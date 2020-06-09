@@ -42,6 +42,7 @@ export type Entity = {
 	accountId: string // id of the account that has this contact
 	name: string
 	request: ContactRequest
+	fake: boolean
 	groupPk?: string
 	addedDate: number
 }
@@ -85,6 +86,8 @@ export namespace Command {
 	export type Delete = { id: string }
 	export type DeleteAll = void
 	export type InitiateRequest = { accountId: string; url: string }
+	export type GenerateFakeContacts = void
+	export type DeleteFakeContacts = void
 }
 
 export namespace Query {
@@ -126,6 +129,8 @@ export namespace Event {
 		groupPk: string
 		contactPk: string
 	}
+	export type GeneratedFakeContacts = { [key: string]: Entity }
+	export type DeletedFakeContacts = void
 }
 
 type SimpleCaseReducer<P> = CaseReducer<State, PayloadAction<P>>
@@ -136,6 +141,8 @@ export type CommandsReducer = {
 	delete: SimpleCaseReducer<Command.Delete>
 	deleteAll: SimpleCaseReducer<Command.DeleteAll>
 	initiateRequest: SimpleCaseReducer<Command.InitiateRequest>
+	generateFakeContacts: SimpleCaseReducer<Command.GenerateFakeContacts>
+	deleteFakeContacts: SimpleCaseReducer<Command.DeleteFakeContacts>
 }
 
 export type QueryReducer = {
@@ -156,6 +163,8 @@ export type EventsReducer = {
 	requestInitiated: SimpleCaseReducer<Event.RequestInitiated>
 	draftReset: SimpleCaseReducer<Event.DraftReset>
 	incomingContactRequestAccepted: SimpleCaseReducer<Event.IncomingContactRequestAccepted>
+	generatedFakeContacts: SimpleCaseReducer<Event.GeneratedFakeContacts>
+	deletedFakeContacts: SimpleCaseReducer<Event.DeletedFakeContacts>
 }
 
 const initialState: State = {
@@ -172,8 +181,61 @@ const commandHandler = createSlice<State, CommandsReducer>({
 		delete: (state: State) => state,
 		deleteAll: (state: State) => state,
 		initiateRequest: (state: State) => state,
+		generateFakeContacts: (state: State) => state,
+		deleteFakeContacts: (state: State) => state,
 	},
 })
+
+type FakeConfig = {
+	name: string
+}
+
+const FAKE_CONTACTS_CONFIG: FakeConfig[] = [
+	{ name: 'test0' },
+	{ name: 'test1' },
+	{ name: 'test2' },
+	{ name: 'test3' },
+	{ name: 'test4' },
+]
+
+const FAKE_CONTACTS: Entity[] = FAKE_CONTACTS_CONFIG.map((fc, index) => {
+	const id = `fake_${index}`
+	return {
+		id: id,
+		accountId: 'fake',
+		name: fc.name,
+		publicKey: id,
+		fake: true,
+		request: {
+			type: ContactRequestType.Incoming,
+			accepted: true,
+			discarded: false,
+		},
+		addedDate: Date.now(),
+	}
+})
+
+export const generateFakeAggregates = () => {
+	const result: { [key: string]: Entity } = {}
+	for (let i = 0; i < FAKE_CONTACTS.length; i++) {
+		const conv = FAKE_CONTACTS[i]
+		result[conv.id] = conv
+	}
+	return result
+}
+
+export const deleteFakeAggregates = (state: State) => {
+	const result: { [key: string]: Entity } = {
+		...state.aggregates,
+	}
+	for (const entry of Object.entries(result)) {
+		const [key, contact] = entry
+		if (contact.fake) {
+			delete result[key]
+		}
+	}
+	return result
+}
 
 export const getAggregateId = ({
 	accountId,
@@ -219,6 +281,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 					name: metadata.name,
 					publicKey: contactPk,
 					groupPk,
+					fake: false,
 					request: {
 						type: ContactRequestType.Outgoing,
 						accepted: false,
@@ -273,6 +336,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 					accountId,
 					name,
 					publicKey: contactPk,
+					fake: false,
 					request: {
 						type: ContactRequestType.Outgoing,
 						accepted: false,
@@ -302,6 +366,17 @@ const eventHandler = createSlice<State, EventsReducer>({
 				contact.request.accepted = true
 				contact.groupPk = groupPk
 			}
+			return state
+		},
+		generatedFakeContacts: (state: State, { payload }) => {
+			state.aggregates = {
+				...state.aggregates,
+				...payload,
+			}
+			return state
+		},
+		deletedFakeContacts: (state: State) => {
+			state.aggregates = deleteFakeAggregates(state)
 			return state
 		},
 	},
@@ -429,6 +504,12 @@ export const transactions: Transactions = {
 			}
 		}
 	},
+	generateFakeContacts: function* () {
+		yield put(events.generatedFakeContacts(generateFakeAggregates()))
+	},
+	deleteFakeContacts: function* () {
+		yield put(events.deletedFakeContacts())
+	},
 }
 
 function* getContact(id: string) {
@@ -519,6 +600,7 @@ export function* orchestrator() {
 						publicKey: bufToStr(contactPk),
 						accountId,
 						name: metadata.name,
+						fake: false,
 						request: {
 							type: ContactRequestType.Incoming,
 							accepted: false,

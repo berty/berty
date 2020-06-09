@@ -96,6 +96,9 @@ const BodyDevTools: React.FC<{}> = () => {
 	const [{ padding, flex, margin, color, text }] = useStyles()
 	const { navigate } = useNavigation()
 	const sendToAll = Chat.useMessageSendToAll()
+	const generateFakeContacts = Chat.useGenerateFakeContacts()
+	const deleteFakeContacts = Chat.useDeleteFakeContacts()
+	const contacts = Chat.useAccountContacts()
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<TracingButton />
@@ -148,6 +151,21 @@ const BodyDevTools: React.FC<{}> = () => {
 				onPress={() => {
 					sendToAll()
 					navigate.main.list()
+				}}
+			/>
+			<ButtonSetting
+				name='Generate fake contacts'
+				icon='book-outline'
+				iconSize={30}
+				iconColor={color.dark.grey}
+				toggled
+				varToggle={contacts.some((item) => item.fake)}
+				actionToggle={(val: boolean) => {
+					if (val) {
+						generateFakeContacts()
+					} else {
+						deleteFakeContacts()
+					}
 				}}
 			/>
 			<ButtonSettingRow

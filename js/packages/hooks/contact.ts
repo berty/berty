@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { chat } from '@berty-tech/store'
 import { Buffer } from 'buffer'
@@ -22,6 +23,16 @@ export const useDiscardContactRequest = () => {
 				id,
 			}),
 		)
+}
+
+export const useGenerateFakeContacts = () => {
+	const dispatch = useDispatch()
+	return useMemo(() => () => dispatch(chat.contact.commands.generateFakeContacts()), [dispatch])
+}
+
+export const useDeleteFakeContacts = () => {
+	const dispatch = useDispatch()
+	return useMemo(() => () => dispatch(chat.contact.commands.deleteFakeContacts()), [dispatch])
 }
 
 // requests queries

@@ -315,8 +315,11 @@ const Conversations: React.FC<ConversationsProps> = ({ items, hasRequests }) => 
 									border.radius.big,
 									{
 										flexGrow: 1,
-										paddingTop: (!hasRequests && insets?.top ? insets?.top * scaleSize : 0) + 85 * scaleSize,
-										paddingBottom: (insets?.bottom ? insets?.bottom * scaleSize : 0) + (100 - (insets?.bottom || 0)) * scaleSize,
+										paddingTop:
+											(!hasRequests && insets?.top ? insets?.top * scaleSize : 0) + 85 * scaleSize,
+										paddingBottom:
+											(insets?.bottom ? insets?.bottom * scaleSize : 0) +
+											(100 - (insets?.bottom || 0)) * scaleSize,
 									},
 								]}
 								bounces={false}
