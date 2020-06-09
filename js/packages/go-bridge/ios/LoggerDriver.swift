@@ -61,22 +61,23 @@ class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
 
         var type: OSLogType
         switch level {
-        // @FIXME(gfanton): on some device: debug log dont show up on the Console.
-        // for the moment, merge debug logs into info logs
-        // case Level.debug:
-        //     type = .debug
-        case Level.info, Level.debug:
+            // @FIXME(gfanton): on some device: debug log dont show up on the Console.
+            // for the moment, use default type for debug
+        case Level.debug:
+            type = .default
+        case Level.info:
             type = .info
-        case Level.warn, Level.error:
+        case Level.warn:
             type = .error
-        case Level.dPanic, Level.panic, Level.fatal:
+        case Level.error, Level.dPanic, Level.panic, Level.fatal:
             type = .fault
         default:
-            type = OSLogType.default
+            type = .default
         }
+
         switch self.scope {
-        case Visibility.visible: os_log("[%@] %{public}@", log: logger, type: type, ulevel, out)
-        case Visibility.hidden: os_log("[%@] %{private}@", log: logger, type: type, ulevel, out)
+        case Visibility.visible: os_log("[%{public}@] %{public}@", log: logger, type: type, ulevel, out)
+        case Visibility.hidden: os_log("[%{private}@] %{private}@", log: logger, type: type, ulevel, out)
         }
     } else {
         NSLog("[%@] [%@]: %@", level.rawValue, self.subsytem + "." + subsytem, out)
@@ -84,12 +85,16 @@ class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
   }
 
   func format(_ format: NSString, level: Level = Level.info, _ args: CVarArg...) {
-    let message = NSString(format: format, args) as String
-    do {
-      try self.log(level.rawValue, namespace: self.category, message: message)
-    } catch {
-      NSLog("[%@] [%@]: %@", level.rawValue, self.subsytem + ".log", message)
-    }
+      self.print(NSString(format: format, args), level: level)
+  }
+
+  func print(_ message: NSString, level: Level = Level.info, category: String? = nil) {
+      let namespace = category ?? self.category
+      do {
+          try self.log(level.rawValue, namespace: namespace, message: message as String)
+      } catch {
+          NSLog("[%@] [%@]: %@", level.rawValue, self.subsytem + ".log", message)
+      }
   }
 
   // @TODO: implement this

@@ -13,7 +13,13 @@ export type GoBridgeOpts = {
 	tracing?: boolean
 }
 
+export type GoLoggerOpts = {
+	level: GoLogLevel
+	message: string
+}
+
 export interface GoBridgeInterface {
+	log(_: GoLoggerOpts): void
 	startProtocol(_: GoBridgeOpts): Promise<void>
 	stopProtocol(): Promise<void>
 	getProtocolAddr(): Promise<string>

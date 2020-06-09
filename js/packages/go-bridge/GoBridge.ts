@@ -9,6 +9,8 @@ class NoopGoBirdge implements GoBridgeInterface {
 		return Promise.reject()
 	}
 
+	log() {}
+
 	getProtocolAddr() {
 		return Promise.reject()
 	}
