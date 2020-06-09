@@ -36,6 +36,13 @@
       "disclaimer": "Ces messages seront envoyés via le Bluetooth.",
       "enable": "Activer le Bluetooth"
     },
+    "multipeer-connectivity": {
+      "tab": "Multipeer Connectivity",
+      "title": "Messagerie hors ligne",
+      "help": "Vous pourrez recevoir et envoyer des messages sans internet !",
+      "disclaimer": "Ces messages seront envoyés via Multipeer Connectivity.",
+      "enable": "Activer Multipeer Connectivity"
+    },
     "contacts": {
       "tab": "Contacts",
       "title": "Discutez avec les personnes qui comptent pour vous",

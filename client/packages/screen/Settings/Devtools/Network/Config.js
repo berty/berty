@@ -10,6 +10,7 @@ import { Header, Loader, Menu } from '@berty/component'
 const transports = {
   TCP: '/ip4/0.0.0.0/tcp/0',
   BLE: '/ble/00000000-0000-0000-0000-000000000000',
+  MC: '/mc/Qmeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
   QUIC: '/ip4/0.0.0.0/udp/0/quic',
 }
 
@@ -183,6 +184,29 @@ class Network extends PureComponent {
                     }
                   } else {
                     const bindP2P = this.removeTransport('ble')
+                    this.updateConfig({ bindP2P })
+                  }
+                }}
+              />
+            }
+          />
+          <Menu.Item
+            title="Multipeer Connectivity"
+            customRight={
+              <Switch
+                justify="end"
+                value={this.isTransportEnable('mc')}
+                onValueChange={async enable => {
+                  if (enable) {
+                    if (
+                      Platform.OS !== 'android' ||
+                      (await requestBLEAndroidPermission())
+                    ) {
+                      const bindP2P = this.addTransport(transports.MC)
+                      this.updateConfig({ bindP2P })
+                    }
+                  } else {
+                    const bindP2P = this.removeTransport('mc')
                     this.updateConfig({ bindP2P })
                   }
                 }}

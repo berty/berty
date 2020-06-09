@@ -7,6 +7,7 @@ import (
 	"berty.tech/network/helper"
 	"berty.tech/network/protocol/berty"
 	blema "berty.tech/network/transport/ble/multiaddr"
+	mcma "berty.tech/network/transport/mc/multiaddr"
 	ggio "github.com/gogo/protobuf/io"
 	inet "github.com/libp2p/go-libp2p-net"
 	protocol "github.com/libp2p/go-libp2p-protocol"
@@ -39,8 +40,8 @@ func (lrm *LocalRecordManager) UpdateLocalContactID(lcontactID string) {
 
 func (lrm *LocalRecordManager) Connected(net inet.Network, c inet.Conn) {
 	go func() {
-		// Send local record if new connection is made through BLE or private IP
-		if blema.BLE.Matches(c.RemoteMultiaddr()) || manet.IsPrivateAddr(c.RemoteMultiaddr()) {
+		// Send local record if new connection is made through MC/BLE or private IP
+		if mcma.MC.Matches(c.RemoteMultiaddr()) || blema.BLE.Matches(c.RemoteMultiaddr()) || manet.IsPrivateAddr(c.RemoteMultiaddr()) {
 			if err := lrm.sendLocalRecord(c); err != nil {
 				logger().Error("sending local record failed", zap.Error(err))
 			} else {

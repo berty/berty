@@ -31,7 +31,7 @@ const Bluetooth = ({ bridge, navigation, t }) => (
           <NextButton
             onPress={async () => {
               if (
-                Platform.OS === 'ios' ||
+                Platform.OS !== 'android' ||
                 (await requestBLEAndroidPermission())
               ) {
                 let config = await bridge.daemon.getNetworkConfig({})

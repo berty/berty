@@ -39,6 +39,7 @@ require (
 	github.com/libp2p/go-tcp-transport v0.1.0
 	github.com/libp2p/go-ws-transport v0.1.0
 	github.com/multiformats/go-multiaddr v0.0.4
+	github.com/multiformats/go-multiaddr-fmt v0.0.1
 	github.com/multiformats/go-multiaddr-net v0.0.1
 	github.com/multiformats/go-multihash v0.0.5
 	github.com/multiformats/go-multistream v0.1.0

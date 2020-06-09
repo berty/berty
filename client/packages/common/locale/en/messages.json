@@ -36,6 +36,13 @@
       "disclaimer": "Your messages will be send through Bluetooth.",
       "enable": "Enable Bluetooth"
     },
+    "multipeer-connectivity": {
+      "tab": "Multipeer Connectivity",
+      "title": "Offline message delivery",
+      "help": "You can receive and send messages even without the internet.",
+      "disclaimer": "Your messages will be send through Multipeer Connectivity.",
+      "enable": "Enable Multipeer Connectivity"
+    },
     "contacts": {
       "tab": "Contacts",
       "title": "Talk securely with the people that matters to you",

@@ -10,6 +10,8 @@ import (
 	"berty.tech/core/daemon"
 	"berty.tech/core/pkg/logmanager"
 	network_config "berty.tech/network"
+	ble "berty.tech/network/transport/ble"
+	mc "berty.tech/network/transport/mc"
 	"go.uber.org/zap"
 
 	"berty.tech/core/platform/desktop/coreinterface"
@@ -59,7 +61,8 @@ func main() {
 		BindP2P: []string{
 			"/ip4/0.0.0.0/udp/0/quic",
 			"/ip4/0.0.0.0/tcp/0",
-			"/ble/00000000-0000-0000-0000-000000000000",
+			ble.DefaultBind,
+			mc.DefaultBind,
 		},
 		Mdns:           true,
 		PrivateNetwork: true,

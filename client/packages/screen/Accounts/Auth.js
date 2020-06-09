@@ -60,6 +60,7 @@ class Auth extends PureComponent {
       return accounts
     } catch (err) {
       console.warn('list account', err)
+      return {}
     }
   }
 

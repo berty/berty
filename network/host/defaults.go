@@ -4,6 +4,7 @@ import (
 	libp2p "github.com/libp2p/go-libp2p"
 
 	ble "berty.tech/network/transport/ble"
+	mc "berty.tech/network/transport/mc"
 
 	libp2p_tls "github.com/libp2p/go-libp2p-tls"
 
@@ -23,6 +24,7 @@ var DefaultListeners = []string{
 	"/ip4/0.0.0.0/tcp/0",
 	"/ip4/0.0.0.0/udp/0/quic",
 	ble.DefaultBind,
+	mc.DefaultBind,
 }
 
 var libp2p_default_opts []libp2p.Option

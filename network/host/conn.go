@@ -6,6 +6,7 @@ import (
 
 	state "berty.tech/network/state"
 	mable "berty.tech/network/transport/ble/multiaddr"
+	mamc "berty.tech/network/transport/mc/multiaddr"
 	circuit "github.com/libp2p/go-libp2p-circuit"
 	inet "github.com/libp2p/go-libp2p-net"
 	ma "github.com/multiformats/go-multiaddr"
@@ -73,11 +74,13 @@ func EvalAddrMobile(m ma.Multiaddr) (score int) {
 
 		switch c.Protocol().Code {
 		case ma.P_QUIC:
-			score = 4
+			score = 5
 		case ma.P_TCP:
-			score = 3
+			score = 4
 		// @TODO: is this usefull?
 		case circuit.P_CIRCUIT:
+			score = 3
+		case mamc.P_MC:
 			score = 2
 		case mable.P_BLE:
 			score = 1
@@ -102,11 +105,13 @@ func EvalAddr(m ma.Multiaddr) (score int) {
 
 		switch c.Protocol().Code {
 		case ma.P_TCP:
-			score = 4
+			score = 5
 		case ma.P_QUIC:
-			score = 3
+			score = 4
 		// @TODO: is this usefull?
 		case circuit.P_CIRCUIT:
+			score = 3
+		case mamc.P_MC:
 			score = 2
 		case mable.P_BLE:
 			score = 1

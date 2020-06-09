@@ -1,3 +1,5 @@
+berty.tech/berty v2.28.0+incompatible h1:1fXuHXcxCp9JmmMT5OrOd+xD1g9G/GaQ2mo1OdGK1P8=
+berty.tech/berty/v2 v2.54.0 h1:7xgn5cR3XNEdB4mI+ba3YsOJ0+4dWWAfGwjPeBd4150=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 github.com/AndreasBriese/bbloom v0.0.0-20180913140656-343706a395b7/go.mod h1:bOvUY6CB00SOBii9/FifXqc0awNKxLFCL/+pkDPuyl8=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
