@@ -681,7 +681,7 @@ export function* orchestrator() {
 		takeEvery(protocol.events.client.groupMetadataPayloadSent, function* ({ payload }) {
 			const { aggregateId: accountId } = payload
 			const event = payload.event as AppMessage
-			if (event.type === AppMessageType.GroupInvitation) {
+			if (event && event.type === AppMessageType.GroupInvitation) {
 				const group: berty.types.IGroup = {
 					groupType: berty.types.GroupType.GroupTypeMultiMember,
 					publicKey: strToBuf(event.groupPk),

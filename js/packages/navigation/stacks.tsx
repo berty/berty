@@ -56,12 +56,12 @@ export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => {
 	return (
 		<CreateGroupStack.Navigator screenOptions={{ headerShown: false }}>
 			<CreateGroupStack.Screen
-				name={Routes.CreateGroup.CreateGroup2}
+				name={Routes.CreateGroup.CreateGroupAddMembers}
 				options={{ stackPresentation: 'transparentModal' }}
 			>
 				{() => (
 					// should use setParams ? maybe, tis weird
-					<Components.Main.CreateGroup2
+					<Components.Main.CreateGroupAddMembers
 						members={members}
 						onRemoveMember={removeMember}
 						onSetMember={setMember}
@@ -69,21 +69,11 @@ export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => {
 				)}
 			</CreateGroupStack.Screen>
 			<CreateGroupStack.Screen
-				name={Routes.CreateGroup.CreateGroup3}
-				options={{ stackPresentation: 'transparentModal' }}
-			>
-				{() => <Components.Main.CreateGroup3 members={members} onRemoveMember={removeMember} />}
-			</CreateGroupStack.Screen>
-			<CreateGroupStack.Screen
-				name={Routes.CreateGroup.CreateGroup1}
+				name={Routes.CreateGroup.CreateGroupFinalize}
 				options={{ stackPresentation: 'transparentModal' }}
 			>
 				{() => (
-					<Components.Main.CreateGroup
-						members={members}
-						onRemoveMember={removeMember}
-						onSetMember={setMember}
-					/>
+					<Components.Main.CreateGroupFinalize members={members} onRemoveMember={removeMember} />
 				)}
 			</CreateGroupStack.Screen>
 			<CreateGroupStack.Screen
@@ -152,7 +142,7 @@ export const Navigation: React.FC = () => {
 			/>
 			<NavigationStack.Screen name={Routes.Chat.OneToOne} component={Components.Chat.OneToOne} />
 			{/*<NavigationStack.Screen name={Routes.Chat.Group} component={Components.Chat.ChatGroup} />*/}
-			<NavigationStack.Screen name={Routes.Chat.Settings} component={Components.Chat.Settings} />
+			<NavigationStack.Screen name={Routes.Chat.Settings} component={Components.Chat.Settings} />{' '}
 			<NavigationStack.Screen
 				name={Routes.Chat.OneToOneSettings}
 				component={Components.Chat.OneToOneSettings}
@@ -161,7 +151,6 @@ export const Navigation: React.FC = () => {
 				name={Routes.Chat.GroupSettings}
 				component={Components.Chat.GroupChatSettings}
 			/>*/}
-
 			<NavigationStack.Screen
 				name={Routes.Main.HomeModal}
 				component={Components.Main.HomeModal}
@@ -176,7 +165,7 @@ export const Navigation: React.FC = () => {
 				options={{ stackPresentation: 'transparentModal' }}
 			/>
 			<NavigationStack.Screen
-				name={Routes.CreateGroup.CreateGroup2}
+				name={Routes.CreateGroup.CreateGroupAddMembers}
 				component={CreateGroupNavigation}
 				options={{ stackPresentation: 'transparentModal' }}
 			/>

@@ -59,9 +59,11 @@ const createNavigation = ({
 				search: createNavigateFunc(navigate, Routes.Main.Search),
 				requestSent: createNavigateFunc(navigate, Routes.Main.RequestSent),
 				createGroup: {
-					createGroup1: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroup1),
-					createGroup2: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroup2),
-					createGroup3: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroup3),
+					createGroupAddMembers: createNavigateFunc(
+						navigate,
+						Routes.CreateGroup.CreateGroupAddMembers,
+					),
+					createGroupFinalize: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroupFinalize),
 				},
 			},
 			chat: {

@@ -17,9 +17,8 @@ export namespace ScreenProps {
 		export type Search = RouteProps<void>
 		export type RequestSent = RouteProps<void>
 		export namespace CreateGroup {
-			export type CreateGroup = RouteProps<void>
-			export type CreateGroup2 = RouteProps<void>
-			export type CreateGroup3 = RouteProps<void>
+			export type CreateGroupAddMembers = RouteProps<void>
+			export type CreateGroupFinalize = RouteProps<void>
 		}
 	}
 	export namespace Chat {
@@ -69,9 +68,8 @@ export namespace Routes {
 		RequestSent = 'Main.RequestSent',
 	}
 	export enum CreateGroup {
-		CreateGroup1 = 'Main.CreateGroup1',
-		CreateGroup2 = 'Main.CreateGroup2',
-		CreateGroup3 = 'Main.CreateGroup3',
+		CreateGroupAddMembers = 'Main.CreateGroupAddMembers',
+		CreateGroupFinalize = 'Main.CreateGroupFinalize',
 	}
 	export enum Chat {
 		OneToOne = 'Chat.OneToOne',

@@ -5,8 +5,9 @@ import {
 	TouchableOpacity,
 	StyleSheet,
 	TouchableWithoutFeedback,
+	Text as TextNative,
 } from 'react-native'
-import { Text, Icon } from 'react-native-ui-kitten'
+import { Text, Icon, Layout } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { BlurView } from '@react-native-community/blur'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
@@ -44,67 +45,74 @@ const useStylesList = () => {
 	}
 }
 
-const Header: React.FC<{
+export const Header: React.FC<{
 	title: string
-	icon: string
+	icon?: string
 	iconPack?: string
 	first?: boolean
 	disabled?: boolean
-}> = ({ children, title, icon, iconPack, first = false, disabled = false }) => {
+	onPress?: any
+	style?: any
+}> = ({
+	children,
+	title,
+	icon,
+	iconPack,
+	first = false,
+	disabled = false,
+	onPress = null,
+	style = null,
+}) => {
 	const [
 		{ height, border, margin, row, padding, text, column, color, background, opacity },
 	] = useStyles()
 	return (
-		<View style={!first && [background.white]}>
-			<View
-				style={[
-					background.white,
-					border.radius.top.scale(30),
-					border.shadow.big,
-					disabled && opacity(0.5),
-				]}
-			>
-				<View style={[height(80)]}>
-					<View
-						style={[
-							margin.top.small,
-							row.item.justify,
-							border.scale(2.5),
-							border.color.light.grey,
-							border.radius.scale(4),
-							{
-								backgroundColor: '#E8E9FC',
-								width: '14%',
-							},
-						]}
-					/>
-					<View>
+		<View style={[!first && background.white]}>
+			<TouchableWithoutFeedback onPress={onPress}>
+				<View
+					style={[
+						background.white,
+						border.radius.top.scale(30),
+						border.shadow.big,
+						disabled && opacity(0.5),
+						style,
+					]}
+				>
+					<View style={[height(90)]}>
 						<View
 							style={[
-								row.fill,
-								padding.horizontal.medium,
-								padding.bottom.medium,
-								padding.top.small,
+								margin.top.small,
+								row.item.justify,
+								border.scale(2.5),
+								border.color.light.grey,
+								border.radius.scale(4),
+								{
+									backgroundColor: '#E8E9FC',
+									width: '14%',
+								},
 							]}
-						>
-							<Text
-								style={[
-									text.bold.medium,
-									text.size.scale(20),
-									text.color.black,
-									column.item.center,
-								]}
-							>
-								{title}
-							</Text>
-							{icon && (
-								<Icon name={icon} pack={iconPack} width={30} height={30} fill={color.black} />
-							)}
+						/>
+						<View style={[margin.top.small]}>
+							<View style={[row.fill, padding.horizontal.medium, padding.top.small]}>
+								<TextNative
+									style={[
+										text.bold.medium,
+										text.size.scale(25),
+										text.color.black,
+										column.item.center,
+									]}
+								>
+									{title}
+								</TextNative>
+								{icon && (
+									<Icon name={icon} pack={iconPack} width={30} height={30} fill={color.black} />
+								)}
+							</View>
 						</View>
 					</View>
+					{children && <View>{children}</View>}
 				</View>
-				{children && <View>{children}</View>}
-			</View>
+			</TouchableWithoutFeedback>
 		</View>
 	)
 }
@@ -293,7 +301,12 @@ export const HomeModal: React.FC<{}> = () => {
 					<Header title='Requests sent' icon='paper-plane-outline'>
 						<Requests />
 					</Header>
-					<Header title='New group' icon='users' iconPack='custom' disabled>
+					<Header
+						title='New group'
+						icon='users'
+						iconPack='custom'
+						onPress={() => navigation.navigate.main.createGroup.createGroupAddMembers()}
+					>
 						<EmptyTab />
 					</Header>
 				</Interactable.View>

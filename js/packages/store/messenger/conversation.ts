@@ -260,6 +260,9 @@ const eventHandler = createSlice<State, EventsReducer>({
 			const conversation = state.aggregates[aggregateId]
 
 			if (conversation) {
+				if (!conversation.membersDevices[memberPk]) {
+					conversation.membersDevices[memberPk] = []
+				}
 				const set = conversation.membersDevices[memberPk]
 				if (!set) {
 					conversation.membersDevices[memberPk] = [devicePk]
@@ -351,11 +354,13 @@ export const transactions: Transactions = {
 		// TODO: conversation generate
 	},
 	create: function* ({ accountId, members, name }) {
+		console.log('creat/conv', members, name)
 		const { groupPk } = (yield* protocol.client.transactions.multiMemberGroupCreate({
 			id: accountId,
 		})) as {
 			groupPk: Uint8Array
 		}
+		console.log('creat/conv groupPk', groupPk)
 		const groupPkStr = bufToStr(groupPk)
 
 		const setGroupName: SetGroupName = {
@@ -368,11 +373,15 @@ export const transactions: Transactions = {
 			payload: jsonToBuf(setGroupName),
 		})
 
+		console.log('creat/conv after app metadata send')
+
 		const group: berty.types.IGroup = {
 			groupType: berty.types.GroupType.GroupTypeMultiMember,
 			publicKey: groupPk,
 		}
 		yield* protocol.client.transactions.multiMemberGroupJoin({ id: accountId, group })
+
+		console.log('creat/conv after multiMemberGroupJoin')
 
 		const invitation: GroupInvitation = {
 			type: AppMessageType.GroupInvitation,
@@ -387,6 +396,7 @@ export const transactions: Transactions = {
 					groupPk: strToBuf(oneToOnePk),
 					payload: jsonToBuf(invitation),
 				})
+				console.log('creat/conv after appMetadataSend number 2')
 			} else {
 				console.warn(
 					'Tried to send a multimember group invitation to a contact without an established 1to1',
@@ -613,7 +623,7 @@ export function* orchestrator() {
 				eventContext: { groupPk },
 			} = payload
 			const event = payload.event as AppMessage
-			if (event.type === AppMessageType.SetGroupName) {
+			if (event && event.type === AppMessageType.SetGroupName) {
 				if (!groupPk) {
 					return
 				}

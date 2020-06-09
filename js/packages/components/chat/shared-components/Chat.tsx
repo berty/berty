@@ -37,6 +37,7 @@ export const ChatFooter: React.FC<{
 		return null
 	}
 	const isFake = conversation.kind === 'fake'
+	// const isGroup = conversation.kind === messenger.conversation.ConversationKind.MultiMember
 
 	return (
 		<BlurView style={[]} blurType='light' blurAmount={30}>
@@ -80,6 +81,7 @@ export const ChatFooter: React.FC<{
 									return
 								}
 								if (message) {
+									console.log('test')
 									sendMessage({
 										id: convId,
 										type: AppMessageType.UserMessage,
