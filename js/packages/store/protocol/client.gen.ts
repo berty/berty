@@ -43,6 +43,7 @@ export type Commands<State> = {
 		PayloadAction<{
 			id: string
 			contact: api.berty.types.IShareableContact
+			ownMetadata: Uint8Array
 		}>
 	>
 	contactRequestAccept: CaseReducer<
