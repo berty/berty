@@ -412,6 +412,28 @@ export const transactions: Transactions = {
 	},
 }
 
+function* contactPkToGroupPk({
+	accountId,
+	contactPk,
+}: {
+	accountId: string
+	contactPk: string | Uint8Array
+}) {
+	try {
+		const groupInfo = (yield call(protocol.transactions.client.groupInfo, {
+			id: accountId,
+			contactPk: typeof contactPk === 'string' ? strToBuf(contactPk) : contactPk,
+			groupPk: new Uint8Array(),
+		})) as berty.types.GroupInfo.IReply
+		const { group } = groupInfo
+		if (!group) {
+			return
+		}
+		const { publicKey: groupPk } = group
+		return groupPk || undefined
+	} catch (e) {}
+}
+
 export function* orchestrator() {
 	yield all([
 		...makeDefaultCommandsSagas(commands, transactions),
@@ -430,11 +452,20 @@ export function* orchestrator() {
 			if (!request) {
 				return
 			}
+			let realGroupPk: Uint8Array | undefined = groupPk
+			const groupPkStr = bufToStr(groupPk)
+			if (!groupPkStr) {
+				console.log('groupPk not provided in AccountContactRequestIncomingAccepted')
+				realGroupPk = yield* contactPkToGroupPk({ accountId, contactPk })
+			}
+			if (!realGroupPk) {
+				throw new Error("Can't find groupPk for accepted contact request")
+			}
 			yield put(
 				events.created({
 					accountId,
 					title: request.name,
-					pk: bufToStr(groupPk),
+					pk: bufToStr(realGroupPk),
 					kind: ConversationKind.OneToOne,
 					contactId: contact.getAggregateId({ accountId, contactPk }),
 				}),
@@ -472,7 +503,7 @@ export function* orchestrator() {
 			yield put(
 				events.created({
 					accountId,
-					title: metadata.givenName,
+					title: metadata.name,
 					pk: groupPkStr,
 					kind: ConversationKind.OneToOne,
 					contactId: contact.getAggregateId({ accountId, contactPk: c.pk }),

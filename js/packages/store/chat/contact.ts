@@ -97,8 +97,7 @@ export namespace Query {
 }
 
 export type ContactRequestMetadata = {
-	name: string // requester name
-	givenName: string // requested name
+	name: string
 }
 
 export namespace Event {
@@ -121,6 +120,11 @@ export namespace Event {
 	}
 	export type DraftReset = {
 		accountId: string
+	}
+	export type IncomingContactRequestAccepted = {
+		accountId: string
+		groupPk: string
+		contactPk: string
 	}
 }
 
@@ -151,6 +155,7 @@ export type EventsReducer = {
 	deleted: SimpleCaseReducer<Event.Deleted>
 	requestInitiated: SimpleCaseReducer<Event.RequestInitiated>
 	draftReset: SimpleCaseReducer<Event.DraftReset>
+	incomingContactRequestAccepted: SimpleCaseReducer<Event.IncomingContactRequestAccepted>
 }
 
 const initialState: State = {
@@ -211,7 +216,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 				state.aggregates[id] = {
 					id,
 					accountId,
-					name: metadata.givenName,
+					name: metadata.name,
 					publicKey: contactPk,
 					groupPk,
 					request: {
@@ -287,23 +292,20 @@ const eventHandler = createSlice<State, EventsReducer>({
 			delete state.requestDraft
 			return state
 		},
-	},
-	extraReducers: {
-		[protocol.events.client.accountContactRequestIncomingAccepted.type]: (state, action) => {
+		incomingContactRequestAccepted: (state, action) => {
 			const {
-				payload: {
-					aggregateId: accountId,
-					event: { contactPk, groupPk },
-				},
+				payload: { accountId, contactPk, groupPk },
 			} = action
 			const id = getAggregateId({ accountId, contactPk })
 			const contact = state.aggregates[id]
 			if (contact && contact.request.type === ContactRequestType.Incoming) {
 				contact.request.accepted = true
-				contact.groupPk = bufToStr(groupPk)
+				contact.groupPk = groupPk
 			}
 			return state
 		},
+	},
+	extraReducers: {
 		[protocol.events.client.accountContactRequestIncomingDiscarded.type]: (state, { payload }) => {
 			const {
 				aggregateId: accountId,
@@ -531,14 +533,33 @@ export function* orchestrator() {
 			payload,
 		}) {
 			const {
-				event: { groupPk },
+				event: { groupPk, contactPk },
 				aggregateId: accountId,
 			} = payload
-			yield call(protocol.client.transactions.activateGroup, { id: accountId, groupPk })
+			let realGroupPk: Uint8Array | undefined = groupPk
+			const groupPkStr = bufToStr(groupPk)
+			if (!groupPkStr) {
+				console.log('groupPk not provided in AccountContactRequestIncomingAccepted')
+				realGroupPk = yield* contactPkToGroupPk({ accountId, contactPk })
+			}
+			if (!realGroupPk) {
+				throw new Error("Can't find groupPk for accepted contact request")
+			}
+			yield put(
+				events.incomingContactRequestAccepted({
+					accountId,
+					groupPk: groupPkStr,
+					contactPk: bufToStr(contactPk),
+				}),
+			)
+			yield call(protocol.client.transactions.activateGroup, {
+				id: accountId,
+				groupPk: realGroupPk,
+			})
 			yield put(
 				groupsCommands.subscribe({
 					clientId: accountId,
-					publicKey: bufToStr(groupPk),
+					publicKey: bufToStr(realGroupPk),
 					messages: true,
 					metadata: true,
 				}),

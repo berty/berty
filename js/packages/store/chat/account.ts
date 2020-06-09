@@ -265,8 +265,7 @@ export const transactions: Transactions = {
 		}
 
 		const metadata: contact.ContactRequestMetadata = {
-			name: account.name,
-			givenName: payload.contactName,
+			name: payload.contactName,
 		}
 
 		console.log(
@@ -278,6 +277,10 @@ export const transactions: Transactions = {
 			metadata,
 		)
 
+		const ownMetadata: contact.ContactRequestMetadata = {
+			name: account.name,
+		}
+
 		const contact: berty.types.IShareableContact = {
 			pk: strToBuf(payload.contactPublicKey),
 			publicRendezvousSeed: strToBuf(payload.contactRdvSeed),
@@ -287,6 +290,7 @@ export const transactions: Transactions = {
 		yield* protocol.transactions.client.contactRequestSend({
 			id: payload.id,
 			contact,
+			ownMetadata: jsonToBuf(ownMetadata),
 		})
 
 		console.log('contactRequestSend done')

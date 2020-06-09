@@ -30,7 +30,8 @@ export type Commands<State> = {
 		PayloadAction<{
 			id: string
 			bertyId: api.berty.messenger.IBertyID
-			Metadata: Uint8Array
+			metadata: Uint8Array
+			ownMetadata: Uint8Array
 		}>
 	>
 }
