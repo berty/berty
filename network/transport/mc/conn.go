@@ -15,7 +15,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Conn is a BLE manet.Conn.
+// Conn is a manet.Conn.
 var _ manet.Conn = &Conn{}
 
 // Conn is the equivalent of a net.Conn object. It is the
@@ -55,7 +55,7 @@ func (c *Conn) Write(payload []byte) (n int, err error) {
 	}
 
 	// Write to the peer's device using native driver.
-	if mcdrv.SendToPeer(c.RemoteAddr().String(), payload) == false {
+	if !mcdrv.SendToPeer(c.RemoteAddr().String(), payload) {
 		return 0, fmt.Errorf("conn write failed: native write failed")
 	}
 

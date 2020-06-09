@@ -13,8 +13,8 @@ func BindNativeToGoFunctions(hfp func(string) bool, rfp func(string, []byte)) {
 }
 
 // Go -> Native functions
-func StartMCDriver(localPID string) bool {
-	return native.StartMCDriver(localPID)
+func StartMCDriver(localPID string) {
+	native.StartMCDriver(localPID)
 }
 
 func StopMCDriver() {

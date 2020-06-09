@@ -7,9 +7,9 @@ import (
 	mcdrv "berty.tech/network/transport/mc/driver"
 	mcma "berty.tech/network/transport/mc/multiaddr"
 
-	tpt "github.com/libp2p/go-libp2p-core/transport"
 	host "github.com/libp2p/go-libp2p-core/host"
 	peer "github.com/libp2p/go-libp2p-core/peer"
+	tpt "github.com/libp2p/go-libp2p-core/transport"
 	tptu "github.com/libp2p/go-libp2p-transport-upgrader"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
@@ -17,7 +17,7 @@ import (
 
 const DefaultBind = "/mc/Qmeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
 
-// Transport is a BLE tpt.transport.
+// Transport is a tpt.transport.
 var _ tpt.Transport = &Transport{}
 
 // Transport represents any device by which you can connect to and accept
@@ -27,7 +27,7 @@ type Transport struct {
 	upgrader *tptu.Upgrader
 }
 
-// NewTransport creates a BLE transport object that tracks dialers and listener.
+// NewTransport creates a transport object that tracks dialers and listener.
 // It also starts the discovery service.
 func NewTransport(h host.Host, u *tptu.Upgrader) (*Transport, error) {
 	return &Transport{
@@ -37,25 +37,24 @@ func NewTransport(h host.Host, u *tptu.Upgrader) (*Transport, error) {
 }
 
 // Dial dials the peer at the remote address.
-// With BLE you can only dial a device that is already connected with the native driver.
-func (t *Transport) Dial(ctx context.Context, remoteMa ma.Multiaddr,
-	remotePID peer.ID) (tpt.CapableConn, error) {
-	// BLE transport needs to have a running listener in order to dial other peer
+// With MC you can only dial a device that is already connected with the native driver.
+func (t *Transport) Dial(ctx context.Context, remoteMa ma.Multiaddr, remotePID peer.ID) (tpt.CapableConn, error) {
+	// MC transport needs to have a running listener in order to dial other peer
 	// because native driver is initialized during listener creation.
 	if gListener == nil {
 		return nil, errors.New("transport dialing peer failed: no active listener")
 	}
 
-	// remoteAddr is supposed to be equal to remotePID since with BLE transport:
-	// multiaddr = /ble/<peerID>
+	// remoteAddr is supposed to be equal to remotePID since with MC transport:
+	// multiaddr = /mc/<peerID>
 	remoteAddr, err := remoteMa.ValueForProtocol(mcma.P_MC)
 	if err != nil || remoteAddr != remotePID.Pretty() {
 		return nil, errors.Wrap(err, "transport dialing peer failed: wrong multiaddr")
 	}
 
 	// Check if native driver is already connected to peer's device.
-	// With BLE you can't really dial, only auto-connect with peer nearby.
-	if mcdrv.DialPeer(remoteAddr) == false {
+	// With MC you can't really dial, only auto-connect with peer nearby.
+	if !mcdrv.DialPeer(remoteAddr) {
 		return nil, errors.New("transport dialing peer failed: peer not connected through MC")
 	}
 
@@ -75,10 +74,10 @@ func (t *Transport) CanDial(remoteMa ma.Multiaddr) bool {
 }
 
 // Listen listens on the given multiaddr.
-// BLE can't listen on more than one listener.
+// MC can't listen on more than one listener.
 func (t *Transport) Listen(localMa ma.Multiaddr) (tpt.Listener, error) {
 	// localAddr is supposed to be equal to the localPID
-	// or to DefaultBind since multiaddr == /ble/<peerID>
+	// or to DefaultBind since multiaddr == /mc/<peerID>
 	localPID := t.host.ID().Pretty()
 	localAddr, err := localMa.ValueForProtocol(mcma.P_MC)
 	if err != nil || (localMa.String() != DefaultBind && localAddr != localPID) {
@@ -101,7 +100,7 @@ func (t *Transport) Listen(localMa ma.Multiaddr) (tpt.Listener, error) {
 		gListener.Close()
 	}
 
-	return newListener(localMa, t)
+	return newListener(localMa, t), nil
 }
 
 // Proxy returns true if this transport proxies.

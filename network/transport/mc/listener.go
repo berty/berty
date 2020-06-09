@@ -8,8 +8,8 @@ import (
 
 	mcdrv "berty.tech/network/transport/mc/driver"
 	mcma "berty.tech/network/transport/mc/multiaddr"
-	tpt "github.com/libp2p/go-libp2p-core/transport"
 	peer "github.com/libp2p/go-libp2p-core/peer"
+	tpt "github.com/libp2p/go-libp2p-core/transport"
 	ma "github.com/multiformats/go-multiaddr"
 )
 
@@ -17,7 +17,7 @@ import (
 // and transport (to ensure that only one listener is running at a time).
 var gListener *Listener
 
-// Listener is a BLE tpt.Listener.
+// Listener is a tpt.Listener.
 var _ tpt.Listener = &Listener{}
 
 // Listener is an interface closely resembling the net.Listener interface. The
@@ -35,12 +35,12 @@ type Listener struct {
 
 // connReq holds data necessary for inbound conn creation.
 type connReq struct {
-	remoteMa	ma.Multiaddr
-	remotePID	peer.ID
+	remoteMa  ma.Multiaddr
+	remotePID peer.ID
 }
 
 // newListener starts the native driver then returns a new Listener.
-func newListener(localMa ma.Multiaddr, t *Transport) (*Listener, error) {
+func newListener(localMa ma.Multiaddr, t *Transport) *Listener {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	listener := &Listener{
@@ -52,14 +52,14 @@ func newListener(localMa ma.Multiaddr, t *Transport) (*Listener, error) {
 	}
 
 	// Starts the native driver.
-	if !mcdrv.StartMCDriver(t.host.ID().Pretty()) {
-		return nil, errors.New("listener creation failed: can't start MC native driver")
-	}
+	// If it failed, don't return a error because no other transport
+	// on the libp2p node will be created.
+	mcdrv.StartMCDriver(t.host.ID().Pretty())
 
 	// Sets listener as global listener
 	gListener = listener
 
-	return listener, nil
+	return listener
 }
 
 // Accept waits for and returns the next connection to the listener.
@@ -69,7 +69,7 @@ func (l *Listener) Accept() (tpt.CapableConn, error) {
 		select {
 		case req := <-l.inboundConnReq:
 			conn, err := newConn(l.ctx, l.transport, req.remoteMa, req.remotePID, true)
-			// If the BLE handshake failed for some reason, Accept won't return an error
+			// If the newConn failed for some reason, Accept won't return an error
 			// because otherwise it will close the listener
 			if err == nil {
 				return conn, nil
@@ -88,7 +88,7 @@ func (l *Listener) Close() error {
 	// Stops the native driver.
 	mcdrv.StopMCDriver()
 
-	// Removes global listener so transport can instanciate a new one later.
+	// Removes global listener so transport can instantiate a new one later.
 	if gListener != nil {
 		gListener.inUse.Wait()
 		gListener = nil

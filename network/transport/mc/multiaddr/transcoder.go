@@ -5,7 +5,7 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 )
 
-// MC multiaddr transcoder
+// TranscoderMC is a multipeer-connectivity multiaddr transcoder
 // See https://github.com/multiformats/go-multiaddr/blob/master/transcoders.go
 var TranscoderMC = ma.NewTranscoderFromFunctions(mcStB, mcBtS, mcVal)
 

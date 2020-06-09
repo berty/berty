@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-int StartMCDriver(char *localPId);
+void StartMCDriver(char *localPId);
 void StopMCDriver(void);
 int SendToPeer(char *remotePID, void *payload, int length);
 int DialPeer(char *remotePID);

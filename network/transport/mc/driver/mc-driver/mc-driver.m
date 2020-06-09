@@ -21,18 +21,17 @@ MCManager* getMCManager(NSString *peerID) {
     return gMCManager;
 }
 
-int StartMCDriver(char *localPID) {
+void StartMCDriver(char *localPID) {
     if (!driverStarted) {
         NSString *cPID = [[NSString alloc] initWithUTF8String:localPID];
         if (!getMCManager(cPID)) {
             NSLog(@"MC: StartMCDriver failed");
-            return (0);
+            return ;
         }
         [gMCManager startServiceAdvertiser];
         [gMCManager startServiceBrowser];
         driverStarted = 1;
     }
-	return (1);
 }
 
 void StopMCDriver() {
@@ -45,14 +44,17 @@ void StopMCDriver() {
 }
 
 int SendToPeer(char *remotePID, void *payload, int length) {
-    NSString *cPID = [[NSString alloc] initWithUTF8String:remotePID];
-    NSData *cPayload = [[NSData alloc] initWithBytes:payload length:length];
-    return ([gMCManager sendToPeer:cPID data:cPayload]);
+    if (driverStarted) {
+		NSString *cPID = [[NSString alloc] initWithUTF8String:remotePID];
+		NSData *cPayload = [[NSData alloc] initWithBytes:payload length:length];
+		return ([gMCManager sendToPeer:cPID data:cPayload]);
+	}
+	return (0);
 }
 
 int DialPeer(char *remotePID) {
     NSString *cPID = [[NSString alloc] initWithUTF8String:remotePID];
-    if (![gMCManager getPeer:cPID]) {
+    if (!driverStarted || ![gMCManager getPeer:cPID]) {
         return (0);
     }
 	return (1);

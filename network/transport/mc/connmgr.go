@@ -7,8 +7,8 @@ import (
 	"time"
 
 	mcdrv "berty.tech/network/transport/mc/driver"
-	tpt "github.com/libp2p/go-libp2p-core/transport"
 	peer "github.com/libp2p/go-libp2p-core/peer"
+	tpt "github.com/libp2p/go-libp2p-core/transport"
 	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
 )
@@ -20,7 +20,7 @@ var connMap sync.Map
 // newConn returns an inbound or outbound tpt.CapableConn upgraded from a Conn.
 func newConn(ctx context.Context, t *Transport, remoteMa ma.Multiaddr,
 	remotePID peer.ID, inbound bool) (tpt.CapableConn, error) {
-	// Creates a BLE manet.Conn
+	// Creates a manet.Conn
 	pr, pw := io.Pipe()
 	connCtx, cancel := context.WithCancel(gListener.ctx)
 
@@ -42,9 +42,8 @@ func newConn(ctx context.Context, t *Transport, remoteMa ma.Multiaddr,
 	// Returns an upgraded CapableConn (muxed, addr filtered, secured, etc...)
 	if inbound {
 		return t.upgrader.UpgradeInbound(ctx, t, maconn)
-	} else {
-		return t.upgrader.UpgradeOutbound(ctx, t, maconn, remotePID)
 	}
+	return t.upgrader.UpgradeOutbound(ctx, t, maconn, remotePID)
 }
 
 // ReceiveFromPeer is called by native driver when peer's device sent data.
@@ -55,7 +54,10 @@ func ReceiveFromPeer(remotePID string, payload []byte) {
 	for i := 0; i < 100; i++ {
 		c, ok := connMap.Load(remotePID)
 		if ok {
-			c.(*Conn).readIn.Write(payload)
+			_, err := c.(*Conn).readIn.Write(payload)
+			if err != nil {
+				logger().Error("receive from peer: write", zap.Error(err))
+			}
 			return
 		}
 		time.Sleep(1 * time.Millisecond)

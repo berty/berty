@@ -2,7 +2,7 @@ package mc
 
 import "net"
 
-// Addr is a BLE net.Addr.
+// Addr is a net.Addr.
 var _ net.Addr = &Addr{}
 
 // Addr represents a network end point address.

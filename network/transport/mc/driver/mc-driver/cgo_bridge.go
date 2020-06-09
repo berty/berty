@@ -11,14 +11,11 @@ package mcdriver
 import "C"
 import "unsafe"
 
-func StartMCDriver(localPID string) bool {
+func StartMCDriver(localPID string) {
 	cPID := C.CString(localPID)
 	defer C.free(unsafe.Pointer(cPID))
 
-	if C.StartMCDriver(cPID) == 1 {
-		return true
-	}
-	return false
+	C.StartMCDriver(cPID)
 }
 
 func StopMCDriver() {
