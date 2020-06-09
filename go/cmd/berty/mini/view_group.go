@@ -11,6 +11,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/banner"
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/gdamore/tcell"
 	"github.com/pkg/errors"
@@ -138,10 +139,26 @@ func (v *groupView) loop(ctx context.Context) {
 		cl, err := v.v.client.GroupMessageList(ctx, req)
 		for err == nil {
 			if evt, err = cl.Recv(); err == nil {
+				payload, err := payloadParser(evt.Message)
+				if err != nil {
+					v.messages.Prepend(&historyMessage{
+						messageType: messageTypeMessage,
+						payload:     []byte(err.Error()),
+						sender:      evt.Headers.DevicePK,
+					}, time.Time{})
+
+					continue
+				} else if payload.GetType() != bertymessenger.AppMessageType_UserMessage {
+					continue
+				}
+
+				receivedAt := time.Unix(0, payload.(*bertymessenger.PayloadUserMessage).SentDate*1000000)
+
 				v.messages.Prepend(&historyMessage{
 					messageType: messageTypeMessage,
-					payload:     evt.Message,
+					payload:     []byte(payload.(*bertymessenger.PayloadUserMessage).Body),
 					sender:      evt.Headers.DevicePK,
+					receivedAt:  receivedAt,
 				}, time.Time{})
 			}
 		}
@@ -187,15 +204,37 @@ func (v *groupView) loop(ctx context.Context) {
 			wg.Done()
 			for {
 				evt, err = cl.Recv()
-				if err != nil {
-					// @TODO: Log this
+				if err == io.EOF {
+					return
+				} else if err != nil {
+					v.messages.Append(&historyMessage{
+						messageType: messageTypeMessage,
+						payload:     []byte(err.Error()),
+						sender:      evt.Headers.DevicePK,
+					})
 					return
 				}
 
+				payload, err := payloadParser(evt.Message)
+				if err != nil {
+					v.messages.Append(&historyMessage{
+						messageType: messageTypeMessage,
+						payload:     []byte(err.Error()),
+						sender:      evt.Headers.DevicePK,
+					})
+
+					continue
+				} else if payload.GetType() != bertymessenger.AppMessageType_UserMessage {
+					continue
+				}
+
+				receivedAt := time.Unix(0, payload.(*bertymessenger.PayloadUserMessage).SentDate*1000000)
+
 				v.messages.Append(&historyMessage{
 					messageType: messageTypeMessage,
-					payload:     evt.Message,
+					payload:     []byte(payload.(*bertymessenger.PayloadUserMessage).Body),
 					sender:      evt.Headers.DevicePK,
+					receivedAt:  receivedAt,
 				})
 			}
 		}()

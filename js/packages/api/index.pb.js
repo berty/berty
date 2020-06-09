@@ -1636,6 +1636,111 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 id: 3
               }
             }
+          },
+          AppMessageType: {
+            values: {
+              Undefined: 0,
+              UserMessage: 1,
+              UserReaction: 2,
+              GroupInvitation: 3,
+              SetGroupName: 4,
+              Acknowledge: 5
+            }
+          },
+          AppMessageTyped: {
+            fields: {
+              type: {
+                type: "AppMessageType",
+                id: 1
+              }
+            }
+          },
+          UserMessageAttachment: {
+            fields: {
+              type: {
+                type: "AppMessageType",
+                id: 1
+              },
+              uri: {
+                type: "string",
+                id: 2
+              }
+            }
+          },
+          PayloadUserMessage: {
+            fields: {
+              type: {
+                type: "AppMessageType",
+                id: 1
+              },
+              body: {
+                type: "string",
+                id: 2
+              },
+              attachments: {
+                rule: "repeated",
+                type: "UserMessageAttachment",
+                id: 3
+              },
+              sentDate: {
+                type: "int64",
+                id: 4,
+                options: {
+                  "(gogoproto.jsontag)": "sentDate"
+                }
+              }
+            }
+          },
+          PayloadUserReaction: {
+            fields: {
+              type: {
+                type: "AppMessageType",
+                id: 1
+              },
+              emoji: {
+                type: "string",
+                id: 2
+              }
+            }
+          },
+          PayloadGroupInvitation: {
+            fields: {
+              type: {
+                type: "AppMessageType",
+                id: 1
+              },
+              groupPk: {
+                type: "string",
+                id: 2,
+                options: {
+                  "(gogoproto.jsontag)": "groupPk"
+                }
+              }
+            }
+          },
+          PayloadSetGroupName: {
+            fields: {
+              type: {
+                type: "AppMessageType",
+                id: 1
+              },
+              name: {
+                type: "string",
+                id: 2
+              }
+            }
+          },
+          PayloadAcknowledge: {
+            fields: {
+              type: {
+                type: "AppMessageType",
+                id: 1
+              },
+              target: {
+                type: "string",
+                id: 2
+              }
+            }
           }
         }
       }

@@ -4,6 +4,7 @@
 ## Table of Contents
 
 - [bertymessenger.proto](#bertymessenger.proto)
+    - [AppMessageTyped](#berty.messenger.AppMessageTyped)
     - [BertyID](#berty.messenger.BertyID)
     - [DevShareInstanceBertyID](#berty.messenger.DevShareInstanceBertyID)
     - [DevShareInstanceBertyID.Reply](#berty.messenger.DevShareInstanceBertyID.Reply)
@@ -14,10 +15,17 @@
     - [ParseDeepLink](#berty.messenger.ParseDeepLink)
     - [ParseDeepLink.Reply](#berty.messenger.ParseDeepLink.Reply)
     - [ParseDeepLink.Request](#berty.messenger.ParseDeepLink.Request)
+    - [PayloadAcknowledge](#berty.messenger.PayloadAcknowledge)
+    - [PayloadGroupInvitation](#berty.messenger.PayloadGroupInvitation)
+    - [PayloadSetGroupName](#berty.messenger.PayloadSetGroupName)
+    - [PayloadUserMessage](#berty.messenger.PayloadUserMessage)
+    - [PayloadUserReaction](#berty.messenger.PayloadUserReaction)
     - [SendContactRequest](#berty.messenger.SendContactRequest)
     - [SendContactRequest.Reply](#berty.messenger.SendContactRequest.Reply)
     - [SendContactRequest.Request](#berty.messenger.SendContactRequest.Request)
+    - [UserMessageAttachment](#berty.messenger.UserMessageAttachment)
   
+    - [AppMessageType](#berty.messenger.AppMessageType)
     - [ParseDeepLink.Kind](#berty.messenger.ParseDeepLink.Kind)
   
     - [MessengerService](#berty.messenger.MessengerService)
@@ -28,6 +36,14 @@
 <p align="right"><a href="#top">Top</a></p>
 
 ## bertymessenger.proto
+
+<a name="berty.messenger.AppMessageTyped"></a>
+
+### AppMessageTyped
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| type | [AppMessageType](#berty.messenger.AppMessageType) |  |  |
 
 <a name="berty.messenger.BertyID"></a>
 
@@ -101,6 +117,53 @@
 | ----- | ---- | ----- | ----------- |
 | link | [string](#string) |  |  |
 
+<a name="berty.messenger.PayloadAcknowledge"></a>
+
+### PayloadAcknowledge
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| type | [AppMessageType](#berty.messenger.AppMessageType) |  |  |
+| target | [string](#string) |  |  |
+
+<a name="berty.messenger.PayloadGroupInvitation"></a>
+
+### PayloadGroupInvitation
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| type | [AppMessageType](#berty.messenger.AppMessageType) |  |  |
+| group_pk | [string](#string) |  |  |
+
+<a name="berty.messenger.PayloadSetGroupName"></a>
+
+### PayloadSetGroupName
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| type | [AppMessageType](#berty.messenger.AppMessageType) |  |  |
+| name | [string](#string) |  |  |
+
+<a name="berty.messenger.PayloadUserMessage"></a>
+
+### PayloadUserMessage
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| type | [AppMessageType](#berty.messenger.AppMessageType) |  |  |
+| body | [string](#string) |  |  |
+| attachments | [UserMessageAttachment](#berty.messenger.UserMessageAttachment) | repeated |  |
+| sent_date | [int64](#int64) |  |  |
+
+<a name="berty.messenger.PayloadUserReaction"></a>
+
+### PayloadUserReaction
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| type | [AppMessageType](#berty.messenger.AppMessageType) |  |  |
+| emoji | [string](#string) |  |  |
+
 <a name="berty.messenger.SendContactRequest"></a>
 
 ### SendContactRequest
@@ -119,7 +182,29 @@
 | metadata | [bytes](#bytes) |  |  |
 | own_metadata | [bytes](#bytes) |  |  |
 
+<a name="berty.messenger.UserMessageAttachment"></a>
+
+### UserMessageAttachment
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| type | [AppMessageType](#berty.messenger.AppMessageType) |  |  |
+| uri | [string](#string) |  |  |
+
  
+
+<a name="berty.messenger.AppMessageType"></a>
+
+### AppMessageType
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| Undefined | 0 |  |
+| UserMessage | 1 |  |
+| UserReaction | 2 |  |
+| GroupInvitation | 3 |  |
+| SetGroupName | 4 |  |
+| Acknowledge | 5 |  |
 
 <a name="berty.messenger.ParseDeepLink.Kind"></a>
 

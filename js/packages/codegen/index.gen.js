@@ -90,6 +90,14 @@ export const berty = {
 		ParseDeepLink: jsonPb.lookup('.berty.messenger.ParseDeepLink'),
 		SendContactRequest: jsonPb.lookup('.berty.messenger.SendContactRequest'),
 		BertyID: jsonPb.lookup('.berty.messenger.BertyID'),
+		AppMessageType: jsonPb.lookup('.berty.messenger.AppMessageType'),
+		AppMessageTyped: jsonPb.lookup('.berty.messenger.AppMessageTyped'),
+		UserMessageAttachment: jsonPb.lookup('.berty.messenger.UserMessageAttachment'),
+		PayloadUserMessage: jsonPb.lookup('.berty.messenger.PayloadUserMessage'),
+		PayloadUserReaction: jsonPb.lookup('.berty.messenger.PayloadUserReaction'),
+		PayloadGroupInvitation: jsonPb.lookup('.berty.messenger.PayloadGroupInvitation'),
+		PayloadSetGroupName: jsonPb.lookup('.berty.messenger.PayloadSetGroupName'),
+		PayloadAcknowledge: jsonPb.lookup('.berty.messenger.PayloadAcknowledge'),
 	},
 }
 export const gogoproto = {
