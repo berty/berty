@@ -1,11 +1,13 @@
 import React from 'react'
 import { View, ScrollView, Vibration } from 'react-native'
 import { Layout } from 'react-native-ui-kitten'
+import { useSelector } from 'react-redux'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
-import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
-import { Settings, Chat } from '@berty-tech/hooks'
+import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { Settings, Messenger } from '@berty-tech/hooks'
+import { messenger, groups } from '@berty-tech/store'
 
 //
 // DevTools
@@ -78,7 +80,7 @@ const TracingButton: React.FC = () => {
 }
 
 const DiscordShareButton: React.FC = () => {
-	const devShareInstanceBertyID = Chat.useDevShareInstanceBertyID()
+	const devShareInstanceBertyID = Messenger.useDevShareInstanceBertyID()
 	const { goBack } = useNavigation()
 	const [{ color }] = useStyles()
 	return (
@@ -96,15 +98,53 @@ const DiscordShareButton: React.FC = () => {
 	)
 }
 
+const DumpButton: React.FC<{ text: string; name: string }> = ({ text, name }) => {
+	const { navigate } = useNavigation()
+	const [{ color }] = useStyles()
+	return (
+		<ButtonSetting
+			name={name}
+			icon='activity-outline'
+			iconSize={30}
+			iconColor={color.dark.grey}
+			onPress={() => navigate.settings.devText({ text })}
+		/>
+	)
+}
+
+const DumpContactStore: React.FC = () => {
+	const text = useSelector((state: messenger.contact.GlobalState) =>
+		JSON.stringify(state.messenger.contact, null, 2),
+	)
+	return <DumpButton name='Dump contact store' text={text} />
+}
+
+const DumpConversationStore: React.FC = () => {
+	const conversationStoreText = useSelector((state: messenger.conversation.GlobalState) =>
+		JSON.stringify(state.messenger.conversation, null, 2),
+	)
+	return <DumpButton name='Dump conversation store' text={conversationStoreText} />
+}
+
+const DumpGroupsStore: React.FC = () => {
+	const conversationStoreText = useSelector((state: groups.GlobalState) =>
+		JSON.stringify(state.groups, null, 2),
+	)
+	return <DumpButton name='Dump groups store' text={conversationStoreText} />
+}
+
 const BodyDevTools: React.FC<{}> = () => {
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, color, text }] = useStyles()
 	const { navigate } = useNavigation()
-	const sendToAll = Chat.useMessageSendToAll()
+	const sendToAll = Messenger.useMessageSendToAll()
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<TracingButton />
 			<DiscordShareButton />
+			<DumpContactStore />
+			<DumpConversationStore />
+			<DumpGroupsStore />
 			<ButtonSetting
 				name='Bot mode'
 				icon='briefcase-outline'
@@ -152,7 +192,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				iconColor={color.dark.grey}
 				onPress={() => {
 					sendToAll()
-					navigate.main.list()
+					navigate.main.home()
 				}}
 			/>
 			<ButtonSettingRow

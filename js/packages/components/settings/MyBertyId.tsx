@@ -4,8 +4,8 @@ import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { TabBar } from '../shared-components/TabBar'
 import { RequestAvatar } from '../shared-components/Request'
-import { Chat } from '@berty-tech/hooks'
-import { useNavigation } from '@berty-tech/berty-navigation'
+import { Messenger } from '@berty-tech/hooks'
+import { useNavigation } from '@berty-tech/navigation'
 import QRCode from 'react-native-qrcode-svg'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -45,7 +45,7 @@ const BertyIdContent: React.FC<{}> = ({ children }) => {
 }
 
 const ContactRequestQR = () => {
-	const client = Chat.useClient()
+	const client = Messenger.useClient()
 	const [{ padding }] = useStyles()
 
 	const { height, width } = useDimensions().window
@@ -63,7 +63,7 @@ const ContactRequestQR = () => {
 }
 
 const Fingerprint: React.FC = () => {
-	const client = Chat.useClient()
+	const client = Messenger.useClient()
 	const [{ padding }] = useStyles()
 
 	const { height, width } = useDimensions().window
@@ -94,7 +94,7 @@ const SelectedContent: React.FC<{ contentName: string }> = ({ contentName }) => 
 const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
 	const [{ background, border, margin, padding, opacity }] = useStyles()
 	const [selectedContent, setSelectedContent] = useState('QR')
-	const client = Chat.useClient()
+	const client = Messenger.useClient()
 
 	return (
 		<View
@@ -133,7 +133,7 @@ const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
 
 const BertyIdShare: React.FC<{}> = () => {
 	const [{ row, border, background, flex, color }] = useStyles()
-	const client = Chat.useClient()
+	const client = Messenger.useClient()
 	const url = client?.deepLink
 	if (!url) {
 		return null

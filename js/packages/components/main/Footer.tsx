@@ -1,11 +1,11 @@
 import React from 'react'
 import { Footer as SharedFooter } from '../shared-components/Footer'
-import { Chat } from '@berty-tech/hooks'
-import { useNavigation, Routes } from '@berty-tech/berty-navigation'
+import { Messenger } from '@berty-tech/hooks'
+import { useNavigation, Routes } from '@berty-tech/navigation'
 
 export const Footer: React.FC<{ selected: string }> = ({ selected }) => {
 	const { navigate } = useNavigation()
-	const client = Chat.useClient()
+	const client = Messenger.useClient()
 	return (
 		<SharedFooter
 			left={{
@@ -13,9 +13,10 @@ export const Footer: React.FC<{ selected: string }> = ({ selected }) => {
 				// onPress: navigate.main.search,
 				selected: selected === Routes.Main.Search,
 				disabled: true,
+				onPress: () => {},
 			}}
 			center={
-				selected === Routes.Main.List
+				selected === Routes.Main.Home
 					? {
 							icon: 'plus-outline',
 							onPress: navigate.main.listModal,
@@ -24,7 +25,7 @@ export const Footer: React.FC<{ selected: string }> = ({ selected }) => {
 					: {
 							icon: 'bubble',
 							iconPack: 'custom',
-							onPress: navigate.main.list,
+							onPress: navigate.main.home,
 							selected: false,
 					  }
 			}

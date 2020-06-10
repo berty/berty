@@ -7,12 +7,12 @@
 
 import React from 'react'
 import DevMenu from 'react-native-dev-menu'
-import Navigation, { NavigationContainer } from '@berty-tech/berty-navigation'
+import Navigation, { NavigationContainer } from '@berty-tech/navigation'
 
 import { Theme, NodeGate } from '@berty-tech/components'
 import '@berty-tech/berty-i18n'
 import { enableScreens } from 'react-native-screens'
-import { Chat } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/hooks'
 import AsyncStorage from '@react-native-community/async-storage'
 import { FeatherIconsPack } from './feather-icons'
 import { IconRegistry } from 'react-native-ui-kitten'
@@ -32,7 +32,7 @@ DevMenu.addItem('Clear async-storage', async () => {
 
 export const App: React.FC = () => (
 	<SafeAreaProvider>
-		<Chat.Provider config={{ storage: AsyncStorage }}>
+		<Messenger.Provider config={{ storage: AsyncStorage }}>
 			<NavigationContainer>
 				<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
 				<Theme.Provider>
@@ -41,7 +41,7 @@ export const App: React.FC = () => (
 					</NodeGate>
 				</Theme.Provider>
 			</NavigationContainer>
-		</Chat.Provider>
+		</Messenger.Provider>
 	</SafeAreaProvider>
 )
 

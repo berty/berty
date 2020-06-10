@@ -1,11 +1,11 @@
 import React from 'react'
-import { Chat, Settings } from '@berty-tech/hooks'
+import { Messenger, Settings } from '@berty-tech/hooks'
 import { Text, View, ActivityIndicator } from 'react-native'
 
 const NodeGate: React.FC = ({ children }) => {
-	const client = Chat.useClient()
+	const client = Messenger.useClient()
 	const settings = Settings.useSettings()
-	const account = Chat.useAccount()
+	const account = Messenger.useAccount()
 	return account?.onboarded && !client ? (
 		<View style={{ height: '100%', justifyContent: 'center', alignItems: 'center' }}>
 			<Text style={{ marginBottom: 20 }}>

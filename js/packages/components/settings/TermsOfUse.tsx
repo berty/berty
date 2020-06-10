@@ -3,7 +3,7 @@ import { View, ScrollView } from 'react-native'
 import { Layout, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
-import { useNavigation } from '@berty-tech/berty-navigation'
+import { useNavigation } from '@berty-tech/navigation'
 
 //
 // TermsOfUse

@@ -1,38 +1,35 @@
 import React from 'react'
 import { TouchableOpacity, View, ViewProps, ScrollView, TouchableHighlight } from 'react-native'
 import { Translation } from 'react-i18next'
-import { berty } from '@berty-tech/api'
 import { useLayout } from '../hooks'
 import { useStyles } from '@berty-tech/styles'
 import {
 	ProceduralCircleAvatar,
 	ConversationProceduralAvatar,
 } from '../shared-components/ProceduralCircleAvatar'
-import { Chat } from '@berty-tech/hooks'
-import { ScreenProps, useNavigation, Routes } from '@berty-tech/berty-navigation'
+import { Messenger } from '@berty-tech/hooks'
+import { ScreenProps, useNavigation, Routes } from '@berty-tech/navigation'
 import { CommonActions } from '@react-navigation/core'
-import { chat } from '@berty-tech/store'
+import { messenger } from '@berty-tech/store'
 import { Icon, Text } from 'react-native-ui-kitten'
 import { SafeAreaView, SafeAreaConsumer } from 'react-native-safe-area-context'
 import FromNow from '../shared-components/FromNow'
 import Logo from './1_berty_picto.svg'
-
-type Navigation<T extends {} | undefined = undefined> = (arg0: T) => void
 
 //
 // Main List
 //
 
 type RequestsProps = ViewProps & {
-	items: Array<chat.contact.Entity>
+	items: Array<messenger.contact.Entity>
 }
 
 type ConversationsProps = ViewProps & {
-	items: Array<chat.conversation.Entity>
+	items: Array<messenger.conversation.Entity>
 	hasRequests: boolean
 }
 
-type ConversationsItemProps = chat.conversation.Entity
+type ConversationsItemProps = messenger.conversation.Entity
 
 // Functions
 
@@ -40,7 +37,7 @@ const RequestsItem: React.FC<{
 	id: string
 	name: string
 	publicKey: string
-	display: Navigation<{ id: string }>
+	display: (params: { contactId: string }) => void
 	accept: (kwargs: { id: string }) => void
 	decline: (kwargs: { id: string }) => void
 	addedDate: number
@@ -65,7 +62,7 @@ const RequestsItem: React.FC<{
 						border.radius.medium,
 						border.shadow.medium,
 					]}
-					onPress={() => display({ id, name, accept, decline, publicKey })}
+					onPress={() => display({ contactId: id })}
 				>
 					<ProceduralCircleAvatar
 						style={[absolute.center, absolute.scale({ top: -32.5 })]}
@@ -81,7 +78,7 @@ const RequestsItem: React.FC<{
 							text.size.tiny,
 							text.color.grey,
 							text.align.center,
-							{ lineHeight: text.size.tiny.fontSize * 1.25 },
+							{ lineHeight: (text.size.tiny as any).fontSize * 1.25 },
 						]}
 					>
 						<FromNow date={addedDate} />
@@ -131,16 +128,21 @@ const RequestsItem: React.FC<{
 	)
 }
 
-const ContactRequestsItem: React.FC<chat.contact.Entity> = ({ id, name, publicKey, addedDate }) => {
-	const accept = Chat.useAcceptContactRequest()
-	const decline = Chat.useDiscardContactRequest()
+const ContactRequestsItem: React.FC<messenger.contact.Entity> = ({
+	id,
+	name,
+	publicKey,
+	addedDate,
+}) => {
+	const accept = Messenger.useAcceptContactRequest()
+	const decline = Messenger.useDiscardContactRequest()
 	const { navigate } = useNavigation()
 	return (
 		<RequestsItem
 			id={id}
 			name={name}
 			publicKey={publicKey}
-			display={navigate.main.contactRequest /*({ id }) => {}*/}
+			display={navigate.main.contactRequest}
 			accept={accept}
 			decline={decline}
 			addedDate={addedDate}
@@ -198,14 +200,17 @@ const UnreadCount: React.FC<{ value: number }> = ({ value }) =>
 					lineHeight: 14,
 				}}
 			>
-				{value}
+				{value.toString()}
 			</Text>
 		</View>
 	) : null
 
 const MessageStatus: React.FC<{ messageID: string }> = ({ messageID }) => {
 	const [{ color }] = useStyles()
-	const message = Chat.useGetMessage(messageID)
+	const message = Messenger.useGetMessage(messageID)
+	if (message?.type !== messenger.AppMessageType.UserMessage) {
+		return null
+	}
 	return (
 		<View style={{ width: 25, justifyContent: 'center', alignItems: 'center' }}>
 			{message ? (
@@ -224,14 +229,14 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	const { dispatch } = useNavigation()
 	const { title, kind, id, messages, unreadCount, lastSentMessage } = props
 	const [{ color, row, border, flex, column, padding, text }] = useStyles()
-	const message = Chat.useGetMessage(messages ? messages[messages.length - 1] : '')
+	const message = Messenger.useGetMessage(messages ? messages[messages.length - 1] : '')
 
 	return (
 		<TouchableHighlight
 			underlayColor={color.light.grey}
 			style={[padding.horizontal.medium]}
 			onPress={
-				kind === chat.conversation.ConversationKind.MultiMember
+				kind === messenger.conversation.ConversationKind.MultiMember
 					? () =>
 							dispatch(
 								CommonActions.navigate({
@@ -244,7 +249,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 					: () =>
 							dispatch(
 								CommonActions.navigate({
-									name: Routes.Chat.One2One,
+									name: Routes.Chat.OneToOne,
 									params: {
 										convId: id,
 									},
@@ -267,7 +272,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 								numberOfLines={1}
 								style={[text.size.medium, text.color.black, unreadCount && text.bold.medium]}
 							>
-								{kind === 'fake' && 'SAMPLE - '}
+								{(kind === 'fake' && 'SAMPLE - ') || ''}
 								{title || ''}
 							</Text>
 						</View>
@@ -280,9 +285,11 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 									unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
 								]}
 							>
-								{message && formatTimestamp(new Date(message.sentDate))}
+								{message?.type === messenger.AppMessageType.UserMessage
+									? formatTimestamp(new Date(message.sentDate))
+									: formatTimestamp(new Date(Date.now()))}
 							</Text>
-							<MessageStatus messageID={lastSentMessage} />
+							{lastSentMessage && <MessageStatus messageID={lastSentMessage} />}
 						</View>
 					</View>
 					<Text
@@ -292,7 +299,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 							unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
 						]}
 					>
-						{message && message.body}
+						{message?.type === messenger.AppMessageType.UserMessage ? message.body : ''}
 					</Text>
 				</View>
 			</View>
@@ -346,16 +353,16 @@ const Conversations: React.FC<ConversationsProps> = ({ items, hasRequests }) => 
 	) : null
 }
 
-export const List: React.FC<ScreenProps.Chat.List> = () => {
+export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	// TODO: do something to animate the requests
 	const [, onLayoutRequests] = useLayout()
 
-	const requests = Chat.useAccountContactsWithIncomingRequests().filter(
+	const requests = Messenger.useAccountContactsWithIncomingRequests().filter(
 		(contact) => !(contact.request.accepted || contact.request.discarded),
 	)
-	const conversations = Chat.useConversationList().sort((a, b) => {
+	const conversations = Messenger.useConversationList().sort((a, b) => {
 		if (a.kind !== 'fake' && b.kind !== 'fake') {
-			return b.lastMessageDate - a.lastMessageDate
+			return (b.lastMessageDate || 0) - (a.lastMessageDate || 0)
 		}
 		return 0
 	})
@@ -370,4 +377,4 @@ export const List: React.FC<ScreenProps.Chat.List> = () => {
 	)
 }
 
-export default List
+export default Home

@@ -1,5 +1,5 @@
 import { WebsocketTransport } from '@berty-tech/grpc-bridge'
-import GoBridge, { GoBridgeOpts } from '@berty-tech/go-bridge'
+import GoBridge, { GoBridgeOpts, GoLogLevel } from '@berty-tech/go-bridge'
 import { createSlice, PayloadAction, CaseReducer } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
 import { all, put, putResolve, call, delay, take, fork, join, takeEvery } from 'redux-saga/effects'
@@ -17,6 +17,7 @@ import * as bertytypes from './grpc-web-gen/bertytypes_pb'
 import { grpc } from '@improbable-eng/grpc-web'
 import { unaryChan, EventChannelOutput } from '../sagaUtils'
 import MessengerServiceSagaClient from '../messenger/MessengerServiceSagaClient.gen'
+import { transactions as groupsTransactions, events as groupsEvents } from '../groups'
 
 export type Entity = {
 	id: string
@@ -85,7 +86,7 @@ export type Transactions = {
 	listenToGroupMetadata: (payload: { clientId: string; groupPk: Uint8Array }) => Generator
 	listenToGroupMessages: (payload: { clientId: string; groupPk: Uint8Array }) => Generator
 	listenToGroup: (payload: { clientId: string; groupPk: Uint8Array }) => Generator
-	start: (payload: { id: string }) => Generator
+	start: (payload: { id: string; name: string }) => Generator
 	deleteService: (payload: { id: string }) => Generator
 	restart: (payload: { id: string }) => Generator
 }
@@ -224,10 +225,7 @@ export const decodeMetadataEvent = (
 	return decodedEvent
 }
 
-const groupMetadataEventToReduxAction = (
-	id: string,
-	e: bertytypes.GroupMetadataEvent.AsObject | api.berty.types.IGroupMetadataEvent,
-) => {
+const groupMetadataEventToReduxAction = (id: string, e: api.berty.types.IGroupMetadataEvent) => {
 	if (!(e.metadata && e.metadata.eventType)) {
 		throw new Error('Invalid reply, missing eventType')
 	}
@@ -236,7 +234,8 @@ const groupMetadataEventToReduxAction = (
 	if (eventName === undefined) {
 		throw new Error(`Invalid event type ${eventType}`)
 	}
-	console.log('received', eventName, 'on', id)
+	const cid = e.eventContext?.id && bufToStr(e.eventContext.id)
+	console.log('received', eventName, 'on', id, ', cid:', cid)
 	const type = `${eventHandler.name}/${Case.camel(eventName.replace('EventType', ''))}`
 	return {
 		type,
@@ -256,8 +255,9 @@ const groupMessageEventToReduxAction = (
 	if (!(response.eventContext && response.eventContext.id)) {
 		throw new Error('No event cid')
 	}
-
 	const type = 'protocol/GroupMessageEvent'
+	const cid = response.eventContext?.id && bufToStr(response.eventContext.id)
+	console.log('received GroupMessageEvent on', id, ', cid:', cid)
 	return {
 		type,
 		payload: {
@@ -297,10 +297,10 @@ export const defaultExternalBridgeConfig: BertyNodeConfig = {
 	port: 1337,
 }
 
-export const defaultBridgeOpts = {
+export const defaultBridgeOpts: GoBridgeOpts = {
 	swarmListeners: ['/ip4/0.0.0.0/tcp/0', '/ip6/0.0.0.0/tcp/0'],
 	grpcListeners: ['/ip4/127.0.0.1/tcp/0/grpcws'],
-	logLevel: 'debug',
+	logLevel: GoLogLevel.debug,
 	persistance: true,
 	tracing: true,
 	tracingPrefix: '',
@@ -419,28 +419,80 @@ export const transactions: Transactions = {
 		const chan = getProtocolService(id).groupMetadataSubscribe(req)
 		while (true) {
 			const reply = (yield take(chan)) as EventChannelOutput<typeof chan>
-			yield put(groupMetadataEventToReduxAction(id, reply))
+			const cid = reply.eventContext?.id
+			if (cid) {
+				const cidStr = bufToStr(cid)
+				const pkStr = bufToStr(req.groupPk)
+				const alreadyRead = yield* groupsTransactions.isCIDRead({
+					publicKey: pkStr,
+					cid: cidStr,
+				})
+				if (!alreadyRead) {
+					const action = groupMetadataEventToReduxAction(id, reply)
+					yield put(action)
+					yield put(groupsEvents.cidRead({ cid: cidStr, publicKey: pkStr }))
+				}
+			}
 		}
 	},
 	groupMessageSubscribe: function* ({ id, ...req }) {
 		const chan = getProtocolService(id).groupMessageSubscribe(req)
 		while (true) {
 			const reply = (yield take(chan)) as EventChannelOutput<typeof chan>
-			yield put(groupMessageEventToReduxAction(id, reply))
+			const cid = reply.eventContext?.id
+			if (cid) {
+				const cidStr = bufToStr(cid)
+				const pkStr = bufToStr(req.groupPk)
+				const alreadyRead = yield* groupsTransactions.isCIDRead({
+					publicKey: pkStr,
+					cid: cidStr,
+				})
+				if (!alreadyRead) {
+					const action = groupMessageEventToReduxAction(id, reply)
+					yield put(action)
+					yield put(groupsEvents.cidRead({ cid: cidStr, publicKey: pkStr }))
+				}
+			}
 		}
 	},
 	groupMetadataList: function* ({ id, ...req }) {
 		const chan = getProtocolService(id).groupMetadataList(req)
 		while (true) {
 			const reply = (yield take(chan)) as EventChannelOutput<typeof chan>
-			yield put(groupMetadataEventToReduxAction(id, reply))
+			const cid = reply.eventContext?.id
+			if (cid) {
+				const cidStr = bufToStr(cid)
+				const pkStr = bufToStr(req.groupPk)
+				const alreadyRead = yield* groupsTransactions.isCIDRead({
+					publicKey: pkStr,
+					cid: cidStr,
+				})
+				if (!alreadyRead) {
+					const action = groupMetadataEventToReduxAction(id, reply)
+					yield put(action)
+					yield put(groupsEvents.cidRead({ cid: cidStr, publicKey: pkStr }))
+				}
+			}
 		}
 	},
 	groupMessageList: function* ({ id, ...req }) {
 		const chan = getProtocolService(id).groupMessageList(req)
 		while (true) {
 			const reply = (yield take(chan)) as EventChannelOutput<typeof chan>
-			yield put(groupMessageEventToReduxAction(id, reply))
+			const cid = reply.eventContext?.id
+			if (cid) {
+				const cidStr = bufToStr(cid)
+				const pkStr = bufToStr(req.groupPk)
+				const alreadyRead = yield* groupsTransactions.isCIDRead({
+					publicKey: pkStr,
+					cid: cidStr,
+				})
+				if (!alreadyRead) {
+					const action = groupMessageEventToReduxAction(id, reply)
+					yield put(action)
+					yield put(groupsEvents.cidRead({ cid: cidStr, publicKey: pkStr }))
+				}
+			}
 		}
 	},
 	listenToGroupMetadata: function* ({ clientId, groupPk }) {

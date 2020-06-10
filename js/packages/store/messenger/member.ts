@@ -22,7 +22,7 @@ export type State = {
 }
 
 export type GlobalState = {
-	chat: {
+	messenger: {
 		member: State
 	}
 }
@@ -77,7 +77,7 @@ export type Transactions = {
 }
 
 const commandHandler = createSlice<State, CommandsReducer>({
-	name: 'chat/member/command',
+	name: 'messenger/member/command',
 	initialState,
 	reducers: {
 		create: (state: State) => state,
@@ -87,7 +87,7 @@ const commandHandler = createSlice<State, CommandsReducer>({
 })
 
 const eventHandler = createSlice<State, EventsReducer>({
-	name: 'chat/member/event',
+	name: 'messenger/member/event',
 	initialState,
 	reducers: {
 		created: (state: State) => state,
@@ -100,9 +100,9 @@ export const reducer = composeReducers(commandHandler.reducer, eventHandler.redu
 export const commands = commandHandler.actions
 export const events = eventHandler.actions
 export const queries: QueryReducer = {
-	list: (state) => Object.values(state.chat.member.aggregates),
-	get: (state, { id }) => state.chat.member.aggregates[id],
-	getLength: (state) => Object.keys(state.chat.member.aggregates).length,
+	list: (state) => Object.values(state.messenger.member.aggregates),
+	get: (state, { id }) => state.messenger.member.aggregates[id],
+	getLength: (state) => Object.keys(state.messenger.member.aggregates).length,
 }
 
 export const transactions: Transactions = {

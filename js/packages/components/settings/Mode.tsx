@@ -4,7 +4,7 @@ import { Layout, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
-import { useNavigation } from '@berty-tech/berty-navigation'
+import { useNavigation } from '@berty-tech/navigation'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
 
 //

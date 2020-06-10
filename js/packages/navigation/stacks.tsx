@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { createNativeStackNavigator } from 'react-native-screens/native-stack'
 import * as Components from '@berty-tech/components'
 import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs'
-import { Chat as ChatHooks } from '@berty-tech/hooks'
-import { chat } from '@berty-tech/store'
+import { Messenger } from '@berty-tech/hooks'
+import { messenger } from '@berty-tech/store'
 import { Routes } from './types'
 
 const FakeStack = createNativeStackNavigator()
@@ -39,8 +39,8 @@ export const ModalsNavigation: React.FC = () => (
 
 const CreateGroupStack = createNativeStackNavigator()
 export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => {
-	const [members, setMembers] = useState([] as chat.contact.Entity[])
-	const setMember = (contact: chat.contact.Entity) => {
+	const [members, setMembers] = useState([] as messenger.contact.Entity[])
+	const setMember = (contact: messenger.contact.Entity) => {
 		if (members.find((member) => member.id === contact.id)) {
 			return
 		}
@@ -108,7 +108,7 @@ export const TabNavigation: React.FC = () => {
 		<TabStack.Navigator
 			tabBar={({ state }) => <Components.Main.Footer selected={state.routes[state.index].name} />}
 		>
-			<TabStack.Screen name={Routes.Main.List} component={Components.Main.List} />
+			<TabStack.Screen name={Routes.Main.Home} component={Components.Main.Home} />
 			<TabStack.Screen name={Routes.Main.Search} component={SearchNavigation} />
 			<TabStack.Screen name={Routes.Settings.Home} component={Components.Settings.Home} />
 		</TabStack.Navigator>
@@ -117,7 +117,7 @@ export const TabNavigation: React.FC = () => {
 
 const NavigationStack = createNativeStackNavigator()
 export const Navigation: React.FC = () => {
-	const length = ChatHooks.useAccountLength()
+	const length = Messenger.useAccountLength()
 	return (
 		<NavigationStack.Navigator
 			initialRouteName={length >= 1 ? Routes.Root.Tabs : Routes.Onboarding.GetStarted}
@@ -150,15 +150,12 @@ export const Navigation: React.FC = () => {
 				component={Components.Main.Scan}
 				options={{ stackPresentation: 'transparentModal' }}
 			/>
-			<NavigationStack.Screen name={Routes.Chat.One2One} component={Components.Chat.Chat} />
+			<NavigationStack.Screen name={Routes.Chat.OneToOne} component={Components.Chat.OneToOne} />
 			{/*<NavigationStack.Screen name={Routes.Chat.Group} component={Components.Chat.ChatGroup} />*/}
+			<NavigationStack.Screen name={Routes.Chat.Settings} component={Components.Chat.Settings} />
 			<NavigationStack.Screen
-				name={Routes.Chat.Settings}
-				component={Components.Chat.ChatSettings}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Chat.One2OneSettings}
-				component={Components.Chat.ContactChatSettings}
+				name={Routes.Chat.OneToOneSettings}
+				component={Components.Chat.OneToOneSettings}
 			/>
 			{/*<NavigationStack.Screen
 				name={Routes.Chat.GroupSettings}
@@ -166,8 +163,8 @@ export const Navigation: React.FC = () => {
 			/>*/}
 
 			<NavigationStack.Screen
-				name={Routes.Main.ListModal}
-				component={Components.Main.ListModal}
+				name={Routes.Main.HomeModal}
+				component={Components.Main.HomeModal}
 				options={{
 					stackPresentation: 'transparentModal',
 					contentStyle: { backgroundColor: 'transparent' },
@@ -234,6 +231,10 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={Routes.Settings.IpfsWebUI}
 				component={Components.Settings.IpfsWebUI}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.DevText}
+				component={Components.Settings.DevText}
 			/>
 			<NavigationStack.Screen
 				name={'Modals'}

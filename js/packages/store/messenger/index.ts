@@ -16,6 +16,8 @@ import * as member from './member'
 import * as message from './message'
 import * as groups from '../groups'
 
+export * from './AppMessage'
+
 export { account, contact, conversation, member, message }
 
 export type State = account.GlobalState
@@ -24,7 +26,7 @@ export const reducers = {
 	...protocol.reducers,
 	...settings.reducers,
 	...groups.reducers,
-	chat: combineReducers({
+	messenger: combineReducers({
 		account: account.reducer,
 		contact: contact.reducer,
 		conversation: conversation.reducer,

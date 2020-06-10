@@ -24,7 +24,7 @@
     "typescript": "^3.9.5"
   },
   "dependencies": {
-    "@berty-tech/berty-navigation": "^0.0.0",
+    "@berty-tech/navigation": "^0.0.0",
     "@berty-tech/components": "^0.0.0",
     "@berty-tech/go-bridge": "^1.0.0",
     "@berty-tech/hooks": "^0.0.0",

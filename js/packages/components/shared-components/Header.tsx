@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, TouchableOpacity } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
-import { useStyles, ColorsTypes, defaultStylesDeclaration } from '@berty-tech/styles'
+import { useStyles, defaultStylesDeclaration } from '@berty-tech/styles'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 //
@@ -12,19 +12,20 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 type HeaderSettingsProps = {
 	title?: string
 	children?: React.ReactNode
-	bgColor?: ColorsTypes
+	bgColor?: string
 	undo?: () => void
 	undoIcon?: string
 	undoIconSize?: number
-	undoIconColor?: ColorsTypes
+	undoIconColor?: string
+	undoIconPack?: string
 	desc?: string | null
 	descFontSize?: number
-	descColor?: ColorsTypes
+	descColor?: string
 	action?: React.Dispatch<any>
 	actionValue?: boolean
 	actionIcon?: string
 	actionIconSize?: number
-	actionIconColor?: ColorsTypes
+	actionIconColor?: string
 }
 
 export const HeaderSettings: React.FC<HeaderSettingsProps> = ({

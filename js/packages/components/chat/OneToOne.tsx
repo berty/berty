@@ -10,9 +10,9 @@ import {
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
-import { Chat as ChatHooks } from '@berty-tech/hooks'
-import { useNavigation, Routes } from '@berty-tech/berty-navigation'
-import { CommonActions, useNavigation as useReactNavigation } from '@react-navigation/native'
+import { Messenger } from '@berty-tech/hooks'
+import { useNavigation, ScreenProps } from '@berty-tech/navigation'
+import { useNavigation as useReactNavigation } from '@react-navigation/native'
 import FromNow from '../shared-components/FromNow'
 import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { Message } from './shared-components/Message'
@@ -31,15 +31,28 @@ const useStylesChat = () => {
 	}
 }
 
+const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) => {
+	const { children, ...propsToPass } = props
+	return (
+		<View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+			<ActivityIndicator {...propsToPass} />
+		</View>
+	)
+}
+
 export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
-	const { dispatch, goBack } = useNavigation()
+	const { navigate, goBack } = useNavigation()
 	const _styles = useStylesChat()
 	const [{ absolute, row, padding, column, margin, text, flex, opacity, color }] = useStyles()
-	const conversation = ChatHooks.useGetConversation(id)
-	const contact = ChatHooks.useOneToOneConversationContact(conversation.id)
+	const conversation = Messenger.useGetConversation(id)
+	const contact = Messenger.useOneToOneConversationContact(id)
+	const lastDate = Messenger.useGetDateLastContactMessage(id)
+	if (!conversation) {
+		goBack()
+		return <CenteredActivityIndicator />
+	}
 	const title =
 		conversation.kind === 'fake' ? `SAMPLE - ${conversation.title}` : contact?.name || ''
-	const lastDate = ChatHooks.useGetDateLastContactMessage(conversation.id)
 
 	return (
 		<BlurView
@@ -75,17 +88,7 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 				<TouchableOpacity
 					activeOpacity={contact ? 0.2 : 0.5}
 					style={[flex.tiny, row.item.justify, !contact ? opacity(0.5) : null]}
-					onPress={() =>
-						contact &&
-						dispatch(
-							CommonActions.navigate({
-								name: Routes.Chat.Settings,
-								params: {
-									contact,
-								},
-							}),
-						)
-					}
+					onPress={() => navigate.chat.settings({ convId: id })}
 				>
 					<ConversationProceduralAvatar size={45} diffSize={9} conversationId={id} />
 				</TouchableOpacity>
@@ -105,15 +108,22 @@ const InfosChat: React.FC<{ createdAt: number }> = ({ createdAt }) => {
 
 // const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
 
+// hack until Message props type is fixed
+const TypedMessage = Message as React.FC<{
+	payload: ReturnType<typeof Messenger.useGetMessage>
+}>
+
 const AppMessage: React.FC<{ message: string }> = ({ message }) => {
-	const msg = ChatHooks.useGetMessage(message)
-	return !!msg && <Message payload={msg} />
+	const msg = Messenger.useGetMessage(message)
+	return msg ? <TypedMessage payload={msg} /> : null
 }
 
 const MessageList: React.FC<{ id: string }> = (props) => {
 	const [{ row, overflow, flex, margin }] = useStyles()
-	const conversation = ChatHooks.useGetConversation(props.id)
-
+	const conversation = Messenger.useGetConversation(props.id)
+	if (!conversation) {
+		return <CenteredActivityIndicator />
+	}
 	return (
 		<FlatList
 			keyboardDismissMode='on-drag'
@@ -130,11 +140,11 @@ const MessageList: React.FC<{ id: string }> = (props) => {
 const useReadEffect = (convId: string, timeout: number) => {
 	// timeout is the duration (in ms) that the user must stay on the page to set messages as read
 	const navigation = useReactNavigation()
-	const startRead = ChatHooks.useStartReadConversation(convId)
-	const stopRead = ChatHooks.useStopReadConversation(convId)
+	const startRead = Messenger.useStartReadConversation(convId)
+	const stopRead = Messenger.useStopReadConversation(convId)
 
 	useEffect(() => {
-		let timeoutID: number | null = null
+		let timeoutID: ReturnType<typeof setTimeout> | null = null
 		const handleStart = () => {
 			if (timeoutID === null) {
 				timeoutID = setTimeout(() => {
@@ -161,7 +171,7 @@ const useReadEffect = (convId: string, timeout: number) => {
 	}, [navigation, startRead, stopRead, timeout])
 }
 
-export const Chat: React.FC<{ route: any }> = ({ route }) => {
+export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route }) => {
 	const [inputIsFocused, setInputFocus] = useState(true)
 	const [{ flex, background }] = useStyles()
 	useReadEffect(route.params.convId, 1000)

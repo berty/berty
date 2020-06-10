@@ -1,5 +1,5 @@
 import React from 'react'
-import { chat } from '@berty-tech/store'
+import { messenger } from '@berty-tech/store'
 import { Provider as ReactReduxProvider } from 'react-redux'
 import { ActivityIndicator } from 'react-native'
 import { PersistGate } from 'redux-persist/integration/react'
@@ -9,26 +9,26 @@ import { useStyles } from '@berty-tech/styles'
 /*export const Recorder: React.FC = ({ children }) => {
 	React.useEffect(() => {
 		DevMenu.addItem('(Chat) Start Test Recorder', () => {
-			chat.recorder.start()
+			messenger.recorder.start()
 		})
 		DevMenu.addItem('(Chat) Copy Test And Stop Recoder', () => {
 			Clipboard.setString(
-				chat.recorder
+				messenger.recorder
 					.createTest()
 					.replace(
 						'/* import reducer from YOUR_REDUCER_LOCATION_HERE',
-						"import * as chat from '..'\nconst { reducer } = chat.init()",
+						"import * as messenger from '..'\nconst { reducer } = messenger.init()",
 					),
 			)
-			chat.recorder.stop()
+			messenger.recorder.stop()
 		})
 	})
 
 	return null
 }*/
 
-export const Provider: React.FC<{ config: chat.InitConfig }> = ({ config, children }) => {
-	const store = chat.init(config)
+export const Provider: React.FC<{ config: messenger.InitConfig }> = ({ config, children }) => {
+	const store = messenger.init(config)
 	const [{ flex }] = useStyles()
 	return (
 		<ReactReduxProvider store={store}>

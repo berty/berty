@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import { View, TouchableOpacity } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useNavigation } from '@react-navigation/native'
-import { Chat } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/hooks'
 import { useStyles } from '@berty-tech/styles'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
-import { chat } from '@berty-tech/store'
+import { messenger } from '@berty-tech/store'
 
 const useStylesModal = () => {
 	const [{ width, border, height, opacity }] = useStyles()
@@ -38,12 +38,13 @@ const SelectedContent = ({ contentName, pubKey }: { contentName: string; pubKey:
 	}
 }
 
-const AddThisContact: React.FC<{ requestDraft: chat.contact.ValidRequestDraft }> = ({
+const AddThisContact: React.FC<{ requestDraft: messenger.contact.ValidRequestDraft }> = ({
 	requestDraft,
 }) => {
 	const [{ row, text, column, color, flex, absolute, padding, background, border }] = useStyles()
 	const navigation = useNavigation()
-	const sendContactRequest = Chat.useAccountSendContactRequest()
+	const sendContactRequest = Messenger.useAccountSendContactRequest()
+	const resetDraft = Messenger.useResetDraft()
 	const [selectedContent, setSelectedContent] = useState('Fingerprint')
 	const _styles = useStylesModal()
 	return (
@@ -97,7 +98,8 @@ const AddThisContact: React.FC<{ requestDraft: chat.contact.ValidRequestDraft }>
 							)
 							// Sometimes the navigation happens without sending the contact request
 							navigation.goBack()
-							navigation.navigate('Main.ListModal')
+							resetDraft()
+							navigation.navigate('Main.HomeModal')
 						}}
 						style={[
 							flex.medium,

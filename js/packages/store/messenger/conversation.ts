@@ -5,10 +5,20 @@ import { berty } from '@berty-tech/api'
 import { Buffer } from 'buffer'
 import { AppMessage, GroupInvitation, SetGroupName, AppMessageType } from './AppMessage'
 import { makeDefaultCommandsSagas, strToBuf, bufToStr, jsonToBuf, bufToJSON } from '../utils'
-import { commands as groupsCommands } from '../groups'
+import {
+	commands as groupsCommands,
+	transactions as groupsTransactions,
+	queries as groupsQueries,
+} from '../groups'
+import {
+	queries as contactQueries,
+	events as contactEvents,
+	getAggregateId as getContactAggregateId,
+	Entity as ContactEntity,
+	ContactRequestMetadata,
+} from './contact'
 
 import * as protocol from '../protocol'
-import { contact } from '../chat'
 
 export enum ConversationKind {
 	OneToOne = 'OneToOne',
@@ -22,7 +32,7 @@ type BaseConversation = {
 	title: string
 	pk: string
 	createdAt: number
-	membersDevices: { [key: string]: string[] }
+	membersDevices: { [key: string]: string[] | undefined }
 	members: Array<number>
 	messages: Array<string>
 	unreadCount: number
@@ -57,7 +67,7 @@ export type State = {
 }
 
 export type GlobalState = {
-	chat: {
+	messenger: {
 		conversation: State
 	}
 }
@@ -66,7 +76,7 @@ export namespace Command {
 	export type Generate = void
 	export type Create = {
 		accountId: string
-		members: contact.Entity[]
+		members: ContactEntity[]
 		name: string
 	}
 	export type Delete = { id: string }
@@ -88,6 +98,8 @@ export namespace Event {
 		accountId: string
 		title: string
 		pk: string
+		membersDevices?: { [key: string]: string[] | undefined }
+		now: number
 	} & (
 		| {
 				kind: ConversationKind.OneToOne
@@ -148,7 +160,10 @@ export type Transactions = {
 	[K in keyof CommandsReducer]: CommandsReducer[K] extends SimpleCaseReducer<infer TPayload>
 		? (payload: TPayload) => Generator
 		: never
-} & { open: (payload: { accountId: string }) => Generator }
+} & {
+	open: (payload: { accountId: string }) => Generator
+	createOneToOne: (payload: Event.Created) => Generator
+}
 
 const initialState: State = {
 	events: [],
@@ -156,7 +171,7 @@ const initialState: State = {
 }
 
 const commandHandler = createSlice<State, CommandsReducer>({
-	name: 'chat/conversation/command',
+	name: 'messenger/conversation/command',
 	initialState,
 	reducers: {
 		generate: (state) => state,
@@ -181,7 +196,7 @@ export const getAggregateId: (kwargs: {
 	)
 
 const eventHandler = createSlice<State, EventsReducer>({
-	name: 'chat/conversation/event',
+	name: 'messenger/conversation/event',
 	initialState,
 	reducers: {
 		deleted: (state, { payload }) => {
@@ -190,7 +205,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 			return state
 		},
 		created: (state, { payload }) => {
-			const { accountId, pk, title } = payload
+			const { accountId, pk, title, membersDevices, now } = payload
 			// Create id
 			const id = getAggregateId({ accountId, groupPk: strToBuf(pk) })
 			if (!state.aggregates[id]) {
@@ -199,10 +214,10 @@ const eventHandler = createSlice<State, EventsReducer>({
 					accountId,
 					title,
 					pk,
-					createdAt: Date.now(),
+					createdAt: now,
 					members: [],
 					messages: [],
-					membersDevices: {},
+					membersDevices: membersDevices || {},
 					unreadCount: 0,
 					reading: false,
 				}
@@ -245,12 +260,12 @@ const eventHandler = createSlice<State, EventsReducer>({
 			const conversation = state.aggregates[aggregateId]
 
 			if (conversation) {
-				if (!conversation.membersDevices[memberPk]) {
-					conversation.membersDevices[memberPk] = []
-				}
-
 				const set = conversation.membersDevices[memberPk]
-				if (!set.includes(devicePk)) {
+				if (!set) {
+					conversation.membersDevices[memberPk] = [devicePk]
+					return state
+				}
+				if (set.indexOf(devicePk) === -1) {
 					set.push(devicePk)
 				}
 			}
@@ -310,7 +325,7 @@ const FAKE_CONVERSATIONS: Entity[] = FAKE_CONVERSATIONS_CONFIG.map((fc, index) =
 
 export const getAggregatesWithFakes = (state: GlobalState) => {
 	const result: { [key: string]: Entity | FakeConversation } = {
-		...state.chat.conversation.aggregates,
+		...state.messenger.conversation.aggregates,
 	}
 	for (let i = 0; i < FAKE_CONVERSATIONS.length; i++) {
 		const conv = FAKE_CONVERSATIONS[i]
@@ -379,7 +394,41 @@ export const transactions: Transactions = {
 			}
 		}
 	},
+	createOneToOne: function* (payload) {
+		if (payload.kind !== ConversationKind.OneToOne) {
+			return
+		}
+		const group = (yield select((state) =>
+			groupsQueries.get(state, { groupId: payload.pk }),
+		)) as ReturnType<typeof groupsQueries.get>
+		if (group) {
+			payload.membersDevices = group.membersDevices
+			if (Object.keys(group.membersDevices).length > 1) {
+				const contact = (yield select((state) =>
+					contactQueries.get(state, { id: payload.contactId }),
+				)) as ReturnType<typeof contactQueries.get>
+				if (contact && !contact.request.accepted) {
+					yield put(contactEvents.requestAccepted({ id: contact.id }))
+				}
+				//
+			}
+		}
+
+		yield put(events.created(payload))
+	},
 	delete: function* ({ id }) {
+		const conv = (yield select((state) => queries.get(state, { id }))) as ReturnType<
+			typeof queries.get
+		>
+		if (!conv) {
+			return
+		}
+		yield call(groupsTransactions.unsubscribe, {
+			clientId: conv.accountId,
+			publicKey: conv.pk,
+			metadata: true,
+			messages: true,
+		})
 		yield put(
 			events.deleted({
 				aggregateId: id,
@@ -447,8 +496,8 @@ export function* orchestrator() {
 			} = payload
 			// Recup the request (for requester name)
 			const request = (yield select((state) =>
-				contact.queries.getWithId(state, { contactPk, accountId }),
-			)) as contact.Entity | undefined
+				contactQueries.getWithId(state, { contactPk, accountId }),
+			)) as ContactEntity | undefined
 			if (!request) {
 				return
 			}
@@ -461,15 +510,14 @@ export function* orchestrator() {
 			if (!realGroupPk) {
 				throw new Error("Can't find groupPk for accepted contact request")
 			}
-			yield put(
-				events.created({
-					accountId,
-					title: request.name,
-					pk: bufToStr(realGroupPk),
-					kind: ConversationKind.OneToOne,
-					contactId: contact.getAggregateId({ accountId, contactPk }),
-				}),
-			)
+			yield call(transactions.createOneToOne, {
+				accountId,
+				title: request.name,
+				pk: bufToStr(realGroupPk),
+				kind: ConversationKind.OneToOne,
+				contactId: getContactAggregateId({ accountId, contactPk }),
+				now: Date.now(),
+			})
 		}),
 		takeEvery(protocol.events.client.accountContactRequestOutgoingEnqueued, function* ({
 			payload,
@@ -499,16 +547,15 @@ export function* orchestrator() {
 				return
 			}
 			const groupPkStr = bufToStr(groupPk)
-			const metadata: contact.ContactRequestMetadata = bufToJSON(c.metadata)
-			yield put(
-				events.created({
-					accountId,
-					title: metadata.name,
-					pk: groupPkStr,
-					kind: ConversationKind.OneToOne,
-					contactId: contact.getAggregateId({ accountId, contactPk: c.pk }),
-				}),
-			)
+			const metadata: ContactRequestMetadata = bufToJSON(c.metadata)
+			yield call(transactions.createOneToOne, {
+				accountId,
+				title: metadata.name,
+				pk: groupPkStr,
+				kind: ConversationKind.OneToOne,
+				contactId: getContactAggregateId({ accountId, contactPk: c.pk }),
+				now: Date.now(),
+			})
 		}),
 		takeEvery(protocol.events.client.groupMemberDeviceAdded, function* ({ payload }) {
 			// todo: move to extra reducers
@@ -547,6 +594,7 @@ export function* orchestrator() {
 					title: 'Unknown',
 					pk: bufToStr(publicKey),
 					kind: ConversationKind.MultiMember,
+					now: Date.now(),
 				}),
 			)
 			yield call(protocol.client.transactions.activateGroup, { id: accountId, groupPk: publicKey })

@@ -6,8 +6,14 @@ import { berty } from '@berty-tech/api'
 import { Buffer } from 'buffer'
 import { AppMessage, AppMessageType } from './AppMessage'
 import { makeDefaultCommandsSagas, strToBuf, bufToStr, bufToJSON } from '../utils'
+import { take } from 'typed-redux-saga'
 import { commands as groupsCommands } from '../groups'
-import { events as conversationEvents, ConversationKind } from './conversation'
+import {
+	ConversationKind,
+	transactions as conversationTransactions,
+	queries as conversationQueries,
+	Entity as ConversationEntity,
+} from './conversation'
 
 export enum ContactRequestType {
 	Incoming,
@@ -18,6 +24,7 @@ type ContactRequestBase = {
 	type: ContactRequestType
 	accepted: boolean
 	discarded: boolean
+	uid?: string
 }
 
 type OutgoingContactRequestBase = ContactRequestBase & {
@@ -68,12 +75,12 @@ export type RequestDraft =
 
 export type State = {
 	events: Array<Event>
-	aggregates: { [key: string]: Entity }
+	aggregates: { [key: string]: Entity | undefined }
 	requestDraft?: RequestDraft
 }
 
 export type GlobalState = {
-	chat: {
+	messenger: {
 		contact: State
 	}
 }
@@ -110,8 +117,9 @@ export namespace Event {
 		groupPk: string
 		metadata: ContactRequestMetadata
 		addedDate: number
+		uid?: string
 	}
-	export type Deleted = { id: string }
+	export type Deleted = { accountId: string; contactPk: string }
 	export type RequestInitiated = {
 		accountId: string
 		bertyId?: berty.messenger.IBertyID
@@ -125,6 +133,9 @@ export namespace Event {
 		accountId: string
 		groupPk: string
 		contactPk: string
+	}
+	export type RequestAccepted = {
+		id: string
 	}
 }
 
@@ -140,10 +151,10 @@ export type CommandsReducer = {
 
 export type QueryReducer = {
 	list: (state: GlobalState, query: Query.List) => Array<Entity>
-	get: (state: GlobalState, query: Query.Get) => Entity
+	get: (state: GlobalState, query: Query.Get) => Entity | undefined
 	getLength: (state: GlobalState) => number
 	search: (state: GlobalState, query: Query.Search) => Array<Entity>
-	getWithId: (state: GlobalState, query: Query.GetWithId) => Entity
+	getWithId: (state: GlobalState, query: Query.GetWithId) => Entity | undefined
 	getRequestDraft: (state: GlobalState, query: Query.GetRequestDraft) => RequestDraft | undefined
 }
 
@@ -156,6 +167,7 @@ export type EventsReducer = {
 	requestInitiated: SimpleCaseReducer<Event.RequestInitiated>
 	draftReset: SimpleCaseReducer<Event.DraftReset>
 	incomingContactRequestAccepted: SimpleCaseReducer<Event.IncomingContactRequestAccepted>
+	requestAccepted: SimpleCaseReducer<Event.RequestAccepted>
 }
 
 const initialState: State = {
@@ -164,7 +176,7 @@ const initialState: State = {
 }
 
 const commandHandler = createSlice<State, CommandsReducer>({
-	name: 'chat/contact/command',
+	name: 'messenger/contact/command',
 	initialState,
 	reducers: {
 		acceptRequest: (state: State) => state,
@@ -191,10 +203,11 @@ export const getAggregateId = ({
 }
 
 const eventHandler = createSlice<State, EventsReducer>({
-	name: 'chat/contact/event',
+	name: 'messenger/contact/event',
 	initialState,
 	reducers: {
-		deleted: (state: State, { payload: { id } }) => {
+		deleted: (state: State, { payload: { accountId, contactPk } }) => {
+			const id = getAggregateId({ accountId, contactPk })
 			delete state.aggregates[id]
 			return state
 		},
@@ -207,7 +220,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 			return state
 		},
 		outgoingContactRequestEnqueued: (state: State, { payload }) => {
-			const { accountId, contactPk, groupPk, metadata, addedDate } = payload
+			const { accountId, contactPk, groupPk, metadata, addedDate, uid } = payload
 			if (!accountId || !contactPk) {
 				return state
 			}
@@ -224,6 +237,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 						accepted: false,
 						discarded: false,
 						state: 'enqueued',
+						uid,
 					},
 					addedDate,
 				}
@@ -304,6 +318,13 @@ const eventHandler = createSlice<State, EventsReducer>({
 			}
 			return state
 		},
+		requestAccepted: (state, { payload }) => {
+			const contact = state.aggregates[payload.id]
+			if (contact) {
+				contact.request.accepted = true
+			}
+			return state
+		},
 	},
 	extraReducers: {
 		[protocol.events.client.accountContactRequestIncomingDiscarded.type]: (state, { payload }) => {
@@ -329,20 +350,22 @@ export const reducer = composeReducers(commandHandler.reducer, eventHandler.redu
 export const commands = commandHandler.actions
 export const events = eventHandler.actions
 export const queries: QueryReducer = {
-	list: (state) => Object.values(state.chat.contact.aggregates),
-	get: (state, { id }) => state.chat.contact.aggregates[id],
-	getRequestDraft: (state) => state.chat.contact.requestDraft,
-	getLength: (state) => Object.keys(state.chat.contact.aggregates).length,
+	list: (state) => Object.values(state.messenger.contact.aggregates) as Entity[],
+	get: (state, { id }) => state.messenger.contact.aggregates[id],
+	getRequestDraft: (state) => state.messenger.contact.requestDraft,
+	getLength: (state) => queries.list(state).length,
 	search: (state, { searchText, accountId }) =>
 		searchText
-			? Object.values(state.chat.contact.aggregates).filter(
-					(contact) =>
-						contact.accountId === accountId &&
-						contact.name.toLowerCase().includes(searchText.toLowerCase()),
-			  )
+			? queries
+					.list(state)
+					.filter(
+						(contact) =>
+							contact.accountId === accountId &&
+							contact.name.toLowerCase().includes(searchText.toLowerCase()),
+					)
 			: [],
 	getWithId: (state, { contactPk, accountId }) =>
-		state.chat.contact.aggregates[getAggregateId({ accountId, contactPk })],
+		state.messenger.contact.aggregates[getAggregateId({ accountId, contactPk })],
 }
 
 export type Transactions = {
@@ -354,7 +377,36 @@ export type Transactions = {
 export const transactions: Transactions = {
 	open: function* () {},
 	delete: function* ({ id }) {
-		yield events.deleted({ id })
+		const contact = yield* getContact(id)
+		if (contact) {
+			const groupPk = yield* contactPkToGroupPk({
+				accountId: contact.accountId,
+				contactPk: contact.publicKey,
+			})
+			if (groupPk) {
+				const gpkStr = bufToStr(groupPk)
+				if (gpkStr) {
+					yield put(
+						groupsCommands.unsubscribe({
+							clientId: contact.accountId,
+							publicKey: gpkStr,
+							metadata: true,
+							messages: true,
+						}),
+					)
+				}
+			}
+			const convs = (yield select((state) =>
+				conversationQueries.list(state),
+			)) as ConversationEntity[]
+			const idsToDelete = convs
+				.filter((c) => c.kind === ConversationKind.OneToOne && c.contactId === id)
+				.map((c) => c.id)
+			for (const i of idsToDelete) {
+				yield call(conversationTransactions.delete, { id: i })
+			}
+			yield put(events.deleted({ accountId: contact.accountId, contactPk: contact.publicKey }))
+		}
 	},
 	acceptRequest: function* ({ id }) {
 		const contact = (yield select((state: GlobalState) => queries.get(state, { id }))) as
@@ -377,16 +429,21 @@ export const transactions: Transactions = {
 		if (!contact) {
 			return
 		}
-		yield put(
-			protocol.commands.client.contactRequestDiscard({
-				id: contact.accountId,
-				contactPk: strToBuf(contact.publicKey),
-			}),
-		)
+		const contactPk = strToBuf(contact.publicKey)
+		yield call(protocol.client.transactions.contactBlock, { id: contact.accountId, contactPk })
+		while (true) {
+			const { payload } = yield* take(events.deleted)
+			if (payload.contactPk === contact.publicKey) {
+				yield call(protocol.client.transactions.contactUnblock, {
+					id: contact.accountId,
+					contactPk,
+				})
+				break
+			}
+		}
 	},
 	deleteAll: function* () {
 		const contacts = (yield select(queries.list)) as Entity[]
-
 		for (const contact of contacts) {
 			yield* transactions.delete({ id: contact.id })
 		}
@@ -431,11 +488,10 @@ export const transactions: Transactions = {
 	},
 }
 
-function* getContact(id: string) {
-	const contact = (yield select((state: GlobalState) => queries.get(state, { id }))) as
-		| Entity
-		| undefined
-	return contact
+export function* getContact(id: string) {
+	return (yield select((state: GlobalState) => queries.get(state, { id }))) as ReturnType<
+		typeof queries.get
+	>
 }
 
 function* contactPkToGroupPk({
@@ -477,9 +533,11 @@ export function* orchestrator() {
 			const groupPkStr = bufToStr(groupPk)
 			const mtdt = action.payload.event.contact.metadata
 			const metadata: ContactRequestMetadata = mtdt && bufToJSON(mtdt)
+			const uid = action.payload.eventContext?.id && bufToStr(action.payload.eventContext.id)
 			yield put(
 				events.outgoingContactRequestEnqueued({
 					accountId: accountId,
+					uid: uid || undefined,
 					contactPk: contactPkStr,
 					groupPk: groupPkStr,
 					metadata,
@@ -539,31 +597,44 @@ export function* orchestrator() {
 			let realGroupPk: Uint8Array | undefined = groupPk
 			const groupPkStr = bufToStr(groupPk)
 			if (!groupPkStr) {
-				console.log('groupPk not provided in AccountContactRequestIncomingAccepted')
 				realGroupPk = yield* contactPkToGroupPk({ accountId, contactPk })
 			}
 			if (!realGroupPk) {
 				throw new Error("Can't find groupPk for accepted contact request")
 			}
-			yield put(
-				events.incomingContactRequestAccepted({
+			const id = getAggregateId({ accountId, contactPk })
+			const contact = (yield select((state) => queries.get(state, { id }))) as ReturnType<
+				typeof queries.get
+			>
+			if (contact) {
+				yield call(conversationTransactions.createOneToOne, {
+					kind: ConversationKind.OneToOne,
+					contactId: id,
 					accountId,
-					groupPk: groupPkStr,
-					contactPk: bufToStr(contactPk),
-				}),
-			)
-			yield call(protocol.client.transactions.activateGroup, {
-				id: accountId,
-				groupPk: realGroupPk,
-			})
-			yield put(
-				groupsCommands.subscribe({
-					clientId: accountId,
-					publicKey: bufToStr(realGroupPk),
-					messages: true,
-					metadata: true,
-				}),
-			)
+					title: contact.name,
+					pk: groupPkStr,
+					now: Date.now(),
+				})
+				yield call(protocol.client.transactions.activateGroup, {
+					id: accountId,
+					groupPk: realGroupPk,
+				})
+				yield put(
+					groupsCommands.subscribe({
+						clientId: accountId,
+						publicKey: bufToStr(realGroupPk),
+						messages: true,
+						metadata: true,
+					}),
+				)
+				yield put(
+					events.incomingContactRequestAccepted({
+						accountId,
+						groupPk: groupPkStr,
+						contactPk: bufToStr(contactPk),
+					}),
+				)
+			}
 		}),
 		takeEvery(protocol.events.client.accountContactRequestOutgoingSent, function* ({ payload }) {
 			const { aggregateId: accountId, event } = payload
@@ -588,16 +659,14 @@ export function* orchestrator() {
 			)
 
 			if (groupPk && contact.request.state === 'initiated') {
-				console.log('jumping from initiated state to sent state')
-				yield put(
-					conversationEvents.created({
-						kind: ConversationKind.OneToOne,
-						accountId,
-						contactId: contact.id,
-						title: contact.name,
-						pk: bufToStr(groupPk),
-					}),
-				)
+				yield call(conversationTransactions.createOneToOne, {
+					kind: ConversationKind.OneToOne,
+					accountId,
+					contactId: contact.id,
+					title: contact.name,
+					pk: bufToStr(groupPk),
+					now: Date.now(),
+				})
 				yield call(protocol.client.transactions.activateGroup, { id: accountId, groupPk })
 				yield put(
 					groupsCommands.subscribe({
@@ -655,6 +724,14 @@ export function* orchestrator() {
 					}),
 				)
 			}
+		}),
+		takeEvery(protocol.client.events.accountContactBlocked, function* ({ payload }) {
+			const {
+				aggregateId: accountId,
+				event: { contactPk },
+			} = payload
+			const id = getAggregateId({ accountId, contactPk })
+			yield call(transactions.delete, { id })
 		}),
 	])
 }

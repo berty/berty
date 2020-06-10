@@ -5,7 +5,7 @@ import { berty } from '@berty-tech/api'
 import { makeDefaultCommandsSagas, strToBuf, bufToStr, jsonToBuf, bufToJSON } from '../utils'
 
 import * as protocol from '../protocol'
-import { conversation } from '../chat'
+import * as conversation from './conversation'
 
 import { UserMessage, GroupInvitation, AppMessageType, AppMessage, Acknowledge } from './AppMessage'
 
@@ -31,7 +31,7 @@ export type State = {
 }
 
 export type GlobalState = {
-	chat: {
+	messenger: {
 		message: State
 	}
 }
@@ -120,7 +120,7 @@ const initialState: State = {
 }
 
 const commandHandler = createSlice<State, CommandsReducer>({
-	name: 'chat/message/command',
+	name: 'messenger/message/command',
 	initialState,
 	reducers: {
 		delete: (state) => state,
@@ -131,7 +131,7 @@ const commandHandler = createSlice<State, CommandsReducer>({
 })
 
 const eventHandler = createSlice<State, EventsReducer>({
-	name: 'chat/message/event',
+	name: 'messenger/message/event',
 	initialState,
 	reducers: {
 		received: (state, { payload: { aggregateId, message, receivedDate, isMe } }) => {
@@ -189,7 +189,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 
 const getAggregatesWithFakes = (state: GlobalState) => {
 	// TODO: optimize
-	const result: { [key: string]: Entity | undefined } = { ...state.chat.message.aggregates }
+	const result: { [key: string]: Entity | undefined } = { ...state.messenger.message.aggregates }
 	for (const fake of FAKE_MESSAGES) {
 		result[fake.id] = fake
 	}
@@ -204,8 +204,11 @@ export const queries: QueryReducer = {
 	get: (state, { id }) => getAggregatesWithFakes(state)[id],
 	getLength: (state) => Object.keys(getAggregatesWithFakes(state)).length,
 	getList: (state, { list }) => {
+		if (!list) {
+			return []
+		}
 		const messages = list.map((id) => {
-			const ret = state.chat.message.aggregates[id]
+			const ret = state.messenger.message.aggregates[id]
 			return ret
 		})
 		return messages as Entity[]

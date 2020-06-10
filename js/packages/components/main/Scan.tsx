@@ -7,7 +7,7 @@ import QRCodeScanner from 'react-native-qrcode-scanner'
 import { useNavigation } from '@react-navigation/native'
 import ScanTarget from './scan_target.svg'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Chat } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/hooks'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -28,7 +28,7 @@ const useStylesScan = () => {
 }
 
 const ScanBody: React.FC<{}> = () => {
-	const initiateContactRequest = Chat.useInitiateContactRequest()
+	const initiateContactRequest = Messenger.useInitiateContactRequest()
 	const navigation = useNavigation()
 	const [{ background }] = useStyles()
 	const borderRadius = 30
@@ -82,7 +82,7 @@ const ScanInfosText: React.FC<ScanInfosTextProps> = ({ textProps }) => {
 }
 
 const DevReferenceInput = () => {
-	const initiateContactRequest = Chat.useInitiateContactRequest()
+	const initiateContactRequest = Messenger.useInitiateContactRequest()
 	const [ref, setRef] = useState('')
 	const navigation = useNavigation()
 	return (

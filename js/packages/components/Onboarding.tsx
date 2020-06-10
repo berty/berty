@@ -11,16 +11,16 @@ import {
 	Switch,
 	Vibration,
 } from 'react-native'
-import { useLayout } from 'react-native-hooks'
+import { useLayout } from '@react-native-community/hooks'
 import { Translation } from 'react-i18next'
 import Swiper from 'react-native-swiper'
 import { Card, TouchableCard } from './shared-components/Card'
-import { ColorsTypes, useStyles } from '@berty-tech/styles'
-import { useNavigation, Routes } from '@berty-tech/berty-navigation'
-import { Chat } from '@berty-tech/hooks'
+import { useStyles } from '@berty-tech/styles'
+import { useNavigation, Routes } from '@berty-tech/navigation'
+import { Messenger } from '@berty-tech/hooks'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
 import { useDispatch } from 'react-redux'
-import { chat } from '@berty-tech/store'
+import { messenger } from '@berty-tech/store'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Logo from './berty_gradient_square.svg'
 import {
@@ -72,7 +72,7 @@ const Button: React.FC<{
 
 export const GetStarted: React.FC = () => {
 	const { navigate } = useNavigation()
-	const [{ absolute, background, column, row, flex, padding, text }] = useStyles()
+	const [{ absolute, background, column, flex, padding, text }] = useStyles()
 	return (
 		<Translation>
 			{(t) => (
@@ -124,7 +124,7 @@ export const SelectMode: React.FC = () => {
 							flex.medium,
 							column.justify,
 						]}
-						onPress={navigate.onboarding.performance}
+						onPress={() => navigate.onboarding.performance()}
 					>
 						<Text style={[text.bold.medium, text.size.big, text.color.white, text.align.justify]}>
 							{t('onboarding.select-mode.performance.title')}
@@ -147,7 +147,7 @@ export const SelectMode: React.FC = () => {
 					</TouchableCard>
 					<TouchableCard
 						style={[background.red, column.fill, margin.huge, flex.medium, column.justify]}
-						onPress={navigate.onboarding.privacy}
+						onPress={() => navigate.onboarding.privacy()}
 					>
 						<Text style={[text.bold.medium, text.size.big, text.color.white]}>
 							{t('onboarding.select-mode.high-level.title')}
@@ -182,8 +182,8 @@ const SwiperCard: React.FC<{
 	button?: { text: string; onPress: () => Promise<void> | void }
 	skip?: { text: string; onPress: () => void }
 }> = ({ children, header, label, title, description, button, skip }) => {
-	const [{ absolute, text, padding, margin, background, border, color, column }] = useStyles()
-	let labelColor: ColorsTypes
+	const [{ absolute, text, padding, margin, background, border, column }] = useStyles()
+	let labelColor: keyof typeof background.light
 	switch (label) {
 		default:
 			labelColor = 'white'
@@ -349,7 +349,7 @@ const CreateYourAccount: React.FC<{
 			  },
 	)
 	const [{ text, padding, margin, background, border }] = useStyles()
-	const createAccount = Chat.useAccountCreate()
+	const createAccount = Messenger.useAccountCreate()
 	return (
 		<Translation>
 			{(t) => (
@@ -465,7 +465,7 @@ const Bluetooth: React.FC<{
 
 const SetupFinished: React.FC = () => {
 	const navigation = useReactNavigation()
-	const account = Chat.useAccount()
+	const account = Messenger.useAccount()
 	const dispatch = useDispatch()
 	return (
 		<Translation>
@@ -477,9 +477,9 @@ const SetupFinished: React.FC = () => {
 						button={{
 							text: t('onboarding.setup-finished.button'),
 							onPress: () => {
-								dispatch(chat.account.commands.onboard({ id: account.id }))
+								dispatch(messenger.account.commands.onboard({ id: account.id }))
 								Vibration.vibrate([500])
-								navigation.navigate(Routes.Root.Tabs, { screen: Routes.Main.List })
+								navigation.navigate(Routes.Root.Tabs, { screen: Routes.Main.Home })
 							},
 						}}
 					/>

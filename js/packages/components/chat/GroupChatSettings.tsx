@@ -9,7 +9,7 @@ import {
 } from '../shared-components/SettingsButtons'
 import { GroupCircleAvatar } from '../shared-components/CircleAvatar'
 import HeaderSettings from '../shared-components/Header'
-import { useNavigation, ScreenProps } from '@berty-tech/berty-navigation'
+import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import { berty } from '@berty-tech/api'
 
 //

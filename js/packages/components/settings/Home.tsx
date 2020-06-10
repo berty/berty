@@ -5,8 +5,8 @@ import { useStyles } from '@berty-tech/styles'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import HeaderSettings from '../shared-components/Header'
-import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
-import { Chat } from '@berty-tech/hooks'
+import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { Messenger } from '@berty-tech/hooks'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 //
@@ -64,8 +64,8 @@ const HomeHeaderGroupButton: React.FC = () => {
 const HomeHeaderAvatar: React.FC = () => {
 	const _styles = useStylesHome()
 	const [{ row, margin, background, border, color }] = useStyles()
-	const client = Chat.useClient()
-	const account = Chat.useAccount()
+	const client = Messenger.useClient()
+	const account = Messenger.useAccount()
 	const navigation = useNavigation()
 	return (
 		<View style={[row.center, margin.top.scale(50)]}>
@@ -132,7 +132,7 @@ const HomeBodySettings: React.FC<{}> = () => {
 }
 
 export const Home: React.FC<ScreenProps.Settings.Home> = () => {
-	const account = Chat.useAccount()
+	const account = Messenger.useAccount()
 	const _styles = useStylesHome()
 	const [{ flex, background, row }] = useStyles()
 	return (

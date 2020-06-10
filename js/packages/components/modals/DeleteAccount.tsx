@@ -10,9 +10,9 @@ import {
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
-import { Routes } from '@berty-tech/berty-navigation'
+import { Routes } from '@berty-tech/navigation'
 import { useNavigation } from '@react-navigation/native'
-import { Chat } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/hooks'
 
 const useStylesDeleteAccount = () => {
 	const [{ width, height, border, text, padding, margin }] = useStyles()
@@ -104,13 +104,13 @@ const DELETE_STR = 'delete'
 
 const DeleteAccountContent: React.FC<{}> = () => {
 	const _styles = useStylesDeleteAccount()
-	const [{ row, margin, background, border, color, padding, text, column, opacity }] = useStyles()
+	const [{ row, margin, background, border, color, padding, text, column }] = useStyles()
 	const navigation = useNavigation()
-	const account = Chat.useAccount()
+	const account = Messenger.useAccount()
 	const prevAccount = usePrevious(account)
 	const [startDelete, setStartDelete] = useState(false)
 	const startedDelete = usePrevious(startDelete)
-	const deleteAccount = Chat.useAccountDelete()
+	const deleteAccount = Messenger.useAccountDelete()
 	const [deleteConfirmation, setDeleteConfirmation] = useState<string>()
 	const confirmed = deleteConfirmation === DELETE_STR
 	useEffect(() => {
@@ -131,7 +131,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 		</View>
 	) : (
 		<>
-			<DeleteAccountError error={`Are you sure you want to delete your account?`} />
+			<DeleteAccountError error={'Are you sure you want to delete your account?'} />
 			<View style={[padding.horizontal.medium, padding.bottom.medium]}>
 				<Text style={[text.color.red, text.align.center, text.bold.small]}>
 					Please type <Text style={[text.bold.huge, text.color.red]}>delete</Text> to confirm

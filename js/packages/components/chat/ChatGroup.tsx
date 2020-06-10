@@ -13,10 +13,10 @@ import { useStyles } from '@berty-tech/styles'
 import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { GroupCircleAvatar, CircleAvatar } from '../shared-components/CircleAvatar'
 import { Message } from './shared-components/Message'
-import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
+import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { BertyChatChatService as Store } from '@berty-tech/berty-store'
 import { berty } from '@berty-tech/api'
-import { Chat as ChatHooks } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/hooks'
 import { SafeAreaView } from 'react-native-safe-area-context'
 //
 // ChatGroup
@@ -168,7 +168,7 @@ const InfosChatGroup: React.FC<{ createdAt: number }> = ({ createdAt }) => {
 }
 
 const AppMessage: React.FC<{ message: string }> = ({ message }) => (
-	<Message payload={ChatHooks.useGetMessage(message)} />
+	<Message payload={Messenger.useGetMessage(message)} />
 )
 
 const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
@@ -176,7 +176,7 @@ const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator
 const MessageList: React.FC<{ id: string }> = ({ id }) => {
 	const [cursors] = useState([0])
 	const [{ overflow, row, flex }] = useStyles()
-	const conversation = ChatHooks.useGetConversation(id)
+	const conversation = Messenger.useGetConversation(id)
 	return (
 		<FlatList
 			style={[overflow, row.item.fill, flex.tiny]}

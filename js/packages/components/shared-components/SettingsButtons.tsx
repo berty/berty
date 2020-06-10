@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, StyleProp } from 'react-native'
 import { Text, Icon, Toggle } from 'react-native-ui-kitten'
-import { colors, useStyles, ColorsTypes } from '@berty-tech/styles'
+import { useStyles } from '@berty-tech/styles'
 import { CircleAvatar } from './CircleAvatar'
 
 //
@@ -14,32 +14,32 @@ type SettingButtonProps = {
 	image?: string
 	icon?: string
 	iconSize?: number
-	iconColor?: ColorsTypes
+	iconColor?: string
 	iconPack?: string
 	iconDependToggle?: boolean
 	children?: React.ReactNode
 	state?: {
 		value: string
-		color: ColorsTypes
+		color: string
 		bgColor: string
 		icon?: string
 		iconSize?: number
-		iconColor?: ColorsTypes
+		iconColor?: string
 		stateIcon?: string
-		stateIconColor?: ColorsTypes
+		stateIconColor?: string
 	}
 	alone?: boolean
 	toggled?: boolean
 	actionIcon?: string
 	actionIconSize?: number
-	actionIconColor?: ColorsTypes
+	actionIconColor?: string
 	actionToggle?: React.Dispatch<React.SetStateAction<any>>
 	varToggle?: boolean
 	style?: StyleProp<any>[]
 	// action
 	previewValue?: string
-	previewValueColor?: ColorsTypes
-	onPress?: () => void
+	previewValueColor?: string
+	onPress?: (...args: any) => void
 	//
 	disabled?: boolean
 }
@@ -77,7 +77,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 	onPress,
 	disabled = false,
 }) => {
-	const [isToggle, setIsToggle] = useState()
+	const [isToggle, setIsToggle] = useState<boolean>()
 	const _styles = useStylesSettingButton()
 	const [{ background, margin, row, flex, padding, opacity, text, border }] = useStyles()
 
@@ -225,16 +225,16 @@ type FactionButtonSettingProps = {
 	icon?: string
 	iconSize?: number
 	iconPack?: string
-	iconColor?: ColorsTypes
+	iconColor?: string
 	state?: {
 		value: string
-		color: ColorsTypes
-		bgColor: ColorsTypes
+		color: string
+		bgColor: string
 		icon?: string
 		iconSize?: number
-		iconColor?: ColorsTypes
+		iconColor?: string
 		stateIcon?: string
-		stateIconColor?: ColorsTypes
+		stateIconColor?: string
 	}
 	style?: StyleProp<any>
 	disabled?: boolean
@@ -359,7 +359,7 @@ type ButtonSettingRowProps = {
 	state: {
 		name: string
 		icon: string
-		color: ColorsTypes
+		color: string
 		style: StyleProp<any>
 		onPress?: () => void
 		disabled?: boolean
@@ -428,10 +428,10 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 // Types
 type ButtonSettingItem = {
 	value: string
-	color?: ColorsTypes
+	color?: string
 	icon?: string
 	iconSize?: number
-	iconColor?: ColorsTypes
+	iconColor?: string
 }
 
 // Styles
@@ -447,13 +447,18 @@ export const ButtonSettingItem: React.FC<ButtonSettingItem> = ({
 	color = 'white',
 	icon = 'checkmark-circle-2',
 	iconSize = 12,
-	iconColor = colors.lightBlue,
+	iconColor,
 }) => {
 	const _styles = useStylesButtonSettingItem()
-	const [{ row, padding, text }] = useStyles()
+	const [{ row, padding, text, color: stylesColor }] = useStyles()
 	return (
 		<View style={[row.left, padding.left.small, { alignItems: 'center' }]}>
-			<Icon name={icon} width={iconSize} height={iconSize} fill={iconColor} />
+			<Icon
+				name={icon}
+				width={iconSize}
+				height={iconSize}
+				fill={iconColor || stylesColor.light.blue}
+			/>
 			<Text style={[text.bold.medium, _styles.updateFeatureText, { color }]}>{value}</Text>
 		</View>
 	)

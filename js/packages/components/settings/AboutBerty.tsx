@@ -8,7 +8,7 @@ import {
 	ButtonSettingItem,
 	ButtonSettingRow,
 } from '../shared-components/SettingsButtons'
-import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
+import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 
 //
 // About Berty

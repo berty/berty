@@ -4,9 +4,10 @@ import { Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import HeaderSettings from '../shared-components/Header'
-import { useNavigation, Routes } from '@berty-tech/berty-navigation'
+import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
-import { CommonActions } from '@react-navigation/core'
+import { messenger } from '@berty-tech/store'
+import { Messenger } from '@berty-tech/hooks'
 
 //
 // ChatSettings
@@ -23,7 +24,7 @@ const useStylesChatSettings = () => {
 	}
 }
 
-const ChatSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
+const ChatSettingsHeader: React.FC<{ contact: messenger.contact.Entity }> = ({ contact }) => {
 	const _styles = useStylesChatSettings()
 	const [{ text, padding, border, row }] = useStyles()
 	return (
@@ -100,25 +101,29 @@ const ChatSettingsBody: React.FC<{}> = () => {
 	)
 }
 
-export const ChatSettings: React.FC<{ route: any }> = ({ route: { params } }) => {
-	const { goBack, dispatch } = useNavigation()
+export const ChatSettings: React.FC<ScreenProps.Chat.Settings> = ({ route: { params } }) => {
+	const { goBack, navigate } = useNavigation()
 	const [{ flex, background }] = useStyles()
+	const { convId } = params
+	const conv = Messenger.useGetConversation(convId)
+	const contact = Messenger.useContact({
+		id:
+			(conv && conv.kind === messenger.conversation.ConversationKind.OneToOne && conv.contactId) ||
+			'none',
+	})
+	if (!(conv && conv.kind === messenger.conversation.ConversationKind.OneToOne && contact)) {
+		goBack()
+		return null
+	}
 	return (
 		<ScrollView style={[flex.tiny, background.white]} bounces={false}>
 			<HeaderSettings
-				action={() =>
-					dispatch(
-						CommonActions.navigate({
-							name: Routes.Chat.One2OneSettings,
-							params,
-						}),
-					)
-				}
+				action={() => navigate.chat.oneToOneSettings({ contactId: conv.contactId })}
 				actionIcon='more-horizontal-outline'
 				undo={goBack}
 			>
 				<View>
-					<ChatSettingsHeader {...params} />
+					<ChatSettingsHeader contact={contact} />
 					<ChatSettingsHeaderButtons />
 				</View>
 			</HeaderSettings>

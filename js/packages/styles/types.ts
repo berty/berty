@@ -1,4 +1,4 @@
-export type ColorsTypes = 'white' | 'black' | 'blue' | 'red' | 'yellow' | 'green' | 'grey'
+export type ColorsTypes = string
 export type Colors<T> = {
 	white: T
 	black: T
@@ -8,7 +8,7 @@ export type Colors<T> = {
 	green: T
 	grey: T
 }
-export type ColorsBrightnessTypes = 'default' | 'light' | 'dark'
+
 export type ColorsBrightness<T> = {
 	default: Colors<T>
 	light: Colors<T>
@@ -86,9 +86,7 @@ export type BoldDeclaration<T> = {
 export type Text = {
 	color: Colors<{}> & ColorsBrightness<{}>
 	size: Sizes<{}>
-	family: {
-		use: (fontFamily: string) => {}
-	}
+	family: { use: (fontFamily: string) => {} }
 	bold: BoldDeclaration<{ fontWeight: BoldDeclarationTypes }>
 	italic: {}
 	align: Align<{}>

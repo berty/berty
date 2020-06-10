@@ -1,5 +1,5 @@
 {
-  "name": "some-react-app",
+  "name": "@berty-tech/web-dev-app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
