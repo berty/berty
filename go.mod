@@ -39,6 +39,7 @@ require (
 	github.com/multiformats/go-multiaddr-fmt v0.1.0
 	github.com/multiformats/go-multiaddr-net v0.1.4
 	github.com/multiformats/go-multihash v0.0.13
+	github.com/multiformats/go-multistream v0.1.1
 	github.com/oklog/run v1.1.0
 	github.com/peterbourgon/ff v1.6.0
 	github.com/pkg/errors v0.9.1

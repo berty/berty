@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package tinder;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+option go_package = "berty.tech/berty/go/internal/tinder";
+
+option (gogoproto.goproto_enum_prefix_all) = false;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+
+message LocalRecord {
+  map<string, int64> records = 1;
+}

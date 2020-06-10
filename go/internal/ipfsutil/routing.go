@@ -47,6 +47,9 @@ func NewTinderRouting(logger *zap.Logger, rdvpeer *peer.AddrInfo, dhtclient bool
 			drivers = append(drivers, rdvClient)
 		}
 
+		localDiscovery := tinder.NewLocalDiscovery(logger, h, rand.New(rand.NewSource(rand.Int63())))
+		drivers = append(drivers, localDiscovery)
+
 		tinderRouting := tinder.NewRouting(logger, "dht", dht, drivers...)
 		crout <- &RoutingOut{dht, tinderRouting}
 
