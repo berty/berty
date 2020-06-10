@@ -4,10 +4,16 @@ export PATH := $(PWD)/node_modules/.bin:$(PATH)
 BAZEL_FRAMEWORK := $(PWD)/bazel-bin/ios/gobridge_framework.tar.gz
 FRAMEWORK_DIR := $(PWD)/ios/Frameworks
 FRAMEWORK := $(FRAMEWORK_DIR)/Bertybridge.framework
+FRAMEWORK_TARGETS := $(addsuffix .ios, $(shell \
+	find $(addprefix $(GOPATH)/src/berty.tech/berty/,vendor go) -name '*.go' -newer "$(FRAMEWORK_DIR)" || echo "$(FRAMEWORK_DIR).go") \
+)
 
 BAZEL_AAR := $(PWD)/bazel-bin/android/gobridge_library.aar
 AAR_DIR := $(PWD)/android/libs
 AAR := $(PWD)/android/libs/gobridge.aar
+AAR_TARGETS := $(addsuffix .android, $(shell \
+	find $(addprefix $(GOPATH)/src/berty.tech/berty/,vendor go) -name '*.go' -newer "$(AAR_DIR)" || echo "$(AAR_DIR).go") \
+)
 
 GO_VENDOR := $(GOPATH)/src/berty.tech/berty/vendor
 GOMOBILE := $(GOPATH)/bin/gomobile
@@ -28,19 +34,22 @@ $(GOBIND):
 
 build.gobridge: build.gobridge.ios build.gobridge.android
 
-build.gobridge.ios: $(FRAMEWORK_DIR)
-	touch $<
+$(FRAMEWORK_TARGETS):%.go.ios: deps.gobridge build.framework # TODO: add go prerequisits
+build.gobridge.ios: $(FRAMEWORK_TARGETS)
 
-$(FRAMEWORK_DIR): deps.gobridge # TODO: add go prerequisits
-	mkdir -p $(FRAMEWORK_DIR)
+$(AAR_TARGETS):%.go.android: deps.gobridge build.aar # TODO: add go prerequisits
+build.gobridge.android: $(AAR_TARGETS)
+
+build.framework:
+	@mkdir -p "$(FRAMEWORK_DIR)"
 	GO111MODULE=off gomobile bind -o $(FRAMEWORK) -v -target ios berty.tech/berty/go/framework/bertybridge
+	touch "$(FRAMEWORK_DIR)"
 
-build.gobridge.android: $(AAR)
-	touch $<
-
-$(AAR): deps.gobridge # TODO: add go prerequisits
-	mkdir -p $(AAR_DIR)
+build.aar:
+	@mkdir -p "$(AAR_DIR)"
 	GO111MODULE=off gomobile bind -o $(AAR) -v -target android berty.tech/berty/go/framework/bertybridge
+	touch "$(AAR_DIR)"
+
 
 bazel.build.gobridge: bazel.build.gobridge.ios bazel.build.gobridge.android
 
