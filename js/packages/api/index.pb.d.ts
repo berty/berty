@@ -2677,6 +2677,157 @@ export namespace berty {
             public static toObject(message: berty.messenger.BertyID, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
         }
+
+        enum AppMessageType {
+            Undefined = 0,
+            UserMessage = 1,
+            UserReaction = 2,
+            GroupInvitation = 3,
+            SetGroupName = 4,
+            Acknowledge = 5
+        }
+
+        interface IAppMessageTyped {
+            type?: (berty.messenger.AppMessageType|null);
+        }
+
+        class AppMessageTyped implements IAppMessageTyped {
+
+            public type: berty.messenger.AppMessageType;
+            public static create(properties?: berty.messenger.IAppMessageTyped): berty.messenger.AppMessageTyped;
+            public static encode(message: berty.messenger.IAppMessageTyped, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.messenger.IAppMessageTyped, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.AppMessageTyped;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.AppMessageTyped;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): berty.messenger.AppMessageTyped;
+            public static toObject(message: berty.messenger.AppMessageTyped, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+        }
+
+        interface IUserMessageAttachment {
+            type?: (berty.messenger.AppMessageType|null);
+            uri?: (string|null);
+        }
+
+        class UserMessageAttachment implements IUserMessageAttachment {
+
+            public type: berty.messenger.AppMessageType;
+            public uri: string;
+            public static create(properties?: berty.messenger.IUserMessageAttachment): berty.messenger.UserMessageAttachment;
+            public static encode(message: berty.messenger.IUserMessageAttachment, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.messenger.IUserMessageAttachment, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.UserMessageAttachment;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.UserMessageAttachment;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): berty.messenger.UserMessageAttachment;
+            public static toObject(message: berty.messenger.UserMessageAttachment, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+        }
+
+        interface IPayloadUserMessage {
+            type?: (berty.messenger.AppMessageType|null);
+            body?: (string|null);
+            attachments?: (berty.messenger.IUserMessageAttachment[]|null);
+            sentDate?: (number|Long|null);
+        }
+
+        class PayloadUserMessage implements IPayloadUserMessage {
+
+            public type: berty.messenger.AppMessageType;
+            public body: string;
+            public attachments: berty.messenger.IUserMessageAttachment[];
+            public sentDate: (number|Long);
+            public static create(properties?: berty.messenger.IPayloadUserMessage): berty.messenger.PayloadUserMessage;
+            public static encode(message: berty.messenger.IPayloadUserMessage, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.messenger.IPayloadUserMessage, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.PayloadUserMessage;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.PayloadUserMessage;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): berty.messenger.PayloadUserMessage;
+            public static toObject(message: berty.messenger.PayloadUserMessage, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+        }
+
+        interface IPayloadUserReaction {
+            type?: (berty.messenger.AppMessageType|null);
+            emoji?: (string|null);
+        }
+
+        class PayloadUserReaction implements IPayloadUserReaction {
+
+            public type: berty.messenger.AppMessageType;
+            public emoji: string;
+            public static create(properties?: berty.messenger.IPayloadUserReaction): berty.messenger.PayloadUserReaction;
+            public static encode(message: berty.messenger.IPayloadUserReaction, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.messenger.IPayloadUserReaction, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.PayloadUserReaction;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.PayloadUserReaction;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): berty.messenger.PayloadUserReaction;
+            public static toObject(message: berty.messenger.PayloadUserReaction, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+        }
+
+        interface IPayloadGroupInvitation {
+            type?: (berty.messenger.AppMessageType|null);
+            groupPk?: (string|null);
+        }
+
+        class PayloadGroupInvitation implements IPayloadGroupInvitation {
+
+            public type: berty.messenger.AppMessageType;
+            public groupPk: string;
+            public static create(properties?: berty.messenger.IPayloadGroupInvitation): berty.messenger.PayloadGroupInvitation;
+            public static encode(message: berty.messenger.IPayloadGroupInvitation, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.messenger.IPayloadGroupInvitation, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.PayloadGroupInvitation;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.PayloadGroupInvitation;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): berty.messenger.PayloadGroupInvitation;
+            public static toObject(message: berty.messenger.PayloadGroupInvitation, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+        }
+
+        interface IPayloadSetGroupName {
+            type?: (berty.messenger.AppMessageType|null);
+            name?: (string|null);
+        }
+
+        class PayloadSetGroupName implements IPayloadSetGroupName {
+
+            public type: berty.messenger.AppMessageType;
+            public name: string;
+            public static create(properties?: berty.messenger.IPayloadSetGroupName): berty.messenger.PayloadSetGroupName;
+            public static encode(message: berty.messenger.IPayloadSetGroupName, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.messenger.IPayloadSetGroupName, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.PayloadSetGroupName;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.PayloadSetGroupName;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): berty.messenger.PayloadSetGroupName;
+            public static toObject(message: berty.messenger.PayloadSetGroupName, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+        }
+
+        interface IPayloadAcknowledge {
+            type?: (berty.messenger.AppMessageType|null);
+            target?: (string|null);
+        }
+
+        class PayloadAcknowledge implements IPayloadAcknowledge {
+
+            public type: berty.messenger.AppMessageType;
+            public target: string;
+            public static create(properties?: berty.messenger.IPayloadAcknowledge): berty.messenger.PayloadAcknowledge;
+            public static encode(message: berty.messenger.IPayloadAcknowledge, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.messenger.IPayloadAcknowledge, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.PayloadAcknowledge;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.PayloadAcknowledge;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): berty.messenger.PayloadAcknowledge;
+            public static toObject(message: berty.messenger.PayloadAcknowledge, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+        }
     }
 }
 

@@ -79,3 +79,48 @@ message BertyID {
   bytes account_pk = 2 [(gogoproto.customname) = "AccountPK"];
   string display_name = 3;
 }
+
+enum AppMessageType {
+  Undefined = 0;
+  UserMessage = 1;
+  UserReaction = 2;
+  GroupInvitation = 3;
+  SetGroupName = 4;
+  Acknowledge = 5;
+}
+
+message AppMessageTyped {
+  AppMessageType type = 1;
+}
+
+message UserMessageAttachment {
+  AppMessageType type = 1;
+  string uri = 2;
+}
+
+message PayloadUserMessage {
+  AppMessageType type = 1;
+  string body = 2;
+  repeated UserMessageAttachment attachments = 3;
+  int64 sent_date = 4 [(gogoproto.jsontag) = "sentDate"];
+}
+
+message PayloadUserReaction {
+  AppMessageType type = 1;
+  string emoji = 2;
+}
+
+message PayloadGroupInvitation {
+  AppMessageType type = 1;
+  string group_pk = 2 [(gogoproto.jsontag) = "groupPk"];
+}
+
+message PayloadSetGroupName {
+  AppMessageType type = 1;
+  string name = 2;
+}
+
+message PayloadAcknowledge {
+  AppMessageType type = 1;
+  string target = 2;
+}

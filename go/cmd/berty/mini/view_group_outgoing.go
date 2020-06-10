@@ -1,16 +1,18 @@
 package mini
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io"
 	"strings"
-
-	"bytes"
+	"time"
 
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"github.com/gogo/protobuf/proto"
 	"github.com/ipfs/go-cid"
 	qrterminal "github.com/mdp/qrterminal/v3"
 	"github.com/pkg/errors"
@@ -400,14 +402,61 @@ func contactRequestCommand(ctx context.Context, v *groupView, cmd string) error 
 	return err
 }
 
+func payloadUserMessageFormatter(msg string) ([]byte, error) {
+	return json.Marshal(&bertymessenger.PayloadUserMessage{
+		Type:        bertymessenger.AppMessageType_UserMessage,
+		Body:        msg,
+		Attachments: nil,
+		SentDate:    time.Now().UnixNano() / 1000000,
+	})
+}
+
+type AppMessageTyped interface {
+	proto.Message
+	GetType() bertymessenger.AppMessageType
+}
+
+func payloadParser(data []byte) (AppMessageTyped, error) {
+	res := &bertymessenger.AppMessageTyped{}
+
+	err := json.Unmarshal(data, res)
+	if err != nil {
+		return nil, err
+	}
+
+	typesMapper := map[bertymessenger.AppMessageType]AppMessageTyped{
+		bertymessenger.AppMessageType_UserMessage:     &bertymessenger.PayloadUserMessage{},
+		bertymessenger.AppMessageType_UserReaction:    &bertymessenger.PayloadUserReaction{},
+		bertymessenger.AppMessageType_GroupInvitation: &bertymessenger.PayloadGroupInvitation{},
+		bertymessenger.AppMessageType_SetGroupName:    &bertymessenger.PayloadSetGroupName{},
+		bertymessenger.AppMessageType_Acknowledge:     &bertymessenger.PayloadAcknowledge{},
+	}
+
+	message, ok := typesMapper[res.Type]
+	if !ok {
+		return nil, fmt.Errorf("unknown payload type")
+	}
+
+	if err := json.Unmarshal(data, message); err != nil {
+		return nil, err
+	}
+
+	return message, nil
+}
+
 func newMessageCommand(ctx context.Context, v *groupView, cmd string) error {
 	if cmd == "" {
 		return nil
 	}
 
-	_, err := v.v.client.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
+	payload, err := payloadUserMessageFormatter(cmd)
+	if err != nil {
+		return err
+	}
+
+	_, err = v.v.client.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
 		GroupPK: v.g.PublicKey,
-		Payload: []byte(cmd),
+		Payload: payload,
 	})
 
 	return err

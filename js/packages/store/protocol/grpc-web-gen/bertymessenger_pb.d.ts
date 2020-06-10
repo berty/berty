@@ -301,3 +301,188 @@ export namespace BertyID {
   }
 }
 
+export class AppMessageTyped extends jspb.Message {
+  getType(): AppMessageTypeMap[keyof AppMessageTypeMap];
+  setType(value: AppMessageTypeMap[keyof AppMessageTypeMap]): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AppMessageTyped.AsObject;
+  static toObject(includeInstance: boolean, msg: AppMessageTyped): AppMessageTyped.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AppMessageTyped, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AppMessageTyped;
+  static deserializeBinaryFromReader(message: AppMessageTyped, reader: jspb.BinaryReader): AppMessageTyped;
+}
+
+export namespace AppMessageTyped {
+  export type AsObject = {
+    type: AppMessageTypeMap[keyof AppMessageTypeMap],
+  }
+}
+
+export class UserMessageAttachment extends jspb.Message {
+  getType(): AppMessageTypeMap[keyof AppMessageTypeMap];
+  setType(value: AppMessageTypeMap[keyof AppMessageTypeMap]): void;
+
+  getUri(): string;
+  setUri(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): UserMessageAttachment.AsObject;
+  static toObject(includeInstance: boolean, msg: UserMessageAttachment): UserMessageAttachment.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: UserMessageAttachment, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): UserMessageAttachment;
+  static deserializeBinaryFromReader(message: UserMessageAttachment, reader: jspb.BinaryReader): UserMessageAttachment;
+}
+
+export namespace UserMessageAttachment {
+  export type AsObject = {
+    type: AppMessageTypeMap[keyof AppMessageTypeMap],
+    uri: string,
+  }
+}
+
+export class PayloadUserMessage extends jspb.Message {
+  getType(): AppMessageTypeMap[keyof AppMessageTypeMap];
+  setType(value: AppMessageTypeMap[keyof AppMessageTypeMap]): void;
+
+  getBody(): string;
+  setBody(value: string): void;
+
+  clearAttachmentsList(): void;
+  getAttachmentsList(): Array<UserMessageAttachment>;
+  setAttachmentsList(value: Array<UserMessageAttachment>): void;
+  addAttachments(value?: UserMessageAttachment, index?: number): UserMessageAttachment;
+
+  getSentDate(): number;
+  setSentDate(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): PayloadUserMessage.AsObject;
+  static toObject(includeInstance: boolean, msg: PayloadUserMessage): PayloadUserMessage.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: PayloadUserMessage, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PayloadUserMessage;
+  static deserializeBinaryFromReader(message: PayloadUserMessage, reader: jspb.BinaryReader): PayloadUserMessage;
+}
+
+export namespace PayloadUserMessage {
+  export type AsObject = {
+    type: AppMessageTypeMap[keyof AppMessageTypeMap],
+    body: string,
+    attachmentsList: Array<UserMessageAttachment.AsObject>,
+    sentDate: number,
+  }
+}
+
+export class PayloadUserReaction extends jspb.Message {
+  getType(): AppMessageTypeMap[keyof AppMessageTypeMap];
+  setType(value: AppMessageTypeMap[keyof AppMessageTypeMap]): void;
+
+  getEmoji(): string;
+  setEmoji(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): PayloadUserReaction.AsObject;
+  static toObject(includeInstance: boolean, msg: PayloadUserReaction): PayloadUserReaction.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: PayloadUserReaction, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PayloadUserReaction;
+  static deserializeBinaryFromReader(message: PayloadUserReaction, reader: jspb.BinaryReader): PayloadUserReaction;
+}
+
+export namespace PayloadUserReaction {
+  export type AsObject = {
+    type: AppMessageTypeMap[keyof AppMessageTypeMap],
+    emoji: string,
+  }
+}
+
+export class PayloadGroupInvitation extends jspb.Message {
+  getType(): AppMessageTypeMap[keyof AppMessageTypeMap];
+  setType(value: AppMessageTypeMap[keyof AppMessageTypeMap]): void;
+
+  getGroupPk(): string;
+  setGroupPk(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): PayloadGroupInvitation.AsObject;
+  static toObject(includeInstance: boolean, msg: PayloadGroupInvitation): PayloadGroupInvitation.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: PayloadGroupInvitation, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PayloadGroupInvitation;
+  static deserializeBinaryFromReader(message: PayloadGroupInvitation, reader: jspb.BinaryReader): PayloadGroupInvitation;
+}
+
+export namespace PayloadGroupInvitation {
+  export type AsObject = {
+    type: AppMessageTypeMap[keyof AppMessageTypeMap],
+    groupPk: string,
+  }
+}
+
+export class PayloadSetGroupName extends jspb.Message {
+  getType(): AppMessageTypeMap[keyof AppMessageTypeMap];
+  setType(value: AppMessageTypeMap[keyof AppMessageTypeMap]): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): PayloadSetGroupName.AsObject;
+  static toObject(includeInstance: boolean, msg: PayloadSetGroupName): PayloadSetGroupName.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: PayloadSetGroupName, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PayloadSetGroupName;
+  static deserializeBinaryFromReader(message: PayloadSetGroupName, reader: jspb.BinaryReader): PayloadSetGroupName;
+}
+
+export namespace PayloadSetGroupName {
+  export type AsObject = {
+    type: AppMessageTypeMap[keyof AppMessageTypeMap],
+    name: string,
+  }
+}
+
+export class PayloadAcknowledge extends jspb.Message {
+  getType(): AppMessageTypeMap[keyof AppMessageTypeMap];
+  setType(value: AppMessageTypeMap[keyof AppMessageTypeMap]): void;
+
+  getTarget(): string;
+  setTarget(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): PayloadAcknowledge.AsObject;
+  static toObject(includeInstance: boolean, msg: PayloadAcknowledge): PayloadAcknowledge.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: PayloadAcknowledge, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PayloadAcknowledge;
+  static deserializeBinaryFromReader(message: PayloadAcknowledge, reader: jspb.BinaryReader): PayloadAcknowledge;
+}
+
+export namespace PayloadAcknowledge {
+  export type AsObject = {
+    type: AppMessageTypeMap[keyof AppMessageTypeMap],
+    target: string,
+  }
+}
+
+export interface AppMessageTypeMap {
+  UNDEFINED: 0;
+  USERMESSAGE: 1;
+  USERREACTION: 2;
+  GROUPINVITATION: 3;
+  SETGROUPNAME: 4;
+  ACKNOWLEDGE: 5;
+}
+
+export const AppMessageType: AppMessageTypeMap;
+
