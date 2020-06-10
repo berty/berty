@@ -13,7 +13,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/gogo/protobuf/proto"
-	"github.com/ipfs/go-cid"
+	cid "github.com/ipfs/go-cid"
 	qrterminal "github.com/mdp/qrterminal/v3"
 	"github.com/pkg/errors"
 )
@@ -471,11 +471,14 @@ func contactShareCommand(ctx context.Context, v *groupView, cmd string) error {
 	if cmd == "qr" || cmd == "qrcode" {
 		qrOut := new(bytes.Buffer)
 		qrterminal.GenerateWithConfig(res.DeepLink, qrterminal.Config{
-			Writer:    qrOut,
-			Level:     qrterminal.L,
-			BlackChar: qrterminal.BLACK_BLACK + qrterminal.BLACK_BLACK,
-			WhiteChar: qrterminal.WHITE_WHITE + qrterminal.WHITE_WHITE,
-			QuietZone: qrterminal.QUIET_ZONE,
+			Writer:         qrOut,
+			Level:          qrterminal.L,
+			HalfBlocks:     true,
+			BlackChar:      qrterminal.BLACK_BLACK,
+			WhiteBlackChar: qrterminal.WHITE_BLACK,
+			WhiteChar:      qrterminal.WHITE_WHITE,
+			BlackWhiteChar: qrterminal.BLACK_WHITE,
+			QuietZone:      qrterminal.QUIET_ZONE,
 		})
 
 		lines := strings.Split(qrOut.String(), "\n")
