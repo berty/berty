@@ -95,6 +95,7 @@ const BodyDevTools: React.FC<{}> = () => {
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, color, text }] = useStyles()
 	const { navigate } = useNavigation()
+	const sendToAll = Chat.useMessageSendToAll()
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<TracingButton />
@@ -138,6 +139,16 @@ const BodyDevTools: React.FC<{}> = () => {
 				iconColor={color.dark.grey}
 				actionIcon='arrow-ios-forward'
 				disabled
+			/>
+			<ButtonSetting
+				name='Send messages to all contacts'
+				icon='paper-plane-outline'
+				iconSize={30}
+				iconColor={color.dark.grey}
+				onPress={() => {
+					sendToAll()
+					navigate.main.list()
+				}}
 			/>
 			<ButtonSettingRow
 				state={[
