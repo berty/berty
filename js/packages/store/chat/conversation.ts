@@ -32,7 +32,7 @@ type BaseConversation = {
 	kind: ConversationKind | 'fake'
 }
 
-type FakeConversation = BaseConversation & {
+export type FakeConversation = BaseConversation & {
 	kind: 'fake'
 }
 type OneToOneConversation = BaseConversation & {

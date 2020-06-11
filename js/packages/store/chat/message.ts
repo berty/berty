@@ -40,6 +40,7 @@ export namespace Command {
 	export type Delete = { id: string }
 	export type Send = AppMessage & { id: string }
 	export type Hide = void
+	export type SendToAll = void
 }
 
 export namespace Query {
@@ -66,6 +67,7 @@ export type CommandsReducer = {
 	delete: SimpleCaseReducer<Command.Delete>
 	send: SimpleCaseReducer<Command.Send>
 	hide: SimpleCaseReducer<Command.Hide>
+	sendToAll: SimpleCaseReducer<Command.SendToAll>
 }
 
 type FakeConfig = {
@@ -124,6 +126,7 @@ const commandHandler = createSlice<State, CommandsReducer>({
 		delete: (state) => state,
 		send: (state) => state,
 		hide: (state) => state,
+		sendToAll: (state) => state,
 	},
 })
 
@@ -239,6 +242,30 @@ export const transactions: Transactions = {
 				groupPk: strToBuf(conv.pk), // need to set the pk in conv handlers
 				payload: jsonToBuf(message),
 			})
+		}
+	},
+	sendToAll: function* () {
+		// Recup the conv
+		const conv = (yield select((state) => conversation.queries.list(state))) as
+			| Array<conversation.Entity | conversation.FakeConversation>
+			| undefined
+		if (!conv || (conv && !conv.length)) {
+			return
+		}
+		for (let i = 0; i < conv.length; i++) {
+			if (conv[i].kind !== 'fake') {
+				const message: UserMessage = {
+					type: AppMessageType.UserMessage,
+					body: 'Test',
+					attachments: [],
+					sentDate: Date.now(),
+				}
+				yield* protocol.transactions.client.appMessageSend({
+					id: conv[i].accountId,
+					groupPk: strToBuf(conv[i].pk), // need to set the pk in conv handlers
+					payload: jsonToBuf(message),
+				})
+			}
 		}
 	},
 	hide: function* () {
