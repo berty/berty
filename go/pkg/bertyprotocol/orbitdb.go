@@ -14,6 +14,7 @@ import (
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/pkg/errors"
+	"go.opentelemetry.io/otel/api/trace"
 	"go.uber.org/zap"
 )
 
@@ -68,6 +69,10 @@ func newBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, acc DeviceKeysto
 
 	if options.Logger == nil {
 		options.Logger = zap.NewNop()
+	}
+
+	if options.Tracer == nil {
+		options.Tracer = trace.NoopTracer{}
 	}
 
 	ks := &BertySignedKeyStore{}

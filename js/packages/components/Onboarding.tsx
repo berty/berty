@@ -338,7 +338,15 @@ const CreateYourAccount: React.FC<{
 }> = ({ next }) => {
 	const [name, setName] = useState('')
 	const [nodeConfig, setNodeConfig] = useState(
-		__DEV__ ? defaultExternalBridgeConfig : defaultEmbeddedConfig,
+		__DEV__
+			? defaultExternalBridgeConfig
+			: {
+					...defaultEmbeddedConfig,
+					opts: {
+						...defaultEmbeddedConfig.opts,
+						tracingPrefix: name,
+					},
+			  },
 	)
 	const [{ text, padding, margin, background, border }] = useStyles()
 	const createAccount = Chat.useAccountCreate()
@@ -362,7 +370,18 @@ const CreateYourAccount: React.FC<{
 					<TextInput
 						autoCapitalize='none'
 						autoCorrect={false}
-						onChangeText={setName}
+						onChangeText={(name) => {
+							setName(name)
+							if (nodeConfig.type === 'embedded') {
+								setNodeConfig({
+									...nodeConfig,
+									opts: {
+										...nodeConfig.opts,
+										tracingPrefix: name,
+									},
+								})
+							}
+						}}
 						placeholder={t('onboarding.create-account.placeholder')}
 						style={[
 							margin.top.medium,

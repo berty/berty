@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 
+	"sync"
+
 	"berty.tech/berty/v2/go/pkg/errcode"
 	logac "berty.tech/go-ipfs-log/accesscontroller"
 	"berty.tech/go-ipfs-log/identityprovider"
@@ -13,11 +15,28 @@ import (
 	cid "github.com/ipfs/go-cid"
 	mh "github.com/multiformats/go-multihash"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 )
 
 type simpleAccessController struct {
 	events.EventEmitter
 	allowedKeys map[string][]string
+	logger      *zap.Logger
+	lock        sync.RWMutex
+}
+
+func (o *simpleAccessController) SetLogger(logger *zap.Logger) {
+	o.lock.Lock()
+	defer o.lock.Unlock()
+
+	o.logger = logger
+}
+
+func (o *simpleAccessController) Logger() *zap.Logger {
+	o.lock.RLock()
+	defer o.lock.RUnlock()
+
+	return o.logger
 }
 
 func (o *simpleAccessController) Grant(ctx context.Context, capability string, keyID string) error {
@@ -84,14 +103,20 @@ func (o *simpleAccessController) CanAppend(e logac.LogEntry, p identityprovider.
 }
 
 // NewSimpleAccessController Returns a non configurable access controller
-func NewSimpleAccessController(_ context.Context, _ iface.BaseOrbitDB, options accesscontroller.ManifestParams) (accesscontroller.Interface, error) {
-	if options == nil {
+func NewSimpleAccessController(_ context.Context, _ iface.BaseOrbitDB, params accesscontroller.ManifestParams, options ...accesscontroller.Option) (accesscontroller.Interface, error) {
+	if params == nil {
 		return &simpleAccessController{}, errors.New("an options object is required")
 	}
 
-	return &simpleAccessController{
-		allowedKeys: options.GetAllAccess(),
-	}, nil
+	ac := &simpleAccessController{
+		allowedKeys: params.GetAllAccess(),
+	}
+
+	for _, o := range options {
+		o(ac)
+	}
+
+	return ac, nil
 }
 
 var _ accesscontroller.Interface = &simpleAccessController{}

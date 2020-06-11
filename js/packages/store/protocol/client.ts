@@ -303,6 +303,7 @@ export const defaultBridgeOpts = {
 	logLevel: 'debug',
 	persistance: true,
 	tracing: true,
+	tracingPrefix: '',
 }
 
 export const transactions: Transactions = {

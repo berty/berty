@@ -7,6 +7,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/tinder"
+	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	orbitdb "berty.tech/go-orbit-db"
@@ -120,6 +121,7 @@ func New(opts Opts) (Service, error) {
 		Cache:     opts.OrbitCache,
 		Directory: &orbitDirectory,
 		Logger:    opts.Logger.Named("odb"),
+		Tracer:    tracer.New("berty-orbitdb"),
 	})
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)

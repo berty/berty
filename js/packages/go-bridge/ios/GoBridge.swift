@@ -9,6 +9,14 @@
 import Foundation
 import Bertybridge
 
+extension NSDictionary {
+    func get(bool: String, defaultValue: Bool = false) -> Bool { return self[bool] as? Bool ?? defaultValue }
+    func get(string: String, defaultValue: String = "") -> String { return self[string] as? String ?? defaultValue }
+    func get(int: String, defaultValue: Int = 0) -> Int { return self[int] as? Int ?? defaultValue }
+    func get(array: String, defaultValue: NSArray = []) -> NSArray { return self[array] as? NSArray ?? defaultValue }
+    func get(object: NSDictionary, defaultValue: NSDictionary = [:]) -> NSDictionary { return self[object] as? NSDictionary ?? defaultValue }
+}
+
 @objc(GoBridge)
 class GoBridge: NSObject {
     static let rnlogger = LoggerDriver("tech.berty", "react")
@@ -65,12 +73,13 @@ class GoBridge: NSObject {
                 throw NSError(domain: "already started", code: 1)
             }
 
-            // get opts
-            let optTracing = opts["tracing"] as? Bool ?? false
-            let optPersistance = opts["persistance"] as? Bool ?? false
-            let optLog = opts["logLevel"] as? String ?? "info"
-            let optGrpcListeners = opts["grpcListeners"] as? NSArray ?? ["/ip4/127.0.0.1/tcp/0/grpcws"]
-            let optSwarmListeners = opts["swarmListeners"] as? NSArray ?? ["/ip4/0.0.0.0/tcp/0", "/ip6/0.0.0.0/tcp/0"]
+            // gather opts
+            let optPersistance = opts.get(bool: "persistance")
+            let optLog = opts.get(string: "logLevel", defaultValue: "info")
+            let optGrpcListeners = opts.get(array: "grpcListeners", defaultValue: ["/ip4/127.0.0.1/tcp/0/grpcws"])
+            let optSwarmListeners = opts.get(array: "swarmListeners", defaultValue: ["/ip4/0.0.0.0/tcp/0", "/ip6/0.0.0.0/tcp/0"])
+            let optTracing = opts.get(bool: "tracing")
+            let optTracingPrefix = opts.get(string: "tracingPrefix")
 
             var err: NSError?
             guard let config = BertybridgeNewProtocolConfig() else {
@@ -115,7 +124,7 @@ class GoBridge: NSObject {
 
             if optTracing {
                 config.enableTracing()
-                config.setTracingPrefix("changeme")
+                config.setTracingPrefix(optTracingPrefix)
             }
 
             let bridgeProtocol = BertybridgeNewProtocolBridge(config, &err)
