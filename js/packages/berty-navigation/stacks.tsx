@@ -99,11 +99,6 @@ const SearchStack = createNativeStackNavigator()
 export const SearchNavigation: React.FC<BottomTabBarProps> = () => (
 	<SearchStack.Navigator screenOptions={{ headerShown: false }}>
 		<SearchStack.Screen name={Routes.Main.Search} component={Components.Main.Search} />
-		<SearchStack.Screen
-			name={'Modals'}
-			component={ModalsNavigation}
-			options={{ stackPresentation: 'transparentModal', stackAnimation: 'fade' }}
-		/>
 	</SearchStack.Navigator>
 )
 
