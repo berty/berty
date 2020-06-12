@@ -124,7 +124,7 @@ export const init = mem(
 		const persistConfig = {
 			key: 'root',
 			storage: config.storage,
-			whitelist: ['chat', 'settings', 'groups'],
+			whitelist: ['messenger', 'settings', 'groups'],
 		}
 
 		const configuredStore = configureStore({
