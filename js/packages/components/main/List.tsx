@@ -1,5 +1,5 @@
-import React from 'react'
-import { TouchableOpacity, View, ViewProps, ScrollView, TouchableHighlight } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { TouchableOpacity, View, ViewProps, ScrollView, TouchableHighlight, Text as TextNative, FlatList } from 'react-native'
 import { Translation } from 'react-i18next'
 import { useLayout } from '../hooks'
 import { useStyles } from '@berty-tech/styles'
@@ -68,7 +68,7 @@ const RequestsItem: React.FC<{
 					onPress={() => display({ id, name, accept, decline, publicKey })}
 				>
 					<ProceduralCircleAvatar
-						style={[absolute.center, absolute.scale({ top: -32.5 })]}
+						style={[absolute.center, border.shadow.medium, absolute.scale({ top: -32.5 })]}
 						seed={publicKey}
 						size={65}
 						diffSize={20}
@@ -148,23 +148,30 @@ const ContactRequestsItem: React.FC<chat.contact.Entity> = ({ id, name, publicKe
 	)
 }
 
-const Requests: React.FC<RequestsProps> = ({ items, style, onLayout }) => {
+const Requests: React.FC<RequestsProps> = ({ items, onLayout }) => {
 	const [{ padding, text }] = useStyles()
 	return items?.length ? (
-		<SafeAreaView onLayout={onLayout} style={style}>
+		<SafeAreaView onLayout={onLayout}>
 			<View style={[padding.top.medium]}>
 				<Text style={[text.color.white, text.size.huge, text.bold.medium, padding.medium]}>
 					Requests
 				</Text>
-				<ScrollView
+				{/* <FlatList
 					horizontal
 					style={[padding.bottom.medium]}
 					showsHorizontalScrollIndicator={false}
+					data={items}
+					renderItem={({ item }) => <ContactRequestsItem {...item} />}
+				/> */}
+				<View
+					// horizontal
+					style={[padding.bottom.medium]}
+					// showsHorizontalScrollIndicator={false}
 				>
 					{items.map((_) => {
 						return <ContactRequestsItem {..._} />
 					})}
-				</ScrollView>
+				</View>
 			</View>
 		</SafeAreaView>
 	) : null
@@ -301,22 +308,29 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 }
 
 const Conversations: React.FC<ConversationsProps> = ({ items, hasRequests }) => {
-	const [{ overflow, border, padding, margin, text, background, row, absolute, flex }] = useStyles()
+	const [{ overflow, border, padding, margin, text, background, row, absolute, flex, height }] = useStyles()
 	return items?.length ? (
 		<Translation>
 			{(t): React.ReactNode => (
 				<SafeAreaConsumer>
 					{(insets) => (
-						<View style={[flex.medium]}>
-							<ScrollView
+							<FlatList
+								bounces={false}
+								showsVerticalScrollIndicator={false}
+								contentContainerStyle={[background.white, padding.bottom.scale(100)]}
+								style={[overflow, flex.medium]}
+								data={items}
+								renderItem={({ item }) => <ConversationsItem {...item} /> }
+							/>
+						// <View>
+							/* <ScrollView
 								style={[overflow]}
 								contentContainerStyle={[
 									background.white,
-									border.radius.big,
 									{
 										flexGrow: 1,
 										paddingTop:
-											(!hasRequests && insets?.top ? insets?.top * scaleSize : 0) + 85 * scaleSize,
+											!hasRequests ? ((insets?.top ? insets?.top * scaleSize : 0) + 85 * scaleSize) : 0,
 										paddingBottom:
 											(insets?.bottom ? insets?.bottom * scaleSize : 0) +
 											(100 - (insets?.bottom || 0)) * scaleSize,
@@ -324,35 +338,36 @@ const Conversations: React.FC<ConversationsProps> = ({ items, hasRequests }) => 
 								]}
 								bounces={false}
 							>
-								{items.map((_) => {
-									return <ConversationsItem {..._} />
-								})}
-							</ScrollView>
-							<View
-								style={[
-									row.left,
-									padding.top.scale(insets?.top || 0),
-									padding.left.scale(27),
-									absolute.scale({ top: 0 }),
-									background.white,
-									{ alignItems: 'center', width: '100%', height: '13%' },
-								]}
-							>
-								<Logo width={35} height={35} />
-								<Text
-									style={[
-										text.color.black,
-										text.size.huge,
-										text.bold.medium,
-										padding.medium,
-										padding.top.big,
-										margin.horizontal.medium,
-									]}
-								>
-									{t('main.messages.title')}
-								</Text>
-							</View>
-						</View>
+									<View
+										style={[
+											row.left,
+											padding.left.scale(27),
+											background.white,
+											border.radius.top.large,
+											!hasRequests && absolute.scale({ top: 0 }),
+											height(80),
+											{ alignItems: 'center', width: '100%' },
+										]}
+									>
+										<Logo width={35} height={35} />
+										<TextNative
+											style={[
+												text.color.black,
+												text.size.huge,
+												text.bold.medium,
+												padding.left.medium,
+												margin.horizontal.medium,
+												text.align.center,
+											]}
+										>
+											{t('main.messages.title')}
+										</TextNative>
+									</View>
+									{items.map((_) => {
+										return <ConversationsItem {..._} />
+									})}
+							</ScrollView> */
+						// </View>
 					)}
 				</SafeAreaConsumer>
 			)}
