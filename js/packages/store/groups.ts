@@ -2,16 +2,21 @@ import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { put, all, select, fork, takeEvery, cancel, call } from 'typed-redux-saga'
 import { Task } from 'redux-saga'
 
-import { makeDefaultCommandsSagas, strToBuf } from './utils'
-import { transactions as clientTransactions } from './protocol/client'
+import { makeDefaultCommandsSagas, strToBuf, bufToStr } from './utils'
+import { transactions as clientTransactions, events as clientEvents } from './protocol/client'
 
 export type SubscribeOptions = {
-	publicKey: string
 	metadata?: boolean
 	messages?: boolean
 }
 
-export type State = { [key: string]: SubscribeOptions }
+export type Entity = {
+	publicKey: string
+	cids: { [key: string]: true | undefined }
+	membersDevices: { [key: string]: string[] | undefined }
+} & SubscribeOptions
+
+export type State = { [key: string]: Entity }
 
 export type GlobalState = {
 	groups: State
@@ -21,11 +26,11 @@ export type GlobalState = {
 
 export namespace Commands {
 	export type Open = { clientId: string }
-	export type Subscribe = { clientId: string } & SubscribeOptions
-	export type Unsubscribe = { clientId: string } & SubscribeOptions
+	export type Subscribe = { clientId: string; publicKey: string } & SubscribeOptions
+	export type Unsubscribe = { clientId: string; publicKey: string } & SubscribeOptions
 }
 
-type CommandCaseReducer<P> = CaseReducer<{}, PayloadAction<P>>
+type CommandCaseReducer<P> = CaseReducer<undefined, PayloadAction<P>>
 
 export type CommandsReducer = {
 	open: CommandCaseReducer<Commands.Open>
@@ -33,13 +38,13 @@ export type CommandsReducer = {
 	unsubscribe: CommandCaseReducer<Commands.Unsubscribe>
 }
 
-const commandsHandler = createSlice<State, CommandsReducer>({
+const commandsHandler = createSlice<undefined, CommandsReducer>({
 	name: 'groups/commands',
-	initialState: {},
+	initialState: undefined,
 	reducers: {
-		open: (state: State) => state,
-		subscribe: (state: State) => state,
-		unsubscribe: (state: State) => state,
+		open: (state) => state,
+		subscribe: (state) => state,
+		unsubscribe: (state) => state,
 	},
 })
 
@@ -48,40 +53,74 @@ export const commands = commandsHandler.actions
 // Events
 
 export namespace Events {
-	export type Subscribed = { publicKey: string } & SubscribeOptions
-	export type Unsubscribed = { publicKey: string } & SubscribeOptions
+	export type Updated = { publicKey: string } & SubscribeOptions
+	export type CIDRead = { publicKey: string; cid: string }
+	export type MemberDeviceAdded = {
+		groupPublicKey: string
+		memberPublicKey: string
+		devicePublicKey: string
+	}
 }
 
 type EventCaseReducer<P> = CaseReducer<State, PayloadAction<P>>
 
 export type EventsReducer = {
-	subscribed: EventCaseReducer<Events.Subscribed>
-	unsubscribed: EventCaseReducer<Events.Unsubscribed>
+	updated: EventCaseReducer<Events.Updated>
+	cidRead: EventCaseReducer<Events.CIDRead>
+	memberDeviceAdded: EventCaseReducer<Events.MemberDeviceAdded>
 }
 
 const eventsHandler = createSlice<State, EventsReducer>({
 	name: 'groups/events',
 	initialState: {},
 	reducers: {
-		subscribed: (state: State, { payload }) => {
-			const opts = state[payload.publicKey]
-			if (opts) {
-				opts.metadata = opts.metadata || payload.metadata
-				opts.messages = opts.messages || payload.messages
-			} else {
-				state[payload.publicKey] = payload
+		updated: (state: State, { payload }) => {
+			const { publicKey, metadata, messages } = payload
+			const group = state[payload.publicKey]
+			if (!group) {
+				state[payload.publicKey] = {
+					publicKey,
+					metadata,
+					messages,
+					cids: {},
+					membersDevices: {},
+				}
+				return state
 			}
+			group.metadata = metadata
+			group.messages = messages
 			return state
 		},
-		unsubscribed: (state: State, { payload }) => {
-			const opts = state[payload.publicKey]
-			if (opts) {
-				if (payload.metadata) {
-					delete opts.metadata
+		cidRead: (state: State, { payload: { cid, publicKey } }) => {
+			if (!state[publicKey]) {
+				state[publicKey] = {
+					publicKey,
+					cids: { [cid]: true },
+					membersDevices: {},
 				}
-				if (payload.messages) {
-					delete opts.messages
+			}
+			state[publicKey].cids[cid] = true
+			return state
+		},
+		memberDeviceAdded: (
+			state: State,
+			{ payload: { groupPublicKey, memberPublicKey, devicePublicKey } },
+		) => {
+			if (!state[groupPublicKey]) {
+				state[groupPublicKey] = {
+					publicKey: groupPublicKey,
+					cids: {},
+					membersDevices: {},
 				}
+			}
+			const group = state[groupPublicKey]
+			const devices = group.membersDevices[memberPublicKey]
+			if (!devices) {
+				group.membersDevices[memberPublicKey] = [devicePublicKey]
+				return state
+			}
+			if (devices.indexOf(devicePublicKey) === -1) {
+				devices.push(devicePublicKey)
 			}
 			return state
 		},
@@ -95,8 +134,8 @@ export const events = eventsHandler.actions
 type Query<Props, Return> = (state: GlobalState, query: Props) => Return
 
 export type Queries = {
-	list: Query<{ clientId: string }, SubscribeOptions[]>
-	get: Query<{ groupId: string }, SubscribeOptions | undefined>
+	list: Query<{ clientId: string }, Entity[]>
+	get: Query<{ groupId: string }, Entity | undefined>
 }
 
 export const queries: Queries = {
@@ -110,6 +149,14 @@ export type Transactions = {
 	[K in keyof CommandsReducer]: CommandsReducer[K] extends CommandCaseReducer<infer TPayload>
 		? (payload: TPayload) => Generator
 		: never
+} & {
+	isCIDRead: ({
+		cid,
+		publicKey,
+	}: {
+		cid: string
+		publicKey: string
+	}) => Generator<unknown, true | undefined>
 }
 
 type SubscribeTasks = { metadataTask?: Task; messagesTask?: Task }
@@ -157,13 +204,15 @@ export const transactions: Transactions = {
 					groupPk: strToBuf(payload.publicKey),
 				})
 			}
-			yield* put(events.subscribed(payload))
+			allTasks[payload.publicKey] = tasks
+			yield* put(events.updated(payload))
 		})
 		yield* takeEvery(commands.unsubscribe, function* ({ payload }) {
 			if (payload.clientId !== clientId) {
 				return
 			}
-			const tasks: SubscribeTasks = allTasks[payload.publicKey] || {}
+
+			const tasks = allTasks[payload.publicKey] || {}
 			if (tasks.messagesTask && payload.messages) {
 				yield* cancel(tasks.messagesTask)
 				delete tasks.messagesTask
@@ -172,8 +221,14 @@ export const transactions: Transactions = {
 				yield* cancel(tasks.metadataTask)
 				delete tasks.metadataTask
 			}
-			yield* put(events.unsubscribed(payload))
+			allTasks[payload.publicKey] = tasks
+			yield* put(
+				events.updated({ ...payload, messages: !payload.messages, metadata: !payload.metadata }),
+			)
 		})
+	},
+	isCIDRead: function* ({ cid, publicKey }) {
+		return yield* select((state: GlobalState) => state.groups[publicKey]?.cids[cid])
 	},
 	subscribe: function* () {
 		// handled in 'open' transaction
@@ -184,7 +239,25 @@ export const transactions: Transactions = {
 }
 
 export function* orchestrator() {
-	yield* all([...makeDefaultCommandsSagas(commands, transactions)])
+	yield* all([
+		...makeDefaultCommandsSagas(commands, transactions),
+		takeEvery(clientEvents.groupMemberDeviceAdded, function* ({ payload }) {
+			const {
+				event: { devicePk, memberPk },
+				eventContext: { groupPk },
+			} = payload
+			if (!(devicePk && memberPk && groupPk)) {
+				return
+			}
+			yield* put(
+				events.memberDeviceAdded({
+					groupPublicKey: bufToStr(groupPk),
+					memberPublicKey: bufToStr(memberPk),
+					devicePublicKey: bufToStr(devicePk),
+				}),
+			)
+		}),
+	])
 }
 
 // Exports

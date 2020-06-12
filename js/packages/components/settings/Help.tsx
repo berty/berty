@@ -4,7 +4,7 @@ import { Layout, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
-import { useNavigation, ScreenProps } from '@berty-tech/berty-navigation'
+import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 //
 // Help
 //

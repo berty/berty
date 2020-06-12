@@ -4,11 +4,11 @@ import {
 	NavigationContainer as ReactNavigationContainer,
 } from '@react-navigation/native'
 import { Routes } from './types'
-import { Chat } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/hooks'
 
 export const NavigationContainer: React.FC = ({ children }) => {
 	const ref = useRef()
-	const initiateContactRequest = Chat.useInitiateContactRequest()
+	const initiateContactRequest = Messenger.useInitiateContactRequest()
 
 	const { getInitialState } = useLinking(ref, {
 		prefixes: ['berty://'],

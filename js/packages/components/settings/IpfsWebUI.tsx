@@ -4,7 +4,7 @@ import { Layout } from 'react-native-ui-kitten'
 import { HeaderSettings } from '../shared-components/Header'
 import { WebView } from 'react-native-webview'
 import { useStyles } from '@berty-tech/styles'
-import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
+import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 
 //
 // IpfsWebUI

@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@react-navigation/native'
-import { Chat } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/hooks'
 
 //
 // Scan Invalid
@@ -87,7 +87,7 @@ const InvalidScanDismissButton: React.FC<{}> = () => {
 	const _styles = useStylesInvalidScan()
 	const [{ row, margin, color, padding, text }] = useStyles()
 	const navigation = useNavigation()
-	const resetDraft = Chat.useResetDraft()
+	const resetDraft = Messenger.useResetDraft()
 
 	return (
 		<View style={row.center}>
@@ -108,7 +108,7 @@ const InvalidScanDismissButton: React.FC<{}> = () => {
 }
 
 const InvalidScan: React.FC<{ title: string; error: string }> = ({ title, error }) => {
-	const [layout, setLayout] = useState()
+	const [layout, setLayout] = useState<number>()
 	const [{ background, padding, border }] = useStyles()
 
 	return (

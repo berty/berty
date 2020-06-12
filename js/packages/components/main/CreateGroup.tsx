@@ -5,9 +5,9 @@ import { styles, colors, useStyles } from '@berty-tech/styles'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
-import { useNavigation } from '@berty-tech/berty-navigation'
-import { Chat } from '@berty-tech/hooks'
-import { chat } from '@berty-tech/store'
+import { useNavigation } from '@berty-tech/navigation'
+import { Messenger } from '@berty-tech/hooks'
+import { messenger } from '@berty-tech/store'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 const Screen = Dimensions.get('window')
@@ -45,18 +45,18 @@ const _stylesCreateGroup = StyleSheet.create({
 // Type
 type AddMembersItemProps = {
 	separateBar?: boolean
-	contact: chat.contact.Entity
+	contact: messenger.contact.Entity
 	added: boolean
-	onSetMember: (contact: chat.contact.Entity) => void
+	onSetMember: (contact: messenger.contact.Entity) => void
 	onRemoveMember: (id: string) => void
 }
 
 type AddMembersProps = {
 	heightProps: number
 	paddingBottom?: number
-	onSetMember: (contact: chat.contact.Entity) => void
+	onSetMember: (contact: messenger.contact.Entity) => void
 	onRemoveMember: (id: string) => void
-	members: chat.contact.Entity[]
+	members: messenger.contact.Entity[]
 }
 
 type FooterCreateGroupProps = {
@@ -118,7 +118,7 @@ const AddMembers: React.FC<AddMembersProps> = ({
 }) => {
 	const [{ padding, background, row, height, color, text, margin }] = useStyles()
 	const [searchText, setSearchText] = useState('')
-	const contacts = Chat.useAccountContactSearchResults(searchText)
+	const contacts = Messenger.useAccountContactSearchResults(searchText)
 	const _styles = useStylesCreateGroup()
 
 	return (
@@ -162,9 +162,9 @@ const AddMembers: React.FC<AddMembersProps> = ({
 }
 
 export const CreateGroup: React.FC<{
-	onSetMember: (contact: chat.contact.Entity) => void
+	onSetMember: (contact: messenger.contact.Entity) => void
 	onRemoveMember: (id: string) => void
-	members: chat.contact.Entity[]
+	members: messenger.contact.Entity[]
 }> = ({ onSetMember, onRemoveMember, members }) => {
 	const firstNotToggledPoint = 160 - 50
 	const firstToggledPoint = firstNotToggledPoint
@@ -242,7 +242,7 @@ const NewGroup2Item: React.FC<{ name: string; onRemove: () => void }> = ({ name,
 }
 
 const NewGroup2: React.FC<{
-	members: chat.contact.Entity[]
+	members: messenger.contact.Entity[]
 	onRemoveMember: (id: string) => void
 }> = ({ members, onRemoveMember }) => {
 	const _styles = useStylesCreateGroup()
@@ -298,9 +298,9 @@ const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, icon, acti
 }
 
 export const CreateGroup2: React.FC<{
-	onSetMember: (contact: chat.contact.Entity) => void
+	onSetMember: (contact: messenger.contact.Entity) => void
 	onRemoveMember: (id: string) => void
-	members: chat.contact.Entity[]
+	members: messenger.contact.Entity[]
 }> = ({ onSetMember, onRemoveMember, members }) => {
 	const firstNotToggledPoint = 230
 	const firstToggledPoint = firstNotToggledPoint
@@ -454,7 +454,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange }) => {
 }
 
 export const CreateGroup3: React.FC<{
-	members: chat.contact.Entity[]
+	members: messenger.contact.Entity[]
 	onRemoveMember: (id: string) => void
 }> = ({ members, onRemoveMember }) => {
 	const firstToggledPoint = 300
@@ -467,7 +467,7 @@ export const CreateGroup3: React.FC<{
 	const thirdNotToggledPoint = thirdToggledPoint
 	const navigation = useNavigation()
 	const [groupName, setGroupName] = useState('')
-	const createGroup = Chat.useConversationCreate({ name: groupName, members })
+	const createGroup = Messenger.useConversationCreate({ name: groupName, members })
 
 	return (
 		<Layout style={[styles.flex]}>

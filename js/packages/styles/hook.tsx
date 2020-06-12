@@ -13,6 +13,7 @@ export const setStylesDeclaration: SetStylesDeclaration = (decl, setStyles) =>
 	setStyles(mapScaledDeclaration(decl))
 
 export type Context = React.Context<[Styles, (decl: Declaration) => void]>
+
 export const ctx: Context = createContext([
 	defaultStyles,
 	(decl: Declaration) => setStylesDeclaration(decl, () => {}),
@@ -28,6 +29,6 @@ export const Provider: React.FC = ({ children }) => {
 }
 export const Consumer = ctx.Consumer
 
-export const useStyles = (): [Styles, SetStylesDeclaration] => {
+export const useStyles = () => {
 	return useContext(ctx)
 }

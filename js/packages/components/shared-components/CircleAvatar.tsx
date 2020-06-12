@@ -1,8 +1,8 @@
 import React from 'react'
 import { View, Image, StyleProp } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
-import { useStyles, ColorsTypes } from '@berty-tech/styles'
-import { chat } from '@berty-tech/store'
+import { useStyles, ColorsStyles } from '@berty-tech/styles'
+import { messenger } from '@berty-tech/store'
 
 //
 // CircleAvatar => every avatar in white circle or not
@@ -14,11 +14,10 @@ type CircleAvatarProps = {
 	withCircle?: boolean
 	size?: number
 	diffSize?: number
-	color?: ColorsTypes // the color of the circle
+	color?: keyof ColorsStyles<string> // the color of the circle
 	state?: {
 		icon: string
-		iconColor?: ColorsTypes
-		stateColor?: ColorsTypes
+		iconColor?: string
 	} // when group is created, members have a state for know if the memeber accept, is pending or refuse
 	style?: StyleProp<any>
 }
@@ -125,7 +124,7 @@ export const Avatar: React.FC<{
 	)
 }
 
-type ConversationAvatarProp = chat.conversation.Entity & {
+type ConversationAvatarProp = messenger.conversation.Entity & {
 	size?: number
 	diffSize?: number
 	style?: StyleProp<any>

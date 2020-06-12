@@ -15,7 +15,7 @@ import i18n from '@berty-tech/berty-i18n'
 import { faker } from './faker.gen'
 import { BertyChatChatService as LegacyStore } from '@berty-tech/berty-store'
 import { berty } from '@berty-tech/api'
-import { Routes, FakeNavigation } from '@berty-tech/berty-navigation'
+import { Routes, FakeNavigation } from '@berty-tech/navigation'
 import { NavigationContainer } from '@react-navigation/native'
 import { enableScreens } from 'react-native-screens'
 import { Chat as ChatHooks } from '@berty-tech/hooks'
@@ -82,21 +82,21 @@ stories
 	.add(Routes.Main.ScanRequest, () => <Main.ScanRequest user={fakeOneUser} />)
 	.add(Routes.Main.Scan, () => <Main.Scan />)
 	.add(Routes.Main.InvalidScan, () => <Main.InvalidScan />)
-	.add(Routes.Chat.One2One, () => <Chat.Chat />)
+	.add(Routes.Chat.OneToOne, () => <Chat.Chat />)
 	.add(Routes.Chat.Group, () => (
 		<Chat.ChatGroup route={{ params: faker.berty.chatmodel.Conversation[0] }} />
 	))
 	.add(Routes.Chat.Settings, () => (
-		<Chat.ChatSettings route={{ params: faker.berty.chatmodel.Conversation[0] }} />
+		<Chat.Settings route={{ params: faker.berty.chatmodel.Conversation[0] }} />
 	))
-	.add(Routes.Chat.One2OneSettings, () => (
-		<Chat.ContactChatSettings route={{ params: faker.berty.chatmodel.Conversation[0] }} />
+	.add(Routes.Chat.OneToOneSettings, () => (
+		<Chat.OneToOneSettings route={{ params: faker.berty.chatmodel.Conversation[0] }} />
 	))
 	.add(Routes.Chat.GroupSettings, () => (
 		<Chat.GroupChatSettings route={{ params: faker.berty.chatmodel.Conversation[0] }} />
 	))
 	.add('Main.RequestSent', () => <Main.RequestSent user={fakeOneUser} />)
-	.add('Main.ListModal', () => <Main.ListModal />)
+	.add('Main.HomeModal', () => <Main.HomeModal />)
 	.add('Main.CreateGroup', () => <Main.CreateGroup />)
 	.add('Main.CreateGroup2', () => <Main.CreateGroup2 />)
 	.add('Main.CreateGroup3', () => <Main.CreateGroup3 />)

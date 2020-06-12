@@ -1,4 +1,4 @@
-import * as Chat from './Chat'
+import * as Messenger from './Messenger'
 import * as Settings from './Settings'
 
-export { Chat, Settings }
+export { Messenger, Settings }

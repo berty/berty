@@ -1,10 +1,10 @@
 import React from 'react'
 import { View, StyleProp } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
-import { useStyles, ColorsTypes } from '@berty-tech/styles'
+import { useStyles, ColorsStyles } from '@berty-tech/styles'
 import Jdenticon from 'react-native-jdenticon'
-import { Chat } from '@berty-tech/hooks'
-import { chat } from '@berty-tech/store'
+import { Messenger } from '@berty-tech/hooks'
+import { messenger } from '@berty-tech/store'
 
 //
 // ProceduralCircleAvatar => every avatar in white circle or not
@@ -15,11 +15,10 @@ type ProceduralCircleAvatarProps = {
 	seed?: string
 	size?: number
 	diffSize?: number
-	color?: ColorsTypes // the color of the circle
+	color?: keyof ColorsStyles<string> // the color of the circle
 	state?: {
 		icon: string
-		iconColor?: ColorsTypes
-		stateColor?: ColorsTypes
+		iconColor?: string
 	} // when group is created, members have a state for know if the memeber accept, is pending or refuse
 	style?: StyleProp<any>
 }
@@ -136,12 +135,12 @@ export const ConversationProceduralAvatar: React.FC<ConversationProceduralAvatar
 	diffSize,
 	style,
 }) => {
-	const conversation = Chat.useGetConversation(conversationId)
-	const contact = Chat.useOneToOneConversationContact(conversationId)
+	const conversation = Messenger.useGetConversation(conversationId)
+	const contact = Messenger.useOneToOneConversationContact(conversationId)
 	const seeds: string[] = []
 	if (conversation) {
 		switch (conversation.kind) {
-			case chat.conversation.ConversationKind.OneToOne:
+			case messenger.conversation.ConversationKind.OneToOne:
 				if (contact) {
 					seeds.push(contact.publicKey)
 				}

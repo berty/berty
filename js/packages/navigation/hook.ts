@@ -1,17 +1,17 @@
-import { berty } from '@berty-tech/api'
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import {
 	useNavigation as useReactNavigation,
 	NavigationProp,
 	CommonActions,
 } from '@react-navigation/native'
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
-import { Routes } from './types'
+import { Routes, RouteProps, ScreenProps } from './types'
 
-const createNavigateFunc = <TParams extends {} | undefined = {}>(
-	navigate: NavigationProp<any>['navigate'],
-	route: string,
-) => (params?: TParams) => navigate(route, params)
+export type NavigateParams<R> = R extends RouteProps<infer T> ? T : never
+
+const createNavigateFunc = <Route>(navigate: NavigationProp<any>['navigate'], route: string) => (
+	params?: NavigateParams<Route>,
+) => navigate(route, params)
 
 const createNavigation = ({
 	navigate,
@@ -28,11 +28,11 @@ const createNavigation = ({
 						routes: [{ name: Routes.Onboarding.GetStarted }],
 					}),
 				)
-				dispatch(CommonActions.navigate(Routes.Main.List))
+				dispatch(CommonActions.navigate(Routes.Main.Home))
 			} else {
 				dispatch(
 					CommonActions.reset({
-						routes: [{ name: Routes.Main.List }],
+						routes: [{ name: Routes.Main.Home }],
 					}),
 				)
 				dispatch(CommonActions.navigate(Routes.Onboarding.GetStarted))
@@ -46,13 +46,16 @@ const createNavigation = ({
 				privacy: createNavigateFunc(navigate, Routes.Onboarding.Privacy),
 			},
 			main: {
-				list: createNavigateFunc(navigate, Routes.Main.List),
-				contactRequest: createNavigateFunc(navigate, Routes.Main.ContactRequest),
+				home: createNavigateFunc<ScreenProps.Main.Home>(navigate, Routes.Main.Home),
+				contactRequest: createNavigateFunc<ScreenProps.Main.ContactRequest>(
+					navigate,
+					Routes.Main.ContactRequest,
+				),
 				groupRequest: createNavigateFunc(navigate, Routes.Main.GroupRequest),
 				scanRequest: createNavigateFunc(navigate, Routes.Main.ScanRequest),
-				scan: createNavigateFunc(navigate, Routes.Main.Scan),
+				scan: createNavigateFunc<ScreenProps.Main.Scan>(navigate, Routes.Main.Scan),
 
-				listModal: createNavigateFunc(navigate, Routes.Main.ListModal),
+				listModal: createNavigateFunc<ScreenProps.Main.HomeModal>(navigate, Routes.Main.HomeModal),
 				search: createNavigateFunc(navigate, Routes.Main.Search),
 				requestSent: createNavigateFunc(navigate, Routes.Main.RequestSent),
 				createGroup: {
@@ -62,15 +65,21 @@ const createNavigation = ({
 				},
 			},
 			chat: {
-				one2One: createNavigateFunc(navigate, Routes.Chat.One2One),
+				oneToOne: createNavigateFunc(navigate, Routes.Chat.OneToOne),
 				group: createNavigateFunc(navigate, Routes.Chat.Group),
-				settings: createNavigateFunc(navigate, Routes.Chat.Settings),
-				one2OneSettings: createNavigateFunc(navigate, Routes.Chat.One2OneSettings),
+				settings: createNavigateFunc<ScreenProps.Chat.Settings>(navigate, Routes.Chat.Settings),
+				oneToOneSettings: createNavigateFunc<ScreenProps.Chat.OneToOneSettings>(
+					navigate,
+					Routes.Chat.OneToOneSettings,
+				),
 				groupSettings: createNavigateFunc(navigate, Routes.Chat.GroupSettings),
 			},
 			settings: {
-				home: createNavigateFunc(navigate, Routes.Settings.Home),
-				myBertyId: createNavigateFunc(navigate, Routes.Settings.MyBertyId),
+				home: createNavigateFunc<ScreenProps.Settings.Home>(navigate, Routes.Settings.Home),
+				myBertyId: createNavigateFunc<ScreenProps.Settings.MyBertyId>(
+					navigate,
+					Routes.Settings.MyBertyId,
+				),
 				editProfile: createNavigateFunc(navigate, Routes.Settings.EditProfile),
 				appUpdates: createNavigateFunc(navigate, Routes.Settings.AppUpdates),
 				help: createNavigateFunc(navigate, Routes.Settings.Help),
@@ -81,8 +90,15 @@ const createNavigation = ({
 				aboutBerty: createNavigateFunc(navigate, Routes.Settings.AboutBerty),
 				termsOfUse: createNavigateFunc(navigate, Routes.Settings.TermsOfUse),
 				devTools: createNavigateFunc(navigate, Routes.Settings.DevTools),
-				network: createNavigateFunc(navigate, Routes.Settings.Network),
+				network: createNavigateFunc<ScreenProps.Settings.Network>(
+					navigate,
+					Routes.Settings.Network,
+				),
 				ipfsWebUI: createNavigateFunc(navigate, Routes.Settings.IpfsWebUI),
+				devText: createNavigateFunc<ScreenProps.Settings.DevText>(
+					navigate,
+					Routes.Settings.DevText,
+				),
 			},
 		},
 	}

@@ -1,5 +1,5 @@
 // export { ChatGroup } from './ChatGroup'
-export { Chat } from './Chat'
-export { ChatSettings } from './ChatSettings'
-export { ContactChatSettings } from './ContactChatSettings'
+export { OneToOne } from './OneToOne'
+export { OneToOneSettings } from './OneToOneSettings'
+export { ChatSettings as Settings } from './ChatSettings'
 // export { GroupChatSettings } from './GroupChatSettings'

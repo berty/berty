@@ -1,17 +1,16 @@
 import { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { chat } from '@berty-tech/store'
-import { berty } from '@berty-tech/api'
+import { messenger } from '@berty-tech/store'
 import { useAccount, useClient } from './account'
 
 // conversations commands
 export const useConversationGenerate = () => {
 	const dispatch = useDispatch()
-	return useMemo(() => () => dispatch(chat.conversation.commands.generate()), [dispatch])
+	return useMemo(() => () => dispatch(messenger.conversation.commands.generate()), [dispatch])
 }
 
 type UseConversationCreate = (kwargs: {
-	members: chat.contact.Entity[]
+	members: messenger.contact.Entity[]
 	name: string
 }) => () => void
 
@@ -24,7 +23,7 @@ export const useConversationCreate: UseConversationCreate = ({ name, members }) 
 			return () => {}
 		}
 		return () => {
-			dispatch(chat.conversation.commands.create({ accountId: account.id, name, members }))
+			dispatch(messenger.conversation.commands.create({ accountId: account.id, name, members }))
 		}
 	}, [account, dispatch, members, name])
 }
@@ -32,29 +31,32 @@ export const useConversationCreate: UseConversationCreate = ({ name, members }) 
 export const useConversationDelete = () => {
 	const dispatch = useDispatch()
 	return useMemo(
-		() => (payload: chat.conversation.Command.Delete) =>
-			dispatch(chat.conversation.commands.delete(payload)),
+		() => (payload: messenger.conversation.Command.Delete) =>
+			dispatch(messenger.conversation.commands.delete(payload)),
 		[dispatch],
 	)
 }
 
-export const useStartReadConversation = (id: chat.conversation.Entity['id']) => {
+export const useStartReadConversation = (id: messenger.conversation.Entity['id']) => {
 	const dispatch = useDispatch()
-	return useMemo(() => () => dispatch(chat.conversation.commands.startRead(id)), [dispatch, id])
+	return useMemo(() => () => dispatch(messenger.conversation.commands.startRead(id)), [
+		dispatch,
+		id,
+	])
 }
 
-export const useStopReadConversation = (id: chat.conversation.Entity['id']) => {
+export const useStopReadConversation = (id: messenger.conversation.Entity['id']) => {
 	const dispatch = useDispatch()
-	return useMemo(() => () => dispatch(chat.conversation.commands.stopRead(id)), [dispatch, id])
+	return useMemo(() => () => dispatch(messenger.conversation.commands.stopRead(id)), [dispatch, id])
 }
 
 // conversation queries
 export const useConversationList = () => {
 	const client = useClient()
 	// TODO: handle multiple devices
-	const list = useSelector((state: chat.conversation.GlobalState) =>
+	const list = useSelector((state: messenger.conversation.GlobalState) =>
 		client
-			? chat.conversation.queries
+			? messenger.conversation.queries
 					.list(state)
 					.filter(
 						(conv) =>
@@ -70,19 +72,21 @@ export const useConversationLength = () => {
 	return useConversationList().length
 }
 
-export const useGetConversation = (id: string): chat.conversation.Entity | undefined => {
-	const conversation = useSelector((state: chat.conversation.GlobalState) =>
-		chat.conversation.queries.get(state, { id }),
+export const useGetConversation = (id: string): messenger.conversation.Entity | undefined => {
+	const conversation = useSelector((state: messenger.conversation.GlobalState) =>
+		messenger.conversation.queries.get(state, { id }),
 	)
 	return conversation
 }
 
-export const useOneToOneConversationContact = (id: string): chat.contact.Entity | undefined => {
+export const useOneToOneConversationContact = (
+	id: string,
+): messenger.contact.Entity | undefined => {
 	const conversation = useGetConversation(id)
 	return useSelector(
-		(state: chat.contact.GlobalState) =>
-			(conversation?.kind === chat.conversation.ConversationKind.OneToOne &&
-				chat.contact.queries.get(state, { id: conversation.contactId })) ||
+		(state: messenger.contact.GlobalState) =>
+			(conversation?.kind === messenger.conversation.ConversationKind.OneToOne &&
+				messenger.contact.queries.get(state, { id: conversation.contactId })) ||
 			undefined,
 	)
 }

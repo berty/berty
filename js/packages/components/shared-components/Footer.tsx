@@ -24,6 +24,7 @@ type ButtonFooterProps = {
 	selected: boolean
 	selectedElemSize?: number
 	disabled?: boolean
+	iconPack?: string
 }
 
 type FooterProps = {

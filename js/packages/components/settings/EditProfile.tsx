@@ -2,7 +2,7 @@ import React from 'react'
 import { SafeAreaView, View, TouchableOpacity, Dimensions, StyleSheet } from 'react-native'
 import { Icon, Input, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
-import { ScreenProps, useNavigation } from '@berty-tech/berty-navigation'
+import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { BlurView } from '@react-native-community/blur'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 

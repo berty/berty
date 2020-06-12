@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { chat, protocol } from '@berty-tech/store'
+import { messenger, protocol } from '@berty-tech/store'
 
 // account queries
 export const useAccountList = () => {
-	const list = useSelector((state: chat.account.GlobalState) =>
-		chat.account.queries.list(state, {}),
+	const list = useSelector((state: messenger.account.GlobalState) =>
+		messenger.account.queries.list(state, {}),
 	)
 	return list
 }
@@ -23,7 +23,8 @@ export const useAccount = () => {
 export const useAccountDelete = () => {
 	const dispatch = useDispatch()
 	return useMemo(
-		() => (payload: chat.account.Command.Delete) => dispatch(chat.account.commands.delete(payload)),
+		() => (payload: messenger.account.Command.Delete) =>
+			dispatch(messenger.account.commands.delete(payload)),
 		[dispatch],
 	)
 }
@@ -56,13 +57,14 @@ export const useDevShareInstanceBertyID = () => {
 // account commands
 export const useAccountGenerate = () => {
 	const dispatch = useDispatch()
-	return useMemo(() => () => dispatch(chat.account.commands.generate()), [dispatch])
+	return useMemo(() => () => dispatch(messenger.account.commands.generate()), [dispatch])
 }
 
 export const useAccountCreate = () => {
 	const dispatch = useDispatch()
 	return useMemo(
-		() => (payload: chat.account.Command.Create) => dispatch(chat.account.commands.create(payload)),
+		() => (payload: messenger.account.Command.Create) =>
+			dispatch(messenger.account.commands.create(payload)),
 		[dispatch],
 	)
 }
@@ -75,7 +77,7 @@ export const useAccountSendContactRequest = () => {
 	}
 	return (name: string, rdvSeed: string, pubKey: string) => {
 		dispatch(
-			chat.account.commands.sendContactRequest({
+			messenger.account.commands.sendContactRequest({
 				id: account.id,
 				contactName: name,
 				contactPublicKey: pubKey,

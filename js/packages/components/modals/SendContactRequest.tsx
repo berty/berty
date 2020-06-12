@@ -3,16 +3,16 @@ import { StyleSheet, ActivityIndicator } from 'react-native'
 import { BlurView } from '@react-native-community/blur'
 import InvalidScan from './InvalidScan'
 import AddThisContact from './AddThisContact'
-import { Chat } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/hooks'
 import { useStyles } from '@berty-tech/styles'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 export const SendContactRequest: React.FC<{
 	route: { params: { type: 'qr' | 'link' } }
 }> = ({ route: { params } }) => {
-	const account = Chat.useAccount()
-	const client = Chat.useClient()
-	const requestDraft = Chat.useRequestDraft()
+	const account = Messenger.useAccount()
+	const client = Messenger.useClient()
+	const requestDraft = Messenger.useRequestDraft()
 	const [{ border }] = useStyles()
 	let content
 	if (!client || !account?.onboarded) {

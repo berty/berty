@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { TouchableOpacity, View } from 'react-native'
+import { TouchableOpacity, View, TransformsStyle } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 
@@ -11,10 +11,19 @@ type TabItemProps = {
 	enable?: boolean
 	buttonDisabled?: boolean
 	style?: any
+	iconPack?: string
+	iconTransform?: TransformsStyle['transform']
 }
 
 type TabBarProps = {
-	tabs: { name: string; icon: string; buttonDisabled?: boolean; style?: any }[]
+	tabs: {
+		name: string
+		icon: string
+		buttonDisabled?: boolean
+		style?: any
+		iconPack?: string
+		iconTransform?: TabItemProps['iconTransform']
+	}[]
 	onTabChange: any
 }
 

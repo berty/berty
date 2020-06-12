@@ -32,7 +32,7 @@ export type State = {
 }
 
 export type GlobalState = {
-	chat: {
+	messenger: {
 		account: State
 	}
 }
@@ -109,7 +109,7 @@ const initialState = {
 }
 
 const commandHandler = createSlice<State, CommandsReducer>({
-	name: 'chat/account/command',
+	name: 'messenger/account/command',
 	initialState,
 	// this is stupid but getting https://github.com/kimamula/ts-transformer-keys in might be a headache
 	// maybe move commands and events definitions in .protos
@@ -125,7 +125,7 @@ const commandHandler = createSlice<State, CommandsReducer>({
 })
 
 const eventHandler = createSlice<State, EventsReducer>({
-	name: 'chat/account/event',
+	name: 'messenger/account/event',
 	initialState,
 	reducers: {
 		created: (state, { payload }) => {
@@ -159,14 +159,14 @@ export const reducer = composeReducers(commandHandler.reducer, eventHandler.redu
 export const commands = commandHandler.actions
 export const events = eventHandler.actions
 export const queries: QueryReducer = {
-	list: (state) => Object.values(state.chat.account.aggregates),
-	get: (state, { id }) => state.chat.account.aggregates[id],
+	list: (state) => Object.values(state.messenger.account.aggregates),
+	get: (state, { id }) => state.messenger.account.aggregates[id],
 	getRequestRdvSeed: (state, { id }) => {
 		const account = protocol.queries.client.get(state, { id })
 		return account && account.contactRequestRdvSeed
 	},
-	getAll: (state) => Object.values(state.chat.account.aggregates),
-	getLength: (state) => Object.keys(state.chat.account.aggregates).length,
+	getAll: (state) => Object.values(state.messenger.account.aggregates),
+	getLength: (state) => Object.keys(state.messenger.account.aggregates).length,
 }
 
 export const getProtocolClient = function* (id: string): Generator<unknown, protocol.Client, void> {
@@ -181,7 +181,7 @@ export const getProtocolClient = function* (id: string): Generator<unknown, prot
 
 export const transactions: Transactions = {
 	open: function* ({ id, name }) {
-		yield* protocol.transactions.client.start({ id })
+		yield* protocol.transactions.client.start({ id, name })
 
 		while (true) {
 			try {
@@ -207,13 +207,13 @@ export const transactions: Transactions = {
 			groupPk: gpkb,
 		})
 
-		yield call(protocol.transactions.client.contactRequestReference, { id })
-
 		yield call(protocol.transactions.client.instanceShareableBertyID, {
 			id,
 			reset: false,
 			displayName: name,
 		})
+
+		yield call(protocol.transactions.client.contactRequestReference, { id })
 	},
 	generate: function* () {
 		throw new Error('not implemented')
@@ -233,8 +233,8 @@ export const transactions: Transactions = {
 		yield* transactions.open({ id, name })
 		// get account PK
 
-		yield* protocol.transactions.client.contactRequestResetReference({ id })
-		yield* protocol.transactions.client.contactRequestEnable({ id })
+		//yield* protocol.transactions.client.contactRequestResetReference({ id })
+		//yield* protocol.transactions.client.contactRequestEnable({ id })
 
 		yield put(event)
 

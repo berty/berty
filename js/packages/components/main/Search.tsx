@@ -12,7 +12,7 @@ import {
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { CircleAvatar } from '../shared-components/CircleAvatar'
-import { Chat } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/hooks'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDimensions } from '@react-native-community/hooks'
 
@@ -172,9 +172,9 @@ const SearchHint: React.FC<{ hintText: string }> = ({
 
 const SearchComponent: React.FC<{}> = () => {
 	const [searchText, setSearchText] = useState(initialSearchText)
-	const contacts = Chat.useAccountContactSearchResults(searchText)
+	const contacts = Messenger.useAccountContactSearchResults(searchText)
 	const [{ padding, margin, background, text, flex }] = useStyles()
-	const { windowHeight, windowWidth } = useStylesSearch()
+	const { windowHeight } = useStylesSearch()
 
 	const hintText = () =>
 		searchText && !contacts.length ? 'No results found' : 'Search messages, contacts, or groups...'

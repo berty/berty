@@ -1,9 +1,9 @@
 import React, { useState, useRef, useLayoutEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Chat } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/hooks'
 import grpcBridge from '@berty-tech/grpc-bridge'
 import { protocol, groups } from '@berty-tech/store'
-import { AppMessageType } from '@berty-tech/store/chat/AppMessage'
+import { AppMessageType } from '@berty-tech/store/messenger/AppMessage'
 import ProtocolServiceClient from '@berty-tech/store/protocol/ProtocolServiceClient.gen'
 import './App.css'
 import storage from 'redux-persist/lib/storage'
@@ -11,7 +11,7 @@ import storage from 'redux-persist/lib/storage'
 const CreateAccount: React.FC = () => {
 	const [name, setName] = useState('')
 	const [port, setPort] = useState(1337)
-	const createAccount = Chat.useAccountCreate()
+	const createAccount = Messenger.useAccountCreate()
 	return (
 		<>
 			<input
@@ -38,9 +38,9 @@ const CreateAccount: React.FC = () => {
 }
 
 const Account: React.FC = () => {
-	const account = Chat.useAccount()
-	const client = Chat.useClient()
-	const link = Chat.useContactRequestReference()
+	const account = Messenger.useAccount()
+	const client = Messenger.useClient()
+	const link = Messenger.useContactRequestReference()
 	return (
 		<>
 			<h2>Account</h2>
@@ -55,13 +55,13 @@ const Account: React.FC = () => {
 }
 
 const AccountGate: React.FC = ({ children }) => {
-	const account = Chat.useAccount()
+	const account = Messenger.useAccount()
 	return account ? <>{children}</> : <CreateAccount />
 }
 
 const AddContact: React.FC = () => {
 	const [link, setLink] = useState('')
-	const sendContactRequest = Chat.useAccountSendContactRequest()
+	const sendContactRequest = Messenger.useAccountSendContactRequest()
 	const [, uriComponent] = link.split('berty://')
 	const [b64Name, rdvSeed, pubKey] = uriComponent ? decodeURIComponent(uriComponent).split(' ') : []
 	const name = b64Name && atob(b64Name)
@@ -87,7 +87,7 @@ const JSONed: React.FC<{ value: any }> = ({ value }) => (
 )
 
 const Contacts: React.FC = () => {
-	const contacts = Chat.useAccountContacts()
+	const contacts = Messenger.useAccountContacts()
 	return (
 		<>
 			<h2>Contacts</h2>
@@ -105,21 +105,21 @@ const Contacts: React.FC = () => {
 }
 
 const Message: React.FC<{ msgId: string }> = ({ msgId }) => {
-	const message = Chat.useGetMessage(msgId)
-	if (message.type !== AppMessageType.UserMessage) {
-		return null
+	const message = Messenger.useGetMessage(msgId)
+	if (message.type === AppMessageType.UserMessage) {
+		return (
+			<div style={{ textAlign: message.isMe ? 'right' : 'left' }}>
+				{message.isMe && message.acknowledged && '✓ '}
+				{message.body}
+			</div>
+		)
 	}
-	return (
-		<div style={{ textAlign: message.isMe ? 'right' : 'left' }}>
-			{message.isMe && message.acknowledged && '✓ '}
-			{message.body}
-		</div>
-	)
+	return null
 }
 
 const Conversation: React.FC<{ convId: string }> = ({ convId }) => {
-	const conv = Chat.useGetConversation(convId)
-	const sendMessage = Chat.useMessageSend()
+	const conv = Messenger.useGetConversation(convId)
+	const sendMessage = Messenger.useMessageSend()
 	const [message, setMessage] = useState('')
 	const scrollRef = useRef<HTMLDivElement>(null)
 	useLayoutEffect(() => {
@@ -173,7 +173,7 @@ const Conversation: React.FC<{ convId: string }> = ({ convId }) => {
 }
 
 const Conversations: React.FC = () => {
-	const conversations = Chat.useConversationList()
+	const conversations = Messenger.useConversationList()
 	const [selected, setSelected] = useState('')
 	return (
 		<>
@@ -209,8 +209,8 @@ const ClearStorage: React.FC = () => (
 )
 
 const Requests: React.FC = () => {
-	const outgoing = Chat.useAccountContactsWithOutgoingRequests()
-	const incoming = Chat.useAccountContactsWithIncomingRequests()
+	const outgoing = Messenger.useAccountContactsWithOutgoingRequests()
+	const incoming = Messenger.useAccountContactsWithIncomingRequests()
 	return (
 		<>
 			<h2>Requests</h2>
@@ -234,7 +234,7 @@ let metadata: any[] = []
 let messages: any[] = []
 
 const DumpGroup: React.FC = () => {
-	const client = Chat.useClient()
+	const client = Messenger.useClient()
 	const [groupPk, setGroupPk] = useState('')
 	const [mt, setMt] = useState([])
 	const [ms, setMs] = useState([])
@@ -286,8 +286,8 @@ const Groups: React.FC = () => {
 	console.log('groups', groups)
 	return (
 		<>
-			{Object.values(groups).map((subscribeOpts) => (
-				<JSONed key={subscribeOpts.publicKey} value={subscribeOpts} />
+			{Object.values(groups).map((group) => (
+				<JSONed key={group.publicKey} value={group} />
 			))}
 		</>
 	)
@@ -301,16 +301,7 @@ const Tools: React.FC = () => {
 	)
 }
 
-type TabsDef = {
-	Account: typeof Account
-	Contacts: typeof Contacts
-	Requests: typeof Requests
-	Conversations: typeof Conversations
-	Groups: typeof Groups
-	Tools: typeof Tools
-}
-
-const TABS: TabsDef = {
+const TABS = {
 	Account: Account,
 	Contacts: Contacts,
 	Requests: Requests,
@@ -319,16 +310,17 @@ const TABS: TabsDef = {
 	Tools: Tools,
 }
 
+type TabKey = keyof typeof TABS
+
+const TABS_KEYS = Object.keys(TABS) as TabKey[]
+
 const Tabs: React.FC = () => {
-	const [selected, setSelected] = useState<keyof TabsDef>('Account')
-	if (!(selected in TABS)) {
-		return <>Error: Unknown tab {selected}</>
-	}
-	const TabContent = TABS[selected as keyof TabsDef]
+	const [selected, setSelected] = useState<TabKey>('Account')
+	const TabContent = TABS[selected]
 	return (
 		<>
 			<div>
-				{(Object.keys(TABS) as (keyof TabsDef)[]).map((key) => (
+				{TABS_KEYS.map((key) => (
 					<button key={key} disabled={key === selected} onClick={() => setSelected(key)}>
 						{key}
 					</button>
@@ -343,7 +335,7 @@ const Tabs: React.FC = () => {
 
 function App() {
 	return (
-		<Chat.Provider config={{ storage }}>
+		<Messenger.Provider config={{ storage }}>
 			<div className='App' style={{ display: 'flex', flexDirection: 'column' }}>
 				<h1>Berty web dev</h1>
 				<ClearStorage />
@@ -351,7 +343,7 @@ function App() {
 					<Tabs />
 				</AccountGate>
 			</div>
-		</Chat.Provider>
+		</Messenger.Provider>
 	)
 }
 

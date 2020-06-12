@@ -2,8 +2,8 @@ import React, { useRef, useState } from 'react'
 import { TouchableOpacity, View, TextInput } from 'react-native'
 import { Icon, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
-import { Chat } from '@berty-tech/hooks'
-import { AppMessageType } from '@berty-tech/store/chat/AppMessage'
+import { Messenger } from '@berty-tech/hooks'
+import { AppMessageType } from '@berty-tech/store/messenger/AppMessage'
 import { BlurView } from '@react-native-community/blur'
 import { SafeAreaView } from 'react-native-safe-area-context'
 //
@@ -23,15 +23,19 @@ const useStylesChatFooter = () => {
 export const ChatFooter: React.FC<{
 	isFocused: boolean
 	setFocus: React.Dispatch<React.SetStateAction<any>>
-	convId: any
+	convId: string
 }> = ({ isFocused, setFocus, convId }) => {
 	const [message, setMessage] = useState('')
-	const inputRef = useRef(null)
+	const inputRef = useRef<TextInput>(null)
 	const _isFocused = isFocused || inputRef?.current?.isFocused() || false
 	const _styles = useStylesChatFooter()
 	const [{ row, padding, flex, border, color }] = useStyles()
-	const sendMessage = Chat.useMessageSend()
-	const conversation = Chat.useGetConversation(convId)
+	const sendMessage = Messenger.useMessageSend()
+	const conversation = Messenger.useGetConversation(convId)
+
+	if (!conversation) {
+		return null
+	}
 	const isFake = conversation.kind === 'fake'
 
 	return (
@@ -81,6 +85,7 @@ export const ChatFooter: React.FC<{
 										type: AppMessageType.UserMessage,
 										body: message,
 										attachments: [],
+										sentDate: Date.now(),
 									})
 								}
 								setMessage('')

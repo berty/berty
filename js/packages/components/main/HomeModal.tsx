@@ -10,9 +10,9 @@ import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { BlurView } from '@react-native-community/blur'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
-import { useNavigation, Routes } from '@berty-tech/berty-navigation'
-import { Chat } from '@berty-tech/hooks'
-import { chat } from '@berty-tech/store'
+import { useNavigation, Routes } from '@berty-tech/navigation'
+import { Messenger } from '@berty-tech/hooks'
+import { messenger } from '@berty-tech/store'
 import { CommonActions } from '@react-navigation/core'
 import Interactable from 'react-native-interactable'
 import FromNow from '../shared-components/FromNow'
@@ -109,12 +109,14 @@ const Header: React.FC<{
 	)
 }
 
-const RequestsItem: React.FC<chat.contact.Entity> = ({ name, request, publicKey }) => {
+const RequestsItem: React.FC<messenger.contact.Entity> = ({ name, request, publicKey, id }) => {
 	const { dispatch } = useNavigation()
 	const _styles = useStylesList()
 	const [{ border, column, flex, row, padding, text, background, color }] = useStyles()
-	if (request.type !== chat.contact.ContactRequestType.Outgoing) {
-		return <Text>Error: This is an outgoing request</Text>
+	const discardContactRequest = Messenger.useDiscardContactRequest()
+	const discard = () => discardContactRequest({ id })
+	if (request.type !== messenger.contact.ContactRequestType.Outgoing) {
+		return <Text>Error: This is not an outgoing request</Text>
 	}
 	return (
 		<TouchableOpacity
@@ -144,14 +146,17 @@ const RequestsItem: React.FC<chat.contact.Entity> = ({ name, request, publicKey 
 				category='c1'
 				style={[padding.vertical.medium, text.align.center, text.size.tiny, text.color.grey]}
 			>
-				{request.sent ? <FromNow date={request.sentDate} /> : 'Not sent yet'}
+				{request.state === 'sent' ? <FromNow date={request.sentDate} /> : 'Not sent yet'}
 			</Text>
 			<View style={[row.fill]}>
-				<TouchableOpacity style={[_styles.tinyDiscardButton, border.scale(1), row.item.justify]}>
+				<TouchableOpacity
+					style={[_styles.tinyDiscardButton, border.scale(1), row.item.justify]}
+					onPress={discard}
+				>
 					<Icon name='close-outline' width={20} height={20} fill={color.grey} />
 				</TouchableOpacity>
 				<TouchableOpacity
-					disabled={!request.sent}
+					disabled={!(request.state === 'sent')}
 					style={[_styles.tinyAcceptButton, background.light.green, row.fill]}
 				>
 					<View style={[row.item.justify, padding.right.scale(3)]}>
@@ -180,7 +185,7 @@ const EmptyTab: React.FC<{}> = ({ children }) => {
 const Requests: React.FC<{}> = () => {
 	const [{ padding, background, column, text, opacity, height }] = useStyles()
 
-	const requests = Chat.useAccountContactsWithOutgoingRequests().filter(
+	const requests = Messenger.useAccountContactsWithOutgoingRequests().filter(
 		(contact) => !(contact.request.accepted || contact.request.discarded),
 	)
 
@@ -220,7 +225,7 @@ const AddContact: React.FC<{}> = () => {
 						column.justify,
 						_styles.addContactItem,
 					]}
-					onPress={navigation.navigate.main.scan}
+					onPress={() => navigation.navigate.main.scan()}
 				>
 					<View
 						style={[row.fill, { justifyContent: 'flex-end', height: 45, alignItems: 'flex-start' }]}
@@ -242,7 +247,7 @@ const AddContact: React.FC<{}> = () => {
 						column.justify,
 						_styles.addContactItem,
 					]}
-					onPress={navigation.navigate.settings.myBertyId}
+					onPress={() => navigation.navigate.settings.myBertyId()}
 				>
 					<View
 						style={[row.fill, { justifyContent: 'flex-end', height: 45, alignItems: 'flex-start' }]}
@@ -261,11 +266,11 @@ const AddContact: React.FC<{}> = () => {
 	)
 }
 
-export const ListModal: React.FC<{}> = () => {
+export const HomeModal: React.FC<{}> = () => {
 	const navigation = useNavigation()
 	const [{ absolute }] = useStyles()
 
-	const handleOnDrag = (e) => {
+	const handleOnDrag = (e: Interactable.IDragEvent) => {
 		if (e.nativeEvent.y >= 250) {
 			navigation.goBack()
 		}
@@ -279,7 +284,7 @@ export const ListModal: React.FC<{}> = () => {
 				<Interactable.View
 					verticalOnly={true}
 					snapPoints={[{ x: 0 }, { x: -300 }]}
-					onDrag={(e: any) => handleOnDrag(e)}
+					onDrag={(e) => handleOnDrag(e)}
 					boundaries={{ top: 0 }}
 				>
 					<Header title='Add contact' icon='user-plus' iconPack='custom' first>

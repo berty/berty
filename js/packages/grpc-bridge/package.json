@@ -5,7 +5,7 @@
   "description": "",
   "keywords": [],
   "author": "Berty Technologies <oss@berty.tech>",
-  "homepage": "https://github.com/berty/berty/tree/master/packages/berty-store#readme",
+  "homepage": "https://github.com/berty/berty/tree/master/packages/grpc-bridge#readme",
   "license": "(Apache-2.0 or MIT)",
   "main": "index.ts",
   "directories": {
