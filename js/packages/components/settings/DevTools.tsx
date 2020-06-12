@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, ScrollView } from 'react-native'
+import { View, ScrollView, Vibration } from 'react-native'
 import { Layout } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
@@ -79,6 +79,7 @@ const TracingButton: React.FC = () => {
 
 const DiscordShareButton: React.FC = () => {
 	const devShareInstanceBertyID = Chat.useDevShareInstanceBertyID()
+	const { goBack } = useNavigation()
 	const [{ color }] = useStyles()
 	return (
 		<ButtonSetting
@@ -86,7 +87,11 @@ const DiscordShareButton: React.FC = () => {
 			icon='activity-outline'
 			iconSize={30}
 			iconColor={color.dark.grey}
-			onPress={devShareInstanceBertyID}
+			onPress={() => {
+				devShareInstanceBertyID()
+				Vibration.vibrate(500)
+				goBack()
+			}}
 		/>
 	)
 }
