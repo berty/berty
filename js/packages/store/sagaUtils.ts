@@ -1,5 +1,5 @@
 import { EventChannel } from 'redux-saga'
-import { call, take } from 'redux-saga/effects'
+import { call, take } from 'typed-redux-saga'
 
 export type EventChannelOutput<C> = C extends EventChannel<infer T> ? T : never
 
@@ -8,8 +8,11 @@ export function* typedCall<F extends (...args: any) => any>(func: F, ...args: Pa
 	return ret
 }
 
-export function* unaryChan<F extends (...args: any) => any>(func: F, ...args: Parameters<F>) {
-	const chan = yield* typedCall(func, ...args)
-	const reply = (yield take(chan)) as EventChannelOutput<typeof chan>
+export function* unaryChan<F extends (...args: any) => EventChannel<any>>(
+	func: F,
+	...args: Parameters<F>
+) {
+	const chan = yield* call(func, ...args)
+	const reply = (yield* take(chan)) as EventChannelOutput<ReturnType<F>>
 	return reply
 }

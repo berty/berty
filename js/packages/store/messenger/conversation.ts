@@ -17,6 +17,7 @@ import {
 	Entity as ContactEntity,
 	ContactRequestMetadata,
 } from './contact'
+import { unaryChan } from '../sagaUtils'
 
 import * as protocol from '../protocol'
 
@@ -355,13 +356,58 @@ export const transactions: Transactions = {
 	},
 	create: function* ({ accountId, members, name }) {
 		console.log('creat/conv', members, name)
-		const { groupPk } = (yield* protocol.client.transactions.multiMemberGroupCreate({
-			id: accountId,
-		})) as {
-			groupPk: Uint8Array
+		const createReply = yield* unaryChan(
+			protocol.client.getProtocolService(accountId).multiMemberGroupCreate,
+			{
+				id: accountId,
+			},
+		)
+		const { groupPk } = createReply
+		if (!groupPk) {
+			console.error('failed to create multimembergroup, no groupPk in reply')
+			return
 		}
 		console.log('creat/conv groupPk', groupPk)
 		const groupPkStr = bufToStr(groupPk)
+
+		console.log('creat/conv after app metadata send')
+
+		/*const group: berty.types.IGroup = {
+			groupType: berty.types.GroupType.GroupTypeMultiMember,
+			publicKey: groupPk,
+		}*/
+
+		const rep = yield* unaryChan(
+			protocol.client.getProtocolService(accountId).multiMemberGroupInvitationCreate,
+			{ groupPk },
+		)
+
+		const { group } = rep
+
+		if (!group) {
+			console.error('no group in invitationCreate reply')
+			return
+		}
+
+		if (
+			!(
+				group.publicKey &&
+				group.secret &&
+				group.secretSig &&
+				group.groupType === berty.types.GroupType.GroupTypeMultiMember
+			)
+		) {
+			console.error('malformed group in invitationCreate reply')
+			return
+		}
+
+		//
+
+		try {
+			yield* protocol.client.transactions.multiMemberGroupJoin({ id: accountId, group })
+		} catch (e) {
+			console.warn('Failed to join multi-member group:', e)
+		}
 
 		const setGroupName: SetGroupName = {
 			type: AppMessageType.SetGroupName,
@@ -373,19 +419,36 @@ export const transactions: Transactions = {
 			payload: jsonToBuf(setGroupName),
 		})
 
-		console.log('creat/conv after app metadata send')
+		yield put(
+			groupsCommands.subscribe({
+				clientId: accountId,
+				publicKey: groupPkStr,
+				metadata: true,
+				messages: true,
+			}),
+		)
 
-		const group: berty.types.IGroup = {
-			groupType: berty.types.GroupType.GroupTypeMultiMember,
-			publicKey: groupPk,
-		}
-		yield* protocol.client.transactions.multiMemberGroupJoin({ id: accountId, group })
+		yield put(
+			events.created({
+				kind: ConversationKind.MultiMember,
+				accountId,
+				title: name,
+				pk: groupPkStr,
+			}),
+		)
 
 		console.log('creat/conv after multiMemberGroupJoin')
 
+		console.log('invitation: ', rep)
+
 		const invitation: GroupInvitation = {
 			type: AppMessageType.GroupInvitation,
-			groupPk: groupPkStr,
+			group: {
+				publicKey: groupPkStr,
+				secret: bufToStr(group.secret),
+				secretSig: bufToStr(group.secretSig),
+				groupType: group.groupType,
+			},
 		}
 		for (const member of members) {
 			const oneToOnePk = member.groupPk

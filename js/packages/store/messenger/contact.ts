@@ -679,14 +679,38 @@ export function* orchestrator() {
 			}
 		}),
 		takeEvery(protocol.events.client.groupMetadataPayloadSent, function* ({ payload }) {
-			const { aggregateId: accountId } = payload
-			const event = payload.event as AppMessage
-			if (event && event.type === AppMessageType.GroupInvitation) {
+			const { aggregateId: clientId } = payload
+			const event = payload.event as AppMessage // <--- Not secure
+			if (
+				event &&
+				event.type === AppMessageType.GroupInvitation &&
+				event.group.groupType === berty.types.GroupType.GroupTypeMultiMember
+			) {
+				yield put(
+					conversationEvents.created({
+						kind: ConversationKind.MultiMember,
+						accountId: clientId,
+						title: 'Fetching name..',
+						pk: event.group.publicKey,
+					}),
+				)
+
 				const group: berty.types.IGroup = {
+					publicKey: strToBuf(event.group.publicKey),
+					secret: strToBuf(event.group.secret),
+					secretSig: strToBuf(event.group.secretSig),
 					groupType: berty.types.GroupType.GroupTypeMultiMember,
-					publicKey: strToBuf(event.groupPk),
 				}
-				yield* protocol.client.transactions.multiMemberGroupJoin({ id: accountId, group })
+				yield* protocol.client.transactions.multiMemberGroupJoin({ id: clientId, group })
+
+				yield put(
+					groupsCommands.subscribe({
+						clientId,
+						publicKey: event.group.publicKey,
+						metadata: true,
+						messages: true,
+					}),
+				)
 			}
 		}),
 		takeEvery(protocol.events.client.groupMemberDeviceAdded, function* ({ payload }) {

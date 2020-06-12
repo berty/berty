@@ -269,19 +269,26 @@ const groupMessageEventToReduxAction = (
 	}
 }
 
+type MethodKey = keyof typeof gen.Methods
+const protocolMethodsKeys = Object.keys(gen.Methods) as MethodKey[]
+type MessengerMethodKey = keyof typeof messengerGen.Methods
+const messengerMethodsKeys = Object.keys(messengerGen.Methods) as MessengerMethodKey[]
+
 // call unaryChan on the service method by default
 const defaultTransactions = {
-	...Object.keys(gen.Methods).reduce((txs, methodName) => {
-		const t = txs as any
-		t[methodName] = function* ({ id, ...payload }: { id: string }) {
-			return yield call(unaryChan, (getProtocolService(id) as any)[methodName], payload)
+	...protocolMethodsKeys.reduce((txs, methodName) => {
+		txs[methodName] = function* ({ id, ...payload }: { id: string }) {
+			const f = getProtocolService(id)[methodName]
+			const reply = yield* unaryChan<EventChannelOutput<ReturnType<typeof f>>, typeof f>(f, payload)
+			return reply
 		}
 		return txs
-	}, {}),
-	...Object.keys(messengerGen.Methods).reduce((txs, methodName) => {
+	}, {} as Transactions),
+	...messengerMethodsKeys.reduce((txs, methodName) => {
 		const t = txs as any
 		t[methodName] = function* ({ id, ...payload }: { id: string }) {
-			return yield call(unaryChan, (getMessengerService(id) as any)[methodName], payload)
+			const f = getMessengerService(id)[methodName]
+			return yield* unaryChan<EventChannelOutput<ReturnType<typeof f>>, typeof f>(f, payload)
 		}
 		return txs
 	}, {}),
