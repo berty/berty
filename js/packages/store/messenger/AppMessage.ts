@@ -35,6 +35,7 @@ export type UserReaction = {
 export type GroupInvitation = {
 	type: AppMessageType.GroupInvitation
 	group: JSONGroup
+	name: string
 }
 
 export type SetGroupName = {

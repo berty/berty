@@ -113,8 +113,8 @@ const TypedMessage = Message as React.FC<{
 	payload: ReturnType<typeof Messenger.useGetMessage>
 }>
 
-const AppMessage: React.FC<{ message: string }> = ({ message }) => {
-	const msg = Messenger.useGetMessage(message)
+const AppMessage: React.FC<{ messageId: string }> = ({ messageId }) => {
+	const msg = Messenger.useGetMessage(messageId)
 	return msg ? <TypedMessage payload={msg} /> : null
 }
 
@@ -132,7 +132,7 @@ const MessageList: React.FC<{ id: string }> = (props) => {
 			inverted
 			keyExtractor={(item) => item}
 			ListFooterComponent={<InfosChat createdAt={conversation.createdAt} />}
-			renderItem={({ item }) => <AppMessage message={item} />}
+			renderItem={({ item }) => <AppMessage messageId={item} />}
 		/>
 	)
 }

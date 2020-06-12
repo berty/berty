@@ -434,6 +434,7 @@ export const transactions: Transactions = {
 				accountId,
 				title: name,
 				pk: groupPkStr,
+				now: Date.now(),
 			}),
 		)
 
@@ -443,6 +444,7 @@ export const transactions: Transactions = {
 
 		const invitation: GroupInvitation = {
 			type: AppMessageType.GroupInvitation,
+			name,
 			group: {
 				publicKey: groupPkStr,
 				secret: bufToStr(group.secret),
@@ -451,7 +453,11 @@ export const transactions: Transactions = {
 			},
 		}
 		for (const member of members) {
-			const oneToOnePk = member.groupPk
+			let oneToOnePk = member.groupPk
+			if (!oneToOnePk) {
+				const pkbuf = yield* contactPkToGroupPk({ accountId, contactPk: member.publicKey })
+				oneToOnePk = pkbuf && bufToStr(pkbuf)
+			}
 			if (oneToOnePk) {
 				yield* protocol.client.transactions.appMetadataSend({
 					// TODO: replace with appMessageSend

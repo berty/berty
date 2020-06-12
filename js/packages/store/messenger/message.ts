@@ -162,8 +162,9 @@ const eventHandler = createSlice<State, EventsReducer>({
 					state.aggregates[aggregateId] = {
 						id: aggregateId,
 						type: message.type,
-						groupPk: message.groupPk,
+						group: message.group,
 						receivedDate,
+						name: message.name,
 					}
 					break
 				case AppMessageType.Acknowledge:
@@ -342,8 +343,10 @@ export function* orchestrator() {
 				}),
 			)
 
-			if (message.type === AppMessageType.UserMessage) {
-				// add message to corresponding conversation
+			if (
+				message.type === AppMessageType.UserMessage ||
+				message.type === AppMessageType.GroupInvitation
+			) {
 				yield call(conversation.transactions.addMessage, {
 					aggregateId: conversation.getAggregateId({
 						accountId: action.payload.aggregateId,
@@ -352,6 +355,10 @@ export function* orchestrator() {
 					messageId: aggregateId,
 					isMe,
 				})
+			}
+
+			if (message.type === AppMessageType.UserMessage) {
+				// add message to corresponding conversation
 
 				if (!isMe) {
 					// send acknowledgment

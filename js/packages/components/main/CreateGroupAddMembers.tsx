@@ -3,13 +3,13 @@ import { View, ScrollView, TouchableOpacity, TextInput, Text as TextNative } fro
 import { Layout, Text, Icon, CheckBox } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
-import { useNavigation } from '@berty-tech/berty-navigation'
-import { Chat } from '@berty-tech/hooks'
-import { chat } from '@berty-tech/store'
+import { useNavigation } from '@berty-tech/navigation'
+import { Messenger } from '@berty-tech/hooks'
+import { messenger } from '@berty-tech/store'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDimensions } from '@react-native-community/hooks'
 import { FooterCreateGroup } from './CreateGroupFooter'
-import { Header } from './ListModal'
+import { Header } from './HomeModal'
 
 // Styles
 const useStylesCreateGroup = () => {
@@ -31,18 +31,18 @@ const useStylesCreateGroup = () => {
 // Type
 type AddMembersItemProps = {
 	separateBar?: boolean
-	contact: chat.contact.Entity
+	contact: messenger.contact.Entity
 	added: boolean
-	onSetMember: (contact: chat.contact.Entity) => void
+	onSetMember: (contact: messenger.contact.Entity) => void
 	onRemoveMember: (id: string) => void
 }
 
 type AddMembersProps = {
 	paddingBottom?: number
 	layout: number
-	onSetMember: (contact: chat.contact.Entity) => void
+	onSetMember: (contact: messenger.contact.Entity) => void
 	onRemoveMember: (id: string) => void
-	members: chat.contact.Entity[]
+	members: messenger.contact.Entity[]
 }
 
 const AddMembersItem: React.FC<AddMembersItemProps> = ({
@@ -115,8 +115,8 @@ const AddMembers: React.FC<AddMembersProps> = ({
 	const [{ padding, background, row, color, height, text, margin, border }] = useStyles()
 	const [searchText, setSearchText] = useState('')
 	const contacts = searchText.length
-		? Chat.useAccountContactSearchResults(searchText)
-		: Chat.useAccountContacts()
+		? Messenger.useAccountContactSearchResults(searchText)
+		: Messenger.useAccountContacts()
 	const dimensions = useDimensions().window
 
 	return (
@@ -162,7 +162,7 @@ const AddMembers: React.FC<AddMembersProps> = ({
 	)
 }
 
-const MemberItem: React.FC<{ member: chat.contact.Entity; onRemove: () => void }> = ({
+const MemberItem: React.FC<{ member: messenger.contact.Entity; onRemove: () => void }> = ({
 	member,
 	onRemove,
 }) => {
@@ -189,7 +189,7 @@ const MemberItem: React.FC<{ member: chat.contact.Entity; onRemove: () => void }
 }
 
 export const MemberList: React.FC<{
-	members: chat.contact.Entity[]
+	members: messenger.contact.Entity[]
 	onRemoveMember: (id: string) => void
 }> = ({ members, onRemoveMember }) => {
 	const [{ height, padding }] = useStyles()
@@ -264,9 +264,9 @@ const _iconArrowBackSize = 30
 const _titleSize = 26
 
 export const CreateGroupAddMembers: React.FC<{
-	onSetMember: (contact: chat.contact.Entity) => void
+	onSetMember: (contact: messenger.contact.Entity) => void
 	onRemoveMember: (id: string) => void
-	members: chat.contact.Entity[]
+	members: messenger.contact.Entity[]
 }> = ({ onSetMember, onRemoveMember, members }) => {
 	const [{ flex, background }] = useStyles()
 	const [layout, setLayout] = useState<number>(0)

@@ -4,14 +4,14 @@ import { View, TouchableOpacity, TextInput, Dimensions, StyleSheet, ScrollView }
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { scaleSize } from '@berty-tech/styles/constant'
-import { useNavigation } from '@berty-tech/berty-navigation'
-import { Chat } from '@berty-tech/hooks'
-import { chat } from '@berty-tech/store'
+import { useNavigation } from '@berty-tech/navigation'
+import { Messenger } from '@berty-tech/hooks'
+import { messenger } from '@berty-tech/store'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDimensions } from '@react-native-community/hooks'
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { MemberList, CreateGroupHeader, AddMembersHeader } from './CreateGroupAddMembers'
-import { Header } from './ListModal'
+import { Header } from './HomeModal'
 
 const useStylesCreateGroup = () => {
 	const [{ padding, height, width, absolute, border, margin, text }] = useStyles()
@@ -159,12 +159,12 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 }
 
 export const CreateGroupFinalize: React.FC<{
-	members: chat.contact.Entity[]
+	members: messenger.contact.Entity[]
 	onRemoveMember: (id: string) => void
 }> = ({ members, onRemoveMember }) => {
 	const navigation = useNavigation()
 	const [groupName, setGroupName] = useState('New group')
-	const createGroup = Chat.useConversationCreate({ name: groupName, members })
+	const createGroup = Messenger.useConversationCreate({ name: groupName, members })
 	const [layout, setLayout] = useState<number>(0)
 	const [{ flex, background, padding }] = useStyles()
 

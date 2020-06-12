@@ -13,6 +13,7 @@ import {
 	transactions as conversationTransactions,
 	queries as conversationQueries,
 	Entity as ConversationEntity,
+	events as conversationEvents,
 } from './conversation'
 
 export enum ContactRequestType {
@@ -692,6 +693,7 @@ export function* orchestrator() {
 						accountId: clientId,
 						title: 'Fetching name..',
 						pk: event.group.publicKey,
+						now: Date.now(),
 					}),
 				)
 
