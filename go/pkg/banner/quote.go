@@ -25,6 +25,7 @@ var quotes = []Quote{
 	{"Tom Smothers", "The only valid censorship of ideas is the right of people not to listen."},
 	{"Voltaire", "We have a natural right to make use of our pens as of our tongue, at our peril, risk and hazard."},
 	{"Cəlil Məmmədquluzadə", "Freedom and Liberty is like air, when you don't receive it, you suffer."},
+	{"Bruce Schneier", "Liberty requires security without intrusion, security plus privacy."},
 }
 
 func RandomQuote() Quote {
