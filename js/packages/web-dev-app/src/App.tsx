@@ -358,17 +358,7 @@ const Search: React.FC = () => {
 	)
 }
 
-type TabsDef = {
-	Account: typeof Account
-	Contacts: typeof Contacts
-	Requests: typeof Requests
-	Conversations: typeof Conversations
-	Groups: typeof Groups
-	Tools: typeof Tools
-	Search: typeof Search
-}
-
-const TABS: TabsDef = {
+const TABS = {
 	Account: Account,
 	Contacts: Contacts,
 	Requests: Requests,
