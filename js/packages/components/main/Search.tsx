@@ -1,20 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState } from 'react'
+import { Messenger } from '@berty-tech/hooks'
+import { useFirstConversationWithContact, useGetMessage } from '@berty-tech/hooks/Messenger'
+import { Routes, useNavigation } from '@berty-tech/navigation'
+import { messenger } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
+import { useDimensions } from '@react-native-community/hooks'
+import { CommonActions } from '@react-navigation/core'
+import { noop, sortBy } from 'lodash'
+import React, { useMemo, useState } from 'react'
 import {
-	View,
-	TouchableHighlight,
-	TextInput,
-	SectionList,
 	Keyboard,
 	ScrollView,
+	SectionList,
+	TextInput,
+	TouchableHighlight,
+	View,
 } from 'react-native'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
-import { useStyles } from '@berty-tech/styles'
-import { CircleAvatar } from '../shared-components/CircleAvatar'
-import { Messenger } from '@berty-tech/hooks'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useDimensions } from '@react-native-community/hooks'
+import { Icon, Layout, Text } from 'react-native-ui-kitten'
+import { ConversationProceduralAvatar } from '../shared-components'
 
 // Styles
 
@@ -22,7 +27,7 @@ const _titleIconSize = 30
 
 const _landingIconSize = 90
 
-const _resultAvatarSize = 39
+const _resultAvatarSize = 45
 
 const _fontSizeSearchComponent = 17 // trying to move away from in-house 'scale' (makes font too small in some devices)
 const _fontSizeSmall = 12
@@ -33,15 +38,19 @@ const _searchBarIconSize = 25
 const _searchComponentMarginTopFactor = 0.02
 const _approxFooterHeight = 90
 
-const _maxWidthConversationsItemNameText = 120
-
 const useStylesSearch = () => {
 	const [{ text, background }] = useStyles()
 	const { height: windowHeight, width: windowWidth } = useDimensions().window
 	const isLandscape = () => windowHeight < windowWidth
 
 	return {
-		searchResultHighlightText: [text.color.yellow, background.light.yellow, text.bold.medium],
+		searchResultHighlightText: [
+			{ fontSize: _fontSizeSmall },
+			text.color.yellow,
+			background.light.yellow,
+			text.bold.medium,
+		],
+		plainMessageText: [{ fontSize: _fontSizeSmall }, text.color.grey],
 		windowHeight,
 		windowWidth,
 		isLandscape,
@@ -50,6 +59,7 @@ const useStylesSearch = () => {
 
 const SearchTitle: React.FC<{}> = () => {
 	const [{ text, color }] = useStyles()
+	const { dispatch } = useNavigation()
 	return (
 		<View
 			style={[
@@ -88,6 +98,7 @@ const SearchTitle: React.FC<{}> = () => {
 				width={_titleIconSize}
 				height={_titleIconSize}
 				fill={color.white}
+				onPress={() => dispatch(CommonActions.navigate(Routes.Main.Home))}
 			/>
 		</View>
 	)
@@ -170,16 +181,181 @@ const SearchHint: React.FC<{ hintText: string }> = ({
 	)
 }
 
+// SEARCH RESULTS
+
+type SearchItemProps = {
+	data: any
+	searchTextKey: 'name' | 'message'
+	searchText?: string
+}
+
+// TODO: Move/refactor to hooks
+const useSearchItemDataFromContact = (
+	data: any,
+): {
+	name: string
+	message: string
+	convId: string
+	messageListIndex: number
+} => {
+	const { name = '', publicKey = '' } = data
+	const conversation = useFirstConversationWithContact(publicKey)
+	const lastMessage = useGetMessage(
+		conversation ? conversation.messages[conversation?.messages.length - 1] : '',
+	)
+
+	return {
+		name,
+		messageListIndex: conversation ? conversation.messages.length - 1 : 0,
+		convId: conversation ? conversation.id : '',
+		message:
+			lastMessage && lastMessage.type === messenger.AppMessageType.UserMessage
+				? lastMessage.body
+				: '',
+	}
+}
+
+const useSearchItemDataFromMessage = (
+	data: any = {},
+): {
+	name: string
+	message: string
+	convId: string
+	messageListIndex: number
+} => {
+	// Here we no longer have to call useGetConversationFromMessage
+	const {
+		message: { body },
+		conversationId,
+		conversationTitle,
+		messageIndex,
+	} = data
+	return {
+		name: conversationTitle,
+		message: body,
+		messageListIndex: messageIndex,
+		convId: conversationId,
+	}
+}
+
+const MessageSearchResult: React.FC<{ message: string; searchText: string }> = ({
+	message,
+	searchText,
+}) => {
+	const [{ start, end }] = useState({
+		start: message.toLowerCase().indexOf(searchText.toLowerCase()),
+		end: message.toLowerCase().indexOf(searchText.toLowerCase()) + searchText.length,
+	})
+	const { plainMessageText, searchResultHighlightText } = useStylesSearch()
+
+	return (
+		<>
+			<Text style={plainMessageText}>{message.slice(0, start)}</Text>
+			<Text style={searchResultHighlightText}>{message.slice(start, end)}</Text>
+			<Text style={plainMessageText}>{message.slice(end)}</Text>
+		</>
+	)
+}
+
+// hacky workaround to use conditional hook ^^
+const useSomeSearchItem = (key: SearchItemProps['searchTextKey']) =>
+	key === 'name' ? useSearchItemDataFromContact : useSearchItemDataFromMessage
+
+const SearchResultItem: React.FC<SearchItemProps> = ({ data, searchTextKey, searchText = '' }) => {
+	const [{ color, row, padding, flex, column, text, margin, border }] = useStyles()
+	const { plainMessageText } = useStylesSearch()
+	const { name, message, convId, messageListIndex } = useSomeSearchItem(searchTextKey)(data)
+	const { dispatch } = useNavigation()
+
+	const MessageDisplay = () =>
+		searchTextKey === 'name' ? (
+			<>{message}</>
+		) : (
+			<MessageSearchResult searchText={searchText} message={message} />
+		)
+
+	return (
+		<TouchableHighlight
+			disabled={!convId}
+			underlayColor={!convId ? 'transparent' : color.light.grey}
+			onPress={() =>
+				!convId
+					? noop()
+					: dispatch(
+							CommonActions.navigate({
+								name: Routes.Chat.OneToOne,
+								params: {
+									convId,
+									scrollToMessage: messageListIndex,
+								},
+							}),
+					  )
+			}
+		>
+			<View style={[row.center, padding.medium, border.bottom.tiny, border.color.light.grey]}>
+				<ConversationProceduralAvatar
+					conversationId={convId}
+					size={_resultAvatarSize}
+					diffSize={9}
+					style={[padding.tiny, row.item.justify]}
+				/>
+				<View style={[flex.medium, column.justify, padding.left.medium]}>
+					<View style={[{ flexDirection: 'row', alignItems: 'center' }]} />
+					<View style={[margin.right.big]}>
+						<Text numberOfLines={1} style={[text.bold.medium, !convId && text.color.grey]}>
+							{name}
+						</Text>
+						<Text numberOfLines={1} style={plainMessageText}>
+							<MessageDisplay />
+						</Text>
+					</View>
+				</View>
+			</View>
+		</TouchableHighlight>
+	)
+}
+
+const createSections = (contacts: any, messages: any, searchText: string) => {
+	const sections = [
+		{
+			title: contacts.length ? 'Contacts' : '',
+			data: [...contacts],
+			renderItem: ({ item }: { item: any }) => (
+				<SearchResultItem data={item} searchTextKey={'name'} />
+			),
+		},
+		{
+			title: messages.length ? 'Messages' : '',
+			data: [...messages],
+
+			renderItem: ({ item }: { item: any }) => (
+				<SearchResultItem data={item} searchTextKey={'message'} searchText={searchText} />
+			),
+		},
+	]
+	return sections
+}
+
 const SearchComponent: React.FC<{}> = () => {
 	const [searchText, setSearchText] = useState(initialSearchText)
 	const contacts = Messenger.useAccountContactSearchResults(searchText)
+	const messages = Messenger.useGetMessageSearchResultWithMetadata(searchText)
+
+	const setValidSearchText = (textInput: string) => {
+		// setSearchText(textInput)
+		setSearchText(textInput.replace(/^\s+/g, ''))
+	}
+
 	const [{ padding, margin, background, text, flex }] = useStyles()
 	const { windowHeight } = useStylesSearch()
+	const sections = useMemo(() => createSections(contacts, messages, searchText), [
+		messages,
+		contacts,
+		searchText,
+	])
 
 	const hintText = () =>
 		searchText && !contacts.length ? 'No results found' : 'Search messages, contacts, or groups...'
-
-	const sections = [{ title: 'Contacts', data: [...contacts] }]
 
 	return (
 		<View style={[flex.tiny]}>
@@ -211,7 +387,7 @@ const SearchComponent: React.FC<{}> = () => {
 					background.light.yellow,
 				]}
 			>
-				<SearchBar searchText={searchText} onChange={setSearchText} />
+				<SearchBar searchText={searchText} onChange={setValidSearchText} />
 			</View>
 			{/* Results or Landing */}
 			<View
@@ -224,25 +400,20 @@ const SearchComponent: React.FC<{}> = () => {
 					},
 				]}
 			>
-				{contacts.length > 0 ? (
+				{contacts.length + messages.length > 0 ? (
 					<SectionList
+						bounces={false}
 						style={[background.white]} // TODO: Needs to fill insets from SafeAreaView on Landscape
-						keyExtractor={(item, index) => item.name + index}
+						keyExtractor={(item, index) => item.id + index}
 						sections={sections}
 						renderSectionHeader={({ section: { title } }) => {
-							return contacts.length > 1 ? (
+							return title ? (
 								<Text style={[text.size.large, padding.medium, background.white]}>{title}</Text>
 							) : null
 						}}
-						renderItem={({ item }) => (
-							<SearchItemTmp
-								avatarUri={'https://s3.amazonaws.com/uifaces/faces/twitter/msveet/128.jpg'}
-								name={item.name}
-								message={item.message || 'The quick brown fox jumps over the lazy dog.'}
-								searchTextKey={item.id ? 'name' : 'message'}
-							/>
-						)}
 						ListFooterComponent={() => (
+							// empty div at bottom of list
+
 							// Workaround to make sure nothing is hidden behind footer;
 							// adding padding/margin to this or a wrapping parent doesn't work
 							<View style={[{ height: _approxFooterHeight }, background.white]} />
@@ -261,66 +432,10 @@ export const Search: React.FC<{}> = () => {
 
 	return (
 		<Layout style={[flex.tiny, { backgroundColor: color.yellow }]}>
-			{/* // TODO: SAV seems to not respect edges on landscape (even if dynamically changed on orientation change) */}
+			{/* // TODO: get no weird margins on orientation change */}
 			<SafeAreaView style={[flex.tiny]} {...{ edges: ['right', 'top', 'left'] }}>
 				<SearchComponent />
 			</SafeAreaView>
 		</Layout>
-	)
-}
-
-// SEARCH RESULTS
-
-type SearchItemProps = {
-	avatarUri: string
-	name: string
-	message: string
-	searchTextKey: 'name' | 'message'
-}
-
-// 🚧 The parsing and logic in this function is a placeholder for UI demo
-const SearchItemTmp: React.FC<SearchItemProps> = ({ avatarUri, name, message, searchTextKey }) => {
-	const [{ color, row, padding, flex, column, text, margin }] = useStyles()
-
-	const Name = () => {
-		const highlightName = searchTextKey === 'name'
-		return (
-			<Text
-				numberOfLines={1}
-				style={[
-					{ maxWidth: _maxWidthConversationsItemNameText },
-					highlightName && text.bold.medium,
-				]}
-			>
-				{name}
-			</Text>
-		)
-	}
-
-	const Message = () => (
-		<Text numberOfLines={1} style={[{ fontSize: _fontSizeSmall }, text.color.grey]}>
-			{message}
-		</Text>
-	)
-
-	return (
-		<TouchableHighlight underlayColor={color.light.grey}>
-			<View
-				style={[
-					row.center,
-					padding.medium,
-					{ borderBottomWidth: 1, borderBottomColor: color.light.grey },
-				]}
-			>
-				<CircleAvatar avatarUri={avatarUri} size={_resultAvatarSize} withCircle={false} />
-				<View style={[flex.medium, column.justify, padding.left.medium]}>
-					<View style={[{ flexDirection: 'row', alignItems: 'center' }]} />
-					<View style={[margin.right.big]}>
-						<Name />
-						<Message />
-					</View>
-				</View>
-			</View>
-		</TouchableHighlight>
 	)
 }

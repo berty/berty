@@ -82,13 +82,6 @@ export const useAccountContactsWithOutgoingRequests = () => {
 	)
 }
 
-export const useAccountContactSearchResults = (searchText: string): messenger.contact.Entity[] => {
-	const account = useAccount()
-	return useSelector((state: messenger.contact.GlobalState) =>
-		account ? messenger.contact.queries.search(state, { accountId: account.id, searchText }) : [],
-	)
-}
-
 export const useInitiateContactRequest = () => {
 	const dispatch = useDispatch()
 	const account = useAccount()
@@ -114,4 +107,12 @@ export const useResetDraft = () => {
 	} else {
 		return () => dispatch(messenger.contact.events.draftReset({ accountId: account.id }))
 	}
+}
+
+// search hooks
+export const useAccountContactSearchResults = (searchText: string): messenger.contact.Entity[] => {
+	const account = useAccount()
+	return useSelector((state: messenger.contact.GlobalState) =>
+		account ? messenger.contact.queries.search(state, { accountId: account.id, searchText }) : [],
+	)
 }

@@ -50,6 +50,7 @@ export namespace Query {
 	export type GetLength = void
 	export type GetList = { list: Entity['id'][] }
 	export type Search = { searchText: string; list: Entity['id'][] }
+	export type SearchOne = { searchText: string; id: Entity['id'] }
 }
 
 export namespace Event {
@@ -101,7 +102,8 @@ export type QueryReducer = {
 	get: (state: GlobalState, query: Query.Get) => Entity | undefined
 	getLength: (state: GlobalState) => number
 	getList: (state: GlobalState, query: Query.GetList) => Entity[]
-	search: (state: GlobalState, query: Query.Search) => Entity[]
+	search: (state: GlobalState, query: Query.Search) => StoreUserMessage[]
+	searchOne: (state: GlobalState, query: Query.SearchOne) => Entity | undefined
 }
 
 export type EventsReducer = {
@@ -218,11 +220,22 @@ export const queries: QueryReducer = {
 	},
 	search: (state, { searchText, list }) => {
 		const messages = list
-			.map((id) => state.messenger.message.aggregates[id])
+			.map((id) => state.messenger.message.aggregates[id] as StoreUserMessage)
+			.filter((message) => message && message.type === AppMessageType.UserMessage)
 			.filter(
-				(message) => message?.body && message.body.toLowerCase().includes(searchText.toLowerCase()),
+				(message) =>
+					message && message.body && message.body.toLowerCase().includes(searchText.toLowerCase()),
 			)
 		return !searchText ? [] : messages
+	},
+	searchOne: (state, { searchText, id }) => {
+		const message: Entity | undefined = state.messenger.message.aggregates[id]
+		return message &&
+			message.type === AppMessageType.UserMessage &&
+			message?.body &&
+			message?.body.toLowerCase().includes(searchText.toLowerCase())
+			? message
+			: undefined
 	},
 }
 

@@ -10,6 +10,10 @@ import storage from 'redux-persist/lib/storage'
 import {
 	useAccountContactSearchResults,
 	useMessageSearchResults,
+	useFirstConversationWithContact,
+	useGetMessage,
+	useGetConversationFromMessage,
+	useGetMessageSearchResultWithMetadata,
 } from '@berty-tech/hooks/Messenger'
 
 const CreateAccount: React.FC = () => {
@@ -90,6 +94,30 @@ const JSONed: React.FC<{ value: any }> = ({ value }) => (
 	<div style={{ whiteSpace: 'pre-wrap', textAlign: 'left' }}>{JSON.stringify(value, null, 4)}</div>
 )
 
+const ContactSearchResultLastMessage: React.FC<{ lastSentMessageId: string }> = ({
+	lastSentMessageId,
+}) => {
+	const lastMessage = useGetMessage(lastSentMessageId)
+	return <JSONed value={{ body: lastMessage?.body }} />
+}
+
+const ContactSearchResult: React.FC<{ contact: any }> = ({ contact }) => {
+	const firstConversationWithContact = useFirstConversationWithContact(contact.publicKey)
+
+	return (
+		<>
+			<h4>Last sent message sent by me</h4>
+			<ContactSearchResultLastMessage
+				lastSentMessageId={firstConversationWithContact?.lastSentMessage}
+			/>
+			<h4>First Found Conversation With Contact</h4>
+			<JSONed value={firstConversationWithContact} />
+			<h4>Contact</h4>
+			<JSONed value={contact} />
+		</>
+	)
+}
+
 const SearchContacts: React.FC = () => {
 	const [searchText, setSearchText] = useState('')
 	const contactSearchResults = useAccountContactSearchResults(searchText)
@@ -104,7 +132,7 @@ const SearchContacts: React.FC = () => {
 			<div>
 				{contactSearchResults &&
 					contactSearchResults.map((contact, i) => {
-						return <JSONed value={contact} key={i} />
+						return <ContactSearchResult contact={contact} key={i} />
 					})}
 			</div>
 		</>
@@ -197,9 +225,18 @@ const Conversation: React.FC<{ convId: string }> = ({ convId }) => {
 	)
 }
 
+const SearchMessagesResult: React.FC<{ message: any }> = ({ message }) => {
+	return (
+		<>
+			<h4>Message</h4>
+			<JSONed value={message} />
+		</>
+	)
+}
+
 const SearchMessages: React.FC = () => {
 	const [searchText, setSearchText] = useState('')
-	const messageSearchResults = useMessageSearchResults(searchText)
+	const messageSearchResults = useGetMessageSearchResultWithMetadata(searchText)
 	return (
 		<>
 			<input
@@ -211,7 +248,7 @@ const SearchMessages: React.FC = () => {
 			<div>
 				{messageSearchResults &&
 					messageSearchResults.map((message, i) => {
-						return <JSONed value={message} key={i} />
+						return <SearchMessagesResult message={message} key={i} />
 					})}
 			</div>
 		</>
