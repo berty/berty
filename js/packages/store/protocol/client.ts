@@ -9,7 +9,7 @@ import * as messengerGen from '../messenger/client.gen'
 import * as api from '@berty-tech/api'
 import Case from 'case'
 import * as evgen from '../types/events.gen'
-import { makeDefaultReducers, makeDefaultCommandsSagas, bufToStr } from '../utils'
+import { makeDefaultReducers, makeDefaultCommandsSagas, bufToStr, bufToJSON } from '../utils'
 import ExternalTransport from './externalTransport'
 import { getMainSettings } from '../settings/main'
 import ProtocolServiceSagaClient from './ProtocolServiceSagaClient.gen'
@@ -196,9 +196,7 @@ export const getMessengerService = (id: string): MessengerServiceSagaClient => {
 	return service.messenger
 }
 
-export const decodeMetadataEvent = (
-	response: bertytypes.GroupMetadataEvent.AsObject | api.berty.types.IGroupMetadataEvent,
-) => {
+export const decodeMetadataEvent = (response: api.berty.types.IGroupMetadataEvent) => {
 	const eventType = response.metadata && response.metadata.eventType
 	if (eventType == null) {
 		return undefined
@@ -210,18 +208,30 @@ export const decodeMetadataEvent = (
 		EventTypeAccountContactRequestOutgoingEnqueued: 'AccountContactRequestEnqueued',
 		EventTypeAccountContactRequestOutgoingSent: 'AccountContactRequestSent',
 		EventTypeGroupMemberDeviceAdded: 'GroupAddMemberDevice',
+		EventTypeGroupMetadataPayloadSent: 'AppMetadata',
 	}
 	const eventName = eventNameFromValue(eventType)
 	if (eventName === undefined) {
 		throw new Error(`Invalid event type ${eventType}`)
 	}
-	const protocol: { [key: string]: any } = api.berty.types
-	const event = protocol[eventName.replace('EventType', '')] || protocol[eventsMap[eventName]]
+	const types: { [key: string]: any } = api.berty.types
+	const event = types[eventName.replace('EventType', '')] || types[eventsMap[eventName]]
 	if (!event) {
 		console.warn("Don't know how to decode", eventName)
 		return undefined
 	}
 	const decodedEvent = event.decode(response.event)
+	if (eventName === 'EventTypeGroupMetadataPayloadSent') {
+		if (!decodedEvent?.message) {
+			return {}
+		}
+		try {
+			return bufToJSON(decodedEvent.message) // <---- Not secure
+		} catch (e) {
+			console.warn('Received invalid JSON in group metadata', e)
+		}
+		return {}
+	}
 	return decodedEvent
 }
 
@@ -279,7 +289,7 @@ const defaultTransactions = {
 	...protocolMethodsKeys.reduce((txs, methodName) => {
 		txs[methodName] = function* ({ id, ...payload }: { id: string }) {
 			const f = getProtocolService(id)[methodName]
-			const reply = yield* unaryChan<EventChannelOutput<ReturnType<typeof f>>, typeof f>(f, payload)
+			const reply = yield* unaryChan(f, payload)
 			return reply
 		}
 		return txs
@@ -288,7 +298,7 @@ const defaultTransactions = {
 		const t = txs as any
 		t[methodName] = function* ({ id, ...payload }: { id: string }) {
 			const f = getMessengerService(id)[methodName]
-			return yield* unaryChan<EventChannelOutput<ReturnType<typeof f>>, typeof f>(f, payload)
+			return yield* unaryChan(f, payload)
 		}
 		return txs
 	}, {}),

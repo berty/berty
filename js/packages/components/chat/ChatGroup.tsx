@@ -3,7 +3,6 @@ import {
 	TouchableOpacity,
 	View,
 	KeyboardAvoidingView,
-	ScrollView,
 	FlatList,
 	StatusBar,
 	ActivityIndicator,
@@ -11,11 +10,9 @@ import {
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { ChatFooter, ChatDate } from './shared-components/Chat'
-import { GroupCircleAvatar, CircleAvatar } from '../shared-components/CircleAvatar'
+import { GroupCircleAvatar } from '../shared-components/CircleAvatar'
 import { Message } from './shared-components/Message'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-// import { BertyChatChatService as Store } from '@berty-tech/berty-store'
-import { berty } from '@berty-tech/api'
 import { Messenger } from '@berty-tech/hooks'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
@@ -25,10 +22,10 @@ import { useNavigation as useReactNavigation } from '@react-navigation/native'
 
 // Styles
 
-const HeaderChatGroup: React.FC<berty.chatmodel.IConversation> = (props) => {
-	const { avatarUri, title } = props
+const HeaderChatGroup: React.FC<{ id: string }> = ({ id }) => {
 	const { navigate, goBack } = useNavigation()
 	const [{ row, padding, flex, text, column }] = useStyles()
+	const conversation = Messenger.useGetConversation(id)
 	return (
 		<SafeAreaView>
 			<View
@@ -39,17 +36,17 @@ const HeaderChatGroup: React.FC<berty.chatmodel.IConversation> = (props) => {
 				</TouchableOpacity>
 				<View style={[flex.small, row.item.justify]}>
 					<Text numberOfLines={1} category='h5' style={[text.align.center, text.bold.medium]}>
-						{title || ''}
+						{conversation?.title || ''}
 					</Text>
 				</View>
 				<TouchableOpacity
 					style={[flex.tiny, column.top]}
-					onPress={() => navigate.chat.groupSettings(props)}
+					onPress={conversation ? () => navigate.chat.groupSettings(conversation as any) : () => {}} // FIXME
 				>
 					<GroupCircleAvatar
 						style={[column.item.center]}
-						firstAvatarUri={avatarUri || undefined}
-						secondAvatarUri={avatarUri || undefined}
+						firstAvatarUri={undefined}
+						secondAvatarUri={undefined}
 						size={40}
 						diffSize={5}
 					/>
@@ -168,22 +165,28 @@ const InfosChatGroup: React.FC<{ createdAt: number }> = ({ createdAt }) => {
 	)
 }
 
-const AppMessage: React.FC<{ message: string }> = ({ message }) => (
-	<Message payload={Messenger.useGetMessage(message)} />
-)
-
-const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
+const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) => {
+	const { children, ...propsToPass } = props
+	return (
+		<View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+			<ActivityIndicator {...propsToPass} />
+		</View>
+	)
+}
 
 const MessageList: React.FC<{ id: string }> = ({ id }) => {
 	const [{ overflow, row, flex }] = useStyles()
 	const conversation = Messenger.useGetConversation(id)
+	if (!conversation) {
+		return <CenteredActivityIndicator />
+	}
 	return (
 		<FlatList
 			style={[overflow, row.item.fill, flex.tiny]}
-			data={conversation ? [...conversation.messages].reverse() : []}
+			data={[...conversation.messages].reverse()}
 			inverted
 			ListFooterComponent={<InfosChatGroup createdAt={conversation.createdAt} />}
-			renderItem={({ item }) => <AppMessage message={item} />}
+			renderItem={({ item }) => <Message id={item} />}
 		/>
 	)
 }
@@ -191,11 +194,11 @@ const MessageList: React.FC<{ id: string }> = ({ id }) => {
 const useReadEffect = (convId: string, timeout: number) => {
 	// timeout is the duration (in ms) that the user must stay on the page to set messages as read
 	const navigation = useReactNavigation()
-	const startRead = ChatHooks.useStartReadConversation(convId)
-	const stopRead = ChatHooks.useStopReadConversation(convId)
+	const startRead = Messenger.useStartReadConversation(convId)
+	const stopRead = Messenger.useStopReadConversation(convId)
 
 	useEffect(() => {
-		let timeoutID: number | null = null
+		let timeoutID: ReturnType<typeof setTimeout> | null = null
 		const handleStart = () => {
 			if (timeoutID === null) {
 				timeoutID = setTimeout(() => {
@@ -230,7 +233,7 @@ export const ChatGroup: React.FC<ScreenProps.Chat.Group> = ({ route: { params } 
 		<View style={[flex.tiny, background.white]}>
 			<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
 				<StatusBar backgroundColor='#00BCD4' barStyle='dark-content' />
-				<HeaderChatGroup {...params} />
+				<HeaderChatGroup id={params.convId} />
 				<MessageList id={params.convId} />
 				<ChatFooter convId={params.convId} isFocused={inputIsFocused} setFocus={setInputFocus} />
 			</KeyboardAvoidingView>

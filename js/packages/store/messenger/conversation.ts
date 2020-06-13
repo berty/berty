@@ -459,7 +459,7 @@ export const transactions: Transactions = {
 				oneToOnePk = pkbuf && bufToStr(pkbuf)
 			}
 			if (oneToOnePk) {
-				yield* protocol.client.transactions.appMetadataSend({
+				yield* protocol.client.transactions.appMessageSend({
 					// TODO: replace with appMessageSend
 					id: accountId,
 					groupPk: strToBuf(oneToOnePk),

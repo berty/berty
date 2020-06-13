@@ -108,16 +108,6 @@ const InfosChat: React.FC<{ createdAt: number }> = ({ createdAt }) => {
 
 // const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
 
-// hack until Message props type is fixed
-const TypedMessage = Message as React.FC<{
-	payload: ReturnType<typeof Messenger.useGetMessage>
-}>
-
-const AppMessage: React.FC<{ messageId: string }> = ({ messageId }) => {
-	const msg = Messenger.useGetMessage(messageId)
-	return msg ? <TypedMessage payload={msg} /> : null
-}
-
 const MessageList: React.FC<{ id: string }> = (props) => {
 	const [{ row, overflow, flex, margin }] = useStyles()
 	const conversation = Messenger.useGetConversation(props.id)
@@ -132,7 +122,7 @@ const MessageList: React.FC<{ id: string }> = (props) => {
 			inverted
 			keyExtractor={(item) => item}
 			ListFooterComponent={<InfosChat createdAt={conversation.createdAt} />}
-			renderItem={({ item }) => <AppMessage messageId={item} />}
+			renderItem={({ item }) => <Message id={item} />}
 		/>
 	)
 }

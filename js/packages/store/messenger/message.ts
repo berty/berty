@@ -305,7 +305,7 @@ export function* orchestrator() {
 			if (!action.payload.message) {
 				return
 			}
-			const message: AppMessage = bufToJSON(action.payload.message)
+			const message: AppMessage = bufToJSON(action.payload.message) // <--- Not secure
 			const aggregateId = bufToStr(idBuf)
 			// create the message entity
 			const existingMessage = (yield select((state) => queries.get(state, { id: aggregateId }))) as

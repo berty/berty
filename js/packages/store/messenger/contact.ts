@@ -679,14 +679,29 @@ export function* orchestrator() {
 				)
 			}
 		}),
-		takeEvery(protocol.events.client.groupMetadataPayloadSent, function* ({ payload }) {
+		takeEvery('protocol/GroupMessageEvent', function* ({
+			payload,
+		}: PayloadAction<berty.types.IGroupMessageEvent & { aggregateId: string }>) {
 			const { aggregateId: clientId } = payload
-			const event = payload.event as AppMessage // <--- Not secure
+			console.log('got groupMetadataPayloadSent')
+			if (!payload.message) {
+				return
+			}
+			const event = bufToJSON(payload.message) as AppMessage // <--- Not secure
 			if (
 				event &&
 				event.type === AppMessageType.GroupInvitation &&
 				event.group.groupType === berty.types.GroupType.GroupTypeMultiMember
 			) {
+				console.log('found group invitation')
+
+				const group: berty.types.IGroup = {
+					publicKey: strToBuf(event.group.publicKey),
+					secret: strToBuf(event.group.secret),
+					secretSig: strToBuf(event.group.secretSig),
+					groupType: berty.types.GroupType.GroupTypeMultiMember,
+				}
+
 				yield put(
 					conversationEvents.created({
 						kind: ConversationKind.MultiMember,
@@ -697,13 +712,11 @@ export function* orchestrator() {
 					}),
 				)
 
-				const group: berty.types.IGroup = {
-					publicKey: strToBuf(event.group.publicKey),
-					secret: strToBuf(event.group.secret),
-					secretSig: strToBuf(event.group.secretSig),
-					groupType: berty.types.GroupType.GroupTypeMultiMember,
+				try {
+					yield* protocol.client.transactions.multiMemberGroupJoin({ id: clientId, group })
+				} catch (e) {
+					console.warn('Failed to join multi-member group:', e)
 				}
-				yield* protocol.client.transactions.multiMemberGroupJoin({ id: clientId, group })
 
 				yield put(
 					groupsCommands.subscribe({
