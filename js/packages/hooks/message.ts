@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { messenger } from '@berty-tech/store'
@@ -66,4 +67,24 @@ export const useGetDateLastContactMessage = (id: string) => {
 			}
 		})
 	return lastDate || null
+}
+
+export const useMessageSearchResults = (searchText: string): any[] => {
+	const selectorMessageIds = (state: messenger.conversation.GlobalState): string[] => {
+		return messenger.conversation.queries
+			.list(state)
+			.filter((conv) => conv?.accountId !== 'fake' && conv.messages.length)
+			.map((conv) => conv.messages)
+			.reduce((acc, conv) => [...acc, ...conv], [])
+	}
+
+	const list = useSelector(selectorMessageIds)
+	const selectorMessageResults = useMemo(
+		() => (state: messenger.message.GlobalState) =>
+			messenger.message.queries.search(state, { searchText, list }),
+		[searchText, list],
+	)
+
+	const matchingMessages = useSelector(selectorMessageResults)
+	return matchingMessages
 }

@@ -7,6 +7,10 @@ import { AppMessageType } from '@berty-tech/store/messenger/AppMessage'
 import ProtocolServiceClient from '@berty-tech/store/protocol/ProtocolServiceClient.gen'
 import './App.css'
 import storage from 'redux-persist/lib/storage'
+import {
+	useAccountContactSearchResults,
+	useMessageSearchResults,
+} from '@berty-tech/hooks/Messenger'
 
 const CreateAccount: React.FC = () => {
 	const [name, setName] = useState('')
@@ -85,6 +89,27 @@ const AddContact: React.FC = () => {
 const JSONed: React.FC<{ value: any }> = ({ value }) => (
 	<div style={{ whiteSpace: 'pre-wrap', textAlign: 'left' }}>{JSON.stringify(value, null, 4)}</div>
 )
+
+const SearchContacts: React.FC = () => {
+	const [searchText, setSearchText] = useState('')
+	const contactSearchResults = useAccountContactSearchResults(searchText)
+	return (
+		<>
+			<input
+				type='text'
+				placeholder='Search contacts'
+				value={searchText}
+				onChange={(e) => setSearchText(e.target.value.replace(/^\s+/g, ''))}
+			/>
+			<div>
+				{contactSearchResults &&
+					contactSearchResults.map((contact, i) => {
+						return <JSONed value={contact} key={i} />
+					})}
+			</div>
+		</>
+	)
+}
 
 const Contacts: React.FC = () => {
 	const contacts = Messenger.useAccountContacts()
@@ -169,6 +194,27 @@ const Conversation: React.FC<{ convId: string }> = ({ convId }) => {
 				<JSONed value={conv} />
 			</>
 		)
+	)
+}
+
+const SearchMessages: React.FC = () => {
+	const [searchText, setSearchText] = useState('')
+	const messageSearchResults = useMessageSearchResults(searchText)
+	return (
+		<>
+			<input
+				type='text'
+				placeholder='Search messages'
+				value={searchText}
+				onChange={(e) => setSearchText(e.target.value.replace(/^\s+/g, ''))}
+			/>
+			<div>
+				{messageSearchResults &&
+					messageSearchResults.map((message, i) => {
+						return <JSONed value={message} key={i} />
+					})}
+			</div>
+		</>
 	)
 }
 
@@ -301,6 +347,17 @@ const Tools: React.FC = () => {
 	)
 }
 
+const Search: React.FC = () => {
+	return (
+		<>
+			<h3>Search Contacts</h3>
+			<SearchContacts />
+			<h3>Search Messages</h3>
+			<SearchMessages />
+		</>
+	)
+}
+
 const TABS = {
 	Account: Account,
 	Contacts: Contacts,
@@ -308,6 +365,7 @@ const TABS = {
 	Conversations: Conversations,
 	Groups: Groups,
 	Tools: Tools,
+	Search: Search,
 }
 
 type TabKey = keyof typeof TABS

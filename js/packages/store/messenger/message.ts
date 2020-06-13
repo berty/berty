@@ -48,6 +48,7 @@ export namespace Query {
 	export type Get = { id: string }
 	export type GetLength = void
 	export type GetList = { list: Entity['id'][] }
+	export type Search = { searchText: string; list: Entity['id'][] }
 }
 
 export namespace Event {
@@ -99,6 +100,7 @@ export type QueryReducer = {
 	get: (state: GlobalState, query: Query.Get) => Entity | undefined
 	getLength: (state: GlobalState) => number
 	getList: (state: GlobalState, query: Query.GetList) => Entity[]
+	search: (state: GlobalState, query: Query.Search) => Entity[]
 }
 
 export type EventsReducer = {
@@ -212,6 +214,14 @@ export const queries: QueryReducer = {
 			return ret
 		})
 		return messages as Entity[]
+	},
+	search: (state, { searchText, list }) => {
+		const messages = list
+			.map((id) => state.messenger.message.aggregates[id])
+			.filter(
+				(message) => message?.body && message.body.toLowerCase().includes(searchText.toLowerCase()),
+			)
+		return !searchText ? [] : messages
 	},
 }
 
