@@ -15,7 +15,7 @@ export const useMessageSend = () => {
 
 export const useMessageSendToAll = () => {
 	const dispatch = useDispatch()
-	return useMemo(() => () => dispatch(chat.message.commands.sendToAll()), [dispatch])
+	return useMemo(() => () => dispatch(messenger.message.commands.sendToAll()), [dispatch])
 }
 
 export const useMessageHide = () => {
