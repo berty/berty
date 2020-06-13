@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/url"
+	"runtime"
 
 	"berty.tech/berty/v2/go/internal/discordlog"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
@@ -174,4 +175,13 @@ func (s *service) SendContactRequest(ctx context.Context, req *SendContactReques
 	}
 
 	return &SendContactRequest_Reply{}, nil
+}
+
+func (s *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*SystemInfo_Reply, error) {
+	reply := SystemInfo_Reply{
+		StartedAt: s.startedAt.Unix(),
+		NumCPU:    int64(runtime.NumCPU()),
+		GoVersion: runtime.Version(),
+	}
+	return &reply, nil
 }

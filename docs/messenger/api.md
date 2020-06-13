@@ -23,6 +23,9 @@
     - [SendContactRequest](#berty.messenger.SendContactRequest)
     - [SendContactRequest.Reply](#berty.messenger.SendContactRequest.Reply)
     - [SendContactRequest.Request](#berty.messenger.SendContactRequest.Request)
+    - [SystemInfo](#berty.messenger.SystemInfo)
+    - [SystemInfo.Reply](#berty.messenger.SystemInfo.Reply)
+    - [SystemInfo.Request](#berty.messenger.SystemInfo.Request)
     - [UserMessageAttachment](#berty.messenger.UserMessageAttachment)
   
     - [AppMessageType](#berty.messenger.AppMessageType)
@@ -182,6 +185,24 @@
 | metadata | [bytes](#bytes) |  |  |
 | own_metadata | [bytes](#bytes) |  |  |
 
+<a name="berty.messenger.SystemInfo"></a>
+
+### SystemInfo
+
+<a name="berty.messenger.SystemInfo.Reply"></a>
+
+### SystemInfo.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| started_at | [int64](#int64) |  |  |
+| num_cpu | [int64](#int64) |  |  |
+| go_version | [string](#string) |  |  |
+
+<a name="berty.messenger.SystemInfo.Request"></a>
+
+### SystemInfo.Request
+
 <a name="berty.messenger.UserMessageAttachment"></a>
 
 ### UserMessageAttachment
@@ -231,6 +252,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | DevShareInstanceBertyID | [DevShareInstanceBertyID.Request](#berty.messenger.DevShareInstanceBertyID.Request) | [DevShareInstanceBertyID.Reply](#berty.messenger.DevShareInstanceBertyID.Reply) | DevShareInstanceBertyID shares your Berty ID on a dev channel. TODO: remove for public. |
 | ParseDeepLink | [ParseDeepLink.Request](#berty.messenger.ParseDeepLink.Request) | [ParseDeepLink.Reply](#berty.messenger.ParseDeepLink.Reply) | ParseDeepLink parses a link in the form of berty://xxx or https://berty.tech/id# and returns a structure that can be used to display information. This action is read-only. |
 | SendContactRequest | [SendContactRequest.Request](#berty.messenger.SendContactRequest.Request) | [SendContactRequest.Reply](#berty.messenger.SendContactRequest.Reply) | SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol. |
+| SystemInfo | [SystemInfo.Request](#berty.messenger.SystemInfo.Request) | [SystemInfo.Reply](#berty.messenger.SystemInfo.Reply) |  |
 
  
 

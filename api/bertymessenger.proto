@@ -24,6 +24,8 @@ service MessengerService {
 
   // SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol.
   rpc SendContactRequest(SendContactRequest.Request) returns (SendContactRequest.Reply);
+
+  rpc SystemInfo(SystemInfo.Request) returns (SystemInfo.Reply);
 }
 
 message InstanceShareableBertyID {
@@ -123,4 +125,13 @@ message PayloadSetGroupName {
 message PayloadAcknowledge {
   AppMessageType type = 1;
   string target = 2;
+}
+
+message SystemInfo {
+  message Request {}
+  message Reply {
+    int64 started_at = 1;
+    int64 num_cpu = 2 [(gogoproto.customname) = "NumCPU"];
+    string go_version = 3;
+  }
 }

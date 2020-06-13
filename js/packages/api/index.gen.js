@@ -183,6 +183,7 @@ export const berty = {
 		PayloadGroupInvitation: jsonPb.lookup('.berty.messenger.PayloadGroupInvitation'),
 		PayloadSetGroupName: jsonPb.lookup('.berty.messenger.PayloadSetGroupName'),
 		PayloadAcknowledge: jsonPb.lookup('.berty.messenger.PayloadAcknowledge'),
+		SystemInfo: jsonPb.lookup('.berty.messenger.SystemInfo'),
 	},
 }
 export const gogoproto = {

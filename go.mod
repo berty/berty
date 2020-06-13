@@ -53,6 +53,7 @@ require (
 	golang.org/x/net v0.0.0-20190923162816-aa69164e4478
 	golang.org/x/tools v0.0.0-20200226224502-204d844ad48d // indirect
 	google.golang.org/grpc v1.27.1
+	moul.io/godev v1.6.0
 	moul.io/srand v1.4.0
 )
 
