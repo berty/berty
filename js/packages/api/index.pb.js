@@ -1768,6 +1768,34 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   goVersion: {
                     type: "string",
                     id: 3
+                  },
+                  numGoroutine: {
+                    type: "int64",
+                    id: 4
+                  },
+                  operatingSystem: {
+                    type: "string",
+                    id: 5
+                  },
+                  hostName: {
+                    type: "string",
+                    id: 6
+                  },
+                  arch: {
+                    type: "string",
+                    id: 7
+                  },
+                  version: {
+                    type: "string",
+                    id: 8
+                  },
+                  vcsRef: {
+                    type: "string",
+                    id: 9
+                  },
+                  buildTime: {
+                    type: "int64",
+                    id: 10
                   }
                 }
               }

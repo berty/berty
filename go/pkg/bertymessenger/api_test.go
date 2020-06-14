@@ -2,6 +2,7 @@ package bertymessenger
 
 import (
 	"context"
+	"runtime"
 	"testing"
 	"time"
 
@@ -143,4 +144,10 @@ func TestSystemInfo(t *testing.T) {
 	assert.GreaterOrEqual(t, int64(1), diff)
 	assert.Greater(t, ret.NumCPU, int64(0))
 	assert.NotEmpty(t, ret.GoVersion)
+	assert.Equal(t, ret.Arch, runtime.GOARCH)
+	assert.Equal(t, ret.OperatingSystem, runtime.GOOS)
+	assert.NotEmpty(t, ret.HostName)
+	//assert.NotEmpty(t, ret.VcsRef)
+	//assert.NotEmpty(t, ret.Version)
+	//assert.Greater(t, ret.BuildTime, int64(0))
 }

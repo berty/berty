@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/url"
+	"os"
 	"runtime"
 
 	"berty.tech/berty/v2/go/internal/discordlog"
@@ -178,10 +179,19 @@ func (s *service) SendContactRequest(ctx context.Context, req *SendContactReques
 }
 
 func (s *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*SystemInfo_Reply, error) {
+	hn, _ := os.Hostname()
 	reply := SystemInfo_Reply{
-		StartedAt: s.startedAt.Unix(),
-		NumCPU:    int64(runtime.NumCPU()),
-		GoVersion: runtime.Version(),
+		StartedAt:       s.startedAt.Unix(),
+		NumCPU:          int64(runtime.NumCPU()),
+		GoVersion:       runtime.Version(),
+		HostName:        hn,
+		NumGoroutine:    int64(runtime.NumGoroutine()),
+		OperatingSystem: runtime.GOOS,
+		Arch:            runtime.GOARCH,
+		// TODO: update at build time
+		Version: "n/a",
+		VcsRef:  "n/a",
+		//BuildTime:
 	}
 	return &reply, nil
 }

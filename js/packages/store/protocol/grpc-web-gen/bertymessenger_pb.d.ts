@@ -516,6 +516,27 @@ export namespace SystemInfo {
     getGoVersion(): string;
     setGoVersion(value: string): void;
 
+    getNumGoroutine(): number;
+    setNumGoroutine(value: number): void;
+
+    getOperatingSystem(): string;
+    setOperatingSystem(value: string): void;
+
+    getHostName(): string;
+    setHostName(value: string): void;
+
+    getArch(): string;
+    setArch(value: string): void;
+
+    getVersion(): string;
+    setVersion(value: string): void;
+
+    getVcsRef(): string;
+    setVcsRef(value: string): void;
+
+    getBuildTime(): number;
+    setBuildTime(value: number): void;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Reply.AsObject;
     static toObject(includeInstance: boolean, msg: Reply): Reply.AsObject;
@@ -531,6 +552,13 @@ export namespace SystemInfo {
       startedAt: number,
       numCpu: number,
       goVersion: string,
+      numGoroutine: number,
+      operatingSystem: string,
+      hostName: string,
+      arch: string,
+      version: string,
+      vcsRef: string,
+      buildTime: number,
     }
   }
 }

@@ -198,6 +198,13 @@
 | started_at | [int64](#int64) |  |  |
 | num_cpu | [int64](#int64) |  |  |
 | go_version | [string](#string) |  |  |
+| num_goroutine | [int64](#int64) |  |  |
+| operating_system | [string](#string) |  |  |
+| host_name | [string](#string) |  |  |
+| arch | [string](#string) |  |  |
+| version | [string](#string) |  |  |
+| vcs_ref | [string](#string) |  |  |
+| build_time | [int64](#int64) |  |  |
 
 <a name="berty.messenger.SystemInfo.Request"></a>
 

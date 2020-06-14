@@ -3921,7 +3921,14 @@ proto.berty.messenger.SystemInfo.Reply.toObject = function(includeInstance, msg)
   var f, obj = {
     startedAt: jspb.Message.getFieldWithDefault(msg, 1, 0),
     numCpu: jspb.Message.getFieldWithDefault(msg, 2, 0),
-    goVersion: jspb.Message.getFieldWithDefault(msg, 3, "")
+    goVersion: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    numGoroutine: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    operatingSystem: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    hostName: jspb.Message.getFieldWithDefault(msg, 6, ""),
+    arch: jspb.Message.getFieldWithDefault(msg, 7, ""),
+    version: jspb.Message.getFieldWithDefault(msg, 8, ""),
+    vcsRef: jspb.Message.getFieldWithDefault(msg, 9, ""),
+    buildTime: jspb.Message.getFieldWithDefault(msg, 10, 0)
   };
 
   if (includeInstance) {
@@ -3970,6 +3977,34 @@ proto.berty.messenger.SystemInfo.Reply.deserializeBinaryFromReader = function(ms
       var value = /** @type {string} */ (reader.readString());
       msg.setGoVersion(value);
       break;
+    case 4:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setNumGoroutine(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setOperatingSystem(value);
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setHostName(value);
+      break;
+    case 7:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setArch(value);
+      break;
+    case 8:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setVersion(value);
+      break;
+    case 9:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setVcsRef(value);
+      break;
+    case 10:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setBuildTime(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -4017,6 +4052,55 @@ proto.berty.messenger.SystemInfo.Reply.serializeBinaryToWriter = function(messag
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getNumGoroutine();
+  if (f !== 0) {
+    writer.writeInt64(
+      4,
+      f
+    );
+  }
+  f = message.getOperatingSystem();
+  if (f.length > 0) {
+    writer.writeString(
+      5,
+      f
+    );
+  }
+  f = message.getHostName();
+  if (f.length > 0) {
+    writer.writeString(
+      6,
+      f
+    );
+  }
+  f = message.getArch();
+  if (f.length > 0) {
+    writer.writeString(
+      7,
+      f
+    );
+  }
+  f = message.getVersion();
+  if (f.length > 0) {
+    writer.writeString(
+      8,
+      f
+    );
+  }
+  f = message.getVcsRef();
+  if (f.length > 0) {
+    writer.writeString(
+      9,
+      f
+    );
+  }
+  f = message.getBuildTime();
+  if (f !== 0) {
+    writer.writeInt64(
+      10,
       f
     );
   }
@@ -4074,6 +4158,132 @@ proto.berty.messenger.SystemInfo.Reply.prototype.getGoVersion = function() {
  */
 proto.berty.messenger.SystemInfo.Reply.prototype.setGoVersion = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional int64 num_goroutine = 4;
+ * @return {number}
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.getNumGoroutine = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.setNumGoroutine = function(value) {
+  return jspb.Message.setProto3IntField(this, 4, value);
+};
+
+
+/**
+ * optional string operating_system = 5;
+ * @return {string}
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.getOperatingSystem = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.setOperatingSystem = function(value) {
+  return jspb.Message.setProto3StringField(this, 5, value);
+};
+
+
+/**
+ * optional string host_name = 6;
+ * @return {string}
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.getHostName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.setHostName = function(value) {
+  return jspb.Message.setProto3StringField(this, 6, value);
+};
+
+
+/**
+ * optional string arch = 7;
+ * @return {string}
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.getArch = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.setArch = function(value) {
+  return jspb.Message.setProto3StringField(this, 7, value);
+};
+
+
+/**
+ * optional string version = 8;
+ * @return {string}
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.getVersion = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.setVersion = function(value) {
+  return jspb.Message.setProto3StringField(this, 8, value);
+};
+
+
+/**
+ * optional string vcs_ref = 9;
+ * @return {string}
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.getVcsRef = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 9, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.setVcsRef = function(value) {
+  return jspb.Message.setProto3StringField(this, 9, value);
+};
+
+
+/**
+ * optional int64 build_time = 10;
+ * @return {number}
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.getBuildTime = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 10, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.setBuildTime = function(value) {
+  return jspb.Message.setProto3IntField(this, 10, value);
 };
 
 

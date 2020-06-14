@@ -133,5 +133,12 @@ message SystemInfo {
     int64 started_at = 1;
     int64 num_cpu = 2 [(gogoproto.customname) = "NumCPU"];
     string go_version = 3;
+    int64 num_goroutine = 4;
+    string operating_system = 5;
+    string host_name = 6;
+    string arch = 7;
+    string version = 8;
+    string vcs_ref = 9;
+    int64 build_time = 10;
   }
 }

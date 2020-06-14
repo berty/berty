@@ -2871,6 +2871,13 @@ export namespace berty {
                 startedAt?: (number|Long|null);
                 numCpu?: (number|Long|null);
                 goVersion?: (string|null);
+                numGoroutine?: (number|Long|null);
+                operatingSystem?: (string|null);
+                hostName?: (string|null);
+                arch?: (string|null);
+                version?: (string|null);
+                vcsRef?: (string|null);
+                buildTime?: (number|Long|null);
             }
 
             class Reply implements IReply {
@@ -2878,6 +2885,13 @@ export namespace berty {
                 public startedAt: (number|Long);
                 public numCpu: (number|Long);
                 public goVersion: string;
+                public numGoroutine: (number|Long);
+                public operatingSystem: string;
+                public hostName: string;
+                public arch: string;
+                public version: string;
+                public vcsRef: string;
+                public buildTime: (number|Long);
                 public static create(properties?: berty.messenger.SystemInfo.IReply): berty.messenger.SystemInfo.Reply;
                 public static encode(message: berty.messenger.SystemInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.SystemInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
