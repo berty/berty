@@ -918,6 +918,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore tech.berty.ios";
 				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -945,6 +946,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore tech.berty.ios";
 				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -973,6 +975,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -999,6 +1002,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "match Development tech.berty.ios.debug";
 				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -1026,6 +1030,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc tech.berty.ios.staff";
 				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1052,6 +1057,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc tech.berty.ios.staff";
 				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -1078,6 +1084,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "match InHouse tech.berty.ios.yolo";
 				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1103,6 +1110,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "match InHouse tech.berty.ios.yolo";
 				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
