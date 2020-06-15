@@ -34,6 +34,12 @@ export type Commands<State> = {
 			ownMetadata: Uint8Array
 		}>
 	>
+	systemInfo: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+		}>
+	>
 }
 
 export enum Methods {
@@ -41,4 +47,5 @@ export enum Methods {
 	devShareInstanceBertyID = 'devShareInstanceBertyID',
 	parseDeepLink = 'parseDeepLink',
 	sendContactRequest = 'sendContactRequest',
+	systemInfo = 'systemInfo',
 }

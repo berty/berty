@@ -1,12 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
 import { all, select, put } from 'redux-saga/effects'
+import { berty } from '@berty-tech/api'
 import { makeDefaultReducers, makeDefaultCommandsSagas } from '../utils'
 import { BertyNodeConfig } from '../protocol/client'
+import * as protocol from '../protocol'
 
 export type Entity = {
 	id: string
 	nodeConfig: BertyNodeConfig
+	systemInfo?: berty.messenger.SystemInfo.IReply
 }
 
 export type State = { [key: string]: Entity }
@@ -22,6 +25,7 @@ export type Commands = {
 	set: (state: State, action: { payload: { id: string; key: string; value: any } }) => State
 	delete: (state: State, action: { payload: { id: string } }) => State
 	toggleTracing: (state: State, action: { payload: { id: string } }) => State
+	systemInfo: (state: State, action: { payload: { id: string } }) => State
 }
 
 export type Queries = {
@@ -32,6 +36,10 @@ export type Queries = {
 export type Events = {
 	created: (state: State, action: { payload: Entity }) => State
 	nodeConfigUpdated: (state: State, action: { payload: BertyNodeConfig & { id: string } }) => State
+	systemInfoUpdated: (
+		state: State,
+		action: { payload: { info: berty.messenger.SystemInfo.IReply; id: string } },
+	) => State
 }
 
 export type Transactions = {
@@ -47,7 +55,7 @@ export type Transactions = {
 
 const initialState: State = {}
 
-const commandsNames = ['create', 'set', 'delete', 'toggleTracing']
+const commandsNames = ['create', 'set', 'delete', 'toggleTracing', 'systemInfo']
 
 const commandHandler = createSlice<State, Commands>({
 	name: 'settings/main/command',
@@ -76,6 +84,10 @@ const eventHandler = createSlice<State, Events>({
 				return state
 			}
 			state[id].nodeConfig = payload
+			return state
+		},
+		systemInfoUpdated: (state, { payload }) => {
+			state[payload.id].systemInfo = payload.info
 			return state
 		},
 		// put reducer implementaion here
@@ -122,6 +134,17 @@ export const transactions: Transactions = {
 			opts: { ...nodeConfig.opts, tracing: !tracingPreviously },
 		})
 		yield put(act)
+	},
+	systemInfo: function* ({ id }) {
+		const info = yield* protocol.transactions.client.systemInfo({
+			id,
+		})
+		yield put(
+			events.systemInfoUpdated({
+				id,
+				info,
+			}),
+		)
 	},
 }
 
