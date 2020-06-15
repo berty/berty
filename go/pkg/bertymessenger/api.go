@@ -5,6 +5,9 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/url"
+	"os"
+	"runtime"
+	"strconv"
 
 	"berty.tech/berty/v2/go/internal/discordlog"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
@@ -174,4 +177,26 @@ func (s *service) SendContactRequest(ctx context.Context, req *SendContactReques
 	}
 
 	return &SendContactRequest_Reply{}, nil
+}
+
+func (s *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*SystemInfo_Reply, error) {
+	hn, _ := os.Hostname()
+	reply := SystemInfo_Reply{
+		StartedAt:       s.startedAt.Unix(),
+		NumCPU:          int64(runtime.NumCPU()),
+		GoVersion:       runtime.Version(),
+		HostName:        hn,
+		NumGoroutine:    int64(runtime.NumGoroutine()),
+		OperatingSystem: runtime.GOOS,
+		Arch:            runtime.GOARCH,
+		Version:         Version,
+		VcsRef:          VcsRef,
+	}
+	if BuildTime != "n/a" {
+		buildTime, err := strconv.Atoi(BuildTime)
+		if err == nil {
+			reply.BuildTime = int64(buildTime)
+		}
+	}
+	return &reply, nil
 }

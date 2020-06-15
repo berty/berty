@@ -475,6 +475,94 @@ export namespace PayloadAcknowledge {
   }
 }
 
+export class SystemInfo extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): SystemInfo.AsObject;
+  static toObject(includeInstance: boolean, msg: SystemInfo): SystemInfo.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: SystemInfo, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SystemInfo;
+  static deserializeBinaryFromReader(message: SystemInfo, reader: jspb.BinaryReader): SystemInfo;
+}
+
+export namespace SystemInfo {
+  export type AsObject = {
+  }
+
+  export class Request extends jspb.Message {
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Request.AsObject;
+    static toObject(includeInstance: boolean, msg: Request): Request.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Request, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Request;
+    static deserializeBinaryFromReader(message: Request, reader: jspb.BinaryReader): Request;
+  }
+
+  export namespace Request {
+    export type AsObject = {
+    }
+  }
+
+  export class Reply extends jspb.Message {
+    getStartedAt(): number;
+    setStartedAt(value: number): void;
+
+    getNumCpu(): number;
+    setNumCpu(value: number): void;
+
+    getGoVersion(): string;
+    setGoVersion(value: string): void;
+
+    getNumGoroutine(): number;
+    setNumGoroutine(value: number): void;
+
+    getOperatingSystem(): string;
+    setOperatingSystem(value: string): void;
+
+    getHostName(): string;
+    setHostName(value: string): void;
+
+    getArch(): string;
+    setArch(value: string): void;
+
+    getVersion(): string;
+    setVersion(value: string): void;
+
+    getVcsRef(): string;
+    setVcsRef(value: string): void;
+
+    getBuildTime(): number;
+    setBuildTime(value: number): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Reply.AsObject;
+    static toObject(includeInstance: boolean, msg: Reply): Reply.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Reply, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Reply;
+    static deserializeBinaryFromReader(message: Reply, reader: jspb.BinaryReader): Reply;
+  }
+
+  export namespace Reply {
+    export type AsObject = {
+      startedAt: number,
+      numCpu: number,
+      goVersion: string,
+      numGoroutine: number,
+      operatingSystem: string,
+      hostName: string,
+      arch: string,
+      version: string,
+      vcsRef: string,
+      buildTime: number,
+    }
+  }
+}
+
 export interface AppMessageTypeMap {
   UNDEFINED: 0;
   USERMESSAGE: 1;

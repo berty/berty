@@ -40,12 +40,22 @@ type MessengerServiceSendContactRequest = {
   readonly responseType: typeof bertymessenger_pb.SendContactRequest.Reply;
 };
 
+type MessengerServiceSystemInfo = {
+  readonly methodName: string;
+  readonly service: typeof MessengerService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof bertymessenger_pb.SystemInfo.Request;
+  readonly responseType: typeof bertymessenger_pb.SystemInfo.Reply;
+};
+
 export class MessengerService {
   static readonly serviceName: string;
   static readonly InstanceShareableBertyID: MessengerServiceInstanceShareableBertyID;
   static readonly DevShareInstanceBertyID: MessengerServiceDevShareInstanceBertyID;
   static readonly ParseDeepLink: MessengerServiceParseDeepLink;
   static readonly SendContactRequest: MessengerServiceSendContactRequest;
+  static readonly SystemInfo: MessengerServiceSystemInfo;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -115,6 +125,15 @@ export class MessengerServiceClient {
   sendContactRequest(
     requestMessage: bertymessenger_pb.SendContactRequest.Request,
     callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.SendContactRequest.Reply|null) => void
+  ): UnaryResponse;
+  systemInfo(
+    requestMessage: bertymessenger_pb.SystemInfo.Request,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.SystemInfo.Reply|null) => void
+  ): UnaryResponse;
+  systemInfo(
+    requestMessage: bertymessenger_pb.SystemInfo.Request,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.SystemInfo.Reply|null) => void
   ): UnaryResponse;
 }
 

@@ -2406,6 +2406,8 @@ export namespace berty {
             public parseDeepLink(request: berty.messenger.ParseDeepLink.IRequest): Promise<berty.messenger.ParseDeepLink.Reply>;
             public sendContactRequest(request: berty.messenger.SendContactRequest.IRequest, callback: berty.messenger.MessengerService.SendContactRequestCallback): void;
             public sendContactRequest(request: berty.messenger.SendContactRequest.IRequest): Promise<berty.messenger.SendContactRequest.Reply>;
+            public systemInfo(request: berty.messenger.SystemInfo.IRequest, callback: berty.messenger.MessengerService.SystemInfoCallback): void;
+            public systemInfo(request: berty.messenger.SystemInfo.IRequest): Promise<berty.messenger.SystemInfo.Reply>;
         }
 
         namespace MessengerService {
@@ -2417,6 +2419,8 @@ export namespace berty {
             type ParseDeepLinkCallback = (error: (Error|null), response?: berty.messenger.ParseDeepLink.Reply) => void;
 
             type SendContactRequestCallback = (error: (Error|null), response?: berty.messenger.SendContactRequest.Reply) => void;
+
+            type SystemInfoCallback = (error: (Error|null), response?: berty.messenger.SystemInfo.Reply) => void;
         }
 
         interface IInstanceShareableBertyID {
@@ -2827,6 +2831,77 @@ export namespace berty {
             public static fromObject(object: { [k: string]: any }): berty.messenger.PayloadAcknowledge;
             public static toObject(message: berty.messenger.PayloadAcknowledge, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
+        }
+
+        interface ISystemInfo {
+        }
+
+        class SystemInfo implements ISystemInfo {
+
+            public static create(properties?: berty.messenger.ISystemInfo): berty.messenger.SystemInfo;
+            public static encode(message: berty.messenger.ISystemInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.messenger.ISystemInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.SystemInfo;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.SystemInfo;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): berty.messenger.SystemInfo;
+            public static toObject(message: berty.messenger.SystemInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+        }
+
+        namespace SystemInfo {
+
+            interface IRequest {
+            }
+
+            class Request implements IRequest {
+
+                public static create(properties?: berty.messenger.SystemInfo.IRequest): berty.messenger.SystemInfo.Request;
+                public static encode(message: berty.messenger.SystemInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.SystemInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.SystemInfo.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.SystemInfo.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.SystemInfo.Request;
+                public static toObject(message: berty.messenger.SystemInfo.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+                startedAt?: (number|Long|null);
+                numCpu?: (number|Long|null);
+                goVersion?: (string|null);
+                numGoroutine?: (number|Long|null);
+                operatingSystem?: (string|null);
+                hostName?: (string|null);
+                arch?: (string|null);
+                version?: (string|null);
+                vcsRef?: (string|null);
+                buildTime?: (number|Long|null);
+            }
+
+            class Reply implements IReply {
+
+                public startedAt: (number|Long);
+                public numCpu: (number|Long);
+                public goVersion: string;
+                public numGoroutine: (number|Long);
+                public operatingSystem: string;
+                public hostName: string;
+                public arch: string;
+                public version: string;
+                public vcsRef: string;
+                public buildTime: (number|Long);
+                public static create(properties?: berty.messenger.SystemInfo.IReply): berty.messenger.SystemInfo.Reply;
+                public static encode(message: berty.messenger.SystemInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.SystemInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.SystemInfo.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.SystemInfo.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.SystemInfo.Reply;
+                public static toObject(message: berty.messenger.SystemInfo.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
     }
 }

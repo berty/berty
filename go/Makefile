@@ -69,6 +69,12 @@ go.unittest: pb.generate
 	$(call check-program, $(GO))
 	GO111MODULE=on $(GO) test $(GO_TEST_OPTS) $(GO_TEST_PATH)
 
+
+VERSION ?= `git describe --tags --always`
+VCS_REF ?= `git rev-parse --short HEAD`
+BUILD_DATE ?= `date +%s`
+GO_INSTALL_OPTS = -ldflags="-X berty.tech/berty/v2/go/pkg/bertymessenger.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertymessenger.Version=$(VERSION) -X berty.tech/berty/v2/go/pkg/bertymessenger.BuildTime=$(BUILD_DATE)"
+
 .PHONY: go.unittest.watch
 go.unittest: GO_TEST_PATH ?= ./...
 go.unittest.watch:
@@ -82,7 +88,7 @@ go.unittest.watch:
 .PHONY: go.install
 go.install: pb.generate
 	$(call check-program, $(GO))
-	GO111MODULE=on $(GO) install -v ./cmd/...
+	GO111MODULE=on $(GO) install $(GO_INSTALL_OPTS) -v ./cmd/...
 
 .PHONY: test
 test: unittest lint tidy

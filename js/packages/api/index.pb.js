@@ -1485,6 +1485,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               SendContactRequest: {
                 requestType: "SendContactRequest.Request",
                 responseType: "SendContactRequest.Reply"
+              },
+              SystemInfo: {
+                requestType: "SystemInfo.Request",
+                responseType: "SystemInfo.Reply"
               }
             }
           },
@@ -1739,6 +1743,61 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               target: {
                 type: "string",
                 id: 2
+              }
+            }
+          },
+          SystemInfo: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {}
+              },
+              Reply: {
+                fields: {
+                  startedAt: {
+                    type: "int64",
+                    id: 1
+                  },
+                  numCpu: {
+                    type: "int64",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "NumCPU"
+                    }
+                  },
+                  goVersion: {
+                    type: "string",
+                    id: 3
+                  },
+                  numGoroutine: {
+                    type: "int64",
+                    id: 4
+                  },
+                  operatingSystem: {
+                    type: "string",
+                    id: 5
+                  },
+                  hostName: {
+                    type: "string",
+                    id: 6
+                  },
+                  arch: {
+                    type: "string",
+                    id: 7
+                  },
+                  version: {
+                    type: "string",
+                    id: 8
+                  },
+                  vcsRef: {
+                    type: "string",
+                    id: 9
+                  },
+                  buildTime: {
+                    type: "int64",
+                    id: 10
+                  }
+                }
               }
             }
           }

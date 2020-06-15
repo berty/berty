@@ -50,6 +50,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"moul.io/godev"
 	"moul.io/srand"
 )
 
@@ -100,6 +101,7 @@ func main() {
 		daemonFlags      = flag.NewFlagSet("protocol client", flag.ExitOnError)
 		miniFlags        = flag.NewFlagSet("mini demo client", flag.ExitOnError)
 		shareInviteFlags = flag.NewFlagSet("dev share-invite", flag.ExitOnError)
+		systemInfoFlags  = flag.NewFlagSet("info", flag.ExitOnError)
 	)
 
 	globalFlags.BoolVar(&globalDebug, "debug", false, "berty debug mode")
@@ -123,6 +125,7 @@ func main() {
 	shareInviteFlags.BoolVar(&shareInviteNoTerminal, "no-term", false, "do not print the QR code in terminal")
 	shareInviteFlags.StringVar(&datastorePath, "d", cacheleveldown.InMemoryDirectory, "datastore base directory")
 	shareInviteFlags.StringVar(&displayName, "display-name", safeDefaultDisplayName(), "display name")
+	systemInfoFlags.StringVar(&datastorePath, "d", cacheleveldown.InMemoryDirectory, "datastore base directory")
 
 	type cleanupFunc func()
 	globalPreRun := func() cleanupFunc {
@@ -503,6 +506,53 @@ func main() {
 		},
 	}
 
+	systemInfo := &ffcli.Command{
+		Name:      "info",
+		ShortHelp: "display system info",
+		FlagSet:   systemInfoFlags,
+		Exec: func(args []string) error {
+			ctx := context.Background()
+			cleanup := globalPreRun()
+			defer cleanup()
+
+			// protocol
+			var protocol bertyprotocol.Service
+			{
+				rootDS, dsLock, err := getRootDatastore(datastorePath)
+				if err != nil {
+					return errcode.TODO.Wrap(err)
+				}
+				if dsLock != nil {
+					defer func() { _ = dsLock.Unlock() }()
+				}
+				defer rootDS.Close()
+				deviceDS := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
+				opts := bertyprotocol.Opts{
+					Logger:         logger.Named("bertyprotocol"),
+					RootContext:    ctx,
+					RootDatastore:  rootDS,
+					DeviceKeystore: bertyprotocol.NewDeviceKeystore(deviceDS),
+				}
+				protocol, err = bertyprotocol.New(opts)
+				if err != nil {
+					return errcode.TODO.Wrap(err)
+				}
+				defer protocol.Close()
+			}
+			protocolClient, err := bertyprotocol.NewClient(protocol)
+			if err != nil {
+				return errcode.TODO.Wrap(err)
+			}
+			messenger := bertymessenger.New(protocolClient, &bertymessenger.Opts{Logger: logger.Named("messenger")})
+			ret, err := messenger.SystemInfo(ctx, &bertymessenger.SystemInfo_Request{})
+			if err != nil {
+				return errcode.TODO.Wrap(err)
+			}
+			fmt.Println(godev.PrettyJSONPB(ret))
+			return nil
+		},
+	}
+
 	dev := &ffcli.Command{
 		Name:        "dev",
 		Usage:       "berty [global flags] dev <subcommand> [flags] [args...]",
@@ -520,7 +570,7 @@ func main() {
 		Usage:       "berty [global flags] <subcommand> [flags] [args...]",
 		FlagSet:     globalFlags,
 		Options:     []ff.Option{ff.WithEnvVarPrefix("BERTY")},
-		Subcommands: []*ffcli.Command{daemon, mini, banner, version, dev},
+		Subcommands: []*ffcli.Command{daemon, mini, banner, version, systemInfo, dev},
 		Exec: func([]string) error {
 			globalFlags.Usage()
 			return flag.ErrHelp

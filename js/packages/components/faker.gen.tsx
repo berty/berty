@@ -295,6 +295,13 @@ export namespace faker {
 				) => void = (request, callback) => {
 					callback(null, _api.berty.messenger.SendContactRequest.Reply.encode({}).finish())
 				}
+
+				export const SystemInfo: (
+					request: _api.berty.messenger.SystemInfo.IRequest,
+					callback: pb.RPCImplCallback,
+				) => void = (request, callback) => {
+					callback(null, _api.berty.messenger.SystemInfo.Reply.encode({}).finish())
+				}
 			}
 		}
 	}

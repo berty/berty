@@ -1,3 +1,8 @@
+# dynamic config
+ARG             BUILD_DATE
+ARG             VCS_REF
+ARG             VERSION
+
 # build
 FROM            golang:1.14-alpine as builder
 RUN             apk add --no-cache git gcc musl-dev make

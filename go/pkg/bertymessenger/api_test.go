@@ -2,7 +2,9 @@ package bertymessenger
 
 import (
 	"context"
+	"runtime"
 	"testing"
+	"time"
 
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -128,4 +130,24 @@ func TestServiceSendContactRequest(t *testing.T) {
 	ret, err = svc.SendContactRequest(ctx, &SendContactRequest_Request{BertyID: parseRet.BertyID})
 	require.NoError(t, err)
 	assert.NotNil(t, ret)
+}
+
+func TestSystemInfo(t *testing.T) {
+	ctx := context.Background()
+	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: testutil.Logger(t)})
+	defer cleanup()
+
+	ret, err := svc.SystemInfo(ctx, nil)
+	require.NoError(t, err)
+	diff := time.Now().Unix() - ret.StartedAt
+	assert.GreaterOrEqual(t, diff, int64(0))
+	assert.GreaterOrEqual(t, int64(1), diff)
+	assert.Greater(t, ret.NumCPU, int64(0))
+	assert.NotEmpty(t, ret.GoVersion)
+	assert.Equal(t, ret.Arch, runtime.GOARCH)
+	assert.Equal(t, ret.OperatingSystem, runtime.GOOS)
+	assert.NotEmpty(t, ret.HostName)
+	//assert.NotEmpty(t, ret.VcsRef)
+	//assert.NotEmpty(t, ret.Version)
+	//assert.Greater(t, ret.BuildTime, int64(0))
 }
