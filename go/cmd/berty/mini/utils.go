@@ -2,26 +2,30 @@ package mini
 
 import (
 	"encoding/base64"
-	"strings"
 
+	"fmt"
+
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/juju/fslock"
 )
 
 func openGroupFromString(data string) (*bertytypes.Group, error) {
-	// Read invitation (as base64 on stdin)
-	iB64, err := base64.StdEncoding.DecodeString(strings.TrimSpace(data))
+	query, method, err := bertymessenger.NormalizeDeepLinkURL(data)
+
+	if err != nil {
+		return nil, errcode.ErrInvalidInput.Wrap(err)
+	} else if method != "/group" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected a /group URL, got %s instead", method))
+	}
+
+	res, err := bertymessenger.ParseGroupInviteURLQuery(query)
 	if err != nil {
 		return nil, err
 	}
 
-	grp := &bertytypes.Group{}
-	err = grp.Unmarshal(iB64)
-	if err != nil {
-		return nil, err
-	}
-
-	return grp, nil
+	return res.BertyGroup.Group, nil
 }
 
 func unlockFS(l *fslock.Lock) {

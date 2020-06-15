@@ -15,13 +15,28 @@ import (
 	"github.com/gogo/protobuf/proto"
 	cid "github.com/ipfs/go-cid"
 	qrterminal "github.com/mdp/qrterminal/v3"
-	"github.com/pkg/errors"
 )
 
 type command struct {
 	title string
 	help  string
 	cmd   func(ctx context.Context, v *groupView, cmd string) error
+}
+
+func stringAsQR(data string) []string {
+	qrOut := new(bytes.Buffer)
+	qrterminal.GenerateWithConfig(data, qrterminal.Config{
+		Writer:         qrOut,
+		Level:          qrterminal.L,
+		HalfBlocks:     true,
+		BlackChar:      qrterminal.BLACK_BLACK,
+		WhiteBlackChar: qrterminal.WHITE_BLACK,
+		WhiteChar:      qrterminal.WHITE_WHITE,
+		BlackWhiteChar: qrterminal.BLACK_WHITE,
+		QuietZone:      qrterminal.QUIET_ZONE,
+	})
+
+	return strings.Split(qrOut.String(), "\n")
 }
 
 func commandList() []*command {
@@ -258,19 +273,28 @@ func aliasSendCommand(ctx context.Context, v *groupView, cmd string) error {
 	return nil
 }
 
-func groupInviteCommand(ctx context.Context, v *groupView, _ string) error {
-	if v.g.GroupType != bertytypes.GroupTypeMultiMember {
-		return errors.New("unsupported group type")
-	}
+func groupInviteCommand(ctx context.Context, v *groupView, cmd string) error {
+	res, err := v.v.messenger.ShareableBertyGroup(ctx, &bertymessenger.ShareableBertyGroup_Request{
+		GroupPK:   v.g.PublicKey,
+		GroupName: "some group",
+	})
 
-	protoBytes, err := v.g.Marshal()
 	if err != nil {
 		return err
 	}
 
-	v.syncMessages <- &historyMessage{
-		messageType: messageTypeMeta,
-		payload:     []byte(base64.StdEncoding.EncodeToString(protoBytes)),
+	if cmd == "qr" || cmd == "qrcode" {
+		for _, l := range stringAsQR(res.DeepLink) {
+			v.syncMessages <- &historyMessage{
+				messageType: messageTypeMeta,
+				payload:     []byte(l),
+			}
+		}
+	} else {
+		v.syncMessages <- &historyMessage{
+			messageType: messageTypeMeta,
+			payload:     []byte(res.DeepLink),
+		}
 	}
 
 	return nil
@@ -469,21 +493,7 @@ func contactShareCommand(ctx context.Context, v *groupView, cmd string) error {
 	}
 
 	if cmd == "qr" || cmd == "qrcode" {
-		qrOut := new(bytes.Buffer)
-		qrterminal.GenerateWithConfig(res.DeepLink, qrterminal.Config{
-			Writer:         qrOut,
-			Level:          qrterminal.L,
-			HalfBlocks:     true,
-			BlackChar:      qrterminal.BLACK_BLACK,
-			WhiteBlackChar: qrterminal.WHITE_BLACK,
-			WhiteChar:      qrterminal.WHITE_WHITE,
-			BlackWhiteChar: qrterminal.BLACK_WHITE,
-			QuietZone:      qrterminal.QUIET_ZONE,
-		})
-
-		lines := strings.Split(qrOut.String(), "\n")
-
-		for _, l := range lines {
+		for _, l := range stringAsQR(res.DeepLink) {
 			v.syncMessages <- &historyMessage{
 				messageType: messageTypeMeta,
 				payload:     []byte(l),

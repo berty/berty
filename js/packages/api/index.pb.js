@@ -1474,6 +1474,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 requestType: "InstanceShareableBertyID.Request",
                 responseType: "InstanceShareableBertyID.Reply"
               },
+              ShareableBertyGroup: {
+                requestType: "ShareableBertyGroup.Request",
+                responseType: "ShareableBertyGroup.Reply"
+              },
               DevShareInstanceBertyID: {
                 requestType: "DevShareInstanceBertyID.Request",
                 responseType: "DevShareInstanceBertyID.Reply"
@@ -1541,6 +1545,58 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               }
             }
           },
+          ShareableBertyGroup: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  groupPk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "GroupPK"
+                    }
+                  },
+                  groupName: {
+                    type: "string",
+                    id: 2
+                  }
+                }
+              },
+              Reply: {
+                fields: {
+                  bertyGroup: {
+                    type: "BertyGroup",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "BertyGroup"
+                    }
+                  },
+                  bertyGroupPayload: {
+                    type: "string",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "BertyGroupPayload"
+                    }
+                  },
+                  deepLink: {
+                    type: "string",
+                    id: 3,
+                    options: {
+                      "(gogoproto.customname)": "DeepLink"
+                    }
+                  },
+                  htmlUrl: {
+                    type: "string",
+                    id: 4,
+                    options: {
+                      "(gogoproto.customname)": "HTMLURL"
+                    }
+                  }
+                }
+              }
+            }
+          },
           DevShareInstanceBertyID: {
             fields: {},
             nested: {
@@ -1584,13 +1640,21 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     options: {
                       "(gogoproto.customname)": "BertyID"
                     }
+                  },
+                  bertyGroup: {
+                    type: "BertyGroup",
+                    id: 4,
+                    options: {
+                      "(gogoproto.customname)": "BertyGroup"
+                    }
                   }
                 }
               },
               Kind: {
                 values: {
                   UnknownKind: 0,
-                  BertyID: 1
+                  BertyID: 1,
+                  BertyGroup: 2
                 }
               }
             }
@@ -1638,6 +1702,18 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               displayName: {
                 type: "string",
                 id: 3
+              }
+            }
+          },
+          BertyGroup: {
+            fields: {
+              group: {
+                type: "berty.types.Group",
+                id: 1
+              },
+              displayName: {
+                type: "string",
+                id: 2
               }
             }
           },

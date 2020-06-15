@@ -13,6 +13,15 @@ type MessengerServiceInstanceShareableBertyID = {
   readonly responseType: typeof bertymessenger_pb.InstanceShareableBertyID.Reply;
 };
 
+type MessengerServiceShareableBertyGroup = {
+  readonly methodName: string;
+  readonly service: typeof MessengerService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof bertymessenger_pb.ShareableBertyGroup.Request;
+  readonly responseType: typeof bertymessenger_pb.ShareableBertyGroup.Reply;
+};
+
 type MessengerServiceDevShareInstanceBertyID = {
   readonly methodName: string;
   readonly service: typeof MessengerService;
@@ -52,6 +61,7 @@ type MessengerServiceSystemInfo = {
 export class MessengerService {
   static readonly serviceName: string;
   static readonly InstanceShareableBertyID: MessengerServiceInstanceShareableBertyID;
+  static readonly ShareableBertyGroup: MessengerServiceShareableBertyGroup;
   static readonly DevShareInstanceBertyID: MessengerServiceDevShareInstanceBertyID;
   static readonly ParseDeepLink: MessengerServiceParseDeepLink;
   static readonly SendContactRequest: MessengerServiceSendContactRequest;
@@ -98,6 +108,15 @@ export class MessengerServiceClient {
   instanceShareableBertyID(
     requestMessage: bertymessenger_pb.InstanceShareableBertyID.Request,
     callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.InstanceShareableBertyID.Reply|null) => void
+  ): UnaryResponse;
+  shareableBertyGroup(
+    requestMessage: bertymessenger_pb.ShareableBertyGroup.Request,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.ShareableBertyGroup.Reply|null) => void
+  ): UnaryResponse;
+  shareableBertyGroup(
+    requestMessage: bertymessenger_pb.ShareableBertyGroup.Request,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.ShareableBertyGroup.Reply|null) => void
   ): UnaryResponse;
   devShareInstanceBertyID(
     requestMessage: bertymessenger_pb.DevShareInstanceBertyID.Request,

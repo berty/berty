@@ -111,22 +111,11 @@ func (s *service) ParseDeepLink(ctx context.Context, req *ParseDeepLink_Request)
 		return nil, errcode.ErrMissingInput
 	}
 
-	u, err := url.Parse(req.Link)
-	if err != nil {
-		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
-	}
 	ret := ParseDeepLink_Reply{}
-	var method string
-	qs := u.Fragment
-	switch {
-	case u.Scheme == "berty":
-		method = "/" + u.Host
-	case u.Scheme == "https" && u.Host == "berty.tech":
-		method = u.Path
-	}
-	query, err := url.ParseQuery(qs)
+
+	query, method, err := NormalizeDeepLinkURL(req.Link)
 	if err != nil {
-		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
+		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
 	switch method {
@@ -151,11 +140,128 @@ func (s *service) ParseDeepLink(ctx context.Context, req *ParseDeepLink_Request)
 		if name := query.Get("name"); name != "" {
 			ret.BertyID.DisplayName = name
 		}
+
+	case "/group":
+		return ParseGroupInviteURLQuery(query)
+
 	default:
 		return nil, errcode.ErrMessengerInvalidDeepLink
 	}
 
 	return &ret, nil
+}
+
+func NormalizeDeepLinkURL(input string) (url.Values, string, error) {
+	u, err := url.Parse(input)
+	if err != nil {
+		return url.Values{}, "", errcode.ErrMessengerInvalidDeepLink.Wrap(err)
+	}
+
+	var method string
+	qs := u.Fragment
+
+	switch {
+	case u.Scheme == "berty":
+		method = "/" + u.Host
+	case u.Scheme == "https" && u.Host == "berty.tech":
+		method = u.Path
+	}
+	query, err := url.ParseQuery(qs)
+	if err != nil {
+		return url.Values{}, "", errcode.ErrMessengerInvalidDeepLink.Wrap(err)
+	}
+
+	return query, method, nil
+}
+
+func ParseGroupInviteURLQuery(query url.Values) (*ParseDeepLink_Reply, error) {
+	ret := ParseDeepLink_Reply{}
+
+	ret.Kind = ParseDeepLink_BertyGroup
+	ret.BertyGroup = &BertyGroup{
+		Group: &bertytypes.Group{},
+	}
+
+	invite := query.Get("invite")
+	if invite == "" {
+		return nil, errcode.ErrMessengerInvalidDeepLink
+	}
+	payload, err := base64.StdEncoding.DecodeString(invite)
+
+	if err != nil {
+		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
+	}
+	err = proto.Unmarshal(payload, ret.BertyGroup.Group)
+
+	if err != nil {
+		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
+	}
+
+	if err := ret.BertyGroup.Group.IsValid(); err != nil {
+		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
+	}
+
+	if name := query.Get("name"); name != "" {
+		ret.BertyGroup.DisplayName = name
+	}
+
+	return &ret, nil
+}
+
+func (s *service) ShareableBertyGroup(ctx context.Context, request *ShareableBertyGroup_Request) (*ShareableBertyGroup_Reply, error) {
+	if request == nil {
+		return nil, errcode.ErrInvalidInput
+	}
+
+	grpInfo, err := s.protocol.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+		GroupPK: request.GroupPK,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	rep := &ShareableBertyGroup_Reply{}
+	rep.BertyGroup = &BertyGroup{
+		Group:       grpInfo.Group,
+		DisplayName: request.GroupName,
+	}
+
+	bertyGroupPayload, err := proto.Marshal(rep.BertyGroup)
+	if err != nil {
+		return nil, err
+	}
+
+	rep.BertyGroupPayload = base64.StdEncoding.EncodeToString(bertyGroupPayload)
+	rep.DeepLink, rep.HTMLURL, err = ShareableBertyGroupURL(grpInfo.Group, request.GroupName)
+	if err != nil {
+		return nil, err
+	}
+
+	return rep, nil
+}
+
+func ShareableBertyGroupURL(g *bertytypes.Group, groupName string) (string, string, error) {
+	if g.GroupType != bertytypes.GroupTypeMultiMember {
+		return "", "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't share a %s group type", g.GroupType.String()))
+	}
+
+	invite, err := g.Marshal()
+	if err != nil {
+		return "", "", err
+	}
+
+	inviteB64 := base64.StdEncoding.EncodeToString(invite)
+
+	v := url.Values{}
+	v.Set("invite", url.QueryEscape(inviteB64)) // double-encoding to keep "+" as "+" and not as spaces
+	if groupName != "" {
+		v.Set("name", groupName)
+	}
+
+	fragment := v.Encode()
+
+	return fmt.Sprintf("berty://group/#%s", fragment), fmt.Sprintf("https://berty.tech/group#%s", fragment), nil
 }
 
 func (s *service) SendContactRequest(ctx context.Context, req *SendContactRequest_Request) (*SendContactRequest_Reply, error) {
