@@ -1,6 +1,7 @@
 import { composeReducers } from 'redux-compose'
 import { CaseReducer, PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { all, put, takeEvery, select, call } from 'redux-saga/effects'
+import moment from 'moment'
 import { berty } from '@berty-tech/api'
 import { makeDefaultCommandsSagas, strToBuf, bufToStr, jsonToBuf, bufToJSON } from '../utils'
 
@@ -269,7 +270,7 @@ export const transactions: Transactions = {
 			if (conv[i].kind !== 'fake') {
 				const message: UserMessage = {
 					type: AppMessageType.UserMessage,
-					body: 'Test',
+					body: `Test, ${moment().format('MMMM Do YYYY, h:mm:ss a')}`,
 					attachments: [],
 					sentDate: Date.now(),
 				}
