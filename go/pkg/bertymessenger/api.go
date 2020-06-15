@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"os"
 	"runtime"
+	"strconv"
 
 	"berty.tech/berty/v2/go/internal/discordlog"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
@@ -188,10 +189,14 @@ func (s *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*Sys
 		NumGoroutine:    int64(runtime.NumGoroutine()),
 		OperatingSystem: runtime.GOOS,
 		Arch:            runtime.GOARCH,
-		// TODO: update at build time
-		Version: "n/a",
-		VcsRef:  "n/a",
-		//BuildTime:
+		Version:         Version,
+		VcsRef:          VcsRef,
+	}
+	if BuildTime != "n/a" {
+		buildTime, err := strconv.Atoi(BuildTime)
+		if err == nil {
+			reply.BuildTime = int64(buildTime)
+		}
 	}
 	return &reply, nil
 }
