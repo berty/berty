@@ -138,8 +138,19 @@ const BodyDevTools: React.FC<{}> = () => {
 	const [{ padding, flex, margin, color, text }] = useStyles()
 	const { navigate } = useNavigation()
 	const sendToAll = Messenger.useMessageSendToAll()
+	const systemInfo = Settings.useSystemInfo()
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
+			<ButtonSetting
+				name='System info'
+				icon='info-outline'
+				iconSize={30}
+				iconColor={color.dark.grey}
+				onPress={() => {
+					systemInfo()
+					navigate.settings.systemInfo()
+				}}
+			/>
 			<TracingButton />
 			<DiscordShareButton />
 			<DumpContactStore />

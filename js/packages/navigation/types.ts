@@ -44,6 +44,7 @@ export namespace ScreenProps {
 		export type DevTools = RouteProps<void>
 		export type Network = RouteProps<void>
 		export type IpfsWebUI = RouteProps<void>
+		export type SystemInfo = RouteProps<void>
 		export type DevText = RouteProps<{ text: string }>
 	}
 }
@@ -93,6 +94,7 @@ export namespace Routes {
 		AboutBerty = 'Settings.AboutBerty',
 		TermsOfUse = 'Settings.TermsOfUse',
 		DevTools = 'Settings.DevTools',
+		SystemInfo = 'Settings.SystemInfo',
 		Network = 'Settings.Network',
 		IpfsWebUI = 'Settings.IpfsWebUI',
 		DevText = 'Settings.DevText',

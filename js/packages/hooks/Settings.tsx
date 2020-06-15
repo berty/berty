@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { settings } from '@berty-tech/store'
 import { Provider as ReactReduxProvider, useSelector, useDispatch } from 'react-redux'
 import { ActivityIndicator } from 'react-native'
@@ -24,6 +24,17 @@ export const useSettings = () => {
 	return useSelector((state: settings.main.GlobalState) =>
 		account ? settings.main.queries.get(state, { id: account.id }) : undefined,
 	)
+}
+
+export const useSystemInfo = () => {
+	const dispatch = useDispatch()
+	const account = Messenger.useAccount()
+	if (!account) {
+		return () => {}
+	}
+	return () => {
+		dispatch(settings.main.commands.systemInfo({ id: account.id }))
+	}
 }
 
 export const useToggleTracing = () => {

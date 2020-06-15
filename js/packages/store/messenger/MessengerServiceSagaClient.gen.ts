@@ -126,4 +126,29 @@ export default class MessengerServiceSagaClient {
 			})
 			return close
 		})
+	systemInfo = (requestObj: api.berty.messenger.SystemInfo.IRequest = {}) =>
+		eventChannel<api.berty.messenger.SystemInfo.IReply>((emit) => {
+			const buf = api.berty.messenger.SystemInfo.Request.encode(requestObj).finish()
+			const request = bertymessenger.SystemInfo.Request.deserializeBinary(buf)
+			const { close } = grpc.invoke(MessengerService.SystemInfo, {
+				request,
+				transport: this.transport,
+				host: this.host,
+				onMessage: (message: bertymessenger.SystemInfo.Reply) =>
+					emit(api.berty.messenger.SystemInfo.Reply.decode(message.serializeBinary())),
+				onEnd: (code, msg, trailers) => {
+					if (code !== grpc.Code.OK) {
+						emit(
+							new GRPCError(
+								`GRPC SystemInfo ${grpc.Code[code]} (${code}): ${msg}\nTrailers: ${JSON.stringify(
+									trailers,
+								)}`,
+							) as any,
+						)
+					}
+					emit(END)
+				},
+			})
+			return close
+		})
 }
