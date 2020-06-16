@@ -94,7 +94,7 @@ func NewStdoutProvider() (trace.Provider, error) {
 
 func NewJaegerProvider(host, service string) (trace.Provider, func(), error) {
 	return jaeger.NewExportPipeline(
-		jaeger.WithCollectorEndpoint(fmt.Sprintf("http://%s/api/traces", host)),
+		jaeger.WithCollectorEndpoint(fmt.Sprintf("https://%s/api/traces", host)),
 		jaeger.WithProcess(jaeger.Process{
 			ServiceName: service,
 			Tags: []kv.KeyValue{
