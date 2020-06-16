@@ -28,6 +28,12 @@ service MessengerService {
   // SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol.
   rpc SendContactRequest(SendContactRequest.Request) returns (SendContactRequest.Reply);
 
+  // SendMessage sends a message to a group
+  rpc SendMessage(SendMessage.Request) returns (SendMessage.Reply);
+
+  // SendAck sends an acknowledge payload for given message id
+  rpc SendAck(SendAck.Request) returns (SendAck.Reply);
+
   rpc SystemInfo(SystemInfo.Request) returns (SystemInfo.Reply);
 }
 
@@ -90,6 +96,22 @@ message SendContactRequest {
     BertyID berty_id = 1 [(gogoproto.customname) = "BertyID"];
     bytes metadata = 2;
     bytes own_metadata = 3;
+  }
+  message Reply {}
+}
+
+message SendAck {
+  message Request {
+    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+    bytes message_id = 2 [(gogoproto.customname) = "MessageID"];
+  }
+  message Reply {}
+}
+
+message SendMessage {
+  message Request {
+    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+    string message = 2;
   }
   message Reply {}
 }

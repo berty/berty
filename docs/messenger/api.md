@@ -21,9 +21,15 @@
     - [PayloadSetGroupName](#berty.messenger.PayloadSetGroupName)
     - [PayloadUserMessage](#berty.messenger.PayloadUserMessage)
     - [PayloadUserReaction](#berty.messenger.PayloadUserReaction)
+    - [SendAck](#berty.messenger.SendAck)
+    - [SendAck.Reply](#berty.messenger.SendAck.Reply)
+    - [SendAck.Request](#berty.messenger.SendAck.Request)
     - [SendContactRequest](#berty.messenger.SendContactRequest)
     - [SendContactRequest.Reply](#berty.messenger.SendContactRequest.Reply)
     - [SendContactRequest.Request](#berty.messenger.SendContactRequest.Request)
+    - [SendMessage](#berty.messenger.SendMessage)
+    - [SendMessage.Reply](#berty.messenger.SendMessage.Reply)
+    - [SendMessage.Request](#berty.messenger.SendMessage.Request)
     - [ShareableBertyGroup](#berty.messenger.ShareableBertyGroup)
     - [ShareableBertyGroup.Reply](#berty.messenger.ShareableBertyGroup.Reply)
     - [ShareableBertyGroup.Request](#berty.messenger.ShareableBertyGroup.Request)
@@ -181,6 +187,23 @@
 | type | [AppMessageType](#berty.messenger.AppMessageType) |  |  |
 | emoji | [string](#string) |  |  |
 
+<a name="berty.messenger.SendAck"></a>
+
+### SendAck
+
+<a name="berty.messenger.SendAck.Reply"></a>
+
+### SendAck.Reply
+
+<a name="berty.messenger.SendAck.Request"></a>
+
+### SendAck.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  |  |
+| message_id | [bytes](#bytes) |  |  |
+
 <a name="berty.messenger.SendContactRequest"></a>
 
 ### SendContactRequest
@@ -198,6 +221,23 @@
 | berty_id | [BertyID](#berty.messenger.BertyID) |  |  |
 | metadata | [bytes](#bytes) |  |  |
 | own_metadata | [bytes](#bytes) |  |  |
+
+<a name="berty.messenger.SendMessage"></a>
+
+### SendMessage
+
+<a name="berty.messenger.SendMessage.Reply"></a>
+
+### SendMessage.Reply
+
+<a name="berty.messenger.SendMessage.Request"></a>
+
+### SendMessage.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  |  |
+| message | [string](#string) |  |  |
 
 <a name="berty.messenger.ShareableBertyGroup"></a>
 
@@ -299,6 +339,8 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | DevShareInstanceBertyID | [DevShareInstanceBertyID.Request](#berty.messenger.DevShareInstanceBertyID.Request) | [DevShareInstanceBertyID.Reply](#berty.messenger.DevShareInstanceBertyID.Reply) | DevShareInstanceBertyID shares your Berty ID on a dev channel. TODO: remove for public. |
 | ParseDeepLink | [ParseDeepLink.Request](#berty.messenger.ParseDeepLink.Request) | [ParseDeepLink.Reply](#berty.messenger.ParseDeepLink.Reply) | ParseDeepLink parses a link in the form of berty://xxx or https://berty.tech/id# and returns a structure that can be used to display information. This action is read-only. |
 | SendContactRequest | [SendContactRequest.Request](#berty.messenger.SendContactRequest.Request) | [SendContactRequest.Reply](#berty.messenger.SendContactRequest.Reply) | SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol. |
+| SendMessage | [SendMessage.Request](#berty.messenger.SendMessage.Request) | [SendMessage.Reply](#berty.messenger.SendMessage.Reply) | SendMessage sends a message to a group |
+| SendAck | [SendAck.Request](#berty.messenger.SendAck.Request) | [SendAck.Reply](#berty.messenger.SendAck.Reply) | SendAck sends an acknowledge payload for given message id |
 | SystemInfo | [SystemInfo.Request](#berty.messenger.SystemInfo.Request) | [SystemInfo.Reply](#berty.messenger.SystemInfo.Reply) |  |
 
  

@@ -353,6 +353,124 @@ export namespace SendContactRequest {
   }
 }
 
+export class SendAck extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): SendAck.AsObject;
+  static toObject(includeInstance: boolean, msg: SendAck): SendAck.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: SendAck, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SendAck;
+  static deserializeBinaryFromReader(message: SendAck, reader: jspb.BinaryReader): SendAck;
+}
+
+export namespace SendAck {
+  export type AsObject = {
+  }
+
+  export class Request extends jspb.Message {
+    getGroupPk(): Uint8Array | string;
+    getGroupPk_asU8(): Uint8Array;
+    getGroupPk_asB64(): string;
+    setGroupPk(value: Uint8Array | string): void;
+
+    getMessageId(): Uint8Array | string;
+    getMessageId_asU8(): Uint8Array;
+    getMessageId_asB64(): string;
+    setMessageId(value: Uint8Array | string): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Request.AsObject;
+    static toObject(includeInstance: boolean, msg: Request): Request.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Request, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Request;
+    static deserializeBinaryFromReader(message: Request, reader: jspb.BinaryReader): Request;
+  }
+
+  export namespace Request {
+    export type AsObject = {
+      groupPk: Uint8Array | string,
+      messageId: Uint8Array | string,
+    }
+  }
+
+  export class Reply extends jspb.Message {
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Reply.AsObject;
+    static toObject(includeInstance: boolean, msg: Reply): Reply.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Reply, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Reply;
+    static deserializeBinaryFromReader(message: Reply, reader: jspb.BinaryReader): Reply;
+  }
+
+  export namespace Reply {
+    export type AsObject = {
+    }
+  }
+}
+
+export class SendMessage extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): SendMessage.AsObject;
+  static toObject(includeInstance: boolean, msg: SendMessage): SendMessage.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: SendMessage, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SendMessage;
+  static deserializeBinaryFromReader(message: SendMessage, reader: jspb.BinaryReader): SendMessage;
+}
+
+export namespace SendMessage {
+  export type AsObject = {
+  }
+
+  export class Request extends jspb.Message {
+    getGroupPk(): Uint8Array | string;
+    getGroupPk_asU8(): Uint8Array;
+    getGroupPk_asB64(): string;
+    setGroupPk(value: Uint8Array | string): void;
+
+    getMessage(): string;
+    setMessage(value: string): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Request.AsObject;
+    static toObject(includeInstance: boolean, msg: Request): Request.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Request, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Request;
+    static deserializeBinaryFromReader(message: Request, reader: jspb.BinaryReader): Request;
+  }
+
+  export namespace Request {
+    export type AsObject = {
+      groupPk: Uint8Array | string,
+      message: string,
+    }
+  }
+
+  export class Reply extends jspb.Message {
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Reply.AsObject;
+    static toObject(includeInstance: boolean, msg: Reply): Reply.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Reply, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Reply;
+    static deserializeBinaryFromReader(message: Reply, reader: jspb.BinaryReader): Reply;
+  }
+
+  export namespace Reply {
+    export type AsObject = {
+    }
+  }
+}
+
 export class BertyID extends jspb.Message {
   getPublicRendezvousSeed(): Uint8Array | string;
   getPublicRendezvousSeed_asU8(): Uint8Array;

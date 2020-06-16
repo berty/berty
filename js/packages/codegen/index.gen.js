@@ -90,6 +90,8 @@ export const berty = {
 		DevShareInstanceBertyID: jsonPb.lookup('.berty.messenger.DevShareInstanceBertyID'),
 		ParseDeepLink: jsonPb.lookup('.berty.messenger.ParseDeepLink'),
 		SendContactRequest: jsonPb.lookup('.berty.messenger.SendContactRequest'),
+		SendAck: jsonPb.lookup('.berty.messenger.SendAck'),
+		SendMessage: jsonPb.lookup('.berty.messenger.SendMessage'),
 		BertyID: jsonPb.lookup('.berty.messenger.BertyID'),
 		BertyGroup: jsonPb.lookup('.berty.messenger.BertyGroup'),
 		AppMessageType: jsonPb.lookup('.berty.messenger.AppMessageType'),

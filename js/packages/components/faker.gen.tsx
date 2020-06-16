@@ -303,6 +303,20 @@ export namespace faker {
 					callback(null, _api.berty.messenger.SendContactRequest.Reply.encode({}).finish())
 				}
 
+				export const SendMessage: (
+					request: _api.berty.messenger.SendMessage.IRequest,
+					callback: pb.RPCImplCallback,
+				) => void = (request, callback) => {
+					callback(null, _api.berty.messenger.SendMessage.Reply.encode({}).finish())
+				}
+
+				export const SendAck: (
+					request: _api.berty.messenger.SendAck.IRequest,
+					callback: pb.RPCImplCallback,
+				) => void = (request, callback) => {
+					callback(null, _api.berty.messenger.SendAck.Reply.encode({}).finish())
+				}
+
 				export const SystemInfo: (
 					request: _api.berty.messenger.SystemInfo.IRequest,
 					callback: pb.RPCImplCallback,

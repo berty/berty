@@ -1,6 +1,7 @@
 package mini
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"fmt"
@@ -19,8 +20,6 @@ import (
 	"go.opentelemetry.io/otel/api/kv"
 	"go.opentelemetry.io/otel/api/trace"
 	"go.uber.org/zap"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/metadata"
 )
 
 type groupView struct {
@@ -31,6 +30,7 @@ type groupView struct {
 	syncMessages chan *historyMessage
 	memberPK     []byte
 	devicePK     []byte
+	acks         sync.Map
 	logger       *zap.Logger
 }
 
@@ -77,36 +77,6 @@ func (v *groupView) OnSubmit(ctx context.Context, msg string) {
 	v.inputHistory.Append(msg)
 }
 
-type fakeServerStream struct {
-	context context.Context
-}
-
-func (f *fakeServerStream) SetHeader(metadata.MD) error {
-	panic("implement me")
-}
-
-func (f *fakeServerStream) SendHeader(metadata.MD) error {
-	panic("implement me")
-}
-
-func (f *fakeServerStream) SetTrailer(metadata.MD) {
-	panic("implement me")
-}
-
-func (f *fakeServerStream) Context() context.Context {
-	return f.context
-}
-
-func (f *fakeServerStream) SendMsg(m interface{}) error {
-	panic("implement me")
-}
-
-func (f *fakeServerStream) RecvMsg(m interface{}) error {
-	panic("implement me")
-}
-
-var _ grpc.ServerStream = (*fakeServerStream)(nil)
-
 func newViewGroup(v *tabbedGroupsView, g *bertytypes.Group, memberPK, devicePK []byte, logger *zap.Logger) *groupView {
 	return &groupView{
 		memberPK:     memberPK,
@@ -117,6 +87,22 @@ func newViewGroup(v *tabbedGroupsView, g *bertytypes.Group, memberPK, devicePK [
 		syncMessages: make(chan *historyMessage),
 		inputHistory: newInputHistory(),
 		logger:       logger.With(zap.String("group", pkAsShortID(g.PublicKey))),
+	}
+}
+
+func (v *groupView) ack(ctx context.Context, evt *bertytypes.GroupMessageEvent) {
+	_, err := v.v.messenger.SendAck(ctx, &bertymessenger.SendAck_Request{
+		GroupPK:   evt.EventContext.GroupPK,
+		MessageID: evt.EventContext.ID,
+	})
+
+	if err != nil {
+		v.messages.Append(&historyMessage{
+			messageType: messageTypeError,
+			payload:     []byte(fmt.Sprintf("error while sending ack: %s", err.Error())),
+			sender:      evt.Headers.DevicePK,
+			receivedAt:  time.Now(),
+		})
 	}
 }
 
@@ -148,18 +134,28 @@ func (v *groupView) loop(ctx context.Context) {
 					}, time.Time{})
 
 					continue
-				} else if payload.GetType() != bertymessenger.AppMessageType_UserMessage {
-					continue
 				}
 
-				receivedAt := time.Unix(0, payload.(*bertymessenger.PayloadUserMessage).SentDate*1000000)
+				switch payload.GetType() {
+				case bertymessenger.AppMessageType_Acknowledge:
+					if !bytes.Equal(evt.Headers.DevicePK, v.devicePK) {
+						continue
+					}
 
-				v.messages.Prepend(&historyMessage{
-					messageType: messageTypeMessage,
-					payload:     []byte(payload.(*bertymessenger.PayloadUserMessage).Body),
-					sender:      evt.Headers.DevicePK,
-					receivedAt:  receivedAt,
-				}, time.Time{})
+					v.acks.Store(payload.(*bertymessenger.PayloadAcknowledge).Target, true)
+
+				case bertymessenger.AppMessageType_UserMessage:
+					receivedAt := time.Unix(0, payload.(*bertymessenger.PayloadUserMessage).SentDate*1000000)
+
+					v.messages.Prepend(&historyMessage{
+						messageType: messageTypeMessage,
+						payload:     []byte(payload.(*bertymessenger.PayloadUserMessage).Body),
+						sender:      evt.Headers.DevicePK,
+						receivedAt:  receivedAt,
+					}, time.Time{})
+
+					v.ack(ctx, evt)
+				}
 			}
 		}
 
@@ -224,18 +220,29 @@ func (v *groupView) loop(ctx context.Context) {
 					})
 
 					continue
-				} else if payload.GetType() != bertymessenger.AppMessageType_UserMessage {
-					continue
 				}
 
-				receivedAt := time.Unix(0, payload.(*bertymessenger.PayloadUserMessage).SentDate*1000000)
+				switch payload.GetType() {
+				case bertymessenger.AppMessageType_Acknowledge:
+					if !bytes.Equal(evt.Headers.DevicePK, v.devicePK) {
+						continue
+					}
 
-				v.messages.Append(&historyMessage{
-					messageType: messageTypeMessage,
-					payload:     []byte(payload.(*bertymessenger.PayloadUserMessage).Body),
-					sender:      evt.Headers.DevicePK,
-					receivedAt:  receivedAt,
-				})
+					v.acks.Store(payload.(*bertymessenger.PayloadAcknowledge).Target, true)
+					continue
+
+				case bertymessenger.AppMessageType_UserMessage:
+					receivedAt := time.Unix(0, payload.(*bertymessenger.PayloadUserMessage).SentDate*1000000)
+
+					v.messages.Append(&historyMessage{
+						messageType: messageTypeMessage,
+						payload:     []byte(payload.(*bertymessenger.PayloadUserMessage).Body),
+						sender:      evt.Headers.DevicePK,
+						receivedAt:  receivedAt,
+					})
+
+					v.ack(ctx, evt)
+				}
 			}
 		}()
 	}

@@ -55,6 +55,24 @@ MessengerService.SendContactRequest = {
   responseType: bertymessenger_pb.SendContactRequest.Reply
 };
 
+MessengerService.SendMessage = {
+  methodName: "SendMessage",
+  service: MessengerService,
+  requestStream: false,
+  responseStream: false,
+  requestType: bertymessenger_pb.SendMessage.Request,
+  responseType: bertymessenger_pb.SendMessage.Reply
+};
+
+MessengerService.SendAck = {
+  methodName: "SendAck",
+  service: MessengerService,
+  requestStream: false,
+  responseStream: false,
+  requestType: bertymessenger_pb.SendAck.Request,
+  responseType: bertymessenger_pb.SendAck.Reply
+};
+
 MessengerService.SystemInfo = {
   methodName: "SystemInfo",
   service: MessengerService,
@@ -200,6 +218,68 @@ MessengerServiceClient.prototype.sendContactRequest = function sendContactReques
     callback = arguments[1];
   }
   var client = grpc.unary(MessengerService.SendContactRequest, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+MessengerServiceClient.prototype.sendMessage = function sendMessage(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(MessengerService.SendMessage, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+MessengerServiceClient.prototype.sendAck = function sendAck(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(MessengerService.SendAck, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
