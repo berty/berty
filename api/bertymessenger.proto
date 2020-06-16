@@ -3,7 +3,7 @@ syntax = "proto3";
 package berty.messenger;
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
-//import "bertytypes.proto";
+import "bertytypes.proto";
 
 option go_package = "berty.tech/berty/go/pkg/bertymessenger";
 
@@ -12,6 +12,9 @@ option go_package = "berty.tech/berty/go/pkg/bertymessenger";
 service MessengerService {
   // InstanceShareableBertyID returns a Berty ID that can be shared as a string, QR code or deep link.
   rpc InstanceShareableBertyID(InstanceShareableBertyID.Request) returns (InstanceShareableBertyID.Reply);
+
+  // ShareableBertyGroup returns a Berty Group that can be shared as a string, QR code or deep link.
+  rpc ShareableBertyGroup(ShareableBertyGroup.Request) returns (ShareableBertyGroup.Reply);
 
   // DevShareInstanceBertyID shares your Berty ID on a dev channel.
   // TODO: remove for public.
@@ -43,6 +46,19 @@ message InstanceShareableBertyID {
   }
 }
 
+message ShareableBertyGroup {
+  message Request {
+    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+    string group_name = 2;
+  }
+  message Reply {
+    BertyGroup berty_group = 1 [(gogoproto.customname) = "BertyGroup"];
+    string berty_group_payload = 2 [(gogoproto.customname) = "BertyGroupPayload"];
+    string deep_link = 3 [(gogoproto.customname) = "DeepLink"];
+    string html_url = 4 [(gogoproto.customname) = "HTMLURL"];
+  }
+}
+
 message DevShareInstanceBertyID {
   message Request {
     // reset will regenerate a new link
@@ -60,10 +76,12 @@ message ParseDeepLink {
   message Reply {
     Kind kind = 1;
     BertyID berty_id = 3 [(gogoproto.customname) = "BertyID"];
+    BertyGroup berty_group = 4 [(gogoproto.customname) = "BertyGroup"];
   }
   enum Kind {
     UnknownKind = 0;
     BertyID = 1;
+    BertyGroup = 2;
   }
 }
 
@@ -80,6 +98,11 @@ message BertyID {
   bytes public_rendezvous_seed = 1;
   bytes account_pk = 2 [(gogoproto.customname) = "AccountPK"];
   string display_name = 3;
+}
+
+message BertyGroup {
+  berty.types.Group group = 1;
+  string display_name = 2;
 }
 
 enum AppMessageType {

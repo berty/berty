@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
 	"flag"
 	"fmt"
 	"log"
@@ -439,12 +438,12 @@ func main() {
 				return err
 			}
 
-			gBytes, err := g.Marshal()
+			deepLink, _, err := bertymessenger.ShareableBertyGroupURL(g, fmt.Sprintf("random-group-%d", mrand.Int31()%65535))
 			if err != nil {
 				return err
 			}
 
-			fmt.Print(base64.StdEncoding.EncodeToString(gBytes))
+			fmt.Print(deepLink)
 			return nil
 		},
 	}

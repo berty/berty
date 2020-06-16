@@ -86,10 +86,12 @@ export const berty = {
 	messenger: {
 		MessengerService: jsonPb.lookup('.berty.messenger.MessengerService'),
 		InstanceShareableBertyID: jsonPb.lookup('.berty.messenger.InstanceShareableBertyID'),
+		ShareableBertyGroup: jsonPb.lookup('.berty.messenger.ShareableBertyGroup'),
 		DevShareInstanceBertyID: jsonPb.lookup('.berty.messenger.DevShareInstanceBertyID'),
 		ParseDeepLink: jsonPb.lookup('.berty.messenger.ParseDeepLink'),
 		SendContactRequest: jsonPb.lookup('.berty.messenger.SendContactRequest'),
 		BertyID: jsonPb.lookup('.berty.messenger.BertyID'),
+		BertyGroup: jsonPb.lookup('.berty.messenger.BertyGroup'),
 		AppMessageType: jsonPb.lookup('.berty.messenger.AppMessageType'),
 		AppMessageTyped: jsonPb.lookup('.berty.messenger.AppMessageTyped'),
 		UserMessageAttachment: jsonPb.lookup('.berty.messenger.UserMessageAttachment'),

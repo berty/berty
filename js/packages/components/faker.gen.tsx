@@ -275,6 +275,13 @@ export namespace faker {
 					callback(null, _api.berty.messenger.InstanceShareableBertyID.Reply.encode({}).finish())
 				}
 
+				export const ShareableBertyGroup: (
+					request: _api.berty.messenger.ShareableBertyGroup.IRequest,
+					callback: pb.RPCImplCallback,
+				) => void = (request, callback) => {
+					callback(null, _api.berty.messenger.ShareableBertyGroup.Reply.encode({}).finish())
+				}
+
 				export const DevShareInstanceBertyID: (
 					request: _api.berty.messenger.DevShareInstanceBertyID.IRequest,
 					callback: pb.RPCImplCallback,

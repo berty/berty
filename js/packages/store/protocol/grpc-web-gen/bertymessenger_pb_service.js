@@ -19,6 +19,15 @@ MessengerService.InstanceShareableBertyID = {
   responseType: bertymessenger_pb.InstanceShareableBertyID.Reply
 };
 
+MessengerService.ShareableBertyGroup = {
+  methodName: "ShareableBertyGroup",
+  service: MessengerService,
+  requestStream: false,
+  responseStream: false,
+  requestType: bertymessenger_pb.ShareableBertyGroup.Request,
+  responseType: bertymessenger_pb.ShareableBertyGroup.Reply
+};
+
 MessengerService.DevShareInstanceBertyID = {
   methodName: "DevShareInstanceBertyID",
   service: MessengerService,
@@ -67,6 +76,37 @@ MessengerServiceClient.prototype.instanceShareableBertyID = function instanceSha
     callback = arguments[1];
   }
   var client = grpc.unary(MessengerService.InstanceShareableBertyID, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+MessengerServiceClient.prototype.shareableBertyGroup = function shareableBertyGroup(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(MessengerService.ShareableBertyGroup, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

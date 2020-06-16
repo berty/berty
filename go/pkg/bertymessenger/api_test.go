@@ -2,12 +2,16 @@ package bertymessenger
 
 import (
 	"context"
+	"encoding/base64"
 	"runtime"
 	"testing"
 	"time"
 
 	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -147,7 +151,81 @@ func TestSystemInfo(t *testing.T) {
 	assert.Equal(t, ret.Arch, runtime.GOARCH)
 	assert.Equal(t, ret.OperatingSystem, runtime.GOOS)
 	assert.NotEmpty(t, ret.HostName)
-	//assert.NotEmpty(t, ret.VcsRef)
-	//assert.NotEmpty(t, ret.Version)
-	//assert.Greater(t, ret.BuildTime, int64(0))
+	// assert.NotEmpty(t, ret.VcsRef)
+	// assert.NotEmpty(t, ret.Version)
+	// assert.Greater(t, ret.BuildTime, int64(0))
+}
+
+func testParseSharedGroup(t *testing.T, g *bertytypes.Group, name string, ret *ShareableBertyGroup_Reply) {
+	t.Helper()
+	uri, url, err := ShareableBertyGroupURL(g, name)
+
+	assert.NoError(t, err)
+	assert.Equal(t, uri, ret.DeepLink)
+	assert.Equal(t, url, ret.HTMLURL)
+	assert.Equal(t, name, ret.BertyGroup.DisplayName)
+	assert.Equal(t, g.PublicKey, ret.BertyGroup.Group.PublicKey)
+	assert.Equal(t, g.GroupType, ret.BertyGroup.Group.GroupType)
+	assert.Equal(t, g.Secret, ret.BertyGroup.Group.Secret)
+	assert.Equal(t, g.SecretSig, ret.BertyGroup.Group.SecretSig)
+
+	marshaled, err := proto.Marshal(ret.BertyGroup)
+	assert.NoError(t, err)
+	assert.Equal(t, base64.StdEncoding.EncodeToString(marshaled), ret.BertyGroupPayload)
+}
+
+func TestServiceShareableBertyGroup(t *testing.T) {
+	ctx := context.Background()
+
+	var protocol *bertyprotocol.TestingProtocol
+	protocol, cleanup := bertyprotocol.NewTestingProtocol(ctx, t, nil)
+
+	// required to avoid "writing on closing socket",
+	// should be better to have something blocking instead
+	time.Sleep(10 * time.Millisecond)
+
+	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{
+		Logger: testutil.Logger(t),
+		Client: protocol.Client,
+	})
+	defer cleanup()
+
+	g, _, err := bertyprotocol.NewGroupMultiMember()
+	require.NoError(t, err)
+
+	_, err = protocol.Client.MultiMemberGroupJoin(ctx, &bertytypes.MultiMemberGroupJoin_Request{
+		Group: g,
+	})
+	require.NoError(t, err)
+
+	ret1, err := svc.ShareableBertyGroup(ctx, nil)
+	require.Error(t, err)
+
+	ret1, err = svc.ShareableBertyGroup(ctx, &ShareableBertyGroup_Request{
+		GroupPK:   nil,
+		GroupName: "",
+	})
+	require.Error(t, err)
+
+	ret1, err = svc.ShareableBertyGroup(ctx, &ShareableBertyGroup_Request{
+		GroupPK:   []byte("garbage id"),
+		GroupName: "",
+	})
+	require.Error(t, err)
+
+	ret1, err = svc.ShareableBertyGroup(ctx, &ShareableBertyGroup_Request{
+		GroupPK:   g.PublicKey,
+		GroupName: "",
+	})
+	require.NoError(t, err)
+
+	testParseSharedGroup(t, g, "", ret1)
+
+	ret1, err = svc.ShareableBertyGroup(ctx, &ShareableBertyGroup_Request{
+		GroupPK:   g.PublicKey,
+		GroupName: "named group",
+	})
+	require.NoError(t, err)
+
+	testParseSharedGroup(t, g, "named group", ret1)
 }
