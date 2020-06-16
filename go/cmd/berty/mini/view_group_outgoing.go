@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io"
 	"strings"
-	"time"
 
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
@@ -426,15 +425,6 @@ func contactRequestCommand(ctx context.Context, v *groupView, cmd string) error 
 	return err
 }
 
-func payloadUserMessageFormatter(msg string) ([]byte, error) {
-	return json.Marshal(&bertymessenger.PayloadUserMessage{
-		Type:        bertymessenger.AppMessageType_UserMessage,
-		Body:        msg,
-		Attachments: nil,
-		SentDate:    time.Now().UnixNano() / 1000000,
-	})
-}
-
 type AppMessageTyped interface {
 	proto.Message
 	GetType() bertymessenger.AppMessageType
@@ -473,14 +463,9 @@ func newMessageCommand(ctx context.Context, v *groupView, cmd string) error {
 		return nil
 	}
 
-	payload, err := payloadUserMessageFormatter(cmd)
-	if err != nil {
-		return err
-	}
-
-	_, err = v.v.client.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
+	_, err := v.v.messenger.SendMessage(ctx, &bertymessenger.SendMessage_Request{
 		GroupPK: v.g.PublicKey,
-		Payload: payload,
+		Message: cmd,
 	})
 
 	return err

@@ -1490,6 +1490,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 requestType: "SendContactRequest.Request",
                 responseType: "SendContactRequest.Reply"
               },
+              SendMessage: {
+                requestType: "SendMessage.Request",
+                responseType: "SendMessage.Reply"
+              },
+              SendAck: {
+                requestType: "SendAck.Request",
+                responseType: "SendAck.Reply"
+              },
               SystemInfo: {
                 requestType: "SystemInfo.Request",
                 responseType: "SystemInfo.Reply"
@@ -1678,6 +1686,55 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   ownMetadata: {
                     type: "bytes",
                     id: 3
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          SendAck: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  groupPk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "GroupPK"
+                    }
+                  },
+                  messageId: {
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "MessageID"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {}
+              }
+            }
+          },
+          SendMessage: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  groupPk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "GroupPK"
+                    }
+                  },
+                  message: {
+                    type: "string",
+                    id: 2
                   }
                 }
               },

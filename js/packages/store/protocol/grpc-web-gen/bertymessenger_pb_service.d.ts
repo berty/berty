@@ -49,6 +49,24 @@ type MessengerServiceSendContactRequest = {
   readonly responseType: typeof bertymessenger_pb.SendContactRequest.Reply;
 };
 
+type MessengerServiceSendMessage = {
+  readonly methodName: string;
+  readonly service: typeof MessengerService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof bertymessenger_pb.SendMessage.Request;
+  readonly responseType: typeof bertymessenger_pb.SendMessage.Reply;
+};
+
+type MessengerServiceSendAck = {
+  readonly methodName: string;
+  readonly service: typeof MessengerService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof bertymessenger_pb.SendAck.Request;
+  readonly responseType: typeof bertymessenger_pb.SendAck.Reply;
+};
+
 type MessengerServiceSystemInfo = {
   readonly methodName: string;
   readonly service: typeof MessengerService;
@@ -65,6 +83,8 @@ export class MessengerService {
   static readonly DevShareInstanceBertyID: MessengerServiceDevShareInstanceBertyID;
   static readonly ParseDeepLink: MessengerServiceParseDeepLink;
   static readonly SendContactRequest: MessengerServiceSendContactRequest;
+  static readonly SendMessage: MessengerServiceSendMessage;
+  static readonly SendAck: MessengerServiceSendAck;
   static readonly SystemInfo: MessengerServiceSystemInfo;
 }
 
@@ -144,6 +164,24 @@ export class MessengerServiceClient {
   sendContactRequest(
     requestMessage: bertymessenger_pb.SendContactRequest.Request,
     callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.SendContactRequest.Reply|null) => void
+  ): UnaryResponse;
+  sendMessage(
+    requestMessage: bertymessenger_pb.SendMessage.Request,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.SendMessage.Reply|null) => void
+  ): UnaryResponse;
+  sendMessage(
+    requestMessage: bertymessenger_pb.SendMessage.Request,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.SendMessage.Reply|null) => void
+  ): UnaryResponse;
+  sendAck(
+    requestMessage: bertymessenger_pb.SendAck.Request,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.SendAck.Reply|null) => void
+  ): UnaryResponse;
+  sendAck(
+    requestMessage: bertymessenger_pb.SendAck.Request,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.SendAck.Reply|null) => void
   ): UnaryResponse;
   systemInfo(
     requestMessage: bertymessenger_pb.SystemInfo.Request,

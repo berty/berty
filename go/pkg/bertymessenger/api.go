@@ -3,11 +3,13 @@ package bertymessenger
 import (
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"os"
 	"runtime"
 	"strconv"
+	"time"
 
 	"berty.tech/berty/v2/go/internal/discordlog"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
@@ -305,4 +307,52 @@ func (s *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*Sys
 		}
 	}
 	return &reply, nil
+}
+
+func (s *service) SendAck(ctx context.Context, request *SendAck_Request) (*SendAck_Reply, error) {
+	gInfo, err := s.protocol.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+		GroupPK: request.GroupPK,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if gInfo.Group.GroupType != bertytypes.GroupTypeContact {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("only %s groups are supported", bertytypes.GroupTypeContact.String()))
+	}
+
+	payload, err := json.Marshal(&PayloadAcknowledge{
+		Type:   AppMessageType_Acknowledge,
+		Target: base64.StdEncoding.EncodeToString(request.MessageID),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = s.protocol.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
+		GroupPK: request.GroupPK,
+		Payload: payload,
+	})
+
+	return nil, err
+}
+
+func (s *service) SendMessage(ctx context.Context, request *SendMessage_Request) (*SendMessage_Reply, error) {
+	payload, err := json.Marshal(&PayloadUserMessage{
+		Type:        AppMessageType_UserMessage,
+		Body:        request.Message,
+		Attachments: nil,
+		SentDate:    time.Now().UnixNano() / 1000000,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = s.protocol.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
+		GroupPK: request.GroupPK,
+		Payload: payload,
+	})
+
+	return nil, err
 }
