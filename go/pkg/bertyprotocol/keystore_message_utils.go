@@ -13,7 +13,7 @@ import (
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"github.com/golang/protobuf/proto"
+	"github.com/gogo/protobuf/proto"
 	cid "github.com/ipfs/go-cid"
 	datastore "github.com/ipfs/go-datastore"
 	"github.com/libp2p/go-libp2p-core/crypto"

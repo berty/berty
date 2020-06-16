@@ -11,33 +11,33 @@ require (
 	github.com/dgraph-io/badger v1.6.1
 	github.com/gdamore/tcell v1.3.0
 	github.com/gogo/protobuf v1.3.1
-	github.com/golang/protobuf v1.3.3
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0
 	github.com/improbable-eng/grpc-web v0.11.0
-	github.com/ipfs/go-cid v0.0.5
+	github.com/ipfs/go-cid v0.0.6
 	github.com/ipfs/go-datastore v0.4.4
 	github.com/ipfs/go-ds-badger v0.2.4
-	github.com/ipfs/go-ipfs v0.5.0-rc1.0.20200409041533-6cb3ca41da70
-	github.com/ipfs/go-ipfs-config v0.4.0
+	github.com/ipfs/go-ipfs v0.6.0
+	github.com/ipfs/go-ipfs-config v0.8.0
 	github.com/ipfs/go-ipfs-keystore v0.0.1
-	github.com/ipfs/go-log v1.0.3
-	github.com/ipfs/interface-go-ipfs-core v0.2.6
+	github.com/ipfs/go-log v1.0.4
+	github.com/ipfs/go-log/v2 v2.1.1 // indirect
+	github.com/ipfs/interface-go-ipfs-core v0.3.0
 	github.com/itsTurnip/dishooks v0.0.0-20200206125049-b4fc7c7b042e
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
-	github.com/libp2p/go-libp2p v0.7.4
-	github.com/libp2p/go-libp2p-circuit v0.2.1
-	github.com/libp2p/go-libp2p-core v0.5.1
-	github.com/libp2p/go-libp2p-discovery v0.3.0
-	github.com/libp2p/go-libp2p-kad-dht v0.6.2
-	github.com/libp2p/go-libp2p-quic-transport v0.3.3
-	github.com/libp2p/go-libp2p-record v0.1.2
+	github.com/libp2p/go-libp2p v0.10.0
+	github.com/libp2p/go-libp2p-circuit v0.2.3
+	github.com/libp2p/go-libp2p-core v0.6.0
+	github.com/libp2p/go-libp2p-discovery v0.4.0
+	github.com/libp2p/go-libp2p-kad-dht v0.8.2
+	github.com/libp2p/go-libp2p-quic-transport v0.6.0
+	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20190708065449-737144165c9e
-	github.com/libp2p/go-libp2p-transport-upgrader v0.2.0
+	github.com/libp2p/go-libp2p-transport-upgrader v0.3.0
 	github.com/mdp/qrterminal/v3 v3.0.0
-	github.com/multiformats/go-multiaddr v0.2.1
+	github.com/multiformats/go-multiaddr v0.2.2
 	github.com/multiformats/go-multiaddr-dns v0.2.0
 	github.com/multiformats/go-multiaddr-fmt v0.1.0
-	github.com/multiformats/go-multiaddr-net v0.1.4
+	github.com/multiformats/go-multiaddr-net v0.1.5
 	github.com/multiformats/go-multihash v0.0.13
 	github.com/multiformats/go-multistream v0.1.1
 	github.com/oklog/run v1.1.0
@@ -47,16 +47,13 @@ require (
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
 	github.com/skip2/go-qrcode v0.0.0-20200519171959-a3b48390827e
 	github.com/smartystreets/goconvey v1.6.4 // indirect
-	github.com/stretchr/testify v1.5.1
+	github.com/stretchr/testify v1.6.1
 	go.opentelemetry.io/otel v0.6.0
 	go.opentelemetry.io/otel/exporters/trace/jaeger v0.6.0
-	go.uber.org/zap v1.14.1
-	golang.org/x/crypto v0.0.0-20200406173513-056763e48d71
-	golang.org/x/net v0.0.0-20190923162816-aa69164e4478
-	golang.org/x/tools v0.0.0-20200226224502-204d844ad48d // indirect
+	go.uber.org/zap v1.15.0
+	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37
+	golang.org/x/net v0.0.0-20200520182314-0ba52f642ac2
 	google.golang.org/grpc v1.29.1
 	moul.io/godev v1.6.0
 	moul.io/srand v1.4.0
 )
-
-replace github.com/golang/protobuf => github.com/golang/protobuf v1.3.3
