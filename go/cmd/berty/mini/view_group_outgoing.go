@@ -17,9 +17,10 @@ import (
 )
 
 type command struct {
-	title string
-	help  string
-	cmd   func(ctx context.Context, v *groupView, cmd string) error
+	title     string
+	help      string
+	cmd       func(ctx context.Context, v *groupView, cmd string) error
+	hideInLog bool
 }
 
 func stringAsQR(data string) []string {
@@ -146,9 +147,10 @@ func commandList() []*command {
 			cmd:   debugInspectStoreCommand,
 		},
 		{
-			title: "/",
-			help:  "",
-			cmd:   newSlashMessageCommand,
+			title:     "/",
+			help:      "",
+			cmd:       newSlashMessageCommand,
+			hideInLog: true,
 		},
 	}
 }
@@ -257,7 +259,7 @@ func debugInspectStoreCommand(ctx context.Context, v *groupView, cmd string) err
 
 	groupPK, err := base64.StdEncoding.DecodeString(args[0])
 	if err != nil {
-		return err
+		return fmt.Errorf("invalid args, expected: group_pk {message,metadata} (%w)", err)
 	}
 
 	var logType bertytypes.DebugInspectGroupLogType

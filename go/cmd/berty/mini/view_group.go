@@ -45,9 +45,18 @@ func (v *groupView) View() tview.Primitive {
 
 func (v *groupView) commandParser(ctx context.Context, input string) error {
 	tr := tracer.New("command")
+	input = strings.TrimSpace(input)
+
 	if len(input) > 0 && input[0] == '/' {
 		for _, attrs := range commandList() {
 			if prefix := fmt.Sprintf("/%s", attrs.title); strings.HasPrefix(strings.ToLower(input), prefix) {
+				if !attrs.hideInLog {
+					v.syncMessages <- &historyMessage{
+						messageType: messageTypeMessage,
+						payload:     []byte(input),
+					}
+				}
+
 				ctx, span := tr.Start(ctx, attrs.title, trace.WithAttributes(kv.String("input", input)))
 				defer span.End()
 
@@ -61,6 +70,10 @@ func (v *groupView) commandParser(ctx context.Context, input string) error {
 			}
 		}
 
+		v.syncMessages <- &historyMessage{
+			messageType: messageTypeError,
+			payload:     []byte(input),
+		}
 		return fmt.Errorf("command not found, start with // to send a message beginning with a slash")
 	}
 
@@ -99,6 +112,10 @@ func newViewGroup(v *tabbedGroupsView, g *bertytypes.Group, memberPK, devicePK [
 }
 
 func (v *groupView) ack(ctx context.Context, evt *bertytypes.GroupMessageEvent) {
+	if v.g.GroupType != bertytypes.GroupTypeContact {
+		return
+	}
+
 	_, err := v.v.messenger.SendAck(ctx, &bertymessenger.SendAck_Request{
 		GroupPK:   evt.EventContext.GroupPK,
 		MessageID: evt.EventContext.ID,
