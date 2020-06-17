@@ -34,6 +34,7 @@ type groupView struct {
 	contacts          map[string]bertytypes.ContactState
 	muPendingContacts sync.Mutex
 	logger            *zap.Logger
+	hasNew            int32
 }
 
 func (v *groupView) View() tview.Primitive {
@@ -100,12 +101,8 @@ func (v *groupView) ack(ctx context.Context, evt *bertytypes.GroupMessageEvent) 
 	})
 
 	if err != nil {
-		v.messages.Append(&historyMessage{
-			messageType: messageTypeError,
-			payload:     []byte(fmt.Sprintf("error while sending ack: %s", err.Error())),
-			sender:      evt.Headers.DevicePK,
-			receivedAt:  time.Now(),
-		})
+		v.messages.AppendErr(fmt.Errorf("error while sending ack: %s", err.Error()))
+		v.addBadge()
 	}
 }
 
@@ -117,6 +114,7 @@ func (v *groupView) loop(ctx context.Context) {
 		wg.Done()
 		for m := range v.syncMessages {
 			v.messages.Append(m)
+			v.addBadge()
 		}
 	}()
 
@@ -211,6 +209,7 @@ func (v *groupView) loop(ctx context.Context) {
 						payload:     []byte(err.Error()),
 						sender:      evt.Headers.DevicePK,
 					})
+					v.addBadge()
 					return
 				}
 
@@ -221,6 +220,7 @@ func (v *groupView) loop(ctx context.Context) {
 						payload:     []byte(err.Error()),
 						sender:      evt.Headers.DevicePK,
 					})
+					v.addBadge()
 
 					continue
 				}
@@ -243,6 +243,7 @@ func (v *groupView) loop(ctx context.Context) {
 						sender:      evt.Headers.DevicePK,
 						receivedAt:  receivedAt,
 					})
+					v.addBadge()
 
 					v.ack(ctx, evt)
 				}

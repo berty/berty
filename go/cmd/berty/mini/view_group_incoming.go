@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"sync/atomic"
 	"time"
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
@@ -286,11 +287,13 @@ func metadataEventHandler(ctx context.Context, v *groupView, e *bertytypes.Group
 	action, ok := actions[e.Metadata.EventType]
 	if !ok || action == nil {
 		v.messages.AppendErr(fmt.Errorf("action handler for %s not found", e.Metadata.EventType.String()))
+		v.addBadge()
 		return
 	}
 
 	if err := action(ctx, v, e, isHistory); err != nil {
 		v.messages.AppendErr(fmt.Errorf("error while handling metadata event (type: %s): %w", e.Metadata.EventType.String(), err))
+		v.addBadge()
 	}
 }
 
@@ -299,5 +302,21 @@ func addToBuffer(evt *historyMessage, _ *bertytypes.GroupMetadataEvent, v *group
 		v.messages.Prepend(evt, time.Time{})
 	} else {
 		v.messages.Append(evt)
+		v.addBadge()
+	}
+}
+
+func (v *groupView) addBadge() {
+	// Display unread badge
+	recompute := false
+	v.v.lock.Lock()
+	if v.v.selectedGroupView != v {
+		atomic.StoreInt32(&v.hasNew, 1)
+		recompute = true
+	}
+	v.v.lock.Unlock()
+
+	if recompute {
+		v.v.recomputeChannelList(true)
 	}
 }
