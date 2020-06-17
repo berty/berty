@@ -3,7 +3,9 @@ package mini
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"sync"
+	"sync/atomic"
 
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -43,15 +45,24 @@ func (v *tabbedGroupsView) getChannelViewGroups() []*groupView {
 	return items
 }
 
+func groupLabelWithBadge(cg *groupView) string {
+	badge := " "
+	if atomic.LoadInt32(&cg.hasNew) == 1 {
+		badge = "*"
+	}
+
+	return fmt.Sprintf("%s%s", badge, pkAsShortID(cg.g.PublicKey))
+}
+
 func (v *tabbedGroupsView) getChannelLabels() []string {
 	topics := []string{"Account"}
-	topics = append(topics, pkAsShortID(v.accountGroupView.g.PublicKey))
+	topics = append(topics, groupLabelWithBadge(v.accountGroupView))
 
 	if len(v.contactGroupViews) > 0 {
 		topics = append(topics, "Contacts")
 
 		for _, cg := range v.contactGroupViews {
-			topics = append(topics, pkAsShortID(cg.g.PublicKey))
+			topics = append(topics, groupLabelWithBadge(cg))
 		}
 	}
 
@@ -59,7 +70,7 @@ func (v *tabbedGroupsView) getChannelLabels() []string {
 		topics = append(topics, "Groups")
 
 		for _, cg := range v.multiMembersGroupViews {
-			topics = append(topics, pkAsShortID(cg.g.PublicKey))
+			topics = append(topics, groupLabelWithBadge(cg))
 		}
 	}
 
@@ -155,6 +166,8 @@ func (v *tabbedGroupsView) PrevGroup() {
 				v.selectedGroupView = groups[i-1]
 			}
 
+			atomic.StoreInt32(&v.selectedGroupView.hasNew, 0)
+
 			break
 		}
 	}
@@ -178,6 +191,8 @@ func (v *tabbedGroupsView) NextGroup() {
 			} else {
 				v.selectedGroupView = groups[i+1]
 			}
+
+			atomic.StoreInt32(&v.selectedGroupView.hasNew, 0)
 
 			break
 		}
