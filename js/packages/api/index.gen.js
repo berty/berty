@@ -293,4 +293,10 @@ export const google = {
 		SourceCodeInfo: jsonPb.lookup('.google.protobuf.SourceCodeInfo'),
 		GeneratedCodeInfo: jsonPb.lookup('.google.protobuf.GeneratedCodeInfo'),
 	},
+	api: {
+		http: jsonPb.lookup('.google.api.http'),
+		Http: jsonPb.lookup('.google.api.Http'),
+		HttpRule: jsonPb.lookup('.google.api.HttpRule'),
+		CustomHttpPattern: jsonPb.lookup('.google.api.CustomHttpPattern'),
+	},
 }

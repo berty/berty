@@ -336,5 +336,6 @@ export namespace faker {
 	export namespace gogoproto {}
 	export namespace google {
 		export namespace protobuf {}
+		export namespace api {}
 	}
 }

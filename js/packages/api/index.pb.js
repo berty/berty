@@ -14,129 +14,249 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
             methods: {
               InstanceExportData: {
                 requestType: "types.InstanceExportData.Request",
-                responseType: "types.InstanceExportData.Reply"
+                responseType: "types.InstanceExportData.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/InstanceExportData",
+                  "(google.api.http).body": "*"
+                }
               },
               InstanceGetConfiguration: {
                 requestType: "types.InstanceGetConfiguration.Request",
-                responseType: "types.InstanceGetConfiguration.Reply"
+                responseType: "types.InstanceGetConfiguration.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/InstanceGetConfiguration",
+                  "(google.api.http).body": "*"
+                }
               },
               ContactRequestReference: {
                 requestType: "types.ContactRequestReference.Request",
-                responseType: "types.ContactRequestReference.Reply"
+                responseType: "types.ContactRequestReference.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/ContactRequestReference",
+                  "(google.api.http).body": "*"
+                }
               },
               ContactRequestDisable: {
                 requestType: "types.ContactRequestDisable.Request",
-                responseType: "types.ContactRequestDisable.Reply"
+                responseType: "types.ContactRequestDisable.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/ContactRequestDisable",
+                  "(google.api.http).body": "*"
+                }
               },
               ContactRequestEnable: {
                 requestType: "types.ContactRequestEnable.Request",
-                responseType: "types.ContactRequestEnable.Reply"
+                responseType: "types.ContactRequestEnable.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/ContactRequestEnable",
+                  "(google.api.http).body": "*"
+                }
               },
               ContactRequestResetReference: {
                 requestType: "types.ContactRequestResetReference.Request",
-                responseType: "types.ContactRequestResetReference.Reply"
+                responseType: "types.ContactRequestResetReference.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/ContactRequestResetReference",
+                  "(google.api.http).body": "*"
+                }
               },
               ContactRequestSend: {
                 requestType: "types.ContactRequestSend.Request",
-                responseType: "types.ContactRequestSend.Reply"
+                responseType: "types.ContactRequestSend.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/ContactRequestSend",
+                  "(google.api.http).body": "*"
+                }
               },
               ContactRequestAccept: {
                 requestType: "types.ContactRequestAccept.Request",
-                responseType: "types.ContactRequestAccept.Reply"
+                responseType: "types.ContactRequestAccept.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/ContactRequestAccept",
+                  "(google.api.http).body": "*"
+                }
               },
               ContactRequestDiscard: {
                 requestType: "types.ContactRequestDiscard.Request",
-                responseType: "types.ContactRequestDiscard.Reply"
+                responseType: "types.ContactRequestDiscard.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/ContactRequestDiscard",
+                  "(google.api.http).body": "*"
+                }
               },
               ContactBlock: {
                 requestType: "types.ContactBlock.Request",
-                responseType: "types.ContactBlock.Reply"
+                responseType: "types.ContactBlock.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/ContactBlock",
+                  "(google.api.http).body": "*"
+                }
               },
               ContactUnblock: {
                 requestType: "types.ContactUnblock.Request",
-                responseType: "types.ContactUnblock.Reply"
+                responseType: "types.ContactUnblock.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/ContactUnblock",
+                  "(google.api.http).body": "*"
+                }
               },
               ContactAliasKeySend: {
                 requestType: "types.ContactAliasKeySend.Request",
-                responseType: "types.ContactAliasKeySend.Reply"
+                responseType: "types.ContactAliasKeySend.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/ContactAliasKeySend",
+                  "(google.api.http).body": "*"
+                }
               },
               MultiMemberGroupCreate: {
                 requestType: "types.MultiMemberGroupCreate.Request",
-                responseType: "types.MultiMemberGroupCreate.Reply"
+                responseType: "types.MultiMemberGroupCreate.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/MultiMemberGroupCreate",
+                  "(google.api.http).body": "*"
+                }
               },
               MultiMemberGroupJoin: {
                 requestType: "types.MultiMemberGroupJoin.Request",
-                responseType: "types.MultiMemberGroupJoin.Reply"
+                responseType: "types.MultiMemberGroupJoin.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/MultiMemberGroupJoin",
+                  "(google.api.http).body": "*"
+                }
               },
               MultiMemberGroupLeave: {
                 requestType: "types.MultiMemberGroupLeave.Request",
-                responseType: "types.MultiMemberGroupLeave.Reply"
+                responseType: "types.MultiMemberGroupLeave.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/MultiMemberGroupLeave",
+                  "(google.api.http).body": "*"
+                }
               },
               MultiMemberGroupAliasResolverDisclose: {
                 requestType: "types.MultiMemberGroupAliasResolverDisclose.Request",
-                responseType: "types.MultiMemberGroupAliasResolverDisclose.Reply"
+                responseType: "types.MultiMemberGroupAliasResolverDisclose.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/MultiMemberGroupAliasResolverDisclose",
+                  "(google.api.http).body": "*"
+                }
               },
               MultiMemberGroupAdminRoleGrant: {
                 requestType: "types.MultiMemberGroupAdminRoleGrant.Request",
-                responseType: "types.MultiMemberGroupAdminRoleGrant.Reply"
+                responseType: "types.MultiMemberGroupAdminRoleGrant.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/MultiMemberGroupAdminRoleGrant",
+                  "(google.api.http).body": "*"
+                }
               },
               MultiMemberGroupInvitationCreate: {
                 requestType: "types.MultiMemberGroupInvitationCreate.Request",
-                responseType: "types.MultiMemberGroupInvitationCreate.Reply"
+                responseType: "types.MultiMemberGroupInvitationCreate.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/MultiMemberGroupInvitationCreate",
+                  "(google.api.http).body": "*"
+                }
               },
               AppMetadataSend: {
                 requestType: "types.AppMetadataSend.Request",
-                responseType: "types.AppMetadataSend.Reply"
+                responseType: "types.AppMetadataSend.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/AppMetadataSend",
+                  "(google.api.http).body": "*"
+                }
               },
               AppMessageSend: {
                 requestType: "types.AppMessageSend.Request",
-                responseType: "types.AppMessageSend.Reply"
+                responseType: "types.AppMessageSend.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/AppMessageSend",
+                  "(google.api.http).body": "*"
+                }
               },
               GroupMetadataSubscribe: {
                 requestType: "types.GroupMetadataSubscribe.Request",
                 responseType: "types.GroupMetadataEvent",
-                responseStream: true
+                responseStream: true,
+                options: {
+                  "(google.api.http).post": "/protocol/v1/GroupMetadataSubscribe",
+                  "(google.api.http).body": "*"
+                }
               },
               GroupMessageSubscribe: {
                 requestType: "types.GroupMessageSubscribe.Request",
                 responseType: "types.GroupMessageEvent",
-                responseStream: true
+                responseStream: true,
+                options: {
+                  "(google.api.http).post": "/protocol/v1/GroupMessageSubscribe",
+                  "(google.api.http).body": "*"
+                }
               },
               GroupMetadataList: {
                 requestType: "types.GroupMetadataList.Request",
                 responseType: "types.GroupMetadataEvent",
-                responseStream: true
+                responseStream: true,
+                options: {
+                  "(google.api.http).post": "/protocol/v1/GroupMetadataList",
+                  "(google.api.http).body": "*"
+                }
               },
               GroupMessageList: {
                 requestType: "types.GroupMessageList.Request",
                 responseType: "types.GroupMessageEvent",
-                responseStream: true
+                responseStream: true,
+                options: {
+                  "(google.api.http).post": "/protocol/v1/GroupMessageList",
+                  "(google.api.http).body": "*"
+                }
               },
               GroupInfo: {
                 requestType: "types.GroupInfo.Request",
-                responseType: "types.GroupInfo.Reply"
+                responseType: "types.GroupInfo.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/GroupInfo",
+                  "(google.api.http).body": "*"
+                }
               },
               ActivateGroup: {
                 requestType: "types.ActivateGroup.Request",
-                responseType: "types.ActivateGroup.Reply"
+                responseType: "types.ActivateGroup.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/ActivateGroup",
+                  "(google.api.http).body": "*"
+                }
               },
               DeactivateGroup: {
                 requestType: "types.DeactivateGroup.Request",
-                responseType: "types.DeactivateGroup.Reply"
+                responseType: "types.DeactivateGroup.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/DeactivateGroup",
+                  "(google.api.http).body": "*"
+                }
               },
               DebugListGroups: {
                 requestType: "types.DebugListGroups.Request",
                 responseType: "types.DebugListGroups.Reply",
-                responseStream: true
+                responseStream: true,
+                options: {
+                  "(google.api.http).post": "/protocol/v1/DebugListGroups",
+                  "(google.api.http).body": "*"
+                }
               },
               DebugInspectGroupStore: {
                 requestType: "types.DebugInspectGroupStore.Request",
                 responseType: "types.DebugInspectGroupStore.Reply",
-                responseStream: true
+                responseStream: true,
+                options: {
+                  "(google.api.http).post": "/protocol/v1/DebugInspectGroupStore",
+                  "(google.api.http).body": "*"
+                }
               },
               DebugGroup: {
                 requestType: "types.DebugGroup.Request",
-                responseType: "types.DebugGroup.Reply"
+                responseType: "types.DebugGroup.Reply",
+                options: {
+                  "(google.api.http).post": "/protocol/v1/DebugGroup",
+                  "(google.api.http).body": "*"
+                }
               }
             }
           }
@@ -1504,7 +1624,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
             methods: {
               InstanceShareableBertyID: {
                 requestType: "InstanceShareableBertyID.Request",
-                responseType: "InstanceShareableBertyID.Reply"
+                responseType: "InstanceShareableBertyID.Reply",
+                options: {
+                  "(google.api.http).post": "/messenger/v1/InstanceShareableBertyID",
+                  "(google.api.http).body": "*"
+                }
               },
               ShareableBertyGroup: {
                 requestType: "ShareableBertyGroup.Request",
@@ -1512,27 +1636,51 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               },
               DevShareInstanceBertyID: {
                 requestType: "DevShareInstanceBertyID.Request",
-                responseType: "DevShareInstanceBertyID.Reply"
+                responseType: "DevShareInstanceBertyID.Reply",
+                options: {
+                  "(google.api.http).post": "/messenger/v1/DevShareInstanceBertyID",
+                  "(google.api.http).body": "*"
+                }
               },
               ParseDeepLink: {
                 requestType: "ParseDeepLink.Request",
-                responseType: "ParseDeepLink.Reply"
+                responseType: "ParseDeepLink.Reply",
+                options: {
+                  "(google.api.http).post": "/messenger/v1/ParseDeepLink",
+                  "(google.api.http).body": "*"
+                }
               },
               SendContactRequest: {
                 requestType: "SendContactRequest.Request",
-                responseType: "SendContactRequest.Reply"
+                responseType: "SendContactRequest.Reply",
+                options: {
+                  "(google.api.http).post": "/messenger/v1/SendContactRequest",
+                  "(google.api.http).body": "*"
+                }
               },
               SendMessage: {
                 requestType: "SendMessage.Request",
-                responseType: "SendMessage.Reply"
+                responseType: "SendMessage.Reply",
+                options: {
+                  "(google.api.http).post": "/messenger/v1/SendMessage",
+                  "(google.api.http).body": "*"
+                }
               },
               SendAck: {
                 requestType: "SendAck.Request",
-                responseType: "SendAck.Reply"
+                responseType: "SendAck.Reply",
+                options: {
+                  "(google.api.http).post": "/messenger/v1/SendAck",
+                  "(google.api.http).body": "*"
+                }
               },
               SystemInfo: {
                 requestType: "SystemInfo.Request",
-                responseType: "SystemInfo.Reply"
+                responseType: "SystemInfo.Reply",
+                options: {
+                  "(google.api.http).post": "/messenger/v1/SystemInfo",
+                  "(google.api.http).body": "*"
+                }
               }
             }
           },
@@ -3249,6 +3397,96 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     id: 4
                   }
                 }
+              }
+            }
+          }
+        }
+      },
+      api: {
+        options: {
+          java_multiple_files: true,
+          java_outer_classname: "HttpProto",
+          java_package: "com.google.api",
+          objc_class_prefix: "GAPI",
+          cc_enable_arenas: true
+        },
+        nested: {
+          http: {
+            type: "HttpRule",
+            id: 72295728,
+            extend: "google.protobuf.MethodOptions"
+          },
+          Http: {
+            fields: {
+              rules: {
+                rule: "repeated",
+                type: "HttpRule",
+                id: 1
+              }
+            }
+          },
+          HttpRule: {
+            oneofs: {
+              pattern: {
+                oneof: [
+                  "get",
+                  "put",
+                  "post",
+                  "delete",
+                  "patch",
+                  "custom"
+                ]
+              }
+            },
+            fields: {
+              selector: {
+                type: "string",
+                id: 1
+              },
+              get: {
+                type: "string",
+                id: 2
+              },
+              put: {
+                type: "string",
+                id: 3
+              },
+              post: {
+                type: "string",
+                id: 4
+              },
+              "delete": {
+                type: "string",
+                id: 5
+              },
+              patch: {
+                type: "string",
+                id: 6
+              },
+              custom: {
+                type: "CustomHttpPattern",
+                id: 8
+              },
+              body: {
+                type: "string",
+                id: 7
+              },
+              additionalBindings: {
+                rule: "repeated",
+                type: "HttpRule",
+                id: 11
+              }
+            }
+          },
+          CustomHttpPattern: {
+            fields: {
+              kind: {
+                type: "string",
+                id: 1
+              },
+              path: {
+                type: "string",
+                id: 2
               }
             }
           }

@@ -3,6 +3,7 @@
 
 import * as jspb from "google-protobuf";
 import * as github_com_gogo_protobuf_gogoproto_gogo_pb from "./github.com/gogo/protobuf/gogoproto/gogo_pb";
+import * as google_api_annotations_pb from "./google/api/annotations_pb";
 import * as bertytypes_pb from "./bertytypes_pb";
 
 export class InstanceShareableBertyID extends jspb.Message {

@@ -3839,6 +3839,7 @@ export namespace google {
             deprecated?: (boolean|null);
             idempotencyLevel?: (google.protobuf.MethodOptions.IdempotencyLevel|null);
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
+            ".google.api.http"?: (google.api.IHttpRule|null);
         }
 
         class MethodOptions implements IMethodOptions {
@@ -4009,6 +4010,82 @@ export namespace google {
                 public static toObject(message: google.protobuf.GeneratedCodeInfo.Annotation, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
+        }
+    }
+
+    namespace api {
+
+        interface IHttp {
+            rules?: (google.api.IHttpRule[]|null);
+        }
+
+        class Http implements IHttp {
+
+            public rules: google.api.IHttpRule[];
+            public static create(properties?: google.api.IHttp): google.api.Http;
+            public static encode(message: google.api.IHttp, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: google.api.IHttp, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.Http;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.Http;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): google.api.Http;
+            public static toObject(message: google.api.Http, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+        }
+
+        interface IHttpRule {
+            selector?: (string|null);
+            get?: (string|null);
+            put?: (string|null);
+            post?: (string|null);
+            "delete"?: (string|null);
+            patch?: (string|null);
+            custom?: (google.api.ICustomHttpPattern|null);
+            body?: (string|null);
+            additionalBindings?: (google.api.IHttpRule[]|null);
+        }
+
+        class HttpRule implements IHttpRule {
+
+            public selector: string;
+            public get: string;
+            public put: string;
+            public post: string;
+            public delete: string;
+            public patch: string;
+            public custom?: (google.api.ICustomHttpPattern|null);
+            public body: string;
+            public additionalBindings: google.api.IHttpRule[];
+            public pattern?: ("get"|"put"|"post"|"delete"|"patch"|"custom");
+            public static create(properties?: google.api.IHttpRule): google.api.HttpRule;
+            public static encode(message: google.api.IHttpRule, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: google.api.IHttpRule, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.HttpRule;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.HttpRule;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): google.api.HttpRule;
+            public static toObject(message: google.api.HttpRule, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+        }
+
+        interface ICustomHttpPattern {
+            kind?: (string|null);
+            path?: (string|null);
+        }
+
+        class CustomHttpPattern implements ICustomHttpPattern {
+
+            public kind: string;
+            public path: string;
+            public static create(properties?: google.api.ICustomHttpPattern): google.api.CustomHttpPattern;
+            public static encode(message: google.api.ICustomHttpPattern, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: google.api.ICustomHttpPattern, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.CustomHttpPattern;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.CustomHttpPattern;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): google.api.CustomHttpPattern;
+            public static toObject(message: google.api.CustomHttpPattern, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
         }
     }
 }

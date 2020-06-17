@@ -14,3 +14,5 @@ var global = Function('return this')();
 
 var bertytypes_pb = require('./bertytypes_pb.js');
 goog.object.extend(proto, bertytypes_pb);
+var google_api_annotations_pb = require('./google/api/annotations_pb.js');
+goog.object.extend(proto, google_api_annotations_pb);

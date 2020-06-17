@@ -11,7 +11,9 @@ require (
 	github.com/dgraph-io/badger v1.6.1
 	github.com/gdamore/tcell v1.3.0
 	github.com/gogo/protobuf v1.3.1
+	github.com/golang/protobuf v1.4.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0
+	github.com/grpc-ecosystem/grpc-gateway v1.5.0
 	github.com/improbable-eng/grpc-web v0.11.0
 	github.com/ipfs/go-cid v0.0.6
 	github.com/ipfs/go-datastore v0.4.4
@@ -52,6 +54,7 @@ require (
 	go.uber.org/zap v1.15.0
 	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37
 	golang.org/x/net v0.0.0-20200520182314-0ba52f642ac2
+	google.golang.org/genproto v0.0.0-20200212174721-66ed5ce911ce
 	google.golang.org/grpc v1.29.1
 	moul.io/godev v1.6.0
 	moul.io/srand v1.4.0
