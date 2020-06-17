@@ -23,15 +23,17 @@ import (
 )
 
 type groupView struct {
-	g            *bertytypes.Group
-	messages     *historyMessageList
-	v            *tabbedGroupsView
-	inputHistory *inputHistory
-	syncMessages chan *historyMessage
-	memberPK     []byte
-	devicePK     []byte
-	acks         sync.Map
-	logger       *zap.Logger
+	g                 *bertytypes.Group
+	messages          *historyMessageList
+	v                 *tabbedGroupsView
+	inputHistory      *inputHistory
+	syncMessages      chan *historyMessage
+	memberPK          []byte
+	devicePK          []byte
+	acks              sync.Map
+	contacts          map[string]bertytypes.ContactState
+	muPendingContacts sync.Mutex
+	logger            *zap.Logger
 }
 
 func (v *groupView) View() tview.Primitive {
@@ -87,6 +89,7 @@ func newViewGroup(v *tabbedGroupsView, g *bertytypes.Group, memberPK, devicePK [
 		syncMessages: make(chan *historyMessage),
 		inputHistory: newInputHistory(),
 		logger:       logger.With(zap.String("group", pkAsShortID(g.PublicKey))),
+		contacts:     map[string]bertytypes.ContactState{},
 	}
 }
 

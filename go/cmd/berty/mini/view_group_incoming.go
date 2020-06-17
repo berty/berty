@@ -79,6 +79,12 @@ func handlerAccountContactRequestOutgoingSent(ctx context.Context, v *groupView,
 		return err
 	}
 
+	v.muPendingContacts.Lock()
+	if _, hasValue := v.contacts[string(casted.ContactPK)]; (isHistory && !hasValue) || !isHistory {
+		v.contacts[string(casted.ContactPK)] = bertytypes.ContactStateAdded
+	}
+	v.muPendingContacts.Unlock()
+
 	v.v.AddContextGroup(ctx, gInfo.Group)
 	v.v.recomputeChannelList(true)
 
@@ -108,9 +114,15 @@ func handlerAccountContactRequestIncomingReceived(_ context.Context, v *groupVie
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte(fmt.Sprintf("incoming request received, type /contact {accept,discard} %s", base64.StdEncoding.EncodeToString(casted.ContactPK))),
+		payload:     []byte(fmt.Sprintf("incoming request received, type /contact accept %s (alt. /contact discard <id>)", base64.StdEncoding.EncodeToString(casted.ContactPK))),
 		sender:      casted.DevicePK,
 	}, e, v, isHistory)
+
+	v.muPendingContacts.Lock()
+	if _, hasValue := v.contacts[string(casted.ContactPK)]; (isHistory && !hasValue) || !isHistory {
+		v.contacts[string(casted.ContactPK)] = bertytypes.ContactStateReceived
+	}
+	v.muPendingContacts.Unlock()
 
 	return nil
 }
@@ -126,6 +138,12 @@ func handlerAccountContactRequestIncomingDiscarded(_ context.Context, v *groupVi
 		payload:     []byte(fmt.Sprintf("incoming request discarded, contact: %s", base64.StdEncoding.EncodeToString(casted.ContactPK))),
 		sender:      casted.DevicePK,
 	}, e, v, isHistory)
+
+	v.muPendingContacts.Lock()
+	if _, hasValue := v.contacts[string(casted.ContactPK)]; (isHistory && !hasValue) || !isHistory {
+		delete(v.contacts, string(casted.ContactPK))
+	}
+	v.muPendingContacts.Unlock()
 
 	return nil
 }
@@ -165,6 +183,12 @@ func handlerAccountContactRequestOutgoingEnqueued(_ context.Context, v *groupVie
 		payload:     []byte("fake request on the other end by typing `/contact received` with the value of `/contact share`"),
 		sender:      casted.DevicePK,
 	}, nil, v, false)
+
+	v.muPendingContacts.Lock()
+	if _, hasValue := v.contacts[string(casted.Contact.PK)]; (isHistory && !hasValue) || !isHistory {
+		v.contacts[string(casted.Contact.PK)] = bertytypes.ContactStateToRequest
+	}
+	v.muPendingContacts.Unlock()
 
 	return nil
 }
@@ -218,6 +242,12 @@ func handlerAccountContactRequestIncomingAccepted(ctx context.Context, v *groupV
 	if err != nil {
 		return err
 	}
+
+	v.muPendingContacts.Lock()
+	if _, hasValue := v.contacts[string(casted.ContactPK)]; (isHistory && !hasValue) || !isHistory {
+		v.contacts[string(casted.ContactPK)] = bertytypes.ContactStateAdded
+	}
+	v.muPendingContacts.Unlock()
 
 	v.v.AddContextGroup(ctx, gInfo.Group)
 	v.v.recomputeChannelList(false)

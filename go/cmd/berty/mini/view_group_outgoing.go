@@ -66,9 +66,19 @@ func commandList() []*command {
 		// 	cmd:   contactReceivedCommand,
 		// },
 		{
+			title: "contact accept all",
+			help:  "Accepts all pending contact requests",
+			cmd:   contactAcceptAllCommand,
+		},
+		{
 			title: "contact accept",
 			help:  "Accepts a contact requests, a contact id must be supplied",
 			cmd:   contactAcceptCommand,
+		},
+		{
+			title: "contact discard all",
+			help:  "Ignores all pending contact requests",
+			cmd:   contactDiscardAllCommand,
 		},
 		{
 			title: "contact discard",
@@ -126,6 +136,50 @@ func commandList() []*command {
 			cmd:   newSlashMessageCommand,
 		},
 	}
+}
+
+func contactDiscardAllCommand(ctx context.Context, v *groupView, cmd string) error {
+	v.v.accountGroupView.muPendingContacts.Lock()
+	toAdd := [][]byte(nil)
+
+	for id, state := range v.v.accountGroupView.contacts {
+		if state != bertytypes.ContactStateReceived {
+			continue
+		}
+
+		toAdd = append(toAdd, []byte(id))
+	}
+	v.v.accountGroupView.muPendingContacts.Unlock()
+
+	for _, id := range toAdd {
+		if err := contactDiscardCommand(ctx, v, base64.StdEncoding.EncodeToString(id)); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func contactAcceptAllCommand(ctx context.Context, v *groupView, cmd string) error {
+	v.v.accountGroupView.muPendingContacts.Lock()
+	toAdd := [][]byte(nil)
+
+	for id, state := range v.v.accountGroupView.contacts {
+		if state != bertytypes.ContactStateReceived {
+			continue
+		}
+
+		toAdd = append(toAdd, []byte(id))
+	}
+	v.v.accountGroupView.muPendingContacts.Unlock()
+
+	for _, id := range toAdd {
+		if err := contactAcceptCommand(ctx, v, base64.StdEncoding.EncodeToString(id)); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func debugInspectStoreCommand(ctx context.Context, v *groupView, cmd string) error {
