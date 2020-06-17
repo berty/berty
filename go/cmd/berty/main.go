@@ -24,10 +24,13 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/cache/cacheleveldown"
+
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+
+	grpcgw "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
@@ -347,6 +350,7 @@ func main() {
 			// listeners for berty
 			var workers run.Group
 			var grpcServer *grpc.Server
+			var grpcServeMux *grpcgw.ServeMux
 			{
 				// setup grpc server
 				grpcLogger := logger.Named("grpc")
@@ -365,7 +369,8 @@ func main() {
 				tr := tracer.New("grpc-server")
 				// setup grpc with zap
 				grpc_zap.ReplaceGrpcLoggerV2(grpcLogger)
-				grpcServer = grpc.NewServer(
+
+				grpcOpts := []grpc.ServerOption{
 					grpc_middleware.WithUnaryServerChain(
 						grpc_recovery.UnaryServerInterceptor(recoverOpts...),
 						grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
@@ -378,7 +383,10 @@ func main() {
 						grpc_trace.StreamServerInterceptor(tr),
 						grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...),
 					),
-				)
+				}
+
+				grpcServer = grpc.NewServer(grpcOpts...)
+				grpcServeMux = grpcgw.NewServeMux()
 
 				// setup listeners
 				addrs := strings.Split(daemonListeners, ",")
@@ -390,10 +398,14 @@ func main() {
 
 					l, err := grpcutil.Listen(maddr)
 					if err != nil {
+						fmt.Printf("ERROR: %s\n", err)
 						return errcode.TODO.Wrap(err)
 					}
 
-					server := grpcutil.Server{Server: grpcServer}
+					server := grpcutil.Server{
+						Server:   grpcServer,
+						ServeMux: grpcServeMux,
+					}
 
 					workers.Add(func() error {
 						logger.Info("serving", zap.String("maddr", maddr.String()))
@@ -435,9 +447,13 @@ func main() {
 					return errcode.TODO.Wrap(err)
 				}
 
-				bertyprotocol.RegisterProtocolServiceServer(grpcServer, protocol)
-
 				defer protocol.Close()
+
+				// register grpc service
+				bertyprotocol.RegisterProtocolServiceServer(grpcServer, protocol)
+				if err := bertyprotocol.RegisterProtocolServiceHandlerServer(ctx, grpcServeMux, protocol); err != nil {
+					return errcode.TODO.Wrap(err)
+				}
 			}
 
 			// messenger
@@ -447,7 +463,12 @@ func main() {
 					return errcode.TODO.Wrap(err)
 				}
 				messenger := bertymessenger.New(protocolClient, &bertymessenger.Opts{Logger: logger.Named("messenger")})
+
+				// register grpc service
 				bertymessenger.RegisterMessengerServiceServer(grpcServer, messenger)
+				if err := bertymessenger.RegisterMessengerServiceHandlerServer(ctx, grpcServeMux, messenger); err != nil {
+					return errcode.TODO.Wrap(err)
+				}
 			}
 
 			info, err := protocol.InstanceGetConfiguration(ctx, nil)
