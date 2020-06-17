@@ -17,9 +17,10 @@ import (
 )
 
 type command struct {
-	title string
-	help  string
-	cmd   func(ctx context.Context, v *groupView, cmd string) error
+	title     string
+	help      string
+	cmd       func(ctx context.Context, v *groupView, cmd string) error
+	hideInLog bool
 }
 
 func stringAsQR(data string) []string {
@@ -121,9 +122,24 @@ func commandList() []*command {
 			cmd:   contactRequestsOnCommand,
 		},
 		{
+			title: "debug ipfs",
+			help:  "Shows IPFS debug information",
+			cmd:   debugIPFSCommand,
+		},
+		{
+			title: "debug system",
+			help:  "Shows system debug information",
+			cmd:   debugSystemCommand,
+		},
+		{
 			title: "debug groups",
 			help:  "List groups for current account",
 			cmd:   debugListGroupsCommand,
+		},
+		{
+			title: "debug group",
+			help:  "Shows group debug information",
+			cmd:   debugListGroupCommand,
 		},
 		{
 			title: "debug store",
@@ -131,15 +147,65 @@ func commandList() []*command {
 			cmd:   debugInspectStoreCommand,
 		},
 		{
-			title: "/",
-			help:  "",
-			cmd:   newSlashMessageCommand,
+			title:     "/",
+			help:      "",
+			cmd:       newSlashMessageCommand,
+			hideInLog: true,
 		},
 	}
 }
 
+func debugIPFSCommand(ctx context.Context, v *groupView, _ string) error {
+	config, err := v.v.client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+	if err != nil {
+		return err
+	}
+
+	v.messages.Append(&historyMessage{
+		messageType: messageTypeMeta,
+		payload:     []byte(fmt.Sprintf("peerid: %s", config.PeerID)),
+	})
+
+	for i, listener := range config.Listeners {
+		msg := fmt.Sprintf("listener [#%d]: %s", i, listener)
+		v.messages.Append(&historyMessage{
+			messageType: messageTypeMeta,
+			payload:     []byte(msg),
+		})
+	}
+
+	return nil
+}
+
+func debugSystemCommand(ctx context.Context, v *groupView, _ string) error {
+	config, err := v.v.messenger.SystemInfo(ctx, &bertymessenger.SystemInfo_Request{})
+	if err != nil {
+		return err
+	}
+
+	for k, val := range map[string]interface{}{
+		"StartedAt      ": config.StartedAt,
+		"NumCPU         ": config.NumCPU,
+		"GoVersion      ": config.GoVersion,
+		"NumGoroutine   ": config.NumGoroutine,
+		"OperatingSystem": config.OperatingSystem,
+		"HostName       ": config.HostName,
+		"Arch           ": config.Arch,
+		"Version        ": config.Version,
+		"VcsRef         ": config.VcsRef,
+		"BuildTime      ": config.BuildTime,
+	} {
+		v.messages.Append(&historyMessage{
+			messageType: messageTypeMeta,
+			payload:     []byte(fmt.Sprintf("%s: %v", k, val)),
+		})
+	}
+
+	return nil
+}
+
 func contactDiscardAllCommand(ctx context.Context, v *groupView, cmd string) error {
-	v.v.accountGroupView.muPendingContacts.Lock()
+	v.v.accountGroupView.muAggregates.Lock()
 	toAdd := [][]byte(nil)
 
 	for id, state := range v.v.accountGroupView.contacts {
@@ -149,7 +215,7 @@ func contactDiscardAllCommand(ctx context.Context, v *groupView, cmd string) err
 
 		toAdd = append(toAdd, []byte(id))
 	}
-	v.v.accountGroupView.muPendingContacts.Unlock()
+	v.v.accountGroupView.muAggregates.Unlock()
 
 	for _, id := range toAdd {
 		if err := contactDiscardCommand(ctx, v, base64.StdEncoding.EncodeToString(id)); err != nil {
@@ -161,7 +227,7 @@ func contactDiscardAllCommand(ctx context.Context, v *groupView, cmd string) err
 }
 
 func contactAcceptAllCommand(ctx context.Context, v *groupView, cmd string) error {
-	v.v.accountGroupView.muPendingContacts.Lock()
+	v.v.accountGroupView.muAggregates.Lock()
 	toAdd := [][]byte(nil)
 
 	for id, state := range v.v.accountGroupView.contacts {
@@ -171,7 +237,7 @@ func contactAcceptAllCommand(ctx context.Context, v *groupView, cmd string) erro
 
 		toAdd = append(toAdd, []byte(id))
 	}
-	v.v.accountGroupView.muPendingContacts.Unlock()
+	v.v.accountGroupView.muAggregates.Unlock()
 
 	for _, id := range toAdd {
 		if err := contactAcceptCommand(ctx, v, base64.StdEncoding.EncodeToString(id)); err != nil {
@@ -193,7 +259,7 @@ func debugInspectStoreCommand(ctx context.Context, v *groupView, cmd string) err
 
 	groupPK, err := base64.StdEncoding.DecodeString(args[0])
 	if err != nil {
-		return err
+		return fmt.Errorf("invalid args, expected: group_pk {message,metadata} (%w)", err)
 	}
 
 	var logType bertytypes.DebugInspectGroupLogType
@@ -306,6 +372,65 @@ func debugListGroupsCommand(ctx context.Context, v *groupView, cmd string) error
 			payload:     formatDebugListGroupsReply(e),
 		}
 	}
+}
+
+func debugListGroupCommand(ctx context.Context, v *groupView, cmd string) error {
+	v.messages.Append(&historyMessage{
+		messageType: messageTypeMeta,
+		payload:     []byte(fmt.Sprintf("group pk:     %s", base64.StdEncoding.EncodeToString(v.g.PublicKey))),
+	})
+
+	v.messages.Append(&historyMessage{
+		messageType: messageTypeMeta,
+		payload:     []byte(fmt.Sprintf("group secret: %s", base64.StdEncoding.EncodeToString(v.g.Secret))),
+	})
+
+	v.messages.Append(&historyMessage{
+		messageType: messageTypeMeta,
+		payload:     []byte(fmt.Sprintf("group type:   %s", v.g.GroupType.String())),
+	})
+
+	v.messages.Append(&historyMessage{
+		messageType: messageTypeMeta,
+		payload:     []byte(fmt.Sprintf("member pk:    %s", base64.StdEncoding.EncodeToString(v.memberPK))),
+	})
+
+	v.messages.Append(&historyMessage{
+		messageType: messageTypeMeta,
+		payload:     []byte(fmt.Sprintf("device pk:    %s", base64.StdEncoding.EncodeToString(v.devicePK))),
+	})
+
+	if v.g.GroupType == bertytypes.GroupTypeMultiMember {
+		v.muAggregates.Lock()
+
+		v.messages.Append(&historyMessage{
+			messageType: messageTypeMeta,
+			payload:     []byte("devices:"),
+		})
+
+		for _, device := range v.devices {
+			v.messages.Append(&historyMessage{
+				messageType: messageTypeMeta,
+				payload:     []byte(fmt.Sprintf(" - member: %s - device: %s", base64.StdEncoding.EncodeToString(device.MemberPK), base64.StdEncoding.EncodeToString(device.DevicePK))),
+			})
+		}
+
+		v.messages.Append(&historyMessage{
+			messageType: messageTypeMeta,
+			payload:     []byte("secrets:"),
+		})
+
+		for _, secret := range v.secrets {
+			v.messages.Append(&historyMessage{
+				messageType: messageTypeMeta,
+				payload:     []byte(fmt.Sprintf(" - secret: %s for %s", base64.StdEncoding.EncodeToString(secret.DevicePK), base64.StdEncoding.EncodeToString(secret.DestMemberPK))),
+			})
+		}
+
+		v.muAggregates.Unlock()
+	}
+
+	return nil
 }
 
 // func aliasProveCommand(ctx context.Context, v *groupView, cmd string) error {

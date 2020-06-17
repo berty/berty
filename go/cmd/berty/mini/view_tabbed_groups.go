@@ -232,7 +232,7 @@ func newTabbedGroups(ctx context.Context, g *bertytypes.GroupInfo_Reply, client 
 		AddItem(v.selectedGroupView.View(), 0, 1, false)
 	v.recomputeChannelList(false)
 
-	v.accountGroupView.welcomeEventDisplay(ctx)
+	v.accountGroupView.welcomeEventDisplay()
 
 	v.accountGroupView.loop(ctx)
 
