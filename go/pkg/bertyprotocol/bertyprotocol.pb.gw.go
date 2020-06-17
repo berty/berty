@@ -1001,6 +1001,7 @@ func local_request_ProtocolService_DebugGroup_0(ctx context.Context, marshaler r
 // RegisterProtocolServiceHandlerServer registers the http handlers for service ProtocolService to "mux".
 // UnaryRPC     :call ProtocolServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
+// Note that using this registration option will cause many gRPC library features (such as grpc.SendHeader, etc) to stop working. Consider using RegisterProtocolServiceHandlerFromEndpoint instead.
 func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ProtocolServiceServer) error {
 
 	mux.Handle("POST", pattern_ProtocolService_InstanceExportData_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
