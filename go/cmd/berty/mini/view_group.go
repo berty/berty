@@ -31,7 +31,6 @@ type groupView struct {
 	memberPK     []byte
 	devicePK     []byte
 	acks         sync.Map
-	contacts     map[string]bertytypes.ContactState
 	devices      map[string]*bertytypes.GroupAddMemberDevice
 	secrets      map[string]*bertytypes.GroupAddDeviceSecret
 	muAggregates sync.Mutex
@@ -105,7 +104,6 @@ func newViewGroup(v *tabbedGroupsView, g *bertytypes.Group, memberPK, devicePK [
 		syncMessages: make(chan *historyMessage),
 		inputHistory: newInputHistory(),
 		logger:       logger.With(zap.String("group", pkAsShortID(g.PublicKey))),
-		contacts:     map[string]bertytypes.ContactState{},
 		devices:      map[string]*bertytypes.GroupAddMemberDevice{},
 		secrets:      map[string]*bertytypes.GroupAddDeviceSecret{},
 	}

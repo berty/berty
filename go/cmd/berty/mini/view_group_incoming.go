@@ -88,11 +88,12 @@ func handlerAccountContactRequestOutgoingSent(ctx context.Context, v *groupView,
 		return err
 	}
 
-	v.muAggregates.Lock()
-	if _, hasValue := v.contacts[string(casted.ContactPK)]; (isHistory && !hasValue) || !isHistory {
-		v.contacts[string(casted.ContactPK)] = bertytypes.ContactStateAdded
+	v.v.lock.Lock()
+	if _, hasValue := v.v.contactStates[string(casted.ContactPK)]; !hasValue || !isHistory {
+		v.v.contactStates[string(casted.ContactPK)] = bertytypes.ContactStateAdded
 	}
-	v.muAggregates.Unlock()
+
+	v.v.lock.Unlock()
 
 	v.v.AddContextGroup(ctx, gInfo.Group)
 	v.v.recomputeChannelList(true)
@@ -115,23 +116,37 @@ func handlerAccountGroupLeft(_ context.Context, v *groupView, e *bertytypes.Grou
 	return nil
 }
 
-func handlerAccountContactRequestIncomingReceived(_ context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+func handlerAccountContactRequestIncomingReceived(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &bertytypes.AccountContactRequestReceived{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
 
+	name := string(casted.ContactMetadata)
+
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte(fmt.Sprintf("incoming request received, type /contact accept %s (alt. /contact discard <id>)", base64.StdEncoding.EncodeToString(casted.ContactPK))),
+		payload:     []byte(fmt.Sprintf("incoming request received %s, type /contact accept %s (alt. /contact discard <id>)", name, base64.StdEncoding.EncodeToString(casted.ContactPK))),
 		sender:      casted.DevicePK,
 	}, e, v, isHistory)
 
-	v.muAggregates.Lock()
-	if _, hasValue := v.contacts[string(casted.ContactPK)]; (isHistory && !hasValue) || !isHistory {
-		v.contacts[string(casted.ContactPK)] = bertytypes.ContactStateReceived
+	v.v.lock.Lock()
+	if _, hasValue := v.v.contactStates[string(casted.ContactPK)]; !hasValue || !isHistory {
+		v.v.contactStates[string(casted.ContactPK)] = bertytypes.ContactStateReceived
 	}
-	v.muAggregates.Unlock()
+	v.v.lock.Unlock()
+
+	v.v.lock.Lock()
+	gInfo, err := v.v.client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+		ContactPK: casted.ContactPK,
+	})
+
+	if err == nil {
+		if _, hasValue := v.v.contactNames[string(gInfo.Group.PublicKey)]; (!hasValue || !isHistory) && len(casted.ContactMetadata) > 0 {
+			v.v.contactNames[string(gInfo.Group.PublicKey)] = string(casted.ContactMetadata)
+		}
+	}
+	v.v.lock.Unlock()
 
 	return nil
 }
@@ -148,11 +163,11 @@ func handlerAccountContactRequestIncomingDiscarded(_ context.Context, v *groupVi
 		sender:      casted.DevicePK,
 	}, e, v, isHistory)
 
-	v.muAggregates.Lock()
-	if _, hasValue := v.contacts[string(casted.ContactPK)]; (isHistory && !hasValue) || !isHistory {
-		delete(v.contacts, string(casted.ContactPK))
+	v.v.lock.Lock()
+	if _, hasValue := v.v.contactStates[string(casted.ContactPK)]; !hasValue || !isHistory {
+		v.v.contactStates[string(casted.ContactPK)] = bertytypes.ContactStateRemoved
 	}
-	v.muAggregates.Unlock()
+	v.v.lock.Unlock()
 
 	return nil
 }
@@ -172,7 +187,7 @@ func handlerMultiMemberGroupInitialMemberAnnounced(_ context.Context, v *groupVi
 	return nil
 }
 
-func handlerAccountContactRequestOutgoingEnqueued(_ context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+func handlerAccountContactRequestOutgoingEnqueued(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &bertytypes.AccountContactRequestEnqueued{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
@@ -193,11 +208,23 @@ func handlerAccountContactRequestOutgoingEnqueued(_ context.Context, v *groupVie
 		sender:      casted.DevicePK,
 	}, nil, v, false)
 
-	v.muAggregates.Lock()
-	if _, hasValue := v.contacts[string(casted.Contact.PK)]; (isHistory && !hasValue) || !isHistory {
-		v.contacts[string(casted.Contact.PK)] = bertytypes.ContactStateToRequest
+	v.v.lock.Lock()
+	if _, hasValue := v.v.contactStates[string(casted.Contact.PK)]; !hasValue || !isHistory {
+		v.v.contactStates[string(casted.Contact.PK)] = bertytypes.ContactStateToRequest
 	}
-	v.muAggregates.Unlock()
+	v.v.lock.Unlock()
+
+	v.v.lock.Lock()
+	gInfo, err := v.v.client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+		ContactPK: casted.Contact.PK,
+	})
+
+	if err == nil {
+		if _, hasValue := v.v.contactNames[string(gInfo.Group.PublicKey)]; (!hasValue || !isHistory) && len(casted.Contact.Metadata) > 0 {
+			v.v.contactNames[string(gInfo.Group.PublicKey)] = string(casted.Contact.Metadata)
+		}
+	}
+	v.v.lock.Unlock()
 
 	return nil
 }
@@ -252,11 +279,11 @@ func handlerAccountContactRequestIncomingAccepted(ctx context.Context, v *groupV
 		return err
 	}
 
-	v.muAggregates.Lock()
-	if _, hasValue := v.contacts[string(casted.ContactPK)]; (isHistory && !hasValue) || !isHistory {
-		v.contacts[string(casted.ContactPK)] = bertytypes.ContactStateAdded
+	v.v.lock.Lock()
+	if _, hasValue := v.v.contactStates[string(casted.ContactPK)]; !hasValue || !isHistory {
+		v.v.contactStates[string(casted.ContactPK)] = bertytypes.ContactStateAdded
 	}
-	v.muAggregates.Unlock()
+	v.v.lock.Unlock()
 
 	v.v.AddContextGroup(ctx, gInfo.Group)
 	v.v.recomputeChannelList(false)
