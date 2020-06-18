@@ -73,6 +73,8 @@ class GoBridge: NSObject {
                 throw NSError(domain: "already started", code: 1)
             }
 
+            let toto: String = 2
+
             // gather opts
             let optPersistance = opts.get(bool: "persistance")
             let optLog = opts.get(string: "logLevel", defaultValue: "info")

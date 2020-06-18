@@ -50,7 +50,7 @@ bazel.banner: bazel.generate
 .PHONY: bazel.unittest
 bazel.unittest: bazel.generate
 	$(call check-program, $(BAZEL))
-	$(call bazel, test, --test_output=streamed //go/...)
+	$(call bazel, test, --cache_test_results=no --test_output=streamed //go/...)
 
 .PHONY: bazel.rdvp
 bazel.rdvp: bazel.generate
