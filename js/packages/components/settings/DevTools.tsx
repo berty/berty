@@ -203,7 +203,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				iconColor={color.dark.grey}
 				onPress={() => {
 					sendToAll()
-					navigate.main.home()
+					Vibration.vibrate(500)
 				}}
 			/>
 			<ButtonSettingRow
