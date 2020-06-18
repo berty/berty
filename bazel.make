@@ -104,36 +104,13 @@ vendor/github.com/libp2p/go-openssl/BUILD.bazel: build/bazel/com_github_libp2p_g
 
 $(SAMPLE_GAZELLE_GENERATED_FILE): WORKSPACE vendor $(VENDOR_BAZEL_OVERRIDEN_FILES)
 	$(call check-program, $(BAZEL))
+	find vendor -name BUILD.bazel -delete
 	$(BAZEL) $(BAZEL_ARGS) run $(BAZEL_CMD_ARGS) //:gazelle
 
 vendor: go.mod
 	$(call check-program, $(GO))
 	GO111MODULE=on $(GO) mod vendor
 	touch $@
-
-PROTOS_SRC := $(wildcard api/*.proto) $(wildcard api/go-internal/*.proto)
-GEN_SRC := $(PROTOS_SRC) Makefile
-GEN_SUM := go/gen.sum
-
-.PHONY: pb.generate
-pb.generate: $(GEN_SUM)
-$(GEN_SUM): $(GEN_SRC)
-	$(call check-program, shasum docker $(GO))
-	shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp
-	@diff -q $(GEN_SUM).tmp $(GEN_SUM) || ( \
-	  uid=`id -u`; \
-	  set -xe; \
-	  $(GO) mod vendor; \
-	  docker run \
-	    --user="$$uid" \
-	    --volume="$(PWD):/go/src/berty.tech/berty" \
-	    --workdir="/go/src/berty.tech/berty/go" \
-	    --entrypoint="sh" \
-	    --rm \
-	    bertytech/protoc:24 \
-	    -xec 'make generate_local'; \
-	    $(MAKE) tidy \
-	)
 
 .PHONY: tidy
 tidy: pb.generate

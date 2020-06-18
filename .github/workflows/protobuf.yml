@@ -61,7 +61,7 @@ on:
 jobs:
   gen-go-and-docs:
     runs-on: ubuntu-latest
-    container: bertytech/protoc:23
+    container: bertytech/protoc:24
     steps:
       - uses: actions/checkout@v2
       - run: find . -name gen.sum ! -path './js/*' -delete

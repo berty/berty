@@ -126,7 +126,7 @@ GEN_SUM := gen.sum
 
 .PHONY: pb.clean
 pb.clean:
-	rm -f gen.sum $(wildcard */*/*.pb.go) $(wildcard */*/*pb_test.go)
+	rm -f gen.sum $(wildcard */*/*.pb.go) $(wildcard */*/*pb_test.go) $(wildcard */*/*pb.gw.go)
 
 .PHONY: pb.generate
 pb.generate: gen.sum
