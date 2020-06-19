@@ -1,6 +1,6 @@
 b41a615518c699db79b00db16094ba23596b0506  ../api/bertymessenger.proto
 a6b1965b41d41869f43fc31d65350fccd9fc2908  ../api/bertyprotocol.proto
 c38c894af6d917d75d4f4e51e9cd6af9668d9e0c  ../api/bertytypes.proto
-0c750308ca695ad24d22caa368e197f0fbc3d9e7  ../api/errcode.proto
+f8f05c10a1cf5c8b42f9bde6bb572d0bc687979e  ../api/errcode.proto
 5589d560e33f2da4a466ad965eb9c8bd3d7612cd  ../api/go-internal/handshake.proto
 71b3bb87bb39859c4d2dffcb1d65d39edc8d982e  Makefile

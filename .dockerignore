@@ -6,11 +6,13 @@
 .env
 .projectile
 /bazel-*
+Dockerfile
 core-sources.jar
 coverage.txt
 gen.sum.tmp
 gin-bin
 google-services.json
+js/
 out/
 profile.out
 vendor/

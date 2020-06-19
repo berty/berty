@@ -4,19 +4,20 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"os"
 	"strings"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/tracer"
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/gdamore/tcell"
-
+	"github.com/gdamore/tcell/terminfo"
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	p2plog "github.com/ipfs/go-log"
-
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"github.com/juju/fslock"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/rivo/tview"
@@ -113,7 +114,12 @@ func newService(ctx context.Context, logger *zap.Logger, opts *Opts) (bertyproto
 	}
 }
 
-func Main(ctx context.Context, opts *Opts) {
+func Main(ctx context.Context, opts *Opts) error {
+	_, err := terminfo.LookupTerminfo(os.Getenv("TERM"))
+	if err != nil {
+		return errcode.ErrCLINoTermcaps.Wrap(err)
+	}
+
 	p2plog.SetAllLoggers(p2plog.LevelFatal)
 
 	ctx, cancel := context.WithCancel(ctx)
@@ -139,7 +145,7 @@ func Main(ctx context.Context, opts *Opts) {
 
 		protocolClient, err := bertyprotocol.NewClientFromServer(grpcServer, service, clientOpts...)
 		if err != nil {
-			panic(err)
+			return errcode.TODO.Wrap(err)
 		}
 
 		defer protocolClient.Close()
@@ -150,7 +156,7 @@ func Main(ctx context.Context, opts *Opts) {
 			clientOpts...,
 		)...)
 		if err != nil {
-			panic(err)
+			return errcode.TODO.Wrap(err)
 		}
 
 		client = bertyprotocol.NewProtocolServiceClient(cc)
@@ -160,7 +166,7 @@ func Main(ctx context.Context, opts *Opts) {
 
 	config, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
 	if err != nil {
-		panic(err)
+		return errcode.TODO.Wrap(err)
 	}
 
 	app := tview.NewApplication()
@@ -169,7 +175,7 @@ func Main(ctx context.Context, opts *Opts) {
 		GroupPK: config.AccountGroupPK,
 	})
 	if err != nil {
-		panic(err)
+		return errcode.TODO.Wrap(err)
 	}
 
 	if opts.Logger != nil {
@@ -183,7 +189,7 @@ func Main(ctx context.Context, opts *Opts) {
 		req := &bertytypes.GroupMetadataSubscribe_Request{GroupPK: accountGroup.Group.PublicKey}
 		cl, err := tabbedView.client.GroupMetadataSubscribe(ctx, req)
 		if err != nil {
-			panic(err)
+			return errcode.TODO.Wrap(err)
 		}
 
 		go func() {
@@ -207,7 +213,7 @@ func Main(ctx context.Context, opts *Opts) {
 
 		for _, invit := range strings.Split(opts.GroupInvitation, ",") {
 			if err := groupJoinCommand(ctx, tabbedView.accountGroupView, invit); err != nil {
-				panic(err)
+				return errcode.TODO.Wrap(err)
 			}
 		}
 	}
@@ -272,6 +278,8 @@ func Main(ctx context.Context, opts *Opts) {
 	})
 
 	if err := app.SetRoot(mainUI, true).SetFocus(mainUI).Run(); err != nil {
-		panic(err)
+		return errcode.TODO.Wrap(err)
 	}
+
+	return nil
 }
