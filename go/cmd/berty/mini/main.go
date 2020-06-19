@@ -243,6 +243,8 @@ func Main(ctx context.Context, opts *Opts) {
 			tcell.KeyEnd:   func() bool { tabbedView.GetActiveViewGroup().messages.historyScroll.ScrollToEnd(); return true },
 			tcell.KeyPgUp:  func() bool { tabbedView.GetActiveViewGroup().ScrollToOffset(-10); return true },
 			tcell.KeyPgDn:  func() bool { tabbedView.GetActiveViewGroup().ScrollToOffset(+10); return true },
+			tcell.KeyCtrlP: func() bool { tabbedView.PrevGroup(); return true },
+			tcell.KeyCtrlN: func() bool { tabbedView.NextGroup(); return true },
 			tcell.KeyUp: func() bool {
 				if event.Modifiers() == tcell.ModAlt || event.Modifiers() == tcell.ModCtrl {
 					tabbedView.PrevGroup()

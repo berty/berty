@@ -52,9 +52,14 @@ func commandList() []*command {
 			cmd:   groupNewCommand,
 		},
 		{
-			title: "group invite",
-			help:  "Displays a invite for the current group",
-			cmd:   groupInviteCommand,
+			title: "group share qr",
+			help:  "Displays an invite QR Code for the current group",
+			cmd:   groupInviteCommand(renderQR),
+		},
+		{
+			title: "group share",
+			help:  "Displays a invite Link for the current group",
+			cmd:   groupInviteCommand(renderText),
 		},
 		{
 			title: "group join",
@@ -89,12 +94,12 @@ func commandList() []*command {
 		{
 			title: "contact share qr",
 			help:  "Output a shareable contact QR Code",
-			cmd:   contactShareCommand(contactShareCommandQRCode),
+			cmd:   contactShareCommand(renderQR),
 		},
 		{
 			title: "contact share",
 			help:  "Output a shareable contact URL",
-			cmd:   contactShareCommand(contactShareCommandURL),
+			cmd:   contactShareCommand(renderText),
 		},
 		{
 			title: "contact request",
@@ -167,14 +172,13 @@ func commandList() []*command {
 
 func setDisplayName(_ context.Context, v *groupView, cmd string) error {
 	v.v.lock.Lock()
-	defer v.v.lock.Unlock()
-
 	v.v.displayName = cmd
+	v.v.lock.Unlock()
 
-	v.messages.Append(&historyMessage{
+	v.syncMessages <- &historyMessage{
 		messageType: messageTypeMeta,
 		payload:     []byte(fmt.Sprintf("display name changed to \"%s\"", cmd)),
-	})
+	}
 
 	return nil
 }
@@ -475,31 +479,21 @@ func aliasSendCommand(ctx context.Context, v *groupView, cmd string) error {
 	return nil
 }
 
-func groupInviteCommand(ctx context.Context, v *groupView, cmd string) error {
-	res, err := v.v.messenger.ShareableBertyGroup(ctx, &bertymessenger.ShareableBertyGroup_Request{
-		GroupPK:   v.g.PublicKey,
-		GroupName: "some group",
-	})
+func groupInviteCommand(renderFunc func(*groupView, string)) func(ctx context.Context, v *groupView, cmd string) error {
+	return func(ctx context.Context, v *groupView, cmd string) error {
+		res, err := v.v.messenger.ShareableBertyGroup(ctx, &bertymessenger.ShareableBertyGroup_Request{
+			GroupPK:   v.g.PublicKey,
+			GroupName: "some group",
+		})
 
-	if err != nil {
-		return err
-	}
-
-	if cmd == "qr" || cmd == "qrcode" {
-		for _, l := range stringAsQR(res.DeepLink) {
-			v.syncMessages <- &historyMessage{
-				messageType: messageTypeMeta,
-				payload:     []byte(l),
-			}
+		if err != nil {
+			return err
 		}
-	} else {
-		v.syncMessages <- &historyMessage{
-			messageType: messageTypeMeta,
-			payload:     []byte(res.DeepLink),
-		}
-	}
 
-	return nil
+		renderFunc(v, res.DeepLink)
+
+		return nil
+	}
 }
 
 func cmdHelp(ctx context.Context, v *groupView, cmd string) error {
@@ -698,7 +692,7 @@ func contactShareCommand(displayFunc func(*groupView, string)) func(ctx context.
 	}
 }
 
-func contactShareCommandQRCode(v *groupView, url string) {
+func renderQR(v *groupView, url string) {
 	for _, l := range stringAsQR(url) {
 		v.syncMessages <- &historyMessage{
 			messageType: messageTypeMeta,
@@ -707,7 +701,7 @@ func contactShareCommandQRCode(v *groupView, url string) {
 	}
 }
 
-func contactShareCommandURL(v *groupView, url string) {
+func renderText(v *groupView, url string) {
 	v.syncMessages <- &historyMessage{
 		messageType: messageTypeMeta,
 		payload:     []byte(url),
