@@ -52,9 +52,14 @@ func commandList() []*command {
 			cmd:   groupNewCommand,
 		},
 		{
-			title: "group invite",
-			help:  "Displays a invite for the current group",
-			cmd:   groupInviteCommand,
+			title: "group share qr",
+			help:  "Displays an invite QR Code for the current group",
+			cmd:   groupInviteCommand(renderQR),
+		},
+		{
+			title: "group share",
+			help:  "Displays a invite Link for the current group",
+			cmd:   groupInviteCommand(renderText),
 		},
 		{
 			title: "group join",
@@ -87,14 +92,24 @@ func commandList() []*command {
 			cmd:   contactDiscardCommand,
 		},
 		{
+			title: "contact share qr",
+			help:  "Output a shareable contact QR Code",
+			cmd:   contactShareCommand(renderQR),
+		},
+		{
 			title: "contact share",
-			help:  "Output a shareable contact",
-			cmd:   contactShareCommand,
+			help:  "Output a shareable contact URL",
+			cmd:   contactShareCommand(renderText),
 		},
 		{
 			title: "contact request",
 			help:  "Sends a contact request, a shareable contact must be supplied",
 			cmd:   contactRequestCommand,
+		},
+		{
+			title: "name",
+			help:  "Changes your display name used in contact request URLs and outgoing contact requests",
+			cmd:   setDisplayName,
 		},
 		{
 			title: "alias send",
@@ -155,6 +170,19 @@ func commandList() []*command {
 	}
 }
 
+func setDisplayName(_ context.Context, v *groupView, cmd string) error {
+	v.v.lock.Lock()
+	v.v.displayName = cmd
+	v.v.lock.Unlock()
+
+	v.syncMessages <- &historyMessage{
+		messageType: messageTypeMeta,
+		payload:     []byte(fmt.Sprintf("display name changed to \"%s\"", cmd)),
+	}
+
+	return nil
+}
+
 func debugIPFSCommand(ctx context.Context, v *groupView, _ string) error {
 	config, err := v.v.client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
 	if err != nil {
@@ -205,17 +233,17 @@ func debugSystemCommand(ctx context.Context, v *groupView, _ string) error {
 }
 
 func contactDiscardAllCommand(ctx context.Context, v *groupView, cmd string) error {
-	v.v.accountGroupView.muAggregates.Lock()
+	v.v.lock.Lock()
 	toAdd := [][]byte(nil)
 
-	for id, state := range v.v.accountGroupView.contacts {
-		if state != bertytypes.ContactStateReceived {
+	for id, contactState := range v.v.contactStates {
+		if contactState != bertytypes.ContactStateReceived {
 			continue
 		}
 
 		toAdd = append(toAdd, []byte(id))
 	}
-	v.v.accountGroupView.muAggregates.Unlock()
+	v.v.lock.Unlock()
 
 	for _, id := range toAdd {
 		if err := contactDiscardCommand(ctx, v, base64.StdEncoding.EncodeToString(id)); err != nil {
@@ -227,17 +255,17 @@ func contactDiscardAllCommand(ctx context.Context, v *groupView, cmd string) err
 }
 
 func contactAcceptAllCommand(ctx context.Context, v *groupView, cmd string) error {
-	v.v.accountGroupView.muAggregates.Lock()
+	v.v.lock.Lock()
 	toAdd := [][]byte(nil)
 
-	for id, state := range v.v.accountGroupView.contacts {
-		if state != bertytypes.ContactStateReceived {
+	for id, contactState := range v.v.contactStates {
+		if contactState != bertytypes.ContactStateReceived {
 			continue
 		}
 
 		toAdd = append(toAdd, []byte(id))
 	}
-	v.v.accountGroupView.muAggregates.Unlock()
+	v.v.lock.Unlock()
 
 	for _, id := range toAdd {
 		if err := contactAcceptCommand(ctx, v, base64.StdEncoding.EncodeToString(id)); err != nil {
@@ -451,31 +479,21 @@ func aliasSendCommand(ctx context.Context, v *groupView, cmd string) error {
 	return nil
 }
 
-func groupInviteCommand(ctx context.Context, v *groupView, cmd string) error {
-	res, err := v.v.messenger.ShareableBertyGroup(ctx, &bertymessenger.ShareableBertyGroup_Request{
-		GroupPK:   v.g.PublicKey,
-		GroupName: "some group",
-	})
+func groupInviteCommand(renderFunc func(*groupView, string)) func(ctx context.Context, v *groupView, cmd string) error {
+	return func(ctx context.Context, v *groupView, cmd string) error {
+		res, err := v.v.messenger.ShareableBertyGroup(ctx, &bertymessenger.ShareableBertyGroup_Request{
+			GroupPK:   v.g.PublicKey,
+			GroupName: "some group",
+		})
 
-	if err != nil {
-		return err
-	}
-
-	if cmd == "qr" || cmd == "qrcode" {
-		for _, l := range stringAsQR(res.DeepLink) {
-			v.syncMessages <- &historyMessage{
-				messageType: messageTypeMeta,
-				payload:     []byte(l),
-			}
+		if err != nil {
+			return err
 		}
-	} else {
-		v.syncMessages <- &historyMessage{
-			messageType: messageTypeMeta,
-			payload:     []byte(res.DeepLink),
-		}
-	}
 
-	return nil
+		renderFunc(v, res.DeepLink)
+
+		return nil
+	}
 }
 
 func cmdHelp(ctx context.Context, v *groupView, cmd string) error {
@@ -583,6 +601,10 @@ func groupNewCommand(ctx context.Context, v *groupView, _ string) error {
 }
 
 func contactRequestCommand(ctx context.Context, v *groupView, cmd string) error {
+	v.v.lock.Lock()
+	displayName := v.v.displayName
+	v.v.lock.Unlock()
+
 	res, err := v.v.messenger.ParseDeepLink(ctx, &bertymessenger.ParseDeepLink_Request{
 		Link: cmd,
 	})
@@ -598,7 +620,8 @@ func contactRequestCommand(ctx context.Context, v *groupView, cmd string) error 
 	}
 
 	_, err = v.v.client.ContactRequestSend(ctx, &bertytypes.ContactRequestSend_Request{
-		Contact: contact,
+		Contact:     contact,
+		OwnMetadata: []byte(displayName),
 	})
 
 	return err
@@ -650,27 +673,39 @@ func newMessageCommand(ctx context.Context, v *groupView, cmd string) error {
 	return err
 }
 
-func contactShareCommand(ctx context.Context, v *groupView, cmd string) error {
-	res, err := v.v.messenger.InstanceShareableBertyID(ctx, &bertymessenger.InstanceShareableBertyID_Request{})
-	if err != nil {
-		return err
-	}
+func contactShareCommand(displayFunc func(*groupView, string)) func(ctx context.Context, v *groupView, cmd string) error {
+	return func(ctx context.Context, v *groupView, cmd string) error {
+		v.v.lock.Lock()
+		displayName := v.v.displayName
+		v.v.lock.Unlock()
 
-	if cmd == "qr" || cmd == "qrcode" {
-		for _, l := range stringAsQR(res.DeepLink) {
-			v.syncMessages <- &historyMessage{
-				messageType: messageTypeMeta,
-				payload:     []byte(l),
-			}
+		res, err := v.v.messenger.InstanceShareableBertyID(ctx, &bertymessenger.InstanceShareableBertyID_Request{
+			DisplayName: displayName,
+		})
+		if err != nil {
+			return err
 		}
-	} else {
+
+		displayFunc(v, res.DeepLink)
+
+		return nil
+	}
+}
+
+func renderQR(v *groupView, url string) {
+	for _, l := range stringAsQR(url) {
 		v.syncMessages <- &historyMessage{
 			messageType: messageTypeMeta,
-			payload:     []byte(res.DeepLink),
+			payload:     []byte(l),
 		}
 	}
+}
 
-	return nil
+func renderText(v *groupView, url string) {
+	v.syncMessages <- &historyMessage{
+		messageType: messageTypeMeta,
+		payload:     []byte(url),
+	}
 }
 
 func contactRequestsOnCommand(ctx context.Context, v *groupView, cmd string) error {

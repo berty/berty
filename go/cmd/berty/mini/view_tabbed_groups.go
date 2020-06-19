@@ -26,6 +26,9 @@ type tabbedGroupsView struct {
 	multiMembersGroupViews []*groupView
 	lock                   sync.RWMutex
 	messenger              bertymessenger.MessengerServiceServer
+	displayName            string
+	contactStates          map[string]bertytypes.ContactState
+	contactNames           map[string]string
 }
 
 func (v *tabbedGroupsView) getChannelViewGroups() []*groupView {
@@ -45,24 +48,33 @@ func (v *tabbedGroupsView) getChannelViewGroups() []*groupView {
 	return items
 }
 
-func groupLabelWithBadge(cg *groupView) string {
+func groupLabelWithBadge(cg *groupView, name string) string {
 	badge := " "
 	if atomic.LoadInt32(&cg.hasNew) == 1 {
 		badge = "*"
 	}
 
-	return fmt.Sprintf("%s%s", badge, pkAsShortID(cg.g.PublicKey))
+	if name == "" {
+		name = pkAsShortID(cg.g.PublicKey)
+	}
+
+	return fmt.Sprintf("%s%s", badge, name)
 }
 
 func (v *tabbedGroupsView) getChannelLabels() []string {
 	topics := []string{"Account"}
-	topics = append(topics, groupLabelWithBadge(v.accountGroupView))
+	topics = append(topics, groupLabelWithBadge(v.accountGroupView, ""))
 
 	if len(v.contactGroupViews) > 0 {
 		topics = append(topics, "Contacts")
 
 		for _, cg := range v.contactGroupViews {
-			topics = append(topics, groupLabelWithBadge(cg))
+			name := ""
+			if displayName, ok := v.contactNames[string(cg.g.PublicKey)]; ok {
+				name = displayName
+			}
+
+			topics = append(topics, groupLabelWithBadge(cg, name))
 		}
 	}
 
@@ -70,7 +82,7 @@ func (v *tabbedGroupsView) getChannelLabels() []string {
 		topics = append(topics, "Groups")
 
 		for _, cg := range v.multiMembersGroupViews {
-			topics = append(topics, groupLabelWithBadge(cg))
+			topics = append(topics, groupLabelWithBadge(cg, ""))
 		}
 	}
 
@@ -219,11 +231,13 @@ func (v *tabbedGroupsView) GetHistory() tview.Primitive {
 
 func newTabbedGroups(ctx context.Context, g *bertytypes.GroupInfo_Reply, client bertyprotocol.ProtocolServiceClient, messenger bertymessenger.MessengerServiceServer, app *tview.Application) *tabbedGroupsView {
 	v := &tabbedGroupsView{
-		ctx:       ctx,
-		topics:    tview.NewTable(),
-		client:    client,
-		messenger: messenger,
-		app:       app,
+		ctx:           ctx,
+		topics:        tview.NewTable(),
+		client:        client,
+		messenger:     messenger,
+		app:           app,
+		contactStates: map[string]bertytypes.ContactState{},
+		contactNames:  map[string]string{},
 	}
 
 	v.accountGroupView = newViewGroup(v, g.Group, g.MemberPK, g.DevicePK, globalLogger)

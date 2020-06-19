@@ -389,7 +389,7 @@ func (m *metadataStoreIndex) handleContactRequestOutgoingEnqueued(event proto.Me
 		return nil
 	}
 
-	if _, ok := m.contactRequestMetadata[string(evt.Contact.PK)]; !ok {
+	if data, ok := m.contactRequestMetadata[string(evt.Contact.PK)]; !ok || len(data) == 0 {
 		m.contactRequestMetadata[string(evt.Contact.PK)] = evt.OwnMetadata
 	}
 
