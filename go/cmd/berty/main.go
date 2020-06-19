@@ -227,7 +227,7 @@ func main() {
 				l = logger
 			}
 
-			mini.Main(ctx, &mini.Opts{
+			err = mini.Main(ctx, &mini.Opts{
 				RemoteAddr:      remoteDaemonAddr,
 				GroupInvitation: miniGroup,
 				Port:            miniPort,
@@ -236,6 +236,9 @@ func main() {
 				Bootstrap:       DefaultBootstrap,
 				RendezVousPeer:  rdvpeer,
 			})
+			if err != nil {
+				return errcode.TODO.Wrap(err)
+			}
 			return nil
 		},
 	}
@@ -595,7 +598,7 @@ func getRootDatastore(optPath string) (datastore.Batching, *fslock.Lock, error) 
 				return nil, nil, errcode.TODO.Wrap(err)
 			}
 			if err := os.MkdirAll(basePath, 0700); err != nil {
-				panic(err)
+				return nil, nil, errcode.TODO.Wrap(err)
 			}
 		}
 

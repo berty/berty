@@ -11,11 +11,13 @@ WORKDIR         /go/src/berty.tech/berty
 COPY            go.* ./
 RUN             go mod download
 COPY            ./go ./go
+COPY            ./.git ./.git
 WORKDIR         /go/src/berty.tech/berty/go
 RUN             make go.install
 
 # minimalist runtime
-FROM            alpine:3.10
+FROM            alpine:3.12
+RUN             apk add --no-cache ncurses
 LABEL           org.label-schema.build-date=$BUILD_DATE \
                 org.label-schema.name="berty" \
                 org.label-schema.description="" \

@@ -93,4 +93,10 @@ enum ErrCode {
   //------------------
 
   ErrMessengerInvalidDeepLink = 2001;
+
+  // -----------------
+  // CLI
+  // -----------------
+
+  ErrCLINoTermcaps = 3001;
 }
