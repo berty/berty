@@ -37,7 +37,13 @@ const SystemInfoList: React.FC<{}> = () => {
 						)
 					} else if (value[0] === 'buildTime') {
 						return (
-							<SystemInfoItem label='buildTime' value={moment.unix(value[1]).format('mm:ss')} />
+							<View>
+								<SystemInfoItem
+									label='buildTime'
+									value={moment.unix(value[1]).format('MMMM Do YYYY, h:mm:ss a')}
+								/>
+								<SystemInfoItem label='timeAgo' value={moment.unix(value[1]).from(moment())} />
+							</View>
 						)
 					}
 					return <SystemInfoItem label={value[0]} value={value[1]} key={key} />

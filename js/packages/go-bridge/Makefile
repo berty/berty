@@ -19,6 +19,11 @@ GO_VENDOR := $(GOPATH)/src/berty.tech/berty/vendor
 GOMOBILE := $(GOPATH)/bin/gomobile
 GOBIND := $(GOPATH)/bin/gobind
 
+VERSION ?= `git describe --tags --always`
+VCS_REF ?= `git rev-parse --short HEAD`
+BUILD_DATE ?= `date +%s`
+EXT_LDFLAGS = -ldflags="-X berty.tech/berty/go/pkg/bertymessenger.VcsRef=$(VCS_REF) -X berty.tech/berty/go/pkg/bertymessenger.Version=$(VERSION) -X berty.tech/berty/go/pkg/bertymessenger.BuildTime=$(BUILD_DATE)"
+
 deps.gobridge: $(GOMOBILE) $(GO_VENDOR)
 	cd $(PWD) && gomobile init
 
@@ -42,12 +47,12 @@ build.gobridge.android: $(AAR_TARGETS)
 
 build.framework:
 	@mkdir -p "$(FRAMEWORK_DIR)"
-	GO111MODULE=off gomobile bind -o $(FRAMEWORK) -v -target ios berty.tech/berty/go/framework/bertybridge
+	GO111MODULE=off gomobile bind -o $(FRAMEWORK) -v $(EXT_LDFLAGS) -target ios berty.tech/berty/go/framework/bertybridge
 	touch "$(FRAMEWORK_DIR)"
 
 build.aar:
 	@mkdir -p "$(AAR_DIR)"
-	GO111MODULE=off gomobile bind -o $(AAR) -v -target android berty.tech/berty/go/framework/bertybridge
+	GO111MODULE=off gomobile bind -o $(AAR) -v $(EXT_LDFLAGS) -target android berty.tech/berty/go/framework/bertybridge
 	touch "$(AAR_DIR)"
 
 
