@@ -43,6 +43,7 @@ import (
 	"github.com/oklog/run"
 	"github.com/peterbourgon/ff"
 	"github.com/peterbourgon/ff/ffcli"
+	"github.com/shibukawa/configdir"
 	grpc_trace "go.opentelemetry.io/otel/plugin/grpctrace"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -88,6 +89,7 @@ func main() {
 		shareInviteReset      bool
 		shareInviteNoTerminal bool
 		miniGroup             string
+		miniInMemory          bool
 		displayName           string
 	)
 
@@ -108,6 +110,7 @@ func main() {
 	globalFlags.BoolVar(&globalOrbitDebug, "debug-odb", false, "orbitdb debug mode")
 	globalFlags.StringVar(&globalLogToFile, "logfile", "", "if specified, will log everything in JSON into a file and nothing on stderr")
 	globalFlags.StringVar(&globalTracer, "tracer", "", "specify \"stdout\" to output tracing on stdout or <hostname:port> to trace on jaeger")
+	globalFlags.StringVar(&displayName, "display-name", safeDefaultDisplayName(), "display name")
 	bannerFlags.BoolVar(&bannerLight, "light", false, "light mode")
 	bannerFlags.BoolVar(&bannerRandom, "random", false, "pick a random quote")
 	daemonFlags.StringVar(&daemonListeners, "l", "/ip4/127.0.0.1/tcp/9091/grpc", "client listeners")
@@ -119,11 +122,11 @@ func main() {
 	miniFlags.UintVar(&miniPort, "p", 0, "default IPFS listen port")
 	miniFlags.StringVar(&remoteDaemonAddr, "r", "", "remote berty daemon")
 	miniFlags.StringVar(&rdvpMaddr, "rdvp", DevRendezVousPoint, "rendezvous point maddr")
+	miniFlags.BoolVar(&miniInMemory, "inmem", false, "disable persistence")
 	shareInviteFlags.BoolVar(&shareInviteOnDev, "dev-channel", false, "post qrcode on dev channel")
 	shareInviteFlags.BoolVar(&shareInviteReset, "reset", false, "reset contact reference")
 	shareInviteFlags.BoolVar(&shareInviteNoTerminal, "no-term", false, "do not print the QR code in terminal")
 	shareInviteFlags.StringVar(&datastorePath, "d", cacheleveldown.InMemoryDirectory, "datastore base directory")
-	shareInviteFlags.StringVar(&displayName, "display-name", safeDefaultDisplayName(), "display name")
 	systemInfoFlags.StringVar(&datastorePath, "d", cacheleveldown.InMemoryDirectory, "datastore base directory")
 
 	type cleanupFunc func()
@@ -208,6 +211,20 @@ func main() {
 			cleanup := globalPreRun()
 			defer cleanup()
 
+			if !miniInMemory && datastorePath == cacheleveldown.InMemoryDirectory {
+				storagePath := configdir.New("Berty", "Mini")
+				storageDirs := storagePath.QueryFolders(configdir.Global)
+				if len(storageDirs) == 0 {
+					return fmt.Errorf("no storage path found")
+				}
+
+				if err := storageDirs[0].CreateParentDir(""); err != nil {
+					return err
+				}
+
+				datastorePath = storageDirs[0].Path
+			}
+
 			rootDS, dsLock, err := getRootDatastore(datastorePath)
 			if err != nil {
 				return errcode.TODO.Wrap(err)
@@ -235,6 +252,7 @@ func main() {
 				Logger:          l,
 				Bootstrap:       DefaultBootstrap,
 				RendezVousPeer:  rdvpeer,
+				DisplayName:     displayName,
 			})
 			if err != nil {
 				return errcode.TODO.Wrap(err)
