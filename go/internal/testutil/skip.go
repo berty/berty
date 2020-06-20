@@ -11,3 +11,11 @@ func SkipSlow(t *testing.T) {
 		t.Skip("slow test skipped")
 	}
 }
+
+func SkipUnstable(t *testing.T) {
+	t.Helper()
+	if os.Getenv("DONT_SKIP_UNSTABLE") != "1" {
+		t.Log("FIXME: stabilize test")
+		t.Skip("unstable test skipped")
+	}
+}

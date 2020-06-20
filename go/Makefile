@@ -3,7 +3,8 @@
 ##
 
 GO ?= go
-GO_TEST_OPTS ?= -test.timeout=180s -race -cover -coverprofile=coverage.txt -covermode=atomic
+GO_TEST_OPTS ?= -test.timeout=300s -race -cover -coverprofile=coverage.txt -covermode=atomic
+GO_TEST_ENV ?= DONT_SKIP_UNSTABLE=0
 GOPATH ?= $(HOME)/go
 
 ##
@@ -67,7 +68,7 @@ go.lint: pb.generate
 go.unittest: GO_TEST_PATH ?= ./...
 go.unittest: pb.generate
 	$(call check-program, $(GO))
-	GO111MODULE=on $(GO) test $(GO_TEST_OPTS) $(GO_TEST_PATH)
+	$(GO_TEST_ENV) GO111MODULE=on $(GO) test $(GO_TEST_OPTS) $(GO_TEST_PATH)
 
 
 VERSION ?= `git describe --tags --always`
