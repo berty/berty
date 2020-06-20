@@ -1,0 +1,117 @@
+name: Go
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+    paths:
+      - 'go/**'
+      - '.goreleaser'
+      - 'go.*'
+      - '**.go'
+      - '.github/workflows/go.yml'
+  pull_request:
+    paths:
+      - 'go/**'
+      - '.goreleaser'
+      - 'go.*'
+      - '**.go'
+      - '.github/workflows/go.yml'
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    needs: golangci-lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.14
+      - name: Cache Go modules
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Run GoReleaser (Dry Run)
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          version: latest
+          args: release --rm-dist --snapshot --skip-publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  golangci-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v1
+        with:
+          version: v1.27
+          working-directory: go
+          args: --timeout=2m
+          # only-new-issues: true
+  go-tests-on-linux:
+    needs: golangci-lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        golang:
+          #- 1.13
+          - 1.14
+          #- tip
+    env:
+      OS: ubuntu-latest
+      GOLANG: ${{ matrix.golang }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.golang }}
+      - name: Cache Go modules
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Compile the project on Unix-like operating systems
+        run: |
+          cd go
+          touch gen.sum # avoid triggering make generate
+          make go.install
+      - name: Check go.mod and go.sum
+        run: |
+          go mod tidy -v
+          git --no-pager diff go.mod go.sum
+          git --no-pager diff --quiet go.mod go.sum
+      - name: Run fast tests multiple times
+        run: |
+          cd go
+          SKIP_SLOW_TESTS=1 make go.unittest GO_TEST_OPTS="-v -test.timeout=600s -count 5"
+      - name: Run all tests
+        run: |
+          cd go
+          SKIP_SLOW_TESTS=0 make go.unittest GO_TEST_OPTS="-v -test.timeout=600s -count 1"
+      - name: Run all tests with race flag and generate coverage
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 10
+          max_attempts: 5
+          command: |
+            cd go
+            SKIP_SLOW_TESTS=0 make go.unittest GO_TEST_OPTS="-v -test.timeout=600s -count 1 -race -cover -coverprofile=coverage.txt -covermode=atomic"
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./go/coverage.txt
+          flags: unittests
+          env_vars: OS,GOLANG
+          name: codecov-umbrella
+          fail_ci_if_error: false

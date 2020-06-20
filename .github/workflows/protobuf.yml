@@ -1,0 +1,52 @@
+name: Protobuf
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+    paths:
+      - 'api/**'
+      - 'Makefile'
+      - '**/Makefile'
+      - '**.mk'
+      - '.github/workflows/protobuf.yml'
+  pull_request:
+    paths:
+      - 'api/**'
+      - 'Makefile'
+      - '**/Makefile'
+      - '**.mk'
+      - '.github/workflows/protobuf.yml'
+
+jobs:
+  protobuf:
+    runs-on: ubuntu-latest
+    container: bertytech/protoc:23
+    steps:
+      - uses: actions/checkout@v2
+      - run: find . -name gen.sum ! -path './js/*' -delete
+      - name: generating go/
+        run: |
+          cd go
+          go mod vendor
+          make generate_local
+          cd ..
+          git checkout go.mod go.sum
+      - name: generating docs/
+        run: |
+          cd docs
+          make generate_local
+      #- name: generating js/
+      #  run: |
+      #    cd js
+      #    make gen.clean
+      #    make deps
+      #    make gen.api
+      #    make gen.codegen
+      #    make generate_local
+      - name: check diff
+        run: |
+          git status | cat
+          diff -w | cat
+          git diff-index -w --quiet HEAD --

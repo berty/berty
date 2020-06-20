@@ -50,14 +50,15 @@ archives:
       goos: windows
       format: zip
     wrap_in_directory: true
-nfpms:
-  -
-    file_name_template: '{{ .ProjectName }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
-    homepage:  https://github.com/berty/berty
-    description: "berty"
-    maintainer: "Berty Technologies <https://berty.tech>"
-    license: "Apache-2.0 OR MIT"
-    vendor: berty
-    formats:
-      - deb
-      - rpm
+# generate .deb and .rpm (disabled for now)
+#nfpms:
+#  -
+#    file_name_template: '{{ .ProjectName }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+#    homepage:  https://github.com/berty/berty
+#    description: "berty"
+#    maintainer: "Berty Technologies <https://berty.tech>"
+#    license: "Apache-2.0 OR MIT"
+#    vendor: berty
+#    formats:
+#      - deb
+#      - rpm
