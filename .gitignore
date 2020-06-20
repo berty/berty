@@ -8,6 +8,7 @@
 /bazel-*
 core-sources.jar
 coverage.txt
+dist/
 gen.sum.tmp
 gin-bin
 google-services.json
