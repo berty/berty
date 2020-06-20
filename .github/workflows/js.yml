@@ -14,7 +14,50 @@ on:
       - '.github/workflows/js.yml'
 
 jobs:
+  deps:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version:
+          - 12.x
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Get yarn & npm cache paths
+      id: yarn-npm-cache-dir-path
+      run: |
+        echo "::set-output name=yarn-dir::$(yarn cache dir)"
+        echo "::set-output name=npm-dir::$(npm config get cache)"
+    - name: Cache yarn & npm cache
+      uses: actions/cache@v2
+      id: cache-yarn-npm-cache
+      with:
+        path: |
+          ${{ steps.yarn-npm-cache-dir-path.outputs.yarn-dir }}
+          ${{ steps.yarn-npm-cache-dir-path.outputs.npm-dir }}
+          js/**/node_modules
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+    - name: "Fetch deps"
+      run: |
+        cd js
+        make deps
+    - name: Prepare cache artifact
+      run: |
+        tar -czf dependencies.tar.gz ./js/node_modules ./js/packages/*/node_modules
+        ls -lah dependencies.tar.gz
+    - name: Upload cache artifact for next jobs
+      uses: actions/upload-artifact@v2
+      with:
+        name: dependencies
+        path: dependencies.tar.gz
+
   build:
+    needs: deps
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -27,20 +70,13 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Cache Node.js modules
-      uses: actions/cache@v2
+    - name: Download cache artifact
+      uses: actions/download-artifact@v2
       with:
-        path: ~/.npm
-        key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.OS }}-node-
-          ${{ runner.OS }}-
-    - name: "Fetch deps"
-      run: |
-        cd js
-        make deps
-      env:
-        CI: true
+        name: dependencies
+        path: .
+    - name: Extract cache artifact
+      run: tar -xzf dependencies.tar.gz
     - name: "Run tests"
       run: |
         cd js
@@ -49,6 +85,7 @@ jobs:
         CI: true
 
   lint:
+    needs: deps
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -60,14 +97,13 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Cache Node.js modules
-      uses: actions/cache@v2
+    - name: Download cache artifact
+      uses: actions/download-artifact@v2
       with:
-        path: ~/.npm
-        key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.OS }}-node-
-          ${{ runner.OS }}-
+        name: dependencies
+        path: .
+    - name: Extract cache artifact
+      run: tar -xzf dependencies.tar.gz
     - name: "Fetch deps"
       run: |
         cd js
