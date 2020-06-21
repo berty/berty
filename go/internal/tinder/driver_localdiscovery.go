@@ -49,6 +49,17 @@ type StreamWrapper struct {
 	io.ReadWriter
 }
 
+// LocalDiscovery is a discovery.Discovery
+// https://github.com/libp2p/go-libp2p-core/blob/master/discovery/discovery.go
+var _ discovery.Discovery = (*localDiscovery)(nil)
+
+// LocalDiscovery is a network.Notifiee
+// https://github.com/libp2p/go-libp2p-core/blob/master/network/notifee.go
+var _ network.Notifiee = (*localDiscovery)(nil)
+
+// LocalDiscovery is a network.Notifiee
+var _ Driver = (*localDiscovery)(nil)
+
 func NewLocalDiscovery(logger *zap.Logger, host host.Host, rng *mrand.Rand) Driver {
 	ld := &localDiscovery{
 		logger:    logger.Named("tinder/localDiscovery"),
@@ -135,6 +146,7 @@ func (ld *localDiscovery) deletePeerCacheEntry(cid string, peerID peer.ID) error
 	return nil
 }
 
+// Implementation of the discovery.Discovery interface
 func (ld *localDiscovery) Advertise(ctx context.Context, cid string, opts ...discovery.Option) (time.Duration, error) {
 	ld.logger.Debug("localDiscovery: Advertise", zap.String("CID", cid))
 	// Get options
@@ -174,7 +186,9 @@ func (ld *localDiscovery) Advertise(ctx context.Context, cid string, opts ...dis
 	return time.Duration(ttlSeconds), nil
 }
 
-func (ld *localDiscovery) FindPeers(ctx context.Context, ns string, opts ...discovery.Option) (<-chan peer.AddrInfo, error) {
+// Implementation of the discovery.Discovery interface
+// Looking for in the peer cache if there is any peer for that CID
+func (ld *localDiscovery) FindPeers(ctx context.Context, cid string, opts ...discovery.Option) (<-chan peer.AddrInfo, error) {
 	// Get options
 	var options discovery.Options
 	err := options.Apply(opts...)
@@ -192,14 +206,14 @@ func (ld *localDiscovery) FindPeers(ctx context.Context, ns string, opts ...disc
 	var cache *pCache
 
 	ld.peerCacheMux.RLock()
-	cache, ok := ld.peerCache[ns]
+	cache, ok := ld.peerCache[cid]
 	ld.peerCacheMux.RUnlock()
 	if !ok {
 		ld.peerCacheMux.Lock()
-		cache, ok = ld.peerCache[ns]
+		cache, ok = ld.peerCache[cid]
 		if !ok {
 			cache = &pCache{recs: make(map[peer.ID]*pRecord)}
-			ld.peerCache[ns] = cache
+			ld.peerCache[cid] = cache
 		}
 		ld.peerCacheMux.Unlock()
 	}
@@ -225,7 +239,7 @@ func (ld *localDiscovery) FindPeers(ctx context.Context, ns string, opts ...disc
 		count = limit
 	}
 
-	ld.logger.Debug("localDiscovery: FindPeers", zap.String("CID", ns), zap.Int("count", count))
+	ld.logger.Debug("localDiscovery: FindPeers", zap.String("CID", cid), zap.Int("count", count))
 
 	chPeer := make(chan peer.AddrInfo, count)
 
@@ -255,21 +269,26 @@ func (ld *localDiscovery) FindPeers(ctx context.Context, ns string, opts ...disc
 	return chPeer, err
 }
 
+// Implementation of the Driver interface
 // Remove the entry from the local peer cache
 func (ld *localDiscovery) Unregister(ctx context.Context, cid string) error {
 	err := ld.deletePeerCacheEntry(cid, ld.host.ID())
 	return err
 }
 
+// Implementation of the Driver interface
 func (*localDiscovery) Name() string { return "localDiscovery" }
 
-// called when network starts listening on an addr
+// Implementation of the network.Notifiee interface
+// Called when network starts listening on an addr
 func (ld *localDiscovery) Listen(network.Network, ma.Multiaddr) {}
 
-// called when network stops listening on an addr
+// Implementation of the network.Notifiee interface
+// Called when network stops listening on an addr
 func (ld *localDiscovery) ListenClose(network.Network, ma.Multiaddr) {}
 
-// called when a connection is opened by discovery.Discoverer's FindPeers()
+// Implementation of the network.Notifiee interface
+// Called when a connection is opened by discovery.Discoverer's FindPeers()
 func (ld *localDiscovery) Connected(net network.Network, c network.Conn) {
 	go func() {
 		if manet.IsPrivateAddr(c.RemoteMultiaddr()) || mcma.MC.Matches(c.RemoteMultiaddr()) {
@@ -280,6 +299,7 @@ func (ld *localDiscovery) Connected(net network.Network, c network.Conn) {
 	}()
 }
 
+// Send only records owned by the local peer
 func (ld *localDiscovery) sendLocalRecord(c network.Conn) error {
 	// Open a multiplexed stream
 	s, err := c.NewStream()
@@ -317,7 +337,8 @@ func (ld *localDiscovery) sendLocalRecord(c network.Conn) error {
 	return nil
 }
 
-// called when is a stream is opened by a remote peer
+// Called when is a stream is opened by a remote peer
+// Receive remote peer cache and put it in our local cache
 func (ld *localDiscovery) handleStream(s network.Stream) {
 	pbr := ggio.NewDelimitedReader(s, network.MessageSizeMax)
 	for {
@@ -359,19 +380,24 @@ func (ld *localDiscovery) handleStream(s network.Stream) {
 	}
 }
 
-// called when a connection closed
+// Implementation of the network.Notifiee interface
+// Called when a connection closed
 func (ld *localDiscovery) Disconnected(network.Network, network.Conn) {}
 
-// called when a stream opened
+// Implementation of the network.Notifiee interface
+// Called when a stream opened
 func (ld *localDiscovery) OpenedStream(network.Network, network.Stream) {}
 
-// called when a stream closed
+// Implementation of the network.Notifiee interface
+// Called when a stream closed
 func (ld *localDiscovery) ClosedStream(network.Network, network.Stream) {}
 
+// Implementation of the io.ReadWriter interface
 func (s *StreamWrapper) Read(b []byte) (int, error) {
 	return s.ReadWriter.Read(b)
 }
 
+// Implementation of the io.ReadWriter interface
 func (s *StreamWrapper) Write(b []byte) (int, error) {
 	return s.ReadWriter.Write(b)
 }
