@@ -11,6 +11,26 @@ on:
       - '**/Makefile'
       - '**.mk'
       - '.github/workflows/protobuf.yml'
+      - '**/gen.sum'
+      - '**.pb.go'
+      - '**.gen.go'
+      - '**.gen.graphql'
+      - '**.gen.js'
+      - '**.gen.ts'
+      - '**.gen.tsx'
+      - '**.gen.yml'
+      - '**.pb.d.ts'
+      - '**.pb.go'
+      - '**.pb.js'
+      - '**/pb_test.go'
+      - '**/docs/*/api.md'
+      - '**/gen.sum'
+      - '**/go.mod'
+      - '**/go.sum'
+      - '**/yarn.lock'
+      - '**/package.json'
+      - '**/Podfile.lock'
+      - 'js/packages/store/protocol/grpc-web-gen/**'
   pull_request:
     paths:
       - 'api/**'
@@ -18,7 +38,26 @@ on:
       - '**/Makefile'
       - '**.mk'
       - '.github/workflows/protobuf.yml'
-
+      - '**/gen.sum'
+      - '**.pb.go'
+      - '**.gen.go'
+      - '**.gen.graphql'
+      - '**.gen.js'
+      - '**.gen.ts'
+      - '**.gen.tsx'
+      - '**.gen.yml'
+      - '**.pb.d.ts'
+      - '**.pb.go'
+      - '**.pb.js'
+      - '**/pb_test.go'
+      - '**/docs/*/api.md'
+      - '**/gen.sum'
+      - '**/go.mod'
+      - '**/go.sum'
+      - '**/yarn.lock'
+      - '**/package.json'
+      - '**/Podfile.lock'
+      - 'js/packages/store/protocol/grpc-web-gen/**'
 jobs:
   protobuf:
     runs-on: ubuntu-latest
@@ -48,5 +87,5 @@ jobs:
       - name: check diff
         run: |
           git status | cat
-          diff -w | cat
+          git diff -w | cat
           git diff-index -w --quiet HEAD --
