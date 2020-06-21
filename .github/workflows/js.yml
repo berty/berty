@@ -14,12 +14,12 @@ on:
       - '.github/workflows/js.yml'
 
 jobs:
-  build:
+  build-and-lint:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version:
-          - 10.x
+          #- 10.x
           - 12.x
     steps:
     - uses: actions/checkout@v2
@@ -30,8 +30,10 @@ jobs:
     - name: Cache Node.js modules
       uses: actions/cache@v2
       with:
-        path: ~/.npm
-        key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+        path: |
+          js/node_modules
+          js/packages/*/node_modules
+        key: ${{ runner.OS }}-node-${{ hashFiles('js/**/yarn.lock') }}
         restore-keys: |
           ${{ runner.OS }}-node-
           ${{ runner.OS }}-
@@ -45,33 +47,6 @@ jobs:
       run: |
         cd js
         make test
-      env:
-        CI: true
-
-  lint:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version:
-          - 12.x
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Cache Node.js modules
-      uses: actions/cache@v2
-      with:
-        path: ~/.npm
-        key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.OS }}-node-
-          ${{ runner.OS }}-
-    - name: "Fetch deps"
-      run: |
-        cd js
-        make deps
       env:
         CI: true
     - name: "Run lint"
