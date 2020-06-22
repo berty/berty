@@ -143,19 +143,22 @@ func TestingCoreAPI(ctx context.Context, t testing.TB) (CoreAPIMock, func()) {
 		RDVPeer: peer.Network().Peerstore().PeerInfo(peer.ID()),
 	})
 
-	return api, func() {
+	cleanup := func() {
 		cleanapi()
 		cleanrdvp()
 	}
+	return api, cleanup
 }
 
 func TestingRDVP(ctx context.Context, t testing.TB, h host.Host) (*rendezvous.RendezvousService, func()) {
 	db, err := p2p_rpdb.OpenDB(ctx, ":memory:")
 	require.NoError(t, err)
 
-	return rendezvous.NewRendezvousService(h, db), func() {
-		db.Close()
+	svc := rendezvous.NewRendezvousService(h, db)
+	cleanup := func() {
+		_ = db.Close()
 	}
+	return svc, cleanup
 }
 
 type coreAPIMock struct {

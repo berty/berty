@@ -30,15 +30,16 @@ func TestScenario_JoinGroup(t *testing.T) {
 		NumberOfClient int
 		ConnectFunc    ConnnectTestingProtocolFunc
 		IsSlowTest     bool
+		IsUnstableTest bool
 	}{
 
-		{"2 clients/connectAll", 2, ConnectAll, true},
-		// {"3 clients/connectAll", 3, ConnectAll, false},
-		//{"5 clients/connectAll", 5, ConnectAll, true},
-		//{"8 clients/connectAll", 8, ConnectAll, false},
+		{"2 clients/connectAll", 2, ConnectAll, true, false},
+		// {"3 clients/connectAll", 3, ConnectAll, false, true},
+		//{"5 clients/connectAll", 5, ConnectAll, true, true},
+		//{"8 clients/connectAll", 8, ConnectAll, false, true},
 		//@FIXME(gfanton): those tests doesn't works
-		//{"10 clients/connectAll", 10, ConnectAll, true},
-		// {"10 clients/connectInLine", 10, ConnectInLine, true},
+		//{"10 clients/connectAll", 10, ConnectAll, true, true},
+		// {"10 clients/connectInLine", 10, ConnectInLine, true, true},
 	}
 
 	tr := tracer.NewTestingProvider(t, "Scenario_JoinGroup").Tracer("testing")
@@ -48,13 +49,16 @@ func TestScenario_JoinGroup(t *testing.T) {
 			if tc.IsSlowTest {
 				testutil.SkipSlow(t)
 			}
+			if tc.IsUnstableTest {
+				testutil.SkipUnstable(t)
+			}
 
 			opts := TestingOpts{
 				Mocknet: libp2p_mocknet.New(ctx),
 				Logger:  testutil.Logger(t),
 			}
 
-			pts, cleanup := generateTestingProtocol(ctx, t, &opts, tc.NumberOfClient)
+			pts, cleanup := newTestingProtocolWithMockedPeers(ctx, t, &opts, tc.NumberOfClient)
 			defer cleanup()
 
 			// connect all pts together
@@ -342,7 +346,7 @@ func TestScenario_ContactMessage(t *testing.T) {
 	}
 
 	// Setup test
-	pts, cleanup := generateTestingProtocol(ctx, t, &opts, nService)
+	pts, cleanup := newTestingProtocolWithMockedPeers(ctx, t, &opts, nService)
 	defer cleanup()
 
 	pt := pts[0]
@@ -390,7 +394,9 @@ func TestScenario_ContactMessage(t *testing.T) {
 		i++
 	}
 
-	subCtx, subCancel := context.WithTimeout(ctx, time.Second*5)
+	testutil.SkipUnstable(t) // after this line, the test is unstable, especially on low hardware
+
+	subCtx, subCancel := context.WithTimeout(ctx, time.Second*10)
 
 	go func() {
 		sub, err := pt.Client.GroupMessageSubscribe(subCtx, &bertytypes.GroupMessageSubscribe_Request{
