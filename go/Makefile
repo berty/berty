@@ -5,7 +5,13 @@
 GO ?= go
 GO_TEST_OPTS ?= -test.timeout=300s -race -cover -coverprofile=coverage.txt -covermode=atomic
 GO_TEST_ENV ?= DONT_SKIP_UNSTABLE=0
+GO_TEST_PATH ?= ./...
+GO_TEST_AFTER ?=
 GOPATH ?= $(HOME)/go
+VERSION ?= `git describe --tags --always`
+VCS_REF ?= `git rev-parse --short HEAD`
+BUILD_DATE ?= `date +%s`
+GO_INSTALL_OPTS ?= -ldflags="-X berty.tech/berty/v2/go/pkg/bertymessenger.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertymessenger.Version=$(VERSION) -X berty.tech/berty/v2/go/pkg/bertymessenger.BuildTime=$(BUILD_DATE)"
 
 ##
 ## Functions
@@ -54,7 +60,6 @@ fclean: clean
 .PHONY: re
 re: clean build
 
-
 ##
 ## Go rules
 ##
@@ -65,28 +70,11 @@ go.lint: pb.generate
 	golangci-lint run --timeout=120s --verbose ./...
 
 .PHONY: go.unittest
-go.unittest: GO_TEST_PATH ?= ./...
 go.unittest: pb.generate
 	$(call check-program, $(GO))
-	$(GO_TEST_ENV) GO111MODULE=on $(GO) test $(GO_TEST_OPTS) $(GO_TEST_PATH)
+	$(GO_TEST_ENV) GO111MODULE=on $(GO) test $(GO_TEST_OPTS) $(GO_TEST_PATH) $(GO_TEST_AFTER)
 
-
-VERSION ?= `git describe --tags --always`
-VCS_REF ?= `git rev-parse --short HEAD`
-BUILD_DATE ?= `date +%s`
-GO_INSTALL_OPTS = -ldflags="-X berty.tech/berty/v2/go/pkg/bertymessenger.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertymessenger.Version=$(VERSION) -X berty.tech/berty/v2/go/pkg/bertymessenger.BuildTime=$(BUILD_DATE)"
-
-.PHONY: go.unittest.watch
-go.unittest: GO_TEST_PATH ?= ./...
-go.unittest.watch:
-	@if ! command -v watchman &>/dev/null; then brew install watchman; fi
-	while true; \
-		do clear; \
-		GO_TEST_PATH=$(GO_TEST_PATH) make go.unittest; \
-		watchman-wait . -p "**/*.go"; \
-	done
-
-.PHONY: go.install
+.PHONYg: go.install
 go.install: pb.generate
 	$(call check-program, $(GO))
 	GO111MODULE=on $(GO) install $(GO_INSTALL_OPTS) -v ./cmd/...
