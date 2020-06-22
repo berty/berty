@@ -93,12 +93,12 @@ jobs:
           git --no-pager diff --quiet go.mod go.sum
       - name: Run fast tests multiple times
         run: |
-          mkdir -p junit
+          mkdir -p reports
           cd go
           set -euxo pipefail
           SKIP_SLOW_TESTS=1 \
             GO_TEST_OPTS="-v -test.timeout=600s -count 5" \
-            GO_TEST_AFTER="2>&1 | tee ../junit/${{runner.os}}-slow.go-test" \
+            GO_TEST_AFTER="-json | tee ../reports/go-${{runner.os}}-slow.json" \
             make go.unittest
       #- name: Run all tests
       #  run: |
@@ -128,14 +128,16 @@ jobs:
           env_vars: OS,GOLANG
           name: codecov-umbrella
           fail_ci_if_error: false
-      - name: Prepare JUnit Reports
-        run: |
-          cd junit
-          go get -u github.com/jstemmer/go-junit-report
-          for file in *.go-test; do go-junit-report < $file > $file.xml; done
-      - uses: shyim/junit-report-annotations-action@master
-        with:
-          accessToken: ${{ secrets.GITHUB_TOKEN }}
-          path: ./junit/*.xml
-          #stripFromPath:
+      #- name: Prepare JUnit Reports
+      #  run: |
+      #    cd junit
+      #    go get -u github.com/jstemmer/go-junit-report
+      #    for file in *.go-test; do go-junit-report < $file > $file.xml; done
+      #- uses: shyim/junit-report-annotations-action@master
+      #  with:
+      #    accessToken: ${{ secrets.GITHUB_TOKEN }}
+      #    path: ./junit/*.xml
+      #    #stripFromPath:
+      - name: Upload to Report.ci
         if: always()
+        run: curl -s https://report.ci/upload.py | python - --include='./reports/*.json' --framework=go
