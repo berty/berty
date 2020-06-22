@@ -458,6 +458,33 @@ func debugListGroupCommand(ctx context.Context, v *groupView, cmd string) error 
 		v.muAggregates.Unlock()
 	}
 
+	groupDebug, err := v.v.client.DebugGroup(ctx, &bertytypes.DebugGroup_Request{
+		GroupPK: v.g.PublicKey,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	if len(groupDebug.PeerIDs) > 0 {
+		v.messages.Append(&historyMessage{
+			messageType: messageTypeMeta,
+			payload:     []byte("Peers connected on topic:"),
+		})
+
+		for _, p := range groupDebug.PeerIDs {
+			v.messages.Append(&historyMessage{
+				messageType: messageTypeMeta,
+				payload:     []byte(fmt.Sprintf(" - %s", p)),
+			})
+		}
+	} else {
+		v.messages.Append(&historyMessage{
+			messageType: messageTypeMeta,
+			payload:     []byte("No peers connected on topic found"),
+		})
+	}
+
 	return nil
 }
 

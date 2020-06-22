@@ -250,6 +250,13 @@ export namespace faker {
 				) => void = (request, callback) => {
 					callback(null, _api.berty.types.DebugInspectGroupStore.Reply.encode({}).finish())
 				}
+
+				export const DebugGroup: (
+					request: _api.berty.types.DebugGroup.IRequest,
+					callback: pb.RPCImplCallback,
+				) => void = (request, callback) => {
+					callback(null, _api.berty.types.DebugGroup.Reply.encode({}).finish())
+				}
 			}
 		}
 		export namespace types {}

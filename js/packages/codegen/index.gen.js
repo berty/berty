@@ -79,6 +79,7 @@ export const berty = {
 		DeactivateGroup: jsonPb.lookup('.berty.types.DeactivateGroup'),
 		DebugListGroups: jsonPb.lookup('.berty.types.DebugListGroups'),
 		DebugInspectGroupStore: jsonPb.lookup('.berty.types.DebugInspectGroupStore'),
+		DebugGroup: jsonPb.lookup('.berty.types.DebugGroup'),
 		DebugInspectGroupLogType: jsonPb.lookup('.berty.types.DebugInspectGroupLogType'),
 		ContactState: jsonPb.lookup('.berty.types.ContactState'),
 		ShareableContact: jsonPb.lookup('.berty.types.ShareableContact'),

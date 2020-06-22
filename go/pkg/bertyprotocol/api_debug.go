@@ -3,6 +3,8 @@ package bertyprotocol
 import (
 	"fmt"
 
+	"context"
+
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/stores/operation"
@@ -146,4 +148,24 @@ func (s *service) DebugInspectGroupStore(req *bertytypes.DebugInspectGroupStore_
 	}
 
 	return nil
+}
+
+func (s *service) DebugGroup(ctx context.Context, request *bertytypes.DebugGroup_Request) (*bertytypes.DebugGroup_Reply, error) {
+	rep := &bertytypes.DebugGroup_Reply{}
+
+	peers, err := s.ipfsCoreAPI.Swarm().Peers(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	topic := fmt.Sprintf("grp_%s", string(request.GroupPK))
+
+	for _, p := range peers {
+		tagInfo := s.ipfsCoreAPI.ConnMgr().GetTagInfo(p.ID())
+		if _, ok := tagInfo.Tags[topic]; ok {
+			rep.PeerIDs = append(rep.PeerIDs, p.ID().String())
+		}
+	}
+
+	return rep, nil
 }

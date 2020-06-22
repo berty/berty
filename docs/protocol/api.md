@@ -64,6 +64,9 @@
     - [DeactivateGroup](#berty.types.DeactivateGroup)
     - [DeactivateGroup.Reply](#berty.types.DeactivateGroup.Reply)
     - [DeactivateGroup.Request](#berty.types.DeactivateGroup.Request)
+    - [DebugGroup](#berty.types.DebugGroup)
+    - [DebugGroup.Reply](#berty.types.DebugGroup.Reply)
+    - [DebugGroup.Request](#berty.types.DebugGroup.Request)
     - [DebugInspectGroupStore](#berty.types.DebugInspectGroupStore)
     - [DebugInspectGroupStore.Reply](#berty.types.DebugInspectGroupStore.Reply)
     - [DebugInspectGroupStore.Request](#berty.types.DebugInspectGroupStore.Request)
@@ -180,6 +183,7 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | DeactivateGroup | [.berty.types.DeactivateGroup.Request](#berty.types.DeactivateGroup.Request) | [.berty.types.DeactivateGroup.Reply](#berty.types.DeactivateGroup.Reply) | DeactivateGroup closes a group |
 | DebugListGroups | [.berty.types.DebugListGroups.Request](#berty.types.DebugListGroups.Request) | [.berty.types.DebugListGroups.Reply](#berty.types.DebugListGroups.Reply) stream |  |
 | DebugInspectGroupStore | [.berty.types.DebugInspectGroupStore.Request](#berty.types.DebugInspectGroupStore.Request) | [.berty.types.DebugInspectGroupStore.Reply](#berty.types.DebugInspectGroupStore.Reply) stream |  |
+| DebugGroup | [.berty.types.DebugGroup.Request](#berty.types.DebugGroup.Request) | [.berty.types.DebugGroup.Reply](#berty.types.DebugGroup.Reply) |  |
 
  
 
@@ -567,6 +571,26 @@ ContactAddAliasKey is an event type where ones shares their alias public key
 <a name="berty.types.DeactivateGroup.Request"></a>
 
 ### DeactivateGroup.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
+
+<a name="berty.types.DebugGroup"></a>
+
+### DebugGroup
+
+<a name="berty.types.DebugGroup.Reply"></a>
+
+### DebugGroup.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| peer_ids | [string](#string) | repeated | peer_ids is the list of peer ids connected to the same group |
+
+<a name="berty.types.DebugGroup.Request"></a>
+
+### DebugGroup.Request
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
