@@ -12,5 +12,9 @@ option (gogoproto.unmarshaler_all) = true;
 option (gogoproto.sizer_all) = true;
 
 message LocalRecord {
-  map<string, int64> records = 1;
+    message Record {
+      string cid = 1;
+      int64 expire = 2;
+    }
+    repeated Record records = 1;
 }
