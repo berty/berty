@@ -120,14 +120,14 @@ jobs:
       #        GO_TEST_OPTS="-v -test.timeout=600s -count 1 -race -cover -coverprofile=coverage.txt -covermode=atomic" \
       #        GO_TEST_AFTER="2>&1 | tee ../junit/${{runner.os}}-slow.go-test" \
       #        make go.unittest
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          file: ./go/coverage.txt
-          flags: unittests
-          env_vars: OS,GOLANG
-          name: codecov-umbrella
-          fail_ci_if_error: false
+      #- name: Upload coverage to Codecov
+      #  uses: codecov/codecov-action@v1
+      #  with:
+      #    file: ./go/coverage.txt
+      #    flags: unittests
+      #    env_vars: OS,GOLANG
+      #    name: codecov-umbrella
+      #    fail_ci_if_error: false
       #- name: Prepare JUnit Reports
       #  run: |
       #    cd junit
@@ -140,4 +140,6 @@ jobs:
       #    #stripFromPath:
       - name: Upload to Report.ci
         if: always()
-        run: curl -s https://report.ci/upload.py | python - --include='./reports/*.json' --framework=go
+        run: |
+          ls -la reports
+          curl -s https://report.ci/upload.py | python - --include='./reports/*.json' --framework=go
