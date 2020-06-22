@@ -35,6 +35,7 @@ type Opts struct {
 	Port            uint
 	RootDS          datastore.Batching
 	Logger          *zap.Logger
+	DisplayName     string
 }
 
 var globalLogger *zap.Logger
@@ -184,7 +185,7 @@ func Main(ctx context.Context, opts *Opts) error {
 		globalLogger = zap.NewNop()
 	}
 
-	tabbedView := newTabbedGroups(ctx, accountGroup, client, messenger, app)
+	tabbedView := newTabbedGroups(ctx, accountGroup, client, messenger, app, opts.DisplayName)
 	if len(opts.GroupInvitation) > 0 {
 		req := &bertytypes.GroupMetadataSubscribe_Request{GroupPK: accountGroup.Group.PublicKey}
 		cl, err := tabbedView.client.GroupMetadataSubscribe(ctx, req)

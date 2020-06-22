@@ -229,7 +229,7 @@ func (v *tabbedGroupsView) GetHistory() tview.Primitive {
 	return v.activeViewContainer
 }
 
-func newTabbedGroups(ctx context.Context, g *bertytypes.GroupInfo_Reply, client bertyprotocol.ProtocolServiceClient, messenger bertymessenger.MessengerServiceServer, app *tview.Application) *tabbedGroupsView {
+func newTabbedGroups(ctx context.Context, g *bertytypes.GroupInfo_Reply, client bertyprotocol.ProtocolServiceClient, messenger bertymessenger.MessengerServiceServer, app *tview.Application, displayName string) *tabbedGroupsView {
 	v := &tabbedGroupsView{
 		ctx:           ctx,
 		topics:        tview.NewTable(),
@@ -238,6 +238,7 @@ func newTabbedGroups(ctx context.Context, g *bertytypes.GroupInfo_Reply, client 
 		app:           app,
 		contactStates: map[string]bertytypes.ContactState{},
 		contactNames:  map[string]string{},
+		displayName:   displayName,
 	}
 
 	v.accountGroupView = newViewGroup(v, g.Group, g.MemberPK, g.DevicePK, globalLogger)
