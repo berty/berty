@@ -304,13 +304,13 @@ func (ld *localDiscovery) sendLocalRecord(c network.Conn) error {
 		ReadWriter: lzcon,
 	}
 
-	// Fill the protobuf LocalRecord struct
-	lr := &LocalRecord{Records: []*LocalRecord_Record{}}
+	// Fill the protobuf Records struct
+	lr := &Records{Records: []*Record{}}
 	ld.peerCacheMux.RLock()
 	for c := range ld.peerCache {
 		ld.peerCache[c].mux.RLock()
 		if rec, ok := ld.peerCache[c].recs[ld.host.ID()]; ok {
-			record := &LocalRecord_Record{Cid: c, Expire: rec.expire}
+			record := &Record{Cid: c, Expire: rec.expire}
 			lr.Records = append(lr.Records, record)
 		}
 		ld.peerCache[c].mux.RUnlock()
@@ -333,7 +333,7 @@ func (ld *localDiscovery) sendLocalRecord(c network.Conn) error {
 func (ld *localDiscovery) handleStream(s network.Stream) {
 	pbr := ggio.NewDelimitedReader(s, network.MessageSizeMax)
 	for {
-		lr := &LocalRecord{}
+		lr := &Records{}
 		switch err := pbr.ReadMsg(lr); err {
 		case io.EOF:
 			s.Close()
