@@ -2,7 +2,9 @@ syntax = "proto3";
 
 package berty.messenger;
 
-import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "gogoproto/gogo.proto";
+import "patch/go.proto";
+import "patch/go/field.proto";
 import "bertytypes.proto";
 
 option go_package = "berty.tech/berty/go/pkg/bertymessenger";
@@ -48,7 +50,7 @@ message InstanceShareableBertyID {
     BertyID berty_id = 1 [(gogoproto.customname) = "BertyID"];
     string berty_id_payload = 2 [(gogoproto.customname) = "BertyIDPayload"];
     string deep_link = 3 [(gogoproto.customname) = "DeepLink"];
-    string html_url = 4 [(gogoproto.customname) = "HTMLURL"];
+    string html_url = 4 [(go.field.options) = {name: 'HTMLURL'}];
   }
 }
 

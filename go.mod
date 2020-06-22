@@ -8,10 +8,11 @@ require (
 	berty.tech/ipfs-webui-packed v1.0.0-v2.9.0-4
 	github.com/aead/ecdh v0.2.0
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
+	github.com/alta/protopatch v0.0.0-20200619233426-6dfb8e37c85a
 	github.com/dgraph-io/badger v1.6.1
 	github.com/gdamore/tcell v1.3.0
 	github.com/gogo/protobuf v1.3.1
-	github.com/golang/protobuf v1.3.3
+	github.com/golang/protobuf v1.4.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0
 	github.com/improbable-eng/grpc-web v0.11.0
 	github.com/ipfs/go-cid v0.0.5
@@ -51,11 +52,9 @@ require (
 	go.opentelemetry.io/otel/exporters/trace/jaeger v0.6.0
 	go.uber.org/zap v1.14.1
 	golang.org/x/crypto v0.0.0-20200406173513-056763e48d71
-	golang.org/x/net v0.0.0-20190923162816-aa69164e4478
-	golang.org/x/tools v0.0.0-20200226224502-204d844ad48d // indirect
+	golang.org/x/net v0.0.0-20200226121028-0de0cce0169b
 	google.golang.org/grpc v1.29.1
+	google.golang.org/protobuf v1.24.0
 	moul.io/godev v1.6.0
 	moul.io/srand v1.4.0
 )
-
-replace github.com/golang/protobuf => github.com/golang/protobuf v1.3.3

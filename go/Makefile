@@ -44,7 +44,7 @@ install: go.install
 
 .PHONY: clean
 clean: pb.clean
-	rm -rf vendor/ out/
+	rm -rf ../vendor/ out/
 	$(MAKE) -C .. bazel.clean
 
 .PHONY: fclean
@@ -148,9 +148,12 @@ $(GEN_SUM): $(GEN_SRC)
 	    $(MAKE) tidy \
 	)
 
-PROTOC_OPTS = -I ../vendor/github.com/grpc-ecosystem/grpc-gateway:../api:../vendor:/protobuf
+PROTOC_OPTS = -I ../api:`go list -f {{.Dir}} github.com/alta/protopatch/patch`/..:`go list -f {{.Dir}} github.com/gogo/protobuf/gogoproto`/..:`go list -f {{.Dir}} google.golang.org/protobuf/proto`:`go list -f {{.Dir}} github.com/golang/protobuf/protoc-gen-go/descriptor`/..:/protobuf
+# FIXME: remove unused imports here (/protobuf, and gogo)
+
 .PHONY: generate_local
 generate_local:
+	@echo PROTOC_OPTS=$(PROTOC_OPTS)
 	$(call check-program, goimports shasum protoc)
 	@set -e; for proto in $(PROTOS_SRC); do ( set -xe; \
 	  protoc $(PROTOC_OPTS) --gogo_out="plugins=grpc:$(GOPATH)/src" "$$proto" \
