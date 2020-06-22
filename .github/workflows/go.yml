@@ -132,7 +132,7 @@ jobs:
           for file in *.go-test; do go-junit-report < $file > $file.xml; done
       - uses: shyim/junit-report-annotations-action@master
         with:
-          access-token: ${{ secrets.GITHUB_TOKEN }}
+          accessToken: ${{ secrets.GITHUB_TOKEN }}
           path: ./junit/*.xml
-          #strip-from-path:
+          #stripFromPath:
         if: always()
