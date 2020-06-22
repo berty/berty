@@ -94,11 +94,6 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*
 
 	server := grpc.NewServer(serverOpts...)
 	client, cleanupClient := TestingClientFromServer(t, server, service, clientOpts...)
-	cleanup := func() {
-		cleanupClient()
-		cleanupService()
-		cleanupNode()
-	}
 
 	tp := &TestingProtocol{
 		Opts:    &serviceOpts,
@@ -106,7 +101,11 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*
 		Service: service,
 		IPFS:    node,
 	}
-
+	cleanup := func() {
+		cleanupClient()
+		cleanupService()
+		cleanupNode()
+	}
 	return tp, cleanup
 }
 
@@ -119,7 +118,7 @@ func (opts *TestingOpts) applyDefaults(ctx context.Context) {
 	}
 }
 
-func generateTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, n int) ([]*TestingProtocol, func()) {
+func newTestingProtocolWithMockedPeers(ctx context.Context, t *testing.T, opts *TestingOpts, amount int) ([]*TestingProtocol, func()) {
 	t.Helper()
 	opts.applyDefaults(ctx)
 	logger := opts.Logger
@@ -134,8 +133,8 @@ func generateTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpt
 
 	opts.RDVPeer = rdvpeer.Peerstore().PeerInfo(rdvpeer.ID())
 
-	cls := make([]func(), n)
-	tps := make([]*TestingProtocol, n)
+	cls := make([]func(), amount)
+	tps := make([]*TestingProtocol, amount)
 	for i := range tps {
 		svcName := fmt.Sprintf("pt[%d]", i)
 		opts.Logger = logger.Named(svcName)
@@ -154,14 +153,14 @@ func generateTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpt
 		}
 	}
 
-	return tps, func() {
+	cleanup := func() {
 		for i := range cls {
 			cls[i]()
 		}
 
 		cleanupRDVP()
 	}
-
+	return tps, cleanup
 }
 
 // TestingService returns a configured Client struct with in-memory contexts.

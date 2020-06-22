@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"sync"
+	"time"
 
 	"google.golang.org/grpc"
 )
@@ -14,10 +15,15 @@ type PipeListener struct {
 	ctx    context.Context
 	cconn  chan net.Conn
 	once   sync.Once
+	mutex  sync.Mutex
 }
 
 func NewPipeListener() *PipeListener {
-	ctx, cancel := context.WithCancel(context.Background())
+	return NewPipeListenerWithContext(context.Background())
+}
+
+func NewPipeListenerWithContext(ctx context.Context) *PipeListener {
+	ctx, cancel := context.WithCancel(ctx)
 	return &PipeListener{
 		cancel: cancel,
 		ctx:    ctx,
@@ -27,6 +33,9 @@ func NewPipeListener() *PipeListener {
 
 // Add conn forward the given conn to the listener
 func (pl *PipeListener) AddConn(c net.Conn) {
+	pl.mutex.Lock()
+	defer pl.mutex.Unlock()
+
 	select {
 	case <-pl.ctx.Done():
 	case pl.cconn <- c:
@@ -47,6 +56,9 @@ func (pl *PipeListener) NewClientConn(opts ...grpc.DialOption) (conn *grpc.Clien
 	}
 
 	conn, err = grpc.DialContext(pl.ctx, "pipe", append(opts, baseOpts...)...)
+	// avoid channel closing panic on same cases, i.e., unit tests
+	// see https://go101.org/article/channel-closing.html for more info
+	time.Sleep(time.Millisecond)
 	return
 }
 
@@ -73,6 +85,8 @@ func (pl *PipeListener) Accept() (net.Conn, error) {
 }
 func (pl *PipeListener) Close() error {
 	pl.cancel()
+	pl.mutex.Lock()
+	defer pl.mutex.Unlock()
 	pl.once.Do(func() { close(pl.cconn) })
 	return nil
 }
