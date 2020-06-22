@@ -141,5 +141,6 @@ jobs:
       - name: Upload to Report.ci
         if: always()
         run: |
-          ls -la reports
-          curl -s https://report.ci/upload.py | python - --include='./reports/*.json' --framework=go
+          cd reports
+          ls -la
+          curl -s https://report.ci/upload.py | python - --include='*.json' --framework=go
