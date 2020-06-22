@@ -1,23 +1,23 @@
 name: Go
 on:
   push:
-    tags:
-      - v*
-    branches:
-      - master
+#    tags:
+#      - v*
+#    branches:
+#      - master
     paths:
       - 'go/**'
       - '.goreleaser'
       - 'go.*'
       - '**.go'
       - '.github/workflows/go.yml'
-  pull_request:
-    paths:
-      - 'go/**'
-      - '.goreleaser'
-      - 'go.*'
-      - '**.go'
-      - '.github/workflows/go.yml'
+#  pull_request:
+#    paths:
+#      - 'go/**'
+#      - '.goreleaser'
+#      - 'go.*'
+#      - '**.go'
+#      - '.github/workflows/go.yml'
 
 jobs:
   goreleaser:
@@ -95,7 +95,7 @@ jobs:
         run: |
           mkdir -p junit
           cd go
-          set -o pipefail
+          set -euxo pipefail
           SKIP_SLOW_TESTS=1 \
             GO_TEST_OPTS="-v -test.timeout=600s -count 5" \
             GO_TEST_AFTER="2>&1 | tee ../junit/${{runner.os}}-slow.go-test" \
@@ -103,7 +103,7 @@ jobs:
       #- name: Run all tests
       #  run: |
       #    cd go
-      #    set -o pipefail
+      #    set -euxo pipefail
       #    SKIP_SLOW_TESTS=0 \
       #      GO_TEST_OPTS="-v -test.timeout=600s -count 1" \
       #      GO_TEST_AFTER="2>&1 | tee ../junit/${{runner.os}}-all.go-test" \
@@ -115,7 +115,7 @@ jobs:
       #    max_attempts: 5
       #    command: |
       #      cd go
-      #      set -o pipefail
+      #      set -euxo pipefail
       #      SKIP_SLOW_TESTS=0 \
       #        GO_TEST_OPTS="-v -test.timeout=600s -count 1 -race -cover -coverprofile=coverage.txt -covermode=atomic" \
       #        GO_TEST_AFTER="2>&1 | tee ../junit/${{runner.os}}-slow.go-test" \
