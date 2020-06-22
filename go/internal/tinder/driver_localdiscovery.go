@@ -36,7 +36,7 @@ type localDiscovery struct {
 
 type pCache struct {
 	recs map[peer.ID]*pRecord
-	mux  sync.Mutex
+	mux  sync.RWMutex
 }
 
 type pRecord struct {
@@ -72,32 +72,41 @@ func NewLocalDiscovery(logger *zap.Logger, host host.Host, rng *mrand.Rand) Driv
 	return ld
 }
 
+func (ld *localDiscovery) getCache(cid string) (c *pCache, ok bool) {
+	ld.peerCacheMux.RLock()
+	c, ok = ld.peerCache[cid]
+	ld.peerCacheMux.RUnlock()
+	return
+}
+
 // Delete expired entries of a CID in the peer cache
 func (ld *localDiscovery) cleanPeerCache(cid string) {
 	currentTime := time.Now().Unix()
 
-	ld.peerCacheMux.RLock()
-	_, ok := ld.peerCache[cid]
-	ld.peerCacheMux.RUnlock()
+	_, ok := ld.getCache(cid)
 	if ok {
 		ld.peerCacheMux.Lock()
 		cache, ok := ld.peerCache[cid]
 		if ok {
+			cache.mux.Lock()
 			for p := range cache.recs {
 				expire := cache.recs[p].expire
 				if expire < currentTime {
 					delete(cache.recs, p)
 				}
 			}
+			cache.mux.Unlock()
+			if len(cache.recs) == 0 {
+				delete(ld.peerCache, cid)
+			}
 		}
+		ld.peerCacheMux.Unlock()
 	}
 }
 
 // Update the peer cache
 func (ld *localDiscovery) updatePeerCache(cid string, peerID peer.ID, addrInfo peer.AddrInfo, expire int64) {
-	ld.peerCacheMux.RLock()
-	cache, ok := ld.peerCache[cid]
-	ld.peerCacheMux.RUnlock()
+	cache, ok := ld.getCache(cid)
 	if !ok {
 		ld.peerCacheMux.Lock()
 		cache, ok = ld.peerCache[cid]
@@ -113,25 +122,19 @@ func (ld *localDiscovery) updatePeerCache(cid string, peerID peer.ID, addrInfo p
 }
 
 // Return the cache size of a cid
-func (ld *localDiscovery) peerCacheLen(cid string) int {
-	var size int = 0
-
-	ld.peerCacheMux.RLock()
-	cache, ok := ld.peerCache[cid]
-	ld.peerCacheMux.RUnlock()
+func (ld *localDiscovery) peerCacheLen(cid string) (size int) {
+	cache, ok := ld.getCache(cid)
 	if ok {
-		cache.mux.Lock()
+		cache.mux.RLock()
 		size = len(cache.recs)
-		cache.mux.Unlock()
+		cache.mux.RUnlock()
 	}
-	return size
+	return
 }
 
 // Delete an entry of the peer cache
 func (ld *localDiscovery) deletePeerCacheEntry(cid string, peerID peer.ID) error {
-	ld.peerCacheMux.RLock()
-	cache, ok := ld.peerCache[cid]
-	ld.peerCacheMux.RUnlock()
+	cache, ok := ld.getCache(cid)
 	if ok {
 		cache.mux.Lock()
 		_, ok := cache.recs[peerID]
@@ -139,6 +142,11 @@ func (ld *localDiscovery) deletePeerCacheEntry(cid string, peerID peer.ID) error
 			delete(cache.recs, peerID)
 		}
 		cache.mux.Unlock()
+		if len(cache.recs) == 0 {
+			ld.peerCacheMux.Lock()
+			delete(ld.peerCache, cid)
+			ld.peerCacheMux.Unlock()
+		}
 	} else {
 		ld.logger.Error("CID not found from the local peer cache")
 		return errors.New("delete failed: CID not found")
@@ -203,19 +211,11 @@ func (ld *localDiscovery) FindPeers(ctx context.Context, cid string, opts ...dis
 	}
 
 	// Get cached peers
-	var cache *pCache
-
-	ld.peerCacheMux.RLock()
-	cache, ok := ld.peerCache[cid]
-	ld.peerCacheMux.RUnlock()
+	cache, ok := ld.getCache(cid)
 	if !ok {
-		ld.peerCacheMux.Lock()
-		cache, ok = ld.peerCache[cid]
-		if !ok {
-			cache = &pCache{recs: make(map[peer.ID]*pRecord)}
-			ld.peerCache[cid] = cache
-		}
-		ld.peerCacheMux.Unlock()
+		// This CID is unknown, so return a empty chan
+		chPeer := make(chan peer.AddrInfo)
+		return chPeer, nil
 	}
 
 	// Remove all expired entries from cache
@@ -290,7 +290,7 @@ func (ld *localDiscovery) Connected(net network.Network, c network.Conn) {
 	}()
 }
 
-// Send only records owned by the local peer
+// Send records only owned by the local peer
 func (ld *localDiscovery) sendLocalRecord(c network.Conn) error {
 	// Open a multiplexed stream
 	s, err := c.NewStream()
@@ -308,12 +308,12 @@ func (ld *localDiscovery) sendLocalRecord(c network.Conn) error {
 	lr := &LocalRecord{Records: []*LocalRecord_Record{}}
 	ld.peerCacheMux.RLock()
 	for c := range ld.peerCache {
-		ld.peerCache[c].mux.Lock()
+		ld.peerCache[c].mux.RLock()
 		if rec, ok := ld.peerCache[c].recs[ld.host.ID()]; ok {
 			record := &LocalRecord_Record{Cid: c, Expire: rec.expire}
 			lr.Records = append(lr.Records, record)
 		}
-		ld.peerCache[c].mux.Unlock()
+		ld.peerCache[c].mux.RUnlock()
 	}
 	ld.peerCacheMux.RUnlock()
 
@@ -351,9 +351,7 @@ func (ld *localDiscovery) handleStream(s network.Stream) {
 				zap.String("remoteID", s.Conn().RemotePeer().String()),
 				zap.String("CID", rec.Cid),
 				zap.Int64("expire", rec.Expire))
-			ld.peerCacheMux.RLock()
-			cache, ok := ld.peerCache[rec.Cid]
-			ld.peerCacheMux.RUnlock()
+			cache, ok := ld.getCache(rec.Cid)
 			if !ok {
 				ld.peerCacheMux.Lock()
 				cache, ok = ld.peerCache[rec.Cid]
