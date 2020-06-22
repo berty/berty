@@ -1,23 +1,23 @@
 name: Go
 on:
   push:
-#    tags:
-#      - v*
-#    branches:
-#      - master
+    tags:
+      - v*
+    branches:
+      - master
     paths:
       - 'go/**'
       - '.goreleaser'
       - 'go.*'
       - '**.go'
       - '.github/workflows/go.yml'
-#  pull_request:
-#    paths:
-#      - 'go/**'
-#      - '.goreleaser'
-#      - 'go.*'
-#      - '**.go'
-#      - '.github/workflows/go.yml'
+  pull_request:
+    paths:
+      - 'go/**'
+      - '.goreleaser'
+      - 'go.*'
+      - '**.go'
+      - '.github/workflows/go.yml'
 
 jobs:
   goreleaser:
