@@ -35,6 +35,7 @@ func TestEmptyArgs(t *testing.T) {
 }
 
 func TestTestingProtocol(t *testing.T) {
+	t.Errorf("YO")
 	ctx := context.Background()
 	opts := TestingOpts{}
 	tp, cleanup := NewTestingProtocol(ctx, t, &opts)

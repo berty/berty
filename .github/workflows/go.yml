@@ -56,7 +56,7 @@ jobs:
           args: --timeout=2m
           # only-new-issues: true
   go-tests-on-linux:
-    needs: golangci-lint
+    #needs: golangci-lint
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -99,24 +99,24 @@ jobs:
             GO_TEST_OPTS="-v -test.timeout=600s -count 5" \
             GO_TEST_AFTER="2>&1 | tee ../junit/${{runner.os}}-slow.go-test" \
             make go.unittest
-      - name: Run all tests
-        run: |
-          cd go
-          SKIP_SLOW_TESTS=0 \
-            GO_TEST_OPTS="-v -test.timeout=600s -count 1" \
-            GO_TEST_AFTER="2>&1 | tee ../junit/${{runner.os}}-all.go-test" \
-            make go.unittest
-      - name: Run all tests with race flag and generate coverage
-        uses: nick-invision/retry@v1
-        with:
-          timeout_minutes: 10
-          max_attempts: 5
-          command: |
-            cd go
-            SKIP_SLOW_TESTS=0 \
-              GO_TEST_OPTS="-v -test.timeout=600s -count 1 -race -cover -coverprofile=coverage.txt -covermode=atomic" \
-              GO_TEST_AFTER="2>&1 | tee ../junit/${{runner.os}}-slow.go-test" \
-              make go.unittest
+      #- name: Run all tests
+      #  run: |
+      #    cd go
+      #    SKIP_SLOW_TESTS=0 \
+      #      GO_TEST_OPTS="-v -test.timeout=600s -count 1" \
+      #      GO_TEST_AFTER="2>&1 | tee ../junit/${{runner.os}}-all.go-test" \
+      #      make go.unittest
+      #- name: Run all tests with race flag and generate coverage
+      #  uses: nick-invision/retry@v1
+      #  with:
+      #    timeout_minutes: 10
+      #    max_attempts: 5
+      #    command: |
+      #      cd go
+      #      SKIP_SLOW_TESTS=0 \
+      #        GO_TEST_OPTS="-v -test.timeout=600s -count 1 -race -cover -coverprofile=coverage.txt -covermode=atomic" \
+      #        GO_TEST_AFTER="2>&1 | tee ../junit/${{runner.os}}-slow.go-test" \
+      #        make go.unittest
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
@@ -130,10 +130,9 @@ jobs:
           cd junit
           go get -u github.com/jstemmer/go-junit-report
           for file in *.go-test; do go-junit-report < $file > $file.xml; done
-      - uses: ashley-taylor/junit-report-annotations-action@master
+      - uses: shyim/junit-report-annotations-action@master
         with:
           access-token: ${{ secrets.GITHUB_TOKEN }}
           path: ./junit/*.xml
-          numFailures: 42
-          testSrcPath: go/
+          #strip-from-path:
         if: always()
