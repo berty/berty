@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { BlurView } from '@react-native-community/blur'
 import {
 	TouchableOpacity,
@@ -18,6 +18,7 @@ import { ConversationProceduralAvatar } from '../shared-components/ProceduralCir
 import { Message } from './shared-components/Message'
 import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { messenger } from '@berty-tech/store'
 //
 // Chat
 //
@@ -118,21 +119,34 @@ const AppMessage: React.FC<{ message: string }> = ({ message }) => {
 	return msg ? <TypedMessage payload={msg} /> : null
 }
 
-const MessageList: React.FC<{ id: string }> = (props) => {
+const MessageList: React.FC<{ id: string; scrollToMessage?: number }> = (props) => {
 	const [{ row, overflow, flex, margin }] = useStyles()
 	const conversation = Messenger.useGetConversation(props.id)
-	if (!conversation) {
-		return <CenteredActivityIndicator />
+	const flatListRef = useRef<FlatList<messenger.message.Entity['id']>>(null)
+
+	const onScrollToIndexFailed = () => {
+		// Not sure why this happens (something to do with item/screen dimensions I think)
+		flatListRef.current?.scrollToIndex({ index: 0 })
 	}
-	return (
+
+	return !conversation ? (
+		<CenteredActivityIndicator />
+	) : (
 		<FlatList
+			initialScrollIndex={
+				conversation && props.scrollToMessage
+					? conversation.messages.length - props.scrollToMessage
+					: undefined
+			}
+			onScrollToIndexFailed={onScrollToIndexFailed}
+			ref={flatListRef}
 			keyboardDismissMode='on-drag'
 			style={[overflow, row.item.fill, flex.tiny, margin.top.scale(140)]}
 			data={conversation ? [...conversation.messages].reverse() : []}
 			inverted
 			keyExtractor={(item) => item}
 			ListFooterComponent={<InfosChat createdAt={conversation.createdAt} />}
-			renderItem={({ item }) => <AppMessage message={item} />}
+			renderItem={({ item }: { item: string }) => <AppMessage message={item} />}
 		/>
 	)
 }
@@ -178,7 +192,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route }) => {
 	return (
 		<View style={[StyleSheet.absoluteFill, background.white]}>
 			<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
-				<MessageList id={route.params.convId} />
+				<MessageList id={route.params.convId} scrollToMessage={route.params.scrollToMessage} />
 				<ChatFooter
 					convId={route.params.convId}
 					isFocused={inputIsFocused}

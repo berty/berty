@@ -88,8 +88,10 @@ export namespace Command {
 
 export namespace Query {
 	export type List = void
+	export type ListHuman = void // TODO: May not need
 	export type Get = { id: string }
 	export type GetLength = void
+	export type SearchByTitle = { searchText: string }
 }
 
 export namespace Event {
@@ -141,8 +143,11 @@ export type CommandsReducer = {
 
 export type QueryReducer = {
 	list: (state: GlobalState, query: Query.List) => Array<Entity | FakeConversation>
+	listHuman: (state: GlobalState, query: Query.ListHuman) => Array<Entity>
 	get: (state: GlobalState, query: Query.Get) => Entity | FakeConversation | undefined
 	getLength: (state: GlobalState) => number
+	searchByTitle: (state: GlobalState, query: Query.SearchByTitle) => Array<Entity>
+	// putSearchForMessages here?
 }
 
 export type EventsReducer = {
@@ -339,8 +344,17 @@ export const commands = commandHandler.actions
 export const events = eventHandler.actions
 export const queries: QueryReducer = {
 	list: (state) => Object.values(getAggregatesWithFakes(state)),
+	listHuman: (state) =>
+		Object.values(state.messenger.conversation.aggregates).filter(
+			(conv) =>
+				conv.kind === ConversationKind.OneToOne || conv.kind === ConversationKind.MultiMember,
+		),
 	get: (state, { id }) => getAggregatesWithFakes(state)[id],
 	getLength: (state) => Object.keys(getAggregatesWithFakes(state)).length,
+	searchByTitle: (state, { searchText }) =>
+		Object.values(state.messenger.conversation.aggregates).filter((conv) =>
+			searchText?.toLowerCase().includes(conv.title?.toLowerCase()),
+		),
 }
 
 export const transactions: Transactions = {

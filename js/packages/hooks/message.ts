@@ -2,7 +2,10 @@
 import { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { messenger } from '@berty-tech/store'
-import { useGetConversation } from './conversation'
+import { useGetConversation, useConversationList } from './conversation'
+import { Entity as ConversationEntity } from '@berty-tech/store/messenger/conversation'
+import { flatten } from 'lodash'
+import { UserMessage } from '@berty-tech/store/messenger'
 
 // messages commands
 export const useMessageSend = () => {
@@ -69,22 +72,72 @@ export const useGetDateLastContactMessage = (id: string) => {
 	return lastDate || null
 }
 
-export const useMessageSearchResults = (searchText: string): any[] => {
-	const selectorMessageIds = (state: messenger.conversation.GlobalState): string[] => {
-		return messenger.conversation.queries
-			.list(state)
-			.filter((conv) => conv?.accountId !== 'fake' && conv.messages.length)
-			.map((conv) => conv.messages)
-			.reduce((acc, conv) => [...acc, ...conv], [])
+// search hooks
+
+export type MessageSearchMatch = {
+	conversationId: string
+	id: messenger.message.Entity['id'] // need for react unique key for .map
+	message: messenger.UserMessage // TODO: Probably just need sentDate and body, not entire message
+	conversationTitle?: string
+	messageIndex?: number
+}
+
+// TODO: Optimize
+
+// TODO: (Maybe) Add to UserMessage `conversation: messenger.conversation.Entity['id'] instead...
+// Also might have been smarter to search all messages first,
+//     then search for corresponding conversations
+// Also caching of some kind
+// Also return in batches
+export const useGetMessageSearchResultWithMetadata = (searchText: string): MessageSearchMatch[] => {
+	// map all messages to conversation ID
+	const messagesWithConv = useSelector((state: messenger.conversation.GlobalState) => {
+		const conversations = messenger.conversation.queries.listHuman(state)
+
+		if (conversations.length > 30) {
+			console.warn(
+				'useGetMessageSearchResultWithMetadata: You have more than 30 conversations, this might take a while...',
+			)
+		}
+		const mapMessageToConv = (conv: messenger.conversation.Entity) => (
+			id: string,
+			messageIndex: number,
+		) => ({
+			conversationId: conv.id,
+			id,
+			conversationTitle: conv.title,
+			messageIndex,
+		})
+
+		return flatten(conversations.map((conv) => conv.messages.map(mapMessageToConv(conv))))
+	})
+
+	if (messagesWithConv.length > 200) {
+		console.warn(
+			'useGetMessageSearchResultWithMetadata: You have more than 200 messages, this might take a while...',
+		)
 	}
 
-	const list = useSelector(selectorMessageIds)
-	const selectorMessageResults = useMemo(
-		() => (state: messenger.message.GlobalState) =>
-			messenger.message.queries.search(state, { searchText, list }),
-		[searchText, list],
+	// search messages for search match
+	const messageIdsForConversationsWithMatch = useSelector(
+		(state: messenger.message.GlobalState): MessageSearchMatch[] => {
+			return messagesWithConv
+				.map(({ conversationId, conversationTitle, messageIndex, id }) => ({
+					id,
+					conversationId,
+					conversationTitle,
+					messageIndex,
+					message: messenger.message.queries.searchOne(state, {
+						searchText,
+						id,
+					}) as UserMessage,
+				}))
+				.filter(({ message }) => !!message && message.type === messenger.AppMessageType.UserMessage)
+				.sort(
+					({ message: { sentDate: sentDateA } }, { message: { sentDate: sentDateB } }) =>
+						sentDateB - sentDateA,
+				)
+		},
 	)
-
-	const matchingMessages = useSelector(selectorMessageResults)
-	return matchingMessages
+	return !searchText ? [] : messageIdsForConversationsWithMatch
 }

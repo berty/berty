@@ -90,3 +90,36 @@ export const useOneToOneConversationContact = (
 			undefined,
 	)
 }
+
+// search hooks
+
+/**
+ * Maybe not ideal, as we have already searched contacts
+ * and could have returned conversation with them at the same time
+ */
+export const useFirstConversationWithContact = (
+	contactPk: string,
+): messenger.conversation.Entity | null => {
+	const conversations = useConversationList()
+	const conversationWithContact = useMemo(
+		() =>
+			conversations.find(
+				(conv) =>
+					conv?.kind === messenger.conversation.ConversationKind.OneToOne &&
+					Object.keys(conv.membersDevices).includes(contactPk),
+			) || null,
+		[contactPk, conversations],
+	)
+	return !contactPk ? null : conversationWithContact
+}
+
+/**
+ * Not used yet, but we can maybe use it to search for groups, not just contacts
+ * (problem is, it won't show contacts without conversation or group)
+ */
+export const useSearchConversationsByTitle = (searchText: string): any => {
+	const conversationSelector = (state: messenger.conversation.GlobalState) =>
+		messenger.conversation.queries.searchByTitle(state, { searchText })
+	const conversations = useSelector(conversationSelector)
+	return conversations
+}
