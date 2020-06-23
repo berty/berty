@@ -53,7 +53,9 @@ steps:
           import: berty.tech/berty
     commands:
       - set -x
-      - mkdir -p junit/$BUILDKITE_COMMIT
+      - mkdir -p junit/$BUILDKITE_COMMIT logs/$BUILDKITE_COMMIT
+
+      - export GYM_BUILDLOG_PATH=$$PWD/logs/$BUILDKITE_COMMIT
       - export XCPRETTY_REPORT_JUNIT=$$PWD/junit/$BUILDKITE_COMMIT/report-ios.xml
       - export PATH=$$(brew --prefix ruby)/bin:$$PATH # use brew ruby
       - go get golang.org/x/mobile/cmd/gomobile
@@ -61,9 +63,12 @@ steps:
       - cd js
       - make release.ios.yolo
       - mv ./packages/berty-app/build/ios-yolo/development/Berty.ipa ../Berty-Yolo-$BUILDKITE_COMMIT.ipa
+      # remove logs if succeed
+      - rm -f $$PWD/logs/$BUILDKITE_COMMIT/*
     artifact_paths:
       - Berty-Yolo-$BUILDKITE_COMMIT.ipa
       - junit/$BUILDKITE_COMMIT/report-ios.xml
+      - logs/$BUILDKITE_COMMIT/*
 
   - label: js-generate
     if: build.branch == "master" || (build.message !~ /\[skip js-generate\]/ && build.message !~ /\[skip-ci\]/)
@@ -122,9 +127,7 @@ steps:
       - export BAZEL_TESTLOG="$(bazel info 2>/dev/null | grep bazel-testlogs | tr ' ' '\t' | cut -f2)"
       - mkdir -p junit/$BUILDKITE_COMMIT
 
-      # in case of failure export xml testlog
-      - make bazel.unittest || find "$$BAZEL_TESTLOG" -name '*.xml' -exec sh -c 'cp -v {} junit/$BUILDKITE_COMMIT/"$(echo {}|rev|cut -d/ -f1,2,3|rev|tr / -)"' ';' && exit 1
-      - make bazel.build
+      - (make bazel.unittest && make bazel.build) || (find "$$BAZEL_TESTLOG" -name '*.xml' -exec sh -c 'cp -v {} junit/$BUILDKITE_COMMIT/"$(echo {}|rev|cut -d/ -f1,2,3|rev|tr / -)"' ';' && exit 1)
 
     artifact_paths:
       -  junit/$BUILDKITE_COMMIT/*.xml
