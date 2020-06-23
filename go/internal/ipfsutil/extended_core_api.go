@@ -4,6 +4,7 @@ import (
 	"context"
 
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
+	"github.com/libp2p/go-libp2p-core/connmgr"
 	ipfs_host "github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	peer "github.com/libp2p/go-libp2p-core/peer"
@@ -15,6 +16,7 @@ type ConnMgr interface {
 	UntagPeer(p peer.ID, tag string)
 	Protect(id peer.ID, tag string)
 	Unprotect(id peer.ID, tag string) (protected bool)
+	GetTagInfo(p peer.ID) *connmgr.TagInfo
 }
 
 type ExtendedCoreAPI interface {

@@ -133,6 +133,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 requestType: "types.DebugInspectGroupStore.Request",
                 responseType: "types.DebugInspectGroupStore.Reply",
                 responseStream: true
+              },
+              DebugGroup: {
+                requestType: "types.DebugGroup.Request",
+                responseType: "types.DebugGroup.Reply"
               }
             }
           }
@@ -1419,6 +1423,34 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   payload: {
                     type: "bytes",
                     id: 6
+                  }
+                }
+              }
+            }
+          },
+          DebugGroup: {
+            fields: {},
+            nested: {
+              Request: {
+                fields: {
+                  groupPk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "GroupPK"
+                    }
+                  }
+                }
+              },
+              Reply: {
+                fields: {
+                  peerIds: {
+                    rule: "repeated",
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "PeerIDs"
+                    }
                   }
                 }
               }

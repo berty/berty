@@ -93,4 +93,6 @@ service ProtocolService {
   rpc DebugListGroups (types.DebugListGroups.Request) returns (stream types.DebugListGroups.Reply);
 
   rpc DebugInspectGroupStore (types.DebugInspectGroupStore.Request) returns (stream types.DebugInspectGroupStore.Reply);
+
+  rpc DebugGroup (types.DebugGroup.Request) returns (types.DebugGroup.Reply);
 }

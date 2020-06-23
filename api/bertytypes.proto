@@ -784,6 +784,18 @@ message DebugInspectGroupStore {
   }
 }
 
+message DebugGroup {
+  message Request {
+    // group_pk is the identifier of the group
+    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+  }
+
+  message Reply {
+    // peer_ids is the list of peer ids connected to the same group
+    repeated string peer_ids = 1  [(gogoproto.customname) = "PeerIDs"];
+  }
+}
+
 
 enum DebugInspectGroupLogType {
   DebugInspectGroupLogTypeUndefined = 0;

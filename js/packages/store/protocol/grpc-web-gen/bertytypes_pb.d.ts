@@ -2636,6 +2636,66 @@ export namespace DebugInspectGroupStore {
   }
 }
 
+export class DebugGroup extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DebugGroup.AsObject;
+  static toObject(includeInstance: boolean, msg: DebugGroup): DebugGroup.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DebugGroup, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DebugGroup;
+  static deserializeBinaryFromReader(message: DebugGroup, reader: jspb.BinaryReader): DebugGroup;
+}
+
+export namespace DebugGroup {
+  export type AsObject = {
+  }
+
+  export class Request extends jspb.Message {
+    getGroupPk(): Uint8Array | string;
+    getGroupPk_asU8(): Uint8Array;
+    getGroupPk_asB64(): string;
+    setGroupPk(value: Uint8Array | string): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Request.AsObject;
+    static toObject(includeInstance: boolean, msg: Request): Request.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Request, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Request;
+    static deserializeBinaryFromReader(message: Request, reader: jspb.BinaryReader): Request;
+  }
+
+  export namespace Request {
+    export type AsObject = {
+      groupPk: Uint8Array | string,
+    }
+  }
+
+  export class Reply extends jspb.Message {
+    clearPeerIdsList(): void;
+    getPeerIdsList(): Array<string>;
+    setPeerIdsList(value: Array<string>): void;
+    addPeerIds(value: string, index?: number): string;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Reply.AsObject;
+    static toObject(includeInstance: boolean, msg: Reply): Reply.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Reply, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Reply;
+    static deserializeBinaryFromReader(message: Reply, reader: jspb.BinaryReader): Reply;
+  }
+
+  export namespace Reply {
+    export type AsObject = {
+      peerIdsList: Array<string>,
+    }
+  }
+}
+
 export class ShareableContact extends jspb.Message {
   getPk(): Uint8Array | string;
   getPk_asU8(): Uint8Array;

@@ -64,6 +64,8 @@ export namespace berty {
             public debugListGroups(request: berty.types.DebugListGroups.IRequest): Promise<berty.types.DebugListGroups.Reply>;
             public debugInspectGroupStore(request: berty.types.DebugInspectGroupStore.IRequest, callback: berty.protocol.ProtocolService.DebugInspectGroupStoreCallback): void;
             public debugInspectGroupStore(request: berty.types.DebugInspectGroupStore.IRequest): Promise<berty.types.DebugInspectGroupStore.Reply>;
+            public debugGroup(request: berty.types.DebugGroup.IRequest, callback: berty.protocol.ProtocolService.DebugGroupCallback): void;
+            public debugGroup(request: berty.types.DebugGroup.IRequest): Promise<berty.types.DebugGroup.Reply>;
         }
 
         namespace ProtocolService {
@@ -125,6 +127,8 @@ export namespace berty {
             type DebugListGroupsCallback = (error: (Error|null), response?: berty.types.DebugListGroups.Reply) => void;
 
             type DebugInspectGroupStoreCallback = (error: (Error|null), response?: berty.types.DebugInspectGroupStore.Reply) => void;
+
+            type DebugGroupCallback = (error: (Error|null), response?: berty.types.DebugGroup.Reply) => void;
         }
     }
 
@@ -2350,6 +2354,61 @@ export namespace berty {
                 public static verify(message: { [k: string]: any }): (string|null);
                 public static fromObject(object: { [k: string]: any }): berty.types.DebugInspectGroupStore.Reply;
                 public static toObject(message: berty.types.DebugInspectGroupStore.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+        }
+
+        interface IDebugGroup {
+        }
+
+        class DebugGroup implements IDebugGroup {
+
+            public static create(properties?: berty.types.IDebugGroup): berty.types.DebugGroup;
+            public static encode(message: berty.types.IDebugGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.types.IDebugGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.DebugGroup;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.DebugGroup;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): berty.types.DebugGroup;
+            public static toObject(message: berty.types.DebugGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+        }
+
+        namespace DebugGroup {
+
+            interface IRequest {
+                groupPk?: (Uint8Array|null);
+            }
+
+            class Request implements IRequest {
+
+                public groupPk: Uint8Array;
+                public static create(properties?: berty.types.DebugGroup.IRequest): berty.types.DebugGroup.Request;
+                public static encode(message: berty.types.DebugGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.types.DebugGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.DebugGroup.Request;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.DebugGroup.Request;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.types.DebugGroup.Request;
+                public static toObject(message: berty.types.DebugGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IReply {
+                peerIds?: (string[]|null);
+            }
+
+            class Reply implements IReply {
+
+                public peerIds: string[];
+                public static create(properties?: berty.types.DebugGroup.IReply): berty.types.DebugGroup.Reply;
+                public static encode(message: berty.types.DebugGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.types.DebugGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.DebugGroup.Reply;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.DebugGroup.Reply;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.types.DebugGroup.Reply;
+                public static toObject(message: berty.types.DebugGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
         }
