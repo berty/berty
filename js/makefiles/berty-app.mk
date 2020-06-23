@@ -1,10 +1,6 @@
-export PWD := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
-export PATH := $(PWD)/node_modules/.bin:$(PATH)
-
-berty_root ?= $(abspath $(PWD)/../../..)
-
-react-native := $(PWD)/node_modules/.bin/react-native
-clisim := $(PWD)/node_modules/.bin/clisim
+bertyapp_pwd=$(shell pwd)/packages/berty-app
+react-native := $(bertyapp_pwd)/node_modules/.bin/react-native
+clisim := $(bertyapp_pwd)/node_modules/.bin/clisim
 pod := pod
 bundle := bundle
 
@@ -14,7 +10,7 @@ device ?= iPhone 11
 target ?= debug
 config ?= development
 entry-file ?= index.js
-build-dir ?= $(PWD)/build
+build-dir ?= $(bertyapp_pwd)/build
 dest ?= $(build-dir)/$(platform)-$(target)/$(config)
 
 check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,$(error "No $(exec) in PATH")))
@@ -36,24 +32,24 @@ $(ENVFILE):
 	deps.web \
 	deps.darwin \
 
-deps: $(PWD)/node_modules config
+deps: $(bertyapp_pwd)/node_modules config
 
-deps.ios: export PWD := $(PWD)
-deps.ios: deps build.gobridge.ios $(PWD)/ios/Pods/Manifest.lock /tmp/envfile
-$(PWD)/ios/Pods/Manifest.lock: $(PWD)/ios/Podfile $(PWD)/package.json
+deps.ios: export PWD := $(bertyapp_pwd)
+deps.ios: deps build.gobridge.ios $(bertyapp_pwd)/ios/Pods/Manifest.lock /tmp/envfile
+$(bertyapp_pwd)/ios/Pods/Manifest.lock: $(bertyapp_pwd)/ios/Podfile $(bertyapp_pwd)/package.json
 	([ ! -z "$(shell which pod)" ] \
 		&& [[ "$$(pod --version)" > "1.7." ]]) \
 		|| sudo gem install cocoapods
-	cd $(PWD)/ios && $(pod) install
-$(PWD)/ios/Podfile: $(PWD)/node_modules
+	cd $(bertyapp_pwd)/ios && $(pod) install
+$(bertyapp_pwd)/ios/Podfile: $(bertyapp_pwd)/node_modules
 .PHONY: /tmp/envfile
 /tmp/envfile: $(ENVFILE)
 	cat $< > $@
 
-deps.android: export PWD := $(PWD)
-deps.android: deps build.gobridge.android $(PWD)/node_modules/react-native/react.gradle.orig $(if $(filter $(config), development), $(HOME)/.android/debug.keystore)
+deps.android: export PWD := $(bertyapp_pwd)
+deps.android: deps build.gobridge.android $(bertyapp_pwd)/node_modules/react-native/react.gradle.orig $(if $(filter $(config), development), $(HOME)/.android/debug.keystore)
 
-$(PWD)/node_modules/react-native/react.gradle.orig: $(PWD)/patch/react.gradle.patch
+$(bertyapp_pwd)/node_modules/react-native/react.gradle.orig: $(bertyapp_pwd)/patch/react.gradle.patch
 	@echo "patching file $(patsubst %.orig, %, $@)"
 	@patch -f $(patsubst %.orig, %, $@) $< 1>/dev/null || true
 
@@ -62,7 +58,7 @@ deps.web: deps
 deps.darwin: deps
 
 .PHONY: start.metro
-start.metro: export PWD := $(PWD)
+start.metro: export PWD := $(bertyapp_pwd)
 start.metro: port ?= 8081
 start.metro: host ?= 127.0.0.1
 start.metro: deps
@@ -73,13 +69,13 @@ start.metro: deps
 	@echo "Waiting for metro to die.. ($(shell date))"
 	while ps -p $(pid); do sleep 1; done
 	@echo "Metro dead ($(shell date))"
-	cd $(PWD) && $(react-native) start \
+	cd $(bertyapp_pwd) && $(react-native) start \
 		--reset-cache \
 		--port=$(port) \
 		--host=$(host)
 
 .PHONY: start.emulator
-start.emulator: export PWD := $(PWD)
+start.emulator: export PWD := $(bertyapp_pwd)
 start.emulator: deps
 	$(if $(filter $(platform), android), \
 		$(call check-program, adb) \
@@ -90,12 +86,12 @@ start.emulator: deps
 
 # the adb reverse is for the berty daemon
 .PHONY: run
-run: export PWD := $(PWD)
+run: export PWD := $(bertyapp_pwd)
 run: berty_port ?= 1337
 run: deps
-	$(if $(filter $(platform), android), $(berty_root)/build/shell/check-java.sh 18)
+	$(if $(filter $(platform), android), $(BERTY_ROOT)/build/shell/check-java.sh 18)
 	$(if $(filter $(platform), android), adb -s $(device) reverse tcp:$(berty_port) tcp:$(berty_port))
-	cd $(PWD) && $(react-native) run-$(platform) \
+	cd $(bertyapp_pwd) && $(react-native) run-$(platform) \
 		--no-packager \
 		$(if $(filter $(platform), android), --variant=$(target)) \
 		$(if $(filter $(platform), android), --deviceId='$(device)') \
@@ -109,18 +105,18 @@ run: deps
 # Use cltr-b then & to close
 # tmux: https://duckduckgo.com/?q=tmux+cheat+sheet&t=ffab&atb=v194-5__&ia=cheatsheet&iax=1
 .PHONY: run.%.tmux
-run.%.tmux: export PWD := $(PWD)
+run.%.tmux: export PWD := $(bertyapp_pwd)
 run.%.tmux: deps
-	cd $(berty_root)/js && tmux \
+	cd $(BERTY_ROOT)/js && tmux \
 		new-session '$(MAKE) start.metro' \; \
-		split-window 'PLATFORM=$* $(berty_root)/build/shell/shortcut_build.sh' \; \
+		split-window 'PLATFORM=$* $(BERTY_ROOT)/build/shell/shortcut_build.sh' \; \
 		split-window 'PLATFORM=$* $(MAKE) start.grpc-bridge.orbitdb' \; \
 		set-option remain-on-exit on
 
 .PHONY: bundle
-bundle: export PWD := $(PWD)
+bundle: export PWD := $(bertyapp_pwd)
 bundle: deps.$(platform)
-	cd $(PWD) && $(react-native) bundle \
+	cd $(bertyapp_pwd) && $(react-native) bundle \
 		--entry-file=$(entry) \
 		--platform=$(platform) \
 		--bundle-output=$(dest)/main.jsbundle \
@@ -173,7 +169,7 @@ release.ios.store: method := app-store
 release.ios.store: profile := AppStore
 release.ios.store: team-id := WMBQ84HN4T # @FIXME(gfanton): this should not be public?
 # setup path
-release.ios: export PWD := $(PWD)
+release.ios: export PWD := $(bertyapp_pwd)
 # setup platform
 release.ios: platform := ios
 # setup version
@@ -195,9 +191,9 @@ release.ios: export GYM_EXPORT_METHOD=$(method)
 release.ios: export GYM_OPTION_METHOD=$(method)
 release.ios: export GYM_OPTION_APP_ID=$(bundle-id)
 release.ios: export GYM_OPTION_PROVISIONING_PROFILE=match $(profile) $(bundle-id)
-release.ios: export GYM_OUTPUT_NAME=$(shell echo $(name) | $(PWD)/node_modules/.bin/caser --pascal)
+release.ios: export GYM_OUTPUT_NAME=$(shell echo $(name) | $(bertyapp_pwd)/node_modules/.bin/caser --pascal)
 release.ios: export GYM_OUTPUT_DIRECTORY=$(dest)
-release.ios: export GYM_WORKSPACE=$(PWD)/ios/$(shell echo $(name) | $(PWD)/node_modules/.bin/caser --pascal).xcworkspace
+release.ios: export GYM_WORKSPACE=$(bertyapp_pwd)/ios/$(shell echo $(name) | $(bertyapp_pwd)/node_modules/.bin/caser --pascal).xcworkspace
 release.ios: export GYM_SCHEME=$(target)
 release.ios: export GYM_SKIP_PROFILE_DETECTION=true
 release.ios: export GYM_INCLUDE_SYMBOLS=false
@@ -206,12 +202,12 @@ release.ios: deps.ios
 	$(if $(method),, $(error "method variable not defined"))
 
 	# gem bundle install
-	cd $(PWD) \
+	cd $(bertyapp_pwd) \
 		&& $(bundle) install
 
 	# setup ci if needed
 ifdef CI
-	cd $(PWD) \
+	cd $(bertyapp_pwd) \
 		`# create temporary keychain` \
 		&& $(bundle) exec fastlane run create_keychain \
 			timeout:3600 \
@@ -219,12 +215,12 @@ ifdef CI
 			unlock:true \
 			add_to_search_list:true \
 		`# setup app version` \
-		&& plutil -replace CFBundleShortVersionString -string $(target_version) $(PWD)/ios/Berty/Info.plist \
-		&& plutil -replace CFBundleVersion -string $(target_build) $(PWD)/ios/Berty/Info.plist
+		&& plutil -replace CFBundleShortVersionString -string $(target_version) $(bertyapp_pwd)/ios/Berty/Info.plist \
+		&& plutil -replace CFBundleVersion -string $(target_build) $(bertyapp_pwd)/ios/Berty/Info.plist
 
 endif
 
-	cd $(PWD) \
+	cd $(bertyapp_pwd) \
 		`# get ios certificates` \
 		&& $(bundle) exec fastlane run match \
 		  --verbose \
@@ -254,7 +250,7 @@ release.darwin:
 
 .PHONY: log
 log:
-	cd $(PWD) && $(react-native) log-$(platform)
+	cd $(bertyapp_pwd) && $(react-native) log-$(platform)
 
 # HELPERS
 
@@ -468,13 +464,13 @@ run.darwin: deps.darwin run
 
 
 clean.ios: platform := ios
-clean.ios: export PWD := $(PWD)
+clean.ios: export PWD := $(bertyapp_pwd)
 clean.ios:
-	touch $(PWD)/ios/Podfile
-clean.android: export PWD := $(PWD)
+	touch $(bertyapp_pwd)/ios/Podfile
+clean.android: export PWD := $(bertyapp_pwd)
 clean.android: platform := android
 clean.android:
-	cd $(PWD)/android; \
+	cd $(bertyapp_pwd)/android; \
 		./gradlew clean; \
 		rm -rf .gradle; \
 
@@ -494,16 +490,16 @@ clean:
 	fclean \
 
 fclean.ios: platform := ios
-fclean.ios: export PWD := $(PWD)
+fclean.ios: export PWD := $(bertyapp_pwd)
 fclean.ios:
-	cd $(PWD)/ios; \
+	cd $(bertyapp_pwd)/ios; \
 		rm -rf build; \
 		xcodebuild clean; \
 		rm -rf $(HOME)/Library/Developer/Xcode/DerivedData; \
 		rm -rf Pods; rm -rf ~/Library/Caches/CocoaPods
 fclean.android: platform := android
 fclean.android: clean.android
-	cd $(PWD)/android; \
+	cd $(bertyapp_pwd)/android; \
 		rm -rf app/build; \
 		rm -rf $$HOME/.gradle/caches;
 fclean.web: platform := web
@@ -519,5 +515,5 @@ fclean: fclean.ios fclean.android fclean.darwin fclean.web
 # - if we don't: we should call lerna bootstrap or some other form of npm install
 #   in this make rule or as a dependency of it
 bazel.android.install:
-	$(MAKE) -C $(abspath $(PWD)/../go-bridge) bazel.build.gobridge.android
+	$(MAKE) -C $(abspath $(bertyapp_pwd)/../go-bridge) bazel.build.gobridge.android
 	bazel mobile-install --sandbox_debug --fat_apk_cpu=x86_64,x86,armeabi-v7a //android/app/src/main:app

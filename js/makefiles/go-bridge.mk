@@ -1,21 +1,21 @@
-export PWD := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
-export PATH := $(PWD)/node_modules/.bin:$(PATH)
+GOBRIDGE_PWD=$(shell pwd)/packages/go-bridge
+GOPATH ?=$(HOME)/go
 
-BAZEL_FRAMEWORK := $(PWD)/bazel-bin/ios/gobridge_framework.tar.gz
-FRAMEWORK_DIR := $(PWD)/ios/Frameworks
+BAZEL_FRAMEWORK := $(GOBRIDGE_PWD)/bazel-bin/ios/gobridge_framework.tar.gz
+FRAMEWORK_DIR := $(GOBRIDGE_PWD)/ios/Frameworks
 FRAMEWORK := $(FRAMEWORK_DIR)/Bertybridge.framework
 FRAMEWORK_TARGETS := $(addsuffix .ios, $(shell \
-	find $(addprefix $(GOPATH)/src/berty.tech/berty/,vendor go) -name '*.go' -newer "$(FRAMEWORK_DIR)" || echo "$(FRAMEWORK_DIR).go") \
+	find $(addprefix $(BERTY_ROOT)/,vendor go) -name '*.go' -newer "$(FRAMEWORK_DIR)" || echo "$(FRAMEWORK_DIR).go") \
 )
 
-BAZEL_AAR := $(PWD)/bazel-bin/android/gobridge_library.aar
-AAR_DIR := $(PWD)/android/libs
-AAR := $(PWD)/android/libs/gobridge.aar
+BAZEL_AAR := $(GOBRIDGE_PWD)/bazel-bin/android/gobridge_library.aar
+AAR_DIR := $(GOBRIDGE_PWD)/android/libs
+AAR := $(GOBRIDGE_PWD)/android/libs/gobridge.aar
 AAR_TARGETS := $(addsuffix .android, $(shell \
-	find $(addprefix $(GOPATH)/src/berty.tech/berty/,vendor go) -name '*.go' -newer "$(AAR_DIR)" || echo "$(AAR_DIR).go") \
+	find $(addprefix $(BERTY_ROOT)/,vendor go) -name '*.go' -newer "$(AAR_DIR)" || echo "$(AAR_DIR).go") \
 )
 
-GO_VENDOR := $(GOPATH)/src/berty.tech/berty/vendor
+GO_VENDOR := $(BERTY_ROOT)/vendor
 GOMOBILE := $(GOPATH)/bin/gomobile
 GOBIND := $(GOPATH)/bin/gobind
 
@@ -25,12 +25,12 @@ BUILD_DATE ?= `date +%s`
 EXT_LDFLAGS = -ldflags="-X berty.tech/berty/go/pkg/bertymessenger.VcsRef=$(VCS_REF) -X berty.tech/berty/go/pkg/bertymessenger.Version=$(VERSION) -X berty.tech/berty/go/pkg/bertymessenger.BuildTime=$(BUILD_DATE)"
 
 deps.gobridge: $(GOMOBILE) $(GO_VENDOR)
-	cd $(PWD) && gomobile init
+	cd $(GOBRIDGE_PWD) && $(GOMOBILE) init
 
 $(GO_VENDOR):
 	cd $(GOPATH)/src/berty.tech/berty && GO111MODULE=on go mod vendor
 
-$(GOMOBILE): $(PWD) := $(PWD)
+$(GOMOBILE): $(GOBRIDGE_PWD) := $(GOBRIDGE_PWD)
 $(GOMOBILE): $(GOBIND)
 	GO111MODULE=off go get golang.org/x/mobile/cmd/gomobile
 

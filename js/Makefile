@@ -1,4 +1,4 @@
-export PWD = $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+export PWD = $(shell pwd)
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
 
 BERTY_ROOT = $(abspath $(shell pwd)/..)
@@ -32,7 +32,7 @@ pkg_desc := $(patsubst %, %/package.json,$(pkg))
 
 .DEFAULT_GOAL := deps
 
-print-%  : ; @echo $* = $($*)
+print-%: ; @echo $* = $($*)
 
 .PHONY: env
 env:
@@ -135,7 +135,6 @@ lint.watch: lint
 
 .PHONY: gen
 gen: deps
-	$(MAKE) pb.generate
 
 .PHONY: gen.clean
 gen.clean:
@@ -163,11 +162,11 @@ start.grpc-bridge.berty:
 		&& bazel run //go/cmd/berty -- daemon -l /ip4/$(host)/tcp/$(port)/$(proto)
 
 # pb.generate
-include gen.make
-
-include packages/api/Makefile
-include packages/codegen/Makefile
-include packages/go-bridge/Makefile
-include packages/berty-app/Makefile
-include packages/storybook-mobile/Makefile
-include packages/storybook-web/Makefile
+makefiles_dir=makefiles
+include $(makefiles_dir)/go-bridge.mk
+include $(makefiles_dir)/gen.mk
+include $(makefiles_dir)/api.mk
+include $(makefiles_dir)/codegen.mk
+include $(makefiles_dir)/berty-app.mk
+include $(makefiles_dir)/storybook-mobile.mk
+include $(makefiles_dir)/storybook-web.mk

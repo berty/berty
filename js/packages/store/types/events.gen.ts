@@ -113,6 +113,7 @@ export type Events<State> = {
 				devicePk: Uint8Array
 				groupPk: Uint8Array
 				contact: api.berty.types.IShareableContact
+				ownMetadata: Uint8Array
 			}
 		}>
 	>

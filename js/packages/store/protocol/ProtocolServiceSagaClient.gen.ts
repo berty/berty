@@ -764,4 +764,29 @@ export default class ProtocolServiceSagaClient {
 			})
 			return close
 		})
+	debugGroup = (requestObj: api.berty.types.DebugGroup.IRequest = {}) =>
+		eventChannel<api.berty.types.DebugGroup.IReply>((emit) => {
+			const buf = api.berty.types.DebugGroup.Request.encode(requestObj).finish()
+			const request = bertytypes.DebugGroup.Request.deserializeBinary(buf)
+			const { close } = grpc.invoke(ProtocolService.DebugGroup, {
+				request,
+				transport: this.transport,
+				host: this.host,
+				onMessage: (message: bertytypes.DebugGroup.Reply) =>
+					emit(api.berty.types.DebugGroup.Reply.decode(message.serializeBinary())),
+				onEnd: (code, msg, trailers) => {
+					if (code !== grpc.Code.OK) {
+						emit(
+							new Error(
+								`GRPC DebugGroup ${grpc.Code[code]} (${code}): ${msg}\nTrailers: ${JSON.stringify(
+									trailers,
+								)}`,
+							) as any,
+						)
+					}
+					emit(END)
+				},
+			})
+			return close
+		})
 }
