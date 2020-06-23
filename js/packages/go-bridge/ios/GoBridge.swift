@@ -76,6 +76,7 @@ class GoBridge: NSObject {
             // gather opts
             let optPersistance = opts.get(bool: "persistance")
             let optLog = opts.get(string: "logLevel", defaultValue: "info")
+            let optPOIDebug = opts.get(bool: "poiDebug")
             let optGrpcListeners = opts.get(array: "grpcListeners", defaultValue: ["/ip4/127.0.0.1/tcp/0/grpcws"])
             let optSwarmListeners = opts.get(array: "swarmListeners", defaultValue: ["/ip4/0.0.0.0/tcp/0", "/ip6/0.0.0.0/tcp/0"])
             let optTracing = opts.get(bool: "tracing")
@@ -120,6 +121,10 @@ class GoBridge: NSObject {
 
                 NSLog("root dir: `%@`", self.rootdir.path)
                 config.rootDirectory(self.rootdir.path)
+            }
+
+            if optPOIDebug {
+                config.enablePOIDebug()
             }
 
             if optTracing {

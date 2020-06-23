@@ -74,6 +74,7 @@ func main() {
 		globalDebug       bool
 		globalLibp2pDebug bool
 		globalOrbitDebug  bool
+		globalPOIDebug    bool
 		globalLogToFile   string
 		globalTracer      string
 
@@ -108,6 +109,7 @@ func main() {
 	globalFlags.BoolVar(&globalDebug, "debug", false, "berty debug mode")
 	globalFlags.BoolVar(&globalLibp2pDebug, "debug-p2p", false, "libp2p debug mode")
 	globalFlags.BoolVar(&globalOrbitDebug, "debug-odb", false, "orbitdb debug mode")
+	globalFlags.BoolVar(&globalPOIDebug, "debug-poi", false, "peer-of-interest debug mode")
 	globalFlags.StringVar(&globalLogToFile, "logfile", "", "if specified, will log everything in JSON into a file and nothing on stderr")
 	globalFlags.StringVar(&globalTracer, "tracer", "", "specify \"stdout\" to output tracing on stdout or <hostname:port> to trace on jaeger")
 	globalFlags.StringVar(&displayName, "display-name", safeDefaultDisplayName(), "display name")
@@ -132,7 +134,7 @@ func main() {
 	type cleanupFunc func()
 	globalPreRun := func() cleanupFunc {
 		mrand.Seed(srand.Secure())
-		isDebugEnabled := globalDebug || globalOrbitDebug || globalLibp2pDebug
+		isDebugEnabled := globalDebug || globalOrbitDebug || globalLibp2pDebug || globalPOIDebug
 		flush := tracer.InitTracer(globalTracer, "berty")
 
 		// setup zap config
@@ -250,6 +252,7 @@ func main() {
 				Port:            miniPort,
 				RootDS:          rootDS,
 				Logger:          l,
+				POIDebug:        globalPOIDebug,
 				Bootstrap:       DefaultBootstrap,
 				RendezVousPeer:  rdvpeer,
 				DisplayName:     displayName,
@@ -303,6 +306,10 @@ func main() {
 				}
 
 				defer node.Close()
+
+				if globalPOIDebug {
+					ipfsutil.EnableConnLogger(logger, node.PeerHost)
+				}
 
 				// construct http api endpoint
 				ipfsutil.ServeHTTPApi(logger, node, "")

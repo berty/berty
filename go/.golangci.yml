@@ -38,7 +38,7 @@ linters:
     - govet
     - ineffassign
     #- interfacer
-    - maligned
+    # - maligned
     - misspell
     - nakedret
     #- prealloc

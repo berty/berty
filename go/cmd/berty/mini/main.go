@@ -35,6 +35,7 @@ type Opts struct {
 	Port            uint
 	RootDS          datastore.Batching
 	Logger          *zap.Logger
+	POIDebug        bool
 	DisplayName     string
 }
 
@@ -86,6 +87,10 @@ func newService(ctx context.Context, logger *zap.Logger, opts *Opts) (bertyproto
 	})
 	if err != nil {
 		panicUnlockFS(err, lock)
+	}
+
+	if opts.POIDebug {
+		ipfsutil.EnableConnLogger(logger, node.PeerHost)
 	}
 
 	// wait to get routing

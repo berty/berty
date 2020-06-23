@@ -301,6 +301,7 @@ export const defaultBridgeOpts: GoBridgeOpts = {
 	swarmListeners: ['/ip4/0.0.0.0/tcp/0', '/ip6/0.0.0.0/tcp/0'],
 	grpcListeners: ['/ip4/127.0.0.1/tcp/0/grpcws'],
 	logLevel: GoLogLevel.debug,
+	poiDebug: true,
 	persistance: true,
 	tracing: true,
 	tracingPrefix: '',

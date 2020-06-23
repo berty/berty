@@ -1,6 +1,6 @@
 ID ?= 42
 TMPDIR ?= /tmp
-RUN_OPTS ?= --debug-p2p --debug-odb
+RUN_OPTS ?= --debug-p2p --debug-odb --debug-poi
 NAME ?= $(USER)-mini-$(ID)
 
 .PHONY: run

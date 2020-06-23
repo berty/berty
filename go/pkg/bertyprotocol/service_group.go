@@ -158,7 +158,7 @@ func (s *service) activateGroup(pk crypto.PubKey) error {
 		go func() {
 			for e := range cg.metadataStore.Subscribe(s.ctx) {
 				if evt, ok := e.(*stores.EventNewPeer); ok {
-					s.ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, fmt.Sprintf("grp_%s", string(id)), 1)
+					s.ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, fmt.Sprintf("grp_%s", string(id)), 42)
 				}
 			}
 		}()
@@ -166,7 +166,7 @@ func (s *service) activateGroup(pk crypto.PubKey) error {
 		go func() {
 			for e := range cg.messageStore.Subscribe(s.ctx) {
 				if evt, ok := e.(*stores.EventNewPeer); ok {
-					s.ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, fmt.Sprintf("grp_%s", string(id)), 1)
+					s.ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, fmt.Sprintf("grp_%s", string(id)), 42)
 				}
 			}
 		}()
