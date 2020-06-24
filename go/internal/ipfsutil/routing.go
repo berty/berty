@@ -24,13 +24,15 @@ type RoutingOut struct {
 
 func NewTinderRouting(logger *zap.Logger, rdvpeer *peer.AddrInfo, dhtclient bool) (ipfs_p2p.RoutingOption, <-chan *RoutingOut) {
 	crout := make(chan *RoutingOut, 1)
-	return func(ctx context.Context, h host.Host, dstore datastore.Batching, validator record.Validator) (routing.Routing, error) {
+	return func(ctx context.Context, h host.Host, dstore datastore.Batching, validator record.Validator, bootstrapPeers ...peer.AddrInfo) (routing.Routing, error) {
 		defer close(crout)
 
 		dht, err := dht.New(
 			ctx, h,
+			dht.Concurrency(3),
 			dht.Datastore(dstore),
 			dht.Validator(validator),
+			dht.BootstrapPeers(bootstrapPeers...),
 			dhtopts.Client(dhtclient),
 		)
 

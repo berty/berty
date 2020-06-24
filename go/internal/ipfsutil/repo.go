@@ -108,7 +108,6 @@ func createBaseConfig() (*ipfs_cfg.Config, error) {
 	}
 
 	// Swarm
-	c.Swarm.EnableAutoNATService = true
 	c.Swarm.EnableAutoRelay = true
 	c.Swarm.EnableRelayHop = false
 	c.Swarm.ConnMgr = ipfs_cfg.ConnMgr{
@@ -121,9 +120,6 @@ func createBaseConfig() (*ipfs_cfg.Config, error) {
 	c.Routing = ipfs_cfg.Routing{
 		Type: "dhtclient",
 	}
-
-	// Experimental
-	c.Experimental.QUIC = true
 
 	return &c, nil
 }

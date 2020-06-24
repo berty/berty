@@ -5,7 +5,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfslog "berty.tech/go-ipfs-log"
-	"github.com/golang/protobuf/proto"
+	"github.com/gogo/protobuf/proto"
 	cid "github.com/ipfs/go-cid"
 	"golang.org/x/crypto/nacl/secretbox"
 )

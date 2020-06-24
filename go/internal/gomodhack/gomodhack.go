@@ -4,8 +4,7 @@
 package gomodhack
 
 import (
-	_ "github.com/gogo/protobuf/gogoproto"          // required by protoc
-	_ "github.com/gogo/protobuf/types"              // required by protoc
-	_ "github.com/golang/protobuf/proto"            // required by protoc
-	_ "github.com/golang/protobuf/ptypes/timestamp" // required by protoc
+	_ "github.com/gogo/protobuf/gogoproto" // required by protoc
+	_ "github.com/gogo/protobuf/proto"     // required by protoc
+	_ "github.com/gogo/protobuf/types"     // required by protoc
 )

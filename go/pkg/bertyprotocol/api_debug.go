@@ -8,7 +8,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/stores/operation"
-	"github.com/golang/protobuf/proto"
+	"github.com/gogo/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
 )
