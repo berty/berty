@@ -76,6 +76,9 @@ func (md *MultiDriver) advertise(ctx context.Context, d Driver, ns string, opts 
 			}
 
 			md.logger.Info("advertise", zap.String("driver", d.Name()), zap.String("key", ns))
+			if ttl < 1 {
+				return
+			}
 			wait := 7 * ttl / 8
 			select {
 			case <-time.After(wait):
