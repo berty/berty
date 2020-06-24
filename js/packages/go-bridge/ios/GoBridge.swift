@@ -81,6 +81,7 @@ class GoBridge: NSObject {
             let optSwarmListeners = opts.get(array: "swarmListeners", defaultValue: ["/ip4/0.0.0.0/tcp/0", "/ip6/0.0.0.0/tcp/0"])
             let optTracing = opts.get(bool: "tracing")
             let optTracingPrefix = opts.get(string: "tracingPrefix")
+            let optLocalDiscovery = opts.get(bool: "localDiscovery")
 
             var err: NSError?
             guard let config = BertybridgeNewProtocolConfig() else {
@@ -130,6 +131,10 @@ class GoBridge: NSObject {
             if optTracing {
                 config.enableTracing()
                 config.setTracingPrefix(optTracingPrefix)
+            }
+
+            if !optLocalDiscovery {
+                config.disableLocalDiscovery()
             }
 
             let bridgeProtocol = BertybridgeNewProtocolBridge(config, &err)

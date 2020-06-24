@@ -305,6 +305,7 @@ export const defaultBridgeOpts: GoBridgeOpts = {
 	persistance: true,
 	tracing: true,
 	tracingPrefix: '',
+	localDiscovery: true,
 }
 
 export const transactions: Transactions = {

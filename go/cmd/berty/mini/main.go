@@ -37,6 +37,7 @@ type Opts struct {
 	Logger          *zap.Logger
 	POIDebug        bool
 	DisplayName     string
+	LocalDiscovery  bool
 }
 
 var globalLogger *zap.Logger
@@ -78,7 +79,7 @@ func newService(ctx context.Context, logger *zap.Logger, opts *Opts) (bertyproto
 
 	rootDS := sync_ds.MutexWrap(opts.RootDS)
 	ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("ipfs"))
-	routingOpt, crouting := ipfsutil.NewTinderRouting(logger, opts.RendezVousPeer, false)
+	routingOpt, crouting := ipfsutil.NewTinderRouting(logger, opts.RendezVousPeer, false, opts.LocalDiscovery)
 	api, node, err := ipfsutil.NewCoreAPIFromDatastore(ctx, ipfsDS, &ipfsutil.CoreAPIConfig{
 		BootstrapAddrs: opts.Bootstrap,
 		SwarmAddrs:     swarmAddresses,

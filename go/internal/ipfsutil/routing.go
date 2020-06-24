@@ -22,7 +22,7 @@ type RoutingOut struct {
 	tinder.Routing
 }
 
-func NewTinderRouting(logger *zap.Logger, rdvpeer *peer.AddrInfo, dhtclient bool) (ipfs_p2p.RoutingOption, <-chan *RoutingOut) {
+func NewTinderRouting(logger *zap.Logger, rdvpeer *peer.AddrInfo, dhtclient bool, localDiscovery bool) (ipfs_p2p.RoutingOption, <-chan *RoutingOut) {
 	crout := make(chan *RoutingOut, 1)
 	return func(ctx context.Context, h host.Host, dstore datastore.Batching, validator record.Validator, bootstrapPeers ...peer.AddrInfo) (routing.Routing, error) {
 		defer close(crout)
@@ -49,8 +49,10 @@ func NewTinderRouting(logger *zap.Logger, rdvpeer *peer.AddrInfo, dhtclient bool
 			drivers = append(drivers, rdvClient)
 		}
 
-		localDiscovery := tinder.NewLocalDiscovery(logger, h, rand.New(rand.NewSource(rand.Int63())))
-		drivers = append(drivers, localDiscovery)
+		if localDiscovery {
+			localDiscovery := tinder.NewLocalDiscovery(logger, h, rand.New(rand.NewSource(rand.Int63())))
+			drivers = append(drivers, localDiscovery)
+		}
 
 		tinderRouting := tinder.NewRouting(logger, "dht", dht, drivers...)
 		crout <- &RoutingOut{dht, tinderRouting}
