@@ -134,7 +134,9 @@ steps:
 
   - wait:
     continue_on_failure: true
-  - label: reports-bigcors
+
+  - label: junit-reports
+    if: build.branch == "master" || (build.message !~ /\[skip junit-reports\]/ && build.message !~ /\[skip bazel-go\]/ && build.message !~ /\[skip ios-build\]/ && build.message !~ /\[skip-ci\]/)
     agents:
       queue: "bigcores"
     plugins:
