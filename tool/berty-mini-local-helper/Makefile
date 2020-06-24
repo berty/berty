@@ -1,17 +1,30 @@
 ID ?= 42
+TMPDIR ?= /tmp
+RUN_OPTS ?= --debug-p2p --debug-odb
+NAME ?= $(USER)-mini-$(ID)
 
 .PHONY: run
 run:
-	berty --debug-p2p --debug-odb --logfile=/tmp/berty-mini-$(ID).log --debug mini -d /tmp/berty-mini-$(ID)
+	berty $(RUN_OPTS) --display-name=$(NAME) --logfile=$(TMPDIR)/berty-mini-$(ID).log --debug mini -d $(TMPDIR)/berty-mini-$(ID)
 
 .PHONY: tail
 tail:
-	tail -f /tmp/berty-mini-$(ID).log
+	@touch $(TMPDIR)/berty-mini-$(ID).log
+	tail -f $(TMPDIR)/berty-mini-$(ID).log
 
 .PHONY: log-stats
 log-stats:
-	cat /tmp/berty-mini-$(ID).log | jq -r '.level + " " + .logger + " " + .msg + " " + .error' | sort | uniq -c
+	@touch $(TMPDIR)/berty-mini-$(ID).log
+	cat $(TMPDIR)/berty-mini-$(ID).log | jq -r '.level + " " + .logger + " " + .msg + " " + .error' | sort | uniq -c
 
 .PHONY: watch-log-stats
 watch-log-stats:
 	watch -d make log-stats
+
+.PHONY: clean
+clean:
+	rm -rf $(TMPDIR)/berty-mini-$(ID).log $(TMPDIR)/berty-mini-$(ID)
+
+.PHONY: kill
+kill:
+	pkill -f -- '--logfile=$(TMPDIR)/berty-mini-$(ID).log'
