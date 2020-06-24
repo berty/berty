@@ -11,6 +11,10 @@ import (
 type NoopRouting struct {
 }
 
+func NewNoopRouting() *NoopRouting {
+	return &NoopRouting{}
+}
+
 // Implementation of routing.ContentRouting interface
 func (nr *NoopRouting) Provide(context.Context, cid.Cid, bool) error {
 	return nil
