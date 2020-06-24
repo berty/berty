@@ -2,4 +2,4 @@ b41a615518c699db79b00db16094ba23596b0506  ../api/bertymessenger.proto
 248e44c8923dfbbcc792e77920eccba2572ce71f  ../api/bertyprotocol.proto
 4834c4dd7fa5b6b8a1846e2af4e00de20e89dcbd  ../api/bertytypes.proto
 4c0fa735ab710727c465ed1444dc6db1c748dc45  ../vendor/github.com/gogo/protobuf/gogoproto/gogo.proto
-c493f51bfe76a0acd1a6f4f7138844faecc32613  gen.make
+4907ebcfc157495512ca240f3b7849e2da82bee0  makefiles/gen.mk

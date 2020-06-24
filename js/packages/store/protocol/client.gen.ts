@@ -209,6 +209,13 @@ export type Commands<State> = {
 			logType: api.berty.types.DebugInspectGroupLogType
 		}>
 	>
+	debugGroup: CaseReducer<
+		State,
+		PayloadAction<{
+			id: string
+			groupPk: Uint8Array
+		}>
+	>
 }
 
 export enum Methods {
@@ -241,4 +248,5 @@ export enum Methods {
 	deactivateGroup = 'deactivateGroup',
 	debugListGroups = 'debugListGroups',
 	debugInspectGroupStore = 'debugInspectGroupStore',
+	debugGroup = 'debugGroup',
 }

@@ -220,4 +220,10 @@ export default class ProtocolServiceClient {
 	) => void = (request, callback) => {
 		return this._pbService.debugInspectGroupStore.bind(this._pbService)(request, callback)
 	}
+	debugGroup: (
+		request: api.berty.types.DebugGroup.IRequest,
+		callback: (error: Error | null, response?: api.berty.types.DebugGroup.IReply) => void,
+	) => void = (request, callback) => {
+		return this._pbService.debugGroup.bind(this._pbService)(request, callback)
+	}
 }
