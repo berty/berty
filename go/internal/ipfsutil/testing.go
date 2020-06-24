@@ -88,7 +88,7 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 	}
 
 	r := TestingRepo(t)
-	routingopt, crout := NewTinderRouting(opts.Logger, &opts.RDVPeer, false)
+	routingopt, crout := NewTinderRouting(opts.Logger, &opts.RDVPeer, false, true)
 
 	node, err := ipfs_core.NewNode(ctx, &ipfs_core.BuildCfg{
 		Repo:    r,

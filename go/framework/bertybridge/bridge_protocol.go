@@ -70,6 +70,7 @@ type ProtocolConfig struct {
 	rootDirectory  string
 	tracing        bool
 	tracingPrefix  string
+	localDiscovery bool
 
 	// internal
 	coreAPI ipfsutil.ExtendedCoreAPI
@@ -107,6 +108,10 @@ func (pc *ProtocolConfig) LoggerDriver(dLogger NativeLoggerDriver) {
 
 func (pc *ProtocolConfig) AddSwarmListener(laddr string) {
 	pc.swarmListeners = append(pc.swarmListeners, laddr)
+}
+
+func (pc *ProtocolConfig) DisableLocalDiscovery() {
+	pc.localDiscovery = false
 }
 
 func NewProtocolBridge(config *ProtocolConfig) (*Protocol, error) {
@@ -167,7 +172,7 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 			}
 			// should be a valid rendezvous peer
 			bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, defaultProtocolRendezVousPeer)
-			bopts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false)
+			bopts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false, config.localDiscovery)
 
 			if len(config.swarmListeners) > 0 {
 				bopts.SwarmAddrs = append(bopts.SwarmAddrs, config.swarmListeners...)

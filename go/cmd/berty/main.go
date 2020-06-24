@@ -71,12 +71,13 @@ func main() {
 	log.SetFlags(0)
 
 	var (
-		globalDebug       bool
-		globalLibp2pDebug bool
-		globalOrbitDebug  bool
-		globalPOIDebug    bool
-		globalLogToFile   string
-		globalTracer      string
+		globalDebug          bool
+		globalLibp2pDebug    bool
+		globalOrbitDebug     bool
+		globalPOIDebug       bool
+		globalLogToFile      string
+		globalTracer         string
+		globalLocalDiscovery bool
 
 		bannerLight           bool
 		bannerRandom          bool
@@ -112,6 +113,7 @@ func main() {
 	globalFlags.BoolVar(&globalPOIDebug, "debug-poi", false, "peer-of-interest debug mode")
 	globalFlags.StringVar(&globalLogToFile, "logfile", "", "if specified, will log everything in JSON into a file and nothing on stderr")
 	globalFlags.StringVar(&globalTracer, "tracer", "", "specify \"stdout\" to output tracing on stdout or <hostname:port> to trace on jaeger")
+	globalFlags.BoolVar(&globalLocalDiscovery, "localdiscovery", true, "local discovery")
 	globalFlags.StringVar(&displayName, "display-name", safeDefaultDisplayName(), "display name")
 	bannerFlags.BoolVar(&bannerLight, "light", false, "light mode")
 	bannerFlags.BoolVar(&bannerRandom, "random", false, "pick a random quote")
@@ -256,6 +258,7 @@ func main() {
 				Bootstrap:       DefaultBootstrap,
 				RendezVousPeer:  rdvpeer,
 				DisplayName:     displayName,
+				LocalDiscovery:  globalLocalDiscovery,
 			})
 			if err != nil {
 				return errcode.TODO.Wrap(err)
@@ -297,7 +300,7 @@ func main() {
 				}
 				if rdvpeer != nil {
 					bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, rdvpMaddr)
-					bopts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false)
+					bopts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false, globalLocalDiscovery)
 				}
 
 				var node *core.IpfsNode
