@@ -4,6 +4,8 @@ import (
 	"context"
 	crand "crypto/rand"
 	"encoding/base64"
+	"os"
+	"strconv"
 	"testing"
 
 	tinder "berty.tech/berty/v2/go/internal/tinder"
@@ -98,6 +100,10 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 		},
 	})
 	require.NoError(t, err, "failed to initialize IPFS node mock")
+
+	if ok, _ := strconv.ParseBool(os.Getenv("POI_DEBUG")); ok {
+		EnableConnLogger(opts.Logger, node.PeerHost)
+	}
 
 	// get back tinder service
 	routing := <-crout

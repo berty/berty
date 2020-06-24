@@ -64,6 +64,7 @@ type ProtocolConfig struct {
 
 	dLogger  NativeLoggerDriver
 	loglevel string
+	poiDebug bool
 
 	swarmListeners []string
 	rootDirectory  string
@@ -86,6 +87,10 @@ func (pc *ProtocolConfig) RootDirectory(dir string) {
 
 func (pc *ProtocolConfig) EnableTracing() {
 	pc.tracing = true
+}
+
+func (pc *ProtocolConfig) EnablePOIDebug() {
+	pc.poiDebug = true
 }
 
 func (pc *ProtocolConfig) SetTracingPrefix(prefix string) {
@@ -178,6 +183,10 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 
 			// serve the embedded ipfs webui
 			ipfsutil.ServeHTTPWebui(logger)
+
+			if config.poiDebug {
+				ipfsutil.EnableConnLogger(logger, node.PeerHost)
+			}
 
 			out := <-crouting
 			dht = out.IpfsDHT
