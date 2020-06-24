@@ -1,172 +1,333 @@
-export PWD = $(shell pwd)
+## user variables
+
+GOPATH ?= $(HOME)/go
+VERSION ?= `git describe --tags --always`
+VCS_REF ?= `git rev-parse --short HEAD`
+BUILD_DATE ?= `date +%s`
+TMPDIR ?= /tmp
+CI ?= false
+BERTY_BRIDGE_PORT ?= 1337
+STORYBOOK_MOBILE_PORT ?= 7007
+STORYBOOK_WEB_PORT ?= 7008
+REACT_NATIVE_PORT ?= 8081
+APP_CONFIG ?= development
+APP_TARGET ?= debug
+ANDROID_DEVICE ?=
+IOS_DEVICE ?= iPhone 11
+
+## Internal variables
+
+rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
+check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,$(error "Missing deps: no '$(exec)' in PATH")))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
-
-BERTY_ROOT = $(abspath $(shell pwd)/..)
-
-UNAME_S ?= $(shell uname -s)
-
 author = Berty Technologies <oss@berty.tech>
-contributor = $(shell git config --get user.name) <$(shell git config --get user.email)>
 license = (Apache-2.0 or MIT)
+ext_ldflags = -ldflags="-X berty.tech/berty/go/pkg/bertymessenger.VcsRef=$(VCS_REF) -X berty.tech/berty/go/pkg/bertymessenger.Version=$(VERSION) -X berty.tech/berty/go/pkg/bertymessenger.BuildTime=$(BUILD_DATE)"
+pkg := $(dir $(wildcard $(PWD)/packages/*/package.json))
+pkg_mod := $(patsubst %, %/node_modules, $(pkg)) node_modules
+pkg_desc := $(patsubst %, %/package.json, $(pkg)) package.json
+gomobile_bin := $(GOPATH)/bin/gomobile
+bridge_src := $(call rwildcard,../vendor ../go, "*.go")
+berty_bin := $(GOPATH)/bin/berty
+react-native := $(abspath packages/berty-app/node_modules/.bin/react-native)
+clisim := packages/berty-app/node_modules/.bin/clisim
 
-yarn := $(shell which yarn || echo '/usr/local/bin/yarn')
-yarn_flags :=
+## User commands
 
-go_vendor := $(BERTY_ROOT)/vendor
-
-mod := $(PWD)/node_modules
-bin := $(mod)/.bin
-
-lerna := $(bin)/lerna
-lerna_flags := --reject-cycles --concurrency=8
-lerna_upgrade := $(bin)/upd
-lerna_exec := $(lerna) $(lerna_flags) exec --stream --parallel --scope=$1 --
-
-json := $(bin)/json
-caser := $(bin)/caser
-eslint := $(bin)/eslint
-
-pkg := $(patsubst %/package.json, %, $(filter-out $(PWD)/packages, $(shell find $(PWD)/packages -maxdepth 2 -type f -name 'package.json')))
-pkg_mod := $(patsubst %, %/node_modules, $(pkg))
-pkg_desc := $(patsubst %, %/package.json,$(pkg))
-
-.DEFAULT_GOAL := deps
-
-print-%: ; @echo $* = $($*)
-
-.PHONY: env
-env:
-	@env
-
-.PHONY: deps
-deps: $(mod) $(pkg_mod)
-deps: $(lerna) $(mod) $(pkg_mod)
-
-$(mod) $(pkg_mod): ci ?= false
-$(mod) $(pkg_mod): $(PWD)/package.json $(pkg_desc)
-	$(yarn) $(if $(filter $(ci), true), --frozen-lockfile)
-	$(lerna) $(lerna_flags) bootstrap
-	# remove duplicate instance of react-native
-	rm -rf $$(find $(mod) -type d -name react-native -path '*/node_modules/*'  | grep 'node_modules/react-native$$')
-	# convert android deps to androidx
-	$(bin)/jetifier
-	mkdir -p $(mod) $(pkg_mod)
-	touch $(mod) $(pkg_mod)
+.PHONY: help
+help:
+	@echo "User commands"
+	@echo "  android.run        "
+	@echo "  android.storybook  "
+	@echo "  bridge.start       "
+	@echo "  deps.update        "
+	@echo "  clean              clear cache"
+	@echo "  gen.clean          "
+	@echo "  generate           use protobuf to generate files"
+	@echo "  ios.run            "
+	@echo "  ios.storybook      "
+	@echo "  lint               "
+	@echo "  lint.fix           "
+	@echo "  metro.start        "
+	@echo "  test               run tests"
+	@echo "  web.storybook      "
 
 .PHONY: test
 test: deps
 	yarn test
 
-.PHONY: upgrade
-upgrade: deps
-	$(lerna_upgrade)
+.PHONY: deps.update
+deps.update: deps
+	upd
 
-.IGNORE \
+.PHONY: generate
+generate: deps gen.sum
+
 .PHONY: clean
 clean:
-
-.IGNORE \
-.PHONY: fclean
-fclean: clean
 	rm -rf $(pkg_mod)
-	rm -rf $(mod)
+	rm -rf packages/berty-app/android/.gradle
+	rm -rf packages/berty-app/ios/build
+	rm -rf $(TMPDIR)/react-native-packager-cache-*
+	rm -rf $(TMPDIR)/metro-bundler-cache-*
+	rm -rf packages/go-bridge/ios/Frameworks/Bertybridge.framework
+	rm -rf Pods
+	rm -f packages/go-bridge/android/libs/gobridge.aar
+	rm -rf packages/storybook-mobile/ios/build
+	rm -rf packages/berty-app/android/app/build
+
 	yarn cache clean -f
+ifneq (, $(shell which xcodebuild))
+	cd packages/berty-app/ios && xcodebuild clean || true
+	cd packages/storybook-mobile/ios && xcodebuild clean || true
+endif
+	cd packages/berty-app/android && ./gradlew clean || true
 
-.PHONY: pkg
-pkg: name ?= example
-pkg: export PWD := $(PWD)
-pkg: deps
-	$(lerna) create @berty-tech/$(name) \
-		--access restricted \
-		--private \
-		--license '$(license)' \
-		--yes
-	cd $(PWD)/packages/$(name) \
-		&& $(json) -I -f package.json -e "this.description=''" \
-		&& $(json) -I -f package.json -e "this.author='$(author)'"
+	touch packages/berty-app/ios/Podfile
 
-.PHONY: rnpkg
-rnpkg: name ?= example
-rnpkg: pascal-name = $(shell echo $(name) | $(caser) --pascal)
-rnpkg: export PWD := $(PWD)
-rnpkg: deps
-	cd $(PWD)/packages \
-		&& create-react-native-module \
-			--platforms ios,android \
-			--prefix Berty \
-			--package-identifier tech.berty.$(name) \
-			--license '$(license)' \
-			--use-cocoapods \
-			--github-account berty \
-			--author-name 'Berty Technologies' \
-			--author-email oss@berty.tech \
-			$(name)
-	cd $(PWD)/packages/react-native-$(name) \
-		&& rm -rf README.md \
-		&& $(json) -I -f package.json -e "this.name='@berty-tech/react-native-$(name)'" \
-		&& $(json) -I -f package.json -e "this.description='Berty\'s react-native $(name) library'" \
-		&& $(json) -I -f package.json -e "this.author='$(author)'" \
-		&& $(json) -I -f package.json -e "this.licenseFilename=undefined"
-	cd $(PWD)/packages/react-native-$(name) \
-		&& sed -i.bak 's/s.license      = "MIT"/s.license      = package["license"]/g' react-native-$(name).podspec \
-		&& rm react-native-$(name).podspec.bak
-	cd $(PWD)/packages/react-native-$(name)/ios/Berty$(pascal-name).xcodeproj \
-		&& sed -i.bak 's/ORGANIZATIONNAME = Facebook/ORGANIZATIONNAME = "Berty Technologies"/g' project.pbxproj \
-		&& rm project.pbxproj.bak
+	# FIXME: use PIDs instead of lsof-based detection
+	lsof -t -i :$(REACT_NATIVE_PORT) | xargs --no-run-if-empty kill
+	lsof -t -i :$(STORYBOOK_MOBILE_PORT) | xargs --no-run-if-empty kill
+	lsof -t -i :$(STORYBOOK_WEB_PORT) | xargs --no-run-if-empty kill
 
-.PHONY: lint
-lint: export PWD := $(PWD)
-lint: files = .
-lint: options += --cache --quiet --ext=.js,.jsx,.ts,.tsx
-lint: deps
-	cat $(PWD)/.gitignore > $(PWD)/.eslintignore
-	echo "packages/store/protocol/grpc-web-gen/" >> $(PWD)/.eslintignore
-	echo "*.pb.*" >> $(PWD)/.eslintignore
-	echo "*.gen.*" >> $(PWD)/.eslintignore
-	$(eslint) $(options) $(files)
-
-.PHONY: lint.fix
-lint.fix: options += --fix
-lint.fix: lint
-
-.PHONY: lint.watch
-lint.watch: options += --watch
-lint.watch: lint
-
-.PHONY: gen
-gen: deps
+	@echo "Cleaned. Now you may consider clearing some of your system cache with one of the following commands."
+	@echo ""
+	@echo "  rm -rf $$HOME/.gradle/caches"
+	@echo "  rm -rf $(HOME)/Library/Developer/Xcode/DerivedData"
+	@echo "  rm -rf ~/Library/Caches/CocoaPods"
+	@echo "  rm -f $(gomobile_bin)"
+	@echo "  rm -f $(berty_bin)"
 
 .PHONY: gen.clean
 gen.clean:
+	rm -f gen.sum
 	rm -f $(wildcard \
 	  packages/*/*.gen.tsx \
 	  packages/*/*.gen.js \
 	  packages/*/*.pb.js \
 	  packages/*/*.pb.d.ts \
 	)
-	rm -f gen.sum
 	rm -fr packages/store/protocol/grpc-web-gen
+	@#TODO add more generated files here
 
-$(HOME)/.android/debug.keystore: $(pkg_mod)
+.PHONY: deps
+deps: $(pkg_mod)
+
+.PHONY: lint
+lint: deps
+	cp .gitignore .eslintignore
+	echo "packages/store/protocol/grpc-web-gen/" >> .eslintignore
+	echo "*.pb.*" >> .eslintignore
+	echo "*.gen.*" >> .eslintignore
+	eslint --cache --quiet --ext=.js,.jsx,.ts,.tsx .
+
+.PHONY: lint.fix
+lint.fix: deps
+	eslint --fix .
+
+print-%: ; @echo $* = $($*)
+
+## advanced rules
+
+### react-native
+
+#### iOS
+
+.PHONY: ios.run
+ios.run: deps packages/go-bridge/ios/Frameworks/Bertybridge.framework packages/berty-app/ios/Pods/Manifest.lock
+	[ -f ".env.$(APP_CONFIG)" ] && cp .env.$(APP_CONFIG) /tmp/envfile || cp .env /tmp/envfile
+	cd packages/berty-app && $(react-native) run-ios --no-packager --configuration=$(if $(filter $(APP_CONFIG), development),Debug,Release) --scheme=$(APP_TARGET) --simulator='$(IOS_DEVICE)'
+
+.PHONY: ios.release
+ios.release: deps packages/go-bridge/ios/Frameworks/Bertybridge.framework packages/berty-app/ios/Pods/Manifest.lock
+	cd packages/berty-app && bundle install
+	../build/shell/release-ios.sh
+
+.PHONY: ios.log
+ios.log:
+	cd packages/berty-app && $(react-native) log-ios
+
+.PHONY: ios.storybook
+ios.storybook: deps packages/storybook-mobile/ios/Pods _storybook.mobile.start
+	lsof -t -i :$(STORYBOOK_MOBILE_PORT) | xargs --no-run-if-empty kill
+	lsof -t -i :$(REACT_NATIVE_PORT) | xargs --no-run-if-empty kill
+	cd packages/storybook-mobile && start-storybook &
+	cd packages/storybook-mobile && PWD=$(abspath packages/storybook-mobile) $(react-native) start --reset-cache &
+	cd packages/storybook-mobile && $(react-native) run-ios --simulator='iPhone 11' --no-packager
+	#cd packages/storybook-mobile && $(react-native) run-ios --no-packager
+
+#### Android
+
+.PHONY: android.run
+android.run: deps packages/go-bridge/android/libs/gobridge.aar packages/berty-app/node_modules/react-native/react.gradle.orig $(HOME)/.android/debug.keystore
+	$(call check-program, adb)
+	$(eval ANDROID_DEVICE ?= `adb devices | tail +2 | head -1 | cut -f 1`)
+	../build/shell/check-java.sh 18
+	adb -s $(ANDROID_DEVICE) reverse tcp:$(BERTY_BRIDGE_PORT) tcp:$(BERTY_BRIDGE_PORT)
+	cd packages/berty-app && $(react-native) run-android --no-packager --variant=$(APP_TARGET) --deviceId="$(ANDROID_DEVICE)" $(if $(filter-out $(APP_TARGET), store), --appIdSuffix=$(APP_TARGET))
+
+.PHONY: android.release
+android.release: deps packages/go-bridge/android/libs/gobridge.aar packages/berty-app/node_modules/react-native/react.gradle.orig $(HOME)/.android/debug.keystore
+	../build/shell/release-android.sh
+
+.PHONY: android.log
+android.log:
+	cd packages/berty-app && $(react-native) log-android
+
+.PHONY: android.emulator
+android.emulator:
+	$(call check-program, adb emulator)
+	$(clisim) -af &
+	adb wait-for-device || trye
+
+.PHONY: android.storybook
+android.storybook: deps start.storybook.mobile packages/storybook-mobile/android/app/debug.keystore
+	cd packages/storybook-mobile && clisim -af
+	cd packages/storybook-mobile && $(react-native) run-android --no-packager
+
+#### Web
+
+.PHONY: web.storybook
+web.storybook: deps
+	lsof -t -i :$(STORYBOOK_WEB_PORT) | xargs --no-run-if-empty kill
+	cd packages/storybook-web && echo Y | start-storybook --port=$(STORYBOOK_WEB_PORT) -c lib &
+
+
+#### Tools
+
+.PHONY: metro.start
+metro.start: deps
+	$(call check-program, lsof)
+	$(eval pid := $(shell lsof -t -i :$(REACT_NATIVE_PORT) -s TCP:LISTEN))
+	@echo Metro pid: $(pid)
+	kill -9 $(pid) || true
+	@echo "Waiting for metro to die.. (`date`)"
+	while ps -p $(pid); do sleep 1; done
+	@echo "Metro dead (`date`)"
+	cd packages/berty-app && $(react-native) start --reset-cache --port=$(REACT_NATIVE_PORT) --host=127.0.0.1
+
+.PHONY: bridge.start
+bridge.start:
+	cd ../go && $(MAKE) install
+	$(GOPATH)/bin/berty daemon -l /ip4/127.0.0.1/tcp/$(BERTY_BRIDGE_PORT)/grpcws
+
+### gen
+### TODO: consider putting all the generation deps in bertytech/protoc docker image and remove the `deps` rule dep to only require docker
+
+#### pbhbs based code generation
+
+pbhbs_templates := $(wildcard */*/protocol/*.hbs */*/messenger/*.hbs */*/types/*.hbs */components/*.hbs)
+pbhbs_targets := $(patsubst %.hbs,%,$(pbhbs_templates))
+pbhbs_flags := -p ../api -p node_modules/@googleapis/googleapis -p ../vendor -p node_modules/@protocolbuffers/protobuf/src -H packages/codegen/helpers
+.PHONY: _gen.pbhbs
+_gen.pbhbs:
+	pbhbs $(pbhbs_flags) -t packages/store/protocol  -o packages/store/protocol  ../api/bertyprotocol.proto
+	pbhbs $(pbhbs_flags) -t packages/store/messenger -o packages/store/messenger ../api/bertymessenger.proto
+	pbhbs $(pbhbs_flags) -t packages/store/types     -o packages/store/types     ../api/bertytypes.proto
+	pbhbs $(pbhbs_flags) -t packages/components      -o packages/components      ../api/bertyprotocol.proto ../api/bertymessenger.proto ../api/bertytypes.proto
+	pbhbs $(pbhbs_flags) -t packages/api             -o packages/api             ../api/bertyprotocol.proto ../api/bertymessenger.proto ../api/bertytypes.proto
+	pbhbs $(pbhbs_flags) -t packages/codegen         -o packages/codegen         ../api/bertyprotocol.proto ../api/bertymessenger.proto ../api/bertytypes.proto
+	eslint --cache --quiet --fix --no-ignore $(pbhbs_targets)
+
+#### pbjs
+
+pbjs_flags := -p node_modules/@googleapis/googleapis -p ../vendor -p node_modules/@protocolbuffers/protobuf/src
+.PHONY: _gen.pbjs
+_gen.pbjs:
+	pbjs $(pbjs_flags) --no-comments --es6 -w es6 -t json-module   -o packages/api/index.pb.js ../api/bertyprotocol.proto ../api/bertymessenger.proto
+	pbjs $(pbjs_flags) -t static-module ../api/bertyprotocol.proto ../api/bertymessenger.proto | pbts --no-comments -o packages/api/index.pb.d.ts -
+	sed -E -i.bak 's/^.*constructor.*$$//g' packages/api/index.pb.d.ts
+	rm -f packages/api/index.pb.d.ts.bak
+	eslint --cache --quiet --fix --no-ignore packages/api/index.gen.js packages/codegen/index.gen.js
+
+#### protoc
+
+protoc_src := ../api/bertytypes.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto ../vendor/github.com/gogo/protobuf/gogoproto/gogo.proto
+protoc_target_dir := ../js/packages/store/protocol/grpc-web-gen
+protoc_opts := -I ../api:../vendor:/protobuf
+.PHONY: _gen.protoc
+_gen.protoc: ../vendor
+	docker run --rm --user="`id -u`" --entrypoint="sh" \
+	  --volume="$(PWD)/..:/go/src/berty.tech/berty" --workdir="/go/src/berty.tech/berty/js" \
+	  bertytech/protoc:23 -xec 'make _gen.protoc.local'
+.PHONY: _gen.protoc.local
+_gen.protoc.local:
+	$(call check-program, protoc)
+	rm -fr $(protoc_target_dir)
+	mkdir -p $(protoc_target_dir)
+	protoc $(protoc_opts) --plugin=protoc-gen-ts=$(PWD)/node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:$(protoc_target_dir) --ts_out=service=grpc-web:$(protoc_target_dir) $(protoc_src)
+
+#### gen.sum
+
+gensum_src := $(protoc_src) Makefile
+gen.sum: $(gensum_src)
+	$(call check-program, shasum)
+	@shasum $(gensum_src) | sort -k 2 > gen.sum.tmp
+	@diff -q gen.sum.tmp gen.sum || ( set -xe; \
+	  $(MAKE) _gen.protoc _gen.pbhbs _gen.pbjs; \
+	  shasum $(gensum_src) | sort -k 2 > gen.sum.tmp; \
+	  mv gen.sum.tmp gen.sum; \
+    )
+
+## file-based rules
+
+../vendor: ../go.mod ../go.sum
+	cd .. && GO111MODULE=on go mod vendor
+
+$(pkg_mod): $(pkg_desc)
+	$(call check-program, yarn)
+	yarn $(if $(filter $(CI), true), --frozen-lockfile)
+	./node_modules/.bin/lerna --reject-cycles --concurrency=8 bootstrap
+	# remove duplicate instance of $(react-native)
+	rm -rf `find node_modules -type d -name $(react-native) -path '*/node_modules/*' | grep 'node_modules/react-native$$'`
+	# convert android deps to androidx
+	node_modules/.bin/jetifier
+	mkdir -p $(pkg_mod)
+	touch $(pkg_mod)
+
+$(gomobile_bin):
+	@# FIXME: use relative gomobile binary and version it in go.mod (ping @moul)
+	GO111MODULE=off go get golang.org/x/mobile/cmd/gomobile
+
+packages/storybook-mobile/storybook/storyLoader.gen.js: packages/storybook-mobile/node_modules
+	PATH=$(PATH) rnstl \
+		--pattern 'packages/storybook-mobile/../*-storybook/storybook.tsx' \
+		--outputFile packages/storybook-mobile/storybook/storyLoader.gen.js
+	sed -i.bak 's/\(.*\)\.\.\/node_modules\/\(.*\)\/storybook/\1\2\/storybook.tsx/g' packages/storybook-mobile/storybook/storyLoader.gen.js
+	rm -f packages/storybook-mobile/storybook/storyLoader.gen.js.bak
+
+packages/storybook-mobile/ios/Pods: packages/storybook-mobile/ios/Podfile packages/storybook-mobile/node_modules
+	cd packages/storybook-mobile/ios && pod install
+
+packages/storybook-mobile/android/app/debug.keystore: $(HOME)/.android/debug.keystore
+	cat $< > $@
+
+$(HOME)/.android/debug.keystore:
 	mkdir -p $(dir $@)
-	cp $(BERTY_ROOT)/js/packages/berty-app/node_modules/react-native/template/android/app/debug.keystore $@
+	cp packages/berty-app/node_modules/react-native/template/android/app/debug.keystore $@
 
-.PHONY: start.grpc-bridge.berty
-start.grpc-bridge.berty: export PWD := $(PWD)
-start.grpc-bridge.berty: host ?= 127.0.0.1
-start.grpc-bridge.berty: port ?= 1337
-start.grpc-bridge.berty: proto ?= grpcws
-start.grpc-bridge.berty:
-	cd $(BERTY_ROOT) && $(MAKE) bazel.generate
-	cd $(BERTY_ROOT) \
-		&& bazel run //go/cmd/berty -- daemon -l /ip4/$(host)/tcp/$(port)/$(proto)
+packages/berty-app/node_modules/react-native/react.gradle.orig: packages/berty-app/patch/react.gradle.patch
+	@echo "patching file $(patsubst %.orig, %, $@)"
+	@patch -f $(patsubst %.orig, %, $@) $< 1>/dev/null || true
 
-# pb.generate
-makefiles_dir=makefiles
-include $(makefiles_dir)/go-bridge.mk
-include $(makefiles_dir)/gen.mk
-include $(makefiles_dir)/api.mk
-include $(makefiles_dir)/codegen.mk
-include $(makefiles_dir)/berty-app.mk
-include $(makefiles_dir)/storybook-mobile.mk
-include $(makefiles_dir)/storybook-web.mk
+packages/berty-app/ios/Pods/Manifest.lock: packages/berty-app/ios/Podfile packages/berty-app/package.json
+	([ ! -z "$(shell which pod)" ] \
+		&& [[ "$$(pod --version)" > "1.7." ]]) \
+		|| sudo gem install cocoapods
+	cd packages/berty-app/ios && pod install
+
+packages/berty-app/ios/Podfile:
+	touch $@
+
+packages/go-bridge/ios/Frameworks/Bertybridge.framework: $(bridge_src) ../vendor $(gomobile_bin)
+	cd packages/go-bridge && $(gomobile_bin) init
+	@mkdir -p "packages/go-bridge/ios/Frameworks"
+	GO111MODULE=off $(gomobile_bin) bind -o $@ -v $(ext_ldflags) -target ios berty.tech/berty/go/framework/bertybridge
+	touch "packages/go-bridge/ios/Frameworks"
+
+packages/go-bridge/android/libs/gobridge.aar: $(aar_src) ../vendor $(gomobile_bin)
+	cd packages/go-bridge && $(gomobile_bin) init
+	@mkdir -p "packages/go-bridge/android/libs"
+	GO111MODULE=off $(gomobile_bin) bind -o $@ -v $(ext_ldflags) -target android berty.tech/berty/go/framework/bertybridge
+
+../vendor/github.com/gogo/protobuf/gogoproto/gogo.proto: ../vendor

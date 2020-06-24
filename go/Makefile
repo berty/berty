@@ -132,7 +132,7 @@ pb.clean:
 pb.generate: gen.sum
 $(GEN_SUM): $(GEN_SRC)
 	$(call check-program, shasum docker $(GO))
-	shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp
+	@shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp
 	@diff -q $(GEN_SUM).tmp $(GEN_SUM) || ( \
 	  uid=`id -u`; \
 	  set -xe; \
