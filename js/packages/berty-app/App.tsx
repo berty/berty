@@ -30,6 +30,10 @@ DevMenu.addItem('Clear async-storage', async () => {
 	console.warn('CLEAR DONE')
 })
 
+DevMenu.addItem('Test watchdog', async () => {
+	await GoBridge.stopProtocol()
+})
+
 export const App: React.FC = () => (
 	<SafeAreaProvider>
 		<Messenger.Provider config={{ storage: AsyncStorage }}>

@@ -1,7 +1,7 @@
 import { combineReducers, Middleware } from 'redux'
 import { configureStore } from '@reduxjs/toolkit'
-import { all, call, cancel, fork, take } from 'redux-saga/effects'
-import createSagaMiddleware, { Task } from 'redux-saga'
+import { all, call, take, race, delay } from 'redux-saga/effects'
+import createSagaMiddleware from 'redux-saga'
 import createRecorder from 'redux-test-recorder'
 import mem from 'mem'
 import createSagaMonitor from '@clarketm/saga-monitor'
@@ -36,34 +36,29 @@ export const reducers = {
 }
 
 export function* rootSaga() {
-	// wrapping everything in a call because typescript gets confused on sagaMiddleware.run otherwise
-	yield call(function* () {
-		yield take('persist/REHYDRATE')
-		while (true) {
-			try {
-				const rootTask = (yield fork(function* () {
-					yield all([
-						call(protocol.rootSaga),
-						call(settings.rootSaga),
-						call(account.orchestrator),
-						call(contact.orchestrator),
-						call(conversation.orchestrator),
-						call(member.orchestrator),
-						call(message.orchestrator),
-						call(groups.orchestrator),
-					])
-				})) as Task
-
-				yield take(['RESTART_ROOT_SAGA', 'CLEAR_STORE'])
-				yield cancel(rootTask)
-				// I wish we could `join(rootTask)` here but it hangs
-				console.log('Restarting root task')
-			} catch (error) {
-				console.error(error)
-				console.warn('Chat orchestrator crashed, retrying')
-			}
+	yield take('persist/REHYDRATE')
+	while (true) {
+		try {
+			yield race({
+				rootTask: all([
+					call(protocol.rootSaga),
+					call(settings.rootSaga),
+					call(account.orchestrator),
+					call(contact.orchestrator),
+					call(conversation.orchestrator),
+					call(member.orchestrator),
+					call(message.orchestrator),
+					call(groups.orchestrator),
+				]),
+				restart: take(['RESTART_ROOT_SAGA', 'CLEAR_STORE']),
+			})
+			console.log('Restarting root saga')
+		} catch (error) {
+			console.warn('Chat orchestrator crashed, retrying in 1s')
+			console.error(error)
+			yield delay(1000)
 		}
-	})
+	}
 }
 
 const combinedReducer = combineReducers(reducers)

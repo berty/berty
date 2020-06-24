@@ -137,7 +137,9 @@ class GoBridge: NSObject {
                 config.disableLocalDiscovery()
             }
 
+            NSLog("bflifecycle: calling BertybridgeNewProtocolBridge")
             let bridgeProtocol = BertybridgeNewProtocolBridge(config, &err)
+            NSLog("bflifecycle: done BertybridgeNewProtocolBridge")
             if err != nil {
                 throw err!
             }
@@ -153,7 +155,9 @@ class GoBridge: NSObject {
     @objc func stopProtocol(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
       do {
           if self.bridgeProtocol != nil {
+              NSLog("bflifecycle: calling try self.bridgeProtocol?.close()")
               try self.bridgeProtocol?.close()
+              NSLog("bflifecycle: done try self.bridgeProtocol?.close()")
               self.bridgeProtocol = nil
           }
           resolve(true)

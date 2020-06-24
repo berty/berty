@@ -8,6 +8,7 @@ import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsBu
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { Settings, Messenger } from '@berty-tech/hooks'
 import { messenger, groups } from '@berty-tech/store'
+import GoBridge from '@berty-tech/go-bridge'
 
 //
 // DevTools
@@ -156,6 +157,13 @@ const BodyDevTools: React.FC<{}> = () => {
 			<DumpContactStore />
 			<DumpConversationStore />
 			<DumpGroupsStore />
+			<ButtonSetting
+				name={'Stop node'}
+				icon='activity-outline'
+				iconSize={30}
+				iconColor={color.dark.grey}
+				onPress={GoBridge.stopProtocol}
+			/>
 			<ButtonSetting
 				name='Bot mode'
 				icon='briefcase-outline'

@@ -187,45 +187,47 @@ export const transactions: Transactions = {
 			}
 			allTasks[opts.publicKey] = tasks
 		}
-		yield* takeEvery(commands.subscribe, function* ({ payload }) {
-			if (payload.clientId !== clientId) {
-				return
-			}
-			const tasks: SubscribeTasks = allTasks[payload.publicKey] || {}
-			if (!tasks.messagesTask && payload.messages) {
-				tasks.messagesTask = yield* fork(clientTransactions.listenToGroupMessages, {
-					clientId,
-					groupPk: strToBuf(payload.publicKey),
-				})
-			}
-			if (!tasks.metadataTask && payload.metadata) {
-				tasks.metadataTask = yield* fork(clientTransactions.listenToGroupMetadata, {
-					clientId,
-					groupPk: strToBuf(payload.publicKey),
-				})
-			}
-			allTasks[payload.publicKey] = tasks
-			yield* put(events.updated(payload))
-		})
-		yield* takeEvery(commands.unsubscribe, function* ({ payload }) {
-			if (payload.clientId !== clientId) {
-				return
-			}
+		yield* all([
+			takeEvery(commands.subscribe, function* ({ payload }) {
+				if (payload.clientId !== clientId) {
+					return
+				}
+				const tasks: SubscribeTasks = allTasks[payload.publicKey] || {}
+				if (!tasks.messagesTask && payload.messages) {
+					tasks.messagesTask = yield* fork(clientTransactions.listenToGroupMessages, {
+						clientId,
+						groupPk: strToBuf(payload.publicKey),
+					})
+				}
+				if (!tasks.metadataTask && payload.metadata) {
+					tasks.metadataTask = yield* fork(clientTransactions.listenToGroupMetadata, {
+						clientId,
+						groupPk: strToBuf(payload.publicKey),
+					})
+				}
+				allTasks[payload.publicKey] = tasks
+				yield* put(events.updated(payload))
+			}),
+			takeEvery(commands.unsubscribe, function* ({ payload }) {
+				if (payload.clientId !== clientId) {
+					return
+				}
 
-			const tasks = allTasks[payload.publicKey] || {}
-			if (tasks.messagesTask && payload.messages) {
-				yield* cancel(tasks.messagesTask)
-				delete tasks.messagesTask
-			}
-			if (tasks.metadataTask && payload.metadata) {
-				yield* cancel(tasks.metadataTask)
-				delete tasks.metadataTask
-			}
-			allTasks[payload.publicKey] = tasks
-			yield* put(
-				events.updated({ ...payload, messages: !payload.messages, metadata: !payload.metadata }),
-			)
-		})
+				const tasks = allTasks[payload.publicKey] || {}
+				if (tasks.messagesTask && payload.messages) {
+					yield* cancel(tasks.messagesTask)
+					delete tasks.messagesTask
+				}
+				if (tasks.metadataTask && payload.metadata) {
+					yield* cancel(tasks.metadataTask)
+					delete tasks.metadataTask
+				}
+				allTasks[payload.publicKey] = tasks
+				yield* put(
+					events.updated({ ...payload, messages: !payload.messages, metadata: !payload.metadata }),
+				)
+			}),
+		])
 	},
 	isCIDRead: function* ({ cid, publicKey }) {
 		return yield* select((state: GlobalState) => state.groups[publicKey]?.cids[cid])
