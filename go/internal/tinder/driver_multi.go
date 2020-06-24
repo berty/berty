@@ -58,14 +58,15 @@ func (md *MultiDriver) advertise(ctx context.Context, d Driver, ns string, opts 
 		for {
 			ttl, err := d.Advertise(ctx, ns, opts...)
 			if err != nil {
+				if ctx.Err() != nil {
+					return
+				}
+
 				md.logger.Warn("failed to advertise",
 					zap.String("driver", d.Name()),
 					zap.String("key", ns),
 					zap.Error(err),
 				)
-				if ctx.Err() != nil {
-					return
-				}
 
 				select {
 				case <-time.After(10 * time.Second):
@@ -75,10 +76,15 @@ func (md *MultiDriver) advertise(ctx context.Context, d Driver, ns string, opts 
 				}
 			}
 
-			md.logger.Info("advertise", zap.String("driver", d.Name()), zap.String("key", ns))
+			md.logger.Debug("advertise success",
+				zap.String("driver", d.Name()),
+				zap.String("key", ns),
+				zap.Duration("ttl", ttl))
+
 			if ttl < 1 {
 				return
 			}
+
 			wait := 7 * ttl / 8
 			select {
 			case <-time.After(wait):
@@ -154,7 +160,9 @@ func (md *MultiDriver) FindPeers(ctx context.Context, ns string, opts ...p2p_dis
 			// fmt.Printf("[multi] found a peers: %v for %s\n", peer, ns)
 
 			md.logger.Debug("found a peer",
-				zap.String("driver", driverRefs[idx]), zap.String("key", ns), zap.String("peer", peer.ID.String()))
+				zap.String("driver", driverRefs[idx]),
+				zap.String("key", ns),
+				zap.String("peer", peer.ID.String()))
 
 			// forward the peer
 			cpeers <- peer

@@ -156,7 +156,6 @@ func (ld *localDiscovery) deletePeerCacheEntry(cid string, peerID peer.ID) error
 
 // Implementation of the discovery.Discovery interface
 func (ld *localDiscovery) Advertise(ctx context.Context, cid string, opts ...discovery.Option) (time.Duration, error) {
-	ld.logger.Debug("localDiscovery: Advertise", zap.String("CID", cid))
 	// Get options
 	var options discovery.Options
 	err := options.Apply(opts...)
@@ -229,8 +228,6 @@ func (ld *localDiscovery) FindPeers(ctx context.Context, cid string, opts ...dis
 	if limit < count {
 		count = limit
 	}
-
-	ld.logger.Debug("localDiscovery: FindPeers", zap.String("CID", cid), zap.Int("count", count))
 
 	chPeer := make(chan peer.AddrInfo, count)
 
