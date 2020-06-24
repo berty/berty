@@ -79,11 +79,11 @@ func (v *groupView) commandParser(ctx context.Context, input string) error {
 	return newMessageCommand(ctx, v, input)
 }
 
-func (v *groupView) OnSubmit(ctx context.Context, msg string) {
-	v.logger.Debug("onSubmit", zap.String("msg", msg))
+func (v *groupView) OnSubmit(ctx context.Context, input string) {
+	v.logger.Debug("onSubmit", zap.String("input", input))
 	v.messages.View().ScrollToEnd()
 
-	if err := v.commandParser(ctx, msg); err != nil {
+	if err := v.commandParser(ctx, input); err != nil {
 		v.logger.Debug("onSubmit error", zap.Error(err))
 		v.syncMessages <- &historyMessage{
 			messageType: messageTypeError,
@@ -91,7 +91,7 @@ func (v *groupView) OnSubmit(ctx context.Context, msg string) {
 		}
 	}
 
-	v.inputHistory.Append(msg)
+	v.inputHistory.Append(input)
 }
 
 func newViewGroup(v *tabbedGroupsView, g *bertytypes.Group, memberPK, devicePK []byte, logger *zap.Logger) *groupView {

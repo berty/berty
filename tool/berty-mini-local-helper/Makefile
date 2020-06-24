@@ -22,8 +22,14 @@ watch-log-stats:
 	watch -d make log-stats
 
 .PHONY: clean
-clean:
-	rm -rf $(TMPDIR)/berty-mini-$(ID).log $(TMPDIR)/berty-mini-$(ID)
+clean: clean-logs
+	rm -rf $(TMPDIR)/berty-mini-$(ID)
+
+.PHONY: clean-logs
+clean-logs:
+	@# send empty lines and cleanup the log file without deleting it to allow keeping tail -f in other windows
+	@printf "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" >> $(TMPDIR)/berty-mini-$(ID).log
+	> $(TMPDIR)/berty-mini-$(ID).log
 
 .PHONY: kill
 kill:
