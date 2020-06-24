@@ -190,7 +190,7 @@ func (ld *localDiscovery) Advertise(ctx context.Context, cid string, opts ...dis
 		ld.logger.Info("localDiscovery: Advertise limit reached")
 	}
 
-	return time.Duration(ttlSeconds), nil
+	return time.Duration(ttlSeconds) * time.Second, nil
 }
 
 // Implementation of the discovery.Discovery interface
