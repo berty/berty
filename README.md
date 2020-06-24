@@ -2,22 +2,27 @@
   <img src="https://berty.tech/img/berty.svg" alt="Berty" title="Berty" height="300px" />
 </h1>
 
-<h3 align="center">🤝 Anti-censorship and anti-surveillance communication protocol</h3>
+<h3 align="center">💬 Berty is a secure peer-to-peer messaging app that works with or without internet access, cellular data or trust in the network</h3>
 
 <p align="center">
-  <a href="https://buildkite.com/berty/main"><img src="https://badge.buildkite.com/331d828ccb643f90f6302b13ea77ab716ec78d6631af54c987.svg?branch=master" alt="Build Status"></a>
+    <a href="https://berty.tech"><img alt="berty.tech" src="https://img.shields.io/badge/berty.tech-2845a7?logo=internet-explorer&style=flat" /></a>
+    <a href="https://crpt.fyi/berty-discord"><img alt="discord" src="https://img.shields.io/badge/discord-gray?logo=discord" /></a>
+    <a href="https://github.com/berty"><img alt="github" src="https://img.shields.io/badge/@berty-471961?logo=github" /></a>
+    <a href="https://twitter.com/berty"><img alt="twitter" src="https://img.shields.io/twitter/follow/berty?label=%40berty&style=flat&logo=twitter" /></a>
+</p>
+<p align="center">
+    <a href="https://github.com/berty/berty/actions?query=workflow%3AJS"><img src="https://github.com/berty/berty/workflows/JS/badge.svg" /></a>
+    <a href="https://github.com/berty/berty/actions?query=workflow%3AGo"><img src="https://github.com/berty/berty/workflows/Go/badge.svg" /></a>
+    <a href="https://github.com/berty/berty/actions?query=workflow%3AProtobuf"><img src="https://github.com/berty/berty/workflows/Protobuf/badge.svg" /></a>
+    <a href="https://github.com/berty/berty/actions?query=workflow%3ARelease"><img src="https://github.com/berty/berty/workflows/Release/badge.svg" /></a>
+    <a href="https://buildkite.com/berty"><img src="https://img.shields.io/buildkite/331d828ccb643f90f6302b13ea77ab716ec78d6631af54c987?label=Mobile%20App" /></a>
+</p>
+<p align="center">
+  <a href="https://pkg.go.dev/berty.tech/berty/v2/go?tab=subdirectories"><img alt="GoDoc" src="https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white" /></a>
+  <a href="https://github.com/berty/berty/releases"><img alt="GitHub release" src="https://img.shields.io/github/v/release/berty/berty" /></a>
   <a href="https://www.codefactor.io/repository/github/berty/berty"><img src="https://www.codefactor.io/repository/github/berty/berty/badge?s=bf5885a3b2782ead81d91cd423915f2e9ddc9196" alt="CodeFactor" /></a>
   <!--<a href="https://goreportcard.com/report/berty/berty"><img src="https://goreportcard.com/badge/berty/berty" alt="Go Report Card"></a>-->
-  <a href="https://github.com/berty/berty/releases"><img src="https://badge.fury.io/gh/berty%2Fberty.svg" alt="GitHub version"></a>
 </p>
-
-<p align="center"><b>
-  <a href="https://berty.tech">berty.tech</a> •
-  <a href="https://twitter.com/berty">Twitter</a> •
-  <a href="http://crpt.fyi/berty-matrix">Matrix</a> •
-  <a href="http://crpt.fyi/berty-discord">Discord</a> •
-  <a href="https://github.com/berty">GitHub</a>
-</b></p>
 
 ---
 
@@ -64,18 +69,18 @@ _We will open betas for the different packages and apps soon, so anyone will be 
 
 ## Under the hood
 
-_TODO: add a high-level schema of how things are connected together_
+<!-- _TODO: add a high-level schema of how things are connected together_ -->
 
 ### Berty Protocol
 
-[![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white)](https://pkg.go.dev/berty.tech/berty/v2)
+[![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white)](https://pkg.go.dev/berty.tech/berty/v2/go/pkg/bertyprotocol?tab=doc)
 [![Code coverage](https://codecov.io/gh/berty/berty/branch/master/graph/badge.svg?token=rBPpNHNNow)](https://codecov.io/gh/berty/berty)
 
 A generic SDK that allows developers to write P2P applications. It contains everything needed (encryption, identities, network routing, group management, account management, device management, application lifecycle) so you can just focus on the high-level features of your app.
 
 The main concept of the _Berty Protocol_ is the "group", a virtual place where multiple devices can share messages and metadata using [OrbitDB](https://github.com/orbitdb), which itself relies on [IPFS](https://ipfs.io/).
 
-_TODO: add usage examples_
+<!-- _TODO: add usage examples_ -->
 
 Get it: `go get -u berty.tech/berty/v2`
 
@@ -102,41 +107,35 @@ We want to contribute to the world of free, secure communication without fear of
 
 Open source is more secure, since anyone can examine the code, improve it and maintain it. Our ultimate goal is to completely lose control of Berty and have it evolve as a global community project.
 
-_TODO: add info about Berty community_
+More info on [berty/community](https://github.com/berty/community).
 
 ## Contributing
 
-Please do!
+![Contribute to Berty](https://assets.berty.tech/files/contribute-contribute_v2--Contribute-berty-ultra-light.gif)
 
-> Use it, fork it, fix it - it's free.
+We really welcome contributions. Your input is the most precious material. We're well aware of that and we thank you in advance. Everyone is encouraged to look at what they can do on their own scale; no effort is too small.  
 
-If you like to code in Go, Typescript, Java, Swift, have a look at one of [our repos](https://github.com/berty).
+There are plenty of ways to get involved and act for our community. It has been divided into two distinct parts: everything that is related to the code and everything that is not. 
 
-If you code in any other language you can also help us by adding tooling, SDKs, bridges.
+To put it very simply:
+* Code-related = Github
+* Not code-related = Open task 
 
-If you like to translate, draw, make videos or have ideas for the content, you can contribute on our repos, we have a dedicated [`assets` repo](https://github.com/berty/assets) for our medias.
+Everything on contribution is sum up here: [CONTRIBUTING.MD](https://github.com/berty/community/blob/master/CONTRIBUTING.md)
 
-_TODO: add info about beta testing_
+## Stargazers over time
 
-We are currently setting up a goodies store and a donation page so you can help us with money if you don't have time.
-
-And finally, you can help us by spreading the word about us to your peers.
-
----
-
-Thank you, and feel free to [contact](#contact) us or open the GitHub issues if you want more details.
-
-Read our [_contribute_ page](https://berty.tech/contribute) on berty.tech.
+[![Stargazers over time](https://starchart.cc/berty/berty.svg)](https://starchart.cc/berty/berty)
 
 ## Other resources
 
 - Official website: https://berty.tech
 - Assets: https://assets.berty.tech/
-- _TODO: add link to mockups_
+- App assets & mockups: https://assets.berty.tech/categories/app__v2.4/
 
 ## Contact
 
-_TODO: add community contact info_
+Take a look at our [community repo](https://github.com/berty/community/).
 
 See all our available contact methods on the [contact page](https://berty.tech/contact) of our website.
 
