@@ -37,6 +37,19 @@ export const useSystemInfo = () => {
 	}
 }
 
+type UseDebugGroup = (kwargs: { pk: string }) => () => void
+
+export const useDebugGroup: UseDebugGroup = ({ pk }) => {
+	const dispatch = useDispatch()
+	const account = Messenger.useAccount()
+	if (!account) {
+		return () => {}
+	}
+	return () => {
+		dispatch(settings.main.commands.debugGroup({ id: account.id, pk }))
+	}
+}
+
 export const useToggleTracing = () => {
 	const stgs = useSettings()
 	const dispatch = useDispatch()

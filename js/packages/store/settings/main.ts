@@ -2,14 +2,19 @@ import { createSlice } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
 import { all, select, put } from 'redux-saga/effects'
 import { berty } from '@berty-tech/api'
-import { makeDefaultReducers, makeDefaultCommandsSagas } from '../utils'
+import { makeDefaultReducers, makeDefaultCommandsSagas, strToBuf } from '../utils'
 import { BertyNodeConfig } from '../protocol/client'
 import * as protocol from '../protocol'
 
 export type Entity = {
 	id: string
 	nodeConfig: BertyNodeConfig
-	systemInfo?: berty.messenger.v1.SystemInfo.IReply
+	systemInfo?: berty.messenger.SystemInfo.IReply
+	debugGroup?: {
+		state: string
+		peerIds?: string[]
+		error?: any
+	}
 }
 
 export type State = { [key: string]: Entity }
@@ -26,6 +31,7 @@ export type Commands = {
 	delete: (state: State, action: { payload: { id: string } }) => State
 	toggleTracing: (state: State, action: { payload: { id: string } }) => State
 	systemInfo: (state: State, action: { payload: { id: string } }) => State
+	debugGroup: (state: State, action: { payload: { id: string; pk: string } }) => State
 }
 
 export type Queries = {
@@ -39,6 +45,10 @@ export type Events = {
 	systemInfoUpdated: (
 		state: State,
 		action: { payload: { info: berty.messenger.v1.SystemInfo.IReply; id: string } },
+	) => State
+	groupDebugged: (
+		state: State,
+		action: { payload: { peerIds?: string[]; error?: any; id: string } },
 	) => State
 }
 
@@ -55,13 +65,22 @@ export type Transactions = {
 
 const initialState: State = {}
 
-const commandsNames = ['create', 'set', 'delete', 'toggleTracing', 'systemInfo']
+const commandsNames = ['create', 'set', 'delete', 'toggleTracing', 'systemInfo', 'debugGroup']
 
 const commandHandler = createSlice<State, Commands>({
 	name: 'settings/main/command',
 	initialState,
-	// we don't change state on commands
-	reducers: makeDefaultReducers(commandsNames),
+	reducers: {
+		...makeDefaultReducers(commandsNames),
+		debugGroup: (state, { payload }) => {
+			const currentState = state[payload.id]
+			currentState.debugGroup = {
+				...currentState.debugGroup,
+				state: 'fetching',
+			}
+			return state
+		},
+	},
 })
 
 const eventsNames = ['created', 'nodeConfigUpdated'] as string[]
@@ -88,6 +107,21 @@ const eventHandler = createSlice<State, Events>({
 		},
 		systemInfoUpdated: (state, { payload }) => {
 			state[payload.id].systemInfo = payload.info
+			return state
+		},
+		groupDebugged: (state, { payload }) => {
+			const currentState = state[payload.id]
+			if (payload.peerIds) {
+				currentState.debugGroup = {
+					peerIds: payload.peerIds,
+					state: 'done',
+				}
+			} else if (payload.error) {
+				currentState.debugGroup = {
+					error: payload.error,
+					state: 'error',
+				}
+			}
 			return state
 		},
 		// put reducer implementaion here
@@ -145,6 +179,27 @@ export const transactions: Transactions = {
 				info,
 			}),
 		)
+	},
+	debugGroup: function* ({ id, pk }) {
+		try {
+			const group = yield* protocol.transactions.client.debugGroup({
+				id,
+				groupPk: strToBuf(pk),
+			}) // does not support multi devices per account
+			yield put(
+				events.groupDebugged({
+					id,
+					peerIds: group.peerIds,
+				}),
+			)
+		} catch (error) {
+			yield put(
+				events.groupDebugged({
+					id,
+					error,
+				}),
+			)
+		}
 	},
 }
 
