@@ -29,7 +29,7 @@ pkg_desc := $(patsubst %, %/package.json, $(pkg)) package.json
 gomobile_bin := $(GOPATH)/bin/gomobile
 bridge_src := $(call rwildcard,../vendor ../go, "*.go")
 berty_bin := $(GOPATH)/bin/berty
-react-native := $(abspath packages/berty-app/node_modules/.bin/react-native)
+react-native := $(abspath node_modules/.bin/react-native)
 clisim := packages/berty-app/node_modules/.bin/clisim
 
 ## User commands
@@ -279,7 +279,7 @@ $(pkg_mod): $(pkg_desc)
 	yarn $(if $(filter $(CI), true), --frozen-lockfile)
 	./node_modules/.bin/lerna --reject-cycles --concurrency=8 bootstrap
 	# remove duplicate instance of $(react-native)
-	rm -rf `find node_modules -type d -name $(react-native) -path '*/node_modules/*' | grep 'node_modules/react-native$$'`
+	rm -rf `find node_modules -type d -name react-native -path '*/node_modules/*'  | grep 'node_modules/react-native$$'`
 	# convert android deps to androidx
 	node_modules/.bin/jetifier
 	mkdir -p $(pkg_mod)
