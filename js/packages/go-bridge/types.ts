@@ -8,7 +8,7 @@ export enum GoLogLevel {
 export type GoBridgeOpts = {
 	swarmListeners?: string[]
 	grpcListeners?: string[]
-	persistance?: boolean
+	persistence?: boolean
 	logLevel?: GoLogLevel
 	tracing?: boolean
 	tracingPrefix?: string

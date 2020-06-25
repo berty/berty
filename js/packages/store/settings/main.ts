@@ -90,7 +90,7 @@ const eventHandler = createSlice<State, Events>({
 			state[payload.id].systemInfo = payload.info
 			return state
 		},
-		// put reducer implementaion here
+		// put reducer implementation here
 	},
 })
 

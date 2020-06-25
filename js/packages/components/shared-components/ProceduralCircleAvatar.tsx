@@ -19,7 +19,7 @@ type ProceduralCircleAvatarProps = {
 	state?: {
 		icon: string
 		iconColor?: string
-	} // when group is created, members have a state for know if the memeber accept, is pending or refuse
+	} // when group is created, members have a state for know if the member accept, is pending or refuse
 	style?: StyleProp<any>
 }
 

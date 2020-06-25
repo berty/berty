@@ -298,11 +298,11 @@ const NodeConfigInput: React.FC<{
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 					<Text>Persist: </Text>
 					<Switch
-						value={config.opts.persistance}
+						value={config.opts.persistence}
 						onValueChange={() =>
 							onConfigChange({
 								...config,
-								opts: { ...config.opts, persistance: !config.opts.persistance },
+								opts: { ...config.opts, persistence: !config.opts.persistence },
 							})
 						}
 					/>

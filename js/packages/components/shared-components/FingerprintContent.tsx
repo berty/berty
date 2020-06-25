@@ -5,7 +5,7 @@ import { useStyles } from '@berty-tech/styles'
 import { SHA3 } from 'sha3'
 
 //
-// FingerprintContent => Generally on TabBar there is a TabItem Fingerpint that show this component
+// FingerprintContent => Generally on TabBar there is a TabItem Fingerprint that show this component
 //
 
 // Types
