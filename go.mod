@@ -8,6 +8,7 @@ require (
 	berty.tech/ipfs-webui-packed v1.0.0-v2.9.0-4
 	github.com/aead/ecdh v0.2.0
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
+	github.com/atotto/clipboard v0.1.2
 	github.com/dgraph-io/badger v1.6.1
 	github.com/gdamore/tcell v1.3.0
 	github.com/gogo/protobuf v1.3.1

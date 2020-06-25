@@ -11,6 +11,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"github.com/atotto/clipboard"
 	"github.com/gogo/protobuf/proto"
 	cid "github.com/ipfs/go-cid"
 	qrterminal "github.com/mdp/qrterminal/v3"
@@ -720,18 +721,41 @@ func contactShareCommand(displayFunc func(*groupView, string)) func(ctx context.
 }
 
 func renderQR(v *groupView, url string) {
-	for _, l := range stringAsQR(url) {
+	qr := stringAsQR(url)
+	for _, l := range qr {
 		v.syncMessages <- &historyMessage{
 			messageType: messageTypeMeta,
 			payload:     []byte(l),
 		}
 	}
+
+	copyToClipboard(v, strings.Join(qr, "\n"))
 }
 
 func renderText(v *groupView, url string) {
 	v.syncMessages <- &historyMessage{
 		messageType: messageTypeMeta,
 		payload:     []byte(url),
+	}
+
+	copyToClipboard(v, url)
+}
+
+func copyToClipboard(v *groupView, txt string) {
+	if clipboard.Unsupported {
+		return
+	}
+
+	if err := clipboard.WriteAll(txt); err != nil {
+		v.syncMessages <- &historyMessage{
+			messageType: messageTypeError,
+			payload:     []byte(fmt.Sprintf("(Copy to clipboard failed: %v)", err)),
+		}
+	} else {
+		v.syncMessages <- &historyMessage{
+			messageType: messageTypeMeta,
+			payload:     []byte("(Copied to clipboard)"),
+		}
 	}
 }
 
