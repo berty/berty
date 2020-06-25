@@ -40,15 +40,15 @@ help:
 	@echo "  android.run        "
 	@echo "  android.storybook  "
 	@echo "  bridge.start       "
-	@echo "  deps.update        "
 	@echo "  clean              clear cache"
-	@echo "  gen.clean          "
+	@echo "  deps.update        "
 	@echo "  generate           use protobuf to generate files"
 	@echo "  ios.run            "
 	@echo "  ios.storybook      "
 	@echo "  lint               "
 	@echo "  lint.fix           "
 	@echo "  metro.start        "
+	@echo "  regenerate         "
 	@echo "  test               run tests"
 	@echo "  web.storybook      "
 
@@ -98,6 +98,9 @@ endif
 	@echo "  rm -rf ~/Library/Caches/CocoaPods"
 	@echo "  rm -f $(gomobile_bin)"
 	@echo "  rm -f $(berty_bin)"
+
+.PHONY: regenerate
+regenerate: gen.clean generate
 
 .PHONY: gen.clean
 gen.clean:

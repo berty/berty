@@ -39,11 +39,14 @@ unittest: go.unittest
 .PHONY: generate
 generate: pb.generate
 
+.PHONY: regenerate
+regenerate: gen.clean generate
+
 .PHONY: install
 install: go.install
 
 .PHONY: clean
-clean: pb.clean
+clean:
 	rm -rf vendor/ out/
 	$(MAKE) -C .. bazel.clean
 
@@ -124,8 +127,8 @@ PROTOS_SRC := $(wildcard ../api/*.proto) $(wildcard ../api/go-internal/*.proto)
 GEN_SRC := $(PROTOS_SRC) Makefile
 GEN_SUM := gen.sum
 
-.PHONY: pb.clean
-pb.clean:
+.PHONY: gen.clean
+gen.clean:
 	rm -f gen.sum $(wildcard */*/*.pb.go) $(wildcard */*/*pb_test.go) $(wildcard */*/*pb.gw.go)
 
 .PHONY: pb.generate
