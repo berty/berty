@@ -65,6 +65,7 @@ generate: deps gen.sum
 
 .PHONY: clean
 clean:
+	rm -rf .tmp
 	rm -rf $(pkg_mod)
 	rm -rf packages/berty-app/android/.gradle
 	rm -rf packages/berty-app/ios/build
@@ -214,46 +215,47 @@ bridge.start:
 	$(GOPATH)/bin/berty daemon -l /ip4/127.0.0.1/tcp/$(BERTY_BRIDGE_PORT)/grpcws
 
 ### gen
+stripped_api := .tmp/stripped-api
 ### TODO: consider putting all the generation deps in bertytech/protoc docker image and remove the `deps` rule dep to only require docker
 
 #### pbhbs based code generation
 
 pbhbs_templates := $(wildcard */*/protocol/*.hbs */*/messenger/*.hbs */*/types/*.hbs */components/*.hbs)
 pbhbs_targets := $(patsubst %.hbs,%,$(pbhbs_templates))
-pbhbs_flags := -p ../api -p node_modules/@googleapis/googleapis -p ../vendor -p node_modules/@protocolbuffers/protobuf/src -H packages/codegen/helpers
+pbhbs_flags := -p $(stripped_api) -p node_modules/@googleapis/googleapis -p ../vendor -p node_modules/@protocolbuffers/protobuf/src -H packages/codegen/helpers
 .PHONY: _gen.pbhbs
-_gen.pbhbs:
-	pbhbs $(pbhbs_flags) -t packages/store/protocol  -o packages/store/protocol  ../api/bertyprotocol.proto
-	pbhbs $(pbhbs_flags) -t packages/store/messenger -o packages/store/messenger ../api/bertymessenger.proto
-	pbhbs $(pbhbs_flags) -t packages/store/types     -o packages/store/types     ../api/bertytypes.proto
-	pbhbs $(pbhbs_flags) -t packages/components      -o packages/components      ../api/bertyprotocol.proto ../api/bertymessenger.proto ../api/bertytypes.proto
-	pbhbs $(pbhbs_flags) -t packages/api             -o packages/api             ../api/bertyprotocol.proto ../api/bertymessenger.proto ../api/bertytypes.proto
-	pbhbs $(pbhbs_flags) -t packages/codegen         -o packages/codegen         ../api/bertyprotocol.proto ../api/bertymessenger.proto ../api/bertytypes.proto
+_gen.pbhbs: $(stripped_api)
+	pbhbs $(pbhbs_flags) -t packages/store/protocol  -o packages/store/protocol  $(stripped_api)/bertyprotocol.proto
+	pbhbs $(pbhbs_flags) -t packages/store/messenger -o packages/store/messenger $(stripped_api)/bertymessenger.proto
+	pbhbs $(pbhbs_flags) -t packages/store/types     -o packages/store/types     $(stripped_api)/bertytypes.proto
+	pbhbs $(pbhbs_flags) -t packages/components      -o packages/components      $(stripped_api)/bertyprotocol.proto $(stripped_api)/bertymessenger.proto $(stripped_api)/bertytypes.proto
+	pbhbs $(pbhbs_flags) -t packages/api             -o packages/api             $(stripped_api)/bertyprotocol.proto $(stripped_api)/bertymessenger.proto $(stripped_api)/bertytypes.proto
+	pbhbs $(pbhbs_flags) -t packages/codegen         -o packages/codegen         $(stripped_api)/bertyprotocol.proto $(stripped_api)/bertymessenger.proto $(stripped_api)/bertytypes.proto
 	eslint --cache --quiet --fix --no-ignore $(pbhbs_targets)
 
 #### pbjs
 
 pbjs_flags := -p node_modules/@googleapis/googleapis -p ../vendor -p node_modules/@protocolbuffers/protobuf/src
 .PHONY: _gen.pbjs
-_gen.pbjs:
-	pbjs $(pbjs_flags) --no-comments --es6 -w es6 -t json-module   -o packages/api/index.pb.js ../api/bertyprotocol.proto ../api/bertymessenger.proto
-	pbjs $(pbjs_flags) -t static-module ../api/bertyprotocol.proto ../api/bertymessenger.proto | pbts --no-comments -o packages/api/index.pb.d.ts -
+_gen.pbjs: $(stripped_api)
+	pbjs $(pbjs_flags) --no-comments --es6 -w es6 -t json-module   -o packages/api/index.pb.js $(stripped_api)/bertyprotocol.proto $(stripped_api)/bertymessenger.proto
+	pbjs $(pbjs_flags) -t static-module $(stripped_api)/bertyprotocol.proto $(stripped_api)/bertymessenger.proto | pbts --no-comments -o packages/api/index.pb.d.ts -
 	sed -E -i.bak 's/^.*constructor.*$$//g' packages/api/index.pb.d.ts
 	rm -f packages/api/index.pb.d.ts.bak
 	eslint --cache --quiet --fix --no-ignore packages/api/index.gen.js packages/codegen/index.gen.js
 
 #### protoc
 
-protoc_src := ../api/bertytypes.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto ../vendor/github.com/gogo/protobuf/gogoproto/gogo.proto
+protoc_src := $(stripped_api)/bertytypes.proto $(stripped_api)/bertyprotocol.proto $(stripped_api)/bertymessenger.proto ../vendor/github.com/gogo/protobuf/gogoproto/gogo.proto
 protoc_target_dir := ../js/packages/store/protocol/grpc-web-gen
-protoc_opts := -I ../api:../vendor:/protobuf
+protoc_opts := -I $(stripped_api):../vendor:/protobuf
 .PHONY: _gen.protoc
 _gen.protoc: ../vendor
 	docker run --rm --user="`id -u`" --entrypoint="sh" \
 	  --volume="$(PWD)/..:/go/src/berty.tech/berty" --workdir="/go/src/berty.tech/berty/js" \
 	  bertytech/protoc:24 -xec 'make _gen.protoc.local'
 .PHONY: _gen.protoc.local
-_gen.protoc.local:
+_gen.protoc.local: $(stripped_api)
 	$(call check-program, protoc)
 	rm -fr $(protoc_target_dir)
 	mkdir -p $(protoc_target_dir)
@@ -262,7 +264,7 @@ _gen.protoc.local:
 #### gen.sum
 
 gensum_src := $(protoc_src) Makefile
-gen.sum: $(gensum_src)
+gen.sum: $(gensum_src) $(stripped_api)
 	$(call check-program, shasum)
 	@shasum $(gensum_src) | sort > gen.sum.tmp
 	@diff -q gen.sum.tmp gen.sum || $(MAKE) _gen.protoc _gen.pbhbs _gen.pbjs _write_gen_sum
@@ -272,6 +274,17 @@ _write_gen_sum:
 	  mv gen.sum.tmp gen.sum;
 
 ## file-based rules
+
+#### minimize .proto files before generation
+$(stripped_api): $(stripped_api)/bertyprotocol.proto
+$(stripped_api)/%: ../api/% Makefile
+	@rm -rf $(stripped_api)
+	@mkdir -p $(stripped_api)
+	@cd ../api; for file in `find . -name "*.proto"`; do set -e; \
+	  mkdir -p ../js/$(stripped_api)/`dirname $$file`; \
+	  cat $$file | sed '/option\ (google.api.http)\ =\ /{:a;N;/\}/!ba};//d' | sed '/^\s*\/\/ /d' | sed '/^\s*$$/d' | grep -v google/api/annotations.proto > ../js/$(stripped_api)/$$file; \
+	done
+	touch $@ $(stripped_api)
 
 ../vendor: ../go.mod ../go.sum
 	cd .. && GO111MODULE=on go mod vendor

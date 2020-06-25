@@ -16,7 +16,8 @@ service MessengerService {
     option (google.api.http) = {
       post: "/messenger/v1/InstanceShareableBertyID"
       body: "*"
-    };}
+    };
+  }
 
   // ShareableBertyGroup returns a Berty Group that can be shared as a string, QR code or deep link.
   rpc ShareableBertyGroup(ShareableBertyGroup.Request) returns (ShareableBertyGroup.Reply);
