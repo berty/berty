@@ -28,7 +28,7 @@ diff --git a/go/core.rst b/go/core.rst
 index 0bd0d242..e5ed564d 100644
 --- a/go/core.rst
 +++ b/go/core.rst
-@@ -61,7 +61,7 @@ These mappings are collected up across the entire transitive dependancies of a
+@@ -61,7 +61,7 @@ These mappings are collected up across the entire transitive dependencies of a
  binary. This means you can set a value using :param:`x_defs` in a
  ``go_library``, and any binary that links that library will be stamped with that
  value. You can also override stamp values from libraries using :param:`x_defs`

@@ -21,7 +21,7 @@ check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,
 
 
 SAMPLE_GAZELLE_GENERATED_FILE ?= pkg/bertyprotocol/BUILD.bazel # should be the path of a git-ignored bazel-generated file
-VENDOR_BAZEL_OVERRIDEN_FILES = vendor/github.com/libp2p/go-openssl/BUILD.bazel
+VENDOR_BAZEL_OVERRIDDEN_FILES = vendor/github.com/libp2p/go-openssl/BUILD.bazel
 
 ##
 ## Main
@@ -102,7 +102,7 @@ ibazel.unittest: bazel.generate
 vendor/github.com/libp2p/go-openssl/BUILD.bazel: build/bazel/com_github_libp2p_go_openssl.BUILD.bzl vendor
 	cp $< $@
 
-$(SAMPLE_GAZELLE_GENERATED_FILE): WORKSPACE vendor $(VENDOR_BAZEL_OVERRIDEN_FILES)
+$(SAMPLE_GAZELLE_GENERATED_FILE): WORKSPACE vendor $(VENDOR_BAZEL_OVERRIDDEN_FILES)
 	$(call check-program, $(BAZEL))
 	$(BAZEL) $(BAZEL_ARGS) run $(BAZEL_CMD_ARGS) //:gazelle
 
