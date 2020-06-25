@@ -15,4 +15,5 @@ ignore:
   - "**/*.gen.go"
   - "**/generated.go"
   - "**/*.pb.go"
+  - "**/*.pb.gw.go"
   - "**/gen/**"
