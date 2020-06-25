@@ -35,10 +35,10 @@ func TestScenario_JoinGroup(t *testing.T) {
 
 		{"2 clients/connectAll", 2, ConnectAll, true, false},
 		// {"3 clients/connectAll", 3, ConnectAll, false, true},
-		//{"5 clients/connectAll", 5, ConnectAll, true, true},
-		//{"8 clients/connectAll", 8, ConnectAll, false, true},
+		// {"5 clients/connectAll", 5, ConnectAll, true, false},
+		// {"8 clients/connectAll", 8, ConnectAll, false, false},
 		//@FIXME(gfanton): those tests doesn't works
-		//{"10 clients/connectAll", 10, ConnectAll, true, true},
+		// {"10 clients/connectAll", 10, ConnectAll, true, false},
 		// {"10 clients/connectInLine", 10, ConnectInLine, true, true},
 	}
 

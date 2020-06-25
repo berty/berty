@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
+	datastore "github.com/ipfs/go-datastore"
 	ds "github.com/ipfs/go-datastore"
 	ipfs_ds "github.com/ipfs/go-datastore"
 	dsync "github.com/ipfs/go-datastore/sync"
@@ -14,11 +15,17 @@ import (
 	ipfs_libp2p "github.com/ipfs/go-ipfs/core/node/libp2p"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
+	"github.com/pkg/errors"
 
 	p2p "github.com/libp2p/go-libp2p" // nolint:staticcheck
+	host "github.com/libp2p/go-libp2p-core/host"
 	p2p_host "github.com/libp2p/go-libp2p-core/host"
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer" // nolint:staticcheck
 	p2p_ps "github.com/libp2p/go-libp2p-core/peerstore"
+	p2p_routing "github.com/libp2p/go-libp2p-core/routing"
+	p2p_dht "github.com/libp2p/go-libp2p-kad-dht"
+	p2p_dualdht "github.com/libp2p/go-libp2p-kad-dht/dual"
+	p2p_record "github.com/libp2p/go-libp2p-record"
 	// nolint:staticcheck
 )
 
@@ -30,7 +37,9 @@ type CoreAPIConfig struct {
 	APIAddrs       []string
 	APIConfig      config.API
 
+	HostConfig        func(host p2p_host.Host) error
 	ExtraLibp2pOption p2p.Option
+	DHTOption         []p2p_dht.Option
 	Routing           ipfs_libp2p.RoutingOption
 
 	Options []CoreAPIOption
@@ -96,14 +105,22 @@ func CreateBuildConfig(repo ipfs_repo.Repo, opts *CoreAPIConfig) (*ipfs_node.Bui
 		opts = &CoreAPIConfig{}
 	}
 
-	routingOpt := ipfs_libp2p.DHTOption
+	routingOpt := ipfs_libp2p.DHTClientOption
 	if opts.Routing != nil {
-		routingOpt = opts.Routing
+		routingOpt = configureRouting(p2p_dht.ModeClient,
+			p2p_dht.Concurrency(5),
+			p2p_dht.DisableAutoRefresh(),
+			p2p_dht.V1CompatibleMode(false),
+		)
 	}
 
 	hostOpt := ipfs_libp2p.DefaultHostOption
 	if opts.ExtraLibp2pOption != nil {
 		hostOpt = wrapP2POptionsToHost(hostOpt, opts.ExtraLibp2pOption)
+	}
+
+	if opts.HostConfig != nil {
+		hostOpt = wrapHostConfig(hostOpt, opts.HostConfig)
 	}
 
 	return &ipfs_node.BuildCfg{
@@ -115,7 +132,7 @@ func CreateBuildConfig(repo ipfs_repo.Repo, opts *CoreAPIConfig) (*ipfs_node.Bui
 		Host:                        hostOpt,
 		Repo:                        repo,
 		ExtraOpts: map[string]bool{
-			"pubsub": true,
+			"pubsub": false,
 		},
 	}, nil
 }
@@ -143,6 +160,46 @@ func updateRepoConfig(repo ipfs_repo.Repo, cfg *CoreAPIConfig) error {
 	}
 
 	return repo.SetConfig(rcfg)
+}
+
+func wrapHostConfig(hf ipfs_libp2p.HostOption, hc func(h host.Host) error) ipfs_libp2p.HostOption {
+	return func(ctx context.Context, id p2p_peer.ID, ps p2p_ps.Peerstore, options ...p2p.Option) (p2p_host.Host, error) {
+		h, err := hf(ctx, id, ps, options...)
+		if err != nil {
+			return nil, err
+		}
+
+		if err = hc(h); err != nil {
+			_ = h.Close()
+			return nil, errors.Wrap(err, "failed to config host")
+		}
+
+		return h, nil
+	}
+}
+
+func configureRouting(mode p2p_dht.ModeOpt, opts ...p2p_dht.Option) func(
+	ctx context.Context,
+	host p2p_host.Host,
+	dstore datastore.Batching,
+	validator p2p_record.Validator,
+	bootstrapPeers ...p2p_peer.AddrInfo,
+) (p2p_routing.Routing, error) {
+	return func(
+		ctx context.Context,
+		host p2p_host.Host,
+		dstore datastore.Batching,
+		validator p2p_record.Validator,
+		bootstrapPeers ...p2p_peer.AddrInfo,
+	) (p2p_routing.Routing, error) {
+		return p2p_dualdht.New(ctx, host,
+			append(opts,
+				p2p_dht.Mode(mode),
+				p2p_dht.Datastore(dstore),
+				p2p_dht.Validator(validator),
+				p2p_dht.BootstrapPeers(bootstrapPeers...),
+			)...)
+	}
 }
 
 func wrapP2POptionsToHost(hf ipfs_libp2p.HostOption, opt ...p2p.Option) ipfs_libp2p.HostOption {

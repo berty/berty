@@ -47,6 +47,7 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*
 	opts.applyDefaults(ctx)
 
 	ipfsopts := &ipfsutil.TestingAPIOpts{
+		Logger:  opts.Logger,
 		Mocknet: opts.Mocknet,
 		RDVPeer: opts.RDVPeer,
 	}

@@ -19,11 +19,11 @@ import (
 
 // defaultConnMgrHighWater is the default value for the connection managers
 // 'high water' mark
-const defaultConnMgrHighWater = 100
+const defaultConnMgrHighWater = 50
 
 // defaultConnMgrLowWater is the default value for the connection managers 'low
 // water' mark
-const defaultConnMgrLowWater = 50
+const defaultConnMgrLowWater = 10
 
 // defaultConnMgrGracePeriod is the default value for the connection managers
 // grace period
@@ -95,7 +95,7 @@ func createBaseConfig() (*ipfs_cfg.Config, error) {
 
 	// Discovery
 	c.Discovery.MDNS.Enabled = true
-	c.Discovery.MDNS.Interval = 1
+	c.Discovery.MDNS.Interval = 5
 
 	// swarm listeners
 	c.Addresses.Swarm = []string{

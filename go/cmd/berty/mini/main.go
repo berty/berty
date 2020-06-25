@@ -4,10 +4,13 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"math/rand"
 	"os"
 	"strings"
+	"time"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -17,9 +20,12 @@ import (
 	"github.com/gdamore/tcell/terminfo"
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
-	p2plog "github.com/ipfs/go-log"
+	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/juju/fslock"
+	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
+	peerstore "github.com/libp2p/go-libp2p-core/peerstore"
+	discovery "github.com/libp2p/go-libp2p-discovery"
 	"github.com/rivo/tview"
 	grpc_trace "go.opentelemetry.io/otel/plugin/grpctrace"
 	"go.uber.org/zap"
@@ -79,13 +85,47 @@ func newService(ctx context.Context, logger *zap.Logger, opts *Opts) (bertyproto
 
 	rootDS := sync_ds.MutexWrap(opts.RootDS)
 	ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("ipfs"))
-	routingOpt, crouting := ipfsutil.NewTinderRouting(logger, opts.RendezVousPeer, false, opts.LocalDiscovery)
+
+	var psapi ipfs_interface.PubSubAPI
+	var disc tinder.Driver
+
 	api, node, err := ipfsutil.NewCoreAPIFromDatastore(ctx, ipfsDS, &ipfsutil.CoreAPIConfig{
 		BootstrapAddrs: opts.Bootstrap,
 		SwarmAddrs:     swarmAddresses,
-		Routing:        routingOpt,
-		Options:        []ipfsutil.CoreAPIOption{ipfsutil.OptionMDNSDiscovery},
+		HostConfig: func(h host.Host) error {
+			var err error
+
+			h.Peerstore().AddAddrs(opts.RendezVousPeer.ID, opts.RendezVousPeer.Addrs, peerstore.PermanentAddrTTL)
+			// @FIXME(gfanton): use rand as argument
+			rdvClient := tinder.NewRendezvousDiscovery(logger, h, opts.RendezVousPeer.ID,
+				rand.New(rand.NewSource(rand.Int63())))
+
+			minBackoff, maxBackoff := time.Second, time.Minute
+			rng := rand.New(rand.NewSource(rand.Int63()))
+			disc, err = tinder.NewService(
+				logger,
+				rdvClient,
+				discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, rng),
+			)
+			if err != nil {
+				return err
+			}
+
+			psapi, err = ipfsutil.NewPubSubAPI(ctx, logger.Named("pubsub"), disc, h)
+			if err != nil {
+				return err
+			}
+
+			return nil
+		},
 	})
+
+	if err != nil {
+		panicUnlockFS(err, lock)
+	}
+
+	api = ipfsutil.InjectPubSubCoreAPIExtendedAdaptater(api, psapi)
+
 	if err != nil {
 		panicUnlockFS(err, lock)
 	}
@@ -94,14 +134,12 @@ func newService(ctx context.Context, logger *zap.Logger, opts *Opts) (bertyproto
 		ipfsutil.EnableConnLogger(logger, node.PeerHost)
 	}
 
-	// wait to get routing
-	routing := <-crouting
-
 	mk := bertyprotocol.NewMessageKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("messages")))
 	ks := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
 	orbitdbDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))
 	service, err := bertyprotocol.New(bertyprotocol.Opts{
-		TinderDriver:    routing,
+		Logger:          logger.Named("protocol"),
+		TinderDriver:    disc,
 		IpfsCoreAPI:     api,
 		DeviceKeystore:  bertyprotocol.NewDeviceKeystore(ks),
 		RootContext:     ctx,
@@ -118,7 +156,6 @@ func newService(ctx context.Context, logger *zap.Logger, opts *Opts) (bertyproto
 	return service, func() {
 		node.Close()
 		service.Close()
-		routing.IpfsDHT.Close() // manually close dht since ipfs wont be able to that
 	}
 }
 
@@ -127,8 +164,6 @@ func Main(ctx context.Context, opts *Opts) error {
 	if err != nil {
 		return errcode.ErrCLINoTermcaps.Wrap(err)
 	}
-
-	p2plog.SetAllLoggers(p2plog.LevelFatal)
 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()

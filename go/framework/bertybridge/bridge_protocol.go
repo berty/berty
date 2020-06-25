@@ -3,9 +3,11 @@ package bertybridge
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -22,8 +24,12 @@ import (
 	ipfs_badger "github.com/ipfs/go-ds-badger"
 	"github.com/ipfs/go-ipfs/core"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
+	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p"
+	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
+	peerstore "github.com/libp2p/go-libp2p-core/peerstore"
+	discovery "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -156,24 +162,50 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 				return nil, errors.Wrap(err, "failed to get ipfs repo")
 			}
 
+			var rdvpeer *peer.AddrInfo
+
+			if rdvpeer, err = ipfsutil.ParseAndResolveIpfsAddr(ctx, defaultProtocolRendezVousPeer); err != nil {
+				return nil, errors.New("failed to parse rdvp multiaddr: " + defaultProtocolRendezVousPeer)
+			}
+
+			var psapi ipfs_interface.PubSubAPI
 			var bopts = ipfsutil.CoreAPIConfig{
 				SwarmAddrs:        defaultSwarmAddrs,
 				APIAddrs:          defaultAPIAddrs,
 				APIConfig:         APIConfig,
 				ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
+				HostConfig: func(h host.Host) error {
+					var err error
+
+					h.Peerstore().AddAddrs(rdvpeer.ID, rdvpeer.Addrs, peerstore.PermanentAddrTTL)
+					// @FIXME(gfanton): use rand as argument
+					rdvClient := tinder.NewRendezvousDiscovery(logger, h, rdvpeer.ID,
+						rand.New(rand.NewSource(rand.Int63())))
+
+					minBackoff, maxBackoff := time.Second, time.Minute
+					rng := rand.New(rand.NewSource(rand.Int63()))
+					tinderDriver, err = tinder.NewService(
+						logger,
+						rdvClient,
+						discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, rng),
+					)
+					if err != nil {
+						return err
+					}
+
+					psapi, err = ipfsutil.NewPubSubAPI(ctx, logger.Named("pubsub"), tinderDriver, h)
+					if err != nil {
+						return err
+					}
+
+					return nil
+				},
 			}
+
 			bopts.BootstrapAddrs = defaultProtocolBootstrap
 
-			var rdvpeer *peer.AddrInfo
-			var crouting <-chan *ipfsutil.RoutingOut
-
-			if rdvpeer, err = ipfsutil.ParseAndResolveIpfsAddr(ctx, defaultProtocolRendezVousPeer); err != nil {
-				return nil, errors.New("failed to parse rdvp multiaddr: " + defaultProtocolRendezVousPeer)
-			}
 			// should be a valid rendezvous peer
 			bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, defaultProtocolRendezVousPeer)
-			bopts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false, config.localDiscovery)
-
 			if len(config.swarmListeners) > 0 {
 				bopts.SwarmAddrs = append(bopts.SwarmAddrs, config.swarmListeners...)
 			}
@@ -182,6 +214,8 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 			if err != nil {
 				return nil, errcode.TODO.Wrap(err)
 			}
+
+			api = ipfsutil.InjectPubSubCoreAPIExtendedAdaptater(api, psapi)
 
 			// construct http api endpoint
 			ipfsutil.ServeHTTPApi(logger, node, config.rootDirectory+"/ipfs")
@@ -192,10 +226,6 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 			if config.poiDebug {
 				ipfsutil.EnableConnLogger(logger, node.PeerHost)
 			}
-
-			out := <-crouting
-			dht = out.IpfsDHT
-			tinderDriver = out.Routing
 		}
 	}
 
