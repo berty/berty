@@ -26,7 +26,7 @@ RUN     go get -d github.com/envoyproxy/protoc-gen-validate \
 
 # runtime
 FROM    golang:1.14-alpine
-RUN     apk --no-cache add git openssh make protobuf gcc libc-dev nodejs-npm yarn sudo perl-utils \
+RUN     apk --no-cache add git openssh make protobuf gcc libc-dev nodejs-npm yarn sudo perl-utils tar \
  &&     mkdir -p /.cache/go-build \
  &&     chmod -R 777 /.cache \
  &&     npm install -g eclint

@@ -84,7 +84,7 @@ jobs:
           git diff-index -w --quiet HEAD --
   gen-js:
     runs-on: ubuntu-latest
-    container: bertytech/protoc:23
+    container: bertytech/protoc:24
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
@@ -116,6 +116,8 @@ jobs:
         run: cd js && make _gen.pbjs
       - name: make _gen.protoc.local
         run: cd js && make _gen.protoc.local
+      - name: make _write_gen_sum
+        run: cd js && make _write_gen_sum
       - name: check diff
         run: |
           git status | cat

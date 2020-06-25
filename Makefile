@@ -7,6 +7,7 @@ test:
 
 .PHONY: generate
 generate:
+	touch api/*.proto
 	cd go; make generate
 	cd js; make generate
 	cd docs; make generate

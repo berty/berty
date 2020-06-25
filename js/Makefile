@@ -251,7 +251,7 @@ protoc_opts := -I ../api:../vendor:/protobuf
 _gen.protoc: ../vendor
 	docker run --rm --user="`id -u`" --entrypoint="sh" \
 	  --volume="$(PWD)/..:/go/src/berty.tech/berty" --workdir="/go/src/berty.tech/berty/js" \
-	  bertytech/protoc:23 -xec 'make _gen.protoc.local'
+	  bertytech/protoc:24 -xec 'make _gen.protoc.local'
 .PHONY: _gen.protoc.local
 _gen.protoc.local:
 	$(call check-program, protoc)
@@ -264,12 +264,12 @@ _gen.protoc.local:
 gensum_src := $(protoc_src) Makefile
 gen.sum: $(gensum_src)
 	$(call check-program, shasum)
-	@shasum $(gensum_src) | sort -k 2 > gen.sum.tmp
-	@diff -q gen.sum.tmp gen.sum || ( set -xe; \
-	  $(MAKE) _gen.protoc _gen.pbhbs _gen.pbjs; \
-	  shasum $(gensum_src) | sort -k 2 > gen.sum.tmp; \
-	  mv gen.sum.tmp gen.sum; \
-    )
+	@shasum $(gensum_src) | sort > gen.sum.tmp
+	@diff -q gen.sum.tmp gen.sum || $(MAKE) _gen.protoc _gen.pbhbs _gen.pbjs _write_gen_sum
+.PHONY: _write_gen_sum
+_write_gen_sum:
+	  shasum $(gensum_src) | sort > gen.sum.tmp
+	  mv gen.sum.tmp gen.sum;
 
 ## file-based rules
 
