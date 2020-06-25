@@ -199,11 +199,13 @@ web.storybook: deps
 metro.start: deps
 	$(call check-program, lsof)
 	$(eval pid := $(shell lsof -t -i :$(REACT_NATIVE_PORT) -s TCP:LISTEN))
-	@echo Metro pid: $(pid)
-	kill -9 $(pid) || true
-	@echo "Waiting for metro to die.. (`date`)"
-	while ps -p $(pid); do sleep 1; done
-	@echo "Metro dead (`date`)"
+	@if [ -n "$(pid)" ]; then \
+		echo Metro pid: $(pid); \
+		kill -9 $(pid) || true; \
+		echo "Waiting for metro to die.. (`date`)"; \
+		while ps -p $(pid); do sleep 1; done; \
+		echo "Metro dead (`date`)"; \
+	fi
 	cd packages/berty-app && $(react-native) start --reset-cache --port=$(REACT_NATIVE_PORT) --host=127.0.0.1
 
 .PHONY: bridge.start
