@@ -5,6 +5,7 @@ import (
 	"net"
 	"net/http"
 
+	grpcgw "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr-net"
@@ -18,7 +19,7 @@ const (
 	P_GRPC           = BertyCustomPrefix + 0x0002 //nolint:golint
 	P_GRPC_WEB       = BertyCustomPrefix + 0x0004 //nolint:golint
 	P_GRPC_WEBSOCKET = BertyCustomPrefix + 0x0008 //nolint:golint
-	// P_GRPC_GATEWAY = BertyCustomPrefix + 0x0016
+	P_GRPC_GATEWAY   = BertyCustomPrefix + 0x0016 //nolint:golint
 )
 
 var protos = []ma.Protocol{
@@ -40,14 +41,11 @@ var protos = []ma.Protocol{
 		VCode: ma.CodeToVarint(P_GRPC_WEBSOCKET),
 	},
 
-	// ma.Protocol{
-	//      Name:       "gw",
-	//      Code:       P_GRPC_GATEWAY,
-	//      VCode:      ma.CodeToVarint(P_GRPC_GATEWAY),
-	//      Size:       16,
-	//      Path:       false,
-	//      Transcoder: ma.TranscoderPort,
-	// },
+	{
+		Name:  "grpcgw",
+		Code:  P_GRPC_GATEWAY,
+		VCode: ma.CodeToVarint(P_GRPC_GATEWAY),
+	},
 }
 
 type Listener interface {
@@ -73,7 +71,7 @@ func Listen(maddr ma.Multiaddr) (Listener, error) {
 	ma.ForEach(maddr, func(c ma.Component) bool {
 		switch c.Protocol().Code {
 		case ma.P_IP4, ma.P_IP6, ma.P_TCP, ma.P_UNIX: // skip (supported protocol)
-		case P_GRPC, P_GRPC_WEB, P_GRPC_WEBSOCKET:
+		case P_GRPC, P_GRPC_WEB, P_GRPC_WEBSOCKET, P_GRPC_GATEWAY:
 			component = &c
 		default:
 			err = fmt.Errorf("protocol not supported: %s", c.Protocol().Name)
@@ -107,10 +105,13 @@ func (l *listener) GRPCMultiaddr() ma.Multiaddr {
 
 type Server struct {
 	*grpc.Server
+	*grpcgw.ServeMux
 }
 
-func (s *Server) Serve(l Listener) (err error) {
+func (s *Server) Serve(l Listener) error {
 	var serve func(net.Listener) error
+
+	var err error
 	ma.ForEach(l.GRPCMultiaddr(), func(c ma.Component) bool {
 		switch c.Protocol().Code {
 		case P_GRPC:
@@ -127,27 +128,27 @@ func (s *Server) Serve(l Listener) (err error) {
 
 			serve = serverWeb.Serve
 
-		// case P_GRPC_GATEWAY:
-		//      if listener == nil {
-		//              return false // end
-		//      }
+		case P_GRPC_GATEWAY:
+			if s.ServeMux == nil {
+				err = fmt.Errorf("grpc gateway: no server mux was given")
+				return false
+			}
+			gatewayServer := http.Server{
+				Handler: s.ServeMux,
+			}
 
-		// 	gwmux := grpcw.NewServeMux()
-		// 	gatewayServer := http.Server{
-		// 		Handler: gwmux,
-		// 	}
+			serve = gatewayServer.Serve
 
-		// 	dialOpts := []grpc.DialOption{grpc.WithInsecure()}
-		// 	target := "127.0.0.1:" + c.Value()
-		// 	err = bertyprotocol.RegisterAccountHandlerFromEndpoint(ctx, gwmux, target, dialOpts)
-
-		// 	s.serve = gatewayServer.Serve
 		default:
 			return true // continue
 		}
 
 		return false // end
 	})
+
+	if err != nil {
+		return fmt.Errorf("unable to serve: %s", err)
+	}
 
 	if serve == nil {
 		return fmt.Errorf("unable to find a way to serve: %s", l.GRPCMultiaddr())

@@ -104,6 +104,7 @@ vendor/github.com/libp2p/go-openssl/BUILD.bazel: build/bazel/com_github_libp2p_g
 
 $(SAMPLE_GAZELLE_GENERATED_FILE): WORKSPACE vendor $(VENDOR_BAZEL_OVERRIDEN_FILES)
 	$(call check-program, $(BAZEL))
+	find vendor -name BUILD.bazel -delete
 	$(BAZEL) $(BAZEL_ARGS) run $(BAZEL_CMD_ARGS) //:gazelle
 
 vendor: go.mod

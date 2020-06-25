@@ -3,7 +3,9 @@ run:
   tests: false
   skip-files:
     - ".*\\.pb\\.go"
+    - ".*\\.pb\\.gw\\.go"
     - ".*\\.gen\\.go"
+    - "_test\\.go"
     - "testing.go"
 
 linters-settings:
