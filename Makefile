@@ -8,11 +8,11 @@ test:
 .PHONY: generate
 generate:
 	cd go; make generate
-	cd js; make gen
+	cd js; make generate
 	cd docs; make generate
 
-.PHONY: clean
-clean:
+.PHONY: gen.clean
+gen.clean:
 	cd go; make clean
 	cd js; make gen.clean
 	cd docs; make clean

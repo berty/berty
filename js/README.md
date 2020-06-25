@@ -22,12 +22,11 @@ In addition to the _**General requirements for React Native**_ below, you'll nee
 
 Run JS bundler:
 
-`make start.metro`
+`make metro.start`
 
 Run two nodes so you can run two app instances and use network protocol functionality:
 
-`make start.grpc-bridge.berty port=1337`
-`make start.grpc-bridge.berty port=1338`
+`make bridge.start
 
 ### 2. Launch in device simulators
 
@@ -35,8 +34,7 @@ _Run two simulators so you can use chat features._
 
 #### Run on iOS
 
-`device="[some-iOS-device-name]" make run.ios`
-`device="[some-iOS-device-name]" make run.ios`
+`make ios.run`
 
 _You'll have some errors, don't worry about them for now._
 
@@ -44,8 +42,7 @@ _You'll have some errors, don't worry about them for now._
 
 ⚠️ Android build currently not maintained.
 
-`device="[some Android device]" make run.android`
-`device="[some Android device]" make run.android`
+`make android.run`
 
 ### 3. Create accounts in simulators and choose a bridge
 
@@ -85,24 +82,23 @@ Storybook enables isolated development of UI component libraries. Examples and s
 
 #### iOS
 
-`make run.storybook.ios`
+`make storybook.ios`
 
 #### Android
 
-`make run.storybook.android`
+`make storybook.android`
 
 ## Run the web dev app
 
 ### 1. Requirements
 
 - `yarn`
-- `bazel`
 
 ### 2. Run required services
 
 - `cd packages/web-dev-app && yarn && yarn start`
-- `port=1337 make start.grpc-bridge.berty`
-- `port=1338 make start.grpc-bridge.berty`
+- `BERBY_BRIDGE_PORT=1337 make bridge.start`
+- `BERTY_BRIDGE_PORT=1338 make bridge.start`
 
 ### 3. Navigate to the app
 
@@ -116,8 +112,8 @@ You can use one normal tab and one private tab to have two accounts at the same 
 
 ## Known issues
 
-- `make run.storybook.*` outputs error `Error: => Create a storybook config file in "./.storybook/config.{ext}".` during build
+- `make storybook.*` outputs error `Error: => Create a storybook config file in "./.storybook/config.{ext}".` during build
 
 - gRPC errors on iOS and Android views
 
-- `make start.metro` outputs `warning: the transform cache was reset. Loading dependency graph...'config.server.enableVisualizer' is enabled but the 'metro-visualizer' package was not found - have you installed it?`
+- `make metro.start` outputs `warning: the transform cache was reset. Loading dependency graph...'config.server.enableVisualizer' is enabled but the 'metro-visualizer' package was not found - have you installed it?`

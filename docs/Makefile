@@ -15,9 +15,9 @@ clean:
 .PHONY: generate
 generate: gen.sum
 $(GEN_SUM): $(GEN_SRC)
-	shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp
-	diff -q $(GEN_SUM).tmp $(GEN_SUM) || ( \
-	  set -e; \
+	@shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp
+	@diff -q $(GEN_SUM).tmp $(GEN_SUM) || ( \
+	  set -xe; \
 	  (set -e; cd .. && GO111MODULE=on go mod vendor); \
 	  docker run \
 	    --user=`id -u` \

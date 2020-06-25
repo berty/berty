@@ -59,31 +59,63 @@ on:
       - '**/Podfile.lock'
       - 'js/packages/store/protocol/grpc-web-gen/**'
 jobs:
-  protobuf:
+  gen-go-and-docs:
     runs-on: ubuntu-latest
     container: bertytech/protoc:23
     steps:
       - uses: actions/checkout@v2
       - run: find . -name gen.sum ! -path './js/*' -delete
-      - name: generating go/
-        run: |
-          cd go
-          go mod vendor
-          make generate_local
-          cd ..
-          git checkout go.mod go.sum
+      - name: preload common deps
+        run: go mod vendor
       - name: generating docs/
         run: |
           cd docs
           make generate_local
-      #- name: generating js/
-      #  run: |
-      #    cd js
-      #    make gen.clean
-      #    make deps
-      #    make gen.api
-      #    make gen.codegen
-      #    make generate_local
+      - name: generating go/
+        run: |
+          cd go
+          make generate_local
+          cd ..
+          git checkout go.mod go.sum
+      - name: check diff
+        run: |
+          git status | cat
+          git diff -w | cat
+          git diff-index -w --quiet HEAD --
+  gen-js:
+    runs-on: ubuntu-latest
+    container: bertytech/protoc:23
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: make gen.clean
+        run: cd js && make gen.clean
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            js/node_modules
+            js/packages/*/node_modules
+          key: ${{ runner.OS }}-genjs-${{ hashFiles('js/**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-genjs-
+            ${{ runner.OS }}-
+      - name: "Fetch deps"
+        # FIXME: find a way of only downloading the required packages or install them directly in the bertytech/protoc image
+        run: cd js && make deps
+        env:
+          CI: true
+      - name: Preload Go vendors
+        run: go mod vendor
+      - name: make _gen.pbhbs
+        run: cd js && make _gen.pbhbs
+      - name: make _gen.pbjs
+        run: cd js && make _gen.pbjs
+      - name: make _gen.protoc.local
+        run: cd js && make _gen.protoc.local
       - name: check diff
         run: |
           git status | cat
