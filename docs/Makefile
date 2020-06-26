@@ -8,9 +8,12 @@ GEN_SUM := gen.sum
 
 all: generate
 
-.PHONY: clean
-clean:
+.PHONY: gen.clean
+gen.clean:
 	rm -f gen.sum $(wildcard */*.md.tmp)
+
+.PHONY: regenerate
+regenerate: gen.clean generate
 
 .PHONY: generate
 generate: gen.sum

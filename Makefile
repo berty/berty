@@ -12,11 +12,11 @@ generate:
 	cd js; make generate
 	cd docs; make generate
 
-.PHONY: gen.clean
-gen.clean:
-	cd go; make clean
-	cd js; make gen.clean
-	cd docs; make clean
+.PHONY: regenerate
+regenerate:
+	cd go; make $@
+	cd js; make $@
+	cd docs; make $@
 
 .PHONY: docker.build
 docker.build:
