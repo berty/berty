@@ -1,5 +1,5 @@
 27b28bf3451192effed2411e86def7198ce72909  .tmp/stripped-api/bertymessenger.proto
 28771eef5d4bc14523168fac138590d6f93df365  .tmp/stripped-api/bertytypes.proto
+4643cb60c9372e911e7e72d0a3be5cf195028425  Makefile
 4c0fa735ab710727c465ed1444dc6db1c748dc45  ../vendor/github.com/gogo/protobuf/gogoproto/gogo.proto
-8885c7b6cf19602640834e27576d66658302cd94  Makefile
 fa793842963c3aa65da2b94883687e029d9d8d8e  .tmp/stripped-api/bertyprotocol.proto

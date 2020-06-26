@@ -145,7 +145,7 @@ ios.run: deps packages/go-bridge/ios/Frameworks/Bertybridge.framework packages/b
 .PHONY: ios.release
 ios.release: deps packages/go-bridge/ios/Frameworks/Bertybridge.framework packages/berty-app/ios/Pods/Manifest.lock
 	cd packages/berty-app && bundle install
-	../build/shell/release-ios.sh
+	../tool/build/shell/release-ios.sh
 
 .PHONY: ios.log
 ios.log:
@@ -166,13 +166,13 @@ ios.storybook: deps packages/storybook-mobile/ios/Pods _storybook.mobile.start
 android.run: deps packages/go-bridge/android/libs/gobridge.aar packages/berty-app/node_modules/react-native/react.gradle.orig $(HOME)/.android/debug.keystore
 	$(call check-program, adb)
 	$(eval ANDROID_DEVICE ?= `adb devices | tail +2 | head -1 | cut -f 1`)
-	../build/shell/check-java.sh 18
+	../tool/build/shell/check-java.sh 18
 	adb -s $(ANDROID_DEVICE) reverse tcp:$(BERTY_BRIDGE_PORT) tcp:$(BERTY_BRIDGE_PORT)
 	cd packages/berty-app && $(react-native) run-android --no-packager --variant=$(APP_TARGET) --deviceId="$(ANDROID_DEVICE)" $(if $(filter-out $(APP_TARGET), store), --appIdSuffix=$(APP_TARGET))
 
 .PHONY: android.release
 android.release: deps packages/go-bridge/android/libs/gobridge.aar packages/berty-app/node_modules/react-native/react.gradle.orig $(HOME)/.android/debug.keystore
-	../build/shell/release-android.sh
+	../tool/build/shell/release-android.sh
 
 .PHONY: android.log
 android.log:

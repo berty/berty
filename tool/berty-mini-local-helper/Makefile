@@ -17,6 +17,10 @@ log-stats:
 	@touch $(TMPDIR)/berty-mini-$(ID).log
 	cat $(TMPDIR)/berty-mini-$(ID).log | jq -r '.level + " " + .logger + " " + .msg + " " + .error' | sort | uniq -c
 
+.PHONY: share-qr
+share-qr:
+	berty --display-name=$(NAME) dev share-invite -d $(TMPDIR)/berty-mini-$(ID) --dev-channel
+
 .PHONY: watch-log-stats
 watch-log-stats:
 	watch -d make log-stats
