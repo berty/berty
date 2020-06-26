@@ -1,5 +1,0 @@
-[{
-  "regex": "^No dependencies were provided.",
-  "command": "bazel",
-  "args": ["run", "//:gazelle"]
-}]

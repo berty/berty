@@ -15,7 +15,6 @@ In addition to the _**General requirements for React Native**_ below, you'll nee
 - An installation of [golang](https://golang.org/dl/), plus:
   - Your `$GOPATH` explicitly set to your golang directory (usually `$HOME/go`)
   - The gomobile package: `go get golang.org/x/mobile/cmd/gomobile/... && gomobile init`
-- [Bazel](https://docs.bazel.build/versions/master/install-os-x.html#install-with-installer-mac-os-x)
 - _Android only:_ Java 8. If you already have another version of Java, you can use a version manager and Homebrew to add another installation. Some nice instructions are given [here](https://java.christmas/2019/16).
 
 ### 1. Run required services

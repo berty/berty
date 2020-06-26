@@ -1,4 +1,0 @@
-alias(
-    name = "app",
-    actual = "//android/app/src/main:app",
-)

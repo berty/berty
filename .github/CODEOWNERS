@@ -31,10 +31,8 @@
 ##
 
 # build
-WORKSPACE @berty/build-owners
-*.bazel @berty/build-owners
-bazel.make @berty/build-owners
 Makefile @berty/build-owners
+*.mk @berty/build-owners
 
 ##
 ## by specific domain

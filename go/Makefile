@@ -3,35 +3,22 @@
 ##
 
 GO ?= go
-GO_TEST_OPTS ?= -test.timeout=300s -race -cover -coverprofile=coverage.txt -covermode=atomic
-GO_TEST_ENV ?= DONT_SKIP_UNSTABLE=0
 GOPATH ?= $(HOME)/go
+GO_TEST_OPTS ?= -test.timeout=300s -race -cover -coverprofile=coverage.txt -covermode=atomic
+GO_TEST_PATH ?= ./...
+PROTOC_OPTS ?= -I ../vendor/github.com/grpc-ecosystem/grpc-gateway:../api:../vendor:/protobuf
 
-##
-## Functions
-##
-
-check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,$(error "No $(exec) in PATH")))
+BUILD_DATE ?= `date +%s`
+VCS_REF ?= `git rev-parse --short HEAD`
+VERSION ?= `git describe --tags --always`
+LDFLAGS ?= -ldflags="-X berty.tech/berty/v2/go/pkg/bertymessenger.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertymessenger.Version=$(VERSION) -X berty.tech/berty/v2/go/pkg/bertymessenger.BuildTime=$(BUILD_DATE)"
 
 ##
 ## General rules
 ##
 
-.PHONY: build
-build:
-	$(MAKE) -C .. bazel.build
-
-.PHONY: run
-run:
-	$(MAKE) -C .. bazel.daemon
-
-.PHONY: dev
-dev:
-	$(MAKE) -C .. ibazel.daemon
-
-.PHONY: autotest
-autotest:
-	$(MAKE) -C .. ibazel.unittest
+.PHONY: test
+test: unittest lint tidy
 
 .PHONY: unittest
 unittest: go.unittest
@@ -48,19 +35,26 @@ install: go.install
 .PHONY: clean
 clean:
 	rm -rf vendor/ out/
-	$(MAKE) -C .. bazel.clean
-
-.PHONY: fclean
-fclean: clean
-	$(MAKE) -C .. bazel.fclean
 
 .PHONY: re
-re: clean build
+re: clean generate install
 
+.PHONY: tidy
+tidy: go.tidy
+
+.PHONY: lint
+lint: go.lint
 
 ##
-## Go rules
+## Other rules
 ##
+
+check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,$(error "No $(exec) in PATH")))
+
+.PHONY: go.tidy
+go.tidy: pb.generate
+	$(call check-program, $(GO))
+	GO111MODULE=on $(GO) mod tidy
 
 .PHONY: go.lint
 go.lint: pb.generate
@@ -68,42 +62,14 @@ go.lint: pb.generate
 	golangci-lint run --timeout=120s --verbose ./...
 
 .PHONY: go.unittest
-go.unittest: GO_TEST_PATH ?= ./...
 go.unittest: pb.generate
 	$(call check-program, $(GO))
 	$(GO_TEST_ENV) GO111MODULE=on $(GO) test $(GO_TEST_OPTS) $(GO_TEST_PATH)
 
-
-VERSION ?= `git describe --tags --always`
-VCS_REF ?= `git rev-parse --short HEAD`
-BUILD_DATE ?= `date +%s`
-GO_INSTALL_OPTS = -ldflags="-X berty.tech/berty/v2/go/pkg/bertymessenger.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertymessenger.Version=$(VERSION) -X berty.tech/berty/v2/go/pkg/bertymessenger.BuildTime=$(BUILD_DATE)"
-
-.PHONY: go.unittest.watch
-go.unittest: GO_TEST_PATH ?= ./...
-go.unittest.watch:
-	@if ! command -v watchman &>/dev/null; then brew install watchman; fi
-	while true; \
-		do clear; \
-		GO_TEST_PATH=$(GO_TEST_PATH) make go.unittest; \
-		watchman-wait . -p "**/*.go"; \
-	done
-
 .PHONY: go.install
 go.install: pb.generate
 	$(call check-program, $(GO))
-	GO111MODULE=on $(GO) install $(GO_INSTALL_OPTS) -v ./cmd/...
-
-.PHONY: test
-test: unittest lint tidy
-
-.PHONY: lint
-lint: go.lint
-
-.PHONY: tidy
-tidy: pb.generate
-	$(call check-program, $(GO))
-	GO111MODULE=on $(GO) mod tidy
+	GO111MODULE=on $(GO) install $(LDFLAGS) -v ./cmd/...
 
 .PHONY: docker.build
 docker.build: pb.generate
@@ -123,9 +89,9 @@ docker.fast: pb.generate
 ## Code gen
 ##
 
-PROTOS_SRC := $(wildcard ../api/*.proto) $(wildcard ../api/go-internal/*.proto)
-GEN_SRC := $(PROTOS_SRC) Makefile
-GEN_SUM := gen.sum
+protos_src := $(wildcard ../api/*.proto) $(wildcard ../api/go-internal/*.proto)
+gen_src := $(protos_src) Makefile
+gen_sum := gen.sum
 
 .PHONY: gen.clean
 gen.clean:
@@ -133,10 +99,10 @@ gen.clean:
 
 .PHONY: pb.generate
 pb.generate: gen.sum
-$(GEN_SUM): $(GEN_SRC)
+$(gen_sum): $(gen_src)
 	$(call check-program, shasum docker $(GO))
-	@shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp
-	@diff -q $(GEN_SUM).tmp $(GEN_SUM) || ( \
+	@shasum $(gen_src) | sort -k 2 > $(gen_sum).tmp
+	@diff -q $(gen_sum).tmp $(gen_sum) || ( \
 	  uid=`id -u`; \
 	  set -xe; \
 	  $(GO) mod vendor; \
@@ -151,11 +117,10 @@ $(GEN_SUM): $(GEN_SRC)
 	    $(MAKE) tidy \
 	)
 
-PROTOC_OPTS = -I ../vendor/github.com/grpc-ecosystem/grpc-gateway:../api:../vendor:/protobuf
 .PHONY: generate_local
 generate_local:
 	$(call check-program, goimports shasum protoc)
-	@set -e; for proto in $(PROTOS_SRC); do ( set -xe; \
+	@set -e; for proto in $(protos_src); do ( set -xe; \
 	  protoc $(PROTOC_OPTS) \
 		--gogo_out="plugins=grpc:$(GOPATH)/src" "$$proto" \
 		--grpc-gateway_out="logtostderr=true:$(GOPATH)/src" \
@@ -167,12 +132,12 @@ generate_local:
 	@### end of custom
 
 	goimports -w ./pkg ./cmd ./internal
-	shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp
-	mv $(GEN_SUM).tmp $(GEN_SUM)
+	shasum $(gen_src) | sort -k 2 > $(gen_sum).tmp
+	mv $(gen_sum).tmp $(gen_sum)
 
 ##
 ## Dev
 ##
 
 print-%:
-	@echo $*: $($*)
+	@echo $* = $($*)
