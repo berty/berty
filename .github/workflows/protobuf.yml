@@ -8,8 +8,9 @@ on:
     paths:
       - 'api/**'
       - 'Makefile'
-      - '**/Makefile'
-      - '**.mk'
+      - 'js/Makefile'
+      - 'go/Makefile'
+      - 'docs/Makefile'
       - '.github/workflows/protobuf.yml'
       - '**/gen.sum'
       - '**.pb.go'
@@ -35,8 +36,9 @@ on:
     paths:
       - 'api/**'
       - 'Makefile'
-      - '**/Makefile'
-      - '**.mk'
+      - 'js/Makefile'
+      - 'go/Makefile'
+      - 'docs/Makefile'
       - '.github/workflows/protobuf.yml'
       - '**/gen.sum'
       - '**.pb.go'
