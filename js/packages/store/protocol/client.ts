@@ -2,7 +2,18 @@ import { WebsocketTransport } from '@berty-tech/grpc-bridge'
 import GoBridge, { GoBridgeOpts, GoLogLevel } from '@berty-tech/go-bridge'
 import { createSlice, PayloadAction, CaseReducer } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { all, put, putResolve, call, delay, take, fork, join, takeEvery } from 'redux-saga/effects'
+import {
+	all,
+	put,
+	putResolve,
+	call,
+	delay,
+	take,
+	fork,
+	join,
+	takeEvery,
+	race,
+} from 'redux-saga/effects'
 import { Task } from 'redux-saga'
 import * as gen from './client.gen'
 import * as messengerGen from '../messenger/client.gen'
@@ -184,14 +195,14 @@ export const services: {
 export const getProtocolService = (id: string): ProtocolServiceSagaClient => {
 	const service = services[id]
 	if (!service) {
-		throw new Error(`Services for ${id} not found`)
+		throw new Error(`Protocol service for ${id} not found`)
 	}
 	return service.protocol
 }
 export const getMessengerService = (id: string): MessengerServiceSagaClient => {
 	const service = services[id]
 	if (!service) {
-		throw new Error(`Services for ${id} not found`)
+		throw new Error(`Messneger service for ${id} not found`)
 	}
 	return service.messenger
 }
@@ -311,6 +322,7 @@ export const defaultBridgeOpts: GoBridgeOpts = {
 export const transactions: Transactions = {
 	...defaultTransactions,
 	start: function* ({ id }) {
+		console.log('starting client')
 		if (services[id] != null) {
 			console.warn(`services for ${id} already exist`)
 			return
@@ -326,7 +338,9 @@ export const transactions: Transactions = {
 			transport = ExternalTransport
 		} else {
 			try {
+				console.log('calling startProtocol')
 				yield call(GoBridge.startProtocol, nodeConfig.opts)
+				console.log('done startProtocol')
 			} catch (e) {
 				if (e.domain !== 'already started') {
 					throw e
@@ -338,9 +352,10 @@ export const transactions: Transactions = {
 		}
 
 		const protocolService = new ProtocolServiceSagaClient(address, transport())
+		const messengerService = new MessengerServiceSagaClient(address, transport())
 		services[id] = {
 			protocol: protocolService,
-			messenger: new MessengerServiceSagaClient(address, transport()),
+			messenger: messengerService,
 		}
 
 		// try to connect repeatedly since startBridge can return before the bridge is ready to serve
@@ -353,6 +368,31 @@ export const transactions: Transactions = {
 				console.warn(e)
 			}
 		}
+		yield fork(function* watchdog() {
+			function* testAvailability(...conf: [Parameters<typeof unaryChan>[0], string][]) {
+				for (const [method, name] of conf) {
+					try {
+						yield* unaryChan(method)
+					} catch (e) {
+						console.warn(`${name} service watchdog failed:`, e)
+						yield call(transactions.restart, { id })
+						return true
+					}
+				}
+				return false
+			}
+			while (true) {
+				if (
+					yield* testAvailability(
+						[protocolService.instanceGetConfiguration, 'protocol'],
+						[messengerService.systemInfo, 'messenger'],
+					)
+				) {
+					return
+				}
+				yield delay(2000)
+			}
+		})
 		const { accountPk, devicePk, accountGroupPk } = instanceConf
 		if (!(accountPk && devicePk && accountGroupPk)) {
 			throw new Error('Invalid instance data')
@@ -371,8 +411,14 @@ export const transactions: Transactions = {
 		delete services[id]
 	},
 	restart: function* (payload) {
+		console.log('deleting tx')
 		yield call(transactions.delete, { id: payload.id })
-		yield call(GoBridge.stopProtocol)
+		console.log('stoping protocol')
+		yield race({
+			stopProtocol: call(GoBridge.stopProtocol),
+			timeout: delay(5000),
+		})
+		console.log('put restart root saga')
 		yield put({ type: 'RESTART_ROOT_SAGA' })
 	},
 	delete: function* ({ id }) {
