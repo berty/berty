@@ -54,6 +54,7 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*
 	node, cleanupNode := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsopts)
 
 	serviceOpts := Opts{
+		Host:            node.MockNode().PeerHost,
 		Logger:          opts.Logger,
 		DeviceKeystore:  NewDeviceKeystore(keystore.NewMemKeystore()),
 		MessageKeystore: NewInMemMessageKeystore(),
