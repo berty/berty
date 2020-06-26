@@ -32,7 +32,6 @@ steps:
     artifact_paths:
       - "js/packages/berty-app/android/universal.apk"
       - "js/packages/berty-app/android/toc.pb"
-      - "js/packages/berty-app/android/app/build/outputs/bundle/release/app-release.aab"
 
   - label: ios-build
     if: build.branch == "master" || (build.message !~ /\[skip ios-build\]/ && build.message !~ /\[skip-ci\]/)
