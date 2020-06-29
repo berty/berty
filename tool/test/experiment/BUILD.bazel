@@ -1,3 +1,0 @@
-# gazelle:prefix berty.tech/berty/experiment
-# gazelle:proto package
-# gazelle:proto_group go_package
