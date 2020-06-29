@@ -65,8 +65,12 @@ jobs:
     runs-on: ubuntu-latest
     container: bertytech/protoc:24
     steps:
-      - uses: actions/checkout@v2
-      - run: find . -name gen.sum ! -path './js/*' -delete
+      - name: checkout
+        uses: actions/checkout@v2
+      - name:  unshallow
+        run: git fetch --prune --unshallow
+      - name: remove lock files
+        run: find . -name gen.sum ! -path './js/*' -delete
       - name: preload common deps
         run: go mod vendor
       - name: generating docs/
@@ -84,6 +88,39 @@ jobs:
           git status | cat
           git diff -w | cat
           git diff-index -w --quiet HEAD --
+      - name: install jq
+        run: |
+          wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -O /usr/local/bin/jq
+          chmod +x /usr/local/bin/jq
+      - name: prepare openapi documentation
+        run: cd docs && make openapi.prepare
+      - name: install apiary
+        run: apk --no-cache add ruby-dev g++ && gem install apiaryio
+      - name: upload API docs to apiary.io
+        env:
+          APIARY_API_KEY: "${{ secrets.APIARY_API_KEY }}"
+        if: ${{ env.APIARY_API_KEY != 0 }}
+        run: |
+          apiary publish --api-name=bertyprotocol  --path="docs/.tmp/openapi/bertyprotocol.swagger.json"
+          apiary publish --api-name=bertymessenger --path="docs/.tmp/openapi/bertymessenger.swagger.json"
+      #- name: deploy protocol API documentation on bump.sh
+      #  uses: bump-sh/github-action@0.1
+      #  env:
+      #    BUMP_TOKEN: "${{ secrets.BUMP_TOKEN }}"
+      #  if: ${{ env.BUMP_TOKEN != 0 }}
+      #  with:
+      #    id: 6eb1bb1e-c65d-4b73-a8c4-0e545742f6db
+      #    token: ${{ secrets.BUMP_TOKEN }}
+      #    file: docs/.tmp/openapi/bertyprotocol.swagger.json
+      #- name: deploy messenger API documentation on bump.sh
+      #  uses: bump-sh/github-action@0.1
+      #  env:
+      #    BUMP_TOKEN: "${{ secrets.BUMP_TOKEN }}"
+      #  if: ${{ env.BUMP_TOKEN != 0 }}
+      #  with:
+      #    id: f3c48f1c-2b5b-4d3f-9ddb-40f6cf09b905
+      #    token: ${{ secrets.BUMP_TOKEN }}
+      #    file: docs/.tmp/openapi/bertymessenger.swagger.json
   gen-js:
     runs-on: ubuntu-latest
     container: bertytech/protoc:24

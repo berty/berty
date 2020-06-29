@@ -5,6 +5,7 @@
 .agignore
 .env
 .projectile
+.tmp/
 /bazel-*
 core-sources.jar
 coverage.txt

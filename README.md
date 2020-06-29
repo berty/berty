@@ -22,6 +22,8 @@
   <a href="https://github.com/berty/berty/releases"><img alt="GitHub release" src="https://img.shields.io/github/v/release/berty/berty" /></a>
   <a href="https://www.codefactor.io/repository/github/berty/berty"><img src="https://www.codefactor.io/repository/github/berty/berty/badge?s=bf5885a3b2782ead81d91cd423915f2e9ddc9196" alt="CodeFactor" /></a>
   <!--<a href="https://goreportcard.com/report/berty/berty"><img src="https://goreportcard.com/badge/berty/berty" alt="Go Report Card"></a>-->
+  <!--<a href="https://bump.sh/doc/berty-messenger"/><img src="https://img.shields.io/badge/bump.sh-messenger%20api-black" /></a>-->
+  <!--<a href="https://bump.sh/doc/berty-protocol"/><img src="https://img.shields.io/badge/bump.sh-protocol%20api-black" /></a>-->
 </p>
 
 ---
@@ -113,13 +115,13 @@ More info on [berty/community](https://github.com/berty/community).
 
 ![Contribute to Berty](https://assets.berty.tech/files/contribute-contribute_v2--Contribute-berty-ultra-light.gif)
 
-We really welcome contributions. Your input is the most precious material. We're well aware of that and we thank you in advance. Everyone is encouraged to look at what they can do on their own scale; no effort is too small.  
+We really welcome contributions. Your input is the most precious material. We're well aware of that and we thank you in advance. Everyone is encouraged to look at what they can do on their own scale; no effort is too small.
 
-There are plenty of ways to get involved and act for our community. It has been divided into two distinct parts: everything that is related to the code and everything that is not. 
+There are plenty of ways to get involved and act for our community. It has been divided into two distinct parts: everything that is related to the code and everything that is not.
 
 To put it very simply:
 * Code-related = Github
-* Not code-related = Open task 
+* Not code-related = Open task
 
 Everything on contribution is sum up here: [CONTRIBUTING.MD](https://github.com/berty/community/blob/master/CONTRIBUTING.md)
 

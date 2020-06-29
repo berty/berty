@@ -1,0 +1,529 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "bertymessenger.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/messenger/v1/DevShareInstanceBertyID": {
+      "post": {
+        "summary": "DevShareInstanceBertyID shares your Berty ID on a dev channel.\nTODO: remove for public.",
+        "operationId": "MessengerService_DevShareInstanceBertyID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/messengerDevShareInstanceBertyIDReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/messengerDevShareInstanceBertyIDRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/messenger/v1/InstanceShareableBertyID": {
+      "post": {
+        "summary": "InstanceShareableBertyID returns a Berty ID that can be shared as a string, QR code or deep link.",
+        "operationId": "MessengerService_InstanceShareableBertyID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/messengerInstanceShareableBertyIDReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/messengerInstanceShareableBertyIDRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/messenger/v1/ParseDeepLink": {
+      "post": {
+        "summary": "ParseDeepLink parses a link in the form of berty://xxx or https://berty.tech/id# and returns a structure\nthat can be used to display information.\nThis action is read-only.",
+        "operationId": "MessengerService_ParseDeepLink",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/messengerParseDeepLinkReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/messengerParseDeepLinkRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/messenger/v1/SendAck": {
+      "post": {
+        "summary": "SendAck sends an acknowledge payload for given message id",
+        "operationId": "MessengerService_SendAck",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/messengerSendAckReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/messengerSendAckRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/messenger/v1/SendContactRequest": {
+      "post": {
+        "summary": "SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol.",
+        "operationId": "MessengerService_SendContactRequest",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/messengerSendContactRequestReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/messengerSendContactRequestRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/messenger/v1/SendMessage": {
+      "post": {
+        "summary": "SendMessage sends a message to a group",
+        "operationId": "MessengerService_SendMessage",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/messengerSendMessageReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/messengerSendMessageRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/messenger/v1/SystemInfo": {
+      "post": {
+        "operationId": "MessengerService_SystemInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/messengerSystemInfoReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/messengerSystemInfoRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ParseDeepLinkKind": {
+      "type": "string",
+      "enum": [
+        "UnknownKind",
+        "BertyID",
+        "BertyGroup"
+      ],
+      "default": "UnknownKind"
+    },
+    "messengerBertyGroup": {
+      "type": "object",
+      "properties": {
+        "group": {
+          "$ref": "#/definitions/typesGroup"
+        },
+        "display_name": {
+          "type": "string"
+        }
+      }
+    },
+    "messengerBertyID": {
+      "type": "object",
+      "properties": {
+        "public_rendezvous_seed": {
+          "type": "string",
+          "format": "byte"
+        },
+        "account_pk": {
+          "type": "string",
+          "format": "byte"
+        },
+        "display_name": {
+          "type": "string"
+        }
+      }
+    },
+    "messengerDevShareInstanceBertyIDReply": {
+      "type": "object"
+    },
+    "messengerDevShareInstanceBertyIDRequest": {
+      "type": "object",
+      "properties": {
+        "reset": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "reset will regenerate a new link"
+        },
+        "display_name": {
+          "type": "string"
+        }
+      }
+    },
+    "messengerInstanceShareableBertyIDReply": {
+      "type": "object",
+      "properties": {
+        "berty_id": {
+          "$ref": "#/definitions/messengerBertyID"
+        },
+        "berty_id_payload": {
+          "type": "string"
+        },
+        "deep_link": {
+          "type": "string"
+        },
+        "html_url": {
+          "type": "string"
+        }
+      }
+    },
+    "messengerInstanceShareableBertyIDRequest": {
+      "type": "object",
+      "properties": {
+        "reset": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "reset will regenerate a new link"
+        },
+        "display_name": {
+          "type": "string"
+        }
+      }
+    },
+    "messengerParseDeepLinkReply": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/ParseDeepLinkKind"
+        },
+        "berty_id": {
+          "$ref": "#/definitions/messengerBertyID"
+        },
+        "berty_group": {
+          "$ref": "#/definitions/messengerBertyGroup"
+        }
+      }
+    },
+    "messengerParseDeepLinkRequest": {
+      "type": "object",
+      "properties": {
+        "link": {
+          "type": "string"
+        }
+      }
+    },
+    "messengerSendAckReply": {
+      "type": "object"
+    },
+    "messengerSendAckRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte"
+        },
+        "message_id": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "messengerSendContactRequestReply": {
+      "type": "object"
+    },
+    "messengerSendContactRequestRequest": {
+      "type": "object",
+      "properties": {
+        "berty_id": {
+          "$ref": "#/definitions/messengerBertyID"
+        },
+        "metadata": {
+          "type": "string",
+          "format": "byte"
+        },
+        "own_metadata": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "messengerSendMessageReply": {
+      "type": "object"
+    },
+    "messengerSendMessageRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "messengerShareableBertyGroupReply": {
+      "type": "object",
+      "properties": {
+        "berty_group": {
+          "$ref": "#/definitions/messengerBertyGroup"
+        },
+        "berty_group_payload": {
+          "type": "string"
+        },
+        "deep_link": {
+          "type": "string"
+        },
+        "html_url": {
+          "type": "string"
+        }
+      }
+    },
+    "messengerSystemInfoReply": {
+      "type": "object",
+      "properties": {
+        "started_at": {
+          "type": "string",
+          "format": "int64"
+        },
+        "num_cpu": {
+          "type": "string",
+          "format": "int64"
+        },
+        "go_version": {
+          "type": "string"
+        },
+        "num_goroutine": {
+          "type": "string",
+          "format": "int64"
+        },
+        "operating_system": {
+          "type": "string"
+        },
+        "host_name": {
+          "type": "string"
+        },
+        "arch": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "vcs_ref": {
+          "type": "string"
+        },
+        "build_time": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "messengerSystemInfoRequest": {
+      "type": "object"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "typesGroup": {
+      "type": "object",
+      "properties": {
+        "public_key": {
+          "type": "string",
+          "format": "byte",
+          "title": "public_key is the identifier of the group, it signs the group secret and the initial member of a multi-member group"
+        },
+        "secret": {
+          "type": "string",
+          "format": "byte",
+          "title": "secret is the symmetric secret of the group, which is used to encrypt the metadata"
+        },
+        "secret_sig": {
+          "type": "string",
+          "format": "byte",
+          "title": "secret_sig is the signature of the secret used to ensure the validity of the group"
+        },
+        "group_type": {
+          "$ref": "#/definitions/typesGroupType",
+          "title": "group_type specifies the type of the group"
+        }
+      },
+      "title": "Group define a group and is enough to invite someone to it"
+    },
+    "typesGroupType": {
+      "type": "string",
+      "enum": [
+        "GroupTypeUndefined",
+        "GroupTypeAccount",
+        "GroupTypeContact",
+        "GroupTypeMultiMember"
+      ],
+      "default": "GroupTypeUndefined",
+      "description": " - GroupTypeUndefined: GroupTypeUndefined indicates that the value has not been set. Should not happen.\n - GroupTypeAccount: GroupTypeAccount is the group managing an account, available to all its devices.\n - GroupTypeContact: GroupTypeContact is the group created between two accounts, available to all their devices.\n - GroupTypeMultiMember: GroupTypeMultiMember is a group containing an undefined number of members."
+    }
+  }
+}
