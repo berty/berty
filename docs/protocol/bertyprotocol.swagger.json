@@ -1,0 +1,1857 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "bertyprotocol.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/protocol/v1/ActivateGroup": {
+      "post": {
+        "summary": "ActivateGroup explicitly opens a group, groups are automatically enabled when actions are performed on them",
+        "operationId": "ProtocolService_ActivateGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesActivateGroupReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesActivateGroupRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/AppMessageSend": {
+      "post": {
+        "summary": "AppMessageSend adds an app event to the message store, the message is encrypted using a derived key and readable by current group members",
+        "operationId": "ProtocolService_AppMessageSend",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesAppMessageSendReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesAppMessageSendRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/AppMetadataSend": {
+      "post": {
+        "summary": "AppMetadataSend adds an app event to the metadata store, the message is encrypted using a symmetric key and readable by future group members",
+        "operationId": "ProtocolService_AppMetadataSend",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesAppMetadataSendReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesAppMetadataSendRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/ContactAliasKeySend": {
+      "post": {
+        "summary": "ContactAliasKeySend send an alias key to a contact, the contact will be able to assert that your account is being present on a multi-member group",
+        "operationId": "ProtocolService_ContactAliasKeySend",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesContactAliasKeySendReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesContactAliasKeySendRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/ContactBlock": {
+      "post": {
+        "summary": "ContactBlock blocks a contact from sending requests",
+        "operationId": "ProtocolService_ContactBlock",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesContactBlockReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesContactBlockRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/ContactRequestAccept": {
+      "post": {
+        "summary": "ContactRequestAccept accepts a contact request",
+        "operationId": "ProtocolService_ContactRequestAccept",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesContactRequestAcceptReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesContactRequestAcceptRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/ContactRequestDisable": {
+      "post": {
+        "summary": "ContactRequestDisable disables incoming contact requests",
+        "operationId": "ProtocolService_ContactRequestDisable",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesContactRequestDisableReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesContactRequestDisableRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/ContactRequestDiscard": {
+      "post": {
+        "summary": "ContactRequestDiscard ignores a contact request, without informing the other user",
+        "operationId": "ProtocolService_ContactRequestDiscard",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesContactRequestDiscardReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesContactRequestDiscardRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/ContactRequestEnable": {
+      "post": {
+        "summary": "ContactRequestEnable enables incoming contact requests",
+        "operationId": "ProtocolService_ContactRequestEnable",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesContactRequestEnableReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesContactRequestEnableRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/ContactRequestReference": {
+      "post": {
+        "summary": "ContactRequestReference retrieves the information required to create a reference (types.ie. included in a shareable link) to the current account",
+        "operationId": "ProtocolService_ContactRequestReference",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesContactRequestReferenceReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesContactRequestReferenceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/ContactRequestResetReference": {
+      "post": {
+        "summary": "ContactRequestResetReference changes the contact request reference",
+        "operationId": "ProtocolService_ContactRequestResetReference",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesContactRequestResetReferenceReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesContactRequestResetReferenceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/ContactRequestSend": {
+      "post": {
+        "summary": "ContactRequestSend attempt to send a contact request",
+        "operationId": "ProtocolService_ContactRequestSend",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesContactRequestSendReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesContactRequestSendRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/ContactUnblock": {
+      "post": {
+        "summary": "ContactUnblock unblocks a contact from sending requests",
+        "operationId": "ProtocolService_ContactUnblock",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesContactUnblockReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesContactUnblockRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/DeactivateGroup": {
+      "post": {
+        "summary": "DeactivateGroup closes a group",
+        "operationId": "ProtocolService_DeactivateGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesDeactivateGroupReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesDeactivateGroupRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/DebugGroup": {
+      "post": {
+        "operationId": "ProtocolService_DebugGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesDebugGroupReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesDebugGroupRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/DebugInspectGroupStore": {
+      "post": {
+        "operationId": "ProtocolService_DebugInspectGroupStore",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/typesDebugInspectGroupStoreReply"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of typesDebugInspectGroupStoreReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesDebugInspectGroupStoreRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/DebugListGroups": {
+      "post": {
+        "operationId": "ProtocolService_DebugListGroups",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/typesDebugListGroupsReply"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of typesDebugListGroupsReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesDebugListGroupsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/GroupInfo": {
+      "post": {
+        "summary": "GroupInfo retrieves information about a group",
+        "operationId": "ProtocolService_GroupInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesGroupInfoReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesGroupInfoRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/GroupMessageList": {
+      "post": {
+        "summary": "GroupMessageList replays message  events from the group",
+        "operationId": "ProtocolService_GroupMessageList",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/typesGroupMessageEvent"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of typesGroupMessageEvent"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesGroupMessageListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/GroupMessageSubscribe": {
+      "post": {
+        "summary": "GroupMessageSubscribe subscribes to a group message updates (types.or it can also retrieve the history)",
+        "operationId": "ProtocolService_GroupMessageSubscribe",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/typesGroupMessageEvent"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of typesGroupMessageEvent"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesGroupMessageSubscribeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/GroupMetadataList": {
+      "post": {
+        "summary": "GroupMetadataList replays metadata events from the group",
+        "operationId": "ProtocolService_GroupMetadataList",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/typesGroupMetadataEvent"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of typesGroupMetadataEvent"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesGroupMetadataListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/GroupMetadataSubscribe": {
+      "post": {
+        "summary": "GroupMetadataSubscribe subscribes to a group metadata updates (types.or it can also retrieve the history)",
+        "operationId": "ProtocolService_GroupMetadataSubscribe",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/typesGroupMetadataEvent"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of typesGroupMetadataEvent"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesGroupMetadataSubscribeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/InstanceExportData": {
+      "post": {
+        "summary": "InstanceExportData exports instance data",
+        "operationId": "ProtocolService_InstanceExportData",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesInstanceExportDataReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesInstanceExportDataRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/InstanceGetConfiguration": {
+      "post": {
+        "summary": "InstanceGetConfiguration gets current configuration of this protocol instance",
+        "operationId": "ProtocolService_InstanceGetConfiguration",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesInstanceGetConfigurationReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesInstanceGetConfigurationRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/MultiMemberGroupAdminRoleGrant": {
+      "post": {
+        "summary": "MultiMemberGroupAdminRoleGrant grants an admin role to a group member",
+        "operationId": "ProtocolService_MultiMemberGroupAdminRoleGrant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesMultiMemberGroupAdminRoleGrantReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesMultiMemberGroupAdminRoleGrantRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/MultiMemberGroupAliasResolverDisclose": {
+      "post": {
+        "summary": "MultiMemberGroupAliasResolverDisclose discloses your alias resolver key",
+        "operationId": "ProtocolService_MultiMemberGroupAliasResolverDisclose",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesMultiMemberGroupAliasResolverDiscloseReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesMultiMemberGroupAliasResolverDiscloseRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/MultiMemberGroupCreate": {
+      "post": {
+        "summary": "MultiMemberGroupCreate creates a new multi-member group",
+        "operationId": "ProtocolService_MultiMemberGroupCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesMultiMemberGroupCreateReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesMultiMemberGroupCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/MultiMemberGroupInvitationCreate": {
+      "post": {
+        "summary": "MultiMemberGroupInvitationCreate creates an invitation to a multi-member group",
+        "operationId": "ProtocolService_MultiMemberGroupInvitationCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesMultiMemberGroupInvitationCreateReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesMultiMemberGroupInvitationCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/MultiMemberGroupJoin": {
+      "post": {
+        "summary": "MultiMemberGroupJoin joins a multi-member group",
+        "operationId": "ProtocolService_MultiMemberGroupJoin",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesMultiMemberGroupJoinReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesMultiMemberGroupJoinRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/protocol/v1/MultiMemberGroupLeave": {
+      "post": {
+        "summary": "MultiMemberGroupLeave leaves a multi-member group",
+        "operationId": "ProtocolService_MultiMemberGroupLeave",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/typesMultiMemberGroupLeaveReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/typesMultiMemberGroupLeaveRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "InstanceGetConfigurationSettingState": {
+      "type": "string",
+      "enum": [
+        "Unknown",
+        "Enabled",
+        "Disabled",
+        "Unavailable"
+      ],
+      "default": "Unknown"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "runtimeStreamError": {
+      "type": "object",
+      "properties": {
+        "grpc_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "http_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "http_status": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "typesActivateGroupReply": {
+      "type": "object"
+    },
+    "typesActivateGroupRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "group_pk is the identifier of the group"
+        }
+      }
+    },
+    "typesAppMessageSendReply": {
+      "type": "object"
+    },
+    "typesAppMessageSendRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "group_pk is the identifier of the group"
+        },
+        "payload": {
+          "type": "string",
+          "format": "byte",
+          "title": "payload is the payload to send"
+        }
+      }
+    },
+    "typesAppMetadataSendReply": {
+      "type": "object"
+    },
+    "typesAppMetadataSendRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "group_pk is the identifier of the group"
+        },
+        "payload": {
+          "type": "string",
+          "format": "byte",
+          "title": "payload is the payload to send"
+        }
+      }
+    },
+    "typesContactAliasKeySendReply": {
+      "type": "object"
+    },
+    "typesContactAliasKeySendRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "contact_pk is the identifier of the contact to send the alias public key to"
+        }
+      }
+    },
+    "typesContactBlockReply": {
+      "type": "object"
+    },
+    "typesContactBlockRequest": {
+      "type": "object",
+      "properties": {
+        "contact_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "contact_pk is the identifier of the contact to block"
+        }
+      }
+    },
+    "typesContactRequestAcceptReply": {
+      "type": "object"
+    },
+    "typesContactRequestAcceptRequest": {
+      "type": "object",
+      "properties": {
+        "contact_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "contact_pk is the identifier of the contact to accept the request from"
+        }
+      }
+    },
+    "typesContactRequestDisableReply": {
+      "type": "object"
+    },
+    "typesContactRequestDisableRequest": {
+      "type": "object"
+    },
+    "typesContactRequestDiscardReply": {
+      "type": "object"
+    },
+    "typesContactRequestDiscardRequest": {
+      "type": "object",
+      "properties": {
+        "contact_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "contact_pk is the identifier of the contact to ignore the request from"
+        }
+      }
+    },
+    "typesContactRequestEnableReply": {
+      "type": "object",
+      "properties": {
+        "public_rendezvous_seed": {
+          "type": "string",
+          "format": "byte",
+          "title": "public_rendezvous_seed is the rendezvous seed used by the current account"
+        }
+      }
+    },
+    "typesContactRequestEnableRequest": {
+      "type": "object"
+    },
+    "typesContactRequestReferenceReply": {
+      "type": "object",
+      "properties": {
+        "public_rendezvous_seed": {
+          "type": "string",
+          "format": "byte",
+          "title": "public_rendezvous_seed is the rendezvous seed used by the current account"
+        },
+        "enabled": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "enabled indicates if incoming contact requests are enabled"
+        }
+      }
+    },
+    "typesContactRequestReferenceRequest": {
+      "type": "object"
+    },
+    "typesContactRequestResetReferenceReply": {
+      "type": "object",
+      "properties": {
+        "public_rendezvous_seed": {
+          "type": "string",
+          "format": "byte",
+          "title": "public_rendezvous_seed is the rendezvous seed used by the current account"
+        }
+      }
+    },
+    "typesContactRequestResetReferenceRequest": {
+      "type": "object"
+    },
+    "typesContactRequestSendReply": {
+      "type": "object"
+    },
+    "typesContactRequestSendRequest": {
+      "type": "object",
+      "properties": {
+        "contact": {
+          "$ref": "#/definitions/typesShareableContact",
+          "title": "contact is a message describing how to connect to the other account"
+        },
+        "own_metadata": {
+          "type": "string",
+          "format": "byte",
+          "title": "own_metadata is the identifying metadata that will be shared to the other account"
+        }
+      }
+    },
+    "typesContactUnblockReply": {
+      "type": "object"
+    },
+    "typesContactUnblockRequest": {
+      "type": "object",
+      "properties": {
+        "contact_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "contact_pk is the identifier of the contact to unblock"
+        }
+      }
+    },
+    "typesDeactivateGroupReply": {
+      "type": "object"
+    },
+    "typesDeactivateGroupRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "group_pk is the identifier of the group"
+        }
+      }
+    },
+    "typesDebugGroupReply": {
+      "type": "object",
+      "properties": {
+        "peer_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "peer_ids is the list of peer ids connected to the same group"
+        }
+      }
+    },
+    "typesDebugGroupRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "group_pk is the identifier of the group"
+        }
+      }
+    },
+    "typesDebugInspectGroupLogType": {
+      "type": "string",
+      "enum": [
+        "DebugInspectGroupLogTypeUndefined",
+        "DebugInspectGroupLogTypeMessage",
+        "DebugInspectGroupLogTypeMetadata"
+      ],
+      "default": "DebugInspectGroupLogTypeUndefined"
+    },
+    "typesDebugInspectGroupStoreReply": {
+      "type": "object",
+      "properties": {
+        "cid": {
+          "type": "string",
+          "format": "byte",
+          "title": "cid is the CID of the IPFS log entry"
+        },
+        "parent_cids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "byte"
+          },
+          "title": "parent_cids is the list of the parent entries"
+        },
+        "metadata_event_type": {
+          "$ref": "#/definitions/typesEventType",
+          "title": "event_type metadata event type if subscribed to metadata events"
+        },
+        "device_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "device_pk is the public key of the device signing the entry"
+        },
+        "payload": {
+          "type": "string",
+          "format": "byte",
+          "title": "payload is the un encrypted entry payload if available"
+        }
+      }
+    },
+    "typesDebugInspectGroupStoreRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "group_pk is the identifier of the group"
+        },
+        "log_type": {
+          "$ref": "#/definitions/typesDebugInspectGroupLogType",
+          "title": "log_type is the log to inspect"
+        }
+      }
+    },
+    "typesDebugListGroupsReply": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "group_pk is the public key of the group"
+        },
+        "group_type": {
+          "$ref": "#/definitions/typesGroupType",
+          "title": "group_type is the type of the group"
+        },
+        "contact_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "contact_pk is the contact public key if appropriate"
+        }
+      }
+    },
+    "typesDebugListGroupsRequest": {
+      "type": "object"
+    },
+    "typesEventContext": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "byte",
+          "title": "id is the CID of the underlying OrbitDB event"
+        },
+        "parent_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "byte"
+          },
+          "title": "id are the the CIDs of the underlying parents of the OrbitDB event"
+        },
+        "group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "group_pk receiving the event"
+        }
+      },
+      "title": "EventContext adds context (its id and its parents) to an event"
+    },
+    "typesEventType": {
+      "type": "string",
+      "enum": [
+        "EventTypeUndefined",
+        "EventTypeGroupMemberDeviceAdded",
+        "EventTypeGroupDeviceSecretAdded",
+        "EventTypeAccountGroupJoined",
+        "EventTypeAccountGroupLeft",
+        "EventTypeAccountContactRequestDisabled",
+        "EventTypeAccountContactRequestEnabled",
+        "EventTypeAccountContactRequestReferenceReset",
+        "EventTypeAccountContactRequestOutgoingEnqueued",
+        "EventTypeAccountContactRequestOutgoingSent",
+        "EventTypeAccountContactRequestIncomingReceived",
+        "EventTypeAccountContactRequestIncomingDiscarded",
+        "EventTypeAccountContactRequestIncomingAccepted",
+        "EventTypeAccountContactBlocked",
+        "EventTypeAccountContactUnblocked",
+        "EventTypeContactAliasKeyAdded",
+        "EventTypeMultiMemberGroupAliasResolverAdded",
+        "EventTypeMultiMemberGroupInitialMemberAnnounced",
+        "EventTypeMultiMemberGroupAdminRoleGranted",
+        "EventTypeGroupMetadataPayloadSent"
+      ],
+      "default": "EventTypeUndefined",
+      "title": "- EventTypeUndefined: EventTypeUndefined indicates that the value has not been set. Should not happen.\n - EventTypeGroupMemberDeviceAdded: EventTypeGroupMemberDeviceAdded indicates the payload includes that a member has added their device to the group\n - EventTypeGroupDeviceSecretAdded: EventTypeGroupDeviceSecretAdded indicates the payload includes that a member has sent their device secret to another member\n - EventTypeAccountGroupJoined: EventTypeAccountGroupJoined indicates the payload includes that the account has joined a group\n - EventTypeAccountGroupLeft: EventTypeAccountGroupLeft indicates the payload includes that the account has left a group\n - EventTypeAccountContactRequestDisabled: EventTypeAccountContactRequestDisabled indicates the payload includes that the account has disabled incoming contact requests\n - EventTypeAccountContactRequestEnabled: EventTypeAccountContactRequestEnabled indicates the payload includes that the account has enabled incoming contact requests\n - EventTypeAccountContactRequestReferenceReset: EventTypeAccountContactRequestReferenceReset indicates the payload includes that the account has a new contact request rendezvous seed\n - EventTypeAccountContactRequestOutgoingEnqueued: EventTypeAccountContactRequestEnqueued indicates the payload includes that the account will attempt to send a new contact request\n - EventTypeAccountContactRequestOutgoingSent: EventTypeAccountContactRequestSent indicates the payload includes that the account has sent a contact request\n - EventTypeAccountContactRequestIncomingReceived: EventTypeAccountContactRequestReceived indicates the payload includes that the account has received a contact request\n - EventTypeAccountContactRequestIncomingDiscarded: EventTypeAccountContactRequestIncomingDiscarded indicates the payload includes that the account has ignored a contact request\n - EventTypeAccountContactRequestIncomingAccepted: EventTypeAccountContactRequestAccepted indicates the payload includes that the account has accepted a contact request\n - EventTypeAccountContactBlocked: EventTypeAccountContactBlocked indicates the payload includes that the account has blocked a contact\n - EventTypeAccountContactUnblocked: EventTypeAccountContactUnblocked indicates the payload includes that the account has unblocked a contact\n - EventTypeContactAliasKeyAdded: EventTypeContactAliasKeyAdded indicates the payload includes that the contact group has received an alias key\n - EventTypeMultiMemberGroupAliasResolverAdded: EventTypeMultiMemberGroupAliasResolverAdded indicates the payload includes that a member of the group sent their alias proof\n - EventTypeMultiMemberGroupInitialMemberAnnounced: EventTypeMultiMemberGroupInitialMemberAnnounced indicates the payload includes that a member has authenticated themselves as the group owner\n - EventTypeMultiMemberGroupAdminRoleGranted: EventTypeMultiMemberGroupAdminRoleGranted indicates the payload includes that an admin of the group granted another member as an admin\n - EventTypeGroupMetadataPayloadSent: EventTypeGroupMetadataPayloadSent indicates the payload includes an app specific event, unlike messages stored on the message store it is encrypted using a static key"
+    },
+    "typesGroup": {
+      "type": "object",
+      "properties": {
+        "public_key": {
+          "type": "string",
+          "format": "byte",
+          "title": "public_key is the identifier of the group, it signs the group secret and the initial member of a multi-member group"
+        },
+        "secret": {
+          "type": "string",
+          "format": "byte",
+          "title": "secret is the symmetric secret of the group, which is used to encrypt the metadata"
+        },
+        "secret_sig": {
+          "type": "string",
+          "format": "byte",
+          "title": "secret_sig is the signature of the secret used to ensure the validity of the group"
+        },
+        "group_type": {
+          "$ref": "#/definitions/typesGroupType",
+          "title": "group_type specifies the type of the group"
+        }
+      },
+      "title": "Group define a group and is enough to invite someone to it"
+    },
+    "typesGroupInfoReply": {
+      "type": "object",
+      "properties": {
+        "group": {
+          "$ref": "#/definitions/typesGroup",
+          "title": "group is the group invitation, containing the group pk and its type"
+        },
+        "member_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "member_pk is the identifier of the current member in the group"
+        },
+        "device_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "member_pk is the identifier of the current device in the group"
+        }
+      }
+    },
+    "typesGroupInfoRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "group_pk is the identifier of the group"
+        },
+        "contact_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "contact_pk is the identifier of the contact"
+        }
+      }
+    },
+    "typesGroupMessageEvent": {
+      "type": "object",
+      "properties": {
+        "event_context": {
+          "$ref": "#/definitions/typesEventContext",
+          "title": "event_context contains context information about the event"
+        },
+        "headers": {
+          "$ref": "#/definitions/typesMessageHeaders",
+          "title": "headers contains headers of the secure message"
+        },
+        "message": {
+          "type": "string",
+          "format": "byte",
+          "title": "message contains the secure message payload"
+        }
+      }
+    },
+    "typesGroupMessageListRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "group_pk is the identifier of the group"
+        }
+      }
+    },
+    "typesGroupMessageSubscribeRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "group_pk is the identifier of the group"
+        },
+        "since": {
+          "type": "string",
+          "format": "byte",
+          "title": "since is the lower ID bound used to filter events"
+        },
+        "until": {
+          "type": "string",
+          "format": "byte",
+          "title": "until is the upper ID bound used to filter events"
+        },
+        "go_backwards": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "go_backwards indicates whether the events should be returned in reverse order"
+        }
+      }
+    },
+    "typesGroupMetadata": {
+      "type": "object",
+      "properties": {
+        "event_type": {
+          "$ref": "#/definitions/typesEventType",
+          "title": "event_type defines which event type is used"
+        },
+        "payload": {
+          "type": "string",
+          "format": "byte",
+          "title": "the serialization depends on event_type, event is symmetrically encrypted"
+        },
+        "sig": {
+          "type": "string",
+          "format": "byte",
+          "title": "sig is the signature of the payload, it depends on the event_type for the used key"
+        }
+      },
+      "title": "GroupMetadata is used in GroupEnvelope and only readable by invited group members"
+    },
+    "typesGroupMetadataEvent": {
+      "type": "object",
+      "properties": {
+        "event_context": {
+          "$ref": "#/definitions/typesEventContext",
+          "title": "event_context contains context information about the event"
+        },
+        "metadata": {
+          "$ref": "#/definitions/typesGroupMetadata",
+          "title": "metadata contains the newly available metadata"
+        },
+        "event": {
+          "type": "string",
+          "format": "byte",
+          "title": "event_clear clear bytes for the event"
+        }
+      }
+    },
+    "typesGroupMetadataListRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "group_pk is the identifier of the group"
+        }
+      }
+    },
+    "typesGroupMetadataSubscribeRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "group_pk is the identifier of the group"
+        },
+        "since": {
+          "type": "string",
+          "format": "byte",
+          "title": "since is the lower ID bound used to filter events"
+        },
+        "until": {
+          "type": "string",
+          "format": "byte",
+          "title": "until is the upper ID bound used to filter events"
+        },
+        "go_backwards": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "go_backwards indicates whether the events should be returned in reverse order"
+        }
+      }
+    },
+    "typesGroupType": {
+      "type": "string",
+      "enum": [
+        "GroupTypeUndefined",
+        "GroupTypeAccount",
+        "GroupTypeContact",
+        "GroupTypeMultiMember"
+      ],
+      "default": "GroupTypeUndefined",
+      "description": " - GroupTypeUndefined: GroupTypeUndefined indicates that the value has not been set. Should not happen.\n - GroupTypeAccount: GroupTypeAccount is the group managing an account, available to all its devices.\n - GroupTypeContact: GroupTypeContact is the group created between two accounts, available to all their devices.\n - GroupTypeMultiMember: GroupTypeMultiMember is a group containing an undefined number of members."
+    },
+    "typesInstanceExportDataReply": {
+      "type": "object",
+      "properties": {
+        "exported_data": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "typesInstanceExportDataRequest": {
+      "type": "object"
+    },
+    "typesInstanceGetConfigurationReply": {
+      "type": "object",
+      "properties": {
+        "account_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "account_pk is the public key of the current account"
+        },
+        "device_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "device_pk is the public key of the current device"
+        },
+        "account_group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "account_group_pk is the public key of the account group"
+        },
+        "peer_id": {
+          "type": "string"
+        },
+        "listeners": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ble_enabled": {
+          "$ref": "#/definitions/InstanceGetConfigurationSettingState"
+        },
+        "wifi_p2p_enabled": {
+          "$ref": "#/definitions/InstanceGetConfigurationSettingState"
+        },
+        "mdns_enabled": {
+          "$ref": "#/definitions/InstanceGetConfigurationSettingState"
+        },
+        "relay_enabled": {
+          "$ref": "#/definitions/InstanceGetConfigurationSettingState"
+        }
+      }
+    },
+    "typesInstanceGetConfigurationRequest": {
+      "type": "object"
+    },
+    "typesMessageHeaders": {
+      "type": "object",
+      "properties": {
+        "counter": {
+          "type": "string",
+          "format": "uint64",
+          "title": "counter is the current counter value for the specified device"
+        },
+        "device_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "device_pk is the public key of the device sending the message"
+        },
+        "sig": {
+          "type": "string",
+          "format": "byte",
+          "title": "sig is the signature of the encrypted message using the device's private key"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "metadata allow to pass custom informations"
+        }
+      },
+      "title": "MessageHeaders is used in MessageEnvelope and only readable by invited group members"
+    },
+    "typesMultiMemberGroupAdminRoleGrantReply": {
+      "type": "object"
+    },
+    "typesMultiMemberGroupAdminRoleGrantRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "group_pk is the identifier of the group"
+        },
+        "member_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "member_pk is the identifier of the member which will be granted the admin role"
+        }
+      }
+    },
+    "typesMultiMemberGroupAliasResolverDiscloseReply": {
+      "type": "object"
+    },
+    "typesMultiMemberGroupAliasResolverDiscloseRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "group_pk is the identifier of the group"
+        }
+      }
+    },
+    "typesMultiMemberGroupCreateReply": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "group_pk is the identifier of the newly created group"
+        }
+      }
+    },
+    "typesMultiMemberGroupCreateRequest": {
+      "type": "object"
+    },
+    "typesMultiMemberGroupInvitationCreateReply": {
+      "type": "object",
+      "properties": {
+        "group": {
+          "$ref": "#/definitions/typesGroup",
+          "title": "group is the invitation to the group"
+        }
+      }
+    },
+    "typesMultiMemberGroupInvitationCreateRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "group_pk is the identifier of the group"
+        }
+      }
+    },
+    "typesMultiMemberGroupJoinReply": {
+      "type": "object"
+    },
+    "typesMultiMemberGroupJoinRequest": {
+      "type": "object",
+      "properties": {
+        "group": {
+          "$ref": "#/definitions/typesGroup",
+          "title": "group is the information of the group to join"
+        }
+      }
+    },
+    "typesMultiMemberGroupLeaveReply": {
+      "type": "object"
+    },
+    "typesMultiMemberGroupLeaveRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "typesShareableContact": {
+      "type": "object",
+      "properties": {
+        "pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "pk is the account to send a contact request to"
+        },
+        "public_rendezvous_seed": {
+          "type": "string",
+          "format": "byte",
+          "title": "public_rendezvous_seed is the rendezvous seed used by the account to send a contact request to"
+        },
+        "metadata": {
+          "type": "string",
+          "format": "byte",
+          "title": "metadata is the metadata specific to the app to identify the contact for the request"
+        }
+      }
+    }
+  }
+}

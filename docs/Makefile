@@ -10,7 +10,7 @@ all: generate
 
 .PHONY: gen.clean
 gen.clean:
-	rm -f gen.sum $(wildcard */*.md.tmp)
+	rm -f gen.sum $(wildcard */*.md.tmp) $(wildcard */*.swagger.json) $(wildcard */*.swagger.json)
 
 .PHONY: regenerate
 regenerate: gen.clean generate
@@ -35,7 +35,7 @@ $(GEN_SUM): $(GEN_SRC)
 PROTOC_OPTS = -I ../vendor/github.com/grpc-ecosystem/grpc-gateway:../api:../vendor:/protobuf
 .PHONY: generate_local
 generate_local:
-	protoc $(PROTOC_OPTS) --doc_out=./protocol --doc_opt=markdown,api.md.tmp ../api/bertyprotocol.proto ../api/bertytypes.proto
+	protoc $(PROTOC_OPTS) --doc_out=./protocol  --doc_opt=markdown,api.md.tmp ../api/bertyprotocol.proto ../api/bertytypes.proto
 	protoc $(PROTOC_OPTS) --doc_out=./messenger --doc_opt=markdown,api.md.tmp ../api/bertymessenger.proto
 	@# repace multiple empty lines with one
 	cat protocol/api.md.tmp | sed '/^$$/N;/^\n$$/D' > protocol/api.md
@@ -43,3 +43,28 @@ generate_local:
 	rm -f */*.md.tmp
 	shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp
 	mv $(GEN_SUM).tmp $(GEN_SUM)
+	@# FIXME: patch file with version
+	#protoc $(PROTOC_OPTS) --swagger_out=allow_delete_body=true,allow_merge=true:. ../api/bertymessenger.proto ../api/bertyprotocol.proto
+	protoc $(PROTOC_OPTS) --swagger_out=./protocol  ../api/bertyprotocol.proto
+	protoc $(PROTOC_OPTS) --swagger_out=./messenger ../api/bertymessenger.proto
+
+BUMP_TOKEN ?=
+.PHONY: openapi.prepare
+openapi.prepare: gen.sum
+	mkdir -p .tmp/openapi
+	cat ./messenger/bertymessenger.swagger.json | jq '.info.version="'`git describe --tags --always`'"' > .tmp/openapi/bertymessenger.swagger.json
+	cat ./protocol/bertyprotocol.swagger.json   | jq '.info.version="'`git describe --tags --always`'"' > .tmp/openapi/bertyprotocol.swagger.json
+	cat .tmp/openapi/*.swagger.json | jq .info.version
+
+
+.PHONY: bump.validate
+bump.validate: openapi.prepare
+	@# gem install bump-cli
+	bump validate --token=$(BUMP_TOKEN) --doc=f3c48f1c-2b5b-4d3f-9ddb-40f6cf09b905 .tmp/openapi/bertymessenger.swagger.json
+	bump validate --token=$(BUMP_TOKEN) --doc=6eb1bb1e-c65d-4b73-a8c4-0e545742f6db .tmp/openapi/bertyprotocol.swagger.json
+
+.PHONY: bump.deploy
+bump.deploy: bump.validate
+	@# gem install bump-cli
+	bump deploy --token=$(BUMP_TOKEN) --doc=f3c48f1c-2b5b-4d3f-9ddb-40f6cf09b905 .tmp/openapi/bertymessenger.swagger.json
+	bump deploy --token=$(BUMP_TOKEN) --doc=6eb1bb1e-c65d-4b73-a8c4-0e545742f6db .tmp/openapi/bertyprotocol.swagger.json
