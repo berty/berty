@@ -440,10 +440,6 @@ func (m *metadataStoreIndex) handleContactRequestIncomingReceived(event proto.Me
 			m.contacts[string(evt.ContactPK)].contact.PublicRendezvousSeed = evt.ContactRendezvousSeed
 		}
 
-		if m.contacts[string(evt.ContactPK)].contact.Metadata == nil {
-			m.contacts[string(evt.ContactPK)].contact.Metadata = evt.ContactMetadata
-		}
-
 		return nil
 	}
 

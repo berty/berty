@@ -565,7 +565,7 @@ func (m *metadataStore) ContactRequestIncomingReceived(ctx context.Context, cont
 		return nil, errcode.ErrGroupInvalidType
 	}
 
-	if err := contact.CheckFormat(); err != nil {
+	if err := contact.CheckFormat(bertytypes.ShareableContactOptionsAllowMissingRDVSeed); err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
