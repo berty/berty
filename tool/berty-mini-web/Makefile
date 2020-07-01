@@ -1,13 +1,10 @@
 PORT ?= 7681
 UNAME_S := $(shell uname -s)
+OPTS ?=
 
 .PHONY: run
 run:
-	ttyd -p $(PORT) --url-arg ./berty-mini
-
-.PHONY: rebuild
-rebuild:
-	cd ../../go && make install
+	ttyd -p $(PORT) --url-arg $(OPTS) ./berty-mini
 
 .PHONY: deps
 deps:

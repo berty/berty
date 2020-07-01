@@ -1,6 +1,8 @@
 #!/bin/bash
 
 NAME_PREFIX=${NAME_PREFIX:-mini-web-}
+MAX_MEMORY=${MAX_MEMORY:-2g}
+MAX_CPUS=${MAX_CPUS:-.5}
 
 sanitize() {
     echo "$1" | tr -cd '[:alnum:]'
@@ -8,6 +10,7 @@ sanitize() {
 
 run() {
     ID=$(sanitize "$1")
+    echo "Instance: mini-web-${ID}"
     NAME="${NAME_PREFIX}-${ID}"
     if [ "$( docker container inspect -f '{{.State.Running}}' mini-web-${ID} )" == "true" ]; then
         echo "Someone is already running this ID."
@@ -23,7 +26,22 @@ run() {
         > /tmp/berty-mini-$ID/berty-mini.log
 
         while true; do (
-            docker run -it --volume=/tmp/berty-mini-$ID:/data --rm --name="mini-web-${ID}" bertytech/berty --debug-p2p --debug-odb --debug-poi --display-name="${NAME}" --logfile="/data/berty-mini.log" --debug mini -d /data/berty-mini.db
+            docker run \
+		   --memory="${MAX_MEMORY}" \
+		   --cpus="${MAX_CPUS}" \
+		   -it \
+		   --volume=/tmp/berty-mini-$ID:/data \
+		   --rm \
+		   --name="mini-web-${ID}" \
+		   bertytech/berty \
+		     --debug-p2p \
+		     --debug-odb \
+		     --debug-poi \
+		     --display-name="${NAME}" \
+		     --logfile="/data/berty-mini.log" \
+		     --debug \
+		     mini \
+		       -d=/data/berty-mini.db
             echo "Press enter to restart berty mini with the same datastore."
             read
         ); done
