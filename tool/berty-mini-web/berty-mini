@@ -1,0 +1,97 @@
+#!/bin/bash
+
+NAME_PREFIX=${NAME_PREFIX:-mini-web-}
+
+sanitize() {
+    echo "$1" | tr -cd '[:alnum:]'
+}
+
+run() {
+    ID=$(sanitize "$1")
+    NAME="${NAME_PREFIX}-${ID}"
+    if [ "$( docker container inspect -f '{{.State.Running}}' mini-web-${ID} )" == "true" ]; then
+        echo "Someone is already running this ID."
+        echo "Press enter to attach to existing container."
+        read
+        docker attach --detach-keys='ctrl-c' --sig-proxy=false "mini-web-${ID}"
+        reset
+        echo "Exited."
+    else
+        echo "[+] fetching latest berty version"
+        docker pull bertytech/berty
+        mkdir -p /tmp/berty-mini-$ID
+        > /tmp/berty-mini-$ID/berty-mini.log
+
+        while true; do (
+            docker run -it --volume=/tmp/berty-mini-$ID:/data --rm --name="mini-web-${ID}" bertytech/berty --debug-p2p --debug-odb --debug-poi --display-name="${NAME}" --logfile="/data/berty-mini.log" --debug mini -d /data/berty-mini.db
+            echo "Press enter to restart berty mini with the same datastore."
+            read
+        ); done
+    fi
+    cat
+}
+
+kill() {
+    ps_once
+    for id in $(docker ps | grep mini-web | awk '{print $1}'); do docker kill $id; done
+    echo "Done (or nothing to do)."
+    cat
+}
+
+ps () {
+    watch -d "./berty-mini ps_once"
+}
+
+ps_once() {
+    printf "Instances: "
+    docker ps -a | grep mini-web- | wc -l
+    echo
+    docker ps -a | grep mini-web-
+}
+
+stats() {
+    docker stats $(docker ps | grep mini-web- | awk '{print $1}')
+}
+
+help() {
+    echo "Usage: append a args to the URL:"
+    echo "  ?arg=ps            instance list"
+    echo "  ?arg=kill          kill all instances"
+    echo "  ?arg=loadavg       server status"
+    echo "  ?arg=stats         docker stats"
+    echo "  ?arg=du            disk usage"
+    echo "  ?arg=run&arg=ID    run an instance with ID as identifier"
+    echo "  ?arg=tail&arg=ID   tail the instance log for ID"
+    cat
+}
+
+tail() {
+    ID=$(sanitize "$1")
+    while true; do (
+        clear
+        set -x
+        mkdir -p /tmp/berty-mini-$ID
+        /usr/bin/tail -n 1000 -f /tmp/berty-mini-$ID/berty-mini.log
+        sleep 2
+    ); done
+}
+
+loadavg() {
+    watch -d "cat /proc/loadavg"
+}
+
+du() {
+    watch -d "du -hs /tmp/berty-mini-*/ 2>/dev/null"
+}
+
+case "$1" in
+    kill) kill ;;
+    ps) ps ;;
+    ps_once) ps_once ;;
+    loadavg) loadavg ;;
+    du) du ;;
+    stats) stats ;;
+    tail) tail "${2:-common}" ;;
+    run) run "${2:-common}" ;;
+    *) help ;;
+esac
