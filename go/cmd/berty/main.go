@@ -281,6 +281,7 @@ func main() {
 			defer cleanup()
 
 			var (
+				node       *core.IpfsNode
 				api        ipfsutil.ExtendedCoreAPI
 				routingOut *ipfsutil.RoutingOut
 			)
@@ -306,7 +307,6 @@ func main() {
 					bopts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false, globalLocalDiscovery)
 				}
 
-				var node *core.IpfsNode
 				if api, node, err = ipfsutil.NewCoreAPI(ctx, &bopts); err != nil {
 					return err
 				}
@@ -433,6 +433,7 @@ func main() {
 
 				// initialize new protocol client
 				opts := bertyprotocol.Opts{
+					Host:            node.PeerHost,
 					TinderDriver:    routingOut,
 					IpfsCoreAPI:     api,
 					Logger:          logger.Named("protocol"),

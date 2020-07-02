@@ -236,6 +236,10 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 			TinderDriver:   tinderDriver,
 		}
 
+		if node != nil {
+			protocolOpts.Host = node.PeerHost
+		}
+
 		service, err = bertyprotocol.New(protocolOpts)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)

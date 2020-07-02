@@ -108,6 +108,7 @@ func newService(ctx context.Context, logger *zap.Logger, opts *Opts) (bertyproto
 		RootDatastore:   rootDS,
 		MessageKeystore: mk,
 		OrbitCache:      bertyprotocol.NewOrbitDatastoreCache(orbitdbDS),
+		Host:            node.PeerHost,
 	})
 
 	if err != nil {

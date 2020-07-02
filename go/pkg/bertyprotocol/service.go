@@ -12,9 +12,11 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/cache"
+	"berty.tech/go-orbit-db/pubsub/directchannel"
 	"github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
+	"github.com/libp2p/go-libp2p-core/host"
 	"go.uber.org/zap"
 )
 
@@ -54,6 +56,7 @@ type Opts struct {
 	OrbitCache             cache.Interface
 	TinderDriver           tinder.Driver
 	RendezvousRotationBase time.Duration
+	Host                   host.Host
 	close                  func() error
 }
 
@@ -117,12 +120,18 @@ func New(opts Opts) (Service, error) {
 	}
 
 	orbitDirectory := opts.OrbitDirectory
-	odb, err := newBertyOrbitDB(opts.RootContext, opts.IpfsCoreAPI, opts.DeviceKeystore, opts.MessageKeystore, &orbitdb.NewOrbitDBOptions{
+	odbOpts := &orbitdb.NewOrbitDBOptions{
 		Cache:     opts.OrbitCache,
 		Directory: &orbitDirectory,
 		Logger:    opts.Logger.Named("odb"),
 		Tracer:    tracer.New("berty-orbitdb"),
-	})
+	}
+
+	if opts.Host != nil {
+		odbOpts.DirectChannelFactory = directchannel.InitDirectChannelFactory(opts.Host)
+	}
+
+	odb, err := newBertyOrbitDB(opts.RootContext, opts.IpfsCoreAPI, opts.DeviceKeystore, opts.MessageKeystore, odbOpts)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
