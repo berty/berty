@@ -340,7 +340,7 @@ packages/berty-app/ios/Podfile:
 packages/go-bridge/ios/Frameworks/Bertybridge.framework: $(bridge_src) ../vendor $(gomobile_bin)
 	cd packages/go-bridge && $(gomobile_bin) init
 	@mkdir -p "packages/go-bridge/ios/Frameworks"
-	GO111MODULE=off $(gomobile_bin) bind -o $@ -v $(ext_ldflags) -target ios berty.tech/berty/go/framework/bertybridge
+	GO111MODULE=off CGO_CPPFLAGS='-DHAVE_GETHOSTUUID=0' $(gomobile_bin) bind -o $@ -v $(ext_ldflags) -target ios berty.tech/berty/go/framework/bertybridge
 	touch "packages/go-bridge/ios/Frameworks"
 
 packages/go-bridge/android/libs/gobridge.aar: $(aar_src) ../vendor $(gomobile_bin)

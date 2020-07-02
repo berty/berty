@@ -63,3 +63,5 @@ require (
 	moul.io/godev v1.6.0
 	moul.io/srand v1.4.0
 )
+
+replace github.com/mattn/go-sqlite3 => github.com/mattn/go-sqlite3 v1.13.0
