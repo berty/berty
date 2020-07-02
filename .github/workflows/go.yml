@@ -67,7 +67,6 @@ jobs:
     env:
       OS: ubuntu-latest
       GOLANG: ${{ matrix.golang }}
-      GO111MODULE: "on"
     steps:
       - name: Checkout
         uses: actions/checkout@master
@@ -82,12 +81,11 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-      - name: Prepare workspace for reporting
-        run: rm -f /tmp/go-test.log /tmp/go-build.log
       - name: Compile the project on Unix-like operating systems
         run: |
           cd go
-          go install -v ./cmd/... |& tee -a /tmp/go-build.log
+          touch gen.sum # avoid triggering make generate
+          make go.install
       - name: Check go.mod and go.sum
         run: |
           go mod tidy -v
@@ -96,24 +94,19 @@ jobs:
       - name: Run fast tests multiple times
         run: |
           cd go
-          set -euxo pipefail
-          (set -euxo pipefail; SKIP_SLOW_TESTS=1 go test ./... -v -test.timeout=600s -count 5 -json | tee -a /tmp/go-test.json) 3>&1 1>&2 2>&3 | tee -a /tmp/go-build.log
+          SKIP_SLOW_TESTS=1 make go.unittest GO_TEST_OPTS="-v -test.timeout=600s -count 5"
       - name: Run all tests
         run: |
           cd go
-          set -euxo pipefail
-          (set -euxo pipefail; SKIP_SLOW_TESTS=0 go test ./... -v -test.timeout=600s -count 1 -json | tee -a /tmp/go-test.json) 3>&1 1>&2 2>&3 | tee -a /tmp/go-build.log
+          SKIP_SLOW_TESTS=0 make go.unittest GO_TEST_OPTS="-v -test.timeout=600s -count 1"
       - name: Run all tests with race flag and generate coverage
-        run: |
-          cd go
-          set -euxo pipefail
-          (set -euxo pipefail; SKIP_SLOW_TESTS=0 go test ./... -v -test.timeout=600s -count 1 -race -cover -coverprofile=coverage.txt -covermode=atomic -json | tee -a /tmp/go-test.json) 3>&1 1>&2 2>&3 | tee -a /tmp/go-build.log
-      - name: Upload logs on Report.ci
-        if: always()
-        run: |
-          ls -la /tmp/go-build.log /tmp/go-test.json
-          curl -s https://report.ci/annotate.py | python - --token="${{ secrets.REPORTCI_TOKEN }}" --input="/tmp/go-build.log" --tool=go || true
-          curl -s https://report.ci/upload.py | python - --token="${{ secrets.REPORTCI_TOKEN }}" --include="/tmp/go-test.json" --framework=go || true
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 10
+          max_attempts: 5
+          command: |
+            cd go
+            SKIP_SLOW_TESTS=0 make go.unittest GO_TEST_OPTS="-v -test.timeout=600s -count 1 -race -cover -coverprofile=coverage.txt -covermode=atomic"
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
