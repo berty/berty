@@ -1,4 +1,4 @@
-// +build darwin
+// +build darwin,!catalyst
 
 package driver
 
