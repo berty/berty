@@ -5705,7 +5705,10 @@ proto.berty.messenger.SystemInfo.Reply.toObject = function(includeInstance, msg)
     arch: jspb.Message.getFieldWithDefault(msg, 7, ""),
     version: jspb.Message.getFieldWithDefault(msg, 8, ""),
     vcsRef: jspb.Message.getFieldWithDefault(msg, 9, ""),
-    buildTime: jspb.Message.getFieldWithDefault(msg, 10, 0)
+    buildTime: jspb.Message.getFieldWithDefault(msg, 10, 0),
+    rlimit: jspb.Message.getFieldWithDefault(msg, 11, ""),
+    selfRusage: jspb.Message.getFieldWithDefault(msg, 12, ""),
+    childrenRusage: jspb.Message.getFieldWithDefault(msg, 13, "")
   };
 
   if (includeInstance) {
@@ -5781,6 +5784,18 @@ proto.berty.messenger.SystemInfo.Reply.deserializeBinaryFromReader = function(ms
     case 10:
       var value = /** @type {number} */ (reader.readInt64());
       msg.setBuildTime(value);
+      break;
+    case 11:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setRlimit(value);
+      break;
+    case 12:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setSelfRusage(value);
+      break;
+    case 13:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setChildrenRusage(value);
       break;
     default:
       reader.skipField();
@@ -5878,6 +5893,27 @@ proto.berty.messenger.SystemInfo.Reply.serializeBinaryToWriter = function(messag
   if (f !== 0) {
     writer.writeInt64(
       10,
+      f
+    );
+  }
+  f = message.getRlimit();
+  if (f.length > 0) {
+    writer.writeString(
+      11,
+      f
+    );
+  }
+  f = message.getSelfRusage();
+  if (f.length > 0) {
+    writer.writeString(
+      12,
+      f
+    );
+  }
+  f = message.getChildrenRusage();
+  if (f.length > 0) {
+    writer.writeString(
+      13,
       f
     );
   }
@@ -6061,6 +6097,60 @@ proto.berty.messenger.SystemInfo.Reply.prototype.getBuildTime = function() {
  */
 proto.berty.messenger.SystemInfo.Reply.prototype.setBuildTime = function(value) {
   return jspb.Message.setProto3IntField(this, 10, value);
+};
+
+
+/**
+ * optional string rlimit = 11;
+ * @return {string}
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.getRlimit = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 11, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.setRlimit = function(value) {
+  return jspb.Message.setProto3StringField(this, 11, value);
+};
+
+
+/**
+ * optional string self_rusage = 12;
+ * @return {string}
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.getSelfRusage = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 12, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.setSelfRusage = function(value) {
+  return jspb.Message.setProto3StringField(this, 12, value);
+};
+
+
+/**
+ * optional string children_rusage = 13;
+ * @return {string}
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.getChildrenRusage = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.SystemInfo.Reply.prototype.setChildrenRusage = function(value) {
+  return jspb.Message.setProto3StringField(this, 13, value);
 };
 
 

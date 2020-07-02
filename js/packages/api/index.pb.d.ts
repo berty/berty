@@ -3145,6 +3145,9 @@ export namespace berty {
                 version?: (string|null);
                 vcsRef?: (string|null);
                 buildTime?: (number|Long|null);
+                rlimit?: (string|null);
+                selfRusage?: (string|null);
+                childrenRusage?: (string|null);
             }
 
             class Reply implements IReply {
@@ -3159,6 +3162,9 @@ export namespace berty {
                 public version: string;
                 public vcsRef: string;
                 public buildTime: (number|Long);
+                public rlimit: string;
+                public selfRusage: string;
+                public childrenRusage: string;
                 public static create(properties?: berty.messenger.SystemInfo.IReply): berty.messenger.SystemInfo.Reply;
                 public static encode(message: berty.messenger.SystemInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.SystemInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;

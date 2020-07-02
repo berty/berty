@@ -9,12 +9,14 @@ import (
 	"os"
 	"runtime"
 	"strconv"
+	"syscall"
 	"time"
 
 	"berty.tech/berty/v2/go/internal/discordlog"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/gogo/protobuf/proto"
+	"moul.io/godev"
 )
 
 func (s *service) DevShareInstanceBertyID(ctx context.Context, req *DevShareInstanceBertyID_Request) (*DevShareInstanceBertyID_Reply, error) {
@@ -288,8 +290,26 @@ func (s *service) SendContactRequest(ctx context.Context, req *SendContactReques
 }
 
 func (s *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*SystemInfo_Reply, error) {
+	// rlimit
+	rlimit := map[string]syscall.Rlimit{}
+	rlimitQueries := map[string]int{"NOFILE": syscall.RLIMIT_NOFILE}
+	for name, key := range rlimitQueries {
+		lim := syscall.Rlimit{}
+		_ = syscall.Getrlimit(key, &lim)
+		rlimit[name] = lim
+	}
+
+	// rusage
+	selfUsage := syscall.Rusage{}
+	_ = syscall.Getrusage(syscall.RUSAGE_SELF, &selfUsage)
+	childrenUsage := syscall.Rusage{}
+	_ = syscall.Getrusage(syscall.RUSAGE_CHILDREN, &childrenUsage)
+
 	hn, _ := os.Hostname()
 	reply := SystemInfo_Reply{
+		SelfRusage:      godev.JSON(selfUsage),
+		ChildrenRusage:  godev.JSON(childrenUsage),
+		Rlimit:          godev.JSON(rlimit),
 		StartedAt:       s.startedAt.Unix(),
 		NumCPU:          int64(runtime.NumCPU()),
 		GoVersion:       runtime.Version(),

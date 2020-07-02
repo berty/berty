@@ -222,5 +222,8 @@ message SystemInfo {
     string version = 8;
     string vcs_ref = 9;
     int64 build_time = 10;
+    string rlimit = 11;
+    string self_rusage = 12;
+    string children_rusage = 13;
   }
 }

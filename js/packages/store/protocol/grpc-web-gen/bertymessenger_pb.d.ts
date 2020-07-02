@@ -765,6 +765,15 @@ export namespace SystemInfo {
     getBuildTime(): number;
     setBuildTime(value: number): void;
 
+    getRlimit(): string;
+    setRlimit(value: string): void;
+
+    getSelfRusage(): string;
+    setSelfRusage(value: string): void;
+
+    getChildrenRusage(): string;
+    setChildrenRusage(value: string): void;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Reply.AsObject;
     static toObject(includeInstance: boolean, msg: Reply): Reply.AsObject;
@@ -787,6 +796,9 @@ export namespace SystemInfo {
       version: string,
       vcsRef: string,
       buildTime: number,
+      rlimit: string,
+      selfRusage: string,
+      childrenRusage: string,
     }
   }
 }

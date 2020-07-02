@@ -283,6 +283,9 @@
 | version | [string](#string) |  |  |
 | vcs_ref | [string](#string) |  |  |
 | build_time | [int64](#int64) |  |  |
+| rlimit | [string](#string) |  |  |
+| self_rusage | [string](#string) |  |  |
+| children_rusage | [string](#string) |  |  |
 
 <a name="berty.messenger.SystemInfo.Request"></a>
 
