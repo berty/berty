@@ -450,6 +450,15 @@
         "build_time": {
           "type": "string",
           "format": "int64"
+        },
+        "rlimit": {
+          "type": "string"
+        },
+        "self_rusage": {
+          "type": "string"
+        },
+        "children_rusage": {
+          "type": "string"
         }
       }
     },

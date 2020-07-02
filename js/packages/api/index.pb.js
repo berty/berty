@@ -1961,6 +1961,18 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   buildTime: {
                     type: "int64",
                     id: 10
+                  },
+                  rlimit: {
+                    type: "string",
+                    id: 11
+                  },
+                  selfRusage: {
+                    type: "string",
+                    id: 12
+                  },
+                  childrenRusage: {
+                    type: "string",
+                    id: 13
                   }
                 }
               }
