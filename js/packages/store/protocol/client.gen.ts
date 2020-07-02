@@ -42,7 +42,7 @@ export type Commands<State> = {
 		State,
 		PayloadAction<{
 			id: string
-			contact: api.berty.types.IShareableContact
+			contact: api.berty.types.v1.IShareableContact
 			ownMetadata: Uint8Array
 		}>
 	>
@@ -91,7 +91,7 @@ export type Commands<State> = {
 		State,
 		PayloadAction<{
 			id: string
-			group: api.berty.types.IGroup
+			group: api.berty.types.v1.IGroup
 		}>
 	>
 	multiMemberGroupLeave: CaseReducer<
@@ -206,7 +206,7 @@ export type Commands<State> = {
 		PayloadAction<{
 			id: string
 			groupPk: Uint8Array
-			logType: api.berty.types.DebugInspectGroupLogType
+			logType: api.berty.types.v1.DebugInspectGroupLogType
 		}>
 	>
 	debugGroup: CaseReducer<

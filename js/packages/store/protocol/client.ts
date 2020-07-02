@@ -83,7 +83,7 @@ export type Events = evgen.Events<State> & {
 		State,
 		PayloadAction<{
 			aggregateId: string
-			instanceShareableBertyId: api.berty.messenger.InstanceShareableBertyID.IReply
+			instanceShareableBertyId: api.berty.messenger.v1.InstanceShareableBertyID.IReply
 		}>
 	>
 	deleted: CaseReducer<State, PayloadAction<{ aggregateId: string }>>
@@ -186,7 +186,7 @@ const eventNameFromValue = (value: number) => {
 	if (typeof value !== 'number') {
 		throw new Error(`client.ts: eventNameFromValue: expected number argument, got ${typeof value}`)
 	}
-	return api.berty.types.EventType[value]
+	return api.berty.types.v1.EventType[value]
 }
 
 export const services: {
@@ -208,7 +208,7 @@ export const getMessengerService = (id: string): MessengerServiceSagaClient => {
 }
 
 export const decodeMetadataEvent = (
-	response: bertytypes.GroupMetadataEvent.AsObject | api.berty.types.IGroupMetadataEvent,
+	response: bertytypes.GroupMetadataEvent.AsObject | api.berty.types.v1.IGroupMetadataEvent,
 ) => {
 	const eventType = response.metadata && response.metadata.eventType
 	if (eventType == null) {
@@ -226,7 +226,7 @@ export const decodeMetadataEvent = (
 	if (eventName === undefined) {
 		throw new Error(`Invalid event type ${eventType}`)
 	}
-	const protocol: { [key: string]: any } = api.berty.types
+	const protocol: { [key: string]: any } = api.berty.types.v1
 	const event = protocol[eventName.replace('EventType', '')] || protocol[eventsMap[eventName]]
 	if (!event) {
 		console.warn("Don't know how to decode", eventName)
@@ -236,7 +236,7 @@ export const decodeMetadataEvent = (
 	return decodedEvent
 }
 
-const groupMetadataEventToReduxAction = (id: string, e: api.berty.types.IGroupMetadataEvent) => {
+const groupMetadataEventToReduxAction = (id: string, e: api.berty.types.v1.IGroupMetadataEvent) => {
 	if (!(e.metadata && e.metadata.eventType)) {
 		throw new Error('Invalid reply, missing eventType')
 	}
@@ -261,7 +261,7 @@ const groupMetadataEventToReduxAction = (id: string, e: api.berty.types.IGroupMe
 
 const groupMessageEventToReduxAction = (
 	id: string,
-	response: api.berty.types.IGroupMessageEvent,
+	response: api.berty.types.v1.IGroupMessageEvent,
 ) => {
 	if (!(response.eventContext && response.eventContext.id)) {
 		throw new Error('No event cid')

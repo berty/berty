@@ -1,4 +1,4 @@
-// package: berty.protocol
+// package: berty.protocol.v1
 // file: bertyprotocol.proto
 
 import * as jspb from "google-protobuf";

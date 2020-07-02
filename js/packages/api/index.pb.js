@@ -6,1973 +6,1985 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
   berty: {
     nested: {
       protocol: {
-        options: {
-          go_package: "berty.tech/berty/go/pkg/bertyprotocol"
-        },
         nested: {
-          ProtocolService: {
-            methods: {
-              InstanceExportData: {
-                requestType: "types.InstanceExportData.Request",
-                responseType: "types.InstanceExportData.Reply"
-              },
-              InstanceGetConfiguration: {
-                requestType: "types.InstanceGetConfiguration.Request",
-                responseType: "types.InstanceGetConfiguration.Reply"
-              },
-              ContactRequestReference: {
-                requestType: "types.ContactRequestReference.Request",
-                responseType: "types.ContactRequestReference.Reply"
-              },
-              ContactRequestDisable: {
-                requestType: "types.ContactRequestDisable.Request",
-                responseType: "types.ContactRequestDisable.Reply"
-              },
-              ContactRequestEnable: {
-                requestType: "types.ContactRequestEnable.Request",
-                responseType: "types.ContactRequestEnable.Reply"
-              },
-              ContactRequestResetReference: {
-                requestType: "types.ContactRequestResetReference.Request",
-                responseType: "types.ContactRequestResetReference.Reply"
-              },
-              ContactRequestSend: {
-                requestType: "types.ContactRequestSend.Request",
-                responseType: "types.ContactRequestSend.Reply"
-              },
-              ContactRequestAccept: {
-                requestType: "types.ContactRequestAccept.Request",
-                responseType: "types.ContactRequestAccept.Reply"
-              },
-              ContactRequestDiscard: {
-                requestType: "types.ContactRequestDiscard.Request",
-                responseType: "types.ContactRequestDiscard.Reply"
-              },
-              ContactBlock: {
-                requestType: "types.ContactBlock.Request",
-                responseType: "types.ContactBlock.Reply"
-              },
-              ContactUnblock: {
-                requestType: "types.ContactUnblock.Request",
-                responseType: "types.ContactUnblock.Reply"
-              },
-              ContactAliasKeySend: {
-                requestType: "types.ContactAliasKeySend.Request",
-                responseType: "types.ContactAliasKeySend.Reply"
-              },
-              MultiMemberGroupCreate: {
-                requestType: "types.MultiMemberGroupCreate.Request",
-                responseType: "types.MultiMemberGroupCreate.Reply"
-              },
-              MultiMemberGroupJoin: {
-                requestType: "types.MultiMemberGroupJoin.Request",
-                responseType: "types.MultiMemberGroupJoin.Reply"
-              },
-              MultiMemberGroupLeave: {
-                requestType: "types.MultiMemberGroupLeave.Request",
-                responseType: "types.MultiMemberGroupLeave.Reply"
-              },
-              MultiMemberGroupAliasResolverDisclose: {
-                requestType: "types.MultiMemberGroupAliasResolverDisclose.Request",
-                responseType: "types.MultiMemberGroupAliasResolverDisclose.Reply"
-              },
-              MultiMemberGroupAdminRoleGrant: {
-                requestType: "types.MultiMemberGroupAdminRoleGrant.Request",
-                responseType: "types.MultiMemberGroupAdminRoleGrant.Reply"
-              },
-              MultiMemberGroupInvitationCreate: {
-                requestType: "types.MultiMemberGroupInvitationCreate.Request",
-                responseType: "types.MultiMemberGroupInvitationCreate.Reply"
-              },
-              AppMetadataSend: {
-                requestType: "types.AppMetadataSend.Request",
-                responseType: "types.AppMetadataSend.Reply"
-              },
-              AppMessageSend: {
-                requestType: "types.AppMessageSend.Request",
-                responseType: "types.AppMessageSend.Reply"
-              },
-              GroupMetadataSubscribe: {
-                requestType: "types.GroupMetadataSubscribe.Request",
-                responseType: "types.GroupMetadataEvent",
-                responseStream: true
-              },
-              GroupMessageSubscribe: {
-                requestType: "types.GroupMessageSubscribe.Request",
-                responseType: "types.GroupMessageEvent",
-                responseStream: true
-              },
-              GroupMetadataList: {
-                requestType: "types.GroupMetadataList.Request",
-                responseType: "types.GroupMetadataEvent",
-                responseStream: true
-              },
-              GroupMessageList: {
-                requestType: "types.GroupMessageList.Request",
-                responseType: "types.GroupMessageEvent",
-                responseStream: true
-              },
-              GroupInfo: {
-                requestType: "types.GroupInfo.Request",
-                responseType: "types.GroupInfo.Reply"
-              },
-              ActivateGroup: {
-                requestType: "types.ActivateGroup.Request",
-                responseType: "types.ActivateGroup.Reply"
-              },
-              DeactivateGroup: {
-                requestType: "types.DeactivateGroup.Request",
-                responseType: "types.DeactivateGroup.Reply"
-              },
-              DebugListGroups: {
-                requestType: "types.DebugListGroups.Request",
-                responseType: "types.DebugListGroups.Reply",
-                responseStream: true
-              },
-              DebugInspectGroupStore: {
-                requestType: "types.DebugInspectGroupStore.Request",
-                responseType: "types.DebugInspectGroupStore.Reply",
-                responseStream: true
-              },
-              DebugGroup: {
-                requestType: "types.DebugGroup.Request",
-                responseType: "types.DebugGroup.Reply"
+          v1: {
+            options: {
+              go_package: "berty.tech/berty/go/pkg/bertyprotocol"
+            },
+            nested: {
+              ProtocolService: {
+                methods: {
+                  InstanceExportData: {
+                    requestType: "types.v1.InstanceExportData.Request",
+                    responseType: "types.v1.InstanceExportData.Reply"
+                  },
+                  InstanceGetConfiguration: {
+                    requestType: "types.v1.InstanceGetConfiguration.Request",
+                    responseType: "types.v1.InstanceGetConfiguration.Reply"
+                  },
+                  ContactRequestReference: {
+                    requestType: "types.v1.ContactRequestReference.Request",
+                    responseType: "types.v1.ContactRequestReference.Reply"
+                  },
+                  ContactRequestDisable: {
+                    requestType: "types.v1.ContactRequestDisable.Request",
+                    responseType: "types.v1.ContactRequestDisable.Reply"
+                  },
+                  ContactRequestEnable: {
+                    requestType: "types.v1.ContactRequestEnable.Request",
+                    responseType: "types.v1.ContactRequestEnable.Reply"
+                  },
+                  ContactRequestResetReference: {
+                    requestType: "types.v1.ContactRequestResetReference.Request",
+                    responseType: "types.v1.ContactRequestResetReference.Reply"
+                  },
+                  ContactRequestSend: {
+                    requestType: "types.v1.ContactRequestSend.Request",
+                    responseType: "types.v1.ContactRequestSend.Reply"
+                  },
+                  ContactRequestAccept: {
+                    requestType: "types.v1.ContactRequestAccept.Request",
+                    responseType: "types.v1.ContactRequestAccept.Reply"
+                  },
+                  ContactRequestDiscard: {
+                    requestType: "types.v1.ContactRequestDiscard.Request",
+                    responseType: "types.v1.ContactRequestDiscard.Reply"
+                  },
+                  ContactBlock: {
+                    requestType: "types.v1.ContactBlock.Request",
+                    responseType: "types.v1.ContactBlock.Reply"
+                  },
+                  ContactUnblock: {
+                    requestType: "types.v1.ContactUnblock.Request",
+                    responseType: "types.v1.ContactUnblock.Reply"
+                  },
+                  ContactAliasKeySend: {
+                    requestType: "types.v1.ContactAliasKeySend.Request",
+                    responseType: "types.v1.ContactAliasKeySend.Reply"
+                  },
+                  MultiMemberGroupCreate: {
+                    requestType: "types.v1.MultiMemberGroupCreate.Request",
+                    responseType: "types.v1.MultiMemberGroupCreate.Reply"
+                  },
+                  MultiMemberGroupJoin: {
+                    requestType: "types.v1.MultiMemberGroupJoin.Request",
+                    responseType: "types.v1.MultiMemberGroupJoin.Reply"
+                  },
+                  MultiMemberGroupLeave: {
+                    requestType: "types.v1.MultiMemberGroupLeave.Request",
+                    responseType: "types.v1.MultiMemberGroupLeave.Reply"
+                  },
+                  MultiMemberGroupAliasResolverDisclose: {
+                    requestType: "types.v1.MultiMemberGroupAliasResolverDisclose.Request",
+                    responseType: "types.v1.MultiMemberGroupAliasResolverDisclose.Reply"
+                  },
+                  MultiMemberGroupAdminRoleGrant: {
+                    requestType: "types.v1.MultiMemberGroupAdminRoleGrant.Request",
+                    responseType: "types.v1.MultiMemberGroupAdminRoleGrant.Reply"
+                  },
+                  MultiMemberGroupInvitationCreate: {
+                    requestType: "types.v1.MultiMemberGroupInvitationCreate.Request",
+                    responseType: "types.v1.MultiMemberGroupInvitationCreate.Reply"
+                  },
+                  AppMetadataSend: {
+                    requestType: "types.v1.AppMetadataSend.Request",
+                    responseType: "types.v1.AppMetadataSend.Reply"
+                  },
+                  AppMessageSend: {
+                    requestType: "types.v1.AppMessageSend.Request",
+                    responseType: "types.v1.AppMessageSend.Reply"
+                  },
+                  GroupMetadataSubscribe: {
+                    requestType: "types.v1.GroupMetadataSubscribe.Request",
+                    responseType: "types.v1.GroupMetadataEvent",
+                    responseStream: true
+                  },
+                  GroupMessageSubscribe: {
+                    requestType: "types.v1.GroupMessageSubscribe.Request",
+                    responseType: "types.v1.GroupMessageEvent",
+                    responseStream: true
+                  },
+                  GroupMetadataList: {
+                    requestType: "types.v1.GroupMetadataList.Request",
+                    responseType: "types.v1.GroupMetadataEvent",
+                    responseStream: true
+                  },
+                  GroupMessageList: {
+                    requestType: "types.v1.GroupMessageList.Request",
+                    responseType: "types.v1.GroupMessageEvent",
+                    responseStream: true
+                  },
+                  GroupInfo: {
+                    requestType: "types.v1.GroupInfo.Request",
+                    responseType: "types.v1.GroupInfo.Reply"
+                  },
+                  ActivateGroup: {
+                    requestType: "types.v1.ActivateGroup.Request",
+                    responseType: "types.v1.ActivateGroup.Reply"
+                  },
+                  DeactivateGroup: {
+                    requestType: "types.v1.DeactivateGroup.Request",
+                    responseType: "types.v1.DeactivateGroup.Reply"
+                  },
+                  DebugListGroups: {
+                    requestType: "types.v1.DebugListGroups.Request",
+                    responseType: "types.v1.DebugListGroups.Reply",
+                    responseStream: true
+                  },
+                  DebugInspectGroupStore: {
+                    requestType: "types.v1.DebugInspectGroupStore.Request",
+                    responseType: "types.v1.DebugInspectGroupStore.Reply",
+                    responseStream: true
+                  },
+                  DebugGroup: {
+                    requestType: "types.v1.DebugGroup.Request",
+                    responseType: "types.v1.DebugGroup.Reply"
+                  }
+                }
               }
             }
           }
         }
       },
       types: {
-        options: {
-          go_package: "berty.tech/berty/go/pkg/bertytypes",
-          "(gogoproto.goproto_enum_prefix_all)": false,
-          "(gogoproto.marshaler_all)": true,
-          "(gogoproto.unmarshaler_all)": true,
-          "(gogoproto.sizer_all)": true
-        },
         nested: {
-          GroupType: {
-            values: {
-              GroupTypeUndefined: 0,
-              GroupTypeAccount: 1,
-              GroupTypeContact: 2,
-              GroupTypeMultiMember: 3
-            }
-          },
-          EventType: {
-            values: {
-              EventTypeUndefined: 0,
-              EventTypeGroupMemberDeviceAdded: 1,
-              EventTypeGroupDeviceSecretAdded: 2,
-              EventTypeAccountGroupJoined: 101,
-              EventTypeAccountGroupLeft: 102,
-              EventTypeAccountContactRequestDisabled: 103,
-              EventTypeAccountContactRequestEnabled: 104,
-              EventTypeAccountContactRequestReferenceReset: 105,
-              EventTypeAccountContactRequestOutgoingEnqueued: 106,
-              EventTypeAccountContactRequestOutgoingSent: 107,
-              EventTypeAccountContactRequestIncomingReceived: 108,
-              EventTypeAccountContactRequestIncomingDiscarded: 109,
-              EventTypeAccountContactRequestIncomingAccepted: 110,
-              EventTypeAccountContactBlocked: 111,
-              EventTypeAccountContactUnblocked: 112,
-              EventTypeContactAliasKeyAdded: 201,
-              EventTypeMultiMemberGroupAliasResolverAdded: 301,
-              EventTypeMultiMemberGroupInitialMemberAnnounced: 302,
-              EventTypeMultiMemberGroupAdminRoleGranted: 303,
-              EventTypeGroupMetadataPayloadSent: 1001
-            }
-          },
-          Account: {
-            fields: {
-              group: {
-                type: "Group",
-                id: 1
-              },
-              accountPrivateKey: {
-                type: "bytes",
-                id: 2
-              },
-              aliasPrivateKey: {
-                type: "bytes",
-                id: 3
-              },
-              publicRendezvousSeed: {
-                type: "bytes",
-                id: 4
-              }
-            }
-          },
-          Group: {
-            fields: {
-              publicKey: {
-                type: "bytes",
-                id: 1
-              },
-              secret: {
-                type: "bytes",
-                id: 2
-              },
-              secretSig: {
-                type: "bytes",
-                id: 3
-              },
-              groupType: {
-                type: "GroupType",
-                id: 4
-              }
-            }
-          },
-          GroupMetadata: {
-            fields: {
-              eventType: {
-                type: "EventType",
-                id: 1
-              },
-              payload: {
-                type: "bytes",
-                id: 2
-              },
-              sig: {
-                type: "bytes",
-                id: 3
-              }
-            }
-          },
-          GroupEnvelope: {
-            fields: {
-              nonce: {
-                type: "bytes",
-                id: 1
-              },
-              event: {
-                type: "bytes",
-                id: 2
-              }
-            }
-          },
-          MessageHeaders: {
-            fields: {
-              counter: {
-                type: "uint64",
-                id: 1
-              },
-              devicePk: {
-                type: "bytes",
-                id: 2,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              },
-              sig: {
-                type: "bytes",
-                id: 3
-              },
-              metadata: {
-                keyType: "string",
-                type: "string",
-                id: 4
-              }
-            }
-          },
-          MessageEnvelope: {
-            fields: {
-              messageHeaders: {
-                type: "bytes",
-                id: 1
-              },
-              message: {
-                type: "bytes",
-                id: 2
-              },
-              nonce: {
-                type: "bytes",
-                id: 3
-              }
-            }
-          },
-          EventContext: {
-            fields: {
-              id: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "ID"
-                }
-              },
-              parentIds: {
-                rule: "repeated",
-                type: "bytes",
-                id: 2,
-                options: {
-                  "(gogoproto.customname)": "ParentIDs"
-                }
-              },
-              groupPk: {
-                type: "bytes",
-                id: 3,
-                options: {
-                  "(gogoproto.customname)": "GroupPK"
-                }
-              }
-            }
-          },
-          AppMetadata: {
-            fields: {
-              devicePk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              },
-              message: {
-                type: "bytes",
-                id: 2
-              }
-            }
-          },
-          ContactAddAliasKey: {
-            fields: {
-              devicePk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              },
-              aliasPk: {
-                type: "bytes",
-                id: 2,
-                options: {
-                  "(gogoproto.customname)": "AliasPK"
-                }
-              }
-            }
-          },
-          GroupAddMemberDevice: {
-            fields: {
-              memberPk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "MemberPK"
-                }
-              },
-              devicePk: {
-                type: "bytes",
-                id: 2,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              },
-              memberSig: {
-                type: "bytes",
-                id: 3
-              }
-            }
-          },
-          DeviceSecret: {
-            fields: {
-              chainKey: {
-                type: "bytes",
-                id: 1
-              },
-              counter: {
-                type: "uint64",
-                id: 2
-              }
-            }
-          },
-          GroupAddDeviceSecret: {
-            fields: {
-              devicePk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              },
-              destMemberPk: {
-                type: "bytes",
-                id: 2,
-                options: {
-                  "(gogoproto.customname)": "DestMemberPK"
-                }
-              },
-              payload: {
-                type: "bytes",
-                id: 3
-              }
-            }
-          },
-          MultiMemberGroupAddAliasResolver: {
-            fields: {
-              devicePk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              },
-              aliasResolver: {
-                type: "bytes",
-                id: 2
-              },
-              aliasProof: {
-                type: "bytes",
-                id: 3
-              }
-            }
-          },
-          MultiMemberGrantAdminRole: {
-            fields: {
-              devicePk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              },
-              granteeMemberPk: {
-                type: "bytes",
-                id: 2,
-                options: {
-                  "(gogoproto.customname)": "GranteeMemberPK"
-                }
-              }
-            }
-          },
-          MultiMemberInitialMember: {
-            fields: {
-              memberPk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "MemberPK"
-                }
-              }
-            }
-          },
-          GroupAddAdditionalRendezvousSeed: {
-            fields: {
-              devicePk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              },
-              seed: {
-                type: "bytes",
-                id: 2
-              }
-            }
-          },
-          GroupRemoveAdditionalRendezvousSeed: {
-            fields: {
-              devicePk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              },
-              seed: {
-                type: "bytes",
-                id: 2
-              }
-            }
-          },
-          AccountGroupJoined: {
-            fields: {
-              devicePk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              },
-              group: {
-                type: "Group",
-                id: 2
-              }
-            }
-          },
-          AccountGroupLeft: {
-            fields: {
-              devicePk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              },
-              groupPk: {
-                type: "bytes",
-                id: 2,
-                options: {
-                  "(gogoproto.customname)": "GroupPK"
-                }
-              }
-            }
-          },
-          AccountContactRequestDisabled: {
-            fields: {
-              devicePk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              }
-            }
-          },
-          AccountContactRequestEnabled: {
-            fields: {
-              devicePk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              }
-            }
-          },
-          AccountContactRequestReferenceReset: {
-            fields: {
-              devicePk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              },
-              publicRendezvousSeed: {
-                type: "bytes",
-                id: 2
-              }
-            }
-          },
-          AccountContactRequestEnqueued: {
-            fields: {
-              devicePk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              },
-              groupPk: {
-                type: "bytes",
-                id: 2,
-                options: {
-                  "(gogoproto.customname)": "GroupPK"
-                }
-              },
-              contact: {
-                type: "ShareableContact",
-                id: 3
-              },
-              ownMetadata: {
-                type: "bytes",
-                id: 4
-              }
-            }
-          },
-          AccountContactRequestSent: {
-            fields: {
-              devicePk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              },
-              contactPk: {
-                type: "bytes",
-                id: 2,
-                options: {
-                  "(gogoproto.customname)": "ContactPK"
-                }
-              }
-            }
-          },
-          AccountContactRequestReceived: {
-            fields: {
-              devicePk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              },
-              contactPk: {
-                type: "bytes",
-                id: 2,
-                options: {
-                  "(gogoproto.customname)": "ContactPK"
-                }
-              },
-              contactRendezvousSeed: {
-                type: "bytes",
-                id: 3
-              },
-              contactMetadata: {
-                type: "bytes",
-                id: 4
-              }
-            }
-          },
-          AccountContactRequestDiscarded: {
-            fields: {
-              devicePk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              },
-              contactPk: {
-                type: "bytes",
-                id: 2,
-                options: {
-                  "(gogoproto.customname)": "ContactPK"
-                }
-              }
-            }
-          },
-          AccountContactRequestAccepted: {
-            fields: {
-              devicePk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              },
-              contactPk: {
-                type: "bytes",
-                id: 2,
-                options: {
-                  "(gogoproto.customname)": "ContactPK"
-                }
-              },
-              groupPk: {
-                type: "bytes",
-                id: 3,
-                options: {
-                  "(gogoproto.customname)": "GroupPK"
-                }
-              }
-            }
-          },
-          AccountContactBlocked: {
-            fields: {
-              devicePk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              },
-              contactPk: {
-                type: "bytes",
-                id: 2,
-                options: {
-                  "(gogoproto.customname)": "ContactPK"
-                }
-              }
-            }
-          },
-          AccountContactUnblocked: {
-            fields: {
-              devicePk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "DevicePK"
-                }
-              },
-              contactPk: {
-                type: "bytes",
-                id: 2,
-                options: {
-                  "(gogoproto.customname)": "ContactPK"
-                }
-              }
-            }
-          },
-          InstanceExportData: {
-            fields: {},
+          v1: {
+            options: {
+              go_package: "berty.tech/berty/go/pkg/bertytypes",
+              "(gogoproto.goproto_enum_prefix_all)": false,
+              "(gogoproto.marshaler_all)": true,
+              "(gogoproto.unmarshaler_all)": true,
+              "(gogoproto.sizer_all)": true
+            },
             nested: {
-              Request: {
-                fields: {}
-              },
-              Reply: {
-                fields: {
-                  exportedData: {
-                    type: "bytes",
-                    id: 1
-                  }
-                }
-              }
-            }
-          },
-          InstanceGetConfiguration: {
-            fields: {},
-            nested: {
-              SettingState: {
+              GroupType: {
                 values: {
-                  Unknown: 0,
-                  Enabled: 1,
-                  Disabled: 2,
-                  Unavailable: 3
+                  GroupTypeUndefined: 0,
+                  GroupTypeAccount: 1,
+                  GroupTypeContact: 2,
+                  GroupTypeMultiMember: 3
                 }
               },
-              Request: {
-                fields: {}
-              },
-              Reply: {
-                fields: {
-                  accountPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "AccountPK"
-                    }
-                  },
-                  devicePk: {
-                    type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
-                  },
-                  accountGroupPk: {
-                    type: "bytes",
-                    id: 3,
-                    options: {
-                      "(gogoproto.customname)": "AccountGroupPK"
-                    }
-                  },
-                  peerId: {
-                    type: "string",
-                    id: 4,
-                    options: {
-                      "(gogoproto.customname)": "PeerID"
-                    }
-                  },
-                  listeners: {
-                    rule: "repeated",
-                    type: "string",
-                    id: 5
-                  },
-                  bleEnabled: {
-                    type: "SettingState",
-                    id: 6
-                  },
-                  wifiP2pEnabled: {
-                    type: "SettingState",
-                    id: 7
-                  },
-                  mdnsEnabled: {
-                    type: "SettingState",
-                    id: 8
-                  },
-                  relayEnabled: {
-                    type: "SettingState",
-                    id: 9
-                  }
-                }
-              }
-            }
-          },
-          ContactRequestReference: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {}
-              },
-              Reply: {
-                fields: {
-                  publicRendezvousSeed: {
-                    type: "bytes",
-                    id: 1
-                  },
-                  enabled: {
-                    type: "bool",
-                    id: 2
-                  }
-                }
-              }
-            }
-          },
-          ContactRequestDisable: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {}
-              },
-              Reply: {
-                fields: {}
-              }
-            }
-          },
-          ContactRequestEnable: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {}
-              },
-              Reply: {
-                fields: {
-                  publicRendezvousSeed: {
-                    type: "bytes",
-                    id: 1
-                  }
-                }
-              }
-            }
-          },
-          ContactRequestResetReference: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {}
-              },
-              Reply: {
-                fields: {
-                  publicRendezvousSeed: {
-                    type: "bytes",
-                    id: 1
-                  }
-                }
-              }
-            }
-          },
-          ContactRequestSend: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  contact: {
-                    type: "ShareableContact",
-                    id: 1
-                  },
-                  ownMetadata: {
-                    type: "bytes",
-                    id: 2
-                  }
+              EventType: {
+                values: {
+                  EventTypeUndefined: 0,
+                  EventTypeGroupMemberDeviceAdded: 1,
+                  EventTypeGroupDeviceSecretAdded: 2,
+                  EventTypeAccountGroupJoined: 101,
+                  EventTypeAccountGroupLeft: 102,
+                  EventTypeAccountContactRequestDisabled: 103,
+                  EventTypeAccountContactRequestEnabled: 104,
+                  EventTypeAccountContactRequestReferenceReset: 105,
+                  EventTypeAccountContactRequestOutgoingEnqueued: 106,
+                  EventTypeAccountContactRequestOutgoingSent: 107,
+                  EventTypeAccountContactRequestIncomingReceived: 108,
+                  EventTypeAccountContactRequestIncomingDiscarded: 109,
+                  EventTypeAccountContactRequestIncomingAccepted: 110,
+                  EventTypeAccountContactBlocked: 111,
+                  EventTypeAccountContactUnblocked: 112,
+                  EventTypeContactAliasKeyAdded: 201,
+                  EventTypeMultiMemberGroupAliasResolverAdded: 301,
+                  EventTypeMultiMemberGroupInitialMemberAnnounced: 302,
+                  EventTypeMultiMemberGroupAdminRoleGranted: 303,
+                  EventTypeGroupMetadataPayloadSent: 1001
                 }
               },
-              Reply: {
-                fields: {}
-              }
-            }
-          },
-          ContactRequestAccept: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  contactPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "ContactPK"
-                    }
-                  }
-                }
-              },
-              Reply: {
-                fields: {}
-              }
-            }
-          },
-          ContactRequestDiscard: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  contactPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "ContactPK"
-                    }
-                  }
-                }
-              },
-              Reply: {
-                fields: {}
-              }
-            }
-          },
-          ContactBlock: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  contactPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "ContactPK"
-                    }
-                  }
-                }
-              },
-              Reply: {
-                fields: {}
-              }
-            }
-          },
-          ContactUnblock: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  contactPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "ContactPK"
-                    }
-                  }
-                }
-              },
-              Reply: {
-                fields: {}
-              }
-            }
-          },
-          ContactAliasKeySend: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  groupPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
-                  }
-                }
-              },
-              Reply: {
-                fields: {}
-              }
-            }
-          },
-          MultiMemberGroupCreate: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {}
-              },
-              Reply: {
-                fields: {
-                  groupPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          MultiMemberGroupJoin: {
-            fields: {},
-            nested: {
-              Request: {
+              Account: {
                 fields: {
                   group: {
                     type: "Group",
                     id: 1
-                  }
-                }
-              },
-              Reply: {
-                fields: {}
-              }
-            }
-          },
-          MultiMemberGroupLeave: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  groupPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
-                  }
-                }
-              },
-              Reply: {
-                fields: {}
-              }
-            }
-          },
-          MultiMemberGroupAliasResolverDisclose: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  groupPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
-                  }
-                }
-              },
-              Reply: {
-                fields: {}
-              }
-            }
-          },
-          MultiMemberGroupAdminRoleGrant: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  groupPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
                   },
-                  memberPk: {
-                    type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "MemberPK"
-                    }
-                  }
-                }
-              },
-              Reply: {
-                fields: {}
-              }
-            }
-          },
-          MultiMemberGroupInvitationCreate: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  groupPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
-                  }
-                }
-              },
-              Reply: {
-                fields: {
-                  group: {
-                    type: "Group",
-                    id: 1
-                  }
-                }
-              }
-            }
-          },
-          AppMetadataSend: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  groupPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
-                  },
-                  payload: {
-                    type: "bytes",
-                    id: 2
-                  }
-                }
-              },
-              Reply: {
-                fields: {}
-              }
-            }
-          },
-          AppMessageSend: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  groupPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
-                  },
-                  payload: {
-                    type: "bytes",
-                    id: 2
-                  }
-                }
-              },
-              Reply: {
-                fields: {}
-              }
-            }
-          },
-          GroupMetadataEvent: {
-            fields: {
-              eventContext: {
-                type: "EventContext",
-                id: 1
-              },
-              metadata: {
-                type: "GroupMetadata",
-                id: 2
-              },
-              event: {
-                type: "bytes",
-                id: 3
-              }
-            }
-          },
-          GroupMessageEvent: {
-            fields: {
-              eventContext: {
-                type: "EventContext",
-                id: 1
-              },
-              headers: {
-                type: "MessageHeaders",
-                id: 2
-              },
-              message: {
-                type: "bytes",
-                id: 3
-              }
-            }
-          },
-          GroupMetadataSubscribe: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  groupPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
-                  },
-                  since: {
+                  accountPrivateKey: {
                     type: "bytes",
                     id: 2
                   },
-                  until: {
+                  aliasPrivateKey: {
                     type: "bytes",
                     id: 3
                   },
-                  goBackwards: {
-                    type: "bool",
+                  publicRendezvousSeed: {
+                    type: "bytes",
                     id: 4
                   }
                 }
-              }
-            }
-          },
-          GroupMetadataList: {
-            fields: {},
-            nested: {
-              Request: {
+              },
+              Group: {
                 fields: {
-                  groupPk: {
+                  publicKey: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          GroupMessageSubscribe: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  groupPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
+                    id: 1
                   },
-                  since: {
+                  secret: {
                     type: "bytes",
                     id: 2
                   },
-                  until: {
+                  secretSig: {
                     type: "bytes",
                     id: 3
-                  },
-                  goBackwards: {
-                    type: "bool",
-                    id: 4
-                  }
-                }
-              }
-            }
-          },
-          GroupMessageList: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  groupPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          GroupInfo: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  groupPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
-                  },
-                  contactPk: {
-                    type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "ContactPK"
-                    }
-                  }
-                }
-              },
-              Reply: {
-                fields: {
-                  group: {
-                    type: "Group",
-                    id: 1
-                  },
-                  memberPk: {
-                    type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "MemberPK"
-                    }
-                  },
-                  devicePk: {
-                    type: "bytes",
-                    id: 3,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          ActivateGroup: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  groupPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
-                  }
-                }
-              },
-              Reply: {
-                fields: {}
-              }
-            }
-          },
-          DeactivateGroup: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  groupPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
-                  }
-                }
-              },
-              Reply: {
-                fields: {}
-              }
-            }
-          },
-          DebugListGroups: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {}
-              },
-              Reply: {
-                fields: {
-                  groupPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
                   },
                   groupType: {
                     type: "GroupType",
+                    id: 4
+                  }
+                }
+              },
+              GroupMetadata: {
+                fields: {
+                  eventType: {
+                    type: "EventType",
+                    id: 1
+                  },
+                  payload: {
+                    type: "bytes",
+                    id: 2
+                  },
+                  sig: {
+                    type: "bytes",
+                    id: 3
+                  }
+                }
+              },
+              GroupEnvelope: {
+                fields: {
+                  nonce: {
+                    type: "bytes",
+                    id: 1
+                  },
+                  event: {
+                    type: "bytes",
+                    id: 2
+                  }
+                }
+              },
+              MessageHeaders: {
+                fields: {
+                  counter: {
+                    type: "uint64",
+                    id: 1
+                  },
+                  devicePk: {
+                    type: "bytes",
                     id: 2,
                     options: {
-                      "(gogoproto.customname)": "GroupType"
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  sig: {
+                    type: "bytes",
+                    id: 3
+                  },
+                  metadata: {
+                    keyType: "string",
+                    type: "string",
+                    id: 4
+                  }
+                }
+              },
+              MessageEnvelope: {
+                fields: {
+                  messageHeaders: {
+                    type: "bytes",
+                    id: 1
+                  },
+                  message: {
+                    type: "bytes",
+                    id: 2
+                  },
+                  nonce: {
+                    type: "bytes",
+                    id: 3
+                  }
+                }
+              },
+              EventContext: {
+                fields: {
+                  id: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "ID"
+                    }
+                  },
+                  parentIds: {
+                    rule: "repeated",
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "ParentIDs"
+                    }
+                  },
+                  groupPk: {
+                    type: "bytes",
+                    id: 3,
+                    options: {
+                      "(gogoproto.customname)": "GroupPK"
+                    }
+                  }
+                }
+              },
+              AppMetadata: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  message: {
+                    type: "bytes",
+                    id: 2
+                  }
+                }
+              },
+              ContactAddAliasKey: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  aliasPk: {
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "AliasPK"
+                    }
+                  }
+                }
+              },
+              GroupAddMemberDevice: {
+                fields: {
+                  memberPk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "MemberPK"
+                    }
+                  },
+                  devicePk: {
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  memberSig: {
+                    type: "bytes",
+                    id: 3
+                  }
+                }
+              },
+              DeviceSecret: {
+                fields: {
+                  chainKey: {
+                    type: "bytes",
+                    id: 1
+                  },
+                  counter: {
+                    type: "uint64",
+                    id: 2
+                  }
+                }
+              },
+              GroupAddDeviceSecret: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  destMemberPk: {
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "DestMemberPK"
+                    }
+                  },
+                  payload: {
+                    type: "bytes",
+                    id: 3
+                  }
+                }
+              },
+              MultiMemberGroupAddAliasResolver: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  aliasResolver: {
+                    type: "bytes",
+                    id: 2
+                  },
+                  aliasProof: {
+                    type: "bytes",
+                    id: 3
+                  }
+                }
+              },
+              MultiMemberGrantAdminRole: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  granteeMemberPk: {
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "GranteeMemberPK"
+                    }
+                  }
+                }
+              },
+              MultiMemberInitialMember: {
+                fields: {
+                  memberPk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "MemberPK"
+                    }
+                  }
+                }
+              },
+              GroupAddAdditionalRendezvousSeed: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  seed: {
+                    type: "bytes",
+                    id: 2
+                  }
+                }
+              },
+              GroupRemoveAdditionalRendezvousSeed: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  seed: {
+                    type: "bytes",
+                    id: 2
+                  }
+                }
+              },
+              AccountGroupJoined: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  group: {
+                    type: "Group",
+                    id: 2
+                  }
+                }
+              },
+              AccountGroupLeft: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  groupPk: {
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "GroupPK"
+                    }
+                  }
+                }
+              },
+              AccountContactRequestDisabled: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  }
+                }
+              },
+              AccountContactRequestEnabled: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  }
+                }
+              },
+              AccountContactRequestReferenceReset: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  publicRendezvousSeed: {
+                    type: "bytes",
+                    id: 2
+                  }
+                }
+              },
+              AccountContactRequestEnqueued: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  groupPk: {
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "GroupPK"
+                    }
+                  },
+                  contact: {
+                    type: "ShareableContact",
+                    id: 3
+                  },
+                  ownMetadata: {
+                    type: "bytes",
+                    id: 4
+                  }
+                }
+              },
+              AccountContactRequestSent: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
                     }
                   },
                   contactPk: {
                     type: "bytes",
-                    id: 3,
+                    id: 2,
                     options: {
                       "(gogoproto.customname)": "ContactPK"
                     }
                   }
                 }
-              }
-            }
-          },
-          DebugInspectGroupStore: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  groupPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
-                  },
-                  logType: {
-                    type: "DebugInspectGroupLogType",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "LogType"
-                    }
-                  }
-                }
               },
-              Reply: {
+              AccountContactRequestReceived: {
                 fields: {
-                  cid: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "CID"
-                    }
-                  },
-                  parentCids: {
-                    rule: "repeated",
-                    type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "ParentCIDs"
-                    }
-                  },
-                  metadataEventType: {
-                    type: "EventType",
-                    id: 3
-                  },
                   devicePk: {
                     type: "bytes",
-                    id: 4,
+                    id: 1,
                     options: {
                       "(gogoproto.customname)": "DevicePK"
                     }
                   },
-                  payload: {
+                  contactPk: {
                     type: "bytes",
-                    id: 6
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "ContactPK"
+                    }
+                  },
+                  contactRendezvousSeed: {
+                    type: "bytes",
+                    id: 3
+                  },
+                  contactMetadata: {
+                    type: "bytes",
+                    id: 4
                   }
                 }
-              }
-            }
-          },
-          DebugGroup: {
-            fields: {},
-            nested: {
-              Request: {
+              },
+              AccountContactRequestDiscarded: {
                 fields: {
-                  groupPk: {
+                  devicePk: {
                     type: "bytes",
                     id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  contactPk: {
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "ContactPK"
+                    }
+                  }
+                }
+              },
+              AccountContactRequestAccepted: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  contactPk: {
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "ContactPK"
+                    }
+                  },
+                  groupPk: {
+                    type: "bytes",
+                    id: 3,
                     options: {
                       "(gogoproto.customname)": "GroupPK"
                     }
                   }
                 }
               },
-              Reply: {
+              AccountContactBlocked: {
                 fields: {
-                  peerIds: {
-                    rule: "repeated",
-                    type: "string",
+                  devicePk: {
+                    type: "bytes",
                     id: 1,
                     options: {
-                      "(gogoproto.customname)": "PeerIDs"
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  contactPk: {
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "ContactPK"
                     }
                   }
                 }
-              }
-            }
-          },
-          DebugInspectGroupLogType: {
-            values: {
-              DebugInspectGroupLogTypeUndefined: 0,
-              DebugInspectGroupLogTypeMessage: 1,
-              DebugInspectGroupLogTypeMetadata: 2
-            }
-          },
-          ContactState: {
-            values: {
-              ContactStateUndefined: 0,
-              ContactStateToRequest: 1,
-              ContactStateReceived: 2,
-              ContactStateAdded: 3,
-              ContactStateRemoved: 4,
-              ContactStateDiscarded: 5,
-              ContactStateBlocked: 6
-            }
-          },
-          ShareableContact: {
-            fields: {
-              pk: {
-                type: "bytes",
-                id: 1,
-                options: {
-                  "(gogoproto.customname)": "PK"
+              },
+              AccountContactUnblocked: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  contactPk: {
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "ContactPK"
+                    }
+                  }
                 }
               },
-              publicRendezvousSeed: {
-                type: "bytes",
-                id: 2
+              InstanceExportData: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      exportedData: {
+                        type: "bytes",
+                        id: 1
+                      }
+                    }
+                  }
+                }
               },
-              metadata: {
-                type: "bytes",
-                id: 3
+              InstanceGetConfiguration: {
+                fields: {},
+                nested: {
+                  SettingState: {
+                    values: {
+                      Unknown: 0,
+                      Enabled: 1,
+                      Disabled: 2,
+                      Unavailable: 3
+                    }
+                  },
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      accountPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "AccountPK"
+                        }
+                      },
+                      devicePk: {
+                        type: "bytes",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "DevicePK"
+                        }
+                      },
+                      accountGroupPk: {
+                        type: "bytes",
+                        id: 3,
+                        options: {
+                          "(gogoproto.customname)": "AccountGroupPK"
+                        }
+                      },
+                      peerId: {
+                        type: "string",
+                        id: 4,
+                        options: {
+                          "(gogoproto.customname)": "PeerID"
+                        }
+                      },
+                      listeners: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 5
+                      },
+                      bleEnabled: {
+                        type: "SettingState",
+                        id: 6
+                      },
+                      wifiP2pEnabled: {
+                        type: "SettingState",
+                        id: 7
+                      },
+                      mdnsEnabled: {
+                        type: "SettingState",
+                        id: 8
+                      },
+                      relayEnabled: {
+                        type: "SettingState",
+                        id: 9
+                      }
+                    }
+                  }
+                }
+              },
+              ContactRequestReference: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      publicRendezvousSeed: {
+                        type: "bytes",
+                        id: 1
+                      },
+                      enabled: {
+                        type: "bool",
+                        id: 2
+                      }
+                    }
+                  }
+                }
+              },
+              ContactRequestDisable: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              ContactRequestEnable: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      publicRendezvousSeed: {
+                        type: "bytes",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              ContactRequestResetReference: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      publicRendezvousSeed: {
+                        type: "bytes",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              ContactRequestSend: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      contact: {
+                        type: "ShareableContact",
+                        id: 1
+                      },
+                      ownMetadata: {
+                        type: "bytes",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              ContactRequestAccept: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      contactPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "ContactPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              ContactRequestDiscard: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      contactPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "ContactPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              ContactBlock: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      contactPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "ContactPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              ContactUnblock: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      contactPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "ContactPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              ContactAliasKeySend: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              MultiMemberGroupCreate: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              MultiMemberGroupJoin: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      group: {
+                        type: "Group",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              MultiMemberGroupLeave: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              MultiMemberGroupAliasResolverDisclose: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              MultiMemberGroupAdminRoleGrant: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      },
+                      memberPk: {
+                        type: "bytes",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "MemberPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              MultiMemberGroupInvitationCreate: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      group: {
+                        type: "Group",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              AppMetadataSend: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      },
+                      payload: {
+                        type: "bytes",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              AppMessageSend: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      },
+                      payload: {
+                        type: "bytes",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              GroupMetadataEvent: {
+                fields: {
+                  eventContext: {
+                    type: "EventContext",
+                    id: 1
+                  },
+                  metadata: {
+                    type: "GroupMetadata",
+                    id: 2
+                  },
+                  event: {
+                    type: "bytes",
+                    id: 3
+                  }
+                }
+              },
+              GroupMessageEvent: {
+                fields: {
+                  eventContext: {
+                    type: "EventContext",
+                    id: 1
+                  },
+                  headers: {
+                    type: "MessageHeaders",
+                    id: 2
+                  },
+                  message: {
+                    type: "bytes",
+                    id: 3
+                  }
+                }
+              },
+              GroupMetadataSubscribe: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      },
+                      since: {
+                        type: "bytes",
+                        id: 2
+                      },
+                      until: {
+                        type: "bytes",
+                        id: 3
+                      },
+                      goBackwards: {
+                        type: "bool",
+                        id: 4
+                      }
+                    }
+                  }
+                }
+              },
+              GroupMetadataList: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              GroupMessageSubscribe: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      },
+                      since: {
+                        type: "bytes",
+                        id: 2
+                      },
+                      until: {
+                        type: "bytes",
+                        id: 3
+                      },
+                      goBackwards: {
+                        type: "bool",
+                        id: 4
+                      }
+                    }
+                  }
+                }
+              },
+              GroupMessageList: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              GroupInfo: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      },
+                      contactPk: {
+                        type: "bytes",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "ContactPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      group: {
+                        type: "Group",
+                        id: 1
+                      },
+                      memberPk: {
+                        type: "bytes",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "MemberPK"
+                        }
+                      },
+                      devicePk: {
+                        type: "bytes",
+                        id: 3,
+                        options: {
+                          "(gogoproto.customname)": "DevicePK"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              ActivateGroup: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              DeactivateGroup: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              DebugListGroups: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      },
+                      groupType: {
+                        type: "GroupType",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "GroupType"
+                        }
+                      },
+                      contactPk: {
+                        type: "bytes",
+                        id: 3,
+                        options: {
+                          "(gogoproto.customname)": "ContactPK"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              DebugInspectGroupStore: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      },
+                      logType: {
+                        type: "DebugInspectGroupLogType",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "LogType"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      cid: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "CID"
+                        }
+                      },
+                      parentCids: {
+                        rule: "repeated",
+                        type: "bytes",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "ParentCIDs"
+                        }
+                      },
+                      metadataEventType: {
+                        type: "EventType",
+                        id: 3
+                      },
+                      devicePk: {
+                        type: "bytes",
+                        id: 4,
+                        options: {
+                          "(gogoproto.customname)": "DevicePK"
+                        }
+                      },
+                      payload: {
+                        type: "bytes",
+                        id: 6
+                      }
+                    }
+                  }
+                }
+              },
+              DebugGroup: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      peerIds: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "PeerIDs"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              DebugInspectGroupLogType: {
+                values: {
+                  DebugInspectGroupLogTypeUndefined: 0,
+                  DebugInspectGroupLogTypeMessage: 1,
+                  DebugInspectGroupLogTypeMetadata: 2
+                }
+              },
+              ContactState: {
+                values: {
+                  ContactStateUndefined: 0,
+                  ContactStateToRequest: 1,
+                  ContactStateReceived: 2,
+                  ContactStateAdded: 3,
+                  ContactStateRemoved: 4,
+                  ContactStateDiscarded: 5,
+                  ContactStateBlocked: 6
+                }
+              },
+              ShareableContact: {
+                fields: {
+                  pk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "PK"
+                    }
+                  },
+                  publicRendezvousSeed: {
+                    type: "bytes",
+                    id: 2
+                  },
+                  metadata: {
+                    type: "bytes",
+                    id: 3
+                  }
+                }
               }
             }
           }
         }
       },
       messenger: {
-        options: {
-          go_package: "berty.tech/berty/go/pkg/bertymessenger"
-        },
         nested: {
-          MessengerService: {
-            methods: {
+          v1: {
+            options: {
+              go_package: "berty.tech/berty/go/pkg/bertymessenger"
+            },
+            nested: {
+              MessengerService: {
+                methods: {
+                  InstanceShareableBertyID: {
+                    requestType: "InstanceShareableBertyID.Request",
+                    responseType: "InstanceShareableBertyID.Reply"
+                  },
+                  ShareableBertyGroup: {
+                    requestType: "ShareableBertyGroup.Request",
+                    responseType: "ShareableBertyGroup.Reply"
+                  },
+                  DevShareInstanceBertyID: {
+                    requestType: "DevShareInstanceBertyID.Request",
+                    responseType: "DevShareInstanceBertyID.Reply"
+                  },
+                  ParseDeepLink: {
+                    requestType: "ParseDeepLink.Request",
+                    responseType: "ParseDeepLink.Reply"
+                  },
+                  SendContactRequest: {
+                    requestType: "SendContactRequest.Request",
+                    responseType: "SendContactRequest.Reply"
+                  },
+                  SendMessage: {
+                    requestType: "SendMessage.Request",
+                    responseType: "SendMessage.Reply"
+                  },
+                  SendAck: {
+                    requestType: "SendAck.Request",
+                    responseType: "SendAck.Reply"
+                  },
+                  SystemInfo: {
+                    requestType: "SystemInfo.Request",
+                    responseType: "SystemInfo.Reply"
+                  }
+                }
+              },
               InstanceShareableBertyID: {
-                requestType: "InstanceShareableBertyID.Request",
-                responseType: "InstanceShareableBertyID.Reply"
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      reset: {
+                        type: "bool",
+                        id: 1
+                      },
+                      displayName: {
+                        type: "string",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      bertyId: {
+                        type: "BertyID",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "BertyID"
+                        }
+                      },
+                      bertyIdPayload: {
+                        type: "string",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "BertyIDPayload"
+                        }
+                      },
+                      deepLink: {
+                        type: "string",
+                        id: 3,
+                        options: {
+                          "(gogoproto.customname)": "DeepLink"
+                        }
+                      },
+                      htmlUrl: {
+                        type: "string",
+                        id: 4,
+                        options: {
+                          "(gogoproto.customname)": "HTMLURL"
+                        }
+                      }
+                    }
+                  }
+                }
               },
               ShareableBertyGroup: {
-                requestType: "ShareableBertyGroup.Request",
-                responseType: "ShareableBertyGroup.Reply"
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      },
+                      groupName: {
+                        type: "string",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      bertyGroup: {
+                        type: "BertyGroup",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "BertyGroup"
+                        }
+                      },
+                      bertyGroupPayload: {
+                        type: "string",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "BertyGroupPayload"
+                        }
+                      },
+                      deepLink: {
+                        type: "string",
+                        id: 3,
+                        options: {
+                          "(gogoproto.customname)": "DeepLink"
+                        }
+                      },
+                      htmlUrl: {
+                        type: "string",
+                        id: 4,
+                        options: {
+                          "(gogoproto.customname)": "HTMLURL"
+                        }
+                      }
+                    }
+                  }
+                }
               },
               DevShareInstanceBertyID: {
-                requestType: "DevShareInstanceBertyID.Request",
-                responseType: "DevShareInstanceBertyID.Reply"
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      reset: {
+                        type: "bool",
+                        id: 1
+                      },
+                      displayName: {
+                        type: "string",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
               },
               ParseDeepLink: {
-                requestType: "ParseDeepLink.Request",
-                responseType: "ParseDeepLink.Reply"
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      link: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      kind: {
+                        type: "Kind",
+                        id: 1
+                      },
+                      bertyId: {
+                        type: "BertyID",
+                        id: 3,
+                        options: {
+                          "(gogoproto.customname)": "BertyID"
+                        }
+                      },
+                      bertyGroup: {
+                        type: "BertyGroup",
+                        id: 4,
+                        options: {
+                          "(gogoproto.customname)": "BertyGroup"
+                        }
+                      }
+                    }
+                  },
+                  Kind: {
+                    values: {
+                      UnknownKind: 0,
+                      BertyID: 1,
+                      BertyGroup: 2
+                    }
+                  }
+                }
               },
               SendContactRequest: {
-                requestType: "SendContactRequest.Request",
-                responseType: "SendContactRequest.Reply"
-              },
-              SendMessage: {
-                requestType: "SendMessage.Request",
-                responseType: "SendMessage.Reply"
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      bertyId: {
+                        type: "BertyID",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "BertyID"
+                        }
+                      },
+                      metadata: {
+                        type: "bytes",
+                        id: 2
+                      },
+                      ownMetadata: {
+                        type: "bytes",
+                        id: 3
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
               },
               SendAck: {
-                requestType: "SendAck.Request",
-                responseType: "SendAck.Reply"
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      },
+                      messageId: {
+                        type: "bytes",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "MessageID"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              SendMessage: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      },
+                      message: {
+                        type: "string",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              BertyID: {
+                fields: {
+                  publicRendezvousSeed: {
+                    type: "bytes",
+                    id: 1
+                  },
+                  accountPk: {
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "AccountPK"
+                    }
+                  },
+                  displayName: {
+                    type: "string",
+                    id: 3
+                  }
+                }
+              },
+              BertyGroup: {
+                fields: {
+                  group: {
+                    type: "berty.types.v1.Group",
+                    id: 1
+                  },
+                  displayName: {
+                    type: "string",
+                    id: 2
+                  }
+                }
+              },
+              AppMessageType: {
+                values: {
+                  Undefined: 0,
+                  UserMessage: 1,
+                  UserReaction: 2,
+                  GroupInvitation: 3,
+                  SetGroupName: 4,
+                  Acknowledge: 5
+                }
+              },
+              AppMessageTyped: {
+                fields: {
+                  type: {
+                    type: "AppMessageType",
+                    id: 1
+                  }
+                }
+              },
+              UserMessageAttachment: {
+                fields: {
+                  type: {
+                    type: "AppMessageType",
+                    id: 1
+                  },
+                  uri: {
+                    type: "string",
+                    id: 2
+                  }
+                }
+              },
+              PayloadUserMessage: {
+                fields: {
+                  type: {
+                    type: "AppMessageType",
+                    id: 1
+                  },
+                  body: {
+                    type: "string",
+                    id: 2
+                  },
+                  attachments: {
+                    rule: "repeated",
+                    type: "UserMessageAttachment",
+                    id: 3
+                  },
+                  sentDate: {
+                    type: "int64",
+                    id: 4,
+                    options: {
+                      "(gogoproto.jsontag)": "sentDate"
+                    }
+                  }
+                }
+              },
+              PayloadUserReaction: {
+                fields: {
+                  type: {
+                    type: "AppMessageType",
+                    id: 1
+                  },
+                  emoji: {
+                    type: "string",
+                    id: 2
+                  }
+                }
+              },
+              PayloadGroupInvitation: {
+                fields: {
+                  type: {
+                    type: "AppMessageType",
+                    id: 1
+                  },
+                  groupPk: {
+                    type: "string",
+                    id: 2,
+                    options: {
+                      "(gogoproto.jsontag)": "groupPk"
+                    }
+                  }
+                }
+              },
+              PayloadSetGroupName: {
+                fields: {
+                  type: {
+                    type: "AppMessageType",
+                    id: 1
+                  },
+                  name: {
+                    type: "string",
+                    id: 2
+                  }
+                }
+              },
+              PayloadAcknowledge: {
+                fields: {
+                  type: {
+                    type: "AppMessageType",
+                    id: 1
+                  },
+                  target: {
+                    type: "string",
+                    id: 2
+                  }
+                }
               },
               SystemInfo: {
-                requestType: "SystemInfo.Request",
-                responseType: "SystemInfo.Reply"
-              }
-            }
-          },
-          InstanceShareableBertyID: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  reset: {
-                    type: "bool",
-                    id: 1
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
                   },
-                  displayName: {
-                    type: "string",
-                    id: 2
-                  }
-                }
-              },
-              Reply: {
-                fields: {
-                  bertyId: {
-                    type: "BertyID",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "BertyID"
+                  Reply: {
+                    fields: {
+                      startedAt: {
+                        type: "int64",
+                        id: 1
+                      },
+                      numCpu: {
+                        type: "int64",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "NumCPU"
+                        }
+                      },
+                      goVersion: {
+                        type: "string",
+                        id: 3
+                      },
+                      numGoroutine: {
+                        type: "int64",
+                        id: 4
+                      },
+                      operatingSystem: {
+                        type: "string",
+                        id: 5
+                      },
+                      hostName: {
+                        type: "string",
+                        id: 6
+                      },
+                      arch: {
+                        type: "string",
+                        id: 7
+                      },
+                      version: {
+                        type: "string",
+                        id: 8
+                      },
+                      vcsRef: {
+                        type: "string",
+                        id: 9
+                      },
+                      buildTime: {
+                        type: "int64",
+                        id: 10
+                      },
+                      rlimit: {
+                        type: "string",
+                        id: 11
+                      },
+                      selfRusage: {
+                        type: "string",
+                        id: 12
+                      },
+                      childrenRusage: {
+                        type: "string",
+                        id: 13
+                      }
                     }
-                  },
-                  bertyIdPayload: {
-                    type: "string",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "BertyIDPayload"
-                    }
-                  },
-                  deepLink: {
-                    type: "string",
-                    id: 3,
-                    options: {
-                      "(gogoproto.customname)": "DeepLink"
-                    }
-                  },
-                  htmlUrl: {
-                    type: "string",
-                    id: 4,
-                    options: {
-                      "(gogoproto.customname)": "HTMLURL"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          ShareableBertyGroup: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  groupPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
-                  },
-                  groupName: {
-                    type: "string",
-                    id: 2
-                  }
-                }
-              },
-              Reply: {
-                fields: {
-                  bertyGroup: {
-                    type: "BertyGroup",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "BertyGroup"
-                    }
-                  },
-                  bertyGroupPayload: {
-                    type: "string",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "BertyGroupPayload"
-                    }
-                  },
-                  deepLink: {
-                    type: "string",
-                    id: 3,
-                    options: {
-                      "(gogoproto.customname)": "DeepLink"
-                    }
-                  },
-                  htmlUrl: {
-                    type: "string",
-                    id: 4,
-                    options: {
-                      "(gogoproto.customname)": "HTMLURL"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          DevShareInstanceBertyID: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  reset: {
-                    type: "bool",
-                    id: 1
-                  },
-                  displayName: {
-                    type: "string",
-                    id: 2
-                  }
-                }
-              },
-              Reply: {
-                fields: {}
-              }
-            }
-          },
-          ParseDeepLink: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  link: {
-                    type: "string",
-                    id: 1
-                  }
-                }
-              },
-              Reply: {
-                fields: {
-                  kind: {
-                    type: "Kind",
-                    id: 1
-                  },
-                  bertyId: {
-                    type: "BertyID",
-                    id: 3,
-                    options: {
-                      "(gogoproto.customname)": "BertyID"
-                    }
-                  },
-                  bertyGroup: {
-                    type: "BertyGroup",
-                    id: 4,
-                    options: {
-                      "(gogoproto.customname)": "BertyGroup"
-                    }
-                  }
-                }
-              },
-              Kind: {
-                values: {
-                  UnknownKind: 0,
-                  BertyID: 1,
-                  BertyGroup: 2
-                }
-              }
-            }
-          },
-          SendContactRequest: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  bertyId: {
-                    type: "BertyID",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "BertyID"
-                    }
-                  },
-                  metadata: {
-                    type: "bytes",
-                    id: 2
-                  },
-                  ownMetadata: {
-                    type: "bytes",
-                    id: 3
-                  }
-                }
-              },
-              Reply: {
-                fields: {}
-              }
-            }
-          },
-          SendAck: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  groupPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
-                  },
-                  messageId: {
-                    type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "MessageID"
-                    }
-                  }
-                }
-              },
-              Reply: {
-                fields: {}
-              }
-            }
-          },
-          SendMessage: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {
-                  groupPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
-                  },
-                  message: {
-                    type: "string",
-                    id: 2
-                  }
-                }
-              },
-              Reply: {
-                fields: {}
-              }
-            }
-          },
-          BertyID: {
-            fields: {
-              publicRendezvousSeed: {
-                type: "bytes",
-                id: 1
-              },
-              accountPk: {
-                type: "bytes",
-                id: 2,
-                options: {
-                  "(gogoproto.customname)": "AccountPK"
-                }
-              },
-              displayName: {
-                type: "string",
-                id: 3
-              }
-            }
-          },
-          BertyGroup: {
-            fields: {
-              group: {
-                type: "berty.types.Group",
-                id: 1
-              },
-              displayName: {
-                type: "string",
-                id: 2
-              }
-            }
-          },
-          AppMessageType: {
-            values: {
-              Undefined: 0,
-              UserMessage: 1,
-              UserReaction: 2,
-              GroupInvitation: 3,
-              SetGroupName: 4,
-              Acknowledge: 5
-            }
-          },
-          AppMessageTyped: {
-            fields: {
-              type: {
-                type: "AppMessageType",
-                id: 1
-              }
-            }
-          },
-          UserMessageAttachment: {
-            fields: {
-              type: {
-                type: "AppMessageType",
-                id: 1
-              },
-              uri: {
-                type: "string",
-                id: 2
-              }
-            }
-          },
-          PayloadUserMessage: {
-            fields: {
-              type: {
-                type: "AppMessageType",
-                id: 1
-              },
-              body: {
-                type: "string",
-                id: 2
-              },
-              attachments: {
-                rule: "repeated",
-                type: "UserMessageAttachment",
-                id: 3
-              },
-              sentDate: {
-                type: "int64",
-                id: 4,
-                options: {
-                  "(gogoproto.jsontag)": "sentDate"
-                }
-              }
-            }
-          },
-          PayloadUserReaction: {
-            fields: {
-              type: {
-                type: "AppMessageType",
-                id: 1
-              },
-              emoji: {
-                type: "string",
-                id: 2
-              }
-            }
-          },
-          PayloadGroupInvitation: {
-            fields: {
-              type: {
-                type: "AppMessageType",
-                id: 1
-              },
-              groupPk: {
-                type: "string",
-                id: 2,
-                options: {
-                  "(gogoproto.jsontag)": "groupPk"
-                }
-              }
-            }
-          },
-          PayloadSetGroupName: {
-            fields: {
-              type: {
-                type: "AppMessageType",
-                id: 1
-              },
-              name: {
-                type: "string",
-                id: 2
-              }
-            }
-          },
-          PayloadAcknowledge: {
-            fields: {
-              type: {
-                type: "AppMessageType",
-                id: 1
-              },
-              target: {
-                type: "string",
-                id: 2
-              }
-            }
-          },
-          SystemInfo: {
-            fields: {},
-            nested: {
-              Request: {
-                fields: {}
-              },
-              Reply: {
-                fields: {
-                  startedAt: {
-                    type: "int64",
-                    id: 1
-                  },
-                  numCpu: {
-                    type: "int64",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "NumCPU"
-                    }
-                  },
-                  goVersion: {
-                    type: "string",
-                    id: 3
-                  },
-                  numGoroutine: {
-                    type: "int64",
-                    id: 4
-                  },
-                  operatingSystem: {
-                    type: "string",
-                    id: 5
-                  },
-                  hostName: {
-                    type: "string",
-                    id: 6
-                  },
-                  arch: {
-                    type: "string",
-                    id: 7
-                  },
-                  version: {
-                    type: "string",
-                    id: 8
-                  },
-                  vcsRef: {
-                    type: "string",
-                    id: 9
-                  },
-                  buildTime: {
-                    type: "int64",
-                    id: 10
-                  },
-                  rlimit: {
-                    type: "string",
-                    id: 11
-                  },
-                  selfRusage: {
-                    type: "string",
-                    id: 12
-                  },
-                  childrenRusage: {
-                    type: "string",
-                    id: 13
                   }
                 }
               }

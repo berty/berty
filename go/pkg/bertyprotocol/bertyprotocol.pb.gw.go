@@ -2171,65 +2171,65 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 }
 
 var (
-	pattern_ProtocolService_InstanceExportData_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "InstanceExportData"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_InstanceExportData_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "InstanceExportData"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_InstanceGetConfiguration_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "InstanceGetConfiguration"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_InstanceGetConfiguration_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "InstanceGetConfiguration"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_ContactRequestReference_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "ContactRequestReference"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_ContactRequestReference_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "ContactRequestReference"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_ContactRequestDisable_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "ContactRequestDisable"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_ContactRequestDisable_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "ContactRequestDisable"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_ContactRequestEnable_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "ContactRequestEnable"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_ContactRequestEnable_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "ContactRequestEnable"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_ContactRequestResetReference_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "ContactRequestResetReference"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_ContactRequestResetReference_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "ContactRequestResetReference"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_ContactRequestSend_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "ContactRequestSend"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_ContactRequestSend_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "ContactRequestSend"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_ContactRequestAccept_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "ContactRequestAccept"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_ContactRequestAccept_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "ContactRequestAccept"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_ContactRequestDiscard_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "ContactRequestDiscard"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_ContactRequestDiscard_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "ContactRequestDiscard"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_ContactBlock_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "ContactBlock"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_ContactBlock_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "ContactBlock"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_ContactUnblock_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "ContactUnblock"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_ContactUnblock_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "ContactUnblock"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_ContactAliasKeySend_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "ContactAliasKeySend"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_ContactAliasKeySend_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "ContactAliasKeySend"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_MultiMemberGroupCreate_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "MultiMemberGroupCreate"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_MultiMemberGroupCreate_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "MultiMemberGroupCreate"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_MultiMemberGroupJoin_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "MultiMemberGroupJoin"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_MultiMemberGroupJoin_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "MultiMemberGroupJoin"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_MultiMemberGroupLeave_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "MultiMemberGroupLeave"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_MultiMemberGroupLeave_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "MultiMemberGroupLeave"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_MultiMemberGroupAliasResolverDisclose_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "MultiMemberGroupAliasResolverDisclose"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_MultiMemberGroupAliasResolverDisclose_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "MultiMemberGroupAliasResolverDisclose"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_MultiMemberGroupAdminRoleGrant_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "MultiMemberGroupAdminRoleGrant"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_MultiMemberGroupAdminRoleGrant_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "MultiMemberGroupAdminRoleGrant"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_MultiMemberGroupInvitationCreate_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "MultiMemberGroupInvitationCreate"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_MultiMemberGroupInvitationCreate_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "MultiMemberGroupInvitationCreate"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_AppMetadataSend_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "AppMetadataSend"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_AppMetadataSend_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "AppMetadataSend"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_AppMessageSend_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "AppMessageSend"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_AppMessageSend_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "AppMessageSend"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_GroupMetadataSubscribe_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "GroupMetadataSubscribe"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_GroupMetadataSubscribe_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "GroupMetadataSubscribe"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_GroupMessageSubscribe_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "GroupMessageSubscribe"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_GroupMessageSubscribe_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "GroupMessageSubscribe"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_GroupMetadataList_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "GroupMetadataList"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_GroupMetadataList_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "GroupMetadataList"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_GroupMessageList_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "GroupMessageList"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_GroupMessageList_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "GroupMessageList"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_GroupInfo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "GroupInfo"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_GroupInfo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "GroupInfo"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_ActivateGroup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "ActivateGroup"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_ActivateGroup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "ActivateGroup"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_DeactivateGroup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "DeactivateGroup"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_DeactivateGroup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "DeactivateGroup"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_DebugListGroups_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "DebugListGroups"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_DebugListGroups_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "DebugListGroups"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_DebugInspectGroupStore_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "DebugInspectGroupStore"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_DebugInspectGroupStore_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "DebugInspectGroupStore"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ProtocolService_DebugGroup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"protocol", "v1", "DebugGroup"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ProtocolService_DebugGroup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "DebugGroup"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

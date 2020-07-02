@@ -16,41 +16,41 @@ var github_com_gogo_protobuf_gogoproto_gogo_pb = require('./github.com/gogo/prot
 goog.object.extend(proto, github_com_gogo_protobuf_gogoproto_gogo_pb);
 var bertytypes_pb = require('./bertytypes_pb.js');
 goog.object.extend(proto, bertytypes_pb);
-goog.exportSymbol('proto.berty.messenger.AppMessageType', null, global);
-goog.exportSymbol('proto.berty.messenger.AppMessageTyped', null, global);
-goog.exportSymbol('proto.berty.messenger.BertyGroup', null, global);
-goog.exportSymbol('proto.berty.messenger.BertyID', null, global);
-goog.exportSymbol('proto.berty.messenger.DevShareInstanceBertyID', null, global);
-goog.exportSymbol('proto.berty.messenger.DevShareInstanceBertyID.Reply', null, global);
-goog.exportSymbol('proto.berty.messenger.DevShareInstanceBertyID.Request', null, global);
-goog.exportSymbol('proto.berty.messenger.InstanceShareableBertyID', null, global);
-goog.exportSymbol('proto.berty.messenger.InstanceShareableBertyID.Reply', null, global);
-goog.exportSymbol('proto.berty.messenger.InstanceShareableBertyID.Request', null, global);
-goog.exportSymbol('proto.berty.messenger.ParseDeepLink', null, global);
-goog.exportSymbol('proto.berty.messenger.ParseDeepLink.Kind', null, global);
-goog.exportSymbol('proto.berty.messenger.ParseDeepLink.Reply', null, global);
-goog.exportSymbol('proto.berty.messenger.ParseDeepLink.Request', null, global);
-goog.exportSymbol('proto.berty.messenger.PayloadAcknowledge', null, global);
-goog.exportSymbol('proto.berty.messenger.PayloadGroupInvitation', null, global);
-goog.exportSymbol('proto.berty.messenger.PayloadSetGroupName', null, global);
-goog.exportSymbol('proto.berty.messenger.PayloadUserMessage', null, global);
-goog.exportSymbol('proto.berty.messenger.PayloadUserReaction', null, global);
-goog.exportSymbol('proto.berty.messenger.SendAck', null, global);
-goog.exportSymbol('proto.berty.messenger.SendAck.Reply', null, global);
-goog.exportSymbol('proto.berty.messenger.SendAck.Request', null, global);
-goog.exportSymbol('proto.berty.messenger.SendContactRequest', null, global);
-goog.exportSymbol('proto.berty.messenger.SendContactRequest.Reply', null, global);
-goog.exportSymbol('proto.berty.messenger.SendContactRequest.Request', null, global);
-goog.exportSymbol('proto.berty.messenger.SendMessage', null, global);
-goog.exportSymbol('proto.berty.messenger.SendMessage.Reply', null, global);
-goog.exportSymbol('proto.berty.messenger.SendMessage.Request', null, global);
-goog.exportSymbol('proto.berty.messenger.ShareableBertyGroup', null, global);
-goog.exportSymbol('proto.berty.messenger.ShareableBertyGroup.Reply', null, global);
-goog.exportSymbol('proto.berty.messenger.ShareableBertyGroup.Request', null, global);
-goog.exportSymbol('proto.berty.messenger.SystemInfo', null, global);
-goog.exportSymbol('proto.berty.messenger.SystemInfo.Reply', null, global);
-goog.exportSymbol('proto.berty.messenger.SystemInfo.Request', null, global);
-goog.exportSymbol('proto.berty.messenger.UserMessageAttachment', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.AppMessageType', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.AppMessageTyped', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.BertyGroup', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.BertyID', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.DevShareInstanceBertyID', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.DevShareInstanceBertyID.Reply', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.DevShareInstanceBertyID.Request', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.InstanceShareableBertyID', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.InstanceShareableBertyID.Reply', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.InstanceShareableBertyID.Request', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.ParseDeepLink', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.ParseDeepLink.Kind', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.ParseDeepLink.Reply', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.ParseDeepLink.Request', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.PayloadAcknowledge', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.PayloadGroupInvitation', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.PayloadSetGroupName', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.PayloadUserMessage', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.PayloadUserReaction', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.SendAck', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.SendAck.Reply', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.SendAck.Request', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.SendContactRequest', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.SendContactRequest.Reply', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.SendContactRequest.Request', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.SendMessage', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.SendMessage.Reply', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.SendMessage.Request', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.ShareableBertyGroup', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.ShareableBertyGroup.Reply', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.ShareableBertyGroup.Request', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.SystemInfo', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.SystemInfo.Reply', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.SystemInfo.Request', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.UserMessageAttachment', null, global);
 /**
  * Generated by JsPbCodeGenerator.
  * @param {Array=} opt_data Optional initial data array, typically from a
@@ -61,16 +61,16 @@ goog.exportSymbol('proto.berty.messenger.UserMessageAttachment', null, global);
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.InstanceShareableBertyID = function(opt_data) {
+proto.berty.messenger.v1.InstanceShareableBertyID = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.InstanceShareableBertyID, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.InstanceShareableBertyID, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.InstanceShareableBertyID.displayName = 'proto.berty.messenger.InstanceShareableBertyID';
+  proto.berty.messenger.v1.InstanceShareableBertyID.displayName = 'proto.berty.messenger.v1.InstanceShareableBertyID';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -82,16 +82,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.InstanceShareableBertyID.Request = function(opt_data) {
+proto.berty.messenger.v1.InstanceShareableBertyID.Request = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.InstanceShareableBertyID.Request, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.InstanceShareableBertyID.Request, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.InstanceShareableBertyID.Request.displayName = 'proto.berty.messenger.InstanceShareableBertyID.Request';
+  proto.berty.messenger.v1.InstanceShareableBertyID.Request.displayName = 'proto.berty.messenger.v1.InstanceShareableBertyID.Request';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -103,16 +103,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.InstanceShareableBertyID.Reply = function(opt_data) {
+proto.berty.messenger.v1.InstanceShareableBertyID.Reply = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.InstanceShareableBertyID.Reply, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.InstanceShareableBertyID.Reply, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.InstanceShareableBertyID.Reply.displayName = 'proto.berty.messenger.InstanceShareableBertyID.Reply';
+  proto.berty.messenger.v1.InstanceShareableBertyID.Reply.displayName = 'proto.berty.messenger.v1.InstanceShareableBertyID.Reply';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -124,16 +124,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.ShareableBertyGroup = function(opt_data) {
+proto.berty.messenger.v1.ShareableBertyGroup = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.ShareableBertyGroup, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.ShareableBertyGroup, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.ShareableBertyGroup.displayName = 'proto.berty.messenger.ShareableBertyGroup';
+  proto.berty.messenger.v1.ShareableBertyGroup.displayName = 'proto.berty.messenger.v1.ShareableBertyGroup';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -145,16 +145,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.ShareableBertyGroup.Request = function(opt_data) {
+proto.berty.messenger.v1.ShareableBertyGroup.Request = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.ShareableBertyGroup.Request, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.ShareableBertyGroup.Request, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.ShareableBertyGroup.Request.displayName = 'proto.berty.messenger.ShareableBertyGroup.Request';
+  proto.berty.messenger.v1.ShareableBertyGroup.Request.displayName = 'proto.berty.messenger.v1.ShareableBertyGroup.Request';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -166,16 +166,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.ShareableBertyGroup.Reply = function(opt_data) {
+proto.berty.messenger.v1.ShareableBertyGroup.Reply = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.ShareableBertyGroup.Reply, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.ShareableBertyGroup.Reply, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.ShareableBertyGroup.Reply.displayName = 'proto.berty.messenger.ShareableBertyGroup.Reply';
+  proto.berty.messenger.v1.ShareableBertyGroup.Reply.displayName = 'proto.berty.messenger.v1.ShareableBertyGroup.Reply';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -187,16 +187,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.DevShareInstanceBertyID = function(opt_data) {
+proto.berty.messenger.v1.DevShareInstanceBertyID = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.DevShareInstanceBertyID, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.DevShareInstanceBertyID, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.DevShareInstanceBertyID.displayName = 'proto.berty.messenger.DevShareInstanceBertyID';
+  proto.berty.messenger.v1.DevShareInstanceBertyID.displayName = 'proto.berty.messenger.v1.DevShareInstanceBertyID';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -208,16 +208,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.DevShareInstanceBertyID.Request = function(opt_data) {
+proto.berty.messenger.v1.DevShareInstanceBertyID.Request = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.DevShareInstanceBertyID.Request, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.DevShareInstanceBertyID.Request, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.DevShareInstanceBertyID.Request.displayName = 'proto.berty.messenger.DevShareInstanceBertyID.Request';
+  proto.berty.messenger.v1.DevShareInstanceBertyID.Request.displayName = 'proto.berty.messenger.v1.DevShareInstanceBertyID.Request';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -229,16 +229,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.DevShareInstanceBertyID.Reply = function(opt_data) {
+proto.berty.messenger.v1.DevShareInstanceBertyID.Reply = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.DevShareInstanceBertyID.Reply, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.DevShareInstanceBertyID.Reply, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.DevShareInstanceBertyID.Reply.displayName = 'proto.berty.messenger.DevShareInstanceBertyID.Reply';
+  proto.berty.messenger.v1.DevShareInstanceBertyID.Reply.displayName = 'proto.berty.messenger.v1.DevShareInstanceBertyID.Reply';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -250,16 +250,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.ParseDeepLink = function(opt_data) {
+proto.berty.messenger.v1.ParseDeepLink = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.ParseDeepLink, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.ParseDeepLink, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.ParseDeepLink.displayName = 'proto.berty.messenger.ParseDeepLink';
+  proto.berty.messenger.v1.ParseDeepLink.displayName = 'proto.berty.messenger.v1.ParseDeepLink';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -271,16 +271,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.ParseDeepLink.Request = function(opt_data) {
+proto.berty.messenger.v1.ParseDeepLink.Request = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.ParseDeepLink.Request, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.ParseDeepLink.Request, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.ParseDeepLink.Request.displayName = 'proto.berty.messenger.ParseDeepLink.Request';
+  proto.berty.messenger.v1.ParseDeepLink.Request.displayName = 'proto.berty.messenger.v1.ParseDeepLink.Request';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -292,16 +292,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.ParseDeepLink.Reply = function(opt_data) {
+proto.berty.messenger.v1.ParseDeepLink.Reply = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.ParseDeepLink.Reply, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.ParseDeepLink.Reply, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.ParseDeepLink.Reply.displayName = 'proto.berty.messenger.ParseDeepLink.Reply';
+  proto.berty.messenger.v1.ParseDeepLink.Reply.displayName = 'proto.berty.messenger.v1.ParseDeepLink.Reply';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -313,16 +313,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.SendContactRequest = function(opt_data) {
+proto.berty.messenger.v1.SendContactRequest = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.SendContactRequest, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.SendContactRequest, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.SendContactRequest.displayName = 'proto.berty.messenger.SendContactRequest';
+  proto.berty.messenger.v1.SendContactRequest.displayName = 'proto.berty.messenger.v1.SendContactRequest';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -334,16 +334,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.SendContactRequest.Request = function(opt_data) {
+proto.berty.messenger.v1.SendContactRequest.Request = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.SendContactRequest.Request, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.SendContactRequest.Request, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.SendContactRequest.Request.displayName = 'proto.berty.messenger.SendContactRequest.Request';
+  proto.berty.messenger.v1.SendContactRequest.Request.displayName = 'proto.berty.messenger.v1.SendContactRequest.Request';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -355,16 +355,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.SendContactRequest.Reply = function(opt_data) {
+proto.berty.messenger.v1.SendContactRequest.Reply = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.SendContactRequest.Reply, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.SendContactRequest.Reply, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.SendContactRequest.Reply.displayName = 'proto.berty.messenger.SendContactRequest.Reply';
+  proto.berty.messenger.v1.SendContactRequest.Reply.displayName = 'proto.berty.messenger.v1.SendContactRequest.Reply';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -376,16 +376,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.SendAck = function(opt_data) {
+proto.berty.messenger.v1.SendAck = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.SendAck, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.SendAck, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.SendAck.displayName = 'proto.berty.messenger.SendAck';
+  proto.berty.messenger.v1.SendAck.displayName = 'proto.berty.messenger.v1.SendAck';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -397,16 +397,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.SendAck.Request = function(opt_data) {
+proto.berty.messenger.v1.SendAck.Request = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.SendAck.Request, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.SendAck.Request, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.SendAck.Request.displayName = 'proto.berty.messenger.SendAck.Request';
+  proto.berty.messenger.v1.SendAck.Request.displayName = 'proto.berty.messenger.v1.SendAck.Request';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -418,16 +418,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.SendAck.Reply = function(opt_data) {
+proto.berty.messenger.v1.SendAck.Reply = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.SendAck.Reply, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.SendAck.Reply, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.SendAck.Reply.displayName = 'proto.berty.messenger.SendAck.Reply';
+  proto.berty.messenger.v1.SendAck.Reply.displayName = 'proto.berty.messenger.v1.SendAck.Reply';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -439,16 +439,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.SendMessage = function(opt_data) {
+proto.berty.messenger.v1.SendMessage = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.SendMessage, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.SendMessage, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.SendMessage.displayName = 'proto.berty.messenger.SendMessage';
+  proto.berty.messenger.v1.SendMessage.displayName = 'proto.berty.messenger.v1.SendMessage';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -460,16 +460,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.SendMessage.Request = function(opt_data) {
+proto.berty.messenger.v1.SendMessage.Request = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.SendMessage.Request, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.SendMessage.Request, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.SendMessage.Request.displayName = 'proto.berty.messenger.SendMessage.Request';
+  proto.berty.messenger.v1.SendMessage.Request.displayName = 'proto.berty.messenger.v1.SendMessage.Request';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -481,16 +481,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.SendMessage.Reply = function(opt_data) {
+proto.berty.messenger.v1.SendMessage.Reply = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.SendMessage.Reply, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.SendMessage.Reply, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.SendMessage.Reply.displayName = 'proto.berty.messenger.SendMessage.Reply';
+  proto.berty.messenger.v1.SendMessage.Reply.displayName = 'proto.berty.messenger.v1.SendMessage.Reply';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -502,16 +502,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.BertyID = function(opt_data) {
+proto.berty.messenger.v1.BertyID = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.BertyID, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.BertyID, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.BertyID.displayName = 'proto.berty.messenger.BertyID';
+  proto.berty.messenger.v1.BertyID.displayName = 'proto.berty.messenger.v1.BertyID';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -523,16 +523,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.BertyGroup = function(opt_data) {
+proto.berty.messenger.v1.BertyGroup = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.BertyGroup, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.BertyGroup, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.BertyGroup.displayName = 'proto.berty.messenger.BertyGroup';
+  proto.berty.messenger.v1.BertyGroup.displayName = 'proto.berty.messenger.v1.BertyGroup';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -544,16 +544,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.AppMessageTyped = function(opt_data) {
+proto.berty.messenger.v1.AppMessageTyped = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.AppMessageTyped, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.AppMessageTyped, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.AppMessageTyped.displayName = 'proto.berty.messenger.AppMessageTyped';
+  proto.berty.messenger.v1.AppMessageTyped.displayName = 'proto.berty.messenger.v1.AppMessageTyped';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -565,16 +565,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.UserMessageAttachment = function(opt_data) {
+proto.berty.messenger.v1.UserMessageAttachment = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.UserMessageAttachment, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.UserMessageAttachment, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.UserMessageAttachment.displayName = 'proto.berty.messenger.UserMessageAttachment';
+  proto.berty.messenger.v1.UserMessageAttachment.displayName = 'proto.berty.messenger.v1.UserMessageAttachment';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -586,16 +586,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.PayloadUserMessage = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, proto.berty.messenger.PayloadUserMessage.repeatedFields_, null);
+proto.berty.messenger.v1.PayloadUserMessage = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.berty.messenger.v1.PayloadUserMessage.repeatedFields_, null);
 };
-goog.inherits(proto.berty.messenger.PayloadUserMessage, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.PayloadUserMessage, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.PayloadUserMessage.displayName = 'proto.berty.messenger.PayloadUserMessage';
+  proto.berty.messenger.v1.PayloadUserMessage.displayName = 'proto.berty.messenger.v1.PayloadUserMessage';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -607,16 +607,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.PayloadUserReaction = function(opt_data) {
+proto.berty.messenger.v1.PayloadUserReaction = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.PayloadUserReaction, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.PayloadUserReaction, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.PayloadUserReaction.displayName = 'proto.berty.messenger.PayloadUserReaction';
+  proto.berty.messenger.v1.PayloadUserReaction.displayName = 'proto.berty.messenger.v1.PayloadUserReaction';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -628,16 +628,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.PayloadGroupInvitation = function(opt_data) {
+proto.berty.messenger.v1.PayloadGroupInvitation = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.PayloadGroupInvitation, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.PayloadGroupInvitation, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.PayloadGroupInvitation.displayName = 'proto.berty.messenger.PayloadGroupInvitation';
+  proto.berty.messenger.v1.PayloadGroupInvitation.displayName = 'proto.berty.messenger.v1.PayloadGroupInvitation';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -649,16 +649,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.PayloadSetGroupName = function(opt_data) {
+proto.berty.messenger.v1.PayloadSetGroupName = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.PayloadSetGroupName, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.PayloadSetGroupName, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.PayloadSetGroupName.displayName = 'proto.berty.messenger.PayloadSetGroupName';
+  proto.berty.messenger.v1.PayloadSetGroupName.displayName = 'proto.berty.messenger.v1.PayloadSetGroupName';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -670,16 +670,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.PayloadAcknowledge = function(opt_data) {
+proto.berty.messenger.v1.PayloadAcknowledge = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.PayloadAcknowledge, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.PayloadAcknowledge, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.PayloadAcknowledge.displayName = 'proto.berty.messenger.PayloadAcknowledge';
+  proto.berty.messenger.v1.PayloadAcknowledge.displayName = 'proto.berty.messenger.v1.PayloadAcknowledge';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -691,16 +691,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.SystemInfo = function(opt_data) {
+proto.berty.messenger.v1.SystemInfo = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.SystemInfo, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.SystemInfo, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.SystemInfo.displayName = 'proto.berty.messenger.SystemInfo';
+  proto.berty.messenger.v1.SystemInfo.displayName = 'proto.berty.messenger.v1.SystemInfo';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -712,16 +712,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.SystemInfo.Request = function(opt_data) {
+proto.berty.messenger.v1.SystemInfo.Request = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.SystemInfo.Request, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.SystemInfo.Request, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.SystemInfo.Request.displayName = 'proto.berty.messenger.SystemInfo.Request';
+  proto.berty.messenger.v1.SystemInfo.Request.displayName = 'proto.berty.messenger.v1.SystemInfo.Request';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -733,16 +733,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.SystemInfo.Reply = function(opt_data) {
+proto.berty.messenger.v1.SystemInfo.Reply = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.SystemInfo.Reply, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.SystemInfo.Reply, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.SystemInfo.Reply.displayName = 'proto.berty.messenger.SystemInfo.Reply';
+  proto.berty.messenger.v1.SystemInfo.Reply.displayName = 'proto.berty.messenger.v1.SystemInfo.Reply';
 }
 
 
@@ -760,8 +760,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.InstanceShareableBertyID.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.InstanceShareableBertyID.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.InstanceShareableBertyID.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.InstanceShareableBertyID.toObject(opt_includeInstance, this);
 };
 
 
@@ -770,11 +770,11 @@ proto.berty.messenger.InstanceShareableBertyID.prototype.toObject = function(opt
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.InstanceShareableBertyID} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.InstanceShareableBertyID} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.InstanceShareableBertyID.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.InstanceShareableBertyID.toObject = function(includeInstance, msg) {
   var f, obj = {
 
   };
@@ -790,23 +790,23 @@ proto.berty.messenger.InstanceShareableBertyID.toObject = function(includeInstan
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.InstanceShareableBertyID}
+ * @return {!proto.berty.messenger.v1.InstanceShareableBertyID}
  */
-proto.berty.messenger.InstanceShareableBertyID.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.InstanceShareableBertyID.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.InstanceShareableBertyID;
-  return proto.berty.messenger.InstanceShareableBertyID.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.InstanceShareableBertyID;
+  return proto.berty.messenger.v1.InstanceShareableBertyID.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.InstanceShareableBertyID} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.InstanceShareableBertyID} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.InstanceShareableBertyID}
+ * @return {!proto.berty.messenger.v1.InstanceShareableBertyID}
  */
-proto.berty.messenger.InstanceShareableBertyID.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.InstanceShareableBertyID.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -826,9 +826,9 @@ proto.berty.messenger.InstanceShareableBertyID.deserializeBinaryFromReader = fun
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.InstanceShareableBertyID.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.InstanceShareableBertyID.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.InstanceShareableBertyID.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.InstanceShareableBertyID.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -836,11 +836,11 @@ proto.berty.messenger.InstanceShareableBertyID.prototype.serializeBinary = funct
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.InstanceShareableBertyID} message
+ * @param {!proto.berty.messenger.v1.InstanceShareableBertyID} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.InstanceShareableBertyID.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.InstanceShareableBertyID.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
 };
 
@@ -861,8 +861,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.InstanceShareableBertyID.Request.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.InstanceShareableBertyID.Request.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.InstanceShareableBertyID.Request.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.InstanceShareableBertyID.Request.toObject(opt_includeInstance, this);
 };
 
 
@@ -871,11 +871,11 @@ proto.berty.messenger.InstanceShareableBertyID.Request.prototype.toObject = func
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.InstanceShareableBertyID.Request} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.InstanceShareableBertyID.Request} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.InstanceShareableBertyID.Request.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.InstanceShareableBertyID.Request.toObject = function(includeInstance, msg) {
   var f, obj = {
     reset: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
     displayName: jspb.Message.getFieldWithDefault(msg, 2, "")
@@ -892,23 +892,23 @@ proto.berty.messenger.InstanceShareableBertyID.Request.toObject = function(inclu
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.InstanceShareableBertyID.Request}
+ * @return {!proto.berty.messenger.v1.InstanceShareableBertyID.Request}
  */
-proto.berty.messenger.InstanceShareableBertyID.Request.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.InstanceShareableBertyID.Request.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.InstanceShareableBertyID.Request;
-  return proto.berty.messenger.InstanceShareableBertyID.Request.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.InstanceShareableBertyID.Request;
+  return proto.berty.messenger.v1.InstanceShareableBertyID.Request.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.InstanceShareableBertyID.Request} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.InstanceShareableBertyID.Request} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.InstanceShareableBertyID.Request}
+ * @return {!proto.berty.messenger.v1.InstanceShareableBertyID.Request}
  */
-proto.berty.messenger.InstanceShareableBertyID.Request.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.InstanceShareableBertyID.Request.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -936,9 +936,9 @@ proto.berty.messenger.InstanceShareableBertyID.Request.deserializeBinaryFromRead
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.InstanceShareableBertyID.Request.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.InstanceShareableBertyID.Request.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.InstanceShareableBertyID.Request.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.InstanceShareableBertyID.Request.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -946,11 +946,11 @@ proto.berty.messenger.InstanceShareableBertyID.Request.prototype.serializeBinary
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.InstanceShareableBertyID.Request} message
+ * @param {!proto.berty.messenger.v1.InstanceShareableBertyID.Request} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.InstanceShareableBertyID.Request.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.InstanceShareableBertyID.Request.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getReset();
   if (f) {
@@ -973,16 +973,16 @@ proto.berty.messenger.InstanceShareableBertyID.Request.serializeBinaryToWriter =
  * optional bool reset = 1;
  * @return {boolean}
  */
-proto.berty.messenger.InstanceShareableBertyID.Request.prototype.getReset = function() {
+proto.berty.messenger.v1.InstanceShareableBertyID.Request.prototype.getReset = function() {
   return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 1, false));
 };
 
 
 /**
  * @param {boolean} value
- * @return {!proto.berty.messenger.InstanceShareableBertyID.Request} returns this
+ * @return {!proto.berty.messenger.v1.InstanceShareableBertyID.Request} returns this
  */
-proto.berty.messenger.InstanceShareableBertyID.Request.prototype.setReset = function(value) {
+proto.berty.messenger.v1.InstanceShareableBertyID.Request.prototype.setReset = function(value) {
   return jspb.Message.setProto3BooleanField(this, 1, value);
 };
 
@@ -991,16 +991,16 @@ proto.berty.messenger.InstanceShareableBertyID.Request.prototype.setReset = func
  * optional string display_name = 2;
  * @return {string}
  */
-proto.berty.messenger.InstanceShareableBertyID.Request.prototype.getDisplayName = function() {
+proto.berty.messenger.v1.InstanceShareableBertyID.Request.prototype.getDisplayName = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.InstanceShareableBertyID.Request} returns this
+ * @return {!proto.berty.messenger.v1.InstanceShareableBertyID.Request} returns this
  */
-proto.berty.messenger.InstanceShareableBertyID.Request.prototype.setDisplayName = function(value) {
+proto.berty.messenger.v1.InstanceShareableBertyID.Request.prototype.setDisplayName = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -1021,8 +1021,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.InstanceShareableBertyID.Reply.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.InstanceShareableBertyID.Reply.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.InstanceShareableBertyID.Reply.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.InstanceShareableBertyID.Reply.toObject(opt_includeInstance, this);
 };
 
 
@@ -1031,13 +1031,13 @@ proto.berty.messenger.InstanceShareableBertyID.Reply.prototype.toObject = functi
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.InstanceShareableBertyID.Reply} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.InstanceShareableBertyID.Reply} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.InstanceShareableBertyID.Reply.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.InstanceShareableBertyID.Reply.toObject = function(includeInstance, msg) {
   var f, obj = {
-    bertyId: (f = msg.getBertyId()) && proto.berty.messenger.BertyID.toObject(includeInstance, f),
+    bertyId: (f = msg.getBertyId()) && proto.berty.messenger.v1.BertyID.toObject(includeInstance, f),
     bertyIdPayload: jspb.Message.getFieldWithDefault(msg, 2, ""),
     deepLink: jspb.Message.getFieldWithDefault(msg, 3, ""),
     htmlUrl: jspb.Message.getFieldWithDefault(msg, 4, "")
@@ -1054,23 +1054,23 @@ proto.berty.messenger.InstanceShareableBertyID.Reply.toObject = function(include
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.InstanceShareableBertyID.Reply}
+ * @return {!proto.berty.messenger.v1.InstanceShareableBertyID.Reply}
  */
-proto.berty.messenger.InstanceShareableBertyID.Reply.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.InstanceShareableBertyID.Reply.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.InstanceShareableBertyID.Reply;
-  return proto.berty.messenger.InstanceShareableBertyID.Reply.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.InstanceShareableBertyID.Reply;
+  return proto.berty.messenger.v1.InstanceShareableBertyID.Reply.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.InstanceShareableBertyID.Reply} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.InstanceShareableBertyID.Reply} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.InstanceShareableBertyID.Reply}
+ * @return {!proto.berty.messenger.v1.InstanceShareableBertyID.Reply}
  */
-proto.berty.messenger.InstanceShareableBertyID.Reply.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.InstanceShareableBertyID.Reply.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -1078,8 +1078,8 @@ proto.berty.messenger.InstanceShareableBertyID.Reply.deserializeBinaryFromReader
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = new proto.berty.messenger.BertyID;
-      reader.readMessage(value,proto.berty.messenger.BertyID.deserializeBinaryFromReader);
+      var value = new proto.berty.messenger.v1.BertyID;
+      reader.readMessage(value,proto.berty.messenger.v1.BertyID.deserializeBinaryFromReader);
       msg.setBertyId(value);
       break;
     case 2:
@@ -1107,9 +1107,9 @@ proto.berty.messenger.InstanceShareableBertyID.Reply.deserializeBinaryFromReader
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.InstanceShareableBertyID.Reply.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.InstanceShareableBertyID.Reply.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.InstanceShareableBertyID.Reply.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.InstanceShareableBertyID.Reply.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -1117,18 +1117,18 @@ proto.berty.messenger.InstanceShareableBertyID.Reply.prototype.serializeBinary =
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.InstanceShareableBertyID.Reply} message
+ * @param {!proto.berty.messenger.v1.InstanceShareableBertyID.Reply} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.InstanceShareableBertyID.Reply.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.InstanceShareableBertyID.Reply.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getBertyId();
   if (f != null) {
     writer.writeMessage(
       1,
       f,
-      proto.berty.messenger.BertyID.serializeBinaryToWriter
+      proto.berty.messenger.v1.BertyID.serializeBinaryToWriter
     );
   }
   f = message.getBertyIdPayload();
@@ -1157,28 +1157,28 @@ proto.berty.messenger.InstanceShareableBertyID.Reply.serializeBinaryToWriter = f
 
 /**
  * optional BertyID berty_id = 1;
- * @return {?proto.berty.messenger.BertyID}
+ * @return {?proto.berty.messenger.v1.BertyID}
  */
-proto.berty.messenger.InstanceShareableBertyID.Reply.prototype.getBertyId = function() {
-  return /** @type{?proto.berty.messenger.BertyID} */ (
-    jspb.Message.getWrapperField(this, proto.berty.messenger.BertyID, 1));
+proto.berty.messenger.v1.InstanceShareableBertyID.Reply.prototype.getBertyId = function() {
+  return /** @type{?proto.berty.messenger.v1.BertyID} */ (
+    jspb.Message.getWrapperField(this, proto.berty.messenger.v1.BertyID, 1));
 };
 
 
 /**
- * @param {?proto.berty.messenger.BertyID|undefined} value
- * @return {!proto.berty.messenger.InstanceShareableBertyID.Reply} returns this
+ * @param {?proto.berty.messenger.v1.BertyID|undefined} value
+ * @return {!proto.berty.messenger.v1.InstanceShareableBertyID.Reply} returns this
 */
-proto.berty.messenger.InstanceShareableBertyID.Reply.prototype.setBertyId = function(value) {
+proto.berty.messenger.v1.InstanceShareableBertyID.Reply.prototype.setBertyId = function(value) {
   return jspb.Message.setWrapperField(this, 1, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
- * @return {!proto.berty.messenger.InstanceShareableBertyID.Reply} returns this
+ * @return {!proto.berty.messenger.v1.InstanceShareableBertyID.Reply} returns this
  */
-proto.berty.messenger.InstanceShareableBertyID.Reply.prototype.clearBertyId = function() {
+proto.berty.messenger.v1.InstanceShareableBertyID.Reply.prototype.clearBertyId = function() {
   return this.setBertyId(undefined);
 };
 
@@ -1187,7 +1187,7 @@ proto.berty.messenger.InstanceShareableBertyID.Reply.prototype.clearBertyId = fu
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.berty.messenger.InstanceShareableBertyID.Reply.prototype.hasBertyId = function() {
+proto.berty.messenger.v1.InstanceShareableBertyID.Reply.prototype.hasBertyId = function() {
   return jspb.Message.getField(this, 1) != null;
 };
 
@@ -1196,16 +1196,16 @@ proto.berty.messenger.InstanceShareableBertyID.Reply.prototype.hasBertyId = func
  * optional string berty_id_payload = 2;
  * @return {string}
  */
-proto.berty.messenger.InstanceShareableBertyID.Reply.prototype.getBertyIdPayload = function() {
+proto.berty.messenger.v1.InstanceShareableBertyID.Reply.prototype.getBertyIdPayload = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.InstanceShareableBertyID.Reply} returns this
+ * @return {!proto.berty.messenger.v1.InstanceShareableBertyID.Reply} returns this
  */
-proto.berty.messenger.InstanceShareableBertyID.Reply.prototype.setBertyIdPayload = function(value) {
+proto.berty.messenger.v1.InstanceShareableBertyID.Reply.prototype.setBertyIdPayload = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -1214,16 +1214,16 @@ proto.berty.messenger.InstanceShareableBertyID.Reply.prototype.setBertyIdPayload
  * optional string deep_link = 3;
  * @return {string}
  */
-proto.berty.messenger.InstanceShareableBertyID.Reply.prototype.getDeepLink = function() {
+proto.berty.messenger.v1.InstanceShareableBertyID.Reply.prototype.getDeepLink = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.InstanceShareableBertyID.Reply} returns this
+ * @return {!proto.berty.messenger.v1.InstanceShareableBertyID.Reply} returns this
  */
-proto.berty.messenger.InstanceShareableBertyID.Reply.prototype.setDeepLink = function(value) {
+proto.berty.messenger.v1.InstanceShareableBertyID.Reply.prototype.setDeepLink = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
 };
 
@@ -1232,16 +1232,16 @@ proto.berty.messenger.InstanceShareableBertyID.Reply.prototype.setDeepLink = fun
  * optional string html_url = 4;
  * @return {string}
  */
-proto.berty.messenger.InstanceShareableBertyID.Reply.prototype.getHtmlUrl = function() {
+proto.berty.messenger.v1.InstanceShareableBertyID.Reply.prototype.getHtmlUrl = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.InstanceShareableBertyID.Reply} returns this
+ * @return {!proto.berty.messenger.v1.InstanceShareableBertyID.Reply} returns this
  */
-proto.berty.messenger.InstanceShareableBertyID.Reply.prototype.setHtmlUrl = function(value) {
+proto.berty.messenger.v1.InstanceShareableBertyID.Reply.prototype.setHtmlUrl = function(value) {
   return jspb.Message.setProto3StringField(this, 4, value);
 };
 
@@ -1262,8 +1262,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.ShareableBertyGroup.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.ShareableBertyGroup.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.ShareableBertyGroup.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.ShareableBertyGroup.toObject(opt_includeInstance, this);
 };
 
 
@@ -1272,11 +1272,11 @@ proto.berty.messenger.ShareableBertyGroup.prototype.toObject = function(opt_incl
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.ShareableBertyGroup} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.ShareableBertyGroup} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.ShareableBertyGroup.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.ShareableBertyGroup.toObject = function(includeInstance, msg) {
   var f, obj = {
 
   };
@@ -1292,23 +1292,23 @@ proto.berty.messenger.ShareableBertyGroup.toObject = function(includeInstance, m
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.ShareableBertyGroup}
+ * @return {!proto.berty.messenger.v1.ShareableBertyGroup}
  */
-proto.berty.messenger.ShareableBertyGroup.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.ShareableBertyGroup.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.ShareableBertyGroup;
-  return proto.berty.messenger.ShareableBertyGroup.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.ShareableBertyGroup;
+  return proto.berty.messenger.v1.ShareableBertyGroup.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.ShareableBertyGroup} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.ShareableBertyGroup} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.ShareableBertyGroup}
+ * @return {!proto.berty.messenger.v1.ShareableBertyGroup}
  */
-proto.berty.messenger.ShareableBertyGroup.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.ShareableBertyGroup.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -1328,9 +1328,9 @@ proto.berty.messenger.ShareableBertyGroup.deserializeBinaryFromReader = function
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.ShareableBertyGroup.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.ShareableBertyGroup.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.ShareableBertyGroup.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.ShareableBertyGroup.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -1338,11 +1338,11 @@ proto.berty.messenger.ShareableBertyGroup.prototype.serializeBinary = function()
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.ShareableBertyGroup} message
+ * @param {!proto.berty.messenger.v1.ShareableBertyGroup} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.ShareableBertyGroup.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.ShareableBertyGroup.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
 };
 
@@ -1363,8 +1363,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.ShareableBertyGroup.Request.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.ShareableBertyGroup.Request.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.ShareableBertyGroup.Request.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.ShareableBertyGroup.Request.toObject(opt_includeInstance, this);
 };
 
 
@@ -1373,11 +1373,11 @@ proto.berty.messenger.ShareableBertyGroup.Request.prototype.toObject = function(
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.ShareableBertyGroup.Request} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.ShareableBertyGroup.Request} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.ShareableBertyGroup.Request.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.ShareableBertyGroup.Request.toObject = function(includeInstance, msg) {
   var f, obj = {
     groupPk: msg.getGroupPk_asB64(),
     groupName: jspb.Message.getFieldWithDefault(msg, 2, "")
@@ -1394,23 +1394,23 @@ proto.berty.messenger.ShareableBertyGroup.Request.toObject = function(includeIns
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.ShareableBertyGroup.Request}
+ * @return {!proto.berty.messenger.v1.ShareableBertyGroup.Request}
  */
-proto.berty.messenger.ShareableBertyGroup.Request.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.ShareableBertyGroup.Request.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.ShareableBertyGroup.Request;
-  return proto.berty.messenger.ShareableBertyGroup.Request.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.ShareableBertyGroup.Request;
+  return proto.berty.messenger.v1.ShareableBertyGroup.Request.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.ShareableBertyGroup.Request} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.ShareableBertyGroup.Request} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.ShareableBertyGroup.Request}
+ * @return {!proto.berty.messenger.v1.ShareableBertyGroup.Request}
  */
-proto.berty.messenger.ShareableBertyGroup.Request.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.ShareableBertyGroup.Request.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -1438,9 +1438,9 @@ proto.berty.messenger.ShareableBertyGroup.Request.deserializeBinaryFromReader = 
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.ShareableBertyGroup.Request.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.ShareableBertyGroup.Request.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.ShareableBertyGroup.Request.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.ShareableBertyGroup.Request.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -1448,11 +1448,11 @@ proto.berty.messenger.ShareableBertyGroup.Request.prototype.serializeBinary = fu
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.ShareableBertyGroup.Request} message
+ * @param {!proto.berty.messenger.v1.ShareableBertyGroup.Request} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.ShareableBertyGroup.Request.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.ShareableBertyGroup.Request.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getGroupPk_asU8();
   if (f.length > 0) {
@@ -1475,7 +1475,7 @@ proto.berty.messenger.ShareableBertyGroup.Request.serializeBinaryToWriter = func
  * optional bytes group_pk = 1;
  * @return {!(string|Uint8Array)}
  */
-proto.berty.messenger.ShareableBertyGroup.Request.prototype.getGroupPk = function() {
+proto.berty.messenger.v1.ShareableBertyGroup.Request.prototype.getGroupPk = function() {
   return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -1485,7 +1485,7 @@ proto.berty.messenger.ShareableBertyGroup.Request.prototype.getGroupPk = functio
  * This is a type-conversion wrapper around `getGroupPk()`
  * @return {string}
  */
-proto.berty.messenger.ShareableBertyGroup.Request.prototype.getGroupPk_asB64 = function() {
+proto.berty.messenger.v1.ShareableBertyGroup.Request.prototype.getGroupPk_asB64 = function() {
   return /** @type {string} */ (jspb.Message.bytesAsB64(
       this.getGroupPk()));
 };
@@ -1498,7 +1498,7 @@ proto.berty.messenger.ShareableBertyGroup.Request.prototype.getGroupPk_asB64 = f
  * This is a type-conversion wrapper around `getGroupPk()`
  * @return {!Uint8Array}
  */
-proto.berty.messenger.ShareableBertyGroup.Request.prototype.getGroupPk_asU8 = function() {
+proto.berty.messenger.v1.ShareableBertyGroup.Request.prototype.getGroupPk_asU8 = function() {
   return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
       this.getGroupPk()));
 };
@@ -1506,9 +1506,9 @@ proto.berty.messenger.ShareableBertyGroup.Request.prototype.getGroupPk_asU8 = fu
 
 /**
  * @param {!(string|Uint8Array)} value
- * @return {!proto.berty.messenger.ShareableBertyGroup.Request} returns this
+ * @return {!proto.berty.messenger.v1.ShareableBertyGroup.Request} returns this
  */
-proto.berty.messenger.ShareableBertyGroup.Request.prototype.setGroupPk = function(value) {
+proto.berty.messenger.v1.ShareableBertyGroup.Request.prototype.setGroupPk = function(value) {
   return jspb.Message.setProto3BytesField(this, 1, value);
 };
 
@@ -1517,16 +1517,16 @@ proto.berty.messenger.ShareableBertyGroup.Request.prototype.setGroupPk = functio
  * optional string group_name = 2;
  * @return {string}
  */
-proto.berty.messenger.ShareableBertyGroup.Request.prototype.getGroupName = function() {
+proto.berty.messenger.v1.ShareableBertyGroup.Request.prototype.getGroupName = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.ShareableBertyGroup.Request} returns this
+ * @return {!proto.berty.messenger.v1.ShareableBertyGroup.Request} returns this
  */
-proto.berty.messenger.ShareableBertyGroup.Request.prototype.setGroupName = function(value) {
+proto.berty.messenger.v1.ShareableBertyGroup.Request.prototype.setGroupName = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -1547,8 +1547,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.ShareableBertyGroup.Reply.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.ShareableBertyGroup.Reply.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.ShareableBertyGroup.Reply.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.ShareableBertyGroup.Reply.toObject(opt_includeInstance, this);
 };
 
 
@@ -1557,13 +1557,13 @@ proto.berty.messenger.ShareableBertyGroup.Reply.prototype.toObject = function(op
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.ShareableBertyGroup.Reply} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.ShareableBertyGroup.Reply} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.ShareableBertyGroup.Reply.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.ShareableBertyGroup.Reply.toObject = function(includeInstance, msg) {
   var f, obj = {
-    bertyGroup: (f = msg.getBertyGroup()) && proto.berty.messenger.BertyGroup.toObject(includeInstance, f),
+    bertyGroup: (f = msg.getBertyGroup()) && proto.berty.messenger.v1.BertyGroup.toObject(includeInstance, f),
     bertyGroupPayload: jspb.Message.getFieldWithDefault(msg, 2, ""),
     deepLink: jspb.Message.getFieldWithDefault(msg, 3, ""),
     htmlUrl: jspb.Message.getFieldWithDefault(msg, 4, "")
@@ -1580,23 +1580,23 @@ proto.berty.messenger.ShareableBertyGroup.Reply.toObject = function(includeInsta
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.ShareableBertyGroup.Reply}
+ * @return {!proto.berty.messenger.v1.ShareableBertyGroup.Reply}
  */
-proto.berty.messenger.ShareableBertyGroup.Reply.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.ShareableBertyGroup.Reply.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.ShareableBertyGroup.Reply;
-  return proto.berty.messenger.ShareableBertyGroup.Reply.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.ShareableBertyGroup.Reply;
+  return proto.berty.messenger.v1.ShareableBertyGroup.Reply.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.ShareableBertyGroup.Reply} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.ShareableBertyGroup.Reply} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.ShareableBertyGroup.Reply}
+ * @return {!proto.berty.messenger.v1.ShareableBertyGroup.Reply}
  */
-proto.berty.messenger.ShareableBertyGroup.Reply.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.ShareableBertyGroup.Reply.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -1604,8 +1604,8 @@ proto.berty.messenger.ShareableBertyGroup.Reply.deserializeBinaryFromReader = fu
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = new proto.berty.messenger.BertyGroup;
-      reader.readMessage(value,proto.berty.messenger.BertyGroup.deserializeBinaryFromReader);
+      var value = new proto.berty.messenger.v1.BertyGroup;
+      reader.readMessage(value,proto.berty.messenger.v1.BertyGroup.deserializeBinaryFromReader);
       msg.setBertyGroup(value);
       break;
     case 2:
@@ -1633,9 +1633,9 @@ proto.berty.messenger.ShareableBertyGroup.Reply.deserializeBinaryFromReader = fu
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.ShareableBertyGroup.Reply.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.ShareableBertyGroup.Reply.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.ShareableBertyGroup.Reply.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.ShareableBertyGroup.Reply.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -1643,18 +1643,18 @@ proto.berty.messenger.ShareableBertyGroup.Reply.prototype.serializeBinary = func
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.ShareableBertyGroup.Reply} message
+ * @param {!proto.berty.messenger.v1.ShareableBertyGroup.Reply} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.ShareableBertyGroup.Reply.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.ShareableBertyGroup.Reply.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getBertyGroup();
   if (f != null) {
     writer.writeMessage(
       1,
       f,
-      proto.berty.messenger.BertyGroup.serializeBinaryToWriter
+      proto.berty.messenger.v1.BertyGroup.serializeBinaryToWriter
     );
   }
   f = message.getBertyGroupPayload();
@@ -1683,28 +1683,28 @@ proto.berty.messenger.ShareableBertyGroup.Reply.serializeBinaryToWriter = functi
 
 /**
  * optional BertyGroup berty_group = 1;
- * @return {?proto.berty.messenger.BertyGroup}
+ * @return {?proto.berty.messenger.v1.BertyGroup}
  */
-proto.berty.messenger.ShareableBertyGroup.Reply.prototype.getBertyGroup = function() {
-  return /** @type{?proto.berty.messenger.BertyGroup} */ (
-    jspb.Message.getWrapperField(this, proto.berty.messenger.BertyGroup, 1));
+proto.berty.messenger.v1.ShareableBertyGroup.Reply.prototype.getBertyGroup = function() {
+  return /** @type{?proto.berty.messenger.v1.BertyGroup} */ (
+    jspb.Message.getWrapperField(this, proto.berty.messenger.v1.BertyGroup, 1));
 };
 
 
 /**
- * @param {?proto.berty.messenger.BertyGroup|undefined} value
- * @return {!proto.berty.messenger.ShareableBertyGroup.Reply} returns this
+ * @param {?proto.berty.messenger.v1.BertyGroup|undefined} value
+ * @return {!proto.berty.messenger.v1.ShareableBertyGroup.Reply} returns this
 */
-proto.berty.messenger.ShareableBertyGroup.Reply.prototype.setBertyGroup = function(value) {
+proto.berty.messenger.v1.ShareableBertyGroup.Reply.prototype.setBertyGroup = function(value) {
   return jspb.Message.setWrapperField(this, 1, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
- * @return {!proto.berty.messenger.ShareableBertyGroup.Reply} returns this
+ * @return {!proto.berty.messenger.v1.ShareableBertyGroup.Reply} returns this
  */
-proto.berty.messenger.ShareableBertyGroup.Reply.prototype.clearBertyGroup = function() {
+proto.berty.messenger.v1.ShareableBertyGroup.Reply.prototype.clearBertyGroup = function() {
   return this.setBertyGroup(undefined);
 };
 
@@ -1713,7 +1713,7 @@ proto.berty.messenger.ShareableBertyGroup.Reply.prototype.clearBertyGroup = func
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.berty.messenger.ShareableBertyGroup.Reply.prototype.hasBertyGroup = function() {
+proto.berty.messenger.v1.ShareableBertyGroup.Reply.prototype.hasBertyGroup = function() {
   return jspb.Message.getField(this, 1) != null;
 };
 
@@ -1722,16 +1722,16 @@ proto.berty.messenger.ShareableBertyGroup.Reply.prototype.hasBertyGroup = functi
  * optional string berty_group_payload = 2;
  * @return {string}
  */
-proto.berty.messenger.ShareableBertyGroup.Reply.prototype.getBertyGroupPayload = function() {
+proto.berty.messenger.v1.ShareableBertyGroup.Reply.prototype.getBertyGroupPayload = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.ShareableBertyGroup.Reply} returns this
+ * @return {!proto.berty.messenger.v1.ShareableBertyGroup.Reply} returns this
  */
-proto.berty.messenger.ShareableBertyGroup.Reply.prototype.setBertyGroupPayload = function(value) {
+proto.berty.messenger.v1.ShareableBertyGroup.Reply.prototype.setBertyGroupPayload = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -1740,16 +1740,16 @@ proto.berty.messenger.ShareableBertyGroup.Reply.prototype.setBertyGroupPayload =
  * optional string deep_link = 3;
  * @return {string}
  */
-proto.berty.messenger.ShareableBertyGroup.Reply.prototype.getDeepLink = function() {
+proto.berty.messenger.v1.ShareableBertyGroup.Reply.prototype.getDeepLink = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.ShareableBertyGroup.Reply} returns this
+ * @return {!proto.berty.messenger.v1.ShareableBertyGroup.Reply} returns this
  */
-proto.berty.messenger.ShareableBertyGroup.Reply.prototype.setDeepLink = function(value) {
+proto.berty.messenger.v1.ShareableBertyGroup.Reply.prototype.setDeepLink = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
 };
 
@@ -1758,16 +1758,16 @@ proto.berty.messenger.ShareableBertyGroup.Reply.prototype.setDeepLink = function
  * optional string html_url = 4;
  * @return {string}
  */
-proto.berty.messenger.ShareableBertyGroup.Reply.prototype.getHtmlUrl = function() {
+proto.berty.messenger.v1.ShareableBertyGroup.Reply.prototype.getHtmlUrl = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.ShareableBertyGroup.Reply} returns this
+ * @return {!proto.berty.messenger.v1.ShareableBertyGroup.Reply} returns this
  */
-proto.berty.messenger.ShareableBertyGroup.Reply.prototype.setHtmlUrl = function(value) {
+proto.berty.messenger.v1.ShareableBertyGroup.Reply.prototype.setHtmlUrl = function(value) {
   return jspb.Message.setProto3StringField(this, 4, value);
 };
 
@@ -1788,8 +1788,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.DevShareInstanceBertyID.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.DevShareInstanceBertyID.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.DevShareInstanceBertyID.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.DevShareInstanceBertyID.toObject(opt_includeInstance, this);
 };
 
 
@@ -1798,11 +1798,11 @@ proto.berty.messenger.DevShareInstanceBertyID.prototype.toObject = function(opt_
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.DevShareInstanceBertyID} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.DevShareInstanceBertyID} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.DevShareInstanceBertyID.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.DevShareInstanceBertyID.toObject = function(includeInstance, msg) {
   var f, obj = {
 
   };
@@ -1818,23 +1818,23 @@ proto.berty.messenger.DevShareInstanceBertyID.toObject = function(includeInstanc
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.DevShareInstanceBertyID}
+ * @return {!proto.berty.messenger.v1.DevShareInstanceBertyID}
  */
-proto.berty.messenger.DevShareInstanceBertyID.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.DevShareInstanceBertyID.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.DevShareInstanceBertyID;
-  return proto.berty.messenger.DevShareInstanceBertyID.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.DevShareInstanceBertyID;
+  return proto.berty.messenger.v1.DevShareInstanceBertyID.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.DevShareInstanceBertyID} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.DevShareInstanceBertyID} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.DevShareInstanceBertyID}
+ * @return {!proto.berty.messenger.v1.DevShareInstanceBertyID}
  */
-proto.berty.messenger.DevShareInstanceBertyID.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.DevShareInstanceBertyID.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -1854,9 +1854,9 @@ proto.berty.messenger.DevShareInstanceBertyID.deserializeBinaryFromReader = func
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.DevShareInstanceBertyID.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.DevShareInstanceBertyID.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.DevShareInstanceBertyID.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.DevShareInstanceBertyID.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -1864,11 +1864,11 @@ proto.berty.messenger.DevShareInstanceBertyID.prototype.serializeBinary = functi
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.DevShareInstanceBertyID} message
+ * @param {!proto.berty.messenger.v1.DevShareInstanceBertyID} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.DevShareInstanceBertyID.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.DevShareInstanceBertyID.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
 };
 
@@ -1889,8 +1889,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.DevShareInstanceBertyID.Request.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.DevShareInstanceBertyID.Request.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.DevShareInstanceBertyID.Request.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.DevShareInstanceBertyID.Request.toObject(opt_includeInstance, this);
 };
 
 
@@ -1899,11 +1899,11 @@ proto.berty.messenger.DevShareInstanceBertyID.Request.prototype.toObject = funct
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.DevShareInstanceBertyID.Request} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.DevShareInstanceBertyID.Request} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.DevShareInstanceBertyID.Request.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.DevShareInstanceBertyID.Request.toObject = function(includeInstance, msg) {
   var f, obj = {
     reset: jspb.Message.getBooleanFieldWithDefault(msg, 1, false),
     displayName: jspb.Message.getFieldWithDefault(msg, 2, "")
@@ -1920,23 +1920,23 @@ proto.berty.messenger.DevShareInstanceBertyID.Request.toObject = function(includ
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.DevShareInstanceBertyID.Request}
+ * @return {!proto.berty.messenger.v1.DevShareInstanceBertyID.Request}
  */
-proto.berty.messenger.DevShareInstanceBertyID.Request.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.DevShareInstanceBertyID.Request.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.DevShareInstanceBertyID.Request;
-  return proto.berty.messenger.DevShareInstanceBertyID.Request.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.DevShareInstanceBertyID.Request;
+  return proto.berty.messenger.v1.DevShareInstanceBertyID.Request.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.DevShareInstanceBertyID.Request} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.DevShareInstanceBertyID.Request} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.DevShareInstanceBertyID.Request}
+ * @return {!proto.berty.messenger.v1.DevShareInstanceBertyID.Request}
  */
-proto.berty.messenger.DevShareInstanceBertyID.Request.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.DevShareInstanceBertyID.Request.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -1964,9 +1964,9 @@ proto.berty.messenger.DevShareInstanceBertyID.Request.deserializeBinaryFromReade
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.DevShareInstanceBertyID.Request.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.DevShareInstanceBertyID.Request.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.DevShareInstanceBertyID.Request.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.DevShareInstanceBertyID.Request.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -1974,11 +1974,11 @@ proto.berty.messenger.DevShareInstanceBertyID.Request.prototype.serializeBinary 
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.DevShareInstanceBertyID.Request} message
+ * @param {!proto.berty.messenger.v1.DevShareInstanceBertyID.Request} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.DevShareInstanceBertyID.Request.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.DevShareInstanceBertyID.Request.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getReset();
   if (f) {
@@ -2001,16 +2001,16 @@ proto.berty.messenger.DevShareInstanceBertyID.Request.serializeBinaryToWriter = 
  * optional bool reset = 1;
  * @return {boolean}
  */
-proto.berty.messenger.DevShareInstanceBertyID.Request.prototype.getReset = function() {
+proto.berty.messenger.v1.DevShareInstanceBertyID.Request.prototype.getReset = function() {
   return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 1, false));
 };
 
 
 /**
  * @param {boolean} value
- * @return {!proto.berty.messenger.DevShareInstanceBertyID.Request} returns this
+ * @return {!proto.berty.messenger.v1.DevShareInstanceBertyID.Request} returns this
  */
-proto.berty.messenger.DevShareInstanceBertyID.Request.prototype.setReset = function(value) {
+proto.berty.messenger.v1.DevShareInstanceBertyID.Request.prototype.setReset = function(value) {
   return jspb.Message.setProto3BooleanField(this, 1, value);
 };
 
@@ -2019,16 +2019,16 @@ proto.berty.messenger.DevShareInstanceBertyID.Request.prototype.setReset = funct
  * optional string display_name = 2;
  * @return {string}
  */
-proto.berty.messenger.DevShareInstanceBertyID.Request.prototype.getDisplayName = function() {
+proto.berty.messenger.v1.DevShareInstanceBertyID.Request.prototype.getDisplayName = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.DevShareInstanceBertyID.Request} returns this
+ * @return {!proto.berty.messenger.v1.DevShareInstanceBertyID.Request} returns this
  */
-proto.berty.messenger.DevShareInstanceBertyID.Request.prototype.setDisplayName = function(value) {
+proto.berty.messenger.v1.DevShareInstanceBertyID.Request.prototype.setDisplayName = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -2049,8 +2049,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.DevShareInstanceBertyID.Reply.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.DevShareInstanceBertyID.Reply.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.DevShareInstanceBertyID.Reply.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.DevShareInstanceBertyID.Reply.toObject(opt_includeInstance, this);
 };
 
 
@@ -2059,11 +2059,11 @@ proto.berty.messenger.DevShareInstanceBertyID.Reply.prototype.toObject = functio
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.DevShareInstanceBertyID.Reply} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.DevShareInstanceBertyID.Reply} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.DevShareInstanceBertyID.Reply.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.DevShareInstanceBertyID.Reply.toObject = function(includeInstance, msg) {
   var f, obj = {
 
   };
@@ -2079,23 +2079,23 @@ proto.berty.messenger.DevShareInstanceBertyID.Reply.toObject = function(includeI
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.DevShareInstanceBertyID.Reply}
+ * @return {!proto.berty.messenger.v1.DevShareInstanceBertyID.Reply}
  */
-proto.berty.messenger.DevShareInstanceBertyID.Reply.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.DevShareInstanceBertyID.Reply.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.DevShareInstanceBertyID.Reply;
-  return proto.berty.messenger.DevShareInstanceBertyID.Reply.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.DevShareInstanceBertyID.Reply;
+  return proto.berty.messenger.v1.DevShareInstanceBertyID.Reply.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.DevShareInstanceBertyID.Reply} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.DevShareInstanceBertyID.Reply} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.DevShareInstanceBertyID.Reply}
+ * @return {!proto.berty.messenger.v1.DevShareInstanceBertyID.Reply}
  */
-proto.berty.messenger.DevShareInstanceBertyID.Reply.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.DevShareInstanceBertyID.Reply.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -2115,9 +2115,9 @@ proto.berty.messenger.DevShareInstanceBertyID.Reply.deserializeBinaryFromReader 
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.DevShareInstanceBertyID.Reply.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.DevShareInstanceBertyID.Reply.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.DevShareInstanceBertyID.Reply.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.DevShareInstanceBertyID.Reply.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -2125,11 +2125,11 @@ proto.berty.messenger.DevShareInstanceBertyID.Reply.prototype.serializeBinary = 
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.DevShareInstanceBertyID.Reply} message
+ * @param {!proto.berty.messenger.v1.DevShareInstanceBertyID.Reply} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.DevShareInstanceBertyID.Reply.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.DevShareInstanceBertyID.Reply.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
 };
 
@@ -2150,8 +2150,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.ParseDeepLink.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.ParseDeepLink.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.ParseDeepLink.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.ParseDeepLink.toObject(opt_includeInstance, this);
 };
 
 
@@ -2160,11 +2160,11 @@ proto.berty.messenger.ParseDeepLink.prototype.toObject = function(opt_includeIns
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.ParseDeepLink} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.ParseDeepLink} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.ParseDeepLink.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.ParseDeepLink.toObject = function(includeInstance, msg) {
   var f, obj = {
 
   };
@@ -2180,23 +2180,23 @@ proto.berty.messenger.ParseDeepLink.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.ParseDeepLink}
+ * @return {!proto.berty.messenger.v1.ParseDeepLink}
  */
-proto.berty.messenger.ParseDeepLink.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.ParseDeepLink.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.ParseDeepLink;
-  return proto.berty.messenger.ParseDeepLink.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.ParseDeepLink;
+  return proto.berty.messenger.v1.ParseDeepLink.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.ParseDeepLink} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.ParseDeepLink} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.ParseDeepLink}
+ * @return {!proto.berty.messenger.v1.ParseDeepLink}
  */
-proto.berty.messenger.ParseDeepLink.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.ParseDeepLink.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -2216,9 +2216,9 @@ proto.berty.messenger.ParseDeepLink.deserializeBinaryFromReader = function(msg, 
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.ParseDeepLink.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.ParseDeepLink.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.ParseDeepLink.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.ParseDeepLink.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -2226,11 +2226,11 @@ proto.berty.messenger.ParseDeepLink.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.ParseDeepLink} message
+ * @param {!proto.berty.messenger.v1.ParseDeepLink} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.ParseDeepLink.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.ParseDeepLink.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
 };
 
@@ -2238,7 +2238,7 @@ proto.berty.messenger.ParseDeepLink.serializeBinaryToWriter = function(message, 
 /**
  * @enum {number}
  */
-proto.berty.messenger.ParseDeepLink.Kind = {
+proto.berty.messenger.v1.ParseDeepLink.Kind = {
   UNKNOWNKIND: 0,
   BERTYID: 1,
   BERTYGROUP: 2
@@ -2260,8 +2260,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.ParseDeepLink.Request.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.ParseDeepLink.Request.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.ParseDeepLink.Request.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.ParseDeepLink.Request.toObject(opt_includeInstance, this);
 };
 
 
@@ -2270,11 +2270,11 @@ proto.berty.messenger.ParseDeepLink.Request.prototype.toObject = function(opt_in
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.ParseDeepLink.Request} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.ParseDeepLink.Request} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.ParseDeepLink.Request.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.ParseDeepLink.Request.toObject = function(includeInstance, msg) {
   var f, obj = {
     link: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
@@ -2290,23 +2290,23 @@ proto.berty.messenger.ParseDeepLink.Request.toObject = function(includeInstance,
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.ParseDeepLink.Request}
+ * @return {!proto.berty.messenger.v1.ParseDeepLink.Request}
  */
-proto.berty.messenger.ParseDeepLink.Request.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.ParseDeepLink.Request.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.ParseDeepLink.Request;
-  return proto.berty.messenger.ParseDeepLink.Request.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.ParseDeepLink.Request;
+  return proto.berty.messenger.v1.ParseDeepLink.Request.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.ParseDeepLink.Request} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.ParseDeepLink.Request} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.ParseDeepLink.Request}
+ * @return {!proto.berty.messenger.v1.ParseDeepLink.Request}
  */
-proto.berty.messenger.ParseDeepLink.Request.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.ParseDeepLink.Request.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -2330,9 +2330,9 @@ proto.berty.messenger.ParseDeepLink.Request.deserializeBinaryFromReader = functi
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.ParseDeepLink.Request.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.ParseDeepLink.Request.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.ParseDeepLink.Request.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.ParseDeepLink.Request.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -2340,11 +2340,11 @@ proto.berty.messenger.ParseDeepLink.Request.prototype.serializeBinary = function
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.ParseDeepLink.Request} message
+ * @param {!proto.berty.messenger.v1.ParseDeepLink.Request} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.ParseDeepLink.Request.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.ParseDeepLink.Request.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getLink();
   if (f.length > 0) {
@@ -2360,16 +2360,16 @@ proto.berty.messenger.ParseDeepLink.Request.serializeBinaryToWriter = function(m
  * optional string link = 1;
  * @return {string}
  */
-proto.berty.messenger.ParseDeepLink.Request.prototype.getLink = function() {
+proto.berty.messenger.v1.ParseDeepLink.Request.prototype.getLink = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.ParseDeepLink.Request} returns this
+ * @return {!proto.berty.messenger.v1.ParseDeepLink.Request} returns this
  */
-proto.berty.messenger.ParseDeepLink.Request.prototype.setLink = function(value) {
+proto.berty.messenger.v1.ParseDeepLink.Request.prototype.setLink = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
@@ -2390,8 +2390,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.ParseDeepLink.Reply.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.ParseDeepLink.Reply.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.ParseDeepLink.Reply.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.ParseDeepLink.Reply.toObject(opt_includeInstance, this);
 };
 
 
@@ -2400,15 +2400,15 @@ proto.berty.messenger.ParseDeepLink.Reply.prototype.toObject = function(opt_incl
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.ParseDeepLink.Reply} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.ParseDeepLink.Reply} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.ParseDeepLink.Reply.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.ParseDeepLink.Reply.toObject = function(includeInstance, msg) {
   var f, obj = {
     kind: jspb.Message.getFieldWithDefault(msg, 1, 0),
-    bertyId: (f = msg.getBertyId()) && proto.berty.messenger.BertyID.toObject(includeInstance, f),
-    bertyGroup: (f = msg.getBertyGroup()) && proto.berty.messenger.BertyGroup.toObject(includeInstance, f)
+    bertyId: (f = msg.getBertyId()) && proto.berty.messenger.v1.BertyID.toObject(includeInstance, f),
+    bertyGroup: (f = msg.getBertyGroup()) && proto.berty.messenger.v1.BertyGroup.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -2422,23 +2422,23 @@ proto.berty.messenger.ParseDeepLink.Reply.toObject = function(includeInstance, m
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.ParseDeepLink.Reply}
+ * @return {!proto.berty.messenger.v1.ParseDeepLink.Reply}
  */
-proto.berty.messenger.ParseDeepLink.Reply.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.ParseDeepLink.Reply.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.ParseDeepLink.Reply;
-  return proto.berty.messenger.ParseDeepLink.Reply.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.ParseDeepLink.Reply;
+  return proto.berty.messenger.v1.ParseDeepLink.Reply.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.ParseDeepLink.Reply} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.ParseDeepLink.Reply} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.ParseDeepLink.Reply}
+ * @return {!proto.berty.messenger.v1.ParseDeepLink.Reply}
  */
-proto.berty.messenger.ParseDeepLink.Reply.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.ParseDeepLink.Reply.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -2446,17 +2446,17 @@ proto.berty.messenger.ParseDeepLink.Reply.deserializeBinaryFromReader = function
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {!proto.berty.messenger.ParseDeepLink.Kind} */ (reader.readEnum());
+      var value = /** @type {!proto.berty.messenger.v1.ParseDeepLink.Kind} */ (reader.readEnum());
       msg.setKind(value);
       break;
     case 3:
-      var value = new proto.berty.messenger.BertyID;
-      reader.readMessage(value,proto.berty.messenger.BertyID.deserializeBinaryFromReader);
+      var value = new proto.berty.messenger.v1.BertyID;
+      reader.readMessage(value,proto.berty.messenger.v1.BertyID.deserializeBinaryFromReader);
       msg.setBertyId(value);
       break;
     case 4:
-      var value = new proto.berty.messenger.BertyGroup;
-      reader.readMessage(value,proto.berty.messenger.BertyGroup.deserializeBinaryFromReader);
+      var value = new proto.berty.messenger.v1.BertyGroup;
+      reader.readMessage(value,proto.berty.messenger.v1.BertyGroup.deserializeBinaryFromReader);
       msg.setBertyGroup(value);
       break;
     default:
@@ -2472,9 +2472,9 @@ proto.berty.messenger.ParseDeepLink.Reply.deserializeBinaryFromReader = function
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.ParseDeepLink.Reply.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.ParseDeepLink.Reply.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.ParseDeepLink.Reply.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.ParseDeepLink.Reply.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -2482,11 +2482,11 @@ proto.berty.messenger.ParseDeepLink.Reply.prototype.serializeBinary = function()
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.ParseDeepLink.Reply} message
+ * @param {!proto.berty.messenger.v1.ParseDeepLink.Reply} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.ParseDeepLink.Reply.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.ParseDeepLink.Reply.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getKind();
   if (f !== 0.0) {
@@ -2500,7 +2500,7 @@ proto.berty.messenger.ParseDeepLink.Reply.serializeBinaryToWriter = function(mes
     writer.writeMessage(
       3,
       f,
-      proto.berty.messenger.BertyID.serializeBinaryToWriter
+      proto.berty.messenger.v1.BertyID.serializeBinaryToWriter
     );
   }
   f = message.getBertyGroup();
@@ -2508,7 +2508,7 @@ proto.berty.messenger.ParseDeepLink.Reply.serializeBinaryToWriter = function(mes
     writer.writeMessage(
       4,
       f,
-      proto.berty.messenger.BertyGroup.serializeBinaryToWriter
+      proto.berty.messenger.v1.BertyGroup.serializeBinaryToWriter
     );
   }
 };
@@ -2516,46 +2516,46 @@ proto.berty.messenger.ParseDeepLink.Reply.serializeBinaryToWriter = function(mes
 
 /**
  * optional Kind kind = 1;
- * @return {!proto.berty.messenger.ParseDeepLink.Kind}
+ * @return {!proto.berty.messenger.v1.ParseDeepLink.Kind}
  */
-proto.berty.messenger.ParseDeepLink.Reply.prototype.getKind = function() {
-  return /** @type {!proto.berty.messenger.ParseDeepLink.Kind} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+proto.berty.messenger.v1.ParseDeepLink.Reply.prototype.getKind = function() {
+  return /** @type {!proto.berty.messenger.v1.ParseDeepLink.Kind} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
 /**
- * @param {!proto.berty.messenger.ParseDeepLink.Kind} value
- * @return {!proto.berty.messenger.ParseDeepLink.Reply} returns this
+ * @param {!proto.berty.messenger.v1.ParseDeepLink.Kind} value
+ * @return {!proto.berty.messenger.v1.ParseDeepLink.Reply} returns this
  */
-proto.berty.messenger.ParseDeepLink.Reply.prototype.setKind = function(value) {
+proto.berty.messenger.v1.ParseDeepLink.Reply.prototype.setKind = function(value) {
   return jspb.Message.setProto3EnumField(this, 1, value);
 };
 
 
 /**
  * optional BertyID berty_id = 3;
- * @return {?proto.berty.messenger.BertyID}
+ * @return {?proto.berty.messenger.v1.BertyID}
  */
-proto.berty.messenger.ParseDeepLink.Reply.prototype.getBertyId = function() {
-  return /** @type{?proto.berty.messenger.BertyID} */ (
-    jspb.Message.getWrapperField(this, proto.berty.messenger.BertyID, 3));
+proto.berty.messenger.v1.ParseDeepLink.Reply.prototype.getBertyId = function() {
+  return /** @type{?proto.berty.messenger.v1.BertyID} */ (
+    jspb.Message.getWrapperField(this, proto.berty.messenger.v1.BertyID, 3));
 };
 
 
 /**
- * @param {?proto.berty.messenger.BertyID|undefined} value
- * @return {!proto.berty.messenger.ParseDeepLink.Reply} returns this
+ * @param {?proto.berty.messenger.v1.BertyID|undefined} value
+ * @return {!proto.berty.messenger.v1.ParseDeepLink.Reply} returns this
 */
-proto.berty.messenger.ParseDeepLink.Reply.prototype.setBertyId = function(value) {
+proto.berty.messenger.v1.ParseDeepLink.Reply.prototype.setBertyId = function(value) {
   return jspb.Message.setWrapperField(this, 3, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
- * @return {!proto.berty.messenger.ParseDeepLink.Reply} returns this
+ * @return {!proto.berty.messenger.v1.ParseDeepLink.Reply} returns this
  */
-proto.berty.messenger.ParseDeepLink.Reply.prototype.clearBertyId = function() {
+proto.berty.messenger.v1.ParseDeepLink.Reply.prototype.clearBertyId = function() {
   return this.setBertyId(undefined);
 };
 
@@ -2564,35 +2564,35 @@ proto.berty.messenger.ParseDeepLink.Reply.prototype.clearBertyId = function() {
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.berty.messenger.ParseDeepLink.Reply.prototype.hasBertyId = function() {
+proto.berty.messenger.v1.ParseDeepLink.Reply.prototype.hasBertyId = function() {
   return jspb.Message.getField(this, 3) != null;
 };
 
 
 /**
  * optional BertyGroup berty_group = 4;
- * @return {?proto.berty.messenger.BertyGroup}
+ * @return {?proto.berty.messenger.v1.BertyGroup}
  */
-proto.berty.messenger.ParseDeepLink.Reply.prototype.getBertyGroup = function() {
-  return /** @type{?proto.berty.messenger.BertyGroup} */ (
-    jspb.Message.getWrapperField(this, proto.berty.messenger.BertyGroup, 4));
+proto.berty.messenger.v1.ParseDeepLink.Reply.prototype.getBertyGroup = function() {
+  return /** @type{?proto.berty.messenger.v1.BertyGroup} */ (
+    jspb.Message.getWrapperField(this, proto.berty.messenger.v1.BertyGroup, 4));
 };
 
 
 /**
- * @param {?proto.berty.messenger.BertyGroup|undefined} value
- * @return {!proto.berty.messenger.ParseDeepLink.Reply} returns this
+ * @param {?proto.berty.messenger.v1.BertyGroup|undefined} value
+ * @return {!proto.berty.messenger.v1.ParseDeepLink.Reply} returns this
 */
-proto.berty.messenger.ParseDeepLink.Reply.prototype.setBertyGroup = function(value) {
+proto.berty.messenger.v1.ParseDeepLink.Reply.prototype.setBertyGroup = function(value) {
   return jspb.Message.setWrapperField(this, 4, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
- * @return {!proto.berty.messenger.ParseDeepLink.Reply} returns this
+ * @return {!proto.berty.messenger.v1.ParseDeepLink.Reply} returns this
  */
-proto.berty.messenger.ParseDeepLink.Reply.prototype.clearBertyGroup = function() {
+proto.berty.messenger.v1.ParseDeepLink.Reply.prototype.clearBertyGroup = function() {
   return this.setBertyGroup(undefined);
 };
 
@@ -2601,7 +2601,7 @@ proto.berty.messenger.ParseDeepLink.Reply.prototype.clearBertyGroup = function()
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.berty.messenger.ParseDeepLink.Reply.prototype.hasBertyGroup = function() {
+proto.berty.messenger.v1.ParseDeepLink.Reply.prototype.hasBertyGroup = function() {
   return jspb.Message.getField(this, 4) != null;
 };
 
@@ -2622,8 +2622,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.SendContactRequest.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.SendContactRequest.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.SendContactRequest.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.SendContactRequest.toObject(opt_includeInstance, this);
 };
 
 
@@ -2632,11 +2632,11 @@ proto.berty.messenger.SendContactRequest.prototype.toObject = function(opt_inclu
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.SendContactRequest} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.SendContactRequest} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SendContactRequest.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.SendContactRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
 
   };
@@ -2652,23 +2652,23 @@ proto.berty.messenger.SendContactRequest.toObject = function(includeInstance, ms
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.SendContactRequest}
+ * @return {!proto.berty.messenger.v1.SendContactRequest}
  */
-proto.berty.messenger.SendContactRequest.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.SendContactRequest.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.SendContactRequest;
-  return proto.berty.messenger.SendContactRequest.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.SendContactRequest;
+  return proto.berty.messenger.v1.SendContactRequest.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.SendContactRequest} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.SendContactRequest} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.SendContactRequest}
+ * @return {!proto.berty.messenger.v1.SendContactRequest}
  */
-proto.berty.messenger.SendContactRequest.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.SendContactRequest.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -2688,9 +2688,9 @@ proto.berty.messenger.SendContactRequest.deserializeBinaryFromReader = function(
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.SendContactRequest.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.SendContactRequest.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.SendContactRequest.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.SendContactRequest.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -2698,11 +2698,11 @@ proto.berty.messenger.SendContactRequest.prototype.serializeBinary = function() 
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.SendContactRequest} message
+ * @param {!proto.berty.messenger.v1.SendContactRequest} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SendContactRequest.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.SendContactRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
 };
 
@@ -2723,8 +2723,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.SendContactRequest.Request.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.SendContactRequest.Request.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.SendContactRequest.Request.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.SendContactRequest.Request.toObject(opt_includeInstance, this);
 };
 
 
@@ -2733,13 +2733,13 @@ proto.berty.messenger.SendContactRequest.Request.prototype.toObject = function(o
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.SendContactRequest.Request} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.SendContactRequest.Request} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SendContactRequest.Request.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.SendContactRequest.Request.toObject = function(includeInstance, msg) {
   var f, obj = {
-    bertyId: (f = msg.getBertyId()) && proto.berty.messenger.BertyID.toObject(includeInstance, f),
+    bertyId: (f = msg.getBertyId()) && proto.berty.messenger.v1.BertyID.toObject(includeInstance, f),
     metadata: msg.getMetadata_asB64(),
     ownMetadata: msg.getOwnMetadata_asB64()
   };
@@ -2755,23 +2755,23 @@ proto.berty.messenger.SendContactRequest.Request.toObject = function(includeInst
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.SendContactRequest.Request}
+ * @return {!proto.berty.messenger.v1.SendContactRequest.Request}
  */
-proto.berty.messenger.SendContactRequest.Request.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.SendContactRequest.Request.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.SendContactRequest.Request;
-  return proto.berty.messenger.SendContactRequest.Request.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.SendContactRequest.Request;
+  return proto.berty.messenger.v1.SendContactRequest.Request.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.SendContactRequest.Request} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.SendContactRequest.Request} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.SendContactRequest.Request}
+ * @return {!proto.berty.messenger.v1.SendContactRequest.Request}
  */
-proto.berty.messenger.SendContactRequest.Request.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.SendContactRequest.Request.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -2779,8 +2779,8 @@ proto.berty.messenger.SendContactRequest.Request.deserializeBinaryFromReader = f
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = new proto.berty.messenger.BertyID;
-      reader.readMessage(value,proto.berty.messenger.BertyID.deserializeBinaryFromReader);
+      var value = new proto.berty.messenger.v1.BertyID;
+      reader.readMessage(value,proto.berty.messenger.v1.BertyID.deserializeBinaryFromReader);
       msg.setBertyId(value);
       break;
     case 2:
@@ -2804,9 +2804,9 @@ proto.berty.messenger.SendContactRequest.Request.deserializeBinaryFromReader = f
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.SendContactRequest.Request.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.SendContactRequest.Request.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.SendContactRequest.Request.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.SendContactRequest.Request.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -2814,18 +2814,18 @@ proto.berty.messenger.SendContactRequest.Request.prototype.serializeBinary = fun
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.SendContactRequest.Request} message
+ * @param {!proto.berty.messenger.v1.SendContactRequest.Request} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SendContactRequest.Request.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.SendContactRequest.Request.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getBertyId();
   if (f != null) {
     writer.writeMessage(
       1,
       f,
-      proto.berty.messenger.BertyID.serializeBinaryToWriter
+      proto.berty.messenger.v1.BertyID.serializeBinaryToWriter
     );
   }
   f = message.getMetadata_asU8();
@@ -2847,28 +2847,28 @@ proto.berty.messenger.SendContactRequest.Request.serializeBinaryToWriter = funct
 
 /**
  * optional BertyID berty_id = 1;
- * @return {?proto.berty.messenger.BertyID}
+ * @return {?proto.berty.messenger.v1.BertyID}
  */
-proto.berty.messenger.SendContactRequest.Request.prototype.getBertyId = function() {
-  return /** @type{?proto.berty.messenger.BertyID} */ (
-    jspb.Message.getWrapperField(this, proto.berty.messenger.BertyID, 1));
+proto.berty.messenger.v1.SendContactRequest.Request.prototype.getBertyId = function() {
+  return /** @type{?proto.berty.messenger.v1.BertyID} */ (
+    jspb.Message.getWrapperField(this, proto.berty.messenger.v1.BertyID, 1));
 };
 
 
 /**
- * @param {?proto.berty.messenger.BertyID|undefined} value
- * @return {!proto.berty.messenger.SendContactRequest.Request} returns this
+ * @param {?proto.berty.messenger.v1.BertyID|undefined} value
+ * @return {!proto.berty.messenger.v1.SendContactRequest.Request} returns this
 */
-proto.berty.messenger.SendContactRequest.Request.prototype.setBertyId = function(value) {
+proto.berty.messenger.v1.SendContactRequest.Request.prototype.setBertyId = function(value) {
   return jspb.Message.setWrapperField(this, 1, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
- * @return {!proto.berty.messenger.SendContactRequest.Request} returns this
+ * @return {!proto.berty.messenger.v1.SendContactRequest.Request} returns this
  */
-proto.berty.messenger.SendContactRequest.Request.prototype.clearBertyId = function() {
+proto.berty.messenger.v1.SendContactRequest.Request.prototype.clearBertyId = function() {
   return this.setBertyId(undefined);
 };
 
@@ -2877,7 +2877,7 @@ proto.berty.messenger.SendContactRequest.Request.prototype.clearBertyId = functi
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.berty.messenger.SendContactRequest.Request.prototype.hasBertyId = function() {
+proto.berty.messenger.v1.SendContactRequest.Request.prototype.hasBertyId = function() {
   return jspb.Message.getField(this, 1) != null;
 };
 
@@ -2886,7 +2886,7 @@ proto.berty.messenger.SendContactRequest.Request.prototype.hasBertyId = function
  * optional bytes metadata = 2;
  * @return {!(string|Uint8Array)}
  */
-proto.berty.messenger.SendContactRequest.Request.prototype.getMetadata = function() {
+proto.berty.messenger.v1.SendContactRequest.Request.prototype.getMetadata = function() {
   return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
@@ -2896,7 +2896,7 @@ proto.berty.messenger.SendContactRequest.Request.prototype.getMetadata = functio
  * This is a type-conversion wrapper around `getMetadata()`
  * @return {string}
  */
-proto.berty.messenger.SendContactRequest.Request.prototype.getMetadata_asB64 = function() {
+proto.berty.messenger.v1.SendContactRequest.Request.prototype.getMetadata_asB64 = function() {
   return /** @type {string} */ (jspb.Message.bytesAsB64(
       this.getMetadata()));
 };
@@ -2909,7 +2909,7 @@ proto.berty.messenger.SendContactRequest.Request.prototype.getMetadata_asB64 = f
  * This is a type-conversion wrapper around `getMetadata()`
  * @return {!Uint8Array}
  */
-proto.berty.messenger.SendContactRequest.Request.prototype.getMetadata_asU8 = function() {
+proto.berty.messenger.v1.SendContactRequest.Request.prototype.getMetadata_asU8 = function() {
   return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
       this.getMetadata()));
 };
@@ -2917,9 +2917,9 @@ proto.berty.messenger.SendContactRequest.Request.prototype.getMetadata_asU8 = fu
 
 /**
  * @param {!(string|Uint8Array)} value
- * @return {!proto.berty.messenger.SendContactRequest.Request} returns this
+ * @return {!proto.berty.messenger.v1.SendContactRequest.Request} returns this
  */
-proto.berty.messenger.SendContactRequest.Request.prototype.setMetadata = function(value) {
+proto.berty.messenger.v1.SendContactRequest.Request.prototype.setMetadata = function(value) {
   return jspb.Message.setProto3BytesField(this, 2, value);
 };
 
@@ -2928,7 +2928,7 @@ proto.berty.messenger.SendContactRequest.Request.prototype.setMetadata = functio
  * optional bytes own_metadata = 3;
  * @return {!(string|Uint8Array)}
  */
-proto.berty.messenger.SendContactRequest.Request.prototype.getOwnMetadata = function() {
+proto.berty.messenger.v1.SendContactRequest.Request.prototype.getOwnMetadata = function() {
   return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
@@ -2938,7 +2938,7 @@ proto.berty.messenger.SendContactRequest.Request.prototype.getOwnMetadata = func
  * This is a type-conversion wrapper around `getOwnMetadata()`
  * @return {string}
  */
-proto.berty.messenger.SendContactRequest.Request.prototype.getOwnMetadata_asB64 = function() {
+proto.berty.messenger.v1.SendContactRequest.Request.prototype.getOwnMetadata_asB64 = function() {
   return /** @type {string} */ (jspb.Message.bytesAsB64(
       this.getOwnMetadata()));
 };
@@ -2951,7 +2951,7 @@ proto.berty.messenger.SendContactRequest.Request.prototype.getOwnMetadata_asB64 
  * This is a type-conversion wrapper around `getOwnMetadata()`
  * @return {!Uint8Array}
  */
-proto.berty.messenger.SendContactRequest.Request.prototype.getOwnMetadata_asU8 = function() {
+proto.berty.messenger.v1.SendContactRequest.Request.prototype.getOwnMetadata_asU8 = function() {
   return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
       this.getOwnMetadata()));
 };
@@ -2959,9 +2959,9 @@ proto.berty.messenger.SendContactRequest.Request.prototype.getOwnMetadata_asU8 =
 
 /**
  * @param {!(string|Uint8Array)} value
- * @return {!proto.berty.messenger.SendContactRequest.Request} returns this
+ * @return {!proto.berty.messenger.v1.SendContactRequest.Request} returns this
  */
-proto.berty.messenger.SendContactRequest.Request.prototype.setOwnMetadata = function(value) {
+proto.berty.messenger.v1.SendContactRequest.Request.prototype.setOwnMetadata = function(value) {
   return jspb.Message.setProto3BytesField(this, 3, value);
 };
 
@@ -2982,8 +2982,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.SendContactRequest.Reply.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.SendContactRequest.Reply.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.SendContactRequest.Reply.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.SendContactRequest.Reply.toObject(opt_includeInstance, this);
 };
 
 
@@ -2992,11 +2992,11 @@ proto.berty.messenger.SendContactRequest.Reply.prototype.toObject = function(opt
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.SendContactRequest.Reply} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.SendContactRequest.Reply} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SendContactRequest.Reply.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.SendContactRequest.Reply.toObject = function(includeInstance, msg) {
   var f, obj = {
 
   };
@@ -3012,23 +3012,23 @@ proto.berty.messenger.SendContactRequest.Reply.toObject = function(includeInstan
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.SendContactRequest.Reply}
+ * @return {!proto.berty.messenger.v1.SendContactRequest.Reply}
  */
-proto.berty.messenger.SendContactRequest.Reply.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.SendContactRequest.Reply.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.SendContactRequest.Reply;
-  return proto.berty.messenger.SendContactRequest.Reply.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.SendContactRequest.Reply;
+  return proto.berty.messenger.v1.SendContactRequest.Reply.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.SendContactRequest.Reply} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.SendContactRequest.Reply} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.SendContactRequest.Reply}
+ * @return {!proto.berty.messenger.v1.SendContactRequest.Reply}
  */
-proto.berty.messenger.SendContactRequest.Reply.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.SendContactRequest.Reply.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -3048,9 +3048,9 @@ proto.berty.messenger.SendContactRequest.Reply.deserializeBinaryFromReader = fun
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.SendContactRequest.Reply.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.SendContactRequest.Reply.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.SendContactRequest.Reply.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.SendContactRequest.Reply.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -3058,11 +3058,11 @@ proto.berty.messenger.SendContactRequest.Reply.prototype.serializeBinary = funct
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.SendContactRequest.Reply} message
+ * @param {!proto.berty.messenger.v1.SendContactRequest.Reply} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SendContactRequest.Reply.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.SendContactRequest.Reply.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
 };
 
@@ -3083,8 +3083,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.SendAck.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.SendAck.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.SendAck.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.SendAck.toObject(opt_includeInstance, this);
 };
 
 
@@ -3093,11 +3093,11 @@ proto.berty.messenger.SendAck.prototype.toObject = function(opt_includeInstance)
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.SendAck} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.SendAck} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SendAck.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.SendAck.toObject = function(includeInstance, msg) {
   var f, obj = {
 
   };
@@ -3113,23 +3113,23 @@ proto.berty.messenger.SendAck.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.SendAck}
+ * @return {!proto.berty.messenger.v1.SendAck}
  */
-proto.berty.messenger.SendAck.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.SendAck.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.SendAck;
-  return proto.berty.messenger.SendAck.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.SendAck;
+  return proto.berty.messenger.v1.SendAck.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.SendAck} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.SendAck} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.SendAck}
+ * @return {!proto.berty.messenger.v1.SendAck}
  */
-proto.berty.messenger.SendAck.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.SendAck.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -3149,9 +3149,9 @@ proto.berty.messenger.SendAck.deserializeBinaryFromReader = function(msg, reader
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.SendAck.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.SendAck.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.SendAck.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.SendAck.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -3159,11 +3159,11 @@ proto.berty.messenger.SendAck.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.SendAck} message
+ * @param {!proto.berty.messenger.v1.SendAck} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SendAck.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.SendAck.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
 };
 
@@ -3184,8 +3184,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.SendAck.Request.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.SendAck.Request.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.SendAck.Request.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.SendAck.Request.toObject(opt_includeInstance, this);
 };
 
 
@@ -3194,11 +3194,11 @@ proto.berty.messenger.SendAck.Request.prototype.toObject = function(opt_includeI
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.SendAck.Request} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.SendAck.Request} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SendAck.Request.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.SendAck.Request.toObject = function(includeInstance, msg) {
   var f, obj = {
     groupPk: msg.getGroupPk_asB64(),
     messageId: msg.getMessageId_asB64()
@@ -3215,23 +3215,23 @@ proto.berty.messenger.SendAck.Request.toObject = function(includeInstance, msg) 
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.SendAck.Request}
+ * @return {!proto.berty.messenger.v1.SendAck.Request}
  */
-proto.berty.messenger.SendAck.Request.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.SendAck.Request.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.SendAck.Request;
-  return proto.berty.messenger.SendAck.Request.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.SendAck.Request;
+  return proto.berty.messenger.v1.SendAck.Request.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.SendAck.Request} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.SendAck.Request} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.SendAck.Request}
+ * @return {!proto.berty.messenger.v1.SendAck.Request}
  */
-proto.berty.messenger.SendAck.Request.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.SendAck.Request.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -3259,9 +3259,9 @@ proto.berty.messenger.SendAck.Request.deserializeBinaryFromReader = function(msg
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.SendAck.Request.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.SendAck.Request.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.SendAck.Request.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.SendAck.Request.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -3269,11 +3269,11 @@ proto.berty.messenger.SendAck.Request.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.SendAck.Request} message
+ * @param {!proto.berty.messenger.v1.SendAck.Request} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SendAck.Request.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.SendAck.Request.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getGroupPk_asU8();
   if (f.length > 0) {
@@ -3296,7 +3296,7 @@ proto.berty.messenger.SendAck.Request.serializeBinaryToWriter = function(message
  * optional bytes group_pk = 1;
  * @return {!(string|Uint8Array)}
  */
-proto.berty.messenger.SendAck.Request.prototype.getGroupPk = function() {
+proto.berty.messenger.v1.SendAck.Request.prototype.getGroupPk = function() {
   return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -3306,7 +3306,7 @@ proto.berty.messenger.SendAck.Request.prototype.getGroupPk = function() {
  * This is a type-conversion wrapper around `getGroupPk()`
  * @return {string}
  */
-proto.berty.messenger.SendAck.Request.prototype.getGroupPk_asB64 = function() {
+proto.berty.messenger.v1.SendAck.Request.prototype.getGroupPk_asB64 = function() {
   return /** @type {string} */ (jspb.Message.bytesAsB64(
       this.getGroupPk()));
 };
@@ -3319,7 +3319,7 @@ proto.berty.messenger.SendAck.Request.prototype.getGroupPk_asB64 = function() {
  * This is a type-conversion wrapper around `getGroupPk()`
  * @return {!Uint8Array}
  */
-proto.berty.messenger.SendAck.Request.prototype.getGroupPk_asU8 = function() {
+proto.berty.messenger.v1.SendAck.Request.prototype.getGroupPk_asU8 = function() {
   return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
       this.getGroupPk()));
 };
@@ -3327,9 +3327,9 @@ proto.berty.messenger.SendAck.Request.prototype.getGroupPk_asU8 = function() {
 
 /**
  * @param {!(string|Uint8Array)} value
- * @return {!proto.berty.messenger.SendAck.Request} returns this
+ * @return {!proto.berty.messenger.v1.SendAck.Request} returns this
  */
-proto.berty.messenger.SendAck.Request.prototype.setGroupPk = function(value) {
+proto.berty.messenger.v1.SendAck.Request.prototype.setGroupPk = function(value) {
   return jspb.Message.setProto3BytesField(this, 1, value);
 };
 
@@ -3338,7 +3338,7 @@ proto.berty.messenger.SendAck.Request.prototype.setGroupPk = function(value) {
  * optional bytes message_id = 2;
  * @return {!(string|Uint8Array)}
  */
-proto.berty.messenger.SendAck.Request.prototype.getMessageId = function() {
+proto.berty.messenger.v1.SendAck.Request.prototype.getMessageId = function() {
   return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
@@ -3348,7 +3348,7 @@ proto.berty.messenger.SendAck.Request.prototype.getMessageId = function() {
  * This is a type-conversion wrapper around `getMessageId()`
  * @return {string}
  */
-proto.berty.messenger.SendAck.Request.prototype.getMessageId_asB64 = function() {
+proto.berty.messenger.v1.SendAck.Request.prototype.getMessageId_asB64 = function() {
   return /** @type {string} */ (jspb.Message.bytesAsB64(
       this.getMessageId()));
 };
@@ -3361,7 +3361,7 @@ proto.berty.messenger.SendAck.Request.prototype.getMessageId_asB64 = function() 
  * This is a type-conversion wrapper around `getMessageId()`
  * @return {!Uint8Array}
  */
-proto.berty.messenger.SendAck.Request.prototype.getMessageId_asU8 = function() {
+proto.berty.messenger.v1.SendAck.Request.prototype.getMessageId_asU8 = function() {
   return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
       this.getMessageId()));
 };
@@ -3369,9 +3369,9 @@ proto.berty.messenger.SendAck.Request.prototype.getMessageId_asU8 = function() {
 
 /**
  * @param {!(string|Uint8Array)} value
- * @return {!proto.berty.messenger.SendAck.Request} returns this
+ * @return {!proto.berty.messenger.v1.SendAck.Request} returns this
  */
-proto.berty.messenger.SendAck.Request.prototype.setMessageId = function(value) {
+proto.berty.messenger.v1.SendAck.Request.prototype.setMessageId = function(value) {
   return jspb.Message.setProto3BytesField(this, 2, value);
 };
 
@@ -3392,8 +3392,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.SendAck.Reply.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.SendAck.Reply.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.SendAck.Reply.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.SendAck.Reply.toObject(opt_includeInstance, this);
 };
 
 
@@ -3402,11 +3402,11 @@ proto.berty.messenger.SendAck.Reply.prototype.toObject = function(opt_includeIns
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.SendAck.Reply} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.SendAck.Reply} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SendAck.Reply.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.SendAck.Reply.toObject = function(includeInstance, msg) {
   var f, obj = {
 
   };
@@ -3422,23 +3422,23 @@ proto.berty.messenger.SendAck.Reply.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.SendAck.Reply}
+ * @return {!proto.berty.messenger.v1.SendAck.Reply}
  */
-proto.berty.messenger.SendAck.Reply.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.SendAck.Reply.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.SendAck.Reply;
-  return proto.berty.messenger.SendAck.Reply.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.SendAck.Reply;
+  return proto.berty.messenger.v1.SendAck.Reply.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.SendAck.Reply} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.SendAck.Reply} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.SendAck.Reply}
+ * @return {!proto.berty.messenger.v1.SendAck.Reply}
  */
-proto.berty.messenger.SendAck.Reply.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.SendAck.Reply.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -3458,9 +3458,9 @@ proto.berty.messenger.SendAck.Reply.deserializeBinaryFromReader = function(msg, 
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.SendAck.Reply.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.SendAck.Reply.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.SendAck.Reply.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.SendAck.Reply.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -3468,11 +3468,11 @@ proto.berty.messenger.SendAck.Reply.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.SendAck.Reply} message
+ * @param {!proto.berty.messenger.v1.SendAck.Reply} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SendAck.Reply.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.SendAck.Reply.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
 };
 
@@ -3493,8 +3493,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.SendMessage.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.SendMessage.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.SendMessage.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.SendMessage.toObject(opt_includeInstance, this);
 };
 
 
@@ -3503,11 +3503,11 @@ proto.berty.messenger.SendMessage.prototype.toObject = function(opt_includeInsta
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.SendMessage} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.SendMessage} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SendMessage.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.SendMessage.toObject = function(includeInstance, msg) {
   var f, obj = {
 
   };
@@ -3523,23 +3523,23 @@ proto.berty.messenger.SendMessage.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.SendMessage}
+ * @return {!proto.berty.messenger.v1.SendMessage}
  */
-proto.berty.messenger.SendMessage.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.SendMessage.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.SendMessage;
-  return proto.berty.messenger.SendMessage.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.SendMessage;
+  return proto.berty.messenger.v1.SendMessage.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.SendMessage} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.SendMessage} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.SendMessage}
+ * @return {!proto.berty.messenger.v1.SendMessage}
  */
-proto.berty.messenger.SendMessage.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.SendMessage.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -3559,9 +3559,9 @@ proto.berty.messenger.SendMessage.deserializeBinaryFromReader = function(msg, re
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.SendMessage.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.SendMessage.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.SendMessage.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.SendMessage.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -3569,11 +3569,11 @@ proto.berty.messenger.SendMessage.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.SendMessage} message
+ * @param {!proto.berty.messenger.v1.SendMessage} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SendMessage.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.SendMessage.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
 };
 
@@ -3594,8 +3594,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.SendMessage.Request.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.SendMessage.Request.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.SendMessage.Request.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.SendMessage.Request.toObject(opt_includeInstance, this);
 };
 
 
@@ -3604,11 +3604,11 @@ proto.berty.messenger.SendMessage.Request.prototype.toObject = function(opt_incl
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.SendMessage.Request} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.SendMessage.Request} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SendMessage.Request.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.SendMessage.Request.toObject = function(includeInstance, msg) {
   var f, obj = {
     groupPk: msg.getGroupPk_asB64(),
     message: jspb.Message.getFieldWithDefault(msg, 2, "")
@@ -3625,23 +3625,23 @@ proto.berty.messenger.SendMessage.Request.toObject = function(includeInstance, m
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.SendMessage.Request}
+ * @return {!proto.berty.messenger.v1.SendMessage.Request}
  */
-proto.berty.messenger.SendMessage.Request.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.SendMessage.Request.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.SendMessage.Request;
-  return proto.berty.messenger.SendMessage.Request.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.SendMessage.Request;
+  return proto.berty.messenger.v1.SendMessage.Request.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.SendMessage.Request} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.SendMessage.Request} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.SendMessage.Request}
+ * @return {!proto.berty.messenger.v1.SendMessage.Request}
  */
-proto.berty.messenger.SendMessage.Request.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.SendMessage.Request.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -3669,9 +3669,9 @@ proto.berty.messenger.SendMessage.Request.deserializeBinaryFromReader = function
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.SendMessage.Request.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.SendMessage.Request.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.SendMessage.Request.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.SendMessage.Request.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -3679,11 +3679,11 @@ proto.berty.messenger.SendMessage.Request.prototype.serializeBinary = function()
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.SendMessage.Request} message
+ * @param {!proto.berty.messenger.v1.SendMessage.Request} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SendMessage.Request.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.SendMessage.Request.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getGroupPk_asU8();
   if (f.length > 0) {
@@ -3706,7 +3706,7 @@ proto.berty.messenger.SendMessage.Request.serializeBinaryToWriter = function(mes
  * optional bytes group_pk = 1;
  * @return {!(string|Uint8Array)}
  */
-proto.berty.messenger.SendMessage.Request.prototype.getGroupPk = function() {
+proto.berty.messenger.v1.SendMessage.Request.prototype.getGroupPk = function() {
   return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -3716,7 +3716,7 @@ proto.berty.messenger.SendMessage.Request.prototype.getGroupPk = function() {
  * This is a type-conversion wrapper around `getGroupPk()`
  * @return {string}
  */
-proto.berty.messenger.SendMessage.Request.prototype.getGroupPk_asB64 = function() {
+proto.berty.messenger.v1.SendMessage.Request.prototype.getGroupPk_asB64 = function() {
   return /** @type {string} */ (jspb.Message.bytesAsB64(
       this.getGroupPk()));
 };
@@ -3729,7 +3729,7 @@ proto.berty.messenger.SendMessage.Request.prototype.getGroupPk_asB64 = function(
  * This is a type-conversion wrapper around `getGroupPk()`
  * @return {!Uint8Array}
  */
-proto.berty.messenger.SendMessage.Request.prototype.getGroupPk_asU8 = function() {
+proto.berty.messenger.v1.SendMessage.Request.prototype.getGroupPk_asU8 = function() {
   return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
       this.getGroupPk()));
 };
@@ -3737,9 +3737,9 @@ proto.berty.messenger.SendMessage.Request.prototype.getGroupPk_asU8 = function()
 
 /**
  * @param {!(string|Uint8Array)} value
- * @return {!proto.berty.messenger.SendMessage.Request} returns this
+ * @return {!proto.berty.messenger.v1.SendMessage.Request} returns this
  */
-proto.berty.messenger.SendMessage.Request.prototype.setGroupPk = function(value) {
+proto.berty.messenger.v1.SendMessage.Request.prototype.setGroupPk = function(value) {
   return jspb.Message.setProto3BytesField(this, 1, value);
 };
 
@@ -3748,16 +3748,16 @@ proto.berty.messenger.SendMessage.Request.prototype.setGroupPk = function(value)
  * optional string message = 2;
  * @return {string}
  */
-proto.berty.messenger.SendMessage.Request.prototype.getMessage = function() {
+proto.berty.messenger.v1.SendMessage.Request.prototype.getMessage = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.SendMessage.Request} returns this
+ * @return {!proto.berty.messenger.v1.SendMessage.Request} returns this
  */
-proto.berty.messenger.SendMessage.Request.prototype.setMessage = function(value) {
+proto.berty.messenger.v1.SendMessage.Request.prototype.setMessage = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -3778,8 +3778,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.SendMessage.Reply.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.SendMessage.Reply.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.SendMessage.Reply.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.SendMessage.Reply.toObject(opt_includeInstance, this);
 };
 
 
@@ -3788,11 +3788,11 @@ proto.berty.messenger.SendMessage.Reply.prototype.toObject = function(opt_includ
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.SendMessage.Reply} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.SendMessage.Reply} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SendMessage.Reply.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.SendMessage.Reply.toObject = function(includeInstance, msg) {
   var f, obj = {
 
   };
@@ -3808,23 +3808,23 @@ proto.berty.messenger.SendMessage.Reply.toObject = function(includeInstance, msg
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.SendMessage.Reply}
+ * @return {!proto.berty.messenger.v1.SendMessage.Reply}
  */
-proto.berty.messenger.SendMessage.Reply.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.SendMessage.Reply.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.SendMessage.Reply;
-  return proto.berty.messenger.SendMessage.Reply.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.SendMessage.Reply;
+  return proto.berty.messenger.v1.SendMessage.Reply.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.SendMessage.Reply} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.SendMessage.Reply} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.SendMessage.Reply}
+ * @return {!proto.berty.messenger.v1.SendMessage.Reply}
  */
-proto.berty.messenger.SendMessage.Reply.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.SendMessage.Reply.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -3844,9 +3844,9 @@ proto.berty.messenger.SendMessage.Reply.deserializeBinaryFromReader = function(m
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.SendMessage.Reply.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.SendMessage.Reply.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.SendMessage.Reply.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.SendMessage.Reply.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -3854,11 +3854,11 @@ proto.berty.messenger.SendMessage.Reply.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.SendMessage.Reply} message
+ * @param {!proto.berty.messenger.v1.SendMessage.Reply} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SendMessage.Reply.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.SendMessage.Reply.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
 };
 
@@ -3879,8 +3879,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.BertyID.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.BertyID.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.BertyID.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.BertyID.toObject(opt_includeInstance, this);
 };
 
 
@@ -3889,11 +3889,11 @@ proto.berty.messenger.BertyID.prototype.toObject = function(opt_includeInstance)
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.BertyID} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.BertyID} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.BertyID.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.BertyID.toObject = function(includeInstance, msg) {
   var f, obj = {
     publicRendezvousSeed: msg.getPublicRendezvousSeed_asB64(),
     accountPk: msg.getAccountPk_asB64(),
@@ -3911,23 +3911,23 @@ proto.berty.messenger.BertyID.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.BertyID}
+ * @return {!proto.berty.messenger.v1.BertyID}
  */
-proto.berty.messenger.BertyID.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.BertyID.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.BertyID;
-  return proto.berty.messenger.BertyID.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.BertyID;
+  return proto.berty.messenger.v1.BertyID.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.BertyID} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.BertyID} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.BertyID}
+ * @return {!proto.berty.messenger.v1.BertyID}
  */
-proto.berty.messenger.BertyID.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.BertyID.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -3959,9 +3959,9 @@ proto.berty.messenger.BertyID.deserializeBinaryFromReader = function(msg, reader
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.BertyID.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.BertyID.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.BertyID.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.BertyID.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -3969,11 +3969,11 @@ proto.berty.messenger.BertyID.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.BertyID} message
+ * @param {!proto.berty.messenger.v1.BertyID} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.BertyID.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.BertyID.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getPublicRendezvousSeed_asU8();
   if (f.length > 0) {
@@ -4003,7 +4003,7 @@ proto.berty.messenger.BertyID.serializeBinaryToWriter = function(message, writer
  * optional bytes public_rendezvous_seed = 1;
  * @return {!(string|Uint8Array)}
  */
-proto.berty.messenger.BertyID.prototype.getPublicRendezvousSeed = function() {
+proto.berty.messenger.v1.BertyID.prototype.getPublicRendezvousSeed = function() {
   return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -4013,7 +4013,7 @@ proto.berty.messenger.BertyID.prototype.getPublicRendezvousSeed = function() {
  * This is a type-conversion wrapper around `getPublicRendezvousSeed()`
  * @return {string}
  */
-proto.berty.messenger.BertyID.prototype.getPublicRendezvousSeed_asB64 = function() {
+proto.berty.messenger.v1.BertyID.prototype.getPublicRendezvousSeed_asB64 = function() {
   return /** @type {string} */ (jspb.Message.bytesAsB64(
       this.getPublicRendezvousSeed()));
 };
@@ -4026,7 +4026,7 @@ proto.berty.messenger.BertyID.prototype.getPublicRendezvousSeed_asB64 = function
  * This is a type-conversion wrapper around `getPublicRendezvousSeed()`
  * @return {!Uint8Array}
  */
-proto.berty.messenger.BertyID.prototype.getPublicRendezvousSeed_asU8 = function() {
+proto.berty.messenger.v1.BertyID.prototype.getPublicRendezvousSeed_asU8 = function() {
   return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
       this.getPublicRendezvousSeed()));
 };
@@ -4034,9 +4034,9 @@ proto.berty.messenger.BertyID.prototype.getPublicRendezvousSeed_asU8 = function(
 
 /**
  * @param {!(string|Uint8Array)} value
- * @return {!proto.berty.messenger.BertyID} returns this
+ * @return {!proto.berty.messenger.v1.BertyID} returns this
  */
-proto.berty.messenger.BertyID.prototype.setPublicRendezvousSeed = function(value) {
+proto.berty.messenger.v1.BertyID.prototype.setPublicRendezvousSeed = function(value) {
   return jspb.Message.setProto3BytesField(this, 1, value);
 };
 
@@ -4045,7 +4045,7 @@ proto.berty.messenger.BertyID.prototype.setPublicRendezvousSeed = function(value
  * optional bytes account_pk = 2;
  * @return {!(string|Uint8Array)}
  */
-proto.berty.messenger.BertyID.prototype.getAccountPk = function() {
+proto.berty.messenger.v1.BertyID.prototype.getAccountPk = function() {
   return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
@@ -4055,7 +4055,7 @@ proto.berty.messenger.BertyID.prototype.getAccountPk = function() {
  * This is a type-conversion wrapper around `getAccountPk()`
  * @return {string}
  */
-proto.berty.messenger.BertyID.prototype.getAccountPk_asB64 = function() {
+proto.berty.messenger.v1.BertyID.prototype.getAccountPk_asB64 = function() {
   return /** @type {string} */ (jspb.Message.bytesAsB64(
       this.getAccountPk()));
 };
@@ -4068,7 +4068,7 @@ proto.berty.messenger.BertyID.prototype.getAccountPk_asB64 = function() {
  * This is a type-conversion wrapper around `getAccountPk()`
  * @return {!Uint8Array}
  */
-proto.berty.messenger.BertyID.prototype.getAccountPk_asU8 = function() {
+proto.berty.messenger.v1.BertyID.prototype.getAccountPk_asU8 = function() {
   return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
       this.getAccountPk()));
 };
@@ -4076,9 +4076,9 @@ proto.berty.messenger.BertyID.prototype.getAccountPk_asU8 = function() {
 
 /**
  * @param {!(string|Uint8Array)} value
- * @return {!proto.berty.messenger.BertyID} returns this
+ * @return {!proto.berty.messenger.v1.BertyID} returns this
  */
-proto.berty.messenger.BertyID.prototype.setAccountPk = function(value) {
+proto.berty.messenger.v1.BertyID.prototype.setAccountPk = function(value) {
   return jspb.Message.setProto3BytesField(this, 2, value);
 };
 
@@ -4087,16 +4087,16 @@ proto.berty.messenger.BertyID.prototype.setAccountPk = function(value) {
  * optional string display_name = 3;
  * @return {string}
  */
-proto.berty.messenger.BertyID.prototype.getDisplayName = function() {
+proto.berty.messenger.v1.BertyID.prototype.getDisplayName = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.BertyID} returns this
+ * @return {!proto.berty.messenger.v1.BertyID} returns this
  */
-proto.berty.messenger.BertyID.prototype.setDisplayName = function(value) {
+proto.berty.messenger.v1.BertyID.prototype.setDisplayName = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
 };
 
@@ -4117,8 +4117,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.BertyGroup.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.BertyGroup.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.BertyGroup.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.BertyGroup.toObject(opt_includeInstance, this);
 };
 
 
@@ -4127,11 +4127,11 @@ proto.berty.messenger.BertyGroup.prototype.toObject = function(opt_includeInstan
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.BertyGroup} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.BertyGroup} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.BertyGroup.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.BertyGroup.toObject = function(includeInstance, msg) {
   var f, obj = {
     group: (f = msg.getGroup()) && bertytypes_pb.Group.toObject(includeInstance, f),
     displayName: jspb.Message.getFieldWithDefault(msg, 2, "")
@@ -4148,23 +4148,23 @@ proto.berty.messenger.BertyGroup.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.BertyGroup}
+ * @return {!proto.berty.messenger.v1.BertyGroup}
  */
-proto.berty.messenger.BertyGroup.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.BertyGroup.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.BertyGroup;
-  return proto.berty.messenger.BertyGroup.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.BertyGroup;
+  return proto.berty.messenger.v1.BertyGroup.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.BertyGroup} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.BertyGroup} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.BertyGroup}
+ * @return {!proto.berty.messenger.v1.BertyGroup}
  */
-proto.berty.messenger.BertyGroup.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.BertyGroup.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -4193,9 +4193,9 @@ proto.berty.messenger.BertyGroup.deserializeBinaryFromReader = function(msg, rea
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.BertyGroup.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.BertyGroup.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.BertyGroup.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.BertyGroup.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -4203,11 +4203,11 @@ proto.berty.messenger.BertyGroup.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.BertyGroup} message
+ * @param {!proto.berty.messenger.v1.BertyGroup} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.BertyGroup.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.BertyGroup.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getGroup();
   if (f != null) {
@@ -4228,29 +4228,29 @@ proto.berty.messenger.BertyGroup.serializeBinaryToWriter = function(message, wri
 
 
 /**
- * optional berty.types.Group group = 1;
- * @return {?proto.berty.types.Group}
+ * optional berty.types.v1.Group group = 1;
+ * @return {?proto.berty.types.v1.Group}
  */
-proto.berty.messenger.BertyGroup.prototype.getGroup = function() {
-  return /** @type{?proto.berty.types.Group} */ (
+proto.berty.messenger.v1.BertyGroup.prototype.getGroup = function() {
+  return /** @type{?proto.berty.types.v1.Group} */ (
     jspb.Message.getWrapperField(this, bertytypes_pb.Group, 1));
 };
 
 
 /**
- * @param {?proto.berty.types.Group|undefined} value
- * @return {!proto.berty.messenger.BertyGroup} returns this
+ * @param {?proto.berty.types.v1.Group|undefined} value
+ * @return {!proto.berty.messenger.v1.BertyGroup} returns this
 */
-proto.berty.messenger.BertyGroup.prototype.setGroup = function(value) {
+proto.berty.messenger.v1.BertyGroup.prototype.setGroup = function(value) {
   return jspb.Message.setWrapperField(this, 1, value);
 };
 
 
 /**
  * Clears the message field making it undefined.
- * @return {!proto.berty.messenger.BertyGroup} returns this
+ * @return {!proto.berty.messenger.v1.BertyGroup} returns this
  */
-proto.berty.messenger.BertyGroup.prototype.clearGroup = function() {
+proto.berty.messenger.v1.BertyGroup.prototype.clearGroup = function() {
   return this.setGroup(undefined);
 };
 
@@ -4259,7 +4259,7 @@ proto.berty.messenger.BertyGroup.prototype.clearGroup = function() {
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.berty.messenger.BertyGroup.prototype.hasGroup = function() {
+proto.berty.messenger.v1.BertyGroup.prototype.hasGroup = function() {
   return jspb.Message.getField(this, 1) != null;
 };
 
@@ -4268,16 +4268,16 @@ proto.berty.messenger.BertyGroup.prototype.hasGroup = function() {
  * optional string display_name = 2;
  * @return {string}
  */
-proto.berty.messenger.BertyGroup.prototype.getDisplayName = function() {
+proto.berty.messenger.v1.BertyGroup.prototype.getDisplayName = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.BertyGroup} returns this
+ * @return {!proto.berty.messenger.v1.BertyGroup} returns this
  */
-proto.berty.messenger.BertyGroup.prototype.setDisplayName = function(value) {
+proto.berty.messenger.v1.BertyGroup.prototype.setDisplayName = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -4298,8 +4298,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.AppMessageTyped.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.AppMessageTyped.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.AppMessageTyped.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.AppMessageTyped.toObject(opt_includeInstance, this);
 };
 
 
@@ -4308,11 +4308,11 @@ proto.berty.messenger.AppMessageTyped.prototype.toObject = function(opt_includeI
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.AppMessageTyped} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.AppMessageTyped} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.AppMessageTyped.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.AppMessageTyped.toObject = function(includeInstance, msg) {
   var f, obj = {
     type: jspb.Message.getFieldWithDefault(msg, 1, 0)
   };
@@ -4328,23 +4328,23 @@ proto.berty.messenger.AppMessageTyped.toObject = function(includeInstance, msg) 
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.AppMessageTyped}
+ * @return {!proto.berty.messenger.v1.AppMessageTyped}
  */
-proto.berty.messenger.AppMessageTyped.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.AppMessageTyped.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.AppMessageTyped;
-  return proto.berty.messenger.AppMessageTyped.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.AppMessageTyped;
+  return proto.berty.messenger.v1.AppMessageTyped.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.AppMessageTyped} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.AppMessageTyped} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.AppMessageTyped}
+ * @return {!proto.berty.messenger.v1.AppMessageTyped}
  */
-proto.berty.messenger.AppMessageTyped.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.AppMessageTyped.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -4352,7 +4352,7 @@ proto.berty.messenger.AppMessageTyped.deserializeBinaryFromReader = function(msg
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {!proto.berty.messenger.AppMessageType} */ (reader.readEnum());
+      var value = /** @type {!proto.berty.messenger.v1.AppMessageType} */ (reader.readEnum());
       msg.setType(value);
       break;
     default:
@@ -4368,9 +4368,9 @@ proto.berty.messenger.AppMessageTyped.deserializeBinaryFromReader = function(msg
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.AppMessageTyped.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.AppMessageTyped.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.AppMessageTyped.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.AppMessageTyped.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -4378,11 +4378,11 @@ proto.berty.messenger.AppMessageTyped.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.AppMessageTyped} message
+ * @param {!proto.berty.messenger.v1.AppMessageTyped} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.AppMessageTyped.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.AppMessageTyped.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getType();
   if (f !== 0.0) {
@@ -4396,18 +4396,18 @@ proto.berty.messenger.AppMessageTyped.serializeBinaryToWriter = function(message
 
 /**
  * optional AppMessageType type = 1;
- * @return {!proto.berty.messenger.AppMessageType}
+ * @return {!proto.berty.messenger.v1.AppMessageType}
  */
-proto.berty.messenger.AppMessageTyped.prototype.getType = function() {
-  return /** @type {!proto.berty.messenger.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+proto.berty.messenger.v1.AppMessageTyped.prototype.getType = function() {
+  return /** @type {!proto.berty.messenger.v1.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
 /**
- * @param {!proto.berty.messenger.AppMessageType} value
- * @return {!proto.berty.messenger.AppMessageTyped} returns this
+ * @param {!proto.berty.messenger.v1.AppMessageType} value
+ * @return {!proto.berty.messenger.v1.AppMessageTyped} returns this
  */
-proto.berty.messenger.AppMessageTyped.prototype.setType = function(value) {
+proto.berty.messenger.v1.AppMessageTyped.prototype.setType = function(value) {
   return jspb.Message.setProto3EnumField(this, 1, value);
 };
 
@@ -4428,8 +4428,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.UserMessageAttachment.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.UserMessageAttachment.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.UserMessageAttachment.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.UserMessageAttachment.toObject(opt_includeInstance, this);
 };
 
 
@@ -4438,11 +4438,11 @@ proto.berty.messenger.UserMessageAttachment.prototype.toObject = function(opt_in
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.UserMessageAttachment} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.UserMessageAttachment} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.UserMessageAttachment.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.UserMessageAttachment.toObject = function(includeInstance, msg) {
   var f, obj = {
     type: jspb.Message.getFieldWithDefault(msg, 1, 0),
     uri: jspb.Message.getFieldWithDefault(msg, 2, "")
@@ -4459,23 +4459,23 @@ proto.berty.messenger.UserMessageAttachment.toObject = function(includeInstance,
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.UserMessageAttachment}
+ * @return {!proto.berty.messenger.v1.UserMessageAttachment}
  */
-proto.berty.messenger.UserMessageAttachment.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.UserMessageAttachment.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.UserMessageAttachment;
-  return proto.berty.messenger.UserMessageAttachment.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.UserMessageAttachment;
+  return proto.berty.messenger.v1.UserMessageAttachment.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.UserMessageAttachment} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.UserMessageAttachment} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.UserMessageAttachment}
+ * @return {!proto.berty.messenger.v1.UserMessageAttachment}
  */
-proto.berty.messenger.UserMessageAttachment.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.UserMessageAttachment.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -4483,7 +4483,7 @@ proto.berty.messenger.UserMessageAttachment.deserializeBinaryFromReader = functi
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {!proto.berty.messenger.AppMessageType} */ (reader.readEnum());
+      var value = /** @type {!proto.berty.messenger.v1.AppMessageType} */ (reader.readEnum());
       msg.setType(value);
       break;
     case 2:
@@ -4503,9 +4503,9 @@ proto.berty.messenger.UserMessageAttachment.deserializeBinaryFromReader = functi
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.UserMessageAttachment.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.UserMessageAttachment.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.UserMessageAttachment.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.UserMessageAttachment.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -4513,11 +4513,11 @@ proto.berty.messenger.UserMessageAttachment.prototype.serializeBinary = function
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.UserMessageAttachment} message
+ * @param {!proto.berty.messenger.v1.UserMessageAttachment} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.UserMessageAttachment.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.UserMessageAttachment.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getType();
   if (f !== 0.0) {
@@ -4538,18 +4538,18 @@ proto.berty.messenger.UserMessageAttachment.serializeBinaryToWriter = function(m
 
 /**
  * optional AppMessageType type = 1;
- * @return {!proto.berty.messenger.AppMessageType}
+ * @return {!proto.berty.messenger.v1.AppMessageType}
  */
-proto.berty.messenger.UserMessageAttachment.prototype.getType = function() {
-  return /** @type {!proto.berty.messenger.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+proto.berty.messenger.v1.UserMessageAttachment.prototype.getType = function() {
+  return /** @type {!proto.berty.messenger.v1.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
 /**
- * @param {!proto.berty.messenger.AppMessageType} value
- * @return {!proto.berty.messenger.UserMessageAttachment} returns this
+ * @param {!proto.berty.messenger.v1.AppMessageType} value
+ * @return {!proto.berty.messenger.v1.UserMessageAttachment} returns this
  */
-proto.berty.messenger.UserMessageAttachment.prototype.setType = function(value) {
+proto.berty.messenger.v1.UserMessageAttachment.prototype.setType = function(value) {
   return jspb.Message.setProto3EnumField(this, 1, value);
 };
 
@@ -4558,16 +4558,16 @@ proto.berty.messenger.UserMessageAttachment.prototype.setType = function(value) 
  * optional string uri = 2;
  * @return {string}
  */
-proto.berty.messenger.UserMessageAttachment.prototype.getUri = function() {
+proto.berty.messenger.v1.UserMessageAttachment.prototype.getUri = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.UserMessageAttachment} returns this
+ * @return {!proto.berty.messenger.v1.UserMessageAttachment} returns this
  */
-proto.berty.messenger.UserMessageAttachment.prototype.setUri = function(value) {
+proto.berty.messenger.v1.UserMessageAttachment.prototype.setUri = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -4578,7 +4578,7 @@ proto.berty.messenger.UserMessageAttachment.prototype.setUri = function(value) {
  * @private {!Array<number>}
  * @const
  */
-proto.berty.messenger.PayloadUserMessage.repeatedFields_ = [3];
+proto.berty.messenger.v1.PayloadUserMessage.repeatedFields_ = [3];
 
 
 
@@ -4595,8 +4595,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.PayloadUserMessage.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.PayloadUserMessage.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.PayloadUserMessage.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.PayloadUserMessage.toObject(opt_includeInstance, this);
 };
 
 
@@ -4605,16 +4605,16 @@ proto.berty.messenger.PayloadUserMessage.prototype.toObject = function(opt_inclu
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.PayloadUserMessage} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.PayloadUserMessage} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.PayloadUserMessage.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.PayloadUserMessage.toObject = function(includeInstance, msg) {
   var f, obj = {
     type: jspb.Message.getFieldWithDefault(msg, 1, 0),
     body: jspb.Message.getFieldWithDefault(msg, 2, ""),
     attachmentsList: jspb.Message.toObjectList(msg.getAttachmentsList(),
-    proto.berty.messenger.UserMessageAttachment.toObject, includeInstance),
+    proto.berty.messenger.v1.UserMessageAttachment.toObject, includeInstance),
     sentDate: jspb.Message.getFieldWithDefault(msg, 4, 0)
   };
 
@@ -4629,23 +4629,23 @@ proto.berty.messenger.PayloadUserMessage.toObject = function(includeInstance, ms
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.PayloadUserMessage}
+ * @return {!proto.berty.messenger.v1.PayloadUserMessage}
  */
-proto.berty.messenger.PayloadUserMessage.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.PayloadUserMessage.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.PayloadUserMessage;
-  return proto.berty.messenger.PayloadUserMessage.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.PayloadUserMessage;
+  return proto.berty.messenger.v1.PayloadUserMessage.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.PayloadUserMessage} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.PayloadUserMessage} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.PayloadUserMessage}
+ * @return {!proto.berty.messenger.v1.PayloadUserMessage}
  */
-proto.berty.messenger.PayloadUserMessage.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.PayloadUserMessage.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -4653,7 +4653,7 @@ proto.berty.messenger.PayloadUserMessage.deserializeBinaryFromReader = function(
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {!proto.berty.messenger.AppMessageType} */ (reader.readEnum());
+      var value = /** @type {!proto.berty.messenger.v1.AppMessageType} */ (reader.readEnum());
       msg.setType(value);
       break;
     case 2:
@@ -4661,8 +4661,8 @@ proto.berty.messenger.PayloadUserMessage.deserializeBinaryFromReader = function(
       msg.setBody(value);
       break;
     case 3:
-      var value = new proto.berty.messenger.UserMessageAttachment;
-      reader.readMessage(value,proto.berty.messenger.UserMessageAttachment.deserializeBinaryFromReader);
+      var value = new proto.berty.messenger.v1.UserMessageAttachment;
+      reader.readMessage(value,proto.berty.messenger.v1.UserMessageAttachment.deserializeBinaryFromReader);
       msg.addAttachments(value);
       break;
     case 4:
@@ -4682,9 +4682,9 @@ proto.berty.messenger.PayloadUserMessage.deserializeBinaryFromReader = function(
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.PayloadUserMessage.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.PayloadUserMessage.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.PayloadUserMessage.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.PayloadUserMessage.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -4692,11 +4692,11 @@ proto.berty.messenger.PayloadUserMessage.prototype.serializeBinary = function() 
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.PayloadUserMessage} message
+ * @param {!proto.berty.messenger.v1.PayloadUserMessage} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.PayloadUserMessage.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.PayloadUserMessage.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getType();
   if (f !== 0.0) {
@@ -4717,7 +4717,7 @@ proto.berty.messenger.PayloadUserMessage.serializeBinaryToWriter = function(mess
     writer.writeRepeatedMessage(
       3,
       f,
-      proto.berty.messenger.UserMessageAttachment.serializeBinaryToWriter
+      proto.berty.messenger.v1.UserMessageAttachment.serializeBinaryToWriter
     );
   }
   f = message.getSentDate();
@@ -4732,18 +4732,18 @@ proto.berty.messenger.PayloadUserMessage.serializeBinaryToWriter = function(mess
 
 /**
  * optional AppMessageType type = 1;
- * @return {!proto.berty.messenger.AppMessageType}
+ * @return {!proto.berty.messenger.v1.AppMessageType}
  */
-proto.berty.messenger.PayloadUserMessage.prototype.getType = function() {
-  return /** @type {!proto.berty.messenger.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+proto.berty.messenger.v1.PayloadUserMessage.prototype.getType = function() {
+  return /** @type {!proto.berty.messenger.v1.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
 /**
- * @param {!proto.berty.messenger.AppMessageType} value
- * @return {!proto.berty.messenger.PayloadUserMessage} returns this
+ * @param {!proto.berty.messenger.v1.AppMessageType} value
+ * @return {!proto.berty.messenger.v1.PayloadUserMessage} returns this
  */
-proto.berty.messenger.PayloadUserMessage.prototype.setType = function(value) {
+proto.berty.messenger.v1.PayloadUserMessage.prototype.setType = function(value) {
   return jspb.Message.setProto3EnumField(this, 1, value);
 };
 
@@ -4752,54 +4752,54 @@ proto.berty.messenger.PayloadUserMessage.prototype.setType = function(value) {
  * optional string body = 2;
  * @return {string}
  */
-proto.berty.messenger.PayloadUserMessage.prototype.getBody = function() {
+proto.berty.messenger.v1.PayloadUserMessage.prototype.getBody = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.PayloadUserMessage} returns this
+ * @return {!proto.berty.messenger.v1.PayloadUserMessage} returns this
  */
-proto.berty.messenger.PayloadUserMessage.prototype.setBody = function(value) {
+proto.berty.messenger.v1.PayloadUserMessage.prototype.setBody = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
 /**
  * repeated UserMessageAttachment attachments = 3;
- * @return {!Array<!proto.berty.messenger.UserMessageAttachment>}
+ * @return {!Array<!proto.berty.messenger.v1.UserMessageAttachment>}
  */
-proto.berty.messenger.PayloadUserMessage.prototype.getAttachmentsList = function() {
-  return /** @type{!Array<!proto.berty.messenger.UserMessageAttachment>} */ (
-    jspb.Message.getRepeatedWrapperField(this, proto.berty.messenger.UserMessageAttachment, 3));
+proto.berty.messenger.v1.PayloadUserMessage.prototype.getAttachmentsList = function() {
+  return /** @type{!Array<!proto.berty.messenger.v1.UserMessageAttachment>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.berty.messenger.v1.UserMessageAttachment, 3));
 };
 
 
 /**
- * @param {!Array<!proto.berty.messenger.UserMessageAttachment>} value
- * @return {!proto.berty.messenger.PayloadUserMessage} returns this
+ * @param {!Array<!proto.berty.messenger.v1.UserMessageAttachment>} value
+ * @return {!proto.berty.messenger.v1.PayloadUserMessage} returns this
 */
-proto.berty.messenger.PayloadUserMessage.prototype.setAttachmentsList = function(value) {
+proto.berty.messenger.v1.PayloadUserMessage.prototype.setAttachmentsList = function(value) {
   return jspb.Message.setRepeatedWrapperField(this, 3, value);
 };
 
 
 /**
- * @param {!proto.berty.messenger.UserMessageAttachment=} opt_value
+ * @param {!proto.berty.messenger.v1.UserMessageAttachment=} opt_value
  * @param {number=} opt_index
- * @return {!proto.berty.messenger.UserMessageAttachment}
+ * @return {!proto.berty.messenger.v1.UserMessageAttachment}
  */
-proto.berty.messenger.PayloadUserMessage.prototype.addAttachments = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 3, opt_value, proto.berty.messenger.UserMessageAttachment, opt_index);
+proto.berty.messenger.v1.PayloadUserMessage.prototype.addAttachments = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 3, opt_value, proto.berty.messenger.v1.UserMessageAttachment, opt_index);
 };
 
 
 /**
  * Clears the list making it empty but non-null.
- * @return {!proto.berty.messenger.PayloadUserMessage} returns this
+ * @return {!proto.berty.messenger.v1.PayloadUserMessage} returns this
  */
-proto.berty.messenger.PayloadUserMessage.prototype.clearAttachmentsList = function() {
+proto.berty.messenger.v1.PayloadUserMessage.prototype.clearAttachmentsList = function() {
   return this.setAttachmentsList([]);
 };
 
@@ -4808,16 +4808,16 @@ proto.berty.messenger.PayloadUserMessage.prototype.clearAttachmentsList = functi
  * optional int64 sent_date = 4;
  * @return {number}
  */
-proto.berty.messenger.PayloadUserMessage.prototype.getSentDate = function() {
+proto.berty.messenger.v1.PayloadUserMessage.prototype.getSentDate = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
 };
 
 
 /**
  * @param {number} value
- * @return {!proto.berty.messenger.PayloadUserMessage} returns this
+ * @return {!proto.berty.messenger.v1.PayloadUserMessage} returns this
  */
-proto.berty.messenger.PayloadUserMessage.prototype.setSentDate = function(value) {
+proto.berty.messenger.v1.PayloadUserMessage.prototype.setSentDate = function(value) {
   return jspb.Message.setProto3IntField(this, 4, value);
 };
 
@@ -4838,8 +4838,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.PayloadUserReaction.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.PayloadUserReaction.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.PayloadUserReaction.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.PayloadUserReaction.toObject(opt_includeInstance, this);
 };
 
 
@@ -4848,11 +4848,11 @@ proto.berty.messenger.PayloadUserReaction.prototype.toObject = function(opt_incl
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.PayloadUserReaction} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.PayloadUserReaction} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.PayloadUserReaction.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.PayloadUserReaction.toObject = function(includeInstance, msg) {
   var f, obj = {
     type: jspb.Message.getFieldWithDefault(msg, 1, 0),
     emoji: jspb.Message.getFieldWithDefault(msg, 2, "")
@@ -4869,23 +4869,23 @@ proto.berty.messenger.PayloadUserReaction.toObject = function(includeInstance, m
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.PayloadUserReaction}
+ * @return {!proto.berty.messenger.v1.PayloadUserReaction}
  */
-proto.berty.messenger.PayloadUserReaction.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.PayloadUserReaction.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.PayloadUserReaction;
-  return proto.berty.messenger.PayloadUserReaction.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.PayloadUserReaction;
+  return proto.berty.messenger.v1.PayloadUserReaction.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.PayloadUserReaction} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.PayloadUserReaction} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.PayloadUserReaction}
+ * @return {!proto.berty.messenger.v1.PayloadUserReaction}
  */
-proto.berty.messenger.PayloadUserReaction.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.PayloadUserReaction.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -4893,7 +4893,7 @@ proto.berty.messenger.PayloadUserReaction.deserializeBinaryFromReader = function
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {!proto.berty.messenger.AppMessageType} */ (reader.readEnum());
+      var value = /** @type {!proto.berty.messenger.v1.AppMessageType} */ (reader.readEnum());
       msg.setType(value);
       break;
     case 2:
@@ -4913,9 +4913,9 @@ proto.berty.messenger.PayloadUserReaction.deserializeBinaryFromReader = function
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.PayloadUserReaction.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.PayloadUserReaction.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.PayloadUserReaction.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.PayloadUserReaction.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -4923,11 +4923,11 @@ proto.berty.messenger.PayloadUserReaction.prototype.serializeBinary = function()
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.PayloadUserReaction} message
+ * @param {!proto.berty.messenger.v1.PayloadUserReaction} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.PayloadUserReaction.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.PayloadUserReaction.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getType();
   if (f !== 0.0) {
@@ -4948,18 +4948,18 @@ proto.berty.messenger.PayloadUserReaction.serializeBinaryToWriter = function(mes
 
 /**
  * optional AppMessageType type = 1;
- * @return {!proto.berty.messenger.AppMessageType}
+ * @return {!proto.berty.messenger.v1.AppMessageType}
  */
-proto.berty.messenger.PayloadUserReaction.prototype.getType = function() {
-  return /** @type {!proto.berty.messenger.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+proto.berty.messenger.v1.PayloadUserReaction.prototype.getType = function() {
+  return /** @type {!proto.berty.messenger.v1.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
 /**
- * @param {!proto.berty.messenger.AppMessageType} value
- * @return {!proto.berty.messenger.PayloadUserReaction} returns this
+ * @param {!proto.berty.messenger.v1.AppMessageType} value
+ * @return {!proto.berty.messenger.v1.PayloadUserReaction} returns this
  */
-proto.berty.messenger.PayloadUserReaction.prototype.setType = function(value) {
+proto.berty.messenger.v1.PayloadUserReaction.prototype.setType = function(value) {
   return jspb.Message.setProto3EnumField(this, 1, value);
 };
 
@@ -4968,16 +4968,16 @@ proto.berty.messenger.PayloadUserReaction.prototype.setType = function(value) {
  * optional string emoji = 2;
  * @return {string}
  */
-proto.berty.messenger.PayloadUserReaction.prototype.getEmoji = function() {
+proto.berty.messenger.v1.PayloadUserReaction.prototype.getEmoji = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.PayloadUserReaction} returns this
+ * @return {!proto.berty.messenger.v1.PayloadUserReaction} returns this
  */
-proto.berty.messenger.PayloadUserReaction.prototype.setEmoji = function(value) {
+proto.berty.messenger.v1.PayloadUserReaction.prototype.setEmoji = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -4998,8 +4998,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.PayloadGroupInvitation.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.PayloadGroupInvitation.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.PayloadGroupInvitation.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.PayloadGroupInvitation.toObject(opt_includeInstance, this);
 };
 
 
@@ -5008,11 +5008,11 @@ proto.berty.messenger.PayloadGroupInvitation.prototype.toObject = function(opt_i
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.PayloadGroupInvitation} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.PayloadGroupInvitation} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.PayloadGroupInvitation.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.PayloadGroupInvitation.toObject = function(includeInstance, msg) {
   var f, obj = {
     type: jspb.Message.getFieldWithDefault(msg, 1, 0),
     groupPk: jspb.Message.getFieldWithDefault(msg, 2, "")
@@ -5029,23 +5029,23 @@ proto.berty.messenger.PayloadGroupInvitation.toObject = function(includeInstance
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.PayloadGroupInvitation}
+ * @return {!proto.berty.messenger.v1.PayloadGroupInvitation}
  */
-proto.berty.messenger.PayloadGroupInvitation.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.PayloadGroupInvitation.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.PayloadGroupInvitation;
-  return proto.berty.messenger.PayloadGroupInvitation.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.PayloadGroupInvitation;
+  return proto.berty.messenger.v1.PayloadGroupInvitation.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.PayloadGroupInvitation} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.PayloadGroupInvitation} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.PayloadGroupInvitation}
+ * @return {!proto.berty.messenger.v1.PayloadGroupInvitation}
  */
-proto.berty.messenger.PayloadGroupInvitation.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.PayloadGroupInvitation.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -5053,7 +5053,7 @@ proto.berty.messenger.PayloadGroupInvitation.deserializeBinaryFromReader = funct
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {!proto.berty.messenger.AppMessageType} */ (reader.readEnum());
+      var value = /** @type {!proto.berty.messenger.v1.AppMessageType} */ (reader.readEnum());
       msg.setType(value);
       break;
     case 2:
@@ -5073,9 +5073,9 @@ proto.berty.messenger.PayloadGroupInvitation.deserializeBinaryFromReader = funct
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.PayloadGroupInvitation.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.PayloadGroupInvitation.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.PayloadGroupInvitation.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.PayloadGroupInvitation.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -5083,11 +5083,11 @@ proto.berty.messenger.PayloadGroupInvitation.prototype.serializeBinary = functio
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.PayloadGroupInvitation} message
+ * @param {!proto.berty.messenger.v1.PayloadGroupInvitation} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.PayloadGroupInvitation.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.PayloadGroupInvitation.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getType();
   if (f !== 0.0) {
@@ -5108,18 +5108,18 @@ proto.berty.messenger.PayloadGroupInvitation.serializeBinaryToWriter = function(
 
 /**
  * optional AppMessageType type = 1;
- * @return {!proto.berty.messenger.AppMessageType}
+ * @return {!proto.berty.messenger.v1.AppMessageType}
  */
-proto.berty.messenger.PayloadGroupInvitation.prototype.getType = function() {
-  return /** @type {!proto.berty.messenger.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+proto.berty.messenger.v1.PayloadGroupInvitation.prototype.getType = function() {
+  return /** @type {!proto.berty.messenger.v1.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
 /**
- * @param {!proto.berty.messenger.AppMessageType} value
- * @return {!proto.berty.messenger.PayloadGroupInvitation} returns this
+ * @param {!proto.berty.messenger.v1.AppMessageType} value
+ * @return {!proto.berty.messenger.v1.PayloadGroupInvitation} returns this
  */
-proto.berty.messenger.PayloadGroupInvitation.prototype.setType = function(value) {
+proto.berty.messenger.v1.PayloadGroupInvitation.prototype.setType = function(value) {
   return jspb.Message.setProto3EnumField(this, 1, value);
 };
 
@@ -5128,16 +5128,16 @@ proto.berty.messenger.PayloadGroupInvitation.prototype.setType = function(value)
  * optional string group_pk = 2;
  * @return {string}
  */
-proto.berty.messenger.PayloadGroupInvitation.prototype.getGroupPk = function() {
+proto.berty.messenger.v1.PayloadGroupInvitation.prototype.getGroupPk = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.PayloadGroupInvitation} returns this
+ * @return {!proto.berty.messenger.v1.PayloadGroupInvitation} returns this
  */
-proto.berty.messenger.PayloadGroupInvitation.prototype.setGroupPk = function(value) {
+proto.berty.messenger.v1.PayloadGroupInvitation.prototype.setGroupPk = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -5158,8 +5158,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.PayloadSetGroupName.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.PayloadSetGroupName.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.PayloadSetGroupName.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.PayloadSetGroupName.toObject(opt_includeInstance, this);
 };
 
 
@@ -5168,11 +5168,11 @@ proto.berty.messenger.PayloadSetGroupName.prototype.toObject = function(opt_incl
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.PayloadSetGroupName} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.PayloadSetGroupName} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.PayloadSetGroupName.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.PayloadSetGroupName.toObject = function(includeInstance, msg) {
   var f, obj = {
     type: jspb.Message.getFieldWithDefault(msg, 1, 0),
     name: jspb.Message.getFieldWithDefault(msg, 2, "")
@@ -5189,23 +5189,23 @@ proto.berty.messenger.PayloadSetGroupName.toObject = function(includeInstance, m
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.PayloadSetGroupName}
+ * @return {!proto.berty.messenger.v1.PayloadSetGroupName}
  */
-proto.berty.messenger.PayloadSetGroupName.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.PayloadSetGroupName.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.PayloadSetGroupName;
-  return proto.berty.messenger.PayloadSetGroupName.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.PayloadSetGroupName;
+  return proto.berty.messenger.v1.PayloadSetGroupName.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.PayloadSetGroupName} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.PayloadSetGroupName} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.PayloadSetGroupName}
+ * @return {!proto.berty.messenger.v1.PayloadSetGroupName}
  */
-proto.berty.messenger.PayloadSetGroupName.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.PayloadSetGroupName.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -5213,7 +5213,7 @@ proto.berty.messenger.PayloadSetGroupName.deserializeBinaryFromReader = function
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {!proto.berty.messenger.AppMessageType} */ (reader.readEnum());
+      var value = /** @type {!proto.berty.messenger.v1.AppMessageType} */ (reader.readEnum());
       msg.setType(value);
       break;
     case 2:
@@ -5233,9 +5233,9 @@ proto.berty.messenger.PayloadSetGroupName.deserializeBinaryFromReader = function
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.PayloadSetGroupName.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.PayloadSetGroupName.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.PayloadSetGroupName.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.PayloadSetGroupName.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -5243,11 +5243,11 @@ proto.berty.messenger.PayloadSetGroupName.prototype.serializeBinary = function()
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.PayloadSetGroupName} message
+ * @param {!proto.berty.messenger.v1.PayloadSetGroupName} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.PayloadSetGroupName.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.PayloadSetGroupName.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getType();
   if (f !== 0.0) {
@@ -5268,18 +5268,18 @@ proto.berty.messenger.PayloadSetGroupName.serializeBinaryToWriter = function(mes
 
 /**
  * optional AppMessageType type = 1;
- * @return {!proto.berty.messenger.AppMessageType}
+ * @return {!proto.berty.messenger.v1.AppMessageType}
  */
-proto.berty.messenger.PayloadSetGroupName.prototype.getType = function() {
-  return /** @type {!proto.berty.messenger.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+proto.berty.messenger.v1.PayloadSetGroupName.prototype.getType = function() {
+  return /** @type {!proto.berty.messenger.v1.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
 /**
- * @param {!proto.berty.messenger.AppMessageType} value
- * @return {!proto.berty.messenger.PayloadSetGroupName} returns this
+ * @param {!proto.berty.messenger.v1.AppMessageType} value
+ * @return {!proto.berty.messenger.v1.PayloadSetGroupName} returns this
  */
-proto.berty.messenger.PayloadSetGroupName.prototype.setType = function(value) {
+proto.berty.messenger.v1.PayloadSetGroupName.prototype.setType = function(value) {
   return jspb.Message.setProto3EnumField(this, 1, value);
 };
 
@@ -5288,16 +5288,16 @@ proto.berty.messenger.PayloadSetGroupName.prototype.setType = function(value) {
  * optional string name = 2;
  * @return {string}
  */
-proto.berty.messenger.PayloadSetGroupName.prototype.getName = function() {
+proto.berty.messenger.v1.PayloadSetGroupName.prototype.getName = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.PayloadSetGroupName} returns this
+ * @return {!proto.berty.messenger.v1.PayloadSetGroupName} returns this
  */
-proto.berty.messenger.PayloadSetGroupName.prototype.setName = function(value) {
+proto.berty.messenger.v1.PayloadSetGroupName.prototype.setName = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -5318,8 +5318,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.PayloadAcknowledge.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.PayloadAcknowledge.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.PayloadAcknowledge.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.PayloadAcknowledge.toObject(opt_includeInstance, this);
 };
 
 
@@ -5328,11 +5328,11 @@ proto.berty.messenger.PayloadAcknowledge.prototype.toObject = function(opt_inclu
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.PayloadAcknowledge} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.PayloadAcknowledge} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.PayloadAcknowledge.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.PayloadAcknowledge.toObject = function(includeInstance, msg) {
   var f, obj = {
     type: jspb.Message.getFieldWithDefault(msg, 1, 0),
     target: jspb.Message.getFieldWithDefault(msg, 2, "")
@@ -5349,23 +5349,23 @@ proto.berty.messenger.PayloadAcknowledge.toObject = function(includeInstance, ms
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.PayloadAcknowledge}
+ * @return {!proto.berty.messenger.v1.PayloadAcknowledge}
  */
-proto.berty.messenger.PayloadAcknowledge.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.PayloadAcknowledge.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.PayloadAcknowledge;
-  return proto.berty.messenger.PayloadAcknowledge.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.PayloadAcknowledge;
+  return proto.berty.messenger.v1.PayloadAcknowledge.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.PayloadAcknowledge} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.PayloadAcknowledge} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.PayloadAcknowledge}
+ * @return {!proto.berty.messenger.v1.PayloadAcknowledge}
  */
-proto.berty.messenger.PayloadAcknowledge.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.PayloadAcknowledge.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -5373,7 +5373,7 @@ proto.berty.messenger.PayloadAcknowledge.deserializeBinaryFromReader = function(
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {!proto.berty.messenger.AppMessageType} */ (reader.readEnum());
+      var value = /** @type {!proto.berty.messenger.v1.AppMessageType} */ (reader.readEnum());
       msg.setType(value);
       break;
     case 2:
@@ -5393,9 +5393,9 @@ proto.berty.messenger.PayloadAcknowledge.deserializeBinaryFromReader = function(
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.PayloadAcknowledge.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.PayloadAcknowledge.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.PayloadAcknowledge.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.PayloadAcknowledge.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -5403,11 +5403,11 @@ proto.berty.messenger.PayloadAcknowledge.prototype.serializeBinary = function() 
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.PayloadAcknowledge} message
+ * @param {!proto.berty.messenger.v1.PayloadAcknowledge} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.PayloadAcknowledge.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.PayloadAcknowledge.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getType();
   if (f !== 0.0) {
@@ -5428,18 +5428,18 @@ proto.berty.messenger.PayloadAcknowledge.serializeBinaryToWriter = function(mess
 
 /**
  * optional AppMessageType type = 1;
- * @return {!proto.berty.messenger.AppMessageType}
+ * @return {!proto.berty.messenger.v1.AppMessageType}
  */
-proto.berty.messenger.PayloadAcknowledge.prototype.getType = function() {
-  return /** @type {!proto.berty.messenger.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+proto.berty.messenger.v1.PayloadAcknowledge.prototype.getType = function() {
+  return /** @type {!proto.berty.messenger.v1.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
 /**
- * @param {!proto.berty.messenger.AppMessageType} value
- * @return {!proto.berty.messenger.PayloadAcknowledge} returns this
+ * @param {!proto.berty.messenger.v1.AppMessageType} value
+ * @return {!proto.berty.messenger.v1.PayloadAcknowledge} returns this
  */
-proto.berty.messenger.PayloadAcknowledge.prototype.setType = function(value) {
+proto.berty.messenger.v1.PayloadAcknowledge.prototype.setType = function(value) {
   return jspb.Message.setProto3EnumField(this, 1, value);
 };
 
@@ -5448,16 +5448,16 @@ proto.berty.messenger.PayloadAcknowledge.prototype.setType = function(value) {
  * optional string target = 2;
  * @return {string}
  */
-proto.berty.messenger.PayloadAcknowledge.prototype.getTarget = function() {
+proto.berty.messenger.v1.PayloadAcknowledge.prototype.getTarget = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.PayloadAcknowledge} returns this
+ * @return {!proto.berty.messenger.v1.PayloadAcknowledge} returns this
  */
-proto.berty.messenger.PayloadAcknowledge.prototype.setTarget = function(value) {
+proto.berty.messenger.v1.PayloadAcknowledge.prototype.setTarget = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -5478,8 +5478,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.SystemInfo.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.SystemInfo.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.SystemInfo.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.SystemInfo.toObject(opt_includeInstance, this);
 };
 
 
@@ -5488,11 +5488,11 @@ proto.berty.messenger.SystemInfo.prototype.toObject = function(opt_includeInstan
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.SystemInfo} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.SystemInfo} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SystemInfo.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.SystemInfo.toObject = function(includeInstance, msg) {
   var f, obj = {
 
   };
@@ -5508,23 +5508,23 @@ proto.berty.messenger.SystemInfo.toObject = function(includeInstance, msg) {
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.SystemInfo}
+ * @return {!proto.berty.messenger.v1.SystemInfo}
  */
-proto.berty.messenger.SystemInfo.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.SystemInfo.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.SystemInfo;
-  return proto.berty.messenger.SystemInfo.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.SystemInfo;
+  return proto.berty.messenger.v1.SystemInfo.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.SystemInfo} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.SystemInfo} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.SystemInfo}
+ * @return {!proto.berty.messenger.v1.SystemInfo}
  */
-proto.berty.messenger.SystemInfo.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.SystemInfo.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -5544,9 +5544,9 @@ proto.berty.messenger.SystemInfo.deserializeBinaryFromReader = function(msg, rea
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.SystemInfo.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.SystemInfo.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.SystemInfo.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.SystemInfo.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -5554,11 +5554,11 @@ proto.berty.messenger.SystemInfo.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.SystemInfo} message
+ * @param {!proto.berty.messenger.v1.SystemInfo} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SystemInfo.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.SystemInfo.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
 };
 
@@ -5579,8 +5579,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.SystemInfo.Request.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.SystemInfo.Request.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.SystemInfo.Request.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.SystemInfo.Request.toObject(opt_includeInstance, this);
 };
 
 
@@ -5589,11 +5589,11 @@ proto.berty.messenger.SystemInfo.Request.prototype.toObject = function(opt_inclu
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.SystemInfo.Request} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.SystemInfo.Request} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SystemInfo.Request.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.SystemInfo.Request.toObject = function(includeInstance, msg) {
   var f, obj = {
 
   };
@@ -5609,23 +5609,23 @@ proto.berty.messenger.SystemInfo.Request.toObject = function(includeInstance, ms
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.SystemInfo.Request}
+ * @return {!proto.berty.messenger.v1.SystemInfo.Request}
  */
-proto.berty.messenger.SystemInfo.Request.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.SystemInfo.Request.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.SystemInfo.Request;
-  return proto.berty.messenger.SystemInfo.Request.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.SystemInfo.Request;
+  return proto.berty.messenger.v1.SystemInfo.Request.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.SystemInfo.Request} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.SystemInfo.Request} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.SystemInfo.Request}
+ * @return {!proto.berty.messenger.v1.SystemInfo.Request}
  */
-proto.berty.messenger.SystemInfo.Request.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.SystemInfo.Request.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -5645,9 +5645,9 @@ proto.berty.messenger.SystemInfo.Request.deserializeBinaryFromReader = function(
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.SystemInfo.Request.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.SystemInfo.Request.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.SystemInfo.Request.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.SystemInfo.Request.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -5655,11 +5655,11 @@ proto.berty.messenger.SystemInfo.Request.prototype.serializeBinary = function() 
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.SystemInfo.Request} message
+ * @param {!proto.berty.messenger.v1.SystemInfo.Request} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SystemInfo.Request.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.SystemInfo.Request.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
 };
 
@@ -5680,8 +5680,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.SystemInfo.Reply.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.SystemInfo.Reply.toObject(opt_includeInstance, this);
 };
 
 
@@ -5690,11 +5690,11 @@ proto.berty.messenger.SystemInfo.Reply.prototype.toObject = function(opt_include
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.SystemInfo.Reply} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.SystemInfo.Reply} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SystemInfo.Reply.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.SystemInfo.Reply.toObject = function(includeInstance, msg) {
   var f, obj = {
     startedAt: jspb.Message.getFieldWithDefault(msg, 1, 0),
     numCpu: jspb.Message.getFieldWithDefault(msg, 2, 0),
@@ -5722,23 +5722,23 @@ proto.berty.messenger.SystemInfo.Reply.toObject = function(includeInstance, msg)
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.SystemInfo.Reply}
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply}
  */
-proto.berty.messenger.SystemInfo.Reply.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.SystemInfo.Reply.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.SystemInfo.Reply;
-  return proto.berty.messenger.SystemInfo.Reply.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.SystemInfo.Reply;
+  return proto.berty.messenger.v1.SystemInfo.Reply.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.SystemInfo.Reply} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.SystemInfo.Reply} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.SystemInfo.Reply}
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply}
  */
-proto.berty.messenger.SystemInfo.Reply.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.SystemInfo.Reply.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
@@ -5810,9 +5810,9 @@ proto.berty.messenger.SystemInfo.Reply.deserializeBinaryFromReader = function(ms
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.SystemInfo.Reply.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.SystemInfo.Reply.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -5820,11 +5820,11 @@ proto.berty.messenger.SystemInfo.Reply.prototype.serializeBinary = function() {
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.SystemInfo.Reply} message
+ * @param {!proto.berty.messenger.v1.SystemInfo.Reply} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.SystemInfo.Reply.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.SystemInfo.Reply.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getStartedAt();
   if (f !== 0) {
@@ -5924,16 +5924,16 @@ proto.berty.messenger.SystemInfo.Reply.serializeBinaryToWriter = function(messag
  * optional int64 started_at = 1;
  * @return {number}
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.getStartedAt = function() {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getStartedAt = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
 /**
  * @param {number} value
- * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.setStartedAt = function(value) {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setStartedAt = function(value) {
   return jspb.Message.setProto3IntField(this, 1, value);
 };
 
@@ -5942,16 +5942,16 @@ proto.berty.messenger.SystemInfo.Reply.prototype.setStartedAt = function(value) 
  * optional int64 num_cpu = 2;
  * @return {number}
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.getNumCpu = function() {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getNumCpu = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
 };
 
 
 /**
  * @param {number} value
- * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.setNumCpu = function(value) {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setNumCpu = function(value) {
   return jspb.Message.setProto3IntField(this, 2, value);
 };
 
@@ -5960,16 +5960,16 @@ proto.berty.messenger.SystemInfo.Reply.prototype.setNumCpu = function(value) {
  * optional string go_version = 3;
  * @return {string}
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.getGoVersion = function() {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getGoVersion = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.setGoVersion = function(value) {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setGoVersion = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
 };
 
@@ -5978,16 +5978,16 @@ proto.berty.messenger.SystemInfo.Reply.prototype.setGoVersion = function(value) 
  * optional int64 num_goroutine = 4;
  * @return {number}
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.getNumGoroutine = function() {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getNumGoroutine = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
 };
 
 
 /**
  * @param {number} value
- * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.setNumGoroutine = function(value) {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setNumGoroutine = function(value) {
   return jspb.Message.setProto3IntField(this, 4, value);
 };
 
@@ -5996,16 +5996,16 @@ proto.berty.messenger.SystemInfo.Reply.prototype.setNumGoroutine = function(valu
  * optional string operating_system = 5;
  * @return {string}
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.getOperatingSystem = function() {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getOperatingSystem = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.setOperatingSystem = function(value) {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setOperatingSystem = function(value) {
   return jspb.Message.setProto3StringField(this, 5, value);
 };
 
@@ -6014,16 +6014,16 @@ proto.berty.messenger.SystemInfo.Reply.prototype.setOperatingSystem = function(v
  * optional string host_name = 6;
  * @return {string}
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.getHostName = function() {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getHostName = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.setHostName = function(value) {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setHostName = function(value) {
   return jspb.Message.setProto3StringField(this, 6, value);
 };
 
@@ -6032,16 +6032,16 @@ proto.berty.messenger.SystemInfo.Reply.prototype.setHostName = function(value) {
  * optional string arch = 7;
  * @return {string}
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.getArch = function() {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getArch = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.setArch = function(value) {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setArch = function(value) {
   return jspb.Message.setProto3StringField(this, 7, value);
 };
 
@@ -6050,16 +6050,16 @@ proto.berty.messenger.SystemInfo.Reply.prototype.setArch = function(value) {
  * optional string version = 8;
  * @return {string}
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.getVersion = function() {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getVersion = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.setVersion = function(value) {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setVersion = function(value) {
   return jspb.Message.setProto3StringField(this, 8, value);
 };
 
@@ -6068,16 +6068,16 @@ proto.berty.messenger.SystemInfo.Reply.prototype.setVersion = function(value) {
  * optional string vcs_ref = 9;
  * @return {string}
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.getVcsRef = function() {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getVcsRef = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 9, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.setVcsRef = function(value) {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setVcsRef = function(value) {
   return jspb.Message.setProto3StringField(this, 9, value);
 };
 
@@ -6086,16 +6086,16 @@ proto.berty.messenger.SystemInfo.Reply.prototype.setVcsRef = function(value) {
  * optional int64 build_time = 10;
  * @return {number}
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.getBuildTime = function() {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getBuildTime = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 10, 0));
 };
 
 
 /**
  * @param {number} value
- * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.setBuildTime = function(value) {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setBuildTime = function(value) {
   return jspb.Message.setProto3IntField(this, 10, value);
 };
 
@@ -6104,16 +6104,16 @@ proto.berty.messenger.SystemInfo.Reply.prototype.setBuildTime = function(value) 
  * optional string rlimit = 11;
  * @return {string}
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.getRlimit = function() {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getRlimit = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 11, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.setRlimit = function(value) {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setRlimit = function(value) {
   return jspb.Message.setProto3StringField(this, 11, value);
 };
 
@@ -6122,16 +6122,16 @@ proto.berty.messenger.SystemInfo.Reply.prototype.setRlimit = function(value) {
  * optional string self_rusage = 12;
  * @return {string}
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.getSelfRusage = function() {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getSelfRusage = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 12, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.setSelfRusage = function(value) {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setSelfRusage = function(value) {
   return jspb.Message.setProto3StringField(this, 12, value);
 };
 
@@ -6140,16 +6140,16 @@ proto.berty.messenger.SystemInfo.Reply.prototype.setSelfRusage = function(value)
  * optional string children_rusage = 13;
  * @return {string}
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.getChildrenRusage = function() {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getChildrenRusage = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.SystemInfo.Reply} returns this
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.SystemInfo.Reply.prototype.setChildrenRusage = function(value) {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setChildrenRusage = function(value) {
   return jspb.Message.setProto3StringField(this, 13, value);
 };
 
@@ -6157,7 +6157,7 @@ proto.berty.messenger.SystemInfo.Reply.prototype.setChildrenRusage = function(va
 /**
  * @enum {number}
  */
-proto.berty.messenger.AppMessageType = {
+proto.berty.messenger.v1.AppMessageType = {
   UNDEFINED: 0,
   USERMESSAGE: 1,
   USERREACTION: 2,
@@ -6166,4 +6166,4 @@ proto.berty.messenger.AppMessageType = {
   ACKNOWLEDGE: 5
 };
 
-goog.object.extend(exports, proto.berty.messenger);
+goog.object.extend(exports, proto.berty.messenger.v1);

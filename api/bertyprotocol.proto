@@ -1,9 +1,8 @@
 syntax = "proto3";
 
-package berty.protocol;
+package berty.protocol.v1;
 
 import "bertytypes.proto";
-import "google/api/annotations.proto";
 
 option go_package = "berty.tech/berty/go/pkg/bertyprotocol";
 
@@ -11,239 +10,89 @@ option go_package = "berty.tech/berty/go/pkg/bertyprotocol";
 // Each Berty Protocol Instance is considered as a Berty device and is associated with a Berty user.
 service ProtocolService {
   // InstanceExportData exports instance data
-  rpc InstanceExportData (types.InstanceExportData.Request) returns (types.InstanceExportData.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/InstanceExportData"
-      body: "*"
-    };
-  }
+  rpc InstanceExportData (types.v1.InstanceExportData.Request) returns (types.v1.InstanceExportData.Reply);
 
   // InstanceGetConfiguration gets current configuration of this protocol instance
-  rpc InstanceGetConfiguration (types.InstanceGetConfiguration.Request) returns (types.InstanceGetConfiguration.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/InstanceGetConfiguration"
-      body: "*"
-    };
-  }
+  rpc InstanceGetConfiguration (types.v1.InstanceGetConfiguration.Request) returns (types.v1.InstanceGetConfiguration.Reply);
 
-  // ContactRequestReference retrieves the information required to create a reference (types.ie. included in a shareable link) to the current account
-  rpc ContactRequestReference (types.ContactRequestReference.Request) returns (types.ContactRequestReference.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/ContactRequestReference"
-      body: "*"
-    };
-  }
+  // ContactRequestReference retrieves the information required to create a reference (types.v1.ie. included in a shareable link) to the current account
+  rpc ContactRequestReference (types.v1.ContactRequestReference.Request) returns (types.v1.ContactRequestReference.Reply);
 
   // ContactRequestDisable disables incoming contact requests
-  rpc ContactRequestDisable (types.ContactRequestDisable.Request) returns (types.ContactRequestDisable.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/ContactRequestDisable"
-      body: "*"
-    };
-  }
+  rpc ContactRequestDisable (types.v1.ContactRequestDisable.Request) returns (types.v1.ContactRequestDisable.Reply);
 
   // ContactRequestEnable enables incoming contact requests
-  rpc ContactRequestEnable (types.ContactRequestEnable.Request) returns (types.ContactRequestEnable.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/ContactRequestEnable"
-      body: "*"
-    };
-  }
+  rpc ContactRequestEnable (types.v1.ContactRequestEnable.Request) returns (types.v1.ContactRequestEnable.Reply);
 
   // ContactRequestResetReference changes the contact request reference
-  rpc ContactRequestResetReference (types.ContactRequestResetReference.Request) returns (types.ContactRequestResetReference.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/ContactRequestResetReference"
-      body: "*"
-    };
-  }
+  rpc ContactRequestResetReference (types.v1.ContactRequestResetReference.Request) returns (types.v1.ContactRequestResetReference.Reply);
 
   // ContactRequestSend attempt to send a contact request
-  rpc ContactRequestSend (types.ContactRequestSend.Request) returns (types.ContactRequestSend.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/ContactRequestSend"
-      body: "*"
-    };
-  }
+  rpc ContactRequestSend (types.v1.ContactRequestSend.Request) returns (types.v1.ContactRequestSend.Reply);
 
   // ContactRequestAccept accepts a contact request
-  rpc ContactRequestAccept (types.ContactRequestAccept.Request) returns (types.ContactRequestAccept.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/ContactRequestAccept"
-      body: "*"
-    };
-  }
+  rpc ContactRequestAccept (types.v1.ContactRequestAccept.Request) returns (types.v1.ContactRequestAccept.Reply);
 
   // ContactRequestDiscard ignores a contact request, without informing the other user
-  rpc ContactRequestDiscard (types.ContactRequestDiscard.Request) returns (types.ContactRequestDiscard.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/ContactRequestDiscard"
-      body: "*"
-    };
-  }
+  rpc ContactRequestDiscard (types.v1.ContactRequestDiscard.Request) returns (types.v1.ContactRequestDiscard.Reply);
 
   // ContactBlock blocks a contact from sending requests
-  rpc ContactBlock (types.ContactBlock.Request) returns (types.ContactBlock.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/ContactBlock"
-      body: "*"
-    };
-  }
+  rpc ContactBlock (types.v1.ContactBlock.Request) returns (types.v1.ContactBlock.Reply);
 
   // ContactUnblock unblocks a contact from sending requests
-  rpc ContactUnblock (types.ContactUnblock.Request) returns (types.ContactUnblock.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/ContactUnblock"
-      body: "*"
-    };
-  }
+  rpc ContactUnblock (types.v1.ContactUnblock.Request) returns (types.v1.ContactUnblock.Reply);
 
   // ContactAliasKeySend send an alias key to a contact, the contact will be able to assert that your account is being present on a multi-member group
-  rpc ContactAliasKeySend (types.ContactAliasKeySend.Request) returns (types.ContactAliasKeySend.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/ContactAliasKeySend"
-      body: "*"
-    };
-  }
+  rpc ContactAliasKeySend (types.v1.ContactAliasKeySend.Request) returns (types.v1.ContactAliasKeySend.Reply);
 
   // MultiMemberGroupCreate creates a new multi-member group
-  rpc MultiMemberGroupCreate (types.MultiMemberGroupCreate.Request) returns (types.MultiMemberGroupCreate.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/MultiMemberGroupCreate"
-      body: "*"
-    };
-  }
+  rpc MultiMemberGroupCreate (types.v1.MultiMemberGroupCreate.Request) returns (types.v1.MultiMemberGroupCreate.Reply);
 
   // MultiMemberGroupJoin joins a multi-member group
-  rpc MultiMemberGroupJoin (types.MultiMemberGroupJoin.Request) returns (types.MultiMemberGroupJoin.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/MultiMemberGroupJoin"
-      body: "*"
-    };
-  }
+  rpc MultiMemberGroupJoin (types.v1.MultiMemberGroupJoin.Request) returns (types.v1.MultiMemberGroupJoin.Reply);
 
   // MultiMemberGroupLeave leaves a multi-member group
-  rpc MultiMemberGroupLeave (types.MultiMemberGroupLeave.Request) returns (types.MultiMemberGroupLeave.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/MultiMemberGroupLeave"
-      body: "*"
-    };
-  }
+  rpc MultiMemberGroupLeave (types.v1.MultiMemberGroupLeave.Request) returns (types.v1.MultiMemberGroupLeave.Reply);
 
   // MultiMemberGroupAliasResolverDisclose discloses your alias resolver key
-  rpc MultiMemberGroupAliasResolverDisclose (types.MultiMemberGroupAliasResolverDisclose.Request) returns (types.MultiMemberGroupAliasResolverDisclose.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/MultiMemberGroupAliasResolverDisclose"
-      body: "*"
-    };
-  }
+  rpc MultiMemberGroupAliasResolverDisclose (types.v1.MultiMemberGroupAliasResolverDisclose.Request) returns (types.v1.MultiMemberGroupAliasResolverDisclose.Reply);
 
   // MultiMemberGroupAdminRoleGrant grants an admin role to a group member
-  rpc MultiMemberGroupAdminRoleGrant (types.MultiMemberGroupAdminRoleGrant.Request) returns (types.MultiMemberGroupAdminRoleGrant.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/MultiMemberGroupAdminRoleGrant"
-      body: "*"
-    };
-  }
+  rpc MultiMemberGroupAdminRoleGrant (types.v1.MultiMemberGroupAdminRoleGrant.Request) returns (types.v1.MultiMemberGroupAdminRoleGrant.Reply);
 
   // MultiMemberGroupInvitationCreate creates an invitation to a multi-member group
-  rpc MultiMemberGroupInvitationCreate (types.MultiMemberGroupInvitationCreate.Request) returns (types.MultiMemberGroupInvitationCreate.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/MultiMemberGroupInvitationCreate"
-      body: "*"
-    };
-  }
+  rpc MultiMemberGroupInvitationCreate (types.v1.MultiMemberGroupInvitationCreate.Request) returns (types.v1.MultiMemberGroupInvitationCreate.Reply);
 
   // AppMetadataSend adds an app event to the metadata store, the message is encrypted using a symmetric key and readable by future group members
-  rpc AppMetadataSend (types.AppMetadataSend.Request) returns (types.AppMetadataSend.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/AppMetadataSend"
-      body: "*"
-    };
-  }
+  rpc AppMetadataSend (types.v1.AppMetadataSend.Request) returns (types.v1.AppMetadataSend.Reply);
 
   // AppMessageSend adds an app event to the message store, the message is encrypted using a derived key and readable by current group members
-  rpc AppMessageSend (types.AppMessageSend.Request) returns (types.AppMessageSend.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/AppMessageSend"
-      body: "*"
-    };
-  }
+  rpc AppMessageSend (types.v1.AppMessageSend.Request) returns (types.v1.AppMessageSend.Reply);
 
-  // GroupMetadataSubscribe subscribes to a group metadata updates (types.or it can also retrieve the history)
-  rpc GroupMetadataSubscribe (types.GroupMetadataSubscribe.Request) returns (stream types.GroupMetadataEvent) {
-    option (google.api.http) = {
-      post: "/protocol/v1/GroupMetadataSubscribe"
-      body: "*"
-    };
-  }
+  // GroupMetadataSubscribe subscribes to a group metadata updates (types.v1.or it can also retrieve the history)
+  rpc GroupMetadataSubscribe (types.v1.GroupMetadataSubscribe.Request) returns (stream types.v1.GroupMetadataEvent);
 
-  // GroupMessageSubscribe subscribes to a group message updates (types.or it can also retrieve the history)
-  rpc GroupMessageSubscribe (types.GroupMessageSubscribe.Request) returns (stream types.GroupMessageEvent) {
-    option (google.api.http) = {
-      post: "/protocol/v1/GroupMessageSubscribe"
-      body: "*"
-    };
-  }
+  // GroupMessageSubscribe subscribes to a group message updates (types.v1.or it can also retrieve the history)
+  rpc GroupMessageSubscribe (types.v1.GroupMessageSubscribe.Request) returns (stream types.v1.GroupMessageEvent);
 
   // GroupMetadataList replays metadata events from the group
-  rpc GroupMetadataList (types.GroupMetadataList.Request) returns (stream types.GroupMetadataEvent) {
-    option (google.api.http) = {
-      post: "/protocol/v1/GroupMetadataList"
-      body: "*"
-    };
-  }
+  rpc GroupMetadataList (types.v1.GroupMetadataList.Request) returns (stream types.v1.GroupMetadataEvent);
 
   // GroupMessageList replays message  events from the group
-  rpc GroupMessageList (types.GroupMessageList.Request) returns (stream types.GroupMessageEvent) {
-    option (google.api.http) = {
-      post: "/protocol/v1/GroupMessageList"
-      body: "*"
-    };
-  }
+  rpc GroupMessageList (types.v1.GroupMessageList.Request) returns (stream types.v1.GroupMessageEvent);
 
   // GroupInfo retrieves information about a group
-  rpc GroupInfo (types.GroupInfo.Request) returns (types.GroupInfo.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/GroupInfo"
-      body: "*"
-    };
-  }
+  rpc GroupInfo (types.v1.GroupInfo.Request) returns (types.v1.GroupInfo.Reply);
 
   // ActivateGroup explicitly opens a group, groups are automatically enabled when actions are performed on them
-  rpc ActivateGroup (types.ActivateGroup.Request) returns (types.ActivateGroup.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/ActivateGroup"
-      body: "*"
-    };
-  }
+  rpc ActivateGroup (types.v1.ActivateGroup.Request) returns (types.v1.ActivateGroup.Reply);
 
   // DeactivateGroup closes a group
-  rpc DeactivateGroup (types.DeactivateGroup.Request) returns (types.DeactivateGroup.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/DeactivateGroup"
-      body: "*"
-    };
-  }
+  rpc DeactivateGroup (types.v1.DeactivateGroup.Request) returns (types.v1.DeactivateGroup.Reply);
 
-  rpc DebugListGroups (types.DebugListGroups.Request) returns (stream types.DebugListGroups.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/DebugListGroups"
-      body: "*"
-    };
-  }
+  rpc DebugListGroups (types.v1.DebugListGroups.Request) returns (stream types.v1.DebugListGroups.Reply);
 
-  rpc DebugInspectGroupStore (types.DebugInspectGroupStore.Request) returns (stream types.DebugInspectGroupStore.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/DebugInspectGroupStore"
-      body: "*"
-    };
-  }
+  rpc DebugInspectGroupStore (types.v1.DebugInspectGroupStore.Request) returns (stream types.v1.DebugInspectGroupStore.Reply);
 
-  rpc DebugGroup (types.DebugGroup.Request) returns (types.DebugGroup.Reply) {
-    option (google.api.http) = {
-      post: "/protocol/v1/DebugGroup"
-      body: "*"
-    };
-  }
+  rpc DebugGroup (types.v1.DebugGroup.Request) returns (types.v1.DebugGroup.Reply);
 }

@@ -10,7 +10,6 @@ import (
 
 	bertytypes "berty.tech/berty/v2/go/pkg/bertytypes"
 	proto "github.com/gogo/protobuf/proto"
-	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -30,77 +29,57 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 func init() { proto.RegisterFile("bertyprotocol.proto", fileDescriptor_047e04c733cf8554) }
 
 var fileDescriptor_047e04c733cf8554 = []byte{
-	// 1111 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x98, 0xbf, 0x6f, 0x23, 0xc5,
-	0x17, 0xc0, 0xb5, 0xdf, 0xe2, 0x2b, 0x31, 0x82, 0xbb, 0x63, 0x8f, 0xcb, 0x41, 0xce, 0x97, 0xc4,
-	0xe3, 0x38, 0x8e, 0x9d, 0x8b, 0x37, 0x3f, 0xf8, 0x71, 0x8a, 0x44, 0x91, 0x4b, 0xa2, 0x28, 0x70,
-	0x91, 0x50, 0x22, 0x1a, 0xba, 0xf1, 0x66, 0x62, 0x56, 0xb7, 0xb7, 0xb3, 0xec, 0x8e, 0xad, 0x8b,
-	0x44, 0x81, 0x10, 0x20, 0xd1, 0x21, 0x41, 0x41, 0x41, 0x81, 0x10, 0x05, 0x7f, 0x02, 0x25, 0x25,
-	0x3d, 0x2d, 0x25, 0xff, 0x04, 0x1d, 0x7a, 0x6f, 0xd7, 0x83, 0x67, 0x77, 0x66, 0xb2, 0xa1, 0x73,
-	0xe6, 0x7d, 0xde, 0xbc, 0xcf, 0xdb, 0xf1, 0x9b, 0xb5, 0x42, 0xee, 0x8e, 0x78, 0x26, 0xaf, 0xd2,
-	0x4c, 0x48, 0x11, 0x8a, 0x78, 0x88, 0x1f, 0xfc, 0x5b, 0xb8, 0x38, 0x9c, 0xad, 0x2e, 0xde, 0xc1,
-	0xbf, 0xe5, 0x55, 0xca, 0xf3, 0x62, 0x71, 0xb1, 0x35, 0x16, 0x62, 0x1c, 0xf3, 0x80, 0xa5, 0x51,
-	0xc0, 0x92, 0x44, 0x48, 0x26, 0x23, 0x91, 0x94, 0xd1, 0x9d, 0xbf, 0x3b, 0xe4, 0xf6, 0x07, 0x65,
-	0xf2, 0x39, 0xcf, 0xa6, 0x51, 0xc8, 0xfd, 0x6f, 0x3c, 0xe2, 0x9f, 0x24, 0xb9, 0x64, 0x49, 0xc8,
-	0x8f, 0x5e, 0xa4, 0x22, 0x93, 0x87, 0x4c, 0x32, 0xbf, 0x37, 0x2c, 0x6a, 0x15, 0x9b, 0xd7, 0x81,
-	0xe1, 0x19, 0xff, 0x64, 0xc2, 0x73, 0xb9, 0xd8, 0xbd, 0x1e, 0x4c, 0xe3, 0x2b, 0x3a, 0xf8, 0xfc,
-	0x8f, 0xbf, 0xbe, 0xfd, 0xdf, 0x2a, 0x5d, 0x0e, 0x66, 0xf6, 0xc1, 0x74, 0x3b, 0xa8, 0xe3, 0x7b,
-	0xde, 0xc0, 0xff, 0xc5, 0x23, 0xaf, 0xcf, 0x22, 0xc7, 0x5c, 0x1e, 0x88, 0xe4, 0x32, 0x1a, 0x4f,
-	0x32, 0x6c, 0xc5, 0xdf, 0x34, 0xd6, 0xab, 0x62, 0x4a, 0x6f, 0xa3, 0x29, 0x0e, 0x92, 0x5b, 0x28,
-	0x39, 0xa0, 0x5d, 0xa3, 0x64, 0x35, 0x09, 0x54, 0x7f, 0xf6, 0xc8, 0xfd, 0x03, 0x91, 0x48, 0x16,
-	0xca, 0xb2, 0xe2, 0x19, 0xbf, 0xe4, 0x19, 0x4f, 0x42, 0xee, 0x3f, 0xd2, 0x4a, 0x5b, 0x28, 0x25,
-	0x3a, 0x68, 0x48, 0x83, 0x67, 0x80, 0x9e, 0x7d, 0xba, 0xaa, 0x79, 0x5a, 0x72, 0x40, 0xf3, 0x07,
-	0x8f, 0xdc, 0xd3, 0xc3, 0x87, 0x51, 0xce, 0x46, 0x31, 0xf7, 0x5d, 0x65, 0x4b, 0x46, 0x29, 0xae,
-	0x37, 0x62, 0x41, 0x70, 0x13, 0x05, 0x7b, 0x94, 0x3a, 0x04, 0xcb, 0x0c, 0xd0, 0xfb, 0xde, 0x23,
-	0xaf, 0xe9, 0xc1, 0xa3, 0x04, 0xed, 0xfa, 0x8e, 0x8a, 0x05, 0xa2, 0xe4, 0x7a, 0x4d, 0x50, 0x70,
-	0x7b, 0x84, 0x6e, 0x6b, 0xb4, 0xed, 0x70, 0x2b, 0x12, 0x40, 0xed, 0x57, 0x8f, 0xb4, 0xaa, 0x0f,
-	0x36, 0xe7, 0x73, 0xa7, 0xbc, 0xed, 0x3c, 0xb7, 0x79, 0x54, 0xa9, 0x06, 0x37, 0x49, 0x01, 0xe5,
-	0x37, 0x51, 0x79, 0x48, 0xfb, 0xce, 0xf3, 0x9e, 0x4f, 0x04, 0x75, 0x98, 0x6c, 0x9d, 0x39, 0xe7,
-	0xc9, 0x85, 0xef, 0x7a, 0x50, 0x00, 0x58, 0x26, 0xdb, 0x08, 0xda, 0x27, 0xbb, 0x8e, 0x9b, 0x0f,
-	0x7a, 0x3f, 0x0c, 0x79, 0x2a, 0x9d, 0x07, 0x5d, 0x20, 0x8d, 0x0e, 0x5a, 0xa1, 0x4d, 0x0f, 0xba,
-	0x48, 0xb0, 0x8e, 0x48, 0xc8, 0xb2, 0x8b, 0xeb, 0x46, 0x04, 0x98, 0xa6, 0x23, 0x52, 0xb2, 0x37,
-	0x18, 0x11, 0xc8, 0x00, 0xbd, 0x17, 0xe4, 0xe5, 0x32, 0xf6, 0x24, 0x16, 0xe1, 0x33, 0xbf, 0x6d,
-	0x2a, 0x84, 0x21, 0xe5, 0xb2, 0xec, 0x42, 0x40, 0x61, 0x15, 0x15, 0x96, 0xe8, 0x1b, 0x26, 0x05,
-	0x04, 0xa1, 0xf2, 0x67, 0x1e, 0xb9, 0x55, 0xae, 0x7d, 0x98, 0x8c, 0xb0, 0x78, 0xc7, 0xb4, 0x73,
-	0x19, 0x54, 0xe5, 0xdb, 0x6e, 0x08, 0x04, 0xd6, 0x50, 0x60, 0x85, 0x3e, 0x30, 0x09, 0x94, 0x28,
-	0x28, 0x7c, 0xe7, 0x91, 0xbb, 0xe5, 0xea, 0x7e, 0x1c, 0xb1, 0xfc, 0x7d, 0x7e, 0x85, 0x5f, 0x65,
-	0xe3, 0xd3, 0x9e, 0x27, 0x94, 0xcc, 0x5a, 0x03, 0x12, 0x8c, 0x36, 0xd0, 0xa8, 0x4b, 0x57, 0x4c,
-	0x46, 0xf3, 0x3c, 0x68, 0xfd, 0xe8, 0x91, 0x85, 0xd3, 0x49, 0x2c, 0xa3, 0x53, 0xfe, 0x7c, 0xc4,
-	0xb3, 0xe3, 0x4c, 0x4c, 0xd2, 0x83, 0x8c, 0x33, 0xc9, 0x7d, 0xfd, 0xb5, 0x63, 0x86, 0x94, 0x5c,
-	0xbf, 0x19, 0x0c, 0x7e, 0x43, 0xf4, 0x5b, 0xa7, 0x1d, 0xcd, 0xcf, 0x9c, 0x32, 0x1b, 0xb8, 0x6a,
-	0xf4, 0x3d, 0x11, 0x25, 0xbe, 0xbb, 0x26, 0x20, 0x96, 0x81, 0xb3, 0xa0, 0xf6, 0x81, 0x33, 0x25,
-	0xcc, 0x06, 0xae, 0x1a, 0x7b, 0xca, 0xd9, 0xb4, 0xfa, 0x4e, 0x32, 0x32, 0x96, 0x81, 0xb3, 0xb1,
-	0xf6, 0x81, 0x33, 0x66, 0x80, 0xde, 0x9f, 0x1e, 0xe9, 0x56, 0x83, 0xf8, 0x05, 0x38, 0xe3, 0xb9,
-	0x88, 0xa7, 0x3c, 0x83, 0xe1, 0x8c, 0x45, 0xce, 0xfd, 0x3d, 0xa7, 0x82, 0x31, 0x47, 0xe9, 0x3f,
-	0xfe, 0x4f, 0xb9, 0xd0, 0xce, 0xbb, 0xd8, 0xce, 0x3b, 0x74, 0xc7, 0xd9, 0x8e, 0x71, 0x07, 0x68,
-	0xef, 0x37, 0x8f, 0x2c, 0xd5, 0xe0, 0x8b, 0xe7, 0x51, 0x72, 0x26, 0x62, 0x7e, 0x9c, 0xb1, 0x44,
-	0xfa, 0xbb, 0x6e, 0x37, 0x0d, 0x56, 0x0d, 0x6d, 0xdf, 0x2c, 0x09, 0x3a, 0x79, 0x1b, 0x3b, 0xd9,
-	0xa2, 0x1b, 0xee, 0x4e, 0xb4, 0x54, 0x68, 0xe1, 0x77, 0x8f, 0xac, 0x54, 0xa9, 0x93, 0x64, 0x1a,
-	0x15, 0xbf, 0x79, 0xcb, 0x41, 0x7c, 0xcb, 0xe9, 0x53, 0xc5, 0x55, 0x1b, 0xbb, 0x37, 0x4d, 0x83,
-	0x46, 0x1e, 0x63, 0x23, 0x3b, 0x74, 0xd3, 0xd9, 0x48, 0x35, 0x19, 0x5a, 0xf9, 0xc2, 0x23, 0xb7,
-	0xf7, 0xd3, 0xf4, 0x94, 0x4b, 0x76, 0xc1, 0x24, 0xc3, 0xcb, 0x6d, 0x55, 0x53, 0xa8, 0x44, 0x95,
-	0x28, 0xbd, 0x86, 0x02, 0xaf, 0x1e, 0x7a, 0xb5, 0x69, 0x4b, 0xf3, 0xaa, 0xb0, 0xb3, 0xab, 0x1e,
-	0x97, 0xf3, 0x9c, 0x8d, 0x39, 0x5a, 0x74, 0xea, 0xfb, 0xab, 0xa0, 0xe5, 0xaa, 0xaf, 0x41, 0xf6,
-	0xab, 0x5e, 0x47, 0xcb, 0x0b, 0x6b, 0x01, 0x1f, 0x93, 0x72, 0x9b, 0x8c, 0xf2, 0x30, 0x8b, 0x46,
-	0xd5, 0x3b, 0xd5, 0x0c, 0x59, 0x5e, 0x7e, 0x1a, 0x7c, 0x34, 0xe5, 0x89, 0xb4, 0xdc, 0xa4, 0xe6,
-	0x5d, 0xf7, 0xbc, 0xc1, 0x96, 0x07, 0x6f, 0xa1, 0x7b, 0x65, 0xbc, 0x50, 0x56, 0x66, 0x03, 0x53,
-	0x31, 0x9d, 0x51, 0x62, 0x4b, 0x56, 0xb6, 0xf0, 0x32, 0x5f, 0x53, 0xc6, 0x3d, 0x0b, 0xad, 0xaf,
-	0x3d, 0xf2, 0xaa, 0xa6, 0xfd, 0x34, 0xca, 0xa5, 0xbf, 0x66, 0xef, 0x1f, 0xe2, 0xcd, 0x9f, 0x53,
-	0x1f, 0x7d, 0x3a, 0x74, 0xc9, 0xfe, 0x9c, 0x60, 0xc3, 0xc2, 0xe5, 0x4b, 0x8f, 0xdc, 0x99, 0x57,
-	0x45, 0x95, 0xae, 0xb5, 0x63, 0xcd, 0xe4, 0xba, 0x07, 0xb3, 0x8e, 0x22, 0x94, 0x3e, 0xb4, 0x3e,
-	0x98, 0x7f, 0x3d, 0x62, 0xf2, 0x52, 0x39, 0x6b, 0x97, 0xc2, 0x37, 0x6c, 0x0c, 0xeb, 0xaa, 0x70,
-	0xcb, 0x1a, 0x87, 0x2f, 0x6e, 0x1b, 0xcb, 0x3e, 0xa0, 0x0b, 0xf5, 0xb2, 0x40, 0xc1, 0x77, 0xf6,
-	0x53, 0xf2, 0xca, 0x7e, 0x28, 0xa3, 0x29, 0x93, 0x1c, 0xd7, 0xfd, 0xca, 0x50, 0xce, 0xc7, 0x54,
-	0xd5, 0x15, 0x27, 0x03, 0x95, 0xbb, 0x58, 0x79, 0x99, 0x2e, 0xea, 0x23, 0x33, 0x4f, 0xce, 0xee,
-	0x8e, 0x43, 0xce, 0x34, 0x01, 0xfd, 0xee, 0xa8, 0x44, 0x2d, 0x77, 0x47, 0x9d, 0xb2, 0xdf, 0x1d,
-	0x15, 0x16, 0x34, 0xbe, 0x42, 0x8d, 0xd1, 0x64, 0x0c, 0xa7, 0x80, 0xab, 0x79, 0x4d, 0x43, 0x8b,
-	0x5a, 0x35, 0xaa, 0x94, 0x4b, 0x43, 0x63, 0x8b, 0xb3, 0xff, 0xc9, 0x23, 0x0b, 0x18, 0x38, 0x49,
-	0xf2, 0x94, 0x87, 0x45, 0xec, 0x5c, 0x8a, 0xac, 0x7a, 0x83, 0x98, 0x21, 0xcb, 0xaf, 0x32, 0x2b,
-	0x6c, 0xff, 0x55, 0x66, 0x4e, 0x29, 0x24, 0x53, 0x42, 0x30, 0x5c, 0x1c, 0xd7, 0x72, 0xbd, 0x94,
-	0x7e, 0x52, 0x0f, 0xed, 0x00, 0xd4, 0xa7, 0x58, 0xbf, 0x45, 0xef, 0xd7, 0xeb, 0xcf, 0xce, 0xe7,
-	0x49, 0xef, 0xa3, 0x6e, 0xb9, 0x07, 0x0f, 0x3f, 0x0e, 0xf0, 0x63, 0x30, 0x16, 0x41, 0xfa, 0x6c,
-	0x1c, 0x68, 0xff, 0x6a, 0x1a, 0xfd, 0x1f, 0x3f, 0xed, 0xfe, 0x13, 0x00, 0x00, 0xff, 0xff, 0x59,
-	0x0f, 0xbd, 0x66, 0x82, 0x12, 0x00, 0x00,
+	// 797 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x97, 0x5d, 0x4f, 0x14, 0x3d,
+	0x14, 0xc7, 0xb3, 0x37, 0x4f, 0xf2, 0x34, 0xcf, 0x23, 0x50, 0x04, 0x0d, 0x31, 0x8a, 0xc8, 0xbb,
+	0xb0, 0x0b, 0x48, 0x88, 0x89, 0xf1, 0x62, 0x79, 0x09, 0x41, 0x21, 0x9a, 0x25, 0x26, 0x46, 0x13,
+	0x93, 0xce, 0xec, 0x61, 0x1d, 0x18, 0xda, 0xb1, 0xed, 0x4e, 0xd8, 0xc4, 0x0f, 0xe0, 0x95, 0x57,
+	0x7e, 0x03, 0xbf, 0x87, 0x9f, 0xcd, 0xb4, 0x53, 0x9a, 0x9d, 0xd9, 0x76, 0x66, 0x96, 0xbb, 0xc9,
+	0x39, 0xbf, 0xf3, 0xff, 0x9f, 0x1e, 0x4e, 0xbb, 0x01, 0x4d, 0x07, 0xc0, 0xe5, 0x20, 0xe1, 0x4c,
+	0xb2, 0x90, 0xc5, 0x4d, 0xfd, 0x81, 0xa7, 0x74, 0xb0, 0x69, 0xa3, 0xe9, 0xf6, 0xdc, 0xa4, 0x0e,
+	0xc9, 0x41, 0x02, 0x22, 0x8b, 0xef, 0xfc, 0x99, 0x43, 0x13, 0xef, 0x0d, 0x71, 0x0e, 0x3c, 0x8d,
+	0x42, 0xc0, 0x97, 0x08, 0x9f, 0x50, 0x21, 0x09, 0x0d, 0xe1, 0xe8, 0x26, 0x61, 0x5c, 0x1e, 0x12,
+	0x49, 0xf0, 0x7a, 0x33, 0xd3, 0xcb, 0xaa, 0xd3, 0xed, 0xe6, 0x28, 0xd3, 0xec, 0xc0, 0xb7, 0x3e,
+	0x08, 0x39, 0xb7, 0x5a, 0x8b, 0x4d, 0xe2, 0x01, 0xfe, 0x8e, 0x1e, 0xde, 0xe6, 0x8e, 0x41, 0x1e,
+	0x30, 0x7a, 0x11, 0xf5, 0xfa, 0x9c, 0xc8, 0x88, 0x51, 0xbc, 0xe5, 0x53, 0x29, 0x92, 0xd6, 0xb7,
+	0x39, 0x46, 0x85, 0x72, 0x1f, 0xa0, 0x07, 0x07, 0x8c, 0x4a, 0x12, 0x4a, 0xa3, 0xd0, 0x81, 0x0b,
+	0xe0, 0x40, 0x43, 0xc0, 0xad, 0xa2, 0x94, 0x07, 0xb4, 0xde, 0x9b, 0xf5, 0x0b, 0x94, 0xb5, 0x40,
+	0x33, 0x79, 0xe0, 0x30, 0x12, 0x24, 0x88, 0x01, 0x57, 0xe8, 0x18, 0xcc, 0xda, 0x3e, 0xaf, 0x8b,
+	0x2b, 0xd3, 0x04, 0xdd, 0xcf, 0xa7, 0x8f, 0xa8, 0xf6, 0xdc, 0x28, 0x17, 0xc9, 0x28, 0x6b, 0xb9,
+	0x5e, 0x93, 0x56, 0x8e, 0x3f, 0x1a, 0xe8, 0x51, 0x71, 0x10, 0x02, 0x86, 0xe6, 0xbc, 0x5b, 0x35,
+	0xb6, 0x61, 0xda, 0xb6, 0xb0, 0x33, 0x66, 0x95, 0x6a, 0xe5, 0x12, 0xe1, 0x3c, 0x75, 0x0e, 0xb4,
+	0x8b, 0x2b, 0x0e, 0xa3, 0x18, 0xff, 0x5a, 0x3b, 0x59, 0xe7, 0xa0, 0xdb, 0x61, 0x08, 0x89, 0xac,
+	0x1a, 0x74, 0x46, 0xd5, 0x1d, 0xb4, 0xa5, 0x7d, 0xfb, 0x14, 0x12, 0xde, 0xad, 0xb1, 0x4f, 0x0a,
+	0x1b, 0x63, 0x9f, 0x0c, 0xae, 0x4c, 0x3f, 0xa2, 0xff, 0x4c, 0x7a, 0x3f, 0x66, 0xe1, 0x15, 0x5e,
+	0xf4, 0x14, 0xeb, 0xac, 0xb5, 0x58, 0xa8, 0xa0, 0x94, 0xf2, 0x17, 0x74, 0xcf, 0x44, 0x3f, 0xd0,
+	0x40, 0x6b, 0x2f, 0x7b, 0xaa, 0x4c, 0xde, 0xaa, 0x2f, 0x56, 0x72, 0x4a, 0xff, 0x1a, 0x4d, 0x9b,
+	0x78, 0x3b, 0x8e, 0x88, 0x78, 0x0b, 0x03, 0xbd, 0x0d, 0xbe, 0xd3, 0x0f, 0x43, 0xd6, 0x69, 0xad,
+	0x1e, 0xac, 0xec, 0x52, 0x34, 0x7b, 0xd6, 0x8f, 0x65, 0x74, 0x06, 0xd7, 0x01, 0xf0, 0x63, 0xce,
+	0xfa, 0xc9, 0x01, 0x07, 0x22, 0x01, 0x8f, 0x3c, 0x59, 0x6e, 0xce, 0x9a, 0x6e, 0xd4, 0xe6, 0xcd,
+	0x1e, 0x16, 0xf3, 0x6f, 0x58, 0x44, 0x71, 0xa5, 0x8a, 0xa2, 0xfc, 0x7b, 0xe8, 0xa1, 0xcd, 0x1e,
+	0x16, 0xb3, 0xa7, 0x40, 0x52, 0xc7, 0xbb, 0xe6, 0xc4, 0xfc, 0x7b, 0xe8, 0xc3, 0x95, 0xe9, 0xef,
+	0x06, 0x5a, 0x2a, 0xe6, 0xf5, 0x5f, 0xa1, 0x03, 0x82, 0xc5, 0x29, 0x70, 0xb5, 0xb6, 0x31, 0x13,
+	0x80, 0x5f, 0x57, 0xc9, 0x3a, 0xcb, 0x6c, 0x57, 0xaf, 0xee, 0x5a, 0xae, 0xba, 0xfc, 0xd9, 0x40,
+	0x8f, 0x47, 0xf8, 0xee, 0x75, 0x44, 0x3b, 0x2c, 0x86, 0x63, 0x4e, 0xa8, 0xc4, 0x7b, 0x95, 0xfa,
+	0x39, 0xde, 0xf6, 0xb5, 0x3b, 0x76, 0x9d, 0x6a, 0xe8, 0x57, 0x03, 0xcd, 0x17, 0xc1, 0x13, 0x9a,
+	0x46, 0x52, 0xff, 0x46, 0x9a, 0x05, 0x7d, 0x59, 0x25, 0x5d, 0xac, 0xb0, 0x4d, 0xed, 0xdd, 0xa1,
+	0x52, 0xb5, 0x45, 0xd0, 0x44, 0x3b, 0x49, 0xce, 0x40, 0x92, 0x2e, 0x91, 0x44, 0xdf, 0xcb, 0x95,
+	0xa2, 0x54, 0x01, 0xb0, 0x9e, 0x4b, 0xd5, 0xa0, 0x79, 0x5e, 0x74, 0x42, 0x08, 0xd2, 0x03, 0xed,
+	0xb0, 0xec, 0x2c, 0xb4, 0x79, 0xff, 0xf3, 0x32, 0xc2, 0x29, 0x7d, 0x8a, 0x66, 0xf5, 0x09, 0xad,
+	0x75, 0x3f, 0x10, 0x21, 0x8f, 0x02, 0xc7, 0x7d, 0x77, 0x73, 0xfe, 0xc7, 0x32, 0xc7, 0x1f, 0xa5,
+	0x40, 0xe5, 0x56, 0x03, 0x5f, 0xa1, 0x19, 0x13, 0xcf, 0x3a, 0xb1, 0x76, 0x9b, 0x9e, 0xf2, 0x3c,
+	0x66, 0xdd, 0x9e, 0x96, 0xe1, 0xb7, 0x66, 0x5d, 0x34, 0x95, 0x6b, 0xe2, 0x34, 0x12, 0x12, 0xaf,
+	0x95, 0xf6, 0xa9, 0x90, 0x31, 0x8f, 0x44, 0xd0, 0xe4, 0xb0, 0xb9, 0x36, 0x59, 0x2d, 0x6b, 0x2f,
+	0xe7, 0x51, 0xeb, 0x20, 0xef, 0xd0, 0xbf, 0x66, 0x0f, 0x2f, 0x18, 0x76, 0x57, 0xa8, 0x94, 0x15,
+	0x7d, 0x52, 0x86, 0xa8, 0x3f, 0xfb, 0x67, 0xf4, 0x7f, 0x3b, 0x94, 0x51, 0x4a, 0x24, 0xe8, 0x14,
+	0x1e, 0x5d, 0xc7, 0xe1, 0xb4, 0x15, 0x7e, 0x56, 0x85, 0x99, 0x6b, 0x71, 0x08, 0x24, 0x27, 0x3f,
+	0x72, 0x2d, 0x0a, 0x80, 0xff, 0x5a, 0x8c, 0x82, 0xca, 0x22, 0x54, 0x16, 0x41, 0xbf, 0xa7, 0x46,
+	0xa9, 0xe3, 0xc2, 0x65, 0x91, 0x03, 0xca, 0x2c, 0x8a, 0x60, 0x12, 0x0f, 0xb6, 0x1a, 0xf8, 0x06,
+	0xcd, 0xea, 0xd4, 0x09, 0x15, 0x09, 0x84, 0x59, 0xf6, 0x5c, 0x32, 0xee, 0xb8, 0x1b, 0x6e, 0xce,
+	0xff, 0x5b, 0xe8, 0xe5, 0x33, 0xe7, 0x0e, 0x42, 0x9a, 0xc8, 0x86, 0xb7, 0xe0, 0xac, 0xce, 0xcf,
+	0x6d, 0xbe, 0x94, 0x49, 0xe2, 0xc1, 0xfe, 0xca, 0xa7, 0x25, 0x83, 0x40, 0xf8, 0xb5, 0xa5, 0x3f,
+	0x5b, 0x3d, 0xd6, 0x4a, 0xae, 0x7a, 0xad, 0xdc, 0x3f, 0x65, 0xc1, 0x3f, 0xfa, 0xeb, 0xc5, 0xdf,
+	0x00, 0x00, 0x00, 0xff, 0xff, 0x28, 0x30, 0x16, 0xb8, 0xac, 0x0d, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -119,7 +98,7 @@ type ProtocolServiceClient interface {
 	InstanceExportData(ctx context.Context, in *bertytypes.InstanceExportData_Request, opts ...grpc.CallOption) (*bertytypes.InstanceExportData_Reply, error)
 	// InstanceGetConfiguration gets current configuration of this protocol instance
 	InstanceGetConfiguration(ctx context.Context, in *bertytypes.InstanceGetConfiguration_Request, opts ...grpc.CallOption) (*bertytypes.InstanceGetConfiguration_Reply, error)
-	// ContactRequestReference retrieves the information required to create a reference (types.ie. included in a shareable link) to the current account
+	// ContactRequestReference retrieves the information required to create a reference (types.v1.ie. included in a shareable link) to the current account
 	ContactRequestReference(ctx context.Context, in *bertytypes.ContactRequestReference_Request, opts ...grpc.CallOption) (*bertytypes.ContactRequestReference_Reply, error)
 	// ContactRequestDisable disables incoming contact requests
 	ContactRequestDisable(ctx context.Context, in *bertytypes.ContactRequestDisable_Request, opts ...grpc.CallOption) (*bertytypes.ContactRequestDisable_Reply, error)
@@ -155,9 +134,9 @@ type ProtocolServiceClient interface {
 	AppMetadataSend(ctx context.Context, in *bertytypes.AppMetadataSend_Request, opts ...grpc.CallOption) (*bertytypes.AppMetadataSend_Reply, error)
 	// AppMessageSend adds an app event to the message store, the message is encrypted using a derived key and readable by current group members
 	AppMessageSend(ctx context.Context, in *bertytypes.AppMessageSend_Request, opts ...grpc.CallOption) (*bertytypes.AppMessageSend_Reply, error)
-	// GroupMetadataSubscribe subscribes to a group metadata updates (types.or it can also retrieve the history)
+	// GroupMetadataSubscribe subscribes to a group metadata updates (types.v1.or it can also retrieve the history)
 	GroupMetadataSubscribe(ctx context.Context, in *bertytypes.GroupMetadataSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupMetadataSubscribeClient, error)
-	// GroupMessageSubscribe subscribes to a group message updates (types.or it can also retrieve the history)
+	// GroupMessageSubscribe subscribes to a group message updates (types.v1.or it can also retrieve the history)
 	GroupMessageSubscribe(ctx context.Context, in *bertytypes.GroupMessageSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupMessageSubscribeClient, error)
 	// GroupMetadataList replays metadata events from the group
 	GroupMetadataList(ctx context.Context, in *bertytypes.GroupMetadataList_Request, opts ...grpc.CallOption) (ProtocolService_GroupMetadataListClient, error)
@@ -184,7 +163,7 @@ func NewProtocolServiceClient(cc *grpc.ClientConn) ProtocolServiceClient {
 
 func (c *protocolServiceClient) InstanceExportData(ctx context.Context, in *bertytypes.InstanceExportData_Request, opts ...grpc.CallOption) (*bertytypes.InstanceExportData_Reply, error) {
 	out := new(bertytypes.InstanceExportData_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/InstanceExportData", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/InstanceExportData", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -193,7 +172,7 @@ func (c *protocolServiceClient) InstanceExportData(ctx context.Context, in *bert
 
 func (c *protocolServiceClient) InstanceGetConfiguration(ctx context.Context, in *bertytypes.InstanceGetConfiguration_Request, opts ...grpc.CallOption) (*bertytypes.InstanceGetConfiguration_Reply, error) {
 	out := new(bertytypes.InstanceGetConfiguration_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/InstanceGetConfiguration", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/InstanceGetConfiguration", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -202,7 +181,7 @@ func (c *protocolServiceClient) InstanceGetConfiguration(ctx context.Context, in
 
 func (c *protocolServiceClient) ContactRequestReference(ctx context.Context, in *bertytypes.ContactRequestReference_Request, opts ...grpc.CallOption) (*bertytypes.ContactRequestReference_Reply, error) {
 	out := new(bertytypes.ContactRequestReference_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestReference", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/ContactRequestReference", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -211,7 +190,7 @@ func (c *protocolServiceClient) ContactRequestReference(ctx context.Context, in 
 
 func (c *protocolServiceClient) ContactRequestDisable(ctx context.Context, in *bertytypes.ContactRequestDisable_Request, opts ...grpc.CallOption) (*bertytypes.ContactRequestDisable_Reply, error) {
 	out := new(bertytypes.ContactRequestDisable_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestDisable", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/ContactRequestDisable", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -220,7 +199,7 @@ func (c *protocolServiceClient) ContactRequestDisable(ctx context.Context, in *b
 
 func (c *protocolServiceClient) ContactRequestEnable(ctx context.Context, in *bertytypes.ContactRequestEnable_Request, opts ...grpc.CallOption) (*bertytypes.ContactRequestEnable_Reply, error) {
 	out := new(bertytypes.ContactRequestEnable_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestEnable", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/ContactRequestEnable", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -229,7 +208,7 @@ func (c *protocolServiceClient) ContactRequestEnable(ctx context.Context, in *be
 
 func (c *protocolServiceClient) ContactRequestResetReference(ctx context.Context, in *bertytypes.ContactRequestResetReference_Request, opts ...grpc.CallOption) (*bertytypes.ContactRequestResetReference_Reply, error) {
 	out := new(bertytypes.ContactRequestResetReference_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestResetReference", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/ContactRequestResetReference", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -238,7 +217,7 @@ func (c *protocolServiceClient) ContactRequestResetReference(ctx context.Context
 
 func (c *protocolServiceClient) ContactRequestSend(ctx context.Context, in *bertytypes.ContactRequestSend_Request, opts ...grpc.CallOption) (*bertytypes.ContactRequestSend_Reply, error) {
 	out := new(bertytypes.ContactRequestSend_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestSend", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/ContactRequestSend", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -247,7 +226,7 @@ func (c *protocolServiceClient) ContactRequestSend(ctx context.Context, in *bert
 
 func (c *protocolServiceClient) ContactRequestAccept(ctx context.Context, in *bertytypes.ContactRequestAccept_Request, opts ...grpc.CallOption) (*bertytypes.ContactRequestAccept_Reply, error) {
 	out := new(bertytypes.ContactRequestAccept_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestAccept", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/ContactRequestAccept", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -256,7 +235,7 @@ func (c *protocolServiceClient) ContactRequestAccept(ctx context.Context, in *be
 
 func (c *protocolServiceClient) ContactRequestDiscard(ctx context.Context, in *bertytypes.ContactRequestDiscard_Request, opts ...grpc.CallOption) (*bertytypes.ContactRequestDiscard_Reply, error) {
 	out := new(bertytypes.ContactRequestDiscard_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactRequestDiscard", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/ContactRequestDiscard", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -265,7 +244,7 @@ func (c *protocolServiceClient) ContactRequestDiscard(ctx context.Context, in *b
 
 func (c *protocolServiceClient) ContactBlock(ctx context.Context, in *bertytypes.ContactBlock_Request, opts ...grpc.CallOption) (*bertytypes.ContactBlock_Reply, error) {
 	out := new(bertytypes.ContactBlock_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactBlock", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/ContactBlock", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -274,7 +253,7 @@ func (c *protocolServiceClient) ContactBlock(ctx context.Context, in *bertytypes
 
 func (c *protocolServiceClient) ContactUnblock(ctx context.Context, in *bertytypes.ContactUnblock_Request, opts ...grpc.CallOption) (*bertytypes.ContactUnblock_Reply, error) {
 	out := new(bertytypes.ContactUnblock_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactUnblock", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/ContactUnblock", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -283,7 +262,7 @@ func (c *protocolServiceClient) ContactUnblock(ctx context.Context, in *bertytyp
 
 func (c *protocolServiceClient) ContactAliasKeySend(ctx context.Context, in *bertytypes.ContactAliasKeySend_Request, opts ...grpc.CallOption) (*bertytypes.ContactAliasKeySend_Reply, error) {
 	out := new(bertytypes.ContactAliasKeySend_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ContactAliasKeySend", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/ContactAliasKeySend", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -292,7 +271,7 @@ func (c *protocolServiceClient) ContactAliasKeySend(ctx context.Context, in *ber
 
 func (c *protocolServiceClient) MultiMemberGroupCreate(ctx context.Context, in *bertytypes.MultiMemberGroupCreate_Request, opts ...grpc.CallOption) (*bertytypes.MultiMemberGroupCreate_Reply, error) {
 	out := new(bertytypes.MultiMemberGroupCreate_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/MultiMemberGroupCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/MultiMemberGroupCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -301,7 +280,7 @@ func (c *protocolServiceClient) MultiMemberGroupCreate(ctx context.Context, in *
 
 func (c *protocolServiceClient) MultiMemberGroupJoin(ctx context.Context, in *bertytypes.MultiMemberGroupJoin_Request, opts ...grpc.CallOption) (*bertytypes.MultiMemberGroupJoin_Reply, error) {
 	out := new(bertytypes.MultiMemberGroupJoin_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/MultiMemberGroupJoin", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/MultiMemberGroupJoin", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -310,7 +289,7 @@ func (c *protocolServiceClient) MultiMemberGroupJoin(ctx context.Context, in *be
 
 func (c *protocolServiceClient) MultiMemberGroupLeave(ctx context.Context, in *bertytypes.MultiMemberGroupLeave_Request, opts ...grpc.CallOption) (*bertytypes.MultiMemberGroupLeave_Reply, error) {
 	out := new(bertytypes.MultiMemberGroupLeave_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/MultiMemberGroupLeave", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/MultiMemberGroupLeave", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -319,7 +298,7 @@ func (c *protocolServiceClient) MultiMemberGroupLeave(ctx context.Context, in *b
 
 func (c *protocolServiceClient) MultiMemberGroupAliasResolverDisclose(ctx context.Context, in *bertytypes.MultiMemberGroupAliasResolverDisclose_Request, opts ...grpc.CallOption) (*bertytypes.MultiMemberGroupAliasResolverDisclose_Reply, error) {
 	out := new(bertytypes.MultiMemberGroupAliasResolverDisclose_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/MultiMemberGroupAliasResolverDisclose", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/MultiMemberGroupAliasResolverDisclose", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -328,7 +307,7 @@ func (c *protocolServiceClient) MultiMemberGroupAliasResolverDisclose(ctx contex
 
 func (c *protocolServiceClient) MultiMemberGroupAdminRoleGrant(ctx context.Context, in *bertytypes.MultiMemberGroupAdminRoleGrant_Request, opts ...grpc.CallOption) (*bertytypes.MultiMemberGroupAdminRoleGrant_Reply, error) {
 	out := new(bertytypes.MultiMemberGroupAdminRoleGrant_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/MultiMemberGroupAdminRoleGrant", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/MultiMemberGroupAdminRoleGrant", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -337,7 +316,7 @@ func (c *protocolServiceClient) MultiMemberGroupAdminRoleGrant(ctx context.Conte
 
 func (c *protocolServiceClient) MultiMemberGroupInvitationCreate(ctx context.Context, in *bertytypes.MultiMemberGroupInvitationCreate_Request, opts ...grpc.CallOption) (*bertytypes.MultiMemberGroupInvitationCreate_Reply, error) {
 	out := new(bertytypes.MultiMemberGroupInvitationCreate_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/MultiMemberGroupInvitationCreate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/MultiMemberGroupInvitationCreate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -346,7 +325,7 @@ func (c *protocolServiceClient) MultiMemberGroupInvitationCreate(ctx context.Con
 
 func (c *protocolServiceClient) AppMetadataSend(ctx context.Context, in *bertytypes.AppMetadataSend_Request, opts ...grpc.CallOption) (*bertytypes.AppMetadataSend_Reply, error) {
 	out := new(bertytypes.AppMetadataSend_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/AppMetadataSend", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/AppMetadataSend", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -355,7 +334,7 @@ func (c *protocolServiceClient) AppMetadataSend(ctx context.Context, in *bertyty
 
 func (c *protocolServiceClient) AppMessageSend(ctx context.Context, in *bertytypes.AppMessageSend_Request, opts ...grpc.CallOption) (*bertytypes.AppMessageSend_Reply, error) {
 	out := new(bertytypes.AppMessageSend_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/AppMessageSend", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/AppMessageSend", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -363,7 +342,7 @@ func (c *protocolServiceClient) AppMessageSend(ctx context.Context, in *bertytyp
 }
 
 func (c *protocolServiceClient) GroupMetadataSubscribe(ctx context.Context, in *bertytypes.GroupMetadataSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupMetadataSubscribeClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[0], "/berty.protocol.ProtocolService/GroupMetadataSubscribe", opts...)
+	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[0], "/berty.protocol.v1.ProtocolService/GroupMetadataSubscribe", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -395,7 +374,7 @@ func (x *protocolServiceGroupMetadataSubscribeClient) Recv() (*bertytypes.GroupM
 }
 
 func (c *protocolServiceClient) GroupMessageSubscribe(ctx context.Context, in *bertytypes.GroupMessageSubscribe_Request, opts ...grpc.CallOption) (ProtocolService_GroupMessageSubscribeClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[1], "/berty.protocol.ProtocolService/GroupMessageSubscribe", opts...)
+	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[1], "/berty.protocol.v1.ProtocolService/GroupMessageSubscribe", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -427,7 +406,7 @@ func (x *protocolServiceGroupMessageSubscribeClient) Recv() (*bertytypes.GroupMe
 }
 
 func (c *protocolServiceClient) GroupMetadataList(ctx context.Context, in *bertytypes.GroupMetadataList_Request, opts ...grpc.CallOption) (ProtocolService_GroupMetadataListClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[2], "/berty.protocol.ProtocolService/GroupMetadataList", opts...)
+	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[2], "/berty.protocol.v1.ProtocolService/GroupMetadataList", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -459,7 +438,7 @@ func (x *protocolServiceGroupMetadataListClient) Recv() (*bertytypes.GroupMetada
 }
 
 func (c *protocolServiceClient) GroupMessageList(ctx context.Context, in *bertytypes.GroupMessageList_Request, opts ...grpc.CallOption) (ProtocolService_GroupMessageListClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[3], "/berty.protocol.ProtocolService/GroupMessageList", opts...)
+	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[3], "/berty.protocol.v1.ProtocolService/GroupMessageList", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -492,7 +471,7 @@ func (x *protocolServiceGroupMessageListClient) Recv() (*bertytypes.GroupMessage
 
 func (c *protocolServiceClient) GroupInfo(ctx context.Context, in *bertytypes.GroupInfo_Request, opts ...grpc.CallOption) (*bertytypes.GroupInfo_Reply, error) {
 	out := new(bertytypes.GroupInfo_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/GroupInfo", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/GroupInfo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -501,7 +480,7 @@ func (c *protocolServiceClient) GroupInfo(ctx context.Context, in *bertytypes.Gr
 
 func (c *protocolServiceClient) ActivateGroup(ctx context.Context, in *bertytypes.ActivateGroup_Request, opts ...grpc.CallOption) (*bertytypes.ActivateGroup_Reply, error) {
 	out := new(bertytypes.ActivateGroup_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/ActivateGroup", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/ActivateGroup", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -510,7 +489,7 @@ func (c *protocolServiceClient) ActivateGroup(ctx context.Context, in *bertytype
 
 func (c *protocolServiceClient) DeactivateGroup(ctx context.Context, in *bertytypes.DeactivateGroup_Request, opts ...grpc.CallOption) (*bertytypes.DeactivateGroup_Reply, error) {
 	out := new(bertytypes.DeactivateGroup_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/DeactivateGroup", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/DeactivateGroup", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -518,7 +497,7 @@ func (c *protocolServiceClient) DeactivateGroup(ctx context.Context, in *bertyty
 }
 
 func (c *protocolServiceClient) DebugListGroups(ctx context.Context, in *bertytypes.DebugListGroups_Request, opts ...grpc.CallOption) (ProtocolService_DebugListGroupsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[4], "/berty.protocol.ProtocolService/DebugListGroups", opts...)
+	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[4], "/berty.protocol.v1.ProtocolService/DebugListGroups", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -550,7 +529,7 @@ func (x *protocolServiceDebugListGroupsClient) Recv() (*bertytypes.DebugListGrou
 }
 
 func (c *protocolServiceClient) DebugInspectGroupStore(ctx context.Context, in *bertytypes.DebugInspectGroupStore_Request, opts ...grpc.CallOption) (ProtocolService_DebugInspectGroupStoreClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[5], "/berty.protocol.ProtocolService/DebugInspectGroupStore", opts...)
+	stream, err := c.cc.NewStream(ctx, &_ProtocolService_serviceDesc.Streams[5], "/berty.protocol.v1.ProtocolService/DebugInspectGroupStore", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -583,7 +562,7 @@ func (x *protocolServiceDebugInspectGroupStoreClient) Recv() (*bertytypes.DebugI
 
 func (c *protocolServiceClient) DebugGroup(ctx context.Context, in *bertytypes.DebugGroup_Request, opts ...grpc.CallOption) (*bertytypes.DebugGroup_Reply, error) {
 	out := new(bertytypes.DebugGroup_Reply)
-	err := c.cc.Invoke(ctx, "/berty.protocol.ProtocolService/DebugGroup", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.protocol.v1.ProtocolService/DebugGroup", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -596,7 +575,7 @@ type ProtocolServiceServer interface {
 	InstanceExportData(context.Context, *bertytypes.InstanceExportData_Request) (*bertytypes.InstanceExportData_Reply, error)
 	// InstanceGetConfiguration gets current configuration of this protocol instance
 	InstanceGetConfiguration(context.Context, *bertytypes.InstanceGetConfiguration_Request) (*bertytypes.InstanceGetConfiguration_Reply, error)
-	// ContactRequestReference retrieves the information required to create a reference (types.ie. included in a shareable link) to the current account
+	// ContactRequestReference retrieves the information required to create a reference (types.v1.ie. included in a shareable link) to the current account
 	ContactRequestReference(context.Context, *bertytypes.ContactRequestReference_Request) (*bertytypes.ContactRequestReference_Reply, error)
 	// ContactRequestDisable disables incoming contact requests
 	ContactRequestDisable(context.Context, *bertytypes.ContactRequestDisable_Request) (*bertytypes.ContactRequestDisable_Reply, error)
@@ -632,9 +611,9 @@ type ProtocolServiceServer interface {
 	AppMetadataSend(context.Context, *bertytypes.AppMetadataSend_Request) (*bertytypes.AppMetadataSend_Reply, error)
 	// AppMessageSend adds an app event to the message store, the message is encrypted using a derived key and readable by current group members
 	AppMessageSend(context.Context, *bertytypes.AppMessageSend_Request) (*bertytypes.AppMessageSend_Reply, error)
-	// GroupMetadataSubscribe subscribes to a group metadata updates (types.or it can also retrieve the history)
+	// GroupMetadataSubscribe subscribes to a group metadata updates (types.v1.or it can also retrieve the history)
 	GroupMetadataSubscribe(*bertytypes.GroupMetadataSubscribe_Request, ProtocolService_GroupMetadataSubscribeServer) error
-	// GroupMessageSubscribe subscribes to a group message updates (types.or it can also retrieve the history)
+	// GroupMessageSubscribe subscribes to a group message updates (types.v1.or it can also retrieve the history)
 	GroupMessageSubscribe(*bertytypes.GroupMessageSubscribe_Request, ProtocolService_GroupMessageSubscribeServer) error
 	// GroupMetadataList replays metadata events from the group
 	GroupMetadataList(*bertytypes.GroupMetadataList_Request, ProtocolService_GroupMetadataListServer) error
@@ -760,7 +739,7 @@ func _ProtocolService_InstanceExportData_Handler(srv interface{}, ctx context.Co
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/InstanceExportData",
+		FullMethod: "/berty.protocol.v1.ProtocolService/InstanceExportData",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).InstanceExportData(ctx, req.(*bertytypes.InstanceExportData_Request))
@@ -778,7 +757,7 @@ func _ProtocolService_InstanceGetConfiguration_Handler(srv interface{}, ctx cont
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/InstanceGetConfiguration",
+		FullMethod: "/berty.protocol.v1.ProtocolService/InstanceGetConfiguration",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).InstanceGetConfiguration(ctx, req.(*bertytypes.InstanceGetConfiguration_Request))
@@ -796,7 +775,7 @@ func _ProtocolService_ContactRequestReference_Handler(srv interface{}, ctx conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/ContactRequestReference",
+		FullMethod: "/berty.protocol.v1.ProtocolService/ContactRequestReference",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).ContactRequestReference(ctx, req.(*bertytypes.ContactRequestReference_Request))
@@ -814,7 +793,7 @@ func _ProtocolService_ContactRequestDisable_Handler(srv interface{}, ctx context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/ContactRequestDisable",
+		FullMethod: "/berty.protocol.v1.ProtocolService/ContactRequestDisable",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).ContactRequestDisable(ctx, req.(*bertytypes.ContactRequestDisable_Request))
@@ -832,7 +811,7 @@ func _ProtocolService_ContactRequestEnable_Handler(srv interface{}, ctx context.
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/ContactRequestEnable",
+		FullMethod: "/berty.protocol.v1.ProtocolService/ContactRequestEnable",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).ContactRequestEnable(ctx, req.(*bertytypes.ContactRequestEnable_Request))
@@ -850,7 +829,7 @@ func _ProtocolService_ContactRequestResetReference_Handler(srv interface{}, ctx 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/ContactRequestResetReference",
+		FullMethod: "/berty.protocol.v1.ProtocolService/ContactRequestResetReference",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).ContactRequestResetReference(ctx, req.(*bertytypes.ContactRequestResetReference_Request))
@@ -868,7 +847,7 @@ func _ProtocolService_ContactRequestSend_Handler(srv interface{}, ctx context.Co
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/ContactRequestSend",
+		FullMethod: "/berty.protocol.v1.ProtocolService/ContactRequestSend",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).ContactRequestSend(ctx, req.(*bertytypes.ContactRequestSend_Request))
@@ -886,7 +865,7 @@ func _ProtocolService_ContactRequestAccept_Handler(srv interface{}, ctx context.
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/ContactRequestAccept",
+		FullMethod: "/berty.protocol.v1.ProtocolService/ContactRequestAccept",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).ContactRequestAccept(ctx, req.(*bertytypes.ContactRequestAccept_Request))
@@ -904,7 +883,7 @@ func _ProtocolService_ContactRequestDiscard_Handler(srv interface{}, ctx context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/ContactRequestDiscard",
+		FullMethod: "/berty.protocol.v1.ProtocolService/ContactRequestDiscard",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).ContactRequestDiscard(ctx, req.(*bertytypes.ContactRequestDiscard_Request))
@@ -922,7 +901,7 @@ func _ProtocolService_ContactBlock_Handler(srv interface{}, ctx context.Context,
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/ContactBlock",
+		FullMethod: "/berty.protocol.v1.ProtocolService/ContactBlock",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).ContactBlock(ctx, req.(*bertytypes.ContactBlock_Request))
@@ -940,7 +919,7 @@ func _ProtocolService_ContactUnblock_Handler(srv interface{}, ctx context.Contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/ContactUnblock",
+		FullMethod: "/berty.protocol.v1.ProtocolService/ContactUnblock",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).ContactUnblock(ctx, req.(*bertytypes.ContactUnblock_Request))
@@ -958,7 +937,7 @@ func _ProtocolService_ContactAliasKeySend_Handler(srv interface{}, ctx context.C
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/ContactAliasKeySend",
+		FullMethod: "/berty.protocol.v1.ProtocolService/ContactAliasKeySend",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).ContactAliasKeySend(ctx, req.(*bertytypes.ContactAliasKeySend_Request))
@@ -976,7 +955,7 @@ func _ProtocolService_MultiMemberGroupCreate_Handler(srv interface{}, ctx contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/MultiMemberGroupCreate",
+		FullMethod: "/berty.protocol.v1.ProtocolService/MultiMemberGroupCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).MultiMemberGroupCreate(ctx, req.(*bertytypes.MultiMemberGroupCreate_Request))
@@ -994,7 +973,7 @@ func _ProtocolService_MultiMemberGroupJoin_Handler(srv interface{}, ctx context.
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/MultiMemberGroupJoin",
+		FullMethod: "/berty.protocol.v1.ProtocolService/MultiMemberGroupJoin",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).MultiMemberGroupJoin(ctx, req.(*bertytypes.MultiMemberGroupJoin_Request))
@@ -1012,7 +991,7 @@ func _ProtocolService_MultiMemberGroupLeave_Handler(srv interface{}, ctx context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/MultiMemberGroupLeave",
+		FullMethod: "/berty.protocol.v1.ProtocolService/MultiMemberGroupLeave",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).MultiMemberGroupLeave(ctx, req.(*bertytypes.MultiMemberGroupLeave_Request))
@@ -1030,7 +1009,7 @@ func _ProtocolService_MultiMemberGroupAliasResolverDisclose_Handler(srv interfac
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/MultiMemberGroupAliasResolverDisclose",
+		FullMethod: "/berty.protocol.v1.ProtocolService/MultiMemberGroupAliasResolverDisclose",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).MultiMemberGroupAliasResolverDisclose(ctx, req.(*bertytypes.MultiMemberGroupAliasResolverDisclose_Request))
@@ -1048,7 +1027,7 @@ func _ProtocolService_MultiMemberGroupAdminRoleGrant_Handler(srv interface{}, ct
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/MultiMemberGroupAdminRoleGrant",
+		FullMethod: "/berty.protocol.v1.ProtocolService/MultiMemberGroupAdminRoleGrant",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).MultiMemberGroupAdminRoleGrant(ctx, req.(*bertytypes.MultiMemberGroupAdminRoleGrant_Request))
@@ -1066,7 +1045,7 @@ func _ProtocolService_MultiMemberGroupInvitationCreate_Handler(srv interface{}, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/MultiMemberGroupInvitationCreate",
+		FullMethod: "/berty.protocol.v1.ProtocolService/MultiMemberGroupInvitationCreate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).MultiMemberGroupInvitationCreate(ctx, req.(*bertytypes.MultiMemberGroupInvitationCreate_Request))
@@ -1084,7 +1063,7 @@ func _ProtocolService_AppMetadataSend_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/AppMetadataSend",
+		FullMethod: "/berty.protocol.v1.ProtocolService/AppMetadataSend",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).AppMetadataSend(ctx, req.(*bertytypes.AppMetadataSend_Request))
@@ -1102,7 +1081,7 @@ func _ProtocolService_AppMessageSend_Handler(srv interface{}, ctx context.Contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/AppMessageSend",
+		FullMethod: "/berty.protocol.v1.ProtocolService/AppMessageSend",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).AppMessageSend(ctx, req.(*bertytypes.AppMessageSend_Request))
@@ -1204,7 +1183,7 @@ func _ProtocolService_GroupInfo_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/GroupInfo",
+		FullMethod: "/berty.protocol.v1.ProtocolService/GroupInfo",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).GroupInfo(ctx, req.(*bertytypes.GroupInfo_Request))
@@ -1222,7 +1201,7 @@ func _ProtocolService_ActivateGroup_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/ActivateGroup",
+		FullMethod: "/berty.protocol.v1.ProtocolService/ActivateGroup",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).ActivateGroup(ctx, req.(*bertytypes.ActivateGroup_Request))
@@ -1240,7 +1219,7 @@ func _ProtocolService_DeactivateGroup_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/DeactivateGroup",
+		FullMethod: "/berty.protocol.v1.ProtocolService/DeactivateGroup",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).DeactivateGroup(ctx, req.(*bertytypes.DeactivateGroup_Request))
@@ -1300,7 +1279,7 @@ func _ProtocolService_DebugGroup_Handler(srv interface{}, ctx context.Context, d
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.protocol.ProtocolService/DebugGroup",
+		FullMethod: "/berty.protocol.v1.ProtocolService/DebugGroup",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProtocolServiceServer).DebugGroup(ctx, req.(*bertytypes.DebugGroup_Request))
@@ -1309,7 +1288,7 @@ func _ProtocolService_DebugGroup_Handler(srv interface{}, ctx context.Context, d
 }
 
 var _ProtocolService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "berty.protocol.ProtocolService",
+	ServiceName: "berty.protocol.v1.ProtocolService",
 	HandlerType: (*ProtocolServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

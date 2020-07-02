@@ -1,4 +1,4 @@
-// package: berty.messenger
+// package: berty.messenger.v1
 // file: bertymessenger.proto
 
 var bertymessenger_pb = require("./bertymessenger_pb");
@@ -6,7 +6,7 @@ var grpc = require("@improbable-eng/grpc-web").grpc;
 
 var MessengerService = (function () {
   function MessengerService() {}
-  MessengerService.serviceName = "berty.messenger.MessengerService";
+  MessengerService.serviceName = "berty.messenger.v1.MessengerService";
   return MessengerService;
 }());
 

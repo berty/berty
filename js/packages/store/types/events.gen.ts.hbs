@@ -1,7 +1,7 @@
 import * as api from '@berty-tech/api'
 import { PayloadAction, CaseReducer } from '@reduxjs/toolkit'
 
-{{#with (lookup "berty.types")}}
+{{#with (lookup "berty.types.v1")}}
 	{{#each nested}}
     {{#if (and (eq (typeof this) "Enum") (eq name "EventType"))}}
       export type Events<State> = {
@@ -9,10 +9,10 @@ import { PayloadAction, CaseReducer } from '@reduxjs/toolkit'
           {{#with (removeFirst @key "EventType") as | eventName |}}
             {{case 'camel' eventName}}: CaseReducer<State, PayloadAction<{
 							aggregateId: string,
-							eventContext: api.berty.types.IEventContext,
-							metadata: api.berty.types.IGroupMetadata,
+							eventContext: api.berty.types.v1.IEventContext,
+							metadata: api.berty.types.v1.IGroupMetadata,
 							event: {
-								{{#with (lookup "berty.types")}}
+								{{#with (lookup "berty.types.v1")}}
 									{{#each nested}}
 										{{#if (matchInconsistant name eventName)}}
 											// {{eventName}} seems event of type {{name}}

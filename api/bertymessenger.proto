@@ -1,9 +1,8 @@
 syntax = "proto3";
 
-package berty.messenger;
+package berty.messenger.v1;
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
-import "google/api/annotations.proto";
 import "bertytypes.proto";
 
 option go_package = "berty.tech/berty/go/pkg/bertymessenger";
@@ -12,66 +11,30 @@ option go_package = "berty.tech/berty/go/pkg/bertymessenger";
 // Today, most of the Berty Messenger logic is implemented directly in the application (see the /js folder of this repo).
 service MessengerService {
   // InstanceShareableBertyID returns a Berty ID that can be shared as a string, QR code or deep link.
-  rpc InstanceShareableBertyID(InstanceShareableBertyID.Request) returns (InstanceShareableBertyID.Reply) {
-    option (google.api.http) = {
-      post: "/messenger/v1/InstanceShareableBertyID"
-      body: "*"
-    };
-  }
+  rpc InstanceShareableBertyID(InstanceShareableBertyID.Request) returns (InstanceShareableBertyID.Reply);
 
   // ShareableBertyGroup returns a Berty Group that can be shared as a string, QR code or deep link.
   rpc ShareableBertyGroup(ShareableBertyGroup.Request) returns (ShareableBertyGroup.Reply);
 
   // DevShareInstanceBertyID shares your Berty ID on a dev channel.
   // TODO: remove for public.
-  rpc DevShareInstanceBertyID(DevShareInstanceBertyID.Request) returns (DevShareInstanceBertyID.Reply) {
-    option (google.api.http) = {
-      post: "/messenger/v1/DevShareInstanceBertyID"
-      body: "*"
-    };
-  }
+  rpc DevShareInstanceBertyID(DevShareInstanceBertyID.Request) returns (DevShareInstanceBertyID.Reply);
 
   // ParseDeepLink parses a link in the form of berty://xxx or https://berty.tech/id# and returns a structure
   // that can be used to display information.
   // This action is read-only.
-  rpc ParseDeepLink(ParseDeepLink.Request) returns (ParseDeepLink.Reply) {
-    option (google.api.http) = {
-      post: "/messenger/v1/ParseDeepLink"
-      body: "*"
-    };
-  }
+  rpc ParseDeepLink(ParseDeepLink.Request) returns (ParseDeepLink.Reply);
 
   // SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol.
-  rpc SendContactRequest(SendContactRequest.Request) returns (SendContactRequest.Reply) {
-    option (google.api.http) = {
-      post: "/messenger/v1/SendContactRequest"
-      body: "*"
-    };
-  }
-
+  rpc SendContactRequest(SendContactRequest.Request) returns (SendContactRequest.Reply);
 
   // SendMessage sends a message to a group
-  rpc SendMessage(SendMessage.Request) returns (SendMessage.Reply) {
-    option (google.api.http) = {
-      post: "/messenger/v1/SendMessage"
-      body: "*"
-    };
-  }
+  rpc SendMessage(SendMessage.Request) returns (SendMessage.Reply);
 
   // SendAck sends an acknowledge payload for given message id
-  rpc SendAck(SendAck.Request) returns (SendAck.Reply) {
-    option (google.api.http) = {
-      post: "/messenger/v1/SendAck"
-      body: "*"
-    };
-  }
+  rpc SendAck(SendAck.Request) returns (SendAck.Reply);
 
-  rpc SystemInfo(SystemInfo.Request) returns (SystemInfo.Reply) {
-    option (google.api.http) = {
-      post: "/messenger/v1/SystemInfo"
-      body: "*"
-    };
-  }
+  rpc SystemInfo(SystemInfo.Request) returns (SystemInfo.Reply);
 }
 
 message InstanceShareableBertyID {
@@ -160,7 +123,7 @@ message BertyID {
 }
 
 message BertyGroup {
-  berty.types.Group group = 1;
+  berty.types.v1.Group group = 1;
   string display_name = 2;
 }
 

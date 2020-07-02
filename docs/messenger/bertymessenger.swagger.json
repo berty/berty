@@ -11,7 +11,7 @@
     "application/json"
   ],
   "paths": {
-    "/messenger/v1/DevShareInstanceBertyID": {
+    "/berty.messenger.v1/MessengerService/DevShareInstanceBertyID": {
       "post": {
         "summary": "DevShareInstanceBertyID shares your Berty ID on a dev channel.\nTODO: remove for public.",
         "operationId": "MessengerService_DevShareInstanceBertyID",
@@ -19,7 +19,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/messengerDevShareInstanceBertyIDReply"
+              "$ref": "#/definitions/v1DevShareInstanceBertyIDReply"
             }
           },
           "default": {
@@ -35,7 +35,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/messengerDevShareInstanceBertyIDRequest"
+              "$ref": "#/definitions/v1DevShareInstanceBertyIDRequest"
             }
           }
         ],
@@ -44,7 +44,7 @@
         ]
       }
     },
-    "/messenger/v1/InstanceShareableBertyID": {
+    "/berty.messenger.v1/MessengerService/InstanceShareableBertyID": {
       "post": {
         "summary": "InstanceShareableBertyID returns a Berty ID that can be shared as a string, QR code or deep link.",
         "operationId": "MessengerService_InstanceShareableBertyID",
@@ -52,7 +52,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/messengerInstanceShareableBertyIDReply"
+              "$ref": "#/definitions/v1InstanceShareableBertyIDReply"
             }
           },
           "default": {
@@ -68,7 +68,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/messengerInstanceShareableBertyIDRequest"
+              "$ref": "#/definitions/v1InstanceShareableBertyIDRequest"
             }
           }
         ],
@@ -77,7 +77,7 @@
         ]
       }
     },
-    "/messenger/v1/ParseDeepLink": {
+    "/berty.messenger.v1/MessengerService/ParseDeepLink": {
       "post": {
         "summary": "ParseDeepLink parses a link in the form of berty://xxx or https://berty.tech/id# and returns a structure\nthat can be used to display information.\nThis action is read-only.",
         "operationId": "MessengerService_ParseDeepLink",
@@ -85,7 +85,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/messengerParseDeepLinkReply"
+              "$ref": "#/definitions/v1ParseDeepLinkReply"
             }
           },
           "default": {
@@ -101,7 +101,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/messengerParseDeepLinkRequest"
+              "$ref": "#/definitions/v1ParseDeepLinkRequest"
             }
           }
         ],
@@ -110,7 +110,7 @@
         ]
       }
     },
-    "/messenger/v1/SendAck": {
+    "/berty.messenger.v1/MessengerService/SendAck": {
       "post": {
         "summary": "SendAck sends an acknowledge payload for given message id",
         "operationId": "MessengerService_SendAck",
@@ -118,7 +118,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/messengerSendAckReply"
+              "$ref": "#/definitions/v1SendAckReply"
             }
           },
           "default": {
@@ -134,7 +134,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/messengerSendAckRequest"
+              "$ref": "#/definitions/v1SendAckRequest"
             }
           }
         ],
@@ -143,7 +143,7 @@
         ]
       }
     },
-    "/messenger/v1/SendContactRequest": {
+    "/berty.messenger.v1/MessengerService/SendContactRequest": {
       "post": {
         "summary": "SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol.",
         "operationId": "MessengerService_SendContactRequest",
@@ -151,7 +151,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/messengerSendContactRequestReply"
+              "$ref": "#/definitions/v1SendContactRequestReply"
             }
           },
           "default": {
@@ -167,7 +167,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/messengerSendContactRequestRequest"
+              "$ref": "#/definitions/v1SendContactRequestRequest"
             }
           }
         ],
@@ -176,7 +176,7 @@
         ]
       }
     },
-    "/messenger/v1/SendMessage": {
+    "/berty.messenger.v1/MessengerService/SendMessage": {
       "post": {
         "summary": "SendMessage sends a message to a group",
         "operationId": "MessengerService_SendMessage",
@@ -184,7 +184,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/messengerSendMessageReply"
+              "$ref": "#/definitions/v1SendMessageReply"
             }
           },
           "default": {
@@ -200,7 +200,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/messengerSendMessageRequest"
+              "$ref": "#/definitions/v1SendMessageRequest"
             }
           }
         ],
@@ -209,14 +209,15 @@
         ]
       }
     },
-    "/messenger/v1/SystemInfo": {
+    "/berty.messenger.v1/MessengerService/ShareableBertyGroup": {
       "post": {
-        "operationId": "MessengerService_SystemInfo",
+        "summary": "ShareableBertyGroup returns a Berty Group that can be shared as a string, QR code or deep link.",
+        "operationId": "MessengerService_ShareableBertyGroup",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/messengerSystemInfoReply"
+              "$ref": "#/definitions/v1ShareableBertyGroupReply"
             }
           },
           "default": {
@@ -232,7 +233,39 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/messengerSystemInfoRequest"
+              "$ref": "#/definitions/v1ShareableBertyGroupRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/berty.messenger.v1/MessengerService/SystemInfo": {
+      "post": {
+        "operationId": "MessengerService_SystemInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SystemInfoReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1SystemInfoRequest"
             }
           }
         ],
@@ -252,18 +285,51 @@
       ],
       "default": "UnknownKind"
     },
-    "messengerBertyGroup": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1BertyGroup": {
       "type": "object",
       "properties": {
         "group": {
-          "$ref": "#/definitions/typesGroup"
+          "$ref": "#/definitions/v1Group"
         },
         "display_name": {
           "type": "string"
         }
       }
     },
-    "messengerBertyID": {
+    "v1BertyID": {
       "type": "object",
       "properties": {
         "public_rendezvous_seed": {
@@ -279,10 +345,10 @@
         }
       }
     },
-    "messengerDevShareInstanceBertyIDReply": {
+    "v1DevShareInstanceBertyIDReply": {
       "type": "object"
     },
-    "messengerDevShareInstanceBertyIDRequest": {
+    "v1DevShareInstanceBertyIDRequest": {
       "type": "object",
       "properties": {
         "reset": {
@@ -295,11 +361,47 @@
         }
       }
     },
-    "messengerInstanceShareableBertyIDReply": {
+    "v1Group": {
+      "type": "object",
+      "properties": {
+        "public_key": {
+          "type": "string",
+          "format": "byte",
+          "title": "public_key is the identifier of the group, it signs the group secret and the initial member of a multi-member group"
+        },
+        "secret": {
+          "type": "string",
+          "format": "byte",
+          "title": "secret is the symmetric secret of the group, which is used to encrypt the metadata"
+        },
+        "secret_sig": {
+          "type": "string",
+          "format": "byte",
+          "title": "secret_sig is the signature of the secret used to ensure the validity of the group"
+        },
+        "group_type": {
+          "$ref": "#/definitions/v1GroupType",
+          "title": "group_type specifies the type of the group"
+        }
+      },
+      "title": "Group define a group and is enough to invite someone to it"
+    },
+    "v1GroupType": {
+      "type": "string",
+      "enum": [
+        "GroupTypeUndefined",
+        "GroupTypeAccount",
+        "GroupTypeContact",
+        "GroupTypeMultiMember"
+      ],
+      "default": "GroupTypeUndefined",
+      "description": " - GroupTypeUndefined: GroupTypeUndefined indicates that the value has not been set. Should not happen.\n - GroupTypeAccount: GroupTypeAccount is the group managing an account, available to all its devices.\n - GroupTypeContact: GroupTypeContact is the group created between two accounts, available to all their devices.\n - GroupTypeMultiMember: GroupTypeMultiMember is a group containing an undefined number of members."
+    },
+    "v1InstanceShareableBertyIDReply": {
       "type": "object",
       "properties": {
         "berty_id": {
-          "$ref": "#/definitions/messengerBertyID"
+          "$ref": "#/definitions/v1BertyID"
         },
         "berty_id_payload": {
           "type": "string"
@@ -312,7 +414,7 @@
         }
       }
     },
-    "messengerInstanceShareableBertyIDRequest": {
+    "v1InstanceShareableBertyIDRequest": {
       "type": "object",
       "properties": {
         "reset": {
@@ -325,21 +427,21 @@
         }
       }
     },
-    "messengerParseDeepLinkReply": {
+    "v1ParseDeepLinkReply": {
       "type": "object",
       "properties": {
         "kind": {
           "$ref": "#/definitions/ParseDeepLinkKind"
         },
         "berty_id": {
-          "$ref": "#/definitions/messengerBertyID"
+          "$ref": "#/definitions/v1BertyID"
         },
         "berty_group": {
-          "$ref": "#/definitions/messengerBertyGroup"
+          "$ref": "#/definitions/v1BertyGroup"
         }
       }
     },
-    "messengerParseDeepLinkRequest": {
+    "v1ParseDeepLinkRequest": {
       "type": "object",
       "properties": {
         "link": {
@@ -347,10 +449,10 @@
         }
       }
     },
-    "messengerSendAckReply": {
+    "v1SendAckReply": {
       "type": "object"
     },
-    "messengerSendAckRequest": {
+    "v1SendAckRequest": {
       "type": "object",
       "properties": {
         "group_pk": {
@@ -363,14 +465,14 @@
         }
       }
     },
-    "messengerSendContactRequestReply": {
+    "v1SendContactRequestReply": {
       "type": "object"
     },
-    "messengerSendContactRequestRequest": {
+    "v1SendContactRequestRequest": {
       "type": "object",
       "properties": {
         "berty_id": {
-          "$ref": "#/definitions/messengerBertyID"
+          "$ref": "#/definitions/v1BertyID"
         },
         "metadata": {
           "type": "string",
@@ -382,10 +484,10 @@
         }
       }
     },
-    "messengerSendMessageReply": {
+    "v1SendMessageReply": {
       "type": "object"
     },
-    "messengerSendMessageRequest": {
+    "v1SendMessageRequest": {
       "type": "object",
       "properties": {
         "group_pk": {
@@ -397,11 +499,11 @@
         }
       }
     },
-    "messengerShareableBertyGroupReply": {
+    "v1ShareableBertyGroupReply": {
       "type": "object",
       "properties": {
         "berty_group": {
-          "$ref": "#/definitions/messengerBertyGroup"
+          "$ref": "#/definitions/v1BertyGroup"
         },
         "berty_group_payload": {
           "type": "string"
@@ -414,7 +516,19 @@
         }
       }
     },
-    "messengerSystemInfoReply": {
+    "v1ShareableBertyGroupRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte"
+        },
+        "group_name": {
+          "type": "string"
+        }
+      }
+    },
+    "v1SystemInfoReply": {
       "type": "object",
       "properties": {
         "started_at": {
@@ -462,77 +576,8 @@
         }
       }
     },
-    "messengerSystemInfoRequest": {
+    "v1SystemInfoRequest": {
       "type": "object"
-    },
-    "protobufAny": {
-      "type": "object",
-      "properties": {
-        "type_url": {
-          "type": "string"
-        },
-        "value": {
-          "type": "string",
-          "format": "byte"
-        }
-      }
-    },
-    "runtimeError": {
-      "type": "object",
-      "properties": {
-        "error": {
-          "type": "string"
-        },
-        "code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "message": {
-          "type": "string"
-        },
-        "details": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/protobufAny"
-          }
-        }
-      }
-    },
-    "typesGroup": {
-      "type": "object",
-      "properties": {
-        "public_key": {
-          "type": "string",
-          "format": "byte",
-          "title": "public_key is the identifier of the group, it signs the group secret and the initial member of a multi-member group"
-        },
-        "secret": {
-          "type": "string",
-          "format": "byte",
-          "title": "secret is the symmetric secret of the group, which is used to encrypt the metadata"
-        },
-        "secret_sig": {
-          "type": "string",
-          "format": "byte",
-          "title": "secret_sig is the signature of the secret used to ensure the validity of the group"
-        },
-        "group_type": {
-          "$ref": "#/definitions/typesGroupType",
-          "title": "group_type specifies the type of the group"
-        }
-      },
-      "title": "Group define a group and is enough to invite someone to it"
-    },
-    "typesGroupType": {
-      "type": "string",
-      "enum": [
-        "GroupTypeUndefined",
-        "GroupTypeAccount",
-        "GroupTypeContact",
-        "GroupTypeMultiMember"
-      ],
-      "default": "GroupTypeUndefined",
-      "description": " - GroupTypeUndefined: GroupTypeUndefined indicates that the value has not been set. Should not happen.\n - GroupTypeAccount: GroupTypeAccount is the group managing an account, available to all its devices.\n - GroupTypeContact: GroupTypeContact is the group created between two accounts, available to all their devices.\n - GroupTypeMultiMember: GroupTypeMultiMember is a group containing an undefined number of members."
     }
   }
 }

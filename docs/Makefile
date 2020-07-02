@@ -2,8 +2,7 @@
 ## Code gen
 ##
 
-PROTOS_SRC := $(wildcard ../api/*.proto)
-GEN_SRC := $(PROTOS_SRC) Makefile
+GEN_SRC := $(wildcard ../api/*.proto) $(wildcard ../api/*.yaml) Makefile
 GEN_SUM := gen.sum
 
 all: generate
@@ -44,9 +43,9 @@ generate_local:
 	shasum $(GEN_SRC) | sort -k 2 > $(GEN_SUM).tmp
 	mv $(GEN_SUM).tmp $(GEN_SUM)
 	@# FIXME: patch file with version
-	#protoc $(PROTOC_OPTS) --swagger_out=allow_delete_body=true,allow_merge=true:. ../api/bertymessenger.proto ../api/bertyprotocol.proto
-	protoc $(PROTOC_OPTS) --swagger_out=./protocol  ../api/bertyprotocol.proto
-	protoc $(PROTOC_OPTS) --swagger_out=./messenger ../api/bertymessenger.proto
+	@# FIXME: use allow_merge=true (requires v2)
+	protoc $(PROTOC_OPTS) --swagger_out=logtostderr=true,grpc_api_configuration=../api/bertyprotocol.yaml:./protocol  ../api/bertyprotocol.proto
+	protoc $(PROTOC_OPTS) --swagger_out=logtostderr=true,grpc_api_configuration=../api/bertymessenger.yaml:./messenger ../api/bertymessenger.proto
 
 BUMP_TOKEN ?=
 .PHONY: openapi.prepare
