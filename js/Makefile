@@ -36,24 +36,30 @@ clisim := packages/berty-app/node_modules/.bin/clisim
 
 .PHONY: help
 help:
-	@echo "User commands"
+	@echo "User commands                                                env options"
 	@echo "  android.run        "
 	@echo "  android.storybook  "
-	@echo "  bridge.start       "
+	@echo "  bridge.start                                               BERTY_BRIDGE_PORT=1337"
 	@echo "  clean              clear cache"
 	@echo "  deps.update        "
 	@echo "  generate           use protobuf to generate files"
-	@echo "  ios.run            "
+	@echo "  ios.run                                                    IOS_DEVICE='iPhone 11'"
 	@echo "  ios.storybook      "
 	@echo "  lint               "
 	@echo "  lint.fix           "
+	@echo "  lint.quick         lint without verifying deps"
 	@echo "  metro.start        "
 	@echo "  regenerate         "
 	@echo "  test               run tests"
+	@echo "  test.quick         run tests without verifying deps"
 	@echo "  web.storybook      "
 
 .PHONY: test
 test: deps
+	yarn test
+
+.PHONY: test.quick
+test.quick:
 	yarn test
 
 .PHONY: deps.update
@@ -128,6 +134,14 @@ lint: deps
 .PHONY: lint.fix
 lint.fix: deps
 	eslint --fix .
+
+.PHONY: lint.quick
+lint.quick:
+	cp .gitignore .eslintignore
+	echo "packages/store/protocol/grpc-web-gen/" >> .eslintignore
+	echo "*.pb.*" >> .eslintignore
+	echo "*.gen.*" >> .eslintignore
+	eslint --cache --quiet --ext=.js,.jsx,.ts,.tsx .
 
 print-%: ; @echo $* = $($*)
 
