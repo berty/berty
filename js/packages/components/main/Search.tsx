@@ -58,15 +58,15 @@ const useStylesSearch = () => {
 }
 
 const SearchTitle: React.FC<{}> = () => {
-	const [{ text, color }] = useStyles()
+	const [{ text, color, flex }] = useStyles()
 	const { dispatch } = useNavigation()
 	return (
 		<View
 			style={[
+				flex.direction.row,
+				flex.justify.center,
+				flex.align.center,
 				{
-					flexDirection: 'row',
-					justifyContent: 'center',
-					alignItems: 'center',
 					marginLeft: _titleIconSize,
 				},
 			]}
@@ -77,10 +77,10 @@ const SearchTitle: React.FC<{}> = () => {
 					text.bold.medium,
 					text.color.white,
 					text.align.center,
+					flex.align.center,
+					flex.justify.center,
 					{
 						flexShrink: 0,
-						alignItems: 'center',
-						justifyContent: 'center',
 						flexGrow: 1,
 					},
 				]}
@@ -300,7 +300,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, searchTextKey, sear
 					style={[padding.tiny, row.item.justify]}
 				/>
 				<View style={[flex.medium, column.justify, padding.left.medium]}>
-					<View style={[{ flexDirection: 'row', alignItems: 'center' }]} />
+					<View style={[flex.direction.row, flex.align.center]} />
 					<View style={[margin.right.big]}>
 						<Text numberOfLines={1} style={[text.bold.medium, !convId && text.color.grey]}>
 							{name}

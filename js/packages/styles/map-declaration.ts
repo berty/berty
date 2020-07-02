@@ -111,6 +111,25 @@ export const mapDeclaration = (decl: Declaration): Styles => {
 				big: { flex: 8 },
 				huge: { flex: 13 },
 			}),
+			direction: StyleSheet.create({
+				row: { flexDirection: 'row' },
+				column: { flexDirection: 'column' },
+			}),
+			align: StyleSheet.create({
+				baseline: { alignItems: 'baseline' },
+				center: { alignItems: 'center' },
+				end: { alignItems: 'flex-end' },
+				start: { alignItems: 'flex-start' },
+				stretch: { alignItems: 'stretch' },
+			}),
+			justify: StyleSheet.create({
+				center: { justifyContent: 'center' },
+				end: { justifyContent: 'flex-end' },
+				spaceAround: { justifyContent: 'space-around' },
+				spaceBetween: { justifyContent: 'space-between' },
+				spaceEvenly: { justifyContent: 'space-evenly' },
+				start: { justifyContent: 'flex-start' },
+			}),
 			scale: mem((size: number) => StyleSheet.create({ scale: { flex: size } }).scale),
 		},
 		absolute: {
