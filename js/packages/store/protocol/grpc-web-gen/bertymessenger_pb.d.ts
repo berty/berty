@@ -747,6 +747,9 @@ export namespace SystemInfo {
     getNofile(): number;
     setNofile(value: number): void;
 
+    getTooManyOpenFiles(): boolean;
+    setTooManyOpenFiles(value: boolean): void;
+
     getStartedAt(): number;
     setStartedAt(value: number): void;
 
@@ -799,6 +802,7 @@ export namespace SystemInfo {
       numGoroutine: number,
       connectedPeers: number,
       nofile: number,
+      tooManyOpenFiles: boolean,
       startedAt: number,
       numCpu: number,
       goVersion: string,

@@ -4,9 +4,9 @@
 2d133bba134fef4f23b3087a76907783bbd4f460  Makefile
 4989b51bf6dfc52cd195cc46db1732a81090191f  ../api/bertyprotocol.proto
 4c0fa735ab710727c465ed1444dc6db1c748dc45  ../vendor/github.com/gogo/protobuf/gogoproto/gogo.proto
+5bf6c46c26dc0ac3fa5f310b873f22d17a66b623  ../api/bertymessenger.proto
 79cc69e3078dc058c0f82cb852e8dd54871af7e2  packages/store/messenger/client.gen.ts.hbs
 805aee6ffe307df914ec45a89d6bb05dcbd5a33a  packages/store/types/events.gen.ts.hbs
-a752d63d5ff9f1f60d7897672cbf5fe5a8ef9eb6  ../api/bertymessenger.proto
 cdcfd4235af64debca29d0553209a34df7899361  ../api/bertytypes.proto
 e3fb6d1b91d746e062c3ceda2d8908108b4b791c  packages/store/protocol/ProtocolServiceSagaClient.gen.ts.hbs
 fff74e17f874124b181741e1f0271e10520159b6  packages/store/messenger/MessengerServiceSagaClient.gen.ts.hbs
