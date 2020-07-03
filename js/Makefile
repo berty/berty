@@ -36,23 +36,24 @@ clisim := packages/berty-app/node_modules/.bin/clisim
 
 .PHONY: help
 help:
-	@echo "User commands                                                env options"
-	@echo "  android.run        "
-	@echo "  android.storybook  "
-	@echo "  bridge.start                                               BERTY_BRIDGE_PORT=1337"
-	@echo "  clean              clear cache"
-	@echo "  deps.update        "
-	@echo "  generate           use protobuf to generate files"
-	@echo "  ios.run                                                    IOS_DEVICE='iPhone 11'"
-	@echo "  ios.storybook      "
-	@echo "  lint               "
-	@echo "  lint.fix           "
-	@echo "  lint.quick         lint without verifying deps"
-	@echo "  metro.start        "
-	@echo "  regenerate         "
-	@echo "  test               run tests"
-	@echo "  test.quick         run tests without verifying deps"
-	@echo "  web.storybook      "
+	@echo "User commands          Description                             Main env options"
+	@echo "  android.run"
+	@echo "  android.storybook"
+	@echo "  bridge.start                                                 BERTY_BRIDGE_PORT=1337"
+	@echo "  bridge.start.docker                                          BERTY_BRIDGE_PORT=1337"
+	@echo "  clean                clear cache"
+	@echo "  deps.update"
+	@echo "  generate             use protobuf to generate files"
+	@echo "  ios.run                                                      IOS_DEVICE='iPhone 11'"
+	@echo "  ios.storybook"
+	@echo "  lint"
+	@echo "  lint.fix"
+	@echo "  lint.quick           lint without verifying deps"
+	@echo "  metro.start"
+	@echo "  regenerate"
+	@echo "  test                 run tests"
+	@echo "  test.quick           run tests without verifying deps"
+	@echo "  web.storybook"
 
 .PHONY: test
 test: deps
@@ -231,8 +232,12 @@ bridge.start:
 	cd ../go && $(MAKE) install
 	$(GOPATH)/bin/berty daemon -l /ip4/127.0.0.1/tcp/$(BERTY_BRIDGE_PORT)/grpcws
 
+.PHONY: bridge.start.docker
+bridge.start.docker:
+	$(call check-program, docker)
+	docker run -it --rm -p $(BERTY_BRIDGE_PORT):$(BERTY_BRIDGE_PORT) bertytech/berty daemon -l /ip4/0.0.0.0/tcp/$(BERTY_BRIDGE_PORT)/grpcws
+
 ### gen
-### TODO: consider putting all the generation deps in bertytech/protoc docker image and remove the `deps` rule dep to only require docker
 
 #### pbhbs based code generation
 
