@@ -5699,6 +5699,7 @@ proto.berty.messenger.v1.SystemInfo.Reply.toObject = function(includeInstance, m
     rlimitCur: jspb.Message.getFieldWithDefault(msg, 1, 0),
     numGoroutine: jspb.Message.getFieldWithDefault(msg, 2, 0),
     connectedPeers: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    nofile: jspb.Message.getFieldWithDefault(msg, 4, 0),
     startedAt: jspb.Message.getFieldWithDefault(msg, 10, 0),
     numCpu: jspb.Message.getFieldWithDefault(msg, 11, 0),
     goVersion: jspb.Message.getFieldWithDefault(msg, 12, ""),
@@ -5758,6 +5759,10 @@ proto.berty.messenger.v1.SystemInfo.Reply.deserializeBinaryFromReader = function
     case 3:
       var value = /** @type {number} */ (reader.readInt64());
       msg.setConnectedPeers(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setNofile(value);
       break;
     case 10:
       var value = /** @type {number} */ (reader.readInt64());
@@ -5854,6 +5859,13 @@ proto.berty.messenger.v1.SystemInfo.Reply.serializeBinaryToWriter = function(mes
   if (f !== 0) {
     writer.writeInt64(
       3,
+      f
+    );
+  }
+  f = message.getNofile();
+  if (f !== 0) {
+    writer.writeInt64(
+      4,
       f
     );
   }
@@ -5995,6 +6007,24 @@ proto.berty.messenger.v1.SystemInfo.Reply.prototype.getConnectedPeers = function
  */
 proto.berty.messenger.v1.SystemInfo.Reply.prototype.setConnectedPeers = function(value) {
   return jspb.Message.setProto3IntField(this, 3, value);
+};
+
+
+/**
+ * optional int64 nofile = 4;
+ * @return {number}
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getNofile = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setNofile = function(value) {
+  return jspb.Message.setProto3IntField(this, 4, value);
 };
 
 

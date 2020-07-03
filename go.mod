@@ -62,5 +62,6 @@ require (
 	google.golang.org/grpc v1.30.0
 	google.golang.org/protobuf v1.25.0 // indirect
 	moul.io/godev v1.6.0
+	moul.io/openfiles v1.1.0
 	moul.io/srand v1.4.0
 )

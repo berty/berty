@@ -744,6 +744,9 @@ export namespace SystemInfo {
     getConnectedPeers(): number;
     setConnectedPeers(value: number): void;
 
+    getNofile(): number;
+    setNofile(value: number): void;
+
     getStartedAt(): number;
     setStartedAt(value: number): void;
 
@@ -795,6 +798,7 @@ export namespace SystemInfo {
       rlimitCur: number,
       numGoroutine: number,
       connectedPeers: number,
+      nofile: number,
       startedAt: number,
       numCpu: number,
       goVersion: string,

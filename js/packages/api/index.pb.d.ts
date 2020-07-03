@@ -3146,6 +3146,7 @@ export namespace berty {
                     rlimitCur?: (number|Long|null);
                     numGoroutine?: (number|Long|null);
                     connectedPeers?: (number|Long|null);
+                    nofile?: (number|Long|null);
                     startedAt?: (number|Long|null);
                     numCpu?: (number|Long|null);
                     goVersion?: (string|null);
@@ -3165,6 +3166,7 @@ export namespace berty {
                     public rlimitCur: (number|Long);
                     public numGoroutine: (number|Long);
                     public connectedPeers: (number|Long);
+                    public nofile: (number|Long);
                     public startedAt: (number|Long);
                     public numCpu: (number|Long);
                     public goVersion: string;

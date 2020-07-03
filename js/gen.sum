@@ -5,7 +5,7 @@
 4c0fa735ab710727c465ed1444dc6db1c748dc45  ../vendor/github.com/gogo/protobuf/gogoproto/gogo.proto
 79cc69e3078dc058c0f82cb852e8dd54871af7e2  packages/store/messenger/client.gen.ts.hbs
 805aee6ffe307df914ec45a89d6bb05dcbd5a33a  packages/store/types/events.gen.ts.hbs
-933afb5edbb7027e0dafd10e31601a10fc741b12  ../api/bertymessenger.proto
+a752d63d5ff9f1f60d7897672cbf5fe5a8ef9eb6  ../api/bertymessenger.proto
 cdcfd4235af64debca29d0553209a34df7899361  ../api/bertytypes.proto
 da7c5600ba2035ee97874b61d7c8aeede43396a3  Makefile
 e3fb6d1b91d746e062c3ceda2d8908108b4b791c  packages/store/protocol/ProtocolServiceSagaClient.gen.ts.hbs

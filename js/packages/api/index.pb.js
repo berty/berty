@@ -1941,6 +1941,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         type: "int64",
                         id: 3
                       },
+                      nofile: {
+                        type: "int64",
+                        id: 4
+                      },
                       startedAt: {
                         type: "int64",
                         id: 10

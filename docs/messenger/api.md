@@ -277,6 +277,7 @@ most important and dynamic values first
 | rlimit_cur | [uint64](#uint64) |  |  |
 | num_goroutine | [int64](#int64) |  |  |
 | connected_peers | [int64](#int64) |  |  |
+| nofile | [int64](#int64) |  |  |
 | started_at | [int64](#int64) |  |  |
 | num_cpu | [int64](#int64) |  |  |
 | go_version | [string](#string) |  |  |

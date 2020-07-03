@@ -180,6 +180,7 @@ message SystemInfo {
     uint64 rlimit_cur = 1;
     int64 num_goroutine = 2;
     int64 connected_peers = 3;
+    int64 nofile = 4;
 
     // other values below
 
