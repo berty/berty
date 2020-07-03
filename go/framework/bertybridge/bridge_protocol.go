@@ -290,7 +290,11 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
-		messenger := bertymessenger.New(protocolClient, &bertymessenger.Opts{Logger: logger.Named("messenger")})
+		opts := bertymessenger.Opts{
+			Logger:          logger.Named("messenger"),
+			ProtocolService: service,
+		}
+		messenger := bertymessenger.New(protocolClient, &opts)
 		bertymessenger.RegisterMessengerServiceServer(grpcServer, messenger)
 	}
 

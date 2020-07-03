@@ -140,10 +140,12 @@ func Main(ctx context.Context, opts *Opts) error {
 	}
 
 	var client bertyprotocol.ProtocolServiceClient
+	var service bertyprotocol.Service
 	if opts.RemoteAddr == "" {
 		trServer := tracer.New("grpc-server")
 
-		service, clean := newService(ctx, opts.Logger, opts)
+		var clean func()
+		service, clean = newService(ctx, opts.Logger, opts)
 		defer clean()
 
 		grpcServer := grpc.NewServer(
@@ -170,7 +172,10 @@ func Main(ctx context.Context, opts *Opts) error {
 		client = bertyprotocol.NewProtocolServiceClient(cc)
 	}
 
-	messenger := bertymessenger.New(client, &bertymessenger.Opts{Logger: opts.Logger.Named("messenger")})
+	messenger := bertymessenger.New(client, &bertymessenger.Opts{
+		Logger:          opts.Logger.Named("messenger"),
+		ProtocolService: service,
+	})
 
 	config, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
 	if err != nil {

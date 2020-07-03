@@ -16,6 +16,7 @@ import (
 	"github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
+	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/host"
 	"go.uber.org/zap"
 )
@@ -28,6 +29,7 @@ type Service interface {
 
 	Close() error
 	Status() Status
+	IpfsCoreAPI() ipfs_interface.CoreAPI
 }
 
 type service struct {
@@ -167,6 +169,10 @@ func New(opts Opts) (Service, error) {
 			string(acc.Group().PublicKey): acc,
 		},
 	}, nil
+}
+
+func (s *service) IpfsCoreAPI() ipfs_interface.CoreAPI {
+	return s.ipfsCoreAPI
 }
 
 func (s *service) Close() error {

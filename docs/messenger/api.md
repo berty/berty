@@ -270,22 +270,25 @@
 <a name="berty.messenger.v1.SystemInfo.Reply"></a>
 
 ### SystemInfo.Reply
+most important and dynamic values first
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| rlimit_cur | [uint64](#uint64) |  |  |
+| num_goroutine | [int64](#int64) |  |  |
+| connected_peers | [int64](#int64) |  |  |
 | started_at | [int64](#int64) |  |  |
 | num_cpu | [int64](#int64) |  |  |
 | go_version | [string](#string) |  |  |
-| num_goroutine | [int64](#int64) |  |  |
 | operating_system | [string](#string) |  |  |
 | host_name | [string](#string) |  |  |
 | arch | [string](#string) |  |  |
 | version | [string](#string) |  |  |
 | vcs_ref | [string](#string) |  |  |
 | build_time | [int64](#int64) |  |  |
-| rlimit | [string](#string) |  |  |
 | self_rusage | [string](#string) |  |  |
 | children_rusage | [string](#string) |  |  |
+| rlimit_max | [uint64](#uint64) |  | FIXME: string ipfs_config = 22; |
 
 <a name="berty.messenger.v1.SystemInfo.Request"></a>
 

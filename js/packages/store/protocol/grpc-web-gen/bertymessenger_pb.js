@@ -5696,19 +5696,21 @@ proto.berty.messenger.v1.SystemInfo.Reply.prototype.toObject = function(opt_incl
  */
 proto.berty.messenger.v1.SystemInfo.Reply.toObject = function(includeInstance, msg) {
   var f, obj = {
-    startedAt: jspb.Message.getFieldWithDefault(msg, 1, 0),
-    numCpu: jspb.Message.getFieldWithDefault(msg, 2, 0),
-    goVersion: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    numGoroutine: jspb.Message.getFieldWithDefault(msg, 4, 0),
-    operatingSystem: jspb.Message.getFieldWithDefault(msg, 5, ""),
-    hostName: jspb.Message.getFieldWithDefault(msg, 6, ""),
-    arch: jspb.Message.getFieldWithDefault(msg, 7, ""),
-    version: jspb.Message.getFieldWithDefault(msg, 8, ""),
-    vcsRef: jspb.Message.getFieldWithDefault(msg, 9, ""),
-    buildTime: jspb.Message.getFieldWithDefault(msg, 10, 0),
-    rlimit: jspb.Message.getFieldWithDefault(msg, 11, ""),
-    selfRusage: jspb.Message.getFieldWithDefault(msg, 12, ""),
-    childrenRusage: jspb.Message.getFieldWithDefault(msg, 13, "")
+    rlimitCur: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    numGoroutine: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    connectedPeers: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    startedAt: jspb.Message.getFieldWithDefault(msg, 10, 0),
+    numCpu: jspb.Message.getFieldWithDefault(msg, 11, 0),
+    goVersion: jspb.Message.getFieldWithDefault(msg, 12, ""),
+    operatingSystem: jspb.Message.getFieldWithDefault(msg, 13, ""),
+    hostName: jspb.Message.getFieldWithDefault(msg, 14, ""),
+    arch: jspb.Message.getFieldWithDefault(msg, 15, ""),
+    version: jspb.Message.getFieldWithDefault(msg, 16, ""),
+    vcsRef: jspb.Message.getFieldWithDefault(msg, 17, ""),
+    buildTime: jspb.Message.getFieldWithDefault(msg, 18, 0),
+    selfRusage: jspb.Message.getFieldWithDefault(msg, 19, ""),
+    childrenRusage: jspb.Message.getFieldWithDefault(msg, 20, ""),
+    rlimitMax: jspb.Message.getFieldWithDefault(msg, 21, 0)
   };
 
   if (includeInstance) {
@@ -5746,56 +5748,64 @@ proto.berty.messenger.v1.SystemInfo.Reply.deserializeBinaryFromReader = function
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {number} */ (reader.readInt64());
-      msg.setStartedAt(value);
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setRlimitCur(value);
       break;
     case 2:
       var value = /** @type {number} */ (reader.readInt64());
-      msg.setNumCpu(value);
-      break;
-    case 3:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setGoVersion(value);
-      break;
-    case 4:
-      var value = /** @type {number} */ (reader.readInt64());
       msg.setNumGoroutine(value);
       break;
-    case 5:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setOperatingSystem(value);
-      break;
-    case 6:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setHostName(value);
-      break;
-    case 7:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setArch(value);
-      break;
-    case 8:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setVersion(value);
-      break;
-    case 9:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setVcsRef(value);
+    case 3:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setConnectedPeers(value);
       break;
     case 10:
       var value = /** @type {number} */ (reader.readInt64());
-      msg.setBuildTime(value);
+      msg.setStartedAt(value);
       break;
     case 11:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setRlimit(value);
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setNumCpu(value);
       break;
     case 12:
       var value = /** @type {string} */ (reader.readString());
-      msg.setSelfRusage(value);
+      msg.setGoVersion(value);
       break;
     case 13:
       var value = /** @type {string} */ (reader.readString());
+      msg.setOperatingSystem(value);
+      break;
+    case 14:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setHostName(value);
+      break;
+    case 15:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setArch(value);
+      break;
+    case 16:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setVersion(value);
+      break;
+    case 17:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setVcsRef(value);
+      break;
+    case 18:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setBuildTime(value);
+      break;
+    case 19:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setSelfRusage(value);
+      break;
+    case 20:
+      var value = /** @type {string} */ (reader.readString());
       msg.setChildrenRusage(value);
+      break;
+    case 21:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setRlimitMax(value);
       break;
     default:
       reader.skipField();
@@ -5826,94 +5836,108 @@ proto.berty.messenger.v1.SystemInfo.Reply.prototype.serializeBinary = function()
  */
 proto.berty.messenger.v1.SystemInfo.Reply.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getStartedAt();
+  f = message.getRlimitCur();
   if (f !== 0) {
-    writer.writeInt64(
+    writer.writeUint64(
       1,
-      f
-    );
-  }
-  f = message.getNumCpu();
-  if (f !== 0) {
-    writer.writeInt64(
-      2,
-      f
-    );
-  }
-  f = message.getGoVersion();
-  if (f.length > 0) {
-    writer.writeString(
-      3,
       f
     );
   }
   f = message.getNumGoroutine();
   if (f !== 0) {
     writer.writeInt64(
-      4,
+      2,
       f
     );
   }
-  f = message.getOperatingSystem();
-  if (f.length > 0) {
-    writer.writeString(
-      5,
+  f = message.getConnectedPeers();
+  if (f !== 0) {
+    writer.writeInt64(
+      3,
       f
     );
   }
-  f = message.getHostName();
-  if (f.length > 0) {
-    writer.writeString(
-      6,
-      f
-    );
-  }
-  f = message.getArch();
-  if (f.length > 0) {
-    writer.writeString(
-      7,
-      f
-    );
-  }
-  f = message.getVersion();
-  if (f.length > 0) {
-    writer.writeString(
-      8,
-      f
-    );
-  }
-  f = message.getVcsRef();
-  if (f.length > 0) {
-    writer.writeString(
-      9,
-      f
-    );
-  }
-  f = message.getBuildTime();
+  f = message.getStartedAt();
   if (f !== 0) {
     writer.writeInt64(
       10,
       f
     );
   }
-  f = message.getRlimit();
-  if (f.length > 0) {
-    writer.writeString(
+  f = message.getNumCpu();
+  if (f !== 0) {
+    writer.writeInt64(
       11,
       f
     );
   }
-  f = message.getSelfRusage();
+  f = message.getGoVersion();
   if (f.length > 0) {
     writer.writeString(
       12,
       f
     );
   }
-  f = message.getChildrenRusage();
+  f = message.getOperatingSystem();
   if (f.length > 0) {
     writer.writeString(
       13,
+      f
+    );
+  }
+  f = message.getHostName();
+  if (f.length > 0) {
+    writer.writeString(
+      14,
+      f
+    );
+  }
+  f = message.getArch();
+  if (f.length > 0) {
+    writer.writeString(
+      15,
+      f
+    );
+  }
+  f = message.getVersion();
+  if (f.length > 0) {
+    writer.writeString(
+      16,
+      f
+    );
+  }
+  f = message.getVcsRef();
+  if (f.length > 0) {
+    writer.writeString(
+      17,
+      f
+    );
+  }
+  f = message.getBuildTime();
+  if (f !== 0) {
+    writer.writeInt64(
+      18,
+      f
+    );
+  }
+  f = message.getSelfRusage();
+  if (f.length > 0) {
+    writer.writeString(
+      19,
+      f
+    );
+  }
+  f = message.getChildrenRusage();
+  if (f.length > 0) {
+    writer.writeString(
+      20,
+      f
+    );
+  }
+  f = message.getRlimitMax();
+  if (f !== 0) {
+    writer.writeUint64(
+      21,
       f
     );
   }
@@ -5921,10 +5945,10 @@ proto.berty.messenger.v1.SystemInfo.Reply.serializeBinaryToWriter = function(mes
 
 
 /**
- * optional int64 started_at = 1;
+ * optional uint64 rlimit_cur = 1;
  * @return {number}
  */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.getStartedAt = function() {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getRlimitCur = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
@@ -5933,16 +5957,16 @@ proto.berty.messenger.v1.SystemInfo.Reply.prototype.getStartedAt = function() {
  * @param {number} value
  * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.setStartedAt = function(value) {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setRlimitCur = function(value) {
   return jspb.Message.setProto3IntField(this, 1, value);
 };
 
 
 /**
- * optional int64 num_cpu = 2;
+ * optional int64 num_goroutine = 2;
  * @return {number}
  */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.getNumCpu = function() {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getNumGoroutine = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
 };
 
@@ -5951,35 +5975,17 @@ proto.berty.messenger.v1.SystemInfo.Reply.prototype.getNumCpu = function() {
  * @param {number} value
  * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.setNumCpu = function(value) {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setNumGoroutine = function(value) {
   return jspb.Message.setProto3IntField(this, 2, value);
 };
 
 
 /**
- * optional string go_version = 3;
- * @return {string}
- */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.getGoVersion = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
- */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.setGoVersion = function(value) {
-  return jspb.Message.setProto3StringField(this, 3, value);
-};
-
-
-/**
- * optional int64 num_goroutine = 4;
+ * optional int64 connected_peers = 3;
  * @return {number}
  */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.getNumGoroutine = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getConnectedPeers = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
 };
 
 
@@ -5987,106 +5993,16 @@ proto.berty.messenger.v1.SystemInfo.Reply.prototype.getNumGoroutine = function()
  * @param {number} value
  * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.setNumGoroutine = function(value) {
-  return jspb.Message.setProto3IntField(this, 4, value);
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setConnectedPeers = function(value) {
+  return jspb.Message.setProto3IntField(this, 3, value);
 };
 
 
 /**
- * optional string operating_system = 5;
- * @return {string}
- */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.getOperatingSystem = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
- */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.setOperatingSystem = function(value) {
-  return jspb.Message.setProto3StringField(this, 5, value);
-};
-
-
-/**
- * optional string host_name = 6;
- * @return {string}
- */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.getHostName = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
- */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.setHostName = function(value) {
-  return jspb.Message.setProto3StringField(this, 6, value);
-};
-
-
-/**
- * optional string arch = 7;
- * @return {string}
- */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.getArch = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
- */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.setArch = function(value) {
-  return jspb.Message.setProto3StringField(this, 7, value);
-};
-
-
-/**
- * optional string version = 8;
- * @return {string}
- */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.getVersion = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
- */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.setVersion = function(value) {
-  return jspb.Message.setProto3StringField(this, 8, value);
-};
-
-
-/**
- * optional string vcs_ref = 9;
- * @return {string}
- */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.getVcsRef = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 9, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
- */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.setVcsRef = function(value) {
-  return jspb.Message.setProto3StringField(this, 9, value);
-};
-
-
-/**
- * optional int64 build_time = 10;
+ * optional int64 started_at = 10;
  * @return {number}
  */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.getBuildTime = function() {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getStartedAt = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 10, 0));
 };
 
@@ -6095,34 +6011,34 @@ proto.berty.messenger.v1.SystemInfo.Reply.prototype.getBuildTime = function() {
  * @param {number} value
  * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.setBuildTime = function(value) {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setStartedAt = function(value) {
   return jspb.Message.setProto3IntField(this, 10, value);
 };
 
 
 /**
- * optional string rlimit = 11;
- * @return {string}
+ * optional int64 num_cpu = 11;
+ * @return {number}
  */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.getRlimit = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 11, ""));
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getNumCpu = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 11, 0));
 };
 
 
 /**
- * @param {string} value
+ * @param {number} value
  * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.setRlimit = function(value) {
-  return jspb.Message.setProto3StringField(this, 11, value);
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setNumCpu = function(value) {
+  return jspb.Message.setProto3IntField(this, 11, value);
 };
 
 
 /**
- * optional string self_rusage = 12;
+ * optional string go_version = 12;
  * @return {string}
  */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.getSelfRusage = function() {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getGoVersion = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 12, ""));
 };
 
@@ -6131,16 +6047,16 @@ proto.berty.messenger.v1.SystemInfo.Reply.prototype.getSelfRusage = function() {
  * @param {string} value
  * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.setSelfRusage = function(value) {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setGoVersion = function(value) {
   return jspb.Message.setProto3StringField(this, 12, value);
 };
 
 
 /**
- * optional string children_rusage = 13;
+ * optional string operating_system = 13;
  * @return {string}
  */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.getChildrenRusage = function() {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getOperatingSystem = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, ""));
 };
 
@@ -6149,8 +6065,152 @@ proto.berty.messenger.v1.SystemInfo.Reply.prototype.getChildrenRusage = function
  * @param {string} value
  * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
  */
-proto.berty.messenger.v1.SystemInfo.Reply.prototype.setChildrenRusage = function(value) {
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setOperatingSystem = function(value) {
   return jspb.Message.setProto3StringField(this, 13, value);
+};
+
+
+/**
+ * optional string host_name = 14;
+ * @return {string}
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getHostName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 14, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setHostName = function(value) {
+  return jspb.Message.setProto3StringField(this, 14, value);
+};
+
+
+/**
+ * optional string arch = 15;
+ * @return {string}
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getArch = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 15, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setArch = function(value) {
+  return jspb.Message.setProto3StringField(this, 15, value);
+};
+
+
+/**
+ * optional string version = 16;
+ * @return {string}
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getVersion = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 16, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setVersion = function(value) {
+  return jspb.Message.setProto3StringField(this, 16, value);
+};
+
+
+/**
+ * optional string vcs_ref = 17;
+ * @return {string}
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getVcsRef = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 17, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setVcsRef = function(value) {
+  return jspb.Message.setProto3StringField(this, 17, value);
+};
+
+
+/**
+ * optional int64 build_time = 18;
+ * @return {number}
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getBuildTime = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 18, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setBuildTime = function(value) {
+  return jspb.Message.setProto3IntField(this, 18, value);
+};
+
+
+/**
+ * optional string self_rusage = 19;
+ * @return {string}
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getSelfRusage = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 19, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setSelfRusage = function(value) {
+  return jspb.Message.setProto3StringField(this, 19, value);
+};
+
+
+/**
+ * optional string children_rusage = 20;
+ * @return {string}
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getChildrenRusage = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 20, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setChildrenRusage = function(value) {
+  return jspb.Message.setProto3StringField(this, 20, value);
+};
+
+
+/**
+ * optional uint64 rlimit_max = 21;
+ * @return {number}
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getRlimitMax = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 21, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setRlimitMax = function(value) {
+  return jspb.Message.setProto3IntField(this, 21, value);
 };
 
 

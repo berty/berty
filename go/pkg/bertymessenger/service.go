@@ -9,21 +9,24 @@ import (
 
 func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) MessengerServiceServer {
 	svc := service{
-		protocol:  client,
-		logger:    opts.Logger,
-		startedAt: time.Now(),
+		protocolClient:  client,
+		logger:          opts.Logger,
+		startedAt:       time.Now(),
+		protocolService: opts.ProtocolService,
 	}
 	return &svc
 }
 
 type Opts struct {
-	Logger *zap.Logger
+	Logger          *zap.Logger
+	ProtocolService bertyprotocol.Service
 }
 
 type service struct {
-	logger    *zap.Logger
-	protocol  bertyprotocol.ProtocolServiceClient
-	startedAt time.Time
+	logger          *zap.Logger
+	protocolClient  bertyprotocol.ProtocolServiceClient
+	startedAt       time.Time
+	protocolService bertyprotocol.Service // optional, for debugging only
 }
 
 var _ MessengerServiceServer = (*service)(nil)

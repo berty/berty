@@ -1929,60 +1929,68 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Reply: {
                     fields: {
+                      rlimitCur: {
+                        type: "uint64",
+                        id: 1
+                      },
+                      numGoroutine: {
+                        type: "int64",
+                        id: 2
+                      },
+                      connectedPeers: {
+                        type: "int64",
+                        id: 3
+                      },
                       startedAt: {
                         type: "int64",
-                        id: 1
+                        id: 10
                       },
                       numCpu: {
                         type: "int64",
-                        id: 2,
+                        id: 11,
                         options: {
                           "(gogoproto.customname)": "NumCPU"
                         }
                       },
                       goVersion: {
                         type: "string",
-                        id: 3
-                      },
-                      numGoroutine: {
-                        type: "int64",
-                        id: 4
+                        id: 12
                       },
                       operatingSystem: {
                         type: "string",
-                        id: 5
+                        id: 13
                       },
                       hostName: {
                         type: "string",
-                        id: 6
+                        id: 14
                       },
                       arch: {
                         type: "string",
-                        id: 7
+                        id: 15
                       },
                       version: {
                         type: "string",
-                        id: 8
+                        id: 16
                       },
                       vcsRef: {
                         type: "string",
-                        id: 9
+                        id: 17
                       },
                       buildTime: {
                         type: "int64",
-                        id: 10
-                      },
-                      rlimit: {
-                        type: "string",
-                        id: 11
+                        id: 18
                       },
                       selfRusage: {
                         type: "string",
-                        id: 12
+                        id: 19
                       },
                       childrenRusage: {
                         type: "string",
-                        id: 13
+                        id: 20
+                      },
+                      rlimitMax: {
+                        type: "uint64",
+                        id: 21
                       }
                     }
                   }

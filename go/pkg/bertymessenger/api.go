@@ -39,26 +39,26 @@ func (s *service) InstanceShareableBertyID(ctx context.Context, req *InstanceSha
 	if req == nil {
 		req = &InstanceShareableBertyID_Request{}
 	}
-	config, err := s.protocol.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+	config, err := s.protocolClient.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
 	s.logger.Debug("enable contact request (may be already done)")
-	_, err = s.protocol.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})
+	_, err = s.protocolClient.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
 	if req.Reset_ {
 		s.logger.Info("reset contact reference")
-		_, err = s.protocol.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
+		_, err = s.protocolClient.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 	}
 
-	res, err := s.protocol.ContactRequestReference(ctx, &bertytypes.ContactRequestReference_Request{})
+	res, err := s.protocolClient.ContactRequestReference(ctx, &bertytypes.ContactRequestReference_Request{})
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -66,12 +66,12 @@ func (s *service) InstanceShareableBertyID(ctx context.Context, req *InstanceSha
 	// if this call does not return a PublicRendezvousSeed, then we need to call Reset
 	if res.PublicRendezvousSeed == nil {
 		s.logger.Info("reset contact reference")
-		_, err = s.protocol.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
+		_, err = s.protocolClient.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 	}
-	res, err = s.protocol.ContactRequestReference(ctx, &bertytypes.ContactRequestReference_Request{})
+	res, err = s.protocolClient.ContactRequestReference(ctx, &bertytypes.ContactRequestReference_Request{})
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -217,7 +217,7 @@ func (s *service) ShareableBertyGroup(ctx context.Context, request *ShareableBer
 		return nil, errcode.ErrInvalidInput
 	}
 
-	grpInfo, err := s.protocol.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+	grpInfo, err := s.protocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		GroupPK: request.GroupPK,
 	})
 
@@ -281,7 +281,7 @@ func (s *service) SendContactRequest(ctx context.Context, req *SendContactReques
 		},
 		OwnMetadata: req.OwnMetadata,
 	}
-	_, err := s.protocol.ContactRequestSend(ctx, &contactRequest)
+	_, err := s.protocolClient.ContactRequestSend(ctx, &contactRequest)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -291,13 +291,8 @@ func (s *service) SendContactRequest(ctx context.Context, req *SendContactReques
 
 func (s *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*SystemInfo_Reply, error) {
 	// rlimit
-	rlimit := map[string]syscall.Rlimit{}
-	rlimitQueries := map[string]int{"NOFILE": syscall.RLIMIT_NOFILE}
-	for name, key := range rlimitQueries {
-		lim := syscall.Rlimit{}
-		_ = syscall.Getrlimit(key, &lim)
-		rlimit[name] = lim
-	}
+	rlimitNofile := syscall.Rlimit{}
+	_ = syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rlimitNofile)
 
 	// rusage
 	selfUsage := syscall.Rusage{}
@@ -309,7 +304,7 @@ func (s *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*Sys
 	reply := SystemInfo_Reply{
 		SelfRusage:      godev.JSON(selfUsage),
 		ChildrenRusage:  godev.JSON(childrenUsage),
-		Rlimit:          godev.JSON(rlimit),
+		RlimitCur:       rlimitNofile.Cur,
 		StartedAt:       s.startedAt.Unix(),
 		NumCPU:          int64(runtime.NumCPU()),
 		GoVersion:       runtime.Version(),
@@ -319,6 +314,7 @@ func (s *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*Sys
 		Arch:            runtime.GOARCH,
 		Version:         Version,
 		VcsRef:          VcsRef,
+		RlimitMax:       rlimitNofile.Max,
 	}
 	if BuildTime != "n/a" {
 		buildTime, err := strconv.Atoi(BuildTime)
@@ -326,11 +322,17 @@ func (s *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*Sys
 			reply.BuildTime = int64(buildTime)
 		}
 	}
+	if s.protocolService != nil && s.protocolService.IpfsCoreAPI() != nil {
+		api := s.protocolService.IpfsCoreAPI()
+		peers, _ := api.Swarm().Peers(ctx)
+		reply.ConnectedPeers = int64(len(peers))
+	}
+
 	return &reply, nil
 }
 
 func (s *service) SendAck(ctx context.Context, request *SendAck_Request) (*SendAck_Reply, error) {
-	gInfo, err := s.protocol.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+	gInfo, err := s.protocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		GroupPK: request.GroupPK,
 	})
 
@@ -350,7 +352,7 @@ func (s *service) SendAck(ctx context.Context, request *SendAck_Request) (*SendA
 		return nil, err
 	}
 
-	_, err = s.protocol.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
+	_, err = s.protocolClient.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
 		GroupPK: request.GroupPK,
 		Payload: payload,
 	})
@@ -369,7 +371,7 @@ func (s *service) SendMessage(ctx context.Context, request *SendMessage_Request)
 		return nil, err
 	}
 
-	_, err = s.protocol.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
+	_, err = s.protocolClient.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
 		GroupPK: request.GroupPK,
 		Payload: payload,
 	})

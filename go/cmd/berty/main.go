@@ -24,12 +24,10 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/cache/cacheleveldown"
-
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-
 	grpcgw "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
@@ -96,6 +94,7 @@ func main() {
 		miniGroup             string
 		miniInMemory          bool
 		displayName           string
+		infoRefreshEvery      time.Duration
 	)
 
 	var (
@@ -135,6 +134,7 @@ func main() {
 	shareInviteFlags.BoolVar(&shareInviteNoTerminal, "no-term", false, "do not print the QR code in terminal")
 	shareInviteFlags.StringVar(&datastorePath, "d", cacheleveldown.InMemoryDirectory, "datastore base directory")
 	systemInfoFlags.StringVar(&datastorePath, "d", cacheleveldown.InMemoryDirectory, "datastore base directory")
+	systemInfoFlags.DurationVar(&infoRefreshEvery, "refresh", 0, "refresh every DURATION (0: no refresh)")
 
 	type cleanupFunc func()
 	globalPreRun := func() cleanupFunc {
@@ -463,7 +463,11 @@ func main() {
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
-				messenger := bertymessenger.New(protocolClient, &bertymessenger.Opts{Logger: logger.Named("messenger")})
+				opts := bertymessenger.Opts{
+					Logger:          logger.Named("messenger"),
+					ProtocolService: protocol,
+				}
+				messenger := bertymessenger.New(protocolClient, &opts)
 
 				// register grpc service
 				bertymessenger.RegisterMessengerServiceServer(grpcServer, messenger)
@@ -538,7 +542,7 @@ func main() {
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
-			messenger := bertymessenger.New(protocolClient, &bertymessenger.Opts{Logger: logger.Named("messenger")})
+			messenger := bertymessenger.New(protocolClient, &bertymessenger.Opts{Logger: logger.Named("messenger"), ProtocolService: protocol})
 			ret, err := messenger.InstanceShareableBertyID(ctx, &bertymessenger.InstanceShareableBertyID_Request{DisplayName: displayName})
 			if err != nil {
 				return errcode.TODO.Wrap(err)
@@ -595,12 +599,22 @@ func main() {
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
-			messenger := bertymessenger.New(protocolClient, &bertymessenger.Opts{Logger: logger.Named("messenger")})
-			ret, err := messenger.SystemInfo(ctx, &bertymessenger.SystemInfo_Request{})
-			if err != nil {
-				return errcode.TODO.Wrap(err)
+			messenger := bertymessenger.New(protocolClient, &bertymessenger.Opts{Logger: logger.Named("messenger"), ProtocolService: protocol})
+
+			for {
+				ret, err := messenger.SystemInfo(ctx, &bertymessenger.SystemInfo_Request{})
+				if err != nil {
+					return errcode.TODO.Wrap(err)
+				}
+				if infoRefreshEvery == 0 {
+					fmt.Println(godev.PrettyJSONPB(ret))
+					break
+				}
+				print("\033[H\033[2J")
+				fmt.Println(godev.PrettyJSONPB(ret))
+				time.Sleep(infoRefreshEvery)
 			}
-			fmt.Println(godev.PrettyJSONPB(ret))
+
 			return nil
 		},
 	}

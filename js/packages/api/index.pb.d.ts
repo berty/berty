@@ -3143,36 +3143,40 @@ export namespace berty {
                 }
 
                 interface IReply {
+                    rlimitCur?: (number|Long|null);
+                    numGoroutine?: (number|Long|null);
+                    connectedPeers?: (number|Long|null);
                     startedAt?: (number|Long|null);
                     numCpu?: (number|Long|null);
                     goVersion?: (string|null);
-                    numGoroutine?: (number|Long|null);
                     operatingSystem?: (string|null);
                     hostName?: (string|null);
                     arch?: (string|null);
                     version?: (string|null);
                     vcsRef?: (string|null);
                     buildTime?: (number|Long|null);
-                    rlimit?: (string|null);
                     selfRusage?: (string|null);
                     childrenRusage?: (string|null);
+                    rlimitMax?: (number|Long|null);
                 }
 
                 class Reply implements IReply {
 
+                    public rlimitCur: (number|Long);
+                    public numGoroutine: (number|Long);
+                    public connectedPeers: (number|Long);
                     public startedAt: (number|Long);
                     public numCpu: (number|Long);
                     public goVersion: string;
-                    public numGoroutine: (number|Long);
                     public operatingSystem: string;
                     public hostName: string;
                     public arch: string;
                     public version: string;
                     public vcsRef: string;
                     public buildTime: (number|Long);
-                    public rlimit: string;
                     public selfRusage: string;
                     public childrenRusage: string;
+                    public rlimitMax: (number|Long);
                     public static create(properties?: berty.messenger.v1.SystemInfo.IReply): berty.messenger.v1.SystemInfo.Reply;
                     public static encode(message: berty.messenger.v1.SystemInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.SystemInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;

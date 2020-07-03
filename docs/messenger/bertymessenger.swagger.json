@@ -531,6 +531,18 @@
     "v1SystemInfoReply": {
       "type": "object",
       "properties": {
+        "rlimit_cur": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "num_goroutine": {
+          "type": "string",
+          "format": "int64"
+        },
+        "connected_peers": {
+          "type": "string",
+          "format": "int64"
+        },
         "started_at": {
           "type": "string",
           "format": "int64"
@@ -541,10 +553,6 @@
         },
         "go_version": {
           "type": "string"
-        },
-        "num_goroutine": {
-          "type": "string",
-          "format": "int64"
         },
         "operating_system": {
           "type": "string"
@@ -565,14 +573,15 @@
           "type": "string",
           "format": "int64"
         },
-        "rlimit": {
-          "type": "string"
-        },
         "self_rusage": {
           "type": "string"
         },
         "children_rusage": {
           "type": "string"
+        },
+        "rlimit_max": {
+          "type": "string",
+          "format": "uint64"
         }
       }
     },
