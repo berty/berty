@@ -543,6 +543,10 @@
           "type": "string",
           "format": "int64"
         },
+        "nofile": {
+          "type": "string",
+          "format": "int64"
+        },
         "started_at": {
           "type": "string",
           "format": "int64"

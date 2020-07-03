@@ -17,6 +17,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/gogo/protobuf/proto"
 	"moul.io/godev"
+	"moul.io/openfiles"
 )
 
 func (s *service) DevShareInstanceBertyID(ctx context.Context, req *DevShareInstanceBertyID_Request) (*DevShareInstanceBertyID_Reply, error) {
@@ -300,11 +301,14 @@ func (s *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*Sys
 	childrenUsage := syscall.Rusage{}
 	_ = syscall.Getrusage(syscall.RUSAGE_CHILDREN, &childrenUsage)
 
+	nofile, _ := openfiles.Count()
+
 	hn, _ := os.Hostname()
 	reply := SystemInfo_Reply{
 		SelfRusage:      godev.JSON(selfUsage),
 		ChildrenRusage:  godev.JSON(childrenUsage),
 		RlimitCur:       rlimitNofile.Cur,
+		Nofile:          nofile,
 		StartedAt:       s.startedAt.Unix(),
 		NumCPU:          int64(runtime.NumCPU()),
 		GoVersion:       runtime.Version(),
