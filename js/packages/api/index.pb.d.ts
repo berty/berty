@@ -3147,6 +3147,7 @@ export namespace berty {
                     numGoroutine?: (number|Long|null);
                     connectedPeers?: (number|Long|null);
                     nofile?: (number|Long|null);
+                    tooManyOpenFiles?: (boolean|null);
                     startedAt?: (number|Long|null);
                     numCpu?: (number|Long|null);
                     goVersion?: (string|null);
@@ -3167,6 +3168,7 @@ export namespace berty {
                     public numGoroutine: (number|Long);
                     public connectedPeers: (number|Long);
                     public nofile: (number|Long);
+                    public tooManyOpenFiles: boolean;
                     public startedAt: (number|Long);
                     public numCpu: (number|Long);
                     public goVersion: string;

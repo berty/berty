@@ -547,6 +547,10 @@
           "type": "string",
           "format": "int64"
         },
+        "too_many_open_files": {
+          "type": "boolean",
+          "format": "boolean"
+        },
         "started_at": {
           "type": "string",
           "format": "int64"

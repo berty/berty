@@ -301,24 +301,25 @@ func (s *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*Sys
 	childrenUsage := syscall.Rusage{}
 	_ = syscall.Getrusage(syscall.RUSAGE_CHILDREN, &childrenUsage)
 
-	nofile, _ := openfiles.Count()
+	nofile, nofileErr := openfiles.Count()
 
 	hn, _ := os.Hostname()
 	reply := SystemInfo_Reply{
-		SelfRusage:      godev.JSON(selfUsage),
-		ChildrenRusage:  godev.JSON(childrenUsage),
-		RlimitCur:       rlimitNofile.Cur,
-		Nofile:          nofile,
-		StartedAt:       s.startedAt.Unix(),
-		NumCPU:          int64(runtime.NumCPU()),
-		GoVersion:       runtime.Version(),
-		HostName:        hn,
-		NumGoroutine:    int64(runtime.NumGoroutine()),
-		OperatingSystem: runtime.GOOS,
-		Arch:            runtime.GOARCH,
-		Version:         Version,
-		VcsRef:          VcsRef,
-		RlimitMax:       rlimitNofile.Max,
+		SelfRusage:       godev.JSON(selfUsage),
+		ChildrenRusage:   godev.JSON(childrenUsage),
+		RlimitCur:        rlimitNofile.Cur,
+		Nofile:           nofile,
+		TooManyOpenFiles: openfiles.IsTooManyError(nofileErr),
+		StartedAt:        s.startedAt.Unix(),
+		NumCPU:           int64(runtime.NumCPU()),
+		GoVersion:        runtime.Version(),
+		HostName:         hn,
+		NumGoroutine:     int64(runtime.NumGoroutine()),
+		OperatingSystem:  runtime.GOOS,
+		Arch:             runtime.GOARCH,
+		Version:          Version,
+		VcsRef:           VcsRef,
+		RlimitMax:        rlimitNofile.Max,
 	}
 	if BuildTime != "n/a" {
 		buildTime, err := strconv.Atoi(BuildTime)

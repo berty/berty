@@ -278,6 +278,7 @@ most important and dynamic values first
 | num_goroutine | [int64](#int64) |  |  |
 | connected_peers | [int64](#int64) |  |  |
 | nofile | [int64](#int64) |  |  |
+| too_many_open_files | [bool](#bool) |  |  |
 | started_at | [int64](#int64) |  |  |
 | num_cpu | [int64](#int64) |  |  |
 | go_version | [string](#string) |  |  |

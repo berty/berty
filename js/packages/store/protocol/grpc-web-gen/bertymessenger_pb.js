@@ -5700,6 +5700,7 @@ proto.berty.messenger.v1.SystemInfo.Reply.toObject = function(includeInstance, m
     numGoroutine: jspb.Message.getFieldWithDefault(msg, 2, 0),
     connectedPeers: jspb.Message.getFieldWithDefault(msg, 3, 0),
     nofile: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    tooManyOpenFiles: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
     startedAt: jspb.Message.getFieldWithDefault(msg, 10, 0),
     numCpu: jspb.Message.getFieldWithDefault(msg, 11, 0),
     goVersion: jspb.Message.getFieldWithDefault(msg, 12, ""),
@@ -5763,6 +5764,10 @@ proto.berty.messenger.v1.SystemInfo.Reply.deserializeBinaryFromReader = function
     case 4:
       var value = /** @type {number} */ (reader.readInt64());
       msg.setNofile(value);
+      break;
+    case 5:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setTooManyOpenFiles(value);
       break;
     case 10:
       var value = /** @type {number} */ (reader.readInt64());
@@ -5866,6 +5871,13 @@ proto.berty.messenger.v1.SystemInfo.Reply.serializeBinaryToWriter = function(mes
   if (f !== 0) {
     writer.writeInt64(
       4,
+      f
+    );
+  }
+  f = message.getTooManyOpenFiles();
+  if (f) {
+    writer.writeBool(
+      5,
       f
     );
   }
@@ -6025,6 +6037,24 @@ proto.berty.messenger.v1.SystemInfo.Reply.prototype.getNofile = function() {
  */
 proto.berty.messenger.v1.SystemInfo.Reply.prototype.setNofile = function(value) {
   return jspb.Message.setProto3IntField(this, 4, value);
+};
+
+
+/**
+ * optional bool too_many_open_files = 5;
+ * @return {boolean}
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.getTooManyOpenFiles = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 5, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.berty.messenger.v1.SystemInfo.Reply} returns this
+ */
+proto.berty.messenger.v1.SystemInfo.Reply.prototype.setTooManyOpenFiles = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 5, value);
 };
 
 

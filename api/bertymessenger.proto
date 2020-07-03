@@ -181,6 +181,7 @@ message SystemInfo {
     int64 num_goroutine = 2;
     int64 connected_peers = 3;
     int64 nofile = 4;
+    bool too_many_open_files = 5;
 
     // other values below
 

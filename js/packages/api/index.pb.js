@@ -1945,6 +1945,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         type: "int64",
                         id: 4
                       },
+                      tooManyOpenFiles: {
+                        type: "bool",
+                        id: 5
+                      },
                       startedAt: {
                         type: "int64",
                         id: 10

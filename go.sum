@@ -1482,8 +1482,8 @@ honnef.co/go/tools v0.0.1-2019.2.3 h1:3JgtbtFHMiCmsznwGVTUWbgGov+pVqnlf1dEJTNAXe
 honnef.co/go/tools v0.0.1-2019.2.3/go.mod h1:a3bituU0lyd329TUQxRnasdCoJDkEUEAqEt0JzvZhAg=
 moul.io/godev v1.6.0 h1:ms1aI6o9k+PhmMdTR7Aw5iDHPu56xtnmrUgdfLKPspc=
 moul.io/godev v1.6.0/go.mod h1:5lgSpI1oH7xWpLl2Ew/Nsgk8DiNM6FzN9WV9+lgW8RQ=
-moul.io/openfiles v1.1.0 h1:yrVhO9PCHbt7FG6ZSPn7qJNmWJTS4M9UGokeIQiSwBM=
-moul.io/openfiles v1.1.0/go.mod h1:FR9BZ1mw7VE0uZN6HVJcA16Ee2nTDG/YZUyiGM/T2Rw=
+moul.io/openfiles v1.2.0 h1:oAmBX0ChBBsKERFfTRyLi9JkjOvEv9E474BEL/wVq44=
+moul.io/openfiles v1.2.0/go.mod h1:FR9BZ1mw7VE0uZN6HVJcA16Ee2nTDG/YZUyiGM/T2Rw=
 moul.io/srand v1.4.0 h1:r5ZMiWDN0ni0lTV7KzJR/jx0K7GivJYW5WaXmufgeik=
 moul.io/srand v1.4.0/go.mod h1:P2uaZB+GFstFNo8sEj6/U8FRV1n25kD0LLckFpJ+qvc=
 rsc.io/binaryregexp v0.2.0/go.mod h1:qTv7/COck+e2FymRvadv62gMdZztPaShugOCi3I+8D8=
