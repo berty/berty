@@ -1,5 +1,7 @@
-481c10c8f3c054e2d7140e2800bf718c4313aef8  ../api/bertymessenger.proto
-b60b4f16d4cd499d0b5a3f7b03bc5d5ebc10889c  ../api/bertyprotocol.proto
-4834c4dd7fa5b6b8a1846e2af4e00de20e89dcbd  ../api/bertytypes.proto
+1f3eb1325338533f81bd49f3a6b00a42ad1c10a5  ../api/bertymessenger.proto
+63f839b82309915d2ac352cae393e9d152f4a4fd  ../api/bertymessenger.yaml
+4989b51bf6dfc52cd195cc46db1732a81090191f  ../api/bertyprotocol.proto
+e62576e46e2d91d5d2584d0ac99ac7ac71d93e5f  ../api/bertyprotocol.yaml
+cdcfd4235af64debca29d0553209a34df7899361  ../api/bertytypes.proto
 f8f05c10a1cf5c8b42f9bde6bb572d0bc687979e  ../api/errcode.proto
-fd0d22e83f296c45a24fd0fe4fc0cab2f0ef6995  Makefile
+e516590d80f55b348e4428b7c268169240fe8772  Makefile

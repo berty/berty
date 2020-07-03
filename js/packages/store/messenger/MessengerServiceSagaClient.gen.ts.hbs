@@ -11,7 +11,7 @@ class GRPCError extends Error {
   }
 }
 
-{{#with (lookup "berty.messenger")}}
+{{#with (lookup "berty.messenger.v1")}}
 	{{#each nested}}
 		{{#if (eq (typeof this) "Service")}}
 			export default class {{name}}SagaClient {
@@ -26,14 +26,14 @@ class GRPCError extends Error {
 				{{#each methods}}
 					{{case 'camel' name}} = (requestObj: api{{inamespace resolvedRequestType}} = {}) =>
 						eventChannel<api{{inamespace resolvedResponseType}}>((emit) => {
-							const buf = api.berty.messenger.{{requestType}}.encode(requestObj).finish()
+							const buf = api.berty.messenger.v1.{{requestType}}.encode(requestObj).finish()
 							const request = bertymessenger.{{requestType}}.deserializeBinary(buf)
 							const { close } = grpc.invoke(MessengerService.{{name}}, {
 								request,
 								transport: this.transport,
 								host: this.host,
 								onMessage: (message: bertymessenger.{{responseType}}) =>
-									emit(api.berty.messenger.{{responseType}}.decode(message.serializeBinary())),
+									emit(api.berty.messenger.v1.{{responseType}}.decode(message.serializeBinary())),
 								onEnd: (code, msg, trailers) => {
 									if (code !== grpc.Code.OK) {
 										emit(

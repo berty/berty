@@ -120,17 +120,17 @@ $(gen_sum): $(gen_src)
 .PHONY: generate_local
 generate_local:
 	$(call check-program, goimports shasum protoc)
-	@set -e; for proto in $(protos_src); do ( set -xe; \
-	  protoc $(PROTOC_OPTS) \
-		--gogo_out="plugins=grpc:$(GOPATH)/src" "$$proto" \
-		--grpc-gateway_out="logtostderr=true:$(GOPATH)/src" \
-	); done
-
-	@### custom
+	go install github.com/buicongtan1997/protoc-gen-swagger-config
+	protoc-gen-swagger-config -i ../api/bertymessenger.proto -o ../api/bertymessenger.yaml
+	protoc-gen-swagger-config -i ../api/bertyprotocol.proto -o ../api/bertyprotocol.yaml
+	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/errcode.proto
+	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertytypes.proto
+	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/go-internal/records.proto
+	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/go-internal/handshake.proto
+	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/bertyprotocol.yaml:$(GOPATH)/src ../api/bertyprotocol.proto
+	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/bertymessenger.yaml:$(GOPATH)/src ../api/bertymessenger.proto
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.go
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.gw.go
-	@### end of custom
-
 	goimports -w ./pkg ./cmd ./internal
 	shasum $(gen_src) | sort -k 2 > $(gen_sum).tmp
 	mv $(gen_sum).tmp $(gen_sum)

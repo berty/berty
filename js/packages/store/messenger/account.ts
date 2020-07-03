@@ -281,7 +281,7 @@ export const transactions: Transactions = {
 			name: account.name,
 		}
 
-		const contact: berty.types.IShareableContact = {
+		const contact: berty.types.v1.IShareableContact = {
 			pk: strToBuf(payload.contactPublicKey),
 			publicRendezvousSeed: strToBuf(payload.contactRdvSeed),
 			metadata: jsonToBuf(metadata),

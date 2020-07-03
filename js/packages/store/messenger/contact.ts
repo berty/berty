@@ -122,7 +122,7 @@ export namespace Event {
 	export type Deleted = { accountId: string; contactPk: string }
 	export type RequestInitiated = {
 		accountId: string
-		bertyId?: berty.messenger.IBertyID
+		bertyId?: berty.messenger.v1.IBertyID
 		error?: Error
 		now: number
 	}
@@ -453,7 +453,7 @@ export const transactions: Transactions = {
 			const data = (yield call(protocol.client.transactions.parseDeepLink, {
 				id: accountId,
 				link: url,
-			})) as berty.messenger.ParseDeepLink.IReply
+			})) as berty.messenger.v1.ParseDeepLink.IReply
 			if (!(data && data.bertyId && data.bertyId.accountPk)) {
 				throw new Error('Internal: Invalid node response.')
 			}
@@ -506,7 +506,7 @@ function* contactPkToGroupPk({
 			id: accountId,
 			contactPk: typeof contactPk === 'string' ? strToBuf(contactPk) : contactPk,
 			groupPk: new Uint8Array(),
-		})) as berty.types.GroupInfo.IReply
+		})) as berty.types.v1.GroupInfo.IReply
 		const { group } = groupInfo
 		if (!group) {
 			return
@@ -682,8 +682,8 @@ export function* orchestrator() {
 			const { aggregateId: accountId } = payload
 			const event = payload.event as AppMessage
 			if (event.type === AppMessageType.GroupInvitation) {
-				const group: berty.types.IGroup = {
-					groupType: berty.types.GroupType.GroupTypeMultiMember,
+				const group: berty.types.v1.IGroup = {
+					groupType: berty.types.v1.GroupType.GroupTypeMultiMember,
 					publicKey: strToBuf(event.groupPk),
 				}
 				yield* protocol.client.transactions.multiMemberGroupJoin({ id: accountId, group })

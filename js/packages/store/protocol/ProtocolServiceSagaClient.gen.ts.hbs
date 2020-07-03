@@ -4,7 +4,7 @@ import { grpc } from '@improbable-eng/grpc-web'
 import { ProtocolService } from './grpc-web-gen/bertyprotocol_pb_service'
 import * as bertytypes from './grpc-web-gen/bertytypes_pb'
 
-{{#with (lookup "berty.protocol")}}
+{{#with (lookup "berty.protocol.v1")}}
 	{{#each nested}}
 		{{#if (eq (typeof this) "Service")}}
 			export default class {{name}}SagaClient {
@@ -20,12 +20,12 @@ import * as bertytypes from './grpc-web-gen/bertytypes_pb'
 					{{case 'camel' name}} = (requestObj: api{{inamespace resolvedRequestType}} = {}) =>
 						eventChannel<api{{inamespace resolvedResponseType}}>((emit) => {
 							const buf = api.berty.{{requestType}}.encode(requestObj).finish()
-							const request = berty{{requestType}}.deserializeBinary(buf)
+							const request = bertytypes.{{name}}.Request.deserializeBinary(buf)
 							const { close } = grpc.invoke(ProtocolService.{{name}}, {
 								request,
 								transport: this.transport,
 								host: this.host,
-								onMessage: (message: berty{{responseType}}) =>
+								onMessage: (message: bertytypes.{{name}}.Reply) =>
 									emit(api.berty.{{responseType}}.decode(message.serializeBinary())),
 								onEnd: (code, msg, trailers) => {
 									if (code !== grpc.Code.OK) {

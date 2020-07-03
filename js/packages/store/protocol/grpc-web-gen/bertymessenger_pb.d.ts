@@ -1,4 +1,4 @@
-// package: berty.messenger
+// package: berty.messenger.v1
 // file: bertymessenger.proto
 
 import * as jspb from "google-protobuf";

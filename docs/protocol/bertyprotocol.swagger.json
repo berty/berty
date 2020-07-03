@@ -11,7 +11,7 @@
     "application/json"
   ],
   "paths": {
-    "/protocol/v1/ActivateGroup": {
+    "/berty.protocol.v1/ProtocolService/ActivateGroup": {
       "post": {
         "summary": "ActivateGroup explicitly opens a group, groups are automatically enabled when actions are performed on them",
         "operationId": "ProtocolService_ActivateGroup",
@@ -19,7 +19,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesActivateGroupReply"
+              "$ref": "#/definitions/v1ActivateGroupReply"
             }
           },
           "default": {
@@ -35,7 +35,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesActivateGroupRequest"
+              "$ref": "#/definitions/v1ActivateGroupRequest"
             }
           }
         ],
@@ -44,7 +44,7 @@
         ]
       }
     },
-    "/protocol/v1/AppMessageSend": {
+    "/berty.protocol.v1/ProtocolService/AppMessageSend": {
       "post": {
         "summary": "AppMessageSend adds an app event to the message store, the message is encrypted using a derived key and readable by current group members",
         "operationId": "ProtocolService_AppMessageSend",
@@ -52,7 +52,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesAppMessageSendReply"
+              "$ref": "#/definitions/v1AppMessageSendReply"
             }
           },
           "default": {
@@ -68,7 +68,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesAppMessageSendRequest"
+              "$ref": "#/definitions/v1AppMessageSendRequest"
             }
           }
         ],
@@ -77,7 +77,7 @@
         ]
       }
     },
-    "/protocol/v1/AppMetadataSend": {
+    "/berty.protocol.v1/ProtocolService/AppMetadataSend": {
       "post": {
         "summary": "AppMetadataSend adds an app event to the metadata store, the message is encrypted using a symmetric key and readable by future group members",
         "operationId": "ProtocolService_AppMetadataSend",
@@ -85,7 +85,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesAppMetadataSendReply"
+              "$ref": "#/definitions/v1AppMetadataSendReply"
             }
           },
           "default": {
@@ -101,7 +101,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesAppMetadataSendRequest"
+              "$ref": "#/definitions/v1AppMetadataSendRequest"
             }
           }
         ],
@@ -110,7 +110,7 @@
         ]
       }
     },
-    "/protocol/v1/ContactAliasKeySend": {
+    "/berty.protocol.v1/ProtocolService/ContactAliasKeySend": {
       "post": {
         "summary": "ContactAliasKeySend send an alias key to a contact, the contact will be able to assert that your account is being present on a multi-member group",
         "operationId": "ProtocolService_ContactAliasKeySend",
@@ -118,7 +118,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesContactAliasKeySendReply"
+              "$ref": "#/definitions/v1ContactAliasKeySendReply"
             }
           },
           "default": {
@@ -134,7 +134,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesContactAliasKeySendRequest"
+              "$ref": "#/definitions/v1ContactAliasKeySendRequest"
             }
           }
         ],
@@ -143,7 +143,7 @@
         ]
       }
     },
-    "/protocol/v1/ContactBlock": {
+    "/berty.protocol.v1/ProtocolService/ContactBlock": {
       "post": {
         "summary": "ContactBlock blocks a contact from sending requests",
         "operationId": "ProtocolService_ContactBlock",
@@ -151,7 +151,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesContactBlockReply"
+              "$ref": "#/definitions/v1ContactBlockReply"
             }
           },
           "default": {
@@ -167,7 +167,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesContactBlockRequest"
+              "$ref": "#/definitions/v1ContactBlockRequest"
             }
           }
         ],
@@ -176,7 +176,7 @@
         ]
       }
     },
-    "/protocol/v1/ContactRequestAccept": {
+    "/berty.protocol.v1/ProtocolService/ContactRequestAccept": {
       "post": {
         "summary": "ContactRequestAccept accepts a contact request",
         "operationId": "ProtocolService_ContactRequestAccept",
@@ -184,7 +184,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesContactRequestAcceptReply"
+              "$ref": "#/definitions/v1ContactRequestAcceptReply"
             }
           },
           "default": {
@@ -200,7 +200,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesContactRequestAcceptRequest"
+              "$ref": "#/definitions/v1ContactRequestAcceptRequest"
             }
           }
         ],
@@ -209,7 +209,7 @@
         ]
       }
     },
-    "/protocol/v1/ContactRequestDisable": {
+    "/berty.protocol.v1/ProtocolService/ContactRequestDisable": {
       "post": {
         "summary": "ContactRequestDisable disables incoming contact requests",
         "operationId": "ProtocolService_ContactRequestDisable",
@@ -217,7 +217,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesContactRequestDisableReply"
+              "$ref": "#/definitions/v1ContactRequestDisableReply"
             }
           },
           "default": {
@@ -233,7 +233,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesContactRequestDisableRequest"
+              "$ref": "#/definitions/v1ContactRequestDisableRequest"
             }
           }
         ],
@@ -242,7 +242,7 @@
         ]
       }
     },
-    "/protocol/v1/ContactRequestDiscard": {
+    "/berty.protocol.v1/ProtocolService/ContactRequestDiscard": {
       "post": {
         "summary": "ContactRequestDiscard ignores a contact request, without informing the other user",
         "operationId": "ProtocolService_ContactRequestDiscard",
@@ -250,7 +250,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesContactRequestDiscardReply"
+              "$ref": "#/definitions/v1ContactRequestDiscardReply"
             }
           },
           "default": {
@@ -266,7 +266,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesContactRequestDiscardRequest"
+              "$ref": "#/definitions/v1ContactRequestDiscardRequest"
             }
           }
         ],
@@ -275,7 +275,7 @@
         ]
       }
     },
-    "/protocol/v1/ContactRequestEnable": {
+    "/berty.protocol.v1/ProtocolService/ContactRequestEnable": {
       "post": {
         "summary": "ContactRequestEnable enables incoming contact requests",
         "operationId": "ProtocolService_ContactRequestEnable",
@@ -283,7 +283,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesContactRequestEnableReply"
+              "$ref": "#/definitions/v1ContactRequestEnableReply"
             }
           },
           "default": {
@@ -299,7 +299,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesContactRequestEnableRequest"
+              "$ref": "#/definitions/v1ContactRequestEnableRequest"
             }
           }
         ],
@@ -308,15 +308,15 @@
         ]
       }
     },
-    "/protocol/v1/ContactRequestReference": {
+    "/berty.protocol.v1/ProtocolService/ContactRequestReference": {
       "post": {
-        "summary": "ContactRequestReference retrieves the information required to create a reference (types.ie. included in a shareable link) to the current account",
+        "summary": "ContactRequestReference retrieves the information required to create a reference (types.v1.ie. included in a shareable link) to the current account",
         "operationId": "ProtocolService_ContactRequestReference",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesContactRequestReferenceReply"
+              "$ref": "#/definitions/v1ContactRequestReferenceReply"
             }
           },
           "default": {
@@ -332,7 +332,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesContactRequestReferenceRequest"
+              "$ref": "#/definitions/v1ContactRequestReferenceRequest"
             }
           }
         ],
@@ -341,7 +341,7 @@
         ]
       }
     },
-    "/protocol/v1/ContactRequestResetReference": {
+    "/berty.protocol.v1/ProtocolService/ContactRequestResetReference": {
       "post": {
         "summary": "ContactRequestResetReference changes the contact request reference",
         "operationId": "ProtocolService_ContactRequestResetReference",
@@ -349,7 +349,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesContactRequestResetReferenceReply"
+              "$ref": "#/definitions/v1ContactRequestResetReferenceReply"
             }
           },
           "default": {
@@ -365,7 +365,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesContactRequestResetReferenceRequest"
+              "$ref": "#/definitions/v1ContactRequestResetReferenceRequest"
             }
           }
         ],
@@ -374,7 +374,7 @@
         ]
       }
     },
-    "/protocol/v1/ContactRequestSend": {
+    "/berty.protocol.v1/ProtocolService/ContactRequestSend": {
       "post": {
         "summary": "ContactRequestSend attempt to send a contact request",
         "operationId": "ProtocolService_ContactRequestSend",
@@ -382,7 +382,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesContactRequestSendReply"
+              "$ref": "#/definitions/v1ContactRequestSendReply"
             }
           },
           "default": {
@@ -398,7 +398,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesContactRequestSendRequest"
+              "$ref": "#/definitions/v1ContactRequestSendRequest"
             }
           }
         ],
@@ -407,7 +407,7 @@
         ]
       }
     },
-    "/protocol/v1/ContactUnblock": {
+    "/berty.protocol.v1/ProtocolService/ContactUnblock": {
       "post": {
         "summary": "ContactUnblock unblocks a contact from sending requests",
         "operationId": "ProtocolService_ContactUnblock",
@@ -415,7 +415,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesContactUnblockReply"
+              "$ref": "#/definitions/v1ContactUnblockReply"
             }
           },
           "default": {
@@ -431,7 +431,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesContactUnblockRequest"
+              "$ref": "#/definitions/v1ContactUnblockRequest"
             }
           }
         ],
@@ -440,7 +440,7 @@
         ]
       }
     },
-    "/protocol/v1/DeactivateGroup": {
+    "/berty.protocol.v1/ProtocolService/DeactivateGroup": {
       "post": {
         "summary": "DeactivateGroup closes a group",
         "operationId": "ProtocolService_DeactivateGroup",
@@ -448,7 +448,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesDeactivateGroupReply"
+              "$ref": "#/definitions/v1DeactivateGroupReply"
             }
           },
           "default": {
@@ -464,7 +464,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesDeactivateGroupRequest"
+              "$ref": "#/definitions/v1DeactivateGroupRequest"
             }
           }
         ],
@@ -473,14 +473,14 @@
         ]
       }
     },
-    "/protocol/v1/DebugGroup": {
+    "/berty.protocol.v1/ProtocolService/DebugGroup": {
       "post": {
         "operationId": "ProtocolService_DebugGroup",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesDebugGroupReply"
+              "$ref": "#/definitions/v1DebugGroupReply"
             }
           },
           "default": {
@@ -496,7 +496,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesDebugGroupRequest"
+              "$ref": "#/definitions/v1DebugGroupRequest"
             }
           }
         ],
@@ -505,7 +505,7 @@
         ]
       }
     },
-    "/protocol/v1/DebugInspectGroupStore": {
+    "/berty.protocol.v1/ProtocolService/DebugInspectGroupStore": {
       "post": {
         "operationId": "ProtocolService_DebugInspectGroupStore",
         "responses": {
@@ -515,13 +515,13 @@
               "type": "object",
               "properties": {
                 "result": {
-                  "$ref": "#/definitions/typesDebugInspectGroupStoreReply"
+                  "$ref": "#/definitions/v1DebugInspectGroupStoreReply"
                 },
                 "error": {
                   "$ref": "#/definitions/runtimeStreamError"
                 }
               },
-              "title": "Stream result of typesDebugInspectGroupStoreReply"
+              "title": "Stream result of v1DebugInspectGroupStoreReply"
             }
           },
           "default": {
@@ -537,7 +537,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesDebugInspectGroupStoreRequest"
+              "$ref": "#/definitions/v1DebugInspectGroupStoreRequest"
             }
           }
         ],
@@ -546,7 +546,7 @@
         ]
       }
     },
-    "/protocol/v1/DebugListGroups": {
+    "/berty.protocol.v1/ProtocolService/DebugListGroups": {
       "post": {
         "operationId": "ProtocolService_DebugListGroups",
         "responses": {
@@ -556,13 +556,13 @@
               "type": "object",
               "properties": {
                 "result": {
-                  "$ref": "#/definitions/typesDebugListGroupsReply"
+                  "$ref": "#/definitions/v1DebugListGroupsReply"
                 },
                 "error": {
                   "$ref": "#/definitions/runtimeStreamError"
                 }
               },
-              "title": "Stream result of typesDebugListGroupsReply"
+              "title": "Stream result of v1DebugListGroupsReply"
             }
           },
           "default": {
@@ -578,7 +578,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesDebugListGroupsRequest"
+              "$ref": "#/definitions/v1DebugListGroupsRequest"
             }
           }
         ],
@@ -587,7 +587,7 @@
         ]
       }
     },
-    "/protocol/v1/GroupInfo": {
+    "/berty.protocol.v1/ProtocolService/GroupInfo": {
       "post": {
         "summary": "GroupInfo retrieves information about a group",
         "operationId": "ProtocolService_GroupInfo",
@@ -595,7 +595,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesGroupInfoReply"
+              "$ref": "#/definitions/v1GroupInfoReply"
             }
           },
           "default": {
@@ -611,7 +611,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesGroupInfoRequest"
+              "$ref": "#/definitions/v1GroupInfoRequest"
             }
           }
         ],
@@ -620,7 +620,7 @@
         ]
       }
     },
-    "/protocol/v1/GroupMessageList": {
+    "/berty.protocol.v1/ProtocolService/GroupMessageList": {
       "post": {
         "summary": "GroupMessageList replays message  events from the group",
         "operationId": "ProtocolService_GroupMessageList",
@@ -631,13 +631,13 @@
               "type": "object",
               "properties": {
                 "result": {
-                  "$ref": "#/definitions/typesGroupMessageEvent"
+                  "$ref": "#/definitions/v1GroupMessageEvent"
                 },
                 "error": {
                   "$ref": "#/definitions/runtimeStreamError"
                 }
               },
-              "title": "Stream result of typesGroupMessageEvent"
+              "title": "Stream result of v1GroupMessageEvent"
             }
           },
           "default": {
@@ -653,7 +653,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesGroupMessageListRequest"
+              "$ref": "#/definitions/v1GroupMessageListRequest"
             }
           }
         ],
@@ -662,9 +662,9 @@
         ]
       }
     },
-    "/protocol/v1/GroupMessageSubscribe": {
+    "/berty.protocol.v1/ProtocolService/GroupMessageSubscribe": {
       "post": {
-        "summary": "GroupMessageSubscribe subscribes to a group message updates (types.or it can also retrieve the history)",
+        "summary": "GroupMessageSubscribe subscribes to a group message updates (types.v1.or it can also retrieve the history)",
         "operationId": "ProtocolService_GroupMessageSubscribe",
         "responses": {
           "200": {
@@ -673,13 +673,13 @@
               "type": "object",
               "properties": {
                 "result": {
-                  "$ref": "#/definitions/typesGroupMessageEvent"
+                  "$ref": "#/definitions/v1GroupMessageEvent"
                 },
                 "error": {
                   "$ref": "#/definitions/runtimeStreamError"
                 }
               },
-              "title": "Stream result of typesGroupMessageEvent"
+              "title": "Stream result of v1GroupMessageEvent"
             }
           },
           "default": {
@@ -695,7 +695,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesGroupMessageSubscribeRequest"
+              "$ref": "#/definitions/v1GroupMessageSubscribeRequest"
             }
           }
         ],
@@ -704,7 +704,7 @@
         ]
       }
     },
-    "/protocol/v1/GroupMetadataList": {
+    "/berty.protocol.v1/ProtocolService/GroupMetadataList": {
       "post": {
         "summary": "GroupMetadataList replays metadata events from the group",
         "operationId": "ProtocolService_GroupMetadataList",
@@ -715,13 +715,13 @@
               "type": "object",
               "properties": {
                 "result": {
-                  "$ref": "#/definitions/typesGroupMetadataEvent"
+                  "$ref": "#/definitions/v1GroupMetadataEvent"
                 },
                 "error": {
                   "$ref": "#/definitions/runtimeStreamError"
                 }
               },
-              "title": "Stream result of typesGroupMetadataEvent"
+              "title": "Stream result of v1GroupMetadataEvent"
             }
           },
           "default": {
@@ -737,7 +737,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesGroupMetadataListRequest"
+              "$ref": "#/definitions/v1GroupMetadataListRequest"
             }
           }
         ],
@@ -746,9 +746,9 @@
         ]
       }
     },
-    "/protocol/v1/GroupMetadataSubscribe": {
+    "/berty.protocol.v1/ProtocolService/GroupMetadataSubscribe": {
       "post": {
-        "summary": "GroupMetadataSubscribe subscribes to a group metadata updates (types.or it can also retrieve the history)",
+        "summary": "GroupMetadataSubscribe subscribes to a group metadata updates (types.v1.or it can also retrieve the history)",
         "operationId": "ProtocolService_GroupMetadataSubscribe",
         "responses": {
           "200": {
@@ -757,13 +757,13 @@
               "type": "object",
               "properties": {
                 "result": {
-                  "$ref": "#/definitions/typesGroupMetadataEvent"
+                  "$ref": "#/definitions/v1GroupMetadataEvent"
                 },
                 "error": {
                   "$ref": "#/definitions/runtimeStreamError"
                 }
               },
-              "title": "Stream result of typesGroupMetadataEvent"
+              "title": "Stream result of v1GroupMetadataEvent"
             }
           },
           "default": {
@@ -779,7 +779,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesGroupMetadataSubscribeRequest"
+              "$ref": "#/definitions/v1GroupMetadataSubscribeRequest"
             }
           }
         ],
@@ -788,7 +788,7 @@
         ]
       }
     },
-    "/protocol/v1/InstanceExportData": {
+    "/berty.protocol.v1/ProtocolService/InstanceExportData": {
       "post": {
         "summary": "InstanceExportData exports instance data",
         "operationId": "ProtocolService_InstanceExportData",
@@ -796,7 +796,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesInstanceExportDataReply"
+              "$ref": "#/definitions/v1InstanceExportDataReply"
             }
           },
           "default": {
@@ -812,7 +812,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesInstanceExportDataRequest"
+              "$ref": "#/definitions/v1InstanceExportDataRequest"
             }
           }
         ],
@@ -821,7 +821,7 @@
         ]
       }
     },
-    "/protocol/v1/InstanceGetConfiguration": {
+    "/berty.protocol.v1/ProtocolService/InstanceGetConfiguration": {
       "post": {
         "summary": "InstanceGetConfiguration gets current configuration of this protocol instance",
         "operationId": "ProtocolService_InstanceGetConfiguration",
@@ -829,7 +829,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesInstanceGetConfigurationReply"
+              "$ref": "#/definitions/v1InstanceGetConfigurationReply"
             }
           },
           "default": {
@@ -845,7 +845,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesInstanceGetConfigurationRequest"
+              "$ref": "#/definitions/v1InstanceGetConfigurationRequest"
             }
           }
         ],
@@ -854,7 +854,7 @@
         ]
       }
     },
-    "/protocol/v1/MultiMemberGroupAdminRoleGrant": {
+    "/berty.protocol.v1/ProtocolService/MultiMemberGroupAdminRoleGrant": {
       "post": {
         "summary": "MultiMemberGroupAdminRoleGrant grants an admin role to a group member",
         "operationId": "ProtocolService_MultiMemberGroupAdminRoleGrant",
@@ -862,7 +862,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesMultiMemberGroupAdminRoleGrantReply"
+              "$ref": "#/definitions/v1MultiMemberGroupAdminRoleGrantReply"
             }
           },
           "default": {
@@ -878,7 +878,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesMultiMemberGroupAdminRoleGrantRequest"
+              "$ref": "#/definitions/v1MultiMemberGroupAdminRoleGrantRequest"
             }
           }
         ],
@@ -887,7 +887,7 @@
         ]
       }
     },
-    "/protocol/v1/MultiMemberGroupAliasResolverDisclose": {
+    "/berty.protocol.v1/ProtocolService/MultiMemberGroupAliasResolverDisclose": {
       "post": {
         "summary": "MultiMemberGroupAliasResolverDisclose discloses your alias resolver key",
         "operationId": "ProtocolService_MultiMemberGroupAliasResolverDisclose",
@@ -895,7 +895,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesMultiMemberGroupAliasResolverDiscloseReply"
+              "$ref": "#/definitions/v1MultiMemberGroupAliasResolverDiscloseReply"
             }
           },
           "default": {
@@ -911,7 +911,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesMultiMemberGroupAliasResolverDiscloseRequest"
+              "$ref": "#/definitions/v1MultiMemberGroupAliasResolverDiscloseRequest"
             }
           }
         ],
@@ -920,7 +920,7 @@
         ]
       }
     },
-    "/protocol/v1/MultiMemberGroupCreate": {
+    "/berty.protocol.v1/ProtocolService/MultiMemberGroupCreate": {
       "post": {
         "summary": "MultiMemberGroupCreate creates a new multi-member group",
         "operationId": "ProtocolService_MultiMemberGroupCreate",
@@ -928,7 +928,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesMultiMemberGroupCreateReply"
+              "$ref": "#/definitions/v1MultiMemberGroupCreateReply"
             }
           },
           "default": {
@@ -944,7 +944,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesMultiMemberGroupCreateRequest"
+              "$ref": "#/definitions/v1MultiMemberGroupCreateRequest"
             }
           }
         ],
@@ -953,7 +953,7 @@
         ]
       }
     },
-    "/protocol/v1/MultiMemberGroupInvitationCreate": {
+    "/berty.protocol.v1/ProtocolService/MultiMemberGroupInvitationCreate": {
       "post": {
         "summary": "MultiMemberGroupInvitationCreate creates an invitation to a multi-member group",
         "operationId": "ProtocolService_MultiMemberGroupInvitationCreate",
@@ -961,7 +961,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesMultiMemberGroupInvitationCreateReply"
+              "$ref": "#/definitions/v1MultiMemberGroupInvitationCreateReply"
             }
           },
           "default": {
@@ -977,7 +977,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesMultiMemberGroupInvitationCreateRequest"
+              "$ref": "#/definitions/v1MultiMemberGroupInvitationCreateRequest"
             }
           }
         ],
@@ -986,7 +986,7 @@
         ]
       }
     },
-    "/protocol/v1/MultiMemberGroupJoin": {
+    "/berty.protocol.v1/ProtocolService/MultiMemberGroupJoin": {
       "post": {
         "summary": "MultiMemberGroupJoin joins a multi-member group",
         "operationId": "ProtocolService_MultiMemberGroupJoin",
@@ -994,7 +994,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesMultiMemberGroupJoinReply"
+              "$ref": "#/definitions/v1MultiMemberGroupJoinReply"
             }
           },
           "default": {
@@ -1010,7 +1010,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesMultiMemberGroupJoinRequest"
+              "$ref": "#/definitions/v1MultiMemberGroupJoinRequest"
             }
           }
         ],
@@ -1019,7 +1019,7 @@
         ]
       }
     },
-    "/protocol/v1/MultiMemberGroupLeave": {
+    "/berty.protocol.v1/ProtocolService/MultiMemberGroupLeave": {
       "post": {
         "summary": "MultiMemberGroupLeave leaves a multi-member group",
         "operationId": "ProtocolService_MultiMemberGroupLeave",
@@ -1027,7 +1027,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/typesMultiMemberGroupLeaveReply"
+              "$ref": "#/definitions/v1MultiMemberGroupLeaveReply"
             }
           },
           "default": {
@@ -1043,7 +1043,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/typesMultiMemberGroupLeaveRequest"
+              "$ref": "#/definitions/v1MultiMemberGroupLeaveRequest"
             }
           }
         ],
@@ -1122,10 +1122,10 @@
         }
       }
     },
-    "typesActivateGroupReply": {
+    "v1ActivateGroupReply": {
       "type": "object"
     },
-    "typesActivateGroupRequest": {
+    "v1ActivateGroupRequest": {
       "type": "object",
       "properties": {
         "group_pk": {
@@ -1135,28 +1135,10 @@
         }
       }
     },
-    "typesAppMessageSendReply": {
+    "v1AppMessageSendReply": {
       "type": "object"
     },
-    "typesAppMessageSendRequest": {
-      "type": "object",
-      "properties": {
-        "group_pk": {
-          "type": "string",
-          "format": "byte",
-          "title": "group_pk is the identifier of the group"
-        },
-        "payload": {
-          "type": "string",
-          "format": "byte",
-          "title": "payload is the payload to send"
-        }
-      }
-    },
-    "typesAppMetadataSendReply": {
-      "type": "object"
-    },
-    "typesAppMetadataSendRequest": {
+    "v1AppMessageSendRequest": {
       "type": "object",
       "properties": {
         "group_pk": {
@@ -1171,10 +1153,28 @@
         }
       }
     },
-    "typesContactAliasKeySendReply": {
+    "v1AppMetadataSendReply": {
       "type": "object"
     },
-    "typesContactAliasKeySendRequest": {
+    "v1AppMetadataSendRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "group_pk is the identifier of the group"
+        },
+        "payload": {
+          "type": "string",
+          "format": "byte",
+          "title": "payload is the payload to send"
+        }
+      }
+    },
+    "v1ContactAliasKeySendReply": {
+      "type": "object"
+    },
+    "v1ContactAliasKeySendRequest": {
       "type": "object",
       "properties": {
         "group_pk": {
@@ -1184,10 +1184,10 @@
         }
       }
     },
-    "typesContactBlockReply": {
+    "v1ContactBlockReply": {
       "type": "object"
     },
-    "typesContactBlockRequest": {
+    "v1ContactBlockRequest": {
       "type": "object",
       "properties": {
         "contact_pk": {
@@ -1197,10 +1197,10 @@
         }
       }
     },
-    "typesContactRequestAcceptReply": {
+    "v1ContactRequestAcceptReply": {
       "type": "object"
     },
-    "typesContactRequestAcceptRequest": {
+    "v1ContactRequestAcceptRequest": {
       "type": "object",
       "properties": {
         "contact_pk": {
@@ -1210,16 +1210,16 @@
         }
       }
     },
-    "typesContactRequestDisableReply": {
+    "v1ContactRequestDisableReply": {
       "type": "object"
     },
-    "typesContactRequestDisableRequest": {
+    "v1ContactRequestDisableRequest": {
       "type": "object"
     },
-    "typesContactRequestDiscardReply": {
+    "v1ContactRequestDiscardReply": {
       "type": "object"
     },
-    "typesContactRequestDiscardRequest": {
+    "v1ContactRequestDiscardRequest": {
       "type": "object",
       "properties": {
         "contact_pk": {
@@ -1229,7 +1229,7 @@
         }
       }
     },
-    "typesContactRequestEnableReply": {
+    "v1ContactRequestEnableReply": {
       "type": "object",
       "properties": {
         "public_rendezvous_seed": {
@@ -1239,10 +1239,10 @@
         }
       }
     },
-    "typesContactRequestEnableRequest": {
+    "v1ContactRequestEnableRequest": {
       "type": "object"
     },
-    "typesContactRequestReferenceReply": {
+    "v1ContactRequestReferenceReply": {
       "type": "object",
       "properties": {
         "public_rendezvous_seed": {
@@ -1257,10 +1257,10 @@
         }
       }
     },
-    "typesContactRequestReferenceRequest": {
+    "v1ContactRequestReferenceRequest": {
       "type": "object"
     },
-    "typesContactRequestResetReferenceReply": {
+    "v1ContactRequestResetReferenceReply": {
       "type": "object",
       "properties": {
         "public_rendezvous_seed": {
@@ -1270,17 +1270,17 @@
         }
       }
     },
-    "typesContactRequestResetReferenceRequest": {
+    "v1ContactRequestResetReferenceRequest": {
       "type": "object"
     },
-    "typesContactRequestSendReply": {
+    "v1ContactRequestSendReply": {
       "type": "object"
     },
-    "typesContactRequestSendRequest": {
+    "v1ContactRequestSendRequest": {
       "type": "object",
       "properties": {
         "contact": {
-          "$ref": "#/definitions/typesShareableContact",
+          "$ref": "#/definitions/v1ShareableContact",
           "title": "contact is a message describing how to connect to the other account"
         },
         "own_metadata": {
@@ -1290,10 +1290,10 @@
         }
       }
     },
-    "typesContactUnblockReply": {
+    "v1ContactUnblockReply": {
       "type": "object"
     },
-    "typesContactUnblockRequest": {
+    "v1ContactUnblockRequest": {
       "type": "object",
       "properties": {
         "contact_pk": {
@@ -1303,10 +1303,10 @@
         }
       }
     },
-    "typesDeactivateGroupReply": {
+    "v1DeactivateGroupReply": {
       "type": "object"
     },
-    "typesDeactivateGroupRequest": {
+    "v1DeactivateGroupRequest": {
       "type": "object",
       "properties": {
         "group_pk": {
@@ -1316,7 +1316,7 @@
         }
       }
     },
-    "typesDebugGroupReply": {
+    "v1DebugGroupReply": {
       "type": "object",
       "properties": {
         "peer_ids": {
@@ -1328,7 +1328,7 @@
         }
       }
     },
-    "typesDebugGroupRequest": {
+    "v1DebugGroupRequest": {
       "type": "object",
       "properties": {
         "group_pk": {
@@ -1338,7 +1338,7 @@
         }
       }
     },
-    "typesDebugInspectGroupLogType": {
+    "v1DebugInspectGroupLogType": {
       "type": "string",
       "enum": [
         "DebugInspectGroupLogTypeUndefined",
@@ -1347,7 +1347,7 @@
       ],
       "default": "DebugInspectGroupLogTypeUndefined"
     },
-    "typesDebugInspectGroupStoreReply": {
+    "v1DebugInspectGroupStoreReply": {
       "type": "object",
       "properties": {
         "cid": {
@@ -1364,7 +1364,7 @@
           "title": "parent_cids is the list of the parent entries"
         },
         "metadata_event_type": {
-          "$ref": "#/definitions/typesEventType",
+          "$ref": "#/definitions/v1EventType",
           "title": "event_type metadata event type if subscribed to metadata events"
         },
         "device_pk": {
@@ -1379,7 +1379,7 @@
         }
       }
     },
-    "typesDebugInspectGroupStoreRequest": {
+    "v1DebugInspectGroupStoreRequest": {
       "type": "object",
       "properties": {
         "group_pk": {
@@ -1388,12 +1388,12 @@
           "title": "group_pk is the identifier of the group"
         },
         "log_type": {
-          "$ref": "#/definitions/typesDebugInspectGroupLogType",
+          "$ref": "#/definitions/v1DebugInspectGroupLogType",
           "title": "log_type is the log to inspect"
         }
       }
     },
-    "typesDebugListGroupsReply": {
+    "v1DebugListGroupsReply": {
       "type": "object",
       "properties": {
         "group_pk": {
@@ -1402,7 +1402,7 @@
           "title": "group_pk is the public key of the group"
         },
         "group_type": {
-          "$ref": "#/definitions/typesGroupType",
+          "$ref": "#/definitions/v1GroupType",
           "title": "group_type is the type of the group"
         },
         "contact_pk": {
@@ -1412,10 +1412,10 @@
         }
       }
     },
-    "typesDebugListGroupsRequest": {
+    "v1DebugListGroupsRequest": {
       "type": "object"
     },
-    "typesEventContext": {
+    "v1EventContext": {
       "type": "object",
       "properties": {
         "id": {
@@ -1439,7 +1439,7 @@
       },
       "title": "EventContext adds context (its id and its parents) to an event"
     },
-    "typesEventType": {
+    "v1EventType": {
       "type": "string",
       "enum": [
         "EventTypeUndefined",
@@ -1466,7 +1466,7 @@
       "default": "EventTypeUndefined",
       "title": "- EventTypeUndefined: EventTypeUndefined indicates that the value has not been set. Should not happen.\n - EventTypeGroupMemberDeviceAdded: EventTypeGroupMemberDeviceAdded indicates the payload includes that a member has added their device to the group\n - EventTypeGroupDeviceSecretAdded: EventTypeGroupDeviceSecretAdded indicates the payload includes that a member has sent their device secret to another member\n - EventTypeAccountGroupJoined: EventTypeAccountGroupJoined indicates the payload includes that the account has joined a group\n - EventTypeAccountGroupLeft: EventTypeAccountGroupLeft indicates the payload includes that the account has left a group\n - EventTypeAccountContactRequestDisabled: EventTypeAccountContactRequestDisabled indicates the payload includes that the account has disabled incoming contact requests\n - EventTypeAccountContactRequestEnabled: EventTypeAccountContactRequestEnabled indicates the payload includes that the account has enabled incoming contact requests\n - EventTypeAccountContactRequestReferenceReset: EventTypeAccountContactRequestReferenceReset indicates the payload includes that the account has a new contact request rendezvous seed\n - EventTypeAccountContactRequestOutgoingEnqueued: EventTypeAccountContactRequestEnqueued indicates the payload includes that the account will attempt to send a new contact request\n - EventTypeAccountContactRequestOutgoingSent: EventTypeAccountContactRequestSent indicates the payload includes that the account has sent a contact request\n - EventTypeAccountContactRequestIncomingReceived: EventTypeAccountContactRequestReceived indicates the payload includes that the account has received a contact request\n - EventTypeAccountContactRequestIncomingDiscarded: EventTypeAccountContactRequestIncomingDiscarded indicates the payload includes that the account has ignored a contact request\n - EventTypeAccountContactRequestIncomingAccepted: EventTypeAccountContactRequestAccepted indicates the payload includes that the account has accepted a contact request\n - EventTypeAccountContactBlocked: EventTypeAccountContactBlocked indicates the payload includes that the account has blocked a contact\n - EventTypeAccountContactUnblocked: EventTypeAccountContactUnblocked indicates the payload includes that the account has unblocked a contact\n - EventTypeContactAliasKeyAdded: EventTypeContactAliasKeyAdded indicates the payload includes that the contact group has received an alias key\n - EventTypeMultiMemberGroupAliasResolverAdded: EventTypeMultiMemberGroupAliasResolverAdded indicates the payload includes that a member of the group sent their alias proof\n - EventTypeMultiMemberGroupInitialMemberAnnounced: EventTypeMultiMemberGroupInitialMemberAnnounced indicates the payload includes that a member has authenticated themselves as the group owner\n - EventTypeMultiMemberGroupAdminRoleGranted: EventTypeMultiMemberGroupAdminRoleGranted indicates the payload includes that an admin of the group granted another member as an admin\n - EventTypeGroupMetadataPayloadSent: EventTypeGroupMetadataPayloadSent indicates the payload includes an app specific event, unlike messages stored on the message store it is encrypted using a static key"
     },
-    "typesGroup": {
+    "v1Group": {
       "type": "object",
       "properties": {
         "public_key": {
@@ -1485,17 +1485,17 @@
           "title": "secret_sig is the signature of the secret used to ensure the validity of the group"
         },
         "group_type": {
-          "$ref": "#/definitions/typesGroupType",
+          "$ref": "#/definitions/v1GroupType",
           "title": "group_type specifies the type of the group"
         }
       },
       "title": "Group define a group and is enough to invite someone to it"
     },
-    "typesGroupInfoReply": {
+    "v1GroupInfoReply": {
       "type": "object",
       "properties": {
         "group": {
-          "$ref": "#/definitions/typesGroup",
+          "$ref": "#/definitions/v1Group",
           "title": "group is the group invitation, containing the group pk and its type"
         },
         "member_pk": {
@@ -1510,7 +1510,7 @@
         }
       }
     },
-    "typesGroupInfoRequest": {
+    "v1GroupInfoRequest": {
       "type": "object",
       "properties": {
         "group_pk": {
@@ -1525,15 +1525,15 @@
         }
       }
     },
-    "typesGroupMessageEvent": {
+    "v1GroupMessageEvent": {
       "type": "object",
       "properties": {
         "event_context": {
-          "$ref": "#/definitions/typesEventContext",
+          "$ref": "#/definitions/v1EventContext",
           "title": "event_context contains context information about the event"
         },
         "headers": {
-          "$ref": "#/definitions/typesMessageHeaders",
+          "$ref": "#/definitions/v1MessageHeaders",
           "title": "headers contains headers of the secure message"
         },
         "message": {
@@ -1543,7 +1543,7 @@
         }
       }
     },
-    "typesGroupMessageListRequest": {
+    "v1GroupMessageListRequest": {
       "type": "object",
       "properties": {
         "group_pk": {
@@ -1553,7 +1553,7 @@
         }
       }
     },
-    "typesGroupMessageSubscribeRequest": {
+    "v1GroupMessageSubscribeRequest": {
       "type": "object",
       "properties": {
         "group_pk": {
@@ -1578,11 +1578,11 @@
         }
       }
     },
-    "typesGroupMetadata": {
+    "v1GroupMetadata": {
       "type": "object",
       "properties": {
         "event_type": {
-          "$ref": "#/definitions/typesEventType",
+          "$ref": "#/definitions/v1EventType",
           "title": "event_type defines which event type is used"
         },
         "payload": {
@@ -1598,15 +1598,15 @@
       },
       "title": "GroupMetadata is used in GroupEnvelope and only readable by invited group members"
     },
-    "typesGroupMetadataEvent": {
+    "v1GroupMetadataEvent": {
       "type": "object",
       "properties": {
         "event_context": {
-          "$ref": "#/definitions/typesEventContext",
+          "$ref": "#/definitions/v1EventContext",
           "title": "event_context contains context information about the event"
         },
         "metadata": {
-          "$ref": "#/definitions/typesGroupMetadata",
+          "$ref": "#/definitions/v1GroupMetadata",
           "title": "metadata contains the newly available metadata"
         },
         "event": {
@@ -1616,7 +1616,7 @@
         }
       }
     },
-    "typesGroupMetadataListRequest": {
+    "v1GroupMetadataListRequest": {
       "type": "object",
       "properties": {
         "group_pk": {
@@ -1626,7 +1626,7 @@
         }
       }
     },
-    "typesGroupMetadataSubscribeRequest": {
+    "v1GroupMetadataSubscribeRequest": {
       "type": "object",
       "properties": {
         "group_pk": {
@@ -1651,7 +1651,7 @@
         }
       }
     },
-    "typesGroupType": {
+    "v1GroupType": {
       "type": "string",
       "enum": [
         "GroupTypeUndefined",
@@ -1662,7 +1662,7 @@
       "default": "GroupTypeUndefined",
       "description": " - GroupTypeUndefined: GroupTypeUndefined indicates that the value has not been set. Should not happen.\n - GroupTypeAccount: GroupTypeAccount is the group managing an account, available to all its devices.\n - GroupTypeContact: GroupTypeContact is the group created between two accounts, available to all their devices.\n - GroupTypeMultiMember: GroupTypeMultiMember is a group containing an undefined number of members."
     },
-    "typesInstanceExportDataReply": {
+    "v1InstanceExportDataReply": {
       "type": "object",
       "properties": {
         "exported_data": {
@@ -1671,10 +1671,10 @@
         }
       }
     },
-    "typesInstanceExportDataRequest": {
+    "v1InstanceExportDataRequest": {
       "type": "object"
     },
-    "typesInstanceGetConfigurationReply": {
+    "v1InstanceGetConfigurationReply": {
       "type": "object",
       "properties": {
         "account_pk": {
@@ -1715,10 +1715,10 @@
         }
       }
     },
-    "typesInstanceGetConfigurationRequest": {
+    "v1InstanceGetConfigurationRequest": {
       "type": "object"
     },
-    "typesMessageHeaders": {
+    "v1MessageHeaders": {
       "type": "object",
       "properties": {
         "counter": {
@@ -1746,10 +1746,10 @@
       },
       "title": "MessageHeaders is used in MessageEnvelope and only readable by invited group members"
     },
-    "typesMultiMemberGroupAdminRoleGrantReply": {
+    "v1MultiMemberGroupAdminRoleGrantReply": {
       "type": "object"
     },
-    "typesMultiMemberGroupAdminRoleGrantRequest": {
+    "v1MultiMemberGroupAdminRoleGrantRequest": {
       "type": "object",
       "properties": {
         "group_pk": {
@@ -1764,10 +1764,10 @@
         }
       }
     },
-    "typesMultiMemberGroupAliasResolverDiscloseReply": {
+    "v1MultiMemberGroupAliasResolverDiscloseReply": {
       "type": "object"
     },
-    "typesMultiMemberGroupAliasResolverDiscloseRequest": {
+    "v1MultiMemberGroupAliasResolverDiscloseRequest": {
       "type": "object",
       "properties": {
         "group_pk": {
@@ -1777,7 +1777,7 @@
         }
       }
     },
-    "typesMultiMemberGroupCreateReply": {
+    "v1MultiMemberGroupCreateReply": {
       "type": "object",
       "properties": {
         "group_pk": {
@@ -1787,19 +1787,19 @@
         }
       }
     },
-    "typesMultiMemberGroupCreateRequest": {
+    "v1MultiMemberGroupCreateRequest": {
       "type": "object"
     },
-    "typesMultiMemberGroupInvitationCreateReply": {
+    "v1MultiMemberGroupInvitationCreateReply": {
       "type": "object",
       "properties": {
         "group": {
-          "$ref": "#/definitions/typesGroup",
+          "$ref": "#/definitions/v1Group",
           "title": "group is the invitation to the group"
         }
       }
     },
-    "typesMultiMemberGroupInvitationCreateRequest": {
+    "v1MultiMemberGroupInvitationCreateRequest": {
       "type": "object",
       "properties": {
         "group_pk": {
@@ -1809,22 +1809,22 @@
         }
       }
     },
-    "typesMultiMemberGroupJoinReply": {
+    "v1MultiMemberGroupJoinReply": {
       "type": "object"
     },
-    "typesMultiMemberGroupJoinRequest": {
+    "v1MultiMemberGroupJoinRequest": {
       "type": "object",
       "properties": {
         "group": {
-          "$ref": "#/definitions/typesGroup",
+          "$ref": "#/definitions/v1Group",
           "title": "group is the information of the group to join"
         }
       }
     },
-    "typesMultiMemberGroupLeaveReply": {
+    "v1MultiMemberGroupLeaveReply": {
       "type": "object"
     },
-    "typesMultiMemberGroupLeaveRequest": {
+    "v1MultiMemberGroupLeaveRequest": {
       "type": "object",
       "properties": {
         "group_pk": {
@@ -1833,7 +1833,7 @@
         }
       }
     },
-    "typesShareableContact": {
+    "v1ShareableContact": {
       "type": "object",
       "properties": {
         "pk": {

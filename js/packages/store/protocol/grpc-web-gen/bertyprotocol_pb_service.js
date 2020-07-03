@@ -1,4 +1,4 @@
-// package: berty.protocol
+// package: berty.protocol.v1
 // file: bertyprotocol.proto
 
 var bertyprotocol_pb = require("./bertyprotocol_pb");
@@ -7,7 +7,7 @@ var grpc = require("@improbable-eng/grpc-web").grpc;
 
 var ProtocolService = (function () {
   function ProtocolService() {}
-  ProtocolService.serviceName = "berty.protocol.ProtocolService";
+  ProtocolService.serviceName = "berty.protocol.v1.ProtocolService";
   return ProtocolService;
 }());
 

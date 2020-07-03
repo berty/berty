@@ -9,7 +9,7 @@ import * as protocol from '../protocol'
 export type Entity = {
 	id: string
 	nodeConfig: BertyNodeConfig
-	systemInfo?: berty.messenger.SystemInfo.IReply
+	systemInfo?: berty.messenger.v1.SystemInfo.IReply
 }
 
 export type State = { [key: string]: Entity }
@@ -38,7 +38,7 @@ export type Events = {
 	nodeConfigUpdated: (state: State, action: { payload: BertyNodeConfig & { id: string } }) => State
 	systemInfoUpdated: (
 		state: State,
-		action: { payload: { info: berty.messenger.SystemInfo.IReply; id: string } },
+		action: { payload: { info: berty.messenger.v1.SystemInfo.IReply; id: string } },
 	) => State
 }
 

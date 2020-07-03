@@ -68,7 +68,7 @@ func TestProtocolBridge(t *testing.T) {
 	require.NoError(t, err)
 
 	// bridgeClient test
-	res, err = bridgeClient.UnaryRequest("/berty.protocol.ProtocolService/InstanceGetConfiguration", req)
+	res, err = bridgeClient.UnaryRequest("/berty.protocol.v1.ProtocolService/InstanceGetConfiguration", req)
 	require.NoError(t, err)
 
 	out := &bertytypes.InstanceGetConfiguration_Reply{}
@@ -82,7 +82,7 @@ func TestProtocolBridge(t *testing.T) {
 
 	//results, err = makeGrpcRequest(
 	//	protocol.GRPCWebListenerAddr(),
-	//	"/berty.protocol.ProtocolService/ContactGet",
+	//	"/berty.protocol.v1.ProtocolService/ContactGet",
 	//	[][]byte{req},
 	//	false,
 	//)

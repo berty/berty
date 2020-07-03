@@ -1,4 +1,4 @@
-// package: berty.types
+// package: berty.types.v1
 // file: bertytypes.proto
 
 import * as jspb from "google-protobuf";

@@ -21,10 +21,12 @@ export default class MessengerServiceSagaClient {
 	}
 
 	instanceShareableBertyID = (
-		requestObj: api.berty.messenger.InstanceShareableBertyID.IRequest = {},
+		requestObj: api.berty.messenger.v1.InstanceShareableBertyID.IRequest = {},
 	) =>
-		eventChannel<api.berty.messenger.InstanceShareableBertyID.IReply>((emit) => {
-			const buf = api.berty.messenger.InstanceShareableBertyID.Request.encode(requestObj).finish()
+		eventChannel<api.berty.messenger.v1.InstanceShareableBertyID.IReply>((emit) => {
+			const buf = api.berty.messenger.v1.InstanceShareableBertyID.Request.encode(
+				requestObj,
+			).finish()
 			const request = bertymessenger.InstanceShareableBertyID.Request.deserializeBinary(buf)
 			const { close } = grpc.invoke(MessengerService.InstanceShareableBertyID, {
 				request,
@@ -32,7 +34,7 @@ export default class MessengerServiceSagaClient {
 				host: this.host,
 				onMessage: (message: bertymessenger.InstanceShareableBertyID.Reply) =>
 					emit(
-						api.berty.messenger.InstanceShareableBertyID.Reply.decode(message.serializeBinary()),
+						api.berty.messenger.v1.InstanceShareableBertyID.Reply.decode(message.serializeBinary()),
 					),
 				onEnd: (code, msg, trailers) => {
 					if (code !== grpc.Code.OK) {
@@ -49,16 +51,16 @@ export default class MessengerServiceSagaClient {
 			})
 			return close
 		})
-	shareableBertyGroup = (requestObj: api.berty.messenger.ShareableBertyGroup.IRequest = {}) =>
-		eventChannel<api.berty.messenger.ShareableBertyGroup.IReply>((emit) => {
-			const buf = api.berty.messenger.ShareableBertyGroup.Request.encode(requestObj).finish()
+	shareableBertyGroup = (requestObj: api.berty.messenger.v1.ShareableBertyGroup.IRequest = {}) =>
+		eventChannel<api.berty.messenger.v1.ShareableBertyGroup.IReply>((emit) => {
+			const buf = api.berty.messenger.v1.ShareableBertyGroup.Request.encode(requestObj).finish()
 			const request = bertymessenger.ShareableBertyGroup.Request.deserializeBinary(buf)
 			const { close } = grpc.invoke(MessengerService.ShareableBertyGroup, {
 				request,
 				transport: this.transport,
 				host: this.host,
 				onMessage: (message: bertymessenger.ShareableBertyGroup.Reply) =>
-					emit(api.berty.messenger.ShareableBertyGroup.Reply.decode(message.serializeBinary())),
+					emit(api.berty.messenger.v1.ShareableBertyGroup.Reply.decode(message.serializeBinary())),
 				onEnd: (code, msg, trailers) => {
 					if (code !== grpc.Code.OK) {
 						emit(
@@ -75,17 +77,19 @@ export default class MessengerServiceSagaClient {
 			return close
 		})
 	devShareInstanceBertyID = (
-		requestObj: api.berty.messenger.DevShareInstanceBertyID.IRequest = {},
+		requestObj: api.berty.messenger.v1.DevShareInstanceBertyID.IRequest = {},
 	) =>
-		eventChannel<api.berty.messenger.DevShareInstanceBertyID.IReply>((emit) => {
-			const buf = api.berty.messenger.DevShareInstanceBertyID.Request.encode(requestObj).finish()
+		eventChannel<api.berty.messenger.v1.DevShareInstanceBertyID.IReply>((emit) => {
+			const buf = api.berty.messenger.v1.DevShareInstanceBertyID.Request.encode(requestObj).finish()
 			const request = bertymessenger.DevShareInstanceBertyID.Request.deserializeBinary(buf)
 			const { close } = grpc.invoke(MessengerService.DevShareInstanceBertyID, {
 				request,
 				transport: this.transport,
 				host: this.host,
 				onMessage: (message: bertymessenger.DevShareInstanceBertyID.Reply) =>
-					emit(api.berty.messenger.DevShareInstanceBertyID.Reply.decode(message.serializeBinary())),
+					emit(
+						api.berty.messenger.v1.DevShareInstanceBertyID.Reply.decode(message.serializeBinary()),
+					),
 				onEnd: (code, msg, trailers) => {
 					if (code !== grpc.Code.OK) {
 						emit(
@@ -101,16 +105,16 @@ export default class MessengerServiceSagaClient {
 			})
 			return close
 		})
-	parseDeepLink = (requestObj: api.berty.messenger.ParseDeepLink.IRequest = {}) =>
-		eventChannel<api.berty.messenger.ParseDeepLink.IReply>((emit) => {
-			const buf = api.berty.messenger.ParseDeepLink.Request.encode(requestObj).finish()
+	parseDeepLink = (requestObj: api.berty.messenger.v1.ParseDeepLink.IRequest = {}) =>
+		eventChannel<api.berty.messenger.v1.ParseDeepLink.IReply>((emit) => {
+			const buf = api.berty.messenger.v1.ParseDeepLink.Request.encode(requestObj).finish()
 			const request = bertymessenger.ParseDeepLink.Request.deserializeBinary(buf)
 			const { close } = grpc.invoke(MessengerService.ParseDeepLink, {
 				request,
 				transport: this.transport,
 				host: this.host,
 				onMessage: (message: bertymessenger.ParseDeepLink.Reply) =>
-					emit(api.berty.messenger.ParseDeepLink.Reply.decode(message.serializeBinary())),
+					emit(api.berty.messenger.v1.ParseDeepLink.Reply.decode(message.serializeBinary())),
 				onEnd: (code, msg, trailers) => {
 					if (code !== grpc.Code.OK) {
 						emit(
@@ -126,16 +130,16 @@ export default class MessengerServiceSagaClient {
 			})
 			return close
 		})
-	sendContactRequest = (requestObj: api.berty.messenger.SendContactRequest.IRequest = {}) =>
-		eventChannel<api.berty.messenger.SendContactRequest.IReply>((emit) => {
-			const buf = api.berty.messenger.SendContactRequest.Request.encode(requestObj).finish()
+	sendContactRequest = (requestObj: api.berty.messenger.v1.SendContactRequest.IRequest = {}) =>
+		eventChannel<api.berty.messenger.v1.SendContactRequest.IReply>((emit) => {
+			const buf = api.berty.messenger.v1.SendContactRequest.Request.encode(requestObj).finish()
 			const request = bertymessenger.SendContactRequest.Request.deserializeBinary(buf)
 			const { close } = grpc.invoke(MessengerService.SendContactRequest, {
 				request,
 				transport: this.transport,
 				host: this.host,
 				onMessage: (message: bertymessenger.SendContactRequest.Reply) =>
-					emit(api.berty.messenger.SendContactRequest.Reply.decode(message.serializeBinary())),
+					emit(api.berty.messenger.v1.SendContactRequest.Reply.decode(message.serializeBinary())),
 				onEnd: (code, msg, trailers) => {
 					if (code !== grpc.Code.OK) {
 						emit(
@@ -151,16 +155,16 @@ export default class MessengerServiceSagaClient {
 			})
 			return close
 		})
-	sendMessage = (requestObj: api.berty.messenger.SendMessage.IRequest = {}) =>
-		eventChannel<api.berty.messenger.SendMessage.IReply>((emit) => {
-			const buf = api.berty.messenger.SendMessage.Request.encode(requestObj).finish()
+	sendMessage = (requestObj: api.berty.messenger.v1.SendMessage.IRequest = {}) =>
+		eventChannel<api.berty.messenger.v1.SendMessage.IReply>((emit) => {
+			const buf = api.berty.messenger.v1.SendMessage.Request.encode(requestObj).finish()
 			const request = bertymessenger.SendMessage.Request.deserializeBinary(buf)
 			const { close } = grpc.invoke(MessengerService.SendMessage, {
 				request,
 				transport: this.transport,
 				host: this.host,
 				onMessage: (message: bertymessenger.SendMessage.Reply) =>
-					emit(api.berty.messenger.SendMessage.Reply.decode(message.serializeBinary())),
+					emit(api.berty.messenger.v1.SendMessage.Reply.decode(message.serializeBinary())),
 				onEnd: (code, msg, trailers) => {
 					if (code !== grpc.Code.OK) {
 						emit(
@@ -176,16 +180,16 @@ export default class MessengerServiceSagaClient {
 			})
 			return close
 		})
-	sendAck = (requestObj: api.berty.messenger.SendAck.IRequest = {}) =>
-		eventChannel<api.berty.messenger.SendAck.IReply>((emit) => {
-			const buf = api.berty.messenger.SendAck.Request.encode(requestObj).finish()
+	sendAck = (requestObj: api.berty.messenger.v1.SendAck.IRequest = {}) =>
+		eventChannel<api.berty.messenger.v1.SendAck.IReply>((emit) => {
+			const buf = api.berty.messenger.v1.SendAck.Request.encode(requestObj).finish()
 			const request = bertymessenger.SendAck.Request.deserializeBinary(buf)
 			const { close } = grpc.invoke(MessengerService.SendAck, {
 				request,
 				transport: this.transport,
 				host: this.host,
 				onMessage: (message: bertymessenger.SendAck.Reply) =>
-					emit(api.berty.messenger.SendAck.Reply.decode(message.serializeBinary())),
+					emit(api.berty.messenger.v1.SendAck.Reply.decode(message.serializeBinary())),
 				onEnd: (code, msg, trailers) => {
 					if (code !== grpc.Code.OK) {
 						emit(
@@ -201,16 +205,16 @@ export default class MessengerServiceSagaClient {
 			})
 			return close
 		})
-	systemInfo = (requestObj: api.berty.messenger.SystemInfo.IRequest = {}) =>
-		eventChannel<api.berty.messenger.SystemInfo.IReply>((emit) => {
-			const buf = api.berty.messenger.SystemInfo.Request.encode(requestObj).finish()
+	systemInfo = (requestObj: api.berty.messenger.v1.SystemInfo.IRequest = {}) =>
+		eventChannel<api.berty.messenger.v1.SystemInfo.IReply>((emit) => {
+			const buf = api.berty.messenger.v1.SystemInfo.Request.encode(requestObj).finish()
 			const request = bertymessenger.SystemInfo.Request.deserializeBinary(buf)
 			const { close } = grpc.invoke(MessengerService.SystemInfo, {
 				request,
 				transport: this.transport,
 				host: this.host,
 				onMessage: (message: bertymessenger.SystemInfo.Reply) =>
-					emit(api.berty.messenger.SystemInfo.Reply.decode(message.serializeBinary())),
+					emit(api.berty.messenger.v1.SystemInfo.Reply.decode(message.serializeBinary())),
 				onEnd: (code, msg, trailers) => {
 					if (code !== grpc.Code.OK) {
 						emit(

@@ -382,8 +382,8 @@ export const transactions: Transactions = {
 			payload: jsonToBuf(setGroupName),
 		})
 
-		const group: berty.types.IGroup = {
-			groupType: berty.types.GroupType.GroupTypeMultiMember,
+		const group: berty.types.v1.IGroup = {
+			groupType: berty.types.v1.GroupType.GroupTypeMultiMember,
 			publicKey: groupPk,
 		}
 		yield* protocol.client.transactions.multiMemberGroupJoin({ id: accountId, group })
@@ -487,7 +487,7 @@ function* contactPkToGroupPk({
 			id: accountId,
 			contactPk: typeof contactPk === 'string' ? strToBuf(contactPk) : contactPk,
 			groupPk: new Uint8Array(),
-		})) as berty.types.GroupInfo.IReply
+		})) as berty.types.v1.GroupInfo.IReply
 		const { group } = groupInfo
 		if (!group) {
 			return
@@ -551,7 +551,7 @@ export function* orchestrator() {
 			const groupInfo = (yield* protocol.transactions.client.groupInfo({
 				id: payload.aggregateId,
 				contactPk,
-			} as any)) as berty.types.GroupInfo.IReply
+			} as any)) as berty.types.v1.GroupInfo.IReply
 			const { group } = groupInfo
 			if (!group) {
 				return
@@ -596,7 +596,7 @@ export function* orchestrator() {
 				event: { group },
 			} = payload
 			const { publicKey, groupType } = group
-			if (groupType !== berty.types.GroupType.GroupTypeMultiMember) {
+			if (groupType !== berty.types.v1.GroupType.GroupTypeMultiMember) {
 				return
 			}
 			if (!publicKey) {

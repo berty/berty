@@ -1,4 +1,4 @@
-// package: berty.protocol
+// package: berty.protocol.v1
 // file: bertyprotocol.proto
 
 import * as bertyprotocol_pb from "./bertyprotocol_pb";

@@ -1,0 +1,29 @@
+type: google.api.Service
+config_version: 3
+
+http:
+ rules:
+ - selector: berty.messenger.v1.MessengerService.InstanceShareableBertyID
+   post: /berty.messenger.v1/MessengerService/InstanceShareableBertyID
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.ShareableBertyGroup
+   post: /berty.messenger.v1/MessengerService/ShareableBertyGroup
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.DevShareInstanceBertyID
+   post: /berty.messenger.v1/MessengerService/DevShareInstanceBertyID
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.ParseDeepLink
+   post: /berty.messenger.v1/MessengerService/ParseDeepLink
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.SendContactRequest
+   post: /berty.messenger.v1/MessengerService/SendContactRequest
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.SendMessage
+   post: /berty.messenger.v1/MessengerService/SendMessage
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.SendAck
+   post: /berty.messenger.v1/MessengerService/SendAck
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.SystemInfo
+   post: /berty.messenger.v1/MessengerService/SystemInfo
+   body: "*"

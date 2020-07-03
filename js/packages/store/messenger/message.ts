@@ -314,7 +314,7 @@ export function* orchestrator() {
 	yield all([
 		...makeDefaultCommandsSagas(commands, transactions),
 		takeEvery('protocol/GroupMessageEvent', function* (
-			action: PayloadAction<berty.types.IGroupMessageEvent & { aggregateId: string }>,
+			action: PayloadAction<berty.types.v1.IGroupMessageEvent & { aggregateId: string }>,
 		) {
 			// create an id for the message
 			const idBuf = action.payload.eventContext?.id
