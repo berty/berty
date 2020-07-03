@@ -12,10 +12,8 @@ import (
 	ipfs_loader "github.com/ipfs/go-ipfs/plugin/loader"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
 	ipfs_fsrepo "github.com/ipfs/go-ipfs/repo/fsrepo"
-
 	p2p_ci "github.com/libp2p/go-libp2p-core/crypto" // nolint:staticcheck
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
-
 	"github.com/pkg/errors"
 )
 

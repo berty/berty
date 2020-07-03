@@ -175,18 +175,26 @@ message PayloadAcknowledge {
 message SystemInfo {
   message Request {}
   message Reply {
-    int64 started_at = 1;
-    int64 num_cpu = 2 [(gogoproto.customname) = "NumCPU"];
-    string go_version = 3;
-    int64 num_goroutine = 4;
-    string operating_system = 5;
-    string host_name = 6;
-    string arch = 7;
-    string version = 8;
-    string vcs_ref = 9;
-    int64 build_time = 10;
-    string rlimit = 11;
-    string self_rusage = 12;
-    string children_rusage = 13;
+    // most important and dynamic values first
+
+    uint64 rlimit_cur = 1;
+    int64 num_goroutine = 2;
+    int64 connected_peers = 3;
+
+    // other values below
+
+    int64 started_at = 10;
+    int64 num_cpu = 11 [(gogoproto.customname) = "NumCPU"];
+    string go_version = 12;
+    string operating_system = 13;
+    string host_name = 14;
+    string arch = 15;
+    string version = 16;
+    string vcs_ref = 17;
+    int64 build_time = 18;
+    string self_rusage = 19;
+    string children_rusage = 20;
+    uint64 rlimit_max = 21;
+    // FIXME: string ipfs_config = 22;
   }
 }

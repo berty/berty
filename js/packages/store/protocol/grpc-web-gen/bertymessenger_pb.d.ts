@@ -735,6 +735,15 @@ export namespace SystemInfo {
   }
 
   export class Reply extends jspb.Message {
+    getRlimitCur(): number;
+    setRlimitCur(value: number): void;
+
+    getNumGoroutine(): number;
+    setNumGoroutine(value: number): void;
+
+    getConnectedPeers(): number;
+    setConnectedPeers(value: number): void;
+
     getStartedAt(): number;
     setStartedAt(value: number): void;
 
@@ -743,9 +752,6 @@ export namespace SystemInfo {
 
     getGoVersion(): string;
     setGoVersion(value: string): void;
-
-    getNumGoroutine(): number;
-    setNumGoroutine(value: number): void;
 
     getOperatingSystem(): string;
     setOperatingSystem(value: string): void;
@@ -765,14 +771,14 @@ export namespace SystemInfo {
     getBuildTime(): number;
     setBuildTime(value: number): void;
 
-    getRlimit(): string;
-    setRlimit(value: string): void;
-
     getSelfRusage(): string;
     setSelfRusage(value: string): void;
 
     getChildrenRusage(): string;
     setChildrenRusage(value: string): void;
+
+    getRlimitMax(): number;
+    setRlimitMax(value: number): void;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Reply.AsObject;
@@ -786,19 +792,21 @@ export namespace SystemInfo {
 
   export namespace Reply {
     export type AsObject = {
+      rlimitCur: number,
+      numGoroutine: number,
+      connectedPeers: number,
       startedAt: number,
       numCpu: number,
       goVersion: string,
-      numGoroutine: number,
       operatingSystem: string,
       hostName: string,
       arch: string,
       version: string,
       vcsRef: string,
       buildTime: number,
-      rlimit: string,
       selfRusage: string,
       childrenRusage: string,
+      rlimitMax: number,
     }
   }
 }
