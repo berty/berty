@@ -7,7 +7,7 @@ import { messenger } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import { useDimensions } from '@react-native-community/hooks'
 import { CommonActions } from '@react-navigation/core'
-import { noop, sortBy } from 'lodash'
+import { noop } from 'lodash'
 import React, { useMemo, useState } from 'react'
 import {
 	Keyboard,
@@ -17,7 +17,7 @@ import {
 	TouchableHighlight,
 	View,
 } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaConsumer, EdgeInsets } from 'react-native-safe-area-context'
 import { Icon, Layout, Text } from 'react-native-ui-kitten'
 import { ConversationProceduralAvatar } from '../shared-components'
 
@@ -151,13 +151,13 @@ const SearchBar: React.FC<{
 	)
 }
 
-const SearchHint: React.FC<{ hintText: string }> = ({
-	hintText = 'Search messages, contacts, or groups...',
-}) => {
-	const [{ row, color, text, margin, column }] = useStyles()
+const SearchHint: React.FC<{
+	hintText: string
+}> = ({ hintText = 'Search messages, contacts, or groups...' }) => {
+	const [{ row, color, text, margin, column, padding }] = useStyles()
 	const { windowWidth } = useStylesSearch()
 	return (
-		<View style={[column.top, { marginBottom: _approxFooterHeight }]}>
+		<View style={[column.top, padding.small, { marginBottom: _approxFooterHeight }]}>
 			<Icon
 				name='search'
 				width={_landingIconSize}
@@ -223,7 +223,6 @@ const useSearchItemDataFromMessage = (
 	convId: string
 	messageListIndex: number
 } => {
-	// Here we no longer have to call useGetConversationFromMessage
 	const {
 		message: { body },
 		conversationId,
@@ -265,28 +264,36 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, searchTextKey, sear
 	const [{ color, row, padding, flex, column, text, margin, border }] = useStyles()
 	const { plainMessageText } = useStylesSearch()
 	const { name, message, convId, messageListIndex } = useSomeSearchItem(searchTextKey)(data)
+	const [noConversation, noMessages] = useMemo(() => [!convId, messageListIndex < 0], [
+		convId,
+		messageListIndex,
+	])
 	const { dispatch } = useNavigation()
 
 	const MessageDisplay = () =>
-		searchTextKey === 'name' ? (
-			<>{message}</>
-		) : (
-			<MessageSearchResult searchText={searchText} message={message} />
+		noMessages ? null : (
+			<Text numberOfLines={1} style={plainMessageText}>
+				{searchTextKey === 'name' ? (
+					<>{message}</>
+				) : (
+					<MessageSearchResult searchText={searchText} message={message} />
+				)}
+			</Text>
 		)
 
 	return (
 		<TouchableHighlight
-			disabled={!convId}
-			underlayColor={!convId ? 'transparent' : color.light.grey}
+			disabled={noConversation}
+			underlayColor={noConversation ? 'transparent' : color.light.grey}
 			onPress={() =>
-				!convId
+				noConversation
 					? noop()
 					: dispatch(
 							CommonActions.navigate({
 								name: Routes.Chat.OneToOne,
 								params: {
 									convId,
-									scrollToMessage: messageListIndex,
+									scrollToMessage: noMessages ? 0 : messageListIndex,
 								},
 							}),
 					  )
@@ -300,14 +307,14 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, searchTextKey, sear
 					style={[padding.tiny, row.item.justify]}
 				/>
 				<View style={[flex.medium, column.justify, padding.left.medium]}>
-					<View style={[flex.direction.row, flex.align.center]} />
 					<View style={[margin.right.big]}>
-						<Text numberOfLines={1} style={[text.bold.medium, !convId && text.color.grey]}>
+						<Text
+							numberOfLines={1}
+							style={[column.item.fill, text.bold.medium, noConversation && text.color.grey]}
+						>
 							{name}
 						</Text>
-						<Text numberOfLines={1} style={plainMessageText}>
-							<MessageDisplay />
-						</Text>
+						<MessageDisplay />
 					</View>
 				</View>
 			</View>
@@ -336,16 +343,13 @@ const createSections = (contacts: any, messages: any, searchText: string) => {
 	return sections
 }
 
-const SearchComponent: React.FC<{}> = () => {
+const SearchComponent: React.FC<{
+	insets: EdgeInsets | null
+}> = ({ insets }) => {
+	const validInsets = useMemo(() => insets || { top: 0, bottom: 0, left: 0, right: 0 }, [insets])
 	const [searchText, setSearchText] = useState(initialSearchText)
 	const contacts = Messenger.useAccountContactSearchResults(searchText)
 	const messages = Messenger.useGetMessageSearchResultWithMetadata(searchText)
-
-	const setValidSearchText = (textInput: string) => {
-		// setSearchText(textInput)
-		setSearchText(textInput.replace(/^\s+/g, ''))
-	}
-
 	const [{ padding, margin, background, text, flex }] = useStyles()
 	const { windowHeight } = useStylesSearch()
 	const sections = useMemo(() => createSections(contacts, messages, searchText), [
@@ -354,11 +358,29 @@ const SearchComponent: React.FC<{}> = () => {
 		searchText,
 	])
 
+	// Remove leading spaces
+	const setValidSearchText = (textInput: string) => {
+		setSearchText(textInput.replace(/^\s+/g, ''))
+	}
+
+	const paddingVertical = useMemo(
+		() => ({
+			paddingTop: Math.max(0, validInsets.top),
+			paddingBottom: contacts.length || messages.length ? 0 : Math.max(0, validInsets.bottom),
+		}),
+		[contacts.length, validInsets, messages.length],
+	)
+
+	const mainBackgroundColor = useMemo(
+		() => (contacts.length > 0 || messages.length > 0 ? background.white : background.yellow),
+		[background.white, background.yellow, contacts.length, messages.length],
+	)
+
 	const hintText = () =>
 		searchText && !contacts.length ? 'No results found' : 'Search messages, contacts, or groups...'
 
 	return (
-		<View style={[flex.tiny]}>
+		<View style={[flex.tiny, { ...paddingVertical }]}>
 			{/* Title */}
 			<View
 				style={[
@@ -368,6 +390,8 @@ const SearchComponent: React.FC<{}> = () => {
 					{
 						flexShrink: 0,
 						marginTop: windowHeight * _searchComponentMarginTopFactor,
+						marginLeft: Math.max(validInsets.left, 16), // TODO: Add way to destructure styles API values
+						marginRight: Math.max(validInsets.right, 16), // TODO: Add way to destructure styles API values
 					},
 				]}
 			>
@@ -379,12 +403,14 @@ const SearchComponent: React.FC<{}> = () => {
 					padding.small,
 					margin.horizontal.medium,
 					margin.bottom.medium,
+					background.light.yellow,
 					{
+						marginLeft: Math.max(validInsets.left, 16), // TODO: Add way to destructure styles API values
+						marginRight: Math.max(validInsets.right, 16), // TODO: Add way to destructure styles API values
 						flexShrink: 0, // TODO: Add to API
 						flexGrow: 0,
 						borderRadius: _searchComponentBorderRadius,
 					},
-					background.light.yellow,
 				]}
 			>
 				<SearchBar searchText={searchText} onChange={setValidSearchText} />
@@ -393,17 +419,22 @@ const SearchComponent: React.FC<{}> = () => {
 			<View
 				style={[
 					margin.top.small,
+					flex.justify.center,
 					{
 						flexShrink: 1,
 						flexGrow: 1,
-						justifyContent: 'center',
+						paddingHorizontal: 0,
+						...mainBackgroundColor,
 					},
 				]}
 			>
 				{contacts.length + messages.length > 0 ? (
 					<SectionList
+						style={{
+							marginLeft: Math.max(validInsets.left, 16), // TODO: Add way to destructure styles API values
+							marginRight: Math.max(validInsets.right, 16), // TODO: Add way to destructure styles API values
+						}}
 						bounces={false}
-						style={[background.white]} // TODO: Needs to fill insets from SafeAreaView on Landscape
 						keyExtractor={(item, index) => item.id + index}
 						sections={sections}
 						renderSectionHeader={({ section: { title } }) => {
@@ -428,14 +459,19 @@ const SearchComponent: React.FC<{}> = () => {
 }
 
 export const Search: React.FC<{}> = () => {
-	const [{ flex, color }] = useStyles()
+	const [{ flex, background }] = useStyles()
 
 	return (
-		<Layout style={[flex.tiny, { backgroundColor: color.yellow }]}>
-			{/* // TODO: get no weird margins on orientation change */}
-			<SafeAreaView style={[flex.tiny]} {...{ edges: ['right', 'top', 'left'] }}>
-				<SearchComponent />
-			</SafeAreaView>
+		<Layout style={[flex.tiny, background.yellow]}>
+			<SafeAreaConsumer>
+				{(insets: EdgeInsets | null) => {
+					return (
+						<View style={[flex.tiny]}>
+							<SearchComponent insets={insets} />
+						</View>
+					)
+				}}
+			</SafeAreaConsumer>
 		</Layout>
 	)
 }
