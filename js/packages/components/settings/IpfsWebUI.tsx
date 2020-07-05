@@ -40,7 +40,7 @@ export const IpfsWebUI: React.FC<ScreenProps.Settings.IpfsWebUI> = () => {
 	return (
 		<Layout style={[background.white, flex.tiny]}>
 			<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
-				<HeaderSettings title='Ipfs WebUI' bgColor={color.dark.grey} undo={goBack}></HeaderSettings>
+				<HeaderSettings title='Ipfs WebUI' bgColor={color.dark.grey} undo={goBack} />
 				<BodyIpfsWebUI />
 			</ScrollView>
 		</Layout>

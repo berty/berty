@@ -7,11 +7,12 @@ import {
 	FlatList,
 	ActivityIndicator,
 	KeyboardAvoidingView,
+	Text as TextNative,
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
-import { Messenger } from '@berty-tech/hooks'
-import { useNavigation, ScreenProps } from '@berty-tech/navigation'
+import { Messenger, Settings } from '@berty-tech/hooks'
+import { useNavigation, ScreenProps, Routes } from '@berty-tech/navigation'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
 import FromNow from '../shared-components/FromNow'
 import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
@@ -44,14 +45,34 @@ const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) 
 export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 	const { navigate, goBack } = useNavigation()
 	const _styles = useStylesChat()
-	const [{ absolute, row, padding, column, margin, text, flex, opacity, color }] = useStyles()
+	const [
+		{ absolute, row, padding, column, margin, text, flex, opacity, color, border, width, height },
+	] = useStyles()
 	const conversation = Messenger.useGetConversation(id)
 	const contact = Messenger.useOneToOneConversationContact(id)
 	const lastDate = Messenger.useGetDateLastContactMessage(id)
+	const debugGroup = Settings.useDebugGroup({ pk: conversation?.pk || '' })
+	const main = Settings.useSettings()
+	const state = main?.debugGroup?.state
+
+	useEffect(() => {
+		if (!state) {
+			debugGroup()
+		}
+	})
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			debugGroup()
+		}, 10000)
+		return () => clearInterval(interval)
+	}, [debugGroup])
+
 	if (!conversation) {
 		goBack()
 		return <CenteredActivityIndicator />
 	}
+
 	const title =
 		conversation.kind === 'fake' ? `SAMPLE - ${conversation.title}` : contact?.name || ''
 
@@ -74,25 +95,47 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 						_styles.headerName,
 					]}
 				>
-					<Text
-						numberOfLines={1}
-						style={[text.align.center, text.bold.medium, _styles.headerNameText]}
-					>
-						{title}
-					</Text>
+					<View style={[{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }]}>
+						<TouchableOpacity onPress={() => debugGroup()}>
+							<Text
+								numberOfLines={1}
+								style={[text.align.center, text.bold.medium, _styles.headerNameText]}
+							>
+								{title}
+							</Text>
+						</TouchableOpacity>
+						{state === 'error' && (
+							<Icon name='close-outline' width={14} height={14} fill={color.red} />
+						)}
+						{state === 'done' ? (
+							<View
+								style={[
+									width(14),
+									height(14),
+									border.radius.scale(7),
+									margin.left.large,
+									{ backgroundColor: main?.debugGroup?.peerIds?.length ? color.green : color.red },
+								]}
+							/>
+						) : (
+							<ActivityIndicator size='small' style={[margin.left.large]} />
+						)}
+					</View>
 					{lastDate && (
 						<Text numberOfLines={1} style={[text.size.small, text.color.grey, text.align.center]}>
 							Last seen <FromNow date={lastDate} />
 						</Text>
 					)}
 				</View>
-				<TouchableOpacity
-					activeOpacity={contact ? 0.2 : 0.5}
-					style={[flex.tiny, row.item.justify, !contact ? opacity(0.5) : null]}
-					onPress={() => navigate.chat.settings({ convId: id })}
-				>
-					<ConversationProceduralAvatar size={45} diffSize={9} conversationId={id} />
-				</TouchableOpacity>
+				<View style={[flex.tiny, row.fill, { alignItems: 'center' }]}>
+					<TouchableOpacity
+						activeOpacity={contact ? 0.2 : 0.5}
+						style={[flex.tiny, row.item.justify, !contact ? opacity(0.5) : null]}
+						onPress={() => navigate.chat.settings({ convId: id })}
+					>
+						<ConversationProceduralAvatar size={45} diffSize={9} conversationId={id} />
+					</TouchableOpacity>
+				</View>
 			</SafeAreaView>
 		</BlurView>
 	)
