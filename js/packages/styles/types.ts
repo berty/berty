@@ -54,12 +54,13 @@ export type AlignHorizontal<T> = {
 	fill: T
 }
 
-export type AlignVerticalTypes = 'top' | 'bottom' | 'justify' | 'fill'
+export type AlignVerticalTypes = 'top' | 'bottom' | 'justify' | 'fill' | 'center'
 export type AlignVertical<T> = {
 	top: T
 	bottom: T
 	justify: T
 	fill: T
+	center?: T
 }
 
 export type AlignTypes = [AlignHorizontalTypes, AlignVerticalTypes]
@@ -109,6 +110,40 @@ export type Border<T> = Sizes<T> &
 		color: Colors<T> & ColorsBrightness<T>
 	}
 
+export type FlexJustifyTypes =
+	| 'center'
+	| 'flex-end'
+	| 'flex-start'
+	| 'space-around'
+	| 'space-between'
+	| 'space-evenly'
+export type FlexJustifyType = { justifyContent: FlexJustifyTypes }
+export type FlexJustify<FlexJustifyType> = {
+	center: FlexJustifyType
+	end: FlexJustifyType
+	spaceAround: FlexJustifyType
+	spaceBetween: FlexJustifyType
+	spaceEvenly: FlexJustifyType
+	start: FlexJustifyType
+}
+
+export type FlexAlignTypes = 'stretch' | 'center' | 'flex-start' | 'flex-end' | 'baseline'
+export type FlexAlignType = { alignItems: FlexAlignTypes }
+export type FlexAlign<FlexAlignType> = {
+	baseline: FlexAlignType
+	center: FlexAlignType
+	end: FlexAlignType
+	start: FlexAlignType
+	stretch: FlexAlignType
+}
+
+export type FlexDirectionTypes = 'row' | 'column'
+export type FlexDirectionType = { flexDirection: FlexDirectionTypes }
+export type FlexDirection<FlexDirectionType> = {
+	row: FlexDirectionType
+	column: FlexDirectionType
+}
+
 export type Declaration = {
 	colors: ColorsDeclaration
 	sides: SizesDeclaration<number>
@@ -134,7 +169,11 @@ export type Styles = {
 	row: AlignHorizontal<{}> & {
 		item: AlignVertical<{}>
 	}
-	flex: Sizes<{}>
+	flex: Sizes<{}> & {
+		align: FlexAlign<FlexAlignType>
+		justify: FlexJustify<FlexJustifyType>
+		direction: FlexDirection<FlexDirectionType>
+	}
 	width: (width: number) => {}
 	height: (height: number) => {}
 	maxWidth: (maxWidth: number) => {}
