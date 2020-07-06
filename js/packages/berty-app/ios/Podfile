@@ -36,6 +36,10 @@ target 'Berty' do
 
   # needed for react-native-qrcode-scanner
   pod 'Permission-Camera', :path => "../../../node_modules/react-native-permissions/ios/Camera.podspec"
+  
+  # needed for lottie-react-native
+  pod 'lottie-ios', :path => '../../../node_modules/lottie-ios'
+  pod 'lottie-react-native', :path => '../../../node_modules/lottie-react-native'
 
   use_native_modules!
 

@@ -28,6 +28,7 @@ import {
 	BertyNodeConfig,
 	defaultExternalBridgeConfig,
 } from '@berty-tech/store/protocol/client'
+import LottieView from 'lottie-react-native'
 
 type Navigation = () => void
 type Form<T> = (arg0: T) => Promise<void>
@@ -348,52 +349,60 @@ const CreateYourAccount: React.FC<{
 					},
 			  },
 	)
-	const [{ text, padding, margin, background, border }] = useStyles()
+	const [{ text, padding, margin, background, border, color }] = useStyles()
 	const createAccount = Messenger.useAccountCreate()
 	return (
 		<Translation>
 			{(t) => (
-				<SwiperCard
-					label='required'
-					title={t('onboarding.create-account.required')}
-					description={t('onboarding.create-account.desc')}
-					button={{
-						text: t('onboarding.create-account.button'),
-						onPress: async (): Promise<void> => {
-							createAccount({ name: name || 'Anonymous 1337', nodeConfig })
-							Vibration.vibrate(500)
-							// @TODO: Error handling
-							next()
-						},
-					}}
-				>
-					<TextInput
-						autoCapitalize='none'
-						autoCorrect={false}
-						onChangeText={(name) => {
-							setName(name)
-							if (nodeConfig.type === 'embedded') {
-								setNodeConfig({
-									...nodeConfig,
-									opts: {
-										...nodeConfig.opts,
-										tracingPrefix: name,
-									},
-								})
-							}
-						}}
-						placeholder={t('onboarding.create-account.placeholder')}
-						style={[
-							margin.top.medium,
-							background.light.grey,
-							padding.medium,
-							text.size.large,
-							border.radius.small,
-							text.color.black,
-						]}
+				<>
+					<LottieView
+						source={require('./Berty_onboard_animation_assets2/Startup animation assets/Code single line phase/Code phase 1.json')}
+						autoPlay
+						loop
 					/>
-					{__DEV__ && <NodeConfigInput onConfigChange={setNodeConfig} config={nodeConfig} />}
-				</SwiperCard>
+					{/* <SwiperCard
+						label='required'
+						title={t('onboarding.create-account.required')}
+						description={t('onboarding.create-account.desc')}
+						button={{
+							text: t('onboarding.create-account.button'),
+							onPress: async (): Promise<void> => {
+								createAccount({ name: name || 'Anonymous 1337', nodeConfig })
+								Vibration.vibrate(500)
+								// @TODO: Error handling
+								next()
+							},
+						}}
+					>
+						
+						<TextInput
+							autoCapitalize='none'
+							autoCorrect={false}
+							onChangeText={(name) => {
+								setName(name)
+								if (nodeConfig.type === 'embedded') {
+									setNodeConfig({
+										...nodeConfig,
+										opts: {
+											...nodeConfig.opts,
+											tracingPrefix: name,
+										},
+									})
+								}
+							}}
+							placeholder={t('onboarding.create-account.placeholder')}
+							style={[
+								margin.top.medium,
+								background.light.grey,
+								padding.medium,
+								text.size.large,
+								border.radius.small,
+								text.color.black,
+							]}
+						/>
+						{__DEV__ && <NodeConfigInput onConfigChange={setNodeConfig} config={nodeConfig} />}
+					</SwiperCard> */}
+				</>
 			)}
 		</Translation>
 	)
