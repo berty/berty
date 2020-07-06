@@ -138,7 +138,7 @@ func TestContactRequestFlow(t *testing.T) {
 func TestContactRequestFlowWithoutIncoming(t *testing.T) {
 	testutil.SkipSlow(t)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
 	opts := TestingOpts{

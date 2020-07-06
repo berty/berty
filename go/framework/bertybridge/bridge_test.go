@@ -29,14 +29,14 @@ func TestProtocolBridge(t *testing.T) {
 	)
 
 	ctx := context.Background()
-	coreAPI, cleanup := ipfsutil.TestingCoreAPI(ctx, t)
+	mc, cleanup := ipfsutil.TestingCoreAPI(ctx, t)
 	defer cleanup()
 
 	logger := testutil.Logger(t)
 	config := NewProtocolConfig()
 	config.AddGRPCListener("/ip4/127.0.0.1/tcp/0/grpc")
 	config.AddGRPCListener("/ip4/127.0.0.1/tcp/0/grpcweb")
-	config.ipfsCoreAPI(coreAPI)
+	config.ipfsCoreAPI(mc.API())
 
 	protocol, err = newProtocolBridge(logger, config)
 	require.NoError(t, err)

@@ -24,13 +24,13 @@ import (
 	ipfs_badger "github.com/ipfs/go-ds-badger"
 	"github.com/ipfs/go-ipfs/core"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
-	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	peerstore "github.com/libp2p/go-libp2p-core/peerstore"
+	"github.com/libp2p/go-libp2p-core/routing"
 	discovery "github.com/libp2p/go-libp2p-discovery"
-	dht "github.com/libp2p/go-libp2p-kad-dht"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
@@ -58,7 +58,6 @@ type Protocol struct {
 	*Bridge
 
 	node    *core.IpfsNode
-	dht     *dht.IpfsDHT
 	service bertyprotocol.Service
 
 	// protocol datastore
@@ -145,11 +144,11 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 
 	// setup coreapi if needed
 	var (
-		api          ipfsutil.ExtendedCoreAPI
-		node         *core.IpfsNode
-		dht          *dht.IpfsDHT
-		repo         ipfs_repo.Repo
-		tinderDriver tinder.Driver
+		api  ipfsutil.ExtendedCoreAPI
+		node *core.IpfsNode
+		ps   *pubsub.PubSub
+		repo ipfs_repo.Repo
+		disc tinder.Driver
 	)
 
 	{
@@ -168,13 +167,13 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 				return nil, errors.New("failed to parse rdvp multiaddr: " + defaultProtocolRendezVousPeer)
 			}
 
-			var psapi ipfs_interface.PubSubAPI
 			var bopts = ipfsutil.CoreAPIConfig{
+				DisableCorePubSub: true,
 				SwarmAddrs:        defaultSwarmAddrs,
 				APIAddrs:          defaultAPIAddrs,
 				APIConfig:         APIConfig,
 				ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
-				HostConfig: func(h host.Host) error {
+				HostConfig: func(h host.Host, _ routing.Routing) error {
 					var err error
 
 					h.Peerstore().AddAddrs(rdvpeer.ID, rdvpeer.Addrs, peerstore.PermanentAddrTTL)
@@ -184,7 +183,7 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 
 					minBackoff, maxBackoff := time.Second, time.Minute
 					rng := rand.New(rand.NewSource(rand.Int63()))
-					tinderDriver, err = tinder.NewService(
+					disc, err = tinder.NewService(
 						logger,
 						rdvClient,
 						discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, rng),
@@ -193,7 +192,12 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 						return err
 					}
 
-					psapi, err = ipfsutil.NewPubSubAPI(ctx, logger.Named("pubsub"), tinderDriver, h)
+					ps, err = pubsub.NewGossipSub(ctx, h,
+						pubsub.WithMessageSigning(true),
+						pubsub.WithFloodPublish(true),
+						pubsub.WithDiscovery(disc),
+					)
+
 					if err != nil {
 						return err
 					}
@@ -215,6 +219,7 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 				return nil, errcode.TODO.Wrap(err)
 			}
 
+			psapi := ipfsutil.NewPubSubAPI(ctx, logger, disc, ps)
 			api = ipfsutil.InjectPubSubCoreAPIExtendedAdaptater(api, psapi)
 
 			// construct http api endpoint
@@ -259,11 +264,12 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 
 		// initialize new protocol client
 		protocolOpts := bertyprotocol.Opts{
+			PubSub:         ps,
 			Logger:         logger.Named("bertyprotocol"),
 			OrbitDirectory: odbDir,
 			RootDatastore:  rootds,
 			IpfsCoreAPI:    api,
-			TinderDriver:   tinderDriver,
+			TinderDriver:   disc,
 		}
 
 		if node != nil {
@@ -344,7 +350,6 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 
 		service: service,
 		node:    node,
-		dht:     dht,
 
 		ds: rootds,
 	}, nil
@@ -356,11 +361,6 @@ func (p *Protocol) Close() (err error) {
 
 	// close service
 	err = p.service.Close() // keep service error
-
-	/// close other services
-	if p.dht != nil {
-		p.dht.Close()
-	}
 
 	if p.node != nil {
 		p.node.Close()

@@ -20,9 +20,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func newTestOrbitDB(ctx context.Context, api ipfsutil.CoreAPIMock, t *testing.T, baseDS datastore.Batching) *bertyOrbitDB {
+func newTestOrbitDB(ctx context.Context, node ipfsutil.CoreAPIMock, t *testing.T, baseDS datastore.Batching) *bertyOrbitDB {
 	t.Helper()
 
+	api := node.API()
 	selfKey, err := api.Key().Self(ctx)
 	if err != nil {
 		t.Fatal(err)
@@ -54,7 +55,8 @@ func TestDifferentStores(t *testing.T) {
 	rdvp, err := mn.GenPeer()
 	require.NoError(t, err, "failed to generate mocked peer")
 
-	_, _ = ipfsutil.TestingRDVP(ctx, t, rdvp)
+	_, cleanrdvp := ipfsutil.TestingRDVP(ctx, t, rdvp)
+	defer cleanrdvp()
 
 	ipfsOpts := &ipfsutil.TestingAPIOpts{
 		Mocknet: mn,

@@ -4,18 +4,14 @@ import (
 	"context"
 	"encoding/hex"
 	"fmt"
-	"io"
-	"sync"
-	"sync/atomic"
 	"testing"
 	"time"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
-	"github.com/libp2p/go-libp2p-core/peer"
 	p2pmocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 func TestRoundTimePeriod_Next(t *testing.T) {
@@ -102,11 +98,8 @@ func TestGenerateRendezvousPointForPeriod(t *testing.T) {
 
 func TestAnnounceWatchForPeriod(t *testing.T) {
 	testutil.SkipSlow(t)
-
-	defaultTime := time.Now()
-
 	cases := []struct {
-		expectedPeersFound int64
+		expectedPeersFound int
 		topicA             []byte
 		topicB             []byte
 		seedA              []byte
@@ -132,6 +125,7 @@ func TestAnnounceWatchForPeriod(t *testing.T) {
 	for i, tc := range cases {
 		t.Run(fmt.Sprintf("tc: %d", i), func(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
 
 			mn := p2pmocknet.New(ctx)
 			rdvp, err := mn.GenPeer()
@@ -145,8 +139,6 @@ func TestAnnounceWatchForPeriod(t *testing.T) {
 				Mocknet: mn,
 				RDVPeer: rdvp.Peerstore().PeerInfo(rdvp.ID()),
 			}
-			ctx, cancel = context.WithTimeout(context.Background(), 5000*time.Millisecond)
-			defer cancel()
 
 			apiA, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, opts)
 			defer cleanup()
@@ -159,47 +151,27 @@ func TestAnnounceWatchForPeriod(t *testing.T) {
 			err = mn.ConnectAllButSelf()
 			require.NoError(t, err)
 
-			swiperA := newSwiper(apiA.Tinder(), zap.NewNop(), time.Hour)
-			swiperB := newSwiper(apiB.Tinder(), zap.NewNop(), time.Hour)
-			var foundPeers int64 = 0
-			wg := sync.WaitGroup{}
-			wg.Add(1)
+			swiperA := NewSwiper(opts.Logger, apiA.PubSub(), time.Hour)
+			swiperB := NewSwiper(opts.Logger, apiB.PubSub(), time.Hour)
 
-			announcesA, errsA := swiperA.announceForPeriod(ctx, tc.topicA, tc.seedA, defaultTime)
-
-			func() {
-				select {
-				case <-announcesA:
-					return
-
-				case err := <-errsA:
-					if err == io.EOF {
-						require.NoError(t, err, "unexpected EOF")
-						return
-					}
-
-					require.NoError(t, err)
-				}
-			}()
+			swiperA.Announce(ctx, tc.topicA, tc.seedA)
 
 			time.Sleep(time.Millisecond * 100)
-			var ch chan peer.AddrInfo
-			ch, errB := swiperB.watchForPeriod(ctx, tc.topicB, tc.seedB, defaultTime)
 
-			require.NoError(t, errB)
+			ch := swiperB.WatchTopic(ctx, tc.topicB, tc.seedB)
+			require.NotNil(t, ch)
 
-			go func() {
-				for range ch {
-					atomic.AddInt64(&foundPeers, 1)
+			var foundPeers int
+			for foundPeers = 0; foundPeers < tc.expectedPeersFound; foundPeers++ {
+				select {
+				case <-ctx.Done():
+					break
+				case <-ch:
 				}
+			}
 
-				wg.Done()
-			}()
-
-			<-ctx.Done()
-			wg.Wait()
-
-			require.Equal(t, tc.expectedPeersFound, foundPeers)
+			assert.Equal(t, len(ch), 0)
+			assert.Equal(t, tc.expectedPeersFound, foundPeers)
 		})
 	}
 }

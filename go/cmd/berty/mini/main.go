@@ -20,12 +20,13 @@ import (
 	"github.com/gdamore/tcell/terminfo"
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
-	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/juju/fslock"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	peerstore "github.com/libp2p/go-libp2p-core/peerstore"
+	"github.com/libp2p/go-libp2p-core/routing"
 	discovery "github.com/libp2p/go-libp2p-discovery"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/rivo/tview"
 	grpc_trace "go.opentelemetry.io/otel/plugin/grpctrace"
 	"go.uber.org/zap"
@@ -86,13 +87,13 @@ func newService(ctx context.Context, logger *zap.Logger, opts *Opts) (bertyproto
 	rootDS := sync_ds.MutexWrap(opts.RootDS)
 	ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("ipfs"))
 
-	var psapi ipfs_interface.PubSubAPI
 	var disc tinder.Driver
-
+	var ps *pubsub.PubSub
 	api, node, err := ipfsutil.NewCoreAPIFromDatastore(ctx, ipfsDS, &ipfsutil.CoreAPIConfig{
-		BootstrapAddrs: opts.Bootstrap,
-		SwarmAddrs:     swarmAddresses,
-		HostConfig: func(h host.Host) error {
+		DisableCorePubSub: true,
+		BootstrapAddrs:    opts.Bootstrap,
+		SwarmAddrs:        swarmAddresses,
+		HostConfig: func(h host.Host, _ routing.Routing) error {
 			var err error
 
 			h.Peerstore().AddAddrs(opts.RendezVousPeer.ID, opts.RendezVousPeer.Addrs, peerstore.PermanentAddrTTL)
@@ -111,7 +112,13 @@ func newService(ctx context.Context, logger *zap.Logger, opts *Opts) (bertyproto
 				return err
 			}
 
-			psapi, err = ipfsutil.NewPubSubAPI(ctx, logger.Named("pubsub"), disc, h)
+			ps, err = pubsub.NewGossipSub(ctx, h,
+				pubsub.WithMessageSigning(true),
+				pubsub.WithFloodPublish(true),
+				pubsub.WithDiscovery(disc),
+				pubsub.WithPeerExchange(true),
+			)
+
 			if err != nil {
 				return err
 			}
@@ -120,12 +127,8 @@ func newService(ctx context.Context, logger *zap.Logger, opts *Opts) (bertyproto
 		},
 	})
 
-	if err != nil {
-		panicUnlockFS(err, lock)
-	}
-
+	psapi := ipfsutil.NewPubSubAPI(ctx, logger, disc, ps)
 	api = ipfsutil.InjectPubSubCoreAPIExtendedAdaptater(api, psapi)
-
 	if err != nil {
 		panicUnlockFS(err, lock)
 	}
@@ -139,6 +142,7 @@ func newService(ctx context.Context, logger *zap.Logger, opts *Opts) (bertyproto
 	orbitdbDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))
 	service, err := bertyprotocol.New(bertyprotocol.Opts{
 		Logger:          logger.Named("protocol"),
+		PubSub:          ps,
 		TinderDriver:    disc,
 		IpfsCoreAPI:     api,
 		DeviceKeystore:  bertyprotocol.NewDeviceKeystore(ks),

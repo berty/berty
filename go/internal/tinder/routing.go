@@ -8,7 +8,7 @@ import (
 	"go.uber.org/zap"
 )
 
-type Routing interface {
+type DriverRouting interface {
 	p2p_routing.Routing
 
 	Driver
@@ -28,14 +28,11 @@ func (r *routing) Bootstrap(ctx context.Context) error {
 	return r.bootstrap(ctx)
 }
 
-func NewRouting(logger *zap.Logger, name string, r p2p_routing.Routing, drivers ...Driver) Routing {
+func NewDriverRouting(logger *zap.Logger, name string, r p2p_routing.Routing) DriverRouting {
 	rdisc := discovery.NewRoutingDiscovery(r)
-	drivers = append(drivers, ComposeDriver(name, rdisc, rdisc, nil))
-	md := NewMultiDriver(logger, drivers...)
-
-	cr := discovery.NewDiscoveryRouting(md)
+	md := ComposeDriver(name, rdisc, rdisc, NoopUnregisterer)
 	return &routing{
-		ContentRouting: cr,
+		ContentRouting: r,
 		ValueStore:     r,
 		PeerRouting:    r,
 		Driver:         md,

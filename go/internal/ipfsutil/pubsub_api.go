@@ -7,17 +7,15 @@ import (
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	ipfs_iopts "github.com/ipfs/interface-go-ipfs-core/options"
 	p2p_disc "github.com/libp2p/go-libp2p-core/discovery"
-	p2p_host "github.com/libp2p/go-libp2p-core/host"
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	p2p_pubsub "github.com/libp2p/go-libp2p-pubsub"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
 
 	"go.uber.org/zap"
 )
 
 type PubSubAPI struct {
 	*p2p_pubsub.PubSub
-
-	host   p2p_host.Host
 	disc   p2p_disc.Discovery
 	logger *zap.Logger
 
@@ -25,43 +23,49 @@ type PubSubAPI struct {
 	topics   map[string]*p2p_pubsub.Topic
 }
 
-func NewPubSubAPI(ctx context.Context, logger *zap.Logger, disc p2p_disc.Discovery, h p2p_host.Host) (ipfs_interface.PubSubAPI, error) {
-	ps, err := p2p_pubsub.NewGossipSub(ctx, h,
-		p2p_pubsub.WithMessageSigning(true),
-		p2p_pubsub.WithFloodPublish(true),
-		p2p_pubsub.WithDiscovery(disc),
-	)
-
-	if err != nil {
-		return nil, err
-	}
-
+func NewPubSubAPI(ctx context.Context, logger *zap.Logger, disc p2p_disc.Discovery, ps *p2p_pubsub.PubSub) ipfs_interface.PubSubAPI {
 	return &PubSubAPI{
-		host:   h,
-		disc:   disc,
 		PubSub: ps,
+
+		disc:   disc,
 		logger: logger,
 		topics: make(map[string]*p2p_pubsub.Topic),
-	}, nil
+	}
 }
 
-func (ps *PubSubAPI) getTopic(topic string) (*p2p_pubsub.Topic, error) {
+func (ps *PubSubAPI) topicJoin(topic string, opts ...p2p_pubsub.TopicOpt) (*pubsub.Topic, error) {
 	ps.muTopics.Lock()
 	defer ps.muTopics.Unlock()
 
-	t, ok := ps.topics[topic]
-	if !ok {
-		var err error
-		t, err = ps.PubSub.Join(topic)
-		if err != nil {
-			return nil, err
-		}
+	var err error
 
-		ps.topics[topic] = t
+	t, ok := ps.topics[topic]
+	if ok {
+		return t, nil
 	}
 
+	if t, err = ps.PubSub.Join(topic, opts...); err != nil {
+		return nil, err
+	}
+
+	if _, err = t.Relay(); err != nil {
+		t.Close()
+		return nil, err
+	}
+
+	ps.topics[topic] = t
 	return t, nil
 }
+
+// func (ps *PubSubAPI) topicLeave(topic string) (err error) {
+// 	ps.muTopics.Lock()
+// 	if t, ok := ps.topics[topic]; ok {
+// 		err = t.Close()
+// 		delete(ps.topics, topic)
+// 	}
+// 	ps.muTopics.Unlock()
+// 	return
+// }
 
 // Ls lists subscribed topics by name
 func (ps *PubSubAPI) Ls(ctx context.Context) ([]string, error) {
@@ -82,34 +86,24 @@ var minTopicSize = p2p_pubsub.WithReadiness(p2p_pubsub.MinTopicSize(1))
 
 // Publish a message to a given pubsub topic
 func (ps *PubSubAPI) Publish(ctx context.Context, topic string, msg []byte) error {
-	ps.logger.Debug("publishing", zap.String("topic", topic), zap.Int("msglen", len(msg)))
-
-	t, err := ps.getTopic(topic)
+	t, err := ps.topicJoin(topic)
 	if err != nil {
-		ps.logger.Warn("unable to get topic", zap.Error(err))
 		return err
 	}
 
-	peers := t.ListPeers()
-	if len(peers) == 0 {
-		ps.logger.Warn("no peers connected to this topic...", zap.String("topic", topic))
-	}
-
-	return t.Publish(context.Background(), msg, minTopicSize)
+	return t.Publish(ctx, msg, minTopicSize)
 }
 
 // Subscribe to messages on a given topic
 func (ps *PubSubAPI) Subscribe(ctx context.Context, topic string, opts ...ipfs_iopts.PubSubSubscribeOption) (ipfs_interface.PubSubSubscription, error) {
-	t, err := ps.getTopic(topic)
+	t, err := ps.topicJoin(topic)
 	if err != nil {
-		ps.logger.Warn("unable to join topic", zap.Error(err))
 		return nil, err
 	}
 
-	ps.logger.Debug("subscribing:", zap.String("topic", topic))
+	ps.logger.Debug("subscribing", zap.String("topic", topic))
 	sub, err := t.Subscribe()
 	if err != nil {
-		ps.logger.Warn("unable to subscribe to topic", zap.String("topic", topic), zap.Error(err))
 		return nil, err
 	}
 
@@ -132,15 +126,8 @@ func (pss *pubsubSubscriptionAPI) Close() (_ error) {
 func (pss *pubsubSubscriptionAPI) Next(ctx context.Context) (ipfs_interface.PubSubMessage, error) {
 	m, err := pss.Subscription.Next(ctx)
 	if err != nil {
-		pss.logger.Warn("unable to get next message", zap.Error(err))
 		return nil, err
 	}
-
-	pss.logger.Debug("got a message from pubsub",
-		zap.Int("size", len(m.Message.Data)),
-		zap.String("from", m.ReceivedFrom.String()),
-		zap.Strings("topic", m.TopicIDs),
-	)
 
 	return &pubsubMessageAPI{m}, nil
 }

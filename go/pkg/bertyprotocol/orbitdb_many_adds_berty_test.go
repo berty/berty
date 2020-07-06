@@ -21,10 +21,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func testAddBerty(ctx context.Context, t *testing.T, api ipfsutil.CoreAPIMock, g *bertytypes.Group, pathBase string, amountToAdd, amountCurrentlyPresent int) {
+func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, g *bertytypes.Group, pathBase string, amountToAdd, amountCurrentlyPresent int) {
 	t.Helper()
 	testutil.SkipSlow(t)
 
+	api := node.API()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 

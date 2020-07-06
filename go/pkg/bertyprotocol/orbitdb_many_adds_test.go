@@ -26,7 +26,7 @@ func TestAdd(t *testing.T) {
 	dir := "./orbitdb/benchmarks"
 	defer os.RemoveAll(dir)
 
-	orbit, err := orbitdb.NewOrbitDB(ctx, ipfs, &orbitdb.NewOrbitDBOptions{Directory: &dir})
+	orbit, err := orbitdb.NewOrbitDB(ctx, ipfs.API(), &orbitdb.NewOrbitDBOptions{Directory: &dir})
 	if err != nil {
 		t.Fatal(err)
 	}

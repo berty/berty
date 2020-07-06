@@ -56,10 +56,11 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*
 
 	serviceOpts := Opts{
 		Host:            node.MockNode().PeerHost,
+		PubSub:          node.PubSub(),
 		Logger:          opts.Logger,
 		DeviceKeystore:  NewDeviceKeystore(keystore.NewMemKeystore()),
 		MessageKeystore: NewInMemMessageKeystore(),
-		IpfsCoreAPI:     node,
+		IpfsCoreAPI:     node.API(),
 		TinderDriver:    node.Tinder(),
 	}
 
@@ -181,7 +182,9 @@ func TestingService(t *testing.T, opts Opts) (Service, func()) {
 	cleanupNode := func() {}
 
 	if opts.IpfsCoreAPI == nil {
-		opts.IpfsCoreAPI, cleanupNode = ipfsutil.TestingCoreAPI(ctx, t)
+		var mn ipfsutil.CoreAPIMock
+		mn, cleanupNode = ipfsutil.TestingCoreAPI(ctx, t)
+		opts.IpfsCoreAPI = mn.API()
 	}
 
 	service, err := New(opts)

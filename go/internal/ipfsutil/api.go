@@ -37,10 +37,13 @@ type CoreAPIConfig struct {
 	APIAddrs       []string
 	APIConfig      config.API
 
-	HostConfig        func(host p2p_host.Host) error
+	DisableCorePubSub bool
+	HostConfig        func(p2p_host.Host, p2p_routing.Routing) error
 	ExtraLibp2pOption p2p.Option
 	DHTOption         []p2p_dht.Option
-	Routing           ipfs_libp2p.RoutingOption
+
+	Routing ipfs_libp2p.RoutingOption
+	Host    ipfs_libp2p.HostOption
 
 	Options []CoreAPIOption
 }
@@ -105,22 +108,24 @@ func CreateBuildConfig(repo ipfs_repo.Repo, opts *CoreAPIConfig) (*ipfs_node.Bui
 		opts = &CoreAPIConfig{}
 	}
 
-	routingOpt := ipfs_libp2p.DHTClientOption
+	routingOpt := configureRouting(
+		p2p_dht.ModeClient,
+		p2p_dht.Concurrency(2))
 	if opts.Routing != nil {
-		routingOpt = configureRouting(p2p_dht.ModeClient,
-			p2p_dht.Concurrency(5),
-			p2p_dht.DisableAutoRefresh(),
-			p2p_dht.V1CompatibleMode(false),
-		)
+		routingOpt = opts.Routing
 	}
 
 	hostOpt := ipfs_libp2p.DefaultHostOption
+	if opts.Host != nil {
+		hostOpt = opts.Host
+	}
+
 	if opts.ExtraLibp2pOption != nil {
 		hostOpt = wrapP2POptionsToHost(hostOpt, opts.ExtraLibp2pOption)
 	}
 
 	if opts.HostConfig != nil {
-		hostOpt = wrapHostConfig(hostOpt, opts.HostConfig)
+		routingOpt = wrapHostConfig(routingOpt, opts.HostConfig)
 	}
 
 	return &ipfs_node.BuildCfg{
@@ -132,7 +137,7 @@ func CreateBuildConfig(repo ipfs_repo.Repo, opts *CoreAPIConfig) (*ipfs_node.Bui
 		Host:                        hostOpt,
 		Repo:                        repo,
 		ExtraOpts: map[string]bool{
-			"pubsub": false,
+			"pubsub": !opts.DisableCorePubSub,
 		},
 	}, nil
 }
@@ -162,19 +167,24 @@ func updateRepoConfig(repo ipfs_repo.Repo, cfg *CoreAPIConfig) error {
 	return repo.SetConfig(rcfg)
 }
 
-func wrapHostConfig(hf ipfs_libp2p.HostOption, hc func(h host.Host) error) ipfs_libp2p.HostOption {
-	return func(ctx context.Context, id p2p_peer.ID, ps p2p_ps.Peerstore, options ...p2p.Option) (p2p_host.Host, error) {
-		h, err := hf(ctx, id, ps, options...)
+func wrapHostConfig(rh ipfs_libp2p.RoutingOption, hc func(h host.Host, r p2p_routing.Routing) error) ipfs_libp2p.RoutingOption {
+	return func(
+		ctx context.Context,
+		host p2p_host.Host,
+		dstore datastore.Batching,
+		validator p2p_record.Validator,
+		bootstrapPeers ...p2p_peer.AddrInfo,
+	) (p2p_routing.Routing, error) {
+		routing, err := rh(ctx, host, dstore, validator, bootstrapPeers...)
 		if err != nil {
 			return nil, err
 		}
 
-		if err = hc(h); err != nil {
-			_ = h.Close()
+		if err := hc(host, routing); err != nil {
 			return nil, errors.Wrap(err, "failed to config host")
 		}
 
-		return h, nil
+		return routing, nil
 	}
 }
 
