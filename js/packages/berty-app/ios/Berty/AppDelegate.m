@@ -12,7 +12,7 @@
 #import <React/RCTRootView.h>
 #import <React/RCTLinkingManager.h>
 
-#if DEBUG
+#if DEBUG && !TARGET_OS_MACCATALYST
 #import <FlipperKit/FlipperClient.h>
 #import <FlipperKitLayoutPlugin/FlipperKitLayoutPlugin.h>
 #import <FlipperKitUserDefaultsPlugin/FKUserDefaultsPlugin.h>
@@ -41,7 +41,7 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  #if DEBUG
+  #if DEBUG && !TARGET_OS_MACCATALYST
    InitializeFlipper(application);
   #endif
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];

@@ -20,6 +20,7 @@
 		48F6329923E1C9BE001FA4AB /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4886B57E23C61C0000DFECD4 /* File.swift */; };
 		48F6329A23E1C9BF001FA4AB /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4886B57E23C61C0000DFECD4 /* File.swift */; };
 		48F6329B23E1C9C0001FA4AB /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4886B57E23C61C0000DFECD4 /* File.swift */; };
+		512BA5125917EC933FF84FD9 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BD93067BBAEDAF142A40DC71 /* libPods-Berty.a */; };
 		5243B435428145D3A3A1BC4D /* OpenSans-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A126A34A50D94690A8F3DEA6 /* OpenSans-ExtraBoldItalic.ttf */; };
 		5ADF9CEE186E47658E40CA52 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CDD34DF205BB4B44B79D823A /* FontAwesome5_Brands.ttf */; };
 		5F9F065C52DF4948ACD06FAF /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 50A51C4D5FCF4BE3BC06B638 /* Fontisto.ttf */; };
@@ -36,7 +37,6 @@
 		B74A52827F644F6097E446DB /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B71C1E04461D4461970D53B3 /* Octicons.ttf */; };
 		CE5B2F029D0B4906A2736FC4 /* OpenSans-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C22C7B2AFD50420F85A0D4F2 /* OpenSans-LightItalic.ttf */; };
 		D44A45BF35F04A99B4A45ABE /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 028A8D5E44594D8B89E3E5A3 /* MaterialCommunityIcons.ttf */; };
-		DF1CF8685A8FD1A9A562BD92 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BEDCC0FECBC5098CC5A7FC6 /* libPods-Berty.a */; };
 		E4B70368347145B788EDEEE3 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9A9E5C4A6C654C56B328B5B8 /* MaterialIcons.ttf */; };
 		EDB76784535B48A9B2024122 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E7A1DC446F744A008F70567F /* FontAwesome5_Solid.ttf */; };
 		F18D9C8C0F6A4B06A770CB30 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1115E25D5C2F48F893178AE4 /* Zocial.ttf */; };
@@ -72,6 +72,7 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Berty/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Berty/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Berty/main.m; sourceTree = "<group>"; };
+		2F0FC1A9093A352D61CD280F /* Pods-Berty.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.debug.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.debug.xcconfig"; sourceTree = "<group>"; };
 		4886B57B23C61B5800DFECD4 /* Berty Debug-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Berty Debug-Bridging-Header.h"; sourceTree = "<group>"; };
 		4886B57E23C61C0000DFECD4 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		5045D393FFFF41F8AF6E2C7C /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
@@ -79,14 +80,15 @@
 		583DC111DEBA44B284DE3276 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
 		67D93FCF36BE4E4983E748F2 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		691A909A3E3647AE8DE10380 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
-		6BDA6987DE819826236D7D61 /* Pods-Berty.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.release.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.release.xcconfig"; sourceTree = "<group>"; };
 		8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
-		8BEDCC0FECBC5098CC5A7FC6 /* libPods-Berty.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D2F003C24AE4F4600C94C2C /* Berty Debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Berty Debug.entitlements"; sourceTree = "<group>"; };
+		8D2F006224AE63CF00C94C2C /* Berty Yolo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Berty Yolo.entitlements"; sourceTree = "<group>"; };
+		8D2F006324AF31B600C94C2C /* Berty Staff.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Berty Staff.entitlements"; sourceTree = "<group>"; };
 		8F4D2FAD70964BD9A3DC9697 /* OpenSans-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-SemiBold.ttf"; path = "../assets/OpenSans-SemiBold.ttf"; sourceTree = "<group>"; };
+		948E20467A5DFBE622213BEA /* Pods-Berty.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.release.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.release.xcconfig"; sourceTree = "<group>"; };
 		951CDB8AA8954B18AA7554CD /* OpenSans-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Bold.ttf"; path = "../assets/OpenSans-Bold.ttf"; sourceTree = "<group>"; };
 		9A9E5C4A6C654C56B328B5B8 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		A126A34A50D94690A8F3DEA6 /* OpenSans-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-ExtraBoldItalic.ttf"; path = "../assets/OpenSans-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
-		A1909862A0CE282A9A6F7D52 /* Pods-Berty.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.debug.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.debug.xcconfig"; sourceTree = "<group>"; };
 		A7F76ADEF32249B59CD4A790 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		ACA3FA19E16C4CE289EC144D /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		B71C1E04461D4461970D53B3 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 		B9A18E69F8054323A1B5669F /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		BC24EE9A24B2424FB34D78EF /* OpenSans-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-BoldItalic.ttf"; path = "../assets/OpenSans-BoldItalic.ttf"; sourceTree = "<group>"; };
 		BC8CB08233B64D939FFE0469 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
+		BD93067BBAEDAF142A40DC71 /* libPods-Berty.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C22C7B2AFD50420F85A0D4F2 /* OpenSans-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-LightItalic.ttf"; path = "../assets/OpenSans-LightItalic.ttf"; sourceTree = "<group>"; };
 		CDD34DF205BB4B44B79D823A /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		E7A1DC446F744A008F70567F /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
@@ -116,7 +119,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DF1CF8685A8FD1A9A562BD92 /* libPods-Berty.a in Frameworks */,
+				512BA5125917EC933FF84FD9 /* libPods-Berty.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -186,7 +189,7 @@
 				8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				8BEDCC0FECBC5098CC5A7FC6 /* libPods-Berty.a */,
+				BD93067BBAEDAF142A40DC71 /* libPods-Berty.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -234,6 +237,9 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				8D2F006324AF31B600C94C2C /* Berty Staff.entitlements */,
+				8D2F006224AE63CF00C94C2C /* Berty Yolo.entitlements */,
+				8D2F003C24AE4F4600C94C2C /* Berty Debug.entitlements */,
 				F8BF4661238444080077A846 /* Release.xcconfig */,
 				F81E8EE62382FE27007CDBA3 /* Debug.xcconfig */,
 				13B07FAE1A68108700A75B9A /* Berty */,
@@ -264,8 +270,8 @@
 		BB82E9355B2B1BDD0583713C /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				A1909862A0CE282A9A6F7D52 /* Pods-Berty.debug.xcconfig */,
-				6BDA6987DE819826236D7D61 /* Pods-Berty.release.xcconfig */,
+				2F0FC1A9093A352D61CD280F /* Pods-Berty.debug.xcconfig */,
+				948E20467A5DFBE622213BEA /* Pods-Berty.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -284,13 +290,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F83687562355EC9E00CCC6D9 /* Build configuration list for PBXNativeTarget "Berty" */;
 			buildPhases = (
-				C6A9C4F50B6AB37395A1DE3D /* [CP] Check Pods Manifest.lock */,
+				D1CD4623CF100EFD2E89959E /* [CP] Check Pods Manifest.lock */,
 				F836874C2355EC9E00CCC6D9 /* Start Packager */,
 				F836874D2355EC9E00CCC6D9 /* Sources */,
 				F83687502355EC9E00CCC6D9 /* Frameworks */,
 				F83687522355EC9E00CCC6D9 /* Resources */,
 				F83687552355EC9E00CCC6D9 /* Bundle React Native code and images */,
-				25F16C3CF24C8BD72426F5B6 /* [CP] Copy Pods Resources */,
+				71E0832E80CEA83A375095E3 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -473,7 +479,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		25F16C3CF24C8BD72426F5B6 /* [CP] Copy Pods Resources */ = {
+		71E0832E80CEA83A375095E3 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -521,7 +527,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Berty/Pods-Berty-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C6A9C4F50B6AB37395A1DE3D /* [CP] Check Pods Manifest.lock */ = {
+		D1CD4623CF100EFD2E89959E /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -862,7 +868,7 @@
 		};
 		F83687572355EC9E00CCC6D9 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A1909862A0CE282A9A6F7D52 /* Pods-Berty.debug.xcconfig */;
+			baseConfigurationReference = 2F0FC1A9093A352D61CD280F /* Pods-Berty.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -892,7 +898,7 @@
 		};
 		F83687582355EC9E00CCC6D9 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6BDA6987DE819826236D7D61 /* Pods-Berty.release.xcconfig */;
+			baseConfigurationReference = 948E20467A5DFBE622213BEA /* Pods-Berty.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -924,7 +930,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "Berty Debug.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
@@ -943,13 +951,16 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.debug;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = maccatalyst.tech.berty.ios.debug;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development tech.berty.ios.debug";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Development tech.berty.ios.debug (Catalyst)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
+				VALID_ARCHS = "arm64 arm64e armv7 armv7s x86_64";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -959,7 +970,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "Berty Debug.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
@@ -972,12 +985,15 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.debug;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = maccatalyst.tech.berty.ios.debug;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development tech.berty.ios.debug";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match Development tech.berty.ios.debug (Catalyst)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
+				VALID_ARCHS = "arm64 arm64e armv7 armv7s x86_64";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -986,12 +1002,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Berty Staff.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
 				ENABLE_BITCODE = NO;
+				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
@@ -1001,12 +1020,15 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.staff;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = maccatalyst.tech.berty.ios.staff;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc tech.berty.ios.staff";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match AdHoc tech.berty.ios.staff (Catalyst)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
+				VALID_ARCHS = "arm64 arm64e armv7 armv7s x86_64";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1015,11 +1037,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Berty Staff.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
 				ENABLE_BITCODE = NO;
+				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = NO;
@@ -1029,12 +1054,15 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.staff;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = maccatalyst.tech.berty.ios.staff;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc tech.berty.ios.staff";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match AdHoc tech.berty.ios.staff (Catalyst)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
+				VALID_ARCHS = "arm64 arm64e armv7 armv7s x86_64";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -1043,12 +1071,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Berty Yolo.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = GR5463T564;
 				ENABLE_BITCODE = NO;
+				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -1057,12 +1088,15 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.yolo;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = maccatalyst.tech.berty.ios.yolo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match InHouse tech.berty.ios.yolo";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match InHouse tech.berty.ios.yolo (Catalyst)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
+				VALID_ARCHS = "arm64 arm64e armv7 armv7s x86_64";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1071,11 +1105,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Berty Yolo.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = GR5463T564;
 				ENABLE_BITCODE = NO;
+				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -1084,12 +1121,15 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.yolo;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = maccatalyst.tech.berty.ios.yolo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match InHouse tech.berty.ios.yolo";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "match InHouse tech.berty.ios.yolo (Catalyst)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
+				VALID_ARCHS = "arm64 arm64e armv7 armv7s x86_64";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

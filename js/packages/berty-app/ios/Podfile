@@ -86,6 +86,79 @@ target 'Berty' do
   add_flipper_pods!
   post_install do |installer|
     flipper_post_install(installer)
-  end
 
+    # Removes pods incompatible with Catalyst (camera pods)
+    unsupported_header_paths = [
+      '"${PODS_ROOT}/Headers/Public/AFNetworking"',
+      '"${PODS_ROOT}/Headers/Public/CocoaLibEvent"',
+      '"${PODS_ROOT}/Headers/Public/OpenSSL-Universal"',
+      '"${PODS_ROOT}/Headers/Public/react-native-camera"',
+      '"${PODS_ROOT}/Headers/Public/react-native-example"'
+    ]
+    unsupported_header_paths_debug = [
+      '"${PODS_ROOT}/Headers/Public/Flipper"',
+      '"${PODS_ROOT}/Headers/Public/Flipper-DoubleConversion"',
+      '"${PODS_ROOT}/Headers/Public/Flipper-Folly"',
+      '"${PODS_ROOT}/Headers/Public/Flipper-Glog"',
+      '"${PODS_ROOT}/Headers/Public/Flipper-PeerTalk"',
+      '"${PODS_ROOT}/Headers/Public/Flipper-RSocket"',
+      '"${PODS_ROOT}/Headers/Public/FlipperKit"'
+    ]
+    unsupported_lib_paths = [
+      '"${PODS_CONFIGURATION_BUILD_DIR}/AFNetworking"',
+      '"${PODS_CONFIGURATION_BUILD_DIR}/react-native-camera"',
+      '"${PODS_CONFIGURATION_BUILD_DIR}/react-native-example"',
+      '"${PODS_ROOT}/CocoaLibEvent/lib"',
+      '"${PODS_ROOT}/OpenSSL-Universal/ios/lib"'
+    ]
+    unsupported_lib_paths_debug = [
+      '"${PODS_CONFIGURATION_BUILD_DIR}/Flipper"',
+      '"${PODS_CONFIGURATION_BUILD_DIR}/Flipper-DoubleConversion"',
+      '"${PODS_CONFIGURATION_BUILD_DIR}/Flipper-Folly"',
+      '"${PODS_CONFIGURATION_BUILD_DIR}/Flipper-Glog"',
+      '"${PODS_CONFIGURATION_BUILD_DIR}/Flipper-PeerTalk"',
+      '"${PODS_CONFIGURATION_BUILD_DIR}/Flipper-RSocket"',
+      '"${PODS_CONFIGURATION_BUILD_DIR}/FlipperKit"',
+    ]
+    unsupported_ldflags = [
+      '-l"AFNetworking"',
+      '-l"crypto"',
+      '-l"event"',
+      '-l"event_core"',
+      '-l"event_extra"',
+      '-l"event_pthreads"',
+      '-l"ssl"',
+      '-l"react-native-camera"',
+      '-l"react-native-example"'
+    ]
+    unsupported_ldflags_debug = [
+      '-l"Flipper"',
+      '-l"Flipper-DoubleConversion"',
+      '-l"Flipper-Folly"',
+      '-l"Flipper-Glog"',
+      '-l"Flipper-PeerTalk"',
+      '-l"Flipper-RSocket"',
+      '-l"FlipperKit"',
+    ]
+    unsupported_rel = unsupported_header_paths + unsupported_lib_paths + unsupported_ldflags
+    unsupported_debug = unsupported_header_paths_debug + unsupported_lib_paths_debug + unsupported_ldflags_debug
+    installer.pods_project.targets.each do |target|
+      if target.name.start_with?("Pods")
+        puts "Updating #{target.name} to exclude Catalyst incompatible pods"
+        target.build_configurations.each do |config|
+          debug = config.name == 'Debug'
+          xcconfig_path = config.base_configuration_reference.real_path
+          xcconfig = File.read(xcconfig_path)
+          (unsupported_rel + (debug ? unsupported_debug : [])).each do |unsupported|
+            xcconfig.sub!(unsupported, '')
+          end
+          new_xcconfig = xcconfig
+          new_xcconfig += "HEADER_SEARCH_PATHS[sdk=iphone*] = $(inherited) #{(unsupported_header_paths + (debug ? unsupported_header_paths_debug : [])).join(' ')}\n"
+          new_xcconfig += "LIBRARY_SEARCH_PATHS[sdk=iphone*] = $(inherited) #{(unsupported_lib_paths + (debug ? unsupported_lib_paths_debug : [])).join(' ')}\n"
+          new_xcconfig += "OTHER_LDFLAGS[sdk=iphone*] = $(inherited) #{(unsupported_ldflags + (debug ? unsupported_ldflags_debug : [])).join(' ')}\n"
+          File.open(xcconfig_path, "w") { |file| file << new_xcconfig }
+        end
+      end
+    end
+  end
 end
