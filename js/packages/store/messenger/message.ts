@@ -238,6 +238,124 @@ export const queries: QueryReducer = {
 	},
 }
 
+export enum CommandsMessageType {
+	Help = 'help',
+	DebugGroup = 'debug-group',
+	SendMessage = 'send-message',
+}
+
+const addCommandMessage = function* (conv: any, title: any, response: any) {
+	const index: any = yield select((state) => queries.getLength(state))
+	const aggregateId = getAggregateId({
+		accountId: conv.id,
+		index: index.toString(),
+	})
+	const message: UserMessage = {
+		type: AppMessageType.UserMessage,
+		body: '/' + title + '\n\n' + response,
+		attachments: [],
+		sentDate: Date.now(),
+	}
+	yield put(
+		events.received({
+			aggregateId,
+			message,
+			receivedDate: Date.now(),
+			isMe: true,
+		}),
+	)
+	yield call(conversation.transactions.addMessage, {
+		aggregateId: conv.pk,
+		messageId: aggregateId,
+		isMe: true,
+	})
+}
+
+export const getCommandsMessage = () => {
+	const arr = {
+		[CommandsMessageType.Help]: {
+			help: 'Displays all commands',
+			run: function* (context: any, args: any) {
+				const response =
+					'/help					Show this command\n' +
+					'/debug-group				Indicate 1to1 connection\n' +
+					'/send-message [message]	Send message\n'
+				yield addCommandMessage(context.conv, CommandsMessageType.Help, response)
+				return
+			},
+		},
+		[CommandsMessageType.DebugGroup]: {
+			help: 'List peers in this group',
+			run: function* (context: any, args: any) {
+				try {
+					const group: any = yield* protocol.transactions.client.debugGroup({
+						id: context.conv.accountId,
+						groupPk: strToBuf(context.conv.pk),
+					}) // does not support multi devices per account
+					const response = group.peerIds.length
+						? 'You are connected with this peer !'
+						: 'You are not connected with this peer ...'
+					yield addCommandMessage(context.conv, CommandsMessageType.DebugGroup, response)
+					return
+				} catch (error) {
+					return error
+				}
+			},
+		},
+		[CommandsMessageType.SendMessage]: {
+			help: 'Send a message',
+			run: function* (context: any, args: any) {
+				try {
+					// TODO: implem minimist and put this const in args
+					const body = context.payload.body.substr(CommandsMessageType.SendMessage.length + 2) // 2 = slash + space before the message
+					const response = !body ? 'Invalid arguments ...' : 'You have sent a message !'
+					yield addCommandMessage(context.conv, CommandsMessageType.SendMessage, response)
+					if (body) {
+						const userMessage: UserMessage = {
+							type: AppMessageType.UserMessage,
+							body,
+							attachments: [],
+							sentDate: Date.now(),
+						}
+
+						yield* protocol.transactions.client.appMessageSend({
+							id: context.conv.accountId,
+							groupPk: strToBuf(context.conv.pk), // need to set the pk in conv handlers
+							payload: jsonToBuf(userMessage),
+						})
+					}
+					return
+				} catch (error) {
+					return error
+				}
+			},
+		},
+	}
+	return arr
+}
+
+export const isCommandMessage = (message: string) => {
+	const commands: any = getCommandsMessage()
+	// index for simple command
+	let index = message.split('\n')[0]
+	let cmd = commands[index.substr(1)]
+	if (cmd && index.substr(0, 1) === '/') {
+		return cmd
+	}
+	// index for command w/ args
+	index = message.split(' ')[0]
+	cmd = commands[index.substr(1)]
+	if (cmd && index.substr(0, 1) === '/') {
+		return cmd
+	}
+	return null
+}
+
+export const getAggregateId: (kwargs: { accountId: string; index: string }) => string = ({
+	accountId,
+	index,
+}) => bufToStr(Buffer.concat([Buffer.from(accountId, 'utf-8'), Buffer.from(index, 'utf-8')]))
+
 export const transactions: Transactions = {
 	delete: function* ({ id }) {
 		yield put(
@@ -256,16 +374,27 @@ export const transactions: Transactions = {
 		}
 
 		if (payload.type === AppMessageType.UserMessage) {
-			const message: UserMessage = {
-				type: AppMessageType.UserMessage,
-				body: payload.body,
-				attachments: payload.attachments,
-				sentDate: Date.now(),
+			const cmd = isCommandMessage(payload.body)
+			if (cmd) {
+				const context = {
+					conv,
+					payload,
+				}
+				const args = {}
+				yield cmd?.run(context, args)
+			} else {
+				const message: UserMessage = {
+					type: AppMessageType.UserMessage,
+					body: payload.body,
+					attachments: payload.attachments,
+					sentDate: Date.now(),
+				}
+
+				yield* protocol.transactions.client.appMessageSend({
+					groupPk: strToBuf(conv.pk), // need to set the pk in conv handlers
+					payload: jsonToBuf(message),
+				})
 			}
-			yield* protocol.transactions.client.appMessageSend({
-				groupPk: strToBuf(conv.pk), // need to set the pk in conv handlers
-				payload: jsonToBuf(message),
-			})
 		}
 	},
 	sendToAll: function* () {
