@@ -66,3 +66,5 @@ require (
 	moul.io/openfiles v1.2.0
 	moul.io/srand v1.4.0
 )
+
+replace github.com/mattn/go-sqlite3 => github.com/mattn/go-sqlite3 v1.13.0

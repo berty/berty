@@ -23,7 +23,7 @@
   },
   "peerDependencies": {
     "react": "^16.12.0",
-    "react-native": "^0.61.5"
+    "react-native": "0.62.2"
   },
   "dependencies": {
     "case": "^1.6.2",
