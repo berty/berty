@@ -53,7 +53,7 @@ jobs:
         with:
           version: v1.28
           working-directory: go
-          args: --timeout=2m
+          args: --timeout=10m
           # only-new-issues: true
   go-tests-on-linux:
     needs: golangci-lint
