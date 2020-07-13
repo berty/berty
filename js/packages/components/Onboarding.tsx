@@ -335,7 +335,8 @@ const NodeConfigInput: React.FC<{
 
 const CreateYourAccount: React.FC<{
 	next: Navigation
-}> = ({ next }) => {
+	setClickedCreate: any
+}> = ({ next, setClickedCreate }) => {
 	const [name, setName] = useState('')
 	const [nodeConfig, setNodeConfig] = useState(
 		__DEV__
@@ -392,6 +393,7 @@ const CreateYourAccount: React.FC<{
 								text: t('onboarding.create-account.button'),
 								onPress: () => {
 									setIsPress(true)
+									setClickedCreate(true)
 								},
 							}}
 						>
@@ -493,7 +495,7 @@ const Bluetooth: React.FC<{
 	</Translation>
 )
 
-const SetupFinished: React.FC = () => {
+const SetupFinished: React.FC<{ clickedCreate: boolean }> = ({ clickedCreate }) => {
 	const navigation = useReactNavigation()
 	const client = Messenger.useClient()
 	const dispatch = useDispatch()
@@ -504,7 +506,7 @@ const SetupFinished: React.FC = () => {
 	return (
 		<Translation>
 			{(t) =>
-				isAccount && client ? (
+				!clickedCreate ? null : isAccount ? (
 					<>
 						<View style={{ flex: 1 }}>
 							<LottieView
@@ -644,6 +646,7 @@ export const Performance: React.FC<{
 		swiperRef && swiperRef.current && swiperRef.current.scrollTo(index, true)
 	}
 	const [{ absolute, background }] = useStyles()
+	const [clickedCreate, setClickedCreate] = useState(false)
 	return (
 		<SafeAreaView style={[absolute.fill, background.blue]}>
 			<View style={absolute.fill} onLayout={onLayout}>
@@ -655,12 +658,12 @@ export const Performance: React.FC<{
 						activeDotStyle={[background.white]}
 						scrollEnabled={false}
 					>
-						<CreateYourAccount next={next(2)} />
+						<CreateYourAccount next={next(2)} setClickedCreate={setClickedCreate} />
 						{/*<SafeAreaView style={absolute.fill}>
 							<Notifications submit={authorizeNotifications} next={next(4)} />
 						</SafeAreaView>
 						<Bluetooth submit={authorizeBluetooth} next={next(5)} />*/}
-						<SetupFinished />
+						<SetupFinished clickedCreate={clickedCreate} />
 					</Swiper>
 				</KeyboardAvoidingView>
 			</View>
@@ -676,6 +679,7 @@ export const Privacy: React.FC<{}> = () => {
 		return
 	}
 	const [{ absolute, background }] = useStyles()
+	const [clickedCreate, setClickedCreate] = useState(false)
 	return (
 		<SafeAreaView style={[absolute.fill, background.red]} onLayout={onLayout}>
 			<View style={absolute.fill} onLayout={onLayout}>
@@ -686,8 +690,8 @@ export const Privacy: React.FC<{}> = () => {
 						activeDotStyle={[background.white]}
 						scrollEnabled={false}
 					>
-						<CreateYourAccount next={next(2)} />
-						<SetupFinished />
+						<CreateYourAccount next={next(2)} setClickedCreate={setClickedCreate} />
+						<SetupFinished clickedCreate={clickedCreate} />
 					</Swiper>
 				</KeyboardAvoidingView>
 			</View>
