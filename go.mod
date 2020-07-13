@@ -12,6 +12,7 @@ require (
 	github.com/buicongtan1997/protoc-gen-swagger-config v0.0.0-20190801162412-b6396e884596
 	github.com/dgraph-io/badger v1.6.1
 	github.com/gdamore/tcell v1.3.0
+	github.com/githubnemo/CompileDaemon v1.2.1
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.4.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0

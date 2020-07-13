@@ -610,6 +610,7 @@ func main() {
 					fmt.Println(godev.PrettyJSONPB(ret))
 					break
 				}
+				/// clear screen
 				print("\033[H\033[2J")
 				fmt.Println(godev.PrettyJSONPB(ret))
 				time.Sleep(infoRefreshEvery)

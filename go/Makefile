@@ -36,6 +36,11 @@ install: go.install
 clean:
 	rm -rf vendor/ out/
 
+.PHONY: mini.dev
+mini.dev: generate
+	go install github.com/githubnemo/CompileDaemon
+	CompileDaemon --color=true --build="go install -v" --build-dir="./cmd/berty" --command="berty mini"
+
 .PHONY: re
 re: clean generate install
 
