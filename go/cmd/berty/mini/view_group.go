@@ -298,7 +298,7 @@ func (v *groupView) loop(ctx context.Context) {
 }
 
 func (v *groupView) welcomeEventDisplay() {
-	bannerLines := strings.Split(banner.Banner, "\n")
+	bannerLines := strings.Split(banner.OfTheDay(), "\n")
 	v.messages.lock.Lock()
 	for i := range bannerLines {
 		v.messages.historyScroll.InsertRow(0)
