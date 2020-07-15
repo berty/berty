@@ -202,7 +202,7 @@ export const getProtocolService = (id: string): ProtocolServiceSagaClient => {
 export const getMessengerService = (id: string): MessengerServiceSagaClient => {
 	const service = services[id]
 	if (!service) {
-		throw new Error(`Messneger service for ${id} not found`)
+		throw new Error(`Messenger service for ${id} not found`)
 	}
 	return service.messenger
 }
