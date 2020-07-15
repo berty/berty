@@ -28,6 +28,7 @@ import {
 	BertyNodeConfig,
 	defaultExternalBridgeConfig,
 } from '@berty-tech/store/protocol/client'
+import LottieView from 'lottie-react-native'
 
 type Navigation = () => void
 type Form<T> = (arg0: T) => Promise<void>
@@ -348,52 +349,82 @@ const CreateYourAccount: React.FC<{
 					},
 			  },
 	)
-	const [{ text, padding, margin, background, border }] = useStyles()
+	const [{ text, padding, margin, background, border, color }] = useStyles()
 	const createAccount = Messenger.useAccountCreate()
+	const [isPress, setIsPress] = useState<boolean>(false)
 	return (
 		<Translation>
 			{(t) => (
-				<SwiperCard
-					label='required'
-					title={t('onboarding.create-account.required')}
-					description={t('onboarding.create-account.desc')}
-					button={{
-						text: t('onboarding.create-account.button'),
-						onPress: async (): Promise<void> => {
-							createAccount({ name: name || 'Anonymous 1337', nodeConfig })
-							Vibration.vibrate(500)
-							// @TODO: Error handling
-							next()
-						},
-					}}
-				>
-					<TextInput
-						autoCapitalize='none'
-						autoCorrect={false}
-						onChangeText={(name) => {
-							setName(name)
-							if (nodeConfig.type === 'embedded') {
-								setNodeConfig({
-									...nodeConfig,
-									opts: {
-										...nodeConfig.opts,
-										tracingPrefix: name,
-									},
-								})
-							}
-						}}
-						placeholder={t('onboarding.create-account.placeholder')}
-						style={[
-							margin.top.medium,
-							background.light.grey,
-							padding.medium,
-							text.size.large,
-							border.radius.small,
-							text.color.black,
-						]}
-					/>
-					{__DEV__ && <NodeConfigInput onConfigChange={setNodeConfig} config={nodeConfig} />}
-				</SwiperCard>
+				<>
+					<View style={{ flex: 1 }}>
+						<LottieView
+							source={require('./Berty_onboard_animation_assets2/Startup animation assets/Berty BG.json')}
+							autoPlay
+							loop
+							style={{ width: '100%' }}
+						/>
+
+						{!isPress ? (
+							<LottieView
+								source={require('./Berty_onboard_animation_assets2/Startup animation assets/Shield appear.json')}
+								autoPlay
+								loop={false}
+							/>
+						) : (
+							<LottieView
+								source={require('./Berty_onboard_animation_assets2/Startup animation assets/Shield dissapear.json')}
+								autoPlay
+								loop={false}
+								onAnimationFinish={async (): Promise<void> => {
+									createAccount({ name: name || 'Anonymous 1337', nodeConfig })
+									Vibration.vibrate(500)
+									// @TODO: Error handling
+									next()
+								}}
+							/>
+						)}
+					</View>
+					<View style={{ flex: 1 }}>
+						<SwiperCard
+							label='required'
+							title={t('onboarding.create-account.required')}
+							description={t('onboarding.create-account.desc')}
+							button={{
+								text: t('onboarding.create-account.button'),
+								onPress: () => {
+									setIsPress(true)
+								},
+							}}
+						>
+							<TextInput
+								autoCapitalize='none'
+								autoCorrect={false}
+								onChangeText={(name) => {
+									setName(name)
+									if (nodeConfig.type === 'embedded') {
+										setNodeConfig({
+											...nodeConfig,
+											opts: {
+												...nodeConfig.opts,
+												tracingPrefix: name,
+											},
+										})
+									}
+								}}
+								placeholder={t('onboarding.create-account.placeholder')}
+								style={[
+									margin.top.medium,
+									background.light.grey,
+									padding.medium,
+									text.size.large,
+									border.radius.small,
+									text.color.black,
+								]}
+							/>
+							{__DEV__ && <NodeConfigInput onConfigChange={setNodeConfig} config={nodeConfig} />}
+						</SwiperCard>
+					</View>
+				</>
 			)}
 		</Translation>
 	)
@@ -467,29 +498,137 @@ const SetupFinished: React.FC = () => {
 	const navigation = useReactNavigation()
 	const account = Messenger.useAccount()
 	const dispatch = useDispatch()
+	const [isGeneration, setIsGeneration] = useState<number>(1)
+	const [isGenerated, setIsGenerated] = useState<boolean>(false)
+	const [isFinished, setIsFinished] = useState<boolean>(false)
+	const [isAccount, setIsAccount] = useState<boolean>(false)
 	return (
 		<Translation>
 			{(t) =>
-				account ? (
-					<SwiperCard
-						title={t('onboarding.setup-finished.title')}
-						description={t('onboarding.setup-finished.desc')}
-						button={{
-							text: t('onboarding.setup-finished.button'),
-							onPress: () => {
-								dispatch(messenger.account.commands.onboard({ id: account.id }))
-								Vibration.vibrate([500])
-								navigation.navigate(Routes.Root.Tabs, { screen: Routes.Main.Home })
-							},
-						}}
-					/>
+				isAccount && account ? (
+					<>
+						<View style={{ flex: 1 }}>
+							<LottieView
+								source={require('./Berty_onboard_animation_assets2/Startup animation assets/Berty BG.json')}
+								autoPlay
+								loop
+								style={{ width: '100%' }}
+							/>
+							{!isGenerated ? (
+								<>
+									<LottieView
+										source={require('./Berty_onboard_animation_assets2/Startup animation assets/Circle spin.json')}
+										autoPlay
+										loop={false}
+									/>
+									<LottieView
+										source={require('./Berty_onboard_animation_assets2/Startup animation assets/Code Generated.json')}
+										autoPlay
+										loop={false}
+										onAnimationFinish={() => {
+											setIsGenerated(true)
+										}}
+									/>
+								</>
+							) : (
+								<>
+									{!isFinished ? (
+										<LottieView
+											source={require('./Berty_onboard_animation_assets2/Startup animation assets/Finish appear.json')}
+											autoPlay
+											loop={false}
+											onAnimationFinish={() => {
+												setIsFinished(true)
+											}}
+										/>
+									) : (
+										<LottieView
+											source={require('./Berty_onboard_animation_assets2/Startup animation assets/Finish loop.json')}
+											autoPlay
+											loop
+										/>
+									)}
+								</>
+							)}
+						</View>
+						<View style={{ flex: 1 }}>
+							<SwiperCard
+								title={t('onboarding.setup-finished.title')}
+								description={t('onboarding.setup-finished.desc')}
+								button={{
+									text: t('onboarding.setup-finished.button'),
+									onPress: () => {
+										dispatch(messenger.account.commands.onboard({ id: account.id }))
+										Vibration.vibrate([500])
+										navigation.navigate(Routes.Root.Tabs, { screen: Routes.Main.Home })
+									},
+								}}
+							/>
+						</View>
+					</>
 				) : (
-					<SwiperCard
-						title={t('onboarding.generate-key.title')}
-						description={t('onboarding.generate-key.desc')}
-					>
-						<Spinner size='large' />
-					</SwiperCard>
+					<>
+						<View style={{ flex: 1 }}>
+							<LottieView
+								source={require('./Berty_onboard_animation_assets2/Startup animation assets/Berty BG.json')}
+								autoPlay
+								loop
+								style={{ width: '100%' }}
+							/>
+							{isGeneration === 1 && (
+								<LottieView
+									source={require('./Berty_onboard_animation_assets2/Startup animation assets/Code generation row 1.json')}
+									autoPlay
+									loop={false}
+									speed={2}
+									onAnimationFinish={() => {
+										account ? setIsAccount(true) : setIsGeneration(2)
+									}}
+								/>
+							)}
+							{isGeneration === 2 && (
+								<LottieView
+									source={require('./Berty_onboard_animation_assets2/Startup animation assets/Code generation row 2.json')}
+									autoPlay
+									loop={false}
+									speed={2}
+									onAnimationFinish={() => {
+										account ? setIsAccount(true) : setIsGeneration(3)
+									}}
+								/>
+							)}
+							{isGeneration === 3 && (
+								<LottieView
+									source={require('./Berty_onboard_animation_assets2/Startup animation assets/Code generation row 3.json')}
+									autoPlay
+									loop={false}
+									speed={2}
+									onAnimationFinish={() => {
+										account ? setIsAccount(true) : setIsGeneration(4)
+									}}
+								/>
+							)}
+							{isGeneration === 4 && (
+								<LottieView
+									source={require('./Berty_onboard_animation_assets2/Startup animation assets/Code generation row 4.json')}
+									autoPlay
+									loop={false}
+									speed={2}
+									onAnimationFinish={() => {
+										account ? setIsAccount(true) : setIsGeneration(1)
+									}}
+								/>
+							)}
+						</View>
+						<View style={{ flex: 1 }}>
+							<SwiperCard
+								title={t('onboarding.generate-key.title')}
+								description={t('onboarding.generate-key.desc')}
+							>
+								<Spinner size='large' />
+							</SwiperCard>
+						</View>
+					</>
 				)
 			}
 		</Translation>
