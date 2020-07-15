@@ -26,7 +26,6 @@ ext_ldflags = -ldflags="-X berty.tech/berty/go/pkg/bertymessenger.VcsRef=$(VCS_R
 pkg := $(dir $(wildcard $(PWD)/packages/*/package.json))
 pkg_mod := $(patsubst %, %/node_modules, $(pkg)) node_modules
 pkg_desc := $(patsubst %, %/package.json, $(pkg)) package.json
-gomobile_bin := $(GOPATH)/bin/gomobile
 bridge_src := $(call rwildcard,../vendor ../go, "*.go")
 berty_bin := $(GOPATH)/bin/berty
 react-native := $(abspath node_modules/.bin/react-native)
@@ -103,7 +102,6 @@ endif
 	@echo "  rm -rf $$HOME/.gradle/caches"
 	@echo "  rm -rf $(HOME)/Library/Developer/Xcode/DerivedData"
 	@echo "  rm -rf ~/Library/Caches/CocoaPods"
-	@echo "  rm -f $(gomobile_bin)"
 	@echo "  rm -f $(berty_bin)"
 
 .PHONY: regenerate
@@ -294,10 +292,19 @@ _write_gen_sum:
 	  shasum $(gensum_src) | sort > gen.sum.tmp
 	  mv gen.sum.tmp gen.sum;
 
+## Other
+
+.PHONY: tidy
+tidy:
+	go mod tidy
+	cd packages/go-bridge && go mod tidy
+
 ## file-based rules
 
 ../vendor: ../go.mod ../go.sum
 	cd .. && GO111MODULE=on go mod vendor
+
+../vendor/github.com/gogo/protobuf/gogoproto/gogo.proto: ../vendor
 
 $(pkg_mod): $(pkg_desc)
 	$(call check-program, yarn)
@@ -309,10 +316,7 @@ $(pkg_mod): $(pkg_desc)
 	node_modules/.bin/jetifier
 	mkdir -p $(pkg_mod)
 	touch $(pkg_mod)
-
-$(gomobile_bin):
-	@# FIXME: use relative gomobile binary and version it in go.mod (ping @moul)
-	GO111MODULE=off go get golang.org/x/mobile/cmd/gomobile
+	touch node_modules/go.mod # avoid go to lookup in this directory
 
 packages/storybook-mobile/storybook/storyLoader.gen.js: packages/storybook-mobile/node_modules
 	PATH=$(PATH) rnstl \
@@ -344,15 +348,15 @@ packages/berty-app/ios/Pods/Manifest.lock: packages/berty-app/ios/Podfile packag
 packages/berty-app/ios/Podfile:
 	touch $@
 
-packages/go-bridge/ios/Frameworks/Bertybridge.framework: $(bridge_src) ../vendor $(gomobile_bin)
-	cd packages/go-bridge && $(gomobile_bin) init
+packages/go-bridge/ios/Frameworks/Bertybridge.framework: $(bridge_src) ../vendor
+	cd packages/go-bridge && go install golang.org/x/mobile/cmd/gomobile
+	cd packages/go-bridge && gomobile init
 	@mkdir -p "packages/go-bridge/ios/Frameworks"
-	GO111MODULE=off $(gomobile_bin) bind -o $@ -v $(ext_ldflags) -target ios berty.tech/berty/go/framework/bertybridge
+	GO111MODULE=off gomobile bind -o $@ -v $(ext_ldflags) -target ios berty.tech/berty/go/framework/bertybridge
 	touch "packages/go-bridge/ios/Frameworks"
 
-packages/go-bridge/android/libs/gobridge.aar: $(aar_src) ../vendor $(gomobile_bin)
-	cd packages/go-bridge && $(gomobile_bin) init
+packages/go-bridge/android/libs/gobridge.aar: $(aar_src) ../vendor
+	cd packages/go-bridge && go install golang.org/x/mobile/cmd/gomobile
+	cd packages/go-bridge && gomobile init
 	@mkdir -p "packages/go-bridge/android/libs"
-	GO111MODULE=off $(gomobile_bin) bind -o $@ -v $(ext_ldflags) -target android berty.tech/berty/go/framework/bertybridge
-
-../vendor/github.com/gogo/protobuf/gogoproto/gogo.proto: ../vendor
+	GO111MODULE=off gomobile bind -o $@ -v $(ext_ldflags) -target android berty.tech/berty/go/framework/bertybridge

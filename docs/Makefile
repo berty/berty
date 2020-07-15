@@ -67,3 +67,6 @@ bump.deploy: bump.validate
 	@# gem install bump-cli
 	bump deploy --token=$(BUMP_TOKEN) --doc=f3c48f1c-2b5b-4d3f-9ddb-40f6cf09b905 .tmp/openapi/bertymessenger.swagger.json
 	bump deploy --token=$(BUMP_TOKEN) --doc=6eb1bb1e-c65d-4b73-a8c4-0e545742f6db .tmp/openapi/bertyprotocol.swagger.json
+
+.PHONY: tidy
+tidy:

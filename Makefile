@@ -12,8 +12,8 @@ generate:
 	cd js; make generate
 	cd docs; make generate
 
-.PHONY: regenerate
-regenerate:
+.PHONY: regenerate tidy
+regenerate tidy:
 	cd go; make $@
 	cd js; make $@
 	cd docs; make $@
