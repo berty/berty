@@ -116,7 +116,6 @@ const DeleteAccountContent: React.FC<{}> = () => {
 	useEffect(() => {
 		if (prevAccount && !account) {
 			navigation.reset({ routes: [{ name: Routes.Onboarding.GetStarted }] })
-			Vibration.vibrate([1000, 1000, 2000, 1000, 1000])
 		}
 	})
 	useEffect(() => {
@@ -171,7 +170,10 @@ const DeleteAccountContent: React.FC<{}> = () => {
 							_styles.deleteButton,
 							!confirmed && { opacity: 0.5 },
 						]}
-						onPress={() => setStartDelete(true)}
+						onPress={() => {
+							Vibration.vibrate(500)
+							setStartDelete(true)
+						}}
 						disabled={!confirmed}
 					>
 						<Icon name='close' width={30} height={30} fill={color.red} style={row.item.justify} />
