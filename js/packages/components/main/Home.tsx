@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import { TouchableOpacity, View, ViewProps, ScrollView, TouchableHighlight } from 'react-native'
 import { Translation } from 'react-i18next'
 import { useLayout } from '../hooks'
@@ -15,6 +15,8 @@ import { Icon, Text } from 'react-native-ui-kitten'
 import { SafeAreaView, SafeAreaConsumer } from 'react-native-safe-area-context'
 import FromNow from '../shared-components/FromNow'
 import Logo from './1_berty_picto.svg'
+import { scaleHeight } from '@berty-tech/styles/constant'
+import { request } from 'http'
 
 //
 // Main List
@@ -22,11 +24,11 @@ import Logo from './1_berty_picto.svg'
 
 type RequestsProps = ViewProps & {
 	items: Array<messenger.contact.Entity>
+	isShow: boolean
 }
 
 type ConversationsProps = ViewProps & {
 	items: Array<messenger.conversation.Entity>
-	hasRequests: boolean
 }
 
 type ConversationsItemProps = messenger.conversation.Entity
@@ -150,10 +152,10 @@ const ContactRequestsItem: React.FC<messenger.contact.Entity> = ({
 	)
 }
 
-const Requests: React.FC<RequestsProps> = ({ items, style, onLayout }) => {
-	const [{ padding, text }] = useStyles()
-	return items?.length ? (
-		<SafeAreaView onLayout={onLayout} style={style}>
+const Requests: React.FC<RequestsProps> = ({ items, style, onLayout, isShow }) => {
+	const [{ padding, text, background }] = useStyles()
+	return items?.length && isShow ? (
+		<SafeAreaView onLayout={onLayout} style={[style, background.blue]}>
 			<View style={[padding.top.medium]}>
 				<Text style={[text.color.white, text.size.huge, text.bold.medium, padding.medium]}>
 					Requests
@@ -307,55 +309,97 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	)
 }
 
-const Conversations: React.FC<ConversationsProps> = ({ items, hasRequests }) => {
-	const [{ overflow, border, padding, margin, text, background, row }] = useStyles()
+const Conversations: React.FC<ConversationsProps> = ({ items, onLayout, style }) => {
+	const [{ background }] = useStyles()
 	return items?.length ? (
-		<Translation>
-			{(t): React.ReactNode => (
-				<SafeAreaConsumer>
-					{(insets) => (
-						<ScrollView
-							style={[overflow]}
-							contentContainerStyle={[
-								background.white,
-								border.radius.big,
-								{
-									flexGrow: 1,
-									paddingTop: !hasRequests && insets?.top ? insets.top : 0,
-									paddingBottom: (insets?.bottom || 0) + 110,
-								},
-							]}
-							bounces={false}
-						>
-							<View style={[row.left, padding.left.scale(27), { alignItems: 'center' }]}>
-								<Logo width={35} height={35} />
-								<Text
-									style={[
-										text.color.black,
-										text.size.huge,
-										text.bold.medium,
-										padding.medium,
-										padding.top.big,
-										margin.horizontal.medium,
-									]}
-								>
-									{t('main.messages.title')}
-								</Text>
-							</View>
-							{items.map((_) => {
-								return <ConversationsItem key={_.id} {..._} />
-							})}
-						</ScrollView>
-					)}
-				</SafeAreaConsumer>
+		<SafeAreaConsumer>
+			{(insets) => (
+				<View
+					onLayout={onLayout}
+					style={[
+						style,
+						background.white,
+						{
+							paddingBottom: 100 - (insets?.bottom || 0) + (insets?.bottom || 0),
+						},
+					]}
+				>
+					{items &&
+						items.length &&
+						items.map((_) => {
+							return <ConversationsItem key={_.id} {..._} />
+						})}
+				</View>
 			)}
-		</Translation>
+		</SafeAreaConsumer>
 	) : null
+}
+
+const HomeHeader: React.FC<
+	ViewProps & {
+		hasRequests: boolean
+		scrollRef: React.RefObject<ScrollView>
+		isOnTop: boolean
+	}
+> = ({ hasRequests, scrollRef, onLayout, isOnTop }) => {
+	const [{ border, padding, margin, text, background, color }] = useStyles()
+
+	return (
+		<View onLayout={onLayout}>
+			<Translation>
+				{(t): React.ReactNode => (
+					<View
+						style={[
+							background.white,
+							border.radius.top.big,
+							padding.horizontal.scale(27),
+							{
+								alignItems: 'center',
+								flexDirection: 'row',
+								justifyContent: 'space-between',
+								paddingTop: !hasRequests
+									? 40 * scaleHeight
+									: isOnTop
+									? 40 * scaleHeight
+									: 20 * scaleHeight,
+							},
+						]}
+					>
+						<View
+							style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}
+						>
+							<Logo
+								width={35}
+								height={35}
+								onPress={() => {
+									scrollRef.current?.scrollTo({ y: 0, animated: true })
+								}}
+							/>
+							<Text
+								style={[
+									text.color.black,
+									text.size.huge,
+									text.bold.medium,
+									padding.medium,
+									padding.top.big,
+									margin.horizontal.medium,
+								]}
+							>
+								{t('main.messages.title')}
+							</Text>
+						</View>
+					</View>
+				)}
+			</Translation>
+		</View>
+	)
 }
 
 export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	// TODO: do something to animate the requests
-	const [, onLayoutRequests] = useLayout()
+	const [layoutRequests, onLayoutRequests] = useLayout()
+	const [layoutConversations, onLayoutConversations] = useLayout()
+	const [layoutHeader, onLayoutHeader] = useLayout()
 
 	const requests = Messenger.useAccountContactsWithIncomingRequests().filter(
 		(contact) => !(contact.request.accepted || contact.request.discarded),
@@ -367,12 +411,56 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 		return 0
 	})
 
-	const [{ absolute, background }] = useStyles()
+	const [{ color }] = useStyles()
+	const scrollRef = useRef<ScrollView>(null)
+	const [offset, setOffset] = useState<any>()
+	const [isOnTop, setIsOnTop] = useState<boolean>(false)
+	const [dirScroll, setDirScroll] = useState<string>('')
+	const [bgColor, setBgColor] = useState<any>()
+
+	useEffect(() => {
+		if (!requests.length) {
+			setBgColor(color.white)
+		} else if ((dirScroll === 'up' && isOnTop) || isOnTop) {
+			setBgColor(color.white)
+		} else if ((dirScroll === 'down' && !isOnTop) || !isOnTop) {
+			setBgColor(color.blue)
+		}
+	}, [dirScroll, isOnTop, color.white, color.blue, requests.length])
 
 	return (
-		<View style={[absolute.fill, requests.length ? background.blue : background.white]}>
-			<Requests items={requests} onLayout={onLayoutRequests} />
-			<Conversations items={conversations} hasRequests={requests.length > 0} />
+		<View style={{ flex: 1 }}>
+			<ScrollView
+				ref={scrollRef}
+				style={[{ backgroundColor: bgColor }]}
+				stickyHeaderIndices={[1]}
+				showsVerticalScrollIndicator={false}
+				scrollEventThrottle={16}
+				onScroll={(e) => {
+					if (e.nativeEvent.contentOffset) {
+						if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
+							setIsOnTop(true)
+						} else {
+							setIsOnTop(false)
+						}
+						if (offset && e.nativeEvent.contentOffset.y >= offset.y) {
+							setDirScroll('up')
+						} else if (offset && e.nativeEvent.contentOffset.y < offset.y) {
+							setDirScroll('down')
+						}
+						setOffset(e.nativeEvent.contentOffset)
+					}
+				}}
+			>
+				<Requests items={requests} onLayout={onLayoutRequests} isShow={true} />
+				<HomeHeader
+					isOnTop={isOnTop}
+					onLayout={onLayoutHeader}
+					hasRequests={requests.length > 0}
+					scrollRef={scrollRef}
+				/>
+				<Conversations items={conversations} onLayout={onLayoutConversations} />
+			</ScrollView>
 		</View>
 	)
 }
