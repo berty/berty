@@ -2,6 +2,8 @@ import { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { messenger } from '@berty-tech/store'
 import { useAccount, useClient } from './account'
+import { useAccountContacts } from './contact'
+import { useGroups } from './Groups'
 
 // conversations commands
 export const useConversationGenerate = () => {
@@ -23,9 +25,18 @@ export const useConversationCreate: UseConversationCreate = ({ name, members }) 
 			return () => {}
 		}
 		return () => {
-			dispatch(messenger.conversation.commands.create({ accountId: account.id, name, members }))
+			dispatch(messenger.conversation.commands.create({ name, members }))
 		}
 	}, [account, dispatch, members, name])
+}
+
+export const useConversationJoin = ({ link }: { link: string }) => {
+	const dispatch = useDispatch()
+	return useMemo(() => {
+		return () => {
+			dispatch(messenger.conversation.commands.join({ link }))
+		}
+	}, [dispatch, link])
 }
 
 export const useConversationDelete = () => {
@@ -51,18 +62,37 @@ export const useStopReadConversation = (id: messenger.conversation.Entity['id'])
 }
 
 // conversation queries
-export const useConversationList = () => {
+
+export const useAllConversations = () => {
 	const client = useClient()
 	// TODO: handle multiple devices
 	const list = useSelector((state: messenger.conversation.GlobalState) =>
+		client ? messenger.conversation.queries.list(state) : [],
+	)
+	return list
+}
+
+export const useConversationList = () => {
+	const client = useClient()
+	const groups = useGroups()
+	const contacts = useAccountContacts()
+	// TODO: handle multiple devices
+	const list = useSelector((state: messenger.conversation.GlobalState) =>
 		client
-			? messenger.conversation.queries
-					.list(state)
-					.filter(
-						(conv) =>
-							conv.kind === 'fake' ||
-							Object.keys(conv.membersDevices).filter((m) => m !== client.accountPk).length > 0,
+			? messenger.conversation.queries.list(state).filter((conv) => {
+					const { membersDevices } = groups[conv.pk] || { membersDevices: {} }
+					const contact =
+						conv.kind === messenger.conversation.ConversationKind.OneToOne &&
+						contacts.find((c) => c.id === conv.contactId)
+					return (
+						conv.kind === 'fake' ||
+						conv.kind === messenger.conversation.ConversationKind.MultiMember ||
+						(contact &&
+							contact.request.type === messenger.contact.ContactRequestType.Incoming &&
+							contact.request.accepted) ||
+						Object.keys(membersDevices).filter((m) => m !== client.accountPk).length > 0
 					)
+			  })
 			: [],
 	)
 	return list
@@ -101,14 +131,17 @@ export const useFirstConversationWithContact = (
 	contactPk: string,
 ): messenger.conversation.Entity | null => {
 	const conversations = useConversationList()
+	const groups = useGroups()
 	const conversationWithContact = useMemo(
 		() =>
-			conversations.find(
-				(conv) =>
+			conversations.find((conv) => {
+				const { membersDevices } = groups[conv.pk] || { membersDevices: {} }
+				return (
 					conv?.kind === messenger.conversation.ConversationKind.OneToOne &&
-					Object.keys(conv.membersDevices).includes(contactPk),
-			) || null,
-		[contactPk, conversations],
+					Object.keys(membersDevices || {}).includes(contactPk)
+				)
+			}) || null,
+		[contactPk, conversations, groups],
 	)
 	return !contactPk ? null : conversationWithContact
 }

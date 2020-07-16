@@ -2,17 +2,13 @@ import React, { useState, useRef, useLayoutEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Messenger } from '@berty-tech/hooks'
 import grpcBridge from '@berty-tech/grpc-bridge'
-import { protocol, groups } from '@berty-tech/store'
-import { AppMessageType } from '@berty-tech/store/messenger/AppMessage'
-import ProtocolServiceClient from '@berty-tech/store/protocol/ProtocolServiceClient.gen'
+import { protocol, groups, messenger } from '@berty-tech/store'
 import './App.css'
 import storage from 'redux-persist/lib/storage'
 import {
 	useAccountContactSearchResults,
-	useMessageSearchResults,
 	useFirstConversationWithContact,
 	useGetMessage,
-	useGetConversationFromMessage,
 	useGetMessageSearchResultWithMetadata,
 } from '@berty-tech/hooks/Messenger'
 
@@ -159,7 +155,7 @@ const Contacts: React.FC = () => {
 
 const Message: React.FC<{ msgId: string }> = ({ msgId }) => {
 	const message = Messenger.useGetMessage(msgId)
-	if (message.type === AppMessageType.UserMessage) {
+	if (message.type === messenger.AppMessageType.UserMessage) {
 		return (
 			<div style={{ textAlign: message.isMe ? 'right' : 'left' }}>
 				{message.isMe && message.acknowledged && '✓ '}
@@ -208,7 +204,7 @@ const Conversation: React.FC<{ convId: string }> = ({ convId }) => {
 					<button
 						onClick={() =>
 							sendMessage({
-								type: AppMessageType.UserMessage,
+								type: messenger.AppMessageType.UserMessage,
 								body: message,
 								id: convId,
 								attachments: [],
@@ -256,7 +252,7 @@ const SearchMessages: React.FC = () => {
 }
 
 const Conversations: React.FC = () => {
-	const conversations = Messenger.useConversationList()
+	const conversations = Messenger.useAllConversations()
 	const [selected, setSelected] = useState('')
 	return (
 		<>
@@ -317,7 +313,6 @@ let metadata: any[] = []
 let messages: any[] = []
 
 const DumpGroup: React.FC = () => {
-	const client = Messenger.useClient()
 	const [groupPk, setGroupPk] = useState('')
 	const [mt, setMt] = useState([])
 	const [ms, setMs] = useState([])
@@ -327,12 +322,12 @@ const DumpGroup: React.FC = () => {
 			<input value={groupPk} placeholder='groupPK' onChange={(e) => setGroupPk(e.target.value)} />
 			<button
 				onClick={() => {
-					const service = protocol.client.getProtocolService(client.id)
+					const service = protocol.client.getProtocolService()
 					const gpkBuf = Buffer.from(groupPk, 'base64')
 					metadata = []
 					messages = []
 					const bridge = grpcBridge({ host: service.host, transport: service.transport })
-					const grpcClient = new ProtocolServiceClient(bridge)
+					const grpcClient = new protocol.ProtocolServiceClient(bridge)
 					grpcClient.groupMessageList({ groupPk: gpkBuf }, (...args: any[]) => {
 						if (args[1]?.message) {
 							const msg = JSON.parse(Buffer.from(args[1].message).toString('utf-8'))
@@ -395,14 +390,81 @@ const Search: React.FC = () => {
 	)
 }
 
+const CreateMultiMember = () => {
+	const [groupName, setGroupName] = useState('My group')
+	const createGroup = Messenger.useConversationCreate({ name: groupName, members: [] })
+	return (
+		<>
+			<input
+				type='text'
+				value={groupName}
+				onChange={(e) => {
+					setGroupName(e.target.value)
+				}}
+			/>
+			<button onClick={createGroup}>Create</button>
+		</>
+	)
+}
+
+const JoinMultiMember = () => {
+	const [link, setLink] = useState('')
+	const createGroup = Messenger.useConversationJoin({ link })
+	return (
+		<>
+			<input
+				type='text'
+				value={link}
+				onChange={(e) => {
+					setLink(e.target.value)
+				}}
+			/>
+			<button onClick={createGroup}>Join</button>
+		</>
+	)
+}
+
+const MultiMemberList = () => {
+	const unfil = Messenger.useAllConversations()
+	const convs = unfil.filter(
+		(conv) => conv.kind === messenger.conversation.ConversationKind.MultiMember,
+	)
+	return (
+		<>
+			{convs.map((conv) => {
+				return (
+					<div key={conv.id}>
+						<h3>{conv.title}</h3>
+						Public key: {conv.pk}
+						<br />
+						Link: {conv.shareableGroup}
+					</div>
+				)
+			})}
+		</>
+	)
+}
+
+const MultiMember: React.FC = () => {
+	return (
+		<>
+			<CreateMultiMember />
+			<br />
+			<JoinMultiMember />
+			<MultiMemberList />
+		</>
+	)
+}
+
 const TABS = {
 	Account: Account,
 	Contacts: Contacts,
 	Requests: Requests,
 	Conversations: Conversations,
+	Search: Search,
+	MultiMember: MultiMember,
 	Groups: Groups,
 	Tools: Tools,
-	Search: Search,
 }
 
 type TabKey = keyof typeof TABS

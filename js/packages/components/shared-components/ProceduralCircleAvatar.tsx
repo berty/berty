@@ -145,6 +145,9 @@ export const ConversationProceduralAvatar: React.FC<ConversationProceduralAvatar
 					seeds.push(contact.publicKey)
 				}
 				break
+			case messenger.conversation.ConversationKind.MultiMember:
+				seeds.push(conversation.pk)
+				break
 			case 'fake':
 				seeds.push(conversation.id)
 				break

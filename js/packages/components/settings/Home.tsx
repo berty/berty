@@ -75,7 +75,12 @@ const HomeHeaderAvatar: React.FC = () => {
 			>
 				<View style={[{ alignItems: 'center' }]}>
 					<View style={{ position: 'absolute', top: -80 }}>
-						<ProceduralCircleAvatar seed={client?.accountPk} size={80} diffSize={25} />
+						<ProceduralCircleAvatar
+							seed={client?.accountPk}
+							size={80}
+							diffSize={25}
+							style={[border.shadow.big]}
+						/>
 					</View>
 					<Text style={[_styles.headerNameText]}>{account?.name || ''}</Text>
 					<View style={{ paddingLeft: 12, paddingTop: 20 }}>

@@ -6,18 +6,15 @@ import { makeDefaultReducers, makeDefaultCommandsSagas, strToBuf } from '../util
 import { BertyNodeConfig } from '../protocol/client'
 import * as protocol from '../protocol'
 
-export type Entity = {
-	id: string
+export type State = {
 	nodeConfig: BertyNodeConfig
-	systemInfo?: berty.messenger.SystemInfo.IReply
+	systemInfo?: berty.messenger.v1.SystemInfo.IReply
 	debugGroup?: {
 		state: string
 		peerIds?: string[]
 		error?: any
 	}
-}
-
-export type State = { [key: string]: Entity }
+} | null
 
 export type GlobalState = {
 	settings: {
@@ -26,30 +23,26 @@ export type GlobalState = {
 }
 
 export type Commands = {
-	create: (state: State, action: { payload: Entity }) => State
-	set: (state: State, action: { payload: { id: string; key: string; value: any } }) => State
-	delete: (state: State, action: { payload: { id: string } }) => State
-	toggleTracing: (state: State, action: { payload: { id: string } }) => State
-	systemInfo: (state: State, action: { payload: { id: string } }) => State
-	debugGroup: (state: State, action: { payload: { id: string; pk: string } }) => State
+	create: (state: State, action: { payload: State }) => State
+	set: (state: State, action: { payload: { key: string; value: any } }) => State
+	delete: (state: State, action: { payload: void }) => State
+	toggleTracing: (state: State, action: { payload: void }) => State
+	systemInfo: (state: State, action: { payload: void }) => State
+	debugGroup: (state: State, action: { payload: { pk: string } }) => State
 }
 
 export type Queries = {
-	get: (state: GlobalState, payload: { id: string }) => Entity | undefined
-	getAll: (state: GlobalState) => Entity[]
+	get: (state: GlobalState) => State
 }
 
 export type Events = {
-	created: (state: State, action: { payload: Entity }) => State
-	nodeConfigUpdated: (state: State, action: { payload: BertyNodeConfig & { id: string } }) => State
+	created: (state: State, action: { payload: State }) => State
+	nodeConfigUpdated: (state: State, action: { payload: BertyNodeConfig }) => State
 	systemInfoUpdated: (
 		state: State,
-		action: { payload: { info: berty.messenger.v1.SystemInfo.IReply; id: string } },
+		action: { payload: { info: berty.messenger.v1.SystemInfo.IReply } },
 	) => State
-	groupDebugged: (
-		state: State,
-		action: { payload: { peerIds?: string[]; error?: any; id: string } },
-	) => State
+	groupDebugged: (state: State, action: { payload: { peerIds?: string[]; error?: any } }) => State
 }
 
 export type Transactions = {
@@ -63,7 +56,7 @@ export type Transactions = {
 	// put custom transactions here
 }
 
-const initialState: State = {}
+const initialState: State = null
 
 const commandsNames = ['create', 'set', 'delete', 'toggleTracing', 'systemInfo', 'debugGroup']
 
@@ -72,11 +65,9 @@ const commandHandler = createSlice<State, Commands>({
 	initialState,
 	reducers: {
 		...makeDefaultReducers(commandsNames),
-		debugGroup: (state, { payload }) => {
-			const currentState = state[payload.id]
-			currentState.debugGroup = {
-				...currentState.debugGroup,
-				state: 'fetching',
+		debugGroup: (state) => {
+			if (state) {
+				state.debugGroup = { ...state.debugGroup, state: 'fetching' }
 			}
 			return state
 		},
@@ -91,35 +82,37 @@ const eventHandler = createSlice<State, Events>({
 	reducers: {
 		...makeDefaultReducers(eventsNames),
 		created: (state, { payload }) => {
-			const { id } = payload
-			if (!state[id]) {
-				state[id] = payload
+			if (!state) {
+				state = payload
 			}
 			return state
 		},
 		nodeConfigUpdated: (state, { payload }) => {
-			const { id } = payload
-			if (!state[id]) {
+			if (!state) {
 				return state
 			}
-			state[id].nodeConfig = payload
+			state.nodeConfig = payload
 			return state
 		},
 		systemInfoUpdated: (state, { payload }) => {
-			state[payload.id].systemInfo = payload.info
+			if (!state) {
+				return state
+			}
+			state.systemInfo = payload.info
 			return state
 		},
 		groupDebugged: (state, { payload }) => {
-			const currentState = state[payload.id]
-			if (payload.peerIds) {
-				currentState.debugGroup = {
-					peerIds: payload.peerIds,
-					state: 'done',
-				}
-			} else if (payload.error) {
-				currentState.debugGroup = {
-					error: payload.error,
-					state: 'error',
+			if (state) {
+				if (payload.peerIds) {
+					state.debugGroup = {
+						peerIds: payload.peerIds,
+						state: 'done',
+					}
+				} else if (payload.error) {
+					state.debugGroup = {
+						error: payload.error,
+						state: 'error',
+					}
 				}
 			}
 			return state
@@ -132,16 +125,13 @@ export const reducer = composeReducers(commandHandler.reducer, eventHandler.redu
 export const commands = commandHandler.actions
 export const events = eventHandler.actions
 export const queries: Queries = {
-	get: (state, { id }) => state.settings.main[id],
-	getAll: (state) => Object.values(state.settings.main),
+	get: (state) => state.settings.main,
 }
 
-export function* getMainSettings(id: string) {
-	const mainSettings = (yield select((state: GlobalState) => queries.get(state, { id }))) as
-		| Entity
-		| undefined
+export function* getMainSettings() {
+	const mainSettings = (yield select(queries.get)) as ReturnType<typeof queries.get>
 	if (!mainSettings) {
-		throw new Error(`main settings not found for ${id}`)
+		throw new Error('main settings not found')
 	}
 	return mainSettings
 }
@@ -156,49 +146,29 @@ export const transactions: Transactions = {
 	delete: function* () {
 		throw new Error('not implemented')
 	},
-	toggleTracing: function* ({ id }) {
-		const { nodeConfig } = yield* getMainSettings(id)
+	toggleTracing: function* () {
+		const { nodeConfig } = yield* getMainSettings()
 		if (nodeConfig.type === 'external') {
 			return
 		}
 		const tracingPreviously = nodeConfig.opts.tracing
 		const act = events.nodeConfigUpdated({
-			id,
 			...nodeConfig,
 			opts: { ...nodeConfig.opts, tracing: !tracingPreviously },
 		})
 		yield put(act)
 	},
-	systemInfo: function* ({ id }) {
-		const info = yield* protocol.transactions.client.systemInfo({
-			id,
-		})
-		yield put(
-			events.systemInfoUpdated({
-				id,
-				info,
-			}),
-		)
+	systemInfo: function* () {
+		const info = yield* protocol.transactions.client.systemInfo()
+		yield put(events.systemInfoUpdated({ info }))
 	},
-	debugGroup: function* ({ id, pk }) {
+	debugGroup: function* ({ pk }) {
 		try {
-			const group = yield* protocol.transactions.client.debugGroup({
-				id,
-				groupPk: strToBuf(pk),
-			}) // does not support multi devices per account
-			yield put(
-				events.groupDebugged({
-					id,
-					peerIds: group.peerIds,
-				}),
-			)
+			// does not support multi devices per account
+			const group = yield* protocol.transactions.client.debugGroup({ groupPk: strToBuf(pk) })
+			yield put(events.groupDebugged({ peerIds: group.peerIds }))
 		} catch (error) {
-			yield put(
-				events.groupDebugged({
-					id,
-					error,
-				}),
-			)
+			yield put(events.groupDebugged({ error }))
 		}
 	},
 }

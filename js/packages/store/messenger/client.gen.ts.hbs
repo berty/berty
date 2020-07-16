@@ -7,7 +7,6 @@ import { PayloadAction, CaseReducer } from '@reduxjs/toolkit'
 		export type Commands<State> = {
 				{{#each methods}}
 					{{case 'camel' name}}: CaseReducer<State, PayloadAction<{
-						id: string,
 						{{#each resolvedRequestType.fields}}
 							{{@key}}: {{#with (convertScalarType type)~}}
 								{{this}},

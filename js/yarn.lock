@@ -6823,11 +6823,6 @@ bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.1.1, bn.js@^4.4.0:
   version "4.11.8"
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.8.tgz#2cde09eb5ee341f484746bb0309b3253b1b1442f"
 
-bn.js@^5.0.0:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.1.1.tgz#48efc4031a9c4041b9c99c6941d903463ab62eb5"
-  integrity sha512-IUTD/REb78Z2eodka1QZyyEk66pciRcP6Sroka0aI3tG/iwIdYLrBD62RsubR7vqdt3WyX8p4jxeatzmRSphtA==
-
 body-parser@1.19.0, body-parser@^1.15.0:
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/body-parser/-/body-parser-1.19.0.tgz#96b2709e57c9c4e09a6fd66a8fd979844f69f08a"
@@ -11342,6 +11337,11 @@ good-listener@^1.2.2:
   resolved "https://registry.yarnpkg.com/good-listener/-/good-listener-1.2.2.tgz#d53b30cdf9313dffb7dc9a0d477096aa6d145c50"
   dependencies:
     delegate "^3.1.2"
+
+google-palette@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/google-palette/-/google-palette-1.1.0.tgz#37e508568b8ca904e57976dfe28d92f701624a9a"
+  integrity sha512-rg4XQMVYQ83fQUylt2qrzCQ0C06ZrGl3+gh0XIXanyX+7SOkDCtFIn7gV3UMumg/R9HUL1zHtz5Myw3Z5BHCPg==
 
 google-protobuf@^3.12.0, google-protobuf@^3.6.1:
   version "3.12.0"
@@ -20028,13 +20028,6 @@ simplebar@^4.2.3:
     lodash.memoize "^4.1.2"
     lodash.throttle "^4.1.1"
     resize-observer-polyfill "^1.5.1"
-
-simpleflakes@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/simpleflakes/-/simpleflakes-2.1.0.tgz#9c3749609d02f73900be044ce167d50f8516d0cb"
-  integrity sha512-yJsOH+zDowZGb1l7Th8PIVpmpOzguQrSEoPYxpazTGMI0Uovrm7//rHf07GwP7m1060/BvNhcGlDIzAhDUAwYQ==
-  dependencies:
-    bn.js "^5.0.0"
 
 sisteransi@^1.0.3:
   version "1.0.3"

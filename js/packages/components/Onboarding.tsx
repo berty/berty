@@ -20,14 +20,9 @@ import { useNavigation, Routes } from '@berty-tech/navigation'
 import { Messenger } from '@berty-tech/hooks'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
 import { useDispatch } from 'react-redux'
-import { messenger } from '@berty-tech/store'
+import { messenger, protocol } from '@berty-tech/store'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Logo from './berty_gradient_square.svg'
-import {
-	defaultBridgeOpts,
-	BertyNodeConfig,
-	defaultExternalBridgeConfig,
-} from '@berty-tech/store/protocol/client'
 import LottieView from 'lottie-react-native'
 
 type Navigation = () => void
@@ -262,18 +257,22 @@ const SwiperCard: React.FC<{
 	)
 }
 
-const defaultEmbeddedConfig: BertyNodeConfig = {
+const defaultEmbeddedConfig: protocol.client.BertyNodeConfig = {
 	type: 'embedded',
-	opts: defaultBridgeOpts,
+	opts: protocol.client.defaultBridgeOpts,
 }
 
 const NodeConfigInput: React.FC<{
-	config: BertyNodeConfig
-	onConfigChange: (config: BertyNodeConfig) => void
+	config: protocol.client.BertyNodeConfig
+	onConfigChange: (config: protocol.client.BertyNodeConfig) => void
 }> = ({ config, onConfigChange }) => {
 	const [{ text, padding, margin, background, border }] = useStyles()
 	const toggleNodeType = () =>
-		onConfigChange(config.type === 'external' ? defaultEmbeddedConfig : defaultExternalBridgeConfig)
+		onConfigChange(
+			config.type === 'external'
+				? defaultEmbeddedConfig
+				: protocol.client.defaultExternalBridgeConfig,
+		)
 	let content: Element
 	if (config.type === 'external') {
 		content = (
@@ -340,7 +339,7 @@ const CreateYourAccount: React.FC<{
 	const [name, setName] = useState('')
 	const [nodeConfig, setNodeConfig] = useState(
 		__DEV__
-			? defaultExternalBridgeConfig
+			? protocol.client.defaultExternalBridgeConfig
 			: {
 					...defaultEmbeddedConfig,
 					opts: {
@@ -496,7 +495,7 @@ const Bluetooth: React.FC<{
 
 const SetupFinished: React.FC = () => {
 	const navigation = useReactNavigation()
-	const account = Messenger.useAccount()
+	const client = Messenger.useClient()
 	const dispatch = useDispatch()
 	const [isGeneration, setIsGeneration] = useState<number>(1)
 	const [isGenerated, setIsGenerated] = useState<boolean>(false)
@@ -505,7 +504,7 @@ const SetupFinished: React.FC = () => {
 	return (
 		<Translation>
 			{(t) =>
-				isAccount && account ? (
+				isAccount && client ? (
 					<>
 						<View style={{ flex: 1 }}>
 							<LottieView
@@ -558,7 +557,7 @@ const SetupFinished: React.FC = () => {
 								button={{
 									text: t('onboarding.setup-finished.button'),
 									onPress: () => {
-										dispatch(messenger.account.commands.onboard({ id: account.id }))
+										dispatch(messenger.account.commands.onboard())
 										Vibration.vibrate([500])
 										navigation.navigate(Routes.Root.Tabs, { screen: Routes.Main.Home })
 									},
@@ -582,7 +581,7 @@ const SetupFinished: React.FC = () => {
 									loop={false}
 									speed={2}
 									onAnimationFinish={() => {
-										account ? setIsAccount(true) : setIsGeneration(2)
+										client ? setIsAccount(true) : setIsGeneration(2)
 									}}
 								/>
 							)}
@@ -593,7 +592,7 @@ const SetupFinished: React.FC = () => {
 									loop={false}
 									speed={2}
 									onAnimationFinish={() => {
-										account ? setIsAccount(true) : setIsGeneration(3)
+										client ? setIsAccount(true) : setIsGeneration(3)
 									}}
 								/>
 							)}
@@ -604,7 +603,7 @@ const SetupFinished: React.FC = () => {
 									loop={false}
 									speed={2}
 									onAnimationFinish={() => {
-										account ? setIsAccount(true) : setIsGeneration(4)
+										client ? setIsAccount(true) : setIsGeneration(4)
 									}}
 								/>
 							)}
@@ -615,7 +614,7 @@ const SetupFinished: React.FC = () => {
 									loop={false}
 									speed={2}
 									onAnimationFinish={() => {
-										account ? setIsAccount(true) : setIsGeneration(1)
+										client ? setIsAccount(true) : setIsGeneration(1)
 									}}
 								/>
 							)}

@@ -44,9 +44,8 @@ export const useContactRequestEnabled = () => {
 }
 
 export const useAccountContacts = () => {
-	const account = useAccount()
 	return useSelector((state: messenger.contact.GlobalState) =>
-		account ? messenger.contact.queries.list(state) : [],
+		messenger.contact.queries.list(state),
 	)
 }
 
@@ -82,17 +81,6 @@ export const useAccountContactsWithOutgoingRequests = () => {
 	)
 }
 
-export const useInitiateContactRequest = () => {
-	const dispatch = useDispatch()
-	const account = useAccount()
-	if (!account) {
-		return () => {}
-	}
-	return (url: string) => {
-		dispatch(messenger.contact.commands.initiateRequest({ accountId: account.id, url }))
-	}
-}
-
 export const useRequestDraft = () => {
 	return useSelector((state: messenger.contact.GlobalState) =>
 		messenger.contact.queries.getRequestDraft(state),
@@ -105,7 +93,7 @@ export const useResetDraft = () => {
 	if (!account) {
 		return () => {}
 	} else {
-		return () => dispatch(messenger.contact.events.draftReset({ accountId: account.id }))
+		return () => dispatch(messenger.contact.events.draftReset())
 	}
 }
 
@@ -113,6 +101,6 @@ export const useResetDraft = () => {
 export const useAccountContactSearchResults = (searchText: string): messenger.contact.Entity[] => {
 	const account = useAccount()
 	return useSelector((state: messenger.contact.GlobalState) =>
-		account ? messenger.contact.queries.search(state, { accountId: account.id, searchText }) : [],
+		account ? messenger.contact.queries.search(state, { searchText }) : [],
 	)
 }

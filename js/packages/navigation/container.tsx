@@ -8,19 +8,32 @@ import { Messenger } from '@berty-tech/hooks'
 
 export const NavigationContainer: React.FC = ({ children }) => {
 	const ref = useRef()
-	const initiateContactRequest = Messenger.useInitiateContactRequest()
-
+	const handleDeepLink = Messenger.useHandleDeepLink()
+	const prefix = 'berty://'
 	const { getInitialState } = useLinking(ref, {
-		prefixes: ['berty://'],
+		prefixes: [prefix],
 		config: {
 			['Modals']: {
+				initialRouteName: 'Tabs',
 				screens: {
-					[Routes.Modals.SendContactRequest]: {
+					/*[Routes.Modals.ManageDeepLink]: {
 						path: 'id/:type', // can't map prop name
 						parse: {
 							type: (data) => {
-								initiateContactRequest(`berty://id/${data}`)
+								console.log('got contact link', data)
+								handleDeepLink(`${prefix}id/${data}`)
 								return 'link'
+							},
+						},
+					},*/
+					[Routes.Modals.ManageDeepLink]: {
+						path: 'group/:value', // can't map prop name
+						parse: {
+							value: (data) => {
+								console.log('got group link', data)
+								const link = `${prefix}group/${data}`
+								handleDeepLink(link)
+								return link
 							},
 						},
 					},

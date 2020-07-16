@@ -58,9 +58,9 @@ $ make generate
 $ make metro.start
 
 ## Optional if using one device.
-$ BERTY_BRIDGE_PORT=1337 make.bridge
+$ BERTY_DAEMON_PORT=1337 make.bridge
 ## Run this with multiple different ports to test with multiple clients.
-## $ BERTY_BRIDGE_PORT=1338 make.bridge
+## $ BERTY_DAEMON_PORT=1338 make.bridge
 
 ## iOS
 IOS_DEVICE=__IOS_DEVICE_NAME__ make ios.run
@@ -82,8 +82,8 @@ ANDROID_DEVICE=__ANDROID_DEVICE_ID__ make android.run
 #### 2. Run required services
 
 - `cd packages/web-dev-app && yarn && yarn start`
-- `BERBY_BRIDGE_PORT=1337 make bridge.start`
-- `BERTY_BRIDGE_PORT=1338 make bridge.start`
+- `BERTY_DAEMON_PORT=1337 make bridge.start`
+- `BERTY_DAEMON_PORT=1338 make bridge.start`
 
 #### 3. Navigate to the app
 

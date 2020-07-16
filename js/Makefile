@@ -6,7 +6,7 @@ VCS_REF ?= `git rev-parse --short HEAD`
 BUILD_DATE ?= `date +%s`
 TMPDIR ?= /tmp
 CI ?= false
-BERTY_BRIDGE_PORT ?= 1337
+BERTY_DAEMON_PORT ?= 1337
 STORYBOOK_MOBILE_PORT ?= 7007
 STORYBOOK_WEB_PORT ?= 7008
 REACT_NATIVE_PORT ?= 8081
@@ -38,8 +38,8 @@ help:
 	@echo "User commands          Description                             Main env options"
 	@echo "  android.run"
 	@echo "  android.storybook"
-	@echo "  bridge.start                                                 BERTY_BRIDGE_PORT=1337"
-	@echo "  bridge.start.docker                                          BERTY_BRIDGE_PORT=1337"
+	@echo "  daemon.start                                                 BERTY_DAEMON_PORT=1337"
+	@echo "  daemon.start.docker                                          BERTY_DAEMON_PORT=1337"
 	@echo "  clean                clear cache"
 	@echo "  deps.update"
 	@echo "  generate             use protobuf to generate files"
@@ -180,7 +180,7 @@ android.run: deps packages/go-bridge/android/libs/gobridge.aar packages/berty-ap
 	$(call check-program, adb)
 	$(eval ANDROID_DEVICE ?= `adb devices | tail +2 | head -1 | cut -f 1`)
 	../tool/build/shell/check-java.sh 18
-	adb -s $(ANDROID_DEVICE) reverse tcp:$(BERTY_BRIDGE_PORT) tcp:$(BERTY_BRIDGE_PORT)
+	adb -s $(ANDROID_DEVICE) reverse tcp:$(BERTY_DAEMON_PORT) tcp:$(BERTY_DAEMON_PORT)
 	cd packages/berty-app && $(react-native) run-android --no-packager --variant=$(APP_TARGET) --deviceId="$(ANDROID_DEVICE)" $(if $(filter-out $(APP_TARGET), store), --appIdSuffix=$(APP_TARGET))
 
 .PHONY: android.release
@@ -209,6 +209,9 @@ web.storybook: deps
 	lsof -t -i :$(STORYBOOK_WEB_PORT) | xargs --no-run-if-empty kill
 	cd packages/storybook-web && echo Y | start-storybook --port=$(STORYBOOK_WEB_PORT) -c lib &
 
+.PHONY: web-dev-app.start
+web-dev-app.start:
+	cd packages/web-dev-app && yarn && yarn start
 
 #### Tools
 
@@ -225,15 +228,15 @@ metro.start: deps
 	fi
 	cd packages/berty-app && $(react-native) start --reset-cache --port=$(REACT_NATIVE_PORT) --host=127.0.0.1
 
-.PHONY: bridge.start
-bridge.start:
+.PHONY: daemon.start
+daemon.start:
 	cd ../go && $(MAKE) install
-	$(GOPATH)/bin/berty daemon -l /ip4/127.0.0.1/tcp/$(BERTY_BRIDGE_PORT)/grpcws
+	$(GOPATH)/bin/berty daemon -l /ip4/127.0.0.1/tcp/$(BERTY_DAEMON_PORT)/grpcws
 
 .PHONY: bridge.start.docker
 bridge.start.docker:
 	$(call check-program, docker)
-	docker run -it --rm -p $(BERTY_BRIDGE_PORT):$(BERTY_BRIDGE_PORT) bertytech/berty daemon -l /ip4/0.0.0.0/tcp/$(BERTY_BRIDGE_PORT)/grpcws
+	docker run -it --rm -p $(BERTY_DAEMON_PORT):$(BERTY_DAEMON_PORT) bertytech/berty daemon -l /ip4/0.0.0.0/tcp/$(BERTY_DAEMON_PORT)/grpcws
 
 ### gen
 
@@ -355,7 +358,7 @@ packages/go-bridge/ios/Frameworks/Bertybridge.framework: $(bridge_src) ../vendor
 	GO111MODULE=off gomobile bind -o $@ -v $(ext_ldflags) -target ios berty.tech/berty/go/framework/bertybridge
 	touch "packages/go-bridge/ios/Frameworks"
 
-packages/go-bridge/android/libs/gobridge.aar: $(aar_src) ../vendor
+packages/go-bridge/android/libs/gobridge.aar: $(bridge_src) ../vendor
 	cd packages/go-bridge && go install golang.org/x/mobile/cmd/gomobile
 	cd packages/go-bridge && gomobile init
 	@mkdir -p "packages/go-bridge/android/libs"

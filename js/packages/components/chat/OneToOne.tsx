@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
+import { scaleHeight } from '@berty-tech/styles/constant'
 import { Messenger, Settings } from '@berty-tech/hooks'
 import { useNavigation, ScreenProps, Routes } from '@berty-tech/navigation'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
@@ -18,8 +19,8 @@ import FromNow from '../shared-components/FromNow'
 import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { Message } from './shared-components/Message'
 import { ChatFooter, ChatDate } from './shared-components/Chat'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { messenger } from '@berty-tech/store'
+import { useReadEffect } from '../hooks'
 //
 // Chat
 //
@@ -78,11 +79,20 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 
 	return (
 		<BlurView
-			style={[row.fill, padding.medium, absolute.top, absolute.right, absolute.left]}
+			style={[padding.horizontal.medium, absolute.top, absolute.right, absolute.left]}
 			blurType='light'
 			blurAmount={30}
 		>
-			<SafeAreaView style={[row.fill, { width: '100%' }]}>
+			<View
+				style={[
+					{
+						alignItems: 'center',
+						flexDirection: 'row',
+						marginTop: 50 * scaleHeight,
+						paddingBottom: 20 * scaleHeight,
+					},
+				]}
+			>
 				<TouchableOpacity style={[flex.tiny, row.item.justify]} onPress={goBack}>
 					<Icon name='arrow-back-outline' width={25} height={25} fill={color.black} />
 				</TouchableOpacity>
@@ -136,7 +146,7 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 						<ConversationProceduralAvatar size={45} diffSize={9} conversationId={id} />
 					</TouchableOpacity>
 				</View>
-			</SafeAreaView>
+			</View>
 		</BlurView>
 	)
 }
@@ -152,18 +162,8 @@ const InfosChat: React.FC<{ createdAt: number }> = ({ createdAt }) => {
 
 // const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
 
-// hack until Message props type is fixed
-const TypedMessage = Message as React.FC<{
-	payload: ReturnType<typeof Messenger.useGetMessage>
-}>
-
-const AppMessage: React.FC<{ message: string }> = ({ message }) => {
-	const msg = Messenger.useGetMessage(message)
-	return msg ? <TypedMessage payload={msg} /> : null
-}
-
 const MessageList: React.FC<{ id: string; scrollToMessage?: number }> = (props) => {
-	const [{ row, overflow, flex, margin }] = useStyles()
+	const [{ row, overflow, flex }] = useStyles()
 	const conversation = Messenger.useGetConversation(props.id)
 	const flatListRef = useRef<FlatList<messenger.message.Entity['id']>>(null)
 
@@ -184,48 +184,14 @@ const MessageList: React.FC<{ id: string; scrollToMessage?: number }> = (props) 
 			onScrollToIndexFailed={onScrollToIndexFailed}
 			ref={flatListRef}
 			keyboardDismissMode='on-drag'
-			style={[overflow, row.item.fill, flex.tiny, margin.top.scale(140)]}
+			style={[overflow, row.item.fill, flex.tiny, { marginTop: 150 * scaleHeight }]}
 			data={conversation ? [...conversation.messages].reverse() : []}
 			inverted
 			keyExtractor={(item) => item}
 			ListFooterComponent={<InfosChat createdAt={conversation.createdAt} />}
-			renderItem={({ item }: { item: string }) => <AppMessage message={item} />}
+			renderItem={({ item }) => <Message id={item} convKind={'1to1'} />}
 		/>
 	)
-}
-
-const useReadEffect = (convId: string, timeout: number) => {
-	// timeout is the duration (in ms) that the user must stay on the page to set messages as read
-	const navigation = useReactNavigation()
-	const startRead = Messenger.useStartReadConversation(convId)
-	const stopRead = Messenger.useStopReadConversation(convId)
-
-	useEffect(() => {
-		let timeoutID: ReturnType<typeof setTimeout> | null = null
-		const handleStart = () => {
-			if (timeoutID === null) {
-				timeoutID = setTimeout(() => {
-					timeoutID = null
-					startRead()
-				}, timeout)
-			}
-		}
-		handleStart()
-		const unsubscribeFocus = navigation.addListener('focus', handleStart)
-		const handleStop = () => {
-			if (timeoutID !== null) {
-				clearTimeout(timeoutID)
-				timeoutID = null
-			}
-			stopRead()
-		}
-		const unsubscribeBlur = navigation.addListener('blur', handleStop)
-		return () => {
-			unsubscribeFocus()
-			unsubscribeBlur()
-			handleStop()
-		}
-	}, [navigation, startRead, stopRead, timeout])
 }
 
 export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route }) => {

@@ -8,7 +8,6 @@ import { PayloadAction, CaseReducer } from '@reduxjs/toolkit'
         {{#each values}}
           {{#with (removeFirst @key "EventType") as | eventName |}}
             {{case 'camel' eventName}}: CaseReducer<State, PayloadAction<{
-							aggregateId: string,
 							eventContext: api.berty.types.v1.IEventContext,
 							metadata: api.berty.types.v1.IGroupMetadata,
 							event: {

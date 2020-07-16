@@ -120,7 +120,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 	})
 	useEffect(() => {
 		if (!startedDelete && startDelete && account) {
-			deleteAccount({ id: account.id })
+			deleteAccount()
 		}
 	})
 

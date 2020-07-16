@@ -12,6 +12,8 @@ export type GoBridgeOpts = {
 	logLevel?: GoLogLevel
 	tracing?: boolean
 	tracingPrefix?: string
+	poiDebug?: boolean
+	localDiscovery?: boolean
 }
 
 export type GoLoggerOpts = {

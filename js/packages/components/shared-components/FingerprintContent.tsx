@@ -55,9 +55,7 @@ export const FingerprintContent: React.FC<{ seed: string }> = ({ seed }) => {
 	if (!seed) {
 		return <Text style={{ textAlign: 'center' }}>No seed</Text>
 	}
-	const hash = new SHA3(256)
-	hash.update(seed)
-	const digest = hash.digest('hex')
+	const digest = new SHA3(256).update(seed).digest('hex')
 	return (
 		<View
 			style={[border.radius.medium, padding.medium, { backgroundColor: '#E8E9FC', width: '100%' }]}

@@ -2,8 +2,11 @@ import { combineReducers } from 'redux'
 import { all, call } from 'redux-saga/effects'
 import createSagaMiddleware from 'redux-saga'
 import { configureStore } from '@reduxjs/toolkit'
+import ProtocolServiceClient from './ProtocolServiceClient.gen'
 
 import * as client from './client'
+
+export { ProtocolServiceClient }
 
 export type Client = client.Entity
 
