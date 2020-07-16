@@ -37,6 +37,8 @@ func (md *MultiDriver) Advertise(ctx context.Context, ns string, opts ...p2p_dis
 		return 0, err
 	}
 
+	md.logger.Debug("Advertising", zap.String("key", ns))
+
 	md.muc.Lock()
 	if cf, ok := md.mapc[ns]; ok {
 		cf()
@@ -79,13 +81,9 @@ func (md *MultiDriver) advertise(ctx context.Context, d Driver, ns string, opts 
 			md.logger.Debug("advertise success",
 				zap.String("driver", d.Name()),
 				zap.String("key", ns),
-				zap.Duration("ttl", ttl))
+				zap.Int("ttl", int(ttl)))
 
-			if ttl < 1 {
-				return
-			}
-
-			wait := 7 * ttl / 8
+			wait := (7 * ttl / 8)
 			select {
 			case <-time.After(wait):
 			case <-ctx.Done():

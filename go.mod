@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	berty.tech/go-ipfs-log v1.2.0
-	berty.tech/go-orbit-db v1.9.0
+	berty.tech/go-orbit-db v1.9.1
 	berty.tech/ipfs-webui-packed v1.0.0-v2.9.0-4
 	github.com/aead/ecdh v0.2.0
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
@@ -25,6 +25,7 @@ require (
 	github.com/ipfs/go-ipfs-config v0.8.0
 	github.com/ipfs/go-ipfs-keystore v0.0.1
 	github.com/ipfs/go-log v1.0.4
+	github.com/ipfs/go-log/v2 v2.1.1
 	github.com/ipfs/interface-go-ipfs-core v0.3.0
 	github.com/itsTurnip/dishooks v0.0.0-20200206125049-b4fc7c7b042e
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
@@ -33,6 +34,7 @@ require (
 	github.com/libp2p/go-libp2p-core v0.6.0
 	github.com/libp2p/go-libp2p-discovery v0.4.0
 	github.com/libp2p/go-libp2p-kad-dht v0.8.2
+	github.com/libp2p/go-libp2p-pubsub v0.3.1
 	github.com/libp2p/go-libp2p-quic-transport v0.6.0
 	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20190708065449-737144165c9e

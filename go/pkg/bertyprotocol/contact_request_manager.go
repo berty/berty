@@ -3,37 +3,42 @@ package bertyprotocol
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"sync"
+	"time"
 
-	"berty.tech/berty/v2/go/internal/handshake"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	ggio "github.com/gogo/protobuf/io"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	p2phelpers "github.com/libp2p/go-libp2p-core/helpers"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/handshake"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 type pendingRequest struct {
 	cancel      context.CancelFunc
 	contact     *bertytypes.ShareableContact
-	lock        sync.Mutex
+	lock        sync.RWMutex
 	ch          chan peer.AddrInfo
-	swiper      *swiper
+	swiper      *Swiper
 	ownMetadata []byte
 }
 
 func (p *pendingRequest) update(ctx context.Context, contact *bertytypes.ShareableContact, ownMetadata []byte) {
-	p.lock.Lock()
+	p.lock.RLock()
+	currentContact := p.contact
+	p.lock.RUnlock()
 
-	if p.contact != nil && bytes.Equal(p.contact.PublicRendezvousSeed, contact.PublicRendezvousSeed) {
-		p.lock.Unlock()
+	if currentContact != nil && bytes.Equal(currentContact.PublicRendezvousSeed, contact.PublicRendezvousSeed) {
 		return
 	}
 
+	p.lock.Lock()
 	if p.cancel != nil {
 		p.cancel()
 	}
@@ -46,10 +51,19 @@ func (p *pendingRequest) update(ctx context.Context, contact *bertytypes.Shareab
 
 	p.swiper.logger.Info("enqueued request updated")
 
-	for addr := range p.swiper.watch(ctx, contact.PK, contact.PublicRendezvousSeed) {
+	for addr := range p.swiper.WatchTopic(ctx, contact.PK, contact.PublicRendezvousSeed) {
+		p.swiper.logger.Info("get peer on topic")
 		p.lock.Lock()
+
+		p.swiper.logger.Info("sending them")
 		if ctx.Err() == nil {
-			p.ch <- addr
+			p.swiper.logger.Info("sending them ok")
+
+			select {
+			case p.ch <- addr:
+			case <-time.After(time.Second):
+				fmt.Println("timed out")
+			}
 		}
 		p.lock.Unlock()
 	}
@@ -57,17 +71,17 @@ func (p *pendingRequest) update(ctx context.Context, contact *bertytypes.Shareab
 
 func (p *pendingRequest) Close() error {
 	p.lock.Lock()
+	close(p.ch)
 	if p.cancel != nil {
 		p.cancel()
 	}
 
-	close(p.ch)
 	p.lock.Unlock()
 
 	return nil
 }
 
-func newPendingRequest(ctx context.Context, swiper *swiper, contact *bertytypes.ShareableContact, ownMetadata []byte) (*pendingRequest, chan peer.AddrInfo) {
+func newPendingRequest(ctx context.Context, swiper *Swiper, contact *bertytypes.ShareableContact, ownMetadata []byte) (*pendingRequest, chan peer.AddrInfo) {
 	ch := make(chan peer.AddrInfo)
 	p := &pendingRequest{
 		ch:          ch,
@@ -90,7 +104,7 @@ type contactRequestsManager struct {
 	accSK          crypto.PrivKey
 	ctx            context.Context
 	logger         *zap.Logger
-	swiper         *swiper
+	swiper         *Swiper
 	toAdd          map[string]*pendingRequest
 }
 
@@ -110,7 +124,6 @@ func (c *contactRequestsManager) metadataRequestEnabled(_ *bertytypes.GroupMetad
 	c.ipfs.SetStreamHandler(contactRequestV1, c.incomingHandler)
 
 	c.enabled = true
-
 	if c.announceCancel != nil {
 		return nil
 	}
@@ -188,25 +201,27 @@ func (c *contactRequestsManager) enqueueRequest(contact *bertytypes.ShareableCon
 	if pending, ok := c.toAdd[string(contact.PK)]; ok {
 		go pending.update(c.ctx, contact, ownMetadata)
 	} else {
-		var ch chan peer.AddrInfo
-		c.toAdd[string(contact.PK)], ch = newPendingRequest(c.ctx, c.swiper, contact, ownMetadata)
+		toAdd, ch := newPendingRequest(c.ctx, c.swiper, contact, ownMetadata)
+		c.toAdd[string(contact.PK)] = toAdd
 
-		go func(pk crypto.PubKey, ch chan peer.AddrInfo) {
-			for addr := range ch {
+		for addr := range ch {
+			go func(pk crypto.PubKey, addr peer.AddrInfo) {
 				if err := c.ipfs.Swarm().Connect(c.ctx, addr); err != nil {
 					c.logger.Error("error while connecting with other peer", zap.Error(err))
-					continue
+					return
 				}
 
 				stream, err := c.ipfs.NewStream(context.TODO(), addr.ID, contactRequestV1)
 				if err != nil {
 					c.logger.Error("error while opening stream with other peer", zap.Error(err))
-					continue
+					return
 				}
 
-				c.performSend(pk, stream)
-			}
-		}(pk, ch)
+				if err := c.performSend(pk, stream); err != nil {
+					c.logger.Error("unable to perform send", zap.Error(err))
+				}
+			}(pk, addr)
+		}
 	}
 
 	return nil
@@ -228,6 +243,12 @@ func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
 
 	if contact != nil {
 		c.seed = contact.PublicRendezvousSeed
+	}
+
+	if c.enabled && len(c.seed) > 0 {
+		if err := c.metadataRequestEnabled(&bertytypes.GroupMetadataEvent{}); err != nil {
+			c.logger.Warn("unable to enable metadata request", zap.Error(err))
+		}
 	}
 
 	for _, contact := range c.metadataStore.ListContactsByStatus(bertytypes.ContactStateToRequest) {
@@ -253,6 +274,7 @@ func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
 				continue
 			}
 
+			c.logger.Debug("METADATA WATCHER", zap.String("event", e.Metadata.EventType.String()))
 			c.lock.Lock()
 			if err := handlers[e.Metadata.EventType](e); err != nil {
 				c.lock.Unlock()
@@ -316,35 +338,26 @@ func (c *contactRequestsManager) incomingHandler(stream network.Stream) {
 	}
 }
 
-func (c *contactRequestsManager) performSend(otherPK crypto.PubKey, stream network.Stream) {
+func (c *contactRequestsManager) performSend(otherPK crypto.PubKey, stream network.Stream) error {
 	defer func() {
 		if err := p2phelpers.FullClose(stream); err != nil {
 			c.logger.Warn("error while closing stream with other peer", zap.Error(err))
 		}
 	}()
 
-	c.lock.Lock()
-	if c.metadataStore.checkContactStatus(otherPK, bertytypes.ContactStateAdded) {
-		// Nothing to do, contact has already been requested
-		c.lock.Unlock()
-		return
-	}
-	c.lock.Unlock()
-
 	_, contact := c.metadataStore.GetIncomingContactRequestsStatus()
 	if contact == nil {
-		c.logger.Error("unable to retrieve own contact information")
-		return
+		return fmt.Errorf("unable to retrieve own contact information")
 	}
 
 	pkB, err := otherPK.Raw()
 	if err != nil {
-		return
+		return fmt.Errorf("unable to get raw pk: %w", err)
 	}
 
 	ownMetadata, err := c.metadataStore.GetRequestOwnMetadataForContact(pkB)
 	if err != nil {
-		c.logger.Error("unable to get own metadata for contact", zap.Error(err))
+		c.logger.Warn("unable to get own metadata for contact", zap.Error(err))
 		ownMetadata = nil
 	}
 
@@ -354,26 +367,28 @@ func (c *contactRequestsManager) performSend(otherPK crypto.PubKey, stream netwo
 	writer := ggio.NewDelimitedWriter(stream)
 
 	if err := handshake.RequestUsingReaderWriter(reader, writer, c.accSK, otherPK); err != nil {
-		c.logger.Error("an error occurred during handshake", zap.Error(err))
-		return
+		return fmt.Errorf("an error occurred during handshake: %w", err)
 	}
 
 	if err := writer.WriteMsg(contact); err != nil {
-		c.logger.Error("an error occurred while sending own contact information", zap.Error(err))
-		return
+		return fmt.Errorf("an error occurred while sending own contact information: %w", err)
 	}
 
 	if _, err := c.metadataStore.ContactRequestOutgoingSent(c.ctx, otherPK); err != nil {
-		c.logger.Error("an error occurred while marking contact request as sent", zap.Error(err))
-		return
+		return fmt.Errorf("an error occurred while marking contact request as sent: %w", err)
 	}
+
+	return nil
 }
 
 func (c *contactRequestsManager) enableIncomingRequests() error {
+	c.logger.Debug("enableIncomingRequests start")
+
 	if c.announceCancel != nil {
 		c.announceCancel()
 	}
 
+	c.logger.Debug("enableIncomingRequests get public")
 	pkBytes, err := c.accSK.GetPublic().Raw()
 	if err != nil {
 		return err
@@ -382,12 +397,15 @@ func (c *contactRequestsManager) enableIncomingRequests() error {
 	var ctx context.Context
 
 	ctx, c.announceCancel = context.WithCancel(c.ctx)
-	c.swiper.announce(ctx, pkBytes, c.seed)
 
+	c.logger.Debug("enableIncomingRequests run announce")
+	c.swiper.Announce(ctx, pkBytes, c.seed)
+
+	c.logger.Debug("enableIncomingRequests end")
 	return nil
 }
 
-func initContactRequestsManager(ctx context.Context, s *swiper, store *metadataStore, ipfs ipfsutil.ExtendedCoreAPI, logger *zap.Logger) error {
+func initContactRequestsManager(ctx context.Context, s *Swiper, store *metadataStore, ipfs ipfsutil.ExtendedCoreAPI, logger *zap.Logger) error {
 	sk, err := store.devKS.AccountPrivKey()
 	if err != nil {
 		return err

@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"flag"
 	"fmt"
+	"io"
 	"log"
+	"math/rand"
 	mrand "math/rand"
 	"net"
 	"os"
@@ -18,6 +21,7 @@ import (
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
+	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/banner"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
@@ -33,12 +37,15 @@ import (
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
 	"github.com/ipfs/go-ipfs/core"
-	ipfs_log "github.com/ipfs/go-log"
+	ipfs_log "github.com/ipfs/go-log/v2"
 	"github.com/juju/fslock"
 	libp2p "github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/network"
 	peer "github.com/libp2p/go-libp2p-core/peer"
+	peerstore "github.com/libp2p/go-libp2p-core/peerstore"
+	"github.com/libp2p/go-libp2p-core/routing"
+	discovery "github.com/libp2p/go-libp2p-discovery"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	qrterminal "github.com/mdp/qrterminal/v3"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/oklog/run"
@@ -76,6 +83,7 @@ func main() {
 		globalLibp2pDebug    bool
 		globalOrbitDebug     bool
 		globalPOIDebug       bool
+		globalLogFormat      string
 		globalLogToFile      string
 		globalTracer         string
 		globalLocalDiscovery bool
@@ -114,6 +122,7 @@ func main() {
 	globalFlags.BoolVar(&globalOrbitDebug, "debug-odb", false, "orbitdb debug mode")
 	globalFlags.BoolVar(&globalPOIDebug, "debug-poi", false, "peer-of-interest debug mode")
 	globalFlags.StringVar(&globalLogToFile, "logfile", "", "if specified, will log everything in JSON into a file and nothing on stderr")
+	globalFlags.StringVar(&globalLogFormat, "logformat", "", "if specified, will override default log format")
 	globalFlags.StringVar(&globalTracer, "tracer", "", "specify \"stdout\" to output tracing on stdout or <hostname:port> to trace on jaeger")
 	globalFlags.BoolVar(&globalLocalDiscovery, "localdiscovery", true, "local discovery")
 	globalFlags.StringVar(&displayName, "display-name", safeDefaultDisplayName(), "display name")
@@ -153,6 +162,24 @@ func main() {
 			config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 		}
 
+		if globalLogFormat != "" {
+			switch strings.ToLower(globalLogFormat) {
+			case "json":
+				config.Encoding = "json"
+			case "console":
+				config.Encoding = "console"
+				config.EncoderConfig.EncodeTime = zapcore.RFC3339TimeEncoder
+				config.EncoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
+			case "color":
+				config.Encoding = "console"
+				config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+				config.EncoderConfig.EncodeDuration = zapcore.StringDurationEncoder
+				config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+			default:
+				log.Fatalf("unknow log format: %s", globalLogFormat)
+			}
+		}
+
 		if isDebugEnabled {
 			config.Level.SetLevel(zap.DebugLevel)
 		} else {
@@ -164,8 +191,25 @@ func main() {
 			log.Fatalf("unable to build log config: %s", err)
 		}
 
+		ipfs_log.SetupLogging(ipfs_log.Config{
+			Stderr: false,
+			Stdout: false,
+		})
+		ipfs_log.SetAllLoggers(ipfs_log.LevelFatal)
 		if globalLibp2pDebug {
-			ipfs_log.SetDebugLogging()
+			pr := ipfs_log.NewPipeReader()
+			// ipfs_log.SetLogLevel("pubsub", "debug")
+			r := bufio.NewReader(pr)
+			go func() {
+				defer pr.Close()
+				var err error
+				for err != io.EOF {
+					var line []byte
+					if line, _, err = r.ReadLine(); err == nil {
+						logger.Debug(fmt.Sprintf("%s", line))
+					}
+				}
+			}()
 		}
 
 		if globalOrbitDebug {
@@ -281,37 +325,100 @@ func main() {
 			defer cleanup()
 
 			var (
-				node       *core.IpfsNode
-				api        ipfsutil.ExtendedCoreAPI
-				routingOut *ipfsutil.RoutingOut
+				node *core.IpfsNode
+				api  ipfsutil.ExtendedCoreAPI
+				ps   *pubsub.PubSub
+				disc tinder.Driver
 			)
+
 			{
-				var err error
-				var bopts = ipfsutil.CoreAPIConfig{
-					SwarmAddrs:        DefaultSwarmAddrs,
-					APIAddrs:          DefaultAPIAddrs,
-					APIConfig:         APIConfig,
-					ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
-				}
-
-				bopts.BootstrapAddrs = DefaultBootstrap
-
-				var crouting <-chan *ipfsutil.RoutingOut
-
 				rdvpeer, err := parseRdvpMaddr(ctx, rdvpMaddr, logger)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
-				if rdvpeer != nil {
-					bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, rdvpMaddr)
-					bopts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false, globalLocalDiscovery)
+
+				// var err error
+				var bopts = ipfsutil.CoreAPIConfig{
+					SwarmAddrs:        DefaultSwarmAddrs,
+					APIAddrs:          DefaultAPIAddrs,
+					APIConfig:         APIConfig,
+					DisableCorePubSub: true,
+					ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
+					HostConfig: func(h host.Host, _ routing.Routing) error {
+						var err error
+
+						h.Peerstore().AddAddrs(rdvpeer.ID, rdvpeer.Addrs, peerstore.PermanentAddrTTL)
+						// @FIXME(gfanton): use rand as argument
+						rdvClient := tinder.NewRendezvousDiscovery(logger, h, rdvpeer.ID,
+							rand.New(rand.NewSource(rand.Int63())))
+
+						minBackoff, maxBackoff := time.Second, time.Minute
+						rng := rand.New(rand.NewSource(rand.Int63()))
+						disc, err = tinder.NewService(
+							logger,
+							rdvClient,
+							discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, rng),
+						)
+						if err != nil {
+							return err
+						}
+
+						ps, err = pubsub.NewGossipSub(ctx, h,
+							pubsub.WithMessageSigning(true),
+							pubsub.WithFloodPublish(true),
+							pubsub.WithDiscovery(disc),
+						)
+
+						if err != nil {
+							return err
+						}
+
+						return nil
+					},
 				}
+
+				bopts.BootstrapAddrs = DefaultBootstrap
 
 				if api, node, err = ipfsutil.NewCoreAPI(ctx, &bopts); err != nil {
 					return err
 				}
 
 				defer node.Close()
+
+				// drivers := []tinder.Driver{}
+				// if rdvpeer != nil {
+				// 	if rdvpeer != nil {
+				// 		node.Peerstore.AddAddrs(rdvpeer.ID, rdvpeer.Addrs, peerstore.PermanentAddrTTL)
+				// 		// @FIXME(gfanton): use rand as argument
+				// 		rdvClient := tinder.NewRendezvousDiscovery(logger, node.PeerHost, rdvpeer.ID, rand.New(rand.NewSource(rand.Int63())))
+				// 		drivers = append(drivers, rdvClient)
+				// 	}
+
+				// 	// if localDiscovery {
+				// 	localDiscovery := tinder.NewLocalDiscovery(logger, node.PeerHost, rand.New(rand.NewSource(rand.Int63())))
+				// 	drivers = append(drivers, localDiscovery)
+				// 	// }
+
+				// 	bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, rdvpMaddr)
+				// }
+
+				node.Peerstore.AddAddrs(rdvpeer.ID, rdvpeer.Addrs, peerstore.PermanentAddrTTL)
+				// @FIXME(gfanton): use rand as argument
+				rdvClient := tinder.NewRendezvousDiscovery(logger, node.PeerHost, rdvpeer.ID,
+					rand.New(rand.NewSource(rand.Int63())))
+				minBackoff, maxBackoff := time.Second*60, time.Hour
+				rng := rand.New(rand.NewSource(rand.Int63()))
+				disc, err := tinder.NewService(
+					logger,
+					rdvClient,
+					discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, rng),
+				)
+				if err != nil {
+					return err
+				}
+
+				psapi := ipfsutil.NewPubSubAPI(ctx, logger.Named("ps"), disc, ps)
+				api = ipfsutil.InjectPubSubCoreAPIExtendedAdaptater(api, psapi)
 
 				if globalPOIDebug {
 					ipfsutil.EnableConnLogger(logger, node.PeerHost)
@@ -322,29 +429,6 @@ func main() {
 
 				// serve the embedded ipfs webui
 				ipfsutil.ServeHTTPWebui(logger)
-
-				if crouting != nil {
-					routingOut = <-crouting
-					defer routingOut.IpfsDHT.Close()
-
-					if rdvpForce {
-						go func() {
-							// monitor rdv peer
-							if err := monitorPeers(logger, node.PeerHost, rdvpeer.ID); err != nil {
-								logger.Error("monitorPeers", zap.Error(err))
-							}
-						}()
-
-						for {
-							if err := node.PeerHost.Connect(ctx, *rdvpeer); err != nil {
-								logger.Error("cannot dial rendez-vous point", zap.Error(err))
-							} else {
-								break
-							}
-							time.Sleep(time.Second)
-						}
-					}
-				}
 			}
 
 			// listeners for berty
@@ -434,7 +518,8 @@ func main() {
 				// initialize new protocol client
 				opts := bertyprotocol.Opts{
 					Host:            node.PeerHost,
-					TinderDriver:    routingOut,
+					PubSub:          ps,
+					TinderDriver:    disc,
 					IpfsCoreAPI:     api,
 					Logger:          logger.Named("protocol"),
 					RootContext:     ctx,
@@ -702,27 +787,6 @@ func parseAddr(addr string) (maddr ma.Multiaddr, err error) {
 	}
 
 	return
-}
-
-func monitorPeers(l *zap.Logger, h host.Host, peers ...peer.ID) error {
-	currentStates := make([]network.Connectedness, len(peers))
-	for {
-		time.Sleep(time.Second)
-
-		for i, p := range peers {
-			nextState := h.Network().Connectedness(p)
-			if nextState != currentStates[i] {
-				switch nextState {
-				case network.Connected:
-					l.Info("peer Connected", zap.String("ID", p.String()))
-				case network.NotConnected:
-					l.Info("peer NotConnected", zap.String("ID", p.String()))
-				}
-
-				currentStates[i] = nextState
-			}
-		}
-	}
 }
 
 func parseRdvpMaddr(ctx context.Context, rdvpMaddr string, logger *zap.Logger) (*peer.AddrInfo, error) {

@@ -15,9 +15,11 @@ import (
 	"berty.tech/go-orbit-db/pubsub/directchannel"
 	"github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
+
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/host"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"go.uber.org/zap"
 )
 
@@ -59,6 +61,7 @@ type Opts struct {
 	TinderDriver           tinder.Driver
 	RendezvousRotationBase time.Duration
 	Host                   host.Host
+	PubSub                 *pubsub.PubSub
 	close                  func() error
 }
 
@@ -144,7 +147,7 @@ func New(opts Opts) (Service, error) {
 	}
 
 	if opts.TinderDriver != nil {
-		s := newSwiper(opts.TinderDriver, opts.Logger, opts.RendezvousRotationBase)
+		s := NewSwiper(opts.Logger, opts.PubSub, opts.RendezvousRotationBase)
 		opts.Logger.Debug("tinder swiper is enabled")
 
 		if err := initContactRequestsManager(opts.RootContext, s, acc.metadataStore, opts.IpfsCoreAPI, opts.Logger); err != nil {

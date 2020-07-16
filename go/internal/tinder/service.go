@@ -10,12 +10,11 @@ type Service interface {
 	Driver
 }
 
-func NewService(logger *zap.Logger, drivers []Driver, stratFactory p2p_discovery.BackoffFactory, opts ...p2p_discovery.BackoffDiscoveryOption) (Service, error) {
-	mdriver := NewMultiDriver(logger, drivers...)
-	disc, err := p2p_discovery.NewBackoffDiscovery(mdriver, stratFactory, opts...)
+func NewService(logger *zap.Logger, driver Driver, stratFactory p2p_discovery.BackoffFactory, opts ...p2p_discovery.BackoffDiscoveryOption) (Service, error) {
+	disc, err := p2p_discovery.NewBackoffDiscovery(driver, stratFactory, opts...)
 	if err != nil {
 		return nil, err
 	}
 
-	return ComposeDriver("tinder", disc, disc, mdriver), nil
+	return ComposeDriver("tinder", disc, disc, driver), nil
 }

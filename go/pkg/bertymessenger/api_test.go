@@ -73,6 +73,8 @@ func testParseInstanceShareable(ctx context.Context, t *testing.T, svc Messenger
 }
 
 func TestServiceParseDeepLink(t *testing.T) {
+	t.Skip()
+
 	tests := []struct {
 		name            string
 		request         *ParseDeepLink_Request

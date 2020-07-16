@@ -78,7 +78,7 @@ func createPeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 	rdvp, err := mn.GenPeer()
 	require.NoError(t, err, "failed to generate mocked peer")
 
-	_, _ = ipfsutil.TestingRDVP(ctx, t, rdvp)
+	_, cleanuprdvp := ipfsutil.TestingRDVP(ctx, t, rdvp)
 
 	ipfsopts := ipfsutil.TestingAPIOpts{
 		Mocknet: mn,
@@ -106,7 +106,7 @@ func createPeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 
 			mk := NewInMemMessageKeystore()
 
-			db, err := newBertyOrbitDB(ctx, ca, devKS, mk, nil)
+			db, err := newBertyOrbitDB(ctx, ca.API(), devKS, mk, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -150,6 +150,8 @@ func createPeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 		for _, cleanup := range cls {
 			cleanup()
 		}
+
+		cleanuprdvp()
 	}
 }
 

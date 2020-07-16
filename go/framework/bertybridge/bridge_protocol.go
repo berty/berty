@@ -3,9 +3,11 @@ package bertybridge
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -23,8 +25,12 @@ import (
 	"github.com/ipfs/go-ipfs/core"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
 	"github.com/libp2p/go-libp2p"
+	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
-	dht "github.com/libp2p/go-libp2p-kad-dht"
+	peerstore "github.com/libp2p/go-libp2p-core/peerstore"
+	"github.com/libp2p/go-libp2p-core/routing"
+	discovery "github.com/libp2p/go-libp2p-discovery"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
@@ -52,7 +58,6 @@ type Protocol struct {
 	*Bridge
 
 	node    *core.IpfsNode
-	dht     *dht.IpfsDHT
 	service bertyprotocol.Service
 
 	// protocol datastore
@@ -139,11 +144,11 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 
 	// setup coreapi if needed
 	var (
-		api          ipfsutil.ExtendedCoreAPI
-		node         *core.IpfsNode
-		dht          *dht.IpfsDHT
-		repo         ipfs_repo.Repo
-		tinderDriver tinder.Driver
+		api  ipfsutil.ExtendedCoreAPI
+		node *core.IpfsNode
+		ps   *pubsub.PubSub
+		repo ipfs_repo.Repo
+		disc tinder.Driver
 	)
 
 	{
@@ -156,24 +161,55 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 				return nil, errors.Wrap(err, "failed to get ipfs repo")
 			}
 
-			var bopts = ipfsutil.CoreAPIConfig{
-				SwarmAddrs:        defaultSwarmAddrs,
-				APIAddrs:          defaultAPIAddrs,
-				APIConfig:         APIConfig,
-				ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
-			}
-			bopts.BootstrapAddrs = defaultProtocolBootstrap
-
 			var rdvpeer *peer.AddrInfo
-			var crouting <-chan *ipfsutil.RoutingOut
 
 			if rdvpeer, err = ipfsutil.ParseAndResolveIpfsAddr(ctx, defaultProtocolRendezVousPeer); err != nil {
 				return nil, errors.New("failed to parse rdvp multiaddr: " + defaultProtocolRendezVousPeer)
 			}
+
+			var bopts = ipfsutil.CoreAPIConfig{
+				DisableCorePubSub: true,
+				SwarmAddrs:        defaultSwarmAddrs,
+				APIAddrs:          defaultAPIAddrs,
+				APIConfig:         APIConfig,
+				ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
+				HostConfig: func(h host.Host, _ routing.Routing) error {
+					var err error
+
+					h.Peerstore().AddAddrs(rdvpeer.ID, rdvpeer.Addrs, peerstore.PermanentAddrTTL)
+					// @FIXME(gfanton): use rand as argument
+					rdvClient := tinder.NewRendezvousDiscovery(logger, h, rdvpeer.ID,
+						rand.New(rand.NewSource(rand.Int63())))
+
+					minBackoff, maxBackoff := time.Second, time.Minute
+					rng := rand.New(rand.NewSource(rand.Int63()))
+					disc, err = tinder.NewService(
+						logger,
+						rdvClient,
+						discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, rng),
+					)
+					if err != nil {
+						return err
+					}
+
+					ps, err = pubsub.NewGossipSub(ctx, h,
+						pubsub.WithMessageSigning(true),
+						pubsub.WithFloodPublish(true),
+						pubsub.WithDiscovery(disc),
+					)
+
+					if err != nil {
+						return err
+					}
+
+					return nil
+				},
+			}
+
+			bopts.BootstrapAddrs = defaultProtocolBootstrap
+
 			// should be a valid rendezvous peer
 			bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, defaultProtocolRendezVousPeer)
-			bopts.Routing, crouting = ipfsutil.NewTinderRouting(logger, rdvpeer, false, config.localDiscovery)
-
 			if len(config.swarmListeners) > 0 {
 				bopts.SwarmAddrs = append(bopts.SwarmAddrs, config.swarmListeners...)
 			}
@@ -182,6 +218,9 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 			if err != nil {
 				return nil, errcode.TODO.Wrap(err)
 			}
+
+			psapi := ipfsutil.NewPubSubAPI(ctx, logger, disc, ps)
+			api = ipfsutil.InjectPubSubCoreAPIExtendedAdaptater(api, psapi)
 
 			// construct http api endpoint
 			ipfsutil.ServeHTTPApi(logger, node, config.rootDirectory+"/ipfs")
@@ -192,10 +231,6 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 			if config.poiDebug {
 				ipfsutil.EnableConnLogger(logger, node.PeerHost)
 			}
-
-			out := <-crouting
-			dht = out.IpfsDHT
-			tinderDriver = out.Routing
 		}
 	}
 
@@ -229,11 +264,12 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 
 		// initialize new protocol client
 		protocolOpts := bertyprotocol.Opts{
+			PubSub:         ps,
 			Logger:         logger.Named("bertyprotocol"),
 			OrbitDirectory: odbDir,
 			RootDatastore:  rootds,
 			IpfsCoreAPI:    api,
-			TinderDriver:   tinderDriver,
+			TinderDriver:   disc,
 		}
 
 		if node != nil {
@@ -314,7 +350,6 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 
 		service: service,
 		node:    node,
-		dht:     dht,
 
 		ds: rootds,
 	}, nil
@@ -326,11 +361,6 @@ func (p *Protocol) Close() (err error) {
 
 	// close service
 	err = p.service.Close() // keep service error
-
-	/// close other services
-	if p.dht != nil {
-		p.dht.Close()
-	}
 
 	if p.node != nil {
 		p.node.Close()
