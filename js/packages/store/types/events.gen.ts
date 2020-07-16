@@ -5,7 +5,6 @@ export type Events<State> = {
 	undefined: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {}
@@ -14,7 +13,6 @@ export type Events<State> = {
 	groupMemberDeviceAdded: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {
@@ -28,7 +26,6 @@ export type Events<State> = {
 	groupDeviceSecretAdded: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {
@@ -42,7 +39,6 @@ export type Events<State> = {
 	accountGroupJoined: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {
@@ -55,7 +51,6 @@ export type Events<State> = {
 	accountGroupLeft: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {
@@ -68,7 +63,6 @@ export type Events<State> = {
 	accountContactRequestDisabled: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {
@@ -80,7 +74,6 @@ export type Events<State> = {
 	accountContactRequestEnabled: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {
@@ -92,7 +85,6 @@ export type Events<State> = {
 	accountContactRequestReferenceReset: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {
@@ -105,7 +97,6 @@ export type Events<State> = {
 	accountContactRequestOutgoingEnqueued: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {
@@ -120,7 +111,6 @@ export type Events<State> = {
 	accountContactRequestOutgoingSent: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {
@@ -133,7 +123,6 @@ export type Events<State> = {
 	accountContactRequestIncomingReceived: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {
@@ -148,7 +137,6 @@ export type Events<State> = {
 	accountContactRequestIncomingDiscarded: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {
@@ -161,7 +149,6 @@ export type Events<State> = {
 	accountContactRequestIncomingAccepted: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {
@@ -175,7 +162,6 @@ export type Events<State> = {
 	accountContactBlocked: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {
@@ -188,7 +174,6 @@ export type Events<State> = {
 	accountContactUnblocked: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {
@@ -201,7 +186,6 @@ export type Events<State> = {
 	contactAliasKeyAdded: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {
@@ -214,7 +198,6 @@ export type Events<State> = {
 	multiMemberGroupAliasResolverAdded: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {
@@ -228,7 +211,6 @@ export type Events<State> = {
 	multiMemberGroupInitialMemberAnnounced: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {}
@@ -237,7 +219,6 @@ export type Events<State> = {
 	multiMemberGroupAdminRoleGranted: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {
@@ -248,7 +229,6 @@ export type Events<State> = {
 	groupMetadataPayloadSent: CaseReducer<
 		State,
 		PayloadAction<{
-			aggregateId: string
 			eventContext: api.berty.types.v1.IEventContext
 			metadata: api.berty.types.v1.IGroupMetadata
 			event: {}

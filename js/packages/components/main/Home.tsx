@@ -67,7 +67,7 @@ const RequestsItem: React.FC<{
 					onPress={() => display({ contactId: id })}
 				>
 					<ProceduralCircleAvatar
-						style={[absolute.center, absolute.scale({ top: -32.5 })]}
+						style={[absolute.center, border.shadow.medium, absolute.scale({ top: -32.5 })]}
 						seed={publicKey}
 						size={65}
 						diffSize={20}

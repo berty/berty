@@ -37,6 +37,19 @@ class GoBridge: NSObject {
         super.init()
     }
 
+    deinit {
+      do {
+        if self.bridgeProtocol != nil {
+            NSLog("bflifecycle: calling try self.bridgeProtocol?.close()")
+            try self.bridgeProtocol?.close()
+            NSLog("bflifecycle: done try self.bridgeProtocol?.close()")
+            self.bridgeProtocol = nil
+        }
+      } catch let error as NSError {
+        NSLog("\(String(describing: error.code))")
+      }
+    }
+
     @objc func clearStorage(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
             let rootExists = FileManager.default.fileExists(atPath: self.rootdir.path)
@@ -153,17 +166,17 @@ class GoBridge: NSObject {
     }
 
     @objc func stopProtocol(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
-      do {
-          if self.bridgeProtocol != nil {
-              NSLog("bflifecycle: calling try self.bridgeProtocol?.close()")
-              try self.bridgeProtocol?.close()
-              NSLog("bflifecycle: done try self.bridgeProtocol?.close()")
-              self.bridgeProtocol = nil
-          }
-          resolve(true)
-      } catch let error as NSError {
-          reject("\(String(describing: error.code))", error.userInfo.description, error)
-      }
+        do {
+            if self.bridgeProtocol != nil {
+                NSLog("bflifecycle: calling try self.bridgeProtocol?.close()")
+                try self.bridgeProtocol?.close()
+                NSLog("bflifecycle: done try self.bridgeProtocol?.close()")
+                self.bridgeProtocol = nil
+            }
+            resolve(true)
+        } catch let error as NSError {
+            reject("\(String(describing: error.code))", error.userInfo.description, error)
+        }
     }
 
     @objc func getProtocolAddr(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {

@@ -95,7 +95,12 @@ const InvalidScanDismissButton: React.FC<{}> = () => {
 				style={[row.fill, margin.bottom.medium, _styles.dismissButton]}
 				onPress={() => {
 					resetDraft()
-					navigation.goBack()
+					try {
+						navigation.goBack()
+					} catch (e) {
+						console.warn("couldn't go back:", e)
+						navigation.navigate('Tabs')
+					}
 				}}
 			>
 				<Icon name='close' width={30} height={30} fill={color.grey} style={row.item.justify} />

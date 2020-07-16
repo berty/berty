@@ -1,35 +1,26 @@
 import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
-import { fork, put, all, select, delay, call } from 'redux-saga/effects'
+import { fork, put, all, select, call, take } from 'redux-saga/effects'
 import GoBridge from '@berty-tech/go-bridge'
-import { simpleflake } from 'simpleflakes/lib/simpleflakes-legacy'
 import { berty } from '@berty-tech/api'
 import { makeDefaultReducers, makeDefaultCommandsSagas, strToBuf, jsonToBuf } from '../utils'
 
 import { commands as groupsCommands } from '../groups'
 import * as protocol from '../protocol'
 import { events as mainSettingsEvents } from '../settings/main'
-import { events as conversationEvents } from './conversation'
+import {
+	events as conversationEvents,
+	transactions as conversationTransactions,
+} from './conversation'
 import * as contact from './contact'
 
-export type Entity = {
-	id: string
-	name: string
-	requests: Array<string>
-	conversations: Array<string>
-	contacts: Array<string>
-	onboarded: boolean
-}
-
-export type Event = {
-	id: string
-	version: number
-	aggregateId: string
-}
+export type LinkKind = 'group' | 'contact' | 'unknown'
 
 export type State = {
-	aggregates: { [key: string]: Entity }
-}
+	deepLinkStatus?: { link: string; error?: string; kind?: LinkKind }
+	name: string
+	onboarded: boolean
+} | null
 
 export type GlobalState = {
 	messenger: {
@@ -40,33 +31,25 @@ export type GlobalState = {
 export namespace Command {
 	export type Generate = void
 	export type Create = { name: string; nodeConfig: protocol.client.BertyNodeConfig }
-	export type Delete = { id?: string }
+	export type Delete = void
 	export type SendContactRequest = {
-		id: string
 		contactName: string
 		contactRdvSeed: string
 		contactPublicKey: string
 	}
-	export type Replay = { id: string }
-	export type Open = { id: string; name: string }
-	export type Onboard = { id: string }
-}
-
-export namespace Query {
-	export type List = {}
-	export type Get = { id: string }
-	export type GetRequestReference = { id: string }
-	export type GetAll = void
-	export type GetLength = undefined
+	export type Replay = void
+	export type Open = void
+	export type Onboard = void
+	export type HandleDeepLink = { url: string }
 }
 
 export namespace Event {
-	export type Created = {
-		aggregateId: string
-		name: string
-	}
-	export type Deleted = { aggregateId: string }
-	export type Onboarded = { aggregateId: string }
+	export type Created = { name: string }
+	export type Deleted = void
+	export type Onboarded = void
+	export type HandleDeepLinkError = { link: string; error: string }
+	export type HandleDeepLinkDone = { link: string; kind: LinkKind }
+	export type Unboarded = void
 }
 
 type SimpleCaseReducer<P> = CaseReducer<State, PayloadAction<P>>
@@ -79,23 +62,21 @@ export type CommandsReducer = {
 	replay: SimpleCaseReducer<Command.Replay>
 	open: SimpleCaseReducer<Command.Open>
 	onboard: SimpleCaseReducer<Command.Onboard>
+	handleDeepLink: SimpleCaseReducer<Command.HandleDeepLink>
 }
 
-export type QueryReducer = {
-	list: (state: GlobalState, query: Query.List) => Array<Entity>
-	get: (state: GlobalState, query: Query.Get) => Entity
-	getRequestRdvSeed: (
-		state: protocol.client.GlobalState,
-		query: Query.GetRequestReference,
-	) => string | undefined
-	getAll: (state: GlobalState, query: Query.GetAll) => Array<Entity>
-	getLength: (state: GlobalState) => number
+export type Queries = {
+	get: (state: GlobalState) => State
+	getRequestRdvSeed: (state: protocol.client.GlobalState) => string | undefined
 }
 
 export type EventsReducer = {
 	created: SimpleCaseReducer<Event.Created>
 	deleted: SimpleCaseReducer<Event.Deleted>
 	onboarded: SimpleCaseReducer<Event.Onboarded>
+	unboarded: SimpleCaseReducer<Event.Unboarded>
+	handleDeepLinkError: SimpleCaseReducer<Event.HandleDeepLinkError>
+	handleDeepLinkDone: SimpleCaseReducer<Event.HandleDeepLinkDone>
 }
 
 export type Transactions = {
@@ -104,9 +85,7 @@ export type Transactions = {
 		: never
 }
 
-const initialState = {
-	aggregates: {},
-}
+const initialState = null
 
 const commandHandler = createSlice<State, CommandsReducer>({
 	name: 'messenger/account/command',
@@ -121,6 +100,7 @@ const commandHandler = createSlice<State, CommandsReducer>({
 		'replay',
 		'open',
 		'onboard',
+		'handleDeepLink',
 	]),
 })
 
@@ -129,26 +109,38 @@ const eventHandler = createSlice<State, EventsReducer>({
 	initialState,
 	reducers: {
 		created: (state, { payload }) => {
-			if (!state.aggregates[payload.aggregateId]) {
-				state.aggregates[payload.aggregateId] = {
-					id: payload.aggregateId,
+			if (!state) {
+				state = {
 					name: payload.name,
-					requests: [],
-					conversations: [],
-					contacts: [],
 					onboarded: false,
 				}
 			}
 			return state
 		},
-		deleted: (state, { payload }) => {
-			delete state.aggregates[payload.aggregateId]
+		deleted: () => {
+			return null
+		},
+		onboarded: (state) => {
+			if (state) {
+				state.onboarded = true
+			}
 			return state
 		},
-		onboarded: (state, { payload }) => {
-			const account = state.aggregates[payload.aggregateId]
-			if (account) {
-				account.onboarded = true
+		unboarded: (state) => {
+			if (state) {
+				state.onboarded = false
+			}
+			return state
+		},
+		handleDeepLinkError: (state, { payload: { link, error } }) => {
+			if (state) {
+				state.deepLinkStatus = { link, error }
+			}
+			return state
+		},
+		handleDeepLinkDone: (state, { payload: { link, kind } }) => {
+			if (state) {
+				state.deepLinkStatus = { link, kind }
 			}
 			return state
 		},
@@ -158,98 +150,48 @@ const eventHandler = createSlice<State, EventsReducer>({
 export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
 export const commands = commandHandler.actions
 export const events = eventHandler.actions
-export const queries: QueryReducer = {
-	list: (state) => Object.values(state.messenger.account.aggregates),
-	get: (state, { id }) => state.messenger.account.aggregates[id],
-	getRequestRdvSeed: (state, { id }) => {
-		const account = protocol.queries.client.get(state, { id })
-		return account && account.contactRequestRdvSeed
+export const queries: Queries = {
+	get: (state) => state.messenger.account,
+	getRequestRdvSeed: (state) => {
+		const account = protocol.queries.client.get(state)
+		return (account && account.contactRequestRdvSeed) || undefined
 	},
-	getAll: (state) => Object.values(state.messenger.account.aggregates),
-	getLength: (state) => Object.keys(state.messenger.account.aggregates).length,
-}
-
-export const getProtocolClient = function* (id: string): Generator<unknown, protocol.Client, void> {
-	const client = (yield select((state) => protocol.queries.client.get(state, { id }))) as
-		| protocol.Client
-		| undefined
-	if (client == null) {
-		throw new Error('client is not defined')
-	}
-	return client
 }
 
 export const transactions: Transactions = {
-	open: function* ({ id, name }) {
-		yield* protocol.transactions.client.start({ id, name })
-
-		while (true) {
-			try {
-				yield* protocol.transactions.client.instanceGetConfiguration({ id })
-				break
-			} catch (e) {
-				console.warn(e)
-			}
-			yield delay(1000)
+	open: function* () {
+		const acc = (yield select(queries.get)) as ReturnType<typeof queries.get>
+		if (!acc) {
+			throw new Error("tried to open the account while it's undefined")
 		}
 
 		yield put(conversationEvents.appInit())
 
-		yield put(groupsCommands.open({ clientId: id }))
+		yield put(groupsCommands.open())
+		yield take('GROUPS_OPENED')
 
-		const client = yield* getProtocolClient(id)
+		const client = yield* protocol.client.getProtocolClient()
 
-		const gpkb = strToBuf(client.accountGroupPk)
-
-		// replace by subscribe maybe
-		yield fork(protocol.transactions.client.listenToGroupMetadata, {
-			clientId: id,
-			groupPk: gpkb,
-		})
+		yield put(groupsCommands.subscribe({ publicKey: client.accountGroupPk, metadata: true }))
 
 		yield call(protocol.transactions.client.instanceShareableBertyID, {
-			id,
 			reset: false,
-			displayName: name,
+			displayName: acc.name,
 		})
 
-		yield call(protocol.transactions.client.contactRequestReference, { id })
+		yield call(protocol.transactions.client.contactRequestReference)
 	},
 	generate: function* () {
 		throw new Error('not implemented')
 		//yield* transactions.create({ name: faker.name.firstName(), config: {} })
 	},
 	create: function* ({ name, nodeConfig }) {
-		// create an id for the account
-		const id = simpleflake().toString()
-
-		yield put(mainSettingsEvents.created({ id, nodeConfig }))
-
-		const event = events.created({
-			aggregateId: id,
-			name,
-		})
-		// open account
-		yield* transactions.open({ id, name })
-		// get account PK
-
-		//yield* protocol.transactions.client.contactRequestResetReference({ id })
-		//yield* protocol.transactions.client.contactRequestEnable({ id })
-
-		yield put(event)
-
-		/* USEME when we want multidevices support
-		const client = yield* getProtocolClient(id)
-
-		yield* protocol.transactions.client.appMetadataSend({
-			id,
-			groupPk: strToBuf(client.accountGroupPk),
-			payload: jsonToBuf(event),
-		})
-		*/
+		yield put(mainSettingsEvents.created({ nodeConfig }))
+		yield put(events.created({ name }))
 	},
 	delete: function* () {
-		yield call(GoBridge.stopProtocol)
+		yield put(events.unboarded())
+		yield* protocol.client.transactions.stop()
 		yield call(GoBridge.clearStorage)
 		yield put({ type: 'CLEAR_STORE' })
 	},
@@ -257,9 +199,7 @@ export const transactions: Transactions = {
 		throw new Error('not implemented')
 	},
 	sendContactRequest: function* (payload) {
-		const account = (yield select((state) => queries.get(state, { id: payload.id }))) as
-			| Entity
-			| undefined
+		const account = (yield select(queries.get)) as ReturnType<typeof queries.get>
 		if (account == null) {
 			throw new Error("account doesn't exist")
 		}
@@ -288,28 +228,45 @@ export const transactions: Transactions = {
 		}
 
 		yield* protocol.transactions.client.contactRequestSend({
-			id: payload.id,
 			contact,
 			ownMetadata: jsonToBuf(ownMetadata),
 		})
 
 		console.log('contactRequestSend done')
 	},
-	onboard: function* (payload) {
-		yield put(events.onboarded({ aggregateId: payload.id }))
+	onboard: function* () {
+		yield put(events.onboarded())
+	},
+	handleDeepLink: function* ({ url }) {
+		try {
+			const data = (yield call(protocol.client.transactions.parseDeepLink, {
+				link: url,
+			})) as berty.messenger.v1.ParseDeepLink.IReply
+			if (!(data && (data.bertyId || data.bertyGroup))) {
+				throw new Error('Internal: Invalid node response.')
+			}
+			let kind: LinkKind
+			if (data.bertyGroup) {
+				kind = 'group'
+				yield* conversationTransactions.join({ link: url })
+			} else if (data.bertyId) {
+				kind = 'contact'
+				yield* contact.transactions.initiateRequest({ url })
+			} else {
+				kind = 'unknown'
+			}
+			yield put(events.handleDeepLinkDone({ link: url, kind }))
+		} catch (e) {
+			if (e.name === 'GRPCError') {
+				const error = new Error('Corrupted deep link.').toString()
+				yield put(events.handleDeepLinkError({ link: url, error }))
+			} else {
+				yield put(events.handleDeepLinkError({ link: url, error: e.toString() }))
+			}
+		}
 	},
 }
 
 export function* orchestrator() {
-	yield all([
-		...makeDefaultCommandsSagas(commands, transactions),
-		fork(function* () {
-			// start protocol clients
-			const accounts = (yield select(queries.getAll)) as Entity[]
-			for (const account of accounts) {
-				yield* transactions.open({ id: account.id, name: account.name })
-				yield* contact.transactions.open({ accountId: account.id })
-			}
-		}),
-	])
+	yield all([...makeDefaultCommandsSagas(commands, transactions)])
 }

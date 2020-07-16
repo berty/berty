@@ -25,9 +25,9 @@ export type GlobalState = {
 // Commands
 
 export namespace Commands {
-	export type Open = { clientId: string }
-	export type Subscribe = { clientId: string; publicKey: string } & SubscribeOptions
-	export type Unsubscribe = { clientId: string; publicKey: string } & SubscribeOptions
+	export type Open = void
+	export type Subscribe = { publicKey: string } & SubscribeOptions
+	export type Unsubscribe = { publicKey: string } & SubscribeOptions
 }
 
 type CommandCaseReducer<P> = CaseReducer<undefined, PayloadAction<P>>
@@ -134,7 +134,7 @@ export const events = eventsHandler.actions
 type Query<Props, Return> = (state: GlobalState, query: Props) => Return
 
 export type Queries = {
-	list: Query<{ clientId: string }, Entity[]>
+	list: Query<void, Entity[]>
 	get: Query<{ groupId: string }, Entity | undefined>
 }
 
@@ -162,57 +162,38 @@ export type Transactions = {
 type SubscribeTasks = { metadataTask?: Task; messagesTask?: Task }
 
 export const transactions: Transactions = {
-	open: function* ({ clientId }) {
+	open: function* () {
 		const allTasks: { [key: string]: SubscribeTasks | undefined } = {}
-		const optsList = yield* select((state) => queries.list(state, { clientId }))
+		const optsList = yield* select(queries.list)
 		for (const opts of optsList) {
+			const groupPk = strToBuf(opts.publicKey)
 			if (opts.messages || opts.metadata) {
-				yield* call(clientTransactions.activateGroup, {
-					id: clientId,
-					groupPk: strToBuf(opts.publicKey),
-				})
+				yield* call(clientTransactions.activateGroup, { groupPk })
 			}
 			const tasks: SubscribeTasks = {}
 			if (opts.messages) {
-				tasks.messagesTask = yield* fork(clientTransactions.listenToGroupMessages, {
-					clientId,
-					groupPk: strToBuf(opts.publicKey),
-				})
+				tasks.messagesTask = yield* fork(clientTransactions.listenToGroupMessages, { groupPk })
 			}
 			if (opts.metadata) {
-				tasks.metadataTask = yield* fork(clientTransactions.listenToGroupMetadata, {
-					clientId,
-					groupPk: strToBuf(opts.publicKey),
-				})
+				tasks.metadataTask = yield* fork(clientTransactions.listenToGroupMetadata, { groupPk })
 			}
 			allTasks[opts.publicKey] = tasks
 		}
+		yield put({ type: 'GROUPS_OPENED' })
 		yield* all([
 			takeEvery(commands.subscribe, function* ({ payload }) {
-				if (payload.clientId !== clientId) {
-					return
-				}
 				const tasks: SubscribeTasks = allTasks[payload.publicKey] || {}
+				const groupPk = strToBuf(payload.publicKey)
 				if (!tasks.messagesTask && payload.messages) {
-					tasks.messagesTask = yield* fork(clientTransactions.listenToGroupMessages, {
-						clientId,
-						groupPk: strToBuf(payload.publicKey),
-					})
+					tasks.messagesTask = yield* fork(clientTransactions.listenToGroupMessages, { groupPk })
 				}
 				if (!tasks.metadataTask && payload.metadata) {
-					tasks.metadataTask = yield* fork(clientTransactions.listenToGroupMetadata, {
-						clientId,
-						groupPk: strToBuf(payload.publicKey),
-					})
+					tasks.metadataTask = yield* fork(clientTransactions.listenToGroupMetadata, { groupPk })
 				}
 				allTasks[payload.publicKey] = tasks
 				yield* put(events.updated(payload))
 			}),
 			takeEvery(commands.unsubscribe, function* ({ payload }) {
-				if (payload.clientId !== clientId) {
-					return
-				}
-
 				const tasks = allTasks[payload.publicKey] || {}
 				if (tasks.messagesTask && payload.messages) {
 					yield* cancel(tasks.messagesTask)
@@ -226,6 +207,13 @@ export const transactions: Transactions = {
 				yield* put(
 					events.updated({ ...payload, messages: !payload.messages, metadata: !payload.metadata }),
 				)
+			}),
+			takeEvery('STOP_CLIENT', function* () {
+				for (const task of Object.values(allTasks)) {
+					task?.messagesTask?.cancel()
+					task?.metadataTask?.cancel()
+				}
+				yield put({ type: 'GROUPS_STOPED' })
 			}),
 		])
 	},

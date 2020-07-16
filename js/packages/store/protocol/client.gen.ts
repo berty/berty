@@ -2,46 +2,15 @@ import * as api from '@berty-tech/api'
 import { PayloadAction, CaseReducer } from '@reduxjs/toolkit'
 
 export type Commands<State> = {
-	instanceExportData: CaseReducer<
-		State,
-		PayloadAction<{
-			id: string
-		}>
-	>
-	instanceGetConfiguration: CaseReducer<
-		State,
-		PayloadAction<{
-			id: string
-		}>
-	>
-	contactRequestReference: CaseReducer<
-		State,
-		PayloadAction<{
-			id: string
-		}>
-	>
-	contactRequestDisable: CaseReducer<
-		State,
-		PayloadAction<{
-			id: string
-		}>
-	>
-	contactRequestEnable: CaseReducer<
-		State,
-		PayloadAction<{
-			id: string
-		}>
-	>
-	contactRequestResetReference: CaseReducer<
-		State,
-		PayloadAction<{
-			id: string
-		}>
-	>
+	instanceExportData: CaseReducer<State, PayloadAction<{}>>
+	instanceGetConfiguration: CaseReducer<State, PayloadAction<{}>>
+	contactRequestReference: CaseReducer<State, PayloadAction<{}>>
+	contactRequestDisable: CaseReducer<State, PayloadAction<{}>>
+	contactRequestEnable: CaseReducer<State, PayloadAction<{}>>
+	contactRequestResetReference: CaseReducer<State, PayloadAction<{}>>
 	contactRequestSend: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			contact: api.berty.types.v1.IShareableContact
 			ownMetadata: Uint8Array
 		}>
@@ -49,69 +18,55 @@ export type Commands<State> = {
 	contactRequestAccept: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			contactPk: Uint8Array
 		}>
 	>
 	contactRequestDiscard: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			contactPk: Uint8Array
 		}>
 	>
 	contactBlock: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			contactPk: Uint8Array
 		}>
 	>
 	contactUnblock: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			contactPk: Uint8Array
 		}>
 	>
 	contactAliasKeySend: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			groupPk: Uint8Array
 		}>
 	>
-	multiMemberGroupCreate: CaseReducer<
-		State,
-		PayloadAction<{
-			id: string
-		}>
-	>
+	multiMemberGroupCreate: CaseReducer<State, PayloadAction<{}>>
 	multiMemberGroupJoin: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			group: api.berty.types.v1.IGroup
 		}>
 	>
 	multiMemberGroupLeave: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			groupPk: Uint8Array
 		}>
 	>
 	multiMemberGroupAliasResolverDisclose: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			groupPk: Uint8Array
 		}>
 	>
 	multiMemberGroupAdminRoleGrant: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			groupPk: Uint8Array
 			memberPk: Uint8Array
 		}>
@@ -119,14 +74,12 @@ export type Commands<State> = {
 	multiMemberGroupInvitationCreate: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			groupPk: Uint8Array
 		}>
 	>
 	appMetadataSend: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			groupPk: Uint8Array
 			payload: Uint8Array
 		}>
@@ -134,7 +87,6 @@ export type Commands<State> = {
 	appMessageSend: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			groupPk: Uint8Array
 			payload: Uint8Array
 		}>
@@ -142,7 +94,6 @@ export type Commands<State> = {
 	groupMetadataSubscribe: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			groupPk: Uint8Array
 			since: Uint8Array
 			until: Uint8Array
@@ -152,7 +103,6 @@ export type Commands<State> = {
 	groupMessageSubscribe: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			groupPk: Uint8Array
 			since: Uint8Array
 			until: Uint8Array
@@ -162,21 +112,18 @@ export type Commands<State> = {
 	groupMetadataList: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			groupPk: Uint8Array
 		}>
 	>
 	groupMessageList: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			groupPk: Uint8Array
 		}>
 	>
 	groupInfo: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			groupPk: Uint8Array
 			contactPk: Uint8Array
 		}>
@@ -184,27 +131,19 @@ export type Commands<State> = {
 	activateGroup: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			groupPk: Uint8Array
 		}>
 	>
 	deactivateGroup: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			groupPk: Uint8Array
 		}>
 	>
-	debugListGroups: CaseReducer<
-		State,
-		PayloadAction<{
-			id: string
-		}>
-	>
+	debugListGroups: CaseReducer<State, PayloadAction<{}>>
 	debugInspectGroupStore: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			groupPk: Uint8Array
 			logType: api.berty.types.v1.DebugInspectGroupLogType
 		}>
@@ -212,7 +151,6 @@ export type Commands<State> = {
 	debugGroup: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			groupPk: Uint8Array
 		}>
 	>

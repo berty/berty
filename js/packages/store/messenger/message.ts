@@ -11,19 +11,14 @@ import * as conversation from './conversation'
 import { UserMessage, GroupInvitation, AppMessageType, AppMessage, Acknowledge } from './AppMessage'
 
 export type StoreUserMessage = UserMessage & { isMe: boolean; acknowledged: boolean }
+export type StoreGroupInvitation = GroupInvitation & { isMe: boolean }
 
-export type StoreMessage = StoreUserMessage | GroupInvitation
+export type StoreMessage = StoreUserMessage | StoreGroupInvitation
 
 export type Entity = {
 	id: string
 	receivedDate: number
 } & StoreMessage
-
-export type Event = {
-	id: string
-	version: number
-	aggregateId: string
-}
 
 export type State = {
 	events: Array<Event>
@@ -60,6 +55,7 @@ export namespace Event {
 		message: AppMessage
 		receivedDate: number
 		isMe: boolean
+		memberPk?: string
 	}
 	export type Hidden = { aggregateId: string }
 }
@@ -139,7 +135,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 	name: 'messenger/message/event',
 	initialState,
 	reducers: {
-		received: (state, { payload: { aggregateId, message, receivedDate, isMe } }) => {
+		received: (state, { payload: { aggregateId, message, receivedDate, isMe, memberPk } }) => {
 			if (state.aggregates[aggregateId]) {
 				return state
 			}
@@ -149,7 +145,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 					if (hasAckInBacklog) {
 						delete state.ackBacklog[aggregateId]
 					}
-					state.aggregates[aggregateId] = {
+					const templateMsg = {
 						id: aggregateId,
 						type: message.type,
 						body: message.body,
@@ -159,6 +155,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 						acknowledged: hasAckInBacklog,
 						receivedDate,
 					}
+					state.aggregates[aggregateId] = memberPk ? { ...templateMsg, memberPk } : templateMsg
 					break
 				case AppMessageType.UserReaction:
 					// todo: append reaction to message
@@ -167,8 +164,10 @@ const eventHandler = createSlice<State, EventsReducer>({
 					state.aggregates[aggregateId] = {
 						id: aggregateId,
 						type: message.type,
-						groupPk: message.groupPk,
+						group: message.group,
+						isMe,
 						receivedDate,
+						name: message.name,
 					}
 					break
 				case AppMessageType.Acknowledge:
@@ -263,9 +262,7 @@ export const transactions: Transactions = {
 				attachments: payload.attachments,
 				sentDate: Date.now(),
 			}
-
 			yield* protocol.transactions.client.appMessageSend({
-				id: conv.accountId,
 				groupPk: strToBuf(conv.pk), // need to set the pk in conv handlers
 				payload: jsonToBuf(message),
 			})
@@ -288,7 +285,6 @@ export const transactions: Transactions = {
 					sentDate: Date.now(),
 				}
 				yield* protocol.transactions.client.appMessageSend({
-					id: conv[i].accountId,
 					groupPk: strToBuf(conv[i].pk), // need to set the pk in conv handlers
 					payload: jsonToBuf(message),
 				})
@@ -298,16 +294,6 @@ export const transactions: Transactions = {
 	hide: function* () {
 		// TODO: hide a message
 	},
-}
-
-export const getProtocolClient = function* (id: string): Generator<unknown, protocol.Client, void> {
-	const client = (yield select((state) => protocol.queries.client.get(state, { id }))) as
-		| protocol.Client
-		| undefined
-	if (client == null) {
-		throw new Error('client is not defined')
-	}
-	return client
 }
 
 export function* orchestrator() {
@@ -328,7 +314,7 @@ export function* orchestrator() {
 			if (!action.payload.message) {
 				return
 			}
-			const message: AppMessage = bufToJSON(action.payload.message)
+			const message: AppMessage = bufToJSON(action.payload.message) // <--- Not secure
 			const aggregateId = bufToStr(idBuf)
 			// create the message entity
 			const existingMessage = (yield select((state) => queries.get(state, { id: aggregateId }))) as
@@ -338,10 +324,7 @@ export function* orchestrator() {
 				return
 			}
 			// Reconstitute the convId
-			const convId = conversation.getAggregateId({
-				accountId: action.payload.aggregateId,
-				groupPk: groupPkBuf,
-			})
+			const convId = bufToStr(groupPkBuf)
 			// Recup the conv
 			const conv = (yield select((state) => conversation.queries.get(state, { id: convId }))) as
 				| conversation.Entity
@@ -350,32 +333,59 @@ export function* orchestrator() {
 				return
 			}
 
-			const client = yield* getProtocolClient(action.payload.aggregateId)
-			const devicePk = action.payload.headers?.devicePk
+			const msgDevicePk = action.payload.headers?.devicePk
 
-			// warning, this does not support using multiple devices and might not work for multimember groups
-			const isMe = !!devicePk && bufToStr(devicePk) === client.devicePk
+			let memberPk: string | undefined
+			if (msgDevicePk) {
+				const msgDevicePkStr = bufToStr(msgDevicePk)
+				const groups = yield select((state) => state.groups)
+				const { membersDevices } = groups[conv.pk] || { membersDevices: {} }
+				const [pk] =
+					Object.entries((membersDevices as { [key: string]: any }) || {}).find(
+						([, devicePks]) => devicePks && devicePks.some((pk: any) => pk === msgDevicePkStr),
+					) || []
+				memberPk = pk
+			}
 
-			// Add received message in store
+			const groupInfo: berty.types.v1.GroupInfo.IReply = yield call(
+				protocol.transactions.client.groupInfo,
+				{
+					id: action.payload.aggregateId,
+					groupPk: groupPkBuf,
+					contactPk: new Uint8Array(),
+				},
+			)
+			let isMe = false
+			if (msgDevicePk && groupInfo?.devicePk) {
+				// TODO: multiple devices support
+				isMe = Buffer.from(msgDevicePk).equals(Buffer.from(groupInfo.devicePk))
+			}
+
 			yield put(
 				events.received({
 					aggregateId,
 					message,
 					receivedDate: Date.now(),
 					isMe,
+					memberPk,
 				}),
 			)
 
-			if (message.type === AppMessageType.UserMessage) {
-				// add message to corresponding conversation
+			// Add received message in store
+
+			if (
+				message.type === AppMessageType.UserMessage ||
+				message.type === AppMessageType.GroupInvitation
+			) {
 				yield call(conversation.transactions.addMessage, {
-					aggregateId: conversation.getAggregateId({
-						accountId: action.payload.aggregateId,
-						groupPk: groupPkBuf,
-					}),
+					aggregateId: bufToStr(groupPkBuf),
 					messageId: aggregateId,
 					isMe,
 				})
+			}
+
+			if (message.type === AppMessageType.UserMessage) {
+				// add message to corresponding conversation
 
 				if (!isMe) {
 					// send acknowledgment
@@ -384,7 +394,6 @@ export function* orchestrator() {
 						target: aggregateId,
 					}
 					yield call(protocol.transactions.client.appMessageSend, {
-						id: conv.accountId,
 						groupPk: groupPkBuf,
 						payload: jsonToBuf(acknowledge),
 					})

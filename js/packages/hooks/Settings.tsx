@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { settings } from '@berty-tech/store'
 import { Provider as ReactReduxProvider, useSelector, useDispatch } from 'react-redux'
 import { ActivityIndicator } from 'react-native'
@@ -20,10 +20,7 @@ export const Provider: React.FC = ({ children }) => {
 }
 
 export const useSettings = () => {
-	const account = Messenger.useAccount()
-	return useSelector((state: settings.main.GlobalState) =>
-		account ? settings.main.queries.get(state, { id: account.id }) : undefined,
-	)
+	return useSelector(settings.main.queries.get)
 }
 
 export const useSystemInfo = () => {
@@ -33,7 +30,7 @@ export const useSystemInfo = () => {
 		return () => {}
 	}
 	return () => {
-		dispatch(settings.main.commands.systemInfo({ id: account.id }))
+		dispatch(settings.main.commands.systemInfo())
 	}
 }
 
@@ -46,17 +43,13 @@ export const useDebugGroup: UseDebugGroup = ({ pk }) => {
 		return () => {}
 	}
 	return () => {
-		dispatch(settings.main.commands.debugGroup({ id: account.id, pk }))
+		dispatch(settings.main.commands.debugGroup({ pk }))
 	}
 }
 
 export const useToggleTracing = () => {
-	const stgs = useSettings()
 	const dispatch = useDispatch()
-	if (!stgs) {
-		return () => {}
-	}
-	return () => dispatch(settings.main.commands.toggleTracing({ id: stgs.id }))
+	return () => dispatch(settings.main.commands.toggleTracing())
 }
 
 export { settings as store }

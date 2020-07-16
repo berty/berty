@@ -3,9 +3,7 @@ import { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { messenger } from '@berty-tech/store'
 import { useGetConversation, useConversationList } from './conversation'
-import { Entity as ConversationEntity } from '@berty-tech/store/messenger/conversation'
 import { flatten } from 'lodash'
-import { UserMessage } from '@berty-tech/store/messenger'
 
 // messages commands
 export const useMessageSend = () => {
@@ -130,7 +128,7 @@ export const useGetMessageSearchResultWithMetadata = (searchText: string): Messa
 					message: messenger.message.queries.searchOne(state, {
 						searchText,
 						id,
-					}) as UserMessage,
+					}) as messenger.UserMessage,
 				}))
 				.filter(({ message }) => !!message && message.type === messenger.AppMessageType.UserMessage)
 				.sort(

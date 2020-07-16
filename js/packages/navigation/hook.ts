@@ -59,9 +59,11 @@ const createNavigation = ({
 				search: createNavigateFunc(navigate, Routes.Main.Search),
 				requestSent: createNavigateFunc(navigate, Routes.Main.RequestSent),
 				createGroup: {
-					createGroup1: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroup1),
-					createGroup2: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroup2),
-					createGroup3: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroup3),
+					createGroupAddMembers: createNavigateFunc(
+						navigate,
+						Routes.CreateGroup.CreateGroupAddMembers,
+					),
+					createGroupFinalize: createNavigateFunc(navigate, Routes.CreateGroup.CreateGroupFinalize),
 				},
 			},
 			chat: {
@@ -72,7 +74,14 @@ const createNavigation = ({
 					navigate,
 					Routes.Chat.OneToOneSettings,
 				),
-				groupSettings: createNavigateFunc(navigate, Routes.Chat.GroupSettings),
+				groupSettings: createNavigateFunc<ScreenProps.Chat.GroupSettings>(
+					navigate,
+					Routes.Chat.GroupSettings,
+				),
+				multiMemberQR: createNavigateFunc<ScreenProps.Chat.MultiMemberQR>(
+					navigate,
+					Routes.Chat.MultiMemberQR,
+				),
 			},
 			settings: {
 				home: createNavigateFunc<ScreenProps.Settings.Home>(navigate, Routes.Settings.Home),
@@ -99,6 +108,12 @@ const createNavigation = ({
 				devText: createNavigateFunc<ScreenProps.Settings.DevText>(
 					navigate,
 					Routes.Settings.DevText,
+				),
+			},
+			modals: {
+				manageDeepLink: createNavigateFunc<ScreenProps.Modals.ManageDeepLink>(
+					navigate,
+					Routes.Modals.ManageDeepLink,
 				),
 			},
 		},

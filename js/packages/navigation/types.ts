@@ -17,9 +17,8 @@ export namespace ScreenProps {
 		export type Search = RouteProps<void>
 		export type RequestSent = RouteProps<void>
 		export namespace CreateGroup {
-			export type CreateGroup = RouteProps<void>
-			export type CreateGroup2 = RouteProps<void>
-			export type CreateGroup3 = RouteProps<void>
+			export type CreateGroupAddMembers = RouteProps<void>
+			export type CreateGroupFinalize = RouteProps<void>
 		}
 	}
 	export namespace Chat {
@@ -28,6 +27,7 @@ export namespace ScreenProps {
 		export type Settings = RouteProps<{ convId: string }>
 		export type OneToOneSettings = RouteProps<{ contactId: string }>
 		export type GroupSettings = RouteProps<{ convId: string }>
+		export type MultiMemberQR = RouteProps<{ convId: string }>
 	}
 	export namespace Settings {
 		export type Home = RouteProps<void>
@@ -46,6 +46,9 @@ export namespace ScreenProps {
 		export type IpfsWebUI = RouteProps<void>
 		export type SystemInfo = RouteProps<void>
 		export type DevText = RouteProps<{ text: string }>
+	}
+	export namespace Modals {
+		export type ManageDeepLink = RouteProps<{ type: 'qr' | 'link'; value: string }>
 	}
 }
 
@@ -70,9 +73,8 @@ export namespace Routes {
 		RequestSent = 'Main.RequestSent',
 	}
 	export enum CreateGroup {
-		CreateGroup1 = 'Main.CreateGroup1',
-		CreateGroup2 = 'Main.CreateGroup2',
-		CreateGroup3 = 'Main.CreateGroup3',
+		CreateGroupAddMembers = 'Main.CreateGroupAddMembers',
+		CreateGroupFinalize = 'Main.CreateGroupFinalize',
 	}
 	export enum Chat {
 		OneToOne = 'Chat.OneToOne',
@@ -80,6 +82,7 @@ export namespace Routes {
 		Settings = 'Chat.Settings',
 		OneToOneSettings = 'Chat.OneToOneSettings',
 		GroupSettings = 'Group.GroupSettings',
+		MultiMemberQR = 'Chat.MultiMemberQR',
 	}
 	export enum Settings {
 		Home = 'Settings.Home',
@@ -102,5 +105,6 @@ export namespace Routes {
 	export enum Modals {
 		SendContactRequest = 'SendContactRequest',
 		DeleteAccount = 'DeleteAccount',
+		ManageDeepLink = 'ManageDeepLink',
 	}
 }

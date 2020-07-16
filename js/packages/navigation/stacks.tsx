@@ -19,16 +19,16 @@ const ModalsStack = createNativeStackNavigator()
 export const ModalsNavigation: React.FC = () => (
 	<ModalsStack.Navigator screenOptions={{ headerShown: false }}>
 		<ModalsStack.Screen
-			name={Routes.Modals.SendContactRequest}
-			component={Components.Modals.SendContactRequest}
+			name={Routes.Modals.DeleteAccount}
+			component={Components.Modals.DeleteAccount}
 			options={{
 				stackPresentation: 'transparentModal',
 				stackAnimation: 'fade',
 			}}
 		/>
 		<ModalsStack.Screen
-			name={Routes.Modals.DeleteAccount}
-			component={Components.Modals.DeleteAccount}
+			name={Routes.Modals.ManageDeepLink}
+			component={Components.Modals.ManageDeepLink}
 			options={{
 				stackPresentation: 'transparentModal',
 				stackAnimation: 'fade',
@@ -56,12 +56,12 @@ export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => {
 	return (
 		<CreateGroupStack.Navigator screenOptions={{ headerShown: false }}>
 			<CreateGroupStack.Screen
-				name={Routes.CreateGroup.CreateGroup2}
+				name={Routes.CreateGroup.CreateGroupAddMembers}
 				options={{ stackPresentation: 'transparentModal' }}
 			>
 				{() => (
 					// should use setParams ? maybe, tis weird
-					<Components.Main.CreateGroup2
+					<Components.Main.CreateGroupAddMembers
 						members={members}
 						onRemoveMember={removeMember}
 						onSetMember={setMember}
@@ -69,21 +69,11 @@ export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => {
 				)}
 			</CreateGroupStack.Screen>
 			<CreateGroupStack.Screen
-				name={Routes.CreateGroup.CreateGroup3}
-				options={{ stackPresentation: 'transparentModal' }}
-			>
-				{() => <Components.Main.CreateGroup3 members={members} onRemoveMember={removeMember} />}
-			</CreateGroupStack.Screen>
-			<CreateGroupStack.Screen
-				name={Routes.CreateGroup.CreateGroup1}
+				name={Routes.CreateGroup.CreateGroupFinalize}
 				options={{ stackPresentation: 'transparentModal' }}
 			>
 				{() => (
-					<Components.Main.CreateGroup
-						members={members}
-						onRemoveMember={removeMember}
-						onSetMember={setMember}
-					/>
+					<Components.Main.CreateGroupFinalize members={members} onRemoveMember={removeMember} />
 				)}
 			</CreateGroupStack.Screen>
 			<CreateGroupStack.Screen
@@ -117,10 +107,10 @@ export const TabNavigation: React.FC = () => {
 
 const NavigationStack = createNativeStackNavigator()
 export const Navigation: React.FC = () => {
-	const length = Messenger.useAccountLength()
+	const account = Messenger.useAccount()
 	return (
 		<NavigationStack.Navigator
-			initialRouteName={length >= 1 ? Routes.Root.Tabs : Routes.Onboarding.GetStarted}
+			initialRouteName={account ? Routes.Root.Tabs : Routes.Onboarding.GetStarted}
 			screenOptions={{ headerShown: false }}
 		>
 			<NavigationStack.Screen
@@ -151,17 +141,20 @@ export const Navigation: React.FC = () => {
 				options={{ stackPresentation: 'transparentModal' }}
 			/>
 			<NavigationStack.Screen name={Routes.Chat.OneToOne} component={Components.Chat.OneToOne} />
-			{/*<NavigationStack.Screen name={Routes.Chat.Group} component={Components.Chat.ChatGroup} />*/}
+			<NavigationStack.Screen name={Routes.Chat.Group} component={Components.Chat.ChatGroup} />
 			<NavigationStack.Screen name={Routes.Chat.Settings} component={Components.Chat.Settings} />
 			<NavigationStack.Screen
 				name={Routes.Chat.OneToOneSettings}
 				component={Components.Chat.OneToOneSettings}
 			/>
-			{/*<NavigationStack.Screen
+			<NavigationStack.Screen
 				name={Routes.Chat.GroupSettings}
-				component={Components.Chat.GroupChatSettings}
-			/>*/}
-
+				component={Components.Chat.GroupSettings}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Chat.MultiMemberQR}
+				component={Components.Chat.MultiMemberQR}
+			/>
 			<NavigationStack.Screen
 				name={Routes.Main.HomeModal}
 				component={Components.Main.HomeModal}
@@ -176,7 +169,7 @@ export const Navigation: React.FC = () => {
 				options={{ stackPresentation: 'transparentModal' }}
 			/>
 			<NavigationStack.Screen
-				name={Routes.CreateGroup.CreateGroup2}
+				name={Routes.CreateGroup.CreateGroupAddMembers}
 				component={CreateGroupNavigation}
 				options={{ stackPresentation: 'transparentModal' }}
 			/>

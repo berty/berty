@@ -28,7 +28,7 @@ const useStylesScan = () => {
 }
 
 const ScanBody: React.FC<{}> = () => {
-	const initiateContactRequest = Messenger.useInitiateContactRequest()
+	const handleDeepLink = Messenger.useHandleDeepLink()
 	const navigation = useNavigation()
 	const [{ background }] = useStyles()
 	const borderRadius = 30
@@ -48,11 +48,11 @@ const ScanBody: React.FC<{}> = () => {
 			<QRCodeScanner
 				onRead={({ data, type }) => {
 					if ((type as string) === 'QR_CODE' || (type as string) === 'org.iso.QRCode') {
-						initiateContactRequest(data)
+						handleDeepLink(data)
 						// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
 						navigation.navigate('Modals', {
-							screen: 'SendContactRequest',
-							params: { type: 'qr' },
+							screen: 'ManageDeepLink',
+							params: { type: 'qr', value: data },
 						})
 						Vibration.vibrate(1000)
 					}
@@ -82,7 +82,7 @@ const ScanInfosText: React.FC<ScanInfosTextProps> = ({ textProps }) => {
 }
 
 const DevReferenceInput = () => {
-	const initiateContactRequest = Messenger.useInitiateContactRequest()
+	const handleDeepLink = Messenger.useHandleDeepLink()
 	const [ref, setRef] = useState('')
 	const navigation = useNavigation()
 	return (
@@ -92,10 +92,10 @@ const DevReferenceInput = () => {
 			<Button
 				title='Submit'
 				onPress={() => {
-					initiateContactRequest(ref)
+					handleDeepLink(ref)
 					navigation.navigate('Modals', {
-						screen: 'SendContactRequest',
-						params: { type: 'link' },
+						screen: 'ManageDeepLink',
+						params: { type: 'link', value: ref },
 					})
 					Vibration.vibrate(1000)
 				}}

@@ -1,6 +1,6 @@
 import { combineReducers, Middleware } from 'redux'
 import { configureStore } from '@reduxjs/toolkit'
-import { all, call, take, race, delay } from 'redux-saga/effects'
+import { call, take, race, delay, select, fork } from 'redux-saga/effects'
 import createSagaMiddleware from 'redux-saga'
 import createRecorder from 'redux-test-recorder'
 import mem from 'mem'
@@ -12,13 +12,12 @@ import * as settings from '../settings'
 import * as account from './account'
 import * as contact from './contact'
 import * as conversation from './conversation'
-import * as member from './member'
 import * as message from './message'
 import * as groups from '../groups'
 
 export * from './AppMessage'
 
-export { account, contact, conversation, member, message }
+export { account, contact, conversation, message }
 
 export type State = account.GlobalState
 
@@ -30,9 +29,18 @@ export const reducers = {
 		account: account.reducer,
 		contact: contact.reducer,
 		conversation: conversation.reducer,
-		member: member.reducer,
 		message: message.reducer,
 	}),
+}
+
+function* initApp() {
+	let acc = yield select(account.queries.get)
+	if (!acc) {
+		yield take(account.events.created)
+		acc = yield select(account.queries.get)
+	}
+	yield* protocol.transactions.client.start({ name: acc.name })
+	yield* account.transactions.open()
 }
 
 export function* rootSaga() {
@@ -40,19 +48,26 @@ export function* rootSaga() {
 	while (true) {
 		try {
 			yield race({
-				rootTask: all([
-					call(protocol.rootSaga),
-					call(settings.rootSaga),
-					call(account.orchestrator),
-					call(contact.orchestrator),
-					call(conversation.orchestrator),
-					call(member.orchestrator),
-					call(message.orchestrator),
-					call(groups.orchestrator),
-				]),
+				rootTask: call(function* rootTask() {
+					// start commands and events listeners
+					for (const saga of [
+						protocol.rootSaga,
+						settings.rootSaga,
+						account.orchestrator,
+						contact.orchestrator,
+						conversation.orchestrator,
+						message.orchestrator,
+						groups.orchestrator,
+					]) {
+						yield fork(saga)
+					}
+					// call init saga
+					yield* initApp()
+				}),
 				restart: take(['RESTART_ROOT_SAGA', 'CLEAR_STORE']),
 			})
 			console.log('Restarting root saga')
+			yield delay(500)
 		} catch (error) {
 			console.warn('Chat orchestrator crashed, retrying in 1s')
 			console.error(error)
@@ -138,6 +153,6 @@ export const init = mem(
 		return store
 	},
 	{
-		cacheKey: () => 'chat',
+		cacheKey: () => 'messenger',
 	},
 )

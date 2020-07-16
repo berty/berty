@@ -5,7 +5,6 @@ export type Commands<State> = {
 	instanceShareableBertyID: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			reset: boolean
 			displayName: string
 		}>
@@ -13,7 +12,6 @@ export type Commands<State> = {
 	shareableBertyGroup: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			groupPk: Uint8Array
 			groupName: string
 		}>
@@ -21,7 +19,6 @@ export type Commands<State> = {
 	devShareInstanceBertyID: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			reset: boolean
 			displayName: string
 		}>
@@ -29,14 +26,12 @@ export type Commands<State> = {
 	parseDeepLink: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			link: string
 		}>
 	>
 	sendContactRequest: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			bertyId: api.berty.messenger.v1.IBertyID
 			metadata: Uint8Array
 			ownMetadata: Uint8Array
@@ -45,7 +40,6 @@ export type Commands<State> = {
 	sendMessage: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			groupPk: Uint8Array
 			message: string
 		}>
@@ -53,17 +47,11 @@ export type Commands<State> = {
 	sendAck: CaseReducer<
 		State,
 		PayloadAction<{
-			id: string
 			groupPk: Uint8Array
 			messageId: Uint8Array
 		}>
 	>
-	systemInfo: CaseReducer<
-		State,
-		PayloadAction<{
-			id: string
-		}>
-	>
+	systemInfo: CaseReducer<State, PayloadAction<{}>>
 }
 
 export enum Methods {

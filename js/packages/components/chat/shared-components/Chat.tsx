@@ -3,9 +3,8 @@ import { TouchableOpacity, View, TextInput } from 'react-native'
 import { Icon, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { Messenger } from '@berty-tech/hooks'
-import { AppMessageType } from '@berty-tech/store/messenger/AppMessage'
-import { BlurView } from '@react-native-community/blur'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { messenger } from '@berty-tech/store'
+import { scaleHeight } from '@berty-tech/styles/constant'
 //
 // ChatFooter => Textinput for type message
 //
@@ -29,7 +28,7 @@ export const ChatFooter: React.FC<{
 	const inputRef = useRef<TextInput>(null)
 	const _isFocused = isFocused || inputRef?.current?.isFocused() || false
 	const _styles = useStylesChatFooter()
-	const [{ row, padding, flex, border, color }] = useStyles()
+	const [{ row, padding, flex, border, color, background }] = useStyles()
 	const sendMessage = Messenger.useMessageSend()
 	const conversation = Messenger.useGetConversation(convId)
 
@@ -37,71 +36,65 @@ export const ChatFooter: React.FC<{
 		return null
 	}
 	const isFake = conversation.kind === 'fake'
+	// const isGroup = conversation.kind === messenger.conversation.ConversationKind.MultiMember
 
 	return (
-		<BlurView style={[]} blurType='light' blurAmount={30}>
-			<SafeAreaView>
-				<View
-					style={[
-						row.right,
-						padding.medium,
-						_isFocused && padding.bottom.medium,
-						{ alignItems: 'center' },
-					]}
+		<View
+			style={[
+				background.white,
+				row.right,
+				padding.medium,
+				{ alignItems: 'center', paddingBottom: 30 * scaleHeight },
+			]}
+		>
+			<View
+				style={[
+					flex.tiny,
+					border.radius.medium,
+					padding.small,
+					row.fill,
+					{ alignItems: 'center', backgroundColor: _isFocused ? '#E8E9FC99' : '#EDEFF3' },
+				]}
+			>
+				<TextInput
+					value={message}
+					ref={inputRef}
+					multiline={true}
+					onFocus={() => setFocus(true)}
+					onBlur={() => setFocus(false)}
+					onChangeText={setMessage}
+					style={[_styles.textInput, _isFocused && { color: color.blue } && _styles.focusTextInput]}
+					placeholder='Write a secure message...'
+					placeholderTextColor={_isFocused ? color.blue : color.grey}
+				/>
+				<TouchableOpacity
+					style={[flex.tiny, _styles.sendButton]}
+					disabled={isFake}
+					onPress={() => {
+						if (isFake) {
+							return
+						}
+						if (message) {
+							sendMessage({
+								id: convId,
+								type: messenger.AppMessageType.UserMessage,
+								body: message,
+								attachments: [],
+								sentDate: Date.now(),
+							})
+						}
+						setMessage('')
+					}}
 				>
-					<View
-						style={[
-							flex.tiny,
-							border.radius.medium,
-							padding.small,
-							row.fill,
-							{ alignItems: 'center', backgroundColor: _isFocused ? '#E8E9FC99' : '#EDEFF3' },
-						]}
-					>
-						<TextInput
-							value={message}
-							ref={inputRef}
-							multiline={true}
-							onFocus={() => setFocus(true)}
-							onBlur={() => setFocus(false)}
-							onChangeText={setMessage}
-							style={[
-								_styles.textInput,
-								_isFocused && { color: color.blue } && _styles.focusTextInput,
-							]}
-							placeholder='Write a secure message...'
-							placeholderTextColor={_isFocused ? color.blue : color.grey}
-						/>
-						<TouchableOpacity
-							style={[flex.tiny, _styles.sendButton]}
-							disabled={isFake}
-							onPress={() => {
-								if (isFake) {
-									return
-								}
-								if (message) {
-									sendMessage({
-										id: convId,
-										type: AppMessageType.UserMessage,
-										body: message,
-										attachments: [],
-										sentDate: Date.now(),
-									})
-								}
-								setMessage('')
-							}}
-						>
-							<Icon
-								name='paper-plane-outline'
-								width={30}
-								height={30}
-								fill={!isFake && message.length >= 1 ? color.blue : color.grey}
-							/>
-						</TouchableOpacity>
-					</View>
-				</View>
-			</SafeAreaView>
-		</BlurView>
+					<Icon
+						name='paper-plane-outline'
+						width={30}
+						height={30}
+						fill={!isFake && message.length >= 1 ? color.blue : color.grey}
+					/>
+				</TouchableOpacity>
+			</View>
+		</View>
 	)
 }
 
