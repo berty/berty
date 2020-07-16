@@ -12,15 +12,18 @@ import (
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	orbitdb "berty.tech/go-orbit-db"
+	"berty.tech/go-orbit-db/pubsub/directchannel"
+	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 	"github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/zap"
 )
 
-func newTestOrbitDB(ctx context.Context, node ipfsutil.CoreAPIMock, t *testing.T, baseDS datastore.Batching) *bertyOrbitDB {
+func newTestOrbitDB(ctx context.Context, t *testing.T, logger *zap.Logger, node ipfsutil.CoreAPIMock, baseDS datastore.Batching) *bertyOrbitDB {
 	t.Helper()
 
 	api := node.API()
@@ -39,7 +42,12 @@ func newTestOrbitDB(ctx context.Context, node ipfsutil.CoreAPIMock, t *testing.T
 	orbitdbCache := NewOrbitDatastoreCache(orbitdbDS)
 	mk := NewMessageKeystore(messagesDS)
 
-	odb, err := newBertyOrbitDB(ctx, api, NewDeviceKeystore(accountKS), mk, &orbitdb.NewOrbitDBOptions{Cache: orbitdbCache})
+	odb, err := newBertyOrbitDB(ctx, api, NewDeviceKeystore(accountKS), mk, &orbitdb.NewOrbitDBOptions{
+		Logger:               logger,
+		PubSub:               pubsubraw.NewPubSub(node.PubSub(), selfKey.ID(), logger, nil),
+		DirectChannelFactory: directchannel.InitDirectChannelFactory(node.MockNode().PeerHost),
+		Cache:                orbitdbCache,
+	})
 	require.NoError(t, err)
 
 	return odb
@@ -47,6 +55,7 @@ func newTestOrbitDB(ctx context.Context, node ipfsutil.CoreAPIMock, t *testing.T
 
 func TestDifferentStores(t *testing.T) {
 	testutil.SkipSlow(t)
+	logger := testutil.Logger(t)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -59,6 +68,7 @@ func TestDifferentStores(t *testing.T) {
 	defer cleanrdvp()
 
 	ipfsOpts := &ipfsutil.TestingAPIOpts{
+		Logger:  logger,
 		Mocknet: mn,
 		RDVPeer: rdvp.Peerstore().PeerInfo(rdvp.ID()),
 	}
@@ -83,13 +93,13 @@ func TestDifferentStores(t *testing.T) {
 	api1, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts)
 	defer cleanup()
 
-	odb1 := newTestOrbitDB(ctx, api1, t, baseDS)
+	odb1 := newTestOrbitDB(ctx, t, logger, api1, baseDS)
 	defer odb1.Close()
 
 	api2, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts)
 	defer cleanup()
 
-	odb2 := newTestOrbitDB(ctx, api2, t, baseDS)
+	odb2 := newTestOrbitDB(ctx, t, logger, api2, baseDS)
 	defer odb2.Close()
 
 	err = mn.LinkAll()

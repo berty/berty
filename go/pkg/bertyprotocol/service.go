@@ -13,6 +13,7 @@ import (
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/cache"
 	"berty.tech/go-orbit-db/pubsub/directchannel"
+	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 	"github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 
@@ -134,6 +135,15 @@ func New(opts Opts) (Service, error) {
 
 	if opts.Host != nil {
 		odbOpts.DirectChannelFactory = directchannel.InitDirectChannelFactory(opts.Host)
+	}
+
+	if opts.PubSub != nil {
+		self, err := opts.IpfsCoreAPI.Key().Self(context.Background())
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
+
+		odbOpts.PubSub = pubsubraw.NewPubSub(opts.PubSub, self.ID(), opts.Logger, nil)
 	}
 
 	odb, err := newBertyOrbitDB(opts.RootContext, opts.IpfsCoreAPI, opts.DeviceKeystore, opts.MessageKeystore, odbOpts)
