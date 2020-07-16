@@ -13,6 +13,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/pubsub/directchannel"
+	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 	"github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
@@ -43,6 +44,7 @@ func newTestOrbitDB(ctx context.Context, t *testing.T, logger *zap.Logger, node 
 
 	odb, err := newBertyOrbitDB(ctx, api, NewDeviceKeystore(accountKS), mk, &orbitdb.NewOrbitDBOptions{
 		Logger:               logger,
+		PubSub:               pubsubraw.NewPubSub(node.PubSub(), selfKey.ID(), logger, nil),
 		DirectChannelFactory: directchannel.InitDirectChannelFactory(node.MockNode().PeerHost),
 		Cache:                orbitdbCache,
 	})

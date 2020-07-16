@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	berty.tech/go-ipfs-log v1.2.0
-	berty.tech/go-orbit-db v1.9.1
+	berty.tech/go-orbit-db v1.10.1
 	berty.tech/ipfs-webui-packed v1.0.0-v2.9.0-4
 	github.com/aead/ecdh v0.2.0
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
@@ -57,8 +57,8 @@ require (
 	go.opentelemetry.io/otel v0.6.0
 	go.opentelemetry.io/otel/exporters/trace/jaeger v0.6.0
 	go.uber.org/zap v1.15.0
-	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37
-	golang.org/x/net v0.0.0-20200602114024-627f9648deb9
+	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+	golang.org/x/net v0.0.0-20200625001655-4c5254603344
 	golang.org/x/sys v0.0.0-20200622214017-ed371f2e16b4 // indirect
 	golang.org/x/text v0.3.3 // indirect
 	google.golang.org/genproto v0.0.0-20200624020401-64a14ca9d1ad // indirect
