@@ -243,5 +243,9 @@ func ConnectAll(t *testing.T, m libp2p_mocknet.Mocknet) {
 func ConnectInLine(t *testing.T, m libp2p_mocknet.Mocknet) {
 	t.Helper()
 
-	t.Fatal("not implemented")
+	peers := m.Peers()
+
+	for i := 0; i < len(peers)-1; i++ {
+		m.ConnectPeers(peers[i], peers[i+1])
+	}
 }
