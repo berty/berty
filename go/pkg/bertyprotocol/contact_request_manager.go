@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"sync"
-	"time"
 
 	ggio "github.com/gogo/protobuf/io"
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -20,78 +19,54 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
-type pendingRequest struct {
-	cancel      context.CancelFunc
+type pendingRequestDetails struct {
 	contact     *bertytypes.ShareableContact
-	lock        sync.RWMutex
-	ch          chan peer.AddrInfo
-	swiper      *Swiper
 	ownMetadata []byte
 }
 
-func (p *pendingRequest) update(ctx context.Context, contact *bertytypes.ShareableContact, ownMetadata []byte) {
-	p.lock.RLock()
-	currentContact := p.contact
-	p.lock.RUnlock()
+type pendingRequest struct {
+	contact    *bertytypes.ShareableContact
+	update     chan *pendingRequestDetails
+	swiper     *Swiper
+	cancelFunc context.CancelFunc
+}
 
-	if currentContact != nil && bytes.Equal(currentContact.PublicRendezvousSeed, contact.PublicRendezvousSeed) {
-		return
+func (p *pendingRequest) watcher(ctx context.Context, details *pendingRequestDetails, ch chan peer.AddrInfo) {
+	for addr := range p.swiper.WatchTopic(ctx, details.contact.PK, details.contact.PublicRendezvousSeed) {
+		ch <- addr
+	}
+}
+
+func newPendingRequest(ctx context.Context, swiper *Swiper, details *pendingRequestDetails) (*pendingRequest, chan peer.AddrInfo) {
+	ch := make(chan peer.AddrInfo)
+
+	ctx, addedCancel := context.WithCancel(ctx)
+	initUpdateCtx, updateCancel := context.WithCancel(ctx)
+
+	req := &pendingRequest{
+		swiper:     swiper,
+		update:     make(chan *pendingRequestDetails),
+		cancelFunc: addedCancel,
 	}
 
-	p.lock.Lock()
-	if p.cancel != nil {
-		p.cancel()
-	}
-
-	p.contact = contact
-	p.ownMetadata = ownMetadata
-	ctx, p.cancel = context.WithCancel(ctx)
-
-	p.lock.Unlock()
-
-	p.swiper.logger.Info("enqueued request updated")
-
-	for addr := range p.swiper.WatchTopic(ctx, contact.PK, contact.PublicRendezvousSeed) {
-		p.swiper.logger.Info("get peer on topic")
-		p.lock.Lock()
-
-		p.swiper.logger.Info("sending them")
-		if ctx.Err() == nil {
-			p.swiper.logger.Info("sending them ok")
-
+	go func() {
+		for {
 			select {
-			case p.ch <- addr:
-			case <-time.After(time.Second):
-				fmt.Println("timed out")
+			case details := <-req.update:
+				updateCancel()
+				initUpdateCtx, updateCancel = context.WithCancel(ctx)
+				go req.watcher(initUpdateCtx, details, ch)
+
+			case <-ctx.Done():
+				close(ch)
+				return
 			}
 		}
-		p.lock.Unlock()
-	}
-}
+	}()
 
-func (p *pendingRequest) Close() error {
-	p.lock.Lock()
-	close(p.ch)
-	if p.cancel != nil {
-		p.cancel()
-	}
+	req.update <- details
 
-	p.lock.Unlock()
-
-	return nil
-}
-
-func newPendingRequest(ctx context.Context, swiper *Swiper, contact *bertytypes.ShareableContact, ownMetadata []byte) (*pendingRequest, chan peer.AddrInfo) {
-	ch := make(chan peer.AddrInfo)
-	p := &pendingRequest{
-		ch:          ch,
-		swiper:      swiper,
-		ownMetadata: ownMetadata,
-	}
-
-	go p.update(ctx, contact, ownMetadata)
-
-	return p, ch
+	return req, ch
 }
 
 type contactRequestsManager struct {
@@ -165,10 +140,7 @@ func (c *contactRequestsManager) metadataRequestSent(evt *bertytypes.GroupMetada
 	}
 
 	if request, ok := c.toAdd[string(e.ContactPK)]; ok {
-		if err := request.Close(); err != nil {
-			c.logger.Warn("error while closing request", zap.Error(err))
-		}
-
+		request.cancelFunc()
 		delete(c.toAdd, string(e.ContactPK))
 	}
 
@@ -182,10 +154,7 @@ func (c *contactRequestsManager) metadataRequestReceived(evt *bertytypes.GroupMe
 	}
 
 	if request, ok := c.toAdd[string(e.ContactPK)]; ok {
-		if err := request.Close(); err != nil {
-			c.logger.Warn("error while closing request", zap.Error(err))
-		}
-
+		request.cancelFunc()
 		delete(c.toAdd, string(e.ContactPK))
 	}
 
@@ -198,14 +167,15 @@ func (c *contactRequestsManager) enqueueRequest(contact *bertytypes.ShareableCon
 		return err
 	}
 
-	if pending, ok := c.toAdd[string(contact.PK)]; ok {
-		go pending.update(c.ctx, contact, ownMetadata)
-	} else {
-		toAdd, ch := newPendingRequest(c.ctx, c.swiper, contact, ownMetadata)
-		c.toAdd[string(contact.PK)] = toAdd
+	if pending, ok := c.toAdd[string(contact.PK)]; !ok {
+		pending, ch := newPendingRequest(c.ctx, c.swiper, &pendingRequestDetails{
+			contact:     contact,
+			ownMetadata: ownMetadata,
+		})
+		c.toAdd[string(contact.PK)] = pending
 
-		for addr := range ch {
-			go func(pk crypto.PubKey, addr peer.AddrInfo) {
+		go func() {
+			for addr := range ch {
 				if err := c.ipfs.Swarm().Connect(c.ctx, addr); err != nil {
 					c.logger.Error("error while connecting with other peer", zap.Error(err))
 					return
@@ -220,7 +190,12 @@ func (c *contactRequestsManager) enqueueRequest(contact *bertytypes.ShareableCon
 				if err := c.performSend(pk, stream); err != nil {
 					c.logger.Error("unable to perform send", zap.Error(err))
 				}
-			}(pk, addr)
+			}
+		}()
+	} else {
+		pending.update <- &pendingRequestDetails{
+			contact:     contact,
+			ownMetadata: ownMetadata,
 		}
 	}
 
@@ -344,6 +319,14 @@ func (c *contactRequestsManager) performSend(otherPK crypto.PubKey, stream netwo
 			c.logger.Warn("error while closing stream with other peer", zap.Error(err))
 		}
 	}()
+
+	c.lock.Lock()
+	if c.metadataStore.checkContactStatus(otherPK, bertytypes.ContactStateAdded) {
+		// Nothing to do, contact has already been requested
+		c.lock.Unlock()
+		return nil
+	}
+	c.lock.Unlock()
 
 	_, contact := c.metadataStore.GetIncomingContactRequestsStatus()
 	if contact == nil {
