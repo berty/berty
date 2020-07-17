@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react'
 import {
 	View,
@@ -7,7 +8,7 @@ import {
 	TouchableWithoutFeedback,
 	Text as TextNative,
 } from 'react-native'
-import { Text, Icon, Layout } from 'react-native-ui-kitten'
+import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { BlurView } from '@react-native-community/blur'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
@@ -19,11 +20,17 @@ import Interactable from 'react-native-interactable'
 import FromNow from '../shared-components/FromNow'
 import EmptyContact from './empty_contact.svg'
 import { scaleHeight } from '@berty-tech/styles/constant'
+import { useDimensions } from '@react-native-community/hooks'
 
 const useStylesList = () => {
+	const shortScreenMax = 640
+	const iPadShortEdge = 768
+	const iPadLongEdge = 1024
 	const [
 		{ absolute, margin, padding, width, height, border, background, row, column },
 	] = useStyles()
+	const { height: windowHeight, width: windowWidth } = useDimensions().window
+
 	return {
 		tinyAvatar: [absolute.scale({ top: -32.5 }), row.item.justify],
 		tinyCard: [
@@ -43,6 +50,13 @@ const useStylesList = () => {
 		],
 		addContactItem: [height(115), width(150)],
 		addContactItemText: width(75),
+		windowHeight,
+		windowWidth,
+		isLandscape: windowHeight < windowWidth,
+		isShortWindow: windowHeight <= shortScreenMax,
+		isGteIpadSize:
+			Math.min(windowHeight, windowWidth) >= iPadShortEdge &&
+			Math.max(windowHeight, windowWidth) >= iPadLongEdge,
 	}
 }
 
@@ -192,7 +206,8 @@ const EmptyTab: React.FC<{}> = ({ children }) => {
 }
 
 const Requests: React.FC<{}> = () => {
-	const [{ padding, background, column, text, opacity, height }] = useStyles()
+	const [{ padding, background, column, text, opacity }] = useStyles()
+	const { isLandscape, isShortWindow, isGteIpadSize } = useStylesList()
 
 	const requests = Messenger.useAccountContactsWithOutgoingRequests().filter(
 		(contact) => !(contact.request.accepted || contact.request.discarded),
@@ -210,8 +225,10 @@ const Requests: React.FC<{}> = () => {
 		</View>
 	) : (
 		<EmptyTab>
-			<View style={[column.justify, { height: 200 * scaleHeight }]}>
-				<EmptyContact width='75%' height='75%' style={[column.item.center]} />
+			<View
+				style={[column.justify, { height: isLandscape && !isGteIpadSize ? 0 : 200 * scaleHeight }]}
+			>
+				{!isShortWindow && <EmptyContact width='75%' height='75%' style={[column.item.center]} />}
 				<Text style={[text.color.grey, opacity(0.4)]}>You don't have any pending requests</Text>
 			</View>
 		</EmptyTab>
@@ -221,10 +238,12 @@ const Requests: React.FC<{}> = () => {
 const AddContact: React.FC<{}> = () => {
 	const navigation = useNavigation()
 	const _styles = useStylesList()
-	const [{ padding, row, column, border, background, color, text }] = useStyles()
+	const [{ padding, row, column, border, background, color, text, flex, height }] = useStyles()
 
 	return (
-		<View style={[background.white, padding.bottom.big]}>
+		<View
+			style={[background.white, _styles.isShortWindow ? padding.bottom.medium : padding.bottom.big]}
+		>
 			<View style={[row.center]}>
 				<TouchableOpacity
 					style={[
@@ -232,14 +251,21 @@ const AddContact: React.FC<{}> = () => {
 						padding.medium,
 						border.radius.medium,
 						column.justify,
-						_styles.addContactItem,
+						!_styles.isShortWindow && _styles.addContactItem,
 					]}
 					onPress={() => navigation.navigate.main.scan()}
 				>
 					<View
-						style={[row.fill, { justifyContent: 'flex-end', height: 45, alignItems: 'flex-start' }]}
+						style={[
+							row.fill,
+							!_styles.isShortWindow && height(45),
+							!_styles.isShortWindow ? flex.justify.end : flex.justify.center,
+							!_styles.isShortWindow ? flex.align.start : flex.align.center,
+						]}
 					>
-						<Icon name='qr' pack='custom' width={38} height={38} fill={color.white} />
+						{!_styles.isShortWindow && (
+							<Icon name='qr' pack='custom' width={38} height={38} fill={color.white} />
+						)}
 					</View>
 					<View style={[row.fill]}>
 						<Text numberOfLines={2} style={[text.color.white, _styles.addContactItemText]}>
@@ -254,14 +280,21 @@ const AddContact: React.FC<{}> = () => {
 						padding.medium,
 						border.radius.medium,
 						column.justify,
-						_styles.addContactItem,
+						!_styles.isShortWindow && _styles.addContactItem,
 					]}
 					onPress={() => navigation.navigate.settings.myBertyId()}
 				>
 					<View
-						style={[row.fill, { justifyContent: 'flex-end', height: 45, alignItems: 'flex-start' }]}
+						style={[
+							row.fill,
+							!_styles.isShortWindow && height(45),
+							!_styles.isShortWindow ? flex.justify.end : flex.justify.center,
+							!_styles.isShortWindow ? flex.align.start : flex.align.center,
+						]}
 					>
-						<Icon name='id' pack='custom' width={40} height={40} fill={color.white} />
+						{!_styles.isShortWindow && (
+							<Icon name='id' pack='custom' width={40} height={40} fill={color.white} />
+						)}
 					</View>
 					<View style={[row.fill]}>
 						<Text numberOfLines={2} style={[text.color.white, _styles.addContactItemText]}>
@@ -278,9 +311,10 @@ const AddContact: React.FC<{}> = () => {
 export const HomeModal: React.FC<{}> = () => {
 	const navigation = useNavigation()
 	const [{ absolute }] = useStyles()
+	const { windowHeight } = useStylesList()
 
 	const handleOnDrag = (e: Interactable.IDragEvent) => {
-		if (e.nativeEvent.y >= 250) {
+		if (e.nativeEvent.y >= Math.min(250, windowHeight * 0.9)) {
 			navigation.goBack()
 		}
 	}

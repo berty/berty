@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Dimensions, TextInput, Button, TouchableOpacity, Vibration } from 'react-native'
+import { View, TextInput, Button, TouchableOpacity, Vibration, ScrollView } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import QRCodeScanner from 'react-native-qrcode-scanner'
@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native'
 import ScanTarget from './scan_target.svg'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Messenger } from '@berty-tech/hooks'
+import { useDimensions } from '@react-native-community/hooks'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -19,28 +20,48 @@ type ScanInfosTextProps = {
 }
 
 // Styles
+
 const useStylesScan = () => {
 	const [{ border, height, width }] = useStyles()
+	const { height: windowHeight, width: windowWidth } = useDimensions().window
+	const titleSize = 26
+	const iPadShortEdge = 768
+	const iPadLongEdge = 1024
 	return {
-		body: [border.scale(10), height(300), border.color.white],
-		infosPoint: [width(10), height(10), border.radius.scale(5)],
+		titleSize,
+
+		windowHeight,
+		windowWidth,
+		isLandscape: windowHeight < windowWidth,
+		isGteIpadSize:
+			Math.min(windowHeight, windowWidth) >= iPadShortEdge &&
+			Math.max(windowHeight, windowWidth) >= iPadLongEdge,
+		styles: {
+			infosPoint: [width(10), height(10), border.radius.scale(5)],
+		},
 	}
 }
 
 const ScanBody: React.FC<{}> = () => {
 	const handleDeepLink = Messenger.useHandleDeepLink()
 	const navigation = useNavigation()
-	const [{ background }] = useStyles()
+	const [{ background, margin, flex, column }] = useStyles()
+	const { windowWidth, windowHeight, titleSize, isGteIpadSize } = useStylesScan()
+	const qrScanSize = isGteIpadSize
+		? Math.min(windowHeight, windowWidth) * 0.5
+		: Math.min(windowHeight * 0.8, windowWidth * 0.8) - 1.25 * titleSize
 	const borderRadius = 30
 	return (
 		<View
 			style={[
 				background.black,
+				margin.small,
+				column.item.center,
+				flex.align.center,
+				flex.justify.center,
 				{
-					width: '100%',
+					height: qrScanSize,
 					aspectRatio: 1,
-					justifyContent: 'center',
-					alignItems: 'center',
 					borderRadius,
 				},
 			]}
@@ -74,7 +95,12 @@ const ScanInfosText: React.FC<ScanInfosTextProps> = ({ textProps }) => {
 	return (
 		<View style={[row.left, padding.medium]}>
 			<View
-				style={[background.light.grey, margin.right.medium, row.item.justify, _styles.infosPoint]}
+				style={[
+					background.light.grey,
+					margin.right.medium,
+					row.item.justify,
+					_styles.styles.infosPoint,
+				]}
 			/>
 			<Text style={[text.color.light.grey, row.item.justify]}>{textProps}</Text>
 		</View>
@@ -88,7 +114,12 @@ const DevReferenceInput = () => {
 	return (
 		<>
 			<ScanInfosText textProps='Alternatively, enter the reference below' />
-			<TextInput value={ref} onChangeText={setRef} />
+			<TextInput
+				value={ref}
+				onChangeText={setRef}
+				//eslint-disable-next-line react-native/no-inline-styles
+				style={{ backgroundColor: 'white', padding: 8 }}
+			/>
 			<Button
 				title='Submit'
 				onPress={() => {
@@ -116,29 +147,23 @@ const ScanInfos: React.FC<{}> = () => {
 	)
 }
 
-const Screen = Dimensions.get('window')
-
 const ScanComponent: React.FC<{}> = () => {
 	const { goBack } = useNavigation()
-	const [{ color, padding }] = useStyles()
-	const titleSize = 26
+	const [{ color, padding, flex, margin }] = useStyles()
+	const { titleSize } = useStylesScan()
+
 	return (
-		<View style={[{ height: Screen.height }, padding.medium]}>
+		<ScrollView bounces={false} style={[padding.medium]}>
 			<View
 				style={[
-					{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-						marginBottom: 40,
-					},
+					flex.direction.row,
+					flex.justify.spaceBetween,
+					flex.align.center,
+					margin.bottom.scale(40),
 				]}
 			>
-				<View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
-					<TouchableOpacity
-						onPress={goBack}
-						style={{ alignItems: 'center', justifyContent: 'center' }}
-					>
+				<View style={[flex.direction.row, flex.align.center]}>
+					<TouchableOpacity onPress={goBack} style={[flex.align.center, flex.justify.center]}>
 						<Icon name='arrow-back-outline' width={30} height={30} fill={color.white} />
 					</TouchableOpacity>
 					<Text
@@ -157,7 +182,7 @@ const ScanComponent: React.FC<{}> = () => {
 			</View>
 			<ScanBody />
 			<ScanInfos />
-		</View>
+		</ScrollView>
 	)
 }
 
