@@ -3,7 +3,7 @@ module berty.tech/berty/v2
 go 1.14
 
 require (
-	berty.tech/go-ipfs-log v1.2.0
+	berty.tech/go-ipfs-log v1.2.1
 	berty.tech/go-orbit-db v1.10.1
 	berty.tech/ipfs-webui-packed v1.0.0-v2.9.0-4
 	github.com/aead/ecdh v0.2.0
