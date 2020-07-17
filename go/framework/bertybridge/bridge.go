@@ -17,6 +17,8 @@ import (
 	"google.golang.org/grpc"
 )
 
+const ClientBufferSize = 256 * 1024
+
 type Config struct {
 	bridgeGrpcAddrs []string
 }
@@ -42,8 +44,8 @@ type Bridge struct {
 	grpcServer *grpc.Server
 	logger     *zap.Logger
 
-	pipeListener *grpcutil.PipeListener
-	listeners    []grpcutil.Listener
+	bufListener *grpcutil.BufListener
+	listeners   []grpcutil.Listener
 }
 
 // newBridge is the main entrypoint for gomobile and should only take simple configuration as argument
@@ -87,14 +89,14 @@ func newBridge(s *grpc.Server, logger *zap.Logger, config *Config) (*Bridge, err
 	}
 
 	// setup lazy grpc listener
-	pipeListener := grpcutil.NewPipeListener()
+	bl := grpcutil.NewBufListener(ClientBufferSize)
 	b.workers.Add(func() error {
-		return b.grpcServer.Serve(pipeListener)
+		return b.grpcServer.Serve(bl)
 	}, func(error) {
-		pipeListener.Close()
+		bl.Close()
 	})
 
-	b.pipeListener = pipeListener
+	b.bufListener = bl
 
 	// start Bridge
 	b.logger.Debug("starting Bridge")
@@ -129,7 +131,7 @@ func (b *Bridge) GetGRPCAddrFor(protos string) string {
 // NewGRPCClient return client service on success
 func (b *Bridge) NewGRPCClient() (client *Client, err error) {
 	var grpcClient *grpc.ClientConn
-	if grpcClient, err = b.pipeListener.NewClientConn(grpc.WithInsecure()); err != nil {
+	if grpcClient, err = b.bufListener.NewClientConn(); err != nil {
 		return
 	}
 

@@ -1,11 +1,11 @@
 package bertyprotocol
 
 import (
-	"context"
-
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"google.golang.org/grpc"
 )
+
+const ClientBufferSize = 256 * 1024
 
 type Client interface {
 	ProtocolServiceClient
@@ -16,7 +16,7 @@ type Client interface {
 type client struct {
 	ProtocolServiceClient
 
-	l *grpcutil.PipeListener
+	l *grpcutil.BufListener
 }
 
 func (c *client) Close() error {
@@ -28,23 +28,23 @@ func NewClient(svc Service, opts ...grpc.ServerOption) (Client, error) {
 }
 
 func NewClientFromServer(s *grpc.Server, svc Service, opts ...grpc.DialOption) (Client, error) {
-	pl := grpcutil.NewPipeListener()
-
-	opts = append(opts, grpc.WithInsecure())
-	cc, err := pl.NewClientConn(opts...)
+	bl := grpcutil.NewBufListener(ClientBufferSize)
+	cc, err := bl.NewClientConn(opts...)
 	if err != nil {
 		return nil, err
 	}
 
 	RegisterProtocolServiceServer(s, svc)
-
 	go func() {
-		err := s.Serve(pl)
-		if err != nil && err != context.Canceled {
+		err := s.Serve(bl)
+		if err != nil && err.Error() != "closed" {
 			panic(err)
 		}
 	}()
 
-	c := client{ProtocolServiceClient: NewProtocolServiceClient(cc), l: pl}
+	c := client{
+		ProtocolServiceClient: NewProtocolServiceClient(cc),
+		l:                     bl,
+	}
 	return &c, nil
 }
