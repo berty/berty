@@ -5,7 +5,6 @@ import (
 
 	ipfswebui "berty.tech/ipfs-webui-packed"
 	"github.com/ipfs/go-ipfs/commands"
-	oldcmds "github.com/ipfs/go-ipfs/commands"
 	"github.com/ipfs/go-ipfs/core"
 	"github.com/ipfs/go-ipfs/core/corehttp"
 	"go.uber.org/zap"
@@ -18,7 +17,7 @@ func ServeHTTPApi(logger *zap.Logger, node *core.IpfsNode, rootDirectory string)
 		// needed for config access
 		ConfigRoot: rootDirectory,
 		// http handler requires it
-		ReqLog: &oldcmds.ReqLog{},
+		ReqLog: &commands.ReqLog{},
 		// the node is already construct so we pass it
 		ConstructNode: func() (*core.IpfsNode, error) {
 			return node, nil

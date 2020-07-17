@@ -52,7 +52,7 @@ import (
 	"github.com/peterbourgon/ff"
 	"github.com/peterbourgon/ff/ffcli"
 	"github.com/shibukawa/configdir"
-	grpc_trace "go.opentelemetry.io/otel/plugin/grpctrace"
+	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
