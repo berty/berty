@@ -4,7 +4,7 @@ OPTS ?=
 
 .PHONY: run
 run:
-	ttyd -p $(PORT) --url-arg $(OPTS) ./berty-mini
+	ttyd -p $(PORT) --url-arg $(OPTS) ./berty-mini-web
 
 .PHONY: deps
 deps:

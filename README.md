@@ -95,9 +95,8 @@ A messenger application written in [React Native](https://reactnative.dev/), tha
 - [./go](go): Where all the Golang code belongs.
   - [./go/pkg/**bertyprotocol**](go/pkg/bertyprotocol): **Berty Protocol** _Golang SDK_ to create secure and autonomous groups using _IPFS_.
   - [./go/framework/bertybridge](go/framework/bertybridge): gomobile entrypoint.
-  - [./go/cmd/**berty**](go/cmd/berty): Main **Berty CLI**, containing:
-    - `berty daemon`: Runs the whole Berty Protocol instance.
-    - `berty mini`: Simple CLI messenger app using Berty Protocol.
+  - [./go/cmd/**berty**](go/cmd/berty): Berty Daemon that runs a full Berty Protocol instance.
+  - [./go/cmd/**berty-mini**](go/cmd/berty-mini): Simple CLI messenger app using Berty Protocol.
   - [./go/cmd/**rdvp**](go/cmd/rdvp): A Rendez-Vous Point server.
 - [./js](js): Where all the Javascript/Typescript code belongs, containing:
   - The **Berty Messenger** application, written in React Native.

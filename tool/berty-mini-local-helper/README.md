@@ -1,11 +1,11 @@
-# berty mini local helper
+# berty-mini local helper
 
-A simple Makefile that helps running multiple berty mini instances
+A simple Makefile that helps running multiple berty-mini instances
 
 ## Usage
 
 ```console
-# start a berty mini instance in a shell
+# start a berty-mini instance in a shell
 $ make run ID=1
 Account
  9L7gKAZS                             /\

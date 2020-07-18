@@ -6,7 +6,7 @@ NAME ?= $(USER)-mini-$(ID)
 
 .PHONY: run
 run:
-	berty $(RUN_OPTS) --display-name=$(NAME) --logformat=$(FORMAT) --logfile=$(TMPDIR)/berty-mini-$(ID).log --debug mini -d $(TMPDIR)/berty-mini-$(ID)
+	berty-mini $(RUN_OPTS) --display-name=$(NAME) --logformat=$(FORMAT) --logfile=$(TMPDIR)/berty-mini-$(ID).log --debug -d $(TMPDIR)/berty-mini-$(ID)
 
 .PHONY: tail
 tail:
@@ -39,3 +39,7 @@ clean-logs:
 .PHONY: kill
 kill:
 	pkill -f -- '--logfile=$(TMPDIR)/berty-mini-$(ID).log'
+
+.PHONY: rebuild
+rebuild:
+	cd ../../go && make go.install.berty-mini

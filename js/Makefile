@@ -230,7 +230,7 @@ metro.start: deps
 
 .PHONY: daemon.start
 daemon.start:
-	cd ../go && $(MAKE) install
+	cd ../go && $(MAKE) go.install.berty
 	$(GOPATH)/bin/berty daemon -l /ip4/127.0.0.1/tcp/$(BERTY_DAEMON_PORT)/grpcws
 
 .PHONY: bridge.start.docker

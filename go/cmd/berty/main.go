@@ -16,7 +16,6 @@ import (
 	"strings"
 	"time"
 
-	"berty.tech/berty/v2/go/cmd/berty/mini"
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -51,7 +50,6 @@ import (
 	"github.com/oklog/run"
 	"github.com/peterbourgon/ff"
 	"github.com/peterbourgon/ff/ffcli"
-	"github.com/shibukawa/configdir"
 	grpc_trace "go.opentelemetry.io/otel/plugin/grpctrace"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -79,28 +77,23 @@ func main() {
 	log.SetFlags(0)
 
 	var (
-		globalDebug          bool
-		globalLibp2pDebug    bool
-		globalOrbitDebug     bool
-		globalPOIDebug       bool
-		globalLogFormat      string
-		globalLogToFile      string
-		globalTracer         string
-		globalLocalDiscovery bool
-
+		globalDebug           bool
+		globalLibp2pDebug     bool
+		globalOrbitDebug      bool
+		globalPOIDebug        bool
+		globalLogFormat       string
+		globalLogToFile       string
+		globalTracer          string
+		globalLocalDiscovery  bool
 		bannerLight           bool
 		bannerRandom          bool
 		daemonListeners       string
-		remoteDaemonAddr      string
 		datastorePath         string
 		rdvpMaddr             string
 		rdvpForce             bool
-		miniPort              uint
 		shareInviteOnDev      bool
 		shareInviteReset      bool
 		shareInviteNoTerminal bool
-		miniGroup             string
-		miniInMemory          bool
 		displayName           string
 		infoRefreshEvery      time.Duration
 	)
@@ -112,7 +105,6 @@ func main() {
 		bannerFlags      = flag.NewFlagSet("banner", flag.ExitOnError)
 		devFlags         = flag.NewFlagSet("dev", flag.ExitOnError)
 		daemonFlags      = flag.NewFlagSet("protocol client", flag.ExitOnError)
-		miniFlags        = flag.NewFlagSet("mini demo client", flag.ExitOnError)
 		shareInviteFlags = flag.NewFlagSet("dev share-invite", flag.ExitOnError)
 		systemInfoFlags  = flag.NewFlagSet("info", flag.ExitOnError)
 	)
@@ -132,12 +124,6 @@ func main() {
 	daemonFlags.StringVar(&datastorePath, "d", cacheleveldown.InMemoryDirectory, "datastore base directory")
 	daemonFlags.StringVar(&rdvpMaddr, "rdvp", DevRendezVousPoint, "rendezvous point maddr")
 	daemonFlags.BoolVar(&rdvpForce, "force-rdvp", false, "force connect to rendezvous point")
-	miniFlags.StringVar(&miniGroup, "g", "", "group to join, leave empty to create a new group")
-	miniFlags.StringVar(&datastorePath, "d", cacheleveldown.InMemoryDirectory, "datastore base directory")
-	miniFlags.UintVar(&miniPort, "p", 0, "default IPFS listen port")
-	miniFlags.StringVar(&remoteDaemonAddr, "r", "", "remote berty daemon")
-	miniFlags.StringVar(&rdvpMaddr, "rdvp", DevRendezVousPoint, "rendezvous point maddr")
-	miniFlags.BoolVar(&miniInMemory, "inmem", false, "disable persistence")
 	shareInviteFlags.BoolVar(&shareInviteOnDev, "dev-channel", false, "post qrcode on dev channel")
 	shareInviteFlags.BoolVar(&shareInviteReset, "reset", false, "reset contact reference")
 	shareInviteFlags.BoolVar(&shareInviteNoTerminal, "no-term", false, "do not print the QR code in terminal")
@@ -248,68 +234,6 @@ func main() {
 		ShortHelp: "print software version",
 		Exec: func(args []string) error {
 			fmt.Println("dev")
-			return nil
-		},
-	}
-
-	mini := &ffcli.Command{
-		Name:      "mini",
-		ShortHelp: "start a terminal-based mini berty client (not fully compatible with the app)",
-		Usage:     "mini",
-		FlagSet:   miniFlags,
-		Exec: func(args []string) error {
-			ctx := context.Background()
-			cleanup := globalPreRun()
-			defer cleanup()
-
-			if !miniInMemory && datastorePath == cacheleveldown.InMemoryDirectory {
-				storagePath := configdir.New("Berty", "Mini")
-				storageDirs := storagePath.QueryFolders(configdir.Global)
-				if len(storageDirs) == 0 {
-					return fmt.Errorf("no storage path found")
-				}
-
-				if err := storageDirs[0].CreateParentDir(""); err != nil {
-					return err
-				}
-
-				datastorePath = storageDirs[0].Path
-			}
-
-			rootDS, dsLock, err := getRootDatastore(datastorePath)
-			if err != nil {
-				return errcode.TODO.Wrap(err)
-			}
-			if dsLock != nil {
-				defer func() { _ = dsLock.Unlock() }()
-			}
-			defer rootDS.Close()
-
-			rdvpeer, err := parseRdvpMaddr(ctx, rdvpMaddr, logger)
-			if err != nil {
-				return errcode.TODO.Wrap(err)
-			}
-
-			l := zap.NewNop()
-			if globalLogToFile != "" {
-				l = logger
-			}
-
-			err = mini.Main(ctx, &mini.Opts{
-				RemoteAddr:      remoteDaemonAddr,
-				GroupInvitation: miniGroup,
-				Port:            miniPort,
-				RootDS:          rootDS,
-				Logger:          l,
-				POIDebug:        globalPOIDebug,
-				Bootstrap:       DefaultBootstrap,
-				RendezVousPeer:  rdvpeer,
-				DisplayName:     displayName,
-				LocalDiscovery:  globalLocalDiscovery,
-			})
-			if err != nil {
-				return errcode.TODO.Wrap(err)
-			}
 			return nil
 		},
 	}
@@ -722,7 +646,7 @@ func main() {
 		Usage:       "berty [global flags] <subcommand> [flags] [args...]",
 		FlagSet:     globalFlags,
 		Options:     []ff.Option{ff.WithEnvVarPrefix("BERTY")},
-		Subcommands: []*ffcli.Command{daemon, mini, banner, version, systemInfo, dev},
+		Subcommands: []*ffcli.Command{daemon, banner, version, systemInfo, dev},
 		Exec: func([]string) error {
 			globalFlags.Usage()
 			return flag.ErrHelp

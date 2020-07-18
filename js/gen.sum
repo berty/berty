@@ -2,11 +2,11 @@
 0819bccf954c5acd5bcdf9c74ef3bc227b34674d  packages/store/types/events.gen.ts.hbs
 0c5c61ea1fed8180ad37c5e261fda0dbe15f439f  packages/store/protocol/ProtocolServiceClient.gen.ts.hbs
 109c92178d930d49161d85a08dbf50ecb62efc99  packages/components/faker.gen.tsx.hbs
+132330acc45d0f407e491e2908ee4fed09e99d19  Makefile
 20d4ddb8841032c55965eaec69bbd9ecba423808  packages/store/protocol/client.gen.ts.hbs
 4989b51bf6dfc52cd195cc46db1732a81090191f  ../api/bertyprotocol.proto
 4c0fa735ab710727c465ed1444dc6db1c748dc45  ../vendor/github.com/gogo/protobuf/gogoproto/gogo.proto
 5bf6c46c26dc0ac3fa5f310b873f22d17a66b623  ../api/bertymessenger.proto
 cdcfd4235af64debca29d0553209a34df7899361  ../api/bertytypes.proto
 e3fb6d1b91d746e062c3ceda2d8908108b4b791c  packages/store/protocol/ProtocolServiceSagaClient.gen.ts.hbs
-f54461844fc726d00c1a01131a317e87e378e891  Makefile
 fff74e17f874124b181741e1f0271e10520159b6  packages/store/messenger/MessengerServiceSagaClient.gen.ts.hbs

@@ -29,6 +29,6 @@ LABEL           org.label-schema.build-date=$BUILD_DATE \
                 org.label-schema.schema-version="1.0" \
                 org.label-schema.cmd="docker run -i -t --rm bertytech/berty" \
                 org.label-schema.help="docker exec -it $CONTAINER berty --help"
-COPY            --from=builder /go/bin/berty /go/bin/rdvp /bin/
+COPY            --from=builder /go/bin/berty /go/bin/rdvp /go/bin/berty-mini /bin/
 ENTRYPOINT      ["/bin/berty"]
 #CMD            []

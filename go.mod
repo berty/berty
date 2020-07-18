@@ -50,7 +50,6 @@ require (
 	github.com/peterbourgon/ff v1.6.0
 	github.com/pkg/errors v0.9.1
 	github.com/rivo/tview v0.0.0-20200219210816-cd38d7432498
-	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
 	github.com/skip2/go-qrcode v0.0.0-20200519171959-a3b48390827e
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/stretchr/testify v1.6.1

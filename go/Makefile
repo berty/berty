@@ -39,7 +39,7 @@ clean:
 .PHONY: mini.dev
 mini.dev: generate
 	go install github.com/githubnemo/CompileDaemon
-	CompileDaemon --color=true --build="go install -v" --build-dir="./cmd/berty" --command="berty mini"
+	CompileDaemon --color=true --build="go install -v" --build-dir="./cmd/berty-mini" --command="berty-mini"
 
 .PHONY: re
 re: clean generate install
@@ -75,6 +75,21 @@ go.unittest: pb.generate
 go.install: pb.generate
 	$(call check-program, $(GO))
 	GO111MODULE=on $(GO) install $(LDFLAGS) -v ./cmd/...
+
+.PHONY: go.install.berty
+go.install.berty: pb.generate
+	$(call check-program, $(GO))
+	GO111MODULE=on $(GO) install $(LDFLAGS) -v ./cmd/berty
+
+.PHONY: go.install.rdvp
+go.install.rdvp: pb.generate
+	$(call check-program, $(GO))
+	GO111MODULE=on $(GO) install $(LDFLAGS) -v ./cmd/rdvp
+
+.PHONY: go.install.berty-mini
+go.install.berty-mini: pb.generate
+	$(call check-program, $(GO))
+	GO111MODULE=on $(GO) install $(LDFLAGS) -v ./cmd/berty-mini
 
 .PHONY: docker.build
 docker.build: pb.generate

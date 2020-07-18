@@ -33,15 +33,14 @@ run() {
 		   --volume=/tmp/berty-mini-$ID:/data \
 		   --rm \
 		   --name="mini-web-${ID}" \
-		   bertytech/berty \
+		   bertytech/berty-mini \
 		     --debug-p2p \
 		     --debug-odb \
 		     --debug-poi \
 		     --display-name="${NAME}" \
 		     --logfile="/data/berty-mini.log" \
 		     --debug \
-		     mini \
-		       -d=/data/berty-mini.db
+	         -d=/data/berty-mini.db
             echo "Press enter to restart berty mini with the same datastore."
             read
         ); done
@@ -57,7 +56,7 @@ kill() {
 }
 
 ps () {
-    watch -d "./berty-mini ps_once"
+    watch -d "./berty-mini-web ps_once"
 }
 
 ps_once() {

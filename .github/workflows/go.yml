@@ -81,11 +81,20 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-      - name: Compile the project on Unix-like operating systems
+      - name: Avoid triggering make generate
+        run: touch go/gen.sum
+      - name: Compile berty
         run: |
           cd go
-          touch gen.sum # avoid triggering make generate
-          make go.install
+          make go.install.berty
+      - name: Compile berty-mini
+        run: |
+          cd go
+          make go.install.berty-mini
+      - name: Compile rdvp
+        run: |
+          cd go
+          make go.install.rdvp
       - name: Check go.mod and go.sum
         run: |
           go mod tidy -v
