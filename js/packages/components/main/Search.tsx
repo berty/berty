@@ -7,6 +7,7 @@ import { messenger } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import { useDimensions } from '@react-native-community/hooks'
 import { CommonActions } from '@react-navigation/core'
+import dayjs from 'dayjs'
 import { noop } from 'lodash'
 import React, { useMemo, useState } from 'react'
 import {
@@ -17,7 +18,7 @@ import {
 	TouchableHighlight,
 	View,
 } from 'react-native'
-import { SafeAreaConsumer, EdgeInsets } from 'react-native-safe-area-context'
+import { EdgeInsets, SafeAreaConsumer } from 'react-native-safe-area-context'
 import { Icon, Layout, Text } from 'react-native-ui-kitten'
 import { ConversationProceduralAvatar } from '../shared-components'
 
@@ -56,6 +57,28 @@ const useStylesSearch = () => {
 		isLandscape,
 	}
 }
+
+// Utility
+
+const formatTimestamp = (date: Date) => {
+	const now = new Date(Date.now())
+	const isToday =
+		now.getDate() === date.getDate() &&
+		date.getMonth() === now.getMonth() &&
+		date.getFullYear() === now.getFullYear()
+	if (!isToday) {
+		return dayjs(date).format('DD/MM')
+	} else if (now.getFullYear() !== date.getFullYear()) {
+		return dayjs(date).format('DD/MM/YYYY')
+	} else {
+		const arr = date.toString().split(' ')
+		const hours = arr[4].split(':')
+		const hour = hours[0] + ':' + hours[1]
+		return hour
+	}
+}
+
+//
 
 const SearchTitle: React.FC<{}> = () => {
 	const [{ text, color, flex }] = useStyles()
@@ -197,12 +220,14 @@ const useSearchItemDataFromContact = (
 	message: string
 	convId: string
 	messageListIndex: number
+	receivedDate: number
 } => {
 	const { name = '', publicKey = '' } = data
 	const conversation = useFirstConversationWithContact(publicKey)
 	const lastMessage = useGetMessage(
 		conversation ? conversation.messages[conversation?.messages.length - 1] : '',
 	)
+	const { receivedDate = 0 } = lastMessage || {}
 
 	return {
 		name,
@@ -212,6 +237,7 @@ const useSearchItemDataFromContact = (
 			lastMessage && lastMessage.type === messenger.AppMessageType.UserMessage
 				? lastMessage.body
 				: '',
+		receivedDate,
 	}
 }
 
@@ -222,9 +248,10 @@ const useSearchItemDataFromMessage = (
 	message: string
 	convId: string
 	messageListIndex: number
+	receivedDate: number
 } => {
 	const {
-		message: { body },
+		message: { body, receivedDate },
 		conversationId,
 		conversationTitle,
 		messageIndex,
@@ -234,13 +261,14 @@ const useSearchItemDataFromMessage = (
 		message: body,
 		messageListIndex: messageIndex,
 		convId: conversationId,
+		receivedDate,
 	}
 }
 
-const MessageSearchResult: React.FC<{ message: string; searchText: string }> = ({
-	message,
-	searchText,
-}) => {
+const MessageSearchResult: React.FC<{
+	message: string
+	searchText: string
+}> = ({ message, searchText }) => {
 	const [{ start, end }] = useState({
 		start: message.toLowerCase().indexOf(searchText.toLowerCase()),
 		end: message.toLowerCase().indexOf(searchText.toLowerCase()) + searchText.length,
@@ -263,7 +291,9 @@ const useSomeSearchItem = (key: SearchItemProps['searchTextKey']) =>
 const SearchResultItem: React.FC<SearchItemProps> = ({ data, searchTextKey, searchText = '' }) => {
 	const [{ color, row, padding, flex, column, text, margin, border }] = useStyles()
 	const { plainMessageText } = useStylesSearch()
-	const { name, message, convId, messageListIndex } = useSomeSearchItem(searchTextKey)(data)
+	const { name, message, convId, messageListIndex, receivedDate } = useSomeSearchItem(
+		searchTextKey,
+	)(data)
 	const [noConversation, noMessages] = useMemo(() => [!convId, messageListIndex < 0], [
 		convId,
 		messageListIndex,
@@ -280,6 +310,14 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, searchTextKey, sear
 				)}
 			</Text>
 		)
+
+	const TimeStamp = () => {
+		return (
+			<Text style={[padding.left.small, text.size.small, text.color.grey]}>
+				{formatTimestamp(new Date(receivedDate))}
+			</Text>
+		)
+	}
 
 	return (
 		<TouchableHighlight
@@ -316,6 +354,10 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, searchTextKey, sear
 						</Text>
 						<MessageDisplay />
 					</View>
+				</View>
+
+				<View style={{ marginLeft: 'auto', display: 'flex', alignSelf: 'center' }}>
+					{receivedDate > 0 && searchTextKey === 'message' ? <TimeStamp /> : null}
 				</View>
 			</View>
 		</TouchableHighlight>
@@ -434,6 +476,7 @@ const SearchComponent: React.FC<{
 							marginLeft: Math.max(validInsets.left, 16), // TODO: Add way to destructure styles API values
 							marginRight: Math.max(validInsets.right, 16), // TODO: Add way to destructure styles API values
 						}}
+						stickySectionHeadersEnabled={false}
 						bounces={false}
 						keyExtractor={(item, index) => item.id + index}
 						sections={sections}
