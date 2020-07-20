@@ -16,6 +16,7 @@ import (
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -504,9 +505,7 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*Testi
 
 			// Check if sender and receiver are the same account, should return the right error and skip
 			if bytes.Compare(senderCfg.AccountPK, receiverCfg.AccountPK) == 0 {
-				require.Contains(t, err.Error(), "ErrContactRequestSameAccount", "error should be ErrContactRequestSameAccount")
-				// TODO: @moul / @aeddi use this instead when errcode will be compatible with gRPC
-				// require.Equal(t, errcode.ErrContactRequestSameAccount.Code(), errcode.LastCode(err), "error should be ErrContactRequestSameAccount")
+				require.Equal(t, errcode.LastCode(err), errcode.ErrContactRequestSameAccount)
 				continue
 			}
 
@@ -528,9 +527,7 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*Testi
 			}
 
 			if receiverWasSender && senderWasReceiver {
-				require.Contains(t, err.Error(), "ErrContactRequestContactAlreadyAdded", "error should be ErrContactRequestContactAlreadyAdded")
-				// TODO: @moul / @aeddi use this instead when errcode will be compatible with gRPC
-				// require.Equal(t, errcode.ErrContactRequestContactAlreadyAdded.Code(), errcode.LastCode(err), "error should be ErrContactRequestContactAlreadyAdded")
+				require.Equal(t, errcode.LastCode(err), errcode.ErrContactRequestContactAlreadyAdded)
 				continue
 			}
 
