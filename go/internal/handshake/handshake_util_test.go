@@ -3,13 +3,11 @@ package handshake
 import (
 	"context"
 	crand "crypto/rand"
-	"fmt"
 	"sync"
 	"testing"
 	"time"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/pkg/errcode"
 
 	ggio "github.com/gogo/protobuf/io"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
@@ -116,25 +114,6 @@ func newTestHandshakeContext(stream p2pnetwork.Stream, ownAccountID p2pcrypto.Pr
 		peerAccountID:   peerAccountID,
 		sharedEphemeral: &[32]byte{},
 	}
-}
-
-func requireEqualErrcode(t *testing.T, kind string, expected errcode.ErrCode, actual int32) {
-	message := fmt.Sprintf(
-		"Wrong %s error code: expected(%s) / actual(%s)",
-		kind,
-		errcode.ErrCode_name[int32(expected)],
-		errcode.ErrCode_name[actual],
-	)
-
-	require.EqualValues(t, int32(expected), actual, message)
-}
-
-func requireEqualFirstErrcode(t *testing.T, expected errcode.ErrCode, actual error) {
-	requireEqualErrcode(t, "first", expected, errcode.FirstCode(actual))
-}
-
-func requireEqualLastErrcode(t *testing.T, expected errcode.ErrCode, actual error) {
-	requireEqualErrcode(t, "last", expected, errcode.LastCode(actual))
 }
 
 func runHandshakeTest(t *testing.T, requesterTest requesterTestFunc, responderTest responderTestFunc) {

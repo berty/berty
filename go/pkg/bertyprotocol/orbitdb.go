@@ -123,9 +123,10 @@ func (s *bertyOrbitDB) OpenGroup(ctx context.Context, g *bertytypes.Group, optio
 	id := g.GroupIDAsString()
 
 	existingGC, err := s.getGroupContext(id)
-	if err != nil && errcode.Code(err) != errcode.ErrMissingMapKey.Code() {
+	if err != nil && !errcode.Is(err, errcode.ErrMissingMapKey) {
 		return nil, errcode.ErrInternal.Wrap(err)
-	} else if err == nil {
+	}
+	if err == nil {
 		return existingGC, nil
 	}
 

@@ -43,7 +43,8 @@ func (m *MessageKeystore) getDeviceChainKey(pk crypto.PubKey) (*bertytypes.Devic
 	dsBytes, err := m.store.Get(key)
 	if err == datastore.ErrNotFound {
 		return nil, errcode.ErrMissingInput
-	} else if err != nil {
+	}
+	if err != nil {
 		return nil, errcode.ErrMessageKeyPersistenceGet.Wrap(err)
 	}
 
@@ -136,7 +137,7 @@ func (m *MessageKeystore) GetDeviceSecret(g *bertytypes.Group, acc DeviceKeystor
 
 	ds, err := m.getDeviceChainKey(md.device.GetPublic())
 
-	if err != nil && errcode.Code(err) == errcode.ErrMissingInput.Code() {
+	if errcode.Is(err, errcode.ErrMissingInput) {
 		// If secret does not exist, create it
 		ds, err := newDeviceSecret()
 		if err != nil {
@@ -148,7 +149,8 @@ func (m *MessageKeystore) GetDeviceSecret(g *bertytypes.Group, acc DeviceKeystor
 		}
 
 		return ds, nil
-	} else if err != nil {
+	}
+	if err != nil {
 		return nil, errcode.ErrMessageKeyPersistenceGet.Wrap(err)
 	}
 
@@ -207,7 +209,7 @@ func (m *MessageKeystore) preComputeKeys(device crypto.PubKey, g *bertytypes.Gro
 	counter := ds.Counter
 
 	knownCK, err := m.getDeviceChainKey(device)
-	if err != nil && errcode.Code(err) != errcode.ErrMissingInput.Code() {
+	if err != nil && !errcode.Is(err, errcode.ErrMissingInput) {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
@@ -215,7 +217,7 @@ func (m *MessageKeystore) preComputeKeys(device crypto.PubKey, g *bertytypes.Gro
 		counter++
 
 		knownMK, err := m.getPrecomputedKey(device, counter)
-		if err != nil && errcode.Code(err) != errcode.ErrMissingInput.Code() {
+		if err != nil && !errcode.Is(err, errcode.ErrMissingInput) {
 			return nil, errcode.ErrInternal.Wrap(err)
 		}
 
@@ -261,7 +263,8 @@ func (m *MessageKeystore) getPrecomputedKey(device crypto.PubKey, counter uint64
 
 	if err == datastore.ErrNotFound {
 		return nil, errcode.ErrMissingInput.Wrap(fmt.Errorf("key for message does not exist in datastore"))
-	} else if err != nil {
+	}
+	if err != nil {
 		return nil, errcode.ErrMessageKeyPersistenceGet.Wrap(err)
 	}
 

@@ -100,7 +100,7 @@ func TestServiceParseDeepLink(t *testing.T) {
 			defer cleanup()
 
 			ret, err := service.ParseDeepLink(ctx, tt.request)
-			testSameErrcodes(t, tt.expectedErrcode, err)
+			assert.Equal(t, errcode.Code(err), tt.expectedErrcode)
 			if tt.expectedValidID {
 				assert.NotEmpty(t, ret.BertyID.PublicRendezvousSeed)
 				assert.NotEmpty(t, ret.BertyID.AccountPK)
@@ -123,11 +123,11 @@ func TestServiceSendContactRequest(t *testing.T) {
 	defer cleanup()
 
 	ret, err := svc.SendContactRequest(ctx, nil)
-	testSameErrcodes(t, err, errcode.ErrMissingInput)
+	assert.Equal(t, errcode.Code(err), errcode.ErrMissingInput)
 	assert.Nil(t, ret)
 
 	ret, err = svc.SendContactRequest(ctx, &SendContactRequest_Request{})
-	testSameErrcodes(t, err, errcode.ErrMissingInput)
+	assert.Equal(t, errcode.Code(err), errcode.ErrMissingInput)
 	assert.Nil(t, ret)
 
 	parseRet, err := svc.ParseDeepLink(ctx, &ParseDeepLink_Request{Link: "https://berty.tech/id#key%3DCiDSJgvTIhdDfcZUhhZ8iPYvQVzwBBLRtbnlUX7sh5K9MRIg%252BK1qlkoN7RWQVnzmgveRI0HSLiyRFGa3KE9WNYgJmLQ%253D%26name%3Danonymous%25231337"})
