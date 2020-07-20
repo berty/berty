@@ -59,27 +59,40 @@ export const Message: React.FC<{
 			name = membersNames[message.memberPk]
 		}
 		const payload = message
+		const cmd = messenger.message.isCommandMessage(payload.body)
 		let msgTextColor, msgBackgroundColor, msgBorderColor
 		if (convKind === '1to1') {
-			msgTextColor = payload.isMe ? (payload.acknowledged ? color.white : color.blue) : color.blue
+			msgTextColor = payload.isMe
+				? payload.acknowledged
+					? color.white
+					: cmd
+					? color.grey
+					: color.blue
+				: color.blue
 			msgBackgroundColor = payload.isMe
 				? payload.acknowledged
 					? color.blue
 					: color.white
 				: '#CED2FF99'
-			msgBorderColor = payload.isMe && border.color.blue
+			msgBorderColor = payload.isMe && (cmd ? border.color.grey : border.color.blue)
 		} else {
 			if (!message.isMe && message.memberPk) {
 				const h = new SHA3(256).update(message.memberPk).digest()
 				baseColor = '#' + pal[h[0]]
 			}
-			msgTextColor = payload.isMe ? (payload.acknowledged ? color.white : baseColor) : baseColor
+			msgTextColor = payload.isMe
+				? payload.acknowledged
+					? color.white
+					: cmd
+					? color.grey
+					: baseColor
+				: baseColor
 			msgBackgroundColor = payload.isMe
 				? payload.acknowledged
 					? baseColor
 					: color.white
 				: Color(baseColor).alpha(0.1)
-			msgBorderColor = payload.isMe && { borderColor: baseColor }
+			msgBorderColor = payload.isMe && (cmd ? border.color.grey : { borderColor: baseColor })
 		}
 
 		return (
@@ -147,24 +160,28 @@ export const Message: React.FC<{
 							>
 								{formatTimestamp(new Date(payload.sentDate))}{' '}
 							</Text>
-							{payload.isMe && (
-								<Icon
-									name={payload.acknowledged ? 'navigation-2' : 'navigation-2-outline'}
-									width={12}
-									height={12}
-									fill={color.blue}
-								/>
+							{!cmd && (
+								<>
+									{payload.isMe && (
+										<Icon
+											name={payload.acknowledged ? 'navigation-2' : 'navigation-2-outline'}
+											width={12}
+											height={12}
+											fill={color.blue}
+										/>
+									)}
+									<Text
+										style={[
+											text.color.blue,
+											padding.left.scale(2),
+											_styles.dateMessage,
+											{ fontSize: 10, lineHeight: 11, textAlignVertical: 'center' },
+										]}
+									>
+										{payload.isMe ? (payload.acknowledged ? 'sent' : 'sending...') : ''}
+									</Text>
+								</>
 							)}
-							<Text
-								style={[
-									text.color.blue,
-									padding.left.scale(2),
-									_styles.dateMessage,
-									{ fontSize: 10, lineHeight: 11, textAlignVertical: 'center' },
-								]}
-							>
-								{payload.isMe ? (payload.acknowledged ? 'sent' : 'sending...') : ''}
-							</Text>
 						</View>
 					</View>
 				</View>
