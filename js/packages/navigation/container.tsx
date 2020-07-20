@@ -6,34 +6,36 @@ import {
 import { Routes } from './types'
 import { Messenger } from '@berty-tech/hooks'
 
+export const PREFIX = 'berty://'
+
 export const NavigationContainer: React.FC = ({ children }) => {
 	const ref = useRef()
 	const handleDeepLink = Messenger.useHandleDeepLink()
-	const prefix = 'berty://'
 	const { getInitialState } = useLinking(ref, {
-		prefixes: [prefix],
+		prefixes: [PREFIX],
 		config: {
-			['Modals']: {
-				initialRouteName: 'Tabs',
-				screens: {
-					/*[Routes.Modals.ManageDeepLink]: {
-						path: 'id/:type', // can't map prop name
-						parse: {
-							type: (data) => {
-								console.log('got contact link', data)
-								handleDeepLink(`${prefix}id/${data}`)
-								return 'link'
+			initialRouteName: 'Tabs',
+			screens: {
+				['Modals']: {
+					screens: {
+						[Routes.Modals.ManageDeepLink]: {
+							path: 'id/:link',
+							parse: {
+								link: (data) => {
+									const link = `${PREFIX}id/${data}`
+									handleDeepLink(link)
+									return link
+								},
 							},
 						},
-					},*/
-					[Routes.Modals.ManageDeepLink]: {
-						path: 'group/:value', // can't map prop name
-						parse: {
-							value: (data) => {
-								console.log('got group link', data)
-								const link = `${prefix}group/${data}`
-								handleDeepLink(link)
-								return link
+						[Routes.Modals.ManageDeepLink2]: {
+							path: 'group/:link',
+							parse: {
+								link: (data) => {
+									const link = `${PREFIX}group/${data}`
+									handleDeepLink(link)
+									return link
+								},
 							},
 						},
 					},

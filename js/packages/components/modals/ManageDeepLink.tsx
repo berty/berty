@@ -18,7 +18,7 @@ export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 	const [{ border }] = useStyles()
 	console.log('params', params)
 	console.log('ManageDeepLink render:', deepLinkStatus)
-	const dataType = params.type || 'link'
+	const dataType = (!params.link && params.type) || 'link'
 	let content
 	if (!client || !account?.onboarded) {
 		content = (
@@ -27,7 +27,10 @@ export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 				error={'Please finish the onboarding before using links or QR codes.'}
 			/>
 		)
-	} else if (!deepLinkStatus || deepLinkStatus.link !== params.value) {
+	} else if (
+		!deepLinkStatus ||
+		(deepLinkStatus.link !== params.value && deepLinkStatus.link !== params.link)
+	) {
 		content = <ActivityIndicator size='large' />
 	} else if (deepLinkStatus.error !== undefined) {
 		let title

@@ -106,5 +106,6 @@ export namespace Routes {
 		SendContactRequest = 'SendContactRequest',
 		DeleteAccount = 'DeleteAccount',
 		ManageDeepLink = 'ManageDeepLink',
+		ManageDeepLink2 = 'ManageDeepLink2',
 	}
 }

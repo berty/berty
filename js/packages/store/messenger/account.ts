@@ -238,6 +238,9 @@ export const transactions: Transactions = {
 		yield put(events.onboarded())
 	},
 	handleDeepLink: function* ({ url }) {
+		if (!protocol.client.services) {
+			yield take('APP_READY')
+		}
 		try {
 			const data = (yield call(protocol.client.transactions.parseDeepLink, {
 				link: url,

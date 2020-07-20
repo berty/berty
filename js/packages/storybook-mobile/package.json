@@ -30,7 +30,7 @@
     "@react-native-community/blur": "^3.3.1",
     "@react-native-community/eslint-config": "^0.0.5",
     "@react-native-community/masked-view": "^0.1.7",
-    "@react-navigation/native": "^5.1.4",
+    "@react-navigation/native": "^5.7.1",
     "@storybook/addon-links": "^5.2.1",
     "@storybook/addon-ondevice-knobs": "^5.2.4",
     "@storybook/addon-ondevice-notes": "^5.2.4",
