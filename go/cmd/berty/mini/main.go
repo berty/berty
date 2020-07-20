@@ -28,7 +28,7 @@ import (
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/rivo/tview"
-	grpc_trace "go.opentelemetry.io/otel/plugin/grpctrace"
+	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )

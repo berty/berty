@@ -17,7 +17,7 @@ func NewRuntimeProvider(root trace.Provider) *RuntimeProvider {
 	return &RuntimeProvider{root}
 }
 
-func (rp *RuntimeProvider) Tracer(name string) trace.Tracer {
+func (rp *RuntimeProvider) Tracer(name string, opts ...trace.TracerOption) trace.Tracer {
 	return &RuntimeTracer{
 		skipCall: 2,
 		root:     rp.root.Tracer(name),
