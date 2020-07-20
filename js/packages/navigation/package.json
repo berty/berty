@@ -31,7 +31,7 @@
   },
   "peerDependencies": {
     "@react-native-community/masked-view": "^0.1.7",
-    "@react-navigation/native": "^5.1.4",
+    "@react-navigation/native": "^5.7.1",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-reanimated": "^1.7.1",
     "react-native-safe-area-context": "^0.7.3",

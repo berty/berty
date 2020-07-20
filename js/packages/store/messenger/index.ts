@@ -1,6 +1,6 @@
 import { combineReducers, Middleware } from 'redux'
 import { configureStore } from '@reduxjs/toolkit'
-import { call, take, race, delay, select, fork } from 'redux-saga/effects'
+import { call, take, race, delay, select, fork, put } from 'redux-saga/effects'
 import createSagaMiddleware from 'redux-saga'
 import createRecorder from 'redux-test-recorder'
 import mem from 'mem'
@@ -41,6 +41,7 @@ function* initApp() {
 	}
 	yield* protocol.transactions.client.start({ name: acc.name })
 	yield* account.transactions.open()
+	yield put({ type: 'APP_READY' })
 }
 
 export function* rootSaga() {
