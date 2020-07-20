@@ -524,12 +524,16 @@ func (m *metadataStore) ContactRequestOutgoingEnqueue(ctx context.Context, conta
 	}
 
 	if contact.IsSamePK(accSK.GetPublic()) {
-		return nil, errcode.ErrInvalidInput
+		return nil, errcode.ErrContactRequestSameAccount
 	}
 
 	pk, err := contact.GetPubKey()
 	if err != nil {
 		return nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	if m.checkContactStatus(pk, bertytypes.ContactStateAdded) {
+		return nil, errcode.ErrContactRequestContactAlreadyAdded
 	}
 
 	if m.checkContactStatus(pk, bertytypes.ContactStateRemoved, bertytypes.ContactStateDiscarded, bertytypes.ContactStateReceived) {
@@ -552,7 +556,19 @@ func (m *metadataStore) ContactRequestOutgoingSent(ctx context.Context, pk crypt
 		return nil, errcode.ErrGroupInvalidType
 	}
 
-	if !m.checkContactStatus(pk, bertytypes.ContactStateToRequest, bertytypes.ContactStateRemoved, bertytypes.ContactStateReceived, bertytypes.ContactStateDiscarded) {
+	switch m.getContactStatus(pk) {
+	case bertytypes.ContactStateToRequest:
+	case bertytypes.ContactStateReceived:
+	case bertytypes.ContactStateRemoved:
+	case bertytypes.ContactStateDiscarded:
+
+	case bertytypes.ContactStateUndefined:
+		return nil, errcode.ErrContactRequestContactUndefined
+	case bertytypes.ContactStateAdded:
+		return nil, errcode.ErrContactRequestContactAlreadyAdded
+	case bertytypes.ContactStateBlocked:
+		return nil, errcode.ErrContactRequestContactBlocked
+	default:
 		return nil, errcode.ErrInvalidInput
 	}
 
@@ -575,7 +591,7 @@ func (m *metadataStore) ContactRequestIncomingReceived(ctx context.Context, cont
 	}
 
 	if contact.IsSamePK(accSK.GetPublic()) {
-		return nil, errcode.ErrInvalidInput
+		return nil, errcode.ErrContactRequestSameAccount
 	}
 
 	pk, err := contact.GetPubKey()
@@ -583,12 +599,24 @@ func (m *metadataStore) ContactRequestIncomingReceived(ctx context.Context, cont
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	// Contact was waiting to be accepted, mark as sent instead
-	if m.checkContactStatus(pk, bertytypes.ContactStateToRequest) {
-		return m.ContactRequestOutgoingSent(ctx, pk)
-	}
+	switch m.getContactStatus(pk) {
+	case bertytypes.ContactStateUndefined:
+	case bertytypes.ContactStateRemoved:
+	case bertytypes.ContactStateDiscarded:
 
-	if m.checkContactStatus(pk, bertytypes.ContactStateReceived, bertytypes.ContactStateAdded, bertytypes.ContactStateBlocked) {
+	// If incoming request comes from an account for which an outgoing request
+	// is in "sending" state, mark the outgoing request as "sent"
+	case bertytypes.ContactStateToRequest:
+		return m.ContactRequestOutgoingSent(ctx, pk)
+
+	// Errors
+	case bertytypes.ContactStateReceived:
+		return nil, errcode.ErrContactRequestIncomingAlreadyReceived
+	case bertytypes.ContactStateAdded:
+		return nil, errcode.ErrContactRequestContactAlreadyAdded
+	case bertytypes.ContactStateBlocked:
+		return nil, errcode.ErrContactRequestContactBlocked
+	default:
 		return nil, errcode.ErrInvalidInput
 	}
 
@@ -763,25 +791,25 @@ func (m *metadataStore) groupAction(ctx context.Context, pk crypto.PubKey, event
 	return m.attributeSignAndAddEvent(ctx, event, evtType)
 }
 
-func (m *metadataStore) checkContactStatus(pk crypto.PubKey, states ...bertytypes.ContactState) bool {
+func (m *metadataStore) getContactStatus(pk crypto.PubKey) bertytypes.ContactState {
 	if pk == nil {
-		return false
+		return bertytypes.ContactStateUndefined
 	}
 
 	contact, err := m.Index().(*metadataStoreIndex).getContact(pk)
 	if err != nil {
-		for _, s := range states {
-			if bertytypes.ContactStateUndefined == s {
-				return true
-			}
-		}
-
 		m.logger.Warn("unable to get contact for public key", zap.Error(err))
-		return false
+		return bertytypes.ContactStateUndefined
 	}
 
+	return contact.state
+}
+
+func (m *metadataStore) checkContactStatus(pk crypto.PubKey, states ...bertytypes.ContactState) bool {
+	contactStatus := m.getContactStatus(pk)
+
 	for _, s := range states {
-		if contact.state == s {
+		if contactStatus == s {
 			return true
 		}
 	}

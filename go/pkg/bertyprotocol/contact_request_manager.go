@@ -25,7 +25,6 @@ type pendingRequestDetails struct {
 }
 
 type pendingRequest struct {
-	contact    *bertytypes.ShareableContact
 	update     chan *pendingRequestDetails
 	swiper     *Swiper
 	cancelFunc context.CancelFunc

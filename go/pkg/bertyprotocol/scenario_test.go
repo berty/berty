@@ -106,42 +106,34 @@ func TestScenario_MessageSeveralMultiMemberGroups(t *testing.T) {
 
 func TestScenario_AddContact(t *testing.T) {
 	cases := []testCase{
-		// FIXME: all test cases below (see TODO below)
-		{"2 clients/connectAll", 2, ConnectAll, false, false, time.Second * 10},
-		// {"3 clients/connectAll", 3, ConnectAll, false, true, time.Second * 10},
-		// {"3 clients/connectInLine", 3, ConnectInLine, false, true, time.Second * 10},
-		// {"5 clients/connectAll", 5, ConnectAll, true, true, time.Second * 10},
-		// {"5 clients/connectInLine", 5, ConnectInLine, true, true, time.Second * 10},
-		// {"8 clients/connectAll", 8, ConnectAll, true, true, time.Second * 10},
-		// {"8 clients/connectInLine", 8, ConnectInLine, true, true, time.Second * 10},
-		// {"10 clients/connectAll", 10, ConnectAll, true, true, time.Second * 10},
-		// {"10 clients/connectInLine", 10, ConnectInLine, true, true, time.Second * 10},
+		{"2 clients/connectAll", 2, ConnectAll, false, false, time.Second * 20},
+		{"3 clients/connectAll", 3, ConnectAll, false, false, time.Second * 20},
+		{"3 clients/connectInLine", 3, ConnectInLine, false, false, time.Second * 20},
+		{"5 clients/connectAll", 5, ConnectAll, true, false, time.Second * 30},
+		{"5 clients/connectInLine", 5, ConnectInLine, true, false, time.Second * 30},
+		{"8 clients/connectAll", 8, ConnectAll, true, false, time.Second * 40},
+		{"8 clients/connectInLine", 8, ConnectInLine, true, false, time.Second * 40},
+		{"10 clients/connectAll", 10, ConnectAll, true, false, time.Second * 60},
+		{"10 clients/connectInLine", 10, ConnectInLine, true, false, time.Second * 60},
 	}
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*TestingProtocol) {
-		// TODO: Uncomment when fixed
-		// Add accounts as contacts
-		// addAsContact(ctx, t, tps, tps)
-		///////////////////////
-
-		// TODO: Remove when fixed
-		addAsContact(ctx, t, tps[0:1], tps)
-		///////////////////////
+		addAsContact(ctx, t, tps, tps)
 	})
 }
 
 func TestScenario_MessageContactGroup(t *testing.T) {
 	cases := []testCase{
+		{"2 clients/connectAll", 2, ConnectAll, false, false, time.Second * 20},
 		// FIXME: all test cases below
-		// {"2 clients/connectAll", 2, ConnectAll, false, false, time.Second * 10},
-		// {"3 clients/connectAll", 3, ConnectAll, false, true, time.Second * 10},
-		// {"3 clients/connectInLine", 3, ConnectInLine, false, true, time.Second * 10},
-		// {"5 clients/connectAll", 5, ConnectAll, true, true, time.Second * 10},
-		// {"5 clients/connectInLine", 5, ConnectInLine, true, true, time.Second * 10},
-		// {"8 clients/connectAll", 8, ConnectAll, true, true, time.Second * 10},
-		// {"8 clients/connectInLine", 8, ConnectInLine, true, true, time.Second * 10},
-		// {"10 clients/connectAll", 10, ConnectAll, true, true, time.Second * 10},
-		// {"10 clients/connectInLine", 10, ConnectInLine, true, true, time.Second * 10},
+		// {"3 clients/connectAll", 3, ConnectAll, false, false, time.Second * 20},
+		// {"3 clients/connectInLine", 3, ConnectInLine, false, false, time.Second * 20},
+		// {"5 clients/connectAll", 5, ConnectAll, true, false, time.Second * 30},
+		// {"5 clients/connectInLine", 5, ConnectInLine, true, false, time.Second * 30},
+		// {"8 clients/connectAll", 8, ConnectAll, true, false, time.Second * 40},
+		// {"8 clients/connectInLine", 8, ConnectInLine, true, false, time.Second * 40},
+		// {"10 clients/connectAll", 10, ConnectAll, true, false, time.Second * 60},
+		// {"10 clients/connectInLine", 10, ConnectInLine, true, false, time.Second * 60},
 	}
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*TestingProtocol) {
@@ -481,7 +473,7 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*Testi
 	start := time.Now()
 	var sendDuration, receiveDuration, acceptDuration, activateDuration time.Duration
 
-	for _, sender := range senders {
+	for i, sender := range senders {
 		for _, receiver := range receivers {
 			substart := time.Now()
 
@@ -492,11 +484,6 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*Testi
 			receiverCfg, err := receiver.Client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
 			require.NoError(t, err)
 			require.NotNil(t, receiverCfg)
-
-			// Skip if sender and receiver are the same account
-			if bytes.Compare(senderCfg.AccountPK, receiverCfg.AccountPK) == 0 {
-				continue
-			}
 
 			// Setup receiver's sharable contact
 			_, err = receiver.Client.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})
@@ -514,6 +501,40 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*Testi
 			_, err = sender.Client.ContactRequestSend(ctx, &bertytypes.ContactRequestSend_Request{
 				Contact: receiverSharableContact,
 			})
+
+			// Check if sender and receiver are the same account, should return the right error and skip
+			if bytes.Compare(senderCfg.AccountPK, receiverCfg.AccountPK) == 0 {
+				require.Contains(t, err.Error(), "ErrContactRequestSameAccount", "error should be ErrContactRequestSameAccount")
+				// TODO: @moul / @aeddi use this instead when errcode will be compatible with gRPC
+				// require.Equal(t, errcode.ErrContactRequestSameAccount.Code(), errcode.LastCode(err), "error should be ErrContactRequestSameAccount")
+				continue
+			}
+
+			// Check if contact request was already sent, should return right error and skip
+			receiverWasSender := false
+			for j := 0; j < i; j++ {
+				if senders[j] == receiver {
+					receiverWasSender = true
+				}
+			}
+
+			senderWasReceiver := false
+			if receiverWasSender {
+				for _, r := range receivers {
+					if r == sender {
+						senderWasReceiver = true
+					}
+				}
+			}
+
+			if receiverWasSender && senderWasReceiver {
+				require.Contains(t, err.Error(), "ErrContactRequestContactAlreadyAdded", "error should be ErrContactRequestContactAlreadyAdded")
+				// TODO: @moul / @aeddi use this instead when errcode will be compatible with gRPC
+				// require.Equal(t, errcode.ErrContactRequestContactAlreadyAdded.Code(), errcode.LastCode(err), "error should be ErrContactRequestContactAlreadyAdded")
+				continue
+			}
+
+			// No other error should occur
 			require.NoError(t, err)
 
 			sendDuration += time.Since(substart)
