@@ -10,29 +10,48 @@ import QRCode from 'react-native-qrcode-svg'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDimensions } from '@react-native-community/hooks'
+import { scaleSize } from '@berty-tech/styles/constant'
 //
 // Settings My Berty ID Vue
 //
 
 // Styles
-const _bertyIdButtonSize = 60
-const _bertyIdContentScaleFactor = 0.66
-const _iconShareSize = 26
-const _iconArrowBackSize = 30
-const _iconIdSize = 45
-const _titleSize = 26
-const _requestAvatarSize = 90
 
-const _bertyIdStyles = StyleSheet.create({
-	bertyIdButton: {
-		width: _bertyIdButtonSize,
-		height: _bertyIdButtonSize,
-		borderRadius: _bertyIdButtonSize / 2,
-		marginRight: _bertyIdButtonSize,
-		bottom: _bertyIdButtonSize / 2,
-	},
-	bertyIdContent: { paddingBottom: _bertyIdButtonSize / 2 + 10 },
-})
+const useStylesBertyId = () => {
+	const { height: windowHeight, width: windowWidth } = useDimensions().window
+	const iPadShortEdge = 768
+	const iPadLongEdge = 1024
+	const bertyIdButtonSize = 60
+	const bertyIdContentScaleFactor = 0.66
+	const iconShareSize = 26
+	const iconArrowBackSize = 30
+	const iconIdSize = 45
+	const titleSize = 26
+	const requestAvatarSize = 90
+	return {
+		windowHeight,
+		windowWidth,
+		isLandscape: windowHeight < windowWidth,
+		isGteIpadSize:
+			Math.min(windowHeight, windowWidth) >= iPadShortEdge &&
+			Math.max(windowHeight, windowWidth) >= iPadLongEdge,
+		bertyIdButtonSize,
+		bertyIdContentScaleFactor,
+		iconShareSize,
+		iconArrowBackSize,
+		iconIdSize,
+		titleSize,
+		requestAvatarSize,
+		styleBertyIdButton: {
+			width: bertyIdButtonSize,
+			height: bertyIdButtonSize,
+			borderRadius: bertyIdButtonSize / 2,
+			marginRight: bertyIdButtonSize,
+			bottom: bertyIdButtonSize / 2,
+		},
+		styleBertyIdContent: { paddingBottom: bertyIdButtonSize / 2 + 10 },
+	}
+}
 
 const BertyIdContent: React.FC<{}> = ({ children }) => {
 	const [{ column }] = useStyles()
@@ -47,8 +66,17 @@ const BertyIdContent: React.FC<{}> = ({ children }) => {
 const ContactRequestQR = () => {
 	const client = Messenger.useClient()
 	const [{ padding }] = useStyles()
-
-	const { height, width } = useDimensions().window
+	const {
+		isGteIpadSize,
+		windowHeight,
+		windowWidth,
+		titleSize,
+		bertyIdContentScaleFactor,
+	} = useStylesBertyId()
+	const qrCodeSize = isGteIpadSize
+		? Math.min(windowHeight, windowWidth) * 0.5
+		: Math.min(windowHeight * bertyIdContentScaleFactor, windowWidth * bertyIdContentScaleFactor) -
+		  1.25 * titleSize
 
 	if (!client?.deepLink) {
 		return <Text>Internal error</Text>
@@ -57,7 +85,7 @@ const ContactRequestQR = () => {
 	// I would like to use binary mode in QR but the scanner used seems to not support it, extended tests were done
 	return (
 		<View style={[padding.top.big]}>
-			<QRCode size={_bertyIdContentScaleFactor * Math.min(height, width)} value={client.deepLink} />
+			<QRCode size={qrCodeSize} value={client.deepLink} />
 		</View>
 	)
 }
@@ -65,15 +93,17 @@ const ContactRequestQR = () => {
 const Fingerprint: React.FC = () => {
 	const client = Messenger.useClient()
 	const [{ padding }] = useStyles()
-
-	const { height, width } = useDimensions().window
+	const { bertyIdContentScaleFactor, windowHeight, windowWidth } = useStylesBertyId()
 
 	if (!client) {
 		return <Text>Client not initialized</Text>
 	}
 	return (
 		<View
-			style={[padding.top.big, { width: _bertyIdContentScaleFactor * Math.min(height, width) }]}
+			style={[
+				padding.top.big,
+				{ width: bertyIdContentScaleFactor * Math.min(windowHeight, windowWidth) },
+			]}
 		>
 			<FingerprintContent seed={client.accountPk} />
 		</View>
@@ -93,6 +123,7 @@ const SelectedContent: React.FC<{ contentName: string }> = ({ contentName }) => 
 
 const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
 	const [{ background, border, margin, padding, opacity }] = useStyles()
+	const { styleBertyIdContent, requestAvatarSize } = useStylesBertyId()
 	const [selectedContent, setSelectedContent] = useState('QR')
 	const client = Messenger.useClient()
 
@@ -103,10 +134,10 @@ const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
 				border.radius.scale(30),
 				margin.horizontal.medium,
 				padding.top.large,
-				_bertyIdStyles.bertyIdContent,
+				styleBertyIdContent,
 			]}
 		>
-			<RequestAvatar {...user} seed={client?.accountPk} size={_requestAvatarSize} />
+			<RequestAvatar {...user} seed={client?.accountPk} size={requestAvatarSize} />
 			<View style={[padding.horizontal.big]}>
 				<TabBar
 					tabs={[
@@ -133,6 +164,7 @@ const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
 
 const BertyIdShare: React.FC<{}> = () => {
 	const [{ row, border, background, flex, color }] = useStyles()
+	const { styleBertyIdButton, iconShareSize } = useStylesBertyId()
 	const client = Messenger.useClient()
 	const url = client?.deepLink
 	if (!url) {
@@ -140,12 +172,7 @@ const BertyIdShare: React.FC<{}> = () => {
 	}
 	return (
 		<TouchableOpacity
-			style={[
-				row.item.bottom,
-				background.light.blue,
-				border.shadow.medium,
-				_bertyIdStyles.bertyIdButton,
-			]}
+			style={[row.item.bottom, background.light.blue, border.shadow.medium, styleBertyIdButton]}
 			onPress={async () => {
 				try {
 					await Share.share({ url })
@@ -159,8 +186,8 @@ const BertyIdShare: React.FC<{}> = () => {
 					style={row.item.justify}
 					name='share'
 					pack='custom'
-					width={_iconShareSize}
-					height={_iconShareSize}
+					width={iconShareSize}
+					height={iconShareSize}
 					fill={color.blue}
 				/>
 			</View>
@@ -171,6 +198,7 @@ const BertyIdShare: React.FC<{}> = () => {
 const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
 	const { goBack } = useNavigation()
 	const [{ padding, color }] = useStyles()
+	const { iconArrowBackSize, titleSize, iconIdSize, iconShareSize } = useStylesBertyId()
 	const { height } = useDimensions().window
 
 	return (
@@ -199,16 +227,16 @@ const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
 					>
 						<Icon
 							name='arrow-back-outline'
-							width={_iconArrowBackSize}
-							height={_iconArrowBackSize}
+							width={iconArrowBackSize}
+							height={iconArrowBackSize}
 							fill={color.white}
 						/>
 					</TouchableOpacity>
 					<Text
 						style={{
 							fontWeight: '700',
-							fontSize: _titleSize,
-							lineHeight: 1.25 * _titleSize,
+							fontSize: titleSize,
+							lineHeight: 1.25 * titleSize,
 							marginLeft: 10,
 							color: color.white,
 						}}
@@ -216,7 +244,7 @@ const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
 						My Berty ID
 					</Text>
 				</View>
-				<Icon name='id' pack='custom' width={_iconIdSize} height={_iconIdSize} fill={color.white} />
+				<Icon name='id' pack='custom' width={iconIdSize} height={iconIdSize} fill={color.white} />
 			</View>
 			<BertIdBody user={user} />
 			<BertyIdShare />
