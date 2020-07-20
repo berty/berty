@@ -100,3 +100,7 @@ enum ErrCode {
 
   ErrCLINoTermcaps = 3001;
 }
+
+message ErrDetails {
+  repeated ErrCode codes = 1;
+}

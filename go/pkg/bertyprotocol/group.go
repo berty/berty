@@ -161,7 +161,7 @@ func metadataStoreListSecrets(ctx context.Context, gc *groupContext) map[crypto.
 		}
 
 		pk, ds, err := openDeviceSecret(meta.Metadata, ownSK, g)
-		if errcode.Code(err) == errcode.ErrInvalidInput.Code() || errcode.Code(err) == errcode.ErrGroupSecretOtherDestMember.Code() {
+		if errcode.Is(err, errcode.ErrInvalidInput) || errcode.Is(err, errcode.ErrGroupSecretOtherDestMember) {
 			continue
 		}
 
@@ -187,7 +187,7 @@ func FillMessageKeysHolderUsingNewData(ctx context.Context, gc *groupContext) {
 			}
 
 			pk, ds, err := openDeviceSecret(e.Metadata, gc.getMemberPrivKey(), gc.Group())
-			if errcode.Code(err) == errcode.ErrInvalidInput.Code() || errcode.Code(err) == errcode.ErrGroupSecretOtherDestMember.Code() {
+			if errcode.Is(err, errcode.ErrInvalidInput) || errcode.Is(err, errcode.ErrGroupSecretOtherDestMember) {
 				return
 			}
 
@@ -282,7 +282,7 @@ func SendSecretsToExistingMembers(ctx context.Context, gctx *groupContext) {
 			}
 
 			if _, err := gctx.MetadataStore().SendSecret(ctx, pk); err != nil {
-				if errcode.Code(err) != errcode.ErrGroupSecretAlreadySentToMember.Code() {
+				if !errcode.Is(err, errcode.ErrGroupSecretAlreadySentToMember) {
 					gctx.logger.Info("secret already sent secret to member", zap.String("memberpk", base64.StdEncoding.EncodeToString(rawPK)))
 					return
 				}
@@ -320,7 +320,7 @@ func WatchNewMembersAndSendSecrets(ctx context.Context, logger *zap.Logger, gctx
 			}
 
 			if _, err := gctx.MetadataStore().SendSecret(ctx, memberPK); err != nil {
-				if errcode.Code(err) != errcode.ErrGroupSecretAlreadySentToMember.Code() {
+				if !errcode.Is(err, errcode.ErrGroupSecretAlreadySentToMember) {
 					logger.Error("unable to send secret to member", zap.Error(err))
 				}
 			}

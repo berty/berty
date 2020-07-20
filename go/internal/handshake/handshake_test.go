@@ -26,6 +26,7 @@ func TestValidHandshake(t *testing.T) {
 		stream p2pnetwork.Stream,
 		mh *mockedHandshake,
 	) {
+		t.Helper()
 		defer p2phelpers.FullClose(stream)
 
 		err := Request(
@@ -42,6 +43,7 @@ func TestValidHandshake(t *testing.T) {
 		mh *mockedHandshake,
 		wg *sync.WaitGroup,
 	) {
+		t.Helper()
 		defer wg.Done()
 		defer p2phelpers.FullClose(stream)
 
@@ -70,6 +72,7 @@ func TestInvalidRequesterHello(t *testing.T) {
 			stream p2pnetwork.Stream,
 			_ *mockedHandshake,
 		) {
+			t.Helper()
 			p2phelpers.FullClose(stream)
 		}
 
@@ -79,12 +82,12 @@ func TestInvalidRequesterHello(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
-			requireEqualFirstErrcode(t, errcode.ErrHandshakeRequesterHello, err)
-			requireEqualLastErrcode(t, errcode.ErrStreamRead, err)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterHello, errcode.ErrStreamRead})
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)
@@ -104,6 +107,7 @@ func TestInvalidResponderHello(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			t.Helper()
 			defer p2phelpers.FullClose(stream)
 
 			err := Request(
@@ -111,8 +115,7 @@ func TestInvalidResponderHello(t *testing.T) {
 				mh.requester.accountID,
 				mh.responder.accountID.GetPublic(),
 			)
-			requireEqualFirstErrcode(t, errcode.ErrHandshakeResponderHello, err)
-			requireEqualLastErrcode(t, errcode.ErrStreamRead, err)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeResponderHello, errcode.ErrHandshakePeerEphemeralKeyRecv, errcode.ErrStreamRead})
 		}
 
 		var responderTest responderTestFunc = func(
@@ -121,6 +124,7 @@ func TestInvalidResponderHello(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			defer wg.Done()
 
 			hc := newTestHandshakeContext(stream, mh.responder.accountID, nil)
@@ -148,6 +152,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			t.Helper()
 			hc := newTestHandshakeContext(
 				stream,
 				mh.requester.accountID,
@@ -170,16 +175,12 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.requester.accountID)
-			requireEqualFirstErrcode(
-				t,
-				errcode.ErrHandshakeRequesterAuthenticate,
-				err,
-			)
-			requireEqualLastErrcode(t, errcode.ErrStreamRead, err)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAuthenticate, errcode.ErrStreamRead})
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)
@@ -195,6 +196,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			t.Helper()
 			var request RequesterAuthenticatePayload
 
 			hc := newTestHandshakeContext(
@@ -238,16 +240,12 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
-			requireEqualFirstErrcode(
-				t,
-				errcode.ErrHandshakeRequesterAuthenticate,
-				err,
-			)
-			requireEqualLastErrcode(t, errcode.ErrDeserialization, err)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAuthenticate, errcode.ErrDeserialization})
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)
@@ -263,6 +261,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			t.Helper()
 			var request RequesterAuthenticatePayload
 
 			hc := newTestHandshakeContext(
@@ -311,20 +310,12 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
-			requireEqualFirstErrcode(
-				t,
-				errcode.ErrHandshakeRequesterAuthenticate,
-				err,
-			)
-			requireEqualLastErrcode(
-				t,
-				errcode.ErrCryptoSignatureVerification,
-				err,
-			)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAuthenticate, errcode.ErrCryptoSignatureVerification})
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)
@@ -340,6 +331,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			t.Helper()
 			var request RequesterAuthenticatePayload
 
 			hc := newTestHandshakeContext(
@@ -388,20 +380,12 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
-			requireEqualFirstErrcode(
-				t,
-				errcode.ErrHandshakeRequesterAuthenticate,
-				err,
-			)
-			requireEqualLastErrcode(
-				t,
-				errcode.ErrCryptoSignatureVerification,
-				err,
-			)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAuthenticate, errcode.ErrCryptoSignatureVerification})
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)
@@ -417,6 +401,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			t.Helper()
 			var request RequesterAuthenticatePayload
 
 			hc := newTestHandshakeContext(
@@ -462,20 +447,12 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
-			requireEqualFirstErrcode(
-				t,
-				errcode.ErrHandshakeRequesterAuthenticate,
-				err,
-			)
-			requireEqualLastErrcode(
-				t,
-				errcode.ErrCryptoSignatureVerification,
-				err,
-			)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAuthenticate, errcode.ErrCryptoSignatureVerification})
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)
@@ -491,6 +468,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			t.Helper()
 			hc := newTestHandshakeContext(
 				stream,
 				mh.requester.accountID,
@@ -527,16 +505,12 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
-			requireEqualFirstErrcode(
-				t,
-				errcode.ErrHandshakeRequesterAuthenticate,
-				err,
-			)
-			requireEqualLastErrcode(t, errcode.ErrDeserialization, err)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAuthenticate, errcode.ErrDeserialization})
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)
@@ -552,6 +526,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			t.Helper()
 			var request RequesterAuthenticatePayload
 
 			hc := newTestHandshakeContext(
@@ -597,16 +572,12 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
-			requireEqualFirstErrcode(
-				t,
-				errcode.ErrHandshakeRequesterAuthenticate,
-				err,
-			)
-			requireEqualLastErrcode(t, errcode.ErrCryptoDecrypt, err)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAuthenticate, errcode.ErrCryptoDecrypt})
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)
@@ -622,6 +593,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			t.Helper()
 			var request RequesterAuthenticatePayload
 
 			hc := newTestHandshakeContext(
@@ -670,16 +642,12 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
-			requireEqualFirstErrcode(
-				t,
-				errcode.ErrHandshakeRequesterAuthenticate,
-				err,
-			)
-			requireEqualLastErrcode(t, errcode.ErrCryptoDecrypt, err)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAuthenticate, errcode.ErrCryptoDecrypt})
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)
@@ -695,6 +663,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			t.Helper()
 			hc := newTestHandshakeContext(
 				stream,
 				mh.requester.accountID,
@@ -719,16 +688,12 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
-			requireEqualFirstErrcode(
-				t,
-				errcode.ErrHandshakeRequesterAuthenticate,
-				err,
-			)
-			requireEqualLastErrcode(t, errcode.ErrCryptoDecrypt, err)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAuthenticate, errcode.ErrCryptoDecrypt})
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)
@@ -748,6 +713,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			t.Helper()
 			defer p2phelpers.FullClose(stream)
 
 			err := Request(
@@ -755,12 +721,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 				mh.requester.accountID,
 				mh.responder.accountID.GetPublic(),
 			)
-			requireEqualFirstErrcode(
-				t,
-				errcode.ErrHandshakeResponderAccept,
-				err,
-			)
-			requireEqualLastErrcode(t, errcode.ErrStreamRead, err)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeResponderAccept, errcode.ErrStreamRead})
 		}
 
 		var responderTest responderTestFunc = func(
@@ -769,6 +730,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			defer wg.Done()
 
 			hc := newTestHandshakeContext(stream, mh.responder.accountID, nil)
@@ -798,6 +760,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			t.Helper()
 			defer p2phelpers.FullClose(stream)
 
 			err := Request(
@@ -805,16 +768,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 				mh.requester.accountID,
 				mh.responder.accountID.GetPublic(),
 			)
-			requireEqualFirstErrcode(
-				t,
-				errcode.ErrHandshakeResponderAccept,
-				err,
-			)
-			requireEqualLastErrcode(
-				t,
-				errcode.ErrCryptoSignatureVerification,
-				err,
-			)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeResponderAccept, errcode.ErrCryptoSignatureVerification})
 		}
 
 		var responderTest responderTestFunc = func(
@@ -823,6 +777,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			var response ResponderAcceptPayload
 
 			defer wg.Done()
@@ -876,6 +831,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			t.Helper()
 			defer p2phelpers.FullClose(stream)
 
 			err := Request(
@@ -883,16 +839,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 				mh.requester.accountID,
 				mh.responder.accountID.GetPublic(),
 			)
-			requireEqualFirstErrcode(
-				t,
-				errcode.ErrHandshakeResponderAccept,
-				err,
-			)
-			requireEqualLastErrcode(
-				t,
-				errcode.ErrCryptoSignatureVerification,
-				err,
-			)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeResponderAccept, errcode.ErrCryptoSignatureVerification})
 		}
 
 		var responderTest responderTestFunc = func(
@@ -901,6 +848,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			var response ResponderAcceptPayload
 
 			defer wg.Done()
@@ -951,6 +899,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			t.Helper()
 			defer p2phelpers.FullClose(stream)
 
 			err := Request(
@@ -958,12 +907,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 				mh.requester.accountID,
 				mh.responder.accountID.GetPublic(),
 			)
-			requireEqualFirstErrcode(
-				t,
-				errcode.ErrHandshakeResponderAccept,
-				err,
-			)
-			requireEqualLastErrcode(t, errcode.ErrDeserialization, err)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeResponderAccept, errcode.ErrDeserialization})
 		}
 
 		var responderTest responderTestFunc = func(
@@ -972,6 +916,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			defer wg.Done()
 
 			hc := newTestHandshakeContext(stream, mh.responder.accountID, nil)
@@ -1016,6 +961,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			t.Helper()
 			defer p2phelpers.FullClose(stream)
 
 			err := Request(
@@ -1023,12 +969,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 				mh.requester.accountID,
 				mh.responder.accountID.GetPublic(),
 			)
-			requireEqualFirstErrcode(
-				t,
-				errcode.ErrHandshakeResponderAccept,
-				err,
-			)
-			requireEqualLastErrcode(t, errcode.ErrCryptoDecrypt, err)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeResponderAccept, errcode.ErrCryptoDecrypt})
 		}
 
 		var responderTest responderTestFunc = func(
@@ -1037,6 +978,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			var response ResponderAcceptPayload
 
 			defer wg.Done()
@@ -1087,6 +1029,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			t.Helper()
 			defer p2phelpers.FullClose(stream)
 
 			err := Request(
@@ -1094,12 +1037,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 				mh.requester.accountID,
 				mh.responder.accountID.GetPublic(),
 			)
-			requireEqualFirstErrcode(
-				t,
-				errcode.ErrHandshakeResponderAccept,
-				err,
-			)
-			requireEqualLastErrcode(t, errcode.ErrCryptoDecrypt, err)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeResponderAccept, errcode.ErrCryptoDecrypt})
 		}
 
 		var responderTest responderTestFunc = func(
@@ -1108,6 +1046,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			var response ResponderAcceptPayload
 
 			defer wg.Done()
@@ -1161,6 +1100,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			t.Helper()
 			defer p2phelpers.FullClose(stream)
 
 			err := Request(
@@ -1168,12 +1108,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 				mh.requester.accountID,
 				mh.responder.accountID.GetPublic(),
 			)
-			requireEqualFirstErrcode(
-				t,
-				errcode.ErrHandshakeResponderAccept,
-				err,
-			)
-			requireEqualLastErrcode(t, errcode.ErrCryptoDecrypt, err)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeResponderAccept, errcode.ErrCryptoDecrypt})
 		}
 
 		var responderTest responderTestFunc = func(
@@ -1182,6 +1117,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			defer wg.Done()
 
 			hc := newTestHandshakeContext(stream, mh.responder.accountID, nil)
@@ -1218,6 +1154,7 @@ func TestInvalidResponderAcceptAck(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			t.Helper()
 			hc := newTestHandshakeContext(
 				stream,
 				mh.requester.accountID,
@@ -1245,16 +1182,12 @@ func TestInvalidResponderAcceptAck(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
-			requireEqualFirstErrcode(
-				t,
-				errcode.ErrHandshakeRequesterAcknowledge,
-				err,
-			)
-			requireEqualLastErrcode(t, errcode.ErrStreamRead, err)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAcknowledge, errcode.ErrStreamRead})
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)
@@ -1270,6 +1203,7 @@ func TestInvalidResponderAcceptAck(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
+			t.Helper()
 			hc := newTestHandshakeContext(
 				stream,
 				mh.requester.accountID,
@@ -1300,16 +1234,12 @@ func TestInvalidResponderAcceptAck(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
+			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
-			requireEqualFirstErrcode(
-				t,
-				errcode.ErrHandshakeRequesterAcknowledge,
-				err,
-			)
-			requireEqualLastErrcode(t, errcode.ErrInvalidInput, err)
+			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAcknowledge, errcode.ErrInvalidInput})
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)

@@ -5,21 +5,9 @@ import (
 	"fmt"
 	"testing"
 
-	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
-
-func testSameErrcodes(t *testing.T, expected, got error) {
-	t.Helper()
-
-	assert.Equalf(
-		t,
-		errcode.ErrCode_name[errcode.Code(expected)],
-		errcode.ErrCode_name[errcode.Code(got)],
-		"%v", got,
-	)
-}
 
 func TestClient_impl(t *testing.T) {
 	var _ Service = (*service)(nil)
