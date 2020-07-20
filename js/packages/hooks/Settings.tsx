@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { settings } from '@berty-tech/store'
 import { Provider as ReactReduxProvider, useSelector, useDispatch } from 'react-redux'
 import { ActivityIndicator } from 'react-native'

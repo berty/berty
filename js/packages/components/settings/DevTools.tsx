@@ -25,6 +25,7 @@ const useStylesDevTools = () => {
 }
 
 const HeaderDevTools: React.FC<{}> = () => {
+	const { navigate } = useNavigation()
 	const _styles = useStylesDevTools()
 	const [{ color, text }] = useStyles()
 
@@ -40,11 +41,13 @@ const HeaderDevTools: React.FC<{}> = () => {
 						disabled: true,
 					},
 					{
-						name: 'List events',
-						icon: 'list-outline',
+						name: 'Generate fake datas',
+						icon: 'book-outline',
 						color: color.dark.grey,
 						style: _styles.buttonRow,
-						disabled: true,
+						onPress: () => {
+							navigate.settings.fakeDatas()
+						},
 					},
 					{
 						name: 'Restart daemon',
@@ -224,8 +227,8 @@ const BodyDevTools: React.FC<{}> = () => {
 						disabled: true,
 					},
 					{
-						name: 'Generate fake datas',
-						icon: 'book-outline',
+						name: 'List events',
+						icon: 'list-outline',
 						color: color.dark.grey,
 						style: _styles.buttonRow,
 						disabled: true,

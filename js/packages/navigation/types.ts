@@ -45,6 +45,7 @@ export namespace ScreenProps {
 		export type Network = RouteProps<void>
 		export type IpfsWebUI = RouteProps<void>
 		export type SystemInfo = RouteProps<void>
+		export type FakeDatas = RouteProps<void>
 		export type DevText = RouteProps<{ text: string }>
 	}
 	export namespace Modals {
@@ -101,6 +102,7 @@ export namespace Routes {
 		Network = 'Settings.Network',
 		IpfsWebUI = 'Settings.IpfsWebUI',
 		DevText = 'Settings.DevText',
+		FakeDatas = 'Settings.FakeDatas',
 	}
 	export enum Modals {
 		SendContactRequest = 'SendContactRequest',

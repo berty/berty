@@ -2,7 +2,6 @@ import { composeReducers } from 'redux-compose'
 import { createSlice } from '@reduxjs/toolkit'
 import { all, put, takeEvery, select, call } from 'redux-saga/effects'
 import moment from 'moment'
-import { berty } from '@berty-tech/api'
 import {
 	makeDefaultCommandsSagas,
 	strToBuf,
@@ -17,35 +16,18 @@ import * as protocol from '../protocol'
 import * as conversation from './conversation'
 
 import { AppMessageType } from './AppMessage'
+import * as faker from '../../components/faker'
 
-const FAKE_MESSAGES_CONFIG = [
-	{ body: 'Welcome to Berty' },
-	{ body: 'Hey, nice to see you here' },
-	{ body: 'Get out of here! It has all the cryptos!' },
-	{ body: 'Hey, I just arrived in New York' },
-]
-
-const FAKE_MESSAGES: Entity[] = FAKE_MESSAGES_CONFIG.map((fc, i) => {
-	return {
-		type: AppMessageType.UserMessage,
-		id: `fake_${i}`,
-		body: fc.body,
-		attachments: [],
-		sentDate: Date.now(),
-		receivedDate: Date.now(),
-		isMe: false,
-		acknowledged: false,
-	}
-})
-
-const initialState: State = {
+const initialState = {
 	events: [],
 	aggregates: {},
 	ackBacklog: {},
 }
 
 const commandsSlice = createCommands('messenger/message/command', initialState, [
+	'generate',
 	'delete',
+	'deleteFake',
 	'send',
 	'hide',
 	'sendToAll',
@@ -55,6 +37,13 @@ const eventHandler = createSlice({
 	name: 'messenger/message/event',
 	initialState,
 	reducers: {
+		generated: (state, { payload }) => {
+			const { messages } = payload
+			messages.forEach((message) => {
+				state.aggregates[message.id] = message
+			})
+			return state
+		},
 		received: (state, { payload: { aggregateId, message, receivedDate, isMe, memberPk } }) => {
 			if (state.aggregates[aggregateId]) {
 				return state
@@ -70,6 +59,7 @@ const eventHandler = createSlice({
 						type: message.type,
 						body: message.body,
 						isMe,
+						fake: false,
 						attachments: [],
 						sentDate: message.sentDate,
 						acknowledged: hasAckInBacklog,
@@ -86,6 +76,7 @@ const eventHandler = createSlice({
 						type: message.type,
 						group: message.group,
 						isMe,
+						fake: false,
 						receivedDate,
 						name: message.name,
 					}
@@ -108,25 +99,33 @@ const eventHandler = createSlice({
 			delete state.aggregates[payload.aggregateId]
 			return state
 		},
+		deletedFake: (state) => {
+			for (const message of Object.values(state.aggregates)) {
+				if (message?.fake) {
+					delete state.aggregates[message.id]
+				}
+			}
+			return state
+		},
 	},
 })
 
-const getAggregatesWithFakes = (state) => {
-	// TODO: optimize
-	const result: { [key: string]: Entity | undefined } = { ...state.messenger.message.aggregates }
-	for (const fake of FAKE_MESSAGES) {
-		result[fake.id] = fake
-	}
+const getAggregates = (state) => {
+	const result = { ...state.messenger.message.aggregates }
 	return result
 }
 
 export const reducer = composeReducers(commandsSlice.reducer, eventHandler.reducer)
 export const commands = commandsSlice.actions
 export const events = eventHandler.actions
-export const queries: QueryReducer = {
-	list: (state) => Object.values(getAggregatesWithFakes(state)),
-	get: (state, { id }) => getAggregatesWithFakes(state)[id],
-	getLength: (state) => Object.keys(getAggregatesWithFakes(state)).length,
+export const queries = {
+	list: (state) => Object.values(getAggregates(state)),
+	get: (state, { id }) => getAggregates(state)[id],
+	getLength: (state) => Object.keys(getAggregates(state)).length,
+	getFakeLength: (state) =>
+		Object.keys(
+			Object.values(state.messenger.message.aggregates).map((message) => message && message.fake),
+		).length,
 	getList: (state, { list }) => {
 		if (!list) {
 			return []
@@ -148,7 +147,7 @@ export const queries: QueryReducer = {
 		return !searchText ? [] : messages
 	},
 	searchOne: (state, { searchText, id }) => {
-		const message: Entity | undefined = state.messenger.message.aggregates[id]
+		const message = state.messenger.message.aggregates[id]
 		return message &&
 			message.type === AppMessageType.UserMessage &&
 			message?.body &&
@@ -164,13 +163,10 @@ export const CommandsMessageType = {
 	SendMessage: 'send-message',
 }
 
-const addCommandMessage = function* (conv: any, title: any, response: any) {
-	const index: any = yield select((state) => queries.getLength(state))
-	const aggregateId = getAggregateId({
-		accountId: conv.id,
-		index: index.toString(),
-	})
-	const message: UserMessage = {
+const addCommandMessage = function* (conv, title, response) {
+	const index = yield select((state) => queries.getLength(state))
+	const aggregateId = `cmd_${index.toString()}`
+	const message = {
 		type: AppMessageType.UserMessage,
 		body: '/' + title + '\n\n' + response,
 		attachments: [],
@@ -195,7 +191,7 @@ export const getCommandsMessage = () => {
 	const arr = {
 		[CommandsMessageType.Help]: {
 			help: 'Displays all commands',
-			run: function* (context: any, args: any) {
+			run: function* (context, args) {
 				const response =
 					'/help					Show this command\n' +
 					'/debug-group				Indicate 1to1 connection\n' +
@@ -206,9 +202,9 @@ export const getCommandsMessage = () => {
 		},
 		[CommandsMessageType.DebugGroup]: {
 			help: 'List peers in this group',
-			run: function* (context: any, args: any) {
+			run: function* (context, args) {
 				try {
-					const group: any = yield* protocol.transactions.client.debugGroup({
+					const group = yield* protocol.transactions.client.debugGroup({
 						id: context.conv.accountId,
 						groupPk: strToBuf(context.conv.pk),
 					}) // does not support multi devices per account
@@ -224,14 +220,14 @@ export const getCommandsMessage = () => {
 		},
 		[CommandsMessageType.SendMessage]: {
 			help: 'Send a message',
-			run: function* (context: any, args: any) {
+			run: function* (context, args) {
 				try {
 					// TODO: implem minimist and put this const in args
 					const body = context.payload.body.substr(CommandsMessageType.SendMessage.length + 2) // 2 = slash + space before the message
 					const response = !body ? 'Invalid arguments ...' : 'You have sent a message !'
 					yield addCommandMessage(context.conv, CommandsMessageType.SendMessage, response)
 					if (body) {
-						const userMessage: UserMessage = {
+						const userMessage = {
 							type: AppMessageType.UserMessage,
 							body,
 							attachments: [],
@@ -239,7 +235,6 @@ export const getCommandsMessage = () => {
 						}
 
 						yield* protocol.transactions.client.appMessageSend({
-							id: context.conv.accountId,
 							groupPk: strToBuf(context.conv.pk), // need to set the pk in conv handlers
 							payload: jsonToBuf(userMessage),
 						})
@@ -254,7 +249,7 @@ export const getCommandsMessage = () => {
 	return arr
 }
 
-export const isCommandMessage = (message: string) => {
+export const isCommandMessage = (message) => {
 	const cmds = getCommandsMessage()
 	// index for simple command
 	let index = message.split('\n')[0]
@@ -271,18 +266,26 @@ export const isCommandMessage = (message: string) => {
 	return null
 }
 
-export const getAggregateId: (kwargs: { accountId: string, index: string }) => string = ({
-	accountId,
-	index,
-}) => bufToStr(Buffer.concat([Buffer.from(accountId, 'utf-8'), Buffer.from(index, 'utf-8')]))
-
-export const transactions: Transactions = {
+export const transactions = {
+	generate: function* ({ length }) {
+		const index = yield select((state) => queries.getFakeLength(state))
+		const messages = faker.fakeMessages(length, index)
+		yield put(
+			events.generated({
+				messages,
+			}),
+		)
+		return messages
+	},
 	delete: function* ({ id }) {
 		yield put(
 			events.deleted({
 				aggregateId: id,
 			}),
 		)
+	},
+	deleteFake: function* () {
+		yield put(events.deletedFake())
 	},
 	send: function* (payload) {
 		// Recup the conv
@@ -301,7 +304,7 @@ export const transactions: Transactions = {
 				const args = {}
 				yield cmd?.run(context, args)
 			} else {
-				const message: UserMessage = {
+				const message = {
 					type: AppMessageType.UserMessage,
 					body: payload.body,
 					attachments: payload.attachments,
@@ -322,8 +325,8 @@ export const transactions: Transactions = {
 			return
 		}
 		for (let i = 0; i < conv.length; i++) {
-			if (conv[i].kind !== 'fake') {
-				const message: UserMessage = {
+			if (!conv[i].fake) {
+				const message = {
 					type: AppMessageType.UserMessage,
 					body: `Test, ${moment().format('MMMM Do YYYY, h:mm:ss a')}`,
 					attachments: [],
@@ -344,9 +347,7 @@ export const transactions: Transactions = {
 export function* orchestrator() {
 	yield all([
 		...makeDefaultCommandsSagas(commands, transactions),
-		takeEvery('protocol/GroupMessageEvent', function* (
-			action: PayloadAction<berty.types.v1.IGroupMessageEvent & { aggregateId: string }>,
-		) {
+		takeEvery('protocol/GroupMessageEvent', function* (action) {
 			// create an id for the message
 			const idBuf = action.payload.eventContext?.id
 			if (!idBuf) {
@@ -359,7 +360,7 @@ export function* orchestrator() {
 			if (!action.payload.message) {
 				return
 			}
-			const message: AppMessage = bufToJSON(action.payload.message) // <--- Not secure
+			const message = bufToJSON(action.payload.message) // <--- Not secure
 			const aggregateId = bufToStr(idBuf)
 			// create the message entity
 			const existingMessage = yield select((state) => queries.get(state, { id: aggregateId }))
@@ -376,7 +377,7 @@ export function* orchestrator() {
 
 			const msgDevicePk = action.payload.headers?.devicePk
 
-			let memberPk: string | undefined
+			let memberPk
 			if (msgDevicePk) {
 				const msgDevicePkStr = bufToStr(msgDevicePk)
 				const groups = yield select((state) => state.groups)
@@ -388,14 +389,11 @@ export function* orchestrator() {
 				memberPk = pk
 			}
 
-			const groupInfo: berty.types.v1.GroupInfo.IReply = yield call(
-				protocol.transactions.client.groupInfo,
-				{
-					id: action.payload.aggregateId,
-					groupPk: groupPkBuf,
-					contactPk: new Uint8Array(),
-				},
-			)
+			const groupInfo = yield call(protocol.transactions.client.groupInfo, {
+				id: action.payload.aggregateId,
+				groupPk: groupPkBuf,
+				contactPk: new Uint8Array(),
+			})
 			let isMe = false
 			if (msgDevicePk && groupInfo?.devicePk) {
 				// TODO: multiple devices support
@@ -429,7 +427,7 @@ export function* orchestrator() {
 
 				if (!isMe) {
 					// send acknowledgment
-					const acknowledge: Acknowledge = {
+					const acknowledge = {
 						type: AppMessageType.Acknowledge,
 						target: aggregateId,
 					}

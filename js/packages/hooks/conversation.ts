@@ -8,7 +8,20 @@ import { useGroups } from './Groups'
 // conversations commands
 export const useConversationGenerate = () => {
 	const dispatch = useDispatch()
-	return useMemo(() => () => dispatch(messenger.conversation.commands.generate()), [dispatch])
+	return useMemo(
+		() => (payload: messenger.conversation.Command.Generate) =>
+			dispatch(messenger.conversation.commands.generate(payload)),
+		[dispatch],
+	)
+}
+
+export const useConversationGenerateMsg = () => {
+	const dispatch = useDispatch()
+	return useMemo(
+		() => (payload: messenger.conversation.Command.GenerateMsg) =>
+			dispatch(messenger.conversation.commands.generateMsg(payload)),
+		[dispatch],
+	)
 }
 
 type UseConversationCreate = (kwargs: {
@@ -48,6 +61,11 @@ export const useConversationDelete = () => {
 	)
 }
 
+export const useConversationDeleteFake = () => {
+	const dispatch = useDispatch()
+	return useMemo(() => () => dispatch(messenger.conversation.commands.deleteFake()), [dispatch])
+}
+
 export const useStartReadConversation = (id: messenger.conversation.Entity['id']) => {
 	const dispatch = useDispatch()
 	return useMemo(() => () => dispatch(messenger.conversation.commands.startRead(id)), [
@@ -85,7 +103,7 @@ export const useConversationList = () => {
 						conv.kind === messenger.conversation.ConversationKind.OneToOne &&
 						contacts.find((c) => c.id === conv.contactId)
 					return (
-						conv.kind === 'fake' ||
+						conv.fake ||
 						conv.kind === messenger.conversation.ConversationKind.MultiMember ||
 						(contact &&
 							contact.request.type === messenger.contact.ContactRequestType.Incoming &&
@@ -107,6 +125,12 @@ export const useGetConversation = (id: string): messenger.conversation.Entity | 
 		messenger.conversation.queries.get(state, { id }),
 	)
 	return conversation
+}
+
+export const useGetFakeConversationLength = () => {
+	return useSelector((state: messenger.conversation.GlobalState) =>
+		messenger.conversation.queries.getFakeLength(state),
+	)
 }
 
 export const useOneToOneConversationContact = (

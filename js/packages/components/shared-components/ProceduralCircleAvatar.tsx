@@ -148,9 +148,6 @@ export const ConversationProceduralAvatar: React.FC<ConversationProceduralAvatar
 			case messenger.conversation.ConversationKind.MultiMember:
 				seeds.push(conversation.pk)
 				break
-			case 'fake':
-				seeds.push(conversation.id)
-				break
 		}
 	}
 	return <ProceduralAvatar seeds={seeds} size={size} diffSize={diffSize} style={style} />

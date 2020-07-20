@@ -1,5 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react'
-import { TouchableOpacity, View, ViewProps, ScrollView, TouchableHighlight } from 'react-native'
+import {
+	TouchableOpacity,
+	View,
+	ViewProps,
+	ScrollView,
+	TouchableHighlight,
+	Text as TextNative,
+} from 'react-native'
 import { Translation } from 'react-i18next'
 import { useLayout } from '../hooks'
 import { useStyles } from '@berty-tech/styles'
@@ -15,8 +22,8 @@ import { Icon, Text } from 'react-native-ui-kitten'
 import { SafeAreaView, SafeAreaConsumer } from 'react-native-safe-area-context'
 import FromNow from '../shared-components/FromNow'
 import Logo from './1_berty_picto.svg'
+import EmptyChat from './empty_chat.svg'
 import { scaleHeight } from '@berty-tech/styles/constant'
-import { request } from 'http'
 
 //
 // Main List
@@ -229,7 +236,7 @@ const MessageStatus: React.FC<{ messageID: string }> = ({ messageID }) => {
 
 const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	const { dispatch } = useNavigation()
-	const { title, kind, id, messages, unreadCount, lastSentMessage } = props
+	const { title, kind, id, messages, unreadCount, lastSentMessage, fake } = props
 	const [{ color, row, border, flex, column, padding, text }] = useStyles()
 	const message = Messenger.useGetMessage(messages ? messages[messages.length - 1] : '')
 
@@ -274,7 +281,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 								numberOfLines={1}
 								style={[text.size.medium, text.color.black, unreadCount && text.bold.medium]}
 							>
-								{(kind === 'fake' && 'SAMPLE - ') || ''}
+								{(fake && 'FAKE - ') || ''}
 								{title || ''}
 							</Text>
 						</View>
@@ -405,13 +412,14 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 		(contact) => !(contact.request.accepted || contact.request.discarded),
 	)
 	const conversations = Messenger.useConversationList().sort((a, b) => {
-		if (a.kind !== 'fake' && b.kind !== 'fake') {
+		if (!a.fake && !b.fake) {
 			return (b.lastMessageDate || 0) - (a.lastMessageDate || 0)
 		}
 		return 0
 	})
+	const isConversation = Messenger.useConversationLength()
 
-	const [{ color }] = useStyles()
+	const [{ color, text, opacity, flex, margin }] = useStyles()
 	const scrollRef = useRef<ScrollView>(null)
 	const [offset, setOffset] = useState<any>()
 	const [isOnTop, setIsOnTop] = useState<boolean>(false)
@@ -429,7 +437,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	}, [dirScroll, isOnTop, color.white, color.blue, requests.length])
 
 	return (
-		<View style={{ flex: 1 }}>
+		<View style={[flex.tiny]}>
 			<ScrollView
 				ref={scrollRef}
 				style={[{ backgroundColor: bgColor }]}
@@ -459,7 +467,24 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 					hasRequests={requests.length > 0}
 					scrollRef={scrollRef}
 				/>
-				<Conversations items={conversations} onLayout={onLayoutConversations} />
+				{isConversation ? (
+					<Conversations items={conversations} onLayout={onLayoutConversations} />
+				) : (
+					<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
+						<EmptyChat width={350} height={350} />
+						<TextNative
+							style={[
+								text.align.center,
+								text.color.grey,
+								text.bold.small,
+								opacity(0.3),
+								margin.top.big,
+							]}
+						>
+							You don't have any contacts or chat yet
+						</TextNative>
+					</View>
+				)}
 			</ScrollView>
 		</View>
 	)

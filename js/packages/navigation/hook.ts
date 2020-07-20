@@ -109,6 +109,7 @@ const createNavigation = ({
 					navigate,
 					Routes.Settings.DevText,
 				),
+				fakeDatas: createNavigateFunc(navigate, Routes.Settings.FakeDatas),
 			},
 			modals: {
 				manageDeepLink: createNavigateFunc<ScreenProps.Modals.ManageDeepLink>(

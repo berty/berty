@@ -15,13 +15,10 @@ import {
 	transactions as groupsTransactions,
 	queries as groupsQueries,
 } from '../groups'
-import {
-	queries as contactQueries,
-	events as contactEvents,
-	contactPkToGroupPk,
-	ContactRequestMetadata,
-} from './contact'
+import { queries as contactQueries, events as contactEvents, contactPkToGroupPk } from './contact'
 import { AppMessageType } from './AppMessage'
+import { messenger } from '@berty-tech/store'
+import * as faker from '../../components/faker'
 
 import * as protocol from '../protocol'
 import { account } from '.'
@@ -42,9 +39,11 @@ const commandsSlice = createSlice({
 	initialState,
 	reducers: {
 		generate: (state) => state,
+		generateMsg: (state) => state,
 		create: (state) => state,
 		join: (state) => state,
 		delete: (state) => state,
+		deleteFake: (state) => state,
 		deleteAll: (state) => state,
 		addMessage: (state) => state,
 		startRead: (state) => state,
@@ -61,6 +60,28 @@ const eventHandler = createSlice({
 			delete state.aggregates[payload.aggregateId]
 			return state
 		},
+		deletedFake: (state) => {
+			for (const conv of Object.values(state.aggregates)) {
+				if (conv.fake) {
+					delete state.aggregates[conv.id]
+				}
+			}
+			return state
+		},
+		generated: (state, { payload }) => {
+			const { convs } = payload
+			for (const conv of convs) {
+				state.aggregates[conv.id] = conv
+			}
+			return state
+		},
+		generatedMsg: (state, { payload }) => {
+			const { msgs } = payload
+			for (const msg of msgs) {
+				state.aggregates[payload.id].messages.push(msg.id)
+			}
+			return state
+		},
 		created: (state, { payload }) => {
 			const { pk, title, now, shareableGroup } = payload
 			// Create id
@@ -69,6 +90,7 @@ const eventHandler = createSlice({
 					id: pk,
 					title,
 					pk,
+					fake: false,
 					shareableGroup,
 					createdAt: now,
 					members: [],
@@ -154,41 +176,9 @@ const eventHandler = createSlice({
 	},
 })
 
-type FakeConfig = {
-	title: string,
-}
-
-const FAKE_CONVERSATIONS_CONFIG: FakeConfig[] = [
-	{ title: 'Berty Crew' },
-	{ title: 'Snowlair' },
-	{ title: 'Tromp' },
-	{ title: 'Alice Yakeys' },
-]
-
-const FAKE_CONVERSATIONS: Entity[] = FAKE_CONVERSATIONS_CONFIG.map((fc, index) => {
-	const id = `fake_${index}`
-	return {
-		id: id,
-		title: fc.title,
-		pk: id,
-		kind: 'fake',
-		createdAt: Date.now(),
-		membersNames: {},
-		members: [],
-		messages: [id],
-		unreadCount: 0,
-		reading: false,
-		shareableGroup: 'fake://fake',
-	}
-})
-
-export const getAggregatesWithFakes = (state: GlobalState) => {
-	const result: { [key: string]: Entity | FakeConversation } = {
+export const getAggregates = (state) => {
+	const result = {
 		...state.messenger.conversation.aggregates,
-	}
-	for (let i = 0; i < FAKE_CONVERSATIONS.length; i++) {
-		const conv = FAKE_CONVERSATIONS[i]
-		result[conv.id] = conv
 	}
 	return result
 }
@@ -196,27 +186,68 @@ export const getAggregatesWithFakes = (state: GlobalState) => {
 export const reducer = composeReducers(commandsSlice.reducer, eventHandler.reducer)
 export const commands = commandsSlice.actions
 export const events = eventHandler.actions
-export const queries: QueryReducer = {
-	list: (state) => Object.values(getAggregatesWithFakes(state)),
+export const queries = {
+	list: (state) => Object.values(getAggregates(state)),
 	listHuman: (state) =>
 		Object.values(state.messenger.conversation.aggregates).filter(
 			(conv) =>
 				conv.kind === ConversationKind.OneToOne || conv.kind === ConversationKind.MultiMember,
 		),
-	get: (state, { id }) => getAggregatesWithFakes(state)[id],
-	getLength: (state) => Object.keys(getAggregatesWithFakes(state)).length,
+	get: (state, { id }) => getAggregates(state)[id],
+	getLength: (state) => Object.keys(getAggregates(state)).length,
+	getFakeLength: (state) =>
+		Object.keys(
+			Object.values(state.messenger.conversation.aggregates).map((conv) => conv && conv.fake),
+		).length,
 	searchByTitle: (state, { searchText }) =>
 		Object.values(state.messenger.conversation.aggregates).filter((conv) =>
 			searchText?.toLowerCase().includes(conv.title?.toLowerCase()),
 		),
 }
 
-export const transactions: Transactions = {
+export const transactions = {
 	open: function* () {
 		yield put(events.appInit())
 	},
-	generate: function* () {
-		// TODO: conversation generate
+	deleteFake: function* () {
+		yield* messenger.contact.transactions.deleteFake()
+		yield* messenger.message.transactions.deleteFake()
+		yield put(events.deletedFake())
+	},
+	generate: function* ({ length }) {
+		const contacts = yield* messenger.contact.transactions.generate({ length })
+		const index = yield select((state) => queries.getFakeLength(state))
+		const convs = faker.fakeConversations(length, index)
+		for (const conv of convs) {
+			const contact = contacts.find((c) => conv.id === c.id)
+			conv.membersNames = {
+				...conv.membersNames,
+				[contact.id]: contact.name,
+			}
+			conv.contactId = contact.id
+			conv.title = contact.name
+			conv.pk = contact.publicKey
+			conv.messages = []
+			const messages = yield* messenger.message.transactions.generate({ length: 10 })
+			for (const msg of messages) {
+				conv.messages.push(msg.id)
+			}
+		}
+		yield put(
+			events.generated({
+				convs,
+			}),
+		)
+		return convs
+	},
+	generateMsg: function* ({ length }) {
+		const convs = yield select((state) => queries.list(state))
+		for (const conv of convs) {
+			if (conv.fake) {
+				const msgs = yield* messenger.message.transactions.generate({ length })
+				yield put(events.generatedMsg({ msgs, id: conv.id }))
+			}
+		}
 	},
 	create: function* ({ members, name }) {
 		console.log('creat/conv', members, name)
@@ -264,7 +295,7 @@ export const transactions: Transactions = {
 
 		console.log('setting group name')
 
-		const setGroupName: SetGroupName = {
+		const setGroupName = {
 			type: AppMessageType.SetGroupName,
 			name,
 		}
@@ -309,7 +340,7 @@ export const transactions: Transactions = {
 			console.warn('no account')
 			return
 		}
-		const groupInfo: any = yield call(protocol.transactions.client.groupInfo, {
+		const groupInfo = yield call(protocol.transactions.client.groupInfo, {
 			groupPk,
 			contactPk: new Uint8Array(),
 		})
@@ -327,7 +358,7 @@ export const transactions: Transactions = {
 
 		console.log('invitation: ', rep)
 
-		const invitation: GroupInvitation = {
+		const invitation = {
 			type: AppMessageType.GroupInvitation,
 			name,
 			group: {
@@ -479,7 +510,7 @@ export function* orchestrator() {
 				return
 			}
 			const groupPkStr = bufToStr(groupPk)
-			const metadata: ContactRequestMetadata = bufToJSON(c.metadata)
+			const metadata = bufToJSON(c.metadata)
 			yield call(transactions.createOneToOne, {
 				title: metadata.name,
 				pk: groupPkStr,
@@ -531,11 +562,11 @@ export function* orchestrator() {
 				console.warn('account not found')
 				return
 			}
-			const groupInfo: any = yield call(protocol.transactions.client.groupInfo, {
+			const groupInfo = yield call(protocol.transactions.client.groupInfo, {
 				groupPk: publicKey,
 				contactPk: new Uint8Array(),
 			})
-			const setUserName: SetUserName = {
+			const setUserName = {
 				type: AppMessageType.SetUserName,
 				userName: a.name,
 				memberPk: bufToStr(groupInfo.memberPk),
