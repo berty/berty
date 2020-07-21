@@ -26,7 +26,6 @@ func TestValidHandshake(t *testing.T) {
 		stream p2pnetwork.Stream,
 		mh *mockedHandshake,
 	) {
-		t.Helper()
 		defer p2phelpers.FullClose(stream)
 
 		err := Request(
@@ -43,7 +42,6 @@ func TestValidHandshake(t *testing.T) {
 		mh *mockedHandshake,
 		wg *sync.WaitGroup,
 	) {
-		t.Helper()
 		defer wg.Done()
 		defer p2phelpers.FullClose(stream)
 
@@ -72,7 +70,6 @@ func TestInvalidRequesterHello(t *testing.T) {
 			stream p2pnetwork.Stream,
 			_ *mockedHandshake,
 		) {
-			t.Helper()
 			p2phelpers.FullClose(stream)
 		}
 
@@ -82,7 +79,6 @@ func TestInvalidRequesterHello(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
@@ -107,7 +103,6 @@ func TestInvalidResponderHello(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			t.Helper()
 			defer p2phelpers.FullClose(stream)
 
 			err := Request(
@@ -124,7 +119,6 @@ func TestInvalidResponderHello(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			defer wg.Done()
 
 			hc := newTestHandshakeContext(stream, mh.responder.accountID, nil)
@@ -152,7 +146,6 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			t.Helper()
 			hc := newTestHandshakeContext(
 				stream,
 				mh.requester.accountID,
@@ -175,7 +168,6 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
@@ -196,7 +188,6 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			t.Helper()
 			var request RequesterAuthenticatePayload
 
 			hc := newTestHandshakeContext(
@@ -240,7 +231,6 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
@@ -261,7 +251,6 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			t.Helper()
 			var request RequesterAuthenticatePayload
 
 			hc := newTestHandshakeContext(
@@ -310,7 +299,6 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
@@ -331,7 +319,6 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			t.Helper()
 			var request RequesterAuthenticatePayload
 
 			hc := newTestHandshakeContext(
@@ -380,7 +367,6 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
@@ -401,7 +387,6 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			t.Helper()
 			var request RequesterAuthenticatePayload
 
 			hc := newTestHandshakeContext(
@@ -447,7 +432,6 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
@@ -468,7 +452,6 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			t.Helper()
 			hc := newTestHandshakeContext(
 				stream,
 				mh.requester.accountID,
@@ -505,7 +488,6 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
@@ -526,7 +508,6 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			t.Helper()
 			var request RequesterAuthenticatePayload
 
 			hc := newTestHandshakeContext(
@@ -572,7 +553,6 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
@@ -593,7 +573,6 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			t.Helper()
 			var request RequesterAuthenticatePayload
 
 			hc := newTestHandshakeContext(
@@ -642,7 +621,6 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
@@ -663,7 +641,6 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			t.Helper()
 			hc := newTestHandshakeContext(
 				stream,
 				mh.requester.accountID,
@@ -688,7 +665,6 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
@@ -713,7 +689,6 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			t.Helper()
 			defer p2phelpers.FullClose(stream)
 
 			err := Request(
@@ -730,7 +705,6 @@ func TestInvalidResponderAccept(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			defer wg.Done()
 
 			hc := newTestHandshakeContext(stream, mh.responder.accountID, nil)
@@ -760,7 +734,6 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			t.Helper()
 			defer p2phelpers.FullClose(stream)
 
 			err := Request(
@@ -777,7 +750,6 @@ func TestInvalidResponderAccept(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			var response ResponderAcceptPayload
 
 			defer wg.Done()
@@ -831,7 +803,6 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			t.Helper()
 			defer p2phelpers.FullClose(stream)
 
 			err := Request(
@@ -848,7 +819,6 @@ func TestInvalidResponderAccept(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			var response ResponderAcceptPayload
 
 			defer wg.Done()
@@ -899,7 +869,6 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			t.Helper()
 			defer p2phelpers.FullClose(stream)
 
 			err := Request(
@@ -916,7 +885,6 @@ func TestInvalidResponderAccept(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			defer wg.Done()
 
 			hc := newTestHandshakeContext(stream, mh.responder.accountID, nil)
@@ -961,7 +929,6 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			t.Helper()
 			defer p2phelpers.FullClose(stream)
 
 			err := Request(
@@ -978,7 +945,6 @@ func TestInvalidResponderAccept(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			var response ResponderAcceptPayload
 
 			defer wg.Done()
@@ -1029,7 +995,6 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			t.Helper()
 			defer p2phelpers.FullClose(stream)
 
 			err := Request(
@@ -1046,7 +1011,6 @@ func TestInvalidResponderAccept(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			var response ResponderAcceptPayload
 
 			defer wg.Done()
@@ -1100,7 +1064,6 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			t.Helper()
 			defer p2phelpers.FullClose(stream)
 
 			err := Request(
@@ -1117,7 +1080,6 @@ func TestInvalidResponderAccept(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			defer wg.Done()
 
 			hc := newTestHandshakeContext(stream, mh.responder.accountID, nil)
@@ -1154,7 +1116,6 @@ func TestInvalidResponderAcceptAck(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			t.Helper()
 			hc := newTestHandshakeContext(
 				stream,
 				mh.requester.accountID,
@@ -1182,7 +1143,6 @@ func TestInvalidResponderAcceptAck(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
@@ -1203,7 +1163,6 @@ func TestInvalidResponderAcceptAck(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			t.Helper()
 			hc := newTestHandshakeContext(
 				stream,
 				mh.requester.accountID,
@@ -1234,7 +1193,6 @@ func TestInvalidResponderAcceptAck(t *testing.T) {
 			mh *mockedHandshake,
 			wg *sync.WaitGroup,
 		) {
-			t.Helper()
 			defer wg.Done()
 			defer p2phelpers.FullClose(stream)
 
