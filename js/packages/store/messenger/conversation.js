@@ -1,15 +1,15 @@
-import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
 import { put, all, select, takeEvery, call } from 'redux-saga/effects'
 import { berty } from '@berty-tech/api'
 import {
-	AppMessage,
-	GroupInvitation,
-	SetGroupName,
-	AppMessageType,
-	SetUserName,
-} from './AppMessage'
-import { makeDefaultCommandsSagas, strToBuf, bufToStr, jsonToBuf, bufToJSON } from '../utils'
+	makeDefaultCommandsSagas,
+	strToBuf,
+	bufToStr,
+	jsonToBuf,
+	bufToJSON,
+	unaryChan,
+} from '../utils'
 import {
 	commands as groupsCommands,
 	transactions as groupsTransactions,
@@ -18,167 +18,26 @@ import {
 import {
 	queries as contactQueries,
 	events as contactEvents,
-	Entity as ContactEntity,
 	contactPkToGroupPk,
 	ContactRequestMetadata,
 } from './contact'
-import { unaryChan } from '../sagaUtils'
+import { AppMessageType } from './AppMessage'
 
 import * as protocol from '../protocol'
 import { account } from '.'
 
-export enum ConversationKind {
-	OneToOne = 'OneToOne',
-	MultiMember = 'MultiMember',
-	Self = 'Self',
+export const ConversationKind = {
+	OneToOne: 'OneToOne',
+	MultiMember: 'MultiMember',
+	Self: 'Self',
 }
 
-type BaseConversation = {
-	id: string
-	title: string
-	pk: string
-	createdAt: number
-	membersNames: { [key: string]: string }
-	members: Array<number>
-	messages: Array<string>
-	unreadCount: number
-	reading: boolean
-	lastSentMessage?: string
-	lastMessageDate?: number
-	kind: ConversationKind | 'fake'
-	shareableGroup?: string
-}
-
-export type FakeConversation = BaseConversation & {
-	kind: 'fake'
-}
-export type OneToOneConversation = BaseConversation & {
-	kind: ConversationKind.OneToOne
-	contactId: string
-}
-export type MultiMemberConversation = BaseConversation & {
-	kind: ConversationKind.MultiMember
-}
-
-export type Entity = FakeConversation | OneToOneConversation | MultiMemberConversation
-
-export type State = {
-	events: Array<Event>
-	aggregates: { [key: string]: Entity }
-}
-
-export type GlobalState = {
-	messenger: {
-		conversation: State
-	}
-}
-
-export namespace Command {
-	export type Generate = void
-	export type Create = {
-		members: ContactEntity[]
-		name: string
-	}
-	export type Join = {
-		link: string
-	}
-	export type Delete = { id: string }
-	export type DeleteAll = void
-	export type AddMessage = { aggregateId: string; messageId: string; isMe: boolean }
-	export type StartRead = string
-	export type StopRead = string
-}
-
-export namespace Query {
-	export type List = void
-	export type ListHuman = void // TODO: May not need
-	export type Get = { id: string }
-	export type GetLength = void
-	export type SearchByTitle = { searchText: string }
-}
-
-export namespace Event {
-	export type Deleted = { aggregateId: string }
-	export type Created = {
-		title: string
-		pk: string
-		now: number
-		shareableGroup?: string
-	} & (
-		| {
-				kind: ConversationKind.OneToOne
-				contactId: string
-		  }
-		| { kind: ConversationKind.MultiMember }
-	)
-	export type NameUpdated = {
-		aggregateId: string
-		name: string
-		shareableGroup?: string
-	}
-	export type UserNameUpdated = {
-		aggregateId: string
-		userName: string
-		memberPk: string
-	}
-	export type MessageAdded = {
-		aggregateId: string
-		messageId: string
-		isMe: boolean
-		lastMessageDate: number
-	}
-	export type StartRead = string
-	export type StopRead = string
-}
-
-type SimpleCaseReducer<P> = CaseReducer<State, PayloadAction<P>>
-
-export type CommandsReducer = {
-	generate: SimpleCaseReducer<Command.Generate>
-	create: SimpleCaseReducer<Command.Create>
-	join: SimpleCaseReducer<Command.Join>
-	delete: SimpleCaseReducer<Command.Delete>
-	deleteAll: SimpleCaseReducer<Command.DeleteAll>
-	addMessage: SimpleCaseReducer<Command.AddMessage>
-	startRead: SimpleCaseReducer<Command.StartRead>
-	stopRead: SimpleCaseReducer<Command.StopRead>
-}
-
-export type QueryReducer = {
-	list: (state: GlobalState, query: Query.List) => Array<Entity | FakeConversation>
-	listHuman: (state: GlobalState, query: Query.ListHuman) => Array<Entity>
-	get: (state: GlobalState, query: Query.Get) => Entity | FakeConversation | undefined
-	getLength: (state: GlobalState) => number
-	searchByTitle: (state: GlobalState, query: Query.SearchByTitle) => Array<Entity>
-	// putSearchForMessages here?
-}
-
-export type EventsReducer = {
-	created: SimpleCaseReducer<Event.Created>
-	deleted: SimpleCaseReducer<Event.Deleted>
-	nameUpdated: SimpleCaseReducer<Event.NameUpdated>
-	userNameUpdated: SimpleCaseReducer<Event.UserNameUpdated>
-	messageAdded: SimpleCaseReducer<Event.MessageAdded>
-	startRead: SimpleCaseReducer<Event.StartRead>
-	stopRead: SimpleCaseReducer<Event.StopRead>
-	appInit: SimpleCaseReducer<void>
-}
-
-export type Transactions = {
-	[K in keyof CommandsReducer]: CommandsReducer[K] extends SimpleCaseReducer<infer TPayload>
-		? (payload: TPayload) => Generator
-		: never
-} & {
-	open: () => Generator
-	createOneToOne: (payload: Event.Created) => Generator
-}
-
-const initialState: State = {
+const initialState = {
 	events: [],
 	aggregates: {},
 }
 
-const commandHandler = createSlice<State, CommandsReducer>({
+const commandsSlice = createSlice({
 	name: 'messenger/conversation/command',
 	initialState,
 	reducers: {
@@ -193,7 +52,7 @@ const commandHandler = createSlice<State, CommandsReducer>({
 	},
 })
 
-const eventHandler = createSlice<State, EventsReducer>({
+const eventHandler = createSlice({
 	name: 'messenger/conversation/event',
 	initialState,
 	reducers: {
@@ -296,7 +155,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 })
 
 type FakeConfig = {
-	title: string
+	title: string,
 }
 
 const FAKE_CONVERSATIONS_CONFIG: FakeConfig[] = [
@@ -334,8 +193,8 @@ export const getAggregatesWithFakes = (state: GlobalState) => {
 	return result
 }
 
-export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
-export const commands = commandHandler.actions
+export const reducer = composeReducers(commandsSlice.reducer, eventHandler.reducer)
+export const commands = commandsSlice.actions
 export const events = eventHandler.actions
 export const queries: QueryReducer = {
 	list: (state) => Object.values(getAggregatesWithFakes(state)),
@@ -428,10 +287,10 @@ export const transactions: Transactions = {
 
 		// get shareable group
 
-		const reply = (yield* protocol.client.transactions.shareableBertyGroup({
+		const reply = yield* protocol.client.transactions.shareableBertyGroup({
 			groupPk: group.publicKey,
 			groupName: name,
-		})) as berty.messenger.v1.ShareableBertyGroup.IReply
+		})
 
 		console.log('puting created event')
 
@@ -445,9 +304,7 @@ export const transactions: Transactions = {
 			}),
 		)
 
-		const a = (yield select((state) => account.queries.get(state))) as ReturnType<
-			typeof account.queries.get
-		>
+		const a = yield select((state) => account.queries.get(state))
 		if (!a) {
 			console.warn('no account')
 			return
@@ -456,7 +313,7 @@ export const transactions: Transactions = {
 			groupPk,
 			contactPk: new Uint8Array(),
 		})
-		const setUserName: SetUserName = {
+		const setUserName = {
 			type: AppMessageType.SetUserName,
 			userName: a.name,
 			memberPk: bufToStr(groupInfo.memberPk),
@@ -502,9 +359,9 @@ export const transactions: Transactions = {
 		}
 	},
 	join: function* ({ link }) {
-		const reply = (yield* protocol.client.transactions.parseDeepLink({
+		const reply = yield* protocol.client.transactions.parseDeepLink({
 			link,
-		})) as berty.messenger.v1.ParseDeepLink.IReply
+		})
 		try {
 			if (
 				!(
@@ -536,14 +393,12 @@ export const transactions: Transactions = {
 		if (payload.kind !== ConversationKind.OneToOne) {
 			return
 		}
-		const group = (yield select((state) =>
-			groupsQueries.get(state, { groupId: payload.pk }),
-		)) as ReturnType<typeof groupsQueries.get>
+		const group = yield select((state) => groupsQueries.get(state, { groupId: payload.pk }))
 		if (group) {
 			if (Object.keys(group.membersDevices).length > 1) {
-				const contact = (yield select((state) =>
+				const contact = yield select((state) =>
 					contactQueries.get(state, { id: payload.contactId }),
-				)) as ReturnType<typeof contactQueries.get>
+				)
 				if (contact && !contact.request.accepted) {
 					yield put(contactEvents.requestAccepted({ id: contact.id }))
 				}
@@ -554,9 +409,7 @@ export const transactions: Transactions = {
 		yield put(events.created(payload))
 	},
 	delete: function* ({ id }) {
-		const conv = (yield select((state) => queries.get(state, { id }))) as ReturnType<
-			typeof queries.get
-		>
+		const conv = yield select((state) => queries.get(state, { id }))
 		if (!conv) {
 			return
 		}
@@ -573,7 +426,7 @@ export const transactions: Transactions = {
 	},
 	deleteAll: function* () {
 		// Recup conversations
-		const conversations = (yield select(queries.list)) as Entity[]
+		const conversations = yield select(queries.list)
 		// Delete conversations
 		for (const conversation of conversations) {
 			yield* transactions.delete({ id: conversation.id })
@@ -614,9 +467,9 @@ export function* orchestrator() {
 			if (!contactPk) {
 				return
 			}
-			const groupInfo = (yield* protocol.transactions.client.groupInfo({
+			const groupInfo = yield* protocol.transactions.client.groupInfo({
 				contactPk,
-			} as any)) as berty.types.v1.GroupInfo.IReply
+			})
 			const { group } = groupInfo
 			if (!group) {
 				return
@@ -650,10 +503,10 @@ export function* orchestrator() {
 			yield call(protocol.client.transactions.activateGroup, { groupPk: publicKey })
 			let reply
 			try {
-				reply = (yield* protocol.client.transactions.shareableBertyGroup({
+				reply = yield* protocol.client.transactions.shareableBertyGroup({
 					groupPk: publicKey,
 					groupName: 'Unknown',
-				})) as berty.messenger.v1.ShareableBertyGroup.IReply | undefined
+				})
 			} catch (e) {
 				console.warn('Failed to get deep link for group')
 			}
@@ -673,9 +526,7 @@ export function* orchestrator() {
 					metadata: true,
 				}),
 			)
-			const a = (yield select((state) => account.queries.get(state))) as ReturnType<
-				typeof account.queries.get
-			>
+			const a = yield select((state) => account.queries.get(state))
 			if (!a) {
 				console.warn('account not found')
 				return
@@ -698,24 +549,22 @@ export function* orchestrator() {
 			const {
 				eventContext: { groupPk },
 			} = payload
-			const event = payload.event as AppMessage
+			const event = payload.event
 			if (!groupPk) {
 				return
 			}
 			const id = bufToStr(groupPk)
-			const conversation = (yield select((state) => queries.get(state, { id }))) as ReturnType<
-				typeof queries.get
-			>
+			const conversation = yield select((state) => queries.get(state, { id }))
 			if (!conversation) {
 				return
 			}
 			if (event && event.type === AppMessageType.SetGroupName) {
 				let reply
 				try {
-					reply = (yield* protocol.client.transactions.shareableBertyGroup({
+					reply = yield* protocol.client.transactions.shareableBertyGroup({
 						groupPk,
 						groupName: event.name,
-					})) as berty.messenger.v1.ShareableBertyGroup.IReply | undefined
+					})
 				} catch (e) {
 					console.warn('Failed to get deep link for group')
 				}

@@ -8,24 +8,24 @@ import * as bertytypes from './grpc-web-gen/bertytypes_pb'
 	{{#each nested}}
 		{{#if (eq (typeof this) "Service")}}
 			export default class {{name}}SagaClient {
-				host: string
-				transport: grpc.TransportFactory
+				host
+				transport
 
-				constructor(host: string, transport: grpc.TransportFactory) {
+				constructor(host, transport) {
 					this.host = host
 					this.transport = transport
 				}
 
 				{{#each methods}}
-					{{case 'camel' name}} = (requestObj: api{{inamespace resolvedRequestType}} = {}) =>
-						eventChannel<api{{inamespace resolvedResponseType}}>((emit) => {
+					{{case 'camel' name}} = (requestObj = {}) =>
+						eventChannel((emit) => {
 							const buf = api.berty.{{requestType}}.encode(requestObj).finish()
 							const request = bertytypes.{{name}}.Request.deserializeBinary(buf)
 							const { close } = grpc.invoke(ProtocolService.{{name}}, {
 								request,
 								transport: this.transport,
 								host: this.host,
-								onMessage: (message: bertytypes.{{name}}.Reply) =>
+								onMessage: (message) =>
 									emit(api.berty.{{responseType}}.decode(message.serializeBinary())),
 								onEnd: (code, msg, trailers) => {
 									if (code !== grpc.Code.OK) {
@@ -34,7 +34,7 @@ import * as bertytypes from './grpc-web-gen/bertytypes_pb'
 												`GRPC {{name}} ${
 													grpc.Code[code]
 												} (${code}): ${msg}\nTrailers: ${JSON.stringify(trailers)}`,
-											) as any,
+											),
 										)
 									}
 									emit(END)

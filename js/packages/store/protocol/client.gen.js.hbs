@@ -1,0 +1,11 @@
+{{#with (lookup "berty.protocol.v1")}}
+	{{#each nested}}
+		{{#if (eq (typeof this) "Service")}}
+		export const Methods = {
+				{{#each methods}}
+					{{case 'camel' name}}: "{{case 'camel' name}}",
+				{{/each}}
+			}
+		{{/if}}
+	{{/each}}
+{{/with}}

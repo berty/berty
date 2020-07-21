@@ -5,7 +5,7 @@ import { MessengerService } from '../protocol/grpc-web-gen/bertymessenger_pb_ser
 import * as bertymessenger from '../protocol/grpc-web-gen/bertymessenger_pb'
 
 class GRPCError extends Error {
-  constructor(message: string) {
+  constructor(message) {
     super(message);
     this.name = 'GRPCError';
   }
@@ -15,24 +15,24 @@ class GRPCError extends Error {
 	{{#each nested}}
 		{{#if (eq (typeof this) "Service")}}
 			export default class {{name}}SagaClient {
-				host: string
-				transport: grpc.TransportFactory
+				host
+				transport
 
-				constructor(host: string, transport: grpc.TransportFactory) {
+				constructor(host, transport) {
 					this.host = host
 					this.transport = transport
 				}
 
 				{{#each methods}}
-					{{case 'camel' name}} = (requestObj: api{{inamespace resolvedRequestType}} = {}) =>
-						eventChannel<api{{inamespace resolvedResponseType}}>((emit) => {
+					{{case 'camel' name}} = (requestObj = {}) =>
+						eventChannel((emit) => {
 							const buf = api.berty.messenger.v1.{{requestType}}.encode(requestObj).finish()
 							const request = bertymessenger.{{requestType}}.deserializeBinary(buf)
 							const { close } = grpc.invoke(MessengerService.{{name}}, {
 								request,
 								transport: this.transport,
 								host: this.host,
-								onMessage: (message: bertymessenger.{{responseType}}) =>
+								onMessage: (message) =>
 									emit(api.berty.messenger.v1.{{responseType}}.decode(message.serializeBinary())),
 								onEnd: (code, msg, trailers) => {
 									if (code !== grpc.Code.OK) {
@@ -41,7 +41,7 @@ class GRPCError extends Error {
 												`GRPC {{name}} ${
 													grpc.Code[code]
 												} (${code}): ${msg}\nTrailers: ${JSON.stringify(trailers)}`,
-											) as any,
+											),
 										)
 									}
 									emit(END)
