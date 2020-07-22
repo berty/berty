@@ -28,8 +28,6 @@
     "@berty-tech/api": "^0.0.0",
     "@clarketm/saga-monitor": "^2.0.1",
     "@reduxjs/toolkit": "^1.3.6",
-    "@types/once": "^1.4.0",
-    "@types/redux-logger": "^3.0.7",
     "arraybuffer-to-string": "^1.0.2",
     "case": "^1.6.2",
     "faker": "^4.1.0",
@@ -45,11 +43,9 @@
     "redux-saga": "^1.1.3",
     "redux-test-recorder": "^1.4.0",
     "string-to-arraybuffer": "^1.0.2",
-    "text-encoding-polyfill": "^0.6.7",
-    "typed-redux-saga": "^1.0.7"
+    "text-encoding-polyfill": "^0.6.7"
   },
   "devDependencies": {
-    "@types/google-protobuf": "^3.7.2",
     "jest": "24.9.0",
     "redux-devtools-cli": "^0.0.1-1",
     "redux-test-recorder": "^1.4.0",

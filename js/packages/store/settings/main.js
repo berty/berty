@@ -1,66 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
 import { all, select, put } from 'redux-saga/effects'
-import { berty } from '@berty-tech/api'
 import { makeDefaultReducers, makeDefaultCommandsSagas, strToBuf } from '../utils'
-import { BertyNodeConfig } from '../protocol/client'
 import * as protocol from '../protocol'
 
-export type State = {
-	nodeConfig: BertyNodeConfig
-	systemInfo?: berty.messenger.v1.SystemInfo.IReply
-	debugGroup?: {
-		state: string
-		peerIds?: string[]
-		error?: any
-	}
-} | null
-
-export type GlobalState = {
-	settings: {
-		main: State
-	}
-}
-
-export type Commands = {
-	create: (state: State, action: { payload: State }) => State
-	set: (state: State, action: { payload: { key: string; value: any } }) => State
-	delete: (state: State, action: { payload: void }) => State
-	toggleTracing: (state: State, action: { payload: void }) => State
-	systemInfo: (state: State, action: { payload: void }) => State
-	debugGroup: (state: State, action: { payload: { pk: string } }) => State
-}
-
-export type Queries = {
-	get: (state: GlobalState) => State
-}
-
-export type Events = {
-	created: (state: State, action: { payload: State }) => State
-	nodeConfigUpdated: (state: State, action: { payload: BertyNodeConfig }) => State
-	systemInfoUpdated: (
-		state: State,
-		action: { payload: { info: berty.messenger.v1.SystemInfo.IReply } },
-	) => State
-	groupDebugged: (state: State, action: { payload: { peerIds?: string[]; error?: any } }) => State
-}
-
-export type Transactions = {
-	[K in keyof Commands]: Commands[K] extends (
-		state: State,
-		action: { payload: infer TPayload },
-	) => State
-		? (payload: TPayload) => Generator
-		: never
-} & {
-	// put custom transactions here
-}
-
-const initialState: State = null
+const initialState = null
 
 const commandsNames = ['create', 'set', 'delete', 'toggleTracing', 'systemInfo', 'debugGroup']
 
-const commandHandler = createSlice<State, Commands>({
+const commandsSlice = createSlice({
 	name: 'settings/main/command',
 	initialState,
 	reducers: {
@@ -74,9 +22,9 @@ const commandHandler = createSlice<State, Commands>({
 	},
 })
 
-const eventsNames = ['created', 'nodeConfigUpdated'] as string[]
+const eventsNames = ['created', 'nodeConfigUpdated']
 
-const eventHandler = createSlice<State, Events>({
+const eventHandler = createSlice({
 	name: 'settings/main/event',
 	initialState,
 	reducers: {
@@ -121,22 +69,22 @@ const eventHandler = createSlice<State, Events>({
 	},
 })
 
-export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
-export const commands = commandHandler.actions
+export const reducer = composeReducers(commandsSlice.reducer, eventHandler.reducer)
+export const commands = commandsSlice.actions
 export const events = eventHandler.actions
-export const queries: Queries = {
+export const queries = {
 	get: (state) => state.settings.main,
 }
 
 export function* getMainSettings() {
-	const mainSettings = (yield select(queries.get)) as ReturnType<typeof queries.get>
+	const mainSettings = yield select(queries.get)
 	if (!mainSettings) {
 		throw new Error('main settings not found')
 	}
 	return mainSettings
 }
 
-export const transactions: Transactions = {
+export const transactions = {
 	create: function* () {
 		throw new Error('not implemented')
 	},

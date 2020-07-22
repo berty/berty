@@ -1,13 +1,5 @@
 import * as api from '@berty-tech/api'
-
-export enum AppMessageType {
-	UserMessage = 'UserMessage',
-	UserReaction = 'UserReaction',
-	GroupInvitation = 'GroupInvitation',
-	SetGroupName = 'SetGroupName',
-	Acknowledge = 'Acknowledge',
-	SetUserName = 'SetUserName',
-}
+import { AppMessageType } from './AppMessage'
 
 // this is api.berty.types.IGroup with buffers encoded to base64 strings
 export type JSONGroup = {

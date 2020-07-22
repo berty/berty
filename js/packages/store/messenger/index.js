@@ -1,4 +1,4 @@
-import { combineReducers, Middleware } from 'redux'
+import { combineReducers } from 'redux'
 import { configureStore } from '@reduxjs/toolkit'
 import { call, take, race, delay, select, fork, put } from 'redux-saga/effects'
 import createSagaMiddleware from 'redux-saga'
@@ -18,8 +18,6 @@ import * as groups from '../groups'
 export * from './AppMessage'
 
 export { account, contact, conversation, message }
-
-export type State = account.GlobalState
 
 export const reducers = {
 	...protocol.reducers,
@@ -79,7 +77,7 @@ export function* rootSaga() {
 
 const combinedReducer = combineReducers(reducers)
 // Check if CLEAR_STORE
-const reducer = (state: any, action: any) => {
+const reducer = (state, action) => {
 	if (action.type === 'CLEAR_STORE') {
 		return combinedReducer(undefined, action)
 	} else {
@@ -90,29 +88,18 @@ const reducer = (state: any, action: any) => {
 const _recorder = createRecorder({
 	reducer,
 	testLib: 'jest',
-	equality: (result: State, nextState: State) =>
-		JSON.stringify(result) === JSON.stringify(nextState),
+	equality: (result, nextState) => JSON.stringify(result) === JSON.stringify(nextState),
 })
 
-export const recorder: {
-	start: () => void
-	stop: () => void
-	listen: (clbk: (testState: any) => void) => () => void
-	createTest: () => string
-} = {
+export const recorder = {
 	start: _recorder.props.startRecord,
 	stop: _recorder.props.stopRecord,
 	listen: _recorder.props.listen,
 	createTest: _recorder.props.createNewTest,
 }
 
-export type InitConfig = {
-	storage: any
-	middlewares?: Array<Middleware>
-}
-
 export const init = mem(
-	(config: InitConfig) => {
+	(config) => {
 		const sagaMiddleware = createSagaMiddleware({
 			sagaMonitor: createSagaMonitor({
 				level: 'log', // logging level
@@ -126,11 +113,7 @@ export const init = mem(
 				actionDispatch: false, // show dispatched actions
 			}),
 		})
-		const middlewares: Array<Middleware> = [
-			sagaMiddleware,
-			_recorder.middleware,
-			...(config.middlewares || []),
-		]
+		const middlewares = [sagaMiddleware, _recorder.middleware, ...(config.middlewares || [])]
 
 		const persistConfig = {
 			key: 'root',

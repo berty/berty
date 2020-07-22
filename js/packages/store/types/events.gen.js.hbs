@@ -1,0 +1,16 @@
+import * as api from '@berty-tech/api'
+import { PayloadAction, CaseReducer } from '@reduxjs/toolkit'
+
+{{#with (lookup "berty.types.v1")}}
+	{{#each nested}}
+    {{#if (and (eq (typeof this) "Enum") (eq name "EventType"))}}
+			export const EventsNames = {
+	      {{#each values}}
+	        {{#with (removeFirst @key "EventType") as | eventName |}}
+	          {{case 'camel' eventName}}: "{{case 'camel' eventName}}",
+	        {{/with}}
+	      {{/each}}
+	    }
+    {{/if}}
+  {{/each}}
+{{/with}}

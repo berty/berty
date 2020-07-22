@@ -1,79 +1,24 @@
 import { composeReducers } from 'redux-compose'
-import { CaseReducer, PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 import { all, put, takeEvery, select, call } from 'redux-saga/effects'
 import moment from 'moment'
 import { berty } from '@berty-tech/api'
-import { makeDefaultCommandsSagas, strToBuf, bufToStr, jsonToBuf, bufToJSON } from '../utils'
+import {
+	makeDefaultCommandsSagas,
+	strToBuf,
+	bufToStr,
+	jsonToBuf,
+	bufToJSON,
+	createCommands,
+} from '../utils'
+import { Buffer } from 'buffer'
 
 import * as protocol from '../protocol'
 import * as conversation from './conversation'
 
-import { UserMessage, GroupInvitation, AppMessageType, AppMessage, Acknowledge } from './AppMessage'
+import { AppMessageType } from './AppMessage'
 
-export type StoreUserMessage = UserMessage & { isMe: boolean; acknowledged: boolean }
-export type StoreGroupInvitation = GroupInvitation & { isMe: boolean }
-
-export type StoreMessage = StoreUserMessage | StoreGroupInvitation
-
-export type Entity = {
-	id: string
-	receivedDate: number
-} & StoreMessage
-
-export type State = {
-	events: Array<Event>
-	aggregates: { [key: string]: Entity | undefined }
-	ackBacklog: { [key: string]: true | undefined }
-}
-
-export type GlobalState = {
-	messenger: {
-		message: State
-	}
-}
-
-export namespace Command {
-	export type Delete = { id: string }
-	export type Send = AppMessage & { id: string }
-	export type Hide = void
-	export type SendToAll = void
-}
-
-export namespace Query {
-	export type List = {}
-	export type Get = { id: string }
-	export type GetLength = void
-	export type GetList = { list: Entity['id'][] }
-	export type Search = { searchText: string; list: Entity['id'][] }
-	export type SearchOne = { searchText: string; id: Entity['id'] }
-}
-
-export namespace Event {
-	export type Deleted = { aggregateId: string }
-	export type Received = {
-		aggregateId: string
-		message: AppMessage
-		receivedDate: number
-		isMe: boolean
-		memberPk?: string
-	}
-	export type Hidden = { aggregateId: string }
-}
-
-type SimpleCaseReducer<P> = CaseReducer<State, PayloadAction<P>>
-
-export type CommandsReducer = {
-	delete: SimpleCaseReducer<Command.Delete>
-	send: SimpleCaseReducer<Command.Send>
-	hide: SimpleCaseReducer<Command.Hide>
-	sendToAll: SimpleCaseReducer<Command.SendToAll>
-}
-
-type FakeConfig = {
-	body: string
-}
-
-const FAKE_MESSAGES_CONFIG: FakeConfig[] = [
+const FAKE_MESSAGES_CONFIG = [
 	{ body: 'Welcome to Berty' },
 	{ body: 'Hey, nice to see you here' },
 	{ body: 'Get out of here! It has all the cryptos!' },
@@ -93,45 +38,20 @@ const FAKE_MESSAGES: Entity[] = FAKE_MESSAGES_CONFIG.map((fc, i) => {
 	}
 })
 
-export type QueryReducer = {
-	list: (state: GlobalState, query: Query.List) => Entity[]
-	get: (state: GlobalState, query: Query.Get) => Entity | undefined
-	getLength: (state: GlobalState) => number
-	getList: (state: GlobalState, query: Query.GetList) => Entity[]
-	search: (state: GlobalState, query: Query.Search) => StoreUserMessage[]
-	searchOne: (state: GlobalState, query: Query.SearchOne) => Entity | undefined
-}
-
-export type EventsReducer = {
-	deleted: SimpleCaseReducer<Event.Deleted>
-	received: SimpleCaseReducer<Event.Received>
-	hidden: SimpleCaseReducer<Event.Hidden>
-}
-
-export type Transactions = {
-	[K in keyof CommandsReducer]: CommandsReducer[K] extends SimpleCaseReducer<infer TPayload>
-		? (payload: TPayload) => Generator
-		: never
-}
-
 const initialState: State = {
 	events: [],
 	aggregates: {},
 	ackBacklog: {},
 }
 
-const commandHandler = createSlice<State, CommandsReducer>({
-	name: 'messenger/message/command',
-	initialState,
-	reducers: {
-		delete: (state) => state,
-		send: (state) => state,
-		hide: (state) => state,
-		sendToAll: (state) => state,
-	},
-})
+const commandsSlice = createCommands('messenger/message/command', initialState, [
+	'delete',
+	'send',
+	'hide',
+	'sendToAll',
+])
 
-const eventHandler = createSlice<State, EventsReducer>({
+const eventHandler = createSlice({
 	name: 'messenger/message/event',
 	initialState,
 	reducers: {
@@ -191,7 +111,7 @@ const eventHandler = createSlice<State, EventsReducer>({
 	},
 })
 
-const getAggregatesWithFakes = (state: GlobalState) => {
+const getAggregatesWithFakes = (state) => {
 	// TODO: optimize
 	const result: { [key: string]: Entity | undefined } = { ...state.messenger.message.aggregates }
 	for (const fake of FAKE_MESSAGES) {
@@ -200,11 +120,11 @@ const getAggregatesWithFakes = (state: GlobalState) => {
 	return result
 }
 
-export const reducer = composeReducers(commandHandler.reducer, eventHandler.reducer)
-export const commands = commandHandler.actions
+export const reducer = composeReducers(commandsSlice.reducer, eventHandler.reducer)
+export const commands = commandsSlice.actions
 export const events = eventHandler.actions
 export const queries: QueryReducer = {
-	list: (state) => Object.values(getAggregatesWithFakes(state)) as Entity[],
+	list: (state) => Object.values(getAggregatesWithFakes(state)),
 	get: (state, { id }) => getAggregatesWithFakes(state)[id],
 	getLength: (state) => Object.keys(getAggregatesWithFakes(state)).length,
 	getList: (state, { list }) => {
@@ -215,11 +135,11 @@ export const queries: QueryReducer = {
 			const ret = state.messenger.message.aggregates[id]
 			return ret
 		})
-		return messages as Entity[]
+		return messages
 	},
 	search: (state, { searchText, list }) => {
 		const messages = list
-			.map((id) => state.messenger.message.aggregates[id] as StoreUserMessage)
+			.map((id) => state.messenger.message.aggregates[id])
 			.filter((message) => message && message.type === AppMessageType.UserMessage)
 			.filter(
 				(message) =>
@@ -238,10 +158,10 @@ export const queries: QueryReducer = {
 	},
 }
 
-export enum CommandsMessageType {
-	Help = 'help',
-	DebugGroup = 'debug-group',
-	SendMessage = 'send-message',
+export const CommandsMessageType = {
+	Help: 'help',
+	DebugGroup: 'debug-group',
+	SendMessage: 'send-message',
 }
 
 const addCommandMessage = function* (conv: any, title: any, response: any) {
@@ -335,23 +255,23 @@ export const getCommandsMessage = () => {
 }
 
 export const isCommandMessage = (message: string) => {
-	const commands: any = getCommandsMessage()
+	const cmds = getCommandsMessage()
 	// index for simple command
 	let index = message.split('\n')[0]
-	let cmd = commands[index.substr(1)]
+	let cmd = cmds[index.substr(1)]
 	if (cmd && index.substr(0, 1) === '/') {
 		return cmd
 	}
 	// index for command w/ args
 	index = message.split(' ')[0]
-	cmd = commands[index.substr(1)]
+	cmd = cmds[index.substr(1)]
 	if (cmd && index.substr(0, 1) === '/') {
 		return cmd
 	}
 	return null
 }
 
-export const getAggregateId: (kwargs: { accountId: string; index: string }) => string = ({
+export const getAggregateId: (kwargs: { accountId: string, index: string }) => string = ({
 	accountId,
 	index,
 }) => bufToStr(Buffer.concat([Buffer.from(accountId, 'utf-8'), Buffer.from(index, 'utf-8')]))
@@ -366,9 +286,7 @@ export const transactions: Transactions = {
 	},
 	send: function* (payload) {
 		// Recup the conv
-		const conv = (yield select((state) => conversation.queries.get(state, { id: payload.id }))) as
-			| conversation.Entity
-			| undefined
+		const conv = yield select((state) => conversation.queries.get(state, { id: payload.id }))
 		if (!conv) {
 			return
 		}
@@ -399,9 +317,7 @@ export const transactions: Transactions = {
 	},
 	sendToAll: function* () {
 		// Recup the conv
-		const conv = (yield select((state) => conversation.queries.list(state))) as
-			| Array<conversation.Entity | conversation.FakeConversation>
-			| undefined
+		const conv = yield select((state) => conversation.queries.list(state))
 		if (!conv || (conv && !conv.length)) {
 			return
 		}
@@ -446,18 +362,14 @@ export function* orchestrator() {
 			const message: AppMessage = bufToJSON(action.payload.message) // <--- Not secure
 			const aggregateId = bufToStr(idBuf)
 			// create the message entity
-			const existingMessage = (yield select((state) => queries.get(state, { id: aggregateId }))) as
-				| Entity
-				| undefined
+			const existingMessage = yield select((state) => queries.get(state, { id: aggregateId }))
 			if (existingMessage) {
 				return
 			}
 			// Reconstitute the convId
 			const convId = bufToStr(groupPkBuf)
 			// Recup the conv
-			const conv = (yield select((state) => conversation.queries.get(state, { id: convId }))) as
-				| conversation.Entity
-				| undefined
+			const conv = yield select((state) => conversation.queries.get(state, { id: convId }))
 			if (!conv) {
 				return
 			}
@@ -470,8 +382,8 @@ export function* orchestrator() {
 				const groups = yield select((state) => state.groups)
 				const { membersDevices } = groups[conv.pk] || { membersDevices: {} }
 				const [pk] =
-					Object.entries((membersDevices as { [key: string]: any }) || {}).find(
-						([, devicePks]) => devicePks && devicePks.some((pk: any) => pk === msgDevicePkStr),
+					Object.entries(membersDevices || {}).find(
+						([, devicePks]) => devicePks && devicePks.some((p) => p === msgDevicePkStr),
 					) || []
 				memberPk = pk
 			}
@@ -501,7 +413,6 @@ export function* orchestrator() {
 			)
 
 			// Add received message in store
-
 			if (
 				message.type === AppMessageType.UserMessage ||
 				message.type === AppMessageType.GroupInvitation

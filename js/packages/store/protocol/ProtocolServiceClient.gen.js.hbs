@@ -5,25 +5,19 @@ import * as pb from 'protobufjs'
 	{{#each nested}}
 		{{#if (eq (typeof this) "Service")}}
 			export default class {{name}}Client {
-				_pbService: api{{namespace this}}
-				end: () => void
+				_pbService
+				end
 
-				constructor(rpcImpl: pb.RPCImpl) {
+				constructor(rpcImpl) {
 					this._pbService = api{{namespace this}}.create(rpcImpl)
 					this.end = this._pbService.end.bind(this._pbService)
 				}
 
 				{{#each methods}}
-					{{case 'camel' name}}: (
-						request: api{{inamespace resolvedRequestType}},
-						callback: (
-							error: Error | null,
-							response?: api{{inamespace resolvedResponseType}}
-						) => void
-					) => void = (request, callback) => {
+					{{case 'camel' name}} = (request, callback) => {
 						return this._pbService.{{case 'camel' name}}.bind(this._pbService)(request, callback)
 					}
-			  	{{/each}}
+			  {{/each}}
 			}
 		{{/if}}
 	{{/each}}
