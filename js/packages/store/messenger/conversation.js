@@ -9,6 +9,7 @@ import {
 	jsonToBuf,
 	bufToJSON,
 	unaryChan,
+	createCommands,
 } from '../utils'
 import {
 	commands as groupsCommands,
@@ -34,22 +35,19 @@ const initialState = {
 	aggregates: {},
 }
 
-const commandsSlice = createSlice({
-	name: 'messenger/conversation/command',
-	initialState,
-	reducers: {
-		generate: (state) => state,
-		generateMsg: (state) => state,
-		create: (state) => state,
-		join: (state) => state,
-		delete: (state) => state,
-		deleteFake: (state) => state,
-		deleteAll: (state) => state,
-		addMessage: (state) => state,
-		startRead: (state) => state,
-		stopRead: (state) => state,
-	},
-})
+const commandsSlice = createCommands('messenger/conversation/command', initialState, [
+	'generate',
+	'generateMsg',
+	'create',
+	'join',
+	'delete',
+	'deleteFake',
+	'deleteAll',
+	'addMessage',
+	'startRead',
+	'stopRead',
+	'acceptGroupInvitation',
+])
 
 const eventHandler = createSlice({
 	name: 'messenger/conversation/event',
@@ -376,7 +374,6 @@ export const transactions = {
 			console.log('after create oneToOnePk', oneToOnePk)
 			if (oneToOnePk) {
 				yield* protocol.client.transactions.appMessageSend({
-					// TODO: replace with appMessageSend
 					groupPk: strToBuf(oneToOnePk),
 					payload: jsonToBuf(invitation),
 				})
@@ -476,6 +473,50 @@ export const transactions = {
 	},
 	stopRead: function* (id) {
 		yield put(events.stopRead(id))
+	},
+	acceptGroupInvitation: function* (payload) {
+		console.log('got groupMetadataPayloadSent')
+		if (!payload.message) {
+			return
+		}
+		const event = payload.message // <--- Not secure
+		if (
+			event &&
+			event.type === AppMessageType.GroupInvitation &&
+			event.group.groupType === berty.types.v1.GroupType.GroupTypeMultiMember
+		) {
+			console.log('found group invitation')
+
+			const group = {
+				publicKey: strToBuf(event.group.publicKey),
+				secret: strToBuf(event.group.secret),
+				secretSig: strToBuf(event.group.secretSig),
+				groupType: berty.types.v1.GroupType.GroupTypeMultiMember,
+			}
+
+			yield put(
+				messenger.conversation.events.created({
+					kind: ConversationKind.MultiMember,
+					title: event.name,
+					pk: event.group.publicKey,
+					now: Date.now(),
+				}),
+			)
+
+			try {
+				yield* protocol.client.transactions.multiMemberGroupJoin({ group })
+			} catch (e) {
+				console.warn('Failed to join multi-member group:', e)
+			}
+
+			yield put(
+				groupsCommands.subscribe({
+					publicKey: event.group.publicKey,
+					metadata: true,
+					messages: true,
+				}),
+			)
+		}
 	},
 }
 

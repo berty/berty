@@ -105,7 +105,7 @@ export const transactions = {
 		yield put({ type: 'GROUPS_OPENED' })
 		yield all([
 			takeEvery(commands.subscribe, function* ({ payload }) {
-				const tasks: SubscribeTasks = allTasks[payload.publicKey] || {}
+				const tasks = allTasks[payload.publicKey] || {}
 				const groupPk = strToBuf(payload.publicKey)
 				if (!tasks.messagesTask && payload.messages) {
 					tasks.messagesTask = yield fork(clientTransactions.listenToGroupMessages, { groupPk })

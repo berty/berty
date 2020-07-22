@@ -48,10 +48,7 @@ const _stylesCreateGroup = StyleSheet.create({
 	},
 })
 
-const MemberItem: React.FC<{ member: messenger.contact.Entity; onRemove: () => void }> = ({
-	member,
-	onRemove,
-}) => {
+const MemberItem: React.FC<{ member: any; onRemove: () => void }> = ({ member, onRemove }) => {
 	const [{ padding, column, text, color, row }] = useStyles()
 	const _styles = useStylesCreateGroup()
 
@@ -75,7 +72,7 @@ const MemberItem: React.FC<{ member: messenger.contact.Entity; onRemove: () => v
 }
 
 const MemberList: React.FC<{
-	members: messenger.contact.Entity[]
+	members: any[]
 	onRemoveMember: (id: string) => void
 }> = ({ members, onRemoveMember }) => {
 	const [{ height, padding }] = useStyles()
@@ -87,7 +84,7 @@ const MemberList: React.FC<{
 				showsHorizontalScrollIndicator={false}
 				contentContainerStyle={[padding.left.medium]}
 			>
-				{members.map((member) => (
+				{members.map((member: any) => (
 					<MemberItem member={member} onRemove={() => onRemoveMember(member.id)} />
 				))}
 			</ScrollView>
@@ -215,7 +212,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 }
 
 export const CreateGroupFinalize: React.FC<{
-	members: messenger.contact.Entity[]
+	members: any[]
 	onRemoveMember: (id: string) => void
 }> = ({ members, onRemoveMember }) => {
 	const navigation = useNavigation()

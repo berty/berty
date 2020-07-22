@@ -7,20 +7,17 @@ import {
 	FlatList,
 	ActivityIndicator,
 	KeyboardAvoidingView,
-	Text as TextNative,
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { Messenger, Settings } from '@berty-tech/hooks'
-import { useNavigation, ScreenProps, Routes } from '@berty-tech/navigation'
-import { useNavigation as useReactNavigation } from '@react-navigation/native'
+import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import FromNow from '../shared-components/FromNow'
 import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { Message } from './shared-components/Message'
 import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { messenger } from '@berty-tech/store'
 import { useReadEffect } from '../hooks'
-import { SafeAreaView } from 'react-native-safe-area-context'
 //
 // Chat
 //
@@ -85,77 +82,73 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 				blurAmount={30}
 				style={{ position: 'absolute', bottom: 0, top: 0, left: 0, right: 0 }}
 			/>
-			<SafeAreaView>
+			<View
+				style={[
+					padding.horizontal.medium,
+					{
+						alignItems: 'center',
+						flexDirection: 'row',
+						marginTop: 50 * scaleHeight,
+						paddingBottom: 20 * scaleHeight,
+					},
+				]}
+			>
+				<TouchableOpacity style={[flex.tiny, row.item.justify]} onPress={goBack}>
+					<Icon name='arrow-back-outline' width={25} height={25} fill={color.black} />
+				</TouchableOpacity>
 				<View
 					style={[
-						padding.horizontal.medium,
-						{
-							alignItems: 'center',
-							flexDirection: 'row',
-							marginTop: 50 * scaleHeight,
-							paddingBottom: 20 * scaleHeight,
-						},
+						flex.huge,
+						column.justify,
+						row.item.justify,
+						margin.top.small,
+						_styles.headerName,
 					]}
 				>
-					<TouchableOpacity style={[flex.tiny, row.item.justify]} onPress={goBack}>
-						<Icon name='arrow-back-outline' width={25} height={25} fill={color.black} />
-					</TouchableOpacity>
-					<View
-						style={[
-							flex.huge,
-							column.justify,
-							row.item.justify,
-							margin.top.small,
-							_styles.headerName,
-						]}
-					>
-						<View
-							style={[{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }]}
-						>
-							<TouchableOpacity onPress={() => debugGroup()}>
-								<Text
-									numberOfLines={1}
-									style={[text.align.center, text.bold.medium, _styles.headerNameText]}
-								>
-									{title}
-								</Text>
-							</TouchableOpacity>
-							{state === 'error' && (
-								<Icon name='close-outline' width={14} height={14} fill={color.red} />
-							)}
-							{state === 'done' ? (
-								<View
-									style={[
-										width(14),
-										height(14),
-										border.radius.scale(7),
-										margin.left.large,
-										{
-											backgroundColor: main?.debugGroup?.peerIds?.length ? color.green : color.red,
-										},
-									]}
-								/>
-							) : (
-								<ActivityIndicator size='small' style={[margin.left.large]} />
-							)}
-						</View>
-						{lastDate && (
-							<Text numberOfLines={1} style={[text.size.small, text.color.grey, text.align.center]}>
-								Last seen <FromNow date={lastDate} />
+					<View style={[{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }]}>
+						<TouchableOpacity onPress={() => debugGroup()}>
+							<Text
+								numberOfLines={1}
+								style={[text.align.center, text.bold.medium, _styles.headerNameText]}
+							>
+								{title}
 							</Text>
+						</TouchableOpacity>
+						{state === 'error' && (
+							<Icon name='close-outline' width={14} height={14} fill={color.red} />
+						)}
+						{state === 'done' ? (
+							<View
+								style={[
+									width(14),
+									height(14),
+									border.radius.scale(7),
+									margin.left.large,
+									{
+										backgroundColor: main?.debugGroup?.peerIds?.length ? color.green : color.red,
+									},
+								]}
+							/>
+						) : (
+							<ActivityIndicator size='small' style={[margin.left.large]} />
 						)}
 					</View>
-					<View style={[flex.tiny, row.fill, { alignItems: 'center' }]}>
-						<TouchableOpacity
-							activeOpacity={contact ? 0.2 : 0.5}
-							style={[flex.tiny, row.item.justify, !contact ? opacity(0.5) : null]}
-							onPress={() => navigate.chat.settings({ convId: id })}
-						>
-							<ConversationProceduralAvatar size={45} diffSize={9} conversationId={id} />
-						</TouchableOpacity>
-					</View>
+					{lastDate && (
+						<Text numberOfLines={1} style={[text.size.small, text.color.grey, text.align.center]}>
+							Last seen <FromNow date={lastDate} />
+						</Text>
+					)}
 				</View>
-			</SafeAreaView>
+				<View style={[flex.tiny, row.fill, { alignItems: 'center' }]}>
+					<TouchableOpacity
+						activeOpacity={contact ? 0.2 : 0.5}
+						style={[flex.tiny, row.item.justify, !contact ? opacity(0.5) : null]}
+						onPress={() => navigate.chat.settings({ convId: id })}
+					>
+						<ConversationProceduralAvatar size={45} diffSize={9} conversationId={id} />
+					</TouchableOpacity>
+				</View>
+			</View>
 		</View>
 	)
 }
@@ -172,7 +165,7 @@ const InfosChat: React.FC<{ createdAt: number }> = ({ createdAt }) => {
 // const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
 
 const MessageList: React.FC<{ id: string; scrollToMessage?: number }> = (props) => {
-	const [{ row, overflow, flex }, { scaleHeight }] = useStyles()
+	const [{ row, overflow, flex, padding }, { scaleHeight }] = useStyles()
 	const conversation = Messenger.useGetConversation(props.id)
 	const flatListRef = useRef<FlatList<messenger.message.Entity['id']>>(null)
 
@@ -193,7 +186,12 @@ const MessageList: React.FC<{ id: string; scrollToMessage?: number }> = (props) 
 			onScrollToIndexFailed={onScrollToIndexFailed}
 			ref={flatListRef}
 			keyboardDismissMode='on-drag'
-			style={[overflow, row.item.fill, flex.tiny, { marginTop: 150 * scaleHeight }]}
+			style={[
+				overflow,
+				row.item.fill,
+				flex.tiny,
+				{ marginTop: 150 * scaleHeight, marginBottom: 120 * scaleHeight },
+			]}
 			data={conversation ? [...conversation.messages].reverse() : []}
 			inverted
 			keyExtractor={(item) => item}

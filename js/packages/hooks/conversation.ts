@@ -24,10 +24,7 @@ export const useConversationGenerateMsg = () => {
 	)
 }
 
-type UseConversationCreate = (kwargs: {
-	members: messenger.contact.Entity[]
-	name: string
-}) => () => void
+type UseConversationCreate = (kwargs: { members: any; name: string }) => () => void
 
 // multimember group
 export const useConversationCreate: UseConversationCreate = ({ name, members }) => {
@@ -57,6 +54,15 @@ export const useConversationDelete = () => {
 	return useMemo(
 		() => (payload: messenger.conversation.Command.Delete) =>
 			dispatch(messenger.conversation.commands.delete(payload)),
+		[dispatch],
+	)
+}
+
+export const useAcceptGroupInvitation = () => {
+	const dispatch = useDispatch()
+	return useMemo(
+		() => (payload: any) =>
+			dispatch(messenger.conversation.commands.acceptGroupInvitation(payload)),
 		[dispatch],
 	)
 }
@@ -128,9 +134,7 @@ export const useGetConversation = (id: string): messenger.conversation.Entity | 
 }
 
 export const useGetFakeConversationLength = () => {
-	return useSelector((state: messenger.conversation.GlobalState) =>
-		messenger.conversation.queries.getFakeLength(state),
-	)
+	return useSelector((state) => messenger.conversation.queries.getFakeLength(state))
 }
 
 export const useOneToOneConversationContact = (
