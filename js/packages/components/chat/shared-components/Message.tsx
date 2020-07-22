@@ -45,7 +45,7 @@ export const Message: React.FC<{
 }> = ({ id, convKind, membersNames }) => {
 	const message = Messenger.useGetMessage(id)
 	const _styles = useStylesMessage()
-	const [{ row, margin, padding, column, text, border, color }] = useStyles()
+	const [{ row, margin, padding, column, text, border, color, flex }] = useStyles()
 	if (!message) {
 		return null
 	}
@@ -130,9 +130,10 @@ export const Message: React.FC<{
 							payload.isMe && border.scale(2),
 							padding.horizontal.scale(payload.isMe ? 11 : 13),
 							padding.vertical.scale(payload.isMe ? 7 : 9),
+							payload.isMe ? column.item.right : column.item.left,
 							{
 								backgroundColor: msgBackgroundColor,
-								alignSelf: payload.isMe ? 'flex-end' : 'flex-start',
+								// alignSelf: payload.isMe ? 'flex-end' : 'flex-start',
 							},
 						]}
 					>
@@ -149,7 +150,7 @@ export const Message: React.FC<{
 						</Text>
 					</View>
 					<View style={[payload.isMe && row.item.bottom]}>
-						<View style={[row.left, { alignItems: 'center' }]}>
+						<View style={[row.left, flex.align.center]}>
 							<Text
 								style={[
 									text.color.grey,

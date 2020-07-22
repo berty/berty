@@ -50,7 +50,7 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 	return (
 		<SafeAreaView style={[flex.tiny, border.radius.bottom.scale(20), { backgroundColor: bgColor }]}>
 			<View style={[padding.horizontal.medium, padding.top.tiny, padding.bottom.medium]}>
-				<View style={[row.fill, flex.tiny, { justifyContent: 'center' }]}>
+				<View style={[row.fill, flex.tiny, flex.justify.center]}>
 					{undo ? (
 						<TouchableOpacity style={[flex.tiny, row.item.justify]} onPress={undo}>
 							<Icon
@@ -125,7 +125,7 @@ type HeaderInfoSettingsProps = {
 }
 
 export const HeaderInfoSettings: React.FC<HeaderInfoSettingsProps> = ({ children }) => {
-	const [{ margin, border, padding }] = useStyles()
+	const [{ margin, border, padding, flex }] = useStyles()
 	return (
 		<View
 			style={[
@@ -136,7 +136,7 @@ export const HeaderInfoSettings: React.FC<HeaderInfoSettingsProps> = ({ children
 				{ backgroundColor: 'rgba(206,210,255,0.3)' },
 			]}
 		>
-			<View style={{ justifyContent: 'center' }}>{children}</View>
+			<View style={[flex.justify.center]}>{children}</View>
 		</View>
 	)
 }

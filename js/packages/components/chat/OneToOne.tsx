@@ -36,8 +36,9 @@ const useStylesChat = () => {
 
 const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) => {
 	const { children, ...propsToPass } = props
+	const [{ flex }] = useStyles()
 	return (
-		<View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+		<View style={[{ width: '100%', height: '100%' }, flex.justify.center, flex.align.center]}>
 			<ActivityIndicator {...propsToPass} />
 		</View>
 	)
@@ -85,9 +86,9 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 		>
 			<View
 				style={[
+					flex.align.center,
+					flex.direction.row,
 					{
-						alignItems: 'center',
-						flexDirection: 'row',
 						marginTop: 50 * scaleHeight,
 						paddingBottom: 20 * scaleHeight,
 					},
@@ -105,7 +106,7 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 						_styles.headerName,
 					]}
 				>
-					<View style={[{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }]}>
+					<View style={[flex.direction.row, flex.justify.center, flex.align.center]}>
 						<TouchableOpacity onPress={() => debugGroup()}>
 							<Text
 								numberOfLines={1}
@@ -137,7 +138,7 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 						</Text>
 					)}
 				</View>
-				<View style={[flex.tiny, row.fill, { alignItems: 'center' }]}>
+				<View style={[flex.tiny, row.fill, flex.align.center]}>
 					<TouchableOpacity
 						activeOpacity={contact ? 0.2 : 0.5}
 						style={[flex.tiny, row.item.justify, !contact ? opacity(0.5) : null]}

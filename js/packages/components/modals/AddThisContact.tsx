@@ -48,9 +48,7 @@ const AddThisContact: React.FC<{ requestDraft: messenger.contact.ValidRequestDra
 	const [selectedContent, setSelectedContent] = useState('Fingerprint')
 	const _styles = useStylesModal()
 	return (
-		<View
-			style={[{ justifyContent: 'center', alignItems: 'center', height: '100%' }, padding.medium]}
-		>
+		<View style={[flex.justify.center, flex.align.center, { height: '100%' }, padding.medium]}>
 			<View
 				style={[
 					background.white,

@@ -42,7 +42,7 @@ const HeaderBluetooth: React.FC<BluetoothProps> = ({ isBluetooth }) => {
 					<TouchableOpacity style={[row.right]}>
 						<Icon name='close-outline' width={20} height={20} fill={color.light.blue} />
 					</TouchableOpacity>
-					<View style={[row.center, flex.tiny, { alignItems: 'center', justifyContent: 'center' }]}>
+					<View style={[row.center, flex.tiny, flex.align.center, flex.justify.center]}>
 						<Icon name='alert-circle' width={25} height={25} fill={color.red} />
 						<Text
 							category='h6'
@@ -73,12 +73,7 @@ const HeaderBluetooth: React.FC<BluetoothProps> = ({ isBluetooth }) => {
 						]}
 					>
 						<View
-							style={[
-								margin.vertical.medium,
-								row.center,
-								{ alignItems: 'center' },
-								{ justifyContent: 'center' },
-							]}
+							style={[margin.vertical.medium, row.center, flex.align.center, flex.justify.center]}
 						>
 							<Icon name='bluetooth-outline' width={20} height={20} fill={color.white} />
 							<Text

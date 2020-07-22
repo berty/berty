@@ -76,7 +76,7 @@ export const SystemInfo: React.FC<ScreenProps.Settings.SystemInfo> = () => {
 					action={() => setStartRefresh(true)}
 				/>
 				{startRefresh ? (
-					<View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 100 }}>
+					<View style={[flex.align.center, flex.justify.center, { marginTop: 100 }]}>
 						<ActivityIndicator size='large' />
 					</View>
 				) : (

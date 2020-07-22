@@ -69,14 +69,14 @@ const GroupChatSettingsHeaderButtons: React.FC<
 }
 
 const GroupChatSettingsHeader: React.FC<messenger.conversation.Entity> = ({ title, id }) => {
-	const [{ text, margin }] = useStyles()
+	const [{ text, margin, flex }] = useStyles()
 	return (
 		<View>
 			<ConversationProceduralAvatar
 				conversationId={id}
 				size={120 * scaleHeight}
 				diffSize={20}
-				style={{ alignItems: 'center' }}
+				style={[flex.align.center]}
 			/>
 			<Text
 				numberOfLines={1}

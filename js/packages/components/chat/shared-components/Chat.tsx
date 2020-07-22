@@ -46,7 +46,7 @@ export const ChatFooter: React.FC<{
 						row.right,
 						padding.medium,
 						_isFocused && padding.bottom.medium,
-						{ alignItems: 'center' },
+						flex.align.center,
 					]}
 				>
 					<View
@@ -55,7 +55,8 @@ export const ChatFooter: React.FC<{
 							border.radius.medium,
 							padding.small,
 							row.fill,
-							{ alignItems: 'center', backgroundColor: _isFocused ? '#E8E9FC99' : '#EDEFF3' },
+							flex.align.center,
+							{ backgroundColor: _isFocused ? '#E8E9FC99' : '#EDEFF3' },
 						]}
 					>
 						<TextInput

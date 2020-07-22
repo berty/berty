@@ -114,10 +114,10 @@ const InvalidScanDismissButton: React.FC<{}> = () => {
 
 const InvalidScan: React.FC<{ title: string; error: string }> = ({ title, error }) => {
 	const [layout, setLayout] = useState<number>()
-	const [{ background, padding, border }] = useStyles()
+	const [{ background, flex, padding, border }] = useStyles()
 
 	return (
-		<View style={[padding.medium, { justifyContent: 'center', height: '100%' }]}>
+		<View style={[padding.medium, flex.justify.center, { height: '100%' }]}>
 			<View
 				onLayout={(e) => !layout && setLayout(e.nativeEvent.layout.height)}
 				style={[

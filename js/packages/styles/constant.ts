@@ -4,6 +4,11 @@ const { height, width } = Dimensions.get('window')
 const iPhone11ShortEdge = 414
 const iPhone11LongEdge = 896
 
+const iPadShortEdge = 768
+const iPadLongEdge = 1024
+
+export const shortScreenMax = 640
+
 const dimensions = {
 	shortEdge: Math.min(height, width),
 	longEdge: Math.max(width, height),
@@ -13,6 +18,8 @@ const { shortEdge, longEdge } = dimensions
 
 const shortEdgeRatio = shortEdge / Math.max(shortEdge, iPhone11ShortEdge)
 const longEdgeRatio = longEdge / Math.max(longEdge, iPhone11LongEdge)
+
 export const scaleSize = Math.min(shortEdgeRatio, 1)
 export const scaleHeight = Math.min(longEdgeRatio, 1)
 export const fontScale = PixelRatio.getFontScale() * scaleSize
+export const isGteIpadDims = shortEdge >= iPadShortEdge && longEdge >= iPadLongEdge

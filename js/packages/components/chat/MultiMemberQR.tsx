@@ -7,6 +7,7 @@ import { SafeAreaConsumer } from 'react-native-safe-area-context'
 
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { Messenger } from '@berty-tech/hooks'
+import { useStyles } from '@berty-tech/styles'
 
 const _contentScaleFactor = 0.66
 
@@ -16,6 +17,7 @@ export const MultiMemberQR: React.FC<ScreenProps.Chat.MultiMemberQR> = ({
 	},
 }) => {
 	const { height, width } = useDimensions().window
+	const { flex, margin } = useStyles()
 	const conv = Messenger.useGetConversation(convId)
 	const { goBack } = useNavigation()
 	if (!conv) {
@@ -26,11 +28,11 @@ export const MultiMemberQR: React.FC<ScreenProps.Chat.MultiMemberQR> = ({
 			{(insets) => (
 				<View
 					style={[
+						flex.align.center,
+						flex.justify.center,
 						{
 							paddingTop: insets?.top || 0,
-							alignItems: 'center',
 							height: '100%',
-							justifyContent: 'center',
 						},
 					]}
 				>
@@ -38,7 +40,7 @@ export const MultiMemberQR: React.FC<ScreenProps.Chat.MultiMemberQR> = ({
 						size={_contentScaleFactor * Math.min(height, width)}
 						value={conv.shareableGroup}
 					/>
-					<Button style={[{ marginTop: 40 }]} onPress={goBack}>
+					<Button style={[margin.top.scale(40)]} onPress={goBack}>
 						Go back
 					</Button>
 				</View>

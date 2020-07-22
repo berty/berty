@@ -38,16 +38,16 @@ const HeaderChatGroup: React.FC<{ id: string }> = ({ id }) => {
 				absolute.top,
 				absolute.right,
 				absolute.left,
-				{ alignItems: 'center' },
+				flex.align.center,
 			]}
 			blurType='light'
 			blurAmount={30}
 		>
 			<View
 				style={[
+					flex.align.center,
+					flex.direction.row,
 					{
-						alignItems: 'center',
-						flexDirection: 'row',
 						marginTop: 50 * scaleHeight,
 						paddingBottom: 15 * scaleHeight,
 					},
@@ -116,7 +116,7 @@ const HeaderChatGroup: React.FC<{ id: string }> = ({ id }) => {
 // 				width(90),
 // 			]}
 // 		>
-// 			<View style={[{ alignItems: 'center' }]}>
+// 			<View style={[{ flex.align.center }]}>
 // 				<View style={[padding.horizontal.small]}>
 // 					<CircleAvatar
 // 						avatarUri={avatarUri || contactGetReply?.contact?.avatarUri}
@@ -196,8 +196,9 @@ const InfosChatGroup: React.FC<messenger.conversation.Entity> = ({ createdAt, pk
 
 const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) => {
 	const { children, ...propsToPass } = props
+	const [{ flex }] = useStyles()
 	return (
-		<View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+		<View style={[{ width: '100%', height: '100%' }, flex.justify.center, flex.align.center]}>
 			<ActivityIndicator {...propsToPass} />
 		</View>
 	)

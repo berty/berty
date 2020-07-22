@@ -51,7 +51,7 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 	selected,
 	disabled = false,
 }) => {
-	const [{ border, column, width, height, color, opacity }] = useStyles()
+	const [{ border, column, flex, width, height, color, opacity }] = useStyles()
 	const size = selected ? selectedSize : sizeProp
 	const elemSize = selected ? selectedElemSize : elemSizeProp
 	const elemColor = selected ? selectedElemColor : elemColorProp || color.blue
@@ -60,12 +60,14 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 
 	return (
 		<View
-			style={{
-				width: selectedSize,
-				height: selectedSize,
-				justifyContent: 'center',
-				alignItems: 'center',
-			}}
+			style={[
+				{
+					width: selectedSize,
+					height: selectedSize,
+				},
+				flex.justify.center,
+				flex.align.center,
+			]}
 		>
 			<TouchableOpacity
 				onPress={onPress}
@@ -85,12 +87,7 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 				]}
 			>
 				{icon && (
-					<View
-						style={[
-							{ justifyContent: 'center', alignItems: 'center' },
-							disabled ? opacity(0.5) : null,
-						]}
-					>
+					<View style={[flex.justify.center, flex.align.center, disabled ? opacity(0.5) : null]}>
 						<Icon
 							name={icon}
 							pack={iconPack}
@@ -114,12 +111,14 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 				)}
 				{seed && (
 					<View
-						style={{
-							display: 'flex',
-							flexDirection: 'row',
-							justifyContent: 'center',
-							alignItems: 'center',
-						}}
+						style={[
+							{
+								display: 'flex',
+							},
+							flex.direction.row,
+							flex.justify.center,
+							flex.align.center,
+						]}
 					>
 						<Jdenticon value={seed} size={elemSize} style={{}} />
 					</View>
@@ -132,21 +131,23 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 const max = (a: number, b: number) => (a >= b ? a : b)
 
 export const Footer: React.FC<FooterProps> = ({ left, center, right }) => {
-	const [{ absolute }] = useStyles()
+	const [{ absolute, flex }] = useStyles()
 	return (
 		<LinearGradient
-			style={[absolute.bottom, { alignItems: 'center', justifyContent: 'center', width: '100%' }]}
+			style={[absolute.bottom, flex.align.center, flex.justify.center, { width: '100%' }]}
 			colors={['#ffffff00', '#ffffff80', '#ffffffc0', '#ffffffff']}
 		>
 			<SafeAreaConsumer>
 				{(insets) => (
 					<View
-						style={{
-							width: '72.8%',
-							justifyContent: 'space-between',
-							flexDirection: 'row',
-							paddingBottom: max(insets?.bottom || 0, 25),
-						}}
+						style={[
+							{
+								width: '72.8%',
+								paddingBottom: max(insets?.bottom || 0, 25),
+							},
+							flex.justify.spaceBetween,
+							flex.direction.row,
+						]}
 					>
 						<ButtonFooter {...left} />
 						<ButtonFooter {...center} />

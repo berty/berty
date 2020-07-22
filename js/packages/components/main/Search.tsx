@@ -356,7 +356,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, searchTextKey, sear
 					</View>
 				</View>
 
-				<View style={{ marginLeft: 'auto', display: 'flex', alignSelf: 'center' }}>
+				<View style={[{ marginLeft: 'auto' }, column.item.center]}>
 					{receivedDate > 0 && searchTextKey === 'message' ? <TimeStamp /> : null}
 				</View>
 			</View>

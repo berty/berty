@@ -19,7 +19,7 @@ const useStylesCreateGroup = () => {
 }
 
 export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, icon, action }) => {
-	const [{ absolute, background, row, padding, color, text, margin }] = useStyles()
+	const [{ absolute, background, row, padding, color, text, margin, flex }] = useStyles()
 	const _styles = useStylesCreateGroup()
 
 	return (
@@ -30,10 +30,8 @@ export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, ico
 						background.light.blue,
 						padding.horizontal.medium,
 						padding.vertical.small,
-						{
-							flexDirection: 'row',
-							justifyContent: 'center',
-						},
+						flex.direction.row,
+						flex.justify.center,
 						_styles.footerCreateGroupButton,
 					]}
 				>

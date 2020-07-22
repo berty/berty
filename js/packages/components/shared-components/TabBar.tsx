@@ -61,7 +61,7 @@ const TabBarItem: React.FC<TabItemProps> = ({
 			style={[flex.tiny, style]}
 			disabled={buttonDisabled}
 		>
-			<View style={[!enable && _styles.tabItemDisable, { alignItems: 'center' }]}>
+			<View style={[!enable && _styles.tabItemDisable, flex.align.center]}>
 				<View style={{ height: 25 }}>
 					<Icon
 						fill={enable ? color.blue : color.black}

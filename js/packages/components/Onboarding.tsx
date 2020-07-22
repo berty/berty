@@ -74,7 +74,7 @@ export const GetStarted: React.FC = () => {
 			{(t) => (
 				<SafeAreaView style={[absolute.fill, background.white, column.justify, padding.medium]}>
 					<View style={[flex.medium]} />
-					<View style={[flex.big, { flexDirection: 'row', justifyContent: 'center' }]}>
+					<View style={[flex.big, flex.direction.row, flex.justify.center]}>
 						<Logo height='60%' width='65%' />
 					</View>
 					<View style={[flex.medium]}>
@@ -266,7 +266,7 @@ const NodeConfigInput: React.FC<{
 	config: protocol.client.BertyNodeConfig
 	onConfigChange: (config: protocol.client.BertyNodeConfig) => void
 }> = ({ config, onConfigChange }) => {
-	const [{ text, padding, margin, background, border }] = useStyles()
+	const [{ text, padding, margin, background, border, flex }] = useStyles()
 	const toggleNodeType = () =>
 		onConfigChange(
 			config.type === 'external'
@@ -295,7 +295,7 @@ const NodeConfigInput: React.FC<{
 	} else {
 		content = (
 			<>
-				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+				<View style={[flex.direction.row, flex.align.center]}>
 					<Text>Persist: </Text>
 					<Switch
 						value={config.opts.persistance}
@@ -307,7 +307,7 @@ const NodeConfigInput: React.FC<{
 						}
 					/>
 				</View>
-				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+				<View style={[flex.direction.row, flex.align.center]}>
 					<Text>Trace: </Text>
 					<Switch
 						value={config.opts.tracing}
@@ -324,7 +324,7 @@ const NodeConfigInput: React.FC<{
 	}
 	return (
 		<>
-			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+			<View style={[flex.direction.row, flex.align.center]}>
 				<Switch value={config.type === 'external'} onValueChange={toggleNodeType} />
 				<Text> {config.type}</Text>
 			</View>

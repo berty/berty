@@ -104,7 +104,7 @@ const DELETE_STR = 'delete'
 
 const DeleteAccountContent: React.FC<{}> = () => {
 	const _styles = useStylesDeleteAccount()
-	const [{ row, margin, background, border, color, padding, text, column }] = useStyles()
+	const [{ flex, row, margin, background, border, color, padding, text, column }] = useStyles()
 	const navigation = useNavigation()
 	const account = Messenger.useAccount()
 	const prevAccount = usePrevious(account)
@@ -125,7 +125,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 	})
 
 	return startDelete ? (
-		<View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 100 }}>
+		<View style={[flex.align.center, flex.justify.center, margin.top.scale(100)]}>
 			<ActivityIndicator size='large' />
 		</View>
 	) : (
@@ -191,10 +191,10 @@ const DeleteAccountContent: React.FC<{}> = () => {
 
 export const DeleteAccount: React.FC<{}> = () => {
 	const [layout, setLayout] = useState(0)
-	const [{ background, padding, border }] = useStyles()
+	const [{ background, padding, border, flex }] = useStyles()
 
 	return (
-		<View style={[padding.medium, background.red, { justifyContent: 'center', height: '100%' }]}>
+		<View style={[padding.medium, background.red, flex.justify.center, { height: '100%' }]}>
 			<View
 				onLayout={(e) => !layout && setLayout(e.nativeEvent.layout.height)}
 				style={[
