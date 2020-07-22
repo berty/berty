@@ -20,11 +20,10 @@ const SystemInfoItem: React.FC<{ label: string; value: string }> = ({ label, val
 const SystemInfoList: React.FC<{}> = () => {
 	const settings = Settings.useSettings()
 	const [{ padding }] = useStyles()
-	const a = moment()
 	return (
 		<View style={[padding.large]}>
 			{settings?.systemInfo &&
-				Object.entries(settings?.systemInfo).map((value, key) => {
+				Object.entries(settings?.systemInfo).map((value: any, key) => {
 					if (value[0] === 'startedAt') {
 						return (
 							<View>

@@ -210,7 +210,7 @@ const Requests: React.FC<{}> = () => {
 	const { isLandscape, isShortWindow, isGteIpadSize } = useStylesList()
 
 	const requests = Messenger.useAccountContactsWithOutgoingRequests().filter(
-		(contact) => !(contact.request.accepted || contact.request.discarded),
+		(contact) => !(contact.request.accepted || contact.request.discarded) && !contact.fake,
 	)
 
 	return requests.length >= 1 ? (

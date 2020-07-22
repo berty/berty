@@ -21,12 +21,12 @@ export const fakeContacts = (length, start) =>
 export const fakeMessages = (length, start) =>
 	fakeArray(length).map((_, index) => ({
 		id: `fake_${(start + index).toString()}`,
-		receivedDate: Date.now(),
+		receivedDate: faker.date.past(),
 		type: messenger.AppMessageType.UserMessage,
 		body: faker.lorem.sentences(),
 		fake: true,
 		attachments: [],
-		sentDate: Date.now(),
+		sentDate: faker.date.past(),
 		isMe: faker.random.boolean(),
 		acknowledged: faker.random.boolean(),
 	}))
@@ -40,7 +40,8 @@ export const fakeConversations = (length, start) =>
 			// pk: contact.publicKey,
 			kind: messenger.conversation.ConversationKind.OneToOne,
 			fake: true,
-			createdAt: Date.now(),
+			createdAt: faker.date.past(),
+			// lastMessageDate: faker.date.past(),
 			// membersNames: { [contact.id]: contact.name },
 			members: [],
 			// messages: fakeMessages().map((_) => _.id),

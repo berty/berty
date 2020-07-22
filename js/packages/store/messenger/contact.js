@@ -191,10 +191,7 @@ export const queries = {
 	get: (state, { id }) => state.messenger.contact.entities[id],
 	getRequestDraft: (state) => state.messenger.contact.requestDraft,
 	getLength: (state) => queries.list(state).length,
-	getFakeLength: (state) =>
-		Object.keys(
-			Object.values(state.messenger.contact.entities).map((contact) => contact && contact.fake),
-		).length,
+	getFakeLength: (state) => queries.list(state).filter((contact) => contact.fake).length,
 	search: (state, { searchText }) =>
 		searchText
 			? queries
@@ -207,6 +204,7 @@ export const queries = {
 export const transactions = {
 	generate: function* ({ length }) {
 		const index = yield select((state) => queries.getFakeLength(state))
+		console.log('contact', index)
 		const contacts = faker.fakeContacts(length, index)
 		yield put(
 			events.generated({
