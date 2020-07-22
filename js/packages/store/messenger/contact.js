@@ -12,6 +12,7 @@ import {
 	queries as conversationQueries,
 	events as conversationEvents,
 } from './conversation'
+import * as faker from '../../components/faker'
 
 export const ContactRequestType = {
 	Incoming: 'Incoming',
@@ -34,8 +35,23 @@ const eventHandler = createSlice({
 	name: 'messenger/contact/event',
 	initialState,
 	reducers: {
+		generated: (state, { payload }) => {
+			const { contacts } = payload
+			for (const contact of contacts) {
+				state.entities[contact.id] = contact
+			}
+			return state
+		},
 		deleted: (state, { payload: { contactPk } }) => {
 			delete state.entities[contactPk]
+			return state
+		},
+		deletedFake: (state) => {
+			for (const contact of Object.values(state.entities)) {
+				if (contact && contact.fake) {
+					delete state.entities[contact.id]
+				}
+			}
 			return state
 		},
 		outgoingContactRequestAccepted: (state, { payload: { contactPk } }) => {
@@ -56,6 +72,7 @@ const eventHandler = createSlice({
 					name: metadata.name,
 					publicKey: contactPk,
 					groupPk,
+					fake: false,
 					request: {
 						type: ContactRequestType.Outgoing,
 						accepted: false,
@@ -109,6 +126,7 @@ const eventHandler = createSlice({
 					id: contactPk,
 					name,
 					publicKey: contactPk,
+					fake: false,
 					request: {
 						type: ContactRequestType.Outgoing,
 						accepted: false,
@@ -173,6 +191,10 @@ export const queries = {
 	get: (state, { id }) => state.messenger.contact.entities[id],
 	getRequestDraft: (state) => state.messenger.contact.requestDraft,
 	getLength: (state) => queries.list(state).length,
+	getFakeLength: (state) =>
+		Object.keys(
+			Object.values(state.messenger.contact.entities).map((contact) => contact && contact.fake),
+		).length,
 	search: (state, { searchText }) =>
 		searchText
 			? queries
@@ -183,6 +205,19 @@ export const queries = {
 }
 
 export const transactions = {
+	generate: function* ({ length }) {
+		const index = yield select((state) => queries.getFakeLength(state))
+		const contacts = faker.fakeContacts(length, index)
+		yield put(
+			events.generated({
+				contacts,
+			}),
+		)
+		return contacts
+	},
+	deleteFake: function* () {
+		yield put(events.deletedFake())
+	},
 	delete: function* ({ id }) {
 		const contact = yield* getContact(id)
 		if (contact) {
@@ -210,7 +245,7 @@ export const transactions = {
 		}
 	},
 	acceptRequest: function* ({ id }) {
-		const contact = yield select((state: GlobalState) => queries.get(state, { id }))
+		const contact = yield select((state) => queries.get(state, { id }))
 		if (!contact) {
 			return
 		}
@@ -221,7 +256,7 @@ export const transactions = {
 		)
 	},
 	discardRequest: function* ({ id }) {
-		const contact = yield select((state: GlobalState) => queries.get(state, { id }))
+		const contact = yield select((state) => queries.get(state, { id }))
 		if (!contact) {
 			return
 		}
@@ -277,8 +312,8 @@ export const transactions = {
 	},
 }
 
-export function* getContact(id: string | Uint8Array) {
-	return yield select((state: GlobalState) =>
+export function* getContact(id) {
+	return yield select((state) =>
 		queries.get(state, { id: typeof id === 'string' ? id : bufToStr(id) }),
 	)
 }
@@ -314,7 +349,7 @@ export function* orchestrator() {
 			const contactPkStr = bufToStr(contactPk)
 			const groupPkStr = bufToStr(groupPk)
 			const mtdt = action.payload.event.contact.metadata
-			const metadata: ContactRequestMetadata = mtdt && bufToJSON(mtdt)
+			const metadata = mtdt && bufToJSON(mtdt)
 			const uid = action.payload.eventContext?.id && bufToStr(action.payload.eventContext.id)
 			yield put(
 				events.outgoingContactRequestEnqueued({
@@ -355,6 +390,7 @@ export function* orchestrator() {
 						id: pkstr,
 						publicKey: pkstr,
 						name: metadata.name,
+						fake: false,
 						request: {
 							type: ContactRequestType.Incoming,
 							accepted: false,

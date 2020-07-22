@@ -33,6 +33,7 @@ export const useMessageDelete = () => {
 		[dispatch],
 	)
 }
+
 // messages queries
 export const useGetMessage = (id: string): messenger.message.Entity | undefined => {
 	const selector = useMemo(
@@ -41,6 +42,12 @@ export const useGetMessage = (id: string): messenger.message.Entity | undefined 
 	)
 	const message = useSelector(selector)
 	return message
+}
+
+export const useGetFakeMessageLength = () => {
+	return useSelector((state: messenger.message.GlobalState) =>
+		messenger.message.queries.getFakeLength(state),
+	)
 }
 
 export const useGetListMessage = (list: any): messenger.message.Entity[] => {
@@ -60,7 +67,7 @@ export const useGetDateLastContactMessage = (id: string) => {
 		return null
 	}
 	let lastDate
-	conversation.kind !== 'fake' &&
+	conversation.fake &&
 		messages.length &&
 		messages.map((message) => {
 			if (message && message.type === messenger.AppMessageType.UserMessage && !message.isMe) {

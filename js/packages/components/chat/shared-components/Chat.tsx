@@ -37,7 +37,7 @@ export const ChatFooter: React.FC<{
 	if (!conversation) {
 		return null
 	}
-	const isFake = conversation.kind === 'fake'
+	const isFake = conversation.fake
 	return (
 		<BlurView blurType='light' blurAmount={30}>
 			<SafeAreaView>

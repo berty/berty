@@ -3,6 +3,7 @@ import { composeReducers } from 'redux-compose'
 import { all, select, put } from 'redux-saga/effects'
 import { makeDefaultReducers, makeDefaultCommandsSagas, strToBuf } from '../utils'
 import * as protocol from '../protocol'
+import { messenger } from '..'
 
 const initialState = null
 

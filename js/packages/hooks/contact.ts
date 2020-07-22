@@ -49,6 +49,12 @@ export const useAccountContacts = () => {
 	)
 }
 
+export const useGetFakeContactLength = () => {
+	return useSelector((state: messenger.contact.GlobalState) =>
+		messenger.contact.queries.getFakeLength(state),
+	)
+}
+
 export const useContact = ({ id }: { id: string }) => {
 	return useSelector((state: messenger.contact.GlobalState) =>
 		messenger.contact.queries.get(state, { id }),

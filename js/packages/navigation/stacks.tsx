@@ -200,6 +200,10 @@ export const Navigation: React.FC = () => {
 				component={Components.Settings.AppUpdates}
 			/>
 			<NavigationStack.Screen name={Routes.Settings.Help} component={Components.Settings.Help} />
+			<NavigationStack.Screen
+				name={Routes.Settings.FakeDatas}
+				component={Components.Settings.FakeDatas}
+			/>
 			<NavigationStack.Screen name={Routes.Settings.Mode} component={Components.Settings.Mode} />
 			<NavigationStack.Screen
 				name={Routes.Settings.BlockedContacts}
