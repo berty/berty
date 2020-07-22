@@ -181,7 +181,7 @@ const BertyIdShare: React.FC<{}> = () => {
 				}
 			}}
 		>
-			<View style={[flex.tiny, { justifyContent: 'center' }]}>
+			<View style={[flex.tiny, flex.justify.center]}>
 				<Icon
 					style={row.item.justify}
 					name='share'
@@ -197,7 +197,7 @@ const BertyIdShare: React.FC<{}> = () => {
 
 const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
 	const { goBack } = useNavigation()
-	const [{ padding, color }] = useStyles()
+	const [{ flex, padding, color }] = useStyles()
 	const { iconArrowBackSize, titleSize, iconIdSize, iconShareSize } = useStylesBertyId()
 	const { height } = useDimensions().window
 
@@ -205,26 +205,14 @@ const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
 		<ScrollView bounces={false} style={[padding.medium]}>
 			<View
 				style={[
-					{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-						marginBottom: height * 0.1,
-					},
+					flex.direction.row,
+					flex.justify.spaceBetween,
+					flex.align.center,
+					{ marginBottom: height * 0.1 },
 				]}
 			>
-				<View
-					style={[
-						{
-							flexDirection: 'row',
-							alignItems: 'center',
-						},
-					]}
-				>
-					<TouchableOpacity
-						onPress={goBack}
-						style={{ alignItems: 'center', justifyContent: 'center' }}
-					>
+				<View style={[flex.direction.row, flex.align.center]}>
+					<TouchableOpacity onPress={goBack} style={[flex.align.center, flex.justify.center]}>
 						<Icon
 							name='arrow-back-outline'
 							width={iconArrowBackSize}

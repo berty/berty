@@ -110,10 +110,10 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 					row.fill,
 					alone && padding.horizontal.medium,
 					children && alone && padding.top.medium,
-					{ alignItems: 'center' },
+					flex.align.center,
 				]}
 			>
-				<View style={[row.left, { alignItems: 'center' }]}>
+				<View style={[row.left, flex.align.center]}>
 					{icon && iconSize && iconColor && (
 						<View>
 							<Icon
@@ -139,9 +139,9 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 						<Text style={[padding.left.small, text.color.black]}>{name}</Text>
 					</View>
 				</View>
-				<View style={[row.center, { alignItems: 'center' }]}>
+				<View style={[row.center, flex.align.center]}>
 					{state && state.value && state.color && state.bgColor && (
-						<View style={[row.left, margin.right.medium, { alignItems: 'center' }]}>
+						<View style={[row.left, margin.right.medium, flex.align.center]}>
 							{state && state.icon && (
 								<Icon
 									style={[margin.right.small]}
@@ -155,7 +155,8 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 								style={[
 									row.fill,
 									border.radius.medium,
-									{ backgroundColor: state.bgColor, alignItems: 'center' },
+									{ backgroundColor: state.bgColor },
+									flex.align.center,
 									_styles.statePaddingBox,
 								]}
 							>
@@ -267,7 +268,7 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 		>
 			{name && icon && iconSize && iconColor && (
 				<View style={[height(60), flex.tiny]}>
-					<View style={[row.left, flex.tiny, { alignItems: 'center' }]}>
+					<View style={[row.left, flex.tiny, flex.align.center]}>
 						{icon && iconSize && iconColor && (
 							<View>
 								<Icon
@@ -287,7 +288,8 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 								style={[
 									margin.right.medium,
 									flex.tiny,
-									{ flexDirection: 'row-reverse', alignItems: 'center' },
+									{ flexDirection: 'row-reverse' },
+									flex.align.center,
 								]}
 							>
 								{state && state.icon && (
@@ -303,7 +305,8 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 									style={[
 										row.center,
 										border.radius.medium,
-										{ backgroundColor: state.bgColor, alignItems: 'center' },
+										{ backgroundColor: state.bgColor },
+										flex.align.center,
 										_styles.statePaddingBox,
 									]}
 								>
@@ -386,7 +389,7 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 	const _styles = useStylesButtonSettingRow()
 	const [{ flex, row, margin, padding, border, background, text, opacity }] = useStyles()
 	return (
-		<View style={[flex.tiny, row.fill, margin.top.medium, style, { alignItems: 'center' }]}>
+		<View style={[flex.tiny, row.fill, margin.top.medium, style, flex.align.center]}>
 			{state.map((obj, key) => (
 				<TouchableOpacity
 					key={key}
@@ -399,7 +402,8 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 						background.white,
 						obj.style,
 						obj.disabled ? opacity(0.5) : null,
-						{ alignItems: 'center', justifyContent: 'center' },
+						flex.align.center,
+						flex.justify.center,
 					]}
 					onPress={obj.onPress}
 				>
@@ -451,9 +455,9 @@ export const ButtonSettingItem: React.FC<ButtonSettingItem> = ({
 	iconColor,
 }) => {
 	const _styles = useStylesButtonSettingItem()
-	const [{ row, padding, text, color: stylesColor }] = useStyles()
+	const [{ flex, row, padding, text, color: stylesColor }] = useStyles()
 	return (
-		<View style={[row.left, padding.left.small, { alignItems: 'center' }]}>
+		<View style={[row.left, padding.left.small, flex.align.center]}>
 			<Icon
 				name={icon}
 				width={iconSize}

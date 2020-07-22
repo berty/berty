@@ -212,30 +212,21 @@ export const MemberList: React.FC<{
 
 export const CreateGroupHeader: React.FC<{}> = () => {
 	const navigation = useNavigation()
-	const [{ color, padding, margin }] = useStyles()
+	const [{ color, padding, margin, flex }] = useStyles()
 	return (
 		<View
 			style={[
 				padding.medium,
 				margin.bottom.small,
-				{
-					flexDirection: 'row',
-					justifyContent: 'space-between',
-					alignItems: 'center',
-				},
+				flex.direction.row,
+				flex.justify.spaceBetween,
+				flex.align.center,
 			]}
 		>
-			<View
-				style={[
-					{
-						flexDirection: 'row',
-						alignItems: 'center',
-					},
-				]}
-			>
+			<View style={[flex.direction.row, flex.align.center]}>
 				<TouchableOpacity
 					onPress={navigation.goBack}
-					style={{ alignItems: 'center', justifyContent: 'center' }}
+					style={[flex.align.center, flex.justify.center]}
 				>
 					<Icon
 						name='arrow-back-outline'

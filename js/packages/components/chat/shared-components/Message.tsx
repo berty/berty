@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, SafeAreaView } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { CircleAvatar } from '../../shared-components/CircleAvatar'
@@ -45,7 +45,7 @@ export const Message: React.FC<{
 }> = ({ id, convKind, membersNames }) => {
 	const message = Messenger.useGetMessage(id)
 	const _styles = useStylesMessage()
-	const [{ row, margin, padding, column, text, border, color }] = useStyles()
+	const [{ row, margin, padding, column, text, border, color, flex }] = useStyles()
 	if (!message) {
 		return null
 	}
@@ -96,15 +96,16 @@ export const Message: React.FC<{
 		}
 
 		return (
-			<View
-				style={[
-					row.left,
-					payload.isMe ? _styles.isMeMessage : _styles.isOtherMessage,
-					padding.horizontal.medium,
-					{ paddingTop: 2 },
-				]}
-			>
-				{/*!payload.isMe && isGroup && (
+			<SafeAreaView>
+				<View
+					style={[
+						row.left,
+						payload.isMe ? _styles.isMeMessage : _styles.isOtherMessage,
+						padding.horizontal.medium,
+						{ paddingTop: 2 },
+					]}
+				>
+					{/*!payload.isMe && isGroup && (
 					<CircleAvatar
 						style={_styles.circleAvatar}
 						avatarUri={avatarUri}
@@ -112,94 +113,98 @@ export const Message: React.FC<{
 						size={35}
 					/>
 				)*/}
-				<View style={[column.top, _styles.messageItem]}>
-					{!payload.isMe && isGroup && name && (
-						<View style={[margin.left.small]}>
-							<Text style={[text.bold.medium, _styles.personNameInGroup, { color: baseColor }]}>
-								{name}
-							</Text>
-						</View>
-					)}
-					<View
-						style={[
-							padding.small,
-							border.radius.top.medium,
-							payload.isMe ? border.radius.left.medium : border.radius.right.medium,
-							styleMsg,
-							msgBorderColor,
-							payload.isMe && border.scale(2),
-							padding.horizontal.scale(payload.isMe ? 11 : 13),
-							padding.vertical.scale(payload.isMe ? 7 : 9),
-							{
-								backgroundColor: msgBackgroundColor,
-								alignSelf: payload.isMe ? 'flex-end' : 'flex-start',
-							},
-						]}
-					>
-						<Text
+					<View style={[column.top, _styles.messageItem]}>
+						{!payload.isMe && isGroup && name && (
+							<View style={[margin.left.small]}>
+								<Text style={[text.bold.medium, _styles.personNameInGroup, { color: baseColor }]}>
+									{name}
+								</Text>
+							</View>
+						)}
+						<View
 							style={[
+								padding.small,
+								border.radius.top.medium,
+								payload.isMe ? border.radius.left.medium : border.radius.right.medium,
+								styleMsg,
+								msgBorderColor,
+								payload.isMe && border.scale(2),
+								padding.horizontal.scale(payload.isMe ? 11 : 13),
+								padding.vertical.scale(payload.isMe ? 7 : 9),
+								payload.isMe ? column.item.right : column.item.left,
 								{
-									color: msgTextColor,
-									fontSize: 12,
-									lineHeight: 17,
+									backgroundColor: msgBackgroundColor,
+									// alignSelf: payload.isMe ? 'flex-end' : 'flex-start',
 								},
 							]}
 						>
-							{payload.body}
-						</Text>
-					</View>
-					<View style={[payload.isMe && row.item.bottom]}>
-						<View style={[row.left, { alignItems: 'center' }]}>
 							<Text
 								style={[
-									text.color.grey,
-									padding.right.scale(5),
-									_styles.dateMessage,
-									{ fontSize: 9 },
+									{
+										color: msgTextColor,
+										fontSize: 12,
+										lineHeight: 17,
+									},
 								]}
 							>
-								{formatTimestamp(new Date(payload.sentDate))}{' '}
+								{payload.body}
 							</Text>
-							{!cmd && (
-								<>
-									{payload.isMe && (
-										<Icon
-											name={payload.acknowledged ? 'navigation-2' : 'navigation-2-outline'}
-											width={12}
-											height={12}
-											fill={color.blue}
-										/>
-									)}
-									<Text
-										style={[
-											text.color.blue,
-											padding.left.scale(2),
-											_styles.dateMessage,
-											{ fontSize: 10, lineHeight: 11, textAlignVertical: 'center' },
-										]}
-									>
-										{payload.isMe ? (payload.acknowledged ? 'sent' : 'sending...') : ''}
-									</Text>
-								</>
-							)}
+						</View>
+						<View style={[payload.isMe && row.item.bottom]}>
+							<View style={[row.left, flex.align.center]}>
+								<Text
+									style={[
+										text.color.grey,
+										padding.right.scale(5),
+										_styles.dateMessage,
+										{ fontSize: 9 },
+									]}
+								>
+									{formatTimestamp(new Date(payload.sentDate))}{' '}
+								</Text>
+								{!cmd && (
+									<>
+										{payload.isMe && (
+											<Icon
+												name={payload.acknowledged ? 'navigation-2' : 'navigation-2-outline'}
+												width={12}
+												height={12}
+												fill={color.blue}
+											/>
+										)}
+										<Text
+											style={[
+												text.color.blue,
+												padding.left.scale(2),
+												_styles.dateMessage,
+												{ fontSize: 10, lineHeight: 11, textAlignVertical: 'center' },
+											]}
+										>
+											{payload.isMe ? (payload.acknowledged ? 'sent' : 'sending...') : ''}
+										</Text>
+									</>
+								)}
+							</View>
 						</View>
 					</View>
 				</View>
-			</View>
+			</SafeAreaView>
 		)
 	} else if (message.type === messenger.AppMessageType.GroupInvitation) {
 		return (
-			<View
-				style={[
-					message.isMe ? row.right : row.left,
-					padding.horizontal.medium,
-					padding.vertical.medium,
-				]}
-			>
-				<Text>
-					{message.isMe ? `You invited X to ${message.name}` : `Y invited you to ${message.name}`}
-				</Text>
-			</View>
+			<SafeAreaView>
+				<View
+					style={[
+						message.isMe ? row.right : row.left,
+						padding.horizontal.medium,
+						padding.vertical.medium,
+					]}
+				>
+					<Text>
+						{message.isMe ? `You invited X to ${message.name}` : `Y invited you to ${message.name}`}
+					</Text>
+				</View>
+			</SafeAreaView>
 		)
 	} else {
 		return null

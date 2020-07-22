@@ -63,7 +63,7 @@ const HomeHeaderGroupButton: React.FC = () => {
 }
 const HomeHeaderAvatar: React.FC = () => {
 	const _styles = useStylesHome()
-	const [{ row, margin, background, border, color }] = useStyles()
+	const [{ row, margin, background, border, color, flex }] = useStyles()
 	const client = Messenger.useClient()
 	const account = Messenger.useAccount()
 	const navigation = useNavigation()
@@ -73,7 +73,7 @@ const HomeHeaderAvatar: React.FC = () => {
 				style={[background.white, border.radius.medium, { padding: 20 }, { paddingTop: 40 }]}
 				onPress={() => navigation.navigate.settings.myBertyId()}
 			>
-				<View style={[{ alignItems: 'center' }]}>
+				<View style={[flex.align.center]}>
 					<View style={{ position: 'absolute', top: -80 }}>
 						<ProceduralCircleAvatar
 							seed={client?.accountPk}

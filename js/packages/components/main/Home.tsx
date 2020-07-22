@@ -188,17 +188,20 @@ const formatTimestamp = (date: Date) => {
 	return hour
 }
 
-const UnreadCount: React.FC<{ value: number }> = ({ value }) =>
-	value ? (
+const UnreadCount: React.FC<{ value: number }> = ({ value }) => {
+	const [{ flex }] = useStyles()
+	return value ? (
 		<View
-			style={{
-				backgroundColor: 'red',
-				justifyContent: 'center',
-				borderRadius: 1000,
-				height: 15,
-				minWidth: 15,
-				paddingHorizontal: 2,
-			}}
+			style={[
+				flex.justify.center,
+				{
+					backgroundColor: 'red',
+					borderRadius: 1000,
+					height: 15,
+					minWidth: 15,
+					paddingHorizontal: 2,
+				},
+			]}
 		>
 			<Text
 				style={{
@@ -213,15 +216,16 @@ const UnreadCount: React.FC<{ value: number }> = ({ value }) =>
 			</Text>
 		</View>
 	) : null
+}
 
 const MessageStatus: React.FC<{ messageID: string }> = ({ messageID }) => {
-	const [{ color }] = useStyles()
+	const [{ color, flex }] = useStyles()
 	const message = Messenger.useGetMessage(messageID)
 	if (message?.type !== messenger.AppMessageType.UserMessage) {
 		return null
 	}
 	return (
-		<View style={{ width: 25, justifyContent: 'center', alignItems: 'center' }}>
+		<View style={[{ width: 25 }, flex.justify.center, flex.align.center]}>
 			{message ? (
 				<Icon
 					name={message.acknowledged ? 'navigation-2' : 'navigation-2-outline'}
@@ -285,7 +289,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 								{title || ''}
 							</Text>
 						</View>
-						<View style={[row.right, { alignItems: 'center' }]}>
+						<View style={[row.right, flex.align.center]}>
 							<UnreadCount value={unreadCount} />
 							<Text
 								style={[
@@ -328,6 +332,8 @@ const Conversations: React.FC<ConversationsProps> = ({ items, onLayout, style })
 						background.white,
 						{
 							paddingBottom: 100 - (insets?.bottom || 0) + (insets?.bottom || 0),
+							paddingLeft: insets?.left || 0,
+							paddingRight: insets?.right || 0,
 						},
 					]}
 				>
@@ -349,56 +355,57 @@ const HomeHeader: React.FC<
 		isOnTop: boolean
 	}
 > = ({ hasRequests, scrollRef, onLayout, isOnTop }) => {
-	const [{ border, padding, margin, text, background, color }] = useStyles()
+	const [{ border, padding, margin, text, background, flex, color }] = useStyles()
 
 	return (
-		<View onLayout={onLayout}>
-			<Translation>
-				{(t): React.ReactNode => (
-					<View
-						style={[
-							background.white,
-							border.radius.top.big,
-							padding.horizontal.scale(27),
-							{
-								alignItems: 'center',
-								flexDirection: 'row',
-								justifyContent: 'space-between',
-								paddingTop: !hasRequests
-									? 40 * scaleHeight
-									: isOnTop
-									? 40 * scaleHeight
-									: 20 * scaleHeight,
-							},
-						]}
-					>
+		<SafeAreaView>
+			<View onLayout={onLayout}>
+				<Translation>
+					{(t): React.ReactNode => (
 						<View
-							style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}
+							style={[
+								background.white,
+								border.radius.top.big,
+								padding.horizontal.scale(27),
+
+								flex.align.center,
+								flex.direction.row,
+								flex.justify.spaceBetween,
+								{
+									paddingTop: !hasRequests
+										? 40 * scaleHeight
+										: isOnTop
+										? 40 * scaleHeight
+										: 20 * scaleHeight,
+								},
+							]}
 						>
-							<Logo
-								width={35}
-								height={35}
-								onPress={() => {
-									scrollRef.current?.scrollTo({ y: 0, animated: true })
-								}}
-							/>
-							<Text
-								style={[
-									text.color.black,
-									text.size.huge,
-									text.bold.medium,
-									padding.medium,
-									padding.top.big,
-									margin.horizontal.medium,
-								]}
-							>
-								{t('main.messages.title')}
-							</Text>
+							<View style={[flex.direction.row, flex.justify.start, flex.align.center]}>
+								<Logo
+									width={35}
+									height={35}
+									onPress={() => {
+										scrollRef.current?.scrollTo({ y: 0, animated: true })
+									}}
+								/>
+								<Text
+									style={[
+										text.color.black,
+										text.size.huge,
+										text.bold.medium,
+										padding.medium,
+										padding.top.big,
+										margin.horizontal.medium,
+									]}
+								>
+									{t('main.messages.title')}
+								</Text>
+							</View>
 						</View>
-					</View>
-				)}
-			</Translation>
-		</View>
+					)}
+				</Translation>
+			</View>
+		</SafeAreaView>
 	)
 }
 

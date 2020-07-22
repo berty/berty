@@ -12,11 +12,16 @@ import { scaleHeight } from '@berty-tech/styles/constant'
 
 // Styles
 const useStylesChatFooter = () => {
-	const [{ flex, maxHeight, padding }] = useStyles()
+	const [{ flex, maxHeight, padding, maxWidth, row }] = useStyles()
 	return {
-		textInput: flex.scale(10),
+		textInput: { ...flex.small, flexGrow: 2, ...padding.right.scale(10) },
 		focusTextInput: maxHeight(80),
-		sendButton: padding.left.scale(4),
+		sendButton: {
+			...flex.tiny,
+			flexGrow: 1,
+			...maxWidth(30),
+			...row.item.center,
+		},
 	}
 }
 
@@ -46,7 +51,7 @@ export const ChatFooter: React.FC<{
 						row.right,
 						padding.medium,
 						_isFocused && padding.bottom.medium,
-						{ alignItems: 'center' },
+						flex.align.center,
 					]}
 				>
 					<View
@@ -55,7 +60,8 @@ export const ChatFooter: React.FC<{
 							border.radius.medium,
 							padding.small,
 							row.fill,
-							{ alignItems: 'center', backgroundColor: _isFocused ? '#E8E9FC99' : '#EDEFF3' },
+							flex.align.center,
+							{ backgroundColor: _isFocused ? '#E8E9FC99' : '#EDEFF3' },
 						]}
 					>
 						<TextInput
@@ -113,8 +119,8 @@ export const ChatFooter: React.FC<{
 						>
 							<Icon
 								name='paper-plane-outline'
-								width={30}
-								height={30}
+								width={30 * scaleHeight}
+								height={30 * scaleHeight}
 								fill={!isFake && message.length >= 1 ? color.blue : color.grey}
 							/>
 						</TouchableOpacity>

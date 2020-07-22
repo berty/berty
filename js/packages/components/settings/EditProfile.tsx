@@ -68,7 +68,7 @@ const EditMyProfile: React.FC<{}> = () => {
 }
 
 const ResetMyQrCode: React.FC<{}> = () => {
-	const [{ padding, margin, row, background, border, text, color }] = useStyles()
+	const [{ flex, padding, margin, row, background, border, text, color }] = useStyles()
 	return (
 		<View style={[padding.horizontal.big, margin.vertical.big]}>
 			<TouchableOpacity
@@ -79,7 +79,7 @@ const ResetMyQrCode: React.FC<{}> = () => {
 					border.shadow.medium,
 					border.radius.small,
 					margin.bottom.medium,
-					{ alignItems: 'center' },
+					flex.align.center,
 					_stylesEditProfile.profileInfo,
 				]}
 			>
@@ -88,19 +88,19 @@ const ResetMyQrCode: React.FC<{}> = () => {
 				<Icon name='arrow-ios-downward-outline' width={30} height={30} />
 			</TouchableOpacity>
 			<View style={[padding.horizontal.medium, padding.top.medium]}>
-				<View style={[padding.top.small, row.left, { alignItems: 'center' }]}>
+				<View style={[padding.top.small, row.left, flex.align.center]}>
 					<Icon name='checkmark-outline' width={20} height={20} fill={color.green} />
 					<Text style={[text.color.grey, margin.left.medium, text.size.scale(11)]}>
 						Your Berty ID (QR code) will be updated
 					</Text>
 				</View>
-				<View style={[padding.top.small, row.left, { alignItems: 'center' }]}>
+				<View style={[padding.top.small, row.left, flex.align.center]}>
 					<Icon name='close-outline' width={20} height={20} fill={color.red} />
 					<Text style={[text.color.grey, margin.left.medium, text.size.scale(11)]}>
 						Your pending contact requests won’t be updated
 					</Text>
 				</View>
-				<View style={[padding.top.small, row.left, { alignItems: 'center' }]}>
+				<View style={[padding.top.small, row.left, flex.align.center]}>
 					<Icon name='close-outline' width={20} height={20} fill={color.red} />
 					<Text style={[text.color.grey, margin.left.medium, text.size.scale(11)]}>
 						People won’t be able to send you a contact request using your former credentials

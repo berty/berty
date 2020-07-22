@@ -113,9 +113,7 @@ export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({ 
 	if (!contact) {
 		goBack()
 		return (
-			<View
-				style={{ height: '100%', width: '100%', alignItems: 'center', justifyContent: 'center' }}
-			>
+			<View style={[{ height: '100%', width: '100%' }, flex.align.center, flex.justify.center]}>
 				<ActivityIndicator />
 			</View>
 		)

@@ -356,7 +356,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, searchTextKey, sear
 					</View>
 				</View>
 
-				<View style={{ marginLeft: 'auto', display: 'flex', alignSelf: 'center' }}>
+				<View style={[{ marginLeft: 'auto' }, column.item.center]}>
 					{receivedDate > 0 && searchTextKey === 'message' ? <TimeStamp /> : null}
 				</View>
 			</View>
@@ -392,7 +392,7 @@ const SearchComponent: React.FC<{
 	const [searchText, setSearchText] = useState(initialSearchText)
 	const contacts = Messenger.useAccountContactSearchResults(searchText)
 	const messages = Messenger.useGetMessageSearchResultWithMetadata(searchText)
-	const [{ padding, margin, background, text, flex }] = useStyles()
+	const [{ padding, margin, background, text, flex, border }] = useStyles()
 	const { windowHeight } = useStylesSearch()
 	const sections = useMemo(() => createSections(contacts, messages, searchText), [
 		messages,
@@ -462,10 +462,11 @@ const SearchComponent: React.FC<{
 				style={[
 					margin.top.small,
 					flex.justify.center,
+					border.radius.top.medium,
+					padding.top.small,
 					{
 						flexShrink: 1,
 						flexGrow: 1,
-						paddingHorizontal: 0,
 						...mainBackgroundColor,
 					},
 				]}

@@ -8,6 +8,7 @@ import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAva
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { messenger } from '@berty-tech/store'
+import { useDimensions } from '@react-native-community/hooks'
 
 const useStylesModal = () => {
 	const [{ width, border, height, opacity }] = useStyles()
@@ -47,9 +48,15 @@ const AddThisContact: React.FC<{ requestDraft: messenger.contact.ValidRequestDra
 	const resetDraft = Messenger.useResetDraft()
 	const [selectedContent, setSelectedContent] = useState('Fingerprint')
 	const _styles = useStylesModal()
+	const { height } = useDimensions().window
 	return (
 		<View
-			style={[{ justifyContent: 'center', alignItems: 'center', height: '100%' }, padding.medium]}
+			style={[
+				flex.justify.center,
+				flex.align.center,
+				{ flexBasis: height, flexGrow: 0 },
+				padding.medium,
+			]}
 		>
 			<View
 				style={[
@@ -57,7 +64,7 @@ const AddThisContact: React.FC<{ requestDraft: messenger.contact.ValidRequestDra
 					padding.horizontal.medium,
 					padding.bottom.medium,
 					border.radius.large,
-					{ width: '100%' },
+					{ width: '100%', flexBasis: height * 0.8, flexGrow: 0 },
 				]}
 			>
 				<View style={[absolute.scale({ top: -50 }), row.item.justify]}>
@@ -88,7 +95,13 @@ const AddThisContact: React.FC<{ requestDraft: messenger.contact.ValidRequestDra
 						<SelectedContent contentName={selectedContent} pubKey={requestDraft.contactPublicKey} />
 					</BodyAddThisContactContent>
 				</View>
-				<View style={[padding.top.big, row.fill, padding.medium]}>
+				<View
+					style={[
+						// padding.top.big,
+						row.fill,
+						// padding.medium,
+					]}
+				>
 					<TouchableOpacity
 						onPress={() => {
 							sendContactRequest(

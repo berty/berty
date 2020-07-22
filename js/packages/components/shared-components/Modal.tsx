@@ -43,7 +43,7 @@ export const Modal: React.FC<ModalProps> = ({
 }) => {
 	const { goBack } = useNavigation()
 	const _styles = useStylesModal()
-	const [{ margin, border, column, background, row, color, padding }] = useStyles()
+	const [{ margin, border, column, background, row, color, padding, flex }] = useStyles()
 	return (
 		<View style={[StyleSheet.absoluteFill]}>
 			{blurColor && (
@@ -56,7 +56,7 @@ export const Modal: React.FC<ModalProps> = ({
 			)}
 			<BlurView style={[StyleSheet.absoluteFill]} blurType='light' blurAmount={blurAmount} />
 			<SafeAreaView style={{ height: '100%' }}>
-				<View style={{ flexGrow: 1, justifyContent: 'center' }}>
+				<View style={[{ flexGrow: 1 }, flex.justify.center]}>
 					<TouchableWithoutFeedback onPress={goBack}>
 						<View style={[StyleSheet.absoluteFill]} />
 					</TouchableWithoutFeedback>
