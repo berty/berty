@@ -64,7 +64,7 @@ require (
 	github.com/multiformats/go-multihash v0.0.14
 	github.com/multiformats/go-multistream v0.1.1
 	github.com/oklog/run v1.1.0
-	github.com/peterbourgon/ff v1.7.0
+	github.com/peterbourgon/ff/v3 v3.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.7.1 // indirect
 	github.com/rivo/tview v0.0.0-20200712113419-c65badfc3d92

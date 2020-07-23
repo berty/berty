@@ -24,8 +24,8 @@ import (
 	libp2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlite"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/oklog/run"
-	"github.com/peterbourgon/ff"
-	"github.com/peterbourgon/ff/ffcli"
+	ff "github.com/peterbourgon/ff/v3"
+	"github.com/peterbourgon/ff/v3/ffcli"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"moul.io/srand"
@@ -87,19 +87,12 @@ func main() {
 		return nil
 	}
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	// handle close signal
-	execute, interrupt := run.SignalHandler(ctx, os.Interrupt)
-	process.Add(execute, interrupt)
-
 	serve := &ffcli.Command{
-		Name:    "serve",
-		Usage:   "serve -l <maddrs> -pk <private_key> -db <file>",
-		FlagSet: serveFlags,
-		Options: []ff.Option{ff.WithEnvVarPrefix("RDVP")},
-		Exec: func(args []string) error {
+		Name:       "serve",
+		ShortUsage: "serve -l <maddrs> -pk <private_key> -db <file>",
+		FlagSet:    serveFlags,
+		Options:    []ff.Option{ff.WithEnvVarPrefix("RDVP")},
+		Exec: func(ctx context.Context, args []string) error {
 			if err := globalPreRun(); err != nil {
 				return errcode.TODO.Wrap(err)
 			}
@@ -174,7 +167,7 @@ func main() {
 
 	genkey := &ffcli.Command{
 		Name: "genkey",
-		Exec: func(args []string) error {
+		Exec: func(context.Context, []string) error {
 			priv, _, err := libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.RSA, 2048, crand.Reader) // nolint:staticcheck
 			if err != nil {
 				return errcode.TODO.Wrap(err)
@@ -191,19 +184,26 @@ func main() {
 	}
 
 	root := &ffcli.Command{
-		Usage:       "rdvp [global flags] <subcommand> [flags] [args...]",
+		ShortUsage:  "rdvp [global flags] <subcommand> [flags] [args...]",
 		FlagSet:     globalFlags,
 		Options:     []ff.Option{ff.WithEnvVarPrefix("RDVP")},
 		Subcommands: []*ffcli.Command{serve, genkey},
-		Exec: func([]string) error {
+		Exec: func(context.Context, []string) error {
 			globalFlags.Usage()
 			return flag.ErrHelp
 		},
 	}
 
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	// handle close signal
+	execute, interrupt := run.SignalHandler(ctx, os.Interrupt)
+	process.Add(execute, interrupt)
+
 	// add root command to process
 	process.Add(func() error {
-		return root.Run(os.Args[1:])
+		return root.ParseAndRun(ctx, os.Args[1:])
 	}, func(error) {
 		cancel()
 	})
