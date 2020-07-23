@@ -11,7 +11,6 @@ import {
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
-import { scaleHeight } from '@berty-tech/styles/constant'
 import { Messenger, Settings } from '@berty-tech/hooks'
 import { useNavigation, ScreenProps, Routes } from '@berty-tech/navigation'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
@@ -48,6 +47,7 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 	const _styles = useStylesChat()
 	const [
 		{ absolute, row, padding, column, margin, text, flex, opacity, color, border, width, height },
+		{ scaleHeight },
 	] = useStyles()
 	const conversation = Messenger.useGetConversation(id)
 	const contact = Messenger.useOneToOneConversationContact(id)
@@ -163,7 +163,7 @@ const InfosChat: React.FC<{ createdAt: number }> = ({ createdAt }) => {
 // const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
 
 const MessageList: React.FC<{ id: string; scrollToMessage?: number }> = (props) => {
-	const [{ row, overflow, flex }] = useStyles()
+	const [{ row, overflow, flex }, { scaleHeight }] = useStyles()
 	const conversation = Messenger.useGetConversation(props.id)
 	const flatListRef = useRef<FlatList<messenger.message.Entity['id']>>(null)
 

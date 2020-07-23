@@ -23,7 +23,6 @@ import { SafeAreaView, SafeAreaConsumer } from 'react-native-safe-area-context'
 import FromNow from '../shared-components/FromNow'
 import Logo from './1_berty_picto.svg'
 import EmptyChat from './empty_chat.svg'
-import { scaleHeight } from '@berty-tech/styles/constant'
 import moment from 'moment'
 
 //
@@ -352,7 +351,7 @@ const HomeHeader: React.FC<
 		isOnTop: boolean
 	}
 > = ({ hasRequests, scrollRef, onLayout, isOnTop }) => {
-	const [{ border, padding, margin, text, background, color }] = useStyles()
+	const [{ border, padding, margin, text, background }, { scaleHeight }] = useStyles()
 
 	return (
 		<View onLayout={onLayout}>

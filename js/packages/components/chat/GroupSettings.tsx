@@ -12,7 +12,6 @@ import HeaderSettings from '../shared-components/Header'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import { messenger } from '@berty-tech/store'
 import { Messenger, Groups } from '@berty-tech/hooks'
-import { scaleHeight } from '@berty-tech/styles/constant'
 
 //
 // GroupChatSettings
@@ -69,7 +68,7 @@ const GroupChatSettingsHeaderButtons: React.FC<
 }
 
 const GroupChatSettingsHeader: React.FC<messenger.conversation.Entity> = ({ title, id }) => {
-	const [{ text, margin }] = useStyles()
+	const [{ text, margin }, { scaleHeight }] = useStyles()
 	return (
 		<View>
 			<ConversationProceduralAvatar

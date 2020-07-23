@@ -1,30 +1,56 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mem from 'mem'
 import { StyleSheet, Platform } from 'react-native'
 import { Declaration, Sizes } from './types'
-import { scaleSize } from './constant'
 import { mapSizes, mapBorderSidesSizes } from './map-sides'
 import { mapColorsDeclaration } from './map-colors'
+import { initialScaleSize } from './constant'
 
-export const mapBorderRadiusSides = (decl: Declaration) => ({
-	top: mapSizes(decl.sides, (radius) => ({
-		borderTopLeftRadius: radius,
-		borderTopRightRadius: radius,
-	})),
-	left: mapSizes(decl.sides, (radius) => ({
-		borderTopLeftRadius: radius,
-		borderBottomLeftRadius: radius,
-	})),
-	right: mapSizes(decl.sides, (radius) => ({
-		borderTopRightRadius: radius,
-		borderBottomRightRadius: radius,
-	})),
-	bottom: mapSizes(decl.sides, (radius) => ({
-		borderBottomLeftRadius: radius,
-		borderBottomRightRadius: radius,
-	})),
-	vertical: mapSizes(decl.sides, (radius) => ({ borderRadius: radius })),
-	horizontal: mapSizes(decl.sides, (radius) => ({ borderRadius: radius })),
-})
+export const mapBorderRadiusSides = (
+	decl: Declaration,
+	{ scaleSize } = { scaleSize: initialScaleSize },
+): any => {
+	return {
+		top: mapSizes(
+			decl.sides,
+			(radius) => ({
+				borderTopLeftRadius: radius,
+				borderTopRightRadius: radius,
+			}),
+			{ scaleSize },
+		),
+		left: mapSizes(
+			decl.sides,
+			(radius) => ({
+				borderTopLeftRadius: radius,
+				borderBottomLeftRadius: radius,
+			}),
+			{ scaleSize },
+		),
+		right: mapSizes(
+			decl.sides,
+			(radius) => ({
+				borderTopRightRadius: radius,
+				borderBottomRightRadius: radius,
+			}),
+			{ scaleSize },
+		),
+		bottom: mapSizes(
+			decl.sides,
+			(radius) => ({
+				borderBottomLeftRadius: radius,
+				borderBottomRightRadius: radius,
+			}),
+			{ scaleSize },
+		),
+		vertical: mapSizes(decl.sides, (radius) => ({ borderRadius: radius }), {
+			scaleSize,
+		}),
+		horizontal: mapSizes(decl.sides, (radius) => ({ borderRadius: radius }), {
+			scaleSize,
+		}),
+	}
+}
 
 export const mapBorderShadowIOS = (
 	decl: Declaration,
@@ -64,16 +90,35 @@ export const mapBorderShadowAndroid = (): Sizes<{}> => ({
 	scale: mem((size: number) => StyleSheet.create({ scale: { elevation: size } }).scale),
 })
 
-export const mapBorder = (decl: Declaration) => ({
-	...mapBorderSidesSizes(),
-	scale: mem(
-		(size: number) => StyleSheet.create({ scale: { borderWidth: size * scaleSize } }).scale,
+export const mapBorder = (
+	decl: Declaration,
+	{ scaleSize } = { scaleSize: initialScaleSize },
+): any => ({
+	...mapBorderSidesSizes(
+		{ scaleSize },
+		{
+			tiny: 0.1 * scaleSize,
+			small: 0.2 * scaleSize,
+			medium: 0.5 * scaleSize,
+			large: 1 * scaleSize,
+			big: 2 * scaleSize,
+			huge: 5 * scaleSize,
+		},
 	),
+	scale: mem((size: number) => {
+		return StyleSheet.create({ scale: { borderWidth: size * scaleSize } }).scale
+	}),
 	radius: {
-		...mapSizes(decl.sides, (radius) => ({
-			borderRadius: radius,
-		})),
-		...mapBorderRadiusSides(decl),
+		...mapSizes(
+			decl.sides,
+			(radius) => {
+				return {
+					borderRadius: radius,
+				}
+			},
+			{ scaleSize },
+		),
+		...mapBorderRadiusSides(decl, { scaleSize }),
 	},
 	shadow: Platform.select({ ios: mapBorderShadowIOS(decl), android: mapBorderShadowAndroid() }),
 	size: StyleSheet.create({}),

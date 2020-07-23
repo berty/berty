@@ -20,6 +20,7 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import { CustomIconsPack } from './custom-icons'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import GoBridge from '@berty-tech/go-bridge'
+import { Provider as StyleProvider } from '@berty-tech/styles'
 
 enableScreens()
 
@@ -34,19 +35,23 @@ DevMenu.addItem('Test watchdog', async () => {
 	await GoBridge.stopProtocol()
 })
 
-export const App: React.FC = () => (
-	<SafeAreaProvider>
-		<Messenger.Provider config={{ storage: AsyncStorage }}>
-			<NavigationContainer>
-				<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
-				<Theme.Provider>
-					<NodeGate>
-						<Navigation />
-					</NodeGate>
-				</Theme.Provider>
-			</NavigationContainer>
-		</Messenger.Provider>
-	</SafeAreaProvider>
-)
+export const App: React.FC = () => {
+	return (
+		<SafeAreaProvider>
+			<StyleProvider>
+				<Messenger.Provider config={{ storage: AsyncStorage }}>
+					<NavigationContainer>
+						<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
+						<Theme.Provider>
+							<NodeGate>
+								<Navigation />
+							</NodeGate>
+						</Theme.Provider>
+					</NavigationContainer>
+				</Messenger.Provider>
+			</StyleProvider>
+		</SafeAreaProvider>
+	)
+}
 
 export default App

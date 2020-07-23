@@ -87,7 +87,6 @@ export type BoldDeclaration<T> = {
 export type Text = {
 	color: Colors<{}> & ColorsBrightness<{}>
 	size: Sizes<{}>
-	family: { use: (fontFamily: string) => {} }
 	bold: BoldDeclaration<{ fontWeight: BoldDeclarationTypes }>
 	italic: {}
 	align: Align<{}>
@@ -148,7 +147,6 @@ export type Declaration = {
 	colors: ColorsDeclaration
 	sides: SizesDeclaration<number>
 	text: {
-		family: {}
 		sizes: SizesDeclaration<number>
 	}
 }
@@ -183,3 +181,5 @@ export type Styles = {
 	minHeight: (minHeight: number) => {}
 	overflow: {}
 }
+
+export type ScaleSizes = { fontScale: number; scaleSize: number; scaleHeight: number }

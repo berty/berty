@@ -19,7 +19,6 @@ import { CommonActions } from '@react-navigation/core'
 import Interactable from 'react-native-interactable'
 import FromNow from '../shared-components/FromNow'
 import EmptyContact from './empty_contact.svg'
-import { scaleHeight } from '@berty-tech/styles/constant'
 import { useDimensions } from '@react-native-community/hooks'
 
 const useStylesList = () => {
@@ -206,7 +205,7 @@ const EmptyTab: React.FC<{}> = ({ children }) => {
 }
 
 const Requests: React.FC<{}> = () => {
-	const [{ padding, background, column, text, opacity }] = useStyles()
+	const [{ padding, background, column, text, opacity }, { scaleHeight }] = useStyles()
 	const { isLandscape, isShortWindow, isGteIpadSize } = useStylesList()
 
 	const requests = Messenger.useAccountContactsWithOutgoingRequests().filter(

@@ -1,18 +1,13 @@
 import { PixelRatio, Dimensions } from 'react-native'
 
-const { height, width } = Dimensions.get('window')
-const iPhone11ShortEdge = 414
-const iPhone11LongEdge = 896
+export const { height: initialHeight, width: initialWidth } = Dimensions.get('window')
+export const iPhone11ShortEdge = 414
+export const iPhone11LongEdge = 896
+const initialIsLandscape = initialHeight < initialWidth
 
-const dimensions = {
-	shortEdge: Math.min(height, width),
-	longEdge: Math.max(width, height),
-}
+export const initialScaleSize =
+	initialWidth / Math.max(initialIsLandscape ? iPhone11LongEdge : iPhone11ShortEdge, initialWidth)
+export const initialScaleHeight =
+	initialHeight / Math.max(initialIsLandscape ? iPhone11ShortEdge : iPhone11LongEdge, initialHeight)
 
-const { shortEdge, longEdge } = dimensions
-
-const shortEdgeRatio = shortEdge / Math.max(shortEdge, iPhone11ShortEdge)
-const longEdgeRatio = longEdge / Math.max(longEdge, iPhone11LongEdge)
-export const scaleSize = Math.min(shortEdgeRatio, 1)
-export const scaleHeight = Math.min(longEdgeRatio, 1)
-export const fontScale = PixelRatio.getFontScale() * scaleSize
+export const initialFontScale = PixelRatio.getFontScale() * initialScaleSize

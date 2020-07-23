@@ -12,7 +12,6 @@ import {
 import { BlurView } from '@react-native-community/blur'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
-import { scaleHeight } from '@berty-tech/styles/constant'
 import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { Message } from './shared-components/Message'
@@ -29,7 +28,7 @@ import { useReadEffect } from '../hooks'
 
 const HeaderChatGroup: React.FC<{ id: string }> = ({ id }) => {
 	const { navigate, goBack } = useNavigation()
-	const [{ row, padding, flex, text, column, absolute }] = useStyles()
+	const [{ row, padding, flex, text, column, absolute }, { scaleHeight }] = useStyles()
 	const conversation = Messenger.useGetConversation(id)
 	return (
 		<BlurView
@@ -155,6 +154,7 @@ const HeaderChatGroup: React.FC<{ id: string }> = ({ id }) => {
 // }
 
 const ChatGroupMemberItem: React.FC<{ memberPk: any }> = ({ memberPk }) => {
+	const [, { scaleHeight }] = useStyles()
 	return (
 		<View>
 			<TextNative style={{ paddingLeft: 10 * scaleHeight }}>{memberPk}</TextNative>
@@ -204,7 +204,7 @@ const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) 
 }
 
 const MessageList: React.FC<{ id: string }> = ({ id }) => {
-	const [{ overflow, row, flex }] = useStyles()
+	const [{ overflow, row, flex }, { scaleHeight }] = useStyles()
 	const conversation = Messenger.useGetConversation(id)
 	if (!conversation) {
 		return <CenteredActivityIndicator />
