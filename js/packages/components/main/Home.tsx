@@ -24,6 +24,7 @@ import FromNow from '../shared-components/FromNow'
 import Logo from './1_berty_picto.svg'
 import EmptyChat from './empty_chat.svg'
 import { scaleHeight } from '@berty-tech/styles/constant'
+import moment from 'moment'
 
 //
 // Main List
@@ -295,8 +296,10 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 								]}
 							>
 								{message?.type === messenger.AppMessageType.UserMessage
-									? formatTimestamp(new Date(message.sentDate))
-									: formatTimestamp(new Date(Date.now()))}
+									? Date.now() - new Date(message.sentDate).getTime() > 86400000
+										? moment(message.sentDate).format('DD/MM/YYYY')
+										: moment(message.sentDate).format('hh:mm')
+									: moment().format('hh:mm')}
 							</Text>
 							{lastSentMessage && <MessageStatus messageID={lastSentMessage} />}
 						</View>
@@ -411,15 +414,12 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const requests = Messenger.useAccountContactsWithIncomingRequests().filter(
 		(contact) => !(contact.request.accepted || contact.request.discarded),
 	)
-	const conversations = Messenger.useConversationList().sort((a, b) => {
-		if (!a.fake && !b.fake) {
-			return (b.lastMessageDate || 0) - (a.lastMessageDate || 0)
-		}
-		return 0
-	})
+	const conversations = Messenger.useConversationList().sort(
+		(a, b) => new Date(b.lastMessageDate).getTime() - new Date(a.lastMessageDate).getTime(),
+	)
 	const isConversation = Messenger.useConversationLength()
 
-	const [{ color, text, opacity, flex, margin }] = useStyles()
+	const [{ color, text, opacity, flex, margin, background }] = useStyles()
 	const scrollRef = useRef<ScrollView>(null)
 	const [offset, setOffset] = useState<any>()
 	const [isOnTop, setIsOnTop] = useState<boolean>(false)
@@ -429,12 +429,10 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	useEffect(() => {
 		if (!requests.length) {
 			setBgColor(color.white)
-		} else if ((dirScroll === 'up' && isOnTop) || isOnTop) {
-			setBgColor(color.white)
-		} else if ((dirScroll === 'down' && !isOnTop) || !isOnTop) {
+		} else {
 			setBgColor(color.blue)
 		}
-	}, [dirScroll, isOnTop, color.white, color.blue, requests.length])
+	}, [color.white, color.blue, requests.length])
 
 	return (
 		<View style={[flex.tiny]}>
@@ -470,19 +468,21 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 				{isConversation ? (
 					<Conversations items={conversations} onLayout={onLayoutConversations} />
 				) : (
-					<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
-						<EmptyChat width={350} height={350} />
-						<TextNative
-							style={[
-								text.align.center,
-								text.color.grey,
-								text.bold.small,
-								opacity(0.3),
-								margin.top.big,
-							]}
-						>
-							You don't have any contacts or chat yet
-						</TextNative>
+					<View style={[background.white]}>
+						<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
+							<EmptyChat width={350} height={350} />
+							<TextNative
+								style={[
+									text.align.center,
+									text.color.grey,
+									text.bold.small,
+									opacity(0.3),
+									margin.top.big,
+								]}
+							>
+								You don't have any contacts or chat yet
+							</TextNative>
+						</View>
 					</View>
 				)}
 			</ScrollView>

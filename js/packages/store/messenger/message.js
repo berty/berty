@@ -122,10 +122,7 @@ export const queries = {
 	list: (state) => Object.values(getAggregates(state)),
 	get: (state, { id }) => getAggregates(state)[id],
 	getLength: (state) => Object.keys(getAggregates(state)).length,
-	getFakeLength: (state) =>
-		Object.keys(
-			Object.values(state.messenger.message.aggregates).map((message) => message && message.fake),
-		).length,
+	getFakeLength: (state) => queries.list(state).filter((msg) => msg.fake).length,
 	getList: (state, { list }) => {
 		if (!list) {
 			return []

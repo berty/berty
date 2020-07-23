@@ -195,10 +195,7 @@ export const queries = {
 		),
 	get: (state, { id }) => getAggregates(state)[id],
 	getLength: (state) => Object.keys(getAggregates(state)).length,
-	getFakeLength: (state) =>
-		Object.keys(
-			Object.values(state.messenger.conversation.aggregates).map((conv) => conv && conv.fake),
-		).length,
+	getFakeLength: (state) => queries.list(state).filter((conv) => conv.fake).length,
 	searchByTitle: (state, { searchText }) =>
 		Object.values(state.messenger.conversation.aggregates).filter((conv) =>
 			searchText?.toLowerCase().includes(conv.title?.toLowerCase()),
@@ -232,6 +229,7 @@ export const transactions = {
 			for (const msg of messages) {
 				conv.messages.push(msg.id)
 			}
+			conv.lastMessageDate = messages[messages.length - 1].sentDate
 		}
 		yield put(
 			events.generated({
