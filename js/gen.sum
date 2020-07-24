@@ -8,5 +8,5 @@
 84e82ba2400f5cf180d062b5f8d7f89784da79ef  packages/store/types/events.gen.js.hbs
 a0d72ec76cf80a59f7b3e616f5a90924c0ffffd2  packages/store/messenger/client.gen.js.hbs
 af95a29375259c0d5fd47e7e07aafee140a592a8  packages/store/protocol/client.gen.js.hbs
+ca5e1e645894ca5ef88d43f77e6d73549b41ada1  Makefile
 cdcfd4235af64debca29d0553209a34df7899361  ../api/bertytypes.proto
-f54461844fc726d00c1a01131a317e87e378e891  Makefile

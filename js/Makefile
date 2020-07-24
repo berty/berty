@@ -275,7 +275,7 @@ protoc_opts := -I ../api:../vendor:/protobuf
 _gen.protoc: ../vendor
 	docker run --rm --user="`id -u`" --entrypoint="sh" \
 	  --volume="$(PWD)/..:/go/src/berty.tech/berty" --workdir="/go/src/berty.tech/berty/js" \
-	  bertytech/protoc:24 -xec 'make _gen.protoc.local'
+	  bertytech/protoc:25 -xec 'make _gen.protoc.local'
 .PHONY: _gen.protoc.local
 _gen.protoc.local:
 	$(call check-program, protoc)

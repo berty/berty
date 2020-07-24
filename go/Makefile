@@ -117,14 +117,15 @@ $(gen_sum): $(gen_src)
 	    --workdir="/go/src/berty.tech/berty/go" \
 	    --entrypoint="sh" \
 	    --rm \
-	    bertytech/protoc:24 \
+	    bertytech/protoc:25 \
 	    -xec 'make generate_local'; \
 	    $(MAKE) tidy \
 	)
 
 .PHONY: generate_local
 generate_local:
-	$(call check-program, goimports shasum protoc)
+	$(call check-program, shasum protoc)
+	go install golang.org/x/tools/cmd/goimports
 	go install github.com/buicongtan1997/protoc-gen-swagger-config
 	protoc-gen-swagger-config -i ../api/bertymessenger.proto -o ../api/bertymessenger.yaml
 	protoc-gen-swagger-config -i ../api/bertyprotocol.proto -o ../api/bertyprotocol.yaml

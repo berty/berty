@@ -63,7 +63,7 @@ on:
 jobs:
   gen-go-and-docs:
     runs-on: ubuntu-latest
-    container: bertytech/protoc:24
+    container: bertytech/protoc:25
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -123,7 +123,7 @@ jobs:
       #    file: docs/.tmp/openapi/bertymessenger.swagger.json
   gen-js:
     runs-on: ubuntu-latest
-    container: bertytech/protoc:24
+    container: bertytech/protoc:25
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}

@@ -67,6 +67,7 @@ require (
 	github.com/peterbourgon/ff/v3 v3.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.7.1 // indirect
+	github.com/pseudomuto/protoc-gen-doc v1.3.2
 	github.com/rivo/tview v0.0.0-20200712113419-c65badfc3d92
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
@@ -80,7 +81,7 @@ require (
 	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381
 	golang.org/x/text v0.3.3 // indirect
-	golang.org/x/tools v0.0.0-20200717024301-6ddee64345a6 // indirect
+	golang.org/x/tools v0.0.0-20200717024301-6ddee64345a6
 	google.golang.org/genproto v0.0.0-20200715011427-11fb19a81f2c // indirect
 	google.golang.org/grpc v1.30.0
 	google.golang.org/protobuf v1.25.0 // indirect
