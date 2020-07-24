@@ -1,10 +1,9 @@
 IMAGE ?=	bertytech/protoc
-VERSION ?=	24
+VERSION ?=	25
 
 build:
-	docker build -t $(IMAGE):$(VERSION) .
+	cd ../../ && docker build -f ./tool/docker-protoc/Dockerfile -t $(IMAGE):$(VERSION) -t $(IMAGE):latest .
 
 publish: build
-	docker tag $(IMAGE):$(VERSION) $(IMAGE):latest
 	docker push $(IMAGE):$(VERSION)
 	docker push $(IMAGE):latest

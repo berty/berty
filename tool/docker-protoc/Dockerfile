@@ -5,24 +5,14 @@ FROM    golang:1.14-alpine as builder
 # install deps
 RUN     apk --no-cache add make git go rsync libc-dev openssh docker npm
 # install compilers
-RUN     go get -u \
-          github.com/gogo/protobuf/gogoproto \
-          github.com/gogo/protobuf/jsonpb \
-          github.com/gogo/protobuf/proto \
+WORKDIR $GOPATH/src/berty.tech/berty
+COPY    go.mod go.sum ./
+RUN     go install -mod=readonly \
           github.com/gogo/protobuf/protoc-gen-gogo \
-          github.com/gogo/protobuf/protoc-gen-gogofast \
-          github.com/gogo/protobuf/protoc-gen-gogofaster \
-          github.com/gogo/protobuf/protoc-gen-gogoslick \
           github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
           github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger \
           github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc \
-          github.com/simplealpine/json2yaml \
-          github.com/spf13/cobra \
-          github.com/vektah/gorunpkg \
-          golang.org/x/tools/cmd/goimports \
-          moul.io/protoc-gen-gotemplate
-RUN     go get -d github.com/envoyproxy/protoc-gen-validate \
- &&     make -C $GOPATH/src/github.com/envoyproxy/protoc-gen-validate build
+          golang.org/x/tools/cmd/goimports
 
 # runtime
 FROM    golang:1.14-alpine

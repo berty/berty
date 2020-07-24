@@ -306,7 +306,6 @@ func local_request_MessengerService_SystemInfo_0(ctx context.Context, marshaler 
 // RegisterMessengerServiceHandlerServer registers the http handlers for service MessengerService to "mux".
 // UnaryRPC     :call MessengerServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Note that using this registration option will cause many gRPC library features (such as grpc.SendHeader, etc) to stop working. Consider using RegisterMessengerServiceHandlerFromEndpoint instead.
 func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server MessengerServiceServer) error {
 
 	mux.Handle("POST", pattern_MessengerService_InstanceShareableBertyID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
