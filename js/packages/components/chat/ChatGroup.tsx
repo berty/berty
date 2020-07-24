@@ -209,6 +209,10 @@ const MessageList: React.FC<{ id: string }> = ({ id }) => {
 	if (!conversation) {
 		return <CenteredActivityIndicator />
 	}
+	const getPreviousMessageId = (item = '', messageList: string[] = []): string => {
+		const messagePosition: number = !item ? -1 : messageList.indexOf(item)
+		return messagePosition < 1 ? '' : messageList[messagePosition - 1]
+	}
 	return (
 		<FlatList
 			keyboardDismissMode='on-drag'
@@ -217,7 +221,13 @@ const MessageList: React.FC<{ id: string }> = ({ id }) => {
 			inverted
 			ListFooterComponent={<InfosChatGroup {...conversation} />}
 			renderItem={({ item }) => (
-				<Message id={item} convKind='multi' key={item} membersNames={conversation.membersNames} />
+				<Message
+					id={item}
+					convKind='multi'
+					key={item}
+					membersNames={conversation.membersNames}
+					previousMessageId={getPreviousMessageId(item, conversation.messages)}
+				/>
 			)}
 		/>
 	)

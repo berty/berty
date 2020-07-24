@@ -1,13 +1,13 @@
+import { Messenger } from '@berty-tech/hooks'
+import { messenger } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
+import Color from 'color'
+import palette from 'google-palette'
 import React from 'react'
 import { View } from 'react-native'
-import { Text, Icon } from 'react-native-ui-kitten'
-import { useStyles } from '@berty-tech/styles'
-import { CircleAvatar } from '../../shared-components/CircleAvatar'
-import { messenger } from '@berty-tech/store'
-import { Messenger } from '@berty-tech/hooks'
-import palette from 'google-palette'
-import Color from 'color'
+import { Icon, Text } from 'react-native-ui-kitten'
 import { SHA3 } from 'sha3'
+import { ProceduralCircleAvatar } from '../../shared-components/ProceduralCircleAvatar'
 
 const pal = palette('tol-rainbow', 256)
 
@@ -18,11 +18,11 @@ const pal = palette('tol-rainbow', 256)
 // Types
 // Styles
 const useStylesMessage = () => {
-	const [{ margin, row, flex, text, padding }] = useStyles()
+	const [{ row, text, padding }] = useStyles()
 	return {
 		isMeMessage: [row.item.bottom, { maxWidth: '90%' }],
 		isOtherMessage: [row.item.top, { maxWidth: '90%' }],
-		circleAvatar: [flex.tiny, margin.right.small, row.item.bottom],
+		circleAvatar: [row.item.center],
 		messageItem: [],
 		personNameInGroup: text.size.tiny,
 		dateMessage: text.size.tiny,
@@ -42,25 +42,29 @@ export const Message: React.FC<{
 	id: string
 	convKind: '1to1' | 'multi'
 	membersNames?: { [key: string]: string | undefined }
-}> = ({ id, convKind, membersNames }) => {
+	previousMessageId: string
+}> = ({ id, convKind, membersNames, previousMessageId }) => {
 	const message = Messenger.useGetMessage(id)
+	const previousMessage = Messenger.useGetMessage(previousMessageId)
+
 	const _styles = useStylesMessage()
-	const [{ row, margin, padding, column, text, border, color }] = useStyles()
+	const [{ row, margin, padding, column, text, border, color, flex, height, width }] = useStyles()
 	if (!message) {
 		return null
 	}
 	const isGroup = convKind === 'multi'
 	const styleMsg = null
-	const avatarUri = undefined
 	let name
 	let baseColor = color.blue
+	let isFollowupMessage = false
+	let isWithinTenMinsAfter = false
 	if (message.type === messenger.AppMessageType.UserMessage) {
 		if (message.memberPk && membersNames) {
 			name = membersNames[message.memberPk]
 		}
 		const payload = message
 		const cmd = messenger.message.isCommandMessage(payload.body)
-		let msgTextColor, msgBackgroundColor, msgBorderColor
+		let msgTextColor, msgBackgroundColor, msgBorderColor, msgSenderColor
 		if (convKind === '1to1') {
 			msgTextColor = payload.isMe
 				? payload.acknowledged
@@ -76,6 +80,16 @@ export const Message: React.FC<{
 				: '#CED2FF99'
 			msgBorderColor = payload.isMe && (cmd ? border.color.grey : border.color.blue)
 		} else {
+			isFollowupMessage =
+				previousMessage && !payload.isMe && payload.memberPk === previousMessage.memberPk
+
+			isWithinTenMinsAfter =
+				previousMessage &&
+				payload?.memberPk === previousMessage?.memberPk &&
+				payload.sentDate &&
+				previousMessage.sentDate &&
+				Math.abs((payload?.sentDate || 0) - (previousMessage?.sentDate || 0)) < 10 * 6000
+
 			if (!message.isMe && message.memberPk) {
 				const h = new SHA3(256).update(message.memberPk).digest()
 				baseColor = '#' + pal[h[0]]
@@ -93,6 +107,7 @@ export const Message: React.FC<{
 					: color.white
 				: Color(baseColor).alpha(0.1)
 			msgBorderColor = payload.isMe && (cmd ? border.color.grey : { borderColor: baseColor })
+			msgSenderColor = payload.isMe ? 'red' : Color(baseColor).alpha(0.4)
 		}
 
 		return (
@@ -101,25 +116,13 @@ export const Message: React.FC<{
 					row.left,
 					payload.isMe ? _styles.isMeMessage : _styles.isOtherMessage,
 					padding.horizontal.medium,
-					{ paddingTop: 2 },
+					padding.top.scale(2),
 				]}
 			>
-				{/*!payload.isMe && isGroup && (
-					<CircleAvatar
-						style={_styles.circleAvatar}
-						avatarUri={avatarUri}
-						withCircle={false}
-						size={35}
-					/>
-				)*/}
+				{!payload.isMe && isGroup && !isFollowupMessage && (
+					<ProceduralCircleAvatar style={_styles.circleAvatar} seed={message.memberPk} size={35} />
+				)}
 				<View style={[column.top, _styles.messageItem]}>
-					{!payload.isMe && isGroup && name && (
-						<View style={[margin.left.small]}>
-							<Text style={[text.bold.medium, _styles.personNameInGroup, { color: baseColor }]}>
-								{name}
-							</Text>
-						</View>
-					)}
 					<View
 						style={[
 							padding.small,
@@ -130,12 +133,22 @@ export const Message: React.FC<{
 							payload.isMe && border.scale(2),
 							padding.horizontal.scale(payload.isMe ? 11 : 13),
 							padding.vertical.scale(payload.isMe ? 7 : 9),
+							payload.isMe ? column.item.right : column.item.right,
+							isFollowupMessage && margin.left.scale(35),
 							{
 								backgroundColor: msgBackgroundColor,
-								alignSelf: payload.isMe ? 'flex-end' : 'flex-start',
 							},
 						]}
 					>
+						{!payload.isMe && isGroup && name && !isFollowupMessage && (
+							<View>
+								<Text
+									style={[text.bold.medium, _styles.personNameInGroup, { color: msgSenderColor }]}
+								>
+									{name}
+								</Text>
+							</View>
+						)}
 						<Text
 							style={[
 								{
@@ -150,16 +163,19 @@ export const Message: React.FC<{
 					</View>
 					<View style={[payload.isMe && row.item.bottom]}>
 						<View style={[row.left, { alignItems: 'center' }]}>
-							<Text
-								style={[
-									text.color.grey,
-									padding.right.scale(5),
-									_styles.dateMessage,
-									{ fontSize: 9 },
-								]}
-							>
-								{formatTimestamp(new Date(payload.sentDate))}{' '}
-							</Text>
+							{!isWithinTenMinsAfter && (
+								<Text
+									style={[
+										text.color.grey,
+										padding.right.scale(5),
+										_styles.dateMessage,
+										isFollowupMessage && margin.left.scale(35),
+										{ fontSize: 9 },
+									]}
+								>
+									{formatTimestamp(new Date(payload.sentDate))}{' '}
+								</Text>
+							)}
 							{!cmd && (
 								<>
 									{payload.isMe && (
