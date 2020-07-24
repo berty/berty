@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react'
 import { View, TouchableOpacity, TextInput, Dimensions, StyleSheet, ScrollView } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
-import { scaleSize, scaleHeight } from '@berty-tech/styles/constant'
 import { useNavigation } from '@berty-tech/navigation'
 import { Messenger } from '@berty-tech/hooks'
 import { messenger } from '@berty-tech/store'
@@ -102,6 +101,7 @@ type GroupInfoProps = { onGroupNameChange: (name: string) => void; layout: numbe
 const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 	const [
 		{ row, background, column, margin, flex, height, border, padding, color, text },
+		{ scaleSize },
 	] = useStyles()
 	const _styles = useStylesCreateGroup()
 	const dimensions = useDimensions().window

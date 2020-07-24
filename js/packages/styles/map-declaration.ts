@@ -2,12 +2,69 @@ import { StyleSheet } from 'react-native'
 import mem from 'mem'
 import _ from 'lodash'
 import { Declaration, Styles, ColorsStyles } from './types'
-import { scaleSize, fontScale } from './constant'
+import { initialScaleSize, initialFontScale, initialScaleHeight } from './constant'
 import { mapColorsDeclaration } from './map-colors'
 import { mapSides } from './map-sides'
 import { mapBorder } from './map-border'
 
-export const mapDeclaration = (decl: Declaration): Styles => {
+export const defaultStylesDeclaration: Declaration = {
+	colors: {
+		default: {
+			white: '#FFFFFF',
+			black: '#2B2E4D',
+			blue: '#525BEC',
+			red: '#F64278',
+			yellow: '#FFBF47',
+			green: '#20D6B5',
+			grey: '#979797',
+		},
+		light: {
+			white: '#FFFFFF',
+			black: '#2B2E4D',
+			blue: '#CED2FF',
+			red: '#FFCED8',
+			yellow: '#FFF2DA',
+			green: '#D3F8F2',
+			grey: '#EDEFF3',
+		},
+		dark: {
+			white: '#FFFFFF',
+			black: '#2B2E4D',
+			blue: '#3E49EA',
+			red: '#F64278',
+			yellow: '#FFBF47',
+			green: '#20D6B5',
+			grey: '#3F426D',
+		},
+	},
+	sides: {
+		tiny: 4,
+		small: 9,
+		medium: 16,
+		large: 24,
+		big: 32,
+		huge: 40,
+	},
+	text: {
+		sizes: {
+			tiny: 10,
+			small: 12,
+			medium: 15,
+			large: 19,
+			big: 22,
+			huge: 26,
+		},
+	},
+}
+
+export const mapDeclarationWithDims = (
+	decl: Declaration,
+	{ fontScale, scaleSize, scaleHeight } = {
+		fontScale: initialFontScale,
+		scaleSize: initialScaleSize,
+		scaleHeight: initialScaleHeight,
+	},
+): Styles => {
 	return {
 		color: {
 			...decl.colors.default,
@@ -34,12 +91,9 @@ export const mapDeclaration = (decl: Declaration): Styles => {
 			scale: mem((size) => StyleSheet.create({ scale: { margin: size * scaleSize } }).scale),
 			...mapSides(decl.sides, 'margin'),
 		},
-		border: mapBorder(decl),
+		border: mapBorder(decl, { scaleSize }),
 		text: {
 			color: mapColorsDeclaration(decl.colors, (v) => ({ color: v })),
-			family: {
-				use: (fontFamily: string) => StyleSheet.create({ use: { fontFamily: fontFamily } }),
-			},
 			bold: {
 				...StyleSheet.create({
 					// default is '600'
@@ -184,63 +238,23 @@ export const mapDeclaration = (decl: Declaration): Styles => {
 	}
 }
 
-export const mapScaledDeclaration = (decl: Declaration): Styles =>
-	mapDeclaration({
-		...decl,
-		sides: _.mapValues(decl.sides, (n: number) => n * scaleSize),
-		text: {
-			...decl.text,
-			sizes: _.mapValues(decl.text.sizes, (n: number) => n * fontScale),
-		},
-	})
-
-export const defaultStylesDeclaration: Declaration = {
-	colors: {
-		default: {
-			white: '#FFFFFF',
-			black: '#2B2E4D',
-			blue: '#525BEC',
-			red: '#F64278',
-			yellow: '#FFBF47',
-			green: '#20D6B5',
-			grey: '#979797',
-		},
-		light: {
-			white: '#FFFFFF',
-			black: '#2B2E4D',
-			blue: '#CED2FF',
-			red: '#FFCED8',
-			yellow: '#FFF2DA',
-			green: '#D3F8F2',
-			grey: '#EDEFF3',
-		},
-		dark: {
-			white: '#FFFFFF',
-			black: '#2B2E4D',
-			blue: '#3E49EA',
-			red: '#F64278',
-			yellow: '#FFBF47',
-			green: '#20D6B5',
-			grey: '#3F426D',
-		},
+export const mapScaledDeclarationWithDims = (
+	decl: Declaration,
+	{ fontScale, scaleSize, scaleHeight } = {
+		fontScale: initialFontScale,
+		scaleSize: initialScaleSize,
+		scaleHeight: initialScaleHeight,
 	},
-	sides: {
-		tiny: 4,
-		small: 9,
-		medium: 16,
-		large: 24,
-		big: 32,
-		huge: 40,
-	},
-	text: {
-		family: 'Avenir',
-		sizes: {
-			tiny: 10,
-			small: 12,
-			medium: 15,
-			large: 19,
-			big: 22,
-			huge: 26,
+): Styles => {
+	return mapDeclarationWithDims(
+		{
+			...decl,
+			sides: _.mapValues(decl.sides, (n: number) => n * scaleSize),
+			text: {
+				...decl.text,
+				sizes: _.mapValues(decl.text.sizes, (n: number) => n * fontScale),
+			},
 		},
-	},
+		{ fontScale, scaleSize, scaleHeight },
+	)
 }

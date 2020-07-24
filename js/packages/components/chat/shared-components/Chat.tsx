@@ -1,11 +1,10 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState } from 'react'
 import { TouchableOpacity, View, TextInput, SafeAreaView } from 'react-native'
 import { Icon, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { Messenger } from '@berty-tech/hooks'
 import { messenger } from '@berty-tech/store'
 import { BlurView } from '@react-native-community/blur'
-import { scaleHeight } from '@berty-tech/styles/constant'
 //
 // ChatFooter => Textinput for type message
 //
