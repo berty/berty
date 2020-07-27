@@ -143,7 +143,7 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 	exapi = InjectPubSubCoreAPIExtendedAdaptater(exapi, psapi)
 
 	if ok, _ := strconv.ParseBool(os.Getenv("POI_DEBUG")); ok {
-		EnableConnLogger(opts.Logger, node.PeerHost)
+		EnableConnLogger(ctx, opts.Logger, node.PeerHost)
 	}
 
 	api := &coreAPIMock{
@@ -155,7 +155,9 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 	}
 
 	return api, func() {
-		node.Close()
+		_ = node.Close()
+		_ = node.PeerHost.Close()
+		_ = repo.Close()
 	}
 }
 
@@ -166,18 +168,19 @@ func TestingCoreAPI(ctx context.Context, t testing.TB) (CoreAPIMock, func()) {
 	t.Helper()
 
 	m := libp2p_mocknet.New(ctx)
-	peer, err := m.GenPeer()
+	rdvPeer, err := m.GenPeer()
 	require.NoError(t, err)
 
-	_, cleanrdvp := TestingRDVP(ctx, t, peer)
+	_, cleanrdvp := TestingRDVP(ctx, t, rdvPeer)
 	api, cleanapi := TestingCoreAPIUsingMockNet(ctx, t, &TestingAPIOpts{
 		Mocknet: m,
-		RDVPeer: peer.Network().Peerstore().PeerInfo(peer.ID()),
+		RDVPeer: rdvPeer.Network().Peerstore().PeerInfo(rdvPeer.ID()),
 	})
 
 	cleanup := func() {
 		cleanapi()
 		cleanrdvp()
+		_ = rdvPeer.Close()
 	}
 	return api, cleanup
 }
@@ -188,7 +191,7 @@ func TestingRDVP(ctx context.Context, t testing.TB, h host.Host) (*rendezvous.Re
 
 	svc := rendezvous.NewRendezvousService(h, db)
 	cleanup := func() {
-		// _ = db.Close() // dont use me for now as db is open in_memory
+		_ = db.Close() // dont use me for now as db is open in_memory
 	}
 	return svc, cleanup
 }

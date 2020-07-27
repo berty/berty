@@ -10,11 +10,13 @@ import (
 
 type BufListener struct {
 	*bufconn.Listener
+	ctx context.Context
 }
 
-func NewBufListener(sz int) *BufListener {
+func NewBufListener(ctx context.Context, sz int) *BufListener {
 	return &BufListener{
 		Listener: bufconn.Listen(sz),
+		ctx:      ctx,
 	}
 }
 
@@ -29,7 +31,7 @@ func (bl *BufListener) NewClientConn(opts ...grpc.DialOption) (*grpc.ClientConn,
 	}
 
 	return grpc.DialContext(
-		context.Background(),
+		bl.ctx,
 		"buf",
 		append(opts, baseOpts...)...)
 }

@@ -55,7 +55,6 @@ type Opts struct {
 	IpfsCoreAPI            ipfsutil.ExtendedCoreAPI
 	DeviceKeystore         DeviceKeystore
 	MessageKeystore        *MessageKeystore
-	RootContext            context.Context
 	RootDatastore          datastore.Batching
 	OrbitDirectory         string
 	OrbitCache             cache.Interface
@@ -66,17 +65,13 @@ type Opts struct {
 	close                  func() error
 }
 
-func (opts *Opts) applyDefaults() error {
+func (opts *Opts) applyDefaults(ctx context.Context) error {
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()
 	}
 
 	if opts.OrbitDirectory == "" {
 		opts.OrbitDirectory = ":memory:"
-	}
-
-	if opts.RootContext == nil {
-		opts.RootContext = context.TODO()
 	}
 
 	if opts.RootDatastore == nil {
@@ -101,7 +96,7 @@ func (opts *Opts) applyDefaults() error {
 		var err error
 		var createdIPFSNode *ipfs_core.IpfsNode
 
-		opts.IpfsCoreAPI, createdIPFSNode, err = ipfsutil.NewCoreAPI(opts.RootContext, &ipfsutil.CoreAPIConfig{})
+		opts.IpfsCoreAPI, createdIPFSNode, err = ipfsutil.NewCoreAPI(ctx, &ipfsutil.CoreAPIConfig{})
 		if err != nil {
 			return errcode.TODO.Wrap(err)
 		}
@@ -120,8 +115,8 @@ func (opts *Opts) applyDefaults() error {
 }
 
 // New initializes a new Service
-func New(opts Opts) (Service, error) {
-	if err := opts.applyDefaults(); err != nil {
+func New(ctx context.Context, opts Opts) (Service, error) {
+	if err := opts.applyDefaults(ctx); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
@@ -138,7 +133,7 @@ func New(opts Opts) (Service, error) {
 	}
 
 	if opts.PubSub != nil {
-		self, err := opts.IpfsCoreAPI.Key().Self(context.Background())
+		self, err := opts.IpfsCoreAPI.Key().Self(ctx)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -146,12 +141,12 @@ func New(opts Opts) (Service, error) {
 		odbOpts.PubSub = pubsubraw.NewPubSub(opts.PubSub, self.ID(), opts.Logger, nil)
 	}
 
-	odb, err := newBertyOrbitDB(opts.RootContext, opts.IpfsCoreAPI, opts.DeviceKeystore, opts.MessageKeystore, odbOpts)
+	odb, err := newBertyOrbitDB(ctx, opts.IpfsCoreAPI, opts.DeviceKeystore, opts.MessageKeystore, odbOpts)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	acc, err := odb.OpenAccountGroup(opts.RootContext, nil)
+	acc, err := odb.OpenAccountGroup(ctx, nil)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -160,7 +155,7 @@ func New(opts Opts) (Service, error) {
 		s := NewSwiper(opts.Logger, opts.PubSub, opts.RendezvousRotationBase)
 		opts.Logger.Debug("tinder swiper is enabled")
 
-		if err := initContactRequestsManager(opts.RootContext, s, acc.metadataStore, opts.IpfsCoreAPI, opts.Logger); err != nil {
+		if err := initContactRequestsManager(ctx, s, acc.metadataStore, opts.IpfsCoreAPI, opts.Logger); err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 	} else {
@@ -168,7 +163,7 @@ func New(opts Opts) (Service, error) {
 	}
 
 	return &service{
-		ctx:            opts.RootContext,
+		ctx:            ctx,
 		ipfsCoreAPI:    opts.IpfsCoreAPI,
 		logger:         opts.Logger,
 		odb:            odb,

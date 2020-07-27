@@ -89,8 +89,11 @@ func Test_EncryptMessagePayload(t *testing.T) {
 
 	omd2, err := acc2.MemberDeviceForGroup(g)
 
-	mkh1 := NewInMemMessageKeystore()
-	mkh2 := NewInMemMessageKeystore()
+	mkh1, cleanup := NewInMemMessageKeystore()
+	defer cleanup()
+
+	mkh2, cleanup := NewInMemMessageKeystore()
+	defer cleanup()
 
 	gc1 := newContextGroup(g, nil, nil, mkh1, omd1, nil)
 	gc2 := newContextGroup(g, nil, nil, mkh2, omd2, nil)
@@ -253,7 +256,9 @@ func Test_EncryptMessageEnvelope(t *testing.T) {
 	assert.NoError(t, err)
 
 	acc1 := NewDeviceKeystore(keystore.NewMemKeystore())
-	mkh1 := NewInMemMessageKeystore()
+	mkh1, cleanup := NewInMemMessageKeystore()
+	defer cleanup()
+
 	omd1, err := acc1.MemberDeviceForGroup(g)
 	assert.NoError(t, err)
 
@@ -266,7 +271,9 @@ func Test_EncryptMessageEnvelope(t *testing.T) {
 	assert.NoError(t, err)
 
 	acc2 := NewDeviceKeystore(keystore.NewMemKeystore())
-	mkh2 := NewInMemMessageKeystore()
+	mkh2, cleanup := NewInMemMessageKeystore()
+	defer cleanup()
+
 	omd2, err := acc2.MemberDeviceForGroup(g)
 	assert.NoError(t, err)
 
@@ -311,8 +318,11 @@ func Test_EncryptMessageEnvelopeAndDerive(t *testing.T) {
 	ds1, err := newDeviceSecret()
 	assert.NoError(t, err)
 
-	mkh1 := NewInMemMessageKeystore()
-	mkh2 := NewInMemMessageKeystore()
+	mkh1, cleanup := NewInMemMessageKeystore()
+	defer cleanup()
+
+	mkh2, cleanup := NewInMemMessageKeystore()
+	defer cleanup()
 
 	err = mkh1.RegisterChainKey(g, omd1.device.GetPublic(), ds1, true)
 	assert.NoError(t, err)

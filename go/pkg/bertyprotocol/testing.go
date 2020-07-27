@@ -52,17 +52,19 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*
 
 	node, cleanupNode := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsopts)
 
+	mks, cleanupMessageKeystore := NewInMemMessageKeystore()
+
 	serviceOpts := Opts{
 		Host:            node.MockNode().PeerHost,
 		PubSub:          node.PubSub(),
 		Logger:          opts.Logger,
 		DeviceKeystore:  NewDeviceKeystore(keystore.NewMemKeystore()),
-		MessageKeystore: NewInMemMessageKeystore(),
+		MessageKeystore: mks,
 		IpfsCoreAPI:     node.API(),
 		TinderDriver:    node.Tinder(),
 	}
 
-	service, cleanupService := TestingService(t, serviceOpts)
+	service, cleanupService := TestingService(ctx, t, serviceOpts)
 
 	if opts.TracerProvider == nil {
 		servicename := node.MockNode().Identity.ShortString()
@@ -94,7 +96,7 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*
 	}
 
 	server := grpc.NewServer(serverOpts...)
-	client, cleanupClient := TestingClientFromServer(t, server, service, clientOpts...)
+	client, cleanupClient := TestingClientFromServer(ctx, t, server, service, clientOpts...)
 
 	tp := &TestingProtocol{
 		Opts:    &serviceOpts,
@@ -103,9 +105,11 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*
 		IPFS:    node,
 	}
 	cleanup := func() {
+		server.Stop()
 		cleanupClient()
 		cleanupService()
 		cleanupNode()
+		cleanupMessageKeystore()
 	}
 	return tp, cleanup
 }
@@ -160,18 +164,16 @@ func newTestingProtocolWithMockedPeers(ctx context.Context, t *testing.T, opts *
 		}
 
 		cleanupRDVP()
+
+		rdvpnet.Close()
+		rdvpeer.Close()
 	}
 	return tps, cleanup
 }
 
 // TestingService returns a configured Client struct with in-memory contexts.
-func TestingService(t *testing.T, opts Opts) (Service, func()) {
+func TestingService(ctx context.Context, t *testing.T, opts Opts) (Service, func()) {
 	t.Helper()
-
-	ctx := opts.RootContext
-	if ctx == nil {
-		ctx = context.Background()
-	}
 
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()
@@ -185,7 +187,7 @@ func TestingService(t *testing.T, opts Opts) (Service, func()) {
 		opts.IpfsCoreAPI = mn.API()
 	}
 
-	service, err := New(opts)
+	service, err := New(ctx, opts)
 	if err != nil {
 		t.Fatalf("failed to initialize client: %v", err)
 	}
@@ -198,24 +200,26 @@ func TestingService(t *testing.T, opts Opts) (Service, func()) {
 	return service, cleanup
 }
 
-func TestingClientFromServer(t *testing.T, s *grpc.Server, svc Service, dialOpts ...grpc.DialOption) (client Client, cleanup func()) {
+func TestingClientFromServer(ctx context.Context, t *testing.T, s *grpc.Server, svc Service, dialOpts ...grpc.DialOption) (client Client, cleanup func()) {
 	t.Helper()
 
 	var err error
 
-	client, err = NewClientFromServer(s, svc, dialOpts...)
+	client, err = NewClientFromServer(ctx, s, svc, dialOpts...)
 	require.NoError(t, err)
-	cleanup = func() { client.Close() }
+	cleanup = func() {
+		client.Close()
+	}
 
 	return
 }
 
-func TestingClient(t *testing.T, svc Service, opts ...grpc.ServerOption) (client Client, cleanup func()) {
+func TestingClient(ctx context.Context, t *testing.T, svc Service, opts ...grpc.ServerOption) (client Client, cleanup func()) {
 	t.Helper()
 
 	var err error
 
-	client, err = NewClient(svc, opts...)
+	client, err = NewClient(ctx, svc, opts...)
 	require.NoError(t, err)
 	cleanup = func() { client.Close() }
 

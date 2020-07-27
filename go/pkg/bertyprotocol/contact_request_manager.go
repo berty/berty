@@ -140,7 +140,7 @@ func (c *contactRequestsManager) enqueueRequest(contact *bertytypes.ShareableCon
 
 	swiperCh := make(chan peer.AddrInfo)
 	reqCtx, reqCancel := context.WithCancel(c.ctx)
-	parent := u.NewUniqueChild(context.Background())
+	parent := u.NewUniqueChild(c.ctx)
 	var wg sync.WaitGroup
 	pending := &pendingRequest{
 		updateCh:   make(chan *pendingRequestDetails),

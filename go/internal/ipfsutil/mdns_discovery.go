@@ -13,10 +13,11 @@ import (
 
 type DiscoveryNotifee struct {
 	api ipfs_interface.CoreAPI
+	ctx context.Context
 }
 
 func (n *DiscoveryNotifee) HandlePeerFound(pi peer.AddrInfo) {
-	if err := n.api.Swarm().Connect(context.Background(), pi); err != nil {
+	if err := n.api.Swarm().Connect(n.ctx, pi); err != nil {
 		_ = err
 		// TODO: log
 		// println("HandlePeerFound: Unable to connect to peer", err.Error())
@@ -29,7 +30,7 @@ func OptionMDNSDiscovery(ctx context.Context, node *ipfs_core.IpfsNode, api ipfs
 		return errcode.TODO.Wrap(err)
 	}
 
-	n := &DiscoveryNotifee{api: api}
+	n := &DiscoveryNotifee{api: api, ctx: ctx}
 
 	s.RegisterNotifee(n)
 

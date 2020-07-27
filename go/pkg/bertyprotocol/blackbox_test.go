@@ -13,27 +13,36 @@ import (
 )
 
 func TestTestingClient_impl(t *testing.T) {
-	client, cleanup := bertyprotocol.TestingService(t, bertyprotocol.Opts{
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	mks, cleanup := bertyprotocol.NewInMemMessageKeystore()
+	defer cleanup()
+
+	client, cleanup := bertyprotocol.TestingService(ctx, t, bertyprotocol.Opts{
 		Logger:          testutil.Logger(t),
 		DeviceKeystore:  bertyprotocol.NewDeviceKeystore(keystore.NewMemKeystore()),
-		MessageKeystore: bertyprotocol.NewInMemMessageKeystore(),
+		MessageKeystore: mks,
 	})
 	defer cleanup()
 
 	// test service
-	_, _ = client.InstanceGetConfiguration(context.Background(), &bertytypes.InstanceGetConfiguration_Request{})
+	_, _ = client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
 	status := client.Status()
 	expected := bertyprotocol.Status{}
 	assert.Equal(t, expected, status)
 }
 
 func ExampleNew_basic() {
-	client, err := bertyprotocol.New(bertyprotocol.Opts{})
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	client, err := bertyprotocol.New(ctx, bertyprotocol.Opts{})
 	if err != nil {
 		panic(err)
 	}
 
-	ret, err := client.InstanceGetConfiguration(context.Background(), &bertytypes.InstanceGetConfiguration_Request{})
+	ret, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
 	if err != nil {
 		panic(err)
 	}

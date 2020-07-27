@@ -138,12 +138,13 @@ func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte, out chan<- 
 
 // watch looks for peers providing a resource
 func (s *Swiper) Announce(ctx context.Context, topic, seed []byte) {
-	ctx, cancel := context.WithCancel(ctx)
 	var currentTopic string
-
 	s.logger.Debug("start watch announce")
+
 	go func() {
+		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
+
 		for {
 			if currentTopic != "" {
 				if err := s.topicLeave(currentTopic); err != nil {

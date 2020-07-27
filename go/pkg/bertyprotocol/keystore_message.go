@@ -2,18 +2,18 @@ package bertyprotocol
 
 import (
 	"context"
+	"fmt"
 	"sync"
 
-	"fmt"
+	"github.com/ipfs/go-cid"
+	"github.com/ipfs/go-datastore"
+	dssync "github.com/ipfs/go-datastore/sync"
+	"github.com/libp2p/go-libp2p-core/crypto"
+	"golang.org/x/crypto/nacl/secretbox"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	cid "github.com/ipfs/go-cid"
-	datastore "github.com/ipfs/go-datastore"
-	dssync "github.com/ipfs/go-datastore/sync"
-	"github.com/libp2p/go-libp2p-core/crypto"
-	"golang.org/x/crypto/nacl/secretbox"
 )
 
 type MessageKeystore struct {
@@ -521,6 +521,8 @@ func NewMessageKeystore(s datastore.Datastore) *MessageKeystore {
 }
 
 // NewInMemMessageKeystore instantiate a new MessageKeystore, useful for testing
-func NewInMemMessageKeystore() *MessageKeystore {
-	return NewMessageKeystore(dssync.MutexWrap(datastore.NewMapDatastore()))
+func NewInMemMessageKeystore() (*MessageKeystore, func()) {
+	ds := dssync.MutexWrap(datastore.NewMapDatastore())
+
+	return NewMessageKeystore(ds), func() { _ = ds.Close() }
 }

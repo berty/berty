@@ -21,7 +21,7 @@ func (mc *MessengerConfig) ipfsCoreAPI(api ipfsutil.ExtendedCoreAPI) {
 	mc.coreAPI = api
 }
 
-func makeRequest(host string, method string, headers http.Header, body io.Reader, isText bool) (*http.Response, error) {
+func makeRequest(ctx context.Context, host string, method string, headers http.Header, body io.Reader, isText bool) (*http.Response, error) {
 	contentType := "application/grpc-web"
 	if isText {
 		// base64 encode the body
@@ -41,7 +41,7 @@ func makeRequest(host string, method string, headers http.Header, body io.Reader
 
 	url := fmt.Sprintf("http://%s%s", host, method)
 	req, err := http.NewRequest("POST", url, body)
-	req = req.WithContext(context.Background())
+	req = req.WithContext(ctx)
 	req.Header = headers
 
 	req.Header.Set("Content-Type", contentType)
@@ -83,7 +83,7 @@ func decodeMultipleBase64Chunks(b []byte) ([]byte, error) {
 	return output[:outputEnd], nil
 }
 
-func makeGrpcRequest(host string, method string, requestMessages [][]byte, isText bool) (responseMessages [][]byte, err error) {
+func makeGrpcRequest(ctx context.Context, host string, method string, requestMessages [][]byte, isText bool) (responseMessages [][]byte, err error) {
 	writer := new(bytes.Buffer)
 	for _, msgBytes := range requestMessages {
 		grpcPreamble := []byte{0, 0, 0, 0, 0}
@@ -91,7 +91,7 @@ func makeGrpcRequest(host string, method string, requestMessages [][]byte, isTex
 		writer.Write(grpcPreamble)
 		writer.Write(msgBytes)
 	}
-	resp, err := makeRequest(host, method, http.Header{}, writer, isText)
+	resp, err := makeRequest(ctx, host, method, http.Header{}, writer, isText)
 	if err != nil {
 		return nil, err
 	}
@@ -150,11 +150,11 @@ func makeGrpcRequest(host string, method string, requestMessages [][]byte, isTex
 	return responseMessages, nil
 }
 
-func newServiceClient(p *MessengerBridge) (bertyprotocol.ProtocolServiceClient, error) {
-	cl, err := p.Bridge.NewGRPCClient()
+func newServiceClient(p *MessengerBridge) (bertyprotocol.ProtocolServiceClient, func(), error) {
+	cl, cleanup, err := p.Bridge.NewGRPCClient()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return bertyprotocol.NewProtocolServiceClient(cl.grpcClient), nil
+	return bertyprotocol.NewProtocolServiceClient(cl.grpcClient), cleanup, nil
 }

@@ -42,7 +42,9 @@ func main() {
 		},
 	}
 
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	if err := root.ParseAndRun(ctx, os.Args[1:]); err != nil {
 		log.Fatalf("error: %v", err)
 	}

@@ -64,6 +64,8 @@ func TestDifferentStores(t *testing.T) {
 	rdvp, err := mn.GenPeer()
 	require.NoError(t, err, "failed to generate mocked peer")
 
+	defer rdvp.Close()
+
 	_, cleanrdvp := ipfsutil.TestingRDVP(ctx, t, rdvp)
 	defer cleanrdvp()
 

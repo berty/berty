@@ -104,7 +104,7 @@ func createPeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 				require.NoError(t, err, "deviceKeystore from existing keys")
 			}
 
-			mk := NewInMemMessageKeystore()
+			mk, cleanupMessageKeystore := NewInMemMessageKeystore()
 
 			db, err := newBertyOrbitDB(ctx, ca.API(), devKS, mk, nil)
 			if err != nil {
@@ -137,6 +137,7 @@ func createPeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 				}
 
 				cleanupNode()
+				cleanupMessageKeystore()
 			}
 
 			mockedPeers[deviceIndex] = mp
@@ -152,6 +153,8 @@ func createPeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 		}
 
 		cleanuprdvp()
+
+		_ = rdvp.Close()
 	}
 }
 

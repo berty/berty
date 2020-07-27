@@ -132,6 +132,8 @@ func TestAnnounceWatchForPeriod(t *testing.T) {
 			rdvp, err := mn.GenPeer()
 			require.NoError(t, err, "failed to generate mocked peer")
 
+			defer rdvp.Close()
+
 			_, rdv_cleanup := ipfsutil.TestingRDVP(ctx, t, rdvp)
 			defer rdv_cleanup()
 
