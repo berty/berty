@@ -311,7 +311,7 @@ module.exports = {
 		// React-Native Plugin
 		// The following rules are made available via `eslint-plugin-react-native`
 
-		'react-native/no-inline-styles': 1,
+		'react-native/no-inline-styles': 0,
 
 		// Jest Plugin
 		// The following rules are made available via `eslint-plugin-jest`.
