@@ -8,6 +8,10 @@ import {
 	iPhone11ShortEdge,
 	iPhone11LongEdge,
 	initialFontScale,
+	initialHeight,
+	initialWidth,
+	iPadShortEdge,
+	iPadLongEdge,
 } from './constant'
 import { useDimensions } from '@react-native-community/hooks'
 import { PixelRatio } from 'react-native'
@@ -40,6 +44,12 @@ export const ctx: React.Context<any> = createContext<any>([
 		scaleSize: initialScaleSize,
 		scaleHeight: initialScaleHeight,
 		fontScale: initialFontScale,
+		windowHeight: initialHeight,
+		windowWidth: initialWidth,
+		isGteIpadSize:
+			Math.min(initialHeight, initialWidth) >= iPadShortEdge &&
+			Math.max(initialHeight, initialWidth) >= iPadLongEdge,
+		isLandscape: initialWidth > initialHeight,
 	},
 	(decl: Declaration) => {},
 ])
@@ -50,6 +60,9 @@ export const Provider: React.FC = ({ children }) => {
 	const [scaleHeight, setScaleHeight] = useState(initialScaleHeight)
 	const [scaleSize, setScaleSize] = useState(initialScaleSize)
 	const [fontScale, setFontScale] = useState(initialFontScale)
+	const isGteIpadSize =
+		Math.min(initialHeight, initialWidth) >= iPadShortEdge &&
+		Math.max(initialHeight, initialWidth) >= iPadLongEdge
 	React.useEffect(() => {
 		const isLandscape = windowHeight < windowWidth
 		const _scaleHeight =
@@ -73,7 +86,15 @@ export const Provider: React.FC = ({ children }) => {
 		<ctx.Provider
 			value={[
 				stylesState,
-				{ scaleHeight, scaleSize, fontScale },
+				{
+					scaleHeight,
+					scaleSize,
+					fontScale,
+					windowHeight,
+					windowWidth,
+					isGteIpadSize,
+					isLandscape: windowWidth > windowHeight,
+				},
 				(decl: Declaration) =>
 					setStylesDeclaration(decl, setStylesState, {
 						scaleHeight,

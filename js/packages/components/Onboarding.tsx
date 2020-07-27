@@ -171,7 +171,7 @@ export const SelectMode: React.FC = () => {
 }
 
 const SwiperCard: React.FC<{
-	label?: 'required' | 'optional' | 'recommanded' | ''
+	label?: 'required' | 'optional' | 'recommended' | ''
 	header?: string
 	title: string
 	description: string
@@ -190,7 +190,7 @@ const SwiperCard: React.FC<{
 		case 'optional':
 			labelColor = 'yellow'
 			break
-		case 'recommanded':
+		case 'recommended':
 			labelColor = 'green'
 			break
 	}
@@ -439,7 +439,7 @@ const Notifications: React.FC<{
 		{(t) => (
 			<SwiperCard
 				header={t('onboarding.notifications.header')}
-				label={t('onboarding.notifications.recommanded')}
+				label={t('onboarding.notifications.recommended')}
 				title={t('onboarding.notifications.title')}
 				description={t('onboarding.notifications.desc')}
 				button={{
@@ -692,8 +692,10 @@ export const Privacy: React.FC<{}> = () => {
 						activeDotStyle={[background.white]}
 						scrollEnabled={false}
 					>
-						<CreateYourAccount next={next(2)} setClickedCreate={setClickedCreate} />
-						<SetupFinished />
+						{!clickedCreate && (
+							<CreateYourAccount next={next(2)} setClickedCreate={setClickedCreate} />
+						)}
+						{clickedCreate && <SetupFinished />}
 					</Swiper>
 				</KeyboardAvoidingView>
 			</View>

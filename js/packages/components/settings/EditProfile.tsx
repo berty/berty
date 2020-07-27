@@ -1,8 +1,8 @@
 import React from 'react'
-import { SafeAreaView, View, TouchableOpacity, Dimensions, StyleSheet } from 'react-native'
+import { SafeAreaView, View, TouchableOpacity, StyleSheet } from 'react-native'
 import { Icon, Input, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { ScreenProps } from '@berty-tech/navigation'
 import { BlurView } from '@react-native-community/blur'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 
@@ -128,15 +128,13 @@ const ResetMyQrCode: React.FC<{}> = () => {
 	)
 }
 
-const Screen = Dimensions.get('window')
-
 export const EditProfile: React.FC<ScreenProps.Settings.EditProfile> = () => {
-	const firstNotToggledPoint = Screen.height - 110 // 90 = header height component // 20 = padding // 10 = safeAreaview // 497 = height of the third component
+	const [{ flex, color }, { windowHeight }] = useStyles()
+	const firstNotToggledPoint = windowHeight - 110 // 90 = header height component // 20 = padding // 10 = safeAreaview // 497 = height of the third component
 	const firstToggledPoint = firstNotToggledPoint - 370 // 379.5 = height of first component / 10 = padding
 
 	const secondNotToggledPoint = firstToggledPoint - 190
 	const secondToggledPoint = secondNotToggledPoint - 300
-	const [{ flex, color }] = useStyles()
 
 	return (
 		<>

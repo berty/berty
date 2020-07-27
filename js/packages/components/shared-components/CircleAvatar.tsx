@@ -31,7 +31,10 @@ export const CircleAvatar: React.FC<CircleAvatarProps> = ({
 	state = {},
 	style = null,
 }) => {
-	const [{ row, width, height, background, border, absolute, color: colorDecl }] = useStyles()
+	const [
+		{ row, width, height, background, border, absolute, color: colorDecl },
+		{ scaleSize },
+	] = useStyles()
 	const _circleStyle = [
 		row.center,
 		width(size),
@@ -55,8 +58,8 @@ export const CircleAvatar: React.FC<CircleAvatarProps> = ({
 				<View style={[_circleAvatarStyles]}>
 					<Icon
 						name={state.icon}
-						width={30}
-						height={30}
+						width={30 * scaleSize}
+						height={30 * scaleSize}
 						fill={state.iconColor ? state.iconColor : colorDecl[color]}
 					/>
 				</View>

@@ -2,11 +2,11 @@ import React from 'react'
 import QRCode from 'react-native-qrcode-svg'
 import { View } from 'react-native'
 import { Button } from 'react-native-ui-kitten'
-import { useDimensions } from '@react-native-community/hooks'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
 
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { Messenger } from '@berty-tech/hooks'
+import { useStyles } from '@berty-tech/styles'
 
 const _contentScaleFactor = 0.66
 
@@ -15,7 +15,7 @@ export const MultiMemberQR: React.FC<ScreenProps.Chat.MultiMemberQR> = ({
 		params: { convId },
 	},
 }) => {
-	const { height, width } = useDimensions().window
+	const [, { windowHeight, windowWidth }] = useStyles()
 	const conv = Messenger.useGetConversation(convId)
 	const { goBack } = useNavigation()
 	if (!conv) {
@@ -35,7 +35,7 @@ export const MultiMemberQR: React.FC<ScreenProps.Chat.MultiMemberQR> = ({
 					]}
 				>
 					<QRCode
-						size={_contentScaleFactor * Math.min(height, width)}
+						size={_contentScaleFactor * Math.min(windowHeight, windowWidth)}
 						value={conv.shareableGroup}
 					/>
 					<Button style={[{ marginTop: 40 }]} onPress={goBack}>
