@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-native/no-inline-styles */
 import { Messenger } from '@berty-tech/hooks'
 import { useFirstConversationWithContact, useGetMessage } from '@berty-tech/hooks/Messenger'
 import { Routes, useNavigation } from '@berty-tech/navigation'

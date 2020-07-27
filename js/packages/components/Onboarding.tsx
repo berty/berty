@@ -378,6 +378,7 @@ const CreateYourAccount: React.FC<{
 								onAnimationFinish={async (): Promise<void> => {
 									createAccount({ name: name || 'Anonymous 1337', nodeConfig })
 									Vibration.vibrate(500)
+									setClickedCreate(true)
 									// @TODO: Error handling
 									next()
 								}}
@@ -393,7 +394,6 @@ const CreateYourAccount: React.FC<{
 								text: t('onboarding.create-account.button'),
 								onPress: () => {
 									setIsPress(true)
-									setClickedCreate(true)
 								},
 							}}
 						>
@@ -495,7 +495,7 @@ const Bluetooth: React.FC<{
 	</Translation>
 )
 
-const SetupFinished: React.FC<{ clickedCreate: boolean }> = ({ clickedCreate }) => {
+const SetupFinished: React.FC = () => {
 	const navigation = useReactNavigation()
 	const client = Messenger.useClient()
 	const dispatch = useDispatch()
@@ -506,7 +506,7 @@ const SetupFinished: React.FC<{ clickedCreate: boolean }> = ({ clickedCreate }) 
 	return (
 		<Translation>
 			{(t) =>
-				!clickedCreate ? null : isAccount ? (
+				isAccount ? (
 					<>
 						<View style={{ flex: 1 }}>
 							<LottieView
@@ -658,12 +658,14 @@ export const Performance: React.FC<{
 						activeDotStyle={[background.white]}
 						scrollEnabled={false}
 					>
-						<CreateYourAccount next={next(2)} setClickedCreate={setClickedCreate} />
+						{!clickedCreate && (
+							<CreateYourAccount next={next(2)} setClickedCreate={setClickedCreate} />
+						)}
 						{/*<SafeAreaView style={absolute.fill}>
 							<Notifications submit={authorizeNotifications} next={next(4)} />
 						</SafeAreaView>
 						<Bluetooth submit={authorizeBluetooth} next={next(5)} />*/}
-						<SetupFinished clickedCreate={clickedCreate} />
+						{clickedCreate && <SetupFinished />}
 					</Swiper>
 				</KeyboardAvoidingView>
 			</View>
@@ -691,7 +693,7 @@ export const Privacy: React.FC<{}> = () => {
 						scrollEnabled={false}
 					>
 						<CreateYourAccount next={next(2)} setClickedCreate={setClickedCreate} />
-						<SetupFinished clickedCreate={clickedCreate} />
+						<SetupFinished />
 					</Swiper>
 				</KeyboardAvoidingView>
 			</View>
