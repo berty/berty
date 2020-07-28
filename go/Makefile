@@ -130,11 +130,13 @@ generate_local:
 	protoc-gen-swagger-config -i ../api/bertymessenger.proto -o ../api/bertymessenger.yaml
 	protoc-gen-swagger-config -i ../api/bertyprotocol.proto -o ../api/bertyprotocol.yaml
 	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/errcode.proto
+	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertybridge.proto
 	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertytypes.proto
 	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/go-internal/records.proto
 	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/go-internal/handshake.proto
 	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/bertyprotocol.yaml:$(GOPATH)/src ../api/bertyprotocol.proto
 	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/bertymessenger.yaml:$(GOPATH)/src ../api/bertymessenger.proto
+	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./framework/bertybridge/internal/bridgepb/*.pb.go
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.go
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.gw.go
 	goimports -w ./pkg ./cmd ./internal
