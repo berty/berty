@@ -30,7 +30,7 @@ class GoBridge: NSObject {
     }
 
     override init() {
-        // set berty dir for persistance
+        // set berty dir for persistence
         let absUserUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         self.rootdir = absUserUrl.appendingPathComponent("berty", isDirectory: true)
 
@@ -87,7 +87,7 @@ class GoBridge: NSObject {
             }
 
             // gather opts
-            let optPersistance = opts.get(bool: "persistance")
+            let optPersistence = opts.get(bool: "persistence")
             let optLog = opts.get(string: "logLevel", defaultValue: "info")
             let optPOIDebug = opts.get(bool: "poiDebug")
             let optGrpcListeners = opts.get(array: "grpcListeners", defaultValue: ["/ip4/127.0.0.1/tcp/0/grpcws"])
@@ -125,8 +125,8 @@ class GoBridge: NSObject {
                 config.addSwarmListener(listener)
             }
 
-            // set persistance if needed
-            if optPersistance {
+            // set persistence if needed
+            if optPersistence {
                 var isDirectory: ObjCBool = true
                 let exist = FileManager.default.fileExists(atPath: self.rootdir.path, isDirectory: &isDirectory)
                 if !exist {
