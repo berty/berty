@@ -9,7 +9,7 @@ import {
 	Text as TextNative,
 	ScrollView,
 } from 'react-native'
-import { BlurView } from '@react-native-community/blur'
+import BlurView from '../shared-components/BlurView'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { ChatFooter, ChatDate } from './shared-components/Chat'

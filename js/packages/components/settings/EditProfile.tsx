@@ -3,7 +3,7 @@ import { SafeAreaView, View, TouchableOpacity, StyleSheet } from 'react-native'
 import { Icon, Input, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps } from '@berty-tech/navigation'
-import { BlurView } from '@react-native-community/blur'
+import BlurView from '../shared-components/BlurView'
 import { SDTSModalComponent } from '../shared-components/SDTSModalComponent'
 
 //

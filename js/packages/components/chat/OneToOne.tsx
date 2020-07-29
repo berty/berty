@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { BlurView } from '@react-native-community/blur'
+import BlurView from '../shared-components/BlurView'
 import {
 	TouchableOpacity,
 	View,
@@ -20,6 +20,7 @@ import { Message } from './shared-components/Message'
 import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { messenger } from '@berty-tech/store'
 import { useReadEffect } from '../hooks'
+import { SafeAreaView } from 'react-native-safe-area-context'
 //
 // Chat
 //
@@ -78,76 +79,84 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 		conversation.kind === 'fake' ? `SAMPLE - ${conversation.title}` : contact?.name || ''
 
 	return (
-		<BlurView
-			style={[padding.horizontal.medium, absolute.top, absolute.right, absolute.left]}
-			blurType='light'
-			blurAmount={30}
-		>
-			<View
-				style={[
-					{
-						alignItems: 'center',
-						flexDirection: 'row',
-						marginTop: 50 * scaleHeight,
-						paddingBottom: 20 * scaleHeight,
-					},
-				]}
-			>
-				<TouchableOpacity style={[flex.tiny, row.item.justify]} onPress={goBack}>
-					<Icon name='arrow-back-outline' width={25} height={25} fill={color.black} />
-				</TouchableOpacity>
+		<View style={{ position: 'absolute', top: 0, left: 0, right: 0 }}>
+			<BlurView
+				blurType='light'
+				blurAmount={30}
+				style={{ position: 'absolute', bottom: 0, top: 0, left: 0, right: 0 }}
+			/>
+			<SafeAreaView>
 				<View
 					style={[
-						flex.huge,
-						column.justify,
-						row.item.justify,
-						margin.top.small,
-						_styles.headerName,
+						padding.horizontal.medium,
+						{
+							alignItems: 'center',
+							flexDirection: 'row',
+							marginTop: 50 * scaleHeight,
+							paddingBottom: 20 * scaleHeight,
+						},
 					]}
 				>
-					<View style={[{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }]}>
-						<TouchableOpacity onPress={() => debugGroup()}>
-							<Text
-								numberOfLines={1}
-								style={[text.align.center, text.bold.medium, _styles.headerNameText]}
-							>
-								{title}
+					<TouchableOpacity style={[flex.tiny, row.item.justify]} onPress={goBack}>
+						<Icon name='arrow-back-outline' width={25} height={25} fill={color.black} />
+					</TouchableOpacity>
+					<View
+						style={[
+							flex.huge,
+							column.justify,
+							row.item.justify,
+							margin.top.small,
+							_styles.headerName,
+						]}
+					>
+						<View
+							style={[{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }]}
+						>
+							<TouchableOpacity onPress={() => debugGroup()}>
+								<Text
+									numberOfLines={1}
+									style={[text.align.center, text.bold.medium, _styles.headerNameText]}
+								>
+									{title}
+								</Text>
+							</TouchableOpacity>
+							{state === 'error' && (
+								<Icon name='close-outline' width={14} height={14} fill={color.red} />
+							)}
+							{state === 'done' ? (
+								<View
+									style={[
+										width(14),
+										height(14),
+										border.radius.scale(7),
+										margin.left.large,
+										{
+											backgroundColor: main?.debugGroup?.peerIds?.length ? color.green : color.red,
+										},
+									]}
+								/>
+							) : (
+								<ActivityIndicator size='small' style={[margin.left.large]} />
+							)}
+						</View>
+						{lastDate && (
+							<Text numberOfLines={1} style={[text.size.small, text.color.grey, text.align.center]}>
+								Last seen <FromNow date={lastDate} />
 							</Text>
-						</TouchableOpacity>
-						{state === 'error' && (
-							<Icon name='close-outline' width={14} height={14} fill={color.red} />
-						)}
-						{state === 'done' ? (
-							<View
-								style={[
-									width(14),
-									height(14),
-									border.radius.scale(7),
-									margin.left.large,
-									{ backgroundColor: main?.debugGroup?.peerIds?.length ? color.green : color.red },
-								]}
-							/>
-						) : (
-							<ActivityIndicator size='small' style={[margin.left.large]} />
 						)}
 					</View>
-					{lastDate && (
-						<Text numberOfLines={1} style={[text.size.small, text.color.grey, text.align.center]}>
-							Last seen <FromNow date={lastDate} />
-						</Text>
-					)}
+					<View style={[flex.tiny, row.fill, { alignItems: 'center' }]}>
+						<TouchableOpacity
+							activeOpacity={contact ? 0.2 : 0.5}
+							style={[flex.tiny, row.item.justify, !contact ? opacity(0.5) : null]}
+							onPress={() => navigate.chat.settings({ convId: id })}
+						>
+							<ConversationProceduralAvatar size={45} diffSize={9} conversationId={id} />
+						</TouchableOpacity>
+					</View>
 				</View>
-				<View style={[flex.tiny, row.fill, { alignItems: 'center' }]}>
-					<TouchableOpacity
-						activeOpacity={contact ? 0.2 : 0.5}
-						style={[flex.tiny, row.item.justify, !contact ? opacity(0.5) : null]}
-						onPress={() => navigate.chat.settings({ convId: id })}
-					>
-						<ConversationProceduralAvatar size={45} diffSize={9} conversationId={id} />
-					</TouchableOpacity>
-				</View>
-			</View>
-		</BlurView>
+			</SafeAreaView>
+		</View>
 	)
 }
 
