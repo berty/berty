@@ -8,7 +8,6 @@ import { useNavigation } from '@react-navigation/native'
 import ScanTarget from './scan_target.svg'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Messenger } from '@berty-tech/hooks'
-import { useDimensions } from '@react-native-community/hooks'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -22,20 +21,9 @@ type ScanInfosTextProps = {
 // Styles
 
 const useStylesScan = () => {
-	const [{ border, height, width }] = useStyles()
-	const { height: windowHeight, width: windowWidth } = useDimensions().window
-	const titleSize = 26
-	const iPadShortEdge = 768
-	const iPadLongEdge = 1024
+	const [{ border, height, width }, { fontScale }] = useStyles()
 	return {
-		titleSize,
-
-		windowHeight,
-		windowWidth,
-		isLandscape: windowHeight < windowWidth,
-		isGteIpadSize:
-			Math.min(windowHeight, windowWidth) >= iPadShortEdge &&
-			Math.max(windowHeight, windowWidth) >= iPadLongEdge,
+		titleSize: 26 * fontScale,
 		styles: {
 			infosPoint: [width(10), height(10), border.radius.scale(5)],
 		},
@@ -45,12 +33,16 @@ const useStylesScan = () => {
 const ScanBody: React.FC<{}> = () => {
 	const handleDeepLink = Messenger.useHandleDeepLink()
 	const navigation = useNavigation()
-	const [{ background, margin, flex, column }] = useStyles()
-	const { windowWidth, windowHeight, titleSize, isGteIpadSize } = useStylesScan()
+	const [
+		{ background, margin, flex, column, border },
+		{ windowHeight, windowWidth, isGteIpadSize },
+	] = useStyles()
+	const { titleSize } = useStylesScan()
 	const qrScanSize = isGteIpadSize
 		? Math.min(windowHeight, windowWidth) * 0.5
 		: Math.min(windowHeight * 0.8, windowWidth * 0.8) - 1.25 * titleSize
-	const borderRadius = 30
+	const borderRadius = border.radius.scale(30)
+
 	return (
 		<View
 			style={[
@@ -59,10 +51,10 @@ const ScanBody: React.FC<{}> = () => {
 				column.item.center,
 				flex.align.center,
 				flex.justify.center,
+				borderRadius,
 				{
 					height: qrScanSize,
 					aspectRatio: 1,
-					borderRadius,
 				},
 			]}
 		>
@@ -79,7 +71,7 @@ const ScanBody: React.FC<{}> = () => {
 					}
 				}}
 				cameraProps={{ captureAudio: false }}
-				containerStyle={{ width: '100%', height: '100%', overflow: 'hidden', borderRadius }}
+				containerStyle={[borderRadius, { width: '100%', height: '100%', overflow: 'hidden' }]}
 				cameraStyle={{ width: '100%', height: '100%', aspectRatio: 1 }}
 				// flashMode={RNCamera.Constants.FlashMode.torch}
 			/>

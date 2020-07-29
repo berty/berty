@@ -63,18 +63,18 @@ const HomeHeaderGroupButton: React.FC = () => {
 }
 const HomeHeaderAvatar: React.FC = () => {
 	const _styles = useStylesHome()
-	const [{ row, margin, background, border, color }] = useStyles()
+	const [{ row, margin, background, border, color, padding }, { scaleSize }] = useStyles()
 	const client = Messenger.useClient()
 	const account = Messenger.useAccount()
 	const navigation = useNavigation()
 	return (
 		<View style={[row.center, margin.top.scale(50)]}>
 			<TouchableOpacity
-				style={[background.white, border.radius.medium, { padding: 20 }, { paddingTop: 40 }]}
+				style={[background.white, border.radius.medium, padding.scale(20), padding.top.scale(40)]}
 				onPress={() => navigation.navigate.settings.myBertyId()}
 			>
 				<View style={[{ alignItems: 'center' }]}>
-					<View style={{ position: 'absolute', top: -80 }}>
+					<View style={{ position: 'absolute', top: -80 * scaleSize }}>
 						<ProceduralCircleAvatar
 							seed={client?.accountPk}
 							size={80}
@@ -83,8 +83,20 @@ const HomeHeaderAvatar: React.FC = () => {
 						/>
 					</View>
 					<Text style={[_styles.headerNameText]}>{account?.name || ''}</Text>
-					<View style={{ paddingLeft: 12, paddingTop: 20 }}>
-						<Icon name='qr' pack='custom' width={140} height={140} fill={color.blue} />
+					<View
+						style={[
+							// { paddingLeft: 12, paddingTop: 20 },
+							padding.left.scale(12),
+							padding.top.scale(20),
+						]}
+					>
+						<Icon
+							name='qr'
+							pack='custom'
+							width={140 * scaleSize}
+							height={140 * scaleSize}
+							fill={color.blue}
+						/>
 					</View>
 				</View>
 			</TouchableOpacity>

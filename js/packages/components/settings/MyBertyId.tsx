@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, StyleSheet, ScrollView, Share } from 'react-native'
+import { View, TouchableOpacity, ScrollView, Share } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { TabBar } from '../shared-components/TabBar'
@@ -9,8 +9,7 @@ import { useNavigation } from '@berty-tech/navigation'
 import QRCode from 'react-native-qrcode-svg'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useDimensions } from '@react-native-community/hooks'
-import { scaleSize } from '@berty-tech/styles/constant'
+
 //
 // Settings My Berty ID Vue
 //
@@ -18,38 +17,30 @@ import { scaleSize } from '@berty-tech/styles/constant'
 // Styles
 
 const useStylesBertyId = () => {
-	const { height: windowHeight, width: windowWidth } = useDimensions().window
-	const iPadShortEdge = 768
-	const iPadLongEdge = 1024
-	const bertyIdButtonSize = 60
+	const _iconArrowBackSize = 30
+	const _iconIdSize = 45
+	const _iconShareSize = 26
+	const _titleSize = 26
 	const bertyIdContentScaleFactor = 0.66
-	const iconShareSize = 26
-	const iconArrowBackSize = 30
-	const iconIdSize = 45
-	const titleSize = 26
 	const requestAvatarSize = 90
+
+	const [, { fontScale, scaleSize }] = useStyles()
+	const _bertyIdButtonSize = 60 * scaleSize
 	return {
-		windowHeight,
-		windowWidth,
-		isLandscape: windowHeight < windowWidth,
-		isGteIpadSize:
-			Math.min(windowHeight, windowWidth) >= iPadShortEdge &&
-			Math.max(windowHeight, windowWidth) >= iPadLongEdge,
-		bertyIdButtonSize,
 		bertyIdContentScaleFactor,
-		iconShareSize,
-		iconArrowBackSize,
-		iconIdSize,
-		titleSize,
+		iconShareSize: _iconShareSize * scaleSize,
+		iconArrowBackSize: _iconArrowBackSize * scaleSize,
+		iconIdSize: _iconIdSize * scaleSize,
+		titleSize: _titleSize * fontScale,
 		requestAvatarSize,
 		styleBertyIdButton: {
-			width: bertyIdButtonSize,
-			height: bertyIdButtonSize,
-			borderRadius: bertyIdButtonSize / 2,
-			marginRight: bertyIdButtonSize,
-			bottom: bertyIdButtonSize / 2,
+			width: _bertyIdButtonSize,
+			height: _bertyIdButtonSize,
+			borderRadius: _bertyIdButtonSize / 2,
+			marginRight: _bertyIdButtonSize,
+			bottom: _bertyIdButtonSize / 2,
 		},
-		styleBertyIdContent: { paddingBottom: bertyIdButtonSize / 2 + 10 },
+		styleBertyIdContent: { paddingBottom: _bertyIdButtonSize / 2 + 10 },
 	}
 }
 
@@ -65,22 +56,18 @@ const BertyIdContent: React.FC<{}> = ({ children }) => {
 
 const ContactRequestQR = () => {
 	const client = Messenger.useClient()
-	const [{ padding }] = useStyles()
-	const {
-		isGteIpadSize,
-		windowHeight,
-		windowWidth,
-		titleSize,
-		bertyIdContentScaleFactor,
-	} = useStylesBertyId()
-	const qrCodeSize = isGteIpadSize
-		? Math.min(windowHeight, windowWidth) * 0.5
-		: Math.min(windowHeight * bertyIdContentScaleFactor, windowWidth * bertyIdContentScaleFactor) -
-		  1.25 * titleSize
+	const [{ padding }, { windowHeight, windowWidth, isGteIpadSize }] = useStyles()
+	const { titleSize, bertyIdContentScaleFactor } = useStylesBertyId()
 
 	if (!client?.deepLink) {
 		return <Text>Internal error</Text>
 	}
+
+	// Make sure we can always see the whole QR code on the screen, even if need to scroll
+	const qrCodeSize = isGteIpadSize
+		? Math.min(windowHeight, windowWidth) * 0.5
+		: Math.min(windowHeight * bertyIdContentScaleFactor, windowWidth * bertyIdContentScaleFactor) -
+		  1.25 * titleSize
 
 	// I would like to use binary mode in QR but the scanner used seems to not support it, extended tests were done
 	return (
@@ -92,8 +79,8 @@ const ContactRequestQR = () => {
 
 const Fingerprint: React.FC = () => {
 	const client = Messenger.useClient()
-	const [{ padding }] = useStyles()
-	const { bertyIdContentScaleFactor, windowHeight, windowWidth } = useStylesBertyId()
+	const [{ padding }, { windowHeight, windowWidth, isGteIpadSize }] = useStyles()
+	const { bertyIdContentScaleFactor } = useStylesBertyId()
 
 	if (!client) {
 		return <Text>Client not initialized</Text>
@@ -102,7 +89,12 @@ const Fingerprint: React.FC = () => {
 		<View
 			style={[
 				padding.top.big,
-				{ width: bertyIdContentScaleFactor * Math.min(windowHeight, windowWidth) },
+				{
+					// Make sure we can always see the whole Fingerprint on the screen, even if need to scroll
+					width: isGteIpadSize
+						? Math.min(windowHeight, windowWidth) * 0.5
+						: bertyIdContentScaleFactor * Math.min(windowHeight, windowWidth),
+				},
 			]}
 		>
 			<FingerprintContent seed={client.accountPk} />
@@ -197,9 +189,8 @@ const BertyIdShare: React.FC<{}> = () => {
 
 const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
 	const { goBack } = useNavigation()
-	const [{ padding, color }] = useStyles()
-	const { iconArrowBackSize, titleSize, iconIdSize, iconShareSize } = useStylesBertyId()
-	const { height } = useDimensions().window
+	const [{ padding, color, margin }, { windowHeight }] = useStyles()
+	const { iconArrowBackSize, titleSize, iconIdSize } = useStylesBertyId()
 
 	return (
 		<ScrollView bounces={false} style={[padding.medium]}>
@@ -209,7 +200,7 @@ const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
 						flexDirection: 'row',
 						justifyContent: 'space-between',
 						alignItems: 'center',
-						marginBottom: height * 0.1,
+						marginBottom: windowHeight * 0.1,
 					},
 				]}
 			>
@@ -233,13 +224,15 @@ const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
 						/>
 					</TouchableOpacity>
 					<Text
-						style={{
-							fontWeight: '700',
-							fontSize: titleSize,
-							lineHeight: 1.25 * titleSize,
-							marginLeft: 10,
-							color: color.white,
-						}}
+						style={[
+							margin.left.scale(10),
+							{
+								fontWeight: '700',
+								fontSize: titleSize,
+								lineHeight: 1.25 * titleSize,
+								color: color.white,
+							},
+						]}
 					>
 						My Berty ID
 					</Text>

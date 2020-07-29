@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { View, ScrollView, TouchableOpacity, TextInput, Text as TextNative } from 'react-native'
 import { Layout, Text, Icon, CheckBox } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
@@ -7,7 +7,6 @@ import { useNavigation } from '@berty-tech/navigation'
 import { Messenger } from '@berty-tech/hooks'
 import { messenger } from '@berty-tech/store'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useDimensions } from '@react-native-community/hooks'
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { Header } from './HomeModal'
 
@@ -113,12 +112,14 @@ const AddMembers: React.FC<AddMembersProps> = ({
 	members,
 	layout,
 }) => {
-	const [{ padding, background, row, color, height, text, margin, border }] = useStyles()
+	const [
+		{ padding, background, row, color, height, text, margin, border },
+		{ windowHeight },
+	] = useStyles()
 	const [searchText, setSearchText] = useState('')
 	const contacts = searchText.length
 		? Messenger.useAccountContactSearchResults(searchText)
 		: Messenger.useAccountContacts()
-	const dimensions = useDimensions().window
 
 	return (
 		<View>
@@ -138,7 +139,7 @@ const AddMembers: React.FC<AddMembersProps> = ({
 						autoCorrect={false}
 					/>
 				</View>
-				<View style={[height(dimensions.height - layout - 90)]}>
+				<View style={[height(windowHeight - layout - 90)]}>
 					<ScrollView
 						contentContainerStyle={[
 							padding.top.medium,

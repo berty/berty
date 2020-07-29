@@ -33,7 +33,10 @@ export const ProceduralCircleAvatar: React.FC<ProceduralCircleAvatarProps> = ({
 	style = null,
 }) => {
 	// for centering to work properly, size and diffsize must have the same oddness (pair or odd)
-	const [{ row, width, height, background, border, absolute, color: colorDecl }] = useStyles()
+	const [
+		{ row, width, height, background, border, absolute, color: colorDecl },
+		{ scaleSize },
+	] = useStyles()
 	const _circleStyle = [
 		row.center,
 		width(size),
@@ -47,14 +50,14 @@ export const ProceduralCircleAvatar: React.FC<ProceduralCircleAvatarProps> = ({
 			<View
 				style={[_circleStyle, { display: 'flex', alignItems: 'center', justifyContent: 'center' }]}
 			>
-				<Jdenticon value={seed} size={size - diffSize} style={{}} />
+				<Jdenticon value={seed} size={(size - diffSize) * scaleSize} style={{}} />
 			</View>
 			{state && state.icon ? (
 				<View style={[_circleAvatarStyles]}>
 					<Icon
 						name={state.icon}
-						width={30}
-						height={30}
+						width={30 * scaleSize}
+						height={30 * scaleSize}
 						fill={state.iconColor ? state.iconColor : colorDecl[color]}
 					/>
 				</View>

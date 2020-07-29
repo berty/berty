@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Messenger } from '@berty-tech/hooks'
 import { useFirstConversationWithContact, useGetMessage } from '@berty-tech/hooks/Messenger'
 import { Routes, useNavigation } from '@berty-tech/navigation'
 import { messenger } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { useDimensions } from '@react-native-community/hooks'
 import { CommonActions } from '@react-navigation/core'
 import dayjs from 'dayjs'
 import { noop } from 'lodash'
@@ -29,31 +27,21 @@ const _landingIconSize = 90
 
 const _resultAvatarSize = 45
 
-const _fontSizeSearchComponent = 17 // trying to move away from in-house 'scale' (makes font too small in some devices)
-const _fontSizeSmall = 12
-
-const _searchComponentBorderRadius = 7
 const _searchBarIconSize = 25
 
-const _searchComponentMarginTopFactor = 0.02
 const _approxFooterHeight = 90
 
 const useStylesSearch = () => {
 	const [{ text, background }] = useStyles()
-	const { height: windowHeight, width: windowWidth } = useDimensions().window
-	const isLandscape = () => windowHeight < windowWidth
 
 	return {
 		searchResultHighlightText: [
-			{ fontSize: _fontSizeSmall },
+			text.size.small,
 			text.color.yellow,
 			background.light.yellow,
 			text.bold.medium,
 		],
-		plainMessageText: [{ fontSize: _fontSizeSmall }, text.color.grey],
-		windowHeight,
-		windowWidth,
-		isLandscape,
+		plainMessageText: [text.size.small, text.color.grey],
 	}
 }
 
@@ -80,7 +68,7 @@ const formatTimestamp = (date: Date) => {
 //
 
 const SearchTitle: React.FC<{}> = () => {
-	const [{ text, color, flex }] = useStyles()
+	const [{ text, color, flex, margin }, { scaleSize }] = useStyles()
 	const { dispatch } = useNavigation()
 	return (
 		<View
@@ -88,9 +76,8 @@ const SearchTitle: React.FC<{}> = () => {
 				flex.direction.row,
 				flex.justify.center,
 				flex.align.center,
-				{
-					marginLeft: _titleIconSize,
-				},
+				margin.left.scale(_titleIconSize),
+				margin.top.medium,
 			]}
 		>
 			<Text
@@ -117,8 +104,8 @@ const SearchTitle: React.FC<{}> = () => {
 					},
 				]}
 				name='arrow-forward-outline'
-				width={_titleIconSize}
-				height={_titleIconSize}
+				width={_titleIconSize * scaleSize}
+				height={_titleIconSize * scaleSize}
 				fill={color.white}
 				onPress={() => dispatch(CommonActions.navigate(Routes.Main.Home))}
 			/>
@@ -132,18 +119,21 @@ const SearchBar: React.FC<{
 	onChange: (text: string) => void
 	searchText: string
 }> = ({ onChange, searchText }) => {
-	const [{ row, color, background, text }] = useStyles()
+	const [{ row, color, background, text, margin, padding }, { scaleSize }] = useStyles()
 	const onClear = (): void => {
 		onChange('')
 		Keyboard.dismiss()
 	}
 
 	return (
-		<ScrollView contentContainerStyle={[row.left]} keyboardShouldPersistTaps='handled'>
+		<ScrollView
+			contentContainerStyle={[row.left, { alignItems: 'center' }]}
+			keyboardShouldPersistTaps='handled'
+		>
 			<Icon
 				name='search'
-				width={_searchBarIconSize}
-				height={_searchBarIconSize}
+				width={_searchBarIconSize * scaleSize}
+				height={_searchBarIconSize * scaleSize}
 				fill={color.yellow}
 			/>
 			<TextInput
@@ -151,7 +141,9 @@ const SearchBar: React.FC<{
 				placeholder='Search'
 				placeholderTextColor={color.yellow}
 				style={[
-					{ marginLeft: 15, padding: 4, flex: 2 },
+					{ flex: 2 },
+					padding.scale(4),
+					margin.left.scale(10),
 					background.light.yellow,
 					text.color.yellow,
 				]}
@@ -162,8 +154,8 @@ const SearchBar: React.FC<{
 			{searchText.length > 0 && (
 				<Icon
 					name='close-circle-outline'
-					width={_searchBarIconSize}
-					height={_searchBarIconSize}
+					width={_searchBarIconSize * scaleSize}
+					height={_searchBarIconSize * scaleSize}
 					fill={color.yellow}
 					onPress={onClear}
 					style={[{ marginLeft: 'auto' }]}
@@ -176,16 +168,18 @@ const SearchBar: React.FC<{
 const SearchHint: React.FC<{
 	hintText: string
 }> = ({ hintText = 'Search messages, contacts, or groups...' }) => {
-	const [{ row, color, text, margin, column, padding }] = useStyles()
-	const { windowWidth } = useStylesSearch()
+	const [
+		{ row, color, text, margin, column, padding, width, opacity },
+		{ windowWidth, scaleSize },
+	] = useStyles()
 	return (
-		<View style={[column.top, padding.small, { marginBottom: _approxFooterHeight }]}>
+		<View style={[column.top, padding.small, margin.bottom.scale(_approxFooterHeight)]}>
 			<Icon
 				name='search'
-				width={_landingIconSize}
-				height={_landingIconSize}
+				width={_landingIconSize * scaleSize}
+				height={_landingIconSize * scaleSize}
 				fill={color.light.yellow}
-				style={[row.item.justify, { opacity: 0.8 }]}
+				style={[row.item.justify, opacity(0.8)]}
 			/>
 			<Text
 				style={[
@@ -193,8 +187,9 @@ const SearchHint: React.FC<{
 					margin.top.small,
 					row.item.justify,
 					text.color.light.yellow,
-					text.size.medium,
-					{ width: windowWidth * 0.5, fontSize: _fontSizeSearchComponent, opacity: 0.8 },
+					text.size.large,
+					width(windowWidth * 0.66),
+					opacity(0.8),
 				]}
 			>
 				{hintText}
@@ -355,7 +350,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, searchTextKey, sear
 					</View>
 				</View>
 
-				<View style={{ marginLeft: 'auto', display: 'flex', alignSelf: 'center' }}>
+				<View style={[{ marginLeft: 'auto' }, row.item.center]}>
 					{receivedDate > 0 && searchTextKey === 'message' ? <TimeStamp /> : null}
 				</View>
 			</View>
@@ -391,8 +386,7 @@ const SearchComponent: React.FC<{
 	const [searchText, setSearchText] = useState(initialSearchText)
 	const contacts = Messenger.useAccountContactSearchResults(searchText)
 	const messages = Messenger.useGetMessageSearchResultWithMetadata(searchText)
-	const [{ padding, margin, background, text, flex }] = useStyles()
-	const { windowHeight } = useStylesSearch()
+	const [{ padding, margin, background, text, flex, border, height }] = useStyles()
 	const sections = useMemo(() => createSections(contacts, messages, searchText), [
 		messages,
 		contacts,
@@ -421,18 +415,17 @@ const SearchComponent: React.FC<{
 		searchText && !contacts.length ? 'No results found' : 'Search messages, contacts, or groups...'
 
 	return (
-		<View style={[flex.tiny, { ...paddingVertical }]}>
+		<View style={[flex.tiny, paddingVertical]}>
 			{/* Title */}
 			<View
 				style={[
 					padding.small,
 					margin.medium,
-					margin.top.huge,
+					margin.top.large,
 					{
 						flexShrink: 0,
-						marginTop: windowHeight * _searchComponentMarginTopFactor,
-						marginLeft: Math.max(validInsets.left, 16), // TODO: Add way to destructure styles API values
-						marginRight: Math.max(validInsets.right, 16), // TODO: Add way to destructure styles API values
+						marginLeft: Math.max(validInsets.left, 16),
+						marginRight: Math.max(validInsets.right, 16),
 					},
 				]}
 			>
@@ -445,12 +438,12 @@ const SearchComponent: React.FC<{
 					margin.horizontal.medium,
 					margin.bottom.medium,
 					background.light.yellow,
+					border.radius.small,
 					{
-						marginLeft: Math.max(validInsets.left, 16), // TODO: Add way to destructure styles API values
-						marginRight: Math.max(validInsets.right, 16), // TODO: Add way to destructure styles API values
-						flexShrink: 0, // TODO: Add to API
+						marginLeft: Math.max(validInsets.left, 16),
+						marginRight: Math.max(validInsets.right, 16),
+						flexShrink: 0,
 						flexGrow: 0,
-						borderRadius: _searchComponentBorderRadius,
 					},
 				]}
 			>
@@ -461,19 +454,19 @@ const SearchComponent: React.FC<{
 				style={[
 					margin.top.small,
 					flex.justify.center,
+					mainBackgroundColor,
 					{
 						flexShrink: 1,
 						flexGrow: 1,
 						paddingHorizontal: 0,
-						...mainBackgroundColor,
 					},
 				]}
 			>
 				{contacts.length + messages.length > 0 ? (
 					<SectionList
 						style={{
-							marginLeft: Math.max(validInsets.left, 16), // TODO: Add way to destructure styles API values
-							marginRight: Math.max(validInsets.right, 16), // TODO: Add way to destructure styles API values
+							marginLeft: Math.max(validInsets.left, 16),
+							marginRight: Math.max(validInsets.right, 16),
 						}}
 						stickySectionHeadersEnabled={false}
 						bounces={false}
@@ -489,7 +482,7 @@ const SearchComponent: React.FC<{
 
 							// Workaround to make sure nothing is hidden behind footer;
 							// adding padding/margin to this or a wrapping parent doesn't work
-							<View style={[{ height: _approxFooterHeight }, background.white]} />
+							<View style={[height(_approxFooterHeight), background.white]} />
 						)}
 					/>
 				) : (

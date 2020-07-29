@@ -75,6 +75,7 @@ module.exports = {
 				'@typescript-eslint/explicit-function-return-type': 0,
 				'@typescript-eslint/no-empty-function': 0,
 				'@typescript-eslint/ban-types': 0,
+				'@typescript-eslint/no-explicit-any': 0,
 			},
 		},
 		{

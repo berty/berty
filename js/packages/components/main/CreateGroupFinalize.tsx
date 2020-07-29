@@ -1,13 +1,12 @@
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
 import React, { useState, useEffect } from 'react'
-import { View, TouchableOpacity, TextInput, Dimensions, StyleSheet, ScrollView } from 'react-native'
+import { View, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/navigation'
 import { Messenger } from '@berty-tech/hooks'
 import { messenger } from '@berty-tech/store'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useDimensions } from '@react-native-community/hooks'
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { CreateGroupHeader } from './CreateGroupAddMembers'
 import { Header } from './HomeModal'
@@ -101,11 +100,10 @@ type GroupInfoProps = { onGroupNameChange: (name: string) => void; layout: numbe
 const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 	const [
 		{ row, background, column, margin, flex, height, border, padding, color, text },
-		{ scaleSize },
+		{ scaleSize, windowHeight },
 	] = useStyles()
 	const _styles = useStylesCreateGroup()
-	const dimensions = useDimensions().window
-	const restScreen = dimensions.height - layout - 400 * scaleSize // Rest of screen // 400 = size of the component (300) + header (90) + padding (10)
+	const restScreen = windowHeight - layout - 400 * scaleSize // Rest of screen // 400 = size of the component (300) + header (90) + padding (10)
 	const paddingBottom =
 		restScreen < 90 * scaleSize ? 90 * scaleSize - restScreen + 20 * scaleSize : 0 // Padding in scrollview if the rest of screen was smaller than footer // 90 = size of footer, 20 = padding
 
