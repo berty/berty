@@ -25,13 +25,13 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
 
     // protocol
     private Protocol bridgeProtocol = null;
-    private final String rootDir;
+    private File rootDir = null;
 
     public GoBridgeModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
-        this.rootDir = reactContext.getFilesDir().getAbsolutePath() + "/berty";
-        System.out.println("root dir: " + this.rootDir);
+        this.rootDir = new File(reactContext.getFilesDir().getAbsolutePath() + "/berty");
+        System.out.println("root dir: " + this.rootDir.getAbsolutePath());
     }
 
     @Override
@@ -42,8 +42,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void clearStorage(Promise promise) {
         try {
-            final File rootDir = new File(this.rootDir);
-            if (rootDir.exists()) {
+            if (this.rootDir != null && this.rootDir.exists()) {
                 if (!rootDir.delete()) {
                     throw new Exception("can't delete rootDir");
                 }
@@ -123,14 +122,13 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
 
             // set persistence if needed
             if (optPersistence) {
-                final File dir = new File(this.rootDir);
-                if (!dir.exists()) {
-                    if (!dir.mkdirs()) {
+                if (this.rootDir != null && !this.rootDir.exists()) {
+                    if (!this.rootDir.mkdirs()) {
                         throw new Exception("rootdir directory creation failed");
                     }
                 }
-                Log.i(TAG, "root dir: " + this.rootDir);
-                config.rootDirectory(this.rootDir);
+                Log.i(TAG, "root dir: " + this.rootDir.getAbsolutePath());
+                config.rootDirectory(this.rootDir.getAbsolutePath());
             }
 
             if (optPOIDebug) {
