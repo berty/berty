@@ -21,6 +21,7 @@ import bertybridge.ProtocolConfig;
 public class GoBridgeModule extends ReactContextBaseJavaModule {
     private final static String TAG = "GoBridge";
     private final ReactApplicationContext reactContext;
+    private final static LoggerDriver rnlogger = new LoggerDriver("tech.berty", "react");
 
     // protocol
     private Protocol bridgeProtocol = null;
@@ -30,6 +31,20 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.rootDir = reactContext.getFilesDir().getAbsolutePath() + "/berty";
+    }
+
+    @Override
+    public void finalize() {
+        try {
+            if (this.bridgeProtocol != null) {
+                System.out.println("bflifecycle: calling try this.bridgeProtocol.close()");
+                this.bridgeProtocol.close();
+                System.out.println("bflifecycle: done this.bridgeProtocol.close()");
+                this.bridgeProtocol = null;
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
     }
 
     @Override
@@ -56,8 +71,18 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     public void log(ReadableMap opts) {
         if (opts.hasKey("message")) {
             String message = opts.getString("message");
-            String level = opts.hasKey("level") ? opts.getString("level") : "info";
-            // TODO
+            String type = opts.hasKey("level") ? opts.getString("level") : "info";
+
+            // set log level
+            LoggerLevel level;
+            try {
+                level = LoggerLevel.valueOf(type.toUpperCase());
+            } catch (Exception e) {
+                level = LoggerLevel.INFO;
+            }
+
+            // log
+            GoBridgeModule.rnlogger.print(message, level, "react-native");
         }
     }
 
@@ -74,7 +99,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
 
             // gather opts
             final boolean optPersistence = opts.hasKey("persistence") && opts.getBoolean("persistence");
-            final String optLog = opts.hasKey("logLevel") ? opts.getString("logLevel)") : "";
+            final String optLog = opts.hasKey("logLevel") ? opts.getString("logLevel") : "";
             final boolean optPOIDebug = opts.hasKey("poiDebug") && opts.getBoolean("poiDebug");
             String[] optsGrpcListeners = {"/ip4/127.0.0.1/tcp/0/grpcws"}; // default value
             if (opts.hasKey("grpcListeners") && opts.getType("grpcListeners") == ReadableType.Array) {
@@ -82,7 +107,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
             }
             String[] optsSwarmListeners = {"/ip4/0.0.0.0/tcp/0", "/ip6/0.0.0.0/tcp/0"}; // default value
             if (opts.hasKey("swarmListeners") && opts.getType("swarmListeners") == ReadableType.Array) {
-                optsGrpcListeners = readableArrayToStringArray(opts.getArray("swarmListeners"));
+                optsSwarmListeners = readableArrayToStringArray(opts.getArray("swarmListeners"));
             }
             final boolean optTracing = opts.hasKey("tracing") && opts.getBoolean("tracing");
             final String optTracingPrefix = opts.hasKey("tracingPrefix") ? opts.getString("tracingPrefix") : "";
@@ -94,11 +119,10 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
             }
 
             // init logger
-            // TODO
+            LoggerDriver logger = new LoggerDriver("tech.berty", "protocol");
 
             config.logLevel(optLog);
-            // TODO
-            //config.loggerDriver(logger);
+            config.loggerDriver(logger);
 
             // configure grpc listener
             for (String listener: optsGrpcListeners) {
@@ -106,7 +130,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
             }
 
             // configure swarm listeners
-            for (String listener: optsGrpcListeners) {
+            for (String listener: optsSwarmListeners) {
                 config.addSwarmListener(listener);
             }
 
@@ -135,9 +159,9 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
                 config.disableLocalDiscovery();
             }
 
-            Log.i(TAG, "bflifecycle: calling Bertybridge.newProtocolBridge");
+            System.out.println("bflifecycle: calling Bertybridge.newProtocolBridge");
             this.bridgeProtocol = Bertybridge.newProtocolBridge(config);
-            Log.i(TAG, "bflifecycle: done Bertybridge.newProtocolBridge");
+            System.out.println("bflifecycle: done Bertybridge.newProtocolBridge");
             promise.resolve(true);
         } catch(Exception err) {
             promise.reject(err);
@@ -148,9 +172,9 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     public void stopProtocol(Promise promise) {
         try {
             if (this.bridgeProtocol != null) {
-                Log.i(TAG, "bflifecycle: calling bridgeProtocol.close()");
+                System.out.println("bflifecycle: calling bridgeProtocol.close()");
                 this.bridgeProtocol.close();
-                Log.i(TAG, "bflifecycle: done bridgeProtocol.close()");
+                System.out.println("bflifecycle: done bridgeProtocol.close()");
                 this.bridgeProtocol = null;
             }
             promise.resolve(true);

@@ -4,9 +4,9 @@
 4989b51bf6dfc52cd195cc46db1732a81090191f  ../api/bertyprotocol.proto
 4c0fa735ab710727c465ed1444dc6db1c748dc45  ../vendor/github.com/gogo/protobuf/gogoproto/gogo.proto
 5bf6c46c26dc0ac3fa5f310b873f22d17a66b623  ../api/bertymessenger.proto
+69cc2e66d1284df67e32b6a439b722d1666f0016  Makefile
 76dca7af909f54d3a2d2b6d117f2239f2da80403  packages/store/protocol/ProtocolServiceClient.gen.js.hbs
 84e82ba2400f5cf180d062b5f8d7f89784da79ef  packages/store/types/events.gen.js.hbs
 a0d72ec76cf80a59f7b3e616f5a90924c0ffffd2  packages/store/messenger/client.gen.js.hbs
 af95a29375259c0d5fd47e7e07aafee140a592a8  packages/store/protocol/client.gen.js.hbs
-ca5e1e645894ca5ef88d43f77e6d73549b41ada1  Makefile
 cdcfd4235af64debca29d0553209a34df7899361  ../api/bertytypes.proto
