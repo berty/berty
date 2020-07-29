@@ -31,20 +31,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
         this.rootDir = reactContext.getFilesDir().getAbsolutePath() + "/berty";
-    }
-
-    @Override
-    public void finalize() {
-        try {
-            if (this.bridgeProtocol != null) {
-                System.out.println("bflifecycle: calling try this.bridgeProtocol.close()");
-                this.bridgeProtocol.close();
-                System.out.println("bflifecycle: done this.bridgeProtocol.close()");
-                this.bridgeProtocol = null;
-            }
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
+        System.out.println("root dir: " + this.rootDir);
     }
 
     @Override
