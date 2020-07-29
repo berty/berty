@@ -24,15 +24,15 @@
     "typescript": "^3.9.5"
   },
   "dependencies": {
-    "@berty-tech/navigation": "^0.0.0",
     "@berty-tech/components": "^0.0.0",
     "@berty-tech/go-bridge": "^1.0.0",
     "@berty-tech/hooks": "^0.0.0",
+    "@berty-tech/navigation": "^0.0.0",
     "@berty-tech/react-native-example": "^1.0.0",
     "@berty-tech/styles": "^0.0.0",
     "@eva-design/eva": "^1.4.0",
     "@react-native-community/async-storage": "^1.8.0",
-    "@react-native-community/blur": "^3.3.1",
+    "@react-native-community/blur": "^3.6.0",
     "@react-native-community/masked-view": "^0.1.7",
     "@react-navigation/native": "^5.7.1",
     "@ui-kitten/eva-icons": "^4.4.1",
