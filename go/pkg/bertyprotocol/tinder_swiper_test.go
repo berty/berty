@@ -9,6 +9,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
+	"github.com/libp2p/go-libp2p-core/peer"
 	p2pmocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -158,8 +159,8 @@ func TestAnnounceWatchForPeriod(t *testing.T) {
 
 			time.Sleep(time.Millisecond * 100)
 
-			ch := swiperB.WatchTopic(ctx, tc.topicB, tc.seedB)
-			require.NotNil(t, ch)
+			ch := make(chan peer.AddrInfo)
+			go swiperB.WatchTopic(ctx, tc.topicB, tc.seedB, ch)
 
 			var foundPeers int
 			for foundPeers = 0; foundPeers < tc.expectedPeersFound; foundPeers++ {

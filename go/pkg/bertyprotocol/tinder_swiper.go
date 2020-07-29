@@ -89,9 +89,9 @@ func (s *Swiper) watchUntilDeadline(ctx context.Context, out chan<- peer.AddrInf
 
 	s.logger.Debug("start watch event handler")
 	for {
-		pe, err := te.NextPeerEvent(ctx)
-		if err != nil {
-			return err
+		pe, _ := te.NextPeerEvent(ctx)
+		if ctx.Err() != nil {
+			return ctx.Err()
 		}
 
 		s.logger.Debug("event received")
@@ -101,8 +101,12 @@ func (s *Swiper) watchUntilDeadline(ctx context.Context, out chan<- peer.AddrInf
 				zap.String("topic", topic),
 				zap.String("peer", pe.Peer.ShortString()),
 			)
-			out <- peer.AddrInfo{
+			select {
+			case out <- peer.AddrInfo{
 				ID: pe.Peer,
+			}:
+			case <-ctx.Done():
+				return ctx.Err()
 			}
 		case pubsub.PeerLeave:
 		}
@@ -110,33 +114,26 @@ func (s *Swiper) watchUntilDeadline(ctx context.Context, out chan<- peer.AddrInf
 }
 
 // watch looks for peers providing a resource
-func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte) chan peer.AddrInfo {
-	out := make(chan peer.AddrInfo)
-
-	go func() {
-		for {
-			roundedTime := roundTimePeriod(time.Now(), s.interval)
-			topicForTime := generateRendezvousPointForPeriod(topic, seed, roundedTime)
-			periodEnd := nextTimePeriod(roundedTime, s.interval)
-			err := s.watchUntilDeadline(ctx, out, string(topicForTime), periodEnd)
-			switch err {
-			case nil:
-			case context.DeadlineExceeded, context.Canceled:
-				s.logger.Debug("watch until deadline", zap.Error(err))
-			default:
-				s.logger.Error("watch until deadline", zap.Error(err))
-			}
-
-			select {
-			case <-ctx.Done():
-				close(out)
-				return
-			default:
-			}
+func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte, out chan<- peer.AddrInfo) {
+	for {
+		roundedTime := roundTimePeriod(time.Now(), s.interval)
+		topicForTime := generateRendezvousPointForPeriod(topic, seed, roundedTime)
+		periodEnd := nextTimePeriod(roundedTime, s.interval)
+		err := s.watchUntilDeadline(ctx, out, string(topicForTime), periodEnd)
+		switch err {
+		case nil:
+		case context.DeadlineExceeded, context.Canceled:
+			s.logger.Debug("watch until deadline", zap.Error(err))
+		default:
+			s.logger.Error("watch until deadline", zap.Error(err))
 		}
-	}()
 
-	return out
+		select {
+		case <-ctx.Done():
+			return
+		default:
+		}
+	}
 }
 
 // watch looks for peers providing a resource

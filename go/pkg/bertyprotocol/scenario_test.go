@@ -487,15 +487,23 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*Testi
 			require.NotNil(t, receiverCfg)
 
 			// Setup receiver's sharable contact
-			_, err = receiver.Client.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})
-			require.NoError(t, err)
-			receiverRDV, err := receiver.Client.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
-			require.NoError(t, err)
-			require.NotNil(t, receiverRDV)
+			var receiverRDVSeed []byte
+
+			crf, err := receiver.Client.ContactRequestReference(ctx, &bertytypes.ContactRequestReference_Request{})
+			if err != nil || !crf.Enabled || len(crf.PublicRendezvousSeed) == 0 {
+				_, err = receiver.Client.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})
+				require.NoError(t, err)
+				receiverRDV, err := receiver.Client.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
+				require.NoError(t, err)
+				require.NotNil(t, receiverRDV)
+				receiverRDVSeed = receiverRDV.PublicRendezvousSeed
+			} else {
+				receiverRDVSeed = crf.PublicRendezvousSeed
+			}
 
 			receiverSharableContact := &bertytypes.ShareableContact{
 				PK:                   receiverCfg.AccountPK,
-				PublicRendezvousSeed: receiverRDV.PublicRendezvousSeed,
+				PublicRendezvousSeed: receiverRDVSeed,
 			}
 
 			// Sender sends contact request

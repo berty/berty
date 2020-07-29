@@ -30,12 +30,6 @@ type pendingRequest struct {
 	cancelFunc context.CancelFunc
 }
 
-func (p *pendingRequest) watcher(ctx context.Context, details *pendingRequestDetails, ch chan peer.AddrInfo) {
-	for addr := range p.swiper.WatchTopic(ctx, details.contact.PK, details.contact.PublicRendezvousSeed) {
-		ch <- addr
-	}
-}
-
 func newPendingRequest(ctx context.Context, swiper *Swiper, details *pendingRequestDetails) (*pendingRequest, chan peer.AddrInfo) {
 	ch := make(chan peer.AddrInfo)
 
@@ -54,7 +48,7 @@ func newPendingRequest(ctx context.Context, swiper *Swiper, details *pendingRequ
 			case details := <-req.update:
 				updateCancel()
 				initUpdateCtx, updateCancel = context.WithCancel(ctx)
-				go req.watcher(initUpdateCtx, details, ch)
+				go req.swiper.WatchTopic(initUpdateCtx, details.contact.PK, details.contact.PublicRendezvousSeed, ch)
 
 			case <-ctx.Done():
 				close(ch)
