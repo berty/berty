@@ -17,7 +17,7 @@ import (
 )
 
 // Service is BridgeServiceServer
-var _ *Service = (pb.BridgeServiceServer)(nil)
+var _ pb.BridgeServiceServer = (*Service)(nil)
 
 type Service struct {
 	cc *grpc.ClientConn
@@ -68,7 +68,7 @@ func (s *Service) ClientInvokeUnary(ctx context.Context, req *pb.ClientInvokeUna
 	out := grpcutil.NewLazyMessage()
 	err := grpc.Invoke(uctx, req.MethodDesc.Name, in, out, s.cc, grpc.ForceCodec(lazyCodec))
 	if err != nil {
-		res.Error = getError(err)
+		res.Error = getSerivceError(err)
 		return res, nil
 	}
 
@@ -89,6 +89,10 @@ func (s *Service) CreateClientStream(ctx context.Context, req *pb.ClientCreateSt
 		return nil, fmt.Errorf("cannot invoke `ClientInvokeUnary` without a `MethodDesc`")
 	}
 
+	if !req.MethodDesc.IsClientStream && !req.MethodDesc.IsClientStream {
+		return res, fmt.Errorf("cannot call a unary method with `CreateClientStream`")
+	}
+
 	desc := &grpc.StreamDesc{
 		StreamName: req.MethodDesc.Name,
 
@@ -96,11 +100,11 @@ func (s *Service) CreateClientStream(ctx context.Context, req *pb.ClientCreateSt
 		ClientStreams: req.MethodDesc.IsClientStream,
 	}
 
-	sctx := newOutgoingContext(context.Background(), req.Header)
+	sctx := newOutgoingContext(s.rootCtx, req.Header)
 	sctx, cancel := context.WithCancel(sctx)
 	cstream, err := grpc.NewClientStream(sctx, desc, s.cc, req.MethodDesc.Name, grpc.ForceCodec(lazyCodec))
 	if err != nil {
-		res.Error = getError(err)
+		res.Error = getSerivceError(err)
 		return res, nil
 	}
 
@@ -108,7 +112,17 @@ func (s *Service) CreateClientStream(ctx context.Context, req *pb.ClientCreateSt
 		in := grpcutil.NewLazyMessage().FromBytes(req.Payload)
 		if err := cstream.SendMsg(in); err != nil {
 			cancel()
-			res.Error = getError(err)
+
+			res.Error = getSerivceError(err)
+			res.Trailer = convertMetadata(cstream.Trailer())
+
+			return res, nil
+		}
+
+		if err := cstream.CloseSend(); err != nil {
+			cancel()
+
+			res.Error = getSerivceError(err)
 			res.Trailer = convertMetadata(cstream.Trailer())
 
 			return res, nil
@@ -144,7 +158,7 @@ func (s *Service) ClientStreamSend(ctx context.Context, req *pb.ClientStreamSend
 	in := grpcutil.NewLazyMessage().FromBytes(req.Payload)
 	if err := cstream.SendMsg(in); err != nil {
 		cstream.CancelFunc()
-		res.Error = getError(err)
+		res.Error = getSerivceError(err)
 		res.Trailer = convertMetadata(cstream.Trailer())
 
 		s.muStreams.Lock()
@@ -174,7 +188,7 @@ func (s *Service) ClientStreamRecv(ctx context.Context, req *pb.ClientStreamRecv
 	if err := cstream.RecvMsg(out); err != nil {
 		s.muStreams.Lock()
 
-		res.Error = getError(err)
+		res.Error = getSerivceError(err)
 		res.Trailer = convertMetadata(cstream.Trailer())
 		cstream.CancelFunc()
 		delete(s.streams, id)
@@ -264,7 +278,7 @@ func convertMetadata(in metadata.MD) []*pb.Metadata {
 // 	return trailer
 // }
 
-func getError(err error) *pb.Error {
+func getSerivceError(err error) *pb.Error {
 	if err == nil {
 		return nil
 	}

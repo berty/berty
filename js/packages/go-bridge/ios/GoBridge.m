@@ -30,6 +30,11 @@ RCT_EXTERN_METHOD(log:(NSDictionary)opts);
 RCT_EXTERN_METHOD(stopProtocol:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
 
+RCT_EXTERN_METHOD(invokeBridgeMethod:(NSString)method
+                  b64message:(NSString)b64message
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject);
+
 RCT_EXTERN_METHOD(getProtocolAddr:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
 

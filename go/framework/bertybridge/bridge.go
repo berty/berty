@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"berty.tech/berty/v2/go/framework/bertybridge/internal/bridgepb"
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	ma "github.com/multiformats/go-multiaddr"
@@ -18,6 +19,11 @@ import (
 )
 
 const ClientBufferSize = 256 * 1024
+
+type PromiseBlock interface {
+	CallResolve(reply string)
+	CallReject(error error)
+}
 
 type Config struct {
 	bridgeGrpcAddrs []string
@@ -43,6 +49,8 @@ type Bridge struct {
 	workers    run.Group
 	grpcServer *grpc.Server
 	logger     *zap.Logger
+
+	clientBridgeService *Client
 
 	bufListener *grpcutil.BufListener
 	listeners   []grpcutil.Listener
@@ -98,7 +106,47 @@ func newBridge(ctx context.Context, s *grpc.Server, logger *zap.Logger, config *
 		bl.Close()
 	})
 
-	b.bufListener = bl
+	// setup lazy grpc listener for services
+	var ccServices *grpc.ClientConn
+	var bufListener *grpcutil.BufListener
+	{
+		var err error
+
+		bufListener = grpcutil.NewBufListener(ctx, ClientBufferSize)
+		b.workers.Add(func() error {
+			return b.grpcServer.Serve(bufListener)
+		}, func(error) {
+			bufListener.Close()
+		})
+
+		if ccServices, err = bufListener.NewClientConn(); err != nil {
+			return nil, errors.Wrap(err, "unable to get services gRPC ClientConn")
+		}
+	}
+	b.bufListener = bufListener
+
+	// setup bridge client
+	var ccBridge *grpc.ClientConn
+	{
+		var err error
+
+		service := NewServiceFromClientConn(ccServices)
+		s := grpc.NewServer()
+		bridgepb.RegisterBridgeServiceServer(s, service)
+
+		bl := grpcutil.NewBufListener(ClientBufferSize)
+		b.workers.Add(func() error {
+			return s.Serve(bl)
+		}, func(error) {
+			bl.Close()
+			service.Close()
+		})
+
+		if ccBridge, err = bl.NewClientConn(); err != nil {
+			return nil, errors.Wrap(err, "unable to get bridge gRPC ClientConn")
+		}
+	}
+	b.clientBridgeService = &Client{ccBridge}
 
 	// start Bridge
 	b.logger.Debug("starting Bridge")
@@ -107,6 +155,25 @@ func newBridge(ctx context.Context, s *grpc.Server, logger *zap.Logger, config *
 	}()
 
 	return b, nil
+}
+
+func (b *Bridge) InvokeBridgeMethodWithPromiseBlock(promise PromiseBlock, method string, b64message string) {
+	go func() {
+		res, err := b.InvokeBridgeMethod(method, b64message)
+		// if an internal error occure generate a new bridge error
+		if err != nil {
+			err = errors.Wrap(err, "unable to invoke bridge method")
+			promise.CallReject(err)
+			return
+		}
+
+		promise.CallResolve(res)
+		return
+	}()
+}
+
+func (b *Bridge) InvokeBridgeMethod(method string, b64message string) (string, error) {
+	return b.clientBridgeService.UnaryRequestFromBase64(method, b64message)
 }
 
 func (b *Bridge) GRPCListenerAddr() string          { return b.GetGRPCAddrFor("ip4/tcp/grpc") }

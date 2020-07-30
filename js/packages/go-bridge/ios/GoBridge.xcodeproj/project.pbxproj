@@ -8,7 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		489F867C23606976004E8660 /* Gobridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 489F867B23606976004E8660 /* Gobridge.framework */; };
+		48B5F4CF24D2D18C005B75AC /* PromiseBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B5F4CE24D2D18C005B75AC /* PromiseBlock.swift */; };
 		48C42EB823C3D47B006A2D1C /* GoBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C42EB723C3D47B006A2D1C /* GoBridge.swift */; };
+		48D71D7824D2D32400F2EA90 /* LoggerDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48D71D7724D2D32400F2EA90 /* LoggerDriver.swift */; };
 		B3E7B58A1CC2AC0600A0062D /* GoBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* GoBridge.m */; };
 /* End PBXBuildFile section */
 
@@ -27,8 +29,10 @@
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libGoBridge.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libGoBridge.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		489F867B23606976004E8660 /* Gobridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Gobridge.framework; sourceTree = "<group>"; };
+		48B5F4CE24D2D18C005B75AC /* PromiseBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseBlock.swift; sourceTree = "<group>"; };
 		48C42EB623C3D47B006A2D1C /* GoBridge-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GoBridge-Bridging-Header.h"; sourceTree = "<group>"; };
 		48C42EB723C3D47B006A2D1C /* GoBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoBridge.swift; sourceTree = "<group>"; };
+		48D71D7724D2D32400F2EA90 /* LoggerDriver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggerDriver.swift; sourceTree = "<group>"; };
 		B3E7B5881CC2AC0600A0062D /* GoBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoBridge.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* GoBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoBridge.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -64,6 +68,8 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				48D71D7724D2D32400F2EA90 /* LoggerDriver.swift */,
+				48B5F4CE24D2D18C005B75AC /* PromiseBlock.swift */,
 				48C42EB723C3D47B006A2D1C /* GoBridge.swift */,
 				B3E7B5881CC2AC0600A0062D /* GoBridge.h */,
 				B3E7B5891CC2AC0600A0062D /* GoBridge.m */,
@@ -131,6 +137,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48B5F4CF24D2D18C005B75AC /* PromiseBlock.swift in Sources */,
+				48D71D7824D2D32400F2EA90 /* LoggerDriver.swift in Sources */,
 				B3E7B58A1CC2AC0600A0062D /* GoBridge.m in Sources */,
 				48C42EB823C3D47B006A2D1C /* GoBridge.swift in Sources */,
 			);
