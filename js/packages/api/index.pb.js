@@ -1507,7 +1507,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         nested: {
           v1: {
             options: {
-              go_package: "berty.tech/berty/go/pkg/bertymessenger"
+              go_package: "berty.tech/berty/go/pkg/bertymessenger",
+              "(gogoproto.goproto_unkeyed_all)": false,
+              "(gogoproto.goproto_unrecognized_all)": false,
+              "(gogoproto.goproto_sizecache_all)": false
             },
             nested: {
               MessengerService: {
@@ -1543,6 +1546,24 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   SystemInfo: {
                     requestType: "SystemInfo.Request",
                     responseType: "SystemInfo.Reply"
+                  },
+                  ConversationStream: {
+                    requestType: "ConversationStream.Request",
+                    responseType: "ConversationStream.Reply",
+                    responseStream: true
+                  },
+                  EventStream: {
+                    requestType: "EventStream.Request",
+                    responseType: "EventStream.Reply",
+                    responseStream: true
+                  },
+                  ConversationCreate: {
+                    requestType: "ConversationCreate.Request",
+                    responseType: "ConversationCreate.Reply"
+                  },
+                  AccountGet: {
+                    requestType: "AccountGet.Request",
+                    responseType: "AccountGet.Reply"
                   }
                 }
               },
@@ -1816,108 +1837,99 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              AppMessageType: {
-                values: {
-                  Undefined: 0,
-                  UserMessage: 1,
-                  UserReaction: 2,
-                  GroupInvitation: 3,
-                  SetGroupName: 4,
-                  Acknowledge: 5
-                }
-              },
-              AppMessageTyped: {
-                fields: {
-                  type: {
-                    type: "AppMessageType",
-                    id: 1
-                  }
-                }
-              },
               UserMessageAttachment: {
                 fields: {
-                  type: {
-                    type: "AppMessageType",
-                    id: 1
-                  },
                   uri: {
                     type: "string",
                     id: 2
                   }
                 }
               },
-              PayloadUserMessage: {
+              AppMessage: {
                 fields: {
                   type: {
-                    type: "AppMessageType",
+                    type: "Type",
                     id: 1
                   },
-                  body: {
-                    type: "string",
+                  payload: {
+                    type: "bytes",
                     id: 2
-                  },
-                  attachments: {
-                    rule: "repeated",
-                    type: "UserMessageAttachment",
-                    id: 3
-                  },
-                  sentDate: {
-                    type: "int64",
-                    id: 4,
-                    options: {
-                      "(gogoproto.jsontag)": "sentDate"
+                  }
+                },
+                nested: {
+                  Type: {
+                    values: {
+                      TypeUndefined: 0,
+                      TypeUserMessage: 1,
+                      TypeUserReaction: 2,
+                      TypeGroupInvitation: 3,
+                      TypeSetGroupName: 4,
+                      TypeSetUserName: 5,
+                      TypeAcknowledge: 6
                     }
-                  }
-                }
-              },
-              PayloadUserReaction: {
-                fields: {
-                  type: {
-                    type: "AppMessageType",
-                    id: 1
                   },
-                  emoji: {
-                    type: "string",
-                    id: 2
-                  }
-                }
-              },
-              PayloadGroupInvitation: {
-                fields: {
-                  type: {
-                    type: "AppMessageType",
-                    id: 1
-                  },
-                  groupPk: {
-                    type: "string",
-                    id: 2,
-                    options: {
-                      "(gogoproto.jsontag)": "groupPk"
+                  UserMessage: {
+                    fields: {
+                      body: {
+                        type: "string",
+                        id: 2
+                      },
+                      attachments: {
+                        rule: "repeated",
+                        type: "UserMessageAttachment",
+                        id: 3
+                      },
+                      sentDate: {
+                        type: "int64",
+                        id: 4,
+                        options: {
+                          "(gogoproto.jsontag)": "sentDate"
+                        }
+                      }
                     }
-                  }
-                }
-              },
-              PayloadSetGroupName: {
-                fields: {
-                  type: {
-                    type: "AppMessageType",
-                    id: 1
                   },
-                  name: {
-                    type: "string",
-                    id: 2
-                  }
-                }
-              },
-              PayloadAcknowledge: {
-                fields: {
-                  type: {
-                    type: "AppMessageType",
-                    id: 1
+                  UserReaction: {
+                    fields: {
+                      emoji: {
+                        type: "string",
+                        id: 2
+                      }
+                    }
                   },
-                  target: {
-                    type: "string",
-                    id: 2
+                  GroupInvitation: {
+                    fields: {
+                      groupPk: {
+                        type: "string",
+                        id: 2,
+                        options: {
+                          "(gogoproto.jsontag)": "groupPk"
+                        }
+                      }
+                    }
+                  },
+                  SetGroupName: {
+                    fields: {
+                      name: {
+                        type: "string",
+                        id: 2
+                      }
+                    }
+                  },
+                  SetUserName: {
+                    fields: {
+                      name: {
+                        type: "string",
+                        id: 2
+                      }
+                    }
+                  },
+                  Acknowledge: {
+                    fields: {
+                      target: {
+                        type: "string",
+                        id: 2
+                      }
+                    }
                   }
                 }
               },
@@ -2001,6 +2013,253 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         id: 21
                       }
                     }
+                  }
+                }
+              },
+              Account: {
+                fields: {
+                  publicKey: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primary_key"
+                    }
+                  },
+                  displayName: {
+                    type: "string",
+                    id: 2
+                  },
+                  state: {
+                    type: "State",
+                    id: 3
+                  }
+                },
+                nested: {
+                  State: {
+                    values: {
+                      Undefined: 0,
+                      NotReady: 1,
+                      Ready: 2
+                    }
+                  }
+                }
+              },
+              Contact: {
+                fields: {
+                  publicKey: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primary_key"
+                    }
+                  },
+                  displayName: {
+                    type: "string",
+                    id: 2
+                  },
+                  state: {
+                    type: "State",
+                    id: 3
+                  }
+                },
+                nested: {
+                  State: {
+                    values: {
+                      Undefined: 0,
+                      IncomingRequest: 1,
+                      OutgoingRequestEnqueued: 2,
+                      OutgoingRequestSent: 3,
+                      Established: 4
+                    }
+                  }
+                }
+              },
+              Conversation: {
+                fields: {
+                  publicKey: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primary_key"
+                    }
+                  },
+                  displayName: {
+                    type: "string",
+                    id: 2
+                  }
+                }
+              },
+              Member: {
+                fields: {
+                  publicKey: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primary_key"
+                    }
+                  },
+                  displayName: {
+                    type: "string",
+                    id: 2
+                  },
+                  givenName: {
+                    type: "string",
+                    id: 3
+                  }
+                }
+              },
+              Device: {
+                fields: {
+                  publicKey: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primary_key"
+                    }
+                  }
+                }
+              },
+              StreamEvent: {
+                fields: {
+                  type: {
+                    type: "Type",
+                    id: 1
+                  },
+                  payload: {
+                    type: "bytes",
+                    id: 2
+                  }
+                },
+                nested: {
+                  Type: {
+                    values: {
+                      TypeConversationUpdated: 0,
+                      TypeConversationDeleted: 1,
+                      TypeInteractionUpdated: 2,
+                      TypeContactUpdated: 3
+                    }
+                  },
+                  ConversationUpdated: {
+                    fields: {
+                      conversation: {
+                        type: "Conversation",
+                        id: 1
+                      }
+                    }
+                  },
+                  ConversationDeleted: {
+                    fields: {
+                      publicKey: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  InteractionUpdated: {
+                    fields: {}
+                  },
+                  ContactUpdated: {
+                    fields: {
+                      contact: {
+                        type: "Contact",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              ConversationStream: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      count: {
+                        type: "uint64",
+                        id: 1
+                      },
+                      page: {
+                        type: "uint64",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      conversation: {
+                        type: "Conversation",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              ConversationCreate: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      displayName: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      publicKey: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              AccountGet: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      account: {
+                        type: "Account",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              EventStream: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      count: {
+                        type: "uint64",
+                        id: 1
+                      },
+                      page: {
+                        type: "uint64",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      event: {
+                        type: "StreamEvent",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              ContactMetadata: {
+                fields: {
+                  displayName: {
+                    type: "string",
+                    id: 1
                   }
                 }
               }

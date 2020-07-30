@@ -16,25 +16,46 @@ var github_com_gogo_protobuf_gogoproto_gogo_pb = require('./github.com/gogo/prot
 goog.object.extend(proto, github_com_gogo_protobuf_gogoproto_gogo_pb);
 var bertytypes_pb = require('./bertytypes_pb.js');
 goog.object.extend(proto, bertytypes_pb);
-goog.exportSymbol('proto.berty.messenger.v1.AppMessageType', null, global);
-goog.exportSymbol('proto.berty.messenger.v1.AppMessageTyped', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.Account', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.Account.State', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.AccountGet', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.AccountGet.Reply', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.AccountGet.Request', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.AppMessage', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.AppMessage.Acknowledge', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.AppMessage.GroupInvitation', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.AppMessage.SetGroupName', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.AppMessage.SetUserName', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.AppMessage.Type', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.AppMessage.UserMessage', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.AppMessage.UserReaction', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.BertyGroup', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.BertyID', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.Contact', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.Contact.State', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.ContactMetadata', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.Conversation', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.ConversationCreate', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.ConversationCreate.Reply', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.ConversationCreate.Request', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.ConversationStream', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.ConversationStream.Reply', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.ConversationStream.Request', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.DevShareInstanceBertyID', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.DevShareInstanceBertyID.Reply', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.DevShareInstanceBertyID.Request', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.Device', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.EventStream', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.EventStream.Reply', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.EventStream.Request', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.InstanceShareableBertyID', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.InstanceShareableBertyID.Reply', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.InstanceShareableBertyID.Request', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.Member', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.ParseDeepLink', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.ParseDeepLink.Kind', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.ParseDeepLink.Reply', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.ParseDeepLink.Request', null, global);
-goog.exportSymbol('proto.berty.messenger.v1.PayloadAcknowledge', null, global);
-goog.exportSymbol('proto.berty.messenger.v1.PayloadGroupInvitation', null, global);
-goog.exportSymbol('proto.berty.messenger.v1.PayloadSetGroupName', null, global);
-goog.exportSymbol('proto.berty.messenger.v1.PayloadUserMessage', null, global);
-goog.exportSymbol('proto.berty.messenger.v1.PayloadUserReaction', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.SendAck', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.SendAck.Reply', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.SendAck.Request', null, global);
@@ -47,6 +68,12 @@ goog.exportSymbol('proto.berty.messenger.v1.SendMessage.Request', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.ShareableBertyGroup', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.ShareableBertyGroup.Reply', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.ShareableBertyGroup.Request', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.StreamEvent', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.StreamEvent.ContactUpdated', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.StreamEvent.ConversationDeleted', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.StreamEvent.ConversationUpdated', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.StreamEvent.InteractionUpdated', null, global);
+goog.exportSymbol('proto.berty.messenger.v1.StreamEvent.Type', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.SystemInfo', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.SystemInfo.Reply', null, global);
 goog.exportSymbol('proto.berty.messenger.v1.SystemInfo.Request', null, global);
@@ -544,27 +571,6 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.v1.AppMessageTyped = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
-};
-goog.inherits(proto.berty.messenger.v1.AppMessageTyped, jspb.Message);
-if (goog.DEBUG && !COMPILED) {
-  /**
-   * @public
-   * @override
-   */
-  proto.berty.messenger.v1.AppMessageTyped.displayName = 'proto.berty.messenger.v1.AppMessageTyped';
-}
-/**
- * Generated by JsPbCodeGenerator.
- * @param {Array=} opt_data Optional initial data array, typically from a
- * server response, or constructed directly in Javascript. The array is used
- * in place and becomes part of the constructed object. It is not cloned.
- * If no data is provided, the constructed object will be empty, but still
- * valid.
- * @extends {jspb.Message}
- * @constructor
- */
 proto.berty.messenger.v1.UserMessageAttachment = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
@@ -586,16 +592,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.v1.PayloadUserMessage = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, proto.berty.messenger.v1.PayloadUserMessage.repeatedFields_, null);
+proto.berty.messenger.v1.AppMessage = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.v1.PayloadUserMessage, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.AppMessage, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.v1.PayloadUserMessage.displayName = 'proto.berty.messenger.v1.PayloadUserMessage';
+  proto.berty.messenger.v1.AppMessage.displayName = 'proto.berty.messenger.v1.AppMessage';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -607,16 +613,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.v1.PayloadUserReaction = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+proto.berty.messenger.v1.AppMessage.UserMessage = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.berty.messenger.v1.AppMessage.UserMessage.repeatedFields_, null);
 };
-goog.inherits(proto.berty.messenger.v1.PayloadUserReaction, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.AppMessage.UserMessage, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.v1.PayloadUserReaction.displayName = 'proto.berty.messenger.v1.PayloadUserReaction';
+  proto.berty.messenger.v1.AppMessage.UserMessage.displayName = 'proto.berty.messenger.v1.AppMessage.UserMessage';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -628,16 +634,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.v1.PayloadGroupInvitation = function(opt_data) {
+proto.berty.messenger.v1.AppMessage.UserReaction = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.v1.PayloadGroupInvitation, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.AppMessage.UserReaction, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.v1.PayloadGroupInvitation.displayName = 'proto.berty.messenger.v1.PayloadGroupInvitation';
+  proto.berty.messenger.v1.AppMessage.UserReaction.displayName = 'proto.berty.messenger.v1.AppMessage.UserReaction';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -649,16 +655,16 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.v1.PayloadSetGroupName = function(opt_data) {
+proto.berty.messenger.v1.AppMessage.GroupInvitation = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.v1.PayloadSetGroupName, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.AppMessage.GroupInvitation, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.v1.PayloadSetGroupName.displayName = 'proto.berty.messenger.v1.PayloadSetGroupName';
+  proto.berty.messenger.v1.AppMessage.GroupInvitation.displayName = 'proto.berty.messenger.v1.AppMessage.GroupInvitation';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -670,16 +676,58 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.berty.messenger.v1.PayloadAcknowledge = function(opt_data) {
+proto.berty.messenger.v1.AppMessage.SetGroupName = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.berty.messenger.v1.PayloadAcknowledge, jspb.Message);
+goog.inherits(proto.berty.messenger.v1.AppMessage.SetGroupName, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
    * @override
    */
-  proto.berty.messenger.v1.PayloadAcknowledge.displayName = 'proto.berty.messenger.v1.PayloadAcknowledge';
+  proto.berty.messenger.v1.AppMessage.SetGroupName.displayName = 'proto.berty.messenger.v1.AppMessage.SetGroupName';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.AppMessage.SetUserName = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.AppMessage.SetUserName, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.AppMessage.SetUserName.displayName = 'proto.berty.messenger.v1.AppMessage.SetUserName';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.AppMessage.Acknowledge = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.AppMessage.Acknowledge, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.AppMessage.Acknowledge.displayName = 'proto.berty.messenger.v1.AppMessage.Acknowledge';
 }
 /**
  * Generated by JsPbCodeGenerator.
@@ -743,6 +791,489 @@ if (goog.DEBUG && !COMPILED) {
    * @override
    */
   proto.berty.messenger.v1.SystemInfo.Reply.displayName = 'proto.berty.messenger.v1.SystemInfo.Reply';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.Account = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.Account, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.Account.displayName = 'proto.berty.messenger.v1.Account';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.Contact = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.Contact, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.Contact.displayName = 'proto.berty.messenger.v1.Contact';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.Conversation = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.Conversation, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.Conversation.displayName = 'proto.berty.messenger.v1.Conversation';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.Member = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.Member, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.Member.displayName = 'proto.berty.messenger.v1.Member';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.Device = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.Device, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.Device.displayName = 'proto.berty.messenger.v1.Device';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.StreamEvent = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.StreamEvent, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.StreamEvent.displayName = 'proto.berty.messenger.v1.StreamEvent';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.StreamEvent.ConversationUpdated = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.StreamEvent.ConversationUpdated, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.StreamEvent.ConversationUpdated.displayName = 'proto.berty.messenger.v1.StreamEvent.ConversationUpdated';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.StreamEvent.ConversationDeleted = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.StreamEvent.ConversationDeleted, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.StreamEvent.ConversationDeleted.displayName = 'proto.berty.messenger.v1.StreamEvent.ConversationDeleted';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.StreamEvent.InteractionUpdated = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.StreamEvent.InteractionUpdated, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.StreamEvent.InteractionUpdated.displayName = 'proto.berty.messenger.v1.StreamEvent.InteractionUpdated';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.StreamEvent.ContactUpdated = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.StreamEvent.ContactUpdated, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.StreamEvent.ContactUpdated.displayName = 'proto.berty.messenger.v1.StreamEvent.ContactUpdated';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.ConversationStream = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.ConversationStream, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.ConversationStream.displayName = 'proto.berty.messenger.v1.ConversationStream';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.ConversationStream.Request = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.ConversationStream.Request, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.ConversationStream.Request.displayName = 'proto.berty.messenger.v1.ConversationStream.Request';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.ConversationStream.Reply = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.ConversationStream.Reply, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.ConversationStream.Reply.displayName = 'proto.berty.messenger.v1.ConversationStream.Reply';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.ConversationCreate = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.ConversationCreate, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.ConversationCreate.displayName = 'proto.berty.messenger.v1.ConversationCreate';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.ConversationCreate.Request = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.ConversationCreate.Request, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.ConversationCreate.Request.displayName = 'proto.berty.messenger.v1.ConversationCreate.Request';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.ConversationCreate.Reply = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.ConversationCreate.Reply, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.ConversationCreate.Reply.displayName = 'proto.berty.messenger.v1.ConversationCreate.Reply';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.AccountGet = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.AccountGet, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.AccountGet.displayName = 'proto.berty.messenger.v1.AccountGet';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.AccountGet.Request = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.AccountGet.Request, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.AccountGet.Request.displayName = 'proto.berty.messenger.v1.AccountGet.Request';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.AccountGet.Reply = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.AccountGet.Reply, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.AccountGet.Reply.displayName = 'proto.berty.messenger.v1.AccountGet.Reply';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.EventStream = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.EventStream, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.EventStream.displayName = 'proto.berty.messenger.v1.EventStream';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.EventStream.Request = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.EventStream.Request, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.EventStream.Request.displayName = 'proto.berty.messenger.v1.EventStream.Request';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.EventStream.Reply = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.EventStream.Reply, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.EventStream.Reply.displayName = 'proto.berty.messenger.v1.EventStream.Reply';
+}
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.berty.messenger.v1.ContactMetadata = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.berty.messenger.v1.ContactMetadata, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  /**
+   * @public
+   * @override
+   */
+  proto.berty.messenger.v1.ContactMetadata.displayName = 'proto.berty.messenger.v1.ContactMetadata';
 }
 
 
@@ -4298,136 +4829,6 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.v1.AppMessageTyped.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.v1.AppMessageTyped.toObject(opt_includeInstance, this);
-};
-
-
-/**
- * Static version of the {@see toObject} method.
- * @param {boolean|undefined} includeInstance Deprecated. Whether to include
- *     the JSPB instance for transitional soy proto support:
- *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.v1.AppMessageTyped} msg The msg instance to transform.
- * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
- */
-proto.berty.messenger.v1.AppMessageTyped.toObject = function(includeInstance, msg) {
-  var f, obj = {
-    type: jspb.Message.getFieldWithDefault(msg, 1, 0)
-  };
-
-  if (includeInstance) {
-    obj.$jspbMessageInstance = msg;
-  }
-  return obj;
-};
-}
-
-
-/**
- * Deserializes binary data (in protobuf wire format).
- * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.v1.AppMessageTyped}
- */
-proto.berty.messenger.v1.AppMessageTyped.deserializeBinary = function(bytes) {
-  var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.v1.AppMessageTyped;
-  return proto.berty.messenger.v1.AppMessageTyped.deserializeBinaryFromReader(msg, reader);
-};
-
-
-/**
- * Deserializes binary data (in protobuf wire format) from the
- * given reader into the given message object.
- * @param {!proto.berty.messenger.v1.AppMessageTyped} msg The message object to deserialize into.
- * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.v1.AppMessageTyped}
- */
-proto.berty.messenger.v1.AppMessageTyped.deserializeBinaryFromReader = function(msg, reader) {
-  while (reader.nextField()) {
-    if (reader.isEndGroup()) {
-      break;
-    }
-    var field = reader.getFieldNumber();
-    switch (field) {
-    case 1:
-      var value = /** @type {!proto.berty.messenger.v1.AppMessageType} */ (reader.readEnum());
-      msg.setType(value);
-      break;
-    default:
-      reader.skipField();
-      break;
-    }
-  }
-  return msg;
-};
-
-
-/**
- * Serializes the message to binary data (in protobuf wire format).
- * @return {!Uint8Array}
- */
-proto.berty.messenger.v1.AppMessageTyped.prototype.serializeBinary = function() {
-  var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.v1.AppMessageTyped.serializeBinaryToWriter(this, writer);
-  return writer.getResultBuffer();
-};
-
-
-/**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.v1.AppMessageTyped} message
- * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
- */
-proto.berty.messenger.v1.AppMessageTyped.serializeBinaryToWriter = function(message, writer) {
-  var f = undefined;
-  f = message.getType();
-  if (f !== 0.0) {
-    writer.writeEnum(
-      1,
-      f
-    );
-  }
-};
-
-
-/**
- * optional AppMessageType type = 1;
- * @return {!proto.berty.messenger.v1.AppMessageType}
- */
-proto.berty.messenger.v1.AppMessageTyped.prototype.getType = function() {
-  return /** @type {!proto.berty.messenger.v1.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
-};
-
-
-/**
- * @param {!proto.berty.messenger.v1.AppMessageType} value
- * @return {!proto.berty.messenger.v1.AppMessageTyped} returns this
- */
-proto.berty.messenger.v1.AppMessageTyped.prototype.setType = function(value) {
-  return jspb.Message.setProto3EnumField(this, 1, value);
-};
-
-
-
-
-
-if (jspb.Message.GENERATE_TO_OBJECT) {
-/**
- * Creates an object representation of this proto.
- * Field names that are reserved in JavaScript and will be renamed to pb_name.
- * Optional fields that are not set will be set to undefined.
- * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
- * For the list of reserved names please see:
- *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
- * @param {boolean=} opt_includeInstance Deprecated. whether to include the
- *     JSPB instance for transitional soy proto support:
- *     http://goto/soy-param-migration
- * @return {!Object}
- */
 proto.berty.messenger.v1.UserMessageAttachment.prototype.toObject = function(opt_includeInstance) {
   return proto.berty.messenger.v1.UserMessageAttachment.toObject(opt_includeInstance, this);
 };
@@ -4444,7 +4845,6 @@ proto.berty.messenger.v1.UserMessageAttachment.prototype.toObject = function(opt
  */
 proto.berty.messenger.v1.UserMessageAttachment.toObject = function(includeInstance, msg) {
   var f, obj = {
-    type: jspb.Message.getFieldWithDefault(msg, 1, 0),
     uri: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
@@ -4482,10 +4882,6 @@ proto.berty.messenger.v1.UserMessageAttachment.deserializeBinaryFromReader = fun
     }
     var field = reader.getFieldNumber();
     switch (field) {
-    case 1:
-      var value = /** @type {!proto.berty.messenger.v1.AppMessageType} */ (reader.readEnum());
-      msg.setType(value);
-      break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
       msg.setUri(value);
@@ -4519,13 +4915,6 @@ proto.berty.messenger.v1.UserMessageAttachment.prototype.serializeBinary = funct
  */
 proto.berty.messenger.v1.UserMessageAttachment.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getType();
-  if (f !== 0.0) {
-    writer.writeEnum(
-      1,
-      f
-    );
-  }
   f = message.getUri();
   if (f.length > 0) {
     writer.writeString(
@@ -4533,24 +4922,6 @@ proto.berty.messenger.v1.UserMessageAttachment.serializeBinaryToWriter = functio
       f
     );
   }
-};
-
-
-/**
- * optional AppMessageType type = 1;
- * @return {!proto.berty.messenger.v1.AppMessageType}
- */
-proto.berty.messenger.v1.UserMessageAttachment.prototype.getType = function() {
-  return /** @type {!proto.berty.messenger.v1.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
-};
-
-
-/**
- * @param {!proto.berty.messenger.v1.AppMessageType} value
- * @return {!proto.berty.messenger.v1.UserMessageAttachment} returns this
- */
-proto.berty.messenger.v1.UserMessageAttachment.prototype.setType = function(value) {
-  return jspb.Message.setProto3EnumField(this, 1, value);
 };
 
 
@@ -4573,12 +4944,149 @@ proto.berty.messenger.v1.UserMessageAttachment.prototype.setUri = function(value
 
 
 
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.AppMessage.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.AppMessage.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.AppMessage} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.AppMessage.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    type: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    payload: msg.getPayload_asB64()
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.AppMessage}
+ */
+proto.berty.messenger.v1.AppMessage.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.AppMessage;
+  return proto.berty.messenger.v1.AppMessage.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.AppMessage} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.AppMessage}
+ */
+proto.berty.messenger.v1.AppMessage.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {!proto.berty.messenger.v1.AppMessage.Type} */ (reader.readEnum());
+      msg.setType(value);
+      break;
+    case 2:
+      var value = /** @type {!Uint8Array} */ (reader.readBytes());
+      msg.setPayload(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.AppMessage.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.AppMessage.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.AppMessage} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.AppMessage.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getType();
+  if (f !== 0.0) {
+    writer.writeEnum(
+      1,
+      f
+    );
+  }
+  f = message.getPayload_asU8();
+  if (f.length > 0) {
+    writer.writeBytes(
+      2,
+      f
+    );
+  }
+};
+
+
+/**
+ * @enum {number}
+ */
+proto.berty.messenger.v1.AppMessage.Type = {
+  TYPEUNDEFINED: 0,
+  TYPEUSERMESSAGE: 1,
+  TYPEUSERREACTION: 2,
+  TYPEGROUPINVITATION: 3,
+  TYPESETGROUPNAME: 4,
+  TYPESETUSERNAME: 5,
+  TYPEACKNOWLEDGE: 6
+};
+
+
 /**
  * List of repeated fields within this message type.
  * @private {!Array<number>}
  * @const
  */
-proto.berty.messenger.v1.PayloadUserMessage.repeatedFields_ = [3];
+proto.berty.messenger.v1.AppMessage.UserMessage.repeatedFields_ = [3];
 
 
 
@@ -4595,8 +5103,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.v1.PayloadUserMessage.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.v1.PayloadUserMessage.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.AppMessage.UserMessage.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.AppMessage.UserMessage.toObject(opt_includeInstance, this);
 };
 
 
@@ -4605,13 +5113,12 @@ proto.berty.messenger.v1.PayloadUserMessage.prototype.toObject = function(opt_in
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.v1.PayloadUserMessage} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.AppMessage.UserMessage} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.v1.PayloadUserMessage.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.AppMessage.UserMessage.toObject = function(includeInstance, msg) {
   var f, obj = {
-    type: jspb.Message.getFieldWithDefault(msg, 1, 0),
     body: jspb.Message.getFieldWithDefault(msg, 2, ""),
     attachmentsList: jspb.Message.toObjectList(msg.getAttachmentsList(),
     proto.berty.messenger.v1.UserMessageAttachment.toObject, includeInstance),
@@ -4629,33 +5136,29 @@ proto.berty.messenger.v1.PayloadUserMessage.toObject = function(includeInstance,
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.v1.PayloadUserMessage}
+ * @return {!proto.berty.messenger.v1.AppMessage.UserMessage}
  */
-proto.berty.messenger.v1.PayloadUserMessage.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.AppMessage.UserMessage.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.v1.PayloadUserMessage;
-  return proto.berty.messenger.v1.PayloadUserMessage.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.AppMessage.UserMessage;
+  return proto.berty.messenger.v1.AppMessage.UserMessage.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.v1.PayloadUserMessage} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.AppMessage.UserMessage} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.v1.PayloadUserMessage}
+ * @return {!proto.berty.messenger.v1.AppMessage.UserMessage}
  */
-proto.berty.messenger.v1.PayloadUserMessage.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.AppMessage.UserMessage.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-    case 1:
-      var value = /** @type {!proto.berty.messenger.v1.AppMessageType} */ (reader.readEnum());
-      msg.setType(value);
-      break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
       msg.setBody(value);
@@ -4682,9 +5185,9 @@ proto.berty.messenger.v1.PayloadUserMessage.deserializeBinaryFromReader = functi
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.v1.PayloadUserMessage.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.AppMessage.UserMessage.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.v1.PayloadUserMessage.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.AppMessage.UserMessage.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -4692,19 +5195,12 @@ proto.berty.messenger.v1.PayloadUserMessage.prototype.serializeBinary = function
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.v1.PayloadUserMessage} message
+ * @param {!proto.berty.messenger.v1.AppMessage.UserMessage} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.v1.PayloadUserMessage.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.AppMessage.UserMessage.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getType();
-  if (f !== 0.0) {
-    writer.writeEnum(
-      1,
-      f
-    );
-  }
   f = message.getBody();
   if (f.length > 0) {
     writer.writeString(
@@ -4731,37 +5227,19 @@ proto.berty.messenger.v1.PayloadUserMessage.serializeBinaryToWriter = function(m
 
 
 /**
- * optional AppMessageType type = 1;
- * @return {!proto.berty.messenger.v1.AppMessageType}
- */
-proto.berty.messenger.v1.PayloadUserMessage.prototype.getType = function() {
-  return /** @type {!proto.berty.messenger.v1.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
-};
-
-
-/**
- * @param {!proto.berty.messenger.v1.AppMessageType} value
- * @return {!proto.berty.messenger.v1.PayloadUserMessage} returns this
- */
-proto.berty.messenger.v1.PayloadUserMessage.prototype.setType = function(value) {
-  return jspb.Message.setProto3EnumField(this, 1, value);
-};
-
-
-/**
  * optional string body = 2;
  * @return {string}
  */
-proto.berty.messenger.v1.PayloadUserMessage.prototype.getBody = function() {
+proto.berty.messenger.v1.AppMessage.UserMessage.prototype.getBody = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.v1.PayloadUserMessage} returns this
+ * @return {!proto.berty.messenger.v1.AppMessage.UserMessage} returns this
  */
-proto.berty.messenger.v1.PayloadUserMessage.prototype.setBody = function(value) {
+proto.berty.messenger.v1.AppMessage.UserMessage.prototype.setBody = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -4770,7 +5248,7 @@ proto.berty.messenger.v1.PayloadUserMessage.prototype.setBody = function(value) 
  * repeated UserMessageAttachment attachments = 3;
  * @return {!Array<!proto.berty.messenger.v1.UserMessageAttachment>}
  */
-proto.berty.messenger.v1.PayloadUserMessage.prototype.getAttachmentsList = function() {
+proto.berty.messenger.v1.AppMessage.UserMessage.prototype.getAttachmentsList = function() {
   return /** @type{!Array<!proto.berty.messenger.v1.UserMessageAttachment>} */ (
     jspb.Message.getRepeatedWrapperField(this, proto.berty.messenger.v1.UserMessageAttachment, 3));
 };
@@ -4778,9 +5256,9 @@ proto.berty.messenger.v1.PayloadUserMessage.prototype.getAttachmentsList = funct
 
 /**
  * @param {!Array<!proto.berty.messenger.v1.UserMessageAttachment>} value
- * @return {!proto.berty.messenger.v1.PayloadUserMessage} returns this
+ * @return {!proto.berty.messenger.v1.AppMessage.UserMessage} returns this
 */
-proto.berty.messenger.v1.PayloadUserMessage.prototype.setAttachmentsList = function(value) {
+proto.berty.messenger.v1.AppMessage.UserMessage.prototype.setAttachmentsList = function(value) {
   return jspb.Message.setRepeatedWrapperField(this, 3, value);
 };
 
@@ -4790,16 +5268,16 @@ proto.berty.messenger.v1.PayloadUserMessage.prototype.setAttachmentsList = funct
  * @param {number=} opt_index
  * @return {!proto.berty.messenger.v1.UserMessageAttachment}
  */
-proto.berty.messenger.v1.PayloadUserMessage.prototype.addAttachments = function(opt_value, opt_index) {
+proto.berty.messenger.v1.AppMessage.UserMessage.prototype.addAttachments = function(opt_value, opt_index) {
   return jspb.Message.addToRepeatedWrapperField(this, 3, opt_value, proto.berty.messenger.v1.UserMessageAttachment, opt_index);
 };
 
 
 /**
  * Clears the list making it empty but non-null.
- * @return {!proto.berty.messenger.v1.PayloadUserMessage} returns this
+ * @return {!proto.berty.messenger.v1.AppMessage.UserMessage} returns this
  */
-proto.berty.messenger.v1.PayloadUserMessage.prototype.clearAttachmentsList = function() {
+proto.berty.messenger.v1.AppMessage.UserMessage.prototype.clearAttachmentsList = function() {
   return this.setAttachmentsList([]);
 };
 
@@ -4808,16 +5286,16 @@ proto.berty.messenger.v1.PayloadUserMessage.prototype.clearAttachmentsList = fun
  * optional int64 sent_date = 4;
  * @return {number}
  */
-proto.berty.messenger.v1.PayloadUserMessage.prototype.getSentDate = function() {
+proto.berty.messenger.v1.AppMessage.UserMessage.prototype.getSentDate = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
 };
 
 
 /**
  * @param {number} value
- * @return {!proto.berty.messenger.v1.PayloadUserMessage} returns this
+ * @return {!proto.berty.messenger.v1.AppMessage.UserMessage} returns this
  */
-proto.berty.messenger.v1.PayloadUserMessage.prototype.setSentDate = function(value) {
+proto.berty.messenger.v1.AppMessage.UserMessage.prototype.setSentDate = function(value) {
   return jspb.Message.setProto3IntField(this, 4, value);
 };
 
@@ -4838,8 +5316,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.v1.PayloadUserReaction.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.v1.PayloadUserReaction.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.AppMessage.UserReaction.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.AppMessage.UserReaction.toObject(opt_includeInstance, this);
 };
 
 
@@ -4848,13 +5326,12 @@ proto.berty.messenger.v1.PayloadUserReaction.prototype.toObject = function(opt_i
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.v1.PayloadUserReaction} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.AppMessage.UserReaction} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.v1.PayloadUserReaction.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.AppMessage.UserReaction.toObject = function(includeInstance, msg) {
   var f, obj = {
-    type: jspb.Message.getFieldWithDefault(msg, 1, 0),
     emoji: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
@@ -4869,33 +5346,29 @@ proto.berty.messenger.v1.PayloadUserReaction.toObject = function(includeInstance
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.v1.PayloadUserReaction}
+ * @return {!proto.berty.messenger.v1.AppMessage.UserReaction}
  */
-proto.berty.messenger.v1.PayloadUserReaction.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.AppMessage.UserReaction.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.v1.PayloadUserReaction;
-  return proto.berty.messenger.v1.PayloadUserReaction.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.AppMessage.UserReaction;
+  return proto.berty.messenger.v1.AppMessage.UserReaction.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.v1.PayloadUserReaction} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.AppMessage.UserReaction} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.v1.PayloadUserReaction}
+ * @return {!proto.berty.messenger.v1.AppMessage.UserReaction}
  */
-proto.berty.messenger.v1.PayloadUserReaction.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.AppMessage.UserReaction.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-    case 1:
-      var value = /** @type {!proto.berty.messenger.v1.AppMessageType} */ (reader.readEnum());
-      msg.setType(value);
-      break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
       msg.setEmoji(value);
@@ -4913,9 +5386,9 @@ proto.berty.messenger.v1.PayloadUserReaction.deserializeBinaryFromReader = funct
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.v1.PayloadUserReaction.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.AppMessage.UserReaction.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.v1.PayloadUserReaction.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.AppMessage.UserReaction.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -4923,19 +5396,12 @@ proto.berty.messenger.v1.PayloadUserReaction.prototype.serializeBinary = functio
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.v1.PayloadUserReaction} message
+ * @param {!proto.berty.messenger.v1.AppMessage.UserReaction} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.v1.PayloadUserReaction.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.AppMessage.UserReaction.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getType();
-  if (f !== 0.0) {
-    writer.writeEnum(
-      1,
-      f
-    );
-  }
   f = message.getEmoji();
   if (f.length > 0) {
     writer.writeString(
@@ -4947,37 +5413,19 @@ proto.berty.messenger.v1.PayloadUserReaction.serializeBinaryToWriter = function(
 
 
 /**
- * optional AppMessageType type = 1;
- * @return {!proto.berty.messenger.v1.AppMessageType}
- */
-proto.berty.messenger.v1.PayloadUserReaction.prototype.getType = function() {
-  return /** @type {!proto.berty.messenger.v1.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
-};
-
-
-/**
- * @param {!proto.berty.messenger.v1.AppMessageType} value
- * @return {!proto.berty.messenger.v1.PayloadUserReaction} returns this
- */
-proto.berty.messenger.v1.PayloadUserReaction.prototype.setType = function(value) {
-  return jspb.Message.setProto3EnumField(this, 1, value);
-};
-
-
-/**
  * optional string emoji = 2;
  * @return {string}
  */
-proto.berty.messenger.v1.PayloadUserReaction.prototype.getEmoji = function() {
+proto.berty.messenger.v1.AppMessage.UserReaction.prototype.getEmoji = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.v1.PayloadUserReaction} returns this
+ * @return {!proto.berty.messenger.v1.AppMessage.UserReaction} returns this
  */
-proto.berty.messenger.v1.PayloadUserReaction.prototype.setEmoji = function(value) {
+proto.berty.messenger.v1.AppMessage.UserReaction.prototype.setEmoji = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -4998,8 +5446,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.v1.PayloadGroupInvitation.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.v1.PayloadGroupInvitation.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.AppMessage.GroupInvitation.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.AppMessage.GroupInvitation.toObject(opt_includeInstance, this);
 };
 
 
@@ -5008,13 +5456,12 @@ proto.berty.messenger.v1.PayloadGroupInvitation.prototype.toObject = function(op
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.v1.PayloadGroupInvitation} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.AppMessage.GroupInvitation} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.v1.PayloadGroupInvitation.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.AppMessage.GroupInvitation.toObject = function(includeInstance, msg) {
   var f, obj = {
-    type: jspb.Message.getFieldWithDefault(msg, 1, 0),
     groupPk: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
@@ -5029,33 +5476,29 @@ proto.berty.messenger.v1.PayloadGroupInvitation.toObject = function(includeInsta
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.v1.PayloadGroupInvitation}
+ * @return {!proto.berty.messenger.v1.AppMessage.GroupInvitation}
  */
-proto.berty.messenger.v1.PayloadGroupInvitation.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.AppMessage.GroupInvitation.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.v1.PayloadGroupInvitation;
-  return proto.berty.messenger.v1.PayloadGroupInvitation.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.AppMessage.GroupInvitation;
+  return proto.berty.messenger.v1.AppMessage.GroupInvitation.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.v1.PayloadGroupInvitation} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.AppMessage.GroupInvitation} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.v1.PayloadGroupInvitation}
+ * @return {!proto.berty.messenger.v1.AppMessage.GroupInvitation}
  */
-proto.berty.messenger.v1.PayloadGroupInvitation.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.AppMessage.GroupInvitation.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-    case 1:
-      var value = /** @type {!proto.berty.messenger.v1.AppMessageType} */ (reader.readEnum());
-      msg.setType(value);
-      break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
       msg.setGroupPk(value);
@@ -5073,9 +5516,9 @@ proto.berty.messenger.v1.PayloadGroupInvitation.deserializeBinaryFromReader = fu
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.v1.PayloadGroupInvitation.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.AppMessage.GroupInvitation.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.v1.PayloadGroupInvitation.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.AppMessage.GroupInvitation.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -5083,19 +5526,12 @@ proto.berty.messenger.v1.PayloadGroupInvitation.prototype.serializeBinary = func
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.v1.PayloadGroupInvitation} message
+ * @param {!proto.berty.messenger.v1.AppMessage.GroupInvitation} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.v1.PayloadGroupInvitation.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.AppMessage.GroupInvitation.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getType();
-  if (f !== 0.0) {
-    writer.writeEnum(
-      1,
-      f
-    );
-  }
   f = message.getGroupPk();
   if (f.length > 0) {
     writer.writeString(
@@ -5107,37 +5543,19 @@ proto.berty.messenger.v1.PayloadGroupInvitation.serializeBinaryToWriter = functi
 
 
 /**
- * optional AppMessageType type = 1;
- * @return {!proto.berty.messenger.v1.AppMessageType}
- */
-proto.berty.messenger.v1.PayloadGroupInvitation.prototype.getType = function() {
-  return /** @type {!proto.berty.messenger.v1.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
-};
-
-
-/**
- * @param {!proto.berty.messenger.v1.AppMessageType} value
- * @return {!proto.berty.messenger.v1.PayloadGroupInvitation} returns this
- */
-proto.berty.messenger.v1.PayloadGroupInvitation.prototype.setType = function(value) {
-  return jspb.Message.setProto3EnumField(this, 1, value);
-};
-
-
-/**
  * optional string group_pk = 2;
  * @return {string}
  */
-proto.berty.messenger.v1.PayloadGroupInvitation.prototype.getGroupPk = function() {
+proto.berty.messenger.v1.AppMessage.GroupInvitation.prototype.getGroupPk = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.v1.PayloadGroupInvitation} returns this
+ * @return {!proto.berty.messenger.v1.AppMessage.GroupInvitation} returns this
  */
-proto.berty.messenger.v1.PayloadGroupInvitation.prototype.setGroupPk = function(value) {
+proto.berty.messenger.v1.AppMessage.GroupInvitation.prototype.setGroupPk = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -5158,8 +5576,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.v1.PayloadSetGroupName.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.v1.PayloadSetGroupName.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.AppMessage.SetGroupName.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.AppMessage.SetGroupName.toObject(opt_includeInstance, this);
 };
 
 
@@ -5168,13 +5586,12 @@ proto.berty.messenger.v1.PayloadSetGroupName.prototype.toObject = function(opt_i
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.v1.PayloadSetGroupName} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.AppMessage.SetGroupName} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.v1.PayloadSetGroupName.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.AppMessage.SetGroupName.toObject = function(includeInstance, msg) {
   var f, obj = {
-    type: jspb.Message.getFieldWithDefault(msg, 1, 0),
     name: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
@@ -5189,33 +5606,29 @@ proto.berty.messenger.v1.PayloadSetGroupName.toObject = function(includeInstance
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.v1.PayloadSetGroupName}
+ * @return {!proto.berty.messenger.v1.AppMessage.SetGroupName}
  */
-proto.berty.messenger.v1.PayloadSetGroupName.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.AppMessage.SetGroupName.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.v1.PayloadSetGroupName;
-  return proto.berty.messenger.v1.PayloadSetGroupName.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.AppMessage.SetGroupName;
+  return proto.berty.messenger.v1.AppMessage.SetGroupName.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.v1.PayloadSetGroupName} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.AppMessage.SetGroupName} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.v1.PayloadSetGroupName}
+ * @return {!proto.berty.messenger.v1.AppMessage.SetGroupName}
  */
-proto.berty.messenger.v1.PayloadSetGroupName.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.AppMessage.SetGroupName.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-    case 1:
-      var value = /** @type {!proto.berty.messenger.v1.AppMessageType} */ (reader.readEnum());
-      msg.setType(value);
-      break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
       msg.setName(value);
@@ -5233,9 +5646,9 @@ proto.berty.messenger.v1.PayloadSetGroupName.deserializeBinaryFromReader = funct
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.v1.PayloadSetGroupName.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.AppMessage.SetGroupName.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.v1.PayloadSetGroupName.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.AppMessage.SetGroupName.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -5243,19 +5656,12 @@ proto.berty.messenger.v1.PayloadSetGroupName.prototype.serializeBinary = functio
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.v1.PayloadSetGroupName} message
+ * @param {!proto.berty.messenger.v1.AppMessage.SetGroupName} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.v1.PayloadSetGroupName.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.AppMessage.SetGroupName.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getType();
-  if (f !== 0.0) {
-    writer.writeEnum(
-      1,
-      f
-    );
-  }
   f = message.getName();
   if (f.length > 0) {
     writer.writeString(
@@ -5267,37 +5673,19 @@ proto.berty.messenger.v1.PayloadSetGroupName.serializeBinaryToWriter = function(
 
 
 /**
- * optional AppMessageType type = 1;
- * @return {!proto.berty.messenger.v1.AppMessageType}
- */
-proto.berty.messenger.v1.PayloadSetGroupName.prototype.getType = function() {
-  return /** @type {!proto.berty.messenger.v1.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
-};
-
-
-/**
- * @param {!proto.berty.messenger.v1.AppMessageType} value
- * @return {!proto.berty.messenger.v1.PayloadSetGroupName} returns this
- */
-proto.berty.messenger.v1.PayloadSetGroupName.prototype.setType = function(value) {
-  return jspb.Message.setProto3EnumField(this, 1, value);
-};
-
-
-/**
  * optional string name = 2;
  * @return {string}
  */
-proto.berty.messenger.v1.PayloadSetGroupName.prototype.getName = function() {
+proto.berty.messenger.v1.AppMessage.SetGroupName.prototype.getName = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.v1.PayloadSetGroupName} returns this
+ * @return {!proto.berty.messenger.v1.AppMessage.SetGroupName} returns this
  */
-proto.berty.messenger.v1.PayloadSetGroupName.prototype.setName = function(value) {
+proto.berty.messenger.v1.AppMessage.SetGroupName.prototype.setName = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -5318,8 +5706,8 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  *     http://goto/soy-param-migration
  * @return {!Object}
  */
-proto.berty.messenger.v1.PayloadAcknowledge.prototype.toObject = function(opt_includeInstance) {
-  return proto.berty.messenger.v1.PayloadAcknowledge.toObject(opt_includeInstance, this);
+proto.berty.messenger.v1.AppMessage.SetUserName.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.AppMessage.SetUserName.toObject(opt_includeInstance, this);
 };
 
 
@@ -5328,13 +5716,142 @@ proto.berty.messenger.v1.PayloadAcknowledge.prototype.toObject = function(opt_in
  * @param {boolean|undefined} includeInstance Deprecated. Whether to include
  *     the JSPB instance for transitional soy proto support:
  *     http://goto/soy-param-migration
- * @param {!proto.berty.messenger.v1.PayloadAcknowledge} msg The msg instance to transform.
+ * @param {!proto.berty.messenger.v1.AppMessage.SetUserName} msg The msg instance to transform.
  * @return {!Object}
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.v1.PayloadAcknowledge.toObject = function(includeInstance, msg) {
+proto.berty.messenger.v1.AppMessage.SetUserName.toObject = function(includeInstance, msg) {
   var f, obj = {
-    type: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    name: jspb.Message.getFieldWithDefault(msg, 2, "")
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.AppMessage.SetUserName}
+ */
+proto.berty.messenger.v1.AppMessage.SetUserName.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.AppMessage.SetUserName;
+  return proto.berty.messenger.v1.AppMessage.SetUserName.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.AppMessage.SetUserName} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.AppMessage.SetUserName}
+ */
+proto.berty.messenger.v1.AppMessage.SetUserName.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setName(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.AppMessage.SetUserName.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.AppMessage.SetUserName.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.AppMessage.SetUserName} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.AppMessage.SetUserName.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getName();
+  if (f.length > 0) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string name = 2;
+ * @return {string}
+ */
+proto.berty.messenger.v1.AppMessage.SetUserName.prototype.getName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.AppMessage.SetUserName} returns this
+ */
+proto.berty.messenger.v1.AppMessage.SetUserName.prototype.setName = function(value) {
+  return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.AppMessage.Acknowledge.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.AppMessage.Acknowledge.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.AppMessage.Acknowledge} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.AppMessage.Acknowledge.toObject = function(includeInstance, msg) {
+  var f, obj = {
     target: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
@@ -5349,33 +5866,29 @@ proto.berty.messenger.v1.PayloadAcknowledge.toObject = function(includeInstance,
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.berty.messenger.v1.PayloadAcknowledge}
+ * @return {!proto.berty.messenger.v1.AppMessage.Acknowledge}
  */
-proto.berty.messenger.v1.PayloadAcknowledge.deserializeBinary = function(bytes) {
+proto.berty.messenger.v1.AppMessage.Acknowledge.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.berty.messenger.v1.PayloadAcknowledge;
-  return proto.berty.messenger.v1.PayloadAcknowledge.deserializeBinaryFromReader(msg, reader);
+  var msg = new proto.berty.messenger.v1.AppMessage.Acknowledge;
+  return proto.berty.messenger.v1.AppMessage.Acknowledge.deserializeBinaryFromReader(msg, reader);
 };
 
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
  * given reader into the given message object.
- * @param {!proto.berty.messenger.v1.PayloadAcknowledge} msg The message object to deserialize into.
+ * @param {!proto.berty.messenger.v1.AppMessage.Acknowledge} msg The message object to deserialize into.
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.berty.messenger.v1.PayloadAcknowledge}
+ * @return {!proto.berty.messenger.v1.AppMessage.Acknowledge}
  */
-proto.berty.messenger.v1.PayloadAcknowledge.deserializeBinaryFromReader = function(msg, reader) {
+proto.berty.messenger.v1.AppMessage.Acknowledge.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-    case 1:
-      var value = /** @type {!proto.berty.messenger.v1.AppMessageType} */ (reader.readEnum());
-      msg.setType(value);
-      break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
       msg.setTarget(value);
@@ -5393,9 +5906,9 @@ proto.berty.messenger.v1.PayloadAcknowledge.deserializeBinaryFromReader = functi
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.berty.messenger.v1.PayloadAcknowledge.prototype.serializeBinary = function() {
+proto.berty.messenger.v1.AppMessage.Acknowledge.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  proto.berty.messenger.v1.PayloadAcknowledge.serializeBinaryToWriter(this, writer);
+  proto.berty.messenger.v1.AppMessage.Acknowledge.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
@@ -5403,19 +5916,12 @@ proto.berty.messenger.v1.PayloadAcknowledge.prototype.serializeBinary = function
 /**
  * Serializes the given message to binary data (in protobuf wire
  * format), writing to the given BinaryWriter.
- * @param {!proto.berty.messenger.v1.PayloadAcknowledge} message
+ * @param {!proto.berty.messenger.v1.AppMessage.Acknowledge} message
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.berty.messenger.v1.PayloadAcknowledge.serializeBinaryToWriter = function(message, writer) {
+proto.berty.messenger.v1.AppMessage.Acknowledge.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getType();
-  if (f !== 0.0) {
-    writer.writeEnum(
-      1,
-      f
-    );
-  }
   f = message.getTarget();
   if (f.length > 0) {
     writer.writeString(
@@ -5427,38 +5933,80 @@ proto.berty.messenger.v1.PayloadAcknowledge.serializeBinaryToWriter = function(m
 
 
 /**
- * optional AppMessageType type = 1;
- * @return {!proto.berty.messenger.v1.AppMessageType}
- */
-proto.berty.messenger.v1.PayloadAcknowledge.prototype.getType = function() {
-  return /** @type {!proto.berty.messenger.v1.AppMessageType} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
-};
-
-
-/**
- * @param {!proto.berty.messenger.v1.AppMessageType} value
- * @return {!proto.berty.messenger.v1.PayloadAcknowledge} returns this
- */
-proto.berty.messenger.v1.PayloadAcknowledge.prototype.setType = function(value) {
-  return jspb.Message.setProto3EnumField(this, 1, value);
-};
-
-
-/**
  * optional string target = 2;
  * @return {string}
  */
-proto.berty.messenger.v1.PayloadAcknowledge.prototype.getTarget = function() {
+proto.berty.messenger.v1.AppMessage.Acknowledge.prototype.getTarget = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
  * @param {string} value
- * @return {!proto.berty.messenger.v1.PayloadAcknowledge} returns this
+ * @return {!proto.berty.messenger.v1.AppMessage.Acknowledge} returns this
  */
-proto.berty.messenger.v1.PayloadAcknowledge.prototype.setTarget = function(value) {
+proto.berty.messenger.v1.AppMessage.Acknowledge.prototype.setTarget = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional Type type = 1;
+ * @return {!proto.berty.messenger.v1.AppMessage.Type}
+ */
+proto.berty.messenger.v1.AppMessage.prototype.getType = function() {
+  return /** @type {!proto.berty.messenger.v1.AppMessage.Type} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/**
+ * @param {!proto.berty.messenger.v1.AppMessage.Type} value
+ * @return {!proto.berty.messenger.v1.AppMessage} returns this
+ */
+proto.berty.messenger.v1.AppMessage.prototype.setType = function(value) {
+  return jspb.Message.setProto3EnumField(this, 1, value);
+};
+
+
+/**
+ * optional bytes payload = 2;
+ * @return {!(string|Uint8Array)}
+ */
+proto.berty.messenger.v1.AppMessage.prototype.getPayload = function() {
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * optional bytes payload = 2;
+ * This is a type-conversion wrapper around `getPayload()`
+ * @return {string}
+ */
+proto.berty.messenger.v1.AppMessage.prototype.getPayload_asB64 = function() {
+  return /** @type {string} */ (jspb.Message.bytesAsB64(
+      this.getPayload()));
+};
+
+
+/**
+ * optional bytes payload = 2;
+ * Note that Uint8Array is not supported on all browsers.
+ * @see http://caniuse.com/Uint8Array
+ * This is a type-conversion wrapper around `getPayload()`
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.AppMessage.prototype.getPayload_asU8 = function() {
+  return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
+      this.getPayload()));
+};
+
+
+/**
+ * @param {!(string|Uint8Array)} value
+ * @return {!proto.berty.messenger.v1.AppMessage} returns this
+ */
+proto.berty.messenger.v1.AppMessage.prototype.setPayload = function(value) {
+  return jspb.Message.setProto3BytesField(this, 2, value);
 };
 
 
@@ -6274,16 +6822,3279 @@ proto.berty.messenger.v1.SystemInfo.Reply.prototype.setRlimitMax = function(valu
 };
 
 
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.Account.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.Account.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.Account} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.Account.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    publicKey: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    displayName: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    state: jspb.Message.getFieldWithDefault(msg, 3, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.Account}
+ */
+proto.berty.messenger.v1.Account.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.Account;
+  return proto.berty.messenger.v1.Account.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.Account} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.Account}
+ */
+proto.berty.messenger.v1.Account.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPublicKey(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setDisplayName(value);
+      break;
+    case 3:
+      var value = /** @type {!proto.berty.messenger.v1.Account.State} */ (reader.readEnum());
+      msg.setState(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.Account.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.Account.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.Account} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.Account.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getPublicKey();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+  f = message.getDisplayName();
+  if (f.length > 0) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
+  f = message.getState();
+  if (f !== 0.0) {
+    writer.writeEnum(
+      3,
+      f
+    );
+  }
+};
+
+
 /**
  * @enum {number}
  */
-proto.berty.messenger.v1.AppMessageType = {
+proto.berty.messenger.v1.Account.State = {
   UNDEFINED: 0,
-  USERMESSAGE: 1,
-  USERREACTION: 2,
-  GROUPINVITATION: 3,
-  SETGROUPNAME: 4,
-  ACKNOWLEDGE: 5
+  NOTREADY: 1,
+  READY: 2
 };
+
+/**
+ * optional string public_key = 1;
+ * @return {string}
+ */
+proto.berty.messenger.v1.Account.prototype.getPublicKey = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.Account} returns this
+ */
+proto.berty.messenger.v1.Account.prototype.setPublicKey = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+/**
+ * optional string display_name = 2;
+ * @return {string}
+ */
+proto.berty.messenger.v1.Account.prototype.getDisplayName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.Account} returns this
+ */
+proto.berty.messenger.v1.Account.prototype.setDisplayName = function(value) {
+  return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional State state = 3;
+ * @return {!proto.berty.messenger.v1.Account.State}
+ */
+proto.berty.messenger.v1.Account.prototype.getState = function() {
+  return /** @type {!proto.berty.messenger.v1.Account.State} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/**
+ * @param {!proto.berty.messenger.v1.Account.State} value
+ * @return {!proto.berty.messenger.v1.Account} returns this
+ */
+proto.berty.messenger.v1.Account.prototype.setState = function(value) {
+  return jspb.Message.setProto3EnumField(this, 3, value);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.Contact.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.Contact.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.Contact} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.Contact.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    publicKey: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    displayName: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    state: jspb.Message.getFieldWithDefault(msg, 3, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.Contact}
+ */
+proto.berty.messenger.v1.Contact.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.Contact;
+  return proto.berty.messenger.v1.Contact.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.Contact} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.Contact}
+ */
+proto.berty.messenger.v1.Contact.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPublicKey(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setDisplayName(value);
+      break;
+    case 3:
+      var value = /** @type {!proto.berty.messenger.v1.Contact.State} */ (reader.readEnum());
+      msg.setState(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.Contact.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.Contact.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.Contact} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.Contact.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getPublicKey();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+  f = message.getDisplayName();
+  if (f.length > 0) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
+  f = message.getState();
+  if (f !== 0.0) {
+    writer.writeEnum(
+      3,
+      f
+    );
+  }
+};
+
+
+/**
+ * @enum {number}
+ */
+proto.berty.messenger.v1.Contact.State = {
+  UNDEFINED: 0,
+  INCOMINGREQUEST: 1,
+  OUTGOINGREQUESTENQUEUED: 2,
+  OUTGOINGREQUESTSENT: 3,
+  ESTABLISHED: 4
+};
+
+/**
+ * optional string public_key = 1;
+ * @return {string}
+ */
+proto.berty.messenger.v1.Contact.prototype.getPublicKey = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.Contact} returns this
+ */
+proto.berty.messenger.v1.Contact.prototype.setPublicKey = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+/**
+ * optional string display_name = 2;
+ * @return {string}
+ */
+proto.berty.messenger.v1.Contact.prototype.getDisplayName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.Contact} returns this
+ */
+proto.berty.messenger.v1.Contact.prototype.setDisplayName = function(value) {
+  return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional State state = 3;
+ * @return {!proto.berty.messenger.v1.Contact.State}
+ */
+proto.berty.messenger.v1.Contact.prototype.getState = function() {
+  return /** @type {!proto.berty.messenger.v1.Contact.State} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/**
+ * @param {!proto.berty.messenger.v1.Contact.State} value
+ * @return {!proto.berty.messenger.v1.Contact} returns this
+ */
+proto.berty.messenger.v1.Contact.prototype.setState = function(value) {
+  return jspb.Message.setProto3EnumField(this, 3, value);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.Conversation.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.Conversation.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.Conversation} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.Conversation.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    publicKey: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    displayName: jspb.Message.getFieldWithDefault(msg, 2, "")
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.Conversation}
+ */
+proto.berty.messenger.v1.Conversation.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.Conversation;
+  return proto.berty.messenger.v1.Conversation.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.Conversation} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.Conversation}
+ */
+proto.berty.messenger.v1.Conversation.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPublicKey(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setDisplayName(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.Conversation.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.Conversation.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.Conversation} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.Conversation.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getPublicKey();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+  f = message.getDisplayName();
+  if (f.length > 0) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string public_key = 1;
+ * @return {string}
+ */
+proto.berty.messenger.v1.Conversation.prototype.getPublicKey = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.Conversation} returns this
+ */
+proto.berty.messenger.v1.Conversation.prototype.setPublicKey = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+/**
+ * optional string display_name = 2;
+ * @return {string}
+ */
+proto.berty.messenger.v1.Conversation.prototype.getDisplayName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.Conversation} returns this
+ */
+proto.berty.messenger.v1.Conversation.prototype.setDisplayName = function(value) {
+  return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.Member.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.Member.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.Member} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.Member.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    publicKey: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    displayName: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    givenName: jspb.Message.getFieldWithDefault(msg, 3, "")
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.Member}
+ */
+proto.berty.messenger.v1.Member.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.Member;
+  return proto.berty.messenger.v1.Member.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.Member} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.Member}
+ */
+proto.berty.messenger.v1.Member.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPublicKey(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setDisplayName(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setGivenName(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.Member.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.Member.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.Member} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.Member.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getPublicKey();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+  f = message.getDisplayName();
+  if (f.length > 0) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
+  f = message.getGivenName();
+  if (f.length > 0) {
+    writer.writeString(
+      3,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string public_key = 1;
+ * @return {string}
+ */
+proto.berty.messenger.v1.Member.prototype.getPublicKey = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.Member} returns this
+ */
+proto.berty.messenger.v1.Member.prototype.setPublicKey = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+/**
+ * optional string display_name = 2;
+ * @return {string}
+ */
+proto.berty.messenger.v1.Member.prototype.getDisplayName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.Member} returns this
+ */
+proto.berty.messenger.v1.Member.prototype.setDisplayName = function(value) {
+  return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional string given_name = 3;
+ * @return {string}
+ */
+proto.berty.messenger.v1.Member.prototype.getGivenName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.Member} returns this
+ */
+proto.berty.messenger.v1.Member.prototype.setGivenName = function(value) {
+  return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.Device.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.Device.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.Device} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.Device.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    publicKey: jspb.Message.getFieldWithDefault(msg, 1, "")
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.Device}
+ */
+proto.berty.messenger.v1.Device.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.Device;
+  return proto.berty.messenger.v1.Device.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.Device} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.Device}
+ */
+proto.berty.messenger.v1.Device.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPublicKey(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.Device.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.Device.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.Device} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.Device.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getPublicKey();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string public_key = 1;
+ * @return {string}
+ */
+proto.berty.messenger.v1.Device.prototype.getPublicKey = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.Device} returns this
+ */
+proto.berty.messenger.v1.Device.prototype.setPublicKey = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.StreamEvent.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.StreamEvent.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.StreamEvent} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.StreamEvent.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    type: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    payload: msg.getPayload_asB64()
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.StreamEvent}
+ */
+proto.berty.messenger.v1.StreamEvent.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.StreamEvent;
+  return proto.berty.messenger.v1.StreamEvent.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.StreamEvent} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.StreamEvent}
+ */
+proto.berty.messenger.v1.StreamEvent.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {!proto.berty.messenger.v1.StreamEvent.Type} */ (reader.readEnum());
+      msg.setType(value);
+      break;
+    case 2:
+      var value = /** @type {!Uint8Array} */ (reader.readBytes());
+      msg.setPayload(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.StreamEvent.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.StreamEvent.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.StreamEvent} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.StreamEvent.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getType();
+  if (f !== 0.0) {
+    writer.writeEnum(
+      1,
+      f
+    );
+  }
+  f = message.getPayload_asU8();
+  if (f.length > 0) {
+    writer.writeBytes(
+      2,
+      f
+    );
+  }
+};
+
+
+/**
+ * @enum {number}
+ */
+proto.berty.messenger.v1.StreamEvent.Type = {
+  TYPECONVERSATIONUPDATED: 0,
+  TYPECONVERSATIONDELETED: 1,
+  TYPEINTERACTIONUPDATED: 2,
+  TYPECONTACTUPDATED: 3
+};
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.StreamEvent.ConversationUpdated.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.StreamEvent.ConversationUpdated.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.StreamEvent.ConversationUpdated} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.StreamEvent.ConversationUpdated.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    conversation: (f = msg.getConversation()) && proto.berty.messenger.v1.Conversation.toObject(includeInstance, f)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.StreamEvent.ConversationUpdated}
+ */
+proto.berty.messenger.v1.StreamEvent.ConversationUpdated.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.StreamEvent.ConversationUpdated;
+  return proto.berty.messenger.v1.StreamEvent.ConversationUpdated.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.StreamEvent.ConversationUpdated} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.StreamEvent.ConversationUpdated}
+ */
+proto.berty.messenger.v1.StreamEvent.ConversationUpdated.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = new proto.berty.messenger.v1.Conversation;
+      reader.readMessage(value,proto.berty.messenger.v1.Conversation.deserializeBinaryFromReader);
+      msg.setConversation(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.StreamEvent.ConversationUpdated.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.StreamEvent.ConversationUpdated.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.StreamEvent.ConversationUpdated} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.StreamEvent.ConversationUpdated.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getConversation();
+  if (f != null) {
+    writer.writeMessage(
+      1,
+      f,
+      proto.berty.messenger.v1.Conversation.serializeBinaryToWriter
+    );
+  }
+};
+
+
+/**
+ * optional Conversation conversation = 1;
+ * @return {?proto.berty.messenger.v1.Conversation}
+ */
+proto.berty.messenger.v1.StreamEvent.ConversationUpdated.prototype.getConversation = function() {
+  return /** @type{?proto.berty.messenger.v1.Conversation} */ (
+    jspb.Message.getWrapperField(this, proto.berty.messenger.v1.Conversation, 1));
+};
+
+
+/**
+ * @param {?proto.berty.messenger.v1.Conversation|undefined} value
+ * @return {!proto.berty.messenger.v1.StreamEvent.ConversationUpdated} returns this
+*/
+proto.berty.messenger.v1.StreamEvent.ConversationUpdated.prototype.setConversation = function(value) {
+  return jspb.Message.setWrapperField(this, 1, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.berty.messenger.v1.StreamEvent.ConversationUpdated} returns this
+ */
+proto.berty.messenger.v1.StreamEvent.ConversationUpdated.prototype.clearConversation = function() {
+  return this.setConversation(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.berty.messenger.v1.StreamEvent.ConversationUpdated.prototype.hasConversation = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.StreamEvent.ConversationDeleted.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.StreamEvent.ConversationDeleted.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.StreamEvent.ConversationDeleted} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.StreamEvent.ConversationDeleted.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    publicKey: jspb.Message.getFieldWithDefault(msg, 1, "")
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.StreamEvent.ConversationDeleted}
+ */
+proto.berty.messenger.v1.StreamEvent.ConversationDeleted.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.StreamEvent.ConversationDeleted;
+  return proto.berty.messenger.v1.StreamEvent.ConversationDeleted.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.StreamEvent.ConversationDeleted} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.StreamEvent.ConversationDeleted}
+ */
+proto.berty.messenger.v1.StreamEvent.ConversationDeleted.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPublicKey(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.StreamEvent.ConversationDeleted.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.StreamEvent.ConversationDeleted.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.StreamEvent.ConversationDeleted} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.StreamEvent.ConversationDeleted.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getPublicKey();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string public_key = 1;
+ * @return {string}
+ */
+proto.berty.messenger.v1.StreamEvent.ConversationDeleted.prototype.getPublicKey = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.StreamEvent.ConversationDeleted} returns this
+ */
+proto.berty.messenger.v1.StreamEvent.ConversationDeleted.prototype.setPublicKey = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.StreamEvent.InteractionUpdated.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.StreamEvent.InteractionUpdated.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.StreamEvent.InteractionUpdated} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.StreamEvent.InteractionUpdated.toObject = function(includeInstance, msg) {
+  var f, obj = {
+
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.StreamEvent.InteractionUpdated}
+ */
+proto.berty.messenger.v1.StreamEvent.InteractionUpdated.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.StreamEvent.InteractionUpdated;
+  return proto.berty.messenger.v1.StreamEvent.InteractionUpdated.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.StreamEvent.InteractionUpdated} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.StreamEvent.InteractionUpdated}
+ */
+proto.berty.messenger.v1.StreamEvent.InteractionUpdated.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.StreamEvent.InteractionUpdated.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.StreamEvent.InteractionUpdated.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.StreamEvent.InteractionUpdated} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.StreamEvent.InteractionUpdated.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.StreamEvent.ContactUpdated.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.StreamEvent.ContactUpdated.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.StreamEvent.ContactUpdated} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.StreamEvent.ContactUpdated.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    contact: (f = msg.getContact()) && proto.berty.messenger.v1.Contact.toObject(includeInstance, f)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.StreamEvent.ContactUpdated}
+ */
+proto.berty.messenger.v1.StreamEvent.ContactUpdated.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.StreamEvent.ContactUpdated;
+  return proto.berty.messenger.v1.StreamEvent.ContactUpdated.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.StreamEvent.ContactUpdated} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.StreamEvent.ContactUpdated}
+ */
+proto.berty.messenger.v1.StreamEvent.ContactUpdated.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = new proto.berty.messenger.v1.Contact;
+      reader.readMessage(value,proto.berty.messenger.v1.Contact.deserializeBinaryFromReader);
+      msg.setContact(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.StreamEvent.ContactUpdated.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.StreamEvent.ContactUpdated.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.StreamEvent.ContactUpdated} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.StreamEvent.ContactUpdated.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getContact();
+  if (f != null) {
+    writer.writeMessage(
+      1,
+      f,
+      proto.berty.messenger.v1.Contact.serializeBinaryToWriter
+    );
+  }
+};
+
+
+/**
+ * optional Contact contact = 1;
+ * @return {?proto.berty.messenger.v1.Contact}
+ */
+proto.berty.messenger.v1.StreamEvent.ContactUpdated.prototype.getContact = function() {
+  return /** @type{?proto.berty.messenger.v1.Contact} */ (
+    jspb.Message.getWrapperField(this, proto.berty.messenger.v1.Contact, 1));
+};
+
+
+/**
+ * @param {?proto.berty.messenger.v1.Contact|undefined} value
+ * @return {!proto.berty.messenger.v1.StreamEvent.ContactUpdated} returns this
+*/
+proto.berty.messenger.v1.StreamEvent.ContactUpdated.prototype.setContact = function(value) {
+  return jspb.Message.setWrapperField(this, 1, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.berty.messenger.v1.StreamEvent.ContactUpdated} returns this
+ */
+proto.berty.messenger.v1.StreamEvent.ContactUpdated.prototype.clearContact = function() {
+  return this.setContact(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.berty.messenger.v1.StreamEvent.ContactUpdated.prototype.hasContact = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * optional Type type = 1;
+ * @return {!proto.berty.messenger.v1.StreamEvent.Type}
+ */
+proto.berty.messenger.v1.StreamEvent.prototype.getType = function() {
+  return /** @type {!proto.berty.messenger.v1.StreamEvent.Type} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/**
+ * @param {!proto.berty.messenger.v1.StreamEvent.Type} value
+ * @return {!proto.berty.messenger.v1.StreamEvent} returns this
+ */
+proto.berty.messenger.v1.StreamEvent.prototype.setType = function(value) {
+  return jspb.Message.setProto3EnumField(this, 1, value);
+};
+
+
+/**
+ * optional bytes payload = 2;
+ * @return {!(string|Uint8Array)}
+ */
+proto.berty.messenger.v1.StreamEvent.prototype.getPayload = function() {
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * optional bytes payload = 2;
+ * This is a type-conversion wrapper around `getPayload()`
+ * @return {string}
+ */
+proto.berty.messenger.v1.StreamEvent.prototype.getPayload_asB64 = function() {
+  return /** @type {string} */ (jspb.Message.bytesAsB64(
+      this.getPayload()));
+};
+
+
+/**
+ * optional bytes payload = 2;
+ * Note that Uint8Array is not supported on all browsers.
+ * @see http://caniuse.com/Uint8Array
+ * This is a type-conversion wrapper around `getPayload()`
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.StreamEvent.prototype.getPayload_asU8 = function() {
+  return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
+      this.getPayload()));
+};
+
+
+/**
+ * @param {!(string|Uint8Array)} value
+ * @return {!proto.berty.messenger.v1.StreamEvent} returns this
+ */
+proto.berty.messenger.v1.StreamEvent.prototype.setPayload = function(value) {
+  return jspb.Message.setProto3BytesField(this, 2, value);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.ConversationStream.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.ConversationStream.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.ConversationStream} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.ConversationStream.toObject = function(includeInstance, msg) {
+  var f, obj = {
+
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.ConversationStream}
+ */
+proto.berty.messenger.v1.ConversationStream.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.ConversationStream;
+  return proto.berty.messenger.v1.ConversationStream.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.ConversationStream} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.ConversationStream}
+ */
+proto.berty.messenger.v1.ConversationStream.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.ConversationStream.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.ConversationStream.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.ConversationStream} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.ConversationStream.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.ConversationStream.Request.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.ConversationStream.Request.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.ConversationStream.Request} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.ConversationStream.Request.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    count: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    page: jspb.Message.getFieldWithDefault(msg, 2, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.ConversationStream.Request}
+ */
+proto.berty.messenger.v1.ConversationStream.Request.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.ConversationStream.Request;
+  return proto.berty.messenger.v1.ConversationStream.Request.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.ConversationStream.Request} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.ConversationStream.Request}
+ */
+proto.berty.messenger.v1.ConversationStream.Request.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setCount(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setPage(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.ConversationStream.Request.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.ConversationStream.Request.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.ConversationStream.Request} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.ConversationStream.Request.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getCount();
+  if (f !== 0) {
+    writer.writeUint64(
+      1,
+      f
+    );
+  }
+  f = message.getPage();
+  if (f !== 0) {
+    writer.writeUint64(
+      2,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional uint64 count = 1;
+ * @return {number}
+ */
+proto.berty.messenger.v1.ConversationStream.Request.prototype.getCount = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.berty.messenger.v1.ConversationStream.Request} returns this
+ */
+proto.berty.messenger.v1.ConversationStream.Request.prototype.setCount = function(value) {
+  return jspb.Message.setProto3IntField(this, 1, value);
+};
+
+
+/**
+ * optional uint64 page = 2;
+ * @return {number}
+ */
+proto.berty.messenger.v1.ConversationStream.Request.prototype.getPage = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.berty.messenger.v1.ConversationStream.Request} returns this
+ */
+proto.berty.messenger.v1.ConversationStream.Request.prototype.setPage = function(value) {
+  return jspb.Message.setProto3IntField(this, 2, value);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.ConversationStream.Reply.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.ConversationStream.Reply.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.ConversationStream.Reply} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.ConversationStream.Reply.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    conversation: (f = msg.getConversation()) && proto.berty.messenger.v1.Conversation.toObject(includeInstance, f)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.ConversationStream.Reply}
+ */
+proto.berty.messenger.v1.ConversationStream.Reply.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.ConversationStream.Reply;
+  return proto.berty.messenger.v1.ConversationStream.Reply.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.ConversationStream.Reply} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.ConversationStream.Reply}
+ */
+proto.berty.messenger.v1.ConversationStream.Reply.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = new proto.berty.messenger.v1.Conversation;
+      reader.readMessage(value,proto.berty.messenger.v1.Conversation.deserializeBinaryFromReader);
+      msg.setConversation(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.ConversationStream.Reply.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.ConversationStream.Reply.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.ConversationStream.Reply} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.ConversationStream.Reply.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getConversation();
+  if (f != null) {
+    writer.writeMessage(
+      1,
+      f,
+      proto.berty.messenger.v1.Conversation.serializeBinaryToWriter
+    );
+  }
+};
+
+
+/**
+ * optional Conversation conversation = 1;
+ * @return {?proto.berty.messenger.v1.Conversation}
+ */
+proto.berty.messenger.v1.ConversationStream.Reply.prototype.getConversation = function() {
+  return /** @type{?proto.berty.messenger.v1.Conversation} */ (
+    jspb.Message.getWrapperField(this, proto.berty.messenger.v1.Conversation, 1));
+};
+
+
+/**
+ * @param {?proto.berty.messenger.v1.Conversation|undefined} value
+ * @return {!proto.berty.messenger.v1.ConversationStream.Reply} returns this
+*/
+proto.berty.messenger.v1.ConversationStream.Reply.prototype.setConversation = function(value) {
+  return jspb.Message.setWrapperField(this, 1, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.berty.messenger.v1.ConversationStream.Reply} returns this
+ */
+proto.berty.messenger.v1.ConversationStream.Reply.prototype.clearConversation = function() {
+  return this.setConversation(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.berty.messenger.v1.ConversationStream.Reply.prototype.hasConversation = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.ConversationCreate.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.ConversationCreate.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.ConversationCreate} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.ConversationCreate.toObject = function(includeInstance, msg) {
+  var f, obj = {
+
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.ConversationCreate}
+ */
+proto.berty.messenger.v1.ConversationCreate.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.ConversationCreate;
+  return proto.berty.messenger.v1.ConversationCreate.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.ConversationCreate} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.ConversationCreate}
+ */
+proto.berty.messenger.v1.ConversationCreate.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.ConversationCreate.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.ConversationCreate.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.ConversationCreate} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.ConversationCreate.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.ConversationCreate.Request.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.ConversationCreate.Request.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.ConversationCreate.Request} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.ConversationCreate.Request.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    displayName: jspb.Message.getFieldWithDefault(msg, 1, "")
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.ConversationCreate.Request}
+ */
+proto.berty.messenger.v1.ConversationCreate.Request.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.ConversationCreate.Request;
+  return proto.berty.messenger.v1.ConversationCreate.Request.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.ConversationCreate.Request} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.ConversationCreate.Request}
+ */
+proto.berty.messenger.v1.ConversationCreate.Request.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setDisplayName(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.ConversationCreate.Request.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.ConversationCreate.Request.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.ConversationCreate.Request} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.ConversationCreate.Request.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getDisplayName();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string display_name = 1;
+ * @return {string}
+ */
+proto.berty.messenger.v1.ConversationCreate.Request.prototype.getDisplayName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.ConversationCreate.Request} returns this
+ */
+proto.berty.messenger.v1.ConversationCreate.Request.prototype.setDisplayName = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.ConversationCreate.Reply.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.ConversationCreate.Reply.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.ConversationCreate.Reply} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.ConversationCreate.Reply.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    publicKey: jspb.Message.getFieldWithDefault(msg, 1, "")
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.ConversationCreate.Reply}
+ */
+proto.berty.messenger.v1.ConversationCreate.Reply.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.ConversationCreate.Reply;
+  return proto.berty.messenger.v1.ConversationCreate.Reply.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.ConversationCreate.Reply} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.ConversationCreate.Reply}
+ */
+proto.berty.messenger.v1.ConversationCreate.Reply.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPublicKey(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.ConversationCreate.Reply.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.ConversationCreate.Reply.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.ConversationCreate.Reply} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.ConversationCreate.Reply.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getPublicKey();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string public_key = 1;
+ * @return {string}
+ */
+proto.berty.messenger.v1.ConversationCreate.Reply.prototype.getPublicKey = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.ConversationCreate.Reply} returns this
+ */
+proto.berty.messenger.v1.ConversationCreate.Reply.prototype.setPublicKey = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.AccountGet.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.AccountGet.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.AccountGet} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.AccountGet.toObject = function(includeInstance, msg) {
+  var f, obj = {
+
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.AccountGet}
+ */
+proto.berty.messenger.v1.AccountGet.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.AccountGet;
+  return proto.berty.messenger.v1.AccountGet.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.AccountGet} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.AccountGet}
+ */
+proto.berty.messenger.v1.AccountGet.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.AccountGet.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.AccountGet.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.AccountGet} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.AccountGet.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.AccountGet.Request.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.AccountGet.Request.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.AccountGet.Request} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.AccountGet.Request.toObject = function(includeInstance, msg) {
+  var f, obj = {
+
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.AccountGet.Request}
+ */
+proto.berty.messenger.v1.AccountGet.Request.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.AccountGet.Request;
+  return proto.berty.messenger.v1.AccountGet.Request.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.AccountGet.Request} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.AccountGet.Request}
+ */
+proto.berty.messenger.v1.AccountGet.Request.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.AccountGet.Request.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.AccountGet.Request.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.AccountGet.Request} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.AccountGet.Request.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.AccountGet.Reply.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.AccountGet.Reply.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.AccountGet.Reply} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.AccountGet.Reply.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    account: (f = msg.getAccount()) && proto.berty.messenger.v1.Account.toObject(includeInstance, f)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.AccountGet.Reply}
+ */
+proto.berty.messenger.v1.AccountGet.Reply.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.AccountGet.Reply;
+  return proto.berty.messenger.v1.AccountGet.Reply.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.AccountGet.Reply} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.AccountGet.Reply}
+ */
+proto.berty.messenger.v1.AccountGet.Reply.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = new proto.berty.messenger.v1.Account;
+      reader.readMessage(value,proto.berty.messenger.v1.Account.deserializeBinaryFromReader);
+      msg.setAccount(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.AccountGet.Reply.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.AccountGet.Reply.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.AccountGet.Reply} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.AccountGet.Reply.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getAccount();
+  if (f != null) {
+    writer.writeMessage(
+      1,
+      f,
+      proto.berty.messenger.v1.Account.serializeBinaryToWriter
+    );
+  }
+};
+
+
+/**
+ * optional Account account = 1;
+ * @return {?proto.berty.messenger.v1.Account}
+ */
+proto.berty.messenger.v1.AccountGet.Reply.prototype.getAccount = function() {
+  return /** @type{?proto.berty.messenger.v1.Account} */ (
+    jspb.Message.getWrapperField(this, proto.berty.messenger.v1.Account, 1));
+};
+
+
+/**
+ * @param {?proto.berty.messenger.v1.Account|undefined} value
+ * @return {!proto.berty.messenger.v1.AccountGet.Reply} returns this
+*/
+proto.berty.messenger.v1.AccountGet.Reply.prototype.setAccount = function(value) {
+  return jspb.Message.setWrapperField(this, 1, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.berty.messenger.v1.AccountGet.Reply} returns this
+ */
+proto.berty.messenger.v1.AccountGet.Reply.prototype.clearAccount = function() {
+  return this.setAccount(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.berty.messenger.v1.AccountGet.Reply.prototype.hasAccount = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.EventStream.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.EventStream.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.EventStream} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.EventStream.toObject = function(includeInstance, msg) {
+  var f, obj = {
+
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.EventStream}
+ */
+proto.berty.messenger.v1.EventStream.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.EventStream;
+  return proto.berty.messenger.v1.EventStream.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.EventStream} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.EventStream}
+ */
+proto.berty.messenger.v1.EventStream.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.EventStream.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.EventStream.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.EventStream} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.EventStream.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.EventStream.Request.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.EventStream.Request.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.EventStream.Request} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.EventStream.Request.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    count: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    page: jspb.Message.getFieldWithDefault(msg, 2, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.EventStream.Request}
+ */
+proto.berty.messenger.v1.EventStream.Request.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.EventStream.Request;
+  return proto.berty.messenger.v1.EventStream.Request.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.EventStream.Request} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.EventStream.Request}
+ */
+proto.berty.messenger.v1.EventStream.Request.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setCount(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setPage(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.EventStream.Request.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.EventStream.Request.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.EventStream.Request} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.EventStream.Request.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getCount();
+  if (f !== 0) {
+    writer.writeUint64(
+      1,
+      f
+    );
+  }
+  f = message.getPage();
+  if (f !== 0) {
+    writer.writeUint64(
+      2,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional uint64 count = 1;
+ * @return {number}
+ */
+proto.berty.messenger.v1.EventStream.Request.prototype.getCount = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.berty.messenger.v1.EventStream.Request} returns this
+ */
+proto.berty.messenger.v1.EventStream.Request.prototype.setCount = function(value) {
+  return jspb.Message.setProto3IntField(this, 1, value);
+};
+
+
+/**
+ * optional uint64 page = 2;
+ * @return {number}
+ */
+proto.berty.messenger.v1.EventStream.Request.prototype.getPage = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.berty.messenger.v1.EventStream.Request} returns this
+ */
+proto.berty.messenger.v1.EventStream.Request.prototype.setPage = function(value) {
+  return jspb.Message.setProto3IntField(this, 2, value);
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.EventStream.Reply.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.EventStream.Reply.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.EventStream.Reply} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.EventStream.Reply.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    event: (f = msg.getEvent()) && proto.berty.messenger.v1.StreamEvent.toObject(includeInstance, f)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.EventStream.Reply}
+ */
+proto.berty.messenger.v1.EventStream.Reply.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.EventStream.Reply;
+  return proto.berty.messenger.v1.EventStream.Reply.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.EventStream.Reply} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.EventStream.Reply}
+ */
+proto.berty.messenger.v1.EventStream.Reply.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = new proto.berty.messenger.v1.StreamEvent;
+      reader.readMessage(value,proto.berty.messenger.v1.StreamEvent.deserializeBinaryFromReader);
+      msg.setEvent(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.EventStream.Reply.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.EventStream.Reply.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.EventStream.Reply} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.EventStream.Reply.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getEvent();
+  if (f != null) {
+    writer.writeMessage(
+      1,
+      f,
+      proto.berty.messenger.v1.StreamEvent.serializeBinaryToWriter
+    );
+  }
+};
+
+
+/**
+ * optional StreamEvent event = 1;
+ * @return {?proto.berty.messenger.v1.StreamEvent}
+ */
+proto.berty.messenger.v1.EventStream.Reply.prototype.getEvent = function() {
+  return /** @type{?proto.berty.messenger.v1.StreamEvent} */ (
+    jspb.Message.getWrapperField(this, proto.berty.messenger.v1.StreamEvent, 1));
+};
+
+
+/**
+ * @param {?proto.berty.messenger.v1.StreamEvent|undefined} value
+ * @return {!proto.berty.messenger.v1.EventStream.Reply} returns this
+*/
+proto.berty.messenger.v1.EventStream.Reply.prototype.setEvent = function(value) {
+  return jspb.Message.setWrapperField(this, 1, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.berty.messenger.v1.EventStream.Reply} returns this
+ */
+proto.berty.messenger.v1.EventStream.Reply.prototype.clearEvent = function() {
+  return this.setEvent(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.berty.messenger.v1.EventStream.Reply.prototype.hasEvent = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.berty.messenger.v1.ContactMetadata.prototype.toObject = function(opt_includeInstance) {
+  return proto.berty.messenger.v1.ContactMetadata.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.berty.messenger.v1.ContactMetadata} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.ContactMetadata.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    displayName: jspb.Message.getFieldWithDefault(msg, 1, "")
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.berty.messenger.v1.ContactMetadata}
+ */
+proto.berty.messenger.v1.ContactMetadata.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.berty.messenger.v1.ContactMetadata;
+  return proto.berty.messenger.v1.ContactMetadata.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.berty.messenger.v1.ContactMetadata} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.berty.messenger.v1.ContactMetadata}
+ */
+proto.berty.messenger.v1.ContactMetadata.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setDisplayName(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.berty.messenger.v1.ContactMetadata.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.berty.messenger.v1.ContactMetadata.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.berty.messenger.v1.ContactMetadata} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.berty.messenger.v1.ContactMetadata.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getDisplayName();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string display_name = 1;
+ * @return {string}
+ */
+proto.berty.messenger.v1.ContactMetadata.prototype.getDisplayName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.berty.messenger.v1.ContactMetadata} returns this
+ */
+proto.berty.messenger.v1.ContactMetadata.prototype.setDisplayName = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
+};
+
 
 goog.object.extend(exports, proto.berty.messenger.v1);

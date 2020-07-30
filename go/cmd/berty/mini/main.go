@@ -211,10 +211,13 @@ func Main(ctx context.Context, opts *Opts) error {
 		client = bertyprotocol.NewProtocolServiceClient(cc)
 	}
 
-	messenger := bertymessenger.New(client, &bertymessenger.Opts{
+	messenger, err := bertymessenger.New(client, &bertymessenger.Opts{
 		Logger:          opts.Logger.Named("messenger"),
 		ProtocolService: service,
 	})
+	if err != nil {
+		return errcode.TODO.Wrap(err)
+	}
 
 	config, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
 	if err != nil {

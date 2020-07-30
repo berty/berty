@@ -52,7 +52,6 @@ require (
 	github.com/libp2p/go-yamux v1.3.8 // indirect
 	github.com/marten-seemann/qtls v0.10.0 // indirect
 	github.com/mattn/go-colorable v0.1.7 // indirect
-	github.com/mattn/go-sqlite3 v1.14.0 // indirect
 	github.com/mdp/qrterminal/v3 v3.0.0
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/multiformats/go-multiaddr v0.2.2
@@ -83,6 +82,9 @@ require (
 	google.golang.org/genproto v0.0.0-20200715011427-11fb19a81f2c // indirect
 	google.golang.org/grpc v1.30.0
 	google.golang.org/protobuf v1.25.0 // indirect
+	gorm.io/driver/sqlite v1.0.8
+	gorm.io/gorm v0.2.26
+	honnef.co/go/tools v0.0.1-2020.1.4 // indirect
 	moul.io/godev v1.6.0
 	moul.io/openfiles v1.2.0
 	moul.io/srand v1.4.0

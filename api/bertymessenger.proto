@@ -6,6 +6,9 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 import "bertytypes.proto";
 
 option go_package = "berty.tech/berty/go/pkg/bertymessenger";
+option (gogoproto.goproto_unkeyed_all) = false;
+option (gogoproto.goproto_unrecognized_all) = false;
+option (gogoproto.goproto_sizecache_all) = false;
 
 // MessengerService is the top-level API that uses the Berty Protocol to implement the Berty Messenger specific logic.
 // Today, most of the Berty Messenger logic is implemented directly in the application (see the /js folder of this repo).
@@ -35,6 +38,14 @@ service MessengerService {
   rpc SendAck(SendAck.Request) returns (SendAck.Reply);
 
   rpc SystemInfo(SystemInfo.Request) returns (SystemInfo.Reply);
+
+
+  // NEW
+
+  rpc ConversationStream(ConversationStream.Request) returns (stream ConversationStream.Reply);
+  rpc EventStream(EventStream.Request) returns (stream EventStream.Reply);
+  rpc ConversationCreate(ConversationCreate.Request) returns (ConversationCreate.Reply);
+  rpc AccountGet(AccountGet.Request) returns (AccountGet.Reply);
 }
 
 message InstanceShareableBertyID {
@@ -127,49 +138,43 @@ message BertyGroup {
   string display_name = 2;
 }
 
-enum AppMessageType {
-  Undefined = 0;
-  UserMessage = 1;
-  UserReaction = 2;
-  GroupInvitation = 3;
-  SetGroupName = 4;
-  Acknowledge = 5;
-}
-
-message AppMessageTyped {
-  AppMessageType type = 1;
-}
-
 message UserMessageAttachment {
-  AppMessageType type = 1;
   string uri = 2;
 }
 
-message PayloadUserMessage {
-  AppMessageType type = 1;
-  string body = 2;
-  repeated UserMessageAttachment attachments = 3;
-  int64 sent_date = 4 [(gogoproto.jsontag) = "sentDate"];
-}
+message AppMessage {
+  Type type = 1;
+  bytes payload = 2;
 
-message PayloadUserReaction {
-  AppMessageType type = 1;
-  string emoji = 2;
-}
-
-message PayloadGroupInvitation {
-  AppMessageType type = 1;
-  string group_pk = 2 [(gogoproto.jsontag) = "groupPk"];
-}
-
-message PayloadSetGroupName {
-  AppMessageType type = 1;
-  string name = 2;
-}
-
-message PayloadAcknowledge {
-  AppMessageType type = 1;
-  string target = 2;
+  enum Type {
+    TypeUndefined = 0;
+    TypeUserMessage = 1;
+    TypeUserReaction = 2;
+    TypeGroupInvitation = 3;
+    TypeSetGroupName = 4;
+    TypeSetUserName = 5;
+    TypeAcknowledge = 6;
+  }
+  message UserMessage {
+    string body = 2;
+    repeated UserMessageAttachment attachments = 3;
+    int64 sent_date = 4 [(gogoproto.jsontag) = "sentDate"];
+  }
+  message UserReaction {
+    string emoji = 2;
+  }
+  message GroupInvitation {
+    string group_pk = 2 [(gogoproto.jsontag) = "groupPk"];
+  }
+  message SetGroupName {
+    string name = 2;
+  }
+  message SetUserName {
+    string name = 2;
+  }
+  message Acknowledge {
+    string target = 2;
+  }
 }
 
 message SystemInfo {
@@ -199,4 +204,119 @@ message SystemInfo {
     uint64 rlimit_max = 21;
     // FIXME: string ipfs_config = 22;
   }
+}
+
+
+// APP MODEL
+
+// NOTE: public keys should be base64 encoded using golang's StdEncoding format
+
+message Account {
+  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  string display_name = 2;
+  State state = 3;
+
+  enum State {
+    Undefined = 0;
+    NotReady = 1;
+    Ready = 2;
+  }
+}
+
+message Contact {
+  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  string display_name = 2;
+  State state = 3;
+
+  enum State {
+    Undefined = 0;
+    IncomingRequest = 1;
+    OutgoingRequestEnqueued = 2;
+    OutgoingRequestSent = 3;
+    Established = 4;
+  }
+}
+
+message Conversation {
+  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  string display_name = 2;
+}
+
+message Member {
+  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  string display_name = 2;
+  string given_name = 3;
+}
+
+message Device {
+  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+}
+
+message StreamEvent {
+  // DRAFT
+  Type type = 1;
+  bytes payload = 2;
+
+  enum Type {
+    TypeConversationUpdated = 0;
+    TypeConversationDeleted = 1;
+    TypeInteractionUpdated = 2;
+    TypeContactUpdated = 3;
+    // etc..
+  }
+  message ConversationUpdated {
+    Conversation conversation = 1;
+  }
+  message ConversationDeleted {
+    string public_key = 1;
+  }
+  message InteractionUpdated {
+    // Interaction interaction = 1;
+  }
+  message ContactUpdated {
+    Contact contact = 1;
+  }
+  // etc..
+}
+
+message ConversationStream {
+  message Request {
+    uint64 count = 1;
+    uint64 page = 2;
+  }
+  message Reply {
+    Conversation conversation = 1;
+  }
+}
+
+message ConversationCreate {
+  message Request {
+    string display_name = 1;
+  }
+  message Reply {
+    string public_key = 1;
+  }
+}
+
+message AccountGet {
+  message Request {
+
+  }
+  message Reply {
+    Account account = 1;
+  }
+}
+
+message EventStream {
+  message Request {
+    uint64 count = 1;
+    uint64 page = 2;
+  }
+  message Reply {
+    StreamEvent event = 1;
+  }
+}
+
+message ContactMetadata {
+  string display_name = 1;
 }

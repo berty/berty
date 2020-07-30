@@ -283,7 +283,10 @@ func daemonCommand() *ffcli.Command {
 					Logger:          opts.logger.Named("messenger"),
 					ProtocolService: protocol,
 				}
-				messenger := bertymessenger.New(protocolClient, &opts)
+				messenger, err := bertymessenger.New(protocolClient, &opts)
+				if err != nil {
+					return errcode.TODO.Wrap(err)
+				}
 
 				// register grpc service
 				bertymessenger.RegisterMessengerServiceServer(grpcServer, messenger)

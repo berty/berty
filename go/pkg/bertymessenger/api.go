@@ -16,6 +16,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/gogo/protobuf/proto"
+	"go.uber.org/zap"
 	"moul.io/godev"
 	"moul.io/openfiles"
 )
@@ -269,6 +270,7 @@ func ShareableBertyGroupURL(g *bertytypes.Group, groupName string) (string, stri
 	return fmt.Sprintf("berty://group/#%s", fragment), fmt.Sprintf("https://berty.tech/group#%s", fragment), nil
 }
 
+// maybe we should preserve the previous generic api
 func (s *service) SendContactRequest(ctx context.Context, req *SendContactRequest_Request) (*SendContactRequest_Reply, error) {
 	if req == nil || req.BertyID == nil || req.BertyID.AccountPK == nil || req.BertyID.PublicRendezvousSeed == nil {
 		return nil, errcode.ErrMissingInput
@@ -349,9 +351,15 @@ func (s *service) SendAck(ctx context.Context, request *SendAck_Request) (*SendA
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("only %s groups are supported", bertytypes.GroupTypeContact.String()))
 	}
 
-	payload, err := json.Marshal(&PayloadAcknowledge{
-		Type:   AppMessageType_Acknowledge,
+	payload, err := proto.Marshal(&AppMessage_Acknowledge{
 		Target: base64.StdEncoding.EncodeToString(request.MessageID),
+	})
+	if err != nil {
+		return nil, err
+	}
+	appMessage, err := proto.Marshal(&AppMessage{
+		Type:    AppMessage_TypeAcknowledge,
+		Payload: payload,
 	})
 	if err != nil {
 		return nil, err
@@ -359,15 +367,14 @@ func (s *service) SendAck(ctx context.Context, request *SendAck_Request) (*SendA
 
 	_, err = s.protocolClient.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
 		GroupPK: request.GroupPK,
-		Payload: payload,
+		Payload: appMessage,
 	})
 
 	return nil, err
 }
 
 func (s *service) SendMessage(ctx context.Context, request *SendMessage_Request) (*SendMessage_Reply, error) {
-	payload, err := json.Marshal(&PayloadUserMessage{
-		Type:        AppMessageType_UserMessage,
+	payload, err := json.Marshal(&AppMessage_UserMessage{
 		Body:        request.Message,
 		Attachments: nil,
 		SentDate:    time.Now().UnixNano() / 1000000,
@@ -382,4 +389,169 @@ func (s *service) SendMessage(ctx context.Context, request *SendMessage_Request)
 	})
 
 	return nil, err
+}
+
+func (s *service) ConversationStream(req *ConversationStream_Request, sub MessengerService_ConversationStreamServer) error {
+	// TODO: cursors
+
+	// send existing convs
+	var convs []*Conversation
+	s.db.Find(&convs)
+	for _, c := range convs {
+		if err := sub.Send(&ConversationStream_Reply{Conversation: c}); err != nil {
+			return err
+		}
+	}
+
+	// FIXME: case where a conversation is created/updated/deleted between the list and the stream
+	// dunno how to add a test to trigger, maybe it can never happen? don't know how to prove either way
+
+	// stream new convs
+	errch := make(chan error)
+	defer close(errch)
+	n := NotifieeBundle{StreamEventImpl: func(e *StreamEvent) error {
+		if e.Type == StreamEvent_TypeConversationUpdated {
+			var cu StreamEvent_ConversationUpdated
+			err := proto.Unmarshal(e.GetPayload(), &cu)
+			if err == nil {
+				err = sub.Send(&ConversationStream_Reply{Conversation: cu.GetConversation()})
+			}
+			if err != nil {
+				// next commmented line allows me to manually test the behavior on a send error. How to isolate into an automatic test?
+				// errch <- errors.New("TEST ERROR")
+				errch <- err
+			}
+		}
+		return nil
+	}}
+	unreg := s.dispatcher.Register(&n)
+	defer unreg()
+
+	// don't return until we have a send error or the context is canceled
+	select {
+	case e := <-errch:
+		return e
+	case <-sub.Context().Done():
+		return nil
+	}
+}
+
+func (s *service) EventStream(req *EventStream_Request, sub MessengerService_EventStreamServer) error {
+	// TODO: cursors
+
+	// TODO: send existing models
+	/*var convs []*Conversation
+	s.db.Find(&convs)
+	for _, c := range convs {
+		if err := sub.Send(&EventStream_Reply{Conversation: c}); err != nil {
+			return err
+		}
+	}*/
+
+	// FIXME: case where a conversation is created/updated/deleted between the list and the stream
+	// dunno how to add a test to trigger, maybe it can never happen? don't know how to prove either way
+
+	// stream new convs
+	errch := make(chan error)
+	defer close(errch)
+	n := NotifieeBundle{StreamEventImpl: func(e *StreamEvent) error {
+		err := sub.Send(&EventStream_Reply{Event: e})
+		if err != nil {
+			// next commmented line allows me to manually test the behavior on a send error. How to isolate into an automatic test?
+			// errch <- errors.New("TEST ERROR")
+			errch <- err
+		}
+		return nil
+	}}
+	unreg := s.dispatcher.Register(&n)
+	defer unreg()
+
+	// don't return until we have a send error or the context is canceled
+	select {
+	case e := <-errch:
+		return e
+	case <-sub.Context().Done():
+		return nil
+	}
+}
+
+func (s *service) ConversationCreate(ctx context.Context, req *ConversationCreate_Request) (*ConversationCreate_Reply, error) {
+	dn := req.GetDisplayName()
+
+	// Create a multimember group
+	cr, err := s.protocolClient.MultiMemberGroupCreate(ctx, &bertytypes.MultiMemberGroupCreate_Request{})
+	if err != nil {
+		return nil, err
+	}
+	pk := cr.GetGroupPK()
+	pkStr := base64.StdEncoding.EncodeToString(pk)
+	s.logger.Info("Created conv", zap.String("dn", req.GetDisplayName()), zap.String("pk", pkStr))
+
+	// Add conversation to database
+	conv := &Conversation{PublicKey: pkStr, DisplayName: dn}
+	if err = s.db.Save(conv).Error; err != nil {
+		return nil, err
+	}
+
+	// Dispatch new conversation
+	payload, err := proto.Marshal(&StreamEvent_ConversationUpdated{conv})
+	if err == nil {
+		s.dispatcher.StreamEvent(&StreamEvent{Type: StreamEvent_TypeConversationUpdated, Payload: payload})
+	} else {
+		s.logger.Error("Failed to marshal ConversationUpdated", zap.Error(err))
+	}
+
+	// Try to put group name in group metadata
+	p, err := proto.Marshal(&AppMessage_SetGroupName{Name: dn})
+	if err == nil {
+		am, err := proto.Marshal(&AppMessage{Type: AppMessage_TypeSetGroupName, Payload: p})
+		if err == nil {
+			_, err = s.protocolClient.AppMetadataSend(ctx, &bertytypes.AppMetadataSend_Request{GroupPK: pk, Payload: am})
+			if err != nil {
+				s.logger.Error("Failed to set group name", zap.Error(err))
+			}
+		} else {
+			s.logger.Error("Failed to marshal AppMessage", zap.Error(err))
+		}
+	} else {
+		s.logger.Error("Failed to marshal SetGroupName", zap.Error(err))
+	}
+
+	/* There is a tradoff between privacy and log size here, we could send the user name as a message but it would require
+	** to re-add the name to the log everytime a new user arrives in the conversation which is bad for large public groups
+	** It would make sense to offer it as an option for privacy sensitive groups of small sizes though
+	** In the case that the group invitation leaks after an user leaves it, this user's name will be inaccessible to new users joining the group
+	 */
+
+	// Try to put user name in group metadata
+	var acc Account
+	if err = s.db.First(&acc).Error; err == nil {
+		p, err = proto.Marshal(&AppMessage_SetUserName{Name: acc.GetDisplayName()})
+		var am []byte
+		if err != nil {
+			am, err = proto.Marshal(&AppMessage{Type: AppMessage_TypeSetUserName, Payload: p})
+		}
+		if err == nil {
+			_, err = s.protocolClient.AppMetadataSend(ctx, &bertytypes.AppMetadataSend_Request{GroupPK: pk, Payload: am})
+			if err != nil {
+				s.logger.Warn("Failed to set user name in group", zap.Error(err))
+			}
+		} else {
+			s.logger.Warn("Failed to marshal SetUserName", zap.Error(err))
+		}
+	} else {
+		s.logger.Warn("Failed to get account name", zap.Error(err))
+	}
+
+	// Reply
+	rep := &ConversationCreate_Reply{PublicKey: pkStr}
+	return rep, nil
+}
+
+func (s *service) AccountGet(ctx context.Context, req *AccountGet_Request) (*AccountGet_Reply, error) {
+	var acc Account
+	if err := s.db.First(&acc).Error; err != nil {
+		return nil, err
+	}
+	return &AccountGet_Reply{Account: &acc}, nil
 }

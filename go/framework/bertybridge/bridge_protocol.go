@@ -40,6 +40,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 var (
@@ -54,8 +56,10 @@ var (
 type Protocol struct {
 	*Bridge
 
-	node    *core.IpfsNode
-	service bertyprotocol.Service
+	node      *core.IpfsNode
+	service   bertyprotocol.Service
+	messenger bertymessenger.Service
+	msngrDB   *gorm.DB
 
 	// protocol datastore
 	ds datastore.Batching
@@ -318,16 +322,31 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 	}
 
 	// register messenger service
+	var messenger bertymessenger.Service
+	var db *gorm.DB
 	{
 		protocolClient, err := bertyprotocol.NewClient(service)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
+
+		db, err = gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
+		if err != nil {
+			if cErr := protocolClient.Close(); err != nil {
+				logger.Error("Failed to close protocol client", zap.Error(cErr))
+			}
+			return nil, errcode.TODO.Wrap(err)
+		}
+
 		opts := bertymessenger.Opts{
 			Logger:          logger.Named("messenger"),
 			ProtocolService: service,
+			DB:              db,
 		}
-		messenger := bertymessenger.New(protocolClient, &opts)
+		messenger, err = bertymessenger.New(protocolClient, &opts)
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
 		bertymessenger.RegisterMessengerServiceServer(grpcServer, messenger)
 	}
 
@@ -349,12 +368,19 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 		node:    node,
 
 		ds: rootds,
+
+		messenger: messenger,
+		msngrDB:   db,
 	}, nil
 }
 
 func (p *Protocol) Close() (err error) {
 	// Close bridge
 	p.Bridge.Close()
+
+	p.messenger.Close()
+	sqlDB, _ := p.msngrDB.DB()
+	sqlDB.Close()
 
 	// close service
 	err = p.service.Close() // keep service error

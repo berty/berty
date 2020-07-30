@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"io"
 	"strings"
@@ -12,7 +11,6 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/atotto/clipboard"
-	"github.com/gogo/protobuf/proto"
 	cid "github.com/ipfs/go-cid"
 	qrterminal "github.com/mdp/qrterminal/v3"
 )
@@ -653,39 +651,6 @@ func contactRequestCommand(ctx context.Context, v *groupView, cmd string) error 
 	})
 
 	return err
-}
-
-type AppMessageTyped interface {
-	proto.Message
-	GetType() bertymessenger.AppMessageType
-}
-
-func payloadParser(data []byte) (AppMessageTyped, error) {
-	res := &bertymessenger.AppMessageTyped{}
-
-	err := json.Unmarshal(data, res)
-	if err != nil {
-		return nil, err
-	}
-
-	typesMapper := map[bertymessenger.AppMessageType]AppMessageTyped{
-		bertymessenger.AppMessageType_UserMessage:     &bertymessenger.PayloadUserMessage{},
-		bertymessenger.AppMessageType_UserReaction:    &bertymessenger.PayloadUserReaction{},
-		bertymessenger.AppMessageType_GroupInvitation: &bertymessenger.PayloadGroupInvitation{},
-		bertymessenger.AppMessageType_SetGroupName:    &bertymessenger.PayloadSetGroupName{},
-		bertymessenger.AppMessageType_Acknowledge:     &bertymessenger.PayloadAcknowledge{},
-	}
-
-	message, ok := typesMapper[res.Type]
-	if !ok {
-		return nil, fmt.Errorf("unknown payload type")
-	}
-
-	if err := json.Unmarshal(data, message); err != nil {
-		return nil, err
-	}
-
-	return message, nil
 }
 
 func newMessageCommand(ctx context.Context, v *groupView, cmd string) error {

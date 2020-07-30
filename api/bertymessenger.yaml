@@ -27,3 +27,15 @@ http:
  - selector: berty.messenger.v1.MessengerService.SystemInfo
    post: /berty.messenger.v1/MessengerService/SystemInfo
    body: "*"
+ - selector: berty.messenger.v1.MessengerService.ConversationStream
+   post: /berty.messenger.v1/MessengerService/ConversationStream
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.EventStream
+   post: /berty.messenger.v1/MessengerService/EventStream
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.ConversationCreate
+   post: /berty.messenger.v1/MessengerService/ConversationCreate
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.AccountGet
+   post: /berty.messenger.v1/MessengerService/AccountGet
+   body: "*"

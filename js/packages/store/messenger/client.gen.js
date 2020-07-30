@@ -10,4 +10,8 @@ export const Methods = {
 	sendMessage: 'sendMessage',
 	sendAck: 'sendAck',
 	systemInfo: 'systemInfo',
+	conversationStream: 'conversationStream',
+	eventStream: 'eventStream',
+	conversationCreate: 'conversationCreate',
+	accountGet: 'accountGet',
 }

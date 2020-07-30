@@ -11,6 +11,111 @@
     "application/json"
   ],
   "paths": {
+    "/berty.messenger.v1/MessengerService/AccountGet": {
+      "post": {
+        "operationId": "MessengerService_AccountGet",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AccountGetReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AccountGetRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/berty.messenger.v1/MessengerService/ConversationCreate": {
+      "post": {
+        "operationId": "MessengerService_ConversationCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ConversationCreateReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ConversationCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/berty.messenger.v1/MessengerService/ConversationStream": {
+      "post": {
+        "operationId": "MessengerService_ConversationStream",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1ConversationStreamReply"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of v1ConversationStreamReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ConversationStreamRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/DevShareInstanceBertyID": {
       "post": {
         "summary": "DevShareInstanceBertyID shares your Berty ID on a dev channel.\nTODO: remove for public.",
@@ -36,6 +141,47 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/v1DevShareInstanceBertyIDRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/berty.messenger.v1/MessengerService/EventStream": {
+      "post": {
+        "operationId": "MessengerService_EventStream",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1EventStreamReply"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of v1EventStreamReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1EventStreamRequest"
             }
           }
         ],
@@ -285,6 +431,20 @@
       ],
       "default": "UnknownKind"
     },
+    "bertymessengerv1Account": {
+      "type": "object",
+      "properties": {
+        "public_key": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/definitions/v1AccountState"
+        }
+      }
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -318,6 +478,51 @@
         }
       }
     },
+    "runtimeStreamError": {
+      "type": "object",
+      "properties": {
+        "grpc_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "http_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "http_status": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AccountGetReply": {
+      "type": "object",
+      "properties": {
+        "account": {
+          "$ref": "#/definitions/bertymessengerv1Account"
+        }
+      }
+    },
+    "v1AccountGetRequest": {
+      "type": "object"
+    },
+    "v1AccountState": {
+      "type": "string",
+      "enum": [
+        "Undefined",
+        "NotReady",
+        "Ready"
+      ],
+      "default": "Undefined"
+    },
     "v1BertyGroup": {
       "type": "object",
       "properties": {
@@ -345,6 +550,54 @@
         }
       }
     },
+    "v1Conversation": {
+      "type": "object",
+      "properties": {
+        "public_key": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ConversationCreateReply": {
+      "type": "object",
+      "properties": {
+        "public_key": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ConversationCreateRequest": {
+      "type": "object",
+      "properties": {
+        "display_name": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ConversationStreamReply": {
+      "type": "object",
+      "properties": {
+        "conversation": {
+          "$ref": "#/definitions/v1Conversation"
+        }
+      }
+    },
+    "v1ConversationStreamRequest": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "page": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
     "v1DevShareInstanceBertyIDReply": {
       "type": "object"
     },
@@ -358,6 +611,27 @@
         },
         "display_name": {
           "type": "string"
+        }
+      }
+    },
+    "v1EventStreamReply": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "$ref": "#/definitions/v1StreamEvent"
+        }
+      }
+    },
+    "v1EventStreamRequest": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "page": {
+          "type": "string",
+          "format": "uint64"
         }
       }
     },
@@ -527,6 +801,29 @@
           "type": "string"
         }
       }
+    },
+    "v1StreamEvent": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/v1StreamEventType",
+          "title": "DRAFT"
+        },
+        "payload": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "v1StreamEventType": {
+      "type": "string",
+      "enum": [
+        "TypeConversationUpdated",
+        "TypeConversationDeleted",
+        "TypeInteractionUpdated",
+        "TypeContactUpdated"
+      ],
+      "default": "TypeConversationUpdated"
     },
     "v1SystemInfoReply": {
       "type": "object",
