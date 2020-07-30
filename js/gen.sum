@@ -10,3 +10,4 @@
 a0d72ec76cf80a59f7b3e616f5a90924c0ffffd2  packages/store/messenger/client.gen.js.hbs
 af95a29375259c0d5fd47e7e07aafee140a592a8  packages/store/protocol/client.gen.js.hbs
 cdcfd4235af64debca29d0553209a34df7899361  ../api/bertytypes.proto
+dd116d18859d0e70abcde1c6f389443fff814b5a  Makefile
