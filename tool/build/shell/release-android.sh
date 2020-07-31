@@ -5,7 +5,7 @@ cd packages/berty-app
 
 npx jetify
 cd android
-echo 'android.buildCacheDir=/home/buildkite-agent/.cache/android-build-cache' >> gradle.properties
+[ "$BUILDKITE" = "true" ] && echo 'android.buildCacheDir=/home/buildkite-agent/.cache/android-build-cache' >> gradle.properties
 ./gradlew bundleRelease
 find . -name '*.aab'
 [ -f ~/bundletool-all-0.12.0.jar ] || wget -O ~/bundletool-all-0.12.0.jar https://github.com/google/bundletool/releases/download/0.12.0/bundletool-all-0.12.0.jar
