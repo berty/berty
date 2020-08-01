@@ -149,6 +149,48 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/EchoTest": {
+      "post": {
+        "summary": "Use to test stream",
+        "operationId": "MessengerService_EchoTest",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1EchoTestReply"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of v1EchoTestReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1EchoTestRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/EventStream": {
       "post": {
         "operationId": "MessengerService_EventStream",
@@ -610,6 +652,26 @@
           "title": "reset will regenerate a new link"
         },
         "display_name": {
+          "type": "string"
+        }
+      }
+    },
+    "v1EchoTestReply": {
+      "type": "object",
+      "properties": {
+        "echo": {
+          "type": "string"
+        }
+      }
+    },
+    "v1EchoTestRequest": {
+      "type": "object",
+      "properties": {
+        "delay": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "echo": {
           "type": "string"
         }
       }

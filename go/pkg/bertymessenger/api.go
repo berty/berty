@@ -535,3 +535,15 @@ func (s *service) AccountGet(ctx context.Context, req *AccountGet_Request) (*Acc
 	}
 	return &AccountGet_Reply{Account: &acc}, nil
 }
+
+func (s *service) EchoTest(req *EchoTest_Request, srv MessengerService_EchoTestServer) error {
+	for {
+		if err := srv.Send(&EchoTest_Reply{
+			Echo: req.Echo,
+		}); err != nil {
+			return err
+		}
+
+		time.Sleep(time.Duration(req.Delay) * time.Millisecond)
+	}
+}

@@ -1891,6 +1891,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "SystemInfo.Request",
                     responseType: "SystemInfo.Reply"
                   },
+                  EchoTest: {
+                    requestType: "EchoTest.Request",
+                    responseType: "EchoTest.Reply",
+                    responseStream: true
+                  },
                   ConversationStream: {
                     requestType: "ConversationStream.Request",
                     responseType: "ConversationStream.Reply",
@@ -1908,6 +1913,31 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   AccountGet: {
                     requestType: "AccountGet.Request",
                     responseType: "AccountGet.Reply"
+                  }
+                }
+              },
+              EchoTest: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      delay: {
+                        type: "uint64",
+                        id: 1
+                      },
+                      echo: {
+                        type: "string",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      echo: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
                   }
                 }
               },

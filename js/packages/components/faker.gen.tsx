@@ -352,6 +352,13 @@ export namespace faker {
 						callback(null, _api.berty.messenger.v1.SystemInfo.Reply.encode({}).finish())
 					}
 
+					export const EchoTest: (
+						request: _api.berty.messenger.v1.EchoTest.IRequest,
+						callback: pb.RPCImplCallback,
+					) => void = (request, callback) => {
+						callback(null, _api.berty.messenger.v1.EchoTest.Reply.encode({}).finish())
+					}
+
 					export const ConversationStream: (
 						request: _api.berty.messenger.v1.ConversationStream.IRequest,
 						callback: pb.RPCImplCallback,

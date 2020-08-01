@@ -86,10 +86,10 @@ func (s *Service) CreateClientStream(ctx context.Context, req *pb.ClientCreateSt
 	}
 
 	if req.MethodDesc == nil {
-		return nil, fmt.Errorf("cannot invoke `ClientInvokeUnary` without a `MethodDesc`")
+		return nil, fmt.Errorf("cannot invoke `CreateClientStream` without a `MethodDesc`")
 	}
 
-	if !req.MethodDesc.IsClientStream && !req.MethodDesc.IsClientStream {
+	if !req.MethodDesc.IsClientStream && !req.MethodDesc.IsServerStream {
 		return res, fmt.Errorf("cannot call a unary method with `CreateClientStream`")
 	}
 
@@ -104,6 +104,7 @@ func (s *Service) CreateClientStream(ctx context.Context, req *pb.ClientCreateSt
 	sctx, cancel := context.WithCancel(sctx)
 	cstream, err := grpc.NewClientStream(sctx, desc, s.cc, req.MethodDesc.Name, grpc.ForceCodec(lazyCodec))
 	if err != nil {
+		cancel()
 		res.Error = getSerivceError(err)
 		return res, nil
 	}
@@ -212,7 +213,6 @@ func (s *Service) ClientStreamClose(ctx context.Context, req *pb.ClientStreamClo
 	cstream, ok := s.streams[id]
 	if ok {
 		cstream.CancelFunc()
-		delete(s.streams, id)
 	}
 	s.muStreams.Unlock()
 

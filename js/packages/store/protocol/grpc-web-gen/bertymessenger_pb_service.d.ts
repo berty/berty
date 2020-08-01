@@ -76,6 +76,15 @@ type MessengerServiceSystemInfo = {
   readonly responseType: typeof bertymessenger_pb.SystemInfo.Reply;
 };
 
+type MessengerServiceEchoTest = {
+  readonly methodName: string;
+  readonly service: typeof MessengerService;
+  readonly requestStream: false;
+  readonly responseStream: true;
+  readonly requestType: typeof bertymessenger_pb.EchoTest.Request;
+  readonly responseType: typeof bertymessenger_pb.EchoTest.Reply;
+};
+
 type MessengerServiceConversationStream = {
   readonly methodName: string;
   readonly service: typeof MessengerService;
@@ -122,6 +131,7 @@ export class MessengerService {
   static readonly SendMessage: MessengerServiceSendMessage;
   static readonly SendAck: MessengerServiceSendAck;
   static readonly SystemInfo: MessengerServiceSystemInfo;
+  static readonly EchoTest: MessengerServiceEchoTest;
   static readonly ConversationStream: MessengerServiceConversationStream;
   static readonly EventStream: MessengerServiceEventStream;
   static readonly ConversationCreate: MessengerServiceConversationCreate;
@@ -232,6 +242,7 @@ export class MessengerServiceClient {
     requestMessage: bertymessenger_pb.SystemInfo.Request,
     callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.SystemInfo.Reply|null) => void
   ): UnaryResponse;
+  echoTest(requestMessage: bertymessenger_pb.EchoTest.Request, metadata?: grpc.Metadata): ResponseStream<bertymessenger_pb.EchoTest.Reply>;
   conversationStream(requestMessage: bertymessenger_pb.ConversationStream.Request, metadata?: grpc.Metadata): ResponseStream<bertymessenger_pb.ConversationStream.Reply>;
   eventStream(requestMessage: bertymessenger_pb.EventStream.Request, metadata?: grpc.Metadata): ResponseStream<bertymessenger_pb.EventStream.Reply>;
   conversationCreate(

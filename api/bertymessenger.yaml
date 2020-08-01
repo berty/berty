@@ -27,6 +27,9 @@ http:
  - selector: berty.messenger.v1.MessengerService.SystemInfo
    post: /berty.messenger.v1/MessengerService/SystemInfo
    body: "*"
+ - selector: berty.messenger.v1.MessengerService.EchoTest
+   post: /berty.messenger.v1/MessengerService/EchoTest
+   body: "*"
  - selector: berty.messenger.v1.MessengerService.ConversationStream
    post: /berty.messenger.v1/MessengerService/ConversationStream
    body: "*"

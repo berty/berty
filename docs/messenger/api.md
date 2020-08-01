@@ -30,6 +30,9 @@
     - [DevShareInstanceBertyID.Reply](#berty.messenger.v1.DevShareInstanceBertyID.Reply)
     - [DevShareInstanceBertyID.Request](#berty.messenger.v1.DevShareInstanceBertyID.Request)
     - [Device](#berty.messenger.v1.Device)
+    - [EchoTest](#berty.messenger.v1.EchoTest)
+    - [EchoTest.Reply](#berty.messenger.v1.EchoTest.Reply)
+    - [EchoTest.Request](#berty.messenger.v1.EchoTest.Request)
     - [EventStream](#berty.messenger.v1.EventStream)
     - [EventStream.Reply](#berty.messenger.v1.EventStream.Reply)
     - [EventStream.Request](#berty.messenger.v1.EventStream.Request)
@@ -273,6 +276,27 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | public_key | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.EchoTest"></a>
+
+### EchoTest
+
+<a name="berty.messenger.v1.EchoTest.Reply"></a>
+
+### EchoTest.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| echo | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.EchoTest.Request"></a>
+
+### EchoTest.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| delay | [uint64](#uint64) |  | in ms |
+| echo | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.EventStream"></a>
 
@@ -585,6 +609,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | SendMessage | [SendMessage.Request](#berty.messenger.v1.SendMessage.Request) | [SendMessage.Reply](#berty.messenger.v1.SendMessage.Reply) | SendMessage sends a message to a group |
 | SendAck | [SendAck.Request](#berty.messenger.v1.SendAck.Request) | [SendAck.Reply](#berty.messenger.v1.SendAck.Reply) | SendAck sends an acknowledge payload for given message id |
 | SystemInfo | [SystemInfo.Request](#berty.messenger.v1.SystemInfo.Request) | [SystemInfo.Reply](#berty.messenger.v1.SystemInfo.Reply) |  |
+| EchoTest | [EchoTest.Request](#berty.messenger.v1.EchoTest.Request) | [EchoTest.Reply](#berty.messenger.v1.EchoTest.Reply) stream | Use to test stream |
 | ConversationStream | [ConversationStream.Request](#berty.messenger.v1.ConversationStream.Request) | [ConversationStream.Reply](#berty.messenger.v1.ConversationStream.Reply) stream |  |
 | EventStream | [EventStream.Request](#berty.messenger.v1.EventStream.Request) | [EventStream.Reply](#berty.messenger.v1.EventStream.Reply) stream |  |
 | ConversationCreate | [ConversationCreate.Request](#berty.messenger.v1.ConversationCreate.Request) | [ConversationCreate.Reply](#berty.messenger.v1.ConversationCreate.Reply) |  |

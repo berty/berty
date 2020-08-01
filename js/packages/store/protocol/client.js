@@ -1,7 +1,4 @@
-import { WebsocketTransport, Service } from '@berty-tech/grpc-bridge'
-import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
-import * as middleware from '@berty-tech/grpc-bridge/middleware'
-import proto from '@berty-tech/api/index.pb'
+import { WebsocketTransport } from '@berty-tech/grpc-bridge'
 import GoBridge, { GoLogLevel } from '@berty-tech/go-bridge'
 import { createSlice } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
@@ -247,23 +244,10 @@ export const defaultBridgeOpts = {
 	localDiscovery: true,
 }
 
-const protocolMiddlewares = middleware.chain(
-  __DEV__ ? middleware.logger.create('PROTOCOL') : null // eslint-disable-line
-)
-
 const ensureNodeStarted = async (opts) => {
 	try {
 		console.log('Starting node..')
 		await GoBridge.startProtocol(opts)
-
-		const protocolpb =  proto.lookup('berty.protocol.v1.ProtocolService')
-		const protocolClient =  Service(protocolpb, rpcBridge, protocolMiddlewares)
-		console.log(protocolClient)
-
-		protocolClient.instanceGetConfiguration({})
-			.then(res => console.log(res))
-			.catch(err =>console.log('err', err))
-
 		console.log('Done starting node!')
 	} catch (e) {
 		if (e.domain === 'already started') {
@@ -283,7 +267,7 @@ export const transactions = {
 		let address
 		let transport: () => grpc.TransportFactory
 
-		if (nodeConfig && nodeConfig.type === 'external') {
+		if (nodeConfig.type === 'external') {
 			address = `http://${nodeConfig.host}:${nodeConfig.port}`
 			transport = ExternalTransport
 		} else {
