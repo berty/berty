@@ -6,10 +6,13 @@ import (
 	"time"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"moul.io/u"
+	"moul.io/zapgorm2"
 )
 
 type TestingServiceOpts struct {
@@ -23,37 +26,39 @@ func TestingService(ctx context.Context, t *testing.T, opts *TestingServiceOpts)
 		opts.Logger = zap.NewNop()
 	}
 
-	pCleanup := func() {}
+	cleanup := func() {}
 	if opts.Client == nil {
 		var protocol *bertyprotocol.TestingProtocol
-		protocol, pCleanup = bertyprotocol.NewTestingProtocol(ctx, t, nil)
+		protocol, cleanup = bertyprotocol.NewTestingProtocol(ctx, t, nil)
 		opts.Client = protocol.Client
 		// required to avoid "writing on closing socket",
 		// should be better to have something blocking instead
 		time.Sleep(10 * time.Millisecond)
 	}
 
-	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
+	zapLogger := zapgorm2.New(opts.Logger)
+	zapLogger.SetAsDefault()
+	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{Logger: zapLogger})
 	if err != nil {
-		pCleanup()
+		cleanup()
 		require.NoError(t, err)
 	}
+	cleanup = u.CombineFuncs(
+		func() {
+			sqlDB, err := db.DB()
+			assert.NoError(t, err)
+			sqlDB.Close()
+		},
+		cleanup,
+	)
 
 	server, err := New(opts.Client, &Opts{Logger: opts.Logger, DB: db})
 	if err != nil {
-		sqlDB, _ := db.DB()
-		sqlDB.Close()
-		pCleanup()
+		cleanup()
 		require.NoError(t, err)
 	}
 
-	cleanup := func() {
-		server.Close()
-		sqlDB, _ := db.DB()
-		sqlDB.Close()
-		require.NoError(t, err)
-		pCleanup()
-	}
+	cleanup = u.CombineFuncs(func() { server.Close() }, cleanup)
 
 	return server, cleanup
 }

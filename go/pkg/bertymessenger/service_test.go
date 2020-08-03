@@ -2,28 +2,22 @@ package bertymessenger
 
 import (
 	"context"
-	"net"
 	"sync"
 	"testing"
 	"time"
 
+	"berty.tech/berty/v2/go/internal/testutil"
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/test/bufconn"
 )
-
-func mkBufDialer(l *bufconn.Listener) func(context.Context, string) (net.Conn, error) {
-	return func(context.Context, string) (net.Conn, error) { return l.Dial() }
-}
 
 const timeout = time.Second * 5
 
 func TestClient(t *testing.T) {
 	ctx := context.Background()
-	l, err := zap.NewDevelopment()
-	require.NoError(t, err)
+	l := testutil.Logger(t)
 	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: l})
 	defer cleanup()
 
@@ -39,9 +33,9 @@ func TestClient(t *testing.T) {
 	require.NoError(t, err)
 	defer conn.Close()
 	client := NewMessengerServiceClient(conn)
-	//
 
 	streamCtx, cancelStreamCtx := context.WithTimeout(context.Background(), timeout)
+	defer cancelStreamCtx()
 	res, err := client.ConversationStream(streamCtx, &ConversationStream_Request{})
 	require.NoError(t, err)
 
@@ -67,15 +61,13 @@ func TestClient(t *testing.T) {
 	require.Equal(t, dn, c.GetDisplayName())
 
 	cancelStreamCtx()
-
 	_, err = res.Recv()
 	require.True(t, grpcIsCanceled(err))
 }
 
 func TestContactRequest(t *testing.T) {
 	ctx := context.Background()
-	l, err := zap.NewDevelopment()
-	require.NoError(t, err)
+	l := testutil.Logger(t)
 	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: l})
 	defer cleanup()
 
@@ -91,9 +83,9 @@ func TestContactRequest(t *testing.T) {
 	require.NoError(t, err)
 	defer conn.Close()
 	client := NewMessengerServiceClient(conn)
-	//
 
 	streamCtx, cancelStreamCtx := context.WithTimeout(context.Background(), timeout)
+	defer cancelStreamCtx()
 	stream, err := client.EventStream(streamCtx, &EventStream_Request{})
 	require.NoError(t, err)
 

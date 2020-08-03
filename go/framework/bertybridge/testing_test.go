@@ -17,8 +17,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 )
 
-func (pc *ProtocolConfig) ipfsCoreAPI(api ipfsutil.ExtendedCoreAPI) {
-	pc.coreAPI = api
+func (mc *MessengerConfig) ipfsCoreAPI(api ipfsutil.ExtendedCoreAPI) {
+	mc.coreAPI = api
 }
 
 func makeRequest(host string, method string, headers http.Header, body io.Reader, isText bool) (*http.Response, error) {
@@ -150,7 +150,7 @@ func makeGrpcRequest(host string, method string, requestMessages [][]byte, isTex
 	return responseMessages, nil
 }
 
-func newServiceClient(p *Protocol) (bertyprotocol.ProtocolServiceClient, error) {
+func newServiceClient(p *MessengerBridge) (bertyprotocol.ProtocolServiceClient, error) {
 	cl, err := p.Bridge.NewGRPCClient()
 	if err != nil {
 		return nil, err

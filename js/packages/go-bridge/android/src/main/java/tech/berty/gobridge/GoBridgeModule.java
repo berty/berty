@@ -15,8 +15,8 @@ import java.io.File;
 
 // go packages
 import bertybridge.Bertybridge;
-import bertybridge.Protocol;
-import bertybridge.ProtocolConfig;
+import bertybridge.MessengerBridge;
+import bertybridge.MessengerConfig;
 
 public class GoBridgeModule extends ReactContextBaseJavaModule {
     private final static String TAG = "GoBridge";
@@ -24,7 +24,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     private final static LoggerDriver rnlogger = new LoggerDriver("tech.berty", "react");
 
     // protocol
-    private Protocol bridgeProtocol = null;
+    private MessengerBridge bridgeMessenger = null;
     private File rootDir = null;
 
     public GoBridgeModule(ReactApplicationContext reactContext) {
@@ -79,7 +79,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void startProtocol(ReadableMap opts, Promise promise) {
         try {
-            if (this.bridgeProtocol != null) {
+            if (this.bridgeMessenger != null) {
                 throw new Exception("bridge protocol already started");
             }
 
@@ -99,7 +99,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
             final String optTracingPrefix = opts.hasKey("tracingPrefix") ? opts.getString("tracingPrefix") : "";
             final boolean optLocalDiscovery = opts.hasKey("localDiscovery") && opts.getBoolean("localDiscovery");
 
-            final ProtocolConfig config = Bertybridge.newProtocolConfig();
+            final MessengerConfig config = Bertybridge.newMessengerConfig();
             if (config == null) {
                 throw new Exception("");
             }
@@ -144,9 +144,9 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
                 config.disableLocalDiscovery();
             }
 
-            System.out.println("bflifecycle: calling Bertybridge.newProtocolBridge");
-            this.bridgeProtocol = Bertybridge.newProtocolBridge(config);
-            System.out.println("bflifecycle: done Bertybridge.newProtocolBridge");
+            System.out.println("bflifecycle: calling Bertybridge.newMessengerBridge");
+            this.bridgeMessenger = Bertybridge.newMessengerBridge(config);
+            System.out.println("bflifecycle: done Bertybridge.newMessengerBridge");
             promise.resolve(true);
         } catch(Exception err) {
             promise.reject(err);
@@ -156,11 +156,11 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void stopProtocol(Promise promise) {
         try {
-            if (this.bridgeProtocol != null) {
-                System.out.println("bflifecycle: calling bridgeProtocol.close()");
-                this.bridgeProtocol.close();
-                System.out.println("bflifecycle: done bridgeProtocol.close()");
-                this.bridgeProtocol = null;
+            if (this.bridgeMessenger != null) {
+                System.out.println("bflifecycle: calling bridgeMessenger.close()");
+                this.bridgeMessenger.close();
+                System.out.println("bflifecycle: done bridgeMessenger.close()");
+                this.bridgeMessenger = null;
             }
             promise.resolve(true);
         } catch (Exception err) {
@@ -171,11 +171,11 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getProtocolAddr(Promise promise) {
         try {
-            if (this.bridgeProtocol == null) {
+            if (this.bridgeMessenger == null) {
                 throw new Exception("bridge protocol not started");
             }
 
-            String addr = this.bridgeProtocol.grpcWebSocketListenerAddr();
+            String addr = this.bridgeMessenger.grpcWebSocketListenerAddr();
             promise.resolve(addr);
         } catch (Exception err) {
             promise.reject(err);

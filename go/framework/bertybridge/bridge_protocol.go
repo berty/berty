@@ -36,12 +36,14 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
 	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
+	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"moul.io/zapgorm2"
 )
 
 var (
@@ -53,19 +55,19 @@ var (
 	APIConfig                     = config.BertyMobile.APIConfig
 )
 
-type Protocol struct {
+type MessengerBridge struct {
 	*Bridge
 
-	node      *core.IpfsNode
-	service   bertyprotocol.Service
-	messenger bertymessenger.Service
-	msngrDB   *gorm.DB
+	node             *core.IpfsNode
+	protocolService  bertyprotocol.Service
+	messengerService bertymessenger.Service
+	msngrDB          *gorm.DB
 
 	// protocol datastore
 	ds datastore.Batching
 }
 
-type ProtocolConfig struct {
+type MessengerConfig struct {
 	*Config
 
 	dLogger  NativeLoggerDriver
@@ -82,45 +84,45 @@ type ProtocolConfig struct {
 	coreAPI ipfsutil.ExtendedCoreAPI
 }
 
-func NewProtocolConfig() *ProtocolConfig {
-	return &ProtocolConfig{
+func NewMessengerConfig() *MessengerConfig {
+	return &MessengerConfig{
 		Config: NewConfig(),
 	}
 }
 
-func (pc *ProtocolConfig) RootDirectory(dir string) {
+func (pc *MessengerConfig) RootDirectory(dir string) {
 	pc.rootDirectory = dir
 }
 
-func (pc *ProtocolConfig) EnableTracing() {
+func (pc *MessengerConfig) EnableTracing() {
 	pc.tracing = true
 }
 
-func (pc *ProtocolConfig) EnablePOIDebug() {
+func (pc *MessengerConfig) EnablePOIDebug() {
 	pc.poiDebug = true
 }
 
-func (pc *ProtocolConfig) SetTracingPrefix(prefix string) {
+func (pc *MessengerConfig) SetTracingPrefix(prefix string) {
 	pc.tracingPrefix = prefix
 }
 
-func (pc *ProtocolConfig) LogLevel(level string) {
+func (pc *MessengerConfig) LogLevel(level string) {
 	pc.loglevel = level
 }
 
-func (pc *ProtocolConfig) LoggerDriver(dLogger NativeLoggerDriver) {
+func (pc *MessengerConfig) LoggerDriver(dLogger NativeLoggerDriver) {
 	pc.dLogger = dLogger
 }
 
-func (pc *ProtocolConfig) AddSwarmListener(laddr string) {
+func (pc *MessengerConfig) AddSwarmListener(laddr string) {
 	pc.swarmListeners = append(pc.swarmListeners, laddr)
 }
 
-func (pc *ProtocolConfig) DisableLocalDiscovery() {
+func (pc *MessengerConfig) DisableLocalDiscovery() {
 	pc.localDiscovery = false
 }
 
-func NewProtocolBridge(config *ProtocolConfig) (*Protocol, error) {
+func NewMessengerBridge(config *MessengerConfig) (*MessengerBridge, error) {
 	// setup logger
 	var logger *zap.Logger
 	{
@@ -137,10 +139,10 @@ func NewProtocolBridge(config *ProtocolConfig) (*Protocol, error) {
 		}
 	}
 
-	return newProtocolBridge(logger, config)
+	return newMessengerBridge(logger, config)
 }
 
-func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, error) {
+func newMessengerBridge(logger *zap.Logger, config *MessengerConfig) (*MessengerBridge, error) {
 	ctx := context.Background()
 
 	// setup coreapi if needed
@@ -304,7 +306,6 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 		serverOpts := []grpc.ServerOption{
 			grpc_middleware.WithUnaryServerChain(
 				grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-
 				grpc_zap.UnaryServerInterceptor(grpcLogger),
 				grpc_recovery.UnaryServerInterceptor(recoverOpts...),
 				grpc_trace.UnaryServerInterceptor(trServer),
@@ -330,10 +331,12 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 			return nil, errcode.TODO.Wrap(err)
 		}
 
-		db, err = gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
+		zapLogger := zapgorm2.New(logger)
+		zapLogger.SetAsDefault()
+		db, err = gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{Logger: zapLogger})
 		if err != nil {
 			if cErr := protocolClient.Close(); err != nil {
-				logger.Error("Failed to close protocol client", zap.Error(cErr))
+				logger.Error("failed to close protocol client", zap.Error(cErr))
 			}
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -361,29 +364,34 @@ func newProtocolBridge(logger *zap.Logger, config *ProtocolConfig) (*Protocol, e
 		}
 	}
 
-	return &Protocol{
-		Bridge: bridge,
-
-		service: service,
-		node:    node,
-
-		ds: rootds,
-
-		messenger: messenger,
-		msngrDB:   db,
+	return &MessengerBridge{
+		Bridge:           bridge,
+		protocolService:  service,
+		node:             node,
+		ds:               rootds,
+		messengerService: messenger,
+		msngrDB:          db,
 	}, nil
 }
 
-func (p *Protocol) Close() (err error) {
+func (p *MessengerBridge) Close() error {
+	var errs error
+
 	// Close bridge
 	p.Bridge.Close()
 
-	p.messenger.Close()
-	sqlDB, _ := p.msngrDB.DB()
+	// close messenger
+	p.messengerService.Close()
+	sqlDB, err := p.msngrDB.DB()
+	if err != nil {
+		errs = multierr.Append(errs, err)
+	}
 	sqlDB.Close()
 
-	// close service
-	err = p.service.Close() // keep service error
+	// close protocol
+	if err = p.protocolService.Close(); err != nil {
+		errs = multierr.Append(errs, err)
+	}
 
 	if p.node != nil {
 		p.node.Close()
@@ -393,7 +401,7 @@ func (p *Protocol) Close() (err error) {
 		p.ds.Close()
 	}
 
-	return
+	return errs
 }
 
 func getRootDatastore(path string) (datastore.Batching, error) {

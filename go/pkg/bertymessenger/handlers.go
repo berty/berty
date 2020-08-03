@@ -1,8 +1,11 @@
 package bertymessenger
 
 import (
+	"encoding/base64"
+
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/golang/protobuf/proto" // nolint:staticcheck: not sure how to use the new protobuf api to unmarshal
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -13,31 +16,26 @@ func handleProtocolEvent(svc *service, gme *bertytypes.GroupMetadataEvent) error
 		if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
 			return err
 		}
-		b64PK := bytesToB64(ev.GetGroup().GetPublicKey())
+		b64PK := base64.StdEncoding.EncodeToString(ev.GetGroup().GetPublicKey())
 
 		var conv Conversation
 		err := svc.db.First(&conv).Error
-		logStr := "AccountGroupJoined: " + b64PK
 
 		if err == gorm.ErrRecordNotFound {
 			conv.PublicKey = b64PK
-			svc.logger.Info(logStr)
+			svc.logger.Info("AccountGroupJoined", zap.String("pk", b64PK), zap.Bool("is-new", true))
 			return svc.db.Save(conv).Error
 		} else if err != nil {
 			return err
 		}
-		logStr += ", already known"
-		if conv.DisplayName != "" {
-			logStr += " as " + conv.DisplayName
-		}
-		svc.logger.Info(logStr)
+		svc.logger.Info("AccountGroupJoined", zap.String("pk", b64PK), zap.Bool("is-new", false), zap.String("known-as", conv.DisplayName))
 
 	case bertytypes.EventTypeAccountContactRequestOutgoingEnqueued:
 		var ev bertytypes.AccountContactRequestEnqueued
 		if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
 			return err
 		}
-		pkStr := bytesToB64(ev.GetContact().GetPK())
+		pkStr := base64.StdEncoding.EncodeToString(ev.GetContact().GetPK())
 
 		var cm ContactMetadata
 		err := proto.Unmarshal(ev.GetContact().GetMetadata(), &cm)
@@ -47,14 +45,15 @@ func handleProtocolEvent(svc *service, gme *bertytypes.GroupMetadataEvent) error
 
 		var exc Contact
 		err = svc.db.Where(Contact{PublicKey: pkStr}).First(&exc).Error
-		if err != nil {
-			if err != gorm.ErrRecordNotFound {
-				return err
-			}
-		} else {
+		switch err {
+		case gorm.ErrRecordNotFound:
+			// do nothing
+		case nil: // contact already exists
 			// Maybe update DisplayName in some cases?
 			// TODO: better handle case where the state is "IncomingRequest", should end up as in "Established" state in this case IMO
 			return nil
+		default: // any other error
+			return err
 		}
 
 		c := &Contact{DisplayName: cm.DisplayName, PublicKey: pkStr, State: Contact_OutgoingRequestEnqueued}

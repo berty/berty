@@ -73,6 +73,7 @@ require (
 	go.opentelemetry.io/otel v0.8.0
 	go.opentelemetry.io/otel/exporters/trace/jaeger v0.8.0
 	go.uber.org/fx v1.13.0 // indirect
+	go.uber.org/multierr v1.5.0
 	go.uber.org/zap v1.15.0
 	golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381
@@ -88,6 +89,8 @@ require (
 	moul.io/godev v1.6.0
 	moul.io/openfiles v1.2.0
 	moul.io/srand v1.4.0
+	moul.io/u v1.3.0
+	moul.io/zapgorm2 v1.0.1
 )
 
 replace (

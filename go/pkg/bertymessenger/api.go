@@ -3,7 +3,6 @@ package bertymessenger
 import (
 	"context"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"net/url"
 	"os"
@@ -351,15 +350,8 @@ func (s *service) SendAck(ctx context.Context, request *SendAck_Request) (*SendA
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("only %s groups are supported", bertytypes.GroupTypeContact.String()))
 	}
 
-	payload, err := proto.Marshal(&AppMessage_Acknowledge{
+	am, err := AppMessage_TypeAcknowledge.MarshalPayload(&AppMessage_Acknowledge{
 		Target: base64.StdEncoding.EncodeToString(request.MessageID),
-	})
-	if err != nil {
-		return nil, err
-	}
-	appMessage, err := proto.Marshal(&AppMessage{
-		Type:    AppMessage_TypeAcknowledge,
-		Payload: payload,
 	})
 	if err != nil {
 		return nil, err
@@ -367,14 +359,14 @@ func (s *service) SendAck(ctx context.Context, request *SendAck_Request) (*SendA
 
 	_, err = s.protocolClient.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
 		GroupPK: request.GroupPK,
-		Payload: appMessage,
+		Payload: am,
 	})
 
 	return nil, err
 }
 
 func (s *service) SendMessage(ctx context.Context, request *SendMessage_Request) (*SendMessage_Reply, error) {
-	payload, err := json.Marshal(&AppMessage_UserMessage{
+	payload, err := AppMessage_TypeUserMessage.MarshalPayload(&AppMessage_UserMessage{
 		Body:        request.Message,
 		Attachments: nil,
 		SentDate:    time.Now().UnixNano() / 1000000,
@@ -396,7 +388,9 @@ func (s *service) ConversationStream(req *ConversationStream_Request, sub Messen
 
 	// send existing convs
 	var convs []*Conversation
-	s.db.Find(&convs)
+	if err := s.db.Find(&convs).Error; err != nil {
+		return err
+	}
 	for _, c := range convs {
 		if err := sub.Send(&ConversationStream_Reply{Conversation: c}); err != nil {
 			return err
@@ -409,21 +403,20 @@ func (s *service) ConversationStream(req *ConversationStream_Request, sub Messen
 	// stream new convs
 	errch := make(chan error)
 	defer close(errch)
-	n := NotifieeBundle{StreamEventImpl: func(e *StreamEvent) error {
-		if e.Type == StreamEvent_TypeConversationUpdated {
-			var cu StreamEvent_ConversationUpdated
-			err := proto.Unmarshal(e.GetPayload(), &cu)
-			if err == nil {
-				err = sub.Send(&ConversationStream_Reply{Conversation: cu.GetConversation()})
+	n := NotifieeBundle{
+		StreamEventImpl: func(e *StreamEvent) error {
+			if e.Type == StreamEvent_TypeConversationUpdated {
+				var cu StreamEvent_ConversationUpdated
+				if err := proto.Unmarshal(e.GetPayload(), &cu); err != nil {
+					errch <- err
+				}
+				if err := sub.Send(&ConversationStream_Reply{Conversation: cu.GetConversation()}); err != nil {
+					errch <- err
+				}
 			}
-			if err != nil {
-				// next commmented line allows me to manually test the behavior on a send error. How to isolate into an automatic test?
-				// errch <- errors.New("TEST ERROR")
-				errch <- err
-			}
-		}
-		return nil
-	}}
+			return nil
+		},
+	}
 	unreg := s.dispatcher.Register(&n)
 	defer unreg()
 
@@ -440,13 +433,6 @@ func (s *service) EventStream(req *EventStream_Request, sub MessengerService_Eve
 	// TODO: cursors
 
 	// TODO: send existing models
-	/*var convs []*Conversation
-	s.db.Find(&convs)
-	for _, c := range convs {
-		if err := sub.Send(&EventStream_Reply{Conversation: c}); err != nil {
-			return err
-		}
-	}*/
 
 	// FIXME: case where a conversation is created/updated/deleted between the list and the stream
 	// dunno how to add a test to trigger, maybe it can never happen? don't know how to prove either way
@@ -494,27 +480,26 @@ func (s *service) ConversationCreate(ctx context.Context, req *ConversationCreat
 	}
 
 	// Dispatch new conversation
-	payload, err := proto.Marshal(&StreamEvent_ConversationUpdated{conv})
-	if err == nil {
-		s.dispatcher.StreamEvent(&StreamEvent{Type: StreamEvent_TypeConversationUpdated, Payload: payload})
-	} else {
-		s.logger.Error("Failed to marshal ConversationUpdated", zap.Error(err))
+	{
+		payload, err := proto.Marshal(&StreamEvent_ConversationUpdated{conv})
+		if err != nil {
+			s.logger.Error("Failed to marshal ConversationUpdated", zap.Error(err))
+		} else {
+			s.dispatcher.StreamEvent(&StreamEvent{Type: StreamEvent_TypeConversationUpdated, Payload: payload})
+		}
 	}
 
 	// Try to put group name in group metadata
-	p, err := proto.Marshal(&AppMessage_SetGroupName{Name: dn})
-	if err == nil {
-		am, err := proto.Marshal(&AppMessage{Type: AppMessage_TypeSetGroupName, Payload: p})
-		if err == nil {
+	{
+		am, err := AppMessage_TypeSetGroupName.MarshalPayload(&AppMessage_SetGroupName{Name: dn})
+		if err != nil {
+			s.logger.Error("failed to create SetGroupName payload", zap.Error(err))
+		} else {
 			_, err = s.protocolClient.AppMetadataSend(ctx, &bertytypes.AppMetadataSend_Request{GroupPK: pk, Payload: am})
 			if err != nil {
-				s.logger.Error("Failed to set group name", zap.Error(err))
+				s.logger.Error("failed to set group name", zap.Error(err))
 			}
-		} else {
-			s.logger.Error("Failed to marshal AppMessage", zap.Error(err))
 		}
-	} else {
-		s.logger.Error("Failed to marshal SetGroupName", zap.Error(err))
 	}
 
 	/* There is a tradoff between privacy and log size here, we could send the user name as a message but it would require
@@ -525,27 +510,22 @@ func (s *service) ConversationCreate(ctx context.Context, req *ConversationCreat
 
 	// Try to put user name in group metadata
 	var acc Account
-	if err = s.db.First(&acc).Error; err == nil {
-		p, err = proto.Marshal(&AppMessage_SetUserName{Name: acc.GetDisplayName()})
-		var am []byte
+	if err = s.db.First(&acc).Error; err != nil {
+		s.logger.Warn("failed to get account name", zap.Error(err))
+	} else {
+		am, err := AppMessage_TypeSetUserName.MarshalPayload(&AppMessage_SetUserName{Name: acc.GetDisplayName()})
 		if err != nil {
-			am, err = proto.Marshal(&AppMessage{Type: AppMessage_TypeSetUserName, Payload: p})
-		}
-		if err == nil {
+			s.logger.Error("failed to create SetUserName payload", zap.Error(err))
+		} else {
 			_, err = s.protocolClient.AppMetadataSend(ctx, &bertytypes.AppMetadataSend_Request{GroupPK: pk, Payload: am})
 			if err != nil {
 				s.logger.Warn("Failed to set user name in group", zap.Error(err))
 			}
-		} else {
-			s.logger.Warn("Failed to marshal SetUserName", zap.Error(err))
 		}
-	} else {
-		s.logger.Warn("Failed to get account name", zap.Error(err))
 	}
 
-	// Reply
-	rep := &ConversationCreate_Reply{PublicKey: pkStr}
-	return rep, nil
+	rep := ConversationCreate_Reply{PublicKey: pkStr}
+	return &rep, nil
 }
 
 func (s *service) AccountGet(ctx context.Context, req *AccountGet_Request) (*AccountGet_Reply, error) {
