@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
-import { BlurView } from '@react-native-community/blur'
+import BlurView from '../shared-components/BlurView'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { useNavigation, Routes } from '@berty-tech/navigation'
 import { Messenger } from '@berty-tech/hooks'

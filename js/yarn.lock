@@ -3505,10 +3505,10 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/async-storage/-/async-storage-1.8.0.tgz#5f23ad486daa284398c71f2cc94d15fb7be40bb8"
   integrity sha512-R8hYm9h7MqoTa/opzBID6hhL5rseNoMJK1wG/B/Diob+JzEv7b1GMpHjsAZX2pU2o82LU73XbPJOPzfvkGFaUA==
 
-"@react-native-community/blur@^3.3.1":
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/@react-native-community/blur/-/blur-3.3.1.tgz#bc9ecd6d85d89739d8180138716535ac7cfa4680"
-  integrity sha512-UfH2ut/l4GpZHeq/TGx3BrmyXSCSBBwBCVx1DhPodP3k959zJ2ajgXa3PiU/qjutftTUw6KH9Frsh2U0ax9dMQ==
+"@react-native-community/blur@^3.6.0":
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/@react-native-community/blur/-/blur-3.6.0.tgz#31c9e0f2770519c9b5c4f99418f192246f0d4db8"
+  integrity sha512-GtDBhpX2pQcjl4VopOC8FktrVufrEfYRwVeMQ2WWckqKIv2BdwvlvWvj88L1WmEdBr9UNcm3rtgz+d+YXkmirA==
   dependencies:
     prop-types "^15.5.10"
 
@@ -14242,23 +14242,18 @@ loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.3.1, loose-envify@^1.4
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
-lottie-ios@3.1.3:
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/lottie-ios/-/lottie-ios-3.1.3.tgz#dfa18a3a7e66e5d4a6665bf0a2392d143d15661a"
-  integrity sha512-FKSx9l5Ekwm1Wt/ncoCwvsq8NAb1nylzMFlxrHixLYNBtO2eCQet+vwQag+74Nc/E9Lp3DKkBUCyBfz+zjtmAw==
-
-lottie-ios@^3.1.3:
+lottie-ios@3.1.8, lottie-ios@^3.1.8:
   version "3.1.8"
   resolved "https://registry.yarnpkg.com/lottie-ios/-/lottie-ios-3.1.8.tgz#2e9b1f4eae0dfc10bf4c0b3ab6b402c1d590d0fa"
   integrity sha512-9bgiVn1n+zqWjDPTk4MVWXA+DgVa91payxV2jz8B2dsDFqWtjEqTZaaVo5IqNUExsaC5XkRbziExtTOtzd39tQ==
 
-lottie-react-native@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/lottie-react-native/-/lottie-react-native-3.4.0.tgz#df0887cfd2788d30c383c1e4bb0bd7bbd6fb969f"
-  integrity sha512-ErQJiuptd9koH3NppcNbWAOQXTYUS0ZPpcTM1y+A5jqrTSsZviOLt45nl8aQGpKLpmF21/HmJZuInfoKqvYkRg==
+lottie-react-native@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/lottie-react-native/-/lottie-react-native-3.5.0.tgz#749fed964bdc9fabfae24ef81696f90f4d758f59"
+  integrity sha512-yKYj58xynDAG/BqJUhg9LTATBqwD4ATGXJKL2Ho6g4BTmPexOjDBNnPSeRBwjlpBxQ1nP4Qw//0zbuFsTFD1TA==
   dependencies:
     invariant "^2.2.2"
-    lottie-ios "^3.1.3"
+    lottie-ios "^3.1.8"
     prop-types "^15.5.10"
     react-native-safe-modules "^1.0.0"
 

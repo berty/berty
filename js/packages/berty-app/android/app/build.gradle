@@ -287,6 +287,8 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+	implementation project(':lottie-react-native')
 }
 
 // Run this once to be able to run the application with BUCK

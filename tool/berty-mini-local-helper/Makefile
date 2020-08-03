@@ -6,7 +6,7 @@ NAME ?= $(USER)-mini-$(ID)
 
 .PHONY: run
 run:
-	berty $(RUN_OPTS) --display-name=$(NAME) --logformat=$(FORMAT) --logfile=$(TMPDIR)/berty-mini-$(ID).log --debug mini -d $(TMPDIR)/berty-mini-$(ID)
+	berty $(RUN_OPTS) --logformat=$(FORMAT) --logfile=$(TMPDIR)/berty-mini-$(ID).log --debug mini -d $(TMPDIR)/berty-mini-$(ID)
 
 .PHONY: tail
 tail:
@@ -20,7 +20,7 @@ log-stats:
 
 .PHONY: share-qr
 share-qr:
-	berty --display-name=$(NAME) dev share-invite -d $(TMPDIR)/berty-mini-$(ID) --dev-channel
+	berty dev share-invite -d $(TMPDIR)/berty-mini-$(ID) --dev-channel
 
 .PHONY: watch-log-stats
 watch-log-stats:

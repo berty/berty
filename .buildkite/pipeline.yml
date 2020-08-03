@@ -8,6 +8,7 @@ steps:
           workdir: /home/buildkite-agent/go/src/berty.tech/berty
           environment:
             [
+              "BUILDKITE=true",
               "GO111MODULE=off",
               "GOPATH=/home/buildkite-agent/go",
               "HOME=/home/buildkite-agent",

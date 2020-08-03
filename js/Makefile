@@ -178,7 +178,7 @@ ios.storybook: deps packages/storybook-mobile/ios/Pods _storybook.mobile.start
 .PHONY: android.run
 android.run: deps packages/go-bridge/android/libs/gobridge.aar packages/berty-app/node_modules/react-native/react.gradle.orig $(HOME)/.android/debug.keystore
 	$(call check-program, adb)
-	$(eval ANDROID_DEVICE ?= `adb devices | tail +2 | head -1 | cut -f 1`)
+	$(eval ANDROID_DEVICE := `adb devices | tail +2 | head -1 | cut -f 1`)
 	../tool/build/shell/check-java.sh 18
 	adb -s $(ANDROID_DEVICE) reverse tcp:$(BERTY_DAEMON_PORT) tcp:$(BERTY_DAEMON_PORT)
 	cd packages/berty-app && $(react-native) run-android --no-packager --variant=$(APP_TARGET) --deviceId="$(ANDROID_DEVICE)" $(if $(filter-out $(APP_TARGET), store), --appIdSuffix=$(APP_TARGET))

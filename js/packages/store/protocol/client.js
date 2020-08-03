@@ -238,7 +238,7 @@ export const defaultBridgeOpts = {
 	grpcListeners: ['/ip4/127.0.0.1/tcp/0/grpcws'],
 	logLevel: GoLogLevel.debug,
 	poiDebug: true,
-	persistance: true,
+	persistence: true,
 	tracing: true,
 	tracingPrefix: '',
 	localDiscovery: true,

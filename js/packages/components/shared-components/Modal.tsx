@@ -9,7 +9,7 @@ import {
 import { Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/navigation'
-import { BlurView } from '@react-native-community/blur'
+import BlurView from './BlurView'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 //

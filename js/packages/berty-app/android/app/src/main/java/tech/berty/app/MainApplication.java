@@ -11,6 +11,7 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import com.wix.interactable.Interactable;
+import com.airbnb.android.react.lottie.LottiePackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -28,6 +29,7 @@ public class MainApplication extends Application implements ReactApplication {
           // Packages thaxt cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
           packages.add(new Interactable());
+		  packages.add(new LottiePackage());
           return packages;
         }
 

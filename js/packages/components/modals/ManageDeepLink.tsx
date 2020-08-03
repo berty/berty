@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, ActivityIndicator } from 'react-native'
-import { BlurView } from '@react-native-community/blur'
+import BlurView from '../shared-components/BlurView'
 import InvalidScan from './InvalidScan'
 import { Messenger } from '@berty-tech/hooks'
 import { useStyles } from '@berty-tech/styles'

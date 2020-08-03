@@ -27,7 +27,7 @@
     "@berty-tech/components": "^0.0.0",
     "@berty-tech/styles": "^0.0.0",
     "@react-native-community/async-storage": "^1.8.0",
-    "@react-native-community/blur": "^3.3.1",
+    "@react-native-community/blur": "^3.6.0",
     "@react-native-community/eslint-config": "^0.0.5",
     "@react-native-community/masked-view": "^0.1.7",
     "@react-navigation/native": "^5.7.1",
