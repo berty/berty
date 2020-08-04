@@ -13,7 +13,6 @@ const getErrorFromResponse = (method, response) => {
 		}
 
 		if (response.error.grpcErrorCode > 0) {
-
 			const name = grpcErrors.valuesById[response.error.grpcErrorCode]
 			return new Error(`${method.name} error: GRPC_${name}(${response.error.grpcErrorCode})`)
 		}

@@ -168,7 +168,6 @@ func (b *Bridge) InvokeBridgeMethodWithPromiseBlock(promise PromiseBlock, method
 		}
 
 		promise.CallResolve(res)
-		return
 	}()
 }
 

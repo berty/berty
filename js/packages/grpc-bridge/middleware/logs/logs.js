@@ -49,7 +49,6 @@ const create = (name) => (method, call) => async (payload, metadata) => {
 				} else {
 					rpcLogger(name, eventTitle, null, msg, null)
 				}
-
 			})
 		} else {
 			// unary

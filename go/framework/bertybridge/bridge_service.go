@@ -56,7 +56,7 @@ func (s *Service) ClientInvokeUnary(ctx context.Context, req *pb.ClientInvokeUna
 		return res, fmt.Errorf("cannot invoke `ClientInvokeUnary` without a `MethodDesc``")
 	}
 
-	if req.MethodDesc.IsClientStream || req.MethodDesc.IsClientStream {
+	if req.MethodDesc.IsClientStream || req.MethodDesc.IsServerStream {
 		return res, fmt.Errorf("cannot call stream method with `ClientInvokeUnary`")
 	}
 
@@ -149,7 +149,6 @@ func (s *Service) ClientStreamSend(ctx context.Context, req *pb.ClientStreamSend
 	cstream, ok := s.streams[id]
 	s.muStreams.RUnlock()
 	if !ok {
-
 		return nil, fmt.Errorf("invalid stream id")
 	}
 
@@ -291,7 +290,7 @@ func getSerivceError(err error) *pb.Error {
 	}
 
 	if code := errcode.Code(err); code > 0 {
-		errCode = errcode.ErrCode(code)
+		errCode = code
 	} else {
 		errCode = errcode.Undefined
 	}
