@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"sync"
+	"time"
 
 	ggio "github.com/gogo/protobuf/io"
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -12,6 +13,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"go.uber.org/zap"
+	"moul.io/u"
 
 	"berty.tech/berty/v2/go/internal/handshake"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -25,41 +27,8 @@ type pendingRequestDetails struct {
 }
 
 type pendingRequest struct {
-	update     chan *pendingRequestDetails
-	swiper     *Swiper
+	updateCh   chan *pendingRequestDetails
 	cancelFunc context.CancelFunc
-}
-
-func newPendingRequest(ctx context.Context, swiper *Swiper, details *pendingRequestDetails) (*pendingRequest, chan peer.AddrInfo) {
-	ch := make(chan peer.AddrInfo)
-
-	ctx, addedCancel := context.WithCancel(ctx)
-	initUpdateCtx, updateCancel := context.WithCancel(ctx)
-
-	req := &pendingRequest{
-		swiper:     swiper,
-		update:     make(chan *pendingRequestDetails),
-		cancelFunc: addedCancel,
-	}
-
-	go func() {
-		for {
-			select {
-			case details := <-req.update:
-				updateCancel()
-				initUpdateCtx, updateCancel = context.WithCancel(ctx)
-				go req.swiper.WatchTopic(initUpdateCtx, details.contact.PK, details.contact.PublicRendezvousSeed, ch)
-
-			case <-ctx.Done():
-				close(ch)
-				return
-			}
-		}
-	}()
-
-	req.update <- details
-
-	return req, ch
 }
 
 type contactRequestsManager struct {
@@ -160,37 +129,77 @@ func (c *contactRequestsManager) enqueueRequest(contact *bertytypes.ShareableCon
 		return err
 	}
 
-	if pending, ok := c.toAdd[string(contact.PK)]; !ok {
-		pending, ch := newPendingRequest(c.ctx, c.swiper, &pendingRequestDetails{
-			contact:     contact,
-			ownMetadata: ownMetadata,
-		})
-		c.toAdd[string(contact.PK)] = pending
-
-		go func() {
-			for addr := range ch {
-				if err := c.ipfs.Swarm().Connect(c.ctx, addr); err != nil {
-					c.logger.Error("error while connecting with other peer", zap.Error(err))
-					return
-				}
-
-				stream, err := c.ipfs.NewStream(context.TODO(), addr.ID, contactRequestV1)
-				if err != nil {
-					c.logger.Error("error while opening stream with other peer", zap.Error(err))
-					return
-				}
-
-				if err := c.performSend(pk, stream); err != nil {
-					c.logger.Error("unable to perform send", zap.Error(err))
-				}
-			}
-		}()
-	} else {
-		pending.update <- &pendingRequestDetails{
+	// contact already queued
+	if pending, ok := c.toAdd[string(contact.PK)]; ok {
+		pending.updateCh <- &pendingRequestDetails{
 			contact:     contact,
 			ownMetadata: ownMetadata,
 		}
+		return nil
 	}
+
+	swiperCh := make(chan peer.AddrInfo)
+	reqCtx, reqCancel := context.WithCancel(c.ctx)
+	parent := u.NewUniqueChild(context.Background())
+	var wg sync.WaitGroup
+	pending := &pendingRequest{
+		updateCh:   make(chan *pendingRequestDetails),
+		cancelFunc: reqCancel,
+	}
+	go func() {
+		for {
+			select {
+			case details := <-pending.updateCh:
+				wg.Add(1)
+				parent.SetChild(func(ctx context.Context) {
+					c.swiper.WatchTopic(
+						ctx,
+						details.contact.PK,
+						details.contact.PublicRendezvousSeed,
+						swiperCh,
+						wg.Done,
+					)
+				})
+			case <-reqCtx.Done():
+				parent.CloseChild()
+				time.Sleep(10 * time.Millisecond) // avoid races
+				// drain channel
+				go func() {
+					for range swiperCh {
+					}
+				}()
+
+				wg.Wait()
+				close(swiperCh)
+				return
+			}
+		}
+	}()
+	pending.updateCh <- &pendingRequestDetails{
+		contact:     contact,
+		ownMetadata: ownMetadata,
+	}
+	c.toAdd[string(contact.PK)] = pending
+
+	// process addresses from swiper
+	go func() {
+		for addr := range swiperCh {
+			if err := c.ipfs.Swarm().Connect(c.ctx, addr); err != nil {
+				c.logger.Error("error while connecting with other peer", zap.Error(err))
+				return
+			}
+
+			stream, err := c.ipfs.NewStream(context.TODO(), addr.ID, contactRequestV1)
+			if err != nil {
+				c.logger.Error("error while opening stream with other peer", zap.Error(err))
+				return
+			}
+
+			if err := c.performSend(pk, stream); err != nil {
+				c.logger.Error("unable to perform send", zap.Error(err))
+			}
+		}
+	}()
 
 	return nil
 }

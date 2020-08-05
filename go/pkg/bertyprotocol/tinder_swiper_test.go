@@ -160,7 +160,8 @@ func TestAnnounceWatchForPeriod(t *testing.T) {
 			time.Sleep(time.Millisecond * 100)
 
 			ch := make(chan peer.AddrInfo)
-			go swiperB.WatchTopic(ctx, tc.topicB, tc.seedB, ch)
+			doneFn := func() {}
+			go swiperB.WatchTopic(ctx, tc.topicB, tc.seedB, ch, doneFn)
 
 			var foundPeers int
 			for foundPeers = 0; foundPeers < tc.expectedPeersFound; foundPeers++ {

@@ -102,19 +102,19 @@ func (s *Swiper) watchUntilDeadline(ctx context.Context, out chan<- peer.AddrInf
 				zap.String("peer", pe.Peer.ShortString()),
 			)
 			select {
-			case out <- peer.AddrInfo{
-				ID: pe.Peer,
-			}:
 			case <-ctx.Done():
 				return ctx.Err()
+			case out <- peer.AddrInfo{ID: pe.Peer}:
 			}
 		case pubsub.PeerLeave:
 		}
 	}
 }
 
-// watch looks for peers providing a resource
-func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte, out chan<- peer.AddrInfo) {
+// WatchTopic looks for peers providing a resource.
+// 'done' is used to alert parent when everything is done, to avoid data races.
+func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte, out chan<- peer.AddrInfo, done func()) {
+	defer done()
 	for {
 		roundedTime := roundTimePeriod(time.Now(), s.interval)
 		topicForTime := generateRendezvousPointForPeriod(topic, seed, roundedTime)

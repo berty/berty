@@ -32,10 +32,9 @@ func (s *service) GroupMetadataSubscribe(req *bertytypes.GroupMetadataSubscribe_
 					cg.logger.Error("error while sending metadata", zap.Error(err))
 				}
 				return errcode.TODO.Wrap(err)
-			} else {
-				cg.logger.Info("service - metadata store - sent 1 event from log history")
 			}
 
+			cg.logger.Info("service - metadata store - sent 1 event from log history")
 			sentDedup[string(evt.EventContext.ID)] = true
 		}
 	}
