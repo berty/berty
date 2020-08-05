@@ -1,13 +1,13 @@
-import { Messenger } from '@berty-tech/hooks'
-import { messenger } from '@berty-tech/store'
+import React from 'react'
+import { View, TouchableOpacity, Text as TextNative } from 'react-native'
+import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
+import { messenger } from '@berty-tech/store'
+import { Messenger } from '@berty-tech/hooks'
 import Color from 'color'
 import palette from 'google-palette'
-import React from 'react'
-import { View } from 'react-native'
-import { Icon, Text } from 'react-native-ui-kitten'
 import { SHA3 } from 'sha3'
-import { ProceduralCircleAvatar } from '../../shared-components/ProceduralCircleAvatar'
+import { ProceduralCircleAvatar } from '../../shared-components'
 
 const pal = palette('tol-rainbow', 256)
 
@@ -38,6 +38,150 @@ const formatTimestamp = (date: Date) => {
 	return hour
 }
 
+const MessageInvitationButton: React.FC<{
+	onPress?: any
+	activeOpacity: any
+	backgroundColor: any
+	icon: any
+	color: any
+	title: any
+	styleOpacity?: any
+}> = ({ onPress, activeOpacity, backgroundColor, icon, color, title, styleOpacity }) => {
+	const [{ flex, padding, border, width, row, text, opacity }] = useStyles()
+	return (
+		<TouchableOpacity style={[flex.align.center]} activeOpacity={activeOpacity} onPress={onPress}>
+			<View
+				style={[
+					padding.tiny,
+					padding.vertical.small,
+					border.radius.tiny,
+					width(120),
+					row.center,
+					flex.align.center,
+					padding.right.small,
+					{ backgroundColor },
+				]}
+			>
+				<Icon name={icon} width={24} height={24} fill={color} style={[opacity(styleOpacity)]} />
+				<TextNative
+					style={[
+						text.align.center,
+						text.size.scale(14),
+						text.bold.medium,
+						opacity(styleOpacity),
+						{ fontFamily: 'Open Sans', color },
+					]}
+				>
+					{title}
+				</TextNative>
+			</View>
+		</TouchableOpacity>
+	)
+}
+
+const MessageInvitationBody: React.FC<{ message: any; children: any }> = ({
+	message,
+	children,
+}) => {
+	const [{ row, padding, border, flex, text, margin, color, width }] = useStyles()
+	return (
+		<View
+			style={[
+				{ backgroundColor: '#EDEEF8' },
+				padding.medium,
+				width(350),
+				border.radius.scale(10),
+				{ shadowOpacity: 0.1, shadowRadius: 4, shadowOffset: { width: 0, height: 2.5 } },
+			]}
+		>
+			<View style={[flex.tiny, flex.justify.spaceEvenly]}>
+				<View style={[row.left, flex.align.center, flex.justify.center]}>
+					<Icon name='users' width={18} height={18} fill={color.black} pack='custom' />
+					<TextNative
+						style={[
+							text.color.black,
+							text.size.scale(15),
+							margin.left.small,
+							text.bold.medium,
+							{ fontFamily: 'Open Sans' },
+						]}
+					>
+						GROUP INVITATION
+					</TextNative>
+				</View>
+				<View style={[row.left, margin.top.small, flex.align.center, flex.justify.center]}>
+					<ProceduralCircleAvatar seed={message.group.publicKey} size={40} />
+					<TextNative
+						style={[
+							text.color.black,
+							text.size.scale(13),
+							margin.left.small,
+							text.bold.small,
+							{ fontFamily: 'Open Sans' },
+						]}
+					>
+						{message.name}
+					</TextNative>
+				</View>
+				{children}
+			</View>
+		</View>
+	)
+}
+
+export const MessageInvitation: React.FC<{ message: any }> = ({ message }) => {
+	const [{ row, padding, border, flex, text, margin, color, width }] = useStyles()
+	const acceptGroupInvitation = Messenger.useAcceptGroupInvitation()
+	const conv = Messenger.useGetConversation(message.group.publicKey)
+	return (
+		<View
+			style={[row.center, padding.horizontal.medium, margin.bottom.scale(11), { paddingTop: 2 }]}
+		>
+			{message.isMe ? (
+				<MessageInvitationBody message={message}>
+					<View
+						style={[row.center, flex.justify.spaceEvenly, flex.align.center, margin.top.medium]}
+					>
+						<Text style={[text.size.scale(14)]}>
+							You have sent an invitation to join {message.name} !
+						</Text>
+					</View>
+				</MessageInvitationBody>
+			) : (
+				<MessageInvitationBody message={message}>
+					<View
+						style={[row.center, flex.justify.spaceEvenly, flex.align.center, margin.top.medium]}
+					>
+						<MessageInvitationButton
+							onPress={undefined} // TODO: Command to refuse invitation
+							activeOpacity={!conv ? 0.2 : 1}
+							icon='close-outline'
+							color={color.grey}
+							title='REFUSE'
+							backgroundColor={color.white}
+							styleOpacity={0.6}
+						/>
+						<MessageInvitationButton
+							onPress={
+								!conv
+									? () => {
+											acceptGroupInvitation({ message })
+									  }
+									: undefined
+							}
+							activeOpacity={!conv ? 0.2 : 1}
+							icon='checkmark-outline'
+							color={!conv ? color.blue : color.green}
+							title={!conv ? 'ACCEPT' : 'ACCEPTED'}
+							backgroundColor={!conv ? color.light.blue : color.light.green}
+						/>
+					</View>
+				</MessageInvitationBody>
+			)}
+		</View>
+	)
+}
+
 export const Message: React.FC<{
 	id: string
 	convKind: '1to1' | 'multi'
@@ -48,7 +192,7 @@ export const Message: React.FC<{
 	const previousMessage = Messenger.useGetMessage(previousMessageId)
 
 	const _styles = useStylesMessage()
-	const [{ row, margin, padding, column, text, border, color, flex, height, width }] = useStyles()
+	const [{ row, margin, padding, column, text, border, color, width }] = useStyles()
 	if (!message) {
 		return null
 	}
@@ -204,19 +348,7 @@ export const Message: React.FC<{
 			</View>
 		)
 	} else if (message.type === messenger.AppMessageType.GroupInvitation) {
-		return (
-			<View
-				style={[
-					message.isMe ? row.right : row.left,
-					padding.horizontal.medium,
-					padding.vertical.medium,
-				]}
-			>
-				<Text>
-					{message.isMe ? `You invited X to ${message.name}` : `Y invited you to ${message.name}`}
-				</Text>
-			</View>
-		)
+		return <MessageInvitation message={message} />
 	} else {
 		return null
 	}

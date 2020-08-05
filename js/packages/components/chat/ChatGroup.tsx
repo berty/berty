@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
 	TouchableOpacity,
 	View,
@@ -16,8 +16,7 @@ import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { Message } from './shared-components/Message'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { Messenger, Groups } from '@berty-tech/hooks'
-import { useNavigation as useReactNavigation } from '@react-navigation/native'
+import { Messenger } from '@berty-tech/hooks'
 import { messenger } from '@berty-tech/store'
 import { useReadEffect } from '../hooks'
 //
@@ -216,7 +215,12 @@ const MessageList: React.FC<{ id: string }> = ({ id }) => {
 	return (
 		<FlatList
 			keyboardDismissMode='on-drag'
-			style={[overflow, row.item.fill, flex.tiny, { marginTop: 140 * scaleHeight }]}
+			style={[
+				overflow,
+				row.item.fill,
+				flex.tiny,
+				{ marginTop: 140 * scaleHeight, marginBottom: 120 * scaleHeight },
+			]}
 			data={[...conversation.messages].reverse()}
 			inverted
 			ListFooterComponent={<InfosChatGroup {...conversation} />}

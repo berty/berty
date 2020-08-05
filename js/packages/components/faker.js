@@ -12,9 +12,9 @@ export const fakeContacts = (length, start) =>
 		fake: true,
 		request: {
 			type: messenger.contact.ContactRequestType.Outgoing,
-			accepted: false,
+			accepted: true,
 			discarded: false,
-			state: 'initiated',
+			state: 'sent',
 		},
 		addedDate: Date.now(),
 	}))

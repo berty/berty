@@ -2,15 +2,12 @@ import { createSlice } from '@reduxjs/toolkit'
 import { composeReducers } from 'redux-compose'
 import { all, select, takeEvery, put, call, take } from 'redux-saga/effects'
 import * as protocol from '../protocol'
-import { berty } from '@berty-tech/api'
-import { AppMessageType } from './AppMessage'
 import { makeDefaultCommandsSagas, strToBuf, bufToStr, bufToJSON, createCommands } from '../utils'
 import { commands as groupsCommands } from '../groups'
 import {
 	ConversationKind,
 	transactions as conversationTransactions,
 	queries as conversationQueries,
-	events as conversationEvents,
 } from './conversation'
 import * as faker from '../../components/faker'
 
@@ -476,50 +473,6 @@ export function* orchestrator() {
 						publicKey: bufToStr(groupPk),
 						messages: true,
 						metadata: true,
-					}),
-				)
-			}
-		}),
-		takeEvery('protocol/GroupMessageEvent', function* ({ payload }) {
-			console.log('got groupMetadataPayloadSent')
-			if (!payload.message) {
-				return
-			}
-			const event = bufToJSON(payload.message) // <--- Not secure
-			if (
-				event &&
-				event.type === AppMessageType.GroupInvitation &&
-				event.group.groupType === berty.types.v1.GroupType.GroupTypeMultiMember
-			) {
-				console.log('found group invitation')
-
-				const group = {
-					publicKey: strToBuf(event.group.publicKey),
-					secret: strToBuf(event.group.secret),
-					secretSig: strToBuf(event.group.secretSig),
-					groupType: berty.types.v1.GroupType.GroupTypeMultiMember,
-				}
-
-				yield put(
-					conversationEvents.created({
-						kind: ConversationKind.MultiMember,
-						title: event.name,
-						pk: event.group.publicKey,
-						now: Date.now(),
-					}),
-				)
-
-				try {
-					yield* protocol.client.transactions.multiMemberGroupJoin({ group })
-				} catch (e) {
-					console.warn('Failed to join multi-member group:', e)
-				}
-
-				yield put(
-					groupsCommands.subscribe({
-						publicKey: event.group.publicKey,
-						metadata: true,
-						messages: true,
 					}),
 				)
 			}

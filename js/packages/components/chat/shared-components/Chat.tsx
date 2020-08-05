@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react'
-import { TouchableOpacity, View, TextInput } from 'react-native'
+import { TouchableOpacity, SafeAreaView, View, TextInput } from 'react-native'
 import { Icon, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { Messenger } from '@berty-tech/hooks'
 import { messenger } from '@berty-tech/store'
 import BlurView from '../../shared-components/BlurView'
-import { SafeAreaView } from 'react-native-safe-area-context'
+// import { SafeAreaView } from 'react-native-safe-area-context'
 //
 // ChatFooter => Textinput for type message
 //
@@ -49,8 +49,9 @@ export const ChatFooter: React.FC<{
 				<View
 					style={[
 						row.right,
-						padding.medium,
-						_isFocused && padding.bottom.medium,
+						padding.horizontal.medium,
+						padding.top.medium,
+						// _isFocused && padding.bottom.medium,
 						{ alignItems: 'center' },
 					]}
 				>
