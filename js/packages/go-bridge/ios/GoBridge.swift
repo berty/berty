@@ -21,8 +21,8 @@ extension NSDictionary {
 class GoBridge: NSObject {
     static let rnlogger = LoggerDriver("tech.berty", "react")
 
-    // protocol
-    var bridgeProtocol: BertybridgeProtocol?
+    // protocolz
+    var bridgeMessenger: BertybridgeMessengerBridge?
     let rootdir: URL
 
     static func requiresMainQueueSetup() -> Bool {
@@ -39,11 +39,11 @@ class GoBridge: NSObject {
 
     deinit {
       do {
-        if self.bridgeProtocol != nil {
-            NSLog("bflifecycle: calling try self.bridgeProtocol?.close()")
-            try self.bridgeProtocol?.close()
-            NSLog("bflifecycle: done try self.bridgeProtocol?.close()")
-            self.bridgeProtocol = nil
+        if self.bridgeMessenger != nil {
+            NSLog("bflifecycle: calling try self.bridgeMessenger?.close()")
+            try self.bridgeMessenger?.close()
+            NSLog("bflifecycle: done try self.bridgeMessenger?.close()")
+            self.bridgeMessenger = nil
         }
       } catch let error as NSError {
         NSLog("\(String(describing: error.code))")
@@ -82,7 +82,7 @@ class GoBridge: NSObject {
 
     @objc func startProtocol(_ opts: NSDictionary, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
-            if self.bridgeProtocol != nil {
+            if self.bridgeMessenger != nil {
                 throw NSError(domain: "already started", code: 1)
             }
 
@@ -97,7 +97,7 @@ class GoBridge: NSObject {
             let optLocalDiscovery = opts.get(bool: "localDiscovery")
 
             var err: NSError?
-            guard let config = BertybridgeNewProtocolConfig() else {
+            guard let config = BertybridgeNewMessengerConfig() else {
                 throw NSError(domain: "unable to create config", code: 1)
             }
 
@@ -150,14 +150,14 @@ class GoBridge: NSObject {
                 config.disableLocalDiscovery()
             }
 
-            NSLog("bflifecycle: calling BertybridgeNewProtocolBridge")
-            let bridgeProtocol = BertybridgeNewProtocolBridge(config, &err)
-            NSLog("bflifecycle: done BertybridgeNewProtocolBridge")
+            NSLog("bflifecycle: calling BertybridgeNewMessengerBridge")
+            let bridgeMessenger = BertybridgeNewMessengerBridge(config, &err)
+            NSLog("bflifecycle: done BertybridgeNewMessengerBridge")
             if err != nil {
                 throw err!
             }
 
-            self.bridgeProtocol = bridgeProtocol
+            self.bridgeMessenger = bridgeMessenger
 
             resolve(true)
         } catch let error as NSError {
@@ -167,11 +167,11 @@ class GoBridge: NSObject {
 
     @objc func stopProtocol(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
-            if self.bridgeProtocol != nil {
-                NSLog("bflifecycle: calling try self.bridgeProtocol?.close()")
-                try self.bridgeProtocol?.close()
-                NSLog("bflifecycle: done try self.bridgeProtocol?.close()")
-                self.bridgeProtocol = nil
+            if self.bridgeMessenger != nil {
+                NSLog("bflifecycle: calling try self.messengerProtocol?.close()")
+                try self.bridgeMessenger?.close()
+                NSLog("bflifecycle: done try self.bridgeMessenger?.close()")
+                self.bridgeMessenger = nil
             }
             resolve(true)
         } catch let error as NSError {
@@ -181,11 +181,11 @@ class GoBridge: NSObject {
 
     @objc func getProtocolAddr(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
-            guard let bridgeProtocol = self.bridgeProtocol else {
-                throw NSError(domain: "bridgeProtocol isn't started", code: 1)
+            guard let bridgeMessenger = self.bridgeMessenger else {
+                throw NSError(domain: "bridgeMessenger isn't started", code: 1)
             }
 
-            let addr = bridgeProtocol.grpcWebSocketListenerAddr()
+            let addr = bridgeMessenger.grpcWebSocketListenerAddr()
             resolve(addr)
         } catch let error as NSError {
             reject("\(String(describing: error.code))", error.userInfo.description, error)

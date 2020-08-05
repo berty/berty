@@ -15,6 +15,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/gdamore/tcell"
+	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
 	"github.com/rivo/tview"
 	"go.opentelemetry.io/otel/api/kv"
@@ -139,48 +140,49 @@ func (v *groupView) loop(ctx context.Context) {
 
 	// list group message events
 	{
-		var evt *bertytypes.GroupMessageEvent
-
 		req := &bertytypes.GroupMessageList_Request{GroupPK: v.g.PublicKey}
 		cl, err := v.v.client.GroupMessageList(ctx, req)
-		for err == nil {
-			if evt, err = cl.Recv(); err == nil {
-				payload, err := payloadParser(evt.Message)
-				if err != nil {
-					v.messages.Prepend(&historyMessage{
-						messageType: messageTypeMessage,
-						payload:     []byte(err.Error()),
-						sender:      evt.Headers.DevicePK,
-					}, time.Time{})
-
-					continue
-				}
-
-				switch payload.GetType() {
-				case bertymessenger.AppMessageType_Acknowledge:
-					if !bytes.Equal(evt.Headers.DevicePK, v.devicePK) {
-						continue
-					}
-
-					v.acks.Store(payload.(*bertymessenger.PayloadAcknowledge).Target, true)
-
-				case bertymessenger.AppMessageType_UserMessage:
-					receivedAt := time.Unix(0, payload.(*bertymessenger.PayloadUserMessage).SentDate*1000000)
-
-					v.messages.Prepend(&historyMessage{
-						messageType: messageTypeMessage,
-						payload:     []byte(payload.(*bertymessenger.PayloadUserMessage).Body),
-						sender:      evt.Headers.DevicePK,
-						receivedAt:  receivedAt,
-					}, time.Time{})
-
-					v.ack(ctx, evt)
-				}
-			}
+		if err != nil {
+			panic(err)
 		}
 
-		if err != io.EOF {
-			panic(err)
+		for {
+			evt, err := cl.Recv()
+			if err != nil {
+				if err != io.EOF {
+					panic(err)
+				}
+				break
+			}
+
+			am, typ, err := bertymessenger.UnmarshalAppMessage(evt.GetMessage())
+			if err != nil {
+				v.messages.Prepend(&historyMessage{
+					messageType: messageTypeMessage,
+					payload:     []byte(err.Error()),
+					sender:      evt.Headers.DevicePK,
+				}, time.Time{})
+				continue
+			}
+
+			switch typ {
+			case bertymessenger.AppMessage_TypeAcknowledge:
+				if !bytes.Equal(evt.Headers.DevicePK, v.devicePK) {
+					continue
+				}
+				payload := am.(*bertymessenger.AppMessage_Acknowledge)
+				v.acks.Store(payload.Target, true)
+
+			case bertymessenger.AppMessage_TypeUserMessage:
+				payload := am.(*bertymessenger.AppMessage_UserMessage)
+				v.messages.Prepend(&historyMessage{
+					messageType: messageTypeMessage,
+					payload:     []byte(payload.Body),
+					sender:      evt.Headers.DevicePK,
+					receivedAt:  time.Unix(0, payload.SentDate*1000000),
+				}, time.Time{})
+				v.ack(ctx, evt)
+			}
 		}
 	}
 
@@ -232,7 +234,8 @@ func (v *groupView) loop(ctx context.Context) {
 					return
 				}
 
-				payload, err := payloadParser(evt.Message)
+				var am bertymessenger.AppMessage
+				err := proto.Unmarshal(evt.Message, &am)
 				if err != nil {
 					v.messages.Append(&historyMessage{
 						messageType: messageTypeMessage,
@@ -244,21 +247,32 @@ func (v *groupView) loop(ctx context.Context) {
 					continue
 				}
 
-				switch payload.GetType() {
-				case bertymessenger.AppMessageType_Acknowledge:
+				switch am.GetType() {
+				case bertymessenger.AppMessage_TypeAcknowledge:
 					if !bytes.Equal(evt.Headers.DevicePK, v.devicePK) {
 						continue
 					}
-
-					v.acks.Store(payload.(*bertymessenger.PayloadAcknowledge).Target, true)
+					var payload bertymessenger.AppMessage_Acknowledge
+					err := proto.Unmarshal(am.GetPayload(), &payload)
+					if err != nil {
+						v.logger.Error("failed to unmarshal Acknowledge", zap.Error(err))
+					}
+					v.acks.Store(payload.Target, true)
 					continue
 
-				case bertymessenger.AppMessageType_UserMessage:
-					receivedAt := time.Unix(0, payload.(*bertymessenger.PayloadUserMessage).SentDate*1000000)
+				case bertymessenger.AppMessage_TypeUserMessage:
+					var payload bertymessenger.AppMessage_UserMessage
+					err := proto.Unmarshal(am.GetPayload(), &payload)
+					if err != nil {
+						v.logger.Error("failed to unmarshal UserMessage", zap.Error(err))
+						continue
+					}
+
+					receivedAt := time.Unix(0, payload.SentDate*1000000)
 
 					v.messages.Append(&historyMessage{
 						messageType: messageTypeMessage,
-						payload:     []byte(payload.(*bertymessenger.PayloadUserMessage).Body),
+						payload:     []byte(payload.Body),
 						sender:      evt.Headers.DevicePK,
 						receivedAt:  receivedAt,
 					})

@@ -351,6 +351,32 @@ export namespace faker {
 					) => void = (request, callback) => {
 						callback(null, _api.berty.messenger.v1.SystemInfo.Reply.encode({}).finish())
 					}
+
+					export const ConversationStream: (
+						request: _api.berty.messenger.v1.ConversationStream.IRequest,
+						callback: pb.RPCImplCallback,
+					) => void = (request, callback) => {
+						callback(null, _api.berty.messenger.v1.ConversationStream.Reply.encode({}).finish())
+					}
+
+					export const EventStream: (
+						request: _api.berty.messenger.v1.EventStream.IRequest,
+						callback: pb.RPCImplCallback,
+					) => void = (request, callback) => {
+						callback(null, _api.berty.messenger.v1.EventStream.Reply.encode({}).finish())
+					}
+
+					export const ConversationCreate: (
+						request: _api.berty.messenger.v1.ConversationCreate.IRequest,
+						callback: pb.RPCImplCallback,
+					) => void = (request, callback) => {
+						callback(null, _api.berty.messenger.v1.ConversationCreate.Reply.encode({}).finish())
+					}
+
+					export const AccountGet: (
+						request: _api.berty.messenger.v1.AccountGet.IRequest,
+						callback: pb.RPCImplCallback,
+					) => void = (request, callback) => {}
 				}
 			}
 		}

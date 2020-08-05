@@ -226,4 +226,104 @@ export default class MessengerServiceSagaClient {
 			})
 			return close
 		})
+	conversationStream = (requestObj = {}) =>
+		eventChannel((emit) => {
+			const buf = api.berty.messenger.v1.ConversationStream.Request.encode(requestObj).finish()
+			const request = bertymessenger.ConversationStream.Request.deserializeBinary(buf)
+			const { close } = grpc.invoke(MessengerService.ConversationStream, {
+				request,
+				transport: this.transport,
+				host: this.host,
+				onMessage: (message) =>
+					emit(api.berty.messenger.v1.ConversationStream.Reply.decode(message.serializeBinary())),
+				onEnd: (code, msg, trailers) => {
+					if (code !== grpc.Code.OK) {
+						emit(
+							new GRPCError(
+								`GRPC ConversationStream ${
+									grpc.Code[code]
+								} (${code}): ${msg}\nTrailers: ${JSON.stringify(trailers)}`,
+							),
+						)
+					}
+					emit(END)
+				},
+			})
+			return close
+		})
+	eventStream = (requestObj = {}) =>
+		eventChannel((emit) => {
+			const buf = api.berty.messenger.v1.EventStream.Request.encode(requestObj).finish()
+			const request = bertymessenger.EventStream.Request.deserializeBinary(buf)
+			const { close } = grpc.invoke(MessengerService.EventStream, {
+				request,
+				transport: this.transport,
+				host: this.host,
+				onMessage: (message) =>
+					emit(api.berty.messenger.v1.EventStream.Reply.decode(message.serializeBinary())),
+				onEnd: (code, msg, trailers) => {
+					if (code !== grpc.Code.OK) {
+						emit(
+							new GRPCError(
+								`GRPC EventStream ${grpc.Code[code]} (${code}): ${msg}\nTrailers: ${JSON.stringify(
+									trailers,
+								)}`,
+							),
+						)
+					}
+					emit(END)
+				},
+			})
+			return close
+		})
+	conversationCreate = (requestObj = {}) =>
+		eventChannel((emit) => {
+			const buf = api.berty.messenger.v1.ConversationCreate.Request.encode(requestObj).finish()
+			const request = bertymessenger.ConversationCreate.Request.deserializeBinary(buf)
+			const { close } = grpc.invoke(MessengerService.ConversationCreate, {
+				request,
+				transport: this.transport,
+				host: this.host,
+				onMessage: (message) =>
+					emit(api.berty.messenger.v1.ConversationCreate.Reply.decode(message.serializeBinary())),
+				onEnd: (code, msg, trailers) => {
+					if (code !== grpc.Code.OK) {
+						emit(
+							new GRPCError(
+								`GRPC ConversationCreate ${
+									grpc.Code[code]
+								} (${code}): ${msg}\nTrailers: ${JSON.stringify(trailers)}`,
+							),
+						)
+					}
+					emit(END)
+				},
+			})
+			return close
+		})
+	accountGet = (requestObj = {}) =>
+		eventChannel((emit) => {
+			const buf = api.berty.messenger.v1.AccountGet.Request.encode(requestObj).finish()
+			const request = bertymessenger.AccountGet.Request.deserializeBinary(buf)
+			const { close } = grpc.invoke(MessengerService.AccountGet, {
+				request,
+				transport: this.transport,
+				host: this.host,
+				onMessage: (message) =>
+					emit(api.berty.messenger.v1.AccountGet.Reply.decode(message.serializeBinary())),
+				onEnd: (code, msg, trailers) => {
+					if (code !== grpc.Code.OK) {
+						emit(
+							new GRPCError(
+								`GRPC AccountGet ${grpc.Code[code]} (${code}): ${msg}\nTrailers: ${JSON.stringify(
+									trailers,
+								)}`,
+							),
+						)
+					}
+					emit(END)
+				},
+			})
+			return close
+		})
 }

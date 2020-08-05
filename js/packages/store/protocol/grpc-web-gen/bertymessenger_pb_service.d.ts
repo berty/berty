@@ -76,6 +76,42 @@ type MessengerServiceSystemInfo = {
   readonly responseType: typeof bertymessenger_pb.SystemInfo.Reply;
 };
 
+type MessengerServiceConversationStream = {
+  readonly methodName: string;
+  readonly service: typeof MessengerService;
+  readonly requestStream: false;
+  readonly responseStream: true;
+  readonly requestType: typeof bertymessenger_pb.ConversationStream.Request;
+  readonly responseType: typeof bertymessenger_pb.ConversationStream.Reply;
+};
+
+type MessengerServiceEventStream = {
+  readonly methodName: string;
+  readonly service: typeof MessengerService;
+  readonly requestStream: false;
+  readonly responseStream: true;
+  readonly requestType: typeof bertymessenger_pb.EventStream.Request;
+  readonly responseType: typeof bertymessenger_pb.EventStream.Reply;
+};
+
+type MessengerServiceConversationCreate = {
+  readonly methodName: string;
+  readonly service: typeof MessengerService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof bertymessenger_pb.ConversationCreate.Request;
+  readonly responseType: typeof bertymessenger_pb.ConversationCreate.Reply;
+};
+
+type MessengerServiceAccountGet = {
+  readonly methodName: string;
+  readonly service: typeof MessengerService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof bertymessenger_pb.AccountGet.Request;
+  readonly responseType: typeof bertymessenger_pb.AccountGet.Reply;
+};
+
 export class MessengerService {
   static readonly serviceName: string;
   static readonly InstanceShareableBertyID: MessengerServiceInstanceShareableBertyID;
@@ -86,6 +122,10 @@ export class MessengerService {
   static readonly SendMessage: MessengerServiceSendMessage;
   static readonly SendAck: MessengerServiceSendAck;
   static readonly SystemInfo: MessengerServiceSystemInfo;
+  static readonly ConversationStream: MessengerServiceConversationStream;
+  static readonly EventStream: MessengerServiceEventStream;
+  static readonly ConversationCreate: MessengerServiceConversationCreate;
+  static readonly AccountGet: MessengerServiceAccountGet;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -191,6 +231,26 @@ export class MessengerServiceClient {
   systemInfo(
     requestMessage: bertymessenger_pb.SystemInfo.Request,
     callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.SystemInfo.Reply|null) => void
+  ): UnaryResponse;
+  conversationStream(requestMessage: bertymessenger_pb.ConversationStream.Request, metadata?: grpc.Metadata): ResponseStream<bertymessenger_pb.ConversationStream.Reply>;
+  eventStream(requestMessage: bertymessenger_pb.EventStream.Request, metadata?: grpc.Metadata): ResponseStream<bertymessenger_pb.EventStream.Reply>;
+  conversationCreate(
+    requestMessage: bertymessenger_pb.ConversationCreate.Request,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.ConversationCreate.Reply|null) => void
+  ): UnaryResponse;
+  conversationCreate(
+    requestMessage: bertymessenger_pb.ConversationCreate.Request,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.ConversationCreate.Reply|null) => void
+  ): UnaryResponse;
+  accountGet(
+    requestMessage: bertymessenger_pb.AccountGet.Request,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.AccountGet.Reply|null) => void
+  ): UnaryResponse;
+  accountGet(
+    requestMessage: bertymessenger_pb.AccountGet.Request,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.AccountGet.Reply|null) => void
   ): UnaryResponse;
 }
 

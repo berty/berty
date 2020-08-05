@@ -20,12 +20,11 @@ import (
 
 func TestProtocolBridge(t *testing.T) {
 	var (
-		err          error
-		protocol     *Protocol
-		bridgeClient *Client
-		grpcClient   *grpc.ClientConn
-		req, res     []byte
-		//results      [][]byte
+		err             error
+		messengerBridge *MessengerBridge
+		bridgeClient    *Client
+		grpcClient      *grpc.ClientConn
+		req, res        []byte
 	)
 
 	ctx := context.Background()
@@ -33,32 +32,32 @@ func TestProtocolBridge(t *testing.T) {
 	defer cleanup()
 
 	logger := testutil.Logger(t)
-	config := NewProtocolConfig()
+	config := NewMessengerConfig()
 	config.AddGRPCListener("/ip4/127.0.0.1/tcp/0/grpc")
 	config.AddGRPCListener("/ip4/127.0.0.1/tcp/0/grpcweb")
 	config.ipfsCoreAPI(mc.API())
 
-	protocol, err = newProtocolBridge(logger, config)
+	messengerBridge, err = newMessengerBridge(logger, config)
 	require.NoError(t, err)
 
 	defer func() {
-		err = protocol.Close()
-		assert.NoErrorf(t, err, "protocol.Close")
+		err = messengerBridge.Close()
+		assert.NoErrorf(t, err, "messengerBridge.Close")
 	}()
 
 	logger.Info(
 		"listeners",
-		zap.String("gRPC", protocol.GRPCListenerAddr()),
-		zap.String("gRPC web", protocol.GRPCWebListenerAddr()),
+		zap.String("gRPC", messengerBridge.GRPCListenerAddr()),
+		zap.String("gRPC web", messengerBridge.GRPCWebListenerAddr()),
 	)
 
 	// clients
 
-	bridgeClient, err = protocol.NewGRPCClient()
+	bridgeClient, err = messengerBridge.NewGRPCClient()
 	require.NoError(t, err)
 	assert.NotNil(t, bridgeClient)
 
-	grpcClient, err = grpc.Dial(protocol.GRPCListenerAddr(), grpc.WithBlock(), grpc.WithInsecure())
+	grpcClient, err = grpc.Dial(messengerBridge.GRPCListenerAddr(), grpc.WithBlock(), grpc.WithInsecure())
 	require.NoError(t, err)
 
 	// setup unary test
@@ -96,7 +95,7 @@ func TestProtocolBridge(t *testing.T) {
 }
 
 func TestPersistenceProtocol(t *testing.T) {
-	var err error //results      [][]byte
+	var err error
 
 	const n_try = 4
 
@@ -114,13 +113,13 @@ func TestPersistenceProtocol(t *testing.T) {
 	// coreAPI, cleanup := ipfsutil.TestingCoreAPI(ctx, t)
 	// defer cleanup()
 
-	config := NewProtocolConfig()
+	config := NewMessengerConfig()
 	config.RootDirectory(rootdir)
 
 	var node_id_1 p2p_peer.ID
 	var device_pk_1 []byte
 	{
-		protocol, err := newProtocolBridge(logger, config)
+		protocol, err := newMessengerBridge(logger, config)
 		require.NoError(t, err)
 
 		// get grpc client
@@ -148,7 +147,7 @@ func TestPersistenceProtocol(t *testing.T) {
 	var device_pk_2 []byte
 	{
 
-		protocol, err := newProtocolBridge(logger, config)
+		protocol, err := newMessengerBridge(logger, config)
 		require.NoError(t, err)
 
 		// get grpc client

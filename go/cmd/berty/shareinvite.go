@@ -58,7 +58,10 @@ func shareInviteCommand() *ffcli.Command {
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
-			messenger := bertymessenger.New(protocolClient, &bertymessenger.Opts{Logger: opts.logger.Named("messenger"), ProtocolService: protocol})
+			messenger, err := bertymessenger.New(protocolClient, &bertymessenger.Opts{Logger: opts.logger.Named("messenger"), ProtocolService: protocol})
+			if err != nil {
+				return errcode.TODO.Wrap(err)
+			}
 			ret, err := messenger.InstanceShareableBertyID(ctx, &bertymessenger.InstanceShareableBertyID_Request{DisplayName: opts.displayName})
 			if err != nil {
 				return errcode.TODO.Wrap(err)

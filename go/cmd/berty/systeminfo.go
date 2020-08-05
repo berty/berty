@@ -56,7 +56,10 @@ func systemInfoCommand() *ffcli.Command {
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
-			messenger := bertymessenger.New(protocolClient, &bertymessenger.Opts{Logger: opts.logger.Named("messenger"), ProtocolService: protocol})
+			messenger, err := bertymessenger.New(protocolClient, &bertymessenger.Opts{Logger: opts.logger.Named("messenger"), ProtocolService: protocol})
+			if err != nil {
+				return errcode.TODO.Wrap(err)
+			}
 
 			for {
 				ret, err := messenger.SystemInfo(ctx, &bertymessenger.SystemInfo_Request{})

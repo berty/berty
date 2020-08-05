@@ -82,6 +82,42 @@ MessengerService.SystemInfo = {
   responseType: bertymessenger_pb.SystemInfo.Reply
 };
 
+MessengerService.ConversationStream = {
+  methodName: "ConversationStream",
+  service: MessengerService,
+  requestStream: false,
+  responseStream: true,
+  requestType: bertymessenger_pb.ConversationStream.Request,
+  responseType: bertymessenger_pb.ConversationStream.Reply
+};
+
+MessengerService.EventStream = {
+  methodName: "EventStream",
+  service: MessengerService,
+  requestStream: false,
+  responseStream: true,
+  requestType: bertymessenger_pb.EventStream.Request,
+  responseType: bertymessenger_pb.EventStream.Reply
+};
+
+MessengerService.ConversationCreate = {
+  methodName: "ConversationCreate",
+  service: MessengerService,
+  requestStream: false,
+  responseStream: false,
+  requestType: bertymessenger_pb.ConversationCreate.Request,
+  responseType: bertymessenger_pb.ConversationCreate.Reply
+};
+
+MessengerService.AccountGet = {
+  methodName: "AccountGet",
+  service: MessengerService,
+  requestStream: false,
+  responseStream: false,
+  requestType: bertymessenger_pb.AccountGet.Request,
+  responseType: bertymessenger_pb.AccountGet.Reply
+};
+
 exports.MessengerService = MessengerService;
 
 function MessengerServiceClient(serviceHost, options) {
@@ -311,6 +347,146 @@ MessengerServiceClient.prototype.systemInfo = function systemInfo(requestMessage
     callback = arguments[1];
   }
   var client = grpc.unary(MessengerService.SystemInfo, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+MessengerServiceClient.prototype.conversationStream = function conversationStream(requestMessage, metadata) {
+  var listeners = {
+    data: [],
+    end: [],
+    status: []
+  };
+  var client = grpc.invoke(MessengerService.ConversationStream, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onMessage: function (responseMessage) {
+      listeners.data.forEach(function (handler) {
+        handler(responseMessage);
+      });
+    },
+    onEnd: function (status, statusMessage, trailers) {
+      listeners.status.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners.end.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners = null;
+    }
+  });
+  return {
+    on: function (type, handler) {
+      listeners[type].push(handler);
+      return this;
+    },
+    cancel: function () {
+      listeners = null;
+      client.close();
+    }
+  };
+};
+
+MessengerServiceClient.prototype.eventStream = function eventStream(requestMessage, metadata) {
+  var listeners = {
+    data: [],
+    end: [],
+    status: []
+  };
+  var client = grpc.invoke(MessengerService.EventStream, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onMessage: function (responseMessage) {
+      listeners.data.forEach(function (handler) {
+        handler(responseMessage);
+      });
+    },
+    onEnd: function (status, statusMessage, trailers) {
+      listeners.status.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners.end.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners = null;
+    }
+  });
+  return {
+    on: function (type, handler) {
+      listeners[type].push(handler);
+      return this;
+    },
+    cancel: function () {
+      listeners = null;
+      client.close();
+    }
+  };
+};
+
+MessengerServiceClient.prototype.conversationCreate = function conversationCreate(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(MessengerService.ConversationCreate, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+MessengerServiceClient.prototype.accountGet = function accountGet(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(MessengerService.AccountGet, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
