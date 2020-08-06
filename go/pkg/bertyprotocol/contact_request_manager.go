@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"sync"
-	"time"
 
 	ggio "github.com/gogo/protobuf/io"
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -140,7 +139,7 @@ func (c *contactRequestsManager) enqueueRequest(contact *bertytypes.ShareableCon
 
 	swiperCh := make(chan peer.AddrInfo)
 	reqCtx, reqCancel := context.WithCancel(c.ctx)
-	parent := u.NewUniqueChild(c.ctx)
+	parent := u.NewUniqueChild(context.Background())
 	var wg sync.WaitGroup
 	pending := &pendingRequest{
 		updateCh:   make(chan *pendingRequestDetails),
@@ -162,7 +161,6 @@ func (c *contactRequestsManager) enqueueRequest(contact *bertytypes.ShareableCon
 				})
 			case <-reqCtx.Done():
 				parent.CloseChild()
-				time.Sleep(10 * time.Millisecond) // avoid races
 				// drain channel
 				go func() {
 					for range swiperCh {

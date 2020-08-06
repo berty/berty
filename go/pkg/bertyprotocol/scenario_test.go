@@ -109,28 +109,15 @@ func TestScenario_MessageSeveralMultiMemberGroups(t *testing.T) {
 }
 
 func TestScenario_AddContact(t *testing.T) {
-	if os.Getenv("WITH_GOLEAK") == "1" {
-		defer goleak.VerifyNone(t,
-			goleak.IgnoreTopFunction("github.com/syndtr/goleveldb/leveldb.(*DB).mpoolDrain"),           // inherited from one of the imports (init)
-			goleak.IgnoreTopFunction("github.com/ipfs/go-log/writer.(*MirrorWriter).logRoutine"),       // inherited from one of the imports (init)
-			goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-connmgr.(*BasicConnMgr).background"), // inherited from github.com/ipfs/go-ipfs/core.NewNode
-			goleak.IgnoreTopFunction("github.com/jbenet/goprocess/periodic.callOnTicker.func1"),        // inherited from github.com/ipfs/go-ipfs/core.NewNode
-			goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-connmgr.(*decayer).process"),         // inherited from github.com/ipfs/go-ipfs/core.NewNode)
-			goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),                    // inherited from github.com/ipfs/go-ipfs/core.NewNode)
-			goleak.IgnoreTopFunction("github.com/desertbit/timer.timerRoutine"),                        // inherited from github.com/ipfs/go-ipfs/core.NewNode)
-			goleak.IgnoreTopFunction("go.opentelemetry.io/otel/instrumentation/grpctrace.wrapClientStream.func1"),
-			goleak.IgnoreTopFunction("go.opentelemetry.io/otel/instrumentation/grpctrace.StreamClientInterceptor.func1.1"),
-		)
-	}
-
 	cases := []testCase{
 		{"2 clients/connectAll", 2, ConnectAll, false, false, time.Second * 20},
 		{"3 clients/connectAll", 3, ConnectAll, false, false, time.Second * 20},
 		{"3 clients/connectInLine", 3, ConnectInLine, false, false, time.Second * 20},
 		{"5 clients/connectAll", 5, ConnectAll, true, false, time.Second * 30},
 		{"5 clients/connectInLine", 5, ConnectInLine, true, false, time.Second * 30},
-		{"8 clients/connectAll", 8, ConnectAll, true, false, time.Second * 40},
-		{"8 clients/connectInLine", 8, ConnectInLine, true, false, time.Second * 40},
+		{"8 clients/connectAll", 8, ConnectAll, true, false, time.Second * 60},
+		{"8 clients/connectInLine", 8, ConnectInLine, true, false, time.Second * 60},
+		// FIXME: all test cases below
 		// {"10 clients/connectAll", 10, ConnectAll, true, false, time.Second * 60},
 		// {"10 clients/connectInLine", 10, ConnectInLine, true, false, time.Second * 60},
 	}
@@ -141,23 +128,9 @@ func TestScenario_AddContact(t *testing.T) {
 }
 
 func TestScenario_MessageContactGroup(t *testing.T) {
-	if os.Getenv("WITH_GOLEAK") == "1" {
-		defer goleak.VerifyNone(t,
-			goleak.IgnoreTopFunction("github.com/syndtr/goleveldb/leveldb.(*DB).mpoolDrain"),           // inherited from one of the imports (init)
-			goleak.IgnoreTopFunction("github.com/ipfs/go-log/writer.(*MirrorWriter).logRoutine"),       // inherited from one of the imports (init)
-			goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-connmgr.(*BasicConnMgr).background"), // inherited from github.com/ipfs/go-ipfs/core.NewNode
-			goleak.IgnoreTopFunction("github.com/jbenet/goprocess/periodic.callOnTicker.func1"),        // inherited from github.com/ipfs/go-ipfs/core.NewNode
-			goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-connmgr.(*decayer).process"),         // inherited from github.com/ipfs/go-ipfs/core.NewNode)
-			goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),                    // inherited from github.com/ipfs/go-ipfs/core.NewNode)
-			goleak.IgnoreTopFunction("github.com/desertbit/timer.timerRoutine"),                        // inherited from github.com/ipfs/go-ipfs/core.NewNode)
-			goleak.IgnoreTopFunction("go.opentelemetry.io/otel/instrumentation/grpctrace.wrapClientStream.func1"),
-			goleak.IgnoreTopFunction("go.opentelemetry.io/otel/instrumentation/grpctrace.StreamClientInterceptor.func1.1"),
-		)
-	}
-
 	cases := []testCase{
+		{"2 clients/connectAll", 2, ConnectAll, false, true, time.Second * 20},
 		// FIXME: all test cases below
-		// {"2 clients/connectAll", 2, ConnectAll, false, false, time.Second * 20},
 		// {"3 clients/connectAll", 3, ConnectAll, false, false, time.Second * 20},
 		// {"3 clients/connectInLine", 3, ConnectInLine, false, false, time.Second * 20},
 		// {"5 clients/connectAll", 5, ConnectAll, true, false, time.Second * 30},
@@ -229,7 +202,7 @@ func TestScenario_MessageAccountAndMultiMemberGroups(t *testing.T) {
 
 			// Send messages on account group
 			messages = []string{"account1", "account2", "account3"}
-			sendMessageOnGroup(ctx, t, tps, tps, config.AccountGroupPK, messages)
+			sendMessageOnGroup(ctx, t, []*TestingProtocol{account}, []*TestingProtocol{account}, config.AccountGroupPK, messages)
 		}
 
 		t.Log("===== Send Messages again on MultiMember Group =====")
@@ -272,7 +245,7 @@ func TestScenario_MessageAccountAndContactGroups(t *testing.T) {
 
 			// Send messages on account group
 			messages = []string{"account1", "account2", "account3"}
-			sendMessageOnGroup(ctx, t, tps, tps, config.AccountGroupPK, messages)
+			sendMessageOnGroup(ctx, t, []*TestingProtocol{account}, []*TestingProtocol{account}, config.AccountGroupPK, messages)
 		}
 
 		t.Log("===== Send Messages again on Contact Group =====")
@@ -295,6 +268,20 @@ func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
 		tracerName = "TestingScenario"
 	}
 	tr := tracer.NewTestingProvider(t, tracerName).Tracer("testing")
+
+	if os.Getenv("WITH_GOLEAK") == "1" {
+		defer goleak.VerifyNone(t,
+			goleak.IgnoreTopFunction("github.com/syndtr/goleveldb/leveldb.(*DB).mpoolDrain"),           // inherited from one of the imports (init)
+			goleak.IgnoreTopFunction("github.com/ipfs/go-log/writer.(*MirrorWriter).logRoutine"),       // inherited from one of the imports (init)
+			goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-connmgr.(*BasicConnMgr).background"), // inherited from github.com/ipfs/go-ipfs/core.NewNode
+			goleak.IgnoreTopFunction("github.com/jbenet/goprocess/periodic.callOnTicker.func1"),        // inherited from github.com/ipfs/go-ipfs/core.NewNode
+			goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-connmgr.(*decayer).process"),         // inherited from github.com/ipfs/go-ipfs/core.NewNode)
+			goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),                    // inherited from github.com/ipfs/go-ipfs/core.NewNode)
+			goleak.IgnoreTopFunction("github.com/desertbit/timer.timerRoutine"),                        // inherited from github.com/ipfs/go-ipfs/core.NewNode)
+			goleak.IgnoreTopFunction("go.opentelemetry.io/otel/instrumentation/grpctrace.wrapClientStream.func1"),
+			goleak.IgnoreTopFunction("go.opentelemetry.io/otel/instrumentation/grpctrace.StreamClientInterceptor.func1.1"),
+		)
+	}
 
 	for _, tc := range tcs {
 		t.Run(tc.Name, func(t *testing.T) {
