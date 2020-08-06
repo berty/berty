@@ -17,7 +17,9 @@ import (
 )
 
 func TestServiceInstanceShareableBertyID(t *testing.T) {
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: testutil.Logger(t)})
 	defer cleanup()
 
@@ -95,7 +97,9 @@ func TestServiceParseDeepLink(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ctx := context.Background()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
 			service, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: testutil.Logger(t)})
 			defer cleanup()
 
@@ -118,7 +122,9 @@ func TestServiceParseDeepLink(t *testing.T) {
 }
 
 func TestServiceSendContactRequest(t *testing.T) {
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: testutil.Logger(t)})
 	defer cleanup()
 
@@ -139,7 +145,9 @@ func TestServiceSendContactRequest(t *testing.T) {
 }
 
 func TestSystemInfo(t *testing.T) {
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: testutil.Logger(t)})
 	defer cleanup()
 
@@ -177,7 +185,8 @@ func testParseSharedGroup(t *testing.T, g *bertytypes.Group, name string, ret *S
 }
 
 func TestServiceShareableBertyGroup(t *testing.T) {
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
 	var protocol *bertyprotocol.TestingProtocol
 	protocol, cleanup := bertyprotocol.NewTestingProtocol(ctx, t, nil)

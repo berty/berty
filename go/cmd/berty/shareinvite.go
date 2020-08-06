@@ -44,17 +44,16 @@ func shareInviteCommand() *ffcli.Command {
 				deviceDS := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
 				opts := bertyprotocol.Opts{
 					Logger:         opts.logger.Named("bertyprotocol"),
-					RootContext:    ctx,
 					RootDatastore:  rootDS,
 					DeviceKeystore: bertyprotocol.NewDeviceKeystore(deviceDS),
 				}
-				protocol, err = bertyprotocol.New(opts)
+				protocol, err = bertyprotocol.New(ctx, opts)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
 				defer protocol.Close()
 			}
-			protocolClient, err := bertyprotocol.NewClient(protocol)
+			protocolClient, err := bertyprotocol.NewClient(ctx, protocol)
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}

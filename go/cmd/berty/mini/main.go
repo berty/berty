@@ -134,19 +134,18 @@ func newService(ctx context.Context, logger *zap.Logger, opts *Opts) (bertyproto
 	}
 
 	if opts.POIDebug {
-		ipfsutil.EnableConnLogger(logger, node.PeerHost)
+		ipfsutil.EnableConnLogger(ctx, logger, node.PeerHost)
 	}
 
 	mk := bertyprotocol.NewMessageKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("messages")))
 	ks := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
 	orbitdbDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))
-	service, err := bertyprotocol.New(bertyprotocol.Opts{
+	service, err := bertyprotocol.New(ctx, bertyprotocol.Opts{
 		Logger:          logger.Named("protocol"),
 		PubSub:          ps,
 		TinderDriver:    disc,
 		IpfsCoreAPI:     api,
 		DeviceKeystore:  bertyprotocol.NewDeviceKeystore(ks),
-		RootContext:     ctx,
 		RootDatastore:   rootDS,
 		MessageKeystore: mk,
 		OrbitCache:      bertyprotocol.NewOrbitDatastoreCache(orbitdbDS),
@@ -191,8 +190,9 @@ func Main(ctx context.Context, opts *Opts) error {
 			grpc.UnaryInterceptor(grpc_trace.UnaryServerInterceptor(trServer)),
 			grpc.StreamInterceptor(grpc_trace.StreamServerInterceptor(trServer)),
 		)
+		defer grpcServer.Stop()
 
-		protocolClient, err := bertyprotocol.NewClientFromServer(grpcServer, service, clientOpts...)
+		protocolClient, err := bertyprotocol.NewClientFromServer(ctx, grpcServer, service, clientOpts...)
 		if err != nil {
 			return errcode.TODO.Wrap(err)
 		}

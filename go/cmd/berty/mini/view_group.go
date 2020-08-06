@@ -228,7 +228,7 @@ func (v *groupView) loop(ctx context.Context) {
 					v.messages.Append(&historyMessage{
 						messageType: messageTypeMessage,
 						payload:     []byte(err.Error()),
-						sender:      evt.Headers.DevicePK,
+						sender:      nil,
 					})
 					v.addBadge()
 					return

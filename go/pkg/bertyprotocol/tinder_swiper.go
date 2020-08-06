@@ -89,9 +89,9 @@ func (s *Swiper) watchUntilDeadline(ctx context.Context, out chan<- peer.AddrInf
 
 	s.logger.Debug("start watch event handler")
 	for {
-		pe, err := te.NextPeerEvent(ctx)
-		if err != nil {
-			return err
+		pe, _ := te.NextPeerEvent(ctx)
+		if ctx.Err() != nil {
+			return ctx.Err()
 		}
 
 		s.logger.Debug("event received")
@@ -101,52 +101,50 @@ func (s *Swiper) watchUntilDeadline(ctx context.Context, out chan<- peer.AddrInf
 				zap.String("topic", topic),
 				zap.String("peer", pe.Peer.ShortString()),
 			)
-			out <- peer.AddrInfo{
-				ID: pe.Peer,
+			select {
+			case <-ctx.Done():
+				return ctx.Err()
+			case out <- peer.AddrInfo{ID: pe.Peer}:
 			}
 		case pubsub.PeerLeave:
 		}
 	}
 }
 
-// watch looks for peers providing a resource
-func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte) chan peer.AddrInfo {
-	out := make(chan peer.AddrInfo)
-
-	go func() {
-		for {
-			roundedTime := roundTimePeriod(time.Now(), s.interval)
-			topicForTime := generateRendezvousPointForPeriod(topic, seed, roundedTime)
-			periodEnd := nextTimePeriod(roundedTime, s.interval)
-			err := s.watchUntilDeadline(ctx, out, string(topicForTime), periodEnd)
-			switch err {
-			case nil:
-			case context.DeadlineExceeded, context.Canceled:
-				s.logger.Debug("watch until deadline", zap.Error(err))
-			default:
-				s.logger.Error("watch until deadline", zap.Error(err))
-			}
-
-			select {
-			case <-ctx.Done():
-				close(out)
-				return
-			default:
-			}
+// WatchTopic looks for peers providing a resource.
+// 'done' is used to alert parent when everything is done, to avoid data races.
+func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte, out chan<- peer.AddrInfo, done func()) {
+	defer done()
+	for {
+		roundedTime := roundTimePeriod(time.Now(), s.interval)
+		topicForTime := generateRendezvousPointForPeriod(topic, seed, roundedTime)
+		periodEnd := nextTimePeriod(roundedTime, s.interval)
+		err := s.watchUntilDeadline(ctx, out, string(topicForTime), periodEnd)
+		switch err {
+		case nil:
+		case context.DeadlineExceeded, context.Canceled:
+			s.logger.Debug("watch until deadline", zap.Error(err))
+		default:
+			s.logger.Error("watch until deadline", zap.Error(err))
 		}
-	}()
 
-	return out
+		select {
+		case <-ctx.Done():
+			return
+		default:
+		}
+	}
 }
 
 // watch looks for peers providing a resource
 func (s *Swiper) Announce(ctx context.Context, topic, seed []byte) {
-	ctx, cancel := context.WithCancel(ctx)
 	var currentTopic string
-
 	s.logger.Debug("start watch announce")
+
 	go func() {
+		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
+
 		for {
 			if currentTopic != "" {
 				if err := s.topicLeave(currentTopic); err != nil {

@@ -9,20 +9,13 @@ import (
 	"strings"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/config"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
-	"berty.tech/berty/v2/go/internal/tinder"
-	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	badger_opts "github.com/dgraph-io/badger/options"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	datastore "github.com/ipfs/go-datastore"
+	"github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_badger "github.com/ipfs/go-ds-badger"
 	"github.com/ipfs/go-ipfs/core"
@@ -30,7 +23,7 @@ import (
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
-	peerstore "github.com/libp2p/go-libp2p-core/peerstore"
+	"github.com/libp2p/go-libp2p-core/peerstore"
 	"github.com/libp2p/go-libp2p-core/routing"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -44,6 +37,14 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
+
+	"berty.tech/berty/v2/go/internal/config"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
+	"berty.tech/berty/v2/go/internal/tinder"
+	"berty.tech/berty/v2/go/internal/tracer"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 var (
@@ -64,7 +65,8 @@ type MessengerBridge struct {
 	msngrDB          *gorm.DB
 
 	// protocol datastore
-	ds datastore.Batching
+	ds             datastore.Batching
+	protocolClient bertyprotocol.Client
 }
 
 type MessengerConfig struct {
@@ -139,19 +141,22 @@ func NewMessengerBridge(config *MessengerConfig) (*MessengerBridge, error) {
 		}
 	}
 
-	return newMessengerBridge(logger, config)
+	return newMessengerBridge(context.Background(), logger, config)
 }
 
-func newMessengerBridge(logger *zap.Logger, config *MessengerConfig) (*MessengerBridge, error) {
-	ctx := context.Background()
+func newMessengerBridge(ctx context.Context, logger *zap.Logger, config *MessengerConfig) (*MessengerBridge, error) {
+	return newProtocolBridge(ctx, logger, config)
+}
 
+func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *MessengerConfig) (*MessengerBridge, error) {
 	// setup coreapi if needed
 	var (
-		api  ipfsutil.ExtendedCoreAPI
-		node *core.IpfsNode
-		ps   *pubsub.PubSub
-		repo ipfs_repo.Repo
-		disc tinder.Driver
+		protocolClient bertyprotocol.Client
+		api            ipfsutil.ExtendedCoreAPI
+		node           *core.IpfsNode
+		ps             *pubsub.PubSub
+		repo           ipfs_repo.Repo
+		disc           tinder.Driver
 	)
 
 	{
@@ -232,7 +237,7 @@ func newMessengerBridge(logger *zap.Logger, config *MessengerConfig) (*Messenger
 			ipfsutil.ServeHTTPWebui(logger)
 
 			if config.poiDebug {
-				ipfsutil.EnableConnLogger(logger, node.PeerHost)
+				ipfsutil.EnableConnLogger(ctx, logger, node.PeerHost)
 			}
 		}
 	}
@@ -279,7 +284,7 @@ func newMessengerBridge(logger *zap.Logger, config *MessengerConfig) (*Messenger
 			protocolOpts.Host = node.PeerHost
 		}
 
-		service, err = bertyprotocol.New(protocolOpts)
+		service, err = bertyprotocol.New(ctx, protocolOpts)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -300,7 +305,7 @@ func newMessengerBridge(logger *zap.Logger, config *MessengerConfig) (*Messenger
 		}
 
 		// setup grpc with zap
-		grpc_zap.ReplaceGrpcLoggerV2(grpcLogger)
+		// grpc_zap.ReplaceGrpcLoggerV2(grpcLogger)
 
 		trServer := tracer.New("grpc-server")
 		serverOpts := []grpc.ServerOption{
@@ -325,8 +330,11 @@ func newMessengerBridge(logger *zap.Logger, config *MessengerConfig) (*Messenger
 	// register messenger service
 	var messenger bertymessenger.Service
 	var db *gorm.DB
+
 	{
-		protocolClient, err := bertyprotocol.NewClient(service)
+		var err error
+		protocolClient, err = bertyprotocol.NewClient(ctx, service)
+
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -358,7 +366,7 @@ func newMessengerBridge(logger *zap.Logger, config *MessengerConfig) (*Messenger
 	{
 		var err error
 
-		bridge, err = newBridge(grpcServer, logger, config.Config)
+		bridge, err = newBridge(ctx, grpcServer, logger, config.Config)
 		if err != nil {
 			return nil, err
 		}
@@ -371,6 +379,7 @@ func newMessengerBridge(logger *zap.Logger, config *MessengerConfig) (*Messenger
 		ds:               rootds,
 		messengerService: messenger,
 		msngrDB:          db,
+		protocolClient:   protocolClient,
 	}, nil
 }
 
@@ -392,6 +401,8 @@ func (p *MessengerBridge) Close() error {
 	if err = p.protocolService.Close(); err != nil {
 		errs = multierr.Append(errs, err)
 	}
+
+	p.protocolClient.Close()
 
 	if p.node != nil {
 		p.node.Close()

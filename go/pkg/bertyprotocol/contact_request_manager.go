@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"sync"
-	"time"
 
 	ggio "github.com/gogo/protobuf/io"
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -13,6 +12,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"go.uber.org/zap"
+	"moul.io/u"
 
 	"berty.tech/berty/v2/go/internal/handshake"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -20,78 +20,14 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
-type pendingRequest struct {
-	cancel      context.CancelFunc
+type pendingRequestDetails struct {
 	contact     *bertytypes.ShareableContact
-	lock        sync.RWMutex
-	ch          chan peer.AddrInfo
-	swiper      *Swiper
 	ownMetadata []byte
 }
 
-func (p *pendingRequest) update(ctx context.Context, contact *bertytypes.ShareableContact, ownMetadata []byte) {
-	p.lock.RLock()
-	currentContact := p.contact
-	p.lock.RUnlock()
-
-	if currentContact != nil && bytes.Equal(currentContact.PublicRendezvousSeed, contact.PublicRendezvousSeed) {
-		return
-	}
-
-	p.lock.Lock()
-	if p.cancel != nil {
-		p.cancel()
-	}
-
-	p.contact = contact
-	p.ownMetadata = ownMetadata
-	ctx, p.cancel = context.WithCancel(ctx)
-
-	p.lock.Unlock()
-
-	p.swiper.logger.Info("enqueued request updated")
-
-	for addr := range p.swiper.WatchTopic(ctx, contact.PK, contact.PublicRendezvousSeed) {
-		p.swiper.logger.Info("get peer on topic")
-		p.lock.Lock()
-
-		p.swiper.logger.Info("sending them")
-		if ctx.Err() == nil {
-			p.swiper.logger.Info("sending them ok")
-
-			select {
-			case p.ch <- addr:
-			case <-time.After(time.Second):
-				fmt.Println("timed out")
-			}
-		}
-		p.lock.Unlock()
-	}
-}
-
-func (p *pendingRequest) Close() error {
-	p.lock.Lock()
-	close(p.ch)
-	if p.cancel != nil {
-		p.cancel()
-	}
-
-	p.lock.Unlock()
-
-	return nil
-}
-
-func newPendingRequest(ctx context.Context, swiper *Swiper, contact *bertytypes.ShareableContact, ownMetadata []byte) (*pendingRequest, chan peer.AddrInfo) {
-	ch := make(chan peer.AddrInfo)
-	p := &pendingRequest{
-		ch:          ch,
-		swiper:      swiper,
-		ownMetadata: ownMetadata,
-	}
-
-	go p.update(ctx, contact, ownMetadata)
-
-	return p, ch
+type pendingRequest struct {
+	updateCh   chan *pendingRequestDetails
+	cancelFunc context.CancelFunc
 }
 
 type contactRequestsManager struct {
@@ -165,10 +101,7 @@ func (c *contactRequestsManager) metadataRequestSent(evt *bertytypes.GroupMetada
 	}
 
 	if request, ok := c.toAdd[string(e.ContactPK)]; ok {
-		if err := request.Close(); err != nil {
-			c.logger.Warn("error while closing request", zap.Error(err))
-		}
-
+		request.cancelFunc()
 		delete(c.toAdd, string(e.ContactPK))
 	}
 
@@ -182,10 +115,7 @@ func (c *contactRequestsManager) metadataRequestReceived(evt *bertytypes.GroupMe
 	}
 
 	if request, ok := c.toAdd[string(e.ContactPK)]; ok {
-		if err := request.Close(); err != nil {
-			c.logger.Warn("error while closing request", zap.Error(err))
-		}
-
+		request.cancelFunc()
 		delete(c.toAdd, string(e.ContactPK))
 	}
 
@@ -198,31 +128,76 @@ func (c *contactRequestsManager) enqueueRequest(contact *bertytypes.ShareableCon
 		return err
 	}
 
+	// contact already queued
 	if pending, ok := c.toAdd[string(contact.PK)]; ok {
-		go pending.update(c.ctx, contact, ownMetadata)
-	} else {
-		toAdd, ch := newPendingRequest(c.ctx, c.swiper, contact, ownMetadata)
-		c.toAdd[string(contact.PK)] = toAdd
-
-		for addr := range ch {
-			go func(pk crypto.PubKey, addr peer.AddrInfo) {
-				if err := c.ipfs.Swarm().Connect(c.ctx, addr); err != nil {
-					c.logger.Error("error while connecting with other peer", zap.Error(err))
-					return
-				}
-
-				stream, err := c.ipfs.NewStream(context.TODO(), addr.ID, contactRequestV1)
-				if err != nil {
-					c.logger.Error("error while opening stream with other peer", zap.Error(err))
-					return
-				}
-
-				if err := c.performSend(pk, stream); err != nil {
-					c.logger.Error("unable to perform send", zap.Error(err))
-				}
-			}(pk, addr)
+		pending.updateCh <- &pendingRequestDetails{
+			contact:     contact,
+			ownMetadata: ownMetadata,
 		}
+		return nil
 	}
+
+	swiperCh := make(chan peer.AddrInfo)
+	reqCtx, reqCancel := context.WithCancel(c.ctx)
+	parent := u.NewUniqueChild(context.Background())
+	var wg sync.WaitGroup
+	pending := &pendingRequest{
+		updateCh:   make(chan *pendingRequestDetails),
+		cancelFunc: reqCancel,
+	}
+	go func() {
+		for {
+			select {
+			case details := <-pending.updateCh:
+				wg.Add(1)
+				parent.SetChild(func(ctx context.Context) {
+					c.swiper.WatchTopic(
+						ctx,
+						details.contact.PK,
+						details.contact.PublicRendezvousSeed,
+						swiperCh,
+						wg.Done,
+					)
+				})
+			case <-reqCtx.Done():
+				parent.CloseChild()
+				// drain channel
+				go func() {
+					for range swiperCh {
+					}
+				}()
+
+				wg.Wait()
+				close(swiperCh)
+				return
+			}
+		}
+	}()
+	pending.updateCh <- &pendingRequestDetails{
+		contact:     contact,
+		ownMetadata: ownMetadata,
+	}
+	c.toAdd[string(contact.PK)] = pending
+
+	// process addresses from swiper
+	go func() {
+		for addr := range swiperCh {
+			if err := c.ipfs.Swarm().Connect(c.ctx, addr); err != nil {
+				c.logger.Error("error while connecting with other peer", zap.Error(err))
+				return
+			}
+
+			stream, err := c.ipfs.NewStream(context.TODO(), addr.ID, contactRequestV1)
+			if err != nil {
+				c.logger.Error("error while opening stream with other peer", zap.Error(err))
+				return
+			}
+
+			if err := c.performSend(pk, stream); err != nil {
+				c.logger.Error("unable to perform send", zap.Error(err))
+			}
+		}
+	}()
 
 	return nil
 }
@@ -344,6 +319,14 @@ func (c *contactRequestsManager) performSend(otherPK crypto.PubKey, stream netwo
 			c.logger.Warn("error while closing stream with other peer", zap.Error(err))
 		}
 	}()
+
+	c.lock.Lock()
+	if c.metadataStore.checkContactStatus(otherPK, bertytypes.ContactStateAdded) {
+		// Nothing to do, contact has already been requested
+		c.lock.Unlock()
+		return nil
+	}
+	c.lock.Unlock()
 
 	_, contact := c.metadataStore.GetIncomingContactRequestsStatus()
 	if contact == nil {

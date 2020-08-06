@@ -83,7 +83,8 @@ func TestInvalidRequesterHello(t *testing.T) {
 			defer p2phelpers.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
-			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterHello, errcode.ErrStreamRead})
+			require.Contains(t, errcode.Codes(err), errcode.ErrHandshakeRequesterHello)
+			require.Contains(t, errcode.Codes(err), errcode.ErrStreamRead)
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)

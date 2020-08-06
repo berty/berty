@@ -1,9 +1,10 @@
 package ipfsutil
 
 import (
+	"context"
 	"time"
 
-	host "github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	ma "github.com/multiformats/go-multiaddr"
@@ -21,11 +22,18 @@ type connLogger struct {
 	logger *zap.Logger
 }
 
-func EnableConnLogger(logger *zap.Logger, h host.Host) {
-	h.Network().Notify(&connLogger{
+func EnableConnLogger(ctx context.Context, logger *zap.Logger, h host.Host) {
+	notifee := &connLogger{
 		host:   h,
 		logger: logger.Named("conn_logger"),
-	})
+	}
+
+	h.Network().Notify(notifee)
+
+	go func() {
+		<-ctx.Done()
+		h.Network().StopNotify(notifee)
+	}()
 }
 
 func (cl *connLogger) getPeerTags(p peer.ID) []string {

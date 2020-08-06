@@ -1,7 +1,6 @@
 package mc
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -42,7 +41,7 @@ func HandleFoundPeer(sRemotePID string) bool {
 		// Async connect so HandleFoundPeer can return and unlock the native driver.
 		// Needed to read and write during the connect handshake.
 		go func() {
-			err := gListener.transport.host.Connect(context.Background(), peer.AddrInfo{
+			err := gListener.transport.host.Connect(gListener.ctx, peer.AddrInfo{
 				ID:    remotePID,
 				Addrs: []ma.Multiaddr{remoteMa},
 			})

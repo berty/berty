@@ -49,7 +49,7 @@ type Bridge struct {
 }
 
 // newBridge is the main entrypoint for gomobile and should only take simple configuration as argument
-func newBridge(s *grpc.Server, logger *zap.Logger, config *Config) (*Bridge, error) {
+func newBridge(ctx context.Context, s *grpc.Server, logger *zap.Logger, config *Config) (*Bridge, error) {
 	if config == nil {
 		config = NewConfig()
 	}
@@ -69,7 +69,9 @@ func newBridge(s *grpc.Server, logger *zap.Logger, config *Config) (*Bridge, err
 		<-b.cclose
 		return errcode.ErrBridgeInterrupted
 	}, func(error) {
-		b.once.Do(func() { close(b.cclose) })
+		b.once.Do(func() {
+			close(b.cclose)
+		})
 	})
 
 	// setup grpc listeners
@@ -89,7 +91,7 @@ func newBridge(s *grpc.Server, logger *zap.Logger, config *Config) (*Bridge, err
 	}
 
 	// setup lazy grpc listener
-	bl := grpcutil.NewBufListener(ClientBufferSize)
+	bl := grpcutil.NewBufListener(ctx, ClientBufferSize)
 	b.workers.Add(func() error {
 		return b.grpcServer.Serve(bl)
 	}, func(error) {
@@ -129,13 +131,17 @@ func (b *Bridge) GetGRPCAddrFor(protos string) string {
 }
 
 // NewGRPCClient return client service on success
-func (b *Bridge) NewGRPCClient() (client *Client, err error) {
+func (b *Bridge) NewGRPCClient() (client *Client, cleanup func(), err error) {
 	var grpcClient *grpc.ClientConn
 	if grpcClient, err = b.bufListener.NewClientConn(); err != nil {
 		return
 	}
 
 	client = &Client{grpcClient}
+	cleanup = func() {
+		_ = client.Close()
+	}
+
 	return
 }
 
@@ -160,6 +166,9 @@ func (b *Bridge) Close() (err error) {
 	case <-ctx.Done():
 		err = ctx.Err()
 	}
+
+	b.grpcServer.Stop()
+	b.bufListener.Close()
 
 	if !errcode.Is(err, errcode.ErrBridgeInterrupted) {
 		return errcode.TODO.Wrap(err)

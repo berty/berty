@@ -2,6 +2,10 @@ package bertyprotocol
 
 import (
 	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/pkg/errcode"
+
+	"context"
+
 	"google.golang.org/grpc"
 )
 
@@ -16,19 +20,43 @@ type Client interface {
 type client struct {
 	ProtocolServiceClient
 
-	l *grpcutil.BufListener
+	l  *grpcutil.BufListener
+	cc *grpc.ClientConn
+}
+
+type embeddedClient struct {
+	Client
+	server *grpc.Server
 }
 
 func (c *client) Close() error {
+	c.cc.Close()
 	return c.l.Close()
 }
 
-func NewClient(svc Service, opts ...grpc.ServerOption) (Client, error) {
-	return NewClientFromServer(grpc.NewServer(opts...), svc)
+func (c *embeddedClient) Close() error {
+	_ = c.Client.Close()
+	c.server.Stop()
+
+	return nil
 }
 
-func NewClientFromServer(s *grpc.Server, svc Service, opts ...grpc.DialOption) (Client, error) {
-	bl := grpcutil.NewBufListener(ClientBufferSize)
+func NewClient(ctx context.Context, svc Service, opts ...grpc.ServerOption) (Client, error) {
+	s := grpc.NewServer(opts...)
+
+	c, err := NewClientFromServer(ctx, s, svc)
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	return &embeddedClient{
+		Client: c,
+		server: s,
+	}, nil
+}
+
+func NewClientFromServer(ctx context.Context, s *grpc.Server, svc Service, opts ...grpc.DialOption) (Client, error) {
+	bl := grpcutil.NewBufListener(ctx, ClientBufferSize)
 	cc, err := bl.NewClientConn(opts...)
 	if err != nil {
 		return nil, err
@@ -37,13 +65,14 @@ func NewClientFromServer(s *grpc.Server, svc Service, opts ...grpc.DialOption) (
 	RegisterProtocolServiceServer(s, svc)
 	go func() {
 		err := s.Serve(bl)
-		if err != nil && err.Error() != "closed" {
+		if err != nil && !(err == grpc.ErrServerStopped || err.Error() == "closed") {
 			panic(err)
 		}
 	}()
 
 	c := client{
 		ProtocolServiceClient: NewProtocolServiceClient(cc),
+		cc:                    cc,
 		l:                     bl,
 	}
 	return &c, nil

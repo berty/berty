@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"os"
 	"runtime"
 	"strings"
 	"sync"
@@ -13,13 +14,16 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/internal/tracer"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/goleak"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/internal/tracer"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 type testCase struct {
@@ -106,42 +110,35 @@ func TestScenario_MessageSeveralMultiMemberGroups(t *testing.T) {
 
 func TestScenario_AddContact(t *testing.T) {
 	cases := []testCase{
-		// FIXME: all test cases below (see TODO below)
-		{"2 clients/connectAll", 2, ConnectAll, false, false, time.Second * 10},
-		// {"3 clients/connectAll", 3, ConnectAll, false, true, time.Second * 10},
-		// {"3 clients/connectInLine", 3, ConnectInLine, false, true, time.Second * 10},
-		// {"5 clients/connectAll", 5, ConnectAll, true, true, time.Second * 10},
-		// {"5 clients/connectInLine", 5, ConnectInLine, true, true, time.Second * 10},
-		// {"8 clients/connectAll", 8, ConnectAll, true, true, time.Second * 10},
-		// {"8 clients/connectInLine", 8, ConnectInLine, true, true, time.Second * 10},
-		// {"10 clients/connectAll", 10, ConnectAll, true, true, time.Second * 10},
-		// {"10 clients/connectInLine", 10, ConnectInLine, true, true, time.Second * 10},
+		{"2 clients/connectAll", 2, ConnectAll, false, false, time.Second * 20},
+		{"3 clients/connectAll", 3, ConnectAll, false, false, time.Second * 20},
+		{"3 clients/connectInLine", 3, ConnectInLine, false, false, time.Second * 20},
+		{"5 clients/connectAll", 5, ConnectAll, true, false, time.Second * 30},
+		{"5 clients/connectInLine", 5, ConnectInLine, true, false, time.Second * 30},
+		{"8 clients/connectAll", 8, ConnectAll, true, false, time.Second * 60},
+		{"8 clients/connectInLine", 8, ConnectInLine, true, false, time.Second * 60},
+		// FIXME: all test cases below
+		// {"10 clients/connectAll", 10, ConnectAll, true, false, time.Second * 60},
+		// {"10 clients/connectInLine", 10, ConnectInLine, true, false, time.Second * 60},
 	}
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*TestingProtocol) {
-		// TODO: Uncomment when fixed
-		// Add accounts as contacts
-		// addAsContact(ctx, t, tps, tps)
-		///////////////////////
-
-		// TODO: Remove when fixed
-		addAsContact(ctx, t, tps[0:1], tps)
-		///////////////////////
+		addAsContact(ctx, t, tps, tps)
 	})
 }
 
 func TestScenario_MessageContactGroup(t *testing.T) {
 	cases := []testCase{
+		{"2 clients/connectAll", 2, ConnectAll, false, true, time.Second * 20},
 		// FIXME: all test cases below
-		// {"2 clients/connectAll", 2, ConnectAll, false, false, time.Second * 10},
-		// {"3 clients/connectAll", 3, ConnectAll, false, true, time.Second * 10},
-		// {"3 clients/connectInLine", 3, ConnectInLine, false, true, time.Second * 10},
-		// {"5 clients/connectAll", 5, ConnectAll, true, true, time.Second * 10},
-		// {"5 clients/connectInLine", 5, ConnectInLine, true, true, time.Second * 10},
-		// {"8 clients/connectAll", 8, ConnectAll, true, true, time.Second * 10},
-		// {"8 clients/connectInLine", 8, ConnectInLine, true, true, time.Second * 10},
-		// {"10 clients/connectAll", 10, ConnectAll, true, true, time.Second * 10},
-		// {"10 clients/connectInLine", 10, ConnectInLine, true, true, time.Second * 10},
+		// {"3 clients/connectAll", 3, ConnectAll, false, false, time.Second * 20},
+		// {"3 clients/connectInLine", 3, ConnectInLine, false, false, time.Second * 20},
+		// {"5 clients/connectAll", 5, ConnectAll, true, false, time.Second * 30},
+		// {"5 clients/connectInLine", 5, ConnectInLine, true, false, time.Second * 30},
+		// {"8 clients/connectAll", 8, ConnectAll, true, false, time.Second * 40},
+		// {"8 clients/connectInLine", 8, ConnectInLine, true, false, time.Second * 40},
+		// {"10 clients/connectAll", 10, ConnectAll, true, false, time.Second * 60},
+		// {"10 clients/connectInLine", 10, ConnectInLine, true, false, time.Second * 60},
 	}
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*TestingProtocol) {
@@ -205,7 +202,7 @@ func TestScenario_MessageAccountAndMultiMemberGroups(t *testing.T) {
 
 			// Send messages on account group
 			messages = []string{"account1", "account2", "account3"}
-			sendMessageOnGroup(ctx, t, tps, tps, config.AccountGroupPK, messages)
+			sendMessageOnGroup(ctx, t, []*TestingProtocol{account}, []*TestingProtocol{account}, config.AccountGroupPK, messages)
 		}
 
 		t.Log("===== Send Messages again on MultiMember Group =====")
@@ -248,7 +245,7 @@ func TestScenario_MessageAccountAndContactGroups(t *testing.T) {
 
 			// Send messages on account group
 			messages = []string{"account1", "account2", "account3"}
-			sendMessageOnGroup(ctx, t, tps, tps, config.AccountGroupPK, messages)
+			sendMessageOnGroup(ctx, t, []*TestingProtocol{account}, []*TestingProtocol{account}, config.AccountGroupPK, messages)
 		}
 
 		t.Log("===== Send Messages again on Contact Group =====")
@@ -261,8 +258,6 @@ func TestScenario_MessageAccountAndContactGroups(t *testing.T) {
 // Helpers
 
 func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
-	ctx := context.Background()
-
 	var tracerName string
 	pc, _, _, ok := runtime.Caller(1)
 	fun := runtime.FuncForPC(pc)
@@ -274,6 +269,20 @@ func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
 	}
 	tr := tracer.NewTestingProvider(t, tracerName).Tracer("testing")
 
+	if os.Getenv("WITH_GOLEAK") == "1" {
+		defer goleak.VerifyNone(t,
+			goleak.IgnoreTopFunction("github.com/syndtr/goleveldb/leveldb.(*DB).mpoolDrain"),           // inherited from one of the imports (init)
+			goleak.IgnoreTopFunction("github.com/ipfs/go-log/writer.(*MirrorWriter).logRoutine"),       // inherited from one of the imports (init)
+			goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-connmgr.(*BasicConnMgr).background"), // inherited from github.com/ipfs/go-ipfs/core.NewNode
+			goleak.IgnoreTopFunction("github.com/jbenet/goprocess/periodic.callOnTicker.func1"),        // inherited from github.com/ipfs/go-ipfs/core.NewNode
+			goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-connmgr.(*decayer).process"),         // inherited from github.com/ipfs/go-ipfs/core.NewNode)
+			goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),                    // inherited from github.com/ipfs/go-ipfs/core.NewNode)
+			goleak.IgnoreTopFunction("github.com/desertbit/timer.timerRoutine"),                        // inherited from github.com/ipfs/go-ipfs/core.NewNode)
+			goleak.IgnoreTopFunction("go.opentelemetry.io/otel/instrumentation/grpctrace.wrapClientStream.func1"),
+			goleak.IgnoreTopFunction("go.opentelemetry.io/otel/instrumentation/grpctrace.StreamClientInterceptor.func1.1"),
+		)
+	}
+
 	for _, tc := range tcs {
 		t.Run(tc.Name, func(t *testing.T) {
 			if tc.IsSlowTest {
@@ -282,6 +291,9 @@ func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
 			if tc.IsUnstableTest {
 				testutil.SkipUnstable(t)
 			}
+
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
 
 			opts := TestingOpts{
 				Mocknet: libp2p_mocknet.New(ctx),
@@ -295,7 +307,6 @@ func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
 			tc.ConnectFunc(t, opts.Mocknet)
 
 			var cctx context.Context
-			var cancel context.CancelFunc
 
 			if tc.Timeout > 0 {
 				cctx, cancel = context.WithTimeout(ctx, tc.Timeout)
@@ -481,7 +492,7 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*Testi
 	start := time.Now()
 	var sendDuration, receiveDuration, acceptDuration, activateDuration time.Duration
 
-	for _, sender := range senders {
+	for i, sender := range senders {
 		for _, receiver := range receivers {
 			substart := time.Now()
 
@@ -493,33 +504,66 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*Testi
 			require.NoError(t, err)
 			require.NotNil(t, receiverCfg)
 
-			// Skip if sender and receiver are the same account
-			if bytes.Compare(senderCfg.AccountPK, receiverCfg.AccountPK) == 0 {
-				continue
-			}
-
 			// Setup receiver's sharable contact
-			_, err = receiver.Client.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})
-			require.NoError(t, err)
-			receiverRDV, err := receiver.Client.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
-			require.NoError(t, err)
-			require.NotNil(t, receiverRDV)
+			var receiverRDVSeed []byte
+
+			crf, err := receiver.Client.ContactRequestReference(ctx, &bertytypes.ContactRequestReference_Request{})
+			if err != nil || !crf.Enabled || len(crf.PublicRendezvousSeed) == 0 {
+				_, err = receiver.Client.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})
+				require.NoError(t, err)
+				receiverRDV, err := receiver.Client.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
+				require.NoError(t, err)
+				require.NotNil(t, receiverRDV)
+				receiverRDVSeed = receiverRDV.PublicRendezvousSeed
+			} else {
+				receiverRDVSeed = crf.PublicRendezvousSeed
+			}
 
 			receiverSharableContact := &bertytypes.ShareableContact{
 				PK:                   receiverCfg.AccountPK,
-				PublicRendezvousSeed: receiverRDV.PublicRendezvousSeed,
+				PublicRendezvousSeed: receiverRDVSeed,
 			}
 
 			// Sender sends contact request
 			_, err = sender.Client.ContactRequestSend(ctx, &bertytypes.ContactRequestSend_Request{
 				Contact: receiverSharableContact,
 			})
+
+			// Check if sender and receiver are the same account, should return the right error and skip
+			if bytes.Compare(senderCfg.AccountPK, receiverCfg.AccountPK) == 0 {
+				require.Equal(t, errcode.LastCode(err), errcode.ErrContactRequestSameAccount)
+				continue
+			}
+
+			// Check if contact request was already sent, should return right error and skip
+			receiverWasSender := false
+			for j := 0; j < i; j++ {
+				if senders[j] == receiver {
+					receiverWasSender = true
+				}
+			}
+
+			senderWasReceiver := false
+			if receiverWasSender {
+				for _, r := range receivers {
+					if r == sender {
+						senderWasReceiver = true
+					}
+				}
+			}
+
+			if receiverWasSender && senderWasReceiver {
+				require.Equal(t, errcode.LastCode(err), errcode.ErrContactRequestContactAlreadyAdded)
+				continue
+			}
+
+			// No other error should occur
 			require.NoError(t, err)
 
 			sendDuration += time.Since(substart)
 			substart = time.Now()
 
-			// Receiver subcribes to handle incoming contact request
+			// Receiver subscribes to handle incoming contact request
 			subCtx, subCancel := context.WithCancel(ctx)
 			subReceiver, err := receiver.Client.GroupMetadataSubscribe(subCtx, &bertytypes.GroupMetadataSubscribe_Request{
 				GroupPK: receiverCfg.AccountGroupPK,

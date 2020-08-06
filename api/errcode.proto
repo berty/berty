@@ -68,25 +68,33 @@ enum ErrCode {
   ErrHandshakeResponderAccept = 1107;
   ErrHandshakeRequesterAcknowledge = 1108;
 
+  // Contact Request errors
+
+  ErrContactRequestSameAccount = 1200;
+  ErrContactRequestContactAlreadyAdded = 1201;
+  ErrContactRequestContactBlocked = 1202;
+  ErrContactRequestContactUndefined = 1203;
+  ErrContactRequestIncomingAlreadyReceived = 1204;
+
   // Group errors
 
-  ErrGroupMemberLogEventOpen = 1200;
-  ErrGroupMemberLogEventSignature = 1201;
-  ErrGroupMemberUnknownGroupID = 1202;
-  ErrGroupSecretOtherDestMember = 1203;
-  ErrGroupSecretAlreadySentToMember = 1204;
-  ErrGroupInvalidType = 1205;
-  ErrGroupMissing = 1206;
+  ErrGroupMemberLogEventOpen = 1300;
+  ErrGroupMemberLogEventSignature = 1301;
+  ErrGroupMemberUnknownGroupID = 1302;
+  ErrGroupSecretOtherDestMember = 1303;
+  ErrGroupSecretAlreadySentToMember = 1304;
+  ErrGroupInvalidType = 1305;
+  ErrGroupMissing = 1306;
 
   // Message key errors
 
-  ErrMessageKeyPersistencePut = 1300;
-  ErrMessageKeyPersistenceGet = 1301;
+  ErrMessageKeyPersistencePut = 1400;
+  ErrMessageKeyPersistenceGet = 1401;
 
   // Bridge errors
 
-  ErrBridgeInterrupted = 1400;
-  ErrBridgeNotRunning = 1401;
+  ErrBridgeInterrupted = 1500;
+  ErrBridgeNotRunning = 1501;
 
   //------------------
   // Messenger errors

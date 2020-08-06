@@ -152,7 +152,7 @@ func daemonCommand() *ffcli.Command {
 				api = ipfsutil.InjectPubSubCoreAPIExtendedAdaptater(api, psapi)
 
 				if opts.poiDebug {
-					ipfsutil.EnableConnLogger(opts.logger, node.PeerHost)
+					ipfsutil.EnableConnLogger(ctx, opts.logger, node.PeerHost)
 				}
 
 				// construct http api endpoint
@@ -253,13 +253,12 @@ func daemonCommand() *ffcli.Command {
 					TinderDriver:    disc,
 					IpfsCoreAPI:     api,
 					Logger:          opts.logger.Named("protocol"),
-					RootContext:     ctx,
 					RootDatastore:   rootDS,
 					MessageKeystore: mk,
 					DeviceKeystore:  bertyprotocol.NewDeviceKeystore(deviceDS),
 					OrbitCache:      bertyprotocol.NewOrbitDatastoreCache(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))),
 				}
-				protocol, err = bertyprotocol.New(opts)
+				protocol, err = bertyprotocol.New(ctx, opts)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
@@ -275,7 +274,7 @@ func daemonCommand() *ffcli.Command {
 
 			// messenger
 			{
-				protocolClient, err := bertyprotocol.NewClient(protocol)
+				protocolClient, err := bertyprotocol.NewClient(ctx, protocol)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}

@@ -89,6 +89,7 @@ func newMockedHandshake(t *testing.T, ctx context.Context) *mockedHandshake {
 		res_cleanup()
 		req_cleanup()
 		rdv_cleanup()
+		rdvp.Close()
 	}
 
 	return &mockedHandshake{
