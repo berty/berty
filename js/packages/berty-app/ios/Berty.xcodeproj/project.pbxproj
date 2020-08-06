@@ -28,6 +28,10 @@
 		8A72F25B2451C4EC00CC2839 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */; };
 		8A72F25C2451C4F500CC2839 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */; };
 		8A72F25D2451C4FD00CC2839 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */; };
+		8D51F31924DC66DC006B1F4E /* Instabug.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8D51F31824DC66DC006B1F4E /* Instabug.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8D51F31C24DC679F006B1F4E /* Instabug.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8D51F31B24DC679E006B1F4E /* Instabug.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8D51F31F24DC68E5006B1F4E /* Instabug.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8D51F31E24DC68E4006B1F4E /* Instabug.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8D51F32224DC6989006B1F4E /* Instabug.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8D51F32124DC6989006B1F4E /* Instabug.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9062E30D29BE46569E12E997 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BC8CB08233B64D939FFE0469 /* FontAwesome.ttf */; };
 		98148E4901574218AB30D109 /* OpenSans-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FF8061EED4734329B6D865C9 /* OpenSans-SemiBoldItalic.ttf */; };
 		9A6F9E6CCD5D4173AAD6C669 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 67D93FCF36BE4E4983E748F2 /* Ionicons.ttf */; };
@@ -60,6 +64,49 @@
 		F8BF46872384443D0077A846 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		FC8D1D57AAD24A8EB7518431 /* OpenSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F399DA55B10C419A9CB95365 /* OpenSans-Italic.ttf */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8D51F31724DC65F9006B1F4E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8D51F31924DC66DC006B1F4E /* Instabug.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D51F31A24DC6762006B1F4E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8D51F31C24DC679F006B1F4E /* Instabug.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D51F31D24DC689E006B1F4E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8D51F31F24DC68E5006B1F4E /* Instabug.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D51F32024DC6927006B1F4E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8D51F32224DC6989006B1F4E /* Instabug.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0029E969C4DE2054480ABAAD /* Pods-Berty.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.debug.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.debug.xcconfig"; sourceTree = "<group>"; };
@@ -94,6 +141,10 @@
 		6F84C76F030A6EDBA22AB150 /* Pods-BertyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.debug.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 		8BF04205A0A80BA5C404077E /* Pods-BertyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.release.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.release.xcconfig"; sourceTree = "<group>"; };
+		8D51F31824DC66DC006B1F4E /* Instabug.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Instabug.framework; path = "../../../node_modules/instabug-reactnative/ios/Instabug.framework"; sourceTree = "<group>"; };
+		8D51F31B24DC679E006B1F4E /* Instabug.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Instabug.framework; path = "../../../node_modules/instabug-reactnative/ios/Instabug.framework"; sourceTree = "<group>"; };
+		8D51F31E24DC68E4006B1F4E /* Instabug.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Instabug.framework; path = "../../../node_modules/instabug-reactnative/ios/Instabug.framework"; sourceTree = "<group>"; };
+		8D51F32124DC6989006B1F4E /* Instabug.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Instabug.framework; path = "../../../node_modules/instabug-reactnative/ios/Instabug.framework"; sourceTree = "<group>"; };
 		8F4D2FAD70964BD9A3DC9697 /* OpenSans-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-SemiBold.ttf"; path = "../assets/OpenSans-SemiBold.ttf"; sourceTree = "<group>"; };
 		951CDB8AA8954B18AA7554CD /* OpenSans-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Bold.ttf"; path = "../assets/OpenSans-Bold.ttf"; sourceTree = "<group>"; };
 		9A9E5C4A6C654C56B328B5B8 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
@@ -257,6 +308,10 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				8D51F31824DC66DC006B1F4E /* Instabug.framework */,
+				8D51F31B24DC679E006B1F4E /* Instabug.framework */,
+				8D51F31E24DC68E4006B1F4E /* Instabug.framework */,
+				8D51F32124DC6989006B1F4E /* Instabug.framework */,
 				F8BF4661238444080077A846 /* Release.xcconfig */,
 				F81E8EE62382FE27007CDBA3 /* Debug.xcconfig */,
 				13B07FAE1A68108700A75B9A /* Berty */,
@@ -320,11 +375,13 @@
 			buildPhases = (
 				F836874B2355EC9E00CCC6D9 /* [CP] Check Pods Manifest.lock */,
 				F836874C2355EC9E00CCC6D9 /* Start Packager */,
+				8D51F32024DC6927006B1F4E /* CopyFiles */,
 				F836874D2355EC9E00CCC6D9 /* Sources */,
 				F83687502355EC9E00CCC6D9 /* Frameworks */,
 				F83687522355EC9E00CCC6D9 /* Resources */,
 				F83687552355EC9E00CCC6D9 /* Bundle React Native code and images */,
 				9F997BDFA0DA3DF2231F5F6E /* [CP] Copy Pods Resources */,
+				707DCBC454EDECC83293F37B /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -340,6 +397,7 @@
 			buildConfigurationList = F8BF465C238441AC0077A846 /* Build configuration list for PBXNativeTarget "Berty Debug" */;
 			buildPhases = (
 				F8BF464D238441AC0077A846 /* Start Packager */,
+				8D51F31724DC65F9006B1F4E /* CopyFiles */,
 				F8BF464E238441AC0077A846 /* Sources */,
 				F8BF4651238441AC0077A846 /* Frameworks */,
 				F8BF4658238441AC0077A846 /* Resources */,
@@ -359,6 +417,7 @@
 			buildConfigurationList = F8BF4673238444330077A846 /* Build configuration list for PBXNativeTarget "Berty Staff" */;
 			buildPhases = (
 				F8BF4664238444330077A846 /* Start Packager */,
+				8D51F31A24DC6762006B1F4E /* CopyFiles */,
 				F8BF4665238444330077A846 /* Sources */,
 				F8BF4668238444330077A846 /* Frameworks */,
 				F8BF466F238444330077A846 /* Resources */,
@@ -378,6 +437,7 @@
 			buildConfigurationList = F8BF46892384443D0077A846 /* Build configuration list for PBXNativeTarget "Berty Yolo" */;
 			buildPhases = (
 				F8BF467A2384443D0077A846 /* Start Packager */,
+				8D51F31D24DC689E006B1F4E /* CopyFiles */,
 				F8BF467B2384443D0077A846 /* Sources */,
 				F8BF467E2384443D0077A846 /* Frameworks */,
 				F8BF46852384443D0077A846 /* Resources */,
@@ -507,6 +567,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		707DCBC454EDECC83293F37B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Berty/Pods-Berty-frameworks.sh",
+				"${PODS_ROOT}/../../../../node_modules/instabug-reactnative/ios/Instabug.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Instabug.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Berty/Pods-Berty-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		9F997BDFA0DA3DF2231F5F6E /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

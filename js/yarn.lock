@@ -12345,6 +12345,11 @@ inquirer@^7.0.0:
     strip-ansi "^5.1.0"
     through "^2.3.6"
 
+instabug-reactnative@^9.1.6:
+  version "9.1.6"
+  resolved "https://registry.yarnpkg.com/instabug-reactnative/-/instabug-reactnative-9.1.6.tgz#23f2b00060127c10f09b3ced159dd4684d45ec13"
+  integrity sha512-Zu7wIAHZW1JXzGREwixn02skxPv2tOQzHNZOK++Ota+6VL4x4PsAetCfnQgIhMotMeBW0Lj0qVcCcc1cDkfh8g==
+
 internal-ip@^4.2.0, internal-ip@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/internal-ip/-/internal-ip-4.3.0.tgz#845452baad9d2ca3b69c635a137acb9a0dad0907"

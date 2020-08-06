@@ -35,5 +35,8 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
+        maven {
+            url "https://sdks.instabug.com/nexus/repository/instabug-cp"
+        }
     }
 }

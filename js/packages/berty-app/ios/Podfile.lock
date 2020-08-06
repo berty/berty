@@ -38,6 +38,8 @@ PODS:
   - glog (0.3.5)
   - go-bridge (1.0.0):
     - React
+  - instabug-reactnative (9.1.6):
+    - React
   - Interactable (2.0.1):
     - React
   - lottie-ios (3.1.8)
@@ -293,6 +295,7 @@ DEPENDENCIES:
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - go-bridge (from `../../go-bridge`)
+  - instabug-reactnative (from `../../../node_modules/instabug-reactnative`)
   - Interactable (from `../../../node_modules/react-native-interactable`)
   - lottie-ios (from `../../../node_modules/lottie-ios`)
   - lottie-react-native (from `../../../node_modules/lottie-react-native`)
@@ -356,6 +359,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   go-bridge:
     :path: "../../go-bridge"
+  instabug-reactnative:
+    :path: "../../../node_modules/instabug-reactnative"
   Interactable:
     :path: "../../../node_modules/react-native-interactable"
   lottie-ios:
@@ -445,6 +450,7 @@ SPEC CHECKSUMS:
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
   go-bridge: c1dc5d0b5ca1cf244ea633a6ff535253eed83ac8
+  instabug-reactnative: aae9da235f22a48455fd837f5983c144d169330c
   Interactable: 411887c89fa16ac41f8e7898aca06dcad55e5f22
   lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
   lottie-react-native: 1fb4ce21d6ad37dab8343eaff8719df76035bd93
@@ -487,4 +493,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 47ba4e6c6a8c84d20de01449b329f90f77bbe143
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.9.3
