@@ -165,7 +165,7 @@ const InfosChat: React.FC<{ createdAt: number }> = ({ createdAt }) => {
 // const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
 
 const MessageList: React.FC<{ id: string; scrollToMessage?: number }> = (props) => {
-	const [{ row, overflow, flex, padding }, { scaleHeight }] = useStyles()
+	const [{ row, overflow, flex, margin }, { scaleHeight }] = useStyles()
 	const conversation = Messenger.useGetConversation(props.id)
 	const flatListRef = useRef<FlatList<messenger.message.Entity['id']>>(null)
 
@@ -190,7 +190,8 @@ const MessageList: React.FC<{ id: string; scrollToMessage?: number }> = (props) 
 				overflow,
 				row.item.fill,
 				flex.tiny,
-				{ marginTop: 150 * scaleHeight, marginBottom: 120 * scaleHeight },
+				margin.bottom.medium,
+				{ marginTop: 150 * scaleHeight },
 			]}
 			data={conversation ? [...conversation.messages].reverse() : []}
 			inverted

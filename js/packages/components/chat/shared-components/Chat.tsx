@@ -39,12 +39,7 @@ export const ChatFooter: React.FC<{
 	}
 	const isFake = conversation.fake
 	return (
-		<View style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
-			<BlurView
-				blurType='light'
-				blurAmount={30}
-				style={{ position: 'absolute', bottom: 0, top: 0, left: 0, right: 0 }}
-			/>
+		<BlurView blurType='light' blurAmount={30}>
 			<SafeAreaView>
 				<View
 					style={[
@@ -127,7 +122,7 @@ export const ChatFooter: React.FC<{
 					</View>
 				</View>
 			</SafeAreaView>
-		</View>
+		</BlurView>
 	)
 }
 

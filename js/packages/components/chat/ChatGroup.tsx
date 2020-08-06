@@ -203,7 +203,7 @@ const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) 
 }
 
 const MessageList: React.FC<{ id: string }> = ({ id }) => {
-	const [{ overflow, row, flex }, { scaleHeight }] = useStyles()
+	const [{ overflow, row, flex, margin }, { scaleHeight }] = useStyles()
 	const conversation = Messenger.useGetConversation(id)
 	if (!conversation) {
 		return <CenteredActivityIndicator />
@@ -219,7 +219,8 @@ const MessageList: React.FC<{ id: string }> = ({ id }) => {
 				overflow,
 				row.item.fill,
 				flex.tiny,
-				{ marginTop: 140 * scaleHeight, marginBottom: 120 * scaleHeight },
+				margin.bottom.medium,
+				{ marginTop: 140 * scaleHeight },
 			]}
 			data={[...conversation.messages].reverse()}
 			inverted
