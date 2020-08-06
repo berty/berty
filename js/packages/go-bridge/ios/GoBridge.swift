@@ -181,12 +181,12 @@ class GoBridge: NSObject {
 
     @objc func invokeBridgeMethod(_ method: String, b64message: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
-            guard let bridgeProtocol = self.bridgeProtocol else {
-                throw NSError(domain: "bridgeProtocol isn't started", code: 1)
+            guard let bridgeMessenger = self.bridgeMessenger else {
+                throw NSError(domain: "bridgeMessenger isn't started", code: 1)
             }
 
             let promise = PromiseBlock(resolve, reject)
-            bridgeProtocol.invokeBridgeMethod(with: promise, method: method, b64message: b64message)
+            bridgeMessenger.invokeBridgeMethod(with: promise, method: method, b64message: b64message)
         } catch let error as NSError {
             reject("\(String(describing: error.code))", error.userInfo.description, error)
         }

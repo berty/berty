@@ -134,7 +134,7 @@ func newBridge(ctx context.Context, s *grpc.Server, logger *zap.Logger, config *
 		s := grpc.NewServer()
 		bridgepb.RegisterBridgeServiceServer(s, service)
 
-		bl := grpcutil.NewBufListener(ClientBufferSize)
+		bl := grpcutil.NewBufListener(ctx, ClientBufferSize)
 		b.workers.Add(func() error {
 			return s.Serve(bl)
 		}, func(error) {

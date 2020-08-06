@@ -79,7 +79,6 @@ export const createService = (service, rpcImpl, middleware) => {
 		middleware = (method, call) => call
 	}
 
-	console.log(service)
 	const rootService = service.resolveAll()
 	const unaryMethods = createUnaryMethodList(rootService, rpcImpl, middleware)
 	const streamMethods = createStreamMethodList(rootService, rpcImpl, middleware)

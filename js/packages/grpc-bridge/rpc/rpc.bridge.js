@@ -1,12 +1,16 @@
 import { Service } from '..'
 import rpcNative from './rpc.native'
 import { bridge, errcode } from '@berty-tech/api/index.js'
-import { getServiceName } from './utils'
+import { getServiceName, EOF } from './utils'
 
 const protocolErrors = errcode.lookup('ErrCode')
 const grpcErrors = bridge.lookup('GRPCErrCode')
 const getErrorFromResponse = (method, response) => {
 	if (response.error) {
+		if (response.error.grpcErrorCode === grpcErrors.values.CANCELED) {
+			throw EOF
+		}
+
 		if (response.error.errorCode > 0) {
 			const name = protocolErrors.valuesById[response.error.errorCode]
 			return new Error(`${method.name} error: ${name}(${response.error.errorCode})`)

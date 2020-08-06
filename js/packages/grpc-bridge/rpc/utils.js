@@ -19,6 +19,7 @@ export const isElectron =
 	window.navigator &&
 	window.navigator.userAgent &&
 	window.navigator.userAgent.toLowerCase().indexOf('electron') !== -1
+export const EOF = new Error('EOF')
 
 // Error
 export const ErrorStreamNotImplemented = new Error('stream service not implemented')
