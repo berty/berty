@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/base64"
 	"errors"
-	"fmt"
 	"io"
 	"time"
 
@@ -19,13 +18,11 @@ import (
 )
 
 func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error) {
-	fmt.Println(opts.DB)
 	optsCleanup, err := opts.applyDefaults()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	fmt.Println(opts.DB)
 	if err := initDB(opts.DB); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
