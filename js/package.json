@@ -41,7 +41,8 @@
       "**/metro-*",
       "**/@react-native-community/cli-*",
       "**/react-native-svg-transformer",
-      "**/@webpack-cli/serve"
+      "**/@webpack-cli/serve",
+      "**/instabug-reactnative"
     ]
   },
   "dependencies": {

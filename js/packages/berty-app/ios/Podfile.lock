@@ -295,7 +295,7 @@ DEPENDENCIES:
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - go-bridge (from `../../go-bridge`)
-  - instabug-reactnative (from `../../../node_modules/instabug-reactnative`)
+  - instabug-reactnative (from `../node_modules/instabug-reactnative`)
   - Interactable (from `../../../node_modules/react-native-interactable`)
   - lottie-ios (from `../../../node_modules/lottie-ios`)
   - lottie-react-native (from `../../../node_modules/lottie-react-native`)
@@ -360,7 +360,7 @@ EXTERNAL SOURCES:
   go-bridge:
     :path: "../../go-bridge"
   instabug-reactnative:
-    :path: "../../../node_modules/instabug-reactnative"
+    :path: "../node_modules/instabug-reactnative"
   Interactable:
     :path: "../../../node_modules/react-native-interactable"
   lottie-ios:
