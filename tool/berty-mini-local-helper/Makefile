@@ -20,7 +20,7 @@ log-stats:
 
 .PHONY: share-qr
 share-qr:
-	berty dev share-invite -d $(TMPDIR)/berty-mini-$(ID) --dev-channel
+	berty share-invite -d $(TMPDIR)/berty-mini-$(ID) --dev-channel
 
 .PHONY: watch-log-stats
 watch-log-stats:
