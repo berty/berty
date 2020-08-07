@@ -10,6 +10,7 @@ export const Methods = {
 	sendMessage: 'sendMessage',
 	sendAck: 'sendAck',
 	systemInfo: 'systemInfo',
+	echoTest: 'echoTest',
 	conversationStream: 'conversationStream',
 	eventStream: 'eventStream',
 	conversationCreate: 'conversationCreate',

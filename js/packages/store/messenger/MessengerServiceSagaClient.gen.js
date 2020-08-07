@@ -226,6 +226,31 @@ export default class MessengerServiceSagaClient {
 			})
 			return close
 		})
+	echoTest = (requestObj = {}) =>
+		eventChannel((emit) => {
+			const buf = api.berty.messenger.v1.EchoTest.Request.encode(requestObj).finish()
+			const request = bertymessenger.EchoTest.Request.deserializeBinary(buf)
+			const { close } = grpc.invoke(MessengerService.EchoTest, {
+				request,
+				transport: this.transport,
+				host: this.host,
+				onMessage: (message) =>
+					emit(api.berty.messenger.v1.EchoTest.Reply.decode(message.serializeBinary())),
+				onEnd: (code, msg, trailers) => {
+					if (code !== grpc.Code.OK) {
+						emit(
+							new GRPCError(
+								`GRPC EchoTest ${grpc.Code[code]} (${code}): ${msg}\nTrailers: ${JSON.stringify(
+									trailers,
+								)}`,
+							),
+						)
+					}
+					emit(END)
+				},
+			})
+			return close
+		})
 	conversationStream = (requestObj = {}) =>
 		eventChannel((emit) => {
 			const buf = api.berty.messenger.v1.ConversationStream.Request.encode(requestObj).finish()

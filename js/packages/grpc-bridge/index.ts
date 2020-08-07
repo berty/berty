@@ -4,5 +4,8 @@ export type { GRPCBridge } from './bridge'
 
 export { ReactNativeTransport } from './grpc-web-react-native-transport'
 export { WebsocketTransport } from './grpc-web-websocket-transport'
+export { EOF } from './rpc/utils'
+
+export { createService as Service } from './service'
 
 export default grpcBridge

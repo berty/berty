@@ -39,6 +39,8 @@ service MessengerService {
 
   rpc SystemInfo(SystemInfo.Request) returns (SystemInfo.Reply);
 
+  // Use to test stream
+  rpc EchoTest(EchoTest.Request) returns (stream EchoTest.Reply);
 
   // NEW
 
@@ -46,6 +48,16 @@ service MessengerService {
   rpc EventStream(EventStream.Request) returns (stream EventStream.Reply);
   rpc ConversationCreate(ConversationCreate.Request) returns (ConversationCreate.Reply);
   rpc AccountGet(AccountGet.Request) returns (AccountGet.Reply);
+}
+
+message EchoTest {
+  message Request {
+    uint64 delay = 1; // in ms
+    string echo = 2;
+  }
+  message Reply {
+    string echo = 1;
+  }
 }
 
 message InstanceShareableBertyID {

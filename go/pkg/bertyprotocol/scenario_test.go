@@ -115,8 +115,8 @@ func TestScenario_AddContact(t *testing.T) {
 		{"3 clients/connectInLine", 3, ConnectInLine, false, false, time.Second * 20},
 		{"5 clients/connectAll", 5, ConnectAll, true, false, time.Second * 30},
 		{"5 clients/connectInLine", 5, ConnectInLine, true, false, time.Second * 30},
-		{"8 clients/connectAll", 8, ConnectAll, true, false, time.Second * 60},
-		{"8 clients/connectInLine", 8, ConnectInLine, true, false, time.Second * 60},
+		{"8 clients/connectAll", 8, ConnectAll, true, true, time.Second * 300},       // marked as "unstable" because too slow, but it works
+		{"8 clients/connectInLine", 8, ConnectInLine, true, true, time.Second * 300}, // marked as "unstable" because too slow, but it works
 		// FIXME: all test cases below
 		// {"10 clients/connectAll", 10, ConnectAll, true, false, time.Second * 60},
 		// {"10 clients/connectInLine", 10, ConnectInLine, true, false, time.Second * 60},
@@ -324,7 +324,7 @@ func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
 }
 
 func createMultiMemberGroup(ctx context.Context, t *testing.T, tps ...*TestingProtocol) (groupID []byte) {
-	t.Log(logTree("Create and Join MultiMember Group", 0, true))
+	logTree(t, "Create and Join MultiMember Group", 0, true)
 	start := time.Now()
 
 	ntps := len(tps)
@@ -335,7 +335,7 @@ func createMultiMemberGroup(ctx context.Context, t *testing.T, tps ...*TestingPr
 
 	// Get Instance Configurations
 	{
-		t.Log(logTree("Get Instance Configuration", 1, true))
+		logTree(t, "Get Instance Configuration", 1, true)
 		start := time.Now()
 
 		// check if everything is ready
@@ -344,12 +344,12 @@ func createMultiMemberGroup(ctx context.Context, t *testing.T, tps ...*TestingPr
 			require.NoError(t, err)
 		}
 
-		t.Logf(logTree("duration: %s", 1, false), time.Since(start))
+		logTree(t, "duration: %s", 1, false, time.Since(start))
 	}
 
 	// Join Group
 	{
-		t.Log(logTree("Join Group", 1, true))
+		logTree(t, "Join Group", 1, true)
 		start := time.Now()
 
 		for _, pt := range tps {
@@ -362,14 +362,14 @@ func createMultiMemberGroup(ctx context.Context, t *testing.T, tps ...*TestingPr
 			require.NoError(t, err)
 		}
 
-		t.Logf(logTree("duration: %s", 1, false), time.Since(start))
+		logTree(t, "duration: %s", 1, false, time.Since(start))
 	}
 
 	// Get Member/Device PKs
 	memberPKs := make([][]byte, ntps)
 	devicePKs := make([][]byte, ntps)
 	{
-		t.Log(logTree("Get Member/Device PKs", 1, true))
+		logTree(t, "Get Member/Device PKs", 1, true)
 		start := time.Now()
 
 		for i, pt := range tps {
@@ -383,12 +383,12 @@ func createMultiMemberGroup(ctx context.Context, t *testing.T, tps ...*TestingPr
 			devicePKs[i] = res.DevicePK
 		}
 
-		t.Logf(logTree("duration: %s", 1, false), time.Since(start))
+		logTree(t, "duration: %s", 1, false, time.Since(start))
 	}
 
 	// Activate Group
 	{
-		t.Log(logTree("Activate Group", 1, true))
+		logTree(t, "Activate Group", 1, true)
 		start := time.Now()
 
 		for i, pt := range tps {
@@ -399,12 +399,12 @@ func createMultiMemberGroup(ctx context.Context, t *testing.T, tps ...*TestingPr
 			assert.NoError(t, err, fmt.Sprintf("error for client %d", i))
 		}
 
-		t.Logf(logTree("duration: %s", 1, false), time.Since(start))
+		logTree(t, "duration: %s", 1, false, time.Since(start))
 	}
 
 	// Exchange Secrets
 	{
-		t.Log(logTree("Exchange Secrets", 1, true))
+		logTree(t, "Exchange Secrets", 1, true)
 		start := time.Now()
 
 		wg := sync.WaitGroup{}
@@ -479,16 +479,16 @@ func createMultiMemberGroup(ctx context.Context, t *testing.T, tps ...*TestingPr
 		require.True(t, ok)
 		secretsReceivedLock.Unlock()
 
-		t.Logf(logTree("duration: %s", 1, false), time.Since(start))
+		logTree(t, "duration: %s", 1, false, time.Since(start))
 	}
 
-	t.Logf(logTree("duration: %s", 0, false), time.Since(start))
+	logTree(t, "duration: %s", 0, false, time.Since(start))
 
 	return group.PublicKey
 }
 
 func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*TestingProtocol) {
-	t.Log(logTree("Add Senders/Receivers as Contact", 0, true))
+	logTree(t, "Add Senders/Receivers as Contact", 0, true)
 	start := time.Now()
 	var sendDuration, receiveDuration, acceptDuration, activateDuration time.Duration
 
@@ -635,16 +635,16 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*Testi
 		}
 	}
 
-	t.Log(logTree("Send Contact Requests", 1, true))
-	t.Logf(logTree("duration: %s", 1, false), sendDuration)
-	t.Log(logTree("Receive Contact Requests", 1, true))
-	t.Logf(logTree("duration: %s", 1, false), receiveDuration)
-	t.Log(logTree("Accept Contact Requests", 1, true))
-	t.Logf(logTree("duration: %s", 1, false), acceptDuration)
-	t.Log(logTree("Activate Contact Groups", 1, true))
-	t.Logf(logTree("duration: %s", 1, false), activateDuration)
+	logTree(t, "Send Contact Requests", 1, true)
+	logTree(t, "duration: %s", 1, false, sendDuration)
+	logTree(t, "Receive Contact Requests", 1, true)
+	logTree(t, "duration: %s", 1, false, receiveDuration)
+	logTree(t, "Accept Contact Requests", 1, true)
+	logTree(t, "duration: %s", 1, false, acceptDuration)
+	logTree(t, "Activate Contact Groups", 1, true)
+	logTree(t, "duration: %s", 1, false, activateDuration)
 
-	t.Logf(logTree("duration: %s", 0, false), time.Since(start))
+	logTree(t, "duration: %s", 0, false, time.Since(start))
 }
 
 func sendMessageToContact(ctx context.Context, t *testing.T, messages []string, tps []*TestingProtocol) {
@@ -669,7 +669,7 @@ func sendMessageToContact(ctx context.Context, t *testing.T, messages []string, 
 }
 
 func sendMessageOnGroup(ctx context.Context, t *testing.T, senders, receivers []*TestingProtocol, groupPK []byte, messages []string) {
-	t.Log(logTree("Send, Receive and List Messages", 0, true))
+	logTree(t, "Send, Receive and List Messages", 0, true)
 	start := time.Now()
 
 	// Setup expectedMessages map
@@ -709,7 +709,7 @@ func sendMessageOnGroup(ctx context.Context, t *testing.T, senders, receivers []
 
 	// Senders send all expected messages
 	{
-		t.Log(logTree("Senders Send Messages", 1, true))
+		logTree(t, "Senders Send Messages", 1, true)
 		start := time.Now()
 
 		for _, sender := range senders {
@@ -724,12 +724,12 @@ func sendMessageOnGroup(ctx context.Context, t *testing.T, senders, receivers []
 			}
 		}
 
-		t.Logf(logTree("duration: %s", 1, false), time.Since(start))
+		logTree(t, "duration: %s", 1, false, time.Since(start))
 	}
 
 	// Receivers receive all expected messages
 	{
-		t.Log(logTree("Receivers Receive Messages (subscription)", 1, true))
+		logTree(t, "Receivers Receive Messages (subscription)", 1, true)
 		start := time.Now()
 
 		var wg sync.WaitGroup
@@ -804,12 +804,12 @@ func sendMessageOnGroup(ctx context.Context, t *testing.T, senders, receivers []
 			assert.Equal(t, expectedMessagesCount, subReceivedMessagesCount[receiverID])
 		}
 
-		t.Logf(logTree("duration: %s", 1, false), time.Since(start))
+		logTree(t, "duration: %s", 1, false, time.Since(start))
 	}
 
 	// Receivers list all expected messages
 	{
-		t.Log(logTree("Receivers List Messages (store)", 1, true))
+		logTree(t, "Receivers List Messages (store)", 1, true)
 		start := time.Now()
 
 		var wg sync.WaitGroup
@@ -885,9 +885,9 @@ func sendMessageOnGroup(ctx context.Context, t *testing.T, senders, receivers []
 			assert.Equal(t, expectedMessagesCount, listReceivedMessagesCount[receiverID])
 		}
 
-		t.Logf(logTree("duration: %s", 1, false), time.Since(start))
+		logTree(t, "duration: %s", 1, false, time.Since(start))
 	}
-	t.Logf(logTree("duration: %s", 0, false), time.Since(start))
+	logTree(t, "duration: %s", 0, false, time.Since(start))
 }
 
 func isEventAddSecretTargetedToMember(ownRawPK []byte, evt *bertytypes.GroupMetadataEvent) ([]byte, error) {
@@ -927,16 +927,4 @@ func getAccountB64PubKey(t *testing.T, tp *TestingProtocol) string {
 	tpPK := getAccountPubKey(t, tp)
 
 	return base64.StdEncoding.EncodeToString(tpPK)
-}
-
-func logTree(log string, indent int, title bool) string {
-	if !title {
-		log = "└── " + log
-	}
-
-	for i := 0; i < indent; i++ {
-		log = "│  " + log
-	}
-
-	return log
 }

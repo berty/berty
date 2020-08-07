@@ -5,6 +5,355 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
 .addJSON({
   berty: {
     nested: {
+      bridge: {
+        nested: {
+          v1: {
+            options: {
+              go_package: "berty.tech/berty/go/framework/bertybridge/internal/bridgepb"
+            },
+            nested: {
+              BridgeService: {
+                methods: {
+                  ClientInvokeUnary: {
+                    requestType: "ClientInvokeUnary.Request",
+                    responseType: "ClientInvokeUnary.Reply"
+                  },
+                  CreateClientStream: {
+                    requestType: "ClientCreateStream.Request",
+                    responseType: "ClientCreateStream.Reply"
+                  },
+                  ClientStreamSend: {
+                    requestType: "ClientStreamSend.Request",
+                    responseType: "ClientStreamSend.Reply"
+                  },
+                  ClientStreamRecv: {
+                    requestType: "ClientStreamRecv.Request",
+                    responseType: "ClientStreamRecv.Reply"
+                  },
+                  ClientStreamClose: {
+                    requestType: "ClientStreamClose.Request",
+                    responseType: "ClientStreamClose.Reply"
+                  }
+                }
+              },
+              ClientInvokeUnary: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      methodDesc: {
+                        type: "MethodDesc",
+                        id: 2
+                      },
+                      payload: {
+                        type: "bytes",
+                        id: 3
+                      },
+                      header: {
+                        rule: "repeated",
+                        type: "Metadata",
+                        id: 4
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      payload: {
+                        type: "bytes",
+                        id: 2
+                      },
+                      trailer: {
+                        rule: "repeated",
+                        type: "Metadata",
+                        id: 3
+                      },
+                      error: {
+                        type: "Error",
+                        id: 4
+                      }
+                    }
+                  }
+                }
+              },
+              ClientCreateStream: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      methodDesc: {
+                        type: "MethodDesc",
+                        id: 2
+                      },
+                      payload: {
+                        type: "bytes",
+                        id: 3
+                      },
+                      header: {
+                        rule: "repeated",
+                        type: "Metadata",
+                        id: 4
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      streamId: {
+                        type: "string",
+                        id: 1
+                      },
+                      trailer: {
+                        rule: "repeated",
+                        type: "Metadata",
+                        id: 2
+                      },
+                      error: {
+                        type: "Error",
+                        id: 3
+                      }
+                    }
+                  }
+                }
+              },
+              ClientStreamSend: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      streamId: {
+                        type: "string",
+                        id: 1
+                      },
+                      payload: {
+                        type: "bytes",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      streamId: {
+                        type: "string",
+                        id: 1
+                      },
+                      trailer: {
+                        rule: "repeated",
+                        type: "Metadata",
+                        id: 2
+                      },
+                      error: {
+                        type: "Error",
+                        id: 3
+                      }
+                    }
+                  }
+                }
+              },
+              ClientStreamRecv: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      streamId: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      streamId: {
+                        type: "string",
+                        id: 1
+                      },
+                      payload: {
+                        type: "bytes",
+                        id: 2
+                      },
+                      trailer: {
+                        rule: "repeated",
+                        type: "Metadata",
+                        id: 3
+                      },
+                      error: {
+                        type: "Error",
+                        id: 4
+                      }
+                    }
+                  }
+                }
+              },
+              ClientStreamClose: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      streamId: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      streamId: {
+                        type: "string",
+                        id: 1
+                      },
+                      trailer: {
+                        rule: "repeated",
+                        type: "Metadata",
+                        id: 2
+                      },
+                      error: {
+                        type: "Error",
+                        id: 3
+                      }
+                    }
+                  }
+                }
+              },
+              MethodDesc: {
+                fields: {
+                  name: {
+                    type: "string",
+                    id: 1
+                  },
+                  isClientStream: {
+                    type: "bool",
+                    id: 2
+                  },
+                  isServerStream: {
+                    type: "bool",
+                    id: 3
+                  }
+                }
+              },
+              Metadata: {
+                fields: {
+                  key: {
+                    type: "string",
+                    id: 1
+                  },
+                  values: {
+                    rule: "repeated",
+                    type: "string",
+                    id: 2
+                  }
+                }
+              },
+              Error: {
+                fields: {
+                  grpcErrorCode: {
+                    type: "GRPCErrCode",
+                    id: 1
+                  },
+                  errorCode: {
+                    type: "errcode.ErrCode",
+                    id: 2
+                  },
+                  message: {
+                    type: "string",
+                    id: 3
+                  }
+                }
+              },
+              GRPCErrCode: {
+                values: {
+                  OK: 0,
+                  CANCELED: 1,
+                  UNKNOWN: 2,
+                  INVALID_ARGUMENT: 3,
+                  DEADLINE_EXCEEDED: 4,
+                  NOT_FOUND: 5,
+                  ALREADY_EXISTS: 6,
+                  PERMISSION_DENIED: 7,
+                  RESOURCE_EXHAUSTED: 8,
+                  FAILED_PRECONDITION: 9,
+                  ABORTED: 10,
+                  OUT_OF_RANGE: 11,
+                  UNIMPLEMENTED: 12,
+                  INTERNAL: 13,
+                  UNAVAILABLE: 14,
+                  DATA_LOSS: 15,
+                  UNAUTHENTICATED: 16
+                }
+              }
+            }
+          }
+        }
+      },
+      errcode: {
+        options: {
+          go_package: "berty.tech/berty/go/pkg/errcode",
+          "(gogoproto.goproto_enum_prefix_all)": false
+        },
+        nested: {
+          ErrCode: {
+            values: {
+              Undefined: 0,
+              TODO: 666,
+              ErrNotImplemented: 777,
+              ErrInternal: 888,
+              ErrInvalidInput: 100,
+              ErrMissingInput: 101,
+              ErrSerialization: 102,
+              ErrDeserialization: 103,
+              ErrStreamRead: 104,
+              ErrStreamWrite: 105,
+              ErrMissingMapKey: 106,
+              ErrCryptoRandomGeneration: 200,
+              ErrCryptoKeyGeneration: 201,
+              ErrCryptoNonceGeneration: 202,
+              ErrCryptoSignature: 203,
+              ErrCryptoSignatureVerification: 204,
+              ErrCryptoDecrypt: 205,
+              ErrCryptoEncrypt: 206,
+              ErrCryptoKeyConversion: 207,
+              ErrOrbitDBInit: 1000,
+              ErrOrbitDBOpen: 1001,
+              ErrOrbitDBAppend: 1002,
+              ErrOrbitDBDeserialization: 1003,
+              ErrOrbitDBStoreCast: 1004,
+              ErrHandshakeOwnEphemeralKeyGenSend: 1100,
+              ErrHandshakePeerEphemeralKeyRecv: 1101,
+              ErrHandshakeRequesterAuthenticateBoxKeyGen: 1102,
+              ErrHandshakeResponderAcceptBoxKeyGen: 1103,
+              ErrHandshakeRequesterHello: 1104,
+              ErrHandshakeResponderHello: 1105,
+              ErrHandshakeRequesterAuthenticate: 1106,
+              ErrHandshakeResponderAccept: 1107,
+              ErrHandshakeRequesterAcknowledge: 1108,
+              ErrContactRequestSameAccount: 1200,
+              ErrContactRequestContactAlreadyAdded: 1201,
+              ErrContactRequestContactBlocked: 1202,
+              ErrContactRequestContactUndefined: 1203,
+              ErrContactRequestIncomingAlreadyReceived: 1204,
+              ErrGroupMemberLogEventOpen: 1300,
+              ErrGroupMemberLogEventSignature: 1301,
+              ErrGroupMemberUnknownGroupID: 1302,
+              ErrGroupSecretOtherDestMember: 1303,
+              ErrGroupSecretAlreadySentToMember: 1304,
+              ErrGroupInvalidType: 1305,
+              ErrGroupMissing: 1306,
+              ErrMessageKeyPersistencePut: 1400,
+              ErrMessageKeyPersistenceGet: 1401,
+              ErrBridgeInterrupted: 1500,
+              ErrBridgeNotRunning: 1501,
+              ErrMessengerInvalidDeepLink: 2001,
+              ErrCLINoTermcaps: 3001
+            }
+          },
+          ErrDetails: {
+            fields: {
+              codes: {
+                rule: "repeated",
+                type: "ErrCode",
+                id: 1
+              }
+            }
+          }
+        }
+      },
       protocol: {
         nested: {
           v1: {
@@ -1547,6 +1896,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "SystemInfo.Request",
                     responseType: "SystemInfo.Reply"
                   },
+                  EchoTest: {
+                    requestType: "EchoTest.Request",
+                    responseType: "EchoTest.Reply",
+                    responseStream: true
+                  },
                   ConversationStream: {
                     requestType: "ConversationStream.Request",
                     responseType: "ConversationStream.Reply",
@@ -1564,6 +1918,31 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   AccountGet: {
                     requestType: "AccountGet.Request",
                     responseType: "AccountGet.Reply"
+                  }
+                }
+              },
+              EchoTest: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      delay: {
+                        type: "uint64",
+                        id: 1
+                      },
+                      echo: {
+                        type: "string",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      echo: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
                   }
                 }
               },

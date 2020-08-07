@@ -8,6 +8,10 @@ import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsBu
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { Settings, Messenger } from '@berty-tech/hooks'
 import { messenger, groups } from '@berty-tech/store'
+import * as middleware from '@berty-tech/grpc-bridge/middleware'
+import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
+import { Service, EOF } from '@berty-tech/grpc-bridge'
 import GoBridge from '@berty-tech/go-bridge'
 
 //
@@ -79,6 +83,56 @@ const TracingButton: React.FC = () => {
 			actionToggle={toggleTracing}
 			varToggle={settings.nodeConfig.opts.tracing}
 			toggled
+		/>
+	)
+}
+
+const NativeCallButton: React.FC = () => {
+	// create middleware(s) if needed
+	const messengerMiddlewares = middleware.chain(
+		__DEV__ ? middleware.logger.create('MESSENGER') : null // eslint-disable-line
+	)
+
+	const messengerClient: any = Service(
+		messengerpb.MessengerService,
+		rpcBridge,
+		messengerMiddlewares,
+	)
+	let i = 0
+	return (
+		<ButtonSetting
+			name='Test Native Bridge'
+			icon='activity-outline'
+			iconSize={30}
+			iconColor='grey'
+			onPress={() => {
+				const n = i
+				++i
+				console.info(`start of the EchoTest stream #${n}`)
+				messengerClient
+					.echoTest({
+						echo: `hello number #${n}`,
+						delay: 1000,
+					})
+					.then((stream: any) => {
+						stream.onMessage((res: any) => {
+							if (res) {
+								Vibration.vibrate(500)
+							}
+						})
+
+						setTimeout(stream.stop, 10000)
+						return stream.start()
+					})
+					.catch((err: Error) => {
+						if (err === EOF) {
+							console.info(`end of the EchoTest stream #${n}`)
+						} else if (err) {
+							console.warn(err)
+						}
+					})
+				++i
+			}}
 		/>
 	)
 }
@@ -157,6 +211,7 @@ const BodyDevTools: React.FC<{}> = () => {
 			/>
 			<TracingButton />
 			<DiscordShareButton />
+			<NativeCallButton />
 			<DumpContactStore />
 			<DumpConversationStore />
 			<DumpGroupsStore />

@@ -1,5 +1,6 @@
-2cbab12dd2ca79a3927633a0c7a1c20b21daf0b0  ../api/bertymessenger.proto
-47edfb915c309b1675fb9321a8872b50c4e74317  ../api/bertymessenger.yaml
+d4320504e644ee3cf87a6aa5d9d5aaf3dcec2166  ../api/bertybridge.proto
+69b7f3d1e93eec96550f5e0601793955a496d4bd  ../api/bertymessenger.proto
+2f54ca2410d45c13fabec6718002b6911526cd36  ../api/bertymessenger.yaml
 4989b51bf6dfc52cd195cc46db1732a81090191f  ../api/bertyprotocol.proto
 e62576e46e2d91d5d2584d0ac99ac7ac71d93e5f  ../api/bertyprotocol.yaml
 cdcfd4235af64debca29d0553209a34df7899361  ../api/bertytypes.proto

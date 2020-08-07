@@ -173,6 +173,8 @@ ios.storybook: deps packages/storybook-mobile/ios/Pods _storybook.mobile.start
 	cd packages/storybook-mobile && $(react-native) run-ios --simulator='iPhone 11' --no-packager
 	#cd packages/storybook-mobile && $(react-native) run-ios --no-packager
 
+ios.gomobile: packages/go-bridge/ios/Frameworks/Bertybridge.framework
+
 #### Android
 
 .PHONY: android.run
@@ -260,8 +262,17 @@ _gen.pbhbs:
 pbjs_flags := -p node_modules/@googleapis/googleapis -p ../vendor -p node_modules/@protocolbuffers/protobuf/src
 .PHONY: _gen.pbjs
 _gen.pbjs:
-	pbjs $(pbjs_flags) --no-comments --es6 -w es6 -t json-module   -o packages/api/index.pb.js ../api/bertyprotocol.proto ../api/bertymessenger.proto
-	pbjs $(pbjs_flags) -t static-module ../api/bertyprotocol.proto ../api/bertymessenger.proto | pbts --no-comments -o packages/api/index.pb.d.ts -
+	pbjs $(pbjs_flags) --no-comments --es6 -w es6 -t json-module   -o packages/api/index.pb.js \
+		../api/bertybridge.proto \
+		../api/bertyprotocol.proto \
+		../api/bertymessenger.proto
+
+	pbjs $(pbjs_flags) -t static-module \
+		../api/bertybridge.proto \
+		../api/bertyprotocol.proto \
+		../api/bertymessenger.proto \
+			| pbts --no-comments -o packages/api/index.pb.d.ts -
+
 	sed -E -i.bak 's/^.*constructor.*$$//g' packages/api/index.pb.d.ts
 	rm -f packages/api/index.pb.d.ts.bak
 	eslint --cache --quiet --fix --no-ignore packages/api/index.gen.js packages/codegen/index.gen.js
