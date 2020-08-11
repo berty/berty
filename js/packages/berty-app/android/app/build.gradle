@@ -147,6 +147,8 @@ android {
         ndk { abiFilters "armeabi", "armeabi-v7a", "x86" }
 
         missingDimensionStrategy 'react-native-camera', 'general'
+
+        buildConfigField "String", "INSTABUG_TOKEN", "\"${getEnvValue("INSTABUG_TOKEN")}\""
     }
     splits {
         abi {
@@ -297,6 +299,22 @@ dependencies {
 task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
+}
+
+// Override instabug upload_sourcemap task with similar task
+// that uses getEnvValue()
+task instabug_upload_sourcemap(type: Exec) {
+	environment 'INSTABUG_APP_TOKEN', getEnvValue('INSTABUG_TOKEN')
+	workingDir "${rootDir.getPath()}/../node_modules/instabug-reactnative/android"
+	commandLine 'bash', './upload_sourcemap.sh'
+}
+
+import org.apache.tools.ant.taskdefs.condition.Os
+tasks.whenTaskAdded { task ->
+	if (task.name == 'preReleaseBuild' && getEnvValue('INSTABUG_SKIP_UPLOAD') != 'true'
+		&& !Os.isFamily(Os.FAMILY_WINDOWS)) {
+		task.dependsOn instabug_upload_sourcemap
+	}
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

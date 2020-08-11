@@ -7,6 +7,7 @@ buildscript {
         minSdkVersion = 21
         compileSdkVersion = 29
         targetSdkVersion = 29
+        instabugUploadEnable = false // Fixed in `app/build.gradle`
     }
     repositories {
         google()
@@ -39,4 +40,28 @@ allprojects {
             url "https://sdks.instabug.com/nexus/repository/instabug-cp"
         }
     }
+}
+
+task importEnvFile {
+    def envFile = file("${rootDir.getPath()}/../../../.env")
+
+    if (envFile.exists()) {
+        envFile.readLines().each() {
+            if (!it.isEmpty() && !it.startsWith("#")) {
+                def (key, value) = it.tokenize('=')
+                if (key) {
+                    System.properties[key] = (value ? value : '')
+                }
+            }
+        }
+    }
+}
+
+ext.getEnvValue = { key ->
+    if (System.getenv(key)) { // Get var from system env first
+        return System.getenv(key)
+    } else if (System.getProperty(key)) { // if null, get var from env file
+        return System.getProperty(key)
+    }
+    return "" // if null, return an empty string
 }
