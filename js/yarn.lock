@@ -18127,6 +18127,13 @@ react-native-dev-menu@^4.0.0:
   resolved "https://registry.yarnpkg.com/react-native-dev-menu/-/react-native-dev-menu-4.0.0.tgz#ed4a067e4f8b38c3e97c25c8623b555cdfeccf54"
   integrity sha512-JOKoh4mKiB4KN8DwrZDpGMw5JK4RLQR/bdHm+38km+8dH6ib28mblHq2ILI9Gd2qgpasAS75CEqn4Ye4jggy1Q==
 
+react-native-dotenv@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-dotenv/-/react-native-dotenv-2.3.0.tgz#5c41bb06879616e9222f998446c4e401447c0638"
+  integrity sha512-I+qChtJT8U8EXSr91O1cMC7uU4Xaalg3aVFtRb1b47DX+30PMK+I8sCOMGnZcJW6YQyUaf0fjqlVXmmaMOcfWg==
+  dependencies:
+    dotenv "^8.0.0"
+
 react-native-easy-grid@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/react-native-easy-grid/-/react-native-easy-grid-0.2.2.tgz#f0be33620be1ebe2d2295918eb58b0a27e8272ab"

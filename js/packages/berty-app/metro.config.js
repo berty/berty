@@ -48,7 +48,7 @@ module.exports = (async () => {
 		},
 		watchFolders,
 		server: {
-			enableVisualizer: true,
+			enableVisualizer: false,
 		},
 	}
 })()

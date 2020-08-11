@@ -21,6 +21,7 @@
   "dependencies": {
     "@babel/core": "7.9.0",
     "@babel/preset-typescript": "^7.6.0",
-    "metro-react-native-babel-preset": "^0.56.0"
+    "metro-react-native-babel-preset": "^0.56.0",
+    "react-native-dotenv": "^2.3.0"
   }
 }

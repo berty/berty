@@ -27,6 +27,7 @@ steps:
       - export PATH=/usr/local/go/bin:$$PATH
       - go version
       - cd js
+      - echo "INSTABUG_TOKEN=$$INSTABUG_TOKEN" > .env
       - make android.release
     artifact_paths:
       - "js/packages/berty-app/android/universal.apk"
@@ -44,6 +45,7 @@ steps:
       - export GYM_BUILDLOG_PATH=$$PWD/logs/$BUILDKITE_COMMIT
       - export PATH=$$(brew --prefix ruby)/bin:$$PATH # use brew ruby
       - cd js
+      - echo "INSTABUG_TOKEN=$$INSTABUG_TOKEN" > .env
       - APP_TARGET=yolo IOS_BUNDLE_ID=tech.berty.ios.yolo IOS_RELEASE_METHOD=enterprise IOS_PROFILE=InHouse IOS_TEAM_ID=GR5463T564 make ios.release
       - mv ./packages/berty-app/build/ios-yolo/development/Berty.ipa ../Berty-Yolo-$BUILDKITE_COMMIT.ipa
       # remove logs if succeed
