@@ -5,8 +5,8 @@ buildscript {
         buildToolsVersion = "28.0.3"
         // minSdkVersion = 21 is required for optimal caching, see https://developer.android.com/studio/build/build-cache.html
         minSdkVersion = 21
-        compileSdkVersion = 28
-        targetSdkVersion = 28
+        compileSdkVersion = 29
+        targetSdkVersion = 29
     }
     repositories {
         google()

@@ -289,6 +289,7 @@ dependencies {
     }
 
 	implementation project(':lottie-react-native')
+	implementation project(':instabug-reactnative')
 }
 
 // Run this once to be able to run the application with BUCK
