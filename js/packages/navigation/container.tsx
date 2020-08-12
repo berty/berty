@@ -7,32 +7,23 @@ import { Routes } from './types'
 import { Messenger } from '@berty-tech/hooks'
 
 export const PREFIX = 'berty://'
+export const HTTPS_PREFIX = 'https://berty.tech/'
 
 export const NavigationContainer: React.FC = ({ children }) => {
 	const ref = useRef()
 	const handleDeepLink = Messenger.useHandleDeepLink()
 	const { getInitialState } = useLinking(ref, {
-		prefixes: [PREFIX],
+		prefixes: [PREFIX, HTTPS_PREFIX],
 		config: {
 			initialRouteName: 'Tabs',
 			screens: {
 				['Modals']: {
 					screens: {
 						[Routes.Modals.ManageDeepLink]: {
-							path: 'id/:link',
+							path: ':link',
 							parse: {
 								link: (data) => {
-									const link = `${PREFIX}id/${data}`
-									handleDeepLink(link)
-									return link
-								},
-							},
-						},
-						[Routes.Modals.ManageDeepLink2]: {
-							path: 'group/:link',
-							parse: {
-								link: (data) => {
-									const link = `${PREFIX}group/${data}`
+									const link = `${PREFIX}${data}`
 									handleDeepLink(link)
 									return link
 								},

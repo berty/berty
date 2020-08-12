@@ -37,6 +37,7 @@
 		CE5B2F029D0B4906A2736FC4 /* OpenSans-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C22C7B2AFD50420F85A0D4F2 /* OpenSans-LightItalic.ttf */; };
 		D44A45BF35F04A99B4A45ABE /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 028A8D5E44594D8B89E3E5A3 /* MaterialCommunityIcons.ttf */; };
 		E4B70368347145B788EDEEE3 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9A9E5C4A6C654C56B328B5B8 /* MaterialIcons.ttf */; };
+		EB1D6C9824E547A700F04D93 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D6C9724E547A700F04D93 /* ExternalAccessory.framework */; };
 		EDB76784535B48A9B2024122 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E7A1DC446F744A008F70567F /* FontAwesome5_Solid.ttf */; };
 		F18D9C8C0F6A4B06A770CB30 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1115E25D5C2F48F893178AE4 /* Zocial.ttf */; };
 		F82356B62383FBE300950AF2 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D0DE88311DF965EC38F62B95 /* libPods-Berty.a */; };
@@ -113,6 +114,11 @@
 		CDD34DF205BB4B44B79D823A /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		D0DE88311DF965EC38F62B95 /* libPods-Berty.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7A1DC446F744A008F70567F /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
+		EB1D6C9324E3EA1E00F04D93 /* Berty Debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Berty Debug.entitlements"; sourceTree = "<group>"; };
+		EB1D6C9424E4203C00F04D93 /* Berty Staff.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Berty Staff.entitlements"; sourceTree = "<group>"; };
+		EB1D6C9524E4205900F04D93 /* Berty Yolo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Berty Yolo.entitlements"; sourceTree = "<group>"; };
+		EB1D6C9624E4206A00F04D93 /* Berty.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Berty.entitlements; path = Berty/Berty.entitlements; sourceTree = "<group>"; };
+		EB1D6C9724E547A700F04D93 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F399DA55B10C419A9CB95365 /* OpenSans-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Italic.ttf"; path = "../assets/OpenSans-Italic.ttf"; sourceTree = "<group>"; };
@@ -159,6 +165,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB1D6C9824E547A700F04D93 /* ExternalAccessory.framework in Frameworks */,
 				8A72F25D2451C4FD00CC2839 /* MultipeerConnectivity.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -186,6 +193,7 @@
 		13B07FAE1A68108700A75B9A /* Berty */ = {
 			isa = PBXGroup;
 			children = (
+				EB1D6C9624E4206A00F04D93 /* Berty.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -202,6 +210,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EB1D6C9724E547A700F04D93 /* ExternalAccessory.framework */,
 				8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */,
 				F82356C223841C7E00950AF2 /* libPods-Berty.a */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
@@ -257,6 +266,9 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				EB1D6C9524E4205900F04D93 /* Berty Yolo.entitlements */,
+				EB1D6C9424E4203C00F04D93 /* Berty Staff.entitlements */,
+				EB1D6C9324E3EA1E00F04D93 /* Berty Debug.entitlements */,
 				F8BF4661238444080077A846 /* Release.xcconfig */,
 				F81E8EE62382FE27007CDBA3 /* Debug.xcconfig */,
 				13B07FAE1A68108700A75B9A /* Berty */,
@@ -408,7 +420,7 @@
 					F8BF464B238441AC0077A846 = {
 						DevelopmentTeam = WMBQ84HN4T;
 						LastSwiftMigration = 1110;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					F8BF4662238444330077A846 = {
 						DevelopmentTeam = WMBQ84HN4T;
@@ -903,6 +915,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Berty/Berty.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -934,6 +947,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Berty/Berty.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -963,11 +977,12 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_ENTITLEMENTS = "Berty Debug.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = WMBQ84HN4T;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -978,7 +993,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.debug;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development tech.berty.ios.debug";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -994,10 +1009,11 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_ENTITLEMENTS = "Berty Debug.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = WMBQ84HN4T;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1008,7 +1024,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.debug;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development tech.berty.ios.debug";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1022,6 +1038,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Berty Staff.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1052,6 +1069,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Berty Staff.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1081,6 +1099,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Berty Yolo.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1110,6 +1129,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Berty Yolo.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
