@@ -20,7 +20,6 @@ import (
 	ipfs_badger "github.com/ipfs/go-ds-badger"
 	"github.com/ipfs/go-ipfs/core"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
-	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/peerstore"
@@ -40,7 +39,6 @@ import (
 
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -75,6 +73,7 @@ type MessengerConfig struct {
 	*Config
 
 	dLogger  NativeLoggerDriver
+	lc       LifeCycleDriver
 	loglevel string
 	poiDebug bool
 
@@ -116,6 +115,10 @@ func (pc *MessengerConfig) LogLevel(level string) {
 
 func (pc *MessengerConfig) LoggerDriver(dLogger NativeLoggerDriver) {
 	pc.dLogger = dLogger
+}
+
+func (pc *MessengerConfig) LifeCycleDriver(lc LifeCycleDriver) {
+	pc.lc = lc
 }
 
 func (pc *MessengerConfig) AddSwarmListener(laddr string) {
@@ -182,7 +185,8 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 				SwarmAddrs:        defaultSwarmAddrs,
 				APIAddrs:          defaultAPIAddrs,
 				APIConfig:         APIConfig,
-				ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
+				// @FIXME: this can cause some crash in debug, disable it for the moment
+				// ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
 				HostConfig: func(h host.Host, _ routing.Routing) error {
 					var err error
 
@@ -381,6 +385,19 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 		if err != nil {
 			return nil, err
 		}
+	}
+
+	// setup lifecycle
+	{
+		var lc LifeCycleDriver
+		if lc = config.lc; lc == nil {
+			lc = NewNoopLifeCycleDriver()
+		}
+
+		testHandler := NewTestHandler(logger.Named("lifecycle"))
+		lc.RegisterHandler(testHandler)
+		state := lc.GetCurrentState()
+		testHandler.HandleState(state)
 	}
 
 	return &MessengerBridge{

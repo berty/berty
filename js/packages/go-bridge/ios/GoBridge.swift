@@ -21,7 +21,7 @@ extension NSDictionary {
 class GoBridge: NSObject {
     static let rnlogger = LoggerDriver("tech.berty", "react")
 
-    // protocolz
+    // protocol
     var bridgeMessenger: BertybridgeMessengerBridge?
     let rootdir: URL
 
@@ -101,12 +101,15 @@ class GoBridge: NSObject {
                 throw NSError(domain: "unable to create config", code: 1)
             }
 
-            // init logger
+            // set life cycle driver
+            config.lifeCycleDriver(LifeCycleDriver.shared)
+            
+            // init logger driver
             let logger = LoggerDriver("tech.berty", "protocol")
 
             config.logLevel(optLog)
             config.loggerDriver(logger)
-
+            
             // configure grpc listener
             for obj in optGrpcListeners {
                 guard let listener = obj as? String else {
