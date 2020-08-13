@@ -15,7 +15,6 @@ import (
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/go-orbit-db/events"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/hkdf"
@@ -176,106 +175,171 @@ func metadataStoreListSecrets(ctx context.Context, gc *groupContext) map[crypto.
 	return publishedSecrets
 }
 
-func FillMessageKeysHolderUsingNewData(ctx context.Context, gc *groupContext) {
+func FillMessageKeysHolderUsingNewData(ctx context.Context, gc *groupContext) <-chan crypto.PubKey {
 	m := gc.MetadataStore()
+	ch := make(chan crypto.PubKey)
+	sub := m.Subscribe(ctx)
 
-	for evt := range m.Subscribe(ctx) {
-		go func(evt events.Event) {
+	go func() {
+		for evt := range sub {
 			e, ok := evt.(*bertytypes.GroupMetadataEvent)
 			if !ok {
-				return
+				continue
+			}
+
+			if e.Metadata.EventType != bertytypes.EventTypeGroupDeviceSecretAdded {
+				continue
 			}
 
 			pk, ds, err := openDeviceSecret(e.Metadata, gc.getMemberPrivKey(), gc.Group())
-			if errcode.Is(err, errcode.ErrInvalidInput) || errcode.Is(err, errcode.ErrGroupSecretOtherDestMember) {
-				return
+			if errcode.Is(err, errcode.ErrInvalidInput) {
+				continue
+			}
+
+			if errcode.Is(err, errcode.ErrGroupSecretOtherDestMember) {
+				continue
 			}
 
 			if err != nil {
 				gc.logger.Error("an error occurred while opening device secrets", zap.Error(err))
-				return
+				continue
 			}
 
 			if err = gc.MessageKeystore().RegisterChainKey(gc.Group(), pk, ds, gc.DevicePubKey().Equals(pk)); err != nil {
 				gc.logger.Error("unable to register chain key", zap.Error(err))
-				return
+				continue
 			}
-		}(evt)
-	}
+
+			ch <- pk
+		}
+
+		close(ch)
+	}()
+
+	return ch
 }
 
-func FillMessageKeysHolderUsingPreviousData(ctx context.Context, gc *groupContext) {
+func FillMessageKeysHolderUsingPreviousData(ctx context.Context, gc *groupContext) <-chan crypto.PubKey {
+	ch := make(chan crypto.PubKey)
 	publishedSecrets := metadataStoreListSecrets(ctx, gc)
-	wg := sync.WaitGroup{}
 
-	for pk, sec := range publishedSecrets {
-		wg.Add(1)
-		go func(pk crypto.PubKey, sec *bertytypes.DeviceSecret) {
+	go func() {
+		for pk, sec := range publishedSecrets {
 			if err := gc.MessageKeystore().RegisterChainKey(gc.Group(), pk, sec, gc.DevicePubKey().Equals(pk)); err != nil {
 				gc.logger.Error("unable to register chain key", zap.Error(err))
+			} else {
+				ch <- pk
 			}
-			wg.Done()
-		}(pk, sec)
-	}
+		}
 
-	wg.Wait()
+		close(ch)
+	}()
+
+	return ch
 }
 
-func ActivateGroupContext(ctx context.Context, gc *groupContext) error {
+func activateGroupContext(ctx context.Context, gc *groupContext, selfAnnouncement bool) error {
 	wg := sync.WaitGroup{}
 	wg.Add(2)
+
+	syncChMKH := make(chan bool, 1)
+	syncChSecrets := make(chan bool, 1)
 
 	// Fill keystore
 	go func() {
+		ch := FillMessageKeysHolderUsingNewData(ctx, gc)
 		wg.Done()
-		FillMessageKeysHolderUsingNewData(ctx, gc)
+
+		for pk := range ch {
+			if pk.Equals(gc.memberDevice.device.GetPublic()) {
+				select {
+				case syncChMKH <- true:
+				default:
+				}
+			}
+		}
+
+		close(syncChMKH)
 	}()
 
 	go func() {
+		ch := WatchNewMembersAndSendSecrets(ctx, gc.logger, gc)
 		wg.Done()
-		WatchNewMembersAndSendSecrets(ctx, gc.logger, gc)
-	}()
 
-	wg.Wait()
-	wg.Add(2)
+		for pk := range ch {
+			if pk.Equals(gc.memberDevice.member.GetPublic()) {
+				select {
+				case syncChSecrets <- true:
+				default:
+				}
+			}
+		}
 
-	go func() {
-		start := time.Now()
-		FillMessageKeysHolderUsingPreviousData(ctx, gc)
-
-		gc.logger.Info(fmt.Sprintf("FillMessageKeysHolderUsingPreviousData took %s", time.Since(start)))
-		wg.Done()
-	}()
-
-	go func() {
-		start := time.Now()
-		SendSecretsToExistingMembers(ctx, gc)
-
-		gc.logger.Info(fmt.Sprintf("SendSecretsToExistingMembers took %s", time.Since(start)))
-		wg.Done()
+		close(syncChSecrets)
 	}()
 
 	wg.Wait()
 
 	start := time.Now()
-	if _, err := gc.MetadataStore().AddDeviceToGroup(ctx); err != nil {
-		return errcode.ErrInternal.Wrap(err)
+	ch := FillMessageKeysHolderUsingPreviousData(ctx, gc)
+	for pk := range ch {
+		if pk.Equals(gc.memberDevice.device.GetPublic()) {
+			select {
+			case syncChMKH <- true:
+			default:
+			}
+		}
 	}
-	gc.logger.Info(fmt.Sprintf("AddDeviceToGroup took %s", time.Since(start)))
+
+	gc.logger.Info(fmt.Sprintf("FillMessageKeysHolderUsingPreviousData took %s", time.Since(start)))
+
+	start = time.Now()
+	ch = SendSecretsToExistingMembers(ctx, gc)
+	for pk := range ch {
+		if pk.Equals(gc.memberDevice.member.GetPublic()) {
+			select {
+			case syncChSecrets <- true:
+			default:
+			}
+		}
+	}
+
+	gc.logger.Info(fmt.Sprintf("SendSecretsToExistingMembers took %s", time.Since(start)))
+
+	if selfAnnouncement {
+		start = time.Now()
+		op, err := gc.MetadataStore().AddDeviceToGroup(ctx)
+		if err != nil {
+			return errcode.ErrInternal.Wrap(err)
+		}
+
+		gc.logger.Info(fmt.Sprintf("AddDeviceToGroup took %s", time.Since(start)))
+
+		if op != nil {
+			// Waiting for async events to be handled
+			if ok := <-syncChMKH; !ok {
+				return errcode.ErrInternal.Wrap(fmt.Errorf("error while registering own secrets"))
+			}
+
+			if ok := <-syncChSecrets; !ok {
+				return errcode.ErrInternal.Wrap(fmt.Errorf("error while sending own secrets"))
+			}
+		}
+	}
 
 	return nil
 }
 
-func SendSecretsToExistingMembers(ctx context.Context, gctx *groupContext) {
+func ActivateGroupContext(ctx context.Context, gc *groupContext) error {
+	return activateGroupContext(ctx, gc, true)
+}
+
+func SendSecretsToExistingMembers(ctx context.Context, gctx *groupContext) <-chan crypto.PubKey {
+	ch := make(chan crypto.PubKey)
 	members := gctx.MetadataStore().ListMembers()
-	wg := sync.WaitGroup{}
 
-	for _, pk := range members {
-		wg.Add(1)
-
-		go func(pk crypto.PubKey) {
-			defer wg.Done()
-
+	go func() {
+		for _, pk := range members {
 			rawPK, err := pk.Raw()
 			if err != nil {
 				gctx.logger.Error("failed to serialize pk", zap.Error(err))
@@ -284,39 +348,46 @@ func SendSecretsToExistingMembers(ctx context.Context, gctx *groupContext) {
 			if _, err := gctx.MetadataStore().SendSecret(ctx, pk); err != nil {
 				if !errcode.Is(err, errcode.ErrGroupSecretAlreadySentToMember) {
 					gctx.logger.Info("secret already sent secret to member", zap.String("memberpk", base64.StdEncoding.EncodeToString(rawPK)))
-					return
+					ch <- pk
+					continue
 				}
 			} else {
 				gctx.logger.Info("sent secret to existing member", zap.String("memberpk", base64.StdEncoding.EncodeToString(rawPK)))
+				ch <- pk
 			}
-		}(pk)
-	}
+		}
 
-	wg.Wait()
+		close(ch)
+	}()
+
+	return ch
 }
 
-func WatchNewMembersAndSendSecrets(ctx context.Context, logger *zap.Logger, gctx *groupContext) {
-	for evt := range gctx.MetadataStore().Subscribe(ctx) {
-		go func(evt events.Event) {
+func WatchNewMembersAndSendSecrets(ctx context.Context, logger *zap.Logger, gctx *groupContext) <-chan crypto.PubKey {
+	ch := make(chan crypto.PubKey)
+	sub := gctx.MetadataStore().Subscribe(ctx)
+
+	go func() {
+		for evt := range sub {
 			e, ok := evt.(*bertytypes.GroupMetadataEvent)
 			if !ok {
-				return
+				continue
 			}
 
 			if e.Metadata.EventType != bertytypes.EventTypeGroupMemberDeviceAdded {
-				return
+				continue
 			}
 
 			event := &bertytypes.GroupAddMemberDevice{}
 			if err := event.Unmarshal(e.Event); err != nil {
 				logger.Error("unable to unmarshal payload", zap.Error(err))
-				return
+				continue
 			}
 
 			memberPK, err := crypto.UnmarshalEd25519PublicKey(event.MemberPK)
 			if err != nil {
 				logger.Error("unable to unmarshal sender member pk", zap.Error(err))
-				return
+				continue
 			}
 
 			if _, err := gctx.MetadataStore().SendSecret(ctx, memberPK); err != nil {
@@ -324,8 +395,14 @@ func WatchNewMembersAndSendSecrets(ctx context.Context, logger *zap.Logger, gctx
 					logger.Error("unable to send secret to member", zap.Error(err))
 				}
 			}
-		}(evt)
-	}
+
+			ch <- memberPK
+		}
+
+		close(ch)
+	}()
+
+	return ch
 }
 
 func openDeviceSecret(m *bertytypes.GroupMetadata, localMemberPrivateKey crypto.PrivKey, group *bertytypes.Group) (crypto.PubKey, *bertytypes.DeviceSecret, error) {

@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	bazil.org/fuse v0.0.0-20200524192727-fb710f7dfd05 // indirect
-	berty.tech/go-ipfs-log v1.2.3
+	berty.tech/go-ipfs-log v1.2.4
 	berty.tech/go-orbit-db v1.10.4
 	berty.tech/ipfs-webui-packed v1.0.0-v2.9.0-4
 	github.com/aead/ecdh v0.2.0
@@ -96,6 +96,8 @@ require (
 
 replace (
 	bazil.org/fuse => bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc // specific version for iOS building
+	berty.tech/go-ipfs-log => ../go-ipfs-log
+	berty.tech/go-orbit-db => ../go-orbit-db
 	github.com/agl/ed25519 => github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // latest commit before the author shutdown the repo; see https://github.com/golang/go/issues/20504
 	github.com/ipld/go-ipld-prime => github.com/ipld/go-ipld-prime v0.0.2-0.20191108012745-28a82f04c785 // specific version needed indirectly
 	github.com/ipld/go-ipld-prime-proto => github.com/ipld/go-ipld-prime-proto v0.0.0-20191113031812-e32bd156a1e5 // specific version needed indirectly

@@ -129,7 +129,7 @@ func TestScenario_AddContact(t *testing.T) {
 
 func TestScenario_MessageContactGroup(t *testing.T) {
 	cases := []testCase{
-		{"2 clients/connectAll", 2, ConnectAll, false, true, time.Second * 20},
+		{"2 clients/connectAll", 2, ConnectAll, false, false, time.Second * 20},
 		// FIXME: all test cases below
 		// {"3 clients/connectAll", 3, ConnectAll, false, false, time.Second * 20},
 		// {"3 clients/connectInLine", 3, ConnectInLine, false, false, time.Second * 20},
