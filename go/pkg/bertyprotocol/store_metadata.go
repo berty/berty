@@ -843,7 +843,7 @@ func constructorFactoryGroupMetadata(s *bertyOrbitDB) iface.StoreConstructor {
 
 		go func() {
 			for e := range store.Subscribe(ctx) {
-				entry := ipfslog.Entry(nil)
+				var entry ipfslog.Entry
 
 				switch evt := e.(type) {
 				case *stores.EventWrite:

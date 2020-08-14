@@ -128,7 +128,7 @@ func constructorFactoryGroupMessage(s *bertyOrbitDB) iface.StoreConstructor {
 			devKS:  s.deviceKeystore,
 			mks:    s.messageKeystore,
 			g:      g,
-			logger: zap.NewNop(),
+			logger: s.Logger(),
 		}
 
 		options.Index = basestore.NewBaseIndex

@@ -2,9 +2,9 @@ package bertyprotocol
 
 import (
 	"berty.tech/berty/v2/go/internal/tracer"
-
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+
 	"go.uber.org/zap"
 )
 
