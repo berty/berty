@@ -9,7 +9,7 @@ import React from 'react'
 import DevMenu from 'react-native-dev-menu'
 import Navigation, { NavigationContainer } from '@berty-tech/navigation'
 
-import { Theme, NodeGate } from '@berty-tech/components'
+import { Theme, NodeGate, NotificationsProvider } from '@berty-tech/components'
 import '@berty-tech/berty-i18n'
 import { enableScreens } from 'react-native-screens'
 import { Messenger } from '@berty-tech/hooks'
@@ -43,9 +43,11 @@ export const App: React.FC = () => {
 					<NavigationContainer>
 						<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
 						<Theme.Provider>
-							<NodeGate>
-								<Navigation />
-							</NodeGate>
+							<NotificationsProvider>
+								<NodeGate>
+									<Navigation />
+								</NodeGate>
+							</NotificationsProvider>
 						</Theme.Provider>
 					</NavigationContainer>
 				</Messenger.Provider>
