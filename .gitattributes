@@ -15,6 +15,7 @@ client/common/openssl/built/* linguist-vendored
 *.gen.yml linguist-generated
 *.pb.d.ts linguist-generated
 *.pb.go linguist-generated
+*.pb.gw.go linguist-generated
 *.pb.js linguist-generated
 *pb_test.go linguist-generated
 docs/*/api.md linguist-generated
@@ -25,6 +26,7 @@ yarn.lock linguist-generated
 package.json linguist-generated
 Podfile.lock linguist-generated
 /js/packages/store/protocol/grpc-web-gen/** linguist-generated
+api/bertymessenger.yaml linguist-generated
 
 # Reduce conflicts on markdown files
 *.md merge=union
