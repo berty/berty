@@ -109,7 +109,6 @@ const DevReferenceInput = () => {
 			<TextInput
 				value={ref}
 				onChangeText={setRef}
-				//eslint-disable-next-line react-native/no-inline-styles
 				style={{ backgroundColor: 'white', padding: 8 }}
 			/>
 			<Button

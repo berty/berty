@@ -412,7 +412,8 @@ export const transactions = {
 				group: reply.bertyGroup?.group,
 			})
 		} catch (e) {
-			console.warn('Failed to join multi-member group:', e)
+			console.warn(e.toString())
+			throw new Error('Error joining group. Are you already a member?')
 		}
 	},
 	createOneToOne: function* (payload) {

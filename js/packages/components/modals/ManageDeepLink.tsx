@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { SendContactRequest } from './SendContactRequest'
 import { ScreenProps } from '@berty-tech/navigation'
 import { ManageGroupInvitation } from './ManageGroupInvitation'
+import { bufToStr } from '@berty-tech/store/utils'
 
 export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 	route: { params },
@@ -17,7 +18,7 @@ export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 	const deepLinkStatus = Messenger.useDeepLinkStatus()
 	const [{ border }] = useStyles()
 	console.log('params', params)
-	console.log('ManageDeepLink render:', deepLinkStatus)
+	console.log('ManageDeepLink render:', JSON.stringify(deepLinkStatus, null, 2))
 	const dataType = (!params.link && params.type) || 'link'
 	let content
 	if (!client || !account?.onboarded) {
@@ -43,7 +44,22 @@ export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 		}
 		content = <InvalidScan title={title} error={deepLinkStatus.error} />
 	} else if (deepLinkStatus.kind === 'group') {
-		content = <ManageGroupInvitation />
+		const { bertyGroup } = deepLinkStatus.parsedData || {}
+		if (!(bertyGroup?.group?.publicKey && bertyGroup?.displayName)) {
+			content = (
+				<InvalidScan
+					title={'Error joining group!'}
+					error='This invitation contains incomplete data. ☹️'
+				/>
+			)
+		} else {
+			content = (
+				<ManageGroupInvitation
+					groupPk={bufToStr(bertyGroup.group.publicKey)}
+					displayName={bertyGroup.displayName}
+				/>
+			)
+		}
 	} else if (deepLinkStatus.kind === 'contact') {
 		content = <SendContactRequest type={dataType} />
 	}

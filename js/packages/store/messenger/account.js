@@ -67,9 +67,9 @@ const eventHandler = createSlice({
 			}
 			return state
 		},
-		handleDeepLinkDone: (state, { payload: { link, kind } }) => {
+		handleDeepLinkDone: (state, { payload: { link, kind, parsedData } }) => {
 			if (state) {
-				state.deepLinkStatus = { link, kind }
+				state.deepLinkStatus = { link, kind, parsedData }
 			}
 			return state
 		},
@@ -185,7 +185,7 @@ export const transactions = {
 			} else {
 				kind = 'unknown'
 			}
-			yield put(events.handleDeepLinkDone({ link: url, kind }))
+			yield put(events.handleDeepLinkDone({ link: url, kind, parsedData: data }))
 		} catch (e) {
 			if (e.name === 'GRPCError') {
 				const error = new Error('Corrupted deep link.').toString()
