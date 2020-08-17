@@ -45,8 +45,9 @@ func TestClient(t *testing.T) {
 	go func() {
 		defer wg.Done()
 		rep, err := res.Recv()
-		c = rep.Conversation
 		require.NoError(t, err)
+
+		c = rep.Conversation
 	}()
 
 	dn := "Tasty"
