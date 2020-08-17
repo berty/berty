@@ -43,7 +43,7 @@ const sassModuleRegex = /\.module\.(scss|sass)$/
 
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
-module.exports = function(webpackEnv) {
+module.exports = function (webpackEnv) {
 	const isEnvDevelopment = webpackEnv === 'development'
 	const isEnvProduction = webpackEnv === 'production'
 
@@ -353,8 +353,8 @@ module.exports = function(webpackEnv) {
 							loader: require.resolve('babel-loader'),
 							options: {
 								customize: require.resolve('babel-preset-react-app/webpack-overrides'),
-
 								plugins: [
+									require.resolve('@babel/plugin-proposal-class-properties'),
 									[
 										require.resolve('babel-plugin-named-asset-import'),
 										{
@@ -388,6 +388,7 @@ module.exports = function(webpackEnv) {
 								presets: [
 									[require.resolve('babel-preset-react-app/dependencies'), { helpers: true }],
 								],
+								plugins: [require.resolve('@babel/plugin-proposal-class-properties')],
 								cacheDirectory: true,
 								// See #6846 for context on why cacheCompression is disabled
 								cacheCompression: false,

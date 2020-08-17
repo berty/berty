@@ -13,6 +13,7 @@ import (
 	"go.uber.org/zap"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"moul.io/u"
 	"moul.io/zapgorm2"
 )
@@ -37,6 +38,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 		dispatcher:      NewDispatcher(),
 		cancelFn:        cancel,
 		optsCleanup:     optsCleanup,
+		ctx:             ctx,
 	}
 
 	icr, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
@@ -53,8 +55,13 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 		case err == gorm.ErrRecordNotFound: // account not found, create a new one
 			svc.logger.Debug("account not found, creating a new one", zap.String("pk", pkStr))
 			acc.State = Account_NotReady
+			ret, err := svc.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{})
+			if err != nil {
+				return nil, err
+			}
+			acc.Link = ret.GetHTMLURL()
 			acc.PublicKey = pkStr
-			if err = svc.db.Save(&acc).Error; err != nil {
+			if err := svc.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&acc).Error; err != nil {
 				return nil, err
 			}
 		case err != nil: // internal error
@@ -89,10 +96,54 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 				}
 				err = handleProtocolEvent(&svc, gme)
 				if err != nil {
-					svc.logger.Error("failed to handle protocol event", zap.Error(err))
+					svc.logger.Error("failed to handle protocol event", zap.Error(errcode.ErrInternal.Wrap(err)))
 				}
 			}
 		}()
+	}
+
+	// subscribe to groups metadata
+	{
+		// TODO: subscribe to multimember and OutgoingRequest contacts
+
+		var contacts []Contact
+		err := svc.db.Find(&contacts).Error
+		if err != nil {
+			return nil, err
+		}
+		for _, c := range contacts {
+			if c.State != Contact_Established {
+				continue
+			}
+			pkb, err := base64.StdEncoding.DecodeString(c.GetPublicKey())
+			if err != nil {
+				return nil, err
+			}
+			s, err := svc.protocolClient.GroupMetadataSubscribe(svc.ctx, &bertytypes.GroupMetadataSubscribe_Request{GroupPK: pkb})
+			if err != nil {
+				return nil, err
+			}
+			go func() {
+				for {
+					gme, err := s.Recv()
+					if err != nil {
+						switch {
+						case err == io.EOF:
+							svc.logger.Warn("group stream EOF")
+						case grpcIsCanceled(err):
+							svc.logger.Debug("group stream canceled")
+						default:
+							svc.logger.Error("receive from group metadata stream", zap.Error(err))
+						}
+						return
+					}
+					err = handleProtocolEvent(&svc, gme)
+					if err != nil {
+						svc.logger.Error("failed to handle protocol event", zap.Error(errcode.ErrInternal.Wrap(err)))
+					}
+				}
+			}()
+		}
 	}
 
 	return &svc, nil
@@ -147,6 +198,7 @@ type service struct {
 	dispatcher      *Dispatcher
 	cancelFn        func()
 	optsCleanup     func()
+	ctx             context.Context
 }
 
 type Service interface {

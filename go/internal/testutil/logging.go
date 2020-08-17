@@ -21,6 +21,7 @@ func Logger(t *testing.T) *zap.Logger {
 	// @NOTE(gfanton): since orbitdb use `zap.L()`, this will only
 	// replace zap global logger with our logger
 	orbitdbDebug := parseBoolFromEnv("ORBITDB_DEBUG")
+	bertylogfile := os.Getenv("LOGFILE")
 
 	isDebugEnabled := bertyDebug || orbitdbDebug || libp2pDebug
 	if !isDebugEnabled {
@@ -32,6 +33,9 @@ func Logger(t *testing.T) *zap.Logger {
 	config.DisableStacktrace = true
 	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	config.Level.SetLevel(zap.DebugLevel)
+	if bertylogfile != "" {
+		config.OutputPaths = []string{bertylogfile}
+	}
 
 	// build logger
 	logger, err := config.Build()

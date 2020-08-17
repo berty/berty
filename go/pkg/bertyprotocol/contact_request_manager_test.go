@@ -25,7 +25,7 @@ func TestContactRequestFlow(t *testing.T) {
 
 	metadataSender1 := []byte("sender_1")
 
-	pts, cleanup := newTestingProtocolWithMockedPeers(ctx, t, &opts, 2)
+	pts, cleanup := NewTestingProtocolWithMockedPeers(ctx, t, &opts, 2)
 	defer cleanup()
 
 	_, err := pts[0].Client.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})
@@ -148,7 +148,7 @@ func TestContactRequestFlowWithoutIncoming(t *testing.T) {
 
 	metadataSender1 := []byte("sender_1")
 
-	pts, cleanup := newTestingProtocolWithMockedPeers(ctx, t, &opts, 2)
+	pts, cleanup := NewTestingProtocolWithMockedPeers(ctx, t, &opts, 2)
 	defer cleanup()
 
 	_, err := pts[0].Client.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})

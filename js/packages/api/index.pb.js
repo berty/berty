@@ -1915,9 +1915,29 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "ConversationCreate.Request",
                     responseType: "ConversationCreate.Reply"
                   },
+                  ConversationJoin: {
+                    requestType: "ConversationJoin.Request",
+                    responseType: "ConversationJoin.Reply"
+                  },
                   AccountGet: {
                     requestType: "AccountGet.Request",
                     responseType: "AccountGet.Reply"
+                  },
+                  AccountUpdate: {
+                    requestType: "AccountUpdate.Request",
+                    responseType: "AccountUpdate.Reply"
+                  },
+                  ContactRequest: {
+                    requestType: "ContactRequest.Request",
+                    responseType: "ContactRequest.Reply"
+                  },
+                  ContactAccept: {
+                    requestType: "ContactAccept.Request",
+                    responseType: "ContactAccept.Reply"
+                  },
+                  Interact: {
+                    requestType: "Interact.Request",
+                    responseType: "Interact.Reply"
                   }
                 }
               },
@@ -2277,12 +2297,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   GroupInvitation: {
                     fields: {
-                      groupPk: {
+                      link: {
                         type: "string",
-                        id: 2,
-                        options: {
-                          "(gogoproto.jsontag)": "groupPk"
-                        }
+                        id: 2
                       }
                     }
                   },
@@ -2395,6 +2412,22 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
+              ConversationJoin: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      link: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
               Account: {
                 fields: {
                   publicKey: {
@@ -2408,9 +2441,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 2
                   },
+                  link: {
+                    type: "string",
+                    id: 3
+                  },
                   state: {
                     type: "State",
-                    id: 3
+                    id: 4
                   }
                 },
                 nested: {
@@ -2420,6 +2457,37 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       NotReady: 1,
                       Ready: 2
                     }
+                  }
+                }
+              },
+              Interaction: {
+                fields: {
+                  cid: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primary_key"
+                    }
+                  },
+                  type: {
+                    type: "AppMessage.Type",
+                    id: 2
+                  },
+                  conversationPublicKey: {
+                    type: "string",
+                    id: 3
+                  },
+                  conversation: {
+                    type: "Conversation",
+                    id: 4
+                  },
+                  payload: {
+                    type: "bytes",
+                    id: 5
+                  },
+                  isMe: {
+                    type: "bool",
+                    id: 6
                   }
                 }
               },
@@ -2436,9 +2504,17 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 2
                   },
+                  conversationPublicKey: {
+                    type: "string",
+                    id: 3
+                  },
+                  conversation: {
+                    type: "Conversation",
+                    id: 4
+                  },
                   state: {
                     type: "State",
-                    id: 3
+                    id: 5
                   }
                 },
                 nested: {
@@ -2465,6 +2541,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   displayName: {
                     type: "string",
                     id: 2
+                  },
+                  link: {
+                    type: "string",
+                    id: 3
                   }
                 }
               },
@@ -2515,7 +2595,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       TypeConversationUpdated: 0,
                       TypeConversationDeleted: 1,
                       TypeInteractionUpdated: 2,
-                      TypeContactUpdated: 3
+                      TypeContactUpdated: 3,
+                      TypeAccountUpdated: 4,
+                      TypeListEnd: 5
                     }
                   },
                   ConversationUpdated: {
@@ -2535,7 +2617,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     }
                   },
                   InteractionUpdated: {
-                    fields: {}
+                    fields: {
+                      interaction: {
+                        type: "Interaction",
+                        id: 1
+                      }
+                    }
                   },
                   ContactUpdated: {
                     fields: {
@@ -2544,6 +2631,17 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         id: 1
                       }
                     }
+                  },
+                  AccountUpdated: {
+                    fields: {
+                      account: {
+                        type: "Account",
+                        id: 1
+                      }
+                    }
+                  },
+                  ListEnd: {
+                    fields: {}
                   }
                 }
               },
@@ -2580,6 +2678,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       displayName: {
                         type: "string",
                         id: 1
+                      },
+                      contactsToInvite: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 2
                       }
                     }
                   },
@@ -2639,6 +2742,78 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   displayName: {
                     type: "string",
                     id: 1
+                  }
+                }
+              },
+              AccountUpdate: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      displayName: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              ContactRequest: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      link: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              ContactAccept: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      publicKey: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              Interact: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      type: {
+                        type: "AppMessage.Type",
+                        id: 1
+                      },
+                      payload: {
+                        type: "bytes",
+                        id: 2
+                      },
+                      conversationPublicKey: {
+                        type: "string",
+                        id: 3
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
                   }
                 }
               }

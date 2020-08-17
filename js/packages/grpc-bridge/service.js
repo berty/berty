@@ -13,7 +13,7 @@ const createUnaryMethod = (method, unaryCall) => {
 
 const createUnaryMethodList = (service, rpcImpl, middleware) => {
 	let methods = {}
-	Object.keys(service.methods).forEach((key) => {
+	Object.keys(service.methods || {}).forEach((key) => {
 		const method = service.methods[key]
 		if (!method.responseStream && !method.requestStream) {
 			const lkey = lowerFirst(key)
@@ -59,7 +59,7 @@ const createStreamMethod = (method, streamCall) => {
 
 const createStreamMethodList = (service, rpcImpl, middleware) => {
 	let methods = {}
-	Object.keys(service.methods).forEach((key) => {
+	Object.keys(service.methods || {}).forEach((key) => {
 		const method = service.methods[key]
 		if (method.responseStream || method.requestStream) {
 			const lkey = lowerFirst(key)

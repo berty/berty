@@ -123,7 +123,7 @@ func (opts *TestingOpts) applyDefaults(ctx context.Context) {
 	}
 }
 
-func newTestingProtocolWithMockedPeers(ctx context.Context, t *testing.T, opts *TestingOpts, amount int) ([]*TestingProtocol, func()) {
+func NewTestingProtocolWithMockedPeers(ctx context.Context, t *testing.T, opts *TestingOpts, amount int) ([]*TestingProtocol, func()) {
 	t.Helper()
 	opts.applyDefaults(ctx)
 	logger := opts.Logger

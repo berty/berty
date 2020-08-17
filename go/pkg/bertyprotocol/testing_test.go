@@ -40,7 +40,7 @@ func TestTestingProtocolWithMockedPeers(t *testing.T) {
 		t.Run(fmt.Sprintf("%d-peers", amount), func(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			opts := TestingOpts{}
-			tp, cleanup := newTestingProtocolWithMockedPeers(ctx, t, &opts, amount)
+			tp, cleanup := NewTestingProtocolWithMockedPeers(ctx, t, &opts, amount)
 			assert.NotNil(t, tp)
 			cleanup()
 			cancel()

@@ -138,6 +138,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
     "ts-loader": "^7.0.1",
     "typescript": "^3.9.5"
   }

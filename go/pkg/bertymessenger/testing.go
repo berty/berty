@@ -2,6 +2,7 @@ package bertymessenger
 
 import (
 	"context"
+	"strconv"
 	"testing"
 	"time"
 
@@ -18,6 +19,7 @@ import (
 type TestingServiceOpts struct {
 	Logger *zap.Logger
 	Client bertyprotocol.Client
+	Index  int
 }
 
 func TestingService(ctx context.Context, t *testing.T, opts *TestingServiceOpts) (MessengerServiceServer, func()) {
@@ -38,7 +40,7 @@ func TestingService(ctx context.Context, t *testing.T, opts *TestingServiceOpts)
 
 	zapLogger := zapgorm2.New(opts.Logger)
 	zapLogger.SetAsDefault()
-	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{Logger: zapLogger})
+	db, err := gorm.Open(sqlite.Open("file:memdb"+strconv.Itoa(opts.Index)+"?mode=memory&cache=shared"), &gorm.Config{Logger: zapLogger})
 	if err != nil {
 		cleanup()
 		require.NoError(t, err)
