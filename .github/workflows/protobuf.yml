@@ -72,7 +72,7 @@ jobs:
       - name: remove lock files
         run: find . -name gen.sum ! -path './js/*' -delete
       - name: preload common deps
-        run: go mod vendor
+        run: go mod download
       - name: generating docs/
         run: |
           cd docs
@@ -148,7 +148,7 @@ jobs:
         env:
           CI: true
       - name: Preload Go vendors
-        run: go mod vendor
+        run: go mod download
       - name: make _gen.pbhbs
         run: cd js && make _gen.pbhbs
       - name: make _gen.pbjs

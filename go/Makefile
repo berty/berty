@@ -6,7 +6,6 @@ GO ?= go
 GOPATH ?= $(HOME)/go
 GO_TEST_OPTS ?= -test.timeout=300s -race -cover -coverprofile=coverage.txt -covermode=atomic
 GO_TEST_PATH ?= ./...
-PROTOC_OPTS ?= -I ../vendor/github.com/grpc-ecosystem/grpc-gateway:../api:../vendor:/protobuf
 
 BUILD_DATE ?= `date +%s`
 VCS_REF ?= `git rev-parse --short HEAD`
@@ -34,7 +33,7 @@ install: go.install
 
 .PHONY: clean
 clean:
-	rm -rf vendor/ out/
+	rm -rf out/
 
 .PHONY: mini.dev
 mini.dev: generate
@@ -97,11 +96,7 @@ docker.fast: pb.generate
 protos_src := $(wildcard ../api/*.proto) $(wildcard ../api/go-internal/*.proto)
 gen_src := $(protos_src) Makefile
 gen_sum := gen.sum
-
-.PHONY: gen.clean
-gen.clean:
-	rm -f gen.sum $(wildcard */*/*.pb.go) $(wildcard */*/*pb_test.go) $(wildcard */*/*pb.gw.go)
-
+protoc_opts := -I ../api:`go list -m -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis:`go list -m -f {{.Dir}} github.com/gogo/protobuf`:/protobuf
 .PHONY: pb.generate
 pb.generate: gen.sum
 $(gen_sum): $(gen_src)
@@ -110,9 +105,10 @@ $(gen_sum): $(gen_src)
 	@diff -q $(gen_sum).tmp $(gen_sum) || ( \
 	  uid=`id -u`; \
 	  set -xe; \
-	  $(GO) mod vendor; \
+	  $(GO) mod download; \
 	  docker run \
 	    --user="$$uid" \
+	    --volume="`go env GOMODCACHE`:/go/pkg/mod" \
 	    --volume="$(PWD)/..:/go/src/berty.tech/berty" \
 	    --workdir="/go/src/berty.tech/berty/go" \
 	    --entrypoint="sh" \
@@ -129,19 +125,23 @@ generate_local:
 	go install github.com/buicongtan1997/protoc-gen-swagger-config
 	protoc-gen-swagger-config -i ../api/bertymessenger.proto -o ../api/bertymessenger.yaml
 	protoc-gen-swagger-config -i ../api/bertyprotocol.proto -o ../api/bertyprotocol.yaml
-	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/errcode.proto
-	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertybridge.proto
-	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertytypes.proto
-	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/go-internal/records.proto
-	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/go-internal/handshake.proto
-	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/bertyprotocol.yaml:$(GOPATH)/src ../api/bertyprotocol.proto
-	protoc $(PROTOC_OPTS) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/bertymessenger.yaml:$(GOPATH)/src ../api/bertymessenger.proto
+	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/errcode.proto
+	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertybridge.proto
+	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertytypes.proto
+	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/go-internal/records.proto
+	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/go-internal/handshake.proto
+	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/bertyprotocol.yaml:$(GOPATH)/src ../api/bertyprotocol.proto
+	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/bertymessenger.yaml:$(GOPATH)/src ../api/bertymessenger.proto
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./framework/bertybridge/internal/bridgepb/*.pb.go
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.go
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.gw.go
 	goimports -w ./pkg ./cmd ./internal
 	shasum $(gen_src) | sort -k 2 > $(gen_sum).tmp
 	mv $(gen_sum).tmp $(gen_sum)
+
+.PHONY: gen.clean
+gen.clean:
+	rm -f gen.sum $(wildcard */*/*.pb.go) $(wildcard */*/*pb_test.go) $(wildcard */*/*pb.gw.go)
 
 ##
 ## Dev

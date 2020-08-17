@@ -1,6 +1,5 @@
 ## user variables
 
-GOPATH ?= $(HOME)/go
 VERSION ?= `git describe --tags --always`
 VCS_REF ?= `git rev-parse --short HEAD`
 BUILD_DATE ?= `date +%s`
@@ -26,8 +25,7 @@ ext_ldflags = -ldflags="-X berty.tech/berty/go/pkg/bertymessenger.VcsRef=$(VCS_R
 pkg := $(dir $(wildcard $(PWD)/packages/*/package.json))
 pkg_mod := $(patsubst %, %/node_modules, $(pkg)) node_modules
 pkg_desc := $(patsubst %, %/package.json, $(pkg)) package.json
-bridge_src := $(call rwildcard,../vendor ../go, "*.go")
-berty_bin := $(GOPATH)/bin/berty
+bridge_src := $(call rwildcard,../go.sum ../go, "*.go")
 react-native := $(abspath node_modules/.bin/react-native)
 clisim := packages/berty-app/node_modules/.bin/clisim
 
@@ -233,7 +231,7 @@ metro.start: deps
 .PHONY: daemon.start
 daemon.start:
 	cd ../go && $(MAKE) install
-	$(GOPATH)/bin/berty daemon -l /ip4/127.0.0.1/tcp/$(BERTY_DAEMON_PORT)/grpcws
+	`go env GOPATH`/bin/berty daemon -l /ip4/127.0.0.1/tcp/$(BERTY_DAEMON_PORT)/grpcws
 
 .PHONY: bridge.start.docker
 bridge.start.docker:
@@ -246,7 +244,7 @@ bridge.start.docker:
 
 pbhbs_templates := $(wildcard */*/protocol/*.hbs */*/messenger/*.hbs */*/types/*.hbs */components/*.hbs)
 pbhbs_targets := $(patsubst %.hbs,%,$(pbhbs_templates))
-pbhbs_flags := -p ../api -p node_modules/@googleapis/googleapis -p ../vendor -p node_modules/@protocolbuffers/protobuf/src -H packages/codegen/helpers
+pbhbs_flags := -p ../api -p node_modules/@googleapis/googleapis -p `cd ..; go list -m -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `cd ..; go list -m -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src -H packages/codegen/helpers
 .PHONY: _gen.pbhbs
 _gen.pbhbs:
 	pbhbs $(pbhbs_flags) -t packages/store/protocol  -o packages/store/protocol  ../api/bertyprotocol.proto
@@ -259,40 +257,34 @@ _gen.pbhbs:
 
 #### pbjs
 
-pbjs_flags := -p node_modules/@googleapis/googleapis -p ../vendor -p node_modules/@protocolbuffers/protobuf/src
+pbjs_flags := -p ../api -p node_modules/@googleapis/googleapis -p `cd ..; go list -m -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `cd ..; go list -m -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src
 .PHONY: _gen.pbjs
 _gen.pbjs:
-	pbjs $(pbjs_flags) --no-comments --es6 -w es6 -t json-module   -o packages/api/index.pb.js \
-		../api/bertybridge.proto \
-		../api/bertyprotocol.proto \
-		../api/bertymessenger.proto
-
-	pbjs $(pbjs_flags) -t static-module \
-		../api/bertybridge.proto \
-		../api/bertyprotocol.proto \
-		../api/bertymessenger.proto \
-			| pbts --no-comments -o packages/api/index.pb.d.ts -
-
+	pbjs $(pbjs_flags) --no-comments --es6 -w es6 -t json-module   -o packages/api/index.pb.js ../api/bertybridge.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto
+	pbjs $(pbjs_flags) -t static-module ../api/bertybridge.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto | pbts --no-comments -o packages/api/index.pb.d.ts -
 	sed -E -i.bak 's/^.*constructor.*$$//g' packages/api/index.pb.d.ts
 	rm -f packages/api/index.pb.d.ts.bak
 	eslint --cache --quiet --fix --no-ignore packages/api/index.gen.js packages/codegen/index.gen.js
 
 #### protoc
 
-protoc_src := ../api/bertytypes.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto ../vendor/github.com/gogo/protobuf/gogoproto/gogo.proto
+protoc_src := ../api/bertytypes.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto
 protoc_target_dir := ../js/packages/store/protocol/grpc-web-gen
-protoc_opts := -I ../api:../vendor:/protobuf
+protoc_opts := -I ../api:`cd ..; go list -m -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis:`cd ..; go list -m -f {{.Dir}} github.com/gogo/protobuf`:/protobuf
 .PHONY: _gen.protoc
-_gen.protoc: ../vendor
+_gen.protoc:
+	(cd ..; GO111MODULE=on go mod download)
 	docker run --rm --user="`id -u`" --entrypoint="sh" \
-	  --volume="$(PWD)/..:/go/src/berty.tech/berty" --workdir="/go/src/berty.tech/berty/js" \
+	  --volume="`go env GOMODCACHE`:/go/pkg/mod" \
+	  --volume="$(PWD)/..:/go/src/berty.tech/berty" \
+	  --workdir="/go/src/berty.tech/berty/js" \
 	  bertytech/protoc:25 -xec 'make _gen.protoc.local'
 .PHONY: _gen.protoc.local
 _gen.protoc.local:
 	$(call check-program, protoc)
 	rm -fr $(protoc_target_dir)
 	mkdir -p $(protoc_target_dir)
-	protoc $(protoc_opts) --plugin=protoc-gen-ts=$(PWD)/node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:$(protoc_target_dir) --ts_out=service=grpc-web:$(protoc_target_dir) $(protoc_src)
+	protoc $(protoc_opts) --plugin=protoc-gen-ts=$(PWD)/node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:$(protoc_target_dir) --ts_out=service=grpc-web:$(protoc_target_dir) $(protoc_src) `cd ..; go list -m -f {{.Dir}} github.com/gogo/protobuf`/gogoproto/gogo.proto
 
 #### gen.sum
 
@@ -314,11 +306,6 @@ tidy:
 	cd packages/go-bridge && go mod tidy
 
 ## file-based rules
-
-../vendor: ../go.mod ../go.sum
-	cd .. && GO111MODULE=on go mod vendor
-
-../vendor/github.com/gogo/protobuf/gogoproto/gogo.proto: ../vendor
 
 $(pkg_mod): $(pkg_desc)
 	$(call check-program, yarn)
@@ -362,15 +349,19 @@ packages/berty-app/ios/Pods/Manifest.lock: packages/berty-app/ios/Podfile packag
 packages/berty-app/ios/Podfile:
 	touch $@
 
-packages/go-bridge/ios/Frameworks/Bertybridge.framework: $(bridge_src) ../vendor
+packages/go-bridge/ios/Frameworks/Bertybridge.framework: $(bridge_src)
+	(cd ..; GO111MODULE=on go mod download)
 	cd packages/go-bridge && go install golang.org/x/mobile/cmd/gomobile
 	cd packages/go-bridge && gomobile init
+	cd packages/go-bridge && go mod download
 	@mkdir -p "packages/go-bridge/ios/Frameworks"
-	GO111MODULE=off gomobile bind -o $@ -v $(ext_ldflags) -target ios berty.tech/berty/go/framework/bertybridge
+	cd .. && GO111MODULE=on gomobile bind -o js/$@ -v $(ext_ldflags) -target ios ./go/framework/bertybridge
 	touch "packages/go-bridge/ios/Frameworks"
 
-packages/go-bridge/android/libs/gobridge.aar: $(bridge_src) ../vendor
+packages/go-bridge/android/libs/gobridge.aar: $(bridge_src)
+	(cd ..; GO111MODULE=on go mod download)
 	cd packages/go-bridge && go install golang.org/x/mobile/cmd/gomobile
 	cd packages/go-bridge && gomobile init
+	cd packages/go-bridge && go mod download
 	@mkdir -p "packages/go-bridge/android/libs"
-	GO111MODULE=off gomobile bind -o $@ -v $(ext_ldflags) -target android berty.tech/berty/go/framework/bertybridge
+	cd .. && GO111MODULE=on gomobile bind -o js/$@ -v $(ext_ldflags) -target android ./go/framework/bertybridge

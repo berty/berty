@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package berty.bridge.v1;
 
-import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 import "errcode.proto";
 
 option go_package = "berty.tech/berty/go/framework/bertybridge/internal/bridgepb";

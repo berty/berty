@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package berty.errcode;
 
-import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "gogoproto/gogo.proto";
 
 option go_package = "berty.tech/berty/go/pkg/errcode";
 

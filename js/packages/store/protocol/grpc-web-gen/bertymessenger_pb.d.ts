@@ -2,7 +2,7 @@
 // file: bertymessenger.proto
 
 import * as jspb from "google-protobuf";
-import * as github_com_gogo_protobuf_gogoproto_gogo_pb from "./github.com/gogo/protobuf/gogoproto/gogo_pb";
+import * as gogoproto_gogo_pb from "./gogoproto/gogo_pb";
 import * as bertytypes_pb from "./bertytypes_pb";
 
 export class EchoTest extends jspb.Message {

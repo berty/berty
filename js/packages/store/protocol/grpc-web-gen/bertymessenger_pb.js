@@ -12,8 +12,8 @@ var jspb = require('google-protobuf');
 var goog = jspb;
 var global = Function('return this')();
 
-var github_com_gogo_protobuf_gogoproto_gogo_pb = require('./github.com/gogo/protobuf/gogoproto/gogo_pb.js');
-goog.object.extend(proto, github_com_gogo_protobuf_gogoproto_gogo_pb);
+var gogoproto_gogo_pb = require('./gogoproto/gogo_pb.js');
+goog.object.extend(proto, gogoproto_gogo_pb);
 var bertytypes_pb = require('./bertytypes_pb.js');
 goog.object.extend(proto, bertytypes_pb);
 goog.exportSymbol('proto.berty.messenger.v1.Account', null, global);

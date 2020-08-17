@@ -4,7 +4,7 @@ package handshake;
 
 option go_package = "berty.tech/berty/go/internal/handshake";
 
-import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "gogoproto/gogo.proto";
 
 option (gogoproto.marshaler_all) = true;
 option (gogoproto.unmarshaler_all) = true;

@@ -1,5 +1,5 @@
 // package: gogoproto
-// file: github.com/gogo/protobuf/gogoproto/gogo.proto
+// file: gogoproto/gogo.proto
 
 import * as jspb from "google-protobuf";
 import * as google_protobuf_descriptor_pb from "google-protobuf/google/protobuf/descriptor_pb";
