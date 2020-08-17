@@ -9,16 +9,17 @@ import (
 	"io"
 	"io/ioutil"
 
+	"github.com/gogo/protobuf/proto"
+	"github.com/ipfs/go-cid"
+	"github.com/ipfs/go-datastore"
+	"github.com/libp2p/go-libp2p-core/crypto"
+	"golang.org/x/crypto/hkdf"
+	"golang.org/x/crypto/nacl/secretbox"
+
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"github.com/gogo/protobuf/proto"
-	cid "github.com/ipfs/go-cid"
-	datastore "github.com/ipfs/go-datastore"
-	"github.com/libp2p/go-libp2p-core/crypto"
-	"golang.org/x/crypto/hkdf"
-	"golang.org/x/crypto/nacl/secretbox"
 )
 
 func sealPayload(payload []byte, ds *bertytypes.DeviceSecret, deviceSK crypto.PrivKey, g *bertytypes.Group) ([]byte, []byte, error) {
@@ -106,7 +107,7 @@ func openEnvelopeHeaders(data []byte, g *bertytypes.Group) (*bertytypes.MessageE
 
 	headersBytes, ok := secretbox.Open(nil, env.MessageHeaders, nonce, sk)
 	if !ok {
-		return nil, nil, errcode.ErrCryptoDecrypt
+		return nil, nil, errcode.ErrCryptoDecrypt.Wrap(fmt.Errorf("secretbox failed to open headers"))
 	}
 
 	headers := &bertytypes.MessageHeaders{}
@@ -153,12 +154,12 @@ func deriveNextKeys(ck []byte, salt []byte, groupID []byte) ([]byte, [32]byte, e
 	return nextCK, nextMsg, nil
 }
 
-func idForCachedKey(pk []byte, counter uint64) datastore.Key {
-	return datastore.KeyWithNamespaces([]string{"cachedCKs", hex.EncodeToString(pk), fmt.Sprintf("%d", counter)})
+func idForCachedKey(groupPK, pk []byte, counter uint64) datastore.Key {
+	return datastore.KeyWithNamespaces([]string{"cachedCKs", hex.EncodeToString(groupPK), hex.EncodeToString(pk), fmt.Sprintf("%d", counter)})
 }
 
-func idForCurrentCK(pk []byte) datastore.Key {
-	return datastore.KeyWithNamespaces([]string{"currentCKs", hex.EncodeToString(pk)})
+func idForCurrentCK(groupPK, pk []byte) datastore.Key {
+	return datastore.KeyWithNamespaces([]string{"currentCKs", hex.EncodeToString(groupPK), hex.EncodeToString(pk)})
 }
 
 func idForCID(id cid.Cid) datastore.Key {

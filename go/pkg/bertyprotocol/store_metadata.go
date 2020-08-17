@@ -3,15 +3,11 @@ package bertyprotocol
 import (
 	"context"
 	crand "crypto/rand"
+	"encoding/base64"
 	"fmt"
 	"io"
 	"io/ioutil"
 
-	"encoding/base64"
-
-	"berty.tech/berty/v2/go/internal/cryptoutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-ipfs-log/identityprovider"
 	"berty.tech/go-orbit-db/address"
@@ -24,6 +20,10 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
+
+	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 const groupMetadataStoreType = "berty_group_metadata"
@@ -843,7 +843,7 @@ func constructorFactoryGroupMetadata(s *bertyOrbitDB) iface.StoreConstructor {
 
 		go func() {
 			for e := range store.Subscribe(ctx) {
-				entry := ipfslog.Entry(nil)
+				var entry ipfslog.Entry
 
 				switch evt := e.(type) {
 				case *stores.EventWrite:
@@ -851,6 +851,9 @@ func constructorFactoryGroupMetadata(s *bertyOrbitDB) iface.StoreConstructor {
 
 				case *stores.EventReplicateProgress:
 					entry = evt.Entry
+
+				default:
+					continue
 				}
 
 				if entry == nil {

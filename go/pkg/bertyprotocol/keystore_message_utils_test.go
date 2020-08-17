@@ -7,7 +7,6 @@ import (
 	"os"
 	"path"
 	"testing"
-	"time"
 
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
@@ -15,6 +14,7 @@ import (
 	keystore "github.com/ipfs/go-ipfs-keystore"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func addDummyMemberInMetadataStore(ctx context.Context, t testing.TB, ms *metadataStore, g *bertytypes.Group, memberPK crypto.PubKey, join bool) (crypto.PubKey, *bertytypes.DeviceSecret) {
@@ -111,9 +111,12 @@ func Test_EncryptMessagePayload(t *testing.T) {
 	err = mkh2.RegisterChainKey(g, omd1.device.GetPublic(), ds1, false)
 	assert.NoError(t, err)
 
-	assert.Equal(t, mustDeviceSecret(t)(mkh1.getDeviceChainKey(omd1.device.GetPublic())).ChainKey, firstSK)
+	gPK, err := g.GetPubKey()
+	assert.NoError(t, err)
 
-	payloadEnc1, _, err := sealPayload(payloadRef1, mustDeviceSecret(t)(mkh1.getDeviceChainKey(omd1.device.GetPublic())), omd1.device, g)
+	assert.Equal(t, mustDeviceSecret(t)(mkh1.getDeviceChainKey(gPK, omd1.device.GetPublic())).ChainKey, firstSK)
+
+	payloadEnc1, _, err := sealPayload(payloadRef1, mustDeviceSecret(t)(mkh1.getDeviceChainKey(gPK, omd1.device.GetPublic())), omd1.device, g)
 	assert.NoError(t, err)
 
 	// secret is derived by SealEnvelope
@@ -126,20 +129,20 @@ func Test_EncryptMessagePayload(t *testing.T) {
 	// uint64 overflows to 0, which is the expected behaviour
 
 	// Test with a wrong counter value
-	payloadClr1, decryptInfo, err := mkh2.openPayload(cid.Undef, payloadEnc1, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+2))
+	payloadClr1, decryptInfo, err := mkh2.openPayload(cid.Undef, gPK, payloadEnc1, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+2))
 	assert.Error(t, err)
 	assert.Nil(t, decryptInfo)
 	assert.Equal(t, "", string(payloadClr1))
 
 	// Test with a valid counter value, but no CID (so no cache)
-	payloadClr1, decryptInfo, err = mkh2.openPayload(cid.Undef, payloadEnc1, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+1))
+	payloadClr1, decryptInfo, err = mkh2.openPayload(cid.Undef, gPK, payloadEnc1, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+1))
 	assert.NoError(t, err)
 	assert.Equal(t, string(payloadRef1), string(payloadClr1))
 
 	err = mkh2.postDecryptActions(decryptInfo, g, omd2.device.GetPublic(), mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+1))
 	assert.NoError(t, err)
 
-	ds, err := mkh1.getDeviceChainKey(omd1.device.GetPublic())
+	ds, err := mkh1.getDeviceChainKey(gPK, omd1.device.GetPublic())
 	assert.NoError(t, err)
 
 	assert.Equal(t, ds.Counter, initialCounter+1)
@@ -155,7 +158,7 @@ func Test_EncryptMessagePayload(t *testing.T) {
 	assert.NotEqual(t, hex.EncodeToString(payloadRef1), hex.EncodeToString(payloadEnc2))
 	assert.NotEqual(t, hex.EncodeToString(payloadEnc1), hex.EncodeToString(payloadEnc2))
 
-	payloadClr2, decryptInfo, err := mkh2.openPayload(cid.Undef, payloadEnc2, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+2))
+	payloadClr2, decryptInfo, err := mkh2.openPayload(cid.Undef, gPK, payloadEnc2, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+2))
 	assert.NoError(t, err)
 
 	err = mkh2.postDecryptActions(decryptInfo, g, omd2.device.GetPublic(), mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+2))
@@ -164,11 +167,11 @@ func Test_EncryptMessagePayload(t *testing.T) {
 	assert.Equal(t, string(payloadRef1), string(payloadClr2))
 
 	// Make sure that a message without a CID can't be decrypted twice
-	payloadClr2, decryptInfo, err = mkh2.openPayload(cid.Undef, payloadEnc2, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+1))
+	payloadClr2, decryptInfo, err = mkh2.openPayload(cid.Undef, gPK, payloadEnc2, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+1))
 	assert.Error(t, err)
 	assert.Equal(t, "", string(payloadClr2))
 
-	ds, err = mkh1.getDeviceChainKey(omd1.device.GetPublic())
+	ds, err = mkh1.getDeviceChainKey(gPK, omd1.device.GetPublic())
 	assert.NoError(t, err)
 
 	// Make sure that a message a CID can be decrypted twice
@@ -185,18 +188,18 @@ func Test_EncryptMessagePayload(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Not decrypted message yet, wrong counter value
-	payloadClr3, decryptInfo, err := mkh2.openPayload(dummyCID1, payloadEnc3, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+2))
+	payloadClr3, decryptInfo, err := mkh2.openPayload(dummyCID1, gPK, payloadEnc3, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+2))
 	assert.Error(t, err)
 	assert.Equal(t, "", string(payloadClr3))
 
-	payloadClr3, decryptInfo, err = mkh2.openPayload(dummyCID1, payloadEnc3, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+3))
+	payloadClr3, decryptInfo, err = mkh2.openPayload(dummyCID1, gPK, payloadEnc3, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+3))
 	assert.NoError(t, err)
 	assert.Equal(t, string(payloadRef2), string(payloadClr3))
 
 	err = mkh2.postDecryptActions(decryptInfo, g, omd2.device.GetPublic(), mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+3))
 	assert.NoError(t, err)
 
-	payloadClr3, decryptInfo, err = mkh2.openPayload(dummyCID1, payloadEnc3, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+3))
+	payloadClr3, decryptInfo, err = mkh2.openPayload(dummyCID1, gPK, payloadEnc3, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+3))
 	assert.NoError(t, err)
 	assert.Equal(t, string(payloadRef2), string(payloadClr3))
 
@@ -204,12 +207,12 @@ func Test_EncryptMessagePayload(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Wrong CID
-	payloadClr3, decryptInfo, err = mkh2.openPayload(dummyCID2, payloadEnc3, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+3))
+	payloadClr3, decryptInfo, err = mkh2.openPayload(dummyCID2, gPK, payloadEnc3, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+3))
 	assert.Error(t, err)
 	assert.Equal(t, "", string(payloadClr3))
 
 	// Reused CID, wrong counter value
-	payloadClr3, decryptInfo, err = mkh2.openPayload(dummyCID1, payloadEnc3, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+4))
+	payloadClr3, decryptInfo, err = mkh2.openPayload(dummyCID1, gPK, payloadEnc3, mustMessageHeaders(t, omd1.device.GetPublic(), initialCounter+4))
 	assert.Error(t, err)
 	assert.Equal(t, "", string(payloadClr3))
 
@@ -217,7 +220,7 @@ func Test_EncryptMessagePayload(t *testing.T) {
 
 	// Test appending 200 messages, to ensure new secrets are generated correctly
 	for i := uint64(0); i < massExpected; i++ {
-		ds, err = mkh1.getDeviceChainKey(omd1.device.GetPublic())
+		ds, err = mkh1.getDeviceChainKey(gPK, omd1.device.GetPublic())
 		assert.NoError(t, err)
 
 		payloadEnc, _, err := sealPayload(payloadRef3, ds, omd1.device, g)
@@ -226,12 +229,12 @@ func Test_EncryptMessagePayload(t *testing.T) {
 		err = mkh1.deriveDeviceSecret(g, omd1.device)
 		assert.NoError(t, err)
 
-		ds, err = mkh1.getDeviceChainKey(omd1.device.GetPublic())
+		ds, err = mkh1.getDeviceChainKey(gPK, omd1.device.GetPublic())
 		assert.NoError(t, err)
 
 		counter := ds.Counter
 
-		payloadClr, decryptInfo, err := mkh2.openPayload(cid.Undef, payloadEnc, mustMessageHeaders(t, omd1.device.GetPublic(), counter))
+		payloadClr, decryptInfo, err := mkh2.openPayload(cid.Undef, gPK, payloadEnc, mustMessageHeaders(t, omd1.device.GetPublic(), counter))
 		if !assert.NoError(t, err) {
 			t.Fatalf("failed at i = %d", i)
 		}
@@ -242,7 +245,7 @@ func Test_EncryptMessagePayload(t *testing.T) {
 		assert.Equal(t, string(payloadRef3), string(payloadClr))
 	}
 
-	ds, err = mkh1.getDeviceChainKey(omd1.device.GetPublic())
+	ds, err = mkh1.getDeviceChainKey(gPK, omd1.device.GetPublic())
 	assert.NoError(t, err)
 
 	assert.Equal(t, initialCounter+massExpected+3, ds.Counter)
@@ -327,6 +330,9 @@ func Test_EncryptMessageEnvelopeAndDerive(t *testing.T) {
 	err = mkh1.RegisterChainKey(g, omd1.device.GetPublic(), ds1, true)
 	assert.NoError(t, err)
 
+	gPK, err := g.GetPubKey()
+	assert.NoError(t, err)
+
 	gc1 := newContextGroup(g, nil, nil, mkh1, omd1, nil)
 
 	ds2, err := newDeviceSecret()
@@ -345,7 +351,7 @@ func Test_EncryptMessageEnvelopeAndDerive(t *testing.T) {
 		envEncrypted, err := mkh1.SealEnvelope(ctx, g, omd1.device, payloadRef)
 		assert.NoError(t, err)
 
-		ds, err := mkh1.getDeviceChainKey(gc1.DevicePubKey())
+		ds, err := mkh1.getDeviceChainKey(gPK, gc1.DevicePubKey())
 		if !assert.NoError(t, err) {
 			t.Fatalf("failed at i = %d", i)
 		}
@@ -394,10 +400,14 @@ func testMessageKeyHolderCatchUp(t *testing.T, expectedNewDevices int, isSlow bo
 		devicesPK[i], deviceSecrets[i] = addDummyMemberInMetadataStore(ctx, t, ms1, peer.GC.Group(), peer.GC.MemberPubKey(), true)
 	}
 
-	FillMessageKeysHolderUsingPreviousData(ctx, peer.GC)
+	for range FillMessageKeysHolderUsingPreviousData(ctx, peer.GC) {
+	}
+
+	gPK, err := peer.GC.Group().GetPubKey()
+	require.NoError(t, err)
 
 	for i, dPK := range devicesPK {
-		ds, err := mkh1.getDeviceChainKey(dPK)
+		ds, err := mkh1.getDeviceChainKey(gPK, dPK)
 		if assert.NoError(t, err) {
 			assert.Equal(t, deviceSecrets[i].Counter+uint64(mkh1.getPrecomputedKeyExpectedCount()), ds.Counter)
 			// Not testing chain key value as we need to derive it from the generated value
@@ -437,7 +447,7 @@ func testMessageKeyHolderSubscription(t *testing.T, expectedNewDevices int, isSl
 	dir := path.Join(os.TempDir(), fmt.Sprintf("%d", os.Getpid()), "MessageKeyHolderSubscription")
 	defer os.RemoveAll(dir)
 
-	peers, _, cleanup := createPeersWithGroup(ctx, t, dir, 1, 1)
+	peers, gSK, cleanup := createPeersWithGroup(ctx, t, dir, 1, 1)
 	defer cleanup()
 
 	peer := peers[0]
@@ -448,16 +458,24 @@ func testMessageKeyHolderSubscription(t *testing.T, expectedNewDevices int, isSl
 	devicesPK := make([]crypto.PubKey, expectedNewDevices)
 	deviceSecrets := make([]*bertytypes.DeviceSecret, expectedNewDevices)
 
-	go FillMessageKeysHolderUsingNewData(ctx, peer.GC)
+	subCtx, subCancel := context.WithCancel(ctx)
+	ch := FillMessageKeysHolderUsingNewData(subCtx, peer.GC)
 
 	for i := 0; i < expectedNewDevices; i++ {
 		devicesPK[i], deviceSecrets[i] = addDummyMemberInMetadataStore(ctx, t, ms1, peer.GC.Group(), peer.GC.MemberPubKey(), true)
 	}
 
-	<-time.After(time.Millisecond * 100)
+	i := 0
+	for range ch {
+		i++
+		if i == expectedNewDevices {
+			subCancel()
+			break
+		}
+	}
 
 	for i, dPK := range devicesPK {
-		ds, err := mkh1.getDeviceChainKey(dPK)
+		ds, err := mkh1.getDeviceChainKey(gSK.GetPublic(), dPK)
 		if assert.NoError(t, err) {
 			assert.Equal(t, deviceSecrets[i].Counter+uint64(mkh1.getPrecomputedKeyExpectedCount()), ds.Counter)
 			// Not testing chain key value as we need to derive it from the generated value

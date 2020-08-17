@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	bazil.org/fuse v0.0.0-20200524192727-fb710f7dfd05 // indirect
-	berty.tech/go-ipfs-log v1.2.3
+	berty.tech/go-ipfs-log v1.2.4
 	berty.tech/go-orbit-db v1.10.4
 	berty.tech/ipfs-webui-packed v1.0.0-v2.9.0-4
 	github.com/aead/ecdh v0.2.0
