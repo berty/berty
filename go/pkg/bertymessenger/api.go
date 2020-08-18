@@ -16,6 +16,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/gogo/protobuf/proto"
 	"go.uber.org/zap"
+	"gorm.io/gorm/clause"
 	"moul.io/godev"
 	"moul.io/openfiles"
 )
@@ -432,15 +433,84 @@ func (s *service) ConversationStream(req *ConversationStream_Request, sub Messen
 func (s *service) EventStream(req *EventStream_Request, sub MessengerService_EventStreamServer) error {
 	// TODO: cursors
 
-	// TODO: send existing models
+	s.logger.Info("sending account")
+	var acc Account
+	if err := s.db.First(&acc).Error; err != nil {
+		return err
+	}
+	au, err := proto.Marshal(&StreamEvent_AccountUpdated{Account: &acc})
+	if err != nil {
+		return err
+	}
+	if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeAccountUpdated, au}}); err != nil {
+		return err
+	}
 
-	// FIXME: case where a conversation is created/updated/deleted between the list and the stream
+	var convs []Conversation
+	if err := s.db.Find(&convs).Error; err != nil {
+		return err
+	}
+	s.logger.Info("sending existing conversations", zap.Int("count", len(convs)))
+	for _, conv := range convs {
+		c := conv // comply with scopelint
+		cu, err := proto.Marshal(&StreamEvent_ConversationUpdated{&c})
+		if err != nil {
+			return err
+		}
+		if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeConversationUpdated, cu}}); err != nil {
+			return err
+		}
+	}
+
+	var contacts []Contact
+	if err := s.db.Find(&contacts).Error; err != nil {
+		return err
+	}
+	s.logger.Info("sending existing contacts", zap.Int("count", len(contacts)))
+	for _, contact := range contacts {
+		c := contact // comply with scopelint
+		cu, err := proto.Marshal(&StreamEvent_ContactUpdated{&c})
+		if err != nil {
+			return err
+		}
+		if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeContactUpdated, cu}}); err != nil {
+			return err
+		}
+	}
+
+	var intes []Interaction
+	if err := s.db.Find(&intes).Error; err != nil {
+		return err
+	}
+	s.logger.Info("sending existing interactions", zap.Int("count", len(intes)))
+	for _, inte := range intes {
+		i := inte // comply with scopelint
+		iu, err := proto.Marshal(&StreamEvent_InteractionUpdated{&i})
+		if err != nil {
+			return err
+		}
+		if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeInteractionUpdated, iu}}); err != nil {
+			return err
+		}
+	}
+
+	// Signal that we're done sending existing models
+	p, err := proto.Marshal(&StreamEvent_ListEnd{})
+	if err != nil {
+		return err
+	}
+	if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeListEnd, p}}); err != nil {
+		return err
+	}
+
+	// FIXME: case where a model is created/updated/deleted between the list and the stream
 	// dunno how to add a test to trigger, maybe it can never happen? don't know how to prove either way
 
-	// stream new convs
+	// stream new events
 	errch := make(chan error)
 	defer close(errch)
 	n := NotifieeBundle{StreamEventImpl: func(e *StreamEvent) error {
+		s.logger.Debug("sending stream event", zap.String("type", e.GetType().String()))
 		err := sub.Send(&EventStream_Reply{Event: e})
 		if err != nil {
 			// next commmented line allows me to manually test the behavior on a send error. How to isolate into an automatic test?
@@ -473,9 +543,23 @@ func (s *service) ConversationCreate(ctx context.Context, req *ConversationCreat
 	pkStr := base64.StdEncoding.EncodeToString(pk)
 	s.logger.Info("Created conv", zap.String("dn", req.GetDisplayName()), zap.String("pk", pkStr))
 
-	// Add conversation to database
-	conv := &Conversation{PublicKey: pkStr, DisplayName: dn}
-	if err = s.db.Save(conv).Error; err != nil {
+	gir, err := s.protocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{GroupPK: pk})
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	_, htmlURL, err := ShareableBertyGroupURL(gir.GetGroup(), req.GetDisplayName())
+	if err != nil {
+		return nil, err
+	}
+
+	// Update database
+	conv := &Conversation{PublicKey: pkStr, DisplayName: dn, Link: htmlURL}
+	cl := clause.OnConflict{
+		Columns:   []clause.Column{{Name: "public_key"}},
+		DoUpdates: clause.AssignmentColumns([]string{"display_name", "link"}),
+	}
+	if err = s.db.Clauses(cl).Create(&conv).Error; err != nil {
 		return nil, err
 	}
 
@@ -519,13 +603,254 @@ func (s *service) ConversationCreate(ctx context.Context, req *ConversationCreat
 		} else {
 			_, err = s.protocolClient.AppMetadataSend(ctx, &bertytypes.AppMetadataSend_Request{GroupPK: pk, Payload: am})
 			if err != nil {
-				s.logger.Warn("Failed to set user name in group", zap.Error(err))
+				s.logger.Warn("failed to set user name in group", zap.Error(err))
 			}
+		}
+	}
+
+	for _, contactPK := range req.GetContactsToInvite() {
+		ginvb, err := proto.Marshal(&AppMessage_GroupInvitation{Link: conv.GetLink()})
+		if err != nil {
+			return nil, err
+		}
+		am, err := proto.Marshal(&AppMessage{Type: AppMessage_TypeGroupInvitation, Payload: ginvb})
+		if err != nil {
+			return nil, err
+		}
+		cpkb, err := base64.StdEncoding.DecodeString(contactPK)
+		if err != nil {
+			return nil, err
+		}
+		ginfo, err := s.protocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{ContactPK: cpkb})
+		if err != nil {
+			return nil, err
+		}
+		_, err = s.protocolClient.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{GroupPK: ginfo.GetGroup().GetPublicKey(), Payload: am})
+		if err != nil {
+			return nil, err
 		}
 	}
 
 	rep := ConversationCreate_Reply{PublicKey: pkStr}
 	return &rep, nil
+}
+
+func (s *service) ConversationJoin(ctx context.Context, req *ConversationJoin_Request) (*ConversationJoin_Reply, error) {
+	link := req.GetLink()
+	if link == "" {
+		return nil, errcode.ErrMissingInput
+	}
+
+	query, method, err := NormalizeDeepLinkURL(req.Link)
+	if err != nil {
+		return nil, errcode.ErrInvalidInput.Wrap(err)
+	}
+
+	var pdlr *ParseDeepLink_Reply
+	switch method {
+	case "/group":
+		if pdlr, err = ParseGroupInviteURLQuery(query); err != nil {
+			return nil, errcode.ErrInvalidInput.Wrap(err)
+		}
+	default:
+		return nil, errcode.ErrInvalidInput.Wrap(err)
+	}
+
+	bgroup := pdlr.GetBertyGroup()
+	gpkb := bgroup.GetGroup().GetPublicKey()
+	gpk := base64.StdEncoding.EncodeToString(gpkb)
+
+	// Maybe turn this into a svc.updateConversation helper
+	conv := Conversation{PublicKey: gpk, DisplayName: bgroup.GetDisplayName(), Link: link}
+	cl := clause.OnConflict{ // Maybe DoNothing ?
+		Columns:   []clause.Column{{Name: "public_key"}},
+		DoUpdates: clause.AssignmentColumns([]string{"display_name", "link"}),
+	}
+	if err = s.db.Clauses(cl).Create(&conv).Error; err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+	np, err := proto.Marshal(&StreamEvent_ConversationUpdated{Conversation: &conv})
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+	errs := s.dispatcher.StreamEvent(&StreamEvent{Type: StreamEvent_TypeConversationUpdated, Payload: np})
+	if len(errs) > 0 {
+		return nil, errcode.ErrInternal.Wrap(errs[0])
+	}
+	//
+
+	mmgjReq := &bertytypes.MultiMemberGroupJoin_Request{Group: pdlr.GetBertyGroup().GetGroup()}
+	if _, err := s.protocolClient.MultiMemberGroupJoin(ctx, mmgjReq); err != nil {
+		// Rollback db ?
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	return &ConversationJoin_Reply{}, nil
+}
+
+func (s *service) AccountUpdate(ctx context.Context, req *AccountUpdate_Request) (*AccountUpdate_Reply, error) {
+	var acc Account
+	if err := s.db.First(&acc).Error; err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	updated := false
+
+	dn := req.GetDisplayName()
+	s.logger.Debug("updating account", zap.String("display_name", dn))
+	if dn != "" && dn != acc.GetDisplayName() {
+		acc.DisplayName = dn
+		ret, err := s.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{DisplayName: dn})
+		if err != nil {
+			return nil, err
+		}
+		acc.Link = ret.GetHTMLURL()
+		updated = true
+	}
+
+	if updated {
+		if acc.GetDisplayName() != "" {
+			acc.State = Account_Ready
+		} else {
+			acc.State = Account_NotReady
+		}
+
+		if err := s.db.Save(&acc).Error; err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
+		p, err := proto.Marshal(&StreamEvent_AccountUpdated{Account: &acc})
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
+		errs := s.dispatcher.StreamEvent(&StreamEvent{Type: StreamEvent_TypeAccountUpdated, Payload: p})
+		if len(errs) > 0 {
+			// TODO: concat errs
+			return nil, errcode.TODO.Wrap(errs[0])
+		}
+	}
+
+	return &AccountUpdate_Reply{}, nil
+}
+
+func (s *service) ContactRequest(ctx context.Context, req *ContactRequest_Request) (*ContactRequest_Reply, error) {
+	query, method, err := NormalizeDeepLinkURL(req.GetLink())
+	if err != nil {
+		return nil, errcode.ErrInvalidInput.Wrap(err)
+	}
+
+	var bid *BertyID
+
+	switch method {
+	case "/id":
+		bid = &BertyID{}
+		key := query.Get("key")
+		if key == "" {
+			return nil, errcode.ErrMessengerInvalidDeepLink
+		}
+		payload, err := base64.StdEncoding.DecodeString(key)
+		if err != nil {
+			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
+		}
+		err = proto.Unmarshal(payload, bid)
+		if err != nil {
+			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
+		}
+		if len(bid.GetPublicRendezvousSeed()) == 0 || len(bid.GetAccountPK()) == 0 {
+			return nil, errcode.ErrMessengerInvalidDeepLink
+		}
+		name := query.Get("name")
+		s.logger.Info("query display name", zap.String("dn", name))
+		if name != "" {
+			bid.DisplayName = name
+		}
+	default:
+		return nil, errcode.ErrInvalidInput
+	}
+
+	var acc Account
+	if err := s.db.First(&acc).Error; err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+	om, err := proto.Marshal(&ContactMetadata{DisplayName: acc.GetDisplayName()})
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	m, err := proto.Marshal(&ContactMetadata{DisplayName: bid.GetDisplayName()})
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	contactRequest := bertytypes.ContactRequestSend_Request{
+		Contact: &bertytypes.ShareableContact{
+			PK:                   bid.GetAccountPK(),
+			PublicRendezvousSeed: bid.GetPublicRendezvousSeed(),
+			Metadata:             m,
+		},
+		OwnMetadata: om,
+	}
+	_, err = s.protocolClient.ContactRequestSend(ctx, &contactRequest)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	return &ContactRequest_Reply{}, nil
+}
+
+func (s *service) ContactAccept(ctx context.Context, req *ContactAccept_Request) (*ContactAccept_Reply, error) {
+	pk := req.GetPublicKey()
+	if pk == "" {
+		return nil, errcode.ErrInvalidInput
+	}
+
+	pkb, err := base64.StdEncoding.DecodeString(pk)
+	if err != nil {
+		return nil, errcode.ErrInvalidInput
+	}
+
+	var c Contact
+	if err := s.db.Where(Contact{PublicKey: pk}).First(&c).Error; err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	if c.State != Contact_IncomingRequest {
+		return nil, errcode.TODO
+	}
+
+	_, err = s.protocolClient.ContactRequestAccept(ctx, &bertytypes.ContactRequestAccept_Request{ContactPK: pkb})
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	return &ContactAccept_Reply{}, nil
+}
+
+func (s *service) Interact(ctx context.Context, req *Interact_Request) (*Interact_Reply, error) {
+	gpk := req.GetConversationPublicKey()
+	s.logger.Info("interacting", zap.String("publicKey", gpk))
+	gpkb, err := base64.StdEncoding.DecodeString(gpk)
+	if err != nil {
+		return nil, err
+	}
+
+	switch req.GetType() {
+	case AppMessage_TypeUserMessage:
+		var p AppMessage_UserMessage
+		if err := proto.Unmarshal(req.GetPayload(), &p); err != nil {
+			return nil, err
+		}
+		fp, err := proto.Marshal(&AppMessage{Type: req.GetType(), Payload: req.GetPayload()})
+		if err != nil {
+			return nil, err
+		}
+		_, err = s.protocolClient.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{GroupPK: gpkb, Payload: fp})
+		if err != nil {
+			return nil, err
+		}
+	case AppMessage_TypeAcknowledge:
+		// trick gocritic
+	}
+	return &Interact_Reply{}, nil
 }
 
 func (s *service) AccountGet(ctx context.Context, req *AccountGet_Request) (*AccountGet_Reply, error) {

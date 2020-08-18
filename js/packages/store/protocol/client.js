@@ -31,7 +31,6 @@ import {
 import ExternalTransport from './externalTransport'
 import { getMainSettings } from '../settings/main'
 import ProtocolServiceSagaClient from './ProtocolServiceSagaClient.gen'
-import { grpc } from '@improbable-eng/grpc-web'
 import MessengerServiceSagaClient from '../messenger/MessengerServiceSagaClient.gen'
 import { transactions as groupsTransactions, events as groupsEvents } from '../groups'
 
@@ -99,11 +98,11 @@ const eventHandler = createSlice({
 export const reducer = composeReducers(commandsSlice.reducer, eventHandler.reducer)
 export const commands = commandsSlice.actions
 export const events = eventHandler.actions
-export const queries: Queries = {
+export const queries = {
 	get: (state) => state.protocol.client,
 }
 
-const eventNameFromValue = (value: number) => {
+const eventNameFromValue = (value) => {
 	if (typeof value !== 'number') {
 		throw new Error(`client.ts: eventNameFromValue: expected number argument, got ${typeof value}`)
 	}
@@ -111,25 +110,25 @@ const eventNameFromValue = (value: number) => {
 }
 
 export let services
-export const getProtocolService = (): ProtocolServiceSagaClient => {
+export const getProtocolService = () => {
 	if (!services) {
 		throw new Error('Protocol service not found')
 	}
 	return services.protocol
 }
-export const getMessengerService = (): MessengerServiceSagaClient => {
+export const getMessengerService = () => {
 	if (!services) {
 		throw new Error('Messenger service not found')
 	}
 	return services.messenger
 }
 
-export const decodeMetadataEvent = (response: api.berty.types.v1.IGroupMetadataEvent) => {
+export const decodeMetadataEvent = (response) => {
 	const eventType = response.metadata && response.metadata.eventType
 	if (eventType == null) {
 		return undefined
 	}
-	const eventsMap: { [key: string]: string } = {
+	const eventsMap = {
 		EventTypeAccountContactRequestIncomingReceived: 'AccountContactRequestReceived',
 		EventTypeAccountContactRequestIncomingAccepted: 'AccountContactRequestAccepted',
 		EventTypeAccountContactRequestIncomingDiscarded: 'AccountContactRequestDiscarded',
@@ -142,7 +141,7 @@ export const decodeMetadataEvent = (response: api.berty.types.v1.IGroupMetadataE
 	if (eventName === undefined) {
 		throw new Error(`Invalid event type ${eventType}`)
 	}
-	const protocol: { [key: string]: any } = api.berty.types.v1
+	const protocol = api.berty.types.v1
 	const event = protocol[eventName.replace('EventType', '')] || protocol[eventsMap[eventName]]
 	if (!event) {
 		console.warn("Don't know how to decode", eventName)
@@ -163,7 +162,7 @@ export const decodeMetadataEvent = (response: api.berty.types.v1.IGroupMetadataE
 	return decodedEvent
 }
 
-const groupMetadataEventToReduxAction = (e: api.berty.types.v1.IGroupMetadataEvent) => {
+const groupMetadataEventToReduxAction = (e) => {
 	if (!(e.metadata && e.metadata.eventType)) {
 		throw new Error('Invalid reply, missing eventType')
 	}
@@ -185,7 +184,7 @@ const groupMetadataEventToReduxAction = (e: api.berty.types.v1.IGroupMetadataEve
 	}
 }
 
-const groupMessageEventToReduxAction = (response: api.berty.types.v1.IGroupMessageEvent) => {
+const groupMessageEventToReduxAction = (response) => {
 	if (!(response.eventContext && response.eventContext.id)) {
 		throw new Error('No event cid')
 	}
@@ -265,7 +264,7 @@ export const transactions = {
 		const { nodeConfig } = yield* getMainSettings()
 
 		let address
-		let transport: () => grpc.TransportFactory
+		let transport
 
 		if (nodeConfig.type === 'external') {
 			address = `http://${nodeConfig.host}:${nodeConfig.port}`
@@ -295,7 +294,7 @@ export const transactions = {
 			}
 			yield delay(1000)
 		}
-		yield fork(function* watchdogRace() {
+		/*yield fork(function* watchdogRace() {
 			yield race({
 				watchdog: call(function* () {
 					console.log('starting watchdog')
@@ -340,7 +339,7 @@ export const transactions = {
 					console.log('stoping watchdog..')
 				}),
 			})
-		})
+		})*/
 		const { accountPk, devicePk, accountGroupPk } = instanceConf
 		if (!(accountPk && devicePk && accountGroupPk)) {
 			throw new Error('Invalid instance data')
@@ -427,7 +426,7 @@ export const transactions = {
 		)
 		return reply
 	},
-	groupMetadataSubscribe: function* (req: any) {
+	groupMetadataSubscribe: function* (req) {
 		const chan = getProtocolService().groupMetadataSubscribe(req)
 		try {
 			while (true) {

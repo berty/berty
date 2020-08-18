@@ -47,7 +47,12 @@ service MessengerService {
   rpc ConversationStream(ConversationStream.Request) returns (stream ConversationStream.Reply);
   rpc EventStream(EventStream.Request) returns (stream EventStream.Reply);
   rpc ConversationCreate(ConversationCreate.Request) returns (ConversationCreate.Reply);
+  rpc ConversationJoin(ConversationJoin.Request) returns (ConversationJoin.Reply);
   rpc AccountGet(AccountGet.Request) returns (AccountGet.Reply);
+  rpc AccountUpdate(AccountUpdate.Request) returns (AccountUpdate.Reply);
+  rpc ContactRequest(ContactRequest.Request) returns (ContactRequest.Reply);
+  rpc ContactAccept(ContactAccept.Request) returns (ContactAccept.Reply);
+  rpc Interact(Interact.Request) returns (Interact.Reply);
 }
 
 message EchoTest {
@@ -176,7 +181,7 @@ message AppMessage {
     string emoji = 2;
   }
   message GroupInvitation {
-    string group_pk = 2 [(gogoproto.jsontag) = "groupPk"];
+    string link = 2;
   }
   message SetGroupName {
     string name = 2;
@@ -219,6 +224,15 @@ message SystemInfo {
 }
 
 
+message ConversationJoin {
+  message Request {
+    string link = 1;
+  }
+  message Reply {
+  }
+}
+
+
 // APP MODEL
 
 // NOTE: public keys should be base64 encoded using golang's StdEncoding format
@@ -226,7 +240,8 @@ message SystemInfo {
 message Account {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
   string display_name = 2;
-  State state = 3;
+  string link = 3;
+  State state = 4;
 
   enum State {
     Undefined = 0;
@@ -235,10 +250,21 @@ message Account {
   }
 }
 
+message Interaction {
+  string cid = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  AppMessage.Type type = 2;
+  string conversation_public_key = 3;
+  Conversation conversation = 4;
+  bytes payload = 5;
+  bool is_me = 6;
+}
+
 message Contact {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
   string display_name = 2;
-  State state = 3;
+  string conversation_public_key = 3;
+  Conversation conversation = 4;
+  State state = 5;
 
   enum State {
     Undefined = 0;
@@ -252,6 +278,7 @@ message Contact {
 message Conversation {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
   string display_name = 2;
+  string link = 3;
 }
 
 message Member {
@@ -264,6 +291,8 @@ message Device {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
 }
 
+
+
 message StreamEvent {
   // DRAFT
   Type type = 1;
@@ -274,6 +303,8 @@ message StreamEvent {
     TypeConversationDeleted = 1;
     TypeInteractionUpdated = 2;
     TypeContactUpdated = 3;
+    TypeAccountUpdated = 4;
+    TypeListEnd = 5;
     // etc..
   }
   message ConversationUpdated {
@@ -283,10 +314,16 @@ message StreamEvent {
     string public_key = 1;
   }
   message InteractionUpdated {
-    // Interaction interaction = 1;
+    Interaction interaction = 1;
   }
   message ContactUpdated {
     Contact contact = 1;
+  }
+  message AccountUpdated {
+    Account account = 1;
+  }
+  message ListEnd {
+
   }
   // etc..
 }
@@ -304,6 +341,7 @@ message ConversationStream {
 message ConversationCreate {
   message Request {
     string display_name = 1;
+    repeated string contacts_to_invite = 2; // public keys
   }
   message Reply {
     string public_key = 1;
@@ -331,4 +369,44 @@ message EventStream {
 
 message ContactMetadata {
   string display_name = 1;
+}
+
+
+message AccountUpdate {
+  message Request {
+    string display_name = 1;
+  }
+
+  message Reply {
+
+  }
+}
+
+message ContactRequest {
+  message Request {
+    string link = 1;
+  }
+  message Reply {
+
+  }
+}
+
+message ContactAccept {
+  message Request {
+    string public_key = 1;
+  }
+  message Reply {
+
+  }
+}
+
+message Interact {
+  message Request {
+    AppMessage.Type type = 1;
+    bytes payload = 2;
+    string conversation_public_key = 3;
+  }
+  message Reply {
+
+  }
 }

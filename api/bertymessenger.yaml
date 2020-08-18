@@ -39,6 +39,21 @@ http:
  - selector: berty.messenger.v1.MessengerService.ConversationCreate
    post: /berty.messenger.v1/MessengerService/ConversationCreate
    body: "*"
+ - selector: berty.messenger.v1.MessengerService.ConversationJoin
+   post: /berty.messenger.v1/MessengerService/ConversationJoin
+   body: "*"
  - selector: berty.messenger.v1.MessengerService.AccountGet
    post: /berty.messenger.v1/MessengerService/AccountGet
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.AccountUpdate
+   post: /berty.messenger.v1/MessengerService/AccountUpdate
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.ContactRequest
+   post: /berty.messenger.v1/MessengerService/ContactRequest
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.ContactAccept
+   post: /berty.messenger.v1/MessengerService/ContactAccept
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.Interact
+   post: /berty.messenger.v1/MessengerService/Interact
    body: "*"

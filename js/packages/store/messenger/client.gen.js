@@ -14,5 +14,10 @@ export const Methods = {
 	conversationStream: 'conversationStream',
 	eventStream: 'eventStream',
 	conversationCreate: 'conversationCreate',
+	conversationJoin: 'conversationJoin',
 	accountGet: 'accountGet',
+	accountUpdate: 'accountUpdate',
+	contactRequest: 'contactRequest',
+	contactAccept: 'contactAccept',
+	interact: 'interact',
 }

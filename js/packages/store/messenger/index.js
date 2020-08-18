@@ -15,6 +15,12 @@ import * as conversation from './conversation'
 import * as message from './message'
 import * as groups from '../groups'
 
+import * as middleware from '@berty-tech/grpc-bridge/middleware'
+import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import { grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
+import { Service, EOF } from '@berty-tech/grpc-bridge'
+import ExternalTransport from '../protocol/externalTransport'
+
 export * from './AppMessage'
 
 export { account, contact, conversation, message }
@@ -32,6 +38,11 @@ export const reducers = {
 }
 
 function* initApp() {
+	console.log(
+		'messengerpb.StreamEvent.ConversationUpdated',
+		messengerpb.StreamEvent.ConversationUpdated,
+	)
+
 	let acc = yield select(account.queries.get)
 	if (!acc) {
 		yield take(account.events.created)

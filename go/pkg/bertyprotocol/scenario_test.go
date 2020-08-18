@@ -300,7 +300,7 @@ func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
 				Logger:  testutil.Logger(t),
 			}
 
-			tps, cleanup := newTestingProtocolWithMockedPeers(ctx, t, &opts, tc.NumberOfClient)
+			tps, cleanup := NewTestingProtocolWithMockedPeers(ctx, t, &opts, tc.NumberOfClient)
 			defer cleanup()
 
 			// connect all tps together

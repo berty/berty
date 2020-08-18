@@ -8,6 +8,9 @@
     - [AccountGet](#berty.messenger.v1.AccountGet)
     - [AccountGet.Reply](#berty.messenger.v1.AccountGet.Reply)
     - [AccountGet.Request](#berty.messenger.v1.AccountGet.Request)
+    - [AccountUpdate](#berty.messenger.v1.AccountUpdate)
+    - [AccountUpdate.Reply](#berty.messenger.v1.AccountUpdate.Reply)
+    - [AccountUpdate.Request](#berty.messenger.v1.AccountUpdate.Request)
     - [AppMessage](#berty.messenger.v1.AppMessage)
     - [AppMessage.Acknowledge](#berty.messenger.v1.AppMessage.Acknowledge)
     - [AppMessage.GroupInvitation](#berty.messenger.v1.AppMessage.GroupInvitation)
@@ -18,11 +21,20 @@
     - [BertyGroup](#berty.messenger.v1.BertyGroup)
     - [BertyID](#berty.messenger.v1.BertyID)
     - [Contact](#berty.messenger.v1.Contact)
+    - [ContactAccept](#berty.messenger.v1.ContactAccept)
+    - [ContactAccept.Reply](#berty.messenger.v1.ContactAccept.Reply)
+    - [ContactAccept.Request](#berty.messenger.v1.ContactAccept.Request)
     - [ContactMetadata](#berty.messenger.v1.ContactMetadata)
+    - [ContactRequest](#berty.messenger.v1.ContactRequest)
+    - [ContactRequest.Reply](#berty.messenger.v1.ContactRequest.Reply)
+    - [ContactRequest.Request](#berty.messenger.v1.ContactRequest.Request)
     - [Conversation](#berty.messenger.v1.Conversation)
     - [ConversationCreate](#berty.messenger.v1.ConversationCreate)
     - [ConversationCreate.Reply](#berty.messenger.v1.ConversationCreate.Reply)
     - [ConversationCreate.Request](#berty.messenger.v1.ConversationCreate.Request)
+    - [ConversationJoin](#berty.messenger.v1.ConversationJoin)
+    - [ConversationJoin.Reply](#berty.messenger.v1.ConversationJoin.Reply)
+    - [ConversationJoin.Request](#berty.messenger.v1.ConversationJoin.Request)
     - [ConversationStream](#berty.messenger.v1.ConversationStream)
     - [ConversationStream.Reply](#berty.messenger.v1.ConversationStream.Reply)
     - [ConversationStream.Request](#berty.messenger.v1.ConversationStream.Request)
@@ -39,6 +51,10 @@
     - [InstanceShareableBertyID](#berty.messenger.v1.InstanceShareableBertyID)
     - [InstanceShareableBertyID.Reply](#berty.messenger.v1.InstanceShareableBertyID.Reply)
     - [InstanceShareableBertyID.Request](#berty.messenger.v1.InstanceShareableBertyID.Request)
+    - [Interact](#berty.messenger.v1.Interact)
+    - [Interact.Reply](#berty.messenger.v1.Interact.Reply)
+    - [Interact.Request](#berty.messenger.v1.Interact.Request)
+    - [Interaction](#berty.messenger.v1.Interaction)
     - [Member](#berty.messenger.v1.Member)
     - [ParseDeepLink](#berty.messenger.v1.ParseDeepLink)
     - [ParseDeepLink.Reply](#berty.messenger.v1.ParseDeepLink.Reply)
@@ -56,10 +72,12 @@
     - [ShareableBertyGroup.Reply](#berty.messenger.v1.ShareableBertyGroup.Reply)
     - [ShareableBertyGroup.Request](#berty.messenger.v1.ShareableBertyGroup.Request)
     - [StreamEvent](#berty.messenger.v1.StreamEvent)
+    - [StreamEvent.AccountUpdated](#berty.messenger.v1.StreamEvent.AccountUpdated)
     - [StreamEvent.ContactUpdated](#berty.messenger.v1.StreamEvent.ContactUpdated)
     - [StreamEvent.ConversationDeleted](#berty.messenger.v1.StreamEvent.ConversationDeleted)
     - [StreamEvent.ConversationUpdated](#berty.messenger.v1.StreamEvent.ConversationUpdated)
     - [StreamEvent.InteractionUpdated](#berty.messenger.v1.StreamEvent.InteractionUpdated)
+    - [StreamEvent.ListEnd](#berty.messenger.v1.StreamEvent.ListEnd)
     - [SystemInfo](#berty.messenger.v1.SystemInfo)
     - [SystemInfo.Reply](#berty.messenger.v1.SystemInfo.Reply)
     - [SystemInfo.Request](#berty.messenger.v1.SystemInfo.Request)
@@ -88,6 +106,7 @@
 | ----- | ---- | ----- | ----------- |
 | public_key | [string](#string) |  |  |
 | display_name | [string](#string) |  |  |
+| link | [string](#string) |  |  |
 | state | [Account.State](#berty.messenger.v1.Account.State) |  |  |
 
 <a name="berty.messenger.v1.AccountGet"></a>
@@ -105,6 +124,22 @@
 <a name="berty.messenger.v1.AccountGet.Request"></a>
 
 ### AccountGet.Request
+
+<a name="berty.messenger.v1.AccountUpdate"></a>
+
+### AccountUpdate
+
+<a name="berty.messenger.v1.AccountUpdate.Reply"></a>
+
+### AccountUpdate.Reply
+
+<a name="berty.messenger.v1.AccountUpdate.Request"></a>
+
+### AccountUpdate.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| display_name | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.AppMessage"></a>
 
@@ -129,7 +164,7 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| group_pk | [string](#string) |  |  |
+| link | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.AppMessage.SetGroupName"></a>
 
@@ -192,7 +227,25 @@
 | ----- | ---- | ----- | ----------- |
 | public_key | [string](#string) |  |  |
 | display_name | [string](#string) |  |  |
+| conversation_public_key | [string](#string) |  |  |
+| conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
 | state | [Contact.State](#berty.messenger.v1.Contact.State) |  |  |
+
+<a name="berty.messenger.v1.ContactAccept"></a>
+
+### ContactAccept
+
+<a name="berty.messenger.v1.ContactAccept.Reply"></a>
+
+### ContactAccept.Reply
+
+<a name="berty.messenger.v1.ContactAccept.Request"></a>
+
+### ContactAccept.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| public_key | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.ContactMetadata"></a>
 
@@ -202,6 +255,22 @@
 | ----- | ---- | ----- | ----------- |
 | display_name | [string](#string) |  |  |
 
+<a name="berty.messenger.v1.ContactRequest"></a>
+
+### ContactRequest
+
+<a name="berty.messenger.v1.ContactRequest.Reply"></a>
+
+### ContactRequest.Reply
+
+<a name="berty.messenger.v1.ContactRequest.Request"></a>
+
+### ContactRequest.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| link | [string](#string) |  |  |
+
 <a name="berty.messenger.v1.Conversation"></a>
 
 ### Conversation
@@ -210,6 +279,7 @@
 | ----- | ---- | ----- | ----------- |
 | public_key | [string](#string) |  |  |
 | display_name | [string](#string) |  |  |
+| link | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.ConversationCreate"></a>
 
@@ -230,6 +300,23 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | display_name | [string](#string) |  |  |
+| contacts_to_invite | [string](#string) | repeated | public keys |
+
+<a name="berty.messenger.v1.ConversationJoin"></a>
+
+### ConversationJoin
+
+<a name="berty.messenger.v1.ConversationJoin.Reply"></a>
+
+### ConversationJoin.Reply
+
+<a name="berty.messenger.v1.ConversationJoin.Request"></a>
+
+### ConversationJoin.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| link | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.ConversationStream"></a>
 
@@ -342,6 +429,37 @@
 | ----- | ---- | ----- | ----------- |
 | reset | [bool](#bool) |  | reset will regenerate a new link |
 | display_name | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.Interact"></a>
+
+### Interact
+
+<a name="berty.messenger.v1.Interact.Reply"></a>
+
+### Interact.Reply
+
+<a name="berty.messenger.v1.Interact.Request"></a>
+
+### Interact.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| type | [AppMessage.Type](#berty.messenger.v1.AppMessage.Type) |  |  |
+| payload | [bytes](#bytes) |  |  |
+| conversation_public_key | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.Interaction"></a>
+
+### Interaction
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| cid | [string](#string) |  |  |
+| type | [AppMessage.Type](#berty.messenger.v1.AppMessage.Type) |  |  |
+| conversation_public_key | [string](#string) |  |  |
+| conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
+| payload | [bytes](#bytes) |  |  |
+| is_me | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.Member"></a>
 
@@ -460,6 +578,14 @@
 | type | [StreamEvent.Type](#berty.messenger.v1.StreamEvent.Type) |  | DRAFT |
 | payload | [bytes](#bytes) |  |  |
 
+<a name="berty.messenger.v1.StreamEvent.AccountUpdated"></a>
+
+### StreamEvent.AccountUpdated
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| account | [Account](#berty.messenger.v1.Account) |  |  |
+
 <a name="berty.messenger.v1.StreamEvent.ContactUpdated"></a>
 
 ### StreamEvent.ContactUpdated
@@ -487,7 +613,14 @@
 <a name="berty.messenger.v1.StreamEvent.InteractionUpdated"></a>
 
 ### StreamEvent.InteractionUpdated
-Interaction interaction = 1;
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| interaction | [Interaction](#berty.messenger.v1.Interaction) |  |  |
+
+<a name="berty.messenger.v1.StreamEvent.ListEnd"></a>
+
+### StreamEvent.ListEnd
 
 <a name="berty.messenger.v1.SystemInfo"></a>
 
@@ -587,7 +720,9 @@ most important and dynamic values first
 | TypeConversationUpdated | 0 |  |
 | TypeConversationDeleted | 1 |  |
 | TypeInteractionUpdated | 2 |  |
-| TypeContactUpdated | 3 | etc.. |
+| TypeContactUpdated | 3 |  |
+| TypeAccountUpdated | 4 |  |
+| TypeListEnd | 5 | etc.. |
 
  
 
@@ -613,7 +748,12 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | ConversationStream | [ConversationStream.Request](#berty.messenger.v1.ConversationStream.Request) | [ConversationStream.Reply](#berty.messenger.v1.ConversationStream.Reply) stream |  |
 | EventStream | [EventStream.Request](#berty.messenger.v1.EventStream.Request) | [EventStream.Reply](#berty.messenger.v1.EventStream.Reply) stream |  |
 | ConversationCreate | [ConversationCreate.Request](#berty.messenger.v1.ConversationCreate.Request) | [ConversationCreate.Reply](#berty.messenger.v1.ConversationCreate.Reply) |  |
+| ConversationJoin | [ConversationJoin.Request](#berty.messenger.v1.ConversationJoin.Request) | [ConversationJoin.Reply](#berty.messenger.v1.ConversationJoin.Reply) |  |
 | AccountGet | [AccountGet.Request](#berty.messenger.v1.AccountGet.Request) | [AccountGet.Reply](#berty.messenger.v1.AccountGet.Reply) |  |
+| AccountUpdate | [AccountUpdate.Request](#berty.messenger.v1.AccountUpdate.Request) | [AccountUpdate.Reply](#berty.messenger.v1.AccountUpdate.Reply) |  |
+| ContactRequest | [ContactRequest.Request](#berty.messenger.v1.ContactRequest.Request) | [ContactRequest.Reply](#berty.messenger.v1.ContactRequest.Reply) |  |
+| ContactAccept | [ContactAccept.Request](#berty.messenger.v1.ContactAccept.Request) | [ContactAccept.Reply](#berty.messenger.v1.ContactAccept.Reply) |  |
+| Interact | [Interact.Request](#berty.messenger.v1.Interact.Request) | [Interact.Reply](#berty.messenger.v1.Interact.Reply) |  |
 
  
 

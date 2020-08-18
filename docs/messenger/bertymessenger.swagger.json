@@ -43,6 +43,102 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/AccountUpdate": {
+      "post": {
+        "operationId": "MessengerService_AccountUpdate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AccountUpdateReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AccountUpdateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/berty.messenger.v1/MessengerService/ContactAccept": {
+      "post": {
+        "operationId": "MessengerService_ContactAccept",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ContactAcceptReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ContactAcceptRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/berty.messenger.v1/MessengerService/ContactRequest": {
+      "post": {
+        "operationId": "MessengerService_ContactRequest",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ContactRequestReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ContactRequestRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/ConversationCreate": {
       "post": {
         "operationId": "MessengerService_ConversationCreate",
@@ -67,6 +163,38 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/v1ConversationCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/berty.messenger.v1/MessengerService/ConversationJoin": {
+      "post": {
+        "operationId": "MessengerService_ConversationJoin",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ConversationJoinReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ConversationJoinRequest"
             }
           }
         ],
@@ -257,6 +385,38 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/v1InstanceShareableBertyIDRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/berty.messenger.v1/MessengerService/Interact": {
+      "post": {
+        "operationId": "MessengerService_Interact",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1InteractReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1InteractRequest"
             }
           }
         ],
@@ -482,6 +642,9 @@
         "display_name": {
           "type": "string"
         },
+        "link": {
+          "type": "string"
+        },
         "state": {
           "$ref": "#/definitions/v1AccountState"
         }
@@ -565,6 +728,30 @@
       ],
       "default": "Undefined"
     },
+    "v1AccountUpdateReply": {
+      "type": "object"
+    },
+    "v1AccountUpdateRequest": {
+      "type": "object",
+      "properties": {
+        "display_name": {
+          "type": "string"
+        }
+      }
+    },
+    "v1AppMessageType": {
+      "type": "string",
+      "enum": [
+        "TypeUndefined",
+        "TypeUserMessage",
+        "TypeUserReaction",
+        "TypeGroupInvitation",
+        "TypeSetGroupName",
+        "TypeSetUserName",
+        "TypeAcknowledge"
+      ],
+      "default": "TypeUndefined"
+    },
     "v1BertyGroup": {
       "type": "object",
       "properties": {
@@ -592,6 +779,28 @@
         }
       }
     },
+    "v1ContactAcceptReply": {
+      "type": "object"
+    },
+    "v1ContactAcceptRequest": {
+      "type": "object",
+      "properties": {
+        "public_key": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ContactRequestReply": {
+      "type": "object"
+    },
+    "v1ContactRequestRequest": {
+      "type": "object",
+      "properties": {
+        "link": {
+          "type": "string"
+        }
+      }
+    },
     "v1Conversation": {
       "type": "object",
       "properties": {
@@ -599,6 +808,9 @@
           "type": "string"
         },
         "display_name": {
+          "type": "string"
+        },
+        "link": {
           "type": "string"
         }
       }
@@ -615,6 +827,23 @@
       "type": "object",
       "properties": {
         "display_name": {
+          "type": "string"
+        },
+        "contacts_to_invite": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1ConversationJoinReply": {
+      "type": "object"
+    },
+    "v1ConversationJoinRequest": {
+      "type": "object",
+      "properties": {
+        "link": {
           "type": "string"
         }
       }
@@ -763,6 +992,24 @@
         }
       }
     },
+    "v1InteractReply": {
+      "type": "object"
+    },
+    "v1InteractRequest": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/v1AppMessageType"
+        },
+        "payload": {
+          "type": "string",
+          "format": "byte"
+        },
+        "conversation_public_key": {
+          "type": "string"
+        }
+      }
+    },
     "v1ParseDeepLinkReply": {
       "type": "object",
       "properties": {
@@ -883,7 +1130,9 @@
         "TypeConversationUpdated",
         "TypeConversationDeleted",
         "TypeInteractionUpdated",
-        "TypeContactUpdated"
+        "TypeContactUpdated",
+        "TypeAccountUpdated",
+        "TypeListEnd"
       ],
       "default": "TypeConversationUpdated"
     },

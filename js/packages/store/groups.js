@@ -20,7 +20,7 @@ const eventsHandler = createSlice({
 	name: 'groups/events',
 	initialState: {},
 	reducers: {
-		updated: (state: State, { payload }) => {
+		updated: (state, { payload }) => {
 			const { publicKey, metadata, messages } = payload
 			const group = state[payload.publicKey]
 			if (!group) {
@@ -37,7 +37,7 @@ const eventsHandler = createSlice({
 			group.messages = messages
 			return state
 		},
-		cidRead: (state: State, { payload: { cid, publicKey } }) => {
+		cidRead: (state, { payload: { cid, publicKey } }) => {
 			if (!state[publicKey]) {
 				state[publicKey] = {
 					publicKey,
@@ -49,7 +49,7 @@ const eventsHandler = createSlice({
 			return state
 		},
 		memberDeviceAdded: (
-			state: State,
+			state,
 			{ payload: { groupPublicKey, memberPublicKey, devicePublicKey } },
 		) => {
 			if (!state[groupPublicKey]) {
@@ -141,7 +141,7 @@ export const transactions = {
 		])
 	},
 	isCIDRead: function* ({ cid, publicKey }) {
-		return yield select((state: GlobalState) => state.groups[publicKey]?.cids[cid])
+		return yield select((state) => state.groups[publicKey]?.cids[cid])
 	},
 	subscribe: function* () {
 		// handled in 'open' transaction

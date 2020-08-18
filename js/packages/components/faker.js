@@ -1,7 +1,5 @@
 import faker from 'faker'
 import { messenger } from '../store/index'
-import { OneToOne } from './chat'
-import { conversation, message } from '@berty-tech/store/messenger'
 
 const fakeArray = (length) => new Array(length).fill({})
 export const fakeContacts = (length, start) =>

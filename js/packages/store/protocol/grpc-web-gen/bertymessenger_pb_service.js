@@ -118,6 +118,15 @@ MessengerService.ConversationCreate = {
   responseType: bertymessenger_pb.ConversationCreate.Reply
 };
 
+MessengerService.ConversationJoin = {
+  methodName: "ConversationJoin",
+  service: MessengerService,
+  requestStream: false,
+  responseStream: false,
+  requestType: bertymessenger_pb.ConversationJoin.Request,
+  responseType: bertymessenger_pb.ConversationJoin.Reply
+};
+
 MessengerService.AccountGet = {
   methodName: "AccountGet",
   service: MessengerService,
@@ -125,6 +134,42 @@ MessengerService.AccountGet = {
   responseStream: false,
   requestType: bertymessenger_pb.AccountGet.Request,
   responseType: bertymessenger_pb.AccountGet.Reply
+};
+
+MessengerService.AccountUpdate = {
+  methodName: "AccountUpdate",
+  service: MessengerService,
+  requestStream: false,
+  responseStream: false,
+  requestType: bertymessenger_pb.AccountUpdate.Request,
+  responseType: bertymessenger_pb.AccountUpdate.Reply
+};
+
+MessengerService.ContactRequest = {
+  methodName: "ContactRequest",
+  service: MessengerService,
+  requestStream: false,
+  responseStream: false,
+  requestType: bertymessenger_pb.ContactRequest.Request,
+  responseType: bertymessenger_pb.ContactRequest.Reply
+};
+
+MessengerService.ContactAccept = {
+  methodName: "ContactAccept",
+  service: MessengerService,
+  requestStream: false,
+  responseStream: false,
+  requestType: bertymessenger_pb.ContactAccept.Request,
+  responseType: bertymessenger_pb.ContactAccept.Reply
+};
+
+MessengerService.Interact = {
+  methodName: "Interact",
+  service: MessengerService,
+  requestStream: false,
+  responseStream: false,
+  requestType: bertymessenger_pb.Interact.Request,
+  responseType: bertymessenger_pb.Interact.Reply
 };
 
 exports.MessengerService = MessengerService;
@@ -530,11 +575,166 @@ MessengerServiceClient.prototype.conversationCreate = function conversationCreat
   };
 };
 
+MessengerServiceClient.prototype.conversationJoin = function conversationJoin(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(MessengerService.ConversationJoin, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
 MessengerServiceClient.prototype.accountGet = function accountGet(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
   var client = grpc.unary(MessengerService.AccountGet, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+MessengerServiceClient.prototype.accountUpdate = function accountUpdate(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(MessengerService.AccountUpdate, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+MessengerServiceClient.prototype.contactRequest = function contactRequest(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(MessengerService.ContactRequest, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+MessengerServiceClient.prototype.contactAccept = function contactAccept(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(MessengerService.ContactAccept, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+MessengerServiceClient.prototype.interact = function interact(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(MessengerService.Interact, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

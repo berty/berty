@@ -11,11 +11,17 @@ import {
 	useGetMessage,
 	useGetMessageSearchResultWithMetadata,
 } from '@berty-tech/hooks/Messenger'
+import { MsgrProvider, MsgrContext } from './context'
+import { messenger as messengerpb } from '@berty-tech/api/index.js'
 
 const CreateAccount: React.FC = () => {
 	const [name, setName] = useState('')
+	const [error, setError] = useState(null)
 	const [port, setPort] = useState(1337)
-	const createAccount = Messenger.useAccountCreate()
+	const ctx = React.useContext(MsgrContext)
+	const handleCreate = React.useCallback(() => {
+		ctx.client.accountUpdate({ displayName: name }).catch((err: any) => setError(err))
+	}, [ctx.client, name])
 	return (
 		<>
 			<input
@@ -30,45 +36,39 @@ const CreateAccount: React.FC = () => {
 				value={port}
 				onChange={(e) => setPort(parseInt(e.target.value, 10))}
 			/>
-			<button
-				onClick={() =>
-					createAccount({ name, nodeConfig: { type: 'external', host: 'localhost', port } })
-				}
-			>
-				Create account
-			</button>
+
+			<button onClick={handleCreate}>Create account</button>
 		</>
 	)
 }
 
 const Account: React.FC = () => {
-	const account = Messenger.useAccount()
-	const client = Messenger.useClient()
-	const link = Messenger.useContactRequestReference()
+	const ctx = React.useContext(MsgrContext)
+	const account = ctx.account
 	return (
 		<>
 			<h2>Account</h2>
-			{account.name}
-			<br />
-			berty://{encodeURIComponent(link)}
-			<br />
 			<JSONed value={account} />
-			<JSONed value={client} />
 		</>
 	)
 }
 
 const AccountGate: React.FC = ({ children }) => {
-	const account = Messenger.useAccount()
-	return account ? <>{children}</> : <CreateAccount />
+	const ctx = React.useContext(MsgrContext)
+	return ctx.account && ctx.account.state === messengerpb.Account.State.Ready ? (
+		<>{children}</>
+	) : (
+		<CreateAccount />
+	)
 }
 
 const AddContact: React.FC = () => {
 	const [link, setLink] = useState('')
-	const sendContactRequest = Messenger.useAccountSendContactRequest()
-	const [, uriComponent] = link.split('berty://')
-	const [b64Name, rdvSeed, pubKey] = uriComponent ? decodeURIComponent(uriComponent).split(' ') : []
-	const name = b64Name && atob(b64Name)
+	const [error, setError] = useState(null)
+	const ctx = React.useContext(MsgrContext)
+	const handleAdd = React.useCallback(() => {
+		ctx.client.contactRequest({ link }).catch((err: any) => setError(err))
+	}, [ctx.client, link])
 	return (
 		<>
 			<h3>Add contact</h3>
@@ -78,10 +78,8 @@ const AddContact: React.FC = () => {
 				value={link}
 				onChange={(e) => setLink(e.target.value)}
 			/>
-			{name}
-			{!!(name && rdvSeed && pubKey) && (
-				<button onClick={() => sendContactRequest(name, rdvSeed, pubKey)}>Add contact</button>
-			)}
+			<Error value={error} />
+			<button onClick={handleAdd}>Add contact</button>
 		</>
 	)
 }
@@ -135,17 +133,34 @@ const SearchContacts: React.FC = () => {
 	)
 }
 
+const AcceptButton: React.FC<{ publicKey: string }> = ({ publicKey }) => {
+	const ctx = React.useContext(MsgrContext)
+	const [error, setError] = React.useState(null)
+	const handleAccept = React.useCallback(() => {
+		ctx.client.contactAccept({ publicKey }).catch((err: any) => setError(err))
+	}, [ctx.client, publicKey])
+	return (
+		<>
+			<Error value={error} />
+			<button onClick={handleAccept}>Accept</button>
+		</>
+	)
+}
+
 const Contacts: React.FC = () => {
-	const contacts = Messenger.useAccountContacts()
+	const ctx = React.useContext(MsgrContext)
 	return (
 		<>
 			<h2>Contacts</h2>
 			<AddContact />
 			<h3>Contacts List</h3>
 			<div style={{ display: 'flex', flexWrap: 'wrap' }}>
-				{contacts.map((contact) => (
-					<div style={{ border: '1px solid black' }} key={contact.id}>
+				{Object.values(ctx.contacts).map((contact: any) => (
+					<div style={{ border: '1px solid black' }} key={contact.publicKey}>
 						<JSONed value={contact} />
+						{contact.state === messengerpb.Contact.State.IncomingRequest && (
+							<AcceptButton publicKey={contact.publicKey} />
+						)}
 					</div>
 				))}
 			</div>
@@ -153,33 +168,64 @@ const Contacts: React.FC = () => {
 	)
 }
 
-const Message: React.FC<{ msgId: string }> = ({ msgId }) => {
-	const message = Messenger.useGetMessage(msgId)
-	if (message.type === messenger.AppMessageType.UserMessage) {
+const Interaction: React.FC<{ value: any }> = ({ value }) => {
+	console.log('render inte', value)
+	if (value.type === messengerpb.AppMessage.Type.TypeUserMessage) {
+		const payload = value.payload
 		return (
-			<div style={{ textAlign: message.isMe ? 'right' : 'left' }}>
-				{message.isMe && message.acknowledged && '✓ '}
-				{message.body}
+			<div style={{ textAlign: payload.isMe ? 'right' : 'left' }}>
+				{payload.isMe && payload.acknowledged && '✓ '}
+				{payload.body}
 			</div>
 		)
 	}
 	return null
 }
 
-const Conversation: React.FC<{ convId: string }> = ({ convId }) => {
-	const conv = Messenger.useGetConversation(convId)
-	const sendMessage = Messenger.useMessageSend()
+const Conversation: React.FC<{ publicKey: string }> = ({ publicKey }) => {
+	const ctx = React.useContext(MsgrContext)
+	let conv = (ctx.conversations as any)[publicKey]
+	if (!conv) {
+		const contact: any = Object.values(ctx.contacts).find(
+			(c: any) => c.conversationPublicKey === publicKey,
+		)
+		if (contact) {
+			conv = { displayName: contact.displayName, publicKey, kind: '1to1' }
+		}
+	} else {
+		conv = { ...conv, kind: 'multi' }
+	}
+	const interactions = Object.values((ctx.interactions as any)[publicKey] || {})
 	const [message, setMessage] = useState('')
+	const [error, setError] = useState(null)
+
+	const usermsg = { body: message }
+	console.log('sending', usermsg)
+	const buf = messengerpb.AppMessage.UserMessage.encode(usermsg).finish()
+	console.log('encoded', buf)
+	const decoded = messengerpb.AppMessage.UserMessage.decode(buf)
+	console.log('decoded', decoded)
+
+	const handleSend = React.useCallback(() => {
+		ctx.client
+			.interact({
+				conversationPublicKey: publicKey,
+				type: messengerpb.AppMessage.Type.TypeUserMessage,
+				payload: buf,
+			})
+			.catch((e: any) => setError(e))
+	}, [buf, ctx.client, publicKey])
+
 	const scrollRef = useRef<HTMLDivElement>(null)
 	useLayoutEffect(() => {
 		const div = scrollRef.current
 		if (!div) return
 		div.scrollTop = div.scrollHeight - div.clientHeight
-	}, [conv])
+	}, [])
 	return (
 		!!conv && (
 			<>
-				{conv.title}
+				{conv.displayName}
 				<br />
 				<div
 					style={{
@@ -190,8 +236,8 @@ const Conversation: React.FC<{ convId: string }> = ({ convId }) => {
 					}}
 					ref={scrollRef}
 				>
-					{conv.messages.map((msg) => (
-						<Message key={msg} msgId={msg} />
+					{(interactions || []).map((inte: any) => (
+						<Interaction key={inte.cid} value={inte} />
 					))}
 				</div>
 				<input
@@ -200,21 +246,8 @@ const Conversation: React.FC<{ convId: string }> = ({ convId }) => {
 					value={message}
 					onChange={(e) => setMessage(e.target.value)}
 				/>
-				{!!message && (
-					<button
-						onClick={() =>
-							sendMessage({
-								type: messenger.AppMessageType.UserMessage,
-								body: message,
-								id: convId,
-								attachments: [],
-								sentDate: Date.now(),
-							})
-						}
-					>
-						Send
-					</button>
-				)}
+				{!!message && <button onClick={handleSend}>Send</button>}
+				<Error value={error} />
 				<JSONed value={conv} />
 			</>
 		)
@@ -252,26 +285,34 @@ const SearchMessages: React.FC = () => {
 }
 
 const Conversations: React.FC = () => {
-	const conversations = Messenger.useAllConversations()
+	const ctx = React.useContext(MsgrContext)
+	const conversations = React.useMemo(
+		() => [
+			...Object.values(ctx.conversations),
+			...Object.values(ctx.contacts)
+				.filter((c: any) => c.state === messengerpb.Contact.State.Established)
+				.map((c: any) => ({ publicKey: c.conversationPublicKey, displayName: c.displayName })),
+		], // TODO: add sortDate
+		[ctx.contacts, ctx.conversations],
+	)
 	const [selected, setSelected] = useState('')
 	return (
 		<>
 			<h2>Conversations</h2>
 			<div style={{ display: 'flex' }}>
-				{conversations.map((conv) => {
-					if (conv.kind === 'fake') return null
+				{conversations.map((conv: any) => {
 					return (
 						<button
-							key={conv.id}
-							disabled={selected === conv.id}
-							onClick={() => setSelected(conv.id)}
+							key={conv.publicKey}
+							disabled={selected === conv.publicKey}
+							onClick={() => setSelected(conv.publicKey)}
 						>
-							{conv.title}
+							{conv.displayName}
 						</button>
 					)
 				})}
 			</div>
-			{!!selected && <Conversation convId={selected} />}
+			{!!selected && <Conversation publicKey={selected} />}
 		</>
 	)
 }
@@ -286,28 +327,6 @@ const ClearStorage: React.FC = () => (
 		Clear storage
 	</button>
 )
-
-const Requests: React.FC = () => {
-	const outgoing = Messenger.useAccountContactsWithOutgoingRequests()
-	const incoming = Messenger.useAccountContactsWithIncomingRequests()
-	return (
-		<>
-			<h2>Requests</h2>
-			<h3>Incoming</h3>
-			{incoming.map((i) => (
-				<div style={{ border: '1px solid black' }} key={i.id}>
-					<JSONed value={i} />
-				</div>
-			))}
-			<h3>Outgoing</h3>
-			{outgoing.map((o) => (
-				<div style={{ border: '1px solid black' }} key={o.id}>
-					<JSONed key={o.id} value={o} />
-				</div>
-			))}
-		</>
-	)
-}
 
 let metadata: any[] = []
 let messages: any[] = []
@@ -364,7 +383,7 @@ const Groups: React.FC = () => {
 	console.log('groups', groups)
 	return (
 		<>
-			{Object.values(groups).map((group) => (
+			{Object.values(groups).map((group: any) => (
 				<JSONed key={group.publicKey} value={group} />
 			))}
 		</>
@@ -390,9 +409,17 @@ const Search: React.FC = () => {
 	)
 }
 
+const Error: React.FC<{ value: Error }> = ({ value }) => (
+	<div style={{ color: 'red' }}>{value && value.toString()}</div>
+)
+
 const CreateMultiMember = () => {
 	const [groupName, setGroupName] = useState('My group')
-	const createGroup = Messenger.useConversationCreate({ name: groupName, members: [] })
+	const [error, setError] = useState(null)
+	const ctx = React.useContext(MsgrContext)
+	const handleCreate = React.useCallback(() => {
+		ctx.client.conversationCreate({ displayName: groupName }).catch((err: any) => setError(err))
+	}, [ctx.client, groupName])
 	return (
 		<>
 			<input
@@ -402,14 +429,19 @@ const CreateMultiMember = () => {
 					setGroupName(e.target.value)
 				}}
 			/>
-			<button onClick={createGroup}>Create</button>
+			<Error value={error} />
+			<button onClick={handleCreate}>Create</button>
 		</>
 	)
 }
 
 const JoinMultiMember = () => {
 	const [link, setLink] = useState('')
-	const createGroup = Messenger.useConversationJoin({ link })
+	const [error, setError] = useState(null)
+	const ctx = React.useContext(MsgrContext)
+	const handleJoin = React.useCallback(() => {
+		ctx.client.conversationJoin({ link }).catch((err: any) => setError(err))
+	}, [ctx.client, link, setError])
 	return (
 		<>
 			<input
@@ -419,25 +451,24 @@ const JoinMultiMember = () => {
 					setLink(e.target.value)
 				}}
 			/>
-			<button onClick={createGroup}>Join</button>
+			<Error value={error} />
+			<button onClick={handleJoin}>Join</button>
 		</>
 	)
 }
 
 const MultiMemberList = () => {
-	const unfil = Messenger.useAllConversations()
-	const convs = unfil.filter(
-		(conv) => conv.kind === messenger.conversation.ConversationKind.MultiMember,
-	)
+	const ctx = React.useContext(MsgrContext)
+	const convs = Object.values(ctx.conversations)
 	return (
 		<>
-			{convs.map((conv) => {
+			{convs.map((conv: any) => {
 				return (
-					<div key={conv.id}>
-						<h3>{conv.title}</h3>
-						Public key: {conv.pk}
+					<div key={conv.publicKey}>
+						<h3>{conv.displayName}</h3>
+						Public key: {conv.publicKey}
 						<br />
-						Link: {conv.shareableGroup}
+						Link: {conv.link}
 					</div>
 				)
 			})}
@@ -457,9 +488,7 @@ const MultiMember: React.FC = () => {
 }
 
 const TABS = {
-	Account: Account,
 	Contacts: Contacts,
-	Requests: Requests,
 	Conversations: Conversations,
 	Search: Search,
 	MultiMember: MultiMember,
@@ -472,7 +501,7 @@ type TabKey = keyof typeof TABS
 const TABS_KEYS = Object.keys(TABS) as TabKey[]
 
 const Tabs: React.FC = () => {
-	const [selected, setSelected] = useState<TabKey>('Account')
+	const [selected, setSelected] = useState<TabKey>('Contacts')
 	const TabContent = TABS[selected]
 	return (
 		<>
@@ -490,17 +519,40 @@ const Tabs: React.FC = () => {
 	)
 }
 
+const ListGate: React.FC = ({ children }) => {
+	const ctx = React.useContext(MsgrContext)
+	if (ctx && ctx.listDone) {
+		return <>{children}</>
+	} else {
+		return <>Loading..</>
+	}
+}
+
+function getParam(sVar: string) {
+	return unescape(
+		window.location.search.replace(
+			new RegExp(
+				'^(?:.*[&\\?]' + escape(sVar).replace(/[\.\+\*]/g, '\\$&') + '(?:\\=([^&]*))?)?.*$',
+				'i',
+			),
+			'$1',
+		),
+	)
+}
+
 function App() {
 	return (
-		<Messenger.Provider config={{ storage }}>
+		<MsgrProvider daemonAddress={getParam('daemonAddress') || 'http://127.0.0.1:1337'}>
 			<div className='App' style={{ display: 'flex', flexDirection: 'column' }}>
 				<h1>Berty web dev</h1>
-				<ClearStorage />
-				<AccountGate>
-					<Tabs />
-				</AccountGate>
+				<ListGate>
+					<Account />
+					<AccountGate>
+						<Tabs />
+					</AccountGate>
+				</ListGate>
 			</div>
-		</Messenger.Provider>
+		</MsgrProvider>
 	)
 }
 

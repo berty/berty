@@ -38,8 +38,8 @@ export function* unaryChan(func, ...args) {
 
 export const BUFFER_ENCODING = 'base64'
 export const strToBuf = (pk) => Buffer.from(pk, BUFFER_ENCODING)
-export const bufToStr = (buf: Uint8Array) => Buffer.from(buf).toString(BUFFER_ENCODING)
+export const bufToStr = (buf) => Buffer.from(buf).toString(BUFFER_ENCODING)
 
 export const JSON_ENCODING = 'utf-8'
-export const jsonToBuf = (val: any) => Buffer.from(JSON.stringify(val), JSON_ENCODING)
-export const bufToJSON = (buf: Uint8Array) => JSON.parse(Buffer.from(buf).toString(JSON_ENCODING))
+export const jsonToBuf = (val) => Buffer.from(JSON.stringify(val), JSON_ENCODING)
+export const bufToJSON = (buf) => JSON.parse(Buffer.from(buf).toString(JSON_ENCODING))

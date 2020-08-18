@@ -112,6 +112,15 @@ type MessengerServiceConversationCreate = {
   readonly responseType: typeof bertymessenger_pb.ConversationCreate.Reply;
 };
 
+type MessengerServiceConversationJoin = {
+  readonly methodName: string;
+  readonly service: typeof MessengerService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof bertymessenger_pb.ConversationJoin.Request;
+  readonly responseType: typeof bertymessenger_pb.ConversationJoin.Reply;
+};
+
 type MessengerServiceAccountGet = {
   readonly methodName: string;
   readonly service: typeof MessengerService;
@@ -119,6 +128,42 @@ type MessengerServiceAccountGet = {
   readonly responseStream: false;
   readonly requestType: typeof bertymessenger_pb.AccountGet.Request;
   readonly responseType: typeof bertymessenger_pb.AccountGet.Reply;
+};
+
+type MessengerServiceAccountUpdate = {
+  readonly methodName: string;
+  readonly service: typeof MessengerService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof bertymessenger_pb.AccountUpdate.Request;
+  readonly responseType: typeof bertymessenger_pb.AccountUpdate.Reply;
+};
+
+type MessengerServiceContactRequest = {
+  readonly methodName: string;
+  readonly service: typeof MessengerService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof bertymessenger_pb.ContactRequest.Request;
+  readonly responseType: typeof bertymessenger_pb.ContactRequest.Reply;
+};
+
+type MessengerServiceContactAccept = {
+  readonly methodName: string;
+  readonly service: typeof MessengerService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof bertymessenger_pb.ContactAccept.Request;
+  readonly responseType: typeof bertymessenger_pb.ContactAccept.Reply;
+};
+
+type MessengerServiceInteract = {
+  readonly methodName: string;
+  readonly service: typeof MessengerService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof bertymessenger_pb.Interact.Request;
+  readonly responseType: typeof bertymessenger_pb.Interact.Reply;
 };
 
 export class MessengerService {
@@ -135,7 +180,12 @@ export class MessengerService {
   static readonly ConversationStream: MessengerServiceConversationStream;
   static readonly EventStream: MessengerServiceEventStream;
   static readonly ConversationCreate: MessengerServiceConversationCreate;
+  static readonly ConversationJoin: MessengerServiceConversationJoin;
   static readonly AccountGet: MessengerServiceAccountGet;
+  static readonly AccountUpdate: MessengerServiceAccountUpdate;
+  static readonly ContactRequest: MessengerServiceContactRequest;
+  static readonly ContactAccept: MessengerServiceContactAccept;
+  static readonly Interact: MessengerServiceInteract;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -254,6 +304,15 @@ export class MessengerServiceClient {
     requestMessage: bertymessenger_pb.ConversationCreate.Request,
     callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.ConversationCreate.Reply|null) => void
   ): UnaryResponse;
+  conversationJoin(
+    requestMessage: bertymessenger_pb.ConversationJoin.Request,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.ConversationJoin.Reply|null) => void
+  ): UnaryResponse;
+  conversationJoin(
+    requestMessage: bertymessenger_pb.ConversationJoin.Request,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.ConversationJoin.Reply|null) => void
+  ): UnaryResponse;
   accountGet(
     requestMessage: bertymessenger_pb.AccountGet.Request,
     metadata: grpc.Metadata,
@@ -262,6 +321,42 @@ export class MessengerServiceClient {
   accountGet(
     requestMessage: bertymessenger_pb.AccountGet.Request,
     callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.AccountGet.Reply|null) => void
+  ): UnaryResponse;
+  accountUpdate(
+    requestMessage: bertymessenger_pb.AccountUpdate.Request,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.AccountUpdate.Reply|null) => void
+  ): UnaryResponse;
+  accountUpdate(
+    requestMessage: bertymessenger_pb.AccountUpdate.Request,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.AccountUpdate.Reply|null) => void
+  ): UnaryResponse;
+  contactRequest(
+    requestMessage: bertymessenger_pb.ContactRequest.Request,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.ContactRequest.Reply|null) => void
+  ): UnaryResponse;
+  contactRequest(
+    requestMessage: bertymessenger_pb.ContactRequest.Request,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.ContactRequest.Reply|null) => void
+  ): UnaryResponse;
+  contactAccept(
+    requestMessage: bertymessenger_pb.ContactAccept.Request,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.ContactAccept.Reply|null) => void
+  ): UnaryResponse;
+  contactAccept(
+    requestMessage: bertymessenger_pb.ContactAccept.Request,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.ContactAccept.Reply|null) => void
+  ): UnaryResponse;
+  interact(
+    requestMessage: bertymessenger_pb.Interact.Request,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.Interact.Reply|null) => void
+  ): UnaryResponse;
+  interact(
+    requestMessage: bertymessenger_pb.Interact.Request,
+    callback: (error: ServiceError|null, responseMessage: bertymessenger_pb.Interact.Reply|null) => void
   ): UnaryResponse;
 }
 

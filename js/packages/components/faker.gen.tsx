@@ -380,10 +380,45 @@ export namespace faker {
 						callback(null, _api.berty.messenger.v1.ConversationCreate.Reply.encode({}).finish())
 					}
 
+					export const ConversationJoin: (
+						request: _api.berty.messenger.v1.ConversationJoin.IRequest,
+						callback: pb.RPCImplCallback,
+					) => void = (request, callback) => {
+						callback(null, _api.berty.messenger.v1.ConversationJoin.Reply.encode({}).finish())
+					}
+
 					export const AccountGet: (
 						request: _api.berty.messenger.v1.AccountGet.IRequest,
 						callback: pb.RPCImplCallback,
 					) => void = (request, callback) => {}
+
+					export const AccountUpdate: (
+						request: _api.berty.messenger.v1.AccountUpdate.IRequest,
+						callback: pb.RPCImplCallback,
+					) => void = (request, callback) => {
+						callback(null, _api.berty.messenger.v1.AccountUpdate.Reply.encode({}).finish())
+					}
+
+					export const ContactRequest: (
+						request: _api.berty.messenger.v1.ContactRequest.IRequest,
+						callback: pb.RPCImplCallback,
+					) => void = (request, callback) => {
+						callback(null, _api.berty.messenger.v1.ContactRequest.Reply.encode({}).finish())
+					}
+
+					export const ContactAccept: (
+						request: _api.berty.messenger.v1.ContactAccept.IRequest,
+						callback: pb.RPCImplCallback,
+					) => void = (request, callback) => {
+						callback(null, _api.berty.messenger.v1.ContactAccept.Reply.encode({}).finish())
+					}
+
+					export const Interact: (
+						request: _api.berty.messenger.v1.Interact.IRequest,
+						callback: pb.RPCImplCallback,
+					) => void = (request, callback) => {
+						callback(null, _api.berty.messenger.v1.Interact.Reply.encode({}).finish())
+					}
 				}
 			}
 		}
