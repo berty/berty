@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package tinder;
 
-import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "gogoproto/gogo.proto";
 
 option go_package = "berty.tech/berty/go/internal/tinder";
 

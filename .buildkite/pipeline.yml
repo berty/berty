@@ -9,7 +9,7 @@ steps:
           environment:
             [
               "BUILDKITE=true",
-              "GO111MODULE=off",
+              "GO111MODULE=on",
               "GOPATH=/home/buildkite-agent/go",
               "HOME=/home/buildkite-agent",
               "GRADLE_USER_HOME=/home/buildkite-agent/.gradle",

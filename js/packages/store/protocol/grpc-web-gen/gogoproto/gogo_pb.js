@@ -1,4 +1,4 @@
-// source: github.com/gogo/protobuf/gogoproto/gogo.proto
+// source: gogoproto/gogo.proto
 /**
  * @fileoverview
  * @enhanceable
