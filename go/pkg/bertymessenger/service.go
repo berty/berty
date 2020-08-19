@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/base64"
 	"errors"
-	"io"
 	"time"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -84,14 +83,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 			for {
 				gme, err := s.Recv()
 				if err != nil {
-					switch {
-					case err == io.EOF:
-						svc.logger.Warn("account group stream EOF")
-					case grpcIsCanceled(err):
-						svc.logger.Debug("account group stream canceled")
-					default:
-						svc.logger.Error("receive from account group metadata stream", zap.Error(err))
-					}
+					svc.logStreamingError("account group", err)
 					return
 				}
 				err = handleProtocolEvent(&svc, gme)
@@ -127,14 +119,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 				for {
 					gme, err := s.Recv()
 					if err != nil {
-						switch {
-						case err == io.EOF:
-							svc.logger.Warn("group stream EOF")
-						case grpcIsCanceled(err):
-							svc.logger.Debug("group stream canceled")
-						default:
-							svc.logger.Error("receive from group metadata stream", zap.Error(err))
-						}
+						svc.logStreamingError("group metadata", err)
 						return
 					}
 					err = handleProtocolEvent(&svc, gme)

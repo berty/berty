@@ -21,8 +21,8 @@ import (
 	"moul.io/openfiles"
 )
 
-func (s *service) DevShareInstanceBertyID(ctx context.Context, req *DevShareInstanceBertyID_Request) (*DevShareInstanceBertyID_Reply, error) {
-	ret, err := s.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{
+func (svc *service) DevShareInstanceBertyID(ctx context.Context, req *DevShareInstanceBertyID_Request) (*DevShareInstanceBertyID_Reply, error) {
+	ret, err := svc.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{
 		DisplayName: req.DisplayName,
 		Reset_:      req.Reset_,
 	})
@@ -37,43 +37,43 @@ func (s *service) DevShareInstanceBertyID(ctx context.Context, req *DevShareInst
 	return &DevShareInstanceBertyID_Reply{}, nil
 }
 
-func (s *service) InstanceShareableBertyID(ctx context.Context, req *InstanceShareableBertyID_Request) (*InstanceShareableBertyID_Reply, error) {
+func (svc *service) InstanceShareableBertyID(ctx context.Context, req *InstanceShareableBertyID_Request) (*InstanceShareableBertyID_Reply, error) {
 	if req == nil {
 		req = &InstanceShareableBertyID_Request{}
 	}
-	config, err := s.protocolClient.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+	config, err := svc.protocolClient.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	s.logger.Debug("enable contact request (may be already done)")
-	_, err = s.protocolClient.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})
+	svc.logger.Debug("enable contact request (may be already done)")
+	_, err = svc.protocolClient.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
 	if req.Reset_ {
-		s.logger.Info("reset contact reference")
-		_, err = s.protocolClient.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
+		svc.logger.Info("reset contact reference")
+		_, err = svc.protocolClient.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 	}
 
-	res, err := s.protocolClient.ContactRequestReference(ctx, &bertytypes.ContactRequestReference_Request{})
+	res, err := svc.protocolClient.ContactRequestReference(ctx, &bertytypes.ContactRequestReference_Request{})
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
 	// if this call does not return a PublicRendezvousSeed, then we need to call Reset
 	if res.PublicRendezvousSeed == nil {
-		s.logger.Info("reset contact reference")
-		_, err = s.protocolClient.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
+		svc.logger.Info("reset contact reference")
+		_, err = svc.protocolClient.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 	}
-	res, err = s.protocolClient.ContactRequestReference(ctx, &bertytypes.ContactRequestReference_Request{})
+	res, err = svc.protocolClient.ContactRequestReference(ctx, &bertytypes.ContactRequestReference_Request{})
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -112,7 +112,7 @@ func (s *service) InstanceShareableBertyID(ctx context.Context, req *InstanceSha
 	return &ret, nil
 }
 
-func (s *service) ParseDeepLink(ctx context.Context, req *ParseDeepLink_Request) (*ParseDeepLink_Reply, error) {
+func (svc *service) ParseDeepLink(ctx context.Context, req *ParseDeepLink_Request) (*ParseDeepLink_Reply, error) {
 	if req == nil || req.Link == "" {
 		return nil, errcode.ErrMissingInput
 	}
@@ -214,12 +214,12 @@ func ParseGroupInviteURLQuery(query url.Values) (*ParseDeepLink_Reply, error) {
 	return &ret, nil
 }
 
-func (s *service) ShareableBertyGroup(ctx context.Context, request *ShareableBertyGroup_Request) (*ShareableBertyGroup_Reply, error) {
+func (svc *service) ShareableBertyGroup(ctx context.Context, request *ShareableBertyGroup_Request) (*ShareableBertyGroup_Reply, error) {
 	if request == nil {
 		return nil, errcode.ErrInvalidInput
 	}
 
-	grpInfo, err := s.protocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+	grpInfo, err := svc.protocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		GroupPK: request.GroupPK,
 	})
 
@@ -271,7 +271,7 @@ func ShareableBertyGroupURL(g *bertytypes.Group, groupName string) (string, stri
 }
 
 // maybe we should preserve the previous generic api
-func (s *service) SendContactRequest(ctx context.Context, req *SendContactRequest_Request) (*SendContactRequest_Reply, error) {
+func (svc *service) SendContactRequest(ctx context.Context, req *SendContactRequest_Request) (*SendContactRequest_Reply, error) {
 	if req == nil || req.BertyID == nil || req.BertyID.AccountPK == nil || req.BertyID.PublicRendezvousSeed == nil {
 		return nil, errcode.ErrMissingInput
 	}
@@ -284,7 +284,7 @@ func (s *service) SendContactRequest(ctx context.Context, req *SendContactReques
 		},
 		OwnMetadata: req.OwnMetadata,
 	}
-	_, err := s.protocolClient.ContactRequestSend(ctx, &contactRequest)
+	_, err := svc.protocolClient.ContactRequestSend(ctx, &contactRequest)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -292,7 +292,7 @@ func (s *service) SendContactRequest(ctx context.Context, req *SendContactReques
 	return &SendContactRequest_Reply{}, nil
 }
 
-func (s *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*SystemInfo_Reply, error) {
+func (svc *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*SystemInfo_Reply, error) {
 	// rlimit
 	rlimitNofile := syscall.Rlimit{}
 	_ = syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rlimitNofile)
@@ -312,7 +312,7 @@ func (s *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*Sys
 		RlimitCur:        rlimitNofile.Cur,
 		Nofile:           nofile,
 		TooManyOpenFiles: openfiles.IsTooManyError(nofileErr),
-		StartedAt:        s.startedAt.Unix(),
+		StartedAt:        svc.startedAt.Unix(),
 		NumCPU:           int64(runtime.NumCPU()),
 		GoVersion:        runtime.Version(),
 		HostName:         hn,
@@ -329,8 +329,8 @@ func (s *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*Sys
 			reply.BuildTime = int64(buildTime)
 		}
 	}
-	if s.protocolService != nil && s.protocolService.IpfsCoreAPI() != nil {
-		api := s.protocolService.IpfsCoreAPI()
+	if svc.protocolService != nil && svc.protocolService.IpfsCoreAPI() != nil {
+		api := svc.protocolService.IpfsCoreAPI()
 		peers, _ := api.Swarm().Peers(ctx)
 		reply.ConnectedPeers = int64(len(peers))
 	}
@@ -338,8 +338,8 @@ func (s *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*Sys
 	return &reply, nil
 }
 
-func (s *service) SendAck(ctx context.Context, request *SendAck_Request) (*SendAck_Reply, error) {
-	gInfo, err := s.protocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+func (svc *service) SendAck(ctx context.Context, request *SendAck_Request) (*SendAck_Reply, error) {
+	gInfo, err := svc.protocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		GroupPK: request.GroupPK,
 	})
 
@@ -358,7 +358,7 @@ func (s *service) SendAck(ctx context.Context, request *SendAck_Request) (*SendA
 		return nil, err
 	}
 
-	_, err = s.protocolClient.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
+	_, err = svc.protocolClient.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
 		GroupPK: request.GroupPK,
 		Payload: am,
 	})
@@ -366,7 +366,7 @@ func (s *service) SendAck(ctx context.Context, request *SendAck_Request) (*SendA
 	return nil, err
 }
 
-func (s *service) SendMessage(ctx context.Context, request *SendMessage_Request) (*SendMessage_Reply, error) {
+func (svc *service) SendMessage(ctx context.Context, request *SendMessage_Request) (*SendMessage_Reply, error) {
 	payload, err := AppMessage_TypeUserMessage.MarshalPayload(&AppMessage_UserMessage{
 		Body:        request.Message,
 		Attachments: nil,
@@ -376,7 +376,7 @@ func (s *service) SendMessage(ctx context.Context, request *SendMessage_Request)
 		return nil, err
 	}
 
-	_, err = s.protocolClient.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
+	_, err = svc.protocolClient.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
 		GroupPK: request.GroupPK,
 		Payload: payload,
 	})
@@ -384,12 +384,12 @@ func (s *service) SendMessage(ctx context.Context, request *SendMessage_Request)
 	return nil, err
 }
 
-func (s *service) ConversationStream(req *ConversationStream_Request, sub MessengerService_ConversationStreamServer) error {
+func (svc *service) ConversationStream(req *ConversationStream_Request, sub MessengerService_ConversationStreamServer) error {
 	// TODO: cursors
 
 	// send existing convs
 	var convs []*Conversation
-	if err := s.db.Find(&convs).Error; err != nil {
+	if err := svc.db.Find(&convs).Error; err != nil {
 		return err
 	}
 	for _, c := range convs {
@@ -418,7 +418,7 @@ func (s *service) ConversationStream(req *ConversationStream_Request, sub Messen
 			return nil
 		},
 	}
-	unreg := s.dispatcher.Register(&n)
+	unreg := svc.dispatcher.Register(&n)
 	defer unreg()
 
 	// don't return until we have a send error or the context is canceled
@@ -430,120 +430,136 @@ func (s *service) ConversationStream(req *ConversationStream_Request, sub Messen
 	}
 }
 
-func (s *service) EventStream(req *EventStream_Request, sub MessengerService_EventStreamServer) error {
+func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_EventStreamServer) error {
 	// TODO: cursors
 
-	s.logger.Info("sending account")
-	var acc Account
-	if err := s.db.First(&acc).Error; err != nil {
-		return err
-	}
-	au, err := proto.Marshal(&StreamEvent_AccountUpdated{Account: &acc})
-	if err != nil {
-		return err
-	}
-	if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeAccountUpdated, au}}); err != nil {
-		return err
-	}
-
-	var convs []Conversation
-	if err := s.db.Find(&convs).Error; err != nil {
-		return err
-	}
-	s.logger.Info("sending existing conversations", zap.Int("count", len(convs)))
-	for _, conv := range convs {
-		c := conv // comply with scopelint
-		cu, err := proto.Marshal(&StreamEvent_ConversationUpdated{&c})
+	// send account
+	{
+		svc.logger.Debug("sending account")
+		var acc Account
+		if err := svc.db.First(&acc).Error; err != nil {
+			return err
+		}
+		au, err := proto.Marshal(&StreamEvent_AccountUpdated{Account: &acc})
 		if err != nil {
 			return err
 		}
-		if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeConversationUpdated, cu}}); err != nil {
+		if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeAccountUpdated, au}}); err != nil {
 			return err
 		}
 	}
 
-	var contacts []Contact
-	if err := s.db.Find(&contacts).Error; err != nil {
-		return err
+	// send conversations
+	{
+		var convs []Conversation
+		if err := svc.db.Find(&convs).Error; err != nil {
+			return err
+		}
+		svc.logger.Debug("sending existing conversations", zap.Int("count", len(convs)))
+		for _, conv := range convs {
+			c := conv // comply with scopelint
+			cu, err := proto.Marshal(&StreamEvent_ConversationUpdated{&c})
+			if err != nil {
+				return err
+			}
+			if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeConversationUpdated, cu}}); err != nil {
+				return err
+			}
+		}
 	}
-	s.logger.Info("sending existing contacts", zap.Int("count", len(contacts)))
-	for _, contact := range contacts {
-		c := contact // comply with scopelint
-		cu, err := proto.Marshal(&StreamEvent_ContactUpdated{&c})
+
+	// send contacts
+	{
+		var contacts []Contact
+		if err := svc.db.Find(&contacts).Error; err != nil {
+			return err
+		}
+		svc.logger.Info("sending existing contacts", zap.Int("count", len(contacts)))
+		for _, contact := range contacts {
+			c := contact // comply with scopelint
+			cu, err := proto.Marshal(&StreamEvent_ContactUpdated{&c})
+			if err != nil {
+				return err
+			}
+			if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeContactUpdated, cu}}); err != nil {
+				return err
+			}
+		}
+	}
+
+	// send interactions
+	{
+		var interactions []Interaction
+		if err := svc.db.Find(&interactions).Error; err != nil {
+			return err
+		}
+		svc.logger.Info("sending existing interactions", zap.Int("count", len(interactions)))
+		for _, inte := range interactions {
+			i := inte // comply with scopelint
+			iu, err := proto.Marshal(&StreamEvent_InteractionUpdated{&i})
+			if err != nil {
+				return err
+			}
+			if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeInteractionUpdated, iu}}); err != nil {
+				return err
+			}
+		}
+	}
+
+	// signal that we're done sending existing models
+	{
+		p, err := proto.Marshal(&StreamEvent_ListEnd{})
 		if err != nil {
 			return err
 		}
-		if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeContactUpdated, cu}}); err != nil {
+		if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeListEnd, p}}); err != nil {
 			return err
 		}
-	}
-
-	var intes []Interaction
-	if err := s.db.Find(&intes).Error; err != nil {
-		return err
-	}
-	s.logger.Info("sending existing interactions", zap.Int("count", len(intes)))
-	for _, inte := range intes {
-		i := inte // comply with scopelint
-		iu, err := proto.Marshal(&StreamEvent_InteractionUpdated{&i})
-		if err != nil {
-			return err
-		}
-		if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeInteractionUpdated, iu}}); err != nil {
-			return err
-		}
-	}
-
-	// Signal that we're done sending existing models
-	p, err := proto.Marshal(&StreamEvent_ListEnd{})
-	if err != nil {
-		return err
-	}
-	if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeListEnd, p}}); err != nil {
-		return err
 	}
 
 	// FIXME: case where a model is created/updated/deleted between the list and the stream
 	// dunno how to add a test to trigger, maybe it can never happen? don't know how to prove either way
 
 	// stream new events
-	errch := make(chan error)
-	defer close(errch)
-	n := NotifieeBundle{StreamEventImpl: func(e *StreamEvent) error {
-		s.logger.Debug("sending stream event", zap.String("type", e.GetType().String()))
-		err := sub.Send(&EventStream_Reply{Event: e})
-		if err != nil {
-			// next commmented line allows me to manually test the behavior on a send error. How to isolate into an automatic test?
-			// errch <- errors.New("TEST ERROR")
-			errch <- err
-		}
-		return nil
-	}}
-	unreg := s.dispatcher.Register(&n)
-	defer unreg()
+	{
+		errch := make(chan error)
+		defer close(errch)
+		n := NotifieeBundle{StreamEventImpl: func(e *StreamEvent) error {
+			svc.logger.Debug("sending stream event", zap.String("type", e.GetType().String()))
+			err := sub.Send(&EventStream_Reply{Event: e})
+			if err != nil {
+				// next commmented line allows me to manually test the behavior on a send error. How to isolate into an automatic test?
+				// errch <- errors.New("TEST ERROR")
+				errch <- err
+			}
+			return nil
+		}}
+		unreg := svc.dispatcher.Register(&n)
+		defer unreg()
 
-	// don't return until we have a send error or the context is canceled
-	select {
-	case e := <-errch:
-		return e
-	case <-sub.Context().Done():
-		return nil
+		// don't return until we have a send error or the context is canceled
+		select {
+		case err := <-errch:
+			return err
+		case <-sub.Context().Done():
+			return nil
+		}
 	}
 }
 
-func (s *service) ConversationCreate(ctx context.Context, req *ConversationCreate_Request) (*ConversationCreate_Reply, error) {
+func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCreate_Request) (*ConversationCreate_Reply, error) {
 	dn := req.GetDisplayName()
 
 	// Create a multimember group
-	cr, err := s.protocolClient.MultiMemberGroupCreate(ctx, &bertytypes.MultiMemberGroupCreate_Request{})
+	cr, err := svc.protocolClient.MultiMemberGroupCreate(ctx, &bertytypes.MultiMemberGroupCreate_Request{})
 	if err != nil {
 		return nil, err
 	}
 	pk := cr.GetGroupPK()
 	pkStr := base64.StdEncoding.EncodeToString(pk)
-	s.logger.Info("Created conv", zap.String("dn", req.GetDisplayName()), zap.String("pk", pkStr))
+	svc.logger.Info("Created conv", zap.String("dn", req.GetDisplayName()), zap.String("pk", pkStr))
 
-	gir, err := s.protocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{GroupPK: pk})
+	gir, err := svc.protocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{GroupPK: pk})
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -555,34 +571,38 @@ func (s *service) ConversationCreate(ctx context.Context, req *ConversationCreat
 
 	// Update database
 	conv := &Conversation{PublicKey: pkStr, DisplayName: dn, Link: htmlURL}
-	cl := clause.OnConflict{
-		Columns:   []clause.Column{{Name: "public_key"}},
-		DoUpdates: clause.AssignmentColumns([]string{"display_name", "link"}),
-	}
-	if err = s.db.Clauses(cl).Create(&conv).Error; err != nil {
-		return nil, err
+	{
+		err = svc.db.
+			Clauses(clause.OnConflict{
+				Columns:   []clause.Column{{Name: "public_key"}},
+				DoUpdates: clause.AssignmentColumns([]string{"display_name", "link"}),
+			}).
+			Create(&conv).
+			Error
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// Dispatch new conversation
 	{
-		payload, err := proto.Marshal(&StreamEvent_ConversationUpdated{conv})
-		if err != nil {
-			s.logger.Error("Failed to marshal ConversationUpdated", zap.Error(err))
-		} else {
-			s.dispatcher.StreamEvent(&StreamEvent{Type: StreamEvent_TypeConversationUpdated, Payload: payload})
-		}
+		err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conv})
+		svc.logger.Error("failed to dispatch ConversationUpdated event", zap.Error(err))
 	}
 
 	// Try to put group name in group metadata
 	{
-		am, err := AppMessage_TypeSetGroupName.MarshalPayload(&AppMessage_SetGroupName{Name: dn})
-		if err != nil {
-			s.logger.Error("failed to create SetGroupName payload", zap.Error(err))
-		} else {
-			_, err = s.protocolClient.AppMetadataSend(ctx, &bertytypes.AppMetadataSend_Request{GroupPK: pk, Payload: am})
+		err := func() error {
+			am, err := AppMessage_TypeSetGroupName.MarshalPayload(&AppMessage_SetGroupName{Name: dn})
 			if err != nil {
-				s.logger.Error("failed to set group name", zap.Error(err))
+				return err
 			}
+
+			_, err = svc.protocolClient.AppMetadataSend(ctx, &bertytypes.AppMetadataSend_Request{GroupPK: pk, Payload: am})
+			return err
+		}()
+		if err != nil {
+			svc.logger.Error("failed to set group name", zap.Error(err))
 		}
 	}
 
@@ -593,18 +613,24 @@ func (s *service) ConversationCreate(ctx context.Context, req *ConversationCreat
 	 */
 
 	// Try to put user name in group metadata
-	var acc Account
-	if err = s.db.First(&acc).Error; err != nil {
-		s.logger.Warn("failed to get account name", zap.Error(err))
-	} else {
-		am, err := AppMessage_TypeSetUserName.MarshalPayload(&AppMessage_SetUserName{Name: acc.GetDisplayName()})
-		if err != nil {
-			s.logger.Error("failed to create SetUserName payload", zap.Error(err))
-		} else {
-			_, err = s.protocolClient.AppMetadataSend(ctx, &bertytypes.AppMetadataSend_Request{GroupPK: pk, Payload: am})
+	{
+		err := func() error {
+			var acc Account
+			err = svc.db.First(&acc).Error
 			if err != nil {
-				s.logger.Warn("failed to set user name in group", zap.Error(err))
+				return err
 			}
+
+			am, err := AppMessage_TypeSetUserName.MarshalPayload(&AppMessage_SetUserName{Name: acc.GetDisplayName()})
+			if err != nil {
+				return err
+			}
+
+			_, err = svc.protocolClient.AppMetadataSend(ctx, &bertytypes.AppMetadataSend_Request{GroupPK: pk, Payload: am})
+			return err
+		}()
+		if err != nil {
+			svc.logger.Error("failed to set username in group", zap.Error(err))
 		}
 	}
 
@@ -621,11 +647,11 @@ func (s *service) ConversationCreate(ctx context.Context, req *ConversationCreat
 		if err != nil {
 			return nil, err
 		}
-		ginfo, err := s.protocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{ContactPK: cpkb})
+		ginfo, err := svc.protocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{ContactPK: cpkb})
 		if err != nil {
 			return nil, err
 		}
-		_, err = s.protocolClient.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{GroupPK: ginfo.GetGroup().GetPublicKey(), Payload: am})
+		_, err = svc.protocolClient.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{GroupPK: ginfo.GetGroup().GetPublicKey(), Payload: am})
 		if err != nil {
 			return nil, err
 		}
@@ -635,7 +661,7 @@ func (s *service) ConversationCreate(ctx context.Context, req *ConversationCreat
 	return &rep, nil
 }
 
-func (s *service) ConversationJoin(ctx context.Context, req *ConversationJoin_Request) (*ConversationJoin_Reply, error) {
+func (svc *service) ConversationJoin(ctx context.Context, req *ConversationJoin_Request) (*ConversationJoin_Reply, error) {
 	link := req.GetLink()
 	if link == "" {
 		return nil, errcode.ErrMissingInput
@@ -649,7 +675,8 @@ func (s *service) ConversationJoin(ctx context.Context, req *ConversationJoin_Re
 	var pdlr *ParseDeepLink_Reply
 	switch method {
 	case "/group":
-		if pdlr, err = ParseGroupInviteURLQuery(query); err != nil {
+		pdlr, err = ParseGroupInviteURLQuery(query)
+		if err != nil {
 			return nil, errcode.ErrInvalidInput.Wrap(err)
 		}
 	default:
@@ -658,29 +685,34 @@ func (s *service) ConversationJoin(ctx context.Context, req *ConversationJoin_Re
 
 	bgroup := pdlr.GetBertyGroup()
 	gpkb := bgroup.GetGroup().GetPublicKey()
-	gpk := base64.StdEncoding.EncodeToString(gpkb)
+	conv := Conversation{
+		PublicKey:   base64.StdEncoding.EncodeToString(gpkb),
+		DisplayName: bgroup.GetDisplayName(),
+		Link:        link,
+	}
 
-	// Maybe turn this into a svc.updateConversation helper
-	conv := Conversation{PublicKey: gpk, DisplayName: bgroup.GetDisplayName(), Link: link}
-	cl := clause.OnConflict{ // Maybe DoNothing ?
-		Columns:   []clause.Column{{Name: "public_key"}},
-		DoUpdates: clause.AssignmentColumns([]string{"display_name", "link"}),
+	// update db
+	{
+		// Maybe turn this into a svc.updateConversation helper
+		cl := clause.OnConflict{ // Maybe DoNothing ?
+			Columns:   []clause.Column{{Name: "public_key"}},
+			DoUpdates: clause.AssignmentColumns([]string{"display_name", "link"}),
+		}
+		if err = svc.db.Clauses(cl).Create(&conv).Error; err != nil {
+			return nil, errcode.ErrInternal.Wrap(err)
+		}
 	}
-	if err = s.db.Clauses(cl).Create(&conv).Error; err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
+
+	// dispatch event
+	{
+		err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{Conversation: &conv})
+		if err != nil {
+			return nil, errcode.ErrInternal.Wrap(err)
+		}
 	}
-	np, err := proto.Marshal(&StreamEvent_ConversationUpdated{Conversation: &conv})
-	if err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
-	}
-	errs := s.dispatcher.StreamEvent(&StreamEvent{Type: StreamEvent_TypeConversationUpdated, Payload: np})
-	if len(errs) > 0 {
-		return nil, errcode.ErrInternal.Wrap(errs[0])
-	}
-	//
 
 	mmgjReq := &bertytypes.MultiMemberGroupJoin_Request{Group: pdlr.GetBertyGroup().GetGroup()}
-	if _, err := s.protocolClient.MultiMemberGroupJoin(ctx, mmgjReq); err != nil {
+	if _, err := svc.protocolClient.MultiMemberGroupJoin(ctx, mmgjReq); err != nil {
 		// Rollback db ?
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -688,19 +720,19 @@ func (s *service) ConversationJoin(ctx context.Context, req *ConversationJoin_Re
 	return &ConversationJoin_Reply{}, nil
 }
 
-func (s *service) AccountUpdate(ctx context.Context, req *AccountUpdate_Request) (*AccountUpdate_Reply, error) {
+func (svc *service) AccountUpdate(ctx context.Context, req *AccountUpdate_Request) (*AccountUpdate_Reply, error) {
 	var acc Account
-	if err := s.db.First(&acc).Error; err != nil {
+	if err := svc.db.First(&acc).Error; err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
 	updated := false
 
 	dn := req.GetDisplayName()
-	s.logger.Debug("updating account", zap.String("display_name", dn))
+	svc.logger.Debug("updating account", zap.String("display_name", dn))
 	if dn != "" && dn != acc.GetDisplayName() {
 		acc.DisplayName = dn
-		ret, err := s.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{DisplayName: dn})
+		ret, err := svc.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{DisplayName: dn})
 		if err != nil {
 			return nil, err
 		}
@@ -715,24 +747,23 @@ func (s *service) AccountUpdate(ctx context.Context, req *AccountUpdate_Request)
 			acc.State = Account_NotReady
 		}
 
-		if err := s.db.Save(&acc).Error; err != nil {
+		if err := svc.db.Save(&acc).Error; err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
-		p, err := proto.Marshal(&StreamEvent_AccountUpdated{Account: &acc})
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-		errs := s.dispatcher.StreamEvent(&StreamEvent{Type: StreamEvent_TypeAccountUpdated, Payload: p})
-		if len(errs) > 0 {
-			// TODO: concat errs
-			return nil, errcode.TODO.Wrap(errs[0])
+
+		// dispatch event
+		{
+			err := svc.dispatcher.StreamEvent(StreamEvent_TypeAccountUpdated, &StreamEvent_AccountUpdated{Account: &acc})
+			if err != nil {
+				return nil, errcode.TODO.Wrap(err)
+			}
 		}
 	}
 
 	return &AccountUpdate_Reply{}, nil
 }
 
-func (s *service) ContactRequest(ctx context.Context, req *ContactRequest_Request) (*ContactRequest_Reply, error) {
+func (svc *service) ContactRequest(ctx context.Context, req *ContactRequest_Request) (*ContactRequest_Reply, error) {
 	query, method, err := NormalizeDeepLinkURL(req.GetLink())
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -759,7 +790,7 @@ func (s *service) ContactRequest(ctx context.Context, req *ContactRequest_Reques
 			return nil, errcode.ErrMessengerInvalidDeepLink
 		}
 		name := query.Get("name")
-		s.logger.Info("query display name", zap.String("dn", name))
+		svc.logger.Info("query display name", zap.String("dn", name))
 		if name != "" {
 			bid.DisplayName = name
 		}
@@ -768,7 +799,7 @@ func (s *service) ContactRequest(ctx context.Context, req *ContactRequest_Reques
 	}
 
 	var acc Account
-	if err := s.db.First(&acc).Error; err != nil {
+	if err := svc.db.First(&acc).Error; err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 	om, err := proto.Marshal(&ContactMetadata{DisplayName: acc.GetDisplayName()})
@@ -789,7 +820,7 @@ func (s *service) ContactRequest(ctx context.Context, req *ContactRequest_Reques
 		},
 		OwnMetadata: om,
 	}
-	_, err = s.protocolClient.ContactRequestSend(ctx, &contactRequest)
+	_, err = svc.protocolClient.ContactRequestSend(ctx, &contactRequest)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -797,7 +828,7 @@ func (s *service) ContactRequest(ctx context.Context, req *ContactRequest_Reques
 	return &ContactRequest_Reply{}, nil
 }
 
-func (s *service) ContactAccept(ctx context.Context, req *ContactAccept_Request) (*ContactAccept_Reply, error) {
+func (svc *service) ContactAccept(ctx context.Context, req *ContactAccept_Request) (*ContactAccept_Reply, error) {
 	pk := req.GetPublicKey()
 	if pk == "" {
 		return nil, errcode.ErrInvalidInput
@@ -809,7 +840,7 @@ func (s *service) ContactAccept(ctx context.Context, req *ContactAccept_Request)
 	}
 
 	var c Contact
-	if err := s.db.Where(Contact{PublicKey: pk}).First(&c).Error; err != nil {
+	if err := svc.db.Where(Contact{PublicKey: pk}).First(&c).Error; err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
@@ -817,7 +848,7 @@ func (s *service) ContactAccept(ctx context.Context, req *ContactAccept_Request)
 		return nil, errcode.TODO
 	}
 
-	_, err = s.protocolClient.ContactRequestAccept(ctx, &bertytypes.ContactRequestAccept_Request{ContactPK: pkb})
+	_, err = svc.protocolClient.ContactRequestAccept(ctx, &bertytypes.ContactRequestAccept_Request{ContactPK: pkb})
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -825,9 +856,9 @@ func (s *service) ContactAccept(ctx context.Context, req *ContactAccept_Request)
 	return &ContactAccept_Reply{}, nil
 }
 
-func (s *service) Interact(ctx context.Context, req *Interact_Request) (*Interact_Reply, error) {
+func (svc *service) Interact(ctx context.Context, req *Interact_Request) (*Interact_Reply, error) {
 	gpk := req.GetConversationPublicKey()
-	s.logger.Info("interacting", zap.String("publicKey", gpk))
+	svc.logger.Info("interacting", zap.String("public-key", gpk))
 	gpkb, err := base64.StdEncoding.DecodeString(gpk)
 	if err != nil {
 		return nil, err
@@ -843,7 +874,7 @@ func (s *service) Interact(ctx context.Context, req *Interact_Request) (*Interac
 		if err != nil {
 			return nil, err
 		}
-		_, err = s.protocolClient.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{GroupPK: gpkb, Payload: fp})
+		_, err = svc.protocolClient.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{GroupPK: gpkb, Payload: fp})
 		if err != nil {
 			return nil, err
 		}
@@ -853,19 +884,18 @@ func (s *service) Interact(ctx context.Context, req *Interact_Request) (*Interac
 	return &Interact_Reply{}, nil
 }
 
-func (s *service) AccountGet(ctx context.Context, req *AccountGet_Request) (*AccountGet_Reply, error) {
+func (svc *service) AccountGet(ctx context.Context, req *AccountGet_Request) (*AccountGet_Reply, error) {
 	var acc Account
-	if err := s.db.First(&acc).Error; err != nil {
+	if err := svc.db.First(&acc).Error; err != nil {
 		return nil, err
 	}
 	return &AccountGet_Reply{Account: &acc}, nil
 }
 
-func (s *service) EchoTest(req *EchoTest_Request, srv MessengerService_EchoTestServer) error {
+func (svc *service) EchoTest(req *EchoTest_Request, srv MessengerService_EchoTestServer) error {
 	for {
-		if err := srv.Send(&EchoTest_Reply{
-			Echo: req.Echo,
-		}); err != nil {
+		err := srv.Send(&EchoTest_Reply{Echo: req.Echo})
+		if err != nil {
 			return err
 		}
 
