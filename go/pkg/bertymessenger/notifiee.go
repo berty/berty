@@ -2,9 +2,12 @@ package bertymessenger
 
 import (
 	"sync"
+
+	"github.com/gogo/protobuf/proto"
+	"go.uber.org/multierr"
 )
 
-// should use EventStream types, this is a poc of the notifiee system à la ipfs
+// Notifiee should use EventStream types, this is a poc of the notifiee system à la ipfs
 type Notifiee interface {
 	StreamEvent(*StreamEvent) error
 }
@@ -27,18 +30,27 @@ func (d *Dispatcher) Unregister(n Notifiee) {
 	d.mutex.Unlock()
 }
 
-func (d *Dispatcher) StreamEvent(c *StreamEvent) []error {
-	// we could paralelize this but it would mess logs
+func (d *Dispatcher) StreamEvent(typ StreamEvent_Type, msg proto.Message) error {
+	payload, err := proto.Marshal(msg)
+	if err != nil {
+		return err
+	}
 
-	var errors []error
+	event := &StreamEvent{
+		Type:    typ,
+		Payload: payload,
+	}
+
+	// can be parallelized if needed
+	var errs error
 	d.mutex.RLock()
 	for n := range d.notifiees {
-		if err := n.StreamEvent(c); err != nil {
-			errors = append(errors, err)
+		if err := n.StreamEvent(event); err != nil {
+			errs = multierr.Append(errs, err)
 		}
 	}
 	d.mutex.RUnlock()
-	return errors
+	return errs
 }
 
 func NewDispatcher() *Dispatcher {

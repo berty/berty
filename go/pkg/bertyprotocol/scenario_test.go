@@ -110,7 +110,7 @@ func TestScenario_MessageSeveralMultiMemberGroups(t *testing.T) {
 
 func TestScenario_AddContact(t *testing.T) {
 	cases := []testCase{
-		{"2 clients/connectAll", 2, ConnectAll, false, false, time.Second * 20},
+		{"2 clients/connectAll", 2, ConnectAll, false, true, time.Second * 20}, // marked as "unstable" because it fails multiple times on the CI recently
 		{"3 clients/connectAll", 3, ConnectAll, false, false, time.Second * 20},
 		{"3 clients/connectInLine", 3, ConnectInLine, false, false, time.Second * 20},
 		{"5 clients/connectAll", 5, ConnectAll, true, false, time.Second * 30},

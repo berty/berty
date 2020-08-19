@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"go.uber.org/multierr"
 )
 
 func TestDispatcher(t *testing.T) {
@@ -19,7 +20,8 @@ func TestDispatcher(t *testing.T) {
 	}
 	d.Register(&n)
 
-	errs := d.StreamEvent(&StreamEvent{})
+	err := d.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{})
+	errs := multierr.Errors(err)
 	require.True(t, called)
 	require.Equal(t, len(errs), 1)
 	require.Equal(t, errs[0].Error(), errStr)

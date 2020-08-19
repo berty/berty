@@ -75,8 +75,6 @@ func testParseInstanceShareable(ctx context.Context, t *testing.T, svc Messenger
 }
 
 func TestServiceParseDeepLink(t *testing.T) {
-	t.Skip()
-
 	tests := []struct {
 		name            string
 		request         *ParseDeepLink_Request
@@ -104,6 +102,9 @@ func TestServiceParseDeepLink(t *testing.T) {
 			defer cleanup()
 
 			ret, err := service.ParseDeepLink(ctx, tt.request)
+			if tt.expectedErrcode == nil {
+				tt.expectedErrcode = errcode.ErrCode(-1)
+			}
 			assert.Equal(t, errcode.Code(err), tt.expectedErrcode)
 			if tt.expectedValidID {
 				assert.NotEmpty(t, ret.BertyID.PublicRendezvousSeed)

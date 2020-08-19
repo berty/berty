@@ -2,7 +2,6 @@ package bertymessenger
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"strconv"
 	"testing"
@@ -53,7 +52,7 @@ func TestStreamThenCreateConv(t *testing.T) {
 	var c *Conversation
 	for {
 		rep, err := res.Recv()
-		requireNoEOF(t, err, "while waiting for conversation update after creating it")
+		require.NotEqual(t, err, io.EOF, "EOF while waiting for conversation update after creating it")
 		require.NoError(t, err)
 		ev := rep.GetEvent()
 		if ev.GetType() == StreamEvent_TypeConversationUpdated {
@@ -79,7 +78,7 @@ func TestStreamThenCreateConv(t *testing.T) {
 	for err = nil; err == nil; {
 		_, err = res.Recv()
 	}
-	require.True(t, grpcIsCanceled(err))
+	require.True(t, isGRPCCanceledError(err))
 }
 
 func TestContactRequest(t *testing.T) {
@@ -119,7 +118,7 @@ func TestContactRequest(t *testing.T) {
 	var c *Contact
 	for {
 		rep, err := stream.Recv()
-		requireNoEOF(t, err, "while waiting for contact update after sending a request")
+		require.NotEqual(t, err, io.EOF, "EOF while waiting for contact update after sending a request")
 		require.NoError(t, err)
 		ev := rep.GetEvent()
 		if ev.GetType() == StreamEvent_TypeContactUpdated {
@@ -138,7 +137,7 @@ func TestContactRequest(t *testing.T) {
 	for err = nil; err == nil; {
 		_, err = stream.Recv()
 	}
-	require.True(t, grpcIsCanceled(err))
+	require.True(t, isGRPCCanceledError(err))
 }
 
 func testingInfra(ctx context.Context, t *testing.T, amount int, l *zap.Logger) ([]MessengerServiceClient, func()) {
@@ -209,7 +208,7 @@ func TestCreateConvThenStream(t *testing.T) {
 	var c *Conversation
 	for {
 		rep, err := strm.Recv()
-		requireNoEOF(t, err, "while waiting for conversation update after creating it")
+		require.NotEqual(t, err, io.EOF, "EOF while waiting for conversation update after creating it")
 		require.NoError(t, err)
 		ev := rep.GetEvent()
 		if ev.GetType() == StreamEvent_TypeConversationUpdated {
@@ -234,7 +233,7 @@ func TestCreateConvThenStream(t *testing.T) {
 	for err = nil; err == nil; {
 		_, err = strm.Recv()
 	}
-	require.True(t, grpcIsCanceled(err))
+	require.True(t, isGRPCCanceledError(err))
 }
 
 func Test1To1Exchange(t *testing.T) {
@@ -260,7 +259,7 @@ func Test1To1Exchange(t *testing.T) {
 	var alink string
 	for alink == "" {
 		esr, err := astrm.Recv()
-		requireNoEOF(t, err, "while waiting for account update after starting alice's events stream")
+		require.NotEqual(t, err, io.EOF, "EOF while waiting for account update after starting alice's events stream")
 		require.NoError(t, err)
 		if esr.GetEvent().GetType() == StreamEvent_TypeAccountUpdated {
 			var cu StreamEvent_AccountUpdated
@@ -282,7 +281,7 @@ func Test1To1Exchange(t *testing.T) {
 
 	for {
 		esr, err := bstrm.Recv()
-		requireNoEOF(t, err, "while waiting for account update after starting bob's events stream")
+		require.NotEqual(t, err, io.EOF, "EOF while waiting for account update after starting bob's events stream")
 		require.NoError(t, err)
 		if esr.GetEvent().GetType() == StreamEvent_TypeAccountUpdated {
 			var cu StreamEvent_AccountUpdated
@@ -302,7 +301,7 @@ func Test1To1Exchange(t *testing.T) {
 	enqueued := false
 	for {
 		esr, err := bstrm.Recv()
-		requireNoEOF(t, err, "while waiting for outgoing contact request updates (enqueued: %t)", enqueued)
+		require.NotEqual(t, err, io.EOF, "EOF while waiting for outgoing contact request updates (enqueued: %t)", enqueued)
 		require.NoError(t, err)
 		if esr.GetEvent().GetType() == StreamEvent_TypeContactUpdated {
 			var cu StreamEvent_ContactUpdated
@@ -323,7 +322,7 @@ func Test1To1Exchange(t *testing.T) {
 	var bc *Contact
 	for bc == nil {
 		esr, err := astrm.Recv()
-		requireNoEOF(t, err, "while waiting for incoming contact request update")
+		require.NotEqual(t, err, io.EOF, "EOF while waiting for incoming contact request update")
 		require.NoError(t, err)
 		if esr.GetEvent().GetType() == StreamEvent_TypeContactUpdated {
 			var cu StreamEvent_ContactUpdated
@@ -346,7 +345,7 @@ func Test1To1Exchange(t *testing.T) {
 
 	for {
 		esr, err := astrm.Recv()
-		requireNoEOF(t, err, "while waiting for contact established in requested node")
+		require.NotEqual(t, err, io.EOF, "EOF while waiting for contact established in requested node")
 		require.NoError(t, err)
 		if esr.GetEvent().GetType() == StreamEvent_TypeContactUpdated {
 			var cu StreamEvent_ContactUpdated
@@ -366,7 +365,7 @@ func Test1To1Exchange(t *testing.T) {
 
 	for {
 		esr, err := bstrm.Recv()
-		requireNoEOF(t, err, "while waiting for contact established in requester node")
+		require.NotEqual(t, err, io.EOF, "EOF while waiting for contact established in requester node")
 		require.NoError(t, err)
 		if esr.GetEvent().GetType() == StreamEvent_TypeContactUpdated {
 			var cu StreamEvent_ContactUpdated
@@ -390,6 +389,8 @@ func Test1To1Exchange(t *testing.T) {
 }
 
 func testMessage(ctx context.Context, t *testing.T, l *zap.Logger, msg string, gpk string, sender MessengerServiceClient, senderStream MessengerService_EventStreamClient, receiverStream MessengerService_EventStreamClient) {
+	t.Helper()
+
 	um, err := proto.Marshal(&AppMessage_UserMessage{Body: msg})
 	require.NoError(t, err)
 	ir := Interact_Request{Type: AppMessage_TypeUserMessage, Payload: um, ConversationPublicKey: gpk}
@@ -400,7 +401,7 @@ func testMessage(ctx context.Context, t *testing.T, l *zap.Logger, msg string, g
 	var gotMsg, gotAck bool
 	for !(gotAck && gotMsg) {
 		esr, err := receiverStream.Recv()
-		requireNoEOF(t, err, "while waiting for msg or ack in receiver node (gotMsg: %t, gotAck: %t)", gotMsg, gotAck)
+		require.NotEqual(t, err, io.EOF, "EOF while waiting for msg or ack in receiver node (gotMsg: %t, gotAck: %t)", gotMsg, gotAck)
 		require.NoError(t, err)
 
 		evt := esr.GetEvent()
@@ -439,7 +440,7 @@ func testMessage(ctx context.Context, t *testing.T, l *zap.Logger, msg string, g
 	gotMsg = false
 	for !(gotAck && gotMsg) {
 		esr, err := senderStream.Recv()
-		requireNoEOF(t, err, "while waiting for msg or ack in sender node (gotMsg: %t, gotAck: %t)", gotMsg, gotAck)
+		require.NotEqual(t, err, io.EOF, "EOF while waiting for msg or ack in sender node (gotMsg: %t, gotAck: %t)", gotMsg, gotAck)
 		require.NoError(t, err)
 
 		evt := esr.GetEvent()
@@ -475,11 +476,6 @@ func testMessage(ctx context.Context, t *testing.T, l *zap.Logger, msg string, g
 	}
 }
 
-func requireNoEOF(t *testing.T, err error, format string, a ...interface{}) {
-	t.Helper()
-	require.NotEqual(t, err, io.EOF, fmt.Sprintf("EOF "+format, a...))
-}
-
 func Test3PeersExchange(t *testing.T) {
 	testutil.SkipSlow(t)
 	testutil.SkipUnstable(t)
@@ -511,7 +507,7 @@ func Test3PeersExchange(t *testing.T) {
 
 	for link == "" {
 		esr, err := creatorStrm.Recv()
-		requireNoEOF(t, err, "while waiting for conversation update after creating it")
+		require.NotEqual(t, err, io.EOF, "EOF while waiting for conversation update after creating it")
 		require.NoError(t, err)
 		evt := esr.GetEvent()
 		if evt.GetType() == StreamEvent_TypeConversationUpdated {
@@ -544,7 +540,7 @@ func Test3PeersExchange(t *testing.T) {
 
 		for {
 			esr, err := streams[i].Recv()
-			requireNoEOF(t, err, "while waiting for conversation in member node %d", i)
+			require.NotEqual(t, err, io.EOF, "EOF while waiting for conversation in member node %d", i)
 			require.NoError(t, err)
 			evt := esr.GetEvent()
 			if evt.GetType() == StreamEvent_TypeConversationUpdated {
@@ -591,7 +587,7 @@ func testMultiMessage(ctx context.Context, t *testing.T, l *zap.Logger, msg stri
 	var gotMsg, gotAck bool
 	for !(gotAck && gotMsg) {
 		esr, err := senderStream.Recv()
-		requireNoEOF(t, err, "while waiting for msg or ack in sender node (gotMsg: %t, gotAck: %t)", gotMsg, gotAck)
+		require.NotEqual(t, err, io.EOF, "EOF while waiting for msg or ack in sender node (gotMsg: %t, gotAck: %t)", gotMsg, gotAck)
 		require.NoError(t, err)
 
 		evt := esr.GetEvent()
@@ -640,7 +636,7 @@ func testMultiMessage(ctx context.Context, t *testing.T, l *zap.Logger, msg stri
 		gotAck := false
 		for !(gotAck && gotMsg) {
 			esr, err := receiverStream.Recv()
-			requireNoEOF(t, err, "while waiting for msg or ack in receiver node (gotMsg: %t, gotAck: %t)", gotMsg, gotAck)
+			require.NotEqual(t, err, io.EOF, "EOF while waiting for msg or ack in receiver node (gotMsg: %t, gotAck: %t)", gotMsg, gotAck)
 			require.NoError(t, err)
 
 			evt := esr.GetEvent()
@@ -716,7 +712,7 @@ func TestConversationInvitation2Contacts(t *testing.T) {
 
 		for {
 			esr, err := stream.Recv()
-			requireNoEOF(t, err, "while waiting for account update after starting events stream in node %d", i)
+			require.NotEqual(t, err, io.EOF, "EOF while waiting for account update after starting events stream in node %d", i)
 			require.NoError(t, err)
 			if esr.GetEvent().GetType() == StreamEvent_TypeAccountUpdated {
 				var cu StreamEvent_AccountUpdated
@@ -748,7 +744,7 @@ func TestConversationInvitation2Contacts(t *testing.T) {
 			enqueued := false
 			for {
 				esr, err := bstrm.Recv()
-				requireNoEOF(t, err, "while waiting for outgoing contact request updates (%d to %d, enqueued: %t)", i, j, enqueued)
+				require.NotEqual(t, err, io.EOF, "EOF while waiting for outgoing contact request updates (%d to %d, enqueued: %t)", i, j, enqueued)
 				require.NoError(t, err)
 				if esr.GetEvent().GetType() == StreamEvent_TypeContactUpdated {
 					var cu StreamEvent_ContactUpdated
@@ -773,7 +769,7 @@ func TestConversationInvitation2Contacts(t *testing.T) {
 			var bc *Contact
 			for bc == nil {
 				esr, err := astrm.Recv()
-				requireNoEOF(t, err, "while waiting for incoming contact request (%d to %d)", i, j)
+				require.NotEqual(t, err, io.EOF, "EOF while waiting for incoming contact request (%d to %d)", i, j)
 				require.NoError(t, err)
 				if esr.GetEvent().GetType() == StreamEvent_TypeContactUpdated {
 					var cu StreamEvent_ContactUpdated
@@ -800,7 +796,7 @@ func TestConversationInvitation2Contacts(t *testing.T) {
 
 			for {
 				esr, err := astrm.Recv()
-				requireNoEOF(t, err, "while waiting for contact established in requested node (%d to %d)", i, j)
+				require.NotEqual(t, err, io.EOF, "EOF while waiting for contact established in requested node (%d to %d)", i, j)
 				require.NoError(t, err)
 				if esr.GetEvent().GetType() == StreamEvent_TypeContactUpdated {
 					var cu StreamEvent_ContactUpdated
@@ -824,7 +820,7 @@ func TestConversationInvitation2Contacts(t *testing.T) {
 
 			for {
 				esr, err := bstrm.Recv()
-				requireNoEOF(t, err, "while waiting for contact established in requester node (%d to %d)", i, j)
+				require.NotEqual(t, err, io.EOF, "EOF while waiting for contact established in requester node (%d to %d)", i, j)
 				require.NoError(t, err)
 				if esr.GetEvent().GetType() == StreamEvent_TypeContactUpdated {
 					var cu StreamEvent_ContactUpdated
@@ -862,7 +858,7 @@ func TestConversationInvitation2Contacts(t *testing.T) {
 
 	for link == "" {
 		esr, err := creatorStrm.Recv()
-		requireNoEOF(t, err, "while waiting for conversation update after creating it")
+		require.NotEqual(t, err, io.EOF, "EOF while waiting for conversation update after creating it")
 		require.NoError(t, err)
 		evt := esr.GetEvent()
 		if evt.GetType() == StreamEvent_TypeConversationUpdated {
@@ -884,7 +880,7 @@ func TestConversationInvitation2Contacts(t *testing.T) {
 		stream := streams[i]
 		for inviteLink == "" {
 			esr, err := stream.Recv()
-			requireNoEOF(t, err, "while waiting for group invitation in node %d", i)
+			require.NotEqual(t, err, io.EOF, "EOF while waiting for group invitation in node %d", i)
 			require.NoError(t, err)
 			evt := esr.GetEvent()
 			if evt.GetType() == StreamEvent_TypeInteractionUpdated {
@@ -905,7 +901,7 @@ func TestConversationInvitation2Contacts(t *testing.T) {
 
 					for {
 						esr, err := stream.Recv()
-						requireNoEOF(t, err, "while waiting for conversation update after joining one in node %d", i)
+						require.NotEqual(t, err, io.EOF, "EOF while waiting for conversation update after joining one in node %d", i)
 						require.NoError(t, err)
 						evt := esr.GetEvent()
 						if evt.GetType() == StreamEvent_TypeConversationUpdated {
