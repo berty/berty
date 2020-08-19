@@ -24,6 +24,7 @@ type metadataStoreIndex struct {
 	contacts                 map[string]*accountContact
 	groups                   map[string]*accountGroup
 	contactRequestMetadata   map[string][]byte
+	serviceTokens            map[string]*bertytypes.ServiceToken
 	contactRequestSeed       []byte
 	contactRequestEnabled    *bool
 	eventHandlers            map[bertytypes.EventType][]func(event proto.Message) error
@@ -63,6 +64,7 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 	m.contactRequestMetadata = map[string][]byte{}
 	m.contactRequestEnabled = nil
 	m.contactRequestSeed = []byte(nil)
+	m.serviceTokens = map[string]*bertytypes.ServiceToken{}
 
 	for i := len(entries) - 1; i >= 0; i-- {
 		e := entries[i]
@@ -587,6 +589,23 @@ func (m *metadataStoreIndex) listAdmins() []crypto.PubKey {
 	return admins
 }
 
+func (m *metadataStoreIndex) listReplicationTokens() []*bertytypes.ServiceToken {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	ret := []*bertytypes.ServiceToken(nil)
+
+	for _, t := range m.serviceTokens {
+		if t == nil {
+			continue
+		}
+
+		ret = append(ret, t)
+	}
+
+	return ret
+}
+
 func (m *metadataStoreIndex) contactRequestsEnabled() bool {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
@@ -647,6 +666,32 @@ func (m *metadataStoreIndex) postHandlerSentAliases() error {
 	return nil
 }
 
+func (m *metadataStoreIndex) handleAccountReplicationServiceAdded(event proto.Message) error {
+	evt, ok := event.(*bertytypes.AccountServiceTokenAdded)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	if _, ok := m.serviceTokens[evt.ServiceToken.TokenID()]; ok {
+		return nil
+	}
+
+	m.serviceTokens[evt.ServiceToken.TokenID()] = evt.ServiceToken
+
+	return nil
+}
+
+func (m *metadataStoreIndex) handleAccountReplicationServiceRemoved(event proto.Message) error {
+	evt, ok := event.(*bertytypes.AccountServiceTokenRemoved)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	m.serviceTokens[evt.TokenID] = nil
+
+	return nil
+}
+
 // newMetadataIndex returns a new index to manage the list of the group members
 func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface, g *bertytypes.Group, md *memberDevice) iface.IndexConstructor {
 	return func(publicKey []byte) iface.StoreIndex {
@@ -659,6 +704,7 @@ func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface,
 			contacts:               map[string]*accountContact{},
 			groups:                 map[string]*accountGroup{},
 			contactRequestMetadata: map[string][]byte{},
+			serviceTokens:          map[string]*bertytypes.ServiceToken{},
 			g:                      g,
 			eventEmitter:           eventEmitter,
 			ownMemberDevice:        md,
@@ -684,6 +730,8 @@ func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface,
 			bertytypes.EventTypeGroupMemberDeviceAdded:                 {m.handleGroupAddMemberDevice},
 			bertytypes.EventTypeMultiMemberGroupAdminRoleGranted:       {m.handleMultiMemberGrantAdminRole},
 			bertytypes.EventTypeMultiMemberGroupInitialMemberAnnounced: {m.handleMultiMemberInitialMember},
+			bertytypes.EventTypeAccountServiceTokenAdded:               {m.handleAccountReplicationServiceAdded},
+			bertytypes.EventTypeAccountServiceTokenRemoved:             {m.handleAccountReplicationServiceRemoved},
 		}
 
 		m.postIndexActions = []func() error{

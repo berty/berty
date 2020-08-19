@@ -56,6 +56,8 @@
     "lerna-update-wizard": "^0.16.0",
     "react": "^16.12.0",
     "react-native-create-library": "^3.1.2",
+    "react-native-inappbrowser-reborn": "^3.4.0",
+    "react-native-url-polyfill": "^1.2.0",
     "text-transform-cli": "^1.5.0",
     "update-versions": "^2.0.0"
   },

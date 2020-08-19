@@ -4,6 +4,7 @@
 
 import 'react-native-gesture-handler'
 import 'node-libs-react-native/globals'
+import 'react-native-url-polyfill/auto'
 
 import { Alert, AppRegistry } from 'react-native'
 import App from './App'

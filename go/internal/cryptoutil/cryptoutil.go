@@ -1,9 +1,13 @@
 package cryptoutil
 
 import (
+	stdcrypto "crypto"
 	crand "crypto/rand"
 	"crypto/sha256"
 	"fmt"
+	"io/ioutil"
+
+	"golang.org/x/crypto/ssh"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 
@@ -143,4 +147,29 @@ func EdwardsToMontgomeryPriv(privKey crypto.PrivKey) (*[KeySize]byte, error) {
 	cconv.PrivateKeyToCurve25519(&mongPriv, &edPriv)
 
 	return &mongPriv, nil
+}
+
+// PrivateKeyFromFilePath Parses private keys issued using `ssh-keygen -t ed25519`
+func PrivateKeyFromFilePath(filePath string) (crypto.PrivKey, error) {
+	pem, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return nil, err
+	}
+
+	key, err := ssh.ParseRawPrivateKey(pem)
+	if err != nil {
+		return nil, err
+	}
+
+	privKey, ok := key.(stdcrypto.PrivateKey)
+	if !ok {
+		return nil, fmt.Errorf("invalid secret key file")
+	}
+
+	sk, _, err := crypto.KeyPairFromStdKey(privKey)
+	if err != nil {
+		return nil, err
+	}
+
+	return sk, nil
 }

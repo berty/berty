@@ -9,6 +9,10 @@ import (
 )
 
 func (m *Group) GetSigningPrivKey() (crypto.PrivKey, error) {
+	if len(m.Secret) == 0 {
+		return nil, errcode.ErrMissingInput
+	}
+
 	edSK := ed25519.NewKeyFromSeed(m.Secret)
 
 	sk, _, err := crypto.KeyPairFromStdKey(&edSK)
@@ -24,10 +28,16 @@ func (m *Group) GetPubKey() (crypto.PubKey, error) {
 }
 
 func (m *Group) GetSigningPubKey() (crypto.PubKey, error) {
+	if len(m.SignPub) != 0 {
+		return crypto.UnmarshalEd25519PublicKey(m.SignPub)
+	}
+
 	sk, err := m.GetSigningPrivKey()
 	if err != nil {
 		return nil, err
 	}
+
+	// TODO: read signing pub key from field
 
 	return sk.GetPublic(), nil
 }
@@ -60,4 +70,11 @@ func (m *Group) GetSharedSecret() (*[32]byte, error) {
 	copy(sharedSecret[:], m.Secret)
 
 	return &sharedSecret, nil
+}
+
+func (m *ReplicationGroup) ToGroup() *Group {
+	return &Group{
+		PublicKey: m.PubKey,
+		SignPub:   m.SigPubKey,
+	}
 }

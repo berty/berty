@@ -13,15 +13,15 @@ type BertySignedKeyStore struct {
 	sync.Map
 }
 
-func (s *BertySignedKeyStore) SetKey(pk crypto.PrivKey) error {
-	pubKeyBytes, err := pk.GetPublic().Raw()
+func (s *BertySignedKeyStore) SetKey(sk crypto.PrivKey) error {
+	pubKeyBytes, err := sk.GetPublic().Raw()
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
 
 	keyID := hex.EncodeToString(pubKeyBytes)
 
-	s.Store(keyID, pk)
+	s.Store(keyID, sk)
 
 	return nil
 }
@@ -38,8 +38,8 @@ func (s *BertySignedKeyStore) CreateKey(id string) (crypto.PrivKey, error) {
 
 func (s *BertySignedKeyStore) GetKey(id string) (crypto.PrivKey, error) {
 	if privKey, ok := s.Load(id); ok {
-		if pk, ok := privKey.(crypto.PrivKey); ok {
-			return pk, nil
+		if sk, ok := privKey.(crypto.PrivKey); ok {
+			return sk, nil
 		}
 	}
 

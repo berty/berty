@@ -273,6 +273,8 @@ PODS:
     - React-RCTNetwork
   - RNGestureHandler (1.6.1):
     - React
+  - RNInAppBrowser (3.4.0):
+    - React
   - RNPermissions (2.0.3):
     - React
   - RNReanimated (1.7.1):
@@ -329,6 +331,7 @@ DEPENDENCIES:
   - "RNCMaskedView (from `../../../node_modules/@react-native-community/masked-view`)"
   - RNDevMenu (from `../../../node_modules/react-native-dev-menu`)
   - RNGestureHandler (from `../../../node_modules/react-native-gesture-handler`)
+  - RNInAppBrowser (from `../../../node_modules/react-native-inappbrowser-reborn`)
   - RNPermissions (from `../../../node_modules/react-native-permissions`)
   - RNReanimated (from `../../../node_modules/react-native-reanimated`)
   - RNScreens (from `../../../node_modules/react-native-screens`)
@@ -422,6 +425,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native-dev-menu"
   RNGestureHandler:
     :path: "../../../node_modules/react-native-gesture-handler"
+  RNInAppBrowser:
+    :path: "../../../node_modules/react-native-inappbrowser-reborn"
   RNPermissions:
     :path: "../../../node_modules/react-native-permissions"
   RNReanimated:
@@ -478,6 +483,7 @@ SPEC CHECKSUMS:
   RNCMaskedView: 76c40a1d41c3e2535df09246a2b5487f04de0814
   RNDevMenu: 641b38a8aa65d98fb9df0f8652f05767609920f2
   RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
+  RNInAppBrowser: c1a0dad2734458d79bcb6c8f4297ba8658a1da9f
   RNPermissions: 9e437a90de84a5402ff689d4da233730b81556c2
   RNReanimated: 4e102df74a9674fa943e05f97f3362b6e44d0b48
   RNScreens: b5c0e1b2b04512919e78bd3898e144a157ce2363
@@ -487,4 +493,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 47ba4e6c6a8c84d20de01449b329f90f77bbe143
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.8.4

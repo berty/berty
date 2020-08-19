@@ -1,0 +1,123 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "bertyreplication.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/berty.replication.v1/ReplicationService/RegisterGroup": {
+      "post": {
+        "summary": "RegisterGroup registers a Berty group, which will be replicated",
+        "operationId": "ReplicationService_RegisterGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/RegisterGroupReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RegisterGroupRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ReplicationService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "RegisterGroupReply": {
+      "type": "object"
+    },
+    "RegisterGroupRequest": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "$ref": "#/definitions/v1ReplicationToken"
+        },
+        "group": {
+          "$ref": "#/definitions/v1ReplicatedGroup"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1ReplicatedGroup": {
+      "type": "object",
+      "properties": {
+        "group_pub_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "group_sig_pub_key": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "v1ReplicationToken": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string",
+          "format": "byte"
+        },
+        "sig": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    }
+  }
+}

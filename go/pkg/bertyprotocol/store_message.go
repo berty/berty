@@ -117,11 +117,23 @@ func (m *messageStore) AddMessage(ctx context.Context, payload []byte) (operatio
 	return op, nil
 }
 
-func constructorFactoryGroupMessage(s *bertyOrbitDB) iface.StoreConstructor {
+func constructorFactoryGroupMessage(s *BertyOrbitDB) iface.StoreConstructor {
 	return func(ctx context.Context, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
 		g, err := s.getGroupFromOptions(options)
 		if err != nil {
 			return nil, errcode.ErrInvalidInput.Wrap(err)
+		}
+
+		replication := false
+
+		if s.deviceKeystore == nil {
+			replication = true
+		} else {
+			if _, err := s.deviceKeystore.MemberDeviceForGroup(g); err == errcode.ErrInvalidInput {
+				replication = true
+			} else if err != nil {
+				return nil, errcode.TODO.Wrap(err)
+			}
 		}
 
 		store := &messageStore{
@@ -137,34 +149,36 @@ func constructorFactoryGroupMessage(s *bertyOrbitDB) iface.StoreConstructor {
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
 		}
 
-		go func() {
-			for e := range store.Subscribe(ctx) {
-				entry := ipfslog.Entry(nil)
+		if !replication {
+			go func() {
+				for e := range store.Subscribe(ctx) {
+					entry := ipfslog.Entry(nil)
 
-				switch evt := e.(type) {
-				case *stores.EventWrite:
-					entry = evt.Entry
+					switch evt := e.(type) {
+					case *stores.EventWrite:
+						entry = evt.Entry
 
-				case *stores.EventReplicateProgress:
-					entry = evt.Entry
+					case *stores.EventReplicateProgress:
+						entry = evt.Entry
+					}
+
+					if entry == nil {
+						continue
+					}
+
+					store.logger.Debug("received store event", zap.Any("raw event", e))
+
+					messageEvent, err := store.openMessage(ctx, entry)
+					if err != nil {
+						store.logger.Error("unable to open message", zap.Error(err))
+						continue
+					}
+
+					store.logger.Debug("received payload", zap.String("payload", string(messageEvent.Message)))
+					store.Emit(ctx, messageEvent)
 				}
-
-				if entry == nil {
-					continue
-				}
-
-				store.logger.Debug("received store event", zap.Any("raw event", e))
-
-				messageEvent, err := store.openMessage(ctx, entry)
-				if err != nil {
-					store.logger.Error("unable to open message", zap.Error(err))
-					continue
-				}
-
-				store.logger.Debug("received payload", zap.String("payload", string(messageEvent.Message)))
-				store.Emit(ctx, messageEvent)
-			}
-		}()
+			}()
+		}
 
 		return store, nil
 	}

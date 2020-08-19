@@ -351,7 +351,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrDBAddGroupMemberDeviceAdded: 2106,
               ErrReplayProcessGroupMetadata: 2200,
               ErrReplayProcessGroupMessage: 2201,
-              ErrCLINoTermcaps: 3001
+              ErrCLINoTermcaps: 3001,
+              ErrServicesAuth: 4000,
+              ErrServicesAuthNotInitialized: 4001,
+              ErrServicesAuthWrongState: 4002,
+              ErrServicesAuthInvalidResponse: 4003,
+              ErrServicesAuthServer: 4004,
+              ErrServiceReplication: 4100,
+              ErrServiceReplicationServer: 4101
             }
           },
           ErrDetails: {
@@ -499,6 +506,23 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   DebugGroup: {
                     requestType: "types.v1.DebugGroup.Request",
                     responseType: "types.v1.DebugGroup.Reply"
+                  },
+                  AuthServiceInitFlow: {
+                    requestType: "types.v1.AuthServiceInitFlow.Request",
+                    responseType: "types.v1.AuthServiceInitFlow.Reply"
+                  },
+                  AuthServiceCompleteFlow: {
+                    requestType: "types.v1.AuthServiceCompleteFlow.Request",
+                    responseType: "types.v1.AuthServiceCompleteFlow.Reply"
+                  },
+                  ReplicationServiceRegisterGroup: {
+                    requestType: "types.v1.ReplicationServiceRegisterGroup.Request",
+                    responseType: "types.v1.ReplicationServiceRegisterGroup.Reply"
+                  },
+                  ServicesTokenList: {
+                    requestType: "types.v1.ServicesTokenList.Request",
+                    responseType: "types.v1.ServicesTokenList.Reply",
+                    responseStream: true
                   }
                 }
               }
@@ -546,6 +570,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   EventTypeMultiMemberGroupAliasResolverAdded: 301,
                   EventTypeMultiMemberGroupInitialMemberAnnounced: 302,
                   EventTypeMultiMemberGroupAdminRoleGranted: 303,
+                  EventTypeAccountServiceTokenAdded: 401,
+                  EventTypeAccountServiceTokenRemoved: 402,
                   EventTypeGroupMetadataPayloadSent: 1001
                 }
               },
@@ -586,6 +612,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   groupType: {
                     type: "GroupType",
                     id: 4
+                  },
+                  signPub: {
+                    type: "bytes",
+                    id: 5
                   }
                 }
               },
@@ -1065,6 +1095,39 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     id: 2,
                     options: {
                       "(gogoproto.customname)": "ContactPK"
+                    }
+                  }
+                }
+              },
+              AccountServiceTokenAdded: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  serviceToken: {
+                    type: "ServiceToken",
+                    id: 2
+                  }
+                }
+              },
+              AccountServiceTokenRemoved: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  tokenId: {
+                    type: "string",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "TokenID"
                     }
                   }
                 }
@@ -1858,6 +1921,193 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     id: 3
                   }
                 }
+              },
+              ReplicationGroup: {
+                fields: {
+                  pubKey: {
+                    type: "bytes",
+                    id: 1
+                  },
+                  sigPubKey: {
+                    type: "bytes",
+                    id: 2
+                  }
+                }
+              },
+              ServiceTokenSupportedService: {
+                fields: {
+                  serviceType: {
+                    type: "string",
+                    id: 1
+                  },
+                  serviceEndpoint: {
+                    type: "string",
+                    id: 2
+                  }
+                }
+              },
+              ServiceToken: {
+                fields: {
+                  token: {
+                    type: "string",
+                    id: 1
+                  },
+                  authenticationUrl: {
+                    type: "string",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "AuthenticationURL"
+                    }
+                  },
+                  supportedServices: {
+                    rule: "repeated",
+                    type: "ServiceTokenSupportedService",
+                    id: 3
+                  },
+                  expiration: {
+                    type: "int64",
+                    id: 4
+                  }
+                }
+              },
+              AuthServiceCompleteFlow: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      callbackUrl: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "CallbackURL"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              AuthServiceInitFlow: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      authUrl: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "AuthURL"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      url: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "URL"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              ReplicationServiceRegisterGroup: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      tokenId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "TokenID"
+                        }
+                      },
+                      groupPk: {
+                        type: "bytes",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              ReplicationServiceReplicateGroup: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      group: {
+                        type: "ReplicationGroup",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      ok: {
+                        type: "bool",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "OK"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              ServicesTokenList: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      tokenId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "TokenID"
+                        }
+                      },
+                      service: {
+                        type: "ServiceToken",
+                        id: 2
+                      }
+                    }
+                  }
+                }
+              },
+              ServicesTokenCode: {
+                fields: {
+                  services: {
+                    rule: "repeated",
+                    type: "string",
+                    id: 1
+                  },
+                  codeChallenge: {
+                    type: "string",
+                    id: 2
+                  },
+                  tokenId: {
+                    type: "string",
+                    id: 3,
+                    options: {
+                      "(gogoproto.customname)": "TokenID"
+                    }
+                  }
+                }
               }
             }
           }
@@ -1957,6 +2207,23 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   ConversationClose: {
                     requestType: "ConversationClose.Request",
                     responseType: "ConversationClose.Reply"
+                  },
+                  AuthServiceInitFlow: {
+                    requestType: "types.v1.AuthServiceInitFlow.Request",
+                    responseType: "types.v1.AuthServiceInitFlow.Reply"
+                  },
+                  AuthServiceCompleteFlow: {
+                    requestType: "types.v1.AuthServiceCompleteFlow.Request",
+                    responseType: "types.v1.AuthServiceCompleteFlow.Reply"
+                  },
+                  ReplicationServiceRegisterGroup: {
+                    requestType: "types.v1.ReplicationServiceRegisterGroup.Request",
+                    responseType: "types.v1.ReplicationServiceRegisterGroup.Reply"
+                  },
+                  ServicesTokenList: {
+                    requestType: "types.v1.ServicesTokenList.Request",
+                    responseType: "types.v1.ServicesTokenList.Reply",
+                    responseStream: true
                   }
                 }
               },

@@ -1,0 +1,8 @@
+type: google.api.Service
+config_version: 3
+
+http:
+ rules:
+ - selector: berty.protocol.v1.ReplicationService.ReplicateGroup
+   post: /berty.protocol.v1/ReplicationService/ReplicateGroup
+   body: "*"

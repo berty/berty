@@ -124,6 +124,15 @@ enum ErrCode {
   // -----------------
 
   ErrCLINoTermcaps = 3001;
+
+  ErrServicesAuth = 4000;
+  ErrServicesAuthNotInitialized = 4001;
+  ErrServicesAuthWrongState = 4002;
+  ErrServicesAuthInvalidResponse = 4003;
+  ErrServicesAuthServer = 4004;
+
+  ErrServiceReplication = 4100;
+  ErrServiceReplicationServer = 4101;
 }
 
 message ErrDetails {

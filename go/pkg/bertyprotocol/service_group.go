@@ -143,7 +143,7 @@ func (s *service) activateGroup(pk crypto.PubKey) error {
 
 	switch g.GroupType {
 	case bertytypes.GroupTypeContact, bertytypes.GroupTypeMultiMember:
-		cg, err := s.odb.OpenGroup(s.ctx, g, nil)
+		cg, err := s.odb.openGroup(s.ctx, g, nil)
 		if err != nil {
 			return errcode.TODO.Wrap(err)
 		}

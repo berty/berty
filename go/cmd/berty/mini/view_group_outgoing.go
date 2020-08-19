@@ -161,12 +161,94 @@ func commandList() []*command {
 			cmd:   debugInspectStoreCommand,
 		},
 		{
+			title: "services list",
+			help:  "Lists registered services",
+			cmd:   servicesList,
+		},
+		{
+			title: "services auth init",
+			help:  "Inits authentication with a service provider",
+			cmd:   authInit,
+		},
+		{
+			title: "services auth complete",
+			help:  "Completes authentication with a service provider",
+			cmd:   authComplete,
+		},
+		{
+			title: "replicate group",
+			help:  "Registers current group for replication using specified token",
+			cmd:   replGroup,
+		},
+		{
 			title:     "/",
 			help:      "",
 			cmd:       newSlashMessageCommand,
 			hideInLog: true,
 		},
 	}
+}
+
+func replGroup(ctx context.Context, v *groupView, cmd string) error {
+	if _, err := v.v.client.ReplicationServiceRegisterGroup(ctx, &bertytypes.ReplicationServiceRegisterGroup_Request{
+		TokenID: strings.TrimSpace(cmd),
+		GroupPK: v.g.PublicKey,
+	}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func authInit(ctx context.Context, v *groupView, cmd string) error {
+	rep, err := v.v.client.AuthServiceInitFlow(ctx, &bertytypes.AuthServiceInitFlow_Request{
+		AuthURL: strings.TrimSpace(cmd),
+	})
+
+	if err != nil {
+		return err
+	}
+
+	v.messages.Append(&historyMessage{
+		messageType: messageTypeMeta,
+		payload:     []byte(fmt.Sprintf("Auth URL: %s", rep.URL)),
+	})
+
+	return err
+}
+
+func authComplete(ctx context.Context, v *groupView, cmd string) error {
+	_, err := v.v.client.AuthServiceCompleteFlow(ctx, &bertytypes.AuthServiceCompleteFlow_Request{
+		CallbackURL: strings.TrimSpace(cmd),
+	})
+
+	return err
+}
+
+func servicesList(ctx context.Context, v *groupView, _ string) error {
+	cl, err := v.v.client.ServicesTokenList(ctx, &bertytypes.ServicesTokenList_Request{})
+	if err != nil {
+		return err
+	}
+
+	for {
+		item, err := cl.Recv()
+		if err != nil {
+			if err != io.EOF {
+				return err
+			}
+			break
+		}
+
+		for _, service := range item.Service.SupportedServices {
+			v.messages.Append(&historyMessage{
+				messageType: messageTypeMeta,
+				payload:     []byte(fmt.Sprintf("token: %s - service: %s, %s", item.TokenID, service.ServiceType, service.ServiceEndpoint)),
+			})
+		}
+	}
+
+	return nil
 }
 
 func setDisplayName(_ context.Context, v *groupView, cmd string) error {

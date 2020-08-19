@@ -1,8 +1,10 @@
 41a24aadd7901a76a4dce50c2ad175d0eba77c4e  ../api/bertybridge.proto
-84376470e280d46f0d8bbc19d064a20afeabc006  ../api/bertymessenger.proto
-dfca8319c10169f25f36bdbb092c7b5efd953b1a  ../api/bertymessenger.yaml
-4989b51bf6dfc52cd195cc46db1732a81090191f  ../api/bertyprotocol.proto
-e62576e46e2d91d5d2584d0ac99ac7ac71d93e5f  ../api/bertyprotocol.yaml
-d70e7e0659761f25577333ff20f13a8a79fd8f4b  ../api/bertytypes.proto
-ed8568e7c66e8f4b8a9bf2435f0423b05ef4a8be  ../api/errcode.proto
+7b486057fbd04edc4aeabab3cfc1baf239779f9a  ../api/bertymessenger.proto
+e395d5b07ea2f234b5966e34712159e81303b71e  ../api/bertymessenger.yaml
+916b0fc330abb35c43caf2892757bd7edfd1cbe8  ../api/bertyprotocol.proto
+17a543ac11bb8620ca2a2e7b43decd47043a2109  ../api/bertyprotocol.yaml
+23e393a8bba7426244b4747d7adb6188830756aa  ../api/bertyreplication.proto
+efe05c869eb27277829aa4018133888bf41f5e9e  ../api/bertyreplication.yaml
+adea3b0831d4b358e974893c92555be6aa32cb76  ../api/bertytypes.proto
+dc2072a458429c39aafd5c80e1a12558a58707ba  ../api/errcode.proto
 c6b861f93a59a96b6a1f0336c25a3d56c8a43230  Makefile

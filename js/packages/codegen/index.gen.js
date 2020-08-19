@@ -49,6 +49,8 @@ export const berty = {
 			AccountContactRequestAccepted: jsonPb.lookup('.berty.types.v1.AccountContactRequestAccepted'),
 			AccountContactBlocked: jsonPb.lookup('.berty.types.v1.AccountContactBlocked'),
 			AccountContactUnblocked: jsonPb.lookup('.berty.types.v1.AccountContactUnblocked'),
+			AccountServiceTokenAdded: jsonPb.lookup('.berty.types.v1.AccountServiceTokenAdded'),
+			AccountServiceTokenRemoved: jsonPb.lookup('.berty.types.v1.AccountServiceTokenRemoved'),
 			InstanceExportData: jsonPb.lookup('.berty.types.v1.InstanceExportData'),
 			InstanceGetConfiguration: jsonPb.lookup('.berty.types.v1.InstanceGetConfiguration'),
 			ContactRequestReference: jsonPb.lookup('.berty.types.v1.ContactRequestReference'),
@@ -90,6 +92,19 @@ export const berty = {
 			DebugInspectGroupLogType: jsonPb.lookup('.berty.types.v1.DebugInspectGroupLogType'),
 			ContactState: jsonPb.lookup('.berty.types.v1.ContactState'),
 			ShareableContact: jsonPb.lookup('.berty.types.v1.ShareableContact'),
+			ReplicationGroup: jsonPb.lookup('.berty.types.v1.ReplicationGroup'),
+			ServiceTokenSupportedService: jsonPb.lookup('.berty.types.v1.ServiceTokenSupportedService'),
+			ServiceToken: jsonPb.lookup('.berty.types.v1.ServiceToken'),
+			AuthServiceCompleteFlow: jsonPb.lookup('.berty.types.v1.AuthServiceCompleteFlow'),
+			AuthServiceInitFlow: jsonPb.lookup('.berty.types.v1.AuthServiceInitFlow'),
+			ReplicationServiceRegisterGroup: jsonPb.lookup(
+				'.berty.types.v1.ReplicationServiceRegisterGroup',
+			),
+			ReplicationServiceReplicateGroup: jsonPb.lookup(
+				'.berty.types.v1.ReplicationServiceReplicateGroup',
+			),
+			ServicesTokenList: jsonPb.lookup('.berty.types.v1.ServicesTokenList'),
+			ServicesTokenCode: jsonPb.lookup('.berty.types.v1.ServicesTokenCode'),
 		},
 	},
 	messenger: {

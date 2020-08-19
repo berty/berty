@@ -33,6 +33,8 @@ var eventTypesMapper = map[bertytypes.EventType]struct {
 	bertytypes.EventTypeMultiMemberGroupInitialMemberAnnounced: {Message: &bertytypes.MultiMemberInitialMember{}, SigChecker: sigCheckerGroupSigned},
 	bertytypes.EventTypeMultiMemberGroupAdminRoleGranted:       {Message: &bertytypes.MultiMemberGrantAdminRole{}, SigChecker: sigCheckerDeviceSigned},
 	bertytypes.EventTypeGroupMetadataPayloadSent:               {Message: &bertytypes.AppMetadata{}, SigChecker: sigCheckerDeviceSigned},
+	bertytypes.EventTypeAccountServiceTokenAdded:               {Message: &bertytypes.AccountServiceTokenAdded{}, SigChecker: sigCheckerDeviceSigned},
+	bertytypes.EventTypeAccountServiceTokenRemoved:             {Message: &bertytypes.AccountServiceTokenRemoved{}, SigChecker: sigCheckerDeviceSigned},
 }
 
 func newEventContext(eventID cid.Cid, parentIDs []cid.Cid, g *bertytypes.Group) *bertytypes.EventContext {

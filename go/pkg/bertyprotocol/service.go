@@ -3,6 +3,7 @@ package bertyprotocol
 import (
 	"context"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -40,13 +41,14 @@ type service struct {
 	ctx            context.Context
 	logger         *zap.Logger
 	ipfsCoreAPI    ipfsutil.ExtendedCoreAPI
-	odb            *bertyOrbitDB
+	odb            *BertyOrbitDB
 	accountGroup   *groupContext
 	deviceKeystore DeviceKeystore
 	openedGroups   map[string]*groupContext
 	groups         map[string]*bertytypes.Group
 	lock           sync.RWMutex
 	close          func() error
+	authSession    atomic.Value
 }
 
 // Opts contains optional configuration flags for building a new Client
@@ -141,12 +143,12 @@ func New(ctx context.Context, opts Opts) (Service, error) {
 		odbOpts.PubSub = pubsubraw.NewPubSub(opts.PubSub, self.ID(), opts.Logger, nil)
 	}
 
-	odb, err := newBertyOrbitDB(ctx, opts.IpfsCoreAPI, opts.DeviceKeystore, opts.MessageKeystore, odbOpts)
+	odb, err := NewBertyOrbitDB(ctx, opts.IpfsCoreAPI, opts.DeviceKeystore, opts.MessageKeystore, odbOpts)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	acc, err := odb.OpenAccountGroup(ctx, nil)
+	acc, err := odb.openAccountGroup(ctx, nil)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

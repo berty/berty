@@ -98,6 +98,7 @@ const createNavigation = ({
 				blockedContacts: createNavigateFunc(navigate, Routes.Settings.BlockedContacts),
 				notifications: createNavigateFunc(navigate, Routes.Settings.Notifications),
 				bluetooth: createNavigateFunc(navigate, Routes.Settings.Bluetooth),
+				servicesAuth: createNavigateFunc(navigate, Routes.Settings.ServicesAuth),
 				aboutBerty: createNavigateFunc(navigate, Routes.Settings.AboutBerty),
 				termsOfUse: createNavigateFunc(navigate, Routes.Settings.TermsOfUse),
 				devTools: createNavigateFunc(navigate, Routes.Settings.DevTools),

@@ -87,3 +87,11 @@ func (m *MultiMemberGrantAdminRole) SetDevicePK(pk []byte) {
 func (m *AppMetadata) SetDevicePK(pk []byte) {
 	m.DevicePK = pk
 }
+
+func (m *AccountServiceTokenAdded) SetDevicePK(pk []byte) {
+	m.DevicePK = pk
+}
+
+func (m *AccountServiceTokenRemoved) SetDevicePK(pk []byte) {
+	m.DevicePK = pk
+}

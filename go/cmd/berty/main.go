@@ -40,6 +40,8 @@ func main() {
 			systemInfoCommand(),
 			groupinitCommand(),
 			shareInviteCommand(),
+			tokenServerCommand(),
+			replicationServerCommand(),
 		},
 	}
 

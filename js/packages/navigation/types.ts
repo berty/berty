@@ -38,6 +38,7 @@ export namespace ScreenProps {
 		export type BlockedContacts = RouteProps<void>
 		export type Notifications = RouteProps<void>
 		export type Bluetooth = RouteProps<void>
+		export type ServicesAuth = RouteProps<void>
 		export type AboutBerty = RouteProps<void>
 		export type TermsOfUse = RouteProps<void>
 		export type DevTools = RouteProps<void>
@@ -93,6 +94,7 @@ export namespace Routes {
 		BlockedContacts = 'Settings.BlockedContacts',
 		Notifications = 'Settings.Notifications',
 		Bluetooth = 'Settings.Bluetooth',
+		ServicesAuth = 'Settings.ServicesAuth',
 		AboutBerty = 'Settings.AboutBerty',
 		TermsOfUse = 'Settings.TermsOfUse',
 		DevTools = 'Settings.DevTools',

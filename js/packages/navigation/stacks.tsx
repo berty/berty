@@ -213,6 +213,10 @@ export const Navigation: React.FC = () => {
 				component={Components.Settings.Bluetooth}
 			/>
 			<NavigationStack.Screen
+				name={Routes.Settings.ServicesAuth}
+				component={Components.Settings.ServicesAuth}
+			/>
+			<NavigationStack.Screen
 				name={Routes.Settings.AboutBerty}
 				component={Components.Settings.AboutBerty}
 			/>

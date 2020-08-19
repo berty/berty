@@ -26,9 +26,9 @@
 	"dependencies": {
 		"@berty-tech/components": "^0.0.0",
 		"@berty-tech/go-bridge": "^1.0.0",
-		"@berty-tech/store": "^0.0.0",
 		"@berty-tech/navigation": "^0.0.0",
 		"@berty-tech/react-native-example": "^1.0.0",
+		"@berty-tech/store": "^0.0.0",
 		"@berty-tech/styles": "^0.0.0",
 		"@eva-design/eva": "^1.4.0",
 		"@react-native-community/async-storage": "^1.8.0",
@@ -46,6 +46,7 @@
 		"react-native-dev-menu": "^4.0.0",
 		"react-native-eva-icons": "^1.2.1",
 		"react-native-gesture-handler": "^1.6.1",
+		"react-native-inappbrowser-reborn": "^3.4.0",
 		"react-native-interactable": "^2.0.1",
 		"react-native-linear-gradient": "^2.5.6",
 		"react-native-permissions": "^2.0.3",

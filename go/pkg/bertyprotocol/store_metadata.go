@@ -728,6 +728,44 @@ func (m *metadataStore) SendAppMetadata(ctx context.Context, message []byte) (op
 	}, bertytypes.EventTypeGroupMetadataPayloadSent)
 }
 
+func (m *metadataStore) SendAccountServiceTokenAdded(ctx context.Context, token *bertytypes.ServiceToken) (operation.Operation, error) {
+	if !m.typeChecker(isAccountGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
+	m.Index().(*metadataStoreIndex).lock.RLock()
+	_, ok := m.Index().(*metadataStoreIndex).serviceTokens[token.TokenID()]
+	m.Index().(*metadataStoreIndex).lock.RUnlock()
+
+	if ok {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("token has already been registered"))
+	}
+
+	return m.attributeSignAndAddEvent(ctx, &bertytypes.AccountServiceTokenAdded{
+		ServiceToken: token,
+	}, bertytypes.EventTypeAccountServiceTokenAdded)
+}
+
+func (m *metadataStore) SendReplicationTokenRemoved(ctx context.Context, tokenID string) (operation.Operation, error) {
+	if !m.typeChecker(isAccountGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
+	m.Index().(*metadataStoreIndex).lock.RLock()
+	val, ok := m.Index().(*metadataStoreIndex).serviceTokens[tokenID]
+	m.Index().(*metadataStoreIndex).lock.RUnlock()
+
+	if !ok {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("token not registered"))
+	} else if val == nil {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("token already removed"))
+	}
+
+	return m.attributeSignAndAddEvent(ctx, &bertytypes.AccountServiceTokenRemoved{
+		TokenID: tokenID,
+	}, bertytypes.EventTypeAccountServiceTokenRemoved)
+}
+
 type accountSignableEvent interface {
 	proto.Message
 	proto.Marshaler
@@ -817,21 +855,48 @@ func (m *metadataStore) checkContactStatus(pk crypto.PubKey, states ...bertytype
 	return false
 }
 
+func (m *metadataStore) listReplicationTokens() []*bertytypes.ServiceToken {
+	return m.Index().(*metadataStoreIndex).listReplicationTokens()
+}
+
+func (m *metadataStore) getReplicationToken(tokenID string) (*bertytypes.ServiceToken, error) {
+	m.Index().(*metadataStoreIndex).lock.RLock()
+	defer m.Index().(*metadataStoreIndex).lock.RUnlock()
+
+	token, ok := m.Index().(*metadataStoreIndex).serviceTokens[tokenID]
+	if !ok {
+		return nil, errcode.ErrMissingInput.Wrap(fmt.Errorf("token not found"))
+	}
+
+	return token, nil
+}
+
 type EventMetadataReceived struct {
 	MetaEvent *bertytypes.GroupMetadataEvent
 	Event     proto.Message
 }
 
-func constructorFactoryGroupMetadata(s *bertyOrbitDB) iface.StoreConstructor {
+func constructorFactoryGroupMetadata(s *BertyOrbitDB) iface.StoreConstructor {
 	return func(ctx context.Context, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
 		g, err := s.getGroupFromOptions(options)
 		if err != nil {
 			return nil, errcode.ErrInvalidInput.Wrap(err)
 		}
 
-		md, err := s.deviceKeystore.MemberDeviceForGroup(g)
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
+		var (
+			md          *ownMemberDevice
+			replication = false
+		)
+
+		if s.deviceKeystore == nil {
+			replication = true
+		} else {
+			md, err = s.deviceKeystore.MemberDeviceForGroup(g)
+			if err == errcode.ErrInvalidInput {
+				replication = true
+			} else if err != nil {
+				return nil, errcode.TODO.Wrap(err)
+			}
 		}
 
 		store := &metadataStore{
@@ -841,44 +906,46 @@ func constructorFactoryGroupMetadata(s *bertyOrbitDB) iface.StoreConstructor {
 			logger: zap.NewNop(),
 		}
 
-		go func() {
-			for e := range store.Subscribe(ctx) {
-				var entry ipfslog.Entry
+		if !replication {
+			go func() {
+				for e := range store.Subscribe(ctx) {
+					var entry ipfslog.Entry
 
-				switch evt := e.(type) {
-				case *stores.EventWrite:
-					entry = evt.Entry
+					switch evt := e.(type) {
+					case *stores.EventWrite:
+						entry = evt.Entry
 
-				case *stores.EventReplicateProgress:
-					entry = evt.Entry
+					case *stores.EventReplicateProgress:
+						entry = evt.Entry
 
-				default:
-					continue
+					default:
+						continue
+					}
+
+					if entry == nil {
+						continue
+					}
+
+					store.logger.Debug("received store event", zap.Any("raw event", e))
+
+					metaEvent, event, err := openMetadataEntry(store.OpLog(), entry, g)
+					if err != nil {
+						store.logger.Error("unable to open message", zap.Error(err))
+						continue
+					}
+
+					store.logger.Debug("received payload", zap.String("payload", metaEvent.Metadata.EventType.String()))
+
+					store.Emit(ctx, &EventMetadataReceived{
+						MetaEvent: metaEvent,
+						Event:     event,
+					})
+					store.Emit(ctx, metaEvent)
 				}
+			}()
 
-				if entry == nil {
-					continue
-				}
-
-				store.logger.Debug("received store event", zap.Any("raw event", e))
-
-				metaEvent, event, err := openMetadataEntry(store.OpLog(), entry, g)
-				if err != nil {
-					store.logger.Error("unable to open message", zap.Error(err))
-					continue
-				}
-
-				store.logger.Debug("received payload", zap.String("payload", metaEvent.Metadata.EventType.String()))
-
-				store.Emit(ctx, &EventMetadataReceived{
-					MetaEvent: metaEvent,
-					Event:     event,
-				})
-				store.Emit(ctx, metaEvent)
-			}
-		}()
-
-		options.Index = newMetadataIndex(ctx, store, g, md.Public())
+			options.Index = newMetadataIndex(ctx, store, g, md.Public())
+		}
 
 		if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
