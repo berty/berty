@@ -108,7 +108,7 @@ $(gen_sum): $(gen_src)
 	  $(GO) mod download; \
 	  docker run \
 	    --user="$$uid" \
-	    --volume="`go env GOMODCACHE`:/go/pkg/mod" \
+	    --volume="`go env GOPATH`/pkg/mod:/go/pkg/mod" \
 	    --volume="$(PWD)/..:/go/src/berty.tech/berty" \
 	    --workdir="/go/src/berty.tech/berty/go" \
 	    --entrypoint="sh" \

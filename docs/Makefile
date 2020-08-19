@@ -23,7 +23,7 @@ $(gen_sum): $(gen_src)
 	  docker run \
 	    --user=`id -u` \
 	    --volume="$(PWD)/..:/go/src/berty.tech/berty" \
-	    --volume="`go env GOMODCACHE`:/go/pkg/mod" \
+	    --volume="`go env GOPATH`/pkg/mod:/go/pkg/mod" \
 	    --workdir="/go/src/berty.tech/berty/docs" \
 	    --entrypoint="sh" \
 	    --rm \

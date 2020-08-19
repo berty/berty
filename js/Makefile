@@ -275,7 +275,7 @@ protoc_opts := -I ../api:`cd ..; go list -m -f {{.Dir}} github.com/grpc-ecosyste
 _gen.protoc:
 	(cd ..; GO111MODULE=on go mod download)
 	docker run --rm --user="`id -u`" --entrypoint="sh" \
-	  --volume="`go env GOMODCACHE`:/go/pkg/mod" \
+	  --volume="`go env GOPATH`/pkg/mod:/go/pkg/mod" \
 	  --volume="$(PWD)/..:/go/src/berty.tech/berty" \
 	  --workdir="/go/src/berty.tech/berty/js" \
 	  bertytech/protoc:25 -xec 'make _gen.protoc.local'
