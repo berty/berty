@@ -1,23 +1,16 @@
 import React, { useState, useRef, useLayoutEffect } from 'react'
-import { useSelector } from 'react-redux'
-import { Messenger } from '@berty-tech/hooks'
-import grpcBridge from '@berty-tech/grpc-bridge'
-import { protocol, groups, messenger } from '@berty-tech/store'
 import './App.css'
-import storage from 'redux-persist/lib/storage'
+import { MsgrProvider, MsgrContext } from './context'
 import {
+	useGetMessageSearchResultWithMetadata,
 	useAccountContactSearchResults,
 	useFirstConversationWithContact,
-	useGetMessage,
-	useGetMessageSearchResultWithMetadata,
-} from '@berty-tech/hooks/Messenger'
-import { MsgrProvider, MsgrContext } from './context'
+} from './hooks'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 
 const CreateAccount: React.FC = () => {
 	const [name, setName] = useState('')
 	const [error, setError] = useState(null)
-	const [port, setPort] = useState(1337)
 	const ctx = React.useContext(MsgrContext)
 	const handleCreate = React.useCallback(() => {
 		ctx.client.accountUpdate({ displayName: name }).catch((err: any) => setError(err))
@@ -30,14 +23,8 @@ const CreateAccount: React.FC = () => {
 				value={name}
 				onChange={(e) => setName(e.target.value)}
 			/>
-			<input
-				type='number'
-				placeholder='Bridge port'
-				value={port}
-				onChange={(e) => setPort(parseInt(e.target.value, 10))}
-			/>
-
-			<button onClick={handleCreate}>Create account</button>
+			<Error value={error} />
+			<button onClick={handleCreate}>Update account</button>
 		</>
 	)
 }
@@ -88,11 +75,20 @@ const JSONed: React.FC<{ value: any }> = ({ value }) => (
 	<div style={{ whiteSpace: 'pre-wrap', textAlign: 'left' }}>{JSON.stringify(value, null, 4)}</div>
 )
 
-const ContactSearchResultLastMessage: React.FC<{ lastSentMessageId: string }> = ({
-	lastSentMessageId,
-}) => {
-	const lastMessage = useGetMessage(lastSentMessageId)
-	return <JSONed value={{ body: lastMessage?.body }} />
+const ContactSearchResultLastMessage: React.FC<{ convId: string }> = ({ convId }) => {
+	const ctx = React.useContext(MsgrContext)
+	const intes = (ctx.interactions as any)[convId]
+	if (!intes) {
+		return null
+	}
+	const messages = Object.values(intes).filter(
+		(inte: any) => inte.isMe && inte.type === messengerpb.AppMessage.Type.TypeUserMessage,
+	)
+	if (messages.length <= 0) {
+		return null
+	}
+	const lastMessage = messages[messages.length - 1] as any
+	return <JSONed value={{ body: lastMessage?.payload?.body }} />
 }
 
 const ContactSearchResult: React.FC<{ contact: any }> = ({ contact }) => {
@@ -101,9 +97,7 @@ const ContactSearchResult: React.FC<{ contact: any }> = ({ contact }) => {
 	return (
 		<>
 			<h4>Last sent message sent by me</h4>
-			<ContactSearchResultLastMessage
-				lastSentMessageId={firstConversationWithContact?.lastSentMessage}
-			/>
+			<ContactSearchResultLastMessage convId={contact.conversationPublicKey} />
 			<h4>First Found Conversation With Contact</h4>
 			<JSONed value={firstConversationWithContact} />
 			<h4>Contact</h4>
@@ -125,8 +119,8 @@ const SearchContacts: React.FC = () => {
 			/>
 			<div>
 				{contactSearchResults &&
-					contactSearchResults.map((contact, i) => {
-						return <ContactSearchResult contact={contact} key={i} />
+					contactSearchResults.map((contact: any) => {
+						return <ContactSearchResult contact={contact} key={contact.publicKey} />
 					})}
 			</div>
 		</>
@@ -168,13 +162,23 @@ const Contacts: React.FC = () => {
 	)
 }
 
+// TODO: use acknowledeged flag on Interaction
+const isAcknowledged = (ctx: any, cid: string) =>
+	!!Object.values(ctx.interactions).find((convIntes: any[]) =>
+		Object.values(convIntes).find(
+			(inte) =>
+				inte.type === messengerpb.AppMessage.Type.TypeAcknowledge && cid === inte.payload.target,
+		),
+	)
+
 const Interaction: React.FC<{ value: any }> = ({ value }) => {
+	const ctx = React.useContext(MsgrContext)
 	console.log('render inte', value)
 	if (value.type === messengerpb.AppMessage.Type.TypeUserMessage) {
 		const payload = value.payload
 		return (
-			<div style={{ textAlign: payload.isMe ? 'right' : 'left' }}>
-				{payload.isMe && payload.acknowledged && '✓ '}
+			<div style={{ textAlign: value.isMe ? 'right' : 'left' }}>
+				{value.isMe && isAcknowledged(ctx, value.cid) && '✓ '}
 				{payload.body}
 			</div>
 		)
@@ -317,87 +321,6 @@ const Conversations: React.FC = () => {
 	)
 }
 
-const ClearStorage: React.FC = () => (
-	<button
-		onClick={() => {
-			localStorage.clear()
-			window.location.reload()
-		}}
-	>
-		Clear storage
-	</button>
-)
-
-let metadata: any[] = []
-let messages: any[] = []
-
-const DumpGroup: React.FC = () => {
-	const [groupPk, setGroupPk] = useState('')
-	const [mt, setMt] = useState([])
-	const [ms, setMs] = useState([])
-	return (
-		<>
-			<h2>Dump Group</h2>
-			<input value={groupPk} placeholder='groupPK' onChange={(e) => setGroupPk(e.target.value)} />
-			<button
-				onClick={() => {
-					const service = protocol.client.getProtocolService()
-					const gpkBuf = Buffer.from(groupPk, 'base64')
-					metadata = []
-					messages = []
-					const bridge = grpcBridge({ host: service.host, transport: service.transport })
-					const grpcClient = new protocol.ProtocolServiceClient(bridge)
-					grpcClient.groupMessageList({ groupPk: gpkBuf }, (...args: any[]) => {
-						if (args[1]?.message) {
-							const msg = JSON.parse(Buffer.from(args[1].message).toString('utf-8'))
-							console.log('message:', msg)
-							args[1] = { ...args[1], message: msg }
-						}
-						messages = [...messages, args]
-						setMs(messages)
-						console.log('messages callback', ...args)
-					})
-					grpcClient.groupMetadataList({ groupPk: gpkBuf }, (...args: any[]) => {
-						if (args[1]?.event) {
-							const event = protocol.client.decodeMetadataEvent(args[1])
-							args[1] = { ...args[1], event }
-						}
-						metadata = [...metadata, args]
-						setMt(metadata)
-						console.log('metadata callback', ...args)
-					})
-				}}
-			>
-				Dump
-			</button>
-			<h3>Metadata</h3>
-			<JSONed value={mt} />
-			<h3>Messages</h3>
-			<JSONed value={ms} />
-		</>
-	)
-}
-
-const Groups: React.FC = () => {
-	const groups = useSelector((state: groups.GlobalState) => state.groups)
-	console.log('groups', groups)
-	return (
-		<>
-			{Object.values(groups).map((group: any) => (
-				<JSONed key={group.publicKey} value={group} />
-			))}
-		</>
-	)
-}
-
-const Tools: React.FC = () => {
-	return (
-		<>
-			<DumpGroup />
-		</>
-	)
-}
-
 const Search: React.FC = () => {
 	return (
 		<>
@@ -410,7 +333,7 @@ const Search: React.FC = () => {
 }
 
 const Error: React.FC<{ value: Error }> = ({ value }) => (
-	<div style={{ color: 'red' }}>{value && value.toString()}</div>
+	<span style={{ color: 'red' }}>{value && value.toString()}</span>
 )
 
 const CreateMultiMember = () => {
@@ -492,8 +415,6 @@ const TABS = {
 	Conversations: Conversations,
 	Search: Search,
 	MultiMember: MultiMember,
-	Groups: Groups,
-	Tools: Tools,
 }
 
 type TabKey = keyof typeof TABS
@@ -540,19 +461,47 @@ function getParam(sVar: string) {
 	)
 }
 
+const daemonAddrParamName = 'daemonAddress'
+
+const StreamGate: React.FC = ({ children }) => {
+	const ctx = React.useContext(MsgrContext)
+	const exampleAddr = `${window.location.protocol}//${window.location.host}/?${daemonAddrParamName}=http://localhost:1337`
+	if (ctx.streamError) {
+		return (
+			<>
+				<p>
+					<Error value={ctx.streamError} />
+				</p>
+				<p>
+					Likely couldn't connect to the node, or the connection droped
+					<br />
+					You can change the node's address by using the "{daemonAddrParamName}" url parameter
+					<br />
+					Example: <a href={exampleAddr}>{exampleAddr}</a>
+				</p>
+			</>
+		)
+	}
+	return <>{children}</>
+}
+
 function App() {
+	const daemonAddress = getParam(daemonAddrParamName) || 'http://127.0.0.1:1337'
 	return (
-		<MsgrProvider daemonAddress={getParam('daemonAddress') || 'http://127.0.0.1:1337'}>
-			<div className='App' style={{ display: 'flex', flexDirection: 'column' }}>
-				<h1>Berty web dev</h1>
-				<ListGate>
-					<Account />
-					<AccountGate>
-						<Tabs />
-					</AccountGate>
-				</ListGate>
-			</div>
-		</MsgrProvider>
+		<div className='App' style={{ display: 'flex', flexDirection: 'column' }}>
+			<h1>Berty web dev</h1>
+			<p>Daemon address is "{daemonAddress}"</p>
+			<MsgrProvider daemonAddress={daemonAddress}>
+				<StreamGate>
+					<ListGate>
+						<Account />
+						<AccountGate>
+							<Tabs />
+						</AccountGate>
+					</ListGate>
+				</StreamGate>
+			</MsgrProvider>
+		</div>
 	)
 }
 

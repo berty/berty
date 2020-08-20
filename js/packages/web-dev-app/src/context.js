@@ -15,6 +15,7 @@ const initialState = {
 	interactions: {},
 	client: null,
 	listDone: false,
+	streamError: null,
 }
 
 export const MsgrContext = React.createContext(initialState)
@@ -25,6 +26,9 @@ const reducer = (oldState, action) => {
 	const state = cloneDeep(oldState) // TODO: optimize rerenders
 	console.log('reducing', action)
 	switch (action.type) {
+		case 'SET_STREAM_ERROR':
+			state.streamError = action.payload.error
+			break
 		case 'SET_CLIENT':
 			state.client = action.payload.client
 			break
@@ -59,21 +63,24 @@ const reducer = (oldState, action) => {
 					throw new Error('failed to find a protobuf object matching the event type')
 				}
 				inte.name = name
-				inte.payload = pbobj.decode(inte.payload)
+				inte.payload = pbobj.decode(inte.payload).toJSON()
+				console.log('jsoned payload', inte.payload)
 				console.log('received inte', inte)
 				state.interactions[gpk][inte.cid] = inte
 			} catch (e) {
 				console.warn('failed to reduce interaction', e)
+				return oldState
 			}
 			break
 		default:
+			console.warn('Unknown action type', action.type)
 	}
 	console.log('new global state', state)
 	return state
 }
 
 export const MsgrProvider = ({ children, daemonAddress }) => {
-	const [state, dispatch] = React.useReducer(reducer, initialState)
+	const [state, dispatch] = React.useReducer(reducer, { ...initialState, daemonAddress })
 	React.useEffect(() => {
 		// TODO:: support embeded node
 		const messengerMiddlewares = middleware.chain(
@@ -87,13 +94,20 @@ export const MsgrProvider = ({ children, daemonAddress }) => {
 		const messengerClient = Service(messengerpb.MessengerService, rpc, messengerMiddlewares)
 		dispatch({ type: 'SET_CLIENT', payload: { client: messengerClient } })
 		let precancel = false
-		let cancel = () => {
-			precancel = true
+		const cancelObj = {
+			cancel: () => {
+				precancel = true
+			},
 		}
 		messengerClient
 			.eventStream({})
 			.then((stream) => {
-				stream.onMessage((msg) => {
+				stream.onMessage((msg, err) => {
+					if (err) {
+						dispatch({ type: 'SET_STREAM_ERROR', payload: { error: err } })
+						return
+					}
+					console.log('got msg', msg, err)
 					const evt = msg && msg.event
 					if (!evt) return
 					console.log('got event', evt)
@@ -110,9 +124,8 @@ export const MsgrProvider = ({ children, daemonAddress }) => {
 					}
 					dispatch({ type: evt.type, name: payloadName, payload: pbobj.decode(evt.payload) })
 				})
-				cancel = stream.start()
-				if (precancel === true) {
-					cancel()
+				if (!precancel) {
+					cancelObj.cancel = stream.start()
 				}
 			})
 			.catch((err) => {
@@ -121,8 +134,11 @@ export const MsgrProvider = ({ children, daemonAddress }) => {
 				} else if (err) {
 					console.warn(err)
 				}
+				dispatch({ type: 'SET_STREAM_ERROR', payload: { error: err } })
 			})
-		return () => cancel()
+		return () => {
+			cancelObj.cancel()
+		}
 	}, [daemonAddress, dispatch])
 	return <MsgrContext.Provider value={state}>{children}</MsgrContext.Provider>
 }
