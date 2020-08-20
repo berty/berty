@@ -81,7 +81,7 @@ const stream = (options: grpc.ClientRpcOptions) => async (
 	const client = grpc.client(methodDesc, options)
 	return new Promise((resolve) => {
 		const stream = {
-			onMessage: (callback: (message: Uint8Array, error: Error) => void) => {
+			onMessage: (callback: (message: Uint8Array | null, error: Error | null) => void) => {
 				client.onMessage((message: grpc.ProtobufMessage): void => {
 					callback(message.serializeBinary(), null)
 				})
