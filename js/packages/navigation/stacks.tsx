@@ -34,14 +34,6 @@ export const ModalsNavigation: React.FC = () => (
 				stackAnimation: 'fade',
 			}}
 		/>
-		<ModalsStack.Screen
-			name={Routes.Modals.ManageDeepLink2}
-			component={Components.Modals.ManageDeepLink}
-			options={{
-				stackPresentation: 'transparentModal',
-				stackAnimation: 'fade',
-			}}
-		/>
 	</ModalsStack.Navigator>
 )
 
