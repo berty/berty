@@ -1,12 +1,13 @@
-import React from 'react'
-import { View, TouchableOpacity, Text as TextNative } from 'react-native'
-import { Text, Icon } from 'react-native-ui-kitten'
-import { useStyles } from '@berty-tech/styles'
-import { messenger } from '@berty-tech/store'
 import { Messenger } from '@berty-tech/hooks'
+import { messenger } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 import Color from 'color'
 import palette from 'google-palette'
+import React from 'react'
+import { Text as TextNative, TouchableOpacity, View } from 'react-native'
+import { Icon, Text } from 'react-native-ui-kitten'
 import { SHA3 } from 'sha3'
+import Logo from '../../main/1_berty_picto.svg'
 import { ProceduralCircleAvatar } from '../../shared-components'
 
 const pal = palette('tol-rainbow', 256)
@@ -79,76 +80,103 @@ const MessageInvitationButton: React.FC<{
 	)
 }
 
-const MessageInvitationBody: React.FC<{ message: any; children: any }> = ({
-	message,
-	children,
-}) => {
-	const [{ row, padding, border, flex, text, margin, color, width }] = useStyles()
+const MessageInvitationWrapper: React.FC<{ message: any; children: any }> = ({ children }) => {
+	const [{ padding, border, flex, margin, width, background, height }, { scaleSize }] = useStyles()
+	const logoDiameter = 40
+	const diffSize = 10
 	return (
 		<View
 			style={[
 				{ backgroundColor: '#EDEEF8' },
 				padding.medium,
+				margin.top.scale(logoDiameter), // make room for logo
 				width(350),
 				border.radius.scale(10),
 				{ shadowOpacity: 0.1, shadowRadius: 4, shadowOffset: { width: 0, height: 2.5 } },
 			]}
 		>
-			<View style={[flex.tiny, flex.justify.spaceEvenly]}>
-				<View style={[row.left, flex.align.center, flex.justify.center]}>
-					<Icon name='users' width={18} height={18} fill={color.black} pack='custom' />
-					<TextNative
-						style={[
-							text.color.black,
-							text.size.scale(15),
-							margin.left.small,
-							text.bold.medium,
-							{ fontFamily: 'Open Sans' },
-						]}
-					>
-						GROUP INVITATION
-					</TextNative>
+			<View
+				style={{
+					transform: [{ translateY: -logoDiameter * 1.3 * scaleSize }],
+					alignSelf: 'center',
+					marginBottom: -logoDiameter * scaleSize, // compensate for transformed logo
+				}}
+			>
+				<View
+					style={[
+						flex.align.center,
+						flex.justify.center,
+						width(logoDiameter + diffSize * scaleSize),
+						height(logoDiameter + diffSize * scaleSize),
+						background.white,
+						border.radius.scale((logoDiameter + diffSize) / 2),
+						{
+							borderWidth: 2,
+							borderColor: 'rgba(215, 217, 239, 1)',
+						},
+					]}
+				>
+					<Logo
+						width={scaleSize * logoDiameter - diffSize}
+						height={scaleSize * logoDiameter - diffSize}
+						style={[margin.left.tiny]} // nudge logo to appear centered
+					/>
 				</View>
-				<View style={[row.left, margin.top.small, flex.align.center, flex.justify.center]}>
-					<ProceduralCircleAvatar seed={message.group.publicKey} size={40} />
-					<TextNative
-						style={[
-							text.color.black,
-							text.size.scale(13),
-							margin.left.small,
-							text.bold.small,
-							{ fontFamily: 'Open Sans' },
-						]}
-					>
-						{message.name}
-					</TextNative>
-				</View>
-				{children}
 			</View>
+			{children}
 		</View>
 	)
 }
 
 export const MessageInvitation: React.FC<{ message: any }> = ({ message }) => {
-	const [{ row, padding, border, flex, text, margin, color, width }] = useStyles()
+	const [{ row, padding, flex, text, margin, color }] = useStyles()
 	const acceptGroupInvitation = Messenger.useAcceptGroupInvitation()
 	const conv = Messenger.useGetConversation(message.group.publicKey)
+
 	return (
 		<View
 			style={[row.center, padding.horizontal.medium, margin.bottom.scale(11), { paddingTop: 2 }]}
 		>
 			{message.isMe ? (
-				<MessageInvitationBody message={message}>
-					<View
-						style={[row.center, flex.justify.spaceEvenly, flex.align.center, margin.top.medium]}
-					>
+				<MessageInvitationWrapper message={message}>
+					<View style={[row.center, flex.justify.spaceEvenly, flex.align.center]}>
 						<Text style={[text.size.scale(14)]}>
-							You have sent an invitation to join {message.name} !
+							You have sent an invitation to join {message.name}!
 						</Text>
 					</View>
-				</MessageInvitationBody>
+				</MessageInvitationWrapper>
 			) : (
-				<MessageInvitationBody message={message}>
+				<MessageInvitationWrapper message={message}>
+					<View style={[row.left, flex.align.center, flex.justify.center]}>
+						<TextNative
+							style={[
+								text.color.black,
+								text.size.scale(15),
+								text.bold.medium,
+								{ fontFamily: 'Open Sans' },
+							]}
+						>
+							GROUP INVITATION
+						</TextNative>
+					</View>
+					<View style={[margin.top.small, flex.align.center, flex.justify.center]}>
+						<ProceduralCircleAvatar
+							seed={message.group.publicKey}
+							size={40}
+							style={[margin.bottom.small]}
+						/>
+						<TextNative
+							style={[
+								text.color.black,
+								text.size.scale(13),
+								text.bold.small,
+								margin.bottom.small,
+								{ fontFamily: 'Open Sans' },
+							]}
+						>
+							{message.name}
+						</TextNative>
+					</View>
 					<View
 						style={[row.center, flex.justify.spaceEvenly, flex.align.center, margin.top.medium]}
 					>
@@ -176,7 +204,7 @@ export const MessageInvitation: React.FC<{ message: any }> = ({ message }) => {
 							backgroundColor={!conv ? color.light.blue : color.light.green}
 						/>
 					</View>
-				</MessageInvitationBody>
+				</MessageInvitationWrapper>
 			)}
 		</View>
 	)
