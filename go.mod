@@ -44,13 +44,12 @@ require (
 	github.com/libp2p/go-libp2p-kad-dht v0.8.3
 	github.com/libp2p/go-libp2p-kbucket v0.4.6 // indirect
 	github.com/libp2p/go-libp2p-pubsub v0.3.3
-	github.com/libp2p/go-libp2p-quic-transport v0.7.1
+	github.com/libp2p/go-libp2p-quic-transport v0.8.0
 	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20190708065449-737144165c9e
 	github.com/libp2p/go-libp2p-transport-upgrader v0.3.0
 	github.com/libp2p/go-reuseport-transport v0.0.4 // indirect
 	github.com/libp2p/go-yamux v1.3.8 // indirect
-	github.com/marten-seemann/qtls v0.10.0 // indirect
 	github.com/mattn/go-colorable v0.1.7 // indirect
 	github.com/mdp/qrterminal/v3 v3.0.0
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect

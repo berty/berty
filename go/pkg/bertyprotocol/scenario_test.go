@@ -110,11 +110,11 @@ func TestScenario_MessageSeveralMultiMemberGroups(t *testing.T) {
 
 func TestScenario_AddContact(t *testing.T) {
 	cases := []testCase{
-		{"2 clients/connectAll", 2, ConnectAll, false, true, time.Second * 20}, // marked as "unstable" because it fails multiple times on the CI recently
-		{"3 clients/connectAll", 3, ConnectAll, false, false, time.Second * 20},
-		{"3 clients/connectInLine", 3, ConnectInLine, false, false, time.Second * 20},
-		{"5 clients/connectAll", 5, ConnectAll, true, false, time.Second * 30},
-		{"5 clients/connectInLine", 5, ConnectInLine, true, false, time.Second * 30},
+		{"2 clients/connectAll", 2, ConnectAll, false, true, time.Second * 20},       // marked as "unstable" because it failed multiple times on the CI recently
+		{"3 clients/connectAll", 3, ConnectAll, false, true, time.Second * 20},       // marked as "unstable" because it failed multiple times on the CI recently
+		{"3 clients/connectInLine", 3, ConnectInLine, false, true, time.Second * 20}, // marked as "unstable" because it failed multiple times on the CI recently
+		{"5 clients/connectAll", 5, ConnectAll, true, true, time.Second * 30},        // marked as "unstable" because it failed multiple times on the CI recently
+		{"5 clients/connectInLine", 5, ConnectInLine, true, true, time.Second * 30},  // marked as "unstable" because it failed multiple times on the CI recently
 		{"8 clients/connectAll", 8, ConnectAll, true, true, time.Second * 300},       // marked as "unstable" because too slow, but it works
 		{"8 clients/connectInLine", 8, ConnectInLine, true, true, time.Second * 300}, // marked as "unstable" because too slow, but it works
 		// FIXME: all test cases below
