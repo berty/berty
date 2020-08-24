@@ -298,13 +298,6 @@ _write_gen_sum:
 	  shasum $(gensum_src) | sort > gen.sum.tmp
 	  mv gen.sum.tmp gen.sum;
 
-## Other
-
-.PHONY: tidy
-tidy:
-	go mod tidy
-	cd packages/go-bridge && go mod tidy
-
 ## file-based rules
 
 $(pkg_mod): $(pkg_desc)
@@ -350,18 +343,16 @@ packages/berty-app/ios/Podfile:
 	touch $@
 
 packages/go-bridge/ios/Frameworks/Bertybridge.framework: $(bridge_src)
-	(cd ..; GO111MODULE=on go mod download)
-	cd packages/go-bridge && go install golang.org/x/mobile/cmd/gomobile
-	cd packages/go-bridge && gomobile init
-	cd packages/go-bridge && go mod download
+	cd ..; go mod download
+	cd ..; go install golang.org/x/mobile/cmd/gomobile
+	cd ..; gomobile init
 	@mkdir -p "packages/go-bridge/ios/Frameworks"
 	cd .. && GO111MODULE=on gomobile bind -o js/$@ -v $(ext_ldflags) -target ios ./go/framework/bertybridge
 	touch "packages/go-bridge/ios/Frameworks"
 
 packages/go-bridge/android/libs/gobridge.aar: $(bridge_src)
-	(cd ..; GO111MODULE=on go mod download)
-	cd packages/go-bridge && go install golang.org/x/mobile/cmd/gomobile
-	cd packages/go-bridge && gomobile init
-	cd packages/go-bridge && go mod download
+	cd ..; go mod download
+	cd ..; go install golang.org/x/mobile/cmd/gomobile
+	cd ..; gomobile init
 	@mkdir -p "packages/go-bridge/android/libs"
 	cd .. && GO111MODULE=on gomobile bind -o js/$@ -v $(ext_ldflags) -target android ./go/framework/bertybridge
