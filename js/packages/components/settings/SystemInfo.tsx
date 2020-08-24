@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { View, ScrollView, ActivityIndicator } from 'react-native'
 import { Layout, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { Settings } from '@berty-tech/store/oldhooks'
+import messengerMethodsHooks from '@berty-tech/store/methods'
 import moment from 'moment'
 
 const SystemInfoItem: React.FC<{ label: string; value: string }> = ({ label, value }) => {
@@ -17,35 +17,34 @@ const SystemInfoItem: React.FC<{ label: string; value: string }> = ({ label, val
 	)
 }
 
-const SystemInfoList: React.FC<{}> = () => {
-	const settings = Settings.useSettings()
+const SystemInfoList: React.FC<{ systemInfo: any }> = ({ systemInfo }) => {
 	const [{ padding }] = useStyles()
 	return (
 		<View style={[padding.large]}>
-			{settings?.systemInfo &&
-				Object.entries(settings?.systemInfo).map((value: any, key) => {
-					if (value[0] === 'startedAt') {
+			{systemInfo &&
+				Object.entries(systemInfo).map(([key, value]) => {
+					if (key === 'startedAt') {
 						return (
-							<View>
+							<View key={key}>
 								<SystemInfoItem
 									label='startedAt'
-									value={moment.unix(value[1]).format('MMMM Do YYYY, h:mm:ss a')}
+									value={moment.unix(value).format('MMMM Do YYYY, h:mm:ss a')}
 								/>
-								<SystemInfoItem label='timeAgo' value={moment.unix(value[1]).from(moment())} />
+								<SystemInfoItem label='timeAgo' value={moment.unix(value).from(moment())} />
 							</View>
 						)
-					} else if (value[0] === 'buildTime') {
+					} else if (key === 'buildTime') {
 						return (
-							<View>
+							<View key={key}>
 								<SystemInfoItem
 									label='buildTime'
 									value={moment.unix(value[1]).format('MMMM Do YYYY, h:mm:ss a')}
 								/>
-								<SystemInfoItem label='timeAgo' value={moment.unix(value[1]).from(moment())} />
+								<SystemInfoItem label='timeAgo' value={moment.unix(value).from(moment())} />
 							</View>
 						)
 					}
-					return <SystemInfoItem label={value[0]} value={value[1]} key={key} />
+					return <SystemInfoItem label={key} value={value} key={key} />
 				})}
 		</View>
 	)
@@ -54,15 +53,11 @@ const SystemInfoList: React.FC<{}> = () => {
 export const SystemInfo: React.FC<ScreenProps.Settings.SystemInfo> = () => {
 	const { goBack } = useNavigation()
 	const [{ background, flex, color, padding }] = useStyles()
-	const systemInfo = Settings.useSystemInfo()
-	const [startRefresh, setStartRefresh] = useState(false)
+	const { reply: systemInfo, done, error, refresh } = messengerMethodsHooks.useSystemInfo()
 
-	useEffect(() => {
-		if (startRefresh) {
-			systemInfo()
-			setStartRefresh(false)
-		}
-	}, [startRefresh, systemInfo])
+	React.useEffect(() => {
+		refresh()
+	}, [refresh])
 
 	return (
 		<Layout style={[background.white, flex.tiny]}>
@@ -72,14 +67,20 @@ export const SystemInfo: React.FC<ScreenProps.Settings.SystemInfo> = () => {
 					bgColor={color.dark.grey}
 					undo={goBack}
 					actionIcon='refresh-outline'
-					action={() => setStartRefresh(true)}
+					action={refresh}
 				/>
-				{startRefresh ? (
+				{done ? (
+					error ? (
+						<View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 100 }}>
+							<Text style={{ color: 'red' }}>{error.toString()}</Text>
+						</View>
+					) : (
+						<SystemInfoList systemInfo={systemInfo} />
+					)
+				) : (
 					<View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 100 }}>
 						<ActivityIndicator size='large' />
 					</View>
-				) : (
-					<SystemInfoList />
 				)}
 			</ScrollView>
 		</Layout>
