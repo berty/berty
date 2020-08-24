@@ -2,7 +2,7 @@ import React from 'react'
 import { ActivityIndicator } from 'react-native'
 import InvalidScan from './InvalidScan'
 import AddThisContact from './AddThisContact'
-import { Messenger } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/store/oldhooks'
 
 export const SendContactRequest: React.FC<{
 	type: 'qr' | 'link'

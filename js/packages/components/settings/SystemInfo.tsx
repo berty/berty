@@ -4,7 +4,7 @@ import { Layout, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { Settings } from '@berty-tech/hooks'
+import { Settings } from '@berty-tech/store/oldhooks'
 import moment from 'moment'
 
 const SystemInfoItem: React.FC<{ label: string; value: string }> = ({ label, value }) => {

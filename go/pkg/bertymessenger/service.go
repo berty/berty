@@ -2,7 +2,7 @@ package bertymessenger
 
 import (
 	"context"
-	"encoding/base64"
+
 	"errors"
 	"time"
 
@@ -44,7 +44,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 	if err != nil {
 		return nil, err
 	}
-	pkStr := base64.StdEncoding.EncodeToString(icr.GetAccountGroupPK())
+	pkStr := bytesToString(icr.GetAccountGroupPK())
 
 	// get or create account in DB
 	{
@@ -107,7 +107,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 			if c.State != Contact_Established {
 				continue
 			}
-			pkb, err := base64.StdEncoding.DecodeString(c.GetPublicKey())
+			pkb, err := stringToBytes(c.GetPublicKey())
 			if err != nil {
 				return nil, err
 			}

@@ -6,60 +6,58 @@ on:
     branches:
       - master
     paths:
-      - 'api/**'
-      - 'Makefile'
-      - 'js/Makefile'
-      - 'go/Makefile'
-      - 'docs/Makefile'
-      - '.github/workflows/protobuf.yml'
-      - '**/gen.sum'
-      - '**.pb.go'
-      - '**.gen.go'
-      - '**.gen.graphql'
-      - '**.gen.js'
-      - '**.gen.ts'
-      - '**.gen.tsx'
-      - '**.gen.yml'
-      - '**.pb.d.ts'
-      - '**.pb.go'
-      - '**.pb.js'
-      - '**/pb_test.go'
-      - '**/docs/*/api.md'
-      - '**/gen.sum'
-      - '**/go.mod'
-      - '**/go.sum'
-      - '**/yarn.lock'
-      - '**/package.json'
-      - '**/Podfile.lock'
-      - 'js/packages/store/protocol/grpc-web-gen/**'
+      - "api/**"
+      - "Makefile"
+      - "js/Makefile"
+      - "go/Makefile"
+      - "docs/Makefile"
+      - ".github/workflows/protobuf.yml"
+      - "**/gen.sum"
+      - "**.pb.go"
+      - "**.gen.go"
+      - "**.gen.graphql"
+      - "**.gen.js"
+      - "**.gen.ts"
+      - "**.gen.tsx"
+      - "**.gen.yml"
+      - "**.pb.d.ts"
+      - "**.pb.go"
+      - "**.pb.js"
+      - "**/pb_test.go"
+      - "**/docs/*/api.md"
+      - "**/gen.sum"
+      - "**/go.mod"
+      - "**/go.sum"
+      - "**/yarn.lock"
+      - "**/package.json"
+      - "**/Podfile.lock"
   pull_request:
     paths:
-      - 'api/**'
-      - 'Makefile'
-      - 'js/Makefile'
-      - 'go/Makefile'
-      - 'docs/Makefile'
-      - '.github/workflows/protobuf.yml'
-      - '**/gen.sum'
-      - '**.pb.go'
-      - '**.gen.go'
-      - '**.gen.graphql'
-      - '**.gen.js'
-      - '**.gen.ts'
-      - '**.gen.tsx'
-      - '**.gen.yml'
-      - '**.pb.d.ts'
-      - '**.pb.go'
-      - '**.pb.js'
-      - '**/pb_test.go'
-      - '**/docs/*/api.md'
-      - '**/gen.sum'
-      - '**/go.mod'
-      - '**/go.sum'
-      - '**/yarn.lock'
-      - '**/package.json'
-      - '**/Podfile.lock'
-      - 'js/packages/store/protocol/grpc-web-gen/**'
+      - "api/**"
+      - "Makefile"
+      - "js/Makefile"
+      - "go/Makefile"
+      - "docs/Makefile"
+      - ".github/workflows/protobuf.yml"
+      - "**/gen.sum"
+      - "**.pb.go"
+      - "**.gen.go"
+      - "**.gen.graphql"
+      - "**.gen.js"
+      - "**.gen.ts"
+      - "**.gen.tsx"
+      - "**.gen.yml"
+      - "**.pb.d.ts"
+      - "**.pb.go"
+      - "**.pb.js"
+      - "**/pb_test.go"
+      - "**/docs/*/api.md"
+      - "**/gen.sum"
+      - "**/go.mod"
+      - "**/go.sum"
+      - "**/yarn.lock"
+      - "**/package.json"
+      - "**/Podfile.lock"
 jobs:
   gen-go-and-docs:
     runs-on: ubuntu-latest
@@ -67,7 +65,7 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
-      - name:  unshallow
+      - name: unshallow
         run: git fetch --prune --unshallow
       - name: remove lock files
         run: find . -name gen.sum ! -path './js/*' -delete
@@ -153,8 +151,6 @@ jobs:
         run: cd js && make _gen.pbhbs
       - name: make _gen.pbjs
         run: cd js && make _gen.pbjs
-      - name: make _gen.protoc.local
-        run: cd js && make _gen.protoc.local
       - name: make _write_gen_sum
         run: cd js && make _write_gen_sum
       - name: check diff

@@ -2,7 +2,6 @@ import React from 'react'
 import { View, Image, StyleProp } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
 import { useStyles, ColorsStyles } from '@berty-tech/styles'
-import { messenger } from '@berty-tech/store'
 
 //
 // CircleAvatar => every avatar in white circle or not

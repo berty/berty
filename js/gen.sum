@@ -1,11 +1,2 @@
-01fc1e98c2a30f39e441d0fa423ec85390ec3217  packages/store/messenger/MessengerServiceSagaClient.gen.js.hbs
-03f6cb88c42aca3cec2609ffd466aabcf695c5a3  packages/store/protocol/ProtocolServiceSagaClient.gen.js.hbs
-058e779549ddd3c68d5d2a227ef6791aef2a9cdf  Makefile
 109c92178d930d49161d85a08dbf50ecb62efc99  packages/components/faker.gen.tsx.hbs
-4989b51bf6dfc52cd195cc46db1732a81090191f  ../api/bertyprotocol.proto
-76dca7af909f54d3a2d2b6d117f2239f2da80403  packages/store/protocol/ProtocolServiceClient.gen.js.hbs
-84e82ba2400f5cf180d062b5f8d7f89784da79ef  packages/store/types/events.gen.js.hbs
-a0d72ec76cf80a59f7b3e616f5a90924c0ffffd2  packages/store/messenger/client.gen.js.hbs
-af95a29375259c0d5fd47e7e07aafee140a592a8  packages/store/protocol/client.gen.js.hbs
-d70e7e0659761f25577333ff20f13a8a79fd8f4b  ../api/bertytypes.proto
-ee67a61a0cf517c88e5dc825ea1a22a31d6ec02d  ../api/bertymessenger.proto
+a1ec5e57af0934e37292b2539866459e5985be18  Makefile

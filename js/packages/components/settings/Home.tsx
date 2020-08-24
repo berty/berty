@@ -6,7 +6,7 @@ import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsBu
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import HeaderSettings from '../shared-components/Header'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { Messenger } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/store/oldhooks'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 //
@@ -64,7 +64,7 @@ const HomeHeaderGroupButton: React.FC = () => {
 const HomeHeaderAvatar: React.FC = () => {
 	const _styles = useStylesHome()
 	const [{ row, margin, background, border, color, padding }, { scaleSize }] = useStyles()
-	const client = Messenger.useClient()
+	//const client = Messenger.useClient()
 	const account = Messenger.useAccount()
 	const navigation = useNavigation()
 	return (
@@ -76,13 +76,13 @@ const HomeHeaderAvatar: React.FC = () => {
 				<View style={[{ alignItems: 'center' }]}>
 					<View style={{ position: 'absolute', top: -80 * scaleSize }}>
 						<ProceduralCircleAvatar
-							seed={client?.accountPk}
+							seed={account?.publicKey}
 							size={80}
 							diffSize={25}
 							style={[border.shadow.big]}
 						/>
 					</View>
-					<Text style={[_styles.headerNameText]}>{account?.name || ''}</Text>
+					<Text style={[_styles.headerNameText]}>{account?.displayName || ''}</Text>
 					<View
 						style={[
 							// { paddingLeft: 12, paddingTop: 20 },

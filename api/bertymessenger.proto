@@ -178,10 +178,11 @@ message AppMessage {
     int64 sent_date = 4 [(gogoproto.jsontag) = "sentDate"];
   }
   message UserReaction {
+    string target = 3;// TODO: optimize message size
     string emoji = 2;
   }
   message GroupInvitation {
-    string link = 2;
+    string link = 2; // TODO: optimize message size
   }
   message SetGroupName {
     string name = 2;
@@ -190,7 +191,7 @@ message AppMessage {
     string name = 2;
   }
   message Acknowledge {
-    string target = 2;
+    string target = 2; // TODO: optimize message size
   }
 }
 
@@ -235,7 +236,7 @@ message ConversationJoin {
 
 // APP MODEL
 
-// NOTE: public keys should be base64 encoded using golang's StdEncoding format
+// NOTE: public keys should be base64 encoded using golang's URLEncoding.WithPadding(NoPadding) format
 
 message Account {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
@@ -407,6 +408,6 @@ message Interact {
     string conversation_public_key = 3;
   }
   message Reply {
-
+    // TODO: return cid
   }
 }

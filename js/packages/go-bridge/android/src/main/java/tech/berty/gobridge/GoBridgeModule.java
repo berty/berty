@@ -14,9 +14,12 @@ import java.io.File;
 
 
 // go packages
+import bertybridge.PromiseBlock;
 import bertybridge.Bertybridge;
 import bertybridge.MessengerBridge;
 import bertybridge.MessengerConfig;
+
+
 
 public class GoBridgeModule extends ReactContextBaseJavaModule {
     private final static String TAG = "GoBridge";
@@ -24,8 +27,8 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     private final static LoggerDriver rnlogger = new LoggerDriver("tech.berty", "react");
 
     // protocol
-    private MessengerBridge bridgeMessenger = null;
-    private File rootDir = null;
+    private static MessengerBridge bridgeMessenger = null;
+    private static File rootDir = null;
 
     public GoBridgeModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -43,7 +46,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     public void clearStorage(Promise promise) {
         try {
             if (this.rootDir != null && this.rootDir.exists()) {
-                if (!rootDir.delete()) {
+                if (!deleteRecursive(this.rootDir)) {
                     throw new Exception("can't delete rootDir");
                 }
                 promise.resolve(true);
@@ -80,7 +83,8 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     public void startProtocol(ReadableMap opts, Promise promise) {
         try {
             if (this.bridgeMessenger != null) {
-                throw new Exception("bridge protocol already started");
+                promise.resolve(false);
+                return;
             }
 
             // gather opts
@@ -172,11 +176,25 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     public void getProtocolAddr(Promise promise) {
         try {
             if (this.bridgeMessenger == null) {
-                throw new Exception("bridge protocol not started");
+                throw new Exception("bridge not started");
             }
 
             String addr = this.bridgeMessenger.grpcWebSocketListenerAddr();
             promise.resolve(addr);
+        } catch (Exception err) {
+            promise.reject(err);
+        }
+    }
+
+    @ReactMethod
+    public void invokeBridgeMethod(String method, String b64message , Promise promise) {
+        try {
+            if (this.bridgeMessenger == null) {
+                throw new Exception("bridge not started");
+            }
+
+            PromiseBlock promiseBlock = new JavaPromiseBlock(promise);
+            this.bridgeMessenger.invokeBridgeMethodWithPromiseBlock(promiseBlock, method, b64message);
         } catch (Exception err) {
             promise.reject(err);
         }
@@ -191,4 +209,14 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
         return arr;
     }
 
+    private static boolean deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory()) {
+            for (File child : fileOrDirectory.listFiles()) {
+                if (!deleteRecursive(child)) {
+                    return false;
+                }
+            }
+        }
+        return fileOrDirectory.delete();
+    }
 }

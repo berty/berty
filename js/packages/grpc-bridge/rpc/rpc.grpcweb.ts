@@ -96,12 +96,13 @@ const stream = (options: grpc.ClientRpcOptions) => async (
 			emit: async (request: Uint8Array) => {
 				client.send(LazyMessage.deserializeBinary(request))
 			},
-			start: async () => {
+			start: () => {
 				client.start(new grpc.Metadata(metadata))
 				if (!methodDesc.requestStream) {
 					client.send(LazyMessage.deserializeBinary(request))
 					client.finishSend()
 				}
+				return () => client.close()
 			},
 			stop: async () => {
 				if (methodDesc.requestStream) {

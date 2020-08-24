@@ -17,10 +17,12 @@ import Swiper from 'react-native-swiper'
 import { Card, TouchableCard } from './shared-components/Card'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation, Routes } from '@berty-tech/navigation'
-import { Messenger } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/store/oldhooks'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
 import { useDispatch } from 'react-redux'
-import { messenger, protocol } from '@berty-tech/store'
+import { useMsgrContext } from '@berty-tech/store/context'
+import messengerMethodsHooks from '@berty-tech/store/methods'
+
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Logo from './berty_gradient_square.svg'
 import LottieView from 'lottie-react-native'
@@ -257,21 +259,22 @@ const SwiperCard: React.FC<{
 	)
 }
 
-const defaultEmbeddedConfig: protocol.client.BertyNodeConfig = {
+const defaultEmbeddedConfig = {
 	type: 'embedded',
-	opts: protocol.client.defaultBridgeOpts,
+	// opts: protocol.client.defaultBridgeOpts,
 }
 
 const NodeConfigInput: React.FC<{
-	config: protocol.client.BertyNodeConfig
-	onConfigChange: (config: protocol.client.BertyNodeConfig) => void
+	config: any
+	onConfigChange: (config: any) => void
 }> = ({ config, onConfigChange }) => {
+	return <Text>TODO</Text>
 	const [{ text, padding, margin, background, border }] = useStyles()
 	const toggleNodeType = () =>
 		onConfigChange(
 			config.type === 'external'
 				? defaultEmbeddedConfig
-				: protocol.client.defaultExternalBridgeConfig,
+				: /*protocol.client.defaultExternalBridgeConfig*/ undefined,
 		)
 	let content: Element
 	if (config.type === 'external') {
@@ -335,23 +338,23 @@ const NodeConfigInput: React.FC<{
 
 const CreateYourAccount: React.FC<{
 	next: Navigation
-	setClickedCreate: any
-}> = ({ next, setClickedCreate }) => {
-	const [name, setName] = useState('')
-	const [nodeConfig, setNodeConfig] = useState(
-		__DEV__
-			? protocol.client.defaultExternalBridgeConfig
-			: {
-					...defaultEmbeddedConfig,
-					opts: {
-						...defaultEmbeddedConfig.opts,
-						tracingPrefix: name,
-					},
-			  },
-	)
-	const [{ text, padding, margin, background, border, color }] = useStyles()
-	const createAccount = Messenger.useAccountCreate()
-	const [isPress, setIsPress] = useState<boolean>(false)
+	onCreate: () => void
+}> = ({ next, onCreate }) => {
+	const ctx: any = useMsgrContext()
+	const [{ text, padding, margin, background, border }] = useStyles()
+	const [name, setName] = React.useState('')
+	const [error, setError] = React.useState()
+	const [isPressed, setIsPressed] = useState<boolean>(false)
+	const onPress = React.useCallback(() => {
+		const displayName = name || `anon#${ctx.account.publicKey.substr(0, 4)}`
+		ctx.client
+			.accountUpdate({ displayName })
+			.then(() => {
+				// TODO: check that account is in "ready" state
+				setIsPressed(true)
+			})
+			.catch((err: any) => setError(err))
+	}, [ctx.client, ctx.account.publicKey, name])
 	return (
 		<Translation>
 			{(t) => (
@@ -364,7 +367,7 @@ const CreateYourAccount: React.FC<{
 							style={{ width: '100%' }}
 						/>
 
-						{!isPress ? (
+						{!isPressed ? (
 							<LottieView
 								source={require('./Berty_onboard_animation_assets2/Startup animation assets/Shield appear.json')}
 								autoPlay
@@ -376,9 +379,9 @@ const CreateYourAccount: React.FC<{
 								autoPlay
 								loop={false}
 								onAnimationFinish={async (): Promise<void> => {
-									createAccount({ name: name || 'Anonymous 1337', nodeConfig })
+									//createAccount({ name: name || 'Anonymous 1337', nodeConfig })
 									Vibration.vibrate(500)
-									setClickedCreate(true)
+									onCreate()
 									// @TODO: Error handling
 									next()
 								}}
@@ -392,26 +395,14 @@ const CreateYourAccount: React.FC<{
 							description={t('onboarding.create-account.desc')}
 							button={{
 								text: t('onboarding.create-account.button'),
-								onPress: () => {
-									setIsPress(true)
-								},
+								onPress,
 							}}
 						>
 							<TextInput
 								autoCapitalize='none'
 								autoCorrect={false}
-								onChangeText={(name) => {
-									setName(name)
-									if (nodeConfig.type === 'embedded') {
-										setNodeConfig({
-											...nodeConfig,
-											opts: {
-												...nodeConfig.opts,
-												tracingPrefix: name,
-											},
-										})
-									}
-								}}
+								value={name}
+								onChangeText={setName}
 								placeholder={t('onboarding.create-account.placeholder')}
 								style={[
 									margin.top.medium,
@@ -422,7 +413,8 @@ const CreateYourAccount: React.FC<{
 									text.color.black,
 								]}
 							/>
-							{__DEV__ && <NodeConfigInput onConfigChange={setNodeConfig} config={nodeConfig} />}
+							{__DEV__ && <NodeConfigInput onConfigChange={() => {}} config={{}} />}
+							{error && <Text>{error.toString()}</Text>}
 						</SwiperCard>
 					</View>
 				</>
@@ -497,12 +489,13 @@ const Bluetooth: React.FC<{
 
 const SetupFinished: React.FC = () => {
 	const navigation = useReactNavigation()
-	const client = Messenger.useClient()
-	const dispatch = useDispatch()
+	//const client = Messenger.useClient()
+	//const dispatch = useDispatch()
 	const [isGeneration, setIsGeneration] = useState<number>(1)
 	const [isGenerated, setIsGenerated] = useState<boolean>(false)
 	const [isFinished, setIsFinished] = useState<boolean>(false)
 	const [isAccount, setIsAccount] = useState<boolean>(false)
+	const client = {}
 	return (
 		<Translation>
 			{(t) =>
@@ -559,7 +552,7 @@ const SetupFinished: React.FC = () => {
 								button={{
 									text: t('onboarding.setup-finished.button'),
 									onPress: () => {
-										dispatch(messenger.account.commands.onboard())
+										//dispatch(messenger.account.commands.onboard())
 										Vibration.vibrate([500])
 										navigation.navigate(Routes.Root.Tabs, { screen: Routes.Main.Home })
 									},
@@ -659,7 +652,7 @@ export const Performance: React.FC<{
 						scrollEnabled={false}
 					>
 						{!clickedCreate && (
-							<CreateYourAccount next={next(2)} setClickedCreate={setClickedCreate} />
+							<CreateYourAccount next={next(2)} onCreate={() => setClickedCreate(true)} />
 						)}
 						{/*<SafeAreaView style={absolute.fill}>
 							<Notifications submit={authorizeNotifications} next={next(4)} />

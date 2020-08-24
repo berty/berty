@@ -1,11 +1,11 @@
 import React from 'react'
 import { Footer as SharedFooter } from '../shared-components/Footer'
-import { Messenger } from '@berty-tech/hooks'
+import { useAccount } from '@berty-tech/store/hooks'
 import { useNavigation, Routes } from '@berty-tech/navigation'
 
 export const Footer: React.FC<{ selected: string }> = ({ selected }) => {
 	const { navigate } = useNavigation()
-	const client = Messenger.useClient()
+	const account = useAccount()
 	return (
 		<SharedFooter
 			left={{
@@ -30,7 +30,7 @@ export const Footer: React.FC<{ selected: string }> = ({ selected }) => {
 					  }
 			}
 			right={{
-				seed: client?.accountPk,
+				seed: account.publicKey,
 				onPress: navigate.settings.home,
 				selected: selected === Routes.Settings.Home,
 				selectedElemSize: 30,

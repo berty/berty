@@ -4,7 +4,7 @@ import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { TabBar } from '../shared-components/TabBar'
 import { RequestAvatar } from '../shared-components/Request'
-import { Messenger } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/store/oldhooks'
 import { useNavigation } from '@berty-tech/navigation'
 import QRCode from 'react-native-qrcode-svg'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
@@ -55,11 +55,11 @@ const BertyIdContent: React.FC<{}> = ({ children }) => {
 }
 
 const ContactRequestQR = () => {
-	const client = Messenger.useClient()
+	const account = Messenger.useAccount()
 	const [{ padding }, { windowHeight, windowWidth, isGteIpadSize }] = useStyles()
 	const { titleSize, bertyIdContentScaleFactor } = useStylesBertyId()
 
-	if (!client?.deepLink) {
+	if (!account?.link) {
 		return <Text>Internal error</Text>
 	}
 
@@ -72,17 +72,17 @@ const ContactRequestQR = () => {
 	// I would like to use binary mode in QR but the scanner used seems to not support it, extended tests were done
 	return (
 		<View style={[padding.top.big]}>
-			<QRCode size={qrCodeSize} value={client.deepLink} />
+			<QRCode size={qrCodeSize} value={account.link} />
 		</View>
 	)
 }
 
 const Fingerprint: React.FC = () => {
-	const client = Messenger.useClient()
+	const account = Messenger.useAccount()
 	const [{ padding }, { windowHeight, windowWidth, isGteIpadSize }] = useStyles()
 	const { bertyIdContentScaleFactor } = useStylesBertyId()
 
-	if (!client) {
+	if (!account) {
 		return <Text>Client not initialized</Text>
 	}
 	return (
@@ -97,7 +97,7 @@ const Fingerprint: React.FC = () => {
 				},
 			]}
 		>
-			<FingerprintContent seed={client.accountPk} />
+			<FingerprintContent seed={account.publicKey} />
 		</View>
 	)
 }
@@ -117,7 +117,7 @@ const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
 	const [{ background, border, margin, padding, opacity }] = useStyles()
 	const { styleBertyIdContent, requestAvatarSize } = useStylesBertyId()
 	const [selectedContent, setSelectedContent] = useState('QR')
-	const client = Messenger.useClient()
+	const account = Messenger.useAccount()
 
 	return (
 		<View
@@ -129,7 +129,7 @@ const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
 				styleBertyIdContent,
 			]}
 		>
-			<RequestAvatar {...user} seed={client?.accountPk} size={requestAvatarSize} />
+			<RequestAvatar {...user} seed={account?.publicKey} size={requestAvatarSize} />
 			<View style={[padding.horizontal.big]}>
 				<TabBar
 					tabs={[
@@ -157,8 +157,8 @@ const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
 const BertyIdShare: React.FC<{}> = () => {
 	const [{ row, border, background, flex, color }] = useStyles()
 	const { styleBertyIdButton, iconShareSize } = useStylesBertyId()
-	const client = Messenger.useClient()
-	const url = client?.deepLink
+	const account = Messenger.useAccount()
+	const url = account?.link
 	if (!url) {
 		return null
 	}
@@ -167,6 +167,7 @@ const BertyIdShare: React.FC<{}> = () => {
 			style={[row.item.bottom, background.light.blue, border.shadow.medium, styleBertyIdButton]}
 			onPress={async () => {
 				try {
+					console.log('sharing', url)
 					await Share.share({ url })
 				} catch (e) {
 					console.error(e)

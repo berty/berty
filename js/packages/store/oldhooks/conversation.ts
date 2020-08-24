@@ -1,9 +1,11 @@
 import { useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { messenger } from '@berty-tech/store'
+
 import { useAccount, useClient } from './account'
 import { useAccountContacts } from './contact'
 import { useGroups } from './Groups'
+
+const useDispatch = () => () => {}
+const useSelector = () => () => undefined
 
 // conversations commands
 export const useConversationGenerate = () => {

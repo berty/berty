@@ -5,7 +5,7 @@ import { Button } from 'react-native-ui-kitten'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
 
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { Messenger } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/store/oldhooks'
 import { useStyles } from '@berty-tech/styles'
 
 const _contentScaleFactor = 0.66

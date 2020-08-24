@@ -2,7 +2,7 @@ package bertymessenger
 
 import (
 	"context"
-	"encoding/base64"
+
 	"fmt"
 	"net/url"
 	"os"
@@ -92,7 +92,7 @@ func (svc *service) InstanceShareableBertyID(ctx context.Context, req *InstanceS
 		},
 	}
 	bertyIDPayloadBytes, _ := proto.Marshal(ret.BertyID)
-	ret.BertyIDPayload = base64.StdEncoding.EncodeToString(bertyIDPayloadBytes)
+	ret.BertyIDPayload = bytesToString(bertyIDPayloadBytes)
 
 	// create QRCodes with standalone display_name variable
 	lightID := BertyID{
@@ -100,7 +100,7 @@ func (svc *service) InstanceShareableBertyID(ctx context.Context, req *InstanceS
 		AccountPK:            ret.BertyID.AccountPK,
 	}
 	lightIDBytes, _ := proto.Marshal(&lightID)
-	lightIDPayload := base64.StdEncoding.EncodeToString(lightIDBytes)
+	lightIDPayload := bytesToString(lightIDBytes)
 	v := url.Values{}
 	v.Set("key", url.QueryEscape(lightIDPayload)) // double-encoding to keep "+" as "+" and not as spaces
 	if displayName != "" {
@@ -132,7 +132,7 @@ func (svc *service) ParseDeepLink(ctx context.Context, req *ParseDeepLink_Reques
 		if key == "" {
 			return nil, errcode.ErrMessengerInvalidDeepLink
 		}
-		payload, err := base64.StdEncoding.DecodeString(key)
+		payload, err := stringToBytes(key)
 		if err != nil {
 			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
 		}
@@ -192,7 +192,7 @@ func ParseGroupInviteURLQuery(query url.Values) (*ParseDeepLink_Reply, error) {
 	if invite == "" {
 		return nil, errcode.ErrMessengerInvalidDeepLink
 	}
-	payload, err := base64.StdEncoding.DecodeString(invite)
+	payload, err := stringToBytes(invite)
 
 	if err != nil {
 		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
@@ -238,7 +238,7 @@ func (svc *service) ShareableBertyGroup(ctx context.Context, request *ShareableB
 		return nil, err
 	}
 
-	rep.BertyGroupPayload = base64.StdEncoding.EncodeToString(bertyGroupPayload)
+	rep.BertyGroupPayload = bytesToString(bertyGroupPayload)
 	rep.DeepLink, rep.HTMLURL, err = ShareableBertyGroupURL(grpInfo.Group, request.GroupName)
 	if err != nil {
 		return nil, err
@@ -257,7 +257,7 @@ func ShareableBertyGroupURL(g *bertytypes.Group, groupName string) (string, stri
 		return "", "", err
 	}
 
-	inviteB64 := base64.StdEncoding.EncodeToString(invite)
+	inviteB64 := bytesToString(invite)
 
 	v := url.Values{}
 	v.Set("invite", url.QueryEscape(inviteB64)) // double-encoding to keep "+" as "+" and not as spaces
@@ -352,7 +352,7 @@ func (svc *service) SendAck(ctx context.Context, request *SendAck_Request) (*Sen
 	}
 
 	am, err := AppMessage_TypeAcknowledge.MarshalPayload(&AppMessage_Acknowledge{
-		Target: base64.StdEncoding.EncodeToString(request.MessageID),
+		Target: bytesToString(request.MessageID),
 	})
 	if err != nil {
 		return nil, err
@@ -556,7 +556,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 		return nil, err
 	}
 	pk := cr.GetGroupPK()
-	pkStr := base64.StdEncoding.EncodeToString(pk)
+	pkStr := bytesToString(pk)
 	svc.logger.Info("Created conv", zap.String("dn", req.GetDisplayName()), zap.String("pk", pkStr))
 
 	gir, err := svc.protocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{GroupPK: pk})
@@ -643,7 +643,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 		if err != nil {
 			return nil, err
 		}
-		cpkb, err := base64.StdEncoding.DecodeString(contactPK)
+		cpkb, err := stringToBytes(contactPK)
 		if err != nil {
 			return nil, err
 		}
@@ -686,7 +686,7 @@ func (svc *service) ConversationJoin(ctx context.Context, req *ConversationJoin_
 	bgroup := pdlr.GetBertyGroup()
 	gpkb := bgroup.GetGroup().GetPublicKey()
 	conv := Conversation{
-		PublicKey:   base64.StdEncoding.EncodeToString(gpkb),
+		PublicKey:   bytesToString(gpkb),
 		DisplayName: bgroup.GetDisplayName(),
 		Link:        link,
 	}
@@ -778,7 +778,7 @@ func (svc *service) ContactRequest(ctx context.Context, req *ContactRequest_Requ
 		if key == "" {
 			return nil, errcode.ErrMessengerInvalidDeepLink
 		}
-		payload, err := base64.StdEncoding.DecodeString(key)
+		payload, err := stringToBytes(key)
 		if err != nil {
 			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
 		}
@@ -834,7 +834,7 @@ func (svc *service) ContactAccept(ctx context.Context, req *ContactAccept_Reques
 		return nil, errcode.ErrInvalidInput
 	}
 
-	pkb, err := base64.StdEncoding.DecodeString(pk)
+	pkb, err := stringToBytes(pk)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -859,7 +859,7 @@ func (svc *service) ContactAccept(ctx context.Context, req *ContactAccept_Reques
 func (svc *service) Interact(ctx context.Context, req *Interact_Request) (*Interact_Reply, error) {
 	gpk := req.GetConversationPublicKey()
 	svc.logger.Info("interacting", zap.String("public-key", gpk))
-	gpkb, err := base64.StdEncoding.DecodeString(gpk)
+	gpkb, err := stringToBytes(gpk)
 	if err != nil {
 		return nil, err
 	}

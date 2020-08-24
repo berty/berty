@@ -18,7 +18,7 @@ import { berty } from '@berty-tech/api'
 import { Routes, FakeNavigation } from '@berty-tech/navigation'
 import { NavigationContainer } from '@react-navigation/native'
 import { enableScreens } from 'react-native-screens'
-import { Chat as ChatHooks } from '@berty-tech/hooks'
+import { Chat as ChatHooks } from '@berty-tech/store/oldhooks'
 
 enableScreens()
 

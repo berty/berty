@@ -6,8 +6,8 @@ import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsBu
 import HeaderSettings from '../shared-components/Header'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
-import { messenger } from '@berty-tech/store'
-import { Messenger } from '@berty-tech/hooks'
+
+import { Messenger } from '@berty-tech/store/oldhooks'
 
 //
 // ChatSettings

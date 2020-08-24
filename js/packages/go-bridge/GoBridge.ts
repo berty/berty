@@ -18,6 +18,10 @@ class NoopGoBirdge implements GoBridgeInterface {
 	clearStorage() {
 		return Promise.reject()
 	}
+
+	invokeBridgeMethod() {
+		return Promise.reject()
+	}
 }
 
 const GoBridge: GoBridgeInterface = new NoopGoBirdge()

@@ -4,14 +4,14 @@ import {
 	NavigationContainer as ReactNavigationContainer,
 } from '@react-navigation/native'
 import { Routes } from './types'
-import { Messenger } from '@berty-tech/hooks'
 
 export const PREFIX = 'berty://'
 export const HTTPS_PREFIX = 'https://berty.tech/'
 
 export const NavigationContainer: React.FC = ({ children }) => {
-	const ref = useRef()
-	const handleDeepLink = Messenger.useHandleDeepLink()
+	const ref: any = useRef()
+	// const handleDeepLink = Messenger.useHandleDeepLink()
+	const handleDeepLink = (_: any) => {}
 	const { getInitialState } = useLinking(ref, {
 		prefixes: [PREFIX, HTTPS_PREFIX],
 		config: {

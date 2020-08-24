@@ -1,4 +1,4 @@
-import { NativeModules } from 'react-native'
+import GoBridge from '@berty-tech/go-bridge'
 import {
 	serializeToBase64,
 	deserializeFromBase64,
@@ -10,7 +10,7 @@ import {
 const unary = async (method, request, metadata) => {
 	const methodName = `/${getServiceName(method)}/${method.name}`
 	const req64 = serializeToBase64(request)
-	return NativeModules.GoBridge.invokeBridgeMethod(methodName, req64).then((res64) =>
+	return GoBridge.invokeBridgeMethod(methodName, req64).then((res64) =>
 		deserializeFromBase64(res64),
 	)
 }

@@ -12,7 +12,7 @@ import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { Routes } from '@berty-tech/navigation'
 import { useNavigation } from '@react-navigation/native'
-import { Messenger } from '@berty-tech/hooks'
+import { useMsgrContext, useAccount } from '@berty-tech/store/hooks'
 
 const useStylesDeleteAccount = () => {
 	const [{ width, height, border, text, padding, margin }] = useStyles()
@@ -106,11 +106,12 @@ const DeleteAccountContent: React.FC<{}> = () => {
 	const _styles = useStylesDeleteAccount()
 	const [{ row, margin, background, border, color, padding, text, column }] = useStyles()
 	const navigation = useNavigation()
-	const account = Messenger.useAccount()
+	const account = useAccount()
 	const prevAccount = usePrevious(account)
 	const [startDelete, setStartDelete] = useState(false)
 	const startedDelete = usePrevious(startDelete)
-	const deleteAccount = Messenger.useAccountDelete()
+	const ctx = useMsgrContext()
+	const deleteAccount = ctx.deleteAccount
 	const [deleteConfirmation, setDeleteConfirmation] = useState<string>()
 	const confirmed = deleteConfirmation === DELETE_STR
 	useEffect(() => {

@@ -2289,6 +2289,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   UserReaction: {
                     fields: {
+                      target: {
+                        type: "string",
+                        id: 3
+                      },
                       emoji: {
                         type: "string",
                         id: 2

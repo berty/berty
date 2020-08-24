@@ -1,23 +1,9 @@
-import React, { useMemo } from 'react'
-import { settings } from '@berty-tech/store'
-import { Provider as ReactReduxProvider, useSelector, useDispatch } from 'react-redux'
-import { ActivityIndicator } from 'react-native'
-import { PersistGate } from 'redux-persist/integration/react'
 import * as Messenger from './Messenger'
 
-export const Provider: React.FC = ({ children }) => {
-	const store = settings.init()
-	return (
-		<ReactReduxProvider store={store}>
-			<PersistGate
-				loading={<ActivityIndicator size='large' />}
-				persistor={(store as any).persistor} // FIXME: store type to remove any cast
-			>
-				{children}
-			</PersistGate>
-		</ReactReduxProvider>
-	)
-}
+const settings = {}
+
+const useDispatch = () => () => {}
+const useSelector = () => () => undefined
 
 export const useSettings = () => {
 	return useSelector(settings.main.queries.get)

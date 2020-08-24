@@ -2,6 +2,7 @@ package bertymessenger
 
 import (
 	"bytes"
+	"encoding/base64"
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -35,4 +36,12 @@ func (svc *service) groupPKFromContactPK(contactPK []byte) ([]byte, error) {
 	}
 
 	return groupPK, nil
+}
+
+func bytesToString(b []byte) string {
+	return base64.RawURLEncoding.EncodeToString(b)
+}
+
+func stringToBytes(s string) ([]byte, error) {
+	return base64.RawURLEncoding.DecodeString(s)
 }

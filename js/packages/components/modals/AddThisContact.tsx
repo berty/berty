@@ -2,12 +2,11 @@ import React, { useState } from 'react'
 import { View, TouchableOpacity } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useNavigation } from '@react-navigation/native'
-import { Messenger } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/store/oldhooks'
 import { useStyles } from '@berty-tech/styles'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
-import { messenger } from '@berty-tech/store'
 
 const useStylesModal = () => {
 	const [{ width, border, height, opacity }] = useStyles()

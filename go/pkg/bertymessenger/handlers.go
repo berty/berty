@@ -1,8 +1,6 @@
 package bertymessenger
 
 import (
-	"encoding/base64"
-
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/golang/protobuf/proto" // nolint:staticcheck: not sure how to use the new protobuf api to unmarshal
@@ -51,7 +49,7 @@ func accountContactRequestOutgoingEnqueued(svc *service, gme *bertytypes.GroupMe
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
 		return err
 	}
-	pkStr := base64.StdEncoding.EncodeToString(ev.GetContact().GetPK())
+	pkStr := bytesToString(ev.GetContact().GetPK())
 
 	var cm ContactMetadata
 	err := proto.Unmarshal(ev.GetContact().GetMetadata(), &cm)
@@ -88,7 +86,7 @@ func accountGroupJoined(svc *service, gme *bertytypes.GroupMetadataEvent) error 
 	}
 
 	pkb := ev.GetGroup().GetPublicKey()
-	b64PK := base64.StdEncoding.EncodeToString(pkb)
+	b64PK := bytesToString(pkb)
 	isNew := false
 
 	// get or create conversation in DB
@@ -188,7 +186,7 @@ func accountContactRequestOutgoingSent(svc *service, gme *bertytypes.GroupMetada
 		return err
 	}
 	pkb := ev.GetContactPK()
-	pkStr := base64.StdEncoding.EncodeToString(pkb)
+	pkStr := bytesToString(pkb)
 
 	var c Contact
 	if err := svc.db.Where(Contact{PublicKey: pkStr}).First(&c).Error; err != nil {
@@ -255,7 +253,7 @@ func accountContactRequestIncomingReceived(svc *service, gme *bertytypes.GroupMe
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
 		return err
 	}
-	pkStr := base64.StdEncoding.EncodeToString(ev.GetContactPK())
+	pkStr := bytesToString(ev.GetContactPK())
 
 	var m ContactMetadata
 	err := proto.Unmarshal(ev.GetContactMetadata(), &m)
@@ -281,7 +279,7 @@ func accountContactRequestIncomingAccepted(svc *service, gme *bertytypes.GroupMe
 	if pkb == nil {
 		return errcode.ErrInvalidInput
 	}
-	pkStr := base64.StdEncoding.EncodeToString(pkb)
+	pkStr := bytesToString(pkb)
 
 	// retrieve contact from DB
 	var c Contact
@@ -303,7 +301,7 @@ func accountContactRequestIncomingAccepted(svc *service, gme *bertytypes.GroupMe
 	if err != nil {
 		return err
 	}
-	c.ConversationPublicKey = base64.StdEncoding.EncodeToString(groupPK)
+	c.ConversationPublicKey = bytesToString(groupPK)
 
 	if err := svc.db.Save(&c).Error; err != nil {
 		return err
@@ -361,7 +359,7 @@ func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) er
 	if mpkb == nil {
 		return errcode.ErrInvalidInput
 	}
-	mpk := base64.StdEncoding.EncodeToString(mpkb)
+	mpk := bytesToString(mpkb)
 
 	var c Contact
 	err := svc.db.Where(Contact{PublicKey: mpk}).First(&c).Error
@@ -373,7 +371,7 @@ func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) er
 		if err != nil {
 			return err
 		}
-		c.ConversationPublicKey = base64.StdEncoding.EncodeToString(groupPK)
+		c.ConversationPublicKey = bytesToString(groupPK)
 
 		if err := svc.db.Save(&c).Error; err != nil {
 			return err
@@ -425,7 +423,7 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 	amt := am.GetType()
 	svc.logger.Debug("received app message", zap.String("type", amt.String()))
 	cidb := gme.GetEventContext().GetID()
-	cid := base64.StdEncoding.EncodeToString(cidb)
+	cid := bytesToString(cidb)
 	isMe, err := svc.checkIsMe(gme)
 	if err != nil {
 		return err

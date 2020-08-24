@@ -56,6 +56,8 @@ var (
 	APIConfig                     = config.BertyMobile.APIConfig
 )
 
+const memPath = ":memory:"
+
 type MessengerBridge struct {
 	*Bridge
 
@@ -341,9 +343,18 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 
 		zapLogger := zapgorm2.New(logger)
 		zapLogger.SetAsDefault()
-		db, err = gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{Logger: zapLogger})
+
+		// setup db
+		shouldPersist := config.rootDirectory != "" && config.rootDirectory != memPath
+		if shouldPersist {
+			dbPath := config.rootDirectory + "/messenger.db"
+			logger.Debug("using db", zap.String("path", dbPath))
+			db, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{Logger: zapLogger})
+		} else {
+			db, err = gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{Logger: zapLogger})
+		}
 		if err != nil {
-			if cErr := protocolClient.Close(); err != nil {
+			if cErr := protocolClient.Close(); cErr != nil {
 				logger.Error("failed to close protocol client", zap.Error(cErr))
 			}
 			return nil, errcode.TODO.Wrap(err)
@@ -416,7 +427,7 @@ func (p *MessengerBridge) Close() error {
 }
 
 func getRootDatastore(path string) (datastore.Batching, error) {
-	if path == "" || path == ":memory:" {
+	if path == "" || path == memPath {
 		baseds := ds_sync.MutexWrap(datastore.NewMapDatastore())
 		return baseds, nil
 	}
@@ -444,7 +455,7 @@ func getRootDatastore(path string) (datastore.Batching, error) {
 }
 
 func getOrbitDBDirectory(path string) (string, error) {
-	if path == "" || path == ":memory:" {
+	if path == "" || path == memPath {
 		return path, nil
 	}
 
@@ -463,7 +474,7 @@ func getOrbitDBDirectory(path string) (string, error) {
 }
 
 func getIPFSRepo(path string) (ipfs_repo.Repo, error) {
-	if path == "" || path == ":memory:" {
+	if path == "" || path == memPath {
 		repods := ds_sync.MutexWrap(datastore.NewMapDatastore())
 		return ipfsutil.CreateMockedRepo(repods)
 	}
