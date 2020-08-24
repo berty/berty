@@ -1,5 +1,5 @@
-import { Messenger } from '@berty-tech/hooks'
-import { messenger } from '@berty-tech/store'
+import { Messenger } from '@berty-tech/store/oldhooks'
+import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { useStyles } from '@berty-tech/styles'
 import Color from 'color'
 import palette from 'google-palette'
@@ -230,12 +230,12 @@ export const Message: React.FC<{
 	let baseColor = color.blue
 	let isFollowupMessage = false
 	let isWithinTenMinsAfter = false
-	if (message.type === messenger.AppMessageType.UserMessage) {
+	if (message.type === messengerpb.AppMessage.Type.TypeUserMessage) {
 		if (message.memberPk && membersNames) {
 			name = membersNames[message.memberPk]
 		}
 		const payload = message
-		const cmd = messenger.message.isCommandMessage(payload.body)
+		const cmd = null /*messenger.message.isCommandMessage(payload.body)*/
 		let msgTextColor, msgBackgroundColor, msgBorderColor, msgSenderColor
 		if (convKind === '1to1') {
 			msgTextColor = payload.isMe
@@ -375,7 +375,7 @@ export const Message: React.FC<{
 				</View>
 			</View>
 		)
-	} else if (message.type === messenger.AppMessageType.GroupInvitation) {
+	} else if (message.type === messengerpb.AppMessage.Type.TypeGroupInvitation) {
 		return <MessageInvitation message={message} />
 	} else {
 		return null

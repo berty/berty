@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Layout } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { Request } from '../shared-components/Request'
-//import { Messenger } from '@berty-tech/hooks'
+//import { Messenger } from '@berty-tech/store/oldhooks'
 
 //
 // Scan Request

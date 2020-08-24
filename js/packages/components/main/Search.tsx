@@ -1,7 +1,10 @@
-import { Messenger } from '@berty-tech/hooks'
-import { useFirstConversationWithContact, useGetMessage } from '@berty-tech/hooks/Messenger'
+import { Messenger } from '@berty-tech/store/oldhooks'
+import {
+	useFirstConversationWithContact,
+	useGetMessage,
+} from '@berty-tech/store/oldhooks/Messenger'
 import { Routes, useNavigation } from '@berty-tech/navigation'
-import { messenger } from '@berty-tech/store'
+
 import { useStyles } from '@berty-tech/styles'
 import { CommonActions } from '@react-navigation/core'
 import dayjs from 'dayjs'
@@ -384,8 +387,8 @@ const SearchComponent: React.FC<{
 }> = ({ insets }) => {
 	const validInsets = useMemo(() => insets || { top: 0, bottom: 0, left: 0, right: 0 }, [insets])
 	const [searchText, setSearchText] = useState(initialSearchText)
-	const contacts = Messenger.useAccountContactSearchResults(searchText)
-	const messages = Messenger.useGetMessageSearchResultWithMetadata(searchText)
+	const contacts = [] /*Messenger.useAccountContactSearchResults(searchText)*/
+	const messages = [] /*Messenger.useGetMessageSearchResultWithMetadata(searchText)*/
 	const [{ padding, margin, background, text, flex, border, height }] = useStyles()
 	const sections = useMemo(() => createSections(contacts, messages, searchText), [
 		messages,

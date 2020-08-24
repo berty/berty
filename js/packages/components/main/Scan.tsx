@@ -7,7 +7,7 @@ import QRCodeScanner from 'react-native-qrcode-scanner'
 import { useNavigation } from '@react-navigation/native'
 import ScanTarget from './scan_target.svg'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Messenger } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/store/oldhooks'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -31,7 +31,7 @@ const useStylesScan = () => {
 }
 
 const ScanBody: React.FC<{}> = () => {
-	const handleDeepLink = Messenger.useHandleDeepLink()
+	const handleDeepLink = () => {} /*Messenger.useHandleDeepLink()*/
 	const navigation = useNavigation()
 	const [
 		{ background, margin, flex, column, border },
@@ -100,7 +100,7 @@ const ScanInfosText: React.FC<ScanInfosTextProps> = ({ textProps }) => {
 }
 
 const DevReferenceInput = () => {
-	const handleDeepLink = Messenger.useHandleDeepLink()
+	const handleDeepLink = () => {} /*Messenger.useHandleDeepLink()*/
 	const [ref, setRef] = useState('')
 	const navigation = useNavigation()
 	return (

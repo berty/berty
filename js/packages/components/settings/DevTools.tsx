@@ -6,8 +6,6 @@ import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { Settings, Messenger } from '@berty-tech/hooks'
-import { messenger, groups } from '@berty-tech/store'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
@@ -69,8 +67,8 @@ const HeaderDevTools: React.FC<{}> = () => {
 }
 
 const TracingButton: React.FC = () => {
-	const toggleTracing = Settings.useToggleTracing()
-	const settings = Settings.useSettings()
+	//const toggleTracing = Settings.useToggleTracing()
+	const settings = null /*Settings.useSettings()*/
 	if (!settings || settings.nodeConfig.type === 'external') {
 		return null
 	}
@@ -90,7 +88,7 @@ const TracingButton: React.FC = () => {
 const NativeCallButton: React.FC = () => {
 	// create middleware(s) if needed
 	const messengerMiddlewares = middleware.chain(
-		__DEV__ ? middleware.logger.create('MESSENGER') : null // eslint-disable-line
+		__DEV__ ? middleware.logger.create('MESSENGER') : null, // eslint-disable-line
 	)
 
 	const messengerClient: any = Service(
@@ -138,7 +136,7 @@ const NativeCallButton: React.FC = () => {
 }
 
 const DiscordShareButton: React.FC = () => {
-	const devShareInstanceBertyID = Messenger.useDevShareInstanceBertyID()
+	//const devShareInstanceBertyID = Messenger.useDevShareInstanceBertyID()
 	const { goBack } = useNavigation()
 	const [{ color }] = useStyles()
 	return (
@@ -147,10 +145,11 @@ const DiscordShareButton: React.FC = () => {
 			icon='activity-outline'
 			iconSize={30}
 			iconColor={color.dark.grey}
+			disabled
 			onPress={() => {
-				devShareInstanceBertyID()
+				/*devShareInstanceBertyID()
 				Vibration.vibrate(500)
-				goBack()
+				goBack()*/
 			}}
 		/>
 	)
@@ -171,23 +170,26 @@ const DumpButton: React.FC<{ text: string; name: string }> = ({ text, name }) =>
 }
 
 const DumpContactStore: React.FC = () => {
-	const text = useSelector((state: messenger.contact.GlobalState) =>
+	const text =
+		'' /*useSelector((state: messenger.contact.GlobalState) =>
 		JSON.stringify(state.messenger.contact, null, 2),
-	)
+	)*/
 	return <DumpButton name='Dump contact store' text={text} />
 }
 
 const DumpConversationStore: React.FC = () => {
-	const conversationStoreText = useSelector((state: messenger.conversation.GlobalState) =>
+	const conversationStoreText =
+		'' /*useSelector((state: messenger.conversation.GlobalState) =>
 		JSON.stringify(state.messenger.conversation, null, 2),
-	)
+	)*/
 	return <DumpButton name='Dump conversation store' text={conversationStoreText} />
 }
 
 const DumpGroupsStore: React.FC = () => {
-	const conversationStoreText = useSelector((state: groups.GlobalState) =>
+	const conversationStoreText =
+		'' /*useSelector((state: groups.GlobalState) =>
 		JSON.stringify(state.groups, null, 2),
-	)
+	)*/
 	return <DumpButton name='Dump groups store' text={conversationStoreText} />
 }
 
@@ -195,8 +197,8 @@ const BodyDevTools: React.FC<{}> = () => {
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, color, text }] = useStyles()
 	const { navigate } = useNavigation()
-	const sendToAll = Messenger.useMessageSendToAll()
-	const systemInfo = Settings.useSystemInfo()
+	const sendToAll = () => {} /*Messenger.useMessageSendToAll()*/
+	const systemInfo = {} /*Settings.useSystemInfo()*/
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<ButtonSetting
@@ -204,9 +206,10 @@ const BodyDevTools: React.FC<{}> = () => {
 				icon='info-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
+				disabled
 				onPress={() => {
-					systemInfo()
-					navigate.settings.systemInfo()
+					/*systemInfo()
+					navigate.settings.systemInfo()*/
 				}}
 			/>
 			<TracingButton />
@@ -220,7 +223,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				icon='activity-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
-				onPress={GoBridge.stopProtocol}
+				onPress={() => GoBridge.stopProtocol()}
 			/>
 			<ButtonSetting
 				name='Bot mode'

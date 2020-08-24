@@ -12,8 +12,8 @@ import { useStyles } from '@berty-tech/styles'
 import BlurView from '../shared-components/BlurView'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { useNavigation, Routes } from '@berty-tech/navigation'
-import { Messenger } from '@berty-tech/hooks'
-import { messenger } from '@berty-tech/store'
+import { Messenger } from '@berty-tech/store/oldhooks'
+
 import { CommonActions } from '@react-navigation/core'
 import Interactable from 'react-native-interactable'
 import FromNow from '../shared-components/FromNow'
@@ -207,9 +207,9 @@ const Requests: React.FC<{}> = () => {
 	] = useStyles()
 	const { isShortWindow } = useStylesList()
 
-	const requests = Messenger.useAccountContactsWithOutgoingRequests().filter(
+	const requests = [] /*Messenger.useAccountContactsWithOutgoingRequests().filter(
 		(contact) => !(contact.request.accepted || contact.request.discarded) && !contact.fake,
-	)
+	)*/
 
 	return requests.length >= 1 ? (
 		<View style={[background.white]}>

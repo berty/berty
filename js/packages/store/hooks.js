@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { MsgrContext } from './context'
+import { MsgrContext, useMsgrContext } from './context'
 import flatten from 'lodash/flatten'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 
@@ -8,6 +8,8 @@ const AppMessageType = messengerpb.AppMessage.Type
 const listHuman = (state) => {
 	return Object.values(state.conversations)
 }
+
+export { useMsgrContext }
 
 const searchOne = (state, { searchText, convId, id }) => {
 	const intes = state.interactions[convId]
@@ -23,10 +25,7 @@ const searchOne = (state, { searchText, convId, id }) => {
 		: undefined
 }
 
-const messageToConvMapper = (conv: messenger.conversation.Entity) => (
-	inte: any,
-	messageIndex: number,
-) => ({
+const messageToConvMapper = (conv) => (inte, messageIndex) => ({
 	conversationId: conv.publicKey,
 	id: inte.cid,
 	conversationTitle: conv.displayName,
@@ -37,7 +36,9 @@ const messageToConvMapper = (conv: messenger.conversation.Entity) => (
 export const useGetMessageSearchResultWithMetadata = (searchText) => {
 	const ctx = useContext(MsgrContext)
 
-	if (!searchText) return []
+	if (!searchText) {
+		return []
+	}
 
 	// map all messages to conversation ID
 
@@ -98,7 +99,7 @@ export const useAccountContactSearchResults = (searchText) => {
 	)
 }
 
-export const useFirstConversationWithContact = (contactPk: string) => {
+export const useFirstConversationWithContact = (contactPk) => {
 	const ctx = useContext(MsgrContext)
 	const conversations = ctx.conversations
 	const contact = ctx.contacts[contactPk]
@@ -106,4 +107,9 @@ export const useFirstConversationWithContact = (contactPk: string) => {
 		return undefined
 	}
 	return conversations[contact.conversationPublicKey]
+}
+
+export const useAccount = () => {
+	const ctx = useMsgrContext()
+	return ctx.account
 }

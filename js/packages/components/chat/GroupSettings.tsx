@@ -10,8 +10,8 @@ import {
 import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
 import HeaderSettings from '../shared-components/Header'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
-import { messenger } from '@berty-tech/store'
-import { Messenger, Groups } from '@berty-tech/hooks'
+
+import { Messenger, Groups } from '@berty-tech/store/oldhooks'
 
 //
 // GroupChatSettings

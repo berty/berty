@@ -105,7 +105,7 @@ func TestContactRequest(t *testing.T) {
 	require.NoError(t, err)
 
 	contactName := "zxxma-iphone"
-	link := "berty://id/#key=CiAdJso3YvHGxjkU1%252FXfBpMe00RFB0NZtPuEKRPtyUuQFBIg15Bbyrz0tdy8Su6DDcNpKBguhNuZsF1%252BjTzpCaN6qfA%253D&name=" + contactName
+	link := "https://berty.tech/id#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA&name=" + contactName
 	ownMetadata := []byte("bar")
 
 	metadata, err := proto.Marshal(&ContactMetadata{contactName})

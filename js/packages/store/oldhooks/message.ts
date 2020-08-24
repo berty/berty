@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { messenger } from '@berty-tech/store'
+
 import { useGetConversation, useConversationList } from './conversation'
 import { flatten } from 'lodash'
+
+const useDispatch = () => () => {}
+const useSelector = () => () => undefined
 
 // messages commands
 export const useMessageSend = () => {

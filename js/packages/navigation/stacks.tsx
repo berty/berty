@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { createNativeStackNavigator } from 'react-native-screens/native-stack'
 import * as Components from '@berty-tech/components'
 import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs'
-import { Messenger } from '@berty-tech/hooks'
-import { messenger } from '@berty-tech/store'
+import { Messenger } from '@berty-tech/store/oldhooks'
 import { Routes } from './types'
+import { messenger as messengerpb } from '@berty-tech/api/index.js'
 
 const FakeStack = createNativeStackNavigator()
 export const FakeNavigation: React.FC = ({ children }) => {
@@ -39,9 +39,9 @@ export const ModalsNavigation: React.FC = () => (
 
 const CreateGroupStack = createNativeStackNavigator()
 export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => {
-	const [members, setMembers] = useState([] as messenger.contact.Entity[])
-	const setMember = (contact: messenger.contact.Entity) => {
-		if (members.find((member) => member.id === contact.id)) {
+	const [members, setMembers] = useState([] as any[])
+	const setMember = (contact: any) => {
+		if (members.find((member) => member.id === contact.publicKey)) {
 			return
 		}
 		setMembers([...members, contact])
@@ -107,10 +107,14 @@ export const TabNavigation: React.FC = () => {
 
 const NavigationStack = createNativeStackNavigator()
 export const Navigation: React.FC = () => {
-	const account = Messenger.useAccount()
+	const account: any = Messenger.useAccount()
 	return (
 		<NavigationStack.Navigator
-			initialRouteName={account ? Routes.Root.Tabs : Routes.Onboarding.GetStarted}
+			initialRouteName={
+				account?.state === messengerpb.Account.State.Ready
+					? Routes.Root.Tabs
+					: Routes.Onboarding.GetStarted
+			}
 			screenOptions={{ headerShown: false }}
 		>
 			<NavigationStack.Screen

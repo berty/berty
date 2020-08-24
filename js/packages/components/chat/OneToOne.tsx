@@ -10,13 +10,13 @@ import {
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
-import { Messenger, Settings } from '@berty-tech/hooks'
+import { Messenger, Settings } from '@berty-tech/store/oldhooks'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import FromNow from '../shared-components/FromNow'
 import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { Message } from './shared-components/Message'
 import { ChatFooter, ChatDate } from './shared-components/Chat'
-import { messenger } from '@berty-tech/store'
+
 import { useReadEffect } from '../hooks'
 //
 // Chat

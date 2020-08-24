@@ -2,7 +2,7 @@ package bertymessenger
 
 import (
 	"context"
-	"encoding/base64"
+
 	"runtime"
 	"testing"
 	"time"
@@ -87,10 +87,10 @@ func TestServiceParseDeepLink(t *testing.T) {
 		{"invalid", &ParseDeepLink_Request{Link: "invalid"}, errcode.ErrMessengerInvalidDeepLink, false, false},
 		{"invalid2", &ParseDeepLink_Request{Link: "berty://id/#key=blah&name=blih"}, errcode.ErrMessengerInvalidDeepLink, false, false},
 		{"invalid3", &ParseDeepLink_Request{Link: "https://berty.tech/id#key=blah&name=blih"}, errcode.ErrMessengerInvalidDeepLink, false, false},
-		{"deeplink", &ParseDeepLink_Request{Link: "berty://id/#key%3DCiDSJgvTIhdDfcZUhhZ8iPYvQVzwBBLRtbnlUX7sh5K9MRIg%252BK1qlkoN7RWQVnzmgveRI0HSLiyRFGa3KE9WNYgJmLQ%253D%26name%3Danonymous%25231337"}, nil, true, true},
-		{"htmlurl", &ParseDeepLink_Request{Link: "https://berty.tech/id#key%3DCiDSJgvTIhdDfcZUhhZ8iPYvQVzwBBLRtbnlUX7sh5K9MRIg%252BK1qlkoN7RWQVnzmgveRI0HSLiyRFGa3KE9WNYgJmLQ%253D%26name%3Danonymous%25231337"}, nil, true, true},
-		{"deeplink-noname", &ParseDeepLink_Request{Link: "berty://id/#key%3DCiDSJgvTIhdDfcZUhhZ8iPYvQVzwBBLRtbnlUX7sh5K9MRIg%252BK1qlkoN7RWQVnzmgveRI0HSLiyRFGa3KE9WNYgJmLQ%253D"}, nil, true, false},
-		{"htmlurl-noname", &ParseDeepLink_Request{Link: "https://berty.tech/id#key%3DCiDSJgvTIhdDfcZUhhZ8iPYvQVzwBBLRtbnlUX7sh5K9MRIg%252BK1qlkoN7RWQVnzmgveRI0HSLiyRFGa3KE9WNYgJmLQ%253D"}, nil, true, false},
+		{"deeplink", &ParseDeepLink_Request{Link: "berty://id/#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA&name=Alice"}, nil, true, true},
+		{"htmlurl", &ParseDeepLink_Request{Link: "https://berty.tech/id#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA&name=Alice"}, nil, true, true},
+		{"deeplink-noname", &ParseDeepLink_Request{Link: "berty://id/#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA"}, nil, true, false},
+		{"htmlurl-noname", &ParseDeepLink_Request{Link: "https://berty.tech/id#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA"}, nil, true, false},
 	}
 
 	for _, tt := range tests {
@@ -137,7 +137,7 @@ func TestServiceSendContactRequest(t *testing.T) {
 	assert.Equal(t, errcode.Code(err), errcode.ErrMissingInput)
 	assert.Nil(t, ret)
 
-	parseRet, err := svc.ParseDeepLink(ctx, &ParseDeepLink_Request{Link: "https://berty.tech/id#key%3DCiDSJgvTIhdDfcZUhhZ8iPYvQVzwBBLRtbnlUX7sh5K9MRIg%252BK1qlkoN7RWQVnzmgveRI0HSLiyRFGa3KE9WNYgJmLQ%253D%26name%3Danonymous%25231337"})
+	parseRet, err := svc.ParseDeepLink(ctx, &ParseDeepLink_Request{Link: "https://berty.tech/id#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA&name=Alice"})
 	require.NoError(t, err)
 
 	ret, err = svc.SendContactRequest(ctx, &SendContactRequest_Request{BertyID: parseRet.BertyID})
@@ -182,7 +182,7 @@ func testParseSharedGroup(t *testing.T, g *bertytypes.Group, name string, ret *S
 
 	marshaled, err := proto.Marshal(ret.BertyGroup)
 	assert.NoError(t, err)
-	assert.Equal(t, base64.StdEncoding.EncodeToString(marshaled), ret.BertyGroupPayload)
+	assert.Equal(t, bytesToString(marshaled), ret.BertyGroupPayload)
 }
 
 func TestServiceShareableBertyGroup(t *testing.T) {

@@ -114,7 +114,6 @@ gen.clean:
 	  packages/*/*.pb.js \
 	  packages/*/*.pb.d.ts \
 	)
-	rm -fr packages/store/protocol/grpc-web-gen
 	@#TODO add more generated files here
 
 .PHONY: deps
@@ -123,7 +122,6 @@ deps: $(pkg_mod)
 .PHONY: lint
 lint: deps
 	cp .gitignore .eslintignore
-	echo "packages/store/protocol/grpc-web-gen/" >> .eslintignore
 	echo "*.pb.*" >> .eslintignore
 	echo "*.gen.*" >> .eslintignore
 	eslint --cache --quiet --ext=.js,.jsx,.ts,.tsx .
@@ -135,7 +133,6 @@ lint.fix: deps
 .PHONY: lint.quick
 lint.quick:
 	cp .gitignore .eslintignore
-	echo "packages/store/protocol/grpc-web-gen/" >> .eslintignore
 	echo "*.pb.*" >> .eslintignore
 	echo "*.gen.*" >> .eslintignore
 	eslint --cache --quiet --ext=.js,.jsx,.ts,.tsx .
@@ -247,9 +244,6 @@ pbhbs_targets := $(patsubst %.hbs,%,$(pbhbs_templates))
 pbhbs_flags := -p ../api -p node_modules/@googleapis/googleapis -p `cd ..; go list -m -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `cd ..; go list -m -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src -H packages/codegen/helpers
 .PHONY: _gen.pbhbs
 _gen.pbhbs:
-	pbhbs $(pbhbs_flags) -t packages/store/protocol  -o packages/store/protocol  ../api/bertyprotocol.proto
-	pbhbs $(pbhbs_flags) -t packages/store/messenger -o packages/store/messenger ../api/bertymessenger.proto
-	pbhbs $(pbhbs_flags) -t packages/store/types     -o packages/store/types     ../api/bertytypes.proto
 	pbhbs $(pbhbs_flags) -t packages/components      -o packages/components      ../api/bertyprotocol.proto  ../api/bertymessenger.proto ../api/bertytypes.proto
 	pbhbs $(pbhbs_flags) -t packages/api             -o packages/api             ../api/bertyprotocol.proto  ../api/bertymessenger.proto ../api/bertytypes.proto
 	pbhbs $(pbhbs_flags) -t packages/codegen         -o packages/codegen         ../api/bertyprotocol.proto  ../api/bertymessenger.proto ../api/bertytypes.proto
@@ -266,33 +260,13 @@ _gen.pbjs:
 	rm -f packages/api/index.pb.d.ts.bak
 	eslint --cache --quiet --fix --no-ignore packages/api/index.gen.js packages/codegen/index.gen.js
 
-#### protoc
-
-protoc_src := ../api/bertytypes.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto
-protoc_target_dir := ../js/packages/store/protocol/grpc-web-gen
-protoc_opts := -I ../api:`cd ..; go list -m -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis:`cd ..; go list -m -f {{.Dir}} github.com/gogo/protobuf`:/protobuf
-.PHONY: _gen.protoc
-_gen.protoc:
-	(cd ..; GO111MODULE=on go mod download)
-	docker run --rm --user="`id -u`" --entrypoint="sh" \
-	  --volume="`go env GOPATH`/pkg/mod:/go/pkg/mod" \
-	  --volume="$(PWD)/..:/go/src/berty.tech/berty" \
-	  --workdir="/go/src/berty.tech/berty/js" \
-	  bertytech/protoc:25 -xec 'make _gen.protoc.local'
-.PHONY: _gen.protoc.local
-_gen.protoc.local:
-	$(call check-program, protoc)
-	rm -fr $(protoc_target_dir)
-	mkdir -p $(protoc_target_dir)
-	protoc $(protoc_opts) --plugin=protoc-gen-ts=$(PWD)/node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:$(protoc_target_dir) --ts_out=service=grpc-web:$(protoc_target_dir) $(protoc_src) `cd ..; go list -m -f {{.Dir}} github.com/gogo/protobuf`/gogoproto/gogo.proto
-
 #### gen.sum
 
-gensum_src := $(protoc_src) Makefile $(pbhbs_templates)
+gensum_src := Makefile $(pbhbs_templates)
 gen.sum: $(gensum_src)
 	$(call check-program, shasum)
 	@shasum $(gensum_src) | sort > gen.sum.tmp
-	@diff -q gen.sum.tmp gen.sum || $(MAKE) _gen.protoc _gen.pbhbs _gen.pbjs _write_gen_sum
+	@diff -q gen.sum.tmp gen.sum || $(MAKE) _gen.pbhbs _gen.pbjs _write_gen_sum
 .PHONY: _write_gen_sum
 _write_gen_sum:
 	  shasum $(gensum_src) | sort > gen.sum.tmp

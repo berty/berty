@@ -3,8 +3,7 @@ import { View, StyleProp } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
 import { useStyles, ColorsStyles } from '@berty-tech/styles'
 import Jdenticon from 'react-native-jdenticon'
-import { Messenger } from '@berty-tech/hooks'
-import { messenger } from '@berty-tech/store'
+import { Messenger } from '@berty-tech/store/oldhooks'
 
 //
 // ProceduralCircleAvatar => every avatar in white circle or not

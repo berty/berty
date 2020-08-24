@@ -156,7 +156,7 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| target | [string](#string) |  |  |
+| target | [string](#string) |  | TODO: optimize message size |
 
 <a name="berty.messenger.v1.AppMessage.GroupInvitation"></a>
 
@@ -164,7 +164,7 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| link | [string](#string) |  |  |
+| link | [string](#string) |  | TODO: optimize message size |
 
 <a name="berty.messenger.v1.AppMessage.SetGroupName"></a>
 
@@ -198,6 +198,7 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| target | [string](#string) |  | TODO: optimize message size |
 | emoji | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.BertyGroup"></a>
@@ -437,6 +438,7 @@
 <a name="berty.messenger.v1.Interact.Reply"></a>
 
 ### Interact.Reply
+TODO: return cid
 
 <a name="berty.messenger.v1.Interact.Request"></a>
 

@@ -14,10 +14,10 @@ import {
 	ProceduralCircleAvatar,
 	ConversationProceduralAvatar,
 } from '../shared-components/ProceduralCircleAvatar'
-import { Messenger } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/store/oldhooks'
 import { ScreenProps, useNavigation, Routes } from '@berty-tech/navigation'
 import { CommonActions } from '@react-navigation/core'
-import { messenger } from '@berty-tech/store'
+
 import { Icon, Text } from 'react-native-ui-kitten'
 import { SafeAreaView, SafeAreaConsumer } from 'react-native-safe-area-context'
 import FromNow from '../shared-components/FromNow'
@@ -30,15 +30,15 @@ import moment from 'moment'
 //
 
 type RequestsProps = ViewProps & {
-	items: Array<messenger.contact.Entity>
+	items: Array<any>
 	isShow: boolean
 }
 
 type ConversationsProps = ViewProps & {
-	items: Array<messenger.conversation.Entity>
+	items: Array<any>
 }
 
-type ConversationsItemProps = messenger.conversation.Entity
+type ConversationsItemProps = any
 
 // Functions
 
@@ -137,14 +137,9 @@ const RequestsItem: React.FC<{
 	)
 }
 
-const ContactRequestsItem: React.FC<messenger.contact.Entity> = ({
-	id,
-	name,
-	publicKey,
-	addedDate,
-}) => {
-	const accept = Messenger.useAcceptContactRequest()
-	const decline = Messenger.useDiscardContactRequest()
+const ContactRequestsItem: React.FC<any> = ({ id, name, publicKey, addedDate }) => {
+	const accept = () => {} // Messenger.useAcceptContactRequest()
+	const decline = () => {} // Messenger.useDiscardContactRequest()
 	const { navigate } = useNavigation()
 	return (
 		<RequestsItem
@@ -410,13 +405,13 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const [layoutConversations, onLayoutConversations] = useLayout()
 	const [layoutHeader, onLayoutHeader] = useLayout()
 
-	const requests = Messenger.useAccountContactsWithIncomingRequests().filter(
+	const requests: any[] = [] /* Messenger.useAccountContactsWithIncomingRequests().filter(
 		(contact) => !(contact.request.accepted || contact.request.discarded),
-	)
-	const conversations = Messenger.useConversationList().sort(
+	)*/
+	const conversations: any[] = [] /*Messenger.useConversationList().sort(
 		(a, b) => new Date(b.lastMessageDate).getTime() - new Date(a.lastMessageDate).getTime(),
-	)
-	const isConversation = Messenger.useConversationLength()
+	)*/
+	const isConversation = 0 // Messenger.useConversationLength()
 
 	const [{ color, text, opacity, flex, margin, background }] = useStyles()
 	const scrollRef = useRef<ScrollView>(null)

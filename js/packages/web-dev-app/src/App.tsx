@@ -1,11 +1,12 @@
 import React, { useState, useRef, useLayoutEffect } from 'react'
 import './App.css'
-import { MsgrProvider, MsgrContext } from './context'
+import { MsgrContext } from '@berty-tech/store/context'
+import { MsgrProvider } from '@berty-tech/store/provider'
 import {
 	useGetMessageSearchResultWithMetadata,
 	useAccountContactSearchResults,
 	useFirstConversationWithContact,
-} from './hooks'
+} from '@berty-tech/store/hooks'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 
 const CreateAccount: React.FC = () => {
@@ -13,6 +14,7 @@ const CreateAccount: React.FC = () => {
 	const [error, setError] = useState(null)
 	const ctx = React.useContext(MsgrContext)
 	const handleCreate = React.useCallback(() => {
+		setError(null)
 		ctx.client.accountUpdate({ displayName: name }).catch((err: any) => setError(err))
 	}, [ctx.client, name])
 	return (
@@ -54,6 +56,7 @@ const AddContact: React.FC = () => {
 	const [error, setError] = useState(null)
 	const ctx = React.useContext(MsgrContext)
 	const handleAdd = React.useCallback(() => {
+		setError(null)
 		ctx.client.contactRequest({ link }).catch((err: any) => setError(err))
 	}, [ctx.client, link])
 	return (
@@ -131,6 +134,7 @@ const AcceptButton: React.FC<{ publicKey: string }> = ({ publicKey }) => {
 	const ctx = React.useContext(MsgrContext)
 	const [error, setError] = React.useState(null)
 	const handleAccept = React.useCallback(() => {
+		setError(null)
 		ctx.client.contactAccept({ publicKey }).catch((err: any) => setError(err))
 	}, [ctx.client, publicKey])
 	return (
@@ -211,6 +215,7 @@ const Conversation: React.FC<{ publicKey: string }> = ({ publicKey }) => {
 	console.log('decoded', decoded)
 
 	const handleSend = React.useCallback(() => {
+		setError(null)
 		ctx.client
 			.interact({
 				conversationPublicKey: publicKey,
@@ -341,6 +346,7 @@ const CreateMultiMember = () => {
 	const [error, setError] = useState(null)
 	const ctx = React.useContext(MsgrContext)
 	const handleCreate = React.useCallback(() => {
+		setError(null)
 		ctx.client.conversationCreate({ displayName: groupName }).catch((err: any) => setError(err))
 	}, [ctx.client, groupName])
 	return (
@@ -363,8 +369,9 @@ const JoinMultiMember = () => {
 	const [error, setError] = useState(null)
 	const ctx = React.useContext(MsgrContext)
 	const handleJoin = React.useCallback(() => {
+		setError(null)
 		ctx.client.conversationJoin({ link }).catch((err: any) => setError(err))
-	}, [ctx.client, link, setError])
+	}, [ctx.client, link])
 	return (
 		<>
 			<input

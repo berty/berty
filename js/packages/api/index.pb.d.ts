@@ -3627,11 +3627,13 @@ export namespace berty {
                 }
 
                 interface IUserReaction {
+                    target?: (string|null);
                     emoji?: (string|null);
                 }
 
                 class UserReaction implements IUserReaction {
 
+                    public target: string;
                     public emoji: string;
                     public static create(properties?: berty.messenger.v1.AppMessage.IUserReaction): berty.messenger.v1.AppMessage.UserReaction;
                     public static encode(message: berty.messenger.v1.AppMessage.IUserReaction, writer?: $protobuf.Writer): $protobuf.Writer;

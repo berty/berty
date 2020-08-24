@@ -1,7 +1,8 @@
-import { useDispatch, useSelector } from 'react-redux'
-import { messenger } from '@berty-tech/store'
 import { Buffer } from 'buffer'
 import { useAccount, useClient } from './account'
+
+const useDispatch = () => () => {}
+const useSelector = () => () => undefined
 
 // contact commands
 export const useAcceptContactRequest = () => {

@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@react-navigation/native'
-import { Messenger } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/store/oldhooks'
 
 //
 // Scan Invalid

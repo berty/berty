@@ -8,8 +8,7 @@ import { TabBar } from '../shared-components/TabBar'
 import HeaderSettings from '../shared-components/Header'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
-import { Messenger } from '@berty-tech/hooks'
-import { messenger } from '@berty-tech/store'
+import { Messenger } from '@berty-tech/store/oldhooks'
 
 const OneToOneSettingsHeaderContent: React.FC = ({ children }) => {
 	const [{ margin }] = useStyles()

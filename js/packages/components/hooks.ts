@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
-import { Messenger } from '@berty-tech/hooks'
+import { Messenger } from '@berty-tech/store/oldhooks'
 import { useNavigation } from '@react-navigation/native'
 
 export const useScroll = (): [React.NativeScrollEvent, ScrollViewProps.onScroll] => {
