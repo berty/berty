@@ -49,8 +49,8 @@ const DeleteProgressScreen = () => {
 	const ctx = useMsgrContext()
 	let text = 'Unknown state'
 	switch (ctx.deleteState) {
-		case 'STOPING_DAEMON':
-			text = 'Stoping node..'
+		case 'STOPPING_DAEMON':
+			text = 'Stopping node..'
 			break
 		case 'CLEARING_STORAGE':
 			text = 'Clearing storage..'

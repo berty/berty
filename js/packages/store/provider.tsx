@@ -87,7 +87,7 @@ export const MsgrProvider = ({ children, daemonAddress, embedded }) => {
 		if (!embedded) {
 			return
 		}
-		dispatch({ type: 'DELETE_STATE_UPDATED', payload: { state: 'STOPING_DAEMON' } })
+		dispatch({ type: 'DELETE_STATE_UPDATED', payload: { state: 'STOPPING_DAEMON' } })
 		await GoBridge.stopProtocol()
 		dispatch({ type: 'DELETE_STATE_UPDATED', payload: { state: 'CLEARING_STORAGE' } })
 		await GoBridge.clearStorage()
