@@ -198,7 +198,6 @@ const BodyDevTools: React.FC<{}> = () => {
 	const [{ padding, flex, margin, color, text }] = useStyles()
 	const { navigate } = useNavigation()
 	const sendToAll = () => {} /*Messenger.useMessageSendToAll()*/
-	const systemInfo = {} /*Settings.useSystemInfo()*/
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<ButtonSetting
@@ -206,11 +205,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				icon='info-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
-				disabled
-				onPress={() => {
-					/*systemInfo()
-					navigate.settings.systemInfo()*/
-				}}
+				onPress={navigate.settings.systemInfo}
 			/>
 			<TracingButton />
 			<DiscordShareButton />
