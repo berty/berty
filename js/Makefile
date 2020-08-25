@@ -24,7 +24,7 @@ ext_ldflags = -ldflags="-X berty.tech/berty/go/pkg/bertymessenger.VcsRef=$(VCS_R
 pkg := $(dir $(wildcard $(PWD)/packages/*/package.json))
 pkg_mod := $(patsubst %, %/node_modules, $(pkg)) node_modules
 pkg_desc := $(patsubst %, %/package.json, $(pkg)) package.json
-bridge_src := $(call rwildcard,../go.sum ../go, "*.go")
+bridge_src := $(shell find ../go -name '*.go') ../go.sum
 react-native := $(abspath node_modules/.bin/react-native)
 clisim := packages/berty-app/node_modules/.bin/clisim
 
@@ -329,5 +329,6 @@ packages/go-bridge/android/libs/gobridge.aar: $(bridge_src)
 	cd ..; go mod download
 	cd ..; go install golang.org/x/mobile/cmd/gomobile
 	cd ..; gomobile init
+	rm -fr packages/go-bridge/android/build # remove broken cache
 	@mkdir -p "packages/go-bridge/android/libs"
 	cd .. && GO111MODULE=on gomobile bind -o js/$@ -v $(ext_ldflags) -target android ./go/framework/bertybridge
