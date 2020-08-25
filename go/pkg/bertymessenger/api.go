@@ -635,11 +635,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 	}
 
 	for _, contactPK := range req.GetContactsToInvite() {
-		ginvb, err := proto.Marshal(&AppMessage_GroupInvitation{Link: conv.GetLink()})
-		if err != nil {
-			return nil, err
-		}
-		am, err := proto.Marshal(&AppMessage{Type: AppMessage_TypeGroupInvitation, Payload: ginvb})
+		am, err := AppMessageType_GroupInvitation.MarshalPayload(&AppMessage_GroupInvitation{Link: conv.GetLink()})
 		if err != nil {
 			return nil, err
 		}

@@ -377,11 +377,7 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 				return err
 			}*/
 
-			ackp, err := proto.Marshal(&AppMessage_Acknowledge{Target: cid})
-			if err != nil {
-				return err
-			}
-			amp, err := proto.Marshal(&AppMessage{Type: AppMessage_TypeAcknowledge, Payload: ackp})
+			amp, err := AppMessage_TypeAcknowledge.MarshalPayload(&AppMessage_Acknowledge{Target: cid})
 			if err != nil {
 				return err
 			}
