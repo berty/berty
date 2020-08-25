@@ -119,21 +119,23 @@ export const useContacts = () => {
 	return ctx.contacts
 }
 
+export const useContactsList = () => {
+	const contacts = useContacts()
+	return Object.values(contacts)
+}
+
 const ContactState = messengerpb.Contact.State
 
 export const useIncomingContactRequests = () => {
-	const contacts = useContacts()
-	return useMemo(
-		() => Object.values(contacts).filter((c) => c.state === ContactState.IncomingRequest),
-		[contacts],
-	)
+	const contacts = useContactsList()
+	return useMemo(() => contacts.filter((c) => c.state === ContactState.IncomingRequest), [contacts])
 }
 
 export const useOutgoingContactRequests = () => {
-	const contacts = useContacts()
+	const contacts = useContactsList()
 	return useMemo(
 		() =>
-			Object.values(contacts).filter((c) =>
+			contacts.filter((c) =>
 				[ContactState.OutgoingRequestEnqueued, ContactState.OutgoingRequestSent].includes(c.state),
 			),
 		[contacts],

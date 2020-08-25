@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
 import { View, ScrollView, TouchableOpacity, TextInput, Text as TextNative } from 'react-native'
 import { Layout, Text, Icon, CheckBox } from 'react-native-ui-kitten'
-import { useStyles } from '@berty-tech/styles'
-import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
-import { useNavigation } from '@berty-tech/navigation'
-import { Messenger } from '@berty-tech/store/oldhooks'
-
 import { SafeAreaView } from 'react-native-safe-area-context'
+
+import { useNavigation } from '@berty-tech/navigation'
+import { useStyles } from '@berty-tech/styles'
+import { useContactsList, useAccountContactSearchResults } from '@berty-tech/store/hooks'
+
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { Header } from './HomeModal'
+import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 
 // Styles
 const useStylesCreateGroup = () => {
@@ -31,18 +32,18 @@ const useStylesCreateGroup = () => {
 // Type
 type AddMembersItemProps = {
 	separateBar?: boolean
-	contact: messenger.contact.Entity
+	contact: any
 	added: boolean
-	onSetMember: (contact: messenger.contact.Entity) => void
+	onSetMember: (contact: any) => void
 	onRemoveMember: (id: string) => void
 }
 
 type AddMembersProps = {
 	paddingBottom?: number
 	layout: number
-	onSetMember: (contact: messenger.contact.Entity) => void
+	onSetMember: (contact: any) => void
 	onRemoveMember: (id: string) => void
-	members: messenger.contact.Entity[]
+	members: any[]
 }
 
 const AddMembersItem: React.FC<AddMembersItemProps> = ({
@@ -59,7 +60,7 @@ const AddMembersItem: React.FC<AddMembersItemProps> = ({
 			<View style={[row.fill, padding.right.small]}>
 				<View style={[row.left, row.item.justify]}>
 					<ProceduralCircleAvatar seed={contact.publicKey} diffSize={30} size={80} />
-					<Text style={[margin.left.small, row.item.justify]}>{contact.name}</Text>
+					<Text style={[margin.left.small, row.item.justify]}>{contact.displayName}</Text>
 				</View>
 				<View style={[row.item.justify]}>
 					<CheckBox
@@ -68,7 +69,7 @@ const AddMembersItem: React.FC<AddMembersItemProps> = ({
 							if (isChecked) {
 								onSetMember(contact)
 							} else {
-								onRemoveMember(contact.id)
+								onRemoveMember(contact.publicKey)
 							}
 						}}
 					/>
@@ -117,9 +118,9 @@ const AddMembers: React.FC<AddMembersProps> = ({
 		{ windowHeight },
 	] = useStyles()
 	const [searchText, setSearchText] = useState('')
-	const contacts = searchText.length
-		? Messenger.useAccountContactSearchResults(searchText)
-		: Messenger.useAccountContacts()
+	const searchContacts = useAccountContactSearchResults(searchText)
+	const accountContacts = useContactsList()
+	const contacts = searchText.length ? searchContacts : accountContacts
 
 	return (
 		<View>
@@ -152,7 +153,7 @@ const AddMembers: React.FC<AddMembersProps> = ({
 							<AddMembersItem
 								onSetMember={onSetMember}
 								onRemoveMember={onRemoveMember}
-								added={!!members.find((member) => member.id === contact.id)}
+								added={!!members.find((member) => member.publicKey === contact.publicKey)}
 								contact={contact}
 								separateBar={index < contacts.length - 1}
 							/>
@@ -164,10 +165,7 @@ const AddMembers: React.FC<AddMembersProps> = ({
 	)
 }
 
-const MemberItem: React.FC<{ member: messenger.contact.Entity; onRemove: () => void }> = ({
-	member,
-	onRemove,
-}) => {
+const MemberItem: React.FC<{ member: any; onRemove: () => void }> = ({ member, onRemove }) => {
 	const [{ padding, column, text, color, row }] = useStyles()
 	const _styles = useStylesCreateGroup()
 
@@ -175,7 +173,9 @@ const MemberItem: React.FC<{ member: messenger.contact.Entity; onRemove: () => v
 		<View style={[padding.horizontal.medium]}>
 			<View style={[column.top, padding.top.small]}>
 				<ProceduralCircleAvatar seed={member.publicKey} diffSize={20} size={70} />
-				<Text style={[text.color.white, column.item.center, padding.top.tiny]}>{member.name}</Text>
+				<Text style={[text.color.white, column.item.center, padding.top.tiny]}>
+					{member.displayName}
+				</Text>
 			</View>
 			<TouchableOpacity style={[_styles.memberItemDelete]} onPress={onRemove}>
 				<Icon
@@ -191,7 +191,7 @@ const MemberItem: React.FC<{ member: messenger.contact.Entity; onRemove: () => v
 }
 
 export const MemberList: React.FC<{
-	members: messenger.contact.Entity[]
+	members: any[]
 	onRemoveMember: (id: string) => void
 }> = ({ members, onRemoveMember }) => {
 	const [{ height, padding }] = useStyles()
@@ -204,7 +204,7 @@ export const MemberList: React.FC<{
 				contentContainerStyle={[padding.left.medium]}
 			>
 				{members.map((member) => (
-					<MemberItem member={member} onRemove={() => onRemoveMember(member.id)} />
+					<MemberItem member={member} onRemove={() => onRemoveMember(member.publicKey)} />
 				))}
 			</ScrollView>
 		</View>
@@ -266,9 +266,9 @@ const _iconArrowBackSize = 30
 const _titleSize = 26
 
 export const CreateGroupAddMembers: React.FC<{
-	onSetMember: (contact: messenger.contact.Entity) => void
+	onSetMember: (contact: any) => void
 	onRemoveMember: (id: string) => void
-	members: messenger.contact.Entity[]
+	members: any[]
 }> = ({ onSetMember, onRemoveMember, members }) => {
 	const [{ flex, background }] = useStyles()
 	const [layout, setLayout] = useState<number>(0)
