@@ -16,10 +16,10 @@
 		24C455BE11AF448FA88E1F72 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5045D393FFFF41F8AF6E2C7C /* Foundation.ttf */; };
 		2A62783702FE443BB2FE144B /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FCAC39E3D9DD48289EC1FA3C /* FontAwesome5_Regular.ttf */; };
 		2E53509D04BF49EF856F7E73 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 583DC111DEBA44B284DE3276 /* AntDesign.ttf */; };
-		4886B57F23C61C0000DFECD4 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4886B57E23C61C0000DFECD4 /* File.swift */; };
-		48F6329923E1C9BE001FA4AB /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4886B57E23C61C0000DFECD4 /* File.swift */; };
-		48F6329A23E1C9BF001FA4AB /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4886B57E23C61C0000DFECD4 /* File.swift */; };
-		48F6329B23E1C9C0001FA4AB /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4886B57E23C61C0000DFECD4 /* File.swift */; };
+		489DE43A24ED424600727383 /* LocalNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 489DE43924ED424600727383 /* LocalNotificationManager.swift */; };
+		489DE43B24ED424600727383 /* LocalNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 489DE43924ED424600727383 /* LocalNotificationManager.swift */; };
+		489DE43C24ED424600727383 /* LocalNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 489DE43924ED424600727383 /* LocalNotificationManager.swift */; };
+		489DE43D24ED424600727383 /* LocalNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 489DE43924ED424600727383 /* LocalNotificationManager.swift */; };
 		5243B435428145D3A3A1BC4D /* OpenSans-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A126A34A50D94690A8F3DEA6 /* OpenSans-ExtraBoldItalic.ttf */; };
 		5ADF9CEE186E47658E40CA52 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CDD34DF205BB4B44B79D823A /* FontAwesome5_Brands.ttf */; };
 		5F9F065C52DF4948ACD06FAF /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 50A51C4D5FCF4BE3BC06B638 /* Fontisto.ttf */; };
@@ -28,6 +28,10 @@
 		8A72F25B2451C4EC00CC2839 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */; };
 		8A72F25C2451C4F500CC2839 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */; };
 		8A72F25D2451C4FD00CC2839 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */; };
+		8DF243CC24E457F20045DA65 /* LifeCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF243CB24E457F20045DA65 /* LifeCycle.swift */; };
+		8DF243CD24E457F20045DA65 /* LifeCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF243CB24E457F20045DA65 /* LifeCycle.swift */; };
+		8DF243CE24E457F20045DA65 /* LifeCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF243CB24E457F20045DA65 /* LifeCycle.swift */; };
+		8DF243CF24E457F20045DA65 /* LifeCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF243CB24E457F20045DA65 /* LifeCycle.swift */; };
 		9062E30D29BE46569E12E997 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BC8CB08233B64D939FFE0469 /* FontAwesome.ttf */; };
 		98148E4901574218AB30D109 /* OpenSans-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FF8061EED4734329B6D865C9 /* OpenSans-SemiBoldItalic.ttf */; };
 		9A6F9E6CCD5D4173AAD6C669 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 67D93FCF36BE4E4983E748F2 /* Ionicons.ttf */; };
@@ -83,8 +87,9 @@
 		2846E9C20CF0E56567DDE888 /* Pods-Berty-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.release.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		45EBCF50D7E5A6FDC3620E25 /* Pods-Berty-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		48236AEDA8308BEBEDB499AA /* Pods-Berty.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.production.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.production.xcconfig"; sourceTree = "<group>"; };
-		4886B57B23C61B5800DFECD4 /* Berty Debug-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Berty Debug-Bridging-Header.h"; sourceTree = "<group>"; };
-		4886B57E23C61C0000DFECD4 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
+		4886B57B23C61B5800DFECD4 /* Berty-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Berty-Bridging-Header.h"; sourceTree = "<group>"; };
+		489DE43924ED424600727383 /* LocalNotificationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalNotificationManager.swift; sourceTree = "<group>"; };
+		489DE43E24ED49B900727383 /* Berty DebugDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Berty DebugDebug.entitlements"; sourceTree = "<group>"; };
 		5045D393FFFF41F8AF6E2C7C /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		50A51C4D5FCF4BE3BC06B638 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		583DC111DEBA44B284DE3276 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
@@ -95,6 +100,7 @@
 		6F84C76F030A6EDBA22AB150 /* Pods-BertyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.debug.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 		8BF04205A0A80BA5C404077E /* Pods-BertyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.release.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.release.xcconfig"; sourceTree = "<group>"; };
+		8DF243CB24E457F20045DA65 /* LifeCycle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LifeCycle.swift; path = Berty/LifeCycle.swift; sourceTree = "<group>"; };
 		8F4D2FAD70964BD9A3DC9697 /* OpenSans-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-SemiBold.ttf"; path = "../assets/OpenSans-SemiBold.ttf"; sourceTree = "<group>"; };
 		951CDB8AA8954B18AA7554CD /* OpenSans-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Bold.ttf"; path = "../assets/OpenSans-Bold.ttf"; sourceTree = "<group>"; };
 		9A9E5C4A6C654C56B328B5B8 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
@@ -194,6 +200,8 @@
 			isa = PBXGroup;
 			children = (
 				EB1D6C9624E4206A00F04D93 /* Berty.entitlements */,
+				489DE43924ED424600727383 /* LocalNotificationManager.swift */,
+				8DF243CB24E457F20045DA65 /* LifeCycle.swift */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -201,8 +209,7 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
-				4886B57B23C61B5800DFECD4 /* Berty Debug-Bridging-Header.h */,
-				4886B57E23C61C0000DFECD4 /* File.swift */,
+				4886B57B23C61B5800DFECD4 /* Berty-Bridging-Header.h */,
 			);
 			name = Berty;
 			sourceTree = "<group>";
@@ -269,6 +276,7 @@
 				EB1D6C9524E4205900F04D93 /* Berty Yolo.entitlements */,
 				EB1D6C9424E4203C00F04D93 /* Berty Staff.entitlements */,
 				EB1D6C9324E3EA1E00F04D93 /* Berty Debug.entitlements */,
+				489DE43E24ED49B900727383 /* Berty DebugDebug.entitlements */,
 				F8BF4661238444080077A846 /* Release.xcconfig */,
 				F81E8EE62382FE27007CDBA3 /* Debug.xcconfig */,
 				13B07FAE1A68108700A75B9A /* Berty */,
@@ -728,8 +736,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				489DE43D24ED424600727383 /* LocalNotificationManager.swift in Sources */,
 				F836874E2355EC9E00CCC6D9 /* AppDelegate.m in Sources */,
-				48F6329B23E1C9C0001FA4AB /* File.swift in Sources */,
+				8DF243CF24E457F20045DA65 /* LifeCycle.swift in Sources */,
 				F836874F2355EC9E00CCC6D9 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -738,8 +747,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				489DE43A24ED424600727383 /* LocalNotificationManager.swift in Sources */,
 				F8BF464F238441AC0077A846 /* AppDelegate.m in Sources */,
-				4886B57F23C61C0000DFECD4 /* File.swift in Sources */,
+				8DF243CC24E457F20045DA65 /* LifeCycle.swift in Sources */,
 				F8BF4650238441AC0077A846 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -748,8 +758,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				489DE43B24ED424600727383 /* LocalNotificationManager.swift in Sources */,
 				F8BF4666238444330077A846 /* AppDelegate.m in Sources */,
-				48F6329923E1C9BE001FA4AB /* File.swift in Sources */,
+				8DF243CD24E457F20045DA65 /* LifeCycle.swift in Sources */,
 				F8BF4667238444330077A846 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -758,8 +769,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				489DE43C24ED424600727383 /* LocalNotificationManager.swift in Sources */,
 				F8BF467C2384443D0077A846 /* AppDelegate.m in Sources */,
-				48F6329A23E1C9BF001FA4AB /* File.swift in Sources */,
+				8DF243CE24E457F20045DA65 /* LifeCycle.swift in Sources */,
 				F8BF467D2384443D0077A846 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -783,7 +795,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F81E8EE62382FE27007CDBA3 /* Debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = "$(inherited)";
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -850,7 +861,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F8BF4661238444080077A846 /* Release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = "$(inherited)";
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -912,7 +922,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0029E969C4DE2054480ABAAD /* Pods-Berty.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Berty/Berty.entitlements;
@@ -932,7 +941,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore tech.berty.ios";
-				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Berty-Swift.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
@@ -944,7 +954,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1B705FD35CD8EAA4AFA69C81 /* Pods-Berty.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Berty/Berty.entitlements;
@@ -963,7 +972,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore tech.berty.ios";
-				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Berty-Swift.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
@@ -982,7 +992,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = WMBQ84HN4T;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -994,7 +1004,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.debug;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Berty-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1024,8 +1035,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.debug;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development tech.berty.ios.debug";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Berty-Swift.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
@@ -1056,7 +1068,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.staff;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc tech.berty.ios.staff";
-				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Berty-Swift.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
@@ -1086,7 +1099,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.staff;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc tech.berty.ios.staff";
-				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Berty-Swift.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
@@ -1116,7 +1130,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.yolo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match InHouse tech.berty.ios.yolo";
-				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Berty-Swift.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
@@ -1145,7 +1160,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = tech.berty.ios.yolo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match InHouse tech.berty.ios.yolo";
-				SWIFT_OBJC_BRIDGING_HEADER = "Berty Debug-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Berty-Swift.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "arm64 arm64e armv7 armv7s";

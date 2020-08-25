@@ -169,8 +169,10 @@ ios.storybook: deps packages/storybook-mobile/ios/Pods _storybook.mobile.start
 	#cd packages/storybook-mobile && $(react-native) run-ios --no-packager
 
 ios.gomobile: packages/go-bridge/ios/Frameworks/Bertybridge.framework
-
+android.gomobile: packages/go-bridge/android/libs/gobridge.aar
 #### Android
+####
+
 
 .PHONY: android.run
 android.run: deps packages/go-bridge/android/libs/gobridge.aar packages/berty-app/node_modules/react-native/react.gradle.orig $(HOME)/.android/debug.keystore

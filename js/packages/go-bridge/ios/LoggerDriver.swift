@@ -8,13 +8,13 @@
 import os
 import Bertybridge
 
-enum LoggerError: Error {
+public enum LoggerError: Error {
   case emptyMessage
   case emptyNamespace
   case invalidLevel
 }
 
-enum Level: String {
+public enum Level: String {
   case debug = "DEBUG"
   case info = "INFO"
   case warn = "WARN"
@@ -25,25 +25,25 @@ enum Level: String {
   case unknow = "UNKNOW"
 }
 
-enum Visibility {
+public enum Visibility {
   case visible
   case hidden
 }
 
-class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
+public class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
   var subsytem: String
   var category: String
   var scope: Visibility
   var isEnabled: Bool
 
-  init(_ subsytem: String = "logger", _ category: String = "log") {
+  public init(_ subsytem: String = "logger", _ category: String = "log") {
     self.subsytem = subsytem
     self.category = category
     self.scope = Visibility.visible
     self.isEnabled = true
   }
 
-  func log(_ level: String?, namespace: String?, message: String?) throws {
+  public func log(_ level: String?, namespace: String?, message: String?) throws {
     guard let ulevel = level, let level = Level(rawValue: ulevel) else {
       throw LoggerError.invalidLevel
     }
@@ -84,11 +84,11 @@ class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
     }
   }
 
-  func format(_ format: NSString, level: Level = Level.info, _ args: CVarArg...) {
+  public func format(_ format: NSString, level: Level = Level.info, _ args: CVarArg...) {
       self.print(NSString(format: format, args), level: level)
   }
 
-  func print(_ message: NSString, level: Level = Level.info, category: String? = nil) {
+  public func print(_ message: NSString, level: Level = Level.info, category: String? = nil) {
       let namespace = category ?? self.category
       do {
           try self.log(level.rawValue, namespace: namespace, message: message as String)

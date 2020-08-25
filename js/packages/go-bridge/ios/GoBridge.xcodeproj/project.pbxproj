@@ -11,6 +11,7 @@
 		48B5F4CF24D2D18C005B75AC /* PromiseBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B5F4CE24D2D18C005B75AC /* PromiseBlock.swift */; };
 		48C42EB823C3D47B006A2D1C /* GoBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48C42EB723C3D47B006A2D1C /* GoBridge.swift */; };
 		48D71D7824D2D32400F2EA90 /* LoggerDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48D71D7724D2D32400F2EA90 /* LoggerDriver.swift */; };
+		8DF243CA24E456160045DA65 /* LifeCycleDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF243C924E456160045DA65 /* LifeCycleDriver.swift */; };
 		B3E7B58A1CC2AC0600A0062D /* GoBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* GoBridge.m */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +34,7 @@
 		48C42EB623C3D47B006A2D1C /* GoBridge-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GoBridge-Bridging-Header.h"; sourceTree = "<group>"; };
 		48C42EB723C3D47B006A2D1C /* GoBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoBridge.swift; sourceTree = "<group>"; };
 		48D71D7724D2D32400F2EA90 /* LoggerDriver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggerDriver.swift; sourceTree = "<group>"; };
+		8DF243C924E456160045DA65 /* LifeCycleDriver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LifeCycleDriver.swift; sourceTree = "<group>"; };
 		B3E7B5881CC2AC0600A0062D /* GoBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoBridge.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* GoBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoBridge.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -68,6 +70,7 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				8DF243C924E456160045DA65 /* LifeCycleDriver.swift */,
 				48D71D7724D2D32400F2EA90 /* LoggerDriver.swift */,
 				48B5F4CE24D2D18C005B75AC /* PromiseBlock.swift */,
 				48C42EB723C3D47B006A2D1C /* GoBridge.swift */,
@@ -137,6 +140,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8DF243CA24E456160045DA65 /* LifeCycleDriver.swift in Sources */,
 				48B5F4CF24D2D18C005B75AC /* PromiseBlock.swift in Sources */,
 				48D71D7824D2D32400F2EA90 /* LoggerDriver.swift in Sources */,
 				B3E7B58A1CC2AC0600A0062D /* GoBridge.m in Sources */,
