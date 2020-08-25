@@ -1,15 +1,16 @@
-import { ButtonSettingItem } from '../shared-components/SettingsButtons'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { View, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
+import { SafeAreaView } from 'react-native-safe-area-context'
+
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/navigation'
-import { Messenger } from '@berty-tech/store/oldhooks'
+import messengerMethodsHooks from '@berty-tech/store/methods'
 
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { CreateGroupHeader } from './CreateGroupAddMembers'
 import { Header } from './HomeModal'
+import { ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 
 const useStylesCreateGroup = () => {
@@ -56,7 +57,9 @@ const MemberItem: React.FC<{ member: any; onRemove: () => void }> = ({ member, o
 		<View style={[padding.horizontal.medium]}>
 			<View style={[column.top, padding.top.small]}>
 				<ProceduralCircleAvatar seed={member.publicKey} diffSize={20} size={70} />
-				<Text style={[text.color.white, column.item.center, padding.top.tiny]}>{member.name}</Text>
+				<Text style={[text.color.white, column.item.center, padding.top.tiny]}>
+					{member.displayName}
+				</Text>
 			</View>
 			<TouchableOpacity style={[_styles.memberItemDelete]} onPress={onRemove}>
 				<Icon
@@ -85,7 +88,7 @@ const MemberList: React.FC<{
 				contentContainerStyle={[padding.left.medium]}
 			>
 				{members.map((member: any) => (
-					<MemberItem member={member} onRemove={() => onRemoveMember(member.id)} />
+					<MemberItem member={member} onRemove={() => onRemoveMember(member.publicKey)} />
 				))}
 			</ScrollView>
 		</View>
@@ -217,9 +220,26 @@ export const CreateGroupFinalize: React.FC<{
 }> = ({ members, onRemoveMember }) => {
 	const navigation = useNavigation()
 	const [groupName, setGroupName] = useState('New group')
-	const createGroup = Messenger.useConversationCreate({ name: groupName, members })
+	//const createGroup = Messenger.useConversationCreate({ name: groupName, members })
+	const { refresh, error, done } = messengerMethodsHooks.useConversationCreate()
+	const createGroup = React.useCallback(() => refresh({ displayName: groupName, members }), [
+		groupName,
+		members,
+		refresh,
+	])
 	const [layout, setLayout] = useState<number>(0)
 	const [{ flex, background, padding }] = useStyles()
+
+	React.useEffect(() => {
+		// TODO: better handle error
+		if (done) {
+			if (error) {
+				console.error('Failed to create group:', error)
+			} else {
+				navigation.navigate.main.home()
+			}
+		}
+	}, [done, error, navigation.navigate.main])
 
 	return (
 		<Layout style={[flex.medium]}>
@@ -244,7 +264,6 @@ export const CreateGroupFinalize: React.FC<{
 				title='CREATE A GROUP'
 				action={() => {
 					createGroup()
-					navigation.navigate.main.home()
 				}}
 			/>
 		</Layout>

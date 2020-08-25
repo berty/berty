@@ -41,13 +41,13 @@ const CreateGroupStack = createNativeStackNavigator()
 export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => {
 	const [members, setMembers] = useState([] as any[])
 	const setMember = (contact: any) => {
-		if (members.find((member) => member.id === contact.publicKey)) {
+		if (members.find((member) => member.publicKey === contact.publicKey)) {
 			return
 		}
 		setMembers([...members, contact])
 	}
 	const removeMember = (id: string) => {
-		const filtered = members.filter((member) => member.id !== id)
+		const filtered = members.filter((member) => member.publicKey !== id)
 		if (filtered.length !== members.length) {
 			setMembers(filtered)
 		}
