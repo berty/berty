@@ -24,7 +24,7 @@ ext_ldflags = -ldflags="-X berty.tech/berty/go/pkg/bertymessenger.VcsRef=$(VCS_R
 pkg := $(dir $(wildcard $(PWD)/packages/*/package.json))
 pkg_mod := $(patsubst %, %/node_modules, $(pkg)) node_modules
 pkg_desc := $(patsubst %, %/package.json, $(pkg)) package.json
-bridge_src := $(shell find ../go -name '*.go') ../go.sum
+bridge_src := $(call rwildcard,../go,*.go) ../go.sum
 react-native := $(abspath node_modules/.bin/react-native)
 clisim := packages/berty-app/node_modules/.bin/clisim
 
