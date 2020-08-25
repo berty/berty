@@ -635,7 +635,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 	}
 
 	for _, contactPK := range req.GetContactsToInvite() {
-		am, err := AppMessageType_GroupInvitation.MarshalPayload(&AppMessage_GroupInvitation{Link: conv.GetLink()})
+		am, err := AppMessage_TypeGroupInvitation.MarshalPayload(&AppMessage_GroupInvitation{Link: conv.GetLink()})
 		if err != nil {
 			return nil, err
 		}
@@ -866,7 +866,10 @@ func (svc *service) Interact(ctx context.Context, req *Interact_Request) (*Inter
 		if err := proto.Unmarshal(req.GetPayload(), &p); err != nil {
 			return nil, err
 		}
-		fp, err := proto.Marshal(&AppMessage{Type: req.GetType(), Payload: req.GetPayload()})
+		if p.SentDate == 0 {
+			p.SentDate = jsNow()
+		}
+		fp, err := AppMessage_TypeUserMessage.MarshalPayload(&p)
 		if err != nil {
 			return nil, err
 		}

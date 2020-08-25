@@ -391,14 +391,19 @@ func Test1To1Exchange(t *testing.T) {
 func testMessage(ctx context.Context, t *testing.T, l *zap.Logger, msg string, gpk string, sender MessengerServiceClient, senderStream MessengerService_EventStreamClient, receiverStream MessengerService_EventStreamClient) {
 	t.Helper()
 
+	beforeSend := jsNow()
+
 	um, err := proto.Marshal(&AppMessage_UserMessage{Body: msg})
 	require.NoError(t, err)
 	ir := Interact_Request{Type: AppMessage_TypeUserMessage, Payload: um, ConversationPublicKey: gpk}
 	_, err = sender.Interact(ctx, &ir)
 	require.NoError(t, err)
 
+	afterSend := jsNow()
+
 	var cid string
 	var gotMsg, gotAck bool
+	var sentDate int64
 	for !(gotAck && gotMsg) {
 		esr, err := receiverStream.Recv()
 		require.NotEqual(t, err, io.EOF, "EOF while waiting for msg or ack in receiver node (gotMsg: %t, gotAck: %t)", gotMsg, gotAck)
@@ -419,6 +424,9 @@ func testMessage(ctx context.Context, t *testing.T, l *zap.Logger, msg string, g
 				if um.GetBody() == msg {
 					require.False(t, gotAck)
 					require.False(t, inte.GetIsMe())
+					sentDate = um.GetSentDate()
+					require.LessOrEqual(t, beforeSend, sentDate)
+					require.GreaterOrEqual(t, afterSend, sentDate)
 					cid = inte.GetCid()
 					gotMsg = true
 				}
@@ -459,6 +467,7 @@ func testMessage(ctx context.Context, t *testing.T, l *zap.Logger, msg string, g
 					require.False(t, gotAck)
 					require.Equal(t, msg, um.GetBody())
 					require.True(t, inte.GetIsMe())
+					require.Equal(t, sentDate, um.GetSentDate())
 					gotMsg = true
 				}
 			} else if inte.GetType() == AppMessage_TypeAcknowledge && inte.GetConversationPublicKey() == gpk {
@@ -577,13 +586,18 @@ func Test3PeersExchange(t *testing.T) {
 }
 
 func testMultiMessage(ctx context.Context, t *testing.T, l *zap.Logger, msg string, gpk string, sender MessengerServiceClient, senderStream MessengerService_EventStreamClient, receivers []MessengerService_EventStreamClient) {
+	beforeSend := jsNow()
+
 	um, err := proto.Marshal(&AppMessage_UserMessage{Body: msg})
 	require.NoError(t, err)
 	ir := Interact_Request{Type: AppMessage_TypeUserMessage, Payload: um, ConversationPublicKey: gpk}
 	_, err = sender.Interact(ctx, &ir)
 	require.NoError(t, err)
 
+	afterSend := jsNow()
+
 	var cid string
+	var sentDate int64
 	var gotMsg, gotAck bool
 	for !(gotAck && gotMsg) {
 		esr, err := senderStream.Recv()
@@ -610,6 +624,9 @@ func testMultiMessage(ctx context.Context, t *testing.T, l *zap.Logger, msg stri
 					require.False(t, gotAck)
 					require.Equal(t, msg, um.GetBody())
 					require.True(t, inte.GetIsMe())
+					sentDate = um.GetSentDate()
+					require.LessOrEqual(t, beforeSend, sentDate)
+					require.GreaterOrEqual(t, afterSend, sentDate)
 					cid = inte.GetCid()
 					require.NotEmpty(t, cid)
 					gotMsg = true
@@ -660,6 +677,7 @@ func testMultiMessage(ctx context.Context, t *testing.T, l *zap.Logger, msg stri
 						//require.False(t, gotAck) // Maybe FIXME otherwise we have to keep an ack backlog
 						require.False(t, inte.GetIsMe())
 						require.Equal(t, msg, um.GetBody())
+						require.Equal(t, sentDate, um.GetSentDate())
 						gotMsg = true
 					}
 				} else if inte.GetType() == AppMessage_TypeAcknowledge && inte.GetConversationPublicKey() == gpk {
@@ -923,7 +941,7 @@ func TestConversationInvitation2Contacts(t *testing.T) {
 	}
 
 	// FIXME: really wait for everyone to know everyone (via MemberUpdated)
-	time.Sleep(time.Second * 20)
+	// time.Sleep(time.Second * 20)
 
 	// TODO: check that members names are propagated
 
