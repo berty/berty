@@ -1,12 +1,3 @@
-import { Messenger } from '@berty-tech/store/oldhooks'
-import {
-	useFirstConversationWithContact,
-	useGetMessage,
-} from '@berty-tech/store/oldhooks/Messenger'
-import { Routes, useNavigation } from '@berty-tech/navigation'
-
-import { useStyles } from '@berty-tech/styles'
-import { CommonActions } from '@react-navigation/core'
 import dayjs from 'dayjs'
 import { noop } from 'lodash'
 import React, { useMemo, useState } from 'react'
@@ -20,7 +11,19 @@ import {
 } from 'react-native'
 import { EdgeInsets, SafeAreaConsumer } from 'react-native-safe-area-context'
 import { Icon, Layout, Text } from 'react-native-ui-kitten'
-import { ConversationProceduralAvatar } from '../shared-components'
+import { CommonActions } from '@react-navigation/native'
+
+import { Routes, useNavigation } from '@berty-tech/navigation'
+import { useStyles } from '@berty-tech/styles'
+import {
+	useAccountContactSearchResults,
+	useFirstConversationWithContact,
+	useGetMessage,
+	useMsgrContext,
+} from '@berty-tech/store/hooks'
+import { messenger as messengerpb } from '@berty-tech/api/index.js'
+
+import { ProceduralAvatar } from '../shared-components'
 
 // Styles
 
@@ -219,20 +222,23 @@ const useSearchItemDataFromContact = (
 	messageListIndex: number
 	receivedDate: number
 } => {
-	const { name = '', publicKey = '' } = data
+	const ctx = useMsgrContext()
+	const { displayName = '', publicKey = '' } = data
 	const conversation = useFirstConversationWithContact(publicKey)
+	const interactions = Object.values(ctx.interactions[conversation?.publicKey] || {})
 	const lastMessage = useGetMessage(
-		conversation ? conversation.messages[conversation?.messages.length - 1] : '',
+		conversation ? interactions[interactions.length - 1] : '',
+		conversation?.publicKey,
 	)
-	const { receivedDate = 0 } = lastMessage || {}
+	const { receivedDate = Date.now() } = lastMessage || {}
 
 	return {
-		name,
+		name: displayName,
 		messageListIndex: conversation ? conversation.messages.length - 1 : 0,
-		convId: conversation ? conversation.id : '',
+		convId: conversation ? conversation.publicKey : '',
 		message:
-			lastMessage && lastMessage.type === messenger.AppMessageType.UserMessage
-				? lastMessage.body
+			lastMessage && lastMessage.type === messengerpb.AppMessage.Type.TypeUserMessage
+				? lastMessage.payload.body
 				: '',
 		receivedDate,
 	}
@@ -288,9 +294,8 @@ const useSomeSearchItem = (key: SearchItemProps['searchTextKey']) =>
 const SearchResultItem: React.FC<SearchItemProps> = ({ data, searchTextKey, searchText = '' }) => {
 	const [{ color, row, padding, flex, column, text, margin, border }] = useStyles()
 	const { plainMessageText } = useStylesSearch()
-	const { name, message, convId, messageListIndex, receivedDate } = useSomeSearchItem(
-		searchTextKey,
-	)(data)
+	const { name, message, messageListIndex, receivedDate } = useSomeSearchItem(searchTextKey)(data)
+	const convId = data.conversationPublicKey || data.publicKey
 	const [noConversation, noMessages] = useMemo(() => [!convId, messageListIndex < 0], [
 		convId,
 		messageListIndex,
@@ -335,8 +340,8 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, searchTextKey, sear
 			}
 		>
 			<View style={[row.center, padding.medium, border.bottom.tiny, border.color.light.grey]}>
-				<ConversationProceduralAvatar
-					conversationId={convId}
+				<ProceduralAvatar
+					seeds={[data.publicKey]}
 					size={_resultAvatarSize}
 					diffSize={9}
 					style={[padding.tiny, row.item.justify]}
@@ -387,8 +392,8 @@ const SearchComponent: React.FC<{
 }> = ({ insets }) => {
 	const validInsets = useMemo(() => insets || { top: 0, bottom: 0, left: 0, right: 0 }, [insets])
 	const [searchText, setSearchText] = useState(initialSearchText)
-	const contacts = [] /*Messenger.useAccountContactSearchResults(searchText)*/
-	const messages = [] /*Messenger.useGetMessageSearchResultWithMetadata(searchText)*/
+	const contacts = useAccountContactSearchResults(searchText)
+	const messages = [] // useGetMessageSearchResultWithMetadata(searchText)
 	const [{ padding, margin, background, text, flex, border, height }] = useStyles()
 	const sections = useMemo(() => createSections(contacts, messages, searchText), [
 		messages,
