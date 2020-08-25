@@ -1,7 +1,6 @@
 import React from 'react'
 import { View, ScrollView, Vibration } from 'react-native'
 import { Layout } from 'react-native-ui-kitten'
-import { useSelector } from 'react-redux'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
@@ -11,6 +10,8 @@ import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
 import { Service, EOF } from '@berty-tech/grpc-bridge'
 import GoBridge from '@berty-tech/go-bridge'
+import messengerMethodsHooks from '@berty-tech/store/methods'
+import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
 
 //
 // DevTools
@@ -136,20 +137,34 @@ const NativeCallButton: React.FC = () => {
 }
 
 const DiscordShareButton: React.FC = () => {
-	//const devShareInstanceBertyID = Messenger.useDevShareInstanceBertyID()
-	const { goBack } = useNavigation()
+	const { navigate, goBack } = useNavigation()
+	const account = useAccount()
+	const { refresh, done, error } = messengerMethodsHooks.useDevShareInstanceBertyID()
 	const [{ color }] = useStyles()
+
+	React.useEffect(() => {
+		if (done) {
+			Vibration.vibrate(500)
+			if (error) {
+				navigate.settings.devText({
+					text: error.toString(),
+				})
+			} else {
+				goBack()
+			}
+		}
+	}, [done, error, goBack, navigate.settings])
+
 	return (
 		<ButtonSetting
 			name='Share ID on discord'
 			icon='activity-outline'
 			iconSize={30}
 			iconColor={color.dark.grey}
-			disabled
 			onPress={() => {
-				/*devShareInstanceBertyID()
-				Vibration.vibrate(500)
-				goBack()*/
+				refresh({
+					displayName: account.displayName,
+				})
 			}}
 		/>
 	)
@@ -169,28 +184,22 @@ const DumpButton: React.FC<{ text: string; name: string }> = ({ text, name }) =>
 	)
 }
 
-const DumpContactStore: React.FC = () => {
-	const text =
-		'' /*useSelector((state: messenger.contact.GlobalState) =>
-		JSON.stringify(state.messenger.contact, null, 2),
-	)*/
-	return <DumpButton name='Dump contact store' text={text} />
+const DumpAccount: React.FC = () => {
+	const acc = useAccount()
+	const text = JSON.stringify(acc, null, 2)
+	return <DumpButton name='Dump account' text={text} />
 }
 
-const DumpConversationStore: React.FC = () => {
-	const conversationStoreText =
-		'' /*useSelector((state: messenger.conversation.GlobalState) =>
-		JSON.stringify(state.messenger.conversation, null, 2),
-	)*/
-	return <DumpButton name='Dump conversation store' text={conversationStoreText} />
+const DumpContacts: React.FC = () => {
+	const ctx = useMsgrContext()
+	const text = JSON.stringify(ctx.contacts, null, 2)
+	return <DumpButton name='Dump contacts' text={text} />
 }
 
-const DumpGroupsStore: React.FC = () => {
-	const conversationStoreText =
-		'' /*useSelector((state: groups.GlobalState) =>
-		JSON.stringify(state.groups, null, 2),
-	)*/
-	return <DumpButton name='Dump groups store' text={conversationStoreText} />
+const DumpConversations: React.FC = () => {
+	const ctx = useMsgrContext()
+	const text = JSON.stringify(ctx.conversations, null, 2)
+	return <DumpButton name='Dump conversations' text={text} />
 }
 
 const BodyDevTools: React.FC<{}> = () => {
@@ -210,9 +219,9 @@ const BodyDevTools: React.FC<{}> = () => {
 			<TracingButton />
 			<DiscordShareButton />
 			<NativeCallButton />
-			<DumpContactStore />
-			<DumpConversationStore />
-			<DumpGroupsStore />
+			<DumpAccount />
+			<DumpContacts />
+			<DumpConversations />
 			<ButtonSetting
 				name={'Stop node'}
 				icon='activity-outline'
