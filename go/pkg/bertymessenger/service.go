@@ -2,13 +2,14 @@ package bertymessenger
 
 import (
 	"context"
-
 	"errors"
 	"time"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+
+	"github.com/golang/protobuf/proto" // nolint:staticcheck: not sure how to use the new protobuf api to unmarshal
 	"go.uber.org/zap"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -96,22 +97,18 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 
 	// subscribe to groups metadata
 	{
-		// TODO: subscribe to multimember and OutgoingRequest contacts
-
-		var contacts []Contact
-		err := svc.db.Find(&contacts).Error
+		var convs []Conversation
+		err := svc.db.Find(&convs).Error
 		if err != nil {
 			return nil, err
 		}
-		for _, c := range contacts {
-			if c.State != Contact_Established {
-				continue
-			}
-			pkb, err := stringToBytes(c.GetPublicKey())
+		for _, cv := range convs {
+			gpk := cv.GetPublicKey()
+			gpkb, err := stringToBytes(gpk)
 			if err != nil {
 				return nil, err
 			}
-			s, err := svc.protocolClient.GroupMetadataSubscribe(svc.ctx, &bertytypes.GroupMetadataSubscribe_Request{GroupPK: pkb})
+			s, err := svc.protocolClient.GroupMetadataSubscribe(svc.ctx, &bertytypes.GroupMetadataSubscribe_Request{GroupPK: gpkb})
 			if err != nil {
 				return nil, err
 			}
@@ -120,6 +117,63 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 					gme, err := s.Recv()
 					if err != nil {
 						svc.logStreamingError("group metadata", err)
+						return
+					}
+					err = handleProtocolEvent(&svc, gme)
+					if err != nil {
+						svc.logger.Error("failed to handle protocol event", zap.Error(errcode.ErrInternal.Wrap(err)))
+					}
+				}
+			}()
+
+			ms, err := svc.protocolClient.GroupMessageSubscribe(svc.ctx, &bertytypes.GroupMessageSubscribe_Request{GroupPK: gpkb})
+			if err != nil {
+				return nil, err
+			}
+			go func() {
+				for {
+					gme, err := ms.Recv()
+					if err != nil {
+						svc.logStreamingError("group message", err)
+						return
+					}
+
+					var am AppMessage
+					if err := proto.Unmarshal(gme.GetMessage(), &am); err != nil {
+						svc.logger.Warn("failed to unmarshal AppMessage", zap.Error(err))
+						return
+					}
+					err = handleAppMessage(&svc, gpk, gme, &am)
+					if err != nil {
+						svc.logger.Error("failed to handle app message", zap.Error(errcode.ErrInternal.Wrap(err)))
+					}
+				}
+			}()
+		}
+
+		var contacts []Contact
+		err = svc.db.Find(&contacts).Error
+		if err != nil {
+			return nil, err
+		}
+		for _, c := range contacts {
+			if c.State != Contact_OutgoingRequestSent {
+				continue
+			}
+			gpk := c.GetConversationPublicKey()
+			gpkb, err := stringToBytes(gpk)
+			if err != nil {
+				return nil, err
+			}
+			s, err := svc.protocolClient.GroupMetadataSubscribe(svc.ctx, &bertytypes.GroupMetadataSubscribe_Request{GroupPK: gpkb})
+			if err != nil {
+				return nil, err
+			}
+			go func() {
+				for {
+					gme, err := s.Recv()
+					if err != nil {
+						svc.logStreamingError("contact group metadata", err)
 						return
 					}
 					err = handleProtocolEvent(&svc, gme)
