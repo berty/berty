@@ -69,33 +69,17 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 		case err == nil && pkStr != acc.GetPublicKey(): // Check that we are connected to the correct node
 			// FIXME: use errcode
 			return nil, errors.New("messenger's account key does not match protocol's account key")
-		default: // account exists, and public keys matche
+		default: // account exists, and public keys match
 			// noop
 		}
 	}
 
 	// Subscribe to account group metadata
-	{
-		s, err := client.GroupMetadataSubscribe(ctx, &bertytypes.GroupMetadataSubscribe_Request{GroupPK: icr.GetAccountGroupPK()})
-		if err != nil {
-			return nil, err
-		}
-		go func() {
-			for {
-				gme, err := s.Recv()
-				if err != nil {
-					svc.logStreamingError("account group", err)
-					return
-				}
-				err = handleProtocolEvent(&svc, gme)
-				if err != nil {
-					svc.logger.Error("failed to handle protocol event", zap.Error(errcode.ErrInternal.Wrap(err)))
-				}
-			}
-		}()
+	if err := svc.subscribeToMetadata(ctx, icr.GetAccountGroupPK()); err != nil {
+		return nil, err
 	}
 
-	// subscribe to groups metadata
+	// subscribe to groups
 	{
 		var convs []Conversation
 		err := svc.db.Find(&convs).Error
@@ -108,23 +92,10 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 			if err != nil {
 				return nil, err
 			}
-			s, err := svc.protocolClient.GroupMetadataSubscribe(svc.ctx, &bertytypes.GroupMetadataSubscribe_Request{GroupPK: gpkb})
-			if err != nil {
+
+			if err := svc.subscribeToMetadata(ctx, gpkb); err != nil {
 				return nil, err
 			}
-			go func() {
-				for {
-					gme, err := s.Recv()
-					if err != nil {
-						svc.logStreamingError("group metadata", err)
-						return
-					}
-					err = handleProtocolEvent(&svc, gme)
-					if err != nil {
-						svc.logger.Error("failed to handle protocol event", zap.Error(errcode.ErrInternal.Wrap(err)))
-					}
-				}
-			}()
 
 			ms, err := svc.protocolClient.GroupMessageSubscribe(svc.ctx, &bertytypes.GroupMessageSubscribe_Request{GroupPK: gpkb})
 			if err != nil {
@@ -150,9 +121,12 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 				}
 			}()
 		}
+	}
 
+	// subscribe to group metadata for contacts in outgoing request sent state
+	{
 		var contacts []Contact
-		err = svc.db.Find(&contacts).Error
+		err := svc.db.Find(&contacts).Error
 		if err != nil {
 			return nil, err
 		}
@@ -165,33 +139,41 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 			if err != nil {
 				return nil, err
 			}
-			s, err := svc.protocolClient.GroupMetadataSubscribe(svc.ctx, &bertytypes.GroupMetadataSubscribe_Request{GroupPK: gpkb})
-			if err != nil {
+
+			if err := svc.subscribeToMetadata(ctx, gpkb); err != nil {
 				return nil, err
 			}
-			go func() {
-				for {
-					gme, err := s.Recv()
-					if err != nil {
-						svc.logStreamingError("contact group metadata", err)
-						return
-					}
-					err = handleProtocolEvent(&svc, gme)
-					if err != nil {
-						svc.logger.Error("failed to handle protocol event", zap.Error(errcode.ErrInternal.Wrap(err)))
-					}
-				}
-			}()
 		}
 	}
 
 	return &svc, nil
 }
 
-func (s *service) Close() {
-	s.logger.Info("closing service")
-	s.cancelFn()
-	s.optsCleanup()
+func (svc *service) subscribeToMetadata(ctx context.Context, gpkb []byte) error {
+	s, err := svc.protocolClient.GroupMetadataSubscribe(ctx, &bertytypes.GroupMetadataSubscribe_Request{GroupPK: gpkb})
+	if err != nil {
+		return err
+	}
+	go func() {
+		for {
+			gme, err := s.Recv()
+			if err != nil {
+				svc.logStreamingError("group metadata", err)
+				return
+			}
+			err = handleProtocolEvent(svc, gme)
+			if err != nil {
+				svc.logger.Error("failed to handle protocol event", zap.Error(errcode.ErrInternal.Wrap(err)))
+			}
+		}
+	}()
+	return nil
+}
+
+func (svc *service) Close() {
+	svc.logger.Info("closing service")
+	svc.cancelFn()
+	svc.optsCleanup()
 }
 
 type Opts struct {
