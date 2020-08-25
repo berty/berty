@@ -2,13 +2,14 @@ package bertymessenger
 
 import (
 	"context"
-
 	"errors"
 	"time"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+
+	"github.com/golang/protobuf/proto" // nolint:staticcheck: not sure how to use the new protobuf api to unmarshal
 	"go.uber.org/zap"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -68,76 +69,111 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 		case err == nil && pkStr != acc.GetPublicKey(): // Check that we are connected to the correct node
 			// FIXME: use errcode
 			return nil, errors.New("messenger's account key does not match protocol's account key")
-		default: // account exists, and public keys matche
+		default: // account exists, and public keys match
 			// noop
 		}
 	}
 
 	// Subscribe to account group metadata
-	{
-		s, err := client.GroupMetadataSubscribe(ctx, &bertytypes.GroupMetadataSubscribe_Request{GroupPK: icr.GetAccountGroupPK()})
-		if err != nil {
-			return nil, err
-		}
-		go func() {
-			for {
-				gme, err := s.Recv()
-				if err != nil {
-					svc.logStreamingError("account group", err)
-					return
-				}
-				err = handleProtocolEvent(&svc, gme)
-				if err != nil {
-					svc.logger.Error("failed to handle protocol event", zap.Error(errcode.ErrInternal.Wrap(err)))
-				}
-			}
-		}()
+	if err := svc.subscribeToMetadata(ctx, icr.GetAccountGroupPK()); err != nil {
+		return nil, err
 	}
 
-	// subscribe to groups metadata
+	// subscribe to groups
 	{
-		// TODO: subscribe to multimember and OutgoingRequest contacts
-
-		var contacts []Contact
-		err := svc.db.Find(&contacts).Error
+		var convs []Conversation
+		err := svc.db.Find(&convs).Error
 		if err != nil {
 			return nil, err
 		}
-		for _, c := range contacts {
-			if c.State != Contact_Established {
-				continue
-			}
-			pkb, err := stringToBytes(c.GetPublicKey())
+		for _, cv := range convs {
+			gpk := cv.GetPublicKey()
+			gpkb, err := stringToBytes(gpk)
 			if err != nil {
 				return nil, err
 			}
-			s, err := svc.protocolClient.GroupMetadataSubscribe(svc.ctx, &bertytypes.GroupMetadataSubscribe_Request{GroupPK: pkb})
+
+			if err := svc.subscribeToMetadata(ctx, gpkb); err != nil {
+				return nil, err
+			}
+
+			ms, err := svc.protocolClient.GroupMessageSubscribe(svc.ctx, &bertytypes.GroupMessageSubscribe_Request{GroupPK: gpkb})
 			if err != nil {
 				return nil, err
 			}
 			go func() {
 				for {
-					gme, err := s.Recv()
+					gme, err := ms.Recv()
 					if err != nil {
-						svc.logStreamingError("group metadata", err)
+						svc.logStreamingError("group message", err)
 						return
 					}
-					err = handleProtocolEvent(&svc, gme)
+
+					var am AppMessage
+					if err := proto.Unmarshal(gme.GetMessage(), &am); err != nil {
+						svc.logger.Warn("failed to unmarshal AppMessage", zap.Error(err))
+						return
+					}
+					err = handleAppMessage(&svc, gpk, gme, &am)
 					if err != nil {
-						svc.logger.Error("failed to handle protocol event", zap.Error(errcode.ErrInternal.Wrap(err)))
+						svc.logger.Error("failed to handle app message", zap.Error(errcode.ErrInternal.Wrap(err)))
 					}
 				}
 			}()
 		}
 	}
 
+	// subscribe to group metadata for contacts in outgoing request sent state
+	{
+		var contacts []Contact
+		err := svc.db.Find(&contacts).Error
+		if err != nil {
+			return nil, err
+		}
+		for _, c := range contacts {
+			if c.State != Contact_OutgoingRequestSent {
+				continue
+			}
+			gpk := c.GetConversationPublicKey()
+			gpkb, err := stringToBytes(gpk)
+			if err != nil {
+				return nil, err
+			}
+
+			if err := svc.subscribeToMetadata(ctx, gpkb); err != nil {
+				return nil, err
+			}
+		}
+	}
+
 	return &svc, nil
 }
 
-func (s *service) Close() {
-	s.logger.Info("closing service")
-	s.cancelFn()
-	s.optsCleanup()
+func (svc *service) subscribeToMetadata(ctx context.Context, gpkb []byte) error {
+	s, err := svc.protocolClient.GroupMetadataSubscribe(ctx, &bertytypes.GroupMetadataSubscribe_Request{GroupPK: gpkb})
+	if err != nil {
+		return err
+	}
+	go func() {
+		for {
+			gme, err := s.Recv()
+			if err != nil {
+				svc.logStreamingError("group metadata", err)
+				return
+			}
+			err = handleProtocolEvent(svc, gme)
+			if err != nil {
+				svc.logger.Error("failed to handle protocol event", zap.Error(errcode.ErrInternal.Wrap(err)))
+			}
+		}
+	}()
+	return nil
+}
+
+func (svc *service) Close() {
+	svc.logger.Info("closing service")
+	svc.cancelFn()
+	svc.optsCleanup()
 }
 
 type Opts struct {

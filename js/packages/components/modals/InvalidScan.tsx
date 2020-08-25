@@ -87,14 +87,12 @@ const InvalidScanDismissButton: React.FC<{}> = () => {
 	const _styles = useStylesInvalidScan()
 	const [{ row, margin, color, padding, text }] = useStyles()
 	const navigation = useNavigation()
-	const resetDraft = Messenger.useResetDraft()
 
 	return (
 		<View style={row.center}>
 			<TouchableOpacity
 				style={[row.fill, margin.bottom.medium, _styles.dismissButton]}
 				onPress={() => {
-					resetDraft()
 					try {
 						navigation.goBack()
 					} catch (e) {

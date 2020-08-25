@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useMemo } from 'react'
 import { MsgrContext, useMsgrContext } from './context'
 import flatten from 'lodash/flatten'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
@@ -112,4 +112,30 @@ export const useFirstConversationWithContact = (contactPk) => {
 export const useAccount = () => {
 	const ctx = useMsgrContext()
 	return ctx.account
+}
+
+export const useContacts = () => {
+	const ctx = useMsgrContext()
+	return ctx.contacts
+}
+
+const ContactState = messengerpb.Contact.State
+
+export const useIncomingContactRequests = () => {
+	const contacts = useContacts()
+	return useMemo(
+		() => Object.values(contacts).filter((c) => c.state === ContactState.IncomingRequest),
+		[contacts],
+	)
+}
+
+export const useOutgoingContactRequests = () => {
+	const contacts = useContacts()
+	return useMemo(
+		() =>
+			Object.values(contacts).filter((c) =>
+				[ContactState.OutgoingRequestEnqueued, ContactState.OutgoingRequestSent].includes(c.state),
+			),
+		[contacts],
+	)
 }

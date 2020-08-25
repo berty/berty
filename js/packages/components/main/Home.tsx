@@ -17,6 +17,7 @@ import {
 import { Messenger } from '@berty-tech/store/oldhooks'
 import { ScreenProps, useNavigation, Routes } from '@berty-tech/navigation'
 import { CommonActions } from '@react-navigation/core'
+import { useIncomingContactRequests } from '@berty-tech/store/hooks'
 
 import { Icon, Text } from 'react-native-ui-kitten'
 import { SafeAreaView, SafeAreaConsumer } from 'react-native-safe-area-context'
@@ -24,15 +25,11 @@ import FromNow from '../shared-components/FromNow'
 import Logo from './1_berty_picto.svg'
 import EmptyChat from './empty_chat.svg'
 import moment from 'moment'
+import messengerMethodsHooks from '@berty-tech/store/methods'
 
 //
 // Main List
 //
-
-type RequestsProps = ViewProps & {
-	items: Array<any>
-	isShow: boolean
-}
 
 type ConversationsProps = ViewProps & {
 	items: Array<any>
@@ -42,16 +39,12 @@ type ConversationsItemProps = any
 
 // Functions
 
-const RequestsItem: React.FC<{
-	id: string
-	name: string
-	publicKey: string
-	display: (params: { contactId: string }) => void
-	accept: (kwargs: { id: string }) => void
-	decline: (kwargs: { id: string }) => void
-	addedDate: number
-}> = (props) => {
-	const { id, name, display, decline, accept, publicKey, addedDate } = props
+const ContactRequest: React.FC<any> = ({ displayName, publicKey, addedDate }) => {
+	const { refresh: accept } = messengerMethodsHooks.useContactAccept()
+	const decline = () => {} // Messenger.useDiscardContactRequest()
+	const { navigate } = useNavigation()
+	const display = navigate.main.contactRequest
+	const id = publicKey
 	const [
 		{ border, padding, margin, width, height, column, row, background, absolute, text },
 	] = useStyles()
@@ -80,7 +73,7 @@ const RequestsItem: React.FC<{
 						diffSize={20}
 					/>
 					<Text style={[text.align.center, text.color.black, text.size.medium]} numberOfLines={2}>
-						{name}
+						{displayName}
 					</Text>
 					<Text
 						style={[
@@ -123,7 +116,7 @@ const RequestsItem: React.FC<{
 								margin.left.tiny,
 							]}
 							onPress={() => {
-								accept({ id })
+								accept({ publicKey })
 							}}
 						>
 							<Text style={[text.size.tiny, text.color.blue, row.item.justify, padding.small]}>
@@ -137,27 +130,10 @@ const RequestsItem: React.FC<{
 	)
 }
 
-const ContactRequestsItem: React.FC<any> = ({ id, name, publicKey, addedDate }) => {
-	const accept = () => {} // Messenger.useAcceptContactRequest()
-	const decline = () => {} // Messenger.useDiscardContactRequest()
-	const { navigate } = useNavigation()
-	return (
-		<RequestsItem
-			id={id}
-			name={name}
-			publicKey={publicKey}
-			display={navigate.main.contactRequest}
-			accept={accept}
-			decline={decline}
-			addedDate={addedDate}
-		/>
-	)
-}
-
-const Requests: React.FC<RequestsProps> = ({ items, style, onLayout, isShow }) => {
+const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
 	const [{ padding, text, background }] = useStyles()
-	return items?.length && isShow ? (
-		<SafeAreaView onLayout={onLayout} style={[style, background.blue]}>
+	return items?.length ? (
+		<SafeAreaView onLayout={onLayout} style={[background.blue]}>
 			<View style={[padding.top.medium]}>
 				<Text style={[text.color.white, text.size.huge, text.bold.medium, padding.medium]}>
 					Requests
@@ -167,8 +143,8 @@ const Requests: React.FC<RequestsProps> = ({ items, style, onLayout, isShow }) =
 					style={[padding.bottom.medium]}
 					showsHorizontalScrollIndicator={false}
 				>
-					{items.map((_) => {
-						return <ContactRequestsItem {..._} />
+					{items.map((c: any) => {
+						return <ContactRequest key={c.publicKey} {...c} />
 					})}
 				</ScrollView>
 			</View>
@@ -405,9 +381,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const [layoutConversations, onLayoutConversations] = useLayout()
 	const [layoutHeader, onLayoutHeader] = useLayout()
 
-	const requests: any[] = [] /* Messenger.useAccountContactsWithIncomingRequests().filter(
-		(contact) => !(contact.request.accepted || contact.request.discarded),
-	)*/
+	const requests: any[] = useIncomingContactRequests()
 	const conversations: any[] = [] /*Messenger.useConversationList().sort(
 		(a, b) => new Date(b.lastMessageDate).getTime() - new Date(a.lastMessageDate).getTime(),
 	)*/
@@ -452,7 +426,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 					}
 				}}
 			>
-				<Requests items={requests} onLayout={onLayoutRequests} isShow={true} />
+				<IncomingRequests items={requests} onLayout={onLayoutRequests} />
 				<HomeHeader
 					isOnTop={isOnTop}
 					onLayout={onLayoutHeader}

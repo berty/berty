@@ -2,11 +2,12 @@ import React, { useState } from 'react'
 import { View, TouchableOpacity } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useNavigation } from '@react-navigation/native'
-import { Messenger } from '@berty-tech/store/oldhooks'
 import { useStyles } from '@berty-tech/styles'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
+import InvalidScan from './InvalidScan'
+import messengerMethodsHooks from '@berty-tech/store/methods'
 
 const useStylesModal = () => {
 	const [{ width, border, height, opacity }] = useStyles()
@@ -37,15 +38,39 @@ const SelectedContent = ({ contentName, pubKey }: { contentName: string; pubKey:
 	}
 }
 
-const AddThisContact: React.FC<{ requestDraft: messenger.contact.ValidRequestDraft }> = ({
-	requestDraft,
-}) => {
+const AddThisContact: React.FC<{
+	displayName: string
+	publicKey: string
+	link: string
+	type: string
+}> = ({ displayName, publicKey, link, type }) => {
 	const [{ row, text, column, color, flex, absolute, padding, background, border }] = useStyles()
 	const navigation = useNavigation()
-	const sendContactRequest = Messenger.useAccountSendContactRequest()
-	const resetDraft = Messenger.useResetDraft()
+	const { refresh: requestContact, error, done } = messengerMethodsHooks.useContactRequest()
 	const [selectedContent, setSelectedContent] = useState('Fingerprint')
 	const _styles = useStylesModal()
+
+	// TODO: handle error (shouldn't happen since we checked the link previously, but still)
+
+	React.useEffect(() => {
+		if (done && !error) {
+			navigation.goBack()
+			navigation.navigate('Main.HomeModal')
+		}
+	}, [done, error, navigation])
+
+	if (error) {
+		let title
+		if (type === 'link') {
+			title = 'Invalid link!'
+		} else if (type === 'qr') {
+			title = 'Invalid QR code!'
+		} else {
+			title = 'Error!'
+		}
+		return <InvalidScan title={title} error={error.toString()} />
+	}
+
 	return (
 		<View
 			style={[{ justifyContent: 'center', alignItems: 'center', height: '100%' }, padding.medium]}
@@ -61,13 +86,13 @@ const AddThisContact: React.FC<{ requestDraft: messenger.contact.ValidRequestDra
 			>
 				<View style={[absolute.scale({ top: -50 }), row.item.justify]}>
 					<ProceduralCircleAvatar
-						seed={requestDraft.contactPublicKey}
+						seed={publicKey}
 						style={[border.shadow.big, row.center]}
 						diffSize={30}
 					/>
 				</View>
 				<View style={[padding.top.scale(55)]}>
-					<Text style={{ textAlign: 'center' }}>{requestDraft.contactName}</Text>
+					<Text style={{ textAlign: 'center' }}>{displayName}</Text>
 					<TabBar
 						tabs={[
 							{ name: 'Fingerprint', icon: 'fingerprint', iconPack: 'custom' } as any, // TODO: fix typing
@@ -84,21 +109,13 @@ const AddThisContact: React.FC<{ requestDraft: messenger.contact.ValidRequestDra
 						onTabChange={setSelectedContent}
 					/>
 					<BodyAddThisContactContent>
-						<SelectedContent contentName={selectedContent} pubKey={requestDraft.contactPublicKey} />
+						<SelectedContent contentName={selectedContent} pubKey={publicKey} />
 					</BodyAddThisContactContent>
 				</View>
 				<View style={[padding.top.big, row.fill, padding.medium]}>
 					<TouchableOpacity
 						onPress={() => {
-							sendContactRequest(
-								requestDraft.contactName,
-								requestDraft.contactRdvSeed,
-								requestDraft.contactPublicKey,
-							)
-							// Sometimes the navigation happens without sending the contact request
-							navigation.goBack()
-							resetDraft()
-							navigation.navigate('Main.HomeModal')
+							requestContact({ link })
 						}}
 						style={[
 							flex.medium,

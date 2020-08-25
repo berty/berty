@@ -11,7 +11,6 @@ export namespace ScreenProps {
 		export type Home = RouteProps<void>
 		export type ContactRequest = RouteProps<{ contactId: string }>
 		export type GroupRequest = RouteProps<{ convId: string }>
-		export type ScanRequest = RouteProps<void>
 		export type Scan = RouteProps<void>
 		export type HomeModal = RouteProps<void>
 		export type Search = RouteProps<void>
@@ -67,7 +66,6 @@ export namespace Routes {
 		Home = 'Main.Home',
 		ContactRequest = 'Main.ContactRequest',
 		GroupRequest = 'Main.GroupRequest',
-		ScanRequest = 'Main.ScanRequest',
 		Scan = 'Main.Scan',
 		HomeModal = 'Main.HomeModal',
 		Search = 'Main.Search',

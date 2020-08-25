@@ -3,11 +3,9 @@ import { View, TextInput, Button, TouchableOpacity, Vibration, ScrollView } from
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import QRCodeScanner from 'react-native-qrcode-scanner'
-// import { RNCamera } from 'react-native-camera'
 import { useNavigation } from '@react-navigation/native'
 import ScanTarget from './scan_target.svg'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Messenger } from '@berty-tech/store/oldhooks'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -31,7 +29,6 @@ const useStylesScan = () => {
 }
 
 const ScanBody: React.FC<{}> = () => {
-	const handleDeepLink = () => {} /*Messenger.useHandleDeepLink()*/
 	const navigation = useNavigation()
 	const [
 		{ background, margin, flex, column, border },
@@ -61,7 +58,6 @@ const ScanBody: React.FC<{}> = () => {
 			<QRCodeScanner
 				onRead={({ data, type }) => {
 					if ((type as string) === 'QR_CODE' || (type as string) === 'org.iso.QRCode') {
-						handleDeepLink(data)
 						// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
 						navigation.navigate('Modals', {
 							screen: 'ManageDeepLink',
@@ -100,7 +96,6 @@ const ScanInfosText: React.FC<ScanInfosTextProps> = ({ textProps }) => {
 }
 
 const DevReferenceInput = () => {
-	const handleDeepLink = () => {} /*Messenger.useHandleDeepLink()*/
 	const [ref, setRef] = useState('')
 	const navigation = useNavigation()
 	return (
@@ -115,7 +110,6 @@ const DevReferenceInput = () => {
 			<Button
 				title='Submit'
 				onPress={() => {
-					handleDeepLink(ref)
 					navigation.navigate('Modals', {
 						screen: 'ManageDeepLink',
 						params: { type: 'link', value: ref },
