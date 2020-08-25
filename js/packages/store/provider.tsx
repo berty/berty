@@ -107,6 +107,7 @@ export const MsgrProvider = ({ children, daemonAddress, embedded }) => {
 		console.log('starting daemon')
 		GoBridge.startProtocol({
 			persistence: true,
+			tracing: true,
 			logLevel: GoLogLevel.debug,
 		})
 			.then(() => {

@@ -31,7 +31,7 @@ class LifeCycle: NSObject {
             switch task {
             case is BGProcessingTask:
                 self.scheduleBackgroundProcessing(identifier: identifier)
-                notif.setBody(body: "Handle Proccessing Task").schedule()
+                notif.setBody(body: "Handle Processing Task").schedule()
             case is BGAppRefreshTask:
                 self.scheduleAppRefresh(identifier: identifier)
                 notif.setBody(body: "Handle AppRefresh Task").schedule()

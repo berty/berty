@@ -171,7 +171,7 @@ ios.storybook: deps packages/storybook-mobile/ios/Pods _storybook.mobile.start
 ios.gomobile: packages/go-bridge/ios/Frameworks/Bertybridge.framework
 android.gomobile: packages/go-bridge/android/libs/gobridge.aar
 #### Android
-####ço
+####
 
 
 .PHONY: android.run
