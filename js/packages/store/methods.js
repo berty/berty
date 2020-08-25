@@ -29,29 +29,37 @@ const methodError = (error) => ({ type: 'ERROR', payload: { error } })
 
 const methodDone = (reply) => ({ type: 'DONE', payload: { reply } })
 
-const messengerMethodHook = (key) => (payload) => {
+// TODO: UnknownMethod class
+
+const messengerMethodHook = (key) => () => {
 	const ctx = useMsgrContext()
 	const [state, dispatch] = useReducer(methodReducer, initialState)
 
-	const callback = useCallback(() => {
-		const clientKey = uncap(key)
-		if (!Object.keys(ctx.client).includes(clientKey)) {
-			dispatch(methodError(new Error(`Couldn't find method '${key}'`)))
-			return
-		}
-		ctx.client[clientKey](payload)
-			.then((reply) => {
-				dispatch(methodDone(reply))
-			})
-			.catch((err) => {
-				dispatch(methodError(err))
-			})
-	}, [ctx.client, payload])
+	const callback = useCallback(
+		(payload) => {
+			const clientKey = uncap(key)
+			if (!Object.keys(ctx.client).includes(clientKey)) {
+				dispatch(methodError(new Error(`Couldn't find method '${key}'`)))
+				return
+			}
+			ctx.client[clientKey](payload)
+				.then((reply) => {
+					dispatch(methodDone(reply))
+				})
+				.catch((err) => {
+					dispatch(methodError(err))
+				})
+		},
+		[ctx.client],
+	)
 
-	const refresh = useCallback(() => {
-		dispatch({ type: 'RESET' })
-		callback()
-	}, [callback])
+	const refresh = useCallback(
+		(payload) => {
+			dispatch({ type: 'RESET' })
+			callback(payload)
+		},
+		[callback],
+	)
 
 	return { done: state.done, reply: state.reply, error: state.error, refresh }
 }
