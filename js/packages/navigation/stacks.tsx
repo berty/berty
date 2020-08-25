@@ -136,10 +136,6 @@ export const Navigation: React.FC = () => {
 				}}
 			/>*/}
 			<NavigationStack.Screen
-				name={Routes.Main.ScanRequest}
-				component={Components.Main.ScanRequest}
-			/>
-			<NavigationStack.Screen
 				name={Routes.Main.Scan}
 				component={Components.Main.Scan}
 				options={{ stackPresentation: 'transparentModal' }}

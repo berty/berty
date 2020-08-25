@@ -79,7 +79,6 @@ stories
 			}}
 		/>
 	))
-	.add(Routes.Main.ScanRequest, () => <Main.ScanRequest user={fakeOneUser} />)
 	.add(Routes.Main.Scan, () => <Main.Scan />)
 	.add(Routes.Main.InvalidScan, () => <Main.InvalidScan />)
 	.add(Routes.Chat.OneToOne, () => <Chat.Chat />)

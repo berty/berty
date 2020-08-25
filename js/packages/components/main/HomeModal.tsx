@@ -18,6 +18,8 @@ import { CommonActions } from '@react-navigation/core'
 import Interactable from 'react-native-interactable'
 import FromNow from '../shared-components/FromNow'
 import EmptyContact from './empty_contact.svg'
+import { useOutgoingContactRequests } from '@berty-tech/store/hooks'
+import { messenger as messengerpb } from '@berty-tech/api/index.js'
 
 const useStylesList = () => {
 	const shortScreenMax = 640
@@ -119,7 +121,8 @@ export const Header: React.FC<{
 	)
 }
 
-const RequestsItem: React.FC<messenger.contact.Entity> = ({ name, request, publicKey, id }) => {
+const OutgoingRequestItem: React.FC<any> = ({ displayName: name, publicKey, state }) => {
+	const id = publicKey
 	const { dispatch } = useNavigation()
 	const _styles = useStylesList()
 	const [
@@ -128,9 +131,7 @@ const RequestsItem: React.FC<messenger.contact.Entity> = ({ name, request, publi
 	] = useStyles()
 	const discardContactRequest = Messenger.useDiscardContactRequest()
 	const discard = () => discardContactRequest({ id })
-	if (request.type !== messenger.contact.ContactRequestType.Outgoing) {
-		return <Text>Error: This is not an outgoing request</Text>
-	}
+	const isSent = state === messengerpb.Contact.State.OutgoingRequestSent
 	return (
 		<TouchableOpacity
 			style={[_styles.tinyCard, border.shadow.medium, column.justify]}
@@ -159,7 +160,7 @@ const RequestsItem: React.FC<messenger.contact.Entity> = ({ name, request, publi
 				category='c1'
 				style={[padding.vertical.medium, text.align.center, text.size.tiny, text.color.grey]}
 			>
-				{request.state === 'sent' ? <FromNow date={request.sentDate} /> : 'Not sent yet'}
+				{isSent ? <FromNow date={Date.now()} /> : 'Not sent yet'}
 			</Text>
 			<View style={[row.fill]}>
 				<TouchableOpacity
@@ -174,7 +175,7 @@ const RequestsItem: React.FC<messenger.contact.Entity> = ({ name, request, publi
 					/>
 				</TouchableOpacity>
 				<TouchableOpacity
-					disabled={!(request.state === 'sent')}
+					disabled={!isSent}
 					style={[_styles.tinyAcceptButton, background.light.green, row.fill]}
 				>
 					<View style={[row.item.justify, padding.right.scale(3)]}>
@@ -200,23 +201,21 @@ const EmptyTab: React.FC<{}> = ({ children }) => {
 	return <View style={[background.white, row.center, padding.bottom.medium]}>{children}</View>
 }
 
-const Requests: React.FC<{}> = () => {
+const OutgoingRequests: React.FC<{}> = () => {
 	const [
 		{ padding, background, column, text, opacity },
 		{ scaleHeight, isGteIpadSize },
 	] = useStyles()
 	const { isShortWindow } = useStylesList()
 
-	const requests = [] /*Messenger.useAccountContactsWithOutgoingRequests().filter(
-		(contact) => !(contact.request.accepted || contact.request.discarded) && !contact.fake,
-	)*/
+	const requests = useOutgoingContactRequests()
 
-	return requests.length >= 1 ? (
+	return requests.length > 0 ? (
 		<View style={[background.white]}>
 			<View style={[background.white, padding.bottom.medium]}>
 				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
 					{requests.map((req) => (
-						<RequestsItem key={req.id} {...req} />
+						<OutgoingRequestItem key={req.publicKey} {...req} />
 					))}
 				</ScrollView>
 			</View>
@@ -358,7 +357,7 @@ export const HomeModal: React.FC<{}> = () => {
 						<AddContact />
 					</Header>
 					<Header title='Requests sent' icon='paper-plane-outline'>
-						<Requests />
+						<OutgoingRequests />
 					</Header>
 					<Header
 						title='New group'
