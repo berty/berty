@@ -1,6 +1,3 @@
-import React, { useContext, useMemo } from 'react'
-import { MsgrContext, useMsgrContext } from './context'
-import flatten from 'lodash/flatten'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import {
 	fakeContacts,
@@ -9,6 +6,9 @@ import {
 	fakeMessages,
 } from './faker'
 import { omitBy } from 'lodash'
+import flatten from 'lodash/flatten'
+import { useContext, useMemo } from 'react'
+import { MsgrContext, useMsgrContext } from './context'
 
 const AppMessageType = messengerpb.AppMessage.Type
 
@@ -154,6 +154,12 @@ export const useConversationList = () => {
 	const ctx = useMsgrContext()
 	return Object.values(ctx.conversations)
 }
+
+// tmp / Includes conversationPublicKeys in established contacts
+// export const useConversationsAllConvKeys = () => {
+// 	const conversationList = useConversationList()
+// 	return keyBy(conversationList, 'publicKey')
+// }
 
 export const useConversationLength = () => {
 	return useConversationList().length
