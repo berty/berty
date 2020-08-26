@@ -2,6 +2,8 @@ import React, { useContext, useMemo } from 'react'
 import { MsgrContext, useMsgrContext } from './context'
 import flatten from 'lodash/flatten'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import { fakeContacts, fakeConversations, fakeMessages } from '@berty-tech/components/faker'
+import { omitBy } from 'lodash'
 
 const AppMessageType = messengerpb.AppMessage.Type
 
@@ -142,12 +144,14 @@ export const useOutgoingContactRequests = () => {
 	)
 }
 
+// TODO: See how to use 1-1's already generated in event stream
 export const useConversationList = () => {
 	const ctx = useMsgrContext()
 
 	const oneToOneConversations = [
 		...Object.values(ctx.contacts)
 			.filter((c) => c.state === messengerpb.Contact.State.Established)
+			.filter((c) => !ctx.conversations[c.conversationPublicKey])
 			.map((c) => ({
 				publicKey: c.conversationPublicKey,
 				displayName: c.displayName,
@@ -168,4 +172,60 @@ export const useConversationLength = () => {
 		Object.values(ctx.contacts).filter((c) => c.state === messengerpb.Contact.State.Established)
 			.length
 	)
+}
+
+//
+// Fake data generation
+//
+
+let globalFakeLengthModifier = 0
+
+// Generate n fake conversations with n fake contacts, one UserMessage per conv
+export const useGenerateFakeConversations = () => {
+	const ctx = useMsgrContext()
+
+	return (length = 10) => {
+		globalFakeLengthModifier += length
+		const contacts = fakeContacts(length, globalFakeLengthModifier)
+		const conversations = fakeConversations(contacts)
+		ctx.dispatch({
+			type: 'ADD_FAKE_CONVERSATIONS',
+			payload: {
+				conversations,
+				contacts,
+			},
+		})
+	}
+}
+
+// Generate n fake messages for all fake conversations
+export const useGenerateFakeMessages = () => {
+	const ctx = useMsgrContext()
+	const fakeConversationList = useConversationList().filter((c) => c.fake === true)
+
+	return (length = 10) => {
+		globalFakeLengthModifier += length * fakeConversationList.length
+		const interactions = fakeMessages(length, fakeConversationList, globalFakeLengthModifier)
+		ctx.dispatch({
+			type: 'ADD_FAKE_MESSAGES',
+			payload: {
+				interactions,
+			},
+		})
+	}
+}
+
+// Delete all fake conversations
+export const useDeleteFakeData = () => {
+	const ctx = useMsgrContext()
+	globalFakeLengthModifier = 0
+	return () =>
+		ctx.dispatch({
+			type: 'DELETE_FAKE_DATA',
+			payload: {
+				conversations: omitBy(ctx.conversations, (c) => c.fake === true),
+				contacts: omitBy(ctx.contacts, (c) => c.fake === true),
+				interactions: omitBy(ctx.interactions, (msg) => msg.fake === true),
+			},
+		})
 }

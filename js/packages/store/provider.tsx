@@ -10,7 +10,7 @@ import MsgrContext, { initialState } from './context'
 
 const T = messengerpb.StreamEvent.Type
 
-const reducer = (oldState, action) => {
+const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 	const state = cloneDeep(oldState) // TODO: optimize rerenders
 	console.log('reducing', action)
 	switch (action.type) {
@@ -50,7 +50,7 @@ const reducer = (oldState, action) => {
 				const typeName = Object.keys(messengerpb.AppMessage.Type).find(
 					(name) => messengerpb.AppMessage.Type[name] === inte.type,
 				)
-				const name = typeName.substr('Type'.length)
+				const name = typeName?.substr('Type'.length)
 				const pbobj = messengerpb.AppMessage[name]
 				if (!pbobj) {
 					throw new Error('failed to find a protobuf object matching the event type')
@@ -64,6 +64,18 @@ const reducer = (oldState, action) => {
 				console.warn('failed to reduce interaction', e)
 				return oldState
 			}
+			break
+		case 'ADD_FAKE_CONVERSATIONS':
+			state.conversations = { ...state.conversations, ...action.payload.conversations }
+			state.contacts = { ...state.contacts, ...action.payload.contacts }
+			break
+		case 'ADD_FAKE_MESSAGES':
+			state.interactions = { ...state.interactions, ...action.payload.interactions }
+			break
+		case 'DELETE_FAKE_DATA':
+			state.conversations = action.payload.conversations
+			state.contacts = action.payload.contacts
+			state.interactions = action.payload.interactions
 			break
 		default:
 			console.warn('Unknown action type', action.type)
@@ -189,7 +201,7 @@ export const MsgrProvider = ({ children, daemonAddress, embedded }) => {
 		return () => cancel()
 	}, [daemonAddress, embedded, nodeStarted])
 	return (
-		<MsgrContext.Provider value={{ ...state, restart, deleteAccount }}>
+		<MsgrContext.Provider value={{ ...state, restart, deleteAccount, dispatch }}>
 			{children}
 		</MsgrContext.Provider>
 	)

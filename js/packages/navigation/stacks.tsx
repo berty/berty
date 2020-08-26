@@ -193,8 +193,8 @@ export const Navigation: React.FC = () => {
 			/>
 			<NavigationStack.Screen name={Routes.Settings.Help} component={Components.Settings.Help} />
 			<NavigationStack.Screen
-				name={Routes.Settings.FakeDatas}
-				component={Components.Settings.FakeDatas}
+				name={Routes.Settings.FakeData}
+				component={Components.Settings.FakeData}
 			/>
 			<NavigationStack.Screen name={Routes.Settings.Mode} component={Components.Settings.Mode} />
 			<NavigationStack.Screen

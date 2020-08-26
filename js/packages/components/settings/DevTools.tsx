@@ -44,12 +44,12 @@ const HeaderDevTools: React.FC<{}> = () => {
 						disabled: true,
 					},
 					{
-						name: 'Generate fake datas',
+						name: 'Generate fake data',
 						icon: 'book-outline',
 						color: color.dark.grey,
 						style: _styles.buttonRow,
 						onPress: () => {
-							navigate.settings.fakeDatas()
+							navigate.settings.fakeData()
 						},
 					},
 					{
