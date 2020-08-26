@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import BlurView from '../shared-components/BlurView'
 import {
 	TouchableOpacity,
@@ -18,7 +19,7 @@ import { ConversationProceduralAvatar } from '../shared-components/ProceduralCir
 // import { ChatFooter, ChatDate } from './shared-components/Chat'
 
 // import { useReadEffect } from '../hooks'
-import { useContacts, useConversationList } from '@berty-tech/store/hooks'
+import { useContacts, useConversationList, useMsgrContext } from '@berty-tech/store/hooks'
 import { values } from 'lodash'
 import { ChatFooter } from './shared-components/Chat'
 // import { useContact } from '@berty-tech/store/oldhooks/contact'
@@ -184,6 +185,11 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: number }> = ({
 	convPk,
 	scrollToMessage,
 }) => {
+	const ctx: any = useMsgrContext()
+	const messages: any = values(ctx.interactions[convPk] as any).filter(
+		(msg) => msg.type === messengerpb.AppMessage.Type.UserMessage,
+	)
+
 	const [{ row, overflow, flex, margin }, { scaleHeight }] = useStyles()
 
 	const contacts: any = useContacts()
@@ -195,8 +201,6 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: number }> = ({
 	if (!conversation) {
 		return <CenteredActivityIndicator />
 	}
-
-	const { messages = [] } = conversation || {}
 
 	// const flatListRef = useRef<FlatList<messenger.message.Entity['convPk']>>(null)
 
@@ -227,7 +231,7 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: number }> = ({
 			// keyExtractor={(item) => item}
 			// ListFooterComponent={<InfosChat createdAt={conversation.createdAt} />}
 			// renderItem={({ item }) => <Message convPk={item} convKind={'1to1'} />}
-			renderItem={({ item }) => <Text>{item.toString()}</Text>}
+			renderItem={({ item }: { item: any }) => <Text>{item.toString()}</Text>}
 		/>
 	)
 }
