@@ -247,7 +247,7 @@ export const ChatGroup: React.FC<ScreenProps.Chat.Group> = ({ route: { params } 
 			<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
 				<StatusBar backgroundColor='#00BCD4' barStyle='dark-content' />
 				<MessageList id={params.convId} />
-				<ChatFooter convId={params.convId} isFocused={inputIsFocused} setFocus={setInputFocus} />
+				<ChatFooter convPk={params.convId} isFocused={inputIsFocused} setFocus={setInputFocus} />
 				<HeaderChatGroup id={params.convId} />
 			</KeyboardAvoidingView>
 		</View>

@@ -27,8 +27,8 @@ const useStylesChatFooter = () => {
 export const ChatFooter: React.FC<{
 	isFocused: boolean
 	setFocus: React.Dispatch<React.SetStateAction<any>>
-	convId: string
-}> = ({ isFocused, setFocus, convId }) => {
+	convPk: string
+}> = ({ isFocused, setFocus, convPk }) => {
 	const ctx: any = useMsgrContext()
 
 	const [message, setMessage] = useState('')
@@ -42,30 +42,30 @@ export const ChatFooter: React.FC<{
 	const buf = messengerpb.AppMessage.UserMessage.encode(usermsg).finish()
 	const decoded = messengerpb.AppMessage.UserMessage.decode(buf)
 
-	let conversation = ctx.conversations[convId]
+	let conversation = ctx.conversations[convPk]
 	if (!conversation) {
-		const contact = values(ctx.contacts).find((c) => c.conversationPublicKey === convId) || {}
+		const contact = values(ctx.contacts).find((c) => c.conversationPublicKey === convPk) || {}
 		conversation = {
 			displayName: contact.displayName,
-			publicKey: convId,
+			publicKey: convPk,
 			kind: contact.fake ? 'fake' : '1to1',
 		}
 	}
 
 	// TODO: Debug
 	const handleSend = React.useCallback(() => {
-		console.log('check convId === conversation.publicKey:', convId === conversation.publicKey)
+		console.log('check convPk === conversation.publicKey:', convPk === conversation.publicKey)
 		console.log('sending user message payload:', decoded)
 		ctx.client
 			?.interact({
-				conversationPublicKey: convId,
+				conversationPublicKey: convPk,
 				type: messengerpb.AppMessage.Type.TypeUserMessage,
 				payload: buf,
 			})
 			.catch((e: any) => {
 				console.warn('e sending message:', e)
 			})
-	}, [convId, conversation.publicKey, decoded, ctx.client, buf])
+	}, [convPk, conversation.publicKey, decoded, ctx.client, buf])
 
 	if (!conversation) {
 		return null

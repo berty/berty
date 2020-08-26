@@ -190,7 +190,7 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: number }> = ({
 	scrollToMessage,
 }) => {
 	const [{ row, overflow, flex, margin }, { scaleHeight }] = useStyles()
-	// const conversation = Messenger.useGetConversation(props.convPk)
+
 	const contacts: any = useContacts()
 	const contact = values(contacts).find((c) => c.conversationPublicKey === convPk) || null
 	const conversation =
@@ -202,7 +202,7 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: number }> = ({
 	}
 
 	const { messages = [] } = conversation || {}
-	//console.log('conversation:', JSON.stringify(conversation, null, 2))
+
 	// const flatListRef = useRef<FlatList<messenger.message.Entity['convPk']>>(null)
 
 	const onScrollToIndexFailed = () => {
@@ -249,7 +249,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route }) => {
 					// scrollToMessage={route.params.scrollToMessage || 0}
 				/>
 				<ChatFooter
-					convId={route.params.convId}
+					convPk={route.params.convId}
 					isFocused={inputIsFocused}
 					setFocus={setInputFocus}
 				/>
