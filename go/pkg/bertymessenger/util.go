@@ -3,6 +3,7 @@ package bertymessenger
 import (
 	"bytes"
 	"encoding/base64"
+	"time"
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -44,4 +45,12 @@ func bytesToString(b []byte) string {
 
 func stringToBytes(s string) ([]byte, error) {
 	return base64.RawURLEncoding.DecodeString(s)
+}
+
+func jsTime(t time.Time) int64 {
+	return t.UnixNano() / 1000000
+}
+
+func jsNow() int64 {
+	return jsTime(time.Now())
 }

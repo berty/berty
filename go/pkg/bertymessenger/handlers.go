@@ -128,54 +128,12 @@ func accountGroupJoined(svc *service, gme *bertytypes.GroupMetadataEvent) error 
 		}
 	}
 
-	// subscribe to new metadata events
-	{
-		s, err := svc.protocolClient.GroupMetadataSubscribe(svc.ctx, &bertytypes.GroupMetadataSubscribe_Request{GroupPK: pkb})
-		if err != nil {
-			return err
-		}
-		go func() {
-			for {
-				gme, err := s.Recv()
-				if err != nil {
-					svc.logStreamingError("group metadata", err)
-					return
-				}
-				err = handleProtocolEvent(svc, gme)
-				if err != nil {
-					svc.logger.Error("failed to handle protocol event", zap.Error(errcode.ErrInternal.Wrap(err)))
-				}
-			}
-		}()
+	// subscribe to group
+	if err := svc.subscribeToGroup(pkb); err != nil {
+		return err
 	}
 
-	// subscribe to new message events
-	{
-		ms, err := svc.protocolClient.GroupMessageSubscribe(svc.ctx, &bertytypes.GroupMessageSubscribe_Request{GroupPK: pkb})
-		if err != nil {
-			return err
-		}
-		go func() {
-			for {
-				gme, err := ms.Recv()
-				if err != nil {
-					svc.logStreamingError("group message", err)
-					return
-				}
-
-				var am AppMessage
-				if err := proto.Unmarshal(gme.GetMessage(), &am); err != nil {
-					svc.logger.Warn("failed to unmarshal AppMessage", zap.Error(err))
-					return
-				}
-				err = handleAppMessage(svc, b64PK, gme, &am)
-				if err != nil {
-					svc.logger.Error("failed to handle app message", zap.Error(errcode.ErrInternal.Wrap(err)))
-				}
-			}
-		}()
-		svc.logger.Info("AccountGroupJoined", zap.String("pk", b64PK), zap.Bool("is-new", isNew), zap.String("known-as", conv.DisplayName))
-	}
+	svc.logger.Info("AccountGroupJoined", zap.String("pk", b64PK), zap.Bool("is-new", isNew), zap.String("known-as", conv.DisplayName))
 
 	return nil
 }
@@ -223,29 +181,8 @@ func accountContactRequestOutgoingSent(svc *service, gme *bertytypes.GroupMetada
 		if err != nil {
 			return err
 		}
-
-		s, err := svc.protocolClient.GroupMetadataSubscribe(svc.ctx, &bertytypes.GroupMetadataSubscribe_Request{GroupPK: groupPK})
-		if err != nil {
-			svc.logger.Error("WTF", zap.Error(err))
-			return err
-		}
-		go func() {
-			for {
-				gme, err := s.Recv()
-				if err != nil {
-					svc.logStreamingError("group metadata", err)
-					return
-				}
-
-				err = handleProtocolEvent(svc, gme)
-				if err != nil {
-					svc.logger.Error("failed to handle protocol event", zap.Error(errcode.ErrInternal.Wrap(err)))
-				}
-			}
-		}()
 	}
-
-	return nil
+	return svc.subscribeToMetadata(groupPK)
 }
 
 func accountContactRequestIncomingReceived(svc *service, gme *bertytypes.GroupMetadataEvent) error {
@@ -319,34 +256,8 @@ func accountContactRequestIncomingAccepted(svc *service, gme *bertytypes.GroupMe
 		return err
 	}
 
-	// subscribe to group metadata
-	{
-		s, err := svc.protocolClient.GroupMessageSubscribe(svc.ctx, &bertytypes.GroupMessageSubscribe_Request{GroupPK: groupPK})
-		if err != nil {
-			return err
-		}
-		go func() {
-			for {
-				gme, err := s.Recv()
-				if err != nil {
-					svc.logStreamingError("group message", err)
-					return
-				}
-
-				var am AppMessage
-				if err := proto.Unmarshal(gme.GetMessage(), &am); err != nil {
-					svc.logger.Warn("failed to unmarshal AppMessage", zap.Error(err))
-					return
-				}
-				err = handleAppMessage(svc, c.ConversationPublicKey, gme, &am)
-				if err != nil {
-					svc.logger.Error("failed to handle app message", zap.Error(errcode.ErrInternal.Wrap(err)))
-				}
-			}
-		}()
-	}
-
-	return nil
+	// subscribe to group messages
+	return svc.subscribeToMessages(groupPK)
 }
 
 func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) error {
@@ -389,33 +300,11 @@ func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) er
 			if err != nil {
 				return err
 			}
-
-			s, err := svc.protocolClient.GroupMessageSubscribe(svc.ctx, &bertytypes.GroupMessageSubscribe_Request{GroupPK: groupPK})
-			if err != nil {
-				return errcode.TODO.Wrap(err)
-			}
-			go func() {
-				for {
-					gme, err := s.Recv()
-					if err != nil {
-						svc.logStreamingError("group message", err)
-						return
-					}
-
-					var am AppMessage
-					if err := proto.Unmarshal(gme.GetMessage(), &am); err != nil {
-						svc.logger.Warn("failed to unmarshal AppMessage", zap.Error(err))
-						return
-					}
-					err = handleAppMessage(svc, c.ConversationPublicKey, gme, &am)
-					if err != nil {
-						svc.logger.Error("failed to handle app message", zap.Error(errcode.ErrInternal.Wrap(err)))
-					}
-				}
-			}()
 		}
+		return svc.subscribeToMessages(groupPK)
 	}
 	// FIXME: elseif
+
 	return nil
 }
 
@@ -488,11 +377,7 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 				return err
 			}*/
 
-			ackp, err := proto.Marshal(&AppMessage_Acknowledge{Target: cid})
-			if err != nil {
-				return err
-			}
-			amp, err := proto.Marshal(&AppMessage{Type: AppMessage_TypeAcknowledge, Payload: ackp})
+			amp, err := AppMessage_TypeAcknowledge.MarshalPayload(&AppMessage_Acknowledge{Target: cid})
 			if err != nil {
 				return err
 			}

@@ -75,11 +75,11 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 	}
 
 	// Subscribe to account group metadata
-	if err := svc.subscribeToMetadata(ctx, icr.GetAccountGroupPK()); err != nil {
+	if err := svc.subscribeToMetadata(icr.GetAccountGroupPK()); err != nil {
 		return nil, err
 	}
 
-	// subscribe to groups
+	// subscribe to multimember groups
 	{
 		var convs []Conversation
 		err := svc.db.Find(&convs).Error
@@ -87,43 +87,17 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 			return nil, err
 		}
 		for _, cv := range convs {
-			gpk := cv.GetPublicKey()
-			gpkb, err := stringToBytes(gpk)
+			gpkb, err := stringToBytes(cv.GetPublicKey())
 			if err != nil {
 				return nil, err
 			}
-
-			if err := svc.subscribeToMetadata(ctx, gpkb); err != nil {
+			if err := svc.subscribeToGroup(gpkb); err != nil {
 				return nil, err
 			}
-
-			ms, err := svc.protocolClient.GroupMessageSubscribe(svc.ctx, &bertytypes.GroupMessageSubscribe_Request{GroupPK: gpkb})
-			if err != nil {
-				return nil, err
-			}
-			go func() {
-				for {
-					gme, err := ms.Recv()
-					if err != nil {
-						svc.logStreamingError("group message", err)
-						return
-					}
-
-					var am AppMessage
-					if err := proto.Unmarshal(gme.GetMessage(), &am); err != nil {
-						svc.logger.Warn("failed to unmarshal AppMessage", zap.Error(err))
-						return
-					}
-					err = handleAppMessage(&svc, gpk, gme, &am)
-					if err != nil {
-						svc.logger.Error("failed to handle app message", zap.Error(errcode.ErrInternal.Wrap(err)))
-					}
-				}
-			}()
 		}
 	}
 
-	// subscribe to group metadata for contacts in outgoing request sent state
+	// subscribe to contact groups
 	{
 		var contacts []Contact
 		err := svc.db.Find(&contacts).Error
@@ -131,17 +105,23 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 			return nil, err
 		}
 		for _, c := range contacts {
-			if c.State != Contact_OutgoingRequestSent {
+			if c.State != Contact_OutgoingRequestSent && c.State != Contact_Established {
 				continue
 			}
-			gpk := c.GetConversationPublicKey()
-			gpkb, err := stringToBytes(gpk)
+
+			gpkb, err := stringToBytes(c.GetConversationPublicKey())
 			if err != nil {
 				return nil, err
 			}
 
-			if err := svc.subscribeToMetadata(ctx, gpkb); err != nil {
+			if err := svc.subscribeToMetadata(gpkb); err != nil {
 				return nil, err
+			}
+
+			if c.State == Contact_Established {
+				if err := svc.subscribeToMessages(gpkb); err != nil {
+					return nil, err
+				}
 			}
 		}
 	}
@@ -149,8 +129,8 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 	return &svc, nil
 }
 
-func (svc *service) subscribeToMetadata(ctx context.Context, gpkb []byte) error {
-	s, err := svc.protocolClient.GroupMetadataSubscribe(ctx, &bertytypes.GroupMetadataSubscribe_Request{GroupPK: gpkb})
+func (svc *service) subscribeToMetadata(gpkb []byte) error {
+	s, err := svc.protocolClient.GroupMetadataSubscribe(svc.ctx, &bertytypes.GroupMetadataSubscribe_Request{GroupPK: gpkb})
 	if err != nil {
 		return err
 	}
@@ -168,6 +148,40 @@ func (svc *service) subscribeToMetadata(ctx context.Context, gpkb []byte) error 
 		}
 	}()
 	return nil
+}
+
+func (svc *service) subscribeToMessages(gpkb []byte) error {
+	ms, err := svc.protocolClient.GroupMessageSubscribe(svc.ctx, &bertytypes.GroupMessageSubscribe_Request{GroupPK: gpkb})
+	if err != nil {
+		return err
+	}
+	go func() {
+		for {
+			gme, err := ms.Recv()
+			if err != nil {
+				svc.logStreamingError("group message", err)
+				return
+			}
+
+			var am AppMessage
+			if err := proto.Unmarshal(gme.GetMessage(), &am); err != nil {
+				svc.logger.Warn("failed to unmarshal AppMessage", zap.Error(err))
+				return
+			}
+			err = handleAppMessage(svc, bytesToString(gpkb), gme, &am)
+			if err != nil {
+				svc.logger.Error("failed to handle app message", zap.Error(errcode.ErrInternal.Wrap(err)))
+			}
+		}
+	}()
+	return nil
+}
+
+func (svc *service) subscribeToGroup(gpkb []byte) error {
+	if err := svc.subscribeToMetadata(gpkb); err != nil {
+		return err
+	}
+	return svc.subscribeToMessages(gpkb)
 }
 
 func (svc *service) Close() {
