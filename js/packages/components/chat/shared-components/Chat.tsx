@@ -5,6 +5,10 @@ import { useStyles } from '@berty-tech/styles'
 import { Messenger } from '@berty-tech/store/oldhooks'
 
 import BlurView from '../../shared-components/BlurView'
+
+import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import { useMsgrContext } from '@berty-tech/store/hooks'
+import { values } from 'lodash'
 // import { SafeAreaView } from 'react-native-safe-area-context'
 //
 // ChatFooter => Textinput for type message
@@ -25,14 +29,41 @@ export const ChatFooter: React.FC<{
 	setFocus: React.Dispatch<React.SetStateAction<any>>
 	convId: string
 }> = ({ isFocused, setFocus, convId }) => {
+	const ctx: any = useMsgrContext()
+	const interactions = Object.values((ctx.interactions as any)[convId] || {})
+	const [error, setError] = useState(null)
+
 	const [message, setMessage] = useState('')
 	const [isSubmit, setIsSubmit] = useState(false)
 	const inputRef = useRef<TextInput>(null)
 	const _isFocused = isFocused || inputRef?.current?.isFocused() || false
 	const _styles = useStylesChatFooter()
 	const [{ row, padding, flex, border, color, background }] = useStyles()
-	const sendMessage = Messenger.useMessageSend()
-	const conversation = Messenger.useGetConversation(convId)
+
+	const usermsg = { body: message }
+	const buf = messengerpb.AppMessage.UserMessage.encode(usermsg).finish()
+	const decoded = messengerpb.AppMessage.UserMessage.decode(buf)
+
+	const handleSend = React.useCallback(() => {
+		console.log('handling send')
+		setError(null)
+		ctx.client
+			?.interact({
+				// conversationPublicKey: publicKey,
+				conversationPublicKey: convId,
+				type: messengerpb.AppMessage.Type.TypeUserMessage,
+				payload: buf,
+			})
+			.catch((e: any) => setError(e))
+	}, [buf, ctx.client, convId])
+
+	console.log('decoded', decoded)
+	// const conversation = Messenger.useGetConversation(convId)
+	const conversation =
+		ctx.conversations[convId] ||
+		ctx.contacts[convId] ||
+		values(ctx.contacts).find((c) => c.conversationPublicKey === convId)
+	console.log('conversation:', JSON.stringify(conversation, null, 2))
 
 	if (!conversation) {
 		return null
@@ -77,13 +108,14 @@ export const ChatFooter: React.FC<{
 									return
 								}
 								if (message) {
-									sendMessage({
-										id: convId,
-										type: messenger.AppMessageType.UserMessage,
-										body: message,
-										attachments: [],
-										sentDate: Date.now(),
-									})
+									handleSend()
+									// sendMessage({
+									// 	id: convId,
+									// 	type: messenger.AppMessageType.UserMessage,
+									// 	body: message,
+									// 	attachments: [],
+									// 	sentDate: Date.now(),
+									// })
 								}
 							}}
 							style={[
@@ -101,13 +133,14 @@ export const ChatFooter: React.FC<{
 									return
 								}
 								if (message) {
-									sendMessage({
-										id: convId,
-										type: messenger.AppMessageType.UserMessage,
-										body: message,
-										attachments: [],
-										sentDate: Date.now(),
-									})
+									handleSend()
+									// sendMessage({
+									// 	id: convId,
+									// 	type: messenger.AppMessageType.UserMessage,
+									// 	body: message,
+									// 	attachments: [],
+									// 	sentDate: Date.now(),
+									// })
 								}
 								setMessage('')
 							}}

@@ -25,6 +25,7 @@ import {
 	useConversationList,
 } from '@berty-tech/store/hooks'
 import { values } from 'lodash'
+import { ChatFooter } from './shared-components/Chat'
 // import { useContact } from '@berty-tech/store/oldhooks/contact'
 //
 // Chat
@@ -89,14 +90,14 @@ export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
 		return <CenteredActivityIndicator />
 	}
 
-	console.log('conversation:', conversation)
+	// console.log('conversation:', conversation)
 
 	const title =
 		conversation.kind === 'fake'
 			? `SAMPLE - ${conversation.displayName}`
 			: conversation?.displayName || ''
 
-	console.log('title:', title)
+	// console.log('title:', title)
 	return (
 		<View style={{ position: 'absolute', top: 0, left: 0, right: 0 }}>
 			<BlurView
@@ -247,11 +248,11 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route }) => {
 					convPk={route.params.convId}
 					// scrollToMessage={route.params.scrollToMessage || 0}
 				/>
-				{/* <ChatFooter
+				<ChatFooter
 					convId={route.params.convId}
 					isFocused={inputIsFocused}
 					setFocus={setInputFocus}
-				/> */}
+				/>
 				<ChatHeader convPk={route.params.convId} />
 			</KeyboardAvoidingView>
 		</View>
