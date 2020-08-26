@@ -9,6 +9,7 @@ import BlurView from '../../shared-components/BlurView'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import { values } from 'lodash'
+import { ContactRequest } from '../../main'
 // import { SafeAreaView } from 'react-native-safe-area-context'
 //
 // ChatFooter => Textinput for type message
@@ -30,7 +31,7 @@ export const ChatFooter: React.FC<{
 	convId: string
 }> = ({ isFocused, setFocus, convId }) => {
 	const ctx: any = useMsgrContext()
-	const interactions = Object.values((ctx.interactions as any)[convId] || {})
+	// const interactions = Object.values((ctx.interactions as any)[convId] || {})
 	const [error, setError] = useState(null)
 
 	const [message, setMessage] = useState('')
@@ -43,27 +44,33 @@ export const ChatFooter: React.FC<{
 	const usermsg = { body: message }
 	const buf = messengerpb.AppMessage.UserMessage.encode(usermsg).finish()
 	const decoded = messengerpb.AppMessage.UserMessage.decode(buf)
+	// console.log('decoded', decoded)
+
+	let conversation = ctx.conversations[convId] || ctx.contacts[convId]
+	if (!conversation) {
+		const contact = values(ctx.contacts).find((c) => c.conversationPublicKey === convId) || {}
+		conversation = {
+			displayName: contact.displayName,
+			publicKey: convId,
+			kind: '1to1',
+		}
+	}
 
 	const handleSend = React.useCallback(() => {
-		console.log('handling send')
+		console.log('check convId === conversation.publicKey:', convId === conversation.publicKey)
+		console.log('sending user message payload:', decoded)
 		setError(null)
 		ctx.client
 			?.interact({
-				// conversationPublicKey: publicKey,
 				conversationPublicKey: convId,
 				type: messengerpb.AppMessage.Type.TypeUserMessage,
 				payload: buf,
 			})
-			.catch((e: any) => setError(e))
-	}, [buf, ctx.client, convId])
-
-	console.log('decoded', decoded)
-	// const conversation = Messenger.useGetConversation(convId)
-	const conversation =
-		ctx.conversations[convId] ||
-		ctx.contacts[convId] ||
-		values(ctx.contacts).find((c) => c.conversationPublicKey === convId)
-	console.log('conversation:', JSON.stringify(conversation, null, 2))
+			.catch((e: any) => {
+				console.log('e sending message:', e)
+				setError(e.toString())
+			})
+	}, [convId, conversation.publicKey, decoded, ctx.client, buf])
 
 	if (!conversation) {
 		return null
@@ -77,7 +84,7 @@ export const ChatFooter: React.FC<{
 						row.right,
 						padding.horizontal.medium,
 						padding.top.medium,
-						// _isFocused && padding.bottom.medium,
+						_isFocused && padding.bottom.medium,
 						{ alignItems: 'center' },
 					]}
 				>
@@ -109,13 +116,6 @@ export const ChatFooter: React.FC<{
 								}
 								if (message) {
 									handleSend()
-									// sendMessage({
-									// 	id: convId,
-									// 	type: messenger.AppMessageType.UserMessage,
-									// 	body: message,
-									// 	attachments: [],
-									// 	sentDate: Date.now(),
-									// })
 								}
 							}}
 							style={[
@@ -134,13 +134,6 @@ export const ChatFooter: React.FC<{
 								}
 								if (message) {
 									handleSend()
-									// sendMessage({
-									// 	id: convId,
-									// 	type: messenger.AppMessageType.UserMessage,
-									// 	body: message,
-									// 	attachments: [],
-									// 	sentDate: Date.now(),
-									// })
 								}
 								setMessage('')
 							}}
