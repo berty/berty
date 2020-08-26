@@ -16,14 +16,14 @@ var debug = flag.Bool("debug", false, "is more verbose logging")
 func Logger(t *testing.T) *zap.Logger {
 	t.Helper()
 
-	bertyDebug := parseBoolFromEnv("BERTY_DEBUG") || *debug
-	libp2pDebug := parseBoolFromEnv("LIBP2P_DEBUG")
-	// @NOTE(gfanton): since orbitdb use `zap.L()`, this will only
-	// replace zap global logger with our logger
-	orbitdbDebug := parseBoolFromEnv("ORBITDB_DEBUG")
-	bertylogfile := os.Getenv("LOGFILE")
+	var (
+		bertyDebug     = parseBoolFromEnv("BERTY_DEBUG") || *debug
+		libp2pDebug    = parseBoolFromEnv("LIBP2P_DEBUG")
+		orbitdbDebug   = parseBoolFromEnv("ORBITDB_DEBUG")
+		bertylogfile   = os.Getenv("LOGFILE")
+		isDebugEnabled = bertyDebug || orbitdbDebug || libp2pDebug
+	)
 
-	isDebugEnabled := bertyDebug || orbitdbDebug || libp2pDebug
 	if !isDebugEnabled {
 		return zap.NewNop()
 	}
@@ -44,6 +44,7 @@ func Logger(t *testing.T) *zap.Logger {
 		return zap.NewNop()
 	}
 
+	// configure extensions
 	if libp2pDebug {
 		ipfs_log.SetDebugLogging()
 	}
@@ -52,11 +53,7 @@ func Logger(t *testing.T) *zap.Logger {
 		zap.ReplaceGlobals(logger)
 	}
 
-	if bertyDebug {
-		return logger
-	}
-
-	return zap.NewNop()
+	return logger
 }
 
 func parseBoolFromEnv(key string) (b bool) {

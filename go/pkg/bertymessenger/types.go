@@ -6,6 +6,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/gogo/protobuf/proto"
+	"moul.io/godev"
 )
 
 func (x *AppMessage_Type) UnmarshalJSON(bytes []byte) error {
@@ -51,34 +52,28 @@ func (x AppMessage_Type) MarshalPayload(payload proto.Message) ([]byte, error) {
 // UnmarshalPayload tries to parse an AppMessage payload in the corresponding type.
 // Since this function returns a proto.Message interface, you still need to cast the returned value, but this function allows you to make it safely.
 func (am AppMessage) UnmarshalPayload() (proto.Message, error) {
-	switch am.Type {
+	switch am.GetType() {
 	case AppMessage_TypeAcknowledge:
 		var ret AppMessage_Acknowledge
-		err := proto.Unmarshal(am.GetPayload(), &ret)
-		return &ret, err
+		return &ret, proto.Unmarshal(am.GetPayload(), &ret)
 	case AppMessage_TypeUserMessage:
 		var ret AppMessage_UserMessage
-		err := proto.Unmarshal(am.GetPayload(), &ret)
-		return &ret, err
+		return &ret, proto.Unmarshal(am.GetPayload(), &ret)
 	case AppMessage_TypeUserReaction:
 		var ret AppMessage_UserReaction
-		err := proto.Unmarshal(am.GetPayload(), &ret)
-		return &ret, err
+		return &ret, proto.Unmarshal(am.GetPayload(), &ret)
 	case AppMessage_TypeGroupInvitation:
 		var ret AppMessage_GroupInvitation
-		err := proto.Unmarshal(am.GetPayload(), &ret)
-		return &ret, err
+		return &ret, proto.Unmarshal(am.GetPayload(), &ret)
 	case AppMessage_TypeSetGroupName:
 		var ret AppMessage_SetGroupName
-		err := proto.Unmarshal(am.GetPayload(), &ret)
-		return &ret, err
+		return &ret, proto.Unmarshal(am.GetPayload(), &ret)
 	case AppMessage_TypeSetUserName:
 		var ret AppMessage_SetUserName
-		err := proto.Unmarshal(am.GetPayload(), &ret)
-		return &ret, err
+		return &ret, proto.Unmarshal(am.GetPayload(), &ret)
 	}
 
-	return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported AppMessage type: %q", am.Type))
+	return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported AppMessage type: %q", am.GetType()))
 }
 
 func UnmarshalAppMessage(payload []byte) (proto.Message, AppMessage_Type, error) {
@@ -91,4 +86,50 @@ func UnmarshalAppMessage(payload []byte) (proto.Message, AppMessage_Type, error)
 
 	msg, err := am.UnmarshalPayload()
 	return msg, am.Type, err
+}
+
+func (event *StreamEvent) UnmarshalPayload() (proto.Message, error) {
+	switch event.GetType() {
+	case StreamEvent_TypeAccountUpdated:
+		var ret StreamEvent_AccountUpdated
+		return &ret, proto.Unmarshal(event.GetPayload(), &ret)
+	case StreamEvent_TypeContactUpdated:
+		var ret StreamEvent_ContactUpdated
+		return &ret, proto.Unmarshal(event.GetPayload(), &ret)
+	case StreamEvent_TypeConversationUpdated:
+		var ret StreamEvent_ConversationUpdated
+		return &ret, proto.Unmarshal(event.GetPayload(), &ret)
+	case StreamEvent_TypeInteractionUpdated:
+		var ret StreamEvent_InteractionUpdated
+		return &ret, proto.Unmarshal(event.GetPayload(), &ret)
+	}
+
+	return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported StreamEvent type: %q", event.GetType()))
+}
+
+func (interaction *Interaction) UnmarshalPayload() (proto.Message, error) {
+	appMessage := AppMessage{
+		Type:    interaction.GetType(),
+		Payload: interaction.GetPayload(),
+	}
+	return appMessage.UnmarshalPayload()
+}
+
+func (event *StreamEvent) Debug() string {
+	output := "=== EVENT DEBUG ===\n"
+	if event == nil {
+		return output + "event is nil\n"
+	}
+
+	output += "event: " + godev.PrettyJSONPB(event) + "\n"
+
+	eventPayload, err := event.UnmarshalPayload()
+	if err != nil {
+		return output + fmt.Sprintf("invalid payload: %v", err)
+	}
+
+	output += "eventPayload: " + godev.PrettyJSONPB(eventPayload)
+
+	// FIXME: switch on the payload type to unmarshal nested payloads
+	return output
 }
