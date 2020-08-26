@@ -52,7 +52,7 @@ export const ChatFooter: React.FC<{
 		}
 	}
 
-	// TODO: Debug
+	// TODO: Debug, error on restarting node
 	const handleSend = React.useCallback(() => {
 		console.log('check convPk === conversation.publicKey:', convPk === conversation.publicKey)
 		console.log('sending user message payload:', decoded)

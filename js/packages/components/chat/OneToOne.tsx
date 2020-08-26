@@ -18,12 +18,7 @@ import { ConversationProceduralAvatar } from '../shared-components/ProceduralCir
 // import { ChatFooter, ChatDate } from './shared-components/Chat'
 
 // import { useReadEffect } from '../hooks'
-import {
-	useContacts,
-	useTmpConversations,
-	useEstablishedContacts,
-	useConversationList,
-} from '@berty-tech/store/hooks'
+import { useContacts, useConversationList } from '@berty-tech/store/hooks'
 import { values } from 'lodash'
 import { ChatFooter } from './shared-components/Chat'
 // import { useContact } from '@berty-tech/store/oldhooks/contact'
