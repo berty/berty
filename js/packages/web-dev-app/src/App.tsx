@@ -1,6 +1,6 @@
 import React, { useState, useRef, useLayoutEffect } from 'react'
 import './App.css'
-import { MsgrContext } from '@berty-tech/store/context'
+import { MsgrContext, useMsgrContext } from '@berty-tech/store/context'
 import { MsgrProvider } from '@berty-tech/store/provider'
 import {
 	useGetMessageSearchResultWithMetadata,
@@ -417,11 +417,17 @@ const MultiMember: React.FC = () => {
 	)
 }
 
+const DumpStore: React.FC = () => {
+	const ctx = useMsgrContext()
+	return <JSONed value={ctx}/>
+}
+
 const TABS = {
 	Contacts: Contacts,
 	Conversations: Conversations,
 	Search: Search,
 	MultiMember: MultiMember,
+	DumpStore: DumpStore
 }
 
 type TabKey = keyof typeof TABS
@@ -494,6 +500,7 @@ const StreamGate: React.FC = ({ children }) => {
 
 function App() {
 	const daemonAddress = getParam(daemonAddrParamName) || 'http://127.0.0.1:1337'
+
 	return (
 		<div className='App' style={{ display: 'flex', flexDirection: 'column' }}>
 			<h1>Berty web dev</h1>

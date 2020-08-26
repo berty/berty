@@ -1,9 +1,9 @@
+import { useMsgrContext } from '@berty-tech/store/hooks'
+import { ColorsStyles, useStyles } from '@berty-tech/styles'
 import React from 'react'
-import { View, StyleProp } from 'react-native'
-import { Icon } from 'react-native-ui-kitten'
-import { useStyles, ColorsStyles } from '@berty-tech/styles'
+import { StyleProp, View } from 'react-native'
 import Jdenticon from 'react-native-jdenticon'
-import { Messenger } from '@berty-tech/store/oldhooks'
+import { Icon } from 'react-native-ui-kitten'
 
 //
 // ProceduralCircleAvatar => every avatar in white circle or not
@@ -137,19 +137,16 @@ export const ConversationProceduralAvatar: React.FC<ConversationProceduralAvatar
 	diffSize,
 	style,
 }) => {
-	const conversation = Messenger.useGetConversation(conversationId)
-	const contact = Messenger.useOneToOneConversationContact(conversationId)
+	const ctx: any = useMsgrContext()
 	const seeds: string[] = []
-	if (conversation) {
-		switch (conversation.kind) {
-			case messenger.conversation.ConversationKind.OneToOne:
-				if (contact) {
-					seeds.push(contact.publicKey)
-				}
-				break
-			case messenger.conversation.ConversationKind.MultiMember:
-				seeds.push(conversation.pk)
-				break
+	if (ctx.conversations[conversationId]) {
+		seeds.push(conversationId)
+	} else {
+		const contact: any = Object.values(ctx.contacts).find(
+			(c: any) => c.conversationPublicKey === conversationId,
+		)
+		if (contact) {
+			seeds.push(contact.publicKey)
 		}
 	}
 	return <ProceduralAvatar seeds={seeds} size={size} diffSize={diffSize} style={style} />

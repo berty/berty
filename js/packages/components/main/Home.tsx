@@ -1,31 +1,32 @@
-import React, { useRef, useEffect, useState } from 'react'
+import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import {
+	useConversationLength,
+	useConversationList,
+	useIncomingContactRequests,
+} from '@berty-tech/store/hooks'
+import messengerMethodsHooks from '@berty-tech/store/methods'
+import { Messenger } from '@berty-tech/store/oldhooks'
+import { useStyles } from '@berty-tech/styles'
+import React, { useEffect, useRef, useState } from 'react'
+import { Translation } from 'react-i18next'
+import {
+	ScrollView,
+	Text as TextNative,
+	TouchableHighlight,
 	TouchableOpacity,
 	View,
 	ViewProps,
-	ScrollView,
-	TouchableHighlight,
-	Text as TextNative,
 } from 'react-native'
-import { Translation } from 'react-i18next'
-import { useLayout } from '../hooks'
-import { useStyles } from '@berty-tech/styles'
-import {
-	ProceduralCircleAvatar,
-	ConversationProceduralAvatar,
-} from '../shared-components/ProceduralCircleAvatar'
-import { Messenger } from '@berty-tech/store/oldhooks'
-import { ScreenProps, useNavigation, Routes } from '@berty-tech/navigation'
-import { CommonActions } from '@react-navigation/core'
-import { useIncomingContactRequests } from '@berty-tech/store/hooks'
-
+import { SafeAreaConsumer, SafeAreaView } from 'react-native-safe-area-context'
 import { Icon, Text } from 'react-native-ui-kitten'
-import { SafeAreaView, SafeAreaConsumer } from 'react-native-safe-area-context'
+import { useLayout } from '../hooks'
 import FromNow from '../shared-components/FromNow'
+import {
+	ConversationProceduralAvatar,
+	ProceduralCircleAvatar,
+} from '../shared-components/ProceduralCircleAvatar'
 import Logo from './1_berty_picto.svg'
 import EmptyChat from './empty_chat.svg'
-import moment from 'moment'
-import messengerMethodsHooks from '@berty-tech/store/methods'
 
 //
 // Main List
@@ -188,9 +189,9 @@ const UnreadCount: React.FC<{ value: number }> = ({ value }) =>
 const MessageStatus: React.FC<{ messageID: string }> = ({ messageID }) => {
 	const [{ color }] = useStyles()
 	const message = Messenger.useGetMessage(messageID)
-	if (message?.type !== messenger.AppMessageType.UserMessage) {
-		return null
-	}
+	// if (message?.type !== messenger.AppMessageType.UserMessage) {
+	// 	return null
+	// }
 	return (
 		<View style={{ width: 25, justifyContent: 'center', alignItems: 'center' }}>
 			{message ? (
@@ -206,42 +207,42 @@ const MessageStatus: React.FC<{ messageID: string }> = ({ messageID }) => {
 }
 
 const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
-	const { dispatch } = useNavigation()
-	const { title, kind, id, messages, unreadCount, lastSentMessage, fake } = props
+	// const { dispatch } = useNavigation()
+	const { publicKey = '', displayName = '', fake = false } = props
 	const [{ color, row, border, flex, column, padding, text }] = useStyles()
-	const message = Messenger.useGetMessage(messages ? messages[messages.length - 1] : '')
+	// TODO: Last message, unread count, navigate to chatroom
 
 	return (
 		<TouchableHighlight
 			underlayColor={color.light.grey}
 			style={[padding.horizontal.medium]}
-			onPress={
-				kind === messenger.conversation.ConversationKind.MultiMember
-					? () =>
-							dispatch(
-								CommonActions.navigate({
-									name: Routes.Chat.Group,
-									params: {
-										convId: id,
-									},
-								}),
-							)
-					: () =>
-							dispatch(
-								CommonActions.navigate({
-									name: Routes.Chat.OneToOne,
-									params: {
-										convId: id,
-									},
-								}),
-							)
-			}
+			// onPress={
+			// 	kind === messenger.conversation.ConversationKind.MultiMember
+			// 		? () =>
+			// 				dispatch(
+			// 					CommonActions.navigate({
+			// 						name: Routes.Chat.Group,
+			// 						params: {
+			// 							convId: id,
+			// 						},
+			// 					}),
+			// 				)
+			// 		: () =>
+			// 				dispatch(
+			// 					CommonActions.navigate({
+			// 						name: Routes.Chat.OneToOne,
+			// 						params: {
+			// 							convId: id,
+			// 						},
+			// 					}),
+			// 				)
+			// }
 		>
 			<View
 				style={[row.center, border.bottom.medium, border.color.light.grey, padding.vertical.small]}
 			>
 				<ConversationProceduralAvatar
-					conversationId={props.id}
+					conversationId={publicKey}
 					size={50}
 					style={[padding.tiny, row.item.justify]}
 				/>
@@ -250,13 +251,17 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 						<View style={[row.left]}>
 							<Text
 								numberOfLines={1}
-								style={[text.size.medium, text.color.black, unreadCount && text.bold.medium]}
+								style={[
+									text.size.medium,
+									text.color.black,
+									// unreadCount && text.bold.medium
+								]}
 							>
 								{(fake && 'FAKE - ') || ''}
-								{title || ''}
+								{displayName || ''}
 							</Text>
 						</View>
-						<View style={[row.right, { alignItems: 'center' }]}>
+						{/* <View style={[row.right, { alignItems: 'center' }]}>
 							<UnreadCount value={unreadCount} />
 							<Text
 								style={[
@@ -272,9 +277,9 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 									: moment().format('hh:mm')}
 							</Text>
 							{lastSentMessage && <MessageStatus messageID={lastSentMessage} />}
-						</View>
+						</View> */}
 					</View>
-					<Text
+					{/* <Text
 						numberOfLines={1}
 						style={[
 							text.size.small,
@@ -282,7 +287,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 						]}
 					>
 						{message?.type === messenger.AppMessageType.UserMessage ? message.body : ''}
-					</Text>
+					</Text> */}
 				</View>
 			</View>
 		</TouchableHighlight>
@@ -307,7 +312,7 @@ const Conversations: React.FC<ConversationsProps> = ({ items, onLayout, style })
 					{items &&
 						items.length &&
 						items.map((_) => {
-							return <ConversationsItem key={_.id} {..._} />
+							return <ConversationsItem key={_.publicKey} {..._} />
 						})}
 				</View>
 			)}
@@ -382,10 +387,8 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const [layoutHeader, onLayoutHeader] = useLayout()
 
 	const requests: any[] = useIncomingContactRequests()
-	const conversations: any[] = [] /*Messenger.useConversationList().sort(
-		(a, b) => new Date(b.lastMessageDate).getTime() - new Date(a.lastMessageDate).getTime(),
-	)*/
-	const isConversation = 0 // Messenger.useConversationLength()
+	const conversations: any[] = useConversationList() // TODO: sort
+	const isConversation: number = useConversationLength()
 
 	const [{ color, text, opacity, flex, margin, background }] = useStyles()
 	const scrollRef = useRef<ScrollView>(null)
