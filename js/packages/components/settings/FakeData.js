@@ -7,29 +7,39 @@ import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 // import { Messenger } from '@berty-tech/store/oldhooks'
 import {
-	useGenerateFakeConversations,
+	useGenerateFakeContacts,
+	useGenerateFakeMultiMembers,
 	useDeleteFakeData,
 	useGenerateFakeMessages,
 } from '@berty-tech/store/hooks'
 
 const BodyFakeData = () => {
 	const [{ color, padding, flex, margin }] = useStyles()
-	const generateFake = useGenerateFakeConversations()
+	const generateFakeContacts = useGenerateFakeContacts()
+	const generateFakeMM = useGenerateFakeMultiMembers()
 	const deleteFake = useDeleteFakeData()
 	const convGenMsg = useGenerateFakeMessages()
 
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<ButtonSetting
-				name='Gen fake convs'
+				name='Gen fake contacts'
 				icon='book-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
 				actionIcon={null}
-				onPress={() => generateFake(20)}
+				onPress={() => generateFakeContacts(5)}
 			/>
 			<ButtonSetting
-				name='Gen fake msgs in convs'
+				name='Gen fake multi-members'
+				icon='book-outline'
+				iconSize={30}
+				iconColor={color.dark.grey}
+				actionIcon={null}
+				onPress={() => generateFakeMM(5)}
+			/>
+			<ButtonSetting
+				name='Gen fake messages'
 				icon='book-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}

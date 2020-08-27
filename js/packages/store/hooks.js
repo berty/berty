@@ -2,7 +2,12 @@ import React, { useContext, useMemo } from 'react'
 import { MsgrContext, useMsgrContext } from './context'
 import flatten from 'lodash/flatten'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
-import { fakeContacts, fakeConversations, fakeMessages } from '@berty-tech/components/faker'
+import {
+	fakeContacts,
+	fake1To1Conversations,
+	fakeMultiMemberConversations,
+	fakeMessages,
+} from './faker'
 import { omitBy } from 'lodash'
 
 const AppMessageType = messengerpb.AppMessage.Type
@@ -147,52 +152,42 @@ export const useOutgoingContactRequests = () => {
 // TODO: See how to use 1-1's already generated in event stream
 export const useConversationList = () => {
 	const ctx = useMsgrContext()
-
-	const oneToOneConversations = [
-		...Object.values(ctx.contacts)
-			.filter((c) => c.state === messengerpb.Contact.State.Established)
-			.filter((c) => !ctx.conversations[c.conversationPublicKey])
-			.map((c) => ({
-				publicKey: c.conversationPublicKey,
-				displayName: c.displayName,
-				kind: '1to1',
-			})),
-	]
-	const conversationList = [
-		...Object.values(ctx.conversations).map((c) => ({ ...c, kind: 'multi' })),
-		...Object.values(oneToOneConversations),
-	]
-	return conversationList
+	return Object.values(ctx.conversations)
 }
 
 export const useConversationLength = () => {
-	const ctx = useMsgrContext()
-	return (
-		Object.values(ctx.conversations).length +
-		Object.values(ctx.contacts).filter((c) => c.state === messengerpb.Contact.State.Established)
-			.length
-	)
+	return useConversationList().length
 }
 
 //
 // Fake data generation
 //
 
-let globalFakeLengthModifier = 0
-
 // Generate n fake conversations with n fake contacts, one UserMessage per conv
-export const useGenerateFakeConversations = () => {
+export const useGenerateFakeContacts = () => {
 	const ctx = useMsgrContext()
-
+	const prevFakeCount = Object.values(ctx.contacts).reduce((r, c) => (c.fake ? r + 1 : r), 0)
 	return (length = 10) => {
-		globalFakeLengthModifier += length
-		const contacts = fakeContacts(length, globalFakeLengthModifier)
-		const conversations = fakeConversations(contacts)
+		const payload = fakeContacts(length, prevFakeCount)
 		ctx.dispatch({
-			type: 'ADD_FAKE_CONVERSATIONS',
+			type: 'ADD_FAKE_DATA',
+			payload,
+		})
+	}
+}
+
+export const useGenerateFakeMultiMembers = () => {
+	const ctx = useMsgrContext()
+	const prevFakeCount = Object.values(ctx.conversations).reduce(
+		(r, c) => (c.fake && c.kind === 'multi' ? r + 1 : r),
+		0,
+	)
+	return (length = 10) => {
+		const conversations = fakeMultiMemberConversations(length, prevFakeCount)
+		ctx.dispatch({
+			type: 'ADD_FAKE_DATA',
 			payload: {
 				conversations,
-				contacts,
 			},
 		})
 	}
@@ -202,12 +197,16 @@ export const useGenerateFakeConversations = () => {
 export const useGenerateFakeMessages = () => {
 	const ctx = useMsgrContext()
 	const fakeConversationList = useConversationList().filter((c) => c.fake === true)
-
+	const prevFakeCount = fakeConversationList.reduce((r, fakeConv) => {
+		return Object.values(ctx.interactions[fakeConv.publicKey] || {}).reduce(
+			(r2, inte) => (inte.fake ? r2 + 1 : r2),
+			r,
+		)
+	}, 0)
 	return (length = 10) => {
-		globalFakeLengthModifier += length * fakeConversationList.length
-		const interactions = fakeMessages(length, fakeConversationList, globalFakeLengthModifier)
+		const interactions = fakeMessages(length, fakeConversationList, prevFakeCount)
 		ctx.dispatch({
-			type: 'ADD_FAKE_MESSAGES',
+			type: 'ADD_FAKE_DATA',
 			payload: {
 				interactions,
 			},
@@ -215,17 +214,11 @@ export const useGenerateFakeMessages = () => {
 	}
 }
 
-// Delete all fake conversations
+// Delete all fake data
 export const useDeleteFakeData = () => {
 	const ctx = useMsgrContext()
-	globalFakeLengthModifier = 0
 	return () =>
 		ctx.dispatch({
 			type: 'DELETE_FAKE_DATA',
-			payload: {
-				conversations: omitBy(ctx.conversations, (c) => c.fake === true),
-				contacts: omitBy(ctx.contacts, (c) => c.fake === true),
-				interactions: omitBy(ctx.interactions, (msg) => msg.fake === true),
-			},
 		})
 }

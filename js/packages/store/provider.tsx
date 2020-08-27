@@ -7,6 +7,7 @@ import ExternalTransport from './externalTransport'
 import cloneDeep from 'lodash/cloneDeep'
 import GoBridge, { GoLogLevel } from '@berty-tech/go-bridge'
 import MsgrContext, { initialState } from './context'
+import pickBy from 'lodash/pickBy'
 
 const T = messengerpb.StreamEvent.Type
 
@@ -77,17 +78,15 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 				return oldState
 			}
 			break
-		case 'ADD_FAKE_CONVERSATIONS':
+		case 'ADD_FAKE_DATA':
 			state.conversations = { ...state.conversations, ...action.payload.conversations }
 			state.contacts = { ...state.contacts, ...action.payload.contacts }
-			break
-		case 'ADD_FAKE_MESSAGES':
 			state.interactions = { ...state.interactions, ...action.payload.interactions }
 			break
 		case 'DELETE_FAKE_DATA':
-			state.conversations = action.payload.conversations
-			state.contacts = action.payload.contacts
-			state.interactions = action.payload.interactions
+			state.conversations = pickBy(state.conversations, (conv) => !conv.fake)
+			state.contacts = pickBy(state.contacts, (contact) => !contact.fake)
+			state.interactions = pickBy(state.interactions, (inte) => !inte.fake)
 			break
 		default:
 			console.warn('Unknown action type', action.type)
