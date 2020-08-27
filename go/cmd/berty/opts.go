@@ -43,6 +43,7 @@ type mainOpts struct {
 	poiDebug       bool
 	tracer         string
 	datastorePath  string
+	sqlitePath     string
 
 	// more specific
 	bannerLight           bool

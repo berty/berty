@@ -240,7 +240,7 @@ func processMessageList(ctx context.Context, groupPK []byte, db *gorm.DB, client
 		}
 
 		i := &Interaction{
-			Cid:                   bytesToString(message.GetEventContext().GetID()),
+			CID:                   bytesToString(message.GetEventContext().GetID()),
 			Type:                  appMsg.GetType(),
 			Payload:               appMsg.GetPayload(),
 			ConversationPublicKey: bytesToString(message.GetEventContext().GetGroupPK()),

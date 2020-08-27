@@ -31,6 +31,7 @@ import (
 	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"gorm.io/gorm"
 )
 
 type Opts struct {
@@ -41,6 +42,7 @@ type Opts struct {
 	GroupInvitation string
 	Port            uint
 	RootDS          datastore.Batching
+	MessengerDB     *gorm.DB
 	Logger          *zap.Logger
 	POIDebug        bool
 	DisplayName     string
@@ -214,6 +216,7 @@ func Main(ctx context.Context, opts *Opts) error {
 	messenger, err := bertymessenger.New(client, &bertymessenger.Opts{
 		Logger:          opts.Logger.Named("messenger"),
 		ProtocolService: service,
+		DB:              opts.MessengerDB,
 	})
 	if err != nil {
 		return errcode.TODO.Wrap(err)
