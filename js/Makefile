@@ -239,7 +239,7 @@ bridge.start.docker:
 
 #### pbhbs based code generation
 
-pbhbs_templates := $(wildcard */*/protocol/*.hbs */*/messenger/*.hbs */*/types/*.hbs */components/*.hbs)
+pbhbs_templates := packages/api/index.gen.js.hbs packages/codegen/index.gen.js.hbs
 pbhbs_targets := $(patsubst %.hbs,%,$(pbhbs_templates))
 pbhbs_flags := -p ../api -p node_modules/@googleapis/googleapis -p `cd ..; go list -m -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `cd ..; go list -m -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src -H packages/codegen/helpers
 .PHONY: _gen.pbhbs
@@ -262,7 +262,7 @@ _gen.pbjs:
 
 #### gen.sum
 
-gensum_src := Makefile $(pbhbs_templates)
+gensum_src := Makefile $(pbhbs_templates) ../api/bertyprotocol.proto ../api/bertymessenger.proto ../api/bertytypes.proto
 gen.sum: $(gensum_src)
 	$(call check-program, shasum)
 	@shasum $(gensum_src) | sort > gen.sum.tmp
