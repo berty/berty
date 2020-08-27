@@ -7,10 +7,11 @@ import ExternalTransport from './externalTransport'
 import cloneDeep from 'lodash/cloneDeep'
 import GoBridge, { GoLogLevel } from '@berty-tech/go-bridge'
 import MsgrContext, { initialState } from './context'
+import pickBy from 'lodash/pickBy'
 
 const T = messengerpb.StreamEvent.Type
 
-const reducer = (oldState, action) => {
+const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 	const state = cloneDeep(oldState) // TODO: optimize rerenders
 	console.log('reducing', action)
 	switch (action.type) {
@@ -27,7 +28,7 @@ const reducer = (oldState, action) => {
 			break
 		case T.TypeConversationUpdated:
 			const conv = action.payload.conversation
-			state.conversations[conv.publicKey] = conv
+			state.conversations[conv.publicKey] = { kind: 'multi', ...conv }
 			break
 		case T.TypeAccountUpdated:
 			const acc = action.payload.account
@@ -36,6 +37,18 @@ const reducer = (oldState, action) => {
 		case T.TypeContactUpdated:
 			const contact = action.payload.contact
 			state.contacts[contact.publicKey] = contact
+			if (
+				contact.state === messengerpb.Contact.State.Established &&
+				contact.conversationPublicKey
+			) {
+				state.conversations[contact.conversationPublicKey] = {
+					...(state.conversations[contact.conversationPublicKey] || {}),
+					kind: '1to1',
+					publicKey: contact.conversationPublicKey,
+					displayName: contact.displayName,
+					contactPublicKey: contact.publicKey,
+				}
+			}
 			break
 		case T.TypeListEnd:
 			state.listDone = true
@@ -50,7 +63,7 @@ const reducer = (oldState, action) => {
 				const typeName = Object.keys(messengerpb.AppMessage.Type).find(
 					(name) => messengerpb.AppMessage.Type[name] === inte.type,
 				)
-				const name = typeName.substr('Type'.length)
+				const name = typeName?.substr('Type'.length)
 				const pbobj = messengerpb.AppMessage[name]
 				if (!pbobj) {
 					throw new Error('failed to find a protobuf object matching the event type')
@@ -64,6 +77,16 @@ const reducer = (oldState, action) => {
 				console.warn('failed to reduce interaction', e)
 				return oldState
 			}
+			break
+		case 'ADD_FAKE_DATA':
+			state.conversations = { ...state.conversations, ...action.payload.conversations }
+			state.contacts = { ...state.contacts, ...action.payload.contacts }
+			state.interactions = { ...state.interactions, ...action.payload.interactions }
+			break
+		case 'DELETE_FAKE_DATA':
+			state.conversations = pickBy(state.conversations, (conv) => !conv.fake)
+			state.contacts = pickBy(state.contacts, (contact) => !contact.fake)
+			state.interactions = pickBy(state.interactions, (inte) => !inte.fake)
 			break
 		default:
 			console.warn('Unknown action type', action.type)
@@ -189,7 +212,7 @@ export const MsgrProvider = ({ children, daemonAddress, embedded }) => {
 		return () => cancel()
 	}, [daemonAddress, embedded, nodeStarted])
 	return (
-		<MsgrContext.Provider value={{ ...state, restart, deleteAccount }}>
+		<MsgrContext.Provider value={{ ...state, restart, deleteAccount, dispatch }}>
 			{children}
 		</MsgrContext.Provider>
 	)
