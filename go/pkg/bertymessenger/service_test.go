@@ -2,485 +2,456 @@ package bertymessenger
 
 import (
 	"context"
-	"io"
-	"strconv"
 	"testing"
 	"time"
 
 	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"github.com/gogo/protobuf/proto"
-	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/test/bufconn"
-	"moul.io/u"
 )
 
-const timeout = time.Second * 5
-
-func TestStreamThenCreateConv(t *testing.T) {
-	ctx, cancelCtx := context.WithTimeout(context.Background(), timeout)
-	defer cancelCtx()
-	l := testutil.Logger(t)
-	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: l})
+func TestServiceStream(t *testing.T) {
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	node, cleanup := testingNode(ctx, t)
 	defer cleanup()
 
-	// new client
-	lis := bufconn.Listen(1024 * 1024)
-	s := grpc.NewServer()
-	RegisterMessengerServiceServer(s, svc)
-	go func() {
-		err := s.Serve(lis)
+	// first event is account update
+	{
+		event := node.NextEvent(t)
+		require.Equal(t, event.Type, StreamEvent_TypeAccountUpdated)
+		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
-	}()
-	conn, err := grpc.DialContext(ctx, "bufnet", grpc.WithContextDialer(mkBufDialer(lis)), grpc.WithInsecure())
-	require.NoError(t, err)
-	defer conn.Close()
-	client := NewMessengerServiceClient(conn)
-
-	res, err := client.EventStream(ctx, &EventStream_Request{})
-	require.NoError(t, err)
-
-	dn := "Tasty"
-
-	ccrep, err := client.ConversationCreate(ctx, &ConversationCreate_Request{DisplayName: dn})
-	require.NoError(t, err)
-	require.NotEmpty(t, ccrep.GetPublicKey())
-
-	var c *Conversation
-	for {
-		rep, err := res.Recv()
-		require.NotEqual(t, err, io.EOF, "EOF while waiting for conversation update after creating it")
-		require.NoError(t, err)
-		ev := rep.GetEvent()
-		if ev.GetType() == StreamEvent_TypeConversationUpdated {
-			var p StreamEvent_ConversationUpdated
-			err := proto.Unmarshal(ev.GetPayload(), &p)
-			require.NoError(t, err)
-			nc := p.GetConversation()
-			l.Debug("got conv", zap.String("display_name", nc.GetDisplayName()))
-			require.NotNil(t, nc)
-			require.Equal(t, nc.GetPublicKey(), ccrep.GetPublicKey())
-			if nc.GetDisplayName() != "" {
-				c = nc
-				break
-			}
-		}
+		account := payload.(*StreamEvent_AccountUpdated).Account
+		require.Equal(t, account, node.GetAccount())
+		require.NotEmpty(t, account.Link)
+		require.NotEmpty(t, account.PublicKey)
+		require.Equal(t, account.State, Account_NotReady)
+		require.Empty(t, account.DisplayName)
 	}
 
-	require.NotNil(t, c)
-	require.Equal(t, ccrep.GetPublicKey(), c.GetPublicKey())
-	require.Equal(t, dn, c.GetDisplayName())
-
-	cancelCtx()
-	for err = nil; err == nil; {
-		_, err = res.Recv()
+	// second event is list end
+	{
+		event := node.NextEvent(t)
+		require.Equal(t, event.Type, StreamEvent_TypeListEnd)
+		require.Empty(t, event.Payload)
 	}
-	require.True(t, isGRPCCanceledError(err))
+
+	// no more event
+	{
+		event := node.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
+	}
 }
 
-func TestContactRequest(t *testing.T) {
-	ctx, cancelCtx := context.WithTimeout(context.Background(), timeout)
-	defer cancelCtx()
-	l := testutil.Logger(t)
-	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: l})
+func TestServiceSetName(t *testing.T) {
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	node, cleanup := testingNode(ctx, t)
 	defer cleanup()
 
-	// new client
-	lis := bufconn.Listen(1024 * 1024)
-	s := grpc.NewServer()
-	RegisterMessengerServiceServer(s, svc)
-	go func() {
-		err := s.Serve(lis)
+	// set name before opening the stream
+	node.SetName(t, "foo")
+
+	// first event is account update
+	{
+		event := node.NextEvent(t)
+		require.Equal(t, event.Type, StreamEvent_TypeAccountUpdated)
+		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
-	}()
-	conn, err := grpc.DialContext(ctx, "bufnet", grpc.WithContextDialer(mkBufDialer(lis)), grpc.WithInsecure())
-	require.NoError(t, err)
-	defer conn.Close()
-	client := NewMessengerServiceClient(conn)
-
-	stream, err := client.EventStream(ctx, &EventStream_Request{})
-	require.NoError(t, err)
-
-	contactName := "zxxma-iphone"
-	link := "https://berty.tech/id#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA&name=" + contactName
-	ownMetadata := []byte("bar")
-
-	metadata, err := proto.Marshal(&ContactMetadata{contactName})
-	require.NoError(t, err)
-	pdlRep, err := client.ParseDeepLink(ctx, &ParseDeepLink_Request{Link: link})
-	require.NoError(t, err)
-	_, err = client.SendContactRequest(ctx, &SendContactRequest_Request{BertyID: pdlRep.BertyID, Metadata: metadata, OwnMetadata: ownMetadata})
-	require.NoError(t, err)
-
-	var c *Contact
-	for {
-		rep, err := stream.Recv()
-		require.NotEqual(t, err, io.EOF, "EOF while waiting for contact update after sending a request")
-		require.NoError(t, err)
-		ev := rep.GetEvent()
-		if ev.GetType() == StreamEvent_TypeContactUpdated {
-			var p StreamEvent_ContactUpdated
-			err := proto.Unmarshal(ev.GetPayload(), &p)
-			require.NoError(t, err)
-			c = p.GetContact()
-			break
-		}
+		account := payload.(*StreamEvent_AccountUpdated).Account
+		require.Equal(t, account, node.GetAccount())
+		require.NotEmpty(t, account.Link)
+		require.NotEmpty(t, account.PublicKey)
+		require.Equal(t, account.State, Account_Ready)
+		require.Equal(t, account.DisplayName, "foo")
 	}
-	require.NotNil(t, c)
-	require.Equal(t, contactName, c.GetDisplayName())
-	require.Equal(t, c.GetState(), Contact_OutgoingRequestEnqueued)
 
-	cancelCtx()
-	for err = nil; err == nil; {
-		_, err = stream.Recv()
+	// second event is list end
+	{
+		event := node.NextEvent(t)
+		require.Equal(t, event.Type, StreamEvent_TypeListEnd)
+		require.Empty(t, event.Payload)
 	}
-	require.True(t, isGRPCCanceledError(err))
+
+	// no more event
+	{
+		event := node.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
+	}
 }
 
-func testingInfra(ctx context.Context, t *testing.T, amount int, l *zap.Logger) ([]MessengerServiceClient, func()) {
-	if l == nil {
-		l = testutil.Logger(t)
-	}
-
-	mocknet := libp2p_mocknet.New(ctx)
-
-	protocols, cleanup := bertyprotocol.NewTestingProtocolWithMockedPeers(ctx, t, &bertyprotocol.TestingOpts{Logger: l, Mocknet: mocknet}, amount)
-	clients := make([]MessengerServiceClient, amount)
-
-	for i, p := range protocols {
-		// new messenger service
-		svc, cleanupMessengerService := TestingService(ctx, t, &TestingServiceOpts{Logger: l, Client: p.Client, Index: i})
-
-		// new messenger client
-		lis := bufconn.Listen(1024 * 1024)
-		s := grpc.NewServer()
-		RegisterMessengerServiceServer(s, svc)
-		go func() {
-			err := s.Serve(lis)
-			require.NoError(t, err)
-		}()
-		conn, err := grpc.DialContext(ctx, "bufnet", grpc.WithContextDialer(mkBufDialer(lis)), grpc.WithInsecure())
-		require.NoError(t, err)
-		cleanup = u.CombineFuncs(func() {
-			require.NoError(t, conn.Close())
-			cleanupMessengerService()
-		}, cleanup)
-		clients[i] = NewMessengerServiceClient(conn)
-	}
-
-	require.NoError(t, mocknet.ConnectAllButSelf())
-
-	return clients, cleanup
-}
-
-func TestCreateConvThenStream(t *testing.T) {
-	ctx, cancelCtx := context.WithTimeout(context.Background(), timeout)
-	defer cancelCtx()
-	l := testutil.Logger(t)
-	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: l})
+func TestServiceSetNameAsync(t *testing.T) {
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	node, cleanup := testingNode(ctx, t)
 	defer cleanup()
 
-	// new client
-	lis := bufconn.Listen(1024 * 1024)
-	s := grpc.NewServer()
-	RegisterMessengerServiceServer(s, svc)
-	go func() {
-		err := s.Serve(lis)
+	// first event is account update
+	{
+		event := node.NextEvent(t)
+		require.Equal(t, event.Type, StreamEvent_TypeAccountUpdated)
+		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
-	}()
-	conn, err := grpc.DialContext(ctx, "bufnet", grpc.WithContextDialer(mkBufDialer(lis)), grpc.WithInsecure())
-	require.NoError(t, err)
-	defer conn.Close()
-	client := NewMessengerServiceClient(conn)
+		account := payload.(*StreamEvent_AccountUpdated).Account
+		require.Equal(t, account, node.GetAccount())
+		require.NotEmpty(t, account.Link)
+		require.NotEmpty(t, account.PublicKey)
+		require.Equal(t, account.State, Account_NotReady)
+		require.Empty(t, account.DisplayName)
+	}
 
-	dn := "Tasty"
+	// second event is list end
+	{
+		event := node.NextEvent(t)
+		require.Equal(t, event.Type, StreamEvent_TypeListEnd)
+		require.Empty(t, event.Payload)
+	}
 
-	ccrep, err := client.ConversationCreate(ctx, &ConversationCreate_Request{DisplayName: dn})
-	require.NoError(t, err)
-	require.NotEmpty(t, ccrep.GetPublicKey())
+	// set name after opening the stream
+	previousAccount := node.GetAccount()
+	node.SetName(t, "foo")
 
-	strm, err := client.EventStream(ctx, &EventStream_Request{})
-	require.NoError(t, err)
-
-	var c *Conversation
-	for {
-		rep, err := strm.Recv()
-		require.NotEqual(t, err, io.EOF, "EOF while waiting for conversation update after creating it")
+	// new account update event
+	{
+		event := node.NextEvent(t)
+		require.Equal(t, event.Type, StreamEvent_TypeAccountUpdated)
+		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
-		ev := rep.GetEvent()
-		if ev.GetType() == StreamEvent_TypeConversationUpdated {
-			var p StreamEvent_ConversationUpdated
-			err := proto.Unmarshal(ev.GetPayload(), &p)
-			require.NoError(t, err)
-			nc := p.GetConversation()
-			require.NotNil(t, nc)
-			require.Equal(t, nc.GetPublicKey(), ccrep.GetPublicKey())
-			if nc.GetDisplayName() != "" {
-				c = nc
-				break
-			}
+		account := payload.(*StreamEvent_AccountUpdated).Account
+		require.Equal(t, account, node.GetAccount())
+		require.NotEmpty(t, account.Link)
+		require.NotEmpty(t, account.PublicKey)
+		require.Equal(t, account.State, Account_Ready)
+		require.Equal(t, account.DisplayName, "foo")
+		require.Equal(t, account.PublicKey, previousAccount.PublicKey)
+		require.NotEqual(t, account.Link, previousAccount.Link)
+	}
+
+	// no more event
+	{
+		event := node.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
+	}
+}
+
+func TestServiceStreamCancel(t *testing.T) {
+	ctx, ctxCancel := context.WithTimeout(context.Background(), 5*time.Second)
+	node, cleanup := testingNode(ctx, t)
+	defer cleanup()
+
+	// first event is account update
+	{
+		event := node.NextEvent(t)
+		require.Equal(t, event.Type, StreamEvent_TypeAccountUpdated)
+	}
+
+	// cancel
+	ctxCancel()
+
+	// second event fails
+	{
+		var err error
+		for err == nil {
+			_, err = node.GetStream(t).Recv()
 		}
+		require.True(t, isGRPCCanceledError(err))
+	}
+}
+
+func TestServiceContactRequest(t *testing.T) {
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	node, cleanup := testingNode(ctx, t)
+	defer cleanup()
+
+	// drain init events
+	node.DrainInitEvents(t)
+
+	// send contact request
+	const contactName = "zxxma-iphone"
+	{
+		link := "https://berty.tech/id#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA&name=" + contactName
+		ownMetadata := []byte("bar")
+		metadata, err := proto.Marshal(&ContactMetadata{DisplayName: contactName})
+		require.NoError(t, err)
+		deeplinkReply, err := node.GetClient().ParseDeepLink(ctx, &ParseDeepLink_Request{Link: link})
+		require.NoError(t, err)
+		req := &SendContactRequest_Request{
+			BertyID:     deeplinkReply.BertyID,
+			Metadata:    metadata,
+			OwnMetadata: ownMetadata,
+		}
+		_, err = node.GetClient().SendContactRequest(ctx, req)
+		require.NoError(t, err)
+		require.Len(t, node.contacts, 0)
+		require.Len(t, node.conversations, 0)
 	}
 
-	require.NotNil(t, c)
-	require.Equal(t, ccrep.GetPublicKey(), c.GetPublicKey())
-	require.Equal(t, dn, c.GetDisplayName())
-
-	cancelCtx()
-	for err = nil; err == nil; {
-		_, err = strm.Recv()
+	// check for ContactUpdated event
+	{
+		event := node.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeContactUpdated)
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		contact := payload.(*StreamEvent_ContactUpdated).Contact
+		require.NotNil(t, contact)
+		require.Equal(t, contact.GetDisplayName(), contactName)
+		require.Equal(t, contact.GetState(), Contact_OutgoingRequestEnqueued)
+		require.Len(t, node.contacts, 1)
+		require.Len(t, node.conversations, 0)
 	}
-	require.True(t, isGRPCCanceledError(err))
+
+	// no more event
+	{
+		event := node.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
+	}
+}
+
+func TestServiceConversationCreateLive(t *testing.T) {
+	testutil.SkipUnstable(t)
+
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	node, cleanup := testingNode(ctx, t)
+	defer cleanup()
+
+	// drain init events
+	node.DrainInitEvents(t)
+
+	// create conversation
+	const conversationName = "Tasty"
+	var createdConversationPK string
+	{
+		reply, err := node.GetClient().ConversationCreate(ctx, &ConversationCreate_Request{DisplayName: conversationName})
+		require.NoError(t, err)
+		require.NotEmpty(t, reply.GetPublicKey())
+		createdConversationPK = reply.GetPublicKey()
+	}
+
+	// check for the first ConversationUpdated event (triggered on the join protocol event)
+	{
+		event := node.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		conversation := payload.(*StreamEvent_ConversationUpdated).Conversation
+		require.NotNil(t, conversation)
+		require.Equal(t, conversation.GetPublicKey(), createdConversationPK)
+		require.Empty(t, conversation.GetDisplayName())
+		require.Empty(t, conversation.GetLink())
+	}
+
+	// check for the second ConversationUpdated event (triggered when receiving the metadata with display name)
+	{
+		event := node.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		conversation := payload.(*StreamEvent_ConversationUpdated).Conversation
+		require.NotNil(t, conversation)
+		require.Equal(t, conversation.GetPublicKey(), createdConversationPK)
+		require.Equal(t, conversation.GetDisplayName(), conversationName)
+		require.NotEmpty(t, conversation.GetLink())
+	}
+
+	// no more event
+	{
+		event := node.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
+	}
+}
+
+func TestServiceConversationCreateAsync(t *testing.T) {
+	testutil.SkipUnstable(t)
+
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	node, cleanup := testingNode(ctx, t)
+	defer cleanup()
+
+	// create conversation
+	const conversationName = "Tasty"
+	var createdConversationPK string
+	{
+		reply, err := node.GetClient().ConversationCreate(ctx, &ConversationCreate_Request{DisplayName: conversationName})
+		require.NoError(t, err)
+		require.NotEmpty(t, reply.GetPublicKey())
+		createdConversationPK = reply.GetPublicKey()
+	}
+
+	// first event is account
+	{
+		event := node.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeAccountUpdated)
+	}
+
+	// second event is the conversation, with display name
+	{
+		event := node.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		conversation := payload.(*StreamEvent_ConversationUpdated).Conversation
+		require.NotNil(t, conversation)
+		require.Equal(t, conversation.GetPublicKey(), createdConversationPK)
+		require.Equal(t, conversation.GetDisplayName(), conversationName)
+		require.NotEmpty(t, conversation.GetLink())
+	}
+
+	// then, the list end event
+	{
+		event := node.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeListEnd)
+	}
+
+	// no more event
+	{
+		event := node.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
+	}
+}
+
+func Test1To1AddContact(t *testing.T) {
+	testutil.SkipSlow(t)
+	testutil.SkipUnstable(t)
+
+	logger := testutil.Logger(t)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	clients, cleanup := testingInfra(ctx, t, 2, logger)
+	defer cleanup()
+
+	// Init accounts
+	var (
+		alice = NewTestingAccount(ctx, t, clients[0], logger)
+		bob   = NewTestingAccount(ctx, t, clients[1], logger)
+	)
+	{
+		defer alice.Close()
+		alice.SetName(t, "Alice")
+		alice.DrainInitEvents(t)
+		require.NotEmpty(t, alice.GetAccount().GetLink())
+
+		defer bob.Close()
+		bob.SetName(t, "Bob")
+		bob.DrainInitEvents(t)
+		require.NotEmpty(t, bob.GetAccount().GetLink())
+	}
+
+	// Bob add Alice as contact (and she accepts)
+	{
+		testAddContact(ctx, t, bob, alice)
+		require.Len(t, alice.contacts, 1)
+		require.Len(t, bob.contacts, 1)
+		// FIXME: should have 1 conversation
+		require.Len(t, alice.conversations, 0)
+		require.Len(t, bob.conversations, 0)
+	}
+
+	// no more event
+	{
+		event := alice.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
+
+		event = bob.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
+	}
 }
 
 func Test1To1Exchange(t *testing.T) {
 	testutil.SkipSlow(t)
 	testutil.SkipUnstable(t)
 
-	l := testutil.Logger(t)
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	logger := testutil.Logger(t)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	clients, cleanup := testingInfra(ctx, t, 2, l)
+	clients, cleanup := testingInfra(ctx, t, 2, logger)
 	defer cleanup()
 
 	// Init accounts
+	var (
+		alice = NewTestingAccount(ctx, t, clients[0], logger)
+		bob   = NewTestingAccount(ctx, t, clients[1], logger)
+	)
+	{
+		defer alice.Close()
+		alice.SetName(t, "Alice")
+		alice.DrainInitEvents(t)
+		require.NotEmpty(t, alice.GetAccount().GetLink())
+		require.Len(t, alice.contacts, 0)
+		require.Len(t, alice.conversations, 0)
 
-	aname := "Alice"
-	alice := clients[0]
-	_, err := alice.AccountUpdate(ctx, &AccountUpdate_Request{DisplayName: aname})
-	require.NoError(t, err)
-
-	astrm, err := alice.EventStream(ctx, &EventStream_Request{})
-	require.NoError(t, err)
-
-	var alink string
-	for alink == "" {
-		esr, err := astrm.Recv()
-		require.NotEqual(t, err, io.EOF, "EOF while waiting for account update after starting alice's events stream")
-		require.NoError(t, err)
-		if esr.GetEvent().GetType() == StreamEvent_TypeAccountUpdated {
-			var cu StreamEvent_AccountUpdated
-			err := proto.Unmarshal(esr.GetEvent().GetPayload(), &cu)
-			require.NoError(t, err)
-			acc := cu.GetAccount()
-			require.Equal(t, aname, acc.GetDisplayName())
-			alink = acc.GetLink()
-		}
+		defer bob.Close()
+		bob.SetName(t, "Bob")
+		bob.DrainInitEvents(t)
+		require.NotEmpty(t, bob.GetAccount().GetLink())
+		require.Len(t, bob.contacts, 0)
+		require.Len(t, bob.conversations, 0)
 	}
 
-	bname := "Bob"
-	bob := clients[1]
-	_, err = bob.AccountUpdate(ctx, &AccountUpdate_Request{DisplayName: bname})
-	require.NoError(t, err)
-
-	bstrm, err := bob.EventStream(ctx, &EventStream_Request{})
-	require.NoError(t, err)
-
-	for {
-		esr, err := bstrm.Recv()
-		require.NotEqual(t, err, io.EOF, "EOF while waiting for account update after starting bob's events stream")
-		require.NoError(t, err)
-		if esr.GetEvent().GetType() == StreamEvent_TypeAccountUpdated {
-			var cu StreamEvent_AccountUpdated
-			err := proto.Unmarshal(esr.GetEvent().GetPayload(), &cu)
-			require.NoError(t, err)
-			acc := cu.GetAccount()
-			require.Equal(t, bname, acc.GetDisplayName())
-			break
-		}
-	}
-
-	// Request contact
-
-	_, err = bob.ContactRequest(ctx, &ContactRequest_Request{Link: alink})
-	require.NoError(t, err)
-
-	enqueued := false
-	for {
-		esr, err := bstrm.Recv()
-		require.NotEqual(t, err, io.EOF, "EOF while waiting for outgoing contact request updates (enqueued: %t)", enqueued)
-		require.NoError(t, err)
-		if esr.GetEvent().GetType() == StreamEvent_TypeContactUpdated {
-			var cu StreamEvent_ContactUpdated
-			err := proto.Unmarshal(esr.GetEvent().GetPayload(), &cu)
-			require.NoError(t, err)
-			c := cu.GetContact()
-
-			require.Equal(t, aname, c.GetDisplayName())
-
-			if !enqueued && c.GetState() == Contact_OutgoingRequestEnqueued {
-				enqueued = true
-			} else if enqueued && c.GetState() == Contact_OutgoingRequestSent {
-				break
-			}
-		}
-	}
-
-	var bc *Contact
-	for bc == nil {
-		esr, err := astrm.Recv()
-		require.NotEqual(t, err, io.EOF, "EOF while waiting for incoming contact request update")
-		require.NoError(t, err)
-		if esr.GetEvent().GetType() == StreamEvent_TypeContactUpdated {
-			var cu StreamEvent_ContactUpdated
-			err := proto.Unmarshal(esr.GetEvent().GetPayload(), &cu)
-			require.NoError(t, err)
-			c := cu.GetContact()
-
-			require.Equal(t, bname, c.GetDisplayName())
-
-			if c.GetState() == Contact_IncomingRequest {
-				bc = c
-			}
-		}
-	}
-
-	bpk := bc.GetPublicKey()
-	alice.ContactAccept(ctx, &ContactAccept_Request{PublicKey: bpk})
-
-	var gpk string
-
-	for {
-		esr, err := astrm.Recv()
-		require.NotEqual(t, err, io.EOF, "EOF while waiting for contact established in requested node")
-		require.NoError(t, err)
-		if esr.GetEvent().GetType() == StreamEvent_TypeContactUpdated {
-			var cu StreamEvent_ContactUpdated
-			err := proto.Unmarshal(esr.GetEvent().GetPayload(), &cu)
-			require.NoError(t, err)
-			c := cu.GetContact()
-
-			require.Equal(t, bname, c.GetDisplayName())
-
-			if c.GetState() == Contact_Established {
-				gpk = c.GetConversationPublicKey()
-				require.NotEmpty(t, gpk)
-				break
-			}
-		}
-	}
-
-	for {
-		esr, err := bstrm.Recv()
-		require.NotEqual(t, err, io.EOF, "EOF while waiting for contact established in requester node")
-		require.NoError(t, err)
-		if esr.GetEvent().GetType() == StreamEvent_TypeContactUpdated {
-			var cu StreamEvent_ContactUpdated
-			err := proto.Unmarshal(esr.GetEvent().GetPayload(), &cu)
-			require.NoError(t, err)
-			c := cu.GetContact()
-
-			require.Equal(t, aname, c.GetDisplayName())
-
-			if c.GetState() == Contact_Established {
-				require.Equal(t, c.GetConversationPublicKey(), gpk)
-				break
-			}
-		}
+	// Bob add Alice as contact (and she accepts)
+	var groupPK string
+	{
+		aliceContact := testAddContact(ctx, t, bob, alice)
+		groupPK = aliceContact.GetConversationPublicKey()
 	}
 
 	// Exchange messages
+	{
+		testSendGroupMessage(ctx, t, groupPK, alice, []*TestingAccount{bob}, "Hello Bob!", logger)
+		testSendGroupMessage(ctx, t, groupPK, bob, []*TestingAccount{alice}, "Hello Alice!", logger)
+	}
 
-	testMessage(ctx, t, l, "Hello Bob!", gpk, alice, astrm, bstrm)
-	testMessage(ctx, t, l, "Hello Alice!", gpk, bob, bstrm, astrm)
+	// no more event
+	{
+		event := alice.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
+
+		event = bob.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
+	}
 }
 
-func testMessage(ctx context.Context, t *testing.T, l *zap.Logger, msg string, gpk string, sender MessengerServiceClient, senderStream MessengerService_EventStreamClient, receiverStream MessengerService_EventStreamClient) {
-	t.Helper()
+func Test3PeersCreateJoinConversation(t *testing.T) {
+	testutil.SkipSlow(t)
+	testutil.SkipUnstable(t)
 
-	beforeSend := jsNow()
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+	logger := testutil.Logger(t)
+	clients, cleanup := testingInfra(ctx, t, 3, logger)
+	defer cleanup()
 
-	um, err := proto.Marshal(&AppMessage_UserMessage{Body: msg})
-	require.NoError(t, err)
-	ir := Interact_Request{Type: AppMessage_TypeUserMessage, Payload: um, ConversationPublicKey: gpk}
-	_, err = sender.Interact(ctx, &ir)
-	require.NoError(t, err)
-
-	afterSend := jsNow()
-
-	var cid string
-	var gotMsg, gotAck bool
-	var sentDate int64
-	for !(gotAck && gotMsg) {
-		esr, err := receiverStream.Recv()
-		require.NotEqual(t, err, io.EOF, "EOF while waiting for msg or ack in receiver node (gotMsg: %t, gotAck: %t)", gotMsg, gotAck)
-		require.NoError(t, err)
-
-		evt := esr.GetEvent()
-		if evt.GetType() == StreamEvent_TypeInteractionUpdated {
-			var cu StreamEvent_InteractionUpdated
-			err := proto.Unmarshal(evt.GetPayload(), &cu)
-			require.NoError(t, err)
-
-			inte := cu.GetInteraction()
-			if inte.GetType() == AppMessage_TypeUserMessage && inte.GetConversationPublicKey() == gpk {
-				var um AppMessage_UserMessage
-				err := proto.Unmarshal(inte.GetPayload(), &um)
-				require.NoError(t, err)
-
-				if um.GetBody() == msg {
-					require.False(t, gotAck)
-					require.False(t, inte.GetIsMe())
-					sentDate = um.GetSentDate()
-					require.LessOrEqual(t, beforeSend, sentDate)
-					require.GreaterOrEqual(t, afterSend, sentDate)
-					cid = inte.GetCid()
-					gotMsg = true
-				}
-			} else if inte.GetType() == AppMessage_TypeAcknowledge && inte.GetConversationPublicKey() == gpk {
-				var ack AppMessage_Acknowledge
-				err := proto.Unmarshal(inte.GetPayload(), &ack)
-				require.NoError(t, err)
-
-				if ack.GetTarget() == cid {
-					require.True(t, gotMsg)
-					require.True(t, inte.GetIsMe())
-					gotAck = true
-				}
-			}
+	// create nodes
+	var creator *TestingAccount
+	{
+		creator = NewTestingAccount(ctx, t, clients[0], logger)
+		defer creator.Close()
+		creator.DrainInitEvents(t)
+	}
+	var joiners = make([]*TestingAccount, 2)
+	{
+		for i := 0; i < 2; i++ {
+			joiners[i] = NewTestingAccount(ctx, t, clients[i+1], logger)
+			defer joiners[i].Close()
+			joiners[i].DrainInitEvents(t)
 		}
 	}
 
-	gotAck = false
-	gotMsg = false
-	for !(gotAck && gotMsg) {
-		esr, err := senderStream.Recv()
-		require.NotEqual(t, err, io.EOF, "EOF while waiting for msg or ack in sender node (gotMsg: %t, gotAck: %t)", gotMsg, gotAck)
-		require.NoError(t, err)
+	// creator creates a new conversation
+	createdConv := testCreateConversation(ctx, t, creator, "My Group", nil, logger)
 
-		evt := esr.GetEvent()
-		if evt.GetType() == StreamEvent_TypeInteractionUpdated {
-			var cu StreamEvent_InteractionUpdated
-			err := proto.Unmarshal(evt.GetPayload(), &cu)
-			require.NoError(t, err)
+	// joiners join the conversation
+	for _, joiner := range joiners {
+		testJoinConversation(ctx, t, joiner, createdConv, logger)
+	}
 
-			inte := cu.GetInteraction()
-			if inte.GetType() == AppMessage_TypeUserMessage && inte.GetConversationPublicKey() == gpk {
-				var um AppMessage_UserMessage
-				err := proto.Unmarshal(inte.GetPayload(), &um)
-				require.NoError(t, err)
+	// FIXME: check that member names are propagated
 
-				if inte.GetCid() == cid {
-					require.False(t, gotAck)
-					require.Equal(t, msg, um.GetBody())
-					require.True(t, inte.GetIsMe())
-					require.Equal(t, sentDate, um.GetSentDate())
-					gotMsg = true
-				}
-			} else if inte.GetType() == AppMessage_TypeAcknowledge && inte.GetConversationPublicKey() == gpk {
-				var ack AppMessage_Acknowledge
-				err := proto.Unmarshal(inte.GetPayload(), &ack)
-				require.NoError(t, err)
-
-				if ack.GetTarget() == cid {
-					require.True(t, gotMsg)
-					require.False(t, inte.GetIsMe())
-					gotAck = true
-				}
-			}
+	// no more event
+	{
+		event := creator.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
+		for _, joiner := range joiners {
+			event = joiner.TryNextEvent(t, 100*time.Millisecond)
+			require.Nil(t, event)
 		}
 	}
 }
@@ -489,471 +460,505 @@ func Test3PeersExchange(t *testing.T) {
 	testutil.SkipSlow(t)
 	testutil.SkipUnstable(t)
 
-	amount := 3
-	require.Greater(t, amount, 1)
-
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
-	l := testutil.Logger(t)
-	clients, cleanup := testingInfra(ctx, t, amount, l)
+	logger := testutil.Logger(t)
+	clients, cleanup := testingInfra(ctx, t, 3, logger)
 	defer cleanup()
 
-	creator := clients[0]
-
-	name := "My Group"
-
-	ccr, err := creator.ConversationCreate(ctx, &ConversationCreate_Request{DisplayName: name})
-	require.NoError(t, err)
-
-	creatorStrm, err := creator.EventStream(ctx, &EventStream_Request{})
-	require.NoError(t, err)
-
-	gpk := ccr.GetPublicKey()
-
-	// Create conv
-
-	var link string
-
-	for link == "" {
-		esr, err := creatorStrm.Recv()
-		require.NotEqual(t, err, io.EOF, "EOF while waiting for conversation update after creating it")
-		require.NoError(t, err)
-		evt := esr.GetEvent()
-		if evt.GetType() == StreamEvent_TypeConversationUpdated {
-			var cu StreamEvent_ConversationUpdated
-			err := proto.Unmarshal(evt.GetPayload(), &cu)
-			require.NoError(t, err)
-
-			conv := cu.GetConversation()
-			if conv.GetPublicKey() == gpk {
-				require.Equal(t, name, conv.GetDisplayName())
-				link = conv.GetLink()
-			}
-		}
+	// create nodes
+	var creator *TestingAccount
+	{
+		creator = NewTestingAccount(ctx, t, clients[0], logger)
+		defer creator.Close()
+		creator.DrainInitEvents(t)
 	}
-	l.Debug("created conv", zap.String("pk", gpk))
-
-	// Join conv in other nodes
-
-	streams := make([]MessengerService_EventStreamClient, amount)
-	streams[0] = creatorStrm
-	for i := 1; i < amount; i++ {
-		cl := clients[i]
-
-		// also test while opening stream after
-		streams[i], err = cl.EventStream(ctx, &EventStream_Request{})
-		require.NoError(t, err)
-
-		_, err := cl.ConversationJoin(ctx, &ConversationJoin_Request{Link: link})
-		require.NoError(t, err)
-
-		for {
-			esr, err := streams[i].Recv()
-			require.NotEqual(t, err, io.EOF, "EOF while waiting for conversation in member node %d", i)
-			require.NoError(t, err)
-			evt := esr.GetEvent()
-			if evt.GetType() == StreamEvent_TypeConversationUpdated {
-				var cu StreamEvent_ConversationUpdated
-				err := proto.Unmarshal(evt.GetPayload(), &cu)
-				require.NoError(t, err)
-
-				conv := cu.GetConversation()
-				pk := conv.GetPublicKey()
-				l.Debug("received conv", zap.String("pk", pk), zap.Int("index", i))
-				if pk == gpk {
-					require.Equal(t, name, conv.GetDisplayName())
-					require.Equal(t, link, conv.GetLink())
-					l.Debug("found correct conv", zap.String("pk", pk), zap.Int("index", i))
-					break
-				}
-			}
+	var joiners = make([]*TestingAccount, 2)
+	{
+		for i := 0; i < 2; i++ {
+			joiners[i] = NewTestingAccount(ctx, t, clients[i+1], logger)
+			defer joiners[i].Close()
+			joiners[i].DrainInitEvents(t)
 		}
 	}
 
-	// FIXME: really wait for everyone to know everyone (via MemberUpdated)
-	time.Sleep(time.Second * 20)
+	// creator creates a new conversation
+	createdConv := testCreateConversation(ctx, t, creator, "My Group", nil, logger)
 
-	// TODO: check that members names are propagated
-
-	// Exchange messages
-
-	for i := 0; i < amount; i++ {
-		sender := clients[i]
-		senderStrm := streams[i]
-		strms := append(streams[0:i:i], streams[i+1:]...)
-		testMultiMessage(ctx, t, l, "Hello Group! "+strconv.Itoa(i), gpk, sender, senderStrm, strms)
-	}
-}
-
-func testMultiMessage(ctx context.Context, t *testing.T, l *zap.Logger, msg string, gpk string, sender MessengerServiceClient, senderStream MessengerService_EventStreamClient, receivers []MessengerService_EventStreamClient) {
-	beforeSend := jsNow()
-
-	um, err := proto.Marshal(&AppMessage_UserMessage{Body: msg})
-	require.NoError(t, err)
-	ir := Interact_Request{Type: AppMessage_TypeUserMessage, Payload: um, ConversationPublicKey: gpk}
-	_, err = sender.Interact(ctx, &ir)
-	require.NoError(t, err)
-
-	afterSend := jsNow()
-
-	var cid string
-	var sentDate int64
-	var gotMsg, gotAck bool
-	for !(gotAck && gotMsg) {
-		esr, err := senderStream.Recv()
-		require.NotEqual(t, err, io.EOF, "EOF while waiting for msg or ack in sender node (gotMsg: %t, gotAck: %t)", gotMsg, gotAck)
-		require.NoError(t, err)
-
-		evt := esr.GetEvent()
-		if evt.GetType() == StreamEvent_TypeInteractionUpdated {
-			var cu StreamEvent_InteractionUpdated
-			err := proto.Unmarshal(evt.GetPayload(), &cu)
-			require.NoError(t, err)
-
-			inte := cu.GetInteraction()
-			l.Debug("sender received interaction", zap.String("cid", inte.GetCid()), zap.String("type", inte.GetType().String()))
-			if inte.GetType() == AppMessage_TypeUserMessage && inte.GetConversationPublicKey() == gpk {
-				var um AppMessage_UserMessage
-				err := proto.Unmarshal(inte.GetPayload(), &um)
-				require.NoError(t, err)
-
-				l.Debug("sender received message", zap.String("cid", inte.GetCid()), zap.String("body", um.GetBody()))
-
-				if msg == um.GetBody() {
-					l.Debug("sender found correct message", zap.String("cid", inte.GetCid()))
-					require.False(t, gotAck)
-					require.Equal(t, msg, um.GetBody())
-					require.True(t, inte.GetIsMe())
-					sentDate = um.GetSentDate()
-					require.LessOrEqual(t, beforeSend, sentDate)
-					require.GreaterOrEqual(t, afterSend, sentDate)
-					cid = inte.GetCid()
-					require.NotEmpty(t, cid)
-					gotMsg = true
-				}
-			} else if inte.GetType() == AppMessage_TypeAcknowledge && inte.GetConversationPublicKey() == gpk {
-				var ack AppMessage_Acknowledge
-				err := proto.Unmarshal(inte.GetPayload(), &ack)
-				require.NoError(t, err)
-
-				l.Debug("sender received ack", zap.String("target", ack.GetTarget()))
-
-				if ack.GetTarget() == cid {
-					l.Debug("sender found correct ack", zap.String("target", ack.GetTarget()))
-					require.True(t, gotMsg)
-					require.False(t, inte.GetIsMe())
-					gotAck = true
-				}
-			}
-		}
+	// joiners join the conversation
+	for _, joiner := range joiners {
+		testJoinConversation(ctx, t, joiner, createdConv, logger)
 	}
 
-	for i, receiverStream := range receivers {
-		gotMsg := false
-		gotAck := false
-		for !(gotAck && gotMsg) {
-			esr, err := receiverStream.Recv()
-			require.NotEqual(t, err, io.EOF, "EOF while waiting for msg or ack in receiver node (gotMsg: %t, gotAck: %t)", gotMsg, gotAck)
-			require.NoError(t, err)
+	// FIXME: replace by a check
+	time.Sleep(5 * time.Second)
 
-			evt := esr.GetEvent()
-			if evt.GetType() == StreamEvent_TypeInteractionUpdated {
-				var iu StreamEvent_InteractionUpdated
-				err := proto.Unmarshal(evt.GetPayload(), &iu)
-				require.NoError(t, err)
+	// interact
+	{
+		testSendGroupMessage(ctx, t, createdConv.GetPublicKey(), creator, []*TestingAccount{joiners[0], joiners[1]}, "Hello Group! (creator)", logger)
+		testSendGroupMessage(ctx, t, createdConv.GetPublicKey(), joiners[0], []*TestingAccount{creator, joiners[1]}, "Hello Group! (joiner1)", logger)
+		testSendGroupMessage(ctx, t, createdConv.GetPublicKey(), joiners[1], []*TestingAccount{creator, joiners[0]}, "Hello Group! (joiner2)", logger)
+	}
 
-				inte := iu.GetInteraction()
-				l.Debug("received interaction", zap.String("cid", inte.GetCid()), zap.String("type", inte.GetType().String()), zap.Int("index", i))
-
-				if inte.GetType() == AppMessage_TypeUserMessage && inte.GetConversationPublicKey() == gpk {
-					var um AppMessage_UserMessage
-					err := proto.Unmarshal(inte.GetPayload(), &um)
-					require.NoError(t, err)
-
-					l.Debug("received message", zap.String("cid", inte.GetCid()), zap.String("body", um.GetBody()), zap.Int("index", i))
-
-					if inte.GetCid() == cid {
-						l.Debug("found correct cid", zap.String("cid", inte.GetCid()), zap.Int("index", i))
-						//require.False(t, gotAck) // Maybe FIXME otherwise we have to keep an ack backlog
-						require.False(t, inte.GetIsMe())
-						require.Equal(t, msg, um.GetBody())
-						require.Equal(t, sentDate, um.GetSentDate())
-						gotMsg = true
-					}
-				} else if inte.GetType() == AppMessage_TypeAcknowledge && inte.GetConversationPublicKey() == gpk {
-					var ack AppMessage_Acknowledge
-					err := proto.Unmarshal(inte.GetPayload(), &ack)
-					require.NoError(t, err)
-					target := ack.GetTarget()
-					require.NotEmpty(t, target)
-
-					l.Debug("received ack", zap.String("target", target), zap.Int("index", i))
-
-					if target == cid {
-						l.Debug("found correct ack", zap.Int("index", i))
-						//require.True(t, gotMsg) // Maybe FIXME
-						gotAck = true
-					}
-				}
-			}
+	// no more event
+	{
+		event := creator.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
+		for _, joiner := range joiners {
+			event = joiner.TryNextEvent(t, 100*time.Millisecond)
+			require.Nil(t, event)
 		}
 	}
 }
 
-func TestConversationInvitation2Contacts(t *testing.T) {
+func TestConversationInvitation(t *testing.T) {
+	testutil.SkipUnstable(t)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	logger := testutil.Logger(t)
+	clients, cleanup := testingInfra(ctx, t, 3, logger)
+	defer cleanup()
+
+	// create nodes
+	var alice, bob, john *TestingAccount
+	{
+		alice = NewTestingAccount(ctx, t, clients[0], logger)
+		defer alice.Close()
+		alice.SetName(t, "Alice")
+		alice.DrainInitEvents(t)
+
+		bob = NewTestingAccount(ctx, t, clients[1], logger)
+		defer bob.Close()
+		bob.SetName(t, "Bob")
+		bob.DrainInitEvents(t)
+
+		john = NewTestingAccount(ctx, t, clients[2], logger)
+		defer john.Close()
+		john.SetName(t, "John")
+		john.DrainInitEvents(t)
+	}
+
+	// contact requests
+	{
+		testAddContact(ctx, t, alice, bob)
+		testAddContact(ctx, t, alice, john)
+		testAddContact(ctx, t, bob, john)
+		require.Len(t, alice.contacts, 2)
+		require.Len(t, bob.contacts, 2)
+		require.Len(t, john.contacts, 2)
+		require.Len(t, alice.conversations, 0)
+		require.Len(t, bob.conversations, 0)
+		require.Len(t, john.conversations, 0)
+	}
+
+	// create group
+	{
+		testCreateConversation(ctx, t, alice, "Alice & Friends", []*TestingAccount{bob, john}, logger)
+		require.Len(t, alice.contacts, 2)
+		require.Len(t, bob.contacts, 2)
+		require.Len(t, john.contacts, 2)
+		require.Len(t, alice.conversations, 1)
+		require.Len(t, bob.conversations, 1)
+		require.Len(t, john.conversations, 1)
+	}
+
+	// no more event
+	{
+		event := alice.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
+
+		event = bob.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
+
+		event = john.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
+	}
+}
+
+func TestConversationInvitationAndExchange(t *testing.T) {
 	testutil.SkipSlow(t)
 	testutil.SkipUnstable(t)
 
-	amount := 3
-	require.Greater(t, amount, 2)
-
-	names := []string{"alice", "bob", "john"}
-	require.Equal(t, amount, len(names))
-
-	ctx, cancel := context.WithTimeout(context.Background(), 80*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	l := testutil.Logger(t)
-	clients, cleanup := testingInfra(ctx, t, amount, l)
+	logger := testutil.Logger(t)
+	clients, cleanup := testingInfra(ctx, t, 3, logger)
 	defer cleanup()
 
-	streams := make([]MessengerService_EventStreamClient, amount)
-	links := make([]string, amount)
-	publicKeys := make([]string, amount)
-	for i, client := range clients {
-		name := names[i]
-		_, err := client.AccountUpdate(ctx, &AccountUpdate_Request{DisplayName: name})
-		require.NoError(t, err)
+	// create nodes
+	var alice, bob, john *TestingAccount
+	{
+		alice = NewTestingAccount(ctx, t, clients[0], logger)
+		defer alice.Close()
+		alice.SetName(t, "Alice")
+		alice.DrainInitEvents(t)
 
-		stream, err := client.EventStream(ctx, &EventStream_Request{})
-		require.NoError(t, err)
-		streams[i] = stream
+		bob = NewTestingAccount(ctx, t, clients[1], logger)
+		defer bob.Close()
+		bob.SetName(t, "Bob")
+		bob.DrainInitEvents(t)
 
-		for {
-			esr, err := stream.Recv()
-			require.NotEqual(t, err, io.EOF, "EOF while waiting for account update after starting events stream in node %d", i)
-			require.NoError(t, err)
-			if esr.GetEvent().GetType() == StreamEvent_TypeAccountUpdated {
-				var cu StreamEvent_AccountUpdated
-				err := proto.Unmarshal(esr.GetEvent().GetPayload(), &cu)
-				require.NoError(t, err)
-				acc := cu.GetAccount()
-				require.Equal(t, name, acc.GetDisplayName())
-				links[i] = acc.GetLink()
-				publicKeys[i] = acc.GetPublicKey()
-				break
-			}
-		}
+		john = NewTestingAccount(ctx, t, clients[2], logger)
+		defer john.Close()
+		john.SetName(t, "John")
+		john.DrainInitEvents(t)
 	}
 
-	for i, client := range clients {
-		bstrm := streams[i]
-		bname := names[i]
-
-		for j := i + 1; j < amount; j++ {
-			otherClient := clients[j]
-			astrm := streams[j]
-			aname := names[j]
-
-			l.Debug("adding contacts", zap.String("aname", aname), zap.String("bname", bname))
-
-			_, err := client.ContactRequest(ctx, &ContactRequest_Request{Link: links[j]})
-			require.NoError(t, err)
-
-			enqueued := false
-			for {
-				esr, err := bstrm.Recv()
-				require.NotEqual(t, err, io.EOF, "EOF while waiting for outgoing contact request updates (%d to %d, enqueued: %t)", i, j, enqueued)
-				require.NoError(t, err)
-				if esr.GetEvent().GetType() == StreamEvent_TypeContactUpdated {
-					var cu StreamEvent_ContactUpdated
-					err := proto.Unmarshal(esr.GetEvent().GetPayload(), &cu)
-					require.NoError(t, err)
-					c := cu.GetContact()
-
-					if c.GetPublicKey() != publicKeys[j] {
-						continue
-					}
-
-					require.Equal(t, aname, c.GetDisplayName())
-
-					if !enqueued && c.GetState() == Contact_OutgoingRequestEnqueued {
-						enqueued = true
-					} else if enqueued && c.GetState() == Contact_OutgoingRequestSent {
-						break
-					}
-				}
-			}
-
-			var bc *Contact
-			for bc == nil {
-				esr, err := astrm.Recv()
-				require.NotEqual(t, err, io.EOF, "EOF while waiting for incoming contact request (%d to %d)", i, j)
-				require.NoError(t, err)
-				if esr.GetEvent().GetType() == StreamEvent_TypeContactUpdated {
-					var cu StreamEvent_ContactUpdated
-					err := proto.Unmarshal(esr.GetEvent().GetPayload(), &cu)
-					require.NoError(t, err)
-					c := cu.GetContact()
-
-					if c.GetPublicKey() != publicKeys[i] {
-						continue
-					}
-
-					require.Equal(t, bname, c.GetDisplayName())
-
-					if c.GetState() == Contact_IncomingRequest {
-						bc = c
-					}
-				}
-			}
-
-			bpk := bc.GetPublicKey()
-			otherClient.ContactAccept(ctx, &ContactAccept_Request{PublicKey: bpk})
-
-			var gpk string
-
-			for {
-				esr, err := astrm.Recv()
-				require.NotEqual(t, err, io.EOF, "EOF while waiting for contact established in requested node (%d to %d)", i, j)
-				require.NoError(t, err)
-				if esr.GetEvent().GetType() == StreamEvent_TypeContactUpdated {
-					var cu StreamEvent_ContactUpdated
-					err := proto.Unmarshal(esr.GetEvent().GetPayload(), &cu)
-					require.NoError(t, err)
-					c := cu.GetContact()
-
-					if c.GetPublicKey() != publicKeys[i] {
-						continue
-					}
-
-					require.Equal(t, bname, c.GetDisplayName())
-
-					if c.GetState() == Contact_Established {
-						gpk = c.GetConversationPublicKey()
-						require.NotEmpty(t, gpk)
-						break
-					}
-				}
-			}
-
-			for {
-				esr, err := bstrm.Recv()
-				require.NotEqual(t, err, io.EOF, "EOF while waiting for contact established in requester node (%d to %d)", i, j)
-				require.NoError(t, err)
-				if esr.GetEvent().GetType() == StreamEvent_TypeContactUpdated {
-					var cu StreamEvent_ContactUpdated
-					err := proto.Unmarshal(esr.GetEvent().GetPayload(), &cu)
-					require.NoError(t, err)
-					c := cu.GetContact()
-
-					if c.GetPublicKey() != publicKeys[j] {
-						continue
-					}
-
-					require.Equal(t, aname, c.GetDisplayName())
-
-					if c.GetState() == Contact_Established {
-						require.Equal(t, gpk, c.GetConversationPublicKey())
-						break
-					}
-				}
-			}
-		}
+	// contact requests
+	{
+		testAddContact(ctx, t, alice, bob)
+		testAddContact(ctx, t, alice, john)
+		testAddContact(ctx, t, bob, john)
+		require.Len(t, alice.contacts, 2)
+		require.Len(t, bob.contacts, 2)
+		require.Len(t, john.contacts, 2)
+		require.Len(t, alice.conversations, 0)
+		require.Len(t, bob.conversations, 0)
+		require.Len(t, john.conversations, 0)
 	}
 
-	creator := clients[0]
-
-	name := "My Group"
-
-	ccr, err := creator.ConversationCreate(ctx, &ConversationCreate_Request{DisplayName: name, ContactsToInvite: publicKeys[1:]})
-	require.NoError(t, err)
-
-	creatorStrm := streams[0]
-
-	gpk := ccr.GetPublicKey()
-
-	var link string
-
-	for link == "" {
-		esr, err := creatorStrm.Recv()
-		require.NotEqual(t, err, io.EOF, "EOF while waiting for conversation update after creating it")
-		require.NoError(t, err)
-		evt := esr.GetEvent()
-		if evt.GetType() == StreamEvent_TypeConversationUpdated {
-			var cu StreamEvent_ConversationUpdated
-			err := proto.Unmarshal(evt.GetPayload(), &cu)
-			require.NoError(t, err)
-
-			conv := cu.GetConversation()
-			if conv.GetPublicKey() == gpk && name == conv.GetDisplayName() {
-				// require.Equal(t, name, conv.GetDisplayName())
-				link = conv.GetLink()
-			}
-		}
-	}
-	l.Debug("created conv", zap.String("pk", gpk))
-
-	var inviteLink string
-	for i := 1; i < amount; i++ {
-		stream := streams[i]
-		for inviteLink == "" {
-			esr, err := stream.Recv()
-			require.NotEqual(t, err, io.EOF, "EOF while waiting for group invitation in node %d", i)
-			require.NoError(t, err)
-			evt := esr.GetEvent()
-			if evt.GetType() == StreamEvent_TypeInteractionUpdated {
-				var iu StreamEvent_InteractionUpdated
-				err := proto.Unmarshal(evt.GetPayload(), &iu)
-				require.NoError(t, err)
-
-				inte := iu.GetInteraction()
-				if inte.GetType() == AppMessage_TypeGroupInvitation {
-					var ginv AppMessage_GroupInvitation
-					err := proto.Unmarshal(inte.GetPayload(), &ginv)
-					require.NoError(t, err)
-					inviteLink = ginv.GetLink()
-					require.Equal(t, inviteLink, link)
-
-					_, err = clients[i].ConversationJoin(ctx, &ConversationJoin_Request{Link: inviteLink})
-					require.NoError(t, err)
-
-					for {
-						esr, err := stream.Recv()
-						require.NotEqual(t, err, io.EOF, "EOF while waiting for conversation update after joining one in node %d", i)
-						require.NoError(t, err)
-						evt := esr.GetEvent()
-						if evt.GetType() == StreamEvent_TypeConversationUpdated {
-							var cu StreamEvent_ConversationUpdated
-							err := proto.Unmarshal(evt.GetPayload(), &cu)
-							require.NoError(t, err)
-
-							conv := cu.GetConversation()
-							if conv.GetPublicKey() == gpk && name == conv.GetDisplayName() {
-								// require.Equal(t, name, conv.GetDisplayName())
-								require.Equal(t, link, conv.GetLink())
-								break
-							}
-						}
-					}
-				}
-			}
-		}
+	// create group
+	var createdConv *Conversation
+	{
+		createdConv = testCreateConversation(ctx, t, alice, "Alice & Friends", []*TestingAccount{bob, john}, logger)
+		require.Len(t, alice.contacts, 2)
+		require.Len(t, bob.contacts, 2)
+		require.Len(t, john.contacts, 2)
+		require.Len(t, alice.conversations, 1)
+		require.Len(t, bob.conversations, 1)
+		require.Len(t, john.conversations, 1)
 	}
 
-	// FIXME: really wait for everyone to know everyone (via MemberUpdated)
-	// time.Sleep(time.Second * 20)
+	// FIXME: replace by a check
+	time.Sleep(5 * time.Second)
 
-	// TODO: check that members names are propagated
+	// interact
+	{
+		testSendGroupMessage(ctx, t, createdConv.GetPublicKey(), alice, []*TestingAccount{bob, john}, "Hello Group! (alice)", logger)
+		testSendGroupMessage(ctx, t, createdConv.GetPublicKey(), bob, []*TestingAccount{alice, john}, "Hello Group! (bob)", logger)
+		testSendGroupMessage(ctx, t, createdConv.GetPublicKey(), john, []*TestingAccount{alice, bob}, "Hello Group! (john)", logger)
+	}
 
-	// Exchange messages
+	// no more event
+	{
+		event := alice.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
 
-	// NOTE: Uncomment when messages exchange is stable
-	/*for i := 0; i < amount; i++ {
-		sender := clients[i]
-		senderStrm := streams[i]
-		strms := append(streams[0:i:i], streams[i+1:]...)
-		testMultiMessage(ctx, t, l, "Hello Group! "+strconv.Itoa(i), gpk, sender, senderStrm, strms)
-	}*/
+		event = bob.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
+
+		event = john.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
+	}
 }
 
-// TODO: implem and test "read" logic
+func testJoinConversation(ctx context.Context, t *testing.T, joiner *TestingAccount, existingConv *Conversation, logger *zap.Logger) {
+	t.Helper()
+
+	// joiner joins the conversation
+	{
+		ret, err := joiner.GetClient().ConversationJoin(ctx, &ConversationJoin_Request{Link: existingConv.GetLink()})
+		require.NoError(t, err)
+		require.Empty(t, ret)
+		logger.Debug("testJoinConversation: conversation joined")
+	}
+
+	// joiner has ConversationUpdated event
+	{
+		event := joiner.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		conversation := payload.(*StreamEvent_ConversationUpdated).GetConversation()
+		if existingConv.GetPublicKey() != "" {
+			require.Equal(t, conversation.GetPublicKey(), existingConv.GetPublicKey())
+		}
+		if existingConv.GetDisplayName() != "" {
+			require.Equal(t, conversation.GetDisplayName(), existingConv.GetDisplayName())
+		}
+		require.Equal(t, conversation.GetLink(), existingConv.GetLink())
+		logger.Debug("testJoinConversation: conversation joined confirmation received")
+	}
+}
+
+func testAddContact(ctx context.Context, t *testing.T, requester, requested *TestingAccount) *Contact {
+	t.Helper()
+	// Requester sends a contact request to requested
+	{
+		ret, err := requester.GetClient().ContactRequest(ctx, &ContactRequest_Request{Link: requested.GetAccount().GetLink()})
+		require.NoError(t, err)
+		require.Empty(t, ret)
+	}
+
+	// Requester has a contact updated event (outgoing request enqueued)
+	{
+		event := requester.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeContactUpdated)
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		contact := payload.(*StreamEvent_ContactUpdated).Contact
+		require.NotEmpty(t, contact.GetPublicKey())
+		require.Equal(t, contact.GetPublicKey(), requested.GetAccount().GetPublicKey())
+		require.Equal(t, contact.GetDisplayName(), requested.GetAccount().GetDisplayName())
+		require.Equal(t, contact.GetState(), Contact_OutgoingRequestEnqueued)
+		require.Empty(t, contact.GetConversationPublicKey())
+	}
+
+	// Requester has a contact updated event (outgoing request sent)
+	{
+		event := requester.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeContactUpdated)
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		contact := payload.(*StreamEvent_ContactUpdated).Contact
+		require.NotEmpty(t, contact.GetPublicKey())
+		require.Equal(t, contact.GetPublicKey(), requested.GetAccount().GetPublicKey())
+		require.Equal(t, contact.GetDisplayName(), requested.GetAccount().GetDisplayName())
+		require.Equal(t, contact.GetState(), Contact_OutgoingRequestSent)
+		require.Empty(t, contact.GetConversationPublicKey())
+	}
+
+	// Requested receives the contact request
+	{
+		event := requested.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeContactUpdated)
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		contact := payload.(*StreamEvent_ContactUpdated).Contact
+		require.NotEmpty(t, contact.GetPublicKey())
+		require.Equal(t, contact.GetPublicKey(), requester.GetAccount().GetPublicKey())
+		require.Equal(t, contact.GetDisplayName(), requester.GetAccount().GetDisplayName())
+		require.Equal(t, contact.GetState(), Contact_IncomingRequest)
+	}
+
+	// Requested accepts the contact request
+	{
+		ret, err := requested.GetClient().ContactAccept(ctx, &ContactAccept_Request{PublicKey: requester.GetAccount().GetPublicKey()})
+		require.NoError(t, err)
+		require.Empty(t, ret)
+	}
+
+	// Requested receives the contact request
+	var groupPK string
+	{
+		event := requested.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeContactUpdated)
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		contact := payload.(*StreamEvent_ContactUpdated).Contact
+		require.NotEmpty(t, contact.GetPublicKey())
+		require.Equal(t, contact.GetPublicKey(), requester.GetAccount().GetPublicKey())
+		require.Equal(t, contact.GetDisplayName(), requester.GetAccount().GetDisplayName())
+		require.Equal(t, contact.GetState(), Contact_Established)
+		groupPK = contact.GetConversationPublicKey()
+	}
+
+	// FIXME: should also have a conversation created event
+
+	// Requester has a contact updated event (Established)
+	{
+		event := requester.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeContactUpdated)
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		contact := payload.(*StreamEvent_ContactUpdated).Contact
+		require.NotEmpty(t, contact.GetPublicKey())
+		require.Equal(t, contact.GetPublicKey(), requested.GetAccount().GetPublicKey())
+		require.Equal(t, contact.GetDisplayName(), requested.GetAccount().GetDisplayName())
+		require.Equal(t, contact.GetState(), Contact_Established)
+		require.Equal(t, contact.GetConversationPublicKey(), groupPK)
+		return contact
+	}
+}
+
+func testSendGroupMessage(ctx context.Context, t *testing.T, groupPK string, sender *TestingAccount, receivers []*TestingAccount, msg string, logger *zap.Logger) {
+	t.Helper()
+
+	// sender interacts
+	var beforeSend, afterSend int64
+	{
+		beforeSend = timestampMs(time.Now())
+		userMessage, err := proto.Marshal(&AppMessage_UserMessage{Body: msg})
+		require.NoError(t, err)
+		interactionRequest := Interact_Request{Type: AppMessage_TypeUserMessage, Payload: userMessage, ConversationPublicKey: groupPK}
+		_, err = sender.GetClient().Interact(ctx, &interactionRequest)
+		require.NoError(t, err)
+		afterSend = timestampMs(time.Now())
+		logger.Debug("testSendGroupMessage: message sent")
+	}
+
+	// sender has own interact event
+	var messageCid string
+	{
+		event := sender.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeInteractionUpdated)
+		eventPayload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		interaction := eventPayload.(*StreamEvent_InteractionUpdated).Interaction
+		require.NotEmpty(t, interaction.GetCID())
+		messageCid = interaction.GetCID()
+		require.Equal(t, interaction.GetType(), AppMessage_TypeUserMessage)
+		require.Equal(t, interaction.GetConversationPublicKey(), groupPK)
+		require.True(t, interaction.GetIsMe())
+		require.Equal(t, interaction.GetCID(), messageCid)
+		interactionPayload, err := interaction.UnmarshalPayload()
+		require.NoError(t, err)
+		userMessage := interactionPayload.(*AppMessage_UserMessage)
+		require.Equal(t, userMessage.GetBody(), msg)
+		require.LessOrEqual(t, beforeSend, userMessage.GetSentDate())
+		require.LessOrEqual(t, userMessage.GetSentDate(), afterSend)
+		logger.Debug("testSendGroupMessage: message received by creator")
+	}
+
+	// sender has the ack event too
+	for i := 0; i < len(receivers); i++ {
+		event := sender.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeInteractionUpdated)
+		eventPayload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		interaction := eventPayload.(*StreamEvent_InteractionUpdated).Interaction
+		require.NotEmpty(t, interaction.GetCID())
+		require.Equal(t, interaction.GetType(), AppMessage_TypeAcknowledge)
+		require.Equal(t, interaction.GetConversationPublicKey(), groupPK)
+		require.False(t, interaction.GetIsMe())
+		interactionPayload, err := interaction.UnmarshalPayload()
+		require.NoError(t, err)
+		ack := interactionPayload.(*AppMessage_Acknowledge)
+		require.Equal(t, ack.GetTarget(), messageCid)
+		logger.Debug("testSendGroupMessage: message ack received by creator")
+		// FIXME: check if the ack is from the good receiver, or useless?
+	}
+
+	for _, receiver := range receivers {
+		gotOwnAck := false
+		gotOthersAcks := 0
+		gotMsg := false
+		// we should receive one message + one ack per receiver
+		for i := 0; i < len(receivers)+1; i++ {
+			event := receiver.NextEvent(t)
+			require.Equal(t, event.GetType(), StreamEvent_TypeInteractionUpdated)
+			eventPayload, err := event.UnmarshalPayload()
+			require.NoError(t, err)
+			interaction := eventPayload.(*StreamEvent_InteractionUpdated).Interaction
+			require.NotEmpty(t, interaction.GetCID())
+			require.Equal(t, interaction.GetConversationPublicKey(), groupPK)
+			interactionPayload, err := interaction.UnmarshalPayload()
+			require.NoError(t, err)
+			switch {
+			case interaction.GetType() == AppMessage_TypeAcknowledge && interaction.GetIsMe():
+				require.False(t, gotOwnAck)
+				gotOwnAck = true
+				ack := interactionPayload.(*AppMessage_Acknowledge)
+				require.Equal(t, ack.GetTarget(), messageCid)
+			case interaction.GetType() == AppMessage_TypeAcknowledge && !interaction.GetIsMe():
+				ack := interactionPayload.(*AppMessage_Acknowledge)
+				require.Equal(t, ack.GetTarget(), messageCid)
+				gotOthersAcks++
+			case interaction.GetType() == AppMessage_TypeUserMessage:
+				require.False(t, gotMsg)
+				gotMsg = true
+				require.Equal(t, interaction.GetCID(), messageCid)
+				userMessage := interactionPayload.(*AppMessage_UserMessage)
+				require.Equal(t, userMessage.GetBody(), msg)
+				require.LessOrEqual(t, beforeSend, userMessage.GetSentDate())
+				require.LessOrEqual(t, userMessage.GetSentDate(), afterSend)
+			}
+		}
+		require.True(t, gotOwnAck)
+		require.True(t, gotMsg)
+		require.Equal(t, gotOthersAcks, len(receivers)-1)
+	}
+}
+
+func testCreateConversation(ctx context.Context, t *testing.T, creator *TestingAccount, convName string, invitees []*TestingAccount, logger *zap.Logger) *Conversation {
+	t.Helper()
+
+	// creator creates a conversation
+	var convPK string
+	{
+		contactsToInvite := make([]string, len(invitees))
+		for idx, invitee := range invitees {
+			contactsToInvite[idx] = invitee.GetAccount().GetPublicKey()
+		}
+		createdConv, err := creator.GetClient().ConversationCreate(ctx, &ConversationCreate_Request{DisplayName: convName, ContactsToInvite: contactsToInvite})
+		require.NoError(t, err)
+		require.NotEmpty(t, createdConv.GetPublicKey())
+		convPK = createdConv.GetPublicKey()
+	}
+
+	// creator has a ConversationUpdated event for the conversation creation
+	{
+		event := creator.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		conversation := payload.(*StreamEvent_ConversationUpdated).GetConversation()
+		require.Equal(t, convPK, conversation.GetPublicKey())
+		require.Equal(t, conversation.GetDisplayName(), "")
+	}
+
+	// creator has a ConversationUpdated event for the display name
+	var createdConv *Conversation
+	{
+		event := creator.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		conversation := payload.(*StreamEvent_ConversationUpdated).GetConversation()
+		require.Equal(t, convPK, conversation.GetPublicKey())
+		require.Equal(t, conversation.GetDisplayName(), convName)
+		createdConv = conversation
+	}
+
+	for _, invitee := range invitees {
+		// creator see the invitation in 1-1 conv
+		{
+			event := creator.NextEvent(t)
+			require.Equal(t, event.GetType(), StreamEvent_TypeInteractionUpdated)
+			eventPayload, err := event.UnmarshalPayload()
+			require.NoError(t, err)
+			interaction := eventPayload.(*StreamEvent_InteractionUpdated).GetInteraction()
+			require.Equal(t, interaction.GetType(), AppMessage_TypeGroupInvitation)
+			require.NotEmpty(t, interaction.GetCID())
+			require.NotEqual(t, convPK, interaction.GetConversationPublicKey())
+			require.True(t, interaction.GetIsMe())
+			// FIXME: require.Equal, 1to1conv.pk
+			interactionPayload, err := interaction.UnmarshalPayload()
+			require.NoError(t, err)
+			inviteLink := interactionPayload.(*AppMessage_GroupInvitation).GetLink()
+			require.NotEmpty(t, inviteLink)
+
+		}
+
+		// invitee receive the invitation
+		var inviteLink string
+		{
+			event := invitee.NextEvent(t)
+			require.Equal(t, event.GetType(), StreamEvent_TypeInteractionUpdated)
+			eventPayload, err := event.UnmarshalPayload()
+			require.NoError(t, err)
+			interaction := eventPayload.(*StreamEvent_InteractionUpdated).GetInteraction()
+			require.Equal(t, interaction.GetType(), AppMessage_TypeGroupInvitation)
+			require.NotEmpty(t, interaction.GetCID())
+			require.NotEqual(t, convPK, interaction.GetConversationPublicKey())
+			require.False(t, interaction.GetIsMe())
+			// FIXME: require.Equal, 1to1conv.pk
+			interactionPayload, err := interaction.UnmarshalPayload()
+			require.NoError(t, err)
+			inviteLink = interactionPayload.(*AppMessage_GroupInvitation).GetLink()
+			require.NotEmpty(t, inviteLink)
+		}
+
+		// invitee accepts the invitation
+		{
+			conversation := &Conversation{
+				Link: inviteLink,
+				// FIXME: parse the link to get the name and public key (bonus)
+			}
+			testJoinConversation(ctx, t, invitee, conversation, logger)
+		}
+	}
+
+	return createdConv
+}

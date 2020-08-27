@@ -324,7 +324,7 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 	}
 
 	i := &Interaction{
-		Cid:                   cid,
+		CID:                   cid,
 		Type:                  amt,
 		Payload:               am.GetPayload(),
 		ConversationPublicKey: gpk,

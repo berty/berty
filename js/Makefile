@@ -19,7 +19,6 @@ rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subs
 check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,$(error "Missing deps: no '$(exec)' in PATH")))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
 author = Berty Technologies <oss@berty.tech>
-license = (Apache-2.0 or MIT)
 ext_ldflags = -ldflags="-X berty.tech/berty/go/pkg/bertymessenger.VcsRef=$(VCS_REF) -X berty.tech/berty/go/pkg/bertymessenger.Version=$(VERSION) -X berty.tech/berty/go/pkg/bertymessenger.BuildTime=$(BUILD_DATE)"
 pkg := $(dir $(wildcard $(PWD)/packages/*/package.json))
 pkg_mod := $(patsubst %, %/node_modules, $(pkg)) node_modules
@@ -240,7 +239,7 @@ bridge.start.docker:
 
 #### pbhbs based code generation
 
-pbhbs_templates := $(wildcard */*/protocol/*.hbs */*/messenger/*.hbs */*/types/*.hbs */components/*.hbs)
+pbhbs_templates := packages/api/index.gen.js.hbs packages/codegen/index.gen.js.hbs
 pbhbs_targets := $(patsubst %.hbs,%,$(pbhbs_templates))
 pbhbs_flags := -p ../api -p node_modules/@googleapis/googleapis -p `cd ..; go list -m -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `cd ..; go list -m -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src -H packages/codegen/helpers
 .PHONY: _gen.pbhbs
@@ -263,7 +262,7 @@ _gen.pbjs:
 
 #### gen.sum
 
-gensum_src := Makefile $(pbhbs_templates)
+gensum_src := Makefile $(pbhbs_templates) ../api/bertyprotocol.proto ../api/bertymessenger.proto ../api/bertytypes.proto
 gen.sum: $(gensum_src)
 	$(call check-program, shasum)
 	@shasum $(gensum_src) | sort > gen.sum.tmp

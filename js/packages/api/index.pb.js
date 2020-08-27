@@ -2470,7 +2470,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 1,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primary_key"
+                      "(gogoproto.moretags)": "gorm:primary_key",
+                      "(gogoproto.customname)": "CID"
                     }
                   },
                   type: {

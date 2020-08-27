@@ -867,7 +867,7 @@ func (svc *service) Interact(ctx context.Context, req *Interact_Request) (*Inter
 			return nil, err
 		}
 		if p.SentDate == 0 {
-			p.SentDate = jsNow()
+			p.SentDate = timestampMs(time.Now())
 		}
 		fp, err := AppMessage_TypeUserMessage.MarshalPayload(&p)
 		if err != nil {

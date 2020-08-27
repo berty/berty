@@ -252,7 +252,7 @@ message Account {
 }
 
 message Interaction {
-  string cid = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  string cid = 1 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "CID"];
   AppMessage.Type type = 2;
   string conversation_public_key = 3;
   Conversation conversation = 4;
