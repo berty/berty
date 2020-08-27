@@ -4,5 +4,5 @@ d975f91dc0ebd50cc86009f1212cb99d5408a47e  ../api/bertymessenger.yaml
 4989b51bf6dfc52cd195cc46db1732a81090191f  ../api/bertyprotocol.proto
 e62576e46e2d91d5d2584d0ac99ac7ac71d93e5f  ../api/bertyprotocol.yaml
 d70e7e0659761f25577333ff20f13a8a79fd8f4b  ../api/bertytypes.proto
-12aa0da6b5051cdc976fbc60f363a1f2cc77f1cb  ../api/errcode.proto
+ed8568e7c66e8f4b8a9bf2435f0423b05ef4a8be  ../api/errcode.proto
 c6b861f93a59a96b6a1f0336c25a3d56c8a43230  Makefile

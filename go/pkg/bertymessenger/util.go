@@ -2,18 +2,20 @@ package bertymessenger
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"time"
 
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
-func (svc *service) checkIsMe(gme *bertytypes.GroupMessageEvent) (bool, error) {
+func checkIsMe(ctx context.Context, client bertyprotocol.ProtocolServiceClient, gme *bertytypes.GroupMessageEvent) (bool, error) {
 	gpkb := gme.GetEventContext().GetGroupPK()
 
 	// TODO: support multiple devices per account
-	gi, err := svc.protocolClient.GroupInfo(svc.ctx, &bertytypes.GroupInfo_Request{GroupPK: gpkb})
+	gi, err := client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{GroupPK: gpkb})
 	if err != nil {
 		return false, err
 	}
@@ -24,9 +26,9 @@ func (svc *service) checkIsMe(gme *bertytypes.GroupMessageEvent) (bool, error) {
 	return bytes.Equal(dpk, mdpk), nil
 }
 
-func (svc *service) groupPKFromContactPK(contactPK []byte) ([]byte, error) {
+func groupPKFromContactPK(ctx context.Context, client bertyprotocol.ProtocolServiceClient, contactPK []byte) ([]byte, error) {
 	req := &bertytypes.GroupInfo_Request{ContactPK: contactPK}
-	groupInfo, err := svc.protocolClient.GroupInfo(svc.ctx, req)
+	groupInfo, err := client.GroupInfo(ctx, req)
 	if err != nil {
 		return nil, err
 	}

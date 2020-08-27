@@ -32,6 +32,8 @@ enum ErrCode {
   ErrStreamRead = 104;
   ErrStreamWrite = 105;
   ErrMissingMapKey = 106;
+  ErrDBWrite = 107;
+  ErrDBRead = 108;
 
   // Crypto errors
 
@@ -100,7 +102,22 @@ enum ErrCode {
   // Messenger errors
   //------------------
 
-  ErrMessengerInvalidDeepLink = 2001;
+  ErrMessengerInvalidDeepLink = 2000;
+
+  // DB errors
+
+  ErrDBEntryAlreadyExists = 2100;
+  ErrDBAddConversation = 2101;
+  ErrDBAddContactRequestOutgoingSent = 2102;
+  ErrDBAddContactRequestOutgoingEnqueud = 2103;
+  ErrDBAddContactRequestIncomingReceived = 2104;
+  ErrDBAddContactRequestIncomingAccepted = 2105;
+  ErrDBAddGroupMemberDeviceAdded = 2106;
+
+  // Replay errors
+
+  ErrReplayProcessGroupMetadata = 2200;
+  ErrReplayProcessGroupMessage = 2201;
 
   // -----------------
   // CLI
