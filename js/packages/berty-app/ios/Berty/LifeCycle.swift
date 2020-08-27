@@ -61,7 +61,7 @@ class LifeCycle: NSObject {
             LifeCycle.logger.print("starting background task")
             let success = bgtask.execute()
             DispatchQueue.main.async {
-                LifeCycle.logger.format("ending background with: success=\(success)" as NSString)
+                LifeCycle.logger.format("ending background with: suc cess=\(success)" as NSString)
                 task.setTaskCompleted(success: success)
             }
         }

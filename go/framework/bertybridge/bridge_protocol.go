@@ -27,8 +27,9 @@ import (
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
+	"go.opentelemetry.io/otel/api/kv"
+	"go.opentelemetry.io/otel/api/trace"
 	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
-	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -59,10 +60,12 @@ const memPath = ":memory:"
 type MessengerBridge struct {
 	*Bridge
 
+	logger           *zap.Logger
 	node             *core.IpfsNode
 	protocolService  bertyprotocol.Service
 	messengerService bertymessenger.Service
 	msngrDB          *gorm.DB
+	lifecycle        LifeCycleDriver
 
 	// protocol datastore
 	ds             datastore.Batching
@@ -163,6 +166,8 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 		repo           ipfs_repo.Repo
 		disc           tinder.Driver
 	)
+
+	bridgeLogger := logger.Named("bridge")
 
 	{
 		var err error
@@ -352,14 +357,14 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 		shouldPersist := config.rootDirectory != "" && config.rootDirectory != memPath
 		if shouldPersist {
 			dbPath := config.rootDirectory + "/messenger.db"
-			logger.Debug("using db", zap.String("path", dbPath))
+			bridgeLogger.Debug("using db", zap.String("path", dbPath))
 			db, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{Logger: zapLogger})
 		} else {
 			db, err = gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{Logger: zapLogger})
 		}
 		if err != nil {
 			if cErr := protocolClient.Close(); cErr != nil {
-				logger.Error("failed to close protocol client", zap.Error(cErr))
+				bridgeLogger.Error("failed to close protocol client", zap.Error(cErr))
 			}
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -381,66 +386,121 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 	{
 		var err error
 
-		bridge, err = newBridge(ctx, grpcServer, logger, config.Config)
+		bridge, err = newBridge(ctx, grpcServer, bridgeLogger, config.Config)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	// setup lifecycle
-	{
-		var lc LifeCycleDriver
-		if lc = config.lc; lc == nil {
-			lc = NewNoopLifeCycleDriver()
-		}
+	messengerBridge := &MessengerBridge{
+		Bridge: bridge,
 
-		testHandler := NewTestHandler(logger.Named("lifecycle"))
-		lc.RegisterHandler(testHandler)
-		state := lc.GetCurrentState()
-		testHandler.HandleState(state)
-	}
-
-	return &MessengerBridge{
-		Bridge:           bridge,
+		logger:           bridgeLogger,
 		protocolService:  service,
 		node:             node,
 		ds:               rootds,
 		messengerService: messenger,
 		msngrDB:          db,
 		protocolClient:   protocolClient,
-	}, nil
+	}
+
+	// setup lifecycle
+	var lc LifeCycleDriver
+	{
+		if lc = config.lc; lc == nil {
+			lc = NewNoopLifeCycleDriver()
+		}
+
+		lc.RegisterHandler(messengerBridge)
+		messengerBridge.lifecycle = lc
+	}
+
+	return messengerBridge, nil
+}
+
+var _ LifeCycleHandler = (*MessengerBridge)(nil)
+
+func (p *MessengerBridge) HandleState(appstate int) {}
+func (p *MessengerBridge) HandleTask() LifeCycleBackgroundTask {
+	tr := tracer.New("AppState")
+	return NewBackgroundTask(p.logger, func(ctx context.Context) error {
+		return tr.WithSpan(ctx, "BackgroundTask", func(ctx context.Context) error {
+			p.logger.Info("starting background task")
+
+			ctx, cancel := context.WithDeadline(ctx, time.Now().Add(time.Second*25))
+			defer cancel()
+			span := trace.SpanFromContext(ctx)
+			count := 0
+			for {
+				select {
+				case <-ctx.Done():
+					p.logger.Info("ending background task")
+					if ctx.Err() != context.DeadlineExceeded {
+						span.AddEvent(ctx, "task has been canceled")
+						return fmt.Errorf("task has been canceled")
+					}
+
+					return nil
+				case <-time.After(time.Second):
+					span.AddEvent(ctx, "tick", kv.Int("count", count))
+					p.logger.Info("background task counting", zap.Int("count", count))
+				}
+				count++
+			}
+		}, trace.WithRecord(), trace.WithSpanKind(trace.SpanKindClient))
+	})
+}
+func (p *MessengerBridge) WillTerminate() {
+	if err := p.Close(); err != nil {
+		p.logger.Error("unable to close bridge properly", zap.Error(err))
+	} else {
+		p.logger.Info("closing success")
+	}
 }
 
 func (p *MessengerBridge) Close() error {
-	var errs error
+	errs := make([]zap.Field, 0)
 
-	// Close bridge
-	p.Bridge.Close()
+	// close bridge
+	if err := p.Bridge.Close(); err != nil {
+		errs = append(errs, zap.Error(err))
+	}
 
 	// close messenger
 	p.messengerService.Close()
-	sqlDB, err := p.msngrDB.DB()
-	if err != nil {
-		errs = multierr.Append(errs, err)
+
+	// protocol client
+	if err := p.protocolClient.Close(); err != nil {
+		errs = append(errs, zap.Error(err))
 	}
-	sqlDB.Close()
 
 	// close protocol
-	if err = p.protocolService.Close(); err != nil {
-		errs = multierr.Append(errs, err)
+	if err := p.protocolService.Close(); err != nil {
+		errs = append(errs, zap.Error(err))
 	}
 
-	p.protocolClient.Close()
-
-	if p.node != nil {
-		p.node.Close()
+	if err := p.node.Close(); err != nil {
+		errs = append(errs, zap.Error(err))
 	}
 
-	if p.ds != nil {
-		p.ds.Close()
+	if err := p.ds.Close(); err != nil {
+		errs = append(errs, zap.Error(err))
 	}
 
-	return errs
+	// closing messenger db
+	sqlDB, err := p.msngrDB.DB()
+	if err != nil {
+		errs = append(errs, zap.Error(err))
+	} else if err := sqlDB.Close(); err != nil {
+		errs = append(errs, zap.Error(err))
+	}
+
+	if len(errs) > 0 {
+		p.logger.Error("error(s) while closing", errs...)
+		return fmt.Errorf("see log for more information about those errors")
+	}
+
+	return nil
 }
 
 func getRootDatastore(path string) (datastore.Batching, error) {

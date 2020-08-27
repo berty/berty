@@ -45,7 +45,7 @@ public class LifeCycleDriver: NSObject, BertybridgeLifeCycleDriverProtocol {
     
     public func willTerminate() {
         if let handler = self.handler {
-            handler.willTerminnate()
+            handler.willTerminate()
         } else {
             print("no state handler set")
         }
