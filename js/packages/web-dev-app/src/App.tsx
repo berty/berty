@@ -186,23 +186,21 @@ const Interaction: React.FC<{ value: any }> = ({ value }) => {
 				{payload.body}
 			</div>
 		)
+	} else if (value.type === messengerpb.AppMessage.Type.TypeGroupInvitation) {
+		const payload = value.payload
+		return (
+			<div style={{ textAlign: value.isMe ? 'right' : 'left' }}>
+				{/* {value.isMe && isAcknowledged(ctx, value.cid) && '✓ '} */}
+				{`${payload.body}`}
+			</div>
+		)
 	}
 	return null
 }
 
 const Conversation: React.FC<{ publicKey: string }> = ({ publicKey }) => {
 	const ctx = React.useContext(MsgrContext)
-	let conv = (ctx.conversations as any)[publicKey]
-	if (!conv) {
-		const contact: any = Object.values(ctx.contacts).find(
-			(c: any) => c.conversationPublicKey === publicKey,
-		)
-		if (contact) {
-			conv = { displayName: contact.displayName, publicKey, kind: '1to1' }
-		}
-	} else {
-		conv = { ...conv, kind: 'multi' }
-	}
+	const conv = (ctx.conversations as any)[publicKey] || {}
 	const interactions = Object.values((ctx.interactions as any)[publicKey] || {})
 	const [message, setMessage] = useState('')
 	const [error, setError] = useState(null)
@@ -297,12 +295,9 @@ const Conversations: React.FC = () => {
 	const ctx = React.useContext(MsgrContext)
 	const conversations = React.useMemo(
 		() => [
-			...Object.values(ctx.conversations),
-			...Object.values(ctx.contacts)
-				.filter((c: any) => c.state === messengerpb.Contact.State.Established)
-				.map((c: any) => ({ publicKey: c.conversationPublicKey, displayName: c.displayName })),
+			...Object.values(ctx.conversations)
 		], // TODO: add sortDate
-		[ctx.contacts, ctx.conversations],
+		[ctx.conversations],
 	)
 	const [selected, setSelected] = useState('')
 	return (
@@ -344,13 +339,21 @@ const Error: React.FC<{ value: Error }> = ({ value }) => (
 const CreateMultiMember = () => {
 	const [groupName, setGroupName] = useState('My group')
 	const [error, setError] = useState(null)
-	const ctx = React.useContext(MsgrContext)
+	const [members, setMembers] = useState([])
+	const ctx: any = React.useContext(MsgrContext)
 	const handleCreate = React.useCallback(() => {
 		setError(null)
-		ctx.client.conversationCreate({ displayName: groupName }).catch((err: any) => setError(err))
-	}, [ctx.client, groupName])
+		ctx.client.conversationCreate({ displayName: groupName, members }).catch((err: any) => setError(err))
+	}, [ctx.client, groupName, members])
 	return (
 		<>
+		{Object.values(ctx.contacts).filter(contact => contact.state === messengerpb.Contact.State.Established).map((contact: any, i) => <button
+		key={`${contact.publicKey}_${i}`}
+		onClick={
+			() => members.find(m => m.publicKey === contact.publicKey) ? setMembers(members.filter(member => member.publicKey !== contact.publicKey)) : setMembers([...members, contact])
+			}>
+			{contact.displayName}{' '}{members.find(m => m.publicKey === contact.publicKey) ? '🅧' : '+'}
+			</button>)}
 			<input
 				type='text'
 				value={groupName}
@@ -389,7 +392,7 @@ const JoinMultiMember = () => {
 
 const MultiMemberList = () => {
 	const ctx = React.useContext(MsgrContext)
-	const convs = Object.values(ctx.conversations)
+	const convs = Object.values(ctx.conversations).filter(conv => conv.kind === 'multi')
 	return (
 		<>
 			{convs.map((conv: any) => {
