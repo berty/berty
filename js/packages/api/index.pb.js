@@ -2530,21 +2530,25 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       "(gogoproto.moretags)": "gorm:primary_key"
                     }
                   },
-                  displayName: {
+                  contactPublicKey: {
                     type: "string",
                     id: 2
                   },
-                  link: {
+                  displayName: {
                     type: "string",
                     id: 3
                   },
+                  link: {
+                    type: "string",
+                    id: 4
+                  },
                   unreadCount: {
                     type: "int32",
-                    id: 4
+                    id: 5
                   },
                   type: {
                     type: "Type",
-                    id: 5
+                    id: 6
                   }
                 },
                 nested: {

@@ -238,7 +238,7 @@ const MessageList: React.FC<{ id: string }> = ({ id }) => {
 			renderItem={({ item }) => (
 				<Message
 					id={item.cid}
-					convKind='multi'
+					convKind={messengerpb.Conversation.Type.MultiMemberType}
 					convPK={conversation.publicKey}
 					membersNames={conversation.membersNames}
 					previousMessageId={getPreviousMessageId(item, conversation.messages)}

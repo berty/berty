@@ -47,10 +47,9 @@ const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) 
 
 export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
 	const { navigate, goBack } = useNavigation()
-	const contacts: any = useContacts()
-	const contact = values(contacts).find((c) => c.conversationPublicKey === convPk) || null
-	const conversation =
-		useConversationList().find((c) => c.contactPublicKey === contact.publicKey) || null
+	const ctx = useMsgrContext()
+	const conversation = ctx.conversations[convPk]
+	const contact = ctx.contacts[conversation.contactPublicKey]
 
 	// const conversation: any = conversations ? conversations[convPk] : null
 	// const { contactPublicKey = '', displayName = '', publicKey = '' } = conversation || {}
@@ -88,10 +87,7 @@ export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
 
 	// console.log('conversation:', conversation)
 
-	const title =
-		conversation.kind === 'fake'
-			? `SAMPLE - ${conversation.displayName}`
-			: conversation?.displayName || ''
+	const title = conversation.fake ? `FAKE - ${contact.displayName}` : contact?.displayName || ''
 
 	// console.log('title:', title)
 	return (
@@ -235,7 +231,7 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: number }> = ({
 			renderItem={({ item }) => (
 				<Message
 					id={item.cid}
-					convKind='1to1'
+					convKind={messengerpb.Conversation.Type.ContactType}
 					convPK={conv.publicKey}
 					membersNames={conv.membersNames}
 					previousMessageId={getPreviousMessageId(item, messages)}

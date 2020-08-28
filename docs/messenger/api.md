@@ -278,6 +278,7 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | public_key | [string](#string) |  |  |
+| contact_public_key | [string](#string) |  | specific to ContactType conversations |
 | display_name | [string](#string) |  |  |
 | link | [string](#string) |  |  |
 | unread_count | [int32](#int32) |  |  |

@@ -108,11 +108,11 @@ export const useConversationList = () => {
 			? messenger.conversation.queries.list(state).filter((conv) => {
 					const { membersDevices } = groups[conv.pk] || { membersDevices: {} }
 					const contact =
-						conv.kind === messenger.conversation.ConversationKind.OneToOne &&
+						conv.type === messenger.conversation.ConversationKind.OneToOne &&
 						contacts.find((c) => c.id === conv.contactId)
 					return (
 						conv.fake ||
-						conv.kind === messenger.conversation.ConversationKind.MultiMember ||
+						conv.type === messenger.conversation.ConversationKind.MultiMember ||
 						(contact &&
 							contact.request.type === messenger.contact.ContactRequestType.Incoming &&
 							contact.request.accepted) ||

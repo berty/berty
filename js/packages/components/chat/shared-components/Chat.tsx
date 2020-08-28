@@ -40,22 +40,11 @@ export const ChatFooter: React.FC<{
 
 	const usermsg = { body: message, sentDate: Date.now() }
 	const buf = messengerpb.AppMessage.UserMessage.encode(usermsg).finish()
-	const decoded = messengerpb.AppMessage.UserMessage.decode(buf)
 
-	let conversation = ctx.conversations[convPk]
-	if (!conversation) {
-		const contact = values(ctx.contacts).find((c) => c.conversationPublicKey === convPk) || {}
-		conversation = {
-			displayName: contact.displayName,
-			publicKey: convPk,
-			kind: contact.fake ? 'fake' : '1to1',
-		}
-	}
+	const conversation = ctx.conversations[convPk]
 
 	// TODO: Debug, error on restarting node
 	const handleSend = React.useCallback(() => {
-		console.log('check convPk === conversation.publicKey:', convPk === conversation.publicKey)
-		console.log('sending user message payload:', decoded)
 		ctx.client
 			?.interact({
 				conversationPublicKey: convPk,
@@ -65,7 +54,7 @@ export const ChatFooter: React.FC<{
 			.catch((e: any) => {
 				console.warn('e sending message:', e)
 			})
-	}, [convPk, conversation.publicKey, decoded, ctx.client, buf])
+	}, [convPk, ctx.client, buf])
 
 	if (!conversation) {
 		return null

@@ -29,7 +29,7 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 			break
 		case T.TypeConversationUpdated:
 			const conv = action.payload.conversation
-			state.conversations[conv.publicKey] = { kind: 'multi', ...conv }
+			state.conversations[conv.publicKey] = conv
 			break
 		case T.TypeAccountUpdated:
 			const acc = action.payload.account
@@ -38,18 +38,6 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 		case T.TypeContactUpdated:
 			const contact = action.payload.contact
 			state.contacts[contact.publicKey] = contact
-			if (
-				contact.state === messengerpb.Contact.State.Established &&
-				contact.conversationPublicKey
-			) {
-				state.conversations[contact.conversationPublicKey] = {
-					...(state.conversations[contact.conversationPublicKey] || {}),
-					kind: '1to1',
-					publicKey: contact.conversationPublicKey,
-					displayName: contact.displayName,
-					contactPublicKey: contact.publicKey,
-				}
-			}
 			break
 		case T.TypeListEnd:
 			state.listDone = true

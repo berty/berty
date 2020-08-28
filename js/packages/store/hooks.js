@@ -200,7 +200,7 @@ export const useGenerateFakeContacts = () => {
 export const useGenerateFakeMultiMembers = () => {
 	const ctx = useMsgrContext()
 	const prevFakeCount = Object.values(ctx.conversations).reduce(
-		(r, c) => (c.fake && c.kind === 'multi' ? r + 1 : r),
+		(r, c) => (c.fake && c.type === messengerpb.Conversation.Type.MultiMemberType ? r + 1 : r),
 		0,
 	)
 	return (length = 10) => {

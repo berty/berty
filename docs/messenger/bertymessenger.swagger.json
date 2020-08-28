@@ -807,6 +807,9 @@
         "public_key": {
           "type": "string"
         },
+        "contact_public_key": {
+          "type": "string"
+        },
         "display_name": {
           "type": "string"
         },

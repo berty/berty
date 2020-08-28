@@ -260,10 +260,11 @@ func accountContactRequestIncomingAccepted(svc *service, gme *bertytypes.GroupMe
 	var conversation Conversation
 	{
 		conversation = Conversation{
-			PublicKey:   contact.ConversationPublicKey,
-			Type:        Conversation_ContactType,
-			DisplayName: "", // empty on account conversations
-			Link:        "", // empty on account conversations
+			PublicKey:        contact.ConversationPublicKey,
+			Type:             Conversation_ContactType,
+			ContactPublicKey: pkStr,
+			DisplayName:      "", // empty on account conversations
+			Link:             "", // empty on account conversations
 		}
 	}
 
@@ -357,10 +358,11 @@ func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) er
 		var conversation Conversation
 		{
 			conversation = Conversation{
-				PublicKey:   contact.ConversationPublicKey,
-				Type:        Conversation_ContactType,
-				DisplayName: "", // empty on account conversations
-				Link:        "", // empty on account conversations
+				PublicKey:        contact.ConversationPublicKey,
+				ContactPublicKey: mpk,
+				Type:             Conversation_ContactType,
+				DisplayName:      "", // empty on account conversations
+				Link:             "", // empty on account conversations
 			}
 		}
 

@@ -294,9 +294,7 @@ const SearchMessages: React.FC = () => {
 const Conversations: React.FC = () => {
 	const ctx = React.useContext(MsgrContext)
 	const conversations = React.useMemo(
-		() => [
-			...Object.values(ctx.conversations)
-		], // TODO: add sortDate
+		() => [...Object.values(ctx.conversations)], // TODO: add sortDate
 		[ctx.conversations],
 	)
 	const [selected, setSelected] = useState('')
@@ -343,17 +341,27 @@ const CreateMultiMember = () => {
 	const ctx: any = React.useContext(MsgrContext)
 	const handleCreate = React.useCallback(() => {
 		setError(null)
-		ctx.client.conversationCreate({ displayName: groupName, members }).catch((err: any) => setError(err))
+		ctx.client
+			.conversationCreate({ displayName: groupName, members })
+			.catch((err: any) => setError(err))
 	}, [ctx.client, groupName, members])
 	return (
 		<>
-		{Object.values(ctx.contacts).filter(contact => contact.state === messengerpb.Contact.State.Established).map((contact: any, i) => <button
-		key={`${contact.publicKey}_${i}`}
-		onClick={
-			() => members.find(m => m.publicKey === contact.publicKey) ? setMembers(members.filter(member => member.publicKey !== contact.publicKey)) : setMembers([...members, contact])
-			}>
-			{contact.displayName}{' '}{members.find(m => m.publicKey === contact.publicKey) ? '🅧' : '+'}
-			</button>)}
+			{Object.values(ctx.contacts)
+				.filter((contact) => contact.state === messengerpb.Contact.State.Established)
+				.map((contact: any, i) => (
+					<button
+						key={`${contact.publicKey}_${i}`}
+						onClick={() =>
+							members.find((m) => m.publicKey === contact.publicKey)
+								? setMembers(members.filter((member) => member.publicKey !== contact.publicKey))
+								: setMembers([...members, contact])
+						}
+					>
+						{contact.displayName}{' '}
+						{members.find((m) => m.publicKey === contact.publicKey) ? '🅧' : '+'}
+					</button>
+				))}
 			<input
 				type='text'
 				value={groupName}
@@ -392,7 +400,9 @@ const JoinMultiMember = () => {
 
 const MultiMemberList = () => {
 	const ctx = React.useContext(MsgrContext)
-	const convs = Object.values(ctx.conversations).filter(conv => conv.kind === 'multi')
+	const convs = Object.values(ctx.conversations).filter(
+		(conv) => conv.type === messengerpb.Conversation.Type.MultiMemberType,
+	)
 	return (
 		<>
 			{convs.map((conv: any) => {
@@ -422,7 +432,7 @@ const MultiMember: React.FC = () => {
 
 const DumpStore: React.FC = () => {
 	const ctx = useMsgrContext()
-	return <JSONed value={ctx}/>
+	return <JSONed value={ctx} />
 }
 
 const TABS = {
@@ -430,7 +440,7 @@ const TABS = {
 	Conversations: Conversations,
 	Search: Search,
 	MultiMember: MultiMember,
-	DumpStore: DumpStore
+	DumpStore: DumpStore,
 }
 
 type TabKey = keyof typeof TABS

@@ -3937,6 +3937,7 @@ export namespace berty {
 
             interface IConversation {
                 publicKey?: (string|null);
+                contactPublicKey?: (string|null);
                 displayName?: (string|null);
                 link?: (string|null);
                 unreadCount?: (number|null);
@@ -3946,6 +3947,7 @@ export namespace berty {
             class Conversation implements IConversation {
 
                 public publicKey: string;
+                public contactPublicKey: string;
                 public displayName: string;
                 public link: string;
                 public unreadCount: number;
