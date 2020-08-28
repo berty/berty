@@ -83,7 +83,7 @@ stories
 	.add(Routes.Main.InvalidScan, () => <Main.InvalidScan />)
 	.add(Routes.Chat.OneToOne, () => <Chat.Chat />)
 	.add(Routes.Chat.Group, () => (
-		<Chat.ChatGroup route={{ params: faker.berty.chatmodel.Conversation[0] }} />
+		<Chat.MultiMember route={{ params: faker.berty.chatmodel.Conversation[0] }} />
 	))
 	.add(Routes.Chat.Settings, () => (
 		<Chat.Settings route={{ params: faker.berty.chatmodel.Conversation[0] }} />
@@ -91,7 +91,7 @@ stories
 	.add(Routes.Chat.OneToOneSettings, () => (
 		<Chat.OneToOneSettings route={{ params: faker.berty.chatmodel.Conversation[0] }} />
 	))
-	.add(Routes.Chat.GroupSettings, () => (
+	.add(Routes.Chat.MultiMemberSettings, () => (
 		<Chat.GroupChatSettings route={{ params: faker.berty.chatmodel.Conversation[0] }} />
 	))
 	.add('Main.RequestSent', () => <Main.RequestSent user={fakeOneUser} />)

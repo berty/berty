@@ -21,12 +21,12 @@ import { messenger as messengerpb } from '@berty-tech/api/index.js'
 
 //import { useReadEffect } from '../hooks'
 //
-// ChatGroup
+// MultiMember
 //
 
 // Styles
 
-const HeaderChatGroup: React.FC<{ id: string }> = ({ id }) => {
+const HeaderMultiMember: React.FC<{ id: string }> = ({ id }) => {
 	const { navigate, goBack } = useNavigation()
 	const [{ row, padding, flex, text, column, absolute }, { scaleHeight }] = useStyles()
 	const conversation = useConversation(id)
@@ -74,7 +74,7 @@ const HeaderChatGroup: React.FC<{ id: string }> = ({ id }) => {
 	)
 }
 
-// const ChatGroupMemberItem: React.FC<berty.chatmodel.IMember> = ({
+// const MultiMemberMemberItem: React.FC<berty.chatmodel.IMember> = ({
 // 	avatarUri,
 // 	name,
 // 	contactId,
@@ -153,7 +153,7 @@ const HeaderChatGroup: React.FC<{ id: string }> = ({ id }) => {
 // 	)
 // }
 
-const ChatGroupMemberItem: React.FC<{ memberPk: any }> = ({ memberPk }) => {
+const MultiMemberMemberItem: React.FC<{ memberPk: any }> = ({ memberPk }) => {
 	const [, { scaleHeight }] = useStyles()
 	return (
 		<View>
@@ -162,7 +162,7 @@ const ChatGroupMemberItem: React.FC<{ memberPk: any }> = ({ memberPk }) => {
 	)
 }
 
-const ChatGroupMemberList: React.FC<{ membersDevices: any }> = ({ membersDevices }) => {
+const MultiMemberMemberList: React.FC<{ membersDevices: any }> = ({ membersDevices }) => {
 	const [{ padding, margin }] = useStyles()
 	return (
 		<ScrollView
@@ -172,13 +172,13 @@ const ChatGroupMemberList: React.FC<{ membersDevices: any }> = ({ membersDevices
 		>
 			{membersDevices &&
 				membersDevices?.map((member: any) =>
-					member ? <ChatGroupMemberItem memberPk={member} /> : null,
+					member ? <MultiMemberMemberItem memberPk={member} /> : null,
 				)}
 		</ScrollView>
 	)
 }
 
-const InfosChatGroup: React.FC<messenger.conversation.Entity> = ({ createdAt, pk }) => {
+const InfosMultiMember: React.FC<messenger.conversation.Entity> = ({ createdAt, pk }) => {
 	//const { membersDevices } = Groups.useGroups()[pk] || { membersDevices: {} }
 	//const [{ margin, text }] = useStyles()
 	return (
@@ -189,7 +189,7 @@ const InfosChatGroup: React.FC<messenger.conversation.Entity> = ({ createdAt, pk
 					Test created the group
 				</Text>
 			</View>
-			<ChatGroupMemberList membersDevices={Object.keys(membersDevices)} />*/}
+			<MultiMemberMemberList membersDevices={Object.keys(membersDevices)} />*/}
 		</View>
 	)
 }
@@ -233,7 +233,7 @@ const MessageList: React.FC<{ id: string }> = ({ id }) => {
 			]}
 			data={interactions.reverse()}
 			inverted
-			ListFooterComponent={<InfosChatGroup {...conversation} />}
+			ListFooterComponent={<InfosMultiMember {...conversation} />}
 			keyExtractor={(item) => item.cid}
 			renderItem={({ item }) => (
 				<Message
@@ -248,7 +248,7 @@ const MessageList: React.FC<{ id: string }> = ({ id }) => {
 	)
 }
 
-export const ChatGroup: React.FC<ScreenProps.Chat.Group> = ({ route: { params } }) => {
+export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params } }) => {
 	const [inputIsFocused, setInputFocus] = useState(true)
 	const [{ background, flex }] = useStyles()
 	//useReadEffect(params.convId, 1000)
@@ -258,7 +258,7 @@ export const ChatGroup: React.FC<ScreenProps.Chat.Group> = ({ route: { params } 
 				<StatusBar backgroundColor='#00BCD4' barStyle='dark-content' />
 				<MessageList id={params.convId} />
 				<ChatFooter convPk={params.convId} isFocused={inputIsFocused} setFocus={setInputFocus} />
-				<HeaderChatGroup id={params.convId} />
+				<HeaderMultiMember id={params.convId} />
 			</KeyboardAvoidingView>
 		</View>
 	)

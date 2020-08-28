@@ -141,15 +141,15 @@ export const Navigation: React.FC = () => {
 				options={{ stackPresentation: 'transparentModal' }}
 			/>
 			<NavigationStack.Screen name={Routes.Chat.OneToOne} component={Components.Chat.OneToOne} />
-			<NavigationStack.Screen name={Routes.Chat.Group} component={Components.Chat.ChatGroup} />
+			<NavigationStack.Screen name={Routes.Chat.Group} component={Components.Chat.MultiMember} />
 			<NavigationStack.Screen name={Routes.Chat.Settings} component={Components.Chat.Settings} />
 			<NavigationStack.Screen
 				name={Routes.Chat.OneToOneSettings}
 				component={Components.Chat.OneToOneSettings}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Chat.GroupSettings}
-				component={Components.Chat.GroupSettings}
+				name={Routes.Chat.MultiMemberSettings}
+				component={Components.Chat.MultiMemberSettings}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Chat.MultiMemberQR}

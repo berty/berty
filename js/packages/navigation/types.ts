@@ -25,7 +25,7 @@ export namespace ScreenProps {
 		export type Group = RouteProps<{ convId: string }>
 		export type Settings = RouteProps<{ convId: string }>
 		export type OneToOneSettings = RouteProps<{ contactId: string }>
-		export type GroupSettings = RouteProps<{ convId: string }>
+		export type MultiMemberSettings = RouteProps<{ convId: string }>
 		export type MultiMemberQR = RouteProps<{ convId: string }>
 	}
 	export namespace Settings {
@@ -80,7 +80,7 @@ export namespace Routes {
 		Group = 'Chat.Group',
 		Settings = 'Chat.Settings',
 		OneToOneSettings = 'Chat.OneToOneSettings',
-		GroupSettings = 'Group.GroupSettings',
+		MultiMemberSettings = 'Group.MultiMemberSettings',
 		MultiMemberQR = 'Chat.MultiMemberQR',
 	}
 	export enum Settings {

@@ -73,9 +73,9 @@ const createNavigation = ({
 					navigate,
 					Routes.Chat.OneToOneSettings,
 				),
-				groupSettings: createNavigateFunc<ScreenProps.Chat.GroupSettings>(
+				groupSettings: createNavigateFunc<ScreenProps.Chat.MultiMemberSettings>(
 					navigate,
-					Routes.Chat.GroupSettings,
+					Routes.Chat.MultiMemberSettings,
 				),
 				multiMemberQR: createNavigateFunc<ScreenProps.Chat.MultiMemberQR>(
 					navigate,

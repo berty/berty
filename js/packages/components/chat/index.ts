@@ -1,6 +1,6 @@
 export { OneToOne } from './OneToOne'
 export { OneToOneSettings } from './OneToOneSettings'
 export { ChatSettings as Settings } from './ChatSettings'
-export { ChatGroup } from './ChatGroup'
-export { GroupSettings } from './GroupSettings'
+export { MultiMember } from './MultiMember'
+export { MultiMemberSettings } from './MultiMemberSettings'
 export { MultiMemberQR } from './MultiMemberQR'
