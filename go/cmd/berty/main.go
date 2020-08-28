@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/oklog/run"
 	ff "github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 )
@@ -45,7 +46,21 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	if err := root.ParseAndRun(ctx, os.Args[1:]); err != nil {
+	var process run.Group
+
+	// handle close signal
+	execute, interrupt := run.SignalHandler(ctx, os.Interrupt)
+	process.Add(execute, interrupt)
+
+	// add root command to process
+	process.Add(func() error {
+		return root.ParseAndRun(ctx, os.Args[1:])
+	}, func(error) {
+		cancel()
+	})
+
+	// run process
+	if err := process.Run(); err != nil && err != context.Canceled {
 		log.Fatalf("error: %v", err)
 	}
 }
