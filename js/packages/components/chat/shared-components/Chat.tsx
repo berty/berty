@@ -2,9 +2,13 @@ import React, { useRef, useState } from 'react'
 import { TouchableOpacity, SafeAreaView, View, TextInput } from 'react-native'
 import { Icon, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
-import { Messenger } from '@berty-tech/store/oldhooks'
 
 import BlurView from '../../shared-components/BlurView'
+
+import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import { useMsgrContext } from '@berty-tech/store/hooks'
+import { values } from 'lodash'
+
 // import { SafeAreaView } from 'react-native-safe-area-context'
 //
 // ChatFooter => Textinput for type message
@@ -23,16 +27,45 @@ const useStylesChatFooter = () => {
 export const ChatFooter: React.FC<{
 	isFocused: boolean
 	setFocus: React.Dispatch<React.SetStateAction<any>>
-	convId: string
-}> = ({ isFocused, setFocus, convId }) => {
+	convPk: string
+}> = ({ isFocused, setFocus, convPk }) => {
+	const ctx: any = useMsgrContext()
+
 	const [message, setMessage] = useState('')
 	const [isSubmit, setIsSubmit] = useState(false)
 	const inputRef = useRef<TextInput>(null)
 	const _isFocused = isFocused || inputRef?.current?.isFocused() || false
 	const _styles = useStylesChatFooter()
-	const [{ row, padding, flex, border, color, background }] = useStyles()
-	const sendMessage = Messenger.useMessageSend()
-	const conversation = Messenger.useGetConversation(convId)
+	const [{ row, padding, flex, border, color }] = useStyles()
+
+	const usermsg = { body: message, sentDate: Date.now() }
+	const buf = messengerpb.AppMessage.UserMessage.encode(usermsg).finish()
+	const decoded = messengerpb.AppMessage.UserMessage.decode(buf)
+
+	let conversation = ctx.conversations[convPk]
+	if (!conversation) {
+		const contact = values(ctx.contacts).find((c) => c.conversationPublicKey === convPk) || {}
+		conversation = {
+			displayName: contact.displayName,
+			publicKey: convPk,
+			kind: contact.fake ? 'fake' : '1to1',
+		}
+	}
+
+	// TODO: Debug, error on restarting node
+	const handleSend = React.useCallback(() => {
+		console.log('check convPk === conversation.publicKey:', convPk === conversation.publicKey)
+		console.log('sending user message payload:', decoded)
+		ctx.client
+			?.interact({
+				conversationPublicKey: convPk,
+				type: messengerpb.AppMessage.Type.TypeUserMessage,
+				payload: buf,
+			})
+			.catch((e: any) => {
+				console.warn('e sending message:', e)
+			})
+	}, [convPk, conversation.publicKey, decoded, ctx.client, buf])
 
 	if (!conversation) {
 		return null
@@ -46,7 +79,7 @@ export const ChatFooter: React.FC<{
 						row.right,
 						padding.horizontal.medium,
 						padding.top.medium,
-						// _isFocused && padding.bottom.medium,
+						_isFocused && padding.bottom.medium,
 						{ alignItems: 'center' },
 					]}
 				>
@@ -77,13 +110,7 @@ export const ChatFooter: React.FC<{
 									return
 								}
 								if (message) {
-									sendMessage({
-										id: convId,
-										type: messenger.AppMessageType.UserMessage,
-										body: message,
-										attachments: [],
-										sentDate: Date.now(),
-									})
+									handleSend()
 								}
 							}}
 							style={[
@@ -101,13 +128,7 @@ export const ChatFooter: React.FC<{
 									return
 								}
 								if (message) {
-									sendMessage({
-										id: convId,
-										type: messenger.AppMessageType.UserMessage,
-										body: message,
-										attachments: [],
-										sentDate: Date.now(),
-									})
+									handleSend()
 								}
 								setMessage('')
 							}}

@@ -1,8 +1,9 @@
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { ScreenProps, useNavigation, Routes } from '@berty-tech/navigation'
 import {
 	useConversationLength,
 	useConversationList,
 	useIncomingContactRequests,
+	useMsgrContext,
 } from '@berty-tech/store/hooks'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { Messenger } from '@berty-tech/store/oldhooks'
@@ -27,6 +28,7 @@ import {
 } from '../shared-components/ProceduralCircleAvatar'
 import Logo from './1_berty_picto.svg'
 import EmptyChat from './empty_chat.svg'
+import { CommonActions } from '@react-navigation/native'
 
 //
 // Main List
@@ -153,13 +155,6 @@ const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
 	) : null
 }
 
-const formatTimestamp = (date: Date) => {
-	const arr = date.toString().split(' ')
-	const hours = arr[4].split(':')
-	const hour = hours[0] + ':' + hours[1]
-	return hour
-}
-
 const UnreadCount: React.FC<{ value: number }> = ({ value }) =>
 	value ? (
 		<View
@@ -208,41 +203,48 @@ const MessageStatus: React.FC<{ messageID: string }> = ({ messageID }) => {
 
 const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	// const { dispatch } = useNavigation()
-	const { publicKey = '', displayName = '', fake = false } = props
+	const {
+		publicKey = '',
+		displayName = '',
+		fake = false,
+		kind = '1to1',
+		contactPublicKey = '',
+	} = props
 	const [{ color, row, border, flex, column, padding, text }] = useStyles()
 	// TODO: Last message, unread count, navigate to chatroom
+	const { dispatch } = useNavigation()
 
 	return (
 		<TouchableHighlight
 			underlayColor={color.light.grey}
 			style={[padding.horizontal.medium]}
-			// onPress={
-			// 	kind === messenger.conversation.ConversationKind.MultiMember
-			// 		? () =>
-			// 				dispatch(
-			// 					CommonActions.navigate({
-			// 						name: Routes.Chat.Group,
-			// 						params: {
-			// 							convId: id,
-			// 						},
-			// 					}),
-			// 				)
-			// 		: () =>
-			// 				dispatch(
-			// 					CommonActions.navigate({
-			// 						name: Routes.Chat.OneToOne,
-			// 						params: {
-			// 							convId: id,
-			// 						},
-			// 					}),
-			// 				)
-			// }
+			onPress={
+				kind === 'multi'
+					? () =>
+							dispatch(
+								CommonActions.navigate({
+									name: Routes.Chat.Group,
+									params: {
+										convId: publicKey,
+									},
+								}),
+							)
+					: () =>
+							dispatch(
+								CommonActions.navigate({
+									name: Routes.Chat.OneToOne,
+									params: {
+										convId: publicKey,
+									},
+								}),
+							)
+			}
 		>
 			<View
 				style={[row.center, border.bottom.medium, border.color.light.grey, padding.vertical.small]}
 			>
-				<ConversationProceduralAvatar
-					conversationId={publicKey}
+				<ProceduralCircleAvatar
+					seed={kind === 'multi' ? publicKey : contactPublicKey}
 					size={50}
 					style={[padding.tiny, row.item.justify]}
 				/>
@@ -262,32 +264,32 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 							</Text>
 						</View>
 						{/* <View style={[row.right, { alignItems: 'center' }]}>
-							<UnreadCount value={unreadCount} />
-							<Text
-								style={[
-									padding.left.small,
-									text.size.small,
-									unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
-								]}
-							>
-								{message?.type === messenger.AppMessageType.UserMessage
-									? Date.now() - new Date(message.sentDate).getTime() > 86400000
-										? moment(message.sentDate).format('DD/MM/YYYY')
-										: moment(message.sentDate).format('hh:mm')
-									: moment().format('hh:mm')}
-							</Text>
-							{lastSentMessage && <MessageStatus messageID={lastSentMessage} />}
-						</View> */}
+                            <UnreadCount value={unreadCount} />
+                            <Text
+                                style={[
+                                    padding.left.small,
+                                    text.size.small,
+                                    unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
+                                ]}
+                            >
+                                {message?.type === messenger.AppMessageType.UserMessage
+                                    ? Date.now() - new Date(message.sentDate).getTime() > 86400000
+                                        ? moment(message.sentDate).format('DD/MM/YYYY')
+                                        : moment(message.sentDate).format('hh:mm')
+                                    : moment().format('hh:mm')}
+                            </Text>
+                            {lastSentMessage && <MessageStatus messageID={lastSentMessage} />}
+                        </View> */}
 					</View>
 					{/* <Text
-						numberOfLines={1}
-						style={[
-							text.size.small,
-							unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
-						]}
-					>
-						{message?.type === messenger.AppMessageType.UserMessage ? message.body : ''}
-					</Text> */}
+                        numberOfLines={1}
+                        style={[
+                            text.size.small,
+                            unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
+                        ]}
+                    >
+                        {message?.type === messenger.AppMessageType.UserMessage ? message.body : ''}
+                    </Text> */}
 				</View>
 			</View>
 		</TouchableHighlight>
@@ -311,8 +313,8 @@ const Conversations: React.FC<ConversationsProps> = ({ items, onLayout, style })
 				>
 					{items &&
 						items.length &&
-						items.map((_) => {
-							return <ConversationsItem key={_.publicKey} {..._} />
+						items.map((i) => {
+							return <ConversationsItem key={i.publicKey} {...i} />
 						})}
 				</View>
 			)}

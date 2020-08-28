@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import BlurView from '../shared-components/BlurView'
 import {
 	TouchableOpacity,
@@ -10,14 +11,18 @@ import {
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
-import { Messenger, Settings } from '@berty-tech/store/oldhooks'
+// import { Messenger, Settings } from '@berty-tech/store/oldhooks'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import FromNow from '../shared-components/FromNow'
-import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
+import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { Message } from './shared-components/Message'
-import { ChatFooter, ChatDate } from './shared-components/Chat'
+// import { ChatFooter, ChatDate } from './shared-components/Chat'
 
-import { useReadEffect } from '../hooks'
+// import { useReadEffect } from '../hooks'
+import { useContacts, useConversationList, useMsgrContext } from '@berty-tech/store/hooks'
+import { values } from 'lodash'
+import { ChatFooter } from './shared-components/Chat'
+// import { useContact } from '@berty-tech/store/oldhooks/contact'
 //
 // Chat
 //
@@ -40,41 +45,55 @@ const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) 
 	)
 }
 
-export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
+export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
 	const { navigate, goBack } = useNavigation()
+	const contacts: any = useContacts()
+	const contact = values(contacts).find((c) => c.conversationPublicKey === convPk) || null
+	const conversation =
+		useConversationList().find((c) => c.contactPublicKey === contact.publicKey) || null
+
+	// const conversation: any = conversations ? conversations[convPk] : null
+	// const { contactPublicKey = '', displayName = '', publicKey = '' } = conversation || {}
+
+	// const contact: any = contacts[contactPublicKey] || null
 	const _styles = useStylesChat()
 	const [
 		{ absolute, row, padding, column, margin, text, flex, opacity, color, border, width, height },
 		{ scaleHeight },
 	] = useStyles()
-	const conversation = Messenger.useGetConversation(id)
-	const contact = Messenger.useOneToOneConversationContact(id)
-	const lastDate = Messenger.useGetDateLastContactMessage(id)
-	const debugGroup = Settings.useDebugGroup({ pk: conversation?.pk || '' })
-	const main = Settings.useSettings()
-	const state = main?.debugGroup?.state
 
-	useEffect(() => {
-		if (!state) {
-			debugGroup()
-		}
-	})
+	// const lastDate = Messenger.useGetDateLastContactMessage(convPk)
+	// const lastDate = new Date()
+	// const debugGroup = Settings.useDebugGroup({ pk: conversation?.pk || '' })
+	// const main = Settings?.useSettings()
+	// const state = main?.debugGroup?.state
 
-	useEffect(() => {
-		const interval = setInterval(() => {
-			debugGroup()
-		}, 10000)
-		return () => clearInterval(interval)
-	}, [debugGroup])
+	// useEffect(() => {
+	// 	if (!state) {
+	// 		debugGroup()
+	// 	}
+	// })
+
+	// useEffect(() => {
+	// 	const interval = setInterval(() => {
+	// 		debugGroup()
+	// 	}, 10000)
+	// 	return () => clearInterval(interval)
+	// }, [debugGroup])
 
 	if (!conversation) {
 		goBack()
 		return <CenteredActivityIndicator />
 	}
 
-	const title =
-		conversation.kind === 'fake' ? `SAMPLE - ${conversation.title}` : contact?.name || ''
+	// console.log('conversation:', conversation)
 
+	const title =
+		conversation.kind === 'fake'
+			? `SAMPLE - ${conversation.displayName}`
+			: conversation?.displayName || ''
+
+	// console.log('title:', title)
 	return (
 		<View style={{ position: 'absolute', top: 0, left: 0, right: 0 }}>
 			<BlurView
@@ -106,7 +125,9 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 					]}
 				>
 					<View style={[{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }]}>
-						<TouchableOpacity onPress={() => debugGroup()}>
+						<TouchableOpacity
+						// onPress={() => debugGroup()}
+						>
 							<Text
 								numberOfLines={1}
 								style={[text.align.center, text.bold.medium, _styles.headerNameText]}
@@ -114,10 +135,10 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 								{title}
 							</Text>
 						</TouchableOpacity>
-						{state === 'error' && (
+						{/* {state === 'error' && (
 							<Icon name='close-outline' width={14} height={14} fill={color.red} />
-						)}
-						{state === 'done' ? (
+						)} */}
+						{/* {state === 'done' ? (
 							<View
 								style={[
 									width(14),
@@ -131,21 +152,21 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 							/>
 						) : (
 							<ActivityIndicator size='small' style={[margin.left.large]} />
-						)}
+						)} */}
 					</View>
-					{lastDate && (
+					{/* {lastDate && (
 						<Text numberOfLines={1} style={[text.size.small, text.color.grey, text.align.center]}>
 							Last seen <FromNow date={lastDate} />
 						</Text>
-					)}
+					)} */}
 				</View>
 				<View style={[flex.tiny, row.fill, { alignItems: 'center' }]}>
 					<TouchableOpacity
 						activeOpacity={contact ? 0.2 : 0.5}
 						style={[flex.tiny, row.item.justify, !contact ? opacity(0.5) : null]}
-						onPress={() => navigate.chat.settings({ convId: id })}
+						// onPress={() => navigate.chat.settings({ convId: convPk })}
 					>
-						<ConversationProceduralAvatar size={45} diffSize={9} conversationId={id} />
+						<ProceduralCircleAvatar size={45} diffSize={9} seed={conversation.contactPublicKey} />
 					</TouchableOpacity>
 				</View>
 			</View>
@@ -155,49 +176,71 @@ export const ChatHeader: React.FC<{ id: any }> = ({ id }) => {
 
 const InfosChat: React.FC<{ createdAt: number }> = ({ createdAt }) => {
 	const [{ padding }] = useStyles()
-	return (
-		<View style={[padding.medium]}>
-			<ChatDate date={createdAt} />
-		</View>
-	)
+	return <View style={[padding.medium]}>{/* <ChatDate date={createdAt} /> */}</View>
 }
 
 // const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
 
-const MessageList: React.FC<{ id: string; scrollToMessage?: number }> = (props) => {
+const MessageList: React.FC<{ convPk: string; scrollToMessage?: number }> = ({
+	convPk,
+	scrollToMessage,
+}) => {
+	const ctx: any = useMsgrContext()
+	const conv = ctx.conversations[convPk]
+	const messages: any = values(ctx.interactions[convPk] as any)
+		.filter((msg) => msg.type === messengerpb.AppMessage.Type.TypeUserMessage)
+		.sort(
+			(a, b) =>
+				(a.payload.sentDate ? parseInt(a.payload.sentDate, 10) : Date.now()) -
+				(b.payload.sentDate ? parseInt(b.payload.sentDate, 10) : Date.now()),
+		)
+	const getPreviousMessageId = (item = '', messageList: string[] = []): string => {
+		const messagePosition: number = !item ? -1 : messageList.indexOf(item)
+		return messagePosition < 1 ? '' : messageList[messagePosition - 1].cid
+	}
+
 	const [{ row, overflow, flex, margin }, { scaleHeight }] = useStyles()
-	const conversation = Messenger.useGetConversation(props.id)
-	const flatListRef = useRef<FlatList<messenger.message.Entity['id']>>(null)
+
+	const flatListRef = useRef(null)
+
+	// const flatListRef = useRef<FlatList<messenger.message.Entity['convPk']>>(null)
 
 	const onScrollToIndexFailed = () => {
 		// Not sure why this happens (something to do with item/screen dimensions I think)
 		flatListRef.current?.scrollToIndex({ index: 0 })
 	}
 
-	return !conversation ? (
-		<CenteredActivityIndicator />
-	) : (
+	return (
 		<FlatList
-			initialScrollIndex={
-				conversation && props.scrollToMessage
-					? conversation.messages.length - props.scrollToMessage
-					: undefined
-			}
-			onScrollToIndexFailed={onScrollToIndexFailed}
+			// initialScrollIndex={
+			// 	conversation && props.scrollToMessage
+			// 		? conversation.messages.length - props.scrollToMessage
+			// 		: undefined
+			// }
+			// onScrollToIndexFailed={onScrollToIndexFailed}
 			ref={flatListRef}
-			keyboardDismissMode='on-drag'
-			style={[
-				overflow,
-				row.item.fill,
-				flex.tiny,
-				margin.bottom.medium,
-				{ marginTop: 150 * scaleHeight },
-			]}
-			data={conversation ? [...conversation.messages].reverse() : []}
+			// keyboardDismissMode='on-drag'
+			// style={[
+			// 	overflow,
+			// 	row.item.fill,
+			// 	flex.tiny,
+			// 	margin.bottom.medium,
+			// 	{ marginTop: 150 * scaleHeight },
+			// ]}
+			data={messages.reverse()}
 			inverted
-			keyExtractor={(item) => item}
-			ListFooterComponent={<InfosChat createdAt={conversation.createdAt} />}
-			renderItem={({ item }) => <Message id={item} convKind={'1to1'} />}
+			keyExtractor={(item) => item.cid}
+			// ListFooterComponent={<InfosChat createdAt={conversation.createdAt} />}
+			// renderItem={({ item }) => <Message convPk={item} convKind={'1to1'} />}
+			renderItem={({ item }) => (
+				<Message
+					id={item.cid}
+					convKind='1to1'
+					convPK={conv.publicKey}
+					membersNames={conv.membersNames}
+					previousMessageId={getPreviousMessageId(item, messages)}
+				/>
+			)}
 		/>
 	)
 }
@@ -205,17 +248,20 @@ const MessageList: React.FC<{ id: string; scrollToMessage?: number }> = (props) 
 export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route }) => {
 	const [inputIsFocused, setInputFocus] = useState(true)
 	const [{ flex, background }] = useStyles()
-	useReadEffect(route.params.convId, 1000)
+	// useReadEffect(route.params.convId, 1000)
 	return (
 		<View style={[StyleSheet.absoluteFill, background.white]}>
 			<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
-				<MessageList id={route.params.convId} scrollToMessage={route.params.scrollToMessage} />
+				<MessageList
+					convPk={route.params.convId}
+					// scrollToMessage={route.params.scrollToMessage || 0}
+				/>
 				<ChatFooter
-					convId={route.params.convId}
+					convPk={route.params.convId}
 					isFocused={inputIsFocused}
 					setFocus={setInputFocus}
 				/>
-				<ChatHeader id={route.params.convId} />
+				<ChatHeader convPk={route.params.convId} />
 			</KeyboardAvoidingView>
 		</View>
 	)

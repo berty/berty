@@ -1,6 +1,3 @@
-import React, { useContext, useMemo } from 'react'
-import { MsgrContext, useMsgrContext } from './context'
-import flatten from 'lodash/flatten'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import {
 	fakeContacts,
@@ -9,6 +6,9 @@ import {
 	fakeMessages,
 } from './faker'
 import { omitBy } from 'lodash'
+import flatten from 'lodash/flatten'
+import { useContext, useMemo } from 'react'
+import { MsgrContext, useMsgrContext } from './context'
 
 const AppMessageType = messengerpb.AppMessage.Type
 
@@ -155,6 +155,27 @@ export const useConversationList = () => {
 	return Object.values(ctx.conversations)
 }
 
+export const useConversation = (publicKey) => {
+	const ctx = useMsgrContext()
+	return ctx.conversations[publicKey]
+}
+
+export const useConvInteractions = (publicKey) => {
+	const ctx = useMsgrContext()
+	return ctx.interactions[publicKey] || {}
+}
+
+export const useInteraction = (cid, convPk) => {
+	const intes = useConvInteractions(convPk)
+	return intes && intes[cid]
+}
+
+// tmp / Includes conversationPublicKeys in established contacts
+// export const useConversationsAllConvKeys = () => {
+// 	const conversationList = useConversationList()
+// 	return keyBy(conversationList, 'publicKey')
+// }
+
 export const useConversationLength = () => {
 	return useConversationList().length
 }
@@ -197,18 +218,21 @@ export const useGenerateFakeMultiMembers = () => {
 export const useGenerateFakeMessages = () => {
 	const ctx = useMsgrContext()
 	const fakeConversationList = useConversationList().filter((c) => c.fake === true)
-	const prevFakeCount = fakeConversationList.reduce((r, fakeConv) => {
-		return Object.values(ctx.interactions[fakeConv.publicKey] || {}).reduce(
-			(r2, inte) => (inte.fake ? r2 + 1 : r2),
-			r,
-		)
-	}, 0)
+	console.log('fakeConvCount', fakeConversationList.length)
+	const prevFakeCount = fakeConversationList.reduce(
+		(r, fakeConv) =>
+			Object.values(ctx.interactions[fakeConv.publicKey] || {}).reduce(
+				(r2, inte) => (inte.fake ? r2 + 1 : r2),
+				r,
+			),
+		0,
+	)
+	console.log('prevFakeCount', prevFakeCount)
 	return (length = 10) => {
-		const interactions = fakeMessages(length, fakeConversationList, prevFakeCount)
 		ctx.dispatch({
 			type: 'ADD_FAKE_DATA',
 			payload: {
-				interactions,
+				interactions: fakeMessages(length, fakeConversationList, prevFakeCount),
 			},
 		})
 	}

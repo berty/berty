@@ -8,6 +8,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import GoBridge, { GoLogLevel } from '@berty-tech/go-bridge'
 import MsgrContext, { initialState } from './context'
 import pickBy from 'lodash/pickBy'
+import mapValues from 'lodash/mapValues'
 
 const T = messengerpb.StreamEvent.Type
 
@@ -72,6 +73,12 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 				inte.payload = pbobj.decode(inte.payload).toJSON()
 				console.log('jsoned payload', inte.payload)
 				console.log('received inte', inte)
+				if (inte.type === messengerpb.AppMessage.Type.TypeAcknowledge) {
+					if (state.interactions[gpk][inte.payload.target]) {
+						state.interactions[gpk][inte.payload.target].acknowledged = true
+						break
+					}
+				}
 				state.interactions[gpk][inte.cid] = inte
 			} catch (e) {
 				console.warn('failed to reduce interaction', e)
@@ -81,12 +88,20 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 		case 'ADD_FAKE_DATA':
 			state.conversations = { ...state.conversations, ...action.payload.conversations }
 			state.contacts = { ...state.contacts, ...action.payload.contacts }
-			state.interactions = { ...state.interactions, ...action.payload.interactions }
+			for (const inte of action.payload.interactions || []) {
+				if (!state.interactions[inte.conversationPublicKey]) {
+					state.interactions[inte.conversationPublicKey] = {}
+				}
+				state.interactions[inte.conversationPublicKey][inte.cid] = inte
+			}
 			break
 		case 'DELETE_FAKE_DATA':
 			state.conversations = pickBy(state.conversations, (conv) => !conv.fake)
 			state.contacts = pickBy(state.contacts, (contact) => !contact.fake)
-			state.interactions = pickBy(state.interactions, (inte) => !inte.fake)
+			state.interactions = pickBy(
+				mapValues(state.interactions, (intes) => pickBy(intes, (inte) => !inte.fake)),
+				(intes) => intes.length > 0,
+			)
 			break
 		default:
 			console.warn('Unknown action type', action.type)
