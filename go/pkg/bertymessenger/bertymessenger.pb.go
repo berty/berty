@@ -1973,7 +1973,8 @@ func (m *Contact) GetDisplayName() string {
 }
 
 type Conversation struct {
-	PublicKey        string            `protobuf:"bytes,1,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty" gorm:"primary_key"`
+	PublicKey string `protobuf:"bytes,1,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty" gorm:"primary_key"`
+	// specific to ContactType conversations
 	ContactPublicKey string            `protobuf:"bytes,2,opt,name=contact_public_key,json=contactPublicKey,proto3" json:"contact_public_key,omitempty"`
 	DisplayName      string            `protobuf:"bytes,3,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
 	Link             string            `protobuf:"bytes,4,opt,name=link,proto3" json:"link,omitempty"`

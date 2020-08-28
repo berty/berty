@@ -808,7 +808,8 @@
           "type": "string"
         },
         "contact_public_key": {
-          "type": "string"
+          "type": "string",
+          "title": "specific to ContactType conversations"
         },
         "display_name": {
           "type": "string"
