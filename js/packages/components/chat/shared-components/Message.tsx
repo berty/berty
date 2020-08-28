@@ -223,7 +223,7 @@ export const MessageInvitation: React.FC<{ message: any }> = ({ message }) => {
 
 export const Message: React.FC<{
 	id: string
-	convKind: '1to1' | 'multi'
+	convKind: any
 	membersNames?: { [key: string]: string | undefined }
 	convPK: string
 	previousMessageId: string
@@ -236,7 +236,7 @@ export const Message: React.FC<{
 	if (!message) {
 		return null
 	}
-	const isGroup = convKind === 'multi'
+	const isGroup = convKind === messengerpb.Conversation.Type.MultiMemberType
 	const styleMsg = null
 	let name
 	let baseColor = color.blue
@@ -250,7 +250,7 @@ export const Message: React.FC<{
 		const payload = message
 		const cmd = null /*messenger.message.isCommandMessage(payload.body)*/
 		let msgTextColor, msgBackgroundColor, msgBorderColor, msgSenderColor
-		if (convKind === '1to1') {
+		if (convKind === messengerpb.Conversation.Type.ContactType) {
 			msgTextColor = payload.isMe
 				? payload.acknowledged
 					? color.white

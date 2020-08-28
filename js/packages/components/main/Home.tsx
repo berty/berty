@@ -6,6 +6,7 @@ import {
 	useMsgrContext,
 } from '@berty-tech/store/hooks'
 import messengerMethodsHooks from '@berty-tech/store/methods'
+import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { Messenger } from '@berty-tech/store/oldhooks'
 import { useStyles } from '@berty-tech/styles'
 import React, { useEffect, useRef, useState } from 'react'
@@ -207,9 +208,14 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 		publicKey = '',
 		displayName = '',
 		fake = false,
-		kind = '1to1',
-		contactPublicKey = '',
+		type = messengerpb.Conversation.Type.ContactType,
 	} = props
+
+	const ctx = useMsgrContext()
+
+	const contact =
+		Object.values(ctx.contacts).find((c) => c.conversationPublicKey === publicKey) || null
+
 	const [{ color, row, border, flex, column, padding, text }] = useStyles()
 	// TODO: Last message, unread count, navigate to chatroom
 	const { dispatch } = useNavigation()
@@ -219,7 +225,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 			underlayColor={color.light.grey}
 			style={[padding.horizontal.medium]}
 			onPress={
-				kind === 'multi'
+				type === messengerpb.Conversation.Type.MultiMemberType
 					? () =>
 							dispatch(
 								CommonActions.navigate({
@@ -244,7 +250,9 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 				style={[row.center, border.bottom.medium, border.color.light.grey, padding.vertical.small]}
 			>
 				<ProceduralCircleAvatar
-					seed={kind === 'multi' ? publicKey : contactPublicKey}
+					seed={
+						type === messengerpb.Conversation.Type.MultiMemberType ? publicKey : contact.publicKey
+					}
 					size={50}
 					style={[padding.tiny, row.item.justify]}
 				/>
@@ -260,7 +268,9 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 								]}
 							>
 								{(fake && 'FAKE - ') || ''}
-								{displayName || ''}
+								{type === messengerpb.Conversation.Type.MultiMemberType
+									? displayName
+									: contact.displayName || ''}
 							</Text>
 						</View>
 						{/* <View style={[row.right, { alignItems: 'center' }]}>

@@ -3554,24 +3554,6 @@ export namespace berty {
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IUserMessageAttachment {
-                uri?: (string|null);
-            }
-
-            class UserMessageAttachment implements IUserMessageAttachment {
-
-                public uri: string;
-                public static create(properties?: berty.messenger.v1.IUserMessageAttachment): berty.messenger.v1.UserMessageAttachment;
-                public static encode(message: berty.messenger.v1.IUserMessageAttachment, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.messenger.v1.IUserMessageAttachment, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.UserMessageAttachment;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.UserMessageAttachment;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.UserMessageAttachment;
-                public static toObject(message: berty.messenger.v1.UserMessageAttachment, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
             interface IAppMessage {
                 type?: (berty.messenger.v1.AppMessage.Type|null);
                 payload?: (Uint8Array|null);
@@ -3595,7 +3577,7 @@ export namespace berty {
             namespace AppMessage {
 
                 enum Type {
-                    TypeUndefined = 0,
+                    Undefined = 0,
                     TypeUserMessage = 1,
                     TypeUserReaction = 2,
                     TypeGroupInvitation = 3,
@@ -3606,14 +3588,12 @@ export namespace berty {
 
                 interface IUserMessage {
                     body?: (string|null);
-                    attachments?: (berty.messenger.v1.IUserMessageAttachment[]|null);
                     sentDate?: (number|Long|null);
                 }
 
                 class UserMessage implements IUserMessage {
 
                     public body: string;
-                    public attachments: berty.messenger.v1.IUserMessageAttachment[];
                     public sentDate: (number|Long);
                     public static create(properties?: berty.messenger.v1.AppMessage.IUserMessage): berty.messenger.v1.AppMessage.UserMessage;
                     public static encode(message: berty.messenger.v1.AppMessage.IUserMessage, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3920,19 +3900,19 @@ export namespace berty {
 
             interface IContact {
                 publicKey?: (string|null);
-                displayName?: (string|null);
                 conversationPublicKey?: (string|null);
                 conversation?: (berty.messenger.v1.IConversation|null);
                 state?: (berty.messenger.v1.Contact.State|null);
+                displayName?: (string|null);
             }
 
             class Contact implements IContact {
 
                 public publicKey: string;
-                public displayName: string;
                 public conversationPublicKey: string;
                 public conversation?: (berty.messenger.v1.IConversation|null);
                 public state: berty.messenger.v1.Contact.State;
+                public displayName: string;
                 public static create(properties?: berty.messenger.v1.IContact): berty.messenger.v1.Contact;
                 public static encode(message: berty.messenger.v1.IContact, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IContact, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3957,15 +3937,21 @@ export namespace berty {
 
             interface IConversation {
                 publicKey?: (string|null);
+                contactPublicKey?: (string|null);
                 displayName?: (string|null);
                 link?: (string|null);
+                unreadCount?: (number|null);
+                type?: (berty.messenger.v1.Conversation.Type|null);
             }
 
             class Conversation implements IConversation {
 
                 public publicKey: string;
+                public contactPublicKey: string;
                 public displayName: string;
                 public link: string;
+                public unreadCount: number;
+                public type: berty.messenger.v1.Conversation.Type;
                 public static create(properties?: berty.messenger.v1.IConversation): berty.messenger.v1.Conversation;
                 public static encode(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3975,6 +3961,16 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.Conversation;
                 public static toObject(message: berty.messenger.v1.Conversation, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
+            }
+
+            namespace Conversation {
+
+                enum Type {
+                    Undefined = 0,
+                    AccountType = 1,
+                    ContactType = 2,
+                    MultiMemberType = 3
+                }
             }
 
             interface IMember {
@@ -4017,6 +4013,24 @@ export namespace berty {
                 public toJSON(): { [k: string]: any };
             }
 
+            interface IContactMetadata {
+                displayName?: (string|null);
+            }
+
+            class ContactMetadata implements IContactMetadata {
+
+                public displayName: string;
+                public static create(properties?: berty.messenger.v1.IContactMetadata): berty.messenger.v1.ContactMetadata;
+                public static encode(message: berty.messenger.v1.IContactMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IContactMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.ContactMetadata;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.ContactMetadata;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ContactMetadata;
+                public static toObject(message: berty.messenger.v1.ContactMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
             interface IStreamEvent {
                 type?: (berty.messenger.v1.StreamEvent.Type|null);
                 payload?: (Uint8Array|null);
@@ -4040,12 +4054,13 @@ export namespace berty {
             namespace StreamEvent {
 
                 enum Type {
-                    TypeConversationUpdated = 0,
-                    TypeConversationDeleted = 1,
-                    TypeInteractionUpdated = 2,
-                    TypeContactUpdated = 3,
-                    TypeAccountUpdated = 4,
-                    TypeListEnd = 5
+                    Undefined = 0,
+                    TypeConversationUpdated = 1,
+                    TypeConversationDeleted = 2,
+                    TypeInteractionUpdated = 3,
+                    TypeContactUpdated = 4,
+                    TypeAccountUpdated = 5,
+                    TypeListEnd = 6
                 }
 
                 interface IConversationUpdated {
@@ -4377,24 +4392,6 @@ export namespace berty {
                     public static toObject(message: berty.messenger.v1.EventStream.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
-            }
-
-            interface IContactMetadata {
-                displayName?: (string|null);
-            }
-
-            class ContactMetadata implements IContactMetadata {
-
-                public displayName: string;
-                public static create(properties?: berty.messenger.v1.IContactMetadata): berty.messenger.v1.ContactMetadata;
-                public static encode(message: berty.messenger.v1.IContactMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.messenger.v1.IContactMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.ContactMetadata;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.ContactMetadata;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ContactMetadata;
-                public static toObject(message: berty.messenger.v1.ContactMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
             }
 
             interface IAccountUpdate {

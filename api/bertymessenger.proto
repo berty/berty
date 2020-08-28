@@ -42,8 +42,6 @@ service MessengerService {
   // Use to test stream
   rpc EchoTest(EchoTest.Request) returns (stream EchoTest.Reply);
 
-  // NEW
-
   rpc ConversationStream(ConversationStream.Request) returns (stream ConversationStream.Reply);
   rpc EventStream(EventStream.Request) returns (stream EventStream.Reply);
   rpc ConversationCreate(ConversationCreate.Request) returns (ConversationCreate.Reply);
@@ -69,7 +67,6 @@ message InstanceShareableBertyID {
   message Request {
     // reset will regenerate a new link
     bool reset = 1;
-
     string display_name = 2;
   }
   message Reply {
@@ -97,7 +94,6 @@ message DevShareInstanceBertyID {
   message Request {
     // reset will regenerate a new link
     bool reset = 1;
-
     string display_name = 2;
   }
   message Reply {}
@@ -155,16 +151,12 @@ message BertyGroup {
   string display_name = 2;
 }
 
-message UserMessageAttachment {
-  string uri = 2;
-}
-
 message AppMessage {
   Type type = 1;
   bytes payload = 2;
 
   enum Type {
-    TypeUndefined = 0;
+    Undefined = 0;
     TypeUserMessage = 1;
     TypeUserReaction = 2;
     TypeGroupInvitation = 3;
@@ -173,9 +165,11 @@ message AppMessage {
     TypeAcknowledge = 6;
   }
   message UserMessage {
-    string body = 2;
-    repeated UserMessageAttachment attachments = 3;
-    int64 sent_date = 4 [(gogoproto.jsontag) = "sentDate"];
+    string body = 1;
+    int64 sent_date = 2 [(gogoproto.jsontag) = "sentDate"];
+
+    //repeated Attachment attachments = 3;
+    //message Attachment { string uri = 1; }
   }
   message UserReaction {
     string target = 3;// TODO: optimize message size
@@ -224,15 +218,12 @@ message SystemInfo {
   }
 }
 
-
 message ConversationJoin {
   message Request {
     string link = 1;
   }
-  message Reply {
-  }
+  message Reply {}
 }
-
 
 // APP MODEL
 
@@ -262,10 +253,10 @@ message Interaction {
 
 message Contact {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
-  string display_name = 2;
-  string conversation_public_key = 3;
-  Conversation conversation = 4;
-  State state = 5;
+  string conversation_public_key = 2;
+  Conversation conversation = 3;
+  State state = 4;
+  string display_name = 5;
 
   enum State {
     Undefined = 0;
@@ -278,8 +269,20 @@ message Contact {
 
 message Conversation {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
-  string display_name = 2;
-  string link = 3;
+  string contact_public_key = 2; // specific to ContactType conversations
+  string display_name = 3;
+  string link = 4;
+  int32 unread_count = 5;
+  Type type = 6;
+  // updated_at
+  // avatar_cid
+
+  enum Type {
+    Undefined = 0;
+    AccountType = 1;
+    ContactType = 2;
+    MultiMemberType = 3;
+  }
 }
 
 message Member {
@@ -292,7 +295,9 @@ message Device {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
 }
 
-
+message ContactMetadata {
+  string display_name = 1;
+}
 
 message StreamEvent {
   // DRAFT
@@ -300,13 +305,13 @@ message StreamEvent {
   bytes payload = 2;
 
   enum Type {
-    TypeConversationUpdated = 0;
-    TypeConversationDeleted = 1;
-    TypeInteractionUpdated = 2;
-    TypeContactUpdated = 3;
-    TypeAccountUpdated = 4;
-    TypeListEnd = 5;
-    // etc..
+    Undefined = 0;
+    TypeConversationUpdated = 1;
+    TypeConversationDeleted = 2;
+    TypeInteractionUpdated = 3;
+    TypeContactUpdated = 4;
+    TypeAccountUpdated = 5;
+    TypeListEnd = 6;
   }
   message ConversationUpdated {
     Conversation conversation = 1;
@@ -323,10 +328,7 @@ message StreamEvent {
   message AccountUpdated {
     Account account = 1;
   }
-  message ListEnd {
-
-  }
-  // etc..
+  message ListEnd {}
 }
 
 message ConversationStream {
@@ -350,9 +352,7 @@ message ConversationCreate {
 }
 
 message AccountGet {
-  message Request {
-
-  }
+  message Request {}
   message Reply {
     Account account = 1;
   }
@@ -368,37 +368,25 @@ message EventStream {
   }
 }
 
-message ContactMetadata {
-  string display_name = 1;
-}
-
-
 message AccountUpdate {
   message Request {
     string display_name = 1;
   }
-
-  message Reply {
-
-  }
+  message Reply {}
 }
 
 message ContactRequest {
   message Request {
     string link = 1;
   }
-  message Reply {
-
-  }
+  message Reply {}
 }
 
 message ContactAccept {
   message Request {
     string public_key = 1;
   }
-  message Reply {
-
-  }
+  message Reply {}
 }
 
 message Interact {

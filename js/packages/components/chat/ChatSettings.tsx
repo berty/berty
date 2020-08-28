@@ -108,10 +108,10 @@ export const ChatSettings: React.FC<ScreenProps.Chat.Settings> = ({ route: { par
 	const conv = Messenger.useGetConversation(convId)
 	const contact = Messenger.useContact({
 		id:
-			(conv && conv.kind === messenger.conversation.ConversationKind.OneToOne && conv.contactId) ||
+			(conv && conv.type === messenger.conversation.ConversationKind.OneToOne && conv.contactId) ||
 			'none',
 	})
-	if (!(conv && conv.kind === messenger.conversation.ConversationKind.OneToOne && contact)) {
+	if (!(conv && conv.type === messenger.conversation.ConversationKind.OneToOne && contact)) {
 		goBack()
 		return null
 	}

@@ -70,7 +70,11 @@ func accountContactRequestOutgoingEnqueued(svc *service, gme *bertytypes.GroupMe
 		return err
 	}
 
-	c := &Contact{DisplayName: cm.DisplayName, PublicKey: pkStr, State: Contact_OutgoingRequestEnqueued}
+	c := &Contact{
+		DisplayName: cm.DisplayName,
+		PublicKey:   pkStr,
+		State:       Contact_OutgoingRequestEnqueued,
+	}
 	err = svc.db.Clauses(clause.OnConflict{DoNothing: true}).Create(c).Error
 	if err != nil {
 		return err
@@ -92,10 +96,14 @@ func accountGroupJoined(svc *service, gme *bertytypes.GroupMetadataEvent) error 
 	// get or create conversation in DB
 	var conv Conversation
 	{
-		err := svc.db.Where(Conversation{PublicKey: b64PK}).First(&conv).Error
+		err := svc.db.
+			Where(Conversation{PublicKey: b64PK}).
+			First(&conv).
+			Error
 		switch err {
 		case gorm.ErrRecordNotFound: // not found, create a new one
 			conv.PublicKey = b64PK
+			conv.Type = Conversation_MultiMemberType
 			isNew = true
 			err := svc.db.
 				Clauses(clause.OnConflict{DoNothing: true}).
@@ -219,47 +227,98 @@ func accountContactRequestIncomingAccepted(svc *service, gme *bertytypes.GroupMe
 	pkStr := bytesToString(pkb)
 
 	// retrieve contact from DB
-	var c Contact
+	var contact Contact
 	{
 		err := svc.db.
 			Where(Contact{PublicKey: pkStr}).
-			First(&c).Error
+			First(&contact).Error
 		if err != nil {
 			return err
 		}
 	}
 
-	if c.State != Contact_IncomingRequest {
-		return errcode.ErrInternal
-	}
-	c.State = Contact_Established
-
-	groupPK, err := svc.groupPKFromContactPK(pkb)
-	if err != nil {
-		return err
-	}
-	c.ConversationPublicKey = bytesToString(groupPK)
-
-	if err := svc.db.Save(&c).Error; err != nil {
-		return err
+	// update contact state from IncomingRequest to Established
+	{
+		if contact.State != Contact_IncomingRequest {
+			return errcode.ErrInternal
+		}
+		contact.State = Contact_Established
 	}
 
-	// dispatch event
-	err = svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{&c})
-	if err != nil {
-		return err
+	// compute account conversation pk
+	var groupPK []byte
+	{
+		var err error
+		groupPK, err = svc.groupPKFromContactPK(pkb)
+		if err != nil {
+			return err
+		}
+		contact.ConversationPublicKey = bytesToString(groupPK)
+	}
+
+	// create new contact conversation
+	var conversation Conversation
+	{
+		conversation = Conversation{
+			PublicKey:        contact.ConversationPublicKey,
+			Type:             Conversation_ContactType,
+			ContactPublicKey: pkStr,
+			DisplayName:      "", // empty on account conversations
+			Link:             "", // empty on account conversations
+		}
+	}
+
+	// update db (in transaction)
+	{
+		err := svc.db.Transaction(func(tx *gorm.DB) error {
+			// update existing contact
+			if err := tx.Save(&contact).Error; err != nil {
+				return err
+			}
+
+			// create new conversation
+			err := tx.
+				Clauses(clause.OnConflict{
+					Columns:   []clause.Column{{Name: "public_key"}},
+					DoUpdates: clause.AssignmentColumns([]string{"display_name", "link"}),
+				}).
+				Create(&conversation).
+				Error
+			return err
+		})
+		if err != nil {
+			return err
+		}
+	}
+
+	// dispatch event to subscribers
+	{
+		err := svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{&contact})
+		if err != nil {
+			return err
+		}
+		err = svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{&conversation})
+		if err != nil {
+			return err
+		}
 	}
 
 	// activate group
-	_, err = svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: groupPK})
-	if err != nil {
-		return err
+	{
+		_, err := svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: groupPK})
+		if err != nil {
+			return err
+		}
 	}
 
 	// subscribe to group messages
 	return svc.subscribeToMessages(groupPK)
 }
 
+// groupMemberDeviceAdded is called at different moments
+// * on AccountGroup when you add a new device to your group
+// * on ContactGroup when you or your contact add a new device
+// * on MultiMemberGroup when you or anyone in a multimember group adds a new device
 func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) error {
 	var ev bertytypes.GroupAddMemberDevice
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
@@ -272,38 +331,91 @@ func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) er
 	}
 	mpk := bytesToString(mpkb)
 
-	var c Contact
-	err := svc.db.Where(Contact{PublicKey: mpk}).First(&c).Error
+	// fetch contact from db
+	var contact Contact
+	err := svc.db.
+		Where(Contact{PublicKey: mpk}).
+		First(&contact).
+		Error
 
-	if err == nil && c.GetState() == Contact_OutgoingRequestSent {
-		c.State = Contact_Established
-
-		groupPK, err := svc.groupPKFromContactPK(mpkb)
-		if err != nil {
-			return err
-		}
-		c.ConversationPublicKey = bytesToString(groupPK)
-
-		if err := svc.db.Save(&c).Error; err != nil {
-			return err
-		}
-
-		// dispatch event
-		err = svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{&c})
-		if err != nil {
-			return err
-		}
-
-		// activate group and subscribe to message events
+	switch {
+	case err == nil && contact.GetState() == Contact_OutgoingRequestSent: // someone you invited just accepted the invitation
+		// update contact
+		var groupPK []byte
 		{
-			_, err = svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: groupPK})
+			contact.State = Contact_Established
+
+			var err error
+			groupPK, err = svc.groupPKFromContactPK(mpkb)
+			if err != nil {
+				return err
+			}
+
+			contact.ConversationPublicKey = bytesToString(groupPK)
+		}
+
+		// create new contact conversation
+		var conversation Conversation
+		{
+			conversation = Conversation{
+				PublicKey:        contact.ConversationPublicKey,
+				ContactPublicKey: mpk,
+				Type:             Conversation_ContactType,
+				DisplayName:      "", // empty on account conversations
+				Link:             "", // empty on account conversations
+			}
+		}
+
+		// update db
+		{
+			err := svc.db.Transaction(func(tx *gorm.DB) error {
+				// update existing contact
+				if err := tx.Save(&contact).Error; err != nil {
+					return err
+				}
+
+				// create new conversation
+				err := tx.
+					Clauses(clause.OnConflict{
+						Columns:   []clause.Column{{Name: "public_key"}},
+						DoUpdates: clause.AssignmentColumns([]string{"display_name", "link"}),
+					}).
+					Create(&conversation).
+					Error
+				return err
+			})
 			if err != nil {
 				return err
 			}
 		}
+
+		// dispatch events
+		{
+			err := svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{&contact})
+			if err != nil {
+				return err
+			}
+			err = svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{&conversation})
+			if err != nil {
+				return err
+			}
+		}
+
+		// activate group and subscribe to message events
+		{
+			_, err := svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: groupPK})
+			if err != nil {
+				return err
+			}
+		}
+
 		return svc.subscribeToMessages(groupPK)
+	case err == nil: // someone you know just added a new device, this happens in
+		// nothing to do
+	case err != nil: // unknown contact
+		// nothing to do
+		// FIXME: create a ConversationMember
 	}
-	// FIXME: elseif
 
 	return nil
 }

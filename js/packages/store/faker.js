@@ -24,7 +24,7 @@ export const fakeContacts = (length, start) => {
 				publicKey: convPk,
 				contactPublicKey: contactPk,
 				displayName: name,
-				kind: '1to1',
+				type: messengerpb.Conversation.Type.ContactType,
 				fake: true,
 			})
 		}
@@ -52,7 +52,7 @@ export const fakeMultiMemberConversations = (length, start) => {
 			publicKey,
 			displayName,
 			link,
-			kind: 'multi',
+			type: messengerpb.Conversation.Type.MultiMemberType,
 			fake: true,
 		}
 	})

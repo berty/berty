@@ -6,7 +6,6 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/gogo/protobuf/proto"
-	"moul.io/godev"
 )
 
 func (x *AppMessage_Type) UnmarshalJSON(bytes []byte) error {
@@ -30,14 +29,14 @@ func (x *AppMessage_Type) UnmarshalJSON(bytes []byte) error {
 
 func (x *AppMessage_Type) MarshalJSON() ([]byte, error) {
 	if x == nil {
-		return json.Marshal(AppMessage_TypeUndefined.String())
+		return json.Marshal(AppMessage_Undefined.String())
 	}
 
 	if v, ok := AppMessage_Type_name[int32(*x)]; ok {
 		return json.Marshal(v)
 	}
 
-	return json.Marshal(AppMessage_TypeUndefined.String())
+	return json.Marshal(AppMessage_Undefined.String())
 }
 
 func (x AppMessage_Type) MarshalPayload(payload proto.Message) ([]byte, error) {
@@ -81,7 +80,7 @@ func UnmarshalAppMessage(payload []byte) (proto.Message, AppMessage_Type, error)
 	var am AppMessage
 	err := proto.Unmarshal(payload, &am)
 	if err != nil {
-		return nil, AppMessage_TypeUndefined, err
+		return nil, AppMessage_Undefined, err
 	}
 
 	msg, err := am.UnmarshalPayload()
@@ -115,21 +114,48 @@ func (interaction *Interaction) UnmarshalPayload() (proto.Message, error) {
 	return appMessage.UnmarshalPayload()
 }
 
-func (event *StreamEvent) Debug() string {
-	output := "=== EVENT DEBUG ===\n"
-	if event == nil {
-		return output + "event is nil\n"
-	}
+func (event *StreamEvent) MarshalJSON() ([]byte, error) {
+	type Alias StreamEvent
 
-	output += "event: " + godev.PrettyJSONPB(event) + "\n"
+	payload, err := event.UnmarshalPayload()
+	return json.Marshal(&struct {
+		*Alias
+		Payload proto.Message `json:"$payload,omitempty"`
+		Type    string        `json:"$type"`
+		Error   error         `json:"$error,omitempty"`
+	}{
+		Alias:   (*Alias)(event),
+		Payload: payload,
+		Type:    event.GetType().String(),
+		Error:   err,
+	})
+}
 
-	eventPayload, err := event.UnmarshalPayload()
-	if err != nil {
-		return output + fmt.Sprintf("invalid payload: %v", err)
-	}
+func (interaction *Interaction) MarshalJSON() ([]byte, error) {
+	type Alias Interaction
 
-	output += "eventPayload: " + godev.PrettyJSONPB(eventPayload)
+	payload, err := interaction.UnmarshalPayload()
+	return json.Marshal(&struct {
+		*Alias
+		Payload proto.Message `json:"$payload,omitempty"`
+		Type    string        `json:"$type"`
+		Error   error         `json:"$error,omitempty"`
+	}{
+		Alias:   (*Alias)(interaction),
+		Payload: payload,
+		Type:    interaction.GetType().String(),
+		Error:   err,
+	})
+}
 
-	// FIXME: switch on the payload type to unmarshal nested payloads
-	return output
+func (contact *Contact) MarshalJSON() ([]byte, error) {
+	type Alias Contact
+
+	return json.Marshal(&struct {
+		*Alias
+		State string `json:"$state"`
+	}{
+		Alias: (*Alias)(contact),
+		State: contact.GetState().String(),
+	})
 }

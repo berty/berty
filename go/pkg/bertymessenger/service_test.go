@@ -7,6 +7,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/testutil"
 	"github.com/gogo/protobuf/proto"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 )
@@ -181,8 +182,8 @@ func TestServiceContactRequest(t *testing.T) {
 		}
 		_, err = node.GetClient().SendContactRequest(ctx, req)
 		require.NoError(t, err)
-		require.Len(t, node.contacts, 0)
-		require.Len(t, node.conversations, 0)
+		assert.Len(t, node.contacts, 0)
+		assert.Len(t, node.conversations, 0)
 	}
 
 	// check for ContactUpdated event
@@ -195,8 +196,8 @@ func TestServiceContactRequest(t *testing.T) {
 		require.NotNil(t, contact)
 		require.Equal(t, contact.GetDisplayName(), contactName)
 		require.Equal(t, contact.GetState(), Contact_OutgoingRequestEnqueued)
-		require.Len(t, node.contacts, 1)
-		require.Len(t, node.conversations, 0)
+		assert.Len(t, node.contacts, 1)
+		assert.Len(t, node.conversations, 0)
 	}
 
 	// no more event
@@ -234,6 +235,7 @@ func TestServiceConversationCreateLive(t *testing.T) {
 		require.NoError(t, err)
 		conversation := payload.(*StreamEvent_ConversationUpdated).Conversation
 		require.NotNil(t, conversation)
+		require.Equal(t, conversation.GetType(), Conversation_MultiMemberType)
 		require.Equal(t, conversation.GetPublicKey(), createdConversationPK)
 		require.Empty(t, conversation.GetDisplayName())
 		require.Empty(t, conversation.GetLink())
@@ -247,6 +249,7 @@ func TestServiceConversationCreateLive(t *testing.T) {
 		require.NoError(t, err)
 		conversation := payload.(*StreamEvent_ConversationUpdated).Conversation
 		require.NotNil(t, conversation)
+		require.Equal(t, conversation.GetType(), Conversation_MultiMemberType)
 		require.Equal(t, conversation.GetPublicKey(), createdConversationPK)
 		require.Equal(t, conversation.GetDisplayName(), conversationName)
 		require.NotEmpty(t, conversation.GetLink())
@@ -290,6 +293,7 @@ func TestServiceConversationCreateAsync(t *testing.T) {
 		require.NoError(t, err)
 		conversation := payload.(*StreamEvent_ConversationUpdated).Conversation
 		require.NotNil(t, conversation)
+		require.Equal(t, conversation.GetType(), Conversation_MultiMemberType)
 		require.Equal(t, conversation.GetPublicKey(), createdConversationPK)
 		require.Equal(t, conversation.GetDisplayName(), conversationName)
 		require.NotEmpty(t, conversation.GetLink())
@@ -335,14 +339,14 @@ func Test1To1AddContact(t *testing.T) {
 		require.NotEmpty(t, bob.GetAccount().GetLink())
 	}
 
-	// Bob add Alice as contact (and she accepts)
+	// Bob adds Alice as contact (and she accepts)
 	{
 		testAddContact(ctx, t, bob, alice)
-		require.Len(t, alice.contacts, 1)
-		require.Len(t, bob.contacts, 1)
+		assert.Len(t, alice.contacts, 1)
+		assert.Len(t, bob.contacts, 1)
 		// FIXME: should have 1 conversation
-		require.Len(t, alice.conversations, 0)
-		require.Len(t, bob.conversations, 0)
+		assert.Len(t, alice.conversations, 1)
+		assert.Len(t, bob.conversations, 1)
 	}
 
 	// no more event
@@ -375,18 +379,18 @@ func Test1To1Exchange(t *testing.T) {
 		alice.SetName(t, "Alice")
 		alice.DrainInitEvents(t)
 		require.NotEmpty(t, alice.GetAccount().GetLink())
-		require.Len(t, alice.contacts, 0)
-		require.Len(t, alice.conversations, 0)
+		assert.Len(t, alice.contacts, 0)
+		assert.Len(t, alice.conversations, 0)
 
 		defer bob.Close()
 		bob.SetName(t, "Bob")
 		bob.DrainInitEvents(t)
 		require.NotEmpty(t, bob.GetAccount().GetLink())
-		require.Len(t, bob.contacts, 0)
-		require.Len(t, bob.conversations, 0)
+		assert.Len(t, bob.contacts, 0)
+		assert.Len(t, bob.conversations, 0)
 	}
 
-	// Bob add Alice as contact (and she accepts)
+	// Bob adds Alice as contact (and she accepts)
 	var groupPK string
 	{
 		aliceContact := testAddContact(ctx, t, bob, alice)
@@ -544,23 +548,23 @@ func TestConversationInvitation(t *testing.T) {
 		testAddContact(ctx, t, alice, bob)
 		testAddContact(ctx, t, alice, john)
 		testAddContact(ctx, t, bob, john)
-		require.Len(t, alice.contacts, 2)
-		require.Len(t, bob.contacts, 2)
-		require.Len(t, john.contacts, 2)
-		require.Len(t, alice.conversations, 0)
-		require.Len(t, bob.conversations, 0)
-		require.Len(t, john.conversations, 0)
+		assert.Len(t, alice.contacts, 2)
+		assert.Len(t, bob.contacts, 2)
+		assert.Len(t, john.contacts, 2)
+		assert.Len(t, alice.conversations, 2)
+		assert.Len(t, bob.conversations, 2)
+		assert.Len(t, john.conversations, 2)
 	}
 
 	// create group
 	{
 		testCreateConversation(ctx, t, alice, "Alice & Friends", []*TestingAccount{bob, john}, logger)
-		require.Len(t, alice.contacts, 2)
-		require.Len(t, bob.contacts, 2)
-		require.Len(t, john.contacts, 2)
-		require.Len(t, alice.conversations, 1)
-		require.Len(t, bob.conversations, 1)
-		require.Len(t, john.conversations, 1)
+		assert.Len(t, alice.contacts, 2)
+		assert.Len(t, bob.contacts, 2)
+		assert.Len(t, john.contacts, 2)
+		assert.Len(t, alice.conversations, 3)
+		assert.Len(t, bob.conversations, 3)
+		assert.Len(t, john.conversations, 3)
 	}
 
 	// no more event
@@ -610,24 +614,24 @@ func TestConversationInvitationAndExchange(t *testing.T) {
 		testAddContact(ctx, t, alice, bob)
 		testAddContact(ctx, t, alice, john)
 		testAddContact(ctx, t, bob, john)
-		require.Len(t, alice.contacts, 2)
-		require.Len(t, bob.contacts, 2)
-		require.Len(t, john.contacts, 2)
-		require.Len(t, alice.conversations, 0)
-		require.Len(t, bob.conversations, 0)
-		require.Len(t, john.conversations, 0)
+		assert.Len(t, alice.contacts, 2)
+		assert.Len(t, bob.contacts, 2)
+		assert.Len(t, john.contacts, 2)
+		assert.Len(t, alice.conversations, 2)
+		assert.Len(t, bob.conversations, 2)
+		assert.Len(t, john.conversations, 2)
 	}
 
 	// create group
 	var createdConv *Conversation
 	{
 		createdConv = testCreateConversation(ctx, t, alice, "Alice & Friends", []*TestingAccount{bob, john}, logger)
-		require.Len(t, alice.contacts, 2)
-		require.Len(t, bob.contacts, 2)
-		require.Len(t, john.contacts, 2)
-		require.Len(t, alice.conversations, 1)
-		require.Len(t, bob.conversations, 1)
-		require.Len(t, john.conversations, 1)
+		assert.Len(t, alice.contacts, 2)
+		assert.Len(t, bob.contacts, 2)
+		assert.Len(t, john.contacts, 2)
+		assert.Len(t, alice.conversations, 3)
+		assert.Len(t, bob.conversations, 3)
+		assert.Len(t, john.conversations, 3)
 	}
 
 	// FIXME: replace by a check
@@ -671,6 +675,8 @@ func testJoinConversation(ctx context.Context, t *testing.T, joiner *TestingAcco
 		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
 		conversation := payload.(*StreamEvent_ConversationUpdated).GetConversation()
+		require.NotNil(t, conversation)
+		require.Equal(t, conversation.GetType(), Conversation_MultiMemberType)
 		if existingConv.GetPublicKey() != "" {
 			require.Equal(t, conversation.GetPublicKey(), existingConv.GetPublicKey())
 		}
@@ -700,7 +706,9 @@ func testAddContact(ctx context.Context, t *testing.T, requester, requested *Tes
 		contact := payload.(*StreamEvent_ContactUpdated).Contact
 		require.NotEmpty(t, contact.GetPublicKey())
 		require.Equal(t, contact.GetPublicKey(), requested.GetAccount().GetPublicKey())
-		require.Equal(t, contact.GetDisplayName(), requested.GetAccount().GetDisplayName())
+		if requested.GetAccount().GetDisplayName() != "" {
+			require.Equal(t, contact.GetDisplayName(), requested.GetAccount().GetDisplayName())
+		}
 		require.Equal(t, contact.GetState(), Contact_OutgoingRequestEnqueued)
 		require.Empty(t, contact.GetConversationPublicKey())
 	}
@@ -714,7 +722,9 @@ func testAddContact(ctx context.Context, t *testing.T, requester, requested *Tes
 		contact := payload.(*StreamEvent_ContactUpdated).Contact
 		require.NotEmpty(t, contact.GetPublicKey())
 		require.Equal(t, contact.GetPublicKey(), requested.GetAccount().GetPublicKey())
-		require.Equal(t, contact.GetDisplayName(), requested.GetAccount().GetDisplayName())
+		if requested.GetAccount().GetDisplayName() != "" {
+			require.Equal(t, contact.GetDisplayName(), requested.GetAccount().GetDisplayName())
+		}
 		require.Equal(t, contact.GetState(), Contact_OutgoingRequestSent)
 		require.Empty(t, contact.GetConversationPublicKey())
 	}
@@ -728,7 +738,9 @@ func testAddContact(ctx context.Context, t *testing.T, requester, requested *Tes
 		contact := payload.(*StreamEvent_ContactUpdated).Contact
 		require.NotEmpty(t, contact.GetPublicKey())
 		require.Equal(t, contact.GetPublicKey(), requester.GetAccount().GetPublicKey())
-		require.Equal(t, contact.GetDisplayName(), requester.GetAccount().GetDisplayName())
+		if requester.GetAccount().GetDisplayName() != "" {
+			require.Equal(t, contact.GetDisplayName(), requester.GetAccount().GetDisplayName())
+		}
 		require.Equal(t, contact.GetState(), Contact_IncomingRequest)
 	}
 
@@ -739,7 +751,7 @@ func testAddContact(ctx context.Context, t *testing.T, requester, requested *Tes
 		require.Empty(t, ret)
 	}
 
-	// Requested receives the contact request
+	// Requested receives the contact update
 	var groupPK string
 	{
 		event := requested.NextEvent(t)
@@ -749,27 +761,59 @@ func testAddContact(ctx context.Context, t *testing.T, requester, requested *Tes
 		contact := payload.(*StreamEvent_ContactUpdated).Contact
 		require.NotEmpty(t, contact.GetPublicKey())
 		require.Equal(t, contact.GetPublicKey(), requester.GetAccount().GetPublicKey())
-		require.Equal(t, contact.GetDisplayName(), requester.GetAccount().GetDisplayName())
+		if requester.GetAccount().GetDisplayName() != "" {
+			require.Equal(t, contact.GetDisplayName(), requester.GetAccount().GetDisplayName())
+		}
 		require.Equal(t, contact.GetState(), Contact_Established)
 		groupPK = contact.GetConversationPublicKey()
 	}
 
-	// FIXME: should also have a conversation created event
+	// Requested receives the contact conversation event
+	{
+		event := requested.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		conversation := payload.(*StreamEvent_ConversationUpdated).Conversation
+		require.NotEmpty(t, conversation.GetPublicKey())
+		require.Equal(t, conversation.GetPublicKey(), groupPK)
+		require.Empty(t, conversation.GetDisplayName())
+		require.Empty(t, conversation.GetLink())
+		require.Equal(t, conversation.GetType(), Conversation_ContactType)
+	}
 
 	// Requester has a contact updated event (Established)
+	var contact *Contact
 	{
 		event := requester.NextEvent(t)
 		require.Equal(t, event.GetType(), StreamEvent_TypeContactUpdated)
 		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
-		contact := payload.(*StreamEvent_ContactUpdated).Contact
+		contact = payload.(*StreamEvent_ContactUpdated).Contact
 		require.NotEmpty(t, contact.GetPublicKey())
 		require.Equal(t, contact.GetPublicKey(), requested.GetAccount().GetPublicKey())
-		require.Equal(t, contact.GetDisplayName(), requested.GetAccount().GetDisplayName())
+		if requested.GetAccount().GetDisplayName() != "" {
+			require.Equal(t, contact.GetDisplayName(), requested.GetAccount().GetDisplayName())
+		}
 		require.Equal(t, contact.GetState(), Contact_Established)
 		require.Equal(t, contact.GetConversationPublicKey(), groupPK)
-		return contact
 	}
+
+	// Requester receives the contact conversation event too
+	{
+		event := requester.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		conversation := payload.(*StreamEvent_ConversationUpdated).Conversation
+		require.NotEmpty(t, conversation.GetPublicKey())
+		require.Equal(t, conversation.GetPublicKey(), groupPK)
+		require.Empty(t, conversation.GetDisplayName())
+		require.Empty(t, conversation.GetLink())
+		require.Equal(t, conversation.GetType(), Conversation_ContactType)
+	}
+
+	return contact
 }
 
 func testSendGroupMessage(ctx context.Context, t *testing.T, groupPK string, sender *TestingAccount, receivers []*TestingAccount, msg string, logger *zap.Logger) {
@@ -894,6 +938,8 @@ func testCreateConversation(ctx context.Context, t *testing.T, creator *TestingA
 		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
 		conversation := payload.(*StreamEvent_ConversationUpdated).GetConversation()
+		require.NotNil(t, conversation)
+		require.Equal(t, conversation.GetType(), Conversation_MultiMemberType)
 		require.Equal(t, convPK, conversation.GetPublicKey())
 		require.Equal(t, conversation.GetDisplayName(), "")
 	}
@@ -906,6 +952,8 @@ func testCreateConversation(ctx context.Context, t *testing.T, creator *TestingA
 		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
 		conversation := payload.(*StreamEvent_ConversationUpdated).GetConversation()
+		require.NotNil(t, conversation)
+		require.Equal(t, conversation.GetType(), Conversation_MultiMemberType)
 		require.Equal(t, convPK, conversation.GetPublicKey())
 		require.Equal(t, conversation.GetDisplayName(), convName)
 		createdConv = conversation
