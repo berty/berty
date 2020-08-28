@@ -742,7 +742,7 @@
     "v1AppMessageType": {
       "type": "string",
       "enum": [
-        "TypeUndefined",
+        "Undefined",
         "TypeUserMessage",
         "TypeUserReaction",
         "TypeGroupInvitation",
@@ -750,7 +750,7 @@
         "TypeSetUserName",
         "TypeAcknowledge"
       ],
-      "default": "TypeUndefined"
+      "default": "Undefined"
     },
     "v1BertyGroup": {
       "type": "object",
@@ -812,6 +812,13 @@
         },
         "link": {
           "type": "string"
+        },
+        "unread_count": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "type": {
+          "$ref": "#/definitions/v1ConversationType"
         }
       }
     },
@@ -868,6 +875,16 @@
           "format": "uint64"
         }
       }
+    },
+    "v1ConversationType": {
+      "type": "string",
+      "enum": [
+        "Undefined",
+        "AccountType",
+        "ContactType",
+        "MultiMemberType"
+      ],
+      "default": "Undefined"
     },
     "v1DevShareInstanceBertyIDReply": {
       "type": "object"
@@ -1127,6 +1144,7 @@
     "v1StreamEventType": {
       "type": "string",
       "enum": [
+        "Undefined",
         "TypeConversationUpdated",
         "TypeConversationDeleted",
         "TypeInteractionUpdated",
@@ -1134,7 +1152,7 @@
         "TypeAccountUpdated",
         "TypeListEnd"
       ],
-      "default": "TypeConversationUpdated"
+      "default": "Undefined"
     },
     "v1SystemInfoReply": {
       "type": "object",

@@ -2236,14 +2236,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              UserMessageAttachment: {
-                fields: {
-                  uri: {
-                    type: "string",
-                    id: 2
-                  }
-                }
-              },
               AppMessage: {
                 fields: {
                   type: {
@@ -2258,7 +2250,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 nested: {
                   Type: {
                     values: {
-                      TypeUndefined: 0,
+                      Undefined: 0,
                       TypeUserMessage: 1,
                       TypeUserReaction: 2,
                       TypeGroupInvitation: 3,
@@ -2271,16 +2263,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       body: {
                         type: "string",
-                        id: 2
-                      },
-                      attachments: {
-                        rule: "repeated",
-                        type: "UserMessageAttachment",
-                        id: 3
+                        id: 1
                       },
                       sentDate: {
                         type: "int64",
-                        id: 4,
+                        id: 2,
                         options: {
                           "(gogoproto.jsontag)": "sentDate"
                         }
@@ -2505,20 +2492,20 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       "(gogoproto.moretags)": "gorm:primary_key"
                     }
                   },
-                  displayName: {
+                  conversationPublicKey: {
                     type: "string",
                     id: 2
                   },
-                  conversationPublicKey: {
-                    type: "string",
-                    id: 3
-                  },
                   conversation: {
                     type: "Conversation",
-                    id: 4
+                    id: 3
                   },
                   state: {
                     type: "State",
+                    id: 4
+                  },
+                  displayName: {
+                    type: "string",
                     id: 5
                   }
                 },
@@ -2550,6 +2537,24 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   link: {
                     type: "string",
                     id: 3
+                  },
+                  unreadCount: {
+                    type: "int32",
+                    id: 4
+                  },
+                  type: {
+                    type: "Type",
+                    id: 5
+                  }
+                },
+                nested: {
+                  Type: {
+                    values: {
+                      Undefined: 0,
+                      AccountType: 1,
+                      ContactType: 2,
+                      MultiMemberType: 3
+                    }
                   }
                 }
               },
@@ -2583,6 +2588,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
+              ContactMetadata: {
+                fields: {
+                  displayName: {
+                    type: "string",
+                    id: 1
+                  }
+                }
+              },
               StreamEvent: {
                 fields: {
                   type: {
@@ -2597,12 +2610,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 nested: {
                   Type: {
                     values: {
-                      TypeConversationUpdated: 0,
-                      TypeConversationDeleted: 1,
-                      TypeInteractionUpdated: 2,
-                      TypeContactUpdated: 3,
-                      TypeAccountUpdated: 4,
-                      TypeListEnd: 5
+                      Undefined: 0,
+                      TypeConversationUpdated: 1,
+                      TypeConversationDeleted: 2,
+                      TypeInteractionUpdated: 3,
+                      TypeContactUpdated: 4,
+                      TypeAccountUpdated: 5,
+                      TypeListEnd: 6
                     }
                   },
                   ConversationUpdated: {
@@ -2739,14 +2753,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         id: 1
                       }
                     }
-                  }
-                }
-              },
-              ContactMetadata: {
-                fields: {
-                  displayName: {
-                    type: "string",
-                    id: 1
                   }
                 }
               },

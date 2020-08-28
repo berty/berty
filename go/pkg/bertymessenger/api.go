@@ -2,7 +2,6 @@ package bertymessenger
 
 import (
 	"context"
-
 	"fmt"
 	"net/url"
 	"os"
@@ -368,9 +367,9 @@ func (svc *service) SendAck(ctx context.Context, request *SendAck_Request) (*Sen
 
 func (svc *service) SendMessage(ctx context.Context, request *SendMessage_Request) (*SendMessage_Reply, error) {
 	payload, err := AppMessage_TypeUserMessage.MarshalPayload(&AppMessage_UserMessage{
-		Body:        request.Message,
-		Attachments: nil,
-		SentDate:    time.Now().UnixNano() / 1000000,
+		Body:     request.Message,
+		SentDate: time.Now().UnixNano() / 1000000,
+		// Attachments
 	})
 	if err != nil {
 		return nil, err
@@ -569,8 +568,15 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 		return nil, err
 	}
 
+	// Create new conversation
+	conv := &Conversation{
+		PublicKey:   pkStr,
+		DisplayName: dn,
+		Link:        htmlURL,
+		Type:        Conversation_MultiMemberType,
+	}
+
 	// Update database
-	conv := &Conversation{PublicKey: pkStr, DisplayName: dn, Link: htmlURL}
 	{
 		err = svc.db.
 			Clauses(clause.OnConflict{
@@ -685,6 +691,7 @@ func (svc *service) ConversationJoin(ctx context.Context, req *ConversationJoin_
 		PublicKey:   bytesToString(gpkb),
 		DisplayName: bgroup.GetDisplayName(),
 		Link:        link,
+		Type:        Conversation_MultiMemberType,
 	}
 
 	// update db

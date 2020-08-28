@@ -81,11 +81,11 @@
     - [SystemInfo](#berty.messenger.v1.SystemInfo)
     - [SystemInfo.Reply](#berty.messenger.v1.SystemInfo.Reply)
     - [SystemInfo.Request](#berty.messenger.v1.SystemInfo.Request)
-    - [UserMessageAttachment](#berty.messenger.v1.UserMessageAttachment)
   
     - [Account.State](#berty.messenger.v1.Account.State)
     - [AppMessage.Type](#berty.messenger.v1.AppMessage.Type)
     - [Contact.State](#berty.messenger.v1.Contact.State)
+    - [Conversation.Type](#berty.messenger.v1.Conversation.Type)
     - [ParseDeepLink.Kind](#berty.messenger.v1.ParseDeepLink.Kind)
     - [StreamEvent.Type](#berty.messenger.v1.StreamEvent.Type)
   
@@ -189,7 +189,6 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | body | [string](#string) |  |  |
-| attachments | [UserMessageAttachment](#berty.messenger.v1.UserMessageAttachment) | repeated |  |
 | sent_date | [int64](#int64) |  |  |
 
 <a name="berty.messenger.v1.AppMessage.UserReaction"></a>
@@ -227,10 +226,10 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | public_key | [string](#string) |  |  |
-| display_name | [string](#string) |  |  |
 | conversation_public_key | [string](#string) |  |  |
 | conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
 | state | [Contact.State](#berty.messenger.v1.Contact.State) |  |  |
+| display_name | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.ContactAccept"></a>
 
@@ -281,6 +280,8 @@
 | public_key | [string](#string) |  |  |
 | display_name | [string](#string) |  |  |
 | link | [string](#string) |  |  |
+| unread_count | [int32](#int32) |  |  |
+| type | [Conversation.Type](#berty.messenger.v1.Conversation.Type) |  | updated_at avatar_cid |
 
 <a name="berty.messenger.v1.ConversationCreate"></a>
 
@@ -657,14 +658,6 @@ most important and dynamic values first
 
 ### SystemInfo.Request
 
-<a name="berty.messenger.v1.UserMessageAttachment"></a>
-
-### UserMessageAttachment
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| uri | [string](#string) |  |  |
-
  
 
 <a name="berty.messenger.v1.Account.State"></a>
@@ -683,7 +676,7 @@ most important and dynamic values first
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| TypeUndefined | 0 |  |
+| Undefined | 0 |  |
 | TypeUserMessage | 1 |  |
 | TypeUserReaction | 2 |  |
 | TypeGroupInvitation | 3 |  |
@@ -703,6 +696,17 @@ most important and dynamic values first
 | OutgoingRequestSent | 3 |  |
 | Established | 4 |  |
 
+<a name="berty.messenger.v1.Conversation.Type"></a>
+
+### Conversation.Type
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| Undefined | 0 |  |
+| AccountType | 1 |  |
+| ContactType | 2 |  |
+| MultiMemberType | 3 |  |
+
 <a name="berty.messenger.v1.ParseDeepLink.Kind"></a>
 
 ### ParseDeepLink.Kind
@@ -719,12 +723,13 @@ most important and dynamic values first
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| TypeConversationUpdated | 0 |  |
-| TypeConversationDeleted | 1 |  |
-| TypeInteractionUpdated | 2 |  |
-| TypeContactUpdated | 3 |  |
-| TypeAccountUpdated | 4 |  |
-| TypeListEnd | 5 | etc.. |
+| Undefined | 0 |  |
+| TypeConversationUpdated | 1 |  |
+| TypeConversationDeleted | 2 |  |
+| TypeInteractionUpdated | 3 |  |
+| TypeContactUpdated | 4 |  |
+| TypeAccountUpdated | 5 |  |
+| TypeListEnd | 6 |  |
 
  
 
