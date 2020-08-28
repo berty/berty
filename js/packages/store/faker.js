@@ -60,23 +60,24 @@ export const fakeMultiMemberConversations = (length, start) => {
 }
 
 export const fakeMessages = (length, conversationList = [], start) => {
-	const type = messengerpb.AppMessage.Type.UserMessage
-	const fake = true
-	const messagesForConversation = (conversation = {}, i = 0) => {
-		return fakeArray(length).map((_, idx = 0) => {
-			return {
-				cid: `fake_interaction_${i * length + idx + start}`,
-				type,
-				conversationPublicKey: conversation.publicKey,
-				payload: messengerpb.AppMessage.UserMessage.encode({
-					body: faker.lorem.sentences(),
-				}).finish(),
-				isMe: faker.random.boolean(),
-				fake,
-			}
-		})
-	}
-	const messageList = flatten(conversationList.map(messagesForConversation))
+	const messageList = flatten(
+		conversationList.map((conversation, i) => {
+			return fakeArray(length).map((_, idx) => {
+				return {
+					cid: `fake_interaction_${i * length + idx + start}`,
+					type: messengerpb.AppMessage.Type.TypeUserMessage,
+					conversationPublicKey: conversation.publicKey,
+					payload: {
+						body: faker.lorem.sentences(),
+						sentDate: Date.now() - Math.floor(Math.random() * (50 * 24 * 60 * 60 * 1000)),
+					},
+					isMe: faker.random.boolean(),
+					acknowledged: faker.random.boolean(),
+					fake: true,
+				}
+			})
+		}),
+	)
 	console.log('generated x fake messages:', messageList.length)
-	return keyBy(messageList, 'cid')
+	return messageList
 }

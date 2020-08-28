@@ -202,6 +202,12 @@ const DumpConversations: React.FC = () => {
 	return <DumpButton name='Dump conversations' text={text} />
 }
 
+const DumpInteractions: React.FC = () => {
+	const ctx = useMsgrContext()
+	const text = JSON.stringify(ctx.interactions, null, 2)
+	return <DumpButton name='Dump interactions' text={text} />
+}
+
 const BodyDevTools: React.FC<{}> = () => {
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, color, text }] = useStyles()
@@ -222,6 +228,7 @@ const BodyDevTools: React.FC<{}> = () => {
 			<DumpAccount />
 			<DumpContacts />
 			<DumpConversations />
+			<DumpInteractions />
 			<ButtonSetting
 				name={'Stop node'}
 				icon='activity-outline'

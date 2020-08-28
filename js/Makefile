@@ -177,7 +177,8 @@ android.run: deps packages/go-bridge/android/libs/gobridge.aar packages/berty-ap
 	$(call check-program, adb)
 	$(eval ANDROID_DEVICE ?= `adb devices | tail +2 | head -1 | cut -f 1`)
 	../tool/build/shell/check-java.sh 18
-	adb -s $(ANDROID_DEVICE) reverse tcp:$(BERTY_DAEMON_PORT) tcp:$(BERTY_DAEMON_PORT)
+	adb -s $(ANDROID_DEVICE) reverse tcp:$(BERTY_DAEMON_PORT) tcp:$(BERTY_DAEMON_PORT) # daemon
+	adb -s $(ANDROID_DEVICE) reverse tcp:8081 tcp:8081 # metro
 	cd packages/berty-app && $(react-native) run-android --no-packager --variant=$(APP_TARGET) --deviceId="$(ANDROID_DEVICE)" $(if $(filter-out $(APP_TARGET), store), --appIdSuffix=$(APP_TARGET))
 
 .PHONY: android.release

@@ -38,7 +38,7 @@ export const ChatFooter: React.FC<{
 	const _styles = useStylesChatFooter()
 	const [{ row, padding, flex, border, color }] = useStyles()
 
-	const usermsg = { body: message }
+	const usermsg = { body: message, sentDate: Date.now() }
 	const buf = messengerpb.AppMessage.UserMessage.encode(usermsg).finish()
 	const decoded = messengerpb.AppMessage.UserMessage.decode(buf)
 

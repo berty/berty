@@ -1,5 +1,5 @@
 import React from 'react'
-import { TextInput, SafeAreaView } from 'react-native'
+import { TextInput, SafeAreaView, Text } from 'react-native'
 import { Button } from 'react-native-ui-kitten'
 import { useNavigation } from '@berty-tech/navigation'
 
@@ -11,7 +11,9 @@ export const DevText: React.FC<{ route: { params: { text: string } } }> = ({
 	const { goBack } = useNavigation()
 	return (
 		<SafeAreaView>
-			<TextInput value={text} editable={false} multiline style={{ height: '95%' }} />
+			<Text selectable={true} style={{ height: '95%' }}>
+				{text}
+			</Text>
 			<Button style={{ height: '5%' }} onPress={goBack}>
 				Go back
 			</Button>

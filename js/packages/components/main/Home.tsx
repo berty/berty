@@ -155,13 +155,6 @@ const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
 	) : null
 }
 
-const formatTimestamp = (date: Date) => {
-	const arr = date.toString().split(' ')
-	const hours = arr[4].split(':')
-	const hour = hours[0] + ':' + hours[1]
-	return hour
-}
-
 const UnreadCount: React.FC<{ value: number }> = ({ value }) =>
 	value ? (
 		<View
@@ -210,7 +203,13 @@ const MessageStatus: React.FC<{ messageID: string }> = ({ messageID }) => {
 
 const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	// const { dispatch } = useNavigation()
-	const { publicKey = '', displayName = '', fake = false, kind = '1to1' } = props
+	const {
+		publicKey = '',
+		displayName = '',
+		fake = false,
+		kind = '1to1',
+		contactPublicKey = '',
+	} = props
 	const [{ color, row, border, flex, column, padding, text }] = useStyles()
 	// TODO: Last message, unread count, navigate to chatroom
 	const { dispatch } = useNavigation()
@@ -224,7 +223,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 					? () =>
 							dispatch(
 								CommonActions.navigate({
-									name: Routes.Chat.OneToOne,
+									name: Routes.Chat.Group,
 									params: {
 										convId: publicKey,
 									},
@@ -244,8 +243,8 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 			<View
 				style={[row.center, border.bottom.medium, border.color.light.grey, padding.vertical.small]}
 			>
-				<ConversationProceduralAvatar
-					conversationId={publicKey}
+				<ProceduralCircleAvatar
+					seed={kind === 'multi' ? publicKey : contactPublicKey}
 					size={50}
 					style={[padding.tiny, row.item.justify]}
 				/>
@@ -314,8 +313,8 @@ const Conversations: React.FC<ConversationsProps> = ({ items, onLayout, style })
 				>
 					{items &&
 						items.length &&
-						items.map((_) => {
-							return <ConversationsItem key={_.publicKey} {..._} />
+						items.map((i) => {
+							return <ConversationsItem key={i.publicKey} {...i} />
 						})}
 				</View>
 			)}

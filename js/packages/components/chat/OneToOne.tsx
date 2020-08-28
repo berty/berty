@@ -14,8 +14,8 @@ import { useStyles } from '@berty-tech/styles'
 // import { Messenger, Settings } from '@berty-tech/store/oldhooks'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import FromNow from '../shared-components/FromNow'
-import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
-// import { Message } from './shared-components/Message'
+import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
+import { Message } from './shared-components/Message'
 // import { ChatFooter, ChatDate } from './shared-components/Chat'
 
 // import { useReadEffect } from '../hooks'
@@ -166,7 +166,7 @@ export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
 						style={[flex.tiny, row.item.justify, !contact ? opacity(0.5) : null]}
 						// onPress={() => navigate.chat.settings({ convId: convPk })}
 					>
-						<ConversationProceduralAvatar size={45} diffSize={9} conversationId={convPk} />
+						<ProceduralCircleAvatar size={45} diffSize={9} seed={conversation.contactPublicKey} />
 					</TouchableOpacity>
 				</View>
 			</View>
@@ -186,21 +186,22 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: number }> = ({
 	scrollToMessage,
 }) => {
 	const ctx: any = useMsgrContext()
-	const messages: any = values(ctx.interactions[convPk] as any).filter(
-		(msg) => msg.type === messengerpb.AppMessage.Type.UserMessage,
-	)
+	const conv = ctx.conversations[convPk]
+	const messages: any = values(ctx.interactions[convPk] as any)
+		.filter((msg) => msg.type === messengerpb.AppMessage.Type.TypeUserMessage)
+		.sort(
+			(a, b) =>
+				(a.payload.sentDate ? parseInt(a.payload.sentDate, 10) : Date.now()) -
+				(b.payload.sentDate ? parseInt(b.payload.sentDate, 10) : Date.now()),
+		)
+	const getPreviousMessageId = (item = '', messageList: string[] = []): string => {
+		const messagePosition: number = !item ? -1 : messageList.indexOf(item)
+		return messagePosition < 1 ? '' : messageList[messagePosition - 1].cid
+	}
 
 	const [{ row, overflow, flex, margin }, { scaleHeight }] = useStyles()
 
-	const contacts: any = useContacts()
-	const contact = values(contacts).find((c) => c.conversationPublicKey === convPk) || null
-	const conversation =
-		useConversationList().find((c) => c.contactPublicKey === contact.publicKey) || null
 	const flatListRef = useRef(null)
-
-	if (!conversation) {
-		return <CenteredActivityIndicator />
-	}
 
 	// const flatListRef = useRef<FlatList<messenger.message.Entity['convPk']>>(null)
 
@@ -227,11 +228,19 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: number }> = ({
 			// 	{ marginTop: 150 * scaleHeight },
 			// ]}
 			data={messages.reverse()}
-			// inverted
-			// keyExtractor={(item) => item}
+			inverted
+			keyExtractor={(item) => item.cid}
 			// ListFooterComponent={<InfosChat createdAt={conversation.createdAt} />}
 			// renderItem={({ item }) => <Message convPk={item} convKind={'1to1'} />}
-			renderItem={({ item }: { item: any }) => <Text>{item.toString()}</Text>}
+			renderItem={({ item }) => (
+				<Message
+					id={item.cid}
+					convKind='1to1'
+					convPK={conv.publicKey}
+					membersNames={conv.membersNames}
+					previousMessageId={getPreviousMessageId(item, messages)}
+				/>
+			)}
 		/>
 	)
 }

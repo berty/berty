@@ -16,9 +16,10 @@ import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { Message } from './shared-components/Message'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { Messenger } from '@berty-tech/store/oldhooks'
+import { useConversation, useConvInteractions } from '@berty-tech/store/hooks'
+import { messenger as messengerpb } from '@berty-tech/api/index.js'
 
-import { useReadEffect } from '../hooks'
+//import { useReadEffect } from '../hooks'
 //
 // ChatGroup
 //
@@ -28,7 +29,7 @@ import { useReadEffect } from '../hooks'
 const HeaderChatGroup: React.FC<{ id: string }> = ({ id }) => {
 	const { navigate, goBack } = useNavigation()
 	const [{ row, padding, flex, text, column, absolute }, { scaleHeight }] = useStyles()
-	const conversation = Messenger.useGetConversation(id)
+	const conversation = useConversation(id)
 	return (
 		<BlurView
 			style={[
@@ -59,7 +60,7 @@ const HeaderChatGroup: React.FC<{ id: string }> = ({ id }) => {
 						numberOfLines={1}
 						style={[text.align.center, text.bold.medium, text.size.scale(20), text.color.black]}
 					>
-						{conversation?.title || ''}
+						{conversation?.displayName || ''}
 					</TextNative>
 				</View>
 				<TouchableOpacity
@@ -204,7 +205,15 @@ const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) 
 
 const MessageList: React.FC<{ id: string }> = ({ id }) => {
 	const [{ overflow, row, flex, margin }, { scaleHeight }] = useStyles()
-	const conversation = Messenger.useGetConversation(id)
+	const conversation = useConversation(id)
+	const interactions = Object.values(useConvInteractions(id))
+		.filter((msg) => msg.type === messengerpb.AppMessage.Type.TypeUserMessage)
+		.sort(
+			(a, b) =>
+				(a.payload.sentDate ? parseInt(a.payload.sentDate, 10) : Date.now()) -
+				(b.payload.sentDate ? parseInt(b.payload.sentDate, 10) : Date.now()),
+		)
+	console.log('will render', interactions.length, 'interactions')
 	if (!conversation) {
 		return <CenteredActivityIndicator />
 	}
@@ -222,14 +231,15 @@ const MessageList: React.FC<{ id: string }> = ({ id }) => {
 				margin.bottom.medium,
 				{ marginTop: 140 * scaleHeight },
 			]}
-			data={[...conversation.messages].reverse()}
+			data={interactions.reverse()}
 			inverted
 			ListFooterComponent={<InfosChatGroup {...conversation} />}
+			keyExtractor={(item) => item.cid}
 			renderItem={({ item }) => (
 				<Message
-					id={item}
+					id={item.cid}
 					convKind='multi'
-					key={item}
+					convPK={conversation.publicKey}
 					membersNames={conversation.membersNames}
 					previousMessageId={getPreviousMessageId(item, conversation.messages)}
 				/>
@@ -241,7 +251,7 @@ const MessageList: React.FC<{ id: string }> = ({ id }) => {
 export const ChatGroup: React.FC<ScreenProps.Chat.Group> = ({ route: { params } }) => {
 	const [inputIsFocused, setInputFocus] = useState(true)
 	const [{ background, flex }] = useStyles()
-	useReadEffect(params.convId, 1000)
+	//useReadEffect(params.convId, 1000)
 	return (
 		<View style={[flex.tiny, background.white]}>
 			<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>

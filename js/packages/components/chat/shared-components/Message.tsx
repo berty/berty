@@ -1,4 +1,3 @@
-import { Messenger } from '@berty-tech/store/oldhooks'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { useStyles } from '@berty-tech/styles'
 import Color from 'color'
@@ -9,6 +8,7 @@ import { Icon, Text } from 'react-native-ui-kitten'
 import { SHA3 } from 'sha3'
 import Logo from '../../main/1_berty_picto.svg'
 import { ProceduralCircleAvatar } from '../../shared-components'
+import { useInteraction } from '@berty-tech/store/hooks'
 
 const pal = palette('tol-rainbow', 256)
 
@@ -32,8 +32,19 @@ const useStylesMessage = () => {
 	}
 }
 
-const formatTimestamp = (date: Date) => {
-	const arr = date.toString().split(' ')
+const formatTimestamp = (date: Date | number) => {
+	let d = date
+	if (typeof date === 'number') {
+		d = new Date()
+		d.setTime(date)
+	}
+	if (!d) {
+		return 'x'
+	}
+	const arr = d.toString().split(' ')
+	if (!arr[4]) {
+		return '?'
+	}
 	const hours = arr[4].split(':')
 	const hour = hours[0] + ':' + hours[1]
 	return hour
@@ -214,10 +225,11 @@ export const Message: React.FC<{
 	id: string
 	convKind: '1to1' | 'multi'
 	membersNames?: { [key: string]: string | undefined }
+	convPK: string
 	previousMessageId: string
-}> = ({ id, convKind, membersNames, previousMessageId }) => {
-	const message = Messenger.useGetMessage(id)
-	const previousMessage = Messenger.useGetMessage(previousMessageId)
+}> = ({ id, convKind, membersNames, previousMessageId, convPK }) => {
+	const message = useInteraction(id, convPK)
+	const previousMessage = useInteraction(previousMessageId, convPK)
 
 	const _styles = useStylesMessage()
 	const [{ row, margin, padding, column, text, border, color, width }] = useStyles()
@@ -230,6 +242,7 @@ export const Message: React.FC<{
 	let baseColor = color.blue
 	let isFollowupMessage = false
 	let isWithinTenMinsAfter = false
+	let sentDate = Date.now()
 	if (message.type === messengerpb.AppMessage.Type.TypeUserMessage) {
 		if (message.memberPk && membersNames) {
 			name = membersNames[message.memberPk]
@@ -251,6 +264,7 @@ export const Message: React.FC<{
 					: color.white
 				: '#CED2FF99'
 			msgBorderColor = payload.isMe && (cmd ? border.color.grey : border.color.blue)
+			sentDate = parseInt(payload.payload.sentDate, 10)
 		} else {
 			isFollowupMessage =
 				previousMessage && !payload.isMe && payload.memberPk === previousMessage.memberPk
@@ -258,9 +272,10 @@ export const Message: React.FC<{
 			isWithinTenMinsAfter =
 				previousMessage &&
 				payload?.memberPk === previousMessage?.memberPk &&
-				payload.sentDate &&
-				previousMessage.sentDate &&
-				Math.abs((payload?.sentDate || 0) - (previousMessage?.sentDate || 0)) < 10 * 6000
+				sentDate &&
+				previousMessage.payload.sentDate &&
+				Math.abs((sentDate || 0) - (parseInt(previousMessage?.payload?.sentDate, 10) || 0)) <
+					10 * 6000
 
 			if (!message.isMe && message.memberPk) {
 				const h = new SHA3(256).update(message.memberPk).digest()
@@ -330,7 +345,7 @@ export const Message: React.FC<{
 								},
 							]}
 						>
-							{payload.body}
+							{payload.payload.body}
 						</Text>
 					</View>
 					<View style={[payload.isMe && row.item.bottom]}>
@@ -345,7 +360,7 @@ export const Message: React.FC<{
 										{ fontSize: 9 },
 									]}
 								>
-									{formatTimestamp(new Date(payload.sentDate))}{' '}
+									{sentDate ? formatTimestamp(sentDate) : null}{' '}
 								</Text>
 							)}
 							{!cmd && (
