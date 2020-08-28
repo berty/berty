@@ -6,7 +6,10 @@ import {
 	useGetMessageSearchResultWithMetadata,
 	useAccountContactSearchResults,
 	useFirstConversationWithContact,
+	useContactsList,
+	useContacts
 } from '@berty-tech/store/hooks'
+import messengerMethodsHooks from '@berty-tech/store/methods'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 
 const CreateAccount: React.FC = () => {
@@ -187,11 +190,9 @@ const Interaction: React.FC<{ value: any }> = ({ value }) => {
 			</div>
 		)
 	} else if (value.type === messengerpb.AppMessage.Type.TypeGroupInvitation) {
-		const payload = value.payload
 		return (
 			<div style={{ textAlign: value.isMe ? 'right' : 'left' }}>
-				{/* {value.isMe && isAcknowledged(ctx, value.cid) && '✓ '} */}
-				{`${payload.body}`}
+				You have received a group invitation!
 			</div>
 		)
 	}
@@ -201,6 +202,7 @@ const Interaction: React.FC<{ value: any }> = ({ value }) => {
 const Conversation: React.FC<{ publicKey: string }> = ({ publicKey }) => {
 	const ctx = React.useContext(MsgrContext)
 	const conv = (ctx.conversations as any)[publicKey] || {}
+	const displayName = conv.displayName || (ctx.contacts as any)[conv.contactPublicKey]?.displayName || '<undefined displayName>'
 	const interactions = Object.values((ctx.interactions as any)[publicKey] || {})
 	const [message, setMessage] = useState('')
 	const [error, setError] = useState(null)
@@ -232,7 +234,7 @@ const Conversation: React.FC<{ publicKey: string }> = ({ publicKey }) => {
 	return (
 		!!conv && (
 			<>
-				{conv.displayName}
+				{displayName}
 				<br />
 				<div
 					style={{
@@ -283,7 +285,7 @@ const SearchMessages: React.FC = () => {
 			/>
 			<div>
 				{messageSearchResults &&
-					messageSearchResults.map((message, i) => {
+					messageSearchResults.map((message: any, i: number) => {
 						return <SearchMessagesResult message={message} key={i} />
 					})}
 			</div>
@@ -309,7 +311,7 @@ const Conversations: React.FC = () => {
 							disabled={selected === conv.publicKey}
 							onClick={() => setSelected(conv.publicKey)}
 						>
-							{conv.displayName}
+							{conv.displayName || (ctx.contacts as any)[conv.contactPublicKey]?.displayName || '<undefined displayName>'}
 						</button>
 					)
 				})}
@@ -338,30 +340,29 @@ const CreateMultiMember = () => {
 	const [groupName, setGroupName] = useState('My group')
 	const [error, setError] = useState(null)
 	const [members, setMembers] = useState([])
-	const ctx: any = React.useContext(MsgrContext)
-	const handleCreate = React.useCallback(() => {
-		setError(null)
-		ctx.client
-			.conversationCreate({ displayName: groupName, members })
-			.catch((err: any) => setError(err))
-	}, [ctx.client, groupName, members])
+	const { refresh, error: errorReply, done } = (messengerMethodsHooks as any).useConversationCreate()
+	const createGroup = React.useCallback(
+		() => refresh({ displayName: groupName, contactsToInvite: members.map((m) => m.publicKey) }),
+		[groupName, members, refresh],
+	)
+	const contactList = useContactsList()
+	React.useEffect(() => {
+		// TODO: better handle error
+		if (done) {
+			if (errorReply) {
+				setError(errorReply)
+			}
+		}
+	}, [done, errorReply])
 	return (
 		<>
-			{Object.values(ctx.contacts)
-				.filter((contact) => contact.state === messengerpb.Contact.State.Established)
-				.map((contact: any, i) => (
-					<button
-						key={`${contact.publicKey}_${i}`}
-						onClick={() =>
-							members.find((m) => m.publicKey === contact.publicKey)
-								? setMembers(members.filter((member) => member.publicKey !== contact.publicKey))
-								: setMembers([...members, contact])
-						}
-					>
-						{contact.displayName}{' '}
-						{members.find((m) => m.publicKey === contact.publicKey) ? '🅧' : '+'}
-					</button>
-				))}
+		{contactList.filter((contact: any) => contact.state === messengerpb.Contact.State.Established).map((contact: any) => <button
+		key={`${contact.publicKey}`}
+		onClick={
+			() => members.find(m => m.publicKey === contact.publicKey) ? setMembers(members.filter(member => member.publicKey !== contact.publicKey)) : setMembers([...members, contact])
+			}>
+			{contact.displayName}{' '}{members.find(m => m.publicKey === contact.publicKey) ? '🅧' : '+'}
+			</button>)}
 			<input
 				type='text'
 				value={groupName}
@@ -370,7 +371,7 @@ const CreateMultiMember = () => {
 				}}
 			/>
 			<Error value={error} />
-			<button onClick={handleCreate}>Create</button>
+			<button onClick={createGroup}>Create</button>
 		</>
 	)
 }
