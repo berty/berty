@@ -24,6 +24,7 @@ func miniCommand() *ffcli.Command {
 	miniFlags.StringVar(&opts.miniGroup, "g", opts.miniGroup, "group to join, leave empty to create a new group")
 	miniFlags.StringVar(&opts.datastorePath, "d", opts.datastorePath, "datastore base directory")
 	miniFlags.StringVar(&opts.sqlitePath, "s", opts.datastorePath, "sqlite base directory")
+	miniFlags.BoolVar(&opts.replay, "replay", opts.replay, "reconstruct DB from orbitDB logs")
 	miniFlags.UintVar(&opts.miniPort, "p", opts.miniPort, "default IPFS listen port")
 	miniFlags.StringVar(&opts.remoteDaemonAddr, "r", opts.remoteDaemonAddr, "remote berty daemon")
 	miniFlags.StringVar(&opts.rdvpMaddr, "rdvp", opts.rdvpMaddr, "rendezvous point maddr")
@@ -96,6 +97,7 @@ func miniCommand() *ffcli.Command {
 				Port:            opts.miniPort,
 				RootDS:          rootDS,
 				MessengerDB:     db,
+				ReplayLogs:      opts.replay,
 				Logger:          l,
 				POIDebug:        opts.poiDebug,
 				Bootstrap:       config.BertyDev.Bootstrap,

@@ -43,6 +43,7 @@ type Opts struct {
 	Port            uint
 	RootDS          datastore.Batching
 	MessengerDB     *gorm.DB
+	ReplayLogs      bool
 	Logger          *zap.Logger
 	POIDebug        bool
 	DisplayName     string
@@ -211,6 +212,12 @@ func Main(ctx context.Context, opts *Opts) error {
 		}
 
 		client = bertyprotocol.NewProtocolServiceClient(cc)
+	}
+
+	if opts.ReplayLogs && opts.MessengerDB != nil {
+		if err := bertymessenger.ReplayLogsToDB(ctx, client, opts.MessengerDB); err != nil {
+			return err
+		}
 	}
 
 	messenger, err := bertymessenger.New(client, &bertymessenger.Opts{

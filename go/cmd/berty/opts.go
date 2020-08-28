@@ -44,6 +44,7 @@ type mainOpts struct {
 	tracer         string
 	datastorePath  string
 	sqlitePath     string
+	replay         bool
 
 	// more specific
 	bannerLight           bool
