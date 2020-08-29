@@ -8,7 +8,7 @@ import { TabBar } from '../shared-components/TabBar'
 import HeaderSettings from '../shared-components/Header'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
-import { Messenger } from '@berty-tech/store/oldhooks'
+import { useContacts } from '@berty-tech/store/hooks'
 
 const OneToOneSettingsHeaderContent: React.FC = ({ children }) => {
 	const [{ margin }] = useStyles()
@@ -27,7 +27,7 @@ const SelectedContent: React.FC<{ contentName: string; publicKey: string }> = ({
 	}
 }
 
-const OneToOneSettingsHeader: React.FC<{ contact: messenger.contact.Entity }> = ({ contact }) => {
+const OneToOneSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 	const [{ border, background, padding, row, absolute, text }] = useStyles()
 	const [selectedContent, setSelectedContent] = useState('Fingerprint')
 	return (
@@ -49,7 +49,7 @@ const OneToOneSettingsHeader: React.FC<{ contact: messenger.contact.Entity }> = 
 				</View>
 				<View style={[padding.horizontal.medium, padding.bottom.medium, padding.top.scale(65)]}>
 					<Text style={[text.size.big, text.color.black, text.align.center, text.bold.small]}>
-						{contact.name}
+						{contact.displayName}
 					</Text>
 					<TabBar
 						tabs={[
@@ -76,7 +76,8 @@ const OneToOneSettingsHeader: React.FC<{ contact: messenger.contact.Entity }> = 
 
 const DeleteContactButton: React.FC<{ id: string }> = ({ id }) => {
 	const [{ color }] = useStyles()
-	const deleteContact = Messenger.useDeleteContact()
+	// const deleteContact = Messenger.useDeleteContact()
+	const deleteContact = () => {}
 	return (
 		<ButtonSetting
 			name='Delete contact'
@@ -107,7 +108,7 @@ const OneToOneSettingsBody: React.FC<{ id: string }> = ({ id }) => {
 export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({ route }) => {
 	const { contactId } = route.params
 	const { goBack } = useNavigation()
-	const contact = Messenger.useContact({ id: contactId })
+	const contact: any = (useContacts() as any)[contactId] || null
 	const [{ background, flex }] = useStyles()
 	if (!contact) {
 		goBack()
@@ -124,7 +125,7 @@ export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({ 
 			<HeaderSettings actionIcon='upload' undo={goBack}>
 				<OneToOneSettingsHeader contact={contact} />
 			</HeaderSettings>
-			<OneToOneSettingsBody id={contact.id} />
+			<OneToOneSettingsBody id={contact.publicKey} />
 		</ScrollView>
 	)
 }

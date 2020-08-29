@@ -1,13 +1,13 @@
-import React from 'react'
-import { View, ScrollView } from 'react-native'
-import { Text } from 'react-native-ui-kitten'
+import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { useContact, useConversation } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
-import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
+import React from 'react'
+import { ScrollView, View } from 'react-native'
+import { Text } from 'react-native-ui-kitten'
 import HeaderSettings from '../shared-components/Header'
-import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
-
-import { Messenger } from '@berty-tech/store/oldhooks'
+import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 
 //
 // ChatSettings
@@ -24,7 +24,7 @@ const useStylesChatSettings = () => {
 	}
 }
 
-const ChatSettingsHeader: React.FC<{ contact: messenger.contact.Entity }> = ({ contact }) => {
+const ChatSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 	const _styles = useStylesChatSettings()
 	const [{ text, padding, border, row }] = useStyles()
 	return (
@@ -38,7 +38,7 @@ const ChatSettingsHeader: React.FC<{ contact: messenger.contact.Entity }> = ({ c
 				numberOfLines={1}
 				style={[text.size.scale(18), text.color.white, text.align.center, padding.top.small]}
 			>
-				{contact.name}
+				{contact.displayName}
 			</Text>
 		</View>
 	)
@@ -105,20 +105,16 @@ export const ChatSettings: React.FC<ScreenProps.Chat.Settings> = ({ route: { par
 	const { goBack, navigate } = useNavigation()
 	const [{ flex, background }] = useStyles()
 	const { convId } = params
-	const conv = Messenger.useGetConversation(convId)
-	const contact = Messenger.useContact({
-		id:
-			(conv && conv.type === messenger.conversation.ConversationKind.OneToOne && conv.contactId) ||
-			'none',
-	})
-	if (!(conv && conv.type === messenger.conversation.ConversationKind.OneToOne && contact)) {
+	const conv = useConversation(convId)
+	const contact = useContact(conv.contactPublicKey)
+	if (!(conv && conv.type === messengerpb.Conversation.Type.ContactType && contact)) {
 		goBack()
 		return null
 	}
 	return (
 		<ScrollView style={[flex.tiny, background.white]} bounces={false}>
 			<HeaderSettings
-				action={() => navigate.chat.oneToOneSettings({ contactId: conv.contactId })}
+				action={() => navigate.chat.oneToOneSettings({ contactId: conv.contactPublicKey })}
 				actionIcon='more-horizontal-outline'
 				undo={goBack}
 			>

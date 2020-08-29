@@ -47,12 +47,9 @@ const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) 
 
 export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
 	const { navigate, goBack } = useNavigation()
-	const ctx = useMsgrContext()
+	const ctx: any = useMsgrContext()
 	const conversation = ctx.conversations[convPk]
 	const contact = ctx.contacts[conversation.contactPublicKey]
-
-	// const conversation: any = conversations ? conversations[convPk] : null
-	// const { contactPublicKey = '', displayName = '', publicKey = '' } = conversation || {}
 
 	// const contact: any = contacts[contactPublicKey] || null
 	const _styles = useStylesChat()
@@ -84,12 +81,7 @@ export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
 		goBack()
 		return <CenteredActivityIndicator />
 	}
-
-	// console.log('conversation:', conversation)
-
 	const title = conversation.fake ? `FAKE - ${contact.displayName}` : contact?.displayName || ''
-
-	// console.log('title:', title)
 	return (
 		<View style={{ position: 'absolute', top: 0, left: 0, right: 0 }}>
 			<BlurView
@@ -160,7 +152,7 @@ export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
 					<TouchableOpacity
 						activeOpacity={contact ? 0.2 : 0.5}
 						style={[flex.tiny, row.item.justify, !contact ? opacity(0.5) : null]}
-						// onPress={() => navigate.chat.settings({ convId: convPk })}
+						onPress={() => navigate.chat.settings({ convId: convPk })}
 					>
 						<ProceduralCircleAvatar size={45} diffSize={9} seed={conversation.contactPublicKey} />
 					</TouchableOpacity>
@@ -225,10 +217,10 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: number }> = ({
 			// ]}
 			data={messages.reverse()}
 			inverted
-			keyExtractor={(item) => item.cid}
+			keyExtractor={(item: any) => item.cid}
 			// ListFooterComponent={<InfosChat createdAt={conversation.createdAt} />}
 			// renderItem={({ item }) => <Message convPk={item} convKind={'1to1'} />}
-			renderItem={({ item }) => (
+			renderItem={({ item }: { item: any }) => (
 				<Message
 					id={item.cid}
 					convKind={messengerpb.Conversation.Type.ContactType}
