@@ -149,7 +149,6 @@ export const useOutgoingContactRequests = () => {
 	)
 }
 
-// TODO: See how to use 1-1's already generated in event stream
 export const useConversationList = () => {
 	const ctx = useMsgrContext()
 	return Object.values(ctx.conversations)
@@ -169,12 +168,6 @@ export const useInteraction = (cid, convPk) => {
 	const intes = useConvInteractions(convPk)
 	return intes && intes[cid]
 }
-
-// tmp / Includes conversationPublicKeys in established contacts
-// export const useConversationsAllConvKeys = () => {
-// 	const conversationList = useConversationList()
-// 	return keyBy(conversationList, 'publicKey')
-// }
 
 export const useConversationLength = () => {
 	return useConversationList().length

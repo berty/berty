@@ -593,7 +593,9 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 	// Dispatch new conversation
 	{
 		err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conv})
-		svc.logger.Error("failed to dispatch ConversationUpdated event", zap.Error(err))
+		if err != nil {
+			svc.logger.Error("failed to dispatch ConversationUpdated event", zap.Error(err))
+		}
 	}
 
 	// Try to put group name in group metadata

@@ -220,13 +220,11 @@ export const CreateGroupFinalize: React.FC<{
 }> = ({ members, onRemoveMember }) => {
 	const navigation = useNavigation()
 	const [groupName, setGroupName] = useState('New group')
-	//const createGroup = Messenger.useConversationCreate({ name: groupName, members })
-	const { refresh, error, done } = messengerMethodsHooks.useConversationCreate()
-	const createGroup = React.useCallback(() => refresh({ displayName: groupName, members }), [
-		groupName,
-		members,
-		refresh,
-	])
+	const { refresh, error, done } = (messengerMethodsHooks as any).useConversationCreate()
+	const createGroup = React.useCallback(
+		() => refresh({ displayName: groupName, contactsToInvite: members.map((m) => m.publicKey) }),
+		[groupName, members, refresh],
+	)
 	const [layout, setLayout] = useState<number>(0)
 	const [{ flex, background, padding }] = useStyles()
 
