@@ -1,9 +1,9 @@
 bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc h1:utDghgcjE8u+EBjHOgYT+dJPcnDF05KqWMBcjuJy510=
 bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc/go.mod h1:FbcW6z/2VytnFDhZfumh8Ss8zxHE6qpMP5sHTRe0EaM=
-berty.tech/go-ipfs-log v1.2.5 h1:87iNIqBT3NNj4qDGDg8uT5BNedGf9/dLCBZ56GcFF+A=
-berty.tech/go-ipfs-log v1.2.5/go.mod h1:4v7G/bAeHNQWqziNC9oZREEFYpSiejSE3+DB4G4nf9M=
-berty.tech/go-orbit-db v1.10.6 h1:sW6fAPzRlndLr5BeJaFGeNCJfSck9jtB6SCX9BRkPyE=
-berty.tech/go-orbit-db v1.10.6/go.mod h1:BWOnIgAHEjk2JmBObSQzUKA7ySPnyDU3kw58qid+de8=
+berty.tech/go-ipfs-log v1.2.6 h1:VBdyZgdkeIt17LS4UX6rJjmskqvfIHaOAEH9Z8aqvIM=
+berty.tech/go-ipfs-log v1.2.6/go.mod h1:4v7G/bAeHNQWqziNC9oZREEFYpSiejSE3+DB4G4nf9M=
+berty.tech/go-orbit-db v1.10.8 h1:eNbtZCmccPR29UTgZu+U12clm8bfw2hxyduuy15ImfY=
+berty.tech/go-orbit-db v1.10.8/go.mod h1:Gl6pmjtt7Db5yA+2S14VP0XJ93Q2OslpyW/eSE9QNCg=
 berty.tech/ipfs-webui-packed v1.0.0-v2.9.0-4 h1:fxCHZjY+/qw1R0gJaTvmILCPGFhu6rvPKslcNHqxIFg=
 berty.tech/ipfs-webui-packed v1.0.0-v2.9.0-4/go.mod h1:n+M4wWEjVxnA0itc1m9oOLAXrNyZr2tiOxLnA1tVnrQ=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
