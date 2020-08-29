@@ -68,10 +68,13 @@ const createNavigation = ({
 			chat: {
 				oneToOne: createNavigateFunc(navigate, Routes.Chat.OneToOne),
 				group: createNavigateFunc(navigate, Routes.Chat.Group),
-				settings: createNavigateFunc<ScreenProps.Chat.Settings>(navigate, Routes.Chat.Settings),
 				oneToOneSettings: createNavigateFunc<ScreenProps.Chat.OneToOneSettings>(
 					navigate,
 					Routes.Chat.OneToOneSettings,
+				),
+				contactSettings: createNavigateFunc<ScreenProps.Chat.ContactSettings>(
+					navigate,
+					Routes.Chat.ContactSettings,
 				),
 				groupSettings: createNavigateFunc<ScreenProps.Chat.MultiMemberSettings>(
 					navigate,

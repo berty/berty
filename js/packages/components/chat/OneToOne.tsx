@@ -19,10 +19,10 @@ import { Message } from './shared-components/Message'
 // import { ChatFooter, ChatDate } from './shared-components/Chat'
 
 // import { useReadEffect } from '../hooks'
-import { useContacts, useConversationList, useMsgrContext } from '@berty-tech/store/hooks'
+import { useMsgrContext, useConversation, useContact } from '@berty-tech/store/hooks'
 import { values } from 'lodash'
 import { ChatFooter } from './shared-components/Chat'
-// import { useContact } from '@berty-tech/store/oldhooks/contact'
+
 //
 // Chat
 //
@@ -47,11 +47,9 @@ const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) 
 
 export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
 	const { navigate, goBack } = useNavigation()
-	const ctx: any = useMsgrContext()
-	const conversation = ctx.conversations[convPk]
-	const contact = ctx.contacts[conversation.contactPublicKey]
+	const conv = useConversation(convPk)
+	const contact = useContact(conv.contactPublicKey)
 
-	// const contact: any = contacts[contactPublicKey] || null
 	const _styles = useStylesChat()
 	const [
 		{ absolute, row, padding, column, margin, text, flex, opacity, color, border, width, height },
@@ -60,7 +58,7 @@ export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
 
 	// const lastDate = Messenger.useGetDateLastContactMessage(convPk)
 	// const lastDate = new Date()
-	// const debugGroup = Settings.useDebugGroup({ pk: conversation?.pk || '' })
+	// const debugGroup = Settings.useDebugGroup({ pk: conv?.pk || '' })
 	// const main = Settings?.useSettings()
 	// const state = main?.debugGroup?.state
 
@@ -77,11 +75,11 @@ export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
 	// 	return () => clearInterval(interval)
 	// }, [debugGroup])
 
-	if (!conversation) {
+	if (!conv) {
 		goBack()
 		return <CenteredActivityIndicator />
 	}
-	const title = conversation.fake ? `FAKE - ${contact.displayName}` : contact?.displayName || ''
+	const title = conv.fake ? `FAKE - ${contact.displayName}` : contact?.displayName || ''
 	return (
 		<View style={{ position: 'absolute', top: 0, left: 0, right: 0 }}>
 			<BlurView
@@ -152,9 +150,9 @@ export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
 					<TouchableOpacity
 						activeOpacity={contact ? 0.2 : 0.5}
 						style={[flex.tiny, row.item.justify, !contact ? opacity(0.5) : null]}
-						onPress={() => navigate.chat.settings({ convId: convPk })}
+						onPress={() => navigate.chat.oneToOneSettings({ convId: convPk })}
 					>
-						<ProceduralCircleAvatar size={45} diffSize={9} seed={conversation.contactPublicKey} />
+						<ProceduralCircleAvatar size={45} diffSize={9} seed={conv.contactPublicKey} />
 					</TouchableOpacity>
 				</View>
 			</View>
@@ -184,7 +182,7 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: number }> = ({
 		)
 	const getPreviousMessageId = (item = '', messageList: string[] = []): string => {
 		const messagePosition: number = !item ? -1 : messageList.indexOf(item)
-		return messagePosition < 1 ? '' : messageList[messagePosition - 1].cid
+		return messagePosition < 1 ? '' : (messageList[messagePosition - 1] as any).cid
 	}
 
 	const [{ row, overflow, flex, margin }, { scaleHeight }] = useStyles()
