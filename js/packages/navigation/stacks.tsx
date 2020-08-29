@@ -142,10 +142,13 @@ export const Navigation: React.FC = () => {
 			/>
 			<NavigationStack.Screen name={Routes.Chat.OneToOne} component={Components.Chat.OneToOne} />
 			<NavigationStack.Screen name={Routes.Chat.Group} component={Components.Chat.MultiMember} />
-			<NavigationStack.Screen name={Routes.Chat.Settings} component={Components.Chat.Settings} />
 			<NavigationStack.Screen
 				name={Routes.Chat.OneToOneSettings}
 				component={Components.Chat.OneToOneSettings}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Chat.ContactSettings}
+				component={Components.Chat.ContactSettings}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Chat.MultiMemberSettings}

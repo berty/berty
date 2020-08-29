@@ -121,6 +121,11 @@ export const useAccount = () => {
 	return ctx.account
 }
 
+export const useContact = (contactPk = '') => {
+	const ctx = useMsgrContext()
+	return ctx.contacts[contactPk] || null
+}
+
 export const useContacts = () => {
 	const ctx = useMsgrContext()
 	return ctx.contacts
