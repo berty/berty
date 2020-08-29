@@ -13,6 +13,8 @@ import (
 )
 
 func TestServiceStream(t *testing.T) {
+	testutil.SkipUnstable(t)
+
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
 	defer cleanup()
@@ -46,6 +48,8 @@ func TestServiceStream(t *testing.T) {
 }
 
 func TestServiceSetName(t *testing.T) {
+	testutil.SkipUnstable(t)
+
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
 	defer cleanup()
@@ -135,6 +139,8 @@ func TestServiceSetNameAsync(t *testing.T) {
 }
 
 func TestServiceStreamCancel(t *testing.T) {
+	testutil.SkipUnstable(t)
+
 	ctx, ctxCancel := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
 	defer cleanup()
@@ -159,6 +165,8 @@ func TestServiceStreamCancel(t *testing.T) {
 }
 
 func TestServiceContactRequest(t *testing.T) {
+	testutil.SkipUnstable(t)
+
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
 	defer cleanup()
