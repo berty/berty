@@ -269,7 +269,8 @@ message Contact {
 
 message Conversation {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
-  string contact_public_key = 2; // specific to ContactType conversations
+  // specific to ContactType conversations
+  string contact_public_key = 2;
   string display_name = 3;
   string link = 4;
   int32 unread_count = 5;

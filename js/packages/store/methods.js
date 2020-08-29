@@ -2,7 +2,7 @@ import { useMemo, useReducer, useCallback } from 'react'
 import { useMsgrContext } from './context'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 
-const initialState = { error: null, reply: null, done: false }
+const initialState = { error: null, reply: null, done: false, called: false }
 
 const methodReducer = (state, action = {}) => {
 	switch (action.type) {
@@ -10,8 +10,8 @@ const methodReducer = (state, action = {}) => {
 			return { ...state, error: action.payload.error, done: true }
 		case 'DONE':
 			return { ...state, reply: action.payload.reply, done: true }
-		case 'RESET':
-			return initialState
+		case 'CALL':
+			return { ...initialState, called: true }
 		default:
 			console.warn(`Unknown methodReducer action ${action.type}`)
 			return state
@@ -25,29 +25,33 @@ const uncap = (v) => {
 	return v.charAt(0).toLowerCase() + v.slice(1)
 }
 
-const methodError = (error) => ({ type: 'ERROR', payload: { error } })
+const errorAction = (error) => ({ type: 'ERROR', payload: { error } })
 
-const methodDone = (reply) => ({ type: 'DONE', payload: { reply } })
+const doneAction = (reply) => ({ type: 'DONE', payload: { reply } })
+
+const callAction = () => ({ type: 'CALL' })
 
 // TODO: UnknownMethod class
 
 const messengerMethodHook = (key) => () => {
 	const ctx = useMsgrContext()
+
 	const [state, dispatch] = useReducer(methodReducer, initialState)
 
-	const callback = useCallback(
+	const call = useCallback(
 		(payload) => {
 			const clientKey = uncap(key)
 			if (!Object.keys(ctx.client).includes(clientKey)) {
-				dispatch(methodError(new Error(`Couldn't find method '${key}'`)))
+				dispatch(errorAction(new Error(`Couldn't find method '${key}'`)))
 				return
 			}
+			dispatch(callAction())
 			ctx.client[clientKey](payload)
 				.then((reply) => {
-					dispatch(methodDone(reply))
+					dispatch(doneAction(reply))
 				})
 				.catch((err) => {
-					dispatch(methodError(err))
+					dispatch(errorAction(err))
 				})
 		},
 		[ctx.client],
@@ -55,13 +59,13 @@ const messengerMethodHook = (key) => () => {
 
 	const refresh = useCallback(
 		(payload) => {
-			dispatch({ type: 'RESET' })
-			callback(payload)
+			console.warn('Using deprecated "refresh" in messenger method hook, please use "call" instead')
+			call(payload)
 		},
-		[callback],
+		[call],
 	)
 
-	return { done: state.done, reply: state.reply, error: state.error, refresh }
+	return { call, refresh, ...state }
 }
 
 const messengerMethods = messengerpb?.MessengerService?.resolveAll()?.methods || {}

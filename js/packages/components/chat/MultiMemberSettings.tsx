@@ -7,11 +7,10 @@ import {
 	FactionButtonSetting,
 	ButtonSettingRow,
 } from '../shared-components/SettingsButtons'
-import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
+import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import HeaderSettings from '../shared-components/Header'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
-
-import { Messenger, Groups } from '@berty-tech/store/oldhooks'
+import { useConversation } from '@berty-tech/store/hooks'
 
 //
 // GroupChatSettings
@@ -27,11 +26,7 @@ const useStylesChatSettings = () => {
 	}
 }
 
-const GroupChatSettingsHeaderButtons: React.FC<
-	| messenger.conversation.FakeConversation
-	| messenger.conversation.OneToOneConversation
-	| messenger.conversation.MultiMemberConversation
-> = ({ shareableGroup, id }) => {
+const GroupChatSettingsHeaderButtons: React.FC<any> = ({ link, publicKey }) => {
 	const { navigate } = useNavigation()
 	const _styles = useStylesChatSettings()
 	const [{ padding, margin, color }] = useStyles()
@@ -58,8 +53,8 @@ const GroupChatSettingsHeaderButtons: React.FC<
 						icon: 'upload',
 						color: color.blue,
 						style: _styles.thirdHeaderButton,
-						disabled: !shareableGroup || undefined,
-						onPress: () => navigate.chat.multiMemberQR({ convId: id }),
+						disabled: !link || undefined,
+						onPress: link ? () => navigate.chat.multiMemberQR({ convId: publicKey }) : undefined,
 					},
 				]}
 			/>
@@ -67,12 +62,15 @@ const GroupChatSettingsHeaderButtons: React.FC<
 	)
 }
 
-const GroupChatSettingsHeader: React.FC<messenger.conversation.Entity> = ({ title, id }) => {
+const GroupChatSettingsHeader: React.FC<messenger.conversation.Entity> = ({
+	displayName,
+	publicKey,
+}) => {
 	const [{ text, margin }, { scaleHeight }] = useStyles()
 	return (
 		<View>
-			<ConversationProceduralAvatar
-				conversationId={id}
+			<ProceduralCircleAvatar
+				seed={publicKey}
 				size={120 * scaleHeight}
 				diffSize={20}
 				style={{ alignItems: 'center' }}
@@ -82,20 +80,16 @@ const GroupChatSettingsHeader: React.FC<messenger.conversation.Entity> = ({ titl
 				ellipsizeMode='tail'
 				style={[text.align.center, text.color.white, margin.top.small, text.bold.medium]}
 			>
-				{title || ''}
+				{displayName || ''}
 			</Text>
 		</View>
 	)
 }
 
-const GroupSettingsBody: React.FC<
-	| messenger.conversation.FakeConversation
-	| messenger.conversation.OneToOneConversation
-	| messenger.conversation.MultiMemberConversation
-> = ({ pk, shareableGroup }) => {
+const MultiMemberSettingsBody: React.FC<any> = ({ pk, link }) => {
 	const [{ padding, margin, color }] = useStyles()
-	const { membersNames } = Messenger.useGetConversation(pk)
-	const { membersDevices } = Groups.useGroups()[pk] || { membersDevices: {} }
+	const membersNames = {}
+	const membersDevices = {}
 	return (
 		<View style={[padding.medium]}>
 			<ButtonSetting name='Medias, links & docs' icon='image-outline' disabled />
@@ -130,17 +124,17 @@ const GroupSettingsBody: React.FC<
 				name='Invite by link'
 				icon='attach-outline'
 				onPress={
-					shareableGroup
+					link
 						? async () => {
 								try {
-									await Share.share({ url: shareableGroup })
+									await Share.share({ url: link })
 								} catch (e) {
 									console.error(e)
 								}
 						  }
 						: undefined
 				}
-				disabled={!shareableGroup || undefined}
+				disabled={!link || undefined}
 			/>
 			<ButtonSetting
 				name='Erase conversation'
@@ -153,9 +147,9 @@ const GroupSettingsBody: React.FC<
 	)
 }
 
-export const GroupSettings: React.FC<ScreenProps.Chat.GroupSettings> = ({ route }) => {
+export const MultiMemberSettings: React.FC<ScreenProps.Chat.MultiMemberSettings> = ({ route }) => {
 	const { convId } = route.params
-	const conv = Messenger.useGetConversation(convId)
+	const conv = useConversation(convId)
 	const { goBack } = useNavigation()
 	const [{ flex, padding }] = useStyles()
 
@@ -172,7 +166,7 @@ export const GroupSettings: React.FC<ScreenProps.Chat.GroupSettings> = ({ route 
 						<GroupChatSettingsHeaderButtons {...conv} />
 					</View>
 				</HeaderSettings>
-				<GroupSettingsBody {...conv} />
+				<MultiMemberSettingsBody {...conv} />
 			</ScrollView>
 		</Layout>
 	)

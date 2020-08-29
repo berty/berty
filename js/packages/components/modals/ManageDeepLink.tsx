@@ -15,10 +15,12 @@ const base64ToURLBase64 = (str: string) => str.replace('+', '-').replace('/', '_
 export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 	route: { params },
 }) => {
-	const { reply: pdlReply, error, refresh, done } = messengerMethodsHooks.useParseDeepLink()
+	const { reply: pdlReply, error, call, done, called } = messengerMethodsHooks.useParseDeepLink()
 	React.useEffect(() => {
-		refresh({ link: params.value })
-	}, [params.value, refresh])
+		if (!called) {
+			call({ link: params.value })
+		}
+	}, [params.value, call, called])
 	const [{ border }] = useStyles()
 	const dataType = params.type || 'link'
 	let content
@@ -35,7 +37,16 @@ export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 		}
 		content = <InvalidScan title={title} error={error.toString()} />
 	} else if (pdlReply.kind === messengerpb.ParseDeepLink.Kind.BertyGroup) {
-		content = <ManageGroupInvitation />
+		content = (
+			<ManageGroupInvitation
+				link={params.value}
+				displayName={pdlReply.bertyGroup.displayName}
+				publicKey={base64ToURLBase64(
+					new Buffer(pdlReply.bertyGroup.group.publicKey).toString('base64'),
+				)}
+				type={params.type}
+			/>
+		)
 	} else if (pdlReply.kind === messengerpb.ParseDeepLink.Kind.BertyID) {
 		content = (
 			<AddThisContact
