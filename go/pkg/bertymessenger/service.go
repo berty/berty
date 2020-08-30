@@ -3,6 +3,8 @@ package bertymessenger
 import (
 	"context"
 	"errors"
+	"io"
+	"sync"
 	"time"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -13,7 +15,6 @@ import (
 	"go.uber.org/zap"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 	"moul.io/u"
 	"moul.io/zapgorm2"
 )
@@ -39,6 +40,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 		cancelFn:        cancel,
 		optsCleanup:     optsCleanup,
 		ctx:             ctx,
+		handlerMutex:    sync.Mutex{},
 	}
 
 	icr, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
@@ -50,7 +52,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 	// get or create account in DB
 	{
 		var acc Account
-		err := svc.db.First(&acc).Error
+		err := svc.db.Take(&acc).Error
 		switch {
 		case err == gorm.ErrRecordNotFound: // account not found, create a new one
 			svc.logger.Debug("account not found, creating a new one", zap.String("pk", pkStr))
@@ -61,7 +63,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 			}
 			acc.Link = ret.GetHTMLURL()
 			acc.PublicKey = pkStr
-			if err := svc.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&acc).Error; err != nil {
+			if err := svc.db.Create(&acc).Error; err != nil {
 				return nil, err
 			}
 		case err != nil: // internal error
@@ -75,11 +77,14 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 	}
 
 	// Subscribe to account group metadata
-	if err := svc.subscribeToMetadata(icr.GetAccountGroupPK()); err != nil {
+
+	err = svc.subscribeToMetadata(icr.GetAccountGroupPK())
+
+	if err != nil {
 		return nil, err
 	}
 
-	// subscribe to multimember groups
+	// subscribe to groups
 	{
 		var convs []Conversation
 		err := svc.db.Find(&convs).Error
@@ -105,7 +110,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 			return nil, err
 		}
 		for _, c := range contacts {
-			if c.State != Contact_OutgoingRequestSent && c.State != Contact_Established {
+			if c.State != Contact_OutgoingRequestSent {
 				continue
 			}
 
@@ -117,12 +122,6 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 			if err := svc.subscribeToMetadata(gpkb); err != nil {
 				return nil, err
 			}
-
-			if c.State == Contact_Established {
-				if err := svc.subscribeToMessages(gpkb); err != nil {
-					return nil, err
-				}
-			}
 		}
 	}
 
@@ -130,6 +129,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 }
 
 func (svc *service) subscribeToMetadata(gpkb []byte) error {
+	// subscribe
 	s, err := svc.protocolClient.GroupMetadataSubscribe(svc.ctx, &bertytypes.GroupMetadataSubscribe_Request{GroupPK: gpkb})
 	if err != nil {
 		return err
@@ -141,12 +141,31 @@ func (svc *service) subscribeToMetadata(gpkb []byte) error {
 				svc.logStreamingError("group metadata", err)
 				return
 			}
+			svc.handlerMutex.Lock()
 			err = handleProtocolEvent(svc, gme)
+			svc.handlerMutex.Unlock()
 			if err != nil {
 				svc.logger.Error("failed to handle protocol event", zap.Error(errcode.ErrInternal.Wrap(err)))
 			}
 		}
 	}()
+	// list metadata to prevent races with messages
+	ls, err := svc.protocolClient.GroupMetadataList(svc.ctx, &bertytypes.GroupMetadataList_Request{GroupPK: gpkb})
+	if err != nil {
+		return err
+	}
+	for {
+		gme, err := ls.Recv()
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			svc.logStreamingError("group metadata", err)
+		}
+		err = handleProtocolEvent(svc, gme)
+		if err != nil {
+			svc.logger.Error("failed to handle protocol event", zap.Error(errcode.ErrInternal.Wrap(err)))
+		}
+	}
 	return nil
 }
 
@@ -168,7 +187,9 @@ func (svc *service) subscribeToMessages(gpkb []byte) error {
 				svc.logger.Warn("failed to unmarshal AppMessage", zap.Error(err))
 				return
 			}
+			svc.handlerMutex.Lock()
 			err = handleAppMessage(svc, bytesToString(gpkb), gme, &am)
+			svc.handlerMutex.Unlock()
 			if err != nil {
 				svc.logger.Error("failed to handle app message", zap.Error(errcode.ErrInternal.Wrap(err)))
 			}
@@ -234,6 +255,7 @@ type service struct {
 	cancelFn        func()
 	optsCleanup     func()
 	ctx             context.Context
+	handlerMutex    sync.Mutex
 }
 
 type Service interface {

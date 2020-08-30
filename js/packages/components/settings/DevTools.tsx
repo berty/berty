@@ -251,6 +251,12 @@ const SendToAll: React.FC = () => {
 	)
 }
 
+const DumpMembers: React.FC = () => {
+	const ctx = useMsgrContext()
+	const text = JSON.stringify(ctx.members, null, 2)
+	return <DumpButton name='Dump members' text={text} />
+}
+
 const BodyDevTools: React.FC<{}> = () => {
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, color, text }] = useStyles()
@@ -271,6 +277,7 @@ const BodyDevTools: React.FC<{}> = () => {
 			<DumpContacts />
 			<DumpConversations />
 			<DumpInteractions />
+			<DumpMembers />
 			<ButtonSetting
 				name={'Stop node'}
 				icon='activity-outline'

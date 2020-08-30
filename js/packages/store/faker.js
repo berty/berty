@@ -16,7 +16,7 @@ export const fakeContacts = (length, start) => {
 	const conversationList = []
 	const contactList = fakeArray(length).map((_, index) => {
 		const state = contactStates[Math.floor(Math.random() * contactStates.length)]
-		const convPk = `fake_pk_contact_conv_${index + start}`
+		const convPk = `fake_pk_contact_conv_${index + start}` // TODO: set to empty depending on state
 		const contactPk = `fake_pk_contact_${index + start}`
 		const name = faker.name.findName()
 		if (state === messengerpb.Contact.State.Established) {
@@ -42,41 +42,92 @@ export const fakeContacts = (length, start) => {
 	}
 }
 
+const maxMembersAmount = 10
+
 export const fakeMultiMemberConversations = (length, start) => {
 	// TODO: fake members
-	const conversationList = fakeArray(length).map((_, index) => {
-		const displayName = faker.name.findName() + "'s Party"
+	const modelsList = fakeArray(length).map((_, index) => {
 		const publicKey = `fake_pk_multi_${index + start}`
+
+		const fakeMembersAmount = Math.floor(Math.random() * (maxMembersAmount + 1))
+		const fakeMembers = {}
+		for (let i = 0; i < fakeMembersAmount; i++) {
+			const memberPublicKey = `fake_pk_multi_member_${index * maxMembersAmount + i}`
+			fakeMembers[memberPublicKey] = {
+				publicKey: memberPublicKey,
+				conversationPublicKey: publicKey,
+				displayName: faker.name.findName(),
+				fake: true,
+			}
+		}
+
+		const displayName = faker.name.findName() + "'s Party"
 		const link = `fake://fake-multi-${index}`
+
 		return {
-			publicKey,
-			displayName,
-			link,
-			type: messengerpb.Conversation.Type.MultiMemberType,
-			fake: true,
+			conversation: {
+				publicKey,
+				displayName,
+				link,
+				type: messengerpb.Conversation.Type.MultiMemberType,
+				fake: true,
+			},
+			members: fakeMembers,
 		}
 	})
-	return keyBy(conversationList, 'publicKey')
+	const payload = modelsList.reduce(
+		(r, { conversation, members }) => {
+			return {
+				conversations: { ...r.conversations, [conversation.publicKey]: conversation },
+				members: { ...r.members, [conversation.publicKey]: members },
+			}
+		},
+		{ conversations: {}, members: {} },
+	)
+	return payload
 }
 
-export const fakeMessages = (length, conversationList = [], start) => {
+export const fakeMessages = (length, conversationList = [], membersListList, start) => {
 	const messageList = flatten(
-		conversationList.map((conversation, i) => {
-			return fakeArray(length).map((_, idx) => {
-				return {
-					cid: `fake_interaction_${i * length + idx + start}`,
-					type: messengerpb.AppMessage.Type.TypeUserMessage,
-					conversationPublicKey: conversation.publicKey,
-					payload: {
-						body: faker.lorem.sentences(),
-						sentDate: Date.now() - Math.floor(Math.random() * (50 * 24 * 60 * 60 * 1000)),
-					},
-					isMe: faker.random.boolean(),
-					acknowledged: faker.random.boolean(),
-					fake: true,
+		conversationList
+			.map((conversation, i) => {
+				const membersCount = membersListList[i].length
+				if (
+					conversation.type === messengerpb.Conversation.Type.MultiMemberType &&
+					membersCount <= 0
+				) {
+					return null
 				}
+				return fakeArray(length).map((_, idx) => {
+					let isMe = true
+					let memberPublicKey = ''
+
+					if (conversation.type === messengerpb.Conversation.Type.MultiMemberType) {
+						const memberIndex = Math.floor(Math.random() * (membersCount + 1))
+						if (memberIndex < membersCount) {
+							isMe = false
+							memberPublicKey = membersListList[i][memberIndex].publicKey
+						}
+					} else {
+						isMe = faker.random.boolean()
+					}
+
+					return {
+						cid: `fake_interaction_${i * length + idx + start}`,
+						type: messengerpb.AppMessage.Type.TypeUserMessage,
+						conversationPublicKey: conversation.publicKey,
+						memberPublicKey,
+						payload: {
+							body: faker.lorem.sentences(),
+							sentDate: Date.now() - Math.floor(Math.random() * (50 * 24 * 60 * 60 * 1000)),
+						},
+						isMe,
+						acknowledged: faker.random.boolean(),
+						fake: true,
+					}
+				})
 			})
-		}),
+			.filter((c) => !!c),
 	)
 	console.log('generated x fake messages:', messageList.length)
 	return messageList

@@ -2465,6 +2465,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "AppMessage.Type",
                     id: 2
                   },
+                  memberPublicKey: {
+                    type: "string",
+                    id: 7
+                  },
+                  member: {
+                    type: "Member",
+                    id: 8
+                  },
                   conversationPublicKey: {
                     type: "string",
                     id: 3
@@ -2507,6 +2515,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   displayName: {
                     type: "string",
                     id: 5
+                  },
+                  devices: {
+                    rule: "repeated",
+                    type: "Device",
+                    id: 6,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:foreignKey:OwnerPublicKey"
+                    }
                   }
                 },
                 nested: {
@@ -2534,21 +2550,30 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 2
                   },
-                  displayName: {
-                    type: "string",
+                  contact: {
+                    type: "Contact",
                     id: 3
                   },
-                  link: {
+                  displayName: {
                     type: "string",
                     id: 4
                   },
+                  link: {
+                    type: "string",
+                    id: 5
+                  },
                   unreadCount: {
                     type: "int32",
-                    id: 5
+                    id: 6
+                  },
+                  members: {
+                    rule: "repeated",
+                    type: "Member",
+                    id: 7
                   },
                   type: {
                     type: "Type",
-                    id: 6
+                    id: 8
                   }
                 },
                 nested: {
@@ -2575,9 +2600,21 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 2
                   },
-                  givenName: {
+                  conversationPublicKey: {
                     type: "string",
                     id: 3
+                  },
+                  conversation: {
+                    type: "Conversation",
+                    id: 4
+                  },
+                  devices: {
+                    rule: "repeated",
+                    type: "Device",
+                    id: 5,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:foreignKey:OwnerPublicKey"
+                    }
                   }
                 }
               },
@@ -2589,6 +2626,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     options: {
                       "(gogoproto.moretags)": "gorm:primary_key"
                     }
+                  },
+                  ownerPublicKey: {
+                    type: "string",
+                    id: 2
                   }
                 }
               },
@@ -2615,12 +2656,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   Type: {
                     values: {
                       Undefined: 0,
-                      TypeConversationUpdated: 1,
-                      TypeConversationDeleted: 2,
-                      TypeInteractionUpdated: 3,
-                      TypeContactUpdated: 4,
-                      TypeAccountUpdated: 5,
-                      TypeListEnd: 6
+                      TypeListEnd: 1,
+                      TypeConversationUpdated: 2,
+                      TypeConversationDeleted: 3,
+                      TypeInteractionUpdated: 4,
+                      TypeContactUpdated: 5,
+                      TypeAccountUpdated: 6,
+                      TypeMemberUpdated: 7,
+                      TypeDeviceUpdated: 8
                     }
                   },
                   ConversationUpdated: {
@@ -2659,6 +2702,22 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       account: {
                         type: "Account",
+                        id: 1
+                      }
+                    }
+                  },
+                  MemberUpdated: {
+                    fields: {
+                      member: {
+                        type: "Member",
+                        id: 1
+                      }
+                    }
+                  },
+                  DeviceUpdated: {
+                    fields: {
+                      device: {
+                        type: "Device",
                         id: 1
                       }
                     }

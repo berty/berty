@@ -178,6 +178,16 @@ export const useConversationLength = () => {
 	return useConversationList().length
 }
 
+export const useConvMembers = (publicKey) => {
+	const ctx = useMsgrContext()
+	return ctx.members[publicKey] || {}
+}
+
+export const useConvMemberList = (publicKey) => {
+	const members = useConvMembers()
+	return Object.values(members)
+}
+
 //
 // Fake data generation
 //
@@ -202,12 +212,10 @@ export const useGenerateFakeMultiMembers = () => {
 		0,
 	)
 	return (length = 10) => {
-		const conversations = fakeMultiMemberConversations(length, prevFakeCount)
+		const payload = fakeMultiMemberConversations(length, prevFakeCount)
 		ctx.dispatch({
 			type: 'ADD_FAKE_DATA',
-			payload: {
-				conversations,
-			},
+			payload,
 		})
 	}
 }
@@ -216,6 +224,9 @@ export const useGenerateFakeMultiMembers = () => {
 export const useGenerateFakeMessages = () => {
 	const ctx = useMsgrContext()
 	const fakeConversationList = useConversationList().filter((c) => c.fake === true)
+	const fakeMembersListList = fakeConversationList.map((conv) =>
+		Object.values(ctx.members[conv.publicKey] || {}).filter((member) => member.fake),
+	)
 	console.log('fakeConvCount', fakeConversationList.length)
 	const prevFakeCount = fakeConversationList.reduce(
 		(r, fakeConv) =>
@@ -230,7 +241,12 @@ export const useGenerateFakeMessages = () => {
 		ctx.dispatch({
 			type: 'ADD_FAKE_DATA',
 			payload: {
-				interactions: fakeMessages(length, fakeConversationList, prevFakeCount),
+				interactions: fakeMessages(
+					length,
+					fakeConversationList,
+					fakeMembersListList,
+					prevFakeCount,
+				),
 			},
 		})
 	}

@@ -76,8 +76,10 @@
     - [StreamEvent.ContactUpdated](#berty.messenger.v1.StreamEvent.ContactUpdated)
     - [StreamEvent.ConversationDeleted](#berty.messenger.v1.StreamEvent.ConversationDeleted)
     - [StreamEvent.ConversationUpdated](#berty.messenger.v1.StreamEvent.ConversationUpdated)
+    - [StreamEvent.DeviceUpdated](#berty.messenger.v1.StreamEvent.DeviceUpdated)
     - [StreamEvent.InteractionUpdated](#berty.messenger.v1.StreamEvent.InteractionUpdated)
     - [StreamEvent.ListEnd](#berty.messenger.v1.StreamEvent.ListEnd)
+    - [StreamEvent.MemberUpdated](#berty.messenger.v1.StreamEvent.MemberUpdated)
     - [SystemInfo](#berty.messenger.v1.SystemInfo)
     - [SystemInfo.Reply](#berty.messenger.v1.SystemInfo.Reply)
     - [SystemInfo.Request](#berty.messenger.v1.SystemInfo.Request)
@@ -230,6 +232,7 @@
 | conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
 | state | [Contact.State](#berty.messenger.v1.Contact.State) |  |  |
 | display_name | [string](#string) |  |  |
+| devices | [Device](#berty.messenger.v1.Device) | repeated |  |
 
 <a name="berty.messenger.v1.ContactAccept"></a>
 
@@ -279,9 +282,11 @@
 | ----- | ---- | ----- | ----------- |
 | public_key | [string](#string) |  |  |
 | contact_public_key | [string](#string) |  | specific to ContactType conversations |
+| contact | [Contact](#berty.messenger.v1.Contact) |  | specific to ContactType conversations |
 | display_name | [string](#string) |  |  |
 | link | [string](#string) |  |  |
 | unread_count | [int32](#int32) |  |  |
+| members | [Member](#berty.messenger.v1.Member) | repeated | specific to MultiMemberType conversations |
 | type | [Conversation.Type](#berty.messenger.v1.Conversation.Type) |  | updated_at avatar_cid |
 
 <a name="berty.messenger.v1.ConversationCreate"></a>
@@ -366,6 +371,7 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | public_key | [string](#string) |  |  |
+| owner_public_key | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.EchoTest"></a>
 
@@ -460,6 +466,8 @@ TODO: return cid
 | ----- | ---- | ----- | ----------- |
 | cid | [string](#string) |  |  |
 | type | [AppMessage.Type](#berty.messenger.v1.AppMessage.Type) |  |  |
+| member_public_key | [string](#string) |  |  |
+| member | [Member](#berty.messenger.v1.Member) |  |  |
 | conversation_public_key | [string](#string) |  |  |
 | conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
 | payload | [bytes](#bytes) |  |  |
@@ -473,7 +481,9 @@ TODO: return cid
 | ----- | ---- | ----- | ----------- |
 | public_key | [string](#string) |  |  |
 | display_name | [string](#string) |  |  |
-| given_name | [string](#string) |  |  |
+| conversation_public_key | [string](#string) |  |  |
+| conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
+| devices | [Device](#berty.messenger.v1.Device) | repeated |  |
 
 <a name="berty.messenger.v1.ParseDeepLink"></a>
 
@@ -614,6 +624,14 @@ TODO: return cid
 | ----- | ---- | ----- | ----------- |
 | conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
 
+<a name="berty.messenger.v1.StreamEvent.DeviceUpdated"></a>
+
+### StreamEvent.DeviceUpdated
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device | [Device](#berty.messenger.v1.Device) |  |  |
+
 <a name="berty.messenger.v1.StreamEvent.InteractionUpdated"></a>
 
 ### StreamEvent.InteractionUpdated
@@ -625,6 +643,14 @@ TODO: return cid
 <a name="berty.messenger.v1.StreamEvent.ListEnd"></a>
 
 ### StreamEvent.ListEnd
+
+<a name="berty.messenger.v1.StreamEvent.MemberUpdated"></a>
+
+### StreamEvent.MemberUpdated
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| member | [Member](#berty.messenger.v1.Member) |  |  |
 
 <a name="berty.messenger.v1.SystemInfo"></a>
 
@@ -725,12 +751,14 @@ most important and dynamic values first
 | Name | Number | Description |
 | ---- | ------ | ----------- |
 | Undefined | 0 |  |
-| TypeConversationUpdated | 1 |  |
-| TypeConversationDeleted | 2 |  |
-| TypeInteractionUpdated | 3 |  |
-| TypeContactUpdated | 4 |  |
-| TypeAccountUpdated | 5 |  |
-| TypeListEnd | 6 |  |
+| TypeListEnd | 1 |  |
+| TypeConversationUpdated | 2 |  |
+| TypeConversationDeleted | 3 |  |
+| TypeInteractionUpdated | 4 |  |
+| TypeContactUpdated | 5 |  |
+| TypeAccountUpdated | 6 |  |
+| TypeMemberUpdated | 7 |  |
+| TypeDeviceUpdated | 8 |  |
 
  
 
