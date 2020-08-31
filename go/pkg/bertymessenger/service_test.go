@@ -13,7 +13,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func TestServiceStream(t *testing.T) {
+func TestUnstableServiceStream(t *testing.T) {
 	testutil.SkipUnstable(t)
 
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
@@ -48,7 +48,7 @@ func TestServiceStream(t *testing.T) {
 	}
 }
 
-func TestServiceSetName(t *testing.T) {
+func TestUnstableServiceSetName(t *testing.T) {
 	testutil.SkipUnstable(t)
 
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
@@ -139,7 +139,7 @@ func TestServiceSetNameAsync(t *testing.T) {
 	}
 }
 
-func TestServiceStreamCancel(t *testing.T) {
+func TestUnstableServiceStreamCancel(t *testing.T) {
 	testutil.SkipUnstable(t)
 
 	ctx, ctxCancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -165,7 +165,7 @@ func TestServiceStreamCancel(t *testing.T) {
 	}
 }
 
-func TestServiceContactRequest(t *testing.T) {
+func TestUnstableServiceContactRequest(t *testing.T) {
 	testutil.SkipUnstable(t)
 
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
@@ -216,7 +216,7 @@ func TestServiceContactRequest(t *testing.T) {
 	}
 }
 
-func TestServiceConversationCreateLive(t *testing.T) {
+func TestUnstableServiceConversationCreateLive(t *testing.T) {
 	testutil.SkipUnstable(t)
 
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
@@ -257,7 +257,7 @@ func TestServiceConversationCreateLive(t *testing.T) {
 	}
 }
 
-func TestServiceConversationCreateAsync(t *testing.T) {
+func TestUnstableServiceConversationCreateAsync(t *testing.T) {
 	testutil.SkipUnstable(t)
 
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
@@ -307,7 +307,7 @@ func TestServiceConversationCreateAsync(t *testing.T) {
 	}
 }
 
-func Test1To1AddContact(t *testing.T) {
+func TestUnstable1To1AddContact(t *testing.T) {
 	testutil.SkipSlow(t)
 	testutil.SkipUnstable(t)
 
@@ -354,7 +354,7 @@ func Test1To1AddContact(t *testing.T) {
 	}
 }
 
-func Test1To1Exchange(t *testing.T) {
+func TestUnstable1To1Exchange(t *testing.T) {
 	testutil.SkipSlow(t)
 	testutil.SkipUnstable(t)
 
@@ -408,7 +408,7 @@ func Test1To1Exchange(t *testing.T) {
 	}
 }
 
-func Test3PeersCreateJoinConversation(t *testing.T) {
+func TestUnstable3PeersCreateJoinConversation(t *testing.T) {
 	testutil.SkipSlow(t)
 	testutil.SkipUnstable(t)
 
@@ -504,7 +504,7 @@ func Test3PeersCreateJoinConversation(t *testing.T) {
 	}
 }
 
-func Test3PeersExchange(t *testing.T) {
+func TestUnstable3PeersExchange(t *testing.T) {
 	testutil.SkipSlow(t)
 	testutil.SkipUnstable(t)
 
@@ -563,7 +563,7 @@ func Test3PeersExchange(t *testing.T) {
 	}
 }
 
-func TestConversationInvitation(t *testing.T) {
+func TestUnstableConversationInvitation(t *testing.T) {
 	testutil.SkipUnstable(t)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -628,7 +628,7 @@ func TestConversationInvitation(t *testing.T) {
 	}
 }
 
-func TestConversationInvitationAndExchange(t *testing.T) {
+func TestUnstableConversationInvitationAndExchange(t *testing.T) {
 	testutil.SkipSlow(t)
 	testutil.SkipUnstable(t)
 
@@ -702,7 +702,7 @@ func TestConversationInvitationAndExchange(t *testing.T) {
 	}
 }
 
-func TestConversationOpenClose(t *testing.T) {
+func TestUnstableConversationOpenClose(t *testing.T) {
 	testutil.SkipSlow(t)
 	testutil.SkipUnstable(t)
 

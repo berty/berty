@@ -418,10 +418,10 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 		}
 
 		i = &Interaction{
-			CID:     cid,
-			Type:    amt,
-			Payload: am.GetPayload(),
-			IsMe:    isMe,
+			CID:                   cid,
+			Type:                  amt,
+			Payload:               am.GetPayload(),
+			IsMe:                  isMe,
 			ConversationPublicKey: gpk,
 			SentDate:              am.GetSentDate(),
 		}

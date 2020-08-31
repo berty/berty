@@ -89,6 +89,7 @@ require (
 	honnef.co/go/tools v0.0.1-2020.1.4 // indirect
 	moul.io/godev v1.6.0
 	moul.io/openfiles v1.2.0
+	moul.io/retry v0.7.0
 	moul.io/srand v1.4.0
 	moul.io/u v1.5.0
 	moul.io/zapgorm2 v1.0.1
