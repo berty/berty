@@ -57,7 +57,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 		case err == gorm.ErrRecordNotFound: // account not found, create a new one
 			svc.logger.Debug("account not found, creating a new one", zap.String("pk", pkStr))
 			acc.State = Account_NotReady
-			ret, err := svc.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{})
+			ret, err := svc.internalInstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{})
 			if err != nil {
 				return nil, err
 			}
@@ -160,6 +160,7 @@ func (svc *service) subscribeToMetadata(gpkb []byte) error {
 			break
 		} else if err != nil {
 			svc.logStreamingError("group metadata", err)
+			break
 		}
 		err = handleProtocolEvent(svc, gme)
 		if err != nil {
