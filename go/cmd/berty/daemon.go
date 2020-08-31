@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"math/rand"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -164,6 +165,12 @@ func daemonCommand() *ffcli.Command {
 
 			// listeners for berty
 			var workers run.Group
+			ctx, cancel := context.WithCancel(ctx)
+			workers.Add(func() error {
+				<-ctx.Done()
+				return ctx.Err()
+			}, func(error) { cancel() })
+
 			var grpcServer *grpc.Server
 			var grpcServeMux *grpcgw.ServeMux
 			{
@@ -227,6 +234,7 @@ func daemonCommand() *ffcli.Command {
 						return server.Serve(l)
 					}, func(error) {
 						l.Close()
+						opts.logger.Info("closing done", zap.String("maddr", maddr.String()))
 					})
 				}
 			}
@@ -245,9 +253,10 @@ func daemonCommand() *ffcli.Command {
 
 				deviceDS := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
 				mk := bertyprotocol.NewMessageKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("messages")))
+				orbitdbDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))
 
 				// initialize new protocol client
-				opts := bertyprotocol.Opts{
+				popts := bertyprotocol.Opts{
 					Host:            node.PeerHost,
 					PubSub:          ps,
 					TinderDriver:    disc,
@@ -256,9 +265,13 @@ func daemonCommand() *ffcli.Command {
 					RootDatastore:   rootDS,
 					MessageKeystore: mk,
 					DeviceKeystore:  bertyprotocol.NewDeviceKeystore(deviceDS),
-					OrbitCache:      bertyprotocol.NewOrbitDatastoreCache(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))),
+					OrbitCache:      bertyprotocol.NewOrbitDatastoreCache(orbitdbDS),
 				}
-				protocol, err = bertyprotocol.New(ctx, opts)
+				if opts.datastorePath != "" && opts.datastorePath != ":memory:" {
+					popts.OrbitDirectory = filepath.Join(opts.datastorePath, "orbitdb")
+				}
+
+				protocol, err = bertyprotocol.New(ctx, popts)
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}

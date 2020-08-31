@@ -456,7 +456,6 @@ func (p *MessengerBridge) HandleState(appstate int) {
 			}
 		case AppStateInactive:
 			p.logger.Info("app is in Inactive State")
-
 		}
 		p.currentAppState = appstate
 	}
@@ -490,6 +489,7 @@ func (p *MessengerBridge) HandleTask() LifeCycleBackgroundTask {
 		}, trace.WithRecord(), trace.WithSpanKind(trace.SpanKindClient))
 	})
 }
+
 func (p *MessengerBridge) WillTerminate() {
 	if err := p.Close(); err != nil {
 		errs := multierr.Errors(err)
