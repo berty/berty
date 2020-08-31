@@ -323,7 +323,7 @@ packages/go-bridge/ios/Frameworks/Bertybridge.framework: $(bridge_src)
 	cd ..; gomobile init
 	@mkdir -p "packages/go-bridge/ios/Frameworks"
 	cd .. && GO111MODULE=on gomobile bind -o js/$@ -v $(ext_ldflags) -target ios ./go/framework/bertybridge
-	touch "packages/go-bridge/ios/Frameworks"
+	touch $@
 
 packages/go-bridge/android/libs/gobridge.aar: $(bridge_src)
 	cd ..; go mod download
@@ -332,3 +332,4 @@ packages/go-bridge/android/libs/gobridge.aar: $(bridge_src)
 	rm -fr packages/go-bridge/android/build # remove broken cache
 	@mkdir -p "packages/go-bridge/android/libs"
 	cd .. && GO111MODULE=on gomobile bind -o js/$@ -v $(ext_ldflags) -target android ./go/framework/bertybridge
+	touch $@
