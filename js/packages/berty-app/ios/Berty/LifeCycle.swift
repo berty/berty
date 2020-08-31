@@ -15,6 +15,8 @@ class LifeCycle: NSObject {
     // init logger driver
     static let logger: LoggerDriver = LoggerDriver("tech.berty", "lifecycle")
     static let shared: LifeCycle = LifeCycle()
+    var notifCount: Int = 0 // for testing purpose
+
     @objc static func getSharedInstance() -> LifeCycle {
         return LifeCycle.shared
     }
@@ -31,14 +33,15 @@ class LifeCycle: NSObject {
             switch task {
             case is BGProcessingTask:
                 self.scheduleBackgroundProcessing(identifier: identifier)
-                notif.setBody(body: "Handle Processing Task").schedule()
+                notif.setBody(body: "Handle Processing Task #\(self.notifCount)").schedule()
             case is BGAppRefreshTask:
                 self.scheduleAppRefresh(identifier: identifier)
-                notif.setBody(body: "Handle AppRefresh Task").schedule()
+                notif.setBody(body: "Handle AppRefresh Task #\(self.notifCount))").schedule()
             default:
-                notif.setBody(body: "Handle Unknow Task").schedule()
+                notif.setBody(body: "Handle Unknow Task #\(self.notifCount)").schedule()
             }
 
+            self.notifCount += 1
             LifeCycle.logger.print(notif.body as NSString)
             self.handle(task: task)
         }
@@ -61,7 +64,7 @@ class LifeCycle: NSObject {
             LifeCycle.logger.print("starting background task")
             let success = bgtask.execute()
             DispatchQueue.main.async {
-                LifeCycle.logger.format("ending background with: suc cess=\(success)" as NSString)
+                LifeCycle.logger.format("ending background with: success=\(success)" as NSString)
                 task.setTaskCompleted(success: success)
             }
         }
