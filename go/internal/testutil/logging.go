@@ -24,8 +24,23 @@ func Logger(t *testing.T) *zap.Logger {
 		isDebugEnabled = bertyDebug || orbitdbDebug || libp2pDebug
 	)
 
+	// if no logger configured, return a zap logger that only prints errors and above
 	if !isDebugEnabled {
-		return zap.NewNop()
+		config := zap.NewDevelopmentConfig()
+		config.DisableStacktrace = true
+		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+		config.Level.SetLevel(zap.ErrorLevel)
+		if bertylogfile != "" {
+			config.OutputPaths = []string{bertylogfile}
+		}
+
+		// build logger
+		logger, err := config.Build()
+		if err != nil {
+			t.Errorf("setup debug logger error: `%v`", err)
+			return zap.NewNop()
+		}
+		return logger
 	}
 
 	// setup zap config
