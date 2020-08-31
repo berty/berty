@@ -228,12 +228,11 @@ export const Message: React.FC<{
 	convPK: string
 	previousMessageId: string
 }> = ({ id, convKind, members, previousMessageId, convPK }) => {
-	const message = useInteraction(id, convPK)
+	const inte = useInteraction(id, convPK)
 	const previousMessage = useInteraction(previousMessageId, convPK)
-
 	const _styles = useStylesMessage()
-	const [{ row, margin, padding, column, text, border, color, width }] = useStyles()
-	if (!message) {
+	const [{ row, margin, padding, column, text, border, color }] = useStyles()
+	if (!inte) {
 		return null
 	}
 	const isGroup = convKind === messengerpb.Conversation.Type.MultiMemberType
@@ -242,76 +241,68 @@ export const Message: React.FC<{
 	let baseColor = color.blue
 	let isFollowupMessage = false
 	let isWithinTenMinsAfter = false
-	let sentDate = Date.now()
-	if (message.type === messengerpb.AppMessage.Type.TypeUserMessage) {
-		if (message.memberPublicKey && members && members[message.memberPublicKey]) {
-			name = members[message.memberPublicKey].displayName
+	const sentDate = inte?.sentDate && parseInt(inte.sentDate, 10)
+	if (inte.type === messengerpb.AppMessage.Type.TypeUserMessage) {
+		if (inte.memberPublicKey && members && members[inte.memberPublicKey]) {
+			name = members[inte.memberPublicKey].displayName
 		}
-		const payload = message
 		const cmd = null /*messenger.message.isCommandMessage(payload.body)*/
 		let msgTextColor, msgBackgroundColor, msgBorderColor, msgSenderColor
 		if (convKind === messengerpb.Conversation.Type.ContactType) {
-			msgTextColor = payload.isMe
-				? payload.acknowledged
+			msgTextColor = inte.isMe
+				? inte.acknowledged
 					? color.white
 					: cmd
 					? color.grey
 					: color.blue
 				: color.blue
-			msgBackgroundColor = payload.isMe
-				? payload.acknowledged
-					? color.blue
-					: color.white
-				: '#CED2FF99'
-			msgBorderColor = payload.isMe && (cmd ? border.color.grey : border.color.blue)
-			sentDate = parseInt(payload.payload.sentDate, 10)
+			msgBackgroundColor = inte.isMe ? (inte.acknowledged ? color.blue : color.white) : '#CED2FF99'
+			msgBorderColor = inte.isMe && (cmd ? border.color.grey : border.color.blue)
 		} else {
 			isFollowupMessage =
-				previousMessage &&
-				!payload.isMe &&
-				payload.memberPublicKey === previousMessage.memberPublicKey
+				previousMessage && !inte.isMe && inte.memberPublicKey === previousMessage.memberPublicKey
 
 			isWithinTenMinsAfter =
 				previousMessage &&
-				payload?.memberPublicKey === previousMessage?.memberPublicKey &&
+				inte?.memberPublicKey === previousMessage?.memberPublicKey &&
 				sentDate &&
 				previousMessage.payload.sentDate &&
 				Math.abs((sentDate || 0) - (parseInt(previousMessage?.payload?.sentDate, 10) || 0)) <
 					10 * 6000
 
-			if (!message.isMe && message.memberPublicKey) {
-				const h = new SHA3(256).update(message.memberPublicKey).digest()
+			if (!inte.isMe && inte.memberPublicKey) {
+				const h = new SHA3(256).update(inte.memberPublicKey).digest()
 				baseColor = '#' + pal[h[0]]
 			}
-			msgTextColor = payload.isMe
-				? payload.acknowledged
+			msgTextColor = inte.isMe
+				? inte.acknowledged
 					? color.white
 					: cmd
 					? color.grey
 					: baseColor
 				: baseColor
-			msgBackgroundColor = payload.isMe
-				? payload.acknowledged
+			msgBackgroundColor = inte.isMe
+				? inte.acknowledged
 					? baseColor
 					: color.white
 				: Color(baseColor).alpha(0.1)
-			msgBorderColor = payload.isMe && (cmd ? border.color.grey : { borderColor: baseColor })
-			msgSenderColor = payload.isMe ? 'red' : Color(baseColor).alpha(0.4)
+			msgBorderColor = inte.isMe && (cmd ? border.color.grey : { borderColor: baseColor })
+			msgSenderColor = inte.isMe ? 'red' : Color(baseColor).alpha(0.4)
 		}
 
 		return (
 			<View
 				style={[
 					row.left,
-					payload.isMe ? _styles.isMeMessage : _styles.isOtherMessage,
+					inte.isMe ? _styles.isMeMessage : _styles.isOtherMessage,
 					padding.horizontal.medium,
 					padding.top.scale(2),
 				]}
 			>
-				{!payload.isMe && isGroup && !isFollowupMessage && (
+				{!inte.isMe && isGroup && !isFollowupMessage && (
 					<ProceduralCircleAvatar
 						style={_styles.circleAvatar}
-						seed={message.memberPublicKey}
+						seed={inte.memberPublicKey}
 						size={35}
 					/>
 				)}
@@ -320,20 +311,20 @@ export const Message: React.FC<{
 						style={[
 							padding.small,
 							border.radius.top.medium,
-							payload.isMe ? border.radius.left.medium : border.radius.right.medium,
+							inte.isMe ? border.radius.left.medium : border.radius.right.medium,
 							styleMsg,
 							msgBorderColor,
-							payload.isMe && border.scale(2),
-							padding.horizontal.scale(payload.isMe ? 11 : 13),
-							padding.vertical.scale(payload.isMe ? 7 : 9),
-							payload.isMe ? column.item.right : column.item.right,
+							inte.isMe && border.scale(2),
+							padding.horizontal.scale(inte.isMe ? 11 : 13),
+							padding.vertical.scale(inte.isMe ? 7 : 9),
+							inte.isMe ? column.item.right : column.item.right,
 							isFollowupMessage && margin.left.scale(35),
 							{
 								backgroundColor: msgBackgroundColor,
 							},
 						]}
 					>
-						{!payload.isMe && isGroup && name && !isFollowupMessage && (
+						{!inte.isMe && isGroup && name && !isFollowupMessage && (
 							<View>
 								<Text
 									style={[text.bold.medium, _styles.personNameInGroup, { color: msgSenderColor }]}
@@ -351,10 +342,10 @@ export const Message: React.FC<{
 								},
 							]}
 						>
-							{payload.payload.body}
+							{inte.payload.body}
 						</Text>
 					</View>
-					<View style={[payload.isMe && row.item.bottom]}>
+					<View style={[inte.isMe && row.item.bottom]}>
 						<View style={[row.left, { alignItems: 'center' }]}>
 							{!isWithinTenMinsAfter && (
 								<Text
@@ -371,9 +362,9 @@ export const Message: React.FC<{
 							)}
 							{!cmd && (
 								<>
-									{payload.isMe && (
+									{inte.isMe && (
 										<Icon
-											name={payload.acknowledged ? 'navigation-2' : 'navigation-2-outline'}
+											name={inte.acknowledged ? 'navigation-2' : 'navigation-2-outline'}
 											width={12}
 											height={12}
 											fill={color.blue}
@@ -387,7 +378,7 @@ export const Message: React.FC<{
 											{ fontSize: 10, lineHeight: 11, textAlignVertical: 'center' },
 										]}
 									>
-										{payload.isMe ? (payload.acknowledged ? 'sent' : 'sending...') : ''}
+										{inte.isMe ? (inte.acknowledged ? 'sent' : 'sending...') : ''}
 									</Text>
 								</>
 							)}
@@ -396,8 +387,8 @@ export const Message: React.FC<{
 				</View>
 			</View>
 		)
-	} else if (message.type === messengerpb.AppMessage.Type.TypeGroupInvitation) {
-		return <MessageInvitation message={message} />
+	} else if (inte.type === messengerpb.AppMessage.Type.TypeGroupInvitation) {
+		return <MessageInvitation message={inte} />
 	} else {
 		return null
 	}

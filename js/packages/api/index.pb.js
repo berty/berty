@@ -2302,6 +2302,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   payload: {
                     type: "bytes",
                     id: 2
+                  },
+                  sentDate: {
+                    type: "int64",
+                    id: 3,
+                    options: {
+                      "(gogoproto.jsontag)": "sentDate"
+                    }
                   }
                 },
                 nested: {
@@ -2321,13 +2328,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       body: {
                         type: "string",
                         id: 1
-                      },
-                      sentDate: {
-                        type: "int64",
-                        id: 2,
-                        options: {
-                          "(gogoproto.jsontag)": "sentDate"
-                        }
                       }
                     }
                   },
@@ -2545,6 +2545,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   isMe: {
                     type: "bool",
                     id: 6
+                  },
+                  sentDate: {
+                    type: "int64",
+                    id: 9
                   }
                 }
               },

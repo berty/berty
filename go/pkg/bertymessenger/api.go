@@ -370,7 +370,7 @@ func (svc *service) SendAck(ctx context.Context, request *SendAck_Request) (*Sen
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("only %s groups are supported", bertytypes.GroupTypeContact.String()))
 	}
 
-	am, err := AppMessage_TypeAcknowledge.MarshalPayload(&AppMessage_Acknowledge{
+	am, err := AppMessage_TypeAcknowledge.MarshalPayload(0, &AppMessage_Acknowledge{
 		Target: bytesToString(request.MessageID),
 	})
 	if err != nil {
@@ -389,10 +389,8 @@ func (svc *service) SendMessage(ctx context.Context, request *SendMessage_Reques
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	payload, err := AppMessage_TypeUserMessage.MarshalPayload(&AppMessage_UserMessage{
-		Body:     request.Message,
-		SentDate: time.Now().UnixNano() / 1000000,
-		// Attachments
+	payload, err := AppMessage_TypeUserMessage.MarshalPayload(timestampMs(time.Now()), &AppMessage_UserMessage{
+		Body: request.Message,
 	})
 	if err != nil {
 		return nil, err
@@ -659,7 +657,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 	// Try to put group name in group metadata
 	{
 		err := func() error {
-			am, err := AppMessage_TypeSetGroupName.MarshalPayload(&AppMessage_SetGroupName{Name: dn})
+			am, err := AppMessage_TypeSetGroupName.MarshalPayload(0, &AppMessage_SetGroupName{Name: dn})
 			if err != nil {
 				return err
 			}
@@ -687,7 +685,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 				return err
 			}
 
-			am, err := AppMessage_TypeSetUserName.MarshalPayload(&AppMessage_SetUserName{Name: acc.GetDisplayName()})
+			am, err := AppMessage_TypeSetUserName.MarshalPayload(0, &AppMessage_SetUserName{Name: acc.GetDisplayName()})
 			if err != nil {
 				return err
 			}
@@ -701,7 +699,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 	}
 
 	for _, contactPK := range req.GetContactsToInvite() {
-		am, err := AppMessage_TypeGroupInvitation.MarshalPayload(&AppMessage_GroupInvitation{Link: conv.GetLink()})
+		am, err := AppMessage_TypeGroupInvitation.MarshalPayload(0, &AppMessage_GroupInvitation{Link: conv.GetLink()})
 		if err != nil {
 			return nil, err
 		}
@@ -805,7 +803,7 @@ func (svc *service) ConversationJoin(ctx context.Context, req *ConversationJoin_
 				return err
 			}
 
-			am, err := AppMessage_TypeSetUserName.MarshalPayload(&AppMessage_SetUserName{Name: acc.GetDisplayName()})
+			am, err := AppMessage_TypeSetUserName.MarshalPayload(0, &AppMessage_SetUserName{Name: acc.GetDisplayName()})
 			if err != nil {
 				return err
 			}
@@ -987,10 +985,7 @@ func (svc *service) Interact(ctx context.Context, req *Interact_Request) (*Inter
 		if err := proto.Unmarshal(req.GetPayload(), &p); err != nil {
 			return nil, errcode.ErrInvalidInput.Wrap(err)
 		}
-		if p.SentDate == 0 {
-			p.SentDate = timestampMs(time.Now())
-		}
-		fp, err := AppMessage_TypeUserMessage.MarshalPayload(&p)
+		fp, err := AppMessage_TypeUserMessage.MarshalPayload(timestampMs(time.Now()), &p)
 		if err != nil {
 			return nil, errcode.ErrInternal.Wrap(err)
 		}

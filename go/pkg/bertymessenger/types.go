@@ -39,13 +39,13 @@ func (x *AppMessage_Type) MarshalJSON() ([]byte, error) {
 	return json.Marshal(AppMessage_Undefined.String())
 }
 
-func (x AppMessage_Type) MarshalPayload(payload proto.Message) ([]byte, error) {
+func (x AppMessage_Type) MarshalPayload(sentDate int64, payload proto.Message) ([]byte, error) {
 	p, err := proto.Marshal(payload)
 	if err != nil {
 		return nil, err
 	}
 
-	return proto.Marshal(&AppMessage{Type: x, Payload: p})
+	return proto.Marshal(&AppMessage{Type: x, Payload: p, SentDate: sentDate})
 }
 
 // UnmarshalPayload tries to parse an AppMessage payload in the corresponding type.
@@ -75,16 +75,16 @@ func (am AppMessage) UnmarshalPayload() (proto.Message, error) {
 	return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported AppMessage type: %q", am.GetType()))
 }
 
-func UnmarshalAppMessage(payload []byte) (proto.Message, AppMessage_Type, error) {
+func UnmarshalAppMessage(payload []byte) (proto.Message, AppMessage, error) {
 	// FIXME: generate this function to avoid human error
 	var am AppMessage
 	err := proto.Unmarshal(payload, &am)
 	if err != nil {
-		return nil, AppMessage_Undefined, err
+		return nil, AppMessage{}, err
 	}
 
 	msg, err := am.UnmarshalPayload()
-	return msg, am.Type, err
+	return msg, am, err
 }
 
 func (event *StreamEvent) UnmarshalPayload() (proto.Message, error) {

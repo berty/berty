@@ -3682,12 +3682,14 @@ export namespace berty {
             interface IAppMessage {
                 type?: (berty.messenger.v1.AppMessage.Type|null);
                 payload?: (Uint8Array|null);
+                sentDate?: (number|Long|null);
             }
 
             class AppMessage implements IAppMessage {
 
                 public type: berty.messenger.v1.AppMessage.Type;
                 public payload: Uint8Array;
+                public sentDate: (number|Long);
                 public static create(properties?: berty.messenger.v1.IAppMessage): berty.messenger.v1.AppMessage;
                 public static encode(message: berty.messenger.v1.IAppMessage, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IAppMessage, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3713,13 +3715,11 @@ export namespace berty {
 
                 interface IUserMessage {
                     body?: (string|null);
-                    sentDate?: (number|Long|null);
                 }
 
                 class UserMessage implements IUserMessage {
 
                     public body: string;
-                    public sentDate: (number|Long);
                     public static create(properties?: berty.messenger.v1.AppMessage.IUserMessage): berty.messenger.v1.AppMessage.UserMessage;
                     public static encode(message: berty.messenger.v1.AppMessage.IUserMessage, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.AppMessage.IUserMessage, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4004,6 +4004,7 @@ export namespace berty {
                 conversation?: (berty.messenger.v1.IConversation|null);
                 payload?: (Uint8Array|null);
                 isMe?: (boolean|null);
+                sentDate?: (number|Long|null);
             }
 
             class Interaction implements IInteraction {
@@ -4016,6 +4017,7 @@ export namespace berty {
                 public conversation?: (berty.messenger.v1.IConversation|null);
                 public payload: Uint8Array;
                 public isMe: boolean;
+                public sentDate: (number|Long);
                 public static create(properties?: berty.messenger.v1.IInteraction): berty.messenger.v1.Interaction;
                 public static encode(message: berty.messenger.v1.IInteraction, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IInteraction, writer?: $protobuf.Writer): $protobuf.Writer;

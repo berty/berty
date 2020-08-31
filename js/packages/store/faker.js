@@ -117,11 +117,11 @@ export const fakeMessages = (length, conversationList = [], membersListList, sta
 						type: messengerpb.AppMessage.Type.TypeUserMessage,
 						conversationPublicKey: conversation.publicKey,
 						memberPublicKey,
-						payload: {
-							body: faker.lorem.sentences(),
-							sentDate: Date.now() - Math.floor(Math.random() * (50 * 24 * 60 * 60 * 1000)),
-						},
+						payload: { body: faker.lorem.sentences() },
 						isMe,
+						sentDate: (
+							Date.now() - Math.floor(Math.random() * (50 * 24 * 60 * 60 * 1000))
+						).toString(),
 						acknowledged: faker.random.boolean(),
 						fake: true,
 					}

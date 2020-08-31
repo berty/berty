@@ -1108,8 +1108,8 @@ func testSendGroupMessage(ctx context.Context, t *testing.T, groupPK string, sen
 		require.NoError(t, err)
 		userMessage := interactionPayload.(*AppMessage_UserMessage)
 		require.Equal(t, userMessage.GetBody(), msg)
-		require.LessOrEqual(t, beforeSend, userMessage.GetSentDate())
-		require.LessOrEqual(t, userMessage.GetSentDate(), afterSend)
+		require.LessOrEqual(t, beforeSend, interaction.GetSentDate())
+		require.LessOrEqual(t, interaction.GetSentDate(), afterSend)
 		logger.Debug("testSendGroupMessage: message received by creator")
 	}
 
@@ -1183,8 +1183,8 @@ func testSendGroupMessage(ctx context.Context, t *testing.T, groupPK string, sen
 					require.Equal(t, interaction.GetCID(), messageCid)
 					userMessage := interactionPayload.(*AppMessage_UserMessage)
 					require.Equal(t, userMessage.GetBody(), msg)
-					require.LessOrEqual(t, beforeSend, userMessage.GetSentDate())
-					require.LessOrEqual(t, userMessage.GetSentDate(), afterSend)
+					require.LessOrEqual(t, beforeSend, interaction.GetSentDate())
+					require.LessOrEqual(t, interaction.GetSentDate(), afterSend)
 				default:
 					require.True(t, false) // maybe there is a better assert func for this :)
 				}
