@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, ScrollView, Vibration } from 'react-native'
 import { Layout } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
@@ -208,11 +208,53 @@ const DumpInteractions: React.FC = () => {
 	return <DumpButton name='Dump interactions' text={text} />
 }
 
+const SendToAll: React.FC = () => {
+	const [{ color }] = useStyles()
+	const [disabled, setDisabled] = useState(false)
+	const [name, setName] = useState('Send message to all contacts')
+	const ctx = useMsgrContext()
+	const convs: any[] = Object.values(ctx.conversations).filter(
+		(conv: any) => conv.type === messengerpb.Conversation.Type.ContactType && !conv.fake,
+	)
+	const body = `Test, ${new Date(Date.now()).toLocaleString()}`
+	const buf: string = messengerpb.AppMessage.UserMessage.encode({ body }).finish()
+	const handleSendToAll = React.useCallback(async () => {
+		setDisabled(true)
+		setName('Sending...')
+		for (const conv of convs) {
+			try {
+				await ctx.client?.interact({
+					conversationPublicKey: conv.publicKey,
+					type: messengerpb.AppMessage.Type.TypeUserMessage,
+					payload: buf,
+				})
+			} catch (e) {
+				console.warn(e)
+			}
+		}
+		setDisabled(false)
+		setName(`✔ Tried sending to ${convs.length} contacts`)
+		setTimeout(() => setName('Send message to all contacts'), 1000)
+	}, [buf, convs, ctx.client])
+	return (
+		<ButtonSetting
+			name={name}
+			icon='paper-plane-outline'
+			iconSize={30}
+			iconColor={color.dark.grey}
+			disabled={disabled}
+			onPress={() => {
+				handleSendToAll()
+				Vibration.vibrate(500)
+			}}
+		/>
+	)
+}
+
 const BodyDevTools: React.FC<{}> = () => {
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, color, text }] = useStyles()
 	const { navigate } = useNavigation()
-	const sendToAll = () => {} /*Messenger.useMessageSendToAll()*/
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<ButtonSetting
@@ -276,16 +318,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				actionIcon='arrow-ios-forward'
 				disabled
 			/>
-			<ButtonSetting
-				name='Send messages to all contacts'
-				icon='paper-plane-outline'
-				iconSize={30}
-				iconColor={color.dark.grey}
-				onPress={() => {
-					sendToAll()
-					Vibration.vibrate(500)
-				}}
-			/>
+			<SendToAll />
 			<ButtonSettingRow
 				state={[
 					{
