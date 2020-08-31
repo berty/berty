@@ -423,6 +423,7 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 			Payload:               am.GetPayload(),
 			IsMe:                  isMe,
 			ConversationPublicKey: gpk,
+			SentDate:              am.GetSentDate(),
 		}
 		svc.logger.Debug("received app message", zap.String("type", amt.String()))
 	}
@@ -540,7 +541,7 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 
 					// Don't send ack if message is already acked to prevent spam in multimember groups
 					// Maybe wait a few seconds before checking since we're likely to receive the message before any ack
-					amp, err := AppMessage_TypeAcknowledge.MarshalPayload(&AppMessage_Acknowledge{Target: i.CID})
+					amp, err := AppMessage_TypeAcknowledge.MarshalPayload(0, &AppMessage_Acknowledge{Target: i.CID})
 					if err != nil {
 						return err
 					}

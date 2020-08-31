@@ -157,6 +157,7 @@
 | ----- | ---- | ----- | ----------- |
 | type | [AppMessage.Type](#berty.messenger.v1.AppMessage.Type) |  |  |
 | payload | [bytes](#bytes) |  |  |
+| sent_date | [int64](#int64) |  |  |
 
 <a name="berty.messenger.v1.AppMessage.Acknowledge"></a>
 
@@ -197,7 +198,6 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | body | [string](#string) |  |  |
-| sent_date | [int64](#int64) |  |  |
 
 <a name="berty.messenger.v1.AppMessage.UserReaction"></a>
 
@@ -514,6 +514,7 @@ TODO: return cid
 | conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
 | payload | [bytes](#bytes) |  |  |
 | is_me | [bool](#bool) |  |  |
+| sent_date | [int64](#int64) |  |  |
 
 <a name="berty.messenger.v1.Member"></a>
 

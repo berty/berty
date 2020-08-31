@@ -170,6 +170,7 @@ message BertyGroup {
 message AppMessage {
   Type type = 1;
   bytes payload = 2;
+  int64 sent_date = 3 [(gogoproto.jsontag) = "sentDate"];
 
   enum Type {
     Undefined = 0;
@@ -182,10 +183,6 @@ message AppMessage {
   }
   message UserMessage {
     string body = 1;
-    int64 sent_date = 2 [(gogoproto.jsontag) = "sentDate"];
-
-    //repeated Attachment attachments = 3;
-    //message Attachment { string uri = 1; }
   }
   message UserReaction {
     string target = 3;// TODO: optimize message size
@@ -267,6 +264,7 @@ message Interaction {
   Conversation conversation = 4;
   bytes payload = 5;
   bool is_me = 6;
+  int64 sent_date = 9;
 }
 
 message Contact {
