@@ -418,10 +418,10 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 		}
 
 		i = &Interaction{
-			CID:                   cid,
-			Type:                  amt,
-			Payload:               am.GetPayload(),
-			IsMe:                  isMe,
+			CID:     cid,
+			Type:    amt,
+			Payload: am.GetPayload(),
+			IsMe:    isMe,
 			ConversationPublicKey: gpk,
 			SentDate:              am.GetSentDate(),
 		}
@@ -502,7 +502,7 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 			switch i.GetType() {
 			case AppMessage_TypeAcknowledge:
 				// FIXME: set 'Acknowledged: true' on existing interaction instead
-				if err := svc.db.Create(i).Error; err != nil {
+				if err := tx.Create(i).Error; err != nil {
 					return err
 				}
 
@@ -514,7 +514,7 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 			case AppMessage_TypeGroupInvitation:
 				isVisibleEvent = true
 
-				if err := svc.db.Create(i).Error; err != nil {
+				if err := tx.Create(i).Error; err != nil {
 					return err
 				}
 
@@ -526,7 +526,7 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 			case AppMessage_TypeUserMessage:
 				isVisibleEvent = true
 
-				if err := svc.db.Create(i).Error; err != nil {
+				if err := tx.Create(i).Error; err != nil {
 					return err
 				}
 
@@ -571,7 +571,7 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 					ConversationPublicKey: gpk,
 					DisplayName:           payload.GetName(),
 				}
-				err := svc.db.
+				err := tx.
 					Clauses(clause.OnConflict{
 						Columns:   []clause.Column{{Name: "public_key"}},
 						DoUpdates: clause.AssignmentColumns([]string{"display_name"}),
