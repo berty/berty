@@ -1,15 +1,20 @@
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import {
+	useClient,
+	useConversation,
+	useInteraction,
+	useOneToOneContact,
+} from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 import Color from 'color'
 import palette from 'google-palette'
-import React from 'react'
+import React, { useState } from 'react'
 import { Text as TextNative, TouchableOpacity, View } from 'react-native'
+import Hyperlink from 'react-native-hyperlink'
 import { Icon, Text } from 'react-native-ui-kitten'
 import { SHA3 } from 'sha3'
 import Logo from '../../main/1_berty_picto.svg'
 import { ProceduralCircleAvatar } from '../../shared-components'
-import { useInteraction } from '@berty-tech/store/hooks'
-import Hyperlink from 'react-native-hyperlink'
 
 const pal = palette('tol-rainbow', 256)
 
@@ -59,10 +64,25 @@ const MessageInvitationButton: React.FC<{
 	color: any
 	title: any
 	styleOpacity?: any
-}> = ({ onPress, activeOpacity, backgroundColor, icon, color, title, styleOpacity }) => {
+	disabled?: boolean
+}> = ({
+	onPress,
+	activeOpacity,
+	backgroundColor,
+	icon,
+	color,
+	title,
+	styleOpacity,
+	disabled = false,
+}) => {
 	const [{ flex, padding, border, width, row, text, opacity }] = useStyles()
 	return (
-		<TouchableOpacity style={[flex.align.center]} activeOpacity={activeOpacity} onPress={onPress}>
+		<TouchableOpacity
+			style={[flex.align.center]}
+			activeOpacity={activeOpacity}
+			onPress={onPress}
+			disabled={disabled}
+		>
 			<View
 				style={[
 					padding.tiny,
@@ -92,7 +112,7 @@ const MessageInvitationButton: React.FC<{
 	)
 }
 
-const MessageInvitationWrapper: React.FC<{ message: any; children: any }> = ({ children }) => {
+const MessageInvitationWrapper: React.FC<{ children: any }> = ({ children }) => {
 	const [{ padding, border, flex, margin, width, background, height }, { scaleSize }] = useStyles()
 	const logoDiameter = 40
 	const diffSize = 10
@@ -140,82 +160,135 @@ const MessageInvitationWrapper: React.FC<{ message: any; children: any }> = ({ c
 	)
 }
 
+const MessageInvitationSent: React.FC<{ message: any }> = ({ message }) => {
+	const [{ row, flex, text }] = useStyles()
+	const conversationContact = useOneToOneContact(message.conversationPublicKey)
+	return (
+		<View style={[row.center, flex.justify.spaceEvenly, flex.align.center]}>
+			<Text style={[text.size.scale(14)]}>
+				You have sent an invitation to {conversationContact.displayName || '<unnamed user!>'}!
+			</Text>
+		</View>
+	)
+}
+
+const base64ToURLBase64 = (str: string) =>
+	str.replace(/\+/, '-').replace(/\//, '_').replace(/\=/, '')
+
+const MessageInvitationReceived: React.FC<{ message: any }> = ({ message }) => {
+	const [{ row, flex, text, margin, color }] = useStyles()
+	const client: any = useClient()
+	const [error, setError] = useState(false)
+	const [{ convPk, displayName }, setPdlInfo] = useState({ convPk: '', displayName: '' })
+	const [accepting, setAccepting] = useState(false)
+	const conv = useConversation(convPk)
+	const { link } = message.payload || {}
+
+	// Parse deep link
+	React.useEffect(() => {
+		if (!convPk && link && !conv) {
+			setError(false)
+			client
+				.parseDeepLink({
+					link,
+				})
+				.then((reply: any) => {
+					setPdlInfo({
+						displayName: reply.bertyGroup.displayName,
+						convPk: base64ToURLBase64(
+							new Buffer(reply?.bertyGroup?.group?.publicKey || '').toString('base64'),
+						),
+					})
+				})
+				.catch((err: any) => {
+					console.warn(err)
+					setError(true)
+				})
+		}
+	}, [convPk, conv, link, client])
+
+	const handleAccept = React.useCallback(() => {
+		if (convPk && !conv && !accepting && !error) {
+			setAccepting(true)
+			client
+				.conversationJoin({ link })
+				.catch((err: any) => {
+					console.warn(err)
+					setError(true)
+				})
+				.finally(() => {
+					setAccepting(false)
+				})
+		}
+	}, [client, link, conv, convPk, accepting, error])
+
+	return (
+		<React.Fragment>
+			<View style={[row.left, flex.align.center, flex.justify.center]}>
+				<TextNative
+					style={[
+						text.color.black,
+						text.size.scale(15),
+						text.bold.medium,
+						{ fontFamily: 'Open Sans' },
+					]}
+				>
+					GROUP INVITATION
+				</TextNative>
+			</View>
+			<View style={[margin.top.small, flex.align.center, flex.justify.center]}>
+				<ProceduralCircleAvatar seed={convPk || '42'} size={40} style={[margin.bottom.small]} />
+				<TextNative
+					style={[
+						text.color.black,
+						text.size.scale(13),
+						text.bold.small,
+						margin.bottom.small,
+						{ fontFamily: 'Open Sans' },
+					]}
+				>
+					{displayName}
+				</TextNative>
+			</View>
+			<View style={[row.center, flex.justify.spaceEvenly, flex.align.center, margin.top.medium]}>
+				<MessageInvitationButton
+					onPress={undefined} // TODO: Command to refuse invitation
+					activeOpacity={!conv ? 0.2 : 1}
+					icon='close-outline'
+					color={color.grey}
+					title='REFUSE'
+					backgroundColor={color.white}
+					styleOpacity={0.6}
+					disabled
+				/>
+				<MessageInvitationButton
+					onPress={handleAccept}
+					activeOpacity={!conv ? 0.2 : 1}
+					icon='checkmark-outline'
+					color={!conv ? color.blue : color.green}
+					title={!conv ? 'ACCEPT' : 'ACCEPTED'}
+					backgroundColor={!conv ? color.light.blue : color.light.green}
+					disabled={accepting || conv || !convPk || error} // TODO: disabled UI
+				/>
+			</View>
+		</React.Fragment>
+	)
+}
+
 export const MessageInvitation: React.FC<{ message: any }> = ({ message }) => {
-	const [{ row, padding, flex, text, margin, color }] = useStyles()
-	const acceptGroupInvitation = Messenger.useAcceptGroupInvitation()
-	const conv = Messenger.useGetConversation(message.group.publicKey)
+	const [{ row, padding, margin }] = useStyles()
 
 	return (
 		<View
 			style={[row.center, padding.horizontal.medium, margin.bottom.scale(11), { paddingTop: 2 }]}
 		>
 			{message.isMe ? (
-				<MessageInvitationWrapper message={message}>
-					<View style={[row.center, flex.justify.spaceEvenly, flex.align.center]}>
-						<Text style={[text.size.scale(14)]}>
-							You have sent an invitation to join the group {message.name}!
-						</Text>
-					</View>
+				<MessageInvitationWrapper>
+					<MessageInvitationSent message={message} />
 				</MessageInvitationWrapper>
 			) : (
-				<MessageInvitationWrapper message={message}>
-					<View style={[row.left, flex.align.center, flex.justify.center]}>
-						<TextNative
-							style={[
-								text.color.black,
-								text.size.scale(15),
-								text.bold.medium,
-								{ fontFamily: 'Open Sans' },
-							]}
-						>
-							GROUP INVITATION
-						</TextNative>
-					</View>
-					<View style={[margin.top.small, flex.align.center, flex.justify.center]}>
-						<ProceduralCircleAvatar
-							seed={message.group.publicKey}
-							size={40}
-							style={[margin.bottom.small]}
-						/>
-						<TextNative
-							style={[
-								text.color.black,
-								text.size.scale(13),
-								text.bold.small,
-								margin.bottom.small,
-								{ fontFamily: 'Open Sans' },
-							]}
-						>
-							{message.name}
-						</TextNative>
-					</View>
-					<View
-						style={[row.center, flex.justify.spaceEvenly, flex.align.center, margin.top.medium]}
-					>
-						<MessageInvitationButton
-							onPress={undefined} // TODO: Command to refuse invitation
-							activeOpacity={!conv ? 0.2 : 1}
-							icon='close-outline'
-							color={color.grey}
-							title='REFUSE'
-							backgroundColor={color.white}
-							styleOpacity={0.6}
-						/>
-						<MessageInvitationButton
-							onPress={
-								!conv
-									? () => {
-											acceptGroupInvitation({ message })
-									  }
-									: undefined
-							}
-							activeOpacity={!conv ? 0.2 : 1}
-							icon='checkmark-outline'
-							color={!conv ? color.blue : color.green}
-							title={!conv ? 'ACCEPT' : 'ACCEPTED'}
-							backgroundColor={!conv ? color.light.blue : color.light.green}
-						/>
-					</View>
+				<MessageInvitationWrapper>
+					<MessageInvitationReceived message={message} />
 				</MessageInvitationWrapper>
 			)}
 		</View>
@@ -360,7 +433,7 @@ export const Message: React.FC<{
 										{ fontSize: 9 },
 									]}
 								>
-									{sentDate ? formatTimestamp(sentDate) : null}{' '}
+									{sentDate ? formatTimestamp(sentDate) : ''}{' '}
 								</Text>
 							)}
 							{!cmd && (
@@ -390,7 +463,10 @@ export const Message: React.FC<{
 				</View>
 			</View>
 		)
-	} else if (inte.type === messengerpb.AppMessage.Type.TypeGroupInvitation) {
+	} else if (
+		inte.type === messengerpb.AppMessage.Type.TypeGroupInvitation &&
+		convKind === messengerpb.Conversation.Type.ContactType
+	) {
 		return <MessageInvitation message={inte} />
 	} else {
 		return null

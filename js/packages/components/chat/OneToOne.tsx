@@ -23,8 +23,10 @@ import {
 
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { Message } from './shared-components/Message'
-import { ChatFooter, ChatDate } from './shared-components/Chat'
 import BlurView from '../shared-components/BlurView'
+
+// import { useReadEffect } from '../hooks'
+import { ChatFooter, ChatDate } from './shared-components/Chat'
 
 //
 // Chat
@@ -188,7 +190,9 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: string }> = ({
 	const ctx: any = useMsgrContext()
 	const conv = ctx.conversations[convPk]
 	const messages = useSortedConvInteractions(convPk).filter(
-		(msg) => msg.type === messengerpb.AppMessage.Type.TypeUserMessage,
+		(msg) =>
+			msg.type === messengerpb.AppMessage.Type.TypeUserMessage ||
+			msg.type === messengerpb.AppMessage.Type.TypeGroupInvitation,
 	)
 
 	const flatListRef = useRef(null)
