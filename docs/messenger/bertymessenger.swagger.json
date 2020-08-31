@@ -779,6 +779,32 @@
         }
       }
     },
+    "v1Contact": {
+      "type": "object",
+      "properties": {
+        "public_key": {
+          "type": "string"
+        },
+        "conversation_public_key": {
+          "type": "string"
+        },
+        "conversation": {
+          "$ref": "#/definitions/v1Conversation"
+        },
+        "state": {
+          "$ref": "#/definitions/v1ContactState"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Device"
+          }
+        }
+      }
+    },
     "v1ContactAcceptReply": {
       "type": "object"
     },
@@ -801,6 +827,17 @@
         }
       }
     },
+    "v1ContactState": {
+      "type": "string",
+      "enum": [
+        "Undefined",
+        "IncomingRequest",
+        "OutgoingRequestEnqueued",
+        "OutgoingRequestSent",
+        "Established"
+      ],
+      "default": "Undefined"
+    },
     "v1Conversation": {
       "type": "object",
       "properties": {
@@ -809,6 +846,10 @@
         },
         "contact_public_key": {
           "type": "string",
+          "title": "specific to ContactType conversations"
+        },
+        "contact": {
+          "$ref": "#/definitions/v1Contact",
           "title": "specific to ContactType conversations"
         },
         "display_name": {
@@ -820,6 +861,13 @@
         "unread_count": {
           "type": "integer",
           "format": "int32"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Member"
+          },
+          "title": "specific to MultiMemberType conversations"
         },
         "type": {
           "$ref": "#/definitions/v1ConversationType"
@@ -902,6 +950,17 @@
           "title": "reset will regenerate a new link"
         },
         "display_name": {
+          "type": "string"
+        }
+      }
+    },
+    "v1Device": {
+      "type": "object",
+      "properties": {
+        "public_key": {
+          "type": "string"
+        },
+        "owner_public_key": {
           "type": "string"
         }
       }
@@ -1031,6 +1090,29 @@
         }
       }
     },
+    "v1Member": {
+      "type": "object",
+      "properties": {
+        "public_key": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "conversation_public_key": {
+          "type": "string"
+        },
+        "conversation": {
+          "$ref": "#/definitions/v1Conversation"
+        },
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Device"
+          }
+        }
+      }
+    },
     "v1ParseDeepLinkReply": {
       "type": "object",
       "properties": {
@@ -1149,12 +1231,14 @@
       "type": "string",
       "enum": [
         "Undefined",
+        "TypeListEnd",
         "TypeConversationUpdated",
         "TypeConversationDeleted",
         "TypeInteractionUpdated",
         "TypeContactUpdated",
         "TypeAccountUpdated",
-        "TypeListEnd"
+        "TypeMemberUpdated",
+        "TypeDeviceUpdated"
       ],
       "default": "Undefined"
     },

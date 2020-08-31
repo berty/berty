@@ -3873,6 +3873,8 @@ export namespace berty {
             interface IInteraction {
                 cid?: (string|null);
                 type?: (berty.messenger.v1.AppMessage.Type|null);
+                memberPublicKey?: (string|null);
+                member?: (berty.messenger.v1.IMember|null);
                 conversationPublicKey?: (string|null);
                 conversation?: (berty.messenger.v1.IConversation|null);
                 payload?: (Uint8Array|null);
@@ -3883,6 +3885,8 @@ export namespace berty {
 
                 public cid: string;
                 public type: berty.messenger.v1.AppMessage.Type;
+                public memberPublicKey: string;
+                public member?: (berty.messenger.v1.IMember|null);
                 public conversationPublicKey: string;
                 public conversation?: (berty.messenger.v1.IConversation|null);
                 public payload: Uint8Array;
@@ -3904,6 +3908,7 @@ export namespace berty {
                 conversation?: (berty.messenger.v1.IConversation|null);
                 state?: (berty.messenger.v1.Contact.State|null);
                 displayName?: (string|null);
+                devices?: (berty.messenger.v1.IDevice[]|null);
             }
 
             class Contact implements IContact {
@@ -3913,6 +3918,7 @@ export namespace berty {
                 public conversation?: (berty.messenger.v1.IConversation|null);
                 public state: berty.messenger.v1.Contact.State;
                 public displayName: string;
+                public devices: berty.messenger.v1.IDevice[];
                 public static create(properties?: berty.messenger.v1.IContact): berty.messenger.v1.Contact;
                 public static encode(message: berty.messenger.v1.IContact, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IContact, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3938,9 +3944,11 @@ export namespace berty {
             interface IConversation {
                 publicKey?: (string|null);
                 contactPublicKey?: (string|null);
+                contact?: (berty.messenger.v1.IContact|null);
                 displayName?: (string|null);
                 link?: (string|null);
                 unreadCount?: (number|null);
+                members?: (berty.messenger.v1.IMember[]|null);
                 type?: (berty.messenger.v1.Conversation.Type|null);
             }
 
@@ -3948,9 +3956,11 @@ export namespace berty {
 
                 public publicKey: string;
                 public contactPublicKey: string;
+                public contact?: (berty.messenger.v1.IContact|null);
                 public displayName: string;
                 public link: string;
                 public unreadCount: number;
+                public members: berty.messenger.v1.IMember[];
                 public type: berty.messenger.v1.Conversation.Type;
                 public static create(properties?: berty.messenger.v1.IConversation): berty.messenger.v1.Conversation;
                 public static encode(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3976,14 +3986,18 @@ export namespace berty {
             interface IMember {
                 publicKey?: (string|null);
                 displayName?: (string|null);
-                givenName?: (string|null);
+                conversationPublicKey?: (string|null);
+                conversation?: (berty.messenger.v1.IConversation|null);
+                devices?: (berty.messenger.v1.IDevice[]|null);
             }
 
             class Member implements IMember {
 
                 public publicKey: string;
                 public displayName: string;
-                public givenName: string;
+                public conversationPublicKey: string;
+                public conversation?: (berty.messenger.v1.IConversation|null);
+                public devices: berty.messenger.v1.IDevice[];
                 public static create(properties?: berty.messenger.v1.IMember): berty.messenger.v1.Member;
                 public static encode(message: berty.messenger.v1.IMember, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IMember, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3997,11 +4011,13 @@ export namespace berty {
 
             interface IDevice {
                 publicKey?: (string|null);
+                ownerPublicKey?: (string|null);
             }
 
             class Device implements IDevice {
 
                 public publicKey: string;
+                public ownerPublicKey: string;
                 public static create(properties?: berty.messenger.v1.IDevice): berty.messenger.v1.Device;
                 public static encode(message: berty.messenger.v1.IDevice, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IDevice, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4055,12 +4071,14 @@ export namespace berty {
 
                 enum Type {
                     Undefined = 0,
-                    TypeConversationUpdated = 1,
-                    TypeConversationDeleted = 2,
-                    TypeInteractionUpdated = 3,
-                    TypeContactUpdated = 4,
-                    TypeAccountUpdated = 5,
-                    TypeListEnd = 6
+                    TypeListEnd = 1,
+                    TypeConversationUpdated = 2,
+                    TypeConversationDeleted = 3,
+                    TypeInteractionUpdated = 4,
+                    TypeContactUpdated = 5,
+                    TypeAccountUpdated = 6,
+                    TypeMemberUpdated = 7,
+                    TypeDeviceUpdated = 8
                 }
 
                 interface IConversationUpdated {
@@ -4150,6 +4168,42 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.AccountUpdated;
                     public static toObject(message: berty.messenger.v1.StreamEvent.AccountUpdated, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IMemberUpdated {
+                    member?: (berty.messenger.v1.IMember|null);
+                }
+
+                class MemberUpdated implements IMemberUpdated {
+
+                    public member?: (berty.messenger.v1.IMember|null);
+                    public static create(properties?: berty.messenger.v1.StreamEvent.IMemberUpdated): berty.messenger.v1.StreamEvent.MemberUpdated;
+                    public static encode(message: berty.messenger.v1.StreamEvent.IMemberUpdated, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.StreamEvent.IMemberUpdated, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.StreamEvent.MemberUpdated;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.StreamEvent.MemberUpdated;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.MemberUpdated;
+                    public static toObject(message: berty.messenger.v1.StreamEvent.MemberUpdated, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IDeviceUpdated {
+                    device?: (berty.messenger.v1.IDevice|null);
+                }
+
+                class DeviceUpdated implements IDeviceUpdated {
+
+                    public device?: (berty.messenger.v1.IDevice|null);
+                    public static create(properties?: berty.messenger.v1.StreamEvent.IDeviceUpdated): berty.messenger.v1.StreamEvent.DeviceUpdated;
+                    public static encode(message: berty.messenger.v1.StreamEvent.IDeviceUpdated, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.StreamEvent.IDeviceUpdated, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.StreamEvent.DeviceUpdated;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.StreamEvent.DeviceUpdated;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.DeviceUpdated;
+                    public static toObject(message: berty.messenger.v1.StreamEvent.DeviceUpdated, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 

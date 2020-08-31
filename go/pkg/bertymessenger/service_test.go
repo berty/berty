@@ -2,6 +2,7 @@ package bertymessenger
 
 import (
 	"context"
+	"strconv"
 	"testing"
 	"time"
 
@@ -428,7 +429,8 @@ func Test3PeersCreateJoinConversation(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 	logger := testutil.Logger(t)
-	clients, cleanup := testingInfra(ctx, t, 3, logger)
+	accountsAmount := 3
+	clients, cleanup := testingInfra(ctx, t, accountsAmount, logger)
 	defer cleanup()
 
 	// create nodes
@@ -437,15 +439,19 @@ func Test3PeersCreateJoinConversation(t *testing.T) {
 		creator = NewTestingAccount(ctx, t, clients[0], logger)
 		defer creator.Close()
 		creator.DrainInitEvents(t)
+		creator.SetNameAndDrainUpdate(t, "Creator")
 	}
-	var joiners = make([]*TestingAccount, 2)
+	var joiners = make([]*TestingAccount, accountsAmount-1)
 	{
-		for i := 0; i < 2; i++ {
+		for i := 0; i < accountsAmount-1; i++ {
 			joiners[i] = NewTestingAccount(ctx, t, clients[i+1], logger)
 			defer joiners[i].Close()
 			joiners[i].DrainInitEvents(t)
+			joiners[i].SetNameAndDrainUpdate(t, "Joiner #"+strconv.Itoa(i))
 		}
+
 	}
+	accounts := append([]*TestingAccount{creator}, joiners...)
 
 	// creator creates a new conversation
 	createdConv := testCreateConversation(ctx, t, creator, "My Group", nil, logger)
@@ -455,7 +461,49 @@ func Test3PeersCreateJoinConversation(t *testing.T) {
 		testJoinConversation(ctx, t, joiner, createdConv, logger)
 	}
 
-	// FIXME: check that member names are propagated
+	// we should receive member updates for all other members
+	for i := 0; i < len(accounts); i++ {
+		toFind := make([]*TestingAccount, len(accounts)-1)
+		for k := 0; k < len(accounts)-1; k++ {
+			if k < i {
+				toFind[k] = accounts[k]
+			} else {
+				toFind[k] = accounts[k+1]
+			}
+		}
+		for len(toFind) > 0 {
+			event := accounts[i].NextEvent(t)
+			require.NotNil(t, event)
+			// skip devices udpates
+			if event.GetType() == StreamEvent_TypeDeviceUpdated {
+				continue
+			}
+			toFindNames := make([]string, len(toFind))
+			for m, tf := range toFind {
+				toFindNames[m] = tf.GetAccount().GetDisplayName()
+			}
+			logger.Debug("looking for", zap.Strings("to-find", toFindNames), zap.String("in", accounts[i].GetAccount().GetDisplayName()))
+			require.Equal(t, event.GetType(), StreamEvent_TypeMemberUpdated)
+			payload, err := event.UnmarshalPayload()
+			require.NoError(t, err)
+			member := payload.(*StreamEvent_MemberUpdated).GetMember()
+			require.NotNil(t, member)
+			logger.Debug("found member", zap.String("name", member.GetDisplayName()))
+			require.NotEqual(t, accounts[i].GetAccount().GetDisplayName(), member.GetDisplayName())
+			// FIXME: find by member key and check name equality
+			found := false
+			for l := 0; l < len(toFindNames); l++ {
+				if toFindNames[l] == member.GetDisplayName() {
+					found = true
+					toFind = append(toFind[0:l], toFind[l+1:]...)
+					break
+				}
+			}
+			require.True(t, found)
+			require.NotNil(t, member.GetPublicKey())
+			require.Equal(t, createdConv.GetPublicKey(), member.GetConversationPublicKey())
+		}
+	}
 
 	// no more event
 	{
@@ -484,6 +532,7 @@ func Test3PeersExchange(t *testing.T) {
 		creator = NewTestingAccount(ctx, t, clients[0], logger)
 		defer creator.Close()
 		creator.DrainInitEvents(t)
+		creator.SetNameAndDrainUpdate(t, "Creator")
 	}
 	var joiners = make([]*TestingAccount, 2)
 	{
@@ -491,6 +540,7 @@ func Test3PeersExchange(t *testing.T) {
 			joiners[i] = NewTestingAccount(ctx, t, clients[i+1], logger)
 			defer joiners[i].Close()
 			joiners[i].DrainInitEvents(t)
+			joiners[i].SetNameAndDrainUpdate(t, "Joiner #"+strconv.Itoa(i))
 		}
 	}
 
@@ -939,19 +989,6 @@ func testCreateConversation(ctx context.Context, t *testing.T, creator *TestingA
 		convPK = createdConv.GetPublicKey()
 	}
 
-	// creator has a ConversationUpdated event for the conversation creation
-	{
-		event := creator.NextEvent(t)
-		require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
-		payload, err := event.UnmarshalPayload()
-		require.NoError(t, err)
-		conversation := payload.(*StreamEvent_ConversationUpdated).GetConversation()
-		require.NotNil(t, conversation)
-		require.Equal(t, conversation.GetType(), Conversation_MultiMemberType)
-		require.Equal(t, convPK, conversation.GetPublicKey())
-		require.Equal(t, conversation.GetDisplayName(), "")
-	}
-
 	// creator has a ConversationUpdated event for the display name
 	var createdConv *Conversation
 	{
@@ -961,9 +998,9 @@ func testCreateConversation(ctx context.Context, t *testing.T, creator *TestingA
 		require.NoError(t, err)
 		conversation := payload.(*StreamEvent_ConversationUpdated).GetConversation()
 		require.NotNil(t, conversation)
-		require.Equal(t, conversation.GetType(), Conversation_MultiMemberType)
+		require.Equal(t, Conversation_MultiMemberType, conversation.GetType())
 		require.Equal(t, convPK, conversation.GetPublicKey())
-		require.Equal(t, conversation.GetDisplayName(), convName)
+		require.Equal(t, convName, conversation.GetDisplayName())
 		createdConv = conversation
 	}
 

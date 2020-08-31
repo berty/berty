@@ -245,6 +245,8 @@ message Account {
 message Interaction {
   string cid = 1 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "CID"];
   AppMessage.Type type = 2;
+  string member_public_key = 7;
+  Member member = 8;
   string conversation_public_key = 3;
   Conversation conversation = 4;
   bytes payload = 5;
@@ -257,6 +259,7 @@ message Contact {
   Conversation conversation = 3;
   State state = 4;
   string display_name = 5;
+  repeated Device devices = 6 [(gogoproto.moretags) = "gorm:\"foreignKey:OwnerPublicKey\""];
 
   enum State {
     Undefined = 0;
@@ -271,10 +274,14 @@ message Conversation {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
   // specific to ContactType conversations
   string contact_public_key = 2;
-  string display_name = 3;
-  string link = 4;
-  int32 unread_count = 5;
-  Type type = 6;
+  // specific to ContactType conversations
+  Contact contact = 3;
+  string display_name = 4;
+  string link = 5;
+  int32 unread_count = 6;
+  // specific to MultiMemberType conversations
+  repeated Member members = 7;
+  Type type = 8;
   // updated_at
   // avatar_cid
 
@@ -289,11 +296,14 @@ message Conversation {
 message Member {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
   string display_name = 2;
-  string given_name = 3;
+  string conversation_public_key = 3;
+  Conversation conversation = 4;
+  repeated Device devices = 5 [(gogoproto.moretags) = "gorm:\"foreignKey:OwnerPublicKey\""];
 }
 
 message Device {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  string owner_public_key = 2;
 }
 
 message ContactMetadata {
@@ -307,12 +317,14 @@ message StreamEvent {
 
   enum Type {
     Undefined = 0;
-    TypeConversationUpdated = 1;
-    TypeConversationDeleted = 2;
-    TypeInteractionUpdated = 3;
-    TypeContactUpdated = 4;
-    TypeAccountUpdated = 5;
-    TypeListEnd = 6;
+    TypeListEnd = 1;
+    TypeConversationUpdated = 2;
+    TypeConversationDeleted = 3;
+    TypeInteractionUpdated = 4;
+    TypeContactUpdated = 5;
+    TypeAccountUpdated = 6;
+    TypeMemberUpdated = 7;
+    TypeDeviceUpdated = 8;
   }
   message ConversationUpdated {
     Conversation conversation = 1;
@@ -328,6 +340,12 @@ message StreamEvent {
   }
   message AccountUpdated {
     Account account = 1;
+  }
+  message MemberUpdated {
+    Member member = 1;
+  }
+  message DeviceUpdated {
+    Device device = 1;
   }
   message ListEnd {}
 }

@@ -10,7 +10,7 @@ import {
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import HeaderSettings from '../shared-components/Header'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
-import { useConversation } from '@berty-tech/store/hooks'
+import { useConversation, useMsgrContext } from '@berty-tech/store/hooks'
 
 //
 // GroupChatSettings
@@ -86,10 +86,11 @@ const GroupChatSettingsHeader: React.FC<messenger.conversation.Entity> = ({
 	)
 }
 
-const MultiMemberSettingsBody: React.FC<any> = ({ pk, link }) => {
+const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 	const [{ padding, margin, color }] = useStyles()
-	const membersNames = {}
-	const membersDevices = {}
+	const ctx: any = useMsgrContext()
+	const pk = publicKey
+	const members = ctx.members[pk] || {}
 	return (
 		<View style={[padding.medium]}>
 			<ButtonSetting name='Medias, links & docs' icon='image-outline' disabled />
@@ -99,17 +100,17 @@ const MultiMemberSettingsBody: React.FC<any> = ({ pk, link }) => {
 				icon='users'
 				iconPack='custom'
 				state={{
-					value: `${Object.values(membersDevices).length} members`,
+					value: `${Object.values(members).length} members`,
 					color: color.blue,
 					bgColor: color.light.blue,
 				}}
 				style={[margin.top.medium]}
 			>
-				{Object.entries(membersDevices).map(([k, v]) => {
+				{Object.entries(members).map(([k, v]) => {
 					return (
 						<ButtonSetting
 							style={[padding.horizontal.small]}
-							name={`${(membersNames && membersNames[k]) || 'Unknown'}: ${v}`}
+							name={`${(members && members[k].displayName) || 'Unknown'}: ${members[k].publicKey}`}
 							// image={seed}
 							// previewValue="Me"
 							// previewValueColor={color.blue}

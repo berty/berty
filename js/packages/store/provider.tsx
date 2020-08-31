@@ -39,6 +39,12 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 			const contact = action.payload.contact
 			state.contacts[contact.publicKey] = contact
 			break
+		case T.TypeMemberUpdated:
+			const member = action.payload.member
+			if (!state.members[member.conversationPublicKey]) {
+				state.members[member.conversationPublicKey] = {}
+			}
+			state.members[member.conversationPublicKey][member.publicKey] = member
 		case T.TypeListEnd:
 			state.listDone = true
 			break
@@ -82,6 +88,12 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 				}
 				state.interactions[inte.conversationPublicKey][inte.cid] = inte
 			}
+			for (const [key, members] of Object.entries(action.payload.members || {})) {
+				state.members[key] = {
+					...(state.members[key] || {}),
+					...members,
+				}
+			}
 			break
 		case 'DELETE_FAKE_DATA':
 			state.conversations = pickBy(state.conversations, (conv) => !conv.fake)
@@ -89,6 +101,10 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 			state.interactions = pickBy(
 				mapValues(state.interactions, (intes) => pickBy(intes, (inte) => !inte.fake)),
 				(intes) => intes.length > 0,
+			)
+			state.members = pickBy(
+				mapValues(state.members, (members) => pickBy(members, (member) => !member.fake)),
+				(members) => members.length > 0,
 			)
 			break
 		default:

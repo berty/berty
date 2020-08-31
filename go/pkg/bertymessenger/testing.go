@@ -83,6 +83,7 @@ type TestingAccount struct {
 	account       *Account
 	conversations map[string]*Conversation
 	contacts      map[string]*Contact
+	members       map[string]*Member
 }
 
 func NewTestingAccount(ctx context.Context, t *testing.T, client MessengerServiceClient, logger *zap.Logger) *TestingAccount {
@@ -95,6 +96,7 @@ func NewTestingAccount(ctx context.Context, t *testing.T, client MessengerServic
 		logger:        logger,
 		conversations: make(map[string]*Conversation),
 		contacts:      make(map[string]*Contact),
+		members:       make(map[string]*Member),
 	}
 }
 
@@ -135,6 +137,12 @@ func (a *TestingAccount) processEvent(t *testing.T, event *StreamEvent) {
 		require.NoError(t, err)
 		conversation := payload.(*StreamEvent_ConversationUpdated).Conversation
 		a.conversations[conversation.GetPublicKey()] = conversation
+	case StreamEvent_TypeMemberUpdated:
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		member := payload.(*StreamEvent_MemberUpdated).Member
+		a.members[member.GetPublicKey()] = member
+		//t.Log("member updated in", a.GetAccount().GetDisplayName(), ", value:", member.GetDisplayName())
 	}
 }
 
@@ -160,6 +168,19 @@ func (a *TestingAccount) SetName(t *testing.T, name string) {
 	t.Helper()
 	_, err := a.client.AccountUpdate(a.ctx, &AccountUpdate_Request{DisplayName: name})
 	require.NoError(t, err)
+}
+
+func (a *TestingAccount) SetNameAndDrainUpdate(t *testing.T, name string) {
+	t.Helper()
+	a.SetName(t, name)
+	event := a.NextEvent(t)
+	require.Equal(t, event.Type, StreamEvent_TypeAccountUpdated)
+	payload, err := event.UnmarshalPayload()
+	require.NoError(t, err)
+	account := payload.(*StreamEvent_AccountUpdated).Account
+	require.Equal(t, a.GetAccount(), account)
+	require.Equal(t, Account_Ready, account.State)
+	require.Equal(t, name, account.DisplayName)
 }
 
 func (a *TestingAccount) NextEvent(t *testing.T) *StreamEvent {

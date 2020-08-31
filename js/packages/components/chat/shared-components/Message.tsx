@@ -224,10 +224,10 @@ export const MessageInvitation: React.FC<{ message: any }> = ({ message }) => {
 export const Message: React.FC<{
 	id: string
 	convKind: any
-	membersNames?: { [key: string]: string | undefined }
+	members?: { [key: string]: any }
 	convPK: string
 	previousMessageId: string
-}> = ({ id, convKind, membersNames, previousMessageId, convPK }) => {
+}> = ({ id, convKind, members, previousMessageId, convPK }) => {
 	const message = useInteraction(id, convPK)
 	const previousMessage = useInteraction(previousMessageId, convPK)
 
@@ -244,8 +244,8 @@ export const Message: React.FC<{
 	let isWithinTenMinsAfter = false
 	let sentDate = Date.now()
 	if (message.type === messengerpb.AppMessage.Type.TypeUserMessage) {
-		if (message.memberPk && membersNames) {
-			name = membersNames[message.memberPk]
+		if (message.memberPublicKey && members && members[message.memberPublicKey]) {
+			name = members[message.memberPublicKey].displayName
 		}
 		const payload = message
 		const cmd = null /*messenger.message.isCommandMessage(payload.body)*/
@@ -267,18 +267,20 @@ export const Message: React.FC<{
 			sentDate = parseInt(payload.payload.sentDate, 10)
 		} else {
 			isFollowupMessage =
-				previousMessage && !payload.isMe && payload.memberPk === previousMessage.memberPk
+				previousMessage &&
+				!payload.isMe &&
+				payload.memberPublicKey === previousMessage.memberPublicKey
 
 			isWithinTenMinsAfter =
 				previousMessage &&
-				payload?.memberPk === previousMessage?.memberPk &&
+				payload?.memberPublicKey === previousMessage?.memberPublicKey &&
 				sentDate &&
 				previousMessage.payload.sentDate &&
 				Math.abs((sentDate || 0) - (parseInt(previousMessage?.payload?.sentDate, 10) || 0)) <
 					10 * 6000
 
-			if (!message.isMe && message.memberPk) {
-				const h = new SHA3(256).update(message.memberPk).digest()
+			if (!message.isMe && message.memberPublicKey) {
+				const h = new SHA3(256).update(message.memberPublicKey).digest()
 				baseColor = '#' + pal[h[0]]
 			}
 			msgTextColor = payload.isMe
@@ -307,7 +309,11 @@ export const Message: React.FC<{
 				]}
 			>
 				{!payload.isMe && isGroup && !isFollowupMessage && (
-					<ProceduralCircleAvatar style={_styles.circleAvatar} seed={message.memberPk} size={35} />
+					<ProceduralCircleAvatar
+						style={_styles.circleAvatar}
+						seed={message.memberPublicKey}
+						size={35}
+					/>
 				)}
 				<View style={[column.top, _styles.messageItem]}>
 					<View

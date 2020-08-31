@@ -16,7 +16,12 @@ import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { Message } from './shared-components/Message'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { useConversation, useConvInteractions } from '@berty-tech/store/hooks'
+import {
+	useConversation,
+	useConvInteractions,
+	useMsgrContext,
+	useConvMembers,
+} from '@berty-tech/store/hooks'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 
 //import { useReadEffect } from '../hooks'
@@ -153,16 +158,16 @@ const HeaderMultiMember: React.FC<{ id: string }> = ({ id }) => {
 // 	)
 // }
 
-const MultiMemberMemberItem: React.FC<{ memberPk: any }> = ({ memberPk }) => {
+const MemberItem: React.FC<{ publicKey: any }> = ({ publicKey }) => {
 	const [, { scaleHeight }] = useStyles()
 	return (
 		<View>
-			<TextNative style={{ paddingLeft: 10 * scaleHeight }}>{memberPk}</TextNative>
+			<TextNative style={{ paddingLeft: 10 * scaleHeight }}>{publicKey}</TextNative>
 		</View>
 	)
 }
 
-const MultiMemberMemberList: React.FC<{ membersDevices: any }> = ({ membersDevices }) => {
+const MemberList: React.FC<{ members: any }> = ({ members }) => {
 	const [{ padding, margin }] = useStyles()
 	return (
 		<ScrollView
@@ -170,26 +175,29 @@ const MultiMemberMemberList: React.FC<{ membersDevices: any }> = ({ membersDevic
 			horizontal
 			showsHorizontalScrollIndicator={false}
 		>
-			{membersDevices &&
-				membersDevices?.map((member: any) =>
-					member ? <MultiMemberMemberItem memberPk={member} /> : null,
+			{members &&
+				members?.map((member: any) =>
+					member ? <MemberItem publicKey={member.publicKey} /> : null,
 				)}
 		</ScrollView>
 	)
 }
 
-const InfosMultiMember: React.FC<messenger.conversation.Entity> = ({ createdAt, pk }) => {
-	//const { membersDevices } = Groups.useGroups()[pk] || { membersDevices: {} }
-	//const [{ margin, text }] = useStyles()
+const InfosMultiMember: React.FC<{ publicKey: string; createdAt: number }> = ({
+	publicKey,
+	createdAt,
+}) => {
+	const [{ margin, text }] = useStyles()
+	const members = useConvMembers(publicKey)
 	return (
 		<View>
 			<ChatDate date={createdAt} />
-			{/*<View style={[margin.top.medium]}>
+			<View style={[margin.top.medium]}>
 				<Text style={[text.align.center, text.color.black, text.bold.medium]}>
 					Test created the group
 				</Text>
 			</View>
-			<MultiMemberMemberList membersDevices={Object.keys(membersDevices)} />*/}
+			<MemberList members={Object.keys(members)} />
 		</View>
 	)
 }
@@ -206,6 +214,8 @@ const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) 
 const MessageList: React.FC<{ id: string }> = ({ id }) => {
 	const [{ overflow, row, flex, margin }, { scaleHeight }] = useStyles()
 	const conversation = useConversation(id)
+	const ctx = useMsgrContext()
+	const members = ctx.members[id] || {}
 	const interactions = Object.values(useConvInteractions(id))
 		.filter((msg) => msg.type === messengerpb.AppMessage.Type.TypeUserMessage)
 		.sort(
@@ -240,7 +250,7 @@ const MessageList: React.FC<{ id: string }> = ({ id }) => {
 					id={item.cid}
 					convKind={messengerpb.Conversation.Type.MultiMemberType}
 					convPK={conversation.publicKey}
-					membersNames={conversation.membersNames}
+					members={members}
 					previousMessageId={getPreviousMessageId(item, conversation.messages)}
 				/>
 			)}

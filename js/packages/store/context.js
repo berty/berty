@@ -5,6 +5,7 @@ export const initialState = {
 	conversations: {},
 	contacts: {},
 	interactions: {},
+	members: {},
 	client: null,
 	listDone: false,
 	streamError: null,

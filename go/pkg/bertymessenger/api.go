@@ -21,10 +21,14 @@ import (
 )
 
 func (svc *service) DevShareInstanceBertyID(ctx context.Context, req *DevShareInstanceBertyID_Request) (*DevShareInstanceBertyID_Reply, error) {
-	ret, err := svc.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+
+	ret, err := svc.internalInstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{
 		DisplayName: req.DisplayName,
 		Reset_:      req.Reset_,
 	})
+
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -37,6 +41,13 @@ func (svc *service) DevShareInstanceBertyID(ctx context.Context, req *DevShareIn
 }
 
 func (svc *service) InstanceShareableBertyID(ctx context.Context, req *InstanceShareableBertyID_Request) (*InstanceShareableBertyID_Reply, error) {
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+	// need to split the function for internal calls to prevent deadlocks
+	return svc.internalInstanceShareableBertyID(ctx, req)
+}
+
+func (svc *service) internalInstanceShareableBertyID(ctx context.Context, req *InstanceShareableBertyID_Request) (*InstanceShareableBertyID_Reply, error) {
 	if req == nil {
 		req = &InstanceShareableBertyID_Request{}
 	}
@@ -218,6 +229,9 @@ func (svc *service) ShareableBertyGroup(ctx context.Context, request *ShareableB
 		return nil, errcode.ErrInvalidInput
 	}
 
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+
 	grpInfo, err := svc.protocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		GroupPK: request.GroupPK,
 	})
@@ -274,6 +288,9 @@ func (svc *service) SendContactRequest(ctx context.Context, req *SendContactRequ
 	if req == nil || req.BertyID == nil || req.BertyID.AccountPK == nil || req.BertyID.PublicRendezvousSeed == nil {
 		return nil, errcode.ErrMissingInput
 	}
+
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
 
 	contactRequest := bertytypes.ContactRequestSend_Request{
 		Contact: &bertytypes.ShareableContact{
@@ -338,6 +355,9 @@ func (svc *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*S
 }
 
 func (svc *service) SendAck(ctx context.Context, request *SendAck_Request) (*SendAck_Reply, error) {
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+
 	gInfo, err := svc.protocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		GroupPK: request.GroupPK,
 	})
@@ -366,6 +386,9 @@ func (svc *service) SendAck(ctx context.Context, request *SendAck_Request) (*Sen
 }
 
 func (svc *service) SendMessage(ctx context.Context, request *SendMessage_Request) (*SendMessage_Reply, error) {
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+
 	payload, err := AppMessage_TypeUserMessage.MarshalPayload(&AppMessage_UserMessage{
 		Body:     request.Message,
 		SentDate: time.Now().UnixNano() / 1000000,
@@ -436,7 +459,7 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 	{
 		svc.logger.Debug("sending account")
 		var acc Account
-		if err := svc.db.First(&acc).Error; err != nil {
+		if err := svc.db.Take(&acc).Error; err != nil {
 			return err
 		}
 		au, err := proto.Marshal(&StreamEvent_AccountUpdated{Account: &acc})
@@ -445,6 +468,25 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 		}
 		if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeAccountUpdated, au}}); err != nil {
 			return err
+		}
+	}
+
+	// send contacts
+	{
+		var contacts []Contact
+		if err := svc.db.Find(&contacts).Error; err != nil {
+			return err
+		}
+		svc.logger.Info("sending existing contacts", zap.Int("count", len(contacts)))
+		for _, contact := range contacts {
+			c := contact // comply with scopelint
+			cu, err := proto.Marshal(&StreamEvent_ContactUpdated{&c})
+			if err != nil {
+				return err
+			}
+			if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeContactUpdated, cu}}); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -467,20 +509,20 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 		}
 	}
 
-	// send contacts
+	// send members
 	{
-		var contacts []Contact
-		if err := svc.db.Find(&contacts).Error; err != nil {
+		var members []Member
+		if err := svc.db.Find(&members).Error; err != nil {
 			return err
 		}
-		svc.logger.Info("sending existing contacts", zap.Int("count", len(contacts)))
-		for _, contact := range contacts {
-			c := contact // comply with scopelint
-			cu, err := proto.Marshal(&StreamEvent_ContactUpdated{&c})
+		svc.logger.Info("sending existing members", zap.Int("count", len(members)))
+		for _, member := range members {
+			m := member // comply with scopelint
+			mu, err := proto.Marshal(&StreamEvent_MemberUpdated{&m})
 			if err != nil {
 				return err
 			}
-			if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeContactUpdated, cu}}); err != nil {
+			if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeMemberUpdated, mu}}); err != nil {
 				return err
 			}
 		}
@@ -547,6 +589,9 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 }
 
 func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCreate_Request) (*ConversationCreate_Reply, error) {
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+
 	dn := req.GetDisplayName()
 
 	// Create a multimember group
@@ -598,6 +643,19 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 		}
 	}
 
+	// activate group
+	{
+		_, err := svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: pk})
+		if err != nil {
+			svc.logger.Warn("failed to activate group", zap.String("pk", bytesToString(pk)))
+		}
+	}
+
+	// subscribe to group
+	if err := svc.subscribeToGroup(pk); err != nil {
+		return nil, err
+	}
+
 	// Try to put group name in group metadata
 	{
 		err := func() error {
@@ -624,7 +682,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 	{
 		err := func() error {
 			var acc Account
-			err = svc.db.First(&acc).Error
+			err = svc.db.Take(&acc).Error
 			if err != nil {
 				return err
 			}
@@ -638,7 +696,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 			return err
 		}()
 		if err != nil {
-			svc.logger.Error("failed to set username in group", zap.Error(err))
+			svc.logger.Error("failed to set creator username in group", zap.Error(err))
 		}
 	}
 
@@ -687,6 +745,9 @@ func (svc *service) ConversationJoin(ctx context.Context, req *ConversationJoin_
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+
 	bgroup := pdlr.GetBertyGroup()
 	gpkb := bgroup.GetGroup().GetPublicKey()
 	conv := Conversation{
@@ -722,12 +783,50 @@ func (svc *service) ConversationJoin(ctx context.Context, req *ConversationJoin_
 		return nil, errcode.TODO.Wrap(err)
 	}
 
+	// activate group
+	{
+		_, err := svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: gpkb})
+		if err != nil {
+			svc.logger.Warn("failed to activate group", zap.String("pk", bytesToString(gpkb)))
+		}
+	}
+
+	// subscribe to group
+	if err := svc.subscribeToGroup(gpkb); err != nil {
+		return nil, err
+	}
+
+	// Try to put user name in group metadata
+	{
+		err := func() error {
+			var acc Account
+			err = svc.db.Take(&acc).Error
+			if err != nil {
+				return err
+			}
+
+			am, err := AppMessage_TypeSetUserName.MarshalPayload(&AppMessage_SetUserName{Name: acc.GetDisplayName()})
+			if err != nil {
+				return err
+			}
+
+			_, err = svc.protocolClient.AppMetadataSend(ctx, &bertytypes.AppMetadataSend_Request{GroupPK: gpkb, Payload: am})
+			return err
+		}()
+		if err != nil {
+			svc.logger.Error("failed to set username in group", zap.Error(err))
+		}
+	}
+
 	return &ConversationJoin_Reply{}, nil
 }
 
 func (svc *service) AccountUpdate(ctx context.Context, req *AccountUpdate_Request) (*AccountUpdate_Reply, error) {
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+
 	var acc Account
-	if err := svc.db.First(&acc).Error; err != nil {
+	if err := svc.db.Take(&acc).Error; err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
@@ -737,7 +836,7 @@ func (svc *service) AccountUpdate(ctx context.Context, req *AccountUpdate_Reques
 	svc.logger.Debug("updating account", zap.String("display_name", dn))
 	if dn != "" && dn != acc.GetDisplayName() {
 		acc.DisplayName = dn
-		ret, err := svc.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{DisplayName: dn})
+		ret, err := svc.internalInstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{DisplayName: dn})
 		if err != nil {
 			return nil, err
 		}
@@ -803,8 +902,11 @@ func (svc *service) ContactRequest(ctx context.Context, req *ContactRequest_Requ
 		return nil, errcode.ErrInvalidInput
 	}
 
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+
 	var acc Account
-	if err := svc.db.First(&acc).Error; err != nil {
+	if err := svc.db.Take(&acc).Error; err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 	om, err := proto.Marshal(&ContactMetadata{DisplayName: acc.GetDisplayName()})
@@ -844,8 +946,11 @@ func (svc *service) ContactAccept(ctx context.Context, req *ContactAccept_Reques
 		return nil, errcode.ErrInvalidInput
 	}
 
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+
 	var c Contact
-	if err := svc.db.Where(Contact{PublicKey: pk}).First(&c).Error; err != nil {
+	if err := svc.db.Where(Contact{PublicKey: pk}).Take(&c).Error; err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
@@ -863,24 +968,31 @@ func (svc *service) ContactAccept(ctx context.Context, req *ContactAccept_Reques
 
 func (svc *service) Interact(ctx context.Context, req *Interact_Request) (*Interact_Reply, error) {
 	gpk := req.GetConversationPublicKey()
+	if gpk == "" {
+		return nil, errcode.ErrMissingInput
+	}
+
 	svc.logger.Info("interacting", zap.String("public-key", gpk))
 	gpkb, err := stringToBytes(gpk)
 	if err != nil {
-		return nil, err
+		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
+
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
 
 	switch req.GetType() {
 	case AppMessage_TypeUserMessage:
 		var p AppMessage_UserMessage
 		if err := proto.Unmarshal(req.GetPayload(), &p); err != nil {
-			return nil, err
+			return nil, errcode.ErrInvalidInput.Wrap(err)
 		}
 		if p.SentDate == 0 {
 			p.SentDate = timestampMs(time.Now())
 		}
 		fp, err := AppMessage_TypeUserMessage.MarshalPayload(&p)
 		if err != nil {
-			return nil, err
+			return nil, errcode.ErrInternal.Wrap(err)
 		}
 		_, err = svc.protocolClient.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{GroupPK: gpkb, Payload: fp})
 		if err != nil {
@@ -893,8 +1005,11 @@ func (svc *service) Interact(ctx context.Context, req *Interact_Request) (*Inter
 }
 
 func (svc *service) AccountGet(ctx context.Context, req *AccountGet_Request) (*AccountGet_Reply, error) {
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+
 	var acc Account
-	if err := svc.db.First(&acc).Error; err != nil {
+	if err := svc.db.Take(&acc).Error; err != nil {
 		return nil, err
 	}
 	return &AccountGet_Reply{Account: &acc}, nil
