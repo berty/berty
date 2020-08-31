@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect } from 'react'
+import React, { useState, useRef, useLayoutEffect, useEffect, useCallback } from 'react'
 import './App.css'
 import { MsgrContext, useMsgrContext } from '@berty-tech/store/context'
 import { MsgrProvider } from '@berty-tech/store/provider'
@@ -376,6 +376,55 @@ const CreateMultiMember = () => {
 	)
 }
 
+const SendToAll: React.FC = () => {
+	const [latestError, setLatestError] = useState(null)
+	const [disabled, setDisabled] = useState(false)
+	const ctx: any = React.useContext(MsgrContext)
+	const convs: any[] = Object.values(ctx.conversations).filter(
+		(conv: any) => conv.type === messengerpb.Conversation.Type.ContactType && !conv.fake,
+	)
+	const body = `Test, ${new Date(Date.now()).toLocaleString()}`
+	const buf: string = messengerpb.AppMessage.UserMessage.encode({ body }).finish()
+	const [sentToDisplayNames, setSentToDisplayNames] = useState([])
+
+	const handleSend = React.useCallback(async () => {
+		setSentToDisplayNames([])
+		setDisabled(true)
+		setLatestError(null)
+		let names = []
+		for (const conv of convs) {
+			try {
+				await ctx.client.interact({
+					conversationPublicKey: conv.publicKey,
+					type: messengerpb.AppMessage.Type.TypeUserMessage,
+					payload: buf,
+				})
+			} catch (e) {
+				setLatestError(e)
+			}
+			names.push(ctx.contacts[conv.contactPublicKey].displayName)
+		}
+		setSentToDisplayNames(names)
+		setDisabled(false)
+	}, [buf, convs, ctx.client, ctx.contacts])
+
+	return (
+		<div style={{ marginTop: '5%' }}>
+			<button onClick={handleSend} disabled={disabled}>
+				Send "<b>{body}</b>" to{' '}
+				{convs.map((conv) => ctx.contacts[conv.contactPublicKey]?.displayName).join(' ')}
+			</button>
+			{sentToDisplayNames.length > 0 && (
+				<>
+					<h4>Message sent to:</h4>
+					<JSONed value={sentToDisplayNames} />
+				</>
+			)}
+			{latestError && <Error value={latestError} />}
+		</div>
+	)
+}
+
 const JoinMultiMember = () => {
 	const [link, setLink] = useState('')
 	const [error, setError] = useState(null)
@@ -442,6 +491,7 @@ const TABS = {
 	Search: Search,
 	MultiMember: MultiMember,
 	DumpStore: DumpStore,
+	SendToAll: SendToAll
 }
 
 type TabKey = keyof typeof TABS
