@@ -408,9 +408,9 @@ func TestUnstable1To1Exchange(t *testing.T) {
 	}
 }
 
-func TestUnstable3PeersCreateJoinConversation(t *testing.T) {
+func TestBrokenPeersCreateJoinConversation(t *testing.T) {
 	testutil.SkipSlow(t)
-	testutil.SkipUnstable(t)
+	testutil.SkipBroken(t)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
@@ -504,11 +504,11 @@ func TestUnstable3PeersCreateJoinConversation(t *testing.T) {
 	}
 }
 
-func TestUnstable3PeersExchange(t *testing.T) {
+func TestBroken3PeersExchange(t *testing.T) {
 	testutil.SkipSlow(t)
-	testutil.SkipUnstable(t)
+	testutil.SkipBroken(t)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	logger := testutil.Logger(t)
 	clients, cleanup := testingInfra(ctx, t, 3, logger)
@@ -563,10 +563,11 @@ func TestUnstable3PeersExchange(t *testing.T) {
 	}
 }
 
-func TestUnstableConversationInvitation(t *testing.T) {
-	testutil.SkipUnstable(t)
+func TestBrokenConversationInvitation(t *testing.T) {
+	testutil.SkipBroken(t)
+	testutil.SkipSlow(t)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 	logger := testutil.Logger(t)
 	clients, cleanup := testingInfra(ctx, t, 3, logger)
@@ -628,9 +629,9 @@ func TestUnstableConversationInvitation(t *testing.T) {
 	}
 }
 
-func TestUnstableConversationInvitationAndExchange(t *testing.T) {
+func TestBrokenConversationInvitationAndExchange(t *testing.T) {
 	testutil.SkipSlow(t)
-	testutil.SkipUnstable(t)
+	testutil.SkipBroken(t)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
