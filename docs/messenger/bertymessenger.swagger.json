@@ -139,6 +139,38 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/ConversationClose": {
+      "post": {
+        "operationId": "MessengerService_ConversationClose",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ConversationCloseReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ConversationCloseRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/ConversationCreate": {
       "post": {
         "operationId": "MessengerService_ConversationCreate",
@@ -195,6 +227,38 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/v1ConversationJoinRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/berty.messenger.v1/MessengerService/ConversationOpen": {
+      "post": {
+        "operationId": "MessengerService_ConversationOpen",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ConversationOpenReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ConversationOpenRequest"
             }
           }
         ],
@@ -844,13 +908,12 @@
         "public_key": {
           "type": "string"
         },
-        "contact_public_key": {
-          "type": "string",
-          "title": "specific to ContactType conversations"
+        "type": {
+          "$ref": "#/definitions/v1ConversationType"
         },
-        "contact": {
-          "$ref": "#/definitions/v1Contact",
-          "title": "specific to ContactType conversations"
+        "is_open": {
+          "type": "boolean",
+          "format": "boolean"
         },
         "display_name": {
           "type": "string"
@@ -862,15 +925,36 @@
           "type": "integer",
           "format": "int32"
         },
+        "last_update": {
+          "type": "string",
+          "format": "int64",
+          "title": "last_update is used to sort conversations, it should be updated for each \"visible\" event"
+        },
+        "contact_public_key": {
+          "type": "string",
+          "title": "specific to ContactType conversations"
+        },
+        "contact": {
+          "$ref": "#/definitions/v1Contact",
+          "title": "specific to ContactType conversations"
+        },
         "members": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/v1Member"
           },
           "title": "specific to MultiMemberType conversations"
-        },
-        "type": {
-          "$ref": "#/definitions/v1ConversationType"
+        }
+      }
+    },
+    "v1ConversationCloseReply": {
+      "type": "object"
+    },
+    "v1ConversationCloseRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string"
         }
       }
     },
@@ -903,6 +987,17 @@
       "type": "object",
       "properties": {
         "link": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ConversationOpenReply": {
+      "type": "object"
+    },
+    "v1ConversationOpenRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
           "type": "string"
         }
       }
