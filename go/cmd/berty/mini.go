@@ -4,6 +4,8 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"os"
+	"path"
 
 	"berty.tech/berty/v2/go/cmd/berty/mini"
 	"berty.tech/berty/v2/go/internal/config"
@@ -12,12 +14,17 @@ import (
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"github.com/shibukawa/configdir"
 	"go.uber.org/zap"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	"moul.io/zapgorm2"
 )
 
 func miniCommand() *ffcli.Command {
 	var miniFlags = flag.NewFlagSet("mini demo client", flag.ExitOnError)
 	miniFlags.StringVar(&opts.miniGroup, "g", opts.miniGroup, "group to join, leave empty to create a new group")
 	miniFlags.StringVar(&opts.datastorePath, "d", opts.datastorePath, "datastore base directory")
+	miniFlags.StringVar(&opts.sqlitePath, "s", opts.datastorePath, "sqlite base directory")
+	miniFlags.BoolVar(&opts.replay, "replay", opts.replay, "reconstruct DB from orbitDB logs")
 	miniFlags.UintVar(&opts.miniPort, "p", opts.miniPort, "default IPFS listen port")
 	miniFlags.StringVar(&opts.remoteDaemonAddr, "r", opts.remoteDaemonAddr, "remote berty daemon")
 	miniFlags.StringVar(&opts.rdvpMaddr, "rdvp", opts.rdvpMaddr, "rendezvous point maddr")
@@ -44,7 +51,6 @@ func miniCommand() *ffcli.Command {
 
 				opts.datastorePath = storageDirs[0].Path
 			}
-
 			rootDS, dsLock, err := getRootDatastore(opts.datastorePath)
 			if err != nil {
 				return errcode.TODO.Wrap(err)
@@ -64,11 +70,34 @@ func miniCommand() *ffcli.Command {
 				l = opts.logger
 			}
 
+			var db *gorm.DB
+			if opts.sqlitePath != "" {
+				_, err := os.Stat(opts.sqlitePath)
+				if err != nil {
+					if !os.IsNotExist(err) {
+						return errcode.TODO.Wrap(err)
+					}
+					if err := os.MkdirAll(opts.sqlitePath, 0700); err != nil {
+						return errcode.TODO.Wrap(err)
+					}
+				}
+
+				basePath := path.Join(opts.sqlitePath, "sqlite.db")
+				db, err = gorm.Open(sqlite.Open(basePath), &gorm.Config{Logger: zapgorm2.New(opts.logger)})
+				if err != nil {
+					return err
+				}
+				sqlDB, _ := db.DB()
+				defer sqlDB.Close()
+			}
+
 			err = mini.Main(ctx, &mini.Opts{
 				RemoteAddr:      opts.remoteDaemonAddr,
 				GroupInvitation: opts.miniGroup,
 				Port:            opts.miniPort,
 				RootDS:          rootDS,
+				MessengerDB:     db,
+				ReplayLogs:      opts.replay,
 				Logger:          l,
 				POIDebug:        opts.poiDebug,
 				Bootstrap:       config.BertyDev.Bootstrap,

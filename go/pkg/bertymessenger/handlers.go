@@ -69,12 +69,40 @@ func groupMetadataPayloadSent(svc *service, gme *bertytypes.GroupMetadataEvent) 
 	return handleAppMessage(svc, groupPK, &groupMessageEvent, &appMessage)
 }
 
+func accountGroupJoined(svc *service, gme *bertytypes.GroupMetadataEvent) error {
+	var ev bertytypes.AccountGroupJoined
+	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
+		return err
+	}
+
+	groupPK := bytesToString(ev.GetGroup().GetPublicKey())
+	isNew := false
+
+	conversation, err := addConversation(svc.db, groupPK)
+	if err == nil {
+		isNew = true
+		svc.logger.Info("saved conversation in db")
+
+		// dispatch event
+		err = svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conversation})
+		if err != nil {
+			return err
+		}
+	} else if !errcode.Is(err, errcode.ErrDBEntryAlreadyExists) {
+		return errcode.ErrDBAddConversation.Wrap(err)
+	}
+
+	svc.logger.Info("AccountGroupJoined", zap.String("pk", groupPK), zap.Bool("is-new", isNew), zap.String("known-as", conversation.DisplayName))
+
+	return nil
+}
+
 func accountContactRequestOutgoingEnqueued(svc *service, gme *bertytypes.GroupMetadataEvent) error {
 	var ev bertytypes.AccountContactRequestEnqueued
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
 		return err
 	}
-	pkStr := bytesToString(ev.GetContact().GetPK())
+	contactPK := bytesToString(ev.GetContact().GetPK())
 
 	var cm ContactMetadata
 	err := proto.Unmarshal(ev.GetContact().GetMetadata(), &cm)
@@ -82,80 +110,14 @@ func accountContactRequestOutgoingEnqueued(svc *service, gme *bertytypes.GroupMe
 		return err
 	}
 
-	var exc Contact
-	err = svc.db.Where(Contact{PublicKey: pkStr}).Take(&exc).Error
-	switch err {
-	case gorm.ErrRecordNotFound:
-		// do nothing
-	case nil: // contact already exists
-		// Maybe update DisplayName in some cases?
-		// TODO: better handle case where the state is "IncomingRequest", should end up as in "Established" state in this case IMO
+	contact, err := addContactRequestOutgoingEnqueued(svc.db, contactPK, cm.DisplayName)
+	if errcode.Is(err, errcode.ErrDBEntryAlreadyExists) {
 		return nil
-	default: // any other error
-		return err
+	} else if err != nil {
+		return errcode.ErrDBAddContactRequestOutgoingEnqueud.Wrap(err)
 	}
 
-	c := &Contact{
-		DisplayName: cm.DisplayName,
-		PublicKey:   pkStr,
-		State:       Contact_OutgoingRequestEnqueued,
-	}
-	err = svc.db.Clauses(clause.OnConflict{DoNothing: true}).Create(c).Error
-	if err != nil {
-		return err
-	}
-
-	return svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{c})
-}
-
-func accountGroupJoined(svc *service, gme *bertytypes.GroupMetadataEvent) error {
-	var ev bertytypes.AccountGroupJoined
-	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
-		return err
-	}
-
-	pkb := ev.GetGroup().GetPublicKey()
-	b64PK := bytesToString(pkb)
-	isNew := false
-
-	// get or create conversation in DB
-	var conv Conversation
-	{
-		err := svc.db.
-			Where(Conversation{PublicKey: b64PK}).
-			First(&conv).
-			Error
-		switch err {
-		case gorm.ErrRecordNotFound: // not found, create a new one
-			conv.PublicKey = b64PK
-			conv.Type = Conversation_MultiMemberType
-			isNew = true
-			err := svc.db.
-				Clauses(clause.OnConflict{DoNothing: true}).
-				Create(&conv).
-				Error
-			if err != nil {
-				return err
-			}
-			svc.logger.Info("saved conversation in db")
-
-			// dispatch event
-			err = svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{&conv})
-			if err != nil {
-				return err
-			}
-
-		case nil: // contact already exists
-			// noop
-
-		default: // other error
-			return err
-		}
-	}
-
-	svc.logger.Info("AccountGroupJoined", zap.String("pk", b64PK), zap.Bool("is-new", isNew), zap.String("known-as", conv.DisplayName))
-
-	return nil
+	return svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{contact})
 }
 
 func accountContactRequestOutgoingSent(svc *service, gme *bertytypes.GroupMetadataEvent) error {
@@ -163,34 +125,22 @@ func accountContactRequestOutgoingSent(svc *service, gme *bertytypes.GroupMetada
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
 		return err
 	}
-	pkb := ev.GetContactPK()
-	pkStr := bytesToString(pkb)
+	contactPK := bytesToString(ev.GetContactPK())
 
-	var c Contact
-	if err := svc.db.Where(Contact{PublicKey: pkStr}).Take(&c).Error; err != nil {
-		return err
-	}
-
-	switch c.State {
-	case Contact_OutgoingRequestEnqueued:
-		c.State = Contact_OutgoingRequestSent
-	default:
-		return errcode.ErrInternal
-	}
-
-	if err := svc.db.Save(c).Error; err != nil {
-		return errcode.ErrInternal.Wrap(err)
+	contact, err := addContactRequestOutgoingSent(svc.db, contactPK)
+	if err != nil {
+		return errcode.ErrDBAddContactRequestOutgoingSent.Wrap(err)
 	}
 
 	// dispatch event
 	{
-		err := svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{&c})
+		err := svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{contact})
 		if err != nil {
 			return err
 		}
 	}
 
-	groupPK, err := svc.groupPKFromContactPK(pkb)
+	groupPK, err := groupPKFromContactPK(svc.ctx, svc.protocolClient, ev.GetContactPK())
 	if err != nil {
 		return err
 	}
@@ -210,7 +160,7 @@ func accountContactRequestIncomingReceived(svc *service, gme *bertytypes.GroupMe
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
 		return err
 	}
-	pkStr := bytesToString(ev.GetContactPK())
+	contactPK := bytesToString(ev.GetContactPK())
 
 	var m ContactMetadata
 	err := proto.Unmarshal(ev.GetContactMetadata(), &m)
@@ -218,13 +168,12 @@ func accountContactRequestIncomingReceived(svc *service, gme *bertytypes.GroupMe
 		return err
 	}
 
-	c := &Contact{DisplayName: m.GetDisplayName(), PublicKey: pkStr, State: Contact_IncomingRequest}
-	err = svc.db.Clauses(clause.OnConflict{DoNothing: true}).Create(c).Error
+	contact, err := addContactRequestIncomingReceived(svc.db, contactPK, m.GetDisplayName())
 	if err != nil {
-		return err
+		return errcode.ErrDBAddContactRequestIncomingReceived.Wrap(err)
 	}
 
-	return svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{c})
+	return svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{contact})
 }
 
 func accountContactRequestIncomingAccepted(svc *service, gme *bertytypes.GroupMetadataEvent) error {
@@ -232,84 +181,28 @@ func accountContactRequestIncomingAccepted(svc *service, gme *bertytypes.GroupMe
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
 		return err
 	}
-	pkb := ev.GetContactPK()
-	if pkb == nil {
+	if ev.GetContactPK() == nil {
 		return errcode.ErrInvalidInput
 	}
-	pkStr := bytesToString(pkb)
+	contactPK := bytesToString(ev.GetContactPK())
 
-	// retrieve contact from DB
-	var contact Contact
-	{
-		err := svc.db.
-			Where(Contact{PublicKey: pkStr}).
-			First(&contact).Error
-		if err != nil {
-			return err
-		}
+	groupPK, err := groupPKFromContactPK(svc.ctx, svc.protocolClient, ev.GetContactPK())
+	if err != nil {
+		return err
 	}
 
-	// update contact state from IncomingRequest to Established
-	{
-		if contact.State != Contact_IncomingRequest {
-			return errcode.ErrInternal
-		}
-		contact.State = Contact_Established
-	}
-
-	// compute account conversation pk
-	var groupPK []byte
-	{
-		var err error
-		groupPK, err = svc.groupPKFromContactPK(pkb)
-		if err != nil {
-			return err
-		}
-		contact.ConversationPublicKey = bytesToString(groupPK)
-	}
-
-	// create new contact conversation
-	var conversation Conversation
-	{
-		conversation = Conversation{
-			PublicKey:        contact.ConversationPublicKey,
-			Type:             Conversation_ContactType,
-			ContactPublicKey: pkStr,
-			DisplayName:      "", // empty on account conversations
-			Link:             "", // empty on account conversations
-		}
-	}
-
-	// update db (in transaction)
-	{
-		err := svc.db.Transaction(func(tx *gorm.DB) error {
-			// update existing contact
-			if err := tx.Save(&contact).Error; err != nil {
-				return err
-			}
-
-			// create new conversation
-			err := tx.
-				Clauses(clause.OnConflict{
-					Columns:   []clause.Column{{Name: "public_key"}},
-					DoUpdates: clause.AssignmentColumns([]string{"display_name", "link"}),
-				}).
-				Create(&conversation).
-				Error
-			return err
-		})
-		if err != nil {
-			return err
-		}
+	contact, conversation, err := addContactRequestIncomingAccepted(svc.db, contactPK, bytesToString(groupPK))
+	if err != nil {
+		return errcode.ErrDBAddContactRequestIncomingAccepted.Wrap(err)
 	}
 
 	// dispatch event to subscribers
 	{
-		err := svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{&contact})
+		err := svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{contact})
 		if err != nil {
 			return err
 		}
-		err = svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{&conversation})
+		err = svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conversation})
 		if err != nil {
 			return err
 		}
@@ -349,10 +242,14 @@ func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) er
 	dpk := bytesToString(dpkb)
 	gpk := bytesToString(dpkb)
 
-	isMe, err := svc.checkIsMe(&bertytypes.GroupMessageEvent{
-		EventContext: gme.GetEventContext(),
-		Headers:      &bertytypes.MessageHeaders{DevicePK: dpkb},
-	})
+	isMe, err := checkIsMe(
+		svc.ctx,
+		svc.protocolClient,
+		&bertytypes.GroupMessageEvent{
+			EventContext: gme.GetEventContext(),
+			Headers:      &bertytypes.MessageHeaders{DevicePK: dpkb},
+		},
+	)
 	if err != nil {
 		return err
 	}
@@ -431,7 +328,7 @@ func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) er
 			contact.State = Contact_Established
 
 			var err error
-			groupPK, err = svc.groupPKFromContactPK(mpkb)
+			groupPK, err = groupPKFromContactPK(svc.ctx, svc.protocolClient, mpkb)
 			if err != nil {
 				return err
 			}
@@ -510,7 +407,7 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 	svc.logger.Debug("received app message", zap.String("type", amt.String()))
 	cidb := gme.GetEventContext().GetID()
 	cid := bytesToString(cidb)
-	isMe, err := svc.checkIsMe(gme)
+	isMe, err := checkIsMe(svc.ctx, svc.protocolClient, gme)
 	if err != nil {
 		return err
 	}

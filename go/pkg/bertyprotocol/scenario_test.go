@@ -826,7 +826,7 @@ func sendMessageOnGroup(ctx context.Context, t *testing.T, senders, receivers []
 					GroupPK: groupPK,
 				}
 
-				ml, err := receiver.Client.GroupMessageList(ctx, &req)
+				ml, err := receiver.Client.GroupMessageList(subCtx, &req)
 				if !assert.NoError(t, err) {
 					return
 				}
