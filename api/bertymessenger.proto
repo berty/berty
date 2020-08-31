@@ -51,6 +51,22 @@ service MessengerService {
   rpc ContactRequest(ContactRequest.Request) returns (ContactRequest.Reply);
   rpc ContactAccept(ContactAccept.Request) returns (ContactAccept.Reply);
   rpc Interact(Interact.Request) returns (Interact.Reply);
+  rpc ConversationOpen(ConversationOpen.Request) returns (ConversationOpen.Reply);
+  rpc ConversationClose(ConversationClose.Request) returns (ConversationClose.Reply);
+}
+
+message ConversationOpen {
+  message Request {
+    string group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+  }
+  message Reply {}
+}
+
+message ConversationClose {
+  message Request {
+    string group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+  }
+  message Reply {}
 }
 
 message EchoTest {
@@ -272,18 +288,20 @@ message Contact {
 
 message Conversation {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
-  // specific to ContactType conversations
-  string contact_public_key = 2;
-  // specific to ContactType conversations
-  Contact contact = 3;
+  Type type = 2;
+  bool is_open = 3;
   string display_name = 4;
   string link = 5;
   int32 unread_count = 6;
+  // last_update is used to sort conversations, it should be updated for each "visible" event
+  int64 last_update = 7;
+  // specific to ContactType conversations
+  string contact_public_key = 8;
+  // specific to ContactType conversations
+  Contact contact = 9;
   // specific to MultiMemberType conversations
-  repeated Member members = 7;
-  Type type = 8;
-  // updated_at
-  // avatar_cid
+  repeated Member members = 10;
+  // TODO: avatar_cid
 
   enum Type {
     Undefined = 0;

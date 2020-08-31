@@ -95,6 +95,8 @@ export const berty = {
 	messenger: {
 		v1: {
 			MessengerService: jsonPb.lookup('.berty.messenger.v1.MessengerService'),
+			ConversationOpen: jsonPb.lookup('.berty.messenger.v1.ConversationOpen'),
+			ConversationClose: jsonPb.lookup('.berty.messenger.v1.ConversationClose'),
 			EchoTest: jsonPb.lookup('.berty.messenger.v1.EchoTest'),
 			InstanceShareableBertyID: jsonPb.lookup('.berty.messenger.v1.InstanceShareableBertyID'),
 			ShareableBertyGroup: jsonPb.lookup('.berty.messenger.v1.ShareableBertyGroup'),

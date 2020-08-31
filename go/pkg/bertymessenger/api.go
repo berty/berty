@@ -1025,3 +1025,105 @@ func (svc *service) EchoTest(req *EchoTest_Request, srv MessengerService_EchoTes
 		time.Sleep(time.Duration(req.Delay) * time.Millisecond)
 	}
 }
+
+func (svc *service) ConversationOpen(ctx context.Context, req *ConversationOpen_Request) (*ConversationOpen_Reply, error) {
+	// check input
+	if req.GroupPK == "" {
+		return nil, errcode.ErrMissingInput
+	}
+
+	ret := ConversationOpen_Reply{}
+
+	// get entry from db
+	conv := Conversation{PublicKey: req.GroupPK}
+	{
+		err := svc.db.
+			Where(&conv).
+			First(&conv).
+			Error
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
+	}
+
+	// sanity checks
+	{
+		// should we raise an error instead?
+		if conv.IsOpen {
+			return &ret, nil
+		}
+	}
+
+	// update entry in db
+	{
+		err := svc.db.
+			Model(&conv).
+			Update("is_open", true).
+			Update("unread_count", 0).
+			Error
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
+	}
+
+	// dispatch event to subscribers
+	{
+		err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{&conv})
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
+	}
+
+	return &ret, nil
+}
+
+func (svc *service) ConversationClose(ctx context.Context, req *ConversationClose_Request) (*ConversationClose_Reply, error) {
+	// check input
+	if req.GroupPK == "" {
+		return nil, errcode.ErrMissingInput
+	}
+
+	ret := ConversationClose_Reply{}
+
+	// get entry from db
+	conv := Conversation{PublicKey: req.GroupPK}
+	{
+		err := svc.db.
+			Where(&conv).
+			First(&conv).
+			Error
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
+	}
+
+	// sanity checks
+	{
+		// should we raise an error instead?
+		if !conv.IsOpen {
+			return &ret, nil
+		}
+	}
+
+	// update entry in db
+	{
+		err := svc.db.
+			Model(&conv).
+			Update("is_open", false).
+			Error
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
+	}
+
+	// dispatch event to subscribers
+	{
+		err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{&conv})
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
+	}
+
+	// FIXME: trigger update
+	return &ret, nil
+}

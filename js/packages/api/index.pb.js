@@ -1949,6 +1949,52 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   Interact: {
                     requestType: "Interact.Request",
                     responseType: "Interact.Reply"
+                  },
+                  ConversationOpen: {
+                    requestType: "ConversationOpen.Request",
+                    responseType: "ConversationOpen.Reply"
+                  },
+                  ConversationClose: {
+                    requestType: "ConversationClose.Request",
+                    responseType: "ConversationClose.Reply"
+                  }
+                }
+              },
+              ConversationOpen: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              ConversationClose: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
                   }
                 }
               },
@@ -2557,12 +2603,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       "(gogoproto.moretags)": "gorm:primary_key"
                     }
                   },
-                  contactPublicKey: {
-                    type: "string",
+                  type: {
+                    type: "Type",
                     id: 2
                   },
-                  contact: {
-                    type: "Contact",
+                  isOpen: {
+                    type: "bool",
                     id: 3
                   },
                   displayName: {
@@ -2577,14 +2623,22 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "int32",
                     id: 6
                   },
+                  lastUpdate: {
+                    type: "int64",
+                    id: 7
+                  },
+                  contactPublicKey: {
+                    type: "string",
+                    id: 8
+                  },
+                  contact: {
+                    type: "Contact",
+                    id: 9
+                  },
                   members: {
                     rule: "repeated",
                     type: "Member",
-                    id: 7
-                  },
-                  type: {
-                    type: "Type",
-                    id: 8
+                    id: 10
                   }
                 },
                 nested: {

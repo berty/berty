@@ -3012,6 +3012,10 @@ export namespace berty {
                 public contactAccept(request: berty.messenger.v1.ContactAccept.IRequest): Promise<berty.messenger.v1.ContactAccept.Reply>;
                 public interact(request: berty.messenger.v1.Interact.IRequest, callback: berty.messenger.v1.MessengerService.InteractCallback): void;
                 public interact(request: berty.messenger.v1.Interact.IRequest): Promise<berty.messenger.v1.Interact.Reply>;
+                public conversationOpen(request: berty.messenger.v1.ConversationOpen.IRequest, callback: berty.messenger.v1.MessengerService.ConversationOpenCallback): void;
+                public conversationOpen(request: berty.messenger.v1.ConversationOpen.IRequest): Promise<berty.messenger.v1.ConversationOpen.Reply>;
+                public conversationClose(request: berty.messenger.v1.ConversationClose.IRequest, callback: berty.messenger.v1.MessengerService.ConversationCloseCallback): void;
+                public conversationClose(request: berty.messenger.v1.ConversationClose.IRequest): Promise<berty.messenger.v1.ConversationClose.Reply>;
             }
 
             namespace MessengerService {
@@ -3051,6 +3055,116 @@ export namespace berty {
                 type ContactAcceptCallback = (error: (Error|null), response?: berty.messenger.v1.ContactAccept.Reply) => void;
 
                 type InteractCallback = (error: (Error|null), response?: berty.messenger.v1.Interact.Reply) => void;
+
+                type ConversationOpenCallback = (error: (Error|null), response?: berty.messenger.v1.ConversationOpen.Reply) => void;
+
+                type ConversationCloseCallback = (error: (Error|null), response?: berty.messenger.v1.ConversationClose.Reply) => void;
+            }
+
+            interface IConversationOpen {
+            }
+
+            class ConversationOpen implements IConversationOpen {
+
+                public static create(properties?: berty.messenger.v1.IConversationOpen): berty.messenger.v1.ConversationOpen;
+                public static encode(message: berty.messenger.v1.IConversationOpen, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IConversationOpen, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.ConversationOpen;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.ConversationOpen;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationOpen;
+                public static toObject(message: berty.messenger.v1.ConversationOpen, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace ConversationOpen {
+
+                interface IRequest {
+                    groupPk?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public groupPk: string;
+                    public static create(properties?: berty.messenger.v1.ConversationOpen.IRequest): berty.messenger.v1.ConversationOpen.Request;
+                    public static encode(message: berty.messenger.v1.ConversationOpen.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.ConversationOpen.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.ConversationOpen.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.ConversationOpen.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationOpen.Request;
+                    public static toObject(message: berty.messenger.v1.ConversationOpen.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                }
+
+                class Reply implements IReply {
+
+                    public static create(properties?: berty.messenger.v1.ConversationOpen.IReply): berty.messenger.v1.ConversationOpen.Reply;
+                    public static encode(message: berty.messenger.v1.ConversationOpen.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.ConversationOpen.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.ConversationOpen.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.ConversationOpen.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationOpen.Reply;
+                    public static toObject(message: berty.messenger.v1.ConversationOpen.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IConversationClose {
+            }
+
+            class ConversationClose implements IConversationClose {
+
+                public static create(properties?: berty.messenger.v1.IConversationClose): berty.messenger.v1.ConversationClose;
+                public static encode(message: berty.messenger.v1.IConversationClose, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IConversationClose, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.ConversationClose;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.ConversationClose;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationClose;
+                public static toObject(message: berty.messenger.v1.ConversationClose, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace ConversationClose {
+
+                interface IRequest {
+                    groupPk?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public groupPk: string;
+                    public static create(properties?: berty.messenger.v1.ConversationClose.IRequest): berty.messenger.v1.ConversationClose.Request;
+                    public static encode(message: berty.messenger.v1.ConversationClose.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.ConversationClose.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.ConversationClose.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.ConversationClose.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationClose.Request;
+                    public static toObject(message: berty.messenger.v1.ConversationClose.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                }
+
+                class Reply implements IReply {
+
+                    public static create(properties?: berty.messenger.v1.ConversationClose.IReply): berty.messenger.v1.ConversationClose.Reply;
+                    public static encode(message: berty.messenger.v1.ConversationClose.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.ConversationClose.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.ConversationClose.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.ConversationClose.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationClose.Reply;
+                    public static toObject(message: berty.messenger.v1.ConversationClose.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
             }
 
             interface IEchoTest {
@@ -3954,25 +4068,29 @@ export namespace berty {
 
             interface IConversation {
                 publicKey?: (string|null);
-                contactPublicKey?: (string|null);
-                contact?: (berty.messenger.v1.IContact|null);
+                type?: (berty.messenger.v1.Conversation.Type|null);
+                isOpen?: (boolean|null);
                 displayName?: (string|null);
                 link?: (string|null);
                 unreadCount?: (number|null);
+                lastUpdate?: (number|Long|null);
+                contactPublicKey?: (string|null);
+                contact?: (berty.messenger.v1.IContact|null);
                 members?: (berty.messenger.v1.IMember[]|null);
-                type?: (berty.messenger.v1.Conversation.Type|null);
             }
 
             class Conversation implements IConversation {
 
                 public publicKey: string;
-                public contactPublicKey: string;
-                public contact?: (berty.messenger.v1.IContact|null);
+                public type: berty.messenger.v1.Conversation.Type;
+                public isOpen: boolean;
                 public displayName: string;
                 public link: string;
                 public unreadCount: number;
+                public lastUpdate: (number|Long);
+                public contactPublicKey: string;
+                public contact?: (berty.messenger.v1.IContact|null);
                 public members: berty.messenger.v1.IMember[];
-                public type: berty.messenger.v1.Conversation.Type;
                 public static create(properties?: berty.messenger.v1.IConversation): berty.messenger.v1.Conversation;
                 public static encode(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;

@@ -236,21 +236,7 @@ func TestServiceConversationCreateLive(t *testing.T) {
 		createdConversationPK = reply.GetPublicKey()
 	}
 
-	// check for the first ConversationUpdated event (triggered on the join protocol event)
-	{
-		event := node.NextEvent(t)
-		require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
-		payload, err := event.UnmarshalPayload()
-		require.NoError(t, err)
-		conversation := payload.(*StreamEvent_ConversationUpdated).Conversation
-		require.NotNil(t, conversation)
-		require.Equal(t, conversation.GetType(), Conversation_MultiMemberType)
-		require.Equal(t, conversation.GetPublicKey(), createdConversationPK)
-		require.Empty(t, conversation.GetDisplayName())
-		require.Empty(t, conversation.GetLink())
-	}
-
-	// check for the second ConversationUpdated event (triggered when receiving the metadata with display name)
+	// check for the ConversationUpdated event
 	{
 		event := node.NextEvent(t)
 		require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
@@ -457,8 +443,10 @@ func Test3PeersCreateJoinConversation(t *testing.T) {
 	createdConv := testCreateConversation(ctx, t, creator, "My Group", nil, logger)
 
 	// joiners join the conversation
+	existingDevices := []*TestingAccount{creator}
 	for _, joiner := range joiners {
-		testJoinConversation(ctx, t, joiner, createdConv, logger)
+		testJoinConversation(ctx, t, joiner, createdConv, existingDevices, logger)
+		existingDevices = append(existingDevices, joiner)
 	}
 
 	// we should receive member updates for all other members
@@ -474,7 +462,7 @@ func Test3PeersCreateJoinConversation(t *testing.T) {
 		for len(toFind) > 0 {
 			event := accounts[i].NextEvent(t)
 			require.NotNil(t, event)
-			// skip devices udpates
+			// skip devices updates
 			if event.GetType() == StreamEvent_TypeDeviceUpdated {
 				continue
 			}
@@ -548,8 +536,10 @@ func Test3PeersExchange(t *testing.T) {
 	createdConv := testCreateConversation(ctx, t, creator, "My Group", nil, logger)
 
 	// joiners join the conversation
+	existingDevices := []*TestingAccount{creator}
 	for _, joiner := range joiners {
-		testJoinConversation(ctx, t, joiner, createdConv, logger)
+		testJoinConversation(ctx, t, joiner, createdConv, existingDevices, logger)
+		existingDevices = append(existingDevices, joiner)
 	}
 
 	// FIXME: replace by a check
@@ -692,9 +682,6 @@ func TestConversationInvitationAndExchange(t *testing.T) {
 		assert.Len(t, john.conversations, 3)
 	}
 
-	// FIXME: replace by a check
-	time.Sleep(5 * time.Second)
-
 	// interact
 	{
 		testSendGroupMessage(ctx, t, createdConv.GetPublicKey(), alice, []*TestingAccount{bob, john}, "Hello Group! (alice)", logger)
@@ -715,7 +702,158 @@ func TestConversationInvitationAndExchange(t *testing.T) {
 	}
 }
 
-func testJoinConversation(ctx context.Context, t *testing.T, joiner *TestingAccount, existingConv *Conversation, logger *zap.Logger) {
+func TestConversationOpenClose(t *testing.T) {
+	testutil.SkipSlow(t)
+	testutil.SkipUnstable(t)
+
+	logger := testutil.Logger(t)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	clients, cleanup := testingInfra(ctx, t, 2, logger)
+	defer cleanup()
+
+	// Init accounts
+	var (
+		alice = NewTestingAccount(ctx, t, clients[0], logger)
+		bob   = NewTestingAccount(ctx, t, clients[1], logger)
+	)
+	{
+		defer alice.Close()
+		alice.DrainInitEvents(t)
+
+		defer bob.Close()
+		bob.DrainInitEvents(t)
+	}
+
+	// Bob adds Alice as contact (and she accepts)
+	var groupPK string
+	{
+		aliceContact := testAddContact(ctx, t, bob, alice)
+		groupPK = aliceContact.GetConversationPublicKey()
+		require.Equal(t, alice.conversations[groupPK].UnreadCount, int32(0))
+		require.Equal(t, bob.conversations[groupPK].UnreadCount, int32(0))
+		require.Equal(t, alice.conversations[groupPK].LastUpdate, int64(0)) // FIXME: check if normal
+		require.Equal(t, bob.conversations[groupPK].LastUpdate, int64(0))   // FIXME: check if normal
+	}
+
+	// Bob opens the conversation
+	{
+		_, err := bob.GetClient().ConversationOpen(ctx, &ConversationOpen_Request{GroupPK: groupPK})
+		require.NoError(t, err)
+	}
+
+	// Bob has a ConversationUpdated event
+	{
+		event := bob.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
+		require.NotNil(t, event.GetPayload())
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		conversation := payload.(*StreamEvent_ConversationUpdated).GetConversation()
+		require.Equal(t, conversation.GetType(), Conversation_ContactType)
+		require.Equal(t, conversation.GetPublicKey(), groupPK)
+		require.True(t, conversation.GetIsOpen())
+		require.Zero(t, conversation.GetUnreadCount())
+		require.Zero(t, conversation.GetLastUpdate()) // FIXME: should be set because we already have one contact?
+	}
+
+	// Alice sends a message
+	{
+		aliceBefore := alice.conversations[groupPK].LastUpdate
+		bobBefore := bob.conversations[groupPK].LastUpdate
+		testSendGroupMessage(ctx, t, groupPK, alice, []*TestingAccount{bob}, "Hello Bob!", logger)
+		assert.Equal(t, int32(0), bob.conversations[groupPK].UnreadCount)
+		assert.Equal(t, int32(0), alice.conversations[groupPK].UnreadCount)
+		require.Greater(t, alice.conversations[groupPK].LastUpdate, aliceBefore)
+		require.Greater(t, bob.conversations[groupPK].LastUpdate, bobBefore)
+	}
+
+	// Bob sends a message
+	{
+		aliceBefore := alice.conversations[groupPK].LastUpdate
+		bobBefore := bob.conversations[groupPK].LastUpdate
+		testSendGroupMessage(ctx, t, groupPK, bob, []*TestingAccount{alice}, "Hello Alice!", logger)
+		assert.Equal(t, int32(0), bob.conversations[groupPK].UnreadCount)
+		assert.Equal(t, int32(1), alice.conversations[groupPK].UnreadCount)
+		require.Greater(t, alice.conversations[groupPK].LastUpdate, aliceBefore)
+		require.Greater(t, bob.conversations[groupPK].LastUpdate, bobBefore)
+	}
+
+	// Bob closes the conversation
+	{
+		_, err := bob.GetClient().ConversationClose(ctx, &ConversationClose_Request{GroupPK: groupPK})
+		require.NoError(t, err)
+	}
+
+	// Bob has a ConversationUpdated event
+	{
+		event := bob.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
+		require.NotNil(t, event.GetPayload())
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		conversation := payload.(*StreamEvent_ConversationUpdated).GetConversation()
+		require.Equal(t, conversation.GetType(), Conversation_ContactType)
+		require.Equal(t, conversation.GetPublicKey(), groupPK)
+		require.False(t, conversation.GetIsOpen())
+		require.Equal(t, conversation.GetUnreadCount(), int32(0))
+		require.NotZero(t, conversation.GetLastUpdate())
+	}
+
+	// Alice sends a message
+	{
+		aliceBefore := alice.conversations[groupPK].LastUpdate
+		bobBefore := bob.conversations[groupPK].LastUpdate
+		testSendGroupMessage(ctx, t, groupPK, alice, []*TestingAccount{bob}, "Hello Bob!", logger)
+		assert.Equal(t, int32(1), bob.conversations[groupPK].UnreadCount)
+		assert.Equal(t, int32(1), alice.conversations[groupPK].UnreadCount)
+		require.Greater(t, alice.conversations[groupPK].LastUpdate, aliceBefore)
+		require.Greater(t, bob.conversations[groupPK].LastUpdate, bobBefore)
+	}
+
+	// Bob sends a message
+	{
+		aliceBefore := alice.conversations[groupPK].LastUpdate
+		bobBefore := bob.conversations[groupPK].LastUpdate
+		testSendGroupMessage(ctx, t, groupPK, bob, []*TestingAccount{alice}, "Hello Alice!", logger)
+		assert.Equal(t, int32(1), bob.conversations[groupPK].UnreadCount)
+		assert.Equal(t, int32(2), alice.conversations[groupPK].UnreadCount)
+		require.Greater(t, alice.conversations[groupPK].LastUpdate, aliceBefore)
+		require.Greater(t, bob.conversations[groupPK].LastUpdate, bobBefore)
+	}
+
+	// Alice opens the conversation
+	{
+		_, err := alice.GetClient().ConversationOpen(ctx, &ConversationOpen_Request{GroupPK: groupPK})
+		require.NoError(t, err)
+	}
+
+	// Alice has a ConversationUpdated event
+	{
+		event := alice.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
+		require.NotNil(t, event.GetPayload())
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		conversation := payload.(*StreamEvent_ConversationUpdated).GetConversation()
+		require.Equal(t, conversation.GetType(), Conversation_ContactType)
+		require.Equal(t, conversation.GetPublicKey(), groupPK)
+		require.True(t, conversation.GetIsOpen())
+		require.Zero(t, conversation.GetUnreadCount())
+		require.NotZero(t, conversation.GetLastUpdate())
+	}
+
+	// no more event
+	{
+		event := alice.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
+
+		event = bob.TryNextEvent(t, 100*time.Millisecond)
+		require.Nil(t, event)
+	}
+}
+
+func testJoinConversation(ctx context.Context, t *testing.T, joiner *TestingAccount, existingConv *Conversation, existingDevices []*TestingAccount, logger *zap.Logger) {
 	t.Helper()
 
 	// joiner joins the conversation
@@ -727,6 +865,7 @@ func testJoinConversation(ctx context.Context, t *testing.T, joiner *TestingAcco
 	}
 
 	// joiner has ConversationUpdated event
+	var conv *Conversation
 	{
 		event := joiner.NextEvent(t)
 		require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
@@ -743,6 +882,45 @@ func testJoinConversation(ctx context.Context, t *testing.T, joiner *TestingAcco
 		}
 		require.Equal(t, conversation.GetLink(), existingConv.GetLink())
 		logger.Debug("testJoinConversation: conversation joined confirmation received")
+		conv = conversation
+	}
+
+	for _, existingDevice := range existingDevices {
+		// joiner receives a device update for each existing device
+		{
+			event := joiner.NextEvent(t)
+			require.Equal(t, event.GetType(), StreamEvent_TypeDeviceUpdated)
+			payload, err := event.UnmarshalPayload()
+			require.NoError(t, err)
+			device := payload.(*StreamEvent_DeviceUpdated).GetDevice()
+			// FIXME: can be better to check if public key and owner public key are unique here
+			require.NotEmpty(t, device.GetPublicKey())
+			require.NotEmpty(t, device.GetOwnerPublicKey())
+		}
+
+		// each existing device receives a device update for the joiner
+		{
+			event := existingDevice.NextEvent(t)
+			require.Equal(t, event.GetType(), StreamEvent_TypeDeviceUpdated)
+			payload, err := event.UnmarshalPayload()
+			require.NoError(t, err)
+			device := payload.(*StreamEvent_DeviceUpdated).GetDevice()
+			// FIXME: can be better to check if public key and owner public key are unique here
+			require.NotEmpty(t, device.GetOwnerPublicKey())
+			require.NotEmpty(t, device.GetPublicKey())
+		}
+
+		// each existing device receives a member update for the joiner
+		{
+			event := existingDevice.NextEvent(t)
+			require.Equal(t, event.GetType(), StreamEvent_TypeMemberUpdated)
+			payload, err := event.UnmarshalPayload()
+			require.NoError(t, err)
+			member := payload.(*StreamEvent_MemberUpdated).GetMember()
+			require.Equal(t, conv.GetPublicKey(), member.GetConversationPublicKey())
+			require.Equal(t, joiner.GetAccount().GetDisplayName(), member.GetDisplayName())
+			require.NotEmpty(t, member.GetPublicKey())
+		}
 	}
 }
 
@@ -840,6 +1018,28 @@ func testAddContact(ctx context.Context, t *testing.T, requester, requested *Tes
 		require.Equal(t, conversation.GetType(), Conversation_ContactType)
 	}
 
+	// Requester has a device-updated event
+	{
+		event := requester.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeDeviceUpdated)
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		device := payload.(*StreamEvent_DeviceUpdated).Device
+		require.Equal(t, requested.GetAccount().GetPublicKey(), device.GetOwnerPublicKey())
+		require.NotEmpty(t, device.GetPublicKey())
+	}
+
+	// Requested has a device-updated event
+	{
+		event := requested.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeDeviceUpdated)
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		device := payload.(*StreamEvent_DeviceUpdated).Device
+		require.Equal(t, requester.GetAccount().GetPublicKey(), device.GetOwnerPublicKey())
+		require.NotEmpty(t, device.GetPublicKey())
+	}
+
 	// Requester has a contact updated event (Established)
 	var contact *Contact
 	{
@@ -913,6 +1113,89 @@ func testSendGroupMessage(ctx context.Context, t *testing.T, groupPK string, sen
 		logger.Debug("testSendGroupMessage: message received by creator")
 	}
 
+	// sender has a conversation update event
+	{
+		before := sender.conversations[groupPK]
+		event := sender.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
+		eventPayload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		conversation := eventPayload.(*StreamEvent_ConversationUpdated).Conversation
+		require.NotEmpty(t, conversation)
+		require.Equal(t, conversation.GetPublicKey(), groupPK)
+		require.NotZero(t, conversation.GetType()) // this helper can be called in various contexts (account, contact, multi-member)
+		require.NotZero(t, conversation.GetLastUpdate())
+		require.LessOrEqual(t, beforeSend, conversation.GetLastUpdate())
+		// require.LessOrEqual(t, conversation.GetLastUpdate(), afterSend) // -> cannot be sure
+
+		// even if the conversation is closed, the unread cound should not increment if the interaction is from myself
+		require.Equal(t, conversation.GetUnreadCount(), before.GetUnreadCount())
+	}
+
+	for _, receiver := range receivers {
+		gotOwnAck := false
+		gotOthersAcks := 0
+		gotMsg := false
+		gotConversationUpdate := false
+
+		// we should receive one message + one ack + one conversation update per receiver
+		for i := 0; i < len(receivers)+2; i++ {
+			before := receiver.conversations[groupPK]
+			event := receiver.NextEvent(t)
+			switch event.GetType() {
+			case StreamEvent_TypeConversationUpdated:
+				eventPayload, err := event.UnmarshalPayload()
+				require.NoError(t, err)
+				conversation := eventPayload.(*StreamEvent_ConversationUpdated).Conversation
+				require.Equal(t, conversation.PublicKey, groupPK)
+				require.Equal(t, conversation.GetPublicKey(), groupPK)
+				require.NotZero(t, conversation.GetType()) // this helper can be called in various contexts (account, contact, multi-member)
+				require.NotZero(t, conversation.GetLastUpdate())
+				require.LessOrEqual(t, beforeSend, conversation.GetLastUpdate())
+				// require.LessOrEqual(t, conversation.GetLastUpdate(), afterSend) // -> cannot be sure
+				require.True(t, gotMsg) // should have the message before the conversation
+				if !before.IsOpen {
+					require.NotZero(t, conversation.GetUnreadCount())
+					require.Equal(t, conversation.GetUnreadCount(), before.GetUnreadCount()+1)
+				}
+				gotConversationUpdate = true
+			case StreamEvent_TypeInteractionUpdated:
+				eventPayload, err := event.UnmarshalPayload()
+				require.NoError(t, err)
+				interaction := eventPayload.(*StreamEvent_InteractionUpdated).Interaction
+				require.NotEmpty(t, interaction.GetCID())
+				require.Equal(t, interaction.GetConversationPublicKey(), groupPK)
+				interactionPayload, err := interaction.UnmarshalPayload()
+				require.NoError(t, err)
+				switch {
+				case interaction.GetType() == AppMessage_TypeAcknowledge && interaction.GetIsMe():
+					require.False(t, gotOwnAck)
+					gotOwnAck = true
+					ack := interactionPayload.(*AppMessage_Acknowledge)
+					require.Equal(t, ack.GetTarget(), messageCid)
+				case interaction.GetType() == AppMessage_TypeAcknowledge && !interaction.GetIsMe():
+					ack := interactionPayload.(*AppMessage_Acknowledge)
+					require.Equal(t, ack.GetTarget(), messageCid)
+					gotOthersAcks++
+				case interaction.GetType() == AppMessage_TypeUserMessage:
+					require.False(t, gotMsg)
+					gotMsg = true
+					require.Equal(t, interaction.GetCID(), messageCid)
+					userMessage := interactionPayload.(*AppMessage_UserMessage)
+					require.Equal(t, userMessage.GetBody(), msg)
+					require.LessOrEqual(t, beforeSend, userMessage.GetSentDate())
+					require.LessOrEqual(t, userMessage.GetSentDate(), afterSend)
+				default:
+					require.True(t, false) // maybe there is a better assert func for this :)
+				}
+			}
+		}
+		require.True(t, gotOwnAck)
+		require.True(t, gotMsg)
+		require.True(t, gotConversationUpdate)
+		require.Equal(t, gotOthersAcks, len(receivers)-1)
+	}
+
 	// sender has the ack event too
 	for i := 0; i < len(receivers); i++ {
 		event := sender.NextEvent(t)
@@ -930,46 +1213,6 @@ func testSendGroupMessage(ctx context.Context, t *testing.T, groupPK string, sen
 		require.Equal(t, ack.GetTarget(), messageCid)
 		logger.Debug("testSendGroupMessage: message ack received by creator")
 		// FIXME: check if the ack is from the good receiver, or useless?
-	}
-
-	for _, receiver := range receivers {
-		gotOwnAck := false
-		gotOthersAcks := 0
-		gotMsg := false
-		// we should receive one message + one ack per receiver
-		for i := 0; i < len(receivers)+1; i++ {
-			event := receiver.NextEvent(t)
-			require.Equal(t, event.GetType(), StreamEvent_TypeInteractionUpdated)
-			eventPayload, err := event.UnmarshalPayload()
-			require.NoError(t, err)
-			interaction := eventPayload.(*StreamEvent_InteractionUpdated).Interaction
-			require.NotEmpty(t, interaction.GetCID())
-			require.Equal(t, interaction.GetConversationPublicKey(), groupPK)
-			interactionPayload, err := interaction.UnmarshalPayload()
-			require.NoError(t, err)
-			switch {
-			case interaction.GetType() == AppMessage_TypeAcknowledge && interaction.GetIsMe():
-				require.False(t, gotOwnAck)
-				gotOwnAck = true
-				ack := interactionPayload.(*AppMessage_Acknowledge)
-				require.Equal(t, ack.GetTarget(), messageCid)
-			case interaction.GetType() == AppMessage_TypeAcknowledge && !interaction.GetIsMe():
-				ack := interactionPayload.(*AppMessage_Acknowledge)
-				require.Equal(t, ack.GetTarget(), messageCid)
-				gotOthersAcks++
-			case interaction.GetType() == AppMessage_TypeUserMessage:
-				require.False(t, gotMsg)
-				gotMsg = true
-				require.Equal(t, interaction.GetCID(), messageCid)
-				userMessage := interactionPayload.(*AppMessage_UserMessage)
-				require.Equal(t, userMessage.GetBody(), msg)
-				require.LessOrEqual(t, beforeSend, userMessage.GetSentDate())
-				require.LessOrEqual(t, userMessage.GetSentDate(), afterSend)
-			}
-		}
-		require.True(t, gotOwnAck)
-		require.True(t, gotMsg)
-		require.Equal(t, gotOthersAcks, len(receivers)-1)
 	}
 }
 
@@ -1004,6 +1247,8 @@ func testCreateConversation(ctx context.Context, t *testing.T, creator *TestingA
 		createdConv = conversation
 	}
 
+	invitationLinks := map[string]string{}
+
 	for _, invitee := range invitees {
 		// creator see the invitation in 1-1 conv
 		{
@@ -1021,7 +1266,21 @@ func testCreateConversation(ctx context.Context, t *testing.T, creator *TestingA
 			require.NoError(t, err)
 			inviteLink := interactionPayload.(*AppMessage_GroupInvitation).GetLink()
 			require.NotEmpty(t, inviteLink)
+		}
 
+		// creator get a conversation update event
+		{
+			event := creator.NextEvent(t)
+			require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
+			eventPayload, err := event.UnmarshalPayload()
+			require.NoError(t, err)
+			conversation := eventPayload.(*StreamEvent_ConversationUpdated).Conversation
+			require.NotEmpty(t, conversation)
+			// require.Equal(t, conversation.GetPublicKey(), 1to1conv.pk)
+			require.NotZero(t, conversation.GetType()) // this helper can be called in various contexts (account, contact, multi-member)
+			require.NotZero(t, conversation.GetLastUpdate())
+			// require.LessOrEqual(t, beforeSend, conversation.GetLastUpdate())
+			// require.LessOrEqual(t, conversation.GetLastUpdate(), afterSend) // -> cannot be sure
 		}
 
 		// invitee receive the invitation
@@ -1041,15 +1300,35 @@ func testCreateConversation(ctx context.Context, t *testing.T, creator *TestingA
 			require.NoError(t, err)
 			inviteLink = interactionPayload.(*AppMessage_GroupInvitation).GetLink()
 			require.NotEmpty(t, inviteLink)
+			invitationLinks[invitee.GetAccount().GetPublicKey()] = inviteLink
 		}
 
+		// invitee get a conversation update event
+		{
+			event := invitee.NextEvent(t)
+			require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
+			eventPayload, err := event.UnmarshalPayload()
+			require.NoError(t, err)
+			conversation := eventPayload.(*StreamEvent_ConversationUpdated).Conversation
+			require.NotEmpty(t, conversation)
+			// require.Equal(t, conversation.GetPublicKey(), 1to1conv.pk)
+			require.NotZero(t, conversation.GetType()) // this helper can be called in various contexts (account, contact, multi-member)
+			require.NotZero(t, conversation.GetLastUpdate())
+			// require.LessOrEqual(t, beforeSend, conversation.GetLastUpdate())
+			// require.LessOrEqual(t, conversation.GetLastUpdate(), afterSend) // -> cannot be sure
+		}
+	}
+
+	existingDevices := []*TestingAccount{creator}
+	for _, invitee := range invitees {
 		// invitee accepts the invitation
 		{
 			conversation := &Conversation{
-				Link: inviteLink,
-				// FIXME: parse the link to get the name and public key (bonus)
+				Link: invitationLinks[invitee.GetAccount().GetPublicKey()],
+				// bonus: parse the link to get the name and public key (bonus)
 			}
-			testJoinConversation(ctx, t, invitee, conversation, logger)
+			testJoinConversation(ctx, t, invitee, conversation, existingDevices, logger)
+			existingDevices = append(existingDevices, invitee)
 		}
 	}
 

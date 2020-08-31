@@ -104,6 +104,9 @@ func (event *StreamEvent) UnmarshalPayload() (proto.Message, error) {
 	case StreamEvent_TypeMemberUpdated:
 		var ret StreamEvent_MemberUpdated
 		return &ret, proto.Unmarshal(event.GetPayload(), &ret)
+	case StreamEvent_TypeDeviceUpdated:
+		var ret StreamEvent_DeviceUpdated
+		return &ret, proto.Unmarshal(event.GetPayload(), &ret)
 	}
 	return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported StreamEvent type: %q", event.GetType()))
 }

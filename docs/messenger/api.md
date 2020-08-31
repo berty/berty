@@ -29,12 +29,18 @@
     - [ContactRequest.Reply](#berty.messenger.v1.ContactRequest.Reply)
     - [ContactRequest.Request](#berty.messenger.v1.ContactRequest.Request)
     - [Conversation](#berty.messenger.v1.Conversation)
+    - [ConversationClose](#berty.messenger.v1.ConversationClose)
+    - [ConversationClose.Reply](#berty.messenger.v1.ConversationClose.Reply)
+    - [ConversationClose.Request](#berty.messenger.v1.ConversationClose.Request)
     - [ConversationCreate](#berty.messenger.v1.ConversationCreate)
     - [ConversationCreate.Reply](#berty.messenger.v1.ConversationCreate.Reply)
     - [ConversationCreate.Request](#berty.messenger.v1.ConversationCreate.Request)
     - [ConversationJoin](#berty.messenger.v1.ConversationJoin)
     - [ConversationJoin.Reply](#berty.messenger.v1.ConversationJoin.Reply)
     - [ConversationJoin.Request](#berty.messenger.v1.ConversationJoin.Request)
+    - [ConversationOpen](#berty.messenger.v1.ConversationOpen)
+    - [ConversationOpen.Reply](#berty.messenger.v1.ConversationOpen.Reply)
+    - [ConversationOpen.Request](#berty.messenger.v1.ConversationOpen.Request)
     - [ConversationStream](#berty.messenger.v1.ConversationStream)
     - [ConversationStream.Reply](#berty.messenger.v1.ConversationStream.Reply)
     - [ConversationStream.Request](#berty.messenger.v1.ConversationStream.Request)
@@ -281,13 +287,33 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | public_key | [string](#string) |  |  |
-| contact_public_key | [string](#string) |  | specific to ContactType conversations |
-| contact | [Contact](#berty.messenger.v1.Contact) |  | specific to ContactType conversations |
+| type | [Conversation.Type](#berty.messenger.v1.Conversation.Type) |  |  |
+| is_open | [bool](#bool) |  |  |
 | display_name | [string](#string) |  |  |
 | link | [string](#string) |  |  |
 | unread_count | [int32](#int32) |  |  |
-| members | [Member](#berty.messenger.v1.Member) | repeated | specific to MultiMemberType conversations |
-| type | [Conversation.Type](#berty.messenger.v1.Conversation.Type) |  | updated_at avatar_cid |
+| last_update | [int64](#int64) |  | last_update is used to sort conversations, it should be updated for each &#34;visible&#34; event |
+| contact_public_key | [string](#string) |  | specific to ContactType conversations |
+| contact | [Contact](#berty.messenger.v1.Contact) |  | specific to ContactType conversations |
+| members | [Member](#berty.messenger.v1.Member) | repeated | specific to MultiMemberType conversations
+
+TODO: avatar_cid |
+
+<a name="berty.messenger.v1.ConversationClose"></a>
+
+### ConversationClose
+
+<a name="berty.messenger.v1.ConversationClose.Reply"></a>
+
+### ConversationClose.Reply
+
+<a name="berty.messenger.v1.ConversationClose.Request"></a>
+
+### ConversationClose.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.ConversationCreate"></a>
 
@@ -325,6 +351,22 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | link | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.ConversationOpen"></a>
+
+### ConversationOpen
+
+<a name="berty.messenger.v1.ConversationOpen.Reply"></a>
+
+### ConversationOpen.Reply
+
+<a name="berty.messenger.v1.ConversationOpen.Request"></a>
+
+### ConversationOpen.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.ConversationStream"></a>
 
@@ -790,6 +832,8 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | ContactRequest | [ContactRequest.Request](#berty.messenger.v1.ContactRequest.Request) | [ContactRequest.Reply](#berty.messenger.v1.ContactRequest.Reply) |  |
 | ContactAccept | [ContactAccept.Request](#berty.messenger.v1.ContactAccept.Request) | [ContactAccept.Reply](#berty.messenger.v1.ContactAccept.Reply) |  |
 | Interact | [Interact.Request](#berty.messenger.v1.Interact.Request) | [Interact.Reply](#berty.messenger.v1.Interact.Reply) |  |
+| ConversationOpen | [ConversationOpen.Request](#berty.messenger.v1.ConversationOpen.Request) | [ConversationOpen.Reply](#berty.messenger.v1.ConversationOpen.Reply) |  |
+| ConversationClose | [ConversationClose.Request](#berty.messenger.v1.ConversationClose.Request) | [ConversationClose.Reply](#berty.messenger.v1.ConversationClose.Reply) |  |
 
  
 

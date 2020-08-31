@@ -57,3 +57,9 @@ http:
  - selector: berty.messenger.v1.MessengerService.Interact
    post: /berty.messenger.v1/MessengerService/Interact
    body: "*"
+ - selector: berty.messenger.v1.MessengerService.ConversationOpen
+   post: /berty.messenger.v1/MessengerService/ConversationOpen
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.ConversationClose
+   post: /berty.messenger.v1/MessengerService/ConversationClose
+   body: "*"
