@@ -293,14 +293,21 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 			return nil, errcode.TODO.Wrap(err)
 		}
 
+		deviceDS := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootds, datastore.NewKey("account")))
+		mk := bertyprotocol.NewMessageKeystore(ipfsutil.NewNamespacedDatastore(rootds, datastore.NewKey("messages")))
+		orbitdbDS := ipfsutil.NewNamespacedDatastore(rootds, datastore.NewKey("orbitdb"))
+
 		// initialize new protocol client
 		protocolOpts := bertyprotocol.Opts{
-			PubSub:         ps,
-			Logger:         logger.Named("bertyprotocol"),
-			OrbitDirectory: odbDir,
-			RootDatastore:  rootds,
-			IpfsCoreAPI:    api,
-			TinderDriver:   disc,
+			PubSub:          ps,
+			Logger:          logger.Named("bertyprotocol"),
+			OrbitDirectory:  odbDir,
+			RootDatastore:   rootds,
+			MessageKeystore: mk,
+			DeviceKeystore:  bertyprotocol.NewDeviceKeystore(deviceDS),
+			OrbitCache:      bertyprotocol.NewOrbitDatastoreCache(orbitdbDS),
+			IpfsCoreAPI:     api,
+			TinderDriver:    disc,
 		}
 
 		if node != nil {
@@ -453,7 +460,6 @@ func (p *MessengerBridge) HandleState(appstate int) {
 		}
 		p.currentAppState = appstate
 	}
-
 }
 func (p *MessengerBridge) HandleTask() LifeCycleBackgroundTask {
 	tr := tracer.New("AppState")
@@ -503,8 +509,7 @@ func (p *MessengerBridge) Close() error {
 	// close bridge
 	if err := p.Bridge.Close(); err != nil {
 		errs = multierr.Append(errs,
-			fmt.Errorf("unable to close grpc bridge", err))
-
+			fmt.Errorf("unable to close grpc bridge: %s", err))
 	}
 
 	// close messenger
@@ -513,33 +518,35 @@ func (p *MessengerBridge) Close() error {
 	// protocol client
 	if err := p.protocolClient.Close(); err != nil {
 		errs = multierr.Append(errs,
-			fmt.Errorf("unable to close protocol client", err))
+			fmt.Errorf("unable to close protocol client: %s", err))
 	}
 
 	// close protocol
 	if err := p.protocolService.Close(); err != nil {
 		errs = multierr.Append(errs,
-			fmt.Errorf("unable to close protocol service", err))
+			fmt.Errorf("unable to close protocol service: %s", err))
 	}
 
-	if err := p.node.Close(); err != nil {
-		errs = multierr.Append(errs,
-			fmt.Errorf("unable to close ipfs node", err))
+	if p.node != nil {
+		if err := p.node.Close(); err != nil {
+			errs = multierr.Append(errs,
+				fmt.Errorf("unable to close ipfs node: %s", err))
+		}
 	}
 
 	if err := p.ds.Close(); err != nil {
 		errs = multierr.Append(errs,
-			fmt.Errorf("unable to close datastore", err))
+			fmt.Errorf("unable to close datastore: %s", err))
 	}
 
 	// closing messenger db
 	sqlDB, err := p.msngrDB.DB()
 	if err != nil {
 		errs = multierr.Append(errs,
-			fmt.Errorf("unable to get messenger db", err))
+			fmt.Errorf("unable to get messenger db: %s", err))
 	} else if err := sqlDB.Close(); err != nil {
 		errs = multierr.Append(errs,
-			fmt.Errorf("unable to close messenger db", err))
+			fmt.Errorf("unable to close messenger db: %s", err))
 	}
 
 	return errs
