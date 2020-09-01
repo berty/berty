@@ -22,7 +22,7 @@ func countEntries(out <-chan *bertytypes.GroupMessageEvent) int {
 }
 
 func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
-	testutil.SkipSlow(t)
+	testutil.FilterSpeed(t, testutil.Slow)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -81,7 +81,7 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 	out, err = peers[1].GC.MessageStore().ListMessages(ctx)
 	assert.NoError(t, err)
 
-	testutil.SkipUnstable(t) // after this line, the test is unstable, especially on low hardware
+	testutil.FilterStability(t, testutil.Unstable)
 
 	<-time.After(time.Second)
 

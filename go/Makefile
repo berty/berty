@@ -75,11 +75,11 @@ go.unstable-tests:
 	go install moul.io/retry
 	cd ./pkg/bertymessenger && go test -c -o ./tests.bin .
 	@for test in `cd ./pkg/bertymessenger; go test -list . | grep -E "^TestUnstable"`; do \
-	  (set -xe; DONT_SKIP_UNSTABLE=1 retry -m 10 ./pkg/bertymessenger/tests.bin -test.count 1 -test.run "^$$test\$$" 2>/dev/null || echo "  $$test failed 10/10 times"); \
+	  (set -xe; TEST_STABILITY='unstable' retry -m 10 ./pkg/bertymessenger/tests.bin -test.count 1 -test.run "^$$test\$$" 2>/dev/null || echo "  $$test failed 10/10 times"); \
 	done
 	cd ./pkg/bertyprotocol && go test -c -o ./tests.bin .
 	@for test in `cd ./pkg/bertyprotocol; go test -list . | grep -E "^TestScenario_"`; do \
-	  (set -xe; TEST_FILTER='unstable' retry -m 10 ./pkg/bertyprotocol/tests.bin -test.count 1 -test.run "^$$test\$$" 2>/dev/null || echo "  $$test failed 10/10 times"); \
+	  (set -xe; TEST_STABILITY='unstable' retry -m 10 ./pkg/bertyprotocol/tests.bin -test.count 1 -test.run "^$$test\$$" 2>/dev/null || echo "  $$test failed 10/10 times"); \
 	done
 
 .PHONY: go.install

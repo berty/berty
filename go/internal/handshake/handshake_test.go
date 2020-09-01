@@ -19,7 +19,7 @@ import (
 )
 
 func TestValidHandshake(t *testing.T) {
-	testutil.SkipSlow(t)
+	testutil.FilterSpeed(t, testutil.Slow)
 
 	var requesterTest requesterTestFunc = func(
 		t *testing.T,
@@ -59,7 +59,7 @@ func TestValidHandshake(t *testing.T) {
 }
 
 func TestInvalidRequesterHello(t *testing.T) {
-	testutil.SkipSlow(t)
+	testutil.FilterSpeed(t, testutil.Slow)
 
 	t.Log("Requester interrupts by closing stream")
 	{
@@ -93,7 +93,7 @@ func TestInvalidRequesterHello(t *testing.T) {
 }
 
 func TestInvalidResponderHello(t *testing.T) {
-	testutil.SkipSlow(t)
+	testutil.FilterSpeed(t, testutil.Slow)
 
 	t.Log("Responder interrupts by closing stream")
 	{
@@ -136,7 +136,7 @@ func TestInvalidResponderHello(t *testing.T) {
 }
 
 func TestInvalidRequesterAuthenticate(t *testing.T) {
-	testutil.SkipSlow(t)
+	testutil.FilterSpeed(t, testutil.Slow)
 
 	t.Log("Requester interrupts by closing stream")
 	{
@@ -679,7 +679,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 }
 
 func TestInvalidResponderAccept(t *testing.T) {
-	testutil.SkipSlow(t)
+	testutil.FilterSpeed(t, testutil.Slow)
 
 	t.Log("Responder interrupts by closing stream")
 	{
@@ -1106,7 +1106,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 }
 
 func TestInvalidResponderAcceptAck(t *testing.T) {
-	testutil.SkipSlow(t)
+	testutil.FilterSpeed(t, testutil.Slow)
 
 	t.Log("Requester interrupts by closing stream")
 	{

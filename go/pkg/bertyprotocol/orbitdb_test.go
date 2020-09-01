@@ -54,7 +54,7 @@ func newTestOrbitDB(ctx context.Context, t *testing.T, logger *zap.Logger, node 
 }
 
 func TestDifferentStores(t *testing.T) {
-	testutil.SkipSlow(t)
+	testutil.FilterSpeed(t, testutil.Slow)
 	logger := testutil.Logger(t)
 
 	ctx, cancel := context.WithCancel(context.Background())

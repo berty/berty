@@ -14,7 +14,7 @@ import (
 )
 
 func TestUnstableServiceStream(t *testing.T) {
-	testutil.SkipUnstable(t)
+	testutil.FilterStability(t, testutil.Unstable)
 
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
@@ -49,7 +49,7 @@ func TestUnstableServiceStream(t *testing.T) {
 }
 
 func TestUnstableServiceSetName(t *testing.T) {
-	testutil.SkipUnstable(t)
+	testutil.FilterStability(t, testutil.Unstable)
 
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
@@ -140,7 +140,7 @@ func TestServiceSetNameAsync(t *testing.T) {
 }
 
 func TestUnstableServiceStreamCancel(t *testing.T) {
-	testutil.SkipUnstable(t)
+	testutil.FilterStability(t, testutil.Unstable)
 
 	ctx, ctxCancel := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
@@ -166,7 +166,7 @@ func TestUnstableServiceStreamCancel(t *testing.T) {
 }
 
 func TestUnstableServiceContactRequest(t *testing.T) {
-	testutil.SkipUnstable(t)
+	testutil.FilterStability(t, testutil.Unstable)
 
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
@@ -217,7 +217,7 @@ func TestUnstableServiceContactRequest(t *testing.T) {
 }
 
 func TestUnstableServiceConversationCreateLive(t *testing.T) {
-	testutil.SkipUnstable(t)
+	testutil.FilterStability(t, testutil.Unstable)
 
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
@@ -258,7 +258,7 @@ func TestUnstableServiceConversationCreateLive(t *testing.T) {
 }
 
 func TestUnstableServiceConversationCreateAsync(t *testing.T) {
-	testutil.SkipUnstable(t)
+	testutil.FilterStability(t, testutil.Unstable)
 
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
@@ -308,8 +308,7 @@ func TestUnstableServiceConversationCreateAsync(t *testing.T) {
 }
 
 func TestUnstable1To1AddContact(t *testing.T) {
-	testutil.SkipSlow(t)
-	testutil.SkipUnstable(t)
+	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
 
 	logger := testutil.Logger(t)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -355,8 +354,7 @@ func TestUnstable1To1AddContact(t *testing.T) {
 }
 
 func TestUnstable1To1Exchange(t *testing.T) {
-	testutil.SkipSlow(t)
-	testutil.SkipUnstable(t)
+	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
 
 	logger := testutil.Logger(t)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -409,8 +407,7 @@ func TestUnstable1To1Exchange(t *testing.T) {
 }
 
 func TestBrokenPeersCreateJoinConversation(t *testing.T) {
-	testutil.SkipSlow(t)
-	testutil.SkipBroken(t)
+	testutil.FilterStabilityAndSpeed(t, testutil.Broken, testutil.Slow)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
@@ -505,8 +502,7 @@ func TestBrokenPeersCreateJoinConversation(t *testing.T) {
 }
 
 func TestBroken3PeersExchange(t *testing.T) {
-	testutil.SkipSlow(t)
-	testutil.SkipBroken(t)
+	testutil.FilterStabilityAndSpeed(t, testutil.Broken, testutil.Slow)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -564,8 +560,7 @@ func TestBroken3PeersExchange(t *testing.T) {
 }
 
 func TestBrokenConversationInvitation(t *testing.T) {
-	testutil.SkipBroken(t)
-	testutil.SkipSlow(t)
+	testutil.FilterStabilityAndSpeed(t, testutil.Broken, testutil.Slow)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
@@ -630,8 +625,7 @@ func TestBrokenConversationInvitation(t *testing.T) {
 }
 
 func TestBrokenConversationInvitationAndExchange(t *testing.T) {
-	testutil.SkipSlow(t)
-	testutil.SkipBroken(t)
+	testutil.FilterStabilityAndSpeed(t, testutil.Broken, testutil.Slow)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -704,8 +698,7 @@ func TestBrokenConversationInvitationAndExchange(t *testing.T) {
 }
 
 func TestUnstableConversationOpenClose(t *testing.T) {
-	testutil.SkipSlow(t)
-	testutil.SkipUnstable(t)
+	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
 
 	logger := testutil.Logger(t)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

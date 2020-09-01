@@ -13,7 +13,7 @@ import (
 )
 
 func TestContactRequestFlow(t *testing.T) {
-	testutil.SkipSlow(t)
+	testutil.FilterSpeed(t, testutil.Slow)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*20)
 	defer cancel()
@@ -136,7 +136,7 @@ func TestContactRequestFlow(t *testing.T) {
 }
 
 func TestContactRequestFlowWithoutIncoming(t *testing.T) {
-	testutil.SkipSlow(t)
+	testutil.FilterSpeed(t, testutil.Slow)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
