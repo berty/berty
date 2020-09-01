@@ -96,6 +96,12 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 			if err != nil {
 				return nil, err
 			}
+
+			_, err = svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: gpkb})
+			if err != nil {
+				return nil, err
+			}
+
 			if err := svc.subscribeToGroup(gpkb); err != nil {
 				return nil, err
 			}
@@ -115,6 +121,11 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 			}
 
 			gpkb, err := stringToBytes(c.GetConversationPublicKey())
+			if err != nil {
+				return nil, err
+			}
+
+			_, err = svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: gpkb})
 			if err != nil {
 				return nil, err
 			}
