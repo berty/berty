@@ -3,7 +3,6 @@ package testutil
 import (
 	"flag"
 	"os"
-	"strconv"
 	"testing"
 
 	ipfs_log "github.com/ipfs/go-log"
@@ -69,9 +68,4 @@ func Logger(t *testing.T) *zap.Logger {
 	}
 
 	return logger
-}
-
-func parseBoolFromEnv(key string) (b bool) {
-	b, _ = strconv.ParseBool(os.Getenv(key))
-	return
 }
