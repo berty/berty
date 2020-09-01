@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/internal/tracer"
@@ -66,12 +67,7 @@ func newService(ctx context.Context, logger *zap.Logger, opts *Opts) (bertyproto
 			fmt.Sprintf("/ip6/0.0.0.0/udp/%d/quic", opts.Port+1),
 		}
 	} else {
-		swarmAddresses = []string{
-			"/ip4/0.0.0.0/tcp/0",
-			"/ip6/0.0.0.0/tcp/0",
-			"/ip4/0.0.0.0/udp/0/quic",
-			"/ip6/0.0.0.0/udp/0/quic",
-		}
+		swarmAddresses = config.BertyDev.DefaultSwarmAddrs
 	}
 
 	if opts.RendezVousPeer == nil {
