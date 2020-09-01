@@ -34,6 +34,7 @@ type Transport struct {
 
 func NewTransportConstructorWithLogger(l *zap.Logger) func(h host.Host, u *tptu.Upgrader) (*Transport, error) {
 	if l != nil {
+		l.Named("MC Transport")
 		logger = l
 	}
 	return NewTransport
@@ -42,6 +43,7 @@ func NewTransportConstructorWithLogger(l *zap.Logger) func(h host.Host, u *tptu.
 // NewTransport creates a transport object that tracks dialers and listener.
 // It also starts the discovery service.
 func NewTransport(h host.Host, u *tptu.Upgrader) (*Transport, error) {
+	logger.Debug("New multipeer connectivity transport")
 	return &Transport{
 		host:     h,
 		upgrader: u,
