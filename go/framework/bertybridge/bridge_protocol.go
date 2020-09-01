@@ -20,6 +20,7 @@ import (
 	ipfs_badger "github.com/ipfs/go-ds-badger"
 	"github.com/ipfs/go-ipfs/core"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
+	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/peerstore"
@@ -39,6 +40,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -185,8 +187,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 				SwarmAddrs:        defaultSwarmAddrs,
 				APIAddrs:          defaultAPIAddrs,
 				APIConfig:         APIConfig,
-				// @FIXME: this can cause some crash in debug, disable it for the moment
-				// ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
+				ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
 				HostConfig: func(h host.Host, _ routing.Routing) error {
 					var err error
 
