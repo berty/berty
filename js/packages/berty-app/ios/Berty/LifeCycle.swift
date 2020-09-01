@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  LifeCycle.swift
 //  Berty Debug
 //
 //  Created by Guilhem Fanton on 08/01/2020.
@@ -15,7 +15,7 @@ class LifeCycle: NSObject {
     // init logger driver
     static let logger: LoggerDriver = LoggerDriver("tech.berty", "lifecycle")
     static let shared: LifeCycle = LifeCycle()
-    var notifCount: Int = 0 // for testing purpose
+    var notifCount = notifCounter() // for testing purpose
 
     @objc static func getSharedInstance() -> LifeCycle {
         return LifeCycle.shared
@@ -32,16 +32,17 @@ class LifeCycle: NSObject {
 
             switch task {
             case is BGProcessingTask:
+                self.notifCount.increment(k: .processing)
                 self.scheduleBackgroundProcessing(identifier: identifier)
-                notif.setBody(body: "Handle Processing Task #\(self.notifCount)").schedule()
+                notif.setBody(body: "Processing Task #\(self.notifCount.notifProcessing) (total: \(self.notifCount.total())").schedule()
             case is BGAppRefreshTask:
+                self.notifCount.increment(k: .refresh)
                 self.scheduleAppRefresh(identifier: identifier)
-                notif.setBody(body: "Handle AppRefresh Task #\(self.notifCount))").schedule()
+                notif.setBody(body: "AppRefresh Task #\(self.notifCount.notifRefresh) (total: \(self.notifCount.total())").schedule()
             default:
-                notif.setBody(body: "Handle Unknow Task #\(self.notifCount)").schedule()
+                notif.setBody(body: "Handle Unknow Task #\(self.notifCount.total())").schedule()
             }
 
-            self.notifCount += 1
             LifeCycle.logger.print(notif.body as NSString)
             self.handle(task: task)
         }
@@ -127,5 +128,26 @@ class LifeCycle: NSObject {
     func willTerminate() {
         LifeCycle.logger.print("will terminate")
         LifeCycleDriver.shared.willTerminate()
+    }
+}
+
+// for testing purpose
+struct notifCounter {
+    enum kind {
+        case refresh, processing
+    }
+
+    var notifProcessing = 0
+    var notifRefresh = 0
+
+  func total() -> Int {
+      return notifProcessing + notifRefresh
+  }
+
+    mutating func increment(k: kind) {
+        switch k {
+        case .refresh: notifRefresh += 1
+        case .processing: notifProcessing += 1
+        }
     }
 }
