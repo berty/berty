@@ -98,7 +98,7 @@ func TestGenerateRendezvousPointForPeriod(t *testing.T) {
 }
 
 func TestAnnounceWatchForPeriod(t *testing.T) {
-	testutil.SkipSlow(t)
+	testutil.FilterSpeed(t, testutil.Slow)
 	cases := []struct {
 		expectedPeersFound int
 		topicA             []byte

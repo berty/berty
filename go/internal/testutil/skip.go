@@ -1,28 +1,109 @@
 package testutil
 
 import (
+	"fmt"
+	"os"
+	"strings"
 	"testing"
 )
 
-func SkipSlow(t *testing.T) {
+// Stability level enum
+type Stability string
+
+const (
+	Stable       Stability = "stable"
+	Unstable     Stability = "unstable"
+	Broken       Stability = "broken"
+	AnyStability Stability = "any"
+)
+
+// Speed level enum
+type Speed string
+
+const (
+	Fast     Speed = "fast"
+	Slow     Speed = "slow"
+	AnySpeed Speed = "any"
+)
+
+// Default levels
+const (
+	defaultStabilityFilter Stability = Stable
+	defaultSpeedFilter     Speed     = AnySpeed
+)
+
+var (
+	enabledStability = map[Stability]bool{}
+	enabledSpeed     = map[Speed]bool{}
+	envParsed        = false
+)
+
+func parseEnv() {
+	// Get stability filters
+	stabFilter := os.Getenv("TEST_STABILITY")
+	if stabFilter == "" {
+		stabFilter = string(defaultStabilityFilter)
+	}
+
+	for _, level := range strings.Split(stabFilter, ",") {
+		switch Stability(level) {
+		case Stable, Unstable, Broken:
+			enabledStability[Stability(level)] = true
+		case AnyStability:
+			enabledStability[Stable] = true
+			enabledStability[Unstable] = true
+			enabledStability[Broken] = true
+		default:
+			panic(fmt.Sprintf("invalid stability level: %s", level))
+		}
+	}
+
+	// Get speed filters
+	speedFilter := os.Getenv("TEST_SPEED")
+	if speedFilter == "" {
+		speedFilter = string(defaultSpeedFilter)
+	}
+
+	for _, level := range strings.Split(speedFilter, ",") {
+		switch Speed(level) {
+		case Slow, Fast:
+			enabledSpeed[Speed(level)] = true
+		case AnySpeed:
+			enabledSpeed[Slow] = true
+			enabledSpeed[Fast] = true
+		default:
+			panic(fmt.Sprintf("invalid speed level: %s", level))
+		}
+	}
+
+	envParsed = true
+}
+
+func FilterStability(t *testing.T, stability Stability) {
 	t.Helper()
-	if parseBoolFromEnv("SKIP_SLOW_TESTS") {
-		t.Skip("slow test skipped")
+
+	if !envParsed {
+		parseEnv()
+	}
+
+	if !enabledStability[stability] {
+		t.Skip(fmt.Sprintf("skip test with %s stability", stability))
 	}
 }
 
-func SkipUnstable(t *testing.T) {
+func FilterSpeed(t *testing.T, speed Speed) {
 	t.Helper()
-	if !parseBoolFromEnv("DONT_SKIP_UNSTABLE") {
-		t.Log("FIXME: stabilize test")
-		t.Skip("unstable test skipped")
+
+	if !envParsed {
+		parseEnv()
+	}
+
+	if !enabledSpeed[speed] {
+		t.Skip(fmt.Sprintf("skip test with %s speed", speed))
 	}
 }
 
-func SkipBroken(t *testing.T) {
-	t.Helper()
-	if !parseBoolFromEnv("DONT_SKIP_BROKEN") {
-		t.Log("FIXME: stabilize test")
-		t.Skip("broken test skipped")
-	}
+func FilterStabilityAndSpeed(t *testing.T, stability Stability, speed Speed) {
+	FilterStability(t, stability)
+	FilterSpeed(t, speed)
 }

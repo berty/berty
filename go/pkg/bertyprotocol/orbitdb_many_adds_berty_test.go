@@ -23,7 +23,7 @@ import (
 
 func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, g *bertytypes.Group, pathBase string, amountToAdd, amountCurrentlyPresent int) {
 	t.Helper()
-	testutil.SkipSlow(t)
+	testutil.FilterSpeed(t, testutil.Slow)
 
 	api := node.API()
 	ctx, cancel := context.WithCancel(ctx)

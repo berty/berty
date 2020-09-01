@@ -95,11 +95,11 @@ jobs:
       - name: Run fast tests multiple times
         run: |
           cd go
-          SKIP_SLOW_TESTS=1 make go.unittest GO_TEST_OPTS="-v -test.timeout=600s -count 5"
+          TEST_SPEED=fast make go.unittest GO_TEST_OPTS="-v -test.timeout=600s -count 5"
       - name: Run all tests
         run: |
           cd go
-          SKIP_SLOW_TESTS=0 make go.unittest GO_TEST_OPTS="-v -test.timeout=600s -count 1"
+          TEST_SPEED=any make go.unittest GO_TEST_OPTS="-v -test.timeout=600s -count 1"
       #- name: Run all tests with race flag and generate coverage
       #  uses: nick-invision/retry@v1
       #  with:
@@ -107,11 +107,11 @@ jobs:
       #    max_attempts: 5
       #    command: |
       #      cd go
-      #      SKIP_SLOW_TESTS=0 make go.unittest GO_TEST_OPTS="-v -test.timeout=1200s -count 1 -race -cover -coverprofile=coverage.txt -covermode=atomic"
+      #      TEST_SPEED=any make go.unittest GO_TEST_OPTS="-v -test.timeout=1200s -count 1 -race -cover -coverprofile=coverage.txt -covermode=atomic"
       - name: Run all tests with race flag and generate coverage
         run: |
           cd go
-          SKIP_SLOW_TESTS=0 make go.unittest GO_TEST_OPTS="-v -test.timeout=1200s -count 1 -race -cover -coverprofile=coverage.txt -covermode=atomic"
+          TEST_SPEED=any make go.unittest GO_TEST_OPTS="-v -test.timeout=1200s -count 1 -race -cover -coverprofile=coverage.txt -covermode=atomic"
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:

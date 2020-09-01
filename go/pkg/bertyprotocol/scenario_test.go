@@ -30,8 +30,8 @@ type testCase struct {
 	Name           string
 	NumberOfClient int
 	ConnectFunc    ConnnectTestingProtocolFunc
-	IsSlowTest     bool
-	IsUnstableTest bool
+	Speed          testutil.Speed
+	Stability      testutil.Stability
 	Timeout        time.Duration
 }
 
@@ -41,15 +41,15 @@ type testFunc func(context.Context, *testing.T, ...*TestingProtocol)
 
 func TestScenario_CreateMultiMemberGroup(t *testing.T) {
 	cases := []testCase{
-		{"2 clients/connectAll", 2, ConnectAll, false, true, time.Second * 10},
-		{"3 clients/connectAll", 3, ConnectAll, false, true, time.Second * 10},
-		{"3 clients/connectInLine", 3, ConnectInLine, false, true, time.Second * 10},
-		{"5 clients/connectAll", 5, ConnectAll, true, true, time.Second * 10},
-		{"5 clients/connectInLine", 5, ConnectInLine, true, true, time.Second * 10},
-		{"8 clients/connectAll", 8, ConnectAll, true, true, time.Second * 10},
-		{"8 clients/connectInLine", 8, ConnectInLine, true, true, time.Second * 10},
-		{"10 clients/connectAll", 10, ConnectAll, true, true, time.Second * 10},
-		{"10 clients/connectInLine", 10, ConnectInLine, true, true, time.Second * 10},
+		{"2 clients/connectAll", 2, ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 10},
+		{"3 clients/connectAll", 3, ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 10},
+		{"3 clients/connectInLine", 3, ConnectInLine, testutil.Fast, testutil.Unstable, time.Second * 10},
+		{"5 clients/connectAll", 5, ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 20},
+		{"5 clients/connectInLine", 5, ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 20},
+		{"8 clients/connectAll", 8, ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 30},
+		{"8 clients/connectInLine", 8, ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 30},
+		{"10 clients/connectAll", 10, ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 40},
+		{"10 clients/connectInLine", 10, ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 40},
 	}
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*TestingProtocol) {
@@ -59,15 +59,15 @@ func TestScenario_CreateMultiMemberGroup(t *testing.T) {
 
 func TestScenario_MessageMultiMemberGroup(t *testing.T) {
 	cases := []testCase{
-		{"2 clients/connectAll", 2, ConnectAll, false, true, time.Second * 10},
-		{"3 clients/connectAll", 3, ConnectAll, false, true, time.Second * 10},
-		{"3 clients/connectInLine", 3, ConnectInLine, false, true, time.Second * 10},
-		{"5 clients/connectAll", 5, ConnectAll, true, true, time.Second * 10},
-		{"5 clients/connectInLine", 5, ConnectInLine, true, true, time.Second * 10},
-		{"8 clients/connectAll", 8, ConnectAll, true, true, time.Second * 10},
-		{"8 clients/connectInLine", 8, ConnectInLine, true, true, time.Second * 10},
-		{"10 clients/connectAll", 10, ConnectAll, true, true, time.Second * 10},
-		{"10 clients/connectInLine", 10, ConnectInLine, true, true, time.Second * 10},
+		{"2 clients/connectAll", 2, ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 10},
+		{"3 clients/connectAll", 3, ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 10},
+		{"3 clients/connectInLine", 3, ConnectInLine, testutil.Fast, testutil.Unstable, time.Second * 10},
+		{"5 clients/connectAll", 5, ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 20},
+		{"5 clients/connectInLine", 5, ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 20},
+		{"8 clients/connectAll", 8, ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 30},
+		{"8 clients/connectInLine", 8, ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 30},
+		{"10 clients/connectAll", 10, ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 40},
+		{"10 clients/connectInLine", 10, ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 40},
 	}
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*TestingProtocol) {
@@ -84,15 +84,15 @@ func TestScenario_MessageSeveralMultiMemberGroups(t *testing.T) {
 	const ngroup = 3
 
 	cases := []testCase{
-		{"2 clients/connectAll", 2, ConnectAll, false, true, time.Second * 10},
-		{"3 clients/connectAll", 3, ConnectAll, false, true, time.Second * 10},
-		{"3 clients/connectInLine", 3, ConnectInLine, false, true, time.Second * 10},
-		{"5 clients/connectAll", 5, ConnectAll, true, true, time.Second * 10},
-		{"5 clients/connectInLine", 5, ConnectInLine, true, true, time.Second * 10},
-		{"8 clients/connectAll", 8, ConnectAll, true, true, time.Second * 10},
-		{"8 clients/connectInLine", 8, ConnectInLine, true, true, time.Second * 10},
-		{"10 clients/connectAll", 10, ConnectAll, true, true, time.Second * 10},
-		{"10 clients/connectInLine", 10, ConnectInLine, true, true, time.Second * 10},
+		{"2 clients/connectAll", 2, ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 10},
+		{"3 clients/connectAll", 3, ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 10},
+		{"3 clients/connectInLine", 3, ConnectInLine, testutil.Fast, testutil.Unstable, time.Second * 10},
+		{"5 clients/connectAll", 5, ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 20},
+		{"5 clients/connectInLine", 5, ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 20},
+		{"8 clients/connectAll", 8, ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 30},
+		{"8 clients/connectInLine", 8, ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 30},
+		{"10 clients/connectAll", 10, ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 40},
+		{"10 clients/connectInLine", 10, ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 40},
 	}
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*TestingProtocol) {
@@ -110,16 +110,15 @@ func TestScenario_MessageSeveralMultiMemberGroups(t *testing.T) {
 
 func TestScenario_AddContact(t *testing.T) {
 	cases := []testCase{
-		{"2 clients/connectAll", 2, ConnectAll, false, true, time.Second * 20},       // marked as "unstable" because it failed multiple times on the CI recently
-		{"3 clients/connectAll", 3, ConnectAll, false, true, time.Second * 20},       // marked as "unstable" because it failed multiple times on the CI recently
-		{"3 clients/connectInLine", 3, ConnectInLine, false, true, time.Second * 20}, // marked as "unstable" because it failed multiple times on the CI recently
-		{"5 clients/connectAll", 5, ConnectAll, true, true, time.Second * 30},        // marked as "unstable" because it failed multiple times on the CI recently
-		{"5 clients/connectInLine", 5, ConnectInLine, true, true, time.Second * 30},  // marked as "unstable" because it failed multiple times on the CI recently
-		{"8 clients/connectAll", 8, ConnectAll, true, true, time.Second * 300},       // marked as "unstable" because too slow, but it works
-		{"8 clients/connectInLine", 8, ConnectInLine, true, true, time.Second * 300}, // marked as "unstable" because too slow, but it works
-		// FIXME: all test cases below
-		// {"10 clients/connectAll", 10, ConnectAll, true, false, time.Second * 60},
-		// {"10 clients/connectInLine", 10, ConnectInLine, true, false, time.Second * 60},
+		{"2 clients/connectAll", 2, ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 20},       // marked as "unstable" because it failed multiple times on the CI recently
+		{"3 clients/connectAll", 3, ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 20},       // marked as "unstable" because it failed multiple times on the CI recently
+		{"3 clients/connectInLine", 3, ConnectInLine, testutil.Fast, testutil.Unstable, time.Second * 20}, // marked as "unstable" because it failed multiple times on the CI recently
+		{"5 clients/connectAll", 5, ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 30},       // marked as "unstable" because it failed multiple times on the CI recently
+		{"5 clients/connectInLine", 5, ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 30}, // marked as "unstable" because it failed multiple times on the CI recently
+		{"8 clients/connectAll", 8, ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 40},       // marked as "unstable" because it failed multiple times on the CI recently
+		{"8 clients/connectInLine", 8, ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 40}, // marked as "unstable" because it failed multiple times on the CI recently
+		{"10 clients/connectAll", 10, ConnectAll, testutil.Slow, testutil.Broken, time.Second * 60},
+		{"10 clients/connectInLine", 10, ConnectInLine, testutil.Slow, testutil.Broken, time.Second * 60},
 	}
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*TestingProtocol) {
@@ -129,16 +128,15 @@ func TestScenario_AddContact(t *testing.T) {
 
 func TestScenario_MessageContactGroup(t *testing.T) {
 	cases := []testCase{
-		// FIXME: all test cases below
-		{"2 clients/connectAll", 2, ConnectAll, false, true, time.Second * 20},
-		{"3 clients/connectAll", 3, ConnectAll, false, true, time.Second * 20},
-		{"3 clients/connectInLine", 3, ConnectInLine, false, true, time.Second * 20},
-		{"5 clients/connectAll", 5, ConnectAll, true, true, time.Second * 30},
-		{"5 clients/connectInLine", 5, ConnectInLine, true, true, time.Second * 30},
-		// {"8 clients/connectAll", 8, ConnectAll, true, false, time.Second * 40},
-		// {"8 clients/connectInLine", 8, ConnectInLine, true, false, time.Second * 40},
-		// {"10 clients/connectAll", 10, ConnectAll, true, false, time.Second * 60},
-		// {"10 clients/connectInLine", 10, ConnectInLine, true, false, time.Second * 60},
+		{"2 clients/connectAll", 2, ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 20},
+		{"3 clients/connectAll", 3, ConnectAll, testutil.Fast, testutil.Unstable, time.Second * 20},
+		{"3 clients/connectInLine", 3, ConnectInLine, testutil.Fast, testutil.Unstable, time.Second * 20},
+		{"5 clients/connectAll", 5, ConnectAll, testutil.Slow, testutil.Unstable, time.Second * 30},
+		{"5 clients/connectInLine", 5, ConnectInLine, testutil.Slow, testutil.Unstable, time.Second * 30},
+		{"8 clients/connectAll", 8, ConnectAll, testutil.Slow, testutil.Broken, time.Second * 40},
+		{"8 clients/connectInLine", 8, ConnectInLine, testutil.Slow, testutil.Broken, time.Second * 40},
+		{"10 clients/connectAll", 10, ConnectAll, testutil.Slow, testutil.Broken, time.Second * 60},
+		{"10 clients/connectInLine", 10, ConnectInLine, testutil.Slow, testutil.Broken, time.Second * 60},
 	}
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*TestingProtocol) {
@@ -154,7 +152,7 @@ func TestScenario_MessageContactGroup(t *testing.T) {
 
 func TestScenario_MessageAccountGroup(t *testing.T) {
 	cases := []testCase{
-		{"1 client/connectAll", 1, ConnectAll, false, false, time.Second * 10},
+		{"1 client/connectAll", 1, ConnectAll, testutil.Fast, testutil.Stable, time.Second * 10},
 	}
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*TestingProtocol) {
@@ -171,16 +169,15 @@ func TestScenario_MessageAccountGroup(t *testing.T) {
 
 func TestScenario_MessageAccountAndMultiMemberGroups(t *testing.T) {
 	cases := []testCase{
-		// FIXME: all test cases below
-		// {"2 clients/connectAll", 2, ConnectAll, false, false, time.Second * 10},
-		// {"3 clients/connectAll", 3, ConnectAll, false, true, time.Second * 10},
-		// {"3 clients/connectInLine", 3, ConnectInLine, false, true, time.Second * 10},
-		// {"5 clients/connectAll", 5, ConnectAll, true, true, time.Second * 10},
-		// {"5 clients/connectInLine", 5, ConnectInLine, true, true, time.Second * 10},
-		// {"8 clients/connectAll", 8, ConnectAll, true, true, time.Second * 10},
-		// {"8 clients/connectInLine", 8, ConnectInLine, true, true, time.Second * 10},
-		// {"10 clients/connectAll", 10, ConnectAll, true, true, time.Second * 10},
-		// {"10 clients/connectInLine", 10, ConnectInLine, true, true, time.Second * 10},
+		{"2 clients/connectAll", 2, ConnectAll, testutil.Fast, testutil.Broken, time.Second * 10},
+		{"3 clients/connectAll", 3, ConnectAll, testutil.Fast, testutil.Broken, time.Second * 10},
+		{"3 clients/connectInLine", 3, ConnectInLine, testutil.Fast, testutil.Broken, time.Second * 10},
+		{"5 clients/connectAll", 5, ConnectAll, testutil.Slow, testutil.Broken, time.Second * 20},
+		{"5 clients/connectInLine", 5, ConnectInLine, testutil.Slow, testutil.Broken, time.Second * 20},
+		{"8 clients/connectAll", 8, ConnectAll, testutil.Slow, testutil.Broken, time.Second * 30},
+		{"8 clients/connectInLine", 8, ConnectInLine, testutil.Slow, testutil.Broken, time.Second * 30},
+		{"10 clients/connectAll", 10, ConnectAll, testutil.Slow, testutil.Broken, time.Second * 40},
+		{"10 clients/connectInLine", 10, ConnectInLine, testutil.Slow, testutil.Broken, time.Second * 40},
 	}
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*TestingProtocol) {
@@ -214,16 +211,15 @@ func TestScenario_MessageAccountAndMultiMemberGroups(t *testing.T) {
 
 func TestScenario_MessageAccountAndContactGroups(t *testing.T) {
 	cases := []testCase{
-		// FIXME: all test cases below
-		// {"2 clients/connectAll", 2, ConnectAll, false, false, time.Second * 10},
-		// {"3 clients/connectAll", 3, ConnectAll, false, true, time.Second * 10},
-		// {"3 clients/connectInLine", 3, ConnectInLine, false, true, time.Second * 10},
-		// {"5 clients/connectAll", 5, ConnectAll, true, true, time.Second * 10},
-		// {"5 clients/connectInLine", 5, ConnectInLine, true, true, time.Second * 10},
-		// {"8 clients/connectAll", 8, ConnectAll, true, true, time.Second * 10},
-		// {"8 clients/connectInLine", 8, ConnectInLine, true, true, time.Second * 10},
-		// {"10 clients/connectAll", 10, ConnectAll, true, true, time.Second * 10},
-		// {"10 clients/connectInLine", 10, ConnectInLine, true, true, time.Second * 10},
+		{"2 clients/connectAll", 2, ConnectAll, testutil.Fast, testutil.Broken, time.Second * 10},
+		{"3 clients/connectAll", 3, ConnectAll, testutil.Fast, testutil.Broken, time.Second * 10},
+		{"3 clients/connectInLine", 3, ConnectInLine, testutil.Fast, testutil.Broken, time.Second * 10},
+		{"5 clients/connectAll", 5, ConnectAll, testutil.Slow, testutil.Broken, time.Second * 20},
+		{"5 clients/connectInLine", 5, ConnectInLine, testutil.Slow, testutil.Broken, time.Second * 20},
+		{"8 clients/connectAll", 8, ConnectAll, testutil.Slow, testutil.Broken, time.Second * 30},
+		{"8 clients/connectInLine", 8, ConnectInLine, testutil.Slow, testutil.Broken, time.Second * 30},
+		{"10 clients/connectAll", 10, ConnectAll, testutil.Slow, testutil.Broken, time.Second * 40},
+		{"10 clients/connectInLine", 10, ConnectInLine, testutil.Slow, testutil.Broken, time.Second * 40},
 	}
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*TestingProtocol) {
@@ -285,12 +281,7 @@ func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
 
 	for _, tc := range tcs {
 		t.Run(tc.Name, func(t *testing.T) {
-			if tc.IsSlowTest {
-				testutil.SkipSlow(t)
-			}
-			if tc.IsUnstableTest {
-				testutil.SkipUnstable(t)
-			}
+			testutil.FilterStabilityAndSpeed(t, tc.Stability, tc.Speed)
 
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()

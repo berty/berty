@@ -91,7 +91,7 @@ func TestMetadataStoreMember(t *testing.T) {
 			if tc.slow {
 				// TODO: re-enable this test
 				t.Skip()
-				testutil.SkipSlow(t)
+				testutil.FilterSpeed(t, testutil.Slow)
 			}
 
 			testMemberStore(t, tc.memberCount, tc.deviceCount)
@@ -486,7 +486,7 @@ func TestMetadataContactLifecycle(t *testing.T) {
 }
 
 func TestMetadataAliasLifecycle(t *testing.T) {
-	testutil.SkipSlow(t)
+	testutil.FilterSpeed(t, testutil.Slow)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

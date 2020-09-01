@@ -379,7 +379,7 @@ func testMessageKeyHolderCatchUp(t *testing.T, expectedNewDevices int, isSlow bo
 	defer cancel()
 
 	if isSlow {
-		testutil.SkipSlow(t)
+		testutil.FilterSpeed(t, testutil.Slow)
 	}
 
 	dir := path.Join(os.TempDir(), fmt.Sprintf("%d", os.Getpid()), "MessageKeyHolderCatchUp")
@@ -441,7 +441,7 @@ func testMessageKeyHolderSubscription(t *testing.T, expectedNewDevices int, isSl
 	defer cancel()
 
 	if isSlow {
-		testutil.SkipSlow(t)
+		testutil.FilterSpeed(t, testutil.Slow)
 	}
 
 	dir := path.Join(os.TempDir(), fmt.Sprintf("%d", os.Getpid()), "MessageKeyHolderSubscription")
