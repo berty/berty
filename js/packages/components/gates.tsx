@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, Button, View, ActivityIndicator } from 'react-native'
+import { Text, Button, View, ActivityIndicator, TextInput } from 'react-native'
 
 import { useMsgrContext } from '@berty-tech/store/hooks'
 
@@ -13,8 +13,12 @@ const expandSelfAndCenterContent: any = {
 const gutter = 50
 
 export const StreamGate: React.FC = ({ children }) => {
-	const { streamError, restart } = useMsgrContext()
-	// FIXME: reset nav and state during restartStream
+	const { streamError, restart, daemonAddress, embedded, dispatch } = useMsgrContext()
+	const [newAddress, setNewAddress] = React.useState(daemonAddress)
+	const changeAddress = React.useCallback(() => {
+		dispatch({ type: 'SET_DAEMON_ADDRESS', payload: { value: newAddress } })
+	}, [dispatch, newAddress])
+
 	if (streamError) {
 		return (
 			<View style={[expandSelfAndCenterContent, { padding: gutter }]}>
@@ -22,6 +26,16 @@ export const StreamGate: React.FC = ({ children }) => {
 				<Text style={{ marginTop: gutter }}>
 					Likely couldn't connect to the node, or the connection droped
 				</Text>
+				{embedded || (
+					<>
+						<TextInput
+							onChangeText={setNewAddress}
+							value={newAddress}
+							style={{ backgroundColor: 'grey' }}
+						/>
+						<Button title='Change node address' onPress={changeAddress} />
+					</>
+				)}
 				<View style={{ marginTop: gutter }}>
 					<Button onPress={restart} title='Restart' />
 				</View>

@@ -39,12 +39,7 @@ func dropAllTables(db *gorm.DB) error {
 }
 
 func addConversation(db *gorm.DB, groupPK string) (*Conversation, error) {
-	var conversation Conversation
-
-	err := db.
-		Where(Conversation{PublicKey: groupPK}).
-		First(&conversation).
-		Error
+	conversation, err := getConversation(db, groupPK)
 	switch err {
 	case gorm.ErrRecordNotFound: // not found, create a new one
 		conversation.PublicKey = groupPK
@@ -67,13 +62,68 @@ func addConversation(db *gorm.DB, groupPK string) (*Conversation, error) {
 	}
 }
 
-func addContactRequestOutgoingEnqueued(db *gorm.DB, contactPK, displayName string) (*Contact, error) {
-	var contact Contact
+func getAccount(db *gorm.DB) (Account, error) {
+	var accounts []Account
+	err := db.Find(&accounts).Error
+	if err != nil {
+		return Account{}, err
+	}
+	if len(accounts) == 0 {
+		return Account{}, gorm.ErrRecordNotFound
+	}
+	return accounts[0], nil
+}
 
-	err := db.
-		Where(Contact{PublicKey: contactPK}).
-		Take(&contact).
-		Error
+func getDevice(db *gorm.DB, publicKey string) (Device, error) {
+	var devices []Device
+	err := db.Where(&Device{PublicKey: publicKey}).Find(&devices).Error
+	if err != nil {
+		return Device{}, err
+	}
+	if len(devices) == 0 {
+		return Device{}, gorm.ErrRecordNotFound
+	}
+	return devices[0], nil
+}
+
+func getContact(db *gorm.DB, publicKey string) (Contact, error) {
+	var contacts []Contact
+	err := db.Where(&Contact{PublicKey: publicKey}).Find(&contacts).Error
+	if err != nil {
+		return Contact{}, err
+	}
+	if len(contacts) == 0 {
+		return Contact{}, gorm.ErrRecordNotFound
+	}
+	return contacts[0], nil
+}
+
+func getConversation(db *gorm.DB, publicKey string) (Conversation, error) {
+	var conversations []Conversation
+	err := db.Where(&Conversation{PublicKey: publicKey}).Find(&conversations).Error
+	if err != nil {
+		return Conversation{}, err
+	}
+	if len(conversations) == 0 {
+		return Conversation{}, gorm.ErrRecordNotFound
+	}
+	return conversations[0], nil
+}
+
+func getInteraction(db *gorm.DB, cid string) (Interaction, error) {
+	var interactions []Interaction
+	err := db.Where(map[string]interface{}{"c_id": cid}).Find(&interactions).Error
+	if err != nil {
+		return Interaction{}, err
+	}
+	if len(interactions) == 0 {
+		return Interaction{}, gorm.ErrRecordNotFound
+	}
+	return interactions[0], nil
+}
+
+func addContactRequestOutgoingEnqueued(db *gorm.DB, contactPK, displayName string) (*Contact, error) {
+	contact, err := getContact(db, contactPK)
 	switch err {
 	case gorm.ErrRecordNotFound:
 		contact = Contact{
@@ -100,12 +150,7 @@ func addContactRequestOutgoingEnqueued(db *gorm.DB, contactPK, displayName strin
 }
 
 func addContactRequestOutgoingSent(db *gorm.DB, contactPK string) (*Contact, error) {
-	var contact Contact
-
-	err := db.
-		Where(Contact{PublicKey: contactPK}).
-		Take(&contact).
-		Error
+	contact, err := getContact(db, contactPK)
 	if err != nil {
 		return nil, errcode.ErrDBRead.Wrap(err)
 	}
@@ -143,12 +188,7 @@ func addContactRequestIncomingReceived(db *gorm.DB, contactPK, displayName strin
 }
 
 func addContactRequestIncomingAccepted(db *gorm.DB, contactPK, groupPK string) (*Contact, *Conversation, error) {
-	var contact Contact
-
-	err := db.
-		Where(Contact{PublicKey: contactPK}).
-		First(&contact).
-		Error
+	contact, err := getContact(db, contactPK)
 	if err != nil {
 		return nil, nil, errcode.ErrDBRead.Wrap(err)
 	}

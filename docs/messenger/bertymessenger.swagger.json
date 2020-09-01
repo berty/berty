@@ -944,6 +944,12 @@
             "$ref": "#/definitions/v1Member"
           },
           "title": "specific to MultiMemberType conversations"
+        },
+        "account_member_public_key": {
+          "type": "string"
+        },
+        "local_device_public_key": {
+          "type": "string"
         }
       }
     },
@@ -1330,6 +1336,7 @@
         "TypeConversationUpdated",
         "TypeConversationDeleted",
         "TypeInteractionUpdated",
+        "TypeInteractionDeleted",
         "TypeContactUpdated",
         "TypeAccountUpdated",
         "TypeMemberUpdated",

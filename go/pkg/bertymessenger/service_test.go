@@ -411,7 +411,7 @@ func TestUnstable1To1Exchange(t *testing.T) {
 func TestBrokenPeersCreateJoinConversation(t *testing.T) {
 	testutil.FilterStabilityAndSpeed(t, testutil.Broken, testutil.Slow)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 80*time.Second)
 	defer cancel()
 	logger := testutil.Logger(t)
 	accountsAmount := 3
@@ -423,73 +423,44 @@ func TestBrokenPeersCreateJoinConversation(t *testing.T) {
 	{
 		creator = NewTestingAccount(ctx, t, clients[0], logger)
 		defer creator.Close()
-		creator.DrainInitEvents(t)
-		creator.SetNameAndDrainUpdate(t, "Creator")
+		creator.SetName(t, "Creator")
 	}
 	var joiners = make([]*TestingAccount, accountsAmount-1)
 	{
 		for i := 0; i < accountsAmount-1; i++ {
 			joiners[i] = NewTestingAccount(ctx, t, clients[i+1], logger)
 			defer joiners[i].Close()
-			joiners[i].DrainInitEvents(t)
-			joiners[i].SetNameAndDrainUpdate(t, "Joiner #"+strconv.Itoa(i))
+			joiners[i].SetName(t, "Joiner #"+strconv.Itoa(i))
 		}
 
 	}
-	accounts := append([]*TestingAccount{creator}, joiners...)
 
 	// creator creates a new conversation
-	createdConv := testCreateConversation(ctx, t, creator, "My Group", nil, logger)
+	convName := "Ze Conv"
+	createdConv, err := creator.GetClient().ConversationCreate(ctx, &ConversationCreate_Request{DisplayName: convName})
+	require.NoError(t, err)
+
+	// get conv link
+	gpk := createdConv.GetPublicKey()
+	gpkb, err := stringToBytes(gpk)
+	require.NoError(t, err)
+	sbg, err := creator.GetClient().ShareableBertyGroup(ctx, &ShareableBertyGroup_Request{GroupPK: gpkb, GroupName: convName})
+	require.NoError(t, err)
 
 	// joiners join the conversation
-	existingDevices := []*TestingAccount{creator}
 	for _, joiner := range joiners {
-		testJoinConversation(ctx, t, joiner, createdConv, existingDevices, logger)
-		existingDevices = append(existingDevices, joiner)
+		ret, err := joiner.GetClient().ConversationJoin(ctx, &ConversationJoin_Request{Link: sbg.GetHTMLURL()})
+		require.NoError(t, err)
+		require.Empty(t, ret)
 	}
 
-	// we should receive member updates for all other members
-	for i := 0; i < len(accounts); i++ {
-		toFind := make([]*TestingAccount, len(accounts)-1)
-		for k := 0; k < len(accounts)-1; k++ {
-			if k < i {
-				toFind[k] = accounts[k]
-			} else {
-				toFind[k] = accounts[k+1]
-			}
-		}
-		for len(toFind) > 0 {
-			event := accounts[i].NextEvent(t)
-			require.NotNil(t, event)
-			// skip devices updates
-			if event.GetType() == StreamEvent_TypeDeviceUpdated {
-				continue
-			}
-			toFindNames := make([]string, len(toFind))
-			for m, tf := range toFind {
-				toFindNames[m] = tf.GetAccount().GetDisplayName()
-			}
-			logger.Debug("looking for", zap.Strings("to-find", toFindNames), zap.String("in", accounts[i].GetAccount().GetDisplayName()))
-			require.Equal(t, event.GetType(), StreamEvent_TypeMemberUpdated)
-			payload, err := event.UnmarshalPayload()
-			require.NoError(t, err)
-			member := payload.(*StreamEvent_MemberUpdated).GetMember()
-			require.NotNil(t, member)
-			logger.Debug("found member", zap.String("name", member.GetDisplayName()))
-			require.NotEqual(t, accounts[i].GetAccount().GetDisplayName(), member.GetDisplayName())
-			// FIXME: find by member key and check name equality
-			found := false
-			for l := 0; l < len(toFindNames); l++ {
-				if toFindNames[l] == member.GetDisplayName() {
-					found = true
-					toFind = append(toFind[0:l], toFind[l+1:]...)
-					break
-				}
-			}
-			require.True(t, found)
-			require.NotNil(t, member.GetPublicKey())
-			require.Equal(t, createdConv.GetPublicKey(), member.GetConversationPublicKey())
-		}
+	// wait for events propagation
+	time.Sleep(10 * time.Second)
+
+	// open streams and drain lists on all nodes
+	accounts := append([]*TestingAccount{creator}, joiners...)
+	for _, account := range accounts {
+		account.DrainInitEvents(t)
 	}
 
 	// no more event
@@ -499,6 +470,25 @@ func TestBrokenPeersCreateJoinConversation(t *testing.T) {
 		for _, joiner := range joiners {
 			event = joiner.TryNextEvent(t, 100*time.Millisecond)
 			require.Nil(t, event)
+		}
+	}
+
+	// verify members in each account
+	for _, account := range accounts {
+		accountConv := account.conversations[gpk]
+		require.Equal(t, gpk, accountConv.GetPublicKey())
+		require.Equal(t, convName, accountConv.GetDisplayName())
+		mpk := account.conversations[gpk].GetAccountMemberPublicKey()
+		require.NotEmpty(t, mpk)
+		displayName := account.GetAccount().GetDisplayName()
+		for _, otherAccount := range accounts {
+			if otherAccount.GetAccount().GetPublicKey() == account.GetAccount().GetPublicKey() {
+				continue
+			}
+			member, ok := otherAccount.members[mpk]
+			require.True(t, ok)
+			require.Equal(t, displayName, member.GetDisplayName())
+			require.Equal(t, gpk, member.GetConversationPublicKey())
 		}
 	}
 }
