@@ -63,12 +63,6 @@ http:
  - selector: berty.protocol.v1.ProtocolService.AppMessageSend
    post: /berty.protocol.v1/ProtocolService/AppMessageSend
    body: "*"
- - selector: berty.protocol.v1.ProtocolService.GroupMetadataSubscribe
-   post: /berty.protocol.v1/ProtocolService/GroupMetadataSubscribe
-   body: "*"
- - selector: berty.protocol.v1.ProtocolService.GroupMessageSubscribe
-   post: /berty.protocol.v1/ProtocolService/GroupMessageSubscribe
-   body: "*"
  - selector: berty.protocol.v1.ProtocolService.GroupMetadataList
    post: /berty.protocol.v1/ProtocolService/GroupMetadataList
    body: "*"

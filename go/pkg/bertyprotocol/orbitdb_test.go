@@ -181,17 +181,21 @@ func TestDifferentStores(t *testing.T) {
 
 	time.Sleep(time.Millisecond * 250)
 
-	ops1 := testFilterAppMetadata(t, g1a.MetadataStore().ListEvents(ctx))
+	evt1, err := g1a.MetadataStore().ListEvents(ctx, nil, nil, false)
 	require.NoError(t, err)
+	ops1 := testFilterAppMetadata(t, evt1)
 
-	ops2 := testFilterAppMetadata(t, g2a.MetadataStore().ListEvents(ctx))
+	evt2, err := g2a.MetadataStore().ListEvents(ctx, nil, nil, false)
 	require.NoError(t, err)
+	ops2 := testFilterAppMetadata(t, evt2)
 
-	ops3 := testFilterAppMetadata(t, g1b.MetadataStore().ListEvents(ctx))
+	evt3, err := g1b.MetadataStore().ListEvents(ctx, nil, nil, false)
 	require.NoError(t, err)
+	ops3 := testFilterAppMetadata(t, evt3)
 
-	ops4 := testFilterAppMetadata(t, g2b.MetadataStore().ListEvents(ctx))
+	evt4, err := g2b.MetadataStore().ListEvents(ctx, nil, nil, false)
 	require.NoError(t, err)
+	ops4 := testFilterAppMetadata(t, evt4)
 
 	assert.Equal(t, 2, len(ops1))
 	assert.Equal(t, 2, len(ops2))

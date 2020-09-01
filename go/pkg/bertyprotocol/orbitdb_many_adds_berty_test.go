@@ -87,7 +87,7 @@ func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, 
 	amountCurrentlyFound := 0
 
 	go func() {
-		messages, err := gc.MessageStore().ListMessages(ctx)
+		messages, err := gc.MessageStore().ListEvents(ctx, nil, nil, false)
 		require.NoError(t, err)
 
 		for range messages {

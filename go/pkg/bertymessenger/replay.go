@@ -3,7 +3,6 @@ package bertymessenger
 import (
 	"bytes"
 	"context"
-	"errors"
 	"io"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -15,10 +14,6 @@ import (
 )
 
 func ReplayLogsToDB(ctx context.Context, client bertyprotocol.ProtocolServiceClient, db *gorm.DB) error {
-	if 42 > 24 { // Avoid golangci-lint errors
-		return errors.New("replay not implemented")
-	}
-
 	// Clean and init DB
 	if err := dropAllTables(db); err != nil { // Not sure about this, could prevent painful debug sessions
 		return err
@@ -63,7 +58,18 @@ func ReplayLogsToDB(ctx context.Context, client bertyprotocol.ProtocolServiceCli
 			return errcode.ErrDeserialization.Wrap(err)
 		}
 
-		if !bytes.Equal(groupPK, cfg.GetAccountGroupPK()) { // Group account metadata was already replayed above
+		// Group account metadata was already replayed above and account group
+		// is always activated
+		// TODO: check with @glouvigny if we could launch the protocol
+		// without activating the account group
+		if !bytes.Equal(groupPK, cfg.GetAccountGroupPK()) {
+			if _, err := client.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
+				GroupPK:   groupPK,
+				LocalOnly: true,
+			}); err != nil {
+				return errcode.ErrGroupActivate.Wrap(err)
+			}
+
 			if err := processMetadataList(ctx, groupPK, db, client); err != nil {
 				return errcode.ErrReplayProcessGroupMetadata.Wrap(err)
 			}
@@ -72,6 +78,15 @@ func ReplayLogsToDB(ctx context.Context, client bertyprotocol.ProtocolServiceCli
 		// Replay all group message events
 		if err := processMessageList(ctx, groupPK, db, client); err != nil {
 			return errcode.ErrReplayProcessGroupMessage.Wrap(err)
+		}
+
+		// Deactivate non-account groups
+		if !bytes.Equal(groupPK, cfg.GetAccountGroupPK()) {
+			if _, err := client.DeactivateGroup(ctx, &bertytypes.DeactivateGroup_Request{
+				GroupPK: groupPK,
+			}); err != nil {
+				return errcode.ErrGroupDeactivate.Wrap(err)
+			}
 		}
 	}
 
@@ -82,21 +97,27 @@ func processMetadataList(ctx context.Context, groupPK []byte, db *gorm.DB, clien
 	subCtx, subCancel := context.WithCancel(ctx)
 	defer subCancel()
 
-	metaList, err := client.GroupMetadataList(subCtx, &bertytypes.GroupMetadataList_Request{GroupPK: groupPK})
+	metaList, err := client.GroupMetadataList(
+		subCtx,
+		&bertytypes.GroupMetadataList_Request{
+			GroupPK:  groupPK,
+			UntilNow: true,
+		},
+	)
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrEventListMetadata.Wrap(err)
 	}
 
 	for {
 		if subCtx.Err() != nil {
-			return errcode.TODO.Wrap(err)
+			return errcode.ErrEventListMetadata.Wrap(err)
 		}
 
 		metadata, err := metaList.Recv()
 		if err == io.EOF {
 			return nil
 		} else if err != nil {
-			return errcode.TODO.Wrap(err)
+			return errcode.ErrEventListMetadata.Wrap(err)
 		}
 
 		switch metadata.GetMetadata().GetEventType() {
@@ -129,7 +150,7 @@ func processMetadataList(ctx context.Context, groupPK []byte, db *gorm.DB, clien
 			if gpk == "" {
 				groupInfoReply, err := client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{ContactPK: contactPKBytes})
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrGroupInfo.Wrap(err)
 				}
 				gpk = bytesToString(groupInfoReply.GetGroup().GetPublicKey())
 			}
@@ -221,21 +242,27 @@ func processMessageList(ctx context.Context, groupPK []byte, db *gorm.DB, client
 	subCtx, subCancel := context.WithCancel(ctx)
 	defer subCancel()
 
-	msgList, err := client.GroupMessageList(subCtx, &bertytypes.GroupMessageList_Request{GroupPK: groupPK})
+	msgList, err := client.GroupMessageList(
+		subCtx,
+		&bertytypes.GroupMessageList_Request{
+			GroupPK:  groupPK,
+			UntilNow: true,
+		},
+	)
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrEventListMessage.Wrap(err)
 	}
 
 	for {
 		if subCtx.Err() != nil {
-			return errcode.TODO.Wrap(err)
+			return errcode.ErrEventListMessage.Wrap(err)
 		}
 
 		message, err := msgList.Recv()
 		if err == io.EOF {
 			return nil
 		} else if err != nil {
-			return errcode.TODO.Wrap(err)
+			return errcode.ErrEventListMessage.Wrap(err)
 		}
 
 		var appMsg AppMessage

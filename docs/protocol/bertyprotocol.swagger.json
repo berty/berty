@@ -13,7 +13,7 @@
   "paths": {
     "/berty.protocol.v1/ProtocolService/ActivateGroup": {
       "post": {
-        "summary": "ActivateGroup explicitly opens a group, groups are automatically enabled when actions are performed on them",
+        "summary": "ActivateGroup explicitly opens a group",
         "operationId": "ProtocolService_ActivateGroup",
         "responses": {
           "200": {
@@ -688,7 +688,7 @@
     },
     "/berty.protocol.v1/ProtocolService/GroupMessageList": {
       "post": {
-        "summary": "GroupMessageList replays message  events from the group",
+        "summary": "GroupMessageList replays previous and subscribes to new message events from the group",
         "operationId": "ProtocolService_GroupMessageList",
         "responses": {
           "200": {
@@ -728,51 +728,9 @@
         ]
       }
     },
-    "/berty.protocol.v1/ProtocolService/GroupMessageSubscribe": {
-      "post": {
-        "summary": "GroupMessageSubscribe subscribes to a group message updates (types.v1.or it can also retrieve the history)",
-        "operationId": "ProtocolService_GroupMessageSubscribe",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/v1GroupMessageEvent"
-                },
-                "error": {
-                  "$ref": "#/definitions/runtimeStreamError"
-                }
-              },
-              "title": "Stream result of v1GroupMessageEvent"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1GroupMessageSubscribeRequest"
-            }
-          }
-        ],
-        "tags": [
-          "ProtocolService"
-        ]
-      }
-    },
     "/berty.protocol.v1/ProtocolService/GroupMetadataList": {
       "post": {
-        "summary": "GroupMetadataList replays metadata events from the group",
+        "summary": "GroupMetadataList replays previous and subscribes to new metadata events from the group",
         "operationId": "ProtocolService_GroupMetadataList",
         "responses": {
           "200": {
@@ -804,48 +762,6 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/v1GroupMetadataListRequest"
-            }
-          }
-        ],
-        "tags": [
-          "ProtocolService"
-        ]
-      }
-    },
-    "/berty.protocol.v1/ProtocolService/GroupMetadataSubscribe": {
-      "post": {
-        "summary": "GroupMetadataSubscribe subscribes to a group metadata updates (types.v1.or it can also retrieve the history)",
-        "operationId": "ProtocolService_GroupMetadataSubscribe",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/v1GroupMetadataEvent"
-                },
-                "error": {
-                  "$ref": "#/definitions/runtimeStreamError"
-                }
-              },
-              "title": "Stream result of v1GroupMetadataEvent"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1GroupMetadataSubscribeRequest"
             }
           }
         ],
@@ -1240,6 +1156,11 @@
           "type": "string",
           "format": "byte",
           "title": "group_pk is the identifier of the group"
+        },
+        "local_only": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "local_only will open the group without enabling network interactions\nwith other members"
         }
       }
     },
@@ -1691,31 +1612,31 @@
           "type": "string",
           "format": "byte",
           "title": "group_pk is the identifier of the group"
-        }
-      }
-    },
-    "v1GroupMessageSubscribeRequest": {
-      "type": "object",
-      "properties": {
-        "group_pk": {
+        },
+        "since_id": {
           "type": "string",
           "format": "byte",
-          "title": "group_pk is the identifier of the group"
+          "title": "since is the lower ID bound used to filter events\nif not set, will return events since the beginning"
         },
-        "since": {
-          "type": "string",
-          "format": "byte",
-          "title": "since is the lower ID bound used to filter events"
-        },
-        "until": {
-          "type": "string",
-          "format": "byte",
-          "title": "until is the upper ID bound used to filter events"
-        },
-        "go_backwards": {
+        "since_now": {
           "type": "boolean",
           "format": "boolean",
-          "title": "go_backwards indicates whether the events should be returned in reverse order"
+          "title": "since_now will list only new event to come\nsince_id must not be set"
+        },
+        "until_id": {
+          "type": "string",
+          "format": "byte",
+          "title": "until is the upper ID bound used to filter events\nif not set, will subscribe to new events to come"
+        },
+        "until_now": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "until_now will not list new event to come\nuntil_id must not be set"
+        },
+        "reverse_order": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "reverse_order indicates whether the previous events should be returned in\nreverse chronological order"
         }
       }
     },
@@ -1764,31 +1685,31 @@
           "type": "string",
           "format": "byte",
           "title": "group_pk is the identifier of the group"
-        }
-      }
-    },
-    "v1GroupMetadataSubscribeRequest": {
-      "type": "object",
-      "properties": {
-        "group_pk": {
+        },
+        "since_id": {
           "type": "string",
           "format": "byte",
-          "title": "group_pk is the identifier of the group"
+          "title": "since is the lower ID bound used to filter events\nif not set, will return events since the beginning"
         },
-        "since": {
-          "type": "string",
-          "format": "byte",
-          "title": "since is the lower ID bound used to filter events"
-        },
-        "until": {
-          "type": "string",
-          "format": "byte",
-          "title": "until is the upper ID bound used to filter events"
-        },
-        "go_backwards": {
+        "since_now": {
           "type": "boolean",
           "format": "boolean",
-          "title": "go_backwards indicates whether the events should be returned in reverse order"
+          "title": "since_now will list only new event to come\nsince_id must not be set"
+        },
+        "until_id": {
+          "type": "string",
+          "format": "byte",
+          "title": "until is the upper ID bound used to filter events\nif not set, will subscribe to new events to come"
+        },
+        "until_now": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "until_now will not list new event to come\nuntil_id must not be set"
+        },
+        "reverse_order": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "reverse_order indicates whether the previous events should be returned in\nreverse chronological order"
         }
       }
     },

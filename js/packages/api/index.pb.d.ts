@@ -434,14 +434,15 @@ export namespace berty {
             ErrNotImplemented = 777,
             ErrInternal = 888,
             ErrInvalidInput = 100,
-            ErrMissingInput = 101,
-            ErrSerialization = 102,
-            ErrDeserialization = 103,
-            ErrStreamRead = 104,
-            ErrStreamWrite = 105,
-            ErrMissingMapKey = 106,
-            ErrDBWrite = 107,
-            ErrDBRead = 108,
+            ErrInvalidRange = 101,
+            ErrMissingInput = 102,
+            ErrSerialization = 103,
+            ErrDeserialization = 104,
+            ErrStreamRead = 105,
+            ErrStreamWrite = 106,
+            ErrMissingMapKey = 107,
+            ErrDBWrite = 108,
+            ErrDBRead = 109,
             ErrCryptoRandomGeneration = 200,
             ErrCryptoKeyGeneration = 201,
             ErrCryptoNonceGeneration = 202,
@@ -476,10 +477,15 @@ export namespace berty {
             ErrGroupSecretAlreadySentToMember = 1304,
             ErrGroupInvalidType = 1305,
             ErrGroupMissing = 1306,
-            ErrMessageKeyPersistencePut = 1400,
-            ErrMessageKeyPersistenceGet = 1401,
-            ErrBridgeInterrupted = 1500,
-            ErrBridgeNotRunning = 1501,
+            ErrGroupActivate = 1307,
+            ErrGroupDeactivate = 1308,
+            ErrGroupInfo = 1309,
+            ErrEventListMetadata = 1400,
+            ErrEventListMessage = 1401,
+            ErrMessageKeyPersistencePut = 1500,
+            ErrMessageKeyPersistenceGet = 1501,
+            ErrBridgeInterrupted = 1600,
+            ErrBridgeNotRunning = 1601,
             ErrMessengerInvalidDeepLink = 2000,
             ErrDBEntryAlreadyExists = 2100,
             ErrDBAddConversation = 2101,
@@ -569,10 +575,6 @@ export namespace berty {
                 public appMetadataSend(request: berty.types.v1.AppMetadataSend.IRequest): Promise<berty.types.v1.AppMetadataSend.Reply>;
                 public appMessageSend(request: berty.types.v1.AppMessageSend.IRequest, callback: berty.protocol.v1.ProtocolService.AppMessageSendCallback): void;
                 public appMessageSend(request: berty.types.v1.AppMessageSend.IRequest): Promise<berty.types.v1.AppMessageSend.Reply>;
-                public groupMetadataSubscribe(request: berty.types.v1.GroupMetadataSubscribe.IRequest, callback: berty.protocol.v1.ProtocolService.GroupMetadataSubscribeCallback): void;
-                public groupMetadataSubscribe(request: berty.types.v1.GroupMetadataSubscribe.IRequest): Promise<berty.types.v1.GroupMetadataEvent>;
-                public groupMessageSubscribe(request: berty.types.v1.GroupMessageSubscribe.IRequest, callback: berty.protocol.v1.ProtocolService.GroupMessageSubscribeCallback): void;
-                public groupMessageSubscribe(request: berty.types.v1.GroupMessageSubscribe.IRequest): Promise<berty.types.v1.GroupMessageEvent>;
                 public groupMetadataList(request: berty.types.v1.GroupMetadataList.IRequest, callback: berty.protocol.v1.ProtocolService.GroupMetadataListCallback): void;
                 public groupMetadataList(request: berty.types.v1.GroupMetadataList.IRequest): Promise<berty.types.v1.GroupMetadataEvent>;
                 public groupMessageList(request: berty.types.v1.GroupMessageList.IRequest, callback: berty.protocol.v1.ProtocolService.GroupMessageListCallback): void;
@@ -638,10 +640,6 @@ export namespace berty {
                 type AppMetadataSendCallback = (error: (Error|null), response?: berty.types.v1.AppMetadataSend.Reply) => void;
 
                 type AppMessageSendCallback = (error: (Error|null), response?: berty.types.v1.AppMessageSend.Reply) => void;
-
-                type GroupMetadataSubscribeCallback = (error: (Error|null), response?: berty.types.v1.GroupMetadataEvent) => void;
-
-                type GroupMessageSubscribeCallback = (error: (Error|null), response?: berty.types.v1.GroupMessageEvent) => void;
 
                 type GroupMetadataListCallback = (error: (Error|null), response?: berty.types.v1.GroupMetadataEvent) => void;
 
@@ -2489,49 +2487,6 @@ export namespace berty {
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IGroupMetadataSubscribe {
-            }
-
-            class GroupMetadataSubscribe implements IGroupMetadataSubscribe {
-
-                public static create(properties?: berty.types.v1.IGroupMetadataSubscribe): berty.types.v1.GroupMetadataSubscribe;
-                public static encode(message: berty.types.v1.IGroupMetadataSubscribe, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IGroupMetadataSubscribe, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupMetadataSubscribe;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupMetadataSubscribe;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupMetadataSubscribe;
-                public static toObject(message: berty.types.v1.GroupMetadataSubscribe, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace GroupMetadataSubscribe {
-
-                interface IRequest {
-                    groupPk?: (Uint8Array|null);
-                    since?: (Uint8Array|null);
-                    until?: (Uint8Array|null);
-                    goBackwards?: (boolean|null);
-                }
-
-                class Request implements IRequest {
-
-                    public groupPk: Uint8Array;
-                    public since: Uint8Array;
-                    public until: Uint8Array;
-                    public goBackwards: boolean;
-                    public static create(properties?: berty.types.v1.GroupMetadataSubscribe.IRequest): berty.types.v1.GroupMetadataSubscribe.Request;
-                    public static encode(message: berty.types.v1.GroupMetadataSubscribe.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.GroupMetadataSubscribe.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupMetadataSubscribe.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupMetadataSubscribe.Request;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupMetadataSubscribe.Request;
-                    public static toObject(message: berty.types.v1.GroupMetadataSubscribe.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-            }
-
             interface IGroupMetadataList {
             }
 
@@ -2552,11 +2507,21 @@ export namespace berty {
 
                 interface IRequest {
                     groupPk?: (Uint8Array|null);
+                    sinceId?: (Uint8Array|null);
+                    sinceNow?: (boolean|null);
+                    untilId?: (Uint8Array|null);
+                    untilNow?: (boolean|null);
+                    reverseOrder?: (boolean|null);
                 }
 
                 class Request implements IRequest {
 
                     public groupPk: Uint8Array;
+                    public sinceId: Uint8Array;
+                    public sinceNow: boolean;
+                    public untilId: Uint8Array;
+                    public untilNow: boolean;
+                    public reverseOrder: boolean;
                     public static create(properties?: berty.types.v1.GroupMetadataList.IRequest): berty.types.v1.GroupMetadataList.Request;
                     public static encode(message: berty.types.v1.GroupMetadataList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.types.v1.GroupMetadataList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2565,49 +2530,6 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupMetadataList.Request;
                     public static toObject(message: berty.types.v1.GroupMetadataList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-            }
-
-            interface IGroupMessageSubscribe {
-            }
-
-            class GroupMessageSubscribe implements IGroupMessageSubscribe {
-
-                public static create(properties?: berty.types.v1.IGroupMessageSubscribe): berty.types.v1.GroupMessageSubscribe;
-                public static encode(message: berty.types.v1.IGroupMessageSubscribe, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IGroupMessageSubscribe, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupMessageSubscribe;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupMessageSubscribe;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupMessageSubscribe;
-                public static toObject(message: berty.types.v1.GroupMessageSubscribe, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace GroupMessageSubscribe {
-
-                interface IRequest {
-                    groupPk?: (Uint8Array|null);
-                    since?: (Uint8Array|null);
-                    until?: (Uint8Array|null);
-                    goBackwards?: (boolean|null);
-                }
-
-                class Request implements IRequest {
-
-                    public groupPk: Uint8Array;
-                    public since: Uint8Array;
-                    public until: Uint8Array;
-                    public goBackwards: boolean;
-                    public static create(properties?: berty.types.v1.GroupMessageSubscribe.IRequest): berty.types.v1.GroupMessageSubscribe.Request;
-                    public static encode(message: berty.types.v1.GroupMessageSubscribe.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.GroupMessageSubscribe.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupMessageSubscribe.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupMessageSubscribe.Request;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupMessageSubscribe.Request;
-                    public static toObject(message: berty.types.v1.GroupMessageSubscribe.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -2632,11 +2554,21 @@ export namespace berty {
 
                 interface IRequest {
                     groupPk?: (Uint8Array|null);
+                    sinceId?: (Uint8Array|null);
+                    sinceNow?: (boolean|null);
+                    untilId?: (Uint8Array|null);
+                    untilNow?: (boolean|null);
+                    reverseOrder?: (boolean|null);
                 }
 
                 class Request implements IRequest {
 
                     public groupPk: Uint8Array;
+                    public sinceId: Uint8Array;
+                    public sinceNow: boolean;
+                    public untilId: Uint8Array;
+                    public untilNow: boolean;
+                    public reverseOrder: boolean;
                     public static create(properties?: berty.types.v1.GroupMessageList.IRequest): berty.types.v1.GroupMessageList.Request;
                     public static encode(message: berty.types.v1.GroupMessageList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.types.v1.GroupMessageList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2730,11 +2662,13 @@ export namespace berty {
 
                 interface IRequest {
                     groupPk?: (Uint8Array|null);
+                    localOnly?: (boolean|null);
                 }
 
                 class Request implements IRequest {
 
                     public groupPk: Uint8Array;
+                    public localOnly: boolean;
                     public static create(properties?: berty.types.v1.ActivateGroup.IRequest): berty.types.v1.ActivateGroup.Request;
                     public static encode(message: berty.types.v1.ActivateGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.types.v1.ActivateGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;

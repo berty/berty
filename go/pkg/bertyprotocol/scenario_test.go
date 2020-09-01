@@ -417,9 +417,8 @@ func createMultiMemberGroup(ctx context.Context, t *testing.T, tps ...*TestingPr
 				ctx, cancel := context.WithCancel(ctx)
 				defer cancel()
 
-				sub, inErr := tp.Client.GroupMetadataSubscribe(ctx, &bertytypes.GroupMetadataSubscribe_Request{
+				sub, inErr := tp.Client.GroupMetadataList(ctx, &bertytypes.GroupMetadataList_Request{
 					GroupPK: group.PublicKey,
-					Since:   []byte("give me everything"),
 				})
 				if inErr != nil {
 					assert.NoError(t, err, fmt.Sprintf("error for client %d", i))
@@ -558,9 +557,8 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*Testi
 
 			// Receiver subscribes to handle incoming contact request
 			subCtx, subCancel := context.WithCancel(ctx)
-			subReceiver, err := receiver.Client.GroupMetadataSubscribe(subCtx, &bertytypes.GroupMetadataSubscribe_Request{
+			subReceiver, err := receiver.Client.GroupMetadataList(subCtx, &bertytypes.GroupMetadataList_Request{
 				GroupPK: receiverCfg.AccountGroupPK,
-				Since:   []byte("give me everything"),
 			})
 			require.NoError(t, err)
 			found := false
@@ -735,9 +733,8 @@ func sendMessageOnGroup(ctx context.Context, t *testing.T, senders, receivers []
 				defer subCancel()
 				defer wg.Done()
 
-				sub, err := receiver.Client.GroupMessageSubscribe(subCtx, &bertytypes.GroupMessageSubscribe_Request{
+				sub, err := receiver.Client.GroupMessageList(subCtx, &bertytypes.GroupMessageList_Request{
 					GroupPK: groupPK,
-					Since:   []byte("give me everything"),
 				})
 				if !assert.NoError(t, err) {
 					return
@@ -816,7 +813,8 @@ func sendMessageOnGroup(ctx context.Context, t *testing.T, senders, receivers []
 				defer wg.Done()
 
 				req := bertytypes.GroupMessageList_Request{
-					GroupPK: groupPK,
+					GroupPK:  groupPK,
+					UntilNow: true,
 				}
 
 				ml, err := receiver.Client.GroupMessageList(subCtx, &req)

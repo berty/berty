@@ -675,42 +675,30 @@ message GroupMessageEvent {
   bytes message = 3;
 }
 
-message GroupMetadataSubscribe {
-  message Request {
-    // group_pk is the identifier of the group
-    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
-
-    // since is the lower ID bound used to filter events
-    bytes since = 2;
-
-    // until is the upper ID bound used to filter events
-    bytes until = 3;
-
-    // go_backwards indicates whether the events should be returned in reverse order
-    bool go_backwards = 4;
-  }
-}
-
 message GroupMetadataList {
   message Request {
     // group_pk is the identifier of the group
     bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
-  }
-}
-
-message GroupMessageSubscribe {
-  message Request {
-    // group_pk is the identifier of the group
-    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
 
     // since is the lower ID bound used to filter events
-    bytes since = 2;
+    // if not set, will return events since the beginning
+    bytes since_id = 2 [(gogoproto.customname) = "SinceID"];
+
+    // since_now will list only new event to come
+    // since_id must not be set
+    bool since_now = 3;
 
     // until is the upper ID bound used to filter events
-    bytes until = 3;
+    // if not set, will subscribe to new events to come
+    bytes until_id = 4 [(gogoproto.customname) = "UntilID"];
 
-    // go_backwards indicates whether the events should be returned in reverse order
-    bool go_backwards = 4;
+    // until_now will not list new event to come
+    // until_id must not be set
+    bool until_now = 5;
+
+    // reverse_order indicates whether the previous events should be returned in
+    // reverse chronological order
+    bool reverse_order = 6;
   }
 }
 
@@ -718,6 +706,26 @@ message GroupMessageList {
   message Request {
     // group_pk is the identifier of the group
     bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+
+    // since is the lower ID bound used to filter events
+    // if not set, will return events since the beginning
+    bytes since_id = 2 [(gogoproto.customname) = "SinceID"];
+
+    // since_now will list only new event to come
+    // since_id must not be set
+    bool since_now = 3;
+
+    // until is the upper ID bound used to filter events
+    // if not set, will subscribe to new events to come
+    bytes until_id = 4 [(gogoproto.customname) = "UntilID"];
+
+    // until_now will not list new event to come
+    // until_id must not be set
+    bool until_now = 5;
+
+    // reverse_order indicates whether the previous events should be returned in
+    // reverse chronological order
+    bool reverse_order = 6;
   }
 }
 
@@ -747,6 +755,10 @@ message ActivateGroup {
   message Request {
     // group_pk is the identifier of the group
     bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+
+    // local_only will open the group without enabling network interactions
+    // with other members
+    bool local_only = 2;
   }
 
   message Reply {

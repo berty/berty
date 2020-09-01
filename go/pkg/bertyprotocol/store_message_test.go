@@ -49,7 +49,7 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 
 	<-time.After(time.Millisecond * 500)
 
-	out, err := peers[0].GC.MessageStore().ListMessages(ctx)
+	out, err := peers[0].GC.MessageStore().ListEvents(ctx, nil, nil, false)
 	assert.NoError(t, err)
 
 	assert.Equal(t, 1, countEntries(out))
@@ -58,7 +58,7 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 	chSub := peers[1].GC.MessageStore().Subscribe(watcherCtx)
 	go func() {
 		for range chSub {
-			c, err := peers[1].GC.MessageStore().ListMessages(watcherCtx)
+			c, err := peers[1].GC.MessageStore().ListEvents(watcherCtx, nil, nil, false)
 			if !assert.NoError(t, err) {
 				watcherCancel()
 				break
@@ -79,7 +79,7 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 
 	<-watcherCtx.Done()
 
-	out, err = peers[1].GC.MessageStore().ListMessages(ctx)
+	out, err = peers[1].GC.MessageStore().ListEvents(ctx, nil, nil, false)
 	assert.NoError(t, err)
 
 	testutil.FilterStability(t, testutil.Unstable)
@@ -88,7 +88,7 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 
 	assert.Equal(t, 1+entriesCount, countEntries(out))
 
-	// TODO: check that ListMessages can be called multiple times with the same output
+	// TODO: check that ListEvents can be called multiple times with the same output
 	// TODO: check that message are correctly ordered
 	// TODO: check that message are correctly decrypted
 	// TODO: check that message sender is correct

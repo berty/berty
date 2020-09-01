@@ -55,9 +55,8 @@ func TestContactRequestFlow(t *testing.T) {
 	subCtx, subCancel := context.WithCancel(ctx)
 	defer subCancel()
 
-	subMeta0, err := pts[0].Client.GroupMetadataSubscribe(subCtx, &bertytypes.GroupMetadataSubscribe_Request{
+	subMeta0, err := pts[0].Client.GroupMetadataList(subCtx, &bertytypes.GroupMetadataList_Request{
 		GroupPK: config0.AccountGroupPK,
-		Since:   []byte("give me everything"),
 	})
 	require.NoError(t, err)
 	found := false
@@ -173,9 +172,8 @@ func TestContactRequestFlowWithoutIncoming(t *testing.T) {
 	subCtx, subCancel := context.WithCancel(ctx)
 	defer subCancel()
 
-	subMeta0, err := pts[0].Client.GroupMetadataSubscribe(subCtx, &bertytypes.GroupMetadataSubscribe_Request{
+	subMeta0, err := pts[0].Client.GroupMetadataList(subCtx, &bertytypes.GroupMetadataList_Request{
 		GroupPK: config0.AccountGroupPK,
-		Since:   []byte("give me everything"),
 	})
 	require.NoError(t, err)
 	found := false

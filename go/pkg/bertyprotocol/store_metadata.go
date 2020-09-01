@@ -10,6 +10,7 @@ import (
 
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-ipfs-log/identityprovider"
+	ipliface "berty.tech/go-ipfs-log/iface"
 	"berty.tech/go-orbit-db/address"
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/stores"
@@ -89,30 +90,35 @@ func openMetadataEntry(log ipfslog.Log, e ipfslog.Entry, g *bertytypes.Group) (*
 	return metaEvent, event, err
 }
 
-func (m *metadataStore) ListEvents(ctx context.Context) <-chan *bertytypes.GroupMetadataEvent {
-	ch := make(chan *bertytypes.GroupMetadataEvent)
+// FIXME: use iterator instead to reduce resource usage (require go-ipfs-log improvements)
+func (m *metadataStore) ListEvents(ctx context.Context, since, until []byte, reverse bool) (<-chan *bertytypes.GroupMetadataEvent, error) {
+	entries, err := getEntriesInRange(m.OpLog().GetEntries().Slice(), since, until)
+	if err != nil {
+		return nil, err
+	}
 
-	// FIXME: use iterator instead to reduce resource usage (require go-ipfs-log improvements)
+	out := make(chan *bertytypes.GroupMetadataEvent)
+
 	go func() {
-		log := m.OpLog()
+		iterateOverEntries(
+			entries,
+			reverse,
+			func(entry ipliface.IPFSLogEntry) {
+				event, _, err := openMetadataEntry(m.OpLog(), entry, m.g)
+				if err != nil {
+					m.logger.Error("unable to open metadata event", zap.Error(err))
+				} else {
+					out <- event
+					m.logger.Info("metadata store - sent 1 event from log history")
+				}
+			},
+		)
 
-		for _, e := range log.GetEntries().Slice() {
-			metaEvent, _, err := openMetadataEntry(log, e, m.g)
-			if err != nil {
-				m.logger.Error("unable to open message", zap.Error(err))
-				continue
-			}
-
-			ch <- metaEvent
-			m.logger.Info("metadata store - sent 1 event from log history")
-		}
-
-		ch <- nil
-
-		close(ch)
+		out <- nil
+		close(out)
 	}()
 
-	return ch
+	return out, nil
 }
 
 func (m *metadataStore) AddDeviceToGroup(ctx context.Context) (operation.Operation, error) {
