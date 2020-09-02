@@ -26,6 +26,7 @@ var quotes = []Quote{
 	{"Voltaire", "We have a natural right to make use of our pens as of our tongue, at our peril, risk and hazard."},
 	{"Cəlil Məmmədquluzadə", "Freedom and Liberty is like air, when you don't receive it, you suffer."},
 	{"Bruce Schneier", "Liberty requires security without intrusion, security plus privacy."},
+	{"Edward Snowden", "Arguing that you don't care about privacy because you have nothing to hide is no different than saying you don't care about free speech because you have nothing to say."},
 }
 
 func RandomQuote() Quote {
