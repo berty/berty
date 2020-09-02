@@ -29,9 +29,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/routing"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
-	"go.opentelemetry.io/otel/api/kv"
-	"go.opentelemetry.io/otel/api/trace"
 	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
@@ -76,10 +75,14 @@ type MessengerBridge struct {
 	protocolService  bertyprotocol.Service
 	messengerService bertymessenger.Service
 	msngrDB          *gorm.DB
-	lifecycle        LifeCycleDriver
 
+	// lifecycle
+	listeners       []ma.Multiaddr
 	currentAppState int
 	muAppState      sync.Mutex
+	lifecycle       LifeCycleDriver
+	appStateCancel  context.CancelFunc
+	appStateContext context.Context
 
 	// protocol datastore
 	ds             datastore.Batching
@@ -179,10 +182,12 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 		ps             *pubsub.PubSub
 		repo           ipfs_repo.Repo
 		disc           tinder.Driver
+		listeners      []ma.Multiaddr
 	)
 
 	bridgeLogger := logger.Named("bridge")
 
+	listeners = []ma.Multiaddr{}
 	{
 		var err error
 
@@ -259,6 +264,8 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 
 			// serve the embedded ipfs webui
 			ipfsutil.ServeHTTPWebui(logger)
+
+			listeners = node.PeerHost.Network().ListenAddresses()
 
 			if config.poiDebug {
 				ipfsutil.EnableConnLogger(ctx, logger, node.PeerHost)
@@ -415,6 +422,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 	messengerBridge := &MessengerBridge{
 		Bridge: bridge,
 
+		listeners:        listeners,
 		logger:           bridgeLogger,
 		protocolService:  service,
 		node:             node,
@@ -427,7 +435,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 	// setup lifecycle
 	var lc LifeCycleDriver
 	{
-		if lc = config.lc; lc == nil {
+		if lc = config.lc; lc == nil || node == nil {
 			lc = NewNoopLifeCycleDriver()
 		}
 
@@ -447,47 +455,96 @@ func (p *MessengerBridge) HandleState(appstate int) {
 	defer p.muAppState.Unlock()
 
 	if appstate != p.currentAppState {
+		if p.appStateCancel != nil {
+			p.appStateCancel()
+		}
+
+		ctx, cancel := context.WithCancel(context.Background())
 		switch appstate {
 		case AppStateBackground:
 			p.logger.Info("app is in Background State")
+			p.sleep(ctx)
+
 		case AppStateActive:
 			p.logger.Info("app is in Active State")
-			if err := p.node.Bootstrap(defaultBootstrapConfig); err != nil {
-				p.logger.Warn("Unable to boostrap node", zap.Error(err))
-			}
+			p.wakeUp(ctx)
+
 		case AppStateInactive:
 			p.logger.Info("app is in Inactive State")
 		}
+
+		p.appStateCancel = cancel
 		p.currentAppState = appstate
 	}
 }
-func (p *MessengerBridge) HandleTask() LifeCycleBackgroundTask {
-	tr := tracer.New("AppState")
-	return NewBackgroundTask(p.logger, func(ctx context.Context) error {
-		return tr.WithSpan(ctx, "BackgroundTask", func(ctx context.Context) error {
-			p.logger.Info("starting background task")
 
-			ctx, cancel := context.WithDeadline(ctx, time.Now().Add(time.Second*25))
-			defer cancel()
-			span := trace.SpanFromContext(ctx)
-			count := 0
-			for {
-				select {
-				case <-ctx.Done():
-					p.logger.Info("ending background task")
-					if ctx.Err() != context.DeadlineExceeded {
-						span.AddEvent(ctx, "task has been canceled")
-						return fmt.Errorf("task has been canceled")
-					}
+func (p *MessengerBridge) sleep(ctx context.Context) {
+	p.logger.Info("sleeping")
 
-					return nil
-				case <-time.After(time.Second):
-					span.AddEvent(ctx, "tick", kv.Int("count", count))
-					p.logger.Info("background task counting", zap.Int("count", count))
-				}
-				count++
+	// Disconnect from all connected peers
+	p.logger.Info("closing all active conns")
+	for _, c := range p.node.PeerHost.Network().Conns() {
+		if _, err := c.RemoteMultiaddr().ValueForProtocol(ma.P_QUIC); err != nil {
+			if err := c.Close(); err != nil {
+				p.logger.Warn("failed to close conn", zap.Error(err))
 			}
-		}, trace.WithRecord(), trace.WithSpanKind(trace.SpanKindClient))
+		}
+	}
+}
+
+func (p *MessengerBridge) wakeUp(ctx context.Context) {
+	p.logger.Info("waking up")
+
+	if p.appStateCancel != nil {
+		p.appStateCancel()
+	}
+
+	p.logger.Info("setup listeners back if needed")
+	maddrs := p.node.PeerHost.Network().ListenAddresses()
+	if err := p.node.PeerHost.Network().Listen(maddrs...); err != nil {
+		p.logger.Warn("unable to listen", zap.Error(err))
+	}
+
+	p.logger.Info("reconnecting to odb peers")
+	for _, pe := range p.node.PeerHost.Peerstore().Peers() {
+		t := p.node.PeerHost.ConnManager().GetTagInfo(pe)
+		if t == nil {
+			continue
+		}
+
+		for k := range t.Tags {
+			if strings.HasPrefix(k, "grp") {
+				pi := p.node.PeerHost.Peerstore().PeerInfo(pe)
+				go func(pi peer.AddrInfo) {
+					p.logger.Info("conntecting",
+						zap.String("peer", pi.ID.String()))
+					if err := p.node.PeerHost.Connect(ctx, pi); err != nil {
+						p.logger.Warn("unable to connect",
+							zap.String("peer", pi.ID.String()),
+							zap.Error(err),
+						)
+					}
+				}(pi)
+
+				break
+			}
+		}
+	}
+}
+
+func (p *MessengerBridge) HandleTask() LifeCycleBackgroundTask {
+	return NewBackgroundTask(context.Background(), p.logger, func(ctx context.Context) error {
+		p.logger.Info("starting background task")
+
+		// @TODO(gfanton): Find a better way to know when we are done
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*25)
+		defer cancel()
+
+		p.HandleState(AppStateActive)
+		<-ctx.Done()
+		p.HandleState(AppStateBackground)
+
+		return nil
 	})
 }
 

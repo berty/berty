@@ -44,8 +44,8 @@ type backgroundTask struct {
 	cancel context.CancelFunc
 }
 
-func NewBackgroundTask(logger *zap.Logger, task func(context.Context) error) LifeCycleBackgroundTask {
-	ctx, cancel := context.WithCancel(context.Background())
+func NewBackgroundTask(ctx context.Context, logger *zap.Logger, task func(context.Context) error) LifeCycleBackgroundTask {
+	ctx, cancel := context.WithCancel(ctx)
 	return &backgroundTask{
 		finish: make(chan struct{}),
 		logger: logger,
