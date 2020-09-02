@@ -16,11 +16,17 @@ type BertyConfig struct {
 }
 
 var BertyDev = &BertyConfig{
-	Bootstrap:         ipfs_cfg.DefaultBootstrapAddresses,
-	RendezVousPeer:    "/dnsaddr/rdvp.berty.io/ipfs/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p",
-	DefaultSwarmAddrs: []string{mc.DefaultBind},
-	Tracing:           "jaeger.berty.io:8443",
-	DefaultAPIAddrs:   []string{"/ip4/127.0.0.1/tcp/5001"},
+	Bootstrap:      ipfs_cfg.DefaultBootstrapAddresses,
+	RendezVousPeer: "/dnsaddr/rdvp.berty.io/ipfs/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p",
+	DefaultSwarmAddrs: []string{
+		mc.DefaultBind,
+		"/ip4/0.0.0.0/tcp/0",
+		"/ip6/::/tcp/0",
+		"/ip4/0.0.0.0/udp/0/quic",
+		"/ip6/::/udp/0/quic",
+	},
+	Tracing:         "jaeger.berty.io:8443",
+	DefaultAPIAddrs: []string{"/ip4/127.0.0.1/tcp/5001"},
 	APIConfig: config.API{
 		HTTPHeaders: map[string][]string{
 			"Access-Control-Allow-Origin":  {"*"},
@@ -30,11 +36,17 @@ var BertyDev = &BertyConfig{
 }
 
 var BertyMobile = &BertyConfig{
-	Bootstrap:         ipfs_cfg.DefaultBootstrapAddresses,
-	RendezVousPeer:    "/ip4/163.172.106.31/tcp/4040/p2p/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p",
-	DefaultSwarmAddrs: []string{mc.DefaultBind},
-	Tracing:           "jaeger.berty.io:8443",
-	DefaultAPIAddrs:   []string{"/ip4/127.0.0.1/tcp/5001"},
+	Bootstrap:      ipfs_cfg.DefaultBootstrapAddresses,
+	RendezVousPeer: "/ip4/163.172.106.31/tcp/4040/p2p/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p",
+	DefaultSwarmAddrs: []string{
+		mc.DefaultBind,
+		"/ip4/0.0.0.0/tcp/0",
+		"/ip6/::/tcp/0",
+		"/ip4/0.0.0.0/udp/0/quic",
+		"/ip6/::/udp/0/quic",
+	},
+	Tracing:         "jaeger.berty.io:8443",
+	DefaultAPIAddrs: []string{"/ip4/127.0.0.1/tcp/5001"},
 	APIConfig: config.API{
 		HTTPHeaders: map[string][]string{
 			"Access-Control-Allow-Origin":  {"*"},
