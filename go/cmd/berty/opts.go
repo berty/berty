@@ -1,28 +1,25 @@
 package main
 
 import (
-	"bufio"
 	"context"
 	"fmt"
-	"io"
 	"log"
 	mrand "math/rand"
 	"net"
 	"os"
 	"os/user"
 	"path"
-	"strings"
 	"time"
 
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/cache/cacheleveldown"
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
-	ipfs_log "github.com/ipfs/go-log/v2"
 	"github.com/juju/fslock"
 	"github.com/libp2p/go-libp2p-core/peer"
 	ma "github.com/multiformats/go-multiaddr"
@@ -33,14 +30,11 @@ import (
 
 type mainOpts struct {
 	// global or very common
-	debug          bool
-	libp2pDebug    bool
 	localDiscovery bool
 	logFormat      string
 	logToFile      string
+	logFilters     string
 	logger         *zap.Logger
-	orbitDebug     bool
-	poiDebug       bool
 	tracer         string
 	datastorePath  string
 	sqlitePath     string
@@ -66,14 +60,11 @@ type mainOpts struct {
 func newMainOpts() mainOpts {
 	return mainOpts{
 		// global or very common
-		debug:          false,
-		libp2pDebug:    false,
 		localDiscovery: true,
-		logFormat:      "",
-		logToFile:      "",
+		logFormat:      "color",                        // json, console, color, light-console, light-color
+		logToFile:      "stderr",                       // can be stdout, stderr or a file path
+		logFilters:     "info,warn:bty,bty.* error+:*", // info and warn for bty* + all namespaces for errors, panics, dpanics and fatals
 		logger:         zap.NewNop(),
-		orbitDebug:     false,
-		poiDebug:       false,
 		tracer:         "",
 		datastorePath:  cacheleveldown.InMemoryDirectory,
 
@@ -189,73 +180,20 @@ func safeDefaultDisplayName() string {
 
 func globalPreRun() func() {
 	mrand.Seed(srand.Secure())
-	isDebugEnabled := opts.debug || opts.orbitDebug || opts.libp2pDebug || opts.poiDebug
-	flush := tracer.InitTracer(opts.tracer, "berty")
+	tracerFlush := tracer.InitTracer(opts.tracer, "berty")
 
-	// setup zap config
-	var config zap.Config
-	if opts.logToFile != "" {
-		config = zap.NewProductionConfig()
-		config.OutputPaths = []string{opts.logToFile}
-	} else {
-		config = zap.NewDevelopmentConfig()
-		config.DisableStacktrace = true
-		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	var (
+		err           error
+		loggerCleanup func()
+	)
+	opts.logger, loggerCleanup, err = logutil.NewLogger(opts.logFilters, opts.logFormat, opts.logToFile)
+	if err != nil {
+		log.Fatalf("unable to build logger: %v", err)
 	}
 
-	if opts.logFormat != "" {
-		switch strings.ToLower(opts.logFormat) {
-		case "json":
-			config.Encoding = "json"
-		case "console":
-			config.Encoding = "console"
-			config.EncoderConfig.EncodeTime = zapcore.RFC3339TimeEncoder
-			config.EncoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
-		case "color":
-			config.Encoding = "console"
-			config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-			config.EncoderConfig.EncodeDuration = zapcore.StringDurationEncoder
-			config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-		default:
-			log.Fatalf("unknow log format: %s", opts.logFormat)
-		}
+	cleanup := func() {
+		loggerCleanup()
+		tracerFlush()
 	}
-
-	if isDebugEnabled {
-		config.Level.SetLevel(zap.DebugLevel)
-	} else {
-		config.Level.SetLevel(zap.InfoLevel)
-	}
-
-	var err error
-	if opts.logger, err = config.Build(); err != nil {
-		log.Fatalf("unable to build log config: %s", err)
-	}
-
-	ipfs_log.SetupLogging(ipfs_log.Config{
-		Stderr: false,
-		Stdout: false,
-	})
-	ipfs_log.SetAllLoggers(ipfs_log.LevelFatal)
-	if opts.libp2pDebug {
-		pr := ipfs_log.NewPipeReader()
-		// ipfs_log.SetLogLevel("pubsub", "debug")
-		r := bufio.NewReader(pr)
-		go func() {
-			defer pr.Close()
-			var err error
-			for err != io.EOF {
-				var line []byte
-				if line, _, err = r.ReadLine(); err == nil {
-					opts.logger.Debug(fmt.Sprintf("%s", line))
-				}
-			}
-		}()
-	}
-
-	if opts.orbitDebug {
-		zap.ReplaceGlobals(opts.logger)
-	}
-
-	return flush
+	return cleanup
 }

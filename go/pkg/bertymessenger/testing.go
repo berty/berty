@@ -40,7 +40,7 @@ func TestingService(ctx context.Context, t *testing.T, opts *TestingServiceOpts)
 		time.Sleep(10 * time.Millisecond)
 	}
 
-	zapLogger := zapgorm2.New(opts.Logger)
+	zapLogger := zapgorm2.New(opts.Logger.Named("gorm"))
 	zapLogger.SetAsDefault()
 	db, err := gorm.Open(sqlite.Open("file:memdb"+strconv.Itoa(opts.Index)+"?mode=memory&cache=shared"), &gorm.Config{Logger: zapLogger})
 	if err != nil {

@@ -5,8 +5,6 @@ import (
 	crand "crypto/rand"
 	"encoding/base64"
 	"math/rand"
-	"os"
-	"strconv"
 	"testing"
 	"time"
 
@@ -141,10 +139,7 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 
 	psapi := NewPubSubAPI(ctx, opts.Logger, disc, ps)
 	exapi = InjectPubSubCoreAPIExtendedAdaptater(exapi, psapi)
-
-	if ok, _ := strconv.ParseBool(os.Getenv("POI_DEBUG")); ok {
-		EnableConnLogger(ctx, opts.Logger, node.PeerHost)
-	}
+	EnableConnLogger(ctx, opts.Logger, node.PeerHost)
 
 	api := &coreAPIMock{
 		coreapi: exapi,

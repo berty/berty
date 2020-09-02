@@ -34,12 +34,8 @@ run() {
 		   --rm \
 		   --name="mini-web-${ID}" \
 		   bertytech/berty \
-		     --debug-p2p \
-		     --debug-odb \
-		     --debug-poi \
 		     --display-name="${NAME}" \
 		     --logfile="/data/berty-mini.log" \
-		     --debug \
 		     mini \
 		       -d=/data/berty-mini.db
             echo "Press enter to restart berty mini with the same datastore."

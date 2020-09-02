@@ -47,13 +47,14 @@ func TestProtocolBridge(t *testing.T) {
 	mc, cleanup := ipfsutil.TestingCoreAPI(ctx, t)
 	defer cleanup()
 
-	logger := testutil.Logger(t)
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 	config := NewMessengerConfig()
 	config.AddGRPCListener("/ip4/127.0.0.1/tcp/0/grpc")
 	config.AddGRPCListener("/ip4/127.0.0.1/tcp/0/grpcweb")
 	config.ipfsCoreAPI(mc.API())
 
-	messengerBridge, err = newMessengerBridge(ctx, logger, config)
+	messengerBridge, err = newProtocolBridge(ctx, logger, config)
 	require.NoError(t, err)
 
 	defer func() {
@@ -125,7 +126,8 @@ func TestPersistenceProtocol(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	logger := testutil.Logger(t)
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 	rootdir, err := ioutil.TempDir("", "ipfs")
 	require.NoError(t, err)
 
@@ -140,7 +142,7 @@ func TestPersistenceProtocol(t *testing.T) {
 	var node_id_1 p2p_peer.ID
 	var device_pk_1 []byte
 	{
-		protocol, err := newMessengerBridge(ctx, logger, config)
+		protocol, err := newProtocolBridge(ctx, logger, config)
 		require.NoError(t, err)
 
 		// get grpc client
@@ -170,7 +172,7 @@ func TestPersistenceProtocol(t *testing.T) {
 	var device_pk_2 []byte
 	{
 
-		protocol, err := newMessengerBridge(ctx, logger, config)
+		protocol, err := newProtocolBridge(ctx, logger, config)
 		require.NoError(t, err)
 
 		// get grpc client

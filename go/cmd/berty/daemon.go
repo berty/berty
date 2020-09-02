@@ -25,7 +25,7 @@ import (
 	grpcgw "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	datastore "github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-ipfs/core"
-	"github.com/libp2p/go-libp2p"
+	libp2p "github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
 	peerstore "github.com/libp2p/go-libp2p-core/peerstore"
 	"github.com/libp2p/go-libp2p-core/routing"
@@ -151,10 +151,7 @@ func daemonCommand() *ffcli.Command {
 
 				psapi := ipfsutil.NewPubSubAPI(ctx, opts.logger.Named("ps"), disc, ps)
 				api = ipfsutil.InjectPubSubCoreAPIExtendedAdaptater(api, psapi)
-
-				if opts.poiDebug {
-					ipfsutil.EnableConnLogger(ctx, opts.logger, node.PeerHost)
-				}
+				ipfsutil.EnableConnLogger(ctx, opts.logger, node.PeerHost)
 
 				// construct http api endpoint
 				ipfsutil.ServeHTTPApi(opts.logger, node, "")
@@ -261,7 +258,7 @@ func daemonCommand() *ffcli.Command {
 					PubSub:          ps,
 					TinderDriver:    disc,
 					IpfsCoreAPI:     api,
-					Logger:          opts.logger.Named("protocol"),
+					Logger:          opts.logger,
 					RootDatastore:   rootDS,
 					MessageKeystore: mk,
 					DeviceKeystore:  bertyprotocol.NewDeviceKeystore(deviceDS),
@@ -292,7 +289,7 @@ func daemonCommand() *ffcli.Command {
 					return errcode.TODO.Wrap(err)
 				}
 				opts := bertymessenger.Opts{
-					Logger:          opts.logger.Named("messenger"),
+					Logger:          opts.logger,
 					ProtocolService: protocol,
 				}
 				messenger, err := bertymessenger.New(protocolClient, &opts)

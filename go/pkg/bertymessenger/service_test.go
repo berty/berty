@@ -312,7 +312,8 @@ func TestUnstableServiceConversationCreateAsync(t *testing.T) {
 func TestUnstable1To1AddContact(t *testing.T) {
 	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
 
-	logger := testutil.Logger(t)
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	clients, cleanup := testingInfra(ctx, t, 2, logger)
@@ -358,7 +359,8 @@ func TestUnstable1To1AddContact(t *testing.T) {
 func TestUnstable1To1Exchange(t *testing.T) {
 	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
 
-	logger := testutil.Logger(t)
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	clients, cleanup := testingInfra(ctx, t, 2, logger)
@@ -413,7 +415,8 @@ func TestBrokenPeersCreateJoinConversation(t *testing.T) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 80*time.Second)
 	defer cancel()
-	logger := testutil.Logger(t)
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 	accountsAmount := 3
 	clients, cleanup := testingInfra(ctx, t, accountsAmount, logger)
 	defer cleanup()
@@ -498,7 +501,8 @@ func TestBroken3PeersExchange(t *testing.T) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	logger := testutil.Logger(t)
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 	clients, cleanup := testingInfra(ctx, t, 3, logger)
 	defer cleanup()
 
@@ -556,7 +560,8 @@ func TestBrokenConversationInvitation(t *testing.T) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
-	logger := testutil.Logger(t)
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 	clients, cleanup := testingInfra(ctx, t, 3, logger)
 	defer cleanup()
 
@@ -621,7 +626,8 @@ func TestBrokenConversationInvitationAndExchange(t *testing.T) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	logger := testutil.Logger(t)
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 	clients, cleanup := testingInfra(ctx, t, 3, logger)
 	defer cleanup()
 
@@ -692,7 +698,8 @@ func TestBrokenConversationInvitationAndExchange(t *testing.T) {
 func TestUnstableConversationOpenClose(t *testing.T) {
 	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
 
-	logger := testutil.Logger(t)
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	clients, cleanup := testingInfra(ctx, t, 2, logger)

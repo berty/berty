@@ -46,7 +46,6 @@ type Opts struct {
 	MessengerDB     *gorm.DB
 	ReplayLogs      bool
 	Logger          *zap.Logger
-	POIDebug        bool
 	DisplayName     string
 	LocalDiscovery  bool
 }
@@ -131,16 +130,13 @@ func newService(ctx context.Context, logger *zap.Logger, opts *Opts) (bertyproto
 	if err != nil {
 		panicUnlockFS(err, lock)
 	}
-
-	if opts.POIDebug {
-		ipfsutil.EnableConnLogger(ctx, logger, node.PeerHost)
-	}
+	ipfsutil.EnableConnLogger(ctx, logger, node.PeerHost)
 
 	mk := bertyprotocol.NewMessageKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("messages")))
 	ks := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
 	orbitdbDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))
 	service, err := bertyprotocol.New(ctx, bertyprotocol.Opts{
-		Logger:          logger.Named("protocol"),
+		Logger:          logger,
 		PubSub:          ps,
 		TinderDriver:    disc,
 		IpfsCoreAPI:     api,

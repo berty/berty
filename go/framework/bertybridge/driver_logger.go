@@ -1,9 +1,9 @@
 package bertybridge
 
 import (
-	"fmt"
 	"os"
 
+	"berty.tech/berty/v2/go/internal/logutil"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -41,28 +41,15 @@ func (mc *nativeLogger) Write(entry zapcore.Entry, fields []zapcore.Field) error
 	return mc.l.Log(entry.Level.CapitalString(), entry.LoggerName, buff.String())
 }
 
-func newLogger(loglevel string) (logger *zap.Logger, err error) {
-	config := zap.NewDevelopmentConfig()
-	config.DisableStacktrace = true
-	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-
-	switch loglevel {
-	case "", "warn":
-		config.Level.SetLevel(zap.WarnLevel)
-	case "info":
-		config.Level.SetLevel(zap.InfoLevel)
-	case "debug":
-		config.Level.SetLevel(zap.DebugLevel)
-	default:
-		err = fmt.Errorf("unsupported log level: %q", loglevel)
-		return
+func newLogger(filters string, mlogger NativeLoggerDriver) (*zap.Logger, func(), error) {
+	if filters == "" {
+		return zap.NewNop(), func() {}, nil
 	}
 
-	logger, err = config.Build()
-	return
-}
+	if mlogger == nil {
+		return logutil.NewLogger(filters, "console", "stderr")
+	}
 
-func newNativeLogger(loglevel string, mlogger NativeLoggerDriver) (*zap.Logger, error) {
 	// native logger
 	nativeEncoderConfig := zap.NewDevelopmentEncoderConfig()
 	nativeEncoderConfig.LevelKey = ""
@@ -73,19 +60,7 @@ func newNativeLogger(loglevel string, mlogger NativeLoggerDriver) (*zap.Logger, 
 	nativeEncoder := zapcore.NewConsoleEncoder(nativeEncoderConfig)
 	nativeOutput := zapcore.Lock(os.Stderr)
 
-	var zapLogLevel zapcore.Level
-	switch loglevel {
-	case "", "warn":
-		zapLogLevel = zap.WarnLevel
-	case "info":
-		zapLogLevel = zap.InfoLevel
-	case "debug":
-		zapLogLevel = zap.DebugLevel
-	default:
-		return nil, fmt.Errorf("unsupported log level: %q", loglevel)
-	}
-
-	nativeLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool { return lvl >= zapLogLevel })
+	nativeLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool { return lvl >= zapcore.DebugLevel })
 	nativeCore := &nativeLogger{
 		Core: zapcore.NewCore(nativeEncoder, nativeOutput, nativeLevel),
 		enc:  nativeEncoder,
@@ -101,6 +76,6 @@ func newNativeLogger(loglevel string, mlogger NativeLoggerDriver) (*zap.Logger, 
 	// 	return nil, err
 	// }
 
-	logger.Info("logger initialized", zap.String("level", loglevel))
-	return logger, nil
+	logger.Info("logger initialized", zap.String("filters", filters))
+	return logutil.DecorateLogger(logger, filters)
 }

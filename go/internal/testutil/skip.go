@@ -54,7 +54,7 @@ func parseEnv() {
 			enabledStability[Unstable] = true
 			enabledStability[Broken] = true
 		default:
-			panic(fmt.Sprintf("invalid stability level: %s", level))
+			panic(fmt.Sprintf("invalid stability level: %q", level))
 		}
 	}
 
@@ -72,7 +72,7 @@ func parseEnv() {
 			enabledSpeed[Slow] = true
 			enabledSpeed[Fast] = true
 		default:
-			panic(fmt.Sprintf("invalid speed level: %s", level))
+			panic(fmt.Sprintf("invalid speed level: %q", level))
 		}
 	}
 
@@ -87,7 +87,7 @@ func FilterStability(t *testing.T, stability Stability) {
 	}
 
 	if !enabledStability[stability] {
-		t.Skip(fmt.Sprintf("skip test with %s stability", stability))
+		t.Skip(fmt.Sprintf("skip test with %q stability", stability))
 	}
 }
 
@@ -99,7 +99,7 @@ func FilterSpeed(t *testing.T, speed Speed) {
 	}
 
 	if !enabledSpeed[speed] {
-		t.Skip(fmt.Sprintf("skip test with %s speed", speed))
+		t.Skip(fmt.Sprintf("skip test with %q speed", speed))
 	}
 }
 

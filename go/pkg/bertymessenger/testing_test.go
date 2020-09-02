@@ -24,7 +24,7 @@ func mkBufDialer(l *bufconn.Listener) func(context.Context, string) (net.Conn, e
 func testingNode(ctx context.Context, t *testing.T) (*TestingAccount, func()) {
 	t.Helper()
 
-	logger := testutil.Logger(t)
+	logger, loggerCleanup := testutil.Logger(t)
 	ctx, ctxCancel := context.WithCancel(ctx)
 	clients, infraCleanup := testingInfra(ctx, t, 1, logger)
 	node := NewTestingAccount(ctx, t, clients[0], logger)
@@ -32,6 +32,7 @@ func testingNode(ctx context.Context, t *testing.T) (*TestingAccount, func()) {
 		node.Close()
 		infraCleanup()
 		ctxCancel()
+		loggerCleanup()
 	}
 	return node, cleanup
 }

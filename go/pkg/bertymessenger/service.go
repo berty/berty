@@ -23,6 +23,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
+	opts.Logger = opts.Logger.Named("msg")
 
 	if err := initDB(opts.DB); err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -223,7 +224,7 @@ func (opts *Opts) applyDefaults() (func(), error) {
 	}
 	if opts.DB == nil {
 		opts.Logger.Warn("Messenger started without database, creating a volatile one in memory")
-		zapLogger := zapgorm2.New(opts.Logger)
+		zapLogger := zapgorm2.New(opts.Logger.Named("gorm"))
 		zapLogger.SetAsDefault()
 		db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{Logger: zapLogger})
 		if err != nil {
