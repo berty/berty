@@ -44,6 +44,7 @@ jobs:
           args: release --rm-dist --snapshot --skip-publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   golangci-lint:
     runs-on: ubuntu-latest
     steps:
@@ -55,6 +56,53 @@ jobs:
           working-directory: go
           args: --timeout=10m
           # only-new-issues: true
+
+  unstable-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        golang:
+          #- 1.13
+          #- 1.14.7
+          - 1.15.0
+          #- tip
+    env:
+      OS: ubuntu-latest
+      GOLANG: ${{ matrix.golang }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.golang }}
+      - name: Cache Go modules
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Avoid triggering make generate
+        run: touch go/gen.sum
+      - name: Fetch dependencies
+        run: |
+          go mod download
+      - name: Compile the testing binaries
+        run: |
+          pushd ./go/pkg/bertyprotocol  && go test -c -o ./tests.bin . && popd
+          pushd ./go/pkg/bertymessenger && go test -c -o ./tests.bin . && popd
+      - name: Check go.mod and go.sum
+        run: |
+          go mod tidy -v
+          git --no-pager diff go.mod go.sum
+          git --no-pager diff --quiet go.mod go.sum
+      - name: Run fast unstable tests
+        run: |
+          cd go
+          TEST_SPEED=fast TEST_STABILITY=unstable make go.unstable-tests
+          # FIXME: coverage
+
   go-tests-on-linux:
     #needs: golangci-lint
     runs-on: ubuntu-latest
