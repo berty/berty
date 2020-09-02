@@ -86,7 +86,9 @@ func TestUnstableServiceSetName(t *testing.T) {
 	}
 }
 
-func TestServiceSetNameAsync(t *testing.T) {
+func TestUnstableServiceSetNameAsync(t *testing.T) {
+	testutil.FilterStability(t, testutil.Unstable)
+
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
 	defer cleanup()
