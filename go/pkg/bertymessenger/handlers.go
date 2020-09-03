@@ -77,7 +77,8 @@ func accountGroupJoined(svc *service, gme *bertytypes.GroupMetadataEvent) error 
 		return err
 	}
 
-	groupPK := bytesToString(ev.GetGroup().GetPublicKey())
+	gpkb := ev.GetGroup().GetPublicKey()
+	groupPK := bytesToString(gpkb)
 	isNew := false
 
 	conversation, err := addConversation(svc.db, groupPK)
@@ -92,6 +93,19 @@ func accountGroupJoined(svc *service, gme *bertytypes.GroupMetadataEvent) error 
 		}
 	} else if !errcode.Is(err, errcode.ErrDBEntryAlreadyExists) {
 		return errcode.ErrDBAddConversation.Wrap(err)
+	}
+
+	// activate group
+	{
+		_, err := svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: gpkb})
+		if err != nil {
+			svc.logger.Warn("failed to activate group", zap.String("pk", bytesToString(gpkb)))
+		}
+	}
+
+	// subscribe to group
+	if err := svc.subscribeToGroup(gpkb); err != nil {
+		return err
 	}
 
 	svc.logger.Info("AccountGroupJoined", zap.String("pk", groupPK), zap.Bool("is-new", isNew), zap.String("known-as", conversation.GetDisplayName()))
@@ -226,6 +240,7 @@ func accountContactRequestIncomingAccepted(svc *service, gme *bertytypes.GroupMe
 // * on AccountGroup when you add a new device to your group
 // * on ContactGroup when you or your contact add a new device
 // * on MultiMemberGroup when you or anyone in a multimember group adds a new device
+// nolint:gocyclo
 func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) error {
 	var ev bertytypes.GroupAddMemberDevice
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
@@ -242,7 +257,7 @@ func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) er
 
 	mpk := bytesToString(mpkb)
 	dpk := bytesToString(dpkb)
-	gpk := bytesToString(dpkb)
+	gpk := bytesToString(gpkb)
 
 	isMe, err := checkIsMe(
 		svc.ctx,
@@ -265,7 +280,7 @@ func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) er
 		OwnerPublicKey: mpk,
 	}
 	{
-		err := svc.db.Where(&Device{PublicKey: dpk}).Take(&Device{}).Error
+		_, err = getDevice(svc.db, dpk)
 		if err == gorm.ErrRecordNotFound {
 			err = svc.db.
 				Clauses(clause.OnConflict{
@@ -279,51 +294,26 @@ func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) er
 			}
 			err = svc.dispatcher.StreamEvent(StreamEvent_TypeDeviceUpdated, &StreamEvent_DeviceUpdated{Device: &device})
 			if err != nil {
-				svc.logger.Error("dispatching device updated", zap.Error(err))
+				svc.logger.Error("error dispatching device updated", zap.Error(err))
 			}
 		}
 	}
 
 	{
-		var account Account
-		err := svc.db.Take(&account).Error
+		account, err := getAccount(svc.db)
 		if err != nil {
 			svc.logger.Warn("account not found")
-			svc.logger.Info("device added", zap.String("member", mpk), zap.String("device", dpk))
+			svc.logger.Debug("device added", zap.String("member", mpk), zap.String("device", dpk))
 		} else {
-			svc.logger.Info("device added", zap.String("member", mpk), zap.String("device", dpk), zap.String("account", account.GetPublicKey()))
+			svc.logger.Debug("device added", zap.String("member", mpk), zap.String("device", dpk), zap.String("account", account.GetPublicKey()))
 		}
 	}
 
-	// fetch contact from db
-	var contact Contact
-	err = svc.db.
-		Where(Contact{PublicKey: mpk}).
-		First(&contact).
-		Error
+	// fetch contact from db (include in tranaction maybe?)
+	contact, err := getContact(svc.db, mpk)
 
-	if err == gorm.ErrRecordNotFound {
-		nameSuffix := "1337"
-		if len(mpk) >= 4 {
-			nameSuffix = mpk[:4]
-		}
-		member := Member{
-			PublicKey:             mpk,
-			ConversationPublicKey: gpk,
-			DisplayName:           "anon#" + nameSuffix,
-		}
-		err := svc.db.
-			Clauses(clause.OnConflict{
-				Columns:   []clause.Column{{Name: "public_key"}},
-				DoNothing: true,
-			}).
-			Create(&member).
-			Error
-		return err
-	}
-
-	switch {
-	case err == nil && contact.GetState() == Contact_OutgoingRequestSent: // someone you invited just accepted the invitation
+	if err == nil && contact.GetState() == Contact_OutgoingRequestSent {
+		// someone you invited just accepted the invitation
 		// update contact
 		var groupPK []byte
 		{
@@ -394,11 +384,86 @@ func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) er
 		}
 
 		return svc.subscribeToMessages(groupPK)
-	case err == nil: // someone you know just added a new device, this happens in
-		// nothing to do
-	case err != nil: // unknown contact
-		// nothing to do
-		// FIXME: create a ConversationMember
+	}
+
+	nameSuffix := "1337"
+	if len(mpk) >= 4 {
+		nameSuffix = mpk[:4]
+	}
+	member := Member{
+		PublicKey:             mpk,
+		ConversationPublicKey: gpk,
+		DisplayName:           "anon#" + nameSuffix,
+	}
+	claus := clause.OnConflict{
+		Columns:   []clause.Column{{Name: "public_key"}},
+		DoNothing: true,
+	}
+
+	// check backlogs
+	{
+		var backlog []Interaction
+		err := svc.db.
+			Order("arrival_index asc").
+			Where("device_public_key = ? AND conversation_public_key = ? AND member_public_key = ?", dpk, gpk, "").
+			Find(&backlog).
+			Error
+		if err == gorm.ErrRecordNotFound {
+			return nil
+		} else if err != nil {
+			return err
+		}
+		for _, elem := range backlog {
+			svc.logger.Info("found elem in backlog", zap.String("type", elem.GetType().String()), zap.String("device-pk", elem.GetDevicePublicKey()), zap.String("conv", elem.GetConversationPublicKey()))
+
+			elem.MemberPublicKey = mpk
+
+			switch elem.GetType() {
+			case AppMessage_TypeSetUserName:
+				var payload AppMessage_SetUserName
+				err := proto.Unmarshal(elem.GetPayload(), &payload)
+				if err != nil {
+					return err
+				}
+				member = Member{
+					PublicKey:             mpk,
+					ConversationPublicKey: gpk,
+					DisplayName:           payload.GetName(),
+				}
+				claus = clause.OnConflict{
+					Columns:   []clause.Column{{Name: "public_key"}},
+					DoUpdates: clause.AssignmentColumns([]string{"display_name"}),
+				}
+				err = svc.db.Where(&Interaction{CID: elem.GetCID()}).Delete(&Interaction{}).Error
+				if err != nil {
+					return err
+				}
+				err = svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionDeleted, &StreamEvent_InteractionDeleted{elem.GetCID()})
+				if err != nil {
+					return err
+				}
+			default:
+				e := elem // comply with scopelint
+				err := svc.db.Save(&e).Error
+				if err != nil {
+					return err // maybe only log here
+				}
+				err = svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{&e})
+				if err != nil {
+					return err
+				}
+			}
+		}
+
+		err = svc.db.Clauses(&claus).Create(&member).Error
+		if err != nil {
+			return err
+		}
+		err = svc.dispatcher.StreamEvent(StreamEvent_TypeMemberUpdated, &StreamEvent_MemberUpdated{&member})
+		if err != nil {
+			return err
+		}
+		svc.logger.Info("dispatched member update", zap.String("name", member.GetDisplayName()), zap.String("conv", gpk))
 	}
 
 	return nil
@@ -406,6 +471,7 @@ func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) er
 
 // nolint:gocyclo
 func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEvent, am *AppMessage) error {
+	svc.logger.Info("handling app message", zap.String("type", am.GetType().String()))
 	// build interaction
 	var i *Interaction
 	{
@@ -417,6 +483,9 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 			return err
 		}
 
+		dpkb := gme.GetHeaders().GetDevicePK()
+		dpk := bytesToString(dpkb)
+
 		i = &Interaction{
 			CID:                   cid,
 			Type:                  amt,
@@ -424,6 +493,7 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 			IsMe:                  isMe,
 			ConversationPublicKey: gpk,
 			SentDate:              am.GetSentDate(),
+			DevicePublicKey:       dpk,
 		}
 		svc.logger.Debug("received app message", zap.String("type", amt.String()))
 	}
@@ -442,71 +512,94 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 	// fetch conv from db
 	var conv Conversation
 	{
-		err := svc.db.Where(&Conversation{PublicKey: gpk}).Take(&conv).Error
+		var err error
+		conv, err = getConversation(svc.db, gpk)
 		if err != nil {
 			// FIXME: maybe we should accept receiving app messages on unknown conversations?
+			svc.logger.Warn("ignored message because conv not found")
 			return err
-		}
-	}
-
-	// build device {
-	{
-		dpkb := gme.GetHeaders().GetDevicePK()
-		dpk := bytesToString(dpkb)
-
-		switch {
-		case i.IsMe: // myself
-			i.MemberPublicKey = ""
-		case conv.GetType() == Conversation_ContactType: // 1-1 conversation
-			i.MemberPublicKey = ""
-			// FIXME: multiple devices per contact?
-		default:
-			var existingDevice Device
-			err := svc.db.Where(&Device{PublicKey: dpk}).Take(&existingDevice).Error
-			if err == nil { // device already exists
-				i.MemberPublicKey = existingDevice.GetOwnerPublicKey()
-			} else { // device not found
-				// Wait for device and hence member pk asynchronously to correctly match message to member
-				// Maybe should be better to put in a backlog and empty backlog on member device added
-				ch := make(chan *Device)
-				var unreg func()
-				go func() {
-					unreg = svc.dispatcher.Register(&NotifieeBundle{StreamEventImpl: func(c *StreamEvent) error {
-						if c.GetType() == StreamEvent_TypeDeviceUpdated {
-							var payload StreamEvent_DeviceUpdated
-							err := proto.Unmarshal(c.GetPayload(), &payload)
-							if err != nil {
-								return err
-							}
-							if payload.GetDevice().GetPublicKey() == dpk {
-								ch <- payload.GetDevice()
-								close(ch)
-							}
-						}
-						return nil
-					}})
-				}()
-				// FIXME: timeout
-				device := <-ch
-				unreg()
-				i.MemberPublicKey = device.GetOwnerPublicKey()
-			}
 		}
 	}
 
 	// start a transaction
 	{
 		err := svc.db.Transaction(func(tx *gorm.DB) error {
+			// build device
+			{
+				dpkb := gme.GetHeaders().GetDevicePK()
+				dpk := bytesToString(dpkb)
+
+				switch {
+				case i.IsMe: // myself
+					i.MemberPublicKey = ""
+				case conv.GetType() == Conversation_ContactType: // 1-1 conversation
+					i.MemberPublicKey = ""
+					// FIXME: multiple devices per contact?
+				default:
+					existingDevice, err := getDevice(tx, dpk)
+					if err == nil { // device already exists
+						i.MemberPublicKey = existingDevice.GetOwnerPublicKey()
+					} else { // device not found
+						i.MemberPublicKey = "" // backlog magic
+					}
+				}
+			}
+
+			// extract ack from backlog
+			{
+				var acks []Interaction
+				err := tx.Where(&Interaction{Type: AppMessage_TypeAcknowledge}).Find(&acks).Error
+				if err != nil {
+					return err
+				}
+				for _, ack := range acks {
+					payload, err := ack.UnmarshalPayload()
+					if err != nil {
+						return err
+					}
+					ackPayload := payload.(*AppMessage_Acknowledge)
+					if i.GetCID() == ackPayload.GetTarget() {
+						i.Acknowledged = true
+						svc.logger.Debug("found ack in backlog", zap.String("target", ackPayload.GetTarget()), zap.String("cid", i.GetCID()))
+						err := tx.Where(&Interaction{CID: ack.GetCID()}).Delete(&Interaction{}).Error
+						if err != nil {
+							return err
+						}
+						err = svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionDeleted, &StreamEvent_InteractionDeleted{ack.GetCID()})
+						if err != nil {
+							return err
+						}
+					}
+				}
+			}
+
 			isVisibleEvent := false
 
 			switch i.GetType() {
 			case AppMessage_TypeAcknowledge:
-				// FIXME: set 'Acknowledged: true' on existing interaction instead
-				if err := tx.Create(i).Error; err != nil {
+				payload := amPayload.(*AppMessage_Acknowledge)
+
+				// find target
+				target, err := getInteraction(tx, payload.GetTarget())
+				if err == gorm.ErrRecordNotFound {
+					// add ack in db (backlog)
+					if err := tx.Create(i).Error; err != nil {
+						return err
+					}
+					svc.logger.Debug("added ack in backlog", zap.String("target", payload.GetTarget()), zap.String("cid", i.GetCID()))
+					break
+				} else if err != nil {
 					return err
 				}
 
-				err := svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{i})
+				// set ack on target
+				target.Acknowledged = true
+				if err := tx.Model(&Interaction{}).Where("c_id = ?", target.GetCID()).Update("acknowledged", true).Error; err != nil {
+					return err
+				}
+
+				// dispatch updated target
+				err = svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{&target})
 				if err != nil {
 					return err
 				}
@@ -557,14 +650,25 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 
 			case AppMessage_TypeSetUserName:
 				if i.IsMe {
+					svc.logger.Info("ignoring SetUserName because isMe")
 					break
 				}
 
-				if i.MemberPublicKey == "" {
-					return errcode.ErrMissingInput
-				}
+				svc.logger.Debug("interesting SetUserName")
 
 				payload := amPayload.(*AppMessage_SetUserName)
+
+				if i.MemberPublicKey == "" {
+					// store in backlog
+					svc.logger.Info("storing SetUserName in backlog", zap.String("name", payload.GetName()), zap.String("device-pk", i.GetDevicePublicKey()), zap.String("conv", gpk))
+					return tx.
+						Clauses(clause.OnConflict{
+							Columns:   []clause.Column{{Name: "c_id"}},
+							DoNothing: true,
+						}).
+						Create(&i).
+						Error
+				}
 
 				member := Member{
 					PublicKey:             i.MemberPublicKey,
@@ -587,6 +691,8 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 					return err
 				}
 
+				svc.logger.Debug("dispatched member update", zap.String("name", payload.GetName()), zap.String("device-pk", i.GetDevicePublicKey()), zap.String("conv", gpk))
+
 			default:
 				svc.logger.Warn("unsupported app message type", zap.String("type", i.GetType().String()))
 			}
@@ -595,8 +701,7 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 				// FIXME: check if app is in foreground
 
 				// fetch conversation from db
-				conv := Conversation{PublicKey: i.ConversationPublicKey}
-				err := tx.Where(&conv).Take(&conv).Error
+				conv, err := getConversation(tx, conv.GetPublicKey())
 				if err != nil {
 					return err
 				}
@@ -619,7 +724,7 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 
 				// expr-based (see above) gorm updates don't update the go object
 				// next query could be easily replace by a simple increment, but this way we're 100% sure to be up-to-date
-				err = tx.Where(&Conversation{PublicKey: i.ConversationPublicKey}).Take(&conv).Error
+				conv, err = getConversation(tx, i.GetConversationPublicKey())
 				if err != nil {
 					return err
 				}

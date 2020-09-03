@@ -3999,12 +3999,15 @@ export namespace berty {
                 cid?: (string|null);
                 type?: (berty.messenger.v1.AppMessage.Type|null);
                 memberPublicKey?: (string|null);
+                devicePublicKey?: (string|null);
                 member?: (berty.messenger.v1.IMember|null);
                 conversationPublicKey?: (string|null);
                 conversation?: (berty.messenger.v1.IConversation|null);
                 payload?: (Uint8Array|null);
                 isMe?: (boolean|null);
                 sentDate?: (number|Long|null);
+                acknowledged?: (boolean|null);
+                arrivalIndex?: (number|Long|null);
             }
 
             class Interaction implements IInteraction {
@@ -4012,12 +4015,15 @@ export namespace berty {
                 public cid: string;
                 public type: berty.messenger.v1.AppMessage.Type;
                 public memberPublicKey: string;
+                public devicePublicKey: string;
                 public member?: (berty.messenger.v1.IMember|null);
                 public conversationPublicKey: string;
                 public conversation?: (berty.messenger.v1.IConversation|null);
                 public payload: Uint8Array;
                 public isMe: boolean;
                 public sentDate: (number|Long);
+                public acknowledged: boolean;
+                public arrivalIndex: (number|Long);
                 public static create(properties?: berty.messenger.v1.IInteraction): berty.messenger.v1.Interaction;
                 public static encode(message: berty.messenger.v1.IInteraction, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IInteraction, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4079,6 +4085,8 @@ export namespace berty {
                 contactPublicKey?: (string|null);
                 contact?: (berty.messenger.v1.IContact|null);
                 members?: (berty.messenger.v1.IMember[]|null);
+                accountMemberPublicKey?: (string|null);
+                localDevicePublicKey?: (string|null);
             }
 
             class Conversation implements IConversation {
@@ -4093,6 +4101,8 @@ export namespace berty {
                 public contactPublicKey: string;
                 public contact?: (berty.messenger.v1.IContact|null);
                 public members: berty.messenger.v1.IMember[];
+                public accountMemberPublicKey: string;
+                public localDevicePublicKey: string;
                 public static create(properties?: berty.messenger.v1.IConversation): berty.messenger.v1.Conversation;
                 public static encode(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4206,6 +4216,7 @@ export namespace berty {
                     TypeConversationUpdated = 2,
                     TypeConversationDeleted = 3,
                     TypeInteractionUpdated = 4,
+                    TypeInteractionDeleted = 9,
                     TypeContactUpdated = 5,
                     TypeAccountUpdated = 6,
                     TypeMemberUpdated = 7,
@@ -4263,6 +4274,24 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.InteractionUpdated;
                     public static toObject(message: berty.messenger.v1.StreamEvent.InteractionUpdated, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IInteractionDeleted {
+                    cid?: (string|null);
+                }
+
+                class InteractionDeleted implements IInteractionDeleted {
+
+                    public cid: string;
+                    public static create(properties?: berty.messenger.v1.StreamEvent.IInteractionDeleted): berty.messenger.v1.StreamEvent.InteractionDeleted;
+                    public static encode(message: berty.messenger.v1.StreamEvent.IInteractionDeleted, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.StreamEvent.IInteractionDeleted, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.StreamEvent.InteractionDeleted;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.StreamEvent.InteractionDeleted;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.InteractionDeleted;
+                    public static toObject(message: berty.messenger.v1.StreamEvent.InteractionDeleted, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 

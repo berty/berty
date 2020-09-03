@@ -243,7 +243,7 @@ message ConversationJoin {
 // NOTE: public keys should be base64 encoded using golang's URLEncoding.WithPadding(NoPadding) format
 
 message Account {
-  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
   string display_name = 2;
   string link = 3;
   State state = 4;
@@ -256,19 +256,22 @@ message Account {
 }
 
 message Interaction {
-  string cid = 1 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "CID"];
+  string cid = 1 [(gogoproto.moretags) = "gorm:\"uniqueIndex\"", (gogoproto.customname) = "CID"];
   AppMessage.Type type = 2;
   string member_public_key = 7;
+  string device_public_key = 12;
   Member member = 8;
   string conversation_public_key = 3;
   Conversation conversation = 4;
   bytes payload = 5;
   bool is_me = 6;
   int64 sent_date = 9;
+  bool acknowledged = 10;
+  int64 arrival_index = 11 [(gogoproto.moretags) = "gorm:\"autoIncrement\""];
 }
 
 message Contact {
-  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
   string conversation_public_key = 2;
   Conversation conversation = 3;
   State state = 4;
@@ -299,6 +302,8 @@ message Conversation {
   Contact contact = 9;
   // specific to MultiMemberType conversations
   repeated Member members = 10;
+  string account_member_public_key = 11;
+  string local_device_public_key = 12;
   // TODO: avatar_cid
 
   enum Type {
@@ -337,6 +342,7 @@ message StreamEvent {
     TypeConversationUpdated = 2;
     TypeConversationDeleted = 3;
     TypeInteractionUpdated = 4;
+    TypeInteractionDeleted = 9;
     TypeContactUpdated = 5;
     TypeAccountUpdated = 6;
     TypeMemberUpdated = 7;
@@ -350,6 +356,9 @@ message StreamEvent {
   }
   message InteractionUpdated {
     Interaction interaction = 1;
+  }
+  message InteractionDeleted {
+    string cid = 1  [(gogoproto.customname) = "CID"];
   }
   message ContactUpdated {
     Contact contact = 1;

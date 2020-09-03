@@ -3,7 +3,6 @@ package bertymessenger
 import (
 	"context"
 	"errors"
-	"io"
 	"sync"
 	"time"
 
@@ -51,18 +50,19 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 
 	// get or create account in DB
 	{
-		var acc Account
-		err := svc.db.Take(&acc).Error
+		acc, err := getAccount(svc.db)
 		switch {
 		case err == gorm.ErrRecordNotFound: // account not found, create a new one
 			svc.logger.Debug("account not found, creating a new one", zap.String("pk", pkStr))
-			acc.State = Account_NotReady
 			ret, err := svc.internalInstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{})
 			if err != nil {
 				return nil, err
 			}
-			acc.Link = ret.GetHTMLURL()
-			acc.PublicKey = pkStr
+			acc = Account{
+				PublicKey: pkStr,
+				Link:      ret.GetHTMLURL(),
+				State:     Account_NotReady,
+			}
 			if err := svc.db.Create(&acc).Error; err != nil {
 				return nil, err
 			}
@@ -160,24 +160,6 @@ func (svc *service) subscribeToMetadata(gpkb []byte) error {
 			}
 		}
 	}()
-	// list metadata to prevent races with messages
-	ls, err := svc.protocolClient.GroupMetadataList(svc.ctx, &bertytypes.GroupMetadataList_Request{GroupPK: gpkb})
-	if err != nil {
-		return err
-	}
-	for {
-		gme, err := ls.Recv()
-		if err == io.EOF {
-			break
-		} else if err != nil {
-			svc.logStreamingError("group metadata", err)
-			break
-		}
-		err = handleProtocolEvent(svc, gme)
-		if err != nil {
-			svc.logger.Error("failed to handle protocol event", zap.Error(errcode.ErrInternal.Wrap(err)))
-		}
-	}
 	return nil
 }
 

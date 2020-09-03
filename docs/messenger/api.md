@@ -83,6 +83,7 @@
     - [StreamEvent.ConversationDeleted](#berty.messenger.v1.StreamEvent.ConversationDeleted)
     - [StreamEvent.ConversationUpdated](#berty.messenger.v1.StreamEvent.ConversationUpdated)
     - [StreamEvent.DeviceUpdated](#berty.messenger.v1.StreamEvent.DeviceUpdated)
+    - [StreamEvent.InteractionDeleted](#berty.messenger.v1.StreamEvent.InteractionDeleted)
     - [StreamEvent.InteractionUpdated](#berty.messenger.v1.StreamEvent.InteractionUpdated)
     - [StreamEvent.ListEnd](#berty.messenger.v1.StreamEvent.ListEnd)
     - [StreamEvent.MemberUpdated](#berty.messenger.v1.StreamEvent.MemberUpdated)
@@ -295,9 +296,9 @@
 | last_update | [int64](#int64) |  | last_update is used to sort conversations, it should be updated for each &#34;visible&#34; event |
 | contact_public_key | [string](#string) |  | specific to ContactType conversations |
 | contact | [Contact](#berty.messenger.v1.Contact) |  | specific to ContactType conversations |
-| members | [Member](#berty.messenger.v1.Member) | repeated | specific to MultiMemberType conversations
-
-TODO: avatar_cid |
+| members | [Member](#berty.messenger.v1.Member) | repeated | specific to MultiMemberType conversations |
+| account_member_public_key | [string](#string) |  |  |
+| local_device_public_key | [string](#string) |  | TODO: avatar_cid |
 
 <a name="berty.messenger.v1.ConversationClose"></a>
 
@@ -509,12 +510,15 @@ TODO: return cid
 | cid | [string](#string) |  |  |
 | type | [AppMessage.Type](#berty.messenger.v1.AppMessage.Type) |  |  |
 | member_public_key | [string](#string) |  |  |
+| device_public_key | [string](#string) |  |  |
 | member | [Member](#berty.messenger.v1.Member) |  |  |
 | conversation_public_key | [string](#string) |  |  |
 | conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
 | payload | [bytes](#bytes) |  |  |
 | is_me | [bool](#bool) |  |  |
 | sent_date | [int64](#int64) |  |  |
+| acknowledged | [bool](#bool) |  |  |
+| arrival_index | [int64](#int64) |  |  |
 
 <a name="berty.messenger.v1.Member"></a>
 
@@ -675,6 +679,14 @@ TODO: return cid
 | ----- | ---- | ----- | ----------- |
 | device | [Device](#berty.messenger.v1.Device) |  |  |
 
+<a name="berty.messenger.v1.StreamEvent.InteractionDeleted"></a>
+
+### StreamEvent.InteractionDeleted
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| cid | [string](#string) |  |  |
+
 <a name="berty.messenger.v1.StreamEvent.InteractionUpdated"></a>
 
 ### StreamEvent.InteractionUpdated
@@ -798,6 +810,7 @@ most important and dynamic values first
 | TypeConversationUpdated | 2 |  |
 | TypeConversationDeleted | 3 |  |
 | TypeInteractionUpdated | 4 |  |
+| TypeInteractionDeleted | 9 |  |
 | TypeContactUpdated | 5 |  |
 | TypeAccountUpdated | 6 |  |
 | TypeMemberUpdated | 7 |  |

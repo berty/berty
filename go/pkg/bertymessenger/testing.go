@@ -142,7 +142,7 @@ func (a *TestingAccount) processEvent(t *testing.T, event *StreamEvent) {
 		require.NoError(t, err)
 		member := payload.(*StreamEvent_MemberUpdated).Member
 		a.members[member.GetPublicKey()] = member
-		//t.Log("member updated in", a.GetAccount().GetDisplayName(), ", value:", member.GetDisplayName())
+		t.Log("member updated in", a.GetAccount().GetDisplayName(), ", value:", member.GetDisplayName(), ", mpk:", member.GetPublicKey())
 	}
 }
 

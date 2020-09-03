@@ -456,8 +456,8 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 	// send account
 	{
 		svc.logger.Debug("sending account")
-		var acc Account
-		if err := svc.db.Take(&acc).Error; err != nil {
+		acc, err := getAccount(svc.db)
+		if err != nil {
 			return err
 		}
 		au, err := proto.Marshal(&StreamEvent_AccountUpdated{Account: &acc})
@@ -601,6 +601,14 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 	pkStr := bytesToString(pk)
 	svc.logger.Info("Created conv", zap.String("dn", req.GetDisplayName()), zap.String("pk", pkStr))
 
+	// activate group
+	{
+		_, err := svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: pk})
+		if err != nil {
+			svc.logger.Warn("failed to activate group", zap.String("pk", pkStr))
+		}
+	}
+
 	gir, err := svc.protocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{GroupPK: pk})
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -613,10 +621,12 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 
 	// Create new conversation
 	conv := &Conversation{
-		PublicKey:   pkStr,
-		DisplayName: dn,
-		Link:        htmlURL,
-		Type:        Conversation_MultiMemberType,
+		PublicKey:              pkStr,
+		DisplayName:            dn,
+		Link:                   htmlURL,
+		Type:                   Conversation_MultiMemberType,
+		AccountMemberPublicKey: bytesToString(gir.GetMemberPK()),
+		LocalDevicePublicKey:   bytesToString(gir.GetDevicePK()),
 	}
 
 	// Update database
@@ -641,19 +651,6 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 		}
 	}
 
-	// activate group
-	{
-		_, err := svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: pk})
-		if err != nil {
-			svc.logger.Warn("failed to activate group", zap.String("pk", bytesToString(pk)))
-		}
-	}
-
-	// subscribe to group
-	if err := svc.subscribeToGroup(pk); err != nil {
-		return nil, err
-	}
-
 	// Try to put group name in group metadata
 	{
 		err := func() error {
@@ -676,25 +673,27 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 	** In the case that the group invitation leaks after an user leaves it, this user's name will be inaccessible to new users joining the group
 	 */
 
-	// Try to put user name in group metadata
+	// Try to put user name 3 times in group metadata
+	// FIXME: only do it once, once replication is ok
 	{
-		err := func() error {
-			var acc Account
-			err = svc.db.Take(&acc).Error
-			if err != nil {
-				return err
-			}
+		for i := 0; i < 3; i++ {
+			err := func() error {
+				acc, err := getAccount(svc.db)
+				if err != nil {
+					return err
+				}
 
-			am, err := AppMessage_TypeSetUserName.MarshalPayload(0, &AppMessage_SetUserName{Name: acc.GetDisplayName()})
-			if err != nil {
-				return err
-			}
+				am, err := AppMessage_TypeSetUserName.MarshalPayload(0, &AppMessage_SetUserName{Name: acc.GetDisplayName()})
+				if err != nil {
+					return err
+				}
 
-			_, err = svc.protocolClient.AppMetadataSend(ctx, &bertytypes.AppMetadataSend_Request{GroupPK: pk, Payload: am})
-			return err
-		}()
-		if err != nil {
-			svc.logger.Error("failed to set creator username in group", zap.Error(err))
+				_, err = svc.protocolClient.AppMetadataSend(ctx, &bertytypes.AppMetadataSend_Request{GroupPK: pk, Payload: am})
+				return err
+			}()
+			if err != nil {
+				svc.logger.Error("failed to set creator username in group", zap.Error(err))
+			}
 		}
 	}
 
@@ -748,11 +747,33 @@ func (svc *service) ConversationJoin(ctx context.Context, req *ConversationJoin_
 
 	bgroup := pdlr.GetBertyGroup()
 	gpkb := bgroup.GetGroup().GetPublicKey()
+
+	mmgjReq := &bertytypes.MultiMemberGroupJoin_Request{Group: pdlr.GetBertyGroup().GetGroup()}
+	if _, err := svc.protocolClient.MultiMemberGroupJoin(ctx, mmgjReq); err != nil {
+		// Rollback db ?
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	// activate group
+	{
+		_, err := svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: gpkb})
+		if err != nil {
+			svc.logger.Warn("failed to activate group", zap.String("pk", bytesToString(gpkb)))
+		}
+	}
+
+	gir, err := svc.protocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{GroupPK: gpkb})
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
 	conv := Conversation{
-		PublicKey:   bytesToString(gpkb),
-		DisplayName: bgroup.GetDisplayName(),
-		Link:        link,
-		Type:        Conversation_MultiMemberType,
+		PublicKey:              bytesToString(gpkb),
+		DisplayName:            bgroup.GetDisplayName(),
+		Link:                   link,
+		Type:                   Conversation_MultiMemberType,
+		AccountMemberPublicKey: bytesToString(gir.GetMemberPK()),
+		LocalDevicePublicKey:   bytesToString(gir.GetDevicePK()),
 	}
 
 	// update db
@@ -775,44 +796,26 @@ func (svc *service) ConversationJoin(ctx context.Context, req *ConversationJoin_
 		}
 	}
 
-	mmgjReq := &bertytypes.MultiMemberGroupJoin_Request{Group: pdlr.GetBertyGroup().GetGroup()}
-	if _, err := svc.protocolClient.MultiMemberGroupJoin(ctx, mmgjReq); err != nil {
-		// Rollback db ?
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	// activate group
+	// Try to put user name in group metadata 3 times
 	{
-		_, err := svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: gpkb})
-		if err != nil {
-			svc.logger.Warn("failed to activate group", zap.String("pk", bytesToString(gpkb)))
-		}
-	}
+		for i := 0; i < 3; i++ {
+			err := func() error {
+				acc, err := getAccount(svc.db)
+				if err != nil {
+					return err
+				}
 
-	// subscribe to group
-	if err := svc.subscribeToGroup(gpkb); err != nil {
-		return nil, err
-	}
+				am, err := AppMessage_TypeSetUserName.MarshalPayload(0, &AppMessage_SetUserName{Name: acc.GetDisplayName()})
+				if err != nil {
+					return err
+				}
 
-	// Try to put user name in group metadata
-	{
-		err := func() error {
-			var acc Account
-			err = svc.db.Take(&acc).Error
-			if err != nil {
+				_, err = svc.protocolClient.AppMetadataSend(ctx, &bertytypes.AppMetadataSend_Request{GroupPK: gpkb, Payload: am})
 				return err
-			}
-
-			am, err := AppMessage_TypeSetUserName.MarshalPayload(0, &AppMessage_SetUserName{Name: acc.GetDisplayName()})
+			}()
 			if err != nil {
-				return err
+				svc.logger.Error("failed to set username in group", zap.Error(err))
 			}
-
-			_, err = svc.protocolClient.AppMetadataSend(ctx, &bertytypes.AppMetadataSend_Request{GroupPK: gpkb, Payload: am})
-			return err
-		}()
-		if err != nil {
-			svc.logger.Error("failed to set username in group", zap.Error(err))
 		}
 	}
 
@@ -823,8 +826,8 @@ func (svc *service) AccountUpdate(ctx context.Context, req *AccountUpdate_Reques
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	var acc Account
-	if err := svc.db.Take(&acc).Error; err != nil {
+	acc, err := getAccount(svc.db)
+	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
@@ -903,9 +906,9 @@ func (svc *service) ContactRequest(ctx context.Context, req *ContactRequest_Requ
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	var acc Account
-	if err := svc.db.Take(&acc).Error; err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
+	acc, err := getAccount(svc.db)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
 	}
 	om, err := proto.Marshal(&ContactMetadata{DisplayName: acc.GetDisplayName()})
 	if err != nil {
@@ -947,8 +950,8 @@ func (svc *service) ContactAccept(ctx context.Context, req *ContactAccept_Reques
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	var c Contact
-	if err := svc.db.Where(Contact{PublicKey: pk}).Take(&c).Error; err != nil {
+	c, err := getContact(svc.db, pk)
+	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
@@ -1003,8 +1006,8 @@ func (svc *service) AccountGet(ctx context.Context, req *AccountGet_Request) (*A
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	var acc Account
-	if err := svc.db.Take(&acc).Error; err != nil {
+	acc, err := getAccount(svc.db)
+	if err != nil {
 		return nil, err
 	}
 	return &AccountGet_Reply{Account: &acc}, nil
@@ -1029,16 +1032,9 @@ func (svc *service) ConversationOpen(ctx context.Context, req *ConversationOpen_
 
 	ret := ConversationOpen_Reply{}
 
-	// get entry from db
-	conv := Conversation{PublicKey: req.GroupPK}
-	{
-		err := svc.db.
-			Where(&conv).
-			First(&conv).
-			Error
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
+	conv, err := getConversation(svc.db, req.GetGroupPK())
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	// sanity checks
@@ -1081,15 +1077,9 @@ func (svc *service) ConversationClose(ctx context.Context, req *ConversationClos
 	ret := ConversationClose_Reply{}
 
 	// get entry from db
-	conv := Conversation{PublicKey: req.GroupPK}
-	{
-		err := svc.db.
-			Where(&conv).
-			First(&conv).
-			Error
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
+	conv, err := getConversation(svc.db, req.GetGroupPK())
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	// sanity checks

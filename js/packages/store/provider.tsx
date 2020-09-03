@@ -20,7 +20,7 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 			state.streamError = action.payload.error
 			break
 		case 'CLEAR':
-			return initialState
+			return { ...initialState, embedded: oldState.embedded, daemonAddress: oldState.daemonAddress }
 		case 'SET_CLIENT':
 			state.client = action.payload.client
 			break
@@ -45,6 +45,8 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 				state.members[member.conversationPublicKey] = {}
 			}
 			state.members[member.conversationPublicKey][member.publicKey] = member
+		case T.TypeInteractionDeleted:
+			delete state.interactions[action.payload.cid]
 		case T.TypeListEnd:
 			state.listDone = true
 			break
@@ -107,6 +109,9 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 				(members) => members.length > 0,
 			)
 			break
+		case 'SET_DAEMON_ADDRESS':
+			state.daemonAddress = action.payload.value
+			break
 		default:
 			console.warn('Unknown action type', action.type)
 	}
@@ -115,7 +120,7 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 }
 
 export const MsgrProvider = ({ children, daemonAddress, embedded }) => {
-	const [state, dispatch] = React.useReducer(reducer, { ...initialState, daemonAddress })
+	const [state, dispatch] = React.useReducer(reducer, { ...initialState, daemonAddress, embedded })
 	const [restartCount, setRestartCount] = React.useState(0)
 	const [nodeStarted, setNodeStarted] = React.useState(false)
 
@@ -144,6 +149,7 @@ export const MsgrProvider = ({ children, daemonAddress, embedded }) => {
 
 	React.useEffect(() => {
 		if (!embedded) {
+			setNodeStarted(true)
 			return
 		}
 		console.log('starting daemon')
@@ -176,7 +182,7 @@ export const MsgrProvider = ({ children, daemonAddress, embedded }) => {
 		} else {
 			const opts = {
 				transport: ExternalTransport(),
-				host: daemonAddress,
+				host: state.daemonAddress,
 			}
 			rpc = rpcWeb(opts)
 		}
@@ -229,7 +235,7 @@ export const MsgrProvider = ({ children, daemonAddress, embedded }) => {
 				dispatch({ type: 'SET_STREAM_ERROR', payload: { error: err } })
 			})
 		return () => cancel()
-	}, [daemonAddress, embedded, nodeStarted])
+	}, [embedded, nodeStarted, state.daemonAddress])
 	return (
 		<MsgrContext.Provider value={{ ...state, restart, deleteAccount, dispatch }}>
 			{children}

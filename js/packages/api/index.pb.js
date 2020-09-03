@@ -2482,7 +2482,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 1,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primary_key"
+                      "(gogoproto.moretags)": "gorm:primaryKey"
                     }
                   },
                   displayName: {
@@ -2514,7 +2514,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 1,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primary_key",
+                      "(gogoproto.moretags)": "gorm:uniqueIndex",
                       "(gogoproto.customname)": "CID"
                     }
                   },
@@ -2525,6 +2525,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   memberPublicKey: {
                     type: "string",
                     id: 7
+                  },
+                  devicePublicKey: {
+                    type: "string",
+                    id: 12
                   },
                   member: {
                     type: "Member",
@@ -2549,6 +2553,17 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   sentDate: {
                     type: "int64",
                     id: 9
+                  },
+                  acknowledged: {
+                    type: "bool",
+                    id: 10
+                  },
+                  arrivalIndex: {
+                    type: "int64",
+                    id: 11,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:autoIncrement"
+                    }
                   }
                 }
               },
@@ -2558,7 +2573,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 1,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primary_key"
+                      "(gogoproto.moretags)": "gorm:primaryKey"
                     }
                   },
                   conversationPublicKey: {
@@ -2643,6 +2658,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     rule: "repeated",
                     type: "Member",
                     id: 10
+                  },
+                  accountMemberPublicKey: {
+                    type: "string",
+                    id: 11
+                  },
+                  localDevicePublicKey: {
+                    type: "string",
+                    id: 12
                   }
                 },
                 nested: {
@@ -2729,6 +2752,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       TypeConversationUpdated: 2,
                       TypeConversationDeleted: 3,
                       TypeInteractionUpdated: 4,
+                      TypeInteractionDeleted: 9,
                       TypeContactUpdated: 5,
                       TypeAccountUpdated: 6,
                       TypeMemberUpdated: 7,
@@ -2756,6 +2780,17 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       interaction: {
                         type: "Interaction",
                         id: 1
+                      }
+                    }
+                  },
+                  InteractionDeleted: {
+                    fields: {
+                      cid: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "CID"
+                        }
                       }
                     }
                   },
