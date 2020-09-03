@@ -14,6 +14,7 @@ const T = messengerpb.StreamEvent.Type
 
 const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 	const state = cloneDeep(oldState) // TODO: optimize rerenders
+	state.client = oldState.client
 	console.log('reducing', action)
 	switch (action.type) {
 		case 'SET_STREAM_ERROR':
@@ -111,6 +112,9 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 			break
 		case 'SET_DAEMON_ADDRESS':
 			state.daemonAddress = action.payload.value
+			break
+		case 'CONVS_CLOSED':
+			state.convsClosed = true
 			break
 		default:
 			console.warn('Unknown action type', action.type)
@@ -236,6 +240,20 @@ export const MsgrProvider = ({ children, daemonAddress, embedded }) => {
 			})
 		return () => cancel()
 	}, [embedded, nodeStarted, state.daemonAddress])
+
+	React.useEffect(() => {
+		if (!state.convsClosed && state.listDone) {
+			dispatch({ type: 'CONVS_CLOSED' })
+			for (const conv of Object.values(state.conversations) as any) {
+				if (conv.isOpen) {
+					state.client.conversationClose({ groupPk: conv.publicKey }).catch((e: any) => {
+						console.warn(`failed to close conversation "${conv.displayName}",`, e)
+					})
+				}
+			}
+		}
+	}, [state.client, state.conversations, state.convsClosed, state.listDone])
+
 	return (
 		<MsgrContext.Provider value={{ ...state, restart, deleteAccount, dispatch }}>
 			{children}

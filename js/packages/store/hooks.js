@@ -1,14 +1,18 @@
+import { useContext, useMemo, useEffect, useCallback } from 'react'
+import { omitBy } from 'lodash'
+import flatten from 'lodash/flatten'
+import { useNavigation } from '@react-navigation/native'
+
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
+
+import methods from './methods'
+import { MsgrContext, useMsgrContext } from './context'
 import {
 	fakeContacts,
 	fake1To1Conversations,
 	fakeMultiMemberConversations,
 	fakeMessages,
 } from './faker'
-import { omitBy } from 'lodash'
-import flatten from 'lodash/flatten'
-import { useContext, useMemo } from 'react'
-import { MsgrContext, useMsgrContext } from './context'
 
 const AppMessageType = messengerpb.AppMessage.Type
 
@@ -169,6 +173,13 @@ export const useConvInteractions = (publicKey) => {
 	return ctx.interactions[publicKey] || {}
 }
 
+export const useSortedConvInteractions = (publicKey) => {
+	const intes = useConvInteractions(publicKey)
+	return Object.values(intes).sort((a, b) => {
+		return parseInt(a.sentDate, 10) - parseInt(b.sentDate, 10)
+	})
+}
+
 export const useInteraction = (cid, convPk) => {
 	const intes = useConvInteractions(convPk)
 	return intes && intes[cid]
@@ -259,4 +270,54 @@ export const useDeleteFakeData = () => {
 		ctx.dispatch({
 			type: 'DELETE_FAKE_DATA',
 		})
+}
+
+export const useLastConvInteraction = (convPublicKey, filterFunc) => {
+	let intes = useSortedConvInteractions(convPublicKey)
+	if (filterFunc) {
+		intes = intes.filter(filterFunc)
+	}
+	if (intes.length <= 0) {
+		return null
+	}
+	return intes[intes.length - 1]
+}
+
+export const useReadEffect = (publicKey: string, timeout: number) => {
+	// timeout is the duration (in ms) that the user must stay on the page to set messages as read
+	const navigation = useNavigation()
+
+	const ctx = useMsgrContext()
+
+	useEffect(() => {
+		console.log('HOOK CALLED', publicKey, timeout)
+		let timeoutID = null
+		const handleStart = () => {
+			if (timeoutID === null) {
+				timeoutID = setTimeout(() => {
+					timeoutID = null
+					ctx.client.conversationOpen({ groupPk: publicKey }).catch((err) => {
+						console.warn('failed to open conversation,', err)
+					})
+				}, timeout)
+			}
+		}
+		handleStart()
+		const unsubscribeFocus = navigation.addListener('focus', handleStart)
+		const handleStop = () => {
+			if (timeoutID !== null) {
+				clearTimeout(timeoutID)
+				timeoutID = null
+			}
+			ctx.client.conversationClose({ groupPk: publicKey }).catch((err) => {
+				console.warn('failed to close conversation,', err)
+			})
+		}
+		const unsubscribeBlur = navigation.addListener('blur', handleStop)
+		return () => {
+			unsubscribeFocus()
+			unsubscribeBlur()
+			handleStop()
+		}
+	}, [ctx.client, navigation, publicKey, timeout])
 }

@@ -4,6 +4,7 @@ import {
 	useConversationList,
 	useIncomingContactRequests,
 	useMsgrContext,
+	useLastConvInteraction,
 } from '@berty-tech/store/hooks'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
@@ -30,6 +31,7 @@ import {
 import Logo from './1_berty_picto.svg'
 import EmptyChat from './empty_chat.svg'
 import { CommonActions } from '@react-navigation/native'
+import moment from 'moment'
 
 //
 // Main List
@@ -182,25 +184,25 @@ const UnreadCount: React.FC<{ value: number }> = ({ value }) =>
 		</View>
 	) : null
 
-const MessageStatus: React.FC<{ messageID: string }> = ({ messageID }) => {
+const MessageStatus: React.FC<{ interaction: any }> = ({ interaction }) => {
 	const [{ color }] = useStyles()
-	const message = Messenger.useGetMessage(messageID)
-	// if (message?.type !== messenger.AppMessageType.UserMessage) {
-	// 	return null
-	// }
+	if (interaction?.type !== messengerpb.AppMessage.Type.TypeUserMessage) {
+		return null
+	}
 	return (
 		<View style={{ width: 25, justifyContent: 'center', alignItems: 'center' }}>
-			{message ? (
-				<Icon
-					name={message.acknowledged ? 'navigation-2' : 'navigation-2-outline'}
-					width={14}
-					height={14}
-					fill={color.blue}
-				/>
-			) : null}
+			<Icon
+				name={interaction.acknowledged ? 'navigation-2' : 'navigation-2-outline'}
+				width={14}
+				height={14}
+				fill={color.blue}
+				style={[interaction.isMe || { transform: [{ rotate: '180deg' }] }]}
+			/>
 		</View>
 	)
 }
+
+const interactionsFilter = (inte: any) => inte.type === messengerpb.AppMessage.Type.TypeUserMessage
 
 const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	// const { dispatch } = useNavigation()
@@ -209,12 +211,18 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 		displayName = '',
 		fake = false,
 		type = messengerpb.Conversation.Type.ContactType,
+		unreadCount,
+		lastUpdate,
 	} = props
 
 	const ctx = useMsgrContext()
 
+	const lastInte = useLastConvInteraction(publicKey, interactionsFilter)
+
+	const sentDate = lastInte ? parseInt(lastInte.sentDate, 10) : Date.now()
+
 	const contact =
-		Object.values(ctx.contacts).find((c) => c.conversationPublicKey === publicKey) || null
+		Object.values(ctx.contacts).find((c: any) => c.conversationPublicKey === publicKey) || null
 
 	const [{ color, row, border, flex, column, padding, text }] = useStyles()
 	// TODO: Last message, unread count, navigate to chatroom
@@ -273,33 +281,33 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 									: contact.displayName || ''}
 							</Text>
 						</View>
-						{/* <View style={[row.right, { alignItems: 'center' }]}>
-                            <UnreadCount value={unreadCount} />
-                            <Text
-                                style={[
-                                    padding.left.small,
-                                    text.size.small,
-                                    unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
-                                ]}
-                            >
-                                {message?.type === messenger.AppMessageType.UserMessage
-                                    ? Date.now() - new Date(message.sentDate).getTime() > 86400000
-                                        ? moment(message.sentDate).format('DD/MM/YYYY')
-                                        : moment(message.sentDate).format('hh:mm')
-                                    : moment().format('hh:mm')}
-                            </Text>
-                            {lastSentMessage && <MessageStatus messageID={lastSentMessage} />}
-                        </View> */}
+						<View style={[row.right, { alignItems: 'center' }]}>
+							<UnreadCount value={unreadCount} />
+							<Text
+								style={[
+									padding.left.small,
+									text.size.small,
+									unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
+								]}
+							>
+								{Date.now() - new Date(sentDate).getTime() > 86400000
+									? moment(sentDate).format('DD/MM/YYYY')
+									: moment(sentDate).format('hh:mm')}
+							</Text>
+							<MessageStatus interaction={lastInte} />
+						</View>
 					</View>
-					{/* <Text
-                        numberOfLines={1}
-                        style={[
-                            text.size.small,
-                            unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
-                        ]}
-                    >
-                        {message?.type === messenger.AppMessageType.UserMessage ? message.body : ''}
-                    </Text> */}
+					<Text
+						numberOfLines={1}
+						style={[
+							text.size.small,
+							unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
+						]}
+					>
+						{lastInte?.type === messengerpb.AppMessage.Type.TypeUserMessage
+							? lastInte.payload.body
+							: ''}
+					</Text>
 				</View>
 			</View>
 		</TouchableHighlight>

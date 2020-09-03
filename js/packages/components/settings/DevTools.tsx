@@ -261,6 +261,7 @@ const BodyDevTools: React.FC<{}> = () => {
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, color, text }] = useStyles()
 	const { navigate } = useNavigation()
+	const ctx = useMsgrContext()
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<ButtonSetting
@@ -285,6 +286,21 @@ const BodyDevTools: React.FC<{}> = () => {
 				iconColor={color.dark.grey}
 				onPress={() => GoBridge.stopProtocol()}
 			/>
+			{!ctx.embedded && ctx.daemonAddress != 'http://localhost:1338' && (
+				<ButtonSetting
+					name='Switch to 1338 node'
+					icon='folder-outline'
+					iconSize={30}
+					iconColor={color.dark.grey}
+					actionIcon='arrow-ios-forward'
+					onPress={() => {
+						ctx.dispatch({
+							type: 'SET_DAEMON_ADDRESS',
+							payload: { value: 'http://localhost:1338' },
+						})
+					}}
+				/>
+			)}
 			<ButtonSetting
 				name='Bot mode'
 				icon='briefcase-outline'
