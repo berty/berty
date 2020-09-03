@@ -146,6 +146,5 @@ osx/Berty.app
 
 # bazel
 /bazel-*
-packages/store/protocol/grpc-web-gen/
 *.pb.*
 *.gen.*
