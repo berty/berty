@@ -18,8 +18,13 @@ import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAva
 import { Message } from './shared-components/Message'
 // import { ChatFooter, ChatDate } from './shared-components/Chat'
 
-// import { useReadEffect } from '../hooks'
-import { useMsgrContext, useConversation, useContact } from '@berty-tech/store/hooks'
+import {
+	useMsgrContext,
+	useConversation,
+	useContact,
+	useReadEffect,
+	useSortedConvInteractions,
+} from '@berty-tech/store/hooks'
 import { values } from 'lodash'
 import { ChatFooter } from './shared-components/Chat'
 
@@ -173,13 +178,9 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: number }> = ({
 }) => {
 	const ctx: any = useMsgrContext()
 	const conv = ctx.conversations[convPk]
-	const messages: any = values(ctx.interactions[convPk] as any)
-		.filter((msg) => msg.type === messengerpb.AppMessage.Type.TypeUserMessage)
-		.sort(
-			(a, b) =>
-				(a.payload.sentDate ? parseInt(a.payload.sentDate, 10) : Date.now()) -
-				(b.payload.sentDate ? parseInt(b.payload.sentDate, 10) : Date.now()),
-		)
+	const messages = useSortedConvInteractions(convPk).filter(
+		(msg) => msg.type === messengerpb.AppMessage.Type.TypeUserMessage,
+	)
 	const getPreviousMessageId = (item = '', messageList: string[] = []): string => {
 		const messagePosition: number = !item ? -1 : messageList.indexOf(item)
 		return messagePosition < 1 ? '' : (messageList[messagePosition - 1] as any).cid
@@ -234,7 +235,7 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: number }> = ({
 export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route }) => {
 	const [inputIsFocused, setInputFocus] = useState(true)
 	const [{ flex, background }] = useStyles()
-	// useReadEffect(route.params.convId, 1000)
+	useReadEffect(route.params.convId, 1000)
 	return (
 		<View style={[StyleSheet.absoluteFill, background.white]}>
 			<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>

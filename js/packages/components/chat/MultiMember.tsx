@@ -21,10 +21,11 @@ import {
 	useConvInteractions,
 	useMsgrContext,
 	useConvMembers,
+	useReadEffect,
+	useSortedConvInteractions,
 } from '@berty-tech/store/hooks'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 
-//import { useReadEffect } from '../hooks'
 //
 // MultiMember
 //
@@ -216,13 +217,9 @@ const MessageList: React.FC<{ id: string }> = ({ id }) => {
 	const conversation = useConversation(id)
 	const ctx = useMsgrContext()
 	const members = ctx.members[id] || {}
-	const interactions = Object.values(useConvInteractions(id))
-		.filter((msg) => msg.type === messengerpb.AppMessage.Type.TypeUserMessage)
-		.sort(
-			(a, b) =>
-				(a.payload.sentDate ? parseInt(a.payload.sentDate, 10) : Date.now()) -
-				(b.payload.sentDate ? parseInt(b.payload.sentDate, 10) : Date.now()),
-		)
+	const interactions = useSortedConvInteractions(id).filter(
+		(msg) => msg.type === messengerpb.AppMessage.Type.TypeUserMessage,
+	)
 	console.log('will render', interactions.length, 'interactions')
 	if (!conversation) {
 		return <CenteredActivityIndicator />
@@ -261,7 +258,7 @@ const MessageList: React.FC<{ id: string }> = ({ id }) => {
 export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params } }) => {
 	const [inputIsFocused, setInputFocus] = useState(true)
 	const [{ background, flex }] = useStyles()
-	//useReadEffect(params.convId, 1000)
+	useReadEffect(params.convId, 1000)
 	return (
 		<View style={[flex.tiny, background.white]}>
 			<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
