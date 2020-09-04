@@ -394,8 +394,20 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 			ProtocolService: service,
 			DB:              db,
 		}
+		tmpBridge := &MessengerBridge{
+			logger:          bridgeLogger,
+			protocolService: service,
+			node:            node,
+			ds:              rootds,
+			msngrDB:         db,
+			protocolClient:  protocolClient,
+		}
 		messenger, err = bertymessenger.New(protocolClient, &opts)
 		if err != nil {
+			cErr := tmpBridge.Close()
+			if cErr != nil {
+				logger.Error("failed to close messenger", zap.Error(cErr))
+			}
 			return nil, errcode.TODO.Wrap(err)
 		}
 		bertymessenger.RegisterMessengerServiceServer(grpcServer, messenger)
@@ -508,13 +520,17 @@ func (p *MessengerBridge) Close() error {
 	var errs error
 
 	// close bridge
-	if err := p.Bridge.Close(); err != nil {
-		errs = multierr.Append(errs,
-			fmt.Errorf("unable to close grpc bridge: %s", err))
+	if p.Bridge != nil {
+		if err := p.Bridge.Close(); err != nil {
+			errs = multierr.Append(errs,
+				fmt.Errorf("unable to close grpc bridge: %s", err))
+		}
 	}
 
 	// close messenger
-	p.messengerService.Close()
+	if p.messengerService != nil {
+		p.messengerService.Close()
+	}
 
 	// protocol client
 	if err := p.protocolClient.Close(); err != nil {
