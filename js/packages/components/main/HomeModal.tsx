@@ -122,15 +122,12 @@ export const Header: React.FC<{
 }
 
 const OutgoingRequestItem: React.FC<any> = ({ displayName: name, publicKey, state }) => {
-	const id = publicKey
 	const { dispatch } = useNavigation()
 	const _styles = useStylesList()
 	const [
 		{ border, column, flex, row, padding, text, background, color },
 		{ scaleSize },
 	] = useStyles()
-	const discardContactRequest = Messenger.useDiscardContactRequest()
-	const discard = () => discardContactRequest({ id })
 	const isSent = state === messengerpb.Contact.State.OutgoingRequestSent
 	return (
 		<TouchableOpacity
@@ -165,7 +162,7 @@ const OutgoingRequestItem: React.FC<any> = ({ displayName: name, publicKey, stat
 			<View style={[row.fill]}>
 				<TouchableOpacity
 					style={[_styles.tinyDiscardButton, border.scale(1), row.item.justify]}
-					onPress={discard}
+					disabled
 				>
 					<Icon
 						name='close-outline'

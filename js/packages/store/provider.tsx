@@ -165,7 +165,12 @@ export const MsgrProvider = ({ children, daemonAddress, embedded }) => {
 			.then(() => {
 				setNodeStarted(true)
 			})
-			.catch((err) => dispatch({ type: 'SET_STREAM_ERROR', payload: { error: err } }))
+			.catch((err) =>
+				dispatch({
+					type: 'SET_STREAM_ERROR',
+					payload: { error: new Error(`Failed to start node: ${err}`) },
+				}),
+			)
 		return () => GoBridge.stopProtocol()
 	}, [embedded, restartCount])
 
