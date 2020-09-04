@@ -2,6 +2,7 @@ import React from 'react'
 import { Request } from '../shared-components/Request'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
+import messengerMethodsHooks from '@berty-tech/store/methods'
 
 //
 // ContactRequest => Accept/Refuse
@@ -32,26 +33,28 @@ export const ContactRequest: React.FC<ScreenProps.Main.ContactRequest> = ({
 	const _styles = useStylesContactRequest()
 	const [{ color }] = useStyles()
 	const { goBack } = useNavigation()
+	const { call: accept } = (messengerMethodsHooks as any).useContactAccept()
 	return (
 		<Request
-			user={params}
+			contactPublicKey={params.contactId}
 			markAsVerified={false}
 			blurAmount={10}
 			buttons={[
 				{
 					action: () => {
-						params.decline({ id: params.id })
-						goBack()
+						//params.decline({ id: params.id })
+						//goBack()
 					},
 					style: _styles.firstRequestButton,
 					title: 'REFUSE',
 					titleColor: color.grey,
 					icon: 'close-outline',
 					iconColor: color.grey,
+					disabled: true,
 				},
 				{
 					action: () => {
-						params.accept({ id: params.id })
+						accept({ publicKey: params.contactId })
 						goBack()
 					},
 					style: _styles.secondRequestButton,

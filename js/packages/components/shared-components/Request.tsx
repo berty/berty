@@ -6,6 +6,7 @@ import { TabBar } from './TabBar'
 import { FingerprintContent } from './FingerprintContent'
 import { Modal } from './Modal'
 import { ProceduralCircleAvatar } from './ProceduralCircleAvatar'
+import { useContact } from '@berty-tech/store/hooks'
 
 //
 // RequestButtons
@@ -222,16 +223,23 @@ const SelectedContent = ({
 	}
 }
 
-const BodyRequest: React.FC<BodyRequestProps> = ({ user, markAsVerified, buttons = null }) => {
+const BodyRequest: React.FC<BodyRequestProps> = ({
+	contactPublicKey,
+	markAsVerified,
+	buttons = null,
+}) => {
 	const [{ padding, absolute, row, text, border }] = useStyles()
 	const [selectedContent, setSelectedContent] = useState()
+	const contact = useContact(contactPublicKey)
 	return (
 		<View style={[padding.horizontal.medium, padding.bottom.medium]}>
 			<View style={[absolute.scale({ top: -70 }), row.item.justify, border.shadow.medium]}>
-				<ProceduralCircleAvatar seed={user.publicKey} size={140} diffSize={40} />
+				<ProceduralCircleAvatar seed={contactPublicKey} size={140} diffSize={40} />
 			</View>
 			<View style={[padding.horizontal.medium, padding.top.scale(75)]}>
-				<Text style={[padding.vertical.tiny, text.align.center, text.size.big]}>{user.name}</Text>
+				<Text style={[padding.vertical.tiny, text.align.center, text.size.big]}>
+					{contact.displayName}
+				</Text>
 				<TabBar
 					tabs={[
 						{ name: 'Fingerprint', icon: 'fingerprint', iconPack: 'custom' },
@@ -251,7 +259,7 @@ const BodyRequest: React.FC<BodyRequestProps> = ({ user, markAsVerified, buttons
 					<SelectedContent
 						contentName={selectedContent}
 						markAsVerified={markAsVerified}
-						publicKey={user.publicKey}
+						publicKey={contactPublicKey}
 					/>
 				</BodyRequestContent>
 			</View>
@@ -261,7 +269,7 @@ const BodyRequest: React.FC<BodyRequestProps> = ({ user, markAsVerified, buttons
 }
 
 export const Request: React.FC<RequestComponentProps> = ({
-	user,
+	contactPublicKey,
 	markAsVerified = true,
 	buttons = null,
 	blurColor,
@@ -269,6 +277,10 @@ export const Request: React.FC<RequestComponentProps> = ({
 	blurColorOpacity,
 }) => (
 	<Modal blurColor={blurColor} blurAmount={blurAmount} blurColorOpacity={blurColorOpacity}>
-		<BodyRequest user={user} markAsVerified={markAsVerified} buttons={buttons || []} />
+		<BodyRequest
+			contactPublicKey={contactPublicKey}
+			markAsVerified={markAsVerified}
+			buttons={buttons || []}
+		/>
 	</Modal>
 )
