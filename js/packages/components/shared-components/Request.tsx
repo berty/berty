@@ -238,7 +238,7 @@ const BodyRequest: React.FC<BodyRequestProps> = ({
 			</View>
 			<View style={[padding.horizontal.medium, padding.top.scale(75)]}>
 				<Text style={[padding.vertical.tiny, text.align.center, text.size.big]}>
-					{contact.displayName}
+					{contact?.displayName}
 				</Text>
 				<TabBar
 					tabs={[

@@ -31,7 +31,7 @@ export const RequestSent: React.FC<{ route: any }> = ({ route }) => {
 
 	return (
 		<Request
-			user={route.params.contact}
+			contactPublicKey={route.params.contactPublicKey}
 			markAsVerified={false}
 			blurAmount={10}
 			blurColor={'cyan'}
