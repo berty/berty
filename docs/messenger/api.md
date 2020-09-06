@@ -239,6 +239,8 @@
 | conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
 | state | [Contact.State](#berty.messenger.v1.Contact.State) |  |  |
 | display_name | [string](#string) |  |  |
+| created_date | [int64](#int64) |  |  |
+| sent_date | [int64](#int64) |  | specific to outgoing requests |
 | devices | [Device](#berty.messenger.v1.Device) | repeated |  |
 
 <a name="berty.messenger.v1.ContactAccept"></a>
@@ -298,7 +300,8 @@
 | contact | [Contact](#berty.messenger.v1.Contact) |  | specific to ContactType conversations |
 | members | [Member](#berty.messenger.v1.Member) | repeated | specific to MultiMemberType conversations |
 | account_member_public_key | [string](#string) |  |  |
-| local_device_public_key | [string](#string) |  | TODO: avatar_cid |
+| local_device_public_key | [string](#string) |  |  |
+| created_date | [int64](#int64) |  | TODO: avatar_cid |
 
 <a name="berty.messenger.v1.ConversationClose"></a>
 

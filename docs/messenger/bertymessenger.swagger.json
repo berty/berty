@@ -861,6 +861,15 @@
         "display_name": {
           "type": "string"
         },
+        "created_date": {
+          "type": "string",
+          "format": "int64"
+        },
+        "sent_date": {
+          "type": "string",
+          "format": "int64",
+          "title": "specific to outgoing requests"
+        },
         "devices": {
           "type": "array",
           "items": {
@@ -950,6 +959,10 @@
         },
         "local_device_public_key": {
           "type": "string"
+        },
+        "created_date": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },

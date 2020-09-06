@@ -11,7 +11,7 @@ import { Icon } from 'react-native-ui-kitten'
 
 // Types
 type ProceduralCircleAvatarProps = {
-	seed?: string
+	seed?: string | null
 	size?: number
 	diffSize?: number
 	color?: keyof ColorsStyles<string> // the color of the circle

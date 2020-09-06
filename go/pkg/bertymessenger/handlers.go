@@ -337,6 +337,7 @@ func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) er
 				Type:             Conversation_ContactType,
 				DisplayName:      "", // empty on account conversations
 				Link:             "", // empty on account conversations
+				CreatedDate:      timestampMs(time.Now()),
 			}
 		}
 

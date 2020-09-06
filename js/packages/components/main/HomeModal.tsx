@@ -20,6 +20,7 @@ import FromNow from '../shared-components/FromNow'
 import EmptyContact from './empty_contact.svg'
 import { useOutgoingContactRequests } from '@berty-tech/store/hooks'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import * as api from '@berty-tech/api/index.pb'
 
 const useStylesList = () => {
 	const shortScreenMax = 640
@@ -121,7 +122,12 @@ export const Header: React.FC<{
 	)
 }
 
-const OutgoingRequestItem: React.FC<any> = ({ displayName: name, publicKey, state }) => {
+const OutgoingRequestItem: React.FC<api.berty.messenger.v1.IContact> = ({
+	displayName: name,
+	publicKey,
+	state,
+	sentDate: sentDateStr,
+}) => {
 	const { dispatch } = useNavigation()
 	const _styles = useStylesList()
 	const [
@@ -129,6 +135,7 @@ const OutgoingRequestItem: React.FC<any> = ({ displayName: name, publicKey, stat
 		{ scaleSize },
 	] = useStyles()
 	const isSent = state === messengerpb.Contact.State.OutgoingRequestSent
+	const sentDate = isSent && parseInt(sentDateStr, 10)
 	return (
 		<TouchableOpacity
 			style={[_styles.tinyCard, border.shadow.medium, column.justify]}
@@ -154,7 +161,7 @@ const OutgoingRequestItem: React.FC<any> = ({ displayName: name, publicKey, stat
 				category='c1'
 				style={[padding.vertical.medium, text.align.center, text.size.tiny, text.color.grey]}
 			>
-				{isSent ? <FromNow date={Date.now()} /> : 'Not sent yet'}
+				{isSent ? <FromNow date={sentDate || Date.now()} /> : 'Not sent yet'}
 			</Text>
 			<View style={[row.fill]}>
 				<TouchableOpacity

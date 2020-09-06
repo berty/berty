@@ -627,6 +627,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 		Type:                   Conversation_MultiMemberType,
 		AccountMemberPublicKey: bytesToString(gir.GetMemberPK()),
 		LocalDevicePublicKey:   bytesToString(gir.GetDevicePK()),
+		CreatedDate:            timestampMs(time.Now()),
 	}
 
 	// Update database
@@ -774,6 +775,7 @@ func (svc *service) ConversationJoin(ctx context.Context, req *ConversationJoin_
 		Type:                   Conversation_MultiMemberType,
 		AccountMemberPublicKey: bytesToString(gir.GetMemberPK()),
 		LocalDevicePublicKey:   bytesToString(gir.GetDevicePK()),
+		CreatedDate:            timestampMs(time.Now()),
 	}
 
 	// update db

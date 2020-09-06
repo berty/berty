@@ -276,6 +276,9 @@ message Contact {
   Conversation conversation = 3;
   State state = 4;
   string display_name = 5;
+  int64 created_date = 7;
+  // specific to outgoing requests
+  int64 sent_date = 8;
   repeated Device devices = 6 [(gogoproto.moretags) = "gorm:\"foreignKey:OwnerPublicKey\""];
 
   enum State {
@@ -304,6 +307,7 @@ message Conversation {
   repeated Member members = 10;
   string account_member_public_key = 11;
   string local_device_public_key = 12;
+  int64 created_date = 13;
   // TODO: avatar_cid
 
   enum Type {
