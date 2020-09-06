@@ -17,5 +17,5 @@ import (
 	_ "github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc"        // required by protoc
 	_ "golang.org/x/mobile/cmd/gomobile"                               // required by gomobile
 	_ "golang.org/x/tools/cmd/goimports"                               // required by Makefile
-	_ "moul.io/retry"                                                  // required by Makefile
+	_ "moul.io/testman"                                                // required by Makefile
 )

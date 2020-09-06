@@ -309,8 +309,8 @@ func TestUnstableServiceConversationCreateAsync(t *testing.T) {
 	}
 }
 
-func TestUnstable1To1AddContact(t *testing.T) {
-	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
+func TestBroken1To1AddContact(t *testing.T) {
+	testutil.FilterStabilityAndSpeed(t, testutil.Broken, testutil.Slow)
 
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
@@ -356,8 +356,8 @@ func TestUnstable1To1AddContact(t *testing.T) {
 	}
 }
 
-func TestUnstable1To1Exchange(t *testing.T) {
-	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
+func TestBroken1To1Exchange(t *testing.T) {
+	testutil.FilterStabilityAndSpeed(t, testutil.Broken, testutil.Slow)
 
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
@@ -695,8 +695,8 @@ func TestBrokenConversationInvitationAndExchange(t *testing.T) {
 	}
 }
 
-func TestUnstableConversationOpenClose(t *testing.T) {
-	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
+func TestBrokenConversationOpenClose(t *testing.T) {
+	testutil.FilterStabilityAndSpeed(t, testutil.Broken, testutil.Slow)
 
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
