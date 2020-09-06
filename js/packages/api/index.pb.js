@@ -2592,6 +2592,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 5
                   },
+                  createdDate: {
+                    type: "int64",
+                    id: 7
+                  },
+                  sentDate: {
+                    type: "int64",
+                    id: 8
+                  },
                   devices: {
                     rule: "repeated",
                     type: "Device",
@@ -2666,6 +2674,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   localDevicePublicKey: {
                     type: "string",
                     id: 12
+                  },
+                  createdDate: {
+                    type: "int64",
+                    id: 13
                   }
                 },
                 nested: {

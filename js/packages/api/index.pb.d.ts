@@ -4041,6 +4041,8 @@ export namespace berty {
                 conversation?: (berty.messenger.v1.IConversation|null);
                 state?: (berty.messenger.v1.Contact.State|null);
                 displayName?: (string|null);
+                createdDate?: (number|Long|null);
+                sentDate?: (number|Long|null);
                 devices?: (berty.messenger.v1.IDevice[]|null);
             }
 
@@ -4051,6 +4053,8 @@ export namespace berty {
                 public conversation?: (berty.messenger.v1.IConversation|null);
                 public state: berty.messenger.v1.Contact.State;
                 public displayName: string;
+                public createdDate: (number|Long);
+                public sentDate: (number|Long);
                 public devices: berty.messenger.v1.IDevice[];
                 public static create(properties?: berty.messenger.v1.IContact): berty.messenger.v1.Contact;
                 public static encode(message: berty.messenger.v1.IContact, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4087,6 +4091,7 @@ export namespace berty {
                 members?: (berty.messenger.v1.IMember[]|null);
                 accountMemberPublicKey?: (string|null);
                 localDevicePublicKey?: (string|null);
+                createdDate?: (number|Long|null);
             }
 
             class Conversation implements IConversation {
@@ -4103,6 +4108,7 @@ export namespace berty {
                 public members: berty.messenger.v1.IMember[];
                 public accountMemberPublicKey: string;
                 public localDevicePublicKey: string;
+                public createdDate: (number|Long);
                 public static create(properties?: berty.messenger.v1.IConversation): berty.messenger.v1.Conversation;
                 public static encode(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;

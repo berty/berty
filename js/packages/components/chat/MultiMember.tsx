@@ -7,7 +7,6 @@ import {
 	StatusBar,
 	ActivityIndicator,
 	Text as TextNative,
-	ScrollView,
 } from 'react-native'
 import BlurView from '../shared-components/BlurView'
 import { Text, Icon } from 'react-native-ui-kitten'
@@ -18,13 +17,12 @@ import { Message } from './shared-components/Message'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import {
 	useConversation,
-	useConvInteractions,
 	useMsgrContext,
-	useConvMembers,
 	useReadEffect,
 	useSortedConvInteractions,
 } from '@berty-tech/store/hooks'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import * as api from '@berty-tech/api/index.pb'
 
 //
 // MultiMember
@@ -159,7 +157,7 @@ const HeaderMultiMember: React.FC<{ id: string }> = ({ id }) => {
 // 	)
 // }
 
-const MemberItem: React.FC<{ publicKey: any }> = ({ publicKey }) => {
+/*const MemberItem: React.FC<{ publicKey: any }> = ({ publicKey }) => {
 	const [, { scaleHeight }] = useStyles()
 	return (
 		<View>
@@ -182,23 +180,21 @@ const MemberList: React.FC<{ members: any }> = ({ members }) => {
 				)}
 		</ScrollView>
 	)
-}
+}*/
 
-const InfosMultiMember: React.FC<{ publicKey: string; createdAt: number }> = ({
-	publicKey,
-	createdAt,
+const InfosMultiMember: React.FC<api.berty.messenger.v1.IConversation> = ({
+	createdDate: createdDateStr,
 }) => {
 	const [{ margin, text }] = useStyles()
-	const members = useConvMembers(publicKey)
+	// const members = useConvMembers(publicKey)
+	const createdDate = parseInt((createdDateStr as unknown) as string, 10)
 	return (
 		<View>
-			<ChatDate date={createdAt} />
+			<ChatDate date={createdDate} />
 			<View style={[margin.top.medium]}>
-				<Text style={[text.align.center, text.color.black, text.bold.medium]}>
-					Test created the group
-				</Text>
+				<Text style={[text.align.center, text.color.black, text.bold.medium]}>Group joined</Text>
 			</View>
-			<MemberList members={Object.keys(members)} />
+			{/*<MemberList members={Object.keys(members)} />*/}
 		</View>
 	)
 }
@@ -216,7 +212,7 @@ const MessageList: React.FC<{ id: string }> = ({ id }) => {
 	const [{ overflow, row, flex, margin }, { scaleHeight }] = useStyles()
 	const conversation = useConversation(id)
 	const ctx = useMsgrContext()
-	const members = ctx.members[id] || {}
+	const members = (ctx as any).members[id] || {}
 	const interactions = useSortedConvInteractions(id).filter(
 		(msg) => msg.type === messengerpb.AppMessage.Type.TypeUserMessage,
 	)

@@ -8,6 +8,7 @@ import {
 } from '@berty-tech/store/hooks'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import * as api from '@berty-tech/api/index.pb'
 import { Messenger } from '@berty-tech/store/oldhooks'
 import { useStyles } from '@berty-tech/styles'
 import React, { useEffect, useRef, useState } from 'react'
@@ -45,7 +46,11 @@ type ConversationsItemProps = any
 
 // Functions
 
-const ContactRequest: React.FC<any> = ({ displayName, publicKey, addedDate }) => {
+const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
+	displayName,
+	publicKey,
+	createdDate: createdDateStr,
+}) => {
 	const { refresh: accept } = messengerMethodsHooks.useContactAccept()
 	const decline = () => {} // Messenger.useDiscardContactRequest()
 	const { navigate } = useNavigation()
@@ -54,6 +59,7 @@ const ContactRequest: React.FC<any> = ({ displayName, publicKey, addedDate }) =>
 	const [
 		{ border, padding, margin, width, height, column, row, background, absolute, text },
 	] = useStyles()
+	const createdDate = typeof createdDateStr === 'string' ? parseInt(createdDateStr, 10) : Date.now()
 	return (
 		<Translation>
 			{(t): React.ReactNode => (
@@ -70,7 +76,11 @@ const ContactRequest: React.FC<any> = ({ displayName, publicKey, addedDate }) =>
 						border.radius.medium,
 						border.shadow.medium,
 					]}
-					onPress={() => display({ contactId: id })}
+					onPress={() => {
+						if (id) {
+							display({ contactId: id })
+						}
+					}}
 				>
 					<ProceduralCircleAvatar
 						style={[absolute.center, border.shadow.medium, absolute.scale({ top: -32.5 })]}
@@ -79,7 +89,7 @@ const ContactRequest: React.FC<any> = ({ displayName, publicKey, addedDate }) =>
 						diffSize={20}
 					/>
 					<Text style={[text.align.center, text.color.black, text.size.medium]} numberOfLines={2}>
-						{displayName}
+						{displayName || ''}
 					</Text>
 					<Text
 						style={[
@@ -89,7 +99,7 @@ const ContactRequest: React.FC<any> = ({ displayName, publicKey, addedDate }) =>
 							{ lineHeight: (text.size.tiny as any).fontSize * 1.25 },
 						]}
 					>
-						<FromNow date={addedDate} />
+						<FromNow date={createdDate} />
 					</Text>
 					<View style={[row.center]}>
 						<TouchableOpacity

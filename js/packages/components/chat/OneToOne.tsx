@@ -16,7 +16,7 @@ import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import FromNow from '../shared-components/FromNow'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { Message } from './shared-components/Message'
-// import { ChatFooter, ChatDate } from './shared-components/Chat'
+import * as api from '@berty-tech/api/index.pb'
 
 import {
 	useMsgrContext,
@@ -26,7 +26,7 @@ import {
 	useSortedConvInteractions,
 } from '@berty-tech/store/hooks'
 import { values } from 'lodash'
-import { ChatFooter } from './shared-components/Chat'
+import { ChatFooter, ChatDate } from './shared-components/Chat'
 
 //
 // Chat
@@ -165,9 +165,22 @@ export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
 	)
 }
 
-const InfosChat: React.FC<{ createdAt: number }> = ({ createdAt }) => {
-	const [{ padding }] = useStyles()
-	return <View style={[padding.medium]}>{/* <ChatDate date={createdAt} /> */}</View>
+const InfosChat: React.FC<api.berty.messenger.v1.IConversation> = ({
+	createdDate: createdDateStr,
+}) => {
+	const [{ margin, text, padding }] = useStyles()
+	const createdDate =
+		(createdDateStr && parseInt((createdDateStr as unknown) as string, 10)) || Date.now()
+	return (
+		<View style={[padding.medium]}>
+			<ChatDate date={createdDate} />
+			<View style={[margin.top.medium]}>
+				<Text style={[text.align.center, text.color.black, text.bold.medium]}>
+					Contact established
+				</Text>
+			</View>
+		</View>
+	)
 }
 
 // const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
@@ -217,7 +230,7 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: number }> = ({
 			data={messages.reverse()}
 			inverted
 			keyExtractor={(item: any) => item.cid}
-			// ListFooterComponent={<InfosChat createdAt={conversation.createdAt} />}
+			ListFooterComponent={<InfosChat {...conv} />}
 			// renderItem={({ item }) => <Message convPk={item} convKind={'1to1'} />}
 			renderItem={({ item }: { item: any }) => (
 				<Message

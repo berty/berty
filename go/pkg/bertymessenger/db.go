@@ -2,6 +2,7 @@ package bertymessenger
 
 import (
 	"errors"
+	"time"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"gorm.io/gorm"
@@ -44,6 +45,7 @@ func addConversation(db *gorm.DB, groupPK string) (*Conversation, error) {
 	case gorm.ErrRecordNotFound: // not found, create a new one
 		conversation.PublicKey = groupPK
 		conversation.Type = Conversation_MultiMemberType
+		conversation.CreatedDate = timestampMs(time.Now())
 		err := db.
 			Clauses(clause.OnConflict{DoNothing: true}).
 			Create(&conversation).
@@ -130,6 +132,7 @@ func addContactRequestOutgoingEnqueued(db *gorm.DB, contactPK, displayName strin
 			DisplayName: displayName,
 			PublicKey:   contactPK,
 			State:       Contact_OutgoingRequestEnqueued,
+			CreatedDate: timestampMs(time.Now()),
 		}
 		err = db.
 			Clauses(clause.OnConflict{DoNothing: true}).
@@ -158,6 +161,7 @@ func addContactRequestOutgoingSent(db *gorm.DB, contactPK string) (*Contact, err
 	switch contact.State {
 	case Contact_OutgoingRequestEnqueued:
 		contact.State = Contact_OutgoingRequestSent
+		contact.SentDate = timestampMs(time.Now())
 
 		if err := db.Save(&contact).Error; err != nil {
 			return nil, errcode.ErrDBWrite.Wrap(err)
@@ -174,6 +178,7 @@ func addContactRequestIncomingReceived(db *gorm.DB, contactPK, displayName strin
 		DisplayName: displayName,
 		PublicKey:   contactPK,
 		State:       Contact_IncomingRequest,
+		CreatedDate: timestampMs(time.Now()),
 	}
 
 	err := db.
@@ -209,6 +214,7 @@ func addContactRequestIncomingAccepted(db *gorm.DB, contactPK, groupPK string) (
 			ContactPublicKey: contactPK,
 			DisplayName:      "", // empty on account conversations
 			Link:             "", // empty on account conversations
+			CreatedDate:      timestampMs(time.Now()),
 		}
 	}
 
