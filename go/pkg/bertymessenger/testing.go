@@ -191,6 +191,7 @@ func (a *TestingAccount) NextEvent(t *testing.T) *StreamEvent {
 
 	a.closedMutex.RLock()
 	if a.closed {
+		a.closedMutex.RUnlock()
 		return nil
 	}
 	a.closedMutex.RUnlock()

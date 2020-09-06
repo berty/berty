@@ -55,8 +55,9 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 	assert.Equal(t, 1, countEntries(out))
 
 	watcherCtx, watcherCancel := context.WithTimeout(ctx, time.Second*2)
+	chSub := peers[1].GC.MessageStore().Subscribe(watcherCtx)
 	go func() {
-		for range peers[1].GC.MessageStore().Subscribe(watcherCtx) {
+		for range chSub {
 			c, err := peers[1].GC.MessageStore().ListMessages(watcherCtx)
 			if !assert.NoError(t, err) {
 				watcherCancel()

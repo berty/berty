@@ -155,16 +155,18 @@ func (s *service) activateGroup(pk crypto.PubKey) error {
 
 		s.openedGroups[string(id)] = cg
 
+		chSub1 := cg.metadataStore.Subscribe(s.ctx)
 		go func() {
-			for e := range cg.metadataStore.Subscribe(s.ctx) {
+			for e := range chSub1 {
 				if evt, ok := e.(*stores.EventNewPeer); ok {
 					s.ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, fmt.Sprintf("grp_%s", string(id)), 42)
 				}
 			}
 		}()
 
+		chSub2 := cg.messageStore.Subscribe(s.ctx)
 		go func() {
-			for e := range cg.messageStore.Subscribe(s.ctx) {
+			for e := range chSub2 {
 				if evt, ok := e.(*stores.EventNewPeer); ok {
 					s.ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, fmt.Sprintf("grp_%s", string(id)), 42)
 				}
