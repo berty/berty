@@ -137,10 +137,7 @@ const OutgoingRequestItem: React.FC<any> = ({ displayName: name, publicKey, stat
 					CommonActions.navigate({
 						name: Routes.Main.RequestSent,
 						params: {
-							contact: {
-								name,
-								publicKey,
-							},
+							contactPublicKey: publicKey,
 						},
 					}),
 				)

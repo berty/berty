@@ -13,7 +13,14 @@ const expandSelfAndCenterContent: any = {
 const gutter = 50
 
 export const StreamGate: React.FC = ({ children }) => {
-	const { streamError, restart, daemonAddress, embedded, dispatch } = useMsgrContext()
+	const {
+		streamError,
+		restart,
+		daemonAddress,
+		embedded,
+		dispatch,
+		deleteAccount,
+	} = useMsgrContext()
 	const [newAddress, setNewAddress] = React.useState(daemonAddress)
 	const changeAddress = React.useCallback(() => {
 		dispatch({ type: 'SET_DAEMON_ADDRESS', payload: { value: newAddress } })
@@ -38,6 +45,9 @@ export const StreamGate: React.FC = ({ children }) => {
 				)}
 				<View style={{ marginTop: gutter }}>
 					<Button onPress={restart} title='Restart' />
+				</View>
+				<View style={{ marginTop: gutter }}>
+					<Button onPress={deleteAccount} title='Delete account' />
 				</View>
 			</View>
 		)
