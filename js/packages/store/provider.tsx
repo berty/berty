@@ -160,7 +160,7 @@ export const MsgrProvider = ({ children, daemonAddress, embedded }) => {
 		GoBridge.startProtocol({
 			persistence: true,
 			tracing: true,
-			logLevel: GoLogLevel.debug,
+			logFilters: 'info,warn:bty,bty.* error+:*',
 		})
 			.then(() => {
 				setNodeStarted(true)
@@ -171,7 +171,9 @@ export const MsgrProvider = ({ children, daemonAddress, embedded }) => {
 					payload: { error: new Error(`Failed to start node: ${err}`) },
 				}),
 			)
-		return () => GoBridge.stopProtocol()
+		return () => {
+			GoBridge.stopProtocol()
+		}
 	}, [embedded, restartCount])
 
 	React.useEffect(() => {

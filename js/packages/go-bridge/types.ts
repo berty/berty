@@ -1,19 +1,18 @@
+export type GoBridgeOpts = {
+	swarmListeners?: string[]
+	grpcListeners?: string[]
+	persistence?: boolean
+	logFilters?: string
+	tracing?: boolean
+	tracingPrefix?: string
+	localDiscovery?: boolean
+}
+
 export enum GoLogLevel {
 	debug = 'debug',
 	info = 'info',
 	error = 'error',
 	warn = 'warn',
-}
-
-export type GoBridgeOpts = {
-	swarmListeners?: string[]
-	grpcListeners?: string[]
-	persistence?: boolean
-	logLevel?: GoLogLevel
-	tracing?: boolean
-	tracingPrefix?: string
-	poiDebug?: boolean
-	localDiscovery?: boolean
 }
 
 export type GoLoggerOpts = {

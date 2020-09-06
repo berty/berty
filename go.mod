@@ -35,7 +35,6 @@ require (
 	github.com/ipfs/go-ipfs v0.6.0
 	github.com/ipfs/go-ipfs-config v0.9.0
 	github.com/ipfs/go-ipfs-keystore v0.0.1
-	github.com/ipfs/go-log v1.0.4
 	github.com/ipfs/go-log/v2 v2.1.1
 	github.com/ipfs/interface-go-ipfs-core v0.3.0
 	github.com/ipld/go-ipld-prime v0.0.2 // indirect

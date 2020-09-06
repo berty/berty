@@ -89,8 +89,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
 
             // gather opts
             final boolean optPersistence = opts.hasKey("persistence") && opts.getBoolean("persistence");
-            final String optLog = opts.hasKey("logLevel") ? opts.getString("logLevel") : "";
-            final boolean optPOIDebug = opts.hasKey("poiDebug") && opts.getBoolean("poiDebug");
+            final String optLogFilters = opts.hasKey("logFilters") ? opts.getString("logFilters") : "info,warn:bty,bty.* error+:*";
             String[] optsGrpcListeners = {"/ip4/127.0.0.1/tcp/0/grpcws"}; // default value
             if (opts.hasKey("grpcListeners") && opts.getType("grpcListeners") == ReadableType.Array) {
                 optsGrpcListeners = readableArrayToStringArray(opts.getArray("grpcListeners"));
@@ -111,7 +110,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
             // init logger
             LoggerDriver logger = new LoggerDriver("tech.berty", "protocol");
 
-            config.logLevel(optLog);
+            config.setLogFilters(optLogFilters);
             config.loggerDriver(logger);
 
             // configure grpc listener
@@ -133,10 +132,6 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
                 }
                 Log.i(TAG, "root dir: " + this.rootDir.getAbsolutePath());
                 config.rootDirectory(this.rootDir.getAbsolutePath());
-            }
-
-            if (optPOIDebug) {
-                config.enablePOIDebug();
             }
 
             if (optTracing) {
