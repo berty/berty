@@ -122,7 +122,8 @@ func TestAnnounceWatchForPeriod(t *testing.T) {
 		},
 	}
 
-	logger := testutil.Logger(t)
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 	for i, tc := range cases {
 		t.Run(fmt.Sprintf("tc: %d", i), func(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())

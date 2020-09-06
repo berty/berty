@@ -285,10 +285,12 @@ func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
 
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
+			logger, cleanup := testutil.Logger(t)
+			defer cleanup()
 
 			opts := TestingOpts{
 				Mocknet: libp2p_mocknet.New(ctx),
-				Logger:  testutil.Logger(t),
+				Logger:  logger,
 			}
 
 			tps, cleanup := NewTestingProtocolWithMockedPeers(ctx, t, &opts, tc.NumberOfClient)

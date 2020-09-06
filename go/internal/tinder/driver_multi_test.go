@@ -38,7 +38,8 @@ func TestMultiDriver_Advertise(t *testing.T) {
 		},
 	}
 
-	logger := testutil.Logger(t)
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -97,7 +98,8 @@ func TestMultiDriver_FindPeers(t *testing.T) {
 		},
 	}
 
-	logger := testutil.Logger(t)
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -149,7 +151,8 @@ func TestMultiDriver_Unregister(t *testing.T) {
 		},
 	}
 
-	logger := testutil.Logger(t)
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 

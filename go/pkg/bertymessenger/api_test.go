@@ -20,7 +20,9 @@ func TestServiceInstanceShareableBertyID(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: testutil.Logger(t)})
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: logger})
 	defer cleanup()
 
 	ret1, err := svc.InstanceShareableBertyID(ctx, nil)
@@ -98,7 +100,9 @@ func TestServiceParseDeepLink(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			service, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: testutil.Logger(t)})
+			logger, cleanup := testutil.Logger(t)
+			defer cleanup()
+			service, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: logger})
 			defer cleanup()
 
 			ret, err := service.ParseDeepLink(ctx, tt.request)
@@ -126,7 +130,9 @@ func TestServiceSendContactRequest(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: testutil.Logger(t)})
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: logger})
 	defer cleanup()
 
 	ret, err := svc.SendContactRequest(ctx, nil)
@@ -149,7 +155,9 @@ func TestSystemInfo(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: testutil.Logger(t)})
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: logger})
 	defer cleanup()
 
 	ret, err := svc.SystemInfo(ctx, nil)
@@ -196,8 +204,10 @@ func TestServiceShareableBertyGroup(t *testing.T) {
 	// should be better to have something blocking instead
 	time.Sleep(10 * time.Millisecond)
 
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{
-		Logger: testutil.Logger(t),
+		Logger: logger,
 		Client: protocol.Client,
 	})
 	defer cleanup()

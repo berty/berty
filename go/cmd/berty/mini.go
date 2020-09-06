@@ -99,7 +99,6 @@ func miniCommand() *ffcli.Command {
 				MessengerDB:     db,
 				ReplayLogs:      opts.replay,
 				Logger:          l,
-				POIDebug:        opts.poiDebug,
 				Bootstrap:       config.BertyDev.Bootstrap,
 				RendezVousPeer:  rdvpeer,
 				DisplayName:     opts.displayName,

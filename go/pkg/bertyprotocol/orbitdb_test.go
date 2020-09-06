@@ -14,7 +14,7 @@ import (
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/pubsub/directchannel"
 	"berty.tech/go-orbit-db/pubsub/pubsubraw"
-	"github.com/ipfs/go-datastore"
+	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
@@ -55,8 +55,8 @@ func newTestOrbitDB(ctx context.Context, t *testing.T, logger *zap.Logger, node 
 
 func TestDifferentStores(t *testing.T) {
 	testutil.FilterSpeed(t, testutil.Slow)
-	logger := testutil.Logger(t)
-
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 

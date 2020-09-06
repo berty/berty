@@ -7,6 +7,9 @@ require (
 	berty.tech/go-ipfs-log v1.2.6
 	berty.tech/go-orbit-db v1.10.8
 	berty.tech/ipfs-webui-packed v1.0.0-v2.9.0-4
+	github.com/Masterminds/goutils v1.1.0 // indirect
+	github.com/Masterminds/semver v1.5.0 // indirect
+	github.com/Masterminds/sprig v2.22.0+incompatible // indirect
 	github.com/aead/ecdh v0.2.0
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
 	github.com/atotto/clipboard v0.1.2
@@ -23,6 +26,8 @@ require (
 	github.com/golang/protobuf v1.4.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0
 	github.com/grpc-ecosystem/grpc-gateway v1.14.6
+	github.com/huandu/xstrings v1.3.2 // indirect
+	github.com/imdario/mergo v0.3.11 // indirect
 	github.com/improbable-eng/grpc-web v0.13.0
 	github.com/ipfs/go-cid v0.0.7
 	github.com/ipfs/go-datastore v0.4.4
@@ -30,13 +35,13 @@ require (
 	github.com/ipfs/go-ipfs v0.6.0
 	github.com/ipfs/go-ipfs-config v0.9.0
 	github.com/ipfs/go-ipfs-keystore v0.0.1
-	github.com/ipfs/go-log v1.0.4
 	github.com/ipfs/go-log/v2 v2.1.1
 	github.com/ipfs/interface-go-ipfs-core v0.3.0
 	github.com/ipld/go-ipld-prime v0.0.2 // indirect
 	github.com/itsTurnip/dishooks v0.0.0-20200206125049-b4fc7c7b042e
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
 	github.com/kisielk/errcheck v1.4.0 // indirect
+	github.com/kr/text v0.2.0 // indirect
 	github.com/libp2p/go-libp2p v0.10.2
 	github.com/libp2p/go-libp2p-circuit v0.3.1
 	github.com/libp2p/go-libp2p-core v0.6.1
@@ -53,12 +58,15 @@ require (
 	github.com/mattn/go-colorable v0.1.7 // indirect
 	github.com/mdp/qrterminal/v3 v3.0.0
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
+	github.com/mitchellh/copystructure v1.0.0 // indirect
+	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/multiformats/go-multiaddr v0.2.2
 	github.com/multiformats/go-multiaddr-dns v0.2.0
 	github.com/multiformats/go-multiaddr-fmt v0.1.0
 	github.com/multiformats/go-multiaddr-net v0.1.5
 	github.com/multiformats/go-multihash v0.0.14
 	github.com/multiformats/go-multistream v0.1.2
+	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/oklog/run v1.1.0
 	github.com/peterbourgon/ff/v3 v3.0.0
 	github.com/pkg/errors v0.9.1
@@ -74,16 +82,17 @@ require (
 	go.uber.org/fx v1.13.0 // indirect
 	go.uber.org/goleak v1.1.10
 	go.uber.org/multierr v1.5.0
-	go.uber.org/zap v1.15.0
+	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de
 	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381
 	golang.org/x/sys v0.0.0-20200728102440-3e129f6d46b1 // indirect
 	golang.org/x/text v0.3.3 // indirect
-	golang.org/x/tools v0.0.0-20200717024301-6ddee64345a6
+	golang.org/x/tools v0.0.0-20200724022722-7017fd6b1305
 	google.golang.org/genproto v0.0.0-20200715011427-11fb19a81f2c // indirect
 	google.golang.org/grpc v1.30.0
 	google.golang.org/protobuf v1.25.0 // indirect
+	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gorm.io/driver/sqlite v1.0.8
 	gorm.io/gorm v0.2.26
 	honnef.co/go/tools v0.0.1-2020.1.4 // indirect
@@ -92,6 +101,7 @@ require (
 	moul.io/retry v0.7.0
 	moul.io/srand v1.4.0
 	moul.io/u v1.5.0
+	moul.io/zapfilter v1.4.0
 	moul.io/zapgorm2 v1.0.1
 )
 
@@ -101,4 +111,5 @@ replace (
 	github.com/ipld/go-ipld-prime => github.com/ipld/go-ipld-prime v0.0.2-0.20191108012745-28a82f04c785 // specific version needed indirectly
 	github.com/ipld/go-ipld-prime-proto => github.com/ipld/go-ipld-prime-proto v0.0.0-20191113031812-e32bd156a1e5 // specific version needed indirectly
 	github.com/libp2p/go-libp2p-kbucket => github.com/libp2p/go-libp2p-kbucket v0.4.2 // specific version needed indirectly
+	github.com/lucas-clemente/quic-go => github.com/lucas-clemente/quic-go v0.18.0 // required by go1.15
 )

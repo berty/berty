@@ -17,10 +17,12 @@ func TestContactRequestFlow(t *testing.T) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*20)
 	defer cancel()
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 
 	opts := TestingOpts{
 		Mocknet: libp2p_mocknet.New(ctx),
-		Logger:  testutil.Logger(t),
+		Logger:  logger,
 	}
 
 	metadataSender1 := []byte("sender_1")
@@ -140,10 +142,12 @@ func TestContactRequestFlowWithoutIncoming(t *testing.T) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 
 	opts := TestingOpts{
 		Mocknet: libp2p_mocknet.New(ctx),
-		Logger:  testutil.Logger(t),
+		Logger:  logger,
 	}
 
 	metadataSender1 := []byte("sender_1")

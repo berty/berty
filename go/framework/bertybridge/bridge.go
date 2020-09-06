@@ -258,7 +258,7 @@ func (b *Bridge) addGRPCListenner(maddr string) error {
 		return err
 	}
 
-	b.logger.Info(m.String())
+	b.logger.Info("add gRPC listener", zap.Stringer("addr", m))
 	l, err := grpcutil.Listen(m)
 	if err != nil {
 		return err

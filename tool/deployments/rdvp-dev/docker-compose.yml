@@ -12,7 +12,6 @@ services:
     labels:
       com.centurylinklabs.watchtower.enable: "true"
     command:
-      - --debug
       - serve
       - "--db=:memory:"
       - "--pk=$RDVP_PK"

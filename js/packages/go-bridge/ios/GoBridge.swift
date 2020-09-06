@@ -88,8 +88,7 @@ class GoBridge: NSObject {
 
             // gather opts
             let optPersistence = opts.get(bool: "persistence")
-            let optLog = opts.get(string: "logLevel", defaultValue: "info")
-            let optPOIDebug = opts.get(bool: "poiDebug")
+            let optLogFilters = opts.get(string: "logFilters", defaultValue: "info,warn:bty,bty.* error+:*")
             let optGrpcListeners = opts.get(array: "grpcListeners", defaultValue: ["/ip4/127.0.0.1/tcp/0/grpcws"])
             let optSwarmListeners = opts.get(array: "swarmListeners", defaultValue: ["/ip4/0.0.0.0/tcp/0", "/ip6/0.0.0.0/tcp/0"])
             let optTracing = opts.get(bool: "tracing")
@@ -103,13 +102,13 @@ class GoBridge: NSObject {
 
             // set life cycle driver
             config.lifeCycleDriver(LifeCycleDriver.shared)
-            
+
             // init logger driver
             let logger = LoggerDriver("tech.berty", "protocol")
 
-            config.logLevel(optLog)
+            config.setLogFilters(optLogFilters)
             config.loggerDriver(logger)
-            
+
             // configure grpc listener
             for obj in optGrpcListeners {
                 guard let listener = obj as? String else {
@@ -138,10 +137,6 @@ class GoBridge: NSObject {
 
                 NSLog("root dir: `%@`", self.rootdir.path)
                 config.rootDirectory(self.rootdir.path)
-            }
-
-            if optPOIDebug {
-                config.enablePOIDebug()
             }
 
             if optTracing {

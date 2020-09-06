@@ -3,26 +3,33 @@ package bertybridge
 import (
 	"context"
 	"fmt"
-	"math/rand"
+	mrand "math/rand"
 	"os"
 	"path/filepath"
 	"strings"
 	"sync"
 	"time"
 
+	"berty.tech/berty/v2/go/internal/config"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
+	"berty.tech/berty/v2/go/internal/tinder"
+	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	badger_opts "github.com/dgraph-io/badger/options"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	"github.com/ipfs/go-datastore"
+	datastore "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_badger "github.com/ipfs/go-ds-badger"
 	"github.com/ipfs/go-ipfs/core"
 	"github.com/ipfs/go-ipfs/core/bootstrap"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
-	"github.com/libp2p/go-libp2p"
+	libp2p "github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/peerstore"
@@ -41,14 +48,6 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
-
-	"berty.tech/berty/v2/go/internal/config"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
-	"berty.tech/berty/v2/go/internal/tinder"
-	"berty.tech/berty/v2/go/internal/tracer"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 var (
@@ -72,6 +71,7 @@ type MessengerBridge struct {
 	*Bridge
 
 	logger           *zap.Logger
+	loggerCleanup    func()
 	node             *core.IpfsNode
 	protocolService  bertyprotocol.Service
 	messengerService bertymessenger.Service
@@ -89,10 +89,9 @@ type MessengerBridge struct {
 type MessengerConfig struct {
 	*Config
 
-	dLogger  NativeLoggerDriver
-	lc       LifeCycleDriver
-	loglevel string
-	poiDebug bool
+	dLogger    NativeLoggerDriver
+	lc         LifeCycleDriver
+	logFilters string
 
 	swarmListeners []string
 	rootDirectory  string
@@ -118,16 +117,12 @@ func (pc *MessengerConfig) EnableTracing() {
 	pc.tracing = true
 }
 
-func (pc *MessengerConfig) EnablePOIDebug() {
-	pc.poiDebug = true
-}
-
 func (pc *MessengerConfig) SetTracingPrefix(prefix string) {
 	pc.tracingPrefix = prefix
 }
 
-func (pc *MessengerConfig) LogLevel(level string) {
-	pc.loglevel = level
+func (pc *MessengerConfig) SetLogFilters(filters string) {
+	pc.logFilters = filters
 }
 
 func (pc *MessengerConfig) LoggerDriver(dLogger NativeLoggerDriver) {
@@ -147,27 +142,18 @@ func (pc *MessengerConfig) DisableLocalDiscovery() {
 }
 
 func NewMessengerBridge(config *MessengerConfig) (*MessengerBridge, error) {
-	// setup logger
-	var logger *zap.Logger
-	{
-		var err error
-
-		if config.dLogger != nil {
-			logger, err = newNativeLogger(config.loglevel, config.dLogger)
-		} else {
-			logger, err = newLogger(config.loglevel)
-		}
-
-		if err != nil {
-			return nil, err
-		}
+	logger, cleanup, err := newLogger(config.logFilters, config.dLogger)
+	if err != nil {
+		return nil, err
 	}
 
-	return newMessengerBridge(context.Background(), logger, config)
-}
+	bridge, err := newProtocolBridge(context.Background(), logger, config)
+	if err != nil {
+		return nil, err
+	}
 
-func newMessengerBridge(ctx context.Context, logger *zap.Logger, config *MessengerConfig) (*MessengerBridge, error) {
-	return newProtocolBridge(ctx, logger, config)
+	bridge.loggerCleanup = cleanup
+	return bridge, nil
 }
 
 func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *MessengerConfig) (*MessengerBridge, error) {
@@ -211,10 +197,10 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 					h.Peerstore().AddAddrs(rdvpeer.ID, rdvpeer.Addrs, peerstore.PermanentAddrTTL)
 					// @FIXME(gfanton): use rand as argument
 					rdvClient := tinder.NewRendezvousDiscovery(logger, h, rdvpeer.ID,
-						rand.New(rand.NewSource(rand.Int63())))
+						mrand.New(mrand.NewSource(mrand.Int63())))
 
 					minBackoff, maxBackoff := time.Second, time.Minute
-					rng := rand.New(rand.NewSource(rand.Int63()))
+					rng := mrand.New(mrand.NewSource(mrand.Int63()))
 					disc, err = tinder.NewService(
 						logger,
 						rdvClient,
@@ -259,10 +245,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 
 			// serve the embedded ipfs webui
 			ipfsutil.ServeHTTPWebui(logger)
-
-			if config.poiDebug {
-				ipfsutil.EnableConnLogger(ctx, logger, node.PeerHost)
-			}
+			ipfsutil.EnableConnLogger(ctx, logger, node.PeerHost)
 		}
 	}
 
@@ -301,7 +284,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 		// initialize new protocol client
 		protocolOpts := bertyprotocol.Opts{
 			PubSub:          ps,
-			Logger:          logger.Named("bertyprotocol"),
+			Logger:          logger,
 			OrbitDirectory:  odbDir,
 			RootDatastore:   rootds,
 			MessageKeystore: mk,
@@ -390,7 +373,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 		}
 
 		opts := bertymessenger.Opts{
-			Logger:          logger.Named("messenger"),
+			Logger:          logger,
 			ProtocolService: service,
 			DB:              db,
 		}
@@ -522,8 +505,7 @@ func (p *MessengerBridge) Close() error {
 	// close bridge
 	if p.Bridge != nil {
 		if err := p.Bridge.Close(); err != nil {
-			errs = multierr.Append(errs,
-				fmt.Errorf("unable to close grpc bridge: %s", err))
+			errs = multierr.Append(errs, fmt.Errorf("unable to close grpc bridge: %s", err))
 		}
 	}
 
@@ -534,36 +516,34 @@ func (p *MessengerBridge) Close() error {
 
 	// protocol client
 	if err := p.protocolClient.Close(); err != nil {
-		errs = multierr.Append(errs,
-			fmt.Errorf("unable to close protocol client: %s", err))
+		errs = multierr.Append(errs, fmt.Errorf("unable to close protocol client: %s", err))
 	}
 
 	// close protocol
 	if err := p.protocolService.Close(); err != nil {
-		errs = multierr.Append(errs,
-			fmt.Errorf("unable to close protocol service: %s", err))
+		errs = multierr.Append(errs, fmt.Errorf("unable to close protocol service: %s", err))
 	}
 
 	if p.node != nil {
 		if err := p.node.Close(); err != nil {
-			errs = multierr.Append(errs,
-				fmt.Errorf("unable to close ipfs node: %s", err))
+			errs = multierr.Append(errs, fmt.Errorf("unable to close ipfs node: %s", err))
 		}
 	}
 
 	if err := p.ds.Close(); err != nil {
-		errs = multierr.Append(errs,
-			fmt.Errorf("unable to close datastore: %s", err))
+		errs = multierr.Append(errs, fmt.Errorf("unable to close datastore: %s", err))
 	}
 
 	// closing messenger db
 	sqlDB, err := p.msngrDB.DB()
 	if err != nil {
-		errs = multierr.Append(errs,
-			fmt.Errorf("unable to get messenger db: %s", err))
+		errs = multierr.Append(errs, fmt.Errorf("unable to get messenger db: %s", err))
 	} else if err := sqlDB.Close(); err != nil {
-		errs = multierr.Append(errs,
-			fmt.Errorf("unable to close messenger db: %s", err))
+		errs = multierr.Append(errs, fmt.Errorf("unable to close messenger db: %s", err))
+	}
+
+	if p.loggerCleanup != nil {
+		p.loggerCleanup()
 	}
 
 	return errs

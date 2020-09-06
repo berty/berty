@@ -14,7 +14,7 @@ import (
 	"berty.tech/go-orbit-db/cache"
 	"berty.tech/go-orbit-db/pubsub/directchannel"
 	"berty.tech/go-orbit-db/pubsub/pubsubraw"
-	"github.com/ipfs/go-datastore"
+	datastore "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 
 	ipfs_core "github.com/ipfs/go-ipfs/core"
@@ -119,6 +119,7 @@ func New(ctx context.Context, opts Opts) (Service, error) {
 	if err := opts.applyDefaults(ctx); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
+	opts.Logger = opts.Logger.Named("pt")
 
 	orbitDirectory := opts.OrbitDirectory
 	odbOpts := &orbitdb.NewOrbitDBOptions{

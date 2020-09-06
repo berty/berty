@@ -1,12 +1,12 @@
 ID ?= 42
 FORMAT ?= json
 TMPDIR ?= /tmp
-RUN_OPTS ?= --debug-p2p --debug-odb --debug-poi
+RUN_OPTS ?=
 NAME ?= $(USER)-mini-$(ID)
 
 .PHONY: run
 run:
-	berty $(RUN_OPTS) --logformat=$(FORMAT) --logfile=$(TMPDIR)/berty-mini-$(ID).log --debug mini -d $(TMPDIR)/berty-mini-$(ID)
+	berty $(RUN_OPTS) --logformat=$(FORMAT) --logfile=$(TMPDIR)/berty-mini-$(ID).log mini -d $(TMPDIR)/berty-mini-$(ID)
 
 .PHONY: tail
 tail:

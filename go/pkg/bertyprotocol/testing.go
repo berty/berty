@@ -141,7 +141,7 @@ func NewTestingProtocolWithMockedPeers(ctx context.Context, t *testing.T, opts *
 	cls := make([]func(), amount)
 	tps := make([]*TestingProtocol, amount)
 	for i := range tps {
-		svcName := fmt.Sprintf("pt[%d]", i)
+		svcName := fmt.Sprintf("pt.%d", i)
 		opts.Logger = logger.Named(svcName)
 		opts.TracerProvider = tracer.NewTestingProvider(t, svcName)
 

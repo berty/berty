@@ -14,11 +14,13 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 )
 
 func TestMetadataStoreSecret_Basic(t *testing.T) {
 	t.Skip("skipping as we don't care about this code now")
+
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 
 	// TODO: handle more cases (more members, more devices...)
 	memberCount := 2
@@ -35,8 +37,8 @@ func TestMetadataStoreSecret_Basic(t *testing.T) {
 	msA := peers[0].GC.MetadataStore()
 	msB := peers[1].GC.MetadataStore()
 
-	go WatchNewMembersAndSendSecrets(ctx, zap.L(), peers[0].GC)
-	go WatchNewMembersAndSendSecrets(ctx, zap.L(), peers[1].GC)
+	go WatchNewMembersAndSendSecrets(ctx, logger, peers[0].GC)
+	go WatchNewMembersAndSendSecrets(ctx, logger, peers[1].GC)
 	go waitForBertyEventType(ctx, t, msA, bertytypes.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
 	go waitForBertyEventType(ctx, t, msB, bertytypes.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
 	inviteAllPeersToGroup(ctx, t, peers, groupSK)
