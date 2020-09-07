@@ -2,7 +2,6 @@ import React from 'react'
 import { TouchableOpacity, View, Image } from 'react-native'
 import { Icon } from 'react-native-ui-kitten'
 import { useStyles, ColorsTypes } from '@berty-tech/styles'
-import LinearGradient from 'react-native-linear-gradient'
 import Jdenticon from 'react-native-jdenticon'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
 
@@ -134,9 +133,8 @@ const max = (a: number, b: number) => (a >= b ? a : b)
 export const Footer: React.FC<FooterProps> = ({ left, center, right }) => {
 	const [{ absolute }] = useStyles()
 	return (
-		<LinearGradient
+		<View
 			style={[absolute.bottom, { alignItems: 'center', justifyContent: 'center', width: '100%' }]}
-			colors={['#ffffff00', '#ffffff80', '#ffffffc0', '#ffffffff']}
 		>
 			<SafeAreaConsumer>
 				{(insets) => (
@@ -154,7 +152,7 @@ export const Footer: React.FC<FooterProps> = ({ left, center, right }) => {
 					</View>
 				)}
 			</SafeAreaConsumer>
-		</LinearGradient>
+		</View>
 	)
 }
 export default Footer

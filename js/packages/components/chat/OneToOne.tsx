@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
-import BlurView from '../shared-components/BlurView'
+import React, { useState, useRef } from 'react'
 import {
 	TouchableOpacity,
 	View,
@@ -10,14 +8,11 @@ import {
 	KeyboardAvoidingView,
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
-import { useStyles } from '@berty-tech/styles'
-// import { Messenger, Settings } from '@berty-tech/store/oldhooks'
-import { useNavigation, ScreenProps } from '@berty-tech/navigation'
-import FromNow from '../shared-components/FromNow'
-import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
-import { Message } from './shared-components/Message'
-import * as api from '@berty-tech/api/index.pb'
 
+import { useStyles } from '@berty-tech/styles'
+import { useNavigation, ScreenProps } from '@berty-tech/navigation'
+import * as api from '@berty-tech/api/index.pb'
+import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import {
 	useMsgrContext,
 	useConversation,
@@ -25,8 +20,11 @@ import {
 	useReadEffect,
 	useSortedConvInteractions,
 } from '@berty-tech/store/hooks'
-import { values } from 'lodash'
+
+import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
+import { Message } from './shared-components/Message'
 import { ChatFooter, ChatDate } from './shared-components/Chat'
+import BlurView from '../shared-components/BlurView'
 
 //
 // Chat
@@ -183,9 +181,7 @@ const InfosChat: React.FC<api.berty.messenger.v1.IConversation> = ({
 	)
 }
 
-// const MessageListSpinner: React.FC<{ error?: Error }> = () => <ActivityIndicator size='large' />
-
-const MessageList: React.FC<{ convPk: string; scrollToMessage?: number }> = ({
+const MessageList: React.FC<{ convPk: string; scrollToMessage?: string }> = ({
 	convPk,
 	scrollToMessage,
 }) => {
@@ -199,45 +195,38 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: number }> = ({
 		return messagePosition < 1 ? '' : (messageList[messagePosition - 1] as any).cid
 	}
 
-	const [{ row, overflow, flex, margin }, { scaleHeight }] = useStyles()
-
 	const flatListRef = useRef(null)
-
-	// const flatListRef = useRef<FlatList<messenger.message.Entity['convPk']>>(null)
 
 	const onScrollToIndexFailed = () => {
 		// Not sure why this happens (something to do with item/screen dimensions I think)
 		flatListRef.current?.scrollToIndex({ index: 0 })
 	}
 
+	const initialScrollIndex = React.useMemo(() => {
+		if (scrollToMessage) {
+			for (let i = 0; i < messages.length; i++) {
+				if (messages[i].cid === scrollToMessage) {
+					return i
+				}
+			}
+		}
+	}, [messages, scrollToMessage])
+
 	return (
 		<FlatList
-			// initialScrollIndex={
-			// 	conversation && props.scrollToMessage
-			// 		? conversation.messages.length - props.scrollToMessage
-			// 		: undefined
-			// }
-			// onScrollToIndexFailed={onScrollToIndexFailed}
+			initialScrollIndex={initialScrollIndex}
+			onScrollToIndexFailed={onScrollToIndexFailed}
 			ref={flatListRef}
-			// keyboardDismissMode='on-drag'
-			// style={[
-			// 	overflow,
-			// 	row.item.fill,
-			// 	flex.tiny,
-			// 	margin.bottom.medium,
-			// 	{ marginTop: 150 * scaleHeight },
-			// ]}
+			keyboardDismissMode='on-drag'
 			data={messages.reverse()}
 			inverted
 			keyExtractor={(item: any) => item.cid}
 			ListFooterComponent={<InfosChat {...conv} />}
-			// renderItem={({ item }) => <Message convPk={item} convKind={'1to1'} />}
 			renderItem={({ item }: { item: any }) => (
 				<Message
 					id={item.cid}
 					convKind={messengerpb.Conversation.Type.ContactType}
 					convPK={conv.publicKey}
-					membersNames={conv.membersNames}
 					previousMessageId={getPreviousMessageId(item, messages)}
 				/>
 			)}
@@ -252,10 +241,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route }) => {
 	return (
 		<View style={[StyleSheet.absoluteFill, background.white]}>
 			<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
-				<MessageList
-					convPk={route.params.convId}
-					// scrollToMessage={route.params.scrollToMessage || 0}
-				/>
+				<MessageList convPk={route.params.convId} scrollToMessage={route.params.scrollToMessage} />
 				<ChatFooter
 					convPk={route.params.convId}
 					isFocused={inputIsFocused}

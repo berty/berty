@@ -8,6 +8,7 @@ import HeaderSettings from '../shared-components/Header'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { Messenger } from '@berty-tech/store/oldhooks'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import LinearGradient from 'react-native-linear-gradient'
 
 //
 // Home Vue
@@ -151,22 +152,31 @@ const HomeBodySettings: React.FC<{}> = () => {
 export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 	const account = Messenger.useAccount()
 	const _styles = useStylesHome()
-	const [{ flex, background, row }] = useStyles()
+	const [{ flex, background, row, absolute }] = useStyles()
 	return (
-		<View style={[flex.tiny, background.white]}>
-			{account == null ? (
-				<ActivityIndicator size='large' style={[row.center]} />
-			) : (
-				<ScrollView bounces={false} contentContainerStyle={[_styles.scrollViewPadding]}>
-					<HeaderSettings>
-						<View>
-							<HomeHeader />
-							<HomeHeaderGroupButton />
-						</View>
-					</HeaderSettings>
-					<HomeBodySettings />
-				</ScrollView>
-			)}
-		</View>
+		<>
+			<View style={[flex.tiny, background.white]}>
+				{account == null ? (
+					<ActivityIndicator size='large' style={[row.center]} />
+				) : (
+					<ScrollView bounces={false} contentContainerStyle={[_styles.scrollViewPadding]}>
+						<HeaderSettings>
+							<View>
+								<HomeHeader />
+								<HomeHeaderGroupButton />
+							</View>
+						</HeaderSettings>
+						<HomeBodySettings />
+					</ScrollView>
+				)}
+			</View>
+			<LinearGradient
+				style={[
+					absolute.bottom,
+					{ alignItems: 'center', justifyContent: 'center', height: '15%', width: '100%' },
+				]}
+				colors={['#ffffff00', '#ffffff80', '#ffffffc0', '#ffffffff']}
+			/>
+		</>
 	)
 }

@@ -12,6 +12,8 @@ import {
 import { EdgeInsets, SafeAreaConsumer } from 'react-native-safe-area-context'
 import { Icon, Layout, Text } from 'react-native-ui-kitten'
 import { CommonActions } from '@react-navigation/native'
+import LinearGradient from 'react-native-linear-gradient'
+import pickBy from 'lodash/pickBy'
 
 import { Routes, useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
@@ -20,10 +22,14 @@ import {
 	useFirstConversationWithContact,
 	useGetMessage,
 	useMsgrContext,
+	useGetMessageSearchResultWithMetadata,
+	useConversation,
+	useContact,
+	useSortedConvInteractions,
 } from '@berty-tech/store/hooks'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
-
-import { ProceduralAvatar } from '../shared-components'
+import * as api from '@berty-tech/api/index.pb'
+import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 
 // Styles
 
@@ -47,6 +53,7 @@ const useStylesSearch = () => {
 			background.light.yellow,
 			text.bold.medium,
 		],
+		nameHighlightText: [text.color.yellow, background.light.yellow, text.bold.medium],
 		plainMessageText: [text.size.small, text.color.grey],
 	}
 }
@@ -206,181 +213,281 @@ const SearchHint: React.FC<{
 
 // SEARCH RESULTS
 
-type SearchItemProps = {
-	data: any
-	searchTextKey: 'name' | 'message'
-	searchText?: string
+enum SearchResultKind {
+	Contact = 'Contact',
+	Conversation = 'Conversation',
+	Interaction = 'Interaction',
 }
 
-// TODO: Move/refactor to hooks
-const useSearchItemDataFromContact = (
-	data: any,
-): {
-	name: string
-	message: string
-	convId: string
-	messageListIndex: number
-	receivedDate: number
-} => {
-	const ctx = useMsgrContext()
-	const { displayName = '', publicKey = '' } = data
-	const conversation = useFirstConversationWithContact(publicKey)
-	const interactions = Object.values(ctx.interactions[conversation?.publicKey] || {})
-	const lastMessage = useGetMessage(
-		conversation ? interactions[interactions.length - 1] : '',
-		conversation?.publicKey,
-	)
-	const { receivedDate = Date.now() } = lastMessage || {}
-
-	return {
-		name: displayName,
-		messageListIndex: conversation ? conversation.messages.length - 1 : 0,
-		convId: conversation ? conversation.publicKey : '',
-		message:
-			lastMessage && lastMessage.type === messengerpb.AppMessage.Type.TypeUserMessage
-				? lastMessage.payload.body
-				: '',
-		receivedDate,
-	}
-}
-
-const useSearchItemDataFromMessage = (
-	data: any = {},
-): {
-	name: string
-	message: string
-	convId: string
-	messageListIndex: number
-	receivedDate: number
-} => {
-	const {
-		message: { body, receivedDate },
-		conversationId,
-		conversationTitle,
-		messageIndex,
-	} = data
-	return {
-		name: conversationTitle,
-		message: body,
-		messageListIndex: messageIndex,
-		convId: conversationId,
-		receivedDate,
-	}
-}
+type SearchItemProps = { searchText?: string; data: any; kind: SearchResultKind }
 
 const MessageSearchResult: React.FC<{
 	message: string
 	searchText: string
-}> = ({ message, searchText }) => {
-	const [{ start, end }] = useState({
-		start: message.toLowerCase().indexOf(searchText.toLowerCase()),
-		end: message.toLowerCase().indexOf(searchText.toLowerCase()) + searchText.length,
-	})
-	const { plainMessageText, searchResultHighlightText } = useStylesSearch()
+	style?: any
+	highlightStyle?: any
+}> = ({ message, searchText, style, highlightStyle }) => {
+	if (typeof message !== 'string' || typeof searchText !== 'string') {
+		return null
+	}
 
-	return (
-		<>
-			<Text style={plainMessageText}>{message.slice(0, start)}</Text>
-			<Text style={searchResultHighlightText}>{message.slice(start, end)}</Text>
-			<Text style={plainMessageText}>{message.slice(end)}</Text>
-		</>
-	)
-}
+	const parts = []
+	let partsCounter = 0
+	let lastStart = 0
 
-// hacky workaround to use conditional hook ^^
-const useSomeSearchItem = (key: SearchItemProps['searchTextKey']) =>
-	key === 'name' ? useSearchItemDataFromContact : useSearchItemDataFromMessage
+	const firstResultIndex = message.indexOf(searchText)
+	if (firstResultIndex > 20) {
+		message = '...' + message.substr(firstResultIndex - 15)
+	}
 
-const SearchResultItem: React.FC<SearchItemProps> = ({ data, searchTextKey, searchText = '' }) => {
-	const [{ color, row, padding, flex, column, text, margin, border }] = useStyles()
-	const { plainMessageText } = useStylesSearch()
-	const { name, message, messageListIndex, receivedDate } = useSomeSearchItem(searchTextKey)(data)
-	const convId = data.conversationPublicKey || data.publicKey
-	const [noConversation, noMessages] = useMemo(() => [!convId, messageListIndex < 0], [
-		convId,
-		messageListIndex,
-	])
-	const { dispatch } = useNavigation()
-
-	const MessageDisplay = () =>
-		noMessages ? null : (
-			<Text numberOfLines={1} style={plainMessageText}>
-				{searchTextKey === 'name' ? (
-					<>{message}</>
-				) : (
-					<MessageSearchResult searchText={searchText} message={message} />
-				)}
+	for (let i = 0; i < message.length; ) {
+		const searchTarget = message.substr(i, searchText.length)
+		if (searchTarget.toLowerCase() === searchText.toLowerCase()) {
+			if (lastStart < i) {
+				const plainPart = message.substr(lastStart, i - lastStart)
+				parts[partsCounter] = (
+					<Text key={partsCounter} style={style}>
+						{plainPart}
+					</Text>
+				)
+				partsCounter++
+			}
+			parts[partsCounter] = (
+				<Text key={partsCounter} style={highlightStyle}>
+					{searchTarget}
+				</Text>
+			)
+			partsCounter++
+			i += searchText.length
+			lastStart = i
+		} else {
+			i++
+		}
+	}
+	if (lastStart !== message.length) {
+		const plainPart = message.substr(lastStart)
+		parts[partsCounter] = (
+			<Text key={partsCounter} style={style}>
+				{plainPart}
 			</Text>
 		)
+		lastStart = message.length
+		partsCounter++
+	}
+
+	return <>{parts}</>
+}
+
+const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = '' }) => {
+	const [{ color, row, padding, flex, column, text, margin, border }] = useStyles()
+	const { plainMessageText, searchResultHighlightText, nameHighlightText } = useStylesSearch()
+	const { navigate, dispatch } = useNavigation()
+
+	let convPk: string
+	switch (kind) {
+		case SearchResultKind.Contact:
+			convPk = data.conversationPublicKey || ''
+			break
+		case SearchResultKind.Conversation:
+			convPk = data.publicKey || ''
+			break
+		case SearchResultKind.Interaction:
+			convPk = data.conversationPublicKey || ''
+			break
+	}
+	const conv = useConversation(convPk)
+
+	let contactPk: string
+	switch (kind) {
+		case SearchResultKind.Contact:
+			contactPk = data.publicKey
+			break
+		case SearchResultKind.Conversation:
+			contactPk = ''
+			break
+		case SearchResultKind.Interaction:
+			contactPk = conv?.contactPublicKey
+			break
+	}
+	const contact = useContact(contactPk)
+
+	const interactions = useSortedConvInteractions(conv?.publicKey).filter(
+		(inte) => inte.type === messengerpb.AppMessage.Type.TypeUserMessage,
+	)
+	const lastInteraction =
+		interactions && interactions.length > 0 ? interactions[interactions.length - 1] : null
+
+	let name: string
+	let inte: api.berty.messenger.v1.IInteraction | null
+	let avatarSeed: string
+	switch (kind) {
+		case SearchResultKind.Contact:
+			avatarSeed = data.publicKey
+			name = data.displayName || ''
+			inte = lastInteraction || null
+			break
+		case SearchResultKind.Conversation:
+			avatarSeed = convPk
+			name = data.displayName || ''
+			inte = lastInteraction || null
+			break
+		case SearchResultKind.Interaction:
+			if (conv?.type === messengerpb.Conversation.Type.ContactType) {
+				name = contact?.displayName || ''
+				avatarSeed = contact?.publicKey
+			} else {
+				name = conv?.displayName || ''
+				avatarSeed = convPk
+			}
+			inte = data || null
+			break
+		default:
+			return null
+	}
+
+	const date = parseInt((inte?.sentDate as string | undefined) || '0', 10)
+
+	const MessageDisplay = () => {
+		let content
+		switch (kind) {
+			case SearchResultKind.Contact:
+				switch (data.state) {
+					case messengerpb.Contact.State.IncomingRequest:
+						content = '📬 Incoming request'
+						break
+					case messengerpb.Contact.State.OutgoingRequestEnqueued:
+						content = '📪 Outgoing request enqueued'
+						break
+					case messengerpb.Contact.State.OutgoingRequestSent:
+						content = '📫 Outgoing request sent'
+						break
+					default:
+						content = (inte?.payload as any)?.body
+				}
+				break
+			case SearchResultKind.Conversation:
+				content = (inte?.payload as any)?.body
+				break
+			case SearchResultKind.Interaction:
+				content = (
+					<MessageSearchResult
+						searchText={searchText}
+						message={(inte?.payload as any)?.body}
+						style={plainMessageText}
+						highlightStyle={searchResultHighlightText}
+					/>
+				)
+				break
+			default:
+				return null
+		}
+		return (
+			<Text numberOfLines={1} style={plainMessageText}>
+				{content}
+			</Text>
+		)
+	}
 
 	const TimeStamp = () => {
 		return (
 			<Text style={[padding.left.small, text.size.small, text.color.grey]}>
-				{formatTimestamp(new Date(receivedDate))}
+				{formatTimestamp(new Date(date))}
 			</Text>
 		)
 	}
 
 	return (
 		<TouchableHighlight
-			disabled={noConversation}
-			underlayColor={noConversation ? 'transparent' : color.light.grey}
+			underlayColor={!conv ? 'transparent' : color.light.grey}
 			onPress={() =>
-				noConversation
-					? noop()
+				!conv
+					? data.state === messengerpb.Contact.State.IncomingRequest
+						? navigate.main.contactRequest({ contactId: data.publicKey })
+						: dispatch(
+								CommonActions.navigate({
+									name: Routes.Main.RequestSent,
+									params: {
+										contactPublicKey: data.publicKey,
+									},
+								}),
+						  )
 					: dispatch(
 							CommonActions.navigate({
-								name: Routes.Chat.OneToOne,
+								name:
+									conv.type === messengerpb.Conversation.Type.ContactType
+										? Routes.Chat.OneToOne
+										: Routes.Chat.Group,
 								params: {
-									convId,
-									scrollToMessage: noMessages ? 0 : messageListIndex,
+									convId: convPk,
+									scrollToMessage: kind === SearchResultKind.Interaction && inte ? inte.cid : null,
 								},
 							}),
 					  )
 			}
 		>
 			<View style={[row.center, padding.medium, border.bottom.tiny, border.color.light.grey]}>
-				<ProceduralAvatar
-					seeds={[data.publicKey]}
+				<ProceduralCircleAvatar
+					seed={avatarSeed}
 					size={_resultAvatarSize}
 					diffSize={9}
 					style={[padding.tiny, row.item.justify]}
 				/>
 				<View style={[flex.medium, column.justify, padding.left.medium]}>
 					<View style={[margin.right.big]}>
-						<Text
-							numberOfLines={1}
-							style={[column.item.fill, text.bold.medium, noConversation && text.color.grey]}
-						>
-							{name}
+						<Text numberOfLines={1} style={[column.item.fill, text.bold.medium]}>
+							{kind === SearchResultKind.Interaction ? (
+								name
+							) : (
+								<MessageSearchResult
+									message={name}
+									searchText={searchText}
+									style={[text.bold.medium]}
+									highlightStyle={nameHighlightText}
+								/>
+							)}
 						</Text>
 						<MessageDisplay />
 					</View>
 				</View>
 
 				<View style={[{ marginLeft: 'auto' }, row.item.center]}>
-					{receivedDate > 0 && searchTextKey === 'message' ? <TimeStamp /> : null}
+					{date > 0 && kind === SearchResultKind.Interaction ? <TimeStamp /> : null}
 				</View>
 			</View>
 		</TouchableHighlight>
 	)
 }
 
-const createSections = (contacts: any, messages: any, searchText: string) => {
+const createSections = (
+	conversations: any,
+	contacts: any,
+	interactions: any,
+	searchText: string,
+) => {
 	const sections = [
 		{
 			title: contacts.length ? 'Contacts' : '',
-			data: [...contacts],
+			data: contacts,
 			renderItem: ({ item }: { item: any }) => (
-				<SearchResultItem data={item} searchTextKey={'name'} />
+				<SearchResultItem data={item} kind={SearchResultKind.Contact} searchText={searchText} />
 			),
 		},
 		{
-			title: messages.length ? 'Messages' : '',
-			data: [...messages],
-
+			title: conversations.length ? 'Groups' : '',
+			data: conversations,
 			renderItem: ({ item }: { item: any }) => (
-				<SearchResultItem data={item} searchTextKey={'message'} searchText={searchText} />
+				<SearchResultItem
+					data={item}
+					kind={SearchResultKind.Conversation}
+					searchText={searchText}
+				/>
+			),
+		},
+		{
+			title: interactions.length ? 'Messages' : '',
+			data: interactions,
+			renderItem: ({ item }: { item: any }) => (
+				<SearchResultItem data={item} kind={SearchResultKind.Interaction} searchText={searchText} />
 			),
 		},
 	]
@@ -389,17 +496,25 @@ const createSections = (contacts: any, messages: any, searchText: string) => {
 
 const SearchComponent: React.FC<{
 	insets: EdgeInsets | null
-}> = ({ insets }) => {
+	conversations: { [key: string]: api.berty.messenger.v1.IConversation }
+	contacts: { [key: string]: api.berty.messenger.v1.IContact }
+	interactions: { [key: string]: api.berty.messenger.v1.IInteraction }
+	searchText: string
+	setSearchText: (v: string) => void
+	hasResults: boolean
+}> = ({ insets, contacts, interactions, searchText, setSearchText, hasResults, conversations }) => {
 	const validInsets = useMemo(() => insets || { top: 0, bottom: 0, left: 0, right: 0 }, [insets])
-	const [searchText, setSearchText] = useState(initialSearchText)
-	const contacts = useAccountContactSearchResults(searchText)
-	const messages = [] // useGetMessageSearchResultWithMetadata(searchText)
 	const [{ padding, margin, background, text, flex, border, height }] = useStyles()
-	const sections = useMemo(() => createSections(contacts, messages, searchText), [
-		messages,
-		contacts,
-		searchText,
-	])
+	const sections = useMemo(
+		() =>
+			createSections(
+				Object.values(conversations),
+				Object.values(contacts),
+				Object.values(interactions),
+				searchText,
+			),
+		[contacts, conversations, interactions, searchText],
+	)
 
 	// Remove leading spaces
 	const setValidSearchText = (textInput: string) => {
@@ -409,15 +524,16 @@ const SearchComponent: React.FC<{
 	const paddingVertical = useMemo(
 		() => ({
 			paddingTop: Math.max(0, validInsets.top),
-			paddingBottom: contacts.length || messages.length ? 0 : Math.max(0, validInsets.bottom),
+			paddingBottom: contacts.length || interactions.length ? 0 : Math.max(0, validInsets.bottom),
 		}),
-		[contacts.length, validInsets, messages.length],
+		[contacts.length, validInsets, interactions.length],
 	)
 
-	const mainBackgroundColor = useMemo(
-		() => (contacts.length > 0 || messages.length > 0 ? background.white : background.yellow),
-		[background.white, background.yellow, contacts.length, messages.length],
-	)
+	const mainBackgroundColor = useMemo(() => (hasResults ? background.white : background.yellow), [
+		background.white,
+		background.yellow,
+		hasResults,
+	])
 
 	const hintText = () =>
 		searchText && !contacts.length ? 'No results found' : 'Search messages, contacts, or groups...'
@@ -470,15 +586,15 @@ const SearchComponent: React.FC<{
 					},
 				]}
 			>
-				{contacts.length + messages.length > 0 ? (
+				{hasResults ? (
 					<SectionList
 						style={{
-							marginLeft: Math.max(validInsets.left, 16),
-							marginRight: Math.max(validInsets.right, 16),
+							marginLeft: validInsets.left,
+							marginRight: validInsets.right,
 						}}
 						stickySectionHeadersEnabled={false}
 						bounces={false}
-						keyExtractor={(item, index) => item.id + index}
+						keyExtractor={(item) => item.cid || item.publicKey}
 						sections={sections}
 						renderSectionHeader={({ section: { title } }) => {
 							return title ? (
@@ -502,19 +618,85 @@ const SearchComponent: React.FC<{
 }
 
 export const Search: React.FC<{}> = () => {
-	const [{ flex, background }] = useStyles()
+	const [{ flex, background, absolute }] = useStyles()
+
+	const [searchText, setSearchText] = useState(initialSearchText)
+	const searching = !!searchText
+	const lowSearchText = searchText.toLowerCase()
+	const searchCheck = React.useCallback(
+		(searchIn?: string | null | false | 0) =>
+			(searchIn || '').toLowerCase().includes(lowSearchText),
+		[lowSearchText],
+	)
+
+	const ctx = useMsgrContext()
+
+	const conversations = React.useMemo(
+		() =>
+			searching
+				? pickBy(
+						ctx.conversations,
+						(val: any) =>
+							val.type === messengerpb.Conversation.Type.MultiMemberType &&
+							searchCheck(val.displayName),
+				  )
+				: {},
+		[ctx.conversations, searchCheck, searching],
+	)
+
+	const contacts = React.useMemo(
+		() => (searching ? pickBy(ctx.contacts, (val: any) => searchCheck(val.displayName)) : {}),
+		[ctx.contacts, searchCheck, searching],
+	)
+
+	const interactions = React.useMemo(() => {
+		if (!searching) {
+			return {}
+		}
+		const allInteractions: any = Object.values(ctx.interactions).reduce(
+			(r: any, intes: any) => ({ ...r, ...intes }),
+			{},
+		)
+		return pickBy(
+			allInteractions,
+			(inte) =>
+				inte.type === messengerpb.AppMessage.Type.TypeUserMessage &&
+				searchCheck(inte.payload?.body),
+		)
+	}, [ctx.interactions, searchCheck, searching])
+
+	const hasResults = [conversations, contacts, interactions].some((c) => Object.keys(c).length > 0)
 
 	return (
-		<Layout style={[flex.tiny, background.yellow]}>
-			<SafeAreaConsumer>
-				{(insets: EdgeInsets | null) => {
-					return (
-						<View style={[flex.tiny]}>
-							<SearchComponent insets={insets} />
-						</View>
-					)
-				}}
-			</SafeAreaConsumer>
-		</Layout>
+		<>
+			<Layout style={[flex.tiny, background.yellow]}>
+				<SafeAreaConsumer>
+					{(insets: EdgeInsets | null) => {
+						return (
+							<View style={[flex.tiny]}>
+								<SearchComponent
+									insets={insets}
+									contacts={contacts}
+									interactions={interactions}
+									conversations={conversations}
+									searchText={searchText}
+									setSearchText={setSearchText}
+									hasResults={hasResults}
+								/>
+							</View>
+						)
+					}}
+				</SafeAreaConsumer>
+			</Layout>
+			{hasResults && (
+				<LinearGradient
+					style={[
+						absolute.bottom,
+						{ alignItems: 'center', justifyContent: 'center', height: '15%', width: '100%' },
+					]}
+					colors={['#ffffff00', '#ffffff80', '#ffffffc0', '#ffffffff']}
+				/>
+			)}
+		</>
 	)
 }

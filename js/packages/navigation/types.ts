@@ -21,7 +21,7 @@ export namespace ScreenProps {
 		}
 	}
 	export namespace Chat {
-		export type OneToOne = RouteProps<{ convId: string }>
+		export type OneToOne = RouteProps<{ convId: string; scrollToMessage?: string }>
 		export type Group = RouteProps<{ convId: string }>
 		export type OneToOneSettings = RouteProps<{ convId: string }>
 		export type ContactSettings = RouteProps<{ contactId: string }>
