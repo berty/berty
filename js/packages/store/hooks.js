@@ -289,8 +289,12 @@ export const useReadEffect = (publicKey: string, timeout: number) => {
 
 	const ctx = useMsgrContext()
 
+	const fake = useConversation(publicKey).fake || false
+
 	useEffect(() => {
-		console.log('HOOK CALLED', publicKey, timeout)
+		if (fake) {
+			return
+		}
 		let timeoutID = null
 		const handleStart = () => {
 			if (timeoutID === null) {
@@ -319,5 +323,5 @@ export const useReadEffect = (publicKey: string, timeout: number) => {
 			unsubscribeBlur()
 			handleStop()
 		}
-	}, [ctx.client, navigation, publicKey, timeout])
+	}, [ctx.client, fake, navigation, publicKey, timeout])
 }

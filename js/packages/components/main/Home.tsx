@@ -9,7 +9,6 @@ import {
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import * as api from '@berty-tech/api/index.pb'
-import { Messenger } from '@berty-tech/store/oldhooks'
 import { useStyles } from '@berty-tech/styles'
 import React, { useEffect, useRef, useState } from 'react'
 import { Translation } from 'react-i18next'
@@ -23,12 +22,10 @@ import {
 } from 'react-native'
 import { SafeAreaConsumer, SafeAreaView } from 'react-native-safe-area-context'
 import { Icon, Text } from 'react-native-ui-kitten'
+import LinearGradient from 'react-native-linear-gradient'
 import { useLayout } from '../hooks'
 import FromNow from '../shared-components/FromNow'
-import {
-	ConversationProceduralAvatar,
-	ProceduralCircleAvatar,
-} from '../shared-components/ProceduralCircleAvatar'
+import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import Logo from './1_berty_picto.svg'
 import EmptyChat from './empty_chat.svg'
 import { CommonActions } from '@react-navigation/native'
@@ -420,7 +417,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const conversations: any[] = useConversationList() // TODO: sort
 	const isConversation: number = useConversationLength()
 
-	const [{ color, text, opacity, flex, margin, background }] = useStyles()
+	const [{ color, text, opacity, flex, margin, background, absolute }] = useStyles()
 	const scrollRef = useRef<ScrollView>(null)
 	const [offset, setOffset] = useState<any>()
 	const [isOnTop, setIsOnTop] = useState<boolean>(false)
@@ -436,58 +433,67 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	}, [color.white, color.blue, requests.length])
 
 	return (
-		<View style={[flex.tiny]}>
-			<ScrollView
-				ref={scrollRef}
-				style={[{ backgroundColor: bgColor }]}
-				stickyHeaderIndices={[1]}
-				showsVerticalScrollIndicator={false}
-				scrollEventThrottle={16}
-				onScroll={(e) => {
-					if (e.nativeEvent.contentOffset) {
-						if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
-							setIsOnTop(true)
-						} else {
-							setIsOnTop(false)
+		<>
+			<View style={[flex.tiny]}>
+				<ScrollView
+					ref={scrollRef}
+					style={[{ backgroundColor: bgColor }]}
+					stickyHeaderIndices={[1]}
+					showsVerticalScrollIndicator={false}
+					scrollEventThrottle={16}
+					onScroll={(e) => {
+						if (e.nativeEvent.contentOffset) {
+							if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
+								setIsOnTop(true)
+							} else {
+								setIsOnTop(false)
+							}
+							if (offset && e.nativeEvent.contentOffset.y >= offset.y) {
+								setDirScroll('up')
+							} else if (offset && e.nativeEvent.contentOffset.y < offset.y) {
+								setDirScroll('down')
+							}
+							setOffset(e.nativeEvent.contentOffset)
 						}
-						if (offset && e.nativeEvent.contentOffset.y >= offset.y) {
-							setDirScroll('up')
-						} else if (offset && e.nativeEvent.contentOffset.y < offset.y) {
-							setDirScroll('down')
-						}
-						setOffset(e.nativeEvent.contentOffset)
-					}
-				}}
-			>
-				<IncomingRequests items={requests} onLayout={onLayoutRequests} />
-				<HomeHeader
-					isOnTop={isOnTop}
-					onLayout={onLayoutHeader}
-					hasRequests={requests.length > 0}
-					scrollRef={scrollRef}
-				/>
-				{isConversation ? (
-					<Conversations items={conversations} onLayout={onLayoutConversations} />
-				) : (
-					<View style={[background.white]}>
-						<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
-							<EmptyChat width={350} height={350} />
-							<TextNative
-								style={[
-									text.align.center,
-									text.color.grey,
-									text.bold.small,
-									opacity(0.3),
-									margin.top.big,
-								]}
-							>
-								You don't have any contacts or chat yet
-							</TextNative>
+					}}
+				>
+					<IncomingRequests items={requests} onLayout={onLayoutRequests} />
+					<HomeHeader
+						isOnTop={isOnTop}
+						onLayout={onLayoutHeader}
+						hasRequests={requests.length > 0}
+						scrollRef={scrollRef}
+					/>
+					{isConversation ? (
+						<Conversations items={conversations} onLayout={onLayoutConversations} />
+					) : (
+						<View style={[background.white]}>
+							<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
+								<EmptyChat width={350} height={350} />
+								<TextNative
+									style={[
+										text.align.center,
+										text.color.grey,
+										text.bold.small,
+										opacity(0.3),
+										margin.top.big,
+									]}
+								>
+									You don't have any contacts or chat yet
+								</TextNative>
+							</View>
 						</View>
-					</View>
-				)}
-			</ScrollView>
-		</View>
+					)}
+				</ScrollView>
+			</View>
+			<LinearGradient
+				style={[
+					absolute.bottom,
+					{ alignItems: 'center', justifyContent: 'center', height: '15%', width: '100%' },
+				]}
+				colors={['#ffffff00', '#ffffff80', '#ffffffc0', '#ffffffff']}
+			/>
+		</>
 	)
 }
 

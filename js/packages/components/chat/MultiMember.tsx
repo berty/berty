@@ -8,12 +8,9 @@ import {
 	ActivityIndicator,
 	Text as TextNative,
 } from 'react-native'
-import BlurView from '../shared-components/BlurView'
 import { Text, Icon } from 'react-native-ui-kitten'
+
 import { useStyles } from '@berty-tech/styles'
-import { ChatFooter, ChatDate } from './shared-components/Chat'
-import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
-import { Message } from './shared-components/Message'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import {
 	useConversation,
@@ -23,6 +20,11 @@ import {
 } from '@berty-tech/store/hooks'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import * as api from '@berty-tech/api/index.pb'
+
+import { ChatFooter, ChatDate } from './shared-components/Chat'
+import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
+import { Message } from './shared-components/Message'
+import BlurView from '../shared-components/BlurView'
 
 //
 // MultiMember
@@ -208,7 +210,10 @@ const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) 
 	)
 }
 
-const MessageList: React.FC<{ id: string }> = ({ id }) => {
+const MessageList: React.FC<{ id: string; scrollToMessage?: string }> = ({
+	id,
+	scrollToMessage,
+}) => {
 	const [{ overflow, row, flex, margin }, { scaleHeight }] = useStyles()
 	const conversation = useConversation(id)
 	const ctx = useMsgrContext()
@@ -216,7 +221,22 @@ const MessageList: React.FC<{ id: string }> = ({ id }) => {
 	const interactions = useSortedConvInteractions(id).filter(
 		(msg) => msg.type === messengerpb.AppMessage.Type.TypeUserMessage,
 	)
-	console.log('will render', interactions.length, 'interactions')
+	const initialScrollIndex = React.useMemo(() => {
+		if (scrollToMessage) {
+			for (let i = 0; i < interactions.length; i++) {
+				if (interactions[i].cid === scrollToMessage) {
+					return i
+				}
+			}
+		}
+	}, [interactions, scrollToMessage])
+	const flatListRef = React.useRef(null)
+
+	const onScrollToIndexFailed = () => {
+		// Not sure why this happens (something to do with item/screen dimensions I think)
+		flatListRef.current?.scrollToIndex({ index: 0 })
+	}
+
 	if (!conversation) {
 		return <CenteredActivityIndicator />
 	}
@@ -226,6 +246,9 @@ const MessageList: React.FC<{ id: string }> = ({ id }) => {
 	}
 	return (
 		<FlatList
+			initialScrollIndex={initialScrollIndex}
+			onScrollToIndexFailed={onScrollToIndexFailed}
+			ref={flatListRef}
 			keyboardDismissMode='on-drag'
 			style={[
 				overflow,
