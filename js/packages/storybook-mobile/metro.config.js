@@ -39,7 +39,4 @@ module.exports = {
 		}),
 	},
 	watchFolders,
-	server: {
-		enableVisualizer: true,
-	},
 }
