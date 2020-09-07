@@ -9,6 +9,7 @@ import (
 
 	"berty.tech/berty/v2/go/cmd/berty/mini"
 	"berty.tech/berty/v2/go/internal/config"
+	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/cache/cacheleveldown"
 	"github.com/peterbourgon/ff/v3/ffcli"
@@ -29,6 +30,7 @@ func miniCommand() *ffcli.Command {
 	miniFlags.StringVar(&opts.remoteDaemonAddr, "r", opts.remoteDaemonAddr, "remote berty daemon")
 	miniFlags.StringVar(&opts.rdvpMaddr, "rdvp", opts.rdvpMaddr, "rendezvous point maddr")
 	miniFlags.BoolVar(&opts.miniInMemory, "inmem", opts.miniInMemory, "disable persistence")
+	miniFlags.BoolVar(&opts.miniDisableNotification, "no-notif", opts.miniDisableNotification, "disable notification")
 
 	return &ffcli.Command{
 		Name:      "mini",
@@ -91,18 +93,27 @@ func miniCommand() *ffcli.Command {
 				defer sqlDB.Close()
 			}
 
+			var notifmanager notification.Manager
+			if !opts.miniDisableNotification {
+				// @TODO(gfanton): find a way to embed the icon into the app, and generate a valid path
+				notifmanager = notification.NewDesktopManger(l, "")
+			} else {
+				notifmanager = notification.NewLoggerManager(l)
+			}
+
 			err = mini.Main(ctx, &mini.Opts{
-				RemoteAddr:      opts.remoteDaemonAddr,
-				GroupInvitation: opts.miniGroup,
-				Port:            opts.miniPort,
-				RootDS:          rootDS,
-				MessengerDB:     db,
-				ReplayLogs:      opts.replay,
-				Logger:          l,
-				Bootstrap:       config.BertyDev.Bootstrap,
-				RendezVousPeer:  rdvpeer,
-				DisplayName:     opts.displayName,
-				LocalDiscovery:  opts.localDiscovery,
+				RemoteAddr:          opts.remoteDaemonAddr,
+				GroupInvitation:     opts.miniGroup,
+				Port:                opts.miniPort,
+				RootDS:              rootDS,
+				MessengerDB:         db,
+				ReplayLogs:          opts.replay,
+				Logger:              l,
+				Bootstrap:           config.BertyDev.Bootstrap,
+				RendezVousPeer:      rdvpeer,
+				DisplayName:         opts.displayName,
+				LocalDiscovery:      opts.localDiscovery,
+				NotificationManager: notifmanager,
 			})
 			if err != nil {
 				return errcode.TODO.Wrap(err)

@@ -48,6 +48,15 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
+
+	"berty.tech/berty/v2/go/internal/config"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
+	"berty.tech/berty/v2/go/internal/notification"
+	"berty.tech/berty/v2/go/internal/tinder"
+	"berty.tech/berty/v2/go/internal/tracer"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 var (
@@ -89,10 +98,9 @@ type MessengerBridge struct {
 type MessengerConfig struct {
 	*Config
 
-	dLogger    NativeLoggerDriver
-	lc         LifeCycleDriver
-	logFilters string
-
+	dLogger        NativeLoggerDriver
+	logFilters     string
+	lc             LifeCycleDriver
 	swarmListeners []string
 	rootDirectory  string
 	tracing        bool
@@ -127,6 +135,10 @@ func (pc *MessengerConfig) SetLogFilters(filters string) {
 
 func (pc *MessengerConfig) LoggerDriver(dLogger NativeLoggerDriver) {
 	pc.dLogger = dLogger
+}
+
+func (pc *MessengerConfig) NotificationDriver(manager NotificationDriver) {
+	pc.notifdriver = manager
 }
 
 func (pc *MessengerConfig) LifeCycleDriver(lc LifeCycleDriver) {
@@ -341,6 +353,15 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 		bertyprotocol.RegisterProtocolServiceServer(grpcServer, service)
 	}
 
+	var notifmanager notification.Manager
+	{
+		if config.notifdriver != nil {
+			notifmanager = newNotificationManagerAdaptater(logger, config.notifdriver)
+		} else {
+			notifmanager = notification.NewLoggerManager(logger)
+		}
+	}
+
 	// register messenger service
 	var messenger bertymessenger.Service
 	var db *gorm.DB
@@ -373,9 +394,10 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 		}
 
 		opts := bertymessenger.Opts{
-			Logger:          logger,
-			ProtocolService: service,
-			DB:              db,
+			Logger:              logger,
+			ProtocolService:     service,
+			NotificationManager: notifmanager,
+			DB:                  db,
 		}
 		tmpBridge := &MessengerBridge{
 			logger:          bridgeLogger,

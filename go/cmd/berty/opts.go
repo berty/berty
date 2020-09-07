@@ -41,20 +41,21 @@ type mainOpts struct {
 	replay         bool
 
 	// more specific
-	bannerLight           bool
-	bannerRandom          bool
-	displayName           string
-	infoRefreshEvery      time.Duration
-	rdvpForce             bool
-	rdvpMaddr             string
-	remoteDaemonAddr      string
-	daemonListeners       string
-	miniPort              uint
-	miniGroup             string
-	miniInMemory          bool
-	shareInviteOnDev      bool
-	shareInviteReset      bool
-	shareInviteNoTerminal bool
+	bannerLight             bool
+	bannerRandom            bool
+	displayName             string
+	infoRefreshEvery        time.Duration
+	rdvpForce               bool
+	rdvpMaddr               string
+	remoteDaemonAddr        string
+	daemonListeners         string
+	miniPort                uint
+	miniGroup               string
+	miniInMemory            bool
+	miniDisableNotification bool
+	shareInviteOnDev        bool
+	shareInviteReset        bool
+	shareInviteNoTerminal   bool
 }
 
 func newMainOpts() mainOpts {
@@ -68,20 +69,21 @@ func newMainOpts() mainOpts {
 		tracer:         "",
 		datastorePath:  cacheleveldown.InMemoryDirectory,
 
-		miniPort:              0,
-		miniGroup:             "",
-		miniInMemory:          false,
-		bannerLight:           false,
-		bannerRandom:          false,
-		displayName:           safeDefaultDisplayName(),
-		infoRefreshEvery:      time.Duration(0),
-		rdvpForce:             false,
-		rdvpMaddr:             config.BertyDev.RendezVousPeer,
-		remoteDaemonAddr:      "",
-		daemonListeners:       "/ip4/127.0.0.1/tcp/9091/grpc",
-		shareInviteOnDev:      false,
-		shareInviteReset:      false,
-		shareInviteNoTerminal: false,
+		miniPort:                0,
+		miniGroup:               "",
+		miniInMemory:            false,
+		miniDisableNotification: false,
+		bannerLight:             false,
+		bannerRandom:            false,
+		displayName:             safeDefaultDisplayName(),
+		infoRefreshEvery:        time.Duration(0),
+		rdvpForce:               false,
+		rdvpMaddr:               config.BertyDev.RendezVousPeer,
+		remoteDaemonAddr:        "",
+		daemonListeners:         "/ip4/127.0.0.1/tcp/9091/grpc",
+		shareInviteOnDev:        false,
+		shareInviteReset:        false,
+		shareInviteNoTerminal:   false,
 	}
 }
 
