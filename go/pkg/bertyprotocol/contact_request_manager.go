@@ -238,8 +238,9 @@ func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
 	}
 	c.lock.Unlock()
 
+	chSub := c.metadataStore.Subscribe(ctx)
 	go func() {
-		for evt := range c.metadataStore.Subscribe(ctx) {
+		for evt := range chSub {
 			e, ok := evt.(*bertytypes.GroupMetadataEvent)
 			if !ok {
 				continue

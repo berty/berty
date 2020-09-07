@@ -137,8 +137,9 @@ func constructorFactoryGroupMessage(s *bertyOrbitDB) iface.StoreConstructor {
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
 		}
 
+		chSub := store.Subscribe(ctx)
 		go func() {
-			for e := range store.Subscribe(ctx) {
+			for e := range chSub {
 				entry := ipfslog.Entry(nil)
 
 				switch evt := e.(type) {
