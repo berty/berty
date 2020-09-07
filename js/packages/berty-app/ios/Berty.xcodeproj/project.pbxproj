@@ -37,6 +37,7 @@
 		9A6F9E6CCD5D4173AAD6C669 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 67D93FCF36BE4E4983E748F2 /* Ionicons.ttf */; };
 		9D38A58DC0DF458CAD41819E /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 691A909A3E3647AE8DE10380 /* Entypo.ttf */; };
 		A2914EB66A0F4BAB98B96226 /* OpenSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 951CDB8AA8954B18AA7554CD /* OpenSans-Bold.ttf */; };
+		A3C9E5CA601AC52284D7C5FE /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F62523E1726B68B155C158AE /* libPods-Berty.a */; };
 		B74A52827F644F6097E446DB /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B71C1E04461D4461970D53B3 /* Octicons.ttf */; };
 		CE5B2F029D0B4906A2736FC4 /* OpenSans-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C22C7B2AFD50420F85A0D4F2 /* OpenSans-LightItalic.ttf */; };
 		D44A45BF35F04A99B4A45ABE /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 028A8D5E44594D8B89E3E5A3 /* MaterialCommunityIcons.ttf */; };
@@ -44,13 +45,10 @@
 		EB1D6C9824E547A700F04D93 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB1D6C9724E547A700F04D93 /* ExternalAccessory.framework */; };
 		EDB76784535B48A9B2024122 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E7A1DC446F744A008F70567F /* FontAwesome5_Solid.ttf */; };
 		F18D9C8C0F6A4B06A770CB30 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1115E25D5C2F48F893178AE4 /* Zocial.ttf */; };
-		F82356B62383FBE300950AF2 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D0DE88311DF965EC38F62B95 /* libPods-Berty.a */; };
-		F82356C523841CA400950AF2 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F82356C223841C7E00950AF2 /* libPods-Berty.a */; };
 		F836874E2355EC9E00CCC6D9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		F836874F2355EC9E00CCC6D9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		F83687532355EC9E00CCC6D9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		F83687542355EC9E00CCC6D9 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
-		F87D59EA2356180F00DF2398 /* libPods-Berty.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F87D59E92356180F00DF2398 /* libPods-Berty.a */; };
 		F8BF464F238441AC0077A846 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		F8BF4650238441AC0077A846 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		F8BF4659238441AC0077A846 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -67,58 +65,44 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0029E969C4DE2054480ABAAD /* Pods-Berty.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.debug.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.debug.xcconfig"; sourceTree = "<group>"; };
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* BertyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BertyTests.m; sourceTree = "<group>"; };
 		028A8D5E44594D8B89E3E5A3 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
-		0404A42B8981CA0988364916 /* Pods-BertyTests.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.production.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.production.xcconfig"; sourceTree = "<group>"; };
 		1059FDB606BA4A0FBF468941 /* OpenSans-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-ExtraBold.ttf"; path = "../assets/OpenSans-ExtraBold.ttf"; sourceTree = "<group>"; };
 		1115E25D5C2F48F893178AE4 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
-		1297A2F244B4E09B8EAF0A7A /* Pods-Berty.development.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.development.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.development.xcconfig"; sourceTree = "<group>"; };
+		132F0622C9282FB672B145BA /* Pods-Berty.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.debug.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.debug.xcconfig"; sourceTree = "<group>"; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Berty/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Berty/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Berty/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Berty/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Berty/main.m; sourceTree = "<group>"; };
-		1B705FD35CD8EAA4AFA69C81 /* Pods-Berty.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.release.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.release.xcconfig"; sourceTree = "<group>"; };
-		23C4764A0A9B82044E04C08E /* Pods-BertyTests.development.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.development.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.development.xcconfig"; sourceTree = "<group>"; };
-		2846E9C20CF0E56567DDE888 /* Pods-Berty-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.release.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.release.xcconfig"; sourceTree = "<group>"; };
-		45EBCF50D7E5A6FDC3620E25 /* Pods-Berty-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-Berty-tvOS/Pods-Berty-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		48236AEDA8308BEBEDB499AA /* Pods-Berty.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.production.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.production.xcconfig"; sourceTree = "<group>"; };
 		4886B57B23C61B5800DFECD4 /* Berty-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Berty-Bridging-Header.h"; sourceTree = "<group>"; };
 		489DE43924ED424600727383 /* LocalNotificationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalNotificationManager.swift; sourceTree = "<group>"; };
 		489DE43E24ED49B900727383 /* Berty DebugDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Berty DebugDebug.entitlements"; sourceTree = "<group>"; };
 		5045D393FFFF41F8AF6E2C7C /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		50A51C4D5FCF4BE3BC06B638 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		583DC111DEBA44B284DE3276 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
-		6683B60E6DF969A2D232DBB0 /* libPods-Berty-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		67D93FCF36BE4E4983E748F2 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		691A909A3E3647AE8DE10380 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
-		6A2CBB8C091C10654628B2CE /* libPods-BertyTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BertyTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6F84C76F030A6EDBA22AB150 /* Pods-BertyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.debug.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
-		8BF04205A0A80BA5C404077E /* Pods-BertyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BertyTests.release.xcconfig"; path = "Target Support Files/Pods-BertyTests/Pods-BertyTests.release.xcconfig"; sourceTree = "<group>"; };
 		8DF243CB24E457F20045DA65 /* LifeCycle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LifeCycle.swift; path = Berty/LifeCycle.swift; sourceTree = "<group>"; };
 		8F4D2FAD70964BD9A3DC9697 /* OpenSans-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-SemiBold.ttf"; path = "../assets/OpenSans-SemiBold.ttf"; sourceTree = "<group>"; };
 		951CDB8AA8954B18AA7554CD /* OpenSans-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Bold.ttf"; path = "../assets/OpenSans-Bold.ttf"; sourceTree = "<group>"; };
 		9A9E5C4A6C654C56B328B5B8 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
-		9B45842222231D697635D46D /* Pods-Berty-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-Berty-tvOSTests/Pods-Berty-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		A126A34A50D94690A8F3DEA6 /* OpenSans-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-ExtraBoldItalic.ttf"; path = "../assets/OpenSans-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
 		A7F76ADEF32249B59CD4A790 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		ACA3FA19E16C4CE289EC144D /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
-		B1A63EEF32A77DD54A306A4F /* Pods-Berty-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-Berty-tvOSTests/Pods-Berty-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B71C1E04461D4461970D53B3 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		B7CF59070DD64074947E5D03 /* OpenSans-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Regular.ttf"; path = "../assets/OpenSans-Regular.ttf"; sourceTree = "<group>"; };
 		B7F4E4614F2144F29AE37817 /* OpenSans-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Light.ttf"; path = "../assets/OpenSans-Light.ttf"; sourceTree = "<group>"; };
 		B9A18E69F8054323A1B5669F /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		BC24EE9A24B2424FB34D78EF /* OpenSans-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-BoldItalic.ttf"; path = "../assets/OpenSans-BoldItalic.ttf"; sourceTree = "<group>"; };
 		BC8CB08233B64D939FFE0469 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
-		C0895F24BC5F87ADA2652137 /* libPods-Berty-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1CC10AC4CEC84AFC4474096 /* Pods-Berty.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Berty.release.xcconfig"; path = "Target Support Files/Pods-Berty/Pods-Berty.release.xcconfig"; sourceTree = "<group>"; };
 		C22C7B2AFD50420F85A0D4F2 /* OpenSans-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-LightItalic.ttf"; path = "../assets/OpenSans-LightItalic.ttf"; sourceTree = "<group>"; };
 		CDD34DF205BB4B44B79D823A /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
-		D0DE88311DF965EC38F62B95 /* libPods-Berty.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7A1DC446F744A008F70567F /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		EB1D6C9324E3EA1E00F04D93 /* Berty Debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Berty Debug.entitlements"; sourceTree = "<group>"; };
 		EB1D6C9424E4203C00F04D93 /* Berty Staff.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Berty Staff.entitlements"; sourceTree = "<group>"; };
@@ -128,10 +112,9 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F399DA55B10C419A9CB95365 /* OpenSans-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Italic.ttf"; path = "../assets/OpenSans-Italic.ttf"; sourceTree = "<group>"; };
+		F62523E1726B68B155C158AE /* libPods-Berty.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Berty.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F81E8EE62382FE27007CDBA3 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
-		F82356C223841C7E00950AF2 /* libPods-Berty.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-Berty.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F83687592355EC9E00CCC6D9 /* Berty.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Berty.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F87D59E92356180F00DF2398 /* libPods-Berty.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-Berty.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8BF465F238441AC0077A846 /* Berty Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Berty Debug.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8BF4661238444080077A846 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		F8BF4676238444330077A846 /* Berty Staff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Berty Staff.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -145,9 +128,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F82356B62383FBE300950AF2 /* libPods-Berty.a in Frameworks */,
-				F87D59EA2356180F00DF2398 /* libPods-Berty.a in Frameworks */,
-				F82356C523841CA400950AF2 /* libPods-Berty.a in Frameworks */,
+				A3C9E5CA601AC52284D7C5FE /* libPods-Berty.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,13 +200,9 @@
 			children = (
 				EB1D6C9724E547A700F04D93 /* ExternalAccessory.framework */,
 				8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */,
-				F82356C223841C7E00950AF2 /* libPods-Berty.a */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				D0DE88311DF965EC38F62B95 /* libPods-Berty.a */,
-				6683B60E6DF969A2D232DBB0 /* libPods-Berty-tvOS.a */,
-				C0895F24BC5F87ADA2652137 /* libPods-Berty-tvOSTests.a */,
-				6A2CBB8C091C10654628B2CE /* libPods-BertyTests.a */,
+				F62523E1726B68B155C158AE /* libPods-Berty.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -307,18 +284,8 @@
 		BB82E9355B2B1BDD0583713C /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				45EBCF50D7E5A6FDC3620E25 /* Pods-Berty-tvOS.debug.xcconfig */,
-				2846E9C20CF0E56567DDE888 /* Pods-Berty-tvOS.release.xcconfig */,
-				B1A63EEF32A77DD54A306A4F /* Pods-Berty-tvOSTests.debug.xcconfig */,
-				9B45842222231D697635D46D /* Pods-Berty-tvOSTests.release.xcconfig */,
-				6F84C76F030A6EDBA22AB150 /* Pods-BertyTests.debug.xcconfig */,
-				8BF04205A0A80BA5C404077E /* Pods-BertyTests.release.xcconfig */,
-				23C4764A0A9B82044E04C08E /* Pods-BertyTests.development.xcconfig */,
-				0404A42B8981CA0988364916 /* Pods-BertyTests.production.xcconfig */,
-				1297A2F244B4E09B8EAF0A7A /* Pods-Berty.development.xcconfig */,
-				48236AEDA8308BEBEDB499AA /* Pods-Berty.production.xcconfig */,
-				0029E969C4DE2054480ABAAD /* Pods-Berty.debug.xcconfig */,
-				1B705FD35CD8EAA4AFA69C81 /* Pods-Berty.release.xcconfig */,
+				132F0622C9282FB672B145BA /* Pods-Berty.debug.xcconfig */,
+				C1CC10AC4CEC84AFC4474096 /* Pods-Berty.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -326,7 +293,6 @@
 		F87D59EB23561A5000DF2398 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
-				F87D59E92356180F00DF2398 /* libPods-Berty.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -338,13 +304,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F83687562355EC9E00CCC6D9 /* Build configuration list for PBXNativeTarget "Berty" */;
 			buildPhases = (
-				F836874B2355EC9E00CCC6D9 /* [CP] Check Pods Manifest.lock */,
+				11CA459C364CDE4EC4AFC9FC /* [CP] Check Pods Manifest.lock */,
 				F836874C2355EC9E00CCC6D9 /* Start Packager */,
 				F836874D2355EC9E00CCC6D9 /* Sources */,
 				F83687502355EC9E00CCC6D9 /* Frameworks */,
 				F83687522355EC9E00CCC6D9 /* Resources */,
 				F83687552355EC9E00CCC6D9 /* Bundle React Native code and images */,
-				9F997BDFA0DA3DF2231F5F6E /* [CP] Copy Pods Resources */,
+				9D5747BB4D3EC69521AF9494 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -527,7 +493,29 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		9F997BDFA0DA3DF2231F5F6E /* [CP] Copy Pods Resources */ = {
+		11CA459C364CDE4EC4AFC9FC /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Berty-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9D5747BB4D3EC69521AF9494 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -550,6 +538,7 @@
 				"${PODS_ROOT}/../../../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
 				"${PODS_ROOT}/../../../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
 				"${PODS_ROOT}/../../../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -569,32 +558,11 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Berty/Pods-Berty-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F836874B2355EC9E00CCC6D9 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Berty-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F836874C2355EC9E00CCC6D9 /* Start Packager */ = {
@@ -920,7 +888,7 @@
 		};
 		F83687572355EC9E00CCC6D9 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0029E969C4DE2054480ABAAD /* Pods-Berty.debug.xcconfig */;
+			baseConfigurationReference = 132F0622C9282FB672B145BA /* Pods-Berty.debug.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -952,7 +920,7 @@
 		};
 		F83687582355EC9E00CCC6D9 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1B705FD35CD8EAA4AFA69C81 /* Pods-Berty.release.xcconfig */;
+			baseConfigurationReference = C1CC10AC4CEC84AFC4474096 /* Pods-Berty.release.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
