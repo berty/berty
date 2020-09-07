@@ -160,6 +160,22 @@ func commandList() []*command {
 			help:  "Inspect a group store",
 			cmd:   debugInspectStoreCommand,
 		},
+
+		{
+			title: "services list",
+			help:  "Lists registered services",
+			cmd:   servicesList,
+		},
+		{
+			title: "services auth init",
+			help:  "Inits authentication with a service provider",
+			cmd:   authInit,
+		},
+		{
+			title: "services auth complete",
+			help:  "Completes authentication with a service provider",
+			cmd:   authComplete,
+		},
 		{
 			title:     "/",
 			help:      "",
@@ -167,6 +183,71 @@ func commandList() []*command {
 			hideInLog: true,
 		},
 	}
+}
+
+func authInit(ctx context.Context, v *groupView, cmd string) error {
+	rep, err := v.v.client.AuthServiceInitFlow(ctx, &bertytypes.AuthServiceInitFlow_Request{
+		AuthURL: strings.TrimSpace(cmd),
+	})
+
+	if err != nil {
+		return err
+	}
+
+	v.messages.Append(&historyMessage{
+		messageType: messageTypeMeta,
+		payload:     []byte(fmt.Sprintf("Auth URL: %s", rep.URL)),
+	})
+
+	copyToClipboard(v, rep.URL)
+
+	if !rep.SecureURL {
+		v.messages.Append(&historyMessage{
+			messageType: messageTypeMeta,
+			payload:     []byte("The supplied URL will not use a secure transport"),
+		})
+	}
+
+	v.messages.Append(&historyMessage{
+		messageType: messageTypeMeta,
+		payload:     []byte("To complete authentication type `/services auth complete {redirect_url}`"),
+	})
+
+	return err
+}
+
+func authComplete(ctx context.Context, v *groupView, cmd string) error {
+	_, err := v.v.client.AuthServiceCompleteFlow(ctx, &bertytypes.AuthServiceCompleteFlow_Request{
+		CallbackURL: strings.TrimSpace(cmd),
+	})
+
+	return err
+}
+
+func servicesList(ctx context.Context, v *groupView, _ string) error {
+	cl, err := v.v.client.ServicesTokenList(ctx, &bertytypes.ServicesTokenList_Request{})
+	if err != nil {
+		return err
+	}
+
+	for {
+		item, err := cl.Recv()
+		if err != nil {
+			if err != io.EOF {
+				return err
+			}
+			break
+		}
+
+		for _, service := range item.Service.SupportedServices {
+			v.messages.Append(&historyMessage{
+				messageType: messageTypeMeta,
+				payload:     []byte(fmt.Sprintf("token: %s - service: %s, %s", item.TokenID, service.ServiceType, service.ServiceEndpoint)),
+			})
+		}
+	}
+
+	return nil
 }
 
 func setDisplayName(_ context.Context, v *groupView, cmd string) error {

@@ -3,6 +3,7 @@ package bertymessenger
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/url"
 	"os"
 	"runtime"
@@ -1113,4 +1114,38 @@ func (svc *service) ConversationClose(ctx context.Context, req *ConversationClos
 
 	// FIXME: trigger update
 	return &ret, nil
+}
+
+func (svc *service) AuthServiceInitFlow(ctx context.Context, request *bertytypes.AuthServiceInitFlow_Request) (*bertytypes.AuthServiceInitFlow_Reply, error) {
+	return svc.protocolClient.AuthServiceInitFlow(ctx, request)
+}
+
+func (svc *service) AuthServiceCompleteFlow(ctx context.Context, request *bertytypes.AuthServiceCompleteFlow_Request) (*bertytypes.AuthServiceCompleteFlow_Reply, error) {
+	return svc.protocolClient.AuthServiceCompleteFlow(ctx, request)
+}
+
+func (svc *service) ServicesTokenList(request *bertytypes.ServicesTokenList_Request, server MessengerService_ServicesTokenListServer) error {
+	cl, err := svc.protocolClient.ServicesTokenList(server.Context(), request)
+	if err != nil {
+		return err
+	}
+
+	for {
+		item, err := cl.Recv()
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			svc.logger.Error("error while getting token info from protocol", zap.Error(err))
+			return err
+		}
+
+		if err := server.Send(item); err != nil {
+			svc.logger.Error("error while sending token info to client", zap.Error(err))
+			return err
+		}
+	}
+
+	return nil
 }

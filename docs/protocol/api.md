@@ -20,6 +20,8 @@
     - [AccountContactUnblocked](#berty.types.v1.AccountContactUnblocked)
     - [AccountGroupJoined](#berty.types.v1.AccountGroupJoined)
     - [AccountGroupLeft](#berty.types.v1.AccountGroupLeft)
+    - [AccountServiceTokenAdded](#berty.types.v1.AccountServiceTokenAdded)
+    - [AccountServiceTokenRemoved](#berty.types.v1.AccountServiceTokenRemoved)
     - [ActivateGroup](#berty.types.v1.ActivateGroup)
     - [ActivateGroup.Reply](#berty.types.v1.ActivateGroup.Reply)
     - [ActivateGroup.Request](#berty.types.v1.ActivateGroup.Request)
@@ -30,6 +32,12 @@
     - [AppMetadataSend](#berty.types.v1.AppMetadataSend)
     - [AppMetadataSend.Reply](#berty.types.v1.AppMetadataSend.Reply)
     - [AppMetadataSend.Request](#berty.types.v1.AppMetadataSend.Request)
+    - [AuthServiceCompleteFlow](#berty.types.v1.AuthServiceCompleteFlow)
+    - [AuthServiceCompleteFlow.Reply](#berty.types.v1.AuthServiceCompleteFlow.Reply)
+    - [AuthServiceCompleteFlow.Request](#berty.types.v1.AuthServiceCompleteFlow.Request)
+    - [AuthServiceInitFlow](#berty.types.v1.AuthServiceInitFlow)
+    - [AuthServiceInitFlow.Reply](#berty.types.v1.AuthServiceInitFlow.Reply)
+    - [AuthServiceInitFlow.Request](#berty.types.v1.AuthServiceInitFlow.Request)
     - [ContactAddAliasKey](#berty.types.v1.ContactAddAliasKey)
     - [ContactAliasKeySend](#berty.types.v1.ContactAliasKeySend)
     - [ContactAliasKeySend.Reply](#berty.types.v1.ContactAliasKeySend.Reply)
@@ -125,6 +133,12 @@
     - [MultiMemberGroupLeave.Reply](#berty.types.v1.MultiMemberGroupLeave.Reply)
     - [MultiMemberGroupLeave.Request](#berty.types.v1.MultiMemberGroupLeave.Request)
     - [MultiMemberInitialMember](#berty.types.v1.MultiMemberInitialMember)
+    - [ServiceToken](#berty.types.v1.ServiceToken)
+    - [ServiceTokenSupportedService](#berty.types.v1.ServiceTokenSupportedService)
+    - [ServicesTokenCode](#berty.types.v1.ServicesTokenCode)
+    - [ServicesTokenList](#berty.types.v1.ServicesTokenList)
+    - [ServicesTokenList.Reply](#berty.types.v1.ServicesTokenList.Reply)
+    - [ServicesTokenList.Request](#berty.types.v1.ServicesTokenList.Request)
     - [ShareableContact](#berty.types.v1.ShareableContact)
   
     - [ContactState](#berty.types.v1.ContactState)
@@ -184,6 +198,9 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | DebugListGroups | [.berty.types.v1.DebugListGroups.Request](#berty.types.v1.DebugListGroups.Request) | [.berty.types.v1.DebugListGroups.Reply](#berty.types.v1.DebugListGroups.Reply) stream |  |
 | DebugInspectGroupStore | [.berty.types.v1.DebugInspectGroupStore.Request](#berty.types.v1.DebugInspectGroupStore.Request) | [.berty.types.v1.DebugInspectGroupStore.Reply](#berty.types.v1.DebugInspectGroupStore.Reply) stream |  |
 | DebugGroup | [.berty.types.v1.DebugGroup.Request](#berty.types.v1.DebugGroup.Request) | [.berty.types.v1.DebugGroup.Reply](#berty.types.v1.DebugGroup.Reply) |  |
+| AuthServiceInitFlow | [.berty.types.v1.AuthServiceInitFlow.Request](#berty.types.v1.AuthServiceInitFlow.Request) | [.berty.types.v1.AuthServiceInitFlow.Reply](#berty.types.v1.AuthServiceInitFlow.Reply) | AuthServiceInitFlow Initialize an authentication flow |
+| AuthServiceCompleteFlow | [.berty.types.v1.AuthServiceCompleteFlow.Request](#berty.types.v1.AuthServiceCompleteFlow.Request) | [.berty.types.v1.AuthServiceCompleteFlow.Reply](#berty.types.v1.AuthServiceCompleteFlow.Reply) | AuthServiceCompleteFlow Completes an authentication flow |
+| ServicesTokenList | [.berty.types.v1.ServicesTokenList.Request](#berty.types.v1.ServicesTokenList.Request) | [.berty.types.v1.ServicesTokenList.Reply](#berty.types.v1.ServicesTokenList.Reply) stream | ServicesTokenList Retrieves the list of services tokens |
 
  
 
@@ -332,6 +349,26 @@ AccountGroupJoined indicates that the account has left a group
 | device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
 | group_pk | [bytes](#bytes) |  | group_pk references the group left |
 
+<a name="berty.types.v1.AccountServiceTokenAdded"></a>
+
+### AccountServiceTokenAdded
+AccountServiceTokenAdded indicates a token has been added to the account
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
+| service_token | [ServiceToken](#berty.types.v1.ServiceToken) |  |  |
+
+<a name="berty.types.v1.AccountServiceTokenRemoved"></a>
+
+### AccountServiceTokenRemoved
+AccountServiceTokenRemoved indicates a token has removed
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
+| token_id | [string](#string) |  |  |
+
 <a name="berty.types.v1.ActivateGroup"></a>
 
 ### ActivateGroup
@@ -391,6 +428,43 @@ AppMetadata is an app defined message, accessible to future group members
 | ----- | ---- | ----- | ----------- |
 | group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
 | payload | [bytes](#bytes) |  | payload is the payload to send |
+
+<a name="berty.types.v1.AuthServiceCompleteFlow"></a>
+
+### AuthServiceCompleteFlow
+
+<a name="berty.types.v1.AuthServiceCompleteFlow.Reply"></a>
+
+### AuthServiceCompleteFlow.Reply
+
+<a name="berty.types.v1.AuthServiceCompleteFlow.Request"></a>
+
+### AuthServiceCompleteFlow.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| callback_url | [string](#string) |  |  |
+
+<a name="berty.types.v1.AuthServiceInitFlow"></a>
+
+### AuthServiceInitFlow
+
+<a name="berty.types.v1.AuthServiceInitFlow.Reply"></a>
+
+### AuthServiceInitFlow.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| url | [string](#string) |  |  |
+| secure_url | [bool](#bool) |  |  |
+
+<a name="berty.types.v1.AuthServiceInitFlow.Request"></a>
+
+### AuthServiceInitFlow.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| auth_url | [string](#string) |  |  |
 
 <a name="berty.types.v1.ContactAddAliasKey"></a>
 
@@ -1038,6 +1112,53 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | ----- | ---- | ----- | ----------- |
 | member_pk | [bytes](#bytes) |  | member_pk is the public key of the member who is the group creator |
 
+<a name="berty.types.v1.ServiceToken"></a>
+
+### ServiceToken
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token | [string](#string) |  |  |
+| authentication_url | [string](#string) |  |  |
+| supported_services | [ServiceTokenSupportedService](#berty.types.v1.ServiceTokenSupportedService) | repeated |  |
+| expiration | [int64](#int64) |  |  |
+
+<a name="berty.types.v1.ServiceTokenSupportedService"></a>
+
+### ServiceTokenSupportedService
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| service_type | [string](#string) |  |  |
+| service_endpoint | [string](#string) |  |  |
+
+<a name="berty.types.v1.ServicesTokenCode"></a>
+
+### ServicesTokenCode
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| services | [string](#string) | repeated |  |
+| code_challenge | [string](#string) |  |  |
+| token_id | [string](#string) |  |  |
+
+<a name="berty.types.v1.ServicesTokenList"></a>
+
+### ServicesTokenList
+
+<a name="berty.types.v1.ServicesTokenList.Reply"></a>
+
+### ServicesTokenList.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token_id | [string](#string) |  |  |
+| service | [ServiceToken](#berty.types.v1.ServiceToken) |  |  |
+
+<a name="berty.types.v1.ServicesTokenList.Request"></a>
+
+### ServicesTokenList.Request
+
 <a name="berty.types.v1.ShareableContact"></a>
 
 ### ShareableContact
@@ -1099,6 +1220,8 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | EventTypeMultiMemberGroupAliasResolverAdded | 301 | EventTypeMultiMemberGroupAliasResolverAdded indicates the payload includes that a member of the group sent their alias proof |
 | EventTypeMultiMemberGroupInitialMemberAnnounced | 302 | EventTypeMultiMemberGroupInitialMemberAnnounced indicates the payload includes that a member has authenticated themselves as the group owner |
 | EventTypeMultiMemberGroupAdminRoleGranted | 303 | EventTypeMultiMemberGroupAdminRoleGranted indicates the payload includes that an admin of the group granted another member as an admin |
+| EventTypeAccountServiceTokenAdded | 401 | EventTypeAccountServiceTokenAdded indicates that a new service provider has been registered for this account |
+| EventTypeAccountServiceTokenRemoved | 402 | EventTypeAccountServiceTokenRemoved indicates that a service provider is not available anymore |
 | EventTypeGroupMetadataPayloadSent | 1001 | EventTypeGroupMetadataPayloadSent indicates the payload includes an app specific event, unlike messages stored on the message store it is encrypted using a static key |
 
 <a name="berty.types.v1.GroupType"></a>

@@ -23,6 +23,7 @@ type metadataStoreIndex struct {
 	admins                   map[crypto.PubKey]struct{}
 	contacts                 map[string]*accountContact
 	groups                   map[string]*accountGroup
+	serviceTokens            map[string]*bertytypes.ServiceToken
 	contactRequestMetadata   map[string][]byte
 	contactRequestSeed       []byte
 	contactRequestEnabled    *bool
@@ -60,6 +61,7 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 	// Resetting state
 	m.contacts = map[string]*accountContact{}
 	m.groups = map[string]*accountGroup{}
+	m.serviceTokens = map[string]*bertytypes.ServiceToken{}
 	m.contactRequestMetadata = map[string][]byte{}
 	m.contactRequestEnabled = nil
 	m.contactRequestSeed = []byte(nil)
@@ -546,6 +548,49 @@ func (m *metadataStoreIndex) handleContactAliasKeyAdded(event proto.Message) err
 	return nil
 }
 
+func (m *metadataStoreIndex) listServiceTokens() []*bertytypes.ServiceToken {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	ret := []*bertytypes.ServiceToken(nil)
+
+	for _, t := range m.serviceTokens {
+		if t == nil {
+			continue
+		}
+
+		ret = append(ret, t)
+	}
+
+	return ret
+}
+
+func (m *metadataStoreIndex) handleAccountServiceTokenAdded(event proto.Message) error {
+	evt, ok := event.(*bertytypes.AccountServiceTokenAdded)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	if _, ok := m.serviceTokens[evt.ServiceToken.TokenID()]; ok {
+		return nil
+	}
+
+	m.serviceTokens[evt.ServiceToken.TokenID()] = evt.ServiceToken
+
+	return nil
+}
+
+func (m *metadataStoreIndex) handleAccountServiceTokenRemoved(event proto.Message) error {
+	evt, ok := event.(*bertytypes.AccountServiceTokenRemoved)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	m.serviceTokens[evt.TokenID] = nil
+
+	return nil
+}
+
 func (m *metadataStoreIndex) handleMultiMemberInitialMember(event proto.Message) error {
 	e, ok := event.(*bertytypes.MultiMemberInitialMember)
 	if !ok {
@@ -658,6 +703,7 @@ func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface,
 			handledEvents:          map[string]struct{}{},
 			contacts:               map[string]*accountContact{},
 			groups:                 map[string]*accountGroup{},
+			serviceTokens:          map[string]*bertytypes.ServiceToken{},
 			contactRequestMetadata: map[string][]byte{},
 			g:                      g,
 			eventEmitter:           eventEmitter,
@@ -684,6 +730,8 @@ func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface,
 			bertytypes.EventTypeGroupMemberDeviceAdded:                 {m.handleGroupAddMemberDevice},
 			bertytypes.EventTypeMultiMemberGroupAdminRoleGranted:       {m.handleMultiMemberGrantAdminRole},
 			bertytypes.EventTypeMultiMemberGroupInitialMemberAnnounced: {m.handleMultiMemberInitialMember},
+			bertytypes.EventTypeAccountServiceTokenAdded:               {m.handleAccountServiceTokenAdded},
+			bertytypes.EventTypeAccountServiceTokenRemoved:             {m.handleAccountServiceTokenRemoved},
 		}
 
 		m.postIndexActions = []func() error{

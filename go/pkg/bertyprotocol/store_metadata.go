@@ -728,6 +728,44 @@ func (m *metadataStore) SendAppMetadata(ctx context.Context, message []byte) (op
 	}, bertytypes.EventTypeGroupMetadataPayloadSent)
 }
 
+func (m *metadataStore) SendAccountServiceTokenAdded(ctx context.Context, token *bertytypes.ServiceToken) (operation.Operation, error) {
+	if !m.typeChecker(isAccountGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
+	m.Index().(*metadataStoreIndex).lock.RLock()
+	_, ok := m.Index().(*metadataStoreIndex).serviceTokens[token.TokenID()]
+	m.Index().(*metadataStoreIndex).lock.RUnlock()
+
+	if ok {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("token has already been registered"))
+	}
+
+	return m.attributeSignAndAddEvent(ctx, &bertytypes.AccountServiceTokenAdded{
+		ServiceToken: token,
+	}, bertytypes.EventTypeAccountServiceTokenAdded)
+}
+
+func (m *metadataStore) SendAccountServiceTokenRemoved(ctx context.Context, tokenID string) (operation.Operation, error) {
+	if !m.typeChecker(isAccountGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
+	m.Index().(*metadataStoreIndex).lock.RLock()
+	val, ok := m.Index().(*metadataStoreIndex).serviceTokens[tokenID]
+	m.Index().(*metadataStoreIndex).lock.RUnlock()
+
+	if !ok {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("token not registered"))
+	} else if val == nil {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("token already removed"))
+	}
+
+	return m.attributeSignAndAddEvent(ctx, &bertytypes.AccountServiceTokenRemoved{
+		TokenID: tokenID,
+	}, bertytypes.EventTypeAccountServiceTokenRemoved)
+}
+
 type accountSignableEvent interface {
 	proto.Message
 	proto.Marshaler
@@ -817,6 +855,22 @@ func (m *metadataStore) checkContactStatus(pk crypto.PubKey, states ...bertytype
 	return false
 }
 
+func (m *metadataStore) listServiceTokens() []*bertytypes.ServiceToken {
+	return m.Index().(*metadataStoreIndex).listServiceTokens()
+}
+
+func (m *metadataStore) getServiceToken(tokenID string) (*bertytypes.ServiceToken, error) {
+	m.Index().(*metadataStoreIndex).lock.RLock()
+	defer m.Index().(*metadataStoreIndex).lock.RUnlock()
+
+	token, ok := m.Index().(*metadataStoreIndex).serviceTokens[tokenID]
+	if !ok {
+		return nil, errcode.ErrServicesAuthUnknownToken
+	}
+
+	return token, nil
+}
+
 type EventMetadataReceived struct {
 	MetaEvent *bertytypes.GroupMetadataEvent
 	Event     proto.Message
@@ -884,6 +938,8 @@ func constructorFactoryGroupMetadata(s *bertyOrbitDB) iface.StoreConstructor {
 		if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
 		}
+
+		_ = store.getServiceToken // TODO: remove me when used
 
 		return store, nil
 	}

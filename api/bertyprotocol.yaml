@@ -93,3 +93,12 @@ http:
  - selector: berty.protocol.v1.ProtocolService.DebugGroup
    post: /berty.protocol.v1/ProtocolService/DebugGroup
    body: "*"
+ - selector: berty.protocol.v1.ProtocolService.AuthServiceInitFlow
+   post: /berty.protocol.v1/ProtocolService/AuthServiceInitFlow
+   body: "*"
+ - selector: berty.protocol.v1.ProtocolService.AuthServiceCompleteFlow
+   post: /berty.protocol.v1/ProtocolService/AuthServiceCompleteFlow
+   body: "*"
+ - selector: berty.protocol.v1.ProtocolService.ServicesTokenList
+   post: /berty.protocol.v1/ProtocolService/ServicesTokenList
+   body: "*"

@@ -26,7 +26,7 @@ func miniCommand() *ffcli.Command {
 	miniFlags.StringVar(&opts.datastorePath, "d", opts.datastorePath, "datastore base directory")
 	miniFlags.StringVar(&opts.sqlitePath, "s", opts.sqlitePath, "sqlite base directory")
 	miniFlags.BoolVar(&opts.replay, "replay", opts.replay, "reconstruct DB from orbitDB logs")
-	miniFlags.UintVar(&opts.miniPort, "p", opts.miniPort, "default IPFS listen port")
+	miniFlags.UintVar(&opts.port, "p", opts.port, "default IPFS listen port")
 	miniFlags.StringVar(&opts.remoteDaemonAddr, "r", opts.remoteDaemonAddr, "remote berty daemon")
 	miniFlags.StringVar(&opts.rdvpMaddr, "rdvp", opts.rdvpMaddr, "rendezvous point maddr")
 	miniFlags.BoolVar(&opts.miniInMemory, "inmem", opts.miniInMemory, "disable persistence")
@@ -52,7 +52,10 @@ func miniCommand() *ffcli.Command {
 				}
 
 				opts.datastorePath = storageDirs[0].Path
+			} else {
+				opts.sqlitePath = ""
 			}
+
 			rootDS, dsLock, err := getRootDatastore(opts.datastorePath)
 			if err != nil {
 				return errcode.TODO.Wrap(err)
@@ -106,7 +109,7 @@ func miniCommand() *ffcli.Command {
 			err = mini.Main(ctx, &mini.Opts{
 				RemoteAddr:          opts.remoteDaemonAddr,
 				GroupInvitation:     opts.miniGroup,
-				Port:                opts.miniPort,
+				Port:                opts.port,
 				RootDS:              rootDS,
 				MessengerDB:         db,
 				ReplayLogs:          opts.replay,

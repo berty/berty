@@ -23,6 +23,7 @@ require (
 	github.com/gen2brain/beeep v0.0.0-20200526185328-e9c15c258e28
 	github.com/githubnemo/CompileDaemon v1.2.1
 	github.com/gobuffalo/here v0.6.2 // indirect
+	github.com/gofrs/uuid v3.3.0+incompatible
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.4.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0
@@ -94,6 +95,7 @@ require (
 	google.golang.org/grpc v1.30.0
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
+	gopkg.in/square/go-jose.v2 v2.5.1
 	gorm.io/driver/sqlite v1.0.8
 	gorm.io/gorm v0.2.26
 	honnef.co/go/tools v0.0.1-2020.1.4 // indirect

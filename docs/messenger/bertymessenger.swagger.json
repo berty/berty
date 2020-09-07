@@ -75,6 +75,72 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/AuthServiceCompleteFlow": {
+      "post": {
+        "summary": "AuthServiceCompleteFlow Completes an authentication flow",
+        "operationId": "MessengerService_AuthServiceCompleteFlow",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AuthServiceCompleteFlowReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AuthServiceCompleteFlowRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/berty.messenger.v1/MessengerService/AuthServiceInitFlow": {
+      "post": {
+        "summary": "AuthServiceInitFlow Initialize an authentication flow",
+        "operationId": "MessengerService_AuthServiceInitFlow",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AuthServiceInitFlowReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AuthServiceInitFlowRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/ContactAccept": {
       "post": {
         "operationId": "MessengerService_ContactAccept",
@@ -621,6 +687,48 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/ServicesTokenList": {
+      "post": {
+        "summary": "ServicesTokenList Retrieves the list of service server tokens",
+        "operationId": "MessengerService_ServicesTokenList",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1ServicesTokenListReply"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of v1ServicesTokenListReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ServicesTokenListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/ShareableBertyGroup": {
       "post": {
         "summary": "ShareableBertyGroup returns a Berty Group that can be shared as a string, QR code or deep link.",
@@ -815,6 +923,37 @@
         "TypeAcknowledge"
       ],
       "default": "Undefined"
+    },
+    "v1AuthServiceCompleteFlowReply": {
+      "type": "object"
+    },
+    "v1AuthServiceCompleteFlowRequest": {
+      "type": "object",
+      "properties": {
+        "callback_url": {
+          "type": "string"
+        }
+      }
+    },
+    "v1AuthServiceInitFlowReply": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "secure_url": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      }
+    },
+    "v1AuthServiceInitFlowRequest": {
+      "type": "object",
+      "properties": {
+        "auth_url": {
+          "type": "string"
+        }
+      }
     },
     "v1BertyGroup": {
       "type": "object",
@@ -1298,6 +1437,52 @@
           "type": "string"
         }
       }
+    },
+    "v1ServiceToken": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "authentication_url": {
+          "type": "string"
+        },
+        "supported_services": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ServiceTokenSupportedService"
+          }
+        },
+        "expiration": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "v1ServiceTokenSupportedService": {
+      "type": "object",
+      "properties": {
+        "service_type": {
+          "type": "string"
+        },
+        "service_endpoint": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ServicesTokenListReply": {
+      "type": "object",
+      "properties": {
+        "token_id": {
+          "type": "string"
+        },
+        "service": {
+          "$ref": "#/definitions/v1ServiceToken"
+        }
+      }
+    },
+    "v1ServicesTokenListRequest": {
+      "type": "object"
     },
     "v1ShareableBertyGroupReply": {
       "type": "object",
