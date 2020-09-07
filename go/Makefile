@@ -71,16 +71,17 @@ go.unittest: pb.generate
 	$(GO_TEST_ENV) GO111MODULE=on $(GO) test $(GO_TEST_OPTS) $(GO_TEST_PATH)
 
 .PHONY: go.unstable-tests
-go.unstable-tests:
-	go install moul.io/retry
-	cd ./pkg/bertymessenger && go test -c -o ./tests.bin .
-	@for test in `cd ./pkg/bertymessenger; go test -list . | grep -E "^TestUnstable"`; do \
-	  (set -xe; TEST_STABILITY='unstable' retry -m 10 ./pkg/bertymessenger/tests.bin -test.count 1 -test.timeout=300s -test.run "^$$test\$$" 2>/dev/null || echo "  $$test failed 10/10 times"); \
-	done
-	cd ./pkg/bertyprotocol && go test -c -o ./tests.bin .
-	@for test in `cd ./pkg/bertyprotocol; go test -list . | grep -E "^TestScenario_"`; do \
-	  (set -xe; TEST_STABILITY='unstable' retry -m 10 ./pkg/bertyprotocol/tests.bin -test.count 1 -test.timeout=300s -test.run "^$$test\$$" 2>/dev/null || echo "  $$test failed 10/10 times"); \
-	done
+go.unstable-tests: pb.generate
+	go install moul.io/testman
+	TEST_STABILITY=unstable testman test -v -timeout=300s -retry=10 -run ^TestUnstable ./pkg/bertymessenger
+	TEST_STABILITY=unstable testman test -v -timeout=300s -retry=10 -run ^TestScenario_ ./pkg/bertyprotocol # FIXME: run on other unstable functions too
+	# FIXME: run on other packages too
+
+#.PHONY: go.broken-tests
+#go.broken-tests: pb.generate
+#	go install moul.io/testman
+#	TEST_STABILITY=broken testman test -continue-on-error -timeout=300s -retry=10 -run ^TestBroken ./pkg/bertymessenger
+#	TEST_STABILITY=broken testman test -continue-on-error -timeout=300s -retry=10 ./pkg/bertyprotocol
 
 .PHONY: go.install
 go.install: pb.generate
