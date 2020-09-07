@@ -67,6 +67,7 @@ func newMainOpts() mainOpts {
 		logFilters:     "info,warn:bty,bty.* error+:*", // info and warn for bty* + all namespaces for errors, panics, dpanics and fatals
 		logger:         zap.NewNop(),
 		tracer:         "",
+		sqlitePath:     ":memory:",
 		datastorePath:  cacheleveldown.InMemoryDirectory,
 
 		miniPort:                0,

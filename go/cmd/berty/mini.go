@@ -74,17 +74,19 @@ func miniCommand() *ffcli.Command {
 
 			var db *gorm.DB
 			if opts.sqlitePath != "" {
-				_, err := os.Stat(opts.sqlitePath)
-				if err != nil {
-					if !os.IsNotExist(err) {
-						return errcode.TODO.Wrap(err)
+				basePath := opts.sqlitePath
+				if opts.sqlitePath != ":memory:" {
+					_, err := os.Stat(opts.sqlitePath)
+					if err != nil {
+						if !os.IsNotExist(err) {
+							return errcode.TODO.Wrap(err)
+						}
+						if err := os.MkdirAll(opts.sqlitePath, 0700); err != nil {
+							return errcode.TODO.Wrap(err)
+						}
 					}
-					if err := os.MkdirAll(opts.sqlitePath, 0700); err != nil {
-						return errcode.TODO.Wrap(err)
-					}
+					basePath = path.Join(opts.sqlitePath, "sqlite.db")
 				}
-
-				basePath := path.Join(opts.sqlitePath, "sqlite.db")
 				db, err = gorm.Open(sqlite.Open(basePath), &gorm.Config{Logger: zapgorm2.New(opts.logger)})
 				if err != nil {
 					return err
@@ -118,6 +120,7 @@ func miniCommand() *ffcli.Command {
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
+
 			return nil
 		},
 	}
