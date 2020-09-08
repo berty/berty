@@ -3,7 +3,6 @@ package mc
 import (
 	"context"
 	"fmt"
-	"sync"
 
 	mcdrv "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/driver"
 	mcma "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/multiaddr"
@@ -29,9 +28,8 @@ var _ tpt.Transport = &Transport{}
 // Transport represents any device by which you can connect to and accept
 // connections from other peers.
 type Transport struct {
-	host         host.Host
-	upgrader     *tptu.Upgrader
-	onceListener sync.Once
+	host     host.Host
+	upgrader *tptu.Upgrader
 }
 
 func NewTransportConstructorWithLogger(l *zap.Logger) func(h host.Host, u *tptu.Upgrader) (*Transport, error) {
@@ -57,6 +55,8 @@ func NewTransport(h host.Host, u *tptu.Upgrader) (*Transport, error) {
 func (t *Transport) Dial(ctx context.Context, remoteMa ma.Multiaddr, remotePID peer.ID) (tpt.CapableConn, error) {
 	// MC transport needs to have a running listener in order to dial other peer
 	// because native driver is initialized during listener creation.
+	gLock.RLock()
+	defer gLock.RUnlock()
 	if gListener == nil {
 		return nil, errors.New("transport dialing peer failed: no active listener")
 	}
@@ -114,17 +114,14 @@ func (t *Transport) Listen(localMa ma.Multiaddr) (tpt.Listener, error) {
 	}
 
 	// If a global listener already exists, returns an error.
-	gLock.Lock()
-	defer gLock.Unlock()
+	gLock.RLock()
 	if gListener != nil {
-		// TODO: restore this when published as generic lib / fixed in Berty network
-		// config update
-		// return nil, errors.New("transport listen failed: one listener maximum")
-		gListener.Close()
+		gLock.RUnlock()
+		return nil, errors.New("transport listen failed: one listener maximum")
 	}
+	gLock.RUnlock()
 
-	t.onceListener.Do(func() { gListener = newListener(localMa, t) })
-	return gListener, nil
+	return newListener(localMa, t), nil
 }
 
 // Proxy returns true if this transport proxies.

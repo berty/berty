@@ -17,7 +17,7 @@ import (
 // and transport (to ensure that only one listener is running at a time).
 var (
 	gListener *Listener
-	gLock     sync.Mutex
+	gLock     sync.RWMutex
 )
 
 // Listener is a tpt.Listener.
@@ -60,7 +60,9 @@ func newListener(localMa ma.Multiaddr, t *Transport) *Listener {
 	mcdrv.StartMCDriver(t.host.ID().Pretty())
 
 	// Sets listener as global listener
+	gLock.Lock()
 	gListener = listener
+	gLock.Unlock()
 
 	return listener
 }
@@ -93,11 +95,11 @@ func (l *Listener) Close() error {
 
 	// Removes global listener so transport can instantiate a new one later.
 	gLock.Lock()
-	defer gLock.Unlock()
 	if gListener != nil {
 		gListener.inUse.Wait()
 		gListener = nil
 	}
+	gLock.Unlock()
 
 	return nil
 }
