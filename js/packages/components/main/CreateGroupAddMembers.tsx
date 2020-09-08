@@ -272,7 +272,7 @@ export const CreateGroupAddMembers: React.FC<{
 	onRemoveMember: (id: string) => void
 	members: any[]
 }> = ({ onSetMember, onRemoveMember, members }) => {
-	const [{ flex, background }] = useStyles()
+	const [{ flex, background, margin }] = useStyles()
 	const [layout, setLayout] = useState<number>(0)
 	const navigation = useNavigation()
 
@@ -283,15 +283,14 @@ export const CreateGroupAddMembers: React.FC<{
 					<CreateGroupHeader />
 					<MemberList members={members} onRemoveMember={onRemoveMember} />
 				</View>
-				<Header title='Add members' first>
-					<AddMembers
-						members={members}
-						onSetMember={onSetMember}
-						onRemoveMember={onRemoveMember}
-						paddingBottom={120}
-						layout={layout}
-					/>
-				</Header>
+				<Header title='Add members' first style={[margin.bottom.scale(-1)]} />
+				<AddMembers
+					members={members}
+					onSetMember={onSetMember}
+					onRemoveMember={onRemoveMember}
+					paddingBottom={120}
+					layout={layout}
+				/>
 			</SafeAreaView>
 			<FooterCreateGroup
 				title='CONTINUE'
