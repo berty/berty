@@ -17,9 +17,17 @@ extension NSDictionary {
     func get(object: NSDictionary, defaultValue: NSDictionary = [:]) -> NSDictionary { return self[object] as? NSDictionary ?? defaultValue }
 }
 
+struct BridgeError: LocalizedError {
+    let value: String
+    init(_ value: String)  {
+        self.value = value
+    }
+    public var errorDescription: String? { return self.value }
+}
+
 @objc(GoBridge)
 class GoBridge: NSObject {
-    static let rnlogger = LoggerDriver("tech.berty", "react")
+    let logger = LoggerDriver("tech.berty", "react")
 
     // protocol
     var bridgeMessenger: BertybridgeMessengerBridge?
@@ -71,10 +79,9 @@ class GoBridge: NSObject {
             let level = Level(rawValue: type.uppercased()) ?? Level.info
 
             // log
-            GoBridge.rnlogger.print(message as NSString, level: level, category: "react-native")
+            self.logger.print(message as NSString, level: level, category: "react-native")
         }
     }
-
 
     //////////////
     // Protocol //
@@ -108,6 +115,9 @@ class GoBridge: NSObject {
 
             config.setLogFilters(optLogFilters)
             config.loggerDriver(logger)
+
+            // setup notification
+            config.notificationDriver(NotificationDriver.shared)
 
             // configure grpc listener
             for obj in optGrpcListeners {

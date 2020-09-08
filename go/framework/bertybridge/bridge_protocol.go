@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"berty.tech/berty/v2/go/internal/config"
@@ -37,8 +38,6 @@ import (
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
-	"go.opentelemetry.io/otel/api/kv"
-	"go.opentelemetry.io/otel/api/trace"
 	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
@@ -86,6 +85,7 @@ type MessengerBridge struct {
 	messengerService bertymessenger.Service
 	msngrDB          *gorm.DB
 	lifecycle        LifeCycleDriver
+	notification     notification.Manager
 
 	currentAppState int
 	muAppState      sync.Mutex
@@ -439,6 +439,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 		messengerService: messenger,
 		msngrDB:          db,
 		protocolClient:   protocolClient,
+		notification:     notifmanager,
 	}
 
 	// setup lifecycle
@@ -478,33 +479,28 @@ func (p *MessengerBridge) HandleState(appstate int) {
 		p.currentAppState = appstate
 	}
 }
+
+var backgroundCounter int32
+
 func (p *MessengerBridge) HandleTask() LifeCycleBackgroundTask {
-	tr := tracer.New("AppState")
 	return NewBackgroundTask(p.logger, func(ctx context.Context) error {
-		return tr.WithSpan(ctx, "BackgroundTask", func(ctx context.Context) error {
-			p.logger.Info("starting background task")
+		p.logger.Info("starting background task")
 
-			ctx, cancel := context.WithDeadline(ctx, time.Now().Add(time.Second*25))
-			defer cancel()
-			span := trace.SpanFromContext(ctx)
-			count := 0
-			for {
-				select {
-				case <-ctx.Done():
-					p.logger.Info("ending background task")
-					if ctx.Err() != context.DeadlineExceeded {
-						span.AddEvent(ctx, "task has been canceled")
-						return fmt.Errorf("task has been canceled")
-					}
+		counter := atomic.AddInt32(&backgroundCounter, 1)
+		tnow := time.Now()
 
-					return nil
-				case <-time.After(time.Second):
-					span.AddEvent(ctx, "tick", kv.Int("count", count))
-					p.logger.Info("background task counting", zap.Int("count", count))
-				}
-				count++
-			}
-		}, trace.WithRecord(), trace.WithSpanKind(trace.SpanKindClient))
+		p.notification.Notify(&notification.Notification{
+			Title: fmt.Sprintf("GoBackgroundTask #%d", counter),
+			Body:  "started",
+		})
+
+		<-ctx.Done()
+
+		p.notification.Notify(&notification.Notification{
+			Title: fmt.Sprintf("GoBackgroundTask #%d", counter),
+			Body:  fmt.Sprintf("ended (duration: %s)", time.Since(tnow).Truncate(time.Second)),
+		})
+		return nil
 	})
 }
 
