@@ -68,7 +68,9 @@ const messengerMethodHook = (key) => () => {
 	return { call, refresh, ...state }
 }
 
-const messengerMethods = messengerpb?.MessengerService?.resolveAll()?.methods || {}
+const messengerMethods = messengerpb.MessengerService.resolveAll
+	? messengerpb.MessengerService.resolveAll().methods
+	: {}
 
 const messengerMethodsHooks = Object.keys(messengerMethods).reduce(
 	(r, key) => ({ ...r, ['use' + key]: messengerMethodHook(key) }),

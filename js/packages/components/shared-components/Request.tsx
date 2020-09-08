@@ -100,7 +100,7 @@ export const RequestAvatar: React.FC<RequestAvatarProps> = ({
 	return (
 		<View style={[row.left, flex.tiny, { justifyContent: 'center' }, style]}>
 			<View style={[flex.tiny, row.item.bottom, row.center]}>
-				<Text category='h6' style={[text.align.center, text.color.black]}>
+				<Text category='h6' style={[text.align.center, text.color.black]} numberOfLines={1}>
 					{name}
 				</Text>
 				{isVerified && (

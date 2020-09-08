@@ -280,7 +280,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 
 				<View style={[flex.big, column.fill, padding.small]}>
 					<View style={[row.fill]}>
-						<View style={[row.left]}>
+						<View style={[row.left, { flexShrink: 1 }]}>
 							<Text
 								numberOfLines={1}
 								style={[

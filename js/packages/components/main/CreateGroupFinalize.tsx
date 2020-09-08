@@ -50,14 +50,14 @@ const _stylesCreateGroup = StyleSheet.create({
 })
 
 const MemberItem: React.FC<{ member: any; onRemove: () => void }> = ({ member, onRemove }) => {
-	const [{ padding, column, text, color, row }] = useStyles()
+	const [{ padding, column, text, color, row, maxWidth }] = useStyles()
 	const _styles = useStylesCreateGroup()
 
 	return (
-		<View style={[padding.horizontal.medium]}>
+		<View style={[padding.horizontal.medium, maxWidth(100)]}>
 			<View style={[column.top, padding.top.small]}>
 				<ProceduralCircleAvatar seed={member.publicKey} diffSize={20} size={70} />
-				<Text style={[text.color.white, column.item.center, padding.top.tiny]}>
+				<Text style={[text.color.white, column.item.center, padding.top.tiny]} numberOfLines={1}>
 					{member.displayName}
 				</Text>
 			</View>
