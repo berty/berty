@@ -19,6 +19,7 @@ import {
 	TouchableOpacity,
 	View,
 	ViewProps,
+	Image,
 } from 'react-native'
 import { SafeAreaConsumer, SafeAreaView } from 'react-native-safe-area-context'
 import { Icon, Text } from 'react-native-ui-kitten'
@@ -26,10 +27,11 @@ import LinearGradient from 'react-native-linear-gradient'
 import { useLayout } from '../hooks'
 import FromNow from '../shared-components/FromNow'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
-import Logo from './1_berty_picto.svg'
-import EmptyChat from './empty_chat.svg'
 import { CommonActions } from '@react-navigation/native'
 import moment from 'moment'
+import Logo from './1_berty_picto.svg'
+import EmptyChat from './empty_chat.svg'
+import AvatarGroup19 from './Avatar_Group_Copy_19.png'
 
 //
 // Main List
@@ -264,13 +266,18 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 			<View
 				style={[row.center, border.bottom.medium, border.color.light.grey, padding.vertical.small]}
 			>
-				<ProceduralCircleAvatar
-					seed={
-						type === messengerpb.Conversation.Type.MultiMemberType ? publicKey : contact.publicKey
-					}
-					size={50}
-					style={[padding.tiny, row.item.justify]}
-				/>
+				{type === messengerpb.Conversation.Type.MultiMemberType ? (
+					<View style={[padding.tiny, padding.left.small, row.item.justify]}>
+						<Image source={AvatarGroup19} style={{ width: 40, height: 40 }} />
+					</View>
+				) : (
+					<ProceduralCircleAvatar
+						seed={contact.publicKey}
+						size={50}
+						style={[padding.tiny, row.item.justify]}
+					/>
+				)}
+
 				<View style={[flex.big, column.fill, padding.small]}>
 					<View style={[row.fill]}>
 						<View style={[row.left]}>

@@ -5,6 +5,7 @@ import {
 	KeyboardAvoidingView,
 	FlatList,
 	StatusBar,
+	Image,
 	ActivityIndicator,
 	Text as TextNative,
 } from 'react-native'
@@ -25,6 +26,7 @@ import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { Message } from './shared-components/Message'
 import BlurView from '../shared-components/BlurView'
+import AvatarGroup19 from '../main/Avatar_Group_Copy_19.png'
 
 //
 // MultiMember
@@ -73,7 +75,7 @@ const HeaderMultiMember: React.FC<{ id: string }> = ({ id }) => {
 					style={[flex.small, row.right]}
 					onPress={() => navigate.chat.groupSettings({ convId: id })}
 				>
-					<ConversationProceduralAvatar conversationId={id} size={50} diffSize={9} />
+					<Image source={AvatarGroup19} style={{ width: 40, height: 40 }} />
 				</TouchableOpacity>
 			</View>
 		</BlurView>
