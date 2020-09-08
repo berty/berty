@@ -31,3 +31,6 @@ api/*.yaml linguist-generated
 
 # Reduce conflicts on markdown files
 *.md merge=union
+
+# specific for windows script files
+*.bat text eol=crlf

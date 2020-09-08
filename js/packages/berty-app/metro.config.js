@@ -47,8 +47,5 @@ module.exports = (async () => {
 			sourceExts: [...sourceExts, 'svg'],
 		},
 		watchFolders,
-		server: {
-			enableVisualizer: true,
-		},
 	}
 })()
