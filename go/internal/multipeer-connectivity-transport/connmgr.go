@@ -33,9 +33,6 @@ func newConn(ctx context.Context, t *Transport, remoteMa ma.Multiaddr,
 		cancel:   cancel,
 	}
 
-	// Unlock gListener locked from discovery.go (HandlePeerFound)
-	gListener.inUse.Done()
-
 	// Stores the conn in connMap, will be deleted during conn.Close()
 	connMap.Store(maconn.RemoteAddr().String(), maconn)
 

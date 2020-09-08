@@ -31,7 +31,6 @@ type Listener struct {
 	transport      *Transport
 	localMa        ma.Multiaddr
 	inboundConnReq chan connReq // Chan used to accept inbound conn.
-	inUse          sync.WaitGroup
 	ctx            context.Context
 	cancel         func()
 }
@@ -95,10 +94,7 @@ func (l *Listener) Close() error {
 
 	// Removes global listener so transport can instantiate a new one later.
 	gLock.Lock()
-	if gListener != nil {
-		gListener.inUse.Wait()
-		gListener = nil
-	}
+	gListener = nil
 	gLock.Unlock()
 
 	return nil

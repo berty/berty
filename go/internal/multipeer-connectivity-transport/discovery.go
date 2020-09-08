@@ -31,9 +31,6 @@ func HandleFoundPeer(sRemotePID string) bool {
 		return false
 	}
 
-	// Ensures that gListener won't be unset until operations using it are finished
-	gListener.inUse.Add(1)
-
 	// Adds peer to peerstore.
 	gListener.transport.host.Peerstore().AddAddr(remotePID, remoteMa,
 		pstore.TempAddrTTL)
@@ -63,7 +60,6 @@ func HandleFoundPeer(sRemotePID string) bool {
 	}:
 		return true
 	case <-gListener.ctx.Done():
-		gListener.inUse.Done()
 		return false
 	}
 }

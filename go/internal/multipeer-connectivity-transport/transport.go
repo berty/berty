@@ -68,19 +68,14 @@ func (t *Transport) Dial(ctx context.Context, remoteMa ma.Multiaddr, remotePID p
 		return nil, errors.Wrap(err, "transport dialing peer failed: wrong multiaddr")
 	}
 
-	// Ensures that gListener won't be unset until operations using it are finished
-	gListener.inUse.Add(1)
-
 	// Check if native driver is already connected to peer's device.
 	// With MC you can't really dial, only auto-connect with peer nearby.
 	if !mcdrv.DialPeer(remoteAddr) {
-		gListener.inUse.Done()
 		return nil, errors.New("transport dialing peer failed: peer not connected through MC")
 	}
 
 	// Can't have two connections on the same multiaddr
 	if _, ok := connMap.Load(remoteAddr); ok {
-		gListener.inUse.Done()
 		return nil, errors.New("transport dialing peer failed: already connected to this address")
 	}
 
