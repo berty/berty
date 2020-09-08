@@ -1,5 +1,12 @@
 import React, { useState } from 'react'
-import { View, ScrollView, TouchableOpacity, TextInput, Text as TextNative } from 'react-native'
+import {
+	View,
+	ScrollView,
+	TouchableOpacity,
+	FlatList,
+	TextInput,
+	Text as TextNative,
+} from 'react-native'
 import { Layout, Text, Icon, CheckBox } from 'react-native-ui-kitten'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -53,7 +60,7 @@ const AddMembersItem: React.FC<AddMembersItemProps> = ({
 	added,
 	separateBar = true,
 }) => {
-	const [{ row, margin, padding }] = useStyles()
+	const [{ row, margin, padding, flex }] = useStyles()
 	const _styles = useStylesCreateGroup()
 	return (
 		<View>
@@ -117,7 +124,7 @@ const AddMembers: React.FC<AddMembersProps> = ({
 }) => {
 	const [
 		{ padding, background, row, color, height, text, margin, border },
-		{ windowHeight },
+		{ windowHeight, scaleHeight },
 	] = useStyles()
 	const [searchText, setSearchText] = useState('')
 	const searchContacts = useAccountContactSearchResults(searchText)
@@ -142,14 +149,10 @@ const AddMembers: React.FC<AddMembersProps> = ({
 						autoCorrect={false}
 					/>
 				</View>
-				<View style={[height(windowHeight - layout - 90)]}>
+				<View style={[height(windowHeight - layout * scaleHeight - 70 * scaleHeight)]}>
 					<ScrollView
-						contentContainerStyle={[
-							padding.top.medium,
-							paddingBottom ? padding.bottom.scale(paddingBottom) : padding.bottom.medium,
-						]}
+						contentContainerStyle={[padding.top.medium, padding.bottom.scale(layout * scaleHeight)]}
 						showsVerticalScrollIndicator={false}
-						bounces={false}
 					>
 						{contacts.map((contact, index) => (
 							<AddMembersItem
@@ -175,9 +178,18 @@ const MemberItem: React.FC<{ member: any; onRemove: () => void }> = ({ member, o
 		<View style={[padding.horizontal.medium, maxWidth(100)]}>
 			<View style={[column.top, padding.top.small]}>
 				<ProceduralCircleAvatar seed={member.publicKey} diffSize={20} size={70} />
-				<Text numberOfLines={1} style={[text.color.white, column.item.center, padding.top.tiny]}>
+				<TextNative
+					numberOfLines={1}
+					style={[
+						text.color.white,
+						column.item.center,
+						padding.top.tiny,
+						text.bold.medium,
+						text.align.center,
+					]}
+				>
 					{member.displayName}
-				</Text>
+				</TextNative>
 			</View>
 			<TouchableOpacity style={[_styles.memberItemDelete]} onPress={onRemove}>
 				<Icon
@@ -196,7 +208,7 @@ export const MemberList: React.FC<{
 	members: any[]
 	onRemoveMember: (id: string) => void
 }> = ({ members, onRemoveMember }) => {
-	const [{ height, padding }] = useStyles()
+	const [{ height, padding, border }] = useStyles()
 
 	return (
 		<View style={[height(135)]}>
@@ -278,7 +290,7 @@ export const CreateGroupAddMembers: React.FC<{
 
 	return (
 		<Layout style={[flex.tiny]}>
-			<SafeAreaView style={[flex.tiny, background.blue]}>
+			<SafeAreaView style={[background.blue]}>
 				<View onLayout={(e) => setLayout(e.nativeEvent.layout.height)}>
 					<CreateGroupHeader />
 					<MemberList members={members} onRemoveMember={onRemoveMember} />
