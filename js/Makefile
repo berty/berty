@@ -78,6 +78,7 @@ clean:
 	rm -f packages/go-bridge/android/libs/gobridge.aar
 	rm -rf packages/storybook-mobile/ios/build
 	rm -rf packages/berty-app/android/app/build
+	rm -rf vendor/bundle
 
 	yarn cache clean -f
 ifneq (, $(shell which xcodebuild))
@@ -287,6 +288,10 @@ $(pkg_mod): $(pkg_desc)
 	touch $(pkg_mod)
 	touch node_modules/go.mod # avoid go to lookup in this directory
 
+Gemfile.lock: vendor/bundle Gemfile
+	bundle install
+
+
 packages/storybook-mobile/storybook/storyLoader.gen.js: packages/storybook-mobile/node_modules
 	PATH=$(PATH) rnstl \
 		--pattern 'packages/storybook-mobile/../*-storybook/storybook.tsx' \
@@ -294,8 +299,8 @@ packages/storybook-mobile/storybook/storyLoader.gen.js: packages/storybook-mobil
 	sed -i.bak 's/\(.*\)\.\.\/node_modules\/\(.*\)\/storybook/\1\2\/storybook.tsx/g' packages/storybook-mobile/storybook/storyLoader.gen.js
 	rm -f packages/storybook-mobile/storybook/storyLoader.gen.js.bak
 
-packages/storybook-mobile/ios/Pods: packages/storybook-mobile/ios/Podfile packages/storybook-mobile/node_modules
-	cd packages/storybook-mobile/ios && pod install
+packages/storybook-mobile/ios/Pods: Gemfile.lock packages/storybook-mobile/ios/Podfile packages/storybook-mobile/node_modules
+	cd packages/storybook-mobile/ios && bundle exec pod install
 
 packages/storybook-mobile/android/app/debug.keystore: $(HOME)/.android/debug.keystore
 	cat $< > $@
@@ -308,11 +313,8 @@ packages/berty-app/node_modules/react-native/react.gradle.orig: packages/berty-a
 	@echo "patching file $(patsubst %.orig, %, $@)"
 	@patch -f $(patsubst %.orig, %, $@) $< 1>/dev/null || true
 
-packages/berty-app/ios/Pods/Manifest.lock: packages/berty-app/ios/Podfile packages/berty-app/package.json
-	([ ! -z "$(shell which pod)" ] \
-		&& [[ "$$(pod --version)" > "1.7." ]]) \
-		|| sudo gem install cocoapods
-	cd packages/berty-app/ios && pod install
+packages/berty-app/ios/Pods/Manifest.lock: Gemfile.lock packages/berty-app/ios/Podfile packages/berty-app/package.json
+	cd packages/berty-app/ios && bundle exec pod install
 
 packages/berty-app/ios/Podfile:
 	touch $@

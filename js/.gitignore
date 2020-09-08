@@ -128,6 +128,9 @@ jsconfig.json
 # Cocoapods
 /ios/Pods/
 
+# bundler
+bundler
+
 # certificates
 *.ud.wulo.ios.p12
 
