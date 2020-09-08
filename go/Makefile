@@ -73,15 +73,15 @@ go.unittest: pb.generate
 .PHONY: go.unstable-tests
 go.unstable-tests: pb.generate
 	go install moul.io/testman
-	TEST_STABILITY=unstable testman test -v -timeout=300s -retry=10 -run ^TestUnstable ./pkg/bertymessenger
-	TEST_STABILITY=unstable testman test -v -timeout=300s -retry=10 -run ^TestScenario_ ./pkg/bertyprotocol # FIXME: run on other unstable functions too
+	TEST_STABILITY=unstable testman test -v -timeout=600s -retry=10 -run ^TestUnstable ./pkg/bertymessenger
+	TEST_STABILITY=unstable testman test -v -test.v -timeout=600s -retry=10 -run ^TestScenario_ ./pkg/bertyprotocol # FIXME: run on other unstable functions too
 	# FIXME: run on other packages too
 
-#.PHONY: go.broken-tests
-#go.broken-tests: pb.generate
-#	go install moul.io/testman
-#	TEST_STABILITY=broken testman test -continue-on-error -timeout=300s -retry=10 -run ^TestBroken ./pkg/bertymessenger
-#	TEST_STABILITY=broken testman test -continue-on-error -timeout=300s -retry=10 ./pkg/bertyprotocol
+.PHONY: go.broken-tests
+go.broken-tests: pb.generate
+	go install moul.io/testman
+	TEST_STABILITY=broken testman test -continue-on-error -timeout=1200s -test.timeout=60s -retry=5 -run ^TestBroken ./pkg/bertymessenger
+	TEST_STABILITY=broken testman test -continue-on-error -timeout=1200s -test.timeout=60s -retry=5 -run ^TestScenario_ ./pkg/bertyprotocol
 
 .PHONY: go.install
 go.install: pb.generate
