@@ -26,6 +26,6 @@ func (m *LoggerManager) Notify(notif *Notification) error {
 
 func (m *LoggerManager) Schedule(notif *Notification, interval time.Duration) error {
 	m.logger.Info("scheduling notification", zap.Duration("interval", interval))
-	time.AfterFunc(interval, func() { m.Notify(notif) })
+	time.AfterFunc(interval, func() { _ = m.Notify(notif) })
 	return nil
 }

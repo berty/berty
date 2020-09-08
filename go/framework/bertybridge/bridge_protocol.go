@@ -14,11 +14,13 @@ import (
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
+	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
+
 	badger_opts "github.com/dgraph-io/badger/options"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -47,15 +49,6 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
-
-	"berty.tech/berty/v2/go/internal/config"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
-	"berty.tech/berty/v2/go/internal/notification"
-	"berty.tech/berty/v2/go/internal/tinder"
-	"berty.tech/berty/v2/go/internal/tracer"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 var (
@@ -101,6 +94,7 @@ type MessengerConfig struct {
 	dLogger        NativeLoggerDriver
 	logFilters     string
 	lc             LifeCycleDriver
+	notifdriver    NotificationDriver
 	swarmListeners []string
 	rootDirectory  string
 	tracing        bool
@@ -137,8 +131,8 @@ func (pc *MessengerConfig) LoggerDriver(dLogger NativeLoggerDriver) {
 	pc.dLogger = dLogger
 }
 
-func (pc *MessengerConfig) NotificationDriver(manager NotificationDriver) {
-	pc.notifdriver = manager
+func (pc *MessengerConfig) NotificationDriver(driver NotificationDriver) {
+	pc.notifdriver = driver
 }
 
 func (pc *MessengerConfig) LifeCycleDriver(lc LifeCycleDriver) {
@@ -489,17 +483,21 @@ func (p *MessengerBridge) HandleTask() LifeCycleBackgroundTask {
 		counter := atomic.AddInt32(&backgroundCounter, 1)
 		tnow := time.Now()
 
-		p.notification.Notify(&notification.Notification{
+		if err := p.notification.Notify(&notification.Notification{
 			Title: fmt.Sprintf("GoBackgroundTask #%d", counter),
 			Body:  "started",
-		})
+		}); err != nil {
+			p.logger.Error("unable to notify", zap.Error(err))
+		}
 
 		<-ctx.Done()
 
-		p.notification.Notify(&notification.Notification{
+		if err := p.notification.Notify(&notification.Notification{
 			Title: fmt.Sprintf("GoBackgroundTask #%d", counter),
 			Body:  fmt.Sprintf("ended (duration: %s)", time.Since(tnow).Truncate(time.Second)),
-		})
+		}); err != nil {
+			p.logger.Error("unable to notify", zap.Error(err))
+		}
 		return nil
 	})
 }

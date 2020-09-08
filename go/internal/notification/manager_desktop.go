@@ -15,7 +15,7 @@ type DesktopManager struct {
 	appicon string
 }
 
-func NewDesktopManger(logger *zap.Logger, appicon string) Manager {
+func NewDesktopManager(logger *zap.Logger, appicon string) Manager {
 	return &DesktopManager{logger, appicon}
 }
 

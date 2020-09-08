@@ -24,7 +24,7 @@ func miniCommand() *ffcli.Command {
 	var miniFlags = flag.NewFlagSet("mini demo client", flag.ExitOnError)
 	miniFlags.StringVar(&opts.miniGroup, "g", opts.miniGroup, "group to join, leave empty to create a new group")
 	miniFlags.StringVar(&opts.datastorePath, "d", opts.datastorePath, "datastore base directory")
-	miniFlags.StringVar(&opts.sqlitePath, "s", opts.datastorePath, "sqlite base directory")
+	miniFlags.StringVar(&opts.sqlitePath, "s", opts.sqlitePath, "sqlite base directory")
 	miniFlags.BoolVar(&opts.replay, "replay", opts.replay, "reconstruct DB from orbitDB logs")
 	miniFlags.UintVar(&opts.miniPort, "p", opts.miniPort, "default IPFS listen port")
 	miniFlags.StringVar(&opts.remoteDaemonAddr, "r", opts.remoteDaemonAddr, "remote berty daemon")
@@ -98,7 +98,7 @@ func miniCommand() *ffcli.Command {
 			var notifmanager notification.Manager
 			if !opts.miniDisableNotification {
 				// @TODO(gfanton): find a way to embed the icon into the app, and generate a valid path
-				notifmanager = notification.NewDesktopManger(l, "")
+				notifmanager = notification.NewDesktopManager(l, "")
 			} else {
 				notifmanager = notification.NewLoggerManager(l)
 			}
