@@ -25,7 +25,7 @@ func HandleFoundPeer(sRemotePID string) bool {
 
 	// Checks if a listener is currently running.
 	if gListener == nil || gListener.ctx.Err() != nil {
-		logger.Error("discovery handle peer failed: listener not running", zap.Error(gListener.ctx.Err()))
+		logger.Error("discovery handle peer failed: listener not running")
 		return false
 	}
 

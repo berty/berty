@@ -3,6 +3,7 @@ package mc
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	mcdrv "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/driver"
 	mcma "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/multiaddr"
@@ -28,8 +29,9 @@ var _ tpt.Transport = &Transport{}
 // Transport represents any device by which you can connect to and accept
 // connections from other peers.
 type Transport struct {
-	host     host.Host
-	upgrader *tptu.Upgrader
+	host         host.Host
+	upgrader     *tptu.Upgrader
+	onceListener sync.Once
 }
 
 func NewTransportConstructorWithLogger(l *zap.Logger) func(h host.Host, u *tptu.Upgrader) (*Transport, error) {
@@ -119,7 +121,8 @@ func (t *Transport) Listen(localMa ma.Multiaddr) (tpt.Listener, error) {
 		gListener.Close()
 	}
 
-	return newListener(localMa, t), nil
+	t.onceListener.Do(func() { gListener = newListener(localMa, t) })
+	return gListener, nil
 }
 
 // Proxy returns true if this transport proxies.
