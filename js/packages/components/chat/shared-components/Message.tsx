@@ -9,6 +9,7 @@ import { SHA3 } from 'sha3'
 import Logo from '../../main/1_berty_picto.svg'
 import { ProceduralCircleAvatar } from '../../shared-components'
 import { useInteraction } from '@berty-tech/store/hooks'
+import Hyperlink from 'react-native-hyperlink'
 
 const pal = palette('tol-rainbow', 256)
 
@@ -333,17 +334,19 @@ export const Message: React.FC<{
 								</Text>
 							</View>
 						)}
-						<Text
-							style={[
-								{
-									color: msgTextColor,
-									fontSize: 12,
-									lineHeight: 17,
-								},
-							]}
-						>
-							{inte.payload.body}
-						</Text>
+						<Hyperlink linkDefault={true} linkStyle={{ textDecorationLine: 'underline' }}>
+							<Text
+								style={[
+									{
+										color: msgTextColor,
+										fontSize: 12,
+										lineHeight: 17,
+									},
+								]}
+							>
+								{inte.payload.body}
+							</Text>
+						</Hyperlink>
 					</View>
 					<View style={[inte.isMe && row.item.bottom]}>
 						<View style={[row.left, { alignItems: 'center' }]}>
