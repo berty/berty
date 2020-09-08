@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	logFilters     = flag.String("log-filters", "info+:bty.test error+:*", "log namespaces")
+	logFilters     = flag.String("log-filters", "info+:bty.test* error+:*,-ipfs*", "log namespaces")
 	logFile        = flag.String("log-file", "", "log to file")
 	logFormat      = flag.String("log-format", "color", "json, console, color")
 	loggerInstance *zap.Logger
