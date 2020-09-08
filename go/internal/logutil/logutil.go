@@ -140,9 +140,7 @@ func DecorateLogger(base *zap.Logger, filters string) (*zap.Logger, func(), erro
 
 	// IPFS/libp2p logging
 	if os.Getenv("BERTY_LIBP2P_DEBUG") == "1" {
-		// FIXME: only setup the proxy if filters allow it
-		// depends on https://github.com/moul/zapfilter/pull/9
-		// depends on https://github.com/ipfs/go-log/issues/102
+		// FIXME: replace this env var checking by a check that the ipfs namespace is allowed on zapfilter
 		proxyCleanup := setupIPFSLogProxy(logger.Named("ipfs"))
 		cleanup = u.CombineFuncs(proxyCleanup, cleanup)
 	}
@@ -151,6 +149,9 @@ func DecorateLogger(base *zap.Logger, filters string) (*zap.Logger, func(), erro
 }
 
 func setupIPFSLogProxy(logger *zap.Logger) func() {
+	// FIXME: write a better bridge for IPFS logger.
+	//        depends on https://github.com/ipfs/go-log/issues/102
+
 	ipfs_log.SetupLogging(ipfs_log.Config{
 		Stderr: false,
 		Stdout: false,

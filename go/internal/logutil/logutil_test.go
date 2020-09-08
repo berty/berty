@@ -33,7 +33,7 @@ func Example_logall() {
 }
 
 func Example_logerrors() {
-	logger, cleanup, err := logutil.NewLogger("error:*", "light-console", "stdout")
+	logger, cleanup, err := logutil.NewLogger("error:*,-*.bar warn:*.bar", "light-console", "stdout")
 	if err != nil {
 		panic(err)
 	}
@@ -49,7 +49,13 @@ func Example_logerrors() {
 	logger.Named("foo").Warn("foo warn")
 	logger.Named("foo").Error("foo error")
 
+	logger.Named("foo").Named("bar").Debug("foo.bar debug")
+	logger.Named("foo").Named("bar").Info("foo.bar info")
+	logger.Named("foo").Named("bar").Warn("foo.bar warn")
+	logger.Named("foo").Named("bar").Error("foo.bar error")
+
 	// Output:
 	// ERROR	bty               	top error
 	// ERROR	bty.foo           	foo error
+	// WARN 	bty.foo.bar       	foo.bar warn
 }
