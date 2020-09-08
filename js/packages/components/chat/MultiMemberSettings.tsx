@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, ScrollView, Share } from 'react-native'
+import { View, ScrollView, Share, Image } from 'react-native'
 import { Layout, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import {
@@ -11,6 +11,7 @@ import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAva
 import HeaderSettings from '../shared-components/Header'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import { useConversation, useMsgrContext } from '@berty-tech/store/hooks'
+import AvatarGroup19 from '../main/Avatar_Group_Copy_19.png'
 
 //
 // GroupChatSettings
@@ -66,15 +67,12 @@ const GroupChatSettingsHeader: React.FC<messenger.conversation.Entity> = ({
 	displayName,
 	publicKey,
 }) => {
-	const [{ text, margin }, { scaleHeight }] = useStyles()
+	const [{ text, margin, row }, { scaleHeight }] = useStyles()
 	return (
 		<View>
-			<ProceduralCircleAvatar
-				seed={publicKey}
-				size={120 * scaleHeight}
-				diffSize={20}
-				style={{ alignItems: 'center' }}
-			/>
+			<View style={[row.center]}>
+				<Image source={AvatarGroup19} style={{ width: 80, height: 80 }} />
+			</View>
 			<Text
 				numberOfLines={1}
 				ellipsizeMode='tail'
