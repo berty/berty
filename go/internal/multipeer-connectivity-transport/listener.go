@@ -15,7 +15,10 @@ import (
 
 // Global listener is used by discovery (to send incoming conn request to Accept())
 // and transport (to ensure that only one listener is running at a time).
-var gListener *Listener
+var (
+	gListener *Listener
+	gLock     sync.Mutex
+)
 
 // Listener is a tpt.Listener.
 var _ tpt.Listener = &Listener{}
@@ -89,6 +92,8 @@ func (l *Listener) Close() error {
 	mcdrv.StopMCDriver()
 
 	// Removes global listener so transport can instantiate a new one later.
+	gLock.Lock()
+	defer gLock.Unlock()
 	if gListener != nil {
 		gListener.inUse.Wait()
 		gListener = nil

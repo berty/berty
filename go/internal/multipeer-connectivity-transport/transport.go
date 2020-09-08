@@ -114,6 +114,8 @@ func (t *Transport) Listen(localMa ma.Multiaddr) (tpt.Listener, error) {
 	}
 
 	// If a global listener already exists, returns an error.
+	gLock.Lock()
+	defer gLock.Unlock()
 	if gListener != nil {
 		// TODO: restore this when published as generic lib / fixed in Berty network
 		// config update
