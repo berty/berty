@@ -29,20 +29,18 @@ export GYM_OPTION_APP_ID=${IOS_BUNDLE_ID}
 export GYM_OPTION_PROVISIONING_PROFILE="match ${IOS_PROFILE} ${IOS_BUNDLE_ID}"
 export GYM_OUTPUT_NAME=$(echo ${APP_NAME} | packages/berty-app/node_modules/.bin/caser --pascal)
 export GYM_OUTPUT_DIRECTORY=${APP_DEST}
-export GYM_WORKSPACE=ios/$(echo ${APP_NAME} | packages/berty-app/node_modules/.bin/caser --pascal).xcworkspace
+export GYM_WORKSPACE=packages/berty-app/ios/$(echo ${APP_NAME} | packages/berty-app/node_modules/.bin/caser --pascal).xcworkspace
 export GYM_SCHEME=${APP_TARGET}
 export GYM_SKIP_PROFILE_DETECTION=true
 export GYM_INCLUDE_SYMBOLS=false
-
-cd packages/berty-app
 
 # setup ci if needed
 if [ "$CI" = "true" ]; then
 	# create temporary keychain
 	bundle exec fastlane run create_keychain timeout:3600 default_keychain:true unlock:true add_to_search_list:true
     # setup app version
-	plutil -replace CFBundleShortVersionString -string ${TARGET_VERSION} ios/Berty/Info.plist
-    plutil -replace CFBundleVersion -string ${TARGET_BUILD} ios/Berty/Info.plist
+	plutil -replace CFBundleShortVersionString -string ${TARGET_VERSION} packages/berty-app/ios/Berty/Info.plist
+    plutil -replace CFBundleVersion -string ${TARGET_BUILD} packages/berty-app/ios/Berty/Info.plist
 fi
 
 # get ios certificates

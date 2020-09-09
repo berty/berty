@@ -9,6 +9,7 @@ import (
 
 	"berty.tech/berty/v2/go/cmd/berty/mini"
 	"berty.tech/berty/v2/go/internal/config"
+	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/cache/cacheleveldown"
 	"github.com/peterbourgon/ff/v3/ffcli"
@@ -23,12 +24,13 @@ func miniCommand() *ffcli.Command {
 	var miniFlags = flag.NewFlagSet("mini demo client", flag.ExitOnError)
 	miniFlags.StringVar(&opts.miniGroup, "g", opts.miniGroup, "group to join, leave empty to create a new group")
 	miniFlags.StringVar(&opts.datastorePath, "d", opts.datastorePath, "datastore base directory")
-	miniFlags.StringVar(&opts.sqlitePath, "s", opts.datastorePath, "sqlite base directory")
+	miniFlags.StringVar(&opts.sqlitePath, "s", opts.sqlitePath, "sqlite base directory")
 	miniFlags.BoolVar(&opts.replay, "replay", opts.replay, "reconstruct DB from orbitDB logs")
 	miniFlags.UintVar(&opts.miniPort, "p", opts.miniPort, "default IPFS listen port")
 	miniFlags.StringVar(&opts.remoteDaemonAddr, "r", opts.remoteDaemonAddr, "remote berty daemon")
 	miniFlags.StringVar(&opts.rdvpMaddr, "rdvp", opts.rdvpMaddr, "rendezvous point maddr")
 	miniFlags.BoolVar(&opts.miniInMemory, "inmem", opts.miniInMemory, "disable persistence")
+	miniFlags.BoolVar(&opts.miniDisableNotification, "no-notif", opts.miniDisableNotification, "disable notification")
 
 	return &ffcli.Command{
 		Name:      "mini",
@@ -72,17 +74,19 @@ func miniCommand() *ffcli.Command {
 
 			var db *gorm.DB
 			if opts.sqlitePath != "" {
-				_, err := os.Stat(opts.sqlitePath)
-				if err != nil {
-					if !os.IsNotExist(err) {
-						return errcode.TODO.Wrap(err)
+				basePath := opts.sqlitePath
+				if opts.sqlitePath != ":memory:" {
+					_, err := os.Stat(opts.sqlitePath)
+					if err != nil {
+						if !os.IsNotExist(err) {
+							return errcode.TODO.Wrap(err)
+						}
+						if err := os.MkdirAll(opts.sqlitePath, 0700); err != nil {
+							return errcode.TODO.Wrap(err)
+						}
 					}
-					if err := os.MkdirAll(opts.sqlitePath, 0700); err != nil {
-						return errcode.TODO.Wrap(err)
-					}
+					basePath = path.Join(opts.sqlitePath, "sqlite.db")
 				}
-
-				basePath := path.Join(opts.sqlitePath, "sqlite.db")
 				db, err = gorm.Open(sqlite.Open(basePath), &gorm.Config{Logger: zapgorm2.New(opts.logger)})
 				if err != nil {
 					return err
@@ -91,22 +95,32 @@ func miniCommand() *ffcli.Command {
 				defer sqlDB.Close()
 			}
 
+			var notifmanager notification.Manager
+			if !opts.miniDisableNotification {
+				// @TODO(gfanton): find a way to embed the icon into the app, and generate a valid path
+				notifmanager = notification.NewDesktopManager(l, "")
+			} else {
+				notifmanager = notification.NewLoggerManager(l)
+			}
+
 			err = mini.Main(ctx, &mini.Opts{
-				RemoteAddr:      opts.remoteDaemonAddr,
-				GroupInvitation: opts.miniGroup,
-				Port:            opts.miniPort,
-				RootDS:          rootDS,
-				MessengerDB:     db,
-				ReplayLogs:      opts.replay,
-				Logger:          l,
-				Bootstrap:       config.BertyDev.Bootstrap,
-				RendezVousPeer:  rdvpeer,
-				DisplayName:     opts.displayName,
-				LocalDiscovery:  opts.localDiscovery,
+				RemoteAddr:          opts.remoteDaemonAddr,
+				GroupInvitation:     opts.miniGroup,
+				Port:                opts.miniPort,
+				RootDS:              rootDS,
+				MessengerDB:         db,
+				ReplayLogs:          opts.replay,
+				Logger:              l,
+				Bootstrap:           config.BertyDev.Bootstrap,
+				RendezVousPeer:      rdvpeer,
+				DisplayName:         opts.displayName,
+				LocalDiscovery:      opts.localDiscovery,
+				NotificationManager: notifmanager,
 			})
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
+
 			return nil
 		},
 	}

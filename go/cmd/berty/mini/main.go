@@ -11,6 +11,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
@@ -39,15 +40,16 @@ type Opts struct {
 	Bootstrap      []string
 	RendezVousPeer *peer.AddrInfo
 
-	RemoteAddr      string
-	GroupInvitation string
-	Port            uint
-	RootDS          datastore.Batching
-	MessengerDB     *gorm.DB
-	ReplayLogs      bool
-	Logger          *zap.Logger
-	DisplayName     string
-	LocalDiscovery  bool
+	RemoteAddr          string
+	GroupInvitation     string
+	Port                uint
+	RootDS              datastore.Batching
+	MessengerDB         *gorm.DB
+	ReplayLogs          bool
+	Logger              *zap.Logger
+	DisplayName         string
+	LocalDiscovery      bool
+	NotificationManager notification.Manager
 }
 
 var globalLogger *zap.Logger
@@ -213,9 +215,10 @@ func Main(ctx context.Context, opts *Opts) error {
 	}
 
 	messenger, err := bertymessenger.New(client, &bertymessenger.Opts{
-		Logger:          opts.Logger.Named("messenger"),
-		ProtocolService: service,
-		DB:              opts.MessengerDB,
+		Logger:              opts.Logger.Named("messenger"),
+		ProtocolService:     service,
+		DB:                  opts.MessengerDB,
+		NotificationManager: opts.NotificationManager,
 	})
 	if err != nil {
 		return errcode.TODO.Wrap(err)

@@ -8,16 +8,19 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
+	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
+
 	badger_opts "github.com/dgraph-io/badger/options"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -37,8 +40,6 @@ import (
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
-	"go.opentelemetry.io/otel/api/kv"
-	"go.opentelemetry.io/otel/api/trace"
 	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
@@ -77,6 +78,7 @@ type MessengerBridge struct {
 	messengerService bertymessenger.Service
 	msngrDB          *gorm.DB
 	lifecycle        LifeCycleDriver
+	notification     notification.Manager
 
 	currentAppState int
 	muAppState      sync.Mutex
@@ -89,10 +91,10 @@ type MessengerBridge struct {
 type MessengerConfig struct {
 	*Config
 
-	dLogger    NativeLoggerDriver
-	lc         LifeCycleDriver
-	logFilters string
-
+	dLogger        NativeLoggerDriver
+	logFilters     string
+	lc             LifeCycleDriver
+	notifdriver    NotificationDriver
 	swarmListeners []string
 	rootDirectory  string
 	tracing        bool
@@ -127,6 +129,10 @@ func (pc *MessengerConfig) SetLogFilters(filters string) {
 
 func (pc *MessengerConfig) LoggerDriver(dLogger NativeLoggerDriver) {
 	pc.dLogger = dLogger
+}
+
+func (pc *MessengerConfig) NotificationDriver(driver NotificationDriver) {
+	pc.notifdriver = driver
 }
 
 func (pc *MessengerConfig) LifeCycleDriver(lc LifeCycleDriver) {
@@ -341,6 +347,15 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 		bertyprotocol.RegisterProtocolServiceServer(grpcServer, service)
 	}
 
+	var notifmanager notification.Manager
+	{
+		if config.notifdriver != nil {
+			notifmanager = newNotificationManagerAdaptater(logger, config.notifdriver)
+		} else {
+			notifmanager = notification.NewLoggerManager(logger)
+		}
+	}
+
 	// register messenger service
 	var messenger bertymessenger.Service
 	var db *gorm.DB
@@ -373,9 +388,10 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 		}
 
 		opts := bertymessenger.Opts{
-			Logger:          logger,
-			ProtocolService: service,
-			DB:              db,
+			Logger:              logger,
+			ProtocolService:     service,
+			NotificationManager: notifmanager,
+			DB:                  db,
 		}
 		tmpBridge := &MessengerBridge{
 			logger:          bridgeLogger,
@@ -417,6 +433,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 		messengerService: messenger,
 		msngrDB:          db,
 		protocolClient:   protocolClient,
+		notification:     notifmanager,
 	}
 
 	// setup lifecycle
@@ -456,33 +473,32 @@ func (p *MessengerBridge) HandleState(appstate int) {
 		p.currentAppState = appstate
 	}
 }
+
+var backgroundCounter int32
+
 func (p *MessengerBridge) HandleTask() LifeCycleBackgroundTask {
-	tr := tracer.New("AppState")
 	return NewBackgroundTask(p.logger, func(ctx context.Context) error {
-		return tr.WithSpan(ctx, "BackgroundTask", func(ctx context.Context) error {
-			p.logger.Info("starting background task")
+		p.logger.Info("starting background task")
 
-			ctx, cancel := context.WithDeadline(ctx, time.Now().Add(time.Second*25))
-			defer cancel()
-			span := trace.SpanFromContext(ctx)
-			count := 0
-			for {
-				select {
-				case <-ctx.Done():
-					p.logger.Info("ending background task")
-					if ctx.Err() != context.DeadlineExceeded {
-						span.AddEvent(ctx, "task has been canceled")
-						return fmt.Errorf("task has been canceled")
-					}
+		counter := atomic.AddInt32(&backgroundCounter, 1)
+		tnow := time.Now()
 
-					return nil
-				case <-time.After(time.Second):
-					span.AddEvent(ctx, "tick", kv.Int("count", count))
-					p.logger.Info("background task counting", zap.Int("count", count))
-				}
-				count++
-			}
-		}, trace.WithRecord(), trace.WithSpanKind(trace.SpanKindClient))
+		if err := p.notification.Notify(&notification.Notification{
+			Title: fmt.Sprintf("GoBackgroundTask #%d", counter),
+			Body:  "started",
+		}); err != nil {
+			p.logger.Error("unable to notify", zap.Error(err))
+		}
+
+		<-ctx.Done()
+
+		if err := p.notification.Notify(&notification.Notification{
+			Title: fmt.Sprintf("GoBackgroundTask #%d", counter),
+			Body:  fmt.Sprintf("ended (duration: %s)", time.Since(tnow).Truncate(time.Second)),
+		}); err != nil {
+			p.logger.Error("unable to notify", zap.Error(err))
+		}
+		return nil
 	})
 }
 

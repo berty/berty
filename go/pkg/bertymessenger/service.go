@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -36,6 +37,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 		startedAt:       time.Now(),
 		protocolService: opts.ProtocolService,
 		db:              opts.DB,
+		notifmanager:    opts.NotificationManager,
 		dispatcher:      NewDispatcher(),
 		cancelFn:        cancel,
 		optsCleanup:     optsCleanup,
@@ -80,7 +82,6 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 	// Subscribe to account group metadata
 
 	err = svc.subscribeToMetadata(icr.GetAccountGroupPK())
-
 	if err != nil {
 		return nil, err
 	}
@@ -135,6 +136,13 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 				return nil, err
 			}
 		}
+	}
+
+	if err := svc.notifmanager.Notify(&notification.Notification{
+		Title: "Berty",
+		Body:  "Service Messenger Started",
+	}); err != nil {
+		opts.Logger.Error("unable to trigger notify", zap.Error(err))
 	}
 
 	return &svc, nil
@@ -207,10 +215,11 @@ func (svc *service) Close() {
 }
 
 type Opts struct {
-	Logger          *zap.Logger
-	ProtocolService bertyprotocol.Service
-	DB              *gorm.DB
-	Context         context.Context
+	Logger              *zap.Logger
+	NotificationManager notification.Manager
+	ProtocolService     bertyprotocol.Service
+	DB                  *gorm.DB
+	Context             context.Context
 }
 
 func (opts *Opts) applyDefaults() (func(), error) {
@@ -237,8 +246,20 @@ func (opts *Opts) applyDefaults() (func(), error) {
 		opts.DB = db
 	}
 
+	if opts.NotificationManager == nil {
+		opts.NotificationManager = notification.NewNoopManager()
+	}
+
 	return cleanup, nil
 }
+
+type Service interface {
+	MessengerServiceServer
+	Close()
+}
+
+// service is a Service
+var _ Service = (*service)(nil)
 
 type service struct {
 	logger          *zap.Logger
@@ -247,15 +268,9 @@ type service struct {
 	protocolService bertyprotocol.Service // optional, for debugging only
 	db              *gorm.DB
 	dispatcher      *Dispatcher
+	notifmanager    notification.Manager
 	cancelFn        func()
 	optsCleanup     func()
 	ctx             context.Context
 	handlerMutex    sync.Mutex
 }
-
-type Service interface {
-	MessengerServiceServer
-	Close()
-}
-
-var _ Service = (*service)(nil)

@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.license      = package["license"]
   # s.license    = { :type => "MIT", :file => "FILE_LICENSE" }
   s.authors      = { "Berty Technologies" => "oss@berty.tech" }
-  s.platforms    = { :ios => "9.0", :tvos => "10.0" }
+  s.platforms    = { :ios => "12.0", :tvos => "10.0" }
   s.source       = { :git => "https://github.com/berty/go-bridge.git", :tag => "#{s.version}" }
 
   s.source_files = 'ios/*.{h,m,swift}'

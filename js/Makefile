@@ -78,6 +78,7 @@ clean:
 	rm -f packages/go-bridge/android/libs/gobridge.aar
 	rm -rf packages/storybook-mobile/ios/build
 	rm -rf packages/berty-app/android/app/build
+	rm -rf vendor/bundle
 
 	yarn cache clean -f
 ifneq (, $(shell which xcodebuild))
@@ -149,8 +150,7 @@ ios.run: deps packages/go-bridge/ios/Frameworks/Bertybridge.framework packages/b
 	cd packages/berty-app && $(react-native) run-ios --no-packager --configuration=$(if $(filter $(APP_CONFIG), development),Debug,Release) --scheme=$(APP_TARGET) --simulator='$(IOS_DEVICE)'
 
 .PHONY: ios.release
-ios.release: deps packages/go-bridge/ios/Frameworks/Bertybridge.framework packages/berty-app/ios/Pods/Manifest.lock
-	cd packages/berty-app && bundle install
+ios.release: vendor/bundle deps packages/go-bridge/ios/Frameworks/Bertybridge.framework packages/berty-app/ios/Pods/Manifest.lock
 	../tool/build/shell/release-ios.sh
 
 .PHONY: ios.log
@@ -287,6 +287,9 @@ $(pkg_mod): $(pkg_desc)
 	touch $(pkg_mod)
 	touch node_modules/go.mod # avoid go to lookup in this directory
 
+vendor/bundle: Gemfile.lock Gemfile
+	bundle install
+
 packages/storybook-mobile/storybook/storyLoader.gen.js: packages/storybook-mobile/node_modules
 	PATH=$(PATH) rnstl \
 		--pattern 'packages/storybook-mobile/../*-storybook/storybook.tsx' \
@@ -294,8 +297,8 @@ packages/storybook-mobile/storybook/storyLoader.gen.js: packages/storybook-mobil
 	sed -i.bak 's/\(.*\)\.\.\/node_modules\/\(.*\)\/storybook/\1\2\/storybook.tsx/g' packages/storybook-mobile/storybook/storyLoader.gen.js
 	rm -f packages/storybook-mobile/storybook/storyLoader.gen.js.bak
 
-packages/storybook-mobile/ios/Pods: packages/storybook-mobile/ios/Podfile packages/storybook-mobile/node_modules
-	cd packages/storybook-mobile/ios && pod install
+packages/storybook-mobile/ios/Pods: vendor/bundle packages/storybook-mobile/ios/Podfile packages/storybook-mobile/node_modules
+	cd packages/storybook-mobile/ios && bundle exec pod install
 
 packages/storybook-mobile/android/app/debug.keystore: $(HOME)/.android/debug.keystore
 	cat $< > $@
@@ -308,11 +311,8 @@ packages/berty-app/node_modules/react-native/react.gradle.orig: packages/berty-a
 	@echo "patching file $(patsubst %.orig, %, $@)"
 	@patch -f $(patsubst %.orig, %, $@) $< 1>/dev/null || true
 
-packages/berty-app/ios/Pods/Manifest.lock: packages/berty-app/ios/Podfile packages/berty-app/package.json
-	([ ! -z "$(shell which pod)" ] \
-		&& [[ "$$(pod --version)" > "1.7." ]]) \
-		|| sudo gem install cocoapods
-	cd packages/berty-app/ios && pod install
+packages/berty-app/ios/Pods/Manifest.lock: vendor/bundle packages/berty-app/ios/Podfile packages/berty-app/package.json
+	cd packages/berty-app/ios && bundle exec pod install
 
 packages/berty-app/ios/Podfile:
 	touch $@

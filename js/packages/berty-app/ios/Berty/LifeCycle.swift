@@ -13,9 +13,8 @@ import go_bridge
 
 class LifeCycle: NSObject {
     // init logger driver
-    static let logger: LoggerDriver = LoggerDriver("tech.berty", "lifecycle")
     static let shared: LifeCycle = LifeCycle()
-    var notifCount = notifCounter() // for testing purpose
+    let logger: LoggerDriver = LoggerDriver("tech.berty", "lifecycle")
 
     @objc static func getSharedInstance() -> LifeCycle {
         return LifeCycle.shared
@@ -24,26 +23,17 @@ class LifeCycle: NSObject {
     @available(iOS 13.0, *)
     @objc
     public func registerBackgroundTask(identifier: String) {
-        LifeCycle.logger.print("register background fetch task \(identifier)" as NSString)
+        self.logger.print("register background fetch task \(identifier)" as NSString)
         BGTaskScheduler.shared.register(forTaskWithIdentifier: identifier, using: nil) { (task) in
-            let notifID = identifier + ".notif"
-            let notif = LocalNotificationManager(id: notifID)
-              .setTitle(title: "AppLifeCycle")
-
             switch task {
             case is BGProcessingTask:
-                self.notifCount.increment(k: .processing)
                 self.scheduleBackgroundProcessing(identifier: identifier)
-                notif.setBody(body: "Processing Task #\(self.notifCount.notifProcessing) (total: \(self.notifCount.total())").schedule()
             case is BGAppRefreshTask:
-                self.notifCount.increment(k: .refresh)
                 self.scheduleAppRefresh(identifier: identifier)
-                notif.setBody(body: "AppRefresh Task #\(self.notifCount.notifRefresh) (total: \(self.notifCount.total())").schedule()
             default:
-                notif.setBody(body: "Handle Unknow Task #\(self.notifCount.total())").schedule()
+                break
             }
 
-            LifeCycle.logger.print(notif.body as NSString)
             self.handle(task: task)
         }
     }
@@ -51,21 +41,21 @@ class LifeCycle: NSObject {
     @available(iOS 13.0, *)
     func handle(task: BGTask) {
         guard let bgtask = LifeCycleDriver.shared.handleBackgroundTask() else {
-            LifeCycle.logger.print("unable to get handlers", level: .error)
+            self.logger.print("unable to get handlers", level: .error)
             task.setTaskCompleted(success: false)
             return
         }
 
         task.expirationHandler = {
-            LifeCycle.logger.print("handle expiracy")
+            self.logger.print("handle expiracy")
             bgtask.cancel()
         }
 
         DispatchQueue.global(qos: .background).async {
-            LifeCycle.logger.print("starting background task")
+            self.logger.print("starting background task")
             let success = bgtask.execute()
             DispatchQueue.main.async {
-                LifeCycle.logger.format("ending background with: success=\(success)" as NSString)
+                self.logger.format("ending background with: success=\(success)" as NSString)
                 task.setTaskCompleted(success: success)
             }
         }
@@ -77,10 +67,10 @@ class LifeCycle: NSObject {
         let request = BGAppRefreshTaskRequest(identifier: identifier)
         request.earliestBeginDate = Date(timeIntervalSinceNow: 60)
         do {
-            LifeCycle.logger.print("scheduling app refresh")
+            self.logger.print("scheduling app refresh")
             try BGTaskScheduler.shared.submit(request)
         } catch {
-            LifeCycle.logger.format("unable to submit task: %@", level: .error, error.localizedDescription)
+            self.logger.format("unable to submit task: %@", level: .error, error.localizedDescription)
         }
     }
 
@@ -90,17 +80,17 @@ class LifeCycle: NSObject {
         let request = BGProcessingTaskRequest(identifier: identifier)
         request.requiresNetworkConnectivity = true
         do {
-            LifeCycle.logger.print("scheduling app processing")
+            self.logger.print("scheduling app processing")
             try BGTaskScheduler.shared.submit(request)
         } catch {
-            LifeCycle.logger.format("unable to submit task: %@", level: .error, error.localizedDescription)
+            self.logger.format("unable to submit task: %@", level: .error, error.localizedDescription)
         }
     }
 
     @objc
     func startBackgroundTask(cancelAfter: Int, completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         guard let bgtask = LifeCycleDriver.shared.handleBackgroundTask() else {
-            LifeCycle.logger.print("unable to get handler", level: .error)
+            self.logger.print("unable to get handler", level: .error)
             completionHandler(.noData)
             return
         }
@@ -126,28 +116,7 @@ class LifeCycle: NSObject {
 
     @objc
     func willTerminate() {
-        LifeCycle.logger.print("will terminate")
+        self.logger.print("will terminate")
         LifeCycleDriver.shared.willTerminate()
-    }
-}
-
-// for testing purpose
-struct notifCounter {
-    enum kind {
-        case refresh, processing
-    }
-
-    var notifProcessing = 0
-    var notifRefresh = 0
-
-  func total() -> Int {
-      return notifProcessing + notifRefresh
-  }
-
-    mutating func increment(k: kind) {
-        switch k {
-        case .refresh: notifRefresh += 1
-        case .processing: notifProcessing += 1
-        }
     }
 }
