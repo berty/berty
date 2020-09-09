@@ -49,13 +49,20 @@ type mainOpts struct {
 	rdvpMaddr               string
 	remoteDaemonAddr        string
 	daemonListeners         string
-	miniPort                uint
+	port                    uint
 	miniGroup               string
 	miniInMemory            bool
 	miniDisableNotification bool
 	shareInviteOnDev        bool
 	shareInviteReset        bool
 	shareInviteNoTerminal   bool
+
+	// ServiceProvider
+	serviceProviderSecret    string
+	serviceProviderAuthSK    string
+	serviceProviderAuthPK    string
+	serviceProviderListener  string
+	serviceProviderSupported string
 }
 
 func newMainOpts() mainOpts {
@@ -70,7 +77,7 @@ func newMainOpts() mainOpts {
 		sqlitePath:     ":memory:",
 		datastorePath:  cacheleveldown.InMemoryDirectory,
 
-		miniPort:                0,
+		port:                    0,
 		miniGroup:               "",
 		miniInMemory:            false,
 		miniDisableNotification: false,
@@ -85,6 +92,12 @@ func newMainOpts() mainOpts {
 		shareInviteOnDev:        false,
 		shareInviteReset:        false,
 		shareInviteNoTerminal:   false,
+
+		serviceProviderSecret:    "",
+		serviceProviderAuthSK:    "",
+		serviceProviderAuthPK:    "",
+		serviceProviderListener:  ":8080",
+		serviceProviderSupported: "",
 	}
 }
 

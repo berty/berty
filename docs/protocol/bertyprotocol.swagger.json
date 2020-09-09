@@ -110,6 +110,72 @@
         ]
       }
     },
+    "/berty.protocol.v1/ProtocolService/AuthServiceCompleteFlow": {
+      "post": {
+        "summary": "AuthServiceCompleteFlow Completes an authentication flow",
+        "operationId": "ProtocolService_AuthServiceCompleteFlow",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AuthServiceCompleteFlowReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AuthServiceCompleteFlowRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/berty.protocol.v1/ProtocolService/AuthServiceInitFlow": {
+      "post": {
+        "summary": "AuthServiceInitFlow Initialize an authentication flow",
+        "operationId": "ProtocolService_AuthServiceInitFlow",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AuthServiceInitFlowReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AuthServiceInitFlowRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
     "/berty.protocol.v1/ProtocolService/ContactAliasKeySend": {
       "post": {
         "summary": "ContactAliasKeySend send an alias key to a contact, the contact will be able to assert that your account is being present on a multi-member group",
@@ -1051,6 +1117,48 @@
           "ProtocolService"
         ]
       }
+    },
+    "/berty.protocol.v1/ProtocolService/ServicesTokenList": {
+      "post": {
+        "summary": "ServicesTokenList Retrieves the list of services tokens",
+        "operationId": "ProtocolService_ServicesTokenList",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1ServicesTokenListReply"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of v1ServicesTokenListReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ServicesTokenListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
     }
   },
   "definitions": {
@@ -1168,6 +1276,37 @@
           "type": "string",
           "format": "byte",
           "title": "payload is the payload to send"
+        }
+      }
+    },
+    "v1AuthServiceCompleteFlowReply": {
+      "type": "object"
+    },
+    "v1AuthServiceCompleteFlowRequest": {
+      "type": "object",
+      "properties": {
+        "callback_url": {
+          "type": "string"
+        }
+      }
+    },
+    "v1AuthServiceInitFlowReply": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "secure_url": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      }
+    },
+    "v1AuthServiceInitFlowRequest": {
+      "type": "object",
+      "properties": {
+        "auth_url": {
+          "type": "string"
         }
       }
     },
@@ -1461,10 +1600,12 @@
         "EventTypeMultiMemberGroupAliasResolverAdded",
         "EventTypeMultiMemberGroupInitialMemberAnnounced",
         "EventTypeMultiMemberGroupAdminRoleGranted",
+        "EventTypeAccountServiceTokenAdded",
+        "EventTypeAccountServiceTokenRemoved",
         "EventTypeGroupMetadataPayloadSent"
       ],
       "default": "EventTypeUndefined",
-      "title": "- EventTypeUndefined: EventTypeUndefined indicates that the value has not been set. Should not happen.\n - EventTypeGroupMemberDeviceAdded: EventTypeGroupMemberDeviceAdded indicates the payload includes that a member has added their device to the group\n - EventTypeGroupDeviceSecretAdded: EventTypeGroupDeviceSecretAdded indicates the payload includes that a member has sent their device secret to another member\n - EventTypeAccountGroupJoined: EventTypeAccountGroupJoined indicates the payload includes that the account has joined a group\n - EventTypeAccountGroupLeft: EventTypeAccountGroupLeft indicates the payload includes that the account has left a group\n - EventTypeAccountContactRequestDisabled: EventTypeAccountContactRequestDisabled indicates the payload includes that the account has disabled incoming contact requests\n - EventTypeAccountContactRequestEnabled: EventTypeAccountContactRequestEnabled indicates the payload includes that the account has enabled incoming contact requests\n - EventTypeAccountContactRequestReferenceReset: EventTypeAccountContactRequestReferenceReset indicates the payload includes that the account has a new contact request rendezvous seed\n - EventTypeAccountContactRequestOutgoingEnqueued: EventTypeAccountContactRequestEnqueued indicates the payload includes that the account will attempt to send a new contact request\n - EventTypeAccountContactRequestOutgoingSent: EventTypeAccountContactRequestSent indicates the payload includes that the account has sent a contact request\n - EventTypeAccountContactRequestIncomingReceived: EventTypeAccountContactRequestReceived indicates the payload includes that the account has received a contact request\n - EventTypeAccountContactRequestIncomingDiscarded: EventTypeAccountContactRequestIncomingDiscarded indicates the payload includes that the account has ignored a contact request\n - EventTypeAccountContactRequestIncomingAccepted: EventTypeAccountContactRequestAccepted indicates the payload includes that the account has accepted a contact request\n - EventTypeAccountContactBlocked: EventTypeAccountContactBlocked indicates the payload includes that the account has blocked a contact\n - EventTypeAccountContactUnblocked: EventTypeAccountContactUnblocked indicates the payload includes that the account has unblocked a contact\n - EventTypeContactAliasKeyAdded: EventTypeContactAliasKeyAdded indicates the payload includes that the contact group has received an alias key\n - EventTypeMultiMemberGroupAliasResolverAdded: EventTypeMultiMemberGroupAliasResolverAdded indicates the payload includes that a member of the group sent their alias proof\n - EventTypeMultiMemberGroupInitialMemberAnnounced: EventTypeMultiMemberGroupInitialMemberAnnounced indicates the payload includes that a member has authenticated themselves as the group owner\n - EventTypeMultiMemberGroupAdminRoleGranted: EventTypeMultiMemberGroupAdminRoleGranted indicates the payload includes that an admin of the group granted another member as an admin\n - EventTypeGroupMetadataPayloadSent: EventTypeGroupMetadataPayloadSent indicates the payload includes an app specific event, unlike messages stored on the message store it is encrypted using a static key"
+      "title": "- EventTypeUndefined: EventTypeUndefined indicates that the value has not been set. Should not happen.\n - EventTypeGroupMemberDeviceAdded: EventTypeGroupMemberDeviceAdded indicates the payload includes that a member has added their device to the group\n - EventTypeGroupDeviceSecretAdded: EventTypeGroupDeviceSecretAdded indicates the payload includes that a member has sent their device secret to another member\n - EventTypeAccountGroupJoined: EventTypeAccountGroupJoined indicates the payload includes that the account has joined a group\n - EventTypeAccountGroupLeft: EventTypeAccountGroupLeft indicates the payload includes that the account has left a group\n - EventTypeAccountContactRequestDisabled: EventTypeAccountContactRequestDisabled indicates the payload includes that the account has disabled incoming contact requests\n - EventTypeAccountContactRequestEnabled: EventTypeAccountContactRequestEnabled indicates the payload includes that the account has enabled incoming contact requests\n - EventTypeAccountContactRequestReferenceReset: EventTypeAccountContactRequestReferenceReset indicates the payload includes that the account has a new contact request rendezvous seed\n - EventTypeAccountContactRequestOutgoingEnqueued: EventTypeAccountContactRequestEnqueued indicates the payload includes that the account will attempt to send a new contact request\n - EventTypeAccountContactRequestOutgoingSent: EventTypeAccountContactRequestSent indicates the payload includes that the account has sent a contact request\n - EventTypeAccountContactRequestIncomingReceived: EventTypeAccountContactRequestReceived indicates the payload includes that the account has received a contact request\n - EventTypeAccountContactRequestIncomingDiscarded: EventTypeAccountContactRequestIncomingDiscarded indicates the payload includes that the account has ignored a contact request\n - EventTypeAccountContactRequestIncomingAccepted: EventTypeAccountContactRequestAccepted indicates the payload includes that the account has accepted a contact request\n - EventTypeAccountContactBlocked: EventTypeAccountContactBlocked indicates the payload includes that the account has blocked a contact\n - EventTypeAccountContactUnblocked: EventTypeAccountContactUnblocked indicates the payload includes that the account has unblocked a contact\n - EventTypeContactAliasKeyAdded: EventTypeContactAliasKeyAdded indicates the payload includes that the contact group has received an alias key\n - EventTypeMultiMemberGroupAliasResolverAdded: EventTypeMultiMemberGroupAliasResolverAdded indicates the payload includes that a member of the group sent their alias proof\n - EventTypeMultiMemberGroupInitialMemberAnnounced: EventTypeMultiMemberGroupInitialMemberAnnounced indicates the payload includes that a member has authenticated themselves as the group owner\n - EventTypeMultiMemberGroupAdminRoleGranted: EventTypeMultiMemberGroupAdminRoleGranted indicates the payload includes that an admin of the group granted another member as an admin\n - EventTypeAccountServiceTokenAdded: EventTypeAccountServiceTokenAdded indicates that a new service provider has been registered for this account\n - EventTypeAccountServiceTokenRemoved: EventTypeAccountServiceTokenRemoved indicates that a service provider is not available anymore\n - EventTypeGroupMetadataPayloadSent: EventTypeGroupMetadataPayloadSent indicates the payload includes an app specific event, unlike messages stored on the message store it is encrypted using a static key"
     },
     "v1Group": {
       "type": "object",
@@ -1832,6 +1973,52 @@
           "format": "byte"
         }
       }
+    },
+    "v1ServiceToken": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "authentication_url": {
+          "type": "string"
+        },
+        "supported_services": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ServiceTokenSupportedService"
+          }
+        },
+        "expiration": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "v1ServiceTokenSupportedService": {
+      "type": "object",
+      "properties": {
+        "service_type": {
+          "type": "string"
+        },
+        "service_endpoint": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ServicesTokenListReply": {
+      "type": "object",
+      "properties": {
+        "token_id": {
+          "type": "string"
+        },
+        "service": {
+          "$ref": "#/definitions/v1ServiceToken"
+        }
+      }
+    },
+    "v1ServicesTokenListRequest": {
+      "type": "object"
     },
     "v1ShareableContact": {
       "type": "object",

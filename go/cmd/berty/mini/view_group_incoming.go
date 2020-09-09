@@ -316,6 +316,7 @@ func metadataEventHandler(ctx context.Context, v *groupView, e *bertytypes.Group
 		bertytypes.EventTypeMultiMemberGroupAdminRoleGranted:       nil, // do it later
 		bertytypes.EventTypeMultiMemberGroupAliasResolverAdded:     handlerMultiMemberGroupAliasResolverAdded,
 		bertytypes.EventTypeMultiMemberGroupInitialMemberAnnounced: handlerMultiMemberGroupInitialMemberAnnounced,
+		bertytypes.EventTypeAccountServiceTokenAdded:               handlerAccountServiceTokenAdded,
 	}
 	logger.Debug("metadataEventHandler", zap.Stringer("event-type", e.Metadata.EventType))
 
@@ -330,6 +331,27 @@ func metadataEventHandler(ctx context.Context, v *groupView, e *bertytypes.Group
 		v.messages.AppendErr(fmt.Errorf("error while handling metadata event (type: %s): %w", e.Metadata.EventType.String(), err))
 		v.addBadge()
 	}
+}
+
+func handlerAccountServiceTokenAdded(_ context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
+	casted := &bertytypes.AccountServiceTokenAdded{}
+	if err := casted.Unmarshal(e.Event); err != nil {
+		return err
+	}
+
+	addToBuffer(&historyMessage{
+		messageType: messageTypeMeta,
+		payload:     []byte(fmt.Sprintf("service token registered for account (%s: auth via %s)", casted.ServiceToken.TokenID(), casted.ServiceToken.AuthenticationURL)),
+	}, e, v, isHistory)
+
+	for _, s := range casted.ServiceToken.SupportedServices {
+		addToBuffer(&historyMessage{
+			messageType: messageTypeMeta,
+			payload:     []byte(fmt.Sprintf(" - %s, %s", s.ServiceType, s.ServiceEndpoint)),
+		}, e, v, isHistory)
+	}
+
+	return nil
 }
 
 func addToBuffer(evt *historyMessage, _ *bertytypes.GroupMetadataEvent, v *groupView, isHistory bool) {

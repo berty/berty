@@ -3,6 +3,7 @@ package bertyprotocol
 import (
 	"context"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -46,6 +47,7 @@ type service struct {
 	openedGroups   map[string]*groupContext
 	groups         map[string]*bertytypes.Group
 	lock           sync.RWMutex
+	authSession    atomic.Value
 	close          func() error
 }
 

@@ -98,6 +98,12 @@ enum EventType {
   // EventTypeMultiMemberGroupAdminRoleGranted indicates the payload includes that an admin of the group granted another member as an admin
   EventTypeMultiMemberGroupAdminRoleGranted = 303;
 
+  // EventTypeAccountServiceTokenAdded indicates that a new service provider has been registered for this account
+  EventTypeAccountServiceTokenAdded = 401;
+
+  // EventTypeAccountServiceTokenRemoved indicates that a service provider is not available anymore
+  EventTypeAccountServiceTokenRemoved = 402;
+
   // EventTypeGroupMetadataPayloadSent indicates the payload includes an app specific event, unlike messages stored on the message store it is encrypted using a static key
   EventTypeGroupMetadataPayloadSent = 1001;
 }
@@ -421,6 +427,22 @@ message AccountContactUnblocked {
 
   // contact_pk is the contact unblocked
   bytes contact_pk = 2 [(gogoproto.customname) = "ContactPK"];
+}
+
+// AccountServiceTokenAdded indicates a token has been added to the account
+message AccountServiceTokenAdded {
+  // device_pk is the device sending the event, signs the message
+  bytes device_pk = 1 [(gogoproto.customname) = "DevicePK"];
+
+  ServiceToken service_token = 2;
+}
+
+// AccountServiceTokenRemoved indicates a token has removed
+message AccountServiceTokenRemoved {
+  // device_pk is the device sending the event, signs the message
+  bytes device_pk = 1 [(gogoproto.customname) = "DevicePK"];
+
+  string token_id = 2 [(gogoproto.customname) = "TokenID"];
 }
 
 // ***************************************************************************
@@ -823,4 +845,47 @@ message ShareableContact {
 
   // metadata is the metadata specific to the app to identify the contact for the request
   bytes metadata = 3;
+}
+
+message ServiceTokenSupportedService {
+  string service_type = 1;
+  string service_endpoint = 2;
+}
+
+message ServiceToken {
+  string token = 1;
+  string authentication_url = 2  [(gogoproto.customname) = "AuthenticationURL"];
+  repeated ServiceTokenSupportedService supported_services = 3;
+  int64 expiration = 4;
+}
+
+message AuthServiceCompleteFlow {
+  message Request{
+    string callback_url = 1 [(gogoproto.customname) = "CallbackURL"];
+  }
+  message Reply{}
+}
+
+message AuthServiceInitFlow {
+  message Request {
+    string auth_url = 1 [(gogoproto.customname) = "AuthURL"];
+  }
+  message Reply {
+    string url = 1 [(gogoproto.customname) = "URL"];
+    bool secure_url = 2 [(gogoproto.customname) = "SecureURL"];
+  }
+}
+
+message ServicesTokenList {
+  message Request{}
+  message Reply{
+    string token_id = 1 [(gogoproto.customname) = "TokenID"];
+    ServiceToken service = 2;
+  }
+}
+
+message ServicesTokenCode {
+  repeated string services = 1;
+  string code_challenge = 2;
+  string token_id = 3 [(gogoproto.customname) = "TokenID"];
 }
