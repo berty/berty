@@ -156,7 +156,12 @@ const OutgoingRequestItem: React.FC<api.berty.messenger.v1.IContact> = ({
 				size={70}
 				diffSize={30}
 			/>
-			<Text style={[flex.tiny, text.align.center, padding.top.medium]}>{name}</Text>
+			<Text
+				style={[flex.tiny, text.align.center, padding.top.medium, { maxWidth: 100 }]}
+				numberOfLines={1}
+			>
+				{name}
+			</Text>
 			<Text
 				category='c1'
 				style={[padding.vertical.medium, text.align.center, text.size.tiny, text.color.grey]}

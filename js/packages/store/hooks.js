@@ -283,7 +283,7 @@ export const useLastConvInteraction = (convPublicKey, filterFunc) => {
 	return intes[intes.length - 1]
 }
 
-export const useReadEffect = (publicKey: string, timeout: number) => {
+export const useReadEffect = (publicKey, timeout) => {
 	// timeout is the duration (in ms) that the user must stay on the page to set messages as read
 	const navigation = useNavigation()
 

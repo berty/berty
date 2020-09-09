@@ -58,9 +58,11 @@ const AddMembersItem: React.FC<AddMembersItemProps> = ({
 	return (
 		<View>
 			<View style={[row.fill, padding.right.small]}>
-				<View style={[row.left, row.item.justify]}>
+				<View style={[row.left, row.item.justify, { flexShrink: 1 }]}>
 					<ProceduralCircleAvatar seed={contact.publicKey} diffSize={30} size={80} />
-					<Text style={[margin.left.small, row.item.justify]}>{contact.displayName}</Text>
+					<Text numberOfLines={1} style={[margin.left.small, row.item.justify, { flexShrink: 1 }]}>
+						{contact.displayName}
+					</Text>
 				</View>
 				<View style={[row.item.justify]}>
 					<CheckBox
@@ -166,14 +168,14 @@ const AddMembers: React.FC<AddMembersProps> = ({
 }
 
 const MemberItem: React.FC<{ member: any; onRemove: () => void }> = ({ member, onRemove }) => {
-	const [{ padding, column, text, color, row }] = useStyles()
+	const [{ padding, column, text, color, row, maxWidth }] = useStyles()
 	const _styles = useStylesCreateGroup()
 
 	return (
-		<View style={[padding.horizontal.medium]}>
+		<View style={[padding.horizontal.medium, maxWidth(100)]}>
 			<View style={[column.top, padding.top.small]}>
 				<ProceduralCircleAvatar seed={member.publicKey} diffSize={20} size={70} />
-				<Text style={[text.color.white, column.item.center, padding.top.tiny]}>
+				<Text numberOfLines={1} style={[text.color.white, column.item.center, padding.top.tiny]}>
 					{member.displayName}
 				</Text>
 			</View>
@@ -270,7 +272,7 @@ export const CreateGroupAddMembers: React.FC<{
 	onRemoveMember: (id: string) => void
 	members: any[]
 }> = ({ onSetMember, onRemoveMember, members }) => {
-	const [{ flex, background }] = useStyles()
+	const [{ flex, background, margin }] = useStyles()
 	const [layout, setLayout] = useState<number>(0)
 	const navigation = useNavigation()
 
@@ -281,15 +283,14 @@ export const CreateGroupAddMembers: React.FC<{
 					<CreateGroupHeader />
 					<MemberList members={members} onRemoveMember={onRemoveMember} />
 				</View>
-				<Header title='Add members' first>
-					<AddMembers
-						members={members}
-						onSetMember={onSetMember}
-						onRemoveMember={onRemoveMember}
-						paddingBottom={120}
-						layout={layout}
-					/>
-				</Header>
+				<Header title='Add members' first style={[margin.bottom.scale(-1)]} />
+				<AddMembers
+					members={members}
+					onSetMember={onSetMember}
+					onRemoveMember={onRemoveMember}
+					paddingBottom={120}
+					layout={layout}
+				/>
 			</SafeAreaView>
 			<FooterCreateGroup
 				title='CONTINUE'
