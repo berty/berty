@@ -14,6 +14,31 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 )
 
+// This server is a showcase of a PKCE OAuth 2 token issuer. Its behavior is to
+// generate a random identifier and sign it, thus allowing a no storage service
+// operation. The actual token contains a random identifier and the list of
+// services granted by the user, this value is encrypted an not accessible to
+// end users. The value returned to the app also contains a map of the services
+// endpoints indexed by their identifiers.
+//
+// For example the JSON response for /oauth/token can include:
+//  {
+//  "access_token":
+//  	"a_token",
+//  "token_type":
+//      "bearer",
+//  "scope":
+//  	"replication,contacts,backup",
+// 	"services": {
+//      "replication": "host:1234",
+//      "contacts": "host:5678",
+//      "backup": "other_host:1337"
+//    }
+//  }
+//
+// Where a_token will follow this construction:
+//    sig(sk, crypt(secret, (uuid, "replication,contacts,backup"])))
+//
 func tokenServerCommand() *ffcli.Command {
 	var flags = flag.NewFlagSet("token issuer server", flag.ExitOnError)
 	flags.StringVar(&opts.serviceProviderSecret, "secret", opts.serviceProviderSecret, "base64 encoded secret")

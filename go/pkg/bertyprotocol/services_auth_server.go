@@ -21,6 +21,10 @@ type AuthTokenServer struct {
 }
 
 func NewAuthTokenServer(secret []byte, sk ed25519.PrivateKey, services map[string]string, logger *zap.Logger) (*AuthTokenServer, error) {
+	if logger == nil {
+		logger = zap.NewNop()
+	}
+
 	if len(services) == 0 {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing services list"))
 	}
@@ -37,12 +41,16 @@ func NewAuthTokenServer(secret []byte, sk ed25519.PrivateKey, services map[strin
 	}, nil
 }
 
-func (a *AuthTokenServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (a *AuthTokenServer) serveMux() *http.ServeMux {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/oauth/token", a.authTokenServerHTTPOAuthToken)
-	mux.HandleFunc("/authorize", a.authTokenServerHTTPAuthorize)
+	mux.HandleFunc(AuthHTTPPathTokenExchange, a.authTokenServerHTTPOAuthToken)
+	mux.HandleFunc(AuthHTTPPathAuthorize, a.authTokenServerHTTPAuthorize)
 
-	mux.ServeHTTP(w, r)
+	return mux
+}
+
+func (a *AuthTokenServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	a.serveMux().ServeHTTP(w, r)
 }
 
 func (a *AuthTokenServer) authTokenServerRedirectError(w http.ResponseWriter, redirectURI, errorCode, errorDescription string, logger *zap.Logger) {
@@ -54,6 +62,14 @@ var templateAuthTokenServerRedirect = template.Must(template.New("redirect").Par
 <title>Redirection</title>
   <meta http-equiv="refresh" content="1; URL={{.URL}}" />
 </head><body><a href="{{.URL}}">Redirection</a></body></html>`))
+
+var templateAuthTokenServerAuthorizeButton = `<!DOCTYPE html><html lang="en-GB"><head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Token</title>
+</head>
+<form method="POST">
+<button type="submit">Get token</button>
+</form></html>`
 
 func (a *AuthTokenServer) authTokenServerJSONError(w http.ResponseWriter, errorCode, errorDescription string, logger *zap.Logger) {
 	a.authTokenServerJSONResponse(w, map[string]string{
@@ -95,25 +111,26 @@ func (a *AuthTokenServer) authTokenServerHTTPAuthorize(w http.ResponseWriter, r 
 	state := r.URL.Query().Get("state")
 	codeChallenge := r.URL.Query().Get("code_challenge")
 
-	expectedFixedValues := map[string]string{
-		"response_type":         AuthResponseType,
-		"client_id":             AuthClientID,
-		"redirect_uri":          AuthRedirect,
-		"code_challenge_method": AuthCodeChallengeMethod,
-	}
-
-	for k, v := range expectedFixedValues {
-		if got := r.URL.Query().Get(k); got != v {
-			a.authTokenServerRedirectError(w, redirectURI, "invalid_request", fmt.Sprintf("expected %s, got %s for %s", v, got, k), a.logger)
+	for _, vs := range [][2]string{
+		{"redirect_uri", AuthRedirect},
+		{"response_type", AuthResponseType},
+		{"client_id", AuthClientID},
+		{"code_challenge_method", AuthCodeChallengeMethod},
+	} {
+		if got := r.URL.Query().Get(vs[0]); got != vs[1] {
+			a.authTokenServerRedirectError(w, redirectURI, "invalid_request", fmt.Sprintf("unexpected value for %s", vs[0]), a.logger)
 			return
 		}
 	}
 
-	for _, k := range []string{"state", "code_challenge"} {
-		if r.URL.Query().Get(k) == "" {
-			a.authTokenServerRedirectError(w, redirectURI, "invalid_request", fmt.Sprintf("expected a value for %s", k), a.logger)
-			return
-		}
+	if state == "" {
+		a.authTokenServerRedirectError(w, redirectURI, "invalid_request", "unexpected value for state", a.logger)
+		return
+	}
+
+	if codeChallenge == "" {
+		a.authTokenServerRedirectError(w, redirectURI, "invalid_request", "unexpected value for code_challenge", a.logger)
+		return
 	}
 
 	if r.Method == "POST" {
@@ -132,7 +149,7 @@ func (a *AuthTokenServer) authTokenServerHTTPAuthorize(w http.ResponseWriter, r 
 		return
 	}
 
-	_, _ = fmt.Fprint(w, `<!DOCTYPE html><html lang="en-GB"><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Token</title></head><form method="POST"><button type="submit">Get token</button></form></html>`)
+	_, _ = fmt.Fprint(w, templateAuthTokenServerAuthorizeButton)
 }
 
 func (a *AuthTokenServer) authTokenServerHTTPOAuthToken(w http.ResponseWriter, r *http.Request) {
@@ -141,29 +158,12 @@ func (a *AuthTokenServer) authTokenServerHTTPOAuthToken(w http.ResponseWriter, r
 		return
 	}
 
-	code := r.Form.Get("code")
-	codeVerifier := r.Form.Get("code_verifier")
-
-	expectedFixedValues := map[string]string{
-		"grant_type": AuthGrantType,
-		"client_id":  AuthClientID,
+	if got := r.Form.Get("grant_type"); AuthGrantType != got {
+		a.authTokenServerJSONError(w, "invalid_request", fmt.Sprintf("expected %s, got %s for %s", AuthGrantType, got, "grant_type"), a.logger)
+		return
 	}
 
-	for k, v := range expectedFixedValues {
-		if got := r.Form.Get(k); got != v {
-			a.authTokenServerJSONError(w, "invalid_request", fmt.Sprintf("expected %s, got %s for %s", v, got, k), a.logger)
-			return
-		}
-	}
-
-	for _, k := range []string{"code", "code_verifier"} {
-		if r.Form.Get(k) == "" {
-			a.authTokenServerJSONError(w, "invalid_request", fmt.Sprintf("expected a value for %s", k), a.logger)
-			return
-		}
-	}
-
-	codeData, err := a.issuer.VerifyCode(code, codeVerifier)
+	codeData, err := a.issuer.VerifyCode(r.Form.Get("code"), r.Form.Get("code_verifier"))
 	if err != nil {
 		a.authTokenServerJSONError(w, "invalid_request", "invalid value for code", a.logger)
 		return

@@ -32,24 +32,45 @@ type authExchangeResponse struct {
 
 type authSession struct {
 	state        string
-	codeVerifier string
+	codeVerifier string // codeVerifier base64 encoded random value
 	baseURL      string
 }
 
-func newAuthSession(baseURL string) (*authSession, error) {
-	state, err := cryptoutil.GenerateNonce()
-	if err != nil {
-		return nil, err
+func authSessionCodeChallenge(codeVerifier string) string {
+	codeChallengeArr := sha256.Sum256([]byte(codeVerifier))
+	codeChallenge := make([]byte, sha256.Size)
+	for i, c := range codeChallengeArr {
+		codeChallenge[i] = c
 	}
 
-	codeVerifier, err := cryptoutil.GenerateNonce()
+	return base64.RawURLEncoding.EncodeToString(codeChallenge)
+}
+
+func authSessionCodeVerifierAndChallenge() (string, string, error) {
+	verifierArr, err := cryptoutil.GenerateNonce()
 	if err != nil {
-		return nil, err
+		return "", "", err
 	}
 
 	codeVerifierBytes := make([]byte, cryptoutil.NonceSize)
-	for i, c := range codeVerifier {
+	for i, c := range verifierArr {
 		codeVerifierBytes[i] = c
+	}
+
+	verifier := base64.RawURLEncoding.EncodeToString(codeVerifierBytes)
+
+	return verifier, authSessionCodeChallenge(verifier), nil
+}
+
+func newAuthSession(baseURL string) (*authSession, string, error) {
+	state, err := cryptoutil.GenerateNonce()
+	if err != nil {
+		return nil, "", err
+	}
+
+	verifier, challenge, err := authSessionCodeVerifierAndChallenge()
+	if err != nil {
+		return nil, "", err
 	}
 
 	stateBytes := make([]byte, cryptoutil.NonceSize)
@@ -60,37 +81,47 @@ func newAuthSession(baseURL string) (*authSession, error) {
 	auth := &authSession{
 		baseURL:      baseURL,
 		state:        base64.RawURLEncoding.EncodeToString(stateBytes),
-		codeVerifier: base64.RawURLEncoding.EncodeToString(codeVerifierBytes),
+		codeVerifier: verifier,
 	}
 
-	return auth, nil
+	return auth, challenge, nil
 }
 
 func (s *service) authInitURL(baseURL string) (string, error) {
-	if !strings.HasSuffix(baseURL, "/") {
-		baseURL += "/"
+	parsedAuthURL, err := url.Parse(baseURL)
+	if err != nil {
+		return "", errcode.ErrServicesAuthInvalidURL
 	}
 
-	auth, err := newAuthSession(baseURL)
+	switch parsedAuthURL.Scheme {
+	case "http", "https":
+	default:
+		return "", errcode.ErrServicesAuthInvalidURL
+	}
+
+	if parsedAuthURL.Host == "" {
+		return "", errcode.ErrServicesAuthInvalidURL
+	}
+
+	if strings.HasSuffix(baseURL, "/") {
+		baseURL = baseURL[:len(baseURL)-1]
+	}
+
+	auth, codeChallenge, err := newAuthSession(baseURL)
 	if err != nil {
 		return "", err
 	}
 
 	s.authSession.Store(auth)
 
-	codeChallengeArr := sha256.Sum256([]byte(auth.codeVerifier))
-	codeChallenge := make([]byte, sha256.Size)
-	for i, c := range codeChallengeArr {
-		codeChallenge[i] = c
-	}
-
-	return fmt.Sprintf("%sauthorize?response_type=%s&client_id=%s&redirect_uri=%s&state=%s&code_challenge=%s&code_challenge_method=%s",
+	return fmt.Sprintf("%s%s?response_type=%s&client_id=%s&redirect_uri=%s&state=%s&code_challenge=%s&code_challenge_method=%s",
 		baseURL,
+		AuthHTTPPathAuthorize,
 		AuthResponseType,
 		AuthClientID,
 		url.QueryEscape(AuthRedirect),
 		auth.state,
-		base64.RawURLEncoding.EncodeToString(codeChallenge),
+		codeChallenge,
 		AuthCodeChallengeMethod,
 	), nil
 }
@@ -121,7 +152,7 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *bertytyp
 		return nil, errcode.ErrServicesAuthWrongState
 	}
 
-	res, err := http.PostForm(fmt.Sprintf("%soauth/token", auth.baseURL), url.Values{
+	res, err := http.PostForm(fmt.Sprintf("%s%s", auth.baseURL, AuthHTTPPathTokenExchange), url.Values{
 		"grant_type":    {AuthGrantType},
 		"code":          {code},
 		"client_id":     {AuthClientID},
@@ -183,19 +214,6 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *bertytyp
 }
 
 func (s *service) AuthServiceInitFlow(ctx context.Context, request *bertytypes.AuthServiceInitFlow_Request) (*bertytypes.AuthServiceInitFlow_Reply, error) {
-	parsedAuthURL, err := url.Parse(request.AuthURL)
-	if err != nil {
-		return nil, errcode.ErrServicesAuthInvalidURL
-	}
-
-	secure := true
-
-	if parsedAuthURL.Scheme == "http" {
-		secure = false
-	} else if parsedAuthURL.Scheme != "https" {
-		return nil, errcode.ErrServicesAuthInvalidURL
-	}
-
 	u, err := s.authInitURL(request.AuthURL)
 	if err != nil {
 		return nil, err
@@ -203,7 +221,7 @@ func (s *service) AuthServiceInitFlow(ctx context.Context, request *bertytypes.A
 
 	return &bertytypes.AuthServiceInitFlow_Reply{
 		URL:       u,
-		SecureURL: secure,
+		SecureURL: strings.HasPrefix(u, "https://"),
 	}, nil
 }
 

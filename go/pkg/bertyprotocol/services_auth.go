@@ -4,8 +4,7 @@ import (
 	"context"
 	stdcrypto "crypto"
 	"crypto/ed25519"
-	"crypto/sha256"
-	"encoding/base64"
+	"fmt"
 
 	"github.com/gofrs/uuid"
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
@@ -23,6 +22,8 @@ type ContextAuthValue uint32
 
 const ContextTokenHashField ContextAuthValue = iota
 const ServiceReplicationID = "rpl"
+const AuthHTTPPathTokenExchange = "/oauth/token"
+const AuthHTTPPathAuthorize = "/authorize"
 
 type AuthTokenVerifier struct {
 	secret *[32]byte
@@ -35,6 +36,10 @@ type AuthTokenIssuer struct {
 }
 
 func NewAuthTokenVerifier(secret []byte, pk ed25519.PublicKey) (*AuthTokenVerifier, error) {
+	if pk == nil {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("pk is nil"))
+	}
+
 	secretArr, err := cryptoutil.KeySliceToArray(secret)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -47,6 +52,10 @@ func NewAuthTokenVerifier(secret []byte, pk ed25519.PublicKey) (*AuthTokenVerifi
 }
 
 func NewAuthTokenIssuer(secret []byte, sk ed25519.PrivateKey) (*AuthTokenIssuer, error) {
+	if sk == nil {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("sk is nil"))
+	}
+
 	tokVerifier, err := NewAuthTokenVerifier(secret, sk.Public().(ed25519.PublicKey))
 	if err != nil {
 		return nil, err
@@ -93,6 +102,14 @@ func (r *AuthTokenIssuer) encryptSign(payload []byte) (string, error) {
 }
 
 func (r *AuthTokenIssuer) IssueCode(codeChallenge string, services []string) (string, error) {
+	if len(services) == 0 {
+		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("no services specified"))
+	}
+
+	if len(codeChallenge) == 0 {
+		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("no codeChallenge specified"))
+	}
+
 	codePayload := &bertytypes.ServicesTokenCode{
 		Services:      services,
 		CodeChallenge: codeChallenge,
@@ -145,18 +162,7 @@ func (r *AuthTokenVerifier) VerifyCode(code, codeVerifier string) (*bertytypes.S
 		return nil, err
 	}
 
-	codeVerifierBytes, err := base64.RawURLEncoding.DecodeString(codeVerifier)
-	if err != nil {
-		return nil, err
-	}
-
-	codeChallengeArr := sha256.Sum256([]byte(base64.RawURLEncoding.EncodeToString(codeVerifierBytes)))
-	codeChallenge := make([]byte, sha256.Size)
-	for i, c := range codeChallengeArr {
-		codeChallenge[i] = c
-	}
-
-	if base64.RawURLEncoding.EncodeToString(codeChallenge) != codeObj.CodeChallenge {
+	if authSessionCodeChallenge(codeVerifier) != codeObj.CodeChallenge {
 		return nil, errcode.ErrServicesAuthCodeChallenge
 	}
 
@@ -167,6 +173,10 @@ func (r *AuthTokenIssuer) IssueToken(services []string) (string, error) {
 	tokenID, err := uuid.NewV4()
 	if err != nil {
 		return "", errcode.ErrInternal.Wrap(err)
+	}
+
+	if len(services) == 0 {
+		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("no services specified"))
 	}
 
 	tokenPayload := &bertytypes.ServicesTokenCode{
