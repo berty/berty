@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"os"
 	"strings"
 	"sync"
 
@@ -139,10 +138,12 @@ func DecorateLogger(base *zap.Logger, filters string) (*zap.Logger, func(), erro
 	}
 
 	// IPFS/libp2p logging
-	if os.Getenv("BERTY_LIBP2P_DEBUG") == "1" {
-		// FIXME: replace this env var checking by a check that the ipfs namespace is allowed on zapfilter
-		proxyCleanup := setupIPFSLogProxy(logger.Named("ipfs"))
-		cleanup = u.CombineFuncs(proxyCleanup, cleanup)
+	{
+		ipfsLogger := logger.Named("ipfs")
+		if zapfilter.CheckAnyLevel(ipfsLogger) {
+			proxyCleanup := setupIPFSLogProxy(ipfsLogger)
+			cleanup = u.CombineFuncs(proxyCleanup, cleanup)
+		}
 	}
 
 	return logger.Named("bty"), cleanup, nil
