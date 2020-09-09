@@ -11,7 +11,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	datastore "github.com/ipfs/go-datastore"
-	"github.com/mdp/qrterminal/v3"
+	qrterminal "github.com/mdp/qrterminal/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 )
 
@@ -21,6 +21,7 @@ func shareInviteCommand() *ffcli.Command {
 	shareInviteFlags.BoolVar(&opts.shareInviteReset, "reset", opts.shareInviteReset, "reset contact reference")
 	shareInviteFlags.BoolVar(&opts.shareInviteNoTerminal, "no-term", opts.shareInviteNoTerminal, "do not print the QR code in terminal")
 	shareInviteFlags.StringVar(&opts.datastorePath, "d", opts.datastorePath, "datastore base directory")
+	shareInviteFlags.StringVar(&opts.displayName, "display-name", opts.displayName, "display name to share")
 
 	return &ffcli.Command{
 		Name:      "share-invite",

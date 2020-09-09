@@ -157,6 +157,39 @@ gen.clean:
 	rm -f gen.sum $(wildcard */*/*.pb.go) $(wildcard */*/*pb_test.go) $(wildcard */*/*pb.gw.go)
 
 ##
+## Doc gen
+##
+
+.PHONY: doc.generate
+doc.generate: install
+	mkdir -p .tmp
+	GO111MODULE=off go get github.com/campoy/embedmd
+
+	# generate usage.txt
+	echo 'foo@bar:~$$ berty -h' > .tmp/usage.txt
+	berty -h 2>> .tmp/usage.txt
+	for sub in `berty -h 2>&1 | grep "^  [a-z]" | sed 1d | awk '{print $$1}'`; do \
+		echo >> .tmp/usage.txt; \
+		echo 'foo@bar:~$$ berty '$$sub' -h' >> .tmp/usage.txt; \
+		berty $$sub -h 2>> .tmp/usage.txt; \
+	done
+
+	echo 'foo@bar:~$$ berty share-invite' > .tmp/share-invite.txt
+	berty --logfilters="" share-invite -d=:memory: -display-name=demo >> .tmp/share-invite.txt
+
+	echo 'foo@bar:~$$ berty info' > .tmp/info.txt
+	berty --logfilters="" info -d=:memory: >> .tmp/info.txt
+
+	echo 'foo@bar:~$$ berty daemon' > .tmp/daemon.txt
+	expect -c "set timeout 10; spawn -noecho docker run bertytech/berty --logformat=console --logfilters=info+:bty daemon -d=:memory:; expect serving" >> .tmp/daemon.txt
+	echo '...' >> .tmp/daemon.txt
+
+	# FIXME: generate output for berty mini
+
+	embedmd -w README.md
+	#rm -rf .tmp
+
+##
 ## Dev
 ##
 
