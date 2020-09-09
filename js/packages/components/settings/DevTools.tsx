@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, ScrollView, Vibration } from 'react-native'
+import { View, ScrollView, Vibration, Alert } from 'react-native'
 import { Layout } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
@@ -138,7 +138,7 @@ const NativeCallButton: React.FC = () => {
 
 const DiscordShareButton: React.FC = () => {
 	const { navigate, goBack } = useNavigation()
-	const account = useAccount()
+	const account: any = useAccount()
 	const { refresh, done, error } = messengerMethodsHooks.useDevShareInstanceBertyID()
 	const [{ color }] = useStyles()
 
@@ -155,6 +155,28 @@ const DiscordShareButton: React.FC = () => {
 		}
 	}, [done, error, goBack, navigate.settings])
 
+	const createDiscordShareAlert = () =>
+		Alert.alert(
+			'Do you want to share your QR code to "#dev-logs" on Berty Discord?',
+			'This will allow other staff to scan your QR code or copy your contact link.',
+			[
+				{
+					text: 'Nope',
+					style: 'cancel',
+				},
+				{
+					text: 'Yep 👍',
+					onPress: () => {
+						refresh({
+							displayName: account.displayName,
+						})
+					},
+					style: 'default',
+				},
+			],
+			{ cancelable: true },
+		)
+
 	return (
 		<ButtonSetting
 			name='Share ID on discord'
@@ -162,9 +184,7 @@ const DiscordShareButton: React.FC = () => {
 			iconSize={30}
 			iconColor={color.dark.grey}
 			onPress={() => {
-				refresh({
-					displayName: account.displayName,
-				})
+				createDiscordShareAlert()
 			}}
 		/>
 	)

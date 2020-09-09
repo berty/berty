@@ -242,10 +242,7 @@ const MessageList: React.FC<{ id: string; scrollToMessage?: string }> = ({
 	if (!conversation) {
 		return <CenteredActivityIndicator />
 	}
-	const getPreviousMessageId = (item = '', messageList: string[] = []): string => {
-		const messagePosition: number = !item ? -1 : messageList.indexOf(item)
-		return messagePosition < 1 ? '' : messageList[messagePosition - 1]
-	}
+
 	return (
 		<FlatList
 			initialScrollIndex={initialScrollIndex}
@@ -263,13 +260,13 @@ const MessageList: React.FC<{ id: string; scrollToMessage?: string }> = ({
 			inverted
 			ListFooterComponent={<InfosMultiMember {...conversation} />}
 			keyExtractor={(item) => item.cid}
-			renderItem={({ item }) => (
+			renderItem={({ item, index }: { item: any; index: number }) => (
 				<Message
 					id={item.cid}
 					convKind={messengerpb.Conversation.Type.MultiMemberType}
 					convPK={conversation.publicKey}
 					members={members}
-					previousMessageId={getPreviousMessageId(item, conversation.messages)}
+					previousMessageId={index > 0 ? interactions.reverse()[index - 1]?.cid : ''}
 				/>
 			)}
 		/>

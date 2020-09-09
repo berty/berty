@@ -153,7 +153,7 @@ export const MessageInvitation: React.FC<{ message: any }> = ({ message }) => {
 				<MessageInvitationWrapper message={message}>
 					<View style={[row.center, flex.justify.spaceEvenly, flex.align.center]}>
 						<Text style={[text.size.scale(14)]}>
-							You have sent an invitation to join {message.name}!
+							You have sent an invitation to join the group {message.name}!
 						</Text>
 					</View>
 				</MessageInvitationWrapper>
