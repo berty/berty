@@ -15,7 +15,10 @@ import (
 
 // Global listener is used by discovery (to send incoming conn request to Accept())
 // and transport (to ensure that only one listener is running at a time).
-var gListener *Listener
+var (
+	gListener *Listener
+	gLock     sync.RWMutex
+)
 
 // Listener is a tpt.Listener.
 var _ tpt.Listener = &Listener{}
@@ -28,7 +31,6 @@ type Listener struct {
 	transport      *Transport
 	localMa        ma.Multiaddr
 	inboundConnReq chan connReq // Chan used to accept inbound conn.
-	inUse          sync.WaitGroup
 	ctx            context.Context
 	cancel         func()
 }
@@ -57,7 +59,9 @@ func newListener(localMa ma.Multiaddr, t *Transport) *Listener {
 	mcdrv.StartMCDriver(t.host.ID().Pretty())
 
 	// Sets listener as global listener
+	gLock.Lock()
 	gListener = listener
+	gLock.Unlock()
 
 	return listener
 }
@@ -89,10 +93,9 @@ func (l *Listener) Close() error {
 	mcdrv.StopMCDriver()
 
 	// Removes global listener so transport can instantiate a new one later.
-	if gListener != nil {
-		gListener.inUse.Wait()
-		gListener = nil
-	}
+	gLock.Lock()
+	gListener = nil
+	gLock.Unlock()
 
 	return nil
 }

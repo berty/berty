@@ -55,6 +55,8 @@ func NewTransport(h host.Host, u *tptu.Upgrader) (*Transport, error) {
 func (t *Transport) Dial(ctx context.Context, remoteMa ma.Multiaddr, remotePID peer.ID) (tpt.CapableConn, error) {
 	// MC transport needs to have a running listener in order to dial other peer
 	// because native driver is initialized during listener creation.
+	gLock.RLock()
+	defer gLock.RUnlock()
 	if gListener == nil {
 		return nil, errors.New("transport dialing peer failed: no active listener")
 	}
@@ -66,19 +68,14 @@ func (t *Transport) Dial(ctx context.Context, remoteMa ma.Multiaddr, remotePID p
 		return nil, errors.Wrap(err, "transport dialing peer failed: wrong multiaddr")
 	}
 
-	// Ensures that gListener won't be unset until operations using it are finished
-	gListener.inUse.Add(1)
-
 	// Check if native driver is already connected to peer's device.
 	// With MC you can't really dial, only auto-connect with peer nearby.
 	if !mcdrv.DialPeer(remoteAddr) {
-		gListener.inUse.Done()
 		return nil, errors.New("transport dialing peer failed: peer not connected through MC")
 	}
 
 	// Can't have two connections on the same multiaddr
 	if _, ok := connMap.Load(remoteAddr); ok {
-		gListener.inUse.Done()
 		return nil, errors.New("transport dialing peer failed: already connected to this address")
 	}
 
@@ -112,12 +109,12 @@ func (t *Transport) Listen(localMa ma.Multiaddr) (tpt.Listener, error) {
 	}
 
 	// If a global listener already exists, returns an error.
+	gLock.RLock()
 	if gListener != nil {
-		// TODO: restore this when published as generic lib / fixed in Berty network
-		// config update
-		// return nil, errors.New("transport listen failed: one listener maximum")
-		gListener.Close()
+		gLock.RUnlock()
+		return nil, errors.New("transport listen failed: one listener maximum")
 	}
+	gLock.RUnlock()
 
 	return newListener(localMa, t), nil
 }

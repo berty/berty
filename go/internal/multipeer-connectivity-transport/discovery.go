@@ -24,13 +24,12 @@ func HandleFoundPeer(sRemotePID string) bool {
 	}
 
 	// Checks if a listener is currently running.
+	gLock.RLock()
+	defer gLock.RUnlock()
 	if gListener == nil || gListener.ctx.Err() != nil {
-		logger.Error("discovery handle peer failed: listener not running", zap.Error(gListener.ctx.Err()))
+		logger.Error("discovery handle peer failed: listener not running")
 		return false
 	}
-
-	// Ensures that gListener won't be unset until operations using it are finished
-	gListener.inUse.Add(1)
 
 	// Adds peer to peerstore.
 	gListener.transport.host.Peerstore().AddAddr(remotePID, remoteMa,
@@ -61,7 +60,6 @@ func HandleFoundPeer(sRemotePID string) bool {
 	}:
 		return true
 	case <-gListener.ctx.Done():
-		gListener.inUse.Done()
 		return false
 	}
 }
