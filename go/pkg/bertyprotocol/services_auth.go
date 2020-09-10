@@ -21,7 +21,6 @@ import (
 type ContextAuthValue uint32
 
 const ContextTokenHashField ContextAuthValue = iota
-const ServiceReplicationID = "rpl"
 const AuthHTTPPathTokenExchange = "/oauth/token"
 const AuthHTTPPathAuthorize = "/authorize"
 

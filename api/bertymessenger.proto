@@ -62,6 +62,9 @@ service MessengerService {
 
   // ServicesTokenList Retrieves the list of service server tokens
   rpc ServicesTokenList(types.v1.ServicesTokenList.Request) returns (stream types.v1.ServicesTokenList.Reply);
+
+  // ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents
+  rpc ReplicationServiceRegisterGroup(types.v1.ReplicationServiceRegisterGroup.Request) returns (types.v1.ReplicationServiceRegisterGroup.Reply);
 }
 
 message ConversationOpen {

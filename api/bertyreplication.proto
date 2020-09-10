@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package berty.protocol.v1;
+
+import "bertytypes.proto";
+
+option go_package = "berty.tech/berty/go/pkg/bertyprotocol";
+
+// ReplicationService
+service ReplicationService {
+  // ReplicateGroup
+  rpc ReplicateGroup(types.v1.ReplicationServiceReplicateGroup.Request) returns (types.v1.ReplicationServiceReplicateGroup.Reply);
+}
+

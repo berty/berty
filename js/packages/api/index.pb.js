@@ -368,7 +368,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrServicesAuthServiceInvalidToken: 4006,
               ErrServicesAuthServiceNotSupported: 4007,
               ErrServicesAuthUnknownToken: 4008,
-              ErrServicesAuthInvalidURL: 4009
+              ErrServicesAuthInvalidURL: 4009,
+              ErrServiceReplication: 4100,
+              ErrServiceReplicationServer: 4101,
+              ErrServiceReplicationMissingEndpoint: 4102
             }
           },
           ErrDetails: {
@@ -519,6 +522,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "types.v1.ServicesTokenList.Request",
                     responseType: "types.v1.ServicesTokenList.Reply",
                     responseStream: true
+                  },
+                  ReplicationServiceRegisterGroup: {
+                    requestType: "types.v1.ReplicationServiceRegisterGroup.Request",
+                    responseType: "types.v1.ReplicationServiceRegisterGroup.Reply"
                   }
                 }
               }
@@ -608,6 +615,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   groupType: {
                     type: "GroupType",
                     id: 4
+                  },
+                  signPub: {
+                    type: "bytes",
+                    id: 5
                   }
                 }
               },
@@ -2045,6 +2056,56 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     }
                   }
                 }
+              },
+              ReplicationServiceRegisterGroup: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      tokenId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "TokenID"
+                        }
+                      },
+                      groupPk: {
+                        type: "bytes",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              ReplicationServiceReplicateGroup: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      group: {
+                        type: "Group",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      ok: {
+                        type: "bool",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "OK"
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -2157,6 +2218,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "types.v1.ServicesTokenList.Request",
                     responseType: "types.v1.ServicesTokenList.Reply",
                     responseStream: true
+                  },
+                  ReplicationServiceRegisterGroup: {
+                    requestType: "types.v1.ReplicationServiceRegisterGroup.Request",
+                    responseType: "types.v1.ReplicationServiceRegisterGroup.Reply"
                   }
                 }
               },

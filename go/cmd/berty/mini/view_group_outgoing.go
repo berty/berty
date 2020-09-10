@@ -177,6 +177,11 @@ func commandList() []*command {
 			cmd:   authComplete,
 		},
 		{
+			title: "replicate group",
+			help:  "Registers current group for replication using specified token",
+			cmd:   replGroup,
+		},
+		{
 			title:     "/",
 			help:      "",
 			cmd:       newSlashMessageCommand,
@@ -245,6 +250,17 @@ func servicesList(ctx context.Context, v *groupView, _ string) error {
 				payload:     []byte(fmt.Sprintf("token: %s - service: %s, %s", item.TokenID, service.ServiceType, service.ServiceEndpoint)),
 			})
 		}
+	}
+
+	return nil
+}
+
+func replGroup(ctx context.Context, v *groupView, cmd string) error {
+	if _, err := v.v.protocol.ReplicationServiceRegisterGroup(ctx, &bertytypes.ReplicationServiceRegisterGroup_Request{
+		TokenID: strings.TrimSpace(cmd),
+		GroupPK: v.g.PublicKey,
+	}); err != nil {
+		return err
 	}
 
 	return nil

@@ -22,6 +22,16 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
+type GroupOpenMode uint64
+
+const (
+	GroupOpenModeUndefined GroupOpenMode = iota
+	GroupOpenModeReplicate
+	GroupOpenModeWrite
+)
+
+var _ = GroupOpenModeUndefined
+
 type loggable interface {
 	setLogger(*zap.Logger)
 }
@@ -98,6 +108,28 @@ func (s *BertyOrbitDB) registerGroupPrivateKey(g *bertytypes.Group) error {
 	return nil
 }
 
+func (s *BertyOrbitDB) registerGroupSigningPubKey(g *bertytypes.Group) error {
+	groupID := g.GroupIDAsString()
+
+	var gSigPK crypto.PubKey
+
+	gSigSK, err := g.GetSigningPrivKey()
+	if err == nil && gSigSK != nil {
+		gSigPK = gSigSK.GetPublic()
+	} else {
+		gSigPK, err = g.GetSigningPubKey()
+		if err != nil {
+			return errcode.TODO.Wrap(err)
+		}
+	}
+
+	if err := s.SetGroupSigPubKey(groupID, gSigPK); err != nil {
+		return errcode.TODO.Wrap(err)
+	}
+
+	return nil
+}
+
 func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *NewOrbitDBOptions) (*BertyOrbitDB, error) {
 	var err error
 
@@ -153,6 +185,10 @@ func (s *BertyOrbitDB) openAccountGroup(ctx context.Context, options *orbitdb.Cr
 }
 
 func (s *BertyOrbitDB) openGroup(ctx context.Context, g *bertytypes.Group, options *orbitdb.CreateDBOptions) (*groupContext, error) {
+	if s.deviceKeystore == nil || s.messageKeystore == nil {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("db open in naive mode"))
+	}
+
 	id := g.GroupIDAsString()
 
 	existingGC, err := s.getGroupContext(id)
@@ -198,6 +234,41 @@ func (s *BertyOrbitDB) openGroup(ctx context.Context, g *bertytypes.Group, optio
 	return gc, nil
 }
 
+func (s *BertyOrbitDB) openGroupReplication(ctx context.Context, g *bertytypes.Group, options *orbitdb.CreateDBOptions) error {
+	if g == nil || len(g.PublicKey) == 0 {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing group or group pubkey"))
+	}
+
+	id := g.GroupIDAsString()
+
+	_, err := s.getGroupContext(id)
+	if err != nil && !errcode.Is(err, errcode.ErrMissingMapKey) {
+		return errcode.ErrInternal.Wrap(err)
+	}
+	if err == nil {
+		return nil
+	}
+
+	groupID := g.GroupIDAsString()
+	s.groups.Store(groupID, g)
+
+	if err := s.registerGroupSigningPubKey(g); err != nil {
+		return err
+	}
+
+	_, err = s.storeForGroup(ctx, s, g, options, groupMetadataStoreType, GroupOpenModeReplicate)
+	if err != nil {
+		return errors.Wrap(err, "unable to open database")
+	}
+
+	_, err = s.storeForGroup(ctx, s, g, options, groupMessageStoreType, GroupOpenModeReplicate)
+	if err != nil {
+		return errors.Wrap(err, "unable to open database")
+	}
+
+	return nil
+}
+
 func (s *BertyOrbitDB) getGroupContext(id string) (*groupContext, error) {
 	g, ok := s.groupContexts.Load(id)
 	if !ok {
@@ -219,8 +290,8 @@ func (s *BertyOrbitDB) SetGroupSigPubKey(groupID string, pubKey crypto.PubKey) e
 	return nil
 }
 
-func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g *bertytypes.Group, options *orbitdb.CreateDBOptions, storeType string) (iface.Store, error) {
-	options, err := DefaultOrbitDBOptions(g, options, s.keyStore, storeType)
+func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g *bertytypes.Group, options *orbitdb.CreateDBOptions, storeType string, groupOpenMode GroupOpenMode) (iface.Store, error) {
+	options, err := DefaultOrbitDBOptions(g, options, s.keyStore, storeType, groupOpenMode)
 	if err != nil {
 		return nil, err
 	}
@@ -238,7 +309,7 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 }
 
 func (s *BertyOrbitDB) groupMetadataStore(ctx context.Context, g *bertytypes.Group, options *orbitdb.CreateDBOptions) (*metadataStore, error) {
-	store, err := s.storeForGroup(ctx, s, g, options, groupMetadataStoreType)
+	store, err := s.storeForGroup(ctx, s, g, options, groupMetadataStoreType, GroupOpenModeWrite)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to open database")
 	}
@@ -252,7 +323,7 @@ func (s *BertyOrbitDB) groupMetadataStore(ctx context.Context, g *bertytypes.Gro
 }
 
 func (s *BertyOrbitDB) groupMessageStore(ctx context.Context, g *bertytypes.Group, options *orbitdb.CreateDBOptions) (*messageStore, error) {
-	store, err := s.storeForGroup(ctx, s, g, options, groupMessageStoreType)
+	store, err := s.storeForGroup(ctx, s, g, options, groupMessageStoreType, GroupOpenModeWrite)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to open database")
 	}

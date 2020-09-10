@@ -45,16 +45,45 @@ type CoreAPIMock interface {
 	Close()
 }
 
-func TestingRepo(t testing.TB) ipfs_repo.Repo {
+func getOrCreatePrivateKeyFromDatastore(t testing.TB, datastore ds.Datastore) libp2p_ci.PrivKey {
+	const datastoreKeyForPrivateKey = "libp2p_private_key"
+
+	privkeyb, err := datastore.Get(ds.NewKey("private_key"))
+	if err == ds.ErrNotFound {
+		priv, _, err := libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.RSA, 2048, crand.Reader)
+		if err != nil {
+			t.Fatalf("failed to generate pair key: %v", err)
+		}
+
+		privkeyb, err := priv.Bytes()
+		if err != nil {
+			t.Fatalf("failed to get raw priv key: %v", err)
+		}
+
+		if err := datastore.Put(ds.NewKey(datastoreKeyForPrivateKey), privkeyb); err != nil {
+			t.Fatalf("failed to save priv key: %v", err)
+		}
+
+		return priv
+	} else if err != nil {
+		t.Fatalf("failed to get value from datastore: %v", err)
+	}
+
+	priv, err := libp2p_ci.UnmarshalPrivateKey(privkeyb)
+	if err != nil {
+		t.Fatalf("failed to unmarshal priv key: %v", err)
+	}
+
+	return priv
+}
+
+func TestingRepo(t testing.TB, datastore ds.Datastore) ipfs_repo.Repo {
 	t.Helper()
 
 	c := ipfs_cfg.Config{}
-	priv, pub, err := libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.RSA, 2048, crand.Reader)
-	if err != nil {
-		t.Fatalf("failed to generate pair key: %v", err)
-	}
+	priv := getOrCreatePrivateKeyFromDatastore(t, datastore)
 
-	pid, err := libp2p_peer.IDFromPublicKey(pub)
+	pid, err := libp2p_peer.IDFromPublicKey(priv.GetPublic())
 	if err != nil {
 		t.Fatalf("failed to get pid from pub key: %v", err)
 	}
@@ -69,7 +98,11 @@ func TestingRepo(t testing.TB) ipfs_repo.Repo {
 	c.Identity.PeerID = pid.Pretty()
 	c.Identity.PrivKey = base64.StdEncoding.EncodeToString(privkeyb)
 
-	dstore := dsync.MutexWrap(ds.NewMapDatastore())
+	if datastore == nil {
+		datastore = ds.NewMapDatastore()
+	}
+	dstore := dsync.MutexWrap(datastore)
+
 	return &ipfs_repo.Mock{
 		D: dstore,
 		C: c,
@@ -77,9 +110,10 @@ func TestingRepo(t testing.TB) ipfs_repo.Repo {
 }
 
 type TestingAPIOpts struct {
-	Logger  *zap.Logger
-	Mocknet libp2p_mocknet.Mocknet
-	RDVPeer peer.AddrInfo
+	Logger    *zap.Logger
+	Mocknet   libp2p_mocknet.Mocknet
+	RDVPeer   peer.AddrInfo
+	Datastore ds.Batching
 }
 
 // TestingCoreAPIUsingMockNet returns a fully initialized mocked Core API with the given mocknet
@@ -93,7 +127,12 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 	var ps *pubsub.PubSub
 	var disc tinder.Driver
 
-	repo := TestingRepo(t)
+	datastore := opts.Datastore
+	if datastore == nil {
+		datastore = dsync.MutexWrap(ds.NewMapDatastore())
+	}
+
+	repo := TestingRepo(t, datastore)
 	exapi, node, err := NewCoreAPIFromRepo(ctx, repo, &CoreAPIConfig{
 		DisableCorePubSub: true,
 		Host:              ipfs_mock.MockHostOption(opts.Mocknet),

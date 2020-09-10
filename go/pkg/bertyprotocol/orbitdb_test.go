@@ -89,13 +89,13 @@ func TestDifferentStores(t *testing.T) {
 	api1, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts)
 	defer cleanup()
 
-	odb1 := newTestOrbitDB(ctx, t, logger, api1, baseDS)
+	odb1 := newTestOrbitDB(ctx, t, logger, api1, ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer1")))
 	defer odb1.Close()
 
 	api2, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts)
 	defer cleanup()
 
-	odb2 := newTestOrbitDB(ctx, t, logger, api2, baseDS)
+	odb2 := newTestOrbitDB(ctx, t, logger, api2, ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer2")))
 	defer odb2.Close()
 
 	err = mn.LinkAll()
