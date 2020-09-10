@@ -277,7 +277,7 @@ const MessageList: React.FC<{ id: string; scrollToMessage?: string }> = ({
 }
 
 export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params } }) => {
-	const [inputIsFocused, setInputFocus] = useState(true)
+	const [inputIsFocused, setInputFocus] = useState(false)
 	const [{ background, flex }] = useStyles()
 	useReadEffect(params.convId, 1000)
 	return (

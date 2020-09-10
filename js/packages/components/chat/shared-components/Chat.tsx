@@ -78,14 +78,17 @@ export const ChatFooter: React.FC<{
 							border.radius.medium,
 							padding.small,
 							row.fill,
-							{ alignItems: 'center', backgroundColor: _isFocused ? '#E8E9FC99' : '#EDEFF3' },
+							{
+								alignItems: 'center',
+								backgroundColor: _isFocused ? '#E8E9FC99' : '#EDEFF3',
+								marginBottom: _isFocused ? 0 : 16,
+							},
 						]}
 					>
 						<TextInput
 							value={message}
 							ref={inputRef}
 							multiline
-							autoFocus
 							onFocus={() => setFocus(true)}
 							onBlur={() => setFocus(false)}
 							onChange={({ nativeEvent }) => {
