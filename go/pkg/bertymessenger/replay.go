@@ -116,7 +116,8 @@ func processMetadataList(ctx context.Context, groupPK []byte, db *gorm.DB, clien
 			if err := proto.Unmarshal(metadata.GetEvent(), &ev); err != nil {
 				return errcode.ErrDeserialization.Wrap(err)
 			}
-			contactPK := bytesToString(ev.GetContact().GetPK())
+			contactPKBytes := ev.GetContact().GetPK()
+			contactPK := bytesToString(contactPKBytes)
 
 			var cm ContactMetadata
 			err := proto.Unmarshal(ev.GetContact().GetMetadata(), &cm)
@@ -124,7 +125,16 @@ func processMetadataList(ctx context.Context, groupPK []byte, db *gorm.DB, clien
 				return errcode.ErrDeserialization.Wrap(err)
 			}
 
-			if _, err := addContactRequestOutgoingEnqueued(db, contactPK, cm.DisplayName); err != nil {
+			gpk := bytesToString(ev.GetGroupPK())
+			if gpk == "" {
+				groupInfoReply, err := client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{ContactPK: contactPKBytes})
+				if err != nil {
+					return errcode.TODO.Wrap(err)
+				}
+				gpk = bytesToString(groupInfoReply.GetGroup().GetPublicKey())
+			}
+
+			if _, err := addContactRequestOutgoingEnqueued(db, contactPK, cm.DisplayName, gpk); err != nil {
 				return errcode.ErrDBAddContactRequestOutgoingEnqueud.Wrap(err)
 			}
 

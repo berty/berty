@@ -124,15 +124,16 @@ func getInteraction(db *gorm.DB, cid string) (Interaction, error) {
 	return interactions[0], nil
 }
 
-func addContactRequestOutgoingEnqueued(db *gorm.DB, contactPK, displayName string) (*Contact, error) {
+func addContactRequestOutgoingEnqueued(db *gorm.DB, contactPK, displayName, convPK string) (*Contact, error) {
 	contact, err := getContact(db, contactPK)
 	switch err {
 	case gorm.ErrRecordNotFound:
 		contact = Contact{
-			DisplayName: displayName,
-			PublicKey:   contactPK,
-			State:       Contact_OutgoingRequestEnqueued,
-			CreatedDate: timestampMs(time.Now()),
+			DisplayName:           displayName,
+			PublicKey:             contactPK,
+			State:                 Contact_OutgoingRequestEnqueued,
+			CreatedDate:           timestampMs(time.Now()),
+			ConversationPublicKey: convPK,
 		}
 		err = db.
 			Clauses(clause.OnConflict{DoNothing: true}).
