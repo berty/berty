@@ -149,6 +149,15 @@ android {
         ndk { abiFilters "armeabi", "armeabi-v7a", "x86" }
 
         missingDimensionStrategy 'react-native-camera', 'general'
+
+        def addEnvVar = {key ->
+            def value = getEnvValue(key)
+            manifestPlaceholders += [(key):value]
+            buildConfigField "String", "${key}", "\"${value}\""
+        }
+
+        addEnvVar("SHAKE_API_ID")
+        addEnvVar("SHAKE_API_SECRET")
     }
     splits {
         abi {
@@ -266,6 +275,7 @@ android {
 }
 
 dependencies {
+    implementation "com.shakebugs.android:shake:9.0.+"
     implementation project(':react-native-vector-icons')
     implementation fileTree(dir: "libs", include: ["*.jar"])
 

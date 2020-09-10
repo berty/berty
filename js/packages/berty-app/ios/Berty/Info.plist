@@ -105,5 +105,12 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>Shake</key>
+	<dict>
+		<key>APIClientID</key>
+		<string>$(SHAKE_API_ID)</string>
+		<key>APIClientSecret</key>
+		<string>$(SHAKE_API_SECRET)</string>
+	</dict>
 </dict>
 </plist>

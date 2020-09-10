@@ -36,6 +36,7 @@
     "@react-native-community/masked-view": "^0.1.7",
     "@react-native-community/toolbar-android": "^0.1.0-rc.2",
     "@react-navigation/native": "^5.7.3",
+    "@shakebugs/react-native-shake": "^9.0.2",
     "@ui-kitten/eva-icons": "^4.4.1",
     "clisim": "^2.5.0",
     "hermes-engine": "^0.2.1",

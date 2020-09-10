@@ -28,6 +28,7 @@
 		8A72F25B2451C4EC00CC2839 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */; };
 		8A72F25C2451C4F500CC2839 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */; };
 		8A72F25D2451C4FD00CC2839 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */; };
+		8DCD97982509005200355D6E /* Shake.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8DCD97972509005200355D6E /* Shake.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8DF243CC24E457F20045DA65 /* LifeCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF243CB24E457F20045DA65 /* LifeCycle.swift */; };
 		8DF243CD24E457F20045DA65 /* LifeCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF243CB24E457F20045DA65 /* LifeCycle.swift */; };
 		8DF243CE24E457F20045DA65 /* LifeCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF243CB24E457F20045DA65 /* LifeCycle.swift */; };
@@ -64,6 +65,19 @@
 		FC8D1D57AAD24A8EB7518431 /* OpenSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F399DA55B10C419A9CB95365 /* OpenSans-Italic.ttf */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		8DCD97962509002700355D6E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8DCD97982509005200355D6E /* Shake.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -87,6 +101,8 @@
 		67D93FCF36BE4E4983E748F2 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		691A909A3E3647AE8DE10380 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
+		8DCD97942508FEBD00355D6E /* Shake.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Shake.framework; path = Pods/Shake/Shake.framework; sourceTree = "<group>"; };
+		8DCD97972509005200355D6E /* Shake.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Shake.framework; path = Pods/Shake/Shake.framework; sourceTree = "<group>"; };
 		8DF243CB24E457F20045DA65 /* LifeCycle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LifeCycle.swift; path = Berty/LifeCycle.swift; sourceTree = "<group>"; };
 		8F4D2FAD70964BD9A3DC9697 /* OpenSans-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-SemiBold.ttf"; path = "../assets/OpenSans-SemiBold.ttf"; sourceTree = "<group>"; };
 		951CDB8AA8954B18AA7554CD /* OpenSans-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Bold.ttf"; path = "../assets/OpenSans-Bold.ttf"; sourceTree = "<group>"; };
@@ -199,6 +215,7 @@
 			isa = PBXGroup;
 			children = (
 				EB1D6C9724E547A700F04D93 /* ExternalAccessory.framework */,
+				8DCD97942508FEBD00355D6E /* Shake.framework */,
 				8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
@@ -250,6 +267,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				8DCD97972509005200355D6E /* Shake.framework */,
 				EB1D6C9524E4205900F04D93 /* Berty Yolo.entitlements */,
 				EB1D6C9424E4203C00F04D93 /* Berty Staff.entitlements */,
 				EB1D6C9324E3EA1E00F04D93 /* Berty Debug.entitlements */,
@@ -311,6 +329,7 @@
 				F83687522355EC9E00CCC6D9 /* Resources */,
 				F83687552355EC9E00CCC6D9 /* Bundle React Native code and images */,
 				9D5747BB4D3EC69521AF9494 /* [CP] Copy Pods Resources */,
+				1C837CB505B41A70D3CA45E2 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -330,6 +349,7 @@
 				F8BF4651238441AC0077A846 /* Frameworks */,
 				F8BF4658238441AC0077A846 /* Resources */,
 				F8BF465B238441AC0077A846 /* Bundle React Native code and images */,
+				8DCD97962509002700355D6E /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -513,6 +533,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		1C837CB505B41A70D3CA45E2 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Berty/Pods-Berty-frameworks.sh",
+				"${PODS_ROOT}/Shake/Shake.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Shake.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Berty/Pods-Berty-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		9D5747BB4D3EC69521AF9494 /* [CP] Copy Pods Resources */ = {
@@ -964,6 +1002,10 @@
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Shake",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -997,6 +1039,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Shake",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

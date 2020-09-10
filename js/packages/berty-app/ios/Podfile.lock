@@ -282,6 +282,9 @@ PODS:
     - React
   - react-native-safe-area-context (0.7.3):
     - React
+  - react-native-shake (9.0.2):
+    - React
+    - Shake (~> 9.0.0)
   - react-native-webview (10.8.3):
     - React
   - React-RCTActionSheet (0.63.2):
@@ -364,6 +367,7 @@ PODS:
     - React
   - RNVectorIcons (7.0.0):
     - React
+  - Shake (9.0.11)
   - toolbar-android (0.1.0-rc.2):
     - React
   - Yoga (1.14.0)
@@ -418,6 +422,7 @@ DEPENDENCIES:
   - react-native-config (from `../../../node_modules/react-native-config`)
   - react-native-example (from `../../react-native-example`)
   - react-native-safe-area-context (from `../../../node_modules/react-native-safe-area-context`)
+  - "react-native-shake (from `../node_modules/@shakebugs/react-native-shake`)"
   - react-native-webview (from `../../../node_modules/react-native-webview`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -455,6 +460,7 @@ SPEC REPOS:
     - Flipper-RSocket
     - FlipperKit
     - OpenSSL-Universal
+    - Shake
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -510,6 +516,8 @@ EXTERNAL SOURCES:
     :path: "../../react-native-example"
   react-native-safe-area-context:
     :path: "../../../node_modules/react-native-safe-area-context"
+  react-native-shake:
+    :path: "../node_modules/@shakebugs/react-native-shake"
   react-native-webview:
     :path: "../../../node_modules/react-native-webview"
   React-RCTActionSheet:
@@ -594,6 +602,7 @@ SPEC CHECKSUMS:
   react-native-config: 9a061347e0136fdb32d43a34d60999297d672361
   react-native-example: a62e0ddd2e417f3683b0367d9f0a3539d62f8b10
   react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
+  react-native-shake: ebac228876c942c9aa1bf489e05ea4defb3e0a53
   react-native-webview: 598605cd213f5096e695f5b33fbee210a47e60ab
   React-RCTActionSheet: 910163b6b09685a35c4ebbc52b66d1bfbbe39fc5
   React-RCTAnimation: 9a883bbe1e9d2e158d4fb53765ed64c8dc2200c6
@@ -614,6 +623,7 @@ SPEC CHECKSUMS:
   RNScreens: b748efec66e095134c7166ca333b628cd7e6f3e2
   RNSVG: 67f1f12dae2cef6ed59a42cae74a6b8f5a9e7b46
   RNVectorIcons: da6fe858f5a65d7bbc3379540a889b0b12aa5976
+  Shake: d53b6ca357846a442a4ee8f956c4f1799eac7858
   toolbar-android: 85f3ef4d691469f2d304e7dee4bca013aa1ba1ff
   Yoga: 7740b94929bbacbddda59bf115b5317e9a161598
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
