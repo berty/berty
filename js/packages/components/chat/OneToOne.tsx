@@ -235,7 +235,7 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: string }> = ({
 }
 
 export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route }) => {
-	const [inputIsFocused, setInputFocus] = useState(true)
+	const [inputIsFocused, setInputFocus] = useState(false)
 	const [{ flex, background }] = useStyles()
 	useReadEffect(route.params.convId, 1000)
 	return (
