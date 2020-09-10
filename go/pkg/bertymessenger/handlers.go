@@ -118,7 +118,8 @@ func accountContactRequestOutgoingEnqueued(svc *service, gme *bertytypes.GroupMe
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
 		return err
 	}
-	contactPK := bytesToString(ev.GetContact().GetPK())
+	contactPKBytes := ev.GetContact().GetPK()
+	contactPK := bytesToString(contactPKBytes)
 
 	var cm ContactMetadata
 	err := proto.Unmarshal(ev.GetContact().GetMetadata(), &cm)
@@ -126,7 +127,16 @@ func accountContactRequestOutgoingEnqueued(svc *service, gme *bertytypes.GroupMe
 		return err
 	}
 
-	contact, err := addContactRequestOutgoingEnqueued(svc.db, contactPK, cm.DisplayName)
+	gpk := bytesToString(ev.GetGroupPK())
+	if gpk == "" {
+		groupInfoReply, err := svc.protocolClient.GroupInfo(svc.ctx, &bertytypes.GroupInfo_Request{ContactPK: contactPKBytes})
+		if err != nil {
+			return errcode.TODO.Wrap(err)
+		}
+		gpk = bytesToString(groupInfoReply.GetGroup().GetPublicKey())
+	}
+
+	contact, err := addContactRequestOutgoingEnqueued(svc.db, contactPK, cm.DisplayName, gpk)
 	if errcode.Is(err, errcode.ErrDBEntryAlreadyExists) {
 		return nil
 	} else if err != nil {
@@ -141,6 +151,7 @@ func accountContactRequestOutgoingSent(svc *service, gme *bertytypes.GroupMetada
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
 		return err
 	}
+
 	contactPK := bytesToString(ev.GetContactPK())
 
 	contact, err := addContactRequestOutgoingSent(svc.db, contactPK)

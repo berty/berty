@@ -18,3 +18,4 @@ out/
 profile.out
 vendor/
 debug.log
+/js/*.db.d
