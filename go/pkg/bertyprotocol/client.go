@@ -1,11 +1,10 @@
 package bertyprotocol
 
 import (
-	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/pkg/errcode"
-
 	"context"
 
+	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	"google.golang.org/grpc"
 )
 
@@ -41,10 +40,10 @@ func (c *embeddedClient) Close() error {
 	return nil
 }
 
-func NewClient(ctx context.Context, svc Service, opts ...grpc.ServerOption) (Client, error) {
-	s := grpc.NewServer(opts...)
+func NewClient(ctx context.Context, svc Service, clientOpts []grpc.DialOption, serverOpts []grpc.ServerOption) (Client, error) {
+	s := grpc.NewServer(serverOpts...)
 
-	c, err := NewClientFromServer(ctx, s, svc)
+	c, err := NewClientFromServer(ctx, s, svc, clientOpts...)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
@@ -70,10 +69,6 @@ func NewClientFromServer(ctx context.Context, s *grpc.Server, svc Service, opts 
 		}
 	}()
 
-	c := client{
-		ProtocolServiceClient: NewProtocolServiceClient(cc),
-		cc:                    cc,
-		l:                     bl,
-	}
+	c := client{ProtocolServiceClient: NewProtocolServiceClient(cc), cc: cc, l: bl}
 	return &c, nil
 }

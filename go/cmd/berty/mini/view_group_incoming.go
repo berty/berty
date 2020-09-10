@@ -80,7 +80,7 @@ func handlerAccountContactRequestOutgoingSent(ctx context.Context, v *groupView,
 		sender:      casted.DevicePK,
 	}, e, v, isHistory)
 
-	gInfo, err := v.v.client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+	gInfo, err := v.v.protocol.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		ContactPK: casted.ContactPK,
 	})
 
@@ -137,7 +137,7 @@ func handlerAccountContactRequestIncomingReceived(ctx context.Context, v *groupV
 	v.v.lock.Unlock()
 
 	v.v.lock.Lock()
-	gInfo, err := v.v.client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+	gInfo, err := v.v.protocol.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		ContactPK: casted.ContactPK,
 	})
 
@@ -215,7 +215,7 @@ func handlerAccountContactRequestOutgoingEnqueued(ctx context.Context, v *groupV
 	v.v.lock.Unlock()
 
 	v.v.lock.Lock()
-	gInfo, err := v.v.client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+	gInfo, err := v.v.protocol.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		ContactPK: casted.Contact.PK,
 	})
 
@@ -271,7 +271,7 @@ func handlerAccountContactRequestIncomingAccepted(ctx context.Context, v *groupV
 		sender:      casted.DevicePK,
 	}, e, v, isHistory)
 
-	gInfo, err := v.v.client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+	gInfo, err := v.v.protocol.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		ContactPK: casted.ContactPK,
 	})
 

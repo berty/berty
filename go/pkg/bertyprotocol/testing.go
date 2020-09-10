@@ -214,12 +214,12 @@ func TestingClientFromServer(ctx context.Context, t *testing.T, s *grpc.Server, 
 	return
 }
 
-func TestingClient(ctx context.Context, t *testing.T, svc Service, opts ...grpc.ServerOption) (client Client, cleanup func()) {
+func TestingClient(ctx context.Context, t *testing.T, svc Service, clientOpts []grpc.DialOption, serverOpts []grpc.ServerOption) (client Client, cleanup func()) {
 	t.Helper()
 
 	var err error
 
-	client, err = NewClient(ctx, svc, opts...)
+	client, err = NewClient(ctx, svc, clientOpts, serverOpts)
 	require.NoError(t, err)
 	cleanup = func() { client.Close() }
 

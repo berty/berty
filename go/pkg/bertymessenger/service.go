@@ -32,17 +32,16 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 
 	ctx, cancel := context.WithCancel(opts.Context)
 	svc := service{
-		protocolClient:  client,
-		logger:          opts.Logger,
-		startedAt:       time.Now(),
-		protocolService: opts.ProtocolService,
-		db:              opts.DB,
-		notifmanager:    opts.NotificationManager,
-		dispatcher:      NewDispatcher(),
-		cancelFn:        cancel,
-		optsCleanup:     optsCleanup,
-		ctx:             ctx,
-		handlerMutex:    sync.Mutex{},
+		protocolClient: client,
+		logger:         opts.Logger,
+		startedAt:      time.Now(),
+		db:             opts.DB,
+		notifmanager:   opts.NotificationManager,
+		dispatcher:     NewDispatcher(),
+		cancelFn:       cancel,
+		optsCleanup:    optsCleanup,
+		ctx:            ctx,
+		handlerMutex:   sync.Mutex{},
 	}
 
 	icr, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
@@ -209,7 +208,7 @@ func (svc *service) subscribeToGroup(gpkb []byte) error {
 }
 
 func (svc *service) Close() {
-	svc.logger.Info("closing service")
+	svc.logger.Debug("closing service")
 	svc.cancelFn()
 	svc.optsCleanup()
 }
@@ -217,7 +216,6 @@ func (svc *service) Close() {
 type Opts struct {
 	Logger              *zap.Logger
 	NotificationManager notification.Manager
-	ProtocolService     bertyprotocol.Service
 	DB                  *gorm.DB
 	Context             context.Context
 }
@@ -262,15 +260,14 @@ type Service interface {
 var _ Service = (*service)(nil)
 
 type service struct {
-	logger          *zap.Logger
-	protocolClient  bertyprotocol.ProtocolServiceClient
-	startedAt       time.Time
-	protocolService bertyprotocol.Service // optional, for debugging only
-	db              *gorm.DB
-	dispatcher      *Dispatcher
-	notifmanager    notification.Manager
-	cancelFn        func()
-	optsCleanup     func()
-	ctx             context.Context
-	handlerMutex    sync.Mutex
+	logger         *zap.Logger
+	protocolClient bertyprotocol.ProtocolServiceClient
+	startedAt      time.Time
+	db             *gorm.DB
+	dispatcher     *Dispatcher
+	notifmanager   notification.Manager
+	cancelFn       func()
+	optsCleanup    func()
+	ctx            context.Context
+	handlerMutex   sync.Mutex
 }

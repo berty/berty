@@ -8,10 +8,9 @@ import (
 	"net/http"
 	"strings"
 
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"golang.org/x/crypto/ed25519"
-
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 )
 
 // This server is a showcase of a PKCE OAuth 2 token issuer. Its behavior is to
@@ -40,26 +39,35 @@ import (
 //    sig(sk, crypt(secret, (uuid, "replication,contacts,backup"])))
 //
 func tokenServerCommand() *ffcli.Command {
-	var flags = flag.NewFlagSet("token issuer server", flag.ExitOnError)
-	flags.StringVar(&opts.serviceProviderSecret, "secret", opts.serviceProviderSecret, "base64 encoded secret")
-	flags.StringVar(&opts.serviceProviderAuthSK, "sk", opts.serviceProviderAuthSK, "base64 encoded signature key")
-	flags.StringVar(&opts.serviceProviderListener, "l", opts.serviceProviderListener, "http listener")
-	flags.StringVar(&opts.serviceProviderSupported, "s", opts.serviceProviderSupported, "comma separated list of supported services as name@ip:port")
+	var (
+		fs            = flag.NewFlagSet("token issuer server", flag.ExitOnError)
+		secretFlag    = ""
+		authSKFlag    = ""
+		listenerFlag  = "8080"
+		supportedFlag = ""
+	)
+	fs.StringVar(&secretFlag, "secret", secretFlag, "base64 encoded secret")
+	fs.StringVar(&authSKFlag, "sk", authSKFlag, "base64 encoded signature key")
+	fs.StringVar(&listenerFlag, "l", listenerFlag, "http listener")
+	fs.StringVar(&supportedFlag, "s", supportedFlag, "comma separated list of supported services as name@ip:port")
 
 	return &ffcli.Command{
-		Name:      "token-server",
-		ShortHelp: "token server, a basic token server issuer without auth or logging",
-		FlagSet:   flags,
+		Name:       "token-server",
+		ShortUsage: "berty [global flags] token-server [flags]",
+		ShortHelp:  "token server, a basic token server issuer without auth or logging",
+		FlagSet:    fs,
 		Exec: func(ctx context.Context, args []string) error {
-			cleanup := globalPreRun()
-			defer cleanup()
-
-			secret, err := base64.RawStdEncoding.DecodeString(opts.serviceProviderSecret)
+			logger, err := manager.GetLogger()
 			if err != nil {
 				return err
 			}
 
-			skBytes, err := base64.RawStdEncoding.DecodeString(opts.serviceProviderAuthSK)
+			secret, err := base64.RawStdEncoding.DecodeString(secretFlag)
+			if err != nil {
+				return err
+			}
+
+			skBytes, err := base64.RawStdEncoding.DecodeString(authSKFlag)
 			if err != nil {
 				return err
 			}
@@ -70,7 +78,7 @@ func tokenServerCommand() *ffcli.Command {
 
 			sk := ed25519.NewKeyFromSeed(skBytes)
 
-			servicesStrings := strings.Split(opts.serviceProviderSupported, ",")
+			servicesStrings := strings.Split(supportedFlag, ",")
 			services := map[string]string{}
 			for _, s := range servicesStrings {
 				values := strings.Split(s, "@")
@@ -80,15 +88,15 @@ func tokenServerCommand() *ffcli.Command {
 				services[values[0]] = values[1]
 			}
 
-			server, err := bertyprotocol.NewAuthTokenServer(secret, sk, services, opts.logger)
+			server, err := bertyprotocol.NewAuthTokenServer(secret, sk, services, logger)
 			if err != nil {
 				return err
 			}
 
 			pk := sk.Public().(ed25519.PublicKey)
-			opts.logger.Info(fmt.Sprintf("running server, corresponding pk is %s", base64.RawStdEncoding.EncodeToString(pk)))
+			logger.Info(fmt.Sprintf("running server, corresponding pk is %s", base64.RawStdEncoding.EncodeToString(pk)))
 
-			return http.ListenAndServe(opts.serviceProviderListener, server)
+			return http.ListenAndServe(listenerFlag, server)
 		},
 	}
 }

@@ -141,7 +141,7 @@ func (v *groupView) loop(ctx context.Context) {
 	// list group message events
 	{
 		req := &bertytypes.GroupMessageList_Request{GroupPK: v.g.PublicKey}
-		cl, err := v.v.client.GroupMessageList(ctx, req)
+		cl, err := v.v.protocol.GroupMessageList(ctx, req)
 		if err != nil {
 			panic(err)
 		}
@@ -191,7 +191,7 @@ func (v *groupView) loop(ctx context.Context) {
 		var evt *bertytypes.GroupMetadataEvent
 
 		req := &bertytypes.GroupMetadataList_Request{GroupPK: v.g.PublicKey}
-		cl, err := v.v.client.GroupMetadataList(ctx, req)
+		cl, err := v.v.protocol.GroupMetadataList(ctx, req)
 		for err == nil {
 			if evt, err = cl.Recv(); err == nil {
 				metadataEventHandler(ctx, v, evt, true, v.logger)
@@ -208,7 +208,7 @@ func (v *groupView) loop(ctx context.Context) {
 		var evt *bertytypes.GroupMessageEvent
 
 		req := &bertytypes.GroupMessageSubscribe_Request{GroupPK: v.g.PublicKey}
-		cl, err := v.v.client.GroupMessageSubscribe(ctx, req)
+		cl, err := v.v.protocol.GroupMessageSubscribe(ctx, req)
 		if err != nil {
 			panic(err)
 		}
@@ -289,7 +289,7 @@ func (v *groupView) loop(ctx context.Context) {
 		var evt *bertytypes.GroupMetadataEvent
 
 		req := &bertytypes.GroupMetadataSubscribe_Request{GroupPK: v.g.PublicKey}
-		cl, err := v.v.client.GroupMetadataSubscribe(ctx, req)
+		cl, err := v.v.protocol.GroupMetadataSubscribe(ctx, req)
 		if err != nil {
 			panic(err)
 		}

@@ -3,13 +3,13 @@ package bertybridge
 import (
 	"context"
 	"fmt"
-	"net"
 	"strings"
 	"sync"
 	"time"
 
 	"berty.tech/berty/v2/go/framework/bertybridge/internal/bridgepb"
 	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/oklog/run"
@@ -253,7 +253,7 @@ func (b *Bridge) isClosed() bool {
 }
 
 func (b *Bridge) addGRPCListenner(maddr string) error {
-	m, err := parseAddr(maddr)
+	m, err := ipfsutil.ParseAddr(maddr)
 	if err != nil {
 		return err
 	}
@@ -264,7 +264,7 @@ func (b *Bridge) addGRPCListenner(maddr string) error {
 		return err
 	}
 
-	server := &grpcutil.Server{Server: b.grpcServer}
+	server := &grpcutil.Server{GRPCServer: b.grpcServer}
 	b.workers.Add(func() (err error) {
 		if err = server.Serve(l); err != nil {
 			b.logger.Error("grpc serve server",
@@ -279,25 +279,4 @@ func (b *Bridge) addGRPCListenner(maddr string) error {
 
 	b.listeners = append(b.listeners, l)
 	return nil
-}
-
-// helpers
-func parseAddr(addr string) (maddr ma.Multiaddr, err error) {
-	maddr, err = ma.NewMultiaddr(addr)
-	if err != nil {
-		// try to get a tcp multiaddr from host:port
-		host, port, serr := net.SplitHostPort(addr)
-		if serr != nil {
-			return
-		}
-
-		if host == "" {
-			host = "127.0.0.1"
-		}
-
-		addr = fmt.Sprintf("/ip4/%s/tcp/%s/grpcweb", host, port)
-		maddr, err = ma.NewMultiaddr(addr)
-	}
-
-	return
 }

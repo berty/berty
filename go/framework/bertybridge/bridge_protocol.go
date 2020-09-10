@@ -20,7 +20,6 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
-
 	badger_opts "github.com/dgraph-io/badger/options"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -362,7 +361,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 
 	{
 		var err error
-		protocolClient, err = bertyprotocol.NewClient(ctx, service)
+		protocolClient, err = bertyprotocol.NewClient(ctx, service, nil, nil)
 
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
@@ -389,7 +388,6 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 
 		opts := bertymessenger.Opts{
 			Logger:              logger,
-			ProtocolService:     service,
 			NotificationManager: notifmanager,
 			DB:                  db,
 		}

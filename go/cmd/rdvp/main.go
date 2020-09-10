@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"log"
 	mrand "math/rand"
-	"net"
 	"os"
 	"strings"
 
+	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	libp2p "github.com/libp2p/go-libp2p"
@@ -22,7 +22,6 @@ import (
 	libp2p_quic "github.com/libp2p/go-libp2p-quic-transport"
 	libp2p_rp "github.com/libp2p/go-libp2p-rendezvous"
 	libp2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlite"
-	ma "github.com/multiformats/go-multiaddr"
 	"github.com/oklog/run"
 	ff "github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
@@ -73,7 +72,7 @@ func main() {
 			defer cancel()
 
 			laddrs := strings.Split(serveListeners, ",")
-			listeners, err := parseAddrs(laddrs...)
+			listeners, err := ipfsutil.ParseAddrs(laddrs...)
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
@@ -206,28 +205,4 @@ func logHostInfo(l *zap.Logger, host libp2p_host.Host) {
 	}
 
 	l.Info("host started", fields...)
-}
-
-func parseAddrs(addrs ...string) (maddrs []ma.Multiaddr, err error) {
-	maddrs = make([]ma.Multiaddr, len(addrs))
-	for i, addr := range addrs {
-		maddrs[i], err = ma.NewMultiaddr(addr)
-
-		if err != nil {
-			// try to get a tcp multiaddr from host:port
-			host, port, serr := net.SplitHostPort(addr)
-			if serr != nil {
-				return
-			}
-
-			if host == "" {
-				host = "127.0.0.1"
-			}
-
-			addr = fmt.Sprintf("/ip4/%s/tcp/%s/", host, port)
-			maddrs[i], err = ma.NewMultiaddr(addr)
-		}
-	}
-
-	return
 }
