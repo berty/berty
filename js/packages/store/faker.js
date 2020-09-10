@@ -63,6 +63,8 @@ export const fakeMultiMemberConversations = (length, start) => {
 
 		const displayName = faker.name.findName() + "'s Party"
 		const link = `fake://fake-multi-${index}`
+		const createdDate =
+			Date.now() - Math.floor(Math.random() * (50 * 24 * 60 * 60 * 1000)).toString()
 
 		return {
 			conversation: {
@@ -71,6 +73,7 @@ export const fakeMultiMemberConversations = (length, start) => {
 				link,
 				type: messengerpb.Conversation.Type.MultiMemberType,
 				fake: true,
+				createdDate,
 			},
 			members: fakeMembers,
 		}

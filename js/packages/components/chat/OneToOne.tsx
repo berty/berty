@@ -190,10 +190,6 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: string }> = ({
 	const messages = useSortedConvInteractions(convPk).filter(
 		(msg) => msg.type === messengerpb.AppMessage.Type.TypeUserMessage,
 	)
-	const getPreviousMessageId = (item = '', messageList: string[] = []): string => {
-		const messagePosition: number = !item ? -1 : messageList.indexOf(item)
-		return messagePosition < 1 ? '' : (messageList[messagePosition - 1] as any).cid
-	}
 
 	const flatListRef = useRef(null)
 
@@ -222,12 +218,12 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: string }> = ({
 			inverted
 			keyExtractor={(item: any) => item.cid}
 			ListFooterComponent={<InfosChat {...conv} />}
-			renderItem={({ item }: { item: any }) => (
+			renderItem={({ item, index }: { item: any; index: number }) => (
 				<Message
 					id={item.cid}
 					convKind={messengerpb.Conversation.Type.ContactType}
 					convPK={conv.publicKey}
-					previousMessageId={getPreviousMessageId(item, messages)}
+					previousMessageId={index > 0 ? messages.reverse()[index - 1]?.cid : ''}
 				/>
 			)}
 		/>
