@@ -47,10 +47,11 @@ func ShareQRLink(username, room, title, qrData, url string) error {
 			{
 				Title:       "Associated Link",
 				Description: url,
-			}, {
+			},
+			/*{
 				Title:       "QR Data",
 				Description: qrData,
-			},
+			},*/
 		},
 	}
 	if strings.HasPrefix(url, "http") {
