@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log"
 	"os"
 
@@ -59,6 +60,6 @@ func main() {
 
 	// run process
 	if err := process.Run(); err != nil && err != context.Canceled {
-		log.Fatalf("error: %v", err)
+		fmt.Fprintf(os.Stderr, "error: %+v\n", err)
 	}
 }
