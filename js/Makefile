@@ -229,7 +229,7 @@ metro.start: deps
 .PHONY: daemon.start
 daemon.start:
 	cd ../go && $(MAKE) install
-	`go env GOPATH`/bin/berty $(BERTY_OPTS) daemon -node.listners /ip4/127.0.0.1/tcp/$(BERTY_DAEMON_PORT)/grpcws -d ${BERTY_DAEMON_PORT}.db.d $(BERTY_DAEMON_OPTS)
+	`go env GOPATH`/bin/berty $(BERTY_OPTS) daemon -node.listeners /ip4/127.0.0.1/tcp/$(BERTY_DAEMON_PORT)/grpcws -store.dir ${BERTY_DAEMON_PORT}.db.d $(BERTY_DAEMON_OPTS)
 
 .PHONY: bridge.start.docker
 bridge.start.docker:
