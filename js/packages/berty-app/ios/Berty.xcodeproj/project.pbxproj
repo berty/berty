@@ -28,6 +28,18 @@
 		8A72F25B2451C4EC00CC2839 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */; };
 		8A72F25C2451C4F500CC2839 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */; };
 		8A72F25D2451C4FD00CC2839 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */; };
+		8D151014250AB64300DAF24A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D151013250AB42300DAF24A /* GoogleService-Info.plist */; };
+		8D15101B250AB72400DAF24A /* Shake.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DCD97942508FEBD00355D6E /* Shake.framework */; };
+		8D15101C250AB72400DAF24A /* Shake.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8DCD97942508FEBD00355D6E /* Shake.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8D15101E250AB75800DAF24A /* Shake.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DCD97942508FEBD00355D6E /* Shake.framework */; };
+		8D15101F250AB75800DAF24A /* Shake.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8DCD97942508FEBD00355D6E /* Shake.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8D151021250AB76400DAF24A /* Shake.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DCD97942508FEBD00355D6E /* Shake.framework */; };
+		8D151022250AB76400DAF24A /* Shake.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8DCD97942508FEBD00355D6E /* Shake.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8D151024250AB77B00DAF24A /* Shake.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DCD97942508FEBD00355D6E /* Shake.framework */; };
+		8D151025250AB77B00DAF24A /* Shake.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8DCD97942508FEBD00355D6E /* Shake.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8D25349A250B6FA90052DC4C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D15102F250B587B00DAF24A /* GoogleService-Info.plist */; };
+		8D25349B250B6FAE0052DC4C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D15102D250B583600DAF24A /* GoogleService-Info.plist */; };
+		8D25349C250B6FB10052DC4C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D15102B250B57B800DAF24A /* GoogleService-Info.plist */; };
 		8DF243CC24E457F20045DA65 /* LifeCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF243CB24E457F20045DA65 /* LifeCycle.swift */; };
 		8DF243CD24E457F20045DA65 /* LifeCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF243CB24E457F20045DA65 /* LifeCycle.swift */; };
 		8DF243CE24E457F20045DA65 /* LifeCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF243CB24E457F20045DA65 /* LifeCycle.swift */; };
@@ -64,6 +76,53 @@
 		FC8D1D57AAD24A8EB7518431 /* OpenSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F399DA55B10C419A9CB95365 /* OpenSans-Italic.ttf */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		8D15101D250AB72400DAF24A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8D15101C250AB72400DAF24A /* Shake.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D151020250AB75800DAF24A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8D15101F250AB75800DAF24A /* Shake.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D151023250AB76400DAF24A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8D151022250AB76400DAF24A /* Shake.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D151026250AB77C00DAF24A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				8D151025250AB77B00DAF24A /* Shake.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -87,6 +146,12 @@
 		67D93FCF36BE4E4983E748F2 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		691A909A3E3647AE8DE10380 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
+		8D151013250AB42300DAF24A /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		8D15102B250B57B800DAF24A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		8D15102D250B583600DAF24A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../BertyYolo/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		8D15102F250B587B00DAF24A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		8DCD97942508FEBD00355D6E /* Shake.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Shake.framework; path = Pods/Shake/Shake.framework; sourceTree = "<group>"; };
+		8DCD97972509005200355D6E /* Shake.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Shake.framework; path = Pods/Shake/Shake.framework; sourceTree = "<group>"; };
 		8DF243CB24E457F20045DA65 /* LifeCycle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LifeCycle.swift; path = Berty/LifeCycle.swift; sourceTree = "<group>"; };
 		8F4D2FAD70964BD9A3DC9697 /* OpenSans-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-SemiBold.ttf"; path = "../assets/OpenSans-SemiBold.ttf"; sourceTree = "<group>"; };
 		951CDB8AA8954B18AA7554CD /* OpenSans-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "OpenSans-Bold.ttf"; path = "../assets/OpenSans-Bold.ttf"; sourceTree = "<group>"; };
@@ -129,6 +194,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A3C9E5CA601AC52284D7C5FE /* libPods-Berty.a in Frameworks */,
+				8D151024250AB77B00DAF24A /* Shake.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,6 +203,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A72F25B2451C4EC00CC2839 /* MultipeerConnectivity.framework in Frameworks */,
+				8D15101B250AB72400DAF24A /* Shake.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,6 +212,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A72F25C2451C4F500CC2839 /* MultipeerConnectivity.framework in Frameworks */,
+				8D15101E250AB75800DAF24A /* Shake.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,6 +220,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8D151021250AB76400DAF24A /* Shake.framework in Frameworks */,
 				EB1D6C9824E547A700F04D93 /* ExternalAccessory.framework in Frameworks */,
 				8A72F25D2451C4FD00CC2839 /* MultipeerConnectivity.framework in Frameworks */,
 			);
@@ -180,6 +249,7 @@
 		13B07FAE1A68108700A75B9A /* Berty */ = {
 			isa = PBXGroup;
 			children = (
+				8D15102A250B570000DAF24A /* GoogleService */,
 				EB1D6C9624E4206A00F04D93 /* Berty.entitlements */,
 				489DE43924ED424600727383 /* LocalNotificationManager.swift */,
 				8DF243CB24E457F20045DA65 /* LifeCycle.swift */,
@@ -199,6 +269,7 @@
 			isa = PBXGroup;
 			children = (
 				EB1D6C9724E547A700F04D93 /* ExternalAccessory.framework */,
+				8DCD97942508FEBD00355D6E /* Shake.framework */,
 				8A72F25A2451C4EC00CC2839 /* MultipeerConnectivity.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
@@ -250,6 +321,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				8DCD97972509005200355D6E /* Shake.framework */,
 				EB1D6C9524E4205900F04D93 /* Berty Yolo.entitlements */,
 				EB1D6C9424E4203C00F04D93 /* Berty Staff.entitlements */,
 				EB1D6C9324E3EA1E00F04D93 /* Berty Debug.entitlements */,
@@ -279,6 +351,50 @@
 				F8BF468C2384443D0077A846 /* Berty Yolo.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		8D15102A250B570000DAF24A /* GoogleService */ = {
+			isa = PBXGroup;
+			children = (
+				8D253496250B6DED0052DC4C /* BertyDebug */,
+				8D253497250B6E970052DC4C /* BertyStaff */,
+				8D253498250B6EB50052DC4C /* BertyYolo */,
+				8D253499250B6ECA0052DC4C /* Berty */,
+			);
+			name = GoogleService;
+			path = Berty/GoogleService;
+			sourceTree = SOURCE_ROOT;
+		};
+		8D253496250B6DED0052DC4C /* BertyDebug */ = {
+			isa = PBXGroup;
+			children = (
+				8D151013250AB42300DAF24A /* GoogleService-Info.plist */,
+			);
+			path = BertyDebug;
+			sourceTree = "<group>";
+		};
+		8D253497250B6E970052DC4C /* BertyStaff */ = {
+			isa = PBXGroup;
+			children = (
+				8D15102B250B57B800DAF24A /* GoogleService-Info.plist */,
+			);
+			path = BertyStaff;
+			sourceTree = "<group>";
+		};
+		8D253498250B6EB50052DC4C /* BertyYolo */ = {
+			isa = PBXGroup;
+			children = (
+				8D15102D250B583600DAF24A /* GoogleService-Info.plist */,
+			);
+			path = BertyYolo;
+			sourceTree = "<group>";
+		};
+		8D253499250B6ECA0052DC4C /* Berty */ = {
+			isa = PBXGroup;
+			children = (
+				8D15102F250B587B00DAF24A /* GoogleService-Info.plist */,
+			);
+			path = Berty;
 			sourceTree = "<group>";
 		};
 		BB82E9355B2B1BDD0583713C /* Pods */ = {
@@ -311,6 +427,9 @@
 				F83687522355EC9E00CCC6D9 /* Resources */,
 				F83687552355EC9E00CCC6D9 /* Bundle React Native code and images */,
 				9D5747BB4D3EC69521AF9494 /* [CP] Copy Pods Resources */,
+				1C837CB505B41A70D3CA45E2 /* [CP] Embed Pods Frameworks */,
+				8D151026250AB77C00DAF24A /* Embed Frameworks */,
+				8D151027250AB79200DAF24A /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -330,6 +449,8 @@
 				F8BF4651238441AC0077A846 /* Frameworks */,
 				F8BF4658238441AC0077A846 /* Resources */,
 				F8BF465B238441AC0077A846 /* Bundle React Native code and images */,
+				8D15101D250AB72400DAF24A /* Embed Frameworks */,
+				8D151012250AB25500DAF24A /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -349,6 +470,8 @@
 				F8BF4668238444330077A846 /* Frameworks */,
 				F8BF466F238444330077A846 /* Resources */,
 				F8BF4672238444330077A846 /* Bundle React Native code and images */,
+				8D151020250AB75800DAF24A /* Embed Frameworks */,
+				8D151029250AB7F000DAF24A /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -368,6 +491,8 @@
 				F8BF467E2384443D0077A846 /* Frameworks */,
 				F8BF46852384443D0077A846 /* Resources */,
 				F8BF46882384443D0077A846 /* Bundle React Native code and images */,
+				8D151023250AB76400DAF24A /* Embed Frameworks */,
+				8D151028250AB7E300DAF24A /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -434,6 +559,7 @@
 			files = (
 				F83687532355EC9E00CCC6D9 /* Images.xcassets in Resources */,
 				F83687542355EC9E00CCC6D9 /* LaunchScreen.xib in Resources */,
+				8D25349A250B6FA90052DC4C /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -445,6 +571,7 @@
 				F8BF465A238441AC0077A846 /* LaunchScreen.xib in Resources */,
 				A2914EB66A0F4BAB98B96226 /* OpenSans-Bold.ttf in Resources */,
 				8191D455DF674F1A89032A0A /* OpenSans-BoldItalic.ttf in Resources */,
+				8D151014250AB64300DAF24A /* GoogleService-Info.plist in Resources */,
 				0627D79CE17F47ABB2A8FFC1 /* OpenSans-ExtraBold.ttf in Resources */,
 				5243B435428145D3A3A1BC4D /* OpenSans-ExtraBoldItalic.ttf in Resources */,
 				FC8D1D57AAD24A8EB7518431 /* OpenSans-Italic.ttf in Resources */,
@@ -478,6 +605,7 @@
 			files = (
 				F8BF4670238444330077A846 /* Images.xcassets in Resources */,
 				F8BF4671238444330077A846 /* LaunchScreen.xib in Resources */,
+				8D25349C250B6FB10052DC4C /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -487,6 +615,7 @@
 			files = (
 				F8BF46862384443D0077A846 /* Images.xcassets in Resources */,
 				F8BF46872384443D0077A846 /* LaunchScreen.xib in Resources */,
+				8D25349B250B6FAE0052DC4C /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -514,6 +643,96 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		1C837CB505B41A70D3CA45E2 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Berty/Pods-Berty-frameworks.sh",
+				"${PODS_ROOT}/Shake/Shake.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Shake.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Berty/Pods-Berty-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8D151012250AB25500DAF24A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
+		};
+		8D151027250AB79200DAF24A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
+		};
+		8D151028250AB7E300DAF24A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
+		};
+		8D151029250AB7F000DAF24A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
 		};
 		9D5747BB4D3EC69521AF9494 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -899,6 +1118,10 @@
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Shake",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -931,6 +1154,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Shake",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -964,6 +1191,10 @@
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Shake",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -997,6 +1228,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Shake",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1029,6 +1264,10 @@
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Shake",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1061,6 +1300,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Shake",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1094,6 +1337,10 @@
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = GR5463T564;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Shake",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1125,6 +1372,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = GR5463T564;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Shake",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/Berty/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

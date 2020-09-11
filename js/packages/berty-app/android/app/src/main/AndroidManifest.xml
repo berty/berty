@@ -23,6 +23,12 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
+      <meta-data
+        android:name="com.shakebugs.APIClientID"
+        android:value="${SHAKE_API_ID}" />
+      <meta-data
+        android:name="com.shakebugs.APIClientSecret"
+        android:value="${SHAKE_API_SECRET}" />
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
     </application>
 

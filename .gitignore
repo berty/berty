@@ -13,7 +13,6 @@ coverage.txt
 dist/
 gen.sum.tmp
 gin-bin
-google-services.json
 out/
 profile.out
 vendor/

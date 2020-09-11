@@ -9,6 +9,7 @@ import { Alert, AppRegistry } from 'react-native'
 import App from './App'
 import { BridgeConsole } from '@berty-tech/go-bridge'
 import { name as appName } from './app.json'
+import Shake, { ShakeInvocationEvent } from '@shakebugs/react-native-shake'
 
 if (!__DEV__) {
 	/* eslint-disable no-undef */
@@ -23,5 +24,7 @@ if (!__DEV__) {
 	//console.warn = () => Alert.alert('Warn')
 	/* eslint-enable no-undef */
 }
+
+Shake.start()
 
 AppRegistry.registerComponent(appName, () => App)

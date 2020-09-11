@@ -1,5 +1,9 @@
 apply plugin: "com.android.application"
 
+// Crashlytics - TODO: replace this after closed beta for a more privacy friendly solution
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
+
 import com.android.build.OutputFile
 
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
@@ -149,6 +153,15 @@ android {
         ndk { abiFilters "armeabi", "armeabi-v7a", "x86" }
 
         missingDimensionStrategy 'react-native-camera', 'general'
+
+        def addEnvVar = {key ->
+            def value = getEnvValue(key)
+            manifestPlaceholders += [(key):value]
+            buildConfigField "String", "${key}", "\"${value}\""
+        }
+
+        addEnvVar("SHAKE_API_ID")
+        addEnvVar("SHAKE_API_SECRET")
     }
     splits {
         abi {
@@ -266,6 +279,7 @@ android {
 }
 
 dependencies {
+    implementation "com.shakebugs.android:shake:9.0.+"
     implementation project(':react-native-vector-icons')
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
@@ -291,6 +305,7 @@ dependencies {
     // see java.lang.NoClassDefFoundError
     implementation 'com.android.support:multidex:1.0.3'
 
+    // Crashlytics - TODO: replace this after closed beta for a more privacy friendly solution
     implementation project(path: ':react-native-interactable')
 
     if (enableHermes) {
@@ -304,6 +319,8 @@ dependencies {
     }
 
 	implementation project(':lottie-react-native')
+
+    implementation 'com.google.firebase:firebase-crashlytics:17.2.1'
 }
 
 // Run this once to be able to run the application with BUCK
