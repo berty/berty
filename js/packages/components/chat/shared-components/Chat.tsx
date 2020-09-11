@@ -7,7 +7,6 @@ import BlurView from '../../shared-components/BlurView'
 
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { useMsgrContext } from '@berty-tech/store/hooks'
-import { values } from 'lodash'
 
 // import { SafeAreaView } from 'react-native-safe-area-context'
 //

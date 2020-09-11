@@ -46,8 +46,10 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 				state.members[member.conversationPublicKey] = {}
 			}
 			state.members[member.conversationPublicKey][member.publicKey] = member
+			break
 		case T.TypeInteractionDeleted:
 			delete state.interactions[action.payload.cid]
+			break
 		case T.TypeListEnd:
 			state.listDone = true
 			break

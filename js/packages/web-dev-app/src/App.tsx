@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect, useEffect, useCallback } from 'react'
+import React, { useState, useRef, useLayoutEffect } from 'react'
 import './App.css'
 import { MsgrContext, useMsgrContext } from '@berty-tech/store/context'
 import { MsgrProvider } from '@berty-tech/store/provider'
@@ -7,7 +7,7 @@ import {
 	useAccountContactSearchResults,
 	useFirstConversationWithContact,
 	useContactsList,
-	useContacts
+	useConversationList
 } from '@berty-tech/store/hooks'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
@@ -181,6 +181,14 @@ const isAcknowledged = (ctx: any, cid: string) =>
 const Interaction: React.FC<{ value: any }> = ({ value }) => {
 	const ctx = React.useContext(MsgrContext)
 	console.log('render inte', value)
+
+	const [error, setError] = useState(null)
+	const handleJoin = React.useCallback(({ link}) => {
+		setError(null)
+		ctx.client.conversationJoin({ link }).catch((err: any) => setError(err))
+	}, [ctx.client])
+	const conversations = useConversationList()
+
 	if (value.type === messengerpb.AppMessage.Type.TypeUserMessage) {
 		const payload = value.payload
 		return (
@@ -190,9 +198,12 @@ const Interaction: React.FC<{ value: any }> = ({ value }) => {
 			</div>
 		)
 	} else if (value.type === messengerpb.AppMessage.Type.TypeGroupInvitation) {
+		const payload = value.payload
 		return (
 			<div style={{ textAlign: value.isMe ? 'right' : 'left' }}>
-				You have received a group invitation!
+				{value.isMe ? 'Sent group invitation!' : 'Received group invitation!'}
+				{!value.isMe && <button onClick={() => handleJoin({link: payload.link})} disabled={conversations.find(c => c.link === payload.link)}>Accept</button>}
+				<Error value={error}/>
 			</div>
 		)
 	}

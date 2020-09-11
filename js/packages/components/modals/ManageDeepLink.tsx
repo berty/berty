@@ -10,7 +10,8 @@ import { ManageGroupInvitation } from './ManageGroupInvitation'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 
-const base64ToURLBase64 = (str: string) => str.replace('+', '-').replace('/', '_').replace('=', '')
+const base64ToURLBase64 = (str: string) =>
+	str.replace(/\+/, '-').replace(/\//, '_').replace(/\=/, '')
 
 export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 	route: { params },

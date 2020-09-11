@@ -125,6 +125,21 @@ export const useAccount = () => {
 	return ctx.account
 }
 
+export const useClient = () => {
+	const ctx = useMsgrContext()
+	return ctx.client
+}
+
+export const useOneToOneContact = (convPk = '') => {
+	const ctx = useMsgrContext()
+	const conversation = ctx.conversations[convPk]
+	try {
+		return ctx.contacts[conversation.contactPublicKey]
+	} catch (e) {
+		return null
+	}
+}
+
 export const useContact = (contactPk = '') => {
 	const ctx = useMsgrContext()
 	return ctx.contacts[contactPk] || null
