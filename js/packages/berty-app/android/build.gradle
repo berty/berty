@@ -15,6 +15,10 @@ buildscript {
     dependencies {
         classpath('com.android.tools.build:gradle:3.5.3')
 
+        // Crashlytics - TODO: replace this after closed beta for a more privacy friendly solution
+        classpath('com.google.gms:google-services:4.3.3')
+        classpath('com.google.firebase:firebase-crashlytics-gradle:2.2.1')
+
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

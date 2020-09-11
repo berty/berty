@@ -1,5 +1,9 @@
 apply plugin: "com.android.application"
 
+// Crashlytics - TODO: replace this after closed beta for a more privacy friendly solution
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
+
 import com.android.build.OutputFile
 
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
@@ -301,6 +305,7 @@ dependencies {
     // see java.lang.NoClassDefFoundError
     implementation 'com.android.support:multidex:1.0.3'
 
+    // Crashlytics - TODO: replace this after closed beta for a more privacy friendly solution
     implementation project(path: ':react-native-interactable')
 
     if (enableHermes) {
@@ -314,6 +319,8 @@ dependencies {
     }
 
 	implementation project(':lottie-react-native')
+
+    implementation 'com.google.firebase:firebase-crashlytics:17.2.1'
 }
 
 // Run this once to be able to run the application with BUCK

@@ -31,6 +31,9 @@ static void InitializeFlipper(UIApplication *application) {
 }
 #endif
 
+// TODO: remove this after closed beta / replace it by a more privacy complient solution
+@import Firebase;
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
@@ -50,6 +53,9 @@ static void InitializeFlipper(UIApplication *application) {
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"Berty"
                                             initialProperties:nil];
+
+  // TODO: remove this after closed beta / replace it by a more privacy complient solution
+  [FIRApp configure];
 
   // Background Fetch
   if (@available(iOS 13.0, *)) {

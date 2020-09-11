@@ -16,6 +16,9 @@ target 'Berty' do
   pod 'lottie-ios', :path => '../../../node_modules/lottie-ios'
   pod 'lottie-react-native', :path => '../../../node_modules/lottie-react-native'
 
+  # TODO: remove this after closed beta / replace it by a more privacy complient solution
+  pod 'Firebase/Crashlytics'
+
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
