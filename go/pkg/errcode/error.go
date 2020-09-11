@@ -2,7 +2,9 @@ package errcode
 
 import (
 	"fmt"
+	"io"
 
+	"golang.org/x/xerrors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -151,6 +153,7 @@ func (e ErrCode) Wrap(inner error) WithCode {
 	return wrappedError{
 		code:  e,
 		inner: inner,
+		frame: xerrors.Caller(1),
 	}
 }
 
@@ -169,6 +172,7 @@ func (e ErrCode) GRPCStatus() *status.Status {
 type wrappedError struct {
 	code  ErrCode
 	inner error
+	frame xerrors.Frame
 }
 
 func (e wrappedError) Error() string {
@@ -195,6 +199,63 @@ func (e wrappedError) GRPCStatus() *status.Status {
 		&ErrDetails{Codes: Codes(e)},
 	)
 	return st
+}
+
+func (e wrappedError) Format(f fmt.State, c rune) {
+	xerrors.FormatError(e, f, c)
+	if f.Flag('+') {
+		_, _ = io.WriteString(f, "\n")
+		if sub := genericCause(e); sub != nil {
+			if typed, ok := sub.(wrappedError); ok {
+				sub = lightWrappedError{wrappedError: typed}
+			}
+			formatter, ok := sub.(fmt.Formatter)
+			if ok {
+				formatter.Format(f, c)
+			}
+		}
+	}
+}
+
+func (e wrappedError) FormatError(p xerrors.Printer) error {
+	p.Print(e.Error())
+	if p.Detail() {
+		e.frame.Format(p)
+	}
+	return nil
+}
+
+//
+// light wrapper (used to make prettier (less verbose) stacks)
+//
+
+type lightWrappedError struct {
+	wrappedError
+	deepness int
+}
+
+func (e lightWrappedError) Error() string { return "" }
+
+func (e lightWrappedError) Format(f fmt.State, c rune) {
+	xerrors.FormatError(e, f, c)
+	if f.Flag('+') {
+		_, _ = io.WriteString(f, "\n")
+		if sub := genericCause(e); sub != nil {
+			if typed, ok := sub.(wrappedError); ok {
+				sub = lightWrappedError{wrappedError: typed, deepness: e.deepness + 1}
+			}
+			formatter, ok := sub.(fmt.Formatter)
+			if ok {
+				formatter.Format(f, c)
+			}
+		}
+	}
+}
+
+func (e lightWrappedError) FormatError(p xerrors.Printer) error {
+	p.Printf("#%d", e.deepness+1)
+	e.frame.Format(p)
+	return nil
 }
 
 //
