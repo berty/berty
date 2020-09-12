@@ -20,7 +20,13 @@ func (m *Manager) SetupDatastoreFlags(fs *flag.FlagSet) {
 }
 
 func (m *Manager) GetDatastoreDir() (string, error) {
-	_, err := m.GetLogger() // needed by m.initLogger below
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	return m.getDatastoreDir()
+}
+
+func (m *Manager) getDatastoreDir() (string, error) {
+	_, err := m.getLogger() // needed by m.initLogger below
 	if err != nil {
 		return "", err
 	}
@@ -51,11 +57,17 @@ func (m *Manager) GetDatastoreDir() (string, error) {
 }
 
 func (m *Manager) GetRootDatastore() (datastore.Batching, error) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	return m.getRootDatastore()
+}
+
+func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 	if m.Datastore.rootDS != nil {
 		return m.Datastore.rootDS, nil
 	}
 
-	dir, err := m.GetDatastoreDir()
+	dir, err := m.getDatastoreDir()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

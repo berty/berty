@@ -82,21 +82,27 @@ func (m *Manager) SetupLocalMessengerServerFlags(fs *flag.FlagSet) {
 }
 
 func (m *Manager) GetLocalProtocolServer() (bertyprotocol.Service, error) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	return m.getLocalProtocolServer()
+}
+
+func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 	if m.Node.Protocol.server != nil {
 		return m.Node.Protocol.server, nil
 	}
 
-	logger, err := m.GetLogger()
+	logger, err := m.getLogger()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	dsDir, err := m.GetDatastoreDir()
+	dsDir, err := m.getDatastoreDir()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	rootDS, err := m.GetRootDatastore()
+	rootDS, err := m.getRootDatastore()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -106,7 +112,7 @@ func (m *Manager) GetLocalProtocolServer() (bertyprotocol.Service, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	grpcServer, gatewayMux, err := m.GetGRPCServer()
+	grpcServer, gatewayMux, err := m.getGRPCServer()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -228,6 +234,12 @@ func (m *Manager) GetLocalProtocolServer() (bertyprotocol.Service, error) {
 }
 
 func (m *Manager) GetGRPCClientConn() (*grpc.ClientConn, error) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	return m.getGRPCClientConn()
+}
+
+func (m *Manager) getGRPCClientConn() (*grpc.ClientConn, error) {
 	if m.Node.GRPC.clientConn != nil {
 		return m.Node.GRPC.clientConn, nil
 	}
@@ -249,13 +261,13 @@ func (m *Manager) GetGRPCClientConn() (*grpc.ClientConn, error) {
 		// ensure protocol and messenger are initialized
 		{
 			if m.Node.Protocol.requiredByClient {
-				_, err := m.GetLocalProtocolServer()
+				_, err := m.getLocalProtocolServer()
 				if err != nil {
 					return nil, errcode.TODO.Wrap(err)
 				}
 			}
 			if m.Node.Messenger.requiredByClient {
-				_, err := m.GetLocalMessengerServer()
+				_, err := m.getLocalMessengerServer()
 				if err != nil {
 					return nil, errcode.TODO.Wrap(err)
 				}
@@ -296,11 +308,17 @@ func (m *Manager) GetGRPCClientConn() (*grpc.ClientConn, error) {
 }
 
 func (m *Manager) GetMessengerClient() (bertymessenger.MessengerServiceClient, error) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	return m.getMessengerClient()
+}
+
+func (m *Manager) getMessengerClient() (bertymessenger.MessengerServiceClient, error) {
 	if m.Node.Messenger.client != nil {
 		return m.Node.Messenger.client, nil
 	}
 
-	grpcClient, err := m.GetGRPCClientConn()
+	grpcClient, err := m.getGRPCClientConn()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -311,11 +329,17 @@ func (m *Manager) GetMessengerClient() (bertymessenger.MessengerServiceClient, e
 }
 
 func (m *Manager) GetProtocolClient() (bertyprotocol.ProtocolServiceClient, error) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	return m.getProtocolClient()
+}
+
+func (m *Manager) getProtocolClient() (bertyprotocol.ProtocolServiceClient, error) {
 	if m.Node.Protocol.client != nil {
 		return m.Node.Protocol.client, nil
 	}
 
-	grpcClient, err := m.GetGRPCClientConn()
+	grpcClient, err := m.getGRPCClientConn()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -326,11 +350,21 @@ func (m *Manager) GetProtocolClient() (bertyprotocol.ProtocolServiceClient, erro
 }
 
 func (m *Manager) GetGRPCServer() (*grpc.Server, *runtime.ServeMux, error) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	return m.getGRPCServer()
+}
+
+// grpc logger should be set only once.
+// without this singleton, we can raise race conditions in unit tests => https://github.com/grpc/grpc-go/issues/1084
+var grpcLoggerConfigured = false
+
+func (m *Manager) getGRPCServer() (*grpc.Server, *runtime.ServeMux, error) {
 	if m.Node.GRPC.server != nil {
 		return m.Node.GRPC.server, m.Node.GRPC.gatewayMux, nil
 	}
 
-	logger, err := m.GetLogger()
+	logger, err := m.getLogger()
 	if err != nil {
 		return nil, nil, err
 	}
@@ -350,8 +384,10 @@ func (m *Manager) GetGRPCServer() (*grpc.Server, *runtime.ServeMux, error) {
 
 	tr := tracer.New("grpc-server")
 	// setup grpc with zap
-	grpc_zap.ReplaceGrpcLoggerV2(grpcLogger)
-
+	if !grpcLoggerConfigured {
+		grpc_zap.ReplaceGrpcLoggerV2(grpcLogger)
+		grpcLoggerConfigured = true
+	}
 	grpcOpts := []grpc.ServerOption{
 		grpc_middleware.WithUnaryServerChain(
 			grpc_recovery.UnaryServerInterceptor(recoverOpts...),
@@ -406,7 +442,7 @@ func (m *Manager) GetGRPCServer() (*grpc.Server, *runtime.ServeMux, error) {
 }
 
 func (m *Manager) getRdvpMaddr() (*peer.AddrInfo, error) {
-	_, err := m.GetLogger() // ensure logger is initialized
+	_, err := m.getLogger() // ensure logger is initialized
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -437,16 +473,22 @@ func (m *Manager) getRdvpMaddr() (*peer.AddrInfo, error) {
 }
 
 func (m *Manager) GetMessengerDB() (*gorm.DB, error) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	return m.getMessengerDB()
+}
+
+func (m *Manager) getMessengerDB() (*gorm.DB, error) {
 	if m.Node.Messenger.db != nil {
 		return m.Node.Messenger.db, nil
 	}
 
-	logger, err := m.GetLogger()
+	logger, err := m.getLogger()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	dir, err := m.GetDatastoreDir()
+	dir, err := m.getDatastoreDir()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -475,24 +517,30 @@ func (m *Manager) GetMessengerDB() (*gorm.DB, error) {
 }
 
 func (m *Manager) GetLocalMessengerServer() (bertymessenger.MessengerServiceServer, error) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	return m.getLocalMessengerServer()
+}
+
+func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServer, error) {
 	if m.Node.Messenger.server != nil {
 		return m.Node.Messenger.server, nil
 	}
 
 	// logger
-	logger, err := m.GetLogger()
+	logger, err := m.getLogger()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
 	// messenger db
-	db, err := m.GetMessengerDB()
+	db, err := m.getMessengerDB()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
 	// grpc server
-	grpcServer, gatewayMux, err := m.GetGRPCServer()
+	grpcServer, gatewayMux, err := m.getGRPCServer()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -510,7 +558,7 @@ func (m *Manager) GetLocalMessengerServer() (bertymessenger.MessengerServiceServ
 	}
 
 	// local protocol server
-	protocolServer, err := m.GetLocalProtocolServer()
+	protocolServer, err := m.getLocalProtocolServer()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

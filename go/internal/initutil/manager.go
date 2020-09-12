@@ -3,6 +3,7 @@ package initutil
 import (
 	"context"
 	"fmt"
+	"sync"
 	"time"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
@@ -86,6 +87,7 @@ type Manager struct {
 	ctxCancel  func()
 	initLogger *zap.Logger
 	workers    run.Group // replace by something more accurate
+	mutex      sync.Mutex
 }
 
 func New(ctx context.Context) (*Manager, error) {
