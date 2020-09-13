@@ -186,7 +186,7 @@ func commandList() []*command {
 }
 
 func authInit(ctx context.Context, v *groupView, cmd string) error {
-	rep, err := v.v.client.AuthServiceInitFlow(ctx, &bertytypes.AuthServiceInitFlow_Request{
+	rep, err := v.v.protocol.AuthServiceInitFlow(ctx, &bertytypes.AuthServiceInitFlow_Request{
 		AuthURL: strings.TrimSpace(cmd),
 	})
 
@@ -217,7 +217,7 @@ func authInit(ctx context.Context, v *groupView, cmd string) error {
 }
 
 func authComplete(ctx context.Context, v *groupView, cmd string) error {
-	_, err := v.v.client.AuthServiceCompleteFlow(ctx, &bertytypes.AuthServiceCompleteFlow_Request{
+	_, err := v.v.protocol.AuthServiceCompleteFlow(ctx, &bertytypes.AuthServiceCompleteFlow_Request{
 		CallbackURL: strings.TrimSpace(cmd),
 	})
 
@@ -225,7 +225,7 @@ func authComplete(ctx context.Context, v *groupView, cmd string) error {
 }
 
 func servicesList(ctx context.Context, v *groupView, _ string) error {
-	cl, err := v.v.client.ServicesTokenList(ctx, &bertytypes.ServicesTokenList_Request{})
+	cl, err := v.v.protocol.ServicesTokenList(ctx, &bertytypes.ServicesTokenList_Request{})
 	if err != nil {
 		return err
 	}
@@ -264,7 +264,7 @@ func setDisplayName(_ context.Context, v *groupView, cmd string) error {
 }
 
 func debugIPFSCommand(ctx context.Context, v *groupView, _ string) error {
-	config, err := v.v.client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+	config, err := v.v.protocol.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
 	if err != nil {
 		return err
 	}
@@ -381,7 +381,7 @@ func debugInspectStoreCommand(ctx context.Context, v *groupView, cmd string) err
 		return fmt.Errorf("invalid args, expected: group_pk {message,metadata}")
 	}
 
-	sub, err := v.v.client.DebugInspectGroupStore(ctx, &bertytypes.DebugInspectGroupStore_Request{
+	sub, err := v.v.protocol.DebugInspectGroupStore(ctx, &bertytypes.DebugInspectGroupStore_Request{
 		GroupPK: groupPK,
 		LogType: logType,
 	})
@@ -458,7 +458,7 @@ func debugListGroupsCommand(ctx context.Context, v *groupView, cmd string) error
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	sub, err := v.v.client.DebugListGroups(ctx, &bertytypes.DebugListGroups_Request{})
+	sub, err := v.v.protocol.DebugListGroups(ctx, &bertytypes.DebugListGroups_Request{})
 	if err != nil {
 		return err
 	}
@@ -538,7 +538,7 @@ func debugListGroupCommand(ctx context.Context, v *groupView, cmd string) error 
 		v.muAggregates.Unlock()
 	}
 
-	groupDebug, err := v.v.client.DebugGroup(ctx, &bertytypes.DebugGroup_Request{
+	groupDebug, err := v.v.protocol.DebugGroup(ctx, &bertytypes.DebugGroup_Request{
 		GroupPK: v.g.PublicKey,
 	})
 
@@ -577,7 +577,7 @@ func debugListGroupCommand(ctx context.Context, v *groupView, cmd string) error 
 // }
 
 func aliasSendCommand(ctx context.Context, v *groupView, cmd string) error {
-	if _, err := v.v.client.ContactAliasKeySend(ctx, &bertytypes.ContactAliasKeySend_Request{
+	if _, err := v.v.protocol.ContactAliasKeySend(ctx, &bertytypes.ContactAliasKeySend_Request{
 		GroupPK: v.g.PublicKey,
 	}); err != nil {
 		return err
@@ -664,7 +664,7 @@ func contactAcceptCommand(ctx context.Context, v *groupView, cmd string) error {
 		return err
 	}
 
-	if _, err = v.v.client.ContactRequestAccept(ctx, &bertytypes.ContactRequestAccept_Request{
+	if _, err = v.v.protocol.ContactRequestAccept(ctx, &bertytypes.ContactRequestAccept_Request{
 		ContactPK: pkBytes,
 	}); err != nil {
 		return err
@@ -679,7 +679,7 @@ func contactDiscardCommand(ctx context.Context, v *groupView, cmd string) error 
 		return err
 	}
 
-	if _, err = v.v.client.ContactRequestDiscard(ctx, &bertytypes.ContactRequestDiscard_Request{
+	if _, err = v.v.protocol.ContactRequestDiscard(ctx, &bertytypes.ContactRequestDiscard_Request{
 		ContactPK: pkBytes,
 	}); err != nil {
 		return err
@@ -694,7 +694,7 @@ func groupJoinCommand(ctx context.Context, v *groupView, cmd string) error {
 		return fmt.Errorf("err: can't join group %w", err)
 	}
 
-	_, err = v.v.client.MultiMemberGroupJoin(ctx, &bertytypes.MultiMemberGroupJoin_Request{
+	_, err = v.v.protocol.MultiMemberGroupJoin(ctx, &bertytypes.MultiMemberGroupJoin_Request{
 		Group: g,
 	})
 
@@ -702,7 +702,7 @@ func groupJoinCommand(ctx context.Context, v *groupView, cmd string) error {
 }
 
 func groupNewCommand(ctx context.Context, v *groupView, _ string) error {
-	_, err := v.v.client.MultiMemberGroupCreate(ctx, &bertytypes.MultiMemberGroupCreate_Request{})
+	_, err := v.v.protocol.MultiMemberGroupCreate(ctx, &bertytypes.MultiMemberGroupCreate_Request{})
 
 	return err
 }
@@ -726,7 +726,7 @@ func contactRequestCommand(ctx context.Context, v *groupView, cmd string) error 
 		Metadata:             []byte(res.BertyID.DisplayName),
 	}
 
-	_, err = v.v.client.ContactRequestSend(ctx, &bertytypes.ContactRequestSend_Request{
+	_, err = v.v.protocol.ContactRequestSend(ctx, &bertytypes.ContactRequestSend_Request{
 		Contact:     contact,
 		OwnMetadata: []byte(displayName),
 	})
@@ -806,19 +806,19 @@ func copyToClipboard(v *groupView, txt string) {
 }
 
 func contactRequestsOnCommand(ctx context.Context, v *groupView, cmd string) error {
-	_, err := v.v.client.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})
+	_, err := v.v.protocol.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})
 
 	return err
 }
 
 func contactRequestsOffCommand(ctx context.Context, v *groupView, cmd string) error {
-	_, err := v.v.client.ContactRequestDisable(ctx, &bertytypes.ContactRequestDisable_Request{})
+	_, err := v.v.protocol.ContactRequestDisable(ctx, &bertytypes.ContactRequestDisable_Request{})
 
 	return err
 }
 
 func contactRequestsReferenceResetCommand(ctx context.Context, v *groupView, cmd string) error {
-	_, err := v.v.client.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
+	_, err := v.v.protocol.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
 
 	return err
 }

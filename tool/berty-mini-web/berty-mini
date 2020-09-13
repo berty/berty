@@ -34,10 +34,10 @@ run() {
 		   --rm \
 		   --name="mini-web-${ID}" \
 		   bertytech/berty \
-		     --display-name="${NAME}" \
-		     --logfile="/data/berty-mini.log" \
+		     --log.file="/data/mini.log" \
 		     mini \
-		       -d=/data/berty-mini.db
+		       -node.display-name="${NAME}" \
+		       -store.dir=/data/store
             echo "Press enter to restart berty mini with the same datastore."
             read
         ); done

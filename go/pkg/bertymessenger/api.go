@@ -346,11 +346,14 @@ func (svc *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*S
 			reply.BuildTime = int64(buildTime)
 		}
 	}
-	if svc.protocolService != nil && svc.protocolService.IpfsCoreAPI() != nil {
-		api := svc.protocolService.IpfsCoreAPI()
-		peers, _ := api.Swarm().Peers(ctx)
-		reply.ConnectedPeers = int64(len(peers))
-	}
+	/*
+		FIXME: replace by a call to the protocol client
+		if svc.protocolService != nil && svc.protocolService.IpfsCoreAPI() != nil {
+			api := svc.protocolService.IpfsCoreAPI()
+			peers, _ := api.Swarm().Peers(ctx)
+			reply.ConnectedPeers = int64(len(peers))
+		}
+	*/
 
 	return &reply, nil
 }
@@ -622,11 +625,11 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 
 	// Create new conversation
 	conv := &Conversation{
+		AccountMemberPublicKey: bytesToString(gir.GetMemberPK()),
 		PublicKey:              pkStr,
 		DisplayName:            dn,
 		Link:                   htmlURL,
 		Type:                   Conversation_MultiMemberType,
-		AccountMemberPublicKey: bytesToString(gir.GetMemberPK()),
 		LocalDevicePublicKey:   bytesToString(gir.GetDevicePK()),
 		CreatedDate:            timestampMs(time.Now()),
 	}
@@ -770,11 +773,11 @@ func (svc *service) ConversationJoin(ctx context.Context, req *ConversationJoin_
 	}
 
 	conv := Conversation{
+		AccountMemberPublicKey: bytesToString(gir.GetMemberPK()),
 		PublicKey:              bytesToString(gpkb),
 		DisplayName:            bgroup.GetDisplayName(),
 		Link:                   link,
 		Type:                   Conversation_MultiMemberType,
-		AccountMemberPublicKey: bytesToString(gir.GetMemberPK()),
 		LocalDevicePublicKey:   bytesToString(gir.GetDevicePK()),
 		CreatedDate:            timestampMs(time.Now()),
 	}

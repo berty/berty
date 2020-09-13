@@ -175,13 +175,13 @@ doc.generate: install
 	done
 
 	echo 'foo@bar:~$$ berty share-invite' > .tmp/share-invite.txt
-	berty --logfilters="" share-invite -d=:memory: -display-name=demo >> .tmp/share-invite.txt
+	berty --log.filters="" share-invite -store.inmem -node.display-name=demo >> .tmp/share-invite.txt
 
 	echo 'foo@bar:~$$ berty info' > .tmp/info.txt
-	berty --logfilters="" info -d=:memory: >> .tmp/info.txt
+	berty --log.filters="" info -store.inmem >> .tmp/info.txt
 
 	echo 'foo@bar:~$$ berty daemon' > .tmp/daemon.txt
-	expect -c "set timeout 10; spawn -noecho docker run bertytech/berty --logformat=console --logfilters=info+:bty daemon -d=:memory:; expect serving" >> .tmp/daemon.txt
+	expect -c "set timeout 10; spawn -noecho docker run bertytech/berty --log.format=console --log.filters=info+:bty daemon -store.inmem; expect serving" >> .tmp/daemon.txt
 	echo '...' >> .tmp/daemon.txt
 
 	# FIXME: generate output for berty mini

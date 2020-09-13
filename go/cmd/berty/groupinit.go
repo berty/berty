@@ -11,6 +11,9 @@ import (
 )
 
 func groupinitCommand() *ffcli.Command {
+	// FIXME: share on discord
+	// FIXME: print QR
+	// FIXME: print berty.tech URL
 	return &ffcli.Command{
 		Name:      "groupinit",
 		ShortHelp: "initialize a new multi-member group",
@@ -26,7 +29,7 @@ func groupinitCommand() *ffcli.Command {
 				return err
 			}
 
-			fmt.Print(deepLink)
+			fmt.Println(deepLink)
 			return nil
 		},
 	}

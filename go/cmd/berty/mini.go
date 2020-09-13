@@ -3,128 +3,57 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
-	"os"
-	"path"
 
 	"berty.tech/berty/v2/go/cmd/berty/mini"
-	"berty.tech/berty/v2/go/internal/config"
-	"berty.tech/berty/v2/go/internal/notification"
-	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/go-orbit-db/cache/cacheleveldown"
 	"github.com/peterbourgon/ff/v3/ffcli"
-	"github.com/shibukawa/configdir"
-	"go.uber.org/zap"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
-	"moul.io/zapgorm2"
 )
 
 func miniCommand() *ffcli.Command {
-	var miniFlags = flag.NewFlagSet("mini demo client", flag.ExitOnError)
-	miniFlags.StringVar(&opts.miniGroup, "g", opts.miniGroup, "group to join, leave empty to create a new group")
-	miniFlags.StringVar(&opts.datastorePath, "d", opts.datastorePath, "datastore base directory")
-	miniFlags.StringVar(&opts.sqlitePath, "s", opts.sqlitePath, "sqlite base directory")
-	miniFlags.BoolVar(&opts.replay, "replay", opts.replay, "reconstruct DB from orbitDB logs")
-	miniFlags.UintVar(&opts.port, "p", opts.port, "default IPFS listen port")
-	miniFlags.StringVar(&opts.remoteDaemonAddr, "r", opts.remoteDaemonAddr, "remote berty daemon")
-	miniFlags.StringVar(&opts.rdvpMaddr, "rdvp", opts.rdvpMaddr, "rendezvous point maddr")
-	miniFlags.BoolVar(&opts.miniInMemory, "inmem", opts.miniInMemory, "disable persistence")
-	miniFlags.BoolVar(&opts.miniDisableNotification, "no-notif", opts.miniDisableNotification, "disable notification")
+	var (
+		fs        = flag.NewFlagSet("berty mini", flag.ExitOnError)
+		groupFlag string
+	)
+	fs.StringVar(&groupFlag, "mini.group", groupFlag, "group to join, leave empty to create a new group")
+	manager.SetupLocalMessengerServerFlags(fs)
+	manager.SetupRemoteNodeFlags(fs)
 
 	return &ffcli.Command{
-		Name:      "mini",
-		ShortHelp: "start a terminal-based mini berty client (not fully compatible with the app)",
-		FlagSet:   miniFlags,
+		Name:       "mini",
+		ShortHelp:  "start a terminal-based mini berty client (not fully compatible with the app)",
+		ShortUsage: "berty [global flags] mini [flags]",
+		FlagSet:    fs,
 		Exec: func(ctx context.Context, args []string) error {
-			cleanup := globalPreRun()
-			defer cleanup()
-
-			if !opts.miniInMemory && opts.datastorePath == cacheleveldown.InMemoryDirectory {
-				storagePath := configdir.New("Berty", "Mini")
-				storageDirs := storagePath.QueryFolders(configdir.Global)
-				if len(storageDirs) == 0 {
-					return fmt.Errorf("no storage path found")
-				}
-
-				if err := storageDirs[0].CreateParentDir(""); err != nil {
-					return err
-				}
-
-				opts.datastorePath = storageDirs[0].Path
-			} else {
-				opts.sqlitePath = ""
+			// mini only supports file-based logging
+			if manager.Logging.Logfile == "" {
+				manager.Logging.Filters = ""
 			}
 
-			rootDS, dsLock, err := getRootDatastore(opts.datastorePath)
+			// logger
+			logger, err := manager.GetLogger()
 			if err != nil {
-				return errcode.TODO.Wrap(err)
+				return err
 			}
-			if dsLock != nil {
-				defer func() { _ = dsLock.Unlock() }()
-			}
-			defer rootDS.Close()
+			miniLogger := logger.Named("mini")
 
-			rdvpeer, err := parseRdvpMaddr(ctx, opts.rdvpMaddr, opts.logger)
+			// messenger client
+			messengerClient, err := manager.GetMessengerClient()
 			if err != nil {
-				return errcode.TODO.Wrap(err)
+				return err
 			}
 
-			l := zap.NewNop()
-			if opts.logToFile != "" {
-				l = opts.logger
+			// protocol client
+			protocolClient, err := manager.GetProtocolClient()
+			if err != nil {
+				return err
 			}
 
-			var db *gorm.DB
-			if opts.sqlitePath != "" {
-				basePath := opts.sqlitePath
-				if opts.sqlitePath != ":memory:" {
-					_, err := os.Stat(opts.sqlitePath)
-					if err != nil {
-						if !os.IsNotExist(err) {
-							return errcode.TODO.Wrap(err)
-						}
-						if err := os.MkdirAll(opts.sqlitePath, 0700); err != nil {
-							return errcode.TODO.Wrap(err)
-						}
-					}
-					basePath = path.Join(opts.sqlitePath, "sqlite.db")
-				}
-				db, err = gorm.Open(sqlite.Open(basePath), &gorm.Config{Logger: zapgorm2.New(opts.logger)})
-				if err != nil {
-					return err
-				}
-				sqlDB, _ := db.DB()
-				defer sqlDB.Close()
-			}
-
-			var notifmanager notification.Manager
-			if !opts.miniDisableNotification {
-				// @TODO(gfanton): find a way to embed the icon into the app, and generate a valid path
-				notifmanager = notification.NewDesktopManager(l, "")
-			} else {
-				notifmanager = notification.NewLoggerManager(l)
-			}
-
-			err = mini.Main(ctx, &mini.Opts{
-				RemoteAddr:          opts.remoteDaemonAddr,
-				GroupInvitation:     opts.miniGroup,
-				Port:                opts.port,
-				RootDS:              rootDS,
-				MessengerDB:         db,
-				ReplayLogs:          opts.replay,
-				Logger:              l,
-				Bootstrap:           config.BertyDev.Bootstrap,
-				RendezVousPeer:      rdvpeer,
-				DisplayName:         opts.displayName,
-				LocalDiscovery:      opts.localDiscovery,
-				NotificationManager: notifmanager,
+			return mini.Main(ctx, &mini.Opts{
+				GroupInvitation: groupFlag,
+				MessengerClient: messengerClient,
+				ProtocolClient:  protocolClient,
+				Logger:          miniLogger,
+				DisplayName:     manager.Node.Messenger.DisplayName,
 			})
-			if err != nil {
-				return errcode.TODO.Wrap(err)
-			}
-
-			return nil
 		},
 	}
 }

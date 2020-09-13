@@ -17,7 +17,7 @@ import (
 type tabbedGroupsView struct {
 	ctx                    context.Context
 	app                    *tview.Application
-	client                 bertyprotocol.ProtocolServiceClient
+	protocol               bertyprotocol.ProtocolServiceClient
 	topics                 *tview.Table
 	activeViewContainer    *tview.Flex
 	selectedGroupView      *groupView
@@ -25,7 +25,7 @@ type tabbedGroupsView struct {
 	contactGroupViews      []*groupView
 	multiMembersGroupViews []*groupView
 	lock                   sync.RWMutex
-	messenger              bertymessenger.MessengerServiceServer
+	messenger              bertymessenger.MessengerServiceClient
 	displayName            string
 	contactStates          map[string]bertytypes.ContactState
 	contactNames           map[string]string
@@ -135,7 +135,7 @@ func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *bertytypes.Gr
 		return
 	}
 
-	info, err := v.client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+	info, err := v.protocol.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		GroupPK: g.PublicKey,
 	})
 
@@ -143,7 +143,7 @@ func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *bertytypes.Gr
 		return
 	}
 
-	if _, err := v.client.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
+	if _, err := v.protocol.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
 		GroupPK: g.PublicKey,
 	}); err != nil {
 		return
@@ -229,11 +229,11 @@ func (v *tabbedGroupsView) GetHistory() tview.Primitive {
 	return v.activeViewContainer
 }
 
-func newTabbedGroups(ctx context.Context, g *bertytypes.GroupInfo_Reply, client bertyprotocol.ProtocolServiceClient, messenger bertymessenger.MessengerServiceServer, app *tview.Application, displayName string) *tabbedGroupsView {
+func newTabbedGroups(ctx context.Context, g *bertytypes.GroupInfo_Reply, protocol bertyprotocol.ProtocolServiceClient, messenger bertymessenger.MessengerServiceClient, app *tview.Application, displayName string) *tabbedGroupsView {
 	v := &tabbedGroupsView{
 		ctx:           ctx,
 		topics:        tview.NewTable(),
-		client:        client,
+		protocol:      protocol,
 		messenger:     messenger,
 		app:           app,
 		contactStates: map[string]bertytypes.ContactState{},
@@ -243,7 +243,8 @@ func newTabbedGroups(ctx context.Context, g *bertytypes.GroupInfo_Reply, client 
 
 	v.accountGroupView = newViewGroup(v, g.Group, g.MemberPK, g.DevicePK, globalLogger)
 	v.selectedGroupView = v.accountGroupView
-	v.activeViewContainer = tview.NewFlex().SetDirection(tview.FlexRow).
+	v.activeViewContainer = tview.NewFlex().
+		SetDirection(tview.FlexRow).
 		AddItem(v.selectedGroupView.View(), 0, 1, false)
 	v.recomputeChannelList(false)
 

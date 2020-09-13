@@ -2,13 +2,11 @@ package mini
 
 import (
 	"encoding/base64"
-
 	"fmt"
 
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"github.com/juju/fslock"
 )
 
 func openGroupFromString(data string) (*bertytypes.Group, error) {
@@ -26,22 +24,6 @@ func openGroupFromString(data string) (*bertytypes.Group, error) {
 	}
 
 	return res.BertyGroup.Group, nil
-}
-
-func unlockFS(l *fslock.Lock) {
-	if l == nil {
-		return
-	}
-
-	err := l.Unlock()
-	if err != nil {
-		panic(err)
-	}
-}
-
-func panicUnlockFS(err error, l *fslock.Lock) {
-	unlockFS(l)
-	panic(err)
 }
 
 func pkAsShortID(pk []byte) string {

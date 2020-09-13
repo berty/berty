@@ -104,8 +104,8 @@ func (l *listener) GRPCMultiaddr() ma.Multiaddr {
 }
 
 type Server struct {
-	*grpc.Server
-	*grpcgw.ServeMux
+	GRPCServer *grpc.Server
+	GatewayMux *grpcgw.ServeMux
 }
 
 func (s *Server) Serve(l Listener) error {
@@ -115,9 +115,9 @@ func (s *Server) Serve(l Listener) error {
 	ma.ForEach(l.GRPCMultiaddr(), func(c ma.Component) bool {
 		switch c.Protocol().Code {
 		case P_GRPC:
-			serve = s.Server.Serve
+			serve = s.GRPCServer.Serve
 		case P_GRPC_WEB, P_GRPC_WEBSOCKET:
-			wgrpc := grpcweb.WrapServer(s.Server,
+			wgrpc := grpcweb.WrapServer(s.GRPCServer,
 				grpcweb.WithOriginFunc(func(string) bool { return true }), // @FIXME: this is very insecure
 				grpcweb.WithWebsockets(P_GRPC_WEBSOCKET == c.Protocol().Code),
 			)
@@ -129,12 +129,12 @@ func (s *Server) Serve(l Listener) error {
 			serve = serverWeb.Serve
 
 		case P_GRPC_GATEWAY:
-			if s.ServeMux == nil {
+			if s.GatewayMux == nil {
 				err = fmt.Errorf("grpc gateway: no server mux was given")
 				return false
 			}
 			gatewayServer := http.Server{
-				Handler: s.ServeMux,
+				Handler: s.GatewayMux,
 			}
 
 			serve = gatewayServer.Serve
