@@ -121,8 +121,6 @@ func TestPersistenceProtocol(t *testing.T) {
 
 	const n_try = 4
 
-	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
-
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
