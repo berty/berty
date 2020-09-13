@@ -25,22 +25,30 @@ func HandleFoundPeer(sRemotePID string) bool {
 
 	// Checks if a listener is currently running.
 	gLock.RLock()
-	defer gLock.RUnlock()
+
 	if gListener == nil || gListener.ctx.Err() != nil {
+		gLock.RUnlock()
 		logger.Error("discovery handle peer failed: listener not running")
 		return false
 	}
 
+	// Get snapshot of gListener
+	listener := gListener
+
+	// unblock here to prevent blocking other APIs of Listener or Transport
+	gLock.RUnlock()
+
 	// Adds peer to peerstore.
-	gListener.transport.host.Peerstore().AddAddr(remotePID, remoteMa,
+	listener.transport.host.Peerstore().AddAddr(remotePID, remoteMa,
 		pstore.TempAddrTTL)
 
 	// Peer with lexicographical smallest peerID inits libp2p connection.
-	if gListener.Addr().String() < sRemotePID {
+	if listener.Addr().String() < sRemotePID {
 		// Async connect so HandleFoundPeer can return and unlock the native driver.
 		// Needed to read and write during the connect handshake.
 		go func() {
-			err := gListener.transport.host.Connect(gListener.ctx, peer.AddrInfo{
+			// Need to use listener than gListener here to not have to check valid value of gListener
+			err := listener.transport.host.Connect(listener.ctx, peer.AddrInfo{
 				ID:    remotePID,
 				Addrs: []ma.Multiaddr{remoteMa},
 			})
@@ -53,13 +61,14 @@ func HandleFoundPeer(sRemotePID string) bool {
 	}
 
 	// Peer with lexicographical biggest peerID accepts incoming connection.
+	// FIXME : consider to push this code in go routine to prevent blocking native driver
 	select {
-	case gListener.inboundConnReq <- connReq{
+	case listener.inboundConnReq <- connReq{
 		remoteMa:  remoteMa,
 		remotePID: remotePID,
 	}:
 		return true
-	case <-gListener.ctx.Done():
+	case <-listener.ctx.Done():
 		return false
 	}
 }
