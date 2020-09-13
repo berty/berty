@@ -8,7 +8,7 @@ import {
 import { useStyles } from '@berty-tech/styles'
 import Color from 'color'
 import palette from 'google-palette'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Text as TextNative, TouchableOpacity, View } from 'react-native'
 import Hyperlink from 'react-native-hyperlink'
 import { Icon, Text } from 'react-native-ui-kitten'
@@ -183,6 +183,12 @@ const MessageInvitationReceived: React.FC<{ message: any }> = ({ message }) => {
 	const [accepting, setAccepting] = useState(false)
 	const conv = useConversation(convPk)
 	const { link } = message.payload || {}
+	const acceptDisabled = useMemo(() => accepting || conv || !convPk || error, [
+		accepting,
+		conv,
+		convPk,
+		error,
+	])
 
 	// Parse deep link
 	React.useEffect(() => {
@@ -268,7 +274,8 @@ const MessageInvitationReceived: React.FC<{ message: any }> = ({ message }) => {
 					color={!conv ? color.blue : color.green}
 					title={!conv ? 'ACCEPT' : 'ACCEPTED'}
 					backgroundColor={!conv ? color.light.blue : color.light.green}
-					disabled={accepting || conv || !convPk || error} // TODO: disabled UI
+					styleOpacity={acceptDisabled ? 0.6 : undefined}
+					disabled={acceptDisabled}
 				/>
 			</View>
 		</React.Fragment>
@@ -467,7 +474,22 @@ export const Message: React.FC<{
 		inte.type === messengerpb.AppMessage.Type.TypeGroupInvitation &&
 		convKind === messengerpb.Conversation.Type.ContactType
 	) {
-		return <MessageInvitation message={inte} />
+		return (
+			<>
+				<View style={[padding.horizontal.medium]}>
+					<Text
+						style={[
+							inte.isMe ? text.align.right : text.align.left,
+							text.color.grey,
+							_styles.dateMessage,
+						]}
+					>
+						{sentDate ? formatTimestamp(sentDate) : ''}{' '}
+					</Text>
+				</View>
+				<MessageInvitation message={inte} />
+			</>
+		)
 	} else {
 		return null
 	}

@@ -703,7 +703,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 	}
 
 	for _, contactPK := range req.GetContactsToInvite() {
-		am, err := AppMessage_TypeGroupInvitation.MarshalPayload(0, &AppMessage_GroupInvitation{Link: conv.GetLink()})
+		am, err := AppMessage_TypeGroupInvitation.MarshalPayload(timestampMs(time.Now()), &AppMessage_GroupInvitation{Link: conv.GetLink()})
 		if err != nil {
 			return nil, err
 		}
