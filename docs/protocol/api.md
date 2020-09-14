@@ -94,14 +94,10 @@
     - [GroupMessageEvent](#berty.types.v1.GroupMessageEvent)
     - [GroupMessageList](#berty.types.v1.GroupMessageList)
     - [GroupMessageList.Request](#berty.types.v1.GroupMessageList.Request)
-    - [GroupMessageSubscribe](#berty.types.v1.GroupMessageSubscribe)
-    - [GroupMessageSubscribe.Request](#berty.types.v1.GroupMessageSubscribe.Request)
     - [GroupMetadata](#berty.types.v1.GroupMetadata)
     - [GroupMetadataEvent](#berty.types.v1.GroupMetadataEvent)
     - [GroupMetadataList](#berty.types.v1.GroupMetadataList)
     - [GroupMetadataList.Request](#berty.types.v1.GroupMetadataList.Request)
-    - [GroupMetadataSubscribe](#berty.types.v1.GroupMetadataSubscribe)
-    - [GroupMetadataSubscribe.Request](#berty.types.v1.GroupMetadataSubscribe.Request)
     - [GroupRemoveAdditionalRendezvousSeed](#berty.types.v1.GroupRemoveAdditionalRendezvousSeed)
     - [InstanceExportData](#berty.types.v1.InstanceExportData)
     - [InstanceExportData.Reply](#berty.types.v1.InstanceExportData.Reply)
@@ -188,12 +184,10 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | MultiMemberGroupInvitationCreate | [.berty.types.v1.MultiMemberGroupInvitationCreate.Request](#berty.types.v1.MultiMemberGroupInvitationCreate.Request) | [.berty.types.v1.MultiMemberGroupInvitationCreate.Reply](#berty.types.v1.MultiMemberGroupInvitationCreate.Reply) | MultiMemberGroupInvitationCreate creates an invitation to a multi-member group |
 | AppMetadataSend | [.berty.types.v1.AppMetadataSend.Request](#berty.types.v1.AppMetadataSend.Request) | [.berty.types.v1.AppMetadataSend.Reply](#berty.types.v1.AppMetadataSend.Reply) | AppMetadataSend adds an app event to the metadata store, the message is encrypted using a symmetric key and readable by future group members |
 | AppMessageSend | [.berty.types.v1.AppMessageSend.Request](#berty.types.v1.AppMessageSend.Request) | [.berty.types.v1.AppMessageSend.Reply](#berty.types.v1.AppMessageSend.Reply) | AppMessageSend adds an app event to the message store, the message is encrypted using a derived key and readable by current group members |
-| GroupMetadataSubscribe | [.berty.types.v1.GroupMetadataSubscribe.Request](#berty.types.v1.GroupMetadataSubscribe.Request) | [.berty.types.v1.GroupMetadataEvent](#berty.types.v1.GroupMetadataEvent) stream | GroupMetadataSubscribe subscribes to a group metadata updates (types.v1.or it can also retrieve the history) |
-| GroupMessageSubscribe | [.berty.types.v1.GroupMessageSubscribe.Request](#berty.types.v1.GroupMessageSubscribe.Request) | [.berty.types.v1.GroupMessageEvent](#berty.types.v1.GroupMessageEvent) stream | GroupMessageSubscribe subscribes to a group message updates (types.v1.or it can also retrieve the history) |
-| GroupMetadataList | [.berty.types.v1.GroupMetadataList.Request](#berty.types.v1.GroupMetadataList.Request) | [.berty.types.v1.GroupMetadataEvent](#berty.types.v1.GroupMetadataEvent) stream | GroupMetadataList replays metadata events from the group |
-| GroupMessageList | [.berty.types.v1.GroupMessageList.Request](#berty.types.v1.GroupMessageList.Request) | [.berty.types.v1.GroupMessageEvent](#berty.types.v1.GroupMessageEvent) stream | GroupMessageList replays message events from the group |
+| GroupMetadataList | [.berty.types.v1.GroupMetadataList.Request](#berty.types.v1.GroupMetadataList.Request) | [.berty.types.v1.GroupMetadataEvent](#berty.types.v1.GroupMetadataEvent) stream | GroupMetadataList replays previous and subscribes to new metadata events from the group |
+| GroupMessageList | [.berty.types.v1.GroupMessageList.Request](#berty.types.v1.GroupMessageList.Request) | [.berty.types.v1.GroupMessageEvent](#berty.types.v1.GroupMessageEvent) stream | GroupMessageList replays previous and subscribes to new message events from the group |
 | GroupInfo | [.berty.types.v1.GroupInfo.Request](#berty.types.v1.GroupInfo.Request) | [.berty.types.v1.GroupInfo.Reply](#berty.types.v1.GroupInfo.Reply) | GroupInfo retrieves information about a group |
-| ActivateGroup | [.berty.types.v1.ActivateGroup.Request](#berty.types.v1.ActivateGroup.Request) | [.berty.types.v1.ActivateGroup.Reply](#berty.types.v1.ActivateGroup.Reply) | ActivateGroup explicitly opens a group, groups are automatically enabled when actions are performed on them |
+| ActivateGroup | [.berty.types.v1.ActivateGroup.Request](#berty.types.v1.ActivateGroup.Request) | [.berty.types.v1.ActivateGroup.Reply](#berty.types.v1.ActivateGroup.Reply) | ActivateGroup explicitly opens a group |
 | DeactivateGroup | [.berty.types.v1.DeactivateGroup.Request](#berty.types.v1.DeactivateGroup.Request) | [.berty.types.v1.DeactivateGroup.Reply](#berty.types.v1.DeactivateGroup.Reply) | DeactivateGroup closes a group |
 | DebugListGroups | [.berty.types.v1.DebugListGroups.Request](#berty.types.v1.DebugListGroups.Request) | [.berty.types.v1.DebugListGroups.Reply](#berty.types.v1.DebugListGroups.Reply) stream |  |
 | DebugInspectGroupStore | [.berty.types.v1.DebugInspectGroupStore.Request](#berty.types.v1.DebugInspectGroupStore.Request) | [.berty.types.v1.DebugInspectGroupStore.Reply](#berty.types.v1.DebugInspectGroupStore.Reply) stream |  |
@@ -384,6 +378,7 @@ AccountServiceTokenRemoved indicates a token has removed
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
+| local_only | [bool](#bool) |  | local_only will open the group without enabling network interactions with other members |
 
 <a name="berty.types.v1.AppMessageSend"></a>
 
@@ -835,21 +830,11 @@ GroupEnvelope is a publicly exposed structure containing a group metadata event
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
-
-<a name="berty.types.v1.GroupMessageSubscribe"></a>
-
-### GroupMessageSubscribe
-
-<a name="berty.types.v1.GroupMessageSubscribe.Request"></a>
-
-### GroupMessageSubscribe.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
-| since | [bytes](#bytes) |  | since is the lower ID bound used to filter events |
-| until | [bytes](#bytes) |  | until is the upper ID bound used to filter events |
-| go_backwards | [bool](#bool) |  | go_backwards indicates whether the events should be returned in reverse order |
+| since_id | [bytes](#bytes) |  | since is the lower ID bound used to filter events if not set, will return events since the beginning |
+| since_now | [bool](#bool) |  | since_now will list only new event to come since_id must not be set |
+| until_id | [bytes](#bytes) |  | until is the upper ID bound used to filter events if not set, will subscribe to new events to come |
+| until_now | [bool](#bool) |  | until_now will not list new event to come until_id must not be set |
+| reverse_order | [bool](#bool) |  | reverse_order indicates whether the previous events should be returned in reverse chronological order |
 
 <a name="berty.types.v1.GroupMetadata"></a>
 
@@ -883,21 +868,11 @@ GroupMetadata is used in GroupEnvelope and only readable by invited group member
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
-
-<a name="berty.types.v1.GroupMetadataSubscribe"></a>
-
-### GroupMetadataSubscribe
-
-<a name="berty.types.v1.GroupMetadataSubscribe.Request"></a>
-
-### GroupMetadataSubscribe.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
-| since | [bytes](#bytes) |  | since is the lower ID bound used to filter events |
-| until | [bytes](#bytes) |  | until is the upper ID bound used to filter events |
-| go_backwards | [bool](#bool) |  | go_backwards indicates whether the events should be returned in reverse order |
+| since_id | [bytes](#bytes) |  | since is the lower ID bound used to filter events if not set, will return events since the beginning |
+| since_now | [bool](#bool) |  | since_now will list only new event to come since_id must not be set |
+| until_id | [bytes](#bytes) |  | until is the upper ID bound used to filter events if not set, will subscribe to new events to come |
+| until_now | [bool](#bool) |  | until_now will not list new event to come until_id must not be set |
+| reverse_order | [bool](#bool) |  | reverse_order indicates whether the previous events should be returned in reverse chronological order |
 
 <a name="berty.types.v1.GroupRemoveAdditionalRendezvousSeed"></a>
 

@@ -63,10 +63,10 @@ func Main(ctx context.Context, opts *Opts) error {
 
 	tabbedView := newTabbedGroups(ctx, accountGroup, opts.ProtocolClient, opts.MessengerClient, app, opts.DisplayName)
 	if len(opts.GroupInvitation) > 0 {
-		req := &bertytypes.GroupMetadataSubscribe_Request{GroupPK: accountGroup.Group.PublicKey}
-		cl, err := tabbedView.protocol.GroupMetadataSubscribe(ctx, req)
+		req := &bertytypes.GroupMetadataList_Request{GroupPK: accountGroup.Group.PublicKey}
+		cl, err := tabbedView.protocol.GroupMetadataList(ctx, req)
 		if err != nil {
-			return errcode.TODO.Wrap(err)
+			return errcode.ErrEventListMetadata.Wrap(err)
 		}
 
 		go func() {

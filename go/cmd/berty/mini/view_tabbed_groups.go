@@ -143,12 +143,6 @@ func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *bertytypes.Gr
 		return
 	}
 
-	if _, err := v.protocol.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
-		GroupPK: g.PublicKey,
-	}); err != nil {
-		return
-	}
-
 	vg := newViewGroup(v, g, info.MemberPK, info.DevicePK, globalLogger)
 	vg.welcomeGroupEventDisplay()
 	vg.loop(v.ctx)

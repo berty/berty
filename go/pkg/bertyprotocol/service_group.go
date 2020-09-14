@@ -5,6 +5,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/stores"
 	"github.com/libp2p/go-libp2p-core/crypto"
 )
@@ -122,7 +123,7 @@ func (s *service) deactivateGroup(pk crypto.PubKey) error {
 	return nil
 }
 
-func (s *service) activateGroup(pk crypto.PubKey) error {
+func (s *service) activateGroup(pk crypto.PubKey, localOnly bool) error {
 	id, err := pk.Raw()
 	if err != nil {
 		return errcode.ErrSerialization.Wrap(err)
@@ -143,7 +144,9 @@ func (s *service) activateGroup(pk crypto.PubKey) error {
 
 	switch g.GroupType {
 	case bertytypes.GroupTypeContact, bertytypes.GroupTypeMultiMember:
-		cg, err := s.odb.OpenGroup(s.ctx, g, nil)
+		dbOpts := &iface.CreateDBOptions{LocalOnly: &localOnly}
+
+		cg, err := s.odb.OpenGroup(s.ctx, g, dbOpts)
 		if err != nil {
 			return errcode.TODO.Wrap(err)
 		}

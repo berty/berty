@@ -69,22 +69,16 @@ service ProtocolService {
   // AppMessageSend adds an app event to the message store, the message is encrypted using a derived key and readable by current group members
   rpc AppMessageSend (types.v1.AppMessageSend.Request) returns (types.v1.AppMessageSend.Reply);
 
-  // GroupMetadataSubscribe subscribes to a group metadata updates (types.v1.or it can also retrieve the history)
-  rpc GroupMetadataSubscribe (types.v1.GroupMetadataSubscribe.Request) returns (stream types.v1.GroupMetadataEvent);
-
-  // GroupMessageSubscribe subscribes to a group message updates (types.v1.or it can also retrieve the history)
-  rpc GroupMessageSubscribe (types.v1.GroupMessageSubscribe.Request) returns (stream types.v1.GroupMessageEvent);
-
-  // GroupMetadataList replays metadata events from the group
+  // GroupMetadataList replays previous and subscribes to new metadata events from the group
   rpc GroupMetadataList (types.v1.GroupMetadataList.Request) returns (stream types.v1.GroupMetadataEvent);
 
-  // GroupMessageList replays message  events from the group
+  // GroupMessageList replays previous and subscribes to new message events from the group
   rpc GroupMessageList (types.v1.GroupMessageList.Request) returns (stream types.v1.GroupMessageEvent);
 
   // GroupInfo retrieves information about a group
   rpc GroupInfo (types.v1.GroupInfo.Request) returns (types.v1.GroupInfo.Reply);
 
-  // ActivateGroup explicitly opens a group, groups are automatically enabled when actions are performed on them
+  // ActivateGroup explicitly opens a group
   rpc ActivateGroup (types.v1.ActivateGroup.Request) returns (types.v1.ActivateGroup.Reply);
 
   // DeactivateGroup closes a group

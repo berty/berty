@@ -295,14 +295,15 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrNotImplemented: 777,
               ErrInternal: 888,
               ErrInvalidInput: 100,
-              ErrMissingInput: 101,
-              ErrSerialization: 102,
-              ErrDeserialization: 103,
-              ErrStreamRead: 104,
-              ErrStreamWrite: 105,
-              ErrMissingMapKey: 106,
-              ErrDBWrite: 107,
-              ErrDBRead: 108,
+              ErrInvalidRange: 101,
+              ErrMissingInput: 102,
+              ErrSerialization: 103,
+              ErrDeserialization: 104,
+              ErrStreamRead: 105,
+              ErrStreamWrite: 106,
+              ErrMissingMapKey: 107,
+              ErrDBWrite: 108,
+              ErrDBRead: 109,
               ErrCryptoRandomGeneration: 200,
               ErrCryptoKeyGeneration: 201,
               ErrCryptoNonceGeneration: 202,
@@ -337,10 +338,15 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrGroupSecretAlreadySentToMember: 1304,
               ErrGroupInvalidType: 1305,
               ErrGroupMissing: 1306,
-              ErrMessageKeyPersistencePut: 1400,
-              ErrMessageKeyPersistenceGet: 1401,
-              ErrBridgeInterrupted: 1500,
-              ErrBridgeNotRunning: 1501,
+              ErrGroupActivate: 1307,
+              ErrGroupDeactivate: 1308,
+              ErrGroupInfo: 1309,
+              ErrEventListMetadata: 1400,
+              ErrEventListMessage: 1401,
+              ErrMessageKeyPersistencePut: 1500,
+              ErrMessageKeyPersistenceGet: 1501,
+              ErrBridgeInterrupted: 1600,
+              ErrBridgeNotRunning: 1601,
               ErrMessengerInvalidDeepLink: 2000,
               ErrDBEntryAlreadyExists: 2100,
               ErrDBAddConversation: 2101,
@@ -463,16 +469,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   AppMessageSend: {
                     requestType: "types.v1.AppMessageSend.Request",
                     responseType: "types.v1.AppMessageSend.Reply"
-                  },
-                  GroupMetadataSubscribe: {
-                    requestType: "types.v1.GroupMetadataSubscribe.Request",
-                    responseType: "types.v1.GroupMetadataEvent",
-                    responseStream: true
-                  },
-                  GroupMessageSubscribe: {
-                    requestType: "types.v1.GroupMessageSubscribe.Request",
-                    responseType: "types.v1.GroupMessageEvent",
-                    responseStream: true
                   },
                   GroupMetadataList: {
                     requestType: "types.v1.GroupMetadataList.Request",
@@ -1591,34 +1587,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              GroupMetadataSubscribe: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      groupPk: {
-                        type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
-                      },
-                      since: {
-                        type: "bytes",
-                        id: 2
-                      },
-                      until: {
-                        type: "bytes",
-                        id: 3
-                      },
-                      goBackwards: {
-                        type: "bool",
-                        id: 4
-                      }
-                    }
-                  }
-                }
-              },
               GroupMetadataList: {
                 fields: {},
                 nested: {
@@ -1630,34 +1598,32 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         options: {
                           "(gogoproto.customname)": "GroupPK"
                         }
-                      }
-                    }
-                  }
-                }
-              },
-              GroupMessageSubscribe: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      groupPk: {
+                      },
+                      sinceId: {
                         type: "bytes",
-                        id: 1,
+                        id: 2,
                         options: {
-                          "(gogoproto.customname)": "GroupPK"
+                          "(gogoproto.customname)": "SinceID"
                         }
                       },
-                      since: {
-                        type: "bytes",
-                        id: 2
-                      },
-                      until: {
-                        type: "bytes",
+                      sinceNow: {
+                        type: "bool",
                         id: 3
                       },
-                      goBackwards: {
+                      untilId: {
+                        type: "bytes",
+                        id: 4,
+                        options: {
+                          "(gogoproto.customname)": "UntilID"
+                        }
+                      },
+                      untilNow: {
                         type: "bool",
-                        id: 4
+                        id: 5
+                      },
+                      reverseOrder: {
+                        type: "bool",
+                        id: 6
                       }
                     }
                   }
@@ -1674,6 +1640,32 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         options: {
                           "(gogoproto.customname)": "GroupPK"
                         }
+                      },
+                      sinceId: {
+                        type: "bytes",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "SinceID"
+                        }
+                      },
+                      sinceNow: {
+                        type: "bool",
+                        id: 3
+                      },
+                      untilId: {
+                        type: "bytes",
+                        id: 4,
+                        options: {
+                          "(gogoproto.customname)": "UntilID"
+                        }
+                      },
+                      untilNow: {
+                        type: "bool",
+                        id: 5
+                      },
+                      reverseOrder: {
+                        type: "bool",
+                        id: 6
                       }
                     }
                   }
@@ -1735,6 +1727,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         options: {
                           "(gogoproto.customname)": "GroupPK"
                         }
+                      },
+                      localOnly: {
+                        type: "bool",
+                        id: 2
                       }
                     }
                   },

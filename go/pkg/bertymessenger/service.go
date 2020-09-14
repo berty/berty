@@ -149,9 +149,12 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 
 func (svc *service) subscribeToMetadata(gpkb []byte) error {
 	// subscribe
-	s, err := svc.protocolClient.GroupMetadataSubscribe(svc.ctx, &bertytypes.GroupMetadataSubscribe_Request{GroupPK: gpkb})
+	s, err := svc.protocolClient.GroupMetadataList(
+		svc.ctx,
+		&bertytypes.GroupMetadataList_Request{GroupPK: gpkb},
+	)
 	if err != nil {
-		return err
+		return errcode.ErrEventListMetadata.Wrap(err)
 	}
 	go func() {
 		for {
@@ -172,9 +175,12 @@ func (svc *service) subscribeToMetadata(gpkb []byte) error {
 }
 
 func (svc *service) subscribeToMessages(gpkb []byte) error {
-	ms, err := svc.protocolClient.GroupMessageSubscribe(svc.ctx, &bertytypes.GroupMessageSubscribe_Request{GroupPK: gpkb})
+	ms, err := svc.protocolClient.GroupMessageList(
+		svc.ctx,
+		&bertytypes.GroupMessageList_Request{GroupPK: gpkb},
+	)
 	if err != nil {
-		return err
+		return errcode.ErrEventListMessage.Wrap(err)
 	}
 	go func() {
 		for {

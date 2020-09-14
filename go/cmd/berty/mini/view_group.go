@@ -127,6 +127,8 @@ func (v *groupView) ack(ctx context.Context, evt *bertytypes.GroupMessageEvent) 
 }
 
 func (v *groupView) loop(ctx context.Context) {
+	var lastMessageID, lastMetadataID []byte
+
 	wg := sync.WaitGroup{}
 	wg.Add(3)
 
@@ -138,9 +140,17 @@ func (v *groupView) loop(ctx context.Context) {
 		}
 	}()
 
+	// Open group with local only first
+	if _, err := v.v.protocol.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
+		GroupPK:   v.g.PublicKey,
+		LocalOnly: true,
+	}); err != nil {
+		return
+	}
+
 	// list group message events
 	{
-		req := &bertytypes.GroupMessageList_Request{GroupPK: v.g.PublicKey}
+		req := &bertytypes.GroupMessageList_Request{GroupPK: v.g.PublicKey, UntilNow: true}
 		cl, err := v.v.protocol.GroupMessageList(ctx, req)
 		if err != nil {
 			panic(err)
@@ -154,6 +164,7 @@ func (v *groupView) loop(ctx context.Context) {
 				}
 				break
 			}
+			lastMessageID = evt.EventContext.ID
 
 			amp, am, err := bertymessenger.UnmarshalAppMessage(evt.GetMessage())
 			if err != nil {
@@ -188,27 +199,45 @@ func (v *groupView) loop(ctx context.Context) {
 
 	// list group metadata events
 	{
-		var evt *bertytypes.GroupMetadataEvent
-
-		req := &bertytypes.GroupMetadataList_Request{GroupPK: v.g.PublicKey}
+		req := &bertytypes.GroupMetadataList_Request{GroupPK: v.g.PublicKey, UntilNow: true}
 		cl, err := v.v.protocol.GroupMetadataList(ctx, req)
-		for err == nil {
-			if evt, err = cl.Recv(); err == nil {
-				metadataEventHandler(ctx, v, evt, true, v.logger)
-			}
-		}
-
-		if err != io.EOF {
+		if err == nil {
 			panic(err)
 		}
+
+		for {
+			evt, err := cl.Recv()
+			if err != nil {
+				if err != io.EOF {
+					panic(err)
+				}
+				break
+			}
+
+			metadataEventHandler(ctx, v, evt, true, v.logger)
+			lastMetadataID = evt.EventContext.ID
+		}
+	}
+
+	// Reopen group with network interactions
+	if _, err := v.v.protocol.DeactivateGroup(ctx, &bertytypes.DeactivateGroup_Request{
+		GroupPK: v.g.PublicKey,
+	}); err != nil {
+		return
+	}
+
+	if _, err := v.v.protocol.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
+		GroupPK: v.g.PublicKey,
+	}); err != nil {
+		return
 	}
 
 	// subscribe to group message events
 	{
 		var evt *bertytypes.GroupMessageEvent
 
-		req := &bertytypes.GroupMessageSubscribe_Request{GroupPK: v.g.PublicKey}
-		cl, err := v.v.protocol.GroupMessageSubscribe(ctx, req)
+		req := &bertytypes.GroupMessageList_Request{GroupPK: v.g.PublicKey, SinceID: lastMessageID}
+		cl, err := v.v.protocol.GroupMessageList(ctx, req)
 		if err != nil {
 			panic(err)
 		}
@@ -288,8 +317,8 @@ func (v *groupView) loop(ctx context.Context) {
 	{
 		var evt *bertytypes.GroupMetadataEvent
 
-		req := &bertytypes.GroupMetadataSubscribe_Request{GroupPK: v.g.PublicKey}
-		cl, err := v.v.protocol.GroupMetadataSubscribe(ctx, req)
+		req := &bertytypes.GroupMetadataList_Request{GroupPK: v.g.PublicKey, SinceID: lastMetadataID}
+		cl, err := v.v.protocol.GroupMetadataList(ctx, req)
 		if err != nil {
 			panic(err)
 		}

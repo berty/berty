@@ -154,12 +154,16 @@ func metadataStoreListSecrets(ctx context.Context, gc *groupContext) map[crypto.
 	ownSK := gc.getMemberPrivKey()
 	g := gc.Group()
 
-	for meta := range m.ListEvents(ctx) {
-		if meta == nil {
+	metadatas, err := m.ListEvents(ctx, nil, nil, false)
+	if err != nil {
+		return nil
+	}
+	for metadata := range metadatas {
+		if metadata == nil {
 			continue
 		}
 
-		pk, ds, err := openDeviceSecret(meta.Metadata, ownSK, g)
+		pk, ds, err := openDeviceSecret(metadata.Metadata, ownSK, g)
 		if errcode.Is(err, errcode.ErrInvalidInput) || errcode.Is(err, errcode.ErrGroupSecretOtherDestMember) {
 			continue
 		}

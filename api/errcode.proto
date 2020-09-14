@@ -26,14 +26,15 @@ enum ErrCode {
   // Parameters and I/O errors
 
   ErrInvalidInput = 100;
-  ErrMissingInput = 101;
-  ErrSerialization = 102;
-  ErrDeserialization = 103;
-  ErrStreamRead = 104;
-  ErrStreamWrite = 105;
-  ErrMissingMapKey = 106;
-  ErrDBWrite = 107;
-  ErrDBRead = 108;
+  ErrInvalidRange = 101;
+  ErrMissingInput = 102;
+  ErrSerialization = 103;
+  ErrDeserialization = 104;
+  ErrStreamRead = 105;
+  ErrStreamWrite = 106;
+  ErrMissingMapKey = 107;
+  ErrDBWrite = 108;
+  ErrDBRead = 109;
 
   // Crypto errors
 
@@ -87,16 +88,23 @@ enum ErrCode {
   ErrGroupSecretAlreadySentToMember = 1304;
   ErrGroupInvalidType = 1305;
   ErrGroupMissing = 1306;
+  ErrGroupActivate = 1307;
+  ErrGroupDeactivate = 1308;
+  ErrGroupInfo = 1309;
+
+  // Event errors
+  ErrEventListMetadata = 1400;
+  ErrEventListMessage = 1401;
 
   // Message key errors
 
-  ErrMessageKeyPersistencePut = 1400;
-  ErrMessageKeyPersistenceGet = 1401;
+  ErrMessageKeyPersistencePut = 1500;
+  ErrMessageKeyPersistenceGet = 1501;
 
   // Bridge errors
 
-  ErrBridgeInterrupted = 1500;
-  ErrBridgeNotRunning = 1501;
+  ErrBridgeInterrupted = 1600;
+  ErrBridgeNotRunning = 1601;
 
   //------------------
   // Messenger errors

@@ -10,6 +10,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-ipfs-log/identityprovider"
+	ipliface "berty.tech/go-ipfs-log/iface"
 	"berty.tech/go-orbit-db/address"
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/stores"
@@ -70,20 +71,29 @@ func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry) (*berty
 	}, err
 }
 
-func (m *messageStore) ListMessages(ctx context.Context) (<-chan *bertytypes.GroupMessageEvent, error) {
+// FIXME: use iterator instead to reduce resource usage (require go-ipfs-log improvements)
+func (m *messageStore) ListEvents(ctx context.Context, since, until []byte, reverse bool) (<-chan *bertytypes.GroupMessageEvent, error) {
+	entries, err := getEntriesInRange(m.OpLog().GetEntries().Slice(), since, until)
+	if err != nil {
+		return nil, err
+	}
+
 	out := make(chan *bertytypes.GroupMessageEvent)
 
-	// FIXME: use iterator instead to reduce resource usage (require go-ipfs-log improvements)
 	go func() {
-		for _, e := range m.OpLog().GetEntries().Slice() {
-			evt, err := m.openMessage(ctx, e)
-			if err != nil {
-				m.logger.Error("unable to open message", zap.Error(err))
-				continue
-			}
-
-			out <- evt
-		}
+		iterateOverEntries(
+			entries,
+			reverse,
+			func(entry ipliface.IPFSLogEntry) {
+				message, err := m.openMessage(ctx, entry)
+				if err != nil {
+					m.logger.Error("unable to open message", zap.Error(err))
+				} else {
+					out <- message
+					m.logger.Info("message store - sent 1 event from log history")
+				}
+			},
+		)
 
 		close(out)
 	}()
