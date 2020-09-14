@@ -16,6 +16,7 @@ import (
 	"berty.tech/go-orbit-db/iface"
 )
 
+// FIXME: replace members, devices, sentSecrets, contacts and groups by a circular buffer to avoid an attack by RAM saturation
 type metadataStoreIndex struct {
 	members                  map[string][]*memberDevice
 	devices                  map[string]*memberDevice

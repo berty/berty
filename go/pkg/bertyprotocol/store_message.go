@@ -1,9 +1,11 @@
 package bertyprotocol
 
 import (
+	"container/ring"
 	"context"
 	"encoding/base64"
 	"fmt"
+	"sync"
 
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -23,13 +25,16 @@ import (
 
 const groupMessageStoreType = "berty_group_messages"
 
+// FIXME: replace cache by a circular buffer to avoid an attack by RAM saturation
 type messageStore struct {
 	basestore.BaseStore
 
-	devKS  DeviceKeystore
-	mks    *messageKeystore
-	g      *bertytypes.Group
-	logger *zap.Logger
+	devKS     DeviceKeystore
+	mks       *messageKeystore
+	g         *bertytypes.Group
+	logger    *zap.Logger
+	cache     map[string]*ring.Ring
+	cacheLock sync.Mutex
 }
 
 func (m *messageStore) setLogger(l *zap.Logger) {
@@ -40,7 +45,51 @@ func (m *messageStore) setLogger(l *zap.Logger) {
 	m.logger = l.With(zap.String("group-id", fmt.Sprintf("%.6s", base64.StdEncoding.EncodeToString(m.g.PublicKey))))
 }
 
-func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry) (*bertytypes.GroupMessageEvent, error) {
+// addToCache adds the event into a circular buffer
+func (m *messageStore) addToCache(ctx context.Context, devicePK []byte, e ipfslog.Entry) {
+	bufferSize := 64
+	m.logger.Debug("addToCache", zap.Any("devicePK", devicePK), zap.Any("event", e))
+	m.cacheLock.Lock()
+	if _, ok := m.cache[string(devicePK)]; !ok {
+		m.cache[string(devicePK)] = ring.New(bufferSize)
+	}
+	buffer := m.cache[string(devicePK)]
+	buffer.Value = e
+	buffer = buffer.Next()
+	m.cache[string(devicePK)] = buffer
+	m.cacheLock.Unlock()
+
+	go m.openMessageCacheForPK(ctx, devicePK)
+}
+
+// openMessageCacheForPK tries to open messages for a given devicePK
+func (m *messageStore) openMessageCacheForPK(ctx context.Context, devicePK []byte) {
+	m.cacheLock.Lock()
+	if buffer, ok := m.cache[string(devicePK)]; ok {
+		len := buffer.Len()
+		for i := 0; i < len; i++ {
+			e, ok := buffer.Value.(ipfslog.Entry)
+			if !ok {
+				buffer = buffer.Next()
+				continue
+			}
+
+			m.logger.Debug("openMessageCacheForPK: processing event", zap.Any("devicePK", devicePK), zap.Any("event", e))
+			evt, err := m.openMessage(ctx, e, false)
+			if err != nil {
+				m.logger.Error("openFromCache: unable to open message", zap.Error(err))
+				buffer = buffer.Next()
+				continue
+			}
+			m.Emit(ctx, evt)
+			buffer.Value = nil
+			buffer = buffer.Next()
+		}
+	}
+	m.cacheLock.Unlock()
+}
+
+func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry, enableCache bool) (*bertytypes.GroupMessageEvent, error) {
 	if e == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -59,6 +108,10 @@ func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry) (*berty
 
 	headers, payload, err := m.mks.OpenEnvelope(ctx, m.g, ownPK, op.GetValue(), e.GetHash())
 	if err != nil {
+		if enableCache && errcode.Is(err, errcode.ErrCryptoDecryptPayload) {
+			// Saving this message in the cache waiting for the corresponding secret to be received
+			m.addToCache(ctx, headers.DevicePK, e)
+		}
 		m.logger.Error("unable to open envelope", zap.Error(err))
 		return nil, err
 	}
@@ -85,7 +138,7 @@ func (m *messageStore) ListEvents(ctx context.Context, since, until []byte, reve
 			entries,
 			reverse,
 			func(entry ipliface.IPFSLogEntry) {
-				message, err := m.openMessage(ctx, entry)
+				message, err := m.openMessage(ctx, entry, false)
 				if err != nil {
 					m.logger.Error("unable to open message", zap.Error(err))
 				} else {
@@ -151,6 +204,7 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB) iface.StoreConstructor {
 			mks:    s.messageKeystore,
 			g:      g,
 			logger: s.Logger(),
+			cache:  make(map[string]*ring.Ring),
 		}
 
 		options.Index = basestore.NewBaseIndex
@@ -180,15 +234,15 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB) iface.StoreConstructor {
 					continue
 				}
 
-				store.logger.Debug("received store event", zap.Any("raw event", e))
+				store.logger.Debug("store_message: received store event", zap.Any("raw event", e))
 
-				messageEvent, err := store.openMessage(ctx, entry)
+				messageEvent, err := store.openMessage(ctx, entry, true)
 				if err != nil {
 					store.logger.Error("unable to open message", zap.Error(err))
 					continue
 				}
 
-				store.logger.Debug("received payload", zap.String("payload", string(messageEvent.Message)))
+				store.logger.Debug("store_message: received payload", zap.String("payload", string(messageEvent.Message)))
 				store.Emit(ctx, messageEvent)
 			}
 		}()

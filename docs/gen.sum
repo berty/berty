@@ -6,5 +6,5 @@ d6a4ae84dc55f2af4e863767e9edb8e001f61486  ../api/bertyprotocol.proto
 23e393a8bba7426244b4747d7adb6188830756aa  ../api/bertyreplication.proto
 efe05c869eb27277829aa4018133888bf41f5e9e  ../api/bertyreplication.yaml
 09dce4356bbe7167535afb1de747f85e2ba6bbed  ../api/bertytypes.proto
-6b3ef10a9b511f389e8fae2a3d9693bc2dcee870  ../api/errcode.proto
+358a979bdb2969b4af1cb2ce6c3e60f4d5fcf3e5  ../api/errcode.proto
 6e4704bda46e67434e4b55bb650d5ff7ee47d5d5  Makefile

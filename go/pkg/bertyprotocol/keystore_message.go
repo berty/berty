@@ -370,7 +370,7 @@ func (m *messageKeystore) OpenEnvelope(ctx context.Context, g *bertytypes.Group,
 
 	msg, decryptInfo, err := m.openPayload(id, gPK, env.Message, headers)
 	if err != nil {
-		return nil, nil, errcode.ErrCryptoDecrypt.Wrap(err)
+		return headers, nil, errcode.ErrCryptoDecryptPayload.Wrap(err)
 	}
 
 	if err := m.postDecryptActions(decryptInfo, g, ownPK, headers); err != nil {

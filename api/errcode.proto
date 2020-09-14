@@ -44,8 +44,9 @@ enum ErrCode {
   ErrCryptoSignature = 203;
   ErrCryptoSignatureVerification = 204;
   ErrCryptoDecrypt = 205;
-  ErrCryptoEncrypt = 206;
-  ErrCryptoKeyConversion = 207;
+  ErrCryptoDecryptPayload = 206;
+  ErrCryptoEncrypt = 207;
+  ErrCryptoKeyConversion = 208;
 
   //-----------------
   // Specific errors
