@@ -1,19 +1,12 @@
 package initutil
 
 import (
+	"context"
+	"flag"
 	"fmt"
 	"math/rand"
+	"strings"
 	"time"
-
-	"github.com/ipfs/go-datastore"
-	ipfs_core "github.com/ipfs/go-ipfs/core"
-	"github.com/libp2p/go-libp2p"
-	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/peerstore"
-	"github.com/libp2p/go-libp2p-core/routing"
-	discovery "github.com/libp2p/go-libp2p-discovery"
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	"moul.io/srand"
 
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -21,7 +14,27 @@ import (
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	datastore "github.com/ipfs/go-datastore"
+	ipfs_core "github.com/ipfs/go-ipfs/core"
+	libp2p "github.com/libp2p/go-libp2p"
+	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/peerstore"
+	"github.com/libp2p/go-libp2p-core/routing"
+	discovery "github.com/libp2p/go-libp2p-discovery"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"moul.io/srand"
 )
+
+func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
+	fs.StringVar(&m.Node.Protocol.IPFSListeners, "p2p.ipfs-listeners", "/ip4/127.0.0.1/tcp/0", "IPFS listeners")
+	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")
+	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute, "maximum p2p backoff duration")
+	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "local discovery")
+	fs.StringVar(&m.Node.Protocol.RdvpMaddr, "p2p.rdvp", ":dev:", "rendezvous point maddr")
+}
 
 func (m *Manager) GetLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
 	m.mutex.Lock()
@@ -56,11 +69,10 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 	ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceIPFSDatastore))
 
-	apiAddrs := config.BertyDev.DefaultAPIAddrs
-	if m.Node.Protocol.IPFSListeningPort > 0 {
-		apiAddrs = []string{fmt.Sprintf("/ip4/127.0.0.1/tcp/%d", m.Node.Protocol.IPFSListeningPort)}
+	var apiAddrs = []string{}
+	if m.Node.Protocol.IPFSListeners != "" {
+		apiAddrs = strings.Split(m.Node.Protocol.IPFSListeners, ",")
 	}
-
 	var opts = ipfsutil.CoreAPIConfig{
 		SwarmAddrs:        config.BertyDev.DefaultSwarmAddrs,
 		APIAddrs:          apiAddrs,
@@ -126,4 +138,35 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	ipfsutil.EnableConnLogger(m.ctx, logger, m.Node.Protocol.ipfsNode.PeerHost)
 
 	return m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, nil
+}
+
+func (m *Manager) getRdvpMaddr() (*peer.AddrInfo, error) {
+	_, err := m.getLogger() // ensure logger is initialized
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	switch m.Node.Protocol.RdvpMaddr {
+	case "":
+		m.initLogger.Debug("no rendezvous peer set")
+		return nil, nil
+	case ":dev:":
+		m.Node.Protocol.RdvpMaddr = config.BertyDev.RendezVousPeer
+	}
+
+	resolveCtx, cancel := context.WithTimeout(m.ctx, 10*time.Second)
+	defer cancel()
+
+	rdvpeer, err := ipfsutil.ParseAndResolveIpfsAddr(resolveCtx, m.Node.Protocol.RdvpMaddr)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	fds := make([]zapcore.Field, len(rdvpeer.Addrs))
+	for i, maddr := range rdvpeer.Addrs {
+		key := fmt.Sprintf("#%d", i)
+		fds[i] = zap.String(key, maddr.String())
+	}
+	m.initLogger.Debug("rdvp peer resolved addrs", fds...)
+	return rdvpeer, nil
 }

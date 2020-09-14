@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/ipfs/go-datastore"
+	datastore "github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-ipfs/core"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/oklog/run"
@@ -44,10 +44,9 @@ type Manager struct {
 	}
 	Node struct {
 		Protocol struct {
-			IPFSListeningPort  uint
+			IPFSListeners      string
 			LocalDiscovery     bool
 			RdvpMaddr          string
-			GRPCListeners      string
 			MinBackoff         time.Duration
 			MaxBackoff         time.Duration
 			DisableIPFSNetwork bool
@@ -74,6 +73,7 @@ type Manager struct {
 		}
 		GRPC struct {
 			RemoteAddr string
+			Listeners  string
 
 			clientConn        *grpc.ClientConn
 			server            *grpc.Server
@@ -118,10 +118,6 @@ func (m *Manager) GetContext() context.Context {
 	return m.ctx
 }
 
-func (m *Manager) CancelContext() {
-	m.ctxCancel()
-}
-
 func (m *Manager) RunWorkers() error {
 	m.workers.Add(func() error {
 		<-m.ctx.Done()
@@ -133,6 +129,9 @@ func (m *Manager) RunWorkers() error {
 }
 
 func (m *Manager) Close() error {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
 	m.ctxCancel()
 
 	if m.Node.GRPC.bufServerListener != nil {

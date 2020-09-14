@@ -11,7 +11,7 @@ import (
 	mcma "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/multiaddr"
 
 	ma "github.com/multiformats/go-multiaddr"
-	manet "github.com/multiformats/go-multiaddr-net"
+	manet "github.com/multiformats/go-multiaddr/net"
 	"github.com/pkg/errors"
 )
 

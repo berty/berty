@@ -72,7 +72,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 			return nil, err
 		case err == nil && pkStr != acc.GetPublicKey(): // Check that we are connected to the correct node
 			// FIXME: use errcode
-			return nil, errors.New("messenger's account key does not match protocol's account key")
+			return nil, errcode.TODO.Wrap(errors.New("messenger's account key does not match protocol's account key"))
 		default: // account exists, and public keys match
 			// noop
 		}
