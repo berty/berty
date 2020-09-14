@@ -494,6 +494,7 @@ export namespace berty {
             ErrDBAddContactRequestIncomingReceived = 2104,
             ErrDBAddContactRequestIncomingAccepted = 2105,
             ErrDBAddGroupMemberDeviceAdded = 2106,
+            ErrDBMultipleRecords = 2107,
             ErrReplayProcessGroupMetadata = 2200,
             ErrReplayProcessGroupMessage = 2201,
             ErrCLINoTermcaps = 3001,
@@ -4467,7 +4468,8 @@ export namespace berty {
                     TypeContactUpdated = 5,
                     TypeAccountUpdated = 6,
                     TypeMemberUpdated = 7,
-                    TypeDeviceUpdated = 8
+                    TypeDeviceUpdated = 8,
+                    TypeNotified = 10
                 }
 
                 interface IConversationUpdated {
@@ -4628,6 +4630,77 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.ListEnd;
                     public static toObject(message: berty.messenger.v1.StreamEvent.ListEnd, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
+                }
+
+                interface INotified {
+                    type?: (berty.messenger.v1.StreamEvent.Notified.Type|null);
+                    title?: (string|null);
+                    body?: (string|null);
+                    payload?: (Uint8Array|null);
+                }
+
+                class Notified implements INotified {
+
+                    public type: berty.messenger.v1.StreamEvent.Notified.Type;
+                    public title: string;
+                    public body: string;
+                    public payload: Uint8Array;
+                    public static create(properties?: berty.messenger.v1.StreamEvent.INotified): berty.messenger.v1.StreamEvent.Notified;
+                    public static encode(message: berty.messenger.v1.StreamEvent.INotified, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.StreamEvent.INotified, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.StreamEvent.Notified;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.StreamEvent.Notified;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.Notified;
+                    public static toObject(message: berty.messenger.v1.StreamEvent.Notified, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                namespace Notified {
+
+                    enum Type {
+                        Unknown = 0,
+                        TypeBasic = 1,
+                        TypeMessageReceived = 2
+                    }
+
+                    interface IBasic {
+                    }
+
+                    class Basic implements IBasic {
+
+                        public static create(properties?: berty.messenger.v1.StreamEvent.Notified.IBasic): berty.messenger.v1.StreamEvent.Notified.Basic;
+                        public static encode(message: berty.messenger.v1.StreamEvent.Notified.IBasic, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static encodeDelimited(message: berty.messenger.v1.StreamEvent.Notified.IBasic, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.StreamEvent.Notified.Basic;
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.StreamEvent.Notified.Basic;
+                        public static verify(message: { [k: string]: any }): (string|null);
+                        public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.Notified.Basic;
+                        public static toObject(message: berty.messenger.v1.StreamEvent.Notified.Basic, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                        public toJSON(): { [k: string]: any };
+                    }
+
+                    interface IMessageReceived {
+                        interaction?: (berty.messenger.v1.IInteraction|null);
+                        conversation?: (berty.messenger.v1.IConversation|null);
+                        contact?: (berty.messenger.v1.IContact|null);
+                    }
+
+                    class MessageReceived implements IMessageReceived {
+
+                        public interaction?: (berty.messenger.v1.IInteraction|null);
+                        public conversation?: (berty.messenger.v1.IConversation|null);
+                        public contact?: (berty.messenger.v1.IContact|null);
+                        public static create(properties?: berty.messenger.v1.StreamEvent.Notified.IMessageReceived): berty.messenger.v1.StreamEvent.Notified.MessageReceived;
+                        public static encode(message: berty.messenger.v1.StreamEvent.Notified.IMessageReceived, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static encodeDelimited(message: berty.messenger.v1.StreamEvent.Notified.IMessageReceived, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.StreamEvent.Notified.MessageReceived;
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.StreamEvent.Notified.MessageReceived;
+                        public static verify(message: { [k: string]: any }): (string|null);
+                        public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.Notified.MessageReceived;
+                        public static toObject(message: berty.messenger.v1.StreamEvent.Notified.MessageReceived, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                        public toJSON(): { [k: string]: any };
+                    }
                 }
             }
 

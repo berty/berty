@@ -1538,7 +1538,8 @@
         "TypeContactUpdated",
         "TypeAccountUpdated",
         "TypeMemberUpdated",
-        "TypeDeviceUpdated"
+        "TypeDeviceUpdated",
+        "TypeNotified"
       ],
       "default": "Undefined"
     },

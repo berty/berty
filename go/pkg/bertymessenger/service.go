@@ -133,6 +133,32 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 		}
 	}
 
+	// Dispatch app notifications to native manager
+	svc.dispatcher.Register(&NotifieeBundle{StreamEventImpl: func(se *StreamEvent) error {
+		if se.GetType() != StreamEvent_TypeNotified {
+			return nil
+		}
+
+		var notif *StreamEvent_Notified
+		{
+			payload, err := se.UnmarshalPayload()
+			if err != nil {
+				opts.Logger.Error("unable to unmarshal Notified", zap.Error(err))
+				return nil
+			}
+			notif = payload.(*StreamEvent_Notified)
+		}
+
+		if err := svc.notifmanager.Notify(&notification.Notification{
+			Title: notif.GetTitle(),
+			Body:  notif.GetBody(),
+		}); err != nil {
+			opts.Logger.Error("unable to trigger notify", zap.Error(err))
+		}
+
+		return nil
+	}})
+
 	// Subscribe to account group metadata
 
 	err = svc.subscribeToMetadata(icr.GetAccountGroupPK())
@@ -190,13 +216,6 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 				return nil, err
 			}
 		}
-	}
-
-	if err := svc.notifmanager.Notify(&notification.Notification{
-		Title: "Berty",
-		Body:  "Service Messenger Started",
-	}); err != nil {
-		opts.Logger.Error("unable to trigger notify", zap.Error(err))
 	}
 
 	return &svc, nil
@@ -270,6 +289,7 @@ func (svc *service) subscribeToGroup(gpkb []byte) error {
 
 func (svc *service) Close() {
 	svc.logger.Debug("closing service")
+	svc.dispatcher.UnregisterAll()
 	svc.cancelFn()
 	svc.optsCleanup()
 }

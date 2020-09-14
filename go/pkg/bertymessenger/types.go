@@ -107,8 +107,23 @@ func (event *StreamEvent) UnmarshalPayload() (proto.Message, error) {
 	case StreamEvent_TypeDeviceUpdated:
 		var ret StreamEvent_DeviceUpdated
 		return &ret, proto.Unmarshal(event.GetPayload(), &ret)
+	case StreamEvent_TypeNotified:
+		var ret StreamEvent_Notified
+		return &ret, proto.Unmarshal(event.GetPayload(), &ret)
 	}
 	return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported StreamEvent type: %q", event.GetType()))
+}
+
+func (event *StreamEvent_Notified) UnmarshalPayload() (proto.Message, error) {
+	switch event.GetType() {
+	case StreamEvent_Notified_TypeBasic:
+		var ret StreamEvent_Notified_Basic
+		return &ret, proto.Unmarshal(event.GetPayload(), &ret)
+	case StreamEvent_Notified_TypeMessageReceived:
+		var ret StreamEvent_Notified_MessageReceived
+		return &ret, proto.Unmarshal(event.GetPayload(), &ret)
+	}
+	return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported Notified type: %q", event.GetType()))
 }
 
 func (interaction *Interaction) UnmarshalPayload() (proto.Message, error) {

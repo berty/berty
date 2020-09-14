@@ -121,6 +121,7 @@ enum ErrCode {
   ErrDBAddContactRequestIncomingReceived = 2104;
   ErrDBAddContactRequestIncomingAccepted = 2105;
   ErrDBAddGroupMemberDeviceAdded = 2106;
+  ErrDBMultipleRecords = 2107;
 
   // Replay errors
 

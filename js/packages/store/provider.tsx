@@ -9,6 +9,7 @@ import GoBridge, { GoLogLevel } from '@berty-tech/go-bridge'
 import MsgrContext, { initialState } from './context'
 import pickBy from 'lodash/pickBy'
 import mapValues from 'lodash/mapValues'
+import { EventEmitter } from 'events'
 
 const T = messengerpb.StreamEvent.Type
 
@@ -125,16 +126,31 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 	return state
 }
 
-export const MsgrProvider = ({ children, daemonAddress, embedded }) => {
+export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded }) => {
 	const [state, dispatch] = React.useReducer(reducer, { ...initialState, daemonAddress, embedded })
 	const [restartCount, setRestartCount] = React.useState(0)
 	const [nodeStarted, setNodeStarted] = React.useState(false)
+	const [eventEmitter] = React.useState(new EventEmitter())
 
 	const restart = React.useCallback(() => {
 		setNodeStarted(false)
 		dispatch({ type: 'CLEAR' })
 		setRestartCount(restartCount + 1)
 	}, [restartCount])
+
+	const addNotificationListener = React.useCallback(
+		(cb) => {
+			eventEmitter.addListener('notification', cb)
+		},
+		[eventEmitter],
+	)
+
+	const removeNotificationListener = React.useCallback(
+		(cb) => {
+			eventEmitter.removeListener('notification', cb)
+		},
+		[eventEmitter],
+	)
 
 	const deleteAccount = React.useCallback(async () => {
 		if (!embedded) {
@@ -235,7 +251,30 @@ export const MsgrProvider = ({ children, daemonAddress, embedded }) => {
 						console.warn('failed to find a protobuf object matching the event type')
 						return
 					}
-					dispatch({ type: evt.type, name: payloadName, payload: pbobj.decode(evt.payload) })
+					const eventPayload = pbobj.decode(evt.payload)
+					if (evt.type === messengerpb.StreamEvent.Type.TypeNotified) {
+						const enumName = Object.keys(messengerpb.StreamEvent.Notified.Type).find(
+							(name) => messengerpb.StreamEvent.Notified.Type[name] === eventPayload.type,
+						)
+						const payloadName = enumName.substr('Type'.length)
+						const pbobj = messengerpb.StreamEvent.Notified[payloadName]
+						if (!pbobj) {
+							console.warn('failed to find a protobuf object matching the notification type')
+							return
+						}
+						eventPayload.payload = pbobj.decode(eventPayload.payload)
+						eventEmitter.emit('notification', {
+							type: eventPayload.type,
+							name: payloadName,
+							payload: eventPayload,
+						})
+					} else {
+						dispatch({
+							type: evt.type,
+							name: payloadName,
+							payload: eventPayload,
+						})
+					}
 				})
 				cancel = await stream.start()
 			})
@@ -248,7 +287,7 @@ export const MsgrProvider = ({ children, daemonAddress, embedded }) => {
 				dispatch({ type: 'SET_STREAM_ERROR', payload: { error: err } })
 			})
 		return () => cancel()
-	}, [embedded, nodeStarted, state.daemonAddress])
+	}, [embedded, nodeStarted, state.daemonAddress, eventEmitter])
 
 	React.useEffect(() => {
 		if (!state.convsClosed && state.listDone) {
@@ -264,7 +303,16 @@ export const MsgrProvider = ({ children, daemonAddress, embedded }) => {
 	}, [state.client, state.conversations, state.convsClosed, state.listDone])
 
 	return (
-		<MsgrContext.Provider value={{ ...state, restart, deleteAccount, dispatch }}>
+		<MsgrContext.Provider
+			value={{
+				...state,
+				restart,
+				deleteAccount,
+				dispatch,
+				addNotificationListener,
+				removeNotificationListener,
+			}}
+		>
 			{children}
 		</MsgrContext.Provider>
 	)
