@@ -146,7 +146,7 @@ func (s *service) activateGroup(pk crypto.PubKey, localOnly bool) error {
 	case bertytypes.GroupTypeContact, bertytypes.GroupTypeMultiMember:
 		dbOpts := &iface.CreateDBOptions{LocalOnly: &localOnly}
 
-		cg, err := s.odb.OpenGroup(s.ctx, g, dbOpts)
+		cg, err := s.odb.openGroup(s.ctx, g, dbOpts)
 		if err != nil {
 			return errcode.TODO.Wrap(err)
 		}

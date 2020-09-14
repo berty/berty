@@ -882,7 +882,7 @@ type EventMetadataReceived struct {
 	Event     proto.Message
 }
 
-func constructorFactoryGroupMetadata(s *bertyOrbitDB) iface.StoreConstructor {
+func constructorFactoryGroupMetadata(s *BertyOrbitDB) iface.StoreConstructor {
 	return func(ctx context.Context, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
 		g, err := s.getGroupFromOptions(options)
 		if err != nil {

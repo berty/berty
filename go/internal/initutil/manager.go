@@ -6,14 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/tinder"
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	datastore "github.com/ipfs/go-datastore"
+	"github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-ipfs/core"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/oklog/run"
@@ -21,6 +15,13 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
+
+	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/tinder"
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 type Manager struct {
@@ -80,6 +81,7 @@ type Manager struct {
 			bufServerListener *grpcutil.BufListener
 			gatewayMux        *runtime.ServeMux
 		}
+		orbitDB *bertyprotocol.BertyOrbitDB
 	}
 
 	// internal

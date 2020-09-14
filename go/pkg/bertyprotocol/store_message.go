@@ -127,7 +127,7 @@ func (m *messageStore) AddMessage(ctx context.Context, payload []byte) (operatio
 	return op, nil
 }
 
-func constructorFactoryGroupMessage(s *bertyOrbitDB) iface.StoreConstructor {
+func constructorFactoryGroupMessage(s *BertyOrbitDB) iface.StoreConstructor {
 	return func(ctx context.Context, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
 		g, err := s.getGroupFromOptions(options)
 		if err != nil {

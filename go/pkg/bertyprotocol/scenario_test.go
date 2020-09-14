@@ -293,7 +293,7 @@ func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
 				Logger:  logger,
 			}
 
-			tps, cleanup := NewTestingProtocolWithMockedPeers(ctx, t, &opts, tc.NumberOfClient)
+			tps, cleanup := NewTestingProtocolWithMockedPeers(ctx, t, &opts, nil, tc.NumberOfClient)
 			defer cleanup()
 
 			// connect all tps together
@@ -615,8 +615,15 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*Testi
 
 			require.NoError(t, err)
 
+			grpInfo2, err := receiver.Client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+				ContactPK: senderCfg.AccountPK,
+			})
+			require.NoError(t, err)
+
+			require.Equal(t, grpInfo.Group.PublicKey, grpInfo2.Group.PublicKey)
+
 			_, err = receiver.Client.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
-				GroupPK: grpInfo.Group.PublicKey,
+				GroupPK: grpInfo2.Group.PublicKey,
 			})
 
 			require.NoError(t, err)

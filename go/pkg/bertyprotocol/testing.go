@@ -5,20 +5,25 @@ import (
 	"fmt"
 	"testing"
 
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/tracer"
+	orbitdb "berty.tech/go-orbit-db"
+	"berty.tech/go-orbit-db/pubsub/directchannel"
+	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	keystore "github.com/ipfs/go-ipfs-keystore"
-	peer "github.com/libp2p/go-libp2p-core/peer"
+	"github.com/ipfs/go-datastore"
+	ds_sync "github.com/ipfs/go-datastore/sync"
+	"github.com/libp2p/go-libp2p-core/peer"
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel/api/trace"
 	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
 	"go.uber.org/zap"
-	grpc "google.golang.org/grpc"
+	"google.golang.org/grpc"
+
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/tracer"
 )
 
 type TestingProtocol struct {
@@ -36,13 +41,17 @@ type TestingOpts struct {
 	RDVPeer        peer.AddrInfo
 }
 
-func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*TestingProtocol, func()) {
+func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds datastore.Batching) (*TestingProtocol, func()) {
 	t.Helper()
 
 	if opts == nil {
 		opts = &TestingOpts{}
 	}
 	opts.applyDefaults(ctx)
+
+	if ds == nil {
+		ds = ds_sync.MutexWrap(datastore.NewMapDatastore())
+	}
 
 	ipfsopts := &ipfsutil.TestingAPIOpts{
 		Logger:  opts.Logger,
@@ -51,17 +60,27 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*
 	}
 
 	node, cleanupNode := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsopts)
+	deviceKeystore := NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(ds, datastore.NewKey(NamespaceDeviceKeystore))))
 
-	mks, cleanupMessageKeystore := NewInMemMessageKeystore()
+	odb, err := NewBertyOrbitDB(ctx, node.API(), &NewOrbitDBOptions{
+		NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
+			PubSub:               pubsubraw.NewPubSub(node.PubSub(), node.MockNode().PeerHost.ID(), opts.Logger, nil),
+			DirectChannelFactory: directchannel.InitDirectChannelFactory(node.MockNode().PeerHost),
+		},
+		Datastore:      ds,
+		DeviceKeystore: deviceKeystore,
+	})
+	require.NoError(t, err)
 
 	serviceOpts := Opts{
-		Host:            node.MockNode().PeerHost,
-		PubSub:          node.PubSub(),
-		Logger:          opts.Logger,
-		DeviceKeystore:  NewDeviceKeystore(keystore.NewMemKeystore()),
-		MessageKeystore: mks,
-		IpfsCoreAPI:     node.API(),
-		TinderDriver:    node.Tinder(),
+		Host:           node.MockNode().PeerHost,
+		PubSub:         node.PubSub(),
+		Logger:         opts.Logger,
+		RootDatastore:  ds,
+		DeviceKeystore: deviceKeystore,
+		IpfsCoreAPI:    node.API(),
+		OrbitDB:        odb,
+		TinderDriver:   node.Tinder(),
 	}
 
 	service, cleanupService := TestingService(ctx, t, serviceOpts)
@@ -109,7 +128,6 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts) (*
 		cleanupClient()
 		cleanupService()
 		cleanupNode()
-		cleanupMessageKeystore()
 	}
 	return tp, cleanup
 }
@@ -123,10 +141,14 @@ func (opts *TestingOpts) applyDefaults(ctx context.Context) {
 	}
 }
 
-func NewTestingProtocolWithMockedPeers(ctx context.Context, t *testing.T, opts *TestingOpts, amount int) ([]*TestingProtocol, func()) {
+func NewTestingProtocolWithMockedPeers(ctx context.Context, t *testing.T, opts *TestingOpts, ds datastore.Batching, amount int) ([]*TestingProtocol, func()) {
 	t.Helper()
 	opts.applyDefaults(ctx)
 	logger := opts.Logger
+
+	if ds == nil {
+		ds = ds_sync.MutexWrap(datastore.NewMapDatastore())
+	}
 
 	rdvpeer, err := opts.Mocknet.GenPeer()
 	require.NoError(t, err)
@@ -144,8 +166,9 @@ func NewTestingProtocolWithMockedPeers(ctx context.Context, t *testing.T, opts *
 		svcName := fmt.Sprintf("mock%d", i)
 		opts.Logger = logger.Named(svcName)
 		opts.TracerProvider = tracer.NewTestingProvider(t, svcName)
+		ds := ipfsutil.NewNamespacedDatastore(ds, datastore.NewKey(fmt.Sprintf("%d", i)))
 
-		tps[i], cls[i] = NewTestingProtocol(ctx, t, opts)
+		tps[i], cls[i] = NewTestingProtocol(ctx, t, opts, ds)
 	}
 
 	err = opts.Mocknet.LinkAll()

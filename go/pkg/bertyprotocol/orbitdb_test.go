@@ -23,7 +23,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func newTestOrbitDB(ctx context.Context, t *testing.T, logger *zap.Logger, node ipfsutil.CoreAPIMock, baseDS datastore.Batching) *bertyOrbitDB {
+func newTestOrbitDB(ctx context.Context, t *testing.T, logger *zap.Logger, node ipfsutil.CoreAPIMock, baseDS datastore.Batching) *BertyOrbitDB {
 	t.Helper()
 
 	api := node.API()
@@ -34,19 +34,13 @@ func newTestOrbitDB(ctx context.Context, t *testing.T, logger *zap.Logger, node 
 
 	baseDS = ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey(selfKey.ID().String()))
 
-	accountDS := ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("deviceKeystore"))
-	messagesDS := ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("messages"))
-	orbitdbDS := ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("orbitdb"))
-
-	accountKS := ipfsutil.NewDatastoreKeystore(accountDS)
-	orbitdbCache := NewOrbitDatastoreCache(orbitdbDS)
-	mk := NewMessageKeystore(messagesDS)
-
-	odb, err := newBertyOrbitDB(ctx, api, NewDeviceKeystore(accountKS), mk, &orbitdb.NewOrbitDBOptions{
-		Logger:               logger,
-		PubSub:               pubsubraw.NewPubSub(node.PubSub(), selfKey.ID(), logger, nil),
-		DirectChannelFactory: directchannel.InitDirectChannelFactory(node.MockNode().PeerHost),
-		Cache:                orbitdbCache,
+	odb, err := NewBertyOrbitDB(ctx, api, &NewOrbitDBOptions{
+		Datastore: baseDS,
+		NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
+			Logger:               logger,
+			PubSub:               pubsubraw.NewPubSub(node.PubSub(), selfKey.ID(), logger, nil),
+			DirectChannelFactory: directchannel.InitDirectChannelFactory(node.MockNode().PeerHost),
+		},
 	})
 	require.NoError(t, err)
 
@@ -118,16 +112,16 @@ func TestDifferentStores(t *testing.T) {
 
 	assert.NotEqual(t, gA.PublicKey, gB.PublicKey)
 
-	g1a, err := odb1.OpenGroup(ctx, gA, nil)
+	g1a, err := odb1.openGroup(ctx, gA, nil)
 	require.NoError(t, err)
 
-	g2a, err := odb2.OpenGroup(ctx, gA, nil)
+	g2a, err := odb2.openGroup(ctx, gA, nil)
 	require.NoError(t, err)
 
-	g1b, err := odb1.OpenGroup(ctx, gB, nil)
+	g1b, err := odb1.openGroup(ctx, gB, nil)
 	require.NoError(t, err)
 
-	g2b, err := odb2.OpenGroup(ctx, gB, nil)
+	g2b, err := odb2.openGroup(ctx, gB, nil)
 	require.NoError(t, err)
 
 	require.NoError(t, ActivateGroupContext(ctx, g1a))

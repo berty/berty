@@ -4,38 +4,20 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"math/rand"
 	"os"
 	"os/user"
 	"path"
-	"path/filepath"
 	"strings"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/config"
-	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
-	"berty.tech/berty/v2/go/internal/notification"
-	"berty.tech/berty/v2/go/internal/tinder"
-	"berty.tech/berty/v2/go/internal/tracer"
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	grpcgw "github.com/grpc-ecosystem/grpc-gateway/runtime"
-	datastore "github.com/ipfs/go-datastore"
-	libp2p "github.com/libp2p/go-libp2p"
-	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/ipfs/go-datastore"
 	"github.com/libp2p/go-libp2p-core/peer"
-	peerstore "github.com/libp2p/go-libp2p-core/peerstore"
-	"github.com/libp2p/go-libp2p-core/routing"
-	discovery "github.com/libp2p/go-libp2p-discovery"
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -44,8 +26,16 @@ import (
 	"google.golang.org/grpc/status"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"moul.io/srand"
 	"moul.io/zapgorm2"
+
+	"berty.tech/berty/v2/go/internal/config"
+	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/notification"
+	"berty.tech/berty/v2/go/internal/tracer"
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 func (m *Manager) SetupLocalProtocolServerFlags(fs *flag.FlagSet) {
@@ -97,17 +87,7 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	dsDir, err := m.getDatastoreDir()
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
 	rootDS, err := m.getRootDatastore()
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	rdvpeer, err := m.getRdvpMaddr()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -117,74 +97,9 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	// ipfs node
-	{
-		ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("ipfs"))
-		var opts = ipfsutil.CoreAPIConfig{
-			SwarmAddrs:        config.BertyDev.DefaultSwarmAddrs,
-			APIAddrs:          config.BertyDev.DefaultAPIAddrs,
-			APIConfig:         config.BertyDev.APIConfig,
-			DisableCorePubSub: true,
-			BootstrapAddrs:    config.BertyDev.Bootstrap,
-			HostConfig: func(h host.Host, _ routing.Routing) error {
-				var err error
-				h.Peerstore().AddAddrs(rdvpeer.ID, rdvpeer.Addrs, peerstore.PermanentAddrTTL)
-
-				rng := rand.New(rand.NewSource(srand.Fast()))
-				rdvClient := tinder.NewRendezvousDiscovery(logger, h, rdvpeer.ID, rng)
-				m.Node.Protocol.discovery, err = tinder.NewService(
-					logger,
-					rdvClient,
-					discovery.NewExponentialBackoff(m.Node.Protocol.MinBackoff, m.Node.Protocol.MaxBackoff, discovery.FullJitter, time.Second, 5.0, 0, rng),
-				)
-				if err != nil {
-					return err
-				}
-
-				m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.ctx, h,
-					pubsub.WithMessageSigning(true),
-					pubsub.WithFloodPublish(true),
-					pubsub.WithDiscovery(m.Node.Protocol.discovery),
-					pubsub.WithPeerExchange(true),
-				)
-				if err != nil {
-					return err
-				}
-
-				return nil
-			},
-		}
-		if !m.Node.Protocol.DisableIPFSNetwork {
-			opts.ExtraLibp2pOption = libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger)))
-		}
-		// FIXME: continue disabling things to speedup the node when DisableIPFSNetwork==true
-
-		m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, err = ipfsutil.NewCoreAPIFromDatastore(m.ctx, ipfsDS, &opts)
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-	}
-
-	// drivers := []tinder.Driver{}
-	// if rdvpeer != nil {
-	// 	if rdvpeer != nil {
-	// 		node.Peerstore.AddAddrs(rdvpeer.ID, rdvpeer.Addrs, peerstore.PermanentAddrTTL)
-	// 		// @FIXME(gfanton): use rand as argument
-	// 		rdvClient := tinder.NewRendezvousDiscovery(logger, node.PeerHost, rdvpeer.ID, rand.New(rand.NewSource(rand.Int63())))
-	// 		drivers = append(drivers, rdvClient)
-	// 	}
-	// 	// if localDiscovery {
-	// 	localDiscovery := tinder.NewLocalDiscovery(logger, node.PeerHost, rand.New(rand.NewSource(rand.Int63())))
-	// 	drivers = append(drivers, localDiscovery)
-	// 	// }
-	// 	bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, p2pRdvpMaddr)
-	// }
-
-	// pubsub
-	{
-		psapi := ipfsutil.NewPubSubAPI(m.ctx, logger.Named("ps"), m.Node.Protocol.discovery, m.Node.Protocol.pubsub)
-		m.Node.Protocol.ipfsAPI = ipfsutil.InjectPubSubCoreAPIExtendedAdaptater(m.Node.Protocol.ipfsAPI, psapi)
-		ipfsutil.EnableConnLogger(m.ctx, logger, m.Node.Protocol.ipfsNode.PeerHost)
+	_, _, err = m.getLocalIPFS()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	// construct http api endpoint
@@ -193,28 +108,28 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 	// serve the embedded ipfs web UI
 	ipfsutil.ServeHTTPWebui(logger)
 
+	odb, err := m.getOrbitDB()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
 	// protocol service
 	{
 		var (
-			deviceDS  = ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("account")))
-			messageDS = bertyprotocol.NewMessageKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("messages")))
-			orbitdbDS = ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey("orbitdb"))
+			deviceDS = ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceDeviceKeystore)))
+			deviceKS = bertyprotocol.NewDeviceKeystore(deviceDS)
 		)
 
 		// initialize new protocol client
 		opts := bertyprotocol.Opts{
-			Host:            m.Node.Protocol.ipfsNode.PeerHost,
-			PubSub:          m.Node.Protocol.pubsub,
-			TinderDriver:    m.Node.Protocol.discovery,
-			IpfsCoreAPI:     m.Node.Protocol.ipfsAPI,
-			Logger:          logger,
-			RootDatastore:   rootDS,
-			MessageKeystore: messageDS,
-			DeviceKeystore:  bertyprotocol.NewDeviceKeystore(deviceDS),
-			OrbitCache:      bertyprotocol.NewOrbitDatastoreCache(orbitdbDS),
-		}
-		if dsDir != InMemoryDir {
-			opts.OrbitDirectory = filepath.Join(dsDir, "orbitdb")
+			Host:           m.Node.Protocol.ipfsNode.PeerHost,
+			PubSub:         m.Node.Protocol.pubsub,
+			TinderDriver:   m.Node.Protocol.discovery,
+			IpfsCoreAPI:    m.Node.Protocol.ipfsAPI,
+			Logger:         logger,
+			RootDatastore:  rootDS,
+			DeviceKeystore: deviceKS,
+			OrbitDB:        odb,
 		}
 
 		m.Node.Protocol.server, err = bertyprotocol.New(m.ctx, opts)
