@@ -40,7 +40,7 @@ func (d *datastoreCache) Destroy(directory string, dbAddress address.Address) er
 
 func NewOrbitDatastoreCache(ds datastore.Batching) cache.Interface {
 	return &datastoreCache{
-		ds: ds,
+		ds: ipfsutil.NewNamespacedDatastore(ds, datastore.NewKey(NamespaceOrbitDBDatastore)),
 	}
 }
 

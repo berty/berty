@@ -168,7 +168,7 @@ func TestMetadataRendezvousPointLifecycle(t *testing.T) {
 	peers, _, cleanup := createPeersWithGroup(ctx, t, "/tmp/member_test", 1, 1)
 	defer cleanup()
 
-	ownCG, err := peers[0].DB.OpenAccountGroup(ctx, nil)
+	ownCG, err := peers[0].DB.openAccountGroup(ctx, nil)
 	assert.NoError(t, err)
 
 	meta := ownCG.MetadataStore()
@@ -243,7 +243,7 @@ func TestMetadataContactLifecycle(t *testing.T) {
 	)
 
 	for i, p := range peers {
-		ownCG[i], err = p.DB.OpenAccountGroup(ctx, nil)
+		ownCG[i], err = p.DB.openAccountGroup(ctx, nil)
 		require.NoError(t, err)
 
 		meta[i] = ownCG[i].MetadataStore()
@@ -509,7 +509,7 @@ func TestMetadataAliasLifecycle(t *testing.T) {
 	g, err := getGroupForContact(sk)
 	require.NoError(t, err)
 
-	cg0, err := peers[0].DB.OpenGroup(ctx, g, nil)
+	cg0, err := peers[0].DB.openGroup(ctx, g, nil)
 	require.NoError(t, err)
 
 	require.False(t, cg0.MetadataStore().Index().(*metadataStoreIndex).ownAliasKeySent)
@@ -529,7 +529,7 @@ func TestMetadataAliasLifecycle(t *testing.T) {
 	g, err = getGroupForContact(sk)
 	require.NoError(t, err)
 
-	cg1, err := peers[1].DB.OpenGroup(ctx, g, nil)
+	cg1, err := peers[1].DB.openGroup(ctx, g, nil)
 	require.NoError(t, err)
 
 	_ = cg1
@@ -547,7 +547,7 @@ func TestMetadataGroupsLifecycle(t *testing.T) {
 	peers, _, cleanup := createPeersWithGroup(ctx, t, "/tmp/member_test", 1, 1)
 	defer cleanup()
 
-	ownCG, err := peers[0].DB.OpenAccountGroup(ctx, nil)
+	ownCG, err := peers[0].DB.openAccountGroup(ctx, nil)
 	assert.NoError(t, err)
 
 	g1, _, err := NewGroupMultiMember()

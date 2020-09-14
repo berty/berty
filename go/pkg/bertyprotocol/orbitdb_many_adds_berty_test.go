@@ -10,15 +10,15 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
-	orbitdb "berty.tech/go-orbit-db"
-	datastore "github.com/ipfs/go-datastore"
+	"github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
 	"github.com/juju/fslock"
 	"github.com/stretchr/testify/require"
+
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 )
 
 func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, g *bertytypes.Group, pathBase string, amountToAdd, amountCurrentlyPresent int) {
@@ -59,20 +59,12 @@ func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, 
 
 	defer baseDS.Close()
 
-	accountDS := ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("deviceKeystore"))
-	messagesDS := ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("messages"))
-	orbitdbDS := ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("orbitdb"))
-
-	accountKS := ipfsutil.NewDatastoreKeystore(accountDS)
-	orbitdbCache := NewOrbitDatastoreCache(orbitdbDS)
-	mk := NewMessageKeystore(messagesDS)
-
-	odb, err := newBertyOrbitDB(ctx, api, NewDeviceKeystore(accountKS), mk, &orbitdb.NewOrbitDBOptions{Cache: orbitdbCache})
+	odb, err := NewBertyOrbitDB(ctx, api, &NewOrbitDBOptions{Datastore: baseDS})
 	require.NoError(t, err)
 
 	defer odb.Close()
 
-	gc, err := odb.OpenGroup(ctx, g, nil)
+	gc, err := odb.openGroup(ctx, g, nil)
 	require.NoError(t, err)
 
 	defer gc.Close()

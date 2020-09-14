@@ -198,7 +198,7 @@ func TestServiceShareableBertyGroup(t *testing.T) {
 	defer cancel()
 
 	var protocol *bertyprotocol.TestingProtocol
-	protocol, cleanup := bertyprotocol.NewTestingProtocol(ctx, t, nil)
+	protocol, cleanup := bertyprotocol.NewTestingProtocol(ctx, t, nil, nil)
 
 	// required to avoid "writing on closing socket",
 	// should be better to have something blocking instead

@@ -29,7 +29,7 @@ func TestEmptyArgs(t *testing.T) {
 func TestTestingProtocol(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	opts := TestingOpts{}
-	tp, cleanup := NewTestingProtocol(ctx, t, &opts)
+	tp, cleanup := NewTestingProtocol(ctx, t, &opts, nil)
 	assert.NotNil(t, tp)
 	cleanup()
 	cancel()
@@ -40,7 +40,7 @@ func TestTestingProtocolWithMockedPeers(t *testing.T) {
 		t.Run(fmt.Sprintf("%d-peers", amount), func(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			opts := TestingOpts{}
-			tp, cleanup := NewTestingProtocolWithMockedPeers(ctx, t, &opts, amount)
+			tp, cleanup := NewTestingProtocolWithMockedPeers(ctx, t, &opts, nil, amount)
 			assert.NotNil(t, tp)
 			cleanup()
 			cancel()

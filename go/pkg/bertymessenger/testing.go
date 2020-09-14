@@ -33,7 +33,7 @@ func TestingService(ctx context.Context, t *testing.T, opts *TestingServiceOpts)
 	cleanup := func() {}
 	if opts.Client == nil {
 		var protocol *bertyprotocol.TestingProtocol
-		protocol, cleanup = bertyprotocol.NewTestingProtocol(ctx, t, nil)
+		protocol, cleanup = bertyprotocol.NewTestingProtocol(ctx, t, nil, nil)
 		opts.Client = protocol.Client
 		// required to avoid "writing on closing socket",
 		// should be better to have something blocking instead

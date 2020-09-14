@@ -16,16 +16,12 @@ func TestTestingClient_impl(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	mks, cleanup := bertyprotocol.NewInMemMessageKeystore()
-	defer cleanup()
-
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
 
 	client, cleanup := bertyprotocol.TestingService(ctx, t, bertyprotocol.Opts{
-		Logger:          logger,
-		DeviceKeystore:  bertyprotocol.NewDeviceKeystore(keystore.NewMemKeystore()),
-		MessageKeystore: mks,
+		Logger:         logger,
+		DeviceKeystore: bertyprotocol.NewDeviceKeystore(keystore.NewMemKeystore()),
 	})
 	defer cleanup()
 

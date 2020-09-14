@@ -11,27 +11,18 @@ import (
 	"sync/atomic"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/config"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
-	"berty.tech/berty/v2/go/internal/notification"
-	"berty.tech/berty/v2/go/internal/tinder"
-	"berty.tech/berty/v2/go/internal/tracer"
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	badger_opts "github.com/dgraph-io/badger/options"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	datastore "github.com/ipfs/go-datastore"
+	"github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_badger "github.com/ipfs/go-ds-badger"
 	"github.com/ipfs/go-ipfs/core"
 	"github.com/ipfs/go-ipfs/core/bootstrap"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
-	libp2p "github.com/libp2p/go-libp2p"
+	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/peerstore"
@@ -48,6 +39,16 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
+
+	"berty.tech/berty/v2/go/internal/config"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
+	"berty.tech/berty/v2/go/internal/notification"
+	"berty.tech/berty/v2/go/internal/tinder"
+	"berty.tech/berty/v2/go/internal/tracer"
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 var (
@@ -277,26 +278,18 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 	// setup protocol
 	var service bertyprotocol.Service
 	{
-		odbDir, err := getOrbitDBDirectory(config.rootDirectory)
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-
-		deviceDS := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootds, datastore.NewKey("account")))
-		mk := bertyprotocol.NewMessageKeystore(ipfsutil.NewNamespacedDatastore(rootds, datastore.NewKey("messages")))
-		orbitdbDS := ipfsutil.NewNamespacedDatastore(rootds, datastore.NewKey("orbitdb"))
+		var err error
+		deviceDS := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootds, datastore.NewKey(bertyprotocol.NamespaceDeviceKeystore)))
+		deviceKS := bertyprotocol.NewDeviceKeystore(deviceDS)
 
 		// initialize new protocol client
 		protocolOpts := bertyprotocol.Opts{
-			PubSub:          ps,
-			Logger:          logger,
-			OrbitDirectory:  odbDir,
-			RootDatastore:   rootds,
-			MessageKeystore: mk,
-			DeviceKeystore:  bertyprotocol.NewDeviceKeystore(deviceDS),
-			OrbitCache:      bertyprotocol.NewOrbitDatastoreCache(orbitdbDS),
-			IpfsCoreAPI:     api,
-			TinderDriver:    disc,
+			PubSub:         ps,
+			Logger:         logger,
+			RootDatastore:  rootds,
+			DeviceKeystore: deviceKS,
+			IpfsCoreAPI:    api,
+			TinderDriver:   disc,
 		}
 
 		if node != nil {
@@ -589,25 +582,6 @@ func getRootDatastore(path string) (datastore.Batching, error) {
 	}
 
 	return baseds, nil
-}
-
-func getOrbitDBDirectory(path string) (string, error) {
-	if path == "" || path == memPath {
-		return path, nil
-	}
-
-	basePath := filepath.Join(path, "orbitdb")
-	_, err := os.Stat(basePath)
-	if err != nil {
-		if !os.IsNotExist(err) {
-			return "", errors.Wrap(err, "unable get orbitdb directory")
-		}
-		if err := os.MkdirAll(basePath, 0700); err != nil {
-			return "", errors.Wrap(err, "unable to create orbitdb directory")
-		}
-	}
-
-	return basePath, nil
 }
 
 func getIPFSRepo(path string) (ipfs_repo.Repo, error) {

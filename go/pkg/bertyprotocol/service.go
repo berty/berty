@@ -2,21 +2,20 @@ package bertyprotocol
 
 import (
 	"context"
+	"path/filepath"
 	"sync"
 	"sync/atomic"
 	"time"
 
+	"berty.tech/go-orbit-db/baseorbitdb"
+	"berty.tech/go-orbit-db/pubsub/directchannel"
+	"github.com/ipfs/go-datastore"
+	ds_sync "github.com/ipfs/go-datastore/sync"
+
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/tinder"
-	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	orbitdb "berty.tech/go-orbit-db"
-	"berty.tech/go-orbit-db/cache"
-	"berty.tech/go-orbit-db/pubsub/directchannel"
-	"berty.tech/go-orbit-db/pubsub/pubsubraw"
-	datastore "github.com/ipfs/go-datastore"
-	ds_sync "github.com/ipfs/go-datastore/sync"
 
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
@@ -41,7 +40,7 @@ type service struct {
 	ctx            context.Context
 	logger         *zap.Logger
 	ipfsCoreAPI    ipfsutil.ExtendedCoreAPI
-	odb            *bertyOrbitDB
+	odb            *BertyOrbitDB
 	accountGroup   *groupContext
 	deviceKeystore DeviceKeystore
 	openedGroups   map[string]*groupContext
@@ -56,10 +55,9 @@ type Opts struct {
 	Logger                 *zap.Logger
 	IpfsCoreAPI            ipfsutil.ExtendedCoreAPI
 	DeviceKeystore         DeviceKeystore
-	MessageKeystore        *MessageKeystore
+	DatastoreDir           string
 	RootDatastore          datastore.Batching
-	OrbitDirectory         string
-	OrbitCache             cache.Interface
+	OrbitDB                *BertyOrbitDB
 	TinderDriver           tinder.Driver
 	RendezvousRotationBase time.Duration
 	Host                   host.Host
@@ -72,28 +70,24 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 		opts.Logger = zap.NewNop()
 	}
 
-	if opts.OrbitDirectory == "" {
-		opts.OrbitDirectory = ":memory:"
-	}
-
 	if opts.RootDatastore == nil {
-		opts.RootDatastore = ds_sync.MutexWrap(datastore.NewMapDatastore())
+		if opts.DatastoreDir == "" || opts.DatastoreDir == InMemoryDirectory {
+			opts.RootDatastore = ds_sync.MutexWrap(datastore.NewMapDatastore())
+		} else {
+			opts.RootDatastore = nil
+		}
 	}
 
 	if opts.DeviceKeystore == nil {
-		ks := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(opts.RootDatastore, datastore.NewKey("accountGroup")))
+		ks := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(opts.RootDatastore, datastore.NewKey(NamespaceDeviceKeystore)))
 		opts.DeviceKeystore = NewDeviceKeystore(ks)
-	}
-
-	if opts.MessageKeystore == nil {
-		mk := ipfsutil.NewNamespacedDatastore(opts.RootDatastore, datastore.NewKey("messages"))
-		opts.MessageKeystore = NewMessageKeystore(mk)
 	}
 
 	if opts.RendezvousRotationBase.Nanoseconds() <= 0 {
 		opts.RendezvousRotationBase = time.Hour * 24
 	}
 
+	var createdIPFSHost host.Host
 	if opts.IpfsCoreAPI == nil {
 		var err error
 		var createdIPFSNode *ipfs_core.IpfsNode
@@ -103,6 +97,8 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 			return errcode.TODO.Wrap(err)
 		}
 
+		createdIPFSHost = createdIPFSNode.PeerHost
+
 		oldClose := opts.close
 		opts.close = func() error {
 			if oldClose != nil {
@@ -111,6 +107,42 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 
 			return createdIPFSNode.Close()
 		}
+	}
+
+	if opts.OrbitDB == nil {
+		orbitDirectory := InMemoryDirectory
+		if opts.DatastoreDir != InMemoryDirectory {
+			orbitDirectory = filepath.Join(opts.DatastoreDir, NamespaceOrbitDBDirectory)
+		}
+
+		odbOpts := &NewOrbitDBOptions{
+			NewOrbitDBOptions: baseorbitdb.NewOrbitDBOptions{
+				Directory: &orbitDirectory,
+				Logger:    opts.Logger,
+			},
+			Datastore:      ipfsutil.NewNamespacedDatastore(opts.RootDatastore, datastore.NewKey(NamespaceOrbitDBDatastore)),
+			DeviceKeystore: opts.DeviceKeystore,
+		}
+
+		if createdIPFSHost != nil {
+			odbOpts.DirectChannelFactory = directchannel.InitDirectChannelFactory(createdIPFSHost)
+		}
+
+		odb, err := NewBertyOrbitDB(ctx, opts.IpfsCoreAPI, odbOpts)
+		if err != nil {
+			return nil
+		}
+
+		oldClose := opts.close
+		opts.close = func() error {
+			if oldClose != nil {
+				_ = oldClose()
+			}
+
+			return odb.Close()
+		}
+
+		opts.OrbitDB = odb
 	}
 
 	return nil
@@ -123,33 +155,7 @@ func New(ctx context.Context, opts Opts) (Service, error) {
 	}
 	opts.Logger = opts.Logger.Named("pt")
 
-	orbitDirectory := opts.OrbitDirectory
-	odbOpts := &orbitdb.NewOrbitDBOptions{
-		Cache:     opts.OrbitCache,
-		Directory: &orbitDirectory,
-		Logger:    opts.Logger.Named("odb"),
-		Tracer:    tracer.New("berty-orbitdb"),
-	}
-
-	if opts.Host != nil {
-		odbOpts.DirectChannelFactory = directchannel.InitDirectChannelFactory(opts.Host)
-	}
-
-	if opts.PubSub != nil {
-		self, err := opts.IpfsCoreAPI.Key().Self(ctx)
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-
-		odbOpts.PubSub = pubsubraw.NewPubSub(opts.PubSub, self.ID(), opts.Logger, nil)
-	}
-
-	odb, err := newBertyOrbitDB(ctx, opts.IpfsCoreAPI, opts.DeviceKeystore, opts.MessageKeystore, odbOpts)
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	acc, err := odb.OpenAccountGroup(ctx, nil)
+	acc, err := opts.OrbitDB.openAccountGroup(ctx, nil)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -169,7 +175,7 @@ func New(ctx context.Context, opts Opts) (Service, error) {
 		ctx:            ctx,
 		ipfsCoreAPI:    opts.IpfsCoreAPI,
 		logger:         opts.Logger,
-		odb:            odb,
+		odb:            opts.OrbitDB,
 		deviceKeystore: opts.DeviceKeystore,
 		close:          opts.close,
 		accountGroup:   acc,

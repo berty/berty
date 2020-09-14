@@ -17,7 +17,7 @@ import (
 
 type mockedPeer struct {
 	CoreAPI ipfsutil.CoreAPIMock
-	DB      *bertyOrbitDB
+	DB      *BertyOrbitDB
 	GC      *groupContext
 	MKS     *MessageKeystore
 	DevKS   DeviceKeystore
@@ -105,12 +105,15 @@ func createPeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 
 			mk, cleanupMessageKeystore := NewInMemMessageKeystore()
 
-			db, err := newBertyOrbitDB(ctx, ca.API(), devKS, mk, nil)
+			db, err := NewBertyOrbitDB(ctx, ca.API(), &NewOrbitDBOptions{
+				DeviceKeystore:  devKS,
+				MessageKeystore: mk,
+			})
 			if err != nil {
 				t.Fatal(err)
 			}
 
-			gc, err := db.OpenGroup(ctx, g, nil)
+			gc, err := db.openGroup(ctx, g, nil)
 			if err != nil {
 				t.Fatalf("err: creating new group context, %v", err)
 			}
