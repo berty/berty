@@ -20,6 +20,12 @@ func (m *Manager) SetupLoggingFlags(fs *flag.FlagSet) {
 }
 
 func (m *Manager) GetLogger() (*zap.Logger, error) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	return m.getLogger()
+}
+
+func (m *Manager) getLogger() (*zap.Logger, error) {
 	if m.Logging.zapLogger != nil {
 		return m.Logging.zapLogger, nil
 	}

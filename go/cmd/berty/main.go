@@ -6,6 +6,7 @@ import (
 	"fmt"
 	mrand "math/rand"
 	"os"
+	"strings"
 
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -18,16 +19,19 @@ import (
 var manager *initutil.Manager
 
 func main() {
-	err := runMain()
-	if err != nil {
-		if err != flag.ErrHelp {
-			fmt.Fprintf(os.Stderr, "error: %+v\n", err)
-		}
+	err := runMain(os.Args[1:])
+	switch {
+	case err == nil:
+		// noop
+	case err == flag.ErrHelp || strings.Contains(err.Error(), flag.ErrHelp.Error()):
+		os.Exit(2)
+	default:
+		fmt.Fprintf(os.Stderr, "error: %+v\n", err)
 		os.Exit(1)
 	}
 }
 
-func runMain() error {
+func runMain(args []string) error {
 	mrand.Seed(srand.Secure())
 	ctx, ctxCancel := context.WithCancel(context.Background())
 	defer ctxCancel()
@@ -45,7 +49,7 @@ func runMain() error {
 	// root command
 	var root *ffcli.Command
 	{
-		var fs = flag.NewFlagSet("berty", flag.ExitOnError)
+		var fs = flag.NewFlagSet("berty", flag.ContinueOnError)
 		manager.SetupLoggingFlags(fs)
 
 		root = &ffcli.Command{
@@ -75,7 +79,7 @@ func runMain() error {
 
 		// add root command to process
 		process.Add(func() error {
-			return root.ParseAndRun(ctx, os.Args[1:])
+			return root.ParseAndRun(ctx, args)
 		}, func(error) {
 			ctxCancel()
 		})
