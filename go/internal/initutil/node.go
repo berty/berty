@@ -1,14 +1,12 @@
 package initutil
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"os"
 	"os/user"
 	"path"
 	"strings"
-	"time"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -16,11 +14,9 @@ import (
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	grpcgw "github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/ipfs/go-datastore"
-	"github.com/libp2p/go-libp2p-core/peer"
+	datastore "github.com/ipfs/go-datastore"
 	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -28,7 +24,6 @@ import (
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
 
-	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/notification"
@@ -41,12 +36,8 @@ import (
 func (m *Manager) SetupLocalProtocolServerFlags(fs *flag.FlagSet) {
 	m.Node.Protocol.requiredByClient = true
 	m.SetupDatastoreFlags(fs)
-	fs.UintVar(&m.Node.Protocol.IPFSListeningPort, "p2p.ipfs-port", 0, "IPFS listening port")
-	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "local discovery")
-	fs.StringVar(&m.Node.Protocol.RdvpMaddr, "p2p.rdvp", ":dev:", "rendezvous point maddr")
-	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")
-	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute, "maximum p2p backoff duration")
-	fs.StringVar(&m.Node.Protocol.GRPCListeners, "node.listeners", "/ip4/127.0.0.1/tcp/9091/grpc", "gRPC API listeners")
+	m.SetupLocalIPFSFlags(fs)
+	fs.StringVar(&m.Node.GRPC.Listeners, "node.listeners", "/ip4/127.0.0.1/tcp/9091/grpc", "gRPC API listeners")
 	// p2p.remote-ipfs
 	// p2p.no-ble
 }
@@ -74,6 +65,9 @@ func (m *Manager) SetupLocalMessengerServerFlags(fs *flag.FlagSet) {
 func (m *Manager) GetLocalProtocolServer() (bertyprotocol.Service, error) {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
+	if m.ctx.Err() != nil {
+		return nil, m.ctx.Err()
+	}
 	return m.getLocalProtocolServer()
 }
 
@@ -103,7 +97,10 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 	}
 
 	// construct http api endpoint
-	ipfsutil.ServeHTTPApi(logger, m.Node.Protocol.ipfsNode, "")
+	err = ipfsutil.ServeHTTPApi(logger, m.Node.Protocol.ipfsNode, "")
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
 
 	// serve the embedded ipfs web UI
 	ipfsutil.ServeHTTPWebui(logger)
@@ -321,8 +318,8 @@ func (m *Manager) getGRPCServer() (*grpc.Server, *runtime.ServeMux, error) {
 	grpcServer := grpc.NewServer(grpcOpts...)
 	grpcGatewayMux := grpcgw.NewServeMux()
 
-	if m.Node.Protocol.GRPCListeners != "" {
-		addrs := strings.Split(m.Node.Protocol.GRPCListeners, ",")
+	if m.Node.GRPC.Listeners != "" {
+		addrs := strings.Split(m.Node.GRPC.Listeners, ",")
 		maddrs, err := ipfsutil.ParseAddrs(addrs...)
 		if err != nil {
 			return nil, nil, err
@@ -354,37 +351,6 @@ func (m *Manager) getGRPCServer() (*grpc.Server, *runtime.ServeMux, error) {
 	m.Node.GRPC.server = grpcServer
 	m.Node.GRPC.gatewayMux = grpcGatewayMux
 	return m.Node.GRPC.server, m.Node.GRPC.gatewayMux, nil
-}
-
-func (m *Manager) getRdvpMaddr() (*peer.AddrInfo, error) {
-	_, err := m.getLogger() // ensure logger is initialized
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	switch m.Node.Protocol.RdvpMaddr {
-	case "":
-		m.initLogger.Debug("no rendezvous peer set")
-		return nil, nil
-	case ":dev:":
-		m.Node.Protocol.RdvpMaddr = config.BertyDev.RendezVousPeer
-	}
-
-	resolveCtx, cancel := context.WithTimeout(m.ctx, 10*time.Second)
-	defer cancel()
-
-	rdvpeer, err := ipfsutil.ParseAndResolveIpfsAddr(resolveCtx, m.Node.Protocol.RdvpMaddr)
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	fds := make([]zapcore.Field, len(rdvpeer.Addrs))
-	for i, maddr := range rdvpeer.Addrs {
-		key := fmt.Sprintf("#%d", i)
-		fds[i] = zap.String(key, maddr.String())
-	}
-	m.initLogger.Debug("rdvp peer resolved addrs", fds...)
-	return rdvpeer, nil
 }
 
 func (m *Manager) GetMessengerDB() (*gorm.DB, error) {

@@ -25,8 +25,7 @@ var BertyDev = &BertyConfig{
 		"/ip4/0.0.0.0/udp/0/quic",
 		"/ip6/::/udp/0/quic",
 	},
-	Tracing:         "jaeger.berty.io:8443",
-	DefaultAPIAddrs: []string{"/ip4/127.0.0.1/tcp/5001"},
+	Tracing: "jaeger.berty.io:8443",
 	APIConfig: config.API{
 		HTTPHeaders: map[string][]string{
 			"Access-Control-Allow-Origin":  {"*"},

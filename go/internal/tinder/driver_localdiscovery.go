@@ -19,7 +19,7 @@ import (
 	mcma "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/multiaddr"
 	ggio "github.com/gogo/protobuf/io"
 	ma "github.com/multiformats/go-multiaddr"
-	manet "github.com/multiformats/go-multiaddr-net"
+	manet "github.com/multiformats/go-multiaddr/net"
 	msmux "github.com/multiformats/go-multistream"
 )
 

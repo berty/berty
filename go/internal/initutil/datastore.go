@@ -76,10 +76,11 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 		return sync_ds.MutexWrap(datastore.NewMapDatastore()), nil
 	}
 
-	m.Datastore.rootDS, err = badger.NewDatastore(dir, nil)
+	ds, err := badger.NewDatastore(dir, nil)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
+	m.Datastore.rootDS = ds
 
 	m.Datastore.rootDS = sync_ds.MutexWrap(m.Datastore.rootDS)
 	m.initLogger.Debug("datastore", zap.Bool("in-memory", dir == InMemoryDir))

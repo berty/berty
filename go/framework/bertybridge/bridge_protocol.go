@@ -16,13 +16,13 @@ import (
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	"github.com/ipfs/go-datastore"
+	datastore "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_badger "github.com/ipfs/go-ds-badger"
 	"github.com/ipfs/go-ipfs/core"
 	"github.com/ipfs/go-ipfs/core/bootstrap"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
-	"github.com/libp2p/go-libp2p"
+	libp2p "github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/peerstore"
@@ -247,7 +247,10 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 			api = ipfsutil.InjectPubSubCoreAPIExtendedAdaptater(api, psapi)
 
 			// construct http api endpoint
-			ipfsutil.ServeHTTPApi(logger, node, config.rootDirectory+"/ipfs")
+			err = ipfsutil.ServeHTTPApi(logger, node, config.rootDirectory+"/ipfs")
+			if err != nil {
+				return nil, errcode.TODO.Wrap(err)
+			}
 
 			// serve the embedded ipfs webui
 			ipfsutil.ServeHTTPWebui(logger)
