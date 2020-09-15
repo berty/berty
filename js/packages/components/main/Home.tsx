@@ -32,6 +32,7 @@ import moment from 'moment'
 import Logo from './1_berty_picto.svg'
 import EmptyChat from './empty_chat.svg'
 import AvatarGroup19 from './Avatar_Group_Copy_19.png'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //
 // Main List
@@ -430,6 +431,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const [isOnTop, setIsOnTop] = useState<boolean>(false)
 	const [dirScroll, setDirScroll] = useState<string>('')
 	const [bgColor, setBgColor] = useState<any>()
+	const { navigate } = useNavigation()
 
 	useEffect(() => {
 		if (!requests.length) {
@@ -442,56 +444,61 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	return (
 		<>
 			<View style={[flex.tiny]}>
-				<ScrollView
-					ref={scrollRef}
-					style={[{ backgroundColor: bgColor }]}
-					stickyHeaderIndices={[1]}
-					showsVerticalScrollIndicator={false}
-					scrollEventThrottle={16}
-					onScroll={(e) => {
-						if (e.nativeEvent.contentOffset) {
-							if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
-								setIsOnTop(true)
-							} else {
-								setIsOnTop(false)
-							}
-							if (offset && e.nativeEvent.contentOffset.y >= offset.y) {
-								setDirScroll('up')
-							} else if (offset && e.nativeEvent.contentOffset.y < offset.y) {
-								setDirScroll('down')
-							}
-							setOffset(e.nativeEvent.contentOffset)
-						}
-					}}
+				<SwipeNavRecognizer
+					onSwipeLeft={navigate.settings.home}
+					onSwipeRight={navigate.main.search}
 				>
-					<IncomingRequests items={requests} onLayout={onLayoutRequests} />
-					<HomeHeader
-						isOnTop={isOnTop}
-						onLayout={onLayoutHeader}
-						hasRequests={requests.length > 0}
-						scrollRef={scrollRef}
-					/>
-					{isConversation ? (
-						<Conversations items={conversations} onLayout={onLayoutConversations} />
-					) : (
-						<View style={[background.white]}>
-							<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
-								<EmptyChat width={350} height={350} />
-								<TextNative
-									style={[
-										text.align.center,
-										text.color.grey,
-										text.bold.small,
-										opacity(0.3),
-										margin.top.big,
-									]}
-								>
-									You don't have any contacts or chat yet
-								</TextNative>
+					<ScrollView
+						ref={scrollRef}
+						style={[{ backgroundColor: bgColor }]}
+						stickyHeaderIndices={[1]}
+						showsVerticalScrollIndicator={false}
+						scrollEventThrottle={16}
+						onScroll={(e) => {
+							if (e.nativeEvent.contentOffset) {
+								if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
+									setIsOnTop(true)
+								} else {
+									setIsOnTop(false)
+								}
+								if (offset && e.nativeEvent.contentOffset.y >= offset.y) {
+									setDirScroll('up')
+								} else if (offset && e.nativeEvent.contentOffset.y < offset.y) {
+									setDirScroll('down')
+								}
+								setOffset(e.nativeEvent.contentOffset)
+							}
+						}}
+					>
+						<IncomingRequests items={requests} onLayout={onLayoutRequests} />
+						<HomeHeader
+							isOnTop={isOnTop}
+							onLayout={onLayoutHeader}
+							hasRequests={requests.length > 0}
+							scrollRef={scrollRef}
+						/>
+						{isConversation ? (
+							<Conversations items={conversations} onLayout={onLayoutConversations} />
+						) : (
+							<View style={[background.white]}>
+								<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
+									<EmptyChat width={350} height={350} />
+									<TextNative
+										style={[
+											text.align.center,
+											text.color.grey,
+											text.bold.small,
+											opacity(0.3),
+											margin.top.big,
+										]}
+									>
+										You don't have any contacts or chat yet
+									</TextNative>
+								</View>
 							</View>
-						</View>
-					)}
-				</ScrollView>
+						)}
+					</ScrollView>
+				</SwipeNavRecognizer>
 			</View>
 			<LinearGradient
 				style={[

@@ -30,6 +30,7 @@ import {
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import * as api from '@berty-tech/api/index.pb'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 // Styles
 
@@ -628,6 +629,7 @@ export const Search: React.FC<{}> = () => {
 			(searchIn || '').toLowerCase().includes(lowSearchText),
 		[lowSearchText],
 	)
+	const { navigate } = useNavigation()
 
 	const ctx = useMsgrContext()
 
@@ -670,23 +672,25 @@ export const Search: React.FC<{}> = () => {
 	return (
 		<>
 			<Layout style={[flex.tiny, background.yellow]}>
-				<SafeAreaConsumer>
-					{(insets: EdgeInsets | null) => {
-						return (
-							<View style={[flex.tiny]}>
-								<SearchComponent
-									insets={insets}
-									contacts={contacts}
-									interactions={interactions}
-									conversations={conversations}
-									searchText={searchText}
-									setSearchText={setSearchText}
-									hasResults={hasResults}
-								/>
-							</View>
-						)
-					}}
-				</SafeAreaConsumer>
+				<SwipeNavRecognizer onSwipeLeft={navigate.main.home}>
+					<SafeAreaConsumer>
+						{(insets: EdgeInsets | null) => {
+							return (
+								<View style={[flex.tiny]}>
+									<SearchComponent
+										insets={insets}
+										contacts={contacts}
+										interactions={interactions}
+										conversations={conversations}
+										searchText={searchText}
+										setSearchText={setSearchText}
+										hasResults={hasResults}
+									/>
+								</View>
+							)
+						}}
+					</SafeAreaConsumer>
+				</SwipeNavRecognizer>
 			</Layout>
 			{hasResults && (
 				<LinearGradient

@@ -232,12 +232,16 @@ const MessageList: React.FC<{ id: string; scrollToMessage?: string }> = ({
 			}
 		}
 	}, [interactions, scrollToMessage])
-	const flatListRef = React.useRef(null)
+	const flatListRef: any = React.useRef(null)
 
 	const onScrollToIndexFailed = () => {
 		// Not sure why this happens (something to do with item/screen dimensions I think)
-		flatListRef.current?.scrollToIndex({ index: 0 })
+		flatListRef?.current?.scrollToIndex({ index: 0 })
 	}
+
+	const items: any = React.useMemo(() => {
+		return interactions?.reverse() || []
+	}, [interactions])
 
 	if (!conversation) {
 		return <CenteredActivityIndicator />
@@ -256,7 +260,7 @@ const MessageList: React.FC<{ id: string; scrollToMessage?: string }> = ({
 				margin.bottom.medium,
 				{ marginTop: 140 * scaleHeight },
 			]}
-			data={interactions.reverse()}
+			data={items}
 			inverted
 			ListFooterComponent={<InfosMultiMember {...conversation} />}
 			keyExtractor={(item) => item.cid}
@@ -266,7 +270,7 @@ const MessageList: React.FC<{ id: string; scrollToMessage?: string }> = ({
 					convKind={messengerpb.Conversation.Type.MultiMemberType}
 					convPK={conversation.publicKey}
 					members={members}
-					previousMessageId={index > 0 ? interactions.reverse()[index - 1]?.cid : ''}
+					previousMessageId={index > 0 ? items[index - 1]?.cid : ''}
 				/>
 			)}
 		/>

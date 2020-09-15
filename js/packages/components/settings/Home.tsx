@@ -9,6 +9,7 @@ import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { Messenger } from '@berty-tech/store/oldhooks'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import LinearGradient from 'react-native-linear-gradient'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //
 // Home Vue
@@ -153,22 +154,26 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 	const account = Messenger.useAccount()
 	const _styles = useStylesHome()
 	const [{ flex, background, row, absolute }] = useStyles()
+	const { navigate } = useNavigation()
+
 	return (
 		<>
 			<View style={[flex.tiny, background.white]}>
-				{account == null ? (
-					<ActivityIndicator size='large' style={[row.center]} />
-				) : (
-					<ScrollView bounces={false} contentContainerStyle={[_styles.scrollViewPadding]}>
-						<HeaderSettings>
-							<View>
-								<HomeHeader />
-								<HomeHeaderGroupButton />
-							</View>
-						</HeaderSettings>
-						<HomeBodySettings />
-					</ScrollView>
-				)}
+				<SwipeNavRecognizer onSwipeRight={navigate.main.home}>
+					{account == null ? (
+						<ActivityIndicator size='large' style={[row.center]} />
+					) : (
+						<ScrollView bounces={false} contentContainerStyle={[_styles.scrollViewPadding]}>
+							<HeaderSettings>
+								<View>
+									<HomeHeader />
+									<HomeHeaderGroupButton />
+								</View>
+							</HeaderSettings>
+							<HomeBodySettings />
+						</ScrollView>
+					)}
+				</SwipeNavRecognizer>
 			</View>
 			<LinearGradient
 				style={[

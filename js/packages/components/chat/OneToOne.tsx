@@ -27,6 +27,7 @@ import BlurView from '../shared-components/BlurView'
 
 // import { useReadEffect } from '../hooks'
 import { ChatFooter, ChatDate } from './shared-components/Chat'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //
 // Chat
@@ -195,7 +196,7 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: string }> = ({
 			msg.type === messengerpb.AppMessage.Type.TypeGroupInvitation,
 	)
 
-	const flatListRef = useRef(null)
+	const flatListRef: any = useRef(null)
 
 	const onScrollToIndexFailed = () => {
 		// Not sure why this happens (something to do with item/screen dimensions I think)
@@ -212,13 +213,17 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: string }> = ({
 		}
 	}, [messages, scrollToMessage])
 
+	const items: any = React.useMemo(() => {
+		return messages?.reverse() || []
+	}, [messages])
+
 	return (
 		<FlatList
 			initialScrollIndex={initialScrollIndex}
 			onScrollToIndexFailed={onScrollToIndexFailed}
 			ref={flatListRef}
 			keyboardDismissMode='on-drag'
-			data={messages.reverse()}
+			data={items}
 			inverted
 			keyExtractor={(item: any) => item.cid}
 			ListFooterComponent={<InfosChat {...conv} />}
@@ -227,7 +232,7 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: string }> = ({
 					id={item.cid}
 					convKind={messengerpb.Conversation.Type.ContactType}
 					convPK={conv.publicKey}
-					previousMessageId={index > 0 ? messages.reverse()[index - 1]?.cid : ''}
+					previousMessageId={index > 0 ? items[index - 1]?.cid : ''}
 				/>
 			)}
 		/>
@@ -238,17 +243,23 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route }) => {
 	const [inputIsFocused, setInputFocus] = useState(false)
 	const [{ flex, background }] = useStyles()
 	useReadEffect(route.params.convId, 1000)
+
 	return (
-		<View style={[StyleSheet.absoluteFill, background.white]}>
-			<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
-				<MessageList convPk={route.params.convId} scrollToMessage={route.params.scrollToMessage} />
-				<ChatFooter
-					convPk={route.params.convId}
-					isFocused={inputIsFocused}
-					setFocus={setInputFocus}
-				/>
-				<ChatHeader convPk={route.params.convId} />
-			</KeyboardAvoidingView>
+		<View style={[StyleSheet.absoluteFill, background.white, { flex: 1 }]}>
+			<SwipeNavRecognizer>
+				<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
+					<MessageList
+						convPk={route.params.convId}
+						scrollToMessage={route.params.scrollToMessage}
+					/>
+					<ChatFooter
+						convPk={route.params.convId}
+						isFocused={inputIsFocused}
+						setFocus={setInputFocus}
+					/>
+					<ChatHeader convPk={route.params.convId} />
+				</KeyboardAvoidingView>
+			</SwipeNavRecognizer>
 		</View>
 	)
 }
