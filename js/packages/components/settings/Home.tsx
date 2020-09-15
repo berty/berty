@@ -159,21 +159,21 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 	return (
 		<>
 			<View style={[flex.tiny, background.white]}>
-				<SwipeNavRecognizer onSwipeRight={navigate.main.home}>
-					{account == null ? (
-						<ActivityIndicator size='large' style={[row.center]} />
-					) : (
-						<ScrollView bounces={false} contentContainerStyle={[_styles.scrollViewPadding]}>
-							<HeaderSettings>
-								<View>
-									<HomeHeader />
-									<HomeHeaderGroupButton />
-								</View>
-							</HeaderSettings>
-							<HomeBodySettings />
-						</ScrollView>
-					)}
-				</SwipeNavRecognizer>
+				{/* <SwipeNavRecognizer onSwipeRight={navigate.main.home}> */}
+				{account == null ? (
+					<ActivityIndicator size='large' style={[row.center]} />
+				) : (
+					<ScrollView bounces={false} contentContainerStyle={[_styles.scrollViewPadding]}>
+						<HeaderSettings>
+							<View>
+								<HomeHeader />
+								<HomeHeaderGroupButton />
+							</View>
+						</HeaderSettings>
+						<HomeBodySettings />
+					</ScrollView>
+				)}
+				{/* </SwipeNavRecognizer> */}
 			</View>
 			<LinearGradient
 				style={[

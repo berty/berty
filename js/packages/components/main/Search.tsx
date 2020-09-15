@@ -672,25 +672,25 @@ export const Search: React.FC<{}> = () => {
 	return (
 		<>
 			<Layout style={[flex.tiny, background.yellow]}>
-				<SwipeNavRecognizer onSwipeLeft={navigate.main.home}>
-					<SafeAreaConsumer>
-						{(insets: EdgeInsets | null) => {
-							return (
-								<View style={[flex.tiny]}>
-									<SearchComponent
-										insets={insets}
-										contacts={contacts}
-										interactions={interactions}
-										conversations={conversations}
-										searchText={searchText}
-										setSearchText={setSearchText}
-										hasResults={hasResults}
-									/>
-								</View>
-							)
-						}}
-					</SafeAreaConsumer>
-				</SwipeNavRecognizer>
+				{/* <SwipeNavRecognizer onSwipeLeft={navigate.main.home}> */}
+				<SafeAreaConsumer>
+					{(insets: EdgeInsets | null) => {
+						return (
+							<View style={[flex.tiny]}>
+								<SearchComponent
+									insets={insets}
+									contacts={contacts}
+									interactions={interactions}
+									conversations={conversations}
+									searchText={searchText}
+									setSearchText={setSearchText}
+									hasResults={hasResults}
+								/>
+							</View>
+						)
+					}}
+				</SafeAreaConsumer>
+				{/* </SwipeNavRecognizer> */}
 			</Layout>
 			{hasResults && (
 				<LinearGradient
