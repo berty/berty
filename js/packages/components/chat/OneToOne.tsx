@@ -246,20 +246,17 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route }) => {
 
 	return (
 		<View style={[StyleSheet.absoluteFill, background.white, { flex: 1 }]}>
-			<SwipeNavRecognizer>
-				<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
-					<MessageList
-						convPk={route.params.convId}
-						scrollToMessage={route.params.scrollToMessage}
-					/>
-					<ChatFooter
-						convPk={route.params.convId}
-						isFocused={inputIsFocused}
-						setFocus={setInputFocus}
-					/>
-					<ChatHeader convPk={route.params.convId} />
-				</KeyboardAvoidingView>
-			</SwipeNavRecognizer>
+			{/* <SwipeNavRecognizer> */}
+			<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
+				<MessageList convPk={route.params.convId} scrollToMessage={route.params.scrollToMessage} />
+				<ChatFooter
+					convPk={route.params.convId}
+					isFocused={inputIsFocused}
+					setFocus={setInputFocus}
+				/>
+				<ChatHeader convPk={route.params.convId} />
+			</KeyboardAvoidingView>
+			{/* </SwipeNavRecognizer> */}
 		</View>
 	)
 }
