@@ -31,7 +31,7 @@ Fetch library to your go cache: `go get -u berty.tech/berty/v2`
 [embedmd]:# (.tmp/daemon.txt console)
 ```console
 foo@bar:~$ berty daemon
-API server listening on /ip4/127.0.0.1/tcp/5001
+2020-09-15T12:01:43Z	INFO 	bty               	IPFS API server listening	{"addr": "/ip4/127.0.0.1/tcp/45225"}
 ...
 ```
 
@@ -46,33 +46,32 @@ TODO
 [embedmd]:# (.tmp/share-invite.txt console)
 ```console
 foo@bar:~$ berty share-invite
-API server listening on /ip4/127.0.0.1/tcp/5001
 █████████████████████████████████████████████████
 █████████████████████████████████████████████████
-████ ▄▄▄▄▄ ██▀█▀ ▄▀ ▄ ▀▀▀▀▀  ▄█ █▀ ▀▀█ ▄▄▄▄▄ ████
-████ █   █ █▄▄ ▀    ▀█▀▀▄▀ █ █  ████ █ █   █ ████
-████ █▄▄▄█ ██ █▀▀▀ ▀  ▄ ▀█▄ ▀ █ █▀█ ██ █▄▄▄█ ████
-████▄▄▄▄▄▄▄█ ▀ █ ▀ ▀▄▀ ▀ ▀▄█▄▀▄█▄▀ █ █▄▄▄▄▄▄▄████
-████  ▄▀▄ ▄  ▄▀▄▄  ██▄██▀ ██  █  ███   ▀█▀▄▀█████
-████ █ ▄█ ▄█▀ ▄▄▀▀ █▀ ▀█▄▀ ██▀▀▀█▀▄█████▄██  ████
-████▄ █▄█▀▄ ▄██  ▀   █▄▄  ▄▄ █▀█▀▀▀██▄ █▄▄▀▄▀████
-████▄█▀ █▀▄█▀▄█▄  █▄ ▀ ▀   █▄  ██▀▀█ ▄▀▄▄██▄▄████
-████▄ ▀▄▄ ▄▄▀ █  ▄  ▀▄██ ▀▀▀  ▀▄▀█▀▀ ▀ ██▄█ ▄████
-█████▄█▄  ▄▄▀▀▄█ ▄█▀ ▄█▀█ █▀█▀█▀█ ▀▀▀█   █▄ ▄████
-██████▀█  ▄ ███▀█▀█ ███▄  ███ ▀█ ▀█ ▀ ▄▄▄ █▀▀████
-█████ ▀ ▀█▄█▄▀ ▀█ ▄▀█▀▀▀▀▀██ ▀▀▀█ ▀▀▀█ ▀▀▄▄  ████
-█████▄▀ █ ▄█ ▀█▀▀▀▀█ ▀▀▄█▄▀▄  ▀█ ▀█▄█  ██▀▀█▄████
-████▀▀▄▄██▄▀▄▄█▀█▀ █▀▀ ▀  █▀  ▀▀▀▀█▀██▄▄▀ ▄ ▄████
-████▄█▀▀ ▄▄▀▄▄▄▀ ▀ ▀ ▀ ██ ██ ▀██▀██   ▄██▄▀  ████
-████▄▀▄█  ▄▀▀██▄  ▄▄ ▀▄▀▀▀ █▄▀▄▀▀ █▀ █▀▀██▄▄▄████
-████▄███▄▄▄█  █  ██▄█▄█▀▀ ███▄▄█▀▀▀▄ ▄▄▄ ▀ ▄ ████
-████ ▄▄▄▄▄ █ ▀ █▀▄█▀▀▄██▄▀ ▀▀▀▀█▀ █▄ █▄█ ▀█  ████
-████ █   █ █▄▄▀▀███▀████ ▄█▄▀███ ▀▀█▄▄▄  ▀▀▄▀████
-████ █▄▄▄█ █ ▄ ▀█▀ ▀█  ▀▀ ██▀▀▀▀▄▀▀  ▀▀█ ██ ▄████
-████▄▄▄▄▄▄▄█▄▄▄█▄▄██▄██▄▄▄█▄▄▄███▄█▄▄▄█▄██▄▄▄████
+████ ▄▄▄▄▄ ██▄▄█▀▄ ▀▀ ▀ ▄▀  █ ▀▀▀  ▀▀█ ▄▄▄▄▄ ████
+████ █   █ █▄ ▀▀█  ▀▀█▀██▀  █▀ █▄▀▀█▄█ █   █ ████
+████ █▄▄▄█ ██▀  ▄█ ▀ █▄ ▀ ▄▀█▄▀▀▀█▄▀▀█ █▄▄▄█ ████
+████▄▄▄▄▄▄▄█ ▀▄▀▄▀ ▀▄▀▄▀ ▀ ▀ ▀ ▀ ▀ ▀ █▄▄▄▄▄▄▄████
+████▄▄▄█▄▄▄   █ ▀▀▀█ ███ █▀▀ ▀█▀▀█▀▄   ▀█▀▄▀▀████
+████  ▀▄▄█▄▄▀▀█  ▀ █  ▀▀▀▀ █ ▀█▀▄ ▀█████▄██  ████
+████▄█▀   ▄ ▄▀█▀ ▀ ▀ ▀▄█  ▄▄█▀███  ▀  ▄ █▄▀▄▀████
+████▄▀███▀▄  ▄█▄ ▀▀▄  ▀▀ ▀▀▀▄▀▀█▄▀▀▀ ▄▀██▄▄▄▄████
+████▄▄ ▄█ ▄▄▄█ ▄▄▄█▄█▄ █▀    ▄█▀▀ █▀ ▀ ██▄▄ ▄████
+██████▀▄  ▄█▀ ▄█ ▄█▀ ▄█▀█ █▀▄  ▀▀▀█▀▀▄▀  █▄ ▄████
+████▄█▀█ █▄▄ ▄▀ ███▀█▀█▄ ▄█▀▀▀█▄  ▀▄  ▄█▄▄▀▀▀████
+████▀▀▀ ██▄▀█ ▀▀█▀▀▀█ █▀▀▀ █▄▀ ██ █▀ █   ▄█  ████
+█████▄▄▄█▄▄ ███▀ ▀██ ▀▀  ██▀▀  █ █▀██  ██ ▀█▄████
+████▀▀██▄▄▄█ ▀ █ ▀ █▄▀ █  █▀   █▀▀▄▀█▀▀▄▀ ▄ ▄████
+████▄█▄ ▄▀▄▄█▀▀  ▀ ▀ ▀ ██ ██▀ ███▀█▄█▄▄█▄▄█▀ ████
+████▄▀▄█▀█▄█▀▀ ▄  ▄▄   ▀▀▀ █▄  ▀▀▀ ▀██▀█▀█▄▄▄████
+████▄███▄▄▄█ ▀█▄ ██▄▀████▀█▄ ▀▀▀ ▄█▄ ▄▄▄   ▄▄████
+████ ▄▄▄▄▄ █  ▀█▀▄██▄▄██▄▀ █▀ ▀▀▀▀ ▄ █▄█ ▀█▄▄████
+████ █   █ █▄█ ▀███▀████ ▄██ ▀▀█ ▄ █▄▄▄  ▀▀▄▀████
+████ █▄▄▄█ █ ▄▄▀█▀ ▀█ █▀▀▀▀█▄▀▀▀█▀ ▄ ▀▀█ ▄▄ ▄████
+████▄▄▄▄▄▄▄█▄▄██▄▄██▄██▄█▄▄▄███▄█▄▄█▄█▄▄███▄▄████
 █████████████████████████████████████████████████
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-html url: https://berty.tech/id#key=CiAEWNUwuaqFxkup-m4aKi2cTqnbT9jqYimPkE7l_6562RIgAVNtXNNqlJBjUIsAKlMV6u8_DFPeqkzjuTwMOrn2ctA&name=demo
+html url: https://berty.tech/id#key=CiCUfQi5GmPY_Ea3UWdPNFiU9AM26Iul2G6SNBrd6eGUmBIgnN-PXNm_tYnIF9OJX94dMMO4xI9e3b5LTKCgZjrX4DI&name=demo
 ```
 
 ### Info
@@ -80,22 +79,21 @@ html url: https://berty.tech/id#key=CiAEWNUwuaqFxkup-m4aKi2cTqnbT9jqYimPkE7l_656
 [embedmd]:# (.tmp/info.txt console)
 ```console
 foo@bar:~$ berty info
-API server listening on /ip4/127.0.0.1/tcp/5001
 {
   "rlimitCur": "1024",
-  "numGoroutine": "404",
-  "nofile": "40",
-  "startedAt": "1599845029",
+  "numGoroutine": "414",
+  "nofile": "47",
+  "startedAt": "1600171300",
   "numCpu": "12",
   "goVersion": "go1.15",
   "operatingSystem": "linux",
   "hostName": "fwrz",
   "arch": "amd64",
-  "version": "v2.136.4-4-g45299280",
-  "vcsRef": "45299280",
-  "buildTime": "1599845011",
-  "selfRusage": "{\"Utime\":{\"Sec\":1,\"Usec\":85018},\"Stime\":{\"Sec\":0,\"Usec\":179412},\"Maxrss\":77124,\"Ixrss\":0,\"Idrss\":0,\"Isrss\":0,\"Minflt\":8095,\"Majflt\":0,\"Nswap\":0,\"Inblock\":0,\"Oublock\":8,\"Msgsnd\":0,\"Msgrcv\":0,\"Nsignals\":0,\"Nvcsw\":8021,\"Nivcsw\":14}",
-  "childrenRusage": "{\"Utime\":{\"Sec\":1,\"Usec\":653185},\"Stime\":{\"Sec\":0,\"Usec\":226263},\"Maxrss\":30996,\"Ixrss\":0,\"Idrss\":0,\"Isrss\":0,\"Minflt\":10490,\"Majflt\":0,\"Nswap\":0,\"Inblock\":0,\"Oublock\":0,\"Msgsnd\":0,\"Msgrcv\":0,\"Nsignals\":0,\"Nvcsw\":11852,\"Nivcsw\":326}",
+  "version": "v2.141.0-3-g50d34b2a",
+  "vcsRef": "50d34b2a",
+  "buildTime": "1600171281",
+  "selfRusage": "{\"Utime\":{\"Sec\":0,\"Usec\":948729},\"Stime\":{\"Sec\":0,\"Usec\":183894},\"Maxrss\":79600,\"Ixrss\":0,\"Idrss\":0,\"Isrss\":0,\"Minflt\":8302,\"Majflt\":0,\"Nswap\":0,\"Inblock\":0,\"Oublock\":0,\"Msgsnd\":0,\"Msgrcv\":0,\"Nsignals\":0,\"Nvcsw\":8684,\"Nivcsw\":17}",
+  "childrenRusage": "{\"Utime\":{\"Sec\":1,\"Usec\":687565},\"Stime\":{\"Sec\":0,\"Usec\":275724},\"Maxrss\":31656,\"Ixrss\":0,\"Idrss\":0,\"Isrss\":0,\"Minflt\":10521,\"Majflt\":0,\"Nswap\":0,\"Inblock\":0,\"Oublock\":0,\"Msgsnd\":0,\"Msgrcv\":0,\"Nsignals\":0,\"Nvcsw\":13055,\"Nivcsw\":713}",
   "rlimitMax": "1048576"
 }
 ```
@@ -133,7 +131,7 @@ FLAGS
   -node.listeners /ip4/127.0.0.1/tcp/9091/grpc    gRPC API listeners
   -node.no-notif false                            disable desktop notifications
   -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
-  -p2p.ipfs-port 0                                IPFS listening port
+  -p2p.ipfs-listeners /ip4/127.0.0.1/tcp/0        IPFS listeners
   -p2p.local-discovery true                       local discovery
   -p2p.max-backoff 1m0s                           maximum p2p backoff duration
   -p2p.min-backoff 1s                             minimum p2p backoff duration
@@ -148,11 +146,11 @@ USAGE
 FLAGS
   -mini.group ...                                 group to join, leave empty to create a new group
   -node.display-name moul (cli)                   display name
-  -node.listeners /ip4/127.0.0.1/tcp/9091/grpc    gRPC API listeners
+  -node.listeners ...                             gRPC API listeners
   -node.no-notif false                            disable desktop notifications
   -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
   -node.remote-addr ...                           remote Berty gRPC API address
-  -p2p.ipfs-port 0                                IPFS listening port
+  -p2p.ipfs-listeners /ip4/127.0.0.1/tcp/0        IPFS listeners
   -p2p.local-discovery true                       local discovery
   -p2p.max-backoff 1m0s                           maximum p2p backoff duration
   -p2p.min-backoff 1s                             minimum p2p backoff duration
@@ -179,11 +177,10 @@ USAGE
 FLAGS
   -info.refresh 0s                                refresh every DURATION (0: no refresh)
   -node.display-name moul (cli)                   display name
-  -node.listeners /ip4/127.0.0.1/tcp/9091/grpc    gRPC API listeners
   -node.no-notif false                            disable desktop notifications
   -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
   -node.remote-addr ...                           remote Berty gRPC API address
-  -p2p.ipfs-port 0                                IPFS listening port
+  -p2p.ipfs-listeners /ip4/127.0.0.1/tcp/0        IPFS listeners
   -p2p.local-discovery true                       local discovery
   -p2p.max-backoff 1m0s                           maximum p2p backoff duration
   -p2p.min-backoff 1s                             minimum p2p backoff duration
@@ -203,11 +200,10 @@ FLAGS
   -dev-channel false                              post qrcode on dev channel
   -no-term false                                  do not print the QR code in terminal
   -node.display-name moul (cli)                   display name
-  -node.listeners /ip4/127.0.0.1/tcp/9091/grpc    gRPC API listeners
   -node.no-notif false                            disable desktop notifications
   -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
   -node.remote-addr ...                           remote Berty gRPC API address
-  -p2p.ipfs-port 0                                IPFS listening port
+  -p2p.ipfs-listeners /ip4/127.0.0.1/tcp/0        IPFS listeners
   -p2p.local-discovery true                       local discovery
   -p2p.max-backoff 1m0s                           maximum p2p backoff duration
   -p2p.min-backoff 1s                             minimum p2p backoff duration

@@ -167,11 +167,11 @@ doc.generate: install
 
 	# generate usage.txt
 	echo 'foo@bar:~$$ berty -h' > .tmp/usage.txt
-	berty -h 2>> .tmp/usage.txt
+	(berty -h || true) 2>> .tmp/usage.txt
 	for sub in `berty -h 2>&1 | grep "^  [a-z]" | sed 1d | awk '{print $$1}'`; do \
 		echo >> .tmp/usage.txt; \
 		echo 'foo@bar:~$$ berty '$$sub' -h' >> .tmp/usage.txt; \
-		berty $$sub -h 2>> .tmp/usage.txt; \
+		(berty $$sub -h || true) 2>> .tmp/usage.txt; \
 	done
 
 	echo 'foo@bar:~$$ berty share-invite' > .tmp/share-invite.txt

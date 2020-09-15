@@ -37,9 +37,16 @@ func (m *Manager) SetupLocalProtocolServerFlags(fs *flag.FlagSet) {
 	m.Node.Protocol.requiredByClient = true
 	m.SetupDatastoreFlags(fs)
 	m.SetupLocalIPFSFlags(fs)
-	fs.StringVar(&m.Node.GRPC.Listeners, "node.listeners", "/ip4/127.0.0.1/tcp/9091/grpc", "gRPC API listeners")
 	// p2p.remote-ipfs
 	// p2p.no-ble
+}
+
+func (m *Manager) SetupEmptyGRPCListenersFlags(fs *flag.FlagSet) {
+	fs.StringVar(&m.Node.GRPC.Listeners, "node.listeners", "", "gRPC API listeners")
+}
+
+func (m *Manager) SetupDefaultGRPCListenersFlags(fs *flag.FlagSet) {
+	fs.StringVar(&m.Node.GRPC.Listeners, "node.listeners", "/ip4/127.0.0.1/tcp/9091/grpc", "gRPC API listeners")
 }
 
 func (m *Manager) DisableIPFSNetwork() {
