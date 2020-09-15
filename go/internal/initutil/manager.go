@@ -51,10 +51,13 @@ type Manager struct {
 			Announce           string
 			NoAnnounce         string
 			LocalDiscovery     bool
-			RdvpMaddr          string
 			MinBackoff         time.Duration
 			MaxBackoff         time.Duration
 			DisableIPFSNetwork bool
+			// RdvpMaddrs store a list of rdvp server maddr.
+			// The entry : `:dev:` will add the devs servers to the list (default).
+			// The netry : `:none:` will disable all rdvp servers.
+			RdvpMaddrs stringSlice
 
 			ipfsNode         *core.IpfsNode
 			ipfsAPI          ipfsutil.ExtendedCoreAPI

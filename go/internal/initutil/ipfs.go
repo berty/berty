@@ -1,7 +1,6 @@
 package initutil
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"math/rand"
@@ -17,8 +16,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/routing"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 	"moul.io/srand"
 
 	"berty.tech/berty/v2/go/internal/config"
@@ -37,7 +34,18 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute, "maximum p2p backoff duration")
 	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "local discovery")
-	fs.StringVar(&m.Node.Protocol.RdvpMaddr, "p2p.rdvp", ":dev:", "rendezvous point maddr")
+	fs.Var(&m.Node.Protocol.RdvpMaddrs, "p2p.rdvp", "list of rendezvous point maddr, \":dev:\" will add the default devs servers, \":none:\" will disable rdvp")
+}
+
+type stringSlice []string
+
+func (i *stringSlice) String() string {
+	return fmt.Sprintf("%s", *i)
+}
+
+func (i *stringSlice) Set(value string) error {
+	*i = append(*i, value)
+	return nil
 }
 
 func (m *Manager) GetLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
@@ -66,7 +74,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		return nil, nil, errcode.TODO.Wrap(err)
 	}
 
-	rdvpeer, err := m.getRdvpMaddr()
+	rdvpeers, err := m.getRdvpMaddrs()
 	if err != nil {
 		return nil, nil, errcode.TODO.Wrap(err)
 	}
@@ -103,10 +111,30 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		BootstrapAddrs:    config.BertyDev.Bootstrap,
 		HostConfig: func(h host.Host, _ routing.Routing) error {
 			var err error
-			h.Peerstore().AddAddrs(rdvpeer.ID, rdvpeer.Addrs, peerstore.PermanentAddrTTL)
-
+			var rdvClients []tinder.Driver
 			rng := rand.New(rand.NewSource(srand.Fast()))
-			rdvClient := tinder.NewRendezvousDiscovery(logger, h, rdvpeer.ID, rng)
+
+			if lenrdvpeers := len(rdvpeers); lenrdvpeers > 0 {
+				drivers := make([]tinder.Driver, lenrdvpeers)
+				for i, peer := range rdvpeers {
+					h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
+					drivers[i] = tinder.NewRendezvousDiscovery(logger, h, peer.ID,
+						rand.New(rand.NewSource(srand.Fast())))
+				}
+				rdvClients = append(rdvClients, drivers...)
+			}
+
+			var rdvClient tinder.Driver
+			switch len(rdvClients) {
+			case 0:
+				// FIXME: Check if this isn't called when DisableIPFSNetwork true.
+				return errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't create an IPFS node without any discovery"))
+			case 1:
+				rdvClient = rdvClients[0]
+			default:
+				rdvClient = tinder.NewMultiDriver(logger, rdvClients...)
+			}
+
 			m.Node.Protocol.discovery, err = tinder.NewService(
 				logger,
 				rdvClient,
@@ -162,33 +190,28 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	return m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, nil
 }
 
-func (m *Manager) getRdvpMaddr() (*peer.AddrInfo, error) {
+func (m *Manager) getRdvpMaddrs() ([]*peer.AddrInfo, error) {
 	_, err := m.getLogger() // ensure logger is initialized
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	switch m.Node.Protocol.RdvpMaddr {
-	case "":
-		m.initLogger.Debug("no rendezvous peer set")
-		return nil, nil
-	case ":dev:":
-		m.Node.Protocol.RdvpMaddr = config.BertyDev.RendezVousPeer
+	var addrs []string
+	if len(m.Node.Protocol.RdvpMaddrs) == 0 {
+		addrs = config.BertyDev.RendezVousPeer
+	} else {
+		for _, v := range m.Node.Protocol.RdvpMaddrs {
+			if v == ":dev:" {
+				addrs = append(addrs, config.BertyDev.RendezVousPeer...)
+				continue
+			}
+			if v == ":none:" {
+				m.initLogger.Debug("no rendezvous peer set")
+				return nil, nil
+			}
+			addrs = append(addrs, v)
+		}
 	}
 
-	resolveCtx, cancel := context.WithTimeout(m.ctx, 10*time.Second)
-	defer cancel()
-
-	rdvpeer, err := ipfsutil.ParseAndResolveIpfsAddr(resolveCtx, m.Node.Protocol.RdvpMaddr)
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	fds := make([]zapcore.Field, len(rdvpeer.Addrs))
-	for i, maddr := range rdvpeer.Addrs {
-		key := fmt.Sprintf("#%d", i)
-		fds[i] = zap.String(key, maddr.String())
-	}
-	m.initLogger.Debug("rdvp peer resolved addrs", fds...)
-	return rdvpeer, nil
+	return ipfsutil.ParseAndResolveRdvpMaddrs(m.ctx, m.initLogger, addrs)
 }
