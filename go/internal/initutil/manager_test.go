@@ -30,6 +30,7 @@ func Example_flags() {
 	fs := flag.NewFlagSet("test", flag.ExitOnError)
 	manager.SetupLocalProtocolServerFlags(fs)
 	manager.SetupRemoteNodeFlags(fs)
+	manager.SetupDefaultGRPCListenersFlags(fs)
 	err = fs.Parse([]string{"-store.inmem", "-p2p.min-backoff=2m10s", "-node.remote-addr=1.2.3.4:5678"})
 	if err != nil {
 		panic(err)
@@ -100,6 +101,7 @@ func TestTwoConcurrentManagers(t *testing.T) {
 		defer manager.Close()
 		fs := flag.NewFlagSet("man1", flag.ExitOnError)
 		manager.SetupLocalProtocolServerFlags(fs)
+		manager.SetupEmptyGRPCListenersFlags(fs)
 		err = fs.Parse([]string{"-node.listeners", "/ip4/0.0.0.0/tcp/9097", "-store.inmem"})
 		require.NoError(t, err)
 		man1 = manager
@@ -114,6 +116,7 @@ func TestTwoConcurrentManagers(t *testing.T) {
 		defer manager.Close()
 		fs := flag.NewFlagSet("man2", flag.ExitOnError)
 		manager.SetupRemoteNodeFlags(fs)
+		manager.SetupEmptyGRPCListenersFlags(fs)
 		err = fs.Parse([]string{"-node.remote-addr", "127.0.0.1:9097"})
 		require.NoError(t, err)
 		man2 = manager
@@ -153,6 +156,7 @@ func TestCloseByContext(t *testing.T) {
 	// configure flags
 	fs := flag.NewFlagSet("test", flag.ExitOnError)
 	manager.SetupLocalProtocolServerFlags(fs)
+	manager.SetupEmptyGRPCListenersFlags(fs)
 	fs.Parse([]string{"-store.inmem", "-node.listeners=/ip4/127.0.0.1/tcp/0/grpc"})
 
 	server, err := manager.GetLocalProtocolServer()
@@ -195,6 +199,7 @@ func TestLocalProtocolServerAndClient(t *testing.T) {
 	// configure flags
 	fs := flag.NewFlagSet("test", flag.ExitOnError)
 	manager.SetupLocalProtocolServerFlags(fs)
+	manager.SetupEmptyGRPCListenersFlags(fs)
 	err = fs.Parse([]string{"-node.listeners=/ip4/127.0.0.1/tcp/0/grpc", "-store.inmem"})
 	require.NoError(t, err)
 
@@ -223,6 +228,7 @@ func TestLocalProtocolServerLeak(t *testing.T) {
 	// configure flags
 	fs := flag.NewFlagSet("test", flag.ExitOnError)
 	manager.SetupLocalProtocolServerFlags(fs)
+	manager.SetupEmptyGRPCListenersFlags(fs)
 	err = fs.Parse([]string{"-node.listeners=/ip4/127.0.0.1/tcp/0/grpc", "-store.inmem"})
 
 	server, err := manager.GetLocalProtocolServer()
@@ -251,6 +257,7 @@ func TestClosingTwice(t *testing.T) {
 	// configure flags
 	fs := flag.NewFlagSet("test", flag.ExitOnError)
 	manager.SetupLocalProtocolServerFlags(fs)
+	manager.SetupEmptyGRPCListenersFlags(fs)
 	err = fs.Parse([]string{"-node.listeners=", "-store.inmem"})
 	require.NoError(t, err)
 
@@ -279,6 +286,7 @@ func TestRacyClose(t *testing.T) {
 	// configure flags
 	fs := flag.NewFlagSet("test", flag.ExitOnError)
 	manager.SetupLocalProtocolServerFlags(fs)
+	manager.SetupEmptyGRPCListenersFlags(fs)
 	err = fs.Parse([]string{"-node.listeners=", "-store.inmem"})
 	require.NoError(t, err)
 

@@ -14,8 +14,9 @@ func miniCommand() *ffcli.Command {
 		groupFlag string
 	)
 	fs.StringVar(&groupFlag, "mini.group", groupFlag, "group to join, leave empty to create a new group")
-	manager.SetupLocalMessengerServerFlags(fs)
-	manager.SetupRemoteNodeFlags(fs)
+	manager.SetupLocalMessengerServerFlags(fs) // add flags to allow creating a full node in the same process
+	manager.SetupEmptyGRPCListenersFlags(fs)   // by default, we don't want to expose gRPC server for mini
+	manager.SetupRemoteNodeFlags(fs)           // mini can be run against an already running server
 
 	return &ffcli.Command{
 		Name:       "mini",

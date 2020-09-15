@@ -13,6 +13,7 @@ import (
 func daemonCommand() *ffcli.Command {
 	var fs = flag.NewFlagSet("protocol client", flag.ExitOnError)
 	manager.SetupLocalMessengerServerFlags(fs) // we want to configure a local messenger server
+	manager.SetupDefaultGRPCListenersFlags(fs)
 
 	return &ffcli.Command{
 		Name:       "daemon",
