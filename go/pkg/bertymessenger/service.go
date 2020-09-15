@@ -19,6 +19,61 @@ import (
 	"moul.io/zapgorm2"
 )
 
+type Service interface {
+	MessengerServiceServer
+	Close()
+}
+
+// service is a Service
+var _ Service = (*service)(nil)
+
+type service struct {
+	logger         *zap.Logger
+	protocolClient bertyprotocol.ProtocolServiceClient
+	startedAt      time.Time
+	db             *gorm.DB
+	dispatcher     *Dispatcher
+	notifmanager   notification.Manager
+	cancelFn       func()
+	optsCleanup    func()
+	ctx            context.Context
+	handlerMutex   sync.Mutex
+}
+
+type Opts struct {
+	Logger              *zap.Logger
+	NotificationManager notification.Manager
+	DB                  *gorm.DB
+}
+
+func (opts *Opts) applyDefaults() (func(), error) {
+	cleanup := func() {}
+
+	if opts.Logger == nil {
+		opts.Logger = zap.NewNop()
+	}
+	if opts.DB == nil {
+		opts.Logger.Warn("Messenger started without database, creating a volatile one in memory")
+		zapLogger := zapgorm2.New(opts.Logger.Named("gorm"))
+		zapLogger.SetAsDefault()
+		db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{Logger: zapLogger})
+		if err != nil {
+			return nil, err
+		}
+		cleanup = func() {
+			sqlDB, _ := db.DB()
+			u.SilentClose(sqlDB)
+		}
+		opts.DB = db
+	}
+
+	if opts.NotificationManager == nil {
+		opts.NotificationManager = notification.NewNoopManager()
+	}
+
+	return cleanup, nil
+}
+
 func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error) {
 	optsCleanup, err := opts.applyDefaults()
 	if err != nil {
@@ -30,7 +85,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	ctx, cancel := context.WithCancel(opts.Context)
+	ctx, cancel := context.WithCancel(context.Background())
 	svc := service{
 		protocolClient: client,
 		logger:         opts.Logger,
@@ -217,63 +272,4 @@ func (svc *service) Close() {
 	svc.logger.Debug("closing service")
 	svc.cancelFn()
 	svc.optsCleanup()
-}
-
-type Opts struct {
-	Logger              *zap.Logger
-	NotificationManager notification.Manager
-	DB                  *gorm.DB
-	Context             context.Context
-}
-
-func (opts *Opts) applyDefaults() (func(), error) {
-	cleanup := func() {}
-
-	if opts.Context == nil {
-		opts.Context = context.Background()
-	}
-	if opts.Logger == nil {
-		opts.Logger = zap.NewNop()
-	}
-	if opts.DB == nil {
-		opts.Logger.Warn("Messenger started without database, creating a volatile one in memory")
-		zapLogger := zapgorm2.New(opts.Logger.Named("gorm"))
-		zapLogger.SetAsDefault()
-		db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{Logger: zapLogger})
-		if err != nil {
-			return nil, err
-		}
-		cleanup = func() {
-			sqlDB, _ := db.DB()
-			u.SilentClose(sqlDB)
-		}
-		opts.DB = db
-	}
-
-	if opts.NotificationManager == nil {
-		opts.NotificationManager = notification.NewNoopManager()
-	}
-
-	return cleanup, nil
-}
-
-type Service interface {
-	MessengerServiceServer
-	Close()
-}
-
-// service is a Service
-var _ Service = (*service)(nil)
-
-type service struct {
-	logger         *zap.Logger
-	protocolClient bertyprotocol.ProtocolServiceClient
-	startedAt      time.Time
-	db             *gorm.DB
-	dispatcher     *Dispatcher
-	notifmanager   notification.Manager
-	cancelFn       func()
-	optsCleanup    func()
-	ctx            context.Context
-	handlerMutex   sync.Mutex
 }
