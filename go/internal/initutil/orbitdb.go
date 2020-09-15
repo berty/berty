@@ -54,7 +54,7 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 		NewOrbitDBOptions: baseorbitdb.NewOrbitDBOptions{
 			Cache:                cache,
 			Directory:            &orbitDirectory,
-			Logger:               logger.Named("odb"),
+			Logger:               logger,
 			Tracer:               tracer.New("berty-orbitdb"),
 			DirectChannelFactory: directchannel.InitDirectChannelFactory(node.PeerHost),
 		},
