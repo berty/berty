@@ -201,7 +201,7 @@ func (v *groupView) loop(ctx context.Context) {
 	{
 		req := &bertytypes.GroupMetadataList_Request{GroupPK: v.g.PublicKey, UntilNow: true}
 		cl, err := v.v.protocol.GroupMetadataList(ctx, req)
-		if err == nil {
+		if err != nil {
 			panic(err)
 		}
 
