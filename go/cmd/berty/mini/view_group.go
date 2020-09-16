@@ -142,9 +142,13 @@ func (v *groupView) loop(ctx context.Context) {
 
 	// Open group with local only first
 	if _, err := v.v.protocol.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
-		GroupPK:   v.g.PublicKey,
-		LocalOnly: true,
+		GroupPK: v.g.PublicKey,
 	}); err != nil {
+		v.messages.Append(&historyMessage{
+			messageType: messageTypeError,
+			payload:     []byte(err.Error()),
+		})
+
 		return
 	}
 
@@ -217,19 +221,6 @@ func (v *groupView) loop(ctx context.Context) {
 			metadataEventHandler(ctx, v, evt, true, v.logger)
 			lastMetadataID = evt.EventContext.ID
 		}
-	}
-
-	// Reopen group with network interactions
-	if _, err := v.v.protocol.DeactivateGroup(ctx, &bertytypes.DeactivateGroup_Request{
-		GroupPK: v.g.PublicKey,
-	}); err != nil {
-		return
-	}
-
-	if _, err := v.v.protocol.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
-		GroupPK: v.g.PublicKey,
-	}); err != nil {
-		return
 	}
 
 	// subscribe to group message events
@@ -328,8 +319,16 @@ func (v *groupView) loop(ctx context.Context) {
 			for {
 				evt, err = cl.Recv()
 				if err != nil {
+					if err == io.EOF {
+						return
+					}
+
 					// @TODO: Log this
-					return
+					v.syncMessages <- &historyMessage{
+						messageType: messageTypeError,
+						payload:     []byte(err.Error()),
+					}
+					continue
 				}
 
 				metadataEventHandler(ctx, v, evt, false, v.logger)
