@@ -11,6 +11,16 @@ import (
 	"sync/atomic"
 	"time"
 
+	"berty.tech/berty/v2/go/internal/config"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/lifecycle"
+	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
+	"berty.tech/berty/v2/go/internal/notification"
+	"berty.tech/berty/v2/go/internal/tinder"
+	"berty.tech/berty/v2/go/internal/tracer"
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	badger_opts "github.com/dgraph-io/badger/options"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -39,16 +49,6 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
-
-	"berty.tech/berty/v2/go/internal/config"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
-	"berty.tech/berty/v2/go/internal/notification"
-	"berty.tech/berty/v2/go/internal/tinder"
-	"berty.tech/berty/v2/go/internal/tracer"
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 var (
@@ -77,8 +77,10 @@ type MessengerBridge struct {
 	protocolService  bertyprotocol.Service
 	messengerService bertymessenger.Service
 	msngrDB          *gorm.DB
-	lifecycle        LifeCycleDriver
 	notification     notification.Manager
+
+	lifecycledriver LifeCycleDriver
+	lcmanager       *lifecycle.Manager
 
 	currentAppState int
 	muAppState      sync.Mutex
@@ -351,10 +353,11 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 		}
 	}
 
+	lcmanager := lifecycle.NewManager(bertymessenger.StateActive)
+
 	// register messenger service
 	var messenger bertymessenger.Service
 	var db *gorm.DB
-
 	{
 		var err error
 		protocolClient, err = bertyprotocol.NewClient(ctx, service, nil, nil)
@@ -385,6 +388,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 		opts := bertymessenger.Opts{
 			Logger:              logger,
 			NotificationManager: notifmanager,
+			LifeCycleManager:    lcmanager,
 			DB:                  db,
 		}
 		tmpBridge := &MessengerBridge{
@@ -434,11 +438,11 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 	var lc LifeCycleDriver
 	{
 		if lc = config.lc; lc == nil {
-			lc = NewNoopLifeCycleDriver()
+			lc = newNoopLifeCycleDriver()
 		}
 
 		messengerBridge.HandleState(lc.GetCurrentState())
-		messengerBridge.lifecycle = lc
+		messengerBridge.lifecycledriver = lc
 
 		lc.RegisterHandler(messengerBridge)
 	}
@@ -455,13 +459,16 @@ func (p *MessengerBridge) HandleState(appstate int) {
 	if appstate != p.currentAppState {
 		switch appstate {
 		case AppStateBackground:
+			p.lcmanager.UpdateState(bertymessenger.StateInactive)
 			p.logger.Info("app is in Background State")
 		case AppStateActive:
+			p.lcmanager.UpdateState(bertymessenger.StateActive)
 			p.logger.Info("app is in Active State")
 			if err := p.node.Bootstrap(defaultBootstrapConfig); err != nil {
 				p.logger.Warn("Unable to boostrap node", zap.Error(err))
 			}
 		case AppStateInactive:
+			p.lcmanager.UpdateState(bertymessenger.StateInactive)
 			p.logger.Info("app is in Inactive State")
 		}
 		p.currentAppState = appstate
@@ -476,6 +483,10 @@ func (p *MessengerBridge) HandleTask() LifeCycleBackgroundTask {
 
 		counter := atomic.AddInt32(&backgroundCounter, 1)
 		tnow := time.Now()
+
+		n := time.Duration(mrand.Intn(60) + 5)
+		ctx, cancel := context.WithTimeout(ctx, time.Second*n)
+		defer cancel()
 
 		if err := p.notification.Notify(&notification.Notification{
 			Title: fmt.Sprintf("GoBackgroundTask #%d", counter),
@@ -492,6 +503,7 @@ func (p *MessengerBridge) HandleTask() LifeCycleBackgroundTask {
 		}); err != nil {
 			p.logger.Error("unable to notify", zap.Error(err))
 		}
+
 		return nil
 	})
 }

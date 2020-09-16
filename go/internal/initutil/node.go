@@ -8,6 +8,15 @@ import (
 	"path"
 	"strings"
 
+	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/lifecycle"
+	"berty.tech/berty/v2/go/internal/notification"
+	"berty.tech/berty/v2/go/internal/tracer"
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/errcode"
+
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
@@ -23,14 +32,6 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
-
-	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/notification"
-	"berty.tech/berty/v2/go/internal/tracer"
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 func (m *Manager) SetupLocalProtocolServerFlags(fs *flag.FlagSet) {
@@ -230,6 +231,21 @@ func (m *Manager) GetMessengerClient() (bertymessenger.MessengerServiceClient, e
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 	return m.getMessengerClient()
+}
+
+func (m *Manager) GetLifecycleManager() *lifecycle.Manager {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	return m.getLifecycleManager()
+}
+
+func (m *Manager) getLifecycleManager() *lifecycle.Manager {
+	if m.Node.Messenger.lcmanager != nil {
+		return m.Node.Messenger.lcmanager
+	}
+
+	m.Node.Messenger.lcmanager = lifecycle.NewManager(bertymessenger.StateActive)
+	return m.Node.Messenger.lcmanager
 }
 
 func (m *Manager) getMessengerClient() (bertymessenger.MessengerServiceClient, error) {
@@ -457,11 +473,14 @@ func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServ
 		return nil, errcode.TODO.Wrap(err)
 	}
 
+	lcmanager := m.getLifecycleManager()
+
 	// messenger server
 	opts := bertymessenger.Opts{
 		DB:                  db,
 		Logger:              logger,
 		NotificationManager: notifmanager,
+		LifeCycleManager:    lcmanager,
 	}
 	messengerServer, err := bertymessenger.New(protocolClient, &opts)
 	if err != nil {
@@ -474,6 +493,7 @@ func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServ
 		return nil, errcode.TODO.Wrap(err)
 	}
 
+	m.Node.Messenger.lcmanager = lcmanager
 	m.Node.Messenger.server = messengerServer
 	m.initLogger.Debug("messenger server initialized and cached")
 	return m.Node.Messenger.server, nil

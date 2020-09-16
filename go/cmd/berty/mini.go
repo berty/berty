@@ -48,12 +48,15 @@ func miniCommand() *ffcli.Command {
 				return err
 			}
 
+			lcmanager := manager.GetLifecycleManager()
+
 			return mini.Main(ctx, &mini.Opts{
-				GroupInvitation: groupFlag,
-				MessengerClient: messengerClient,
-				ProtocolClient:  protocolClient,
-				Logger:          miniLogger,
-				DisplayName:     manager.Node.Messenger.DisplayName,
+				GroupInvitation:  groupFlag,
+				MessengerClient:  messengerClient,
+				ProtocolClient:   protocolClient,
+				Logger:           miniLogger,
+				DisplayName:      manager.Node.Messenger.DisplayName,
+				LifecycleManager: lcmanager,
 			})
 		},
 	}
