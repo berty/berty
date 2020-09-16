@@ -8,6 +8,7 @@ import (
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/stores"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"go.uber.org/zap"
 )
 
 func (s *service) indexGroups() error {
@@ -112,11 +113,16 @@ func (s *service) deactivateGroup(pk crypto.PubKey) error {
 	}
 
 	if cg.Group().GroupType == bertytypes.GroupTypeAccount {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't deactivate deviceKeystore group"))
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't deactivate account group"))
 	}
 
 	s.lock.Lock()
 	defer s.lock.Unlock()
+
+	err = cg.Close()
+	if err != nil {
+		s.logger.Error("unable to close group context", zap.Error(err))
+	}
 
 	delete(s.groups, string(id))
 

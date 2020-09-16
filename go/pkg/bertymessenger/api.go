@@ -386,7 +386,7 @@ func (svc *service) SendAck(ctx context.Context, request *SendAck_Request) (*Sen
 		Payload: am,
 	})
 
-	return nil, err
+	return &SendAck_Reply{}, err
 }
 
 func (svc *service) SendMessage(ctx context.Context, request *SendMessage_Request) (*SendMessage_Reply, error) {
@@ -405,7 +405,7 @@ func (svc *service) SendMessage(ctx context.Context, request *SendMessage_Reques
 		Payload: payload,
 	})
 
-	return nil, err
+	return &SendMessage_Reply{}, err
 }
 
 func (svc *service) ConversationStream(req *ConversationStream_Request, sub MessengerService_ConversationStreamServer) error {
