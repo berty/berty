@@ -15,6 +15,7 @@ import (
 	_ "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway" // required by protoc
 	_ "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger"      // required by protoc
 	_ "github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc"        // required by protoc
+	_ "github.com/tailscale/depaware"                                  // required by Makefile
 	_ "golang.org/x/mobile/cmd/gomobile"                               // required by gomobile
 	_ "golang.org/x/tools/cmd/goimports"                               // required by Makefile
 	_ "moul.io/testman"                                                // required by Makefile

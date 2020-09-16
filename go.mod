@@ -78,6 +78,7 @@ require (
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/stretchr/testify v1.6.1
+	github.com/tailscale/depaware v0.0.0-20200914232109-e09ee10c1824
 	go.opentelemetry.io/otel v0.8.0
 	go.opentelemetry.io/otel/exporters/trace/jaeger v0.8.0
 	go.uber.org/fx v1.13.0 // indirect
