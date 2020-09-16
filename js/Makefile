@@ -5,7 +5,10 @@ VCS_REF ?= `git rev-parse --short HEAD`
 BUILD_DATE ?= `date +%s`
 TMPDIR ?= /tmp
 CI ?= false
+BERTY_DAEMON_HOST ?= 127.0.0.1
 BERTY_DAEMON_PORT ?= 1337
+BERTY_DAEMON_OPTS ?= -p2p.webui-listener=""
+BERTY_DAEMON_STORE ?= -store.dir=$(BERTY_DAEMON_PORT).db.d
 STORYBOOK_MOBILE_PORT ?= 7007
 STORYBOOK_WEB_PORT ?= 7008
 REACT_NATIVE_PORT ?= 8081
@@ -229,12 +232,12 @@ metro.start: deps
 .PHONY: daemon.start
 daemon.start:
 	cd ../go && $(MAKE) install
-	`go env GOPATH`/bin/berty $(BERTY_OPTS) daemon -node.listeners /ip4/127.0.0.1/tcp/$(BERTY_DAEMON_PORT)/grpcws -store.dir ${BERTY_DAEMON_PORT}.db.d $(BERTY_DAEMON_OPTS)
+	`go env GOPATH`/bin/berty $(BERTY_OPTS) daemon -node.listeners=/ip4/$(BERTY_DAEMON_HOST)/tcp/$(BERTY_DAEMON_PORT)/grpcws $(BERTY_DAEMON_STORE) $(BERTY_DAEMON_OPTS)
 
 .PHONY: bridge.start.docker
 bridge.start.docker:
 	$(call check-program, docker)
-	docker run -it --rm -p $(BERTY_DAEMON_PORT):$(BERTY_DAEMON_PORT) bertytech/berty $(BERTY_OPTS) daemon -node.listeners /ip4/0.0.0.0/tcp/$(BERTY_DAEMON_PORT)/grpcws
+	docker run -it --rm -p $(BERTY_DAEMON_PORT):$(BERTY_DAEMON_PORT) bertytech/berty $(BERTY_OPTS) daemon -node.listeners=/ip4/0.0.0.0/tcp/$(BERTY_DAEMON_PORT)/grpcws -p2p.webui-listener=""
 
 ### gen
 

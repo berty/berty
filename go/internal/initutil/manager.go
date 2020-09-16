@@ -45,6 +45,7 @@ type Manager struct {
 	Node struct {
 		Protocol struct {
 			IPFSListeners      string
+			IPFSWebUIListener  string
 			LocalDiscovery     bool
 			RdvpMaddr          string
 			MinBackoff         time.Duration

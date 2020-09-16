@@ -43,10 +43,12 @@ func (m *Manager) SetupLocalProtocolServerFlags(fs *flag.FlagSet) {
 
 func (m *Manager) SetupEmptyGRPCListenersFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.GRPC.Listeners, "node.listeners", "", "gRPC API listeners")
+	fs.StringVar(&m.Node.Protocol.IPFSWebUIListener, "p2p.webui-listener", "", "IPFS WebUI listener")
 }
 
 func (m *Manager) SetupDefaultGRPCListenersFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.GRPC.Listeners, "node.listeners", "/ip4/127.0.0.1/tcp/9091/grpc", "gRPC API listeners")
+	fs.StringVar(&m.Node.Protocol.IPFSWebUIListener, "p2p.webui-listener", ":3000", "IPFS WebUI listener")
 }
 
 func (m *Manager) DisableIPFSNetwork() {
@@ -110,7 +112,9 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 	}
 
 	// serve the embedded ipfs web UI
-	ipfsutil.ServeHTTPWebui(logger)
+	if addr := m.Node.Protocol.IPFSWebUIListener; addr != "" {
+		ipfsutil.ServeHTTPWebui(addr, logger)
+	}
 
 	odb, err := m.getOrbitDB()
 	if err != nil {

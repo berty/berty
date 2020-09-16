@@ -253,7 +253,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 			}
 
 			// serve the embedded ipfs webui
-			ipfsutil.ServeHTTPWebui(logger)
+			ipfsutil.ServeHTTPWebui(":3000", logger)
 			ipfsutil.EnableConnLogger(ctx, logger, node.PeerHost)
 		}
 	}

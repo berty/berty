@@ -66,9 +66,12 @@ func ServeHTTPApi(logger *zap.Logger, node *core.IpfsNode, rootDirectory string)
 	return nil
 }
 
-func ServeHTTPWebui(logger *zap.Logger) {
+func ServeHTTPWebui(listenerAddr string, logger *zap.Logger) {
+	if listenerAddr == "" {
+		return
+	}
 	dir := http.FileServer(ipfswebui.Dir())
 	go func(dir http.Handler) {
-		logger.Named("ipfs.webui").Error(http.ListenAndServe(":3000", dir).Error())
+		logger.Named("ipfs.webui").Error(http.ListenAndServe(listenerAddr, dir).Error())
 	}(dir)
 }
