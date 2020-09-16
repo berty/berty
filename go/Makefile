@@ -27,7 +27,7 @@ unittest: go.unittest
 .PHONY: unittest
 
 
-generate: pb.generate
+generate: pb.generate depaware.generate
 .PHONY: generate
 
 
@@ -53,7 +53,7 @@ re: clean generate install
 .PHONY: re
 
 
-tidy: go.tidy
+tidy: go.tidy depaware.generate
 .PHONY: tidy
 
 
@@ -226,3 +226,25 @@ doc.generate: install
 	embedmd -w README.md
 	#rm -rf .tmp
 .PHONY: doc.generate
+
+
+##
+## depaware
+##
+
+
+depaware.generate: ./cmd/berty/depaware.txt ./cmd/rdvp/depaware.txt
+.PHONY: depaware.generate
+
+
+./cmd/*/depaware.txt: ../go.sum
+	$(GO) run github.com/tailscale/depaware --update ./cmd/berty
+	$(GO) run github.com/tailscale/depaware --update ./cmd/rdvp
+	$(GO) run github.com/tailscale/depaware --update ./framework/bertybridge
+
+
+depaware.check:
+	$(GO) run github.com/tailscale/depaware --check ./cmd/berty
+	$(GO) run github.com/tailscale/depaware --check ./cmd/rdvp
+	$(GO) run github.com/tailscale/depaware --check ./framework/bertybridge
+.PHONY: depaware.check
