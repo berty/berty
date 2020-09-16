@@ -3,6 +3,7 @@ package testutil
 import (
 	"flag"
 	"os"
+	"strings"
 	"sync"
 	"testing"
 
@@ -11,8 +12,10 @@ import (
 	"go.uber.org/zap"
 )
 
+const defaultLoggingFilters = "info+:bty.test* error+:*,-ipfs*"
+
 var (
-	logFilters     = flag.String("log-filters", "info+:bty.test* error+:*,-ipfs*", "log namespaces")
+	logFilters     = flag.String("log-filters", defaultLoggingFilters, "log namespaces")
 	logFile        = flag.String("log-file", "", "log to file")
 	logFormat      = flag.String("log-format", "color", "json, console, color")
 	loggerInstance *zap.Logger
@@ -33,6 +36,7 @@ func Logger(t *testing.T) (*zap.Logger, func()) {
 		if val := os.Getenv("BERTY_LOGFORMAT"); val != "" {
 			*logFormat = val
 		}
+		*logFilters = strings.ReplaceAll(*logFilters, ":default:", defaultLoggingFilters)
 
 		var err error
 		loggerInstance, loggerCleanup, err = logutil.NewLogger(*logFilters, *logFormat, *logFile)
