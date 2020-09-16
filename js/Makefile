@@ -318,18 +318,16 @@ packages/berty-app/ios/Podfile:
 	touch $@
 
 packages/go-bridge/ios/Frameworks/Bertybridge.framework: $(bridge_src)
-	cd ..; go mod download
-	cd ..; go install golang.org/x/mobile/cmd/gomobile
-	cd ..; gomobile init
+	cd .. && go mod download
+	cd .. && go run golang.org/x/mobile/cmd/gomobile init
 	@mkdir -p "packages/go-bridge/ios/Frameworks"
-	cd .. && GO111MODULE=on gomobile bind -o js/$@ -v $(ext_ldflags) -target ios ./go/framework/bertybridge
+	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind -o js/$@ -v $(ext_ldflags) -target ios ./go/framework/bertybridge
 	touch $@
 
 packages/go-bridge/android/libs/gobridge.aar: $(bridge_src)
-	cd ..; go mod download
-	cd ..; go install golang.org/x/mobile/cmd/gomobile
-	cd ..; gomobile init
+	cd .. && go mod download
+	cd .. && go run golang.org/x/mobile/cmd/gomobile init
 	rm -fr packages/go-bridge/android/build # remove broken cache
 	@mkdir -p "packages/go-bridge/android/libs"
-	cd .. && GO111MODULE=on gomobile bind -o js/$@ -v $(ext_ldflags) -target android ./go/framework/bertybridge
+	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind -o js/$@ -v $(ext_ldflags) -target android ./go/framework/bertybridge
 	touch $@

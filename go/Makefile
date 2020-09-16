@@ -37,8 +37,7 @@ clean:
 
 .PHONY: mini.dev
 mini.dev: generate
-	go install github.com/githubnemo/CompileDaemon
-	CompileDaemon --color=true --build="go install -v" --build-dir="./cmd/berty" --command="berty mini"
+	go run github.com/githubnemo/CompileDaemon --color=true --build="go install -v" --build-dir="./cmd/berty" --command="berty mini"
 
 .PHONY: re
 re: clean generate install
@@ -72,16 +71,14 @@ go.unittest: pb.generate
 
 .PHONY: go.unstable-tests
 go.unstable-tests: pb.generate
-	go install moul.io/testman
-	TEST_STABILITY=unstable testman test -v -timeout=600s -retry=10 -run ^TestUnstable ./pkg/bertymessenger
-	TEST_STABILITY=unstable testman test -v -test.v -timeout=600s -retry=10 -run ^TestScenario_ ./pkg/bertyprotocol # FIXME: run on other unstable functions too
+	TEST_STABILITY=unstable go run moul.io/testman test -v -timeout=600s -retry=10 -run ^TestUnstable ./pkg/bertymessenger
+	TEST_STABILITY=unstable go run moul.io/testman test -v -test.v -timeout=600s -retry=10 -run ^TestScenario_ ./pkg/bertyprotocol # FIXME: run on other unstable functions too
 	# FIXME: run on other packages too
 
 .PHONY: go.broken-tests
 go.broken-tests: pb.generate
-	go install moul.io/testman
-	TEST_STABILITY=broken testman test -continue-on-error -timeout=1200s -test.timeout=60s -retry=5 -run ^TestBroken ./pkg/bertymessenger
-	TEST_STABILITY=broken testman test -continue-on-error -timeout=1200s -test.timeout=60s -retry=5 -run ^TestScenario_ ./pkg/bertyprotocol
+	TEST_STABILITY=broken go run moul.io/testman test -continue-on-error -timeout=1200s -test.timeout=60s -retry=5 -run ^TestBroken ./pkg/bertymessenger
+	TEST_STABILITY=broken go run moul.io/testman test -continue-on-error -timeout=1200s -test.timeout=60s -retry=5 -run ^TestScenario_ ./pkg/bertyprotocol
 
 .PHONY: go.install
 go.install: pb.generate
@@ -134,10 +131,8 @@ $(gen_sum): $(gen_src)
 .PHONY: generate_local
 generate_local:
 	$(call check-program, shasum protoc)
-	go install golang.org/x/tools/cmd/goimports
-	go install github.com/buicongtan1997/protoc-gen-swagger-config
-	protoc-gen-swagger-config -i ../api/bertymessenger.proto -o ../api/bertymessenger.yaml
-	protoc-gen-swagger-config -i ../api/bertyprotocol.proto -o ../api/bertyprotocol.yaml
+	go run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/bertymessenger.proto -o ../api/bertymessenger.yaml
+	go run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/bertyprotocol.proto -o ../api/bertyprotocol.yaml
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/errcode.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertybridge.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertytypes.proto
@@ -148,7 +143,7 @@ generate_local:
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./framework/bertybridge/internal/bridgepb/*.pb.go
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.go
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.gw.go
-	goimports -w ./pkg ./cmd ./internal
+	go run golang.org/x/tools/cmd/goimports -w ./pkg ./cmd ./internal
 	shasum $(gen_src) | sort -k 2 > $(gen_sum).tmp
 	mv $(gen_sum).tmp $(gen_sum)
 
@@ -171,7 +166,7 @@ doc.generate: install
 	for sub in `berty -h 2>&1 | grep "^  [a-z]" | sed 1d | awk '{print $$1}'`; do \
 		echo >> .tmp/usage.txt; \
 		echo 'foo@bar:~$$ berty '$$sub' -h' >> .tmp/usage.txt; \
-		(berty $$sub -h || true) 2>> .tmp/usage.txt; \
+		(OBberty $$sub -h || true) 2>> .tmp/usage.txt; \
 	done
 
 	echo 'foo@bar:~$$ berty share-invite' > .tmp/share-invite.txt
