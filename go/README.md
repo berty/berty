@@ -31,7 +31,7 @@ Fetch library to your go cache: `go get -u berty.tech/berty/v2`
 [embedmd]:# (.tmp/daemon.txt console)
 ```console
 foo@bar:~$ berty daemon
-2020-09-15T12:01:43Z	INFO 	bty               	IPFS API server listening	{"addr": "/ip4/127.0.0.1/tcp/45225"}
+2020-09-16T13:13:58Z	INFO 	bty               	IPFS API server listening	{"addr": "/ip4/127.0.0.1/tcp/36427"}
 ...
 ```
 
@@ -48,30 +48,30 @@ TODO
 foo@bar:~$ berty share-invite
 █████████████████████████████████████████████████
 █████████████████████████████████████████████████
-████ ▄▄▄▄▄ ██▄▄█▀▄ ▀▀ ▀ ▄▀  █ ▀▀▀  ▀▀█ ▄▄▄▄▄ ████
-████ █   █ █▄ ▀▀█  ▀▀█▀██▀  █▀ █▄▀▀█▄█ █   █ ████
-████ █▄▄▄█ ██▀  ▄█ ▀ █▄ ▀ ▄▀█▄▀▀▀█▄▀▀█ █▄▄▄█ ████
-████▄▄▄▄▄▄▄█ ▀▄▀▄▀ ▀▄▀▄▀ ▀ ▀ ▀ ▀ ▀ ▀ █▄▄▄▄▄▄▄████
-████▄▄▄█▄▄▄   █ ▀▀▀█ ███ █▀▀ ▀█▀▀█▀▄   ▀█▀▄▀▀████
-████  ▀▄▄█▄▄▀▀█  ▀ █  ▀▀▀▀ █ ▀█▀▄ ▀█████▄██  ████
-████▄█▀   ▄ ▄▀█▀ ▀ ▀ ▀▄█  ▄▄█▀███  ▀  ▄ █▄▀▄▀████
-████▄▀███▀▄  ▄█▄ ▀▀▄  ▀▀ ▀▀▀▄▀▀█▄▀▀▀ ▄▀██▄▄▄▄████
-████▄▄ ▄█ ▄▄▄█ ▄▄▄█▄█▄ █▀    ▄█▀▀ █▀ ▀ ██▄▄ ▄████
-██████▀▄  ▄█▀ ▄█ ▄█▀ ▄█▀█ █▀▄  ▀▀▀█▀▀▄▀  █▄ ▄████
-████▄█▀█ █▄▄ ▄▀ ███▀█▀█▄ ▄█▀▀▀█▄  ▀▄  ▄█▄▄▀▀▀████
-████▀▀▀ ██▄▀█ ▀▀█▀▀▀█ █▀▀▀ █▄▀ ██ █▀ █   ▄█  ████
-█████▄▄▄█▄▄ ███▀ ▀██ ▀▀  ██▀▀  █ █▀██  ██ ▀█▄████
-████▀▀██▄▄▄█ ▀ █ ▀ █▄▀ █  █▀   █▀▀▄▀█▀▀▄▀ ▄ ▄████
-████▄█▄ ▄▀▄▄█▀▀  ▀ ▀ ▀ ██ ██▀ ███▀█▄█▄▄█▄▄█▀ ████
-████▄▀▄█▀█▄█▀▀ ▄  ▄▄   ▀▀▀ █▄  ▀▀▀ ▀██▀█▀█▄▄▄████
-████▄███▄▄▄█ ▀█▄ ██▄▀████▀█▄ ▀▀▀ ▄█▄ ▄▄▄   ▄▄████
-████ ▄▄▄▄▄ █  ▀█▀▄██▄▄██▄▀ █▀ ▀▀▀▀ ▄ █▄█ ▀█▄▄████
-████ █   █ █▄█ ▀███▀████ ▄██ ▀▀█ ▄ █▄▄▄  ▀▀▄▀████
-████ █▄▄▄█ █ ▄▄▀█▀ ▀█ █▀▀▀▀█▄▀▀▀█▀ ▄ ▀▀█ ▄▄ ▄████
-████▄▄▄▄▄▄▄█▄▄██▄▄██▄██▄█▄▄▄███▄█▄▄█▄█▄▄███▄▄████
+████ ▄▄▄▄▄ ██▄▀ █▄  ▀ ▀▀▀█  ▄▀ ▀▀ ▄▀▀█ ▄▄▄▄▄ ████
+████ █   █ █▄▄█▄▄  █▀█▀ █▀▀█ █ █ ▀ █ █ █   █ ████
+████ █▄▄▄█ ██▀▄▄▄ ▄▀ ▀  ▀     █ ▄▀▀▀██ █▄▄▄█ ████
+████▄▄▄▄▄▄▄█ █ ▀ ▀▄▀▄▀▄▀ ▀ █▄▀ ▀▄▀▄▀ █▄▄▄▄▄▄▄████
+████▄ ▄▀▄▄▄▄ ▀▀▄▄  ▀ █▀▀▀██▄▀▀██▀  █   ▀█▀▄▀█████
+████▄█ ▀▄▄▄█▀██▀▄▀ █▀ ▀▀▄▀▀█▀  ██ ▄██ ▄█▄██ ▄████
+████▀█▄▀ █▄████▀ ▀ ▀ █▄▄ ▄▄▀  ▀▀▀  █▀  ██▄██▀████
+██████▄▄▄▄▄█  ▀▄ ▀█▄  ▀▀  ▄██▀██▄▀ ██▄▀▄▀██▄▄████
+████▀  ▄▄ ▄▄▀▄█  ▄▀▄▀███ ▀██▀▀▀▄▀▀█▀ ▀ ████ ▄████
+████ ▄ ▄▄▀▄▀▀▄██▄▄██ ▄█▀▀ ██ ▀█▀▀ █▀▀▀▀  █▄  ████
+████  █ ▄▀▄▀▄█▄▀█▀█ ████ ▄█▄█▀▀▄▀▀█ ▀ ▄██ █  ████
+████   ▄ █▄ ▀▀▀▀█▀▄▀█  ▀▀▀ ▀█ ▀▀▀▀█▀██ ▄███  ████
+████▄▄▄  ▄▄▄ █▀█▀▀██  █  ▄   ▀██▄▄█▄█  ██▀▀█ ████
+█████▄ ▀ ▀▄███▀▀ ▀ ██▀ ▀▄ ██▄  ▀█▀▄▀███▄▀ ▄█ ████
+████▄▄▄███▄▄   ▀ ▀ ▀ ▀ ▄█ █▀ ▀██▀█▀▄▀   █ █ ▀████
+████▄▀█▄▀█▄█▀▀█▄  ▄▄  ▀▀▀ ▄█▀▀███ ▄█▀█▀▄ ▄█▄▄████
+████▄█▄▄▄█▄█   ▄ ██ ▀▄█▀▀▀█▀ ▀▀██▄▀▄ ▄▄▄ ▀▀▄▄████
+████ ▄▄▄▄▄ █   █▀▄██▄▄█▀█▀ █▀ █▀▀▀▄▄ █▄█ ▀█ ▄████
+████ █   █ █▄▄▀▀███ ████  █▄█▀▀  ▀▀█▄▄▄  ▀▀▄▀████
+████ █▄▄▄█ █ ▀▀▀█▀ ▀█ ▄▀▀ ██   █  ▄▄▄▀▀█ ▄█ ▄████
+████▄▄▄▄▄▄▄█▄███▄▄██▄▄█▄█▄▄█▄███▄▄█▄▄▄█▄██▄▄▄████
 █████████████████████████████████████████████████
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-html url: https://berty.tech/id#key=CiCUfQi5GmPY_Ea3UWdPNFiU9AM26Iul2G6SNBrd6eGUmBIgnN-PXNm_tYnIF9OJX94dMMO4xI9e3b5LTKCgZjrX4DI&name=demo
+html url: https://berty.tech/id#key=CiD1Djrm1-syIDWDSOBNwx-JI2F1XEhWT_KgjjSnwMh4pBIgdrL_6HFbckM7odjIk_yStXR6HXVCuzP4stSFV7I3K7M&name=demo
 ```
 
 ### Info
@@ -81,19 +81,19 @@ html url: https://berty.tech/id#key=CiCUfQi5GmPY_Ea3UWdPNFiU9AM26Iul2G6SNBrd6eGU
 foo@bar:~$ berty info
 {
   "rlimitCur": "1024",
-  "numGoroutine": "414",
-  "nofile": "47",
-  "startedAt": "1600171300",
+  "numGoroutine": "422",
+  "nofile": "41",
+  "startedAt": "1600262034",
   "numCpu": "12",
-  "goVersion": "go1.15",
+  "goVersion": "go1.14",
   "operatingSystem": "linux",
   "hostName": "fwrz",
   "arch": "amd64",
-  "version": "v2.141.0-3-g50d34b2a",
-  "vcsRef": "50d34b2a",
-  "buildTime": "1600171281",
-  "selfRusage": "{\"Utime\":{\"Sec\":0,\"Usec\":948729},\"Stime\":{\"Sec\":0,\"Usec\":183894},\"Maxrss\":79600,\"Ixrss\":0,\"Idrss\":0,\"Isrss\":0,\"Minflt\":8302,\"Majflt\":0,\"Nswap\":0,\"Inblock\":0,\"Oublock\":0,\"Msgsnd\":0,\"Msgrcv\":0,\"Nsignals\":0,\"Nvcsw\":8684,\"Nivcsw\":17}",
-  "childrenRusage": "{\"Utime\":{\"Sec\":1,\"Usec\":687565},\"Stime\":{\"Sec\":0,\"Usec\":275724},\"Maxrss\":31656,\"Ixrss\":0,\"Idrss\":0,\"Isrss\":0,\"Minflt\":10521,\"Majflt\":0,\"Nswap\":0,\"Inblock\":0,\"Oublock\":0,\"Msgsnd\":0,\"Msgrcv\":0,\"Nsignals\":0,\"Nvcsw\":13055,\"Nivcsw\":713}",
+  "version": "v2.143.0",
+  "vcsRef": "b143cf09",
+  "buildTime": "1600261846",
+  "selfRusage": "{\"Utime\":{\"Sec\":0,\"Usec\":901753},\"Stime\":{\"Sec\":0,\"Usec\":183852},\"Maxrss\":79672,\"Ixrss\":0,\"Idrss\":0,\"Isrss\":0,\"Minflt\":7969,\"Majflt\":0,\"Nswap\":0,\"Inblock\":0,\"Oublock\":0,\"Msgsnd\":0,\"Msgrcv\":0,\"Nsignals\":0,\"Nvcsw\":8422,\"Nivcsw\":23}",
+  "childrenRusage": "{\"Utime\":{\"Sec\":1,\"Usec\":602041},\"Stime\":{\"Sec\":0,\"Usec\":308153},\"Maxrss\":32584,\"Ixrss\":0,\"Idrss\":0,\"Isrss\":0,\"Minflt\":8375,\"Majflt\":0,\"Nswap\":0,\"Inblock\":0,\"Oublock\":0,\"Msgsnd\":0,\"Msgrcv\":0,\"Nsignals\":0,\"Nvcsw\":11539,\"Nivcsw\":458}",
   "rlimitMax": "1048576"
 }
 ```
@@ -131,6 +131,7 @@ FLAGS
   -node.listeners /ip4/127.0.0.1/tcp/9091/grpc    gRPC API listeners
   -node.no-notif false                            disable desktop notifications
   -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
+  -node.webui-listener :3000                      IPFS WebUI listener
   -p2p.ipfs-listeners /ip4/127.0.0.1/tcp/0        IPFS listeners
   -p2p.local-discovery true                       local discovery
   -p2p.max-backoff 1m0s                           maximum p2p backoff duration
@@ -150,6 +151,7 @@ FLAGS
   -node.no-notif false                            disable desktop notifications
   -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
   -node.remote-addr ...                           remote Berty gRPC API address
+  -node.webui-listener ...                        IPFS WebUI listener
   -p2p.ipfs-listeners /ip4/127.0.0.1/tcp/0        IPFS listeners
   -p2p.local-discovery true                       local discovery
   -p2p.max-backoff 1m0s                           maximum p2p backoff duration
