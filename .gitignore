@@ -22,3 +22,4 @@ debug.log
 # Go CMD's build output
 go/cmd/berty/berty
 go/cmd/rdvp/rdvp
+go/cmd/betabot/betabot
