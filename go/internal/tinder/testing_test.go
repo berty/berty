@@ -42,6 +42,17 @@ func testingMockedDriverClients(t *testing.T, s *MockDriverServer, hs ...p2p_hos
 	return drivers
 }
 
+func testingMockedAsyncDriverClients(t *testing.T, s *MockDriverServer, hs ...p2p_host.Host) []AsyncableDriver {
+	t.Helper()
+
+	drivers := make([]AsyncableDriver, len(hs))
+	for i := range drivers {
+		drivers[i] = NewMockedDriverClient(hs[i], s)
+	}
+
+	return drivers
+}
+
 func testingDiscoveryOptions(opts ...p2p_discovery.Option) []p2p_discovery.Option {
 	return opts
 }

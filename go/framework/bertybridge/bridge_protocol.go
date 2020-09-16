@@ -202,10 +202,10 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 				ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
 				HostConfig: func(h host.Host, _ routing.Routing) error {
 					var err error
-					var rdvClients []tinder.Driver
+					var rdvClients []tinder.AsyncableDriver
 
 					if lenrdvpeers := len(rdvpeers); lenrdvpeers > 0 {
-						drivers := make([]tinder.Driver, lenrdvpeers)
+						drivers := make([]tinder.AsyncableDriver, lenrdvpeers)
 						for i, peer := range rdvpeers {
 							h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
 							drivers[i] = tinder.NewRendezvousDiscovery(logger, h, peer.ID,
@@ -214,7 +214,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 						rdvClients = append(rdvClients, drivers...)
 					}
 
-					var rdvClient tinder.Driver
+					var rdvClient tinder.AsyncableDriver
 					switch len(rdvClients) {
 					case 0:
 						// FIXME: Check if this isn't called when DisableIPFSNetwork true.
@@ -222,7 +222,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 					case 1:
 						rdvClient = rdvClients[0]
 					default:
-						rdvClient = tinder.NewMultiDriver(logger, rdvClients...)
+						rdvClient = tinder.NewAsyncMultiDriver(logger, rdvClients...)
 					}
 
 					minBackoff, maxBackoff := time.Second, time.Minute

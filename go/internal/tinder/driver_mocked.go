@@ -82,6 +82,46 @@ func (s *MockDriverServer) FindPeers(ns string, limit int) (<-chan p2p_peer.Addr
 	return ch, nil
 }
 
+func (s *MockDriverServer) FindPeersAsync(ctx context.Context, outChan chan<- p2p_peer.AddrInfo, ns string, limit int) {
+	go func() {
+		s.mx.Lock()
+		defer s.mx.Unlock()
+
+		peers, ok := s.db[ns]
+		if !ok || len(peers) == 0 {
+			return
+		}
+
+		count := len(peers)
+		if limit != 0 && count > limit {
+			count = limit
+		}
+
+		iterTime := time.Now()
+		numSent := 0
+		for p, reg := range peers {
+			if numSent == count {
+				break
+			}
+			if iterTime.After(reg.expiration) {
+				delete(peers, p)
+				continue
+			}
+
+			numSent++
+			select {
+			case outChan <- reg.info:
+			case <-ctx.Done():
+				return
+			}
+		}
+
+		if len(peers) == 0 {
+			delete(s.db, ns)
+		}
+	}()
+}
+
 func (s *MockDriverServer) Unregister(ns string, pid p2p_peer.ID) {
 	s.mx.Lock()
 	if peers, ok := s.db[ns]; ok {
@@ -116,7 +156,7 @@ type mockDriverClient struct {
 	server *MockDriverServer
 }
 
-func NewMockedDriverClient(host p2p_host.Host, server *MockDriverServer) Driver {
+func NewMockedDriverClient(host p2p_host.Host, server *MockDriverServer) AsyncableDriver {
 	return &mockDriverClient{host, server}
 }
 
@@ -138,6 +178,17 @@ func (d *mockDriverClient) FindPeers(ctx context.Context, ns string, opts ...p2p
 	}
 
 	return d.server.FindPeers(ns, options.Limit)
+}
+
+func (d *mockDriverClient) FindPeersAsync(ctx context.Context, outChan chan<- p2p_peer.AddrInfo, ns string, opts ...p2p_discovery.Option) error {
+	var options p2p_discovery.Options
+	err := options.Apply(opts...)
+	if err != nil {
+		return err
+	}
+
+	d.server.FindPeersAsync(ctx, outChan, ns, options.Limit)
+	return nil
 }
 
 func (d *mockDriverClient) Unregister(ctx context.Context, ns string) error {

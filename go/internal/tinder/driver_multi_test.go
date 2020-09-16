@@ -7,6 +7,7 @@ import (
 
 	p2p_discovery "github.com/libp2p/go-libp2p-core/discovery"
 	p2p_host "github.com/libp2p/go-libp2p-core/host"
+	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	p2p_disc "github.com/libp2p/go-libp2p-discovery"
 	p2p_mock "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
@@ -127,6 +128,81 @@ func TestMultiDriver_FindPeers(t *testing.T) {
 
 			ps, err := p2p_disc.FindPeers(ctx, md, testKey, tc.Opts...)
 			assert.NoError(t, err)
+
+			for _, peer := range peers {
+				pi := p2p_host.InfoFromHost(peer)
+				tc.assertPeersFound(t, ps, *pi)
+			}
+		})
+	}
+}
+
+func TestAsyncMultiDriver_FindPeers(t *testing.T) {
+	cases := []struct {
+		Name             string
+		NMock            int
+		Opts             []p2p_discovery.Option
+		assertPeersFound assert.ComparisonAssertionFunc
+	}{
+		{"1 drivers",
+			1,
+			[]p2p_discovery.Option{p2p_discovery.TTL(time.Minute)},
+			assert.Contains,
+		},
+		{"1 drivers/0 ttl",
+			1,
+			[]p2p_discovery.Option{p2p_discovery.TTL(0)},
+			assert.NotContains,
+		},
+		{"5 drivers",
+			5,
+			[]p2p_discovery.Option{p2p_discovery.TTL(time.Minute)},
+			assert.Contains,
+		},
+	}
+
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	ms := NewMockedDriverServer()
+	mn := p2p_mock.New(ctx)
+
+	for _, tc := range cases {
+		t.Run(tc.Name, func(t *testing.T) {
+			defer ms.Reset() // reset server on each iteration
+
+			var opts p2p_discovery.Options
+			err := opts.Apply(tc.Opts...)
+			require.NoError(t, err)
+
+			peers := testingPeers(t, mn, tc.NMock)
+			drivers := testingMockedAsyncDriverClients(t, ms, peers...)
+			md := NewAsyncMultiDriver(logger, drivers...)
+
+			const testKey = "testkey"
+			_, err = md.Advertise(ctx, testKey, tc.Opts...)
+			require.NoError(t, err)
+
+			time.Sleep(time.Millisecond * 100)
+
+			c := make(chan p2p_peer.AddrInfo)
+			searchCtx, cancel := context.WithTimeout(ctx, time.Second)
+			defer cancel()
+			err = md.FindPeersAsync(searchCtx, c, testKey, tc.Opts...)
+			assert.NoError(t, err)
+
+			var ps []p2p_peer.AddrInfo
+		MainEmptyingLoop:
+			for {
+				select {
+				case peer := <-c:
+					ps = append(ps, peer)
+				case <-searchCtx.Done():
+					break MainEmptyingLoop
+				}
+			}
 
 			for _, peer := range peers {
 				pi := p2p_host.InfoFromHost(peer)
