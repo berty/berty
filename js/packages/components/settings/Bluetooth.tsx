@@ -5,6 +5,7 @@ import { useStyles } from '@berty-tech/styles'
 import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //
 // Bluetooth
@@ -128,17 +129,19 @@ export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 	const [{ flex, background }] = useStyles()
 	return (
 		<Layout style={[flex.tiny, background.white]}>
-			<ScrollView bounces={false}>
-				<HeaderSettings
-					title='Bluetooth'
-					desc="Bluetooth allows you to use the Berty app when you don't have a network connection (wifi or data) by connecting
+			<SwipeNavRecognizer>
+				<ScrollView bounces={false}>
+					<HeaderSettings
+						title='Bluetooth'
+						desc="Bluetooth allows you to use the Berty app when you don't have a network connection (wifi or data) by connecting
 					your phone directly with peers nearby"
-					undo={goBack}
-				>
-					<HeaderBluetooth isBluetooth={isBluetooth} />
-				</HeaderSettings>
-				<BodyBluetooth isBluetooth={isBluetooth} />
-			</ScrollView>
+						undo={goBack}
+					>
+						<HeaderBluetooth isBluetooth={isBluetooth} />
+					</HeaderSettings>
+					<BodyBluetooth isBluetooth={isBluetooth} />
+				</ScrollView>
+			</SwipeNavRecognizer>
 		</Layout>
 	)
 }

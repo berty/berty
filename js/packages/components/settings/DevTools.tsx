@@ -12,6 +12,7 @@ import { Service, EOF } from '@berty-tech/grpc-bridge'
 import GoBridge from '@berty-tech/go-bridge'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //
 // DevTools
@@ -398,12 +399,14 @@ export const DevTools: React.FC<ScreenProps.Settings.DevTools> = () => {
 	const [{ background, flex, color, padding }] = useStyles()
 	return (
 		<Layout style={[background.white, flex.tiny]}>
-			<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
-				<HeaderSettings title='Dev tools' bgColor={color.dark.grey} undo={goBack}>
-					<HeaderDevTools />
-				</HeaderSettings>
-				<BodyDevTools />
-			</ScrollView>
+			<SwipeNavRecognizer>
+				<ScrollView bounces={false} contentContainerStyle={padding.bottom.huge}>
+					<HeaderSettings title='Dev tools' bgColor={color.dark.grey} undo={goBack}>
+						<HeaderDevTools />
+					</HeaderSettings>
+					<BodyDevTools />
+				</ScrollView>
+			</SwipeNavRecognizer>
 		</Layout>
 	)
 }

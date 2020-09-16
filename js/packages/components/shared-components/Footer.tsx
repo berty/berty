@@ -131,10 +131,17 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 const max = (a: number, b: number) => (a >= b ? a : b)
 
 export const Footer: React.FC<FooterProps> = ({ left, center, right }) => {
-	const [{ absolute }] = useStyles()
 	return (
 		<View
-			style={[absolute.bottom, { alignItems: 'center', justifyContent: 'center', width: '100%' }]}
+			style={[
+				{
+					position: 'absolute',
+					bottom: 0,
+					alignItems: 'center',
+					justifyContent: 'center',
+					width: '100%',
+				},
+			]}
 		>
 			<SafeAreaConsumer>
 				{(insets) => (

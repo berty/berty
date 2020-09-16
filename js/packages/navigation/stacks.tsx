@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { createNativeStackNavigator } from 'react-native-screens/native-stack'
 import * as Components from '@berty-tech/components'
-import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import { Messenger } from '@berty-tech/store/oldhooks'
 import { Routes } from './types'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 
 const FakeStack = createNativeStackNavigator()
 export const FakeNavigation: React.FC = ({ children }) => {
@@ -38,7 +38,7 @@ export const ModalsNavigation: React.FC = () => (
 )
 
 const CreateGroupStack = createNativeStackNavigator()
-export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => {
+export const CreateGroupNavigation: React.FC = () => {
 	const [members, setMembers] = useState([] as any[])
 	const setMember = (contact: any) => {
 		if (members.find((member) => member.publicKey === contact.publicKey)) {
@@ -85,21 +85,15 @@ export const CreateGroupNavigation: React.FC<BottomTabBarProps> = () => {
 	)
 }
 
-const SearchStack = createNativeStackNavigator()
-export const SearchNavigation: React.FC<BottomTabBarProps> = () => (
-	<SearchStack.Navigator screenOptions={{ headerShown: false }}>
-		<SearchStack.Screen name={Routes.Main.Search} component={Components.Main.Search} />
-	</SearchStack.Navigator>
-)
-
-const TabStack = createBottomTabNavigator()
+const TabStack = createMaterialTopTabNavigator() // provides swipe animation
 export const TabNavigation: React.FC = () => {
 	return (
 		<TabStack.Navigator
 			tabBar={({ state }) => <Components.Main.Footer selected={state.routes[state.index].name} />}
+			tabBarPosition='bottom'
 		>
+			<TabStack.Screen name={Routes.Main.Search} component={Components.Main.Search} />
 			<TabStack.Screen name={Routes.Main.Home} component={Components.Main.Home} />
-			<TabStack.Screen name={Routes.Main.Search} component={SearchNavigation} />
 			<TabStack.Screen name={Routes.Settings.Home} component={Components.Settings.Home} />
 		</TabStack.Navigator>
 	)
@@ -135,6 +129,7 @@ export const Navigation: React.FC = () => {
 					contentStyle: { backgroundColor: 'transparent' },
 				}}
 			/>*/}
+			{/* <NavigationStack.Screen name={Routes.Main.Search} component={Components.Main.Search} /> */}
 			<NavigationStack.Screen
 				name={Routes.Main.Scan}
 				component={Components.Main.Scan}

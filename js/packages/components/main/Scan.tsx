@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
 import { View, TextInput, Button, TouchableOpacity, Vibration, ScrollView } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
-import { useStyles } from '@berty-tech/styles'
 import QRCodeScanner from 'react-native-qrcode-scanner'
-import { useNavigation } from '@react-navigation/native'
-import ScanTarget from './scan_target.svg'
 import { SafeAreaView } from 'react-native-safe-area-context'
+
+import { useStyles } from '@berty-tech/styles'
+import { useNavigation } from '@react-navigation/native'
+
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+
+import ScanTarget from './scan_target.svg'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -177,9 +181,11 @@ export const Scan: React.FC<{}> = () => {
 
 	return (
 		<Layout style={[flex.tiny]}>
-			<SafeAreaView style={[flex.tiny, background.red]}>
-				<ScanComponent />
-			</SafeAreaView>
+			<SwipeNavRecognizer>
+				<SafeAreaView style={[flex.tiny, background.red]}>
+					<ScanComponent />
+				</SafeAreaView>
+			</SwipeNavRecognizer>
 		</Layout>
 	)
 }

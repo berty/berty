@@ -9,6 +9,7 @@ import {
 	ButtonSettingRow,
 } from '../shared-components/SettingsButtons'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //
 // About Berty
@@ -208,16 +209,18 @@ const BodyAboutBerty: React.FC<AboutbertyProps> = () => {
 export const AboutBerty: React.FC<ScreenProps.Settings.AboutBerty> = () => {
 	const [version, setVersion] = useState(true)
 	const { goBack } = useNavigation()
-	const [{ flex, background }] = useStyles()
+	const [{ flex, background, padding }] = useStyles()
 
 	return (
 		<Layout style={[flex.tiny, background.white]}>
-			<ScrollView bounces={false}>
-				<HeaderSettings title='About Berty' undo={goBack}>
-					<HeaderAboutBerty version={version} />
-				</HeaderSettings>
-				<BodyAboutBerty version={version} />
-			</ScrollView>
+			<SwipeNavRecognizer>
+				<ScrollView bounces={false} contentContainerStyle={[padding.bottom.huge]}>
+					<HeaderSettings title='About Berty' undo={goBack}>
+						<HeaderAboutBerty version={version} />
+					</HeaderSettings>
+					<BodyAboutBerty version={version} />
+				</ScrollView>
+			</SwipeNavRecognizer>
 		</Layout>
 	)
 }

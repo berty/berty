@@ -5,6 +5,7 @@ import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 //
 // Help
 //
@@ -123,12 +124,14 @@ export const Help: React.FC<ScreenProps.Settings.Help> = () => {
 	const [{ background, flex, color, padding }] = useStyles()
 	return (
 		<Layout style={[background.white, flex.tiny]}>
-			<ScrollView bounces={false} contentContainerStyle={[padding.bottom.scale(100)]}>
-				<HeaderSettings title='Help' bgColor={color.red} undo={goBack}>
-					<HeaderHelp />
-				</HeaderSettings>
-				<BodyHelp />
-			</ScrollView>
+			<SwipeNavRecognizer>
+				<ScrollView bounces={false} contentContainerStyle={[padding.bottom.huge]}>
+					<HeaderSettings title='Help' bgColor={color.red} undo={goBack}>
+						<HeaderHelp />
+					</HeaderSettings>
+					<BodyHelp />
+				</ScrollView>
+			</SwipeNavRecognizer>
 		</Layout>
 	)
 }

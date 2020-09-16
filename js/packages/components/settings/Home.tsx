@@ -1,15 +1,18 @@
 import React from 'react'
 import { View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import LinearGradient from 'react-native-linear-gradient'
+
 import { useStyles } from '@berty-tech/styles'
+
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import HeaderSettings from '../shared-components/Header'
+import { SwipeHelperReactNavTabBar } from '../shared-components/SwipeNavRecognizer'
+
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { Messenger } from '@berty-tech/store/oldhooks'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import LinearGradient from 'react-native-linear-gradient'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //
 // Home Vue
@@ -154,26 +157,25 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 	const account = Messenger.useAccount()
 	const _styles = useStylesHome()
 	const [{ flex, background, row, absolute }] = useStyles()
-	const { navigate } = useNavigation()
 
 	return (
 		<>
 			<View style={[flex.tiny, background.white]}>
-				{/* <SwipeNavRecognizer onSwipeRight={navigate.main.home}> */}
-				{account == null ? (
-					<ActivityIndicator size='large' style={[row.center]} />
-				) : (
-					<ScrollView bounces={false} contentContainerStyle={[_styles.scrollViewPadding]}>
-						<HeaderSettings>
-							<View>
-								<HomeHeader />
-								<HomeHeaderGroupButton />
-							</View>
-						</HeaderSettings>
-						<HomeBodySettings />
-					</ScrollView>
-				)}
-				{/* </SwipeNavRecognizer> */}
+				<SwipeHelperReactNavTabBar>
+					{account == null ? (
+						<ActivityIndicator size='large' style={[row.center]} />
+					) : (
+						<ScrollView bounces={false} contentContainerStyle={[_styles.scrollViewPadding]}>
+							<HeaderSettings>
+								<View>
+									<HomeHeader />
+									<HomeHeaderGroupButton />
+								</View>
+							</HeaderSettings>
+							<HomeBodySettings />
+						</ScrollView>
+					)}
+				</SwipeHelperReactNavTabBar>
 			</View>
 			<LinearGradient
 				style={[

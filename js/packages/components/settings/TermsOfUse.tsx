@@ -4,6 +4,7 @@ import { Layout, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { useNavigation } from '@berty-tech/navigation'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //
 // TermsOfUse
@@ -86,10 +87,16 @@ export const TermsOfUse: React.FC<{}> = () => {
 	const { goBack } = useNavigation()
 	return (
 		<Layout style={[flex.tiny, background.white]}>
-			<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
-				<HeaderSettings title='Terms of use' desc='Last updated: August 29th 2019' undo={goBack} />
-				<BodyTermsOfUse />
-			</ScrollView>
+			<SwipeNavRecognizer>
+				<ScrollView bounces={false} contentContainerStyle={padding.bottom.huge}>
+					<HeaderSettings
+						title='Terms of use'
+						desc='Last updated: August 29th 2019'
+						undo={goBack}
+					/>
+					<BodyTermsOfUse />
+				</ScrollView>
+			</SwipeNavRecognizer>
 		</Layout>
 	)
 }

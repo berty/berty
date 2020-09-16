@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-import { noop } from 'lodash'
 import React, { useMemo, useState } from 'react'
 import {
 	Keyboard,
@@ -18,23 +17,18 @@ import pickBy from 'lodash/pickBy'
 import { Routes, useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import {
-	useAccountContactSearchResults,
-	useFirstConversationWithContact,
-	useGetMessage,
 	useMsgrContext,
-	useGetMessageSearchResultWithMetadata,
 	useConversation,
 	useContact,
 	useSortedConvInteractions,
 } from '@berty-tech/store/hooks'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import * as api from '@berty-tech/api/index.pb'
+
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { SwipeHelperReactNavTabBar } from '../shared-components/SwipeNavRecognizer'
 
 // Styles
-
-const _titleIconSize = 30
 
 const _landingIconSize = 90
 
@@ -82,18 +76,9 @@ const formatTimestamp = (date: Date) => {
 //
 
 const SearchTitle: React.FC<{}> = () => {
-	const [{ text, color, flex, margin }, { scaleSize }] = useStyles()
-	const { dispatch } = useNavigation()
+	const [{ text, flex, margin }] = useStyles()
 	return (
-		<View
-			style={[
-				flex.direction.row,
-				flex.justify.center,
-				flex.align.center,
-				margin.left.scale(_titleIconSize),
-				margin.top.medium,
-			]}
-		>
+		<View style={[flex.direction.row, flex.justify.center, flex.align.center, margin.top.medium]}>
 			<Text
 				style={[
 					text.size.big,
@@ -110,19 +95,6 @@ const SearchTitle: React.FC<{}> = () => {
 			>
 				Search
 			</Text>
-			<Icon
-				style={[
-					{
-						flexShrink: 0,
-						flexGrow: 0,
-					},
-				]}
-				name='arrow-forward-outline'
-				width={_titleIconSize * scaleSize}
-				height={_titleIconSize * scaleSize}
-				fill={color.white}
-				onPress={() => dispatch(CommonActions.navigate(Routes.Main.Home))}
-			/>
 		</View>
 	)
 }
@@ -672,25 +644,25 @@ export const Search: React.FC<{}> = () => {
 	return (
 		<>
 			<Layout style={[flex.tiny, background.yellow]}>
-				{/* <SwipeNavRecognizer onSwipeLeft={navigate.main.home}> */}
-				<SafeAreaConsumer>
-					{(insets: EdgeInsets | null) => {
-						return (
-							<View style={[flex.tiny]}>
-								<SearchComponent
-									insets={insets}
-									contacts={contacts}
-									interactions={interactions}
-									conversations={conversations}
-									searchText={searchText}
-									setSearchText={setSearchText}
-									hasResults={hasResults}
-								/>
-							</View>
-						)
-					}}
-				</SafeAreaConsumer>
-				{/* </SwipeNavRecognizer> */}
+				<SwipeHelperReactNavTabBar>
+					<SafeAreaConsumer>
+						{(insets: EdgeInsets | null) => {
+							return (
+								<View style={[flex.tiny]}>
+									<SearchComponent
+										insets={insets}
+										contacts={contacts}
+										interactions={interactions}
+										conversations={conversations}
+										searchText={searchText}
+										setSearchText={setSearchText}
+										hasResults={hasResults}
+									/>
+								</View>
+							)
+						}}
+					</SafeAreaConsumer>
+				</SwipeHelperReactNavTabBar>
 			</Layout>
 			{hasResults && (
 				<LinearGradient

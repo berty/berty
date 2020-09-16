@@ -12,6 +12,7 @@ import HeaderSettings from '../shared-components/Header'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import { useConversation, useMsgrContext } from '@berty-tech/store/hooks'
 import AvatarGroup19 from '../main/Avatar_Group_Copy_19.png'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //
 // GroupChatSettings
@@ -158,15 +159,17 @@ export const MultiMemberSettings: React.FC<ScreenProps.Chat.MultiMemberSettings>
 	}
 	return (
 		<Layout style={[flex.tiny]}>
-			<ScrollView contentContainerStyle={[padding.bottom.huge]} bounces={false}>
-				<HeaderSettings actionIcon='edit-outline' undo={goBack}>
-					<View>
-						<GroupChatSettingsHeader {...conv} />
-						<GroupChatSettingsHeaderButtons {...conv} />
-					</View>
-				</HeaderSettings>
-				<MultiMemberSettingsBody {...conv} />
-			</ScrollView>
+			<SwipeNavRecognizer>
+				<ScrollView contentContainerStyle={[padding.bottom.huge]} bounces={false}>
+					<HeaderSettings actionIcon='edit-outline' undo={goBack}>
+						<View>
+							<GroupChatSettingsHeader {...conv} />
+							<GroupChatSettingsHeaderButtons {...conv} />
+						</View>
+					</HeaderSettings>
+					<MultiMemberSettingsBody {...conv} />
+				</ScrollView>
+			</SwipeNavRecognizer>
 		</Layout>
 	)
 }

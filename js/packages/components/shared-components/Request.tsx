@@ -67,7 +67,7 @@ export const RequestButtons: React.FC<RequestButtonsProps> = ({ buttons = null }
 	const [{ row, padding, margin }] = useStyles()
 	return (
 		<View style={[row.left, padding.medium, margin.top.medium]}>
-			{buttons && buttons.map((obj: any) => <RequestButtonItem {...obj} />)}
+			{buttons && buttons.map((obj: any, i: number) => <RequestButtonItem key={i} {...obj} />)}
 		</View>
 	)
 }
