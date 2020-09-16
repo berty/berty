@@ -23,33 +23,4 @@ steps:
       queue: "bigcores"
     commands:
       - set -x
-      - export PATH=$$PATH:/home/buildkite-agent/go/bin
-      - export PATH=/usr/local/go/bin:$$PATH
-      - go version
-      - cd js
-      - cat ~/.buildkite-agent/shake_secrets >> .env
-      - nice -n 10 make android.release
-    artifact_paths:
-      - "js/packages/berty-app/android/universal.apk"
-      - "js/packages/berty-app/android/toc.pb"
-
-  - label: ios-build
-    if: build.branch == "master" || (build.message !~ /\[skip ios-build\]/ && build.message !~ /\[skip-ci\]/)
-    agents:
-      queue: "macos"
-    plugins:
-      - gopath-checkout#v1.0.1:
-          import: berty.tech/berty
-    commands:
-      - set -x
-      - export GYM_BUILDLOG_PATH=$$PWD/logs/$BUILDKITE_COMMIT
-      - export PATH=$$(brew --prefix ruby)/bin:$$PATH # use brew ruby
-      - cd js
-      - cat ~/.buildkite-agent/shake_secrets >> .env
-      - APP_TARGET=yolo IOS_BUNDLE_ID=tech.berty.ios.yolo IOS_RELEASE_METHOD=enterprise IOS_PROFILE=InHouse IOS_TEAM_ID=GR5463T564 nice -n 10 make ios.release
-      - mv ./build/ios-yolo/development/Berty.ipa ../Berty-Yolo-$BUILDKITE_COMMIT.ipa
-      # remove logs if succeed
-      - rm -f $$PWD/logs/$BUILDKITE_COMMIT/*
-    artifact_paths:
-      - Berty-Yolo-$BUILDKITE_COMMIT.ipa
-      - logs/$BUILDKITE_COMMIT/*
+      - java -version
