@@ -360,6 +360,7 @@ message StreamEvent {
     TypeAccountUpdated = 6;
     TypeMemberUpdated = 7;
     TypeDeviceUpdated = 8;
+    TypeNotified = 10;
   }
   message ConversationUpdated {
     Conversation conversation = 1;
@@ -386,6 +387,23 @@ message StreamEvent {
     Device device = 1;
   }
   message ListEnd {}
+  message Notified {
+    Type type = 1;
+    string title = 3;
+    string body = 4;
+    bytes payload = 5;
+    enum Type {
+      Unknown = 0;
+      TypeBasic = 1;
+      TypeMessageReceived = 2;
+    }
+    message Basic {}
+    message MessageReceived {
+      Interaction interaction = 1;
+      Conversation conversation = 2;
+      Contact contact = 3;
+    }
+  }
 }
 
 message ConversationStream {

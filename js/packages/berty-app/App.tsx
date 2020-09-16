@@ -10,6 +10,7 @@ import { StreamGate, DeleteGate, ListGate } from '@berty-tech/components/gates'
 import MsgrProvider from '@berty-tech/store/provider'
 import Navigation, { NavigationContainer } from '@berty-tech/navigation'
 import { Provider as StyleProvider } from '@berty-tech/styles'
+import NotificationProvider from '@berty-tech/components/NotificationProvider'
 
 import { FeatherIconsPack } from './feather-icons'
 import { CustomIconsPack } from './custom-icons'
@@ -23,15 +24,17 @@ export const App: React.FC = () => {
 				<MsgrProvider embedded daemonAddress='http://localhost:1337'>
 					<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
 					<ThemeProvider>
-						<DeleteGate>
-							<StreamGate>
-								<ListGate>
-									<NavigationContainer>
-										<Navigation />
-									</NavigationContainer>
-								</ListGate>
-							</StreamGate>
-						</DeleteGate>
+						<NotificationProvider>
+							<DeleteGate>
+								<StreamGate>
+									<ListGate>
+										<NavigationContainer>
+											<Navigation />
+										</NavigationContainer>
+									</ListGate>
+								</StreamGate>
+							</DeleteGate>
+						</NotificationProvider>
 					</ThemeProvider>
 				</MsgrProvider>
 			</StyleProvider>

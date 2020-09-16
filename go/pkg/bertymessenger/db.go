@@ -40,7 +40,7 @@ func dropAllTables(db *gorm.DB) error {
 }
 
 func addConversation(db *gorm.DB, groupPK string) (*Conversation, error) {
-	conversation, err := getConversation(db, groupPK)
+	conversation, err := getConversationByPK(db, groupPK)
 	switch err {
 	case gorm.ErrRecordNotFound: // not found, create a new one
 		conversation.PublicKey = groupPK
@@ -72,11 +72,13 @@ func getAccount(db *gorm.DB) (Account, error) {
 	}
 	if len(accounts) == 0 {
 		return Account{}, gorm.ErrRecordNotFound
+	} else if len(accounts) > 1 {
+		return Account{}, errcode.ErrDBMultipleRecords
 	}
 	return accounts[0], nil
 }
 
-func getDevice(db *gorm.DB, publicKey string) (Device, error) {
+func getDeviceByPK(db *gorm.DB, publicKey string) (Device, error) {
 	var devices []Device
 	err := db.Where(&Device{PublicKey: publicKey}).Find(&devices).Error
 	if err != nil {
@@ -84,11 +86,13 @@ func getDevice(db *gorm.DB, publicKey string) (Device, error) {
 	}
 	if len(devices) == 0 {
 		return Device{}, gorm.ErrRecordNotFound
+	} else if len(devices) > 1 {
+		return Device{}, errcode.ErrDBMultipleRecords
 	}
 	return devices[0], nil
 }
 
-func getContact(db *gorm.DB, publicKey string) (Contact, error) {
+func getContactByPK(db *gorm.DB, publicKey string) (Contact, error) {
 	var contacts []Contact
 	err := db.Where(&Contact{PublicKey: publicKey}).Find(&contacts).Error
 	if err != nil {
@@ -96,11 +100,13 @@ func getContact(db *gorm.DB, publicKey string) (Contact, error) {
 	}
 	if len(contacts) == 0 {
 		return Contact{}, gorm.ErrRecordNotFound
+	} else if len(contacts) > 1 {
+		return Contact{}, errcode.ErrDBMultipleRecords
 	}
 	return contacts[0], nil
 }
 
-func getConversation(db *gorm.DB, publicKey string) (Conversation, error) {
+func getConversationByPK(db *gorm.DB, publicKey string) (Conversation, error) {
 	var conversations []Conversation
 	err := db.Where(&Conversation{PublicKey: publicKey}).Find(&conversations).Error
 	if err != nil {
@@ -108,11 +114,13 @@ func getConversation(db *gorm.DB, publicKey string) (Conversation, error) {
 	}
 	if len(conversations) == 0 {
 		return Conversation{}, gorm.ErrRecordNotFound
+	} else if len(conversations) > 1 {
+		return Conversation{}, errcode.ErrDBMultipleRecords
 	}
 	return conversations[0], nil
 }
 
-func getInteraction(db *gorm.DB, cid string) (Interaction, error) {
+func getInteractionByCID(db *gorm.DB, cid string) (Interaction, error) {
 	var interactions []Interaction
 	err := db.Where(map[string]interface{}{"c_id": cid}).Find(&interactions).Error
 	if err != nil {
@@ -120,12 +128,28 @@ func getInteraction(db *gorm.DB, cid string) (Interaction, error) {
 	}
 	if len(interactions) == 0 {
 		return Interaction{}, gorm.ErrRecordNotFound
+	} else if len(interactions) > 1 {
+		return Interaction{}, errcode.ErrDBMultipleRecords
 	}
 	return interactions[0], nil
 }
 
+func getMemberByPK(db *gorm.DB, publicKey string) (Member, error) {
+	var members []Member
+	err := db.Where(&Member{PublicKey: publicKey}).Find(&members).Error
+	if err != nil {
+		return Member{}, err
+	}
+	if len(members) == 0 {
+		return Member{}, gorm.ErrRecordNotFound
+	} else if len(members) > 1 {
+		return Member{}, errcode.ErrDBMultipleRecords
+	}
+	return members[0], nil
+}
+
 func addContactRequestOutgoingEnqueued(db *gorm.DB, contactPK, displayName, convPK string) (*Contact, error) {
-	contact, err := getContact(db, contactPK)
+	contact, err := getContactByPK(db, contactPK)
 	switch err {
 	case gorm.ErrRecordNotFound:
 		contact = Contact{
@@ -154,7 +178,7 @@ func addContactRequestOutgoingEnqueued(db *gorm.DB, contactPK, displayName, conv
 }
 
 func addContactRequestOutgoingSent(db *gorm.DB, contactPK string) (*Contact, error) {
-	contact, err := getContact(db, contactPK)
+	contact, err := getContactByPK(db, contactPK)
 	if err != nil {
 		return nil, errcode.ErrDBRead.Wrap(err)
 	}
@@ -194,7 +218,7 @@ func addContactRequestIncomingReceived(db *gorm.DB, contactPK, displayName strin
 }
 
 func addContactRequestIncomingAccepted(db *gorm.DB, contactPK, groupPK string) (*Contact, *Conversation, error) {
-	contact, err := getContact(db, contactPK)
+	contact, err := getContactByPK(db, contactPK)
 	if err != nil {
 		return nil, nil, errcode.ErrDBRead.Wrap(err)
 	}

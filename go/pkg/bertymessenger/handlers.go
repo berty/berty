@@ -291,7 +291,7 @@ func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) er
 		OwnerPublicKey: mpk,
 	}
 	{
-		_, err = getDevice(svc.db, dpk)
+		_, err = getDeviceByPK(svc.db, dpk)
 		if err == gorm.ErrRecordNotFound {
 			err = svc.db.
 				Clauses(clause.OnConflict{
@@ -321,7 +321,7 @@ func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) er
 	}
 
 	// fetch contact from db (include in tranaction maybe?)
-	contact, err := getContact(svc.db, mpk)
+	contact, err := getContactByPK(svc.db, mpk)
 
 	if err == nil && contact.GetState() == Contact_OutgoingRequestSent {
 		// someone you invited just accepted the invitation
@@ -521,21 +521,33 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 		}
 	}
 
-	// fetch conv from db
-	var conv Conversation
-	{
-		var err error
-		conv, err = getConversation(svc.db, gpk)
-		if err != nil {
-			// FIXME: maybe we should accept receiving app messages on unknown conversations?
-			svc.logger.Warn("ignored message because conv not found")
-			return err
-		}
-	}
-
 	// start a transaction
 	{
 		err := svc.db.Transaction(func(tx *gorm.DB) error {
+			// fetch conv from db
+			var conv Conversation
+			{
+				var err error
+				conv, err = getConversationByPK(tx, gpk)
+				if err != nil {
+					// FIXME: maybe we should accept receiving app messages on unknown conversations?
+					svc.logger.Warn("ignored message because conv not found")
+					return err
+				}
+			}
+
+			// fetch contact from db
+			var contact *Contact
+			if conv.Type == Conversation_ContactType {
+				pk := conv.GetContactPublicKey()
+				c, err := getContactByPK(tx, pk)
+				if err == nil {
+					contact = &c
+				} else {
+					svc.logger.Warn("1to1 message contact not found", zap.String("public-key", pk), zap.Error(err))
+				}
+			}
+
 			// build device
 			{
 				dpkb := gme.GetHeaders().GetDevicePK()
@@ -548,12 +560,23 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 					i.MemberPublicKey = ""
 					// FIXME: multiple devices per contact?
 				default:
-					existingDevice, err := getDevice(tx, dpk)
+					existingDevice, err := getDeviceByPK(tx, dpk)
 					if err == nil { // device already exists
 						i.MemberPublicKey = existingDevice.GetOwnerPublicKey()
 					} else { // device not found
 						i.MemberPublicKey = "" // backlog magic
 					}
+				}
+			}
+
+			// fetch member from db
+			var member *Member
+			if conv.GetType() == Conversation_MultiMemberType {
+				pk := i.GetMemberPublicKey()
+				if m, err := getMemberByPK(tx, pk); err == nil {
+					member = &m
+				} else {
+					svc.logger.Warn("multimember message member not found", zap.String("public-key", pk), zap.Error(err))
 				}
 			}
 
@@ -577,6 +600,7 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 						if err != nil {
 							return err
 						}
+						// FIXME: only dispatch on transaction success
 						err = svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionDeleted, &StreamEvent_InteractionDeleted{ack.GetCID()})
 						if err != nil {
 							return err
@@ -592,7 +616,7 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 				payload := amPayload.(*AppMessage_Acknowledge)
 
 				// find target
-				target, err := getInteraction(tx, payload.GetTarget())
+				target, err := getInteractionByCID(tx, payload.GetTarget())
 				if err == gorm.ErrRecordNotFound {
 					// add ack in db (backlog)
 					if err := tx.Create(i).Error; err != nil {
@@ -658,6 +682,30 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 					if err != nil {
 						return err
 					}
+
+					// notify
+					// FIXME: also notify if app is in background
+					if !conv.GetIsOpen() {
+						payload := amPayload.(*AppMessage_UserMessage)
+						if err == nil {
+							var title string
+							body := payload.GetBody()
+							if conv.Type == Conversation_ContactType {
+								title = contact.GetDisplayName()
+							} else {
+								title = conv.GetDisplayName()
+								memberName := member.GetDisplayName()
+								if memberName != "" {
+									body = memberName + ": " + payload.GetBody()
+								}
+							}
+							msgRecvd := StreamEvent_Notified_MessageReceived{Interaction: i, Conversation: &conv, Contact: contact}
+							err = svc.dispatcher.Notify(StreamEvent_Notified_TypeMessageReceived, title, body, &msgRecvd)
+						}
+						if err != nil {
+							svc.logger.Error("failed to notify", zap.Error(err))
+						}
+					}
 				}
 
 			case AppMessage_TypeSetUserName:
@@ -713,7 +761,7 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 				// FIXME: check if app is in foreground
 
 				// fetch conversation from db
-				conv, err := getConversation(tx, conv.GetPublicKey())
+				conv, err := getConversationByPK(tx, conv.GetPublicKey())
 				if err != nil {
 					return err
 				}
@@ -736,7 +784,7 @@ func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEven
 
 				// expr-based (see above) gorm updates don't update the go object
 				// next query could be easily replace by a simple increment, but this way we're 100% sure to be up-to-date
-				conv, err = getConversation(tx, i.GetConversationPublicKey())
+				conv, err = getConversationByPK(tx, i.GetConversationPublicKey())
 				if err != nil {
 					return err
 				}

@@ -956,7 +956,7 @@ func (svc *service) ContactAccept(ctx context.Context, req *ContactAccept_Reques
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	c, err := getContact(svc.db, pk)
+	c, err := getContactByPK(svc.db, pk)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -1038,7 +1038,7 @@ func (svc *service) ConversationOpen(ctx context.Context, req *ConversationOpen_
 
 	ret := ConversationOpen_Reply{}
 
-	conv, err := getConversation(svc.db, req.GetGroupPK())
+	conv, err := getConversationByPK(svc.db, req.GetGroupPK())
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -1083,7 +1083,7 @@ func (svc *service) ConversationClose(ctx context.Context, req *ConversationClos
 	ret := ConversationClose_Reply{}
 
 	// get entry from db
-	conv, err := getConversation(svc.db, req.GetGroupPK())
+	conv, err := getConversationByPK(svc.db, req.GetGroupPK())
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

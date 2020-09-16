@@ -87,6 +87,9 @@
     - [StreamEvent.InteractionUpdated](#berty.messenger.v1.StreamEvent.InteractionUpdated)
     - [StreamEvent.ListEnd](#berty.messenger.v1.StreamEvent.ListEnd)
     - [StreamEvent.MemberUpdated](#berty.messenger.v1.StreamEvent.MemberUpdated)
+    - [StreamEvent.Notified](#berty.messenger.v1.StreamEvent.Notified)
+    - [StreamEvent.Notified.Basic](#berty.messenger.v1.StreamEvent.Notified.Basic)
+    - [StreamEvent.Notified.MessageReceived](#berty.messenger.v1.StreamEvent.Notified.MessageReceived)
     - [SystemInfo](#berty.messenger.v1.SystemInfo)
     - [SystemInfo.Reply](#berty.messenger.v1.SystemInfo.Reply)
     - [SystemInfo.Request](#berty.messenger.v1.SystemInfo.Request)
@@ -96,6 +99,7 @@
     - [Contact.State](#berty.messenger.v1.Contact.State)
     - [Conversation.Type](#berty.messenger.v1.Conversation.Type)
     - [ParseDeepLink.Kind](#berty.messenger.v1.ParseDeepLink.Kind)
+    - [StreamEvent.Notified.Type](#berty.messenger.v1.StreamEvent.Notified.Type)
     - [StreamEvent.Type](#berty.messenger.v1.StreamEvent.Type)
   
     - [MessengerService](#berty.messenger.v1.MessengerService)
@@ -710,6 +714,31 @@ TODO: return cid
 | ----- | ---- | ----- | ----------- |
 | member | [Member](#berty.messenger.v1.Member) |  |  |
 
+<a name="berty.messenger.v1.StreamEvent.Notified"></a>
+
+### StreamEvent.Notified
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| type | [StreamEvent.Notified.Type](#berty.messenger.v1.StreamEvent.Notified.Type) |  |  |
+| title | [string](#string) |  |  |
+| body | [string](#string) |  |  |
+| payload | [bytes](#bytes) |  |  |
+
+<a name="berty.messenger.v1.StreamEvent.Notified.Basic"></a>
+
+### StreamEvent.Notified.Basic
+
+<a name="berty.messenger.v1.StreamEvent.Notified.MessageReceived"></a>
+
+### StreamEvent.Notified.MessageReceived
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| interaction | [Interaction](#berty.messenger.v1.Interaction) |  |  |
+| conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
+| contact | [Contact](#berty.messenger.v1.Contact) |  |  |
+
 <a name="berty.messenger.v1.SystemInfo"></a>
 
 ### SystemInfo
@@ -802,6 +831,16 @@ most important and dynamic values first
 | BertyID | 1 |  |
 | BertyGroup | 2 |  |
 
+<a name="berty.messenger.v1.StreamEvent.Notified.Type"></a>
+
+### StreamEvent.Notified.Type
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| Unknown | 0 |  |
+| TypeBasic | 1 |  |
+| TypeMessageReceived | 2 |  |
+
 <a name="berty.messenger.v1.StreamEvent.Type"></a>
 
 ### StreamEvent.Type
@@ -818,6 +857,7 @@ most important and dynamic values first
 | TypeAccountUpdated | 6 |  |
 | TypeMemberUpdated | 7 |  |
 | TypeDeviceUpdated | 8 |  |
+| TypeNotified | 10 |  |
 
  
 

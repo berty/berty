@@ -7,7 +7,7 @@ import (
 	"go.uber.org/multierr"
 )
 
-// Notifiee should use EventStream types, this is a poc of the notifiee system à la ipfs
+// Notifiee system inspired from ipfs
 type Notifiee interface {
 	StreamEvent(*StreamEvent) error
 }
@@ -27,6 +27,15 @@ func (d *Dispatcher) Register(n Notifiee) func() {
 func (d *Dispatcher) Unregister(n Notifiee) {
 	d.mutex.Lock()
 	delete(d.notifiees, n)
+	d.mutex.Unlock()
+}
+
+func (d *Dispatcher) UnregisterAll() {
+	if d == nil {
+		return
+	}
+	d.mutex.Lock()
+	d.notifiees = make(map[Notifiee]struct{})
 	d.mutex.Unlock()
 }
 
@@ -51,6 +60,25 @@ func (d *Dispatcher) StreamEvent(typ StreamEvent_Type, msg proto.Message) error 
 	}
 	d.mutex.RUnlock()
 	return errs
+}
+
+func (d *Dispatcher) Notify(typ StreamEvent_Notified_Type, title, body string, msg proto.Message) error {
+	var payload []byte
+	if msg != nil {
+		var err error
+		if payload, err = proto.Marshal(msg); err != nil {
+			return err
+		}
+	}
+
+	event := &StreamEvent_Notified{
+		Title:   title,
+		Body:    body,
+		Type:    typ,
+		Payload: payload,
+	}
+
+	return d.StreamEvent(StreamEvent_TypeNotified, event)
 }
 
 func NewDispatcher() *Dispatcher {

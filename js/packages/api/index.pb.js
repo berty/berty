@@ -355,6 +355,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrDBAddContactRequestIncomingReceived: 2104,
               ErrDBAddContactRequestIncomingAccepted: 2105,
               ErrDBAddGroupMemberDeviceAdded: 2106,
+              ErrDBMultipleRecords: 2107,
               ErrReplayProcessGroupMetadata: 2200,
               ErrReplayProcessGroupMessage: 2201,
               ErrCLINoTermcaps: 3001,
@@ -2967,7 +2968,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       TypeContactUpdated: 5,
                       TypeAccountUpdated: 6,
                       TypeMemberUpdated: 7,
-                      TypeDeviceUpdated: 8
+                      TypeDeviceUpdated: 8,
+                      TypeNotified: 10
                     }
                   },
                   ConversationUpdated: {
@@ -3039,6 +3041,54 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   ListEnd: {
                     fields: {}
+                  },
+                  Notified: {
+                    fields: {
+                      type: {
+                        type: "Type",
+                        id: 1
+                      },
+                      title: {
+                        type: "string",
+                        id: 3
+                      },
+                      body: {
+                        type: "string",
+                        id: 4
+                      },
+                      payload: {
+                        type: "bytes",
+                        id: 5
+                      }
+                    },
+                    nested: {
+                      Type: {
+                        values: {
+                          Unknown: 0,
+                          TypeBasic: 1,
+                          TypeMessageReceived: 2
+                        }
+                      },
+                      Basic: {
+                        fields: {}
+                      },
+                      MessageReceived: {
+                        fields: {
+                          interaction: {
+                            type: "Interaction",
+                            id: 1
+                          },
+                          conversation: {
+                            type: "Conversation",
+                            id: 2
+                          },
+                          contact: {
+                            type: "Contact",
+                            id: 3
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               },
