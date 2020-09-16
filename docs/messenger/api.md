@@ -894,6 +894,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | AuthServiceInitFlow | [.berty.types.v1.AuthServiceInitFlow.Request](#berty.types.v1.AuthServiceInitFlow.Request) | [.berty.types.v1.AuthServiceInitFlow.Reply](#berty.types.v1.AuthServiceInitFlow.Reply) | AuthServiceInitFlow Initialize an authentication flow |
 | AuthServiceCompleteFlow | [.berty.types.v1.AuthServiceCompleteFlow.Request](#berty.types.v1.AuthServiceCompleteFlow.Request) | [.berty.types.v1.AuthServiceCompleteFlow.Reply](#berty.types.v1.AuthServiceCompleteFlow.Reply) | AuthServiceCompleteFlow Completes an authentication flow |
 | ServicesTokenList | [.berty.types.v1.ServicesTokenList.Request](#berty.types.v1.ServicesTokenList.Request) | [.berty.types.v1.ServicesTokenList.Reply](#berty.types.v1.ServicesTokenList.Reply) stream | ServicesTokenList Retrieves the list of service server tokens |
+| ReplicationServiceRegisterGroup | [.berty.types.v1.ReplicationServiceRegisterGroup.Request](#berty.types.v1.ReplicationServiceRegisterGroup.Request) | [.berty.types.v1.ReplicationServiceRegisterGroup.Reply](#berty.types.v1.ReplicationServiceRegisterGroup.Reply) | ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents |
 
  
 

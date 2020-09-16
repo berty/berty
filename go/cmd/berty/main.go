@@ -66,6 +66,7 @@ func runMain(args []string) error {
 				groupinitCommand(),
 				shareInviteCommand(),
 				tokenServerCommand(),
+				replicationServerCommand(),
 			},
 		}
 	}

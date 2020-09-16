@@ -12,7 +12,7 @@ option (gogoproto.unmarshaler_all) = true;
 option (gogoproto.sizer_all) = true;
 
 enum GroupType {
-  // GroupTypeUndefined indicates that the value has not been set. Should not happen.
+  // GroupTypeUndefined indicates that the value has not been set. For example, happens if group is replicated.
   GroupTypeUndefined = 0;
 
   // GroupTypeAccount is the group managing an account, available to all its devices.
@@ -134,8 +134,11 @@ message Group {
   // secret_sig is the signature of the secret used to ensure the validity of the group
   bytes secret_sig = 3;
 
-  // group_type specifies the type of the group
+  // group_type specifies the type of the group, used to determine how device secrets are generated
   GroupType group_type = 4;
+
+  // sign_pub is the signature public key used to verify entries, not required when secret and secret_sig are provided
+  bytes sign_pub = 5;
 }
 
 // GroupMetadata is used in GroupEnvelope and only readable by invited group members
@@ -900,4 +903,22 @@ message ServicesTokenCode {
   repeated string services = 1;
   string code_challenge = 2;
   string token_id = 3 [(gogoproto.customname) = "TokenID"];
+}
+
+
+message ReplicationServiceRegisterGroup {
+  message Request{
+    string token_id = 1 [(gogoproto.customname) = "TokenID"];
+    bytes group_pk = 2 [(gogoproto.customname) = "GroupPK"];
+  }
+  message Reply{}
+}
+
+message ReplicationServiceReplicateGroup {
+  message Request {
+    Group group = 1;
+  }
+  message Reply {
+    bool ok = 1 [(gogoproto.customname) = "OK"];
+  }
 }

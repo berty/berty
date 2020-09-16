@@ -1,8 +1,9 @@
 41a24aadd7901a76a4dce50c2ad175d0eba77c4e  ../api/bertybridge.proto
-99ac3e6f361e2e13558d35c19670f8b88e264d7c  ../api/bertymessenger.proto
-fcf115a5906b6c6442e290108deb1327162373b5  ../api/bertyprotocol.proto
-17e8f7cb38e260eed70f5bd62d289c43848f3f80  ../api/bertytypes.proto
-2b4c6dd9059bc6f65801cd24e92ca699495b4837  ../api/errcode.proto
+b451aba16a4db2243f5a996e3b1852b99b53f237  ../api/bertymessenger.proto
+c494629d030d5dfb048480458232d3a1dedec97f  ../api/bertyprotocol.proto
+23e393a8bba7426244b4747d7adb6188830756aa  ../api/bertyreplication.proto
+fcc66fe0765dd9b008d07a0b0b31c9d08f05485f  ../api/bertytypes.proto
+6b3ef10a9b511f389e8fae2a3d9693bc2dcee870  ../api/errcode.proto
 c314cc3d08e8849bd0693039e42da117c39efef5  ../api/go-internal/handshake.proto
 9b4665f0290b8e94e5ef4b80572a9304f587c2c7  ../api/go-internal/records.proto
-13bec24c8a15a3a8f10904458421417ffd3df88d  Makefile
+7d2ba05fe868b2d1b0d155d3fca59e11d5ffe010  Makefile

@@ -14,6 +14,8 @@ import (
 	"testing"
 	"time"
 
+	ds "github.com/ipfs/go-datastore"
+	dsync "github.com/ipfs/go-datastore/sync"
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -251,6 +253,135 @@ func TestScenario_MessageAccountAndContactGroups(t *testing.T) {
 	})
 }
 
+func TestScenario_ReplicateMessage(t *testing.T) {
+	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
+
+	ctx, cancel, mn, rdvPeer := testHelperIPFSSetUp(t)
+	defer cancel()
+
+	dsA := dsync.MutexWrap(ds.NewMapDatastore())
+	nodeA, closeNodeA := NewTestingProtocol(ctx, t, &TestingOpts{
+		Mocknet: mn,
+		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
+	}, dsA)
+	defer closeNodeA()
+
+	dsB := dsync.MutexWrap(ds.NewMapDatastore())
+	nodeB, closeNodeB := NewTestingProtocol(ctx, t, &TestingOpts{
+		Mocknet: mn,
+		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
+	}, dsB)
+	defer closeNodeB()
+
+	tokenSecret, tokenPK, tokenSK := helperGenerateTokenIssuerSecrets(t)
+
+	replPeer, cancel := NewReplicationMockedPeer(ctx, t, tokenSecret, tokenPK, &TestingOpts{
+		Mocknet: mn,
+		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
+	})
+	defer cancel()
+
+	err := mn.LinkAll()
+	require.NoError(t, err)
+
+	for _, net := range mn.Nets() {
+		if net != rdvPeer.Network() {
+			_, err = mn.ConnectNets(net, rdvPeer.Network())
+			assert.NoError(t, err)
+		}
+	}
+
+	err = mn.ConnectAllButSelf()
+	require.NoError(t, err)
+
+	// Create MultiMember Group
+	group := createMultiMemberGroupInstance(ctx, t, nodeA, nodeB)
+
+	// TODO: handle services auth
+	_ = tokenSK
+	// issuer, err := NewAuthTokenIssuer(tokenSecret, tokenSK)
+	// require.NoError(t, err)
+	// token, err := issuer.IssueToken([]string{ServiceReplicationID})
+	// require.NoError(t, err)
+	//
+	// _, err = nodeA.Service.(*service).accountGroup.metadataStore.SendAccountServiceTokenAdded(ctx, &bertytypes.ServiceToken{
+	// 	Token: token,
+	// 	SupportedServices: []*bertytypes.ServiceTokenSupportedService{
+	// 		{
+	// 			ServiceType:     ServiceReplicationID,
+	// 			ServiceEndpoint: "", // TODO
+	// 		},
+	// 	},
+	// })
+	// require.NoError(t, err)
+
+	groupReplicable, err := group.FilterForReplication()
+	require.NoError(t, err)
+
+	// TODO: handle auth
+	_, err = replPeer.Service.ReplicateGroup(ctx, &bertytypes.ReplicationServiceReplicateGroup_Request{
+		Group: groupReplicable,
+	})
+	require.NoError(t, err)
+
+	_, err = nodeA.Service.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
+		GroupPK: group.PublicKey,
+		Payload: []byte("test1"),
+	})
+	require.NoError(t, err)
+
+	_, err = nodeB.Service.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
+		GroupPK: group.PublicKey,
+		Payload: []byte("test2"),
+	})
+	require.NoError(t, err)
+
+	closeNodeB()
+
+	_, err = nodeA.Service.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
+		GroupPK: group.PublicKey,
+		Payload: []byte("test3"),
+	})
+	require.NoError(t, err)
+
+	time.Sleep(time.Second * 5)
+
+	closeNodeA()
+
+	nodeB, closeNodeB = NewTestingProtocol(ctx, t, &TestingOpts{
+		Mocknet: mn,
+		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
+	}, dsB)
+	defer closeNodeB()
+
+	_, err = nodeB.Service.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
+		GroupPK: group.PublicKey,
+	})
+
+	// TODO: list messages properly
+	gc, err := nodeB.Service.(*service).getContextGroupForID(group.PublicKey)
+	require.NoError(t, err)
+
+	time.Sleep(time.Second * 5)
+
+	msgCh, err := gc.messageStore.ListEvents(ctx, nil, nil, false)
+	require.NoError(t, err)
+
+	expectedMsgs := map[string]struct{}{
+		"test1": {},
+		"test2": {},
+		"test3": {},
+	}
+
+	for evt := range msgCh {
+		_, ok := expectedMsgs[string(evt.Message)]
+		require.True(t, ok)
+		delete(expectedMsgs, string(evt.Message))
+	}
+
+	require.Empty(t, expectedMsgs)
+}
+
 // Helpers
 
 func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
@@ -316,7 +447,7 @@ func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
 	}
 }
 
-func createMultiMemberGroup(ctx context.Context, t *testing.T, tps ...*TestingProtocol) (groupID []byte) {
+func createMultiMemberGroupInstance(ctx context.Context, t *testing.T, tps ...*TestingProtocol) *bertytypes.Group {
 	logTree(t, "Create and Join MultiMember Group", 0, true)
 	start := time.Now()
 
@@ -476,7 +607,11 @@ func createMultiMemberGroup(ctx context.Context, t *testing.T, tps ...*TestingPr
 
 	logTree(t, "duration: %s", 0, false, time.Since(start))
 
-	return group.PublicKey
+	return group
+}
+
+func createMultiMemberGroup(ctx context.Context, t *testing.T, tps ...*TestingProtocol) (groupID []byte) {
+	return createMultiMemberGroupInstance(ctx, t, tps...).PublicKey
 }
 
 func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*TestingProtocol) {

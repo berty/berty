@@ -129,6 +129,12 @@
     - [MultiMemberGroupLeave.Reply](#berty.types.v1.MultiMemberGroupLeave.Reply)
     - [MultiMemberGroupLeave.Request](#berty.types.v1.MultiMemberGroupLeave.Request)
     - [MultiMemberInitialMember](#berty.types.v1.MultiMemberInitialMember)
+    - [ReplicationServiceRegisterGroup](#berty.types.v1.ReplicationServiceRegisterGroup)
+    - [ReplicationServiceRegisterGroup.Reply](#berty.types.v1.ReplicationServiceRegisterGroup.Reply)
+    - [ReplicationServiceRegisterGroup.Request](#berty.types.v1.ReplicationServiceRegisterGroup.Request)
+    - [ReplicationServiceReplicateGroup](#berty.types.v1.ReplicationServiceReplicateGroup)
+    - [ReplicationServiceReplicateGroup.Reply](#berty.types.v1.ReplicationServiceReplicateGroup.Reply)
+    - [ReplicationServiceReplicateGroup.Request](#berty.types.v1.ReplicationServiceReplicateGroup.Request)
     - [ServiceToken](#berty.types.v1.ServiceToken)
     - [ServiceTokenSupportedService](#berty.types.v1.ServiceTokenSupportedService)
     - [ServicesTokenCode](#berty.types.v1.ServicesTokenCode)
@@ -195,6 +201,7 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | AuthServiceInitFlow | [.berty.types.v1.AuthServiceInitFlow.Request](#berty.types.v1.AuthServiceInitFlow.Request) | [.berty.types.v1.AuthServiceInitFlow.Reply](#berty.types.v1.AuthServiceInitFlow.Reply) | AuthServiceInitFlow Initialize an authentication flow |
 | AuthServiceCompleteFlow | [.berty.types.v1.AuthServiceCompleteFlow.Request](#berty.types.v1.AuthServiceCompleteFlow.Request) | [.berty.types.v1.AuthServiceCompleteFlow.Reply](#berty.types.v1.AuthServiceCompleteFlow.Reply) | AuthServiceCompleteFlow Completes an authentication flow |
 | ServicesTokenList | [.berty.types.v1.ServicesTokenList.Request](#berty.types.v1.ServicesTokenList.Request) | [.berty.types.v1.ServicesTokenList.Reply](#berty.types.v1.ServicesTokenList.Reply) stream | ServicesTokenList Retrieves the list of services tokens |
+| ReplicationServiceRegisterGroup | [.berty.types.v1.ReplicationServiceRegisterGroup.Request](#berty.types.v1.ReplicationServiceRegisterGroup.Request) | [.berty.types.v1.ReplicationServiceRegisterGroup.Reply](#berty.types.v1.ReplicationServiceRegisterGroup.Reply) | ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents |
 
  
 
@@ -739,7 +746,8 @@ Group define a group and is enough to invite someone to it
 | public_key | [bytes](#bytes) |  | public_key is the identifier of the group, it signs the group secret and the initial member of a multi-member group |
 | secret | [bytes](#bytes) |  | secret is the symmetric secret of the group, which is used to encrypt the metadata |
 | secret_sig | [bytes](#bytes) |  | secret_sig is the signature of the secret used to ensure the validity of the group |
-| group_type | [GroupType](#berty.types.v1.GroupType) |  | group_type specifies the type of the group |
+| group_type | [GroupType](#berty.types.v1.GroupType) |  | group_type specifies the type of the group, used to determine how device secrets are generated |
+| sign_pub | [bytes](#bytes) |  | sign_pub is the signature public key used to verify entries, not required when secret and secret_sig are provided |
 
 <a name="berty.types.v1.GroupAddAdditionalRendezvousSeed"></a>
 
@@ -1087,6 +1095,43 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | ----- | ---- | ----- | ----------- |
 | member_pk | [bytes](#bytes) |  | member_pk is the public key of the member who is the group creator |
 
+<a name="berty.types.v1.ReplicationServiceRegisterGroup"></a>
+
+### ReplicationServiceRegisterGroup
+
+<a name="berty.types.v1.ReplicationServiceRegisterGroup.Reply"></a>
+
+### ReplicationServiceRegisterGroup.Reply
+
+<a name="berty.types.v1.ReplicationServiceRegisterGroup.Request"></a>
+
+### ReplicationServiceRegisterGroup.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token_id | [string](#string) |  |  |
+| group_pk | [bytes](#bytes) |  |  |
+
+<a name="berty.types.v1.ReplicationServiceReplicateGroup"></a>
+
+### ReplicationServiceReplicateGroup
+
+<a name="berty.types.v1.ReplicationServiceReplicateGroup.Reply"></a>
+
+### ReplicationServiceReplicateGroup.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| ok | [bool](#bool) |  |  |
+
+<a name="berty.types.v1.ReplicationServiceReplicateGroup.Request"></a>
+
+### ReplicationServiceReplicateGroup.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group | [Group](#berty.types.v1.Group) |  |  |
+
 <a name="berty.types.v1.ServiceToken"></a>
 
 ### ServiceToken
@@ -1205,7 +1250,7 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| GroupTypeUndefined | 0 | GroupTypeUndefined indicates that the value has not been set. Should not happen. |
+| GroupTypeUndefined | 0 | GroupTypeUndefined indicates that the value has not been set. For example, happens if group is replicated. |
 | GroupTypeAccount | 1 | GroupTypeAccount is the group managing an account, available to all its devices. |
 | GroupTypeContact | 2 | GroupTypeContact is the group created between two accounts, available to all their devices. |
 | GroupTypeMultiMember | 3 | GroupTypeMultiMember is a group containing an undefined number of members. |

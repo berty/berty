@@ -72,3 +72,6 @@ http:
  - selector: berty.messenger.v1.MessengerService.ServicesTokenList
    post: /berty.messenger.v1/MessengerService/ServicesTokenList
    body: "*"
+ - selector: berty.messenger.v1.MessengerService.ReplicationServiceRegisterGroup
+   post: /berty.messenger.v1/MessengerService/ReplicationServiceRegisterGroup
+   body: "*"

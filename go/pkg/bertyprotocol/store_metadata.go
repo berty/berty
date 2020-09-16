@@ -889,9 +889,20 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB) iface.StoreConstructor {
 			return nil, errcode.ErrInvalidInput.Wrap(err)
 		}
 
-		md, err := s.deviceKeystore.MemberDeviceForGroup(g)
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
+		var (
+			md          *ownMemberDevice
+			replication = false
+		)
+
+		if s.deviceKeystore == nil {
+			replication = true
+		} else {
+			md, err = s.deviceKeystore.MemberDeviceForGroup(g)
+			if err == errcode.ErrInvalidInput {
+				replication = true
+			} else if err != nil {
+				return nil, errcode.TODO.Wrap(err)
+			}
 		}
 
 		store := &metadataStore{
@@ -899,6 +910,15 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB) iface.StoreConstructor {
 			mks:    s.messageKeystore,
 			devKS:  s.deviceKeystore,
 			logger: s.Logger(),
+		}
+
+		if replication {
+			options.Index = basestore.NewBaseIndex
+			if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
+				return nil, errcode.ErrOrbitDBInit.Wrap(err)
+			}
+
+			return store, nil
 		}
 
 		chSub := store.Subscribe(ctx)
@@ -944,8 +964,6 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB) iface.StoreConstructor {
 		if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
 		}
-
-		_ = store.getServiceToken // TODO: remove me when used
 
 		return store, nil
 	}

@@ -98,7 +98,7 @@ func (s *service) getGroupForPK(pk crypto.PubKey) (*bertytypes.Group, error) {
 		return g, nil
 	}
 
-	return nil, errcode.ErrMissingInput
+	return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unknown group specified"))
 }
 
 func (s *service) deactivateGroup(pk crypto.PubKey) error {

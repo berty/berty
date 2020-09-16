@@ -1152,3 +1152,7 @@ func (svc *service) ServicesTokenList(request *bertytypes.ServicesTokenList_Requ
 
 	return nil
 }
+
+func (svc *service) ReplicationServiceRegisterGroup(ctx context.Context, request *bertytypes.ReplicationServiceRegisterGroup_Request) (*bertytypes.ReplicationServiceRegisterGroup_Reply, error) {
+	return svc.protocolClient.ReplicationServiceRegisterGroup(ctx, request)
+}

@@ -1034,6 +1034,39 @@
         ]
       }
     },
+    "/berty.protocol.v1/ProtocolService/ReplicationServiceRegisterGroup": {
+      "post": {
+        "summary": "ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents",
+        "operationId": "ProtocolService_ReplicationServiceRegisterGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ReplicationServiceRegisterGroupReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ReplicationServiceRegisterGroupRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
     "/berty.protocol.v1/ProtocolService/ServicesTokenList": {
       "post": {
         "summary": "ServicesTokenList Retrieves the list of services tokens",
@@ -1548,7 +1581,12 @@
         },
         "group_type": {
           "$ref": "#/definitions/v1GroupType",
-          "title": "group_type specifies the type of the group"
+          "title": "group_type specifies the type of the group, used to determine how device secrets are generated"
+        },
+        "sign_pub": {
+          "type": "string",
+          "format": "byte",
+          "title": "sign_pub is the signature public key used to verify entries, not required when secret and secret_sig are provided"
         }
       },
       "title": "Group define a group and is enough to invite someone to it"
@@ -1722,7 +1760,7 @@
         "GroupTypeMultiMember"
       ],
       "default": "GroupTypeUndefined",
-      "description": " - GroupTypeUndefined: GroupTypeUndefined indicates that the value has not been set. Should not happen.\n - GroupTypeAccount: GroupTypeAccount is the group managing an account, available to all its devices.\n - GroupTypeContact: GroupTypeContact is the group created between two accounts, available to all their devices.\n - GroupTypeMultiMember: GroupTypeMultiMember is a group containing an undefined number of members."
+      "description": " - GroupTypeUndefined: GroupTypeUndefined indicates that the value has not been set. For example, happens if group is replicated.\n - GroupTypeAccount: GroupTypeAccount is the group managing an account, available to all its devices.\n - GroupTypeContact: GroupTypeContact is the group created between two accounts, available to all their devices.\n - GroupTypeMultiMember: GroupTypeMultiMember is a group containing an undefined number of members."
     },
     "v1InstanceExportDataReply": {
       "type": "object",
@@ -1889,6 +1927,21 @@
     "v1MultiMemberGroupLeaveRequest": {
       "type": "object",
       "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "v1ReplicationServiceRegisterGroupReply": {
+      "type": "object"
+    },
+    "v1ReplicationServiceRegisterGroupRequest": {
+      "type": "object",
+      "properties": {
+        "token_id": {
+          "type": "string"
+        },
         "group_pk": {
           "type": "string",
           "format": "byte"

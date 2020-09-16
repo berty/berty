@@ -2,9 +2,12 @@ package bertyprotocol
 
 import (
 	"context"
+	"crypto/ed25519"
 	"fmt"
 	"testing"
 
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/tracer"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/pubsub/directchannel"
 	"berty.tech/go-orbit-db/pubsub/pubsubraw"
@@ -21,9 +24,6 @@ import (
 	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
-
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/tracer"
 )
 
 type TestingProtocol struct {
@@ -32,6 +32,10 @@ type TestingProtocol struct {
 	Service Service
 	Client  Client
 	IPFS    ipfsutil.CoreAPIMock
+}
+
+type TestingReplicationPeer struct {
+	Service ReplicationService
 }
 
 type TestingOpts struct {
@@ -54,9 +58,10 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds
 	}
 
 	ipfsopts := &ipfsutil.TestingAPIOpts{
-		Logger:  opts.Logger,
-		Mocknet: opts.Mocknet,
-		RDVPeer: opts.RDVPeer,
+		Logger:    opts.Logger,
+		Mocknet:   opts.Mocknet,
+		RDVPeer:   opts.RDVPeer,
+		Datastore: ds,
 	}
 
 	node, cleanupNode := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsopts)
@@ -142,6 +147,53 @@ func (opts *TestingOpts) applyDefaults(ctx context.Context) {
 	}
 }
 
+func testHelperNewReplicationService(ctx context.Context, t *testing.T, logger *zap.Logger, mn libp2p_mocknet.Mocknet, rdvp peer.AddrInfo, ds datastore.Batching) (*replicationService, context.CancelFunc) {
+	t.Helper()
+
+	if ds == nil {
+		ds = ds_sync.MutexWrap(datastore.NewMapDatastore())
+	}
+
+	api, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, &ipfsutil.TestingAPIOpts{
+		Logger:    logger,
+		Mocknet:   mn,
+		RDVPeer:   rdvp,
+		Datastore: ds,
+	})
+	odb, err := NewBertyOrbitDB(ctx, api.API(), &NewOrbitDBOptions{
+		NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
+			Logger: logger,
+			Cache:  NewOrbitDatastoreCache(ds),
+		},
+	})
+	require.NoError(t, err)
+
+	repl, err := NewReplicationService(ctx, ds, odb, logger)
+	require.NoError(t, err)
+	require.NotNil(t, repl)
+
+	svc, ok := repl.(*replicationService)
+	require.True(t, ok)
+
+	return svc, cleanup
+}
+
+func NewReplicationMockedPeer(ctx context.Context, t *testing.T, secret []byte, sk ed25519.PublicKey, opts *TestingOpts) (*TestingReplicationPeer, func()) {
+	t.Helper()
+
+	// TODO: handle auth
+	_ = secret
+	_ = sk
+
+	replServ, cleanupReplMan := testHelperNewReplicationService(ctx, t, nil, opts.Mocknet, opts.RDVPeer, nil)
+
+	return &TestingReplicationPeer{
+			Service: replServ,
+		}, func() {
+			cleanupReplMan()
+		}
+}
+
 func NewTestingProtocolWithMockedPeers(ctx context.Context, t *testing.T, opts *TestingOpts, ds datastore.Batching, amount int) ([]*TestingProtocol, func()) {
 	t.Helper()
 	opts.applyDefaults(ctx)
@@ -151,15 +203,22 @@ func NewTestingProtocolWithMockedPeers(ctx context.Context, t *testing.T, opts *
 		ds = ds_sync.MutexWrap(datastore.NewMapDatastore())
 	}
 
-	rdvpeer, err := opts.Mocknet.GenPeer()
-	require.NoError(t, err)
-	require.NotNil(t, rdvpeer)
+	cleanupRDVP := func() {}
+	closeRDVP := func() error { return nil }
 
-	_, cleanupRDVP := ipfsutil.TestingRDVP(ctx, t, rdvpeer)
-	rdvpnet := opts.Mocknet.Net(rdvpeer.ID())
+	if opts.RDVPeer.ID == "" {
+		rdvpeer, err := opts.Mocknet.GenPeer()
+		require.NoError(t, err)
+		require.NotNil(t, rdvpeer)
+
+		_, cleanupRDVP = ipfsutil.TestingRDVP(ctx, t, rdvpeer)
+		closeRDVP = rdvpeer.Close
+
+		opts.RDVPeer = rdvpeer.Peerstore().PeerInfo(rdvpeer.ID())
+	}
+
+	rdvpnet := opts.Mocknet.Net(opts.RDVPeer.ID)
 	require.NotNil(t, rdvpnet)
-
-	opts.RDVPeer = rdvpeer.Peerstore().PeerInfo(rdvpeer.ID())
 
 	cls := make([]func(), amount)
 	tps := make([]*TestingProtocol, amount)
@@ -172,7 +231,7 @@ func NewTestingProtocolWithMockedPeers(ctx context.Context, t *testing.T, opts *
 		tps[i], cls[i] = NewTestingProtocol(ctx, t, opts, ds)
 	}
 
-	err = opts.Mocknet.LinkAll()
+	err := opts.Mocknet.LinkAll()
 	require.NoError(t, err)
 
 	for _, net := range opts.Mocknet.Nets() {
@@ -190,7 +249,7 @@ func NewTestingProtocolWithMockedPeers(ctx context.Context, t *testing.T, opts *
 		cleanupRDVP()
 
 		rdvpnet.Close()
-		rdvpeer.Close()
+		closeRDVP()
 	}
 	return tps, cleanup
 }

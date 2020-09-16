@@ -134,6 +134,18 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB) iface.StoreConstructor {
 			return nil, errcode.ErrInvalidInput.Wrap(err)
 		}
 
+		replication := false
+
+		if s.deviceKeystore == nil {
+			replication = true
+		} else {
+			if _, err := s.deviceKeystore.MemberDeviceForGroup(g); err == errcode.ErrInvalidInput {
+				replication = true
+			} else if err != nil {
+				return nil, errcode.TODO.Wrap(err)
+			}
+		}
+
 		store := &messageStore{
 			devKS:  s.deviceKeystore,
 			mks:    s.messageKeystore,
@@ -145,6 +157,10 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB) iface.StoreConstructor {
 
 		if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
+		}
+
+		if replication {
+			return store, nil
 		}
 
 		chSub := store.Subscribe(ctx)

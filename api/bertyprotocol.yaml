@@ -96,3 +96,6 @@ http:
  - selector: berty.protocol.v1.ProtocolService.ServicesTokenList
    post: /berty.protocol.v1/ProtocolService/ServicesTokenList
    body: "*"
+ - selector: berty.protocol.v1.ProtocolService.ReplicationServiceRegisterGroup
+   post: /berty.protocol.v1/ProtocolService/ReplicationServiceRegisterGroup
+   body: "*"
