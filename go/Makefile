@@ -204,24 +204,35 @@ doc.generate: install
 	mkdir -p .tmp
 	GO111MODULE=off go get github.com/campoy/embedmd
 
-	# generate usage.txt
-	echo 'foo@bar:~$$ berty -h' > .tmp/usage.txt
-	(berty -h || true) 2>> .tmp/usage.txt
+	# generate embeddable outputs
+	echo 'foo@bar:~$$ berty -h' > .tmp/berty-usage.txt
+	(berty -h || true) 2>> .tmp/berty-usage.txt
 	for sub in `berty -h 2>&1 | grep "^  [a-z]" | sed 1d | awk '{print $$1}'`; do \
-		echo >> .tmp/usage.txt; \
-		echo 'foo@bar:~$$ berty '$$sub' -h' >> .tmp/usage.txt; \
-		(OBberty $$sub -h || true) 2>> .tmp/usage.txt; \
+		echo >> .tmp/berty-usage.txt; \
+		echo 'foo@bar:~$$ berty '$$sub' -h' >> .tmp/berty-usage.txt; \
+		(berty $$sub -h || true) 2>> .tmp/berty-usage.txt; \
 	done
 
-	echo 'foo@bar:~$$ berty share-invite' > .tmp/share-invite.txt
-	berty --log.filters="" share-invite -store.inmem -node.display-name=demo >> .tmp/share-invite.txt
+	echo 'foo@bar:~$$ berty share-invite' > .tmp/berty-share-invite.txt
+	berty --log.filters="" share-invite -store.inmem -node.display-name=demo >> .tmp/berty-share-invite.txt
 
-	echo 'foo@bar:~$$ berty info' > .tmp/info.txt
-	berty --log.filters="" info -store.inmem >> .tmp/info.txt
+	echo 'foo@bar:~$$ berty info' > .tmp/berty-info.txt
+	berty --log.filters="" info -store.inmem >> .tmp/berty-info.txt
 
-	echo 'foo@bar:~$$ berty daemon' > .tmp/daemon.txt
-	expect -c "set timeout 10; spawn -noecho docker run bertytech/berty --log.format=console --log.filters=info+:bty daemon -store.inmem; expect serving" >> .tmp/daemon.txt
-	echo '...' >> .tmp/daemon.txt
+	echo 'foo@bar:~$$ berty daemon' > .tmp/berty-daemon.txt
+	expect -c "set timeout 10; spawn -noecho docker run bertytech/berty --log.format=console --log.filters=info+:bty daemon -store.inmem; expect serving" >> .tmp/berty-daemon.txt
+	echo '...' >> .tmp/berty-daemon.txt
+
+	echo 'foo@bar:~$$ rdvp -h' > .tmp/rdvp-usage.txt
+	(rdvp -h || true) 2>> .tmp/rdvp-usage.txt
+	for sub in `rdvp -h 2>&1 | grep "^  [a-z]" | sed 1d | awk '{print $$1}'`; do \
+		echo >> .tmp/rdvp-usage.txt; \
+		echo 'foo@bar:~$$ rdvp '$$sub' -h' >> .tmp/rdvp-usage.txt; \
+		(rdvp $$sub -h || true) 2>> .tmp/rdvp-usage.txt; \
+	done
+
+	echo 'foo@bar:~$$ betabot -h' > .tmp/betabot-usage.txt
+	(betabot -h || true) 2>> .tmp/betabot-usage.txt
 
 	# FIXME: generate output for berty mini
 
