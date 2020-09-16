@@ -124,6 +124,19 @@ print-%:
 	@echo $* = $($*)
 
 
+minimum_go_minor_version = 14
+validate-go-version:
+	@if [ ! "x`$(GO) version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f1`" = "x1" ]; then \
+		echo "error: Golang version should be \"1.x\". Please use 1.$(minimum_go_minor_version) or more recent."; \
+		exit 1; \
+	fi
+	@if [ `$(GO) version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f2` -lt $(minimum_go_minor_version) ]; then \
+		echo "error: Golang version is not supported. Please use 1.$(minimum_go_minor_version) or more recent."; \
+		exit 1; \
+	fi
+.PHONY: validate-go-version
+
+
 ##
 ## Code gen
 ##
@@ -133,7 +146,7 @@ protos_src := $(wildcard ../api/*.proto) $(wildcard ../api/go-internal/*.proto)
 gen_src := $(protos_src) Makefile
 gen_sum := gen.sum
 protoc_opts := -I ../api:`go list -m -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis:`go list -m -f {{.Dir}} github.com/gogo/protobuf`:/protobuf
-pb.generate: gen.sum
+pb.generate: gen.sum validate-go-version
 $(gen_sum): $(gen_src)
 	$(call check-program, shasum docker $(GO))
 	@shasum $(gen_src) | sort -k 2 > $(gen_sum).tmp
