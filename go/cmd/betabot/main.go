@@ -12,6 +12,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"github.com/gogo/protobuf/proto"
+	qrterminal "github.com/mdp/qrterminal/v3"
 	"google.golang.org/grpc"
 )
 
@@ -50,8 +51,9 @@ func betabot() error {
 		if err != nil {
 			return err
 		}
-		log.Printf("berty id: %s", res.DeepLink)
-		// FIXME: display QR code
+		log.Printf("berty id: %s", res.HTMLURL)
+
+		qrterminal.GenerateHalfBlock(res.HTMLURL, qrterminal.L, os.Stdout)
 	}
 
 	// event loop
@@ -83,8 +85,6 @@ func betabot() error {
 }
 
 func handleEvent(ctx context.Context, messengerClient bertymessenger.MessengerServiceClient, gme *bertymessenger.EventStream_Reply) error {
-	log.Printf("new event: %q", gme.Event.Type)
-
 	// parse event's payload
 	update, err := gme.Event.UnmarshalPayload()
 	if err != nil {
@@ -95,6 +95,7 @@ func handleEvent(ctx context.Context, messengerClient bertymessenger.MessengerSe
 	case bertymessenger.StreamEvent_TypeContactUpdated:
 		// auto-accept contact requests
 		contact := update.(*bertymessenger.StreamEvent_ContactUpdated).Contact
+		log.Printf("<<< %s: contact=%q conversation=%q name=%q", gme.Event.Type, contact.PublicKey, contact.ConversationPublicKey, contact.DisplayName)
 		if contact.State == bertymessenger.Contact_IncomingRequest {
 			req := &bertymessenger.ContactAccept_Request{PublicKey: contact.PublicKey}
 			_, err = messengerClient.ContactAccept(ctx, req)
@@ -106,6 +107,7 @@ func handleEvent(ctx context.Context, messengerClient bertymessenger.MessengerSe
 	case bertymessenger.StreamEvent_TypeInteractionUpdated:
 		// auto-reply to users' messages
 		interaction := update.(*bertymessenger.StreamEvent_InteractionUpdated).Interaction
+		log.Printf("<<< %s: conversation=%q", gme.Event.Type, interaction.ConversationPublicKey)
 		if interaction.Type == bertymessenger.AppMessage_TypeUserMessage && !interaction.IsMe && !interaction.Acknowledged {
 			userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{
 				Body: "Welcome to the beta!",
@@ -123,6 +125,9 @@ func handleEvent(ctx context.Context, messengerClient bertymessenger.MessengerSe
 				return err
 			}
 		}
+
+	default:
+		log.Printf("<<< %s: ignored", gme.Event.Type)
 	}
 	return err
 }
