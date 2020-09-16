@@ -18,7 +18,7 @@ import { Card, TouchableCard } from './shared-components/Card'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation, Routes } from '@berty-tech/navigation'
 import { Messenger } from '@berty-tech/store/oldhooks'
-import { useNavigation as useReactNavigation } from '@react-navigation/native'
+import { useNavigation as useReactNavigation, CommonActions } from '@react-navigation/native'
 import { useDispatch } from 'react-redux'
 import { useMsgrContext } from '@berty-tech/store/context'
 import messengerMethodsHooks from '@berty-tech/store/methods'
@@ -552,9 +552,12 @@ const SetupFinished: React.FC = () => {
 								button={{
 									text: t('onboarding.setup-finished.button'),
 									onPress: () => {
-										//dispatch(messenger.account.commands.onboard())
 										Vibration.vibrate([500])
-										navigation.navigate(Routes.Root.Tabs, { screen: Routes.Main.Home })
+										navigation.dispatch(
+											CommonActions.reset({
+												routes: [{ name: Routes.Root.Tabs, params: { screen: Routes.Main.Home } }],
+											}),
+										)
 									},
 								}}
 							/>
