@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
@@ -33,17 +34,19 @@ type service struct {
 	startedAt      time.Time
 	db             *gorm.DB
 	dispatcher     *Dispatcher
-	notifmanager   notification.Manager
 	cancelFn       func()
 	optsCleanup    func()
 	ctx            context.Context
 	handlerMutex   sync.Mutex
+	notifmanager   notification.Manager
+	lcmanager      *lifecycle.Manager
 }
 
 type Opts struct {
 	Logger              *zap.Logger
-	NotificationManager notification.Manager
 	DB                  *gorm.DB
+	NotificationManager notification.Manager
+	LifeCycleManager    *lifecycle.Manager
 }
 
 func (opts *Opts) applyDefaults() (func(), error) {
@@ -71,6 +74,10 @@ func (opts *Opts) applyDefaults() (func(), error) {
 		opts.NotificationManager = notification.NewNoopManager()
 	}
 
+	if opts.LifeCycleManager == nil {
+		opts.LifeCycleManager = lifecycle.NewManager(StateActive)
+	}
+
 	return cleanup, nil
 }
 
@@ -92,6 +99,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 		startedAt:      time.Now(),
 		db:             opts.DB,
 		notifmanager:   opts.NotificationManager,
+		lcmanager:      opts.LifeCycleManager,
 		dispatcher:     NewDispatcher(),
 		cancelFn:       cancel,
 		optsCleanup:    optsCleanup,
@@ -133,6 +141,9 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 		}
 	}
 
+	// monitor messenger lifecycle
+	go svc.monitorState(ctx)
+
 	// Dispatch app notifications to native manager
 	svc.dispatcher.Register(&NotifieeBundle{StreamEventImpl: func(se *StreamEvent) error {
 		if se.GetType() != StreamEvent_TypeNotified {
@@ -149,11 +160,13 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 			notif = payload.(*StreamEvent_Notified)
 		}
 
-		if err := svc.notifmanager.Notify(&notification.Notification{
-			Title: notif.GetTitle(),
-			Body:  notif.GetBody(),
-		}); err != nil {
-			opts.Logger.Error("unable to trigger notify", zap.Error(err))
+		if svc.lcmanager.GetCurrentState() == StateInactive {
+			if err := svc.notifmanager.Notify(&notification.Notification{
+				Title: notif.GetTitle(),
+				Body:  notif.GetBody(),
+			}); err != nil {
+				opts.Logger.Error("unable to trigger notify", zap.Error(err))
+			}
 		}
 
 		return nil
