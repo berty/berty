@@ -292,6 +292,7 @@ $(pkg_mod): $(pkg_desc)
 
 vendor/bundle: Gemfile.lock Gemfile
 	bundle install
+	touch $@
 
 packages/storybook-mobile/storybook/storyLoader.gen.js: packages/storybook-mobile/node_modules
 	PATH=$(PATH) rnstl \
@@ -314,11 +315,11 @@ packages/berty-app/node_modules/react-native/react.gradle.orig: packages/berty-a
 	@echo "patching file $(patsubst %.orig, %, $@)"
 	@patch -f $(patsubst %.orig, %, $@) $< 1>/dev/null || true
 
-packages/berty-app/ios/Pods/Manifest.lock: vendor/bundle packages/berty-app/ios/Podfile packages/berty-app/package.json
-	cd packages/berty-app/ios && bundle exec pod install
+# packages/berty-app/ios/Pods/Manifest.lock: vendor/bundle packages/berty-app/ios/Podfile packages/berty-app/package.json
+# 	cd packages/berty-app/ios && bundle exec pod install
 
-packages/berty-app/ios/Podfile:
-	touch $@
+# packages/berty-app/ios/Podfile:
+# 	touch $@
 
 packages/go-bridge/ios/Frameworks/Bertybridge.framework: $(bridge_src)
 	cd .. && go mod download
@@ -333,4 +334,42 @@ packages/go-bridge/android/libs/gobridge.aar: $(bridge_src)
 	rm -fr packages/go-bridge/android/build # remove broken cache
 	@mkdir -p "packages/go-bridge/android/libs"
 	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind -o js/$@ -v $(ext_ldflags) -target android ./go/framework/bertybridge
+	touch $@
+
+# ios v2
+# setting this here until (xcode)gen is done
+
+xcodegen_yml := $(dir $(wildcard $(PWD)/packages/berty-app/ios/*.yaml))
+
+generate.v2: packages/berty-app/ios/Berty.xcodeproj packages/berty-app/ios/Berty.xcworkspace
+
+clean.v2:
+	rm -rf packages/berty-app/ios/Berty.xcodeproj
+	rm -rf packages/berty-app/ios/Berty.xcworkspace
+
+fclean.v2: clean.v2
+	rm -rf packages/berty-app/ios/Pods
+
+packages/berty-app/ios/Berty/main.jsbundle:
+	touch $@
+
+packages/berty-app/ios/Podfile:
+	touch $@
+
+packages/berty-app/ios/Berty.xcworkspace: vendor/bundle packages/berty-app/ios/Podfile packages/berty-app/package.json $(xcodegen_yml)
+	cd packages/berty-app/ios && bundle exec pod install
+	touch $@
+
+packages/berty-app/ios/Berty.xcodeproj: packages/berty-app/ios/Berty/main.jsbundle $(xcodegen_yml)
+	mkdir -p packages/berty-app/ios/Berty
+
+	FASTLANE_SKIP_UPDATE_CHECK=1 \
+	FASTLANE_HIDE_CHANGELOG=1 \
+	XCODEGEN_SPEC=packages/berty-app/ios/berty.yaml \
+	XCODEGEN_PROJECT=packages/berty-app/ios \
+	XCODEGEN_USE_CACHE=true \
+	XCODEGEN_USE_PATH=.xcodegen/cache/Berty \
+	XCODEGEN_PROJECT_ROOT=packages/berty-app/ios \
+		bundle exec fastlane run xcodegen
+
 	touch $@

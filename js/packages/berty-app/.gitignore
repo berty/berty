@@ -58,6 +58,8 @@ vendor/bundle
 # Bundle artifact
 *.jsbundle
 
+ios.old
+
 # CocoaPods
 /ios/Pods/
 /ios/tmp.xcconfig

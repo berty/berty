@@ -20,6 +20,7 @@
 #import <FlipperKitNetworkPlugin/FlipperKitNetworkPlugin.h>
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
+
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
   SKDescriptorMapper *layoutDescriptorMapper = [[SKDescriptorMapper alloc] initWithDefaults];
@@ -83,6 +84,15 @@ static void InitializeFlipper(UIApplication *application) {
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
 
+  NSArray *fontFamilies = [UIFont familyNames];
+
+  for (int i = 0; i < [fontFamilies count]; i++)
+  {
+    NSString *fontFamily = [fontFamilies objectAtIndex:i];
+    NSArray *fontNames = [UIFont fontNamesForFamilyName:[fontFamilies objectAtIndex:i]];
+    NSLog (@"%@: %@", fontFamily, fontNames);
+  }
+  
   return YES;
 }
 

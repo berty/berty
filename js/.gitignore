@@ -119,6 +119,9 @@ android/core/core.aar
 # Optional eslint cache
 .eslintcache
 
+# xcodegen cache
+.xcodegen
+
 # VScode
 jsconfig.json
 

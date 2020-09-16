@@ -1,0 +1,171 @@
+name: Berty
+
+options:
+  deploymentTarget:
+    iOS: "12.0"
+  usesTabs: false
+  tabWidth: 2
+  indentWidth: 2
+  defaultConfig: Debug
+
+fileGroups:
+  - Berty/main.jsbundle
+
+configs:
+  Debug: debug
+  Release: release
+  Staff Debug: debug
+  Staff Release: release
+  Yolo Debug: debug
+  Yolo Release: release
+
+schemes:
+  Berty Debug:
+    templates: [BertyBaseScheme]
+    templateAttributes:
+      configName: Debug
+  Berty Release:
+    templates: [BertyBaseScheme]
+    templateAttributes:
+      configName: Release
+
+schemeTemplates:
+  BertyBaseScheme:
+    build:
+      parallelizeBuild: false
+      targets:
+        Berty: all
+    run:
+      config: ${configName}
+
+settings:
+  base:
+    SWIFT_OBJC_BRIDGING_HEADER: Berty/Berty-Bridging-Header.h
+    LD_RUNPATH_SEARCH_PATHS:
+    - /usr/lib/swift
+    - $(inherited)
+    LIBRARY_SEARCH_PATHS:
+    - $(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)
+    - $(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)
+    - $(inherited)
+    CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED: true
+    GCC_C_LANGUAGE_STANDARD: gnu99
+    CLANG_CXX_LANGUAGE_STANDARD: gnu++0x
+  configs:
+    Debug:
+      COPY_PHASE_STRIP: false
+      GCC_SYMBOLS_PRIVATE_EXTERN: false
+      MTL_ENABLE_DEBUG_INFO: true
+    Staff:
+      COPY_PHASE_STRIP: true
+      MTL_ENABLE_DEBUG_INFO: true
+    Yolo:
+      COPY_PHASE_STRIP: true
+      MTL_ENABLE_DEBUG_INFO: true
+    Release:
+      COPY_PHASE_STRIP: true
+      MTL_ENABLE_DEBUG_INFO: false
+
+targets:
+  Berty:
+    type: application
+    platform: iOS
+    scheme:
+      parallelizeBuild: false
+      configVariants:
+      - Staff
+      - Yolo
+    configFiles:
+        Debug: Configs/Debug.xcconfig
+        Release: Configs/Release.xcconfig
+
+    settings:
+      base:
+        PRODUCT_NAME: Berty
+        PRODUCT_IDENTIFIER: tech.berty.ios
+        VALID_ARCHS: arm64 arm64e armv7 armv7s
+        ENABLE_BITCODE: false
+        DEAD_CODE_STRIPPING: true
+        CLANG_ENABLE_MODULES: true
+        SWIFT_OBJC_BRIDGING_HEADER: Berty/Berty-Bridging-Header.h
+        SWIFT_OBJC_INTERFACE_HEADER_NAME: Berty-Swift.h
+        CLANG_CXX_LANGUAGE_STANDARD:
+        CLANG_CXX_LIBRARY:
+        GCC_C_LANGUAGE_STANDARD:
+        GCC_PREPROCESSOR_DEFINITIONS:
+        - $(inherited)
+        - FB_SONARKIT_ENABLED=1
+        OTHER_LDFLAGS:
+        - $(inherited)
+        - -ObjC
+        - -lc++
+      configs:
+        Debug:
+          DEVELOPMENT_TEAM: WMBQ84HN4T
+          PRODUCT_NAME: Berty Debug
+          PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).debug
+        Release:
+          DEVELOPMENT_TEAM: WMBQ84HN4T
+          PRODUCT_NAME: Berty Release
+          PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).release
+        Staff:
+          DEVELOPMENT_TEAM: WMBQ84HN4T
+          PRODUCT_NAME: Berty Staff
+          PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).staff
+        Yolo:
+          DEVELOPMENT_TEAM: GR5463T564
+          PRODUCT_NAME: Berty Yolo
+          PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).yolo
+
+    sources:
+    - Berty
+    - path: ./Configs/GoogleService
+      group: Configs
+      buildPhase: none # will be added by a script
+    - path: ../assets
+      name: OpenSans
+      group: Resources
+      includes: [ '*.ttf' ]
+    dependencies:
+    - framework: JavascriptCore.framework
+      embed: false
+      link: false
+    - sdk: Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MultipeerConnectivity.framework
+      root: DEVELOPER_DIR
+      link: true
+
+    preBuildScripts:
+    - name: Start Packager
+      script: |
+        export RCT_METRO_PORT="${RCT_METRO_PORT:=8081}"
+        echo "export RCT_METRO_PORT=${RCT_METRO_PORT}" > "${SRCROOT}/../node_modules/react-native/scripts/.packager.env"
+        if [ -z "${RCT_NO_LAUNCH_PACKAGER+xxx}" ] ; then
+          if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then
+            if ! curl -s "http://localhost:${RCT_METRO_PORT}/status" | grep -q "packager-status:running" ; then
+              echo "Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly"
+              exit 2
+            fi
+          else
+            open "$SRCROOT/../node_modules/react-native/scripts/launchPackager.command" || echo "Can't start packager automatically"
+          fi
+        fi
+      showEnvVars: false
+    - name: Copy GoogleService
+      script: |
+        PATH_TO_CONFIG=${SRCROOT}/Configs/GoogleService/GoogleService-Info-${PRODUCT_BUNDLE_IDENTIFIER}.plist
+        FILENAME_IN_BUNDLE=GoogleService-Info.plist
+        BUILD_APP_DIR=${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app
+        echo cp ${PATH_TO_CONFIG} "$BUILD_APP_DIR/${FILENAME_IN_BUNDLE}"
+        cp ${PATH_TO_CONFIG} "${BUILD_APP_DIR}/${FILENAME_IN_BUNDLE}"
+
+    postBuildScripts:
+    - name: Bundle React Native code and images
+      script: |
+        export NODE_BINARY=node
+        ../node_modules/react-native/scripts/react-native-xcode.sh
+    - name: Setup Crashlitics
+      script: "${PODS_ROOT}/FirebaseCrashlytics/run"
+
+include:
+- info.yaml
+- entitlements.yaml

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.shakebugs.react.ShakePackage;
 import com.proyecto26.inappbrowser.RNInAppBrowserPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.oblador.vectoricons.VectorIconsPackage;

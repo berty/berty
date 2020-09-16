@@ -15,6 +15,7 @@ target 'Berty' do
   # needed for lottie-react-native
   pod 'lottie-ios', :path => '../../../node_modules/lottie-ios'
   pod 'lottie-react-native', :path => '../../../node_modules/lottie-react-native'
+  pod 'react-native-shake', :path => '../node_modules/@shakebugs/react-native-shake'
 
   # TODO: remove this after closed beta / replace it by a more privacy complient solution
   pod 'Firebase/Crashlytics'
