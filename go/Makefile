@@ -235,18 +235,13 @@ doc.generate: install
 ##
 
 
-depaware.generate: ./cmd/berty/depaware.txt ./cmd/rdvp/depaware.txt
+depaware.generate: ./cmd/berty/depaware.txt
 .PHONY: depaware.generate
 
-
+depaware_pkgs = ./cmd/berty ./cmd/rdvp ./framework/bertybridge ./cmd/betabot
 ./cmd/*/depaware.txt: ../go.sum
-	$(GO) run github.com/tailscale/depaware --update ./cmd/berty
-	$(GO) run github.com/tailscale/depaware --update ./cmd/rdvp
-	$(GO) run github.com/tailscale/depaware --update ./framework/bertybridge
-
+	@set -xe; for pkg in $(depaware_pkgs); do $(GO) run github.com/tailscale/depaware --update $$pkg; done
 
 depaware.check:
-	$(GO) run github.com/tailscale/depaware --check ./cmd/berty
-	$(GO) run github.com/tailscale/depaware --check ./cmd/rdvp
-	$(GO) run github.com/tailscale/depaware --check ./framework/bertybridge
+	@set -xe; for pkg in $(depaware_pkgs); do $(GO) run github.com/tailscale/depaware --check $$pkg; done
 .PHONY: depaware.check
