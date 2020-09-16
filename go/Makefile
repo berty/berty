@@ -2,6 +2,7 @@
 ## Config
 ##
 
+
 GO ?= go
 GOPATH ?= $(HOME)/go
 GO_TEST_OPTS ?= -test.timeout=300s -race -cover -coverprofile=coverage.txt -covermode=atomic
@@ -10,104 +11,128 @@ GO_TEST_PATH ?= ./...
 BUILD_DATE ?= `date +%s`
 VCS_REF ?= `git rev-parse --short HEAD`
 VERSION ?= `git describe --tags --always`
-LDFLAGS ?= -ldflags="-X berty.tech/berty/v2/go/pkg/bertymessenger.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertymessenger.Version=$(VERSION) -X berty.tech/berty/v2/go/pkg/bertymessenger.BuildTime=$(BUILD_DATE)"
+LDFLAGS ?= -ldflags="-X berty.tech/berty/v2/go/pkg/bertymessenger.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertymessenger.Version=$(VERSION)"
+
 
 ##
 ## General rules
 ##
 
-.PHONY: test
+
 test: unittest lint tidy
+.PHONY: test
 
-.PHONY: unittest
+
 unittest: go.unittest
+.PHONY: unittest
 
-.PHONY: generate
+
 generate: pb.generate
+.PHONY: generate
 
-.PHONY: regenerate
+
 regenerate: gen.clean generate
+.PHONY: regenerate
 
-.PHONY: install
+
 install: go.install
+.PHONY: install
 
-.PHONY: clean
+
 clean:
 	rm -rf out/
+.PHONY: clean
 
-.PHONY: mini.dev
+
 mini.dev: generate
 	go run github.com/githubnemo/CompileDaemon --color=true --build="go install -v" --build-dir="./cmd/berty" --command="berty mini"
+.PHONY: mini.dev
 
-.PHONY: re
+
 re: clean generate install
+.PHONY: re
 
-.PHONY: tidy
+
 tidy: go.tidy
+.PHONY: tidy
 
-.PHONY: lint
+
 lint: go.lint
+.PHONY: lint
+
 
 ##
 ## Other rules
 ##
 
+
 check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,$(error "No $(exec) in PATH")))
 
-.PHONY: go.tidy
+
 go.tidy: pb.generate
 	$(call check-program, $(GO))
 	GO111MODULE=on $(GO) mod tidy
+.PHONY: go.tidy
 
-.PHONY: go.lint
+
 go.lint: pb.generate
 	$(call check-program, golangci-lint)
 	golangci-lint run --timeout=120s --verbose ./...
+.PHONY: go.lint
 
-.PHONY: go.unittest
+
 go.unittest: pb.generate
 	$(call check-program, $(GO))
 	$(GO_TEST_ENV) GO111MODULE=on $(GO) test $(GO_TEST_OPTS) $(GO_TEST_PATH)
+.PHONY: go.unittest
 
-.PHONY: go.unstable-tests
+
 go.unstable-tests: pb.generate
 	TEST_STABILITY=unstable go run moul.io/testman test -v -timeout=600s -retry=10 -run ^TestUnstable ./pkg/bertymessenger
 	TEST_STABILITY=unstable go run moul.io/testman test -v -test.v -timeout=600s -retry=10 -run ^TestScenario_ ./pkg/bertyprotocol # FIXME: run on other unstable functions too
 	# FIXME: run on other packages too
+.PHONY: go.unstable-tests
 
-.PHONY: go.broken-tests
+
 go.broken-tests: pb.generate
 	TEST_STABILITY=broken go run moul.io/testman test -continue-on-error -timeout=1200s -test.timeout=60s -retry=5 -run ^TestBroken ./pkg/bertymessenger
 	TEST_STABILITY=broken go run moul.io/testman test -continue-on-error -timeout=1200s -test.timeout=60s -retry=5 -run ^TestScenario_ ./pkg/bertyprotocol
+.PHONY: go.broken-tests
 
-.PHONY: go.install
+
 go.install: pb.generate
 	$(call check-program, $(GO))
 	GO111MODULE=on $(GO) install $(LDFLAGS) -v ./cmd/...
+.PHONY: go.install
 
-.PHONY: docker.build
+
 docker.build: pb.generate
 	$(call check-program, docker)
 	docker build -t bertytech/berty ..
+.PHONY: docker.build
 
-.PHONY: docker.fast
-docker.fast: args ?= -h
-docker.fast: run_opts ?=
+
 docker.fast: pb.generate
 	$(call check-program, $(GO) docker)
 	@mkdir -p out
 	GOOS=linux GOARCH=amd64 GO111MODULE=on $(GO) build -v -o ./out/berty-linux-static ./cmd/berty
-	docker run -it --rm -v $(PWD)/out/berty-linux-static:/bin/berty $(run_opts) ubuntu berty $(args)
+	docker run -it --rm -v $(PWD)/out/berty-linux-static:/bin/berty $(RUN_OPTS) ubuntu berty $(ARGS)
+.PHONY: docker.fast
+
+
+print-%:
+	@echo $* = $($*)
+
 
 ##
 ## Code gen
 ##
 
+
 protos_src := $(wildcard ../api/*.proto) $(wildcard ../api/go-internal/*.proto)
 gen_src := $(protos_src) Makefile
 gen_sum := gen.sum
 protoc_opts := -I ../api:`go list -m -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis:`go list -m -f {{.Dir}} github.com/gogo/protobuf`:/protobuf
-.PHONY: pb.generate
 pb.generate: gen.sum
 $(gen_sum): $(gen_src)
 	$(call check-program, shasum docker $(GO))
@@ -127,8 +152,9 @@ $(gen_sum): $(gen_src)
 	    -xec 'make generate_local'; \
 	    $(MAKE) tidy \
 	)
+.PHONY: pb.generate
 
-.PHONY: generate_local
+
 generate_local:
 	$(call check-program, shasum protoc)
 	go run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/bertymessenger.proto -o ../api/bertymessenger.yaml
@@ -146,16 +172,19 @@ generate_local:
 	go run golang.org/x/tools/cmd/goimports -w ./pkg ./cmd ./internal
 	shasum $(gen_src) | sort -k 2 > $(gen_sum).tmp
 	mv $(gen_sum).tmp $(gen_sum)
+.PHONY: generate_local
 
-.PHONY: gen.clean
+
 gen.clean:
 	rm -f gen.sum $(wildcard */*/*.pb.go) $(wildcard */*/*pb_test.go) $(wildcard */*/*pb.gw.go)
+.PHONY: gen.clean
+
 
 ##
 ## Doc gen
 ##
 
-.PHONY: doc.generate
+
 doc.generate: install
 	mkdir -p .tmp
 	GO111MODULE=off go get github.com/campoy/embedmd
@@ -183,10 +212,4 @@ doc.generate: install
 
 	embedmd -w README.md
 	#rm -rf .tmp
-
-##
-## Dev
-##
-
-print-%:
-	@echo $* = $($*)
+.PHONY: doc.generate
