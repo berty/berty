@@ -142,6 +142,13 @@
     - [ServicesTokenList.Reply](#berty.types.v1.ServicesTokenList.Reply)
     - [ServicesTokenList.Request](#berty.types.v1.ServicesTokenList.Request)
     - [ShareableContact](#berty.types.v1.ShareableContact)
+    - [SystemInfo](#berty.types.v1.SystemInfo)
+    - [SystemInfo.OrbitDB](#berty.types.v1.SystemInfo.OrbitDB)
+    - [SystemInfo.OrbitDB.ReplicationStatus](#berty.types.v1.SystemInfo.OrbitDB.ReplicationStatus)
+    - [SystemInfo.P2P](#berty.types.v1.SystemInfo.P2P)
+    - [SystemInfo.Process](#berty.types.v1.SystemInfo.Process)
+    - [SystemInfo.Reply](#berty.types.v1.SystemInfo.Reply)
+    - [SystemInfo.Request](#berty.types.v1.SystemInfo.Request)
   
     - [ContactState](#berty.types.v1.ContactState)
     - [DebugInspectGroupLogType](#berty.types.v1.DebugInspectGroupLogType)
@@ -198,6 +205,7 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | DebugListGroups | [.berty.types.v1.DebugListGroups.Request](#berty.types.v1.DebugListGroups.Request) | [.berty.types.v1.DebugListGroups.Reply](#berty.types.v1.DebugListGroups.Reply) stream |  |
 | DebugInspectGroupStore | [.berty.types.v1.DebugInspectGroupStore.Request](#berty.types.v1.DebugInspectGroupStore.Request) | [.berty.types.v1.DebugInspectGroupStore.Reply](#berty.types.v1.DebugInspectGroupStore.Reply) stream |  |
 | DebugGroup | [.berty.types.v1.DebugGroup.Request](#berty.types.v1.DebugGroup.Request) | [.berty.types.v1.DebugGroup.Reply](#berty.types.v1.DebugGroup.Reply) |  |
+| SystemInfo | [.berty.types.v1.SystemInfo.Request](#berty.types.v1.SystemInfo.Request) | [.berty.types.v1.SystemInfo.Reply](#berty.types.v1.SystemInfo.Reply) |  |
 | AuthServiceInitFlow | [.berty.types.v1.AuthServiceInitFlow.Request](#berty.types.v1.AuthServiceInitFlow.Request) | [.berty.types.v1.AuthServiceInitFlow.Reply](#berty.types.v1.AuthServiceInitFlow.Reply) | AuthServiceInitFlow Initialize an authentication flow |
 | AuthServiceCompleteFlow | [.berty.types.v1.AuthServiceCompleteFlow.Request](#berty.types.v1.AuthServiceCompleteFlow.Request) | [.berty.types.v1.AuthServiceCompleteFlow.Reply](#berty.types.v1.AuthServiceCompleteFlow.Reply) | AuthServiceCompleteFlow Completes an authentication flow |
 | ServicesTokenList | [.berty.types.v1.ServicesTokenList.Request](#berty.types.v1.ServicesTokenList.Request) | [.berty.types.v1.ServicesTokenList.Reply](#berty.types.v1.ServicesTokenList.Reply) stream | ServicesTokenList Retrieves the list of services tokens |
@@ -1188,6 +1196,79 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | pk | [bytes](#bytes) |  | pk is the account to send a contact request to |
 | public_rendezvous_seed | [bytes](#bytes) |  | public_rendezvous_seed is the rendezvous seed used by the account to send a contact request to |
 | metadata | [bytes](#bytes) |  | metadata is the metadata specific to the app to identify the contact for the request |
+
+<a name="berty.types.v1.SystemInfo"></a>
+
+### SystemInfo
+
+<a name="berty.types.v1.SystemInfo.OrbitDB"></a>
+
+### SystemInfo.OrbitDB
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| account_metadata | [SystemInfo.OrbitDB.ReplicationStatus](#berty.types.v1.SystemInfo.OrbitDB.ReplicationStatus) |  |  |
+
+<a name="berty.types.v1.SystemInfo.OrbitDB.ReplicationStatus"></a>
+
+### SystemInfo.OrbitDB.ReplicationStatus
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| progress | [int64](#int64) |  |  |
+| maximum | [int64](#int64) |  |  |
+| buffered | [int64](#int64) |  |  |
+| queued | [int64](#int64) |  |  |
+
+<a name="berty.types.v1.SystemInfo.P2P"></a>
+
+### SystemInfo.P2P
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| connected_peers | [int64](#int64) |  |  |
+
+<a name="berty.types.v1.SystemInfo.Process"></a>
+
+### SystemInfo.Process
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| rlimit_cur | [uint64](#uint64) |  |  |
+| num_goroutine | [int64](#int64) |  |  |
+| nofile | [int64](#int64) |  |  |
+| too_many_open_files | [bool](#bool) |  |  |
+| started_at | [int64](#int64) |  |  |
+| num_cpu | [int64](#int64) |  |  |
+| go_version | [string](#string) |  |  |
+| operating_system | [string](#string) |  |  |
+| host_name | [string](#string) |  |  |
+| arch | [string](#string) |  |  |
+| version | [string](#string) |  |  |
+| vcs_ref | [string](#string) |  |  |
+| self_rusage | [string](#string) |  |  |
+| children_rusage | [string](#string) |  |  |
+| rlimit_max | [uint64](#uint64) |  |  |
+| pid | [int64](#int64) |  |  |
+| ppid | [int64](#int64) |  |  |
+| priority | [int64](#int64) |  |  |
+| uid | [int64](#int64) |  |  |
+| working_dir | [string](#string) |  |  |
+
+<a name="berty.types.v1.SystemInfo.Reply"></a>
+
+### SystemInfo.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| process | [SystemInfo.Process](#berty.types.v1.SystemInfo.Process) |  |  |
+| p2p | [SystemInfo.P2P](#berty.types.v1.SystemInfo.P2P) |  |  |
+| orbitdb | [SystemInfo.OrbitDB](#berty.types.v1.SystemInfo.OrbitDB) |  |  |
+| warns | [string](#string) | repeated |  |
+
+<a name="berty.types.v1.SystemInfo.Request"></a>
+
+### SystemInfo.Request
 
  
 

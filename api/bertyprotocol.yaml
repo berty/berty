@@ -87,6 +87,9 @@ http:
  - selector: berty.protocol.v1.ProtocolService.DebugGroup
    post: /berty.protocol.v1/ProtocolService/DebugGroup
    body: "*"
+ - selector: berty.protocol.v1.ProtocolService.SystemInfo
+   post: /berty.protocol.v1/ProtocolService/SystemInfo
+   body: "*"
  - selector: berty.protocol.v1.ProtocolService.AuthServiceInitFlow
    post: /berty.protocol.v1/ProtocolService/AuthServiceInitFlow
    body: "*"

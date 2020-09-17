@@ -24,6 +24,12 @@ func initDB(db *gorm.DB) error {
 	return nil
 }
 
+func dbModelRowsCount(db *gorm.DB, model interface{}) (int64, error) {
+	var count int64
+	err := db.Model(model).Count(&count).Error
+	return count, err
+}
+
 func dropAllTables(db *gorm.DB) error {
 	tables := []string{}
 	if err := db.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").Scan(&tables).Error; err != nil {

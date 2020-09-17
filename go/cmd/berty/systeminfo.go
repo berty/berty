@@ -38,6 +38,11 @@ func systemInfoCommand() *ffcli.Command {
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
+
+				if ret.Messenger.ProtocolInSameProcess {
+					ret.Messenger.Process = nil
+				}
+
 				if refreshEveryFlag == 0 {
 					fmt.Println(godev.PrettyJSONPB(ret))
 					break

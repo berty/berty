@@ -90,6 +90,7 @@ service ProtocolService {
 
   rpc DebugGroup (types.v1.DebugGroup.Request) returns (types.v1.DebugGroup.Reply);
 
+  rpc SystemInfo(types.v1.SystemInfo.Request) returns (types.v1.SystemInfo.Reply);
 
   // AuthServiceInitFlow Initialize an authentication flow
   rpc AuthServiceInitFlow (types.v1.AuthServiceInitFlow.Request) returns (types.v1.AuthServiceInitFlow.Reply);
@@ -99,7 +100,7 @@ service ProtocolService {
 
   // ServicesTokenList Retrieves the list of services tokens
   rpc ServicesTokenList (types.v1.ServicesTokenList.Request) returns (stream types.v1.ServicesTokenList.Reply);
-  
+
   // ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents
   rpc ReplicationServiceRegisterGroup (types.v1.ReplicationServiceRegisterGroup.Request) returns (types.v1.ReplicationServiceRegisterGroup.Reply);
 }

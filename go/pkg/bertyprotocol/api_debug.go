@@ -2,15 +2,22 @@ package bertyprotocol
 
 import (
 	"fmt"
+	"os"
+	"runtime"
+	"syscall"
 
 	"context"
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/stores/operation"
 	"github.com/gogo/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"go.uber.org/multierr"
 	"go.uber.org/zap"
+	"moul.io/godev"
+	"moul.io/openfiles"
 )
 
 func (s *service) DebugListGroups(req *bertytypes.DebugListGroups_Request, srv ProtocolService_DebugListGroupsServer) error {
@@ -168,4 +175,102 @@ func (s *service) DebugGroup(ctx context.Context, request *bertytypes.DebugGroup
 	}
 
 	return rep, nil
+}
+
+func SystemInfoProcess() (*bertytypes.SystemInfo_Process, error) {
+	var errs error
+
+	// rlimit
+	rlimitNofile := syscall.Rlimit{}
+	err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rlimitNofile)
+	errs = multierr.Append(errs, err)
+
+	// rusage
+	selfUsage := syscall.Rusage{}
+	err = syscall.Getrusage(syscall.RUSAGE_SELF, &selfUsage)
+	errs = multierr.Append(errs, err)
+	childrenUsage := syscall.Rusage{}
+	err = syscall.Getrusage(syscall.RUSAGE_CHILDREN, &childrenUsage)
+	errs = multierr.Append(errs, err)
+
+	// openfiles
+	nofile, nofileErr := openfiles.Count()
+	errs = multierr.Append(errs, nofileErr)
+
+	// hostname
+	hn, err := os.Hostname()
+	errs = multierr.Append(errs, err)
+
+	// process priority
+	prio, err := syscall.Getpriority(syscall.PRIO_PROCESS, 0)
+	errs = multierr.Append(errs, err)
+
+	// working dir
+	wd, err := syscall.Getwd()
+	errs = multierr.Append(errs, err)
+
+	reply := bertytypes.SystemInfo_Process{
+		SelfRusage:       godev.JSON(selfUsage),
+		ChildrenRusage:   godev.JSON(childrenUsage),
+		RlimitCur:        rlimitNofile.Cur,
+		Nofile:           nofile,
+		TooManyOpenFiles: openfiles.IsTooManyError(nofileErr),
+		NumCPU:           int64(runtime.NumCPU()),
+		GoVersion:        runtime.Version(),
+		HostName:         hn,
+		NumGoroutine:     int64(runtime.NumGoroutine()),
+		OperatingSystem:  runtime.GOOS,
+		Arch:             runtime.GOARCH,
+		Version:          bertyversion.Version,
+		VcsRef:           bertyversion.VcsRef,
+		RlimitMax:        rlimitNofile.Max,
+		Priority:         int64(prio),
+		PID:              int64(syscall.Getpid()),
+		UID:              int64(syscall.Getuid()),
+		PPID:             int64(syscall.Getppid()),
+		WorkingDir:       wd,
+	}
+
+	return &reply, errs
+}
+
+func (s *service) SystemInfo(ctx context.Context, request *bertytypes.SystemInfo_Request) (*bertytypes.SystemInfo_Reply, error) {
+	reply := bertytypes.SystemInfo_Reply{}
+
+	// process
+	process, errs := SystemInfoProcess()
+	reply.Process = process
+	reply.Process.StartedAt = s.startedAt.Unix()
+
+	// p2p
+	reply.P2P = &bertytypes.SystemInfo_P2P{}
+	if api := s.IpfsCoreAPI(); api != nil {
+		peers, err := api.Swarm().Peers(ctx)
+		reply.P2P.ConnectedPeers = int64(len(peers))
+		errs = multierr.Append(errs, err)
+	} else {
+		errs = multierr.Append(errs, fmt.Errorf("no such IPFS core API"))
+	}
+
+	// OrbitDB
+	status := s.accountGroup.metadataStore.ReplicationStatus()
+	reply.OrbitDB = &bertytypes.SystemInfo_OrbitDB{
+		AccountMetadata: &bertytypes.SystemInfo_OrbitDB_ReplicationStatus{
+			Progress: int64(status.GetProgress()),
+			Maximum:  int64(status.GetMax()),
+			Buffered: int64(status.GetBuffered()),
+			Queued:   int64(status.GetQueued()),
+		},
+	}
+	// FIXME: compute more stores
+
+	// warns
+	if errs != nil {
+		reply.Warns = []string{}
+		for _, err := range multierr.Errors(errs) {
+			reply.Warns = append(reply.Warns, err.Error())
+		}
+	}
+
+	return &reply, nil
 }

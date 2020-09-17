@@ -1108,6 +1108,38 @@
           "ProtocolService"
         ]
       }
+    },
+    "/berty.protocol.v1/ProtocolService/SystemInfo": {
+      "post": {
+        "operationId": "ProtocolService_SystemInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SystemInfoReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1SystemInfoRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
     }
   },
   "definitions": {
@@ -1120,6 +1152,120 @@
         "Unavailable"
       ],
       "default": "Unknown"
+    },
+    "OrbitDBReplicationStatus": {
+      "type": "object",
+      "properties": {
+        "progress": {
+          "type": "string",
+          "format": "int64"
+        },
+        "maximum": {
+          "type": "string",
+          "format": "int64"
+        },
+        "buffered": {
+          "type": "string",
+          "format": "int64"
+        },
+        "queued": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "SystemInfoOrbitDB": {
+      "type": "object",
+      "properties": {
+        "account_metadata": {
+          "$ref": "#/definitions/OrbitDBReplicationStatus"
+        }
+      }
+    },
+    "SystemInfoP2P": {
+      "type": "object",
+      "properties": {
+        "connected_peers": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "SystemInfoProcess": {
+      "type": "object",
+      "properties": {
+        "rlimit_cur": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "num_goroutine": {
+          "type": "string",
+          "format": "int64"
+        },
+        "nofile": {
+          "type": "string",
+          "format": "int64"
+        },
+        "too_many_open_files": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "started_at": {
+          "type": "string",
+          "format": "int64"
+        },
+        "num_cpu": {
+          "type": "string",
+          "format": "int64"
+        },
+        "go_version": {
+          "type": "string"
+        },
+        "operating_system": {
+          "type": "string"
+        },
+        "host_name": {
+          "type": "string"
+        },
+        "arch": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "vcs_ref": {
+          "type": "string"
+        },
+        "self_rusage": {
+          "type": "string"
+        },
+        "children_rusage": {
+          "type": "string"
+        },
+        "rlimit_max": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "pid": {
+          "type": "string",
+          "format": "int64"
+        },
+        "ppid": {
+          "type": "string",
+          "format": "int64"
+        },
+        "priority": {
+          "type": "string",
+          "format": "int64"
+        },
+        "uid": {
+          "type": "string",
+          "format": "int64"
+        },
+        "working_dir": {
+          "type": "string"
+        }
+      }
     },
     "protobufAny": {
       "type": "object",
@@ -2013,6 +2159,29 @@
           "title": "metadata is the metadata specific to the app to identify the contact for the request"
         }
       }
+    },
+    "v1SystemInfoReply": {
+      "type": "object",
+      "properties": {
+        "process": {
+          "$ref": "#/definitions/SystemInfoProcess"
+        },
+        "p2p": {
+          "$ref": "#/definitions/SystemInfoP2P"
+        },
+        "orbitdb": {
+          "$ref": "#/definitions/SystemInfoOrbitDB"
+        },
+        "warns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1SystemInfoRequest": {
+      "type": "object"
     }
   }
 }

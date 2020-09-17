@@ -13,6 +13,7 @@ import (
 	"github.com/atotto/clipboard"
 	cid "github.com/ipfs/go-cid"
 	qrterminal "github.com/mdp/qrterminal/v3"
+	"moul.io/godev"
 )
 
 type command struct {
@@ -302,25 +303,21 @@ func debugIPFSCommand(ctx context.Context, v *groupView, _ string) error {
 }
 
 func debugSystemCommand(ctx context.Context, v *groupView, _ string) error {
-	config, err := v.v.messenger.SystemInfo(ctx, &bertymessenger.SystemInfo_Request{})
+	info, err := v.v.messenger.SystemInfo(ctx, &bertymessenger.SystemInfo_Request{})
 	if err != nil {
 		return err
 	}
 
 	for k, val := range map[string]interface{}{
-		"StartedAt      ": config.StartedAt,
-		"NumCPU         ": config.NumCPU,
-		"GoVersion      ": config.GoVersion,
-		"NumGoroutine   ": config.NumGoroutine,
-		"OperatingSystem": config.OperatingSystem,
-		"HostName       ": config.HostName,
-		"Arch           ": config.Arch,
-		"Version        ": config.Version,
-		"VcsRef         ": config.VcsRef,
+		"Protocol  Process  ": godev.JSONPB(info.Protocol.Process),
+		"Protocol  P2P      ": godev.JSONPB(info.Protocol.P2P),
+		"Protocol  ODB      ": godev.JSONPB(info.Protocol.OrbitDB),
+		"Messenger Process  ": godev.JSONPB(info.Messenger.Process),
+		"Messenger DB       ": godev.JSONPB(info.Messenger.DB),
 	} {
 		v.messages.Append(&historyMessage{
 			messageType: messageTypeMeta,
-			payload:     []byte(fmt.Sprintf("%s: %v", k, val)),
+			payload:     []byte(fmt.Sprintf("%s | %v", k, val)),
 		})
 	}
 

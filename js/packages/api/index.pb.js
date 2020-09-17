@@ -510,6 +510,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "types.v1.DebugGroup.Request",
                     responseType: "types.v1.DebugGroup.Reply"
                   },
+                  SystemInfo: {
+                    requestType: "types.v1.SystemInfo.Request",
+                    responseType: "types.v1.SystemInfo.Reply"
+                  },
                   AuthServiceInitFlow: {
                     requestType: "types.v1.AuthServiceInitFlow.Request",
                     responseType: "types.v1.AuthServiceInitFlow.Reply"
@@ -2106,6 +2110,175 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     }
                   }
                 }
+              },
+              SystemInfo: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      process: {
+                        type: "Process",
+                        id: 1
+                      },
+                      p2p: {
+                        type: "P2P",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "P2P"
+                        }
+                      },
+                      orbitdb: {
+                        type: "OrbitDB",
+                        id: 3,
+                        options: {
+                          "(gogoproto.customname)": "OrbitDB"
+                        }
+                      },
+                      warns: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 4
+                      }
+                    }
+                  },
+                  OrbitDB: {
+                    fields: {
+                      accountMetadata: {
+                        type: "ReplicationStatus",
+                        id: 1
+                      }
+                    },
+                    nested: {
+                      ReplicationStatus: {
+                        fields: {
+                          progress: {
+                            type: "int64",
+                            id: 1
+                          },
+                          maximum: {
+                            type: "int64",
+                            id: 2
+                          },
+                          buffered: {
+                            type: "int64",
+                            id: 3
+                          },
+                          queued: {
+                            type: "int64",
+                            id: 4
+                          }
+                        }
+                      }
+                    }
+                  },
+                  P2P: {
+                    fields: {
+                      connectedPeers: {
+                        type: "int64",
+                        id: 1
+                      }
+                    }
+                  },
+                  Process: {
+                    fields: {
+                      rlimitCur: {
+                        type: "uint64",
+                        id: 1
+                      },
+                      numGoroutine: {
+                        type: "int64",
+                        id: 2
+                      },
+                      nofile: {
+                        type: "int64",
+                        id: 3
+                      },
+                      tooManyOpenFiles: {
+                        type: "bool",
+                        id: 4
+                      },
+                      startedAt: {
+                        type: "int64",
+                        id: 5
+                      },
+                      numCpu: {
+                        type: "int64",
+                        id: 6,
+                        options: {
+                          "(gogoproto.customname)": "NumCPU"
+                        }
+                      },
+                      goVersion: {
+                        type: "string",
+                        id: 7
+                      },
+                      operatingSystem: {
+                        type: "string",
+                        id: 8
+                      },
+                      hostName: {
+                        type: "string",
+                        id: 9
+                      },
+                      arch: {
+                        type: "string",
+                        id: 10
+                      },
+                      version: {
+                        type: "string",
+                        id: 11
+                      },
+                      vcsRef: {
+                        type: "string",
+                        id: 12
+                      },
+                      selfRusage: {
+                        type: "string",
+                        id: 13
+                      },
+                      childrenRusage: {
+                        type: "string",
+                        id: 14
+                      },
+                      rlimitMax: {
+                        type: "uint64",
+                        id: 15
+                      },
+                      pid: {
+                        type: "int64",
+                        id: 16,
+                        options: {
+                          "(gogoproto.customname)": "PID"
+                        }
+                      },
+                      ppid: {
+                        type: "int64",
+                        id: 17,
+                        options: {
+                          "(gogoproto.customname)": "PPID"
+                        }
+                      },
+                      priority: {
+                        type: "int64",
+                        id: 18
+                      },
+                      uid: {
+                        type: "int64",
+                        id: 19,
+                        options: {
+                          "(gogoproto.customname)": "UID"
+                        }
+                      },
+                      workingDir: {
+                        type: "string",
+                        id: 20
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -2650,76 +2823,65 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Reply: {
                     fields: {
-                      rlimitCur: {
-                        type: "uint64",
+                      protocol: {
+                        type: "berty.types.v1.SystemInfo.Reply",
                         id: 1
                       },
-                      numGoroutine: {
+                      messenger: {
+                        type: "Messenger",
+                        id: 2
+                      }
+                    }
+                  },
+                  Messenger: {
+                    fields: {
+                      process: {
+                        type: "berty.types.v1.SystemInfo.Process",
+                        id: 1
+                      },
+                      warns: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 2
+                      },
+                      protocolInSameProcess: {
+                        type: "bool",
+                        id: 3
+                      },
+                      db: {
+                        type: "DB",
+                        id: 4,
+                        options: {
+                          "(gogoproto.customname)": "DB"
+                        }
+                      }
+                    }
+                  },
+                  DB: {
+                    fields: {
+                      accounts: {
+                        type: "int64",
+                        id: 1
+                      },
+                      contacts: {
                         type: "int64",
                         id: 2
                       },
-                      connectedPeers: {
+                      conversations: {
                         type: "int64",
                         id: 3
                       },
-                      nofile: {
+                      interactions: {
                         type: "int64",
                         id: 4
                       },
-                      tooManyOpenFiles: {
-                        type: "bool",
+                      members: {
+                        type: "int64",
                         id: 5
                       },
-                      startedAt: {
+                      devices: {
                         type: "int64",
-                        id: 10
-                      },
-                      numCpu: {
-                        type: "int64",
-                        id: 11,
-                        options: {
-                          "(gogoproto.customname)": "NumCPU"
-                        }
-                      },
-                      goVersion: {
-                        type: "string",
-                        id: 12
-                      },
-                      operatingSystem: {
-                        type: "string",
-                        id: 13
-                      },
-                      hostName: {
-                        type: "string",
-                        id: 14
-                      },
-                      arch: {
-                        type: "string",
-                        id: 15
-                      },
-                      version: {
-                        type: "string",
-                        id: 16
-                      },
-                      vcsRef: {
-                        type: "string",
-                        id: 17
-                      },
-                      buildTime: {
-                        type: "int64",
-                        id: 18
-                      },
-                      selfRusage: {
-                        type: "string",
-                        id: 19
-                      },
-                      childrenRusage: {
-                        type: "string",
-                        id: 20
-                      },
-                      rlimitMax: {
-                        type: "uint64",
-                        id: 21
+                        id: 6
                       }
                     }
                   }

@@ -47,6 +47,7 @@ type service struct {
 	lock           sync.RWMutex
 	authSession    atomic.Value
 	close          func() error
+	startedAt      time.Time
 }
 
 // Opts contains optional configuration flags for building a new Client
@@ -179,6 +180,7 @@ func New(ctx context.Context, opts Opts) (Service, error) {
 		deviceKeystore: opts.DeviceKeystore,
 		close:          opts.close,
 		accountGroup:   acc,
+		startedAt:      time.Now(),
 		groups: map[string]*bertytypes.Group{
 			string(acc.Group().PublicKey): acc.Group(),
 		},
