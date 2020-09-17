@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"testing"
 
-	orbitdb "berty.tech/go-orbit-db"
-	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
@@ -24,6 +22,8 @@ import (
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/tracer"
+	orbitdb "berty.tech/go-orbit-db"
+	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 )
 
 type TestingProtocol struct {
