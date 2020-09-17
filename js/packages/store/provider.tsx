@@ -104,13 +104,11 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 		case 'DELETE_FAKE_DATA':
 			state.conversations = pickBy(state.conversations, (conv) => !conv.fake)
 			state.contacts = pickBy(state.contacts, (contact) => !contact.fake)
-			state.interactions = pickBy(
-				mapValues(state.interactions, (intes) => pickBy(intes, (inte) => !inte.fake)),
-				(intes) => intes.length > 0,
+			state.interactions = mapValues(state.interactions, (intes) =>
+				pickBy(intes, (inte) => !inte.fake),
 			)
-			state.members = pickBy(
-				mapValues(state.members, (members) => pickBy(members, (member) => !member.fake)),
-				(members) => members.length > 0,
+			state.members = mapValues(state.members, (members) =>
+				pickBy(members, (member) => !member.fake),
 			)
 			break
 		case 'SET_DAEMON_ADDRESS':
