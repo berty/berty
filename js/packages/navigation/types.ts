@@ -41,7 +41,6 @@ export namespace ScreenProps {
 		export type AboutBerty = RouteProps<void>
 		export type TermsOfUse = RouteProps<void>
 		export type DevTools = RouteProps<void>
-		export type Network = RouteProps<void>
 		export type IpfsWebUI = RouteProps<void>
 		export type SystemInfo = RouteProps<void>
 		export type FakeData = RouteProps<void>
@@ -97,7 +96,6 @@ export namespace Routes {
 		TermsOfUse = 'Settings.TermsOfUse',
 		DevTools = 'Settings.DevTools',
 		SystemInfo = 'Settings.SystemInfo',
-		Network = 'Settings.Network',
 		IpfsWebUI = 'Settings.IpfsWebUI',
 		DevText = 'Settings.DevText',
 		FakeData = 'Settings.FakeData',
