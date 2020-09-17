@@ -13,10 +13,7 @@ builds:
       #- darwin
       #- windows
     goarch:
-      #- 386
       - amd64
-      #- arm
-      #- arm64
     dir: go/cmd/berty
     ignore:
       -
@@ -25,7 +22,7 @@ builds:
     flags:
       - "-a"
     ldflags:
-      - '-extldflags "-static" -X berty.tech/berty/v2/go/pkg/bertymessenger.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertymessenger.Version=$(VERSION) -X berty.tech/berty/v2/go/pkg/bertymessenger.BuildTime=$(BUILD_DATE)'
+      - '-extldflags "-static" -X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)'
 checksum:
   name_template: '{{.ProjectName}}_checksums.txt'
 changelog:
@@ -50,15 +47,3 @@ archives:
       goos: windows
       format: zip
     wrap_in_directory: true
-# generate .deb and .rpm (disabled for now)
-#nfpms:
-#  -
-#    file_name_template: '{{ .ProjectName }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
-#    homepage:  https://github.com/berty/berty
-#    description: "berty"
-#    maintainer: "Berty Technologies <https://berty.tech>"
-#    license: "Apache-2.0 OR MIT"
-#    vendor: berty
-#    formats:
-#      - deb
-#      - rpm

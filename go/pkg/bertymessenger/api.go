@@ -13,6 +13,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/discordlog"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/gogo/protobuf/proto"
 	"go.uber.org/zap"
@@ -336,8 +337,8 @@ func (svc *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*S
 		NumGoroutine:     int64(runtime.NumGoroutine()),
 		OperatingSystem:  runtime.GOOS,
 		Arch:             runtime.GOARCH,
-		Version:          Version,
-		VcsRef:           VcsRef,
+		Version:          bertyversion.Version,
+		VcsRef:           bertyversion.VcsRef,
 		RlimitMax:        rlimitNofile.Max,
 	}
 	if BuildTime != "n/a" {

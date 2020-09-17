@@ -317,7 +317,6 @@ func debugSystemCommand(ctx context.Context, v *groupView, _ string) error {
 		"Arch           ": config.Arch,
 		"Version        ": config.Version,
 		"VcsRef         ": config.VcsRef,
-		"BuildTime      ": config.BuildTime,
 	} {
 		v.messages.Append(&historyMessage{
 			messageType: messageTypeMeta,
