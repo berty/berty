@@ -16,6 +16,7 @@ func replicationServerCommand() *ffcli.Command {
 	)
 
 	manager.SetupLocalProtocolServerFlags(fs)
+	manager.SetupDefaultGRPCListenersFlags(fs)
 	// fs.StringVar(&pkStr, "pk", pkStr, "auth token sig pk")
 	// fs.StringVar(&secretStr, "secret", secretStr, "auth tokens secret")
 
