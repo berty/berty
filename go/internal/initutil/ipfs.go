@@ -30,6 +30,8 @@ import (
 
 func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.Protocol.IPFSListeners, "p2p.ipfs-listeners", "/ip4/127.0.0.1/tcp/0", "IPFS listeners")
+	fs.StringVar(&m.Node.Protocol.Announce, "p2p.ipfs-announce", "", "IPFS announce addrs")
+	fs.StringVar(&m.Node.Protocol.NoAnnounce, "p2p.ipfs-no-announce", "", "IPFS exclude announce addrs")
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute, "maximum p2p backoff duration")
 	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "local discovery")
@@ -73,10 +75,23 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	if m.Node.Protocol.IPFSListeners != "" {
 		apiAddrs = strings.Split(m.Node.Protocol.IPFSListeners, ",")
 	}
+
+	var announce = []string{}
+	if m.Node.Protocol.Announce != "" {
+		announce = strings.Split(m.Node.Protocol.Announce, ",")
+	}
+
+	var noannounce = []string{}
+	if m.Node.Protocol.NoAnnounce != "" {
+		noannounce = strings.Split(m.Node.Protocol.NoAnnounce, ",")
+	}
+
 	var opts = ipfsutil.CoreAPIConfig{
 		SwarmAddrs:        config.BertyDev.DefaultSwarmAddrs,
 		APIAddrs:          apiAddrs,
 		APIConfig:         config.BertyDev.APIConfig,
+		Announce:          announce,
+		NoAnnounce:        noannounce,
 		DisableCorePubSub: true,
 		BootstrapAddrs:    config.BertyDev.Bootstrap,
 		HostConfig: func(h host.Host, _ routing.Routing) error {

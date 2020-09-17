@@ -35,6 +35,8 @@ type CoreAPIConfig struct {
 	BootstrapAddrs []string
 	SwarmAddrs     []string
 	APIAddrs       []string
+	Announce       []string
+	NoAnnounce     []string
 	APIConfig      config.API
 
 	DisableCorePubSub bool
@@ -152,12 +154,20 @@ func updateRepoConfig(repo ipfs_repo.Repo, cfg *CoreAPIConfig) error {
 		rcfg.Bootstrap = cfg.BootstrapAddrs
 	}
 
-	if len(cfg.SwarmAddrs) != 0 {
+	if len(cfg.SwarmAddrs) > 0 {
 		rcfg.Addresses.Swarm = cfg.SwarmAddrs
 	}
 
-	if len(cfg.APIAddrs) != 0 {
+	if len(cfg.APIAddrs) > 0 {
 		rcfg.Addresses.API = cfg.APIAddrs
+	}
+
+	if len(cfg.Announce) > 0 {
+		rcfg.Addresses.Announce = cfg.Announce
+	}
+
+	if len(cfg.NoAnnounce) > 0 {
+		rcfg.Addresses.NoAnnounce = cfg.NoAnnounce
 	}
 
 	if cfg.APIConfig.HTTPHeaders != nil {
