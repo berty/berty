@@ -27,7 +27,7 @@ unittest: go.unittest
 .PHONY: unittest
 
 
-generate: pb.generate depaware.generate
+generate: pb.generate
 .PHONY: generate
 
 
@@ -200,7 +200,10 @@ gen.clean:
 ##
 
 
-doc.generate: install
+doc.generate: md.generate depaware.generate
+.PHONY: doc.generate
+
+md.generate: install
 	mkdir -p .tmp
 	GO111MODULE=off go get github.com/campoy/embedmd
 
@@ -238,7 +241,7 @@ doc.generate: install
 
 	embedmd -w README.md
 	#rm -rf .tmp
-.PHONY: doc.generate
+.PHONY: md.generate
 
 
 ##
