@@ -75,7 +75,9 @@ export const SystemInfo: React.FC<ScreenProps.Settings.SystemInfo> = () => {
 							<Text style={{ color: 'red' }}>{error.toString()}</Text>
 						</View>
 					) : (
-						<SystemInfoList systemInfo={systemInfo} />
+						<Text selectable={true} style={{ height: '95%' }}>
+							{JSON.stringify(systemInfo, null, 2)}
+						</Text>
 					)
 				) : (
 					<View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 100 }}>
