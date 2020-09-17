@@ -8,6 +8,8 @@ import (
 	"testing"
 	"time"
 
+	orbitdb "berty.tech/go-orbit-db"
+	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
@@ -19,9 +21,6 @@ import (
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
-	orbitdb "berty.tech/go-orbit-db"
-	"berty.tech/go-orbit-db/pubsub/directchannel"
-	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 )
 
 func newTestOrbitDB(ctx context.Context, t *testing.T, logger *zap.Logger, node ipfsutil.CoreAPIMock, baseDS datastore.Batching) *BertyOrbitDB {
@@ -38,9 +37,8 @@ func newTestOrbitDB(ctx context.Context, t *testing.T, logger *zap.Logger, node 
 	odb, err := NewBertyOrbitDB(ctx, api, &NewOrbitDBOptions{
 		Datastore: baseDS,
 		NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
-			Logger:               logger,
-			PubSub:               pubsubraw.NewPubSub(node.PubSub(), selfKey.ID(), logger, nil),
-			DirectChannelFactory: directchannel.InitDirectChannelFactory(node.MockNode().PeerHost),
+			Logger: logger,
+			PubSub: pubsubraw.NewPubSub(node.PubSub(), selfKey.ID(), logger, nil),
 		},
 	})
 	require.NoError(t, err)

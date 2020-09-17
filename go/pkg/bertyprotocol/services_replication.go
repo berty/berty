@@ -34,6 +34,8 @@ func (s *replicationService) GroupRegister(token string, group *bertytypes.Group
 		return err
 	}
 
+	s.logger.Info("registering group", zap.Binary("group_pk", group.PublicKey))
+
 	return s.GroupSubscribe(group)
 }
 

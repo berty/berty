@@ -10,7 +10,6 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/baseorbitdb"
-	"berty.tech/go-orbit-db/pubsub/directchannel"
 	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 )
 
@@ -52,18 +51,17 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 
 	opts := &bertyprotocol.NewOrbitDBOptions{
 		NewOrbitDBOptions: baseorbitdb.NewOrbitDBOptions{
-			Cache:                cache,
-			Directory:            &orbitDirectory,
-			Logger:               logger,
-			Tracer:               tracer.New("berty-orbitdb"),
-			DirectChannelFactory: directchannel.InitDirectChannelFactory(node.PeerHost),
+			Cache:     cache,
+			Directory: &orbitDirectory,
+			Logger:    logger,
+			Tracer:    tracer.New("berty-orbitdb"),
 		},
 		Datastore:       rootDS,
 		MessageKeystore: messageDS,
 		DeviceKeystore:  deviceKS,
 	}
 
-	if opts.PubSub != nil {
+	if node.PubSub != nil {
 		self, err := ipfs.Key().Self(m.ctx)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)

@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"testing"
 
+	orbitdb "berty.tech/go-orbit-db"
+	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
@@ -22,9 +24,6 @@ import (
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/tracer"
-	orbitdb "berty.tech/go-orbit-db"
-	"berty.tech/go-orbit-db/pubsub/directchannel"
-	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 )
 
 type TestingProtocol struct {
@@ -70,9 +69,8 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds
 
 	odb, err := NewBertyOrbitDB(ctx, node.API(), &NewOrbitDBOptions{
 		NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
-			PubSub:               pubsubraw.NewPubSub(node.PubSub(), node.MockNode().PeerHost.ID(), opts.Logger, nil),
-			DirectChannelFactory: directchannel.InitDirectChannelFactory(node.MockNode().PeerHost),
-			Logger:               opts.Logger,
+			PubSub: pubsubraw.NewPubSub(node.PubSub(), node.MockNode().PeerHost.ID(), opts.Logger, nil),
+			Logger: opts.Logger,
 		},
 		Datastore:      ds,
 		DeviceKeystore: deviceKeystore,
