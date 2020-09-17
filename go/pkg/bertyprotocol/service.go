@@ -7,16 +7,15 @@ import (
 	"sync/atomic"
 	"time"
 
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/tinder"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/bertyversion"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/baseorbitdb"
 	"berty.tech/go-orbit-db/pubsub/directchannel"
 	datastore "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
-
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/tinder"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
-	"berty.tech/berty/v2/go/pkg/errcode"
-
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -48,6 +47,7 @@ type service struct {
 	lock           sync.RWMutex
 	authSession    atomic.Value
 	close          func() error
+	startedAt      time.Time
 }
 
 // Opts contains optional configuration flags for building a new Client
@@ -154,6 +154,7 @@ func New(ctx context.Context, opts Opts) (Service, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 	opts.Logger = opts.Logger.Named("pt")
+	opts.Logger.Debug("initializing protocol", zap.String("version", bertyversion.Version))
 
 	acc, err := opts.OrbitDB.openAccountGroup(ctx, nil)
 	if err != nil {
@@ -179,6 +180,7 @@ func New(ctx context.Context, opts Opts) (Service, error) {
 		deviceKeystore: opts.DeviceKeystore,
 		close:          opts.close,
 		accountGroup:   acc,
+		startedAt:      time.Now(),
 		groups: map[string]*bertytypes.Group{
 			string(acc.Group().PublicKey): acc.Group(),
 		},

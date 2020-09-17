@@ -102,6 +102,7 @@ export const berty = {
 			ReplicationServiceReplicateGroup: jsonPb.lookup(
 				'.berty.types.v1.ReplicationServiceReplicateGroup',
 			),
+			SystemInfo: jsonPb.lookup('.berty.types.v1.SystemInfo'),
 		},
 	},
 	messenger: {

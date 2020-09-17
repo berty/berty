@@ -91,6 +91,8 @@
     - [StreamEvent.Notified.Basic](#berty.messenger.v1.StreamEvent.Notified.Basic)
     - [StreamEvent.Notified.MessageReceived](#berty.messenger.v1.StreamEvent.Notified.MessageReceived)
     - [SystemInfo](#berty.messenger.v1.SystemInfo)
+    - [SystemInfo.DB](#berty.messenger.v1.SystemInfo.DB)
+    - [SystemInfo.Messenger](#berty.messenger.v1.SystemInfo.Messenger)
     - [SystemInfo.Reply](#berty.messenger.v1.SystemInfo.Reply)
     - [SystemInfo.Request](#berty.messenger.v1.SystemInfo.Request)
   
@@ -743,30 +745,38 @@ TODO: return cid
 
 ### SystemInfo
 
-<a name="berty.messenger.v1.SystemInfo.Reply"></a>
+<a name="berty.messenger.v1.SystemInfo.DB"></a>
 
-### SystemInfo.Reply
-most important and dynamic values first
+### SystemInfo.DB
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| rlimit_cur | [uint64](#uint64) |  |  |
-| num_goroutine | [int64](#int64) |  |  |
-| connected_peers | [int64](#int64) |  |  |
-| nofile | [int64](#int64) |  |  |
-| too_many_open_files | [bool](#bool) |  |  |
-| started_at | [int64](#int64) |  |  |
-| num_cpu | [int64](#int64) |  |  |
-| go_version | [string](#string) |  |  |
-| operating_system | [string](#string) |  |  |
-| host_name | [string](#string) |  |  |
-| arch | [string](#string) |  |  |
-| version | [string](#string) |  |  |
-| vcs_ref | [string](#string) |  |  |
-| build_time | [int64](#int64) |  |  |
-| self_rusage | [string](#string) |  |  |
-| children_rusage | [string](#string) |  |  |
-| rlimit_max | [uint64](#uint64) |  | FIXME: string ipfs_config = 22; |
+| accounts | [int64](#int64) |  |  |
+| contacts | [int64](#int64) |  |  |
+| conversations | [int64](#int64) |  |  |
+| interactions | [int64](#int64) |  |  |
+| members | [int64](#int64) |  |  |
+| devices | [int64](#int64) |  | older, more recent |
+
+<a name="berty.messenger.v1.SystemInfo.Messenger"></a>
+
+### SystemInfo.Messenger
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| process | [berty.types.v1.SystemInfo.Process](#berty.types.v1.SystemInfo.Process) |  |  |
+| warns | [string](#string) | repeated |  |
+| protocol_in_same_process | [bool](#bool) |  |  |
+| db | [SystemInfo.DB](#berty.messenger.v1.SystemInfo.DB) |  |  |
+
+<a name="berty.messenger.v1.SystemInfo.Reply"></a>
+
+### SystemInfo.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| protocol | [berty.types.v1.SystemInfo.Reply](#berty.types.v1.SystemInfo.Reply) |  |  |
+| messenger | [SystemInfo.Messenger](#berty.messenger.v1.SystemInfo.Messenger) |  |  |
 
 <a name="berty.messenger.v1.SystemInfo.Request"></a>
 

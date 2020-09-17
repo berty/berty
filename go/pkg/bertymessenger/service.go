@@ -10,8 +10,8 @@ import (
 	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
-
 	"github.com/golang/protobuf/proto" // nolint:staticcheck: not sure how to use the new protobuf api to unmarshal
 	"go.uber.org/zap"
 	"gorm.io/driver/sqlite"
@@ -87,6 +87,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 		return nil, errcode.TODO.Wrap(err)
 	}
 	opts.Logger = opts.Logger.Named("msg")
+	opts.Logger.Debug("initializing messenger", zap.String("version", bertyversion.Version))
 
 	if err := initDB(opts.DB); err != nil {
 		return nil, errcode.TODO.Wrap(err)

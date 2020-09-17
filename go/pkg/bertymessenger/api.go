@@ -5,20 +5,16 @@ import (
 	"fmt"
 	"io"
 	"net/url"
-	"os"
-	"runtime"
-	"strconv"
-	"syscall"
 	"time"
 
 	"berty.tech/berty/v2/go/internal/discordlog"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/gogo/protobuf/proto"
+	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"gorm.io/gorm/clause"
-	"moul.io/godev"
-	"moul.io/openfiles"
 )
 
 func (svc *service) DevShareInstanceBertyID(ctx context.Context, req *DevShareInstanceBertyID_Request) (*DevShareInstanceBertyID_Reply, error) {
@@ -310,50 +306,55 @@ func (svc *service) SendContactRequest(ctx context.Context, req *SendContactRequ
 }
 
 func (svc *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*SystemInfo_Reply, error) {
-	// rlimit
-	rlimitNofile := syscall.Rlimit{}
-	_ = syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rlimitNofile)
+	reply := SystemInfo_Reply{}
+	var errs error
 
-	// rusage
-	selfUsage := syscall.Rusage{}
-	_ = syscall.Getrusage(syscall.RUSAGE_SELF, &selfUsage)
-	childrenUsage := syscall.Rusage{}
-	_ = syscall.Getrusage(syscall.RUSAGE_CHILDREN, &childrenUsage)
-
-	nofile, nofileErr := openfiles.Count()
-
-	hn, _ := os.Hostname()
-	reply := SystemInfo_Reply{
-		SelfRusage:       godev.JSON(selfUsage),
-		ChildrenRusage:   godev.JSON(childrenUsage),
-		RlimitCur:        rlimitNofile.Cur,
-		Nofile:           nofile,
-		TooManyOpenFiles: openfiles.IsTooManyError(nofileErr),
-		StartedAt:        svc.startedAt.Unix(),
-		NumCPU:           int64(runtime.NumCPU()),
-		GoVersion:        runtime.Version(),
-		HostName:         hn,
-		NumGoroutine:     int64(runtime.NumGoroutine()),
-		OperatingSystem:  runtime.GOOS,
-		Arch:             runtime.GOARCH,
-		Version:          Version,
-		VcsRef:           VcsRef,
-		RlimitMax:        rlimitNofile.Max,
+	// messenger's process
+	var process *bertytypes.SystemInfo_Process
+	{
+		var err error
+		process, err = bertyprotocol.SystemInfoProcess()
+		errs = multierr.Append(errs, err)
+		reply.Messenger = &SystemInfo_Messenger{Process: process}
+		reply.Messenger.Process.StartedAt = svc.startedAt.Unix()
 	}
-	if BuildTime != "n/a" {
-		buildTime, err := strconv.Atoi(BuildTime)
-		if err == nil {
-			reply.BuildTime = int64(buildTime)
+
+	// messenger's db
+	{
+		var err error
+		reply.Messenger.DB = &SystemInfo_DB{}
+		reply.Messenger.DB.Accounts, err = dbModelRowsCount(svc.db, Account{})
+		errs = multierr.Append(errs, err)
+		reply.Messenger.DB.Contacts, err = dbModelRowsCount(svc.db, Contact{})
+		errs = multierr.Append(errs, err)
+		reply.Messenger.DB.Interactions, err = dbModelRowsCount(svc.db, Interaction{})
+		errs = multierr.Append(errs, err)
+		reply.Messenger.DB.Conversations, err = dbModelRowsCount(svc.db, Conversation{})
+		errs = multierr.Append(errs, err)
+		reply.Messenger.DB.Members, err = dbModelRowsCount(svc.db, Member{})
+		errs = multierr.Append(errs, err)
+		reply.Messenger.DB.Devices, err = dbModelRowsCount(svc.db, Device{})
+		errs = multierr.Append(errs, err)
+	}
+
+	// protocol
+	protocol, err := svc.protocolClient.SystemInfo(ctx, &bertytypes.SystemInfo_Request{})
+	errs = multierr.Append(errs, err)
+	reply.Protocol = protocol
+
+	// is protocol in same process
+	reply.Messenger.ProtocolInSameProcess = true &&
+		(process.PID != 0 && process.PID == protocol.Process.PID) &&
+		(process.PPID != 0 && process.PPID == protocol.Process.PPID) &&
+		(process.HostName != "" && process.HostName == protocol.Process.HostName)
+
+	// warns
+	if errs != nil {
+		reply.Messenger.Warns = []string{}
+		for _, err := range multierr.Errors(errs) {
+			reply.Messenger.Warns = append(reply.Messenger.Warns, err.Error())
 		}
 	}
-	/*
-		FIXME: replace by a call to the protocol client
-		if svc.protocolService != nil && svc.protocolService.IpfsCoreAPI() != nil {
-			api := svc.protocolService.IpfsCoreAPI()
-			peers, _ := api.Swarm().Peers(ctx)
-			reply.ConnectedPeers = int64(len(peers))
-		}
-	*/
 
 	return &reply, nil
 }

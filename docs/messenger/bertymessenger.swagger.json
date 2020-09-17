@@ -802,7 +802,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1SystemInfoReply"
+              "$ref": "#/definitions/bertymessengerv1SystemInfoReply"
             }
           },
           "default": {
@@ -818,7 +818,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1SystemInfoRequest"
+              "$ref": "#/definitions/bertymessengerv1SystemInfoRequest"
             }
           }
         ],
@@ -829,6 +829,27 @@
     }
   },
   "definitions": {
+    "OrbitDBReplicationStatus": {
+      "type": "object",
+      "properties": {
+        "progress": {
+          "type": "string",
+          "format": "int64"
+        },
+        "maximum": {
+          "type": "string",
+          "format": "int64"
+        },
+        "buffered": {
+          "type": "string",
+          "format": "int64"
+        },
+        "queued": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
     "ParseDeepLinkKind": {
       "type": "string",
       "enum": [
@@ -837,6 +858,149 @@
         "BertyGroup"
       ],
       "default": "UnknownKind"
+    },
+    "SystemInfoDB": {
+      "type": "object",
+      "properties": {
+        "accounts": {
+          "type": "string",
+          "format": "int64"
+        },
+        "contacts": {
+          "type": "string",
+          "format": "int64"
+        },
+        "conversations": {
+          "type": "string",
+          "format": "int64"
+        },
+        "interactions": {
+          "type": "string",
+          "format": "int64"
+        },
+        "members": {
+          "type": "string",
+          "format": "int64"
+        },
+        "devices": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "SystemInfoMessenger": {
+      "type": "object",
+      "properties": {
+        "process": {
+          "$ref": "#/definitions/SystemInfoProcess"
+        },
+        "warns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "protocol_in_same_process": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "db": {
+          "$ref": "#/definitions/SystemInfoDB"
+        }
+      }
+    },
+    "SystemInfoOrbitDB": {
+      "type": "object",
+      "properties": {
+        "account_metadata": {
+          "$ref": "#/definitions/OrbitDBReplicationStatus"
+        }
+      }
+    },
+    "SystemInfoP2P": {
+      "type": "object",
+      "properties": {
+        "connected_peers": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "SystemInfoProcess": {
+      "type": "object",
+      "properties": {
+        "rlimit_cur": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "num_goroutine": {
+          "type": "string",
+          "format": "int64"
+        },
+        "nofile": {
+          "type": "string",
+          "format": "int64"
+        },
+        "too_many_open_files": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "started_at": {
+          "type": "string",
+          "format": "int64"
+        },
+        "num_cpu": {
+          "type": "string",
+          "format": "int64"
+        },
+        "go_version": {
+          "type": "string"
+        },
+        "operating_system": {
+          "type": "string"
+        },
+        "host_name": {
+          "type": "string"
+        },
+        "arch": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "vcs_ref": {
+          "type": "string"
+        },
+        "self_rusage": {
+          "type": "string"
+        },
+        "children_rusage": {
+          "type": "string"
+        },
+        "rlimit_max": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "pid": {
+          "type": "string",
+          "format": "int64"
+        },
+        "ppid": {
+          "type": "string",
+          "format": "int64"
+        },
+        "priority": {
+          "type": "string",
+          "format": "int64"
+        },
+        "uid": {
+          "type": "string",
+          "format": "int64"
+        },
+        "working_dir": {
+          "type": "string"
+        }
+      }
     },
     "bertymessengerv1Account": {
       "type": "object",
@@ -852,6 +1016,40 @@
         },
         "state": {
           "$ref": "#/definitions/v1AccountState"
+        }
+      }
+    },
+    "bertymessengerv1SystemInfoReply": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "$ref": "#/definitions/bertytypesv1SystemInfoReply"
+        },
+        "messenger": {
+          "$ref": "#/definitions/SystemInfoMessenger"
+        }
+      }
+    },
+    "bertymessengerv1SystemInfoRequest": {
+      "type": "object"
+    },
+    "bertytypesv1SystemInfoReply": {
+      "type": "object",
+      "properties": {
+        "process": {
+          "$ref": "#/definitions/SystemInfoProcess"
+        },
+        "p2p": {
+          "$ref": "#/definitions/SystemInfoP2P"
+        },
+        "orbitdb": {
+          "$ref": "#/definitions/SystemInfoOrbitDB"
+        },
+        "warns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
@@ -1595,74 +1793,6 @@
         "TypeNotified"
       ],
       "default": "Undefined"
-    },
-    "v1SystemInfoReply": {
-      "type": "object",
-      "properties": {
-        "rlimit_cur": {
-          "type": "string",
-          "format": "uint64"
-        },
-        "num_goroutine": {
-          "type": "string",
-          "format": "int64"
-        },
-        "connected_peers": {
-          "type": "string",
-          "format": "int64"
-        },
-        "nofile": {
-          "type": "string",
-          "format": "int64"
-        },
-        "too_many_open_files": {
-          "type": "boolean",
-          "format": "boolean"
-        },
-        "started_at": {
-          "type": "string",
-          "format": "int64"
-        },
-        "num_cpu": {
-          "type": "string",
-          "format": "int64"
-        },
-        "go_version": {
-          "type": "string"
-        },
-        "operating_system": {
-          "type": "string"
-        },
-        "host_name": {
-          "type": "string"
-        },
-        "arch": {
-          "type": "string"
-        },
-        "version": {
-          "type": "string"
-        },
-        "vcs_ref": {
-          "type": "string"
-        },
-        "build_time": {
-          "type": "string",
-          "format": "int64"
-        },
-        "self_rusage": {
-          "type": "string"
-        },
-        "children_rusage": {
-          "type": "string"
-        },
-        "rlimit_max": {
-          "type": "string",
-          "format": "uint64"
-        }
-      }
-    },
-    "v1SystemInfoRequest": {
-      "type": "object"
     }
   }
 }

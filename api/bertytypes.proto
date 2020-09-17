@@ -922,3 +922,50 @@ message ReplicationServiceReplicateGroup {
     bool ok = 1 [(gogoproto.customname) = "OK"];
   }
 }
+
+message SystemInfo {
+  message Request {}
+  message Reply {
+    Process process = 1;
+    P2P p2p = 2 [(gogoproto.customname) = "P2P"];
+    OrbitDB orbitdb = 3 [(gogoproto.customname) = "OrbitDB"];
+    repeated string warns = 4;
+  }
+
+  message OrbitDB {
+    ReplicationStatus account_metadata = 1;
+
+    message ReplicationStatus {
+      int64 progress = 1;
+      int64 maximum = 2;
+      int64 buffered = 3;
+      int64 queued = 4;
+    }
+  }
+
+  message P2P {
+    int64 connected_peers = 1;
+  }
+  message Process {
+    uint64 rlimit_cur = 1;
+    int64 num_goroutine = 2;
+    int64 nofile = 3;
+    bool too_many_open_files = 4;
+    int64 started_at = 5;
+    int64 num_cpu = 6 [(gogoproto.customname) = "NumCPU"];
+    string go_version = 7;
+    string operating_system = 8;
+    string host_name = 9;
+    string arch = 10;
+    string version = 11;
+    string vcs_ref = 12;
+    string self_rusage = 13;
+    string children_rusage = 14;
+    uint64 rlimit_max = 15;
+    int64 pid = 16 [(gogoproto.customname) = "PID"];
+    int64 ppid = 17 [(gogoproto.customname) = "PPID"];
+    int64 priority = 18;
+    int64 uid = 19 [(gogoproto.customname) = "UID"];
+    string working_dir = 20;
+  }
+}

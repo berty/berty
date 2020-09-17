@@ -11,7 +11,7 @@ GO_TEST_PATH ?= ./...
 BUILD_DATE ?= `date +%s`
 VCS_REF ?= `git rev-parse --short HEAD`
 VERSION ?= `git describe --tags --always`
-LDFLAGS ?= -ldflags="-X berty.tech/berty/v2/go/pkg/bertymessenger.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertymessenger.Version=$(VERSION)"
+LDFLAGS ?= -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
 
 
 ##
@@ -27,7 +27,7 @@ unittest: go.unittest
 .PHONY: unittest
 
 
-generate: pb.generate depaware.generate
+generate: pb.generate
 .PHONY: generate
 
 
@@ -200,7 +200,10 @@ gen.clean:
 ##
 
 
-doc.generate: install
+doc.generate: md.generate depaware.generate
+.PHONY: doc.generate
+
+md.generate: install
 	mkdir -p .tmp
 	GO111MODULE=off go get github.com/campoy/embedmd
 
@@ -217,7 +220,7 @@ doc.generate: install
 	berty --log.filters="" share-invite -store.inmem -node.display-name=demo >> .tmp/berty-share-invite.txt
 
 	echo 'foo@bar:~$$ berty info' > .tmp/berty-info.txt
-	berty --log.filters="" info -store.inmem >> .tmp/berty-info.txt
+	berty --log.filters="" info --info.anonimize -store.inmem >> .tmp/berty-info.txt
 
 	echo 'foo@bar:~$$ berty daemon' > .tmp/berty-daemon.txt
 	expect -c "set timeout 10; spawn -noecho docker run bertytech/berty --log.format=console --log.filters=info+:bty daemon -store.inmem; expect serving" >> .tmp/berty-daemon.txt
@@ -238,7 +241,7 @@ doc.generate: install
 
 	embedmd -w README.md
 	#rm -rf .tmp
-.PHONY: doc.generate
+.PHONY: md.generate
 
 
 ##
