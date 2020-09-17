@@ -242,14 +242,26 @@ func (s *service) SystemInfo(ctx context.Context, request *bertytypes.SystemInfo
 	reply.Process = process
 	reply.Process.StartedAt = s.startedAt.Unix()
 
+	// gRPC
+	// TODO
+
 	// p2p
-	reply.P2P = &bertytypes.SystemInfo_P2P{}
-	if api := s.IpfsCoreAPI(); api != nil {
-		peers, err := api.Swarm().Peers(ctx)
-		reply.P2P.ConnectedPeers = int64(len(peers))
-		errs = multierr.Append(errs, err)
-	} else {
-		errs = multierr.Append(errs, fmt.Errorf("no such IPFS core API"))
+	{
+		reply.P2P = &bertytypes.SystemInfo_P2P{}
+
+		// swarm metrics
+		if api := s.IpfsCoreAPI(); api != nil {
+			peers, err := api.Swarm().Peers(ctx)
+			reply.P2P.ConnectedPeers = int64(len(peers))
+			errs = multierr.Append(errs, err)
+		} else {
+			errs = multierr.Append(errs, fmt.Errorf("no such IPFS core API"))
+		}
+
+		// pubsub metrics
+		// TODO
+
+		// BLE metrics
 	}
 
 	// OrbitDB

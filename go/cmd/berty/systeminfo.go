@@ -16,10 +16,12 @@ func systemInfoCommand() *ffcli.Command {
 	var (
 		fs               = flag.NewFlagSet("info", flag.ExitOnError)
 		refreshEveryFlag time.Duration
+		anonimizeFlag    bool
 	)
 	manager.SetupLocalMessengerServerFlags(fs) // by default, start a new local messenger server,
 	manager.SetupRemoteNodeFlags(fs)           // but allow to set a remote server instead
 	fs.DurationVar(&refreshEveryFlag, "info.refresh", refreshEveryFlag, "refresh every DURATION (0: no refresh)")
+	fs.BoolVar(&anonimizeFlag, "info.anonimize", false, "anonimize output for sharing")
 
 	return &ffcli.Command{
 		Name:       "info",
@@ -43,6 +45,17 @@ func systemInfoCommand() *ffcli.Command {
 					ret.Messenger.Process = nil
 				}
 
+				if anonimizeFlag {
+					if ret.Messenger != nil && ret.Messenger.Process != nil {
+						redactStringPtr(&ret.Messenger.Process.HostName)
+						redactStringPtr(&ret.Messenger.Process.WorkingDir)
+					}
+					if ret.Protocol != nil && ret.Protocol.Process != nil {
+						redactStringPtr(&ret.Protocol.Process.HostName)
+						redactStringPtr(&ret.Protocol.Process.WorkingDir)
+					}
+				}
+
 				if refreshEveryFlag == 0 {
 					fmt.Println(godev.PrettyJSONPB(ret))
 					break
@@ -55,5 +68,11 @@ func systemInfoCommand() *ffcli.Command {
 
 			return nil
 		},
+	}
+}
+
+func redactStringPtr(ptr *string) {
+	if ptr != nil && *ptr != "" {
+		*ptr = "REDACTED"
 	}
 }
