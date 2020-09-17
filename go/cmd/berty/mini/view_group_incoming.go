@@ -7,9 +7,10 @@ import (
 	"sync/atomic"
 	"time"
 
+	"go.uber.org/zap"
+
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"go.uber.org/zap"
 )
 
 func handlerAccountGroupJoined(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {

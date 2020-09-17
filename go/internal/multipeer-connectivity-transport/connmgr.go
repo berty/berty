@@ -6,11 +6,12 @@ import (
 	"sync"
 	"time"
 
-	mcdrv "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/driver"
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	tpt "github.com/libp2p/go-libp2p-core/transport"
 	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
+
+	mcdrv "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/driver"
 )
 
 // Connmgr keeps tracks of opened conn so the native driver can read from them

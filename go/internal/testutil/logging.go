@@ -7,9 +7,10 @@ import (
 	"sync"
 	"testing"
 
-	"berty.tech/berty/v2/go/internal/logutil"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/logutil"
 )
 
 const defaultLoggingFilters = "info+:bty.test* error+:*,-ipfs*"

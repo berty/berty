@@ -1,23 +1,23 @@
 package bertyprotocol
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"runtime"
 	"syscall"
 
-	"context"
-
-	"berty.tech/berty/v2/go/pkg/bertytypes"
-	"berty.tech/berty/v2/go/pkg/bertyversion"
-	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/go-orbit-db/stores/operation"
 	"github.com/gogo/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"moul.io/godev"
 	"moul.io/openfiles"
+
+	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/bertyversion"
+	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/go-orbit-db/stores/operation"
 )
 
 func (s *service) DebugListGroups(req *bertytypes.DebugListGroups_Request, srv ProtocolService_DebugListGroupsServer) error {

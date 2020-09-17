@@ -6,9 +6,8 @@ import (
 	"fmt"
 
 	peer "github.com/libp2p/go-libp2p-core/peer"
-	madns "github.com/multiformats/go-multiaddr-dns"
-
 	ma "github.com/multiformats/go-multiaddr"
+	madns "github.com/multiformats/go-multiaddr-dns"
 )
 
 // parseIpfsAddr is a function that takes in addr string and return ipfsAddrs

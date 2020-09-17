@@ -6,16 +6,15 @@ import (
 	"testing"
 	"time"
 
+	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
+	p2phelpers "github.com/libp2p/go-libp2p-core/helpers"
+	p2pnetwork "github.com/libp2p/go-libp2p-core/network"
+	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/nacl/box"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
-
-	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
-	p2phelpers "github.com/libp2p/go-libp2p-core/helpers"
-	p2pnetwork "github.com/libp2p/go-libp2p-core/network"
-	"github.com/stretchr/testify/require"
 )
 
 func TestValidHandshake(t *testing.T) {

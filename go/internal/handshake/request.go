@@ -3,14 +3,13 @@ package handshake
 import (
 	"errors"
 
+	ggio "github.com/gogo/protobuf/io"
+	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
+	p2pnetwork "github.com/libp2p/go-libp2p-core/network"
 	"golang.org/x/crypto/nacl/box"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
-
-	ggio "github.com/gogo/protobuf/io"
-	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
-	p2pnetwork "github.com/libp2p/go-libp2p-core/network"
 )
 
 // RequestUsingReaderWriter init a handshake with the responder, using provided ggio reader and writer

@@ -5,13 +5,14 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/testutil"
 	p2p_discovery "github.com/libp2p/go-libp2p-core/discovery"
 	p2p_host "github.com/libp2p/go-libp2p-core/host"
 	p2p_disc "github.com/libp2p/go-libp2p-discovery"
 	p2p_mock "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"berty.tech/berty/v2/go/internal/testutil"
 )
 
 func TestMultiDriver_Advertise(t *testing.T) {

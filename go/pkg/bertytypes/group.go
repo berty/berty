@@ -3,9 +3,10 @@ package bertytypes
 import (
 	"encoding/hex"
 
-	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"golang.org/x/crypto/ed25519"
+
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 func (m *Group) GetSigningPrivKey() (crypto.PrivKey, error) {

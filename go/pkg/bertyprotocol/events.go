@@ -1,13 +1,14 @@
 package bertyprotocol
 
 import (
+	"github.com/gogo/protobuf/proto"
+	cid "github.com/ipfs/go-cid"
+	"golang.org/x/crypto/nacl/secretbox"
+
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfslog "berty.tech/go-ipfs-log"
-	"github.com/gogo/protobuf/proto"
-	cid "github.com/ipfs/go-cid"
-	"golang.org/x/crypto/nacl/secretbox"
 )
 
 var eventTypesMapper = map[bertytypes.EventType]struct {

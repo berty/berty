@@ -11,12 +11,11 @@ import (
 	"os"
 	"strings"
 
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/logutil"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	libp2p "github.com/libp2p/go-libp2p"
 	libp2p_cicuit "github.com/libp2p/go-libp2p-circuit"
-	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto" // nolint:staticcheck
+
+	// nolint:staticcheck
+	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto"
 	libp2p_host "github.com/libp2p/go-libp2p-core/host"
 	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	libp2p_quic "github.com/libp2p/go-libp2p-quic-transport"
@@ -28,6 +27,10 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"moul.io/srand"
+
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 func main() {
@@ -192,7 +195,8 @@ func main() {
 
 	// run process
 	if err := process.Run(); err != nil && err != context.Canceled {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 }
 

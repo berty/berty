@@ -2,9 +2,12 @@ package bertyprotocol
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 
-	"encoding/base64"
+	coreapi "github.com/ipfs/interface-go-ipfs-core"
+	"github.com/libp2p/go-libp2p-core/crypto"
+	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -16,9 +19,6 @@ import (
 	"berty.tech/go-orbit-db/stores"
 	"berty.tech/go-orbit-db/stores/basestore"
 	"berty.tech/go-orbit-db/stores/operation"
-	coreapi "github.com/ipfs/interface-go-ipfs-core"
-	"github.com/libp2p/go-libp2p-core/crypto"
-	"go.uber.org/zap"
 )
 
 const groupMessageStoreType = "berty_group_messages"

@@ -3,12 +3,12 @@ package bertyprotocol
 import (
 	"errors"
 
+	"go.uber.org/zap"
+
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/events"
-
-	"go.uber.org/zap"
 )
 
 func checkParametersConsistency(sinceID, untilID []byte, sinceNow, untilNow, reverseOrder bool) error {

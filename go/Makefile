@@ -53,7 +53,7 @@ re: clean generate install
 .PHONY: re
 
 
-tidy: go.tidy depaware.generate
+tidy: go.tidy
 .PHONY: tidy
 
 
@@ -184,10 +184,15 @@ generate_local:
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./framework/bertybridge/internal/bridgepb/*.pb.go
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.go
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.gw.go
-	go run golang.org/x/tools/cmd/goimports -w ./pkg ./cmd ./internal
+	go run github.com/daixiang0/gci -w -local berty.tech ./pkg ./cmd ./internal
 	shasum $(gen_src) | sort -k 2 > $(gen_sum).tmp
 	mv $(gen_sum).tmp $(gen_sum)
 .PHONY: generate_local
+
+
+go.fmt:
+	go run github.com/daixiang0/gci -w -local berty.tech .
+.PHONY: go.fmt
 
 
 gen.clean:
@@ -252,9 +257,11 @@ md.generate: install
 depaware.generate: ./cmd/berty/depaware.txt
 .PHONY: depaware.generate
 
+
 depaware_pkgs = ./cmd/berty ./cmd/rdvp ./framework/bertybridge ./cmd/betabot
 ./cmd/*/depaware.txt: ../go.sum
 	@set -xe; for pkg in $(depaware_pkgs); do $(GO) run github.com/tailscale/depaware --update $$pkg; done
+
 
 depaware.check:
 	@set -xe; for pkg in $(depaware_pkgs); do $(GO) run github.com/tailscale/depaware --check $$pkg; done

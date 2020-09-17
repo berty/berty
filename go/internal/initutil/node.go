@@ -8,20 +8,10 @@ import (
 	"path"
 	"strings"
 
-	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/lifecycle"
-	"berty.tech/berty/v2/go/internal/notification"
-	"berty.tech/berty/v2/go/internal/tracer"
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/errcode"
-
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	grpcgw "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	datastore "github.com/ipfs/go-datastore"
 	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
@@ -32,6 +22,15 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
+
+	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/lifecycle"
+	"berty.tech/berty/v2/go/internal/notification"
+	"berty.tech/berty/v2/go/internal/tracer"
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 func (m *Manager) SetupLocalProtocolServerFlags(fs *flag.FlagSet) {
@@ -288,7 +287,7 @@ func (m *Manager) getProtocolClient() (bertyprotocol.ProtocolServiceClient, erro
 	return m.Node.Protocol.client, nil
 }
 
-func (m *Manager) GetGRPCServer() (*grpc.Server, *runtime.ServeMux, error) {
+func (m *Manager) GetGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 	return m.getGRPCServer()
@@ -298,7 +297,7 @@ func (m *Manager) GetGRPCServer() (*grpc.Server, *runtime.ServeMux, error) {
 // without this singleton, we can raise race conditions in unit tests => https://github.com/grpc/grpc-go/issues/1084
 var grpcLoggerConfigured = false
 
-func (m *Manager) getGRPCServer() (*grpc.Server, *runtime.ServeMux, error) {
+func (m *Manager) getGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 	if m.Node.GRPC.server != nil {
 		return m.Node.GRPC.server, m.Node.GRPC.gatewayMux, nil
 	}

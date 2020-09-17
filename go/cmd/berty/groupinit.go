@@ -5,9 +5,10 @@ import (
 	"fmt"
 	mrand "math/rand"
 
+	"github.com/peterbourgon/ff/v3/ffcli"
+
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"github.com/peterbourgon/ff/v3/ffcli"
 )
 
 func groupinitCommand() *ffcli.Command {

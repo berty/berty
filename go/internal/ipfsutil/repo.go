@@ -6,16 +6,19 @@ import (
 	"path/filepath"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/config"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfs_ds "github.com/ipfs/go-datastore"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_loader "github.com/ipfs/go-ipfs/plugin/loader"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
 	ipfs_fsrepo "github.com/ipfs/go-ipfs/repo/fsrepo"
-	p2p_ci "github.com/libp2p/go-libp2p-core/crypto" // nolint:staticcheck
+
+	// nolint:staticcheck
+	p2p_ci "github.com/libp2p/go-libp2p-core/crypto"
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
+
+	"berty.tech/berty/v2/go/internal/config"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 // defaultConnMgrHighWater is the default value for the connection managers

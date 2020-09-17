@@ -8,12 +8,13 @@ import (
 	"io"
 	"strings"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/atotto/clipboard"
 	cid "github.com/ipfs/go-cid"
 	qrterminal "github.com/mdp/qrterminal/v3"
 	"moul.io/godev"
+
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 )
 
 type command struct {

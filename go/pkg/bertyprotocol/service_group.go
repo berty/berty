@@ -3,12 +3,13 @@ package bertyprotocol
 import (
 	"fmt"
 
+	"github.com/libp2p/go-libp2p-core/crypto"
+	"go.uber.org/zap"
+
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/stores"
-	"github.com/libp2p/go-libp2p-core/crypto"
-	"go.uber.org/zap"
 )
 
 func (s *service) indexGroups() error {

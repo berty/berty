@@ -7,14 +7,14 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-
 	ggio "github.com/gogo/protobuf/io"
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 	p2pnetwork "github.com/libp2p/go-libp2p-core/network"
 	p2ppeer "github.com/libp2p/go-libp2p-core/peer"
 	p2pmocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/require"
+
+	"berty.tech/berty/v2/go/internal/ipfsutil"
 )
 
 const testProtocolID = "/berty/handshake_test/1.0.0"

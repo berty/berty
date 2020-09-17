@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"time"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"moul.io/godev"
+
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 func systemInfoCommand() *ffcli.Command {
@@ -60,7 +61,8 @@ func systemInfoCommand() *ffcli.Command {
 					fmt.Println(godev.PrettyJSONPB(ret))
 					break
 				}
-				/// clear screen
+
+				// clear screen
 				print("\033[H\033[2J")
 				fmt.Println(godev.PrettyJSONPB(ret))
 				time.Sleep(refreshEveryFlag)

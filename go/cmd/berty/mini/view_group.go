@@ -10,10 +10,6 @@ import (
 	"sync"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/tracer"
-	"berty.tech/berty/v2/go/pkg/banner"
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/gdamore/tcell"
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
@@ -21,6 +17,11 @@ import (
 	"go.opentelemetry.io/otel/api/kv"
 	"go.opentelemetry.io/otel/api/trace"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/tracer"
+	"berty.tech/berty/v2/go/pkg/banner"
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 )
 
 type groupView struct {

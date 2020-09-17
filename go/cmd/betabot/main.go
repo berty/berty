@@ -10,10 +10,11 @@ import (
 	"os/user"
 	"sync"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"github.com/gogo/protobuf/proto"
 	qrterminal "github.com/mdp/qrterminal/v3"
 	"google.golang.org/grpc"
+
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
 )
 
 var (

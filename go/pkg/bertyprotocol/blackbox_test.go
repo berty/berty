@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"testing"
 
+	keystore "github.com/ipfs/go-ipfs-keystore"
+	"github.com/stretchr/testify/assert"
+
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
-	keystore "github.com/ipfs/go-ipfs-keystore"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestTestingClient_impl(t *testing.T) {

@@ -3,8 +3,9 @@ package bertymessenger
 import (
 	"context"
 
-	"berty.tech/berty/v2/go/internal/lifecycle"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/lifecycle"
 )
 
 const (

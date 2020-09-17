@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"os"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	qrterminal "github.com/mdp/qrterminal/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
+
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 func shareInviteCommand() *ffcli.Command {

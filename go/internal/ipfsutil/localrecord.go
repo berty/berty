@@ -4,7 +4,6 @@ import (
 	"context"
 	"os"
 
-	mcma "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/multiaddr"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -12,6 +11,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
+
+	mcma "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/multiaddr"
 )
 
 const recProtocolID = protocol.ID("berty/p2p/localrecord")

@@ -9,18 +9,18 @@ import (
 	"sync"
 	"time"
 
+	ggio "github.com/gogo/protobuf/io"
 	"github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
-	"go.uber.org/zap"
-
-	mcma "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/multiaddr"
-	ggio "github.com/gogo/protobuf/io"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 	msmux "github.com/multiformats/go-multistream"
+	"go.uber.org/zap"
+
+	mcma "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/multiaddr"
 )
 
 const recProtocolID = protocol.ID("berty/p2p/localrecord")

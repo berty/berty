@@ -2,18 +2,18 @@ package bertymessenger
 
 import (
 	"context"
-
 	"runtime"
 	"testing"
 	"time"
+
+	"github.com/gogo/protobuf/proto"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"github.com/gogo/protobuf/proto"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestServiceInstanceShareableBertyID(t *testing.T) {

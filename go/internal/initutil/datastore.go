@@ -5,11 +5,12 @@ import (
 	"os"
 	"path"
 
-	"berty.tech/berty/v2/go/pkg/errcode"
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 const InMemoryDir = ":memory:"

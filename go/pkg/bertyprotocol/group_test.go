@@ -4,9 +4,10 @@ import (
 	crand "crypto/rand"
 	"testing"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/stretchr/testify/require"
+
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 )
 
 func TestGetGroupForContact(t *testing.T) {

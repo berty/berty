@@ -13,7 +13,6 @@ import (
 	"io"
 	"net/http"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/golang/protobuf/descriptor"
 	"github.com/golang/protobuf/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -22,6 +21,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/status"
+
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 )
 
 // Suppress "imported and not used" errors

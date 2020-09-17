@@ -11,16 +11,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/config"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/lifecycle"
-	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
-	"berty.tech/berty/v2/go/internal/notification"
-	"berty.tech/berty/v2/go/internal/tinder"
-	"berty.tech/berty/v2/go/internal/tracer"
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	badger_opts "github.com/dgraph-io/badger/options"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -49,6 +39,17 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
+
+	"berty.tech/berty/v2/go/internal/config"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/lifecycle"
+	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
+	"berty.tech/berty/v2/go/internal/notification"
+	"berty.tech/berty/v2/go/internal/tinder"
+	"berty.tech/berty/v2/go/internal/tracer"
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 var (

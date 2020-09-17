@@ -5,8 +5,9 @@ import (
 	"flag"
 	"fmt"
 
-	"berty.tech/berty/v2/go/pkg/banner"
 	"github.com/peterbourgon/ff/v3/ffcli"
+
+	"berty.tech/berty/v2/go/pkg/banner"
 )
 
 func bannerCommand() *ffcli.Command {

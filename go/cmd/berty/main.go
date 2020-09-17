@@ -8,12 +8,13 @@ import (
 	"os"
 	"strings"
 
-	"berty.tech/berty/v2/go/internal/initutil"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/oklog/run"
 	ff "github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"moul.io/srand"
+
+	"berty.tech/berty/v2/go/internal/initutil"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 var manager *initutil.Manager

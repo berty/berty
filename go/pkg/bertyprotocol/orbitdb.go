@@ -5,10 +5,6 @@ import (
 	"fmt"
 	"sync"
 
-	"berty.tech/go-ipfs-log/identityprovider"
-	orbitdb "berty.tech/go-orbit-db"
-	"berty.tech/go-orbit-db/baseorbitdb"
-	"berty.tech/go-orbit-db/iface"
 	datastore "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
@@ -20,6 +16,10 @@ import (
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/go-ipfs-log/identityprovider"
+	orbitdb "berty.tech/go-orbit-db"
+	"berty.tech/go-orbit-db/baseorbitdb"
+	"berty.tech/go-orbit-db/iface"
 )
 
 type GroupOpenMode uint64

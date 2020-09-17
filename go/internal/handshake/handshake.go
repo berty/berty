@@ -3,13 +3,12 @@ package handshake
 import (
 	crand "crypto/rand"
 
+	ggio "github.com/gogo/protobuf/io"
+	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 	"golang.org/x/crypto/nacl/box"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
-
-	ggio "github.com/gogo/protobuf/io"
-	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
 )
 
 // Constant nonces

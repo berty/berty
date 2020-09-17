@@ -4,18 +4,18 @@ import (
 	"crypto/ed25519"
 	crand "crypto/rand"
 	"encoding/hex"
+	"math"
+	"math/big"
 	"strings"
 	"sync"
 
-	"math"
-	"math/big"
+	"github.com/aead/ecdh"
+	"github.com/ipfs/go-ipfs/keystore"
+	"github.com/libp2p/go-libp2p-core/crypto"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"github.com/aead/ecdh"
-	"github.com/ipfs/go-ipfs/keystore"
-	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
 type DeviceKeystore interface {

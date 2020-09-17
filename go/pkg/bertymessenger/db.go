@@ -4,9 +4,10 @@ import (
 	"errors"
 	"time"
 
-	"berty.tech/berty/v2/go/pkg/errcode"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 func initDB(db *gorm.DB) error {

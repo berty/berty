@@ -8,7 +8,6 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
@@ -16,6 +15,8 @@ import (
 	"gorm.io/gorm"
 	"moul.io/u"
 	"moul.io/zapgorm2"
+
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 )
 
 type TestingServiceOpts struct {

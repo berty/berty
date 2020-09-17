@@ -8,12 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/config"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
-	"berty.tech/berty/v2/go/internal/tinder"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	datastore "github.com/ipfs/go-datastore"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	libp2p "github.com/libp2p/go-libp2p"
@@ -26,6 +20,13 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"moul.io/srand"
+
+	"berty.tech/berty/v2/go/internal/config"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
+	"berty.tech/berty/v2/go/internal/tinder"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
