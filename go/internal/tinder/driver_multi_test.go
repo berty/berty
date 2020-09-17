@@ -17,6 +17,7 @@ import (
 )
 
 func TestMultiDriver_Advertise(t *testing.T) {
+	t.Parallel()
 	cases := []struct {
 		Name  string
 		NMock int
@@ -42,15 +43,14 @@ func TestMultiDriver_Advertise(t *testing.T) {
 
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	ctx := context.Background()
 
-	ms := NewMockedDriverServer()
-	mn := p2p_mock.New(ctx)
-
-	for _, tc := range cases {
+	for _, v := range cases {
+		tc := v // Range isn't threadsafe
 		t.Run(tc.Name, func(t *testing.T) {
-			defer ms.Reset() // reset server on each iteration
+			t.Parallel()
+			ms := NewMockedDriverServer()
+			mn := p2p_mock.New(ctx)
 
 			var opts p2p_discovery.Options
 			err := opts.Apply(tc.Opts...)
@@ -73,10 +73,10 @@ func TestMultiDriver_Advertise(t *testing.T) {
 			}
 		})
 	}
-
 }
 
 func TestMultiDriver_FindPeers(t *testing.T) {
+	t.Parallel()
 	cases := []struct {
 		Name             string
 		NMock            int
@@ -102,15 +102,14 @@ func TestMultiDriver_FindPeers(t *testing.T) {
 
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	ctx := context.Background()
 
-	ms := NewMockedDriverServer()
-	mn := p2p_mock.New(ctx)
-
-	for _, tc := range cases {
+	for _, v := range cases {
+		tc := v // Range isn't threadsafe
 		t.Run(tc.Name, func(t *testing.T) {
-			defer ms.Reset() // reset server on each iteration
+			t.Parallel()
+			ms := NewMockedDriverServer()
+			mn := p2p_mock.New(ctx)
 
 			var opts p2p_discovery.Options
 			err := opts.Apply(tc.Opts...)
@@ -138,6 +137,7 @@ func TestMultiDriver_FindPeers(t *testing.T) {
 }
 
 func TestAsyncMultiDriver_FindPeers(t *testing.T) {
+	t.Parallel()
 	cases := []struct {
 		Name             string
 		NMock            int
@@ -163,15 +163,14 @@ func TestAsyncMultiDriver_FindPeers(t *testing.T) {
 
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	ctx := context.Background()
 
-	ms := NewMockedDriverServer()
-	mn := p2p_mock.New(ctx)
-
-	for _, tc := range cases {
+	for _, v := range cases {
+		tc := v // Range isn't threadsafe
 		t.Run(tc.Name, func(t *testing.T) {
-			defer ms.Reset() // reset server on each iteration
+			t.Parallel()
+			ms := NewMockedDriverServer()
+			mn := p2p_mock.New(ctx)
 
 			var opts p2p_discovery.Options
 			err := opts.Apply(tc.Opts...)
@@ -213,6 +212,7 @@ func TestAsyncMultiDriver_FindPeers(t *testing.T) {
 }
 
 func TestMultiDriver_Unregister(t *testing.T) {
+	t.Parallel()
 	cases := []struct {
 		Name  string
 		NMock int
@@ -230,15 +230,14 @@ func TestMultiDriver_Unregister(t *testing.T) {
 
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	ctx := context.Background()
 
-	ms := NewMockedDriverServer()
-	mn := p2p_mock.New(ctx)
-
-	for _, tc := range cases {
+	for _, v := range cases {
+		tc := v
 		t.Run(tc.Name, func(t *testing.T) {
-			defer ms.Reset()
+			t.Parallel()
+			ms := NewMockedDriverServer()
+			mn := p2p_mock.New(ctx)
 
 			peers := testingPeers(t, mn, tc.NMock)
 			drivers := testingMockedDriverClients(t, ms, peers...)

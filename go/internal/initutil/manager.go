@@ -57,7 +57,7 @@ type Manager struct {
 			// RdvpMaddrs store a list of rdvp server maddr.
 			// The entry : `:dev:` will add the devs servers to the list (default).
 			// The netry : `:none:` will disable all rdvp servers.
-			RdvpMaddrs stringSlice
+			RdvpMaddrs flagStringSlice
 
 			ipfsNode         *core.IpfsNode
 			ipfsAPI          ipfsutil.ExtendedCoreAPI

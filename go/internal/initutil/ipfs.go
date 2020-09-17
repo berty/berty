@@ -34,18 +34,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute, "maximum p2p backoff duration")
 	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "local discovery")
-	fs.Var(&m.Node.Protocol.RdvpMaddrs, "p2p.rdvp", "list of rendezvous point maddr, \":dev:\" will add the default devs servers, \":none:\" will disable rdvp")
-}
-
-type stringSlice []string
-
-func (i *stringSlice) String() string {
-	return fmt.Sprintf("%s", *i)
-}
-
-func (i *stringSlice) Set(value string) error {
-	*i = append(*i, value)
-	return nil
+	fs.Var(&m.Node.Protocol.RdvpMaddrs, "p2p.rdvp", `list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp`)
 }
 
 func (m *Manager) GetLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
@@ -198,11 +187,11 @@ func (m *Manager) getRdvpMaddrs() ([]*peer.AddrInfo, error) {
 
 	var addrs []string
 	if len(m.Node.Protocol.RdvpMaddrs) == 0 {
-		addrs = config.BertyDev.RendezVousPeer
+		addrs = config.BertyDev.RendezVousPeers
 	} else {
 		for _, v := range m.Node.Protocol.RdvpMaddrs {
 			if v == ":dev:" {
-				addrs = append(addrs, config.BertyDev.RendezVousPeer...)
+				addrs = append(addrs, config.BertyDev.RendezVousPeers...)
 				continue
 			}
 			if v == ":none:" {

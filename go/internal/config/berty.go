@@ -8,7 +8,7 @@ import (
 
 type BertyConfig struct {
 	Bootstrap         []string
-	RendezVousPeer    []string
+	RendezVousPeers   []string
 	DefaultSwarmAddrs []string
 	Tracing           string
 	DefaultAPIAddrs   []string
@@ -17,7 +17,7 @@ type BertyConfig struct {
 
 var BertyDev = &BertyConfig{
 	Bootstrap: config.DefaultBootstrapAddresses,
-	RendezVousPeer: []string{
+	RendezVousPeers: []string{
 		"/dnsaddr/rdvp.berty.io/ipfs/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p",
 		"/ip4/51.75.127.200/udp/4141/quic/p2p/12D3KooWRpyQpZtUmY5ZktEMgzuhNoWC1C9zokDjLVahNMy3g48u",
 	},
@@ -39,7 +39,7 @@ var BertyDev = &BertyConfig{
 
 var BertyMobile = &BertyConfig{
 	Bootstrap: config.DefaultBootstrapAddresses,
-	RendezVousPeer: []string{
+	RendezVousPeers: []string{
 		"/ip4/163.172.106.31/tcp/4040/p2p/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p",
 		"/ip4/51.75.127.200/udp/4141/quic/p2p/12D3KooWRpyQpZtUmY5ZktEMgzuhNoWC1C9zokDjLVahNMy3g48u",
 	},

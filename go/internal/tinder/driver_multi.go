@@ -25,8 +25,7 @@ type MultiDriver struct {
 func NewMultiDriver(logger *zap.Logger, drivers ...Driver) Driver {
 	switch len(drivers) {
 	case 0:
-		// Any code using this **MUST** be built to prevent this happening !
-		panic("castrophical problem, you should report this to the maintainers")
+		panic("tinder.NewMultiDriver requires at least one driver")
 	case 1:
 		return drivers[0]
 	default:
@@ -53,8 +52,7 @@ type AsyncMultiDriver struct{ MultiDriver }
 func NewAsyncMultiDriver(logger *zap.Logger, drivers ...AsyncableDriver) AsyncableDriver {
 	switch len(drivers) {
 	case 0:
-		// Any code using this **MUST** be built to prevent this happening !
-		panic("castrophical problem, you should report this to the maintainers")
+		panic("tinder.NewMultiDriver requires at least one driver")
 	case 1:
 		return drivers[0]
 	default:
@@ -94,8 +92,8 @@ func (md *MultiDriver) Advertise(ctx context.Context, ns string, opts ...p2p_dis
 	durationReturn := make([]time.Duration, ndrivers)
 	for i := 0; i < ndrivers; i++ {
 		go func(j int) {
+			defer wg.Done()
 			durationReturn[j], errReturn[j] = md.drivers[j].Advertise(ctx, ns, opts...)
-			wg.Done()
 		}(i)
 	}
 	wg.Wait()
@@ -135,7 +133,7 @@ func (md *MultiDriver) FindPeers(ctx context.Context, ns string, opts ...p2p_dis
 	}
 
 	// Buffer to try to limit context switch while returning peers.
-	outPeers := make(chan p2p_peer.AddrInfo, 10)
+	outPeers := make(chan p2p_peer.AddrInfo, limit)
 	ctx, cancelSearch := context.WithCancel(ctx)
 	// This wait group is used to close outPeers when we are finished.
 	var wg sync.WaitGroup
@@ -145,8 +143,9 @@ func (md *MultiDriver) FindPeers(ctx context.Context, ns string, opts ...p2p_dis
 	// This wait group is used to know when to check for errors.
 	var errWg sync.WaitGroup
 	errWg.Add(ndrivers)
-	var alreadySeen []p2p_peer.ID
-	var seenLock sync.RWMutex
+	alreadySeen := make(map[p2p_peer.ID]struct{})
+	var peerCount int
+	var seenLock sync.Mutex
 	for i := 0; i < ndrivers; i++ {
 		go func(j int) {
 			defer wg.Done()
@@ -155,37 +154,24 @@ func (md *MultiDriver) FindPeers(ctx context.Context, ns string, opts ...p2p_dis
 			var inPeers <-chan p2p_peer.AddrInfo
 			inPeers, errReturn[j] = md.drivers[j].FindPeers(ctx, ns, opts...)
 			errWg.Done()
-		MainSearchLoop:
+			if errReturn[j] != nil {
+				return
+			}
 			for v := range inPeers {
 				id := v.ID
-				seenLock.RLock()
-				oldlen := len(alreadySeen)
-				for _, w := range alreadySeen {
-					if w == id {
-						seenLock.RUnlock()
-						continue MainSearchLoop
-					}
-				}
-				seenLock.RUnlock()
 				seenLock.Lock()
-				// We need to check if newer peers were added while we were not locking.
-				curlen := len(alreadySeen)
-				if curlen > limit {
+				if peerCount == limit {
+					seenLock.Unlock()
 					return
 				}
-				for oldlen < curlen {
-					if alreadySeen[oldlen] == id {
-						seenLock.Unlock()
-						continue MainSearchLoop
-					}
-					oldlen++
+				_, ok := alreadySeen[id]
+				if ok {
+					seenLock.Unlock()
+					continue
 				}
-				// We are totaly sure this peer wasn't seen.
-				alreadySeen = append(alreadySeen, id)
+				alreadySeen[id] = struct{}{}
+				peerCount++
 				seenLock.Unlock()
-				if oldlen > limit {
-					return
-				}
 				select {
 				case outPeers <- v:
 				case <-ctx.Done():
@@ -225,7 +211,7 @@ func (md *MultiDriver) FindPeersAsync(ctx context.Context, outPeers chan<- p2p_p
 	}
 
 	// Buffer to try to limit context switch while returning peers.
-	inPeers := make(chan p2p_peer.AddrInfo, 10)
+	inPeers := make(chan p2p_peer.AddrInfo, limit)
 
 	// Start the fetchers first.
 	ctx, cancelSearch := context.WithCancel(ctx)
@@ -239,19 +225,17 @@ func (md *MultiDriver) FindPeersAsync(ctx context.Context, outPeers chan<- p2p_p
 			// At least one is working
 			go func() {
 				// We could maybe mux multiple FindPeers with the same key but that will add an other syncing cost.
-				var alreadySeen []p2p_peer.ID
+				alreadySeen := make(map[p2p_peer.ID]struct{})
 				var peerCount int
-			MainEmptyingLoop:
 				for peerCount < limit {
 					select {
 					case info := <-inPeers:
 						id := info.ID
-						for _, w := range alreadySeen {
-							if w == id {
-								continue MainEmptyingLoop
-							}
+						_, ok := alreadySeen[id]
+						if ok {
+							continue
 						}
-						alreadySeen = append(alreadySeen, id)
+						alreadySeen[id] = struct{}{}
 						select {
 						case outPeers <- info:
 						case <-ctx.Done():

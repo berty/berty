@@ -5,12 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"sync"
-	"time"
-
-	"berty.tech/berty/v2/go/pkg/errcode"
 
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	ma "github.com/multiformats/go-multiaddr"
+	madns "github.com/multiformats/go-multiaddr-dns"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -60,22 +58,20 @@ func ParseAndResolveIpfsAddr(ctx context.Context, addr string) (*peer.AddrInfo, 
 }
 
 func ParseAndResolveRdvpMaddrs(ctx context.Context, log *zap.Logger, addrs []string) ([]*peer.AddrInfo, error) {
-	var outPeers []*peer.AddrInfo
-	var outErr []error
+	outPeers := make([]*peer.AddrInfo, len(addrs))
+	var errs error
 	var outLock sync.Mutex
 	var wg sync.WaitGroup
 	wg.Add(len(addrs))
-	for _, v := range addrs {
-		go func(addr string) {
+	for i, v := range addrs {
+		go func(j int, addr string) {
 			defer wg.Done()
-			resolveCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
-			defer cancel()
 
-			rdvpeer, err := ParseAndResolveIpfsAddr(resolveCtx, addr)
+			rdvpeer, err := ParseAndResolveIpfsAddr(ctx, addr)
 			if err != nil {
 				outLock.Lock()
 				defer outLock.Unlock()
-				outErr = append(outErr, errcode.TODO.Wrap(err))
+				errs = multierr.Append(errs, err)
 				return
 			}
 
@@ -87,12 +83,12 @@ func ParseAndResolveRdvpMaddrs(ctx context.Context, log *zap.Logger, addrs []str
 			log.Debug("rdvp peer resolved addrs", fds...)
 			outLock.Lock()
 			defer outLock.Unlock()
-			outPeers = append(outPeers, rdvpeer)
-		}(v)
+			outPeers[j] = rdvpeer
+		}(i, v)
 	}
 	wg.Wait()
-	if len(outPeers) == 0 {
-		return nil, multierr.Combine(outErr...)
+	if errs != nil {
+		return nil, errs
 	}
 	return outPeers, nil
 }

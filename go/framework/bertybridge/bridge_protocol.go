@@ -53,12 +53,12 @@ import (
 )
 
 var (
-	defaultProtocolRendezVousPeer = config.BertyMobile.RendezVousPeer
-	defaultProtocolBootstrap      = config.BertyMobile.Bootstrap
-	defaultTracingHost            = config.BertyMobile.Tracing
-	defaultSwarmAddrs             = config.BertyMobile.DefaultSwarmAddrs
-	defaultAPIAddrs               = config.BertyMobile.DefaultAPIAddrs
-	APIConfig                     = config.BertyMobile.APIConfig
+	defaultProtocolRendezVousPeers = config.BertyMobile.RendezVousPeers
+	defaultProtocolBootstrap       = config.BertyMobile.Bootstrap
+	defaultTracingHost             = config.BertyMobile.Tracing
+	defaultSwarmAddrs              = config.BertyMobile.DefaultSwarmAddrs
+	defaultAPIAddrs                = config.BertyMobile.DefaultAPIAddrs
+	APIConfig                      = config.BertyMobile.APIConfig
 )
 
 var defaultBootstrapConfig = bootstrap.BootstrapConfig{
@@ -190,7 +190,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 
 			var rdvpeers []*peer.AddrInfo
 
-			if rdvpeers, err = ipfsutil.ParseAndResolveRdvpMaddrs(ctx, logger, defaultProtocolRendezVousPeer); err != nil {
+			if rdvpeers, err = ipfsutil.ParseAndResolveRdvpMaddrs(ctx, logger, defaultProtocolRendezVousPeers); err != nil {
 				return nil, err
 			}
 
@@ -253,7 +253,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 			bopts.BootstrapAddrs = defaultProtocolBootstrap
 
 			// should be a valid rendezvous peer
-			bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, defaultProtocolRendezVousPeer...)
+			bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, defaultProtocolRendezVousPeers...)
 			if len(config.swarmListeners) > 0 {
 				bopts.SwarmAddrs = append(bopts.SwarmAddrs, config.swarmListeners...)
 			}
