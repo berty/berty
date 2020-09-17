@@ -30,7 +30,7 @@ func ServeHTTPApi(logger *zap.Logger, node *core.IpfsNode, rootDirectory string)
 	var APIAddr string
 	cfg, err := node.Repo.Config()
 	if err != nil || len(cfg.Addresses.API) == 0 {
-		APIAddr = "ip4/127.0.0.1/tcp/5001"
+		APIAddr = "/ip4/127.0.0.1/tcp/5001"
 	} else {
 		APIAddr = cfg.Addresses.API[0]
 	}

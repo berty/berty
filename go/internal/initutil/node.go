@@ -107,9 +107,11 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 	}
 
 	// construct http api endpoint
-	err = ipfsutil.ServeHTTPApi(logger, m.Node.Protocol.ipfsNode, "")
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+	if m.Node.Protocol.IPFSAPIListeners != "" {
+		err = ipfsutil.ServeHTTPApi(logger, m.Node.Protocol.ipfsNode, "")
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
 	}
 
 	// serve the embedded ipfs web UI
