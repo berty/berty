@@ -6,11 +6,12 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/testutil"
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/testutil"
 )
 
 func TestUnstableServiceStream(t *testing.T) {

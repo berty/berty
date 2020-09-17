@@ -4,9 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	mcdrv "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/driver"
-	mcma "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/multiaddr"
-
 	host "github.com/libp2p/go-libp2p-core/host"
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	tpt "github.com/libp2p/go-libp2p-core/transport"
@@ -14,6 +11,9 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
+
+	mcdrv "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/driver"
+	mcma "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/multiaddr"
 )
 
 const DefaultBind = "/mc/Qmeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"

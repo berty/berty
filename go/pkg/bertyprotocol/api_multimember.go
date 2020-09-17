@@ -4,9 +4,10 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/libp2p/go-libp2p-core/crypto"
+
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
 // MultiMemberGroupCreate creates a new MultiMember group

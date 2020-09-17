@@ -3,9 +3,10 @@ package bertybridge
 import (
 	"os"
 
-	"berty.tech/berty/v2/go/internal/logutil"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	"berty.tech/berty/v2/go/internal/logutil"
 )
 
 type NativeLoggerDriver interface {

@@ -3,8 +3,12 @@ package bertyprotocol
 import (
 	"context"
 	"encoding/json"
-
 	"sync"
+
+	cid "github.com/ipfs/go-cid"
+	mh "github.com/multiformats/go-multihash"
+	"github.com/pkg/errors"
+	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	logac "berty.tech/go-ipfs-log/accesscontroller"
@@ -12,10 +16,6 @@ import (
 	"berty.tech/go-orbit-db/accesscontroller"
 	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/iface"
-	cid "github.com/ipfs/go-cid"
-	mh "github.com/multiformats/go-multihash"
-	"github.com/pkg/errors"
-	"go.uber.org/zap"
 )
 
 type simpleAccessController struct {

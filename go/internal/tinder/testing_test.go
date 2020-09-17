@@ -6,7 +6,6 @@ import (
 	p2p_discovery "github.com/libp2p/go-libp2p-core/discovery"
 	p2p_host "github.com/libp2p/go-libp2p-core/host"
 	p2p_mock "github.com/libp2p/go-libp2p/p2p/net/mock"
-
 	"github.com/stretchr/testify/require"
 )
 

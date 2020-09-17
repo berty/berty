@@ -7,12 +7,12 @@ import (
 	"net"
 	"time"
 
-	mcdrv "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/driver"
-	mcma "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/multiaddr"
-
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 	"github.com/pkg/errors"
+
+	mcdrv "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/driver"
+	mcma "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/multiaddr"
 )
 
 // Conn is a manet.Conn.

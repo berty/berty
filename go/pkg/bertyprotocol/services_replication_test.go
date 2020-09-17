@@ -6,10 +6,8 @@ import (
 	"testing"
 	"time"
 
-	orbitdb "berty.tech/go-orbit-db"
 	"github.com/ipfs/go-datastore"
 	dssync "github.com/ipfs/go-datastore/sync"
-	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
 	"github.com/libp2p/go-libp2p-core/host"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
@@ -20,6 +18,7 @@ import (
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
+	orbitdb "berty.tech/go-orbit-db"
 )
 
 func testHelperIPFSSetUp(t *testing.T) (context.Context, context.CancelFunc, mocknet.Mocknet, host.Host) {
@@ -137,7 +136,7 @@ func TestReplicationService_Flow(t *testing.T) {
 
 	defer baseDS.Close()
 
-	baseDS = sync_ds.MutexWrap(baseDS)
+	baseDS = dssync.MutexWrap(baseDS)
 
 	defer baseDS.Close()
 

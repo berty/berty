@@ -3,8 +3,9 @@ package bertybridge
 import (
 	"time"
 
-	"berty.tech/berty/v2/go/internal/notification"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/notification"
 )
 
 type LocalNotification struct {

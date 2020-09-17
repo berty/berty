@@ -8,22 +8,16 @@ import (
 	"testing"
 	"time"
 
-	tinder "berty.tech/berty/v2/go/internal/tinder"
 	ds "github.com/ipfs/go-datastore"
 	dsync "github.com/ipfs/go-datastore/sync"
-	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
-
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_mock "github.com/ipfs/go-ipfs/core/mock"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
-
-	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto"
+	p2p_ci "github.com/libp2p/go-libp2p-core/crypto"
 	host "github.com/libp2p/go-libp2p-core/host"
 	p2pnetwork "github.com/libp2p/go-libp2p-core/network"
-	"github.com/libp2p/go-libp2p-core/peer"
-	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
+	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/peerstore"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-libp2p-core/routing"
@@ -31,7 +25,11 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	rendezvous "github.com/libp2p/go-libp2p-rendezvous"
 	p2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlite"
-	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
+	p2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
+	"github.com/stretchr/testify/require"
+	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/tinder"
 )
 
 // CoreAPIMock implements ipfs.CoreAPI and adds some debugging helpers
@@ -40,17 +38,17 @@ type CoreAPIMock interface {
 
 	PubSub() *pubsub.PubSub
 	Tinder() tinder.Driver
-	MockNetwork() libp2p_mocknet.Mocknet
+	MockNetwork() p2p_mocknet.Mocknet
 	MockNode() *ipfs_core.IpfsNode
 	Close()
 }
 
-func getOrCreatePrivateKeyFromDatastore(t testing.TB, datastore ds.Datastore) libp2p_ci.PrivKey {
-	const datastoreKeyForPrivateKey = "libp2p_private_key"
+func getOrCreatePrivateKeyFromDatastore(t testing.TB, datastore ds.Datastore) p2p_ci.PrivKey {
+	const datastoreKeyForPrivateKey = "p2p_private_key"
 
 	privkeyb, err := datastore.Get(ds.NewKey("private_key"))
 	if err == ds.ErrNotFound {
-		priv, _, err := libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.RSA, 2048, crand.Reader)
+		priv, _, err := p2p_ci.GenerateKeyPairWithReader(p2p_ci.RSA, 2048, crand.Reader)
 		if err != nil {
 			t.Fatalf("failed to generate pair key: %v", err)
 		}
@@ -69,7 +67,7 @@ func getOrCreatePrivateKeyFromDatastore(t testing.TB, datastore ds.Datastore) li
 		t.Fatalf("failed to get value from datastore: %v", err)
 	}
 
-	priv, err := libp2p_ci.UnmarshalPrivateKey(privkeyb)
+	priv, err := p2p_ci.UnmarshalPrivateKey(privkeyb)
 	if err != nil {
 		t.Fatalf("failed to unmarshal priv key: %v", err)
 	}
@@ -83,7 +81,7 @@ func TestingRepo(t testing.TB, datastore ds.Datastore) ipfs_repo.Repo {
 	c := ipfs_cfg.Config{}
 	priv := getOrCreatePrivateKeyFromDatastore(t, datastore)
 
-	pid, err := libp2p_peer.IDFromPublicKey(priv.GetPublic())
+	pid, err := p2p_peer.IDFromPublicKey(priv.GetPublic())
 	if err != nil {
 		t.Fatalf("failed to get pid from pub key: %v", err)
 	}
@@ -111,8 +109,8 @@ func TestingRepo(t testing.TB, datastore ds.Datastore) ipfs_repo.Repo {
 
 type TestingAPIOpts struct {
 	Logger    *zap.Logger
-	Mocknet   libp2p_mocknet.Mocknet
-	RDVPeer   peer.AddrInfo
+	Mocknet   p2p_mocknet.Mocknet
+	RDVPeer   p2p_peer.AddrInfo
 	Datastore ds.Batching
 }
 
@@ -201,7 +199,7 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 func TestingCoreAPI(ctx context.Context, t testing.TB) (CoreAPIMock, func()) {
 	t.Helper()
 
-	m := libp2p_mocknet.New(ctx)
+	m := p2p_mocknet.New(ctx)
 	rdvPeer, err := m.GenPeer()
 	require.NoError(t, err)
 
@@ -234,7 +232,7 @@ type coreAPIMock struct {
 	coreapi ExtendedCoreAPI
 
 	pubsub  *pubsub.PubSub
-	mocknet libp2p_mocknet.Mocknet
+	mocknet p2p_mocknet.Mocknet
 	node    *ipfs_core.IpfsNode
 	tinder  tinder.Driver
 }
@@ -243,7 +241,7 @@ func (m *coreAPIMock) ConnMgr() ConnMgr {
 	return m.node.PeerHost.ConnManager()
 }
 
-func (m *coreAPIMock) NewStream(ctx context.Context, p libp2p_peer.ID, pids ...protocol.ID) (p2pnetwork.Stream, error) {
+func (m *coreAPIMock) NewStream(ctx context.Context, p p2p_peer.ID, pids ...protocol.ID) (p2pnetwork.Stream, error) {
 	return m.node.PeerHost.NewStream(ctx, p, pids...)
 }
 
@@ -259,7 +257,7 @@ func (m *coreAPIMock) API() ExtendedCoreAPI {
 	return m.coreapi
 }
 
-func (m *coreAPIMock) MockNetwork() libp2p_mocknet.Mocknet {
+func (m *coreAPIMock) MockNetwork() p2p_mocknet.Mocknet {
 	return m.mocknet
 }
 

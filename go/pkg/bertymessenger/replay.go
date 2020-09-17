@@ -5,12 +5,14 @@ import (
 	"context"
 	"io"
 
+	// nolint:staticcheck: not sure how to use the new protobuf api to unmarshal
+	"github.com/golang/protobuf/proto"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
+
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"github.com/golang/protobuf/proto" // nolint:staticcheck: not sure how to use the new protobuf api to unmarshal
-	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 func ReplayLogsToDB(ctx context.Context, client bertyprotocol.ProtocolServiceClient, db *gorm.DB) error {

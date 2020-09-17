@@ -7,14 +7,15 @@ import (
 	"net/url"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/discordlog"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/gogo/protobuf/proto"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"gorm.io/gorm/clause"
+
+	"berty.tech/berty/v2/go/internal/discordlog"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 func (svc *service) DevShareInstanceBertyID(ctx context.Context, req *DevShareInstanceBertyID_Request) (*DevShareInstanceBertyID_Reply, error) {

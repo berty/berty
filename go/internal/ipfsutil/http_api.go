@@ -3,14 +3,15 @@ package ipfsutil
 import (
 	"net/http"
 
-	"berty.tech/berty/v2/go/pkg/errcode"
-	ipfswebui "berty.tech/ipfs-webui-packed"
 	"github.com/ipfs/go-ipfs/commands"
 	"github.com/ipfs/go-ipfs/core"
 	"github.com/ipfs/go-ipfs/core/corehttp"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/pkg/errcode"
+	ipfswebui "berty.tech/ipfs-webui-packed"
 )
 
 // ServeHTTPApi collects options, creates listener, prints status message and starts serving requests

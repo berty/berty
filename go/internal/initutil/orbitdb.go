@@ -3,15 +3,15 @@ package initutil
 import (
 	"path/filepath"
 
-	"berty.tech/go-orbit-db/baseorbitdb"
-	"berty.tech/go-orbit-db/pubsub/directchannel"
-	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 	datastore "github.com/ipfs/go-datastore"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/go-orbit-db/baseorbitdb"
+	"berty.tech/go-orbit-db/pubsub/directchannel"
+	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 )
 
 func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {

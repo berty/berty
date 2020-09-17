@@ -7,11 +7,12 @@ import (
 	"sync"
 	"sync/atomic"
 
+	"github.com/gdamore/tcell"
+	"github.com/rivo/tview"
+
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
-	"github.com/gdamore/tcell"
-	"github.com/rivo/tview"
 )
 
 type tabbedGroupsView struct {

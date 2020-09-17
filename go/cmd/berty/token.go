@@ -8,9 +8,10 @@ import (
 	"net/http"
 	"strings"
 
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"golang.org/x/crypto/ed25519"
+
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 )
 
 // This server is a showcase of a PKCE OAuth 2 token issuer. Its behavior is to

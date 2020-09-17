@@ -13,9 +13,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"go.uber.org/zap"
-
 	p2p_rp "github.com/libp2p/go-libp2p-rendezvous"
+	"go.uber.org/zap"
 )
 
 type rendezvousDiscovery struct {

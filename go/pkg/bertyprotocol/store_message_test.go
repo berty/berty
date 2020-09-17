@@ -6,9 +6,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
+
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
-	"github.com/stretchr/testify/assert"
 )
 
 func countEntries(out <-chan *bertytypes.GroupMessageEvent) int {

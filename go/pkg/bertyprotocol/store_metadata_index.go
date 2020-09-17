@@ -5,14 +5,15 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/gogo/protobuf/proto"
+	"github.com/libp2p/go-libp2p-core/crypto"
+	"go.uber.org/zap"
+
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/iface"
-	"github.com/gogo/protobuf/proto"
-	"github.com/libp2p/go-libp2p-core/crypto"
-	"go.uber.org/zap"
 )
 
 type metadataStoreIndex struct {

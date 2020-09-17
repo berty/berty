@@ -4,9 +4,10 @@ import (
 	"encoding/base64"
 	"strings"
 
-	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/itsTurnip/dishooks"
 	qrcode "github.com/skip2/go-qrcode"
+
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 // rooms are webhook URLs encoded in base64 to prevent most stupid bots to spam our channels.

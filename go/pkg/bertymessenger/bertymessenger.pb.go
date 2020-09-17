@@ -8,12 +8,13 @@ import (
 	fmt "fmt"
 	math "math"
 
-	bertytypes "berty.tech/berty/v2/go/pkg/bertytypes"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+
+	bertytypes "berty.tech/berty/v2/go/pkg/bertytypes"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.

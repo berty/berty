@@ -7,15 +7,16 @@ import (
 	"sync"
 	"time"
 
-	"berty.tech/berty/v2/go/framework/bertybridge/internal/bridgepb"
-	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/oklog/run"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+
+	"berty.tech/berty/v2/go/framework/bertybridge/internal/bridgepb"
+	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 const ClientBufferSize = 256 * 1024

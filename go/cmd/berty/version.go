@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"runtime"
 
-	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"github.com/peterbourgon/ff/v3/ffcli"
+
+	"berty.tech/berty/v2/go/pkg/bertyversion"
 )
 
 func versionCommand() *ffcli.Command {

@@ -3,8 +3,9 @@ package bertybridge
 import (
 	"context"
 
-	"berty.tech/berty/v2/go/internal/grpcutil"
 	"google.golang.org/grpc"
+
+	"berty.tech/berty/v2/go/internal/grpcutil"
 )
 
 type Client struct {

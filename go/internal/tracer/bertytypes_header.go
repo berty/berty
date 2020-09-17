@@ -3,10 +3,11 @@ package tracer
 import (
 	"context"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"go.opentelemetry.io/otel/api/kv"
 	"go.opentelemetry.io/otel/api/propagation"
 	"go.opentelemetry.io/otel/api/trace"
+
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 )
 
 type metadataSupplier struct {

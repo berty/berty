@@ -4,8 +4,9 @@ import (
 	"context"
 	"flag"
 
-	"berty.tech/berty/v2/go/cmd/berty/mini"
 	"github.com/peterbourgon/ff/v3/ffcli"
+
+	"berty.tech/berty/v2/go/cmd/berty/mini"
 )
 
 func miniCommand() *ffcli.Command {

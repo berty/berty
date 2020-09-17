@@ -18,6 +18,8 @@ linters-settings:
     min-occurrences: 4
   misspell:
     locale: US
+  gci:
+    local-prefixes: berty.tech
 
 linters:
   disable-all: true
@@ -33,6 +35,7 @@ linters:
     - goconst
     - gocritic
     # - gocyclo
+    - gci
     - gofmt
     - goimports
     - golint

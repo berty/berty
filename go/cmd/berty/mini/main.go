@@ -8,15 +8,16 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gdamore/tcell"
+	"github.com/gdamore/tcell/terminfo"
+	"github.com/rivo/tview"
+	"go.uber.org/zap"
+
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"github.com/gdamore/tcell"
-	"github.com/gdamore/tcell/terminfo"
-	"github.com/rivo/tview"
-	"go.uber.org/zap"
 )
 
 type Opts struct {

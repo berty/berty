@@ -4,10 +4,11 @@ import (
 	"context"
 	"flag"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 func daemonCommand() *ffcli.Command {
