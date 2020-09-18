@@ -160,7 +160,10 @@ const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
 					showsHorizontalScrollIndicator={false}
 				>
 					{items.map((c: any) => {
-						return <ContactRequest key={c.publicKey} {...c} />
+						if (c && c.publicKey) {
+							return <ContactRequest key={c.publicKey} {...c} />
+						}
+						return null
 					})}
 				</ScrollView>
 			</View>
