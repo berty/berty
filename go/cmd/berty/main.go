@@ -50,7 +50,7 @@ func runMain(args []string) error {
 	// root command
 	var root *ffcli.Command
 	{
-		var fs = flag.NewFlagSet("berty", flag.ContinueOnError)
+		fs := flag.NewFlagSet("berty", flag.ContinueOnError)
 		manager.SetupLoggingFlags(fs)
 
 		root = &ffcli.Command{

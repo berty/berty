@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	// nolint:staticcheck
+	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
 	"go.uber.org/zap"
 	"gorm.io/driver/sqlite"

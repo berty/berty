@@ -24,33 +24,40 @@ linters-settings:
 linters:
   disable-all: true
   enable:
+    - asciicheck
     - bodyclose
     - deadcode
     - depguard
     - dogsled
-    #- dupl
     - errcheck
+    #- exhaustive    # nice to have
+    - exportloopref
+    - gci
     - gochecknoinits
-    #- gocognit
+    #- gocognit      # nice to have
+    - goconst
     - goconst
     - gocritic
-    # - gocyclo
-    - gci
+    #- godot         # nice to have
+    #- goerr113      # nice to have
     - gofmt
+    #- gofumpt       # depends on https://github.com/mvdan/gofumpt/issues/86
     - goimports
     - golint
+    #- gomnd         # nice to have
+    - gomodguard
+    - gosec
     - gosimple
     - govet
     - ineffassign
-    #- interfacer
-    # - maligned
     - misspell
     - nakedret
-    #- prealloc
+    - noctx
+    #- nolintlint
     - scopelint
+    - sqlclosecheck
     - staticcheck
     - structcheck
-    #- stylecheck
     - typecheck
     - unconvert
     - unparam

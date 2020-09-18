@@ -5,7 +5,7 @@ import (
 )
 
 // FIXME: remove this init
-// nolint: gochecknoinits
+// nolint:gochecknoinits
 func init() {
 	// Bind native to golang bridge functions
 	mcdrv.BindNativeToGoFunctions(

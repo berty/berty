@@ -63,6 +63,7 @@ var templateAuthTokenServerRedirect = template.Must(template.New("redirect").Par
   <meta http-equiv="refresh" content="1; URL={{.URL}}" />
 </head><body><a href="{{.URL}}">Redirection</a></body></html>`))
 
+// nolint:gosec
 var templateAuthTokenServerAuthorizeButton = `<!DOCTYPE html><html lang="en-GB"><head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Token</title>
@@ -80,7 +81,6 @@ func (a *AuthTokenServer) authTokenServerJSONError(w http.ResponseWriter, errorC
 
 func (a *AuthTokenServer) authTokenServerJSONResponse(w http.ResponseWriter, jsonData interface{}, httpCode int, logger *zap.Logger) {
 	data, err := json.Marshal(jsonData)
-
 	if err != nil {
 		logger.Error("unable to marshal JSON response", zap.Error(err))
 		w.WriteHeader(500)
@@ -99,7 +99,7 @@ func (a *AuthTokenServer) authTokenServerRedirect(w http.ResponseWriter, url str
 	if err := templateAuthTokenServerRedirect.Execute(w, struct {
 		URL template.URL
 	}{
-		URL: template.URL(url),
+		URL: template.URL(url), // nolint:gosec
 	}); err != nil {
 		logger.Error("unable to write redirect response", zap.Error(err))
 		w.WriteHeader(500)

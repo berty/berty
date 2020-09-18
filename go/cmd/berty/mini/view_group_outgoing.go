@@ -196,7 +196,6 @@ func authInit(ctx context.Context, v *groupView, cmd string) error {
 	rep, err := v.v.protocol.AuthServiceInitFlow(ctx, &bertytypes.AuthServiceInitFlow_Request{
 		AuthURL: strings.TrimSpace(cmd),
 	})
-
 	if err != nil {
 		return err
 	}
@@ -554,7 +553,6 @@ func debugListGroupCommand(ctx context.Context, v *groupView, cmd string) error 
 	groupDebug, err := v.v.protocol.DebugGroup(ctx, &bertytypes.DebugGroup_Request{
 		GroupPK: v.g.PublicKey,
 	})
-
 	if err != nil {
 		return err
 	}
@@ -605,7 +603,6 @@ func groupInviteCommand(renderFunc func(*groupView, string)) func(ctx context.Co
 			GroupPK:   v.g.PublicKey,
 			GroupName: "some group",
 		})
-
 		if err != nil {
 			return err
 		}
@@ -728,7 +725,6 @@ func contactRequestCommand(ctx context.Context, v *groupView, cmd string) error 
 	res, err := v.v.messenger.ParseDeepLink(ctx, &bertymessenger.ParseDeepLink_Request{
 		Link: cmd,
 	})
-
 	if err != nil {
 		return err
 	}

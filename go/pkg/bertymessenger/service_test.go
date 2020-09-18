@@ -429,14 +429,13 @@ func TestBrokenPeersCreateJoinConversation(t *testing.T) {
 		defer creator.Close()
 		creator.SetName(t, "Creator")
 	}
-	var joiners = make([]*TestingAccount, accountsAmount-1)
+	joiners := make([]*TestingAccount, accountsAmount-1)
 	{
 		for i := 0; i < accountsAmount-1; i++ {
 			joiners[i] = NewTestingAccount(ctx, t, clients[i+1], logger)
 			defer joiners[i].Close()
 			joiners[i].SetName(t, "Joiner #"+strconv.Itoa(i))
 		}
-
 	}
 
 	// creator creates a new conversation
@@ -515,7 +514,7 @@ func TestBroken3PeersExchange(t *testing.T) {
 		creator.DrainInitEvents(t)
 		creator.SetNameAndDrainUpdate(t, "Creator")
 	}
-	var joiners = make([]*TestingAccount, 2)
+	joiners := make([]*TestingAccount, 2)
 	{
 		for i := 0; i < 2; i++ {
 			joiners[i] = NewTestingAccount(ctx, t, clients[i+1], logger)

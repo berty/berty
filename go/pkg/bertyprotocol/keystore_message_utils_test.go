@@ -416,7 +416,6 @@ func testMessageKeyHolderCatchUp(t *testing.T, expectedNewDevices int, isSlow bo
 			t.Fatalf("failed at iteration %d", i)
 		}
 	}
-
 }
 
 func TestMessageKeyHolderCatchUp(t *testing.T) {

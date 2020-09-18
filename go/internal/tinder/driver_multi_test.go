@@ -24,17 +24,20 @@ func TestMultiDriver_Advertise(t *testing.T) {
 		Opts  []p2p_discovery.Option
 		Wait  time.Duration
 	}{
-		{"1 drivers",
+		{
+			"1 drivers",
 			1,
 			[]p2p_discovery.Option{p2p_discovery.TTL(time.Minute)},
 			time.Millisecond * 200,
 		},
-		{"5 drivers",
+		{
+			"5 drivers",
 			5,
 			[]p2p_discovery.Option{p2p_discovery.TTL(time.Minute)},
 			time.Millisecond * 200,
 		},
-		{"2 drivers/100ms ttl/500ms wait",
+		{
+			"2 drivers/100ms ttl/500ms wait",
 			2,
 			[]p2p_discovery.Option{p2p_discovery.TTL(time.Millisecond * 100)},
 			time.Millisecond * 500,
@@ -83,17 +86,20 @@ func TestMultiDriver_FindPeers(t *testing.T) {
 		Opts             []p2p_discovery.Option
 		assertPeersFound assert.ComparisonAssertionFunc
 	}{
-		{"1 drivers",
+		{
+			"1 drivers",
 			1,
 			[]p2p_discovery.Option{p2p_discovery.TTL(time.Minute)},
 			assert.Contains,
 		},
-		{"1 drivers/0 ttl",
+		{
+			"1 drivers/0 ttl",
 			1,
 			[]p2p_discovery.Option{p2p_discovery.TTL(0)},
 			assert.NotContains,
 		},
-		{"5 drivers",
+		{
+			"5 drivers",
 			5,
 			[]p2p_discovery.Option{p2p_discovery.TTL(time.Minute)},
 			assert.Contains,
@@ -144,17 +150,20 @@ func TestAsyncMultiDriver_FindPeers(t *testing.T) {
 		Opts             []p2p_discovery.Option
 		assertPeersFound assert.ComparisonAssertionFunc
 	}{
-		{"1 drivers",
+		{
+			"1 drivers",
 			1,
 			[]p2p_discovery.Option{p2p_discovery.TTL(time.Minute)},
 			assert.Contains,
 		},
-		{"1 drivers/0 ttl",
+		{
+			"1 drivers/0 ttl",
 			1,
 			[]p2p_discovery.Option{p2p_discovery.TTL(0)},
 			assert.NotContains,
 		},
-		{"5 drivers",
+		{
+			"5 drivers",
 			5,
 			[]p2p_discovery.Option{p2p_discovery.TTL(time.Minute)},
 			assert.Contains,
@@ -218,11 +227,13 @@ func TestMultiDriver_Unregister(t *testing.T) {
 		NMock int
 		Opts  []p2p_discovery.Option
 	}{
-		{"1 drivers, 1min ttl",
+		{
+			"1 drivers, 1min ttl",
 			1,
 			[]p2p_discovery.Option{p2p_discovery.TTL(time.Minute)},
 		},
-		{"5 drivers, 1min ttl",
+		{
+			"5 drivers, 1min ttl",
 			5,
 			[]p2p_discovery.Option{p2p_discovery.TTL(time.Minute)},
 		},

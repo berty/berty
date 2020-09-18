@@ -3,7 +3,7 @@ package bertymessenger
 import (
 	"time"
 
-	// nolint:staticcheck: not sure how to use the new protobuf api to unmarshal
+	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
 	"go.uber.org/zap"
 	"gorm.io/gorm"

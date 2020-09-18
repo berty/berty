@@ -36,7 +36,7 @@ func ServeHTTPApi(logger *zap.Logger, node *core.IpfsNode, rootDirectory string)
 		APIAddr = cfg.Addresses.API[0]
 	}
 
-	var opts = []corehttp.ServeOption{
+	opts := []corehttp.ServeOption{
 		corehttp.CommandsOption(cctx),
 		// allow redirections from the http://{apiAddr}/webui to the actual webui address
 		corehttp.WebUIOption,

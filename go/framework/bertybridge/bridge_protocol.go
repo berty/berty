@@ -38,6 +38,7 @@ import (
 	"google.golang.org/grpc/status"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"moul.io/srand"
 	"moul.io/zapgorm2"
 
 	"berty.tech/berty/v2/go/internal/config"
@@ -194,7 +195,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 				return nil, err
 			}
 
-			var bopts = ipfsutil.CoreAPIConfig{
+			bopts := ipfsutil.CoreAPIConfig{
 				DisableCorePubSub: true,
 				SwarmAddrs:        defaultSwarmAddrs,
 				APIAddrs:          defaultAPIAddrs,
@@ -208,8 +209,8 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 						drivers := make([]tinder.AsyncableDriver, lenrdvpeers)
 						for i, peer := range rdvpeers {
 							h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
-							drivers[i] = tinder.NewRendezvousDiscovery(logger, h, peer.ID,
-								mrand.New(mrand.NewSource(mrand.Int63())))
+							rng := mrand.New(mrand.NewSource(srand.Secure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
+							drivers[i] = tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
 						}
 						rdvClients = append(rdvClients, drivers...)
 					}
@@ -226,11 +227,11 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 					}
 
 					minBackoff, maxBackoff := time.Second, time.Minute
-					rng := mrand.New(mrand.NewSource(mrand.Int63()))
+					serviceRng := mrand.New(mrand.NewSource(srand.Secure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
 					disc, err = tinder.NewService(
 						logger,
 						rdvClient,
-						discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, rng),
+						discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, serviceRng),
 					)
 					if err != nil {
 						return err
@@ -502,7 +503,7 @@ func (p *MessengerBridge) HandleTask() LifeCycleBackgroundTask {
 		counter := atomic.AddInt32(&backgroundCounter, 1)
 		tnow := time.Now()
 
-		n := time.Duration(mrand.Intn(60) + 5)
+		n := time.Duration(mrand.Intn(60) + 5) // nolint:gosec
 		ctx, cancel := context.WithTimeout(ctx, time.Second*n)
 		defer cancel()
 
@@ -601,7 +602,7 @@ func getRootDatastore(path string) (datastore.Batching, error) {
 		if !os.IsNotExist(err) {
 			return nil, errors.Wrap(err, "unable get directory")
 		}
-		if err := os.MkdirAll(basepath, 0700); err != nil {
+		if err := os.MkdirAll(basepath, 0o700); err != nil {
 			return nil, errors.Wrap(err, "unable to create datastore directory")
 		}
 	}
@@ -609,7 +610,6 @@ func getRootDatastore(path string) (datastore.Batching, error) {
 	baseds, err := ipfs_badger.NewDatastore(basepath, &ipfs_badger.Options{
 		Options: ipfs_badger.DefaultOptions.WithValueLogLoadingMode(badger_opts.FileIO),
 	})
-
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to load datastore on: `%s`", basepath)
 	}
@@ -629,7 +629,7 @@ func getIPFSRepo(path string) (ipfs_repo.Repo, error) {
 		if !os.IsNotExist(err) {
 			return nil, errors.Wrap(err, "unable get orbitdb directory")
 		}
-		if err := os.MkdirAll(basepath, 0700); err != nil {
+		if err := os.MkdirAll(basepath, 0o700); err != nil {
 			return nil, errors.Wrap(err, "unable to create orbitdb directory")
 		}
 	}

@@ -12,8 +12,10 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
-const serviceReplicationKeyGroupPrefix = "group"
-const ServiceReplicationID = "rpl"
+const (
+	serviceReplicationKeyGroupPrefix = "group"
+	ServiceReplicationID             = "rpl"
+)
 
 type replicationService struct {
 	odb    *BertyOrbitDB

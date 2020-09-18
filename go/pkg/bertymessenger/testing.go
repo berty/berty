@@ -115,7 +115,6 @@ func (a *TestingAccount) openStream(t *testing.T) {
 		a.stream, err = a.client.EventStream(a.ctx, &EventStream_Request{})
 		require.NoError(t, err)
 	})
-
 }
 
 func (a *TestingAccount) processEvent(t *testing.T, event *StreamEvent) {

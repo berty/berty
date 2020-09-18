@@ -165,7 +165,7 @@ func (hc *handshakeContext) receiveResponderAccept() error {
 
 // 5th step - Requester sends: ok
 func (hc *handshakeContext) sendRequesterAcknowledge() error {
-	var acknowledge = &RequesterAcknowledgePayload{Success: true}
+	acknowledge := &RequesterAcknowledgePayload{Success: true}
 
 	// Send Acknowledge to responder
 	if err := hc.writer.WriteMsg(acknowledge); err != nil {

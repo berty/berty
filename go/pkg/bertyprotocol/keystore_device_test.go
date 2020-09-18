@@ -35,7 +35,6 @@ func Test_New_AccountPrivKey_AccountProofPrivKey(t *testing.T) {
 	assert.False(t, sk1.Equals(skProof2))
 	assert.False(t, sk2.Equals(skProof1))
 	assert.False(t, sk2.Equals(skProof2))
-
 }
 
 func Test_NewWithExistingKeys_AccountPrivKey_AccountProofPrivKey(t *testing.T) {

@@ -20,7 +20,6 @@ func TestSeedFromEd25519PrivateKey(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-
 }
 
 func TestEdwardsToMontgomeryPub(t *testing.T) {

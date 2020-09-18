@@ -43,7 +43,7 @@ func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, 
 			if !os.IsNotExist(err) {
 				panic(err)
 			}
-			if err := os.MkdirAll(dirPath, 0700); err != nil {
+			if err := os.MkdirAll(dirPath, 0o700); err != nil {
 				panic(err)
 			}
 		}

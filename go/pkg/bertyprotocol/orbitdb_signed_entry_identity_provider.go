@@ -7,9 +7,11 @@ import (
 	"berty.tech/go-ipfs-log/identityprovider"
 )
 
-const identityGroupIDKey = "group_id"
-const storeTypeKey = "store_type"
-const identityType = "betry_group_entry"
+const (
+	identityGroupIDKey = "group_id"
+	storeTypeKey       = "store_type"
+	identityType       = "betry_group_entry"
+)
 
 type bertySignedIdentityProvider struct {
 	keyStore *BertySignedKeyStore

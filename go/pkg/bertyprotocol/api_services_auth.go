@@ -11,16 +11,20 @@ import (
 	"net/url"
 	"strings"
 
+	"golang.org/x/net/context/ctxhttp"
+
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
-const AuthResponseType = "code"
-const AuthGrantType = "authorization_code"
-const AuthRedirect = "berty://services-auth/"
-const AuthClientID = "berty"
-const AuthCodeChallengeMethod = "S256"
+const (
+	AuthResponseType        = "code"
+	AuthGrantType           = "authorization_code"
+	AuthRedirect            = "berty://services-auth/"
+	AuthClientID            = "berty"
+	AuthCodeChallengeMethod = "S256"
+)
 
 type authExchangeResponse struct {
 	AccessToken      string            `json:"access_token"`
@@ -152,13 +156,13 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *bertytyp
 		return nil, errcode.ErrServicesAuthWrongState
 	}
 
-	res, err := http.PostForm(fmt.Sprintf("%s%s", auth.baseURL, AuthHTTPPathTokenExchange), url.Values{
+	endpoint := fmt.Sprintf("%s%s", auth.baseURL, AuthHTTPPathTokenExchange)
+	res, err := ctxhttp.PostForm(ctx, http.DefaultClient, endpoint, url.Values{
 		"grant_type":    {AuthGrantType},
 		"code":          {code},
 		"client_id":     {AuthClientID},
 		"code_verifier": {auth.codeVerifier},
 	})
-
 	if err != nil {
 		return nil, errcode.ErrStreamWrite.Wrap(err)
 	}

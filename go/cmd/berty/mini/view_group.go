@@ -120,7 +120,6 @@ func (v *groupView) ack(ctx context.Context, evt *bertytypes.GroupMessageEvent) 
 		GroupPK:   evt.EventContext.GroupPK,
 		MessageID: evt.EventContext.ID,
 	})
-
 	if err != nil {
 		v.messages.AppendErr(fmt.Errorf("error while sending ack: %s", err.Error()))
 		v.addBadge()
