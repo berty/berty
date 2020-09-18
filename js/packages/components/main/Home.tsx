@@ -273,7 +273,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 					</View>
 				) : (
 					<ProceduralCircleAvatar
-						seed={contact.publicKey}
+						seed={contact?.publicKey}
 						size={50}
 						style={[padding.tiny, row.item.justify]}
 					/>
@@ -293,7 +293,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 								{(fake && 'FAKE - ') || ''}
 								{type === messengerpb.Conversation.Type.MultiMemberType
 									? displayName
-									: contact.displayName || ''}
+									: contact?.displayName || ''}
 							</Text>
 						</View>
 						<View style={[row.right, { alignItems: 'center' }]}>
