@@ -34,6 +34,14 @@ export const ModalsNavigation: React.FC = () => (
 				stackAnimation: 'fade',
 			}}
 		/>
+		<ModalsStack.Screen
+			name={Routes.Modals.AddBetabot}
+			component={Components.Modals.AddBetabot}
+			options={{
+				stackPresentation: 'transparentModal',
+				stackAnimation: 'fade',
+			}}
+		/>
 	</ModalsStack.Navigator>
 )
 
