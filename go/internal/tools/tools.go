@@ -48,4 +48,7 @@ import (
 
 	// required by Makefile
 	_ "moul.io/testman"
+
+	// required by Makefile
+	_ "mvdan.cc/gofumpt"
 )

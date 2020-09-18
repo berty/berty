@@ -84,7 +84,6 @@ func handlerAccountContactRequestOutgoingSent(ctx context.Context, v *groupView,
 	gInfo, err := v.v.protocol.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		ContactPK: casted.ContactPK,
 	})
-
 	if err != nil {
 		return err
 	}
@@ -275,7 +274,6 @@ func handlerAccountContactRequestIncomingAccepted(ctx context.Context, v *groupV
 	gInfo, err := v.v.protocol.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		ContactPK: casted.ContactPK,
 	})
-
 	if err != nil {
 		return err
 	}

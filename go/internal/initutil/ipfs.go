@@ -3,7 +3,7 @@ package initutil
 import (
 	"flag"
 	"fmt"
-	"math/rand"
+	mrand "math/rand"
 	"strings"
 	"time"
 
@@ -70,27 +70,27 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 	ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceIPFSDatastore))
 
-	var swarmAddrs = []string{}
+	swarmAddrs := []string{}
 	if m.Node.Protocol.IPFSListeners != "" {
 		swarmAddrs = strings.Split(m.Node.Protocol.IPFSListeners, ",")
 	}
 
-	var apiAddrs = []string{}
+	apiAddrs := []string{}
 	if m.Node.Protocol.IPFSAPIListeners != "" {
 		apiAddrs = strings.Split(m.Node.Protocol.IPFSAPIListeners, ",")
 	}
 
-	var announce = []string{}
+	announce := []string{}
 	if m.Node.Protocol.Announce != "" {
 		announce = strings.Split(m.Node.Protocol.Announce, ",")
 	}
 
-	var noannounce = []string{}
+	noannounce := []string{}
 	if m.Node.Protocol.NoAnnounce != "" {
 		noannounce = strings.Split(m.Node.Protocol.NoAnnounce, ",")
 	}
 
-	var opts = ipfsutil.CoreAPIConfig{
+	opts := ipfsutil.CoreAPIConfig{
 		SwarmAddrs:        swarmAddrs,
 		APIAddrs:          apiAddrs,
 		APIConfig:         config.BertyDev.APIConfig,
@@ -100,19 +100,17 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		BootstrapAddrs:    config.BertyDev.Bootstrap,
 		HostConfig: func(h host.Host, _ routing.Routing) error {
 			var err error
-			var rdvClients []tinder.AsyncableDriver
-			rng := rand.New(rand.NewSource(srand.Fast()))
 
+			var rdvClients []tinder.AsyncableDriver
 			if lenrdvpeers := len(rdvpeers); lenrdvpeers > 0 {
 				drivers := make([]tinder.AsyncableDriver, lenrdvpeers)
 				for i, peer := range rdvpeers {
 					h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
-					drivers[i] = tinder.NewRendezvousDiscovery(logger, h, peer.ID,
-						rand.New(rand.NewSource(srand.Fast())))
+					rng := mrand.New(mrand.NewSource(srand.Secure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
+					drivers[i] = tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
 				}
 				rdvClients = append(rdvClients, drivers...)
 			}
-
 			var rdvClient tinder.Driver
 			switch len(rdvClients) {
 			case 0:
@@ -124,10 +122,11 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 				rdvClient = tinder.NewAsyncMultiDriver(logger, rdvClients...)
 			}
 
+			serverRng := mrand.New(mrand.NewSource(srand.Secure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
 			m.Node.Protocol.discovery, err = tinder.NewService(
 				logger,
 				rdvClient,
-				discovery.NewExponentialBackoff(m.Node.Protocol.MinBackoff, m.Node.Protocol.MaxBackoff, discovery.FullJitter, time.Second, 5.0, 0, rng),
+				discovery.NewExponentialBackoff(m.Node.Protocol.MinBackoff, m.Node.Protocol.MaxBackoff, discovery.FullJitter, time.Second, 5.0, 0, serverRng),
 			)
 			if err != nil {
 				return err

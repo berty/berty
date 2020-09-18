@@ -41,7 +41,6 @@ func TestNewAuthTokenVerifier(t *testing.T) {
 
 	require.Error(t, err)
 	require.Nil(t, verifier)
-
 }
 
 func TestNewAuthTokenIssuer(t *testing.T) {

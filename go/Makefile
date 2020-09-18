@@ -184,7 +184,7 @@ generate_local:
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./framework/bertybridge/internal/bridgepb/*.pb.go
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.go
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.gw.go
-	go run github.com/daixiang0/gci -w -local berty.tech ./pkg ./cmd ./internal
+	$(MAKE) go.fmt
 	shasum $(gen_src) | sort -k 2 > $(gen_sum).tmp
 	mv $(gen_sum).tmp $(gen_sum)
 .PHONY: generate_local
@@ -192,6 +192,7 @@ generate_local:
 
 go.fmt:
 	go run github.com/daixiang0/gci -w -local berty.tech .
+	@#go run mvdan.cc/gofumpt -w -s . # temporarily disabled (to be run by hand), see https://github.com/mvdan/gofumpt/issues/86
 .PHONY: go.fmt
 
 

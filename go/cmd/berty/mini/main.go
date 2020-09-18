@@ -135,6 +135,7 @@ func Main(ctx context.Context, opts *Opts) error {
 		}
 		inactiveTimer.Reset(ShouldBecomeInactive)
 
+		// nolint:exhaustive
 		switch event.Key() {
 		case tcell.KeyCtrlC:
 			app.Stop()

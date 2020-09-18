@@ -26,7 +26,6 @@ func (svc *service) DevShareInstanceBertyID(ctx context.Context, req *DevShareIn
 		DisplayName: req.DisplayName,
 		Reset_:      req.Reset_,
 	})
-
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -201,7 +200,6 @@ func ParseGroupInviteURLQuery(query url.Values) (*ParseDeepLink_Reply, error) {
 		return nil, errcode.ErrMessengerInvalidDeepLink
 	}
 	payload, err := stringToBytes(invite)
-
 	if err != nil {
 		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
 	}
@@ -233,7 +231,6 @@ func (svc *service) ShareableBertyGroup(ctx context.Context, request *ShareableB
 	grpInfo, err := svc.protocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		GroupPK: request.GroupPK,
 	})
-
 	if err != nil {
 		return nil, err
 	}
@@ -367,7 +364,6 @@ func (svc *service) SendAck(ctx context.Context, request *SendAck_Request) (*Sen
 	gInfo, err := svc.protocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		GroupPK: request.GroupPK,
 	})
-
 	if err != nil {
 		return nil, err
 	}

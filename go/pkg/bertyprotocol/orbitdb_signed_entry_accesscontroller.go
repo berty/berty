@@ -63,7 +63,6 @@ func simpleAccessControllerCID(allowedKeys map[string][]string) (cid.Cid, error)
 		MhType:   mh.SHA2_256,
 		MhLength: -1,
 	}.Sum(d)
-
 	if err != nil {
 		return cid.Undef, errcode.ErrInvalidInput.Wrap(err)
 	}

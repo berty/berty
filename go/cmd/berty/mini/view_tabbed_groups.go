@@ -139,7 +139,6 @@ func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *bertytypes.Gr
 	info, err := v.protocol.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		GroupPK: g.PublicKey,
 	})
-
 	if err != nil {
 		return
 	}

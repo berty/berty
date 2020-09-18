@@ -107,6 +107,7 @@ require (
 	moul.io/u v1.9.0
 	moul.io/zapfilter v1.6.0
 	moul.io/zapgorm2 v1.0.1
+	mvdan.cc/gofumpt v0.0.0-20200802201014-ab5a8192947d
 )
 
 replace (

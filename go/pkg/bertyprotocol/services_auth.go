@@ -20,9 +20,11 @@ import (
 
 type ContextAuthValue uint32
 
-const ContextTokenHashField ContextAuthValue = iota
-const AuthHTTPPathTokenExchange = "/oauth/token"
-const AuthHTTPPathAuthorize = "/authorize"
+const (
+	ContextTokenHashField     ContextAuthValue = iota
+	AuthHTTPPathTokenExchange                  = "/oauth/token" // nolint:gosec
+	AuthHTTPPathAuthorize                      = "/authorize"
+)
 
 type AuthTokenVerifier struct {
 	secret *[32]byte
@@ -87,7 +89,6 @@ func (r *AuthTokenIssuer) encryptSign(payload []byte) (string, error) {
 	}
 
 	jws, err := r.signer.Sign(append(nonceSlice, encrypted...))
-
 	if err != nil {
 		return "", err
 	}

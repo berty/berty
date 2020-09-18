@@ -30,13 +30,13 @@ var quotes = []Quote{
 }
 
 func RandomQuote() Quote {
-	return quotes[mrand.Intn(len(quotes))]
+	return quotes[mrand.Intn(len(quotes))] // nolint:gosec
 }
 
 func QOTD() Quote {
 	base := time.Date(2000, time.January, 1, 0, 0, 0, 0, time.UTC) // FIXME: use local timezone if available
 	seed := time.Since(base).Hours() / 24
-	r := mrand.New(mrand.NewSource(int64(seed)))
+	r := mrand.New(mrand.NewSource(int64(seed))) // nolint:gosec
 	return quotes[r.Intn(len(quotes))]
 }
 

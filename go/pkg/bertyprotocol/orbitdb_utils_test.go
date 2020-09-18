@@ -250,13 +250,13 @@ func waitForBertyEventType(ctx context.Context, t *testing.T, ms *metadataStore,
 				t.Fatalf(" err: %+v\n", err.Error())
 			}
 
-			//fmt.Println(string(e.DevicePK), string(e.DestMemberPK))
+			// fmt.Println(string(e.DevicePK), string(e.DestMemberPK))
 
 			eventCount--
 			if eventCount == 0 {
 				done <- struct{}{}
 			} else {
-				//fmt.Println(eventCount, "more to go")
+				// fmt.Println(eventCount, "more to go")
 			}
 		}
 	}

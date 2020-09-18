@@ -30,7 +30,7 @@ func groupinitCommand() *ffcli.Command {
 				return err
 			}
 
-			name := fmt.Sprintf("random-group-%d", mrand.Int31()%65535)
+			name := fmt.Sprintf("random-group-%d", mrand.Int31()%65535) // nolint:gosec
 			deepLink, _, err := bertymessenger.ShareableBertyGroupURL(g, name)
 			if err != nil {
 				return err

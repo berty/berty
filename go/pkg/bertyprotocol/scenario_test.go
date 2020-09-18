@@ -149,7 +149,6 @@ func TestScenario_MessageContactGroup(t *testing.T) {
 		messages := []string{"test1", "test2", "test3"}
 		sendMessageToContact(ctx, t, messages, tps)
 	})
-
 }
 
 func TestScenario_MessageAccountGroup(t *testing.T) {

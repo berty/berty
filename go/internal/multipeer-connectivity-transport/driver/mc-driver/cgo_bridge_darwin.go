@@ -22,8 +22,10 @@ func StopMCDriver() {
 	C.StopMCDriver()
 }
 
-var GoHandleFoundPeer func(remotePID string) bool = nil
-var GoReceiveFromPeer func(remotePID string, payload []byte) = nil
+var (
+	GoHandleFoundPeer func(remotePID string) bool            = nil
+	GoReceiveFromPeer func(remotePID string, payload []byte) = nil
+)
 
 //export HandleFoundPeer
 func HandleFoundPeer(remotePID *C.char) C.int {

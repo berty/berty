@@ -10,10 +10,7 @@ import (
 )
 
 func replicationServerCommand() *ffcli.Command {
-	var (
-		fs = flag.NewFlagSet("berty share-invite", flag.ExitOnError)
-		// pkStr, secretStr string
-	)
+	fs := flag.NewFlagSet("berty share-invite", flag.ExitOnError)
 
 	manager.SetupLocalProtocolServerFlags(fs)
 	manager.SetupDefaultGRPCListenersFlags(fs)
@@ -30,10 +27,7 @@ func replicationServerCommand() *ffcli.Command {
 				return flag.ErrHelp
 			}
 
-			var (
-				// secret, pk []byte
-				err error
-			)
+			var err error
 
 			// if secret, err = base64.RawStdEncoding.DecodeString(secretStr); err != nil {
 			// 	return err

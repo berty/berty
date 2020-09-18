@@ -6,8 +6,7 @@ import (
 
 // Add MC to the list of libp2p's multiaddr protocols
 // FIXME: remove this init
-// nolint: gochecknoinits
-func init() {
+func init() { // nolint:gochecknoinits
 	err := ma.AddProtocol(protoMC)
 	if err != nil {
 		panic(err)
