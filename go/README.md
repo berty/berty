@@ -31,7 +31,6 @@ Fetch library to your go cache: `go get -u berty.tech/berty/v2`
 [embedmd]:# (.tmp/berty-daemon.txt console)
 ```console
 foo@bar:~$ berty daemon
-2020-09-17T11:33:38Z	INFO 	bty               	IPFS API server listening	{"addr": "/ip4/127.0.0.1/tcp/36679"}
 ...
 ```
 
@@ -48,30 +47,30 @@ TODO
 foo@bar:~$ berty share-invite
 █████████████████████████████████████████████████
 █████████████████████████████████████████████████
-████ ▄▄▄▄▄ ██▀ ▄ ▄▀ █ ▀▀▀▄ ▀▀▀█▀█▄▄▀▀█ ▄▄▄▄▄ ████
-████ █   █ █▄ ▀▄    ▀█▀▀██▀███▀▀▀█ █▄█ █   █ ████
-████ █▄▄▄█ ██▄ ▀▄▀▄▀  ▄ ▀▄  ██▄  █▄▀▀█ █▄▄▄█ ████
-████▄▄▄▄▄▄▄█ ▀ █▄▀ ▀▄▀▄▀ ▀▄▀▄▀ ▀▄▀ ▀▄█▄▄▄▄▄▄▄████
-████ ▄▄█  ▄▄ █▀▄▀ ▀▀▀█████▀▄▄▀▀▀▀ ██   ▀█▀▄▀▀████
-████▀▄▄▄ ▀▄██  ▄█▀ ▀  ▀▀▄ ▀█  ▄▀▀ ▀██▀██▄██  ████
-███████ █ ▄▀▄▄▀▀ █ ▀ ▀▄▄  ▄▀ ▄▀▄▀  ▀▀█ ▄▄▄█▄ ████
-████ █  ██▄ ▀▄ ▄ ▀▄▄  █▀  █▀█ ▄▀▄ ▀▀▄▄▀▀▀▄█▄▄████
-████   █▄ ▄ ███▄ ▄▀ ▀▄ ██ █▀▀ █▄ ▀▀  ▀ ████  ████
-████▀▄▄██▄▄▄▄█▀█▀▄█▀█▄███ █▀▀▀▄▀▄▀▄▀▀▀   █▄  ████
-█████▄    ▄ ▀▄▀▀█▀█▀████  ██ ▄▀█▀ █  ▄ █▄▄█▀▀████
-████▀█▀▀  ▄ █ ▄▀█  ▀█▀▄▀▀ ▀█▀ ██ ▀ ▀██  ▄██  ████
-████▄ ▀ ▀█▄▄█▀▀▀▀▀█▀▀ █▄ ▄ ▀▀▀▀▄█▄█▄█  ██ ▀▀▄████
-████▀█▄▀█▀▄▀ ▀▄█▀▀ ▀ ▀ ▀▄ ██ ▀▄▀▄  ▀███▄▀ ▄ ▄████
-███████▀▄▄▄▀█▀█▀ ▀ ▀ █ ▄█ █▀▀▀█▄ ██  █ ██▄█▀▀████
-████▄▀▀▀▀█▄█   ▄  ▄▄ ▀█▀▀ ▄█ ▀▀▀▀▀▄█▄█▀██▀▄▄▄████
-████▄██▄█▄▄▄▀█ ▄ ██ ▀▄ █▀▀▀▀▀▀█  ▀██ ▄▄▄  ▀▄ ████
-████ ▄▄▄▄▄ █ ▄ █▀▄██▄▄███▀ █▄▀ █ ▀ ▄ █▄█ ▀█ ▄████
-████ █   █ █▄▀▄▀███▀█▀██  █▄  █▄▄ ▀█▄▄▄  ▀▀█▀████
-████ █▄▄▄█ █ ▀▄▀█▀ ▀█▀▄▀▀ ▀▀   ██ ▄▄▄▀▀█ ▄▄ ▄████
-████▄▄▄▄▄▄▄█▄▄▄█▄▄██▄▄█▄▄██▄▄███▄▄█▄▄█▄▄█▄▄▄▄████
+████ ▄▄▄▄▄ ██▀▄▄ ▄▀▀█ ▀ ▀▄█ ▄▀   ▀ ▀▀█ ▄▄▄▄▄ ████
+████ █   █ █▄█ █▀  █ █▀█▄▀▀▄█▀▀▀ █▀█ █ █   █ ████
+████ █▄▄▄█ ██▀▀▀ ▀▄▀ ▀  ▀█  █ ▀▀█▀  ▀█ █▄▄▄█ ████
+████▄▄▄▄▄▄▄█ █▄▀▄▀ ▀▄▀ ▀ ▀▄▀ ▀ █ ▀▄▀ █▄▄▄▄▄▄▄████
+████▄▄▄▀  ▄▄ █▄▄ ▀██▀██▀ █▀▀  █▄ ▀██   ▀█▀▄▀▀████
+████▀███▀▄▄ ▄▀▄█ ▀ █▀ ▀▀▄▀ █▀ ▀██▀ ██ ▄█▄██▄ ████
+████▄  █ █▄▄▀▀   ▀   █▄▄  ▄█ ▄██ █▀▀▀▄▄█▄▄█▄ ████
+█████▄▀▀ ▄▄▀█▄▀▄ ▀ ▄ ▀▄▀  ▀▀█▀ ▀█ ██▀▄▀▀▀▄█▄▄████
+████▀█ █ ▀▄█▀▀ ▄▀██  ▄▀█▀▀▀██▄▀▀ █▀  ▀ ███▄▄ ████
+████▀▄ ▄▄▀▄ █▄███▄█▀█▄██▄ █▀█▀▀█  ▄▀▀▀▄  █▄▀ ████
+████▄▀ ▀  ▄█▄▄ ▀███▀█▀██ ▄█▀▀▄█▀▀ ▀▄ █ ▄▄▄█  ████
+████▀▄█▀▄▀▄▄▄▀▀▀█▀▄▀█▀▄▀▀▀▄▀▄ ▄██▀████   ▄▄  ████
+████▄▀ ▀██▄  ███ ▀█▀ ▀█▄ ▄ ▄▀ ██ ▄███  ██  █ ████
+████▄▄▀██ ▄ █▀███▀ ▀▀▀ █▀ █▀▄▀▀▀█ ▄▀█  ▄▀ ▄▄▄████
+████▄ ▀▄▀ ▄█▄█▄  ▀ ▀ ▀ ▄█▄█▀ ▀█▀  █▄█▄ ▄█▄█ ▀████
+████▄▀▄▄██▄██ ▀▄  ▄▄ ▀▀▀▀▀▄█▄ ▄██  ▀██▀▄ ▄█▄▄████
+████▄█▄██▄▄▄ ▄█▄ ██ ▀█▀▀  ██▀▄ ▄ ▀█▄ ▄▄▄ ▀▀  ████
+████ ▄▄▄▄▄ █ ▀▀█▀▄██▄▄██▀▀ █▄▀ ▀█ ▄▄ █▄█ ▀█▄ ████
+████ █   █ █▄█▄▀███▀████ ▄█▄▀ ▀▀ ▄██▄▄▄  ▀▀▄ ████
+████ █▄▄▄█ █ ▀ ▀█▀ ▀█ ▀▀▀  ██ ▄▀▀▀█▄ ▀▀█ ▄▄ ▄████
+████▄▄▄▄▄▄▄█▄█▄█▄▄█████▄█▄███████▄▄▄▄██▄██▄▄▄████
 █████████████████████████████████████████████████
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-html url: https://berty.tech/id#key=CiCgQhBnH0mTSZnUCJVUV-NVg2WCxc85XF8l0bTQTVqxsBIggWhxJfgft9VaJX2y8RIHQJg0kAs-nxq1bppAlfWaHoo&name=demo
+html url: https://berty.tech/id#key=CiDNTcL1afCa-izb2Zpq7N6WX8kwObxIuHpE_RUAOxQAHBIgkcwmv7gEWiMyZDP6zy3oUuaZzbeKCQnUWmeIsrHQdkI&name=demo
 ```
 
 ### Info
@@ -83,27 +82,27 @@ foo@bar:~$ berty info
   "protocol": {
     "process": {
       "rlimitCur": "1024",
-      "numGoroutine": "443",
-      "nofile": "42",
-      "startedAt": "1600342415",
+      "numGoroutine": "448",
+      "nofile": "53",
+      "startedAt": "1600421304",
       "numCpu": "12",
       "goVersion": "go1.14",
       "operatingSystem": "linux",
       "hostName": "REDACTED",
       "arch": "amd64",
-      "version": "v2.147.0-2-g255d3df6",
-      "vcsRef": "255d3df6",
-      "selfRusage": "{\"Utime\":{\"Sec\":1,\"Usec\":8448},\"Stime\":{\"Sec\":0,\"Usec\":151045},\"Maxrss\":76716,\"Ixrss\":0,\"Idrss\":0,\"Isrss\":0,\"Minflt\":7471,\"Majflt\":0,\"Nswap\":0,\"Inblock\":0,\"Oublock\":0,\"Msgsnd\":0,\"Msgrcv\":0,\"Nsignals\":0,\"Nvcsw\":7926,\"Nivcsw\":18}",
-      "childrenRusage": "{\"Utime\":{\"Sec\":1,\"Usec\":666106},\"Stime\":{\"Sec\":0,\"Usec\":251536},\"Maxrss\":31060,\"Ixrss\":0,\"Idrss\":0,\"Isrss\":0,\"Minflt\":8666,\"Majflt\":0,\"Nswap\":0,\"Inblock\":0,\"Oublock\":0,\"Msgsnd\":0,\"Msgrcv\":0,\"Nsignals\":0,\"Nvcsw\":11506,\"Nivcsw\":339}",
+      "version": "v2.148.0-3-g371e792f",
+      "vcsRef": "371e792f",
+      "selfRusage": "{\"Utime\":{\"Sec\":1,\"Usec\":168758},\"Stime\":{\"Sec\":0,\"Usec\":182482},\"Maxrss\":77632,\"Ixrss\":0,\"Idrss\":0,\"Isrss\":0,\"Minflt\":7602,\"Majflt\":0,\"Nswap\":0,\"Inblock\":0,\"Oublock\":0,\"Msgsnd\":0,\"Msgrcv\":0,\"Nsignals\":0,\"Nvcsw\":9166,\"Nivcsw\":78}",
+      "childrenRusage": "{\"Utime\":{\"Sec\":1,\"Usec\":623438},\"Stime\":{\"Sec\":0,\"Usec\":212101},\"Maxrss\":34324,\"Ixrss\":0,\"Idrss\":0,\"Isrss\":0,\"Minflt\":9967,\"Majflt\":0,\"Nswap\":0,\"Inblock\":0,\"Oublock\":0,\"Msgsnd\":0,\"Msgrcv\":0,\"Nsignals\":0,\"Nvcsw\":11005,\"Nivcsw\":586}",
       "rlimitMax": "1048576",
-      "pid": "17942",
-      "ppid": "17941",
+      "pid": "2786",
+      "ppid": "2785",
       "priority": "20",
       "uid": "1000",
       "workingDir": "REDACTED"
     },
     "p2p": {
-      "connectedPeers": "9"
+      "connectedPeers": "10"
     },
     "orbitdb": {
       "accountMetadata": {
@@ -151,42 +150,48 @@ USAGE
   berty [global flags] daemon [flags]
 
 FLAGS
-  -node.display-name moul (cli)                   display name
-  -node.listeners /ip4/127.0.0.1/tcp/9091/grpc    gRPC API listeners
-  -node.no-notif false                            disable desktop notifications
-  -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
-  -p2p.ipfs-listeners /ip4/127.0.0.1/tcp/0        IPFS listeners
-  -p2p.local-discovery true                       local discovery
-  -p2p.max-backoff 1m0s                           maximum p2p backoff duration
-  -p2p.min-backoff 1s                             minimum p2p backoff duration
-  -p2p.rdvp :dev:                                 rendezvous point maddr
-  -p2p.webui-listener :3999                       IPFS WebUI listener
-  -store.dir /home/moul/.config/berty-tech/berty  root datastore directory
-  -store.inmem false                              disable datastore persistence
+  -node.display-name moul (cli)                                   display name
+  -node.listeners /ip4/127.0.0.1/tcp/9091/grpc                    gRPC API listeners
+  -node.no-notif false                                            disable desktop notifications
+  -node.rebuild-db false                                          reconstruct messenger DB from OrbitDB logs
+  -p2p.ipfs-announce ...                                          IPFS announce addrs
+  -p2p.ipfs-api-listeners ...                                     IPFS API listeners
+  -p2p.ipfs-listeners /ip4/0.0.0.0/tcp/0,/ip4/0.0.0.0/udp/0/quic  IPFS listeners
+  -p2p.ipfs-no-announce ...                                       IPFS exclude announce addrs
+  -p2p.local-discovery true                                       local discovery
+  -p2p.max-backoff 1m0s                                           maximum p2p backoff duration
+  -p2p.min-backoff 1s                                             minimum p2p backoff duration
+  -p2p.rdvp :dev:                                                 rendezvous point maddr
+  -p2p.webui-listener :3999                                       IPFS WebUI listener
+  -store.dir /home/moul/.config/berty-tech/berty                  root datastore directory
+  -store.inmem false                                              disable datastore persistence
 
 foo@bar:~$ berty mini -h
 USAGE
   berty [global flags] mini [flags]
 
 FLAGS
-  -mini.group ...                                 group to join, leave empty to create a new group
-  -node.display-name moul (cli)                   display name
-  -node.listeners ...                             gRPC API listeners
-  -node.no-notif false                            disable desktop notifications
-  -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
-  -node.remote-addr ...                           remote Berty gRPC API address
-  -p2p.ipfs-listeners /ip4/127.0.0.1/tcp/0        IPFS listeners
-  -p2p.local-discovery true                       local discovery
-  -p2p.max-backoff 1m0s                           maximum p2p backoff duration
-  -p2p.min-backoff 1s                             minimum p2p backoff duration
-  -p2p.rdvp :dev:                                 rendezvous point maddr
-  -p2p.webui-listener ...                         IPFS WebUI listener
-  -store.dir /home/moul/.config/berty-tech/berty  root datastore directory
-  -store.inmem false                              disable datastore persistence
+  -mini.group ...                                                 group to join, leave empty to create a new group
+  -node.display-name moul (cli)                                   display name
+  -node.listeners ...                                             gRPC API listeners
+  -node.no-notif false                                            disable desktop notifications
+  -node.rebuild-db false                                          reconstruct messenger DB from OrbitDB logs
+  -node.remote-addr ...                                           remote Berty gRPC API address
+  -p2p.ipfs-announce ...                                          IPFS announce addrs
+  -p2p.ipfs-api-listeners ...                                     IPFS API listeners
+  -p2p.ipfs-listeners /ip4/0.0.0.0/tcp/0,/ip4/0.0.0.0/udp/0/quic  IPFS listeners
+  -p2p.ipfs-no-announce ...                                       IPFS exclude announce addrs
+  -p2p.local-discovery true                                       local discovery
+  -p2p.max-backoff 1m0s                                           maximum p2p backoff duration
+  -p2p.min-backoff 1s                                             minimum p2p backoff duration
+  -p2p.rdvp :dev:                                                 rendezvous point maddr
+  -p2p.webui-listener ...                                         IPFS WebUI listener
+  -store.dir /home/moul/.config/berty-tech/berty                  root datastore directory
+  -store.inmem false                                              disable datastore persistence
 
 foo@bar:~$ berty banner -h
 USAGE
-  berty [global flags] banner [flags]
+  berty banner [flags]
 
 FLAGS
   -light false   light mode
@@ -194,49 +199,55 @@ FLAGS
 
 foo@bar:~$ berty version -h
 USAGE
-  version
+  berty version
 
 foo@bar:~$ berty info -h
 USAGE
   berty [global flags] info [flags]
 
 FLAGS
-  -info.anonimize false                           anonimize output for sharing
-  -info.refresh 0s                                refresh every DURATION (0: no refresh)
-  -node.display-name moul (cli)                   display name
-  -node.no-notif false                            disable desktop notifications
-  -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
-  -node.remote-addr ...                           remote Berty gRPC API address
-  -p2p.ipfs-listeners /ip4/127.0.0.1/tcp/0        IPFS listeners
-  -p2p.local-discovery true                       local discovery
-  -p2p.max-backoff 1m0s                           maximum p2p backoff duration
-  -p2p.min-backoff 1s                             minimum p2p backoff duration
-  -p2p.rdvp :dev:                                 rendezvous point maddr
-  -store.dir /home/moul/.config/berty-tech/berty  root datastore directory
-  -store.inmem false                              disable datastore persistence
+  -info.anonimize false                                           anonimize output for sharing
+  -info.refresh 0s                                                refresh every DURATION (0: no refresh)
+  -node.display-name moul (cli)                                   display name
+  -node.no-notif false                                            disable desktop notifications
+  -node.rebuild-db false                                          reconstruct messenger DB from OrbitDB logs
+  -node.remote-addr ...                                           remote Berty gRPC API address
+  -p2p.ipfs-announce ...                                          IPFS announce addrs
+  -p2p.ipfs-api-listeners ...                                     IPFS API listeners
+  -p2p.ipfs-listeners /ip4/0.0.0.0/tcp/0,/ip4/0.0.0.0/udp/0/quic  IPFS listeners
+  -p2p.ipfs-no-announce ...                                       IPFS exclude announce addrs
+  -p2p.local-discovery true                                       local discovery
+  -p2p.max-backoff 1m0s                                           maximum p2p backoff duration
+  -p2p.min-backoff 1s                                             minimum p2p backoff duration
+  -p2p.rdvp :dev:                                                 rendezvous point maddr
+  -store.dir /home/moul/.config/berty-tech/berty                  root datastore directory
+  -store.inmem false                                              disable datastore persistence
 
 foo@bar:~$ berty groupinit -h
 USAGE
-  groupinit
+  berty groupinit
 
 foo@bar:~$ berty share-invite -h
 USAGE
   berty [global flags] share-invite [flags]
 
 FLAGS
-  -dev-channel false                              post qrcode on dev channel
-  -no-term false                                  do not print the QR code in terminal
-  -node.display-name moul (cli)                   display name
-  -node.no-notif false                            disable desktop notifications
-  -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
-  -node.remote-addr ...                           remote Berty gRPC API address
-  -p2p.ipfs-listeners /ip4/127.0.0.1/tcp/0        IPFS listeners
-  -p2p.local-discovery true                       local discovery
-  -p2p.max-backoff 1m0s                           maximum p2p backoff duration
-  -p2p.min-backoff 1s                             minimum p2p backoff duration
-  -p2p.rdvp :dev:                                 rendezvous point maddr
-  -store.dir /home/moul/.config/berty-tech/berty  root datastore directory
-  -store.inmem false                              disable datastore persistence
+  -dev-channel false                                              post qrcode on dev channel
+  -no-term false                                                  do not print the QR code in terminal
+  -node.display-name moul (cli)                                   display name
+  -node.no-notif false                                            disable desktop notifications
+  -node.rebuild-db false                                          reconstruct messenger DB from OrbitDB logs
+  -node.remote-addr ...                                           remote Berty gRPC API address
+  -p2p.ipfs-announce ...                                          IPFS announce addrs
+  -p2p.ipfs-api-listeners ...                                     IPFS API listeners
+  -p2p.ipfs-listeners /ip4/0.0.0.0/tcp/0,/ip4/0.0.0.0/udp/0/quic  IPFS listeners
+  -p2p.ipfs-no-announce ...                                       IPFS exclude announce addrs
+  -p2p.local-discovery true                                       local discovery
+  -p2p.max-backoff 1m0s                                           maximum p2p backoff duration
+  -p2p.min-backoff 1s                                             minimum p2p backoff duration
+  -p2p.rdvp :dev:                                                 rendezvous point maddr
+  -store.dir /home/moul/.config/berty-tech/berty                  root datastore directory
+  -store.inmem false                                              disable datastore persistence
 
 foo@bar:~$ berty token-server -h
 USAGE
@@ -250,16 +261,19 @@ FLAGS
 
 foo@bar:~$ berty repl-server -h
 USAGE
-  repl-server
+  berty [global flags] repl-server [flags]
 
 FLAGS
-  -p2p.ipfs-listeners /ip4/127.0.0.1/tcp/0        IPFS listeners
-  -p2p.local-discovery true                       local discovery
-  -p2p.max-backoff 1m0s                           maximum p2p backoff duration
-  -p2p.min-backoff 1s                             minimum p2p backoff duration
-  -p2p.rdvp :dev:                                 rendezvous point maddr
-  -store.dir /home/moul/.config/berty-tech/berty  root datastore directory
-  -store.inmem false                              disable datastore persistence
+  -p2p.ipfs-announce ...                                          IPFS announce addrs
+  -p2p.ipfs-api-listeners ...                                     IPFS API listeners
+  -p2p.ipfs-listeners /ip4/0.0.0.0/tcp/0,/ip4/0.0.0.0/udp/0/quic  IPFS listeners
+  -p2p.ipfs-no-announce ...                                       IPFS exclude announce addrs
+  -p2p.local-discovery true                                       local discovery
+  -p2p.max-backoff 1m0s                                           maximum p2p backoff duration
+  -p2p.min-backoff 1s                                             minimum p2p backoff duration
+  -p2p.rdvp :dev:                                                 rendezvous point maddr
+  -store.dir /home/moul/.config/berty-tech/berty                  root datastore directory
+  -store.inmem false                                              disable datastore persistence
 ```
 
 ## Other Binaries
@@ -270,7 +284,7 @@ FLAGS
 ```console
 foo@bar:~$ rdvp -h
 USAGE
-  rdvp [global flags] <subcommand> [flags] [args...]
+  rdvp [global flags] <subcommand>
 
 SUBCOMMANDS
   serve   
@@ -283,7 +297,11 @@ FLAGS
 
 foo@bar:~$ rdvp serve -h
 USAGE
-  serve -l <maddrs> -pk <private_key> -db <file>
+  rdvp [global flags] serve [flags]
+
+EXAMPLE
+  rdvp genkey > rdvp.key
+  rdvp serve -pk `cat rdvp.key` -db ./rdvp-store
 
 FLAGS
   -db :memory:                                         rdvp sqlite URN

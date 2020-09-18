@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	mrand "math/rand"
 
@@ -16,9 +17,14 @@ func groupinitCommand() *ffcli.Command {
 	// FIXME: print QR
 	// FIXME: print berty.tech URL
 	return &ffcli.Command{
-		Name:      "groupinit",
-		ShortHelp: "initialize a new multi-member group",
+		Name:       "groupinit",
+		ShortHelp:  "initialize a new multi-member group",
+		ShortUsage: "berty groupinit",
 		Exec: func(ctx context.Context, args []string) error {
+			if len(args) > 0 {
+				return flag.ErrHelp
+			}
+
 			g, _, err := bertyprotocol.NewGroupMultiMember()
 			if err != nil {
 				return err
