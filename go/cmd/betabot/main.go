@@ -5,10 +5,12 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"os/signal"
 	"os/user"
 	"sync"
+	"time"
 
 	"github.com/gogo/protobuf/proto"
 	qrterminal "github.com/mdp/qrterminal/v3"
@@ -103,15 +105,70 @@ func handleEvent(ctx context.Context, messengerClient bertymessenger.MessengerSe
 			if err != nil {
 				return err
 			}
+		} else if contact.State == bertymessenger.Contact_Established {
+			time.Sleep(5 * time.Second)
+			userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{
+				Body: "Hey! Welcome to the beta!",
+			})
+			if err != nil {
+				return err
+			}
+			_, err = messengerClient.Interact(ctx, &bertymessenger.Interact_Request{
+				Type:                  bertymessenger.AppMessage_TypeUserMessage,
+				Payload:               userMessage,
+				ConversationPublicKey: contact.ConversationPublicKey,
+			})
+			if err != nil {
+				return err
+			}
+			time.Sleep(5 * time.Second)
+			_, err = messengerClient.ConversationCreate(ctx, &bertymessenger.ConversationCreate_Request{
+				DisplayName: "group-bot",
+				ContactsToInvite: []string{
+					contact.PublicKey,
+				},
+			})
+			if err != nil {
+				return err
+			}
 		}
-
 	case bertymessenger.StreamEvent_TypeInteractionUpdated:
-		// auto-reply to users' messages
+		// auto-reply to user's messages
 		interaction := update.(*bertymessenger.StreamEvent_InteractionUpdated).Interaction
 		log.Printf("<<< %s: conversation=%q", gme.Event.Type, interaction.ConversationPublicKey)
 		if interaction.Type == bertymessenger.AppMessage_TypeUserMessage && !interaction.IsMe && !interaction.Acknowledged {
+			answers := []string{
+				"Welcome to the beta!",
+				"Hello! Welcome to Berty!",
+				"Hey, I hope you're feeling well here!",
+				"Hi, I'm here for you at anytime for tests!",
+				"Hello dude!",
+				"Hello :)",
+				"Ow, I like to receive test messages <3",
+				"What's up ?",
+				"How r u ?",
+				"Hello, 1-2, 1-2, check, check?!",
+				"Do you copy ?",
+				"If you say ping, I'll say pong.",
+				"I'm faster than you at sending message :)",
+				"One day, bots will rules the world. Or not.",
+				"You're so cute.",
+				"I like discuss with you, I feel more and more clever.",
+				"I'm so happy to chat with you.",
+				"I could chat with you all day long.",
+				"Yes darling ? Can I help you ?",
+				"OK, copy that.",
+				"OK, I understand.",
+				"Hmmm, Hmmmm. One more time ?",
+				"I think you're the most clever human I know.",
+				"I missed you babe.",
+				"OK, don't send me nudes, I'm a bot dude.",
+				"Come on, let's party.",
+				"May we have a chat about our love relationship future ?",
+				"That's cool. I copy.",
+			}
 			userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{
-				Body: "Welcome to the beta!",
+				Body: answers[rand.Intn(len(answers))],
 			})
 			if err != nil {
 				return err
@@ -126,7 +183,6 @@ func handleEvent(ctx context.Context, messengerClient bertymessenger.MessengerSe
 				return err
 			}
 		}
-
 	default:
 		log.Printf("<<< %s: ignored", gme.Event.Type)
 	}
