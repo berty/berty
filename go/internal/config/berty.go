@@ -8,7 +8,7 @@ import (
 
 type BertyConfig struct {
 	Bootstrap         []string
-	RendezVousPeer    string
+	RendezVousPeers   []string
 	DefaultSwarmAddrs []string
 	Tracing           string
 	DefaultAPIAddrs   []string
@@ -16,8 +16,11 @@ type BertyConfig struct {
 }
 
 var BertyDev = &BertyConfig{
-	Bootstrap:      config.DefaultBootstrapAddresses,
-	RendezVousPeer: "/dnsaddr/rdvp.berty.io/ipfs/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p",
+	Bootstrap: config.DefaultBootstrapAddresses,
+	RendezVousPeers: []string{
+		"/dnsaddr/rdvp.berty.io/ipfs/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p",
+		"/ip4/51.75.127.200/udp/4141/quic/p2p/12D3KooWRpyQpZtUmY5ZktEMgzuhNoWC1C9zokDjLVahNMy3g48u",
+	},
 	DefaultSwarmAddrs: []string{
 		mc.DefaultBind,
 		"/ip4/0.0.0.0/tcp/0",
@@ -35,8 +38,11 @@ var BertyDev = &BertyConfig{
 }
 
 var BertyMobile = &BertyConfig{
-	Bootstrap:      config.DefaultBootstrapAddresses,
-	RendezVousPeer: "/ip4/163.172.106.31/tcp/4040/p2p/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p",
+	Bootstrap: config.DefaultBootstrapAddresses,
+	RendezVousPeers: []string{
+		"/ip4/163.172.106.31/tcp/4040/p2p/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p",
+		"/ip4/51.75.127.200/udp/4141/quic/p2p/12D3KooWRpyQpZtUmY5ZktEMgzuhNoWC1C9zokDjLVahNMy3g48u",
+	},
 	DefaultSwarmAddrs: []string{
 		mc.DefaultBind,
 		"/ip4/0.0.0.0/tcp/0",
