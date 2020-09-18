@@ -30,6 +30,10 @@ func shareInviteCommand() *ffcli.Command {
 		ShortHelp:  "share invite link on your terminal or in the dev channel on Discord",
 		FlagSet:    fs,
 		Exec: func(ctx context.Context, args []string) error {
+			if len(args) > 0 {
+				return flag.ErrHelp
+			}
+
 			manager.DisableIPFSNetwork()
 
 			// messenger

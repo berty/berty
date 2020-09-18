@@ -25,6 +25,10 @@ func miniCommand() *ffcli.Command {
 		ShortUsage: "berty [global flags] mini [flags]",
 		FlagSet:    fs,
 		Exec: func(ctx context.Context, args []string) error {
+			if len(args) > 0 {
+				return flag.ErrHelp
+			}
+
 			// mini only supports file-based logging
 			if manager.Logging.Logfile == "" {
 				manager.Logging.Filters = ""

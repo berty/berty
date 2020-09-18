@@ -58,6 +58,10 @@ func tokenServerCommand() *ffcli.Command {
 		ShortHelp:  "token server, a basic token server issuer without auth or logging",
 		FlagSet:    fs,
 		Exec: func(ctx context.Context, args []string) error {
+			if len(args) > 0 {
+				return flag.ErrHelp
+			}
+
 			logger, err := manager.GetLogger()
 			if err != nil {
 				return err

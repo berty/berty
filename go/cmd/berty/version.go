@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"runtime"
 
@@ -12,9 +13,13 @@ import (
 
 func versionCommand() *ffcli.Command {
 	return &ffcli.Command{
-		Name:      "version",
-		ShortHelp: "print software version",
-		Exec: func(_ context.Context, _ []string) error {
+		Name:       "version",
+		ShortUsage: "berty version",
+		ShortHelp:  "print software version",
+		Exec: func(_ context.Context, args []string) error {
+			if len(args) > 0 {
+				return flag.ErrHelp
+			}
 			fmt.Printf("version  %s\n", bertyversion.Version)
 			if bertyversion.VcsRef != "n/a" {
 				fmt.Printf("vcs      https://github.com/berty/berty/commits/%s\n", bertyversion.VcsRef)

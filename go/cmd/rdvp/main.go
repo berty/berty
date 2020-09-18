@@ -65,10 +65,15 @@ func main() {
 
 	serve := &ffcli.Command{
 		Name:       "serve",
-		ShortUsage: "serve -l <maddrs> -pk <private_key> -db <file>",
+		ShortUsage: "rdvp [global flags] serve [flags]",
+		LongHelp:   "EXAMPLE\n  rdvp genkey > rdvp.key\n  rdvp serve -pk `cat rdvp.key` -db ./rdvp-store",
 		FlagSet:    serveFlags,
 		Options:    []ff.Option{ff.WithEnvVarPrefix("RDVP")},
 		Exec: func(ctx context.Context, args []string) error {
+			if len(args) > 0 {
+				return flag.ErrHelp
+			}
+
 			mrand.Seed(srand.Secure())
 			logger, cleanup, err := logutil.NewLogger(logFilters, logFormat, logToFile)
 			if err != nil {
@@ -169,7 +174,7 @@ func main() {
 	}
 
 	root := &ffcli.Command{
-		ShortUsage:  "rdvp [global flags] <subcommand> [flags] [args...]",
+		ShortUsage:  "rdvp [global flags] <subcommand>",
 		FlagSet:     globalFlags,
 		Options:     []ff.Option{ff.WithEnvVarPrefix("RDVP")},
 		Subcommands: []*ffcli.Command{serve, genkey},

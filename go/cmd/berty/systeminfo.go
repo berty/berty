@@ -30,6 +30,10 @@ func systemInfoCommand() *ffcli.Command {
 		ShortHelp:  "display system info",
 		FlagSet:    fs,
 		Exec: func(ctx context.Context, args []string) error {
+			if len(args) > 0 {
+				return flag.ErrHelp
+			}
+
 			// messenger client
 			messenger, err := manager.GetMessengerClient()
 			if err != nil {

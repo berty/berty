@@ -20,10 +20,15 @@ func replicationServerCommand() *ffcli.Command {
 	// fs.StringVar(&secretStr, "secret", secretStr, "auth tokens secret")
 
 	return &ffcli.Command{
-		Name:      "repl-server",
-		ShortHelp: "replication server",
-		FlagSet:   fs,
+		Name:       "repl-server",
+		ShortHelp:  "replication server",
+		ShortUsage: "berty [global flags] repl-server [flags]",
+		FlagSet:    fs,
 		Exec: func(ctx context.Context, args []string) error {
+			if len(args) > 0 {
+				return flag.ErrHelp
+			}
+
 			var (
 				// secret, pk []byte
 				err error
