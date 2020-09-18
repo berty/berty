@@ -47,30 +47,30 @@ TODO
 foo@bar:~$ berty share-invite
 █████████████████████████████████████████████████
 █████████████████████████████████████████████████
-████ ▄▄▄▄▄ ██▀▄▄ ▄▀▀█ ▀ ▀▄█ ▄▀   ▀ ▀▀█ ▄▄▄▄▄ ████
-████ █   █ █▄█ █▀  █ █▀█▄▀▀▄█▀▀▀ █▀█ █ █   █ ████
-████ █▄▄▄█ ██▀▀▀ ▀▄▀ ▀  ▀█  █ ▀▀█▀  ▀█ █▄▄▄█ ████
-████▄▄▄▄▄▄▄█ █▄▀▄▀ ▀▄▀ ▀ ▀▄▀ ▀ █ ▀▄▀ █▄▄▄▄▄▄▄████
-████▄▄▄▀  ▄▄ █▄▄ ▀██▀██▀ █▀▀  █▄ ▀██   ▀█▀▄▀▀████
-████▀███▀▄▄ ▄▀▄█ ▀ █▀ ▀▀▄▀ █▀ ▀██▀ ██ ▄█▄██▄ ████
-████▄  █ █▄▄▀▀   ▀   █▄▄  ▄█ ▄██ █▀▀▀▄▄█▄▄█▄ ████
-█████▄▀▀ ▄▄▀█▄▀▄ ▀ ▄ ▀▄▀  ▀▀█▀ ▀█ ██▀▄▀▀▀▄█▄▄████
-████▀█ █ ▀▄█▀▀ ▄▀██  ▄▀█▀▀▀██▄▀▀ █▀  ▀ ███▄▄ ████
-████▀▄ ▄▄▀▄ █▄███▄█▀█▄██▄ █▀█▀▀█  ▄▀▀▀▄  █▄▀ ████
-████▄▀ ▀  ▄█▄▄ ▀███▀█▀██ ▄█▀▀▄█▀▀ ▀▄ █ ▄▄▄█  ████
-████▀▄█▀▄▀▄▄▄▀▀▀█▀▄▀█▀▄▀▀▀▄▀▄ ▄██▀████   ▄▄  ████
-████▄▀ ▀██▄  ███ ▀█▀ ▀█▄ ▄ ▄▀ ██ ▄███  ██  █ ████
-████▄▄▀██ ▄ █▀███▀ ▀▀▀ █▀ █▀▄▀▀▀█ ▄▀█  ▄▀ ▄▄▄████
-████▄ ▀▄▀ ▄█▄█▄  ▀ ▀ ▀ ▄█▄█▀ ▀█▀  █▄█▄ ▄█▄█ ▀████
-████▄▀▄▄██▄██ ▀▄  ▄▄ ▀▀▀▀▀▄█▄ ▄██  ▀██▀▄ ▄█▄▄████
-████▄█▄██▄▄▄ ▄█▄ ██ ▀█▀▀  ██▀▄ ▄ ▀█▄ ▄▄▄ ▀▀  ████
-████ ▄▄▄▄▄ █ ▀▀█▀▄██▄▄██▀▀ █▄▀ ▀█ ▄▄ █▄█ ▀█▄ ████
-████ █   █ █▄█▄▀███▀████ ▄█▄▀ ▀▀ ▄██▄▄▄  ▀▀▄ ████
-████ █▄▄▄█ █ ▀ ▀█▀ ▀█ ▀▀▀  ██ ▄▀▀▀█▄ ▀▀█ ▄▄ ▄████
-████▄▄▄▄▄▄▄█▄█▄█▄▄█████▄█▄███████▄▄▄▄██▄██▄▄▄████
+████ ▄▄▄▄▄ ██████▄▀▀▀  ▀▀   ▀█▄ ▀ ▄▀▀█ ▄▄▄▄▄ ████
+████ █   █ █▄ ▀     ▀█▀███ ▀▄█▀█▀███ █ █   █ ████
+████ █▄▄▄█ ███  ▀▀▄▀ ▄▄ ▀  ▀█▀  █▀█ ██ █▄▄▄█ ████
+████▄▄▄▄▄▄▄█ ▀ █▄▀▄▀▄▀ ▀ ▀▄▀ ▀▄▀ ▀ █▄█▄▄▄▄▄▄▄████
+████  ▄▀ ▄▄▄ ██▀▄ █▀▀▄█▀ ██▀▀▀▀█ ▀▀█   ▀█▀▄█▀████
+████▀ ▀▄▀█▄ █▄▀█▄▀ █▀ ▀▀   ▀▀  ██ ███▀██▄██  ████
+████▄▀▀▄▀▄▄█▄▄   ▀   ▀▄▄  ▄▄     ███▀ ▄ █ ██▀████
+████  █  ▄▄▄▄ ▀▄  ▄▄  ▀▀ ▀▀▀█▀█▀▀▀▄▀ ▄▀▀▄▄▄▄▄████
+████▀█ ▀▀▀▄▄▀█   ▄   █▀▀  ██ ▄██  ▀  ▀ ████  ████
+██████ ▄  ▄▄   ▀▄▄██▄▄██  ██▄▀▄▀▀ █▀▀█   █▄▄ ████
+████ ▄ █▄▄▄▀██  █▀█▀███▄ ▄█▄  ▀█   ▄    █ ▀▀▀████
+████▀▀▄▄ ▀▄▀▄▀█▀█▀ ▀█▀▄▀▀ ▀▀▄  ▀ ▀██▄█ ██▄▄  ████
+████▄  ▄█ ▄█▀▄█▀▀ ███ █  █▀ ▀▀█ ▀ ███  ██▀ ▀▄████
+████▄██   ▄██ █▀▀▀ █▀▀ █▀ █▀  ██▀ █▀█▀█▄▀ ▄▄▄████
+█████▀▀ ▀█▄█ █▀  █ ▀ ▀ ▄█ █▀▀▄▄▀ ▄  ▀▄▄██ ▀▀▀████
+████▄▀ ▀ █▄▄▀▀ ▄ ▀▄▄  ▄▀▀▀▀█▀▀███▀ ▀ █▀▀███▄▄████
+████▄█▄██▄▄▄▀▀ ▄ ██▄█▄▀▀ ▀█▀▀███▀▀██ ▄▄▄ ▀ ▄ ████
+████ ▄▄▄▄▄ █  ▄█▀▄██▀▄██▀▀ █▀▀▀█▄  ▄ █▄█ ▀█▄▄████
+████ █   █ █▄█ ▀███▀████ ▄██ █▀▄█ ██▄▄▄  █▀▄ ████
+████ █▄▄▄█ █  ▄▀█▀ ▀█▀▄▀▀▀▀█▀▀ ▀█ █  ▀██ █▄ ▄████
+████▄▄▄▄▄▄▄█▄███▄▄███▄█▄▄██▄▄▄██▄██▄▄▄█▄███▄▄████
 █████████████████████████████████████████████████
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-html url: https://berty.tech/id#key=CiDNTcL1afCa-izb2Zpq7N6WX8kwObxIuHpE_RUAOxQAHBIgkcwmv7gEWiMyZDP6zy3oUuaZzbeKCQnUWmeIsrHQdkI&name=demo
+html url: https://berty.tech/id#key=CiAXtiFJwUkmdTcLIgTZmQlEoUMGONLMKgXbxw72OWPb1hIgmXEyKjqiJLbf08ChSdRlry6F63a3LeDsc8v-_gXadLk&name=demo
 ```
 
 ### Info
@@ -82,21 +82,21 @@ foo@bar:~$ berty info
   "protocol": {
     "process": {
       "rlimitCur": "1024",
-      "numGoroutine": "448",
-      "nofile": "53",
-      "startedAt": "1600421304",
+      "numGoroutine": "473",
+      "nofile": "41",
+      "startedAt": "1600443153",
       "numCpu": "12",
-      "goVersion": "go1.14",
+      "goVersion": "go1.15.2",
       "operatingSystem": "linux",
       "hostName": "REDACTED",
       "arch": "amd64",
-      "version": "v2.148.0-3-g371e792f",
-      "vcsRef": "371e792f",
-      "selfRusage": "{\"Utime\":{\"Sec\":1,\"Usec\":168758},\"Stime\":{\"Sec\":0,\"Usec\":182482},\"Maxrss\":77632,\"Ixrss\":0,\"Idrss\":0,\"Isrss\":0,\"Minflt\":7602,\"Majflt\":0,\"Nswap\":0,\"Inblock\":0,\"Oublock\":0,\"Msgsnd\":0,\"Msgrcv\":0,\"Nsignals\":0,\"Nvcsw\":9166,\"Nivcsw\":78}",
-      "childrenRusage": "{\"Utime\":{\"Sec\":1,\"Usec\":623438},\"Stime\":{\"Sec\":0,\"Usec\":212101},\"Maxrss\":34324,\"Ixrss\":0,\"Idrss\":0,\"Isrss\":0,\"Minflt\":9967,\"Majflt\":0,\"Nswap\":0,\"Inblock\":0,\"Oublock\":0,\"Msgsnd\":0,\"Msgrcv\":0,\"Nsignals\":0,\"Nvcsw\":11005,\"Nivcsw\":586}",
+      "version": "v2.149.0-3-g8b6591d7",
+      "vcsRef": "8b6591d7",
+      "selfRusage": "{\"Utime\":{\"Sec\":1,\"Usec\":268952},\"Stime\":{\"Sec\":0,\"Usec\":254625},\"Maxrss\":77740,\"Ixrss\":0,\"Idrss\":0,\"Isrss\":0,\"Minflt\":8498,\"Majflt\":0,\"Nswap\":0,\"Inblock\":0,\"Oublock\":0,\"Msgsnd\":0,\"Msgrcv\":0,\"Nsignals\":0,\"Nvcsw\":9241,\"Nivcsw\":65}",
+      "childrenRusage": "{\"Utime\":{\"Sec\":1,\"Usec\":610485},\"Stime\":{\"Sec\":0,\"Usec\":295980},\"Maxrss\":33524,\"Ixrss\":0,\"Idrss\":0,\"Isrss\":0,\"Minflt\":10260,\"Majflt\":0,\"Nswap\":0,\"Inblock\":0,\"Oublock\":0,\"Msgsnd\":0,\"Msgrcv\":0,\"Nsignals\":0,\"Nvcsw\":12825,\"Nivcsw\":597}",
       "rlimitMax": "1048576",
-      "pid": "2786",
-      "ppid": "2785",
+      "pid": "3730",
+      "ppid": "3729",
       "priority": "20",
       "uid": "1000",
       "workingDir": "REDACTED"
@@ -161,7 +161,7 @@ FLAGS
   -p2p.local-discovery true                                       local discovery
   -p2p.max-backoff 1m0s                                           maximum p2p backoff duration
   -p2p.min-backoff 1s                                             minimum p2p backoff duration
-  -p2p.rdvp :dev:                                                 rendezvous point maddr
+  -p2p.rdvp []                                                    list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
   -p2p.webui-listener :3999                                       IPFS WebUI listener
   -store.dir /home/moul/.config/berty-tech/berty                  root datastore directory
   -store.inmem false                                              disable datastore persistence
@@ -184,7 +184,7 @@ FLAGS
   -p2p.local-discovery true                                       local discovery
   -p2p.max-backoff 1m0s                                           maximum p2p backoff duration
   -p2p.min-backoff 1s                                             minimum p2p backoff duration
-  -p2p.rdvp :dev:                                                 rendezvous point maddr
+  -p2p.rdvp []                                                    list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
   -p2p.webui-listener ...                                         IPFS WebUI listener
   -store.dir /home/moul/.config/berty-tech/berty                  root datastore directory
   -store.inmem false                                              disable datastore persistence
@@ -219,7 +219,7 @@ FLAGS
   -p2p.local-discovery true                                       local discovery
   -p2p.max-backoff 1m0s                                           maximum p2p backoff duration
   -p2p.min-backoff 1s                                             minimum p2p backoff duration
-  -p2p.rdvp :dev:                                                 rendezvous point maddr
+  -p2p.rdvp []                                                    list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
   -store.dir /home/moul/.config/berty-tech/berty                  root datastore directory
   -store.inmem false                                              disable datastore persistence
 
@@ -245,7 +245,7 @@ FLAGS
   -p2p.local-discovery true                                       local discovery
   -p2p.max-backoff 1m0s                                           maximum p2p backoff duration
   -p2p.min-backoff 1s                                             minimum p2p backoff duration
-  -p2p.rdvp :dev:                                                 rendezvous point maddr
+  -p2p.rdvp []                                                    list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
   -store.dir /home/moul/.config/berty-tech/berty                  root datastore directory
   -store.inmem false                                              disable datastore persistence
 
@@ -271,7 +271,7 @@ FLAGS
   -p2p.local-discovery true                                       local discovery
   -p2p.max-backoff 1m0s                                           maximum p2p backoff duration
   -p2p.min-backoff 1s                                             minimum p2p backoff duration
-  -p2p.rdvp :dev:                                                 rendezvous point maddr
+  -p2p.rdvp []                                                    list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
   -store.dir /home/moul/.config/berty-tech/berty                  root datastore directory
   -store.inmem false                                              disable datastore persistence
 ```
