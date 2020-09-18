@@ -68,6 +68,9 @@ func (n *NewOrbitDBOptions) applyDefaults() {
 	if n.Tracer == nil {
 		n.Tracer = trace.NoopTracer{}
 	}
+
+	// FIXME: add this setting back
+	n.DirectChannelFactory = nil
 }
 
 type BertyOrbitDB struct {

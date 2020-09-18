@@ -88,11 +88,11 @@ require (
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de
 	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de
-	golang.org/x/net v0.0.0-20200707034311-ab3426394381
+	golang.org/x/net v0.0.0-20200822124328-c89045814202
 	golang.org/x/sys v0.0.0-20200728102440-3e129f6d46b1 // indirect
 	golang.org/x/text v0.3.3 // indirect
-	golang.org/x/tools v0.0.0-20200724022722-7017fd6b1305
-	golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543
+	golang.org/x/tools v0.0.0-20200917221617-d56e4e40bc9d
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 	google.golang.org/genproto v0.0.0-20200715011427-11fb19a81f2c // indirect
 	google.golang.org/grpc v1.30.0
 	google.golang.org/protobuf v1.25.0 // indirect

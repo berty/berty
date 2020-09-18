@@ -21,7 +21,6 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/baseorbitdb"
-	"berty.tech/go-orbit-db/pubsub/directchannel"
 )
 
 var _ Service = (*service)(nil)
@@ -88,7 +87,6 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 		opts.RendezvousRotationBase = time.Hour * 24
 	}
 
-	var createdIPFSHost host.Host
 	if opts.IpfsCoreAPI == nil {
 		var err error
 		var createdIPFSNode *ipfs_core.IpfsNode
@@ -98,7 +96,7 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 			return errcode.TODO.Wrap(err)
 		}
 
-		createdIPFSHost = createdIPFSNode.PeerHost
+		opts.Host = createdIPFSNode.PeerHost
 
 		oldClose := opts.close
 		opts.close = func() error {
@@ -123,10 +121,6 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 			},
 			Datastore:      ipfsutil.NewNamespacedDatastore(opts.RootDatastore, datastore.NewKey(NamespaceOrbitDBDatastore)),
 			DeviceKeystore: opts.DeviceKeystore,
-		}
-
-		if createdIPFSHost != nil {
-			odbOpts.DirectChannelFactory = directchannel.InitDirectChannelFactory(createdIPFSHost)
 		}
 
 		odb, err := NewBertyOrbitDB(ctx, opts.IpfsCoreAPI, odbOpts)

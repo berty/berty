@@ -20,7 +20,6 @@ import (
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	orbitdb "berty.tech/go-orbit-db"
-	"berty.tech/go-orbit-db/pubsub/directchannel"
 	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 )
 
@@ -38,9 +37,8 @@ func newTestOrbitDB(ctx context.Context, t *testing.T, logger *zap.Logger, node 
 	odb, err := NewBertyOrbitDB(ctx, api, &NewOrbitDBOptions{
 		Datastore: baseDS,
 		NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
-			Logger:               logger,
-			PubSub:               pubsubraw.NewPubSub(node.PubSub(), selfKey.ID(), logger, nil),
-			DirectChannelFactory: directchannel.InitDirectChannelFactory(node.MockNode().PeerHost),
+			Logger: logger,
+			PubSub: pubsubraw.NewPubSub(node.PubSub(), selfKey.ID(), logger, nil),
 		},
 	})
 	require.NoError(t, err)

@@ -388,7 +388,11 @@ func (svc *service) SendAck(ctx context.Context, request *SendAck_Request) (*Sen
 		Payload: am,
 	})
 
-	return &SendAck_Reply{}, err
+	if err != nil {
+		return nil, err
+	}
+
+	return &SendAck_Reply{}, nil
 }
 
 func (svc *service) SendMessage(ctx context.Context, request *SendMessage_Request) (*SendMessage_Reply, error) {

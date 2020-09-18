@@ -44,7 +44,7 @@ func tokenServerCommand() *ffcli.Command {
 		fs            = flag.NewFlagSet("token issuer server", flag.ExitOnError)
 		secretFlag    = ""
 		authSKFlag    = ""
-		listenerFlag  = "8080"
+		listenerFlag  = ":8080"
 		supportedFlag = ""
 	)
 	fs.StringVar(&secretFlag, "secret", secretFlag, "base64 encoded secret")
