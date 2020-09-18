@@ -34,17 +34,18 @@ export GYM_SCHEME=${APP_TARGET}
 export GYM_SKIP_PROFILE_DETECTION=true
 export GYM_INCLUDE_SYMBOLS=false
 
-# setup ci if needed
-if [ "$CI" = "true" ]; then
-	# create temporary keychain
-	bundle exec fastlane run create_keychain timeout:3600 default_keychain:true unlock:true add_to_search_list:true
+if [ "$GYM_SKIP_CODESIGNING" != "true" ] ; then
+  # setup ci if needed
+  if [ "$CI" = "true" ]; then
+  	# create temporary keychain
+  	bundle exec fastlane run create_keychain timeout:3600 default_keychain:true unlock:true add_to_search_list:true
     # setup app version
-	plutil -replace CFBundleShortVersionString -string ${TARGET_VERSION} packages/berty-app/ios/Berty/Info.plist
+  	plutil -replace CFBundleShortVersionString -string ${TARGET_VERSION} packages/berty-app/ios/Berty/Info.plist
     plutil -replace CFBundleVersion -string ${TARGET_BUILD} packages/berty-app/ios/Berty/Info.plist
-fi
+  fi
 
-# get ios certificates
-bundle exec fastlane run match --verbose type:$(echo ${IOS_RELEASE_METHOD} | sed 's/-//g') app_identifier:${IOS_BUNDLE_ID} team_id:${IOS_TEAM_ID} readonly:true git_url:${CERTS_GIT_URL}
+  bundle exec fastlane run match --verbose type:$(echo ${IOS_RELEASE_METHOD} | sed 's/-//g') app_identifier:${IOS_BUNDLE_ID} team_id:${IOS_TEAM_ID} readonly:true git_url:${CERTS_GIT_URL}
+fi
 
 # build
 time bundle exec fastlane ios build --verbose
