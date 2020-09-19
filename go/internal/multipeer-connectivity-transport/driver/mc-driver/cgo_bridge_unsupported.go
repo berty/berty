@@ -1,3 +1,3 @@
-// +build !darwin
+// +build !darwin !cgo
 
 package mcdriver
