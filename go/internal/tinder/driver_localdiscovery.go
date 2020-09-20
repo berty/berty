@@ -214,6 +214,7 @@ func (ld *localDiscovery) FindPeers(ctx context.Context, cid string, opts ...dis
 	if !ok {
 		// This CID is unknown, so return a empty chan
 		chPeer := make(chan peer.AddrInfo)
+		close(chPeer)
 		return chPeer, nil
 	}
 
