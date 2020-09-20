@@ -5,12 +5,14 @@ import (
 	"context"
 	"io"
 
+	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
+	"github.com/golang/protobuf/proto"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
+
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"github.com/golang/protobuf/proto" // nolint:staticcheck: not sure how to use the new protobuf api to unmarshal
-	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 func ReplayLogsToDB(ctx context.Context, client bertyprotocol.ProtocolServiceClient, db *gorm.DB) error {
@@ -120,6 +122,7 @@ func processMetadataList(ctx context.Context, groupPK []byte, db *gorm.DB, clien
 			return errcode.ErrEventListMetadata.Wrap(err)
 		}
 
+		// nolint:exhaustive // would be nice to not have this nolint
 		switch metadata.GetMetadata().GetEventType() {
 		case bertytypes.EventTypeAccountGroupJoined:
 			var ev bertytypes.AccountGroupJoined

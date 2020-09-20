@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"os"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	qrterminal "github.com/mdp/qrterminal/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
+
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 func shareInviteCommand() *ffcli.Command {
@@ -29,6 +30,10 @@ func shareInviteCommand() *ffcli.Command {
 		ShortHelp:  "share invite link on your terminal or in the dev channel on Discord",
 		FlagSet:    fs,
 		Exec: func(ctx context.Context, args []string) error {
+			if len(args) > 0 {
+				return flag.ErrHelp
+			}
+
 			manager.DisableIPFSNetwork()
 
 			// messenger

@@ -99,6 +99,7 @@ A messenger application written in [React Native](https://reactnative.dev/), tha
     - `berty daemon`: Runs the whole Berty Protocol instance.
     - `berty mini`: Simple CLI messenger app using Berty Protocol.
   - [./go/cmd/**rdvp**](go/cmd/rdvp): A Rendez-Vous Point server.
+  - [./go/cmd/**betabot**](go/cmd/betabot): An onboarding bot used during the beta phase.
 - [./js](js): Where all the Javascript/Typescript code belongs, containing:
   - The **Berty Messenger** application, written in React Native.
 - [./docs](docs): Mostly auto-generated documentation.

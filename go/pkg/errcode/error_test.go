@@ -24,7 +24,7 @@ func TestError(t *testing.T) {
 	)
 
 	// table-driven tests
-	var tests = []struct {
+	tests := []struct {
 		name              string
 		input             error
 		expectedString    string
@@ -68,7 +68,7 @@ func TestError(t *testing.T) {
 }
 
 func TestStatus(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		name             string
 		input            error
 		has777           bool

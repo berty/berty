@@ -11,7 +11,7 @@ GO_TEST_PATH ?= ./...
 BUILD_DATE ?= `date +%s`
 VCS_REF ?= `git rev-parse --short HEAD`
 VERSION ?= `git describe --tags --always`
-LDFLAGS ?= -ldflags="-X berty.tech/berty/v2/go/pkg/bertymessenger.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertymessenger.Version=$(VERSION)"
+LDFLAGS ?= -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
 
 
 ##
@@ -27,7 +27,7 @@ unittest: go.unittest
 .PHONY: unittest
 
 
-generate: pb.generate depaware.generate
+generate: pb.generate
 .PHONY: generate
 
 
@@ -53,7 +53,7 @@ re: clean generate install
 .PHONY: re
 
 
-tidy: go.tidy depaware.generate
+tidy: go.tidy
 .PHONY: tidy
 
 
@@ -172,6 +172,7 @@ generate_local:
 	$(call check-program, shasum protoc)
 	go run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/bertymessenger.proto -o ../api/bertymessenger.yaml
 	go run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/bertyprotocol.proto -o ../api/bertyprotocol.yaml
+	go run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/bertyreplication.proto -o ../api/bertyreplication.yaml
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/errcode.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertybridge.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertytypes.proto
@@ -179,13 +180,20 @@ generate_local:
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/go-internal/handshake.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/bertyprotocol.yaml:$(GOPATH)/src ../api/bertyprotocol.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/bertymessenger.yaml:$(GOPATH)/src ../api/bertymessenger.proto
+	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/bertyreplication.yaml:$(GOPATH)/src ../api/bertyreplication.proto
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./framework/bertybridge/internal/bridgepb/*.pb.go
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.go
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.gw.go
-	go run golang.org/x/tools/cmd/goimports -w ./pkg ./cmd ./internal
+	$(MAKE) go.fmt
 	shasum $(gen_src) | sort -k 2 > $(gen_sum).tmp
 	mv $(gen_sum).tmp $(gen_sum)
 .PHONY: generate_local
+
+
+go.fmt:
+	go run github.com/daixiang0/gci -w -local berty.tech .
+	@#go run mvdan.cc/gofumpt -w -s . # temporarily disabled (to be run by hand), see https://github.com/mvdan/gofumpt/issues/86
+.PHONY: go.fmt
 
 
 gen.clean:
@@ -198,34 +206,48 @@ gen.clean:
 ##
 
 
-doc.generate: install
+doc.generate: md.generate depaware.generate
+.PHONY: doc.generate
+
+md.generate: install
 	mkdir -p .tmp
 	GO111MODULE=off go get github.com/campoy/embedmd
 
-	# generate usage.txt
-	echo 'foo@bar:~$$ berty -h' > .tmp/usage.txt
-	(berty -h || true) 2>> .tmp/usage.txt
+	# generate embeddable outputs
+	echo 'foo@bar:~$$ berty -h' > .tmp/berty-usage.txt
+	(berty -h || true) 2>> .tmp/berty-usage.txt
 	for sub in `berty -h 2>&1 | grep "^  [a-z]" | sed 1d | awk '{print $$1}'`; do \
-		echo >> .tmp/usage.txt; \
-		echo 'foo@bar:~$$ berty '$$sub' -h' >> .tmp/usage.txt; \
-		(OBberty $$sub -h || true) 2>> .tmp/usage.txt; \
+		echo >> .tmp/berty-usage.txt; \
+		echo 'foo@bar:~$$ berty '$$sub' -h' >> .tmp/berty-usage.txt; \
+		(berty $$sub -h || true) 2>> .tmp/berty-usage.txt; \
 	done
 
-	echo 'foo@bar:~$$ berty share-invite' > .tmp/share-invite.txt
-	berty --log.filters="" share-invite -store.inmem -node.display-name=demo >> .tmp/share-invite.txt
+	echo 'foo@bar:~$$ berty share-invite' > .tmp/berty-share-invite.txt
+	berty --log.filters="" share-invite -store.inmem -node.display-name=demo >> .tmp/berty-share-invite.txt
 
-	echo 'foo@bar:~$$ berty info' > .tmp/info.txt
-	berty --log.filters="" info -store.inmem >> .tmp/info.txt
+	echo 'foo@bar:~$$ berty info' > .tmp/berty-info.txt
+	berty --log.filters="" info --info.anonimize -store.inmem >> .tmp/berty-info.txt
 
-	echo 'foo@bar:~$$ berty daemon' > .tmp/daemon.txt
-	expect -c "set timeout 10; spawn -noecho docker run bertytech/berty --log.format=console --log.filters=info+:bty daemon -store.inmem; expect serving" >> .tmp/daemon.txt
-	echo '...' >> .tmp/daemon.txt
+	echo 'foo@bar:~$$ berty daemon' > .tmp/berty-daemon.txt
+	expect -c "set timeout 10; spawn -noecho docker run bertytech/berty --log.format=console --log.filters=info+:bty daemon -store.inmem; expect serving" >> .tmp/berty-daemon.txt
+	echo '...' >> .tmp/berty-daemon.txt
+
+	echo 'foo@bar:~$$ rdvp -h' > .tmp/rdvp-usage.txt
+	(rdvp -h || true) 2>> .tmp/rdvp-usage.txt
+	for sub in `rdvp -h 2>&1 | grep "^  [a-z]" | sed 1d | awk '{print $$1}'`; do \
+		echo >> .tmp/rdvp-usage.txt; \
+		echo 'foo@bar:~$$ rdvp '$$sub' -h' >> .tmp/rdvp-usage.txt; \
+		(rdvp $$sub -h || true) 2>> .tmp/rdvp-usage.txt; \
+	done
+
+	echo 'foo@bar:~$$ betabot -h' > .tmp/betabot-usage.txt
+	(betabot -h || true) 2>> .tmp/betabot-usage.txt
 
 	# FIXME: generate output for berty mini
 
 	embedmd -w README.md
 	#rm -rf .tmp
-.PHONY: doc.generate
+.PHONY: md.generate
 
 
 ##
@@ -233,18 +255,15 @@ doc.generate: install
 ##
 
 
-depaware.generate: ./cmd/berty/depaware.txt ./cmd/rdvp/depaware.txt
+depaware.generate: ./cmd/berty/depaware.txt
 .PHONY: depaware.generate
 
 
+depaware_pkgs = ./cmd/berty ./cmd/rdvp ./framework/bertybridge ./cmd/betabot
 ./cmd/*/depaware.txt: ../go.sum
-	$(GO) run github.com/tailscale/depaware --update ./cmd/berty
-	$(GO) run github.com/tailscale/depaware --update ./cmd/rdvp
-	$(GO) run github.com/tailscale/depaware --update ./framework/bertybridge
+	@set -xe; for pkg in $(depaware_pkgs); do $(GO) run github.com/tailscale/depaware --update $$pkg; done
 
 
 depaware.check:
-	$(GO) run github.com/tailscale/depaware --check ./cmd/berty
-	$(GO) run github.com/tailscale/depaware --check ./cmd/rdvp
-	$(GO) run github.com/tailscale/depaware --check ./framework/bertybridge
+	@set -xe; for pkg in $(depaware_pkgs); do $(GO) run github.com/tailscale/depaware --check $$pkg; done
 .PHONY: depaware.check

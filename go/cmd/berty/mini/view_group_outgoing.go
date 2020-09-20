@@ -8,11 +8,13 @@ import (
 	"io"
 	"strings"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/atotto/clipboard"
 	cid "github.com/ipfs/go-cid"
 	qrterminal "github.com/mdp/qrterminal/v3"
+	"moul.io/godev"
+
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 )
 
 type command struct {
@@ -177,6 +179,11 @@ func commandList() []*command {
 			cmd:   authComplete,
 		},
 		{
+			title: "replicate group",
+			help:  "Registers current group for replication using specified token",
+			cmd:   replGroup,
+		},
+		{
 			title:     "/",
 			help:      "",
 			cmd:       newSlashMessageCommand,
@@ -189,7 +196,6 @@ func authInit(ctx context.Context, v *groupView, cmd string) error {
 	rep, err := v.v.protocol.AuthServiceInitFlow(ctx, &bertytypes.AuthServiceInitFlow_Request{
 		AuthURL: strings.TrimSpace(cmd),
 	})
-
 	if err != nil {
 		return err
 	}
@@ -250,6 +256,17 @@ func servicesList(ctx context.Context, v *groupView, _ string) error {
 	return nil
 }
 
+func replGroup(ctx context.Context, v *groupView, cmd string) error {
+	if _, err := v.v.protocol.ReplicationServiceRegisterGroup(ctx, &bertytypes.ReplicationServiceRegisterGroup_Request{
+		TokenID: strings.TrimSpace(cmd),
+		GroupPK: v.g.PublicKey,
+	}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func setDisplayName(_ context.Context, v *groupView, cmd string) error {
 	v.v.lock.Lock()
 	v.v.displayName = cmd
@@ -286,26 +303,21 @@ func debugIPFSCommand(ctx context.Context, v *groupView, _ string) error {
 }
 
 func debugSystemCommand(ctx context.Context, v *groupView, _ string) error {
-	config, err := v.v.messenger.SystemInfo(ctx, &bertymessenger.SystemInfo_Request{})
+	info, err := v.v.messenger.SystemInfo(ctx, &bertymessenger.SystemInfo_Request{})
 	if err != nil {
 		return err
 	}
 
 	for k, val := range map[string]interface{}{
-		"StartedAt      ": config.StartedAt,
-		"NumCPU         ": config.NumCPU,
-		"GoVersion      ": config.GoVersion,
-		"NumGoroutine   ": config.NumGoroutine,
-		"OperatingSystem": config.OperatingSystem,
-		"HostName       ": config.HostName,
-		"Arch           ": config.Arch,
-		"Version        ": config.Version,
-		"VcsRef         ": config.VcsRef,
-		"BuildTime      ": config.BuildTime,
+		"Protocol  Process  ": godev.JSONPB(info.Protocol.Process),
+		"Protocol  P2P      ": godev.JSONPB(info.Protocol.P2P),
+		"Protocol  ODB      ": godev.JSONPB(info.Protocol.OrbitDB),
+		"Messenger Process  ": godev.JSONPB(info.Messenger.Process),
+		"Messenger DB       ": godev.JSONPB(info.Messenger.DB),
 	} {
 		v.messages.Append(&historyMessage{
 			messageType: messageTypeMeta,
-			payload:     []byte(fmt.Sprintf("%s: %v", k, val)),
+			payload:     []byte(fmt.Sprintf("%s | %v", k, val)),
 		})
 	}
 
@@ -541,7 +553,6 @@ func debugListGroupCommand(ctx context.Context, v *groupView, cmd string) error 
 	groupDebug, err := v.v.protocol.DebugGroup(ctx, &bertytypes.DebugGroup_Request{
 		GroupPK: v.g.PublicKey,
 	})
-
 	if err != nil {
 		return err
 	}
@@ -592,7 +603,6 @@ func groupInviteCommand(renderFunc func(*groupView, string)) func(ctx context.Co
 			GroupPK:   v.g.PublicKey,
 			GroupName: "some group",
 		})
-
 		if err != nil {
 			return err
 		}
@@ -715,7 +725,6 @@ func contactRequestCommand(ctx context.Context, v *groupView, cmd string) error 
 	res, err := v.v.messenger.ParseDeepLink(ctx, &bertymessenger.ParseDeepLink_Request{
 		Link: cmd,
 	})
-
 	if err != nil {
 		return err
 	}

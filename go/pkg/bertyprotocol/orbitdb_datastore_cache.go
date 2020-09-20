@@ -1,11 +1,12 @@
 package bertyprotocol
 
 import (
+	datastore "github.com/ipfs/go-datastore"
+	"github.com/ipfs/go-datastore/query"
+
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/go-orbit-db/address"
 	"berty.tech/go-orbit-db/cache"
-	datastore "github.com/ipfs/go-datastore"
-	"github.com/ipfs/go-datastore/query"
 )
 
 type datastoreCache struct {

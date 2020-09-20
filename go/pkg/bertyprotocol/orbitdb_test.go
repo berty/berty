@@ -8,12 +8,6 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
-	orbitdb "berty.tech/go-orbit-db"
-	"berty.tech/go-orbit-db/pubsub/directchannel"
-	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
@@ -21,6 +15,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
+	orbitdb "berty.tech/go-orbit-db"
+	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 )
 
 func newTestOrbitDB(ctx context.Context, t *testing.T, logger *zap.Logger, node ipfsutil.CoreAPIMock, baseDS datastore.Batching) *BertyOrbitDB {
@@ -37,9 +37,8 @@ func newTestOrbitDB(ctx context.Context, t *testing.T, logger *zap.Logger, node 
 	odb, err := NewBertyOrbitDB(ctx, api, &NewOrbitDBOptions{
 		Datastore: baseDS,
 		NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
-			Logger:               logger,
-			PubSub:               pubsubraw.NewPubSub(node.PubSub(), selfKey.ID(), logger, nil),
-			DirectChannelFactory: directchannel.InitDirectChannelFactory(node.MockNode().PeerHost),
+			Logger: logger,
+			PubSub: pubsubraw.NewPubSub(node.PubSub(), selfKey.ID(), logger, nil),
 		},
 	})
 	require.NoError(t, err)
@@ -89,13 +88,13 @@ func TestDifferentStores(t *testing.T) {
 	api1, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts)
 	defer cleanup()
 
-	odb1 := newTestOrbitDB(ctx, t, logger, api1, baseDS)
+	odb1 := newTestOrbitDB(ctx, t, logger, api1, ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer1")))
 	defer odb1.Close()
 
 	api2, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts)
 	defer cleanup()
 
-	odb2 := newTestOrbitDB(ctx, t, logger, api2, baseDS)
+	odb2 := newTestOrbitDB(ctx, t, logger, api2, ipfsutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer2")))
 	defer odb2.Close()
 
 	err = mn.LinkAll()

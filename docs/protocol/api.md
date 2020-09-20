@@ -129,6 +129,12 @@
     - [MultiMemberGroupLeave.Reply](#berty.types.v1.MultiMemberGroupLeave.Reply)
     - [MultiMemberGroupLeave.Request](#berty.types.v1.MultiMemberGroupLeave.Request)
     - [MultiMemberInitialMember](#berty.types.v1.MultiMemberInitialMember)
+    - [ReplicationServiceRegisterGroup](#berty.types.v1.ReplicationServiceRegisterGroup)
+    - [ReplicationServiceRegisterGroup.Reply](#berty.types.v1.ReplicationServiceRegisterGroup.Reply)
+    - [ReplicationServiceRegisterGroup.Request](#berty.types.v1.ReplicationServiceRegisterGroup.Request)
+    - [ReplicationServiceReplicateGroup](#berty.types.v1.ReplicationServiceReplicateGroup)
+    - [ReplicationServiceReplicateGroup.Reply](#berty.types.v1.ReplicationServiceReplicateGroup.Reply)
+    - [ReplicationServiceReplicateGroup.Request](#berty.types.v1.ReplicationServiceReplicateGroup.Request)
     - [ServiceToken](#berty.types.v1.ServiceToken)
     - [ServiceTokenSupportedService](#berty.types.v1.ServiceTokenSupportedService)
     - [ServicesTokenCode](#berty.types.v1.ServicesTokenCode)
@@ -136,6 +142,13 @@
     - [ServicesTokenList.Reply](#berty.types.v1.ServicesTokenList.Reply)
     - [ServicesTokenList.Request](#berty.types.v1.ServicesTokenList.Request)
     - [ShareableContact](#berty.types.v1.ShareableContact)
+    - [SystemInfo](#berty.types.v1.SystemInfo)
+    - [SystemInfo.OrbitDB](#berty.types.v1.SystemInfo.OrbitDB)
+    - [SystemInfo.OrbitDB.ReplicationStatus](#berty.types.v1.SystemInfo.OrbitDB.ReplicationStatus)
+    - [SystemInfo.P2P](#berty.types.v1.SystemInfo.P2P)
+    - [SystemInfo.Process](#berty.types.v1.SystemInfo.Process)
+    - [SystemInfo.Reply](#berty.types.v1.SystemInfo.Reply)
+    - [SystemInfo.Request](#berty.types.v1.SystemInfo.Request)
   
     - [ContactState](#berty.types.v1.ContactState)
     - [DebugInspectGroupLogType](#berty.types.v1.DebugInspectGroupLogType)
@@ -192,9 +205,11 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | DebugListGroups | [.berty.types.v1.DebugListGroups.Request](#berty.types.v1.DebugListGroups.Request) | [.berty.types.v1.DebugListGroups.Reply](#berty.types.v1.DebugListGroups.Reply) stream |  |
 | DebugInspectGroupStore | [.berty.types.v1.DebugInspectGroupStore.Request](#berty.types.v1.DebugInspectGroupStore.Request) | [.berty.types.v1.DebugInspectGroupStore.Reply](#berty.types.v1.DebugInspectGroupStore.Reply) stream |  |
 | DebugGroup | [.berty.types.v1.DebugGroup.Request](#berty.types.v1.DebugGroup.Request) | [.berty.types.v1.DebugGroup.Reply](#berty.types.v1.DebugGroup.Reply) |  |
+| SystemInfo | [.berty.types.v1.SystemInfo.Request](#berty.types.v1.SystemInfo.Request) | [.berty.types.v1.SystemInfo.Reply](#berty.types.v1.SystemInfo.Reply) |  |
 | AuthServiceInitFlow | [.berty.types.v1.AuthServiceInitFlow.Request](#berty.types.v1.AuthServiceInitFlow.Request) | [.berty.types.v1.AuthServiceInitFlow.Reply](#berty.types.v1.AuthServiceInitFlow.Reply) | AuthServiceInitFlow Initialize an authentication flow |
 | AuthServiceCompleteFlow | [.berty.types.v1.AuthServiceCompleteFlow.Request](#berty.types.v1.AuthServiceCompleteFlow.Request) | [.berty.types.v1.AuthServiceCompleteFlow.Reply](#berty.types.v1.AuthServiceCompleteFlow.Reply) | AuthServiceCompleteFlow Completes an authentication flow |
 | ServicesTokenList | [.berty.types.v1.ServicesTokenList.Request](#berty.types.v1.ServicesTokenList.Request) | [.berty.types.v1.ServicesTokenList.Reply](#berty.types.v1.ServicesTokenList.Reply) stream | ServicesTokenList Retrieves the list of services tokens |
+| ReplicationServiceRegisterGroup | [.berty.types.v1.ReplicationServiceRegisterGroup.Request](#berty.types.v1.ReplicationServiceRegisterGroup.Request) | [.berty.types.v1.ReplicationServiceRegisterGroup.Reply](#berty.types.v1.ReplicationServiceRegisterGroup.Reply) | ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents |
 
  
 
@@ -739,7 +754,8 @@ Group define a group and is enough to invite someone to it
 | public_key | [bytes](#bytes) |  | public_key is the identifier of the group, it signs the group secret and the initial member of a multi-member group |
 | secret | [bytes](#bytes) |  | secret is the symmetric secret of the group, which is used to encrypt the metadata |
 | secret_sig | [bytes](#bytes) |  | secret_sig is the signature of the secret used to ensure the validity of the group |
-| group_type | [GroupType](#berty.types.v1.GroupType) |  | group_type specifies the type of the group |
+| group_type | [GroupType](#berty.types.v1.GroupType) |  | group_type specifies the type of the group, used to determine how device secrets are generated |
+| sign_pub | [bytes](#bytes) |  | sign_pub is the signature public key used to verify entries, not required when secret and secret_sig are provided |
 
 <a name="berty.types.v1.GroupAddAdditionalRendezvousSeed"></a>
 
@@ -1087,6 +1103,43 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | ----- | ---- | ----- | ----------- |
 | member_pk | [bytes](#bytes) |  | member_pk is the public key of the member who is the group creator |
 
+<a name="berty.types.v1.ReplicationServiceRegisterGroup"></a>
+
+### ReplicationServiceRegisterGroup
+
+<a name="berty.types.v1.ReplicationServiceRegisterGroup.Reply"></a>
+
+### ReplicationServiceRegisterGroup.Reply
+
+<a name="berty.types.v1.ReplicationServiceRegisterGroup.Request"></a>
+
+### ReplicationServiceRegisterGroup.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token_id | [string](#string) |  |  |
+| group_pk | [bytes](#bytes) |  |  |
+
+<a name="berty.types.v1.ReplicationServiceReplicateGroup"></a>
+
+### ReplicationServiceReplicateGroup
+
+<a name="berty.types.v1.ReplicationServiceReplicateGroup.Reply"></a>
+
+### ReplicationServiceReplicateGroup.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| ok | [bool](#bool) |  |  |
+
+<a name="berty.types.v1.ReplicationServiceReplicateGroup.Request"></a>
+
+### ReplicationServiceReplicateGroup.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group | [Group](#berty.types.v1.Group) |  |  |
+
 <a name="berty.types.v1.ServiceToken"></a>
 
 ### ServiceToken
@@ -1143,6 +1196,79 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | pk | [bytes](#bytes) |  | pk is the account to send a contact request to |
 | public_rendezvous_seed | [bytes](#bytes) |  | public_rendezvous_seed is the rendezvous seed used by the account to send a contact request to |
 | metadata | [bytes](#bytes) |  | metadata is the metadata specific to the app to identify the contact for the request |
+
+<a name="berty.types.v1.SystemInfo"></a>
+
+### SystemInfo
+
+<a name="berty.types.v1.SystemInfo.OrbitDB"></a>
+
+### SystemInfo.OrbitDB
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| account_metadata | [SystemInfo.OrbitDB.ReplicationStatus](#berty.types.v1.SystemInfo.OrbitDB.ReplicationStatus) |  |  |
+
+<a name="berty.types.v1.SystemInfo.OrbitDB.ReplicationStatus"></a>
+
+### SystemInfo.OrbitDB.ReplicationStatus
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| progress | [int64](#int64) |  |  |
+| maximum | [int64](#int64) |  |  |
+| buffered | [int64](#int64) |  |  |
+| queued | [int64](#int64) |  |  |
+
+<a name="berty.types.v1.SystemInfo.P2P"></a>
+
+### SystemInfo.P2P
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| connected_peers | [int64](#int64) |  |  |
+
+<a name="berty.types.v1.SystemInfo.Process"></a>
+
+### SystemInfo.Process
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| rlimit_cur | [uint64](#uint64) |  |  |
+| num_goroutine | [int64](#int64) |  |  |
+| nofile | [int64](#int64) |  |  |
+| too_many_open_files | [bool](#bool) |  |  |
+| started_at | [int64](#int64) |  |  |
+| num_cpu | [int64](#int64) |  |  |
+| go_version | [string](#string) |  |  |
+| operating_system | [string](#string) |  |  |
+| host_name | [string](#string) |  |  |
+| arch | [string](#string) |  |  |
+| version | [string](#string) |  |  |
+| vcs_ref | [string](#string) |  |  |
+| self_rusage | [string](#string) |  |  |
+| children_rusage | [string](#string) |  |  |
+| rlimit_max | [uint64](#uint64) |  |  |
+| pid | [int64](#int64) |  |  |
+| ppid | [int64](#int64) |  |  |
+| priority | [int64](#int64) |  |  |
+| uid | [int64](#int64) |  |  |
+| working_dir | [string](#string) |  |  |
+
+<a name="berty.types.v1.SystemInfo.Reply"></a>
+
+### SystemInfo.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| process | [SystemInfo.Process](#berty.types.v1.SystemInfo.Process) |  |  |
+| p2p | [SystemInfo.P2P](#berty.types.v1.SystemInfo.P2P) |  |  |
+| orbitdb | [SystemInfo.OrbitDB](#berty.types.v1.SystemInfo.OrbitDB) |  |  |
+| warns | [string](#string) | repeated |  |
+
+<a name="berty.types.v1.SystemInfo.Request"></a>
+
+### SystemInfo.Request
 
  
 
@@ -1205,7 +1331,7 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| GroupTypeUndefined | 0 | GroupTypeUndefined indicates that the value has not been set. Should not happen. |
+| GroupTypeUndefined | 0 | GroupTypeUndefined indicates that the value has not been set. For example, happens if group is replicated. |
 | GroupTypeAccount | 1 | GroupTypeAccount is the group managing an account, available to all its devices. |
 | GroupTypeContact | 2 | GroupTypeContact is the group created between two accounts, available to all their devices. |
 | GroupTypeMultiMember | 3 | GroupTypeMultiMember is a group containing an undefined number of members. |

@@ -7,11 +7,12 @@ import (
 	"sync"
 	"sync/atomic"
 
+	"github.com/gdamore/tcell"
+	"github.com/rivo/tview"
+
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
-	"github.com/gdamore/tcell"
-	"github.com/rivo/tview"
 )
 
 type tabbedGroupsView struct {
@@ -138,7 +139,6 @@ func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *bertytypes.Gr
 	info, err := v.protocol.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		GroupPK: g.PublicKey,
 	})
-
 	if err != nil {
 		return
 	}

@@ -8,9 +8,10 @@ import (
 	"net/http"
 	"strings"
 
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"golang.org/x/crypto/ed25519"
+
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 )
 
 // This server is a showcase of a PKCE OAuth 2 token issuer. Its behavior is to
@@ -43,7 +44,7 @@ func tokenServerCommand() *ffcli.Command {
 		fs            = flag.NewFlagSet("token issuer server", flag.ExitOnError)
 		secretFlag    = ""
 		authSKFlag    = ""
-		listenerFlag  = "8080"
+		listenerFlag  = ":8080"
 		supportedFlag = ""
 	)
 	fs.StringVar(&secretFlag, "secret", secretFlag, "base64 encoded secret")
@@ -57,6 +58,10 @@ func tokenServerCommand() *ffcli.Command {
 		ShortHelp:  "token server, a basic token server issuer without auth or logging",
 		FlagSet:    fs,
 		Exec: func(ctx context.Context, args []string) error {
+			if len(args) > 0 {
+				return flag.ErrHelp
+			}
+
 			logger, err := manager.GetLogger()
 			if err != nil {
 				return err

@@ -6,23 +6,27 @@ import (
 	"io"
 	"os"
 	"strings"
+	"time"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/gdamore/tcell"
 	"github.com/gdamore/tcell/terminfo"
 	"github.com/rivo/tview"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/lifecycle"
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 type Opts struct {
-	MessengerClient bertymessenger.MessengerServiceClient
-	ProtocolClient  bertyprotocol.ProtocolServiceClient
-	Logger          *zap.Logger
-	GroupInvitation string
-	DisplayName     string
+	MessengerClient  bertymessenger.MessengerServiceClient
+	ProtocolClient   bertyprotocol.ProtocolServiceClient
+	Logger           *zap.Logger
+	GroupInvitation  string
+	DisplayName      string
+	LifecycleManager *lifecycle.Manager
 }
 
 var globalLogger *zap.Logger
@@ -118,40 +122,55 @@ func Main(ctx context.Context, opts *Opts) error {
 			AddItem(tabbedView.GetHistory(), 0, 1, false).
 			AddItem(inputBox, 1, 1, true), 0, 1, true)
 
+	const ShouldBecomeInactive = time.Second * 30
+	inactiveTimer := time.AfterFunc(ShouldBecomeInactive, func() {
+		opts.LifecycleManager.UpdateState(bertymessenger.StateInactive)
+	})
+
 	app.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-		handlers := map[tcell.Key]func() bool{
-			tcell.KeyCtrlC: func() bool { app.Stop(); return true },
-			tcell.KeyEsc:   func() bool { app.Stop(); return true },
-			tcell.KeyHome:  func() bool { tabbedView.GetActiveViewGroup().messages.historyScroll.ScrollToBeginning(); return true },
-			tcell.KeyEnd:   func() bool { tabbedView.GetActiveViewGroup().messages.historyScroll.ScrollToEnd(); return true },
-			tcell.KeyPgUp:  func() bool { tabbedView.GetActiveViewGroup().ScrollToOffset(-10); return true },
-			tcell.KeyPgDn:  func() bool { tabbedView.GetActiveViewGroup().ScrollToOffset(+10); return true },
-			tcell.KeyCtrlP: func() bool { tabbedView.PrevGroup(); return true },
-			tcell.KeyCtrlN: func() bool { tabbedView.NextGroup(); return true },
-			tcell.KeyUp: func() bool {
-				if event.Modifiers() == tcell.ModAlt || event.Modifiers() == tcell.ModCtrl {
-					tabbedView.PrevGroup()
-				} else {
-					input.SetText(tabbedView.GetActiveViewGroup().inputHistory.Prev())
-				}
-				return true
-			},
-			tcell.KeyDown: func() bool {
-				if event.Modifiers() == tcell.ModAlt || event.Modifiers() == tcell.ModCtrl {
-					tabbedView.NextGroup()
-				} else {
-					input.SetText(tabbedView.GetActiveViewGroup().inputHistory.Next())
-				}
-				return true
-			},
+		// reset timer
+		if !inactiveTimer.Stop() {
+			// AfterFunc timer should already have consume `inactiveTimer.C`
+			opts.LifecycleManager.UpdateState(bertymessenger.StateActive)
+		}
+		inactiveTimer.Reset(ShouldBecomeInactive)
+
+		// nolint:exhaustive
+		switch event.Key() {
+		case tcell.KeyCtrlC:
+			app.Stop()
+		case tcell.KeyEsc:
+			app.Stop()
+		case tcell.KeyHome:
+			tabbedView.GetActiveViewGroup().messages.historyScroll.ScrollToBeginning()
+		case tcell.KeyEnd:
+			tabbedView.GetActiveViewGroup().messages.historyScroll.ScrollToEnd()
+		case tcell.KeyPgUp:
+			tabbedView.GetActiveViewGroup().ScrollToOffset(-10)
+		case tcell.KeyPgDn:
+			tabbedView.GetActiveViewGroup().ScrollToOffset(+10)
+		case tcell.KeyCtrlP:
+			tabbedView.PrevGroup()
+		case tcell.KeyCtrlN:
+			tabbedView.NextGroup()
+		case tcell.KeyUp:
+			if event.Modifiers() == tcell.ModAlt || event.Modifiers() == tcell.ModCtrl {
+				tabbedView.PrevGroup()
+			} else {
+				input.SetText(tabbedView.GetActiveViewGroup().inputHistory.Prev())
+			}
+
+		case tcell.KeyDown:
+			if event.Modifiers() == tcell.ModAlt || event.Modifiers() == tcell.ModCtrl {
+				tabbedView.NextGroup()
+			} else {
+				input.SetText(tabbedView.GetActiveViewGroup().inputHistory.Next())
+			}
+		default:
+			return event
 		}
 
-		if handler, ok := handlers[event.Key()]; ok {
-			handler()
-			return nil
-		}
-
-		return event
+		return nil
 	})
 
 	if err := app.SetRoot(mainUI, true).SetFocus(mainUI).Run(); err != nil {

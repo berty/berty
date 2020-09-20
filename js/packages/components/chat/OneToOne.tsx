@@ -232,7 +232,8 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: string }> = ({
 					id={item.cid}
 					convKind={messengerpb.Conversation.Type.ContactType}
 					convPK={conv.publicKey}
-					previousMessageId={index > 0 ? items[index - 1]?.cid : ''}
+					previousMessageId={index > 0 ? items[index + 1]?.cid : ''}
+					nextMessageId={items[index - 1]?.cid || ''}
 				/>
 			)}
 		/>

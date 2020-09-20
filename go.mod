@@ -14,6 +14,7 @@ require (
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
 	github.com/atotto/clipboard v0.1.2
 	github.com/buicongtan1997/protoc-gen-swagger-config v0.0.0-20190801162412-b6396e884596
+	github.com/daixiang0/gci v0.2.4
 	github.com/davidlazar/go-crypto v0.0.0-20200604182044-b73af7476f6c // indirect
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
 	github.com/dgraph-io/badger v1.6.1
@@ -87,11 +88,11 @@ require (
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de
 	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de
-	golang.org/x/net v0.0.0-20200707034311-ab3426394381
+	golang.org/x/net v0.0.0-20200822124328-c89045814202
 	golang.org/x/sys v0.0.0-20200728102440-3e129f6d46b1 // indirect
 	golang.org/x/text v0.3.3 // indirect
-	golang.org/x/tools v0.0.0-20200724022722-7017fd6b1305
-	golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543
+	golang.org/x/tools v0.0.0-20200917221617-d56e4e40bc9d
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 	google.golang.org/genproto v0.0.0-20200715011427-11fb19a81f2c // indirect
 	google.golang.org/grpc v1.30.0
 	google.golang.org/protobuf v1.25.0 // indirect
@@ -99,7 +100,6 @@ require (
 	gopkg.in/square/go-jose.v2 v2.5.1
 	gorm.io/driver/sqlite v1.0.8
 	gorm.io/gorm v0.2.26
-	honnef.co/go/tools v0.0.1-2020.1.4 // indirect
 	moul.io/godev v1.7.0
 	moul.io/openfiles v1.2.0
 	moul.io/srand v1.4.0
@@ -107,6 +107,7 @@ require (
 	moul.io/u v1.9.0
 	moul.io/zapfilter v1.6.0
 	moul.io/zapgorm2 v1.0.1
+	mvdan.cc/gofumpt v0.0.0-20200802201014-ab5a8192947d
 )
 
 replace (

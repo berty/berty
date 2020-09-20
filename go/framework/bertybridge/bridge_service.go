@@ -7,13 +7,14 @@ import (
 	"sync"
 	"sync/atomic"
 
-	pb "berty.tech/berty/v2/go/framework/bertybridge/internal/bridgepb"
-	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+
+	pb "berty.tech/berty/v2/go/framework/bertybridge/internal/bridgepb"
+	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 // Service is BridgeServiceServer

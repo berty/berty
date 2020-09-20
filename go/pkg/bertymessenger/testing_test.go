@@ -5,14 +5,15 @@ import (
 	"net"
 	"testing"
 
-	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	grpc "google.golang.org/grpc"
 	"google.golang.org/grpc/test/bufconn"
 	"moul.io/u"
+
+	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 )
 
 func mkBufDialer(l *bufconn.Listener) func(context.Context, string) (net.Conn, error) {

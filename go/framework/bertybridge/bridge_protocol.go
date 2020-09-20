@@ -38,10 +38,12 @@ import (
 	"google.golang.org/grpc/status"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"moul.io/srand"
 	"moul.io/zapgorm2"
 
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/lifecycle"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
 	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/internal/tinder"
@@ -52,12 +54,12 @@ import (
 )
 
 var (
-	defaultProtocolRendezVousPeer = config.BertyMobile.RendezVousPeer
-	defaultProtocolBootstrap      = config.BertyMobile.Bootstrap
-	defaultTracingHost            = config.BertyMobile.Tracing
-	defaultSwarmAddrs             = config.BertyMobile.DefaultSwarmAddrs
-	defaultAPIAddrs               = config.BertyMobile.DefaultAPIAddrs
-	APIConfig                     = config.BertyMobile.APIConfig
+	defaultProtocolRendezVousPeers = config.BertyMobile.RendezVousPeers
+	defaultProtocolBootstrap       = config.BertyMobile.Bootstrap
+	defaultTracingHost             = config.BertyMobile.Tracing
+	defaultSwarmAddrs              = config.BertyMobile.DefaultSwarmAddrs
+	defaultAPIAddrs                = config.BertyMobile.DefaultAPIAddrs
+	APIConfig                      = config.BertyMobile.APIConfig
 )
 
 var defaultBootstrapConfig = bootstrap.BootstrapConfig{
@@ -77,8 +79,10 @@ type MessengerBridge struct {
 	protocolService  bertyprotocol.Service
 	messengerService bertymessenger.Service
 	msngrDB          *gorm.DB
-	lifecycle        LifeCycleDriver
 	notification     notification.Manager
+
+	lifecycledriver LifeCycleDriver
+	lcmanager       *lifecycle.Manager
 
 	currentAppState int
 	muAppState      sync.Mutex
@@ -185,13 +189,13 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 				return nil, errors.Wrap(err, "failed to get ipfs repo")
 			}
 
-			var rdvpeer *peer.AddrInfo
+			var rdvpeers []*peer.AddrInfo
 
-			if rdvpeer, err = ipfsutil.ParseAndResolveIpfsAddr(ctx, defaultProtocolRendezVousPeer); err != nil {
-				return nil, errors.New("failed to parse rdvp multiaddr: " + defaultProtocolRendezVousPeer)
+			if rdvpeers, err = ipfsutil.ParseAndResolveRdvpMaddrs(ctx, logger, defaultProtocolRendezVousPeers); err != nil {
+				return nil, err
 			}
 
-			var bopts = ipfsutil.CoreAPIConfig{
+			bopts := ipfsutil.CoreAPIConfig{
 				DisableCorePubSub: true,
 				SwarmAddrs:        defaultSwarmAddrs,
 				APIAddrs:          defaultAPIAddrs,
@@ -199,18 +203,35 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 				ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
 				HostConfig: func(h host.Host, _ routing.Routing) error {
 					var err error
+					var rdvClients []tinder.AsyncableDriver
 
-					h.Peerstore().AddAddrs(rdvpeer.ID, rdvpeer.Addrs, peerstore.PermanentAddrTTL)
-					// @FIXME(gfanton): use rand as argument
-					rdvClient := tinder.NewRendezvousDiscovery(logger, h, rdvpeer.ID,
-						mrand.New(mrand.NewSource(mrand.Int63())))
+					if lenrdvpeers := len(rdvpeers); lenrdvpeers > 0 {
+						drivers := make([]tinder.AsyncableDriver, lenrdvpeers)
+						for i, peer := range rdvpeers {
+							h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
+							rng := mrand.New(mrand.NewSource(srand.Secure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
+							drivers[i] = tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
+						}
+						rdvClients = append(rdvClients, drivers...)
+					}
+
+					var rdvClient tinder.AsyncableDriver
+					switch len(rdvClients) {
+					case 0:
+						// FIXME: Check if this isn't called when DisableIPFSNetwork true.
+						return errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't create an IPFS node without any discovery"))
+					case 1:
+						rdvClient = rdvClients[0]
+					default:
+						rdvClient = tinder.NewAsyncMultiDriver(logger, rdvClients...)
+					}
 
 					minBackoff, maxBackoff := time.Second, time.Minute
-					rng := mrand.New(mrand.NewSource(mrand.Int63()))
+					serviceRng := mrand.New(mrand.NewSource(srand.Secure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
 					disc, err = tinder.NewService(
 						logger,
 						rdvClient,
-						discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, rng),
+						discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, serviceRng),
 					)
 					if err != nil {
 						return err
@@ -233,7 +254,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 			bopts.BootstrapAddrs = defaultProtocolBootstrap
 
 			// should be a valid rendezvous peer
-			bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, defaultProtocolRendezVousPeer)
+			bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, defaultProtocolRendezVousPeers...)
 			if len(config.swarmListeners) > 0 {
 				bopts.SwarmAddrs = append(bopts.SwarmAddrs, config.swarmListeners...)
 			}
@@ -253,7 +274,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 			}
 
 			// serve the embedded ipfs webui
-			ipfsutil.ServeHTTPWebui(logger)
+			ipfsutil.ServeHTTPWebui(":3000", logger)
 			ipfsutil.EnableConnLogger(ctx, logger, node.PeerHost)
 		}
 	}
@@ -351,10 +372,11 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 		}
 	}
 
+	lcmanager := lifecycle.NewManager(bertymessenger.StateActive)
+
 	// register messenger service
 	var messenger bertymessenger.Service
 	var db *gorm.DB
-
 	{
 		var err error
 		protocolClient, err = bertyprotocol.NewClient(ctx, service, nil, nil)
@@ -385,6 +407,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 		opts := bertymessenger.Opts{
 			Logger:              logger,
 			NotificationManager: notifmanager,
+			LifeCycleManager:    lcmanager,
 			DB:                  db,
 		}
 		tmpBridge := &MessengerBridge{
@@ -434,11 +457,11 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 	var lc LifeCycleDriver
 	{
 		if lc = config.lc; lc == nil {
-			lc = NewNoopLifeCycleDriver()
+			lc = newNoopLifeCycleDriver()
 		}
 
 		messengerBridge.HandleState(lc.GetCurrentState())
-		messengerBridge.lifecycle = lc
+		messengerBridge.lifecycledriver = lc
 
 		lc.RegisterHandler(messengerBridge)
 	}
@@ -455,13 +478,16 @@ func (p *MessengerBridge) HandleState(appstate int) {
 	if appstate != p.currentAppState {
 		switch appstate {
 		case AppStateBackground:
+			p.lcmanager.UpdateState(bertymessenger.StateInactive)
 			p.logger.Info("app is in Background State")
 		case AppStateActive:
+			p.lcmanager.UpdateState(bertymessenger.StateActive)
 			p.logger.Info("app is in Active State")
 			if err := p.node.Bootstrap(defaultBootstrapConfig); err != nil {
 				p.logger.Warn("Unable to boostrap node", zap.Error(err))
 			}
 		case AppStateInactive:
+			p.lcmanager.UpdateState(bertymessenger.StateInactive)
 			p.logger.Info("app is in Inactive State")
 		}
 		p.currentAppState = appstate
@@ -476,6 +502,10 @@ func (p *MessengerBridge) HandleTask() LifeCycleBackgroundTask {
 
 		counter := atomic.AddInt32(&backgroundCounter, 1)
 		tnow := time.Now()
+
+		n := time.Duration(mrand.Intn(60) + 5) // nolint:gosec
+		ctx, cancel := context.WithTimeout(ctx, time.Second*n)
+		defer cancel()
 
 		if err := p.notification.Notify(&notification.Notification{
 			Title: fmt.Sprintf("GoBackgroundTask #%d", counter),
@@ -492,6 +522,7 @@ func (p *MessengerBridge) HandleTask() LifeCycleBackgroundTask {
 		}); err != nil {
 			p.logger.Error("unable to notify", zap.Error(err))
 		}
+
 		return nil
 	})
 }
@@ -571,7 +602,7 @@ func getRootDatastore(path string) (datastore.Batching, error) {
 		if !os.IsNotExist(err) {
 			return nil, errors.Wrap(err, "unable get directory")
 		}
-		if err := os.MkdirAll(basepath, 0700); err != nil {
+		if err := os.MkdirAll(basepath, 0o700); err != nil {
 			return nil, errors.Wrap(err, "unable to create datastore directory")
 		}
 	}
@@ -579,7 +610,6 @@ func getRootDatastore(path string) (datastore.Batching, error) {
 	baseds, err := ipfs_badger.NewDatastore(basepath, &ipfs_badger.Options{
 		Options: ipfs_badger.DefaultOptions.WithValueLogLoadingMode(badger_opts.FileIO),
 	})
-
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to load datastore on: `%s`", basepath)
 	}
@@ -599,7 +629,7 @@ func getIPFSRepo(path string) (ipfs_repo.Repo, error) {
 		if !os.IsNotExist(err) {
 			return nil, errors.Wrap(err, "unable get orbitdb directory")
 		}
-		if err := os.MkdirAll(basepath, 0700); err != nil {
+		if err := os.MkdirAll(basepath, 0o700); err != nil {
 			return nil, errors.Wrap(err, "unable to create orbitdb directory")
 		}
 	}

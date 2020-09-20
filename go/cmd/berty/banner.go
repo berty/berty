@@ -5,8 +5,9 @@ import (
 	"flag"
 	"fmt"
 
-	"berty.tech/berty/v2/go/pkg/banner"
 	"github.com/peterbourgon/ff/v3/ffcli"
+
+	"berty.tech/berty/v2/go/pkg/banner"
 )
 
 func bannerCommand() *ffcli.Command {
@@ -20,10 +21,14 @@ func bannerCommand() *ffcli.Command {
 
 	return &ffcli.Command{
 		Name:       "banner",
-		ShortUsage: "berty [global flags] banner [flags]",
-		FlagSet:    fs,
+		ShortUsage: "berty banner [flags]",
 		ShortHelp:  "print the Berty banner of the day",
+		FlagSet:    fs,
 		Exec: func(ctx context.Context, args []string) error {
+			if len(args) > 0 {
+				return flag.ErrHelp
+			}
+
 			quote := banner.QOTD()
 			if randomFlag {
 				quote = banner.RandomQuote()

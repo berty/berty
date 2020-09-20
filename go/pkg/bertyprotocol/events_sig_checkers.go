@@ -1,10 +1,11 @@
 package bertyprotocol
 
 import (
-	"berty.tech/berty/v2/go/pkg/bertytypes"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/gogo/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
+
+	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 type sigChecker func(g *bertytypes.Group, metadata *bertytypes.GroupMetadata, message proto.Message) error

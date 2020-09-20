@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/gogo/protobuf/proto"
+
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 func (x *AppMessage_Type) UnmarshalJSON(bytes []byte) error {

@@ -4,8 +4,9 @@ import (
 	"context"
 	"flag"
 
-	"berty.tech/berty/v2/go/cmd/berty/mini"
 	"github.com/peterbourgon/ff/v3/ffcli"
+
+	"berty.tech/berty/v2/go/cmd/berty/mini"
 )
 
 func miniCommand() *ffcli.Command {
@@ -24,6 +25,10 @@ func miniCommand() *ffcli.Command {
 		ShortUsage: "berty [global flags] mini [flags]",
 		FlagSet:    fs,
 		Exec: func(ctx context.Context, args []string) error {
+			if len(args) > 0 {
+				return flag.ErrHelp
+			}
+
 			// mini only supports file-based logging
 			if manager.Logging.Logfile == "" {
 				manager.Logging.Filters = ""
@@ -48,12 +53,15 @@ func miniCommand() *ffcli.Command {
 				return err
 			}
 
+			lcmanager := manager.GetLifecycleManager()
+
 			return mini.Main(ctx, &mini.Opts{
-				GroupInvitation: groupFlag,
-				MessengerClient: messengerClient,
-				ProtocolClient:  protocolClient,
-				Logger:          miniLogger,
-				DisplayName:     manager.Node.Messenger.DisplayName,
+				GroupInvitation:  groupFlag,
+				MessengerClient:  messengerClient,
+				ProtocolClient:   protocolClient,
+				Logger:           miniLogger,
+				DisplayName:      manager.Node.Messenger.DisplayName,
+				LifecycleManager: lcmanager,
 			})
 		},
 	}

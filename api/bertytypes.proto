@@ -12,7 +12,7 @@ option (gogoproto.unmarshaler_all) = true;
 option (gogoproto.sizer_all) = true;
 
 enum GroupType {
-  // GroupTypeUndefined indicates that the value has not been set. Should not happen.
+  // GroupTypeUndefined indicates that the value has not been set. For example, happens if group is replicated.
   GroupTypeUndefined = 0;
 
   // GroupTypeAccount is the group managing an account, available to all its devices.
@@ -134,8 +134,11 @@ message Group {
   // secret_sig is the signature of the secret used to ensure the validity of the group
   bytes secret_sig = 3;
 
-  // group_type specifies the type of the group
+  // group_type specifies the type of the group, used to determine how device secrets are generated
   GroupType group_type = 4;
+
+  // sign_pub is the signature public key used to verify entries, not required when secret and secret_sig are provided
+  bytes sign_pub = 5;
 }
 
 // GroupMetadata is used in GroupEnvelope and only readable by invited group members
@@ -900,4 +903,69 @@ message ServicesTokenCode {
   repeated string services = 1;
   string code_challenge = 2;
   string token_id = 3 [(gogoproto.customname) = "TokenID"];
+}
+
+
+message ReplicationServiceRegisterGroup {
+  message Request{
+    string token_id = 1 [(gogoproto.customname) = "TokenID"];
+    bytes group_pk = 2 [(gogoproto.customname) = "GroupPK"];
+  }
+  message Reply{}
+}
+
+message ReplicationServiceReplicateGroup {
+  message Request {
+    Group group = 1;
+  }
+  message Reply {
+    bool ok = 1 [(gogoproto.customname) = "OK"];
+  }
+}
+
+message SystemInfo {
+  message Request {}
+  message Reply {
+    Process process = 1;
+    P2P p2p = 2 [(gogoproto.customname) = "P2P"];
+    OrbitDB orbitdb = 3 [(gogoproto.customname) = "OrbitDB"];
+    repeated string warns = 4;
+  }
+
+  message OrbitDB {
+    ReplicationStatus account_metadata = 1;
+
+    message ReplicationStatus {
+      int64 progress = 1;
+      int64 maximum = 2;
+      int64 buffered = 3;
+      int64 queued = 4;
+    }
+  }
+
+  message P2P {
+    int64 connected_peers = 1;
+  }
+  message Process {
+    uint64 rlimit_cur = 1;
+    int64 num_goroutine = 2;
+    int64 nofile = 3;
+    bool too_many_open_files = 4;
+    int64 started_at = 5;
+    int64 num_cpu = 6 [(gogoproto.customname) = "NumCPU"];
+    string go_version = 7;
+    string operating_system = 8;
+    string host_name = 9;
+    string arch = 10;
+    string version = 11;
+    string vcs_ref = 12;
+    string self_rusage = 13;
+    string children_rusage = 14;
+    uint64 rlimit_max = 15;
+    int64 pid = 16 [(gogoproto.customname) = "PID"];
+    int64 ppid = 17 [(gogoproto.customname) = "PPID"];
+    int64 priority = 18;
+    int64 uid = 19 [(gogoproto.customname) = "UID"];
+    string working_dir = 20;
+  }
 }

@@ -4,9 +4,10 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 )
 
 type groupContext struct {

@@ -172,6 +172,13 @@ export const berty = {
 			AuthServiceInitFlow: jsonPb.lookup('.berty.types.v1.AuthServiceInitFlow'),
 			ServicesTokenList: jsonPb.lookup('.berty.types.v1.ServicesTokenList'),
 			ServicesTokenCode: jsonPb.lookup('.berty.types.v1.ServicesTokenCode'),
+			ReplicationServiceRegisterGroup: jsonPb.lookup(
+				'.berty.types.v1.ReplicationServiceRegisterGroup',
+			),
+			ReplicationServiceReplicateGroup: jsonPb.lookup(
+				'.berty.types.v1.ReplicationServiceReplicateGroup',
+			),
+			SystemInfo: jsonPb.lookup('.berty.types.v1.SystemInfo'),
 		},
 	},
 	messenger: {

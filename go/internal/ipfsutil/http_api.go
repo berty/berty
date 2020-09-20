@@ -6,14 +6,15 @@ import (
 	"sync"
 	"time"
 
-	"berty.tech/berty/v2/go/pkg/errcode"
-	ipfswebui "berty.tech/ipfs-webui-packed"
 	"github.com/ipfs/go-ipfs/commands"
 	"github.com/ipfs/go-ipfs/core"
 	"github.com/ipfs/go-ipfs/core/corehttp"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/pkg/errcode"
+	ipfswebui "berty.tech/ipfs-webui-packed"
 )
 
 // ServeHTTPApi collects options, creates listener, prints status message and starts serving requests
@@ -33,12 +34,12 @@ func ServeHTTPApi(logger *zap.Logger, node *core.IpfsNode, rootDirectory string)
 	var APIAddr string
 	cfg, err := node.Repo.Config()
 	if err != nil || len(cfg.Addresses.API) == 0 {
-		APIAddr = "ip4/127.0.0.1/tcp/5001"
+		APIAddr = "/ip4/127.0.0.1/tcp/5001"
 	} else {
 		APIAddr = cfg.Addresses.API[0]
 	}
 
-	var opts = []corehttp.ServeOption{
+	opts := []corehttp.ServeOption{
 		corehttp.CommandsOption(cctx),
 		// allow redirections from the http://{apiAddr}/webui to the actual webui address
 		corehttp.WebUIOption,
@@ -69,9 +70,13 @@ func ServeHTTPApi(logger *zap.Logger, node *core.IpfsNode, rootDirectory string)
 	return nil
 }
 
-func ServeHTTPWebui(logger *zap.Logger) func() {
+func ServeHTTPWebui(listenerAddr string, logger *zap.Logger) func() {
+	if listenerAddr == "" {
+		return nil
+	}
+
 	dir := http.FileServer(ipfswebui.Dir())
-	server := &http.Server{Addr: ":3000", Handler: dir}
+	server := &http.Server{Addr: listenerAddr, Handler: dir}
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)

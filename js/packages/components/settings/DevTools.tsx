@@ -346,12 +346,12 @@ const BodyDevTools: React.FC<{}> = () => {
 				disabled
 			/>
 			<ButtonSetting
-				name='Network'
-				icon='activity-outline'
+				name='Ipfs WebUI'
+				icon='smartphone-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
 				actionIcon='arrow-ios-forward'
-				onPress={navigate.settings.network}
+				onPress={navigate.settings.ipfsWebUI}
 			/>
 			<ButtonSetting
 				name='Notifications'

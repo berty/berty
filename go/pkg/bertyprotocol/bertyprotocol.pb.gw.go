@@ -13,7 +13,6 @@ import (
 	"io"
 	"net/http"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/golang/protobuf/descriptor"
 	"github.com/golang/protobuf/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -22,6 +21,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/status"
+
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 )
 
 // Suppress "imported and not used" errors
@@ -948,6 +949,40 @@ func local_request_ProtocolService_DebugGroup_0(ctx context.Context, marshaler r
 
 }
 
+func request_ProtocolService_SystemInfo_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq bertytypes.SystemInfo_Request
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.SystemInfo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_ProtocolService_SystemInfo_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq bertytypes.SystemInfo_Request
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.SystemInfo(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 func request_ProtocolService_AuthServiceInitFlow_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq bertytypes.AuthServiceInitFlow_Request
 	var metadata runtime.ServerMetadata
@@ -1038,6 +1073,40 @@ func request_ProtocolService_ServicesTokenList_0(ctx context.Context, marshaler 
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
+
+}
+
+func request_ProtocolService_ReplicationServiceRegisterGroup_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq bertytypes.ReplicationServiceRegisterGroup_Request
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.ReplicationServiceRegisterGroup(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_ProtocolService_ReplicationServiceRegisterGroup_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq bertytypes.ReplicationServiceRegisterGroup_Request
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.ReplicationServiceRegisterGroup(ctx, &protoReq)
+	return msg, metadata, err
 
 }
 
@@ -1554,6 +1623,26 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 
 	})
 
+	mux.Handle("POST", pattern_ProtocolService_SystemInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_ProtocolService_SystemInfo_0(rctx, inboundMarshaler, server, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ProtocolService_SystemInfo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("POST", pattern_ProtocolService_AuthServiceInitFlow_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1599,6 +1688,26 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 		return
+	})
+
+	mux.Handle("POST", pattern_ProtocolService_ReplicationServiceRegisterGroup_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_ProtocolService_ReplicationServiceRegisterGroup_0(rctx, inboundMarshaler, server, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ProtocolService_ReplicationServiceRegisterGroup_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	return nil
@@ -2202,6 +2311,26 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 
 	})
 
+	mux.Handle("POST", pattern_ProtocolService_SystemInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ProtocolService_SystemInfo_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ProtocolService_SystemInfo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("POST", pattern_ProtocolService_AuthServiceInitFlow_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -2259,6 +2388,26 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ServicesTokenList_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_ProtocolService_ReplicationServiceRegisterGroup_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ProtocolService_ReplicationServiceRegisterGroup_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ProtocolService_ReplicationServiceRegisterGroup_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -2322,11 +2471,15 @@ var (
 
 	pattern_ProtocolService_DebugGroup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "DebugGroup"}, "", runtime.AssumeColonVerbOpt(true)))
 
+	pattern_ProtocolService_SystemInfo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "SystemInfo"}, "", runtime.AssumeColonVerbOpt(true)))
+
 	pattern_ProtocolService_AuthServiceInitFlow_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "AuthServiceInitFlow"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_ProtocolService_AuthServiceCompleteFlow_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "AuthServiceCompleteFlow"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_ProtocolService_ServicesTokenList_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "ServicesTokenList"}, "", runtime.AssumeColonVerbOpt(true)))
+
+	pattern_ProtocolService_ReplicationServiceRegisterGroup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.protocol.v1", "ProtocolService", "ReplicationServiceRegisterGroup"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
@@ -2386,9 +2539,13 @@ var (
 
 	forward_ProtocolService_DebugGroup_0 = runtime.ForwardResponseMessage
 
+	forward_ProtocolService_SystemInfo_0 = runtime.ForwardResponseMessage
+
 	forward_ProtocolService_AuthServiceInitFlow_0 = runtime.ForwardResponseMessage
 
 	forward_ProtocolService_AuthServiceCompleteFlow_0 = runtime.ForwardResponseMessage
 
 	forward_ProtocolService_ServicesTokenList_0 = runtime.ForwardResponseStream
+
+	forward_ProtocolService_ReplicationServiceRegisterGroup_0 = runtime.ForwardResponseMessage
 )

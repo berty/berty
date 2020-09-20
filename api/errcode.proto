@@ -144,6 +144,10 @@ enum ErrCode {
   ErrServicesAuthServiceNotSupported = 4007;
   ErrServicesAuthUnknownToken = 4008;
   ErrServicesAuthInvalidURL = 4009;
+
+  ErrServiceReplication = 4100;
+  ErrServiceReplicationServer = 4101;
+  ErrServiceReplicationMissingEndpoint = 4102;
 }
 
 message ErrDetails {

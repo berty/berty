@@ -7,12 +7,13 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/testutil"
 	"github.com/libp2p/go-libp2p-core/peer"
 	p2pmocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/testutil"
 )
 
 func TestRoundTimePeriod_Next(t *testing.T) {
@@ -23,22 +24,22 @@ func TestRoundTimePeriod_Next(t *testing.T) {
 		next   time.Time
 	}{
 		{
-			time:   time.Date(2020, 04, 10, 12, 00, 00, 0, time.UTC),
+			time:   time.Date(2020, 4, 10, 12, 0, 0, 0, time.UTC),
 			period: time.Hour,
-			out:    time.Date(2020, 04, 10, 12, 00, 00, 0, time.UTC),
-			next:   time.Date(2020, 04, 10, 13, 00, 00, 0, time.UTC),
+			out:    time.Date(2020, 4, 10, 12, 0, 0, 0, time.UTC),
+			next:   time.Date(2020, 4, 10, 13, 0, 0, 0, time.UTC),
 		},
 		{
-			time:   time.Date(2020, 04, 10, 12, 00, 00, 0, time.UTC),
+			time:   time.Date(2020, 4, 10, 12, 0, 0, 0, time.UTC),
 			period: -time.Hour,
-			out:    time.Date(2020, 04, 10, 12, 00, 00, 0, time.UTC),
-			next:   time.Date(2020, 04, 10, 13, 00, 00, 0, time.UTC),
+			out:    time.Date(2020, 4, 10, 12, 0, 0, 0, time.UTC),
+			next:   time.Date(2020, 4, 10, 13, 0, 0, 0, time.UTC),
 		},
 		{
-			time:   time.Date(2020, 04, 10, 12, 34, 56, 0, time.UTC),
+			time:   time.Date(2020, 4, 10, 12, 34, 56, 0, time.UTC),
 			period: time.Hour,
-			out:    time.Date(2020, 04, 10, 12, 00, 00, 0, time.UTC),
-			next:   time.Date(2020, 04, 10, 13, 00, 00, 0, time.UTC),
+			out:    time.Date(2020, 4, 10, 12, 0, 0, 0, time.UTC),
+			next:   time.Date(2020, 4, 10, 13, 0, 0, 0, time.UTC),
 		},
 	}
 
@@ -54,8 +55,8 @@ func TestRoundTimePeriod_Next(t *testing.T) {
 }
 
 func TestGenerateRendezvousPointForPeriod(t *testing.T) {
-	baseTimeA := time.Date(2020, 04, 10, 12, 00, 00, 0, time.UTC)
-	baseTimeB := time.Date(2020, 04, 10, 13, 00, 00, 0, time.UTC)
+	baseTimeA := time.Date(2020, 4, 10, 12, 0, 0, 0, time.UTC)
+	baseTimeB := time.Date(2020, 4, 10, 13, 0, 0, 0, time.UTC)
 
 	cases := []struct {
 		topic    []byte
@@ -182,5 +183,4 @@ func TestAnnounceWatchForPeriod(t *testing.T) {
 }
 
 func TestAnnounceForPeriod(t *testing.T) {
-
 }

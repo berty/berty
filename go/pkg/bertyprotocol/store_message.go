@@ -2,9 +2,12 @@ package bertyprotocol
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 
-	"encoding/base64"
+	coreapi "github.com/ipfs/interface-go-ipfs-core"
+	"github.com/libp2p/go-libp2p-core/crypto"
+	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -16,9 +19,6 @@ import (
 	"berty.tech/go-orbit-db/stores"
 	"berty.tech/go-orbit-db/stores/basestore"
 	"berty.tech/go-orbit-db/stores/operation"
-	coreapi "github.com/ipfs/interface-go-ipfs-core"
-	"github.com/libp2p/go-libp2p-core/crypto"
-	"go.uber.org/zap"
 )
 
 const groupMessageStoreType = "berty_group_messages"
@@ -134,6 +134,18 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB) iface.StoreConstructor {
 			return nil, errcode.ErrInvalidInput.Wrap(err)
 		}
 
+		replication := false
+
+		if s.deviceKeystore == nil {
+			replication = true
+		} else {
+			if _, err := s.deviceKeystore.MemberDeviceForGroup(g); err == errcode.ErrInvalidInput {
+				replication = true
+			} else if err != nil {
+				return nil, errcode.TODO.Wrap(err)
+			}
+		}
+
 		store := &messageStore{
 			devKS:  s.deviceKeystore,
 			mks:    s.messageKeystore,
@@ -145,6 +157,10 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB) iface.StoreConstructor {
 
 		if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
+		}
+
+		if replication {
+			return store, nil
 		}
 
 		chSub := store.Subscribe(ctx)

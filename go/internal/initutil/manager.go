@@ -18,6 +18,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -45,11 +46,18 @@ type Manager struct {
 	Node struct {
 		Protocol struct {
 			IPFSListeners      string
+			IPFSAPIListeners   string
+			IPFSWebUIListener  string
+			Announce           string
+			NoAnnounce         string
 			LocalDiscovery     bool
-			RdvpMaddr          string
 			MinBackoff         time.Duration
 			MaxBackoff         time.Duration
 			DisableIPFSNetwork bool
+			// RdvpMaddrs store a list of rdvp server maddr.
+			// The entry : `:dev:` will add the devs servers to the list (default).
+			// The netry : `:none:` will disable all rdvp servers.
+			RdvpMaddrs flagStringSlice
 
 			ipfsNode         *core.IpfsNode
 			ipfsAPI          ipfsutil.ExtendedCoreAPI
@@ -68,6 +76,7 @@ type Manager struct {
 
 			protocolClient   bertyprotocol.Client
 			server           bertymessenger.Service
+			lcmanager        *lifecycle.Manager
 			client           bertymessenger.MessengerServiceClient
 			db               *gorm.DB
 			dbCleanup        func()

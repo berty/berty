@@ -12,7 +12,6 @@ import (
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	grpcgw "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	datastore "github.com/ipfs/go-datastore"
 	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
@@ -26,6 +25,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
@@ -43,10 +43,12 @@ func (m *Manager) SetupLocalProtocolServerFlags(fs *flag.FlagSet) {
 
 func (m *Manager) SetupEmptyGRPCListenersFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.GRPC.Listeners, "node.listeners", "", "gRPC API listeners")
+	fs.StringVar(&m.Node.Protocol.IPFSWebUIListener, "p2p.webui-listener", "", "IPFS WebUI listener")
 }
 
 func (m *Manager) SetupDefaultGRPCListenersFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.GRPC.Listeners, "node.listeners", "/ip4/127.0.0.1/tcp/9091/grpc", "gRPC API listeners")
+	fs.StringVar(&m.Node.Protocol.IPFSWebUIListener, "p2p.webui-listener", ":3999", "IPFS WebUI listener")
 }
 
 func (m *Manager) DisableIPFSNetwork() {
@@ -104,13 +106,17 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 	}
 
 	// construct http api endpoint
-	err = ipfsutil.ServeHTTPApi(logger, m.Node.Protocol.ipfsNode, "")
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+	if m.Node.Protocol.IPFSAPIListeners != "" {
+		err = ipfsutil.ServeHTTPApi(logger, m.Node.Protocol.ipfsNode, "")
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
 	}
 
 	// serve the embedded ipfs web UI
-	m.Node.Protocol.ipfsWebUICleanup = ipfsutil.ServeHTTPWebui(logger)
+	if addr := m.Node.Protocol.IPFSWebUIListener; addr != "" {
+		m.Node.Protocol.ipfsWebUICleanup = ipfsutil.ServeHTTPWebui(addr, logger)
+	}
 
 	odb, err := m.getOrbitDB()
 	if err != nil {
@@ -232,6 +238,21 @@ func (m *Manager) GetMessengerClient() (bertymessenger.MessengerServiceClient, e
 	return m.getMessengerClient()
 }
 
+func (m *Manager) GetLifecycleManager() *lifecycle.Manager {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	return m.getLifecycleManager()
+}
+
+func (m *Manager) getLifecycleManager() *lifecycle.Manager {
+	if m.Node.Messenger.lcmanager != nil {
+		return m.Node.Messenger.lcmanager
+	}
+
+	m.Node.Messenger.lcmanager = lifecycle.NewManager(bertymessenger.StateActive)
+	return m.Node.Messenger.lcmanager
+}
+
 func (m *Manager) getMessengerClient() (bertymessenger.MessengerServiceClient, error) {
 	if m.Node.Messenger.client != nil {
 		return m.Node.Messenger.client, nil
@@ -268,7 +289,7 @@ func (m *Manager) getProtocolClient() (bertyprotocol.ProtocolServiceClient, erro
 	return m.Node.Protocol.client, nil
 }
 
-func (m *Manager) GetGRPCServer() (*grpc.Server, *runtime.ServeMux, error) {
+func (m *Manager) GetGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 	return m.getGRPCServer()
@@ -278,7 +299,7 @@ func (m *Manager) GetGRPCServer() (*grpc.Server, *runtime.ServeMux, error) {
 // without this singleton, we can raise race conditions in unit tests => https://github.com/grpc/grpc-go/issues/1084
 var grpcLoggerConfigured = false
 
-func (m *Manager) getGRPCServer() (*grpc.Server, *runtime.ServeMux, error) {
+func (m *Manager) getGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 	if m.Node.GRPC.server != nil {
 		return m.Node.GRPC.server, m.Node.GRPC.gatewayMux, nil
 	}
@@ -456,13 +477,16 @@ func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServ
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-
 	m.Node.Messenger.protocolClient = protocolClient
+
+	lcmanager := m.getLifecycleManager()
+
 	// messenger server
 	opts := bertymessenger.Opts{
 		DB:                  db,
 		Logger:              logger,
 		NotificationManager: notifmanager,
+		LifeCycleManager:    lcmanager,
 	}
 	messengerServer, err := bertymessenger.New(protocolClient, &opts)
 	if err != nil {
@@ -475,6 +499,7 @@ func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServ
 		return nil, errcode.TODO.Wrap(err)
 	}
 
+	m.Node.Messenger.lcmanager = lcmanager
 	m.Node.Messenger.server = messengerServer
 	m.initLogger.Debug("messenger server initialized and cached")
 	return m.Node.Messenger.server, nil

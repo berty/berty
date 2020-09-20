@@ -9,8 +9,6 @@ import (
 	p2p_disc "github.com/libp2p/go-libp2p-core/discovery"
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	p2p_pubsub "github.com/libp2p/go-libp2p-pubsub"
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
-
 	"go.uber.org/zap"
 )
 
@@ -33,7 +31,7 @@ func NewPubSubAPI(ctx context.Context, logger *zap.Logger, disc p2p_disc.Discove
 	}
 }
 
-func (ps *PubSubAPI) topicJoin(topic string, opts ...p2p_pubsub.TopicOpt) (*pubsub.Topic, error) {
+func (ps *PubSubAPI) topicJoin(topic string, opts ...p2p_pubsub.TopicOpt) (*p2p_pubsub.Topic, error) {
 	ps.muTopics.Lock()
 	defer ps.muTopics.Unlock()
 

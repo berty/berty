@@ -2,18 +2,18 @@ package bertymessenger
 
 import (
 	"context"
-
 	"runtime"
 	"testing"
 	"time"
+
+	"github.com/gogo/protobuf/proto"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"github.com/gogo/protobuf/proto"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestServiceInstanceShareableBertyID(t *testing.T) {
@@ -162,17 +162,16 @@ func TestSystemInfo(t *testing.T) {
 
 	ret, err := svc.SystemInfo(ctx, nil)
 	require.NoError(t, err)
-	diff := time.Now().Unix() - ret.StartedAt
+	diff := time.Now().Unix() - ret.Messenger.Process.StartedAt
 	assert.GreaterOrEqual(t, diff, int64(0))
 	assert.GreaterOrEqual(t, int64(1), diff)
-	assert.Greater(t, ret.NumCPU, int64(0))
-	assert.NotEmpty(t, ret.GoVersion)
-	assert.Equal(t, ret.Arch, runtime.GOARCH)
-	assert.Equal(t, ret.OperatingSystem, runtime.GOOS)
-	assert.NotEmpty(t, ret.HostName)
-	// assert.NotEmpty(t, ret.VcsRef)
-	// assert.NotEmpty(t, ret.Version)
-	// assert.Greater(t, ret.BuildTime, int64(0))
+	assert.Greater(t, ret.Messenger.Process.NumCPU, int64(0))
+	assert.NotEmpty(t, ret.Messenger.Process.GoVersion)
+	assert.Equal(t, ret.Messenger.Process.Arch, runtime.GOARCH)
+	assert.Equal(t, ret.Messenger.Process.OperatingSystem, runtime.GOOS)
+	assert.NotEmpty(t, ret.Messenger.Process.HostName)
+	assert.NotNil(t, ret.Protocol.Process)
+	assert.True(t, ret.Messenger.ProtocolInSameProcess)
 }
 
 func testParseSharedGroup(t *testing.T, g *bertytypes.Group, name string, ret *ShareableBertyGroup_Reply) {

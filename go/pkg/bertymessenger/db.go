@@ -4,9 +4,10 @@ import (
 	"errors"
 	"time"
 
-	"berty.tech/berty/v2/go/pkg/errcode"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 func initDB(db *gorm.DB) error {
@@ -22,6 +23,12 @@ func initDB(db *gorm.DB) error {
 		return err
 	}
 	return nil
+}
+
+func dbModelRowsCount(db *gorm.DB, model interface{}) (int64, error) {
+	var count int64
+	err := db.Model(model).Count(&count).Error
+	return count, err
 }
 
 func dropAllTables(db *gorm.DB) error {

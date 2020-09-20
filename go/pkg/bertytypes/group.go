@@ -3,12 +3,17 @@ package bertytypes
 import (
 	"encoding/hex"
 
-	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"golang.org/x/crypto/ed25519"
+
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 func (m *Group) GetSigningPrivKey() (crypto.PrivKey, error) {
+	if len(m.Secret) == 0 {
+		return nil, errcode.ErrMissingInput
+	}
+
 	edSK := ed25519.NewKeyFromSeed(m.Secret)
 
 	sk, _, err := crypto.KeyPairFromStdKey(&edSK)
@@ -24,6 +29,10 @@ func (m *Group) GetPubKey() (crypto.PubKey, error) {
 }
 
 func (m *Group) GetSigningPubKey() (crypto.PubKey, error) {
+	if len(m.SignPub) != 0 {
+		return crypto.UnmarshalEd25519PublicKey(m.SignPub)
+	}
+
 	sk, err := m.GetSigningPrivKey()
 	if err != nil {
 		return nil, err
@@ -60,4 +69,21 @@ func (m *Group) GetSharedSecret() (*[32]byte, error) {
 	copy(sharedSecret[:], m.Secret)
 
 	return &sharedSecret, nil
+}
+
+func (m *Group) FilterForReplication() (*Group, error) {
+	groupSigPK, err := m.GetSigningPubKey()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	groupSigPKBytes, err := groupSigPK.Raw()
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	return &Group{
+		PublicKey: m.PublicKey,
+		SignPub:   groupSigPKBytes,
+	}, nil
 }

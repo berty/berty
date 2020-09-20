@@ -4,14 +4,15 @@ import (
 	"context"
 	"flag"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 func daemonCommand() *ffcli.Command {
-	var fs = flag.NewFlagSet("protocol client", flag.ExitOnError)
+	fs := flag.NewFlagSet("protocol client", flag.ExitOnError)
 	manager.SetupLocalMessengerServerFlags(fs) // we want to configure a local messenger server
 	manager.SetupDefaultGRPCListenersFlags(fs)
 
@@ -21,6 +22,10 @@ func daemonCommand() *ffcli.Command {
 		ShortHelp:  "start a full Berty instance (Berty Protocol + Berty Messenger)",
 		FlagSet:    fs,
 		Exec: func(ctx context.Context, args []string) error {
+			if len(args) > 0 {
+				return flag.ErrHelp
+			}
+
 			logger, err := manager.GetLogger()
 			if err != nil {
 				return err

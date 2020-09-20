@@ -3,8 +3,9 @@ package bertytypes
 import (
 	"fmt"
 
-	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/libp2p/go-libp2p-core/crypto"
+
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 const RendezvousSeedLength = 32

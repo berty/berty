@@ -5,14 +5,15 @@ import (
 	"sync"
 	"testing"
 
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/ipfs/go-ipfs/keystore"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 )
 
 type mockedPeer struct {
@@ -249,13 +250,13 @@ func waitForBertyEventType(ctx context.Context, t *testing.T, ms *metadataStore,
 				t.Fatalf(" err: %+v\n", err.Error())
 			}
 
-			//fmt.Println(string(e.DevicePK), string(e.DestMemberPK))
+			// fmt.Println(string(e.DevicePK), string(e.DestMemberPK))
 
 			eventCount--
 			if eventCount == 0 {
 				done <- struct{}{}
 			} else {
-				//fmt.Println(eventCount, "more to go")
+				// fmt.Println(eventCount, "more to go")
 			}
 		}
 	}

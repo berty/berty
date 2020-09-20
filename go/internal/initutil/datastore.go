@@ -5,11 +5,12 @@ import (
 	"os"
 	"path"
 
-	"berty.tech/berty/v2/go/pkg/errcode"
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 const InMemoryDir = ":memory:"
@@ -45,7 +46,7 @@ func (m *Manager) getDatastoreDir() (string, error) {
 	_, err = os.Stat(m.Datastore.dir)
 	switch {
 	case os.IsNotExist(err):
-		if err := os.MkdirAll(m.Datastore.dir, 0700); err != nil {
+		if err := os.MkdirAll(m.Datastore.dir, 0o700); err != nil {
 			return "", errcode.TODO.Wrap(err)
 		}
 	case err != nil:

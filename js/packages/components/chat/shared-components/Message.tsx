@@ -308,20 +308,22 @@ export const Message: React.FC<{
 	members?: { [key: string]: any }
 	convPK: string
 	previousMessageId: string
-}> = ({ id, convKind, members, previousMessageId, convPK }) => {
+	nextMessageId: string
+}> = ({ id, convKind, members, previousMessageId, nextMessageId, convPK }) => {
 	const inte = useInteraction(id, convPK)
 	const previousMessage = useInteraction(previousMessageId, convPK)
+	const nextMessage = useInteraction(nextMessageId, convPK)
 	const _styles = useStylesMessage()
 	const [{ row, margin, padding, column, text, border, color }] = useStyles()
 	if (!inte) {
 		return null
 	}
 	const isGroup = convKind === messengerpb.Conversation.Type.MultiMemberType
-	const styleMsg = null
 	let name
 	let baseColor = color.blue
 	let isFollowupMessage = false
-	let isWithinTenMinsAfter = false
+	let isFollowedMessage = false
+	let isWithinCollapseDuration = false
 	const sentDate = inte?.sentDate && parseInt(inte.sentDate, 10)
 	if (inte.type === messengerpb.AppMessage.Type.TypeUserMessage) {
 		if (inte.memberPublicKey && members && members[inte.memberPublicKey]) {
@@ -339,17 +341,25 @@ export const Message: React.FC<{
 				: color.blue
 			msgBackgroundColor = inte.isMe ? (inte.acknowledged ? color.blue : color.white) : '#CED2FF99'
 			msgBorderColor = inte.isMe && (cmd ? border.color.grey : border.color.blue)
+
+			isWithinCollapseDuration =
+				nextMessage &&
+				inte?.isMe === nextMessage?.isMe &&
+				sentDate &&
+				nextMessage.sentDate &&
+				(parseInt(nextMessage?.sentDate, 10) || 0) - (sentDate || 0) < 60000 // one minute
 		} else {
 			isFollowupMessage =
 				previousMessage && !inte.isMe && inte.memberPublicKey === previousMessage.memberPublicKey
+			isFollowedMessage =
+				nextMessage && !inte.isMe && inte.memberPublicKey === nextMessage.memberPublicKey
 
-			isWithinTenMinsAfter =
-				previousMessage &&
-				inte?.memberPublicKey === previousMessage?.memberPublicKey &&
+			isWithinCollapseDuration =
+				nextMessage &&
+				inte?.memberPublicKey === nextMessage?.memberPublicKey &&
 				sentDate &&
-				previousMessage.payload.sentDate &&
-				Math.abs((sentDate || 0) - (parseInt(previousMessage?.payload?.sentDate, 10) || 0)) <
-					10 * 6000
+				nextMessage.sentDate &&
+				(parseInt(nextMessage?.sentDate, 10) || 0) - (sentDate || 0) < 60000 // one minute
 
 			if (!inte.isMe && inte.memberPublicKey) {
 				const h = new SHA3(256).update(inte.memberPublicKey).digest()
@@ -366,9 +376,9 @@ export const Message: React.FC<{
 				? inte.acknowledged
 					? baseColor
 					: color.white
-				: Color(baseColor).alpha(0.1)
+				: Color(baseColor).alpha(0.1).string()
 			msgBorderColor = inte.isMe && (cmd ? border.color.grey : { borderColor: baseColor })
-			msgSenderColor = inte.isMe ? 'red' : Color(baseColor).alpha(0.4)
+			msgSenderColor = inte.isMe ? 'red' : baseColor
 		}
 
 		return (
@@ -380,40 +390,39 @@ export const Message: React.FC<{
 					padding.top.scale(2),
 				]}
 			>
-				{!inte.isMe && isGroup && !isFollowupMessage && (
+				{!inte.isMe && isGroup && !isFollowedMessage && (
 					<ProceduralCircleAvatar
-						style={_styles.circleAvatar}
+						style={(_styles.circleAvatar, { alignSelf: 'flex-end' })}
 						seed={inte.memberPublicKey}
 						size={35}
 					/>
 				)}
 				<View style={[column.top, _styles.messageItem]}>
+					{!inte.isMe && isGroup && name && !isFollowupMessage && (
+						<View style={[{ paddingLeft: 10 }, isFollowedMessage && margin.left.scale(35)]}>
+							<Text
+								style={[text.bold.medium, _styles.personNameInGroup, { color: msgSenderColor }]}
+							>
+								{name}
+							</Text>
+						</View>
+					)}
 					<View
 						style={[
 							padding.small,
 							border.radius.top.medium,
 							inte.isMe ? border.radius.left.medium : border.radius.right.medium,
-							styleMsg,
 							msgBorderColor,
 							inte.isMe && border.scale(2),
 							padding.horizontal.scale(inte.isMe ? 11 : 13),
 							padding.vertical.scale(inte.isMe ? 7 : 9),
 							inte.isMe ? column.item.right : column.item.right,
-							isFollowupMessage && margin.left.scale(35),
+							isFollowedMessage && margin.left.scale(35),
 							{
 								backgroundColor: msgBackgroundColor,
 							},
 						]}
 					>
-						{!inte.isMe && isGroup && name && !isFollowupMessage && (
-							<View>
-								<Text
-									style={[text.bold.medium, _styles.personNameInGroup, { color: msgSenderColor }]}
-								>
-									{name}
-								</Text>
-							</View>
-						)}
 						<Hyperlink linkDefault={true} linkStyle={{ textDecorationLine: 'underline' }}>
 							<Text
 								style={[
@@ -430,20 +439,20 @@ export const Message: React.FC<{
 					</View>
 					<View style={[inte.isMe && row.item.bottom]}>
 						<View style={[row.left, { alignItems: 'center' }]}>
-							{!isWithinTenMinsAfter && (
+							{!isWithinCollapseDuration && (
 								<Text
 									style={[
 										text.color.grey,
 										padding.right.scale(5),
 										_styles.dateMessage,
-										isFollowupMessage && margin.left.scale(35),
+										isFollowedMessage && margin.left.scale(35),
 										{ fontSize: 9 },
 									]}
 								>
 									{sentDate ? formatTimestamp(sentDate) : ''}{' '}
 								</Text>
 							)}
-							{!cmd && (
+							{!cmd && !isWithinCollapseDuration && (
 								<>
 									{inte.isMe && (
 										<Icon

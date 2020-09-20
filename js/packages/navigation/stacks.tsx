@@ -229,10 +229,6 @@ export const Navigation: React.FC = () => {
 				component={Components.Settings.SystemInfo}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.Network}
-				component={Components.Settings.Network}
-			/>
-			<NavigationStack.Screen
 				name={Routes.Settings.IpfsWebUI}
 				component={Components.Settings.IpfsWebUI}
 			/>

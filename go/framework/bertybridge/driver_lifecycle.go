@@ -86,6 +86,6 @@ type noopLifeCycleDriver struct{}
 func (*noopLifeCycleDriver) GetCurrentState() int               { return AppStateUnknow }
 func (*noopLifeCycleDriver) RegisterHandler(_ LifeCycleHandler) {}
 
-func NewNoopLifeCycleDriver() LifeCycleDriver {
+func newNoopLifeCycleDriver() LifeCycleDriver {
 	return &noopLifeCycleDriver{}
 }

@@ -169,7 +169,7 @@ func setupIPFSLogProxy(logger *zap.Logger) func() {
 			case io.EOF:
 				return
 			case nil:
-				var cpy = make([]byte, len(line))
+				cpy := make([]byte, len(line))
 				copy(cpy, line)
 				mutex.Lock()
 				go func(line []byte) {

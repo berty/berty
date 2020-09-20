@@ -7,9 +7,10 @@ import (
 	"sync/atomic"
 	"time"
 
+	"go.uber.org/zap"
+
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"go.uber.org/zap"
 )
 
 func handlerAccountGroupJoined(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool) error {
@@ -83,7 +84,6 @@ func handlerAccountContactRequestOutgoingSent(ctx context.Context, v *groupView,
 	gInfo, err := v.v.protocol.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		ContactPK: casted.ContactPK,
 	})
-
 	if err != nil {
 		return err
 	}
@@ -274,7 +274,6 @@ func handlerAccountContactRequestIncomingAccepted(ctx context.Context, v *groupV
 	gInfo, err := v.v.protocol.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
 		ContactPK: casted.ContactPK,
 	})
-
 	if err != nil {
 		return err
 	}

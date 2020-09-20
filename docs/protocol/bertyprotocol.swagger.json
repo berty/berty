@@ -1034,6 +1034,39 @@
         ]
       }
     },
+    "/berty.protocol.v1/ProtocolService/ReplicationServiceRegisterGroup": {
+      "post": {
+        "summary": "ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents",
+        "operationId": "ProtocolService_ReplicationServiceRegisterGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ReplicationServiceRegisterGroupReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ReplicationServiceRegisterGroupRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
     "/berty.protocol.v1/ProtocolService/ServicesTokenList": {
       "post": {
         "summary": "ServicesTokenList Retrieves the list of services tokens",
@@ -1075,6 +1108,38 @@
           "ProtocolService"
         ]
       }
+    },
+    "/berty.protocol.v1/ProtocolService/SystemInfo": {
+      "post": {
+        "operationId": "ProtocolService_SystemInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SystemInfoReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1SystemInfoRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
     }
   },
   "definitions": {
@@ -1087,6 +1152,120 @@
         "Unavailable"
       ],
       "default": "Unknown"
+    },
+    "OrbitDBReplicationStatus": {
+      "type": "object",
+      "properties": {
+        "progress": {
+          "type": "string",
+          "format": "int64"
+        },
+        "maximum": {
+          "type": "string",
+          "format": "int64"
+        },
+        "buffered": {
+          "type": "string",
+          "format": "int64"
+        },
+        "queued": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "SystemInfoOrbitDB": {
+      "type": "object",
+      "properties": {
+        "account_metadata": {
+          "$ref": "#/definitions/OrbitDBReplicationStatus"
+        }
+      }
+    },
+    "SystemInfoP2P": {
+      "type": "object",
+      "properties": {
+        "connected_peers": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "SystemInfoProcess": {
+      "type": "object",
+      "properties": {
+        "rlimit_cur": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "num_goroutine": {
+          "type": "string",
+          "format": "int64"
+        },
+        "nofile": {
+          "type": "string",
+          "format": "int64"
+        },
+        "too_many_open_files": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "started_at": {
+          "type": "string",
+          "format": "int64"
+        },
+        "num_cpu": {
+          "type": "string",
+          "format": "int64"
+        },
+        "go_version": {
+          "type": "string"
+        },
+        "operating_system": {
+          "type": "string"
+        },
+        "host_name": {
+          "type": "string"
+        },
+        "arch": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "vcs_ref": {
+          "type": "string"
+        },
+        "self_rusage": {
+          "type": "string"
+        },
+        "children_rusage": {
+          "type": "string"
+        },
+        "rlimit_max": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "pid": {
+          "type": "string",
+          "format": "int64"
+        },
+        "ppid": {
+          "type": "string",
+          "format": "int64"
+        },
+        "priority": {
+          "type": "string",
+          "format": "int64"
+        },
+        "uid": {
+          "type": "string",
+          "format": "int64"
+        },
+        "working_dir": {
+          "type": "string"
+        }
+      }
     },
     "protobufAny": {
       "type": "object",
@@ -1548,7 +1727,12 @@
         },
         "group_type": {
           "$ref": "#/definitions/v1GroupType",
-          "title": "group_type specifies the type of the group"
+          "title": "group_type specifies the type of the group, used to determine how device secrets are generated"
+        },
+        "sign_pub": {
+          "type": "string",
+          "format": "byte",
+          "title": "sign_pub is the signature public key used to verify entries, not required when secret and secret_sig are provided"
         }
       },
       "title": "Group define a group and is enough to invite someone to it"
@@ -1722,7 +1906,7 @@
         "GroupTypeMultiMember"
       ],
       "default": "GroupTypeUndefined",
-      "description": " - GroupTypeUndefined: GroupTypeUndefined indicates that the value has not been set. Should not happen.\n - GroupTypeAccount: GroupTypeAccount is the group managing an account, available to all its devices.\n - GroupTypeContact: GroupTypeContact is the group created between two accounts, available to all their devices.\n - GroupTypeMultiMember: GroupTypeMultiMember is a group containing an undefined number of members."
+      "description": " - GroupTypeUndefined: GroupTypeUndefined indicates that the value has not been set. For example, happens if group is replicated.\n - GroupTypeAccount: GroupTypeAccount is the group managing an account, available to all its devices.\n - GroupTypeContact: GroupTypeContact is the group created between two accounts, available to all their devices.\n - GroupTypeMultiMember: GroupTypeMultiMember is a group containing an undefined number of members."
     },
     "v1InstanceExportDataReply": {
       "type": "object",
@@ -1895,6 +2079,21 @@
         }
       }
     },
+    "v1ReplicationServiceRegisterGroupReply": {
+      "type": "object"
+    },
+    "v1ReplicationServiceRegisterGroupRequest": {
+      "type": "object",
+      "properties": {
+        "token_id": {
+          "type": "string"
+        },
+        "group_pk": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
     "v1ServiceToken": {
       "type": "object",
       "properties": {
@@ -1960,6 +2159,29 @@
           "title": "metadata is the metadata specific to the app to identify the contact for the request"
         }
       }
+    },
+    "v1SystemInfoReply": {
+      "type": "object",
+      "properties": {
+        "process": {
+          "$ref": "#/definitions/SystemInfoProcess"
+        },
+        "p2p": {
+          "$ref": "#/definitions/SystemInfoP2P"
+        },
+        "orbitdb": {
+          "$ref": "#/definitions/SystemInfoOrbitDB"
+        },
+        "warns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1SystemInfoRequest": {
+      "type": "object"
     }
   }
 }

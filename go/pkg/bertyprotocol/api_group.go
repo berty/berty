@@ -3,9 +3,10 @@ package bertyprotocol
 import (
 	"context"
 
+	"github.com/libp2p/go-libp2p-core/crypto"
+
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
 func (s *service) GroupInfo(_ context.Context, req *bertytypes.GroupInfo_Request) (*bertytypes.GroupInfo_Reply, error) {

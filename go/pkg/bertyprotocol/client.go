@@ -3,9 +3,10 @@ package bertyprotocol
 import (
 	"context"
 
+	"google.golang.org/grpc"
+
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"google.golang.org/grpc"
 )
 
 const ClientBufferSize = 256 * 1024

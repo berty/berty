@@ -6,7 +6,6 @@ import (
 	p2p_discovery "github.com/libp2p/go-libp2p-core/discovery"
 	p2p_host "github.com/libp2p/go-libp2p-core/host"
 	p2p_mock "github.com/libp2p/go-libp2p/p2p/net/mock"
-
 	"github.com/stretchr/testify/require"
 )
 
@@ -36,6 +35,17 @@ func testingMockedDriverClients(t *testing.T, s *MockDriverServer, hs ...p2p_hos
 	t.Helper()
 
 	drivers := make([]Driver, len(hs))
+	for i := range drivers {
+		drivers[i] = NewMockedDriverClient(hs[i], s)
+	}
+
+	return drivers
+}
+
+func testingMockedAsyncDriverClients(t *testing.T, s *MockDriverServer, hs ...p2p_host.Host) []AsyncableDriver {
+	t.Helper()
+
+	drivers := make([]AsyncableDriver, len(hs))
 	for i := range drivers {
 		drivers[i] = NewMockedDriverClient(hs[i], s)
 	}

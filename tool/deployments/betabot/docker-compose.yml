@@ -1,0 +1,24 @@
+version: '3.7'
+
+services:
+  daemon:
+    image: bertytech/berty:latest
+    restart: on-failure
+    entrypoint: berty
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    command:
+      - daemon
+      - "-node.listeners=/ip4/0.0.0.0/tcp/9091/grpc"
+
+  betabot:
+    image: bertytech/berty:latest
+    restart: on-failure
+    entrypoint: betabot
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+    command:
+      - "-display-name=BetaBot"
+      - "-addr=daemon:9091"
+    depends_on:
+      - daemon
