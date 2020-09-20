@@ -187,7 +187,9 @@ func TestTwoConcurrentManagers(t *testing.T) {
 
 func TestCloseByContext(t *testing.T) {
 	defer verifyRunningLeakDetection(t)
+
 	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
 	manager, err := initutil.New(ctx)
 	require.NoError(t, err)
@@ -202,11 +204,9 @@ func TestCloseByContext(t *testing.T) {
 	server, err := manager.GetLocalProtocolServer()
 	require.NoError(t, err)
 	require.NotNil(t, server)
-
-	cancel()
 }
 
-func TestUnstableFlagsLeak(t *testing.T) {
+func TestFlagsLeak(t *testing.T) {
 	// FIXME : should call defer verifySetupLeakDetection(t)
 	// but maybe because when run test with other tests, still have some goroutine of previous tests are not done
 	defer verifyRunningLeakDetection(t)
@@ -256,6 +256,7 @@ func TestLocalProtocolServerLeak(t *testing.T) {
 	manager, err := initutil.New(ctx)
 	require.NoError(t, err)
 	require.NotNil(t, manager)
+	defer manager.Close()
 
 	// configure flags
 	fs := flag.NewFlagSet("test", flag.ExitOnError)
@@ -266,8 +267,6 @@ func TestLocalProtocolServerLeak(t *testing.T) {
 	server, err := manager.GetLocalProtocolServer()
 	require.NoError(t, err)
 	require.NotNil(t, server)
-
-	manager.Close()
 }
 
 func TestCloseOnUninited(t *testing.T) {
