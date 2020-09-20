@@ -206,6 +206,9 @@ func TestCloseByContext(t *testing.T) {
 }
 
 func TestUnstableFlagsLeak(t *testing.T) {
+	// FIXME : should call defer verifySetupLeakDetection(t)
+	// but maybe because when run test with other tests, still have some goroutine of previous tests are not done
+	defer verifyRunningLeakDetection(t)
 	ctx := context.Background()
 	manager, err := initutil.New(ctx)
 	require.NoError(t, err)
@@ -217,10 +220,6 @@ func TestUnstableFlagsLeak(t *testing.T) {
 	manager.SetupRemoteNodeFlags(fs)
 	err = fs.Parse([]string{"-store.inmem", "-p2p.min-backoff=2m10s", "-node.remote-addr=1.2.3.4:5678"})
 	require.NoError(t, err)
-
-	// FIXME : should call verifySetupLeakDetection(t)
-	// but maybe because when run test without other tests, still have some goroutine of previous tests are not done
-	verifyRunningLeakDetection(t)
 }
 
 func TestLocalProtocolServerAndClient(t *testing.T) {
