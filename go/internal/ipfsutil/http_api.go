@@ -1,7 +1,10 @@
 package ipfsutil
 
 import (
+	"context"
 	"net/http"
+	"sync"
+	"time"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfswebui "berty.tech/ipfs-webui-packed"
@@ -66,9 +69,24 @@ func ServeHTTPApi(logger *zap.Logger, node *core.IpfsNode, rootDirectory string)
 	return nil
 }
 
-func ServeHTTPWebui(logger *zap.Logger) {
+func ServeHTTPWebui(logger *zap.Logger) func() {
 	dir := http.FileServer(ipfswebui.Dir())
-	go func(dir http.Handler) {
-		logger.Named("ipfs.webui").Error(http.ListenAndServe(":3000", dir).Error())
-	}(dir)
+	server := &http.Server{Addr: ":3000", Handler: dir}
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	go func() {
+		defer wg.Done()
+		logger.Named("ipfs.webui").Error(server.ListenAndServe().Error())
+	}()
+
+	cleanup := func() {
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*4)
+		defer cancel()
+		server.Shutdown(ctx)
+		wg.Wait()
+	}
+
+	return cleanup
 }

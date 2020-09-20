@@ -110,7 +110,7 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 	}
 
 	// serve the embedded ipfs web UI
-	ipfsutil.ServeHTTPWebui(logger)
+	m.Node.Protocol.ipfsWebUICleanup = ipfsutil.ServeHTTPWebui(logger)
 
 	odb, err := m.getOrbitDB()
 	if err != nil {
@@ -457,6 +457,7 @@ func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServ
 		return nil, errcode.TODO.Wrap(err)
 	}
 
+	m.Node.Messenger.protocolClient = protocolClient
 	// messenger server
 	opts := bertymessenger.Opts{
 		DB:                  db,

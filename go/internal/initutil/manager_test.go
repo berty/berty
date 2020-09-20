@@ -9,12 +9,52 @@ import (
 	"time"
 
 	"berty.tech/berty/v2/go/internal/initutil"
-	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/goleak"
 	"moul.io/u"
 )
+
+func verifySetupLeakDetection(t *testing.T) {
+	goleak.VerifyNone(t,
+		goleak.IgnoreTopFunction("github.com/ipfs/go-log/writer.(*MirrorWriter).logRoutine"), // global writer created at github.com/ipfs/go-log@v1.0.4/writer/option.go, refer by github.com/ipfs/, like go-bitswap
+		goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),              // called by init() in berty/go/internal/grpcutil/server.go
+		goleak.IgnoreTopFunction("github.com/desertbit/timer.timerRoutine"),                  // called by init() in github.com/desertbit/timer/timers.go, refer in grpc-web
+	)
+}
+
+func verifyRunningLeakDetection(t *testing.T) {
+	//waiting for some go routines finished
+	time.Sleep(5 * time.Second)
+	goleak.VerifyNone(t,
+		goleak.IgnoreTopFunction("github.com/ipfs/go-log/writer.(*MirrorWriter).logRoutine"),    // global writer created at github.com/ipfs/go-log@v1.0.4/writer/option.go, refer by github.com/ipfs/, like go-bitswap
+		goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),                 // called by init() in berty/go/internal/grpcutil/server.go
+		goleak.IgnoreTopFunction("github.com/desertbit/timer.timerRoutine"),                     // called by init() in github.com/desertbit/timer/timers.go, refer in grpc-web
+		goleak.IgnoreTopFunction("github.com/whyrusleeping/mdns.(*client).query"),               // the closing routine has big timeout
+		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*closedLocalSession).run"), // the closing routine has big timeout
+		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*sendQueue).Run"),          // the closing routine has big timeout
+		// Sometime if timeout is quite short - not enough for below functions to finished
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-noise.newSecureSession"),                                       //upstream issue
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-transport-upgrader.(*Upgrader).setupMuxer"),                    // the closing routine has big timeout
+		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go/internal/handshake.(*cryptoSetup).ReadHandshakeMessage"), // the closing routine has big timeout
+		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go/internal/handshake.(*cryptoSetup).RunHandshake"),         // the closing routine has big timeout
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-swarm.(*activeDial).wait"),                                     // the closing routine has big timeout
+		goleak.IgnoreTopFunction("sync.runtime_Semacquire"),                                                                  // the closing routine has big timeout
+		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*client).dial"),                                         // the closing routine has big timeout
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-swarm.(*Swarm).dialAddrs"),                                     // the closing routine has big timeout
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-quic-transport.(*reuse).runGarbageCollector"),                  // upstream issue of mdns, go wakeup periodiclly to do action before check exist, timeout about 30 seconds
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-peerstore/pstoremem.(*memoryAddrBook).background"),             // upstream issue, no store close in upstream code
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/discovery.(*mdnsService).pollForEntries.func1"),            // upstream issue of mdns, go wakeup periodiclly to do action before check exist, timeout about 10 seconds
+		goleak.IgnoreTopFunction("internal/poll.runtime_pollWait"),                                                           // upstream issue of mdns, go wakeup periodiclly to do action before check exist, timeout about 10 seconds
+		goleak.IgnoreTopFunction("github.com/libp2p/go-flow-metrics.(*sweeper).runActive"),                                   // this goroutine has run alway without stop
+		goleak.IgnoreTopFunction("github.com/libp2p/go-flow-metrics.(*sweeper).run"),                                         // this goroutine has run alway without stop
+		goleak.IgnoreTopFunction("github.com/jbenet/goprocess/periodic.callOnTicker.func1"),                                  // FIXME - upstream code - is used in many code of libp2p + go-ipfs
+		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*receiveStream).readImpl"),                              // upstream code - the closing is did in go routine
+		goleak.IgnoreTopFunction("github.com/libp2p/go-nat.DiscoverNATs.func1"),                                              // upstream code - DiscoverGateway() using context.Background() with timeout is 10s
+		goleak.IgnoreTopFunction("github.com/libp2p/go-nat.DiscoverGateway"),                                                 // upstream code - DiscoverGateway() using context.Background() with timeout is 10s
+		goleak.IgnoreTopFunction("net.(*netFD).connect.func2"),                                                               // FIXME - many libraries used this code
+	)
+}
 
 func Example_flags() {
 	// init manager
@@ -129,7 +169,7 @@ func TestTwoConcurrentManagers(t *testing.T) {
 		require.NotNil(t, server)
 
 		go man1.RunWorkers()
-		time.Sleep(time.Second * 1)
+		time.Sleep(time.Second * 2)
 	}
 
 	// start man2's client
@@ -145,10 +185,9 @@ func TestTwoConcurrentManagers(t *testing.T) {
 }
 
 func TestCloseByContext(t *testing.T) {
-	// FIXME: defer goleak.VerifyNone(t, goleak.IgnoreCurrent())
-
+	defer verifyRunningLeakDetection(t)
 	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+
 	manager, err := initutil.New(ctx)
 	require.NoError(t, err)
 	require.NotNil(t, manager)
@@ -162,20 +201,11 @@ func TestCloseByContext(t *testing.T) {
 	server, err := manager.GetLocalProtocolServer()
 	require.NoError(t, err)
 	require.NotNil(t, server)
+
+	cancel()
 }
 
 func TestUnstableFlagsLeak(t *testing.T) {
-	// strange: this test is the most unstable one in term leak detection
-	testutil.FilterStability(t, testutil.Unstable)
-
-	defer goleak.VerifyNone(t, goleak.IgnoreCurrent(),
-		// FIXME: should not have the following lines
-		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*closedLocalSession).run"),
-		goleak.IgnoreTopFunction("internal/poll.runtime_pollWait"),
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/discovery.(*mdnsService).pollForEntries.func1"),
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-quic-transport.(*reuse).runGarbageCollector"),
-	)
-
 	ctx := context.Background()
 	manager, err := initutil.New(ctx)
 	require.NoError(t, err)
@@ -187,6 +217,10 @@ func TestUnstableFlagsLeak(t *testing.T) {
 	manager.SetupRemoteNodeFlags(fs)
 	err = fs.Parse([]string{"-store.inmem", "-p2p.min-backoff=2m10s", "-node.remote-addr=1.2.3.4:5678"})
 	require.NoError(t, err)
+
+	// FIXME : should call verifySetupLeakDetection(t)
+	// but maybe because when run test without other tests, still have some goroutine of previous tests are not done
+	verifyRunningLeakDetection(t)
 }
 
 func TestLocalProtocolServerAndClient(t *testing.T) {
@@ -217,13 +251,11 @@ func TestLocalProtocolServerAndClient(t *testing.T) {
 }
 
 func TestLocalProtocolServerLeak(t *testing.T) {
-	// FIXME: defer goleak.VerifyNone(t, goleak.IgnoreCurrent())
-
+	defer verifyRunningLeakDetection(t)
 	ctx := context.Background()
 	manager, err := initutil.New(ctx)
 	require.NoError(t, err)
 	require.NotNil(t, manager)
-	defer manager.Close()
 
 	// configure flags
 	fs := flag.NewFlagSet("test", flag.ExitOnError)
@@ -234,10 +266,12 @@ func TestLocalProtocolServerLeak(t *testing.T) {
 	server, err := manager.GetLocalProtocolServer()
 	require.NoError(t, err)
 	require.NotNil(t, server)
+
+	manager.Close()
 }
 
 func TestCloseOnUninited(t *testing.T) {
-	// FIXME: defer goleak.VerifyNone(t, goleak.IgnoreCurrent())
+	defer verifyRunningLeakDetection(t)
 
 	ctx := context.Background()
 	manager, err := initutil.New(ctx)
@@ -247,7 +281,7 @@ func TestCloseOnUninited(t *testing.T) {
 }
 
 func TestClosingTwice(t *testing.T) {
-	// FIXME: defer goleak.VerifyNone(t, goleak.IgnoreCurrent())
+	defer verifyRunningLeakDetection(t)
 
 	ctx := context.Background()
 	manager, err := initutil.New(ctx)
@@ -276,7 +310,7 @@ func TestCloseOpenClose(t *testing.T) {
 }
 
 func TestRacyClose(t *testing.T) {
-	// FIXME: defer goleak.VerifyNone(t, goleak.IgnoreCurrent())
+	defer verifyRunningLeakDetection(t)
 
 	ctx := context.Background()
 	manager, err := initutil.New(ctx)
