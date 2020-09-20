@@ -89,7 +89,9 @@ func ServeHTTPWebui(listenerAddr string, logger *zap.Logger) func() {
 	cleanup := func() {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*4)
 		defer cancel()
-		server.Shutdown(ctx)
+		if err := server.Shutdown(ctx); err != nil {
+			logger.Named("ipfs.webui").Error("failed to shutdown webui server", zap.Error(err))
+		}
 		wg.Wait()
 	}
 
