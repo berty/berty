@@ -66,6 +66,7 @@ type Manager struct {
 			server           bertyprotocol.Service
 			client           bertyprotocol.ProtocolServiceClient
 			requiredByClient bool
+			ipfsWebUICleanup func()
 		}
 		Messenger struct {
 			DisplayName          string
@@ -73,6 +74,7 @@ type Manager struct {
 			RebuildSqlite        bool
 			MessengerSqliteOpts  string
 
+			protocolClient   bertyprotocol.Client
 			server           bertymessenger.Service
 			lcmanager        *lifecycle.Manager
 			client           bertymessenger.MessengerServiceClient
@@ -143,17 +145,36 @@ func (m *Manager) Close() error {
 
 	m.ctxCancel()
 
+	if m.Node.GRPC.clientConn != nil {
+		m.Node.GRPC.clientConn.Close()
+	}
+
+	if m.Node.GRPC.bufServer != nil {
+		m.Node.GRPC.bufServer.Stop()
+	}
+
 	if m.Node.GRPC.bufServerListener != nil {
 		m.Node.GRPC.bufServerListener.Close()
 	}
+
+	if m.Node.GRPC.server != nil {
+		m.Node.GRPC.server.Stop()
+	}
+
 	if m.Node.Messenger.server != nil {
 		m.Node.Messenger.server.Close()
+	}
+	if m.Node.Messenger.protocolClient != nil {
+		m.Node.Messenger.protocolClient.Close()
 	}
 	if m.Node.Messenger.dbCleanup != nil {
 		m.Node.Messenger.dbCleanup()
 	}
 	if m.Node.Protocol.server != nil {
 		m.Node.Protocol.server.Close()
+	}
+	if m.Node.Protocol.ipfsWebUICleanup != nil {
+		m.Node.Protocol.ipfsWebUICleanup()
 	}
 	if m.Node.Protocol.ipfsNode != nil {
 		m.Node.Protocol.ipfsNode.Close()

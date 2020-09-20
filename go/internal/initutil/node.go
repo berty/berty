@@ -115,7 +115,7 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 
 	// serve the embedded ipfs web UI
 	if addr := m.Node.Protocol.IPFSWebUIListener; addr != "" {
-		ipfsutil.ServeHTTPWebui(addr, logger)
+		m.Node.Protocol.ipfsWebUICleanup = ipfsutil.ServeHTTPWebui(addr, logger)
 	}
 
 	odb, err := m.getOrbitDB()
@@ -477,6 +477,7 @@ func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServ
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
+	m.Node.Messenger.protocolClient = protocolClient
 
 	lcmanager := m.getLifecycleManager()
 
