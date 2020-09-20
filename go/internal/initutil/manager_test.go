@@ -8,11 +8,12 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/initutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/goleak"
 	"moul.io/u"
+
+	"berty.tech/berty/v2/go/internal/initutil"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 )
 
 func verifySetupLeakDetection(t *testing.T) {

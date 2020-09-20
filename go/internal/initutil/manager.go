@@ -145,16 +145,16 @@ func (m *Manager) Close() error {
 
 	m.ctxCancel()
 
+	if m.Node.GRPC.clientConn != nil {
+		m.Node.GRPC.clientConn.Close()
+	}
+
 	if m.Node.GRPC.bufServer != nil {
 		m.Node.GRPC.bufServer.Stop()
 	}
 
 	if m.Node.GRPC.bufServerListener != nil {
 		m.Node.GRPC.bufServerListener.Close()
-	}
-
-	if m.Node.GRPC.clientConn != nil {
-		m.Node.GRPC.clientConn.Close()
 	}
 
 	if m.Node.GRPC.server != nil {
