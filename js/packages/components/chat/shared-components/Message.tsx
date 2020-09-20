@@ -416,7 +416,7 @@ export const Message: React.FC<{
 							inte.isMe && border.scale(2),
 							padding.horizontal.scale(inte.isMe ? 11 : 13),
 							padding.vertical.scale(inte.isMe ? 7 : 9),
-							inte.isMe ? column.item.right : column.item.right,
+							inte.isMe ? column.item.right : column.item.left,
 							isFollowedMessage && margin.left.scale(35),
 							{
 								backgroundColor: msgBackgroundColor,
