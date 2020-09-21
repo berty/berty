@@ -1,6 +1,6 @@
 //
 //  mc-driver.h
-//  mc-driver
+//  driver
 //
 //  Created by Rémi BARBERO on 30/03/2020.
 //  Copyright © 2020 Rémi BARBERO. All rights reserved.
