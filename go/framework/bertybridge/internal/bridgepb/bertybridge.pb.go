@@ -17,9 +17,11 @@ import (
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -238,18 +240,23 @@ func (*ClientInvokeUnary) ProtoMessage()    {}
 func (*ClientInvokeUnary) Descriptor() ([]byte, []int) {
 	return fileDescriptor_16edae2516c26cee, []int{0}
 }
+
 func (m *ClientInvokeUnary) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClientInvokeUnary.Unmarshal(m, b)
 }
+
 func (m *ClientInvokeUnary) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ClientInvokeUnary.Marshal(b, m, deterministic)
 }
+
 func (m *ClientInvokeUnary) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ClientInvokeUnary.Merge(m, src)
 }
+
 func (m *ClientInvokeUnary) XXX_Size() int {
 	return xxx_messageInfo_ClientInvokeUnary.Size(m)
 }
+
 func (m *ClientInvokeUnary) XXX_DiscardUnknown() {
 	xxx_messageInfo_ClientInvokeUnary.DiscardUnknown(m)
 }
@@ -271,18 +278,23 @@ func (*ClientInvokeUnary_Request) ProtoMessage()    {}
 func (*ClientInvokeUnary_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_16edae2516c26cee, []int{0, 0}
 }
+
 func (m *ClientInvokeUnary_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClientInvokeUnary_Request.Unmarshal(m, b)
 }
+
 func (m *ClientInvokeUnary_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ClientInvokeUnary_Request.Marshal(b, m, deterministic)
 }
+
 func (m *ClientInvokeUnary_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ClientInvokeUnary_Request.Merge(m, src)
 }
+
 func (m *ClientInvokeUnary_Request) XXX_Size() int {
 	return xxx_messageInfo_ClientInvokeUnary_Request.Size(m)
 }
+
 func (m *ClientInvokeUnary_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_ClientInvokeUnary_Request.DiscardUnknown(m)
 }
@@ -325,18 +337,23 @@ func (*ClientInvokeUnary_Reply) ProtoMessage()    {}
 func (*ClientInvokeUnary_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_16edae2516c26cee, []int{0, 1}
 }
+
 func (m *ClientInvokeUnary_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClientInvokeUnary_Reply.Unmarshal(m, b)
 }
+
 func (m *ClientInvokeUnary_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ClientInvokeUnary_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *ClientInvokeUnary_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ClientInvokeUnary_Reply.Merge(m, src)
 }
+
 func (m *ClientInvokeUnary_Reply) XXX_Size() int {
 	return xxx_messageInfo_ClientInvokeUnary_Reply.Size(m)
 }
+
 func (m *ClientInvokeUnary_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ClientInvokeUnary_Reply.DiscardUnknown(m)
 }
@@ -376,18 +393,23 @@ func (*ClientCreateStream) ProtoMessage()    {}
 func (*ClientCreateStream) Descriptor() ([]byte, []int) {
 	return fileDescriptor_16edae2516c26cee, []int{1}
 }
+
 func (m *ClientCreateStream) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClientCreateStream.Unmarshal(m, b)
 }
+
 func (m *ClientCreateStream) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ClientCreateStream.Marshal(b, m, deterministic)
 }
+
 func (m *ClientCreateStream) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ClientCreateStream.Merge(m, src)
 }
+
 func (m *ClientCreateStream) XXX_Size() int {
 	return xxx_messageInfo_ClientCreateStream.Size(m)
 }
+
 func (m *ClientCreateStream) XXX_DiscardUnknown() {
 	xxx_messageInfo_ClientCreateStream.DiscardUnknown(m)
 }
@@ -409,18 +431,23 @@ func (*ClientCreateStream_Request) ProtoMessage()    {}
 func (*ClientCreateStream_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_16edae2516c26cee, []int{1, 0}
 }
+
 func (m *ClientCreateStream_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClientCreateStream_Request.Unmarshal(m, b)
 }
+
 func (m *ClientCreateStream_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ClientCreateStream_Request.Marshal(b, m, deterministic)
 }
+
 func (m *ClientCreateStream_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ClientCreateStream_Request.Merge(m, src)
 }
+
 func (m *ClientCreateStream_Request) XXX_Size() int {
 	return xxx_messageInfo_ClientCreateStream_Request.Size(m)
 }
+
 func (m *ClientCreateStream_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_ClientCreateStream_Request.DiscardUnknown(m)
 }
@@ -463,18 +490,23 @@ func (*ClientCreateStream_Reply) ProtoMessage()    {}
 func (*ClientCreateStream_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_16edae2516c26cee, []int{1, 1}
 }
+
 func (m *ClientCreateStream_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClientCreateStream_Reply.Unmarshal(m, b)
 }
+
 func (m *ClientCreateStream_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ClientCreateStream_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *ClientCreateStream_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ClientCreateStream_Reply.Merge(m, src)
 }
+
 func (m *ClientCreateStream_Reply) XXX_Size() int {
 	return xxx_messageInfo_ClientCreateStream_Reply.Size(m)
 }
+
 func (m *ClientCreateStream_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ClientCreateStream_Reply.DiscardUnknown(m)
 }
@@ -514,18 +546,23 @@ func (*ClientStreamSend) ProtoMessage()    {}
 func (*ClientStreamSend) Descriptor() ([]byte, []int) {
 	return fileDescriptor_16edae2516c26cee, []int{2}
 }
+
 func (m *ClientStreamSend) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClientStreamSend.Unmarshal(m, b)
 }
+
 func (m *ClientStreamSend) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ClientStreamSend.Marshal(b, m, deterministic)
 }
+
 func (m *ClientStreamSend) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ClientStreamSend.Merge(m, src)
 }
+
 func (m *ClientStreamSend) XXX_Size() int {
 	return xxx_messageInfo_ClientStreamSend.Size(m)
 }
+
 func (m *ClientStreamSend) XXX_DiscardUnknown() {
 	xxx_messageInfo_ClientStreamSend.DiscardUnknown(m)
 }
@@ -546,18 +583,23 @@ func (*ClientStreamSend_Request) ProtoMessage()    {}
 func (*ClientStreamSend_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_16edae2516c26cee, []int{2, 0}
 }
+
 func (m *ClientStreamSend_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClientStreamSend_Request.Unmarshal(m, b)
 }
+
 func (m *ClientStreamSend_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ClientStreamSend_Request.Marshal(b, m, deterministic)
 }
+
 func (m *ClientStreamSend_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ClientStreamSend_Request.Merge(m, src)
 }
+
 func (m *ClientStreamSend_Request) XXX_Size() int {
 	return xxx_messageInfo_ClientStreamSend_Request.Size(m)
 }
+
 func (m *ClientStreamSend_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_ClientStreamSend_Request.DiscardUnknown(m)
 }
@@ -593,18 +635,23 @@ func (*ClientStreamSend_Reply) ProtoMessage()    {}
 func (*ClientStreamSend_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_16edae2516c26cee, []int{2, 1}
 }
+
 func (m *ClientStreamSend_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClientStreamSend_Reply.Unmarshal(m, b)
 }
+
 func (m *ClientStreamSend_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ClientStreamSend_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *ClientStreamSend_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ClientStreamSend_Reply.Merge(m, src)
 }
+
 func (m *ClientStreamSend_Reply) XXX_Size() int {
 	return xxx_messageInfo_ClientStreamSend_Reply.Size(m)
 }
+
 func (m *ClientStreamSend_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ClientStreamSend_Reply.DiscardUnknown(m)
 }
@@ -644,18 +691,23 @@ func (*ClientStreamRecv) ProtoMessage()    {}
 func (*ClientStreamRecv) Descriptor() ([]byte, []int) {
 	return fileDescriptor_16edae2516c26cee, []int{3}
 }
+
 func (m *ClientStreamRecv) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClientStreamRecv.Unmarshal(m, b)
 }
+
 func (m *ClientStreamRecv) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ClientStreamRecv.Marshal(b, m, deterministic)
 }
+
 func (m *ClientStreamRecv) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ClientStreamRecv.Merge(m, src)
 }
+
 func (m *ClientStreamRecv) XXX_Size() int {
 	return xxx_messageInfo_ClientStreamRecv.Size(m)
 }
+
 func (m *ClientStreamRecv) XXX_DiscardUnknown() {
 	xxx_messageInfo_ClientStreamRecv.DiscardUnknown(m)
 }
@@ -675,18 +727,23 @@ func (*ClientStreamRecv_Request) ProtoMessage()    {}
 func (*ClientStreamRecv_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_16edae2516c26cee, []int{3, 0}
 }
+
 func (m *ClientStreamRecv_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClientStreamRecv_Request.Unmarshal(m, b)
 }
+
 func (m *ClientStreamRecv_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ClientStreamRecv_Request.Marshal(b, m, deterministic)
 }
+
 func (m *ClientStreamRecv_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ClientStreamRecv_Request.Merge(m, src)
 }
+
 func (m *ClientStreamRecv_Request) XXX_Size() int {
 	return xxx_messageInfo_ClientStreamRecv_Request.Size(m)
 }
+
 func (m *ClientStreamRecv_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_ClientStreamRecv_Request.DiscardUnknown(m)
 }
@@ -716,18 +773,23 @@ func (*ClientStreamRecv_Reply) ProtoMessage()    {}
 func (*ClientStreamRecv_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_16edae2516c26cee, []int{3, 1}
 }
+
 func (m *ClientStreamRecv_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClientStreamRecv_Reply.Unmarshal(m, b)
 }
+
 func (m *ClientStreamRecv_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ClientStreamRecv_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *ClientStreamRecv_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ClientStreamRecv_Reply.Merge(m, src)
 }
+
 func (m *ClientStreamRecv_Reply) XXX_Size() int {
 	return xxx_messageInfo_ClientStreamRecv_Reply.Size(m)
 }
+
 func (m *ClientStreamRecv_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ClientStreamRecv_Reply.DiscardUnknown(m)
 }
@@ -774,18 +836,23 @@ func (*ClientStreamClose) ProtoMessage()    {}
 func (*ClientStreamClose) Descriptor() ([]byte, []int) {
 	return fileDescriptor_16edae2516c26cee, []int{4}
 }
+
 func (m *ClientStreamClose) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClientStreamClose.Unmarshal(m, b)
 }
+
 func (m *ClientStreamClose) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ClientStreamClose.Marshal(b, m, deterministic)
 }
+
 func (m *ClientStreamClose) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ClientStreamClose.Merge(m, src)
 }
+
 func (m *ClientStreamClose) XXX_Size() int {
 	return xxx_messageInfo_ClientStreamClose.Size(m)
 }
+
 func (m *ClientStreamClose) XXX_DiscardUnknown() {
 	xxx_messageInfo_ClientStreamClose.DiscardUnknown(m)
 }
@@ -805,18 +872,23 @@ func (*ClientStreamClose_Request) ProtoMessage()    {}
 func (*ClientStreamClose_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_16edae2516c26cee, []int{4, 0}
 }
+
 func (m *ClientStreamClose_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClientStreamClose_Request.Unmarshal(m, b)
 }
+
 func (m *ClientStreamClose_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ClientStreamClose_Request.Marshal(b, m, deterministic)
 }
+
 func (m *ClientStreamClose_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ClientStreamClose_Request.Merge(m, src)
 }
+
 func (m *ClientStreamClose_Request) XXX_Size() int {
 	return xxx_messageInfo_ClientStreamClose_Request.Size(m)
 }
+
 func (m *ClientStreamClose_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_ClientStreamClose_Request.DiscardUnknown(m)
 }
@@ -845,18 +917,23 @@ func (*ClientStreamClose_Reply) ProtoMessage()    {}
 func (*ClientStreamClose_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_16edae2516c26cee, []int{4, 1}
 }
+
 func (m *ClientStreamClose_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClientStreamClose_Reply.Unmarshal(m, b)
 }
+
 func (m *ClientStreamClose_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ClientStreamClose_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *ClientStreamClose_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ClientStreamClose_Reply.Merge(m, src)
 }
+
 func (m *ClientStreamClose_Reply) XXX_Size() int {
 	return xxx_messageInfo_ClientStreamClose_Reply.Size(m)
 }
+
 func (m *ClientStreamClose_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ClientStreamClose_Reply.DiscardUnknown(m)
 }
@@ -902,18 +979,23 @@ func (*MethodDesc) ProtoMessage()    {}
 func (*MethodDesc) Descriptor() ([]byte, []int) {
 	return fileDescriptor_16edae2516c26cee, []int{5}
 }
+
 func (m *MethodDesc) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MethodDesc.Unmarshal(m, b)
 }
+
 func (m *MethodDesc) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MethodDesc.Marshal(b, m, deterministic)
 }
+
 func (m *MethodDesc) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_MethodDesc.Merge(m, src)
 }
+
 func (m *MethodDesc) XXX_Size() int {
 	return xxx_messageInfo_MethodDesc.Size(m)
 }
+
 func (m *MethodDesc) XXX_DiscardUnknown() {
 	xxx_messageInfo_MethodDesc.DiscardUnknown(m)
 }
@@ -955,18 +1037,23 @@ func (*Metadata) ProtoMessage()    {}
 func (*Metadata) Descriptor() ([]byte, []int) {
 	return fileDescriptor_16edae2516c26cee, []int{6}
 }
+
 func (m *Metadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Metadata.Unmarshal(m, b)
 }
+
 func (m *Metadata) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Metadata.Marshal(b, m, deterministic)
 }
+
 func (m *Metadata) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Metadata.Merge(m, src)
 }
+
 func (m *Metadata) XXX_Size() int {
 	return xxx_messageInfo_Metadata.Size(m)
 }
+
 func (m *Metadata) XXX_DiscardUnknown() {
 	xxx_messageInfo_Metadata.DiscardUnknown(m)
 }
@@ -1002,18 +1089,23 @@ func (*Error) ProtoMessage()    {}
 func (*Error) Descriptor() ([]byte, []int) {
 	return fileDescriptor_16edae2516c26cee, []int{7}
 }
+
 func (m *Error) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Error.Unmarshal(m, b)
 }
+
 func (m *Error) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Error.Marshal(b, m, deterministic)
 }
+
 func (m *Error) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Error.Merge(m, src)
 }
+
 func (m *Error) XXX_Size() int {
 	return xxx_messageInfo_Error.Size(m)
 }
+
 func (m *Error) XXX_DiscardUnknown() {
 	xxx_messageInfo_Error.DiscardUnknown(m)
 }
@@ -1126,8 +1218,10 @@ var fileDescriptor_16edae2516c26cee = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ grpc.ClientConn
+var (
+	_ context.Context
+	_ grpc.ClientConn
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -1223,15 +1317,19 @@ type UnimplementedBridgeServiceServer struct {
 func (*UnimplementedBridgeServiceServer) ClientInvokeUnary(ctx context.Context, req *ClientInvokeUnary_Request) (*ClientInvokeUnary_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ClientInvokeUnary not implemented")
 }
+
 func (*UnimplementedBridgeServiceServer) CreateClientStream(ctx context.Context, req *ClientCreateStream_Request) (*ClientCreateStream_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateClientStream not implemented")
 }
+
 func (*UnimplementedBridgeServiceServer) ClientStreamSend(ctx context.Context, req *ClientStreamSend_Request) (*ClientStreamSend_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ClientStreamSend not implemented")
 }
+
 func (*UnimplementedBridgeServiceServer) ClientStreamRecv(ctx context.Context, req *ClientStreamRecv_Request) (*ClientStreamRecv_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ClientStreamRecv not implemented")
 }
+
 func (*UnimplementedBridgeServiceServer) ClientStreamClose(ctx context.Context, req *ClientStreamClose_Request) (*ClientStreamClose_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ClientStreamClose not implemented")
 }

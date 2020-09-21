@@ -17,9 +17,11 @@ import (
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -89,8 +91,10 @@ var fileDescriptor_047e04c733cf8554 = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ grpc.ClientConn
+var (
+	_ context.Context
+	_ grpc.ClientConn
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -657,99 +661,131 @@ type UnimplementedProtocolServiceServer struct {
 func (*UnimplementedProtocolServiceServer) InstanceExportData(ctx context.Context, req *bertytypes.InstanceExportData_Request) (*bertytypes.InstanceExportData_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InstanceExportData not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) InstanceGetConfiguration(ctx context.Context, req *bertytypes.InstanceGetConfiguration_Request) (*bertytypes.InstanceGetConfiguration_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InstanceGetConfiguration not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) ContactRequestReference(ctx context.Context, req *bertytypes.ContactRequestReference_Request) (*bertytypes.ContactRequestReference_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestReference not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) ContactRequestDisable(ctx context.Context, req *bertytypes.ContactRequestDisable_Request) (*bertytypes.ContactRequestDisable_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestDisable not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) ContactRequestEnable(ctx context.Context, req *bertytypes.ContactRequestEnable_Request) (*bertytypes.ContactRequestEnable_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestEnable not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) ContactRequestResetReference(ctx context.Context, req *bertytypes.ContactRequestResetReference_Request) (*bertytypes.ContactRequestResetReference_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestResetReference not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) ContactRequestSend(ctx context.Context, req *bertytypes.ContactRequestSend_Request) (*bertytypes.ContactRequestSend_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestSend not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) ContactRequestAccept(ctx context.Context, req *bertytypes.ContactRequestAccept_Request) (*bertytypes.ContactRequestAccept_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestAccept not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) ContactRequestDiscard(ctx context.Context, req *bertytypes.ContactRequestDiscard_Request) (*bertytypes.ContactRequestDiscard_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactRequestDiscard not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) ContactBlock(ctx context.Context, req *bertytypes.ContactBlock_Request) (*bertytypes.ContactBlock_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactBlock not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) ContactUnblock(ctx context.Context, req *bertytypes.ContactUnblock_Request) (*bertytypes.ContactUnblock_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactUnblock not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) ContactAliasKeySend(ctx context.Context, req *bertytypes.ContactAliasKeySend_Request) (*bertytypes.ContactAliasKeySend_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactAliasKeySend not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) MultiMemberGroupCreate(ctx context.Context, req *bertytypes.MultiMemberGroupCreate_Request) (*bertytypes.MultiMemberGroupCreate_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MultiMemberGroupCreate not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) MultiMemberGroupJoin(ctx context.Context, req *bertytypes.MultiMemberGroupJoin_Request) (*bertytypes.MultiMemberGroupJoin_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MultiMemberGroupJoin not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) MultiMemberGroupLeave(ctx context.Context, req *bertytypes.MultiMemberGroupLeave_Request) (*bertytypes.MultiMemberGroupLeave_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MultiMemberGroupLeave not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) MultiMemberGroupAliasResolverDisclose(ctx context.Context, req *bertytypes.MultiMemberGroupAliasResolverDisclose_Request) (*bertytypes.MultiMemberGroupAliasResolverDisclose_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MultiMemberGroupAliasResolverDisclose not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) MultiMemberGroupAdminRoleGrant(ctx context.Context, req *bertytypes.MultiMemberGroupAdminRoleGrant_Request) (*bertytypes.MultiMemberGroupAdminRoleGrant_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MultiMemberGroupAdminRoleGrant not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) MultiMemberGroupInvitationCreate(ctx context.Context, req *bertytypes.MultiMemberGroupInvitationCreate_Request) (*bertytypes.MultiMemberGroupInvitationCreate_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MultiMemberGroupInvitationCreate not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) AppMetadataSend(ctx context.Context, req *bertytypes.AppMetadataSend_Request) (*bertytypes.AppMetadataSend_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AppMetadataSend not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) AppMessageSend(ctx context.Context, req *bertytypes.AppMessageSend_Request) (*bertytypes.AppMessageSend_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AppMessageSend not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) GroupMetadataList(req *bertytypes.GroupMetadataList_Request, srv ProtocolService_GroupMetadataListServer) error {
 	return status.Errorf(codes.Unimplemented, "method GroupMetadataList not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) GroupMessageList(req *bertytypes.GroupMessageList_Request, srv ProtocolService_GroupMessageListServer) error {
 	return status.Errorf(codes.Unimplemented, "method GroupMessageList not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) GroupInfo(ctx context.Context, req *bertytypes.GroupInfo_Request) (*bertytypes.GroupInfo_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GroupInfo not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) ActivateGroup(ctx context.Context, req *bertytypes.ActivateGroup_Request) (*bertytypes.ActivateGroup_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ActivateGroup not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) DeactivateGroup(ctx context.Context, req *bertytypes.DeactivateGroup_Request) (*bertytypes.DeactivateGroup_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeactivateGroup not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) DebugListGroups(req *bertytypes.DebugListGroups_Request, srv ProtocolService_DebugListGroupsServer) error {
 	return status.Errorf(codes.Unimplemented, "method DebugListGroups not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) DebugInspectGroupStore(req *bertytypes.DebugInspectGroupStore_Request, srv ProtocolService_DebugInspectGroupStoreServer) error {
 	return status.Errorf(codes.Unimplemented, "method DebugInspectGroupStore not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) DebugGroup(ctx context.Context, req *bertytypes.DebugGroup_Request) (*bertytypes.DebugGroup_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DebugGroup not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) SystemInfo(ctx context.Context, req *bertytypes.SystemInfo_Request) (*bertytypes.SystemInfo_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SystemInfo not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) AuthServiceInitFlow(ctx context.Context, req *bertytypes.AuthServiceInitFlow_Request) (*bertytypes.AuthServiceInitFlow_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthServiceInitFlow not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) AuthServiceCompleteFlow(ctx context.Context, req *bertytypes.AuthServiceCompleteFlow_Request) (*bertytypes.AuthServiceCompleteFlow_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthServiceCompleteFlow not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) ServicesTokenList(req *bertytypes.ServicesTokenList_Request, srv ProtocolService_ServicesTokenListServer) error {
 	return status.Errorf(codes.Unimplemented, "method ServicesTokenList not implemented")
 }
+
 func (*UnimplementedProtocolServiceServer) ReplicationServiceRegisterGroup(ctx context.Context, req *bertytypes.ReplicationServiceRegisterGroup_Request) (*bertytypes.ReplicationServiceRegisterGroup_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReplicationServiceRegisterGroup not implemented")
 }

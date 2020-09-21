@@ -26,12 +26,14 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var _ codes.Code
-var _ io.Reader
-var _ status.Status
-var _ = runtime.String
-var _ = utilities.NewDoubleArray
-var _ = descriptor.ForMessage
+var (
+	_ codes.Code
+	_ io.Reader
+	_ status.Status
+	_ = runtime.String
+	_ = utilities.NewDoubleArray
+	_ = descriptor.ForMessage
+)
 
 func request_MessengerService_InstanceShareableBertyID_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq InstanceShareableBertyID_Request
@@ -47,7 +49,6 @@ func request_MessengerService_InstanceShareableBertyID_0(ctx context.Context, ma
 
 	msg, err := client.InstanceShareableBertyID(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_InstanceShareableBertyID_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -64,7 +65,6 @@ func local_request_MessengerService_InstanceShareableBertyID_0(ctx context.Conte
 
 	msg, err := server.InstanceShareableBertyID(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_MessengerService_ShareableBertyGroup_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -81,7 +81,6 @@ func request_MessengerService_ShareableBertyGroup_0(ctx context.Context, marshal
 
 	msg, err := client.ShareableBertyGroup(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_ShareableBertyGroup_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -98,7 +97,6 @@ func local_request_MessengerService_ShareableBertyGroup_0(ctx context.Context, m
 
 	msg, err := server.ShareableBertyGroup(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_MessengerService_DevShareInstanceBertyID_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -115,7 +113,6 @@ func request_MessengerService_DevShareInstanceBertyID_0(ctx context.Context, mar
 
 	msg, err := client.DevShareInstanceBertyID(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_DevShareInstanceBertyID_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -132,7 +129,6 @@ func local_request_MessengerService_DevShareInstanceBertyID_0(ctx context.Contex
 
 	msg, err := server.DevShareInstanceBertyID(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_MessengerService_ParseDeepLink_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -149,7 +145,6 @@ func request_MessengerService_ParseDeepLink_0(ctx context.Context, marshaler run
 
 	msg, err := client.ParseDeepLink(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_ParseDeepLink_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -166,7 +161,6 @@ func local_request_MessengerService_ParseDeepLink_0(ctx context.Context, marshal
 
 	msg, err := server.ParseDeepLink(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_MessengerService_SendContactRequest_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -183,7 +177,6 @@ func request_MessengerService_SendContactRequest_0(ctx context.Context, marshale
 
 	msg, err := client.SendContactRequest(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_SendContactRequest_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -200,7 +193,6 @@ func local_request_MessengerService_SendContactRequest_0(ctx context.Context, ma
 
 	msg, err := server.SendContactRequest(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_MessengerService_SendMessage_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -217,7 +209,6 @@ func request_MessengerService_SendMessage_0(ctx context.Context, marshaler runti
 
 	msg, err := client.SendMessage(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_SendMessage_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -234,7 +225,6 @@ func local_request_MessengerService_SendMessage_0(ctx context.Context, marshaler
 
 	msg, err := server.SendMessage(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_MessengerService_SendAck_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -251,7 +241,6 @@ func request_MessengerService_SendAck_0(ctx context.Context, marshaler runtime.M
 
 	msg, err := client.SendAck(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_SendAck_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -268,7 +257,6 @@ func local_request_MessengerService_SendAck_0(ctx context.Context, marshaler run
 
 	msg, err := server.SendAck(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_MessengerService_SystemInfo_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -285,7 +273,6 @@ func request_MessengerService_SystemInfo_0(ctx context.Context, marshaler runtim
 
 	msg, err := client.SystemInfo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_SystemInfo_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -302,7 +289,6 @@ func local_request_MessengerService_SystemInfo_0(ctx context.Context, marshaler 
 
 	msg, err := server.SystemInfo(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_MessengerService_EchoTest_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (MessengerService_EchoTestClient, runtime.ServerMetadata, error) {
@@ -327,7 +313,6 @@ func request_MessengerService_EchoTest_0(ctx context.Context, marshaler runtime.
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
 func request_MessengerService_ConversationStream_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (MessengerService_ConversationStreamClient, runtime.ServerMetadata, error) {
@@ -352,7 +337,6 @@ func request_MessengerService_ConversationStream_0(ctx context.Context, marshale
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
 func request_MessengerService_EventStream_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (MessengerService_EventStreamClient, runtime.ServerMetadata, error) {
@@ -377,7 +361,6 @@ func request_MessengerService_EventStream_0(ctx context.Context, marshaler runti
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
 func request_MessengerService_ConversationCreate_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -394,7 +377,6 @@ func request_MessengerService_ConversationCreate_0(ctx context.Context, marshale
 
 	msg, err := client.ConversationCreate(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_ConversationCreate_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -411,7 +393,6 @@ func local_request_MessengerService_ConversationCreate_0(ctx context.Context, ma
 
 	msg, err := server.ConversationCreate(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_MessengerService_ConversationJoin_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -428,7 +409,6 @@ func request_MessengerService_ConversationJoin_0(ctx context.Context, marshaler 
 
 	msg, err := client.ConversationJoin(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_ConversationJoin_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -445,7 +425,6 @@ func local_request_MessengerService_ConversationJoin_0(ctx context.Context, mars
 
 	msg, err := server.ConversationJoin(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_MessengerService_AccountGet_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -462,7 +441,6 @@ func request_MessengerService_AccountGet_0(ctx context.Context, marshaler runtim
 
 	msg, err := client.AccountGet(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_AccountGet_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -479,7 +457,6 @@ func local_request_MessengerService_AccountGet_0(ctx context.Context, marshaler 
 
 	msg, err := server.AccountGet(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_MessengerService_AccountUpdate_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -496,7 +473,6 @@ func request_MessengerService_AccountUpdate_0(ctx context.Context, marshaler run
 
 	msg, err := client.AccountUpdate(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_AccountUpdate_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -513,7 +489,6 @@ func local_request_MessengerService_AccountUpdate_0(ctx context.Context, marshal
 
 	msg, err := server.AccountUpdate(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_MessengerService_ContactRequest_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -530,7 +505,6 @@ func request_MessengerService_ContactRequest_0(ctx context.Context, marshaler ru
 
 	msg, err := client.ContactRequest(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_ContactRequest_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -547,7 +521,6 @@ func local_request_MessengerService_ContactRequest_0(ctx context.Context, marsha
 
 	msg, err := server.ContactRequest(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_MessengerService_ContactAccept_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -564,7 +537,6 @@ func request_MessengerService_ContactAccept_0(ctx context.Context, marshaler run
 
 	msg, err := client.ContactAccept(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_ContactAccept_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -581,7 +553,6 @@ func local_request_MessengerService_ContactAccept_0(ctx context.Context, marshal
 
 	msg, err := server.ContactAccept(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_MessengerService_Interact_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -598,7 +569,6 @@ func request_MessengerService_Interact_0(ctx context.Context, marshaler runtime.
 
 	msg, err := client.Interact(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_Interact_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -615,7 +585,6 @@ func local_request_MessengerService_Interact_0(ctx context.Context, marshaler ru
 
 	msg, err := server.Interact(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_MessengerService_ConversationOpen_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -632,7 +601,6 @@ func request_MessengerService_ConversationOpen_0(ctx context.Context, marshaler 
 
 	msg, err := client.ConversationOpen(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_ConversationOpen_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -649,7 +617,6 @@ func local_request_MessengerService_ConversationOpen_0(ctx context.Context, mars
 
 	msg, err := server.ConversationOpen(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_MessengerService_ConversationClose_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -666,7 +633,6 @@ func request_MessengerService_ConversationClose_0(ctx context.Context, marshaler
 
 	msg, err := client.ConversationClose(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_ConversationClose_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -683,7 +649,6 @@ func local_request_MessengerService_ConversationClose_0(ctx context.Context, mar
 
 	msg, err := server.ConversationClose(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_MessengerService_AuthServiceInitFlow_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -700,7 +665,6 @@ func request_MessengerService_AuthServiceInitFlow_0(ctx context.Context, marshal
 
 	msg, err := client.AuthServiceInitFlow(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_AuthServiceInitFlow_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -717,7 +681,6 @@ func local_request_MessengerService_AuthServiceInitFlow_0(ctx context.Context, m
 
 	msg, err := server.AuthServiceInitFlow(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_MessengerService_AuthServiceCompleteFlow_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -734,7 +697,6 @@ func request_MessengerService_AuthServiceCompleteFlow_0(ctx context.Context, mar
 
 	msg, err := client.AuthServiceCompleteFlow(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_AuthServiceCompleteFlow_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -751,7 +713,6 @@ func local_request_MessengerService_AuthServiceCompleteFlow_0(ctx context.Contex
 
 	msg, err := server.AuthServiceCompleteFlow(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_MessengerService_ServicesTokenList_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (MessengerService_ServicesTokenListClient, runtime.ServerMetadata, error) {
@@ -776,7 +737,6 @@ func request_MessengerService_ServicesTokenList_0(ctx context.Context, marshaler
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
 func request_MessengerService_ReplicationServiceRegisterGroup_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -793,7 +753,6 @@ func request_MessengerService_ReplicationServiceRegisterGroup_0(ctx context.Cont
 
 	msg, err := client.ReplicationServiceRegisterGroup(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_MessengerService_ReplicationServiceRegisterGroup_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -810,14 +769,12 @@ func local_request_MessengerService_ReplicationServiceRegisterGroup_0(ctx contex
 
 	msg, err := server.ReplicationServiceRegisterGroup(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 // RegisterMessengerServiceHandlerServer registers the http handlers for service MessengerService to "mux".
 // UnaryRPC     :call MessengerServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server MessengerServiceServer) error {
-
 	mux.Handle("POST", pattern_MessengerService_InstanceShareableBertyID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -835,7 +792,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_InstanceShareableBertyID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ShareableBertyGroup_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -855,7 +811,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ShareableBertyGroup_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_DevShareInstanceBertyID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -875,7 +830,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_DevShareInstanceBertyID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ParseDeepLink_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -895,7 +849,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ParseDeepLink_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_SendContactRequest_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -915,7 +868,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_SendContactRequest_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_SendMessage_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -935,7 +887,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_SendMessage_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_SendAck_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -955,7 +906,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_SendAck_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_SystemInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -975,7 +925,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_SystemInfo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_EchoTest_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1016,7 +965,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ConversationCreate_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ConversationJoin_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1036,7 +984,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ConversationJoin_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_AccountGet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1056,7 +1003,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_AccountGet_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_AccountUpdate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1076,7 +1022,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_AccountUpdate_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ContactRequest_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1096,7 +1041,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ContactRequest_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ContactAccept_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1116,7 +1060,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ContactAccept_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_Interact_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1136,7 +1079,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_Interact_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ConversationOpen_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1156,7 +1098,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ConversationOpen_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ConversationClose_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1176,7 +1117,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ConversationClose_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_AuthServiceInitFlow_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1196,7 +1136,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_AuthServiceInitFlow_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_AuthServiceCompleteFlow_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1216,7 +1155,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_AuthServiceCompleteFlow_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ServicesTokenList_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1243,7 +1181,6 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ReplicationServiceRegisterGroup_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	return nil
@@ -1286,7 +1223,6 @@ func RegisterMessengerServiceHandler(ctx context.Context, mux *runtime.ServeMux,
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "MessengerServiceClient" to call the correct interceptors.
 func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client MessengerServiceClient) error {
-
 	mux.Handle("POST", pattern_MessengerService_InstanceShareableBertyID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1304,7 +1240,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_InstanceShareableBertyID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ShareableBertyGroup_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1324,7 +1259,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ShareableBertyGroup_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_DevShareInstanceBertyID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1344,7 +1278,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_DevShareInstanceBertyID_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ParseDeepLink_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1364,7 +1297,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ParseDeepLink_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_SendContactRequest_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1384,7 +1316,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_SendContactRequest_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_SendMessage_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1404,7 +1335,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_SendMessage_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_SendAck_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1424,7 +1354,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_SendAck_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_SystemInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1444,7 +1373,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_SystemInfo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_EchoTest_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1464,7 +1392,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_EchoTest_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ConversationStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1484,7 +1411,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ConversationStream_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_EventStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1504,7 +1430,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_EventStream_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ConversationCreate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1524,7 +1449,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ConversationCreate_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ConversationJoin_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1544,7 +1468,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ConversationJoin_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_AccountGet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1564,7 +1487,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_AccountGet_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_AccountUpdate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1584,7 +1506,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_AccountUpdate_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ContactRequest_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1604,7 +1525,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ContactRequest_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ContactAccept_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1624,7 +1544,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ContactAccept_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_Interact_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1644,7 +1563,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_Interact_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ConversationOpen_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1664,7 +1582,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ConversationOpen_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ConversationClose_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1684,7 +1601,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ConversationClose_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_AuthServiceInitFlow_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1704,7 +1620,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_AuthServiceInitFlow_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_AuthServiceCompleteFlow_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1724,7 +1639,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_AuthServiceCompleteFlow_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ServicesTokenList_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1744,7 +1658,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ServicesTokenList_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ReplicationServiceRegisterGroup_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1764,7 +1677,6 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ReplicationServiceRegisterGroup_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	return nil

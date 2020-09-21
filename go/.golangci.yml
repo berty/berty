@@ -41,7 +41,7 @@ linters:
     #- godot         # nice to have
     #- goerr113      # nice to have
     - gofmt
-    #- gofumpt       # depends on https://github.com/mvdan/gofumpt/issues/86
+    - gofumpt
     - goimports
     - golint
     #- gomnd         # nice to have
