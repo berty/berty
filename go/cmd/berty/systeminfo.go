@@ -15,20 +15,23 @@ import (
 
 func systemInfoCommand() *ffcli.Command {
 	var (
-		fs               = flag.NewFlagSet("info", flag.ExitOnError)
 		refreshEveryFlag time.Duration
 		anonimizeFlag    bool
 	)
-	manager.SetupLocalMessengerServerFlags(fs) // by default, start a new local messenger server,
-	manager.SetupRemoteNodeFlags(fs)           // but allow to set a remote server instead
-	fs.DurationVar(&refreshEveryFlag, "info.refresh", refreshEveryFlag, "refresh every DURATION (0: no refresh)")
-	fs.BoolVar(&anonimizeFlag, "info.anonimize", false, "anonimize output for sharing")
+	fsBuilder := func() (*flag.FlagSet, error) {
+		fs := flag.NewFlagSet("info", flag.ExitOnError)
+		manager.SetupLocalMessengerServerFlags(fs) // by default, start a new local messenger server,
+		manager.SetupRemoteNodeFlags(fs)           // but allow to set a remote server instead
+		fs.DurationVar(&refreshEveryFlag, "info.refresh", refreshEveryFlag, "refresh every DURATION (0: no refresh)")
+		fs.BoolVar(&anonimizeFlag, "info.anonimize", false, "anonimize output for sharing")
+		return fs, nil
+	}
 
 	return &ffcli.Command{
-		Name:       "info",
-		ShortUsage: "berty [global flags] info [flags]",
-		ShortHelp:  "display system info",
-		FlagSet:    fs,
+		Name:           "info",
+		ShortUsage:     "berty [global flags] info [flags]",
+		ShortHelp:      "display system info",
+		FlagSetBuilder: fsBuilder,
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp

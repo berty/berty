@@ -10,20 +10,21 @@ import (
 )
 
 func miniCommand() *ffcli.Command {
-	var (
-		fs        = flag.NewFlagSet("berty mini", flag.ExitOnError)
-		groupFlag string
-	)
-	fs.StringVar(&groupFlag, "mini.group", groupFlag, "group to join, leave empty to create a new group")
-	manager.SetupLocalMessengerServerFlags(fs) // add flags to allow creating a full node in the same process
-	manager.SetupEmptyGRPCListenersFlags(fs)   // by default, we don't want to expose gRPC server for mini
-	manager.SetupRemoteNodeFlags(fs)           // mini can be run against an already running server
+	var groupFlag string
+	fsBuilder := func() (*flag.FlagSet, error) {
+		fs := flag.NewFlagSet("berty mini", flag.ExitOnError)
+		fs.StringVar(&groupFlag, "mini.group", groupFlag, "group to join, leave empty to create a new group")
+		manager.SetupLocalMessengerServerFlags(fs) // add flags to allow creating a full node in the same process
+		manager.SetupEmptyGRPCListenersFlags(fs)   // by default, we don't want to expose gRPC server for mini
+		manager.SetupRemoteNodeFlags(fs)           // mini can be run against an already running server
+		return fs, nil
+	}
 
 	return &ffcli.Command{
-		Name:       "mini",
-		ShortHelp:  "start a terminal-based mini berty client (not fully compatible with the app)",
-		ShortUsage: "berty [global flags] mini [flags]",
-		FlagSet:    fs,
+		Name:           "mini",
+		ShortHelp:      "start a terminal-based mini berty client (not fully compatible with the app)",
+		ShortUsage:     "berty [global flags] mini [flags]",
+		FlagSetBuilder: fsBuilder,
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp
