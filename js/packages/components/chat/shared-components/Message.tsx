@@ -114,8 +114,8 @@ const MessageInvitationButton: React.FC<{
 
 const MessageInvitationWrapper: React.FC<{ children: any }> = ({ children }) => {
 	const [{ padding, border, flex, margin, width, background, height }, { scaleSize }] = useStyles()
-	const logoDiameter = 40
-	const diffSize = 10
+	const logoDiameter = 28
+	const diffSize = 6
 	return (
 		<View
 			style={[
@@ -129,7 +129,7 @@ const MessageInvitationWrapper: React.FC<{ children: any }> = ({ children }) => 
 		>
 			<View
 				style={{
-					transform: [{ translateY: -logoDiameter * 1.3 * scaleSize }],
+					transform: [{ translateY: -logoDiameter * 1.15 * scaleSize }],
 					alignSelf: 'center',
 					marginBottom: -logoDiameter * scaleSize, // compensate for transformed logo
 				}}
