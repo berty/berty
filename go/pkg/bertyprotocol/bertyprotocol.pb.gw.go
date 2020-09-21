@@ -26,12 +26,14 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var _ codes.Code
-var _ io.Reader
-var _ status.Status
-var _ = runtime.String
-var _ = utilities.NewDoubleArray
-var _ = descriptor.ForMessage
+var (
+	_ codes.Code
+	_ io.Reader
+	_ status.Status
+	_ = runtime.String
+	_ = utilities.NewDoubleArray
+	_ = descriptor.ForMessage
+)
 
 func request_ProtocolService_InstanceExportData_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq bertytypes.InstanceExportData_Request
@@ -47,7 +49,6 @@ func request_ProtocolService_InstanceExportData_0(ctx context.Context, marshaler
 
 	msg, err := client.InstanceExportData(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_InstanceExportData_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -64,7 +65,6 @@ func local_request_ProtocolService_InstanceExportData_0(ctx context.Context, mar
 
 	msg, err := server.InstanceExportData(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_InstanceGetConfiguration_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -81,7 +81,6 @@ func request_ProtocolService_InstanceGetConfiguration_0(ctx context.Context, mar
 
 	msg, err := client.InstanceGetConfiguration(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_InstanceGetConfiguration_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -98,7 +97,6 @@ func local_request_ProtocolService_InstanceGetConfiguration_0(ctx context.Contex
 
 	msg, err := server.InstanceGetConfiguration(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_ContactRequestReference_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -115,7 +113,6 @@ func request_ProtocolService_ContactRequestReference_0(ctx context.Context, mars
 
 	msg, err := client.ContactRequestReference(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_ContactRequestReference_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -132,7 +129,6 @@ func local_request_ProtocolService_ContactRequestReference_0(ctx context.Context
 
 	msg, err := server.ContactRequestReference(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_ContactRequestDisable_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -149,7 +145,6 @@ func request_ProtocolService_ContactRequestDisable_0(ctx context.Context, marsha
 
 	msg, err := client.ContactRequestDisable(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_ContactRequestDisable_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -166,7 +161,6 @@ func local_request_ProtocolService_ContactRequestDisable_0(ctx context.Context, 
 
 	msg, err := server.ContactRequestDisable(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_ContactRequestEnable_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -183,7 +177,6 @@ func request_ProtocolService_ContactRequestEnable_0(ctx context.Context, marshal
 
 	msg, err := client.ContactRequestEnable(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_ContactRequestEnable_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -200,7 +193,6 @@ func local_request_ProtocolService_ContactRequestEnable_0(ctx context.Context, m
 
 	msg, err := server.ContactRequestEnable(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_ContactRequestResetReference_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -217,7 +209,6 @@ func request_ProtocolService_ContactRequestResetReference_0(ctx context.Context,
 
 	msg, err := client.ContactRequestResetReference(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_ContactRequestResetReference_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -234,7 +225,6 @@ func local_request_ProtocolService_ContactRequestResetReference_0(ctx context.Co
 
 	msg, err := server.ContactRequestResetReference(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_ContactRequestSend_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -251,7 +241,6 @@ func request_ProtocolService_ContactRequestSend_0(ctx context.Context, marshaler
 
 	msg, err := client.ContactRequestSend(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_ContactRequestSend_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -268,7 +257,6 @@ func local_request_ProtocolService_ContactRequestSend_0(ctx context.Context, mar
 
 	msg, err := server.ContactRequestSend(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_ContactRequestAccept_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -285,7 +273,6 @@ func request_ProtocolService_ContactRequestAccept_0(ctx context.Context, marshal
 
 	msg, err := client.ContactRequestAccept(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_ContactRequestAccept_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -302,7 +289,6 @@ func local_request_ProtocolService_ContactRequestAccept_0(ctx context.Context, m
 
 	msg, err := server.ContactRequestAccept(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_ContactRequestDiscard_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -319,7 +305,6 @@ func request_ProtocolService_ContactRequestDiscard_0(ctx context.Context, marsha
 
 	msg, err := client.ContactRequestDiscard(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_ContactRequestDiscard_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -336,7 +321,6 @@ func local_request_ProtocolService_ContactRequestDiscard_0(ctx context.Context, 
 
 	msg, err := server.ContactRequestDiscard(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_ContactBlock_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -353,7 +337,6 @@ func request_ProtocolService_ContactBlock_0(ctx context.Context, marshaler runti
 
 	msg, err := client.ContactBlock(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_ContactBlock_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -370,7 +353,6 @@ func local_request_ProtocolService_ContactBlock_0(ctx context.Context, marshaler
 
 	msg, err := server.ContactBlock(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_ContactUnblock_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -387,7 +369,6 @@ func request_ProtocolService_ContactUnblock_0(ctx context.Context, marshaler run
 
 	msg, err := client.ContactUnblock(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_ContactUnblock_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -404,7 +385,6 @@ func local_request_ProtocolService_ContactUnblock_0(ctx context.Context, marshal
 
 	msg, err := server.ContactUnblock(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_ContactAliasKeySend_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -421,7 +401,6 @@ func request_ProtocolService_ContactAliasKeySend_0(ctx context.Context, marshale
 
 	msg, err := client.ContactAliasKeySend(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_ContactAliasKeySend_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -438,7 +417,6 @@ func local_request_ProtocolService_ContactAliasKeySend_0(ctx context.Context, ma
 
 	msg, err := server.ContactAliasKeySend(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_MultiMemberGroupCreate_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -455,7 +433,6 @@ func request_ProtocolService_MultiMemberGroupCreate_0(ctx context.Context, marsh
 
 	msg, err := client.MultiMemberGroupCreate(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_MultiMemberGroupCreate_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -472,7 +449,6 @@ func local_request_ProtocolService_MultiMemberGroupCreate_0(ctx context.Context,
 
 	msg, err := server.MultiMemberGroupCreate(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_MultiMemberGroupJoin_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -489,7 +465,6 @@ func request_ProtocolService_MultiMemberGroupJoin_0(ctx context.Context, marshal
 
 	msg, err := client.MultiMemberGroupJoin(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_MultiMemberGroupJoin_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -506,7 +481,6 @@ func local_request_ProtocolService_MultiMemberGroupJoin_0(ctx context.Context, m
 
 	msg, err := server.MultiMemberGroupJoin(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_MultiMemberGroupLeave_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -523,7 +497,6 @@ func request_ProtocolService_MultiMemberGroupLeave_0(ctx context.Context, marsha
 
 	msg, err := client.MultiMemberGroupLeave(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_MultiMemberGroupLeave_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -540,7 +513,6 @@ func local_request_ProtocolService_MultiMemberGroupLeave_0(ctx context.Context, 
 
 	msg, err := server.MultiMemberGroupLeave(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_MultiMemberGroupAliasResolverDisclose_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -557,7 +529,6 @@ func request_ProtocolService_MultiMemberGroupAliasResolverDisclose_0(ctx context
 
 	msg, err := client.MultiMemberGroupAliasResolverDisclose(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_MultiMemberGroupAliasResolverDisclose_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -574,7 +545,6 @@ func local_request_ProtocolService_MultiMemberGroupAliasResolverDisclose_0(ctx c
 
 	msg, err := server.MultiMemberGroupAliasResolverDisclose(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_MultiMemberGroupAdminRoleGrant_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -591,7 +561,6 @@ func request_ProtocolService_MultiMemberGroupAdminRoleGrant_0(ctx context.Contex
 
 	msg, err := client.MultiMemberGroupAdminRoleGrant(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_MultiMemberGroupAdminRoleGrant_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -608,7 +577,6 @@ func local_request_ProtocolService_MultiMemberGroupAdminRoleGrant_0(ctx context.
 
 	msg, err := server.MultiMemberGroupAdminRoleGrant(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_MultiMemberGroupInvitationCreate_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -625,7 +593,6 @@ func request_ProtocolService_MultiMemberGroupInvitationCreate_0(ctx context.Cont
 
 	msg, err := client.MultiMemberGroupInvitationCreate(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_MultiMemberGroupInvitationCreate_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -642,7 +609,6 @@ func local_request_ProtocolService_MultiMemberGroupInvitationCreate_0(ctx contex
 
 	msg, err := server.MultiMemberGroupInvitationCreate(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_AppMetadataSend_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -659,7 +625,6 @@ func request_ProtocolService_AppMetadataSend_0(ctx context.Context, marshaler ru
 
 	msg, err := client.AppMetadataSend(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_AppMetadataSend_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -676,7 +641,6 @@ func local_request_ProtocolService_AppMetadataSend_0(ctx context.Context, marsha
 
 	msg, err := server.AppMetadataSend(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_AppMessageSend_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -693,7 +657,6 @@ func request_ProtocolService_AppMessageSend_0(ctx context.Context, marshaler run
 
 	msg, err := client.AppMessageSend(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_AppMessageSend_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -710,7 +673,6 @@ func local_request_ProtocolService_AppMessageSend_0(ctx context.Context, marshal
 
 	msg, err := server.AppMessageSend(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_GroupMetadataList_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (ProtocolService_GroupMetadataListClient, runtime.ServerMetadata, error) {
@@ -735,7 +697,6 @@ func request_ProtocolService_GroupMetadataList_0(ctx context.Context, marshaler 
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
 func request_ProtocolService_GroupMessageList_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (ProtocolService_GroupMessageListClient, runtime.ServerMetadata, error) {
@@ -760,7 +721,6 @@ func request_ProtocolService_GroupMessageList_0(ctx context.Context, marshaler r
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
 func request_ProtocolService_GroupInfo_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -777,7 +737,6 @@ func request_ProtocolService_GroupInfo_0(ctx context.Context, marshaler runtime.
 
 	msg, err := client.GroupInfo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_GroupInfo_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -794,7 +753,6 @@ func local_request_ProtocolService_GroupInfo_0(ctx context.Context, marshaler ru
 
 	msg, err := server.GroupInfo(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_ActivateGroup_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -811,7 +769,6 @@ func request_ProtocolService_ActivateGroup_0(ctx context.Context, marshaler runt
 
 	msg, err := client.ActivateGroup(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_ActivateGroup_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -828,7 +785,6 @@ func local_request_ProtocolService_ActivateGroup_0(ctx context.Context, marshale
 
 	msg, err := server.ActivateGroup(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_DeactivateGroup_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -845,7 +801,6 @@ func request_ProtocolService_DeactivateGroup_0(ctx context.Context, marshaler ru
 
 	msg, err := client.DeactivateGroup(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_DeactivateGroup_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -862,7 +817,6 @@ func local_request_ProtocolService_DeactivateGroup_0(ctx context.Context, marsha
 
 	msg, err := server.DeactivateGroup(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_DebugListGroups_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (ProtocolService_DebugListGroupsClient, runtime.ServerMetadata, error) {
@@ -887,7 +841,6 @@ func request_ProtocolService_DebugListGroups_0(ctx context.Context, marshaler ru
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
 func request_ProtocolService_DebugInspectGroupStore_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (ProtocolService_DebugInspectGroupStoreClient, runtime.ServerMetadata, error) {
@@ -912,7 +865,6 @@ func request_ProtocolService_DebugInspectGroupStore_0(ctx context.Context, marsh
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
 func request_ProtocolService_DebugGroup_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -929,7 +881,6 @@ func request_ProtocolService_DebugGroup_0(ctx context.Context, marshaler runtime
 
 	msg, err := client.DebugGroup(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_DebugGroup_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -946,7 +897,6 @@ func local_request_ProtocolService_DebugGroup_0(ctx context.Context, marshaler r
 
 	msg, err := server.DebugGroup(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_SystemInfo_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -963,7 +913,6 @@ func request_ProtocolService_SystemInfo_0(ctx context.Context, marshaler runtime
 
 	msg, err := client.SystemInfo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_SystemInfo_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -980,7 +929,6 @@ func local_request_ProtocolService_SystemInfo_0(ctx context.Context, marshaler r
 
 	msg, err := server.SystemInfo(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_AuthServiceInitFlow_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -997,7 +945,6 @@ func request_ProtocolService_AuthServiceInitFlow_0(ctx context.Context, marshale
 
 	msg, err := client.AuthServiceInitFlow(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_AuthServiceInitFlow_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1014,7 +961,6 @@ func local_request_ProtocolService_AuthServiceInitFlow_0(ctx context.Context, ma
 
 	msg, err := server.AuthServiceInitFlow(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_AuthServiceCompleteFlow_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1031,7 +977,6 @@ func request_ProtocolService_AuthServiceCompleteFlow_0(ctx context.Context, mars
 
 	msg, err := client.AuthServiceCompleteFlow(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_AuthServiceCompleteFlow_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1048,7 +993,6 @@ func local_request_ProtocolService_AuthServiceCompleteFlow_0(ctx context.Context
 
 	msg, err := server.AuthServiceCompleteFlow(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_ProtocolService_ServicesTokenList_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (ProtocolService_ServicesTokenListClient, runtime.ServerMetadata, error) {
@@ -1073,7 +1017,6 @@ func request_ProtocolService_ServicesTokenList_0(ctx context.Context, marshaler 
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
 func request_ProtocolService_ReplicationServiceRegisterGroup_0(ctx context.Context, marshaler runtime.Marshaler, client ProtocolServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1090,7 +1033,6 @@ func request_ProtocolService_ReplicationServiceRegisterGroup_0(ctx context.Conte
 
 	msg, err := client.ReplicationServiceRegisterGroup(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_ProtocolService_ReplicationServiceRegisterGroup_0(ctx context.Context, marshaler runtime.Marshaler, server ProtocolServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1107,14 +1049,12 @@ func local_request_ProtocolService_ReplicationServiceRegisterGroup_0(ctx context
 
 	msg, err := server.ReplicationServiceRegisterGroup(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 // RegisterProtocolServiceHandlerServer registers the http handlers for service ProtocolService to "mux".
 // UnaryRPC     :call ProtocolServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ProtocolServiceServer) error {
-
 	mux.Handle("POST", pattern_ProtocolService_InstanceExportData_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1132,7 +1072,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_InstanceExportData_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_InstanceGetConfiguration_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1152,7 +1091,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_InstanceGetConfiguration_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactRequestReference_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1172,7 +1110,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactRequestReference_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactRequestDisable_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1192,7 +1129,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactRequestDisable_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactRequestEnable_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1212,7 +1148,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactRequestEnable_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactRequestResetReference_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1232,7 +1167,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactRequestResetReference_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactRequestSend_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1252,7 +1186,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactRequestSend_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactRequestAccept_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1272,7 +1205,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactRequestAccept_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactRequestDiscard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1292,7 +1224,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactRequestDiscard_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactBlock_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1312,7 +1243,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactBlock_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactUnblock_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1332,7 +1262,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactUnblock_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactAliasKeySend_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1352,7 +1281,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactAliasKeySend_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_MultiMemberGroupCreate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1372,7 +1300,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_MultiMemberGroupCreate_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_MultiMemberGroupJoin_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1392,7 +1319,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_MultiMemberGroupJoin_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_MultiMemberGroupLeave_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1412,7 +1338,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_MultiMemberGroupLeave_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_MultiMemberGroupAliasResolverDisclose_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1432,7 +1357,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_MultiMemberGroupAliasResolverDisclose_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_MultiMemberGroupAdminRoleGrant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1452,7 +1376,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_MultiMemberGroupAdminRoleGrant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_MultiMemberGroupInvitationCreate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1472,7 +1395,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_MultiMemberGroupInvitationCreate_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_AppMetadataSend_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1492,7 +1414,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_AppMetadataSend_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_AppMessageSend_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1512,7 +1433,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_AppMessageSend_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_GroupMetadataList_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1546,7 +1466,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_GroupInfo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ActivateGroup_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1566,7 +1485,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ActivateGroup_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_DeactivateGroup_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1586,7 +1504,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_DeactivateGroup_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_DebugListGroups_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1620,7 +1537,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_DebugGroup_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_SystemInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1640,7 +1556,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_SystemInfo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_AuthServiceInitFlow_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1660,7 +1575,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_AuthServiceInitFlow_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_AuthServiceCompleteFlow_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1680,7 +1594,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_AuthServiceCompleteFlow_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ServicesTokenList_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1707,7 +1620,6 @@ func RegisterProtocolServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ReplicationServiceRegisterGroup_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	return nil
@@ -1750,7 +1662,6 @@ func RegisterProtocolServiceHandler(ctx context.Context, mux *runtime.ServeMux, 
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "ProtocolServiceClient" to call the correct interceptors.
 func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ProtocolServiceClient) error {
-
 	mux.Handle("POST", pattern_ProtocolService_InstanceExportData_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1768,7 +1679,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_InstanceExportData_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_InstanceGetConfiguration_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1788,7 +1698,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_InstanceGetConfiguration_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactRequestReference_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1808,7 +1717,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactRequestReference_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactRequestDisable_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1828,7 +1736,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactRequestDisable_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactRequestEnable_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1848,7 +1755,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactRequestEnable_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactRequestResetReference_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1868,7 +1774,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactRequestResetReference_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactRequestSend_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1888,7 +1793,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactRequestSend_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactRequestAccept_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1908,7 +1812,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactRequestAccept_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactRequestDiscard_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1928,7 +1831,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactRequestDiscard_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactBlock_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1948,7 +1850,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactBlock_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactUnblock_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1968,7 +1869,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactUnblock_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ContactAliasKeySend_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1988,7 +1888,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ContactAliasKeySend_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_MultiMemberGroupCreate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2008,7 +1907,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_MultiMemberGroupCreate_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_MultiMemberGroupJoin_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2028,7 +1926,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_MultiMemberGroupJoin_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_MultiMemberGroupLeave_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2048,7 +1945,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_MultiMemberGroupLeave_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_MultiMemberGroupAliasResolverDisclose_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2068,7 +1964,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_MultiMemberGroupAliasResolverDisclose_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_MultiMemberGroupAdminRoleGrant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2088,7 +1983,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_MultiMemberGroupAdminRoleGrant_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_MultiMemberGroupInvitationCreate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2108,7 +2002,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_MultiMemberGroupInvitationCreate_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_AppMetadataSend_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2128,7 +2021,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_AppMetadataSend_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_AppMessageSend_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2148,7 +2040,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_AppMessageSend_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_GroupMetadataList_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2168,7 +2059,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_GroupMetadataList_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_GroupMessageList_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2188,7 +2078,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_GroupMessageList_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_GroupInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2208,7 +2097,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_GroupInfo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ActivateGroup_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2228,7 +2116,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ActivateGroup_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_DeactivateGroup_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2248,7 +2135,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_DeactivateGroup_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_DebugListGroups_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2268,7 +2154,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_DebugListGroups_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_DebugInspectGroupStore_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2288,7 +2173,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_DebugInspectGroupStore_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_DebugGroup_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2308,7 +2192,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_DebugGroup_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_SystemInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2328,7 +2211,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_SystemInfo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_AuthServiceInitFlow_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2348,7 +2230,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_AuthServiceInitFlow_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_AuthServiceCompleteFlow_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2368,7 +2249,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_AuthServiceCompleteFlow_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ServicesTokenList_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2388,7 +2268,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ServicesTokenList_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
 
 	mux.Handle("POST", pattern_ProtocolService_ReplicationServiceRegisterGroup_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2408,7 +2287,6 @@ func RegisterProtocolServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 
 		forward_ProtocolService_ReplicationServiceRegisterGroup_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	return nil

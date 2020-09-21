@@ -1,6 +1,6 @@
 // +build darwin,cgo
 
-package driver
+package mcdriver
 
 /*
 #cgo CFLAGS: -x objective-c
@@ -12,17 +12,6 @@ import "C"
 
 import "unsafe"
 
-var (
-	GoHandleFoundPeer func(remotePID string) bool            = nil
-	GoReceiveFromPeer func(remotePID string, payload []byte) = nil
-)
-
-// Native -> Go functions
-func BindNativeToGoFunctions(hfp func(string) bool, rfp func(string, []byte)) {
-	GoHandleFoundPeer = hfp
-	GoReceiveFromPeer = rfp
-}
-
 func StartMCDriver(localPID string) {
 	cPID := C.CString(localPID)
 	defer C.free(unsafe.Pointer(cPID))
@@ -33,6 +22,11 @@ func StartMCDriver(localPID string) {
 func StopMCDriver() {
 	C.StopMCDriver()
 }
+
+var (
+	GoHandleFoundPeer func(remotePID string) bool            = nil
+	GoReceiveFromPeer func(remotePID string, payload []byte) = nil
+)
 
 //export HandleFoundPeer
 func HandleFoundPeer(remotePID *C.char) C.int {

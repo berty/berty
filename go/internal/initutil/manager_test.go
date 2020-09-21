@@ -25,7 +25,7 @@ func verifySetupLeakDetection(t *testing.T) {
 }
 
 func verifyRunningLeakDetection(t *testing.T) {
-	//waiting for some go routines finished
+	// waiting for some go routines finished
 	time.Sleep(5 * time.Second)
 	goleak.VerifyNone(t,
 		goleak.IgnoreTopFunction("github.com/ipfs/go-log/writer.(*MirrorWriter).logRoutine"),    // global writer created at github.com/ipfs/go-log@v1.0.4/writer/option.go, refer by github.com/ipfs/, like go-bitswap

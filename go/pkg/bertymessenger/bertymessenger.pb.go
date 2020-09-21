@@ -18,9 +18,11 @@ import (
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -278,18 +280,23 @@ func (*ConversationOpen) ProtoMessage()    {}
 func (*ConversationOpen) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{0}
 }
+
 func (m *ConversationOpen) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConversationOpen.Unmarshal(m, b)
 }
+
 func (m *ConversationOpen) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ConversationOpen.Marshal(b, m, deterministic)
 }
+
 func (m *ConversationOpen) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationOpen.Merge(m, src)
 }
+
 func (m *ConversationOpen) XXX_Size() int {
 	return xxx_messageInfo_ConversationOpen.Size(m)
 }
+
 func (m *ConversationOpen) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationOpen.DiscardUnknown(m)
 }
@@ -306,18 +313,23 @@ func (*ConversationOpen_Request) ProtoMessage()    {}
 func (*ConversationOpen_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{0, 0}
 }
+
 func (m *ConversationOpen_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConversationOpen_Request.Unmarshal(m, b)
 }
+
 func (m *ConversationOpen_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ConversationOpen_Request.Marshal(b, m, deterministic)
 }
+
 func (m *ConversationOpen_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationOpen_Request.Merge(m, src)
 }
+
 func (m *ConversationOpen_Request) XXX_Size() int {
 	return xxx_messageInfo_ConversationOpen_Request.Size(m)
 }
+
 func (m *ConversationOpen_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationOpen_Request.DiscardUnknown(m)
 }
@@ -340,18 +352,23 @@ func (*ConversationOpen_Reply) ProtoMessage()    {}
 func (*ConversationOpen_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{0, 1}
 }
+
 func (m *ConversationOpen_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConversationOpen_Reply.Unmarshal(m, b)
 }
+
 func (m *ConversationOpen_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ConversationOpen_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *ConversationOpen_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationOpen_Reply.Merge(m, src)
 }
+
 func (m *ConversationOpen_Reply) XXX_Size() int {
 	return xxx_messageInfo_ConversationOpen_Reply.Size(m)
 }
+
 func (m *ConversationOpen_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationOpen_Reply.DiscardUnknown(m)
 }
@@ -367,18 +384,23 @@ func (*ConversationClose) ProtoMessage()    {}
 func (*ConversationClose) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{1}
 }
+
 func (m *ConversationClose) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConversationClose.Unmarshal(m, b)
 }
+
 func (m *ConversationClose) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ConversationClose.Marshal(b, m, deterministic)
 }
+
 func (m *ConversationClose) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationClose.Merge(m, src)
 }
+
 func (m *ConversationClose) XXX_Size() int {
 	return xxx_messageInfo_ConversationClose.Size(m)
 }
+
 func (m *ConversationClose) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationClose.DiscardUnknown(m)
 }
@@ -395,18 +417,23 @@ func (*ConversationClose_Request) ProtoMessage()    {}
 func (*ConversationClose_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{1, 0}
 }
+
 func (m *ConversationClose_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConversationClose_Request.Unmarshal(m, b)
 }
+
 func (m *ConversationClose_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ConversationClose_Request.Marshal(b, m, deterministic)
 }
+
 func (m *ConversationClose_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationClose_Request.Merge(m, src)
 }
+
 func (m *ConversationClose_Request) XXX_Size() int {
 	return xxx_messageInfo_ConversationClose_Request.Size(m)
 }
+
 func (m *ConversationClose_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationClose_Request.DiscardUnknown(m)
 }
@@ -429,18 +456,23 @@ func (*ConversationClose_Reply) ProtoMessage()    {}
 func (*ConversationClose_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{1, 1}
 }
+
 func (m *ConversationClose_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConversationClose_Reply.Unmarshal(m, b)
 }
+
 func (m *ConversationClose_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ConversationClose_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *ConversationClose_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationClose_Reply.Merge(m, src)
 }
+
 func (m *ConversationClose_Reply) XXX_Size() int {
 	return xxx_messageInfo_ConversationClose_Reply.Size(m)
 }
+
 func (m *ConversationClose_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationClose_Reply.DiscardUnknown(m)
 }
@@ -456,18 +488,23 @@ func (*EchoTest) ProtoMessage()    {}
 func (*EchoTest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{2}
 }
+
 func (m *EchoTest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EchoTest.Unmarshal(m, b)
 }
+
 func (m *EchoTest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EchoTest.Marshal(b, m, deterministic)
 }
+
 func (m *EchoTest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EchoTest.Merge(m, src)
 }
+
 func (m *EchoTest) XXX_Size() int {
 	return xxx_messageInfo_EchoTest.Size(m)
 }
+
 func (m *EchoTest) XXX_DiscardUnknown() {
 	xxx_messageInfo_EchoTest.DiscardUnknown(m)
 }
@@ -485,18 +522,23 @@ func (*EchoTest_Request) ProtoMessage()    {}
 func (*EchoTest_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{2, 0}
 }
+
 func (m *EchoTest_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EchoTest_Request.Unmarshal(m, b)
 }
+
 func (m *EchoTest_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EchoTest_Request.Marshal(b, m, deterministic)
 }
+
 func (m *EchoTest_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EchoTest_Request.Merge(m, src)
 }
+
 func (m *EchoTest_Request) XXX_Size() int {
 	return xxx_messageInfo_EchoTest_Request.Size(m)
 }
+
 func (m *EchoTest_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_EchoTest_Request.DiscardUnknown(m)
 }
@@ -527,18 +569,23 @@ func (*EchoTest_Reply) ProtoMessage()    {}
 func (*EchoTest_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{2, 1}
 }
+
 func (m *EchoTest_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EchoTest_Reply.Unmarshal(m, b)
 }
+
 func (m *EchoTest_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EchoTest_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *EchoTest_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EchoTest_Reply.Merge(m, src)
 }
+
 func (m *EchoTest_Reply) XXX_Size() int {
 	return xxx_messageInfo_EchoTest_Reply.Size(m)
 }
+
 func (m *EchoTest_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_EchoTest_Reply.DiscardUnknown(m)
 }
@@ -561,18 +608,23 @@ func (*InstanceShareableBertyID) ProtoMessage()    {}
 func (*InstanceShareableBertyID) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{3}
 }
+
 func (m *InstanceShareableBertyID) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InstanceShareableBertyID.Unmarshal(m, b)
 }
+
 func (m *InstanceShareableBertyID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_InstanceShareableBertyID.Marshal(b, m, deterministic)
 }
+
 func (m *InstanceShareableBertyID) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_InstanceShareableBertyID.Merge(m, src)
 }
+
 func (m *InstanceShareableBertyID) XXX_Size() int {
 	return xxx_messageInfo_InstanceShareableBertyID.Size(m)
 }
+
 func (m *InstanceShareableBertyID) XXX_DiscardUnknown() {
 	xxx_messageInfo_InstanceShareableBertyID.DiscardUnknown(m)
 }
@@ -591,18 +643,23 @@ func (*InstanceShareableBertyID_Request) ProtoMessage()    {}
 func (*InstanceShareableBertyID_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{3, 0}
 }
+
 func (m *InstanceShareableBertyID_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InstanceShareableBertyID_Request.Unmarshal(m, b)
 }
+
 func (m *InstanceShareableBertyID_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_InstanceShareableBertyID_Request.Marshal(b, m, deterministic)
 }
+
 func (m *InstanceShareableBertyID_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_InstanceShareableBertyID_Request.Merge(m, src)
 }
+
 func (m *InstanceShareableBertyID_Request) XXX_Size() int {
 	return xxx_messageInfo_InstanceShareableBertyID_Request.Size(m)
 }
+
 func (m *InstanceShareableBertyID_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_InstanceShareableBertyID_Request.DiscardUnknown(m)
 }
@@ -636,18 +693,23 @@ func (*InstanceShareableBertyID_Reply) ProtoMessage()    {}
 func (*InstanceShareableBertyID_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{3, 1}
 }
+
 func (m *InstanceShareableBertyID_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_InstanceShareableBertyID_Reply.Unmarshal(m, b)
 }
+
 func (m *InstanceShareableBertyID_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_InstanceShareableBertyID_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *InstanceShareableBertyID_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_InstanceShareableBertyID_Reply.Merge(m, src)
 }
+
 func (m *InstanceShareableBertyID_Reply) XXX_Size() int {
 	return xxx_messageInfo_InstanceShareableBertyID_Reply.Size(m)
 }
+
 func (m *InstanceShareableBertyID_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_InstanceShareableBertyID_Reply.DiscardUnknown(m)
 }
@@ -691,18 +753,23 @@ func (*ShareableBertyGroup) ProtoMessage()    {}
 func (*ShareableBertyGroup) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{4}
 }
+
 func (m *ShareableBertyGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ShareableBertyGroup.Unmarshal(m, b)
 }
+
 func (m *ShareableBertyGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ShareableBertyGroup.Marshal(b, m, deterministic)
 }
+
 func (m *ShareableBertyGroup) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ShareableBertyGroup.Merge(m, src)
 }
+
 func (m *ShareableBertyGroup) XXX_Size() int {
 	return xxx_messageInfo_ShareableBertyGroup.Size(m)
 }
+
 func (m *ShareableBertyGroup) XXX_DiscardUnknown() {
 	xxx_messageInfo_ShareableBertyGroup.DiscardUnknown(m)
 }
@@ -720,18 +787,23 @@ func (*ShareableBertyGroup_Request) ProtoMessage()    {}
 func (*ShareableBertyGroup_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{4, 0}
 }
+
 func (m *ShareableBertyGroup_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ShareableBertyGroup_Request.Unmarshal(m, b)
 }
+
 func (m *ShareableBertyGroup_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ShareableBertyGroup_Request.Marshal(b, m, deterministic)
 }
+
 func (m *ShareableBertyGroup_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ShareableBertyGroup_Request.Merge(m, src)
 }
+
 func (m *ShareableBertyGroup_Request) XXX_Size() int {
 	return xxx_messageInfo_ShareableBertyGroup_Request.Size(m)
 }
+
 func (m *ShareableBertyGroup_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_ShareableBertyGroup_Request.DiscardUnknown(m)
 }
@@ -765,18 +837,23 @@ func (*ShareableBertyGroup_Reply) ProtoMessage()    {}
 func (*ShareableBertyGroup_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{4, 1}
 }
+
 func (m *ShareableBertyGroup_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ShareableBertyGroup_Reply.Unmarshal(m, b)
 }
+
 func (m *ShareableBertyGroup_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ShareableBertyGroup_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *ShareableBertyGroup_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ShareableBertyGroup_Reply.Merge(m, src)
 }
+
 func (m *ShareableBertyGroup_Reply) XXX_Size() int {
 	return xxx_messageInfo_ShareableBertyGroup_Reply.Size(m)
 }
+
 func (m *ShareableBertyGroup_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ShareableBertyGroup_Reply.DiscardUnknown(m)
 }
@@ -820,18 +897,23 @@ func (*DevShareInstanceBertyID) ProtoMessage()    {}
 func (*DevShareInstanceBertyID) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{5}
 }
+
 func (m *DevShareInstanceBertyID) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DevShareInstanceBertyID.Unmarshal(m, b)
 }
+
 func (m *DevShareInstanceBertyID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_DevShareInstanceBertyID.Marshal(b, m, deterministic)
 }
+
 func (m *DevShareInstanceBertyID) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DevShareInstanceBertyID.Merge(m, src)
 }
+
 func (m *DevShareInstanceBertyID) XXX_Size() int {
 	return xxx_messageInfo_DevShareInstanceBertyID.Size(m)
 }
+
 func (m *DevShareInstanceBertyID) XXX_DiscardUnknown() {
 	xxx_messageInfo_DevShareInstanceBertyID.DiscardUnknown(m)
 }
@@ -850,18 +932,23 @@ func (*DevShareInstanceBertyID_Request) ProtoMessage()    {}
 func (*DevShareInstanceBertyID_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{5, 0}
 }
+
 func (m *DevShareInstanceBertyID_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DevShareInstanceBertyID_Request.Unmarshal(m, b)
 }
+
 func (m *DevShareInstanceBertyID_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_DevShareInstanceBertyID_Request.Marshal(b, m, deterministic)
 }
+
 func (m *DevShareInstanceBertyID_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DevShareInstanceBertyID_Request.Merge(m, src)
 }
+
 func (m *DevShareInstanceBertyID_Request) XXX_Size() int {
 	return xxx_messageInfo_DevShareInstanceBertyID_Request.Size(m)
 }
+
 func (m *DevShareInstanceBertyID_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_DevShareInstanceBertyID_Request.DiscardUnknown(m)
 }
@@ -891,18 +978,23 @@ func (*DevShareInstanceBertyID_Reply) ProtoMessage()    {}
 func (*DevShareInstanceBertyID_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{5, 1}
 }
+
 func (m *DevShareInstanceBertyID_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DevShareInstanceBertyID_Reply.Unmarshal(m, b)
 }
+
 func (m *DevShareInstanceBertyID_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_DevShareInstanceBertyID_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *DevShareInstanceBertyID_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DevShareInstanceBertyID_Reply.Merge(m, src)
 }
+
 func (m *DevShareInstanceBertyID_Reply) XXX_Size() int {
 	return xxx_messageInfo_DevShareInstanceBertyID_Reply.Size(m)
 }
+
 func (m *DevShareInstanceBertyID_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_DevShareInstanceBertyID_Reply.DiscardUnknown(m)
 }
@@ -918,18 +1010,23 @@ func (*ParseDeepLink) ProtoMessage()    {}
 func (*ParseDeepLink) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{6}
 }
+
 func (m *ParseDeepLink) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ParseDeepLink.Unmarshal(m, b)
 }
+
 func (m *ParseDeepLink) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ParseDeepLink.Marshal(b, m, deterministic)
 }
+
 func (m *ParseDeepLink) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ParseDeepLink.Merge(m, src)
 }
+
 func (m *ParseDeepLink) XXX_Size() int {
 	return xxx_messageInfo_ParseDeepLink.Size(m)
 }
+
 func (m *ParseDeepLink) XXX_DiscardUnknown() {
 	xxx_messageInfo_ParseDeepLink.DiscardUnknown(m)
 }
@@ -946,18 +1043,23 @@ func (*ParseDeepLink_Request) ProtoMessage()    {}
 func (*ParseDeepLink_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{6, 0}
 }
+
 func (m *ParseDeepLink_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ParseDeepLink_Request.Unmarshal(m, b)
 }
+
 func (m *ParseDeepLink_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ParseDeepLink_Request.Marshal(b, m, deterministic)
 }
+
 func (m *ParseDeepLink_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ParseDeepLink_Request.Merge(m, src)
 }
+
 func (m *ParseDeepLink_Request) XXX_Size() int {
 	return xxx_messageInfo_ParseDeepLink_Request.Size(m)
 }
+
 func (m *ParseDeepLink_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_ParseDeepLink_Request.DiscardUnknown(m)
 }
@@ -983,18 +1085,23 @@ func (*ParseDeepLink_Reply) ProtoMessage()    {}
 func (*ParseDeepLink_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{6, 1}
 }
+
 func (m *ParseDeepLink_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ParseDeepLink_Reply.Unmarshal(m, b)
 }
+
 func (m *ParseDeepLink_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ParseDeepLink_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *ParseDeepLink_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ParseDeepLink_Reply.Merge(m, src)
 }
+
 func (m *ParseDeepLink_Reply) XXX_Size() int {
 	return xxx_messageInfo_ParseDeepLink_Reply.Size(m)
 }
+
 func (m *ParseDeepLink_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ParseDeepLink_Reply.DiscardUnknown(m)
 }
@@ -1031,18 +1138,23 @@ func (*SendContactRequest) ProtoMessage()    {}
 func (*SendContactRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{7}
 }
+
 func (m *SendContactRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SendContactRequest.Unmarshal(m, b)
 }
+
 func (m *SendContactRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SendContactRequest.Marshal(b, m, deterministic)
 }
+
 func (m *SendContactRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SendContactRequest.Merge(m, src)
 }
+
 func (m *SendContactRequest) XXX_Size() int {
 	return xxx_messageInfo_SendContactRequest.Size(m)
 }
+
 func (m *SendContactRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_SendContactRequest.DiscardUnknown(m)
 }
@@ -1061,18 +1173,23 @@ func (*SendContactRequest_Request) ProtoMessage()    {}
 func (*SendContactRequest_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{7, 0}
 }
+
 func (m *SendContactRequest_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SendContactRequest_Request.Unmarshal(m, b)
 }
+
 func (m *SendContactRequest_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SendContactRequest_Request.Marshal(b, m, deterministic)
 }
+
 func (m *SendContactRequest_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SendContactRequest_Request.Merge(m, src)
 }
+
 func (m *SendContactRequest_Request) XXX_Size() int {
 	return xxx_messageInfo_SendContactRequest_Request.Size(m)
 }
+
 func (m *SendContactRequest_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_SendContactRequest_Request.DiscardUnknown(m)
 }
@@ -1109,18 +1226,23 @@ func (*SendContactRequest_Reply) ProtoMessage()    {}
 func (*SendContactRequest_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{7, 1}
 }
+
 func (m *SendContactRequest_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SendContactRequest_Reply.Unmarshal(m, b)
 }
+
 func (m *SendContactRequest_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SendContactRequest_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *SendContactRequest_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SendContactRequest_Reply.Merge(m, src)
 }
+
 func (m *SendContactRequest_Reply) XXX_Size() int {
 	return xxx_messageInfo_SendContactRequest_Reply.Size(m)
 }
+
 func (m *SendContactRequest_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_SendContactRequest_Reply.DiscardUnknown(m)
 }
@@ -1136,18 +1258,23 @@ func (*SendAck) ProtoMessage()    {}
 func (*SendAck) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{8}
 }
+
 func (m *SendAck) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SendAck.Unmarshal(m, b)
 }
+
 func (m *SendAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SendAck.Marshal(b, m, deterministic)
 }
+
 func (m *SendAck) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SendAck.Merge(m, src)
 }
+
 func (m *SendAck) XXX_Size() int {
 	return xxx_messageInfo_SendAck.Size(m)
 }
+
 func (m *SendAck) XXX_DiscardUnknown() {
 	xxx_messageInfo_SendAck.DiscardUnknown(m)
 }
@@ -1165,18 +1292,23 @@ func (*SendAck_Request) ProtoMessage()    {}
 func (*SendAck_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{8, 0}
 }
+
 func (m *SendAck_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SendAck_Request.Unmarshal(m, b)
 }
+
 func (m *SendAck_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SendAck_Request.Marshal(b, m, deterministic)
 }
+
 func (m *SendAck_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SendAck_Request.Merge(m, src)
 }
+
 func (m *SendAck_Request) XXX_Size() int {
 	return xxx_messageInfo_SendAck_Request.Size(m)
 }
+
 func (m *SendAck_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_SendAck_Request.DiscardUnknown(m)
 }
@@ -1206,18 +1338,23 @@ func (*SendAck_Reply) ProtoMessage()    {}
 func (*SendAck_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{8, 1}
 }
+
 func (m *SendAck_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SendAck_Reply.Unmarshal(m, b)
 }
+
 func (m *SendAck_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SendAck_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *SendAck_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SendAck_Reply.Merge(m, src)
 }
+
 func (m *SendAck_Reply) XXX_Size() int {
 	return xxx_messageInfo_SendAck_Reply.Size(m)
 }
+
 func (m *SendAck_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_SendAck_Reply.DiscardUnknown(m)
 }
@@ -1233,18 +1370,23 @@ func (*SendMessage) ProtoMessage()    {}
 func (*SendMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{9}
 }
+
 func (m *SendMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SendMessage.Unmarshal(m, b)
 }
+
 func (m *SendMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SendMessage.Marshal(b, m, deterministic)
 }
+
 func (m *SendMessage) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SendMessage.Merge(m, src)
 }
+
 func (m *SendMessage) XXX_Size() int {
 	return xxx_messageInfo_SendMessage.Size(m)
 }
+
 func (m *SendMessage) XXX_DiscardUnknown() {
 	xxx_messageInfo_SendMessage.DiscardUnknown(m)
 }
@@ -1262,18 +1404,23 @@ func (*SendMessage_Request) ProtoMessage()    {}
 func (*SendMessage_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{9, 0}
 }
+
 func (m *SendMessage_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SendMessage_Request.Unmarshal(m, b)
 }
+
 func (m *SendMessage_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SendMessage_Request.Marshal(b, m, deterministic)
 }
+
 func (m *SendMessage_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SendMessage_Request.Merge(m, src)
 }
+
 func (m *SendMessage_Request) XXX_Size() int {
 	return xxx_messageInfo_SendMessage_Request.Size(m)
 }
+
 func (m *SendMessage_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_SendMessage_Request.DiscardUnknown(m)
 }
@@ -1303,18 +1450,23 @@ func (*SendMessage_Reply) ProtoMessage()    {}
 func (*SendMessage_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{9, 1}
 }
+
 func (m *SendMessage_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SendMessage_Reply.Unmarshal(m, b)
 }
+
 func (m *SendMessage_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SendMessage_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *SendMessage_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SendMessage_Reply.Merge(m, src)
 }
+
 func (m *SendMessage_Reply) XXX_Size() int {
 	return xxx_messageInfo_SendMessage_Reply.Size(m)
 }
+
 func (m *SendMessage_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_SendMessage_Reply.DiscardUnknown(m)
 }
@@ -1333,18 +1485,23 @@ func (*BertyID) ProtoMessage()    {}
 func (*BertyID) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{10}
 }
+
 func (m *BertyID) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BertyID.Unmarshal(m, b)
 }
+
 func (m *BertyID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BertyID.Marshal(b, m, deterministic)
 }
+
 func (m *BertyID) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_BertyID.Merge(m, src)
 }
+
 func (m *BertyID) XXX_Size() int {
 	return xxx_messageInfo_BertyID.Size(m)
 }
+
 func (m *BertyID) XXX_DiscardUnknown() {
 	xxx_messageInfo_BertyID.DiscardUnknown(m)
 }
@@ -1383,18 +1540,23 @@ func (*BertyGroup) ProtoMessage()    {}
 func (*BertyGroup) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{11}
 }
+
 func (m *BertyGroup) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BertyGroup.Unmarshal(m, b)
 }
+
 func (m *BertyGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BertyGroup.Marshal(b, m, deterministic)
 }
+
 func (m *BertyGroup) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_BertyGroup.Merge(m, src)
 }
+
 func (m *BertyGroup) XXX_Size() int {
 	return xxx_messageInfo_BertyGroup.Size(m)
 }
+
 func (m *BertyGroup) XXX_DiscardUnknown() {
 	xxx_messageInfo_BertyGroup.DiscardUnknown(m)
 }
@@ -1427,18 +1589,23 @@ func (*AppMessage) ProtoMessage()    {}
 func (*AppMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{12}
 }
+
 func (m *AppMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AppMessage.Unmarshal(m, b)
 }
+
 func (m *AppMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AppMessage.Marshal(b, m, deterministic)
 }
+
 func (m *AppMessage) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AppMessage.Merge(m, src)
 }
+
 func (m *AppMessage) XXX_Size() int {
 	return xxx_messageInfo_AppMessage.Size(m)
 }
+
 func (m *AppMessage) XXX_DiscardUnknown() {
 	xxx_messageInfo_AppMessage.DiscardUnknown(m)
 }
@@ -1476,18 +1643,23 @@ func (*AppMessage_UserMessage) ProtoMessage()    {}
 func (*AppMessage_UserMessage) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{12, 0}
 }
+
 func (m *AppMessage_UserMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AppMessage_UserMessage.Unmarshal(m, b)
 }
+
 func (m *AppMessage_UserMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AppMessage_UserMessage.Marshal(b, m, deterministic)
 }
+
 func (m *AppMessage_UserMessage) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AppMessage_UserMessage.Merge(m, src)
 }
+
 func (m *AppMessage_UserMessage) XXX_Size() int {
 	return xxx_messageInfo_AppMessage_UserMessage.Size(m)
 }
+
 func (m *AppMessage_UserMessage) XXX_DiscardUnknown() {
 	xxx_messageInfo_AppMessage_UserMessage.DiscardUnknown(m)
 }
@@ -1512,18 +1684,23 @@ func (*AppMessage_UserReaction) ProtoMessage()    {}
 func (*AppMessage_UserReaction) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{12, 1}
 }
+
 func (m *AppMessage_UserReaction) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AppMessage_UserReaction.Unmarshal(m, b)
 }
+
 func (m *AppMessage_UserReaction) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AppMessage_UserReaction.Marshal(b, m, deterministic)
 }
+
 func (m *AppMessage_UserReaction) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AppMessage_UserReaction.Merge(m, src)
 }
+
 func (m *AppMessage_UserReaction) XXX_Size() int {
 	return xxx_messageInfo_AppMessage_UserReaction.Size(m)
 }
+
 func (m *AppMessage_UserReaction) XXX_DiscardUnknown() {
 	xxx_messageInfo_AppMessage_UserReaction.DiscardUnknown(m)
 }
@@ -1554,18 +1731,23 @@ func (*AppMessage_GroupInvitation) ProtoMessage()    {}
 func (*AppMessage_GroupInvitation) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{12, 2}
 }
+
 func (m *AppMessage_GroupInvitation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AppMessage_GroupInvitation.Unmarshal(m, b)
 }
+
 func (m *AppMessage_GroupInvitation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AppMessage_GroupInvitation.Marshal(b, m, deterministic)
 }
+
 func (m *AppMessage_GroupInvitation) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AppMessage_GroupInvitation.Merge(m, src)
 }
+
 func (m *AppMessage_GroupInvitation) XXX_Size() int {
 	return xxx_messageInfo_AppMessage_GroupInvitation.Size(m)
 }
+
 func (m *AppMessage_GroupInvitation) XXX_DiscardUnknown() {
 	xxx_messageInfo_AppMessage_GroupInvitation.DiscardUnknown(m)
 }
@@ -1589,18 +1771,23 @@ func (*AppMessage_SetGroupName) ProtoMessage()    {}
 func (*AppMessage_SetGroupName) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{12, 3}
 }
+
 func (m *AppMessage_SetGroupName) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AppMessage_SetGroupName.Unmarshal(m, b)
 }
+
 func (m *AppMessage_SetGroupName) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AppMessage_SetGroupName.Marshal(b, m, deterministic)
 }
+
 func (m *AppMessage_SetGroupName) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AppMessage_SetGroupName.Merge(m, src)
 }
+
 func (m *AppMessage_SetGroupName) XXX_Size() int {
 	return xxx_messageInfo_AppMessage_SetGroupName.Size(m)
 }
+
 func (m *AppMessage_SetGroupName) XXX_DiscardUnknown() {
 	xxx_messageInfo_AppMessage_SetGroupName.DiscardUnknown(m)
 }
@@ -1624,18 +1811,23 @@ func (*AppMessage_SetUserName) ProtoMessage()    {}
 func (*AppMessage_SetUserName) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{12, 4}
 }
+
 func (m *AppMessage_SetUserName) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AppMessage_SetUserName.Unmarshal(m, b)
 }
+
 func (m *AppMessage_SetUserName) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AppMessage_SetUserName.Marshal(b, m, deterministic)
 }
+
 func (m *AppMessage_SetUserName) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AppMessage_SetUserName.Merge(m, src)
 }
+
 func (m *AppMessage_SetUserName) XXX_Size() int {
 	return xxx_messageInfo_AppMessage_SetUserName.Size(m)
 }
+
 func (m *AppMessage_SetUserName) XXX_DiscardUnknown() {
 	xxx_messageInfo_AppMessage_SetUserName.DiscardUnknown(m)
 }
@@ -1659,18 +1851,23 @@ func (*AppMessage_Acknowledge) ProtoMessage()    {}
 func (*AppMessage_Acknowledge) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{12, 5}
 }
+
 func (m *AppMessage_Acknowledge) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AppMessage_Acknowledge.Unmarshal(m, b)
 }
+
 func (m *AppMessage_Acknowledge) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AppMessage_Acknowledge.Marshal(b, m, deterministic)
 }
+
 func (m *AppMessage_Acknowledge) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AppMessage_Acknowledge.Merge(m, src)
 }
+
 func (m *AppMessage_Acknowledge) XXX_Size() int {
 	return xxx_messageInfo_AppMessage_Acknowledge.Size(m)
 }
+
 func (m *AppMessage_Acknowledge) XXX_DiscardUnknown() {
 	xxx_messageInfo_AppMessage_Acknowledge.DiscardUnknown(m)
 }
@@ -1693,18 +1890,23 @@ func (*SystemInfo) ProtoMessage()    {}
 func (*SystemInfo) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{13}
 }
+
 func (m *SystemInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SystemInfo.Unmarshal(m, b)
 }
+
 func (m *SystemInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SystemInfo.Marshal(b, m, deterministic)
 }
+
 func (m *SystemInfo) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SystemInfo.Merge(m, src)
 }
+
 func (m *SystemInfo) XXX_Size() int {
 	return xxx_messageInfo_SystemInfo.Size(m)
 }
+
 func (m *SystemInfo) XXX_DiscardUnknown() {
 	xxx_messageInfo_SystemInfo.DiscardUnknown(m)
 }
@@ -1720,18 +1922,23 @@ func (*SystemInfo_Request) ProtoMessage()    {}
 func (*SystemInfo_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{13, 0}
 }
+
 func (m *SystemInfo_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SystemInfo_Request.Unmarshal(m, b)
 }
+
 func (m *SystemInfo_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SystemInfo_Request.Marshal(b, m, deterministic)
 }
+
 func (m *SystemInfo_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SystemInfo_Request.Merge(m, src)
 }
+
 func (m *SystemInfo_Request) XXX_Size() int {
 	return xxx_messageInfo_SystemInfo_Request.Size(m)
 }
+
 func (m *SystemInfo_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_SystemInfo_Request.DiscardUnknown(m)
 }
@@ -1749,18 +1956,23 @@ func (*SystemInfo_Reply) ProtoMessage()    {}
 func (*SystemInfo_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{13, 1}
 }
+
 func (m *SystemInfo_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SystemInfo_Reply.Unmarshal(m, b)
 }
+
 func (m *SystemInfo_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SystemInfo_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *SystemInfo_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SystemInfo_Reply.Merge(m, src)
 }
+
 func (m *SystemInfo_Reply) XXX_Size() int {
 	return xxx_messageInfo_SystemInfo_Reply.Size(m)
 }
+
 func (m *SystemInfo_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_SystemInfo_Reply.DiscardUnknown(m)
 }
@@ -1794,18 +2006,23 @@ func (*SystemInfo_Messenger) ProtoMessage()    {}
 func (*SystemInfo_Messenger) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{13, 2}
 }
+
 func (m *SystemInfo_Messenger) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SystemInfo_Messenger.Unmarshal(m, b)
 }
+
 func (m *SystemInfo_Messenger) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SystemInfo_Messenger.Marshal(b, m, deterministic)
 }
+
 func (m *SystemInfo_Messenger) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SystemInfo_Messenger.Merge(m, src)
 }
+
 func (m *SystemInfo_Messenger) XXX_Size() int {
 	return xxx_messageInfo_SystemInfo_Messenger.Size(m)
 }
+
 func (m *SystemInfo_Messenger) XXX_DiscardUnknown() {
 	xxx_messageInfo_SystemInfo_Messenger.DiscardUnknown(m)
 }
@@ -1855,18 +2072,23 @@ func (*SystemInfo_DB) ProtoMessage()    {}
 func (*SystemInfo_DB) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{13, 3}
 }
+
 func (m *SystemInfo_DB) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SystemInfo_DB.Unmarshal(m, b)
 }
+
 func (m *SystemInfo_DB) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SystemInfo_DB.Marshal(b, m, deterministic)
 }
+
 func (m *SystemInfo_DB) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SystemInfo_DB.Merge(m, src)
 }
+
 func (m *SystemInfo_DB) XXX_Size() int {
 	return xxx_messageInfo_SystemInfo_DB.Size(m)
 }
+
 func (m *SystemInfo_DB) XXX_DiscardUnknown() {
 	xxx_messageInfo_SystemInfo_DB.DiscardUnknown(m)
 }
@@ -1924,18 +2146,23 @@ func (*ConversationJoin) ProtoMessage()    {}
 func (*ConversationJoin) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{14}
 }
+
 func (m *ConversationJoin) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConversationJoin.Unmarshal(m, b)
 }
+
 func (m *ConversationJoin) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ConversationJoin.Marshal(b, m, deterministic)
 }
+
 func (m *ConversationJoin) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationJoin.Merge(m, src)
 }
+
 func (m *ConversationJoin) XXX_Size() int {
 	return xxx_messageInfo_ConversationJoin.Size(m)
 }
+
 func (m *ConversationJoin) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationJoin.DiscardUnknown(m)
 }
@@ -1952,18 +2179,23 @@ func (*ConversationJoin_Request) ProtoMessage()    {}
 func (*ConversationJoin_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{14, 0}
 }
+
 func (m *ConversationJoin_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConversationJoin_Request.Unmarshal(m, b)
 }
+
 func (m *ConversationJoin_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ConversationJoin_Request.Marshal(b, m, deterministic)
 }
+
 func (m *ConversationJoin_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationJoin_Request.Merge(m, src)
 }
+
 func (m *ConversationJoin_Request) XXX_Size() int {
 	return xxx_messageInfo_ConversationJoin_Request.Size(m)
 }
+
 func (m *ConversationJoin_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationJoin_Request.DiscardUnknown(m)
 }
@@ -1986,18 +2218,23 @@ func (*ConversationJoin_Reply) ProtoMessage()    {}
 func (*ConversationJoin_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{14, 1}
 }
+
 func (m *ConversationJoin_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConversationJoin_Reply.Unmarshal(m, b)
 }
+
 func (m *ConversationJoin_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ConversationJoin_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *ConversationJoin_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationJoin_Reply.Merge(m, src)
 }
+
 func (m *ConversationJoin_Reply) XXX_Size() int {
 	return xxx_messageInfo_ConversationJoin_Reply.Size(m)
 }
+
 func (m *ConversationJoin_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationJoin_Reply.DiscardUnknown(m)
 }
@@ -2017,18 +2254,23 @@ func (*Account) ProtoMessage()    {}
 func (*Account) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{15}
 }
+
 func (m *Account) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Account.Unmarshal(m, b)
 }
+
 func (m *Account) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Account.Marshal(b, m, deterministic)
 }
+
 func (m *Account) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Account.Merge(m, src)
 }
+
 func (m *Account) XXX_Size() int {
 	return xxx_messageInfo_Account.Size(m)
 }
+
 func (m *Account) XXX_DiscardUnknown() {
 	xxx_messageInfo_Account.DiscardUnknown(m)
 }
@@ -2084,18 +2326,23 @@ func (*Interaction) ProtoMessage()    {}
 func (*Interaction) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{16}
 }
+
 func (m *Interaction) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Interaction.Unmarshal(m, b)
 }
+
 func (m *Interaction) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Interaction.Marshal(b, m, deterministic)
 }
+
 func (m *Interaction) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Interaction.Merge(m, src)
 }
+
 func (m *Interaction) XXX_Size() int {
 	return xxx_messageInfo_Interaction.Size(m)
 }
+
 func (m *Interaction) XXX_DiscardUnknown() {
 	xxx_messageInfo_Interaction.DiscardUnknown(m)
 }
@@ -2204,18 +2451,23 @@ func (*Contact) ProtoMessage()    {}
 func (*Contact) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{17}
 }
+
 func (m *Contact) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Contact.Unmarshal(m, b)
 }
+
 func (m *Contact) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Contact.Marshal(b, m, deterministic)
 }
+
 func (m *Contact) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Contact.Merge(m, src)
 }
+
 func (m *Contact) XXX_Size() int {
 	return xxx_messageInfo_Contact.Size(m)
 }
+
 func (m *Contact) XXX_DiscardUnknown() {
 	xxx_messageInfo_Contact.DiscardUnknown(m)
 }
@@ -2304,18 +2556,23 @@ func (*Conversation) ProtoMessage()    {}
 func (*Conversation) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{18}
 }
+
 func (m *Conversation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Conversation.Unmarshal(m, b)
 }
+
 func (m *Conversation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Conversation.Marshal(b, m, deterministic)
 }
+
 func (m *Conversation) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Conversation.Merge(m, src)
 }
+
 func (m *Conversation) XXX_Size() int {
 	return xxx_messageInfo_Conversation.Size(m)
 }
+
 func (m *Conversation) XXX_DiscardUnknown() {
 	xxx_messageInfo_Conversation.DiscardUnknown(m)
 }
@@ -2427,18 +2684,23 @@ func (*Member) ProtoMessage()    {}
 func (*Member) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{19}
 }
+
 func (m *Member) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Member.Unmarshal(m, b)
 }
+
 func (m *Member) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Member.Marshal(b, m, deterministic)
 }
+
 func (m *Member) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Member.Merge(m, src)
 }
+
 func (m *Member) XXX_Size() int {
 	return xxx_messageInfo_Member.Size(m)
 }
+
 func (m *Member) XXX_DiscardUnknown() {
 	xxx_messageInfo_Member.DiscardUnknown(m)
 }
@@ -2491,18 +2753,23 @@ func (*Device) ProtoMessage()    {}
 func (*Device) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{20}
 }
+
 func (m *Device) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Device.Unmarshal(m, b)
 }
+
 func (m *Device) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Device.Marshal(b, m, deterministic)
 }
+
 func (m *Device) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Device.Merge(m, src)
 }
+
 func (m *Device) XXX_Size() int {
 	return xxx_messageInfo_Device.Size(m)
 }
+
 func (m *Device) XXX_DiscardUnknown() {
 	xxx_messageInfo_Device.DiscardUnknown(m)
 }
@@ -2533,18 +2800,23 @@ func (*ContactMetadata) ProtoMessage()    {}
 func (*ContactMetadata) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{21}
 }
+
 func (m *ContactMetadata) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContactMetadata.Unmarshal(m, b)
 }
+
 func (m *ContactMetadata) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ContactMetadata.Marshal(b, m, deterministic)
 }
+
 func (m *ContactMetadata) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactMetadata.Merge(m, src)
 }
+
 func (m *ContactMetadata) XXX_Size() int {
 	return xxx_messageInfo_ContactMetadata.Size(m)
 }
+
 func (m *ContactMetadata) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactMetadata.DiscardUnknown(m)
 }
@@ -2570,18 +2842,23 @@ func (*StreamEvent) ProtoMessage()    {}
 func (*StreamEvent) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{22}
 }
+
 func (m *StreamEvent) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamEvent.Unmarshal(m, b)
 }
+
 func (m *StreamEvent) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_StreamEvent.Marshal(b, m, deterministic)
 }
+
 func (m *StreamEvent) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_StreamEvent.Merge(m, src)
 }
+
 func (m *StreamEvent) XXX_Size() int {
 	return xxx_messageInfo_StreamEvent.Size(m)
 }
+
 func (m *StreamEvent) XXX_DiscardUnknown() {
 	xxx_messageInfo_StreamEvent.DiscardUnknown(m)
 }
@@ -2612,18 +2889,23 @@ func (*StreamEvent_ConversationUpdated) ProtoMessage()    {}
 func (*StreamEvent_ConversationUpdated) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{22, 0}
 }
+
 func (m *StreamEvent_ConversationUpdated) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamEvent_ConversationUpdated.Unmarshal(m, b)
 }
+
 func (m *StreamEvent_ConversationUpdated) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_StreamEvent_ConversationUpdated.Marshal(b, m, deterministic)
 }
+
 func (m *StreamEvent_ConversationUpdated) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_StreamEvent_ConversationUpdated.Merge(m, src)
 }
+
 func (m *StreamEvent_ConversationUpdated) XXX_Size() int {
 	return xxx_messageInfo_StreamEvent_ConversationUpdated.Size(m)
 }
+
 func (m *StreamEvent_ConversationUpdated) XXX_DiscardUnknown() {
 	xxx_messageInfo_StreamEvent_ConversationUpdated.DiscardUnknown(m)
 }
@@ -2647,18 +2929,23 @@ func (*StreamEvent_ConversationDeleted) ProtoMessage()    {}
 func (*StreamEvent_ConversationDeleted) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{22, 1}
 }
+
 func (m *StreamEvent_ConversationDeleted) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamEvent_ConversationDeleted.Unmarshal(m, b)
 }
+
 func (m *StreamEvent_ConversationDeleted) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_StreamEvent_ConversationDeleted.Marshal(b, m, deterministic)
 }
+
 func (m *StreamEvent_ConversationDeleted) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_StreamEvent_ConversationDeleted.Merge(m, src)
 }
+
 func (m *StreamEvent_ConversationDeleted) XXX_Size() int {
 	return xxx_messageInfo_StreamEvent_ConversationDeleted.Size(m)
 }
+
 func (m *StreamEvent_ConversationDeleted) XXX_DiscardUnknown() {
 	xxx_messageInfo_StreamEvent_ConversationDeleted.DiscardUnknown(m)
 }
@@ -2682,18 +2969,23 @@ func (*StreamEvent_InteractionUpdated) ProtoMessage()    {}
 func (*StreamEvent_InteractionUpdated) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{22, 2}
 }
+
 func (m *StreamEvent_InteractionUpdated) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamEvent_InteractionUpdated.Unmarshal(m, b)
 }
+
 func (m *StreamEvent_InteractionUpdated) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_StreamEvent_InteractionUpdated.Marshal(b, m, deterministic)
 }
+
 func (m *StreamEvent_InteractionUpdated) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_StreamEvent_InteractionUpdated.Merge(m, src)
 }
+
 func (m *StreamEvent_InteractionUpdated) XXX_Size() int {
 	return xxx_messageInfo_StreamEvent_InteractionUpdated.Size(m)
 }
+
 func (m *StreamEvent_InteractionUpdated) XXX_DiscardUnknown() {
 	xxx_messageInfo_StreamEvent_InteractionUpdated.DiscardUnknown(m)
 }
@@ -2717,18 +3009,23 @@ func (*StreamEvent_InteractionDeleted) ProtoMessage()    {}
 func (*StreamEvent_InteractionDeleted) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{22, 3}
 }
+
 func (m *StreamEvent_InteractionDeleted) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamEvent_InteractionDeleted.Unmarshal(m, b)
 }
+
 func (m *StreamEvent_InteractionDeleted) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_StreamEvent_InteractionDeleted.Marshal(b, m, deterministic)
 }
+
 func (m *StreamEvent_InteractionDeleted) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_StreamEvent_InteractionDeleted.Merge(m, src)
 }
+
 func (m *StreamEvent_InteractionDeleted) XXX_Size() int {
 	return xxx_messageInfo_StreamEvent_InteractionDeleted.Size(m)
 }
+
 func (m *StreamEvent_InteractionDeleted) XXX_DiscardUnknown() {
 	xxx_messageInfo_StreamEvent_InteractionDeleted.DiscardUnknown(m)
 }
@@ -2752,18 +3049,23 @@ func (*StreamEvent_ContactUpdated) ProtoMessage()    {}
 func (*StreamEvent_ContactUpdated) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{22, 4}
 }
+
 func (m *StreamEvent_ContactUpdated) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamEvent_ContactUpdated.Unmarshal(m, b)
 }
+
 func (m *StreamEvent_ContactUpdated) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_StreamEvent_ContactUpdated.Marshal(b, m, deterministic)
 }
+
 func (m *StreamEvent_ContactUpdated) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_StreamEvent_ContactUpdated.Merge(m, src)
 }
+
 func (m *StreamEvent_ContactUpdated) XXX_Size() int {
 	return xxx_messageInfo_StreamEvent_ContactUpdated.Size(m)
 }
+
 func (m *StreamEvent_ContactUpdated) XXX_DiscardUnknown() {
 	xxx_messageInfo_StreamEvent_ContactUpdated.DiscardUnknown(m)
 }
@@ -2787,18 +3089,23 @@ func (*StreamEvent_AccountUpdated) ProtoMessage()    {}
 func (*StreamEvent_AccountUpdated) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{22, 5}
 }
+
 func (m *StreamEvent_AccountUpdated) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamEvent_AccountUpdated.Unmarshal(m, b)
 }
+
 func (m *StreamEvent_AccountUpdated) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_StreamEvent_AccountUpdated.Marshal(b, m, deterministic)
 }
+
 func (m *StreamEvent_AccountUpdated) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_StreamEvent_AccountUpdated.Merge(m, src)
 }
+
 func (m *StreamEvent_AccountUpdated) XXX_Size() int {
 	return xxx_messageInfo_StreamEvent_AccountUpdated.Size(m)
 }
+
 func (m *StreamEvent_AccountUpdated) XXX_DiscardUnknown() {
 	xxx_messageInfo_StreamEvent_AccountUpdated.DiscardUnknown(m)
 }
@@ -2822,18 +3129,23 @@ func (*StreamEvent_MemberUpdated) ProtoMessage()    {}
 func (*StreamEvent_MemberUpdated) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{22, 6}
 }
+
 func (m *StreamEvent_MemberUpdated) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamEvent_MemberUpdated.Unmarshal(m, b)
 }
+
 func (m *StreamEvent_MemberUpdated) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_StreamEvent_MemberUpdated.Marshal(b, m, deterministic)
 }
+
 func (m *StreamEvent_MemberUpdated) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_StreamEvent_MemberUpdated.Merge(m, src)
 }
+
 func (m *StreamEvent_MemberUpdated) XXX_Size() int {
 	return xxx_messageInfo_StreamEvent_MemberUpdated.Size(m)
 }
+
 func (m *StreamEvent_MemberUpdated) XXX_DiscardUnknown() {
 	xxx_messageInfo_StreamEvent_MemberUpdated.DiscardUnknown(m)
 }
@@ -2857,18 +3169,23 @@ func (*StreamEvent_DeviceUpdated) ProtoMessage()    {}
 func (*StreamEvent_DeviceUpdated) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{22, 7}
 }
+
 func (m *StreamEvent_DeviceUpdated) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamEvent_DeviceUpdated.Unmarshal(m, b)
 }
+
 func (m *StreamEvent_DeviceUpdated) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_StreamEvent_DeviceUpdated.Marshal(b, m, deterministic)
 }
+
 func (m *StreamEvent_DeviceUpdated) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_StreamEvent_DeviceUpdated.Merge(m, src)
 }
+
 func (m *StreamEvent_DeviceUpdated) XXX_Size() int {
 	return xxx_messageInfo_StreamEvent_DeviceUpdated.Size(m)
 }
+
 func (m *StreamEvent_DeviceUpdated) XXX_DiscardUnknown() {
 	xxx_messageInfo_StreamEvent_DeviceUpdated.DiscardUnknown(m)
 }
@@ -2891,18 +3208,23 @@ func (*StreamEvent_ListEnd) ProtoMessage()    {}
 func (*StreamEvent_ListEnd) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{22, 8}
 }
+
 func (m *StreamEvent_ListEnd) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamEvent_ListEnd.Unmarshal(m, b)
 }
+
 func (m *StreamEvent_ListEnd) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_StreamEvent_ListEnd.Marshal(b, m, deterministic)
 }
+
 func (m *StreamEvent_ListEnd) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_StreamEvent_ListEnd.Merge(m, src)
 }
+
 func (m *StreamEvent_ListEnd) XXX_Size() int {
 	return xxx_messageInfo_StreamEvent_ListEnd.Size(m)
 }
+
 func (m *StreamEvent_ListEnd) XXX_DiscardUnknown() {
 	xxx_messageInfo_StreamEvent_ListEnd.DiscardUnknown(m)
 }
@@ -2922,18 +3244,23 @@ func (*StreamEvent_Notified) ProtoMessage()    {}
 func (*StreamEvent_Notified) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{22, 9}
 }
+
 func (m *StreamEvent_Notified) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamEvent_Notified.Unmarshal(m, b)
 }
+
 func (m *StreamEvent_Notified) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_StreamEvent_Notified.Marshal(b, m, deterministic)
 }
+
 func (m *StreamEvent_Notified) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_StreamEvent_Notified.Merge(m, src)
 }
+
 func (m *StreamEvent_Notified) XXX_Size() int {
 	return xxx_messageInfo_StreamEvent_Notified.Size(m)
 }
+
 func (m *StreamEvent_Notified) XXX_DiscardUnknown() {
 	xxx_messageInfo_StreamEvent_Notified.DiscardUnknown(m)
 }
@@ -2977,18 +3304,23 @@ func (*StreamEvent_Notified_Basic) ProtoMessage()    {}
 func (*StreamEvent_Notified_Basic) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{22, 9, 0}
 }
+
 func (m *StreamEvent_Notified_Basic) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamEvent_Notified_Basic.Unmarshal(m, b)
 }
+
 func (m *StreamEvent_Notified_Basic) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_StreamEvent_Notified_Basic.Marshal(b, m, deterministic)
 }
+
 func (m *StreamEvent_Notified_Basic) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_StreamEvent_Notified_Basic.Merge(m, src)
 }
+
 func (m *StreamEvent_Notified_Basic) XXX_Size() int {
 	return xxx_messageInfo_StreamEvent_Notified_Basic.Size(m)
 }
+
 func (m *StreamEvent_Notified_Basic) XXX_DiscardUnknown() {
 	xxx_messageInfo_StreamEvent_Notified_Basic.DiscardUnknown(m)
 }
@@ -3007,18 +3339,23 @@ func (*StreamEvent_Notified_MessageReceived) ProtoMessage()    {}
 func (*StreamEvent_Notified_MessageReceived) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{22, 9, 1}
 }
+
 func (m *StreamEvent_Notified_MessageReceived) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamEvent_Notified_MessageReceived.Unmarshal(m, b)
 }
+
 func (m *StreamEvent_Notified_MessageReceived) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_StreamEvent_Notified_MessageReceived.Marshal(b, m, deterministic)
 }
+
 func (m *StreamEvent_Notified_MessageReceived) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_StreamEvent_Notified_MessageReceived.Merge(m, src)
 }
+
 func (m *StreamEvent_Notified_MessageReceived) XXX_Size() int {
 	return xxx_messageInfo_StreamEvent_Notified_MessageReceived.Size(m)
 }
+
 func (m *StreamEvent_Notified_MessageReceived) XXX_DiscardUnknown() {
 	xxx_messageInfo_StreamEvent_Notified_MessageReceived.DiscardUnknown(m)
 }
@@ -3055,18 +3392,23 @@ func (*ConversationStream) ProtoMessage()    {}
 func (*ConversationStream) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{23}
 }
+
 func (m *ConversationStream) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConversationStream.Unmarshal(m, b)
 }
+
 func (m *ConversationStream) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ConversationStream.Marshal(b, m, deterministic)
 }
+
 func (m *ConversationStream) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationStream.Merge(m, src)
 }
+
 func (m *ConversationStream) XXX_Size() int {
 	return xxx_messageInfo_ConversationStream.Size(m)
 }
+
 func (m *ConversationStream) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationStream.DiscardUnknown(m)
 }
@@ -3084,18 +3426,23 @@ func (*ConversationStream_Request) ProtoMessage()    {}
 func (*ConversationStream_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{23, 0}
 }
+
 func (m *ConversationStream_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConversationStream_Request.Unmarshal(m, b)
 }
+
 func (m *ConversationStream_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ConversationStream_Request.Marshal(b, m, deterministic)
 }
+
 func (m *ConversationStream_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationStream_Request.Merge(m, src)
 }
+
 func (m *ConversationStream_Request) XXX_Size() int {
 	return xxx_messageInfo_ConversationStream_Request.Size(m)
 }
+
 func (m *ConversationStream_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationStream_Request.DiscardUnknown(m)
 }
@@ -3126,18 +3473,23 @@ func (*ConversationStream_Reply) ProtoMessage()    {}
 func (*ConversationStream_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{23, 1}
 }
+
 func (m *ConversationStream_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConversationStream_Reply.Unmarshal(m, b)
 }
+
 func (m *ConversationStream_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ConversationStream_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *ConversationStream_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationStream_Reply.Merge(m, src)
 }
+
 func (m *ConversationStream_Reply) XXX_Size() int {
 	return xxx_messageInfo_ConversationStream_Reply.Size(m)
 }
+
 func (m *ConversationStream_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationStream_Reply.DiscardUnknown(m)
 }
@@ -3160,18 +3512,23 @@ func (*ConversationCreate) ProtoMessage()    {}
 func (*ConversationCreate) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{24}
 }
+
 func (m *ConversationCreate) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConversationCreate.Unmarshal(m, b)
 }
+
 func (m *ConversationCreate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ConversationCreate.Marshal(b, m, deterministic)
 }
+
 func (m *ConversationCreate) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationCreate.Merge(m, src)
 }
+
 func (m *ConversationCreate) XXX_Size() int {
 	return xxx_messageInfo_ConversationCreate.Size(m)
 }
+
 func (m *ConversationCreate) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationCreate.DiscardUnknown(m)
 }
@@ -3189,18 +3546,23 @@ func (*ConversationCreate_Request) ProtoMessage()    {}
 func (*ConversationCreate_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{24, 0}
 }
+
 func (m *ConversationCreate_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConversationCreate_Request.Unmarshal(m, b)
 }
+
 func (m *ConversationCreate_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ConversationCreate_Request.Marshal(b, m, deterministic)
 }
+
 func (m *ConversationCreate_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationCreate_Request.Merge(m, src)
 }
+
 func (m *ConversationCreate_Request) XXX_Size() int {
 	return xxx_messageInfo_ConversationCreate_Request.Size(m)
 }
+
 func (m *ConversationCreate_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationCreate_Request.DiscardUnknown(m)
 }
@@ -3231,18 +3593,23 @@ func (*ConversationCreate_Reply) ProtoMessage()    {}
 func (*ConversationCreate_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{24, 1}
 }
+
 func (m *ConversationCreate_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ConversationCreate_Reply.Unmarshal(m, b)
 }
+
 func (m *ConversationCreate_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ConversationCreate_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *ConversationCreate_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ConversationCreate_Reply.Merge(m, src)
 }
+
 func (m *ConversationCreate_Reply) XXX_Size() int {
 	return xxx_messageInfo_ConversationCreate_Reply.Size(m)
 }
+
 func (m *ConversationCreate_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ConversationCreate_Reply.DiscardUnknown(m)
 }
@@ -3265,18 +3632,23 @@ func (*AccountGet) ProtoMessage()    {}
 func (*AccountGet) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{25}
 }
+
 func (m *AccountGet) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AccountGet.Unmarshal(m, b)
 }
+
 func (m *AccountGet) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AccountGet.Marshal(b, m, deterministic)
 }
+
 func (m *AccountGet) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AccountGet.Merge(m, src)
 }
+
 func (m *AccountGet) XXX_Size() int {
 	return xxx_messageInfo_AccountGet.Size(m)
 }
+
 func (m *AccountGet) XXX_DiscardUnknown() {
 	xxx_messageInfo_AccountGet.DiscardUnknown(m)
 }
@@ -3292,18 +3664,23 @@ func (*AccountGet_Request) ProtoMessage()    {}
 func (*AccountGet_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{25, 0}
 }
+
 func (m *AccountGet_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AccountGet_Request.Unmarshal(m, b)
 }
+
 func (m *AccountGet_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AccountGet_Request.Marshal(b, m, deterministic)
 }
+
 func (m *AccountGet_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AccountGet_Request.Merge(m, src)
 }
+
 func (m *AccountGet_Request) XXX_Size() int {
 	return xxx_messageInfo_AccountGet_Request.Size(m)
 }
+
 func (m *AccountGet_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_AccountGet_Request.DiscardUnknown(m)
 }
@@ -3320,18 +3697,23 @@ func (*AccountGet_Reply) ProtoMessage()    {}
 func (*AccountGet_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{25, 1}
 }
+
 func (m *AccountGet_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AccountGet_Reply.Unmarshal(m, b)
 }
+
 func (m *AccountGet_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AccountGet_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *AccountGet_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AccountGet_Reply.Merge(m, src)
 }
+
 func (m *AccountGet_Reply) XXX_Size() int {
 	return xxx_messageInfo_AccountGet_Reply.Size(m)
 }
+
 func (m *AccountGet_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_AccountGet_Reply.DiscardUnknown(m)
 }
@@ -3354,18 +3736,23 @@ func (*EventStream) ProtoMessage()    {}
 func (*EventStream) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{26}
 }
+
 func (m *EventStream) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EventStream.Unmarshal(m, b)
 }
+
 func (m *EventStream) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EventStream.Marshal(b, m, deterministic)
 }
+
 func (m *EventStream) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EventStream.Merge(m, src)
 }
+
 func (m *EventStream) XXX_Size() int {
 	return xxx_messageInfo_EventStream.Size(m)
 }
+
 func (m *EventStream) XXX_DiscardUnknown() {
 	xxx_messageInfo_EventStream.DiscardUnknown(m)
 }
@@ -3383,18 +3770,23 @@ func (*EventStream_Request) ProtoMessage()    {}
 func (*EventStream_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{26, 0}
 }
+
 func (m *EventStream_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EventStream_Request.Unmarshal(m, b)
 }
+
 func (m *EventStream_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EventStream_Request.Marshal(b, m, deterministic)
 }
+
 func (m *EventStream_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EventStream_Request.Merge(m, src)
 }
+
 func (m *EventStream_Request) XXX_Size() int {
 	return xxx_messageInfo_EventStream_Request.Size(m)
 }
+
 func (m *EventStream_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_EventStream_Request.DiscardUnknown(m)
 }
@@ -3425,18 +3817,23 @@ func (*EventStream_Reply) ProtoMessage()    {}
 func (*EventStream_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{26, 1}
 }
+
 func (m *EventStream_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EventStream_Reply.Unmarshal(m, b)
 }
+
 func (m *EventStream_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EventStream_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *EventStream_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EventStream_Reply.Merge(m, src)
 }
+
 func (m *EventStream_Reply) XXX_Size() int {
 	return xxx_messageInfo_EventStream_Reply.Size(m)
 }
+
 func (m *EventStream_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_EventStream_Reply.DiscardUnknown(m)
 }
@@ -3459,18 +3856,23 @@ func (*AccountUpdate) ProtoMessage()    {}
 func (*AccountUpdate) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{27}
 }
+
 func (m *AccountUpdate) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AccountUpdate.Unmarshal(m, b)
 }
+
 func (m *AccountUpdate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AccountUpdate.Marshal(b, m, deterministic)
 }
+
 func (m *AccountUpdate) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AccountUpdate.Merge(m, src)
 }
+
 func (m *AccountUpdate) XXX_Size() int {
 	return xxx_messageInfo_AccountUpdate.Size(m)
 }
+
 func (m *AccountUpdate) XXX_DiscardUnknown() {
 	xxx_messageInfo_AccountUpdate.DiscardUnknown(m)
 }
@@ -3487,18 +3889,23 @@ func (*AccountUpdate_Request) ProtoMessage()    {}
 func (*AccountUpdate_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{27, 0}
 }
+
 func (m *AccountUpdate_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AccountUpdate_Request.Unmarshal(m, b)
 }
+
 func (m *AccountUpdate_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AccountUpdate_Request.Marshal(b, m, deterministic)
 }
+
 func (m *AccountUpdate_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AccountUpdate_Request.Merge(m, src)
 }
+
 func (m *AccountUpdate_Request) XXX_Size() int {
 	return xxx_messageInfo_AccountUpdate_Request.Size(m)
 }
+
 func (m *AccountUpdate_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_AccountUpdate_Request.DiscardUnknown(m)
 }
@@ -3521,18 +3928,23 @@ func (*AccountUpdate_Reply) ProtoMessage()    {}
 func (*AccountUpdate_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{27, 1}
 }
+
 func (m *AccountUpdate_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AccountUpdate_Reply.Unmarshal(m, b)
 }
+
 func (m *AccountUpdate_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AccountUpdate_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *AccountUpdate_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AccountUpdate_Reply.Merge(m, src)
 }
+
 func (m *AccountUpdate_Reply) XXX_Size() int {
 	return xxx_messageInfo_AccountUpdate_Reply.Size(m)
 }
+
 func (m *AccountUpdate_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_AccountUpdate_Reply.DiscardUnknown(m)
 }
@@ -3548,18 +3960,23 @@ func (*ContactRequest) ProtoMessage()    {}
 func (*ContactRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{28}
 }
+
 func (m *ContactRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContactRequest.Unmarshal(m, b)
 }
+
 func (m *ContactRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ContactRequest.Marshal(b, m, deterministic)
 }
+
 func (m *ContactRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactRequest.Merge(m, src)
 }
+
 func (m *ContactRequest) XXX_Size() int {
 	return xxx_messageInfo_ContactRequest.Size(m)
 }
+
 func (m *ContactRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactRequest.DiscardUnknown(m)
 }
@@ -3576,18 +3993,23 @@ func (*ContactRequest_Request) ProtoMessage()    {}
 func (*ContactRequest_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{28, 0}
 }
+
 func (m *ContactRequest_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContactRequest_Request.Unmarshal(m, b)
 }
+
 func (m *ContactRequest_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ContactRequest_Request.Marshal(b, m, deterministic)
 }
+
 func (m *ContactRequest_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactRequest_Request.Merge(m, src)
 }
+
 func (m *ContactRequest_Request) XXX_Size() int {
 	return xxx_messageInfo_ContactRequest_Request.Size(m)
 }
+
 func (m *ContactRequest_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactRequest_Request.DiscardUnknown(m)
 }
@@ -3610,18 +4032,23 @@ func (*ContactRequest_Reply) ProtoMessage()    {}
 func (*ContactRequest_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{28, 1}
 }
+
 func (m *ContactRequest_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContactRequest_Reply.Unmarshal(m, b)
 }
+
 func (m *ContactRequest_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ContactRequest_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *ContactRequest_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactRequest_Reply.Merge(m, src)
 }
+
 func (m *ContactRequest_Reply) XXX_Size() int {
 	return xxx_messageInfo_ContactRequest_Reply.Size(m)
 }
+
 func (m *ContactRequest_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactRequest_Reply.DiscardUnknown(m)
 }
@@ -3637,18 +4064,23 @@ func (*ContactAccept) ProtoMessage()    {}
 func (*ContactAccept) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{29}
 }
+
 func (m *ContactAccept) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContactAccept.Unmarshal(m, b)
 }
+
 func (m *ContactAccept) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ContactAccept.Marshal(b, m, deterministic)
 }
+
 func (m *ContactAccept) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactAccept.Merge(m, src)
 }
+
 func (m *ContactAccept) XXX_Size() int {
 	return xxx_messageInfo_ContactAccept.Size(m)
 }
+
 func (m *ContactAccept) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactAccept.DiscardUnknown(m)
 }
@@ -3665,18 +4097,23 @@ func (*ContactAccept_Request) ProtoMessage()    {}
 func (*ContactAccept_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{29, 0}
 }
+
 func (m *ContactAccept_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContactAccept_Request.Unmarshal(m, b)
 }
+
 func (m *ContactAccept_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ContactAccept_Request.Marshal(b, m, deterministic)
 }
+
 func (m *ContactAccept_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactAccept_Request.Merge(m, src)
 }
+
 func (m *ContactAccept_Request) XXX_Size() int {
 	return xxx_messageInfo_ContactAccept_Request.Size(m)
 }
+
 func (m *ContactAccept_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactAccept_Request.DiscardUnknown(m)
 }
@@ -3699,18 +4136,23 @@ func (*ContactAccept_Reply) ProtoMessage()    {}
 func (*ContactAccept_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{29, 1}
 }
+
 func (m *ContactAccept_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContactAccept_Reply.Unmarshal(m, b)
 }
+
 func (m *ContactAccept_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ContactAccept_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *ContactAccept_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ContactAccept_Reply.Merge(m, src)
 }
+
 func (m *ContactAccept_Reply) XXX_Size() int {
 	return xxx_messageInfo_ContactAccept_Reply.Size(m)
 }
+
 func (m *ContactAccept_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ContactAccept_Reply.DiscardUnknown(m)
 }
@@ -3726,18 +4168,23 @@ func (*Interact) ProtoMessage()    {}
 func (*Interact) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{30}
 }
+
 func (m *Interact) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Interact.Unmarshal(m, b)
 }
+
 func (m *Interact) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Interact.Marshal(b, m, deterministic)
 }
+
 func (m *Interact) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Interact.Merge(m, src)
 }
+
 func (m *Interact) XXX_Size() int {
 	return xxx_messageInfo_Interact.Size(m)
 }
+
 func (m *Interact) XXX_DiscardUnknown() {
 	xxx_messageInfo_Interact.DiscardUnknown(m)
 }
@@ -3756,18 +4203,23 @@ func (*Interact_Request) ProtoMessage()    {}
 func (*Interact_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{30, 0}
 }
+
 func (m *Interact_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Interact_Request.Unmarshal(m, b)
 }
+
 func (m *Interact_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Interact_Request.Marshal(b, m, deterministic)
 }
+
 func (m *Interact_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Interact_Request.Merge(m, src)
 }
+
 func (m *Interact_Request) XXX_Size() int {
 	return xxx_messageInfo_Interact_Request.Size(m)
 }
+
 func (m *Interact_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_Interact_Request.DiscardUnknown(m)
 }
@@ -3804,18 +4256,23 @@ func (*Interact_Reply) ProtoMessage()    {}
 func (*Interact_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fd3bf21e238da6aa, []int{30, 1}
 }
+
 func (m *Interact_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Interact_Reply.Unmarshal(m, b)
 }
+
 func (m *Interact_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Interact_Reply.Marshal(b, m, deterministic)
 }
+
 func (m *Interact_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Interact_Reply.Merge(m, src)
 }
+
 func (m *Interact_Reply) XXX_Size() int {
 	return xxx_messageInfo_Interact_Reply.Size(m)
 }
+
 func (m *Interact_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_Interact_Reply.DiscardUnknown(m)
 }
@@ -4116,8 +4573,10 @@ var fileDescriptor_fd3bf21e238da6aa = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ grpc.ClientConn
+var (
+	_ context.Context
+	_ grpc.ClientConn
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -4534,72 +4993,95 @@ type UnimplementedMessengerServiceServer struct {
 func (*UnimplementedMessengerServiceServer) InstanceShareableBertyID(ctx context.Context, req *InstanceShareableBertyID_Request) (*InstanceShareableBertyID_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InstanceShareableBertyID not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) ShareableBertyGroup(ctx context.Context, req *ShareableBertyGroup_Request) (*ShareableBertyGroup_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ShareableBertyGroup not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) DevShareInstanceBertyID(ctx context.Context, req *DevShareInstanceBertyID_Request) (*DevShareInstanceBertyID_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DevShareInstanceBertyID not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) ParseDeepLink(ctx context.Context, req *ParseDeepLink_Request) (*ParseDeepLink_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ParseDeepLink not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) SendContactRequest(ctx context.Context, req *SendContactRequest_Request) (*SendContactRequest_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendContactRequest not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) SendMessage(ctx context.Context, req *SendMessage_Request) (*SendMessage_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendMessage not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) SendAck(ctx context.Context, req *SendAck_Request) (*SendAck_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendAck not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*SystemInfo_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SystemInfo not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) EchoTest(req *EchoTest_Request, srv MessengerService_EchoTestServer) error {
 	return status.Errorf(codes.Unimplemented, "method EchoTest not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) ConversationStream(req *ConversationStream_Request, srv MessengerService_ConversationStreamServer) error {
 	return status.Errorf(codes.Unimplemented, "method ConversationStream not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) EventStream(req *EventStream_Request, srv MessengerService_EventStreamServer) error {
 	return status.Errorf(codes.Unimplemented, "method EventStream not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) ConversationCreate(ctx context.Context, req *ConversationCreate_Request) (*ConversationCreate_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConversationCreate not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) ConversationJoin(ctx context.Context, req *ConversationJoin_Request) (*ConversationJoin_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConversationJoin not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) AccountGet(ctx context.Context, req *AccountGet_Request) (*AccountGet_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccountGet not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) AccountUpdate(ctx context.Context, req *AccountUpdate_Request) (*AccountUpdate_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccountUpdate not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) ContactRequest(ctx context.Context, req *ContactRequest_Request) (*ContactRequest_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactRequest not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) ContactAccept(ctx context.Context, req *ContactAccept_Request) (*ContactAccept_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ContactAccept not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) Interact(ctx context.Context, req *Interact_Request) (*Interact_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Interact not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) ConversationOpen(ctx context.Context, req *ConversationOpen_Request) (*ConversationOpen_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConversationOpen not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) ConversationClose(ctx context.Context, req *ConversationClose_Request) (*ConversationClose_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConversationClose not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) AuthServiceInitFlow(ctx context.Context, req *bertytypes.AuthServiceInitFlow_Request) (*bertytypes.AuthServiceInitFlow_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthServiceInitFlow not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) AuthServiceCompleteFlow(ctx context.Context, req *bertytypes.AuthServiceCompleteFlow_Request) (*bertytypes.AuthServiceCompleteFlow_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthServiceCompleteFlow not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) ServicesTokenList(req *bertytypes.ServicesTokenList_Request, srv MessengerService_ServicesTokenListServer) error {
 	return status.Errorf(codes.Unimplemented, "method ServicesTokenList not implemented")
 }
+
 func (*UnimplementedMessengerServiceServer) ReplicationServiceRegisterGroup(ctx context.Context, req *bertytypes.ReplicationServiceRegisterGroup_Request) (*bertytypes.ReplicationServiceRegisterGroup_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReplicationServiceRegisterGroup not implemented")
 }

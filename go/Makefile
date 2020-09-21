@@ -192,7 +192,7 @@ generate_local:
 
 go.fmt:
 	go run github.com/daixiang0/gci -w -local berty.tech .
-	@#go run mvdan.cc/gofumpt -w -s . # temporarily disabled (to be run by hand), see https://github.com/mvdan/gofumpt/issues/86
+	go run mvdan.cc/gofumpt -w -s .
 .PHONY: go.fmt
 
 
