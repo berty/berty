@@ -596,7 +596,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1ReplicationServiceRegisterGroupReply"
+              "$ref": "#/definitions/bertymessengerv1ReplicationServiceRegisterGroupReply"
             }
           },
           "default": {
@@ -612,7 +612,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1ReplicationServiceRegisterGroupRequest"
+              "$ref": "#/definitions/bertymessengerv1ReplicationServiceRegisterGroupRequest"
             }
           }
         ],
@@ -1016,6 +1016,47 @@
         },
         "state": {
           "$ref": "#/definitions/v1AccountState"
+        },
+        "service_tokens": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/bertymessengerv1ServiceToken"
+          }
+        }
+      }
+    },
+    "bertymessengerv1ReplicationServiceRegisterGroupReply": {
+      "type": "object"
+    },
+    "bertymessengerv1ReplicationServiceRegisterGroupRequest": {
+      "type": "object",
+      "properties": {
+        "token_id": {
+          "type": "string"
+        },
+        "conversation_public_key": {
+          "type": "string"
+        }
+      }
+    },
+    "bertymessengerv1ServiceToken": {
+      "type": "object",
+      "properties": {
+        "account_pk": {
+          "type": "string"
+        },
+        "token_id": {
+          "type": "string"
+        },
+        "service_type": {
+          "type": "string"
+        },
+        "authentication_url": {
+          "type": "string"
+        },
+        "expiration": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },
@@ -1032,6 +1073,27 @@
     },
     "bertymessengerv1SystemInfoRequest": {
       "type": "object"
+    },
+    "bertytypesv1ServiceToken": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "authentication_url": {
+          "type": "string"
+        },
+        "supported_services": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ServiceTokenSupportedService"
+          }
+        },
+        "expiration": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
     },
     "bertytypesv1SystemInfoReply": {
       "type": "object",
@@ -1624,21 +1686,6 @@
         }
       }
     },
-    "v1ReplicationServiceRegisterGroupReply": {
-      "type": "object"
-    },
-    "v1ReplicationServiceRegisterGroupRequest": {
-      "type": "object",
-      "properties": {
-        "token_id": {
-          "type": "string"
-        },
-        "group_pk": {
-          "type": "string",
-          "format": "byte"
-        }
-      }
-    },
     "v1SendAckReply": {
       "type": "object"
     },
@@ -1689,27 +1736,6 @@
         }
       }
     },
-    "v1ServiceToken": {
-      "type": "object",
-      "properties": {
-        "token": {
-          "type": "string"
-        },
-        "authentication_url": {
-          "type": "string"
-        },
-        "supported_services": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/v1ServiceTokenSupportedService"
-          }
-        },
-        "expiration": {
-          "type": "string",
-          "format": "int64"
-        }
-      }
-    },
     "v1ServiceTokenSupportedService": {
       "type": "object",
       "properties": {
@@ -1728,7 +1754,7 @@
           "type": "string"
         },
         "service": {
-          "$ref": "#/definitions/v1ServiceToken"
+          "$ref": "#/definitions/bertytypesv1ServiceToken"
         }
       }
     },

@@ -200,6 +200,7 @@ export const berty = {
 			SystemInfo: jsonPb.lookup('.berty.messenger.v1.SystemInfo'),
 			ConversationJoin: jsonPb.lookup('.berty.messenger.v1.ConversationJoin'),
 			Account: jsonPb.lookup('.berty.messenger.v1.Account'),
+			ServiceToken: jsonPb.lookup('.berty.messenger.v1.ServiceToken'),
 			Interaction: jsonPb.lookup('.berty.messenger.v1.Interaction'),
 			Contact: jsonPb.lookup('.berty.messenger.v1.Contact'),
 			Conversation: jsonPb.lookup('.berty.messenger.v1.Conversation'),
@@ -215,6 +216,9 @@ export const berty = {
 			ContactRequest: jsonPb.lookup('.berty.messenger.v1.ContactRequest'),
 			ContactAccept: jsonPb.lookup('.berty.messenger.v1.ContactAccept'),
 			Interact: jsonPb.lookup('.berty.messenger.v1.Interact'),
+			ReplicationServiceRegisterGroup: jsonPb.lookup(
+				'.berty.messenger.v1.ReplicationServiceRegisterGroup',
+			),
 		},
 	},
 }

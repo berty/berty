@@ -304,13 +304,13 @@ PODS:
   - React-jsinspector (0.63.2)
   - react-native-blur (0.8.0):
     - React
-  - react-native-camera (3.38.0):
+  - react-native-camera (3.39.0):
     - React
-    - react-native-camera/RCT (= 3.38.0)
-    - react-native-camera/RN (= 3.38.0)
-  - react-native-camera/RCT (3.38.0):
+    - react-native-camera/RCT (= 3.39.0)
+    - react-native-camera/RN (= 3.39.0)
+  - react-native-camera/RCT (3.39.0):
     - React
-  - react-native-camera/RN (3.38.0):
+  - react-native-camera/RN (3.39.0):
     - React
   - react-native-config (1.3.3):
     - react-native-config/App (= 1.3.3)
@@ -324,7 +324,7 @@ PODS:
   - react-native-shake (9.0.2):
     - React
     - Shake (~> 9.0.0)
-  - react-native-webview (10.8.3):
+  - react-native-webview (10.9.0):
     - React
   - React-RCTActionSheet (0.63.2):
     - React-Core/RCTActionSheetHeaders (= 0.63.2)
@@ -396,6 +396,8 @@ PODS:
     - React-RCTNetwork
   - RNGestureHandler (1.8.0):
     - React
+  - RNInAppBrowser (3.4.0):
+    - React
   - RNPermissions (2.2.0):
     - React
   - RNReanimated (1.13.0):
@@ -404,7 +406,7 @@ PODS:
     - React
   - RNSVG (11.0.1):
     - React
-  - RNVectorIcons (7.0.0):
+  - RNVectorIcons (7.1.0):
     - React
   - Shake (9.0.11)
   - toolbar-android (0.1.0-rc.2):
@@ -478,6 +480,7 @@ DEPENDENCIES:
   - "RNCMaskedView (from `../../../node_modules/@react-native-community/masked-view`)"
   - RNDevMenu (from `../../../node_modules/react-native-dev-menu`)
   - RNGestureHandler (from `../../../node_modules/react-native-gesture-handler`)
+  - RNInAppBrowser (from `../../../node_modules/react-native-inappbrowser-reborn`)
   - RNPermissions (from `../../../node_modules/react-native-permissions`)
   - RNReanimated (from `../../../node_modules/react-native-reanimated`)
   - RNScreens (from `../../../node_modules/react-native-screens`)
@@ -597,6 +600,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native-dev-menu"
   RNGestureHandler:
     :path: "../../../node_modules/react-native-gesture-handler"
+  RNInAppBrowser:
+    :path: "../../../node_modules/react-native-inappbrowser-reborn"
   RNPermissions:
     :path: "../../../node_modules/react-native-permissions"
   RNReanimated:
@@ -656,12 +661,12 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 8ca588cc921e70590820ce72b8789b02c67cce38
   React-jsinspector: b14e62ebe7a66e9231e9581279909f2fc3db6606
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
-  react-native-camera: 74f48f9b6e198c77e2187b10aca39126971080b2
+  react-native-camera: 3940f67a49eaf736525a3e730653fcb98e1525dd
   react-native-config: 9a061347e0136fdb32d43a34d60999297d672361
   react-native-example: a62e0ddd2e417f3683b0367d9f0a3539d62f8b10
   react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
   react-native-shake: ebac228876c942c9aa1bf489e05ea4defb3e0a53
-  react-native-webview: 598605cd213f5096e695f5b33fbee210a47e60ab
+  react-native-webview: bfe5436586b214759bd5043658863549fffc8e92
   React-RCTActionSheet: 910163b6b09685a35c4ebbc52b66d1bfbbe39fc5
   React-RCTAnimation: 9a883bbe1e9d2e158d4fb53765ed64c8dc2200c6
   React-RCTBlob: 39cf0ece1927996c4466510e25d2105f67010e13
@@ -676,11 +681,12 @@ SPEC CHECKSUMS:
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNDevMenu: fd325b5554b61fe7f48d9205a3877cf5ee88cd7c
   RNGestureHandler: 7a5833d0f788dbd107fbb913e09aa0c1ff333c39
+  RNInAppBrowser: c1a0dad2734458d79bcb6c8f4297ba8658a1da9f
   RNPermissions: 477d88d0be7ecb0a7b344e4d5fbb0352de104626
   RNReanimated: 89f5e0a04d1dd52fbf27e7e7030d8f80a646a3fc
   RNScreens: b748efec66e095134c7166ca333b628cd7e6f3e2
   RNSVG: 67f1f12dae2cef6ed59a42cae74a6b8f5a9e7b46
-  RNVectorIcons: da6fe858f5a65d7bbc3379540a889b0b12aa5976
+  RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
   Shake: d53b6ca357846a442a4ee8f956c4f1799eac7858
   toolbar-android: 85f3ef4d691469f2d304e7dee4bca013aa1ba1ff
   Yoga: 7740b94929bbacbddda59bf115b5317e9a161598

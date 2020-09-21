@@ -26,6 +26,7 @@ export namespace ScreenProps {
 		export type OneToOneSettings = RouteProps<{ convId: string }>
 		export type ContactSettings = RouteProps<{ contactId: string }>
 		export type MultiMemberSettings = RouteProps<{ convId: string }>
+		export type ReplicateGroupSettings = RouteProps<{ convId: string }>
 		export type MultiMemberQR = RouteProps<{ convId: string }>
 	}
 	export namespace Settings {
@@ -38,6 +39,7 @@ export namespace ScreenProps {
 		export type BlockedContacts = RouteProps<void>
 		export type Notifications = RouteProps<void>
 		export type Bluetooth = RouteProps<void>
+		export type ServicesAuth = RouteProps<void>
 		export type AboutBerty = RouteProps<void>
 		export type TermsOfUse = RouteProps<void>
 		export type DevTools = RouteProps<void>
@@ -81,6 +83,7 @@ export namespace Routes {
 		ContactSettings = 'Chat.ContactSettings',
 		MultiMemberSettings = 'Group.MultiMemberSettings',
 		MultiMemberQR = 'Chat.MultiMemberQR',
+		ReplicateGroupSettings = 'Chat.ReplicateGroupSettings',
 	}
 	export enum Settings {
 		Home = 'Settings.Home',
@@ -92,6 +95,7 @@ export namespace Routes {
 		BlockedContacts = 'Settings.BlockedContacts',
 		Notifications = 'Settings.Notifications',
 		Bluetooth = 'Settings.Bluetooth',
+		ServicesAuth = 'Settings.ServicesAuth',
 		AboutBerty = 'Settings.AboutBerty',
 		TermsOfUse = 'Settings.TermsOfUse',
 		DevTools = 'Settings.DevTools',

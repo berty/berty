@@ -10,6 +10,7 @@ import App from './App'
 import { BridgeConsole } from '@berty-tech/go-bridge'
 import { name as appName } from './app.json'
 import Shake, { ShakeInvocationEvent } from '@shakebugs/react-native-shake'
+import 'react-native-url-polyfill/auto'
 
 if (!__DEV__) {
 	/* eslint-disable no-undef */

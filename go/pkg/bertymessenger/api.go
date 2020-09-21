@@ -1155,6 +1155,26 @@ func (svc *service) ServicesTokenList(request *bertytypes.ServicesTokenList_Requ
 	return nil
 }
 
-func (svc *service) ReplicationServiceRegisterGroup(ctx context.Context, request *bertytypes.ReplicationServiceRegisterGroup_Request) (*bertytypes.ReplicationServiceRegisterGroup_Reply, error) {
-	return svc.protocolClient.ReplicationServiceRegisterGroup(ctx, request)
+func (svc *service) ReplicationServiceRegisterGroup(ctx context.Context, request *ReplicationServiceRegisterGroup_Request) (*ReplicationServiceRegisterGroup_Reply, error) {
+	gpk := request.GetConversationPublicKey()
+	if gpk == "" {
+		return nil, errcode.ErrMissingInput
+	}
+
+	svc.logger.Info("interacting", zap.String("public-key", gpk))
+	gpkb, err := stringToBytes(gpk)
+	if err != nil {
+		return nil, errcode.ErrInvalidInput.Wrap(err)
+	}
+
+	_, err = svc.protocolClient.ReplicationServiceRegisterGroup(ctx, &bertytypes.ReplicationServiceRegisterGroup_Request{
+		TokenID: request.TokenID,
+		GroupPK: gpkb,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &ReplicationServiceRegisterGroup_Reply{}, nil
 }

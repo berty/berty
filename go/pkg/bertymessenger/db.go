@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
@@ -14,6 +15,7 @@ func initDB(db *gorm.DB) error {
 	models := []interface{}{
 		&Conversation{},
 		&Account{},
+		&ServiceToken{},
 		&Contact{},
 		&Interaction{},
 		&Member{},
@@ -73,7 +75,8 @@ func addConversation(db *gorm.DB, groupPK string) (*Conversation, error) {
 
 func getAccount(db *gorm.DB) (Account, error) {
 	var accounts []Account
-	err := db.Find(&accounts).Error
+
+	err := db.Model(&accounts).Preload("ServiceTokens").Find(&accounts).Error
 	if err != nil {
 		return Account{}, err
 	}
@@ -271,4 +274,35 @@ func addContactRequestIncomingAccepted(db *gorm.DB, contactPK, groupPK string) (
 	}
 
 	return &contact, &conversation, nil
+}
+
+func addServiceToken(db *gorm.DB, accountPK string, serviceToken *bertytypes.ServiceToken) error {
+	if err := db.Transaction(func(db *gorm.DB) error {
+		for _, s := range serviceToken.SupportedServices {
+			token := &ServiceToken{}
+			if err := db.First(token, &ServiceToken{
+				AccountPK:   accountPK,
+				TokenID:     serviceToken.TokenID(),
+				ServiceType: s.ServiceType,
+			}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+				if err := db.Create(&ServiceToken{
+					AccountPK:         accountPK,
+					TokenID:           serviceToken.TokenID(),
+					ServiceType:       s.ServiceType,
+					AuthenticationURL: serviceToken.AuthenticationURL,
+					Expiration:        serviceToken.Expiration,
+				}).Error; err != nil {
+					return errcode.ErrDBWrite.Wrap(err)
+				}
+			} else if err != nil {
+				return errcode.ErrDBRead.Wrap(err)
+			}
+		}
+
+		return nil
+	}); err != nil {
+		return err
+	}
+
+	return nil
 }
