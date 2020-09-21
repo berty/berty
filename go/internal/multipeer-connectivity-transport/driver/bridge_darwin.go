@@ -2,33 +2,80 @@
 
 package driver
 
-import (
-	native "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/driver/mc-driver"
+/*
+#cgo CFLAGS: -x objective-c
+#cgo darwin LDFLAGS: -framework Foundation -framework MultipeerConnectivity
+#include <stdlib.h>
+#include "mc-driver.h"
+*/
+import "C"
+import "unsafe"
+
+var (
+	GoHandleFoundPeer func(remotePID string) bool            = nil
+	GoReceiveFromPeer func(remotePID string, payload []byte) = nil
 )
 
 // Native -> Go functions
 func BindNativeToGoFunctions(hfp func(string) bool, rfp func(string, []byte)) {
-	native.GoHandleFoundPeer = hfp
-	native.GoReceiveFromPeer = rfp
+	GoHandleFoundPeer = hfp
+	GoReceiveFromPeer = rfp
 }
 
-// Go -> Native functions
 func StartMCDriver(localPID string) {
-	native.StartMCDriver(localPID)
+	cPID := C.CString(localPID)
+	defer C.free(unsafe.Pointer(cPID))
+
+	C.StartMCDriver(cPID)
 }
 
 func StopMCDriver() {
-	native.StopMCDriver()
+	C.StopMCDriver()
 }
 
-func DialPeer(remotePID string) bool {
-	return native.DialPeer(remotePID)
+//export HandleFoundPeer
+func HandleFoundPeer(remotePID *C.char) C.int {
+	goPID := C.GoString(remotePID)
+
+	if GoHandleFoundPeer(goPID) {
+		return 1
+	}
+	return 0
+}
+
+//export ReceiveFromPeer
+func ReceiveFromPeer(remotePID *C.char, payload unsafe.Pointer, length C.int) {
+	goPID := C.GoString(remotePID)
+	goPayload := C.GoBytes(payload, length)
+
+	GoReceiveFromPeer(goPID, goPayload)
 }
 
 func SendToPeer(remotePID string, payload []byte) bool {
-	return native.SendToPeer(remotePID, payload)
+	cPID := C.CString(remotePID)
+	defer C.free(unsafe.Pointer(cPID))
+	cPayload := C.CBytes(payload)
+	defer C.free(cPayload)
+
+	if C.SendToPeer(cPID, cPayload, C.int(len(payload))) == 1 {
+		return true
+	}
+	return false
+}
+
+func DialPeer(remotePID string) bool {
+	cPID := C.CString(remotePID)
+	defer C.free(unsafe.Pointer(cPID))
+
+	if C.DialPeer(cPID) == 1 {
+		return true
+	}
+	return false
 }
 
 func CloseConnWithPeer(remotePID string) {
-	native.CloseConnWithPeer(remotePID)
+	cPID := C.CString(remotePID)
+	defer C.free(unsafe.Pointer(cPID))
+
+	C.CloseConnWithPeer(cPID)
 }
