@@ -10,18 +10,20 @@ import (
 )
 
 func replicationServerCommand() *ffcli.Command {
-	fs := flag.NewFlagSet("berty share-invite", flag.ExitOnError)
-
-	manager.SetupLocalProtocolServerFlags(fs)
-	manager.SetupDefaultGRPCListenersFlags(fs)
-	// fs.StringVar(&pkStr, "pk", pkStr, "auth token sig pk")
-	// fs.StringVar(&secretStr, "secret", secretStr, "auth tokens secret")
+	fsBuilder := func() (*flag.FlagSet, error) {
+		fs := flag.NewFlagSet("berty share-invite", flag.ExitOnError)
+		manager.SetupLocalProtocolServerFlags(fs)
+		manager.SetupDefaultGRPCListenersFlags(fs)
+		// fs.StringVar(&pkStr, "pk", pkStr, "auth token sig pk")
+		// fs.StringVar(&secretStr, "secret", secretStr, "auth tokens secret")
+		return fs, nil
+	}
 
 	return &ffcli.Command{
-		Name:       "repl-server",
-		ShortHelp:  "replication server",
-		ShortUsage: "berty [global flags] repl-server [flags]",
-		FlagSet:    fs,
+		Name:           "repl-server",
+		ShortHelp:      "replication server",
+		ShortUsage:     "berty [global flags] repl-server [flags]",
+		FlagSetBuilder: fsBuilder,
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp

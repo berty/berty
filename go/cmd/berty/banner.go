@@ -12,18 +12,22 @@ import (
 
 func bannerCommand() *ffcli.Command {
 	var (
-		fs         = flag.NewFlagSet("banner", flag.ExitOnError)
 		lightFlag  = false
 		randomFlag = false
 	)
-	fs.BoolVar(&lightFlag, "light", lightFlag, "light mode")
-	fs.BoolVar(&randomFlag, "random", randomFlag, "pick a random quote")
+
+	fsBuilder := func() (*flag.FlagSet, error) {
+		fs := flag.NewFlagSet("banner", flag.ExitOnError)
+		fs.BoolVar(&lightFlag, "light", lightFlag, "light mode")
+		fs.BoolVar(&randomFlag, "random", randomFlag, "pick a random quote")
+		return fs, nil
+	}
 
 	return &ffcli.Command{
-		Name:       "banner",
-		ShortUsage: "berty banner [flags]",
-		ShortHelp:  "print the Berty banner of the day",
-		FlagSet:    fs,
+		Name:           "banner",
+		ShortUsage:     "berty banner [flags]",
+		ShortHelp:      "print the Berty banner of the day",
+		FlagSetBuilder: fsBuilder,
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp

@@ -41,22 +41,25 @@ import (
 //
 func tokenServerCommand() *ffcli.Command {
 	var (
-		fs            = flag.NewFlagSet("token issuer server", flag.ExitOnError)
 		secretFlag    = ""
 		authSKFlag    = ""
 		listenerFlag  = ":8080"
 		supportedFlag = ""
 	)
-	fs.StringVar(&secretFlag, "secret", secretFlag, "base64 encoded secret")
-	fs.StringVar(&authSKFlag, "sk", authSKFlag, "base64 encoded signature key")
-	fs.StringVar(&listenerFlag, "l", listenerFlag, "http listener")
-	fs.StringVar(&supportedFlag, "s", supportedFlag, "comma separated list of supported services as name@ip:port")
+	fsBuilder := func() (*flag.FlagSet, error) {
+		fs := flag.NewFlagSet("token issuer server", flag.ExitOnError)
+		fs.StringVar(&secretFlag, "secret", secretFlag, "base64 encoded secret")
+		fs.StringVar(&authSKFlag, "sk", authSKFlag, "base64 encoded signature key")
+		fs.StringVar(&listenerFlag, "l", listenerFlag, "http listener")
+		fs.StringVar(&supportedFlag, "s", supportedFlag, "comma separated list of supported services as name@ip:port")
+		return fs, nil
+	}
 
 	return &ffcli.Command{
-		Name:       "token-server",
-		ShortUsage: "berty [global flags] token-server [flags]",
-		ShortHelp:  "token server, a basic token server issuer without auth or logging",
-		FlagSet:    fs,
+		Name:           "token-server",
+		ShortUsage:     "berty [global flags] token-server [flags]",
+		ShortHelp:      "token server, a basic token server issuer without auth or logging",
+		FlagSetBuilder: fsBuilder,
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp
