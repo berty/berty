@@ -28,6 +28,7 @@ import BlurView from '../shared-components/BlurView'
 // import { useReadEffect } from '../hooks'
 import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import Logo from '../main/1_berty_picto.svg'
 
 //
 // Chat
@@ -166,20 +167,72 @@ export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
 	)
 }
 
+const ContactInitiatedWrapper: React.FC<{ children: any }> = ({ children }) => {
+	const [
+		{ padding, border, flex, margin, width, background, height, minWidth },
+		{ scaleSize },
+	] = useStyles()
+	const logoDiameter = 28
+	const diffSize = 6
+	return (
+		<View
+			style={[
+				{ backgroundColor: '#EDEEF8' },
+				padding.tiny,
+				margin.top.scale(logoDiameter + 10), // make room for logo and date
+				border.radius.scale(10),
+				flex.justify.center,
+				minWidth(0),
+				{ shadowOpacity: 0.1, shadowRadius: 4, shadowOffset: { width: 0, height: 2.5 } },
+			]}
+		>
+			<View
+				style={{
+					transform: [{ translateY: -logoDiameter * 1.15 * scaleSize }],
+					alignSelf: 'center',
+					marginBottom: -logoDiameter * scaleSize, // compensate for transformed logo
+				}}
+			>
+				<View
+					style={[
+						flex.align.center,
+						flex.justify.center,
+						width(logoDiameter + diffSize * scaleSize),
+						height(logoDiameter + diffSize * scaleSize),
+						background.white,
+						border.radius.scale((logoDiameter + diffSize) / 2),
+						{
+							borderWidth: 2,
+							borderColor: 'rgba(215, 217, 239, 1)',
+						},
+					]}
+				>
+					<Logo
+						width={scaleSize * logoDiameter - diffSize}
+						height={scaleSize * logoDiameter - diffSize}
+						style={[margin.left.tiny]} // nudge logo to appear centered
+					/>
+				</View>
+			</View>
+			{children}
+		</View>
+	)
+}
+
 const InfosChat: React.FC<api.berty.messenger.v1.IConversation> = ({
 	createdDate: createdDateStr,
 }) => {
-	const [{ margin, text, padding }] = useStyles()
+	const [{ flex, text, padding }] = useStyles()
 	const createdDate =
 		(createdDateStr && parseInt((createdDateStr as unknown) as string, 10)) || Date.now()
 	return (
-		<View style={[padding.medium]}>
+		<View style={[padding.medium, flex.align.center]}>
 			<ChatDate date={createdDate} />
-			<View style={[margin.top.medium]}>
-				<Text style={[text.align.center, text.color.black, text.bold.medium]}>
-					Contact established
+			<ContactInitiatedWrapper>
+				<Text style={[text.color.blue, text.align.center, text.italic]}>
+					👋 Berty Connection: confirmed 🎉
 				</Text>
-			</View>
+			</ContactInitiatedWrapper>
 		</View>
 	)
 }
