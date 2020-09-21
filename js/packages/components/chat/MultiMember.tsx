@@ -10,9 +10,10 @@ import {
 	Text as TextNative,
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
+import { CommonActions } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { Routes, ScreenProps, useNavigation } from '@berty-tech/navigation'
 import {
 	useConversation,
 	useMsgrContext,
@@ -26,6 +27,7 @@ import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { Message } from './shared-components/Message'
 import BlurView from '../shared-components/BlurView'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import AvatarGroup19 from '../main/Avatar_Group_Copy_19.png'
 
 //
@@ -281,15 +283,28 @@ const MessageList: React.FC<{ id: string; scrollToMessage?: string }> = ({
 export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params } }) => {
 	const [inputIsFocused, setInputFocus] = useState(false)
 	const [{ background, flex }] = useStyles()
-	useReadEffect(params.convId, 1000)
+	const { dispatch } = useNavigation()
+	// useReadEffect(params.convId, 1000)
+
 	return (
 		<View style={[flex.tiny, background.white]}>
-			<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
-				<StatusBar backgroundColor='#00BCD4' barStyle='dark-content' />
-				<MessageList id={params.convId} />
-				<ChatFooter convPk={params.convId} isFocused={inputIsFocused} setFocus={setInputFocus} />
-				<HeaderMultiMember id={params.convId} />
-			</KeyboardAvoidingView>
+			<SwipeNavRecognizer
+				onSwipeLeft={() =>
+					dispatch(
+						CommonActions.navigate({
+							name: Routes.Chat.MultiMemberSettings,
+							params: { convId: params.convId },
+						}),
+					)
+				}
+			>
+				<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
+					<StatusBar backgroundColor='#00BCD4' barStyle='dark-content' />
+					<MessageList id={params.convId} />
+					<ChatFooter convPk={params.convId} isFocused={inputIsFocused} setFocus={setInputFocus} />
+					<HeaderMultiMember id={params.convId} />
+				</KeyboardAvoidingView>
+			</SwipeNavRecognizer>
 		</View>
 	)
 }

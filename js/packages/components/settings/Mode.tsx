@@ -6,6 +6,7 @@ import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { useNavigation } from '@berty-tech/navigation'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //
 // Mode
@@ -179,14 +180,16 @@ export const Mode: React.FC<{}> = () => {
 	const [{ flex, background, padding }] = useStyles()
 	return (
 		<Layout style={[flex.tiny, background.white]}>
-			<ScrollView bounces={false} contentContainerStyle={[padding.bottom.scale(90)]}>
-				<HeaderSettings
-					title='Settings'
-					desc='Customize everything to get the app that fits your needs'
-					undo={goBack}
-				/>
-				<BodyMode isMode={isMode} />
-			</ScrollView>
+			<SwipeNavRecognizer>
+				<ScrollView bounces={false} contentContainerStyle={[padding.bottom.scale(90)]}>
+					<HeaderSettings
+						title='Settings'
+						desc='Customize everything to get the app that fits your needs'
+						undo={goBack}
+					/>
+					<BodyMode isMode={isMode} />
+				</ScrollView>
+			</SwipeNavRecognizer>
 		</Layout>
 	)
 }

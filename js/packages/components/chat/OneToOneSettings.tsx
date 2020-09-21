@@ -8,6 +8,7 @@ import { Text } from 'react-native-ui-kitten'
 import HeaderSettings from '../shared-components/Header'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //
 // OneToOneSettings
@@ -105,7 +106,7 @@ export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({
 	route: { params },
 }) => {
 	const { goBack, navigate } = useNavigation()
-	const [{ flex, background }] = useStyles()
+	const [{ flex, background, padding }] = useStyles()
 	const { convId } = params
 	const conv = useConversation(convId)
 	const contact = useContact(conv.contactPublicKey)
@@ -114,18 +115,24 @@ export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({
 		return null
 	}
 	return (
-		<ScrollView style={[flex.tiny, background.white]} bounces={false}>
-			<HeaderSettings
-				action={() => navigate.chat.contactSettings({ contactId: conv.contactPublicKey })}
-				actionIcon='more-horizontal-outline'
-				undo={goBack}
-			>
-				<View>
-					<OneToOneHeader contact={contact} />
-					<OneToOneHeaderButtons />
-				</View>
-			</HeaderSettings>
-			<OneToOneBody />
+		<ScrollView
+			style={[flex.tiny, background.white]}
+			contentContainerStyle={[padding.bottom.huge]}
+			bounces={false}
+		>
+			<SwipeNavRecognizer>
+				<HeaderSettings
+					action={() => navigate.chat.contactSettings({ contactId: conv.contactPublicKey })}
+					actionIcon='more-horizontal-outline'
+					undo={goBack}
+				>
+					<View>
+						<OneToOneHeader contact={contact} />
+						<OneToOneHeaderButtons />
+					</View>
+				</HeaderSettings>
+				<OneToOneBody />
+			</SwipeNavRecognizer>
 		</ScrollView>
 	)
 }

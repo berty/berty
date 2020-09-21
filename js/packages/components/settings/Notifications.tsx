@@ -5,6 +5,7 @@ import { useStyles } from '@berty-tech/styles'
 import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //
 // Notifications
@@ -192,16 +193,18 @@ export const Notifications: React.FC<ScreenProps.Settings.Notifications> = () =>
 	const [{ padding, flex, background }] = useStyles()
 	return (
 		<Layout style={[flex.tiny, background.white]}>
-			<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
-				<HeaderSettings
-					title='Notifications'
-					desc='You have not yet activated notifications for this app'
-					undo={goBack}
-				>
-					<HeaderNotifications isAuthorize={isAuthorize} />
-				</HeaderSettings>
-				<BodyNotifications isAuthorize={isAuthorize} />
-			</ScrollView>
+			<SwipeNavRecognizer>
+				<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
+					<HeaderSettings
+						title='Notifications'
+						desc='You have not yet activated notifications for this app'
+						undo={goBack}
+					>
+						<HeaderNotifications isAuthorize={isAuthorize} />
+					</HeaderSettings>
+					<BodyNotifications isAuthorize={isAuthorize} />
+				</ScrollView>
+			</SwipeNavRecognizer>
 		</Layout>
 	)
 }

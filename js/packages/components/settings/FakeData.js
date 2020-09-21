@@ -1,8 +1,11 @@
 import React from 'react'
 import { View, ScrollView } from 'react-native'
 import { Layout } from 'react-native-ui-kitten'
+
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+
 import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 // import { Messenger } from '@berty-tech/store/oldhooks'
@@ -64,10 +67,12 @@ export const FakeData = () => {
 
 	return (
 		<Layout style={[background.white, flex.tiny]}>
-			<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
-				<HeaderSettings title='Generate fake data' bgColor={color.dark.grey} undo={goBack} />
-				<BodyFakeData />
-			</ScrollView>
+			<SwipeNavRecognizer>
+				<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
+					<HeaderSettings title='Generate fake data' bgColor={color.dark.grey} undo={goBack} />
+					<BodyFakeData />
+				</ScrollView>
+			</SwipeNavRecognizer>
 		</Layout>
 	)
 }

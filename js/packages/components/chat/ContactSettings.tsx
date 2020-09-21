@@ -9,6 +9,7 @@ import HeaderSettings from '../shared-components/Header'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { useContacts } from '@berty-tech/store/hooks'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 const ContactSettingsHeaderContent: React.FC = ({ children }) => {
 	const [{ margin }] = useStyles()
@@ -109,7 +110,7 @@ export const ContactSettings: React.FC<ScreenProps.Chat.ContactSettings> = ({ ro
 	const { contactId } = route.params
 	const { goBack } = useNavigation()
 	const contact: any = (useContacts() as any)[contactId] || null
-	const [{ background, flex }] = useStyles()
+	const [{ background, flex, padding }] = useStyles()
 	if (!contact) {
 		goBack()
 		return (
@@ -121,11 +122,17 @@ export const ContactSettings: React.FC<ScreenProps.Chat.ContactSettings> = ({ ro
 		)
 	}
 	return (
-		<ScrollView style={[flex.tiny, background.white]} bounces={false}>
-			<HeaderSettings actionIcon='upload' undo={goBack}>
-				<ContactSettingsHeader contact={contact} />
-			</HeaderSettings>
-			<ContactSettingsBody id={contact.publicKey} />
+		<ScrollView
+			style={[flex.tiny, background.white]}
+			contentContainerStyle={[padding.bottom.huge]}
+			bounces={false}
+		>
+			<SwipeNavRecognizer>
+				<HeaderSettings actionIcon='upload' undo={goBack}>
+					<ContactSettingsHeader contact={contact} />
+				</HeaderSettings>
+				<ContactSettingsBody id={contact.publicKey} />
+			</SwipeNavRecognizer>
 		</ScrollView>
 	)
 }

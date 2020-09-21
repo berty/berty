@@ -1,8 +1,15 @@
 import React from 'react'
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, Insets } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles, defaultStylesDeclaration } from '@berty-tech/styles'
 import { SafeAreaView } from 'react-native-safe-area-context'
+
+const largeHitSlop: Insets = {
+	top: 20,
+	right: 20,
+	bottom: 20,
+	left: 20,
+}
 
 //
 // Header Settings
@@ -18,6 +25,7 @@ type HeaderSettingsProps = {
 	undoIconSize?: number
 	undoIconColor?: string
 	undoIconPack?: string
+	undoIconHitSlop?: Insets
 	desc?: string | null
 	descFontSize?: number
 	descColor?: string
@@ -26,6 +34,7 @@ type HeaderSettingsProps = {
 	actionIcon?: string
 	actionIconSize?: number
 	actionIconColor?: string
+	actionIconHitSlop?: Insets
 }
 
 export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
@@ -37,6 +46,7 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 	undoIconPack,
 	undoIconSize = 25,
 	undoIconColor = 'white',
+	undoIconHitSlop = largeHitSlop,
 	desc = null,
 	descFontSize = 10,
 	descColor = 'white',
@@ -45,6 +55,7 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 	actionIcon = 'swap',
 	actionIconSize = 25,
 	actionIconColor = 'white',
+	actionIconHitSlop = largeHitSlop,
 }) => {
 	const [{ border, flex, padding, row, text }] = useStyles()
 	return (
@@ -52,7 +63,11 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 			<View style={[padding.horizontal.medium, padding.top.tiny, padding.bottom.medium]}>
 				<View style={[row.fill, flex.tiny, { justifyContent: 'center' }]}>
 					{undo ? (
-						<TouchableOpacity style={[flex.tiny, row.item.justify]} onPress={undo}>
+						<TouchableOpacity
+							style={[flex.tiny, row.item.justify]}
+							onPress={undo}
+							hitSlop={undoIconHitSlop}
+						>
 							<Icon
 								name={undoIcon}
 								pack={undoIconPack}
@@ -84,6 +99,7 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 							<TouchableOpacity
 								style={row.item.bottom}
 								onPress={() => action && action(!actionValue)}
+								hitSlop={actionIconHitSlop}
 							>
 								<Icon
 									name={actionIcon}

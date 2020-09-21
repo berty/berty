@@ -8,9 +8,10 @@ import {
 	KeyboardAvoidingView,
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
+import { CommonActions } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
-import { useNavigation, ScreenProps } from '@berty-tech/navigation'
+import { useNavigation, ScreenProps, Routes } from '@berty-tech/navigation'
 import * as api from '@berty-tech/api/index.pb'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import {
@@ -293,24 +294,30 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: string }> = ({
 	)
 }
 
-export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route }) => {
+export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params } }) => {
 	const [inputIsFocused, setInputFocus] = useState(false)
 	const [{ flex, background }] = useStyles()
-	useReadEffect(route.params.convId, 1000)
+	useReadEffect(params.convId, 1000)
+	const { dispatch } = useNavigation()
 
 	return (
 		<View style={[StyleSheet.absoluteFill, background.white, { flex: 1 }]}>
-			{/* <SwipeNavRecognizer> */}
-			<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
-				<MessageList convPk={route.params.convId} scrollToMessage={route.params.scrollToMessage} />
-				<ChatFooter
-					convPk={route.params.convId}
-					isFocused={inputIsFocused}
-					setFocus={setInputFocus}
-				/>
-				<ChatHeader convPk={route.params.convId} />
-			</KeyboardAvoidingView>
-			{/* </SwipeNavRecognizer> */}
+			<SwipeNavRecognizer
+				onSwipeLeft={() =>
+					dispatch(
+						CommonActions.navigate({
+							name: Routes.Chat.OneToOneSettings,
+							params: { convId: params.convId },
+						}),
+					)
+				}
+			>
+				<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
+					<MessageList convPk={params.convId} scrollToMessage={params.scrollToMessage} />
+					<ChatFooter convPk={params.convId} isFocused={inputIsFocused} setFocus={setInputFocus} />
+					<ChatHeader convPk={params.convId} />
+				</KeyboardAvoidingView>
+			</SwipeNavRecognizer>
 		</View>
 	)
 }
