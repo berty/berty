@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/gogo/protobuf/proto"
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
@@ -198,4 +199,62 @@ func TestPersistenceProtocol(t *testing.T) {
 
 	assert.Equal(t, node_id_1, node_id_2, "IPFS node should have the same ID after reboot")
 	assert.Equal(t, device_pk_1, device_pk_2, "Device should have the same PK after reboot")
+}
+
+func TestBridgeLifecycle(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+
+	mc, cleanup := ipfsutil.TestingCoreAPI(ctx, t)
+	defer cleanup()
+
+	config := NewMessengerConfig()
+	config.ipfsCoreAPI(mc.API())
+
+	protocol, err := newProtocolBridge(ctx, logger, config)
+	require.NoError(t, err)
+
+	// test state active
+	protocol.HandleState(AppStateActive)
+	assert.Equal(t, AppStateActive, protocol.currentAppState)
+
+	// test state inactive
+	protocol.HandleState(AppStateInactive)
+	assert.Equal(t, AppStateInactive, protocol.currentAppState)
+
+	// test state background
+	protocol.HandleState(AppStateBackground)
+	assert.Equal(t, AppStateBackground, protocol.currentAppState)
+
+	// test backgroud task
+	bg := protocol.HandleTask()
+
+	done := make(chan struct{})
+	go func() {
+		// we dont care if the task succeed here
+		_ = bg.Execute()
+		close(done)
+	}()
+
+	// wait that background has been trigger
+	time.After(time.Second)
+
+	// cancel the task
+	bg.Cancel()
+
+	var success bool
+	select {
+	case <-done:
+		success = true
+	case <-time.After(time.Second * 5):
+		success = false
+	}
+
+	assert.True(t, success)
+
+	err = protocol.Close()
+	assert.NoError(t, err)
 }
