@@ -443,6 +443,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 	messengerBridge := &MessengerBridge{
 		Bridge: bridge,
 
+		lcmanager:        lcmanager,
 		logger:           bridgeLogger,
 		protocolService:  service,
 		node:             node,
@@ -483,8 +484,10 @@ func (p *MessengerBridge) HandleState(appstate int) {
 		case AppStateActive:
 			p.lcmanager.UpdateState(bertymessenger.StateActive)
 			p.logger.Info("app is in Active State")
-			if err := p.node.Bootstrap(defaultBootstrapConfig); err != nil {
-				p.logger.Warn("Unable to boostrap node", zap.Error(err))
+			if p.node != nil {
+				if err := p.node.Bootstrap(defaultBootstrapConfig); err != nil {
+					p.logger.Warn("Unable to boostrap node", zap.Error(err))
+				}
 			}
 		case AppStateInactive:
 			p.lcmanager.UpdateState(bertymessenger.StateInactive)
