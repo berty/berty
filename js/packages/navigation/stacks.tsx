@@ -100,8 +100,8 @@ export const TabNavigation: React.FC = () => {
 			tabBar={({ state }) => <Components.Main.Footer selected={state.routes[state.index].name} />}
 			tabBarPosition='bottom'
 		>
-			<TabStack.Screen name={Routes.Main.Search} component={Components.Main.Search} />
 			<TabStack.Screen name={Routes.Main.Home} component={Components.Main.Home} />
+			<TabStack.Screen name={Routes.Main.Search} component={Components.Main.Search} />
 			<TabStack.Screen name={Routes.Settings.Home} component={Components.Settings.Home} />
 		</TabStack.Navigator>
 	)
