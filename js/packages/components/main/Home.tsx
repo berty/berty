@@ -336,7 +336,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	)
 }
 
-const Conversations: React.FC<ConversationsProps> = ({ items, onLayout, style }) => {
+const Conversations: React.FC<ConversationsProps> = ({ items, style, onLayout }) => {
 	const [{ background }] = useStyles()
 	return items?.length ? (
 		<SafeAreaConsumer>
@@ -389,6 +389,12 @@ const HomeHeader: React.FC<
 									: isOnTop
 									? 40 * scaleHeight
 									: 20 * scaleHeight,
+								// paddingTop: hasRequests
+								// 	? isOnTop
+								// 		? 40 * scaleHeight
+								// 		: 20 * scaleHeight
+								// 	: 40 * scaleHeight,
+								// paddingBottom: isOnTop && 10 * scaleHeight,
 							},
 						]}
 					>
@@ -424,17 +430,17 @@ const HomeHeader: React.FC<
 
 export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	// TODO: do something to animate the requests
-	const [layoutRequests, onLayoutRequests] = useLayout()
-	const [layoutConversations, onLayoutConversations] = useLayout()
-	const [layoutHeader, onLayoutHeader] = useLayout()
-
 	const requests: any[] = useIncomingContactRequests()
 	const conversations: any[] = useConversationList() // TODO: sort
 	const isConversation: number = useConversationLength()
+	const [layoutRequests, onLayoutRequests] = useLayout()
+	const [layoutHeader, onLayoutHeader] = useLayout()
+	const [layoutConvs, onLayoutConvs] = useLayout()
+	const [isOnTop, setIsOnTop] = useState<boolean>(false)
 
 	const [
 		{ color, text, opacity, flex, margin, background, absolute },
-		{ windowHeight },
+		{ windowHeight, scaleSize, scaleHeight },
 	] = useStyles()
 	const scrollRef = useRef<ScrollView>(null)
 	const [offset, setOffset] = useState<any>()
@@ -478,40 +484,35 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 								} else {
 									setIsOnTop(false)
 								}
-								if (offset && e.nativeEvent.contentOffset.y >= offset.y) {
-									setDirScroll('up')
-								} else if (offset && e.nativeEvent.contentOffset.y < offset.y) {
-									setDirScroll('down')
-								}
-								setOffset(e.nativeEvent.contentOffset)
 							}
 						}}
 					>
 						<IncomingRequests items={requests} onLayout={onLayoutRequests} />
-
 						<HomeHeader
 							isOnTop={isOnTop}
-							onLayout={onLayoutHeader}
 							hasRequests={requests.length > 0}
 							scrollRef={scrollRef}
+							onLayout={onLayoutHeader}
 						/>
 						{isConversation ? (
-							<Conversations items={conversations} onLayout={onLayoutConversations} />
+							<Conversations items={conversations} onLayout={onLayoutConvs} />
 						) : (
 							<View style={[background.white]}>
 								<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
-									<EmptyChat width={350} height={350} />
-									<TextNative
-										style={[
-											text.align.center,
-											text.color.grey,
-											text.bold.small,
-											opacity(0.3),
-											margin.top.big,
-										]}
-									>
-										You don't have any contacts or chat yet
-									</TextNative>
+									<View>
+										<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
+										<TextNative
+											style={[
+												text.align.center,
+												text.color.grey,
+												text.bold.small,
+												opacity(0.3),
+												margin.top.big,
+											]}
+										>
+											You don't have any contacts or chat yet
+										</TextNative>
+									</View>
 								</View>
 							</View>
 						)}
