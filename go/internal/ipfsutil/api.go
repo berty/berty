@@ -209,12 +209,12 @@ func configureRouting(mode p2p_dht.ModeOpt, opts ...p2p_dht.Option) func(
 		bootstrapPeers ...p2p_peer.AddrInfo,
 	) (p2p_routing.Routing, error) {
 		return p2p_dualdht.New(ctx, host,
-			append(opts,
+			p2p_dualdht.DHTOption(append(opts,
 				p2p_dht.Mode(mode),
 				p2p_dht.Datastore(dstore),
 				p2p_dht.Validator(validator),
 				p2p_dht.BootstrapPeers(bootstrapPeers...),
-			)...)
+			)...))
 	}
 }
 
