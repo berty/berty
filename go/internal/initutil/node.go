@@ -1,6 +1,8 @@
 package initutil
 
 import (
+	"crypto/ed25519"
+	"encoding/base64"
 	"flag"
 	"fmt"
 	"os"
@@ -9,6 +11,7 @@ import (
 	"strings"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
@@ -39,6 +42,12 @@ func (m *Manager) SetupLocalProtocolServerFlags(fs *flag.FlagSet) {
 	m.SetupLocalIPFSFlags(fs)
 	// p2p.remote-ipfs
 	// p2p.no-ble
+}
+
+func (m *Manager) SetupProtocolAuth(fs *flag.FlagSet) {
+	m.Node.Protocol.needAuth = true
+	fs.StringVar(&m.Node.Protocol.AuthSecret, "auth.secret", "", "API Authentication Secret (base64 encoded)")
+	fs.StringVar(&m.Node.Protocol.AuthPrivateKey, "auth.pk", "", "API Authentication Private Key (base64 encoded)")
 }
 
 func (m *Manager) SetupEmptyGRPCListenersFlags(fs *flag.FlagSet) {
@@ -328,6 +337,16 @@ func (m *Manager) getGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 		grpc_zap.ReplaceGrpcLoggerV2(grpcLogger)
 		grpcLoggerConfigured = true
 	}
+
+	if m.Node.Protocol.needAuth {
+		man, err := getAuthTokenVerifier(m.Node.Protocol.AuthSecret, m.Node.Protocol.AuthPrivateKey)
+		if err != nil {
+			return nil, nil, errcode.TODO.Wrap(err)
+		}
+
+		grpc.UnaryInterceptor(grpc_auth.UnaryServerInterceptor(man.GRPCAuthInterceptor("bertyprotocol/replication")))
+	}
+
 	grpcOpts := []grpc.ServerOption{
 		grpc_middleware.WithUnaryServerChain(
 			grpc_recovery.UnaryServerInterceptor(recoverOpts...),
@@ -503,6 +522,24 @@ func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServ
 	m.Node.Messenger.server = messengerServer
 	m.initLogger.Debug("messenger server initialized and cached")
 	return m.Node.Messenger.server, nil
+}
+
+func getAuthTokenVerifier(secret, pk string) (*bertyprotocol.AuthTokenVerifier, error) {
+	rawSecret, err := base64.RawStdEncoding.DecodeString(secret)
+	if err != nil {
+		return nil, err
+	}
+
+	rawPK, err := base64.RawStdEncoding.DecodeString(pk)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(rawPK) != ed25519.PublicKeySize {
+		return nil, fmt.Errorf("empty or invalid pk size")
+	}
+
+	return bertyprotocol.NewAuthTokenVerifier(rawSecret, rawPK)
 }
 
 func safeDefaultDisplayName() string {

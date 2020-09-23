@@ -6,6 +6,7 @@ import (
 
 	"google.golang.org/grpc"
 
+	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
@@ -48,9 +49,7 @@ func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *
 	}
 
 	cc, err := grpc.Dial(endpoint, []grpc.DialOption{
-		// grpc.WithPerRPCCredentials(oauth.NewOauthAccess(&oauth2.Token{
-		// 	AccessToken: token.Token,
-		// })),
+		grpc.WithPerRPCCredentials(grpcutil.NewSimpleAuthAccess(token.Token)),
 		grpc.WithInsecure(), // TODO: remove this, enforce security
 	}...)
 	if err != nil {
