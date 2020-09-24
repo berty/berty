@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
+	"crypto/rand"
 	"flag"
 	"fmt"
 	"log"
-	"math/rand"
+	"math/big"
 	"os"
 	"os/signal"
 	"os/user"
@@ -347,7 +348,7 @@ func handleEvent(ctx context.Context, messengerClient bertymessenger.MessengerSe
 				"Come on, let's party.",
 				"May we have a chat about our love relationship future ?",
 				"That's cool. I copy.",
-			}
+			} // 28
 
 			if receivedMessage.GetBody() == "/help" {
 				userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{
@@ -370,8 +371,13 @@ func handleEvent(ctx context.Context, messengerClient bertymessenger.MessengerSe
 				return
 			}
 			// auto-reply to user's messages
+			nBig, err := rand.Int(rand.Reader, big.NewInt(28))
+			if err != nil {
+				log.Printf("Failed to generate randome number: %v", err)
+				return
+			}
 			userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{
-				Body: answers[rand.Intn(len(answers))],
+				Body: answers[nBig.Int64()],
 			})
 			if err != nil {
 				log.Printf("handle event: %v", err)
@@ -388,13 +394,20 @@ func handleEvent(ctx context.Context, messengerClient bertymessenger.MessengerSe
 				return
 			}
 		} else if interaction.Type == bertymessenger.AppMessage_TypeGroupInvitation && !interaction.IsMe {
-			// _, err := messengerClient.ConversationJoin(ctx, &bertymessenger.ConversationJoin_Request{
-			// 	Link: bytesToString(interaction.Payload),
-			// })
-			// if err != nil {
-			// log.Printf("handle event: %v", err)
-			// 	return
-			// }
+			// auto-accept invitations to group
+			interactionPayload, err := interaction.UnmarshalPayload()
+			if err != nil {
+				log.Printf("handle event: %v", err)
+				return
+			}
+			receivedInvitation := interactionPayload.(*bertymessenger.AppMessage_GroupInvitation)
+			_, err = messengerClient.ConversationJoin(ctx, &bertymessenger.ConversationJoin_Request{
+				Link: receivedInvitation.GetLink(),
+			})
+			if err != nil {
+				log.Printf("handle event: %v", err)
+				return
+			}
 			log.Printf("GroupInvit: %q", interaction)
 		}
 	default:
@@ -403,7 +416,7 @@ func handleEvent(ctx context.Context, messengerClient bertymessenger.MessengerSe
 }
 
 func checkValidationMessage(s string) bool {
-	return s == "Yes" || s == "yes" || s == "y" || s == "Y"
+	return s == "Yes" || s == "yes" || s == "y" || s == "Y" || s == "YES"
 }
 
 func waitForCtrlC(ctx context.Context, cancel context.CancelFunc) {
