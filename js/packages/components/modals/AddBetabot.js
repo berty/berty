@@ -145,7 +145,7 @@ export const AddBetabotBody = () => {
 						onPress={() =>
 							requestContact({
 								link:
-									'https://berty.tech/id#key=CiA1WGum2VRQzQx05UC7LKfN9b5MteNmujlwjZ1mAKuIQhIgNKTdsfjmYvf-4TS_0KRxlXjHVC1SRiI6KjKwQpeAxWA&name=beta-bot',
+									'https://berty.tech/id#key=CiBw6zgibkvlKyyi_jvjGkEavZosW8Dp3zf2h4jX8coxDBIgDxAmLeCIZqG8EkdiaV3izZFFoxTQRDoXEjoMUlJLy9I&name=beta-bot',
 							})
 						}
 					>
