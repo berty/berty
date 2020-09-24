@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 
-import Avatar from './Buck_Berty.svg'
+import Avatar from './Buck_Berty_Icon_Card.svg'
 import BlurView from '../shared-components/BlurView'
 
 const useStylesAddBetabot = () => {
@@ -59,10 +59,40 @@ export const AddBetabotBody = () => {
 					{ width: '100%' },
 				]}
 			>
-				<View style={[absolute.scale({ top: -70 }), row.item.justify, border.shadow.large]}>
-					<Avatar width={120} height={120} />
+				<View style={[absolute.scale({ top: -80 }), row.item.justify]}>
+					<View
+						style={[
+							{
+								width: 130,
+								height: 130,
+								backgroundColor: 'white',
+								justifyContent: 'center',
+								alignItems: 'center',
+							},
+							border.radius.scale(65),
+							border.shadow.large,
+						]}
+					>
+						<View
+							style={[
+								{
+									width: 110,
+									height: 110,
+									backgroundColor: 'white',
+									justifyContent: 'center',
+									alignItems: 'center',
+									shadowOpacity: 0.1,
+									shadowRadius: 5,
+									shadowOffset: { width: 0, height: 0 },
+								},
+								border.radius.scale(60),
+							]}
+						>
+							<Avatar width={120} height={120} />
+						</View>
+					</View>
 				</View>
-				<View style={[padding.top.scale(55)]}>
+				<View style={[padding.top.scale(65)]}>
 					<Icon
 						name='info-outline'
 						fill={color.blue}
@@ -73,7 +103,7 @@ export const AddBetabotBody = () => {
 					<TextNative
 						style={[
 							text.align.center,
-							padding.top.medium,
+							padding.top.small,
 							text.size.large,
 							text.bold.small,
 							text.color.black,
@@ -82,7 +112,7 @@ export const AddBetabotBody = () => {
 					>
 						👋 ADD BETA BOT?
 					</TextNative>
-					<Text style={[text.align.center, padding.top.medium, padding.horizontal.medium]}>
+					<Text style={[text.align.center, padding.top.big, padding.horizontal.medium]}>
 						<Text>You don't have any contacts yet would you like to add the</Text>
 						<TextNative style={[text.bold.medium, text.color.black, { fontFamily: 'Open Sans' }]}>
 							{' '}
@@ -115,8 +145,7 @@ export const AddBetabotBody = () => {
 						onPress={() =>
 							requestContact({
 								link:
-									// TODO variable env with betabot link
-									'https://berty.tech/id#key=CiAeFl27r02orxVgzNizJu6ybew_7wFIfOLKMQ_CwtX77BIgYMR3XA3omKPBJz3kMh8yFaslfvOsYD710GUIivSyJ54&name=beta-bot',
+									'https://berty.tech/id#key=CiA1WGum2VRQzQx05UC7LKfN9b5MteNmujlwjZ1mAKuIQhIgNKTdsfjmYvf-4TS_0KRxlXjHVC1SRiI6KjKwQpeAxWA&name=beta-bot',
 							})
 						}
 					>

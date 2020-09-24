@@ -2,11 +2,10 @@ package main
 
 import (
 	"context"
-	"crypto/rand"
 	"flag"
 	"fmt"
 	"log"
-	"math/big"
+	"math/rand"
 	"os"
 	"os/signal"
 	"os/user"
@@ -17,6 +16,7 @@ import (
 	"github.com/gogo/protobuf/proto"
 	qrterminal "github.com/mdp/qrterminal/v3"
 	"google.golang.org/grpc"
+	"moul.io/srand"
 
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 )
@@ -36,6 +36,7 @@ func main() {
 }
 
 func betabot() error {
+	rand.Seed(srand.Secure())
 	flag.Parse()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -62,48 +63,40 @@ func betabot() error {
 		qrterminal.GenerateHalfBlock(res.HTMLURL, qrterminal.L, os.Stdout)
 	}
 
-	var wg sync.WaitGroup
 	// request contact in flag
 	{
 		if *contact != "" {
 			splits := strings.Split(*contact, ",")
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
-				for _, v := range splits {
-					parseRet, err := messengerClient.ParseDeepLink(ctx, &bertymessenger.ParseDeepLink_Request{Link: v})
+			for _, v := range splits {
+				parseRet, err := messengerClient.ParseDeepLink(ctx, &bertymessenger.ParseDeepLink_Request{Link: v})
+				if err != nil {
+					return err
+				}
+				{
+					om, err := proto.Marshal(&bertymessenger.ContactMetadata{DisplayName: *displayName})
 					if err != nil {
-						log.Printf("contact was not valid")
-						return
+						return err
 					}
-					{
-						om, err := proto.Marshal(&bertymessenger.ContactMetadata{DisplayName: *displayName})
-						if err != nil {
-							cancel()
-							return
-						}
-						_, err = messengerClient.SendContactRequest(ctx, &bertymessenger.SendContactRequest_Request{BertyID: parseRet.BertyID, OwnMetadata: om})
-						if err != nil {
-							cancel()
-							return
-						}
+					_, err = messengerClient.SendContactRequest(ctx, &bertymessenger.SendContactRequest_Request{BertyID: parseRet.BertyID, OwnMetadata: om})
+					if err != nil {
+						cancel()
+						return err
 					}
 				}
-			}()
+			}
 		}
 	}
 
 	// event loop
+	var wg sync.WaitGroup
 	{
 		s, err := messengerClient.EventStream(ctx, &bertymessenger.EventStream_Request{})
 		if err != nil {
-			log.Printf("Failed to listen EventStream %v", err)
-			return err
+			return fmt.Errorf("failed to listen to EventStream: %w", err)
 		}
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-
 			for {
 				gme, err := s.Recv()
 				if err != nil {
@@ -114,8 +107,8 @@ func betabot() error {
 
 				wg.Add(1)
 				go func() {
+					defer wg.Done()
 					handleEvent(ctx, messengerClient, gme)
-					wg.Done()
 				}()
 			}
 		}()
@@ -188,7 +181,8 @@ func handleEvent(ctx context.Context, messengerClient bertymessenger.MessengerSe
 		}
 		interaction := update.(*bertymessenger.StreamEvent_InteractionUpdated).Interaction
 		log.Printf("<<< %s: conversation=%q", gme.Event.Type, interaction.ConversationPublicKey)
-		if interaction.Type == bertymessenger.AppMessage_TypeUserMessage && !interaction.IsMe && !interaction.Acknowledged {
+		switch {
+		case interaction.Type == bertymessenger.AppMessage_TypeUserMessage && !interaction.IsMe && !interaction.Acknowledged:
 			var conv *ConvWithCount
 			var idx int
 			for i := range convs {
@@ -319,37 +313,6 @@ func handleEvent(ctx context.Context, messengerClient bertymessenger.MessengerSe
 				}
 			}
 
-			answers := []string{
-				"Welcome to the beta!",
-				"Hello! Welcome to Berty!",
-				"Hey, I hope you're feeling well here!",
-				"Hi, I'm here for you at anytime for tests!",
-				"Hello dude!",
-				"Hello :)",
-				"Ow, I like to receive test messages <3",
-				"What's up ?",
-				"How r u ?",
-				"Hello, 1-2, 1-2, check, check?!",
-				"Do you copy ?",
-				"If you say ping, I'll say pong.",
-				"I'm faster than you at sending message :)",
-				"One day, bots will rules the world. Or not.",
-				"You're so cute.",
-				"I like discuss with you, I feel more and more clever.",
-				"I'm so happy to chat with you.",
-				"I could chat with you all day long.",
-				"Yes darling ? Can I help you ?",
-				"OK, copy that.",
-				"OK, I understand.",
-				"Hmmm, Hmmmm. One more time ?",
-				"I think you're the most clever human I know.",
-				"I missed you babe.",
-				"OK, don't send me nudes, I'm a bot dude.",
-				"Come on, let's party.",
-				"May we have a chat about our love relationship future ?",
-				"That's cool. I copy.",
-			} // 28
-
 			if receivedMessage.GetBody() == "/help" {
 				userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{
 					Body: "In this conversation, you can type all theses commands :\n/demo group\n/demo demo\n/demo share\n/demo contact \"Here is the QR code of manfred, just add him!\"",
@@ -370,14 +333,15 @@ func handleEvent(ctx context.Context, messengerClient bertymessenger.MessengerSe
 				}
 				return
 			}
+
+			answers := getAnswersRange()
 			// auto-reply to user's messages
-			nBig, err := rand.Int(rand.Reader, big.NewInt(28))
 			if err != nil {
 				log.Printf("Failed to generate randome number: %v", err)
 				return
 			}
 			userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{
-				Body: answers[nBig.Int64()],
+				Body: answers[rand.Intn(len(answers))], // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
 			})
 			if err != nil {
 				log.Printf("handle event: %v", err)
@@ -393,7 +357,7 @@ func handleEvent(ctx context.Context, messengerClient bertymessenger.MessengerSe
 				log.Printf("handle event: %v", err)
 				return
 			}
-		} else if interaction.Type == bertymessenger.AppMessage_TypeGroupInvitation && !interaction.IsMe {
+		case interaction.Type == bertymessenger.AppMessage_TypeGroupInvitation && !interaction.IsMe:
 			// auto-accept invitations to group
 			interactionPayload, err := interaction.UnmarshalPayload()
 			if err != nil {
@@ -416,7 +380,12 @@ func handleEvent(ctx context.Context, messengerClient bertymessenger.MessengerSe
 }
 
 func checkValidationMessage(s string) bool {
-	return s == "Yes" || s == "yes" || s == "y" || s == "Y" || s == "YES"
+	switch strings.ToLower(s) {
+	case "y", "yes", "yes!":
+		return true
+	default:
+		return false
+	}
 }
 
 func waitForCtrlC(ctx context.Context, cancel context.CancelFunc) {
@@ -443,4 +412,37 @@ func safeDefaultDisplayName() string {
 		name = "Anonymous4242"
 	}
 	return fmt.Sprintf("%s (bot)", name)
+}
+
+func getAnswersRange() []string {
+	return []string{
+		"Welcome to the beta!",
+		"Hello! Welcome to Berty!",
+		"Hey, I hope you're feeling well here!",
+		"Hi, I'm here for you at anytime for tests!",
+		"Hello dude!",
+		"Hello :)",
+		"Ow, I like to receive test messages <3",
+		"What's up ?",
+		"How r u ?",
+		"Hello, 1-2, 1-2, check, check?!",
+		"Do you copy ?",
+		"If you say ping, I'll say pong.",
+		"I'm faster than you at sending message :)",
+		"One day, bots will rules the world. Or not.",
+		"You're so cute.",
+		"I like discuss with you, I feel more and more clever.",
+		"I'm so happy to chat with you.",
+		"I could chat with you all day long.",
+		"Yes darling ? Can I help you ?",
+		"OK, copy that.",
+		"OK, I understand.",
+		"Hmmm, Hmmmm. One more time ?",
+		"I think you're the most clever human I know.",
+		"I missed you babe.",
+		"OK, don't send me nudes, I'm a bot dude.",
+		"Come on, let's party.",
+		"May we have a chat about our love relationship future ?",
+		"That's cool. I copy.",
+	} // 28
 }
