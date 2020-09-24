@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { CommonActions } from '@react-navigation/native'
+import { CommonActions, useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { Translation } from 'react-i18next'
 import {
 	ScrollView,
@@ -23,6 +23,7 @@ import {
 	useIncomingContactRequests,
 	useMsgrContext,
 	useLastConvInteraction,
+	useContacts,
 } from '@berty-tech/store/hooks'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
@@ -435,6 +436,8 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const [isOnTop, setIsOnTop] = useState<boolean>(false)
 	const [dirScroll, setDirScroll] = useState<string>('')
 	const [bgColor, setBgColor] = useState<any>()
+	const navigation = useNativeNavigation()
+	const contacts = useContacts()
 
 	useEffect(() => {
 		if (!requests.length) {
@@ -443,6 +446,14 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 			setBgColor(color.blue)
 		}
 	}, [color.white, color.blue, requests.length])
+
+	useEffect(() => {
+		if (!Object.keys(contacts).length) {
+			navigation.navigate('Modals', {
+				screen: 'AddBetabot',
+			})
+		}
+	})
 
 	return (
 		<>

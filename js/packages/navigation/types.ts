@@ -48,6 +48,7 @@ export namespace ScreenProps {
 	}
 	export namespace Modals {
 		export type ManageDeepLink = RouteProps<{ type: 'qr' | 'link'; value: string }>
+		export type AddBetabot = RouteProps<void>
 	}
 }
 
@@ -104,5 +105,6 @@ export namespace Routes {
 		SendContactRequest = 'SendContactRequest',
 		DeleteAccount = 'DeleteAccount',
 		ManageDeepLink = 'ManageDeepLink',
+		AddBetabot = 'AddBetabot',
 	}
 }

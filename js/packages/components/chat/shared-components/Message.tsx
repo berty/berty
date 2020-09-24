@@ -379,6 +379,7 @@ export const Message: React.FC<{
 				: Color(baseColor).alpha(0.1).string()
 			msgBorderColor = inte.isMe && (cmd ? border.color.grey : { borderColor: baseColor })
 			msgSenderColor = inte.isMe ? 'red' : baseColor
+			console.log('State', inte.isMe, isGroup, name, isFollowupMessage)
 		}
 
 		return (
@@ -398,12 +399,12 @@ export const Message: React.FC<{
 					/>
 				)}
 				<View style={[column.top, _styles.messageItem]}>
-					{!inte.isMe && isGroup && name && !isFollowupMessage && (
+					{!inte.isMe && isGroup && !isFollowupMessage && (
 						<View style={[{ paddingLeft: 10 }, isFollowedMessage && margin.left.scale(35)]}>
 							<Text
 								style={[text.bold.medium, _styles.personNameInGroup, { color: msgSenderColor }]}
 							>
-								{name}
+								{name || ''}
 							</Text>
 						</View>
 					)}

@@ -118,6 +118,10 @@ const createNavigation = ({
 					navigate,
 					Routes.Modals.ManageDeepLink,
 				),
+				addBetabot: createNavigateFunc<ScreenProps.Modals.ManageDeepLink>(
+					navigate,
+					Routes.Modals.ManageDeepLink,
+				),
 			},
 		},
 	}
