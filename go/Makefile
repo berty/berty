@@ -145,7 +145,7 @@ validate-go-version:
 protos_src := $(wildcard ../api/*.proto) $(wildcard ../api/go-internal/*.proto)
 gen_src := $(protos_src) Makefile
 gen_sum := gen.sum
-protoc_opts := -I ../api:`go list -m -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis:`go list -m -f {{.Dir}} github.com/gogo/protobuf`:/protobuf
+protoc_opts := -I ../api:`go list -m -mod=mod -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis:`go list -m -mod=mod -f {{.Dir}} github.com/gogo/protobuf`:/protobuf
 pb.generate: gen.sum validate-go-version
 $(gen_sum): $(gen_src)
 	$(call check-program, shasum docker $(GO))
