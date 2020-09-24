@@ -7,6 +7,7 @@ require (
 	berty.tech/go-ipfs-log v1.2.6
 	berty.tech/go-orbit-db v1.10.8
 	berty.tech/ipfs-webui-packed v1.0.0-v2.9.0-4
+	cloud.google.com/go v0.63.0 // indirect
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Masterminds/sprig v2.22.0+incompatible // indirect
@@ -84,9 +85,7 @@ require (
 	golang.org/x/net v0.0.0-20200822124328-c89045814202
 	golang.org/x/tools v0.0.0-20200917221617-d56e4e40bc9d
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
-	google.golang.org/genproto v0.0.0-20200715011427-11fb19a81f2c // indirect
-	google.golang.org/grpc v1.30.0
-	google.golang.org/protobuf v1.25.0 // indirect
+	google.golang.org/grpc v1.32.0
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1
 	gorm.io/driver/sqlite v1.0.8
