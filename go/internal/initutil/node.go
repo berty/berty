@@ -1,6 +1,7 @@
 package initutil
 
 import (
+	"context"
 	"crypto/ed25519"
 	"encoding/base64"
 	"flag"
@@ -45,9 +46,8 @@ func (m *Manager) SetupLocalProtocolServerFlags(fs *flag.FlagSet) {
 }
 
 func (m *Manager) SetupProtocolAuth(fs *flag.FlagSet) {
-	m.Node.Protocol.needAuth = true
-	fs.StringVar(&m.Node.Protocol.AuthSecret, "auth.secret", "", "API Authentication Secret (base64 encoded)")
-	fs.StringVar(&m.Node.Protocol.AuthPrivateKey, "auth.pk", "", "API Authentication Private Key (base64 encoded)")
+	fs.StringVar(&m.Node.Protocol.AuthSecret, "node.auth-secret", "", "Protocol API Authentication Secret (base64 encoded)")
+	fs.StringVar(&m.Node.Protocol.AuthPublicKey, "node.auth-pk", "", "Protocol API Authentication Public Key (base64 encoded)")
 }
 
 func (m *Manager) SetupEmptyGRPCListenersFlags(fs *flag.FlagSet) {
@@ -338,13 +338,16 @@ func (m *Manager) getGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 		grpcLoggerConfigured = true
 	}
 
-	if m.Node.Protocol.needAuth {
-		man, err := getAuthTokenVerifier(m.Node.Protocol.AuthSecret, m.Node.Protocol.AuthPrivateKey)
+	// noop auth func
+	authFunc := func(ctx context.Context) (context.Context, error) { return ctx, nil }
+
+	if m.Node.Protocol.AuthSecret != "" || m.Node.Protocol.AuthPublicKey != "" {
+		man, err := getAuthTokenVerifier(m.Node.Protocol.AuthSecret, m.Node.Protocol.AuthPublicKey)
 		if err != nil {
 			return nil, nil, errcode.TODO.Wrap(err)
 		}
 
-		grpc.UnaryInterceptor(grpc_auth.UnaryServerInterceptor(man.GRPCAuthInterceptor("bertyprotocol/replication")))
+		authFunc = man.GRPCAuthInterceptor(bertyprotocol.ServiceReplicationID)
 	}
 
 	grpcOpts := []grpc.ServerOption{
@@ -353,12 +356,14 @@ func (m *Manager) getGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 			grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...),
 			grpc_trace.UnaryServerInterceptor(tr),
+			grpc_auth.UnaryServerInterceptor(authFunc),
 		),
 		grpc_middleware.WithStreamServerChain(
 			grpc_recovery.StreamServerInterceptor(recoverOpts...),
 			grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 			grpc_trace.StreamServerInterceptor(tr),
 			grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...),
+			grpc_auth.StreamServerInterceptor(authFunc),
 		),
 	}
 

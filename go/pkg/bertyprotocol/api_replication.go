@@ -49,7 +49,7 @@ func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *
 	}
 
 	cc, err := grpc.Dial(endpoint, []grpc.DialOption{
-		grpc.WithPerRPCCredentials(grpcutil.NewSimpleAuthAccess(token.Token)),
+		grpc.WithPerRPCCredentials(grpcutil.NewUnsecureSimpleAuthAccess("bearer", token.Token)),
 		grpc.WithInsecure(), // TODO: remove this, enforce security
 	}...)
 	if err != nil {

@@ -61,8 +61,8 @@ type Manager struct {
 			RdvpMaddrs flagStringSlice
 
 			// Auth
-			AuthSecret     string
-			AuthPrivateKey string
+			AuthSecret    string
+			AuthPublicKey string
 
 			// internal
 			needAuth         bool

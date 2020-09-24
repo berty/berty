@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 
 	"github.com/peterbourgon/ff/v3/ffcli"
 
@@ -29,6 +30,14 @@ func replicationServerCommand() *ffcli.Command {
 			}
 
 			var err error
+
+			if manager.Node.Protocol.AuthSecret == "" {
+				return fmt.Errorf("node.auth-secret cannot be empty")
+			}
+
+			if manager.Node.Protocol.AuthPublicKey == "" {
+				return fmt.Errorf("node.auth-pk cannot be empty")
+			}
 
 			server, mux, err := manager.GetGRPCServer()
 			if err != nil {
