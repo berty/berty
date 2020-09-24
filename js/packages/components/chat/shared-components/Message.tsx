@@ -25,11 +25,11 @@ const pal = palette('tol-rainbow', 256)
 // Types
 // Styles
 const useStylesMessage = () => {
-	const [{ row, text, padding }] = useStyles()
+	const [{ row, text, padding, width }] = useStyles()
 	return {
 		isMeMessage: [row.item.bottom, { maxWidth: '90%' }],
 		isOtherMessage: [row.item.top, { maxWidth: '90%' }],
-		circleAvatar: [row.item.center],
+		circleAvatarUserMessage: [row.item.bottom, width(40)],
 		messageItem: [],
 		personNameInGroup: text.size.tiny,
 		dateMessage: text.size.tiny,
@@ -314,7 +314,7 @@ export const Message: React.FC<{
 	const previousMessage = useInteraction(previousMessageId, convPK)
 	const nextMessage = useInteraction(nextMessageId, convPK)
 	const _styles = useStylesMessage()
-	const [{ row, margin, padding, column, text, border, color }] = useStyles()
+	const [{ row, margin, padding, column, text, border, color }, { scaleSize }] = useStyles()
 	if (!inte) {
 		return null
 	}
@@ -393,14 +393,14 @@ export const Message: React.FC<{
 			>
 				{!inte.isMe && isGroup && !isFollowedMessage && (
 					<ProceduralCircleAvatar
-						style={(_styles.circleAvatar, { alignSelf: 'flex-end' })}
+						style={_styles.circleAvatarUserMessage}
 						seed={inte.memberPublicKey}
-						size={35}
+						size={40 * scaleSize}
 					/>
 				)}
 				<View style={[column.top, _styles.messageItem]}>
 					{!inte.isMe && isGroup && !isFollowupMessage && (
-						<View style={[{ paddingLeft: 10 }, isFollowedMessage && margin.left.scale(35)]}>
+						<View style={[isFollowedMessage && margin.left.scale(40)]}>
 							<Text
 								style={[text.bold.medium, _styles.personNameInGroup, { color: msgSenderColor }]}
 							>
@@ -410,7 +410,6 @@ export const Message: React.FC<{
 					)}
 					<View
 						style={[
-							padding.small,
 							border.radius.top.medium,
 							inte.isMe ? border.radius.left.medium : border.radius.right.medium,
 							msgBorderColor,
