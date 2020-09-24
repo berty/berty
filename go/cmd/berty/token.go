@@ -45,7 +45,7 @@ func tokenServerCommand() *ffcli.Command {
 	var (
 		secretFlag    = ""
 		authSKFlag    = ""
-		listenerFlag  = ":8080"
+		listenerFlag  = "127.0.0.1:8080"
 		supportedFlag = ""
 	)
 	fsBuilder := func() (*flag.FlagSet, error) {
