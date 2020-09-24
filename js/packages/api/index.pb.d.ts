@@ -4565,6 +4565,7 @@ export namespace berty {
             }
 
             interface IInteraction {
+                id?: (number|Long|null);
                 cid?: (string|null);
                 type?: (berty.messenger.v1.AppMessage.Type|null);
                 memberPublicKey?: (string|null);
@@ -4576,11 +4577,12 @@ export namespace berty {
                 isMe?: (boolean|null);
                 sentDate?: (number|Long|null);
                 acknowledged?: (boolean|null);
-                arrivalIndex?: (number|Long|null);
+                targetCid?: (string|null);
             }
 
             class Interaction implements IInteraction {
 
+                public id: (number|Long);
                 public cid: string;
                 public type: berty.messenger.v1.AppMessage.Type;
                 public memberPublicKey: string;
@@ -4592,7 +4594,7 @@ export namespace berty {
                 public isMe: boolean;
                 public sentDate: (number|Long);
                 public acknowledged: boolean;
-                public arrivalIndex: (number|Long);
+                public targetCid: string;
                 public static create(properties?: berty.messenger.v1.IInteraction): berty.messenger.v1.Interaction;
                 public static encode(message: berty.messenger.v1.IInteraction, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IInteraction, writer?: $protobuf.Writer): $protobuf.Writer;

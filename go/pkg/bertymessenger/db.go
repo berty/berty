@@ -2,37 +2,39 @@ package bertymessenger
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
+	"github.com/mattn/go-sqlite3"
+	"go.uber.org/multierr"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
-func initDB(db *gorm.DB) error {
-	models := []interface{}{
+type dbWrapper struct {
+	db *gorm.DB
+}
+
+func (d *dbWrapper) initDB() error {
+	return d.db.AutoMigrate([]interface{}{
 		&Conversation{},
 		&Account{},
 		&Contact{},
 		&Interaction{},
 		&Member{},
 		&Device{},
-	}
-	if err := db.AutoMigrate(models...); err != nil {
-		return err
-	}
-	return nil
+	}...)
 }
 
-func dbModelRowsCount(db *gorm.DB, model interface{}) (int64, error) {
+func (d *dbWrapper) dbModelRowsCount(model interface{}) (int64, error) {
 	var count int64
-	err := db.Model(model).Count(&count).Error
-	return count, err
+	return count, d.db.Model(model).Count(&count).Error
 }
 
 func dropAllTables(db *gorm.DB) error {
-	tables := []string{}
+	tables := []string(nil)
 	if err := db.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").Scan(&tables).Error; err != nil {
 		return errcode.ErrDBRead.Wrap(err)
 	}
@@ -46,166 +48,273 @@ func dropAllTables(db *gorm.DB) error {
 	return nil
 }
 
-func addConversation(db *gorm.DB, groupPK string) (*Conversation, error) {
-	conversation, err := getConversationByPK(db, groupPK)
-	switch err {
-	case gorm.ErrRecordNotFound: // not found, create a new one
-		conversation.PublicKey = groupPK
-		conversation.Type = Conversation_MultiMemberType
-		conversation.CreatedDate = timestampMs(time.Now())
-		err := db.
-			Clauses(clause.OnConflict{DoNothing: true}).
-			Create(&conversation).
-			Error
-		if err != nil {
-			return nil, errcode.ErrDBWrite.Wrap(err)
-		}
-
-		return &conversation, nil
-
-	case nil: // contact already exists
-		return nil, errcode.ErrDBEntryAlreadyExists
-
-	default: // other error
-		return nil, errcode.ErrDBRead.Wrap(err)
+func isSQLiteError(err error, sqliteErr sqlite3.ErrNo) bool {
+	e, ok := err.(sqlite3.Error)
+	if !ok {
+		return false
 	}
+
+	return e.Code == sqliteErr
 }
 
-func getAccount(db *gorm.DB) (Account, error) {
-	var accounts []Account
-	err := db.Find(&accounts).Error
-	if err != nil {
-		return Account{}, err
-	}
-	if len(accounts) == 0 {
-		return Account{}, gorm.ErrRecordNotFound
-	} else if len(accounts) > 1 {
-		return Account{}, errcode.ErrDBMultipleRecords
-	}
-	return accounts[0], nil
+func (d *dbWrapper) tx(txFunc func(*dbWrapper) error) error {
+	// Use this to propagate scope, ie. opened account
+	return d.db.Transaction(func(tx *gorm.DB) error {
+		return txFunc(&dbWrapper{
+			db: tx,
+		})
+	})
 }
 
-func getDeviceByPK(db *gorm.DB, publicKey string) (Device, error) {
-	var devices []Device
-	err := db.Where(&Device{PublicKey: publicKey}).Find(&devices).Error
-	if err != nil {
-		return Device{}, err
+func (d *dbWrapper) addConversationForContact(groupPK, contactPK string) (Conversation, error) {
+	conversation := Conversation{
+		PublicKey:        groupPK,
+		ContactPublicKey: contactPK,
+		Type:             Conversation_ContactType,
+		DisplayName:      "", // empty on account conversations
+		Link:             "", // empty on account conversations
+		CreatedDate:      timestampMs(time.Now()),
 	}
-	if len(devices) == 0 {
-		return Device{}, gorm.ErrRecordNotFound
-	} else if len(devices) > 1 {
-		return Device{}, errcode.ErrDBMultipleRecords
-	}
-	return devices[0], nil
-}
 
-func getContactByPK(db *gorm.DB, publicKey string) (Contact, error) {
-	var contacts []Contact
-	err := db.Where(&Contact{PublicKey: publicKey}).Find(&contacts).Error
-	if err != nil {
-		return Contact{}, err
-	}
-	if len(contacts) == 0 {
-		return Contact{}, gorm.ErrRecordNotFound
-	} else if len(contacts) > 1 {
-		return Contact{}, errcode.ErrDBMultipleRecords
-	}
-	return contacts[0], nil
-}
-
-func getConversationByPK(db *gorm.DB, publicKey string) (Conversation, error) {
-	var conversations []Conversation
-	err := db.Where(&Conversation{PublicKey: publicKey}).Find(&conversations).Error
-	if err != nil {
+	if err := d.db.
+		Clauses(clause.OnConflict{
+			Columns:   []clause.Column{{Name: "public_key"}},
+			DoUpdates: clause.AssignmentColumns([]string{"display_name", "link"}),
+		}).
+		Create(&conversation).
+		Error; err != nil {
 		return Conversation{}, err
 	}
-	if len(conversations) == 0 {
-		return Conversation{}, gorm.ErrRecordNotFound
-	} else if len(conversations) > 1 {
-		return Conversation{}, errcode.ErrDBMultipleRecords
-	}
-	return conversations[0], nil
+
+	return conversation, nil
 }
 
-func getInteractionByCID(db *gorm.DB, cid string) (Interaction, error) {
-	var interactions []Interaction
-	err := db.Where(map[string]interface{}{"c_id": cid}).Find(&interactions).Error
-	if err != nil {
-		return Interaction{}, err
+func (d *dbWrapper) addConversation(groupPK string) (Conversation, error) {
+	conversation := Conversation{
+		PublicKey:   groupPK,
+		Type:        Conversation_MultiMemberType,
+		CreatedDate: timestampMs(time.Now()),
 	}
-	if len(interactions) == 0 {
-		return Interaction{}, gorm.ErrRecordNotFound
-	} else if len(interactions) > 1 {
-		return Interaction{}, errcode.ErrDBMultipleRecords
-	}
-	return interactions[0], nil
-}
 
-func getMemberByPK(db *gorm.DB, publicKey string) (Member, error) {
-	var members []Member
-	err := db.Where(&Member{PublicKey: publicKey}).Find(&members).Error
-	if err != nil {
-		return Member{}, err
-	}
-	if len(members) == 0 {
-		return Member{}, gorm.ErrRecordNotFound
-	} else if len(members) > 1 {
-		return Member{}, errcode.ErrDBMultipleRecords
-	}
-	return members[0], nil
-}
-
-func addContactRequestOutgoingEnqueued(db *gorm.DB, contactPK, displayName, convPK string) (*Contact, error) {
-	contact, err := getContactByPK(db, contactPK)
-	switch err {
-	case gorm.ErrRecordNotFound:
-		contact = Contact{
-			DisplayName:           displayName,
-			PublicKey:             contactPK,
-			State:                 Contact_OutgoingRequestEnqueued,
-			CreatedDate:           timestampMs(time.Now()),
-			ConversationPublicKey: convPK,
-		}
-		err = db.
-			Clauses(clause.OnConflict{DoNothing: true}).
-			Create(&contact).
-			Error
-		if err != nil {
-			return nil, errcode.ErrDBRead.Wrap(err)
+	if err := d.db.Create(&conversation).Error; err != nil {
+		if isSQLiteError(err, sqlite3.ErrConstraint) {
+			return Conversation{}, errcode.ErrDBEntryAlreadyExists.Wrap(err)
 		}
 
-		return &contact, nil
-	case nil: // contact already exists
-		// Maybe update DisplayName in some cases?
-		// TODO: better handle case where the state is "IncomingRequest", should end up as in "Established" state in this case IMO
-		return nil, errcode.ErrDBEntryAlreadyExists
-	default: // any other error
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return Conversation{}, errcode.ErrDBWrite.Wrap(err)
 	}
+
+	return conversation, nil
 }
 
-func addContactRequestOutgoingSent(db *gorm.DB, contactPK string) (*Contact, error) {
-	contact, err := getContactByPK(db, contactPK)
-	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+func (d *dbWrapper) updateConversation(c Conversation) error {
+	cl := clause.OnConflict{ // Maybe DoNothing ?
+		Columns:   []clause.Column{{Name: "public_key"}},
+		DoUpdates: clause.AssignmentColumns([]string{"display_name", "link"}),
+	}
+	if err := d.db.Clauses(cl).Create(&c).Error; err != nil {
+		return errcode.ErrInternal.Wrap(err)
 	}
 
-	switch contact.State {
-	case Contact_OutgoingRequestEnqueued:
-		contact.State = Contact_OutgoingRequestSent
-		contact.SentDate = timestampMs(time.Now())
-
-		if err := db.Save(&contact).Error; err != nil {
-			return nil, errcode.ErrDBWrite.Wrap(err)
-		}
-
-		return &contact, nil
-	default:
-		return nil, errcode.ErrInvalidInput.Wrap(errors.New("request not enqueud"))
-	}
+	return nil
 }
 
-func addContactRequestIncomingReceived(db *gorm.DB, contactPK, displayName string) (*Contact, error) {
+func (d *dbWrapper) updateConversationReadState(pk string, newUnread bool, eventDate time.Time) error {
+	updates := map[string]interface{}{
+		"last_update": timestampMs(eventDate),
+	}
+
+	// if conv is not open, increment the unread_count
+	if newUnread {
+		updates["unread_count"] = gorm.Expr("unread_count + 1")
+	}
+
+	// db update
+	tx := d.db.Model(&Conversation{}).Where(&Conversation{PublicKey: pk}).Updates(updates)
+
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return errcode.ErrDBWrite.Wrap(fmt.Errorf("record not found"))
+	}
+
+	return nil
+}
+
+func (d *dbWrapper) addAccount(pk, url string) (Account, error) {
+	acc := Account{
+		PublicKey: pk,
+		Link:      url,
+		State:     Account_NotReady,
+	}
+
+	if pk == "" {
+		return Account{}, errcode.ErrInvalidInput.Wrap(fmt.Errorf("pk cannot be nil"))
+	}
+
+	if err := d.db.Create(&acc).Error; isSQLiteError(err, sqlite3.ErrConstraint) {
+		return d.getAccountByPK(pk)
+	} else if err != nil {
+		return Account{}, err
+	}
+
+	return acc, nil
+}
+
+func (d *dbWrapper) updateAccount(pk, url, displayName string) (Account, error) {
+	acc := Account{}
+
+	values := map[string]interface{}{}
+	if url != "" {
+		values["link"] = url
+	}
+
+	if displayName != "" {
+		values["display_name"] = displayName
+		values["state"] = Account_Ready
+	}
+
+	tx := d.db.Model(&Account{}).Where(&Account{PublicKey: pk}).Updates(values).First(&acc)
+	if tx.Error != nil {
+		return acc, tx.Error
+	}
+
+	return acc, nil
+}
+
+func (d *dbWrapper) getAccount() (Account, error) {
+	var (
+		account Account
+		count   int64
+	)
+
+	d.db.Model(&Account{}).Count(&count)
+	if count > 1 {
+		return Account{}, errcode.ErrDBMultipleRecords
+	}
+
+	return account, d.db.First(&account).Error
+}
+
+func (d *dbWrapper) getAccountByPK(publicKey string) (Account, error) {
+	account := Account{}
+	err := d.db.First(&account, &Account{PublicKey: publicKey}).Error
+
+	return account, err
+}
+
+func (d *dbWrapper) getDeviceByPK(publicKey string) (Device, error) {
+	device := Device{}
+	err := d.db.First(&device, &Device{PublicKey: publicKey}).Error
+
+	return device, err
+}
+
+func (d *dbWrapper) getContactByPK(publicKey string) (Contact, error) {
+	contact := Contact{}
+	err := d.db.First(&contact, &Contact{PublicKey: publicKey}).Error
+
+	return contact, err
+}
+
+func (d *dbWrapper) getConversationByPK(publicKey string) (Conversation, error) {
+	conversation := Conversation{}
+	err := d.db.First(&conversation, &Conversation{PublicKey: publicKey}).Error
+
+	return conversation, err
+}
+
+func (d *dbWrapper) getAllConversations() ([]Conversation, error) {
+	convs := []Conversation(nil)
+	err := d.db.Find(&convs).Error
+
+	return convs, err
+}
+
+func (d *dbWrapper) getAllMembers() ([]Member, error) {
+	members := []Member(nil)
+	err := d.db.Find(&members).Error
+
+	return members, err
+}
+
+func (d *dbWrapper) getAllContacts() ([]Contact, error) {
+	contacts := []Contact(nil)
+	err := d.db.Find(&contacts).Error
+
+	return contacts, err
+}
+
+func (d *dbWrapper) getContactsByState(state Contact_State) ([]Contact, error) {
+	contacts := []Contact(nil)
+	err := d.db.Where(&Contact{State: state}).Find(&contacts).Error
+
+	return contacts, err
+}
+
+func (d *dbWrapper) getAllInteractions() ([]Interaction, error) {
+	interactions := []Interaction(nil)
+	err := d.db.Find(&interactions).Error
+
+	return interactions, err
+}
+
+func (d *dbWrapper) getInteractionByCID(cid string) (Interaction, error) {
+	var interaction Interaction
+	return interaction, d.db.First(&interaction, &Interaction{CID: cid}).Error
+}
+
+func (d *dbWrapper) getMemberByPK(publicKey string) (Member, error) {
+	var member Member
+	err := d.db.First(&member, &Member{PublicKey: publicKey}).Error
+
+	return member, err
+}
+
+func (d *dbWrapper) addContactRequestOutgoingEnqueued(contactPK, displayName, convPK string) (Contact, error) {
+	contact := Contact{
+		PublicKey:             contactPK,
+		DisplayName:           displayName,
+		State:                 Contact_OutgoingRequestEnqueued,
+		CreatedDate:           timestampMs(time.Now()),
+		ConversationPublicKey: convPK,
+	}
+
+	tx := d.db.Where(&Contact{PublicKey: contactPK}).FirstOrCreate(&contact)
+
+	// if tx.Error == nil && tx.RowsAffected == 0 {
+	// Maybe update DisplayName in some cases?
+	// TODO: better handle case where the state is "IncomingRequest", should end up as in "Established" state in this case IMO
+	// }
+
+	return contact, tx.Error
+}
+
+func (d *dbWrapper) addContactRequestOutgoingSent(contactPK string) (Contact, error) {
+	contact := Contact{}
+
+	if tx := d.db.
+		Where(&Contact{
+			PublicKey: contactPK,
+			State:     Contact_OutgoingRequestEnqueued,
+		}).
+		Updates(&Contact{
+			SentDate: timestampMs(time.Now()),
+			State:    Contact_OutgoingRequestSent,
+		}); tx.Error != nil {
+		return Contact{}, tx.Error
+	} else if tx.RowsAffected == 0 {
+		return Contact{}, errcode.ErrDBAddContactRequestOutgoingSent.Wrap(fmt.Errorf("nothing found"))
+	}
+
+	err := d.db.Where(&Contact{PublicKey: contactPK}).First(&contact).Error
+
+	return contact, err
+}
+
+func (d *dbWrapper) addContactRequestIncomingReceived(contactPK, displayName string) (Contact, error) {
 	contact := Contact{
 		DisplayName: displayName,
 		PublicKey:   contactPK,
@@ -213,62 +322,212 @@ func addContactRequestIncomingReceived(db *gorm.DB, contactPK, displayName strin
 		CreatedDate: timestampMs(time.Now()),
 	}
 
-	err := db.
+	if err := d.db.
 		Clauses(clause.OnConflict{DoNothing: true}).
 		Create(&contact).
-		Error
-	if err != nil {
-		return nil, errcode.ErrDBWrite.Wrap(err)
+		Error; isSQLiteError(err, sqlite3.ErrConstraint) {
+		return d.getContactByPK(contactPK)
+	} else if err != nil {
+		return Contact{}, errcode.ErrDBWrite.Wrap(err)
 	}
 
-	return &contact, nil
+	return d.getContactByPK(contactPK)
 }
 
-func addContactRequestIncomingAccepted(db *gorm.DB, contactPK, groupPK string) (*Contact, *Conversation, error) {
-	contact, err := getContactByPK(db, contactPK)
-	if err != nil {
-		return nil, nil, errcode.ErrDBRead.Wrap(err)
+func (d *dbWrapper) addContactRequestIncomingAccepted(contactPK, groupPK string) (Contact, Conversation, error) {
+	contact := Contact{
+		PublicKey: contactPK,
+		State:     Contact_IncomingRequest,
+	}
+	conversation := Conversation{
+		PublicKey:        groupPK,
+		Type:             Conversation_ContactType,
+		ContactPublicKey: contactPK,
+		DisplayName:      "", // empty on account conversations
+		Link:             "", // empty on account conversations
+		CreatedDate:      timestampMs(time.Now()),
 	}
 
-	if contact.State != Contact_IncomingRequest {
-		return nil, nil, errcode.ErrInvalidInput.Wrap(errors.New("no incoming request"))
-	}
+	if err := d.db.Transaction(func(db *gorm.DB) error {
+		tx := db.Where(&Contact{
+			PublicKey: contactPK,
+			State:     Contact_IncomingRequest,
+		}).Updates(&Contact{
+			State:                 Contact_Established,
+			ConversationPublicKey: groupPK,
+		})
 
-	contact.State = Contact_Established
-	contact.ConversationPublicKey = groupPK
-
-	// create new contact conversation
-	var conversation Conversation
-	{
-		conversation = Conversation{
-			PublicKey:        contact.ConversationPublicKey,
-			Type:             Conversation_ContactType,
-			ContactPublicKey: contactPK,
-			DisplayName:      "", // empty on account conversations
-			Link:             "", // empty on account conversations
-			CreatedDate:      timestampMs(time.Now()),
-		}
-	}
-
-	err = db.Transaction(func(tx *gorm.DB) error {
-		// update existing contact
-		if err := tx.Save(&contact).Error; err != nil {
-			return err
+		if tx.RowsAffected != 1 {
+			return errcode.ErrInvalidInput.Wrap(errors.New("no incoming request"))
 		}
 
-		// create new conversation
-		err := tx.
-			Clauses(clause.OnConflict{
-				Columns:   []clause.Column{{Name: "public_key"}},
-				DoUpdates: clause.AssignmentColumns([]string{"display_name", "link"}),
-			}).
+		tx.First(&contact)
+
+		return db.
+			Clauses(clause.OnConflict{DoNothing: true}).
 			Create(&conversation).
 			Error
-		return err
-	})
-	if err != nil {
-		return nil, nil, errcode.ErrDBWrite.Wrap(err)
+	}); err != nil {
+		return Contact{}, Conversation{}, err
 	}
 
-	return &contact, &conversation, nil
+	return contact, conversation, nil
+}
+
+func (d *dbWrapper) markInteractionAsAcknowledged(cid string) (bool, error) {
+	tx := d.db.Model(&Interaction{}).Where(&Interaction{
+		CID: cid,
+	}).Update("acknowledged", true)
+
+	return tx.RowsAffected == 1, tx.Error
+}
+
+func (d *dbWrapper) getAcknowledgementsCIDsForInteraction(cid string) ([]string, error) {
+	var cids []string
+
+	if err := d.db.Model(&Interaction{}).Where(&Interaction{
+		Type:      AppMessage_TypeAcknowledge,
+		TargetCID: cid,
+	}).Pluck("cid", &cids).Error; err != nil {
+		return nil, err
+	}
+
+	return cids, nil
+}
+
+func (d *dbWrapper) deleteInteractions(cids []string) error {
+	return d.db.Model(&Interaction{}).Delete(&Interaction{}, &cids).Error
+}
+
+func (d *dbWrapper) getDBInfo() (*SystemInfo_DB, error) {
+	var err error
+	infos := &SystemInfo_DB{}
+
+	infos.Accounts, err = d.dbModelRowsCount(Account{})
+	err = multierr.Append(err, err)
+
+	infos.Contacts, err = d.dbModelRowsCount(Contact{})
+	err = multierr.Append(err, err)
+
+	infos.Interactions, err = d.dbModelRowsCount(Interaction{})
+	err = multierr.Append(err, err)
+
+	infos.Conversations, err = d.dbModelRowsCount(Conversation{})
+	err = multierr.Append(err, err)
+
+	infos.Members, err = d.dbModelRowsCount(Member{})
+	err = multierr.Append(err, err)
+
+	infos.Devices, err = d.dbModelRowsCount(Device{})
+	err = multierr.Append(err, err)
+
+	return infos, err
+}
+
+func (d *dbWrapper) addDevice(devicePK string, memberPK string) (Device, error) {
+	if err := d.db.
+		Clauses(clause.OnConflict{
+			Columns:   []clause.Column{{Name: "public_key"}},
+			DoNothing: true,
+		}).
+		Create(&Device{
+			PublicKey:      devicePK,
+			OwnerPublicKey: memberPK,
+		}).
+		Error; err != nil {
+		return Device{}, err
+	}
+
+	return d.getDeviceByPK(devicePK)
+}
+
+func (d *dbWrapper) updateContact(contact Contact) error {
+	return d.db.Updates(&contact).Error
+}
+
+func (d *dbWrapper) addInteraction(i Interaction) (Interaction, error) {
+	// Clauses(clause.OnConflict{
+	// 	Columns:   []clause.Column{{Name: "c_id"}},
+	// 	DoNothing: true,
+	// }).
+	// 	Create(&i).
+	// 	Error
+
+	if err := d.db.Create(i).Error; err != nil {
+		return Interaction{}, err
+	}
+
+	if err := d.db.First(&i, &Interaction{CID: i.CID}).Error; err != nil {
+		return Interaction{}, err
+	}
+
+	return i, nil
+}
+
+func (d *dbWrapper) attributeBacklogInteractions(devicePK, groupPK, memberPK string) ([]*Interaction, error) {
+	var (
+		backlog []*Interaction
+		cids    []string
+	)
+
+	if err := d.db.
+		Order("arrival_index asc").
+		Where("device_public_key = ? AND conversation_public_key = ? AND member_public_key = ?", devicePK, groupPK, "").
+		Pluck("cid", &cids).
+		Update("member_public_key", memberPK).
+		Error; err != nil {
+		return nil, err
+	}
+
+	if err := d.db.Find(&backlog, cids).Error; err != nil {
+		return nil, err
+	}
+
+	return backlog, nil
+}
+
+func (d *dbWrapper) addMember(memberPK, groupPK, displayName string) (*Member, error) {
+	onConflict := clause.OnConflict{
+		Columns:   []clause.Column{{Name: "public_key"}},
+		DoUpdates: clause.AssignmentColumns([]string{"display_name"}),
+	}
+
+	if displayName == "" {
+		nameSuffix := "1337"
+		if len(memberPK) >= 4 {
+			nameSuffix = memberPK[:4]
+		}
+		displayName = "anon#" + nameSuffix
+
+		onConflict = clause.OnConflict{
+			Columns:   []clause.Column{{Name: "public_key"}},
+			DoNothing: true,
+		}
+	}
+
+	member := &Member{
+		PublicKey:             memberPK,
+		ConversationPublicKey: groupPK,
+		DisplayName:           displayName,
+	}
+
+	return member, d.db.Clauses(&onConflict).Create(&member).Error
+}
+
+func (d *dbWrapper) setConversationIsOpenStatus(conversationPK string, status bool) (bool, error) {
+	values := map[string]interface{}{
+		"is_open": status,
+	}
+
+	if status == true {
+		values["unread_count"] = 0
+	}
+
+	tx := d.db.
+		Model(&Conversation{}).
+		Where(&Conversation{PublicKey: conversationPK}).
+		Where("is_open", !status).
+		Updates(values)
+
+	return tx.RowsAffected > 0, tx.Error
 }

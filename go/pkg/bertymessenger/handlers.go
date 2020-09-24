@@ -7,7 +7,6 @@ import (
 	"github.com/golang/protobuf/proto"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -24,30 +23,26 @@ import (
  */
 
 func handleProtocolEvent(svc *service, gme *bertytypes.GroupMetadataEvent) error {
+	eventTypeHandlers := map[bertytypes.EventType]func(svc *service, gme *bertytypes.GroupMetadataEvent) error{
+		bertytypes.EventTypeAccountGroupJoined:                    accountGroupJoined,
+		bertytypes.EventTypeAccountContactRequestOutgoingEnqueued: accountContactRequestOutgoingEnqueued,
+		bertytypes.EventTypeAccountContactRequestOutgoingSent:     accountContactRequestOutgoingSent,
+		bertytypes.EventTypeAccountContactRequestIncomingReceived: accountContactRequestIncomingReceived,
+		bertytypes.EventTypeAccountContactRequestIncomingAccepted: accountContactRequestIncomingAccepted,
+		bertytypes.EventTypeGroupMemberDeviceAdded:                groupMemberDeviceAdded,
+		bertytypes.EventTypeGroupMetadataPayloadSent:              groupMetadataPayloadSent,
+	}
+
 	et := gme.GetMetadata().GetEventType()
 	svc.logger.Info("received protocol event", zap.String("type", et.String()))
 
-	var err error
-	switch et {
-	case bertytypes.EventTypeAccountGroupJoined:
-		err = accountGroupJoined(svc, gme)
-	case bertytypes.EventTypeAccountContactRequestOutgoingEnqueued:
-		err = accountContactRequestOutgoingEnqueued(svc, gme)
-	case bertytypes.EventTypeAccountContactRequestOutgoingSent:
-		err = accountContactRequestOutgoingSent(svc, gme)
-	case bertytypes.EventTypeAccountContactRequestIncomingReceived:
-		err = accountContactRequestIncomingReceived(svc, gme)
-	case bertytypes.EventTypeAccountContactRequestIncomingAccepted:
-		err = accountContactRequestIncomingAccepted(svc, gme)
-	case bertytypes.EventTypeGroupMemberDeviceAdded:
-		err = groupMemberDeviceAdded(svc, gme)
-	case bertytypes.EventTypeGroupMetadataPayloadSent:
-		err = groupMetadataPayloadSent(svc, gme)
-	default:
+	handler, ok := eventTypeHandlers[et]
+	if !ok {
 		svc.logger.Info("event ignored", zap.String("type", et.String()))
+		return nil
 	}
 
-	return err
+	return handler(svc, gme)
 }
 
 func groupMetadataPayloadSent(svc *service, gme *bertytypes.GroupMetadataEvent) error {
@@ -82,13 +77,13 @@ func accountGroupJoined(svc *service, gme *bertytypes.GroupMetadataEvent) error 
 	groupPK := bytesToString(gpkb)
 	isNew := false
 
-	conversation, err := addConversation(svc.db, groupPK)
+	conversation, err := svc.db.addConversation(groupPK)
 	if err == nil {
 		isNew = true
 		svc.logger.Info("saved conversation in db")
 
 		// dispatch event
-		err = svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conversation})
+		err = svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{&conversation})
 		if err != nil {
 			return err
 		}
@@ -97,11 +92,8 @@ func accountGroupJoined(svc *service, gme *bertytypes.GroupMetadataEvent) error 
 	}
 
 	// activate group
-	{
-		_, err := svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: gpkb})
-		if err != nil {
-			svc.logger.Warn("failed to activate group", zap.String("pk", bytesToString(gpkb)))
-		}
+	if _, err := svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: gpkb}); err != nil {
+		svc.logger.Warn("failed to activate group", zap.String("pk", bytesToString(gpkb)))
 	}
 
 	// subscribe to group
@@ -119,6 +111,7 @@ func accountContactRequestOutgoingEnqueued(svc *service, gme *bertytypes.GroupMe
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
 		return err
 	}
+
 	contactPKBytes := ev.GetContact().GetPK()
 	contactPK := bytesToString(contactPKBytes)
 
@@ -137,14 +130,14 @@ func accountContactRequestOutgoingEnqueued(svc *service, gme *bertytypes.GroupMe
 		gpk = bytesToString(groupInfoReply.GetGroup().GetPublicKey())
 	}
 
-	contact, err := addContactRequestOutgoingEnqueued(svc.db, contactPK, cm.DisplayName, gpk)
+	contact, err := svc.db.addContactRequestOutgoingEnqueued(contactPK, cm.DisplayName, gpk)
 	if errcode.Is(err, errcode.ErrDBEntryAlreadyExists) {
 		return nil
 	} else if err != nil {
 		return errcode.ErrDBAddContactRequestOutgoingEnqueud.Wrap(err)
 	}
 
-	return svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{contact})
+	return svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{&contact})
 }
 
 func accountContactRequestOutgoingSent(svc *service, gme *bertytypes.GroupMetadataEvent) error {
@@ -155,14 +148,14 @@ func accountContactRequestOutgoingSent(svc *service, gme *bertytypes.GroupMetada
 
 	contactPK := bytesToString(ev.GetContactPK())
 
-	contact, err := addContactRequestOutgoingSent(svc.db, contactPK)
+	contact, err := svc.db.addContactRequestOutgoingSent(contactPK)
 	if err != nil {
 		return errcode.ErrDBAddContactRequestOutgoingSent.Wrap(err)
 	}
 
 	// dispatch event
 	{
-		err := svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{contact})
+		err := svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{&contact})
 		if err != nil {
 			return err
 		}
@@ -196,12 +189,12 @@ func accountContactRequestIncomingReceived(svc *service, gme *bertytypes.GroupMe
 		return err
 	}
 
-	contact, err := addContactRequestIncomingReceived(svc.db, contactPK, m.GetDisplayName())
+	contact, err := svc.db.addContactRequestIncomingReceived(contactPK, m.GetDisplayName())
 	if err != nil {
 		return errcode.ErrDBAddContactRequestIncomingReceived.Wrap(err)
 	}
 
-	return svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{contact})
+	return svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{&contact})
 }
 
 func accountContactRequestIncomingAccepted(svc *service, gme *bertytypes.GroupMetadataEvent) error {
@@ -219,33 +212,80 @@ func accountContactRequestIncomingAccepted(svc *service, gme *bertytypes.GroupMe
 		return err
 	}
 
-	contact, conversation, err := addContactRequestIncomingAccepted(svc.db, contactPK, bytesToString(groupPK))
+	contact, conversation, err := svc.db.addContactRequestIncomingAccepted(contactPK, bytesToString(groupPK))
 	if err != nil {
 		return errcode.ErrDBAddContactRequestIncomingAccepted.Wrap(err)
 	}
 
 	// dispatch event to subscribers
-	{
-		err := svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{contact})
-		if err != nil {
-			return err
-		}
-		err = svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conversation})
-		if err != nil {
-			return err
-		}
+	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{&contact}); err != nil {
+		return err
+	}
+
+	if err = svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{&conversation}); err != nil {
+		return err
 	}
 
 	// activate group
-	{
-		_, err := svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: groupPK})
-		if err != nil {
-			svc.logger.Warn("failed to activate group", zap.String("pk", bytesToString(groupPK)))
-		}
+	if _, err := svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: groupPK}); err != nil {
+		svc.logger.Warn("failed to activate group", zap.String("pk", bytesToString(groupPK)))
 	}
 
 	// subscribe to group messages
 	return svc.subscribeToGroup(groupPK)
+}
+
+func contactRequestAccepted(svc *service, contact *Contact, memberPK []byte) error {
+	// someone you invited just accepted the invitation
+	// update contact
+	var groupPK []byte
+	{
+		var err error
+		if groupPK, err = groupPKFromContactPK(svc.ctx, svc.protocolClient, memberPK); err != nil {
+			return err
+		}
+
+		contact.State = Contact_Established
+		contact.ConversationPublicKey = bytesToString(groupPK)
+	}
+
+	// create new contact conversation
+	var conversation Conversation
+
+	// update db
+	if err := svc.db.tx(func(tx *dbWrapper) error {
+		var err error
+
+		// update existing contact
+		if err = tx.updateContact(*contact); err != nil {
+			return err
+		}
+
+		// create new conversation
+		if conversation, err = tx.addConversationForContact(contact.ConversationPublicKey, contact.PublicKey); err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return err
+	}
+
+	// dispatch events
+	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{contact}); err != nil {
+		return err
+	}
+
+	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{&conversation}); err != nil {
+		return err
+	}
+
+	// activate group and subscribe to message events
+	if _, err := svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: groupPK}); err != nil {
+		svc.logger.Warn("failed to activate group", zap.String("pk", bytesToString(groupPK)))
+	}
+
+	return svc.subscribeToMessages(groupPK)
 }
 
 // groupMemberDeviceAdded is called at different moments
@@ -271,161 +311,44 @@ func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) er
 	dpk := bytesToString(dpkb)
 	gpk := bytesToString(gpkb)
 
-	isMe, err := checkIsMe(
+	// Ensure the event has is not emitted by the current user
+	if isMe, err := checkIsMe(
 		svc.ctx,
 		svc.protocolClient,
 		&bertytypes.GroupMessageEvent{
 			EventContext: gme.GetEventContext(),
 			Headers:      &bertytypes.MessageHeaders{DevicePK: dpkb},
 		},
-	)
-	if err != nil {
+	); err != nil {
 		return err
-	}
-	if isMe {
+	} else if isMe {
 		svc.logger.Debug("ignoring member device because isMe")
 		return nil
 	}
 
-	device := Device{
-		PublicKey:      dpk,
-		OwnerPublicKey: mpk,
-	}
-	{
-		_, err = getDeviceByPK(svc.db, dpk)
-		if err == gorm.ErrRecordNotFound {
-			err = svc.db.
-				Clauses(clause.OnConflict{
-					Columns:   []clause.Column{{Name: "public_key"}},
-					DoNothing: true,
-				}).
-				Create(&device).
-				Error
-			if err != nil {
-				return err
-			}
-			err = svc.dispatcher.StreamEvent(StreamEvent_TypeDeviceUpdated, &StreamEvent_DeviceUpdated{Device: &device})
-			if err != nil {
-				svc.logger.Error("error dispatching device updated", zap.Error(err))
-			}
-		}
-	}
-
-	{
-		account, err := getAccount(svc.db)
+	// Register device if not already known
+	if _, err := svc.db.getDeviceByPK(dpk); err == gorm.ErrRecordNotFound {
+		device, err := svc.db.addDevice(dpk, mpk)
 		if err != nil {
-			svc.logger.Warn("account not found")
-			svc.logger.Debug("device added", zap.String("member", mpk), zap.String("device", dpk))
-		} else {
-			svc.logger.Debug("device added", zap.String("member", mpk), zap.String("device", dpk), zap.String("account", account.GetPublicKey()))
+			return err
+		}
+
+		err = svc.dispatcher.StreamEvent(StreamEvent_TypeDeviceUpdated, &StreamEvent_DeviceUpdated{Device: &device})
+		if err != nil {
+			svc.logger.Error("error dispatching device updated", zap.Error(err))
 		}
 	}
 
-	// fetch contact from db (include in tranaction maybe?)
-	contact, err := getContactByPK(svc.db, mpk)
-
-	if err == nil && contact.GetState() == Contact_OutgoingRequestSent {
-		// someone you invited just accepted the invitation
-		// update contact
-		var groupPK []byte
-		{
-			contact.State = Contact_Established
-
-			var err error
-			groupPK, err = groupPKFromContactPK(svc.ctx, svc.protocolClient, mpkb)
-			if err != nil {
-				return err
-			}
-
-			contact.ConversationPublicKey = bytesToString(groupPK)
-		}
-
-		// create new contact conversation
-		var conversation Conversation
-		{
-			conversation = Conversation{
-				PublicKey:        contact.ConversationPublicKey,
-				ContactPublicKey: mpk,
-				Type:             Conversation_ContactType,
-				DisplayName:      "", // empty on account conversations
-				Link:             "", // empty on account conversations
-				CreatedDate:      timestampMs(time.Now()),
-			}
-		}
-
-		// update db
-		{
-			err := svc.db.Transaction(func(tx *gorm.DB) error {
-				// update existing contact
-				if err := tx.Save(&contact).Error; err != nil {
-					return err
-				}
-
-				// create new conversation
-				err := tx.
-					Clauses(clause.OnConflict{
-						Columns:   []clause.Column{{Name: "public_key"}},
-						DoUpdates: clause.AssignmentColumns([]string{"display_name", "link"}),
-					}).
-					Create(&conversation).
-					Error
-				return err
-			})
-			if err != nil {
-				return err
-			}
-		}
-
-		// dispatch events
-		{
-			err := svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{&contact})
-			if err != nil {
-				return err
-			}
-			err = svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{&conversation})
-			if err != nil {
-				return err
-			}
-		}
-
-		// activate group and subscribe to message events
-		{
-			_, err := svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: groupPK})
-			if err != nil {
-				svc.logger.Warn("failed to activate group", zap.String("pk", bytesToString(groupPK)))
-			}
-		}
-
-		return svc.subscribeToMessages(groupPK)
-	}
-
-	nameSuffix := "1337"
-	if len(mpk) >= 4 {
-		nameSuffix = mpk[:4]
-	}
-	member := Member{
-		PublicKey:             mpk,
-		ConversationPublicKey: gpk,
-		DisplayName:           "anon#" + nameSuffix,
-	}
-	claus := clause.OnConflict{
-		Columns:   []clause.Column{{Name: "public_key"}},
-		DoNothing: true,
+	// Check whether a contact request has been accepted (a device from the contact has been added to the group)
+	if contact, err := svc.db.getContactByPK(mpk); err == nil && contact.GetState() == Contact_OutgoingRequestSent {
+		return contactRequestAccepted(svc, &contact, mpkb)
 	}
 
 	// check backlogs
 	{
-		var backlog []Interaction
-		err := svc.db.
-			Order("arrival_index asc").
-			Where("device_public_key = ? AND conversation_public_key = ? AND member_public_key = ?", dpk, gpk, "").
-			Find(&backlog).
-			Error
-		if err == gorm.ErrRecordNotFound {
-			return nil
-		} else if err != nil {
-			return err
-		}
+		backlog, err := svc.db.attributeBacklogInteractions(dpk, gpk, mpk)
+		displayName := ""
+
 		for _, elem := range backlog {
 			svc.logger.Info("found elem in backlog", zap.String("type", elem.GetType().String()), zap.String("device-pk", elem.GetDevicePublicKey()), zap.String("conv", elem.GetConversationPublicKey()))
 
@@ -434,373 +357,361 @@ func groupMemberDeviceAdded(svc *service, gme *bertytypes.GroupMetadataEvent) er
 			switch elem.GetType() {
 			case AppMessage_TypeSetUserName:
 				var payload AppMessage_SetUserName
-				err := proto.Unmarshal(elem.GetPayload(), &payload)
-				if err != nil {
+
+				if err := proto.Unmarshal(elem.GetPayload(), &payload); err != nil {
 					return err
 				}
-				member = Member{
-					PublicKey:             mpk,
-					ConversationPublicKey: gpk,
-					DisplayName:           payload.GetName(),
-				}
-				claus = clause.OnConflict{
-					Columns:   []clause.Column{{Name: "public_key"}},
-					DoUpdates: clause.AssignmentColumns([]string{"display_name"}),
-				}
-				err = svc.db.Where(&Interaction{CID: elem.GetCID()}).Delete(&Interaction{}).Error
-				if err != nil {
+
+				displayName = payload.GetName()
+
+				if err := svc.db.deleteInteractions([]string{elem.CID}); err != nil {
 					return err
 				}
-				err = svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionDeleted, &StreamEvent_InteractionDeleted{elem.GetCID()})
-				if err != nil {
+
+				if err := svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionDeleted, &StreamEvent_InteractionDeleted{elem.GetCID()}); err != nil {
 					return err
 				}
+
 			default:
-				e := elem // comply with scopelint
-				err := svc.db.Save(&e).Error
-				if err != nil {
-					return err // maybe only log here
-				}
-				err = svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{&e})
+				err = svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{elem})
 				if err != nil {
 					return err
 				}
 			}
 		}
 
-		err = svc.db.Clauses(&claus).Create(&member).Error
+		member, err := svc.db.addMember(mpk, gpk, displayName)
 		if err != nil {
 			return err
 		}
-		err = svc.dispatcher.StreamEvent(StreamEvent_TypeMemberUpdated, &StreamEvent_MemberUpdated{&member})
+
+		err = svc.dispatcher.StreamEvent(StreamEvent_TypeMemberUpdated, &StreamEvent_MemberUpdated{member})
 		if err != nil {
 			return err
 		}
+
 		svc.logger.Info("dispatched member update", zap.String("name", member.GetDisplayName()), zap.String("conv", gpk))
 	}
 
 	return nil
 }
 
-// nolint:gocyclo
-func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEvent, am *AppMessage) error {
-	svc.logger.Info("handling app message", zap.String("type", am.GetType().String()))
-	// build interaction
-	var i *Interaction
-	{
-		amt := am.GetType()
-		cidb := gme.GetEventContext().GetID()
-		cid := bytesToString(cidb)
-		isMe, err := checkIsMe(svc.ctx, svc.protocolClient, gme)
+func handleAppMessageAcknowledge(svc *service, tx *dbWrapper, i Interaction, amPayload proto.Message) (Interaction, error) {
+	payload := amPayload.(*AppMessage_Acknowledge)
+
+	if found, err := tx.markInteractionAsAcknowledged(payload.Target); err != nil {
+		return i, err
+	} else if found {
+		target, err := tx.getInteractionByCID(payload.Target)
 		if err != nil {
+			return i, err
+		}
+
+		if err := svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{&target}); err != nil {
+			return i, nil
+		}
+	}
+
+	i.TargetCID = payload.Target
+	i, err := tx.addInteraction(i)
+	if err != nil {
+		return i, err
+	}
+
+	svc.logger.Debug("added ack in backlog", zap.String("target", payload.GetTarget()), zap.String("cid", i.GetCID()))
+	return i, nil
+}
+
+func handleAppMessageGroupInvitation(svc *service, tx *dbWrapper, i Interaction, _ proto.Message) (Interaction, error) {
+	i, err := tx.addInteraction(i)
+	if err != nil {
+		return i, err
+	}
+
+	err = svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{&i})
+	return i, err
+}
+
+func handleAppMessageUserMessage(svc *service, tx *dbWrapper, i Interaction, amPayload proto.Message) (Interaction, error) {
+	i, err := tx.addInteraction(i)
+	if err != nil {
+		return i, err
+	}
+
+	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{&i}); err != nil {
+		return i, err
+	}
+
+	if !i.IsMe {
+		return i, nil
+	}
+
+	svc.logger.Debug("sending ack", zap.String("target", i.CID))
+
+	// send ack
+
+	// Don't send ack if message is already acked to prevent spam in multimember groups
+	// Maybe wait a few seconds before checking since we're likely to receive the message before any ack
+	amp, err := AppMessage_TypeAcknowledge.MarshalPayload(0, &AppMessage_Acknowledge{Target: i.CID})
+	if err != nil {
+		return i, err
+	}
+
+	cpk, err := stringToBytes(i.ConversationPublicKey)
+	if err != nil {
+		return i, err
+	}
+
+	req := bertytypes.AppMessageSend_Request{
+		GroupPK: cpk,
+		Payload: amp,
+	}
+	_, err = svc.protocolClient.AppMessageSend(svc.ctx, &req)
+	if err != nil {
+		return i, err
+	}
+
+	// notify
+	// FIXME: also notify if app is in background
+	openedConversation := svc.openedConversation.Load()
+
+	if openedConversation != i.ConversationPublicKey {
+		// fetch contact from db
+		var contact Contact
+		if i.Conversation.Type == Conversation_ContactType {
+			if contact, err = tx.getContactByPK(i.Conversation.ContactPublicKey); err != nil {
+				svc.logger.Warn("1to1 message contact not found", zap.String("public-key", i.Conversation.ContactPublicKey), zap.Error(err))
+			}
+		}
+
+		payload := amPayload.(*AppMessage_UserMessage)
+		var title string
+		body := payload.GetBody()
+		if i.Conversation.Type == Conversation_ContactType {
+			title = contact.GetDisplayName()
+		} else {
+			title = i.Conversation.GetDisplayName()
+			memberName := i.Member.GetDisplayName()
+			if memberName != "" {
+				body = memberName + ": " + payload.GetBody()
+			}
+		}
+		msgRecvd := StreamEvent_Notified_MessageReceived{Interaction: &i, Conversation: i.Conversation, Contact: &contact}
+		err = svc.dispatcher.Notify(StreamEvent_Notified_TypeMessageReceived, title, body, &msgRecvd)
+
+		if err != nil {
+			svc.logger.Error("failed to notify", zap.Error(err))
+		}
+	}
+
+	return i, nil
+}
+
+func handleAppMessageSetUserName(svc *service, tx *dbWrapper, i Interaction, amPayload proto.Message) (Interaction, error) {
+	if i.IsMe {
+		svc.logger.Info("ignoring SetUserName because isMe")
+		return i, nil
+	}
+
+	svc.logger.Debug("interesting SetUserName")
+
+	payload := amPayload.(*AppMessage_SetUserName)
+
+	if i.MemberPublicKey == "" {
+		// store in backlog
+		svc.logger.Info("storing SetUserName in backlog", zap.String("name", payload.GetName()), zap.String("device-pk", i.GetDevicePublicKey()), zap.String("conv", i.ConversationPublicKey))
+		return tx.addInteraction(i)
+	}
+
+	member, err := svc.db.addMember(i.MemberPublicKey, i.ConversationPublicKey, payload.GetName())
+	if err != nil {
+		return i, err
+	}
+
+	err = svc.dispatcher.StreamEvent(StreamEvent_TypeMemberUpdated, &StreamEvent_MemberUpdated{Member: member})
+	if err != nil {
+		return i, err
+	}
+
+	svc.logger.Debug("dispatched member update", zap.String("name", payload.GetName()), zap.String("device-pk", i.GetDevicePublicKey()), zap.String("conv", i.ConversationPublicKey))
+
+	return i, nil
+}
+
+func interactionFromAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEvent, am *AppMessage) (Interaction, error) {
+	amt := am.GetType()
+	cidb := gme.GetEventContext().GetID()
+	cid := bytesToString(cidb)
+	isMe, err := checkIsMe(svc.ctx, svc.protocolClient, gme)
+	if err != nil {
+		return Interaction{}, err
+	}
+
+	dpkb := gme.GetHeaders().GetDevicePK()
+	dpk := bytesToString(dpkb)
+
+	i := Interaction{
+		CID:                   cid,
+		Type:                  amt,
+		Payload:               am.GetPayload(),
+		IsMe:                  isMe,
+		ConversationPublicKey: gpk,
+		SentDate:              am.GetSentDate(),
+		DevicePublicKey:       dpk,
+	}
+	svc.logger.Debug("received app message", zap.String("type", amt.String()))
+
+	return i, nil
+}
+
+func hydrateInteraction(svc *service, gme *bertytypes.GroupMessageEvent, i *Interaction) error {
+	return svc.db.tx(func(tx *dbWrapper) error {
+		var err error
+
+		// fetch conv from db
+		conversation, err := svc.db.getConversationByPK(i.ConversationPublicKey)
+		if err != nil {
+			// FIXME: maybe we should accept receiving app messages on unknown conversations?
+			svc.logger.Warn("ignored message because conv not found")
 			return err
 		}
 
-		dpkb := gme.GetHeaders().GetDevicePK()
-		dpk := bytesToString(dpkb)
+		i.Conversation = &conversation
 
-		i = &Interaction{
-			CID:                   cid,
-			Type:                  amt,
-			Payload:               am.GetPayload(),
-			IsMe:                  isMe,
-			ConversationPublicKey: gpk,
-			SentDate:              am.GetSentDate(),
-			DevicePublicKey:       dpk,
+		if i.Conversation.Type == Conversation_MultiMemberType {
+			// fetch member from db
+			member, err := svc.db.getMemberByPK(i.MemberPublicKey)
+			if err != nil {
+				svc.logger.Warn("multimember message member not found", zap.String("public-key", i.MemberPublicKey), zap.Error(err))
+			}
+
+			i.Member = &member
 		}
-		svc.logger.Debug("received app message", zap.String("type", amt.String()))
+
+		// build device
+		{
+			dpkb := gme.GetHeaders().GetDevicePK()
+			dpk := bytesToString(dpkb)
+
+			switch {
+			case i.IsMe: // myself
+				i.MemberPublicKey = ""
+
+			case i.Conversation.GetType() == Conversation_ContactType: // 1-1 conversation
+				i.MemberPublicKey = ""
+				// FIXME: multiple devices per contact?
+
+			default:
+				existingDevice, err := svc.db.getDeviceByPK(dpk)
+				if err == nil { // device already exists
+					i.MemberPublicKey = existingDevice.GetOwnerPublicKey()
+				} else { // device not found
+					i.MemberPublicKey = "" // backlog magic
+				}
+			}
+		}
+
+		// extract ack from backlog
+		{
+			cids, err := svc.db.getAcknowledgementsCIDsForInteraction(i.CID)
+			if err != nil {
+				return err
+			}
+
+			if len(cids) > 0 {
+				i.Acknowledged = true
+
+				if err := svc.db.deleteInteractions(cids); err != nil {
+					return err
+				}
+
+				for _, c := range cids {
+					svc.logger.Debug("found ack in backlog", zap.String("target", c), zap.String("cid", i.GetCID()))
+					if err := svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionDeleted, &StreamEvent_InteractionDeleted{c}); err != nil {
+						return err
+					}
+				}
+			}
+		}
+
+		return nil
+	})
+}
+
+func dispatchVisibleEvent(svc *service, i Interaction, tx *dbWrapper) error {
+	// FIXME: check if app is in foreground
+	// if conv is not open, increment the unread_count
+	newUnread := !i.IsMe && svc.openedConversation.Load() != i.ConversationPublicKey
+
+	// db update
+	if err := tx.updateConversationReadState(i.ConversationPublicKey, newUnread, time.Now()); err != nil {
+		return err
+	}
+
+	// expr-based (see above) gorm updates don't update the go object
+	// next query could be easily replace by a simple increment, but this way we're 100% sure to be up-to-date
+	conv, err := tx.getConversationByPK(i.GetConversationPublicKey())
+	if err != nil {
+		return err
+	}
+
+	// dispatch update event
+	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{&conv}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func handleAppMessage(svc *service, gpk string, gme *bertytypes.GroupMessageEvent, am *AppMessage) error {
+	appMessageHandlers := map[AppMessage_Type]struct {
+		handler        func(svc *service, tx *dbWrapper, i Interaction, amPayload proto.Message) (Interaction, error)
+		isVisibleEvent bool
+	}{
+		AppMessage_TypeAcknowledge:     {handleAppMessageAcknowledge, false},
+		AppMessage_TypeGroupInvitation: {handleAppMessageGroupInvitation, true},
+		AppMessage_TypeUserMessage:     {handleAppMessageUserMessage, true},
+		AppMessage_TypeSetUserName:     {handleAppMessageSetUserName, false},
+	}
+
+	svc.logger.Info("handling app message", zap.String("type", am.GetType().String()))
+
+	// build interaction
+	i, err := interactionFromAppMessage(svc, gpk, gme, am)
+	if err != nil {
+		return err
+	}
+
+	if err := hydrateInteraction(svc, gme, &i); err != nil {
+		return err
 	}
 
 	// parse payload
-	var amPayload proto.Message
-	{
-		var err error
-		amPayload, err = am.UnmarshalPayload()
-		_ = amPayload // amPayload may be unused, we want to check if the payload can be unmarshaled without error
-		if err != nil {
-			return err
-		}
+	amPayload, err := am.UnmarshalPayload()
+	if err != nil {
+		return err
 	}
 
 	// start a transaction
-	{
-		err := svc.db.Transaction(func(tx *gorm.DB) error {
-			// fetch conv from db
-			var conv Conversation
-			{
-				var err error
-				conv, err = getConversationByPK(tx, gpk)
-				if err != nil {
-					// FIXME: maybe we should accept receiving app messages on unknown conversations?
-					svc.logger.Warn("ignored message because conv not found")
-					return err
-				}
-			}
-
-			// fetch contact from db
-			var contact *Contact
-			if conv.Type == Conversation_ContactType {
-				pk := conv.GetContactPublicKey()
-				c, err := getContactByPK(tx, pk)
-				if err == nil {
-					contact = &c
-				} else {
-					svc.logger.Warn("1to1 message contact not found", zap.String("public-key", pk), zap.Error(err))
-				}
-			}
-
-			// build device
-			{
-				dpkb := gme.GetHeaders().GetDevicePK()
-				dpk := bytesToString(dpkb)
-
-				switch {
-				case i.IsMe: // myself
-					i.MemberPublicKey = ""
-				case conv.GetType() == Conversation_ContactType: // 1-1 conversation
-					i.MemberPublicKey = ""
-					// FIXME: multiple devices per contact?
-				default:
-					existingDevice, err := getDeviceByPK(tx, dpk)
-					if err == nil { // device already exists
-						i.MemberPublicKey = existingDevice.GetOwnerPublicKey()
-					} else { // device not found
-						i.MemberPublicKey = "" // backlog magic
-					}
-				}
-			}
-
-			// fetch member from db
-			var member *Member
-			if conv.GetType() == Conversation_MultiMemberType {
-				pk := i.GetMemberPublicKey()
-				if m, err := getMemberByPK(tx, pk); err == nil {
-					member = &m
-				} else {
-					svc.logger.Warn("multimember message member not found", zap.String("public-key", pk), zap.Error(err))
-				}
-			}
-
-			// extract ack from backlog
-			{
-				var acks []Interaction
-				err := tx.Where(&Interaction{Type: AppMessage_TypeAcknowledge}).Find(&acks).Error
-				if err != nil {
-					return err
-				}
-				for _, ack := range acks {
-					payload, err := ack.UnmarshalPayload()
-					if err != nil {
-						return err
-					}
-					ackPayload := payload.(*AppMessage_Acknowledge)
-					if i.GetCID() == ackPayload.GetTarget() {
-						i.Acknowledged = true
-						svc.logger.Debug("found ack in backlog", zap.String("target", ackPayload.GetTarget()), zap.String("cid", i.GetCID()))
-						err := tx.Where(&Interaction{CID: ack.GetCID()}).Delete(&Interaction{}).Error
-						if err != nil {
-							return err
-						}
-						// FIXME: only dispatch on transaction success
-						err = svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionDeleted, &StreamEvent_InteractionDeleted{ack.GetCID()})
-						if err != nil {
-							return err
-						}
-					}
-				}
-			}
-
-			isVisibleEvent := false
-
-			switch i.GetType() {
-			case AppMessage_TypeAcknowledge:
-				payload := amPayload.(*AppMessage_Acknowledge)
-
-				// find target
-				target, err := getInteractionByCID(tx, payload.GetTarget())
-				if err == gorm.ErrRecordNotFound {
-					// add ack in db (backlog)
-					if err := tx.Create(i).Error; err != nil {
-						return err
-					}
-					svc.logger.Debug("added ack in backlog", zap.String("target", payload.GetTarget()), zap.String("cid", i.GetCID()))
-					break
-				} else if err != nil {
-					return err
-				}
-
-				// set ack on target
-				target.Acknowledged = true
-				if err := tx.Model(&Interaction{}).Where("c_id = ?", target.GetCID()).Update("acknowledged", true).Error; err != nil {
-					return err
-				}
-
-				// dispatch updated target
-				err = svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{&target})
-				if err != nil {
-					return err
-				}
-
-			case AppMessage_TypeGroupInvitation:
-				isVisibleEvent = true
-
-				if err := tx.Create(i).Error; err != nil {
-					return err
-				}
-
-				err := svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{i})
-				if err != nil {
-					return err
-				}
-
-			case AppMessage_TypeUserMessage:
-				isVisibleEvent = true
-
-				if err := tx.Create(i).Error; err != nil {
-					return err
-				}
-
-				if err := svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{i}); err != nil {
-					return err
-				}
-
-				if !i.IsMe {
-					svc.logger.Debug("sending ack", zap.String("target", i.CID))
-
-					// send ack
-
-					// Don't send ack if message is already acked to prevent spam in multimember groups
-					// Maybe wait a few seconds before checking since we're likely to receive the message before any ack
-					amp, err := AppMessage_TypeAcknowledge.MarshalPayload(0, &AppMessage_Acknowledge{Target: i.CID})
-					if err != nil {
-						return err
-					}
-					req := bertytypes.AppMessageSend_Request{
-						GroupPK: gme.GetEventContext().GetGroupPK(),
-						Payload: amp,
-					}
-					_, err = svc.protocolClient.AppMessageSend(svc.ctx, &req)
-					if err != nil {
-						return err
-					}
-
-					// notify
-					// FIXME: also notify if app is in background
-					if !conv.GetIsOpen() {
-						payload := amPayload.(*AppMessage_UserMessage)
-						if err == nil {
-							var title string
-							body := payload.GetBody()
-							if conv.Type == Conversation_ContactType {
-								title = contact.GetDisplayName()
-							} else {
-								title = conv.GetDisplayName()
-								memberName := member.GetDisplayName()
-								if memberName != "" {
-									body = memberName + ": " + payload.GetBody()
-								}
-							}
-							msgRecvd := StreamEvent_Notified_MessageReceived{Interaction: i, Conversation: &conv, Contact: contact}
-							err = svc.dispatcher.Notify(StreamEvent_Notified_TypeMessageReceived, title, body, &msgRecvd)
-						}
-						if err != nil {
-							svc.logger.Error("failed to notify", zap.Error(err))
-						}
-					}
-				}
-
-			case AppMessage_TypeSetUserName:
-				if i.IsMe {
-					svc.logger.Info("ignoring SetUserName because isMe")
-					break
-				}
-
-				svc.logger.Debug("interesting SetUserName")
-
-				payload := amPayload.(*AppMessage_SetUserName)
-
-				if i.MemberPublicKey == "" {
-					// store in backlog
-					svc.logger.Info("storing SetUserName in backlog", zap.String("name", payload.GetName()), zap.String("device-pk", i.GetDevicePublicKey()), zap.String("conv", gpk))
-					return tx.
-						Clauses(clause.OnConflict{
-							Columns:   []clause.Column{{Name: "c_id"}},
-							DoNothing: true,
-						}).
-						Create(&i).
-						Error
-				}
-
-				member := Member{
-					PublicKey:             i.MemberPublicKey,
-					ConversationPublicKey: gpk,
-					DisplayName:           payload.GetName(),
-				}
-				err := tx.
-					Clauses(clause.OnConflict{
-						Columns:   []clause.Column{{Name: "public_key"}},
-						DoUpdates: clause.AssignmentColumns([]string{"display_name"}),
-					}).
-					Create(&member).
-					Error
-				if err != nil {
-					return err
-				}
-
-				err = svc.dispatcher.StreamEvent(StreamEvent_TypeMemberUpdated, &StreamEvent_MemberUpdated{Member: &member})
-				if err != nil {
-					return err
-				}
-
-				svc.logger.Debug("dispatched member update", zap.String("name", payload.GetName()), zap.String("device-pk", i.GetDevicePublicKey()), zap.String("conv", gpk))
-
-			default:
-				svc.logger.Warn("unsupported app message type", zap.String("type", i.GetType().String()))
-			}
-
-			if isVisibleEvent {
-				// FIXME: check if app is in foreground
-
-				// fetch conversation from db
-				conv, err := getConversationByPK(tx, conv.GetPublicKey())
-				if err != nil {
-					return err
-				}
-
-				// visible events update the last_update field
-				updates := map[string]interface{}{
-					"last_update": timestampMs(time.Now()),
-				}
-
-				// if conv is not open, increment the unread_count
-				if !i.IsMe && !conv.GetIsOpen() {
-					updates["unread_count"] = gorm.Expr("unread_count + 1")
-				}
-
-				// db update
-				err = tx.Model(&conv).Updates(updates).Error
-				if err != nil {
-					return err
-				}
-
-				// expr-based (see above) gorm updates don't update the go object
-				// next query could be easily replace by a simple increment, but this way we're 100% sure to be up-to-date
-				conv, err = getConversationByPK(tx, i.GetConversationPublicKey())
-				if err != nil {
-					return err
-				}
-
-				// dispatch update event
-				if err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{&conv}); err != nil {
-					return err
-				}
-			}
+	return svc.db.tx(func(tx *dbWrapper) error {
+		handler, ok := appMessageHandlers[i.GetType()]
+		if !ok {
+			svc.logger.Warn("unsupported app message type", zap.String("type", i.GetType().String()))
 
 			return nil
-		})
-		if err != nil { // something failed during the transaction
+		}
+
+		i, err := handler.handler(svc, tx, i, amPayload)
+		if err != nil {
 			return err
 		}
-	}
-	return nil
+
+		if handler.isVisibleEvent {
+			if err := dispatchVisibleEvent(svc, i, tx); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
 }

@@ -8,7 +8,6 @@ import (
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
@@ -21,7 +20,9 @@ func ReplayLogsToDB(ctx context.Context, client bertyprotocol.ProtocolServiceCli
 		return err
 	}
 
-	if err := initDB(db); err != nil {
+	wrappedDB := &dbWrapper{db: db}
+
+	if err := wrappedDB.initDB(); err != nil {
 		return err
 	}
 
@@ -32,24 +33,20 @@ func ReplayLogsToDB(ctx context.Context, client bertyprotocol.ProtocolServiceCli
 	}
 	pk := bytesToString(cfg.GetAccountGroupPK())
 
-	acc := &Account{}
-	acc.State = Account_NotReady // Not sure about this, looks like we don't push displayName on log?
-	acc.Link = ""                // TODO
-	acc.PublicKey = pk
-	if err := db.Clauses(clause.OnConflict{DoNothing: true}).Create(&acc).Error; err != nil {
+	if _, err := wrappedDB.addAccount(pk, ""); err != nil {
 		return errcode.ErrDBWrite.Wrap(err)
 	}
 
 	// Replay all account group metadata events
 	// TODO: We should have a toggle to "lock" orbitDB while we replaying events
 	// So we don't miss events that occurred during the replay
-	if err := processMetadataList(ctx, cfg.GetAccountGroupPK(), db, client); err != nil {
+	if err := processMetadataList(ctx, cfg.GetAccountGroupPK(), wrappedDB, client); err != nil {
 		return errcode.ErrReplayProcessGroupMetadata.Wrap(err)
 	}
 
 	// Get all groups the account is member of
-	var convs []*Conversation
-	if err := db.Find(&convs).Error; err != nil {
+	convs, err := wrappedDB.getAllConversations()
+	if err != nil {
 		return errcode.ErrDBRead.Wrap(err)
 	}
 
@@ -72,13 +69,13 @@ func ReplayLogsToDB(ctx context.Context, client bertyprotocol.ProtocolServiceCli
 				return errcode.ErrGroupActivate.Wrap(err)
 			}
 
-			if err := processMetadataList(ctx, groupPK, db, client); err != nil {
+			if err := processMetadataList(ctx, groupPK, wrappedDB, client); err != nil {
 				return errcode.ErrReplayProcessGroupMetadata.Wrap(err)
 			}
 		}
 
 		// Replay all group message events
-		if err := processMessageList(ctx, groupPK, db, client); err != nil {
+		if err := processMessageList(ctx, groupPK, wrappedDB, client); err != nil {
 			return errcode.ErrReplayProcessGroupMessage.Wrap(err)
 		}
 
@@ -95,7 +92,7 @@ func ReplayLogsToDB(ctx context.Context, client bertyprotocol.ProtocolServiceCli
 	return nil
 }
 
-func processMetadataList(ctx context.Context, groupPK []byte, db *gorm.DB, client bertyprotocol.ProtocolServiceClient) error {
+func processMetadataList(ctx context.Context, groupPK []byte, db *dbWrapper, client bertyprotocol.ProtocolServiceClient) error {
 	subCtx, subCancel := context.WithCancel(ctx)
 	defer subCancel()
 
@@ -131,7 +128,7 @@ func processMetadataList(ctx context.Context, groupPK []byte, db *gorm.DB, clien
 			}
 			groupPK := bytesToString(ev.GetGroup().GetPublicKey())
 
-			if _, err := addConversation(db, groupPK); err != nil {
+			if _, err := db.addConversation(groupPK); err != nil {
 				return errcode.ErrDBAddConversation.Wrap(err)
 			}
 
@@ -158,7 +155,7 @@ func processMetadataList(ctx context.Context, groupPK []byte, db *gorm.DB, clien
 				gpk = bytesToString(groupInfoReply.GetGroup().GetPublicKey())
 			}
 
-			if _, err := addContactRequestOutgoingEnqueued(db, contactPK, cm.DisplayName, gpk); err != nil {
+			if _, err := db.addContactRequestOutgoingEnqueued(contactPK, cm.DisplayName, gpk); err != nil {
 				return errcode.ErrDBAddContactRequestOutgoingEnqueud.Wrap(err)
 			}
 
@@ -169,7 +166,7 @@ func processMetadataList(ctx context.Context, groupPK []byte, db *gorm.DB, clien
 			}
 			contactPK := bytesToString(ev.GetContactPK())
 
-			if _, err := addContactRequestOutgoingSent(db, contactPK); err != nil {
+			if _, err := db.addContactRequestOutgoingSent(contactPK); err != nil {
 				return errcode.ErrDBAddContactRequestOutgoingSent.Wrap(err)
 			}
 
@@ -186,7 +183,7 @@ func processMetadataList(ctx context.Context, groupPK []byte, db *gorm.DB, clien
 				return errcode.ErrDeserialization.Wrap(err)
 			}
 
-			if _, err := addContactRequestIncomingReceived(db, contactPK, m.GetDisplayName()); err != nil {
+			if _, err := db.addContactRequestIncomingReceived(contactPK, m.GetDisplayName()); err != nil {
 				return errcode.ErrDBAddContactRequestIncomingReceived.Wrap(err)
 			}
 
@@ -207,7 +204,7 @@ func processMetadataList(ctx context.Context, groupPK []byte, db *gorm.DB, clien
 			}
 			groupPK := bytesToString(groupPKBytes)
 
-			if _, _, err := addContactRequestIncomingAccepted(db, contactPK, groupPK); err != nil {
+			if _, _, err := db.addContactRequestIncomingAccepted(contactPK, groupPK); err != nil {
 				return errcode.ErrDBAddContactRequestIncomingAccepted.Wrap(err)
 			}
 
@@ -241,7 +238,7 @@ func processMetadataList(ctx context.Context, groupPK []byte, db *gorm.DB, clien
 	}
 }
 
-func processMessageList(ctx context.Context, groupPK []byte, db *gorm.DB, client bertyprotocol.ProtocolServiceClient) error {
+func processMessageList(ctx context.Context, groupPK []byte, db *dbWrapper, client bertyprotocol.ProtocolServiceClient) error {
 	subCtx, subCancel := context.WithCancel(ctx)
 	defer subCancel()
 
@@ -284,7 +281,7 @@ func processMessageList(ctx context.Context, groupPK []byte, db *gorm.DB, client
 			return errcode.ErrInvalidInput.Wrap(err)
 		}
 
-		i := &Interaction{
+		i := Interaction{
 			CID:                   bytesToString(message.GetEventContext().GetID()),
 			Type:                  appMsg.GetType(),
 			Payload:               appMsg.GetPayload(),
@@ -295,17 +292,17 @@ func processMessageList(ctx context.Context, groupPK []byte, db *gorm.DB, client
 		switch i.Type {
 		case AppMessage_TypeAcknowledge:
 			// FIXME: set 'Acknowledged: true' on existing interaction instead
-			if err := db.Create(i).Error; err != nil {
+			if _, err := db.addInteraction(i); err != nil {
 				return errcode.ErrDBWrite.Wrap(err)
 			}
 
 		case AppMessage_TypeGroupInvitation:
-			if err := db.Create(i).Error; err != nil {
+			if _, err := db.addInteraction(i); err != nil {
 				return errcode.ErrDBWrite.Wrap(err)
 			}
 
 		case AppMessage_TypeUserMessage:
-			if err := db.Create(i).Error; err != nil {
+			if _, err := db.addInteraction(i); err != nil {
 				return errcode.ErrDBWrite.Wrap(err)
 			}
 

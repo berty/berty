@@ -52,28 +52,26 @@ func (x AppMessage_Type) MarshalPayload(sentDate int64, payload proto.Message) (
 // UnmarshalPayload tries to parse an AppMessage payload in the corresponding type.
 // Since this function returns a proto.Message interface, you still need to cast the returned value, but this function allows you to make it safely.
 func (am AppMessage) UnmarshalPayload() (proto.Message, error) {
+	var message proto.Message
+
 	switch am.GetType() {
 	case AppMessage_TypeAcknowledge:
-		var ret AppMessage_Acknowledge
-		return &ret, proto.Unmarshal(am.GetPayload(), &ret)
+		message = &AppMessage_Acknowledge{}
 	case AppMessage_TypeUserMessage:
-		var ret AppMessage_UserMessage
-		return &ret, proto.Unmarshal(am.GetPayload(), &ret)
+		message = &AppMessage_UserMessage{}
 	case AppMessage_TypeUserReaction:
-		var ret AppMessage_UserReaction
-		return &ret, proto.Unmarshal(am.GetPayload(), &ret)
+		message = &AppMessage_UserReaction{}
 	case AppMessage_TypeGroupInvitation:
-		var ret AppMessage_GroupInvitation
-		return &ret, proto.Unmarshal(am.GetPayload(), &ret)
+		message = &AppMessage_GroupInvitation{}
 	case AppMessage_TypeSetGroupName:
-		var ret AppMessage_SetGroupName
-		return &ret, proto.Unmarshal(am.GetPayload(), &ret)
+		message = &AppMessage_SetGroupName{}
 	case AppMessage_TypeSetUserName:
-		var ret AppMessage_SetUserName
-		return &ret, proto.Unmarshal(am.GetPayload(), &ret)
+		message = &AppMessage_SetUserName{}
+	default:
+		return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported AppMessage type: %q", am.GetType()))
 	}
 
-	return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported AppMessage type: %q", am.GetType()))
+	return message, proto.Unmarshal(am.GetPayload(), message)
 }
 
 func UnmarshalAppMessage(payload []byte) (proto.Message, AppMessage, error) {
@@ -89,42 +87,43 @@ func UnmarshalAppMessage(payload []byte) (proto.Message, AppMessage, error) {
 }
 
 func (event *StreamEvent) UnmarshalPayload() (proto.Message, error) {
+	var message proto.Message
+
 	switch event.GetType() {
 	case StreamEvent_TypeAccountUpdated:
-		var ret StreamEvent_AccountUpdated
-		return &ret, proto.Unmarshal(event.GetPayload(), &ret)
+		message = &StreamEvent_AccountUpdated{}
 	case StreamEvent_TypeContactUpdated:
-		var ret StreamEvent_ContactUpdated
-		return &ret, proto.Unmarshal(event.GetPayload(), &ret)
+		message = &StreamEvent_ContactUpdated{}
 	case StreamEvent_TypeConversationUpdated:
-		var ret StreamEvent_ConversationUpdated
-		return &ret, proto.Unmarshal(event.GetPayload(), &ret)
+		message = &StreamEvent_ConversationUpdated{}
 	case StreamEvent_TypeInteractionUpdated:
-		var ret StreamEvent_InteractionUpdated
-		return &ret, proto.Unmarshal(event.GetPayload(), &ret)
+		message = &StreamEvent_InteractionUpdated{}
 	case StreamEvent_TypeMemberUpdated:
-		var ret StreamEvent_MemberUpdated
-		return &ret, proto.Unmarshal(event.GetPayload(), &ret)
+		message = &StreamEvent_MemberUpdated{}
 	case StreamEvent_TypeDeviceUpdated:
-		var ret StreamEvent_DeviceUpdated
-		return &ret, proto.Unmarshal(event.GetPayload(), &ret)
+		message = &StreamEvent_DeviceUpdated{}
 	case StreamEvent_TypeNotified:
-		var ret StreamEvent_Notified
-		return &ret, proto.Unmarshal(event.GetPayload(), &ret)
+		message = &StreamEvent_Notified{}
+	default:
+		return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported StreamEvent type: %q", event.GetType()))
 	}
-	return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported StreamEvent type: %q", event.GetType()))
+
+	return message, proto.Unmarshal(event.GetPayload(), message)
 }
 
 func (event *StreamEvent_Notified) UnmarshalPayload() (proto.Message, error) {
+	var message proto.Message
+
 	switch event.GetType() {
 	case StreamEvent_Notified_TypeBasic:
-		var ret StreamEvent_Notified_Basic
-		return &ret, proto.Unmarshal(event.GetPayload(), &ret)
+		message = &StreamEvent_Notified_Basic{}
 	case StreamEvent_Notified_TypeMessageReceived:
-		var ret StreamEvent_Notified_MessageReceived
-		return &ret, proto.Unmarshal(event.GetPayload(), &ret)
+		message = &StreamEvent_Notified_MessageReceived{}
+	default:
+		return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported Notified type: %q", event.GetType()))
 	}
-	return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported Notified type: %q", event.GetType()))
+
+	return message, proto.Unmarshal(event.GetPayload(), message)
 }
 
 func (interaction *Interaction) UnmarshalPayload() (proto.Message, error) {

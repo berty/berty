@@ -10,7 +10,6 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
-	"gorm.io/gorm/clause"
 
 	"berty.tech/berty/v2/go/internal/discordlog"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -319,20 +318,13 @@ func (svc *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*S
 
 	// messenger's db
 	{
-		var err error
-		reply.Messenger.DB = &SystemInfo_DB{}
-		reply.Messenger.DB.Accounts, err = dbModelRowsCount(svc.db, Account{})
-		errs = multierr.Append(errs, err)
-		reply.Messenger.DB.Contacts, err = dbModelRowsCount(svc.db, Contact{})
-		errs = multierr.Append(errs, err)
-		reply.Messenger.DB.Interactions, err = dbModelRowsCount(svc.db, Interaction{})
-		errs = multierr.Append(errs, err)
-		reply.Messenger.DB.Conversations, err = dbModelRowsCount(svc.db, Conversation{})
-		errs = multierr.Append(errs, err)
-		reply.Messenger.DB.Members, err = dbModelRowsCount(svc.db, Member{})
-		errs = multierr.Append(errs, err)
-		reply.Messenger.DB.Devices, err = dbModelRowsCount(svc.db, Device{})
-		errs = multierr.Append(errs, err)
+		dbInfo, err := svc.db.getDBInfo()
+		if err != nil {
+			errs = multierr.Append(errs, err)
+			reply.Messenger.DB = &SystemInfo_DB{}
+		} else {
+			reply.Messenger.DB = dbInfo
+		}
 	}
 
 	// protocol
@@ -414,12 +406,12 @@ func (svc *service) ConversationStream(req *ConversationStream_Request, sub Mess
 	// TODO: cursors
 
 	// send existing convs
-	var convs []*Conversation
-	if err := svc.db.Find(&convs).Error; err != nil {
+	convs, err := svc.db.getAllConversations()
+	if err != nil {
 		return err
 	}
 	for _, c := range convs {
-		if err := sub.Send(&ConversationStream_Reply{Conversation: c}); err != nil {
+		if err := sub.Send(&ConversationStream_Reply{Conversation: &c}); err != nil {
 			return err
 		}
 	}
@@ -462,7 +454,7 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 	// send account
 	{
 		svc.logger.Debug("sending account")
-		acc, err := getAccount(svc.db)
+		acc, err := svc.db.getAccount()
 		if err != nil {
 			return err
 		}
@@ -477,14 +469,13 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 
 	// send contacts
 	{
-		var contacts []Contact
-		if err := svc.db.Find(&contacts).Error; err != nil {
+		contacts, err := svc.db.getAllContacts()
+		if err != nil {
 			return err
 		}
 		svc.logger.Info("sending existing contacts", zap.Int("count", len(contacts)))
 		for _, contact := range contacts {
-			c := contact // comply with scopelint
-			cu, err := proto.Marshal(&StreamEvent_ContactUpdated{&c})
+			cu, err := proto.Marshal(&StreamEvent_ContactUpdated{Contact: &contact})
 			if err != nil {
 				return err
 			}
@@ -496,14 +487,13 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 
 	// send conversations
 	{
-		var convs []Conversation
-		if err := svc.db.Find(&convs).Error; err != nil {
+		convs, err := svc.db.getAllConversations()
+		if err != nil {
 			return err
 		}
 		svc.logger.Debug("sending existing conversations", zap.Int("count", len(convs)))
 		for _, conv := range convs {
-			c := conv // comply with scopelint
-			cu, err := proto.Marshal(&StreamEvent_ConversationUpdated{&c})
+			cu, err := proto.Marshal(&StreamEvent_ConversationUpdated{Conversation: &conv})
 			if err != nil {
 				return err
 			}
@@ -515,14 +505,13 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 
 	// send members
 	{
-		var members []Member
-		if err := svc.db.Find(&members).Error; err != nil {
+		members, err := svc.db.getAllMembers()
+		if err != nil {
 			return err
 		}
 		svc.logger.Info("sending existing members", zap.Int("count", len(members)))
 		for _, member := range members {
-			m := member // comply with scopelint
-			mu, err := proto.Marshal(&StreamEvent_MemberUpdated{&m})
+			mu, err := proto.Marshal(&StreamEvent_MemberUpdated{Member: &member})
 			if err != nil {
 				return err
 			}
@@ -534,14 +523,13 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 
 	// send interactions
 	{
-		var interactions []Interaction
-		if err := svc.db.Find(&interactions).Error; err != nil {
+		interactions, err := svc.db.getAllInteractions()
+		if err != nil {
 			return err
 		}
 		svc.logger.Info("sending existing interactions", zap.Int("count", len(interactions)))
 		for _, inte := range interactions {
-			i := inte // comply with scopelint
-			iu, err := proto.Marshal(&StreamEvent_InteractionUpdated{&i})
+			iu, err := proto.Marshal(&StreamEvent_InteractionUpdated{Interaction: &inte})
 			if err != nil {
 				return err
 			}
@@ -637,17 +625,9 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 	}
 
 	// Update database
-	{
-		err = svc.db.
-			Clauses(clause.OnConflict{
-				Columns:   []clause.Column{{Name: "public_key"}},
-				DoUpdates: clause.AssignmentColumns([]string{"display_name", "link"}),
-			}).
-			Create(&conv).
-			Error
-		if err != nil {
-			return nil, err
-		}
+	err = svc.db.updateConversation(*conv)
+	if err != nil {
+		return nil, err
 	}
 
 	// Dispatch new conversation
@@ -685,7 +665,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 	{
 		for i := 0; i < 3; i++ {
 			err := func() error {
-				acc, err := getAccount(svc.db)
+				acc, err := svc.db.getAccount()
 				if err != nil {
 					return err
 				}
@@ -785,15 +765,8 @@ func (svc *service) ConversationJoin(ctx context.Context, req *ConversationJoin_
 	}
 
 	// update db
-	{
-		// Maybe turn this into a svc.updateConversation helper
-		cl := clause.OnConflict{ // Maybe DoNothing ?
-			Columns:   []clause.Column{{Name: "public_key"}},
-			DoUpdates: clause.AssignmentColumns([]string{"display_name", "link"}),
-		}
-		if err = svc.db.Clauses(cl).Create(&conv).Error; err != nil {
-			return nil, errcode.ErrInternal.Wrap(err)
-		}
+	if err := svc.db.updateConversation(conv); err != nil {
+		return nil, err
 	}
 
 	// dispatch event
@@ -808,7 +781,7 @@ func (svc *service) ConversationJoin(ctx context.Context, req *ConversationJoin_
 	{
 		for i := 0; i < 3; i++ {
 			err := func() error {
-				acc, err := getAccount(svc.db)
+				acc, err := svc.db.getAccount()
 				if err != nil {
 					return err
 				}
@@ -834,7 +807,7 @@ func (svc *service) AccountUpdate(ctx context.Context, req *AccountUpdate_Reques
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	acc, err := getAccount(svc.db)
+	acc, err := svc.db.getAccount()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -842,35 +815,28 @@ func (svc *service) AccountUpdate(ctx context.Context, req *AccountUpdate_Reques
 	updated := false
 
 	dn := req.GetDisplayName()
-	svc.logger.Debug("updating account", zap.String("display_name", dn))
 	if dn != "" && dn != acc.GetDisplayName() {
-		acc.DisplayName = dn
-		ret, err := svc.internalInstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{DisplayName: dn})
-		if err != nil {
-			return nil, err
-		}
-		acc.Link = ret.GetHTMLURL()
+		svc.logger.Debug("updating account", zap.String("display_name", dn))
 		updated = true
 	}
 
-	if updated {
-		if acc.GetDisplayName() != "" {
-			acc.State = Account_Ready
-		} else {
-			acc.State = Account_NotReady
-		}
+	if !updated {
+		return &AccountUpdate_Reply{}, nil
+	}
 
-		if err := svc.db.Save(&acc).Error; err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
+	ret, err := svc.internalInstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{DisplayName: dn})
+	if err != nil {
+		return nil, err
+	}
 
-		// dispatch event
-		{
-			err := svc.dispatcher.StreamEvent(StreamEvent_TypeAccountUpdated, &StreamEvent_AccountUpdated{Account: &acc})
-			if err != nil {
-				return nil, errcode.TODO.Wrap(err)
-			}
-		}
+	acc, err = svc.db.updateAccount(acc.PublicKey, ret.GetHTMLURL(), dn)
+	if err != nil {
+		return nil, err
+	}
+
+	// dispatch event
+	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeAccountUpdated, &StreamEvent_AccountUpdated{Account: &acc}); err != nil {
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	return &AccountUpdate_Reply{}, nil
@@ -914,7 +880,7 @@ func (svc *service) ContactRequest(ctx context.Context, req *ContactRequest_Requ
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	acc, err := getAccount(svc.db)
+	acc, err := svc.db.getAccount()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -958,7 +924,7 @@ func (svc *service) ContactAccept(ctx context.Context, req *ContactAccept_Reques
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	c, err := getContactByPK(svc.db, pk)
+	c, err := svc.db.getContactByPK(pk)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -1014,7 +980,7 @@ func (svc *service) AccountGet(ctx context.Context, req *AccountGet_Request) (*A
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	acc, err := getAccount(svc.db)
+	acc, err := svc.db.getAccount()
 	if err != nil {
 		return nil, err
 	}
@@ -1040,29 +1006,15 @@ func (svc *service) ConversationOpen(ctx context.Context, req *ConversationOpen_
 
 	ret := ConversationOpen_Reply{}
 
-	conv, err := getConversationByPK(svc.db, req.GetGroupPK())
+	if updated, err := svc.db.setConversationIsOpenStatus(req.GetGroupPK(), true); err != nil {
+		return nil, err
+	} else if !updated {
+		return &ret, nil
+	}
+
+	conv, err := svc.db.getConversationByPK(req.GetGroupPK())
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
-	}
-
-	// sanity checks
-	{
-		// should we raise an error instead?
-		if conv.IsOpen {
-			return &ret, nil
-		}
-	}
-
-	// update entry in db
-	{
-		err := svc.db.
-			Model(&conv).
-			Update("is_open", true).
-			Update("unread_count", 0).
-			Error
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
 	}
 
 	// dispatch event to subscribers
@@ -1084,37 +1036,21 @@ func (svc *service) ConversationClose(ctx context.Context, req *ConversationClos
 
 	ret := ConversationClose_Reply{}
 
+	if updated, err := svc.db.setConversationIsOpenStatus(req.GetGroupPK(), false); err != nil {
+		return nil, err
+	} else if !updated {
+		return &ret, nil
+	}
+
 	// get entry from db
-	conv, err := getConversationByPK(svc.db, req.GetGroupPK())
+	conv, err := svc.db.getConversationByPK(req.GetGroupPK())
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	// sanity checks
-	{
-		// should we raise an error instead?
-		if !conv.IsOpen {
-			return &ret, nil
-		}
-	}
-
-	// update entry in db
-	{
-		err := svc.db.
-			Model(&conv).
-			Update("is_open", false).
-			Error
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-	}
-
 	// dispatch event to subscribers
-	{
-		err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{&conv})
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
+	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{&conv}); err != nil {
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	// FIXME: trigger update

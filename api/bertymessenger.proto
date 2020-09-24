@@ -190,7 +190,7 @@ message AppMessage {
     TypeUserReaction = 2;
     TypeGroupInvitation = 3;
     TypeSetGroupName = 4;
-    TypeSetUserName = 5;
+    TypeSetUserName = 5; // FIXME: SetDisplayName ?
     TypeAcknowledge = 6;
   }
   message UserMessage {
@@ -254,7 +254,7 @@ message Account {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
   string display_name = 2;
   string link = 3;
-  State state = 4;
+  State state = 4; // FIXME(?): What is this, how is it used, does it have to be stored in the database
 
   enum State {
     Undefined = 0;
@@ -264,18 +264,19 @@ message Account {
 }
 
 message Interaction {
-  string cid = 1 [(gogoproto.moretags) = "gorm:\"uniqueIndex\"", (gogoproto.customname) = "CID"];
-  AppMessage.Type type = 2;
+  int64 id = 1 [(gogoproto.moretags) = "gorm:\"primaryKey,autoIncrement\"", (gogoproto.customname) = "ID"];
+  string cid = 11 [(gogoproto.moretags) = "gorm:\"uniqueIndex\"", (gogoproto.customname) = "CID"];
+  AppMessage.Type type = 2 [(gogoproto.moretags) = "gorm:\"index\""];
   string member_public_key = 7;
   string device_public_key = 12;
   Member member = 8;
-  string conversation_public_key = 3;
+  string conversation_public_key = 3 [(gogoproto.moretags) = "gorm:\"index\""];
   Conversation conversation = 4;
   bytes payload = 5;
   bool is_me = 6;
   int64 sent_date = 9;
-  bool acknowledged = 10;
-  int64 arrival_index = 11 [(gogoproto.moretags) = "gorm:\"autoIncrement\""];
+  bool acknowledged = 10; // FIXME(?): By whom? Would a timestamp be better?
+  string target_cid = 13 [(gogoproto.moretags) = "gorm:\"index\"", (gogoproto.customname) = "TargetCID"];
 }
 
 message Contact {
@@ -284,7 +285,7 @@ message Contact {
   Conversation conversation = 3;
   State state = 4;
   string display_name = 5;
-  int64 created_date = 7;
+  int64 created_date = 7; // FIXME(?): If this is not related to the row creation date should we unify this field name with gorm.Model (ID, CreatedAt, UpdatedAt, DeletedAt)
   // specific to outgoing requests
   int64 sent_date = 8;
   repeated Device devices = 6 [(gogoproto.moretags) = "gorm:\"foreignKey:OwnerPublicKey\""];
@@ -294,28 +295,28 @@ message Contact {
     IncomingRequest = 1;
     OutgoingRequestEnqueued = 2;
     OutgoingRequestSent = 3;
-    Established = 4;
+    Established = 4; // FIXME(?): Name sounds weird
   }
 }
 
 message Conversation {
-  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
-  Type type = 2;
+  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  Type type = 2 [(gogoproto.moretags) = "gorm:\"index\""];
   bool is_open = 3;
   string display_name = 4;
-  string link = 5;
+  string link = 5 [(gogoproto.moretags) = "gorm:\"-\""];
   int32 unread_count = 6;
   // last_update is used to sort conversations, it should be updated for each "visible" event
   int64 last_update = 7;
   // specific to ContactType conversations
-  string contact_public_key = 8;
+  string contact_public_key = 8 [(gogoproto.moretags) = "gorm:\"index\""];
   // specific to ContactType conversations
   Contact contact = 9;
   // specific to MultiMemberType conversations
   repeated Member members = 10;
-  string account_member_public_key = 11;
-  string local_device_public_key = 12;
-  int64 created_date = 13;
+  string account_member_public_key = 11; // FIXME: What is the purpose of this field?
+  string local_device_public_key = 12; // FIXME: What is the purpose of this field?
+  int64 created_date = 13; // FIXME(?): If this is not related to the row creation date should we unify this field name with gorm.Model (ID, CreatedAt, UpdatedAt, DeletedAt)
   // TODO: avatar_cid
 
   enum Type {
@@ -327,16 +328,16 @@ message Conversation {
 }
 
 message Member {
-  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
   string display_name = 2;
-  string conversation_public_key = 3;
+  string conversation_public_key = 3 [(gogoproto.moretags) = "gorm:\"index\""];
   Conversation conversation = 4;
   repeated Device devices = 5 [(gogoproto.moretags) = "gorm:\"foreignKey:OwnerPublicKey\""];
 }
 
 message Device {
-  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
-  string owner_public_key = 2;
+  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string owner_public_key = 2 [(gogoproto.moretags) = "gorm:\"index\""]; // FIXME(?): member public key
 }
 
 message ContactMetadata {

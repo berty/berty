@@ -122,7 +122,7 @@
 | public_key | [string](#string) |  |  |
 | display_name | [string](#string) |  |  |
 | link | [string](#string) |  |  |
-| state | [Account.State](#berty.messenger.v1.Account.State) |  |  |
+| state | [Account.State](#berty.messenger.v1.Account.State) |  | FIXME(?): What is this, how is it used, does it have to be stored in the database |
 
 <a name="berty.messenger.v1.AccountGet"></a>
 
@@ -245,7 +245,7 @@
 | conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
 | state | [Contact.State](#berty.messenger.v1.Contact.State) |  |  |
 | display_name | [string](#string) |  |  |
-| created_date | [int64](#int64) |  |  |
+| created_date | [int64](#int64) |  | FIXME(?): If this is not related to the row creation date should we unify this field name with gorm.Model (ID, CreatedAt, UpdatedAt, DeletedAt) |
 | sent_date | [int64](#int64) |  | specific to outgoing requests |
 | devices | [Device](#berty.messenger.v1.Device) | repeated |  |
 
@@ -305,9 +305,9 @@
 | contact_public_key | [string](#string) |  | specific to ContactType conversations |
 | contact | [Contact](#berty.messenger.v1.Contact) |  | specific to ContactType conversations |
 | members | [Member](#berty.messenger.v1.Member) | repeated | specific to MultiMemberType conversations |
-| account_member_public_key | [string](#string) |  |  |
-| local_device_public_key | [string](#string) |  |  |
-| created_date | [int64](#int64) |  | TODO: avatar_cid |
+| account_member_public_key | [string](#string) |  | FIXME: What is the purpose of this field? |
+| local_device_public_key | [string](#string) |  | FIXME: What is the purpose of this field? |
+| created_date | [int64](#int64) |  | FIXME(?): If this is not related to the row creation date should we unify this field name with gorm.Model (ID, CreatedAt, UpdatedAt, DeletedAt) |
 
 <a name="berty.messenger.v1.ConversationClose"></a>
 
@@ -423,7 +423,7 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | public_key | [string](#string) |  |  |
-| owner_public_key | [string](#string) |  |  |
+| owner_public_key | [string](#string) |  | FIXME(?): member public key |
 
 <a name="berty.messenger.v1.EchoTest"></a>
 
@@ -516,6 +516,7 @@ TODO: return cid
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| id | [int64](#int64) |  |  |
 | cid | [string](#string) |  |  |
 | type | [AppMessage.Type](#berty.messenger.v1.AppMessage.Type) |  |  |
 | member_public_key | [string](#string) |  |  |
@@ -526,8 +527,8 @@ TODO: return cid
 | payload | [bytes](#bytes) |  |  |
 | is_me | [bool](#bool) |  |  |
 | sent_date | [int64](#int64) |  |  |
-| acknowledged | [bool](#bool) |  |  |
-| arrival_index | [int64](#int64) |  |  |
+| acknowledged | [bool](#bool) |  | FIXME(?): By whom? Would a timestamp be better? |
+| target_cid | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.Member"></a>
 
@@ -805,7 +806,7 @@ TODO: return cid
 | TypeUserReaction | 2 |  |
 | TypeGroupInvitation | 3 |  |
 | TypeSetGroupName | 4 |  |
-| TypeSetUserName | 5 |  |
+| TypeSetUserName | 5 | FIXME: SetDisplayName ? |
 | TypeAcknowledge | 6 |  |
 
 <a name="berty.messenger.v1.Contact.State"></a>
@@ -818,7 +819,7 @@ TODO: return cid
 | IncomingRequest | 1 |  |
 | OutgoingRequestEnqueued | 2 |  |
 | OutgoingRequestSent | 3 |  |
-| Established | 4 |  |
+| Established | 4 | FIXME(?): Name sounds weird |
 
 <a name="berty.messenger.v1.Conversation.Type"></a>
 
