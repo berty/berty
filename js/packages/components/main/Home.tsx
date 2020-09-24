@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { CommonActions, useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { Translation } from 'react-i18next'
 import {
@@ -9,6 +9,7 @@ import {
 	View,
 	ViewProps,
 	Image,
+	StyleProp,
 } from 'react-native'
 import { SafeAreaConsumer, SafeAreaView } from 'react-native-safe-area-context'
 import { Icon, Text } from 'react-native-ui-kitten'
@@ -430,22 +431,21 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const conversations: any[] = useConversationList() // TODO: sort
 	const isConversation: number = useConversationLength()
 
-	const [{ color, text, opacity, flex, margin, background, absolute }] = useStyles()
+	const [
+		{ color, text, opacity, flex, margin, background, absolute },
+		{ windowHeight },
+	] = useStyles()
 	const scrollRef = useRef<ScrollView>(null)
 	const [offset, setOffset] = useState<any>()
 	const [isOnTop, setIsOnTop] = useState<boolean>(false)
 	const [dirScroll, setDirScroll] = useState<string>('')
-	const [bgColor, setBgColor] = useState<any>()
 	const navigation = useNativeNavigation()
 	const contacts = useContacts()
 
-	useEffect(() => {
-		if (!requests.length) {
-			setBgColor(color.white)
-		} else {
-			setBgColor(color.blue)
-		}
-	}, [color.white, color.blue, requests.length])
+	const styleBackground = useMemo(
+		() => (requests.length > 0 ? background.blue : background.white),
+		[background.blue, background.white, requests.length],
+	)
 
 	useEffect(() => {
 		if (!Object.keys(contacts).length) {
@@ -457,11 +457,10 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 
 	return (
 		<>
-			<View style={[flex.tiny]}>
+			<View style={[flex.tiny, styleBackground]}>
 				<SwipeHelperReactNavTabBar>
 					<ScrollView
 						ref={scrollRef}
-						style={[{ backgroundColor: bgColor }]}
 						stickyHeaderIndices={[1]}
 						showsVerticalScrollIndicator={false}
 						scrollEventThrottle={16}
@@ -508,6 +507,19 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 									</TextNative>
 								</View>
 							</View>
+						)}
+						{requests.length > 0 && (
+							<View
+								style={[
+									{
+										backgroundColor: 'white',
+										position: 'absolute',
+										bottom: windowHeight * -1,
+										height: windowHeight,
+										width: '100%',
+									},
+								]}
+							/>
 						)}
 					</ScrollView>
 				</SwipeHelperReactNavTabBar>
