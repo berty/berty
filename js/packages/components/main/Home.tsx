@@ -289,14 +289,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 				<View style={[flex.big, column.fill, padding.small]}>
 					<View style={[row.fill]}>
 						<View style={[row.left, { flexShrink: 1 }]}>
-							<Text
-								numberOfLines={1}
-								style={[
-									text.size.medium,
-									text.color.black,
-									// unreadCount && text.bold.medium
-								]}
-							>
+							<Text numberOfLines={1} style={[text.size.medium, text.color.black]}>
 								{(fake && 'FAKE - ') || ''}
 								{type === messengerpb.Conversation.Type.MultiMemberType
 									? displayName
@@ -389,12 +382,6 @@ const HomeHeader: React.FC<
 									: isOnTop
 									? 40 * scaleHeight
 									: 20 * scaleHeight,
-								// paddingTop: hasRequests
-								// 	? isOnTop
-								// 		? 40 * scaleHeight
-								// 		: 20 * scaleHeight
-								// 	: 40 * scaleHeight,
-								// paddingBottom: isOnTop && 10 * scaleHeight,
 							},
 						]}
 					>
@@ -443,13 +430,9 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 		{ windowHeight, scaleSize, scaleHeight },
 	] = useStyles()
 	const scrollRef = useRef<ScrollView>(null)
-	const [offset, setOffset] = useState<any>()
-	const [isOnTop, setIsOnTop] = useState<boolean>(false)
-	const [dirScroll, setDirScroll] = useState<string>('')
 	const { setPersistentOption } = useMsgrContext()
 	const persistentOpts = usePersistentOptions()
 	const navigation = useNativeNavigation()
-	const contacts = useContacts()
 
 	const styleBackground = useMemo(
 		() => (requests.length > 0 ? background.blue : background.white),

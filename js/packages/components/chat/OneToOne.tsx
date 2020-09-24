@@ -228,12 +228,14 @@ const InfosChat: React.FC<api.berty.messenger.v1.IConversation> = ({
 		(createdDateStr && parseInt((createdDateStr as unknown) as string, 10)) || Date.now()
 	return (
 		<View style={[padding.medium, flex.align.center]}>
-			<ChatDate date={createdDate} />
 			<ContactInitiatedWrapper>
 				<Text style={[text.color.blue, text.align.center, text.italic]}>
 					👋 Berty Connection: confirmed 🎉
 				</Text>
 			</ContactInitiatedWrapper>
+			<View style={[padding.top.big]}>
+				<ChatDate date={createdDate} />
+			</View>
 		</View>
 	)
 }
@@ -275,6 +277,7 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: string }> = ({
 		<FlatList
 			initialScrollIndex={initialScrollIndex}
 			onScrollToIndexFailed={onScrollToIndexFailed}
+			contentContainerStyle={{ paddingBottom: 105 }}
 			ref={flatListRef}
 			keyboardDismissMode='on-drag'
 			data={items}
