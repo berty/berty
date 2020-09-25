@@ -99,6 +99,11 @@ func processMetadataList(ctx context.Context, groupPK []byte, db *gorm.DB, clien
 	subCtx, subCancel := context.WithCancel(ctx)
 	defer subCancel()
 
+	config, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+	if err != nil {
+		return errcode.ErrEventListMetadata.Wrap(err)
+	}
+
 	metaList, err := client.GroupMetadataList(
 		subCtx,
 		&bertytypes.GroupMetadataList_Request{
@@ -209,6 +214,16 @@ func processMetadataList(ctx context.Context, groupPK []byte, db *gorm.DB, clien
 
 			if _, _, err := addContactRequestIncomingAccepted(db, contactPK, groupPK); err != nil {
 				return errcode.ErrDBAddContactRequestIncomingAccepted.Wrap(err)
+			}
+
+		case bertytypes.EventTypeAccountServiceTokenAdded:
+			var ev bertytypes.AccountServiceTokenAdded
+			if err := proto.Unmarshal(metadata.GetEvent(), &ev); err != nil {
+				return errcode.ErrDeserialization.Wrap(err)
+			}
+
+			if err := addServiceToken(db, bytesToString(config.AccountPK), ev.ServiceToken); err != nil {
+				return errcode.ErrDBWrite.Wrap(err)
 			}
 
 		// TODO

@@ -79,8 +79,10 @@ const OneToOneHeaderButtons: React.FC<{}> = () => {
 	)
 }
 
-const OneToOneBody: React.FC<{}> = () => {
+const OneToOneBody: React.FC<any> = ({ publicKey }) => {
 	const [{ padding, color }] = useStyles()
+	const navigation = useNavigation()
+
 	return (
 		<View style={[padding.horizontal.medium]}>
 			<ButtonSetting name='Medias, links & docs' icon='image-outline' disabled />
@@ -91,6 +93,15 @@ const OneToOneBody: React.FC<{}> = () => {
 				iconPack='custom'
 				state={{ value: '3 mutuals', color: color.blue, bgColor: color.light.blue }}
 				disabled
+			/>
+			<ButtonSetting
+				name='Save conversation on server'
+				icon='cloud-upload-outline'
+				iconSize={30}
+				actionIcon='arrow-ios-forward'
+				onPress={() => {
+					navigation.navigate.chat.replicateGroupSettings({ convId: publicKey })
+				}}
 			/>
 			<ButtonSetting
 				name='Erase conversation'
@@ -131,7 +142,7 @@ export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({
 						<OneToOneHeaderButtons />
 					</View>
 				</HeaderSettings>
-				<OneToOneBody />
+				<OneToOneBody {...conv} />
 			</SwipeNavRecognizer>
 		</ScrollView>
 	)

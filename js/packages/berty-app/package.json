@@ -48,6 +48,7 @@
 		"react-native-dev-menu": "^4.0.0",
 		"react-native-eva-icons": "^1.2.1",
 		"react-native-gesture-handler": "^1.6.1",
+		"react-native-inappbrowser-reborn": "^3.4.0",
 		"react-native-interactable": "^2.0.1",
 		"react-native-linear-gradient": "^2.5.6",
 		"react-native-permissions": "^2.0.3",
@@ -56,6 +57,7 @@
 		"react-native-safe-area-context": "^0.7.3",
 		"react-native-screens": "^2.4.0",
 		"react-native-svg": "^11.0.1",
+		"react-native-url-polyfill": "^1.2.0",
 		"react-native-vector-icons": "^7.0.0",
 		"react-native-webview": "^10.1.1"
 	}

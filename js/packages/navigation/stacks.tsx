@@ -162,6 +162,10 @@ export const Navigation: React.FC = () => {
 				component={Components.Chat.MultiMemberQR}
 			/>
 			<NavigationStack.Screen
+				name={Routes.Chat.ReplicateGroupSettings}
+				component={Components.Chat.ReplicateGroupSettings}
+			/>
+			<NavigationStack.Screen
 				name={Routes.Main.HomeModal}
 				component={Components.Main.HomeModal}
 				options={{
@@ -214,6 +218,10 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={Routes.Settings.Bluetooth}
 				component={Components.Settings.Bluetooth}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Settings.ServicesAuth}
+				component={Components.Settings.ServicesAuth}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Settings.AboutBerty}

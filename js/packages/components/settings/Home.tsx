@@ -136,6 +136,15 @@ const HomeBodySettings: React.FC<{}> = () => {
 				iconColor={color.blue}
 				onPress={navigate.settings.bluetooth}
 			/>
+
+			<ButtonSetting
+				name='External services'
+				icon='cube-outline'
+				iconColor={color.blue}
+				iconSize={30}
+				actionIcon='arrow-ios-forward'
+				onPress={navigate.settings.servicesAuth}
+			/>
 			<ButtonSetting name='Dark mode' icon='moon-outline' iconColor={color.blue} toggled disabled />
 			<ButtonSetting
 				name='About Berty'

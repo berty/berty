@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, ScrollView, Share, Image } from 'react-native'
+import { View, ScrollView, Share, Image, Vibration } from 'react-native'
 import { Layout, Text } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import {
@@ -90,6 +90,8 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 	const ctx: any = useMsgrContext()
 	const pk = publicKey
 	const members = ctx.members[pk] || {}
+	const navigation = useNavigation()
+
 	return (
 		<View style={[padding.medium]}>
 			<ButtonSetting name='Medias, links & docs' icon='image-outline' disabled />
@@ -135,6 +137,15 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 						: undefined
 				}
 				disabled={!link || undefined}
+			/>
+			<ButtonSetting
+				name='Save conversation on server'
+				icon='cloud-upload-outline'
+				iconSize={30}
+				actionIcon='arrow-ios-forward'
+				onPress={() => {
+					navigation.navigate.chat.replicateGroupSettings({ convId: publicKey })
+				}}
 			/>
 			<ButtonSetting
 				name='Erase conversation'

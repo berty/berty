@@ -64,7 +64,7 @@ service MessengerService {
   rpc ServicesTokenList(types.v1.ServicesTokenList.Request) returns (stream types.v1.ServicesTokenList.Reply);
 
   // ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents
-  rpc ReplicationServiceRegisterGroup(types.v1.ReplicationServiceRegisterGroup.Request) returns (types.v1.ReplicationServiceRegisterGroup.Reply);
+  rpc ReplicationServiceRegisterGroup(ReplicationServiceRegisterGroup.Request) returns (ReplicationServiceRegisterGroup.Reply);
 }
 
 message ConversationOpen {
@@ -255,12 +255,21 @@ message Account {
   string display_name = 2;
   string link = 3;
   State state = 4;
+  repeated ServiceToken service_tokens = 5 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
 
   enum State {
     Undefined = 0;
     NotReady = 1;
     Ready = 2;
   }
+}
+
+message ServiceToken {
+  string account_pk = 1 [(gogoproto.customname) = "AccountPK"];
+  string token_id = 2 [(gogoproto.moretags) = "gorm:\"primaryKey\"", (gogoproto.customname) = "TokenID"];
+  string service_type = 3 [(gogoproto.moretags) = "gorm:\"primaryKey\"", (gogoproto.customname) = "ServiceType"];
+  string authentication_url = 4  [(gogoproto.customname) = "AuthenticationURL"];
+  int64 expiration = 5;
 }
 
 message Interaction {
@@ -471,5 +480,14 @@ message Interact {
   }
   message Reply {
     // TODO: return cid
+  }
+}
+
+message ReplicationServiceRegisterGroup {
+  message Request {
+    string token_id = 1 [(gogoproto.customname) = "TokenID"];
+    string conversation_public_key = 2;
+  }
+  message Reply {
   }
 }

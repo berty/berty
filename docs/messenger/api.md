@@ -65,6 +65,9 @@
     - [ParseDeepLink](#berty.messenger.v1.ParseDeepLink)
     - [ParseDeepLink.Reply](#berty.messenger.v1.ParseDeepLink.Reply)
     - [ParseDeepLink.Request](#berty.messenger.v1.ParseDeepLink.Request)
+    - [ReplicationServiceRegisterGroup](#berty.messenger.v1.ReplicationServiceRegisterGroup)
+    - [ReplicationServiceRegisterGroup.Reply](#berty.messenger.v1.ReplicationServiceRegisterGroup.Reply)
+    - [ReplicationServiceRegisterGroup.Request](#berty.messenger.v1.ReplicationServiceRegisterGroup.Request)
     - [SendAck](#berty.messenger.v1.SendAck)
     - [SendAck.Reply](#berty.messenger.v1.SendAck.Reply)
     - [SendAck.Request](#berty.messenger.v1.SendAck.Request)
@@ -74,6 +77,7 @@
     - [SendMessage](#berty.messenger.v1.SendMessage)
     - [SendMessage.Reply](#berty.messenger.v1.SendMessage.Reply)
     - [SendMessage.Request](#berty.messenger.v1.SendMessage.Request)
+    - [ServiceToken](#berty.messenger.v1.ServiceToken)
     - [ShareableBertyGroup](#berty.messenger.v1.ShareableBertyGroup)
     - [ShareableBertyGroup.Reply](#berty.messenger.v1.ShareableBertyGroup.Reply)
     - [ShareableBertyGroup.Request](#berty.messenger.v1.ShareableBertyGroup.Request)
@@ -123,6 +127,7 @@
 | display_name | [string](#string) |  |  |
 | link | [string](#string) |  |  |
 | state | [Account.State](#berty.messenger.v1.Account.State) |  |  |
+| service_tokens | [ServiceToken](#berty.messenger.v1.ServiceToken) | repeated |  |
 
 <a name="berty.messenger.v1.AccountGet"></a>
 
@@ -563,6 +568,23 @@ TODO: return cid
 | ----- | ---- | ----- | ----------- |
 | link | [string](#string) |  |  |
 
+<a name="berty.messenger.v1.ReplicationServiceRegisterGroup"></a>
+
+### ReplicationServiceRegisterGroup
+
+<a name="berty.messenger.v1.ReplicationServiceRegisterGroup.Reply"></a>
+
+### ReplicationServiceRegisterGroup.Reply
+
+<a name="berty.messenger.v1.ReplicationServiceRegisterGroup.Request"></a>
+
+### ReplicationServiceRegisterGroup.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token_id | [string](#string) |  |  |
+| conversation_public_key | [string](#string) |  |  |
+
 <a name="berty.messenger.v1.SendAck"></a>
 
 ### SendAck
@@ -614,6 +636,18 @@ TODO: return cid
 | ----- | ---- | ----- | ----------- |
 | group_pk | [bytes](#bytes) |  |  |
 | message | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.ServiceToken"></a>
+
+### ServiceToken
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| account_pk | [string](#string) |  |  |
+| token_id | [string](#string) |  |  |
+| service_type | [string](#string) |  |  |
+| authentication_url | [string](#string) |  |  |
+| expiration | [int64](#int64) |  |  |
 
 <a name="berty.messenger.v1.ShareableBertyGroup"></a>
 
@@ -904,7 +938,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | AuthServiceInitFlow | [.berty.types.v1.AuthServiceInitFlow.Request](#berty.types.v1.AuthServiceInitFlow.Request) | [.berty.types.v1.AuthServiceInitFlow.Reply](#berty.types.v1.AuthServiceInitFlow.Reply) | AuthServiceInitFlow Initialize an authentication flow |
 | AuthServiceCompleteFlow | [.berty.types.v1.AuthServiceCompleteFlow.Request](#berty.types.v1.AuthServiceCompleteFlow.Request) | [.berty.types.v1.AuthServiceCompleteFlow.Reply](#berty.types.v1.AuthServiceCompleteFlow.Reply) | AuthServiceCompleteFlow Completes an authentication flow |
 | ServicesTokenList | [.berty.types.v1.ServicesTokenList.Request](#berty.types.v1.ServicesTokenList.Request) | [.berty.types.v1.ServicesTokenList.Reply](#berty.types.v1.ServicesTokenList.Reply) stream | ServicesTokenList Retrieves the list of service server tokens |
-| ReplicationServiceRegisterGroup | [.berty.types.v1.ReplicationServiceRegisterGroup.Request](#berty.types.v1.ReplicationServiceRegisterGroup.Request) | [.berty.types.v1.ReplicationServiceRegisterGroup.Reply](#berty.types.v1.ReplicationServiceRegisterGroup.Reply) | ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents |
+| ReplicationServiceRegisterGroup | [ReplicationServiceRegisterGroup.Request](#berty.messenger.v1.ReplicationServiceRegisterGroup.Request) | [ReplicationServiceRegisterGroup.Reply](#berty.messenger.v1.ReplicationServiceRegisterGroup.Reply) | ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents |
 
  
 

@@ -740,7 +740,7 @@ func request_MessengerService_ServicesTokenList_0(ctx context.Context, marshaler
 }
 
 func request_MessengerService_ReplicationServiceRegisterGroup_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq bertytypes.ReplicationServiceRegisterGroup_Request
+	var protoReq ReplicationServiceRegisterGroup_Request
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -756,7 +756,7 @@ func request_MessengerService_ReplicationServiceRegisterGroup_0(ctx context.Cont
 }
 
 func local_request_MessengerService_ReplicationServiceRegisterGroup_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq bertytypes.ReplicationServiceRegisterGroup_Request
+	var protoReq ReplicationServiceRegisterGroup_Request
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)

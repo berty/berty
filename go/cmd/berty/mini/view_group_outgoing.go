@@ -257,9 +257,9 @@ func servicesList(ctx context.Context, v *groupView, _ string) error {
 }
 
 func replGroup(ctx context.Context, v *groupView, cmd string) error {
-	if _, err := v.v.protocol.ReplicationServiceRegisterGroup(ctx, &bertytypes.ReplicationServiceRegisterGroup_Request{
-		TokenID: strings.TrimSpace(cmd),
-		GroupPK: v.g.PublicKey,
+	if _, err := v.v.messenger.ReplicationServiceRegisterGroup(ctx, &bertymessenger.ReplicationServiceRegisterGroup_Request{
+		TokenID:               strings.TrimSpace(cmd),
+		ConversationPublicKey: base64.RawURLEncoding.EncodeToString(v.g.PublicKey),
 	}); err != nil {
 		return err
 	}

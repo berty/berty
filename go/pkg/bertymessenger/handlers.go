@@ -43,11 +43,44 @@ func handleProtocolEvent(svc *service, gme *bertytypes.GroupMetadataEvent) error
 		err = groupMemberDeviceAdded(svc, gme)
 	case bertytypes.EventTypeGroupMetadataPayloadSent:
 		err = groupMetadataPayloadSent(svc, gme)
+	case bertytypes.EventTypeAccountServiceTokenAdded:
+		err = accountServiceTokenAdded(svc, gme)
 	default:
 		svc.logger.Info("event ignored", zap.String("type", et.String()))
 	}
 
 	return err
+}
+
+func accountServiceTokenAdded(svc *service, gme *bertytypes.GroupMetadataEvent) error {
+	config, err := svc.protocolClient.InstanceGetConfiguration(svc.ctx, &bertytypes.InstanceGetConfiguration_Request{})
+	if err != nil {
+		return err
+	}
+
+	var ev bertytypes.AccountServiceTokenAdded
+	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	if err := addServiceToken(svc.db, bytesToString(config.AccountPK), ev.ServiceToken); err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	}
+
+	acc, err := getAccount(svc.db)
+	if err != nil {
+		return errcode.ErrDBRead.Wrap(err)
+	}
+
+	// dispatch event
+	{
+		err := svc.dispatcher.StreamEvent(StreamEvent_TypeAccountUpdated, &StreamEvent_AccountUpdated{Account: &acc})
+		if err != nil {
+			return errcode.TODO.Wrap(err)
+		}
+	}
+
+	return nil
 }
 
 func groupMetadataPayloadSent(svc *service, gme *bertytypes.GroupMetadataEvent) error {
