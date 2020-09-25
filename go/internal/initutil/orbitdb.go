@@ -43,10 +43,9 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 	}
 
 	var (
-		messageDS = bertyprotocol.NewMessageKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceMessageKeystore)))
-		deviceDS  = ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceDeviceKeystore)))
-		deviceKS  = bertyprotocol.NewDeviceKeystore(deviceDS)
-		cache     = bertyprotocol.NewOrbitDatastoreCache(rootDS)
+		deviceDS = ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceDeviceKeystore)))
+		deviceKS = bertyprotocol.NewDeviceKeystore(deviceDS)
+		cache    = bertyprotocol.NewOrbitDatastoreCache(rootDS)
 	)
 
 	opts := &bertyprotocol.NewOrbitDBOptions{
@@ -56,9 +55,8 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 			Logger:    logger,
 			Tracer:    tracer.New("berty-orbitdb"),
 		},
-		Datastore:       rootDS,
-		MessageKeystore: messageDS,
-		DeviceKeystore:  deviceKS,
+		Datastore:      rootDS,
+		DeviceKeystore: deviceKS,
 	}
 
 	if node.PubSub != nil {

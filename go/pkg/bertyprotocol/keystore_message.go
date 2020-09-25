@@ -16,7 +16,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
-type MessageKeystore struct {
+type messageKeystore struct {
 	lock                 sync.Mutex
 	preComputedKeysCount int
 	store                datastore.Datastore
@@ -28,7 +28,7 @@ type decryptInfo struct {
 	Cid            cid.Cid
 }
 
-func (m *MessageKeystore) getDeviceChainKey(groupPK, pk crypto.PubKey) (*bertytypes.DeviceSecret, error) {
+func (m *messageKeystore) getDeviceChainKey(groupPK, pk crypto.PubKey) (*bertytypes.DeviceSecret, error) {
 	if m == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -61,7 +61,7 @@ func (m *MessageKeystore) getDeviceChainKey(groupPK, pk crypto.PubKey) (*bertyty
 	return ds, nil
 }
 
-func (m *MessageKeystore) delPrecomputedKey(groupPK, device crypto.PubKey, counter uint64) error {
+func (m *messageKeystore) delPrecomputedKey(groupPK, device crypto.PubKey, counter uint64) error {
 	if m == nil {
 		return errcode.ErrInvalidInput
 	}
@@ -84,7 +84,7 @@ func (m *MessageKeystore) delPrecomputedKey(groupPK, device crypto.PubKey, count
 	return nil
 }
 
-func (m *MessageKeystore) postDecryptActions(di *decryptInfo, g *bertytypes.Group, ownPK crypto.PubKey, headers *bertytypes.MessageHeaders) error {
+func (m *messageKeystore) postDecryptActions(di *decryptInfo, g *bertytypes.Group, ownPK crypto.PubKey, headers *bertytypes.MessageHeaders) error {
 	if m == nil {
 		return errcode.ErrInvalidInput
 	}
@@ -137,7 +137,7 @@ func (m *MessageKeystore) postDecryptActions(di *decryptInfo, g *bertytypes.Grou
 	return nil
 }
 
-func (m *MessageKeystore) GetDeviceSecret(g *bertytypes.Group, acc DeviceKeystore) (*bertytypes.DeviceSecret, error) {
+func (m *messageKeystore) GetDeviceSecret(g *bertytypes.Group, acc DeviceKeystore) (*bertytypes.DeviceSecret, error) {
 	if m == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -177,7 +177,7 @@ func (m *MessageKeystore) GetDeviceSecret(g *bertytypes.Group, acc DeviceKeystor
 	return ds, nil
 }
 
-func (m *MessageKeystore) RegisterChainKey(g *bertytypes.Group, devicePK crypto.PubKey, ds *bertytypes.DeviceSecret, isOwnPK bool) error {
+func (m *messageKeystore) RegisterChainKey(g *bertytypes.Group, devicePK crypto.PubKey, ds *bertytypes.DeviceSecret, isOwnPK bool) error {
 	if m == nil {
 		return errcode.ErrInvalidInput
 	}
@@ -188,7 +188,7 @@ func (m *MessageKeystore) RegisterChainKey(g *bertytypes.Group, devicePK crypto.
 	return m.registerChainKey(g, devicePK, ds, isOwnPK)
 }
 
-func (m *MessageKeystore) registerChainKey(g *bertytypes.Group, devicePK crypto.PubKey, ds *bertytypes.DeviceSecret, isOwnPK bool) error {
+func (m *messageKeystore) registerChainKey(g *bertytypes.Group, devicePK crypto.PubKey, ds *bertytypes.DeviceSecret, isOwnPK bool) error {
 	if m == nil {
 		return errcode.ErrInvalidInput
 	}
@@ -223,7 +223,7 @@ func (m *MessageKeystore) registerChainKey(g *bertytypes.Group, devicePK crypto.
 	return nil
 }
 
-func (m *MessageKeystore) preComputeKeys(device crypto.PubKey, g *bertytypes.Group, ds *bertytypes.DeviceSecret) (*bertytypes.DeviceSecret, error) {
+func (m *messageKeystore) preComputeKeys(device crypto.PubKey, g *bertytypes.Group, ds *bertytypes.DeviceSecret) (*bertytypes.DeviceSecret, error) {
 	if m == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -275,7 +275,7 @@ func (m *MessageKeystore) preComputeKeys(device crypto.PubKey, g *bertytypes.Gro
 	}, nil
 }
 
-func (m *MessageKeystore) getPrecomputedKey(groupPK, device crypto.PubKey, counter uint64) (*[32]byte, error) {
+func (m *messageKeystore) getPrecomputedKey(groupPK, device crypto.PubKey, counter uint64) (*[32]byte, error) {
 	if m == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -309,7 +309,7 @@ func (m *MessageKeystore) getPrecomputedKey(groupPK, device crypto.PubKey, count
 	return keyArray, nil
 }
 
-func (m *MessageKeystore) putPrecomputedKey(groupPK, device crypto.PubKey, counter uint64, mk *[32]byte) error {
+func (m *messageKeystore) putPrecomputedKey(groupPK, device crypto.PubKey, counter uint64, mk *[32]byte) error {
 	if m == nil {
 		return errcode.ErrInvalidInput
 	}
@@ -333,7 +333,7 @@ func (m *MessageKeystore) putPrecomputedKey(groupPK, device crypto.PubKey, count
 	return nil
 }
 
-func (m *MessageKeystore) putKeyForCID(id cid.Cid, key *[32]byte) error {
+func (m *messageKeystore) putKeyForCID(id cid.Cid, key *[32]byte) error {
 	if m == nil {
 		return errcode.ErrInvalidInput
 	}
@@ -350,7 +350,7 @@ func (m *MessageKeystore) putKeyForCID(id cid.Cid, key *[32]byte) error {
 	return nil
 }
 
-func (m *MessageKeystore) OpenEnvelope(ctx context.Context, g *bertytypes.Group, ownPK crypto.PubKey, data []byte, id cid.Cid) (*bertytypes.MessageHeaders, []byte, error) {
+func (m *messageKeystore) OpenEnvelope(ctx context.Context, g *bertytypes.Group, ownPK crypto.PubKey, data []byte, id cid.Cid) (*bertytypes.MessageHeaders, []byte, error) {
 	if m == nil || g == nil {
 		return nil, nil, errcode.ErrInvalidInput
 	}
@@ -380,7 +380,7 @@ func (m *MessageKeystore) OpenEnvelope(ctx context.Context, g *bertytypes.Group,
 	return headers, msg, nil
 }
 
-func (m *MessageKeystore) openPayload(id cid.Cid, groupPK crypto.PubKey, payload []byte, headers *bertytypes.MessageHeaders) ([]byte, *decryptInfo, error) {
+func (m *messageKeystore) openPayload(id cid.Cid, groupPK crypto.PubKey, payload []byte, headers *bertytypes.MessageHeaders) ([]byte, *decryptInfo, error) {
 	if m == nil {
 		return nil, nil, errcode.ErrInvalidInput
 	}
@@ -417,7 +417,7 @@ func (m *MessageKeystore) openPayload(id cid.Cid, groupPK crypto.PubKey, payload
 	return msg, di, nil
 }
 
-func (m *MessageKeystore) getKeyForCID(id cid.Cid) (*[32]byte, error) {
+func (m *messageKeystore) getKeyForCID(id cid.Cid) (*[32]byte, error) {
 	if m == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -439,7 +439,7 @@ func (m *MessageKeystore) getKeyForCID(id cid.Cid) (*[32]byte, error) {
 	return keyArray, nil
 }
 
-func (m *MessageKeystore) getPrecomputedKeyExpectedCount() int {
+func (m *messageKeystore) getPrecomputedKeyExpectedCount() int {
 	if m == nil {
 		return 0
 	}
@@ -447,7 +447,7 @@ func (m *MessageKeystore) getPrecomputedKeyExpectedCount() int {
 	return m.preComputedKeysCount
 }
 
-func (m *MessageKeystore) putDeviceChainKey(groupPK, device crypto.PubKey, ds *bertytypes.DeviceSecret) error {
+func (m *messageKeystore) putDeviceChainKey(groupPK, device crypto.PubKey, ds *bertytypes.DeviceSecret) error {
 	if m == nil {
 		return errcode.ErrInvalidInput
 	}
@@ -477,7 +477,7 @@ func (m *MessageKeystore) putDeviceChainKey(groupPK, device crypto.PubKey, ds *b
 	return nil
 }
 
-func (m *MessageKeystore) SealEnvelope(ctx context.Context, g *bertytypes.Group, deviceSK crypto.PrivKey, payload []byte) ([]byte, error) {
+func (m *messageKeystore) SealEnvelope(ctx context.Context, g *bertytypes.Group, deviceSK crypto.PrivKey, payload []byte) ([]byte, error) {
 	if m == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -511,7 +511,7 @@ func (m *MessageKeystore) SealEnvelope(ctx context.Context, g *bertytypes.Group,
 	return env, nil
 }
 
-func (m *MessageKeystore) deriveDeviceSecret(g *bertytypes.Group, deviceSK crypto.PrivKey) error {
+func (m *messageKeystore) deriveDeviceSecret(g *bertytypes.Group, deviceSK crypto.PrivKey) error {
 	if m == nil {
 		return errcode.ErrInvalidInput
 	}
@@ -549,7 +549,7 @@ func (m *MessageKeystore) deriveDeviceSecret(g *bertytypes.Group, deviceSK crypt
 	return nil
 }
 
-func (m *MessageKeystore) updateCurrentKey(groupPK, pk crypto.PubKey, ds *bertytypes.DeviceSecret) error {
+func (m *messageKeystore) updateCurrentKey(groupPK, pk crypto.PubKey, ds *bertytypes.DeviceSecret) error {
 	if m == nil {
 		return errcode.ErrInvalidInput
 	}
@@ -570,17 +570,17 @@ func (m *MessageKeystore) updateCurrentKey(groupPK, pk crypto.PubKey, ds *bertyt
 	return nil
 }
 
-// NewMessageKeystore instantiate a new MessageKeystore
-func NewMessageKeystore(s datastore.Datastore) *MessageKeystore {
-	return &MessageKeystore{
+// newMessageKeystore instantiate a new messageKeystore
+func newMessageKeystore(s datastore.Datastore) *messageKeystore {
+	return &messageKeystore{
 		preComputedKeysCount: 100,
 		store:                s,
 	}
 }
 
-// NewInMemMessageKeystore instantiate a new MessageKeystore, useful for testing
-func NewInMemMessageKeystore() (*MessageKeystore, func()) {
+// nolint:deadcode,unused // newInMemMessageKeystore instantiate a new messageKeystore, useful for testing
+func newInMemMessageKeystore() (*messageKeystore, func()) {
 	ds := dssync.MutexWrap(datastore.NewMapDatastore())
 
-	return NewMessageKeystore(ds), func() { _ = ds.Close() }
+	return newMessageKeystore(ds), func() { _ = ds.Close() }
 }

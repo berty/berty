@@ -33,7 +33,7 @@ type metadataStore struct {
 	basestore.BaseStore
 	g      *bertytypes.Group
 	devKS  DeviceKeystore
-	mks    *MessageKeystore
+	mks    *messageKeystore
 	logger *zap.Logger
 }
 

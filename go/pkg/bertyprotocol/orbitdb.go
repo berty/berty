@@ -39,7 +39,7 @@ type loggable interface {
 type NewOrbitDBOptions struct {
 	baseorbitdb.NewOrbitDBOptions
 	Datastore       datastore.Batching
-	MessageKeystore *MessageKeystore
+	MessageKeystore *messageKeystore
 	DeviceKeystore  DeviceKeystore
 }
 
@@ -53,8 +53,7 @@ func (n *NewOrbitDBOptions) applyDefaults() {
 	}
 
 	if n.MessageKeystore == nil {
-		mk := ipfsutil.NewNamespacedDatastore(n.Datastore, datastore.NewKey(NamespaceMessageKeystore))
-		n.MessageKeystore = NewMessageKeystore(mk)
+		n.MessageKeystore = newMessageKeystore(ipfsutil.NewNamespacedDatastore(n.Datastore, datastore.NewKey(NamespaceMessageKeystore)))
 	}
 
 	if n.DeviceKeystore == nil {
@@ -79,7 +78,7 @@ type BertyOrbitDB struct {
 	groupContexts   sync.Map // map[string]*groupContext
 	groupsSigPubKey sync.Map // map[string]crypto.PubKey
 	keyStore        *BertySignedKeyStore
-	messageKeystore *MessageKeystore
+	messageKeystore *messageKeystore
 	deviceKeystore  DeviceKeystore
 }
 
