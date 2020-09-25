@@ -11,7 +11,7 @@ import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
 import { Service, EOF } from '@berty-tech/grpc-bridge'
 import GoBridge from '@berty-tech/go-bridge'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
+import { useAccount, useMsgrContext, usePersistentOptions } from '@berty-tech/store/hooks'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //
@@ -283,6 +283,8 @@ const BodyDevTools: React.FC<{}> = () => {
 	const [{ padding, flex, margin, color, text }] = useStyles()
 	const { navigate } = useNavigation()
 	const ctx = useMsgrContext()
+	const persistentOpts = usePersistentOptions()
+
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<ButtonSetting
@@ -361,6 +363,20 @@ const BodyDevTools: React.FC<{}> = () => {
 				iconColor={color.dark.grey}
 				actionIcon='arrow-ios-forward'
 				disabled
+			/>
+			<ButtonSetting
+				name='Add Betabot'
+				icon='smartphone-outline'
+				iconSize={30}
+				iconColor={color.dark.grey}
+				actionIcon='arrow-ios-forward'
+				onPress={() => {
+					if (!persistentOpts.betabot.added && persistentOpts.betabot.toggledModal) {
+						ctx.setPersistentOption('betabot', { toggledModal: false })
+						navigate.main.home()
+					}
+				}}
+				disabled={persistentOpts.betabot.added}
 			/>
 			<SendToAll />
 			<ButtonSettingRow

@@ -36,8 +36,10 @@ type ConvWithCount struct {
 	IsOneToOne            bool
 }
 
-var convs = []ConvWithCount{}
-var staffConvPk string = ""
+var (
+	convs              = []ConvWithCount{}
+	staffConvPk string = ""
+)
 
 func main() {
 	err := betabot()
@@ -213,7 +215,7 @@ func handleEvent(ctx context.Context, messengerClient bertymessenger.MessengerSe
 			}
 			receivedMessage := interactionPayload.(*bertymessenger.AppMessage_UserMessage)
 			log.Printf("userMessage [%s], conv [%v], convs [%v]", receivedMessage.GetBody(), conv, convs)
-			if conv != nil && conv.IsOneToOne == true {
+			if conv != nil && conv.IsOneToOne {
 				switch {
 				case conv.Count == 0 && checkValidationMessage(receivedMessage.GetBody()):
 					conv.Count++
@@ -396,7 +398,7 @@ func handleEvent(ctx context.Context, messengerClient bertymessenger.MessengerSe
 		}
 		conversation := update.(*bertymessenger.StreamEvent_ConversationUpdated).Conversation
 		log.Printf("<<< %s: conversation=%q", gme.Event.Type, conversation)
-		if strings.Contains(conversation.GetDisplayName(), "staff-x-") == true {
+		if strings.Contains(conversation.GetDisplayName(), "staff-x-") {
 			userName := strings.Split(conversation.GetDisplayName(), "-")[2]
 			userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{
 				Body: fmt.Sprintf("Hi guys, we have a new user in our community! 🥳\nSay hello to %s! 👍\nFor the moment i can't send a group invitation so i share the link of the conversation here: %s", userName, conversation.GetLink()),

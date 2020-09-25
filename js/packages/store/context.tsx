@@ -11,6 +11,7 @@ type MsgrState = {
 	streamError: any
 	addNotificationListener: (cb: (evt: any) => void) => void
 	removeNotificationListener: (cb: (...args: any[]) => void) => void
+	persistentOptions: any
 }
 
 export const initialState = {
@@ -24,6 +25,7 @@ export const initialState = {
 	streamError: null,
 	addNotificationListener: () => {},
 	removeNotificationListener: () => {},
+	persistentOptions: {},
 }
 
 export const MsgrContext = React.createContext<MsgrState>(initialState)

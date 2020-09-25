@@ -214,6 +214,11 @@ export const useConvMemberList = (publicKey) => {
 	return Object.values(members)
 }
 
+export const usePersistentOptions = () => {
+	const ctx = useMsgrContext()
+	return ctx.persistentOptions
+}
+
 //
 // Fake data generation
 //
