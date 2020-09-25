@@ -15,6 +15,7 @@
     <a href="https://github.com/berty/berty/actions?query=workflow%3AGo"><img src="https://github.com/berty/berty/workflows/Go/badge.svg" /></a>
     <a href="https://github.com/berty/berty/actions?query=workflow%3AProtobuf"><img src="https://github.com/berty/berty/workflows/Protobuf/badge.svg" /></a>
     <a href="https://github.com/berty/berty/actions?query=workflow%3ARelease"><img src="https://github.com/berty/berty/workflows/Release/badge.svg" /></a>
+    <a href="https://github.com/berty/berty/actions?query=workflow%3AAndroid"><img src="https://github.com/berty/berty/workflows/Release/android.svg" /></a>
     <a href="https://buildkite.com/berty"><img src="https://img.shields.io/buildkite/331d828ccb643f90f6302b13ea77ab716ec78d6631af54c987?label=Mobile%20App" /></a>
 </p>
 <p align="center">

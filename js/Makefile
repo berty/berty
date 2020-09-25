@@ -280,7 +280,7 @@ _write_gen_sum:
 
 $(pkg_mod): $(pkg_desc)
 	$(call check-program, yarn)
-	yarn $(if $(filter $(CI), true), --frozen-lockfile)
+	yarn $(if $(filter $(CI), true), --frozen-lockfile) --network-timeout 1200000 # Giving 2 minutes for packages resolution, the MacOS CI have a flaky internet.
 	./node_modules/.bin/lerna --reject-cycles --concurrency=8 bootstrap
 	# remove duplicate instance of $(react-native)
 	rm -rf `find node_modules -type d -name react-native -path '*/node_modules/*'  | grep 'node_modules/react-native$$'`
