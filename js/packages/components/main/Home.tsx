@@ -25,6 +25,7 @@ import {
 	useMsgrContext,
 	useLastConvInteraction,
 	useContacts,
+	usePersistentOptions,
 } from '@berty-tech/store/hooks'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
@@ -439,6 +440,8 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const [offset, setOffset] = useState<any>()
 	const [isOnTop, setIsOnTop] = useState<boolean>(false)
 	const [dirScroll, setDirScroll] = useState<string>('')
+	const { setPersistentOption } = useMsgrContext()
+	const persistentOpts = usePersistentOptions()
 	const navigation = useNativeNavigation()
 	const contacts = useContacts()
 
@@ -448,7 +451,11 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	)
 
 	useEffect(() => {
-		if (!Object.keys(contacts).length) {
+		if (
+			!Object.keys(persistentOpts).length ||
+			(persistentOpts.betabot && !persistentOpts.betabot.toggledModal)
+		) {
+			setPersistentOption('betabot', { toggledModal: true })
 			navigation.navigate('Modals', {
 				screen: 'AddBetabot',
 			})

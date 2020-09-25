@@ -4,6 +4,7 @@ import { Text, Icon } from 'react-native-ui-kitten'
 import { useNavigation } from '@react-navigation/native'
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
+import { useMsgrContext } from '@berty-tech/store/hooks'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
 import BlurView from '../shared-components/BlurView'
@@ -37,9 +38,13 @@ const useStylesAddBetabot = () => {
 }
 
 export const AddBetabotBody = () => {
-	const [{ row, text, margin, color, absolute, padding, background, border, opacity }] = useStyles()
+	const [
+		{ row, text, margin, color, absolute, padding, background, border, opacity },
+		{ scaleHeight, scaleSize },
+	] = useStyles()
 	const _styles = useStylesAddBetabot()
 	const navigation = useNavigation()
+	const { setPersistentOption } = useMsgrContext()
 	const { refresh: requestContact, error, done } = messengerMethodsHooks.useContactRequest()
 
 	useEffect(() => {
@@ -63,8 +68,8 @@ export const AddBetabotBody = () => {
 					<View
 						style={[
 							{
-								width: 130,
-								height: 130,
+								width: 130 * scaleHeight,
+								height: 130 * scaleHeight,
 								backgroundColor: 'white',
 								justifyContent: 'center',
 								alignItems: 'center',
@@ -76,8 +81,8 @@ export const AddBetabotBody = () => {
 						<View
 							style={[
 								{
-									width: 110,
-									height: 110,
+									width: 110 * scaleHeight,
+									height: 110 * scaleHeight,
 									backgroundColor: 'white',
 									justifyContent: 'center',
 									alignItems: 'center',
@@ -88,16 +93,16 @@ export const AddBetabotBody = () => {
 								border.radius.scale(60),
 							]}
 						>
-							<Avatar width={120} height={120} />
+							<Avatar width={120 * scaleHeight} height={120 * scaleHeight} />
 						</View>
 					</View>
 				</View>
-				<View style={[padding.top.scale(65)]}>
+				<View style={[padding.top.scale(65 * scaleHeight)]}>
 					<Icon
 						name='info-outline'
 						fill={color.blue}
-						width={60}
-						height={60}
+						width={60 * scaleHeight}
+						height={60 * scaleHeight}
 						style={[row.item.justify, padding.top.large]}
 					/>
 					<TextNative
@@ -142,12 +147,13 @@ export const AddBetabotBody = () => {
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={[row.fill, margin.bottom.medium, background.light.blue, _styles.addButton]}
-						onPress={() =>
+						onPress={() => {
+							setPersistentOption('betabot', { added: true })
 							requestContact({
 								link:
-									'https://berty.tech/id#key=CiA1WGum2VRQzQx05UC7LKfN9b5MteNmujlwjZ1mAKuIQhIgNKTdsfjmYvf-4TS_0KRxlXjHVC1SRiI6KjKwQpeAxWA&name=beta-bot',
+									'https://berty.tech/id#key=CiDhudJMDjcNfNWAMBr9gOOpbJgqyGdcPHqfJAii5BwC1RIgaS_7BYIq0wf9Am4t1hkGxdbVofHllHObYM3XLBlBUr8&name=beta-bot',
 							})
-						}
+						}}
 					>
 						<Icon
 							name='checkmark-outline'

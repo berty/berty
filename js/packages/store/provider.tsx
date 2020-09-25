@@ -10,6 +10,8 @@ import MsgrContext, { initialState } from './context'
 import pickBy from 'lodash/pickBy'
 import mapValues from 'lodash/mapValues'
 import { EventEmitter } from 'events'
+import AsyncStorage from '@react-native-community/async-storage'
+import { keys } from 'lodash'
 
 const T = messengerpb.StreamEvent.Type
 
@@ -117,6 +119,12 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 		case 'CONVS_CLOSED':
 			state.convsClosed = true
 			break
+		case 'SET_PERSISTENT_OPTION':
+			state.persistentOptions = {
+				...state.persistentOptions,
+				[action.payload.key]: action.payload.value,
+			}
+			break
 		default:
 			console.warn('Unknown action type', action.type)
 	}
@@ -159,7 +167,57 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 		dispatch({ type: 'DELETE_STATE_UPDATED', payload: { state: 'CLEARING_STORAGE' } })
 		await GoBridge.clearStorage()
 		dispatch({ type: 'DELETE_STATE_UPDATED', payload: { state: 'DONE' } })
+		await AsyncStorage.clear()
 	}, [embedded])
+
+	const setPersistentOption = async (key: string, value: any) => {
+		try {
+			let item = await AsyncStorage.getItem(key)
+			if (item) {
+				item = JSON.parse(item)
+				typeof item === 'object'
+					? await AsyncStorage.mergeItem(key, JSON.stringify(value))
+					: await AsyncStorage.setItem(key, JSON.stringify(value))
+			} else {
+				await AsyncStorage.setItem(key, JSON.stringify(value))
+			}
+			item = await AsyncStorage.getItem(key)
+			dispatch({
+				type: 'SET_PERSISTENT_OPTION',
+				payload: { key, value: JSON.parse(item) },
+			})
+		} catch (e) {
+			console.warn('store setPersistentOptions Failed:', e)
+			return
+		}
+	}
+
+	const getPersistentOptions = async () => {
+		try {
+			const storageKeys = await AsyncStorage.getAllKeys()
+			if (!storageKeys.length) {
+				return
+			}
+			storageKeys.map(async (key: any) => {
+				const value = await AsyncStorage.getItem(key)
+				dispatch({
+					type: 'SET_PERSISTENT_OPTION',
+					payload: { key, value: JSON.parse(value) },
+				})
+			})
+		} catch (e) {
+			console.warn('store setPersistentOptions Failed:', e)
+			return
+		}
+	}
+
+	// Persist store
+	React.useEffect(() => {
+		if (embedded && !nodeStarted) {
+			return
+		}
+		getPersistentOptions()
+	}, [embedded, nodeStarted])
 
 	React.useEffect(() => {
 		if (state.deleteState === 'DONE') {
@@ -309,6 +367,7 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 				dispatch,
 				addNotificationListener,
 				removeNotificationListener,
+				setPersistentOption,
 			}}
 		>
 			{children}
