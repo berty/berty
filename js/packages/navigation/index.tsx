@@ -3,13 +3,7 @@ export { NavigationContainer } from './container'
 export type { ScreenProps } from './types'
 export { Routes } from './types'
 export type { RouteProps } from './types'
-export {
-	FakeNavigation,
-	ModalsNavigation,
-	CreateGroupNavigation,
-	SearchNavigation,
-	TabNavigation,
-} from './stacks'
+export { FakeNavigation, ModalsNavigation, CreateGroupNavigation, TabNavigation } from './stacks'
 
 import { Navigation } from './stacks'
 

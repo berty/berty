@@ -1211,7 +1211,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
+				VALID_ARCHS = "arm64 arm64e armv7 armv7s x86_64";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1247,7 +1247,7 @@
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Berty-Swift.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
+				VALID_ARCHS = "arm64 arm64e armv7 armv7s x86_64";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
