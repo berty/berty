@@ -30,7 +30,7 @@ $(gen_sum): $(gen_src)
 	    bertytech/protoc:25 \
 	    -xec 'make generate_local' \
 	)
-protoc_opts := -I ../api:`go list -m -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis:`go list -m -f {{.Dir}} github.com/gogo/protobuf`:/protobuf
+protoc_opts := -I ../api:`go list -m -mod=mod -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis:`go list -m -mod=mod -f {{.Dir}} github.com/gogo/protobuf`:/protobuf
 .PHONY: generate_local
 generate_local:
 	protoc $(protoc_opts) --doc_out=./protocol  --doc_opt=markdown,api.md.tmp ../api/bertyprotocol.proto ../api/bertytypes.proto

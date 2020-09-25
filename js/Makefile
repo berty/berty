@@ -245,17 +245,17 @@ bridge.start.docker:
 
 pbhbs_templates := packages/api/index.gen.js.hbs packages/codegen/index.gen.js.hbs
 pbhbs_targets := $(patsubst %.hbs,%,$(pbhbs_templates))
-pbhbs_flags := -p ../api -p node_modules/@googleapis/googleapis -p `cd ..; go list -m -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `cd ..; go list -m -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src -H packages/codegen/helpers
+pbhbs_flags := -p ../api -p node_modules/@googleapis/googleapis -p `cd ..; go list -m -mod=mod -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `cd ..; go list -m -mod=mod -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src -H packages/codegen/helpers
 .PHONY: _gen.pbhbs
 _gen.pbhbs:
-	pbhbs $(pbhbs_flags) -t packages/components      -o packages/components      ../api/bertyprotocol.proto  ../api/bertymessenger.proto ../api/bertytypes.proto
-	pbhbs $(pbhbs_flags) -t packages/api             -o packages/api             ../api/bertyprotocol.proto  ../api/bertymessenger.proto ../api/bertytypes.proto
-	pbhbs $(pbhbs_flags) -t packages/codegen         -o packages/codegen         ../api/bertyprotocol.proto  ../api/bertymessenger.proto ../api/bertytypes.proto
+	pbhbs $(pbhbs_flags) -t packages/components  -o packages/components  ../api/bertyprotocol.proto  ../api/bertymessenger.proto ../api/bertytypes.proto
+	pbhbs $(pbhbs_flags) -t packages/api         -o packages/api         ../api/bertyprotocol.proto  ../api/bertymessenger.proto ../api/bertytypes.proto
+	pbhbs $(pbhbs_flags) -t packages/codegen     -o packages/codegen     ../api/bertyprotocol.proto  ../api/bertymessenger.proto ../api/bertytypes.proto
 	eslint --cache --quiet --fix --no-ignore $(pbhbs_targets)
 
 #### pbjs
 
-pbjs_flags := -p ../api -p node_modules/@googleapis/googleapis -p `cd ..; go list -m -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `cd ..; go list -m -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src
+pbjs_flags := -p ../api -p node_modules/@googleapis/googleapis -p `cd ..; go list -m -mod=mod -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `cd ..; go list -m -mod=mod -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src
 .PHONY: _gen.pbjs
 _gen.pbjs:
 	pbjs $(pbjs_flags) --no-comments --es6 -w es6 -t json-module   -o packages/api/index.pb.js ../api/bertybridge.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto
