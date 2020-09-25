@@ -5,9 +5,11 @@ import (
 	"encoding/base64"
 	"flag"
 	"fmt"
+	"net"
 	"net/http"
 	"strings"
 
+	"github.com/oklog/run"
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"golang.org/x/crypto/ed25519"
 
@@ -43,15 +45,15 @@ func tokenServerCommand() *ffcli.Command {
 	var (
 		secretFlag    = ""
 		authSKFlag    = ""
-		listenerFlag  = ":8080"
+		listenerFlag  = "127.0.0.1:8080"
 		supportedFlag = ""
 	)
 	fsBuilder := func() (*flag.FlagSet, error) {
-		fs := flag.NewFlagSet("token issuer server", flag.ExitOnError)
-		fs.StringVar(&secretFlag, "secret", secretFlag, "base64 encoded secret")
-		fs.StringVar(&authSKFlag, "sk", authSKFlag, "base64 encoded signature key")
-		fs.StringVar(&listenerFlag, "l", listenerFlag, "http listener")
-		fs.StringVar(&supportedFlag, "s", supportedFlag, "comma separated list of supported services as name@ip:port")
+		fs := flag.NewFlagSet("token issuer server p", flag.ExitOnError)
+		fs.StringVar(&secretFlag, "auth.secret", secretFlag, "base64 encoded secret")
+		fs.StringVar(&authSKFlag, "auth.sk", authSKFlag, "base64 encoded signature key")
+		fs.StringVar(&listenerFlag, "http.listener", listenerFlag, "http listener")
+		fs.StringVar(&supportedFlag, "svc", supportedFlag, "comma separated list of supported services as name@ip:port")
 		return fs, nil
 	}
 
@@ -61,6 +63,17 @@ func tokenServerCommand() *ffcli.Command {
 		ShortHelp:      "token server, a basic token server issuer without auth or logging",
 		FlagSetBuilder: fsBuilder,
 		Exec: func(ctx context.Context, args []string) error {
+			ctx, cancel := context.WithCancel(ctx)
+			defer cancel()
+
+			g := run.Group{}
+			g.Add(func() error {
+				<-ctx.Done()
+				return ctx.Err()
+			}, func(error) {
+				cancel()
+			})
+
 			if len(args) > 0 {
 				return flag.ErrHelp
 			}
@@ -86,6 +99,11 @@ func tokenServerCommand() *ffcli.Command {
 
 			sk := ed25519.NewKeyFromSeed(skBytes)
 
+			l, err := net.Listen("tcp", listenerFlag)
+			if err != nil {
+				return err
+			}
+
 			servicesStrings := strings.Split(supportedFlag, ",")
 			services := map[string]string{}
 			for _, s := range servicesStrings {
@@ -101,10 +119,16 @@ func tokenServerCommand() *ffcli.Command {
 				return err
 			}
 
+			g.Add(func() error {
+				return http.Serve(l, server)
+			}, func(err error) {
+				l.Close()
+			})
+
 			pk := sk.Public().(ed25519.PublicKey)
 			logger.Info(fmt.Sprintf("running server, corresponding pk is %s", base64.RawStdEncoding.EncodeToString(pk)))
 
-			return http.ListenAndServe(listenerFlag, server)
+			return g.Run()
 		},
 	}
 }

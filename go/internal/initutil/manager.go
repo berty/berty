@@ -45,6 +45,7 @@ type Manager struct {
 	}
 	Node struct {
 		Protocol struct {
+			// IPFS
 			IPFSListeners      string
 			IPFSAPIListeners   string
 			IPFSWebUIListener  string
@@ -59,6 +60,12 @@ type Manager struct {
 			// The netry : `:none:` will disable all rdvp servers.
 			RdvpMaddrs flagStringSlice
 
+			// Auth
+			AuthSecret    string
+			AuthPublicKey string
+
+			// internal
+			needAuth         bool
 			ipfsNode         *core.IpfsNode
 			ipfsAPI          ipfsutil.ExtendedCoreAPI
 			pubsub           *pubsub.PubSub
@@ -74,6 +81,7 @@ type Manager struct {
 			RebuildSqlite        bool
 			MessengerSqliteOpts  string
 
+			// internal
 			protocolClient   bertyprotocol.Client
 			server           bertymessenger.Service
 			lcmanager        *lifecycle.Manager
@@ -86,6 +94,7 @@ type Manager struct {
 			RemoteAddr string
 			Listeners  string
 
+			// internal
 			clientConn        *grpc.ClientConn
 			server            *grpc.Server
 			bufServer         *grpc.Server

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 
 	"github.com/peterbourgon/ff/v3/ffcli"
 
@@ -11,11 +12,10 @@ import (
 
 func replicationServerCommand() *ffcli.Command {
 	fsBuilder := func() (*flag.FlagSet, error) {
-		fs := flag.NewFlagSet("berty share-invite", flag.ExitOnError)
+		fs := flag.NewFlagSet("berty repl-server", flag.ExitOnError)
+		manager.SetupProtocolAuth(fs)
 		manager.SetupLocalProtocolServerFlags(fs)
 		manager.SetupDefaultGRPCListenersFlags(fs)
-		// fs.StringVar(&pkStr, "pk", pkStr, "auth token sig pk")
-		// fs.StringVar(&secretStr, "secret", secretStr, "auth tokens secret")
 		return fs, nil
 	}
 
@@ -31,23 +31,13 @@ func replicationServerCommand() *ffcli.Command {
 
 			var err error
 
-			// if secret, err = base64.RawStdEncoding.DecodeString(secretStr); err != nil {
-			// 	return err
-			// }
-			//
-			// if pk, err = base64.RawStdEncoding.DecodeString(pkStr); err != nil {
-			// 	return err
-			// }
-			//
-			// if len(pk) != ed25519.PublicKeySize {
-			// 	return fmt.Errorf("invalid pk size")
-			// }
-			// man, err := bertyprotocol.NewAuthTokenVerifier(secret, pk)
-			// if err != nil {
-			//     return err
-			// }
-			// TODO: add auth interceptor
-			// 	// grpc.UnaryInterceptor(grpc_auth.UnaryServerInterceptor(man.GRPCAuthInterceptor(bertyprotocol.ServiceReplicationID))),
+			if manager.Node.Protocol.AuthSecret == "" {
+				return fmt.Errorf("node.auth-secret cannot be empty")
+			}
+
+			if manager.Node.Protocol.AuthPublicKey == "" {
+				return fmt.Errorf("node.auth-pk cannot be empty")
+			}
 
 			server, mux, err := manager.GetGRPCServer()
 			if err != nil {
