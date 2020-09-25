@@ -23,3 +23,4 @@ debug.log
 go/cmd/berty/berty
 go/cmd/rdvp/rdvp
 go/cmd/betabot/betabot
+betabot.store
