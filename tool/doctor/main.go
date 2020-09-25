@@ -13,9 +13,31 @@ import (
 
 const (
 	goVersionConstraint = ">= 1.14"
+	mustHavePrograms    = "sh make shasum go"
+	mayHavePrograms     = "yarn lsof adb golangci-lint docker"
 )
 
 func main() {
+	// check for programs
+	{
+		for _, program := range strings.Split(mustHavePrograms, " ") {
+			path, err := exec.LookPath(program)
+			if err != nil {
+				newError(fmt.Sprintf("%q is not available in $PATH, it is required for most commands.", program))
+			} else {
+				newOk(fmt.Sprintf("%q is present in $PATH (%s).", program, path))
+			}
+		}
+		for _, program := range strings.Split(mayHavePrograms, " ") {
+			path, err := exec.LookPath(program)
+			if err != nil {
+				newWarn(fmt.Sprintf("%q is not available in $PATH, it is only needed for advanced usages.", program))
+			} else {
+				newOk(fmt.Sprintf("%q is present in $PATH (%s).", program, path))
+			}
+		}
+	}
+
 	// check go version
 	{
 		goVersionOutput := u.SafeExec(exec.Command("go", "version"))
@@ -50,8 +72,10 @@ func main() {
 	// FIXME: berty: if installed, make some checks
 	// FIXME: git: check if outdated
 	// FIXME: docker: version check
+	// FIXME: go env
 	// FIXME: android sdk
-	// FIXME: nodejs
+	// FIXME: node version
+	// FIXME: check termcaps support for mini
 
 	// summary
 	{
