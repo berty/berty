@@ -64,7 +64,7 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 				<View style={[row.fill, flex.tiny, { justifyContent: 'center' }]}>
 					{undo ? (
 						<TouchableOpacity
-							style={[flex.tiny, row.item.justify]}
+							style={[flex.tiny, { justifyContent: 'center', alignItems: 'center' }]}
 							onPress={undo}
 							hitSlop={undoIconHitSlop}
 						>
