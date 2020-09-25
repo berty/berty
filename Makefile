@@ -1,27 +1,37 @@
-.PHONY: all
 all: generate test
+.PHONY: all
 
-.PHONY: test
+
 test:
 	cd go; make test
+.PHONY: test
 
-.PHONY: generate
+
 generate:
 	touch api/*.proto
 	cd go; make generate
 	cd js; make generate
 	cd docs; make generate
+.PHONY: generate
 
-.PHONY: regenerate tidy
+
 regenerate tidy:
 	cd go; make $@
 	cd js; make $@
 	cd docs; make $@
+.PHONY: regenerate tidy
 
-.PHONY: docker.build
+
 docker.build:
 	cd go; make docker.build
+.PHONY: docker.build
 
-.PHONY: goreleaser.dry-run
+
 goreleaser.dry-run:
 	goreleaser release --rm-dist --snapshot --skip-publish
+.PHONY: goreleaser.dry-run
+
+
+doctor:
+	go run ./tool/doctor/main.go
+.PHONY: doctor
