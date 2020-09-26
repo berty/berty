@@ -50,7 +50,7 @@ func main() {
 }
 
 func betabot() error {
-	rand.Seed(srand.Secure())
+	rand.Seed(srand.MustSecure())
 	flag.Parse()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

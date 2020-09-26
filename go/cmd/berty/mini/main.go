@@ -13,6 +13,8 @@ import (
 	"github.com/rivo/tview"
 	"go.uber.org/zap"
 
+	// Embeding assets.
+	_ "berty.tech/berty/v2/go/assets"
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"

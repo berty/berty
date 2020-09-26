@@ -27,7 +27,7 @@ unittest: go.unittest
 .PHONY: unittest
 
 
-generate: pb.generate
+generate: pb.generate pkger.generate
 .PHONY: generate
 
 
@@ -170,9 +170,9 @@ $(gen_sum): $(gen_src)
 
 generate_local:
 	$(call check-program, shasum protoc)
-	go run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/bertymessenger.proto -o ../api/bertymessenger.yaml
-	go run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/bertyprotocol.proto -o ../api/bertyprotocol.yaml
-	go run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/bertyreplication.proto -o ../api/bertyreplication.yaml
+	$(GO) run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/bertymessenger.proto -o ../api/bertymessenger.yaml
+	$(GO) run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/bertyprotocol.proto -o ../api/bertyprotocol.yaml
+	$(GO) run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/bertyreplication.proto -o ../api/bertyreplication.yaml
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/errcode.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertybridge.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertytypes.proto
@@ -195,6 +195,9 @@ go.fmt:
 	go run mvdan.cc/gofumpt -w -s .
 .PHONY: go.fmt
 
+pkger.generate:
+	$(GO) run github.com/markbates/pkger/cmd/pkger -o go/assets/
+.PHONY: pkger.generate
 
 gen.clean:
 	rm -f gen.sum $(wildcard */*/*.pb.go) $(wildcard */*/*pb_test.go) $(wildcard */*/*pb.gw.go)

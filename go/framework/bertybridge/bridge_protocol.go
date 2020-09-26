@@ -209,7 +209,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 						drivers := make([]tinder.AsyncableDriver, lenrdvpeers)
 						for i, peer := range rdvpeers {
 							h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
-							rng := mrand.New(mrand.NewSource(srand.Secure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
+							rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
 							drivers[i] = tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
 						}
 						rdvClients = append(rdvClients, drivers...)
@@ -227,7 +227,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 					}
 
 					minBackoff, maxBackoff := time.Second, time.Minute
-					serviceRng := mrand.New(mrand.NewSource(srand.Secure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
+					serviceRng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
 					disc, err = tinder.NewService(
 						logger,
 						rdvClient,

@@ -33,7 +33,7 @@ func main() {
 }
 
 func runMain(args []string) error {
-	mrand.Seed(srand.Secure())
+	mrand.Seed(srand.MustSecure())
 	ctx, ctxCancel := context.WithCancel(context.Background())
 	defer ctxCancel()
 

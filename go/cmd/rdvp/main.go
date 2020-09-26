@@ -73,7 +73,7 @@ func main() {
 				return flag.ErrHelp
 			}
 
-			mrand.Seed(srand.Secure())
+			mrand.Seed(srand.MustSecure())
 			logger, cleanup, err := logutil.NewLogger(logFilters, logFormat, logToFile)
 			if err != nil {
 				return errcode.TODO.Wrap(err)

@@ -5,6 +5,8 @@ import (
 
 	"github.com/gen2brain/beeep"
 	"go.uber.org/zap"
+
+	pack "berty.tech/berty/v2/go/internal/packingutil"
 )
 
 // DesktopManager is a Manager
@@ -21,7 +23,12 @@ func NewDesktopManager(logger *zap.Logger, appicon string) Manager {
 
 func (m *DesktopManager) Notify(notif *Notification) error {
 	m.logger.Debug("notification", zap.String("title", notif.Title), zap.String("body", notif.Body))
-	return beeep.Alert(notif.Title, notif.Body, m.appicon)
+	fpack, err := pack.EmbedToSHM(m.appicon)
+	if err != nil {
+		return err
+	}
+	defer fpack.Close()
+	return beeep.Alert(notif.Title, notif.Body, fpack.Name())
 }
 
 func (m *DesktopManager) Schedule(notif *Notification, interval time.Duration) error {
