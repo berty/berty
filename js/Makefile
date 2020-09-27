@@ -373,3 +373,6 @@ packages/berty-app/ios/Berty.xcodeproj: packages/berty-app/ios/Berty/main.jsbund
 		bundle exec fastlane run xcodegen
 
 	touch $@
+
+build.ios.blank: generate.v2
+	bundle exec fastlane run gym skip_codesigning:true workspace:./packages/berty-app/ios/Berty.xcworkspace 'scheme:Berty Blank'

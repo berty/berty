@@ -18,6 +18,8 @@ configs:
   Staff Release: release
   Yolo Debug: debug
   Yolo Release: release
+  Blank Debug: debug
+  Blank Release: release
 
 schemes:
   Berty Debug:
@@ -41,6 +43,14 @@ schemeTemplates:
 settings:
   base:
     SWIFT_OBJC_BRIDGING_HEADER: Berty/Berty-Bridging-Header.h
+    CLANG_ENABLE_MODULES: true
+    GCC_PREPROCESSOR_DEFINITIONS:
+    - $(inherited)
+    - FB_SONARKIT_ENABLED=1
+    OTHER_LDFLAGS:
+    - $(inherited)
+    - -ObjC
+    - -lc++
     LD_RUNPATH_SEARCH_PATHS:
     - /usr/lib/swift
     - $(inherited)
@@ -56,15 +66,18 @@ settings:
       COPY_PHASE_STRIP: false
       GCC_SYMBOLS_PRIVATE_EXTERN: false
       MTL_ENABLE_DEBUG_INFO: true
+    Release:
+      COPY_PHASE_STRIP: true
+      MTL_ENABLE_DEBUG_INFO: false
     Staff:
       COPY_PHASE_STRIP: true
       MTL_ENABLE_DEBUG_INFO: true
     Yolo:
       COPY_PHASE_STRIP: true
       MTL_ENABLE_DEBUG_INFO: true
-    Release:
+    Blank:
       COPY_PHASE_STRIP: true
-      MTL_ENABLE_DEBUG_INFO: false
+      MTL_ENABLE_DEBUG_INFO: true
 
 targets:
   Berty:
@@ -75,10 +88,10 @@ targets:
       configVariants:
       - Staff
       - Yolo
+      - Blank
     configFiles:
         Debug: Configs/Debug.xcconfig
         Release: Configs/Release.xcconfig
-
     settings:
       base:
         PRODUCT_NAME: Berty
@@ -86,19 +99,9 @@ targets:
         VALID_ARCHS: arm64 arm64e armv7 armv7s
         ENABLE_BITCODE: false
         DEAD_CODE_STRIPPING: true
-        CLANG_ENABLE_MODULES: true
         SWIFT_OBJC_BRIDGING_HEADER: Berty/Berty-Bridging-Header.h
         SWIFT_OBJC_INTERFACE_HEADER_NAME: Berty-Swift.h
-        CLANG_CXX_LANGUAGE_STANDARD:
-        CLANG_CXX_LIBRARY:
-        GCC_C_LANGUAGE_STANDARD:
-        GCC_PREPROCESSOR_DEFINITIONS:
-        - $(inherited)
-        - FB_SONARKIT_ENABLED=1
-        OTHER_LDFLAGS:
-        - $(inherited)
-        - -ObjC
-        - -lc++
+        CODE_SIGN_STYLE: Automatic
       configs:
         Debug:
           DEVELOPMENT_TEAM: WMBQ84HN4T
@@ -116,6 +119,13 @@ targets:
           DEVELOPMENT_TEAM: GR5463T564
           PRODUCT_NAME: Berty Yolo
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).yolo
+        Blank:
+          DEVELOPMENT_TEAM:
+          PRODUCT_BUNDLE_IDENTIFIER:
+          CODE_SIGN_IDENTITY:
+          PROVISIONING_PROFILE_SPECIFIER:
+          CODE_SIGN_STYLE: Manual
+          PRODUCT_NAME: Berty Blank
 
     sources:
     - Berty
