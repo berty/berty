@@ -2,6 +2,7 @@ version: '3.7'
 
 services:
   daemon:
+    container_name: betabot_daemon
     image: bertytech/berty:latest
     restart: on-failure
     entrypoint: berty
@@ -9,12 +10,23 @@ services:
       com.centurylinklabs.watchtower.enable: "true"
     command:
       - daemon
-      - "-node.listeners=/ip4/0.0.0.0/tcp/9091/grpc"
+      - "-store.dir=/store"
+      - "-node.no-notif"
+      - "-node.listeners=/ip4/0.0.0.0/tcp/9091"
+      - "-p2p.ipfs-listeners=/ip4/0.0.0.0/tcp/6001,/ip4/0.0.0.0/udp/6001/quic"
+      - "-p2p.ipfs-announce=/ip4/163.172.106.31/tcp/6001,/ip4/163.172.106.31/udp/6001/quic"
+    volumes:
+      - ./data/daemon/store:/store
+    expose:
+      - 6001
 
   betabot:
+    container_name: betabot
     image: bertytech/berty:latest
     restart: on-failure
     entrypoint: betabot
+    links:
+      - daemon
     labels:
       com.centurylinklabs.watchtower.enable: "true"
     command:
@@ -25,4 +37,4 @@ services:
     depends_on:
       - daemon
     volumes:
-      - ./data/:/data
+      - ./data/betabot:/data
