@@ -13,7 +13,7 @@ import (
 	"moul.io/srand"
 )
 
-// embedToSHM translate an pcker embedded file to a shared memory one.
+// embedToSHM translate a pcker embedded file to a shared memory one.
 func EmbedToSHM(path string) (*PseudoFile, error) {
 	fname := strconv.FormatUint(mrand.New(mrand.NewSource(srand.SafeFast())).Uint64(), 36) // nolint:gosec
 	f, err := shm.Open(fname, os.O_WRONLY|os.O_CREATE|os.O_EXCL|os.O_SYNC, 0o600)
