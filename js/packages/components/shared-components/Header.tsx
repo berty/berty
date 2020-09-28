@@ -77,9 +77,9 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 							/>
 						</TouchableOpacity>
 					) : (
-						<View style={[flex.tiny, row.item.justify]} />
+						<View style={[flex.tiny]} />
 					)}
-					{title && (
+					{title ? (
 						<View style={[flex.big, row.item.justify]}>
 							<Text
 								style={[
@@ -93,6 +93,8 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 								{title}
 							</Text>
 						</View>
+					) : (
+						<View style={[flex.big]} />
 					)}
 					{action && actionIcon ? (
 						<View style={[flex.tiny, row.item.justify]}>
