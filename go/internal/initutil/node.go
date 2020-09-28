@@ -18,6 +18,7 @@ import (
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpcgw "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	datastore "github.com/ipfs/go-datastore"
+	"github.com/markbates/pkger"
 	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -485,8 +486,7 @@ func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServ
 		if m.Node.Messenger.DisableNotifications {
 			notifmanager = notification.NewLoggerManager(notifLogger)
 		} else {
-			// @TODO(gfanton): find a way to embed the icon into the app, and generate a valid path
-			notifmanager = notification.NewDesktopManager(notifLogger, "")
+			notifmanager = notification.NewDesktopManager(notifLogger, pkger.Include("/assets/logo.svg"))
 		}
 	}
 

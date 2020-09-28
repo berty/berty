@@ -106,7 +106,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 				drivers := make([]tinder.AsyncableDriver, lenrdvpeers)
 				for i, peer := range rdvpeers {
 					h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
-					rng := mrand.New(mrand.NewSource(srand.Secure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
+					rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
 					drivers[i] = tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
 				}
 				rdvClients = append(rdvClients, drivers...)
@@ -122,7 +122,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 				rdvClient = tinder.NewAsyncMultiDriver(logger, rdvClients...)
 			}
 
-			serverRng := mrand.New(mrand.NewSource(srand.Secure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
+			serverRng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
 			m.Node.Protocol.discovery, err = tinder.NewService(
 				logger,
 				rdvClient,

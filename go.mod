@@ -19,6 +19,7 @@ require (
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
 	github.com/dgraph-io/badger v1.6.1
 	github.com/dgraph-io/ristretto v0.0.3 // indirect
+	github.com/fabiokung/shm v0.0.0-20150728212823-2852b0d79bae
 	github.com/gdamore/tcell v1.3.0
 	github.com/gen2brain/beeep v0.0.0-20200526185328-e9c15c258e28
 	github.com/githubnemo/CompileDaemon v1.2.1
@@ -55,6 +56,7 @@ require (
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20190708065449-737144165c9e
 	github.com/libp2p/go-libp2p-transport-upgrader v0.3.0
 	github.com/libp2p/go-yamux v1.3.8 // indirect
+	github.com/markbates/pkger v0.17.1
 	github.com/mdp/qrterminal/v3 v3.0.0
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/mitchellh/copystructure v1.0.0 // indirect
@@ -66,6 +68,7 @@ require (
 	github.com/multiformats/go-multistream v0.1.2
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/oklog/run v1.1.0
+	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/peterbourgon/ff/v3 v3.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/pseudomuto/protoc-gen-doc v1.3.2
@@ -92,7 +95,7 @@ require (
 	gorm.io/gorm v0.2.26
 	moul.io/godev v1.7.0
 	moul.io/openfiles v1.2.0
-	moul.io/srand v1.4.0
+	moul.io/srand v1.6.0
 	moul.io/testman v1.5.0
 	moul.io/u v1.13.0
 	moul.io/zapfilter v1.6.0
