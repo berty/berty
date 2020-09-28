@@ -39,8 +39,8 @@ const useStylesAddBetabot = () => {
 
 export const AddBetabotBody = () => {
 	const [
-		{ row, text, margin, color, absolute, padding, background, border, opacity },
-		{ scaleHeight, scaleSize },
+		{ row, text, margin, color, padding, background, border, opacity },
+		{ scaleHeight },
 	] = useStyles()
 	const _styles = useStylesAddBetabot()
 	const navigation = useNavigation()
@@ -54,50 +54,50 @@ export const AddBetabotBody = () => {
 	}, [done, error, navigation])
 
 	return (
-		<View style={[{ justifyContent: 'center', alignItems: 'center', height: '100%' }, padding.big]}>
+		<View
+			style={[
+				{
+					justifyContent: 'center',
+					alignItems: 'center',
+					height: '100%',
+					position: 'relative',
+					top: -60,
+				},
+				padding.big,
+			]}
+		>
+			<View
+				style={[
+					{
+						width: 110 * scaleHeight,
+						height: 110 * scaleHeight,
+						backgroundColor: 'white',
+						justifyContent: 'center',
+						alignItems: 'center',
+						position: 'relative',
+						top: 40,
+						zIndex: 1,
+						shadowOpacity: 0.1,
+						shadowRadius: 5,
+						shadowOffset: { width: 0, height: 3 },
+					},
+					background.white,
+					border.radius.scale(60),
+				]}
+			>
+				<Avatar width={125 * scaleHeight} height={125 * scaleHeight} />
+			</View>
 			<View
 				style={[
 					background.white,
 					padding.horizontal.medium,
 					padding.bottom.medium,
 					border.radius.large,
+					border.shadow.huge,
 					{ width: '100%' },
 				]}
 			>
-				<View style={[absolute.scale({ top: -80 }), row.item.justify]}>
-					<View
-						style={[
-							{
-								width: 130 * scaleHeight,
-								height: 130 * scaleHeight,
-								backgroundColor: 'white',
-								justifyContent: 'center',
-								alignItems: 'center',
-							},
-							border.radius.scale(65),
-							border.shadow.large,
-						]}
-					>
-						<View
-							style={[
-								{
-									width: 110 * scaleHeight,
-									height: 110 * scaleHeight,
-									backgroundColor: 'white',
-									justifyContent: 'center',
-									alignItems: 'center',
-									shadowOpacity: 0.1,
-									shadowRadius: 5,
-									shadowOffset: { width: 0, height: 0 },
-								},
-								border.radius.scale(60),
-							]}
-						>
-							<Avatar width={120 * scaleHeight} height={120 * scaleHeight} />
-						</View>
-					</View>
-				</View>
-				<View style={[padding.top.scale(65 * scaleHeight)]}>
+				<View style={[padding.top.scale(60 * scaleHeight)]}>
 					<Icon
 						name='info-outline'
 						fill={color.blue}
@@ -117,7 +117,7 @@ export const AddBetabotBody = () => {
 					>
 						👋 ADD BETA BOT?
 					</TextNative>
-					<Text style={[text.align.center, padding.top.big, padding.horizontal.medium]}>
+					<Text style={[text.align.center, padding.top.scale(20), padding.horizontal.medium]}>
 						<Text>You don't have any contacts yet would you like to add the</Text>
 						<TextNative style={[text.bold.medium, text.color.black, { fontFamily: 'Open Sans' }]}>
 							{' '}
@@ -181,11 +181,10 @@ export const AddBetabotBody = () => {
 }
 
 export const AddBetabot = () => {
-	const [{ border }] = useStyles()
 	return (
 		<>
 			<BlurView style={[StyleSheet.absoluteFill]} blurType='light' />
-			<SafeAreaView style={[border.shadow.huge]}>
+			<SafeAreaView>
 				<AddBetabotBody />
 			</SafeAreaView>
 		</>

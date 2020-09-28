@@ -289,14 +289,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 				<View style={[flex.big, column.fill, padding.small]}>
 					<View style={[row.fill]}>
 						<View style={[row.left, { flexShrink: 1 }]}>
-							<Text
-								numberOfLines={1}
-								style={[
-									text.size.medium,
-									text.color.black,
-									// unreadCount && text.bold.medium
-								]}
-							>
+							<Text numberOfLines={1} style={[text.size.medium, text.color.black]}>
 								{(fake && 'FAKE - ') || ''}
 								{type === messengerpb.Conversation.Type.MultiMemberType
 									? displayName
@@ -336,7 +329,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	)
 }
 
-const Conversations: React.FC<ConversationsProps> = ({ items, onLayout, style }) => {
+const Conversations: React.FC<ConversationsProps> = ({ items, style, onLayout }) => {
 	const [{ background }] = useStyles()
 	return items?.length ? (
 		<SafeAreaConsumer>
@@ -424,26 +417,22 @@ const HomeHeader: React.FC<
 
 export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	// TODO: do something to animate the requests
-	const [layoutRequests, onLayoutRequests] = useLayout()
-	const [layoutConversations, onLayoutConversations] = useLayout()
-	const [layoutHeader, onLayoutHeader] = useLayout()
-
 	const requests: any[] = useIncomingContactRequests()
 	const conversations: any[] = useConversationList() // TODO: sort
 	const isConversation: number = useConversationLength()
+	const [layoutRequests, onLayoutRequests] = useLayout()
+	const [layoutHeader, onLayoutHeader] = useLayout()
+	const [layoutConvs, onLayoutConvs] = useLayout()
+	const [isOnTop, setIsOnTop] = useState<boolean>(false)
 
 	const [
 		{ color, text, opacity, flex, margin, background, absolute },
-		{ windowHeight },
+		{ windowHeight, scaleSize, scaleHeight },
 	] = useStyles()
 	const scrollRef = useRef<ScrollView>(null)
-	const [offset, setOffset] = useState<any>()
-	const [isOnTop, setIsOnTop] = useState<boolean>(false)
-	const [dirScroll, setDirScroll] = useState<string>('')
 	const { setPersistentOption } = useMsgrContext()
 	const persistentOpts = usePersistentOptions()
 	const navigation = useNativeNavigation()
-	const contacts = useContacts()
 
 	const styleBackground = useMemo(
 		() => (requests.length > 0 ? background.blue : background.white),
@@ -478,40 +467,35 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 								} else {
 									setIsOnTop(false)
 								}
-								if (offset && e.nativeEvent.contentOffset.y >= offset.y) {
-									setDirScroll('up')
-								} else if (offset && e.nativeEvent.contentOffset.y < offset.y) {
-									setDirScroll('down')
-								}
-								setOffset(e.nativeEvent.contentOffset)
 							}
 						}}
 					>
 						<IncomingRequests items={requests} onLayout={onLayoutRequests} />
-
 						<HomeHeader
 							isOnTop={isOnTop}
-							onLayout={onLayoutHeader}
 							hasRequests={requests.length > 0}
 							scrollRef={scrollRef}
+							onLayout={onLayoutHeader}
 						/>
 						{isConversation ? (
-							<Conversations items={conversations} onLayout={onLayoutConversations} />
+							<Conversations items={conversations} onLayout={onLayoutConvs} />
 						) : (
 							<View style={[background.white]}>
 								<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
-									<EmptyChat width={350} height={350} />
-									<TextNative
-										style={[
-											text.align.center,
-											text.color.grey,
-											text.bold.small,
-											opacity(0.3),
-											margin.top.big,
-										]}
-									>
-										You don't have any contacts or chat yet
-									</TextNative>
+									<View>
+										<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
+										<TextNative
+											style={[
+												text.align.center,
+												text.color.grey,
+												text.bold.small,
+												opacity(0.3),
+												margin.top.big,
+											]}
+										>
+											You don't have any contacts or chat yet
+										</TextNative>
+									</View>
 								</View>
 							</View>
 						)}

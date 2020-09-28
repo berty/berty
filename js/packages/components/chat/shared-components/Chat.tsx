@@ -17,7 +17,7 @@ import { useMsgrContext } from '@berty-tech/store/hooks'
 const useStylesChatFooter = () => {
 	const [{ flex, maxHeight, padding }] = useStyles()
 	return {
-		textInput: flex.scale(10),
+		textInput: flex.scale(8),
 		focusTextInput: maxHeight(80),
 		sendButton: padding.left.scale(4),
 	}
@@ -112,7 +112,7 @@ export const ChatFooter: React.FC<{
 							placeholderTextColor={_isFocused ? color.blue : color.grey}
 						/>
 						<TouchableOpacity
-							style={[flex.tiny, _styles.sendButton]}
+							style={[flex.tiny, { justifyContent: 'center', alignItems: 'center' }]}
 							disabled={isFake}
 							onPress={() => {
 								if (isFake) {

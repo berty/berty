@@ -97,6 +97,7 @@ const TabStack = createMaterialTopTabNavigator() // provides swipe animation
 export const TabNavigation: React.FC = () => {
 	return (
 		<TabStack.Navigator
+			initialRouteName={Routes.Main.Home}
 			tabBar={({ state }) => <Components.Main.Footer selected={state.routes[state.index].name} />}
 			tabBarPosition='bottom'
 		>
