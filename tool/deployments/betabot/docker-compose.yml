@@ -18,7 +18,11 @@ services:
     labels:
       com.centurylinklabs.watchtower.enable: "true"
     command:
-      - "-display-name=BetaBot"
-      - "-addr=daemon:9091"
+      - -display-name=BetaBot
+      - -addr=daemon:9091
+      - -staff-conversation-link=$BETABOT_STAFF_CONVERSATION_LINK
+      - -store=/data/betabot.store
     depends_on:
       - daemon
+    volumes:
+      - ./data/:/data
