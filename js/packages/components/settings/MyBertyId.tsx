@@ -2,13 +2,15 @@ import React, { useState } from 'react'
 import { View, TouchableOpacity, ScrollView, Share } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
+import { CommonActions } from '@react-navigation/native'
 import { TabBar } from '../shared-components/TabBar'
 import { RequestAvatar } from '../shared-components/Request'
 import { Messenger } from '@berty-tech/store/oldhooks'
-import { useNavigation } from '@berty-tech/navigation'
+import { useNavigation, Routes } from '@berty-tech/navigation'
 import QRCode from 'react-native-qrcode-svg'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //
 // Settings My Berty ID Vue
@@ -195,53 +197,63 @@ const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
 
 	return (
 		<ScrollView bounces={false} style={[padding.medium]}>
-			<View
-				style={[
-					{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-						marginBottom: windowHeight * 0.1,
-					},
-				]}
+			<SwipeNavRecognizer
+				onSwipeLeft={() =>
+					goBack(
+						CommonActions.navigate({
+							name: Routes.Settings.Home,
+						}),
+					)
+				}
 			>
 				<View
 					style={[
 						{
 							flexDirection: 'row',
+							justifyContent: 'space-between',
 							alignItems: 'center',
+							marginBottom: windowHeight * 0.1,
 						},
 					]}
 				>
-					<TouchableOpacity
-						onPress={goBack}
-						style={{ alignItems: 'center', justifyContent: 'center' }}
-					>
-						<Icon
-							name='arrow-back-outline'
-							width={iconArrowBackSize}
-							height={iconArrowBackSize}
-							fill={color.white}
-						/>
-					</TouchableOpacity>
-					<Text
+					<View
 						style={[
-							margin.left.scale(10),
 							{
-								fontWeight: '700',
-								fontSize: titleSize,
-								lineHeight: 1.25 * titleSize,
-								color: color.white,
+								flexDirection: 'row',
+								alignItems: 'center',
 							},
 						]}
 					>
-						My Berty ID
-					</Text>
+						<TouchableOpacity
+							onPress={goBack}
+							style={{ alignItems: 'center', justifyContent: 'center' }}
+						>
+							<Icon
+								name='arrow-back-outline'
+								width={iconArrowBackSize}
+								height={iconArrowBackSize}
+								fill={color.white}
+							/>
+						</TouchableOpacity>
+						<Text
+							style={[
+								margin.left.scale(10),
+								{
+									fontWeight: '700',
+									fontSize: titleSize,
+									lineHeight: 1.25 * titleSize,
+									color: color.white,
+								},
+							]}
+						>
+							My Berty ID
+						</Text>
+					</View>
+					<Icon name='id' pack='custom' width={iconIdSize} height={iconIdSize} fill={color.white} />
 				</View>
-				<Icon name='id' pack='custom' width={iconIdSize} height={iconIdSize} fill={color.white} />
-			</View>
-			<BertIdBody user={user} />
-			<BertyIdShare />
+				<BertIdBody user={user} />
+				<BertyIdShare />
+			</SwipeNavRecognizer>
 		</ScrollView>
 	)
 }
