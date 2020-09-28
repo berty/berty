@@ -245,7 +245,7 @@ func (bot *Bot) handleEvent(ctx context.Context, gme *bertymessenger.EventStream
 			})
 			bot.saveStore()
 			userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{
-				Body: "Hey! 🙌 Welcome to the Berty beta version! 🎊 \nI’m here to help you on the onboarding process.\nLet’s have some little test together.\nOK ? Just type ‘yes’, to let me know you copy that.",
+				Body: "Hey! 🙌 Welcome to the Berty beta version! 🎊 \nI’m here to help you with the onboarding process.\nLet's test out some features together!\nJust type 'yes' to let me know you copy that. ",
 			})
 			if err != nil {
 				return err
@@ -288,7 +288,7 @@ func (bot *Bot) handleEvent(ctx context.Context, gme *bertymessenger.EventStream
 					bot.saveStore()
 					time.Sleep(1 * time.Second)
 					userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{
-						Body: "OK, perfect! 🤙\nSo, would you like me to invite you in a group, to test multimember conversations?\nType ‘yes’ to receive it! 💌",
+						Body: "Okay, perfect! 🤙\nWould you like me to invite you to a group chat to test multimember conversations?\nType 'yes' to receive it! 💌",
 					})
 					if err != nil {
 						return err
@@ -306,7 +306,7 @@ func (bot *Bot) handleEvent(ctx context.Context, gme *bertymessenger.EventStream
 					bot.saveStore()
 					time.Sleep(1 * time.Second)
 					userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{
-						Body: "OK, I invite you! 🤝\nAnd I’ll also invite some staff members to join the group!\nI’m cool, but humans are sometimes more cool than me… :) ❤️",
+						Body: "Okay, I'm inviting you! 🤝\nI'll also invite some staff members to join the group!\nI’m cool, but humans are sometimes cooler than me… 🤖 ❤️",
 					})
 					if err != nil {
 						return err
@@ -342,7 +342,7 @@ func (bot *Bot) handleEvent(ctx context.Context, gme *bertymessenger.EventStream
 
 					time.Sleep(1 * time.Second)
 					userMessage, err = proto.Marshal(&bertymessenger.AppMessage_UserMessage{
-						Body: "OK, it’s done! 👏👍\nWelcome here, and congrats for joining our community! 🔥\nType /help when you need infos about available test commands! 📖",
+						Body: "Okay, done! 👏 👍\nWelcome and thanks for joining our community. You're part of the revolution now! 🔥\nType /help when you need info about available test commands! 📖",
 					})
 					if err != nil {
 						return err

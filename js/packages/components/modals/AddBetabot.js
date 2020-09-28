@@ -97,7 +97,7 @@ export const AddBetabotBody = () => {
 					{ width: '100%' },
 				]}
 			>
-				<View style={[padding.top.scale(60 * scaleHeight)]}>
+				<View style={[padding.top.scale(52)]}>
 					<Icon
 						name='info-outline'
 						fill={color.blue}
@@ -110,7 +110,7 @@ export const AddBetabotBody = () => {
 							text.align.center,
 							padding.top.small,
 							text.size.large,
-							text.bold.small,
+							text.bold.medium,
 							text.color.black,
 							{ fontFamily: 'Open Sans' },
 						]}
@@ -118,12 +118,38 @@ export const AddBetabotBody = () => {
 						👋 ADD BETA BOT?
 					</TextNative>
 					<Text style={[text.align.center, padding.top.scale(20), padding.horizontal.medium]}>
-						<Text>You don't have any contacts yet would you like to add the</Text>
-						<TextNative style={[text.bold.medium, text.color.black, { fontFamily: 'Open Sans' }]}>
+						<TextNative
+							style={[
+								text.bold.small,
+								text.size.medium,
+								text.color.black,
+								{ fontFamily: 'Open Sans' },
+							]}
+						>
+							You don't have any contacts yet would you like to add the
+						</TextNative>
+						<TextNative
+							style={[
+								text.bold.medium,
+								text.size.medium,
+								text.color.black,
+								{ fontFamily: 'Open Sans' },
+							]}
+						>
 							{' '}
 							Beta Bot
 						</TextNative>
-						<Text> to discover and test conversations?</Text>
+						<TextNative
+							style={[
+								text.bold.small,
+								text.color.black,
+								text.size.medium,
+								{ fontFamily: 'Open Sans' },
+							]}
+						>
+							{' '}
+							to discover and test conversations?
+						</TextNative>
 					</Text>
 				</View>
 				<View style={[row.center, padding.top.medium]}>
