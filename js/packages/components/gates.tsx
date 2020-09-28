@@ -1,7 +1,9 @@
 import React from 'react'
-import { Text, Button, View, ActivityIndicator, TextInput } from 'react-native'
+import { Text, Button, View, ActivityIndicator, TextInput, Image } from 'react-native'
 
 import { useMsgrContext } from '@berty-tech/store/hooks'
+
+import LoaderDots from './shared-components/loader_dots.gif'
 
 const expandSelfAndCenterContent: any = {
 	alignItems: 'center',
@@ -57,13 +59,13 @@ export const StreamGate: React.FC = ({ children }) => {
 
 export const ListGate: React.FC = ({ children }) => {
 	const ctx = useMsgrContext()
+
 	if (ctx && ctx.listDone) {
 		return <>{children}</>
 	} else {
 		return (
 			<View style={expandSelfAndCenterContent}>
-				<Text>Starting node and loading content..</Text>
-				<ActivityIndicator size='large' style={{ marginTop: gutter }} />
+				<Image source={LoaderDots} style={{ width: 170, height: 80 }} />
 			</View>
 		)
 	}
