@@ -441,6 +441,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 
 	useEffect(() => {
 		if (
+			!persistentOpts ||
 			!Object.keys(persistentOpts).length ||
 			!persistentOpts.betabot ||
 			(persistentOpts.betabot && !persistentOpts.betabot.toggledModal)
