@@ -9,11 +9,11 @@ services:
     entrypoint: rdvp
     ports:
       - 4040:4040
-    labels:
-      com.centurylinklabs.watchtower.enable: "true"
     command:
       - serve
       - "--db=:memory:"
       - "--pk=$RDVP_PK"
       - "-l"
-      - "/ip4/0.0.0.0/tcp/4040"
+      - "/ip4/0.0.0.0/tcp/4040,/ip4/0.0.0.0/udp/4040/quic"
+    labels:
+      - 'com.centurylinklabs.watchtower.enable=true'
