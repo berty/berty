@@ -73,4 +73,16 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: js/packages/berty-app/android/universal.apk
+          name: berty-universal.apk
+          if-no-files-found: error
+
+# Fake log to ensure YOLO works correctly.
+      - name: generate fake log
+        run: go env > /tmp/build-env.log
+
+      - name: Upload the Fake log
+        uses: actions/upload-artifact@v2
+        with:
+          path: /tmp/build-env.log
+          name: build-env.log
           if-no-files-found: error
