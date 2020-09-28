@@ -58,9 +58,14 @@ settings:
     - $(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)
     - $(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)
     - $(inherited)
-    CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED: true
     GCC_C_LANGUAGE_STANDARD: gnu99
     CLANG_CXX_LANGUAGE_STANDARD: gnu++0x
+    CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED: true
+    CLANG_CXX_LIBRARY:
+    VALID_ARCHS: arm64 arm64e armv7 armv7s
+    ENABLE_BITCODE: false
+    DEAD_CODE_STRIPPING: true
+
   configs:
     Debug:
       COPY_PHASE_STRIP: false
@@ -96,13 +101,17 @@ targets:
       base:
         PRODUCT_NAME: Berty
         PRODUCT_IDENTIFIER: tech.berty.ios
-        VALID_ARCHS: arm64 arm64e armv7 armv7s
-        ENABLE_BITCODE: false
-        DEAD_CODE_STRIPPING: true
         SWIFT_OBJC_BRIDGING_HEADER: Berty/Berty-Bridging-Header.h
         SWIFT_OBJC_INTERFACE_HEADER_NAME: Berty-Swift.h
         CODE_SIGN_STYLE: Automatic
       configs:
+        Blank:
+          DEVELOPMENT_TEAM:
+          PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).blank
+          CODE_SIGN_IDENTITY:
+          PROVISIONING_PROFILE_SPECIFIER:
+          CODE_SIGN_STYLE: Manual
+          PRODUCT_NAME: Berty Blank
         Debug:
           DEVELOPMENT_TEAM: WMBQ84HN4T
           PRODUCT_NAME: Berty Debug
@@ -119,13 +128,6 @@ targets:
           DEVELOPMENT_TEAM: GR5463T564
           PRODUCT_NAME: Berty Yolo
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).yolo
-        Blank:
-          DEVELOPMENT_TEAM:
-          PRODUCT_BUNDLE_IDENTIFIER:
-          CODE_SIGN_IDENTITY:
-          PROVISIONING_PROFILE_SPECIFIER:
-          CODE_SIGN_STYLE: Manual
-          PRODUCT_NAME: Berty Blank
 
     sources:
     - Berty
@@ -135,7 +137,6 @@ targets:
     - path: ../assets
       name: OpenSans
       group: Resources
-      includes: [ '*.ttf' ]
     dependencies:
     - framework: JavascriptCore.framework
       embed: false

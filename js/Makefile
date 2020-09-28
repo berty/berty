@@ -13,7 +13,8 @@ STORYBOOK_MOBILE_PORT ?= 7007
 STORYBOOK_WEB_PORT ?= 7008
 REACT_NATIVE_PORT ?= 8081
 APP_CONFIG ?= development
-APP_TARGET ?= debug
+IOS_APP_TARGET ?= Berty Debug
+ANDROID_APP_TARGET ?= Debug
 IOS_DEVICE ?= iPhone 11
 
 ## Internal variables
@@ -29,6 +30,7 @@ pkg_desc := $(patsubst %, %/package.json, $(pkg)) package.json
 bridge_src := $(call rwildcard,../go,*.go) ../go.sum
 react-native := $(abspath node_modules/.bin/react-native)
 clisim := packages/berty-app/node_modules/.bin/clisim
+xcodegen_yml := $(dir $(wildcard $(PWD)/packages/berty-app/ios/*.yaml))
 
 ## User commands
 
@@ -66,7 +68,7 @@ deps.update: deps
 	upd
 
 .PHONY: generate
-generate: deps gen.sum
+generate: deps ios.generate gen.sum
 
 .PHONY: clean
 clean:
@@ -81,7 +83,12 @@ clean:
 	rm -f packages/go-bridge/android/libs/gobridge.aar
 	rm -rf packages/storybook-mobile/ios/build
 	rm -rf packages/berty-app/android/app/build
+# bundle vendor
 	rm -rf vendor/bundle
+# xcodegen
+	rm -rf packages/berty-app/ios/Berty.xcodeproj
+	rm -rf packages/berty-app/ios/Berty.xcworkspace
+
 
 	yarn cache clean -f
 ifneq (, $(shell which xcodebuild))
@@ -147,21 +154,28 @@ print-%: ; @echo $* = $($*)
 
 #### iOS
 
+.PHONY: ios.deps
+ios.deps: deps Gemfile.lock ios.gomobile packages/berty-app/ios/Berty.xcworkspace
+
 .PHONY: ios.run
-ios.run: deps packages/go-bridge/ios/Frameworks/Bertybridge.framework packages/berty-app/ios/Pods/Manifest.lock
-	[ -f ".env.$(APP_CONFIG)" ] && cp .env.$(APP_CONFIG) /tmp/envfile || cp .env /tmp/envfile
-	cd packages/berty-app && $(react-native) run-ios --no-packager --configuration=$(if $(filter $(APP_CONFIG), development),Debug,Release) --scheme=$(APP_TARGET) --simulator='$(IOS_DEVICE)'
+ios.run: ios.deps
+	[ -f ".env.$(APP_CONFIG)" ] && cp .env.$(APP_CONFIG) /tmp/envfile  gs|| cp .env /tmp/envfile
+	cd packages/berty-app && $(react-native) run-ios --no-packager --configuration=$(if $(filter $(APP_CONFIG), development),Debug,Release) --scheme="$(IOS_APP_TARGET)" --simulator='$(IOS_DEVICE)'
 
 .PHONY: ios.release
-ios.release: vendor/bundle deps packages/go-bridge/ios/Frameworks/Bertybridge.framework packages/berty-app/ios/Pods/Manifest.lock
+ios.release: ios.deps
 	../tool/build/shell/release-ios.sh
+
+.PHONY: ios.blank
+ios.blank: ios.deps
+	bundle exec fastlane run gym skip_codesigning:true workspace:./packages/berty-app/ios/Berty.xcworkspace 'scheme:Berty Blank'
 
 .PHONY: ios.log
 ios.log:
 	cd packages/berty-app && $(react-native) log-ios
 
 .PHONY: ios.storybook
-ios.storybook: deps packages/storybook-mobile/ios/Pods _storybook.mobile.start
+ios.storybook: ios.deps packages/storybook-mobile/ios/Pods _storybook.mobile.start
 	lsof -t -i :$(STORYBOOK_MOBILE_PORT) | xargs --no-run-if-empty kill
 	lsof -t -i :$(REACT_NATIVE_PORT) | xargs --no-run-if-empty kill
 	cd packages/storybook-mobile && start-storybook &
@@ -182,7 +196,7 @@ android.run: deps packages/go-bridge/android/libs/gobridge.aar packages/berty-ap
 	../tool/build/shell/check-java.sh 18
 	adb -s $(ANDROID_DEVICE) reverse tcp:$(BERTY_DAEMON_PORT) tcp:$(BERTY_DAEMON_PORT) # daemon
 	adb -s $(ANDROID_DEVICE) reverse tcp:8081 tcp:8081 # metro
-	cd packages/berty-app && $(react-native) run-android --no-packager --variant=$(APP_TARGET) --deviceId="$(ANDROID_DEVICE)" $(if $(filter-out $(APP_TARGET), store), --appIdSuffix=$(APP_TARGET))
+	cd packages/berty-app && $(react-native) run-android --no-packager --variant=$(ANDROID_APP_TARGET) --deviceId="$(ANDROID_DEVICE)" $(if $(filter-out $(ANDROID_APP_TARGET), store), --appIdSuffix=$(ANDROID_APP_TARGET))
 
 .PHONY: android.release
 android.release: deps packages/go-bridge/android/libs/gobridge.aar packages/berty-app/node_modules/react-native/react.gradle.orig $(HOME)/.android/debug.keystore
@@ -290,7 +304,10 @@ $(pkg_mod): $(pkg_desc)
 	touch $(pkg_mod)
 	touch node_modules/go.mod # avoid go to lookup in this directory
 
-vendor/bundle: Gemfile.lock Gemfile
+vendor/bundle:
+	mkdir -p $@ && touch $@
+
+Gemfile.lock: vendor/bundle Gemfile
 	bundle install
 	touch $@
 
@@ -315,12 +332,6 @@ packages/berty-app/node_modules/react-native/react.gradle.orig: packages/berty-a
 	@echo "patching file $(patsubst %.orig, %, $@)"
 	@patch -f $(patsubst %.orig, %, $@) $< 1>/dev/null || true
 
-# packages/berty-app/ios/Pods/Manifest.lock: vendor/bundle packages/berty-app/ios/Podfile packages/berty-app/package.json
-# 	cd packages/berty-app/ios && bundle exec pod install
-
-# packages/berty-app/ios/Podfile:
-# 	touch $@
-
 packages/go-bridge/ios/Frameworks/Bertybridge.framework: $(bridge_src)
 	cd .. && go mod download
 	cd .. && go run golang.org/x/mobile/cmd/gomobile init
@@ -336,27 +347,7 @@ packages/go-bridge/android/libs/gobridge.aar: $(bridge_src)
 	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind -o js/$@ -v $(ext_ldflags) -target android ./go/framework/bertybridge
 	touch $@
 
-# ios v2
-# setting this here until (xcode)gen is done
-
-xcodegen_yml := $(dir $(wildcard $(PWD)/packages/berty-app/ios/*.yaml))
-
-generate.v2: packages/berty-app/ios/Berty.xcodeproj packages/berty-app/ios/Berty.xcworkspace
-
-clean.v2:
-	rm -rf packages/berty-app/ios/Berty.xcodeproj
-	rm -rf packages/berty-app/ios/Berty.xcworkspace
-
-fclean.v2: clean.v2
-	rm -rf packages/berty-app/ios/Pods
-
-packages/berty-app/ios/Berty/main.jsbundle:
-	touch $@
-
-packages/berty-app/ios/Podfile:
-	touch $@
-
-packages/berty-app/ios/Berty.xcworkspace: vendor/bundle packages/berty-app/ios/Podfile packages/berty-app/package.json $(xcodegen_yml)
+packages/berty-app/ios/Berty.xcworkspace: packages/berty-app/ios/Berty.xcodeproj vendor/bundle packages/berty-app/ios/Podfile packages/berty-app/package.json $(xcodegen_yml)
 	cd packages/berty-app/ios && bundle exec pod install
 	touch $@
 
@@ -374,5 +365,8 @@ packages/berty-app/ios/Berty.xcodeproj: packages/berty-app/ios/Berty/main.jsbund
 
 	touch $@
 
-build.ios.blank: generate.v2
-	bundle exec fastlane run gym skip_codesigning:true workspace:./packages/berty-app/ios/Berty.xcworkspace 'scheme:Berty Blank'
+packages/berty-app/ios/Berty/main.jsbundle:
+	touch $@
+
+packages/berty-app/ios/Podfile:
+	touch $@
