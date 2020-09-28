@@ -26,7 +26,7 @@ import (
 )
 
 const (
-	staffXConvPrefix = "Berty Staff & "
+	staffXConvPrefix = "Berty Staff X "
 )
 
 var (
@@ -288,7 +288,7 @@ func (bot *Bot) handleEvent(ctx context.Context, gme *bertymessenger.EventStream
 					bot.saveStore()
 					time.Sleep(1 * time.Second)
 					userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{
-						Body: "OK, perfect! 🤙 \nSo, would you like me to invite you in a group, to test multimember conversations? Type ‘yes’ to receive it!",
+						Body: "OK, perfect! 🤙\nSo, would you like me to invite you in a group, to test multimember conversations?\nType ‘yes’ to receive it! 💌",
 					})
 					if err != nil {
 						return err
@@ -306,7 +306,7 @@ func (bot *Bot) handleEvent(ctx context.Context, gme *bertymessenger.EventStream
 					bot.saveStore()
 					time.Sleep(1 * time.Second)
 					userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{
-						Body: "OK, I invite you! And I’ll also invite some staff members to join the group! I’m cool, but humans are sometimes more cool than me… :) <3",
+						Body: "OK, I invite you! 🤝\nAnd I’ll also invite some staff members to join the group!\nI’m cool, but humans are sometimes more cool than me… :) ❤️",
 					})
 					if err != nil {
 						return err
@@ -325,7 +325,7 @@ func (bot *Bot) handleEvent(ctx context.Context, gme *bertymessenger.EventStream
 					{
 						// create staff conversation
 						createdConv, err := bot.client.ConversationCreate(ctx, &bertymessenger.ConversationCreate_Request{
-							DisplayName: fmt.Sprintf(staffXConvPrefix + conv.ContactDisplayName),
+							DisplayName: staffXConvPrefix + conv.ContactDisplayName,
 							ContactsToInvite: []string{
 								conv.ContactPublicKey,
 							},
@@ -342,37 +342,7 @@ func (bot *Bot) handleEvent(ctx context.Context, gme *bertymessenger.EventStream
 
 					time.Sleep(1 * time.Second)
 					userMessage, err = proto.Marshal(&bertymessenger.AppMessage_UserMessage{
-						Body: "Also, would you like me to invite you in the Berty Community Group Chat ?\nJust type ‘yes’, if you want to join it! 😃",
-					})
-					if err != nil {
-						return err
-					}
-					_, err = bot.client.Interact(ctx, &bertymessenger.Interact_Request{
-						Type:                  bertymessenger.AppMessage_TypeUserMessage,
-						Payload:               userMessage,
-						ConversationPublicKey: interaction.ConversationPublicKey,
-					})
-					if err != nil {
-						return err
-					}
-				case conv.Count == 2 && checkValidationMessage(receivedMessage.GetBody()):
-					// TODO invitation to real berty-community (in this group, betabot auto-reply will be disable)
-					conv.Count++
-					bot.saveStore()
-					time.Sleep(1 * time.Second)
-					_, err = bot.client.ConversationCreate(ctx, &bertymessenger.ConversationCreate_Request{
-						DisplayName: "Berty Community",
-						ContactsToInvite: []string{
-							conv.ContactPublicKey,
-						},
-					})
-					if err != nil {
-						return err
-					}
-
-					time.Sleep(1 * time.Second)
-					userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{
-						Body: "OK, it’s done! Welcome here, and congrats for joining our community! 👏👍🔥\nType /help when you need infos about available test commands! 📖",
+						Body: "OK, it’s done! 👏👍\nWelcome here, and congrats for joining our community! 🔥\nType /help when you need infos about available test commands! 📖",
 					})
 					if err != nil {
 						return err
@@ -386,7 +356,7 @@ func (bot *Bot) handleEvent(ctx context.Context, gme *bertymessenger.EventStream
 						return err
 					}
 					log.Printf("Scenario finished !%v", bot.store.Convs)
-				case conv.Count >= 3 && receivedMessage.GetBody() == "/help":
+				case conv.Count >= 2 && receivedMessage.GetBody() == "/help":
 					userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{
 						Body: "In this conversation, you can type all theses commands :\n/demo group\n/demo demo\n/demo share\n/demo contact \"Here is the QR code of manfred, just add him!\"",
 					})
