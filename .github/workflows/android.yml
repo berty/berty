@@ -24,49 +24,48 @@ jobs:
     name: Build for Android
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Go
         uses: actions/setup-go@v2
         with:
           go-version: 1.15.2
-      - name: Cache Go modules
-        uses: actions/cache@v1
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
 
-      - name: Setup node
+      - name: Setup Node
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
 
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
 
-      - name: Cache Node.js modules
+      - name: Cache Go modules
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+
+      - name: Cache Node modules
         uses: actions/cache@v2
         with:
           path: |
             js/node_modules
             js/packages/*/node_modules
           key: ${{ runner.OS }}-node-${{ hashFiles('js/**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-
+          restore-keys: ${{ runner.OS }}-node-
 
-      - name: set up JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-
-      - name: Build
+      - name: Build the APK
+        working-directory: js
         env:
           CI: "true"
           SHAKEBUGS_API_ID: ${{ secrets.SHAKEBUGS_API_ID }}
           SHAKEBUGS_API_SECRET: ${{ secrets.SHAKEBUGS_API_SECRET }}
         run: |
-          cd js
-          if [ "$SHAKEBUGS_API_ID" != "" ] && [ "$SHAKEBUGS_API_SECRET" != "" ] ; then echo "SHAKE_API_ID=$SHAKEBUGS_API_ID\nSHAKE_API_SECRET=$SHAKEBUGS_API_SECRET" > .env ; fi
+          echo "SHAKE_API_ID=$SHAKEBUGS_API_ID\nSHAKE_API_SECRET=$SHAKEBUGS_API_SECRET" > .env
           make android.release
 
       - name: Upload the APK
