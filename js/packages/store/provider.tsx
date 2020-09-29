@@ -5,7 +5,7 @@ import { grpcweb as rpcWeb, bridge as rpcBridge } from '@berty-tech/grpc-bridge/
 import { Service, EOF } from '@berty-tech/grpc-bridge'
 import ExternalTransport from './externalTransport'
 import cloneDeep from 'lodash/cloneDeep'
-import GoBridge, { GoLogLevel } from '@berty-tech/go-bridge'
+import GoBridge from '@berty-tech/go-bridge'
 import MsgrContext, { initialState } from './context'
 import pickBy from 'lodash/pickBy'
 import mapValues from 'lodash/mapValues'
@@ -15,7 +15,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 const T = messengerpb.StreamEvent.Type
 
 const reducer = (oldState: any, action: { type: string; payload?: any }) => {
-	const state = cloneDeep(oldState) // TODO: optimize rerenders
+	const state = { ...oldState }
 	state.client = oldState.client
 	console.log('reducing', action)
 	switch (action.type) {
@@ -32,25 +32,26 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 			break
 		case T.TypeConversationUpdated:
 			const conv = action.payload.conversation
-			state.conversations[conv.publicKey] = conv
+			state.conversations = { ...state.conversations, [conv.publicKey]: cloneDeep(conv) }
 			break
 		case T.TypeAccountUpdated:
 			const acc = action.payload.account
-			state.account = acc
+			state.account = cloneDeep(acc)
 			break
 		case T.TypeContactUpdated:
 			const contact = action.payload.contact
-			state.contacts[contact.publicKey] = contact
+			state.contacts = { ...state.contacts, [contact.publicKey]: cloneDeep(contact) }
 			break
 		case T.TypeMemberUpdated:
 			const member = action.payload.member
-			if (!state.members[member.conversationPublicKey]) {
-				state.members[member.conversationPublicKey] = {}
+			state.members[member.conversationPublicKey] = {
+				...(state.members[member.conversationPublicKey] || {}),
+				[member.publicKey]: cloneDeep(member),
 			}
-			state.members[member.conversationPublicKey][member.publicKey] = member
 			break
 		case T.TypeInteractionDeleted:
 			delete state.interactions[action.payload.cid]
+			state.interactions = { ...state.interactions }
 			break
 		case T.TypeListEnd:
 			state.listDone = true
@@ -75,12 +76,27 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 				console.log('jsoned payload', inte.payload)
 				console.log('received inte', inte)
 				if (inte.type === messengerpb.AppMessage.Type.TypeAcknowledge) {
-					if (state.interactions[gpk][inte.payload.target]) {
-						state.interactions[gpk][inte.payload.target].acknowledged = true
+					let target = state.interactions[gpk][inte.payload.target]
+					if (target) {
+						target = cloneDeep(target)
+						target.acknowledged = true
+						state.interactions = {
+							...state.interactions,
+							[gpk]: {
+								...state.interactions[gpk],
+								[inte.payload.target]: target,
+							},
+						}
 						break
 					}
 				}
-				state.interactions[gpk][inte.cid] = inte
+				state.interactions = {
+					...state.interactions,
+					[gpk]: {
+						...state.interactions[gpk],
+						[inte.cid]: cloneDeep(inte),
+					},
+				}
 			} catch (e) {
 				console.warn('failed to reduce interaction', e)
 				return oldState
@@ -89,12 +105,14 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 		case 'ADD_FAKE_DATA':
 			state.conversations = { ...state.conversations, ...action.payload.conversations }
 			state.contacts = { ...state.contacts, ...action.payload.contacts }
+			state.interactions = { ...state.interactions }
 			for (const inte of action.payload.interactions || []) {
-				if (!state.interactions[inte.conversationPublicKey]) {
-					state.interactions[inte.conversationPublicKey] = {}
+				state.interactions[inte.conversationPublicKey] = {
+					...(state.interactions[inte.conversationPublicKey] || {}),
+					[inte.cid]: inte,
 				}
-				state.interactions[inte.conversationPublicKey][inte.cid] = inte
 			}
+			state.members = { ...state.members }
 			for (const [key, members] of Object.entries(action.payload.members || {})) {
 				state.members[key] = {
 					...(state.members[key] || {}),
