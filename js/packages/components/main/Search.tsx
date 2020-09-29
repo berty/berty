@@ -7,6 +7,7 @@ import {
 	TextInput,
 	TouchableHighlight,
 	View,
+	Text as TextNative,
 } from 'react-native'
 import { EdgeInsets, SafeAreaConsumer } from 'react-native-safe-area-context'
 import { Icon, Layout, Text } from 'react-native-ui-kitten'
@@ -30,7 +31,7 @@ import { SwipeHelperReactNavTabBar } from '../shared-components/SwipeNavRecogniz
 
 // Styles
 
-const _landingIconSize = 90
+const _landingIconSize = 45
 
 const _resultAvatarSize = 45
 
@@ -153,33 +154,80 @@ const SearchBar: React.FC<{
 
 const SearchHint: React.FC<{
 	hintText: string
-}> = ({ hintText = 'Search messages, contacts, or groups...' }) => {
+	hintAuthor: string
+}> = ({ hintText, hintAuthor }) => {
 	const [
-		{ row, color, text, margin, column, padding, width, opacity },
+		{ row, color, text, margin, column, padding, width, opacity, background },
 		{ windowWidth, scaleSize },
 	] = useStyles()
 	return (
-		<View style={[column.top, padding.small, margin.bottom.scale(_approxFooterHeight)]}>
-			<Icon
-				name='search'
-				width={_landingIconSize * scaleSize}
-				height={_landingIconSize * scaleSize}
-				fill={color.light.yellow}
-				style={[row.item.justify, opacity(0.8)]}
-			/>
-			<Text
-				style={[
-					text.align.center,
-					margin.top.small,
-					row.item.justify,
-					text.color.light.yellow,
-					text.size.large,
-					width(windowWidth * 0.66),
-					opacity(0.8),
-				]}
-			>
-				{hintText}
-			</Text>
+		<View style={[column.top, padding.horizontal.small, margin.bottom.scale(_approxFooterHeight), { position: 'relative', bottom: 40 }]}>
+			<View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+				<View>
+					<TextNative
+						style={[
+							text.align.center,
+							row.item.justify,
+							text.color.light.yellow,
+							text.size.scale(30),
+							// width(windowWidth * 0.66),
+							opacity(0.8),
+							text.bold.medium,
+							{ fontFamily: 'Open Sans' },
+						]}
+					>
+						Quote of the day
+					</TextNative>
+				</View>
+				<Icon
+					name='quote'
+					pack='custom'
+					width={_landingIconSize * scaleSize}
+					height={_landingIconSize * scaleSize}
+					fill={color.blue}
+					style={[row.item.justify, opacity(0.8), { position: 'relative', bottom: 20, left: 10 }]}
+				/>
+			</View>
+			<>
+				<TextNative
+					style={[
+						text.align.center,
+						margin.top.medium,
+						// row.item.justify,
+						text.color.light.yellow,
+						text.size.medium,
+						text.bold.small,
+						opacity(0.8),
+						{ fontFamily: 'Open Sans', lineHeight: 30 },
+					]}
+				>
+					{hintText}
+				</TextNative>
+				<View style={[{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }]}>
+					<View
+						style={[
+							background.light.yellow,
+							{
+								width: 15,
+								height: 1.5,
+								marginRight: 5,
+								marginTop: 5,
+							},
+						]}
+					/>
+					<TextNative
+						style={[
+							text.color.light.yellow,
+							text.size.medium,
+							text.bold.small,
+							opacity(0.8),
+							{ fontFamily: 'Open Sans' },
+						]}
+					>
+						{hintAuthor}
+					</TextNative>
+				</View>
+			</>
 		</View>
 	)
 }
@@ -509,7 +557,10 @@ const SearchComponent: React.FC<{
 	])
 
 	const hintText = () =>
-		searchText && !contacts.length ? 'No results found' : 'Search messages, contacts, or groups...'
+		searchText && !contacts.length
+			? 'No results found'
+			: '"Privacy is not something that I\'m merely entitled to, it\'s an absolute prerequisite."\n'
+	const hintAuthor = () => (searchText && !contacts.length ? null : 'Marlon Brando')
 
 	return (
 		<View style={[flex.tiny, paddingVertical]}>
@@ -583,7 +634,7 @@ const SearchComponent: React.FC<{
 						)}
 					/>
 				) : (
-					<SearchHint hintText={hintText()} />
+					<SearchHint hintText={hintText()} hintAuthor={hintAuthor()} />
 				)}
 			</View>
 		</View>
