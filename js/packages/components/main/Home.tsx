@@ -20,11 +20,10 @@ import moment from 'moment'
 import { ScreenProps, useNavigation, Routes } from '@berty-tech/navigation'
 import {
 	useConversationLength,
-	useConversationList,
+	useSortedConversationList,
 	useIncomingContactRequests,
 	useMsgrContext,
 	useLastConvInteraction,
-	useContacts,
 	usePersistentOptions,
 } from '@berty-tech/store/hooks'
 import messengerMethodsHooks from '@berty-tech/store/methods'
@@ -418,7 +417,7 @@ const HomeHeader: React.FC<
 export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	// TODO: do something to animate the requests
 	const requests: any[] = useIncomingContactRequests()
-	const conversations: any[] = useConversationList() // TODO: sort
+	const conversations: any[] = useSortedConversationList()
 	const isConversation: number = useConversationLength()
 	const [layoutRequests, onLayoutRequests] = useLayout()
 	const [layoutHeader, onLayoutHeader] = useLayout()

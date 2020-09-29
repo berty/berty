@@ -16,10 +16,6 @@ import {
 
 const AppMessageType = messengerpb.AppMessage.Type
 
-const listHuman = (state) => {
-	return Object.values(state.conversations)
-}
-
 export { useMsgrContext }
 
 const searchOne = (state, { searchText, convId, id }) => {
@@ -46,14 +42,13 @@ const messageToConvMapper = (conv) => (inte, messageIndex) => ({
 
 export const useGetMessageSearchResultWithMetadata = (searchText) => {
 	const ctx = useContext(MsgrContext)
+	const conversations = useSortedConversationList()
 
 	if (!searchText) {
 		return []
 	}
 
 	// map all messages to conversation ID
-
-	const conversations = listHuman(ctx)
 
 	if (conversations.length > 30) {
 		console.warn(
@@ -178,6 +173,14 @@ export const useConversationList = () => {
 	return Object.values(ctx.conversations)
 }
 
+const sortByTimestamp = (key) => (a, b) => parseInt(a[key], 10) - parseInt(b[key], 10)
+const reverseSortByTimestamp = (key) => (a, b) => parseInt(b[key], 10) - parseInt(a[key], 10)
+
+export const useSortedConversationList = () => {
+	const convs = useConversationList()
+	return useMemo(() => convs.sort(reverseSortByTimestamp('lastUpdate')), [convs])
+}
+
 export const useConversation = (publicKey) => {
 	const ctx = useMsgrContext()
 	return ctx.conversations[publicKey]
@@ -190,9 +193,7 @@ export const useConvInteractions = (publicKey) => {
 
 export const useSortedConvInteractions = (publicKey) => {
 	const intes = useConvInteractions(publicKey)
-	return Object.values(intes).sort((a, b) => {
-		return parseInt(a.sentDate, 10) - parseInt(b.sentDate, 10)
-	})
+	return Object.values(intes).sort(sortByTimestamp('sentDate'))
 }
 
 export const useInteraction = (cid, convPk) => {
