@@ -18,27 +18,22 @@ configs:
   Staff Release: release
   Yolo Debug: debug
   Yolo Release: release
-  Blank Debug: debug
-  Blank Release: release
 
 schemes:
   Berty Debug:
-    templates: [BertyBaseScheme]
-    templateAttributes:
-      configName: Debug
-  Berty Release:
-    templates: [BertyBaseScheme]
-    templateAttributes:
-      configName: Release
-
-schemeTemplates:
-  BertyBaseScheme:
     build:
       parallelizeBuild: false
       targets:
         Berty: all
     run:
-      config: ${configName}
+      config: Debug
+  Berty Release:
+    build:
+      parallelizeBuild: false
+      targets:
+        Berty: all
+    run:
+      config: Release
 
 settings:
   base:
@@ -65,24 +60,21 @@ settings:
     VALID_ARCHS: arm64 arm64e armv7 armv7s
     ENABLE_BITCODE: false
     DEAD_CODE_STRIPPING: true
-
   configs:
-    Debug:
+    debug:
       COPY_PHASE_STRIP: false
       GCC_SYMBOLS_PRIVATE_EXTERN: false
       MTL_ENABLE_DEBUG_INFO: true
-    Release:
+      GCC_PREPROCESSOR_DEFINITIONS:
+      - $(inherited)
+      - FB_SONARKIT_ENABLED=1
+      - DEBUG=1
+    release:
       COPY_PHASE_STRIP: true
       MTL_ENABLE_DEBUG_INFO: false
-    Staff:
-      COPY_PHASE_STRIP: true
-      MTL_ENABLE_DEBUG_INFO: true
-    Yolo:
-      COPY_PHASE_STRIP: true
-      MTL_ENABLE_DEBUG_INFO: true
-    Blank:
-      COPY_PHASE_STRIP: true
-      MTL_ENABLE_DEBUG_INFO: true
+      GCC_PREPROCESSOR_DEFINITIONS:
+      - $(inherited)
+      - FB_SONARKIT_ENABLED=1
 
 targets:
   Berty:
@@ -93,7 +85,6 @@ targets:
       configVariants:
       - Staff
       - Yolo
-      - Blank
     configFiles:
         Debug: Configs/Debug.xcconfig
         Release: Configs/Release.xcconfig
@@ -105,13 +96,6 @@ targets:
         SWIFT_OBJC_INTERFACE_HEADER_NAME: Berty-Swift.h
         CODE_SIGN_STYLE: Automatic
       configs:
-        Blank:
-          DEVELOPMENT_TEAM:
-          PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).blank
-          CODE_SIGN_IDENTITY:
-          PROVISIONING_PROFILE_SPECIFIER:
-          CODE_SIGN_STYLE: Manual
-          PRODUCT_NAME: Berty Blank
         Debug:
           DEVELOPMENT_TEAM: WMBQ84HN4T
           PRODUCT_NAME: Berty Debug
@@ -146,6 +130,14 @@ targets:
       link: true
 
     preBuildScripts:
+    - name: Copy GoogleService
+      script: |
+        PATH_TO_CONFIG=${SRCROOT}/Configs/GoogleService/GoogleService-Info-${PRODUCT_BUNDLE_IDENTIFIER}.plist
+        FILENAME_IN_BUNDLE=GoogleService-Info.plist
+        BUILD_APP_DIR=${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app
+        echo cp ${PATH_TO_CONFIG} "$BUILD_APP_DIR/${FILENAME_IN_BUNDLE}"
+        cp ${PATH_TO_CONFIG} "${BUILD_APP_DIR}/${FILENAME_IN_BUNDLE}"
+
     - name: Start Packager
       script: |
         export RCT_METRO_PORT="${RCT_METRO_PORT:=8081}"
@@ -161,14 +153,6 @@ targets:
           fi
         fi
       showEnvVars: false
-    - name: Copy GoogleService
-      script: |
-        PATH_TO_CONFIG=${SRCROOT}/Configs/GoogleService/GoogleService-Info-${PRODUCT_BUNDLE_IDENTIFIER}.plist
-        FILENAME_IN_BUNDLE=GoogleService-Info.plist
-        BUILD_APP_DIR=${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app
-        echo cp ${PATH_TO_CONFIG} "$BUILD_APP_DIR/${FILENAME_IN_BUNDLE}"
-        cp ${PATH_TO_CONFIG} "${BUILD_APP_DIR}/${FILENAME_IN_BUNDLE}"
-
     postBuildScripts:
     - name: Bundle React Native code and images
       script: |

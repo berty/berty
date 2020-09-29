@@ -2,9 +2,10 @@
 
 # This script is called from the js/ folder with `make ios.release`
 
+APP_TARGET=${APP_TARGET:-Berty}
 APP_NAME=${APP_NAME:-berty}
 APP_CONFIG=${APP_CONFIG:-development}
-APP_TARGET=${APP_TARGET:-debug}
+APP_SCHEME=${APP_SCHEME:-Berty Yolo}
 IOS_RELEASE_METHOD=${IOS_RELEASE_METHOD:-development}
 IOS_PROFILE=${IOS_PROFILE:-Development}
 APP_DEST=${APP_DEST:-build/ios-${APP_TARGET}/${APP_CONFIG}}
@@ -30,7 +31,7 @@ export GYM_OPTION_PROVISIONING_PROFILE="match ${IOS_PROFILE} ${IOS_BUNDLE_ID}"
 export GYM_OUTPUT_NAME=$(echo ${APP_NAME} | packages/berty-app/node_modules/.bin/caser --pascal)
 export GYM_OUTPUT_DIRECTORY=${APP_DEST}
 export GYM_WORKSPACE=packages/berty-app/ios/$(echo ${APP_NAME} | packages/berty-app/node_modules/.bin/caser --pascal).xcworkspace
-export GYM_SCHEME=${APP_TARGET}
+export GYM_SCHEME="${APP_SCHEME}"
 export GYM_SKIP_PROFILE_DETECTION=true
 export GYM_INCLUDE_SYMBOLS=false
 

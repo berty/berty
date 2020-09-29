@@ -168,7 +168,7 @@ ios.release: ios.deps
 
 .PHONY: ios.blank
 ios.blank: ios.deps
-	bundle exec fastlane run gym skip_codesigning:true workspace:./packages/berty-app/ios/Berty.xcworkspace 'scheme:Berty Blank'
+	bundle exec fastlane run gym skip_codesigning:true workspace:./packages/berty-app/ios/Berty.xcworkspace 'scheme:Blank'
 
 .PHONY: ios.log
 ios.log:
