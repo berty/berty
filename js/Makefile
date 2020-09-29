@@ -68,7 +68,7 @@ deps.update: deps
 	upd
 
 .PHONY: generate
-generate: deps ios.generate gen.sum
+generate: deps ios.deps gen.sum
 
 .PHONY: clean
 clean:
