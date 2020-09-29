@@ -1,4 +1,4 @@
-name: IOS
+name: iOS
 on:
   push:
     tags:
@@ -21,63 +21,64 @@ on:
 
 jobs:
   build:
-    name: Build for Ios
+    name: Build for iOS
     runs-on: macos-latest
     steps:
-      - name: Set up Go
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Go
         uses: actions/setup-go@v2
         with:
           go-version: 1.15.2
-      - name: Cache Go modules
-        uses: actions/cache@v1
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
 
-      - name: Setup node
+      - name: Setup Node
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
 
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: Cache Go modules
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
 
-      - name: Cache Node.js modules
+      - name: Cache Node modules
         uses: actions/cache@v2
         with:
           path: |
             js/node_modules
             js/packages/*/node_modules
           key: ${{ runner.OS }}-node-${{ hashFiles('js/**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-
+          restore-keys: ${{ runner.OS }}-node-
 
-# FIXME: Makes the CI crash from time to time
-#      - name: Cache bundle vendors
-#        uses: actions/cache@v2
-#        with:
-#          path: |
-#            js/vendor
-#          key: ${{ runner.OS }}-bundle
+      - name: Cache Ruby modules
+        uses: actions/cache@v2
+        with:
+          path: js/vendor
+          key: ${{ runner.OS }}-bundle-${{ hashFiles('js/Gemfile.lock') }}
+          restore-keys: ${{ runner.OS }}-bundle-
 
-      - name: Build
+      - name: Build the Archive
+        working-directory: js
         env:
-          GYM_SKIP_CODESIGNING: "true"
-          GYM_SKIP_PACKAGE_IPA: "true"
-          DEST: ${{ github.workspace }}
           SHAKEBUGS_API_ID: ${{ secrets.SHAKEBUGS_API_ID }}
           SHAKEBUGS_API_SECRET: ${{ secrets.SHAKEBUGS_API_SECRET }}
         run: |
-          cd js
-          if [ "$SHAKEBUGS_API_ID" != "" ] && [ "$SHAKEBUGS_API_SECRET" != "" ] ; then echo "SHAKE_API_ID=$SHAKEBUGS_API_ID\nSHAKE_API_SECRET=$SHAKEBUGS_API_SECRET" > .env ; fi
-          GYM_DERIVED_DATA_PATH="./DerivedData/" APP_TARGET=yolo IOS_BUNDLE_ID=tech.berty.ios.yolo IOS_RELEASE_METHOD=enterprise IOS_PROFILE=InHouse IOS_TEAM_ID=GR5463T564 make ios.release
-          cd DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/yolo/InstallationBuildProductsLocation/Applications/
-          tar cvhf $DEST/Berty\ Yolo.app.tar Berty\ Yolo.app
+          echo "SHAKE_API_ID=$SHAKEBUGS_API_ID\nSHAKE_API_SECRET=$SHAKEBUGS_API_SECRET" > .env
+          make vendor/bundle deps packages/go-bridge/ios/Frameworks/Bertybridge.framework packages/berty-app/ios/Pods/Manifest.lock
+          xcodebuild archive \
+                -workspace packages/berty-app/ios/Berty.xcworkspace \
+                -scheme yolo \
+                -configuration Release \
+                -sdk iphoneos \
+                -archivePath /tmp/Berty.xcarchive \
+                CODE_SIGN_IDENTITY="" CODE_SIGNING_ALLOWED=NO
 
-      - name: Upload the APP
+      - name: Upload the Archive
         uses: actions/upload-artifact@v2
         with:
-          path: ${{ github.workspace }}/Berty Yolo.app.tar
+          path: /tmp/Berty.xcarchive/Products/Applications/Berty Yolo.app
+          name: berty-yolo.app
           if-no-files-found: error
