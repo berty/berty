@@ -9,6 +9,7 @@ import Id from './custom-icons-svgs/id.svg'
 import Bubble from './custom-icons-svgs/bubble.svg'
 import Users from './custom-icons-svgs/users.svg'
 import UserPlus from './custom-icons-svgs/user-plus.svg'
+import Quote from './custom-icons-svgs/quote.svg'
 
 const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	fingerprint: Fingerprint,
@@ -18,6 +19,7 @@ const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	id: Id,
 	users: Users,
 	'user-plus': UserPlus,
+	quote: Quote,
 }
 
 const CustomIcon: React.FC<{
