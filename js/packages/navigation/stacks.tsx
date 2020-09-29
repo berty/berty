@@ -1,10 +1,68 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { Linking } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from 'react-native-screens/native-stack'
-import * as Components from '@berty-tech/components'
+import * as RawComponents from '@berty-tech/components'
+import mapValues from 'lodash/mapValues'
 import { Messenger } from '@berty-tech/store/oldhooks'
 import { Routes } from './types'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
+
+function useLinking() {
+	const [url, setUrl] = useState(null)
+	const [error, setError] = useState()
+
+	async function initialUrl() {
+		try {
+			const linkingUrl = await Linking.getInitialURL()
+			if (linkingUrl) {
+				setUrl(linkingUrl)
+			}
+		} catch (ex) {
+			setError(ex)
+		}
+	}
+
+	useEffect(() => {
+		function handleOpenUrl(ev: any) {
+			setUrl(null)
+			setUrl(ev.url)
+		}
+
+		initialUrl() // for initial render
+
+		Linking.addEventListener('url', handleOpenUrl)
+		return () => Linking.removeEventListener('url', handleOpenUrl)
+	}, [])
+
+	return [url, error]
+}
+
+const DeepLinkBridge: React.FC = () => {
+	const navigation = useNavigation()
+	const [url, error] = useLinking()
+
+	useEffect(() => {
+		if (url && !error) {
+			navigation.navigate('Modals', {
+				screen: 'ManageDeepLink',
+				params: { type: 'link', value: url },
+			})
+		}
+	}, [url, error, navigation])
+
+	return null
+}
+
+const Components = mapValues(RawComponents, (SubComponents) =>
+	mapValues(SubComponents, (Component: React.FC) => (props: any) => (
+		<>
+			<DeepLinkBridge />
+			<Component {...props} />
+		</>
+	)),
+)
 
 const FakeStack = createNativeStackNavigator()
 export const FakeNavigation: React.FC = ({ children }) => {

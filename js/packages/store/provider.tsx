@@ -11,7 +11,6 @@ import pickBy from 'lodash/pickBy'
 import mapValues from 'lodash/mapValues'
 import { EventEmitter } from 'events'
 import AsyncStorage from '@react-native-community/async-storage'
-import { keys } from 'lodash'
 
 const T = messengerpb.StreamEvent.Type
 
@@ -120,10 +119,8 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 			state.convsClosed = true
 			break
 		case 'SET_PERSISTENT_OPTION':
-			state.persistentOptions = {
-				...state.persistentOptions,
-				[action.payload.key]: action.payload.value,
-			}
+			const { persistOpts } = action.payload
+			state.persistentOptions = persistOpts
 			break
 		default:
 			console.warn('Unknown action type', action.type)
@@ -172,19 +169,13 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 
 	const setPersistentOption = async (key: string, value: any) => {
 		try {
-			let item = await AsyncStorage.getItem(key)
-			if (item) {
-				item = JSON.parse(item)
-				typeof item === 'object'
-					? await AsyncStorage.mergeItem(key, JSON.stringify(value))
-					: await AsyncStorage.setItem(key, JSON.stringify(value))
-			} else {
-				await AsyncStorage.setItem(key, JSON.stringify(value))
-			}
-			item = await AsyncStorage.getItem(key)
+			let persistOpts = await AsyncStorage.getItem('persistentOptions')
+			persistOpts = JSON.parse(persistOpts)
+			const updatedPersistOpts = { ...persistOpts, [key]: value }
+			await AsyncStorage.setItem('persistentOptions', JSON.stringify(updatedPersistOpts))
 			dispatch({
 				type: 'SET_PERSISTENT_OPTION',
-				payload: { key, value: JSON.parse(item) },
+				payload: { persistOpts: updatedPersistOpts },
 			})
 		} catch (e) {
 			console.warn('store setPersistentOptions Failed:', e)
@@ -194,16 +185,11 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 
 	const getPersistentOptions = async () => {
 		try {
-			const storageKeys = await AsyncStorage.getAllKeys()
-			if (!storageKeys.length) {
-				return
-			}
-			storageKeys.map(async (key: any) => {
-				const value = await AsyncStorage.getItem(key)
-				dispatch({
-					type: 'SET_PERSISTENT_OPTION',
-					payload: { key, value: JSON.parse(value) },
-				})
+			let store = await AsyncStorage.getItem('persistentOptions')
+			store = JSON.parse(store)
+			dispatch({
+				type: 'SET_PERSISTENT_OPTION',
+				payload: { persistOpts: store },
 			})
 		} catch (e) {
 			console.warn('store setPersistentOptions Failed:', e)
