@@ -177,8 +177,9 @@ export const useSortedConversationList = () => {
 	const convs = useConversationList()
 	return useMemo(
 		() =>
-			convs.sort((key) => (a, b) =>
-				parseInt(b.lastUpdate || b.createdDate, 10) - parseInt(a.lastUpdate || a.createdDate, 10),
+			convs.sort(
+				(a, b) =>
+					parseInt(b.lastUpdate || b.createdDate, 10) - parseInt(a.lastUpdate || a.createdDate, 10),
 			),
 		[convs],
 	)
