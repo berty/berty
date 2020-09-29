@@ -36,7 +36,6 @@ static void InitializeFlipper(UIApplication *application) {
 
 @implementation AppDelegate
 
-/// REMPLACE ICI
 // iOS 9.x or newer
 - (BOOL)application:(UIApplication *)application
    openURL:(NSURL *)url
@@ -44,9 +43,7 @@ static void InitializeFlipper(UIApplication *application) {
 {
   return [RCTLinkingManager application:application openURL:url options:options];
 }
-////
 
-//// AJOUTE CA
 - (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity
  restorationHandler:(nonnull void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler
 {
@@ -54,7 +51,6 @@ static void InitializeFlipper(UIApplication *application) {
                   continueUserActivity:userActivity
                     restorationHandler:restorationHandler];
 }
-///////
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
