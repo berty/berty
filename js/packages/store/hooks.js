@@ -173,12 +173,15 @@ export const useConversationList = () => {
 	return Object.values(ctx.conversations)
 }
 
-const sortByTimestamp = (key) => (a, b) => parseInt(a[key], 10) - parseInt(b[key], 10)
-const reverseSortByTimestamp = (key) => (a, b) => parseInt(b[key], 10) - parseInt(a[key], 10)
-
 export const useSortedConversationList = () => {
 	const convs = useConversationList()
-	return useMemo(() => convs.sort(reverseSortByTimestamp('lastUpdate')), [convs])
+	return useMemo(
+		() =>
+			convs.sort((key) => (a, b) =>
+				parseInt(b.lastUpdate || b.createdDate, 10) - parseInt(a.lastUpdate || a.createdDate, 10),
+			),
+		[convs],
+	)
 }
 
 export const useConversation = (publicKey) => {
@@ -193,7 +196,7 @@ export const useConvInteractions = (publicKey) => {
 
 export const useSortedConvInteractions = (publicKey) => {
 	const intes = useConvInteractions(publicKey)
-	return Object.values(intes).sort(sortByTimestamp('sentDate'))
+	return Object.values(intes).sort((a, b) => parseInt(a.sentDate, 10) - parseInt(b.sentDate, 10))
 }
 
 export const useInteraction = (cid, convPk) => {

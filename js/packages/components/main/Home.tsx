@@ -9,7 +9,6 @@ import {
 	View,
 	ViewProps,
 	Image,
-	StyleProp,
 } from 'react-native'
 import { SafeAreaConsumer, SafeAreaView } from 'react-native-safe-area-context'
 import { Icon, Text } from 'react-native-ui-kitten'
@@ -229,13 +228,14 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 		type = messengerpb.Conversation.Type.ContactType,
 		unreadCount,
 		lastUpdate,
+		createdDate,
 	} = props
 
 	const ctx = useMsgrContext()
 
 	const lastInte = useLastConvInteraction(publicKey, interactionsFilter)
 
-	const sentDate = lastInte ? parseInt(lastInte.sentDate, 10) : Date.now()
+	const date = lastUpdate || createdDate ? parseInt(lastUpdate || createdDate, 10) : null
 
 	const contact =
 		Object.values(ctx.contacts).find((c: any) => c.conversationPublicKey === publicKey) || null
@@ -297,17 +297,19 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 						</View>
 						<View style={[row.right, { alignItems: 'center' }]}>
 							<UnreadCount value={unreadCount} />
-							<Text
-								style={[
-									padding.left.small,
-									text.size.small,
-									unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
-								]}
-							>
-								{Date.now() - new Date(sentDate).getTime() > 86400000
-									? moment(sentDate).format('DD/MM/YYYY')
-									: moment(sentDate).format('hh:mm')}
-							</Text>
+							{date && (
+								<Text
+									style={[
+										padding.left.small,
+										text.size.small,
+										unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
+									]}
+								>
+									{Date.now() - date > 86400000
+										? moment(date).format('DD/MM/YYYY')
+										: moment(date).format('hh:mm')}
+								</Text>
+							)}
 							<MessageStatus interaction={lastInte} />
 						</View>
 					</View>
