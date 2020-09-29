@@ -62,7 +62,9 @@ Usages:
 
 **Berty is still under active development and should not be used to exchange important data**.
 
-The current Berty Messenger implementation is not using the Berty Protocol yet, but OrbitDB directly. Which means the encryption is not safe, but the good news is that the current Berty Messenger app is already a P2P one!
+The current Berty Messenger implementation is using the Berty Protocol. Which means the encryption is safe and it's a P2P app!
+Berty Messenger has not been hardened yet so avoid using it on devices with weak sandboxes.
+If you're trying to roll your own app based on the protocol, beware that the app layer protocols used by Berty Messenger might change in the future.
 
 The current Berty Protocol is _partially implemented_. The API will certainly change in a near future, so be prepared to have breaking changes if you start using it right now.
 
