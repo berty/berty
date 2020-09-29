@@ -4,7 +4,7 @@ services:
   daemon:
     container_name: betabot_daemon
     image: bertytech/berty:latest
-    restart: on-failure
+    restart: always
     entrypoint: berty
     labels:
       com.centurylinklabs.watchtower.enable: "true"
@@ -23,7 +23,7 @@ services:
   betabot:
     container_name: betabot
     image: bertytech/berty:latest
-    restart: on-failure
+    restart: always
     entrypoint: betabot
     links:
       - daemon
