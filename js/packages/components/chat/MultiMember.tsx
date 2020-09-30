@@ -293,16 +293,16 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 					dispatch(
 						CommonActions.navigate({
 							name: Routes.Chat.MultiMemberSettings,
-							params: { convId: params.convId },
+							params: { convId: params?.convId },
 						}),
 					)
 				}
 			>
 				<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
 					<StatusBar backgroundColor='#00BCD4' barStyle='dark-content' />
-					<MessageList id={params.convId} />
-					<ChatFooter convPk={params.convId} isFocused={inputIsFocused} setFocus={setInputFocus} />
-					<HeaderMultiMember id={params.convId} />
+					<MessageList id={params?.convId} />
+					<ChatFooter convPk={params?.convId} isFocused={inputIsFocused} setFocus={setInputFocus} />
+					<HeaderMultiMember id={params?.convId} />
 				</KeyboardAvoidingView>
 			</SwipeNavRecognizer>
 		</View>

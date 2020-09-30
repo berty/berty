@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useMemo } from 'react'
 import {
 	TouchableOpacity,
 	View,
@@ -20,6 +20,7 @@ import {
 	useContact,
 	useReadEffect,
 	useSortedConvInteractions,
+	useConversationList,
 } from '@berty-tech/store/hooks'
 
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
@@ -56,7 +57,7 @@ const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) 
 export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
 	const { navigate, goBack } = useNavigation()
 	const conv = useConversation(convPk)
-	const contact = useContact(conv.contactPublicKey)
+	const contact = useContact(conv?.contactPublicKey || null)
 
 	const _styles = useStylesChat()
 	const [
@@ -83,8 +84,9 @@ export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
 	// 	return () => clearInterval(interval)
 	// }, [debugGroup])
 
-	if (!conv) {
+	if (!conv || !contact) {
 		goBack()
+		console.warn('OneToOne: no conv')
 		return <CenteredActivityIndicator />
 	}
 	const title = conv.fake ? `FAKE - ${contact.displayName}` : contact?.displayName || ''
@@ -234,7 +236,7 @@ const InfosChat: React.FC<api.berty.messenger.v1.IConversation> = ({
 		<View style={[padding.medium, flex.align.center]}>
 			<ContactInitiatedWrapper>
 				<Text style={[text.color.blue, text.align.center, text.italic]}>
-					👋 Berty Connection: confirmed 🎉
+					👋 Berty connection confirmed! 🎉
 				</Text>
 			</ContactInitiatedWrapper>
 			<View style={[padding.top.big]}>
@@ -304,7 +306,7 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: string }> = ({
 export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params } }) => {
 	const [inputIsFocused, setInputFocus] = useState(false)
 	const [{ flex, background }] = useStyles()
-	useReadEffect(params.convId, 1000)
+	useReadEffect(params?.convId, 1000)
 	const { dispatch } = useNavigation()
 
 	return (
@@ -314,15 +316,15 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 					dispatch(
 						CommonActions.navigate({
 							name: Routes.Chat.OneToOneSettings,
-							params: { convId: params.convId },
+							params: { convId: params?.convId },
 						}),
 					)
 				}
 			>
 				<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
-					<MessageList convPk={params.convId} scrollToMessage={params.scrollToMessage} />
-					<ChatFooter convPk={params.convId} isFocused={inputIsFocused} setFocus={setInputFocus} />
-					<ChatHeader convPk={params.convId} />
+					<MessageList convPk={params?.convId} scrollToMessage={params?.scrollToMessage || '0'} />
+					<ChatFooter convPk={params?.convId} isFocused={inputIsFocused} setFocus={setInputFocus} />
+					<ChatHeader convPk={params?.convId || ''} />
 				</KeyboardAvoidingView>
 			</SwipeNavRecognizer>
 		</View>

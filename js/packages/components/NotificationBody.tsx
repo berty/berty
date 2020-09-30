@@ -9,6 +9,7 @@ import { useInteraction, useConversation, useOneToOneContact } from '@berty-tech
 
 import BlurView from './shared-components/BlurView'
 import Logo from './main/1_berty_picto.svg'
+import { navigate, Routes } from '@berty-tech/navigation'
 
 //
 // Styles
@@ -50,7 +51,7 @@ const NotificationTmpLogo: React.FC<{}> = () => {
 				justifyContent: 'center',
 
 				borderWidth: 2,
-				borderColor: '#bbbee4',
+				borderColor: 'rgba(215, 217, 239, 1)',
 			}}
 		>
 			{/*<Icon name='checkmark-outline' fill={color.green} width={15} height={15} />*/}
@@ -66,33 +67,48 @@ const NotificationTmpLogo: React.FC<{}> = () => {
 const NotificationMessage: React.FC<any> = ({ onClose, title, message, ...props }) => {
 	const [{ text }] = useStyles()
 	const _styles = useStylesNotification()
-	const { conversation, interaction } = props?.additionalProps?.payload?.payload || {}
+	const { payload } = props?.additionalProps?.payload || {}
+	const convExists = useConversation(payload.conversation?.publicKey)
+	const inteExists = useInteraction(payload?.interaction?.cid, payload.conversation?.publicKey)
+
+	const handlePressConvMessage = () => {
+		if (convExists && inteExists) {
+			// TODO: Investigate: doesn't work if app crashes and is restarted
+			navigate(
+				payload.conversation.type === messengerpb.Conversation.Type.ContactType
+					? Routes.Chat.OneToOne
+					: Routes.Chat.Group,
+				{ convId: payload.conversation?.publicKey, scrollToMessage: payload?.interaction?.cid },
+			)
+		} else {
+			console.warn('Notif: Conversation or interaction not found')
+		}
+	}
 
 	return (
-		<>
-			<TouchableOpacity
-				style={_styles.touchable}
-				activeOpacity={1} // TODO: Enable navigation, then re-add activeOpacity
-				//underlayColor='transparent'
-				onPress={() => {
-					if (typeof onClose === 'function') {
-						onClose()
-					}
-				}}
-			>
-				<View style={_styles.innerTouchable}>
-					<NotificationTmpLogo />
-					<View style={_styles.titleAndTextWrapper}>
-						<Text numberOfLines={1} style={[text.color.black, text.bold.medium]}>
-							{title}
-						</Text>
-						<Text numberOfLines={1} ellipsizeMode='tail' style={[text.color.black]}>
-							{message}
-						</Text>
-					</View>
+		<TouchableOpacity
+			style={_styles.touchable}
+			activeOpacity={convExists ? 0.3 : 1}
+			//underlayColor='transparent'
+			onPress={() => {
+				handlePressConvMessage()
+				if (typeof onClose === 'function') {
+					onClose()
+				}
+			}}
+		>
+			<View style={_styles.innerTouchable}>
+				<NotificationTmpLogo />
+				<View style={_styles.titleAndTextWrapper}>
+					<Text numberOfLines={1} style={[text.color.black, text.bold.medium]}>
+						{title}
+					</Text>
+					<Text numberOfLines={1} ellipsizeMode='tail' style={[text.color.black]}>
+						{message}
+					</Text>
 				</View>
-			</TouchableOpacity>
-		</>
+			</View>
+		</TouchableOpacity>
 	)
 }
 
@@ -139,7 +155,7 @@ const NotificationBody: React.FC<any> = (props) => {
 		}
 	})
 
-	const [{ border }] = useStyles()
+	const [{ border, flex, column, background }] = useStyles()
 
 	if (!props.isOpen) {
 		return null
@@ -163,26 +179,19 @@ const NotificationBody: React.FC<any> = (props) => {
 					}}
 					style={[
 						border.shadow.big,
+						flex.tiny,
+						flex.justify.center,
+						column.item.center,
+						background.white,
 						{
 							position: 'absolute',
-							top: 0,
-							width: '100%',
-							alignItems: 'center',
-						},
-					]}
-				>
-					<BlurView
-						style={{
-							flex: 1,
 							marginTop: insets?.top || 0,
 							width: '90%',
 							borderRadius: 15,
-						}}
-						blurType='xlight'
-						blurAmount={10}
-					>
-						<NotificationContents />
-					</BlurView>
+						},
+					]}
+				>
+					<NotificationContents />
 				</GestureRecognizer>
 			)}
 		</SafeAreaContext.Consumer>

@@ -8,7 +8,7 @@ import '@berty-tech/berty-i18n'
 import { Provider as ThemeProvider } from '@berty-tech/components/theme'
 import { StreamGate, DeleteGate, ListGate } from '@berty-tech/components/gates'
 import MsgrProvider from '@berty-tech/store/provider'
-import Navigation from '@berty-tech/navigation'
+import Navigation, { isReadyRef, navigationRef } from '@berty-tech/navigation'
 import { NavigationContainer } from '@react-navigation/native'
 import { Provider as StyleProvider } from '@berty-tech/styles'
 import NotificationProvider from '@berty-tech/components/NotificationProvider'
@@ -19,23 +19,34 @@ import { CustomIconsPack } from './custom-icons'
 enableScreens()
 
 export const App: React.FC = () => {
+	React.useEffect(() => {
+		return () => {
+			isReadyRef.current = false
+		}
+	}, [])
+
 	return (
 		<SafeAreaProvider>
 			<StyleProvider>
 				<MsgrProvider embedded daemonAddress='http://localhost:1337'>
 					<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
 					<ThemeProvider>
-						<NotificationProvider>
-							<DeleteGate>
-								<StreamGate>
-									<ListGate>
-										<NavigationContainer>
+						<NavigationContainer
+							ref={navigationRef}
+							onReady={() => {
+								isReadyRef.current = true
+							}}
+						>
+							<NotificationProvider>
+								<DeleteGate>
+									<StreamGate>
+										<ListGate>
 											<Navigation />
-										</NavigationContainer>
-									</ListGate>
-								</StreamGate>
-							</DeleteGate>
-						</NotificationProvider>
+										</ListGate>
+									</StreamGate>
+								</DeleteGate>
+							</NotificationProvider>
+						</NavigationContainer>
 					</ThemeProvider>
 				</MsgrProvider>
 			</StyleProvider>
