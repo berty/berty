@@ -2,12 +2,11 @@ import React, { useState } from 'react'
 import { View, TextInput, Button, TouchableOpacity, Vibration, ScrollView } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import QRCodeScanner from 'react-native-qrcode-scanner'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaConsumer } from 'react-native-safe-area-context'
+import Interactable from 'react-native-interactable'
 
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@react-navigation/native'
-
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 import ScanTarget from './scan_target.svg'
 
@@ -137,55 +136,85 @@ const ScanInfos: React.FC<{}> = () => {
 	)
 }
 
-const ScanComponent: React.FC<{}> = () => {
+const ScanComponent: React.FC<any> = () => {
 	const { goBack } = useNavigation()
-	const [{ color, padding, flex, margin }] = useStyles()
+	const [{ color, padding, flex, margin, background }, { scaleSize }] = useStyles()
 	const { titleSize } = useStylesScan()
+	const [touchingHeader, setIsTouchingHeader] = useState(false)
 
 	return (
-		<ScrollView bounces={false} style={[padding.medium]}>
-			<View
-				style={[
-					flex.direction.row,
-					flex.justify.spaceBetween,
-					flex.align.center,
-					margin.bottom.scale(40),
-				]}
-			>
-				<View style={[flex.direction.row, flex.align.center]}>
-					<TouchableOpacity onPress={goBack} style={[flex.align.center, flex.justify.center]}>
-						<Icon name='arrow-back-outline' width={30} height={30} fill={color.white} />
-					</TouchableOpacity>
-					<Text
-						style={{
-							fontWeight: '700',
-							fontSize: titleSize,
-							lineHeight: 1.25 * titleSize,
-							marginLeft: 10,
-							color: color.white,
-						}}
+		<SafeAreaConsumer>
+			{(insets) => {
+				return (
+					<ScrollView
+						bounces={false}
+						style={[
+							padding.medium,
+							background.red,
+							{ paddingTop: scaleSize * ((insets?.top || 0) + 16), flexGrow: 2, flexBasis: '100%' },
+						]}
+						scrollEnabled={!touchingHeader}
 					>
-						Scan QR code
-					</Text>
-				</View>
-				<Icon name='qr' pack='custom' width={40} height={40} fill={color.white} />
-			</View>
-			<ScanBody />
-			<ScanInfos />
-		</ScrollView>
+						<View
+							style={[
+								flex.direction.row,
+								flex.justify.spaceBetween,
+								flex.align.center,
+								margin.bottom.scale(40),
+							]}
+							onTouchStart={(e) => {
+								setIsTouchingHeader(true)
+							}}
+							onTouchCancel={() => setIsTouchingHeader(false)}
+							onTouchEnd={() => setIsTouchingHeader(false)}
+						>
+							<View style={[flex.direction.row, flex.align.center]}>
+								<TouchableOpacity onPress={goBack} style={[flex.align.center, flex.justify.center]}>
+									{/* <Icon name='arrow-back-outline' width={30} height={30} fill={color.white} /> */}
+									<Icon name='arrow-down-outline' width={30} height={30} fill={color.white} />
+								</TouchableOpacity>
+								<Text
+									style={{
+										fontWeight: '700',
+										fontSize: titleSize,
+										lineHeight: 1.25 * titleSize,
+										marginLeft: 10,
+										color: color.white,
+									}}
+								>
+									Scan QR code
+								</Text>
+							</View>
+							<Icon name='qr' pack='custom' width={40} height={40} fill={color.white} />
+						</View>
+						<ScanBody />
+						<ScanInfos />
+					</ScrollView>
+				)
+			}}
+		</SafeAreaConsumer>
 	)
 }
 
 export const Scan: React.FC<{}> = () => {
-	const [{ flex, background }] = useStyles()
+	const [{ flex }, { windowHeight }] = useStyles()
+	const navigation = useNavigation()
+
+	const handleOnDrag = (e: Interactable.IDragEvent) => {
+		if (e.nativeEvent.y >= Math.min(250, windowHeight * 0.7)) {
+			navigation.goBack()
+		}
+	}
 
 	return (
-		<Layout style={[flex.tiny]}>
-			<SwipeNavRecognizer>
-				<SafeAreaView style={[flex.tiny, background.red]}>
-					<ScanComponent />
-				</SafeAreaView>
-			</SwipeNavRecognizer>
+		<Layout style={[flex.tiny, { backgroundColor: 'transparent' }]}>
+			<Interactable.View
+				verticalOnly={true}
+				onDrag={(e) => handleOnDrag(e)}
+				boundaries={{ top: 0 }}
+			>
+				<ScanComponent />
+			</Interactable.View>
 		</Layout>
 	)
 }

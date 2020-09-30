@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, ScrollView, Share } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
+import Interactable from 'react-native-interactable'
+import QRCode from 'react-native-qrcode-svg'
+import { SafeAreaConsumer } from 'react-native-safe-area-context'
+
 import { useStyles } from '@berty-tech/styles'
-import { TabBar } from '../shared-components/TabBar'
-import { RequestAvatar } from '../shared-components/Request'
 import { Messenger } from '@berty-tech/store/oldhooks'
 import { useNavigation } from '@berty-tech/navigation'
-import QRCode from 'react-native-qrcode-svg'
+
+import { TabBar } from '../shared-components/TabBar'
+import { RequestAvatar } from '../shared-components/Request'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 //
 // Settings My Berty ID Vue
@@ -17,7 +20,6 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 // Styles
 
 const useStylesBertyId = () => {
-	const _iconArrowBackSize = 30
 	const _iconIdSize = 45
 	const _iconShareSize = 26
 	const _titleSize = 26
@@ -29,7 +31,6 @@ const useStylesBertyId = () => {
 	return {
 		bertyIdContentScaleFactor,
 		iconShareSize: _iconShareSize * scaleSize,
-		iconArrowBackSize: _iconArrowBackSize * scaleSize,
 		iconIdSize: _iconIdSize * scaleSize,
 		titleSize: _titleSize * fontScale,
 		requestAvatarSize,
@@ -190,69 +191,96 @@ const BertyIdShare: React.FC<{}> = () => {
 
 const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
 	const { goBack } = useNavigation()
-	const [{ padding, color, margin }, { windowHeight }] = useStyles()
-	const { iconArrowBackSize, titleSize, iconIdSize } = useStylesBertyId()
+	const [{ padding, color, margin, background, flex }, { windowHeight, scaleSize }] = useStyles()
+	const { titleSize, iconIdSize } = useStylesBertyId()
 
 	return (
-		<ScrollView bounces={false} style={[padding.medium]}>
-			<View
-				style={[
-					{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-						marginBottom: windowHeight * 0.1,
-					},
-				]}
-			>
-				<View
-					style={[
-						{
-							flexDirection: 'row',
-							alignItems: 'center',
-						},
-					]}
-				>
-					<TouchableOpacity
-						onPress={goBack}
-						style={{ alignItems: 'center', justifyContent: 'center' }}
-					>
-						<Icon
-							name='arrow-back-outline'
-							width={iconArrowBackSize}
-							height={iconArrowBackSize}
-							fill={color.white}
-						/>
-					</TouchableOpacity>
-					<Text
+		<SafeAreaConsumer>
+			{(insets) => {
+				return (
+					<ScrollView
+						bounces={false}
 						style={[
-							margin.left.scale(10),
+							padding.medium,
+							background.blue,
 							{
-								fontWeight: '700',
-								fontSize: titleSize,
-								lineHeight: 1.25 * titleSize,
-								color: color.white,
+								paddingTop: scaleSize * ((insets?.top || 0) + 16),
+								flexGrow: 2,
+								flexBasis: '100%',
 							},
 						]}
 					>
-						My Berty ID
-					</Text>
-				</View>
-				<Icon name='id' pack='custom' width={iconIdSize} height={iconIdSize} fill={color.white} />
-			</View>
-			<BertIdBody user={user} />
-			<BertyIdShare />
-		</ScrollView>
+						<View
+							style={[
+								flex.direction.row,
+								flex.align.center,
+								flex.justify.spaceBetween,
+								{ marginBottom: windowHeight * 0.1 },
+							]}
+						>
+							<View style={[flex.direction.row, flex.align.center]}>
+								<TouchableOpacity
+									onPress={goBack}
+									style={{ alignItems: 'center', justifyContent: 'center' }}
+								>
+									<Icon
+										// name='arrow-back-outline'
+										name='arrow-down-outline'
+										width={30}
+										height={30}
+										fill={color.white}
+									/>
+								</TouchableOpacity>
+								<Text
+									style={[
+										margin.left.scale(10),
+										{
+											fontWeight: '700',
+											fontSize: titleSize,
+											lineHeight: 1.25 * titleSize,
+											color: color.white,
+										},
+									]}
+								>
+									My Berty ID
+								</Text>
+							</View>
+							<Icon
+								name='id'
+								pack='custom'
+								width={iconIdSize}
+								height={iconIdSize}
+								fill={color.white}
+							/>
+						</View>
+						<BertIdBody user={user} />
+						<BertyIdShare />
+					</ScrollView>
+				)
+			}}
+		</SafeAreaConsumer>
 	)
 }
 
 export const MyBertyId: React.FC<{ user: any }> = ({ user }) => {
-	const [{ flex, background }] = useStyles()
+	const [{ flex }, { windowHeight }] = useStyles()
+	const navigation = useNavigation()
+
+	const handleOnDrag = (e: Interactable.IDragEvent) => {
+		if (e.nativeEvent.y >= Math.min(250, windowHeight * 0.9)) {
+			navigation.goBack()
+		}
+	}
+
 	return (
-		<Layout style={[flex.tiny]}>
-			<SafeAreaView style={[flex.tiny, background.blue]}>
+		<Layout style={[flex.tiny, { backgroundColor: 'transparent' }]}>
+			<Interactable.View
+				verticalOnly={true}
+				onDrag={(e) => handleOnDrag(e)}
+				boundaries={{ top: 0 }}
+			>
 				<MyBertyIdComponent user={user} />
-			</SafeAreaView>
+			</Interactable.View>
 		</Layout>
 	)
 }
