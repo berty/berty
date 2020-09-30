@@ -75,3 +75,6 @@ http:
  - selector: berty.messenger.v1.MessengerService.ReplicationServiceRegisterGroup
    post: /berty.messenger.v1/MessengerService/ReplicationServiceRegisterGroup
    body: "*"
+ - selector: berty.messenger.v1.MessengerService.BannerQuote
+   post: /berty.messenger.v1/MessengerService/BannerQuote
+   body: "*"

@@ -27,7 +27,7 @@ unittest: go.unittest
 .PHONY: unittest
 
 
-generate: pb.generate pkger.generate
+generate: pb.generate
 .PHONY: generate
 
 

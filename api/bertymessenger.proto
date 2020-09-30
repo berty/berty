@@ -31,15 +31,16 @@ service MessengerService {
   // SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol.
   rpc SendContactRequest(SendContactRequest.Request) returns (SendContactRequest.Reply);
 
-  // SendMessage sends a message to a group
+  // SendMessage sends a message to a group.
   rpc SendMessage(SendMessage.Request) returns (SendMessage.Reply);
 
-  // SendAck sends an acknowledge payload for given message id
+  // SendAck sends an acknowledge payload for given message id.
   rpc SendAck(SendAck.Request) returns (SendAck.Reply);
 
+  // SystemInfo returns runtime information.
   rpc SystemInfo(SystemInfo.Request) returns (SystemInfo.Reply);
 
-  // Use to test stream
+  // Use to test stream.
   rpc EchoTest(EchoTest.Request) returns (stream EchoTest.Reply);
 
   rpc ConversationStream(ConversationStream.Request) returns (stream ConversationStream.Reply);
@@ -65,6 +66,9 @@ service MessengerService {
 
   // ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents
   rpc ReplicationServiceRegisterGroup(ReplicationServiceRegisterGroup.Request) returns (ReplicationServiceRegisterGroup.Reply);
+
+  // BannerQuote returns the quote of the day.
+  rpc BannerQuote(BannerQuote.Request) returns (BannerQuote.Reply);
 }
 
 message ConversationOpen {
@@ -489,5 +493,15 @@ message ReplicationServiceRegisterGroup {
     string conversation_public_key = 2;
   }
   message Reply {
+  }
+}
+
+message BannerQuote {
+  message Request {
+    bool random = 1;
+  }
+  message Reply {
+    string quote = 1;
+    string author = 2;
   }
 }

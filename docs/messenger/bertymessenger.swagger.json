@@ -141,6 +141,39 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/BannerQuote": {
+      "post": {
+        "summary": "BannerQuote returns the quote of the day.",
+        "operationId": "MessengerService_BannerQuote",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1BannerQuoteReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1BannerQuoteRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/ContactAccept": {
       "post": {
         "operationId": "MessengerService_ContactAccept",
@@ -409,7 +442,7 @@
     },
     "/berty.messenger.v1/MessengerService/EchoTest": {
       "post": {
-        "summary": "Use to test stream",
+        "summary": "Use to test stream.",
         "operationId": "MessengerService_EchoTest",
         "responses": {
           "200": {
@@ -623,7 +656,7 @@
     },
     "/berty.messenger.v1/MessengerService/SendAck": {
       "post": {
-        "summary": "SendAck sends an acknowledge payload for given message id",
+        "summary": "SendAck sends an acknowledge payload for given message id.",
         "operationId": "MessengerService_SendAck",
         "responses": {
           "200": {
@@ -689,7 +722,7 @@
     },
     "/berty.messenger.v1/MessengerService/SendMessage": {
       "post": {
-        "summary": "SendMessage sends a message to a group",
+        "summary": "SendMessage sends a message to a group.",
         "operationId": "MessengerService_SendMessage",
         "responses": {
           "200": {
@@ -797,6 +830,7 @@
     },
     "/berty.messenger.v1/MessengerService/SystemInfo": {
       "post": {
+        "summary": "SystemInfo returns runtime information.",
         "operationId": "MessengerService_SystemInfo",
         "responses": {
           "200": {
@@ -1245,6 +1279,26 @@
       "properties": {
         "auth_url": {
           "type": "string"
+        }
+      }
+    },
+    "v1BannerQuoteReply": {
+      "type": "object",
+      "properties": {
+        "quote": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        }
+      }
+    },
+    "v1BannerQuoteRequest": {
+      "type": "object",
+      "properties": {
+        "random": {
+          "type": "boolean",
+          "format": "boolean"
         }
       }
     },

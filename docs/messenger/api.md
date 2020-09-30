@@ -18,6 +18,9 @@
     - [AppMessage.SetUserName](#berty.messenger.v1.AppMessage.SetUserName)
     - [AppMessage.UserMessage](#berty.messenger.v1.AppMessage.UserMessage)
     - [AppMessage.UserReaction](#berty.messenger.v1.AppMessage.UserReaction)
+    - [BannerQuote](#berty.messenger.v1.BannerQuote)
+    - [BannerQuote.Reply](#berty.messenger.v1.BannerQuote.Reply)
+    - [BannerQuote.Request](#berty.messenger.v1.BannerQuote.Request)
     - [BertyGroup](#berty.messenger.v1.BertyGroup)
     - [BertyID](#berty.messenger.v1.BertyID)
     - [Contact](#berty.messenger.v1.Contact)
@@ -219,6 +222,27 @@
 | ----- | ---- | ----- | ----------- |
 | target | [string](#string) |  | TODO: optimize message size |
 | emoji | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.BannerQuote"></a>
+
+### BannerQuote
+
+<a name="berty.messenger.v1.BannerQuote.Reply"></a>
+
+### BannerQuote.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| quote | [string](#string) |  |  |
+| author | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.BannerQuote.Request"></a>
+
+### BannerQuote.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| random | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.BertyGroup"></a>
 
@@ -920,10 +944,10 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | DevShareInstanceBertyID | [DevShareInstanceBertyID.Request](#berty.messenger.v1.DevShareInstanceBertyID.Request) | [DevShareInstanceBertyID.Reply](#berty.messenger.v1.DevShareInstanceBertyID.Reply) | DevShareInstanceBertyID shares your Berty ID on a dev channel. TODO: remove for public. |
 | ParseDeepLink | [ParseDeepLink.Request](#berty.messenger.v1.ParseDeepLink.Request) | [ParseDeepLink.Reply](#berty.messenger.v1.ParseDeepLink.Reply) | ParseDeepLink parses a link in the form of berty://xxx or https://berty.tech/id# and returns a structure that can be used to display information. This action is read-only. |
 | SendContactRequest | [SendContactRequest.Request](#berty.messenger.v1.SendContactRequest.Request) | [SendContactRequest.Reply](#berty.messenger.v1.SendContactRequest.Reply) | SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol. |
-| SendMessage | [SendMessage.Request](#berty.messenger.v1.SendMessage.Request) | [SendMessage.Reply](#berty.messenger.v1.SendMessage.Reply) | SendMessage sends a message to a group |
-| SendAck | [SendAck.Request](#berty.messenger.v1.SendAck.Request) | [SendAck.Reply](#berty.messenger.v1.SendAck.Reply) | SendAck sends an acknowledge payload for given message id |
-| SystemInfo | [SystemInfo.Request](#berty.messenger.v1.SystemInfo.Request) | [SystemInfo.Reply](#berty.messenger.v1.SystemInfo.Reply) |  |
-| EchoTest | [EchoTest.Request](#berty.messenger.v1.EchoTest.Request) | [EchoTest.Reply](#berty.messenger.v1.EchoTest.Reply) stream | Use to test stream |
+| SendMessage | [SendMessage.Request](#berty.messenger.v1.SendMessage.Request) | [SendMessage.Reply](#berty.messenger.v1.SendMessage.Reply) | SendMessage sends a message to a group. |
+| SendAck | [SendAck.Request](#berty.messenger.v1.SendAck.Request) | [SendAck.Reply](#berty.messenger.v1.SendAck.Reply) | SendAck sends an acknowledge payload for given message id. |
+| SystemInfo | [SystemInfo.Request](#berty.messenger.v1.SystemInfo.Request) | [SystemInfo.Reply](#berty.messenger.v1.SystemInfo.Reply) | SystemInfo returns runtime information. |
+| EchoTest | [EchoTest.Request](#berty.messenger.v1.EchoTest.Request) | [EchoTest.Reply](#berty.messenger.v1.EchoTest.Reply) stream | Use to test stream. |
 | ConversationStream | [ConversationStream.Request](#berty.messenger.v1.ConversationStream.Request) | [ConversationStream.Reply](#berty.messenger.v1.ConversationStream.Reply) stream |  |
 | EventStream | [EventStream.Request](#berty.messenger.v1.EventStream.Request) | [EventStream.Reply](#berty.messenger.v1.EventStream.Reply) stream |  |
 | ConversationCreate | [ConversationCreate.Request](#berty.messenger.v1.ConversationCreate.Request) | [ConversationCreate.Reply](#berty.messenger.v1.ConversationCreate.Reply) |  |
@@ -939,6 +963,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | AuthServiceCompleteFlow | [.berty.types.v1.AuthServiceCompleteFlow.Request](#berty.types.v1.AuthServiceCompleteFlow.Request) | [.berty.types.v1.AuthServiceCompleteFlow.Reply](#berty.types.v1.AuthServiceCompleteFlow.Reply) | AuthServiceCompleteFlow Completes an authentication flow |
 | ServicesTokenList | [.berty.types.v1.ServicesTokenList.Request](#berty.types.v1.ServicesTokenList.Request) | [.berty.types.v1.ServicesTokenList.Reply](#berty.types.v1.ServicesTokenList.Reply) stream | ServicesTokenList Retrieves the list of service server tokens |
 | ReplicationServiceRegisterGroup | [ReplicationServiceRegisterGroup.Request](#berty.messenger.v1.ReplicationServiceRegisterGroup.Request) | [ReplicationServiceRegisterGroup.Reply](#berty.messenger.v1.ReplicationServiceRegisterGroup.Reply) | ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents |
+| BannerQuote | [BannerQuote.Request](#berty.messenger.v1.BannerQuote.Request) | [BannerQuote.Reply](#berty.messenger.v1.BannerQuote.Reply) | BannerQuote returns the quote of the day. |
 
  
 

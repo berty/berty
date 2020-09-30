@@ -13,6 +13,7 @@ import (
 	"gorm.io/gorm/clause"
 
 	"berty.tech/berty/v2/go/internal/discordlog"
+	"berty.tech/berty/v2/go/pkg/banner"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -1177,4 +1178,18 @@ func (svc *service) ReplicationServiceRegisterGroup(ctx context.Context, request
 	}
 
 	return &ReplicationServiceRegisterGroup_Reply{}, nil
+}
+
+func (svc *service) BannerQuote(ctx context.Context, request *BannerQuote_Request) (*BannerQuote_Reply, error) {
+	var quote banner.Quote
+	if request != nil && request.Random {
+		quote = banner.RandomQuote()
+	} else {
+		quote = banner.QOTD()
+	}
+	ret := BannerQuote_Reply{
+		Quote:  quote.Text,
+		Author: quote.Author,
+	}
+	return &ret, nil
 }

@@ -250,3 +250,18 @@ func TestServiceShareableBertyGroup(t *testing.T) {
 
 	testParseSharedGroup(t, g, "named group", ret1)
 }
+
+func TestServiceBannerQuote(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: logger})
+	defer cleanup()
+
+	ret, err := svc.BannerQuote(ctx, nil)
+	require.NoError(t, err)
+	assert.NotEmpty(t, ret.Quote)
+	assert.NotEmpty(t, ret.Author)
+}
