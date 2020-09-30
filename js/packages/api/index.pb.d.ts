@@ -3555,6 +3555,8 @@ export namespace berty {
                 public servicesTokenList(request: berty.types.v1.ServicesTokenList.IRequest): Promise<berty.types.v1.ServicesTokenList.Reply>;
                 public replicationServiceRegisterGroup(request: berty.messenger.v1.ReplicationServiceRegisterGroup.IRequest, callback: berty.messenger.v1.MessengerService.ReplicationServiceRegisterGroupCallback): void;
                 public replicationServiceRegisterGroup(request: berty.messenger.v1.ReplicationServiceRegisterGroup.IRequest): Promise<berty.messenger.v1.ReplicationServiceRegisterGroup.Reply>;
+                public bannerQuote(request: berty.messenger.v1.BannerQuote.IRequest, callback: berty.messenger.v1.MessengerService.BannerQuoteCallback): void;
+                public bannerQuote(request: berty.messenger.v1.BannerQuote.IRequest): Promise<berty.messenger.v1.BannerQuote.Reply>;
             }
 
             namespace MessengerService {
@@ -3606,6 +3608,8 @@ export namespace berty {
                 type ServicesTokenListCallback = (error: (Error|null), response?: berty.types.v1.ServicesTokenList.Reply) => void;
 
                 type ReplicationServiceRegisterGroupCallback = (error: (Error|null), response?: berty.messenger.v1.ReplicationServiceRegisterGroup.Reply) => void;
+
+                type BannerQuoteCallback = (error: (Error|null), response?: berty.messenger.v1.BannerQuote.Reply) => void;
             }
 
             interface IConversationOpen {
@@ -5550,6 +5554,63 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ReplicationServiceRegisterGroup.Reply;
                     public static toObject(message: berty.messenger.v1.ReplicationServiceRegisterGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IBannerQuote {
+            }
+
+            class BannerQuote implements IBannerQuote {
+
+                public static create(properties?: berty.messenger.v1.IBannerQuote): berty.messenger.v1.BannerQuote;
+                public static encode(message: berty.messenger.v1.IBannerQuote, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IBannerQuote, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.BannerQuote;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.BannerQuote;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.BannerQuote;
+                public static toObject(message: berty.messenger.v1.BannerQuote, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace BannerQuote {
+
+                interface IRequest {
+                    random?: (boolean|null);
+                }
+
+                class Request implements IRequest {
+
+                    public random: boolean;
+                    public static create(properties?: berty.messenger.v1.BannerQuote.IRequest): berty.messenger.v1.BannerQuote.Request;
+                    public static encode(message: berty.messenger.v1.BannerQuote.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.BannerQuote.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.BannerQuote.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.BannerQuote.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.BannerQuote.Request;
+                    public static toObject(message: berty.messenger.v1.BannerQuote.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    quote?: (string|null);
+                    author?: (string|null);
+                }
+
+                class Reply implements IReply {
+
+                    public quote: string;
+                    public author: string;
+                    public static create(properties?: berty.messenger.v1.BannerQuote.IReply): berty.messenger.v1.BannerQuote.Reply;
+                    public static encode(message: berty.messenger.v1.BannerQuote.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.BannerQuote.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.BannerQuote.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.BannerQuote.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.BannerQuote.Reply;
+                    public static toObject(message: berty.messenger.v1.BannerQuote.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }

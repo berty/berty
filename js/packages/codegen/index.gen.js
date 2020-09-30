@@ -143,6 +143,7 @@ export const berty = {
 			ReplicationServiceRegisterGroup: jsonPb.lookup(
 				'.berty.messenger.v1.ReplicationServiceRegisterGroup',
 			),
+			BannerQuote: jsonPb.lookup('.berty.messenger.v1.BannerQuote'),
 		},
 	},
 }

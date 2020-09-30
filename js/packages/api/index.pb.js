@@ -2395,6 +2395,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   ReplicationServiceRegisterGroup: {
                     requestType: "ReplicationServiceRegisterGroup.Request",
                     responseType: "ReplicationServiceRegisterGroup.Reply"
+                  },
+                  BannerQuote: {
+                    requestType: "BannerQuote.Request",
+                    responseType: "BannerQuote.Reply"
                   }
                 }
               },
@@ -3549,6 +3553,31 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Reply: {
                     fields: {}
+                  }
+                }
+              },
+              BannerQuote: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      random: {
+                        type: "bool",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      quote: {
+                        type: "string",
+                        id: 1
+                      },
+                      author: {
+                        type: "string",
+                        id: 2
+                      }
+                    }
                   }
                 }
               }
