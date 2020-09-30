@@ -14,9 +14,7 @@ fileGroups:
 configs:
   Debug: debug
   Release: release
-  Staff Debug: debug
   Staff Release: release
-  Yolo Debug: debug
   Yolo Release: release
 
 schemes:
@@ -34,6 +32,20 @@ schemes:
         Berty: all
     run:
       config: Release
+  Berty Staff:
+    build:
+      parallelizeBuild: false
+      targets:
+        Berty: all
+    run:
+      config: Staff Release
+  Berty Yolo:
+    build:
+      parallelizeBuild: false
+      targets:
+        Berty: all
+    run:
+      config: Yolo Release
 
 settings:
   base:
@@ -69,18 +81,12 @@ settings:
       - $(inherited)
       - FB_SONARKIT_ENABLED=1
       - DEBUG=1
-      OTHER_CFLAGS:
-      - $(inherited)
-      - -DFB_SONARKIT_ENABLED=1
     release:
       COPY_PHASE_STRIP: true
       MTL_ENABLE_DEBUG_INFO: false
       GCC_PREPROCESSOR_DEFINITIONS:
       - $(inherited)
-      - FB_SONARKIT_ENABLED=1
-      OTHER_CFLAGS:
-      - $(inherited)
-      - -DFB_SONARKIT_ENABLED=1
+      - FB_SONARKIT_ENABLED=0
 
 targets:
   Berty:
@@ -88,9 +94,6 @@ targets:
     platform: iOS
     scheme:
       parallelizeBuild: false
-      configVariants:
-      - Staff
-      - Yolo
     configFiles:
         Debug: Configs/Debug.xcconfig
         Release: Configs/Release.xcconfig
@@ -114,13 +117,14 @@ targets:
           DEVELOPMENT_TEAM: WMBQ84HN4T
           PRODUCT_NAME: Berty Staff
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).staff
-          PROVISIONING_PROFILE_SPECIFIER: "match AdHoc tech.berty.ios.staff"
-          CODE_SIGN_STYLE: Manual
-          CODE_SIGN_IDENTITY: "iPhone Distribution"
         Yolo:
           DEVELOPMENT_TEAM: GR5463T564
           PRODUCT_NAME: Berty Yolo
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).yolo
+          PROVISIONING_PROFILE_SPECIFIER: "match InHouse tech.berty.ios.yolo"
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: "iPhone Distribution"
+
 
     sources:
     - Berty
