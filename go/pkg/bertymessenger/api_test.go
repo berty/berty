@@ -189,7 +189,7 @@ func testParseSharedGroup(t *testing.T, g *bertytypes.Group, name string, ret *S
 
 	marshaled, err := proto.Marshal(ret.BertyGroup)
 	assert.NoError(t, err)
-	assert.Equal(t, bytesToString(marshaled), ret.BertyGroupPayload)
+	assert.Equal(t, b64EncodeBytes(marshaled), ret.BertyGroupPayload)
 }
 
 func TestServiceShareableBertyGroup(t *testing.T) {

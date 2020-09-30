@@ -239,6 +239,7 @@ message SystemInfo {
     int64 interactions = 4;
     int64 members = 5;
     int64 devices = 6;
+    int64 service_tokens = 7;
     // older, more recent
   }
 }
@@ -258,14 +259,7 @@ message Account {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
   string display_name = 2;
   string link = 3;
-  State state = 4;
   repeated ServiceToken service_tokens = 5 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
-
-  enum State {
-    Undefined = 0;
-    NotReady = 1;
-    Ready = 2;
-  }
 }
 
 message ServiceToken {
@@ -277,18 +271,18 @@ message ServiceToken {
 }
 
 message Interaction {
-  string cid = 1 [(gogoproto.moretags) = "gorm:\"uniqueIndex\"", (gogoproto.customname) = "CID"];
-  AppMessage.Type type = 2;
+  string cid = 1 [(gogoproto.moretags) = "gorm:\"primaryKey;column:cid\"", (gogoproto.customname) = "CID"];
+  AppMessage.Type type = 2 [(gogoproto.moretags) = "gorm:\"index\""];
   string member_public_key = 7;
   string device_public_key = 12;
   Member member = 8;
-  string conversation_public_key = 3;
+  string conversation_public_key = 3 [(gogoproto.moretags) = "gorm:\"index\""];
   Conversation conversation = 4;
   bytes payload = 5;
   bool is_me = 6;
   int64 sent_date = 9;
   bool acknowledged = 10;
-  int64 arrival_index = 11 [(gogoproto.moretags) = "gorm:\"autoIncrement\""];
+  string target_cid = 13 [(gogoproto.moretags) = "gorm:\"index;column:target_cid\"", (gogoproto.customname) = "TargetCID"];
 }
 
 message Contact {
@@ -300,19 +294,19 @@ message Contact {
   int64 created_date = 7;
   // specific to outgoing requests
   int64 sent_date = 8;
-  repeated Device devices = 6 [(gogoproto.moretags) = "gorm:\"foreignKey:OwnerPublicKey\""];
+  repeated Device devices = 6 [(gogoproto.moretags) = "gorm:\"foreignKey:MemberPublicKey\""];
 
   enum State {
     Undefined = 0;
     IncomingRequest = 1;
     OutgoingRequestEnqueued = 2;
     OutgoingRequestSent = 3;
-    Established = 4;
+    Accepted = 4;
   }
 }
 
 message Conversation {
-  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
   Type type = 2;
   bool is_open = 3;
   string display_name = 4;
@@ -340,16 +334,16 @@ message Conversation {
 }
 
 message Member {
-  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
+  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
   string display_name = 2;
-  string conversation_public_key = 3;
+  string conversation_public_key = 3 [(gogoproto.moretags) = "gorm:\"index\""];
   Conversation conversation = 4;
-  repeated Device devices = 5 [(gogoproto.moretags) = "gorm:\"foreignKey:OwnerPublicKey\""];
+  repeated Device devices = 5 [(gogoproto.moretags) = "gorm:\"foreignKey:MemberPublicKey\""];
 }
 
 message Device {
-  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primary_key\""];
-  string owner_public_key = 2;
+  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string member_public_key = 2 [(gogoproto.moretags) = "gorm:\"index\""];
 }
 
 message ContactMetadata {

@@ -103,7 +103,6 @@
     - [SystemInfo.Reply](#berty.messenger.v1.SystemInfo.Reply)
     - [SystemInfo.Request](#berty.messenger.v1.SystemInfo.Request)
   
-    - [Account.State](#berty.messenger.v1.Account.State)
     - [AppMessage.Type](#berty.messenger.v1.AppMessage.Type)
     - [Contact.State](#berty.messenger.v1.Contact.State)
     - [Conversation.Type](#berty.messenger.v1.Conversation.Type)
@@ -129,7 +128,6 @@
 | public_key | [string](#string) |  |  |
 | display_name | [string](#string) |  |  |
 | link | [string](#string) |  |  |
-| state | [Account.State](#berty.messenger.v1.Account.State) |  |  |
 | service_tokens | [ServiceToken](#berty.messenger.v1.ServiceToken) | repeated |  |
 
 <a name="berty.messenger.v1.AccountGet"></a>
@@ -452,7 +450,7 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | public_key | [string](#string) |  |  |
-| owner_public_key | [string](#string) |  |  |
+| member_public_key | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.EchoTest"></a>
 
@@ -556,7 +554,7 @@ TODO: return cid
 | is_me | [bool](#bool) |  |  |
 | sent_date | [int64](#int64) |  |  |
 | acknowledged | [bool](#bool) |  |  |
-| arrival_index | [int64](#int64) |  |  |
+| target_cid | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.Member"></a>
 
@@ -814,7 +812,8 @@ TODO: return cid
 | conversations | [int64](#int64) |  |  |
 | interactions | [int64](#int64) |  |  |
 | members | [int64](#int64) |  |  |
-| devices | [int64](#int64) |  | older, more recent |
+| devices | [int64](#int64) |  |  |
+| service_tokens | [int64](#int64) |  | older, more recent |
 
 <a name="berty.messenger.v1.SystemInfo.Messenger"></a>
 
@@ -842,16 +841,6 @@ TODO: return cid
 
  
 
-<a name="berty.messenger.v1.Account.State"></a>
-
-### Account.State
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| Undefined | 0 |  |
-| NotReady | 1 |  |
-| Ready | 2 |  |
-
 <a name="berty.messenger.v1.AppMessage.Type"></a>
 
 ### AppMessage.Type
@@ -876,7 +865,7 @@ TODO: return cid
 | IncomingRequest | 1 |  |
 | OutgoingRequestEnqueued | 2 |  |
 | OutgoingRequestSent | 3 |  |
-| Established | 4 |  |
+| Accepted | 4 |  |
 
 <a name="berty.messenger.v1.Conversation.Type"></a>
 

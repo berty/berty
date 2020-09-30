@@ -57,6 +57,7 @@ require (
 	github.com/libp2p/go-libp2p-transport-upgrader v0.3.0
 	github.com/libp2p/go-yamux v1.3.8 // indirect
 	github.com/markbates/pkger v0.17.1
+	github.com/mattn/go-sqlite3 v1.14.0
 	github.com/mdp/qrterminal/v3 v3.0.0
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/mitchellh/copystructure v1.0.0 // indirect

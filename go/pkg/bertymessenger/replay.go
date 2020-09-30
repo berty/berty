@@ -7,8 +7,8 @@ import (
 
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
@@ -21,7 +21,9 @@ func ReplayLogsToDB(ctx context.Context, client bertyprotocol.ProtocolServiceCli
 		return err
 	}
 
-	if err := initDB(db); err != nil {
+	wrappedDB := newDBWrapper(db)
+
+	if err := wrappedDB.initDB(); err != nil {
 		return err
 	}
 
@@ -30,32 +32,30 @@ func ReplayLogsToDB(ctx context.Context, client bertyprotocol.ProtocolServiceCli
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
-	pk := bytesToString(cfg.GetAccountGroupPK())
+	pk := b64EncodeBytes(cfg.GetAccountGroupPK())
 
-	acc := &Account{}
-	acc.State = Account_NotReady // Not sure about this, looks like we don't push displayName on log?
-	acc.Link = ""                // TODO
-	acc.PublicKey = pk
-	if err := db.Clauses(clause.OnConflict{DoNothing: true}).Create(&acc).Error; err != nil {
+	if err := wrappedDB.addAccount(pk, ""); err != nil {
 		return errcode.ErrDBWrite.Wrap(err)
 	}
+
+	handler := newEventHandler(ctx, wrappedDB, client, zap.NewNop(), nil)
 
 	// Replay all account group metadata events
 	// TODO: We should have a toggle to "lock" orbitDB while we replaying events
 	// So we don't miss events that occurred during the replay
-	if err := processMetadataList(ctx, cfg.GetAccountGroupPK(), db, client); err != nil {
+	if err := processMetadataList(ctx, cfg.GetAccountGroupPK(), handler); err != nil {
 		return errcode.ErrReplayProcessGroupMetadata.Wrap(err)
 	}
 
 	// Get all groups the account is member of
-	var convs []*Conversation
-	if err := db.Find(&convs).Error; err != nil {
+	convs, err := wrappedDB.getAllConversations()
+	if err != nil {
 		return errcode.ErrDBRead.Wrap(err)
 	}
 
 	for _, conv := range convs {
 		// Replay all other group metadata events
-		groupPK, err := stringToBytes(conv.GetPublicKey())
+		groupPK, err := b64DecodeBytes(conv.GetPublicKey())
 		if err != nil {
 			return errcode.ErrDeserialization.Wrap(err)
 		}
@@ -72,13 +72,13 @@ func ReplayLogsToDB(ctx context.Context, client bertyprotocol.ProtocolServiceCli
 				return errcode.ErrGroupActivate.Wrap(err)
 			}
 
-			if err := processMetadataList(ctx, groupPK, db, client); err != nil {
+			if err := processMetadataList(ctx, groupPK, handler); err != nil {
 				return errcode.ErrReplayProcessGroupMetadata.Wrap(err)
 			}
 		}
 
 		// Replay all group message events
-		if err := processMessageList(ctx, groupPK, db, client); err != nil {
+		if err := processMessageList(ctx, groupPK, handler); err != nil {
 			return errcode.ErrReplayProcessGroupMessage.Wrap(err)
 		}
 
@@ -95,16 +95,11 @@ func ReplayLogsToDB(ctx context.Context, client bertyprotocol.ProtocolServiceCli
 	return nil
 }
 
-func processMetadataList(ctx context.Context, groupPK []byte, db *gorm.DB, client bertyprotocol.ProtocolServiceClient) error {
+func processMetadataList(ctx context.Context, groupPK []byte, handler *eventHandler) error {
 	subCtx, subCancel := context.WithCancel(ctx)
 	defer subCancel()
 
-	config, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
-	if err != nil {
-		return errcode.ErrEventListMetadata.Wrap(err)
-	}
-
-	metaList, err := client.GroupMetadataList(
+	metaList, err := handler.protocolClient.GroupMetadataList(
 		subCtx,
 		&bertytypes.GroupMetadataList_Request{
 			GroupPK:  groupPK,
@@ -127,140 +122,19 @@ func processMetadataList(ctx context.Context, groupPK []byte, db *gorm.DB, clien
 			return errcode.ErrEventListMetadata.Wrap(err)
 		}
 
-		// nolint:exhaustive // would be nice to not have this nolint
-		switch metadata.GetMetadata().GetEventType() {
-		case bertytypes.EventTypeAccountGroupJoined:
-			var ev bertytypes.AccountGroupJoined
-			if err := proto.Unmarshal(metadata.GetEvent(), &ev); err != nil {
-				return errcode.ErrDeserialization.Wrap(err)
-			}
-			groupPK := bytesToString(ev.GetGroup().GetPublicKey())
-
-			if _, err := addConversation(db, groupPK); err != nil {
-				return errcode.ErrDBAddConversation.Wrap(err)
-			}
-
-		case bertytypes.EventTypeAccountContactRequestOutgoingEnqueued:
-			var ev bertytypes.AccountContactRequestEnqueued
-			if err := proto.Unmarshal(metadata.GetEvent(), &ev); err != nil {
-				return errcode.ErrDeserialization.Wrap(err)
-			}
-			contactPKBytes := ev.GetContact().GetPK()
-			contactPK := bytesToString(contactPKBytes)
-
-			var cm ContactMetadata
-			err := proto.Unmarshal(ev.GetContact().GetMetadata(), &cm)
-			if err != nil {
-				return errcode.ErrDeserialization.Wrap(err)
-			}
-
-			gpk := bytesToString(ev.GetGroupPK())
-			if gpk == "" {
-				groupInfoReply, err := client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{ContactPK: contactPKBytes})
-				if err != nil {
-					return errcode.ErrGroupInfo.Wrap(err)
-				}
-				gpk = bytesToString(groupInfoReply.GetGroup().GetPublicKey())
-			}
-
-			if _, err := addContactRequestOutgoingEnqueued(db, contactPK, cm.DisplayName, gpk); err != nil {
-				return errcode.ErrDBAddContactRequestOutgoingEnqueud.Wrap(err)
-			}
-
-		case bertytypes.EventTypeAccountContactRequestOutgoingSent:
-			var ev bertytypes.AccountContactRequestSent
-			if err := proto.Unmarshal(metadata.GetEvent(), &ev); err != nil {
-				return errcode.ErrDeserialization.Wrap(err)
-			}
-			contactPK := bytesToString(ev.GetContactPK())
-
-			if _, err := addContactRequestOutgoingSent(db, contactPK); err != nil {
-				return errcode.ErrDBAddContactRequestOutgoingSent.Wrap(err)
-			}
-
-		case bertytypes.EventTypeAccountContactRequestIncomingReceived:
-			var ev bertytypes.AccountContactRequestReceived
-			if err := proto.Unmarshal(metadata.GetEvent(), &ev); err != nil {
-				return errcode.ErrDeserialization.Wrap(err)
-			}
-			contactPK := bytesToString(ev.GetContactPK())
-
-			var m ContactMetadata
-			err := proto.Unmarshal(ev.GetContactMetadata(), &m)
-			if err != nil {
-				return errcode.ErrDeserialization.Wrap(err)
-			}
-
-			if _, err := addContactRequestIncomingReceived(db, contactPK, m.GetDisplayName()); err != nil {
-				return errcode.ErrDBAddContactRequestIncomingReceived.Wrap(err)
-			}
-
-		case bertytypes.EventTypeAccountContactRequestIncomingAccepted:
-			var ev bertytypes.AccountContactRequestAccepted
-			if err := proto.Unmarshal(metadata.GetEvent(), &ev); err != nil {
-				return errcode.ErrDeserialization.Wrap(err)
-			}
-			contactPKBytes := ev.GetContactPK()
-			if contactPKBytes == nil {
-				return errcode.ErrInvalidInput
-			}
-			contactPK := bytesToString(contactPKBytes)
-
-			groupPKBytes, err := groupPKFromContactPK(subCtx, client, contactPKBytes)
-			if err != nil {
-				return errcode.ErrInvalidInput.Wrap(err)
-			}
-			groupPK := bytesToString(groupPKBytes)
-
-			if _, _, err := addContactRequestIncomingAccepted(db, contactPK, groupPK); err != nil {
-				return errcode.ErrDBAddContactRequestIncomingAccepted.Wrap(err)
-			}
-
-		case bertytypes.EventTypeAccountServiceTokenAdded:
-			var ev bertytypes.AccountServiceTokenAdded
-			if err := proto.Unmarshal(metadata.GetEvent(), &ev); err != nil {
-				return errcode.ErrDeserialization.Wrap(err)
-			}
-
-			if err := addServiceToken(db, bytesToString(config.AccountPK), ev.ServiceToken); err != nil {
-				return errcode.ErrDBWrite.Wrap(err)
-			}
-
-		// TODO
-		// case bertytypes.EventTypeGroupMemberDeviceAdded:
-		// 	var ev bertytypes.GroupAddMemberDevice
-		// 	if err := proto.Unmarshal(metadata.GetEvent(), &ev); err != nil {
-		// 		return errcode.ErrDeserialization.Wrap(err)
-		// 	}
-
-		// 	memberPKBytes := ev.GetMemberPK()
-		// 	if memberPKBytes == nil {
-		// 		return errcode.ErrInvalidInput
-		// 	}
-		// 	memberPK := bytesToString(memberPKBytes)
-
-		// 	groupPKBytes, err := groupPKFromContactPK(subCtx, client, memberPKBytes)
-		// 	if err != nil {
-		// 		return errcode.ErrInvalidInput.Wrap(err)
-		// 	}
-		// 	groupPK := bytesToString(groupPKBytes)
-
-		// 	if _, err := addGroupMemberDeviceAdded(db, memberPK, groupPK); err != nil {
-		// 		return errcode.ErrDBAddGroupMemberDeviceAdded.Wrap(err)
-		// 	}
-
-		default:
-			// Not sure about what to do in this case, maybe:
-			// return errcode.ErrInvalidInput
+		if err := handler.handleMetadataEvent(metadata); err != nil {
+			return err
 		}
 	}
 }
 
-func processMessageList(ctx context.Context, groupPK []byte, db *gorm.DB, client bertyprotocol.ProtocolServiceClient) error {
+func processMessageList(ctx context.Context, groupPK []byte, handler *eventHandler) error {
 	subCtx, subCancel := context.WithCancel(ctx)
 	defer subCancel()
 
-	msgList, err := client.GroupMessageList(
+	groupPKStr := b64EncodeBytes(groupPK)
+
+	msgList, err := handler.protocolClient.GroupMessageList(
 		subCtx,
 		&bertytypes.GroupMessageList_Request{
 			GroupPK:  groupPK,
@@ -288,44 +162,8 @@ func processMessageList(ctx context.Context, groupPK []byte, db *gorm.DB, client
 			return errcode.ErrDeserialization.Wrap(err)
 		}
 
-		if _, err = appMsg.UnmarshalPayload(); err != nil {
-			return errcode.ErrDeserialization.Wrap(err)
-		}
-
-		isMe, err := checkIsMe(subCtx, client, message)
-		if err != nil {
-			// TODO: Check with Norman if this shouldn't be a:
-			// return nil
-			return errcode.ErrInvalidInput.Wrap(err)
-		}
-
-		i := &Interaction{
-			CID:                   bytesToString(message.GetEventContext().GetID()),
-			Type:                  appMsg.GetType(),
-			Payload:               appMsg.GetPayload(),
-			ConversationPublicKey: bytesToString(message.GetEventContext().GetGroupPK()),
-			IsMe:                  isMe,
-		}
-
-		switch i.Type {
-		case AppMessage_TypeAcknowledge:
-			// FIXME: set 'Acknowledged: true' on existing interaction instead
-			if err := db.Create(i).Error; err != nil {
-				return errcode.ErrDBWrite.Wrap(err)
-			}
-
-		case AppMessage_TypeGroupInvitation:
-			if err := db.Create(i).Error; err != nil {
-				return errcode.ErrDBWrite.Wrap(err)
-			}
-
-		case AppMessage_TypeUserMessage:
-			if err := db.Create(i).Error; err != nil {
-				return errcode.ErrDBWrite.Wrap(err)
-			}
-
-		default:
-			return errcode.ErrInvalidInput.Wrap(err)
+		if err := handler.handleAppMessage(groupPKStr, message, &appMsg); err != nil {
+			return errcode.TODO.Wrap(err)
 		}
 	}
 }

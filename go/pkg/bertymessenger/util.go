@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
+	"fmt"
 	"time"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -35,17 +36,17 @@ func groupPKFromContactPK(ctx context.Context, client bertyprotocol.ProtocolServ
 
 	groupPK := groupInfo.GetGroup().GetPublicKey()
 	if groupPK == nil {
-		return nil, errcode.ErrInternal
+		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("group pk is empty"))
 	}
 
 	return groupPK, nil
 }
 
-func bytesToString(b []byte) string {
+func b64EncodeBytes(b []byte) string {
 	return base64.RawURLEncoding.EncodeToString(b)
 }
 
-func stringToBytes(s string) ([]byte, error) {
+func b64DecodeBytes(s string) ([]byte, error) {
 	return base64.RawURLEncoding.DecodeString(s)
 }
 

@@ -4460,6 +4460,7 @@ export namespace berty {
                     interactions?: (number|Long|null);
                     members?: (number|Long|null);
                     devices?: (number|Long|null);
+                    serviceTokens?: (number|Long|null);
                 }
 
                 class DB implements IDB {
@@ -4470,6 +4471,7 @@ export namespace berty {
                     public interactions: (number|Long);
                     public members: (number|Long);
                     public devices: (number|Long);
+                    public serviceTokens: (number|Long);
                     public static create(properties?: berty.messenger.v1.SystemInfo.IDB): berty.messenger.v1.SystemInfo.DB;
                     public static encode(message: berty.messenger.v1.SystemInfo.IDB, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.SystemInfo.IDB, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4539,7 +4541,6 @@ export namespace berty {
                 publicKey?: (string|null);
                 displayName?: (string|null);
                 link?: (string|null);
-                state?: (berty.messenger.v1.Account.State|null);
                 serviceTokens?: (berty.messenger.v1.IServiceToken[]|null);
             }
 
@@ -4548,7 +4549,6 @@ export namespace berty {
                 public publicKey: string;
                 public displayName: string;
                 public link: string;
-                public state: berty.messenger.v1.Account.State;
                 public serviceTokens: berty.messenger.v1.IServiceToken[];
                 public static create(properties?: berty.messenger.v1.IAccount): berty.messenger.v1.Account;
                 public static encode(message: berty.messenger.v1.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4559,15 +4559,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.Account;
                 public static toObject(message: berty.messenger.v1.Account, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-            }
-
-            namespace Account {
-
-                enum State {
-                    Undefined = 0,
-                    NotReady = 1,
-                    Ready = 2
-                }
             }
 
             interface IServiceToken {
@@ -4608,7 +4599,7 @@ export namespace berty {
                 isMe?: (boolean|null);
                 sentDate?: (number|Long|null);
                 acknowledged?: (boolean|null);
-                arrivalIndex?: (number|Long|null);
+                targetCid?: (string|null);
             }
 
             class Interaction implements IInteraction {
@@ -4624,7 +4615,7 @@ export namespace berty {
                 public isMe: boolean;
                 public sentDate: (number|Long);
                 public acknowledged: boolean;
-                public arrivalIndex: (number|Long);
+                public targetCid: string;
                 public static create(properties?: berty.messenger.v1.IInteraction): berty.messenger.v1.Interaction;
                 public static encode(message: berty.messenger.v1.IInteraction, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IInteraction, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4675,7 +4666,7 @@ export namespace berty {
                     IncomingRequest = 1,
                     OutgoingRequestEnqueued = 2,
                     OutgoingRequestSent = 3,
-                    Established = 4
+                    Accepted = 4
                 }
             }
 
@@ -4759,13 +4750,13 @@ export namespace berty {
 
             interface IDevice {
                 publicKey?: (string|null);
-                ownerPublicKey?: (string|null);
+                memberPublicKey?: (string|null);
             }
 
             class Device implements IDevice {
 
                 public publicKey: string;
-                public ownerPublicKey: string;
+                public memberPublicKey: string;
                 public static create(properties?: berty.messenger.v1.IDevice): berty.messenger.v1.Device;
                 public static encode(message: berty.messenger.v1.IDevice, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IDevice, writer?: $protobuf.Writer): $protobuf.Writer;

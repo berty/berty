@@ -271,7 +271,7 @@ func (bot *Bot) handleContactUpdated(ctx context.Context, _ *bertymessenger.Even
 		if err != nil {
 			return fmt.Errorf("contact accept failed: %w", err)
 		}
-	} else if contact.State == bertymessenger.Contact_Established {
+	} else if contact.State == bertymessenger.Contact_Accepted {
 		// When contact was established, send message and a group invitation
 		time.Sleep(2 * time.Second)
 		bot.store.Convs = append(bot.store.Convs, Conversation{

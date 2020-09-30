@@ -10,7 +10,6 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
-	"gorm.io/gorm/clause"
 
 	"berty.tech/berty/v2/go/internal/discordlog"
 	"berty.tech/berty/v2/go/pkg/banner"
@@ -100,7 +99,7 @@ func (svc *service) internalInstanceShareableBertyID(ctx context.Context, req *I
 		},
 	}
 	bertyIDPayloadBytes, _ := proto.Marshal(ret.BertyID)
-	ret.BertyIDPayload = bytesToString(bertyIDPayloadBytes)
+	ret.BertyIDPayload = b64EncodeBytes(bertyIDPayloadBytes)
 
 	// create QRCodes with standalone display_name variable
 	lightID := BertyID{
@@ -108,7 +107,7 @@ func (svc *service) internalInstanceShareableBertyID(ctx context.Context, req *I
 		AccountPK:            ret.BertyID.AccountPK,
 	}
 	lightIDBytes, _ := proto.Marshal(&lightID)
-	lightIDPayload := bytesToString(lightIDBytes)
+	lightIDPayload := b64EncodeBytes(lightIDBytes)
 	v := url.Values{}
 	v.Set("key", url.QueryEscape(lightIDPayload)) // double-encoding to keep "+" as "+" and not as spaces
 	if displayName != "" {
@@ -140,7 +139,7 @@ func (svc *service) ParseDeepLink(ctx context.Context, req *ParseDeepLink_Reques
 		if key == "" {
 			return nil, errcode.ErrMessengerInvalidDeepLink
 		}
-		payload, err := stringToBytes(key)
+		payload, err := b64DecodeBytes(key)
 		if err != nil {
 			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
 		}
@@ -200,7 +199,7 @@ func ParseGroupInviteURLQuery(query url.Values) (*ParseDeepLink_Reply, error) {
 	if invite == "" {
 		return nil, errcode.ErrMessengerInvalidDeepLink
 	}
-	payload, err := stringToBytes(invite)
+	payload, err := b64DecodeBytes(invite)
 	if err != nil {
 		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
 	}
@@ -247,7 +246,7 @@ func (svc *service) ShareableBertyGroup(ctx context.Context, request *ShareableB
 		return nil, err
 	}
 
-	rep.BertyGroupPayload = bytesToString(bertyGroupPayload)
+	rep.BertyGroupPayload = b64EncodeBytes(bertyGroupPayload)
 	rep.DeepLink, rep.HTMLURL, err = ShareableBertyGroupURL(grpInfo.Group, request.GroupName)
 	if err != nil {
 		return nil, err
@@ -266,7 +265,7 @@ func ShareableBertyGroupURL(g *bertytypes.Group, groupName string) (string, stri
 		return "", "", err
 	}
 
-	inviteB64 := bytesToString(invite)
+	inviteB64 := b64EncodeBytes(invite)
 
 	v := url.Values{}
 	v.Set("invite", url.QueryEscape(inviteB64)) // double-encoding to keep "+" as "+" and not as spaces
@@ -320,20 +319,13 @@ func (svc *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*S
 
 	// messenger's db
 	{
-		var err error
-		reply.Messenger.DB = &SystemInfo_DB{}
-		reply.Messenger.DB.Accounts, err = dbModelRowsCount(svc.db, Account{})
-		errs = multierr.Append(errs, err)
-		reply.Messenger.DB.Contacts, err = dbModelRowsCount(svc.db, Contact{})
-		errs = multierr.Append(errs, err)
-		reply.Messenger.DB.Interactions, err = dbModelRowsCount(svc.db, Interaction{})
-		errs = multierr.Append(errs, err)
-		reply.Messenger.DB.Conversations, err = dbModelRowsCount(svc.db, Conversation{})
-		errs = multierr.Append(errs, err)
-		reply.Messenger.DB.Members, err = dbModelRowsCount(svc.db, Member{})
-		errs = multierr.Append(errs, err)
-		reply.Messenger.DB.Devices, err = dbModelRowsCount(svc.db, Device{})
-		errs = multierr.Append(errs, err)
+		dbInfo, err := svc.db.getDBInfo()
+		if err != nil {
+			errs = multierr.Append(errs, err)
+			reply.Messenger.DB = &SystemInfo_DB{}
+		} else {
+			reply.Messenger.DB = dbInfo
+		}
 	}
 
 	// protocol
@@ -374,7 +366,7 @@ func (svc *service) SendAck(ctx context.Context, request *SendAck_Request) (*Sen
 	}
 
 	am, err := AppMessage_TypeAcknowledge.MarshalPayload(0, &AppMessage_Acknowledge{
-		Target: bytesToString(request.MessageID),
+		Target: b64EncodeBytes(request.MessageID),
 	})
 	if err != nil {
 		return nil, err
@@ -415,8 +407,8 @@ func (svc *service) ConversationStream(req *ConversationStream_Request, sub Mess
 	// TODO: cursors
 
 	// send existing convs
-	var convs []*Conversation
-	if err := svc.db.Find(&convs).Error; err != nil {
+	convs, err := svc.db.getAllConversations()
+	if err != nil {
 		return err
 	}
 	for _, c := range convs {
@@ -463,11 +455,11 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 	// send account
 	{
 		svc.logger.Debug("sending account")
-		acc, err := getAccount(svc.db)
+		acc, err := svc.db.getAccount()
 		if err != nil {
 			return err
 		}
-		au, err := proto.Marshal(&StreamEvent_AccountUpdated{Account: &acc})
+		au, err := proto.Marshal(&StreamEvent_AccountUpdated{Account: acc})
 		if err != nil {
 			return err
 		}
@@ -478,14 +470,13 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 
 	// send contacts
 	{
-		var contacts []Contact
-		if err := svc.db.Find(&contacts).Error; err != nil {
+		contacts, err := svc.db.getAllContacts()
+		if err != nil {
 			return err
 		}
 		svc.logger.Info("sending existing contacts", zap.Int("count", len(contacts)))
 		for _, contact := range contacts {
-			c := contact // comply with scopelint
-			cu, err := proto.Marshal(&StreamEvent_ContactUpdated{&c})
+			cu, err := proto.Marshal(&StreamEvent_ContactUpdated{Contact: contact})
 			if err != nil {
 				return err
 			}
@@ -497,14 +488,13 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 
 	// send conversations
 	{
-		var convs []Conversation
-		if err := svc.db.Find(&convs).Error; err != nil {
+		convs, err := svc.db.getAllConversations()
+		if err != nil {
 			return err
 		}
 		svc.logger.Debug("sending existing conversations", zap.Int("count", len(convs)))
 		for _, conv := range convs {
-			c := conv // comply with scopelint
-			cu, err := proto.Marshal(&StreamEvent_ConversationUpdated{&c})
+			cu, err := proto.Marshal(&StreamEvent_ConversationUpdated{Conversation: conv})
 			if err != nil {
 				return err
 			}
@@ -516,14 +506,13 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 
 	// send members
 	{
-		var members []Member
-		if err := svc.db.Find(&members).Error; err != nil {
+		members, err := svc.db.getAllMembers()
+		if err != nil {
 			return err
 		}
 		svc.logger.Info("sending existing members", zap.Int("count", len(members)))
 		for _, member := range members {
-			m := member // comply with scopelint
-			mu, err := proto.Marshal(&StreamEvent_MemberUpdated{&m})
+			mu, err := proto.Marshal(&StreamEvent_MemberUpdated{Member: member})
 			if err != nil {
 				return err
 			}
@@ -535,14 +524,13 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 
 	// send interactions
 	{
-		var interactions []Interaction
-		if err := svc.db.Find(&interactions).Error; err != nil {
+		interactions, err := svc.db.getAllInteractions()
+		if err != nil {
 			return err
 		}
 		svc.logger.Info("sending existing interactions", zap.Int("count", len(interactions)))
 		for _, inte := range interactions {
-			i := inte // comply with scopelint
-			iu, err := proto.Marshal(&StreamEvent_InteractionUpdated{&i})
+			iu, err := proto.Marshal(&StreamEvent_InteractionUpdated{Interaction: inte})
 			if err != nil {
 				return err
 			}
@@ -605,7 +593,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 		return nil, err
 	}
 	pk := cr.GetGroupPK()
-	pkStr := bytesToString(pk)
+	pkStr := b64EncodeBytes(pk)
 	svc.logger.Info("Created conv", zap.String("dn", req.GetDisplayName()), zap.String("pk", pkStr))
 
 	// activate group
@@ -628,27 +616,19 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 
 	// Create new conversation
 	conv := &Conversation{
-		AccountMemberPublicKey: bytesToString(gir.GetMemberPK()),
+		AccountMemberPublicKey: b64EncodeBytes(gir.GetMemberPK()),
 		PublicKey:              pkStr,
 		DisplayName:            dn,
 		Link:                   htmlURL,
 		Type:                   Conversation_MultiMemberType,
-		LocalDevicePublicKey:   bytesToString(gir.GetDevicePK()),
+		LocalDevicePublicKey:   b64EncodeBytes(gir.GetDevicePK()),
 		CreatedDate:            timestampMs(time.Now()),
 	}
 
 	// Update database
-	{
-		err = svc.db.
-			Clauses(clause.OnConflict{
-				Columns:   []clause.Column{{Name: "public_key"}},
-				DoUpdates: clause.AssignmentColumns([]string{"display_name", "link"}),
-			}).
-			Create(&conv).
-			Error
-		if err != nil {
-			return nil, err
-		}
+	err = svc.db.updateConversation(*conv)
+	if err != nil {
+		return nil, err
 	}
 
 	// Dispatch new conversation
@@ -686,7 +666,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 	{
 		for i := 0; i < 3; i++ {
 			err := func() error {
-				acc, err := getAccount(svc.db)
+				acc, err := svc.db.getAccount()
 				if err != nil {
 					return err
 				}
@@ -710,7 +690,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 		if err != nil {
 			return nil, err
 		}
-		cpkb, err := stringToBytes(contactPK)
+		cpkb, err := b64DecodeBytes(contactPK)
 		if err != nil {
 			return nil, err
 		}
@@ -766,7 +746,7 @@ func (svc *service) ConversationJoin(ctx context.Context, req *ConversationJoin_
 	{
 		_, err := svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: gpkb})
 		if err != nil {
-			svc.logger.Warn("failed to activate group", zap.String("pk", bytesToString(gpkb)))
+			svc.logger.Warn("failed to activate group", zap.String("pk", b64EncodeBytes(gpkb)))
 		}
 	}
 
@@ -776,25 +756,18 @@ func (svc *service) ConversationJoin(ctx context.Context, req *ConversationJoin_
 	}
 
 	conv := Conversation{
-		AccountMemberPublicKey: bytesToString(gir.GetMemberPK()),
-		PublicKey:              bytesToString(gpkb),
+		AccountMemberPublicKey: b64EncodeBytes(gir.GetMemberPK()),
+		PublicKey:              b64EncodeBytes(gpkb),
 		DisplayName:            bgroup.GetDisplayName(),
 		Link:                   link,
 		Type:                   Conversation_MultiMemberType,
-		LocalDevicePublicKey:   bytesToString(gir.GetDevicePK()),
+		LocalDevicePublicKey:   b64EncodeBytes(gir.GetDevicePK()),
 		CreatedDate:            timestampMs(time.Now()),
 	}
 
 	// update db
-	{
-		// Maybe turn this into a svc.updateConversation helper
-		cl := clause.OnConflict{ // Maybe DoNothing ?
-			Columns:   []clause.Column{{Name: "public_key"}},
-			DoUpdates: clause.AssignmentColumns([]string{"display_name", "link"}),
-		}
-		if err = svc.db.Clauses(cl).Create(&conv).Error; err != nil {
-			return nil, errcode.ErrInternal.Wrap(err)
-		}
+	if err := svc.db.updateConversation(conv); err != nil {
+		return nil, err
 	}
 
 	// dispatch event
@@ -809,7 +782,7 @@ func (svc *service) ConversationJoin(ctx context.Context, req *ConversationJoin_
 	{
 		for i := 0; i < 3; i++ {
 			err := func() error {
-				acc, err := getAccount(svc.db)
+				acc, err := svc.db.getAccount()
 				if err != nil {
 					return err
 				}
@@ -835,7 +808,7 @@ func (svc *service) AccountUpdate(ctx context.Context, req *AccountUpdate_Reques
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	acc, err := getAccount(svc.db)
+	acc, err := svc.db.getAccount()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -843,35 +816,28 @@ func (svc *service) AccountUpdate(ctx context.Context, req *AccountUpdate_Reques
 	updated := false
 
 	dn := req.GetDisplayName()
-	svc.logger.Debug("updating account", zap.String("display_name", dn))
 	if dn != "" && dn != acc.GetDisplayName() {
-		acc.DisplayName = dn
-		ret, err := svc.internalInstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{DisplayName: dn})
-		if err != nil {
-			return nil, err
-		}
-		acc.Link = ret.GetHTMLURL()
+		svc.logger.Debug("updating account", zap.String("display_name", dn))
 		updated = true
 	}
 
-	if updated {
-		if acc.GetDisplayName() != "" {
-			acc.State = Account_Ready
-		} else {
-			acc.State = Account_NotReady
-		}
+	if !updated {
+		return &AccountUpdate_Reply{}, nil
+	}
 
-		if err := svc.db.Save(&acc).Error; err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
+	ret, err := svc.internalInstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{DisplayName: dn})
+	if err != nil {
+		return nil, err
+	}
 
-		// dispatch event
-		{
-			err := svc.dispatcher.StreamEvent(StreamEvent_TypeAccountUpdated, &StreamEvent_AccountUpdated{Account: &acc})
-			if err != nil {
-				return nil, errcode.TODO.Wrap(err)
-			}
-		}
+	acc, err = svc.db.updateAccount(acc.PublicKey, ret.GetHTMLURL(), dn)
+	if err != nil {
+		return nil, err
+	}
+
+	// dispatch event
+	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeAccountUpdated, &StreamEvent_AccountUpdated{Account: acc}); err != nil {
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	return &AccountUpdate_Reply{}, nil
@@ -892,7 +858,7 @@ func (svc *service) ContactRequest(ctx context.Context, req *ContactRequest_Requ
 		if key == "" {
 			return nil, errcode.ErrMessengerInvalidDeepLink
 		}
-		payload, err := stringToBytes(key)
+		payload, err := b64DecodeBytes(key)
 		if err != nil {
 			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
 		}
@@ -915,7 +881,7 @@ func (svc *service) ContactRequest(ctx context.Context, req *ContactRequest_Requ
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	acc, err := getAccount(svc.db)
+	acc, err := svc.db.getAccount()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -948,10 +914,10 @@ func (svc *service) ContactRequest(ctx context.Context, req *ContactRequest_Requ
 func (svc *service) ContactAccept(ctx context.Context, req *ContactAccept_Request) (*ContactAccept_Reply, error) {
 	pk := req.GetPublicKey()
 	if pk == "" {
-		return nil, errcode.ErrInvalidInput
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no public key supplied"))
 	}
 
-	pkb, err := stringToBytes(pk)
+	pkb, err := b64DecodeBytes(pk)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -959,13 +925,15 @@ func (svc *service) ContactAccept(ctx context.Context, req *ContactAccept_Reques
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	c, err := getContactByPK(svc.db, pk)
+	svc.logger.Debug("retrieving contact", zap.String("contact_pk", pk))
+
+	c, err := svc.db.getContactByPK(pk)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
 	if c.State != Contact_IncomingRequest {
-		return nil, errcode.TODO
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("contact request status is not IncomingRequest %s)", c.State.String()))
 	}
 
 	_, err = svc.protocolClient.ContactRequestAccept(ctx, &bertytypes.ContactRequestAccept_Request{ContactPK: pkb})
@@ -983,7 +951,7 @@ func (svc *service) Interact(ctx context.Context, req *Interact_Request) (*Inter
 	}
 
 	svc.logger.Info("interacting", zap.String("public-key", gpk))
-	gpkb, err := stringToBytes(gpk)
+	gpkb, err := b64DecodeBytes(gpk)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
@@ -1015,11 +983,11 @@ func (svc *service) AccountGet(ctx context.Context, req *AccountGet_Request) (*A
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	acc, err := getAccount(svc.db)
+	acc, err := svc.db.getAccount()
 	if err != nil {
 		return nil, err
 	}
-	return &AccountGet_Reply{Account: &acc}, nil
+	return &AccountGet_Reply{Account: acc}, nil
 }
 
 func (svc *service) EchoTest(req *EchoTest_Request, srv MessengerService_EchoTestServer) error {
@@ -1041,37 +1009,16 @@ func (svc *service) ConversationOpen(ctx context.Context, req *ConversationOpen_
 
 	ret := ConversationOpen_Reply{}
 
-	conv, err := getConversationByPK(svc.db, req.GetGroupPK())
+	conv, updated, err := svc.db.setConversationIsOpenStatus(req.GetGroupPK(), true)
+
 	if err != nil {
+		return nil, err
+	} else if !updated {
+		return &ret, nil
+	}
+
+	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conv}); err != nil {
 		return nil, errcode.TODO.Wrap(err)
-	}
-
-	// sanity checks
-	{
-		// should we raise an error instead?
-		if conv.IsOpen {
-			return &ret, nil
-		}
-	}
-
-	// update entry in db
-	{
-		err := svc.db.
-			Model(&conv).
-			Update("is_open", true).
-			Update("unread_count", 0).
-			Error
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-	}
-
-	// dispatch event to subscribers
-	{
-		err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{&conv})
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
 	}
 
 	return &ret, nil
@@ -1085,37 +1032,16 @@ func (svc *service) ConversationClose(ctx context.Context, req *ConversationClos
 
 	ret := ConversationClose_Reply{}
 
-	// get entry from db
-	conv, err := getConversationByPK(svc.db, req.GetGroupPK())
+	conv, updated, err := svc.db.setConversationIsOpenStatus(req.GetGroupPK(), false)
+
 	if err != nil {
+		return nil, err
+	} else if !updated {
+		return &ret, nil
+	}
+
+	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conv}); err != nil {
 		return nil, errcode.TODO.Wrap(err)
-	}
-
-	// sanity checks
-	{
-		// should we raise an error instead?
-		if !conv.IsOpen {
-			return &ret, nil
-		}
-	}
-
-	// update entry in db
-	{
-		err := svc.db.
-			Model(&conv).
-			Update("is_open", false).
-			Error
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-	}
-
-	// dispatch event to subscribers
-	{
-		err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{&conv})
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
 	}
 
 	// FIXME: trigger update
@@ -1163,7 +1089,7 @@ func (svc *service) ReplicationServiceRegisterGroup(ctx context.Context, request
 	}
 
 	svc.logger.Info("interacting", zap.String("public-key", gpk))
-	gpkb, err := stringToBytes(gpk)
+	gpkb, err := b64DecodeBytes(gpk)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}

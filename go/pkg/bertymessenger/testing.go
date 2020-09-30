@@ -179,7 +179,6 @@ func (a *TestingAccount) SetNameAndDrainUpdate(t *testing.T, name string) {
 	require.NoError(t, err)
 	account := payload.(*StreamEvent_AccountUpdated).Account
 	require.Equal(t, a.GetAccount(), account)
-	require.Equal(t, Account_Ready, account.State)
 	require.Equal(t, name, account.DisplayName)
 }
 

@@ -172,9 +172,7 @@ export const Navigation: React.FC = () => {
 	return (
 		<NavigationStack.Navigator
 			initialRouteName={
-				account?.state === messengerpb.Account.State.Ready
-					? Routes.Root.Tabs
-					: Routes.Onboarding.GetStarted
+				account?.displayName !== '' ? Routes.Root.Tabs : Routes.Onboarding.GetStarted
 			}
 			screenOptions={{ headerShown: false }}
 		>
