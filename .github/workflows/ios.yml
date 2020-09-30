@@ -1,4 +1,4 @@
-name: Android
+name: iOS
 on:
   push:
     tags:
@@ -10,19 +10,19 @@ on:
       - 'go.*'
       - '**.go'
       - 'js/**'
-      - '.github/workflows/android.yml'
+      - '.github/workflows/ios.yml'
   pull_request:
     paths:
       - 'go/**'
       - 'go.*'
       - '**.go'
       - 'js/**'
-      - '.github/workflows/android.yml'
+      - '.github/workflows/ios.yml'
 
 jobs:
   build:
-    name: Build for Android
-    runs-on: ubuntu-latest
+    name: Build for iOS
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -36,11 +36,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
-
-      - name: Setup Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
 
       - name: Cache Go modules
         uses: actions/cache@v2
@@ -58,30 +53,32 @@ jobs:
           key: ${{ runner.OS }}-node-${{ hashFiles('js/**/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-
 
-      - name: Build the APK
+      - name: Cache Ruby modules
+        uses: actions/cache@v2
+        with:
+          path: js/vendor
+          key: ${{ runner.OS }}-bundle-${{ hashFiles('js/Gemfile.lock') }}
+          restore-keys: ${{ runner.OS }}-bundle-
+
+      - name: Build the Archive
         working-directory: js
         env:
-          CI: "true"
           SHAKEBUGS_API_ID: ${{ secrets.SHAKEBUGS_API_ID }}
           SHAKEBUGS_API_SECRET: ${{ secrets.SHAKEBUGS_API_SECRET }}
         run: |
           echo "SHAKE_API_ID=$SHAKEBUGS_API_ID\nSHAKE_API_SECRET=$SHAKEBUGS_API_SECRET" > .env
-          make android.release
+          make vendor/bundle deps packages/go-bridge/ios/Frameworks/Bertybridge.framework packages/berty-app/ios/Pods/Manifest.lock
+          xcodebuild archive \
+                -workspace packages/berty-app/ios/Berty.xcworkspace \
+                -scheme yolo \
+                -configuration Release \
+                -sdk iphoneos \
+                -archivePath /tmp/Berty.xcarchive \
+                CODE_SIGN_IDENTITY="" CODE_SIGNING_ALLOWED=NO
 
-      - name: Upload the APK
+      - name: Upload the Archive
         uses: actions/upload-artifact@v2
         with:
-          path: js/packages/berty-app/android/universal.apk
-          name: berty-universal.apk
-          if-no-files-found: error
-
-# Fake log to ensure YOLO works correctly.
-      - name: generate fake log
-        run: go env > /tmp/build-env.log
-
-      - name: Upload the Fake log
-        uses: actions/upload-artifact@v2
-        with:
-          path: /tmp/build-env.log
-          name: build-env.log
+          path: /tmp/Berty.xcarchive/Products/Applications/Berty Yolo.app
+          name: berty-yolo.app
           if-no-files-found: error
