@@ -6,7 +6,6 @@ platform :ios, '12.0'
 
 target 'Berty' do
   config = use_native_modules!
-
   use_react_native!(:path => config["reactNativePath"])
 
   # needed for react-native-qrcode-scanner

@@ -52,9 +52,6 @@ settings:
   base:
     SWIFT_OBJC_BRIDGING_HEADER: Berty/Berty-Bridging-Header.h
     CLANG_ENABLE_MODULES: true
-    GCC_PREPROCESSOR_DEFINITIONS:
-    - $(inherited)
-    - FB_SONARKIT_ENABLED=1
     OTHER_LDFLAGS:
     - $(inherited)
     - -ObjC

@@ -304,6 +304,9 @@ $(pkg_mod): $(pkg_desc)
 	touch $(pkg_mod)
 	touch node_modules/go.mod # avoid go to lookup in this directory
 
+vendor/bundle:
+	mkdir -p $@
+
 Gemfile.lock: vendor/bundle Gemfile
 	bundle install
 	touch $@
