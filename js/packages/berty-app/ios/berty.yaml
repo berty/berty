@@ -8,8 +8,9 @@ options:
   indentWidth: 2
   defaultConfig: Debug
 
+
 fileGroups:
-  - Berty/main.jsbundle
+  - Berty/main.jsbundle # required by react-native
 
 configs:
   Debug: debug
@@ -95,8 +96,10 @@ targets:
     scheme:
       parallelizeBuild: false
     configFiles:
-        Debug: Configs/Debug.xcconfig
-        Release: Configs/Release.xcconfig
+      Debug: Configs/Debug.xcconfig
+      Release: Configs/Release.xcconfig
+      Staff Release: Configs/Staff.xcconfig
+      Yolo Release: Configs/Yolo.xcconfig
     settings:
       base:
         PRODUCT_NAME: Berty
@@ -166,6 +169,7 @@ targets:
           fi
         fi
       showEnvVars: false
+
     postBuildScripts:
     - name: Bundle React Native code and images
       script: |
