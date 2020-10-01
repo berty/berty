@@ -268,9 +268,10 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 			api = ipfsutil.InjectPubSubCoreAPIExtendedAdaptater(api, psapi)
 
 			// construct http api endpoint
+			// ignore error to allow two berty instances in the same place
 			err = ipfsutil.ServeHTTPApi(logger, node, config.rootDirectory+"/ipfs")
 			if err != nil {
-				return nil, errcode.TODO.Wrap(err)
+				logger.Warn("API Ipfs error", zap.Error(err))
 			}
 
 			// serve the embedded ipfs webui
