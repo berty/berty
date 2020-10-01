@@ -16,7 +16,6 @@ const T = messengerpb.StreamEvent.Type
 
 const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 	const state = { ...oldState }
-	state.client = oldState.client
 	console.log('reducing', action)
 	switch (action.type) {
 		case 'SET_STREAM_ERROR':
