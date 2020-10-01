@@ -60,6 +60,16 @@ jobs:
           key: ${{ runner.OS }}-bundle-${{ hashFiles('js/Gemfile.lock') }}
           restore-keys: ${{ runner.OS }}-bundle-
 
+      - name: Setup macOS keychain
+        working-directory: tool/dummy-identity
+        run: |
+          security create-keychain -p "dummypass" dummy.keychain
+          security default-keychain -s dummy.keychain
+          security unlock-keychain -p "dummypass" dummy.keychain
+          security set-keychain-settings dummy.keychain
+          security import berty-dummy.p12 -t priv -f pkcs12 -P "dummypass" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "dummypass" dummy.keychain
+
       - name: Build the Archive
         working-directory: js
         env:
@@ -75,13 +85,14 @@ jobs:
                 -sdk iphoneos \
                 -archivePath /tmp/Berty.xcarchive \
                 CODE_SIGN_IDENTITY="" CODE_SIGNING_ALLOWED=NO
+          codesign -fs "Berty Dummy" /tmp/Berty.xcarchive/Products/Applications/Berty\ Yolo.app
           mkdir Payload
           mv /tmp/Berty.xcarchive/Products/Applications/Berty\ Yolo.app Payload/
-          zip -r ${{ github.workspace }}/Berty\ Yolo.unsigned-ipa Payload
+          zip -r ${{ github.workspace }}/Berty\ Yolo.dummy-signed-ipa Payload
 
       - name: Upload the Archive
         uses: actions/upload-artifact@v2
         with:
-          path: ${{ github.workspace }}/Berty Yolo.unsigned-ipa
-          name: berty-yolo.unsigned-ipa
+          path: ${{ github.workspace }}/Berty Yolo.dummy-signed-ipa
+          name: berty-yolo.dummy-signed-ipa
           if-no-files-found: error
