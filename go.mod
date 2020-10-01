@@ -80,7 +80,7 @@ require (
 	go.opentelemetry.io/otel v0.8.0
 	go.opentelemetry.io/otel/exporters/trace/jaeger v0.8.0
 	go.uber.org/goleak v1.1.10
-	go.uber.org/multierr v1.5.0
+	go.uber.org/multierr v1.6.0
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
 	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de
@@ -98,6 +98,7 @@ require (
 	moul.io/srand v1.6.0
 	moul.io/testman v1.5.0
 	moul.io/u v1.13.0
+	moul.io/zapconfig v1.0.0
 	moul.io/zapfilter v1.6.0
 	moul.io/zapgorm2 v1.0.1
 	mvdan.cc/gofumpt v0.0.0-20200802201014-ab5a8192947d
