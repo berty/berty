@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// Quote is a data type that stores the text of the quote and its author
 type Quote struct {
 	Author string
 	Text   string
@@ -37,12 +38,23 @@ var quotes = []Quote{
 	{"Voltaire", "We have a natural right to make use of our pens as of our tongue, at our peril, risk and hazard."},
 }
 
+// RandomQuote returns a random quote from the quote list.
+// For the quote of the day, use the function QOTD instead.
 func RandomQuote() Quote {
 	return quotes[mrand.Intn(len(quotes))] // nolint:gosec
 }
 
+// QOTD returns the quote of the day for display in banners or other graphics.
+// This is calculated by using the number of days (24 hr periods) since a
+// fixed time as the seed for a random number generator.
+// This will result in the same quote being returned during a 24 hr period
+// even after subsequent calls.
+// UTC time is used by default if local time is not available.
+//
+// BUG: The Go language cannot get local the local time on Android and iOS.
+// This is a confirmed upstream issue, so mobile will always default to UTC.
 func QOTD() Quote {
-	base := time.Date(2000, time.January, 1, 0, 0, 0, 0, time.UTC) // FIXME: use local timezone if available
+	base := time.Date(2000, time.January, 1, 0, 0, 0, 0, time.Local)
 	seed := time.Since(base).Hours() / 24
 	r := mrand.New(mrand.NewSource(int64(seed))) // nolint:gosec
 	return quotes[r.Intn(len(quotes))]
