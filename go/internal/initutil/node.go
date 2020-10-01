@@ -116,10 +116,11 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 	}
 
 	// construct http api endpoint
+	// ignore error to allow two berty instances in the same place
 	if m.Node.Protocol.IPFSAPIListeners != "" {
 		err = ipfsutil.ServeHTTPApi(logger, m.Node.Protocol.ipfsNode, "")
 		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			logger.Warn("API Ipfs error", zap.Error(err))
 		}
 	}
 
