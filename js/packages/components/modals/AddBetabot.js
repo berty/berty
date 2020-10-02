@@ -177,7 +177,7 @@ export const AddBetabotBody = () => {
 							setPersistentOption('betabot', { added: true })
 							requestContact({
 								link:
-									'https://berty.tech/id#key=CiAQu64C2fUXcD1uZICoGhrKSh47h562apUgYQGTSJ2RihIgLcNYlmsJgWVhpVwyJvoWr3rLzPzVUadCCFIbXFlpjoI&name=BetaBot',
+									'https://berty.tech/id#key=CiCUMEbWnQQgC4_6SaStTMFSssJafv-iCdBOoU3I8GfZEBIg-31JSh_hDYcdevUkvhtoajh2nf57ISFasCeLlTME3AA&name=BetaBot',
 							})
 						}}
 					>
