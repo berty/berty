@@ -6,7 +6,7 @@ import { keyBy, flatten } from 'lodash'
 const fakeArray = (length) => new Array(length).fill({})
 
 const contactStates = [
-	messengerpb.Contact.State.Established,
+	messengerpb.Contact.State.Accepted,
 	messengerpb.Contact.State.OutgoingRequestSent,
 	messengerpb.Contact.State.OutgoingRequestEnqueued,
 	messengerpb.Contact.State.IncomingRequest,
@@ -19,7 +19,7 @@ export const fakeContacts = (length, start) => {
 		const convPk = `fake_pk_contact_conv_${index + start}` // TODO: set to empty depending on state
 		const contactPk = `fake_pk_contact_${index + start}`
 		const name = faker.name.findName()
-		if (state === messengerpb.Contact.State.Established) {
+		if (state === messengerpb.Contact.State.Accepted) {
 			conversationList.push({
 				publicKey: convPk,
 				contactPublicKey: contactPk,

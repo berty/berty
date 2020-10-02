@@ -31,7 +31,6 @@ func TestUnstableServiceStream(t *testing.T) {
 		require.Equal(t, account, node.GetAccount())
 		require.NotEmpty(t, account.Link)
 		require.NotEmpty(t, account.PublicKey)
-		require.Equal(t, account.State, Account_NotReady)
 		require.Empty(t, account.DisplayName)
 	}
 
@@ -69,7 +68,6 @@ func TestUnstableServiceSetName(t *testing.T) {
 		require.Equal(t, account, node.GetAccount())
 		require.NotEmpty(t, account.Link)
 		require.NotEmpty(t, account.PublicKey)
-		require.Equal(t, account.State, Account_Ready)
 		require.Equal(t, account.DisplayName, "foo")
 	}
 
@@ -104,7 +102,6 @@ func TestUnstableServiceSetNameAsync(t *testing.T) {
 		require.Equal(t, account, node.GetAccount())
 		require.NotEmpty(t, account.Link)
 		require.NotEmpty(t, account.PublicKey)
-		require.Equal(t, account.State, Account_NotReady)
 		require.Empty(t, account.DisplayName)
 	}
 
@@ -129,7 +126,6 @@ func TestUnstableServiceSetNameAsync(t *testing.T) {
 		require.Equal(t, account, node.GetAccount())
 		require.NotEmpty(t, account.Link)
 		require.NotEmpty(t, account.PublicKey)
-		require.Equal(t, account.State, Account_Ready)
 		require.Equal(t, account.DisplayName, "foo")
 		require.Equal(t, account.PublicKey, previousAccount.PublicKey)
 		require.NotEqual(t, account.Link, previousAccount.Link)
@@ -445,7 +441,7 @@ func TestBrokenPeersCreateJoinConversation(t *testing.T) {
 
 	// get conv link
 	gpk := createdConv.GetPublicKey()
-	gpkb, err := stringToBytes(gpk)
+	gpkb, err := b64DecodeBytes(gpk)
 	require.NoError(t, err)
 	sbg, err := creator.GetClient().ShareableBertyGroup(ctx, &ShareableBertyGroup_Request{GroupPK: gpkb, GroupName: convName})
 	require.NoError(t, err)
@@ -888,7 +884,7 @@ func testJoinConversation(ctx context.Context, t *testing.T, joiner *TestingAcco
 			device := payload.(*StreamEvent_DeviceUpdated).GetDevice()
 			// FIXME: can be better to check if public key and owner public key are unique here
 			require.NotEmpty(t, device.GetPublicKey())
-			require.NotEmpty(t, device.GetOwnerPublicKey())
+			require.NotEmpty(t, device.GetMemberPublicKey())
 		}
 
 		// each existing device receives a device update for the joiner
@@ -899,7 +895,7 @@ func testJoinConversation(ctx context.Context, t *testing.T, joiner *TestingAcco
 			require.NoError(t, err)
 			device := payload.(*StreamEvent_DeviceUpdated).GetDevice()
 			// FIXME: can be better to check if public key and owner public key are unique here
-			require.NotEmpty(t, device.GetOwnerPublicKey())
+			require.NotEmpty(t, device.GetMemberPublicKey())
 			require.NotEmpty(t, device.GetPublicKey())
 		}
 
@@ -993,7 +989,7 @@ func testAddContact(ctx context.Context, t *testing.T, requester, requested *Tes
 		if requester.GetAccount().GetDisplayName() != "" {
 			require.Equal(t, contact.GetDisplayName(), requester.GetAccount().GetDisplayName())
 		}
-		require.Equal(t, contact.GetState(), Contact_Established)
+		require.Equal(t, contact.GetState(), Contact_Accepted)
 		groupPK = contact.GetConversationPublicKey()
 	}
 
@@ -1018,7 +1014,7 @@ func testAddContact(ctx context.Context, t *testing.T, requester, requested *Tes
 		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
 		device := payload.(*StreamEvent_DeviceUpdated).Device
-		require.Equal(t, requested.GetAccount().GetPublicKey(), device.GetOwnerPublicKey())
+		require.Equal(t, requested.GetAccount().GetPublicKey(), device.GetMemberPublicKey())
 		require.NotEmpty(t, device.GetPublicKey())
 	}
 
@@ -1029,7 +1025,7 @@ func testAddContact(ctx context.Context, t *testing.T, requester, requested *Tes
 		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
 		device := payload.(*StreamEvent_DeviceUpdated).Device
-		require.Equal(t, requester.GetAccount().GetPublicKey(), device.GetOwnerPublicKey())
+		require.Equal(t, requester.GetAccount().GetPublicKey(), device.GetMemberPublicKey())
 		require.NotEmpty(t, device.GetPublicKey())
 	}
 
@@ -1046,7 +1042,7 @@ func testAddContact(ctx context.Context, t *testing.T, requester, requested *Tes
 		if requested.GetAccount().GetDisplayName() != "" {
 			require.Equal(t, contact.GetDisplayName(), requested.GetAccount().GetDisplayName())
 		}
-		require.Equal(t, contact.GetState(), Contact_Established)
+		require.Equal(t, contact.GetState(), Contact_Accepted)
 		require.Equal(t, contact.GetConversationPublicKey(), groupPK)
 	}
 

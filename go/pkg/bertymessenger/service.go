@@ -34,7 +34,7 @@ type service struct {
 	logger         *zap.Logger
 	protocolClient bertyprotocol.ProtocolServiceClient
 	startedAt      time.Time
-	db             *gorm.DB
+	db             *dbWrapper
 	dispatcher     *Dispatcher
 	cancelFn       func()
 	optsCleanup    func()
@@ -42,6 +42,7 @@ type service struct {
 	handlerMutex   sync.Mutex
 	notifmanager   notification.Manager
 	lcmanager      *lifecycle.Manager
+	eventHandler   *eventHandler
 }
 
 type Opts struct {
@@ -91,7 +92,8 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 	opts.Logger = opts.Logger.Named("msg")
 	opts.Logger.Debug("initializing messenger", zap.String("version", bertyversion.Version))
 
-	if err := initDB(opts.DB); err != nil {
+	db := newDBWrapper(opts.DB)
+	if err := db.initDB(); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
@@ -100,7 +102,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 		protocolClient: client,
 		logger:         opts.Logger,
 		startedAt:      time.Now(),
-		db:             opts.DB,
+		db:             db,
 		notifmanager:   opts.NotificationManager,
 		lcmanager:      opts.LifeCycleManager,
 		dispatcher:     NewDispatcher(),
@@ -110,15 +112,17 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 		handlerMutex:   sync.Mutex{},
 	}
 
+	svc.eventHandler = newEventHandler(ctx, db, client, opts.Logger, &svc)
+
 	icr, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
 	if err != nil {
 		return nil, err
 	}
-	pkStr := bytesToString(icr.GetAccountGroupPK())
+	pkStr := b64EncodeBytes(icr.GetAccountGroupPK())
 
 	// get or create account in DB
 	{
-		acc, err := getAccount(svc.db)
+		acc, err := svc.db.getAccount()
 		switch {
 		case err == gorm.ErrRecordNotFound: // account not found, create a new one
 			svc.logger.Debug("account not found, creating a new one", zap.String("pk", pkStr))
@@ -126,17 +130,13 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 			if err != nil {
 				return nil, err
 			}
-			acc = Account{
-				PublicKey: pkStr,
-				Link:      ret.GetHTMLURL(),
-				State:     Account_NotReady,
-			}
-			if err := svc.db.Create(&acc).Error; err != nil {
+
+			if err = svc.db.addAccount(pkStr, ret.GetHTMLURL()); err != nil {
 				return nil, err
 			}
 		case err != nil: // internal error
 			return nil, err
-		case err == nil && pkStr != acc.GetPublicKey(): // Check that we are connected to the correct node
+		case pkStr != acc.GetPublicKey(): // Check that we are connected to the correct node
 			// FIXME: use errcode
 			return nil, errcode.TODO.Wrap(errors.New("messenger's account key does not match protocol's account key"))
 		default: // account exists, and public keys match
@@ -184,13 +184,12 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 
 	// subscribe to groups
 	{
-		var convs []Conversation
-		err := svc.db.Find(&convs).Error
+		convs, err := svc.db.getAllConversations()
 		if err != nil {
 			return nil, err
 		}
 		for _, cv := range convs {
-			gpkb, err := stringToBytes(cv.GetPublicKey())
+			gpkb, err := b64DecodeBytes(cv.GetPublicKey())
 			if err != nil {
 				return nil, err
 			}
@@ -208,17 +207,12 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 
 	// subscribe to contact groups
 	{
-		var contacts []Contact
-		err := svc.db.Find(&contacts).Error
+		contacts, err := svc.db.getContactsByState(Contact_OutgoingRequestSent)
 		if err != nil {
 			return nil, err
 		}
 		for _, c := range contacts {
-			if c.State != Contact_OutgoingRequestSent {
-				continue
-			}
-
-			gpkb, err := stringToBytes(c.GetConversationPublicKey())
+			gpkb, err := b64DecodeBytes(c.GetConversationPublicKey())
 			if err != nil {
 				return nil, err
 			}
@@ -253,12 +247,12 @@ func (svc *service) subscribeToMetadata(gpkb []byte) error {
 				svc.logStreamingError("group metadata", err)
 				return
 			}
+
 			svc.handlerMutex.Lock()
-			err = handleProtocolEvent(svc, gme)
-			svc.handlerMutex.Unlock()
-			if err != nil {
+			if err := svc.eventHandler.handleMetadataEvent(gme); err != nil {
 				svc.logger.Error("failed to handle protocol event", zap.Error(errcode.ErrInternal.Wrap(err)))
 			}
+			svc.handlerMutex.Unlock()
 		}
 	}()
 	return nil
@@ -285,12 +279,12 @@ func (svc *service) subscribeToMessages(gpkb []byte) error {
 				svc.logger.Warn("failed to unmarshal AppMessage", zap.Error(err))
 				return
 			}
+
 			svc.handlerMutex.Lock()
-			err = handleAppMessage(svc, bytesToString(gpkb), gme, &am)
-			svc.handlerMutex.Unlock()
-			if err != nil {
+			if err := svc.eventHandler.handleAppMessage(b64EncodeBytes(gpkb), gme, &am); err != nil {
 				svc.logger.Error("failed to handle app message", zap.Error(errcode.ErrInternal.Wrap(err)))
 			}
+			svc.handlerMutex.Unlock()
 		}
 	}()
 	return nil

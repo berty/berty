@@ -47,7 +47,7 @@ const Account: React.FC = () => {
 
 const AccountGate: React.FC = ({ children }) => {
 	const ctx = React.useContext(MsgrContext)
-	return ctx.account && ctx.account.state === messengerpb.Account.State.Ready ? (
+	return ctx.account && ctx.account.displayName !== '' ? (
 		<>{children}</>
 	) : (
 		<CreateAccount />
@@ -367,7 +367,7 @@ const CreateMultiMember = () => {
 	}, [done, errorReply])
 	return (
 		<>
-		{contactList.filter((contact: any) => contact.state === messengerpb.Contact.State.Established).map((contact: any) => <button
+		{contactList.filter((contact: any) => contact.state === messengerpb.Contact.State.Accepted).map((contact: any) => <button
 		key={`${contact.publicKey}`}
 		onClick={
 			() => members.find(m => m.publicKey === contact.publicKey) ? setMembers(members.filter(member => member.publicKey !== contact.publicKey)) : setMembers([...members, contact])
