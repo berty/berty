@@ -85,6 +85,7 @@ jobs:
                 -sdk iphoneos \
                 -archivePath /tmp/Berty.xcarchive \
                 CODE_SIGN_IDENTITY="" CODE_SIGNING_ALLOWED=NO
+          codesign -fs "Berty Dummy" /tmp/Berty.xcarchive/Products/Applications/Berty\ Yolo.app/Frameworks/Shake.framework
           codesign -fs "Berty Dummy" /tmp/Berty.xcarchive/Products/Applications/Berty\ Yolo.app
           mkdir Payload
           mv /tmp/Berty.xcarchive/Products/Applications/Berty\ Yolo.app Payload/
