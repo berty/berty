@@ -77,10 +77,7 @@ jobs:
           SHAKEBUGS_API_SECRET: ${{ secrets.SHAKEBUGS_API_SECRET }}
         run: |
           echo "SHAKE_API_ID=$SHAKEBUGS_API_ID\nSHAKE_API_SECRET=$SHAKEBUGS_API_SECRET" > .env
-
-          touch Gemfile
-          make Gemfile.lock deps ios.deps
-
+          make deps ios.gomobile packages/berty-app/ios/Berty.xcworkspace
           xcodebuild archive \
                 -workspace packages/berty-app/ios/Berty.xcworkspace \
                 -scheme "Berty Yolo" \

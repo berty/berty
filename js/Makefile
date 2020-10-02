@@ -154,28 +154,21 @@ print-%: ; @echo $* = $($*)
 
 #### iOS
 
-.PHONY: ios.deps
-ios.deps: deps Gemfile.lock ios.gomobile packages/berty-app/ios/Berty.xcworkspace
-
 .PHONY: ios.run
-ios.run: ios.deps
+ios.run: deps ios.gomobile packages/berty-app/ios/Berty.xcworkspace
 	[ -f ".env.$(APP_CONFIG)" ] && cp .env.$(APP_CONFIG) /tmp/envfile || cp .env /tmp/envfile
 	cd packages/berty-app && $(react-native) run-ios --no-packager --configuration=$(if $(filter $(APP_CONFIG), development),Debug,Release) --scheme="$(IOS_APP_TARGET)" --simulator='$(IOS_DEVICE)'
 
 .PHONY: ios.release
-ios.release: ios.deps
+ios.release: deps ios.gomobile packages/berty-app/ios/Berty.xcworkspace
 	../tool/build/shell/release-ios.sh
-
-.PHONY: ios.blank
-ios.blank: ios.deps
-	bundle exec fastlane run gym skip_codesigning:true workspace:./packages/berty-app/ios/Berty.xcworkspace 'scheme:Blank'
 
 .PHONY: ios.log
 ios.log:
 	cd packages/berty-app && $(react-native) log-ios
 
 .PHONY: ios.storybook
-ios.storybook: ios.deps packages/storybook-mobile/ios/Pods _storybook.mobile.start
+ios.storybook: deps packages/storybook-mobile/ios/Pods _storybook.mobile.start
 	lsof -t -i :$(STORYBOOK_MOBILE_PORT) | xargs --no-run-if-empty kill
 	lsof -t -i :$(REACT_NATIVE_PORT) | xargs --no-run-if-empty kill
 	cd packages/storybook-mobile && start-storybook &
@@ -304,7 +297,7 @@ $(pkg_mod): $(pkg_desc)
 	touch $(pkg_mod)
 	touch node_modules/go.mod # avoid go to lookup in this directory
 
-Gemfile.lock: Gemfile
+vendor/bundle: Gemfile
 	bundle install
 	touch $@
 
@@ -344,11 +337,11 @@ packages/go-bridge/android/libs/gobridge.aar: $(bridge_src)
 	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind -o js/$@ -v $(ext_ldflags) -target android ./go/framework/bertybridge
 	touch $@
 
-packages/berty-app/ios/Berty.xcworkspace: packages/berty-app/ios/Berty.xcodeproj vendor/bundle packages/berty-app/ios/Podfile packages/berty-app/package.json $(xcodegen_yml)
+packages/berty-app/ios/Berty.xcworkspace: packages/berty-app/ios/Berty.xcodeproj packages/berty-app/ios/Podfile
 	cd packages/berty-app/ios && bundle exec pod install
 	touch $@
 
-packages/berty-app/ios/Berty.xcodeproj: $(xcodegen_yml)
+packages/berty-app/ios/Berty.xcodeproj: vendor/bundle $(xcodegen_yml)
 	mkdir -p packages/berty-app/ios/Berty
 	touch packages/berty-app/ios/Berty/main.jsbundle
 
@@ -361,7 +354,4 @@ packages/berty-app/ios/Berty.xcodeproj: $(xcodegen_yml)
 	XCODEGEN_PROJECT_ROOT=packages/berty-app/ios \
 		bundle exec fastlane run xcodegen
 
-	touch $@
-
-packages/berty-app/ios/Podfile:
 	touch $@
