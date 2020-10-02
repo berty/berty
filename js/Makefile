@@ -30,7 +30,7 @@ pkg_desc := $(patsubst %, %/package.json, $(pkg)) package.json
 bridge_src := $(call rwildcard,../go,*.go) ../go.sum
 react-native := $(abspath node_modules/.bin/react-native)
 clisim := packages/berty-app/node_modules/.bin/clisim
-xcodegen_yml := $(dir $(wildcard $(PWD)/packages/berty-app/ios/*.yaml))
+xcodegen_yml := $(wildcard $(PWD)/packages/berty-app/ios/*.yaml)
 
 ## User commands
 
@@ -68,7 +68,7 @@ deps.update: deps
 	upd
 
 .PHONY: generate
-generate: deps ios.deps gen.sum
+generate: deps gen.sum
 
 .PHONY: clean
 clean:
@@ -159,7 +159,7 @@ ios.deps: deps Gemfile.lock ios.gomobile packages/berty-app/ios/Berty.xcworkspac
 
 .PHONY: ios.run
 ios.run: ios.deps
-	[ -f ".env.$(APP_CONFIG)" ] && cp .env.$(APP_CONFIG) /tmp/envfile  gs|| cp .env /tmp/envfile
+	[ -f ".env.$(APP_CONFIG)" ] && cp .env.$(APP_CONFIG) /tmp/envfile || cp .env /tmp/envfile
 	cd packages/berty-app && $(react-native) run-ios --no-packager --configuration=$(if $(filter $(APP_CONFIG), development),Debug,Release) --scheme="$(IOS_APP_TARGET)" --simulator='$(IOS_DEVICE)'
 
 .PHONY: ios.release
@@ -304,10 +304,7 @@ $(pkg_mod): $(pkg_desc)
 	touch $(pkg_mod)
 	touch node_modules/go.mod # avoid go to lookup in this directory
 
-vendor/bundle:
-	mkdir -p $@
-
-Gemfile.lock: vendor/bundle Gemfile
+Gemfile.lock: Gemfile
 	bundle install
 	touch $@
 
@@ -351,8 +348,9 @@ packages/berty-app/ios/Berty.xcworkspace: packages/berty-app/ios/Berty.xcodeproj
 	cd packages/berty-app/ios && bundle exec pod install
 	touch $@
 
-packages/berty-app/ios/Berty.xcodeproj: packages/berty-app/ios/Berty/main.jsbundle $(xcodegen_yml)
+packages/berty-app/ios/Berty.xcodeproj: $(xcodegen_yml)
 	mkdir -p packages/berty-app/ios/Berty
+	touch packages/berty-app/ios/Berty/main.jsbundle
 
 	FASTLANE_SKIP_UPDATE_CHECK=1 \
 	FASTLANE_HIDE_CHANGELOG=1 \
@@ -363,9 +361,6 @@ packages/berty-app/ios/Berty.xcodeproj: packages/berty-app/ios/Berty/main.jsbund
 	XCODEGEN_PROJECT_ROOT=packages/berty-app/ios \
 		bundle exec fastlane run xcodegen
 
-	touch $@
-
-packages/berty-app/ios/Berty/main.jsbundle:
 	touch $@
 
 packages/berty-app/ios/Podfile:

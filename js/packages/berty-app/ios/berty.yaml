@@ -14,7 +14,7 @@ fileGroups:
 
 configs:
   Debug: debug
-  Release: release
+  AppStore Release: release
   Staff Release: release
   Yolo Release: release
 
@@ -28,15 +28,15 @@ schemes:
       config: Debug
     archive:
       config: Debug
-  Berty Release:
+  Berty AppStore:
     build:
       parallelizeBuild: false
       targets:
         Berty: all
     run:
-      config: Release
+      config: AppStore Release
     archive:
-      config: Release
+      config: AppStore Release
   Berty Staff:
     build:
       parallelizeBuild: false
@@ -100,7 +100,7 @@ targets:
     platform: iOS
     configFiles:
       Debug: Configs/Debug.xcconfig
-      Release: Configs/Release.xcconfig
+      AppStore Release: Configs/AppStore.xcconfig
       Staff Release: Configs/Staff.xcconfig
       Yolo Release: Configs/Yolo.xcconfig
     settings:
@@ -115,7 +115,7 @@ targets:
           DEVELOPMENT_TEAM: WMBQ84HN4T
           PRODUCT_NAME: Berty Debug
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).debug
-        Release:
+        AppStore:
           DEVELOPMENT_TEAM: WMBQ84HN4T
           PRODUCT_NAME: Berty Release
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).release
