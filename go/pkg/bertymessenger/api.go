@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/gogo/protobuf/proto"
@@ -16,6 +17,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/username"
 )
 
 func (svc *service) DevShareInstanceBertyID(ctx context.Context, req *DevShareInstanceBertyID_Request) (*DevShareInstanceBertyID_Reply, error) {
@@ -85,12 +87,7 @@ func (svc *service) internalInstanceShareableBertyID(ctx context.Context, req *I
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	displayName := req.DisplayName
-	if displayName == "" {
-		// FIXME: get it from somewhere
-		displayName = "anonymous#1337"
-	}
-
+	displayName := strings.TrimSpace(req.DisplayName)
 	ret := InstanceShareableBertyID_Reply{
 		BertyID: &BertyID{
 			DisplayName:          displayName,
@@ -1118,4 +1115,10 @@ func (svc *service) BannerQuote(ctx context.Context, request *BannerQuote_Reques
 		Author: quote.Author,
 	}
 	return &ret, nil
+}
+
+func (svc *service) GetUsername(ctx context.Context, request *GetUsername_Request) (*GetUsername_Reply, error) {
+	return &GetUsername_Reply{
+		Username: username.GetUsername(),
+	}, nil
 }
