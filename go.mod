@@ -57,7 +57,7 @@ require (
 	github.com/libp2p/go-libp2p-transport-upgrader v0.3.0
 	github.com/libp2p/go-yamux v1.3.8 // indirect
 	github.com/markbates/pkger v0.17.1
-	github.com/mattn/go-sqlite3 v1.14.0
+	github.com/mattn/go-sqlite3 v1.14.3
 	github.com/mdp/qrterminal/v3 v3.0.0
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/mitchellh/copystructure v1.0.0 // indirect
@@ -92,8 +92,8 @@ require (
 	google.golang.org/grpc/examples v0.0.0-20200922230038-4e932bbcb079
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1
-	gorm.io/driver/sqlite v1.0.8
-	gorm.io/gorm v0.2.26
+	gorm.io/driver/sqlite v1.1.3
+	gorm.io/gorm v1.20.2
 	moul.io/godev v1.7.0
 	moul.io/openfiles v1.2.0
 	moul.io/srand v1.6.0

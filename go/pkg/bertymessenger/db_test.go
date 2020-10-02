@@ -34,7 +34,9 @@ func getInMemoryTestDB(t testing.TB, opts ...getInMemoryTestDBOpts) (*dbWrapper,
 		}
 	}
 
-	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1103,7 +1105,6 @@ func Test_dropAllTables(t *testing.T) {
 	defer dispose()
 
 	tables := []string(nil)
-
 	err := db.db.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").Scan(&tables).Error
 	require.NoError(t, err)
 	require.NotEmpty(t, tables)
@@ -1111,6 +1112,7 @@ func Test_dropAllTables(t *testing.T) {
 	err = dropAllTables(db.db)
 	require.NoError(t, err)
 
+	tables = []string(nil)
 	err = db.db.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").Scan(&tables).Error
 	require.NoError(t, err)
 	require.Empty(t, tables)

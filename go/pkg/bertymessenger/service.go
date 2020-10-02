@@ -62,7 +62,10 @@ func (opts *Opts) applyDefaults() (func(), error) {
 		opts.Logger.Warn("Messenger started without database, creating a volatile one in memory")
 		zapLogger := zapgorm2.New(opts.Logger.Named("gorm"))
 		zapLogger.SetAsDefault()
-		db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{Logger: zapLogger})
+		db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
+			Logger:                                   zapLogger,
+			DisableForeignKeyConstraintWhenMigrating: true,
+		})
 		if err != nil {
 			return nil, err
 		}
