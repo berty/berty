@@ -176,8 +176,9 @@ ios.storybook: deps packages/storybook-mobile/ios/Pods _storybook.mobile.start
 	cd packages/storybook-mobile && $(react-native) run-ios --simulator='iPhone 11' --no-packager
 	#cd packages/storybook-mobile && $(react-native) run-ios --no-packager
 
+
+ios.xcodegen: packages/berty-app/ios/Berty.xcworkspace
 ios.gomobile: packages/go-bridge/ios/Frameworks/Bertybridge.framework
-android.gomobile: packages/go-bridge/android/libs/gobridge.aar
 #### Android
 ####
 
@@ -210,6 +211,7 @@ android.storybook: deps start.storybook.mobile packages/storybook-mobile/android
 	cd packages/storybook-mobile && clisim -af
 	cd packages/storybook-mobile && $(react-native) run-android --no-packager
 
+android.gomobile: packages/go-bridge/android/libs/gobridge.aar
 #### Web
 
 .PHONY: web.storybook
