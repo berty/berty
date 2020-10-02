@@ -90,7 +90,7 @@ jobs:
           codesign -fs "Berty Dummy" /tmp/Berty.xcarchive/Products/Applications/Berty\ Yolo.app/Frameworks/Shake.framework
           codesign -fs "Berty Dummy" /tmp/Berty.xcarchive/Products/Applications/Berty\ Yolo.app
           mkdir Payload
-          mv /tmp/Berty.xcarchive/Products/Applications/Berty\ Release.app Payload/
+          mv /tmp/Berty.xcarchive/Products/Applications/Berty\ Yolo.app Payload/
           zip -r ${{ github.workspace }}/Berty\ Yolo.dummy-signed-ipa Payload
 
       - name: Upload the Archive

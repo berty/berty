@@ -46,7 +46,7 @@ steps:
       - export PATH=$$(brew --prefix ruby)/bin:$$PATH # use brew ruby
       - cd js
       - cat ~/.buildkite-agent/shake_secrets >> .env
-      - IOS_BUNDLE_ID=tech.berty.ios.staff APP_SCHEME="Berty Staff" IOS_RELEASE_METHOD=ad-hoc IOS_PROFILE=AdHoc IOS_TEAM_ID=WMBQ84HN4T nice -n 10 make ios.release
+      - IOS_BUNDLE_ID=tech.berty.ios.yolo APP_SCHEME="Berty Yolo" IOS_RELEASE_METHOD=enterprise IOS_PROFILE=InHouse IOS_TEAM_ID=GR5463T564 nice -n 10 make ios.release
       - mv ./build/ios-yolo/development/Berty.ipa ../Berty-Yolo-$BUILDKITE_COMMIT.ipa
       # remove logs if succeed
       - rm -f $$PWD/logs/$BUILDKITE_COMMIT/*

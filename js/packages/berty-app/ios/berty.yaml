@@ -26,12 +26,16 @@ schemes:
         Berty: all
     run:
       config: Debug
+    archive:
+      config: Debug
   Berty Release:
     build:
       parallelizeBuild: false
       targets:
         Berty: all
     run:
+      config: Release
+    archive:
       config: Release
   Berty Staff:
     build:
@@ -40,12 +44,16 @@ schemes:
         Berty: all
     run:
       config: Staff Release
+    archive:
+      config: Staff Release
   Berty Yolo:
     build:
       parallelizeBuild: false
       targets:
         Berty: all
     run:
+      config: Yolo Release
+    archive:
       config: Yolo Release
 
 settings:
@@ -90,8 +98,6 @@ targets:
   Berty:
     type: application
     platform: iOS
-    scheme:
-      parallelizeBuild: false
     configFiles:
       Debug: Configs/Debug.xcconfig
       Release: Configs/Release.xcconfig
