@@ -355,7 +355,7 @@ func Test_dbWrapper_addInteraction(t *testing.T) {
 	i, err := db.addInteraction(Interaction{
 		CID:     "Qm00001",
 		Payload: []byte("payload1"),
-	})
+	}, true)
 	require.NoError(t, err)
 	require.NotNil(t, i)
 	require.Equal(t, "Qm00001", i.CID)
@@ -365,7 +365,7 @@ func Test_dbWrapper_addInteraction(t *testing.T) {
 	i, err = db.addInteraction(Interaction{
 		CID:     "Qm00001",
 		Payload: []byte("payload2"),
-	})
+	}, true)
 	require.NoError(t, err)
 	require.NotNil(t, i)
 	require.Equal(t, "Qm00001", i.CID)
@@ -374,11 +374,19 @@ func Test_dbWrapper_addInteraction(t *testing.T) {
 	i, err = db.addInteraction(Interaction{
 		CID:     "Qm00002",
 		Payload: []byte("payload2"),
-	})
+	}, true)
 	require.NoError(t, err)
 	require.NotNil(t, i)
 	require.Equal(t, "Qm00002", i.CID)
 	require.Equal(t, []byte("payload2"), i.Payload)
+
+	// Should return an error if data already exists
+	i, err = db.addInteraction(Interaction{
+		CID:     "Qm00001",
+		Payload: []byte("payload2"),
+	}, false)
+	require.Error(t, err)
+	require.Nil(t, i)
 
 	// Test relations
 	require.NoError(t, db.db.Create(&Conversation{PublicKey: "conversation_3"}).Error)
@@ -389,7 +397,7 @@ func Test_dbWrapper_addInteraction(t *testing.T) {
 		Payload:               []byte("payload3"),
 		MemberPublicKey:       "member_3",
 		ConversationPublicKey: "conversation_3",
-	})
+	}, true)
 
 	require.NoError(t, err)
 	require.NotNil(t, i)

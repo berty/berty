@@ -560,18 +560,17 @@ func (d *dbWrapper) updateContact(contact Contact) error {
 	})
 }
 
-func (d *dbWrapper) addInteraction(i Interaction) (*Interaction, error) {
-	ret := &Interaction{}
+func (d *dbWrapper) addInteraction(i Interaction, ignoreExisting bool) (*Interaction, error) {
+	query := d.db
+	if ignoreExisting {
+		query = query.Clauses(clause.OnConflict{DoNothing: true})
+	}
 
-	if err := d.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&i).Error; err != nil {
+	if err := query.Create(&i).Error; err != nil {
 		return nil, err
 	}
 
-	if err := d.db.Model(&Interaction{}).Preload(clause.Associations).First(&ret, &Interaction{CID: i.CID}).Error; err != nil {
-		return nil, err
-	}
-
-	return ret, nil
+	return d.getInteractionByCID(i.CID)
 }
 
 func (d *dbWrapper) attributeBacklogInteractions(devicePK, groupPK, memberPK string) ([]*Interaction, error) {
