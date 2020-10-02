@@ -9,18 +9,34 @@ import { useStyles } from '@berty-tech/styles'
 import Color from 'color'
 import palette from 'google-palette'
 import React, { useMemo, useState } from 'react'
-import { Text as TextNative, TouchableOpacity, View } from 'react-native'
+import { Linking, Text as TextNative, TouchableOpacity, View } from 'react-native'
 import Hyperlink from 'react-native-hyperlink'
 import { Icon, Text } from 'react-native-ui-kitten'
 import { SHA3 } from 'sha3'
 import Logo from '../../main/1_berty_picto.svg'
 import { ProceduralCircleAvatar } from '../../shared-components'
+import { useNavigation as useNativeNavigation } from '@react-navigation/core'
 
 const pal = palette('tol-rainbow', 256)
 
 //
 // Message => All messages (group/contact)
 //
+
+async function isBertyDeepLink(client: any, url: String): Promise<boolean> {
+	return new Promise((resolve) => {
+		client
+			.parseDeepLink({
+				link: url,
+			})
+			.then(() => {
+				resolve(true)
+			})
+			.catch(() => {
+				resolve(false)
+			})
+	})
+}
 
 // Types
 // Styles
@@ -313,6 +329,8 @@ export const Message: React.FC<{
 	const inte = useInteraction(id, convPK)
 	const previousMessage = useInteraction(previousMessageId, convPK)
 	const nextMessage = useInteraction(nextMessageId, convPK)
+	const client: any = useClient()
+	const navigation = useNativeNavigation()
 	const _styles = useStylesMessage()
 	const [{ row, margin, padding, column, text, border, color }, { scaleSize }] = useStyles()
 	if (!inte) {
@@ -423,7 +441,20 @@ export const Message: React.FC<{
 							},
 						]}
 					>
-						<Hyperlink linkDefault={true} linkStyle={{ textDecorationLine: 'underline' }}>
+						<Hyperlink
+							onPress={async (url) => {
+								if (await isBertyDeepLink(client, url)) {
+									navigation.navigate('Modals', {
+										screen: 'ManageDeepLink',
+										params: { type: 'link', value: url },
+									})
+									return
+								}
+
+								Linking.canOpenURL(url).then((supported) => supported && Linking.openURL(url))
+							}}
+							linkStyle={{ textDecorationLine: 'underline' }}
+						>
 							<Text
 								style={[
 									{
