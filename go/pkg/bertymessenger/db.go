@@ -289,6 +289,9 @@ func (d *dbWrapper) getConversationByPK(publicKey string) (*Conversation, error)
 }
 
 func (d *dbWrapper) getMemberByPK(publicKey string) (*Member, error) {
+	if publicKey == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("member public key cannot be empty"))
+	}
 	member := &Member{}
 
 	if err := d.db.First(&member, &Member{PublicKey: publicKey}).Error; err != nil {
