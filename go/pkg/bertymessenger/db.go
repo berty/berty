@@ -126,6 +126,10 @@ func (d *dbWrapper) addConversationForContact(groupPK, contactPK string) (*Conve
 }
 
 func (d *dbWrapper) addConversation(groupPK string) (*Conversation, error) {
+	if groupPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
+	}
+
 	conversation := &Conversation{
 		PublicKey:   groupPK,
 		Type:        Conversation_MultiMemberType,
@@ -145,7 +149,7 @@ func (d *dbWrapper) addConversation(groupPK string) (*Conversation, error) {
 
 func (d *dbWrapper) updateConversation(c Conversation) error {
 	if c.PublicKey == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no public key specified"))
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
 	}
 
 	columns := []string(nil)
@@ -182,6 +186,10 @@ func (d *dbWrapper) updateConversation(c Conversation) error {
 }
 
 func (d *dbWrapper) updateConversationReadState(pk string, newUnread bool, eventDate time.Time) error {
+	if pk == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
+	}
+
 	updates := map[string]interface{}{
 		"last_update": timestampMs(eventDate),
 	}
@@ -206,6 +214,10 @@ func (d *dbWrapper) updateConversationReadState(pk string, newUnread bool, event
 }
 
 func (d *dbWrapper) addAccount(pk, url string) error {
+	if pk == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("an account public key is required"))
+	}
+
 	acc := &Account{
 		PublicKey: pk,
 		Link:      url,
@@ -225,6 +237,10 @@ func (d *dbWrapper) addAccount(pk, url string) error {
 }
 
 func (d *dbWrapper) updateAccount(pk, url, displayName string) (*Account, error) {
+	if pk == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an account public key is required"))
+	}
+
 	acc := &Account{}
 
 	values := map[string]interface{}{}
@@ -259,6 +275,10 @@ func (d *dbWrapper) getAccount() (*Account, error) {
 }
 
 func (d *dbWrapper) getDeviceByPK(publicKey string) (*Device, error) {
+	if publicKey == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a device public key is required"))
+	}
+
 	device := &Device{}
 
 	if err := d.db.First(&device, &Device{PublicKey: publicKey}).Error; err != nil {
@@ -269,6 +289,10 @@ func (d *dbWrapper) getDeviceByPK(publicKey string) (*Device, error) {
 }
 
 func (d *dbWrapper) getContactByPK(publicKey string) (*Contact, error) {
+	if publicKey == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
+	}
+
 	contact := &Contact{}
 
 	if err := d.db.First(&contact, &Contact{PublicKey: publicKey}).Error; err != nil {
@@ -279,6 +303,10 @@ func (d *dbWrapper) getContactByPK(publicKey string) (*Contact, error) {
 }
 
 func (d *dbWrapper) getConversationByPK(publicKey string) (*Conversation, error) {
+	if publicKey == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
+	}
+
 	conversation := &Conversation{}
 
 	if err := d.db.First(&conversation, &Conversation{PublicKey: publicKey}).Error; err != nil {
@@ -292,6 +320,7 @@ func (d *dbWrapper) getMemberByPK(publicKey string) (*Member, error) {
 	if publicKey == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("member public key cannot be empty"))
 	}
+
 	member := &Member{}
 
 	if err := d.db.First(&member, &Member{PublicKey: publicKey}).Error; err != nil {
@@ -332,11 +361,19 @@ func (d *dbWrapper) getAllInteractions() ([]*Interaction, error) {
 }
 
 func (d *dbWrapper) getInteractionByCID(cid string) (*Interaction, error) {
+	if cid == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
+	}
+
 	interaction := &Interaction{}
 	return interaction, d.db.Preload(clause.Associations).First(&interaction, &Interaction{CID: cid}).Error
 }
 
 func (d *dbWrapper) addContactRequestOutgoingEnqueued(contactPK, displayName, convPK string) (*Contact, error) {
+	if contactPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
+	}
+
 	contact := &Contact{
 		PublicKey:             contactPK,
 		DisplayName:           displayName,
@@ -356,6 +393,10 @@ func (d *dbWrapper) addContactRequestOutgoingEnqueued(contactPK, displayName, co
 }
 
 func (d *dbWrapper) addContactRequestOutgoingSent(contactPK string) (*Contact, error) {
+	if contactPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
+	}
+
 	contact := &Contact{}
 
 	if res := d.db.
@@ -376,6 +417,10 @@ func (d *dbWrapper) addContactRequestOutgoingSent(contactPK string) (*Contact, e
 }
 
 func (d *dbWrapper) addContactRequestIncomingReceived(contactPK, displayName string) (*Contact, error) {
+	if contactPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
+	}
+
 	if err := d.db.
 		Clauses(clause.OnConflict{DoNothing: true}).
 		Create(&Contact{
@@ -443,6 +488,10 @@ func (d *dbWrapper) addContactRequestIncomingAccepted(contactPK, groupPK string)
 }
 
 func (d *dbWrapper) markInteractionAsAcknowledged(cid string) (*Interaction, error) {
+	if cid == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
+	}
+
 	count := int64(0)
 
 	if err := d.db.Model(&Interaction{}).Where(map[string]interface{}{"cid": cid}).Count(&count).Error; err != nil {
@@ -467,6 +516,10 @@ func (d *dbWrapper) markInteractionAsAcknowledged(cid string) (*Interaction, err
 }
 
 func (d *dbWrapper) getAcknowledgementsCIDsForInteraction(cid string) ([]string, error) {
+	if cid == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
+	}
+
 	var cids []string
 
 	if err := d.db.Model(&Interaction{}).Where(&Interaction{
@@ -480,6 +533,10 @@ func (d *dbWrapper) getAcknowledgementsCIDsForInteraction(cid string) ([]string,
 }
 
 func (d *dbWrapper) deleteInteractions(cids []string) error {
+	if len(cids) == 0 {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("a list of cids is required"))
+	}
+
 	return d.db.Model(&Interaction{}).Delete(&Interaction{}, &cids).Error
 }
 
@@ -512,6 +569,14 @@ func (d *dbWrapper) getDBInfo() (*SystemInfo_DB, error) {
 }
 
 func (d *dbWrapper) addDevice(devicePK string, memberPK string) (*Device, error) {
+	if devicePK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a device public key is required"))
+	}
+
+	if memberPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a member public key is required"))
+	}
+
 	if err := d.tx(func(tx *dbWrapper) error {
 		// Check if this device already exists for another member
 		{
@@ -564,6 +629,10 @@ func (d *dbWrapper) updateContact(contact Contact) error {
 }
 
 func (d *dbWrapper) addInteraction(i Interaction, ignoreExisting bool) (*Interaction, error) {
+	if i.CID == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
+	}
+
 	query := d.db
 	if ignoreExisting {
 		query = query.Clauses(clause.OnConflict{DoNothing: true})
@@ -687,6 +756,10 @@ func (d *dbWrapper) addMember(memberPK, groupPK, displayName string) (*Member, e
 }
 
 func (d *dbWrapper) setConversationIsOpenStatus(conversationPK string, status bool) (*Conversation, bool, error) {
+	if conversationPK == "" {
+		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
+	}
+
 	conversation, err := d.getConversationByPK(conversationPK)
 	if err != nil {
 		return nil, false, err
@@ -718,6 +791,10 @@ func (d *dbWrapper) setConversationIsOpenStatus(conversationPK string, status bo
 }
 
 func (d *dbWrapper) isConversationOpened(conversationPK string) (bool, error) {
+	if conversationPK == "" {
+		return false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
+	}
+
 	var ret int64
 
 	err := d.db.
@@ -742,6 +819,10 @@ func (d *dbLogWrapper) Trace(ctx context.Context, begin time.Time, fc func() (st
 }
 
 func (d *dbWrapper) addServiceToken(accountPK string, serviceToken *bertytypes.ServiceToken) error {
+	if accountPK == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("an account public key is required"))
+	}
+
 	if len(serviceToken.SupportedServices) == 0 {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no services specified"))
 	}
