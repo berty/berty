@@ -258,6 +258,10 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: string }> = ({
 			msg.type === messengerpb.AppMessage.Type.TypeGroupInvitation,
 	)
 
+	if (conv.replyOptions !== null) {
+		messages.push(conv.replyOptions)
+	}
+
 	const flatListRef: any = useRef(null)
 
 	const onScrollToIndexFailed = () => {

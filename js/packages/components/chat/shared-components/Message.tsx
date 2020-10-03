@@ -3,6 +3,7 @@ import {
 	useClient,
 	useConversation,
 	useInteraction,
+	useMsgrContext,
 	useOneToOneContact,
 } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
@@ -530,7 +531,72 @@ export const Message: React.FC<{
 				<MessageInvitation message={inte} />
 			</>
 		)
+	} else if (inte.type === messengerpb.AppMessage.Type.TypeReplyOptions) {
+		return (
+			<>
+				<View style={[padding.horizontal.medium]}>
+					<QuickReplyOptions convPk={convPK} options={inte.payload.options} />
+				</View>
+			</>
+		)
 	} else {
 		return null
 	}
+}
+
+export const QuickReplyOptions: React.FC<{
+	convPk: string
+	options: Array<{ display: string; payload: string }>
+}> = ({ convPk, options }) => {
+	const [{ flex }] = useStyles()
+
+	return (
+		<View style={[flex.align.start]}>
+			{(options || []).map((opt) => (
+				<QuickReplyOption key={opt.display} convPk={convPk} option={opt} />
+			))}
+		</View>
+	)
+}
+
+const QuickReplyOption: React.FC<{
+	convPk: string
+	option: { display: string; payload: string }
+}> = ({ convPk, option }) => {
+	const ctx: any = useMsgrContext()
+	const [{ padding, border, margin }] = useStyles()
+
+	return (
+		<TouchableOpacity
+			onPress={() => {
+				const usermsg = { body: option.payload, sentDate: Date.now() }
+				const buf = messengerpb.AppMessage.UserMessage.encode(usermsg).finish()
+
+				ctx.client
+					?.interact({
+						conversationPublicKey: convPk,
+						type: messengerpb.AppMessage.Type.TypeUserMessage,
+						payload: buf,
+					})
+					.catch((e: any) => {
+						console.warn('e sending message:', e)
+					})
+			}}
+		>
+			<View
+				style={[
+					border.radius.top.small,
+					border.radius.left.small,
+					border.radius.right.small,
+					margin.top.tiny,
+					border.color.grey,
+					border.scale(2),
+					padding.horizontal.scale(8),
+					padding.vertical.scale(4),
+				]}
+			>
+				<Text>{option.display}</Text>
+			</View>
+		</TouchableOpacity>
+	)
 }

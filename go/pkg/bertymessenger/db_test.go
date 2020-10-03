@@ -1316,3 +1316,40 @@ func Test_dbWrapper_addServiceToken(t *testing.T) {
 	tok = &ServiceToken{}
 	require.Error(t, db.db.Model(&ServiceToken{}).Where(&ServiceToken{TokenID: tok2.TokenID(), ServiceType: "srv2"}).First(&tok).Error)
 }
+
+func Test_dbWrapper_getReplyOptionsCIDForConversation(t *testing.T) {
+	db, dispose := getInMemoryTestDB(t)
+	defer dispose()
+
+	cid, err := db.getReplyOptionsCIDForConversation("")
+	require.Error(t, err)
+	require.Equal(t, "", cid)
+
+	cid, err = db.getReplyOptionsCIDForConversation("unknown_conversation")
+	require.NoError(t, err)
+	require.Equal(t, "", cid)
+
+	db.db.Create(&Interaction{CID: "cid_1", Type: AppMessage_TypeReplyOptions, ConversationPublicKey: "conv_1", IsMe: false})
+
+	cid, err = db.getReplyOptionsCIDForConversation("conv_1")
+	require.NoError(t, err)
+	require.Equal(t, "cid_1", cid)
+
+	db.db.Create(&Interaction{CID: "cid_2", Type: AppMessage_TypeUserMessage, ConversationPublicKey: "conv_1", IsMe: false})
+
+	cid, err = db.getReplyOptionsCIDForConversation("conv_1")
+	require.NoError(t, err)
+	require.Equal(t, "cid_1", cid)
+
+	db.db.Create(&Interaction{CID: "cid_3", Type: AppMessage_TypeReplyOptions, ConversationPublicKey: "conv_1", IsMe: false})
+
+	cid, err = db.getReplyOptionsCIDForConversation("conv_1")
+	require.NoError(t, err)
+	require.Equal(t, "cid_3", cid)
+
+	db.db.Create(&Interaction{CID: "cid_4", Type: AppMessage_TypeUserMessage, ConversationPublicKey: "conv_1", IsMe: true})
+
+	cid, err = db.getReplyOptionsCIDForConversation("conv_1")
+	require.NoError(t, err)
+	require.Equal(t, "", cid)
+}
