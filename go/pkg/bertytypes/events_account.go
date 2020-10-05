@@ -95,3 +95,7 @@ func (m *AccountServiceTokenAdded) SetDevicePK(pk []byte) {
 func (m *AccountServiceTokenRemoved) SetDevicePK(pk []byte) {
 	m.DevicePK = pk
 }
+
+func (m *GroupReplicating) SetDevicePK(pk []byte) {
+	m.DevicePK = pk
+}

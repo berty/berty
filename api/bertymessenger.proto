@@ -70,6 +70,9 @@ service MessengerService {
   // ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents
   rpc ReplicationServiceRegisterGroup(ReplicationServiceRegisterGroup.Request) returns (ReplicationServiceRegisterGroup.Reply);
 
+  // ReplicationSetAutoEnable Sets whether new groups should be replicated automatically or not
+  rpc ReplicationSetAutoEnable(ReplicationSetAutoEnable.Request) returns (ReplicationSetAutoEnable.Reply);
+
   // BannerQuote returns the quote of the day.
   rpc BannerQuote(BannerQuote.Request) returns (BannerQuote.Reply);
 
@@ -263,6 +266,7 @@ message SystemInfo {
     int64 members = 5;
     int64 devices = 6;
     int64 service_tokens = 7;
+    int64 conversation_replication_info = 8;
     // older, more recent
   }
 }
@@ -283,6 +287,7 @@ message Account {
   string display_name = 2;
   string link = 3;
   repeated ServiceToken service_tokens = 5 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
+  bool replicate_new_groups_automatically = 6 [(gogoproto.moretags) = "gorm:\"default:true\""];
 }
 
 message ServiceToken {
@@ -346,9 +351,9 @@ message Conversation {
   string account_member_public_key = 11;
   string local_device_public_key = 12;
   int64 created_date = 13;
-
   string reply_options_cid = 14 [(gogoproto.moretags) = "gorm:\"column:reply_options_cid\"", (gogoproto.customname) = "ReplyOptionsCID"];
   Interaction reply_options = 15 [(gogoproto.customname) = "ReplyOptions"];
+  repeated ConversationReplicationInfo replication_info = 16 [(gogoproto.moretags) = "gorm:\"foreignKey:ConversationPublicKey\""];
 
   // TODO: avatar_cid
 
@@ -358,6 +363,14 @@ message Conversation {
     ContactType = 2;
     MultiMemberType = 3;
   }
+}
+
+message ConversationReplicationInfo {
+  string cid = 1 [(gogoproto.moretags) = "gorm:\"primaryKey;column:cid\"", (gogoproto.customname) = "CID"];
+  string conversation_public_key = 2;
+  string member_public_key = 3;
+  string authentication_url = 4 [(gogoproto.customname) = "AuthenticationURL"];
+  string replication_server = 5;
 }
 
 message Member {
@@ -514,6 +527,14 @@ message ReplicationServiceRegisterGroup {
     string conversation_public_key = 2;
   }
   message Reply {}
+}
+
+message ReplicationSetAutoEnable {
+  message Request {
+    bool enabled = 1;
+  }
+  message Reply {
+  }
 }
 
 message BannerQuote {

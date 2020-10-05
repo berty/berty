@@ -7,6 +7,7 @@ import (
 
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
+	ipfsCid "github.com/ipfs/go-cid"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 
@@ -50,6 +51,7 @@ func newEventHandler(ctx context.Context, db *dbWrapper, protocolClient bertypro
 		bertytypes.EventTypeGroupMemberDeviceAdded:                h.groupMemberDeviceAdded,
 		bertytypes.EventTypeGroupMetadataPayloadSent:              h.groupMetadataPayloadSent,
 		bertytypes.EventTypeAccountServiceTokenAdded:              h.accountServiceTokenAdded,
+		bertytypes.EventTypeGroupReplicating:                      h.groupReplicating,
 	}
 
 	h.appMessageHandlers = map[AppMessage_Type]struct {
@@ -157,6 +159,42 @@ func (h *eventHandler) accountServiceTokenAdded(gme *bertytypes.GroupMetadataEve
 		if err := h.svc.dispatcher.StreamEvent(StreamEvent_TypeAccountUpdated, &StreamEvent_AccountUpdated{Account: acc}); err != nil {
 			return errcode.TODO.Wrap(err)
 		}
+	}
+
+	return nil
+}
+
+func (h *eventHandler) groupReplicating(gme *bertytypes.GroupMetadataEvent) error {
+	var ev bertytypes.GroupReplicating
+	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	_, cid, err := ipfsCid.CidFromBytes(gme.GetEventContext().GetID())
+	if err != nil {
+		return err
+	}
+
+	convPK := b64EncodeBytes(gme.EventContext.GroupPK)
+
+	if err := h.db.saveConversationReplicationInfo(ConversationReplicationInfo{
+		CID:                   cid.String(),
+		ConversationPublicKey: convPK,
+		MemberPublicKey:       "", // TODO
+		AuthenticationURL:     ev.AuthenticationURL,
+		ReplicationServer:     ev.ReplicationServer,
+	}); err != nil {
+		return err
+	}
+
+	if h.svc == nil {
+		return nil
+	}
+
+	if conv, err := h.db.getConversationByPK(convPK); err != nil {
+		h.logger.Warn("unknown conversation", zap.String("conversation-pk", convPK))
+	} else if err := h.svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conv}); err != nil {
+		return err
 	}
 
 	return nil
@@ -692,8 +730,11 @@ func (h *eventHandler) handleAppMessageSetUserName(tx *dbWrapper, i *Interaction
 
 func interactionFromAppMessage(h *eventHandler, gpk string, gme *bertytypes.GroupMessageEvent, am *AppMessage) (*Interaction, error) {
 	amt := am.GetType()
-	cidb := gme.GetEventContext().GetID()
-	cid := b64EncodeBytes(cidb)
+	_, cid, err := ipfsCid.CidFromBytes(gme.GetEventContext().GetID())
+	if err != nil {
+		return nil, err
+	}
+
 	isMe, err := checkIsMe(h.ctx, h.protocolClient, gme)
 	if err != nil {
 		return nil, err
@@ -705,7 +746,7 @@ func interactionFromAppMessage(h *eventHandler, gpk string, gme *bertytypes.Grou
 	h.logger.Debug("received app message", zap.String("type", amt.String()))
 
 	return &Interaction{
-		CID:                   cid,
+		CID:                   cid.String(),
 		Type:                  amt,
 		Payload:               am.GetPayload(),
 		IsMe:                  isMe,

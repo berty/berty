@@ -2,8 +2,10 @@ package bertyprotocol
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
@@ -12,15 +14,12 @@ import (
 )
 
 func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *bertytypes.ReplicationServiceRegisterGroup_Request) (*bertytypes.ReplicationServiceRegisterGroup_Reply, error) {
-	s.lock.RLock()
-	group, ok := s.groups[string(request.GroupPK)]
-	s.lock.RUnlock()
-
-	if !ok {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("group not found"))
+	gc, err := s.getContextGroupForID(request.GroupPK)
+	if err != nil {
+		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	replGroup, err := group.FilterForReplication()
+	replGroup, err := gc.group.FilterForReplication()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -64,8 +63,11 @@ func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *
 		return nil, errcode.ErrServiceReplicationServer.Wrap(err)
 	}
 
-	// TODO: send event to group informing we are now
-	//  replicating its data somewhere?
+	s.logger.Info("group will be replicated", zap.String("public-key", base64.RawURLEncoding.EncodeToString(request.GroupPK)))
+
+	if _, err := gc.metadataStore.SendGroupReplicating(ctx, token, endpoint); err != nil {
+		s.logger.Error("error while notifying group about replication", zap.Error(err))
+	}
 
 	return &bertytypes.ReplicationServiceRegisterGroup_Reply{}, nil
 }

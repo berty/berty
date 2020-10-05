@@ -99,6 +99,7 @@
     - [GroupMetadataList](#berty.types.v1.GroupMetadataList)
     - [GroupMetadataList.Request](#berty.types.v1.GroupMetadataList.Request)
     - [GroupRemoveAdditionalRendezvousSeed](#berty.types.v1.GroupRemoveAdditionalRendezvousSeed)
+    - [GroupReplicating](#berty.types.v1.GroupReplicating)
     - [InstanceExportData](#berty.types.v1.InstanceExportData)
     - [InstanceExportData.Reply](#berty.types.v1.InstanceExportData.Reply)
     - [InstanceExportData.Request](#berty.types.v1.InstanceExportData.Request)
@@ -900,6 +901,16 @@ GroupRemoveAdditionalRendezvousSeed indicates that a previously added rendezvous
 | device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message, must be the device of an admin of the group |
 | seed | [bytes](#bytes) |  | seed is the additional rendezvous point seed which should be removed |
 
+<a name="berty.types.v1.GroupReplicating"></a>
+
+### GroupReplicating
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
+| authentication_url | [string](#string) |  | authentication_url indicates which server has been used for authentication |
+| replication_server | [string](#string) |  | replication_server indicates which server will be used for replication |
+
 <a name="berty.types.v1.InstanceExportData"></a>
 
 ### InstanceExportData
@@ -1325,6 +1336,7 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | EventTypeMultiMemberGroupAdminRoleGranted | 303 | EventTypeMultiMemberGroupAdminRoleGranted indicates the payload includes that an admin of the group granted another member as an admin |
 | EventTypeAccountServiceTokenAdded | 401 | EventTypeAccountServiceTokenAdded indicates that a new service provider has been registered for this account |
 | EventTypeAccountServiceTokenRemoved | 402 | EventTypeAccountServiceTokenRemoved indicates that a service provider is not available anymore |
+| EventTypeGroupReplicating | 403 | EventTypeGroupReplicating indicates that the group has been registered for replication on a server |
 | EventTypeGroupMetadataPayloadSent | 1001 | EventTypeGroupMetadataPayloadSent indicates the payload includes an app specific event, unlike messages stored on the message store it is encrypted using a static key |
 
 <a name="berty.types.v1.GroupType"></a>

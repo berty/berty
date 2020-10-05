@@ -45,6 +45,7 @@
     - [ConversationOpen](#berty.messenger.v1.ConversationOpen)
     - [ConversationOpen.Reply](#berty.messenger.v1.ConversationOpen.Reply)
     - [ConversationOpen.Request](#berty.messenger.v1.ConversationOpen.Request)
+    - [ConversationReplicationInfo](#berty.messenger.v1.ConversationReplicationInfo)
     - [ConversationStream](#berty.messenger.v1.ConversationStream)
     - [ConversationStream.Reply](#berty.messenger.v1.ConversationStream.Reply)
     - [ConversationStream.Request](#berty.messenger.v1.ConversationStream.Request)
@@ -75,6 +76,9 @@
     - [ReplicationServiceRegisterGroup](#berty.messenger.v1.ReplicationServiceRegisterGroup)
     - [ReplicationServiceRegisterGroup.Reply](#berty.messenger.v1.ReplicationServiceRegisterGroup.Reply)
     - [ReplicationServiceRegisterGroup.Request](#berty.messenger.v1.ReplicationServiceRegisterGroup.Request)
+    - [ReplicationSetAutoEnable](#berty.messenger.v1.ReplicationSetAutoEnable)
+    - [ReplicationSetAutoEnable.Reply](#berty.messenger.v1.ReplicationSetAutoEnable.Reply)
+    - [ReplicationSetAutoEnable.Request](#berty.messenger.v1.ReplicationSetAutoEnable.Request)
     - [ReplyOption](#berty.messenger.v1.ReplyOption)
     - [SendAck](#berty.messenger.v1.SendAck)
     - [SendAck.Reply](#berty.messenger.v1.SendAck.Reply)
@@ -137,6 +141,7 @@
 | display_name | [string](#string) |  |  |
 | link | [string](#string) |  |  |
 | service_tokens | [ServiceToken](#berty.messenger.v1.ServiceToken) | repeated |  |
+| replicate_new_groups_automatically | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.AccountGet"></a>
 
@@ -353,6 +358,7 @@
 | created_date | [int64](#int64) |  |  |
 | reply_options_cid | [string](#string) |  |  |
 | reply_options | [Interaction](#berty.messenger.v1.Interaction) |  |  |
+| replication_info | [ConversationReplicationInfo](#berty.messenger.v1.ConversationReplicationInfo) | repeated |  |
 
 <a name="berty.messenger.v1.ConversationClose"></a>
 
@@ -422,6 +428,18 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | group_pk | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.ConversationReplicationInfo"></a>
+
+### ConversationReplicationInfo
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| cid | [string](#string) |  |  |
+| conversation_public_key | [string](#string) |  |  |
+| member_public_key | [string](#string) |  |  |
+| authentication_url | [string](#string) |  |  |
+| replication_server | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.ConversationStream"></a>
 
@@ -640,6 +658,22 @@ TODO: return cid
 | ----- | ---- | ----- | ----------- |
 | token_id | [string](#string) |  |  |
 | conversation_public_key | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.ReplicationSetAutoEnable"></a>
+
+### ReplicationSetAutoEnable
+
+<a name="berty.messenger.v1.ReplicationSetAutoEnable.Reply"></a>
+
+### ReplicationSetAutoEnable.Reply
+
+<a name="berty.messenger.v1.ReplicationSetAutoEnable.Request"></a>
+
+### ReplicationSetAutoEnable.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| enabled | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.ReplyOption"></a>
 
@@ -873,7 +907,8 @@ TODO: return cid
 | interactions | [int64](#int64) |  |  |
 | members | [int64](#int64) |  |  |
 | devices | [int64](#int64) |  |  |
-| service_tokens | [int64](#int64) |  | older, more recent |
+| service_tokens | [int64](#int64) |  |  |
+| conversation_replication_info | [int64](#int64) |  | older, more recent |
 
 <a name="berty.messenger.v1.SystemInfo.Messenger"></a>
 
@@ -1014,6 +1049,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | AuthServiceCompleteFlow | [.berty.types.v1.AuthServiceCompleteFlow.Request](#berty.types.v1.AuthServiceCompleteFlow.Request) | [.berty.types.v1.AuthServiceCompleteFlow.Reply](#berty.types.v1.AuthServiceCompleteFlow.Reply) | AuthServiceCompleteFlow Completes an authentication flow |
 | ServicesTokenList | [.berty.types.v1.ServicesTokenList.Request](#berty.types.v1.ServicesTokenList.Request) | [.berty.types.v1.ServicesTokenList.Reply](#berty.types.v1.ServicesTokenList.Reply) stream | ServicesTokenList Retrieves the list of service server tokens |
 | ReplicationServiceRegisterGroup | [ReplicationServiceRegisterGroup.Request](#berty.messenger.v1.ReplicationServiceRegisterGroup.Request) | [ReplicationServiceRegisterGroup.Reply](#berty.messenger.v1.ReplicationServiceRegisterGroup.Reply) | ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents |
+| ReplicationSetAutoEnable | [ReplicationSetAutoEnable.Request](#berty.messenger.v1.ReplicationSetAutoEnable.Request) | [ReplicationSetAutoEnable.Reply](#berty.messenger.v1.ReplicationSetAutoEnable.Reply) | ReplicationSetAutoEnable Sets whether new groups should be replicated automatically or not |
 | BannerQuote | [BannerQuote.Request](#berty.messenger.v1.BannerQuote.Request) | [BannerQuote.Reply](#berty.messenger.v1.BannerQuote.Reply) | BannerQuote returns the quote of the day. |
 | GetUsername | [GetUsername.Request](#berty.messenger.v1.GetUsername.Request) | [GetUsername.Reply](#berty.messenger.v1.GetUsername.Reply) | GetUsername returns the name of the device/user using Android/iOS/universal API |
 

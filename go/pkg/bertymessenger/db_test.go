@@ -941,6 +941,19 @@ func Test_dbWrapper_getConversationByPK(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, conversation)
 	require.Equal(t, "conversation_1", conversation.PublicKey)
+	require.Empty(t, conversation.ReplicationInfo)
+
+	require.NoError(t, db.db.Create(&ConversationReplicationInfo{
+		CID:                   "cid_1",
+		ConversationPublicKey: "conversation_1",
+	}).Error)
+
+	conversation, err = db.getConversationByPK("conversation_1")
+	require.NoError(t, err)
+	require.NotNil(t, conversation)
+	require.Equal(t, "conversation_1", conversation.PublicKey)
+	require.NotEmpty(t, conversation.ReplicationInfo)
+	require.Equal(t, "cid_1", conversation.ReplicationInfo[0].CID)
 }
 
 func Test_dbWrapper_getDBInfo(t *testing.T) {
@@ -979,6 +992,10 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 		db.db.Create(&ServiceToken{ServiceType: fmt.Sprintf("%d", i), TokenID: fmt.Sprintf("%d", i)})
 	}
 
+	for i := 0; i < 8; i++ {
+		db.db.Create(&ConversationReplicationInfo{CID: fmt.Sprintf("%d", i)})
+	}
+
 	info, err = db.getDBInfo()
 	require.NoError(t, err)
 	require.Equal(t, int64(1), info.Accounts)
@@ -988,12 +1005,13 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 	require.Equal(t, int64(5), info.Members)
 	require.Equal(t, int64(6), info.Devices)
 	require.Equal(t, int64(7), info.ServiceTokens)
+	require.Equal(t, int64(8), info.ConversationReplicationInfo)
 
 	// Ensure all tables are in the debug data
 	tables := []string(nil)
 	err = db.db.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").Scan(&tables).Error
 	require.NoError(t, err)
-	require.Equal(t, 7, len(tables))
+	require.Equal(t, 8, len(tables))
 }
 
 func Test_dbWrapper_getMemberByPK(t *testing.T) {
@@ -1090,7 +1108,7 @@ func Test_dbWrapper_setConversationIsOpenStatus(t *testing.T) {
 	require.NoError(t, err)
 	require.False(t, updated)
 
-	db.db.Where(&Conversation{PublicKey: "conv1"}).First(&c)
+	db.db.Model(&Conversation{}).Preload("ReplicationInfo").Where(&Conversation{PublicKey: "conv1"}).First(&c)
 	require.Equal(t, "conv1", c.PublicKey)
 	require.True(t, c.IsOpen)
 	require.Equal(t, int32(0), c.UnreadCount)
@@ -1100,14 +1118,14 @@ func Test_dbWrapper_setConversationIsOpenStatus(t *testing.T) {
 	require.True(t, updated)
 
 	c = &Conversation{}
-	db.db.Where(&Conversation{PublicKey: "conv1"}).First(&c)
+	db.db.Model(&Conversation{}).Preload("ReplicationInfo").Where(&Conversation{PublicKey: "conv1"}).First(&c)
 	require.Equal(t, "conv1", c.PublicKey)
 	require.False(t, c.IsOpen)
 	require.Equal(t, int32(0), c.UnreadCount)
 	require.Equal(t, c, conv)
 
 	c = &Conversation{}
-	db.db.Where(&Conversation{PublicKey: "conv2"}).First(&c)
+	db.db.Model(&Conversation{}).Preload("ReplicationInfo").Where(&Conversation{PublicKey: "conv2"}).First(&c)
 	require.Equal(t, "conv2", c.PublicKey)
 	require.False(t, c.IsOpen)
 	require.Equal(t, int32(1000), c.UnreadCount)
@@ -1117,7 +1135,7 @@ func Test_dbWrapper_setConversationIsOpenStatus(t *testing.T) {
 	require.True(t, updated)
 
 	c = &Conversation{}
-	db.db.Where(&Conversation{PublicKey: "conv2"}).First(&c)
+	db.db.Model(&Conversation{}).Preload("ReplicationInfo").Where(&Conversation{PublicKey: "conv2"}).First(&c)
 	require.Equal(t, "conv2", c.PublicKey)
 	require.True(t, c.IsOpen)
 	require.Equal(t, int32(0), c.UnreadCount)

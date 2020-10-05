@@ -104,6 +104,9 @@ enum EventType {
   // EventTypeAccountServiceTokenRemoved indicates that a service provider is not available anymore
   EventTypeAccountServiceTokenRemoved = 402;
 
+  // EventTypeGroupReplicating indicates that the group has been registered for replication on a server
+  EventTypeGroupReplicating = 403;
+
   // EventTypeGroupMetadataPayloadSent indicates the payload includes an app specific event, unlike messages stored on the message store it is encrypted using a static key
   EventTypeGroupMetadataPayloadSent = 1001;
 }
@@ -446,6 +449,17 @@ message AccountServiceTokenRemoved {
   bytes device_pk = 1 [(gogoproto.customname) = "DevicePK"];
 
   string token_id = 2 [(gogoproto.customname) = "TokenID"];
+}
+
+message GroupReplicating {
+  // device_pk is the device sending the event, signs the message
+  bytes device_pk = 1 [(gogoproto.customname) = "DevicePK"];
+
+  // authentication_url indicates which server has been used for authentication
+  string authentication_url = 2 [(gogoproto.customname) = "AuthenticationURL"];
+
+  // replication_server indicates which server will be used for replication
+  string replication_server = 3;
 }
 
 // ***************************************************************************

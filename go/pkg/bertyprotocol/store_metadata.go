@@ -772,6 +772,13 @@ func (m *metadataStore) SendAccountServiceTokenRemoved(ctx context.Context, toke
 	}, bertytypes.EventTypeAccountServiceTokenRemoved)
 }
 
+func (m *metadataStore) SendGroupReplicating(ctx context.Context, t *bertytypes.ServiceToken, endpoint string) (operation.Operation, error) {
+	return m.attributeSignAndAddEvent(ctx, &bertytypes.GroupReplicating{
+		AuthenticationURL: t.AuthenticationURL,
+		ReplicationServer: endpoint,
+	}, bertytypes.EventTypeGroupReplicating)
+}
+
 type accountSignableEvent interface {
 	proto.Message
 	proto.Marshaler
@@ -945,7 +952,7 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB) iface.StoreConstructor {
 
 				metaEvent, event, err := openMetadataEntry(store.OpLog(), entry, g)
 				if err != nil {
-					store.logger.Error("unable to open message", zap.Error(err))
+					store.logger.Error("unable to open metadata payload", zap.Error(err))
 					continue
 				}
 

@@ -51,6 +51,7 @@ export const berty = {
 			AccountContactUnblocked: jsonPb.lookup('.berty.types.v1.AccountContactUnblocked'),
 			AccountServiceTokenAdded: jsonPb.lookup('.berty.types.v1.AccountServiceTokenAdded'),
 			AccountServiceTokenRemoved: jsonPb.lookup('.berty.types.v1.AccountServiceTokenRemoved'),
+			GroupReplicating: jsonPb.lookup('.berty.types.v1.GroupReplicating'),
 			InstanceExportData: jsonPb.lookup('.berty.types.v1.InstanceExportData'),
 			InstanceGetConfiguration: jsonPb.lookup('.berty.types.v1.InstanceGetConfiguration'),
 			ContactRequestReference: jsonPb.lookup('.berty.types.v1.ContactRequestReference'),
@@ -130,6 +131,7 @@ export const berty = {
 			Interaction: jsonPb.lookup('.berty.messenger.v1.Interaction'),
 			Contact: jsonPb.lookup('.berty.messenger.v1.Contact'),
 			Conversation: jsonPb.lookup('.berty.messenger.v1.Conversation'),
+			ConversationReplicationInfo: jsonPb.lookup('.berty.messenger.v1.ConversationReplicationInfo'),
 			Member: jsonPb.lookup('.berty.messenger.v1.Member'),
 			Device: jsonPb.lookup('.berty.messenger.v1.Device'),
 			ContactMetadata: jsonPb.lookup('.berty.messenger.v1.ContactMetadata'),
@@ -145,6 +147,7 @@ export const berty = {
 			ReplicationServiceRegisterGroup: jsonPb.lookup(
 				'.berty.messenger.v1.ReplicationServiceRegisterGroup',
 			),
+			ReplicationSetAutoEnable: jsonPb.lookup('.berty.messenger.v1.ReplicationSetAutoEnable'),
 			BannerQuote: jsonPb.lookup('.berty.messenger.v1.BannerQuote'),
 			GetUsername: jsonPb.lookup('.berty.messenger.v1.GetUsername'),
 		},

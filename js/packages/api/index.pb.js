@@ -579,6 +579,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   EventTypeMultiMemberGroupAdminRoleGranted: 303,
                   EventTypeAccountServiceTokenAdded: 401,
                   EventTypeAccountServiceTokenRemoved: 402,
+                  EventTypeGroupReplicating: 403,
                   EventTypeGroupMetadataPayloadSent: 1001
                 }
               },
@@ -1136,6 +1137,28 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     options: {
                       "(gogoproto.customname)": "TokenID"
                     }
+                  }
+                }
+              },
+              GroupReplicating: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  authenticationUrl: {
+                    type: "string",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "AuthenticationURL"
+                    }
+                  },
+                  replicationServer: {
+                    type: "string",
+                    id: 3
                   }
                 }
               },
@@ -2417,6 +2440,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "ReplicationServiceRegisterGroup.Request",
                     responseType: "ReplicationServiceRegisterGroup.Reply"
                   },
+                  ReplicationSetAutoEnable: {
+                    requestType: "ReplicationSetAutoEnable.Request",
+                    responseType: "ReplicationSetAutoEnable.Reply"
+                  },
                   BannerQuote: {
                     requestType: "BannerQuote.Request",
                     responseType: "BannerQuote.Reply"
@@ -2960,6 +2987,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       serviceTokens: {
                         type: "int64",
                         id: 7
+                      },
+                      conversationReplicationInfo: {
+                        type: "int64",
+                        id: 8
                       }
                     }
                   }
@@ -3004,6 +3035,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     id: 5,
                     options: {
                       "(gogoproto.moretags)": "gorm:foreignKey:AccountPK"
+                    }
+                  },
+                  replicateNewGroupsAutomatically: {
+                    type: "bool",
+                    id: 6,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:default:true"
                     }
                   }
                 }
@@ -3238,6 +3276,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     options: {
                       "(gogoproto.customname)": "ReplyOptions"
                     }
+                  },
+                  replicationInfo: {
+                    rule: "repeated",
+                    type: "ConversationReplicationInfo",
+                    id: 16,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:foreignKey:ConversationPublicKey"
+                    }
                   }
                 },
                 nested: {
@@ -3248,6 +3294,37 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       ContactType: 2,
                       MultiMemberType: 3
                     }
+                  }
+                }
+              },
+              ConversationReplicationInfo: {
+                fields: {
+                  cid: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primaryKey;column:cid",
+                      "(gogoproto.customname)": "CID"
+                    }
+                  },
+                  conversationPublicKey: {
+                    type: "string",
+                    id: 2
+                  },
+                  memberPublicKey: {
+                    type: "string",
+                    id: 3
+                  },
+                  authenticationUrl: {
+                    type: "string",
+                    id: 4,
+                    options: {
+                      "(gogoproto.customname)": "AuthenticationURL"
+                    }
+                  },
+                  replicationServer: {
+                    type: "string",
+                    id: 5
                   }
                 }
               },
@@ -3637,6 +3714,22 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       conversationPublicKey: {
                         type: "string",
                         id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              ReplicationSetAutoEnable: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      enabled: {
+                        type: "bool",
+                        id: 1
                       }
                     }
                   },

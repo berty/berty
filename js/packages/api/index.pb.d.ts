@@ -711,6 +711,7 @@ export namespace berty {
                 EventTypeMultiMemberGroupAdminRoleGranted = 303,
                 EventTypeAccountServiceTokenAdded = 401,
                 EventTypeAccountServiceTokenRemoved = 402,
+                EventTypeGroupReplicating = 403,
                 EventTypeGroupMetadataPayloadSent = 1001
             }
 
@@ -1361,6 +1362,28 @@ export namespace berty {
                 public static verify(message: { [k: string]: any }): (string|null);
                 public static fromObject(object: { [k: string]: any }): berty.types.v1.AccountServiceTokenRemoved;
                 public static toObject(message: berty.types.v1.AccountServiceTokenRemoved, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IGroupReplicating {
+                devicePk?: (Uint8Array|null);
+                authenticationUrl?: (string|null);
+                replicationServer?: (string|null);
+            }
+
+            class GroupReplicating implements IGroupReplicating {
+
+                public devicePk: Uint8Array;
+                public authenticationUrl: string;
+                public replicationServer: string;
+                public static create(properties?: berty.types.v1.IGroupReplicating): berty.types.v1.GroupReplicating;
+                public static encode(message: berty.types.v1.IGroupReplicating, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.types.v1.IGroupReplicating, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupReplicating;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupReplicating;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupReplicating;
+                public static toObject(message: berty.types.v1.GroupReplicating, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -3561,6 +3584,8 @@ export namespace berty {
                 public servicesTokenList(request: berty.types.v1.ServicesTokenList.IRequest): Promise<berty.types.v1.ServicesTokenList.Reply>;
                 public replicationServiceRegisterGroup(request: berty.messenger.v1.ReplicationServiceRegisterGroup.IRequest, callback: berty.messenger.v1.MessengerService.ReplicationServiceRegisterGroupCallback): void;
                 public replicationServiceRegisterGroup(request: berty.messenger.v1.ReplicationServiceRegisterGroup.IRequest): Promise<berty.messenger.v1.ReplicationServiceRegisterGroup.Reply>;
+                public replicationSetAutoEnable(request: berty.messenger.v1.ReplicationSetAutoEnable.IRequest, callback: berty.messenger.v1.MessengerService.ReplicationSetAutoEnableCallback): void;
+                public replicationSetAutoEnable(request: berty.messenger.v1.ReplicationSetAutoEnable.IRequest): Promise<berty.messenger.v1.ReplicationSetAutoEnable.Reply>;
                 public bannerQuote(request: berty.messenger.v1.BannerQuote.IRequest, callback: berty.messenger.v1.MessengerService.BannerQuoteCallback): void;
                 public bannerQuote(request: berty.messenger.v1.BannerQuote.IRequest): Promise<berty.messenger.v1.BannerQuote.Reply>;
                 public getUsername(request: berty.messenger.v1.GetUsername.IRequest, callback: berty.messenger.v1.MessengerService.GetUsernameCallback): void;
@@ -3618,6 +3643,8 @@ export namespace berty {
                 type ServicesTokenListCallback = (error: (Error|null), response?: berty.types.v1.ServicesTokenList.Reply) => void;
 
                 type ReplicationServiceRegisterGroupCallback = (error: (Error|null), response?: berty.messenger.v1.ReplicationServiceRegisterGroup.Reply) => void;
+
+                type ReplicationSetAutoEnableCallback = (error: (Error|null), response?: berty.messenger.v1.ReplicationSetAutoEnable.Reply) => void;
 
                 type BannerQuoteCallback = (error: (Error|null), response?: berty.messenger.v1.BannerQuote.Reply) => void;
 
@@ -4567,6 +4594,7 @@ export namespace berty {
                     members?: (number|Long|null);
                     devices?: (number|Long|null);
                     serviceTokens?: (number|Long|null);
+                    conversationReplicationInfo?: (number|Long|null);
                 }
 
                 class DB implements IDB {
@@ -4578,6 +4606,7 @@ export namespace berty {
                     public members: (number|Long);
                     public devices: (number|Long);
                     public serviceTokens: (number|Long);
+                    public conversationReplicationInfo: (number|Long);
                     public static create(properties?: berty.messenger.v1.SystemInfo.IDB): berty.messenger.v1.SystemInfo.DB;
                     public static encode(message: berty.messenger.v1.SystemInfo.IDB, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.SystemInfo.IDB, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4648,6 +4677,7 @@ export namespace berty {
                 displayName?: (string|null);
                 link?: (string|null);
                 serviceTokens?: (berty.messenger.v1.IServiceToken[]|null);
+                replicateNewGroupsAutomatically?: (boolean|null);
             }
 
             class Account implements IAccount {
@@ -4656,6 +4686,7 @@ export namespace berty {
                 public displayName: string;
                 public link: string;
                 public serviceTokens: berty.messenger.v1.IServiceToken[];
+                public replicateNewGroupsAutomatically: boolean;
                 public static create(properties?: berty.messenger.v1.IAccount): berty.messenger.v1.Account;
                 public static encode(message: berty.messenger.v1.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4792,6 +4823,7 @@ export namespace berty {
                 createdDate?: (number|Long|null);
                 replyOptionsCid?: (string|null);
                 replyOptions?: (berty.messenger.v1.IInteraction|null);
+                replicationInfo?: (berty.messenger.v1.IConversationReplicationInfo[]|null);
             }
 
             class Conversation implements IConversation {
@@ -4811,6 +4843,7 @@ export namespace berty {
                 public createdDate: (number|Long);
                 public replyOptionsCid: string;
                 public replyOptions?: (berty.messenger.v1.IInteraction|null);
+                public replicationInfo: berty.messenger.v1.IConversationReplicationInfo[];
                 public static create(properties?: berty.messenger.v1.IConversation): berty.messenger.v1.Conversation;
                 public static encode(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4830,6 +4863,32 @@ export namespace berty {
                     ContactType = 2,
                     MultiMemberType = 3
                 }
+            }
+
+            interface IConversationReplicationInfo {
+                cid?: (string|null);
+                conversationPublicKey?: (string|null);
+                memberPublicKey?: (string|null);
+                authenticationUrl?: (string|null);
+                replicationServer?: (string|null);
+            }
+
+            class ConversationReplicationInfo implements IConversationReplicationInfo {
+
+                public cid: string;
+                public conversationPublicKey: string;
+                public memberPublicKey: string;
+                public authenticationUrl: string;
+                public replicationServer: string;
+                public static create(properties?: berty.messenger.v1.IConversationReplicationInfo): berty.messenger.v1.ConversationReplicationInfo;
+                public static encode(message: berty.messenger.v1.IConversationReplicationInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IConversationReplicationInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.ConversationReplicationInfo;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.ConversationReplicationInfo;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ConversationReplicationInfo;
+                public static toObject(message: berty.messenger.v1.ConversationReplicationInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
             }
 
             interface IMember {
@@ -5655,6 +5714,59 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ReplicationServiceRegisterGroup.Reply;
                     public static toObject(message: berty.messenger.v1.ReplicationServiceRegisterGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IReplicationSetAutoEnable {
+            }
+
+            class ReplicationSetAutoEnable implements IReplicationSetAutoEnable {
+
+                public static create(properties?: berty.messenger.v1.IReplicationSetAutoEnable): berty.messenger.v1.ReplicationSetAutoEnable;
+                public static encode(message: berty.messenger.v1.IReplicationSetAutoEnable, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IReplicationSetAutoEnable, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.ReplicationSetAutoEnable;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.ReplicationSetAutoEnable;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ReplicationSetAutoEnable;
+                public static toObject(message: berty.messenger.v1.ReplicationSetAutoEnable, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace ReplicationSetAutoEnable {
+
+                interface IRequest {
+                    enabled?: (boolean|null);
+                }
+
+                class Request implements IRequest {
+
+                    public enabled: boolean;
+                    public static create(properties?: berty.messenger.v1.ReplicationSetAutoEnable.IRequest): berty.messenger.v1.ReplicationSetAutoEnable.Request;
+                    public static encode(message: berty.messenger.v1.ReplicationSetAutoEnable.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.ReplicationSetAutoEnable.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.ReplicationSetAutoEnable.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.ReplicationSetAutoEnable.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ReplicationSetAutoEnable.Request;
+                    public static toObject(message: berty.messenger.v1.ReplicationSetAutoEnable.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                }
+
+                class Reply implements IReply {
+
+                    public static create(properties?: berty.messenger.v1.ReplicationSetAutoEnable.IReply): berty.messenger.v1.ReplicationSetAutoEnable.Reply;
+                    public static encode(message: berty.messenger.v1.ReplicationSetAutoEnable.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.ReplicationSetAutoEnable.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.ReplicationSetAutoEnable.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.ReplicationSetAutoEnable.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ReplicationSetAutoEnable.Reply;
+                    public static toObject(message: berty.messenger.v1.ReplicationSetAutoEnable.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
