@@ -43,7 +43,10 @@ func TestingService(ctx context.Context, t *testing.T, opts *TestingServiceOpts)
 
 	zapLogger := zapgorm2.New(opts.Logger.Named("gorm"))
 	zapLogger.SetAsDefault()
-	db, err := gorm.Open(sqlite.Open("file:memdb"+strconv.Itoa(opts.Index)+"?mode=memory&cache=shared"), &gorm.Config{Logger: zapLogger})
+	db, err := gorm.Open(sqlite.Open("file:memdb"+strconv.Itoa(opts.Index)+"?mode=memory&cache=shared"), &gorm.Config{
+		Logger:                                   zapLogger,
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
 	if err != nil {
 		cleanup()
 		require.NoError(t, err)

@@ -386,17 +386,21 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 			return nil, errcode.TODO.Wrap(err)
 		}
 
-		zapLogger := zapgorm2.New(logger)
+		zapLogger := zapgorm2.New(logger.Named("gorm"))
 		zapLogger.SetAsDefault()
 
 		// setup db
 		shouldPersist := config.rootDirectory != "" && config.rootDirectory != memPath
+		cfg := gorm.Config{
+			Logger:                                   zapLogger,
+			DisableForeignKeyConstraintWhenMigrating: true,
+		}
 		if shouldPersist {
 			dbPath := config.rootDirectory + "/messenger.db"
 			bridgeLogger.Debug("using db", zap.String("path", dbPath))
-			db, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{Logger: zapLogger})
+			db, err = gorm.Open(sqlite.Open(dbPath), &cfg)
 		} else {
-			db, err = gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{Logger: zapLogger})
+			db, err = gorm.Open(sqlite.Open("file::memory:?cache=shared"), &cfg)
 		}
 		if err != nil {
 			if cErr := protocolClient.Close(); cErr != nil {

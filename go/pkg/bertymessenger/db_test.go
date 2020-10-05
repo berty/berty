@@ -34,7 +34,9 @@ func getInMemoryTestDB(t testing.TB, opts ...getInMemoryTestDBOpts) (*dbWrapper,
 		}
 	}
 
-	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -62,6 +64,11 @@ func Test_dbWrapper_addConversation(t *testing.T) {
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
+	convErr, err := db.addConversation("")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, convErr)
+
 	conv1, err := db.addConversation(groupPK1)
 	require.NoError(t, err)
 	require.Equal(t, groupPK1, conv1.PublicKey)
@@ -81,6 +88,11 @@ func Test_dbWrapper_getDeviceByPK(t *testing.T) {
 	defer dispose()
 
 	pk1 := "pk1"
+
+	devErr, err := db.getDeviceByPK("")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, devErr)
 
 	dev, err := db.getDeviceByPK(pk1)
 	require.Error(t, err)
@@ -115,6 +127,11 @@ func Test_dbWrapper_getContactByPK(t *testing.T) {
 	defer dispose()
 
 	pk1 := "pk1"
+
+	contactErr, err := db.getContactByPK("")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, contactErr)
 
 	contact, err := db.getContactByPK(pk1)
 	require.Error(t, err)
@@ -162,6 +179,7 @@ func Test_dbWrapper_addAccount(t *testing.T) {
 
 	err := db.addAccount("", "http://url1/")
 	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 
 	err = db.addAccount("pk_1", "http://url1/")
 	require.NoError(t, err)
@@ -178,6 +196,11 @@ func Test_dbWrapper_addContactRequestIncomingReceived(t *testing.T) {
 	)
 
 	defer dispose()
+
+	contactErr, err := db.addContactRequestIncomingReceived("", "some name")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, contactErr)
 
 	contact, err := db.addContactRequestIncomingReceived(contact1PK, contact1Name)
 	require.NoError(t, err)
@@ -199,7 +222,19 @@ func Test_dbWrapper_addContactRequestIncomingAccepted(t *testing.T) {
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
-	contact, conversation, err := db.addContactRequestIncomingAccepted("contact_1", "group_1")
+	contact, conversation, err := db.addContactRequestIncomingAccepted("", "group_1")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, contact)
+	require.Nil(t, conversation)
+
+	contact, conversation, err = db.addContactRequestIncomingAccepted("contact_1", "")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, contact)
+	require.Nil(t, conversation)
+
+	contact, conversation, err = db.addContactRequestIncomingAccepted("contact_1", "group_1")
 	require.Error(t, err)
 	require.Empty(t, contact)
 	require.Empty(t, conversation)
@@ -218,7 +253,12 @@ func Test_dbWrapper_addContactRequestOutgoingEnqueued(t *testing.T) {
 
 	defer dispose()
 
-	contact, err := db.addContactRequestOutgoingEnqueued(contactPK, displayName, convPK)
+	contact, err := db.addContactRequestOutgoingEnqueued("", displayName, convPK)
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, contact)
+
+	contact, err = db.addContactRequestOutgoingEnqueued(contactPK, displayName, convPK)
 	require.NoError(t, err)
 	require.NotNil(t, contact)
 
@@ -248,6 +288,11 @@ func Test_dbWrapper_addContactRequestOutgoingSent(t *testing.T) {
 	require.Equal(t, convPK, contact.ConversationPublicKey)
 	require.Equal(t, Contact_OutgoingRequestEnqueued, contact.State)
 
+	contact, err = db.addContactRequestOutgoingSent("")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, contact)
+
 	contact, err = db.addContactRequestOutgoingSent(contactPK)
 	require.NoError(t, err)
 	require.NotNil(t, contact)
@@ -275,11 +320,13 @@ func Test_dbWrapper_addConversationForContact(t *testing.T) {
 	// should raise an error when passing an empty conversation pk
 	conv, err := db.addConversationForContact("", "contact_1")
 	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Nil(t, conv)
 
 	// should raise an error when passing an empty contact pk
 	conv, err = db.addConversationForContact("convo_1", "")
 	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Nil(t, conv)
 
 	// should be ok
@@ -325,7 +372,17 @@ func Test_dbWrapper_addDevice(t *testing.T) {
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
-	device, err := db.addDevice("device1", "member1")
+	device, err := db.addDevice("", "member1")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, device)
+
+	device, err = db.addDevice("device1", "")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, device)
+
+	device, err = db.addDevice("device1", "member1")
 	require.NoError(t, err)
 	require.NotNil(t, device)
 	require.Equal(t, "device1", device.PublicKey)
@@ -353,6 +410,14 @@ func Test_dbWrapper_addInteraction(t *testing.T) {
 	defer dispose()
 
 	i, err := db.addInteraction(Interaction{
+		CID:     "",
+		Payload: []byte("payload1"),
+	}, true)
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, i)
+
+	i, err = db.addInteraction(Interaction{
 		CID:     "Qm00001",
 		Payload: []byte("payload1"),
 	}, true)
@@ -413,10 +478,12 @@ func Test_dbWrapper_addMember(t *testing.T) {
 
 	member, err := db.addMember("member_1", "", "Display1")
 	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Nil(t, member)
 
 	member, err = db.addMember("", "conversation_1", "Display1")
 	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Nil(t, member)
 
 	member, err = db.addMember("member_1", "conversation_1", "")
@@ -465,14 +532,17 @@ func Test_dbWrapper_attributeBacklogInteractions(t *testing.T) {
 
 	interactions, err := db.attributeBacklogInteractions("", "conv3", "member1")
 	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Empty(t, interactions)
 
 	interactions, err = db.attributeBacklogInteractions("device3", "", "member1")
 	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Empty(t, interactions)
 
 	interactions, err = db.attributeBacklogInteractions("device3", "conv3", "")
 	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Empty(t, interactions)
 
 	interactions, err = db.attributeBacklogInteractions("device3", "conv3", "member1")
@@ -529,8 +599,16 @@ func Test_dbWrapper_deleteInteractions(t *testing.T) {
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
+	err := db.deleteInteractions(nil)
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.deleteInteractions([]string{})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
 	// Should we raise an error if a CID is not found
-	err := db.deleteInteractions([]string{"Qm0001", "Qm0002", "Qm0003"})
+	err = db.deleteInteractions([]string{"Qm0001", "Qm0002", "Qm0003"})
 	require.NoError(t, err)
 
 	db.db.Create(&Interaction{CID: "Qm0001"})
@@ -620,7 +698,12 @@ func Test_dbWrapper_getAcknowledgementsCIDsForInteraction(t *testing.T) {
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
-	cids, err := db.getAcknowledgementsCIDsForInteraction("QmXX")
+	cids, err := db.getAcknowledgementsCIDsForInteraction("")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Empty(t, cids)
+
+	cids, err = db.getAcknowledgementsCIDsForInteraction("QmXX")
 	require.NoError(t, err)
 	require.Empty(t, cids)
 
@@ -738,7 +821,12 @@ func Test_dbWrapper_updateAccount(t *testing.T) {
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
-	acc, err := db.updateAccount("pk_1", "https://url1/", "DisplayName1")
+	acc, err := db.updateAccount("", "https://url1/", "DisplayName1")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, acc)
+
+	acc, err = db.updateAccount("pk_1", "https://url1/", "DisplayName1")
 	require.Error(t, err)
 	require.Nil(t, acc)
 
@@ -775,6 +863,7 @@ func Test_dbWrapper_updateContact(t *testing.T) {
 
 	err := db.updateContact(Contact{})
 	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 
 	err = db.updateContact(Contact{PublicKey: "pk_1"})
 	require.Error(t, err)
@@ -808,6 +897,7 @@ func Test_dbWrapper_updateConversation(t *testing.T) {
 	defer dispose()
 
 	err := db.updateConversation(Conversation{})
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Error(t, err)
 
 	err = db.updateConversation(Conversation{PublicKey: "conv_1"})
@@ -844,7 +934,12 @@ func Test_dbWrapper_getConversationByPK(t *testing.T) {
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
-	conversation, err := db.getConversationByPK("unknown")
+	conversation, err := db.getConversationByPK("")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, conversation)
+
+	conversation, err = db.getConversationByPK("unknown")
 	require.Error(t, err)
 	require.Nil(t, conversation)
 
@@ -913,7 +1008,12 @@ func Test_dbWrapper_getMemberByPK(t *testing.T) {
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
-	member, err := db.getMemberByPK("unknown")
+	member, err := db.getMemberByPK("")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, member)
+
+	member, err = db.getMemberByPK("unknown")
 	require.Error(t, err)
 	require.Nil(t, member)
 
@@ -947,7 +1047,12 @@ func Test_dbWrapper_markInteractionAsAcknowledged(t *testing.T) {
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
-	interaction, err := db.markInteractionAsAcknowledged("QmXXXX")
+	interaction, err := db.markInteractionAsAcknowledged("")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, interaction)
+
+	interaction, err = db.markInteractionAsAcknowledged("QmXXXX")
 	require.Error(t, err)
 	require.Equal(t, err, gorm.ErrRecordNotFound)
 	require.Nil(t, interaction)
@@ -973,7 +1078,13 @@ func Test_dbWrapper_setConversationIsOpenStatus(t *testing.T) {
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
-	conv, updated, err := db.setConversationIsOpenStatus("conv_xxx", true)
+	conv, updated, err := db.setConversationIsOpenStatus("", true)
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.False(t, updated)
+	require.Nil(t, conv)
+
+	conv, updated, err = db.setConversationIsOpenStatus("conv_xxx", true)
 	require.Error(t, err)
 	require.False(t, updated)
 
@@ -1073,6 +1184,10 @@ func Test_dbWrapper_updateConversationReadState(t *testing.T) {
 	require.Equal(t, int32(0), c.UnreadCount)
 	require.Equal(t, timestampMs(time.Unix(10000, 0)), c.LastUpdate)
 
+	err := db.updateConversationReadState("", false, time.Unix(10001, 0))
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
 	require.NoError(t, db.updateConversationReadState("convo_a", false, time.Unix(10001, 0)))
 
 	c = &Conversation{}
@@ -1103,7 +1218,6 @@ func Test_dropAllTables(t *testing.T) {
 	defer dispose()
 
 	tables := []string(nil)
-
 	err := db.db.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").Scan(&tables).Error
 	require.NoError(t, err)
 	require.NotEmpty(t, tables)
@@ -1111,6 +1225,7 @@ func Test_dropAllTables(t *testing.T) {
 	err = dropAllTables(db.db)
 	require.NoError(t, err)
 
+	tables = []string(nil)
 	err = db.db.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").Scan(&tables).Error
 	require.NoError(t, err)
 	require.Empty(t, tables)
@@ -1130,7 +1245,11 @@ func Test_dbWrapper_isConversationOpened(t *testing.T) {
 	require.NoError(t, db.db.Create(&Conversation{PublicKey: "convo_a", IsOpen: true}).Error)
 	require.NoError(t, db.db.Create(&Conversation{PublicKey: "convo_b", IsOpen: false}).Error)
 
-	opened, err := db.isConversationOpened("convo_a")
+	opened, err := db.isConversationOpened("")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	opened, err = db.isConversationOpened("convo_a")
 	require.NoError(t, err)
 	require.True(t, opened)
 
@@ -1161,7 +1280,19 @@ func Test_dbWrapper_addServiceToken(t *testing.T) {
 		},
 	}
 
-	err := db.addServiceToken("acc_1", tok1)
+	err := db.addServiceToken("", tok1)
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.addServiceToken("", &bertytypes.ServiceToken{
+		Token:             "tok2",
+		AuthenticationURL: "https://url2/",
+		SupportedServices: []*bertytypes.ServiceTokenSupportedService{},
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.addServiceToken("acc_1", tok1)
 	require.NoError(t, err)
 
 	err = db.addServiceToken("acc_1", tok2)

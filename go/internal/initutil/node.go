@@ -435,7 +435,10 @@ func (m *Manager) getMessengerDB() (*gorm.DB, error) {
 		sqliteConn = path.Join(dir, "messenger.sqlite")
 	}
 
-	cfg := &gorm.Config{Logger: zapgorm2.New(logger.Named("gorm"))}
+	cfg := &gorm.Config{
+		Logger:                                   zapgorm2.New(logger.Named("gorm")),
+		DisableForeignKeyConstraintWhenMigrating: true,
+	}
 	db, err := gorm.Open(sqlite.Open(sqliteConn), cfg)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
