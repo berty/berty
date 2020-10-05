@@ -20,6 +20,7 @@ import (
 var manager *initutil.Manager
 
 func main() {
+	fmt.Println("just a test")
 	err := runMain(os.Args[1:])
 	switch {
 	case err == nil:
