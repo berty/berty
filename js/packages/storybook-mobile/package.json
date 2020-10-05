@@ -54,7 +54,7 @@
     "react-native-permissions": "^2.0.3",
     "react-native-reanimated": "^1.7.1",
     "react-native-safe-area-context": "^0.7.3",
-    "react-native-screens": "^2.4.0",
+    "react-native-screens": "2.11.0",
     "react-native-storybook-loader": "^1.8.1",
     "react-native-svg": "^11.0.1",
     "react-test-renderer": "16.13.1",

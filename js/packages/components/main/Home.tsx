@@ -26,6 +26,7 @@ import {
 	useLastConvInteraction,
 	useContacts,
 	usePersistentOptions,
+	useAccount,
 } from '@berty-tech/store/hooks'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
@@ -40,6 +41,8 @@ import { SwipeHelperReactNavTabBar } from '../shared-components/SwipeNavRecogniz
 import Logo from './1_berty_picto.svg'
 import EmptyChat from './empty_chat.svg'
 import AvatarGroup19 from './Avatar_Group_Copy_19.png'
+
+import AddBetabot from '../modals/AddBetabot'
 
 //
 // Main List
@@ -424,15 +427,14 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const [layoutHeader, onLayoutHeader] = useLayout()
 	const [layoutConvs, onLayoutConvs] = useLayout()
 	const [isOnTop, setIsOnTop] = useState<boolean>(false)
+	const navigation = useNativeNavigation()
 
 	const [
 		{ color, text, opacity, flex, margin, background, absolute },
 		{ windowHeight, scaleSize, scaleHeight },
 	] = useStyles()
 	const scrollRef = useRef<ScrollView>(null)
-	const { setPersistentOption } = useMsgrContext()
 	const persistentOpts = usePersistentOptions()
-	const navigation = useNativeNavigation()
 
 	const styleBackground = useMemo(
 		() => (requests.length > 0 ? background.blue : background.white),
@@ -444,14 +446,15 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 			!persistentOpts ||
 			!Object.keys(persistentOpts).length ||
 			!persistentOpts.betabot ||
-			(persistentOpts.betabot && !persistentOpts.betabot.toggledModal)
+			(persistentOpts.betabot &&
+				!persistentOpts.betabot.toggledModal &&
+				!persistentOpts.betabot.added)
 		) {
-			setPersistentOption('betabot', { toggledModal: true })
 			navigation.navigate('Modals', {
 				screen: 'AddBetabot',
 			})
 		}
-	})
+	}, [persistentOpts, navigation])
 
 	return (
 		<>

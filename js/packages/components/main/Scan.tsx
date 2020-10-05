@@ -211,6 +211,7 @@ export const Scan: React.FC<{}> = () => {
 			<Interactable.View
 				verticalOnly={true}
 				onDrag={(e) => handleOnDrag(e)}
+				snapPoints={[{ x: 0 }, { x: -300 }]}
 				boundaries={{ top: 0 }}
 			>
 				<ScanComponent />

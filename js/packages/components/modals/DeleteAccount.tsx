@@ -11,7 +11,7 @@ import {
 import { Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { Routes } from '@berty-tech/navigation'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, CommonActions } from '@react-navigation/native'
 import { useMsgrContext, useAccount } from '@berty-tech/store/hooks'
 
 const useStylesDeleteAccount = () => {
@@ -107,18 +107,24 @@ const DeleteAccountContent: React.FC<{}> = () => {
 	const [{ row, margin, background, border, color, padding, text, column }] = useStyles()
 	const navigation = useNavigation()
 	const account = useAccount()
-	const prevAccount = usePrevious(account)
+	// const prevAccount = usePrevious(account)
 	const [startDelete, setStartDelete] = useState(false)
 	const startedDelete = usePrevious(startDelete)
 	const ctx = useMsgrContext()
 	const deleteAccount = ctx.deleteAccount
 	const [deleteConfirmation, setDeleteConfirmation] = useState<string>()
 	const confirmed = deleteConfirmation === DELETE_STR
+
 	useEffect(() => {
-		if (prevAccount && !account) {
-			navigation.reset({ routes: [{ name: Routes.Onboarding.GetStarted }] })
+		if (!account.displayName || account.displayName === '') {
+			navigation.dispatch(
+				CommonActions.reset({
+					routes: [{ name: Routes.Onboarding.GetStarted }],
+				}),
+			)
 		}
 	})
+
 	useEffect(() => {
 		if (!startedDelete && startDelete && account) {
 			deleteAccount()

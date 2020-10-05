@@ -277,6 +277,7 @@ export const MyBertyId: React.FC<{ user: any }> = ({ user }) => {
 			<Interactable.View
 				verticalOnly={true}
 				onDrag={(e) => handleOnDrag(e)}
+				snapPoints={[{ x: 0 }, { x: -300 }]}
 				boundaries={{ top: 0 }}
 			>
 				<MyBertyIdComponent user={user} />

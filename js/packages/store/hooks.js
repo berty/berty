@@ -309,7 +309,7 @@ export const useReadEffect = (publicKey, timeout) => {
 
 	const ctx = useMsgrContext()
 
-	const fake = useConversation(publicKey)?.fake || false
+	const fake = useConversation(publicKey).fake || false
 
 	useEffect(() => {
 		if (fake) {

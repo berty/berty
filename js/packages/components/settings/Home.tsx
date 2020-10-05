@@ -12,7 +12,7 @@ import HeaderSettings from '../shared-components/Header'
 import { SwipeHelperReactNavTabBar } from '../shared-components/SwipeNavRecognizer'
 
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { Messenger } from '@berty-tech/store/oldhooks'
+import { useAccount } from '@berty-tech/store/hooks'
 
 //
 // Home Vue
@@ -69,8 +69,7 @@ const HomeHeaderGroupButton: React.FC = () => {
 const HomeHeaderAvatar: React.FC = () => {
 	const _styles = useStylesHome()
 	const [{ row, margin, background, border, color, padding }, { scaleSize }] = useStyles()
-	//const client = Messenger.useClient()
-	const account = Messenger.useAccount()
+	const account = useAccount()
 	const navigation = useNavigation()
 	return (
 		<View style={[row.center, margin.top.scale(50)]}>
@@ -163,7 +162,7 @@ const HomeBodySettings: React.FC<{}> = () => {
 }
 
 export const Home: React.FC<ScreenProps.Settings.Home> = () => {
-	const account = Messenger.useAccount()
+	const account = useAccount()
 	const _styles = useStylesHome()
 	const [{ flex, background, row, absolute }] = useStyles()
 
