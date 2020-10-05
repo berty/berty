@@ -63,7 +63,10 @@ $ BERTY_DAEMON_PORT=1337 make.bridge
 ## $ BERTY_DAEMON_PORT=1338 make.bridge
 
 ## iOS
-IOS_DEVICE=__IOS_DEVICE_NAME__ make ios.run
+## Install generate xcode project
+$ make ios.xcodegen
+## Run on device
+$ IOS_DEVICE=__IOS_DEVICE_NAME__ make ios.run
 ## Run multiple devices to connect them to different running bridge ports!
 
 ## Android

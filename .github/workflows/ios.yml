@@ -77,11 +77,10 @@ jobs:
           SHAKEBUGS_API_SECRET: ${{ secrets.SHAKEBUGS_API_SECRET }}
         run: |
           echo "SHAKE_API_ID=$SHAKEBUGS_API_ID\nSHAKE_API_SECRET=$SHAKEBUGS_API_SECRET" > .env
-          make vendor/bundle deps packages/go-bridge/ios/Frameworks/Bertybridge.framework packages/berty-app/ios/Pods/Manifest.lock
+          make deps ios.gomobile packages/berty-app/ios/Berty.xcworkspace
           xcodebuild archive \
                 -workspace packages/berty-app/ios/Berty.xcworkspace \
-                -scheme yolo \
-                -configuration Release \
+                -scheme "Berty Yolo" \
                 -sdk iphoneos \
                 -archivePath /tmp/Berty.xcarchive \
                 CODE_SIGN_IDENTITY="" CODE_SIGNING_ALLOWED=NO

@@ -6,8 +6,6 @@ apply plugin: 'com.google.firebase.crashlytics'
 
 import com.android.build.OutputFile
 
-apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
-
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
  * and bundleReleaseJsAndAssets).
