@@ -11,7 +11,7 @@ on:
       - '**.go'
       - 'js/**'
       - '.github/workflows/android.yml'
-  pull_request:
+  pull_request_target:
     paths:
       - 'go/**'
       - 'go.*'
