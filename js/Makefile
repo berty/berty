@@ -346,7 +346,7 @@ packages/go-bridge/android/libs/gobridge.aar: $(bridge_src)
 	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind -o js/$@ -v $(ext_ldflags) -target android ./go/framework/bertybridge
 	touch $@
 
-packages/berty-app/ios/Berty.xcworkspace: packages/berty-app/ios/Berty.xcodeproj packages/berty-app/ios/Podfile
+packages/berty-app/ios/Berty.xcworkspace: $(pkg_desc) packages/berty-app/ios/Berty.xcodeproj packages/berty-app/ios/Podfile
 	cd packages/berty-app/ios && bundle exec pod install
 	touch $@
 
