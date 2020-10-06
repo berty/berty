@@ -371,12 +371,17 @@ const BodyDevTools: React.FC<{}> = () => {
 				iconColor={color.dark.grey}
 				actionIcon='arrow-ios-forward'
 				onPress={() => {
-					if (!persistentOpts.betabot.added && persistentOpts.betabot.toggledModal) {
-						ctx.setPersistentOption('betabot', { toggledModal: false })
+					if (
+						persistentOpts &&
+						persistentOpts.betabot &&
+						!persistentOpts.betabot.added &&
+						persistentOpts.betabot.toggledModal
+					) {
 						navigate.main.home()
+						ctx.setPersistentOption('betabot', { toggledModal: false })
 					}
 				}}
-				disabled={persistentOpts.betabot.added}
+				disabled={persistentOpts && persistentOpts.betabot && persistentOpts.betabot.added}
 			/>
 			<SendToAll />
 			<ButtonSettingRow

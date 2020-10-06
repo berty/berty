@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { Linking } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from 'react-native-screens/native-stack'
+// import { createStackNavigator } from '@react-navigation/stack'
 import * as RawComponents from '@berty-tech/components'
 import mapValues from 'lodash/mapValues'
-import { Messenger } from '@berty-tech/store/oldhooks'
+import { useAccount } from '@berty-tech/store/hooks'
 import { Routes } from './types'
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
+// import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 
 function useLinking() {
@@ -64,45 +65,27 @@ const Components = mapValues(RawComponents, (SubComponents) =>
 	)),
 )
 
-const FakeStack = createNativeStackNavigator()
-export const FakeNavigation: React.FC = ({ children }) => {
-	return (
-		<FakeStack.Navigator screenOptions={{ headerShown: false }}>
-			<FakeStack.Screen name='Fake'>{() => children}</FakeStack.Screen>
-		</FakeStack.Navigator>
-	)
-}
-
 const ModalsStack = createNativeStackNavigator()
 export const ModalsNavigation: React.FC = () => (
-	<ModalsStack.Navigator screenOptions={{ headerShown: false }}>
+	<ModalsStack.Navigator
+		screenOptions={{
+			headerShown: false,
+			stackPresentation: 'containedTransparentModal',
+			contentStyle: { backgroundColor: 'transparent' },
+			stackAnimation: 'fade',
+		}}
+	>
 		<ModalsStack.Screen
 			name={Routes.Modals.DeleteAccount}
 			component={Components.Modals.DeleteAccount}
-			options={{
-				stackPresentation: 'transparentModal',
-				stackAnimation: 'fade',
-			}}
 		/>
 		<ModalsStack.Screen
 			name={Routes.Modals.ManageDeepLink}
 			component={Components.Modals.ManageDeepLink}
-			options={{
-				stackPresentation: 'transparentModal',
-				stackAnimation: 'fade',
-			}}
 		/>
-		<ModalsStack.Screen
-			name={Routes.Modals.AddBetabot}
-			component={Components.Modals.AddBetabot}
-			options={{
-				stackPresentation: 'transparentModal',
-				stackAnimation: 'fade',
-			}}
-		/>
+		<ModalsStack.Screen name={Routes.Modals.AddBetabot} component={Components.Modals.AddBetabot} />
 	</ModalsStack.Navigator>
 )
-
 const CreateGroupStack = createNativeStackNavigator()
 export const CreateGroupNavigation: React.FC = () => {
 	const [members, setMembers] = useState([] as any[])
@@ -123,7 +106,7 @@ export const CreateGroupNavigation: React.FC = () => {
 		<CreateGroupStack.Navigator screenOptions={{ headerShown: false }}>
 			<CreateGroupStack.Screen
 				name={Routes.CreateGroup.CreateGroupAddMembers}
-				options={{ stackPresentation: 'transparentModal' }}
+				options={{ stackPresentation: 'containedModal' }}
 			>
 				{() => (
 					// should use setParams ? maybe, tis weird
@@ -136,17 +119,12 @@ export const CreateGroupNavigation: React.FC = () => {
 			</CreateGroupStack.Screen>
 			<CreateGroupStack.Screen
 				name={Routes.CreateGroup.CreateGroupFinalize}
-				options={{ stackPresentation: 'transparentModal' }}
+				options={{ stackPresentation: 'containedModal' }}
 			>
 				{() => (
 					<Components.Main.CreateGroupFinalize members={members} onRemoveMember={removeMember} />
 				)}
 			</CreateGroupStack.Screen>
-			<CreateGroupStack.Screen
-				name={'Modals'}
-				component={ModalsNavigation}
-				options={{ stackPresentation: 'transparentModal', stackAnimation: 'fade' }}
-			/>
 		</CreateGroupStack.Navigator>
 	)
 }
@@ -168,37 +146,33 @@ export const TabNavigation: React.FC = () => {
 
 const NavigationStack = createNativeStackNavigator()
 export const Navigation: React.FC = () => {
-	const account: any = Messenger.useAccount()
+	const account: any = useAccount()
+
 	return (
 		<NavigationStack.Navigator
 			initialRouteName={
 				account?.displayName !== '' ? Routes.Root.Tabs : Routes.Onboarding.GetStarted
 			}
-			screenOptions={{ headerShown: false }}
+			screenOptions={{
+				headerShown: false,
+			}}
 		>
 			<NavigationStack.Screen
 				name={Routes.Main.ContactRequest}
 				component={Components.Main.ContactRequest}
 				options={{
-					stackPresentation: 'transparentModal',
+					stackPresentation: 'containedTransparentModal',
 					stackAnimation: 'fade',
 					contentStyle: { backgroundColor: 'transparent' },
 				}}
 			/>
-			{/*<NavigationStack.Screen
-				name={Routes.Main.GroupRequest}
-				component={Components.Main.GroupRequest}
-				options={{
-					stackPresentation: 'transparentModal',
-					stackAnimation: 'fade',
-					contentStyle: { backgroundColor: 'transparent' },
-				}}
-			/>*/}
-			{/* <NavigationStack.Screen name={Routes.Main.Search} component={Components.Main.Search} /> */}
 			<NavigationStack.Screen
 				name={Routes.Main.Scan}
 				component={Components.Main.Scan}
-				options={{ stackPresentation: 'transparentModal' }}
+				options={{
+					stackPresentation: 'containedTransparentModal',
+					contentStyle: { backgroundColor: 'transparent' },
+				}}
 			/>
 			<NavigationStack.Screen name={Routes.Chat.OneToOne} component={Components.Chat.OneToOne} />
 			<NavigationStack.Screen name={Routes.Chat.Group} component={Components.Chat.MultiMember} />
@@ -226,31 +200,34 @@ export const Navigation: React.FC = () => {
 				name={Routes.Main.HomeModal}
 				component={Components.Main.HomeModal}
 				options={{
-					stackPresentation: 'transparentModal',
+					stackPresentation: 'containedTransparentModal',
 					contentStyle: { backgroundColor: 'transparent' },
 				}}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Main.RequestSent}
 				component={Components.Main.RequestSent}
-				options={{ stackPresentation: 'transparentModal' }}
+				options={{ stackPresentation: 'containedModal' }}
 			/>
 			<NavigationStack.Screen
 				name={Routes.CreateGroup.CreateGroupAddMembers}
 				component={CreateGroupNavigation}
-				options={{ stackPresentation: 'transparentModal' }}
+				options={{ stackPresentation: 'containedModal' }}
 			/>
 			<NavigationStack.Screen name={Routes.Root.Tabs} component={TabNavigation} />
 			<NavigationStack.Screen
 				name={Routes.Settings.MyBertyId}
 				component={Components.Settings.MyBertyId}
-				options={{ stackPresentation: 'transparentModal' }}
+				options={{
+					stackPresentation: 'containedTransparentModal',
+					contentStyle: { backgroundColor: 'transparent' },
+				}}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Settings.EditProfile}
 				component={Components.Settings.EditProfile}
 				options={{
-					stackPresentation: 'transparentModal',
+					stackPresentation: 'containedTransparentModal',
 					contentStyle: { backgroundColor: 'transparent' },
 				}}
 			/>
@@ -307,7 +284,11 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={'Modals'}
 				component={ModalsNavigation}
-				options={{ stackPresentation: 'transparentModal', stackAnimation: 'fade' }}
+				options={{
+					stackPresentation: 'containedTransparentModal',
+					contentStyle: { backgroundColor: 'transparent' },
+					stackAnimation: 'fade',
+				}}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Onboarding.GetStarted}

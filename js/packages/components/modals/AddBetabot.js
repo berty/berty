@@ -1,10 +1,16 @@
 import React, { useEffect } from 'react'
-import { View, TouchableOpacity, Text as TextNative, StyleSheet, SafeAreaView } from 'react-native'
+import {
+	View,
+	TouchableOpacity,
+	TouchableWithoutFeedback,
+	Text as TextNative,
+	StyleSheet,
+} from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
-import { useNavigation } from '@react-navigation/native'
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useMsgrContext } from '@berty-tech/store/hooks'
+import { useMsgrContext, usePersistentOptions } from '@berty-tech/store/hooks'
+import { useNavigation } from '@react-navigation/native'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
 import BlurView from '../shared-components/BlurView'
@@ -155,7 +161,10 @@ export const AddBetabotBody = () => {
 				<View style={[row.center, padding.top.medium]}>
 					<TouchableOpacity
 						style={[row.fill, margin.bottom.medium, opacity(0.5), _styles.skipButton]}
-						onPress={() => navigation.goBack()}
+						onPress={() => {
+							setPersistentOption('betabot', { toggledModal: true })
+							navigation.goBack()
+						}}
 					>
 						<Icon name='close' width={30} height={30} fill={color.grey} style={row.item.justify} />
 						<TextNative
@@ -174,7 +183,7 @@ export const AddBetabotBody = () => {
 					<TouchableOpacity
 						style={[row.fill, margin.bottom.medium, background.light.blue, _styles.addButton]}
 						onPress={() => {
-							setPersistentOption('betabot', { added: true })
+							setPersistentOption('betabot', { added: true, toggledModal: true })
 							requestContact({
 								link:
 									'https://berty.tech/id#key=CiB5MKppSY2DNwaCk24HrrK0blm0poO1tdS2RFoQJlJsSxIgrAO6ncyUPIiMnwL3Lg1CIQlbLDa7eQ34Z3vFBjt7MLg&name=BetaBot',
@@ -207,12 +216,17 @@ export const AddBetabotBody = () => {
 }
 
 export const AddBetabot = () => {
+	const navigation = useNavigation()
+	const [{ absolute }] = useStyles()
+
 	return (
 		<>
-			<BlurView style={[StyleSheet.absoluteFill]} blurType='light' />
-			<SafeAreaView>
+			<TouchableWithoutFeedback style={[StyleSheet.absoluteFill]} onPress={navigation.goBack}>
+				<BlurView style={[StyleSheet.absoluteFill]} blurType='light' />
+			</TouchableWithoutFeedback>
+			<View>
 				<AddBetabotBody />
-			</SafeAreaView>
+			</View>
 		</>
 	)
 }
