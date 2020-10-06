@@ -11,7 +11,7 @@ on:
       - '**.go'
       - 'js/**'
       - '.github/workflows/ios.yml'
-  pull_request_target:
+  pull_request:
     paths:
       - 'go/**'
       - 'go.*'
@@ -70,13 +70,18 @@ jobs:
           security import berty-dummy.p12 -t priv -f pkcs12 -P "dummypass" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "dummypass" dummy.keychain
 
-      - name: Build the Archive
+      - name: Build .env
         working-directory: js
         env:
           SHAKEBUGS_API_ID: ${{ secrets.SHAKEBUGS_API_ID }}
           SHAKEBUGS_API_SECRET: ${{ secrets.SHAKEBUGS_API_SECRET }}
         run: |
-          echo "SHAKE_API_ID=$SHAKEBUGS_API_ID\nSHAKE_API_SECRET=$SHAKEBUGS_API_SECRET" > .env
+          echo "SHAKE_API_ID=$SHAKEBUGS_API_ID" > .env
+          echo "SHAKE_API_SECRET=$SHAKEBUGS_API_SECRET" >> .env
+
+      - name: Build the Archive
+        working-directory: js
+        run: |
           make deps ios.gomobile packages/berty-app/ios/Berty.xcworkspace
           xcodebuild archive \
                 -workspace packages/berty-app/ios/Berty.xcworkspace \
@@ -94,5 +99,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: ${{ github.workspace }}/Berty Yolo.dummy-signed-ipa
-          name: berty-yolo.dummy-signed-ipa
+          name: berty-yolo-${{github.sha}}.dummy-signed-ipa
           if-no-files-found: error
