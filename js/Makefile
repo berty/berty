@@ -23,7 +23,7 @@ rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subs
 check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,$(error "Missing deps: no '$(exec)' in PATH")))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
 author = Berty Technologies <oss@berty.tech>
-ext_ldflags = -ldflags="-X berty.tech/berty/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/go/pkg/bertyversion.Version=$(VERSION)"
+ext_ldflags = -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
 pkg := $(dir $(wildcard $(PWD)/packages/*/package.json))
 pkg_mod := $(patsubst %, %/node_modules, $(pkg)) node_modules
 pkg_desc := $(patsubst %, %/package.json, $(pkg)) package.json
