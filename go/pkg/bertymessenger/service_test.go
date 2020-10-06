@@ -205,7 +205,17 @@ func TestUnstableServiceContactRequest(t *testing.T) {
 		require.Equal(t, contact.GetDisplayName(), contactName)
 		require.Equal(t, contact.GetState(), Contact_OutgoingRequestEnqueued)
 		assert.Len(t, node.contacts, 1)
-		assert.Len(t, node.conversations, 0)
+	}
+
+	// check for the ConversationUpdated event
+	{
+		event := node.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		conversation := payload.(*StreamEvent_ConversationUpdated).Conversation
+		require.NotNil(t, conversation)
+		assert.Len(t, node.conversations, 1)
 	}
 
 	// no more event

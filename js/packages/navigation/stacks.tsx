@@ -300,16 +300,12 @@ export const Navigation: React.FC = () => {
 				component={Components.Onboarding.GetStarted}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Onboarding.SelectMode}
-				component={Components.Onboarding.SelectMode}
+				name={Routes.Onboarding.CreateAccount}
+				component={Components.Onboarding.CreateAccount}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Onboarding.Performance}
-				component={Components.Onboarding.Performance}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Onboarding.Privacy}
-				component={Components.Onboarding.Privacy}
+				name={Routes.Onboarding.ServicesAuth}
+				component={Components.Onboarding.ServicesAuth}
 			/>
 		</NavigationStack.Navigator>
 	)

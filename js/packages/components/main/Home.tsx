@@ -24,9 +24,7 @@ import {
 	useIncomingContactRequests,
 	useMsgrContext,
 	useLastConvInteraction,
-	useContacts,
 	usePersistentOptions,
-	useAccount,
 } from '@berty-tech/store/hooks'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
@@ -41,8 +39,6 @@ import { SwipeHelperReactNavTabBar } from '../shared-components/SwipeNavRecogniz
 import Logo from './1_berty_picto.svg'
 import EmptyChat from './empty_chat.svg'
 import AvatarGroup19 from './Avatar_Group_Copy_19.png'
-
-import AddBetabot from '../modals/AddBetabot'
 
 //
 // Main List
@@ -59,17 +55,19 @@ type ConversationsItemProps = any
 const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 	displayName,
 	publicKey,
+	conversationPublicKey,
 	createdDate: createdDateStr,
 }) => {
 	const { refresh: accept } = messengerMethodsHooks.useContactAccept()
 	const decline: any = () => {} // Messenger.useDiscardContactRequest()
-	const { navigate } = useNavigation()
-	const display = navigate.main.contactRequest
+	const { dispatch } = useNavigation()
+
 	const id = publicKey
 	const [
-		{ border, padding, margin, width, height, column, row, background, absolute, text },
+		{ border, padding, margin, width, height, column, row, background, absolute, text, color },
 	] = useStyles()
 	const createdDate = typeof createdDateStr === 'string' ? parseInt(createdDateStr, 10) : Date.now()
+	const textColor = '#AFB1C0'
 	return (
 		<Translation>
 			{(t): React.ReactNode => (
@@ -77,18 +75,26 @@ const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 					style={[
 						column.fill,
 						width(121),
-						height(177),
+						height(160),
 						background.white,
 						margin.medium,
 						margin.top.huge,
-						padding.medium,
+						padding.vertical.medium,
 						padding.top.huge,
 						border.radius.medium,
 						border.shadow.medium,
 					]}
 					onPress={() => {
-						if (id) {
-							display({ contactId: id })
+						if (conversationPublicKey) {
+							dispatch(
+								CommonActions.navigate({
+									name: Routes.Chat.OneToOne,
+									params: {
+										convId: conversationPublicKey,
+									},
+								}),
+							)
+							// display({ contactId: id })
 						}
 					}}
 				>
@@ -103,10 +109,18 @@ const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 					</Text>
 					<Text
 						style={[
-							text.size.tiny,
-							text.color.grey,
+							text.size.scale(8),
 							text.align.center,
-							{ lineHeight: (text.size.tiny as any).fontSize * 1.25 },
+							{ lineHeight: (text.size.scale(8) as any).fontSize * 1, color: textColor },
+						]}
+					>
+						Incoming contact request!
+					</Text>
+					<Text
+						style={[
+							text.size.scale(8),
+							text.align.center,
+							{ lineHeight: (text.size.scale(8) as any).fontSize * 1, color: textColor },
 						]}
 					>
 						<FromNow date={createdDate} />
@@ -121,16 +135,21 @@ const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 								border.radius.tiny,
 								border.shadow.tiny,
 								background.white,
-								padding.horizontal.tiny,
-								margin.right.tiny,
+								padding.tiny,
+								height(25),
+								{ alignItems: 'center' },
 							]}
 							onPress={(): void => {
 								decline({ id })
 							}}
 						>
-							<Text style={[text.size.tiny, text.color.grey, row.item.justify, padding.small]}>
-								x
-							</Text>
+							<Icon
+								name='close-outline'
+								fill={textColor}
+								width={17}
+								height={17}
+								style={[padding.tiny, row.item.justify]}
+							/>
 						</TouchableOpacity>
 						<TouchableOpacity
 							style={[
@@ -139,13 +158,24 @@ const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 								border.radius.tiny,
 								border.shadow.tiny,
 								padding.horizontal.tiny,
-								margin.left.tiny,
+								height(25),
+								row.fill,
+								{ alignItems: 'center' },
 							]}
 							onPress={() => {
 								accept({ publicKey })
 							}}
 						>
-							<Text style={[text.size.tiny, text.color.blue, row.item.justify, padding.small]}>
+							<Icon name='checkmark-outline' fill={color.blue} width={17} height={17} />
+							<Text
+								style={[
+									text.size.scale(9),
+									text.color.blue,
+									row.item.justify,
+									padding.tiny,
+									{ top: -1 },
+								]}
+							>
 								{t('main.requests.accept')}
 							</Text>
 						</TouchableOpacity>
@@ -156,19 +186,54 @@ const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 	)
 }
 
+const UnreadCount: React.FC<{ value: number; isConvBadge?: boolean }> = ({
+	value,
+	isConvBadge = false,
+}) => {
+	const dimension = isConvBadge ? 15 : 21
+	const fontSize = isConvBadge ? 10 : 13
+	const lineHeight = isConvBadge ? 14 : 17
+
+	return value ? (
+		<View
+			style={{
+				backgroundColor: 'red',
+				justifyContent: 'center',
+				borderRadius: 1000,
+				height: dimension,
+				minWidth: dimension,
+				paddingHorizontal: 2,
+			}}
+		>
+			<Text
+				style={{
+					color: 'white',
+					fontWeight: '700',
+					textAlign: 'center',
+					fontSize,
+					lineHeight,
+				}}
+			>
+				{value.toString()}
+			</Text>
+		</View>
+	) : null
+}
+
 const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
-	const [{ padding, text, background }] = useStyles()
+	const [{ padding, text, background, row }, { scaleHeight, scaleSize }] = useStyles()
 	return items?.length ? (
 		<SafeAreaView onLayout={onLayout} style={[background.blue]}>
 			<View style={[padding.top.medium]}>
-				<Text style={[text.color.white, text.size.huge, text.bold.medium, padding.medium]}>
-					Requests
-				</Text>
-				<ScrollView
-					horizontal
-					style={[padding.bottom.medium]}
-					showsHorizontalScrollIndicator={false}
-				>
+				<View style={[row.left]}>
+					<Text style={[text.color.white, text.size.huge, text.bold.medium, padding.medium]}>
+						Requests
+					</Text>
+					<View style={{ position: 'relative', top: -2, left: -(23 * scaleSize) }}>
+						<UnreadCount value={items.length} />
+					</View>
+				</View>
+				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
 					{items.map((c: any) => {
 						return <ContactRequest key={c.publicKey} {...c} />
 					})}
@@ -178,45 +243,25 @@ const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
 	) : null
 }
 
-const UnreadCount: React.FC<{ value: number }> = ({ value }) =>
-	value ? (
-		<View
-			style={{
-				backgroundColor: 'red',
-				justifyContent: 'center',
-				borderRadius: 1000,
-				height: 15,
-				minWidth: 15,
-				paddingHorizontal: 2,
-			}}
-		>
-			<Text
-				style={{
-					color: 'white',
-					fontWeight: '700',
-					fontSize: 10,
-					textAlign: 'center',
-					lineHeight: 14,
-				}}
-			>
-				{value.toString()}
-			</Text>
-		</View>
-	) : null
-
-const MessageStatus: React.FC<{ interaction: any }> = ({ interaction }) => {
+const MessageStatus: React.FC<{ interaction: any; isAccepted: boolean }> = ({
+	interaction,
+	isAccepted,
+}) => {
 	const [{ color }] = useStyles()
-	if (interaction?.type !== messengerpb.AppMessage.Type.TypeUserMessage) {
+	if (interaction?.type !== messengerpb.AppMessage.Type.TypeUserMessage && isAccepted) {
 		return null
 	}
 	return (
 		<View style={{ width: 25, justifyContent: 'center', alignItems: 'center' }}>
 			<Icon
-				name={interaction.acknowledged ? 'navigation-2' : 'navigation-2-outline'}
+				name={
+					(interaction && !interaction.acknowledged) || !isAccepted
+						? 'navigation-2-outline'
+						: 'navigation-2'
+				}
 				width={14}
 				height={14}
 				fill={color.blue}
-				style={[interaction.isMe || { transform: [{ rotate: '180deg' }] }]}
 			/>
 		</View>
 	)
@@ -232,7 +277,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 		fake = false,
 		type = messengerpb.Conversation.Type.ContactType,
 		unreadCount,
-		lastUpdate,
+		contactPublicKey,
 	} = props
 
 	const ctx = useMsgrContext()
@@ -243,15 +288,32 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 
 	const contact =
 		Object.values(ctx.contacts).find((c: any) => c.conversationPublicKey === publicKey) || null
+	const isAccepted = contact && contact.state === messengerpb.Contact.State.Accepted
+	const isIncoming = contact && contact.state === messengerpb.Contact.State.IncomingRequest
 
-	const [{ color, row, border, flex, column, padding, text }] = useStyles()
+	const [
+		{ color, row, border, flex, column, padding, text, opacity, background, margin },
+		{ scaleHeight },
+	] = useStyles()
 	// TODO: Last message, unread count, navigate to chatroom
 	const { dispatch } = useNavigation()
 
-	return (
+	const persistOpts = usePersistentOptions()
+	const isBetabot =
+		persistOpts &&
+		persistOpts.betabot &&
+		persistOpts.betabot.convPk &&
+		type !== messengerpb.Conversation.Type.MultiMemberType &&
+		contactPublicKey.toString() === persistOpts.betabot.convPk.toString()
+	const isBetabotAdded = persistOpts && persistOpts.betabot.added
+
+	return !isIncoming ? (
 		<TouchableHighlight
 			underlayColor={color.light.grey}
-			style={[padding.horizontal.medium]}
+			style={[
+				padding.horizontal.medium,
+				!isAccepted && type !== messengerpb.Conversation.Type.MultiMemberType && opacity(0.6),
+			]}
 			onPress={
 				type === messengerpb.Conversation.Type.MultiMemberType
 					? () =>
@@ -281,6 +343,29 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 					<View style={[padding.tiny, padding.left.small, row.item.justify]}>
 						<Image source={AvatarGroup19} style={{ width: 40, height: 40 }} />
 					</View>
+				) : isBetabot ? (
+					<View style={[padding.horizontal.tiny]}>
+						<View
+							style={[
+								border.radius.scale(25),
+								border.shadow.medium,
+								background.white,
+								margin.right.small,
+								{
+									justifyContent: 'center',
+									alignItems: 'center',
+									display: 'flex',
+									width: 40,
+									height: 40,
+									alignSelf: 'center',
+									right: -(5 * scaleHeight),
+									top: 9 * scaleHeight,
+								},
+							]}
+						>
+							<Logo width={25} height={25} style={{ right: -1, top: -1 }} />
+						</View>
+					</View>
 				) : (
 					<ProceduralCircleAvatar
 						seed={contact?.publicKey}
@@ -288,7 +373,6 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 						style={[padding.tiny, row.item.justify]}
 					/>
 				)}
-
 				<View style={[flex.big, column.fill, padding.small]}>
 					<View style={[row.fill]}>
 						<View style={[row.left, { flexShrink: 1 }]}>
@@ -300,40 +384,68 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 							</Text>
 						</View>
 						<View style={[row.right, { alignItems: 'center' }]}>
-							<UnreadCount value={unreadCount} />
-							<Text
-								style={[
-									padding.left.small,
-									text.size.small,
-									unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
-								]}
-							>
-								{Date.now() - new Date(sentDate).getTime() > 86400000
-									? moment(sentDate).format('DD/MM/YYYY')
-									: moment(sentDate).format('hh:mm')}
-							</Text>
-							<MessageStatus interaction={lastInte} />
+							{isBetabot && !isBetabotAdded ? (
+								<View
+									style={{
+										width: 25,
+										justifyContent: 'center',
+										alignItems: 'center',
+										top: 10 * scaleHeight,
+									}}
+								>
+									<Icon name='info-outline' fill={color.blue} width={20} height={20} />
+								</View>
+							) : (
+								<>
+									<UnreadCount value={unreadCount} isConvBadge />
+									<Text
+										style={[
+											padding.left.small,
+											text.size.small,
+											unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
+										]}
+									>
+										{Date.now() - new Date(sentDate).getTime() > 86400000
+											? moment(sentDate).format('DD/MM/YYYY')
+											: moment(sentDate).format('hh:mm')}
+									</Text>
+								</>
+							)}
+							{lastInte && lastInte.isMe && (
+								<MessageStatus
+									interaction={lastInte}
+									isAccepted={isAccepted || type === messengerpb.Conversation.Type.MultiMemberType}
+								/>
+							)}
 						</View>
 					</View>
 					<Text
 						numberOfLines={1}
 						style={[
 							text.size.small,
-							unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
+							unreadCount
+								? isBetabot && !isBetabotAdded
+									? text.color.grey
+									: [text.bold.medium, text.color.black]
+								: text.color.grey,
 						]}
 					>
 						{lastInte?.type === messengerpb.AppMessage.Type.TypeUserMessage
-							? lastInte.payload.body
+							? isBetabot && !isBetabotAdded
+								? 'Click here to add the Beta Bot!'
+								: lastInte.payload.body
+							: !isAccepted && type !== messengerpb.Conversation.Type.MultiMemberType
+							? 'Request is sent. Pending...'
 							: ''}
 					</Text>
 				</View>
 			</View>
 		</TouchableHighlight>
-	)
+	) : null
 }
 
 const Conversations: React.FC<ConversationsProps> = ({ items, style, onLayout }) => {
-	const [{ background }] = useStyles()
+	const [{ background, padding }] = useStyles()
 	return items?.length ? (
 		<SafeAreaConsumer>
 			{(insets) => (
@@ -349,9 +461,7 @@ const Conversations: React.FC<ConversationsProps> = ({ items, style, onLayout })
 				>
 					{items &&
 						items.length &&
-						items.map((i) => {
-							return <ConversationsItem key={i.publicKey} {...i} />
-						})}
+						items.map((i) => <ConversationsItem key={i.publicKey} {...i} />)}
 				</View>
 			)}
 		</SafeAreaConsumer>
@@ -427,34 +537,17 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const [layoutHeader, onLayoutHeader] = useLayout()
 	const [layoutConvs, onLayoutConvs] = useLayout()
 	const [isOnTop, setIsOnTop] = useState<boolean>(false)
-	const navigation = useNativeNavigation()
 
 	const [
-		{ color, text, opacity, flex, margin, background, absolute },
+		{ text, opacity, flex, margin, background, absolute },
 		{ windowHeight, scaleSize, scaleHeight },
 	] = useStyles()
 	const scrollRef = useRef<ScrollView>(null)
-	const persistentOpts = usePersistentOptions()
 
 	const styleBackground = useMemo(
 		() => (requests.length > 0 ? background.blue : background.white),
 		[background.blue, background.white, requests.length],
 	)
-
-	useEffect(() => {
-		if (
-			!persistentOpts ||
-			!Object.keys(persistentOpts).length ||
-			!persistentOpts.betabot ||
-			(persistentOpts.betabot &&
-				!persistentOpts.betabot.toggledModal &&
-				!persistentOpts.betabot.added)
-		) {
-			navigation.navigate('Modals', {
-				screen: 'AddBetabot',
-			})
-		}
-	}, [persistentOpts, navigation])
 
 	return (
 		<>

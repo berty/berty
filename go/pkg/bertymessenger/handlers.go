@@ -297,8 +297,29 @@ func (h *eventHandler) accountContactRequestOutgoingEnqueued(gme *bertytypes.Gro
 		return errcode.ErrDBAddContactRequestOutgoingEnqueud.Wrap(err)
 	}
 
+	// create new contact conversation
+	var conversation *Conversation
+
+	// update db
+	if err := h.db.tx(func(tx *dbWrapper) error {
+		var err error
+
+		// create new conversation
+		if conversation, err = tx.addConversationForContact(contact.ConversationPublicKey, contact.PublicKey); err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return err
+	}
+
 	if h.svc != nil {
 		if err := h.svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{contact}); err != nil {
+			return err
+		}
+
+		if err = h.svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conversation}); err != nil {
 			return err
 		}
 	}
@@ -354,13 +375,42 @@ func (h *eventHandler) accountContactRequestIncomingReceived(gme *bertytypes.Gro
 		return err
 	}
 
-	contact, err := h.db.addContactRequestIncomingReceived(contactPK, m.GetDisplayName())
+	groupPK, err := groupPKFromContactPK(h.ctx, h.protocolClient, ev.GetContactPK())
+	if err != nil {
+		return err
+	}
+	groupPKBytes := b64EncodeBytes(groupPK)
+
+	contact, err := h.db.addContactRequestIncomingReceived(contactPK, m.GetDisplayName(), groupPKBytes)
 	if err != nil {
 		return errcode.ErrDBAddContactRequestIncomingReceived.Wrap(err)
 	}
 
+	// create new contact conversation
+	var conversation *Conversation
+
+	// update db
+	if err := h.db.tx(func(tx *dbWrapper) error {
+		var err error
+
+		// create new conversation
+		if conversation, err = tx.addConversationForContact(groupPKBytes, contactPK); err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return err
+	}
+
 	if h.svc != nil {
-		return h.svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{contact})
+		if err := h.svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{contact}); err != nil {
+			return err
+		}
+
+		if err = h.svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conversation}); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -381,7 +431,7 @@ func (h *eventHandler) accountContactRequestIncomingAccepted(gme *bertytypes.Gro
 		return err
 	}
 
-	contact, conversation, err := h.db.addContactRequestIncomingAccepted(contactPK, b64EncodeBytes(groupPK))
+	contact, err := h.db.addContactRequestIncomingAccepted(contactPK, b64EncodeBytes(groupPK))
 	if err != nil {
 		return errcode.ErrDBAddContactRequestIncomingAccepted.Wrap(err)
 	}
@@ -389,10 +439,6 @@ func (h *eventHandler) accountContactRequestIncomingAccepted(gme *bertytypes.Gro
 	if h.svc != nil {
 		// dispatch event to subscribers
 		if err := h.svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{contact}); err != nil {
-			return err
-		}
-
-		if err = h.svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conversation}); err != nil {
 			return err
 		}
 
@@ -422,20 +468,12 @@ func (h *eventHandler) contactRequestAccepted(contact *Contact, memberPK []byte)
 		contact.ConversationPublicKey = b64EncodeBytes(groupPK)
 	}
 
-	// create new contact conversation
-	var conversation *Conversation
-
 	// update db
 	if err := h.db.tx(func(tx *dbWrapper) error {
 		var err error
 
 		// update existing contact
 		if err = tx.updateContact(*contact); err != nil {
-			return err
-		}
-
-		// create new conversation
-		if conversation, err = tx.addConversationForContact(contact.ConversationPublicKey, contact.PublicKey); err != nil {
 			return err
 		}
 
@@ -447,10 +485,6 @@ func (h *eventHandler) contactRequestAccepted(contact *Contact, memberPK []byte)
 	if h.svc != nil {
 		// dispatch events
 		if err := h.svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{contact}); err != nil {
-			return err
-		}
-
-		if err := h.svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conversation}); err != nil {
 			return err
 		}
 

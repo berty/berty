@@ -73,7 +73,7 @@ const formatTimestamp = (date: Date | number) => {
 	return hour
 }
 
-const MessageInvitationButton: React.FC<{
+export const MessageInvitationButton: React.FC<{
 	onPress?: any
 	activeOpacity: any
 	backgroundColor: any
@@ -129,7 +129,7 @@ const MessageInvitationButton: React.FC<{
 	)
 }
 
-const MessageInvitationWrapper: React.FC<{ children: any }> = ({ children }) => {
+export const MessageInvitationWrapper: React.FC<{ children: any }> = ({ children }) => {
 	const [{ padding, border, flex, margin, width, background, height }, { scaleSize }] = useStyles()
 	const logoDiameter = 28
 	const diffSize = 6
