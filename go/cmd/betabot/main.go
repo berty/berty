@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
+	"github.com/matryer/resync"
 	qrterminal "github.com/mdp/qrterminal/v3"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -46,23 +47,52 @@ func main() {
 
 type Bot struct {
 	store struct {
-		Convs       []Conversation
+		Convs       []*Conversation
 		StaffConvPK string
 	}
-	client      bertymessenger.MessengerServiceClient
-	storeIsNew  bool
-	storePath   string
-	storeMutex  sync.Mutex
-	isReplaying bool
-	logger      *zap.Logger
+	client           bertymessenger.MessengerServiceClient
+	storeIsNew       bool
+	storePath        string
+	storeConvMap     map[*Conversation]*sync.Mutex
+	storeConvMapLock sync.Mutex
+	// storeWholeConvLock is a lock where holding it is equivalent to holding all
+	// conversations locks.
+	storeWholeConvLock sync.RWMutex
+	storeMutex         sync.RWMutex
+	storeOnce          resync.Once
+	isReplaying        bool
+	logger             *zap.Logger
 }
 
 type Conversation struct {
 	ConversationPublicKey string
 	ContactPublicKey      string
 	ContactDisplayName    string
-	Count                 int
+	Step                  uint
 	IsOneToOne            bool
+}
+
+// The function returned by LockConversation is the Unlocker.
+func (bot *Bot) LockConversation(c *Conversation) func() {
+	bot.storeConvMapLock.Lock()
+	l, ok := bot.storeConvMap[c]
+	if ok {
+		goto Done
+	}
+	{
+		var m sync.Mutex
+		l = &m
+		bot.storeConvMap[c] = l
+	}
+
+Done:
+	bot.storeConvMapLock.Unlock()
+	(*l).Lock()
+	bot.storeWholeConvLock.RLock()
+	return func() {
+		(*l).Unlock()
+		bot.storeWholeConvLock.RUnlock()
+	}
 }
 
 func betabot() error {
@@ -73,7 +103,7 @@ func betabot() error {
 	rand.Seed(srand.MustSecure())
 
 	// init bot
-	var bot Bot
+	bot := &Bot{storeConvMap: make(map[*Conversation]*sync.Mutex)}
 
 	// init logger
 	{
@@ -197,7 +227,7 @@ func betabot() error {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			handledEvents := 0
+			var handledEvents uint
 			for {
 				gme, err := s.Recv()
 				if err != nil {
@@ -206,32 +236,32 @@ func betabot() error {
 					return
 				}
 
-				switch {
-				case gme.Event.Type == bertymessenger.StreamEvent_TypeListEnd:
-					bot.logger.Info("finished replaying logs from the previous sessions", zap.Int("count", handledEvents))
-					bot.isReplaying = false
-				case !bot.isReplaying:
-					// replay is done, let's handle events normally
-					wg.Add(1)
-					go func() {
-						defer wg.Done()
-						err := bot.handleEvent(ctx, gme)
-						if err != nil {
-							bot.logger.Error("handleEvent failed", zap.Error(err))
-						}
-					}()
-				default:
-					// bot.logger.Debug("ignoring already handled event", zap.Any("event", gme))
+				if bot.isReplaying {
+					if gme.Event.Type == bertymessenger.StreamEvent_TypeListEnd {
+						bot.logger.Info("finished replaying logs from the previous sessions", zap.Uint("count", handledEvents))
+						bot.isReplaying = false
+					}
 					// replayed events
-					// noop
+					// bot.logger.Debug("ignoring already handled event", zap.Any("event", gme))
+					handledEvents++
+					continue
 				}
-				handledEvents++
+				// replay is done, let's handle events normally
+				wg.Add(1)
+				go func() {
+					defer wg.Done()
+					err := bot.handleEvent(ctx, gme)
+					if err != nil {
+						bot.logger.Error("handleEvent failed", zap.Error(err))
+					}
+				}()
 			}
 		}()
 	}
 
 	waitForCtrlC(ctx, cancel)
 	wg.Wait()
+	bot.saveStore()
 	return nil
 }
 
@@ -274,13 +304,14 @@ func (bot *Bot) handleContactUpdated(ctx context.Context, _ *bertymessenger.Even
 	} else if contact.State == bertymessenger.Contact_Accepted {
 		// When contact was established, send message and a group invitation
 		time.Sleep(2 * time.Second)
-		bot.store.Convs = append(bot.store.Convs, Conversation{
+		bot.storeMutex.Lock()
+		bot.store.Convs = append(bot.store.Convs, &Conversation{
 			ConversationPublicKey: contact.ConversationPublicKey,
 			ContactPublicKey:      contact.PublicKey,
-			Count:                 0,
 			ContactDisplayName:    contact.DisplayName,
 			IsOneToOne:            true,
 		})
+		bot.storeMutex.Unlock()
 		bot.saveStore()
 
 		body := `Hey! 🙌 Welcome to the Berty beta version! 🎊
@@ -300,83 +331,121 @@ func (bot *Bot) handleUserMessageInteractionUpdated(ctx context.Context, _ *bert
 	}
 
 	var conv *Conversation
+	bot.storeMutex.RLock()
 	for i := range bot.store.Convs {
 		if bot.store.Convs[i].ConversationPublicKey == interaction.ConversationPublicKey {
-			conv = &bot.store.Convs[i]
+			conv = bot.store.Convs[i]
 		}
 	}
+	bot.storeMutex.RUnlock()
 	receivedMessage := payload.(*bertymessenger.AppMessage_UserMessage)
 	if conv != nil && conv.IsOneToOne {
-		switch {
-		case conv.Count == 0 && checkValidationMessage(receivedMessage.GetBody()):
-			conv.Count++
-			bot.saveStore()
-			time.Sleep(1 * time.Second)
+		unlock := bot.LockConversation(conv)
+		success, err := [3]doStepFn{
+			doStep0,
+			doStep1,
+			doStep2,
+		}[conv.Step](ctx, conv, bot, receivedMessage, interaction, unlock)
+		if err != nil {
+			return err
+		}
+		if success {
+			return nil
+		}
+		// auto-reply to user's messages
+		answer := getRandomReply()
+		if err := bot.interactUserMessage(ctx, answer, interaction.ConversationPublicKey); err != nil {
+			return fmt.Errorf("interact user message failed: %w", err)
+		}
+	}
+	return nil
+}
 
-			body := `Okay, perfect! 🤙
+type doStepFn func(context.Context, *Conversation, *Bot, *bertymessenger.AppMessage_UserMessage, *bertymessenger.Interaction, func()) (bool, error)
+
+func doStep0(ctx context.Context, conv *Conversation, bot *Bot, receivedMessage *bertymessenger.AppMessage_UserMessage, interaction *bertymessenger.Interaction, unlock func()) (bool, error) {
+	if checkValidationMessage(receivedMessage.GetBody()) {
+		conv.Step++
+		unlock()
+		bot.saveStore()
+		time.Sleep(1 * time.Second)
+
+		body := `Okay, perfect! 🤙
 Would you like me to invite you to a group chat to test multimember conversations?
 Type 'yes' to receive it! 💌`
-			if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey); err != nil {
-				return fmt.Errorf("interact user message failed: %w", err)
-			}
-		case conv.Count == 1 && checkValidationMessage(receivedMessage.GetBody()):
-			conv.Count++
-			bot.saveStore()
-			time.Sleep(1 * time.Second)
+		if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey); err != nil {
+			return false, fmt.Errorf("interact user message failed: %w", err)
+		}
+		return true, nil
+	}
+	unlock()
+	return false, nil
+}
 
-			body := `Okay, I'm inviting you! 🤝
+func doStep1(ctx context.Context, conv *Conversation, bot *Bot, receivedMessage *bertymessenger.AppMessage_UserMessage, interaction *bertymessenger.Interaction, unlock func()) (bool, error) {
+	if checkValidationMessage(receivedMessage.GetBody()) {
+		conv.Step++
+		unlock()
+		bot.saveStore()
+		time.Sleep(1 * time.Second)
+
+		body := `Okay, I'm inviting you! 🤝
 I'll also invite some staff members to join the group!
 I’m cool, but humans are sometimes cooler than me… 🤖 ❤️`
-			if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey); err != nil {
-				return fmt.Errorf("interact user message failed: %w", err)
-			}
+		if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey); err != nil {
+			return false, fmt.Errorf("interact user message failed: %w", err)
+		}
 
-			// TODO create with real staff group (in this group, betabot auto-reply will be disable)
-			time.Sleep(1 * time.Second)
-			{
-				// create staff conversation
-				createdConv, err := bot.client.ConversationCreate(ctx, &bertymessenger.ConversationCreate_Request{
-					DisplayName: staffXConvPrefix + conv.ContactDisplayName,
-					ContactsToInvite: []string{
-						conv.ContactPublicKey,
-					},
-				})
-				if err != nil {
-					return fmt.Errorf("conversation create failed: %w", err)
-				}
-				bot.store.Convs = append(bot.store.Convs, Conversation{
-					ConversationPublicKey: createdConv.PublicKey,
-					IsOneToOne:            false,
-				})
-				bot.saveStore()
+		// TODO create with real staff group (in this group, betabot auto-reply will be disable)
+		time.Sleep(1 * time.Second)
+		{
+			// create staff conversation
+			createdConv, err := bot.client.ConversationCreate(ctx, &bertymessenger.ConversationCreate_Request{
+				DisplayName: staffXConvPrefix + conv.ContactDisplayName,
+				ContactsToInvite: []string{
+					conv.ContactPublicKey,
+				},
+			})
+			if err != nil {
+				return false, fmt.Errorf("conversation create failed: %w", err)
 			}
-			time.Sleep(1 * time.Second)
+			bot.storeMutex.Lock()
+			bot.store.Convs = append(bot.store.Convs, &Conversation{
+				ConversationPublicKey: createdConv.PublicKey,
+				IsOneToOne:            false,
+			})
+			bot.storeMutex.Unlock()
+			bot.saveStore()
+		}
+		time.Sleep(1 * time.Second)
 
-			body = `Okay, done! 👏 👍
+		body = `Okay, done! 👏 👍
 Welcome and thanks for joining our community. You're part of the revolution now! 🔥
 Type /help when you need info about available test commands! 📖`
-			if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey); err != nil {
-				return fmt.Errorf("interact user message failed: %w", err)
-			}
-			bot.logger.Info("scenario finished")
-		case conv.Count >= 2 && receivedMessage.GetBody() == "/help":
-			body := `In this conversation, you can type all theses commands :
+		if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey); err != nil {
+			return false, fmt.Errorf("interact user message failed: %w", err)
+		}
+		bot.logger.Info("scenario finished")
+		return true, nil
+	}
+	unlock()
+	return false, nil
+}
+
+func doStep2(ctx context.Context, _ *Conversation, bot *Bot, receivedMessage *bertymessenger.AppMessage_UserMessage, interaction *bertymessenger.Interaction, unlock func()) (bool, error) {
+	unlock()
+	if receivedMessage.GetBody() == "/help" {
+		body := `In this conversation, you can type all theses commands :
 /demo group
 /demo demo
 /demo share
 /demo contact "Here is the QR code of manfred, just add him!"`
-			if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey); err != nil {
-				return fmt.Errorf("interact user message failed: %w", err)
-			}
-		default:
-			// auto-reply to user's messages
-			answer := getRandomReply()
-			if err := bot.interactUserMessage(ctx, answer, interaction.ConversationPublicKey); err != nil {
-				return fmt.Errorf("interact user message failed: %w", err)
-			}
+		if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey); err != nil {
+			return false, fmt.Errorf("interact user message failed: %w", err)
 		}
+		return true, nil
 	}
-	return nil
+	return false, nil
 }
 
 func (bot *Bot) handleGroupInvitationInteractionUpdated(ctx context.Context, _ *bertymessenger.EventStream_Reply, interaction *bertymessenger.Interaction, payload proto.Message) error {
@@ -476,18 +545,30 @@ func (bot *Bot) interactUserMessage(ctx context.Context, body string, conversati
 }
 
 func (bot *Bot) saveStore() {
-	bot.storeMutex.Lock()
-	defer bot.storeMutex.Unlock()
+	var done bool
+	// Prevent concurrent saves
+	bot.storeOnce.Do(func() {
+		done = true
+		// Prevent data race with a writing goroutine.
+		bot.storeMutex.RLock()
+		// Prevent data race on conversations
+		bot.storeWholeConvLock.Lock()
+		// marshal
+		data, err := json.MarshalIndent(bot.store, "", "  ")
+		if err != nil {
+			panic(fmt.Errorf("marshal: %w", err))
+		}
 
-	// marshal
-	data, err := json.MarshalIndent(bot.store, "", "  ")
-	if err != nil {
-		panic(fmt.Errorf("marshal: %w", err))
-	}
-
-	// write file
-	if err := ioutil.WriteFile(bot.storePath, data, 0o600); err != nil {
-		panic(fmt.Errorf("write store file: %w", err))
+		// write file
+		if err := ioutil.WriteFile(bot.storePath, data, 0o600); err != nil {
+			panic(fmt.Errorf("write store file: %w", err))
+		}
+	})
+	if done {
+		// Allow continuation of saves.
+		bot.storeOnce.Reset()
+		bot.storeWholeConvLock.Unlock()
+		bot.storeMutex.RUnlock()
 	}
 }
 
