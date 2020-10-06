@@ -144,6 +144,7 @@ export const berty = {
 				'.berty.messenger.v1.ReplicationServiceRegisterGroup',
 			),
 			BannerQuote: jsonPb.lookup('.berty.messenger.v1.BannerQuote'),
+			GetUsername: jsonPb.lookup('.berty.messenger.v1.GetUsername'),
 		},
 	},
 }

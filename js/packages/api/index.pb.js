@@ -2399,6 +2399,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   BannerQuote: {
                     requestType: "BannerQuote.Request",
                     responseType: "BannerQuote.Reply"
+                  },
+                  GetUsername: {
+                    requestType: "GetUsername.Request",
+                    responseType: "GetUsername.Reply"
                   }
                 }
               },
@@ -3580,6 +3584,22 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       author: {
                         type: "string",
                         id: 2
+                      }
+                    }
+                  }
+                }
+              },
+              GetUsername: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      username: {
+                        type: "string",
+                        id: 1
                       }
                     }
                   }

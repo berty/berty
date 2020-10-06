@@ -57,6 +57,9 @@
     - [EventStream](#berty.messenger.v1.EventStream)
     - [EventStream.Reply](#berty.messenger.v1.EventStream.Reply)
     - [EventStream.Request](#berty.messenger.v1.EventStream.Request)
+    - [GetUsername](#berty.messenger.v1.GetUsername)
+    - [GetUsername.Reply](#berty.messenger.v1.GetUsername.Reply)
+    - [GetUsername.Request](#berty.messenger.v1.GetUsername.Request)
     - [InstanceShareableBertyID](#berty.messenger.v1.InstanceShareableBertyID)
     - [InstanceShareableBertyID.Reply](#berty.messenger.v1.InstanceShareableBertyID.Reply)
     - [InstanceShareableBertyID.Request](#berty.messenger.v1.InstanceShareableBertyID.Request)
@@ -493,6 +496,22 @@
 | ----- | ---- | ----- | ----------- |
 | count | [uint64](#uint64) |  |  |
 | page | [uint64](#uint64) |  |  |
+
+<a name="berty.messenger.v1.GetUsername"></a>
+
+### GetUsername
+
+<a name="berty.messenger.v1.GetUsername.Reply"></a>
+
+### GetUsername.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| username | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.GetUsername.Request"></a>
+
+### GetUsername.Request
 
 <a name="berty.messenger.v1.InstanceShareableBertyID"></a>
 
@@ -953,6 +972,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | ServicesTokenList | [.berty.types.v1.ServicesTokenList.Request](#berty.types.v1.ServicesTokenList.Request) | [.berty.types.v1.ServicesTokenList.Reply](#berty.types.v1.ServicesTokenList.Reply) stream | ServicesTokenList Retrieves the list of service server tokens |
 | ReplicationServiceRegisterGroup | [ReplicationServiceRegisterGroup.Request](#berty.messenger.v1.ReplicationServiceRegisterGroup.Request) | [ReplicationServiceRegisterGroup.Reply](#berty.messenger.v1.ReplicationServiceRegisterGroup.Reply) | ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents |
 | BannerQuote | [BannerQuote.Request](#berty.messenger.v1.BannerQuote.Request) | [BannerQuote.Reply](#berty.messenger.v1.BannerQuote.Reply) | BannerQuote returns the quote of the day. |
+| GetUsername | [GetUsername.Request](#berty.messenger.v1.GetUsername.Request) | [GetUsername.Reply](#berty.messenger.v1.GetUsername.Reply) | GetUsername returns the name of the device/user using Android/iOS/universal API |
 
  
 

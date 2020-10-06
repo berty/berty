@@ -28,12 +28,12 @@ func TestServiceInstanceShareableBertyID(t *testing.T) {
 	ret1, err := svc.InstanceShareableBertyID(ctx, nil)
 	require.NoError(t, err)
 	testParseInstanceShareable(ctx, t, svc, ret1)
-	assert.Equal(t, ret1.BertyID.DisplayName, "anonymous#1337")
+	assert.Equal(t, ret1.BertyID.DisplayName, "")
 
 	ret2, err := svc.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{})
 	require.NoError(t, err)
 	testParseInstanceShareable(ctx, t, svc, ret2)
-	assert.Equal(t, ret2.BertyID.DisplayName, "anonymous#1337")
+	assert.Equal(t, ret2.BertyID.DisplayName, "")
 	assert.Equal(t, ret1, ret2)
 
 	ret3, err := svc.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{DisplayName: "Hello World! 👋"})
@@ -45,7 +45,7 @@ func TestServiceInstanceShareableBertyID(t *testing.T) {
 	ret4, err := svc.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{Reset_: true})
 	require.NoError(t, err)
 	testParseInstanceShareable(ctx, t, svc, ret4)
-	assert.Equal(t, ret4.BertyID.DisplayName, "anonymous#1337")
+	assert.Equal(t, ret4.BertyID.DisplayName, "")
 	assert.NotEqual(t, ret1.BertyID, ret4.BertyID)
 	assert.NotEqual(t, ret3.BertyID, ret4.BertyID)
 
@@ -60,7 +60,6 @@ func testParseInstanceShareable(ctx context.Context, t *testing.T, svc Messenger
 	assert.NotEmpty(t, ret.BertyID)
 	assert.NotEmpty(t, ret.BertyID.PublicRendezvousSeed)
 	assert.NotEmpty(t, ret.BertyID.AccountPK)
-	assert.NotEmpty(t, ret.BertyID.DisplayName)
 	assert.NotEmpty(t, ret.HTMLURL)
 	assert.NotEmpty(t, ret.DeepLink)
 	assert.NotEqual(t, ret.HTMLURL, ret.DeepLink)

@@ -31,6 +31,7 @@ bridge_src := $(call rwildcard,../go,*.go) ../go.sum
 react-native := $(abspath node_modules/.bin/react-native)
 clisim := packages/berty-app/node_modules/.bin/clisim
 xcodegen_yml := $(wildcard $(PWD)/packages/berty-app/ios/*.yaml)
+required_java_ver = 18
 
 ## User commands
 
@@ -185,12 +186,18 @@ ios.gomobile: packages/go-bridge/ios/Frameworks/Bertybridge.framework
 
 .PHONY: android.run
 android.run: deps packages/go-bridge/android/libs/gobridge.aar packages/berty-app/node_modules/react-native/react.gradle.orig $(HOME)/.android/debug.keystore
+	$(eval ANDROID_DEVICE ?= `adb devices | tail +2 | head -1 | cut -f 1`)
+	$(eval CURRENT_JAVA_VER ?= `java -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*"/\1\2/p;'`)
+	if [ "$(CURRENT_JAVA_VER)" != "$(required_java_ver)" ]; then \
+	  >&2 echo "ERROR: Invalid java version, want $(required_java_ver), got $(CURRENT_JAVA_VER)"; exit 1; \
+	fi
+	cd packages/berty-app && $(react-native) run-android --no-packager --variant=$(ANDROID_APP_TARGET) --deviceId="$(ANDROID_DEVICE)" $(if $(filter-out $(ANDROID_APP_TARGET), store), --appIdSuffix=$(ANDROID_APP_TARGET))
+
+android.reverse_tcp:
 	$(call check-program, adb)
 	$(eval ANDROID_DEVICE ?= `adb devices | tail +2 | head -1 | cut -f 1`)
-	../tool/build/shell/check-java.sh 18
 	adb -s $(ANDROID_DEVICE) reverse tcp:$(BERTY_DAEMON_PORT) tcp:$(BERTY_DAEMON_PORT) # daemon
 	adb -s $(ANDROID_DEVICE) reverse tcp:8081 tcp:8081 # metro
-	cd packages/berty-app && $(react-native) run-android --no-packager --variant=$(ANDROID_APP_TARGET) --deviceId="$(ANDROID_DEVICE)" $(if $(filter-out $(ANDROID_APP_TARGET), store), --appIdSuffix=$(ANDROID_APP_TARGET))
 
 .PHONY: android.release
 android.release: deps packages/go-bridge/android/libs/gobridge.aar packages/berty-app/node_modules/react-native/react.gradle.orig $(HOME)/.android/debug.keystore
@@ -328,7 +335,7 @@ packages/go-bridge/ios/Frameworks/Bertybridge.framework: $(bridge_src)
 	cd .. && go mod download
 	cd .. && go run golang.org/x/mobile/cmd/gomobile init
 	@mkdir -p "packages/go-bridge/ios/Frameworks"
-	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind -o js/$@ -v $(ext_ldflags) -target ios ./go/framework/bertybridge
+	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind -o js/$@ -v -tags=ios $(ext_ldflags) -target ios ./go/framework/bertybridge
 	touch $@
 
 packages/go-bridge/android/libs/gobridge.aar: $(bridge_src)

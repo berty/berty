@@ -69,6 +69,9 @@ service MessengerService {
 
   // BannerQuote returns the quote of the day.
   rpc BannerQuote(BannerQuote.Request) returns (BannerQuote.Reply);
+
+  // GetUsername returns the name of the device/user using Android/iOS/universal API
+  rpc GetUsername(GetUsername.Request) returns (GetUsername.Reply);
 }
 
 message ConversationOpen {
@@ -486,8 +489,7 @@ message ReplicationServiceRegisterGroup {
     string token_id = 1 [(gogoproto.customname) = "TokenID"];
     string conversation_public_key = 2;
   }
-  message Reply {
-  }
+  message Reply {}
 }
 
 message BannerQuote {
@@ -497,5 +499,12 @@ message BannerQuote {
   message Reply {
     string quote = 1;
     string author = 2;
+  }
+}
+
+message GetUsername {
+  message Request {}
+  message Reply {
+    string username = 1;
   }
 }
