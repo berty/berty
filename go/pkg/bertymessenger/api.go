@@ -312,6 +312,7 @@ func (svc *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*S
 		errs = multierr.Append(errs, err)
 		reply.Messenger = &SystemInfo_Messenger{Process: process}
 		reply.Messenger.Process.StartedAt = svc.startedAt.Unix()
+		reply.Messenger.Process.UptimeMS = time.Since(svc.startedAt).Milliseconds()
 	}
 
 	// messenger's db

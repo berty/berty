@@ -1234,26 +1234,28 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| version | [string](#string) |  |  |
+| vcs_ref | [string](#string) |  |  |
+| uptime_ms | [int64](#int64) |  |  |
+| user_cpu_time_ms | [int64](#int64) |  |  |
+| system_cpu_time_ms | [int64](#int64) |  |  |
+| started_at | [int64](#int64) |  |  |
 | rlimit_cur | [uint64](#uint64) |  |  |
 | num_goroutine | [int64](#int64) |  |  |
 | nofile | [int64](#int64) |  |  |
 | too_many_open_files | [bool](#bool) |  |  |
-| started_at | [int64](#int64) |  |  |
 | num_cpu | [int64](#int64) |  |  |
 | go_version | [string](#string) |  |  |
 | operating_system | [string](#string) |  |  |
 | host_name | [string](#string) |  |  |
 | arch | [string](#string) |  |  |
-| version | [string](#string) |  |  |
-| vcs_ref | [string](#string) |  |  |
-| self_rusage | [string](#string) |  |  |
-| children_rusage | [string](#string) |  |  |
 | rlimit_max | [uint64](#uint64) |  |  |
 | pid | [int64](#int64) |  |  |
 | ppid | [int64](#int64) |  |  |
 | priority | [int64](#int64) |  |  |
 | uid | [int64](#int64) |  |  |
 | working_dir | [string](#string) |  |  |
+| system_username | [string](#string) |  |  |
 
 <a name="berty.types.v1.SystemInfo.Reply"></a>
 

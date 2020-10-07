@@ -3442,50 +3442,54 @@ export namespace berty {
                 }
 
                 interface IProcess {
+                    version?: (string|null);
+                    vcsRef?: (string|null);
+                    uptimeMs?: (number|Long|null);
+                    userCpuTimeMs?: (number|Long|null);
+                    systemCpuTimeMs?: (number|Long|null);
+                    startedAt?: (number|Long|null);
                     rlimitCur?: (number|Long|null);
                     numGoroutine?: (number|Long|null);
                     nofile?: (number|Long|null);
                     tooManyOpenFiles?: (boolean|null);
-                    startedAt?: (number|Long|null);
                     numCpu?: (number|Long|null);
                     goVersion?: (string|null);
                     operatingSystem?: (string|null);
                     hostName?: (string|null);
                     arch?: (string|null);
-                    version?: (string|null);
-                    vcsRef?: (string|null);
-                    selfRusage?: (string|null);
-                    childrenRusage?: (string|null);
                     rlimitMax?: (number|Long|null);
                     pid?: (number|Long|null);
                     ppid?: (number|Long|null);
                     priority?: (number|Long|null);
                     uid?: (number|Long|null);
                     workingDir?: (string|null);
+                    systemUsername?: (string|null);
                 }
 
                 class Process implements IProcess {
 
+                    public version: string;
+                    public vcsRef: string;
+                    public uptimeMs: (number|Long);
+                    public userCpuTimeMs: (number|Long);
+                    public systemCpuTimeMs: (number|Long);
+                    public startedAt: (number|Long);
                     public rlimitCur: (number|Long);
                     public numGoroutine: (number|Long);
                     public nofile: (number|Long);
                     public tooManyOpenFiles: boolean;
-                    public startedAt: (number|Long);
                     public numCpu: (number|Long);
                     public goVersion: string;
                     public operatingSystem: string;
                     public hostName: string;
                     public arch: string;
-                    public version: string;
-                    public vcsRef: string;
-                    public selfRusage: string;
-                    public childrenRusage: string;
                     public rlimitMax: (number|Long);
                     public pid: (number|Long);
                     public ppid: (number|Long);
                     public priority: (number|Long);
                     public uid: (number|Long);
                     public workingDir: string;
+                    public systemUsername: string;
                     public static create(properties?: berty.types.v1.SystemInfo.IProcess): berty.types.v1.SystemInfo.Process;
                     public static encode(message: berty.types.v1.SystemInfo.IProcess, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.types.v1.SystemInfo.IProcess, writer?: $protobuf.Writer): $protobuf.Writer;

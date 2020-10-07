@@ -6,17 +6,18 @@ import (
 	"os"
 	"runtime"
 	"syscall"
+	"time"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
-	"moul.io/godev"
 	"moul.io/openfiles"
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/username"
 	"berty.tech/go-orbit-db/stores/operation"
 )
 
@@ -186,11 +187,8 @@ func SystemInfoProcess() (*bertytypes.SystemInfo_Process, error) {
 	errs = multierr.Append(errs, err)
 
 	// rusage
-	selfUsage := syscall.Rusage{}
-	err = syscall.Getrusage(syscall.RUSAGE_SELF, &selfUsage)
-	errs = multierr.Append(errs, err)
-	childrenUsage := syscall.Rusage{}
-	err = syscall.Getrusage(syscall.RUSAGE_CHILDREN, &childrenUsage)
+	rusage := syscall.Rusage{}
+	err = syscall.Getrusage(syscall.RUSAGE_SELF, &rusage)
 	errs = multierr.Append(errs, err)
 
 	// openfiles
@@ -210,8 +208,6 @@ func SystemInfoProcess() (*bertytypes.SystemInfo_Process, error) {
 	errs = multierr.Append(errs, err)
 
 	reply := bertytypes.SystemInfo_Process{
-		SelfRusage:       godev.JSON(selfUsage),
-		ChildrenRusage:   godev.JSON(childrenUsage),
 		RlimitCur:        rlimitNofile.Cur,
 		Nofile:           nofile,
 		TooManyOpenFiles: openfiles.IsTooManyError(nofileErr),
@@ -229,6 +225,9 @@ func SystemInfoProcess() (*bertytypes.SystemInfo_Process, error) {
 		UID:              int64(syscall.Getuid()),
 		PPID:             int64(syscall.Getppid()),
 		WorkingDir:       wd,
+		SystemUsername:   username.GetUsername(),
+		UserCPUTimeMS:    int64(rusage.Utime.Sec*1000) + int64(rusage.Utime.Usec/1000), // nolint:unconvert // on some archs, those vars may be int32 instead of int64
+		SystemCPUTimeMS:  int64(rusage.Stime.Sec*1000) + int64(rusage.Stime.Usec/1000), // nolint:unconvert // on some archs, those vars may be int32 instead of int64
 	}
 
 	return &reply, errs
@@ -241,6 +240,7 @@ func (s *service) SystemInfo(ctx context.Context, request *bertytypes.SystemInfo
 	process, errs := SystemInfoProcess()
 	reply.Process = process
 	reply.Process.StartedAt = s.startedAt.Unix()
+	reply.Process.UptimeMS = time.Since(s.startedAt).Milliseconds()
 
 	// gRPC
 	// TODO
