@@ -7,6 +7,9 @@ targets:
         - tech.berty.ios.task.gobridge-process
         - tech.berty.ios.task.gobridge-refresh
         CFBundleIconName: Berty/Images.xcassets/AppIcon.appiconset
+        CFBundleVersion: "${IOS_BUNDLE_VERSION}"
+        CFBundleShortVersionString: "${IOS_SHORT_BUNDLE_VERSION}"
+        Commit: "${IOS_COMMIT}"
         CFBundleSignature:
         CFBundleURLTypes:
         - CFBundleTypeRole: Viewer

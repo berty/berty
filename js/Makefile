@@ -1,6 +1,6 @@
 ## user variables
 
-VERSION ?= `cd ..; go run github.com/mdomke/git-semver`
+VERSION ?= `go run -mod=readonly -modfile=../go.mod github.com/mdomke/git-semver/v5`
 VCS_REF ?= `git rev-parse --short HEAD`
 BUILD_DATE ?= `date +%s`
 TMPDIR ?= /tmp
@@ -354,6 +354,9 @@ packages/berty-app/ios/Berty.xcodeproj: vendor/bundle $(xcodegen_yml)
 	mkdir -p packages/berty-app/ios/Berty
 	touch packages/berty-app/ios/Berty/main.jsbundle
 
+	IOS_BUNDLE_VERSION=$(shell echo -n $(shell git rev-list HEAD | wc -l)) \
+	IOS_SHORT_BUNDLE_VERSION=$(shell echo "$(VERSION)" | cut -c2-) \
+	IOS_COMMIT=$(shell git rev-parse HEAD) \
 	FASTLANE_SKIP_UPDATE_CHECK=1 \
 	FASTLANE_HIDE_CHANGELOG=1 \
 	XCODEGEN_SPEC=packages/berty-app/ios/berty.yaml \
