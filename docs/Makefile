@@ -2,7 +2,7 @@
 ## Code gen
 ##
 
-VERSION ?= `go run github.com/mdomke/git-semver`
+VERSION ?= `go run github.com/mdomke/git-semver/v5`
 
 all: generate
 
