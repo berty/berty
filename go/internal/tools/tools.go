@@ -34,6 +34,9 @@ import (
 	// required by protoc
 	_ "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger"
 
+	// required by Makefile
+	_ "github.com/mdomke/git-semver"
+
 	// required by protoc
 	_ "github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc"
 

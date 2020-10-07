@@ -10,13 +10,22 @@ GO_TEST_PATH ?= ./...
 
 BUILD_DATE ?= `date +%s`
 VCS_REF ?= `git rev-parse --short HEAD`
-VERSION ?= `git describe --tags --always`
+VERSION ?= `go run github.com/mdomke/git-semver`
 LDFLAGS ?= -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
 
 
 ##
 ## General rules
 ##
+
+all: help
+.PHONY: all
+
+
+help:
+	@echo "Available make commands:"
+	@cat Makefile | grep '^[a-z]' | grep -v '=' | cut -d: -f1 | sort | sed 's/^/  /'
+.PHONY: help
 
 
 test: unittest lint tidy
@@ -102,7 +111,8 @@ go.broken-tests: pb.generate
 
 go.install: pb.generate
 	$(call check-program, $(GO))
-	GO111MODULE=on $(GO) install $(LDFLAGS) -v ./cmd/...
+	@echo GO111MODULE=on $(GO) install $(LDFLAGS) -v ./cmd/...
+	@GO111MODULE=on $(GO) install $(LDFLAGS) -v ./cmd/...
 .PHONY: go.install
 
 

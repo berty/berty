@@ -2,6 +2,8 @@
 ## Code gen
 ##
 
+VERSION ?= `go run github.com/mdomke/git-semver`
+
 all: generate
 
 .PHONY: gen.clean
@@ -49,8 +51,8 @@ generate_local:
 .PHONY: openapi.prepare
 openapi.prepare: gen.sum
 	mkdir -p .tmp/openapi
-	cat ./messenger/bertymessenger.swagger.json | jq '.info.version="'`git describe --tags --always`'"' > .tmp/openapi/bertymessenger.swagger.json
-	cat ./protocol/bertyprotocol.swagger.json   | jq '.info.version="'`git describe --tags --always`'"' > .tmp/openapi/bertyprotocol.swagger.json
+	cat ./messenger/bertymessenger.swagger.json | jq '.info.version="'$(VERSION)'"' > .tmp/openapi/bertymessenger.swagger.json
+	cat ./protocol/bertyprotocol.swagger.json   | jq '.info.version="'$(VERSION)'"' > .tmp/openapi/bertyprotocol.swagger.json
 	cat .tmp/openapi/*.swagger.json | jq .info.version
 
 BUMP_TOKEN ?=

@@ -6,4 +6,4 @@ e30b2f597552c76bb20de42dcc7b10f49873362c  ../api/bertytypes.proto
 6b3ef10a9b511f389e8fae2a3d9693bc2dcee870  ../api/errcode.proto
 c314cc3d08e8849bd0693039e42da117c39efef5  ../api/go-internal/handshake.proto
 9b4665f0290b8e94e5ef4b80572a9304f587c2c7  ../api/go-internal/records.proto
-43aecf1e04447b133e2fe03fd9445121891134f9  Makefile
+c52f380d980ba897d3683672a1f779d1e6d5069f  Makefile
