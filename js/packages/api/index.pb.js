@@ -2320,6 +2320,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "SendMessage.Request",
                     responseType: "SendMessage.Reply"
                   },
+                  SendReplyOptions: {
+                    requestType: "SendReplyOptions.Request",
+                    responseType: "SendReplyOptions.Reply"
+                  },
                   SendAck: {
                     requestType: "SendAck.Request",
                     responseType: "SendAck.Reply"
@@ -2708,6 +2712,29 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
+              SendReplyOptions: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      },
+                      options: {
+                        type: "AppMessage.ReplyOptions",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
               BertyID: {
                 fields: {
                   publicRendezvousSeed: {
@@ -2766,7 +2793,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       TypeGroupInvitation: 3,
                       TypeSetGroupName: 4,
                       TypeSetUserName: 5,
-                      TypeAcknowledge: 6
+                      TypeAcknowledge: 6,
+                      TypeReplyOptions: 7
                     }
                   },
                   UserMessage: {
@@ -2820,6 +2848,27 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         id: 2
                       }
                     }
+                  },
+                  ReplyOptions: {
+                    fields: {
+                      options: {
+                        rule: "repeated",
+                        type: "ReplyOption",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              ReplyOption: {
+                fields: {
+                  display: {
+                    type: "string",
+                    id: 1
+                  },
+                  payload: {
+                    type: "string",
+                    id: 2
                   }
                 }
               },
@@ -3157,6 +3206,21 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   createdDate: {
                     type: "int64",
                     id: 13
+                  },
+                  replyOptionsCid: {
+                    type: "string",
+                    id: 14,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:column:reply_options_cid",
+                      "(gogoproto.customname)": "ReplyOptionsCID"
+                    }
+                  },
+                  replyOptions: {
+                    type: "Interaction",
+                    id: 15,
+                    options: {
+                      "(gogoproto.customname)": "ReplyOptions"
+                    }
                   }
                 },
                 nested: {

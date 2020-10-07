@@ -1122,3 +1122,20 @@ func (svc *service) GetUsername(ctx context.Context, request *GetUsername_Reques
 		Username: username.GetUsername(),
 	}, nil
 }
+
+func (svc *service) SendReplyOptions(ctx context.Context, request *SendReplyOptions_Request) (*SendReplyOptions_Reply, error) {
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+
+	payload, err := AppMessage_TypeReplyOptions.MarshalPayload(timestampMs(time.Now()), request.Options)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = svc.protocolClient.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
+		GroupPK: request.GroupPK,
+		Payload: payload,
+	})
+
+	return &SendReplyOptions_Reply{}, err
+}

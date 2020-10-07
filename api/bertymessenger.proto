@@ -34,6 +34,9 @@ service MessengerService {
   // SendMessage sends a message to a group.
   rpc SendMessage(SendMessage.Request) returns (SendMessage.Reply);
 
+  // SendReplyOptions sends a list of prefilled response options to a group.
+  rpc SendReplyOptions (SendReplyOptions.Request) returns (SendReplyOptions.Reply);
+
   // SendAck sends an acknowledge payload for given message id.
   rpc SendAck(SendAck.Request) returns (SendAck.Reply);
 
@@ -175,6 +178,14 @@ message SendMessage {
   message Reply {}
 }
 
+message SendReplyOptions {
+  message Request {
+    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+    AppMessage.ReplyOptions options = 2;
+  }
+  message Reply {}
+}
+
 message BertyID {
   bytes public_rendezvous_seed = 1;
   bytes account_pk = 2 [(gogoproto.customname) = "AccountPK"];
@@ -199,6 +210,7 @@ message AppMessage {
     TypeSetGroupName = 4;
     TypeSetUserName = 5;
     TypeAcknowledge = 6;
+    TypeReplyOptions = 7;
   }
   message UserMessage {
     string body = 1;
@@ -219,6 +231,14 @@ message AppMessage {
   message Acknowledge {
     string target = 2; // TODO: optimize message size
   }
+  message ReplyOptions {
+    repeated ReplyOption options = 1;
+  }
+}
+
+message ReplyOption {
+  string display = 1;
+  string payload = 2;
 }
 
 message SystemInfo {
@@ -326,6 +346,10 @@ message Conversation {
   string account_member_public_key = 11;
   string local_device_public_key = 12;
   int64 created_date = 13;
+
+  string reply_options_cid = 14 [(gogoproto.moretags) = "gorm:\"column:reply_options_cid\"", (gogoproto.customname) = "ReplyOptionsCID"];
+  Interaction reply_options = 15 [(gogoproto.customname) = "ReplyOptions"];
+
   // TODO: avatar_cid
 
   enum Type {

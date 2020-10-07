@@ -199,6 +199,13 @@ func (d *dbWrapper) updateConversationReadState(pk string, newUnread bool, event
 		updates["unread_count"] = gorm.Expr("unread_count + 1")
 	}
 
+	replyOptionsCID, err := d.getReplyOptionsCIDForConversation(pk)
+	if err != nil {
+		return err
+	}
+
+	updates["reply_options_cid"] = replyOptionsCID
+
 	// db update
 	tx := d.db.Model(&Conversation{}).Where(&Conversation{PublicKey: pk}).Updates(updates)
 
@@ -309,7 +316,7 @@ func (d *dbWrapper) getConversationByPK(publicKey string) (*Conversation, error)
 
 	conversation := &Conversation{}
 
-	if err := d.db.First(&conversation, &Conversation{PublicKey: publicKey}).Error; err != nil {
+	if err := d.db.Preload("ReplyOptions").First(&conversation, &Conversation{PublicKey: publicKey}).Error; err != nil {
 		return nil, err
 	}
 
@@ -333,7 +340,7 @@ func (d *dbWrapper) getMemberByPK(publicKey string) (*Member, error) {
 func (d *dbWrapper) getAllConversations() ([]*Conversation, error) {
 	convs := []*Conversation(nil)
 
-	return convs, d.db.Find(&convs).Error
+	return convs, d.db.Preload("ReplyOptions").Find(&convs).Error
 }
 
 func (d *dbWrapper) getAllMembers() ([]*Member, error) {
@@ -643,6 +650,35 @@ func (d *dbWrapper) addInteraction(i Interaction, ignoreExisting bool) (*Interac
 	}
 
 	return d.getInteractionByCID(i.CID)
+}
+
+func (d *dbWrapper) getReplyOptionsCIDForConversation(pk string) (string, error) {
+	if pk == "" {
+		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
+	}
+
+	cid := ""
+
+	if err := d.db.Model(&Interaction{}).
+		Raw(`SELECT cid
+			FROM interactions
+			WHERE conversation_public_key = ?
+			AND ROWID >
+				IFNULL ((
+					SELECT MAX(ROWID)
+					FROM interactions
+					WHERE conversation_public_key = ?
+					AND is_me = true
+				), 0)
+			AND is_me = false
+			AND type = ?
+			ORDER BY ROWID DESC
+			LIMIT 1
+		`, pk, pk, AppMessage_TypeReplyOptions).Scan(&cid).Error; err != nil {
+		return "", err
+	}
+
+	return cid, nil
 }
 
 func (d *dbWrapper) attributeBacklogInteractions(devicePK, groupPK, memberPK string) ([]*Interaction, error) {

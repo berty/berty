@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io"
 	"strings"
@@ -184,12 +185,33 @@ func commandList() []*command {
 			cmd:   replGroup,
 		},
 		{
+			title: "reply-options",
+			help:  `Send a list of quick responses from JSON: [{"display": "Text offering a *yes* option", "payload": "yes"}]`,
+			cmd:   sendReplyOptions,
+		},
+		{
 			title:     "/",
 			help:      "",
 			cmd:       newSlashMessageCommand,
 			hideInLog: true,
 		},
 	}
+}
+
+func sendReplyOptions(ctx context.Context, v *groupView, cmd string) error {
+	options := []*bertymessenger.ReplyOption{}
+	if err := json.Unmarshal([]byte(cmd), &options); err != nil {
+		return err
+	}
+
+	_, err := v.v.messenger.SendReplyOptions(ctx, &bertymessenger.SendReplyOptions_Request{
+		GroupPK: v.g.PublicKey,
+		Options: &bertymessenger.AppMessage_ReplyOptions{
+			Options: options,
+		},
+	})
+
+	return err
 }
 
 func authInit(ctx context.Context, v *groupView, cmd string) error {

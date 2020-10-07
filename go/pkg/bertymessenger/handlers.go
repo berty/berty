@@ -60,6 +60,7 @@ func newEventHandler(ctx context.Context, db *dbWrapper, protocolClient bertypro
 		AppMessage_TypeGroupInvitation: {h.handleAppMessageGroupInvitation, true},
 		AppMessage_TypeUserMessage:     {h.handleAppMessageUserMessage, true},
 		AppMessage_TypeSetUserName:     {h.handleAppMessageSetUserName, false},
+		AppMessage_TypeReplyOptions:    {h.handleAppMessageReplyOptions, true},
 	}
 
 	return h
@@ -840,4 +841,21 @@ func (h *eventHandler) interactionConsumeAck(tx *dbWrapper, i *Interaction) erro
 	}
 
 	return nil
+}
+
+func (h *eventHandler) handleAppMessageReplyOptions(tx *dbWrapper, i *Interaction, _ proto.Message) (*Interaction, error) {
+	i, err := tx.addInteraction(*i, false)
+	if err != nil {
+		return nil, err
+	}
+
+	if h.svc == nil {
+		return i, nil
+	}
+
+	if err := h.svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{i}); err != nil {
+		return nil, err
+	}
+
+	return i, nil
 }

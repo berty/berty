@@ -225,6 +225,10 @@ const MessageList: React.FC<{ id: string; scrollToMessage?: string }> = ({
 	const interactions = useSortedConvInteractions(id).filter(
 		(msg) => msg.type === messengerpb.AppMessage.Type.TypeUserMessage,
 	)
+
+	if (conversation.replyOptions !== null && conversation.replyOptions !== undefined) {
+		interactions.push(conversation.replyOptions)
+	}
 	const initialScrollIndex = React.useMemo(() => {
 		if (scrollToMessage) {
 			for (let i = 0; i < interactions.length; i++) {
