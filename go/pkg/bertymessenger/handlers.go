@@ -844,7 +844,7 @@ func (h *eventHandler) interactionConsumeAck(tx *dbWrapper, i *Interaction) erro
 }
 
 func (h *eventHandler) handleAppMessageReplyOptions(tx *dbWrapper, i *Interaction, _ proto.Message) (*Interaction, error) {
-	i, err := tx.addInteraction(*i, false)
+	i, err := tx.addInteraction(*i)
 	if err != nil {
 		return nil, err
 	}
