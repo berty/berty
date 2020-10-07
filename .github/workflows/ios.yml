@@ -26,11 +26,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}  # see https://github.com/actions/checkout/issues/299
 
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.15.2
+          go-version: 1.15.x
 
       - name: Setup Node
         uses: actions/setup-node@v1
