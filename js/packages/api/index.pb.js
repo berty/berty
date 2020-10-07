@@ -2184,97 +2184,114 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Process: {
                     fields: {
-                      rlimitCur: {
-                        type: "uint64",
+                      version: {
+                        type: "string",
                         id: 1
                       },
-                      numGoroutine: {
-                        type: "int64",
+                      vcsRef: {
+                        type: "string",
                         id: 2
                       },
-                      nofile: {
+                      uptimeMs: {
                         type: "int64",
-                        id: 3
+                        id: 3,
+                        options: {
+                          "(gogoproto.customname)": "UptimeMS"
+                        }
                       },
-                      tooManyOpenFiles: {
-                        type: "bool",
-                        id: 4
+                      userCpuTimeMs: {
+                        type: "int64",
+                        id: 10,
+                        options: {
+                          "(gogoproto.customname)": "UserCPUTimeMS"
+                        }
+                      },
+                      systemCpuTimeMs: {
+                        type: "int64",
+                        id: 11,
+                        options: {
+                          "(gogoproto.customname)": "SystemCPUTimeMS"
+                        }
                       },
                       startedAt: {
                         type: "int64",
-                        id: 5
+                        id: 12
+                      },
+                      rlimitCur: {
+                        type: "uint64",
+                        id: 13
+                      },
+                      numGoroutine: {
+                        type: "int64",
+                        id: 14
+                      },
+                      nofile: {
+                        type: "int64",
+                        id: 15
+                      },
+                      tooManyOpenFiles: {
+                        type: "bool",
+                        id: 16
                       },
                       numCpu: {
                         type: "int64",
-                        id: 6,
+                        id: 17,
                         options: {
                           "(gogoproto.customname)": "NumCPU"
                         }
                       },
                       goVersion: {
                         type: "string",
-                        id: 7
+                        id: 18
                       },
                       operatingSystem: {
                         type: "string",
-                        id: 8
+                        id: 19
                       },
                       hostName: {
                         type: "string",
-                        id: 9
+                        id: 20
                       },
                       arch: {
                         type: "string",
-                        id: 10
-                      },
-                      version: {
-                        type: "string",
-                        id: 11
-                      },
-                      vcsRef: {
-                        type: "string",
-                        id: 12
-                      },
-                      selfRusage: {
-                        type: "string",
-                        id: 13
-                      },
-                      childrenRusage: {
-                        type: "string",
-                        id: 14
+                        id: 21
                       },
                       rlimitMax: {
                         type: "uint64",
-                        id: 15
+                        id: 22
                       },
                       pid: {
                         type: "int64",
-                        id: 16,
+                        id: 23,
                         options: {
                           "(gogoproto.customname)": "PID"
                         }
                       },
                       ppid: {
                         type: "int64",
-                        id: 17,
+                        id: 24,
                         options: {
                           "(gogoproto.customname)": "PPID"
                         }
                       },
                       priority: {
                         type: "int64",
-                        id: 18
+                        id: 25
                       },
                       uid: {
                         type: "int64",
-                        id: 19,
+                        id: 26,
                         options: {
                           "(gogoproto.customname)": "UID"
                         }
                       },
                       workingDir: {
                         type: "string",
-                        id: 20
+                        id: 27
+                      },
+                      systemUsername: {
+                        type: "string",
+                        id: 28
                       }
                     }
                   }

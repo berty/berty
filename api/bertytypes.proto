@@ -947,25 +947,27 @@ message SystemInfo {
     int64 connected_peers = 1;
   }
   message Process {
-    uint64 rlimit_cur = 1;
-    int64 num_goroutine = 2;
-    int64 nofile = 3;
-    bool too_many_open_files = 4;
-    int64 started_at = 5;
-    int64 num_cpu = 6 [(gogoproto.customname) = "NumCPU"];
-    string go_version = 7;
-    string operating_system = 8;
-    string host_name = 9;
-    string arch = 10;
-    string version = 11;
-    string vcs_ref = 12;
-    string self_rusage = 13;
-    string children_rusage = 14;
-    uint64 rlimit_max = 15;
-    int64 pid = 16 [(gogoproto.customname) = "PID"];
-    int64 ppid = 17 [(gogoproto.customname) = "PPID"];
-    int64 priority = 18;
-    int64 uid = 19 [(gogoproto.customname) = "UID"];
-    string working_dir = 20;
+    string version = 1;
+    string vcs_ref = 2;
+    int64 uptime_ms = 3 [(gogoproto.customname) = "UptimeMS"];
+    int64 user_cpu_time_ms = 10 [(gogoproto.customname) = "UserCPUTimeMS"];
+    int64 system_cpu_time_ms = 11 [(gogoproto.customname) = "SystemCPUTimeMS"];
+    int64 started_at = 12;
+    uint64 rlimit_cur = 13;
+    int64 num_goroutine = 14;
+    int64 nofile = 15;
+    bool too_many_open_files = 16;
+    int64 num_cpu = 17 [(gogoproto.customname) = "NumCPU"];
+    string go_version = 18;
+    string operating_system = 19;
+    string host_name = 20;
+    string arch = 21;
+    uint64 rlimit_max = 22;
+    int64 pid = 23 [(gogoproto.customname) = "PID"];
+    int64 ppid = 24 [(gogoproto.customname) = "PPID"];
+    int64 priority = 25;
+    int64 uid = 26 [(gogoproto.customname) = "UID"];
+    string working_dir = 27;
+    string system_username = 28;
   }
 }

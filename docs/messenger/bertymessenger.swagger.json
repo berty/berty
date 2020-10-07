@@ -1055,6 +1055,28 @@
     "SystemInfoProcess": {
       "type": "object",
       "properties": {
+        "version": {
+          "type": "string"
+        },
+        "vcs_ref": {
+          "type": "string"
+        },
+        "uptime_ms": {
+          "type": "string",
+          "format": "int64"
+        },
+        "user_cpu_time_ms": {
+          "type": "string",
+          "format": "int64"
+        },
+        "system_cpu_time_ms": {
+          "type": "string",
+          "format": "int64"
+        },
+        "started_at": {
+          "type": "string",
+          "format": "int64"
+        },
         "rlimit_cur": {
           "type": "string",
           "format": "uint64"
@@ -1071,10 +1093,6 @@
           "type": "boolean",
           "format": "boolean"
         },
-        "started_at": {
-          "type": "string",
-          "format": "int64"
-        },
         "num_cpu": {
           "type": "string",
           "format": "int64"
@@ -1089,18 +1107,6 @@
           "type": "string"
         },
         "arch": {
-          "type": "string"
-        },
-        "version": {
-          "type": "string"
-        },
-        "vcs_ref": {
-          "type": "string"
-        },
-        "self_rusage": {
-          "type": "string"
-        },
-        "children_rusage": {
           "type": "string"
         },
         "rlimit_max": {
@@ -1124,6 +1130,9 @@
           "format": "int64"
         },
         "working_dir": {
+          "type": "string"
+        },
+        "system_username": {
           "type": "string"
         }
       }
