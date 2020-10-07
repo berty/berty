@@ -555,7 +555,7 @@ func (h *eventHandler) handleAppMessageAcknowledge(tx *dbWrapper, i *Interaction
 	case err == gorm.ErrRecordNotFound:
 		h.logger.Debug("added ack in backlog", zap.String("target", payload.GetTarget()), zap.String("cid", i.GetCID()))
 		i.TargetCID = payload.Target
-		i, err = tx.addInteraction(*i, false)
+		i, err = tx.addInteraction(*i)
 		if err != nil {
 			return nil, err
 		}
@@ -577,7 +577,7 @@ func (h *eventHandler) handleAppMessageAcknowledge(tx *dbWrapper, i *Interaction
 }
 
 func (h *eventHandler) handleAppMessageGroupInvitation(tx *dbWrapper, i *Interaction, _ proto.Message) (*Interaction, error) {
-	i, err := tx.addInteraction(*i, false)
+	i, err := tx.addInteraction(*i)
 	if err != nil {
 		return nil, err
 	}
@@ -592,7 +592,7 @@ func (h *eventHandler) handleAppMessageGroupInvitation(tx *dbWrapper, i *Interac
 }
 
 func (h *eventHandler) handleAppMessageUserMessage(tx *dbWrapper, i *Interaction, amPayload proto.Message) (*Interaction, error) {
-	i, err := tx.addInteraction(*i, false)
+	i, err := tx.addInteraction(*i)
 	if err != nil {
 		return nil, err
 	}
@@ -670,7 +670,7 @@ func (h *eventHandler) handleAppMessageSetUserName(tx *dbWrapper, i *Interaction
 	if i.MemberPublicKey == "" {
 		// store in backlog
 		h.logger.Info("storing SetUserName in backlog", zap.String("name", payload.GetName()), zap.String("device-pk", i.GetDevicePublicKey()), zap.String("conv", i.ConversationPublicKey))
-		return tx.addInteraction(*i, true)
+		return tx.addInteraction(*i)
 	}
 
 	member, err := tx.addMember(i.MemberPublicKey, i.ConversationPublicKey, payload.GetName())
@@ -721,16 +721,6 @@ func (h *eventHandler) interactionFetchRelations(tx *dbWrapper, i *Interaction) 
 		h.logger.Warn("conversation related to interaction not found")
 	} else {
 		i.Conversation = conversation
-
-		if i.Conversation.Type == Conversation_MultiMemberType {
-			// fetch member from db
-			member, err := tx.getMemberByPK(i.MemberPublicKey)
-			if err != nil {
-				h.logger.Warn("multimember message member not found", zap.String("public-key", i.MemberPublicKey), zap.Error(err))
-			}
-
-			i.Member = member
-		}
 	}
 
 	// build device
@@ -749,6 +739,16 @@ func (h *eventHandler) interactionFetchRelations(tx *dbWrapper, i *Interaction) 
 		} else { // device not found
 			i.MemberPublicKey = "" // backlog magic
 		}
+	}
+
+	if i.Conversation != nil && i.Conversation.Type == Conversation_MultiMemberType && i.MemberPublicKey != "" {
+		// fetch member from db
+		member, err := tx.getMemberByPK(i.MemberPublicKey)
+		if err != nil {
+			h.logger.Warn("multimember message member not found", zap.String("public-key", i.MemberPublicKey), zap.Error(err))
+		}
+
+		i.Member = member
 	}
 
 	return nil

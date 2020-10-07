@@ -635,17 +635,12 @@ func (d *dbWrapper) updateContact(contact Contact) error {
 	})
 }
 
-func (d *dbWrapper) addInteraction(i Interaction, ignoreExisting bool) (*Interaction, error) {
+func (d *dbWrapper) addInteraction(i Interaction) (*Interaction, error) {
 	if i.CID == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
 	}
 
-	query := d.db
-	if ignoreExisting {
-		query = query.Clauses(clause.OnConflict{DoNothing: true})
-	}
-
-	if err := query.Create(&i).Error; err != nil {
+	if err := d.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&i).Error; err != nil {
 		return nil, err
 	}
 
