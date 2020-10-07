@@ -1,6 +1,6 @@
 ## user variables
 
-VERSION ?= `git describe --tags --always`
+VERSION ?= `cd ..; go run github.com/mdomke/git-semver`
 VCS_REF ?= `git rev-parse --short HEAD`
 BUILD_DATE ?= `date +%s`
 TMPDIR ?= /tmp
