@@ -45,7 +45,12 @@ const DeepLinkBridge: React.FC = () => {
 	const [url, error] = useLinking()
 
 	useEffect(() => {
-		if (url && !error) {
+		if (
+			url &&
+			!error &&
+			typeof url === 'string' &&
+			!(url as string).startsWith('berty://services-auth')
+		) {
 			navigation.navigate('Modals', {
 				screen: 'ManageDeepLink',
 				params: { type: 'link', value: url },

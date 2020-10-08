@@ -1,83 +1,151 @@
 import React from 'react'
-import { Alert, ScrollView, View } from 'react-native'
+import { ScrollView, View } from 'react-native'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@react-navigation/native'
 import { useConversation, useMsgrContext } from '@berty-tech/store/hooks'
-import { Messenger } from '@berty-tech/store/oldhooks'
 import HeaderSettings from '../shared-components/Header'
 import { ButtonSetting, FactionButtonSetting } from '../shared-components'
 import { Layout } from 'react-native-ui-kitten'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { ScreenProps } from '@berty-tech/navigation'
+import {
+	servicesAuthViaDefault,
+	useAccountServices,
+	serviceTypes,
+	replicateGroup,
+} from '@berty-tech/store/services'
+import { berty } from '@berty-tech/api'
+import { colors } from 'react-native-elements'
+
+enum replicationServerStatus {
+	KnownServerEnabled,
+	KnownServerNotEnabled,
+	UnknownServerEnabled,
+}
+
+type TokenUsageStatus = {
+	service: berty.messenger.v1.IServiceToken
+	status: replicationServerStatus
+}
+
+const getAllReplicationStatusForConversation = (
+	conversation: berty.messenger.v1.Conversation,
+	services: Array<berty.messenger.v1.IServiceToken>,
+): Array<TokenUsageStatus> => {
+	const allServers = conversation.replicationInfo.reduce<{
+		[key: string]: { service: berty.messenger.v1.IServiceToken; status: replicationServerStatus }
+	}>((servers, r) => {
+		if (typeof r.authenticationUrl !== 'string') {
+			return servers
+		}
+
+		return {
+			...servers,
+			[r.authenticationUrl]: {
+				service: {
+					authenticationUrl: r.authenticationUrl,
+				},
+				status: replicationServerStatus.UnknownServerEnabled,
+			},
+		}
+	}, {})
+
+	for (const s of services.filter((t) => t.serviceType === serviceTypes.Replication)) {
+		if (typeof s.authenticationUrl !== 'string') {
+			continue
+		}
+
+		allServers[s.authenticationUrl] = {
+			status:
+				allServers[s.authenticationUrl] !== undefined
+					? replicationServerStatus.KnownServerEnabled
+					: replicationServerStatus.KnownServerNotEnabled,
+			service: s,
+		}
+	}
+
+	return Object.values(allServers).sort((a, b) => a.status - b.status)
+}
+
+const getReplicationStatusIcon = (status: replicationServerStatus): string => {
+	switch (status) {
+		case replicationServerStatus.KnownServerEnabled:
+			return 'checkmark-circle-2'
+		case replicationServerStatus.KnownServerNotEnabled:
+			return 'plus-circle-outline'
+		case replicationServerStatus.UnknownServerEnabled:
+			return 'question-mark-circle-outline'
+	}
+
+	return ''
+}
+
+const getReplicationStatusColor = (status: replicationServerStatus): string => {
+	switch (status) {
+		case replicationServerStatus.KnownServerEnabled:
+			return colors.success
+		case replicationServerStatus.KnownServerNotEnabled:
+			return colors.disabled
+		case replicationServerStatus.UnknownServerEnabled:
+			return colors.success
+	}
+
+	return ''
+}
 
 const ReplicateGroupContent: React.FC<{
 	conversationPublicKey: string
 }> = ({ conversationPublicKey }) => {
-	const ctx: any = useMsgrContext()
-	const account = Messenger.useAccount()
+	const ctx = useMsgrContext()
+	const conversation: berty.messenger.v1.Conversation = ctx.conversations[conversationPublicKey]
+	const services = useAccountServices()
 	const navigation = useNavigation()
 	const [{ margin, color, flex, padding }] = useStyles()
 
+	const replicationStatus = getAllReplicationStatusForConversation(conversation, services)
+
 	return (
 		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
-			<FactionButtonSetting
-				name='Choose a replication server'
-				icon='cloud-upload-outline'
-				iconSize={30}
-				iconColor={color.blue}
-				style={[margin.top.medium]}
-			>
-				{account.serviceTokens
-					.filter((t) => t.serviceType === 'rpl')
-					.map((t) => (
+			{replicationStatus.length > 0 ? (
+				<FactionButtonSetting style={[margin.top.medium]}>
+					{replicationStatus.map((t) => (
 						<ButtonSetting
-							key={`${t.tokenId}-${t.serviceType}`}
-							name={`${t.authenticationUrl}`}
+							key={`${t.service.authenticationUrl}`}
+							name={`${t.service.authenticationUrl}`}
 							alone={false}
-							onPress={async () => {
-								if (
-									!(await new Promise((resolve) => {
-										Alert.alert(
-											'Privacy warning',
-											"The data for this conversation will be replicated on the selected server, while the messages and their metadata won't be readable by anyone outside the conversation this will lead to a decreased privacy protection for all the members' activity, do you want to proceed?",
-											[
-												{
-													text: 'Replicate conversation contents',
-													onPress: () => {
-														resolve(true)
-													},
-												},
-												{ text: 'Cancel', onPress: () => resolve(false) },
-											],
-										)
-									}))
-								) {
+							actionIcon={getReplicationStatusIcon(t.status)}
+							actionIconColor={getReplicationStatusColor(t.status)}
+							onPress={() => {
+								if (t.status === replicationServerStatus.UnknownServerEnabled) {
 									return
 								}
 
-								try {
-									await ctx.client.replicationServiceRegisterGroup({
-										tokenId: t.tokenId,
-										conversationPublicKey: conversationPublicKey,
-									})
-
-									Alert.alert(
-										'Conversation registered on server',
-										'The conversation contents will be replicated from now on',
-									)
-
-									navigation.goBack()
-								} catch (e) {
-									console.warn(e)
-									Alert.alert(
-										'Conversation not registered',
-										'An error occurred while registering the conversation on the server',
-									)
-								}
+								return replicateGroup(ctx, conversationPublicKey, t.service.tokenId || '')
 							}}
 						/>
 					))}
-			</FactionButtonSetting>
+				</FactionButtonSetting>
+			) : (
+				<ButtonSetting name={'No replication service registered'} disabled alone={true} />
+			)}
+			<ButtonSetting
+				name='Connect to Berty operated services'
+				icon='plus-circle-outline'
+				iconSize={30}
+				iconColor={color.blue}
+				alone={true}
+				onPress={async () => {
+					await servicesAuthViaDefault(ctx)
+				}}
+			/>
+			<ButtonSetting
+				name='Manage or add services'
+				icon='plus-circle-outline'
+				iconSize={30}
+				iconColor={color.blue}
+				alone={true}
+				onPress={() => navigation.navigate('Settings.ServicesAuth')}
+			/>
 		</View>
 	)
 }

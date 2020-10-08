@@ -687,6 +687,39 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/ReplicationSetAutoEnable": {
+      "post": {
+        "summary": "ReplicationSetAutoEnable Sets whether new groups should be replicated automatically or not",
+        "operationId": "MessengerService_ReplicationSetAutoEnable",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ReplicationSetAutoEnableReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ReplicationSetAutoEnableRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/SendAck": {
       "post": {
         "summary": "SendAck sends an acknowledge payload for given message id.",
@@ -1011,6 +1044,10 @@
         "service_tokens": {
           "type": "string",
           "format": "int64"
+        },
+        "conversation_replication_info": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },
@@ -1154,6 +1191,10 @@
           "items": {
             "$ref": "#/definitions/bertymessengerv1ServiceToken"
           }
+        },
+        "replicate_new_groups_automatically": {
+          "type": "boolean",
+          "format": "boolean"
         }
       }
     },
@@ -1534,6 +1575,12 @@
         },
         "reply_options": {
           "$ref": "#/definitions/v1Interaction"
+        },
+        "replication_info": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ConversationReplicationInfo"
+          }
         }
       }
     },
@@ -1588,6 +1635,26 @@
       "type": "object",
       "properties": {
         "group_pk": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ConversationReplicationInfo": {
+      "type": "object",
+      "properties": {
+        "cid": {
+          "type": "string"
+        },
+        "conversation_public_key": {
+          "type": "string"
+        },
+        "member_public_key": {
+          "type": "string"
+        },
+        "authentication_url": {
+          "type": "string"
+        },
+        "replication_server": {
           "type": "string"
         }
       }
@@ -1878,6 +1945,18 @@
       "properties": {
         "link": {
           "type": "string"
+        }
+      }
+    },
+    "v1ReplicationSetAutoEnableReply": {
+      "type": "object"
+    },
+    "v1ReplicationSetAutoEnableRequest": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "format": "boolean"
         }
       }
     },

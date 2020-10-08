@@ -1,6 +1,8 @@
 package bertyprotocol
 
 import (
+	"fmt"
+
 	"github.com/gogo/protobuf/proto"
 	cid "github.com/ipfs/go-cid"
 	"golang.org/x/crypto/nacl/secretbox"
@@ -36,6 +38,7 @@ var eventTypesMapper = map[bertytypes.EventType]struct {
 	bertytypes.EventTypeGroupMetadataPayloadSent:               {Message: &bertytypes.AppMetadata{}, SigChecker: sigCheckerDeviceSigned},
 	bertytypes.EventTypeAccountServiceTokenAdded:               {Message: &bertytypes.AccountServiceTokenAdded{}, SigChecker: sigCheckerDeviceSigned},
 	bertytypes.EventTypeAccountServiceTokenRemoved:             {Message: &bertytypes.AccountServiceTokenRemoved{}, SigChecker: sigCheckerDeviceSigned},
+	bertytypes.EventTypeGroupReplicating:                       {Message: &bertytypes.GroupReplicating{}, SigChecker: sigCheckerDeviceSigned},
 }
 
 func newEventContext(eventID cid.Cid, parentIDs []cid.Cid, g *bertytypes.Group) *bertytypes.EventContext {
@@ -126,7 +129,7 @@ func openGroupEnvelope(g *bertytypes.Group, envelopeBytes []byte) (*bertytypes.G
 
 	et, ok := eventTypesMapper[metadataEvent.EventType]
 	if !ok {
-		return nil, nil, errcode.ErrInvalidInput
+		return nil, nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("event type not found"))
 	}
 
 	payload := proto.Clone(et.Message)

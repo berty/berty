@@ -39,6 +39,7 @@ func (d *dbWrapper) initDB() error {
 		&Interaction{},
 		&Member{},
 		&Device{},
+		&ConversationReplicationInfo{},
 	}...)
 }
 
@@ -144,7 +145,7 @@ func (d *dbWrapper) addConversation(groupPK string) (*Conversation, error) {
 		return nil, errcode.ErrDBWrite.Wrap(err)
 	}
 
-	return conversation, nil
+	return d.getConversationByPK(groupPK)
 }
 
 func (d *dbWrapper) updateConversation(c Conversation) error {
@@ -316,7 +317,7 @@ func (d *dbWrapper) getConversationByPK(publicKey string) (*Conversation, error)
 
 	conversation := &Conversation{}
 
-	if err := d.db.Preload("ReplyOptions").First(&conversation, &Conversation{PublicKey: publicKey}).Error; err != nil {
+	if err := d.db.Preload("ReplyOptions").Preload("ReplicationInfo").First(&conversation, &Conversation{PublicKey: publicKey}).Error; err != nil {
 		return nil, err
 	}
 
@@ -340,7 +341,7 @@ func (d *dbWrapper) getMemberByPK(publicKey string) (*Member, error) {
 func (d *dbWrapper) getAllConversations() ([]*Conversation, error) {
 	convs := []*Conversation(nil)
 
-	return convs, d.db.Preload("ReplyOptions").Find(&convs).Error
+	return convs, d.db.Preload("ReplyOptions").Preload("ReplicationInfo").Find(&convs).Error
 }
 
 func (d *dbWrapper) getAllMembers() ([]*Member, error) {
@@ -570,6 +571,9 @@ func (d *dbWrapper) getDBInfo() (*SystemInfo_DB, error) {
 	errs = multierr.Append(errs, err)
 
 	infos.ServiceTokens, err = d.dbModelRowsCount(ServiceToken{})
+	errs = multierr.Append(errs, err)
+
+	infos.ConversationReplicationInfo, err = d.dbModelRowsCount(ConversationReplicationInfo{})
 	errs = multierr.Append(errs, err)
 
 	return infos, errs
@@ -876,6 +880,38 @@ func (d *dbWrapper) addServiceToken(accountPK string, serviceToken *bertytypes.S
 		return nil
 	}); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (d *dbWrapper) accountSetReplicationAutoEnable(pk string, enabled bool) error {
+	updates := map[string]interface{}{
+		"replicate_new_groups_automatically": enabled,
+	}
+
+	// db update
+	tx := d.db.Model(&Account{}).Where(&Account{PublicKey: pk}).Updates(updates)
+
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return errcode.ErrDBWrite.Wrap(fmt.Errorf("record not found"))
+	}
+
+	return nil
+}
+
+func (d *dbWrapper) saveConversationReplicationInfo(c ConversationReplicationInfo) error {
+	if c.CID == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
+	}
+
+	tx := d.db.Clauses(clause.OnConflict{DoNothing: true}).Create(c)
+	if tx.Error != nil {
+		return errcode.ErrDBWrite.Wrap(tx.Error)
 	}
 
 	return nil

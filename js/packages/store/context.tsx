@@ -1,12 +1,13 @@
 import React from 'react'
+import { berty } from '@berty-tech/api'
 
-type MsgrState = {
+export type MsgrState = {
 	account: any
 	conversations: { [key: string]: any }
 	contacts: { [key: string]: any }
 	interactions: { [key: string]: { [key: string]: any } }
 	members: { [key: string]: any }
-	client: any
+	client: berty.messenger.v1.MessengerService | null
 	listDone: boolean
 	streamError: any
 	addNotificationListener: (cb: (evt: any) => void) => void
@@ -32,4 +33,4 @@ export const MsgrContext = React.createContext<MsgrState>(initialState)
 
 export default MsgrContext
 
-export const useMsgrContext = () => React.useContext(MsgrContext)
+export const useMsgrContext = (): MsgrState => React.useContext(MsgrContext)

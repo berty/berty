@@ -12,7 +12,9 @@ import HeaderSettings from '../shared-components/Header'
 import { SwipeHelperReactNavTabBar } from '../shared-components/SwipeNavRecognizer'
 
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { useAccount } from '@berty-tech/store/hooks'
+import { serviceTypes, useAccountServices } from '@berty-tech/store/services'
+import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
+import { berty } from '@berty-tech/api'
 
 //
 // Home Vue
@@ -120,6 +122,11 @@ const HomeHeader: React.FC = () => {
 const HomeBodySettings: React.FC<{}> = () => {
 	const [{ flex, color, padding, margin }] = useStyles()
 	const { navigate } = useNavigation()
+	const services = useAccountServices()
+	const account: berty.messenger.v1.Account = useAccount()
+	const replicationServices = services.filter((s) => s.serviceType === serviceTypes.Replication)
+	const ctx = useMsgrContext()
+
 	return (
 		<View style={[flex.tiny, padding.horizontal.medium, margin.top.medium]}>
 			<ButtonSetting
@@ -145,6 +152,27 @@ const HomeBodySettings: React.FC<{}> = () => {
 				onPress={navigate.settings.servicesAuth}
 			/>
 			<ButtonSetting name='Dark mode' icon='moon-outline' iconColor={color.blue} toggled disabled />
+			<ButtonSetting
+				name='Auto replicate'
+				icon='cloud-upload-outline'
+				iconColor={color.blue}
+				actionIcon={
+					// TODO: make toggle usable and use it
+					replicationServices.length !== 0 && account.replicateNewGroupsAutomatically
+						? 'toggle-right'
+						: 'toggle-left-outline'
+				}
+				disabled={replicationServices.length === 0}
+				onPress={async () => {
+					if (replicationServices.length === 0) {
+						return
+					}
+
+					await ctx.client.replicationSetAutoEnable({
+						enabled: !account.replicateNewGroupsAutomatically,
+					})
+				}}
+			/>
 			<ButtonSetting
 				name='About Berty'
 				icon='info-outline'

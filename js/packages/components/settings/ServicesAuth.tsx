@@ -1,32 +1,38 @@
 import React, { useState } from 'react'
-import { View, ScrollView, Alert } from 'react-native'
+import { View, ScrollView } from 'react-native'
 import { Layout, Input } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings, ButtonSetting, FactionButtonSetting } from '../shared-components'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useMsgrContext } from '@berty-tech/store/hooks'
-import InAppBrowser from 'react-native-inappbrowser-reborn'
-import { Messenger } from '@berty-tech/store/oldhooks'
-
-//
-// Notifications
-//
-
-const serviceNames = {
-	rpl: 'Replication service', // TODO: i18n
-}
+import {
+	servicesAuthViaURL,
+	servicesAuthViaDefault,
+	useAccountServices,
+	serviceNames,
+} from '@berty-tech/store/services'
 
 const BodyServicesAuth = () => {
 	const [{ flex, padding, margin, color }] = useStyles()
 
 	const [url, setURL] = useState('')
-	const ctx: any = useMsgrContext()
-	const account = Messenger.useAccount()
+	const ctx = useMsgrContext()
+	const accountServices = useAccountServices()
 
 	return (
 		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
+			<ButtonSetting
+				name='Use Berty operated services'
+				icon='plus-circle-outline'
+				iconSize={30}
+				iconColor={color.blue}
+				alone={true}
+				onPress={async () => {
+					await servicesAuthViaDefault(ctx)
+				}}
+			/>
 			<FactionButtonSetting
-				name='Register a service provider'
+				name='Register a custom service provider'
 				icon='plus-circle-outline'
 				iconSize={30}
 				iconColor={color.blue}
@@ -48,66 +54,7 @@ const BodyServicesAuth = () => {
 					iconColor={color.blue}
 					alone={false}
 					onPress={async () => {
-						let authURL = ''
-
-						try {
-							// PKCE OAuth flow
-							const resp = await ctx.client?.authServiceInitFlow({
-								authUrl: url,
-							})
-
-							authURL = resp.url
-
-							if (!resp.secureUrl) {
-								let allowNonSecure = false
-								await new Promise((resolve) => {
-									Alert.alert(
-										'Security warning',
-										'The provided URL is using a non secure connection, do you want to continue?',
-										[
-											{
-												text: 'Access page',
-												onPress: () => {
-													allowNonSecure = true
-													resolve()
-												},
-											},
-											{ text: 'Go back', onPress: resolve },
-										],
-									)
-								})
-
-								if (!allowNonSecure) {
-									return
-								}
-							}
-						} catch {
-							Alert.alert('The provided URL is not supported')
-							return
-						}
-
-						if (await InAppBrowser.isAvailable()) {
-							InAppBrowser.openAuth(authURL, 'berty://', {
-								dismissButtonStyle: 'cancel',
-								readerMode: false,
-								modalPresentationStyle: 'pageSheet',
-								modalEnabled: true,
-								showTitle: true,
-								enableDefaultShare: false,
-								ephemeralWebSession: true,
-								// forceCloseOnRedirection: false,
-							})
-								.then(async (response) => {
-									if (response.url) {
-										await ctx.client?.authServiceCompleteFlow({
-											callbackUrl: response.url,
-										})
-									}
-								})
-								.catch((e) => {
-									console.warn(e)
-								})
-						}
+						await servicesAuthViaURL(ctx, url)
 					}}
 				/>
 			</FactionButtonSetting>
@@ -118,18 +65,23 @@ const BodyServicesAuth = () => {
 				iconColor={color.blue}
 				style={[margin.top.medium]}
 			>
-				{account.serviceTokens.length === 0 ? (
-					<ButtonSetting name='No services are currently registered' disabled alone={false} />
-				) : null}
-				{/*FIXME: An extra separator is shown when the component above is not displayed*/}
-				{account.serviceTokens.map((t) => (
-					<ButtonSetting
-						key={`${t.tokenId}-${t.serviceType}`}
-						name={`${serviceNames[t.serviceType] || 'Unknown service'}\n${t.authenticationUrl}`}
-						disabled
-						alone={false}
-					/>
-				))}
+				{accountServices.length === 0 ? (
+					<ButtonSetting name='No services registered' disabled alone={false} />
+				) : (
+					accountServices.map((t) => {
+						return (
+							<ButtonSetting
+								key={`${t.tokenId}-${t.serviceType}`}
+								name={`${
+									(typeof t.serviceType === 'string' && serviceNames[t.serviceType]) ||
+									'Unknown service'
+								}\n${t.authenticationUrl}`}
+								disabled
+								alone={false}
+							/>
+						)
+					})
+				)}
 			</FactionButtonSetting>
 		</View>
 	)

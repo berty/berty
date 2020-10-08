@@ -5,68 +5,28 @@ import {
 	KeyboardAvoidingView,
 	Text,
 	TextInput,
-	TouchableHighlight,
-	TouchableOpacity,
-	ViewStyle,
 	Switch,
 	Vibration,
 } from 'react-native'
 import { useLayout } from '@react-native-community/hooks'
 import { Translation } from 'react-i18next'
 import Swiper from 'react-native-swiper'
-import { Card, TouchableCard } from './shared-components/Card'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import LottieView from 'lottie-react-native'
+import { useNavigation as useReactNavigation, CommonActions } from '@react-navigation/native'
+
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation, Routes } from '@berty-tech/navigation'
-import { Messenger } from '@berty-tech/store/oldhooks'
-import { useNavigation as useReactNavigation, CommonActions } from '@react-navigation/native'
-import { useDispatch } from 'react-redux'
 import { useMsgrContext } from '@berty-tech/store/context'
-import messengerMethodsHooks from '@berty-tech/store/methods'
 
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { TouchableCard } from './shared-components/Card'
 import Logo from './berty_gradient_square.svg'
-import LottieView from 'lottie-react-native'
+import ServicesAuth from './onboarding/ServicesAuth'
+import SwiperCard from './onboarding/SwiperCard'
+import Button from './onboarding/Button'
 
 type Navigation = () => void
 type Form<T> = (arg0: T) => Promise<void>
-
-const Button: React.FC<{
-	children: string
-	onPress: () => Promise<void> | void
-	style?: ViewStyle
-}> = ({ children, onPress, style = null }) => {
-	const [{ margin, padding, background, color, text, border }] = useStyles()
-	const [loading, setLoading] = React.useState(false)
-	return (
-		<TouchableHighlight
-			style={[
-				padding.horizontal.big,
-				margin.top.medium,
-				padding.medium,
-				loading ? background.light.blue : background.blue,
-				border.radius.small,
-				style,
-			]}
-			underlayColor={color.light.blue}
-			onPress={async () => {
-				try {
-					setLoading(true)
-					await onPress()
-				} finally {
-					setLoading(false)
-				}
-			}}
-		>
-			{loading ? (
-				<Spinner style={[text.size.medium]} color={color.white} />
-			) : (
-				<Text style={[text.size.medium, text.color.white, text.align.center, text.bold.medium]}>
-					{children}
-				</Text>
-			)}
-		</TouchableHighlight>
-	)
-}
 
 export const GetStarted: React.FC = () => {
 	const { navigate } = useNavigation()
@@ -172,174 +132,9 @@ export const SelectMode: React.FC = () => {
 	)
 }
 
-const SwiperCard: React.FC<{
-	label?: 'required' | 'optional' | 'recommended' | ''
-	header?: string
-	title: string
-	description: string
-	button?: { text: string; onPress: () => Promise<void> | void }
-	skip?: { text: string; onPress: () => void }
-}> = ({ children, header, label, title, description, button, skip }) => {
-	const [{ absolute, text, padding, margin, background, border, column }] = useStyles()
-	let labelColor: keyof typeof background.light
-	switch (label) {
-		default:
-			labelColor = 'white'
-			break
-		case 'required':
-			labelColor = 'red'
-			break
-		case 'optional':
-			labelColor = 'yellow'
-			break
-		case 'recommended':
-			labelColor = 'green'
-			break
-	}
-	return (
-		<SafeAreaView style={[margin.bottom.huge, absolute.fill]}>
-			<Text
-				style={[
-					absolute.fill,
-					margin.big,
-					padding.vertical.big,
-					text.size.large,
-					text.color.white,
-					text.align.center,
-				]}
-			>
-				{header}
-			</Text>
-			<Card
-				style={[
-					background.white,
-					absolute.bottom,
-					absolute.left,
-					absolute.right,
-					border.shadow.large,
-				]}
-			>
-				<View
-					style={[
-						padding.tiny,
-						column.item.right,
-						background.light[labelColor],
-						border.radius.tiny,
-					]}
-				>
-					{label ? (
-						<Text style={[text.size.small, text.color[labelColor], text.align.right]}>{label}</Text>
-					) : null}
-				</View>
-				<Text
-					style={[
-						text.size.huge,
-						padding.top.medium,
-						text.align.center,
-						text.bold.medium,
-						text.color.blue,
-					]}
-				>
-					{title}
-				</Text>
-				<Text
-					style={[text.size.medium, padding.vertical.medium, text.align.center, text.color.grey]}
-				>
-					{description}
-				</Text>
-				{children}
-				{button ? <Button onPress={button.onPress}>{button.text}</Button> : null}
-				{skip ? (
-					<TouchableOpacity style={[margin.top.medium]} onPress={skip.onPress}>
-						<Text style={[text.size.small, text.color.grey, text.align.center]}>{skip.text}</Text>
-					</TouchableOpacity>
-				) : null}
-			</Card>
-		</SafeAreaView>
-	)
-}
-
-const defaultEmbeddedConfig = {
-	type: 'embedded',
-	// opts: protocol.client.defaultBridgeOpts,
-}
-
-const NodeConfigInput: React.FC<{
-	config: any
-	onConfigChange: (config: any) => void
-}> = ({ config, onConfigChange }) => {
-	return <Text>TODO</Text>
-	const [{ text, padding, margin, background, border }] = useStyles()
-	const toggleNodeType = () =>
-		onConfigChange(
-			config.type === 'external'
-				? defaultEmbeddedConfig
-				: /*protocol.client.defaultExternalBridgeConfig*/ undefined,
-		)
-	let content: Element
-	if (config.type === 'external') {
-		content = (
-			<>
-				<TextInput
-					placeholder={'Bridge port'}
-					style={[
-						margin.top.medium,
-						background.light.grey,
-						padding.medium,
-						text.size.large,
-						border.radius.small,
-						text.color.black,
-					]}
-					value={`${config.port}`}
-					onChangeText={(text) => onConfigChange({ ...config, port: parseInt(text, 10) })}
-				/>
-			</>
-		)
-	} else {
-		content = (
-			<>
-				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-					<Text>Persist: </Text>
-					<Switch
-						value={config.opts.persistence}
-						onValueChange={() =>
-							onConfigChange({
-								...config,
-								opts: { ...config.opts, persistence: !config.opts.persistence },
-							})
-						}
-					/>
-				</View>
-				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-					<Text>Trace: </Text>
-					<Switch
-						value={config.opts.tracing}
-						onValueChange={() =>
-							onConfigChange({
-								...config,
-								opts: { ...config.opts, tracing: !config.opts.tracing },
-							})
-						}
-					/>
-				</View>
-			</>
-		)
-	}
-	return (
-		<>
-			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-				<Switch value={config.type === 'external'} onValueChange={toggleNodeType} />
-				<Text> {config.type}</Text>
-			</View>
-			{content}
-		</>
-	)
-}
-
 const CreateYourAccount: React.FC<{
 	next: Navigation
-	onCreate: () => void
-}> = ({ next, onCreate }) => {
+}> = ({ next }) => {
 	const ctx: any = useMsgrContext()
 	const [{ text, padding, margin, background, border }] = useStyles()
 	const [name, setName] = React.useState('')
@@ -381,7 +176,6 @@ const CreateYourAccount: React.FC<{
 								onAnimationFinish={async (): Promise<void> => {
 									//createAccount({ name: name || 'Anonymous 1337', nodeConfig })
 									Vibration.vibrate(500)
-									onCreate()
 									// @TODO: Error handling
 									next()
 								}}
@@ -413,7 +207,6 @@ const CreateYourAccount: React.FC<{
 									text.color.black,
 								]}
 							/>
-							{__DEV__ && <NodeConfigInput onConfigChange={() => {}} config={{}} />}
 							{error && <Text>{error.toString()}</Text>}
 						</SwiperCard>
 					</View>
@@ -642,7 +435,6 @@ export const Performance: React.FC<{
 		swiperRef && swiperRef.current && swiperRef.current.scrollTo(index, true)
 	}
 	const [{ absolute, background }] = useStyles()
-	const [clickedCreate, setClickedCreate] = useState(false)
 	return (
 		<SafeAreaView style={[absolute.fill, background.blue]}>
 			<View style={absolute.fill} onLayout={onLayout}>
@@ -654,14 +446,9 @@ export const Performance: React.FC<{
 						activeDotStyle={[background.white]}
 						scrollEnabled={false}
 					>
-						{!clickedCreate && (
-							<CreateYourAccount next={next(2)} onCreate={() => setClickedCreate(true)} />
-						)}
-						{/*<SafeAreaView style={absolute.fill}>
-							<Notifications submit={authorizeNotifications} next={next(4)} />
-						</SafeAreaView>
-						<Bluetooth submit={authorizeBluetooth} next={next(5)} />*/}
-						{clickedCreate && <SetupFinished />}
+						<CreateYourAccount next={next(2)} />
+						<ServicesAuth next={next(3)} />
+						<SetupFinished />
 					</Swiper>
 				</KeyboardAvoidingView>
 			</View>
@@ -677,7 +464,6 @@ export const Privacy: React.FC<{}> = () => {
 		return
 	}
 	const [{ absolute, background }] = useStyles()
-	const [clickedCreate, setClickedCreate] = useState(false)
 	return (
 		<SafeAreaView style={[absolute.fill, background.red]} onLayout={onLayout}>
 			<View style={absolute.fill} onLayout={onLayout}>
@@ -688,10 +474,8 @@ export const Privacy: React.FC<{}> = () => {
 						activeDotStyle={[background.white]}
 						scrollEnabled={false}
 					>
-						{!clickedCreate && (
-							<CreateYourAccount next={next(2)} setClickedCreate={setClickedCreate} />
-						)}
-						{clickedCreate && <SetupFinished />}
+						<CreateYourAccount next={next(2)} />
+						<SetupFinished />
 					</Swiper>
 				</KeyboardAvoidingView>
 			</View>

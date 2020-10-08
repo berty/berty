@@ -58,20 +58,6 @@ func (a *AuthTokenServer) authTokenServerRedirectError(w http.ResponseWriter, re
 	a.authTokenServerRedirect(w, u, logger)
 }
 
-var templateAuthTokenServerRedirect = template.Must(template.New("redirect").Parse(`<!DOCTYPE html><html lang="en-GB"><head>
-<title>Redirection</title>
-  <meta http-equiv="refresh" content="1; URL={{.URL}}" />
-</head><body><a href="{{.URL}}">Redirection</a></body></html>`))
-
-// nolint:gosec
-var templateAuthTokenServerAuthorizeButton = `<!DOCTYPE html><html lang="en-GB"><head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Token</title>
-</head>
-<form method="POST">
-<button type="submit">Get token</button>
-</form></html>`
-
 func (a *AuthTokenServer) authTokenServerJSONError(w http.ResponseWriter, errorCode, errorDescription string, logger *zap.Logger) {
 	a.authTokenServerJSONResponse(w, map[string]string{
 		"error":             errorCode,

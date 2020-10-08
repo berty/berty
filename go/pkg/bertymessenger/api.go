@@ -297,7 +297,51 @@ func (svc *service) SendContactRequest(ctx context.Context, req *SendContactRequ
 		return nil, errcode.TODO.Wrap(err)
 	}
 
+	go svc.replicateContactGroupOnAllServers(req.BertyID.AccountPK)
+
 	return &SendContactRequest_Reply{}, nil
+}
+
+func (svc *service) replicateContactGroupOnAllServers(contactPK []byte) {
+	groupPK, err := groupPKFromContactPK(svc.ctx, svc.protocolClient, contactPK)
+	if err != nil {
+		return
+	}
+
+	svc.replicateGroupOnAllServers(groupPK)
+}
+
+func (svc *service) replicateGroupOnAllServers(groupPK []byte) {
+	replicationServices := map[string]*ServiceToken{}
+	acc, err := svc.db.getAccount()
+	if err != nil {
+		svc.logger.Error("unable to fetch account", zap.Error(err))
+		return
+	}
+
+	if !acc.ReplicateNewGroupsAutomatically {
+		svc.logger.Warn("group auto replication is not enabled")
+		return
+	}
+	for _, s := range acc.ServiceTokens {
+		if s.ServiceType == bertyprotocol.ServiceReplicationID {
+			replicationServices[s.AuthenticationURL] = s
+		}
+	}
+
+	if len(replicationServices) == 0 {
+		svc.logger.Warn("group auto replication enabled, but no service available")
+		return
+	}
+
+	for _, s := range replicationServices {
+		if _, err := svc.ReplicationServiceRegisterGroup(svc.ctx, &ReplicationServiceRegisterGroup_Request{
+			TokenID:               s.TokenID,
+			ConversationPublicKey: b64EncodeBytes(groupPK),
+		}); err != nil {
+			svc.logger.Error("unable to replicate group on server", zap.Error(err))
+		}
+	}
 }
 
 func (svc *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*SystemInfo_Reply, error) {
@@ -702,6 +746,8 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 		}
 	}
 
+	go svc.replicateGroupOnAllServers(pk)
+
 	rep := ConversationCreate_Reply{PublicKey: pkStr}
 	return &rep, nil
 }
@@ -939,6 +985,8 @@ func (svc *service) ContactAccept(ctx context.Context, req *ContactAccept_Reques
 		return nil, errcode.TODO.Wrap(err)
 	}
 
+	go svc.replicateContactGroupOnAllServers(pkb)
+
 	return &ContactAccept_Reply{}, nil
 }
 
@@ -1086,9 +1134,10 @@ func (svc *service) ReplicationServiceRegisterGroup(ctx context.Context, request
 		return nil, errcode.ErrMissingInput
 	}
 
-	svc.logger.Info("interacting", zap.String("public-key", gpk))
+	svc.logger.Info("attempting replicating group", zap.String("public-key", gpk))
 	gpkb, err := b64DecodeBytes(gpk)
 	if err != nil {
+		svc.logger.Error("failed to decode group pk", zap.String("public-key", gpk), zap.Error(err))
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
@@ -1098,8 +1147,11 @@ func (svc *service) ReplicationServiceRegisterGroup(ctx context.Context, request
 	})
 
 	if err != nil {
+		svc.logger.Error("failed to replicate group", zap.String("public-key", gpk), zap.String("token-id", request.TokenID), zap.Error(err))
 		return nil, err
 	}
+
+	svc.logger.Info("replicating group", zap.String("public-key", gpk), zap.String("token-id", request.TokenID), zap.Error(err))
 
 	return &ReplicationServiceRegisterGroup_Reply{}, nil
 }
@@ -1139,4 +1191,27 @@ func (svc *service) SendReplyOptions(ctx context.Context, request *SendReplyOpti
 	})
 
 	return &SendReplyOptions_Reply{}, err
+}
+
+func (svc *service) ReplicationSetAutoEnable(ctx context.Context, request *ReplicationSetAutoEnable_Request) (*ReplicationSetAutoEnable_Reply, error) {
+	config, err := svc.protocolClient.InstanceGetConfiguration(svc.ctx, &bertytypes.InstanceGetConfiguration_Request{})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := svc.db.accountSetReplicationAutoEnable(b64EncodeBytes(config.AccountPK), request.Enabled); err != nil {
+		return nil, err
+	}
+
+	acc, err := svc.db.getAccount()
+	if err != nil {
+		return nil, err
+	}
+
+	// dispatch event
+	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeAccountUpdated, &StreamEvent_AccountUpdated{Account: acc}); err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	return &ReplicationSetAutoEnable_Reply{}, nil
 }
