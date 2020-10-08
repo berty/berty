@@ -26,8 +26,8 @@ steps:
       - export PATH=$$PATH:/home/buildkite-agent/go/bin
       - export PATH=/usr/local/go/bin:$$PATH
       - go version
+      - cat tool/build/ci/.env >> js/.env
       - cd js
-      - cat ~/.buildkite-agent/shake_secrets >> .env
       - nice -n 10 make android.release
     artifact_paths:
       - "js/packages/berty-app/android/universal.apk"
@@ -44,8 +44,8 @@ steps:
       - set -x
       - export GYM_BUILDLOG_PATH=$$PWD/logs/$BUILDKITE_COMMIT
       - export PATH=$$(brew --prefix ruby)/bin:$$PATH # use brew ruby
+      - cat tool/build/ci/.env >> js/.env
       - cd js
-      - cat ~/.buildkite-agent/shake_secrets >> .env
       - IOS_BUNDLE_ID=tech.berty.ios.yolo APP_SCHEME="Berty Yolo" IOS_RELEASE_METHOD=enterprise IOS_PROFILE=InHouse IOS_TEAM_ID=GR5463T564 nice -n 10 make ios.release
       - mv ./build/ios-Berty/development/Berty.ipa ../Berty-Yolo-$BUILDKITE_COMMIT.ipa
       # remove logs if succeed
