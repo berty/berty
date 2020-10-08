@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import {
 	Keyboard,
 	ScrollView,
@@ -7,6 +7,7 @@ import {
 	TextInput,
 	TouchableHighlight,
 	View,
+	Text as TextNative,
 } from 'react-native'
 import { EdgeInsets, SafeAreaConsumer } from 'react-native-safe-area-context'
 import { Icon, Layout, Text } from 'react-native-ui-kitten'
@@ -27,10 +28,11 @@ import * as api from '@berty-tech/api/index.pb'
 
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { SwipeHelperReactNavTabBar } from '../shared-components/SwipeNavRecognizer'
+import messengerMethodsHooks from '@berty-tech/store/methods'
 
 // Styles
 
-const _landingIconSize = 90
+const _landingIconSize = 45
 
 const _resultAvatarSize = 45
 
@@ -39,7 +41,7 @@ const _searchBarIconSize = 25
 const _approxFooterHeight = 90
 
 const useStylesSearch = () => {
-	const [{ text, background }] = useStyles()
+	const [{ row, text, background, opacity, margin }, { scaleSize, fontScale }] = useStyles()
 
 	return {
 		searchResultHighlightText: [
@@ -50,10 +52,20 @@ const useStylesSearch = () => {
 		],
 		nameHighlightText: [text.color.yellow, background.light.yellow, text.bold.medium],
 		plainMessageText: [text.size.small, text.color.grey],
+		searchHintBodyText: [
+			text.align.center,
+			text.color.light.yellow,
+			text.size.medium,
+			text.bold.small,
+			opacity(0.8),
+			margin.top.medium,
+			margin.bottom.large,
+			{ fontFamily: 'Open Sans', lineHeight: 30 * fontScale },
+		],
 	}
 }
 
-// Utility
+// Utility - TODO Replace with moment
 
 const formatTimestamp = (date: Date) => {
 	const now = new Date(Date.now())
@@ -73,31 +85,7 @@ const formatTimestamp = (date: Date) => {
 	}
 }
 
-//
-
-const SearchTitle: React.FC<{}> = () => {
-	const [{ text, flex, margin }] = useStyles()
-	return (
-		<View style={[flex.direction.row, flex.justify.center, flex.align.center, margin.top.medium]}>
-			<Text
-				style={[
-					text.size.big,
-					text.bold.medium,
-					text.color.white,
-					text.align.center,
-					flex.align.center,
-					flex.justify.center,
-					{
-						flexShrink: 0,
-						flexGrow: 1,
-					},
-				]}
-			>
-				Search
-			</Text>
-		</View>
-	)
-}
+// Components
 
 const initialSearchText = ''
 
@@ -151,35 +139,80 @@ const SearchBar: React.FC<{
 	)
 }
 
-const SearchHint: React.FC<{
-	hintText: string
-}> = ({ hintText = 'Search messages, contacts, or groups...' }) => {
-	const [
-		{ row, color, text, margin, column, padding, width, opacity },
-		{ windowWidth, scaleSize },
-	] = useStyles()
-	return (
-		<View style={[column.top, padding.small, margin.bottom.scale(_approxFooterHeight)]}>
-			<Icon
-				name='search'
-				width={_landingIconSize * scaleSize}
-				height={_landingIconSize * scaleSize}
-				fill={color.light.yellow}
-				style={[row.item.justify, opacity(0.8)]}
-			/>
-			<Text
+const SearchHintReadyBody: React.FC<any> = ({ bannerQuote = {} }) => {
+	const [{ color, opacity, row, text, margin }, { scaleSize }] = useStyles()
+	const { searchHintBodyText } = useStylesSearch()
+	return !bannerQuote?.quote ? null : (
+		<View>
+			<TextNative
 				style={[
 					text.align.center,
-					margin.top.small,
 					row.item.justify,
 					text.color.light.yellow,
-					text.size.large,
-					width(windowWidth * 0.66),
+					text.size.scale(30),
 					opacity(0.8),
+					text.bold.medium,
+					{
+						fontFamily: 'Open Sans',
+						marginHorizontal: _landingIconSize * scaleSize, // room for speech bubble icon
+					},
 				]}
 			>
-				{hintText}
-			</Text>
+				{'Quote of the day'}
+			</TextNative>
+			<Icon
+				name='quote'
+				pack='custom'
+				width={_landingIconSize * scaleSize}
+				height={_landingIconSize * scaleSize}
+				style={[row.item.justify, opacity(0.8), { position: 'absolute', bottom: 20, right: 10 }]}
+			/>
+			<TextNative style={searchHintBodyText}>{bannerQuote?.quote || ''}</TextNative>
+			{bannerQuote?.author && (
+				<View style={[{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }]}>
+					<TextNative
+						style={[
+							text.color.light.yellow,
+							text.size.medium,
+							text.bold.small,
+							opacity(0.8),
+							{ fontFamily: 'Open Sans' },
+						]}
+					>
+						{'— ' + bannerQuote?.author}
+					</TextNative>
+				</View>
+			)}
+		</View>
+	)
+}
+
+const SearchHintFailBody: React.FC<any> = () => {
+	const { searchHintBodyText } = useStylesSearch()
+	return <TextNative style={searchHintBodyText}>No results found</TextNative>
+}
+
+const SearchHint: React.FC<{
+	searchText?: string
+	hasResults?: boolean
+	bannerQuote?: any
+}> = ({ searchText = '', hasResults = false, bannerQuote = {} }) => {
+	const [{ margin, column, padding }] = useStyles()
+
+	return (
+		<View
+			style={[
+				column.top,
+				padding.horizontal.small,
+				margin.bottom.scale(_approxFooterHeight),
+				{ position: 'relative', bottom: 40 },
+			]}
+		>
+			{searchText.length > 0 && !hasResults ? (
+				<SearchHintFailBody />
+			) : (
+				<SearchHintReadyBody bannerQuote={bannerQuote} />
+			)}
 		</View>
 	)
 }
@@ -494,6 +527,13 @@ const SearchComponent: React.FC<{
 		setSearchText(textInput.replace(/^\s+/g, ''))
 	}
 
+	const { reply: bannerQuote = {}, call, called } = (messengerMethodsHooks as any).useBannerQuote()
+	useEffect(() => {
+		if (!called) {
+			call({ random: false })
+		}
+	}, [called, call])
+
 	const paddingVertical = useMemo(
 		() => ({
 			paddingTop: Math.max(0, validInsets.top),
@@ -508,26 +548,8 @@ const SearchComponent: React.FC<{
 		hasResults,
 	])
 
-	const hintText = () =>
-		searchText && !contacts.length ? 'No results found' : 'Search messages, contacts, or groups...'
-
 	return (
 		<View style={[flex.tiny, paddingVertical]}>
-			{/* Title */}
-			<View
-				style={[
-					padding.small,
-					margin.medium,
-					margin.top.large,
-					{
-						flexShrink: 0,
-						marginLeft: Math.max(validInsets.left, 16),
-						marginRight: Math.max(validInsets.right, 16),
-					},
-				]}
-			>
-				<SearchTitle />
-			</View>
 			{/* SearchBar */}
 			<View
 				style={[
@@ -536,6 +558,7 @@ const SearchComponent: React.FC<{
 					margin.bottom.medium,
 					background.light.yellow,
 					border.radius.small,
+					margin.top.huge,
 					{
 						marginLeft: Math.max(validInsets.left, 16),
 						marginRight: Math.max(validInsets.right, 16),
@@ -579,11 +602,16 @@ const SearchComponent: React.FC<{
 
 							// Workaround to make sure nothing is hidden behind footer;
 							// adding padding/margin to this or a wrapping parent doesn't work
-							<View style={[height(_approxFooterHeight), background.white]} />
+							<View style={[height(_approxFooterHeight + 20), background.white]} />
 						)}
 					/>
 				) : (
-					<SearchHint hintText={hintText()} />
+					<SearchHint
+						searchText={searchText}
+						hasResults={hasResults}
+						bannerQuote={bannerQuote}
+						// hintText={hintText()} hintAuthor={hintAuthor()}
+					/>
 				)}
 			</View>
 		</View>
