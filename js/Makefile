@@ -178,6 +178,8 @@ ios.storybook: deps packages/storybook-mobile/ios/Pods _storybook.mobile.start
 	#cd packages/storybook-mobile && $(react-native) run-ios --no-packager
 
 
+ios.xcodegen.clean:
+	rm -rf ./packages/berty-app/ios/Berty.xc* ./packages/berty-app/ios/Berty/Info.plist
 ios.xcodegen: packages/berty-app/ios/Berty.xcworkspace
 ios.gomobile: packages/go-bridge/ios/Frameworks/Bertybridge.framework
 #### Android

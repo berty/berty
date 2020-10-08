@@ -20,6 +20,10 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   s.swift_version = '5.0'
 
+  # exclude arm64 for simulator
+  s.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+  s.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+
   s.ios.vendored_frameworks = 'ios/Frameworks/Bertybridge.framework'
   s.dependency "React"
   # s.dependency "..."

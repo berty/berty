@@ -71,7 +71,7 @@
 		"@storybook/react": "^5.2.1",
 		"@ui-kitten/eva-icons": "^4.4.1",
 		"react": "16.13.1",
-		"react-native": "0.63.2",
+		"react-native": "0.63.3",
 		"react-native-eva-icons": "^1.2.1",
 		"react-native-gesture-handler": "^1.6.1",
 		"react-native-linear-gradient": "^2.5.6",

@@ -58,6 +58,8 @@ schemes:
 
 settings:
   base:
+    EXCLUDED_ARCHS[sdk=iphonesimulator*]: arm64
+    ONLY_ACTIVE_ARCH: false
     SWIFT_OBJC_BRIDGING_HEADER: Berty/Berty-Bridging-Header.h
     CLANG_ENABLE_MODULES: true
     OTHER_LDFLAGS:
@@ -75,7 +77,6 @@ settings:
     CLANG_CXX_LANGUAGE_STANDARD: gnu++0x
     CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED: true
     CLANG_CXX_LIBRARY:
-    VALID_ARCHS: arm64 arm64e armv7 armv7s
     ENABLE_BITCODE: false
     DEAD_CODE_STRIPPING: true
   configs:

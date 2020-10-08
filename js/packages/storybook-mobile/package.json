@@ -45,7 +45,7 @@
     "glob": "^7.1.4",
     "jest": "^25.1.0",
     "node-libs-react-native": "^1.0.3",
-    "react-native": "0.63.2",
+    "react-native": "0.63.3",
     "react-native-dev-menu": "^4.0.0",
     "react-native-eva-icons": "^1.2.1",
     "react-native-gesture-handler": "^1.6.1",
