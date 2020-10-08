@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/signal"
 	"os/user"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -25,6 +26,7 @@ import (
 	"moul.io/zapconfig"
 
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/bertyversion"
 )
 
 const (
@@ -434,14 +436,34 @@ Type /help when you need info about available test commands! 📖`
 
 func doStep2(ctx context.Context, _ *Conversation, bot *Bot, receivedMessage *bertymessenger.AppMessage_UserMessage, interaction *bertymessenger.Interaction, unlock func()) (bool, error) {
 	unlock()
-	if receivedMessage.GetBody() == "/help" {
-		body := `In this conversation, you can type all theses commands :
+	msg := receivedMessage.GetBody()
+	if msg[0] == '/' {
+		switch strings.ToLower(msg[1:]) {
+		case "help":
+			body := `In this conversation, you can type all theses commands :
 /demo group
 /demo demo
 /demo share
-/demo contact "Here is the QR code of manfred, just add him!"`
-		if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey); err != nil {
-			return false, fmt.Errorf("interact user message failed: %w", err)
+/demo contact "Here is the QR code of manfred, just add him!"
+/demo version`
+			if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey); err != nil {
+				return false, fmt.Errorf("interact user message failed: %w", err)
+			}
+		case "demo version":
+			var body string
+			if bertyversion.VcsRef == "n/a" {
+				body = "berty " + bertyversion.Version + "\n" + runtime.Version()
+			} else {
+				body = "berty " + bertyversion.Version + " https://github.com/berty/berty/commits/" + bertyversion.VcsRef + "\n" + runtime.Version()
+			}
+			if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey); err != nil {
+				return false, fmt.Errorf("interact user message failed: %w", err)
+			}
+		default:
+			body := fmt.Sprintf("Sorry but the command %q is not yet known.", msg)
+			if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey); err != nil {
+				return false, fmt.Errorf("interact user message failed: %w", err)
+			}
 		}
 		return true, nil
 	}
