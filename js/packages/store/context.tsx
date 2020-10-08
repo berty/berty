@@ -7,7 +7,7 @@ export type MsgrState = {
 	contacts: { [key: string]: any }
 	interactions: { [key: string]: { [key: string]: any } }
 	members: { [key: string]: any }
-	client: berty.messenger.v1.MessengerService
+	client: berty.messenger.v1.MessengerService | null
 	listDone: boolean
 	streamError: any
 	addNotificationListener: (cb: (evt: any) => void) => void
