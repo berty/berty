@@ -242,7 +242,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  cocoapods (~> 1.9)
+  cocoapods (~> 1.9.3)
   fastlane (= 2.145.0)
   fastlane-plugin-xcodegen
 
