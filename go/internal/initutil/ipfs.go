@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	temp "github.com/Jorropo/go-temp-dir"
 	datastore "github.com/ipfs/go-datastore"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
@@ -25,6 +26,8 @@ import (
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	tor "berty.tech/go-libp2p-tor-transport"
+	torcfg "berty.tech/go-libp2p-tor-transport/config"
 )
 
 func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
@@ -36,6 +39,10 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute, "maximum p2p backoff duration")
 	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "local discovery")
 	fs.Var(&m.Node.Protocol.RdvpMaddrs, "p2p.rdvp", `list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp`)
+	fs.BoolVar(&m.Node.Protocol.Tor.Enabled, "tor.enable", false, "If true tor will be enabled.")
+	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "If set berty will use this external tor binary instead of his builtin one.")
+	fs.BoolVar(&m.Node.Protocol.Tor.DontSetListen, "tor.dont-set-listen", false, "If true tor will not auto set his listen address, allowing you to replace by an other one.")
+	fs.BoolVar(&m.Node.Protocol.AnonymityMode, "anonymity-force", false, `If true the node will be configurated to only use anonimous transports and will disable local discovery. Implies "-tor.enable=true"`)
 }
 
 func (m *Manager) GetLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
@@ -91,6 +98,73 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		noannounce = strings.Split(m.Node.Protocol.NoAnnounce, ",")
 	}
 
+	var p2pOpts libp2p.Option
+	var ipfsConfigPatch ipfsutil.IpfsConfigPatcher
+	if m.Node.Protocol.AnonymityMode {
+		// Force tor in this mode
+		m.Node.Protocol.Tor.Enabled = true
+		// Add extra safety.
+		// All of this should be desactivated later but ensuring its offline since
+		// the root is safer (less of side effects).
+		ipfsConfigPatch = func(c *ipfs_cfg.Config) error {
+			// Disable IP transports
+			c.Swarm.Transports.Network.QUIC = ipfs_cfg.False
+			c.Swarm.Transports.Network.TCP = ipfs_cfg.False
+			c.Swarm.Transports.Network.Websocket = ipfs_cfg.False
+
+			// Disable MDNS
+			c.Discovery.MDNS.Enabled = false
+
+			// Replace listens
+			var addrListens []string
+			if m.Node.Protocol.Tor.DontSetListen {
+				addrListens = nil
+			} else {
+				addrListens = []string{tor.NopMaddr3Str}
+			}
+			c.Addresses.Swarm = addrListens
+			return nil
+		}
+	}
+	if !m.Node.Protocol.DisableIPFSNetwork {
+		if m.Node.Protocol.Tor.Enabled {
+			tDir, err := temp.GetTempDir()
+			if err != nil {
+				return nil, nil, errcode.TODO.Wrap(err)
+			}
+			torOpts := torcfg.SetTemporaryDirectory(tDir)
+			if m.Node.Protocol.Tor.BinaryPath == "" {
+				torOpts = torcfg.Merge(torOpts, torcfg.EnableEmbeded)
+			} else {
+				torOpts = torcfg.Merge(torOpts, torcfg.SetBinaryPath(m.Node.Protocol.Tor.BinaryPath))
+			}
+
+			if !m.Node.Protocol.Tor.DontSetListen {
+				swarmAddrs = append(swarmAddrs, tor.NopMaddr3Str)
+			}
+
+			// If we allow AnonymityMode allow tcp dial.
+			if m.Node.Protocol.AnonymityMode {
+				torOpts = torcfg.Merge(torOpts, torcfg.AllowTcpDial)
+			}
+			torBuilder, err := tor.NewBuilder(torOpts)
+			if err != nil {
+				return nil, nil, errcode.TODO.Wrap(err)
+			}
+			p2pOpts = libp2p.Transport(torBuilder)
+		}
+		if m.Node.Protocol.AnonymityMode {
+			m.Node.Protocol.LocalDiscovery = false
+		} else {
+			mcOpt := libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))
+			if p2pOpts == nil {
+				p2pOpts = mcOpt
+			} else {
+				p2pOpts = libp2p.ChainOptions(p2pOpts, mcOpt)
+			}
+		}
+	}
+
 	opts := ipfsutil.CoreAPIConfig{
 		SwarmAddrs:        swarmAddrs,
 		APIAddrs:          apiAddrs,
@@ -99,13 +173,14 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		NoAnnounce:        noannounce,
 		DisableCorePubSub: true,
 		BootstrapAddrs:    config.BertyDev.Bootstrap,
-		IpfsConfigPatch: func(cfg *ipfs_cfg.Config) error {
+		ExtraLibp2pOption: p2pOpts,
+		IpfsConfigPatch: ipfsutil.ChainIpfsConfigPatch(ipfsConfigPatch, func(cfg *ipfs_cfg.Config) error {
 			for _, p := range rdvpeers {
 				cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
 			}
 
 			return nil
-		},
+		}),
 		HostConfig: func(h host.Host, _ routing.Routing) error {
 			var err error
 
@@ -152,9 +227,6 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 			return nil
 		},
-	}
-	if !m.Node.Protocol.DisableIPFSNetwork {
-		opts.ExtraLibp2pOption = libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger)))
 	}
 	// FIXME: continue disabling things to speedup the node when DisableIPFSNetwork==true
 

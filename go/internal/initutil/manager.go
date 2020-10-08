@@ -60,6 +60,14 @@ type Manager struct {
 			// The netry : `:none:` will disable all rdvp servers.
 			RdvpMaddrs flagStringSlice
 
+			// Tor
+			Tor struct {
+				Enabled       bool
+				BinaryPath    string // if "" that mean embedded must be used.
+				DontSetListen bool
+			}
+			AnonymityMode bool // Desactivate other stuff to enforce anonymity.
+
 			// Auth
 			AuthSecret    string
 			AuthPublicKey string

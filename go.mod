@@ -5,8 +5,10 @@ go 1.14
 require (
 	bazil.org/fuse v0.0.0-20200524192727-fb710f7dfd05 // indirect
 	berty.tech/go-ipfs-log v1.2.6
+	berty.tech/go-libp2p-tor-transport v0.7.2
 	berty.tech/go-orbit-db v1.10.8
 	berty.tech/ipfs-webui-packed v1.0.0-v2.9.0-4
+	github.com/Jorropo/go-temp-dir v1.0.0
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Masterminds/sprig v2.22.0+incompatible // indirect
@@ -113,6 +115,7 @@ replace (
 	bazil.org/fuse => bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc // specific version for iOS building
 	github.com/agl/ed25519 => github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // latest commit before the author shutdown the repo; see https://github.com/golang/go/issues/20504
 	github.com/ipld/go-car => github.com/Jorropo/go-car v0.1.1 // temporary, see https://github.com/ipld/go-car/pull/34
+	github.com/libp2p/go-libp2p-swarm => github.com/Jorropo/go-libp2p-swarm v0.2.11 // temporary, see https://github.com/libp2p/go-libp2p-swarm/pull/227
 	github.com/lucas-clemente/quic-go => github.com/lucas-clemente/quic-go v0.18.0 // required by go1.15
 	github.com/peterbourgon/ff/v3 => github.com/moul/ff/v3 v3.0.1 // temporary, see https://github.com/peterbourgon/ff/pull/67, https://github.com/peterbourgon/ff/issues/68
 )
