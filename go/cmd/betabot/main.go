@@ -626,7 +626,7 @@ func safeDefaultDisplayName() string {
 	if name == "" {
 		name = "Anonymous4242"
 	}
-	return fmt.Sprintf("%s (bot)", name)
+	return fmt.Sprintf("%s (betabot)", name)
 }
 
 func getRandomReply() string {
