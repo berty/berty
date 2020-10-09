@@ -424,7 +424,7 @@ func (d *dbWrapper) addContactRequestOutgoingSent(contactPK string) (*Contact, e
 	return contact, d.db.Where(&Contact{PublicKey: contactPK}).First(&contact).Error
 }
 
-func (d *dbWrapper) addContactRequestIncomingReceived(contactPK, displayName string) (*Contact, error) {
+func (d *dbWrapper) addContactRequestIncomingReceived(contactPK, displayName string, groupPk string) (*Contact, error) {
 	if contactPK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
 	}
@@ -432,10 +432,11 @@ func (d *dbWrapper) addContactRequestIncomingReceived(contactPK, displayName str
 	if err := d.db.
 		Clauses(clause.OnConflict{DoNothing: true}).
 		Create(&Contact{
-			DisplayName: displayName,
-			PublicKey:   contactPK,
-			State:       Contact_IncomingRequest,
-			CreatedDate: timestampMs(time.Now()),
+			DisplayName:           displayName,
+			PublicKey:             contactPK,
+			State:                 Contact_IncomingRequest,
+			CreatedDate:           timestampMs(time.Now()),
+			ConversationPublicKey: groupPk,
 		}).
 		Error; isSQLiteError(err, sqlite3.ErrConstraint) {
 		return d.getContactByPK(contactPK)
@@ -446,31 +447,22 @@ func (d *dbWrapper) addContactRequestIncomingReceived(contactPK, displayName str
 	return d.getContactByPK(contactPK)
 }
 
-func (d *dbWrapper) addContactRequestIncomingAccepted(contactPK, groupPK string) (*Contact, *Conversation, error) {
+func (d *dbWrapper) addContactRequestIncomingAccepted(contactPK, groupPK string) (*Contact, error) {
 	if contactPK == "" {
-		return nil, nil, errcode.ErrInvalidInput.Wrap(errors.New("a contact public key is required"))
+		return nil, errcode.ErrInvalidInput.Wrap(errors.New("a contact public key is required"))
 	}
 
 	if groupPK == "" {
-		return nil, nil, errcode.ErrInvalidInput.Wrap(errors.New("a conversation public key is required"))
+		return nil, errcode.ErrInvalidInput.Wrap(errors.New("a conversation public key is required"))
 	}
 
 	contact, err := d.getContactByPK(contactPK)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	if contact.State != Contact_IncomingRequest {
-		return nil, nil, errcode.ErrInvalidInput.Wrap(errors.New("no incoming request"))
-	}
-
-	conversation := &Conversation{
-		PublicKey:        groupPK,
-		Type:             Conversation_ContactType,
-		ContactPublicKey: contactPK,
-		DisplayName:      "", // empty on account conversations
-		Link:             "", // empty on account conversations
-		CreatedDate:      timestampMs(time.Now()),
+		return nil, errcode.ErrInvalidInput.Wrap(errors.New("no incoming request"))
 	}
 
 	if err := d.db.Transaction(func(db *gorm.DB) error {
@@ -486,13 +478,12 @@ func (d *dbWrapper) addContactRequestIncomingAccepted(contactPK, groupPK string)
 				Columns:   []clause.Column{{Name: "public_key"}},
 				DoUpdates: clause.AssignmentColumns([]string{"display_name", "link"}),
 			}).
-			Create(&conversation).
 			Error
 	}); err != nil {
-		return nil, nil, errcode.ErrDBWrite.Wrap(err)
+		return nil, errcode.ErrDBWrite.Wrap(err)
 	}
 
-	return contact, conversation, nil
+	return contact, nil
 }
 
 func (d *dbWrapper) markInteractionAsAcknowledged(cid string) (*Interaction, error) {

@@ -10,7 +10,7 @@ import {
 const style = StyleSheet.create({
 	default: {
 		borderRadius: 20,
-		padding: 32,
+		padding: 16,
 		margin: 16,
 	},
 })

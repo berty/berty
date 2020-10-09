@@ -218,7 +218,7 @@ const MessageList: React.FC<{ id: string; scrollToMessage?: string }> = ({
 	id,
 	scrollToMessage,
 }) => {
-	const [{ overflow, row, flex, margin }, { scaleHeight }] = useStyles()
+	const [{ overflow, row, column, flex, margin }, { scaleHeight, windowHeight }] = useStyles()
 	const conversation = useConversation(id)
 	const ctx = useMsgrContext()
 	const members = (ctx as any).members[id] || {}
@@ -259,13 +259,7 @@ const MessageList: React.FC<{ id: string; scrollToMessage?: string }> = ({
 			onScrollToIndexFailed={onScrollToIndexFailed}
 			ref={flatListRef}
 			keyboardDismissMode='on-drag'
-			style={[
-				overflow,
-				row.item.fill,
-				flex.tiny,
-				margin.bottom.medium,
-				{ marginTop: 140 * scaleHeight },
-			]}
+			style={[overflow, margin.bottom.medium, { marginTop: 140 * scaleHeight }]}
 			data={items}
 			inverted
 			ListFooterComponent={<InfosMultiMember {...conversation} />}

@@ -139,10 +139,15 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 						background.light.grey,
 						padding.small,
 						border.radius.small,
+						{ backgroundColor: '#F7F8FF' },
 					]}
 				>
 					<TextInput
-						style={[text.color.grey, margin.left.small]}
+						style={[
+							margin.left.small,
+							text.bold.small,
+							{ fontFamily: 'Open Sans', color: '#AFB1C0' },
+						]}
 						placeholder='Group name'
 						onChangeText={onGroupNameChange}
 						autoCorrect={false}

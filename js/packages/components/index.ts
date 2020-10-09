@@ -1,4 +1,4 @@
-import * as Onboarding from './Onboarding'
+import * as Onboarding from './onboarding'
 import * as Main from './main'
 import * as Chat from './chat'
 import * as Settings from './settings'

@@ -6,6 +6,9 @@ export namespace ScreenProps {
 		export type SelectMode = RouteProps<void>
 		export type Performance = RouteProps<void>
 		export type Privacy = RouteProps<void>
+		export type ServicesAuth = RouteProps<void>
+		export type CreateAccount = RouteProps<void>
+		export type SetupFinished = RouteProps<void>
 	}
 	export namespace Main {
 		export type Home = RouteProps<void>
@@ -63,6 +66,9 @@ export namespace Routes {
 		SelectMode = 'Onboarding.SelectMode',
 		Performance = 'Onboarding.Performance',
 		Privacy = 'Onboarding.Privacy',
+		ServicesAuth = 'Onboarding.ServicesAuth',
+		CreateAccount = 'Onboarding.CreateAccount',
+		SetupFinished = 'Onboarding.SetupFinished',
 	}
 	export enum Main {
 		Home = 'Main.Home',
