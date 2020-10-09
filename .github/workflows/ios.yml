@@ -68,7 +68,7 @@ jobs:
           restore-keys: ${{ runner.OS }}-bundle-
 
       - name: Setup macOS keychain
-        working-directory: tool/dummy-identity
+        working-directory: tool/build/dummy-identity
         run: |
           security create-keychain -p "dummypass" dummy.keychain
           security default-keychain -s dummy.keychain
@@ -85,7 +85,7 @@ jobs:
           if [ "$SHAKEBUGS_API_ID" != "" ] && [ "$SHAKEBUGS_API_SECRET" != "" ]; then
             echo "SHAKE_API_ID=$SHAKEBUGS_API_ID\nSHAKE_API_SECRET=$SHAKEBUGS_API_SECRET" >> js/.env
           else
-            cat tool/build/ci/.env >> js/.env
+            cat tool/build/shakebugs-infos/env >> js/.env
           fi
 
       - name: Build the Archive
