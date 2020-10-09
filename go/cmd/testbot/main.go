@@ -15,6 +15,7 @@ import (
 	"moul.io/zapconfig"
 
 	"berty.tech/berty/v2/go/pkg/bertybot"
+	"berty.tech/berty/v2/go/pkg/bertyversion"
 )
 
 var (
@@ -52,6 +53,9 @@ func Main() error {
 		bertybot.WithRecipe(bertybot.AutoAcceptIncomingContactRequestRecipe()),   // accept incoming contact requests
 		bertybot.WithRecipe(bertybot.WelcomeMessageRecipe("welcome to testbot")), // send welcome message to new contacts and new conversations
 		bertybot.WithRecipe(bertybot.EchoRecipe("you said: ")),                   // reply to messages with the same message
+		bertybot.WithCommand("version", "show version", func(ctx bertybot.Context) {
+			_ = ctx.ReplyString("version: " + bertyversion.Version)
+		}),
 	)
 	if *skipReplay {
 		opts = append(opts, bertybot.WithSkipReplay()) // skip old events, only consume fresh ones

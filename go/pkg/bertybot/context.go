@@ -32,6 +32,7 @@ type Context struct {
 	Device         *bertymessenger.Device       `json:"Device,omitempty"`
 	ConversationPK string                       `json:"ConversationPK,omitempty"`
 	UserMessage    string                       `json:"UserMessage,omitempty"`
+	CommandArgs    []string
 
 	// internal
 	initialized bool

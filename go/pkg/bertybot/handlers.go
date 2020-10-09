@@ -3,6 +3,9 @@ package bertybot
 import (
 	"context"
 	"fmt"
+	"strings"
+
+	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 )
@@ -35,6 +38,8 @@ const (
 	AcceptedContactHandler
 	UserMessageHandler
 	NewConversationHandler
+	CommandHandler
+	CommandNotFoundHandler
 )
 
 type Handler func(ctx Context)
@@ -85,6 +90,19 @@ func (b *Bot) handleEvent(ctx context.Context, event *bertymessenger.StreamEvent
 		case bertymessenger.AppMessage_TypeUserMessage:
 			receivedMessage := payload.(*bertymessenger.AppMessage_UserMessage)
 			context.UserMessage = receivedMessage.GetBody()
+			if len(b.commands) > 0 && len(context.UserMessage) > 1 && strings.HasPrefix(context.UserMessage, "/") {
+				if !context.IsMe && !context.IsReplay && !context.IsAck {
+					context.CommandArgs = strings.Split(context.UserMessage[1:], " ")
+					command, found := b.commands[context.CommandArgs[0]]
+					if found {
+						b.logger.Debug("found handler", zap.Strings("args", context.CommandArgs))
+						command.handler(*context)
+						b.callHandlers(context, CommandHandler)
+					} else {
+						b.callHandlers(context, CommandNotFoundHandler)
+					}
+				}
+			}
 			b.callHandlers(context, UserMessageHandler)
 		default:
 			return fmt.Errorf("unsupported interaction type: %q", context.Interaction.Type)

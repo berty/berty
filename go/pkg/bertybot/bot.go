@@ -23,6 +23,7 @@ type Bot struct {
 	handlers        map[HandlerType][]Handler
 	isReplaying     bool
 	handledEvents   uint
+	commands        map[string]command
 	store           struct {
 		conversations map[string]*bertymessenger.Conversation
 		mutex         sync.Mutex
@@ -35,6 +36,7 @@ func New(opts ...NewOption) (*Bot, error) {
 	b := Bot{
 		logger:   zap.NewNop(),
 		handlers: make(map[HandlerType][]Handler),
+		commands: make(map[string]command),
 	}
 	b.store.conversations = make(map[string]*bertymessenger.Conversation)
 

@@ -141,8 +141,3 @@ func AutoAcceptIncomingGroupInviteRecipe() Recipe {
 func SendErrorToClientRecipe() Recipe {
 	panic("not implemented")
 }
-
-// CommandVersionRecipe registers a command that replies bot & protocol versions on '/version'.
-func CommandVersionRecipe(botVersion string) Recipe {
-	panic("not implemented")
-}

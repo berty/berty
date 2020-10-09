@@ -2,6 +2,8 @@ package bertybot
 
 import (
 	"fmt"
+	"sort"
+	"strings"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -73,7 +75,7 @@ func WithHandler(typ HandlerType, handler Handler) NewOption {
 	}
 }
 
-// WithRecipe
+// WithRecipe configures the passed recipe.
 func WithRecipe(recipe Recipe) NewOption {
 	return func(b *Bot) error {
 		for typ, handlers := range recipe {
@@ -85,7 +87,7 @@ func WithRecipe(recipe Recipe) NewOption {
 	}
 }
 
-// WithSkipAcknowledge
+// WithSkipAcknowledge disables sending Acknowledge events.
 func WithSkipAcknowledge() NewOption {
 	return func(b *Bot) error {
 		b.skipAcknowledge = true
@@ -93,10 +95,39 @@ func WithSkipAcknowledge() NewOption {
 	}
 }
 
-// WithSkipMyself
+// WithSkipMyself disables sending events sent by myself.
 func WithSkipMyself() NewOption {
 	return func(b *Bot) error {
 		b.skipMyself = true
+		return nil
+	}
+}
+
+// WithCommand registers a new command that can be called with the '/' prefix.
+// If name was already used, the preview command is replaced by the new one.
+func WithCommand(name, description string, handler CommandFn) NewOption {
+	return func(b *Bot) error {
+		b.commands[name] = command{
+			name:        name,
+			description: description,
+			handler:     handler,
+		}
+		if _, found := b.commands["help"]; !found {
+			b.commands["help"] = command{
+				name:        "help",
+				description: "show this help",
+				handler: func(ctx Context) {
+					lines := []string{}
+					for _, command := range b.commands {
+						lines = append(lines, fmt.Sprintf("  /%-20s %s", command.name, command.description))
+					}
+					sort.Strings(lines)
+					msg := "Available commands:\n" + strings.Join(lines, "\n")
+					_ = ctx.ReplyString(msg)
+					// FIXME: submit suggestions
+				},
+			}
+		}
 		return nil
 	}
 }
