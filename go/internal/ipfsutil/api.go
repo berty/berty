@@ -39,6 +39,7 @@ type CoreAPIConfig struct {
 	HostConfig        func(host.Host, p2p_routing.Routing) error
 	ExtraLibp2pOption p2p.Option
 	DHTOption         []p2p_dht.Option
+	IpfsConfigPatches []ConfigPatcher
 
 	Routing ipfs_libp2p.RoutingOption
 	Host    ipfs_libp2p.HostOption
@@ -52,7 +53,7 @@ func NewCoreAPI(ctx context.Context, cfg *CoreAPIConfig) (ExtendedCoreAPI, *ipfs
 }
 
 func NewCoreAPIFromDatastore(ctx context.Context, ds ds.Batching, cfg *CoreAPIConfig) (ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
-	repo, err := CreateMockedRepo(ds)
+	repo, err := CreateMockedRepo(ds, cfg.IpfsConfigPatches...)
 	if err != nil {
 		return nil, nil, errcode.TODO.Wrap(err)
 	}
