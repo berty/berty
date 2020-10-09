@@ -6,7 +6,6 @@ import (
 	ds "github.com/ipfs/go-datastore"
 	dsync "github.com/ipfs/go-datastore/sync"
 	config "github.com/ipfs/go-ipfs-config"
-	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_coreapi "github.com/ipfs/go-ipfs/core/coreapi"
 	ipfs_node "github.com/ipfs/go-ipfs/core/node"
@@ -26,7 +25,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
-type IpfsConfigPatcher func(*ipfs_cfg.Config) error
+type IpfsConfigPatcher func(*config.Config) error
 
 type CoreAPIOption func(context.Context, *ipfs_core.IpfsNode, ipfs_interface.CoreAPI) error
 
@@ -50,9 +49,14 @@ type CoreAPIConfig struct {
 	Options []CoreAPIOption
 }
 
+// ChainIpfsConfigPatch will execute multiple IpfsConfigPatcher from the first
+// to the last. They can be safely be nilled and will just be ignored.
 func ChainIpfsConfigPatch(ps ...IpfsConfigPatcher) IpfsConfigPatcher {
-	return func(c *ipfs_cfg.Config) error {
+	return func(c *config.Config) error {
 		for _, p := range ps {
+			if p == nil {
+				continue
+			}
 			if err := p(c); err != nil {
 				return err
 			}
