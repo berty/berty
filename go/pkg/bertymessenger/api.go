@@ -297,21 +297,28 @@ func (svc *service) SendContactRequest(ctx context.Context, req *SendContactRequ
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	go svc.replicateContactGroupOnAllServers(req.BertyID.AccountPK)
+	go svc.autoReplicateContactGroupOnAllServers(req.BertyID.AccountPK)
 
 	return &SendContactRequest_Reply{}, nil
 }
 
-func (svc *service) replicateContactGroupOnAllServers(contactPK []byte) {
+func (svc *service) autoReplicateContactGroupOnAllServers(contactPK []byte) {
 	groupPK, err := groupPKFromContactPK(svc.ctx, svc.protocolClient, contactPK)
 	if err != nil {
 		return
 	}
 
-	svc.replicateGroupOnAllServers(groupPK)
+	if _, err := svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{
+		GroupPK:   groupPK,
+		LocalOnly: false,
+	}); err != nil {
+		return
+	}
+
+	svc.autoReplicateGroupOnAllServers(groupPK)
 }
 
-func (svc *service) replicateGroupOnAllServers(groupPK []byte) {
+func (svc *service) autoReplicateGroupOnAllServers(groupPK []byte) {
 	replicationServices := map[string]*ServiceToken{}
 	acc, err := svc.db.getAccount()
 	if err != nil {
@@ -746,7 +753,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 		}
 	}
 
-	go svc.replicateGroupOnAllServers(pk)
+	go svc.autoReplicateGroupOnAllServers(pk)
 
 	rep := ConversationCreate_Reply{PublicKey: pkStr}
 	return &rep, nil
@@ -952,6 +959,8 @@ func (svc *service) ContactRequest(ctx context.Context, req *ContactRequest_Requ
 		return nil, errcode.TODO.Wrap(err)
 	}
 
+	go svc.autoReplicateContactGroupOnAllServers(contactRequest.Contact.PK)
+
 	return &ContactRequest_Reply{}, nil
 }
 
@@ -985,7 +994,7 @@ func (svc *service) ContactAccept(ctx context.Context, req *ContactAccept_Reques
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	go svc.replicateContactGroupOnAllServers(pkb)
+	go svc.autoReplicateContactGroupOnAllServers(pkb)
 
 	return &ContactAccept_Reply{}, nil
 }
