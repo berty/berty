@@ -6,6 +6,7 @@ import (
 	ds "github.com/ipfs/go-datastore"
 	dsync "github.com/ipfs/go-datastore/sync"
 	config "github.com/ipfs/go-ipfs-config"
+	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_coreapi "github.com/ipfs/go-ipfs/core/coreapi"
 	ipfs_node "github.com/ipfs/go-ipfs/core/node"
@@ -25,6 +26,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
+type IpfsConfigPatcher func(*ipfs_cfg.Config) error
+
 type CoreAPIOption func(context.Context, *ipfs_core.IpfsNode, ipfs_interface.CoreAPI) error
 
 type CoreAPIConfig struct {
@@ -39,12 +42,24 @@ type CoreAPIConfig struct {
 	HostConfig        func(host.Host, p2p_routing.Routing) error
 	ExtraLibp2pOption p2p.Option
 	DHTOption         []p2p_dht.Option
-	IpfsConfigPatches []ConfigPatcher
+	IpfsConfigPatch   IpfsConfigPatcher
 
 	Routing ipfs_libp2p.RoutingOption
 	Host    ipfs_libp2p.HostOption
 
 	Options []CoreAPIOption
+}
+
+func ChainIpfsConfigPatch(ps ...IpfsConfigPatcher) IpfsConfigPatcher {
+	return func(c *ipfs_cfg.Config) error {
+		for _, p := range ps {
+			if err := p(c); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	}
 }
 
 func NewCoreAPI(ctx context.Context, cfg *CoreAPIConfig) (ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
@@ -53,7 +68,7 @@ func NewCoreAPI(ctx context.Context, cfg *CoreAPIConfig) (ExtendedCoreAPI, *ipfs
 }
 
 func NewCoreAPIFromDatastore(ctx context.Context, ds ds.Batching, cfg *CoreAPIConfig) (ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
-	repo, err := CreateMockedRepo(ds, cfg.IpfsConfigPatches...)
+	repo, err := CreateMockedRepo(ds)
 	if err != nil {
 		return nil, nil, errcode.TODO.Wrap(err)
 	}
@@ -169,6 +184,13 @@ func updateRepoConfig(repo ipfs_repo.Repo, cfg *CoreAPIConfig) error {
 
 	if cfg.APIConfig.HTTPHeaders != nil {
 		rcfg.API = cfg.APIConfig
+	}
+
+	// apply patches
+	if cfg.IpfsConfigPatch != nil {
+		if err := cfg.IpfsConfigPatch(rcfg); err != nil {
+			return err
+		}
 	}
 
 	return repo.SetConfig(rcfg)

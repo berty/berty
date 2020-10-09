@@ -35,19 +35,10 @@ const defaultConnMgrGracePeriod = time.Second * 20
 // @NOTE(gfanton): this will be removed with gomobile-ipfs
 var plugins *ipfs_loader.PluginLoader
 
-type ConfigPatcher func(*ipfs_cfg.Config) error
-
-func CreateMockedRepo(dstore ipfs_ds.Batching, cPatchs ...ConfigPatcher) (ipfs_repo.Repo, error) {
+func CreateMockedRepo(dstore ipfs_ds.Batching) (ipfs_repo.Repo, error) {
 	c, err := createBaseConfig()
 	if err != nil {
 		return nil, err
-	}
-
-	for _, p := range cPatchs {
-		err = p(c)
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
 	}
 
 	return &ipfs_repo.Mock{
