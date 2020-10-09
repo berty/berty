@@ -40,7 +40,7 @@ jobs:
     - name: "Fetch deps"
       run: |
         cd js
-        make deps
+        make node_mod
       env:
         CI: true
     - name: "Run tests"

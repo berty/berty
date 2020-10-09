@@ -77,11 +77,25 @@ jobs:
         working-directory: js
         env:
           CI: "true"
-        run: make android.release
+        run: |
+          make android.app_deps
+          ### TODO: sign with release keystore on Yolo ###
+          mkdir -p $HOME/.android
+          cp packages/berty-app/android/app/debug.keystore $HOME/.android
+          ################################################
+          (cd packages/berty-app/android && ./gradlew bundleRelease)
+          wget \
+            https://github.com/google/bundletool/releases/download/1.2.0/bundletool-all-1.2.0.jar \
+            -O /tmp/bundletool.jar
+          java -jar /tmp/bundletool.jar build-apks \
+            --bundle=packages/berty-app/android/app/build/outputs/bundle/release/app-release.aab \
+            --output=${{ github.workspace }}/app.apks \
+            --mode=universal
+          cd ${{ github.workspace }} && unzip app.apks
 
       - name: Upload the APK
         uses: actions/upload-artifact@v2
         with:
-          path: js/packages/berty-app/android/universal.apk
+          path: ${{ github.workspace }}/universal.apk
           name: berty-universal-${{github.sha}}.apk
           if-no-files-found: error

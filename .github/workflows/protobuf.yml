@@ -146,7 +146,7 @@ jobs:
 
       - name: "Fetch deps"
         # FIXME: find a way of only downloading the required packages or install them directly in the bertytech/protoc image
-        run: make deps
+        run: make node_mod
         working-directory: js
         env:
           CI: true

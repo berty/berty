@@ -58,7 +58,8 @@ schemes:
 
 settings:
   base:
-    EXCLUDED_ARCHS[sdk=iphonesimulator*]: arm64
+    EXCLUDED_ARCHS[sdk=iphonesimulator*]: armv7 armv7s arm64 arm64e
+    EXCLUDED_ARCHS[sdk=iphoneos*]: armv7 armv7s i386 x86_64
     ONLY_ACTIVE_ARCH: false
     SWIFT_OBJC_BRIDGING_HEADER: Berty/Berty-Bridging-Header.h
     CLANG_ENABLE_MODULES: true
@@ -128,9 +129,6 @@ targets:
           DEVELOPMENT_TEAM: GR5463T564
           PRODUCT_NAME: Berty Yolo
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).yolo
-          PROVISIONING_PROFILE_SPECIFIER: "match InHouse tech.berty.ios.yolo"
-          CODE_SIGN_STYLE: Manual
-          CODE_SIGN_IDENTITY: "iPhone Distribution"
 
 
     sources:

@@ -24,15 +24,17 @@ jobs:
     name: Build for iOS
     runs-on: macos-latest
     steps:
-      - uses: maxim-lobanov/setup-xcode@v1.1
-        with:
-          xcode-version: '12.0'
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}  # see https://github.com/actions/checkout/issues/299
+
+      - name: Setup XCode
+        uses: maxim-lobanov/setup-xcode@v1.1
+        with:
+          xcode-version: '12.0'
 
       - name: Setup Go
         uses: actions/setup-go@v2
@@ -91,7 +93,7 @@ jobs:
       - name: Build the Archive
         working-directory: js
         run: |
-          make deps ios.gomobile packages/berty-app/ios/Berty.xcworkspace
+          make ios.app_deps
           xcodebuild archive \
                 -workspace packages/berty-app/ios/Berty.xcworkspace \
                 -scheme "Berty Yolo" \
