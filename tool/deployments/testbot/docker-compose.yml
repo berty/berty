@@ -1,0 +1,48 @@
+version: '3.7'
+
+services:
+  daemon1:
+    container_name: testbot1_daemon
+    image: bertytech/berty:latest
+    restart: on-failure
+    entrypoint: sh
+    #labels:
+    #  com.centurylinklabs.watchtower.enable: "true"
+    environment:
+      - ANNOUNCE_SERVER
+      - BERTY_STORE_DIR=/store/run
+      - BERTY_NODE_NO_NOTIF=true
+      - BERTY_NODE_LISTENERS=/ip4/0.0.0.0/tcp/9091
+      - BERTY_P2P_IPFS_LISTENERS=/ip4/0.0.0.0/tcp/6002,/ip4/0.0.0.0/udp/6002/quic
+      - BERTY_P2P_IPFS_ANNOUNCE=/ip4/${ANNOUNCE_SERVER}/tcp/6002,/ip4/${ANNOUNCE_SERVER}/udp/6002/quic
+    # copy "clean" db into run, then start the daemon.
+    # be careful if you edit this command, it looks like multiline but will be joined inline.
+    command: -xec "
+      rm -rf /store/run;
+      cp -rf /store/clean /store/run;
+      env;
+      berty daemon;
+      "
+    volumes:
+      - ./data/testbot1/daemon:/store
+    ports:
+      - 6002:6002
+
+  bot1:
+    container_name: testbot1_bot
+    image: bertytech/berty:latest
+    restart: always
+    entrypoint: testbot
+    links:
+      - daemon1
+    #labels:
+    #  com.centurylinklabs.watchtower.enable: "true"
+    command:
+      - -display-name=TestBot 1
+      - -addr=daemon1:9091
+      - -debug
+      - -skip-replay
+    depends_on:
+      - daemon1
+
+# FIXME: add more testbot instances with various network configurations
