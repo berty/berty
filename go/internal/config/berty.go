@@ -18,7 +18,13 @@ type BertyConfig struct {
 var BertyDev = &BertyConfig{
 	Bootstrap: config.DefaultBootstrapAddresses,
 	RendezVousPeers: []string{
+		// svc fr
 		"/ip4/51.159.21.214/tcp/4040/p2p/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p",
+		"/ip4/51.159.21.214/udp/4040/quic/p2p/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p",
+		// svc ams
+		"/ip4/51.15.25.224/tcp/4040/p2p/12D3KooWHhDBv6DJJ4XDWjzEXq6sVNEs6VuxsV1WyBBEhPENHzcZ",
+		"/ip4/51.15.25.224/udp/4040/quic/p2p/12D3KooWHhDBv6DJJ4XDWjzEXq6sVNEs6VuxsV1WyBBEhPENHzcZ",
+		// others
 		"/ip4/51.75.127.200/udp/4141/quic/p2p/12D3KooWRpyQpZtUmY5ZktEMgzuhNoWC1C9zokDjLVahNMy3g48u",
 	},
 	DefaultSwarmAddrs: []string{
@@ -40,7 +46,13 @@ var BertyDev = &BertyConfig{
 var BertyMobile = &BertyConfig{
 	Bootstrap: config.DefaultBootstrapAddresses,
 	RendezVousPeers: []string{
+		// svc fr
 		"/ip4/51.159.21.214/tcp/4040/p2p/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p",
+		"/ip4/51.159.21.214/udp/4040/quic/p2p/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p",
+		// svc ams
+		"/ip4/51.15.25.224/tcp/4040/p2p/12D3KooWHhDBv6DJJ4XDWjzEXq6sVNEs6VuxsV1WyBBEhPENHzcZ",
+		"/ip4/51.15.25.224/udp/4040/quic/p2p/12D3KooWHhDBv6DJJ4XDWjzEXq6sVNEs6VuxsV1WyBBEhPENHzcZ",
+		// others
 		"/ip4/51.75.127.200/udp/4141/quic/p2p/12D3KooWRpyQpZtUmY5ZktEMgzuhNoWC1C9zokDjLVahNMy3g48u",
 	},
 	DefaultSwarmAddrs: []string{
