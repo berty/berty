@@ -46,6 +46,3 @@ android/libs
 buck-out/
 \.buckd/
 *.keystore
-
-# Bazel
-bazel-*

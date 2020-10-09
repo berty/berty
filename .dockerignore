@@ -5,7 +5,6 @@
 .agignore
 .env
 .projectile
-/bazel-*
 Dockerfile
 core-sources.jar
 coverage.txt

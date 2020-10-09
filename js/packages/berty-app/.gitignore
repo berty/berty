@@ -61,6 +61,3 @@ vendor/bundle
 # CocoaPods
 /ios/Pods/
 /ios/tmp.xcconfig
-
-# bazel
-bazel-*

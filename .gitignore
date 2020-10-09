@@ -7,7 +7,6 @@
 .projectile
 .tmp/
 *.bin
-/bazel-*
 core-sources.jar
 coverage.txt
 dist/
