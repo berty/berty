@@ -8,6 +8,7 @@ import (
 	"time"
 
 	datastore "github.com/ipfs/go-datastore"
+	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	libp2p "github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -98,6 +99,13 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		NoAnnounce:        noannounce,
 		DisableCorePubSub: true,
 		BootstrapAddrs:    config.BertyDev.Bootstrap,
+		IpfsConfigPatch: func(cfg *ipfs_cfg.Config) error {
+			for _, p := range rdvpeers {
+				cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
+			}
+
+			return nil
+		},
 		HostConfig: func(h host.Host, _ routing.Routing) error {
 			var err error
 

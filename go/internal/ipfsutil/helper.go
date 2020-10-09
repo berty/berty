@@ -58,7 +58,8 @@ func ParseAndResolveIpfsAddr(ctx context.Context, addr string) (*peer.AddrInfo, 
 }
 
 func ParseAndResolveRdvpMaddrs(ctx context.Context, log *zap.Logger, addrs []string) ([]*peer.AddrInfo, error) {
-	outPeers := make([]*peer.AddrInfo, len(addrs))
+	// Resolve all addresses
+	outPeersUnmatched := make([]*peer.AddrInfo, len(addrs))
 	var errs error
 	var outLock sync.Mutex
 	var wg sync.WaitGroup
@@ -81,14 +82,27 @@ func ParseAndResolveRdvpMaddrs(ctx context.Context, log *zap.Logger, addrs []str
 				fds[i] = zap.String(key, maddr.String())
 			}
 			log.Debug("rdvp peer resolved addrs", fds...)
-			outLock.Lock()
-			defer outLock.Unlock()
-			outPeers[j] = rdvpeer
+			outPeersUnmatched[j] = rdvpeer
 		}(i, v)
 	}
 	wg.Wait()
 	if errs != nil {
 		return nil, errs
 	}
+	// Match peers by ID
+	outPeersMatched := make(map[peer.ID][]ma.Multiaddr)
+	for _, v := range outPeersUnmatched {
+		outPeersMatched[v.ID] = append(outPeersMatched[v.ID], v.Addrs...)
+	}
+
+	// Create the ultimate *peer.AddrInfo
+	var outPeers []*peer.AddrInfo
+	for id, maddrs := range outPeersMatched {
+		outPeers = append(outPeers, &peer.AddrInfo{
+			ID:    id,
+			Addrs: maddrs,
+		})
+	}
+
 	return outPeers, nil
 }
