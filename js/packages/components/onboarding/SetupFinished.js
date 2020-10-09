@@ -5,8 +5,10 @@ import LottieView from 'lottie-react-native'
 import { useNavigation as useReactNavigation, CommonActions } from '@react-navigation/native'
 
 import { useMsgrContext } from '@berty-tech/store/context'
+import { Routes } from '@berty-tech/navigation'
 
-import SwiperCard from './onboarding/SwiperCard'
+import SwiperCard from './SwiperCard'
+import OnboardingWrapper from './OnboardingWrapper'
 
 const SetupFinishedBody = () => {
 	const navigation = useReactNavigation()
@@ -24,7 +26,7 @@ const SetupFinishedBody = () => {
 				convPk: Object.values(contacts)[0].publicKey,
 			})
 		}
-	}, [persistentOptions, contacts])
+	}, [persistentOptions, contacts, setPersistentOption])
 
 	return (
 		<Translation>
