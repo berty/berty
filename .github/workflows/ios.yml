@@ -78,13 +78,15 @@ jobs:
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "dummypass" dummy.keychain
 
       - name: Build .env
-        working-directory: js
         env:
           SHAKEBUGS_API_ID: ${{ secrets.SHAKEBUGS_API_ID }}
           SHAKEBUGS_API_SECRET: ${{ secrets.SHAKEBUGS_API_SECRET }}
         run: |
-          echo "SHAKE_API_ID=$SHAKEBUGS_API_ID" > .env
-          echo "SHAKE_API_SECRET=$SHAKEBUGS_API_SECRET" >> .env
+          if [ "$SHAKEBUGS_API_ID" != "" ] && [ "$SHAKEBUGS_API_SECRET" != "" ]; then
+            echo "SHAKE_API_ID=$SHAKEBUGS_API_ID\nSHAKE_API_SECRET=$SHAKEBUGS_API_SECRET" >> js/.env
+          else
+            cat tool/build/ci/.env >> js/.env
+          fi
 
       - name: Build the Archive
         working-directory: js
