@@ -70,7 +70,7 @@ jobs:
           if [ "$SHAKEBUGS_API_ID" != "" ] && [ "$SHAKEBUGS_API_SECRET" != "" ]; then
             echo "SHAKE_API_ID=$SHAKEBUGS_API_ID\nSHAKE_API_SECRET=$SHAKEBUGS_API_SECRET" >> js/.env
           else
-            cat tool/build/ci/.env >> js/.env
+            cat tool/build/shakebugs-infos/env >> js/.env
           fi
 
       - name: Build the APK
