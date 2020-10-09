@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 
+	ff "github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 
 	"berty.tech/berty/v2/go/pkg/banner"
@@ -28,6 +29,7 @@ func bannerCommand() *ffcli.Command {
 		ShortUsage:     "berty banner [flags]",
 		ShortHelp:      "print the Berty banner of the day",
 		FlagSetBuilder: fsBuilder,
+		Options:        []ff.Option{ff.WithEnvVarPrefix("BERTY")},
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	ff "github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"moul.io/godev"
 
@@ -32,6 +33,7 @@ func systemInfoCommand() *ffcli.Command {
 		ShortUsage:     "berty [global flags] info [flags]",
 		ShortHelp:      "display system info",
 		FlagSetBuilder: fsBuilder,
+		Options:        []ff.Option{ff.WithEnvVarPrefix("BERTY")},
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp
