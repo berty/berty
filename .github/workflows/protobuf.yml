@@ -142,7 +142,7 @@ jobs:
             ${{ runner.OS }}-
       - name: "Fetch deps"
         # FIXME: find a way of only downloading the required packages or install them directly in the bertytech/protoc image
-        run: cd js && make deps
+        run: cd js && make node_modules
         env:
           CI: true
       - name: Preload Go vendors

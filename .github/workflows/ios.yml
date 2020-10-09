@@ -91,7 +91,7 @@ jobs:
       - name: Build the Archive
         working-directory: js
         run: |
-          make deps ios.gomobile packages/berty-app/ios/Berty.xcworkspace
+          make node_modules ios.gomobile ios.project
           xcodebuild archive \
                 -workspace packages/berty-app/ios/Berty.xcworkspace \
                 -scheme "Berty Yolo" \
