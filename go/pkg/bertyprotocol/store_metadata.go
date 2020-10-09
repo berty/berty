@@ -335,15 +335,7 @@ func (m *metadataStore) GetIncomingContactRequestsStatus() (bool, *bertytypes.Sh
 }
 
 func (m *metadataStore) ListMembers() []crypto.PubKey {
-	if m.typeChecker(isAccountGroup) {
-		return nil
-	}
-
-	if m.typeChecker(isContactGroup) {
-		return nil
-	}
-
-	if m.typeChecker(isMultiMemberGroup) {
+	if m.typeChecker(isAccountGroup, isContactGroup, isMultiMemberGroup) {
 		return m.Index().(*metadataStoreIndex).listMembers()
 	}
 

@@ -18,8 +18,10 @@ import (
 	"golang.org/x/crypto/nacl/box"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/go-orbit-db/stores"
 )
 
 const CurrentGroupVersion = 1
@@ -344,6 +346,28 @@ func ActivateGroupContext(ctx context.Context, gc *groupContext) error {
 	return activateGroupContext(ctx, gc, true)
 }
 
+func TagGroupContextPeers(ctx context.Context, gc *groupContext, ipfsCoreAPI ipfsutil.ExtendedCoreAPI, weight int) {
+	id := gc.Group().GroupIDAsString()
+
+	chSub1 := gc.metadataStore.Subscribe(ctx)
+	go func() {
+		for e := range chSub1 {
+			if evt, ok := e.(*stores.EventNewPeer); ok {
+				ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, fmt.Sprintf("grp_%s", id), weight)
+			}
+		}
+	}()
+
+	chSub2 := gc.messageStore.Subscribe(ctx)
+	go func() {
+		for e := range chSub2 {
+			if evt, ok := e.(*stores.EventNewPeer); ok {
+				ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, fmt.Sprintf("grp_%s", id), weight)
+			}
+		}
+	}()
+}
+
 func SendSecretsToExistingMembers(ctx context.Context, gctx *groupContext) <-chan crypto.PubKey {
 	ch := make(chan crypto.PubKey)
 	members := gctx.MetadataStore().ListMembers()
@@ -353,6 +377,7 @@ func SendSecretsToExistingMembers(ctx context.Context, gctx *groupContext) <-cha
 			rawPK, err := pk.Raw()
 			if err != nil {
 				gctx.logger.Error("failed to serialize pk", zap.Error(err))
+				continue
 			}
 
 			if _, err := gctx.MetadataStore().SendSecret(ctx, pk); err != nil {

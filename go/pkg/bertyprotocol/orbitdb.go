@@ -82,15 +82,6 @@ type BertyOrbitDB struct {
 	deviceKeystore  DeviceKeystore
 }
 
-func (s *BertyOrbitDB) GetContactGroup(pk crypto.PubKey) (*bertytypes.Group, error) {
-	sk, err := s.deviceKeystore.ContactGroupPrivKey(pk)
-	if err != nil {
-		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
-	}
-
-	return getGroupForContact(sk)
-}
-
 func (s *BertyOrbitDB) registerGroupPrivateKey(g *bertytypes.Group) error {
 	groupID := g.GroupIDAsString()
 
@@ -167,7 +158,7 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *NewOrbi
 	return bertyDB, nil
 }
 
-func (s *BertyOrbitDB) openAccountGroup(ctx context.Context, options *orbitdb.CreateDBOptions) (*groupContext, error) {
+func (s *BertyOrbitDB) openAccountGroup(ctx context.Context, options *orbitdb.CreateDBOptions, ipfsCoreAPI ipfsutil.ExtendedCoreAPI) (*groupContext, error) {
 	sk, err := s.deviceKeystore.AccountPrivKey()
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
@@ -183,7 +174,18 @@ func (s *BertyOrbitDB) openAccountGroup(ctx context.Context, options *orbitdb.Cr
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 
-	return s.openGroup(ctx, g, options)
+	gc, err := s.openGroup(ctx, g, options)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	if err := ActivateGroupContext(ctx, gc); err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	TagGroupContextPeers(ctx, gc, ipfsCoreAPI, 84)
+
+	return gc, nil
 }
 
 func (s *BertyOrbitDB) openGroup(ctx context.Context, g *bertytypes.Group, options *orbitdb.CreateDBOptions) (*groupContext, error) {
