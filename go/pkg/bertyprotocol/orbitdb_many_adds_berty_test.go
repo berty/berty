@@ -69,7 +69,7 @@ func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, 
 
 	defer gc.Close()
 
-	err = ActivateGroupContext(ctx, gc)
+	err = ActivateGroupContext(ctx, gc, nil)
 	require.NoError(t, err)
 
 	wg := sync.WaitGroup{}

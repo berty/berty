@@ -179,7 +179,7 @@ func (s *BertyOrbitDB) openAccountGroup(ctx context.Context, options *orbitdb.Cr
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	if err := ActivateGroupContext(ctx, gc); err != nil {
+	if err := ActivateGroupContext(ctx, gc, nil); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 

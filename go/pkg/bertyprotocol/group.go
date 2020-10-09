@@ -250,7 +250,7 @@ func FillMessageKeysHolderUsingPreviousData(ctx context.Context, gc *groupContex
 	return ch
 }
 
-func activateGroupContext(ctx context.Context, gc *groupContext, selfAnnouncement bool) error {
+func activateGroupContext(ctx context.Context, gc *groupContext, contact crypto.PubKey, selfAnnouncement bool) error {
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 
@@ -306,7 +306,7 @@ func activateGroupContext(ctx context.Context, gc *groupContext, selfAnnouncemen
 	gc.logger.Info(fmt.Sprintf("FillMessageKeysHolderUsingPreviousData took %s", time.Since(start)))
 
 	start = time.Now()
-	ch = SendSecretsToExistingMembers(ctx, gc)
+	ch = SendSecretsToExistingMembers(ctx, gc, contact)
 	for pk := range ch {
 		if pk.Equals(gc.memberDevice.member.GetPublic()) {
 			select {
@@ -342,8 +342,8 @@ func activateGroupContext(ctx context.Context, gc *groupContext, selfAnnouncemen
 	return nil
 }
 
-func ActivateGroupContext(ctx context.Context, gc *groupContext) error {
-	return activateGroupContext(ctx, gc, true)
+func ActivateGroupContext(ctx context.Context, gc *groupContext, contact crypto.PubKey) error {
+	return activateGroupContext(ctx, gc, contact, true)
 }
 
 func TagGroupContextPeers(ctx context.Context, gc *groupContext, ipfsCoreAPI ipfsutil.ExtendedCoreAPI, weight int) {
@@ -368,9 +368,25 @@ func TagGroupContextPeers(ctx context.Context, gc *groupContext, ipfsCoreAPI ipf
 	}()
 }
 
-func SendSecretsToExistingMembers(ctx context.Context, gctx *groupContext) <-chan crypto.PubKey {
+func SendSecretsToExistingMembers(ctx context.Context, gctx *groupContext, contact crypto.PubKey) <-chan crypto.PubKey {
 	ch := make(chan crypto.PubKey)
 	members := gctx.MetadataStore().ListMembers()
+
+	// Force sending secret to contact member in contact group
+	if gctx.group.GroupType == bertytypes.GroupTypeContact && len(members) < 2 && contact != nil {
+		// Check if contact member is already listed
+		found := false
+		for _, member := range members {
+			if member.Equals(contact) {
+				found = true
+			}
+		}
+
+		// If not listed, add it to the list
+		if !found {
+			members = append(members, contact)
+		}
+	}
 
 	go func() {
 		for _, pk := range members {

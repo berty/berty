@@ -157,8 +157,18 @@ func (s *service) activateGroup(pk crypto.PubKey, localOnly bool) error {
 			return errcode.TODO.Wrap(err)
 		}
 
-		err = ActivateGroupContext(s.ctx, cg)
-		if err != nil {
+		var contactPK crypto.PubKey
+		if g.GroupType == bertytypes.GroupTypeContact {
+			contact := s.accountGroup.metadataStore.GetContactFromGroupPK(id)
+			if contact != nil {
+				contactPK, err = contact.GetPubKey()
+				if err != nil {
+					return errcode.TODO.Wrap(err)
+				}
+			}
+		}
+
+		if err := ActivateGroupContext(s.ctx, gc, contactPK); err != nil {
 			return errcode.TODO.Wrap(err)
 		}
 

@@ -9,10 +9,15 @@ import (
 	"testing"
 	"time"
 
+	datastore "github.com/ipfs/go-datastore"
+	ds_sync "github.com/ipfs/go-datastore/sync"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 )
@@ -161,6 +166,18 @@ func testMemberStore(t *testing.T, memberCount, deviceCount int) {
 	}
 }
 
+func ipfsAPIUsingMockNet(ctx context.Context, t *testing.T) (ipfsutil.ExtendedCoreAPI, func()) {
+	ipfsopts := &ipfsutil.TestingAPIOpts{
+		Logger:    zap.NewNop(),
+		Mocknet:   libp2p_mocknet.New(ctx),
+		Datastore: ds_sync.MutexWrap(datastore.NewMapDatastore()),
+	}
+
+	node, cleanupNode := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsopts)
+
+	return node.API(), cleanupNode
+}
+
 func TestMetadataRendezvousPointLifecycle(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -169,7 +186,10 @@ func TestMetadataRendezvousPointLifecycle(t *testing.T) {
 	peers, _, cleanup := createPeersWithGroup(ctx, t, "/tmp/member_test", 1, 1)
 	defer cleanup()
 
-	ownCG, err := peers[0].DB.openAccountGroup(ctx, nil)
+	api, cleanupNode := ipfsAPIUsingMockNet(ctx, t)
+	defer cleanupNode()
+
+	ownCG, err := peers[0].DB.openAccountGroup(ctx, nil, api)
 	assert.NoError(t, err)
 
 	meta := ownCG.MetadataStore()
@@ -243,8 +263,11 @@ func TestMetadataContactLifecycle(t *testing.T) {
 		contacts = make([]*bertytypes.ShareableContact, peersCount)
 	)
 
+	api, cleanupNode := ipfsAPIUsingMockNet(ctx, t)
+	defer cleanupNode()
+
 	for i, p := range peers {
-		ownCG[i], err = p.DB.openAccountGroup(ctx, nil)
+		ownCG[i], err = p.DB.openAccountGroup(ctx, nil, api)
 		require.NoError(t, err)
 
 		meta[i] = ownCG[i].MetadataStore()
@@ -548,7 +571,10 @@ func TestMetadataGroupsLifecycle(t *testing.T) {
 	peers, _, cleanup := createPeersWithGroup(ctx, t, "/tmp/member_test", 1, 1)
 	defer cleanup()
 
-	ownCG, err := peers[0].DB.openAccountGroup(ctx, nil)
+	api, cleanupNode := ipfsAPIUsingMockNet(ctx, t)
+	defer cleanupNode()
+
+	ownCG, err := peers[0].DB.openAccountGroup(ctx, nil, api)
 	assert.NoError(t, err)
 
 	g1, _, err := NewGroupMultiMember()
@@ -669,6 +695,9 @@ func TestMultiDevices_Basic(t *testing.T) {
 
 	peers, _, cleanup := createPeersWithGroup(ctx, t, "/tmp/multidevices_test", memberCount, deviceCount)
 	defer cleanup()
+
+	api, cleanupNode := ipfsAPIUsingMockNet(ctx, t)
+	defer cleanupNode()
 	// make peer index
 	pi := [][]int{}
 	for i := 0; i < memberCount; i++ {
@@ -693,7 +722,7 @@ func TestMultiDevices_Basic(t *testing.T) {
 		if (i % deviceCount) == (deviceCount - 1) {
 			continue
 		}
-		ownCG[i], err = p.DB.openAccountGroup(ctx, nil)
+		ownCG[i], err = p.DB.openAccountGroup(ctx, nil, api)
 		require.NoError(t, err)
 
 		meta[i] = ownCG[i].MetadataStore()
@@ -779,7 +808,7 @@ func TestMultiDevices_Basic(t *testing.T) {
 
 	// Check if a account group activate after the contact request is synchronized
 	// Activate the 2nd peer's latest device account group
-	ownCG[pi[1][2]], err = peers[pi[1][2]].DB.openAccountGroup(ctx, nil)
+	ownCG[pi[1][2]], err = peers[pi[1][2]].DB.openAccountGroup(ctx, nil, api)
 	require.NoError(t, err)
 	meta[pi[1][2]] = ownCG[pi[1][2]].MetadataStore()
 
