@@ -8,25 +8,19 @@ import (
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
 	"go.uber.org/zap"
-	"gorm.io/gorm"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
-func ReplayLogsToDB(ctx context.Context, client bertyprotocol.ProtocolServiceClient, db *gorm.DB) error {
-	// Clean and init DB
-	if err := dropAllTables(db); err != nil { // Not sure about this, could prevent painful debug sessions
-		return err
+func getEventsReplayerForDB(ctx context.Context, client bertyprotocol.ProtocolServiceClient) func(db *dbWrapper) error {
+	return func(db *dbWrapper) error {
+		return replayLogsToDB(ctx, client, db)
 	}
+}
 
-	wrappedDB := newDBWrapper(db)
-
-	if err := wrappedDB.initDB(); err != nil {
-		return err
-	}
-
+func replayLogsToDB(ctx context.Context, client bertyprotocol.ProtocolServiceClient, wrappedDB *dbWrapper) error {
 	// Get account infos
 	cfg, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
 	if err != nil {

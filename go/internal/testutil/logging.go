@@ -24,7 +24,7 @@ var (
 	loggerInitOnce sync.Once
 )
 
-func Logger(t *testing.T) (*zap.Logger, func()) {
+func Logger(t testing.TB) (*zap.Logger, func()) {
 	t.Helper()
 
 	loggerInitOnce.Do(func() {

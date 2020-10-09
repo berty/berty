@@ -95,12 +95,14 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 	opts.Logger = opts.Logger.Named("msg")
 	opts.Logger.Debug("initializing messenger", zap.String("version", bertyversion.Version))
 
-	db := newDBWrapper(opts.DB)
-	if err := db.initDB(); err != nil {
+	ctx, cancel := context.WithCancel(context.Background())
+	db := newDBWrapper(opts.DB, opts.Logger)
+	if err := db.initDB(getEventsReplayerForDB(ctx, client)); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
+	cancel()
 
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel = context.WithCancel(context.Background())
 	svc := service{
 		protocolClient: client,
 		logger:         opts.Logger,

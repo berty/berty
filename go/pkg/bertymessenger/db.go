@@ -8,6 +8,7 @@ import (
 
 	sqlite3 "github.com/mattn/go-sqlite3"
 	"go.uber.org/multierr"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
@@ -17,21 +18,27 @@ import (
 )
 
 type dbWrapper struct {
-	db *gorm.DB
+	db  *gorm.DB
+	log *zap.Logger
 }
 
-func newDBWrapper(db *gorm.DB) *dbWrapper {
+func newDBWrapper(db *gorm.DB, log *zap.Logger) *dbWrapper {
+	if log == nil {
+		log = zap.NewNop()
+	}
+
 	if db.Logger != nil {
 		db.Logger = &dbLogWrapper{Interface: db.Logger}
 	}
 
 	return &dbWrapper{
-		db: db,
+		db:  db,
+		log: log,
 	}
 }
 
-func (d *dbWrapper) initDB() error {
-	return d.db.AutoMigrate([]interface{}{
+func (d *dbWrapper) initDB(replayer func(d *dbWrapper) error) error {
+	return d.getUpdatedDB([]interface{}{
 		&Conversation{},
 		&Account{},
 		&ServiceToken{},
@@ -40,27 +47,38 @@ func (d *dbWrapper) initDB() error {
 		&Member{},
 		&Device{},
 		&ConversationReplicationInfo{},
-	}...)
+	}, replayer, d.log)
+}
+
+func (d *dbWrapper) getUpdatedDB(models []interface{}, replayer func(db *dbWrapper) error, logger *zap.Logger) error {
+	if err := ensureSeamlessDBUpdate(d.db, models); err != nil {
+		logger.Info("couldn't update db sql schema automatically", zap.Error(err))
+
+		currentState := keepDatabaseLocalState(d.db, logger)
+
+		if err := dropAllTables(d.db); err != nil {
+			return err
+		}
+
+		if err := d.db.AutoMigrate(models...); err != nil {
+			return err
+		}
+
+		if err := replayer(d); err != nil {
+			return err
+		}
+
+		if err := restoreDatabaseLocalState(d.db, currentState); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (d *dbWrapper) dbModelRowsCount(model interface{}) (int64, error) {
 	var count int64
 	return count, d.db.Model(model).Count(&count).Error
-}
-
-func dropAllTables(db *gorm.DB) error {
-	tables := []string(nil)
-	if err := db.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").Scan(&tables).Error; err != nil {
-		return errcode.ErrDBRead.Wrap(err)
-	}
-
-	for _, table := range tables {
-		if err := db.Migrator().DropTable(table); err != nil {
-			return errcode.ErrDBWrite.Wrap(err)
-		}
-	}
-
-	return nil
 }
 
 func isSQLiteError(err error, sqliteErr sqlite3.ErrNo) bool {
