@@ -307,6 +307,10 @@ export const Navigation: React.FC = () => {
 				name={Routes.Onboarding.ServicesAuth}
 				component={Components.Onboarding.ServicesAuth}
 			/>
+			<NavigationStack.Screen
+				name={Routes.Onboarding.SetupFinished}
+				component={Components.Onboarding.SetupFinished}
+			/>
 		</NavigationStack.Navigator>
 	)
 }
