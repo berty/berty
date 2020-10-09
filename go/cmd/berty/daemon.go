@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 
+	ff "github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"go.uber.org/zap"
 
@@ -23,6 +24,7 @@ func daemonCommand() *ffcli.Command {
 		Name:           "daemon",
 		ShortUsage:     "berty [global flags] daemon [flags]",
 		ShortHelp:      "start a full Berty instance (Berty Protocol + Berty Messenger)",
+		Options:        []ff.Option{ff.WithEnvVarPrefix("BERTY")},
 		FlagSetBuilder: fsBuilder,
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {

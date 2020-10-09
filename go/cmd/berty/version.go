@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"runtime"
 
+	ff "github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 
 	"berty.tech/berty/v2/go/pkg/bertyversion"
@@ -16,6 +17,7 @@ func versionCommand() *ffcli.Command {
 		Name:       "version",
 		ShortUsage: "berty version",
 		ShortHelp:  "print software version",
+		Options:    []ff.Option{ff.WithEnvVarPrefix("BERTY")},
 		Exec: func(_ context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp

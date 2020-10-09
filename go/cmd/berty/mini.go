@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 
+	ff "github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 
 	"berty.tech/berty/v2/go/cmd/berty/mini"
@@ -25,6 +26,7 @@ func miniCommand() *ffcli.Command {
 		ShortHelp:      "start a terminal-based mini berty client (not fully compatible with the app)",
 		ShortUsage:     "berty [global flags] mini [flags]",
 		FlagSetBuilder: fsBuilder,
+		Options:        []ff.Option{ff.WithEnvVarPrefix("BERTY")},
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp
