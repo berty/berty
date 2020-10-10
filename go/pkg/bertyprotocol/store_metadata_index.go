@@ -230,6 +230,26 @@ func (m *metadataStoreIndex) DeviceCount() int {
 	return len(m.devices)
 }
 
+func (m *metadataStoreIndex) listContacts() map[string]*accountContact {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	contacts := make(map[string]*accountContact)
+
+	for k, contact := range m.contacts {
+		contacts[k] = &accountContact{
+			state: contact.state,
+			contact: &bertytypes.ShareableContact{
+				PK:                   contact.contact.PK,
+				PublicRendezvousSeed: contact.contact.PublicRendezvousSeed,
+				Metadata:             contact.contact.Metadata,
+			},
+		}
+	}
+
+	return contacts
+}
+
 func (m *metadataStoreIndex) listMembers() []crypto.PubKey {
 	m.lock.RLock()
 	defer m.lock.RUnlock()

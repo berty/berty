@@ -286,6 +286,10 @@ func metadataStoreAddEvent(ctx context.Context, m *metadataStore, g *bertytypes.
 	return op, nil
 }
 
+func (m *metadataStore) ListContacts() map[string]*accountContact {
+	return m.Index().(*metadataStoreIndex).listContacts()
+}
+
 func (m *metadataStore) GetMemberByDevice(pk crypto.PubKey) (crypto.PubKey, error) {
 	return m.Index().(*metadataStoreIndex).getMemberByDevice(pk)
 }

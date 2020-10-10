@@ -656,3 +656,141 @@ func TestMetadataGroupsLifecycle(t *testing.T) {
 	require.Equal(t, groups[0].SecretSig, g2.SecretSig)
 	require.Equal(t, groups[0].GroupType, g2.GroupType)
 }
+
+func TestMultiDevices_Basic(t *testing.T) {
+	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
+
+	memberCount := 2
+	deviceCount := 3
+	totalDevices := memberCount * deviceCount
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
+	defer cancel()
+
+	peers, _, cleanup := createPeersWithGroup(ctx, t, "/tmp/multidevices_test", memberCount, deviceCount)
+	defer cleanup()
+	// make peer index
+	pi := [][]int{}
+	for i := 0; i < memberCount; i++ {
+		pi = append(pi, []int{})
+		for j := 0; j < deviceCount; j++ {
+			pi[i] = append(pi[i], i*deviceCount+j)
+		}
+	}
+
+	var (
+		err          error
+		meta         = make([]*metadataStore, totalDevices)
+		ownCG        = make([]*groupContext, totalDevices)
+		contacts     = make([]*bertytypes.ShareableContact, totalDevices)
+		listContacts map[string]*accountContact
+		groups       []*bertytypes.Group
+	)
+
+	// Activate account group + contact request
+	for i, p := range peers {
+		// except for the latest peer devices
+		if (i % deviceCount) == (deviceCount - 1) {
+			continue
+		}
+		ownCG[i], err = p.DB.openAccountGroup(ctx, nil)
+		require.NoError(t, err)
+
+		meta[i] = ownCG[i].MetadataStore()
+		_, err = meta[i].ContactRequestEnable(ctx)
+		assert.NoError(t, err)
+
+		_, err = meta[i].ContactRequestReferenceReset(ctx)
+		require.NoError(t, err)
+
+		_, contacts[i] = meta[i].GetIncomingContactRequestsStatus()
+		require.NotNil(t, contacts[i])
+
+		contacts[i].Metadata = []byte(fmt.Sprintf("own meta %d", i))
+	}
+
+	syncChan := make(chan struct{})
+	go waitForBertyEventType(ctx, t, meta[pi[0][0]], bertytypes.EventTypeAccountContactRequestOutgoingEnqueued, 1, syncChan)
+	go waitForBertyEventType(ctx, t, meta[pi[0][1]], bertytypes.EventTypeAccountContactRequestOutgoingEnqueued, 1, syncChan)
+	go waitForBertyEventType(ctx, t, meta[pi[1][0]], bertytypes.EventTypeAccountContactRequestIncomingReceived, 1, syncChan)
+	go waitForBertyEventType(ctx, t, meta[pi[1][1]], bertytypes.EventTypeAccountContactRequestIncomingReceived, 1, syncChan)
+
+	// Add peers to contact
+	// Enqueuing outgoing
+	_, err = meta[pi[0][0]].ContactRequestOutgoingEnqueue(ctx, contacts[pi[1][0]], contacts[pi[0][0]].Metadata)
+	require.NoError(t, err)
+
+	// Marking as sent
+	_, err = meta[pi[0][0]].ContactRequestOutgoingSent(ctx, ownCG[pi[1][0]].MemberPubKey())
+	require.NoError(t, err)
+
+	// Marking as received
+	_, err = meta[pi[1][0]].ContactRequestIncomingReceived(ctx, contacts[pi[0][0]])
+	require.NoError(t, err)
+
+	// Accepting received
+	_, err = meta[pi[1][0]].ContactRequestIncomingAccept(ctx, ownCG[pi[0][0]].MemberPubKey())
+	require.NoError(t, err)
+
+	for i := 0; i < 4; i++ {
+		select {
+		case <-syncChan:
+		case <-ctx.Done():
+			require.NoError(t, ctx.Err())
+		}
+	}
+
+	// test if contact is established
+	listContacts = meta[pi[0][0]].ListContacts()
+	require.Equal(t, 1, len(listContacts))
+	require.NotNil(t, listContacts[string(contacts[pi[1][0]].PK)])
+	listContacts = meta[pi[1][0]].ListContacts()
+	require.Equal(t, 1, len(listContacts))
+	require.NotNil(t, listContacts[string(contacts[pi[0][0]].PK)])
+
+	// test if 2nd devices have also the contact
+	listContacts = meta[pi[0][1]].ListContacts()
+	require.Equal(t, 1, len(listContacts))
+	require.NotNil(t, listContacts[string(contacts[pi[1][0]].PK)])
+	listContacts = meta[pi[1][1]].ListContacts()
+	require.Equal(t, 1, len(listContacts))
+	require.NotNil(t, listContacts[string(contacts[pi[0][0]].PK)])
+
+	// Activate group for 2nd peer's 1st device
+	groups = meta[pi[1][0]].ListMultiMemberGroups()
+	require.Len(t, groups, 0)
+	go waitForBertyEventType(ctx, t, meta[pi[1][0]], bertytypes.EventTypeAccountGroupJoined, 1, syncChan)
+	go waitForBertyEventType(ctx, t, meta[pi[1][1]], bertytypes.EventTypeAccountGroupJoined, 1, syncChan)
+	_, err = meta[pi[1][0]].GroupJoin(ctx, peers[pi[1][0]].GC.group)
+	require.NoError(t, err)
+	for i := 0; i < 2; i++ {
+		select {
+		case <-syncChan:
+		case <-ctx.Done():
+			require.NoError(t, ctx.Err())
+		}
+	}
+	groups = meta[pi[1][0]].ListMultiMemberGroups()
+	require.Len(t, groups, 1)
+
+	// Test if other devices have the group too
+	groups = meta[pi[1][1]].ListMultiMemberGroups()
+	require.Len(t, groups, 1)
+
+	// Check if a account group activate after the contact request is synchronized
+	// Activate the 2nd peer's latest device account group
+	ownCG[pi[1][2]], err = peers[pi[1][2]].DB.openAccountGroup(ctx, nil)
+	require.NoError(t, err)
+	meta[pi[1][2]] = ownCG[pi[1][2]].MetadataStore()
+
+	// wait for replication db
+	<-time.After(time.Second * 2)
+
+	listContacts = meta[pi[1][2]].ListContacts()
+	require.Equal(t, 1, len(listContacts))
+	require.NotNil(t, listContacts[string(contacts[0].PK)])
+
+	// Test for group
+	groups = meta[pi[1][2]].ListMultiMemberGroups()
+	require.Len(t, groups, 1)
+}
