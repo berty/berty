@@ -1,0 +1,19 @@
+berty:
+  contacts:
+    betabot:
+      link: "https://berty.tech/id#key=CiB5MKppSY2DNwaCk24HrrK0blm0poO1tdS2RFoQJlJsSxIgrAO6ncyUPIiMnwL3Lg1CIQlbLDa7eQ34Z3vFBjt7MLg&name=BetaBot"
+    testbot:
+      link: "https://berty.tech/id#key=CiCTp8uUnxfqlZaebiJEEt_zY-NUnHAWJl4jbGpB7rXsbxIg6_Grg-eLJ-GtqrdARnoTY35k7AI_g5AxqyFVe2elIaA&name=TestBot+1"
+    #support:
+    #staff:
+    #berty-office-tv:
+p2p:
+  rdvp:
+    # svc fr
+    - "/ip4/51.159.21.214/tcp/4040/p2p/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p"
+    - "/ip4/51.159.21.214/udp/4040/quic/p2p/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p"
+    # svc ams
+    - "/ip4/51.15.25.224/tcp/4040/p2p/12D3KooWHhDBv6DJJ4XDWjzEXq6sVNEs6VuxsV1WyBBEhPENHzcZ"
+    - "/ip4/51.15.25.224/udp/4040/quic/p2p/12D3KooWHhDBv6DJJ4XDWjzEXq6sVNEs6VuxsV1WyBBEhPENHzcZ"
+    # jorropo
+    - "/ip4/51.75.127.200/udp/4141/quic/p2p/12D3KooWRpyQpZtUmY5ZktEMgzuhNoWC1C9zokDjLVahNMy3g48u"

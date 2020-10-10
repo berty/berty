@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
-	"os/user"
+	"syscall"
 
 	qrterminal "github.com/mdp/qrterminal/v3"
+	"github.com/oklog/run"
 	"go.uber.org/zap"
 	"moul.io/srand"
 	"moul.io/u"
@@ -19,11 +20,12 @@ import (
 )
 
 var (
-	nodeAddr    = flag.String("addr", "127.0.0.1:9091", "remote 'berty daemon' address")
-	displayName = flag.String("display-name", safeDefaultDisplayName(), "bot's display name")
-	debug       = flag.Bool("debug", false, "debug mode")
-	skipReplay  = flag.Bool("skip-replay", true, "skip replay")
-	replyDelay  = flag.Duration("reply-delay", 0, "reply delay")
+	username     = u.CurrentUsername("anon")
+	node1Addr    = flag.String("addr1", "127.0.0.1:9092", "first remote 'berty daemon' address")
+	node2Addr    = flag.String("addr2", "127.0.0.1:9093", "second remote 'berty daemon' address")
+	displayName1 = flag.String("name1", username+" (testbot1)", "first bot's display name")
+	displayName2 = flag.String("name2", username+" (testbot2)", "second bot's display name")
+	debug        = flag.Bool("debug", false, "debug mode")
 )
 
 func main() {
@@ -35,33 +37,62 @@ func main() {
 	}
 }
 
+type TestBot struct {
+	Bot1, Bot2 *bertybot.Bot
+	ctx        context.Context
+	logger     *zap.Logger
+}
+
 func Main() error {
-	rootLogger := zapconfig.Configurator{}.MustBuildLogger()
+	logger := zapconfig.Configurator{}.MustBuildLogger()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	logger := rootLogger.Named("testbot")
+
+	// init testbot
+	testbot := &TestBot{ctx: ctx, logger: logger}
+	if err := testbot.InitBot1(); err != nil {
+		return fmt.Errorf("init bot 1: %w", err)
+	}
+	if err := testbot.InitBot2(); err != nil {
+		return fmt.Errorf("init bot 2: %w", err)
+	}
+
+	// FIXME: bot1 and bot2 should be contact
+
+	// start testbot
+	var g run.Group
+	g.Add(func() error { return testbot.Bot1.Start(ctx) }, func(error) { cancel() })
+	g.Add(func() error { return testbot.Bot2.Start(ctx) }, func(error) { cancel() })
+	g.Add(run.SignalHandler(ctx, syscall.SIGKILL))
+	return g.Run()
+}
+
+func (testbot *TestBot) VersionCommand(ctx bertybot.Context) {
+	_ = ctx.ReplyString("version: " + bertyversion.Version)
+	// FIXME: also returns the version of the remote messenger and protocol
+}
+
+// InitBot1 initializes the entrypoint bot
+func (testbot *TestBot) InitBot1() error {
+	logger := testbot.logger.Named("bot1")
 
 	// init bot
 	opts := []bertybot.NewOption{}
 	opts = append(opts,
-		bertybot.WithLogger(logger.Named("botlib")),                              // configure a logger
-		bertybot.WithDisplayName(*displayName),                                   // bot name
-		bertybot.WithInsecureMessengerGRPCAddr(*nodeAddr),                        // connect to running berty messenger daemon
-		bertybot.WithSkipAcknowledge(),                                           // skip acknowledge events
-		bertybot.WithSkipMyself(),                                                // skip my own interactions
-		bertybot.WithRecipe(bertybot.DelayResponseRecipe(*replyDelay)),           // add a delay before sending replies
-		bertybot.WithRecipe(bertybot.AutoAcceptIncomingContactRequestRecipe()),   // accept incoming contact requests
-		bertybot.WithRecipe(bertybot.WelcomeMessageRecipe("welcome to testbot")), // send welcome message to new contacts and new conversations
-		bertybot.WithRecipe(bertybot.EchoRecipe("you said: ")),                   // reply to messages with the same message
-		bertybot.WithCommand("version", "show version", func(ctx bertybot.Context) {
-			_ = ctx.ReplyString("version: " + bertyversion.Version)
-		}),
+		bertybot.WithLogger(logger.Named("lib")),                                  // configure a logger
+		bertybot.WithDisplayName(*displayName1),                                   // bot name
+		bertybot.WithInsecureMessengerGRPCAddr(*node1Addr),                        // connect to running berty messenger daemon
+		bertybot.WithSkipAcknowledge(),                                            // skip acknowledge events
+		bertybot.WithSkipMyself(),                                                 // skip my own interactions
+		bertybot.WithRecipe(bertybot.AutoAcceptIncomingContactRequestRecipe()),    // accept incoming contact requests
+		bertybot.WithRecipe(bertybot.WelcomeMessageRecipe("welcome to testbot1")), // send welcome message to new contacts and new conversations
+		bertybot.WithRecipe(bertybot.EchoRecipe("you said1: ")),                   // reply to messages with the same message
+		bertybot.WithSkipReplay(),
+		// FIXME: with auto-send `/help` suggestion on welcome
+		bertybot.WithCommand("version", "show version", testbot.VersionCommand),
 	)
-	if *skipReplay {
-		opts = append(opts, bertybot.WithSkipReplay()) // skip old events, only consume fresh ones
-	}
 	if *debug {
-		opts = append(opts, bertybot.WithRecipe(bertybot.DebugEventRecipe(rootLogger.Named("debug")))) // debug events
+		opts = append(opts, bertybot.WithRecipe(bertybot.DebugEventRecipe(logger.Named("debug")))) // debug events
 	}
 	bot, err := bertybot.New(opts...)
 	if err != nil {
@@ -73,28 +104,40 @@ func Main() error {
 		zap.String("link", bot.BertyIDURL()),
 	)
 	qrterminal.GenerateHalfBlock(bot.BertyIDURL(), qrterminal.L, os.Stdout)
-
-	// signal handling
-	go func() {
-		u.WaitForCtrlC()
-		cancel()
-	}()
-
-	// start bot
-	return bot.Start(ctx)
+	testbot.Bot1 = bot
+	return nil
 }
 
-func safeDefaultDisplayName() string {
-	var name string
-	current, err := user.Current()
-	if err == nil {
-		name = current.Username
+// InitBot2 initializes the companion bot
+func (testbot *TestBot) InitBot2() error {
+	logger := testbot.logger.Named("bot2")
+
+	// init bot
+	opts := []bertybot.NewOption{}
+	opts = append(opts,
+		bertybot.WithLogger(logger.Named("lib")),                                  // configure a logger
+		bertybot.WithDisplayName(*displayName2),                                   // bot name
+		bertybot.WithInsecureMessengerGRPCAddr(*node2Addr),                        // connect to running berty messenger daemon
+		bertybot.WithSkipAcknowledge(),                                            // skip acknowledge events
+		bertybot.WithSkipMyself(),                                                 // skip my own interactions
+		bertybot.WithRecipe(bertybot.AutoAcceptIncomingContactRequestRecipe()),    // accept incoming contact requests
+		bertybot.WithRecipe(bertybot.WelcomeMessageRecipe("welcome to testbot2")), // send welcome message to new contacts and new conversations
+		bertybot.WithRecipe(bertybot.EchoRecipe("you said2: ")),                   // reply to messages with the same message
+		bertybot.WithSkipReplay(),
+	)
+	if *debug {
+		opts = append(opts, bertybot.WithRecipe(bertybot.DebugEventRecipe(logger.Named("debug")))) // debug events
 	}
-	if name == "" {
-		name = os.Getenv("USER")
+	bot, err := bertybot.New(opts...)
+	if err != nil {
+		return fmt.Errorf("bot initialization failed: %w", err)
 	}
-	if name == "" {
-		name = "anon"
-	}
-	return fmt.Sprintf("%s (testbot)", name)
+	// display link and qr code
+	logger.Info("retrieve instance Berty ID",
+		zap.String("pk", bot.PublicKey()),
+		zap.String("link", bot.BertyIDURL()),
+	)
+	qrterminal.GenerateHalfBlock(bot.BertyIDURL(), qrterminal.L, os.Stdout)
+	testbot.Bot2 = bot
+	return nil
 }
