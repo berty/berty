@@ -3345,7 +3345,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 3,
                     options: {
-                      "(gogoproto.moretags)": "gorm:index"
+                      "(gogoproto.moretags)": "gorm:primaryKey"
                     }
                   },
                   conversation: {
@@ -3355,10 +3355,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   devices: {
                     rule: "repeated",
                     type: "Device",
-                    id: 5,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:foreignKey:MemberPublicKey"
-                    }
+                    id: 5
                   }
                 }
               },
@@ -3397,21 +3394,25 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   payload: {
                     type: "bytes",
                     id: 2
+                  },
+                  isNew: {
+                    type: "bool",
+                    id: 3
                   }
                 },
                 nested: {
                   Type: {
                     values: {
                       Undefined: 0,
-                      TypeListEnd: 1,
+                      TypeListEnded: 1,
                       TypeConversationUpdated: 2,
                       TypeConversationDeleted: 3,
                       TypeInteractionUpdated: 4,
-                      TypeInteractionDeleted: 9,
-                      TypeContactUpdated: 5,
-                      TypeAccountUpdated: 6,
-                      TypeMemberUpdated: 7,
-                      TypeDeviceUpdated: 8,
+                      TypeInteractionDeleted: 5,
+                      TypeContactUpdated: 6,
+                      TypeAccountUpdated: 7,
+                      TypeMemberUpdated: 8,
+                      TypeDeviceUpdated: 9,
                       TypeNotified: 10
                     }
                   },
@@ -3482,7 +3483,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       }
                     }
                   },
-                  ListEnd: {
+                  ListEnded: {
                     fields: {}
                   },
                   Notified: {

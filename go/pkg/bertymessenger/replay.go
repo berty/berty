@@ -38,7 +38,7 @@ func ReplayLogsToDB(ctx context.Context, client bertyprotocol.ProtocolServiceCli
 		return errcode.ErrDBWrite.Wrap(err)
 	}
 
-	handler := newEventHandler(ctx, wrappedDB, client, zap.NewNop(), nil)
+	handler := newEventHandler(ctx, wrappedDB, client, zap.NewNop(), nil, true)
 
 	// Replay all account group metadata events
 	// TODO: We should have a toggle to "lock" orbitDB while we replaying events

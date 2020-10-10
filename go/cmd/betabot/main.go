@@ -239,7 +239,7 @@ func betabot() error {
 				}
 
 				if bot.isReplaying {
-					if gme.Event.Type == bertymessenger.StreamEvent_TypeListEnd {
+					if gme.Event.Type == bertymessenger.StreamEvent_TypeListEnded {
 						bot.logger.Info("finished replaying logs from the previous sessions", zap.Uint("count", handledEvents))
 						bot.isReplaying = false
 					}

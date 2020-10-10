@@ -104,7 +104,7 @@
     - [StreamEvent.DeviceUpdated](#berty.messenger.v1.StreamEvent.DeviceUpdated)
     - [StreamEvent.InteractionDeleted](#berty.messenger.v1.StreamEvent.InteractionDeleted)
     - [StreamEvent.InteractionUpdated](#berty.messenger.v1.StreamEvent.InteractionUpdated)
-    - [StreamEvent.ListEnd](#berty.messenger.v1.StreamEvent.ListEnd)
+    - [StreamEvent.ListEnded](#berty.messenger.v1.StreamEvent.ListEnded)
     - [StreamEvent.MemberUpdated](#berty.messenger.v1.StreamEvent.MemberUpdated)
     - [StreamEvent.Notified](#berty.messenger.v1.StreamEvent.Notified)
     - [StreamEvent.Notified.Basic](#berty.messenger.v1.StreamEvent.Notified.Basic)
@@ -611,6 +611,7 @@ TODO: return cid
 <a name="berty.messenger.v1.Member"></a>
 
 ### Member
+Composite primary key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
@@ -795,8 +796,9 @@ TODO: return cid
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| type | [StreamEvent.Type](#berty.messenger.v1.StreamEvent.Type) |  | DRAFT |
+| type | [StreamEvent.Type](#berty.messenger.v1.StreamEvent.Type) |  |  |
 | payload | [bytes](#bytes) |  |  |
+| is_new | [bool](#bool) |  | specific to &#34;*Updated&#34; events |
 
 <a name="berty.messenger.v1.StreamEvent.AccountUpdated"></a>
 
@@ -854,9 +856,9 @@ TODO: return cid
 | ----- | ---- | ----- | ----------- |
 | interaction | [Interaction](#berty.messenger.v1.Interaction) |  |  |
 
-<a name="berty.messenger.v1.StreamEvent.ListEnd"></a>
+<a name="berty.messenger.v1.StreamEvent.ListEnded"></a>
 
-### StreamEvent.ListEnd
+### StreamEvent.ListEnded
 
 <a name="berty.messenger.v1.StreamEvent.MemberUpdated"></a>
 
@@ -1001,15 +1003,15 @@ TODO: return cid
 | Name | Number | Description |
 | ---- | ------ | ----------- |
 | Undefined | 0 |  |
-| TypeListEnd | 1 |  |
+| TypeListEnded | 1 |  |
 | TypeConversationUpdated | 2 |  |
 | TypeConversationDeleted | 3 |  |
 | TypeInteractionUpdated | 4 |  |
-| TypeInteractionDeleted | 9 |  |
-| TypeContactUpdated | 5 |  |
-| TypeAccountUpdated | 6 |  |
-| TypeMemberUpdated | 7 |  |
-| TypeDeviceUpdated | 8 |  |
+| TypeInteractionDeleted | 5 |  |
+| TypeContactUpdated | 6 |  |
+| TypeAccountUpdated | 7 |  |
+| TypeMemberUpdated | 8 |  |
+| TypeDeviceUpdated | 9 |  |
 | TypeNotified | 10 |  |
 
  

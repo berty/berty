@@ -2094,12 +2094,16 @@
       "type": "object",
       "properties": {
         "type": {
-          "$ref": "#/definitions/v1StreamEventType",
-          "title": "DRAFT"
+          "$ref": "#/definitions/v1StreamEventType"
         },
         "payload": {
           "type": "string",
           "format": "byte"
+        },
+        "is_new": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "specific to \"*Updated\" events"
         }
       }
     },
@@ -2107,7 +2111,7 @@
       "type": "string",
       "enum": [
         "Undefined",
-        "TypeListEnd",
+        "TypeListEnded",
         "TypeConversationUpdated",
         "TypeConversationDeleted",
         "TypeInteractionUpdated",

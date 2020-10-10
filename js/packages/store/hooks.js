@@ -276,3 +276,6 @@ export const useReadEffect = (publicKey, timeout) => {
 		}
 	}, [ctx.client, fake, navigation, publicKey, timeout])
 }
+
+// eslint-disable-next-line react-hooks/exhaustive-deps
+export const useMountEffect = (effect) => useEffect(effect, [])

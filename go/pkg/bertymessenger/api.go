@@ -505,7 +505,7 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 		if err != nil {
 			return err
 		}
-		if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeAccountUpdated, au}}); err != nil {
+		if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeAccountUpdated, au, false}}); err != nil {
 			return err
 		}
 	}
@@ -522,7 +522,7 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 			if err != nil {
 				return err
 			}
-			if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeContactUpdated, cu}}); err != nil {
+			if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeContactUpdated, cu, false}}); err != nil {
 				return err
 			}
 		}
@@ -540,7 +540,7 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 			if err != nil {
 				return err
 			}
-			if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeConversationUpdated, cu}}); err != nil {
+			if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeConversationUpdated, cu, false}}); err != nil {
 				return err
 			}
 		}
@@ -558,7 +558,7 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 			if err != nil {
 				return err
 			}
-			if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeMemberUpdated, mu}}); err != nil {
+			if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeMemberUpdated, mu, false}}); err != nil {
 				return err
 			}
 		}
@@ -576,7 +576,7 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 			if err != nil {
 				return err
 			}
-			if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeInteractionUpdated, iu}}); err != nil {
+			if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeInteractionUpdated, iu, false}}); err != nil {
 				return err
 			}
 		}
@@ -584,11 +584,11 @@ func (svc *service) EventStream(req *EventStream_Request, sub MessengerService_E
 
 	// signal that we're done sending existing models
 	{
-		p, err := proto.Marshal(&StreamEvent_ListEnd{})
+		p, err := proto.Marshal(&StreamEvent_ListEnded{})
 		if err != nil {
 			return err
 		}
-		if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeListEnd, p}}); err != nil {
+		if err := sub.Send(&EventStream_Reply{Event: &StreamEvent{StreamEvent_TypeListEnded, p, false}}); err != nil {
 			return err
 		}
 	}
@@ -668,14 +668,14 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 	}
 
 	// Update database
-	err = svc.db.updateConversation(*conv)
+	isNew, err := svc.db.updateConversation(*conv)
 	if err != nil {
 		return nil, err
 	}
 
 	// Dispatch new conversation
 	{
-		err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conv})
+		err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conv}, isNew)
 		if err != nil {
 			svc.logger.Error("failed to dispatch ConversationUpdated event", zap.Error(err))
 		}
@@ -810,13 +810,14 @@ func (svc *service) ConversationJoin(ctx context.Context, req *ConversationJoin_
 	}
 
 	// update db
-	if err := svc.db.updateConversation(conv); err != nil {
+	isNew, err := svc.db.updateConversation(conv)
+	if err != nil {
 		return nil, err
 	}
 
 	// dispatch event
 	{
-		err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{Conversation: &conv})
+		err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{Conversation: &conv}, isNew)
 		if err != nil {
 			return nil, errcode.ErrInternal.Wrap(err)
 		}
@@ -880,7 +881,7 @@ func (svc *service) AccountUpdate(ctx context.Context, req *AccountUpdate_Reques
 	}
 
 	// dispatch event
-	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeAccountUpdated, &StreamEvent_AccountUpdated{Account: acc}); err != nil {
+	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeAccountUpdated, &StreamEvent_AccountUpdated{Account: acc}, false); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
@@ -1063,7 +1064,7 @@ func (svc *service) ConversationOpen(ctx context.Context, req *ConversationOpen_
 		return &ret, nil
 	}
 
-	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conv}); err != nil {
+	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conv}, false); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
@@ -1086,7 +1087,7 @@ func (svc *service) ConversationClose(ctx context.Context, req *ConversationClos
 		return &ret, nil
 	}
 
-	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conv}); err != nil {
+	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conv}, false); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
@@ -1209,7 +1210,7 @@ func (svc *service) ReplicationSetAutoEnable(ctx context.Context, request *Repli
 	}
 
 	// dispatch event
-	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeAccountUpdated, &StreamEvent_AccountUpdated{Account: acc}); err != nil {
+	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeAccountUpdated, &StreamEvent_AccountUpdated{Account: acc}, false); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 

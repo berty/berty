@@ -4958,12 +4958,14 @@ export namespace berty {
             interface IStreamEvent {
                 type?: (berty.messenger.v1.StreamEvent.Type|null);
                 payload?: (Uint8Array|null);
+                isNew?: (boolean|null);
             }
 
             class StreamEvent implements IStreamEvent {
 
                 public type: berty.messenger.v1.StreamEvent.Type;
                 public payload: Uint8Array;
+                public isNew: boolean;
                 public static create(properties?: berty.messenger.v1.IStreamEvent): berty.messenger.v1.StreamEvent;
                 public static encode(message: berty.messenger.v1.IStreamEvent, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IStreamEvent, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4979,15 +4981,15 @@ export namespace berty {
 
                 enum Type {
                     Undefined = 0,
-                    TypeListEnd = 1,
+                    TypeListEnded = 1,
                     TypeConversationUpdated = 2,
                     TypeConversationDeleted = 3,
                     TypeInteractionUpdated = 4,
-                    TypeInteractionDeleted = 9,
-                    TypeContactUpdated = 5,
-                    TypeAccountUpdated = 6,
-                    TypeMemberUpdated = 7,
-                    TypeDeviceUpdated = 8,
+                    TypeInteractionDeleted = 5,
+                    TypeContactUpdated = 6,
+                    TypeAccountUpdated = 7,
+                    TypeMemberUpdated = 8,
+                    TypeDeviceUpdated = 9,
                     TypeNotified = 10
                 }
 
@@ -5135,19 +5137,19 @@ export namespace berty {
                     public toJSON(): { [k: string]: any };
                 }
 
-                interface IListEnd {
+                interface IListEnded {
                 }
 
-                class ListEnd implements IListEnd {
+                class ListEnded implements IListEnded {
 
-                    public static create(properties?: berty.messenger.v1.StreamEvent.IListEnd): berty.messenger.v1.StreamEvent.ListEnd;
-                    public static encode(message: berty.messenger.v1.StreamEvent.IListEnd, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.messenger.v1.StreamEvent.IListEnd, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.StreamEvent.ListEnd;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.StreamEvent.ListEnd;
+                    public static create(properties?: berty.messenger.v1.StreamEvent.IListEnded): berty.messenger.v1.StreamEvent.ListEnded;
+                    public static encode(message: berty.messenger.v1.StreamEvent.IListEnded, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.StreamEvent.IListEnded, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.StreamEvent.ListEnded;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.StreamEvent.ListEnded;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.ListEnd;
-                    public static toObject(message: berty.messenger.v1.StreamEvent.ListEnd, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.ListEnded;
+                    public static toObject(message: berty.messenger.v1.StreamEvent.ListEnded, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 

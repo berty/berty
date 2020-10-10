@@ -39,7 +39,7 @@ func (d *Dispatcher) UnregisterAll() {
 	d.mutex.Unlock()
 }
 
-func (d *Dispatcher) StreamEvent(typ StreamEvent_Type, msg proto.Message) error {
+func (d *Dispatcher) StreamEvent(typ StreamEvent_Type, msg proto.Message, isNew bool) error {
 	payload, err := proto.Marshal(msg)
 	if err != nil {
 		return err
@@ -48,6 +48,7 @@ func (d *Dispatcher) StreamEvent(typ StreamEvent_Type, msg proto.Message) error 
 	event := &StreamEvent{
 		Type:    typ,
 		Payload: payload,
+		IsNew:   isNew,
 	}
 
 	// can be parallelized if needed
@@ -78,7 +79,7 @@ func (d *Dispatcher) Notify(typ StreamEvent_Notified_Type, title, body string, m
 		Payload: payload,
 	}
 
-	return d.StreamEvent(StreamEvent_TypeNotified, event)
+	return d.StreamEvent(StreamEvent_TypeNotified, event, false)
 }
 
 func NewDispatcher() *Dispatcher {

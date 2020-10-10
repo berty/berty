@@ -45,7 +45,7 @@ func getEventHandlerForTests(t *testing.T, opts ...getEventHandlerForTestsOption
 		require.True(t, ok)
 	}
 
-	handler := newEventHandler(ctx, db, protocolClient.Client, nil, castedService)
+	handler := newEventHandler(ctx, db, protocolClient.Client, nil, castedService, false)
 
 	return handler, func() {
 		serviceDispose()
