@@ -687,6 +687,8 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 		null
 	const isIncoming = contact.state === messengerpb.Contact.State.IncomingRequest
 	const persistOpts = usePersistentOptions()
+	const isBetabot =
+		persistOpts && conv?.contactPublicKey?.toString() === persistOpts?.betabot?.convPk?.toString()
 	const isBetabotAdded = persistOpts && persistOpts.betabot.added
 
 	return (
@@ -710,7 +712,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 						convPk={params?.convId}
 						isFocused={inputIsFocused}
 						setFocus={setInputFocus}
-						disabled={isIncoming || (isBetabotAdded ? false : true)}
+						disabled={isIncoming || (isBetabot && !isBetabotAdded)}
 					/>
 					<ChatHeader convPk={params?.convId || ''} />
 				</KeyboardAvoidingView>
