@@ -299,7 +299,12 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 				<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
 					<StatusBar backgroundColor='#00BCD4' barStyle='dark-content' />
 					<MessageList id={params?.convId} />
-					<ChatFooter convPk={params?.convId} isFocused={inputIsFocused} setFocus={setInputFocus} />
+					<ChatFooter
+						convPk={params?.convId}
+						isFocused={inputIsFocused}
+						setFocus={setInputFocus}
+						placeholder='Write a secure message...'
+					/>
 					<HeaderMultiMember id={params?.convId} />
 				</KeyboardAvoidingView>
 			</SwipeNavRecognizer>

@@ -27,8 +27,9 @@ export const ChatFooter: React.FC<{
 	isFocused: boolean
 	setFocus: React.Dispatch<React.SetStateAction<any>>
 	convPk: string
-	disabled: boolean
-}> = ({ isFocused, setFocus, convPk, disabled }) => {
+	disabled?: boolean
+	placeholder: string
+}> = ({ isFocused, setFocus, convPk, disabled = false, placeholder }) => {
 	const ctx: any = useMsgrContext()
 
 	const [message, setMessage] = useState('')
@@ -112,9 +113,7 @@ export const ChatFooter: React.FC<{
 								text.bold.small,
 								{ fontFamily: 'Open Sans' },
 							]}
-							placeholder={
-								disabled ? 'Accept the request to write here...' : 'Write a secure message...'
-							}
+							placeholder={placeholder}
 							placeholderTextColor={_isFocused ? color.blue : '#AFB1C0'}
 						/>
 						<TouchableOpacity
