@@ -29,6 +29,7 @@ import * as api from '@berty-tech/api/index.pb'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { SwipeHelperReactNavTabBar } from '../shared-components/SwipeNavRecognizer'
 import messengerMethodsHooks from '@berty-tech/store/methods'
+import { pbDateToNum } from '../helpers'
 
 // Styles
 
@@ -511,15 +512,23 @@ const SearchComponent: React.FC<{
 }> = ({ insets, contacts, interactions, searchText, setSearchText, hasResults, conversations }) => {
 	const validInsets = useMemo(() => insets || { top: 0, bottom: 0, left: 0, right: 0 }, [insets])
 	const [{ padding, margin, background, text, flex, border, height }] = useStyles()
+
+	const sortedConversations = useMemo(() => {
+		return Object.values(conversations).sort((a, b) => {
+			return pbDateToNum(b?.lastUpdate) - pbDateToNum(a?.lastUpdate)
+		})
+	}, [conversations])
+
+	const sortedInteractions = useMemo(() => {
+		return Object.values(interactions).sort((a, b) => {
+			return pbDateToNum(b?.sentDate) - pbDateToNum(a?.sentDate)
+		})
+	}, [interactions])
+
 	const sections = useMemo(
 		() =>
-			createSections(
-				Object.values(conversations),
-				Object.values(contacts),
-				Object.values(interactions),
-				searchText,
-			),
-		[contacts, conversations, interactions, searchText],
+			createSections(sortedConversations, Object.values(contacts), sortedInteractions, searchText),
+		[contacts, sortedConversations, sortedInteractions, searchText],
 	)
 
 	// Remove leading spaces

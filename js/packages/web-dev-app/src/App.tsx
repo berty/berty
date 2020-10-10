@@ -3,7 +3,6 @@ import './App.css'
 import { MsgrContext, useMsgrContext } from '@berty-tech/store/context'
 import { MsgrProvider } from '@berty-tech/store/provider'
 import {
-	useGetMessageSearchResultWithMetadata,
 	useAccountContactSearchResults,
 	useFirstConversationWithContact,
 	useContactsList,
@@ -274,36 +273,6 @@ const Conversation: React.FC<{ publicKey: string }> = ({ publicKey }) => {
 	)
 }
 
-const SearchMessagesResult: React.FC<{ message: any }> = ({ message }) => {
-	return (
-		<>
-			<h4>Message</h4>
-			<JSONed value={message} />
-		</>
-	)
-}
-
-const SearchMessages: React.FC = () => {
-	const [searchText, setSearchText] = useState('')
-	const messageSearchResults = useGetMessageSearchResultWithMetadata(searchText)
-	return (
-		<>
-			<input
-				type='text'
-				placeholder='Search messages'
-				value={searchText}
-				onChange={(e) => setSearchText(e.target.value.replace(/^\s+/g, ''))}
-			/>
-			<div>
-				{messageSearchResults &&
-					messageSearchResults.map((message: any, i: number) => {
-						return <SearchMessagesResult message={message} key={i} />
-					})}
-			</div>
-		</>
-	)
-}
-
 const Conversations: React.FC = () => {
 	const ctx = React.useContext(MsgrContext)
 	const conversations = React.useMemo(
@@ -337,8 +306,6 @@ const Search: React.FC = () => {
 		<>
 			<h3>Search Contacts</h3>
 			<SearchContacts />
-			<h3>Search Messages</h3>
-			<SearchMessages />
 		</>
 	)
 }
