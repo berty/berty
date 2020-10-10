@@ -39,7 +39,13 @@ const fmtTimestamp1 = (date: number | Date): string => {
 }
 
 const fmtTimestamp2 = (date: number | Date): string => {
+	const now = moment()
 	const mDate = getValidDateMoment(date)
+	if (now.isSame(mDate, 'day')) {
+		return 'Today'
+	} else if (now.subtract(1, 'day').isSame(mDate, 'day')) {
+		return 'Yesterday'
+	}
 	return mDate.format('MMM D YYYY')
 }
 

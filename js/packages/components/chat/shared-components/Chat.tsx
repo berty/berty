@@ -7,6 +7,7 @@ import BlurView from '../../shared-components/BlurView'
 
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { useMsgrContext } from '@berty-tech/store/hooks'
+import { timeFormat } from '../../helpers'
 
 // import { SafeAreaView } from 'react-native-safe-area-context'
 //
@@ -162,10 +163,10 @@ const useStylesChatDate = () => {
 	}
 }
 
-const formatTimestamp = (date: Date) => {
-	const arr = date.toString().split(' ')
-	return arr[1] + ' ' + arr[2] + ' ' + arr[3]
-}
+// const formatTimestamp = (date: Date) => {
+// 	const arr = date.toString().split(' ')
+// 	return arr[1] + ' ' + arr[2] + ' ' + arr[3]
+// }
 
 export const ChatDate: React.FC<ChatDateProps> = ({ date }) => {
 	const _styles = useStylesChatDate()
@@ -175,7 +176,8 @@ export const ChatDate: React.FC<ChatDateProps> = ({ date }) => {
 	return (
 		<View style={[row.item.justify, border.radius.medium, _styles.date, { backgroundColor }]}>
 			<Text style={[_styles.dateText, { color: textColor }]}>
-				{formatTimestamp(new Date(date))}
+				{/* {formatTimestamp(new Date(date))} */}
+				{timeFormat.fmtTimestamp2(date)}
 			</Text>
 		</View>
 	)
