@@ -282,7 +282,7 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 	const [inputIsFocused, setInputFocus] = useState(false)
 	const [{ background, flex }] = useStyles()
 	const { dispatch } = useNavigation()
-	// useReadEffect(params.convId, 1000)
+	useReadEffect(params.convId, 1000)
 
 	return (
 		<View style={[flex.tiny, background.white]}>
