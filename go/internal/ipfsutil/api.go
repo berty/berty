@@ -25,6 +25,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
+type IpfsConfigPatcher func(*config.Config) error
+
 type CoreAPIOption func(context.Context, *ipfs_core.IpfsNode, ipfs_interface.CoreAPI) error
 
 type CoreAPIConfig struct {
@@ -39,11 +41,29 @@ type CoreAPIConfig struct {
 	HostConfig        func(host.Host, p2p_routing.Routing) error
 	ExtraLibp2pOption p2p.Option
 	DHTOption         []p2p_dht.Option
+	IpfsConfigPatch   IpfsConfigPatcher
 
 	Routing ipfs_libp2p.RoutingOption
 	Host    ipfs_libp2p.HostOption
 
 	Options []CoreAPIOption
+}
+
+// ChainIpfsConfigPatch will execute multiple IpfsConfigPatcher from the first
+// to the last. They can be safely be nilled and will just be ignored.
+func ChainIpfsConfigPatch(ps ...IpfsConfigPatcher) IpfsConfigPatcher {
+	return func(c *config.Config) error {
+		for _, p := range ps {
+			if p == nil {
+				continue
+			}
+			if err := p(c); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	}
 }
 
 func NewCoreAPI(ctx context.Context, cfg *CoreAPIConfig) (ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
@@ -168,6 +188,13 @@ func updateRepoConfig(repo ipfs_repo.Repo, cfg *CoreAPIConfig) error {
 
 	if cfg.APIConfig.HTTPHeaders != nil {
 		rcfg.API = cfg.APIConfig
+	}
+
+	// apply patches
+	if cfg.IpfsConfigPatch != nil {
+		if err := cfg.IpfsConfigPatch(rcfg); err != nil {
+			return err
+		}
 	}
 
 	return repo.SetConfig(rcfg)

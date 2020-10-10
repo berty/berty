@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/oklog/run"
+	ff "github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"golang.org/x/crypto/ed25519"
 
@@ -62,6 +63,7 @@ func tokenServerCommand() *ffcli.Command {
 		ShortUsage:     "berty [global flags] token-server [flags]",
 		ShortHelp:      "token server, a basic token server issuer without auth or logging",
 		FlagSetBuilder: fsBuilder,
+		Options:        []ff.Option{ff.WithEnvVarPrefix("BERTY")},
 		Exec: func(ctx context.Context, args []string) error {
 			ctx, cancel := context.WithCancel(ctx)
 			defer cancel()

@@ -74,7 +74,7 @@ func LoadRepoFromPath(path string) (ipfs_repo.Repo, error) {
 
 func createBaseConfig() (*ipfs_cfg.Config, error) {
 	c := ipfs_cfg.Config{}
-	priv, pub, err := p2p_ci.GenerateKeyPairWithReader(p2p_ci.RSA, 2048, crand.Reader) // nolint:staticcheck
+	priv, pub, err := p2p_ci.GenerateKeyPairWithReader(p2p_ci.Ed25519, 2048, crand.Reader) // nolint:staticcheck
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

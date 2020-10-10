@@ -197,12 +197,12 @@ func Test_dbWrapper_addContactRequestIncomingReceived(t *testing.T) {
 
 	defer dispose()
 
-	contactErr, err := db.addContactRequestIncomingReceived("", "some name")
+	contactErr, err := db.addContactRequestIncomingReceived("", "some name", "")
 	require.Error(t, err)
 	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Nil(t, contactErr)
 
-	contact, err := db.addContactRequestIncomingReceived(contact1PK, contact1Name)
+	contact, err := db.addContactRequestIncomingReceived(contact1PK, contact1Name, "")
 	require.NoError(t, err)
 	require.NotEmpty(t, contact)
 	require.Equal(t, contact1PK, contact.PublicKey)
@@ -210,7 +210,7 @@ func Test_dbWrapper_addContactRequestIncomingReceived(t *testing.T) {
 
 	createdDate := contact.CreatedDate
 
-	contact, err = db.addContactRequestIncomingReceived(contact1PK, "contact1OtherName")
+	contact, err = db.addContactRequestIncomingReceived(contact1PK, "contact1OtherName", "")
 	require.NoError(t, err)
 	require.NotEmpty(t, contact)
 	require.Equal(t, contact1PK, contact.PublicKey)
@@ -222,22 +222,19 @@ func Test_dbWrapper_addContactRequestIncomingAccepted(t *testing.T) {
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
-	contact, conversation, err := db.addContactRequestIncomingAccepted("", "group_1")
+	contact, err := db.addContactRequestIncomingAccepted("", "group_1")
 	require.Error(t, err)
 	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Nil(t, contact)
-	require.Nil(t, conversation)
 
-	contact, conversation, err = db.addContactRequestIncomingAccepted("contact_1", "")
+	contact, err = db.addContactRequestIncomingAccepted("contact_1", "")
 	require.Error(t, err)
 	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Nil(t, contact)
-	require.Nil(t, conversation)
 
-	contact, conversation, err = db.addContactRequestIncomingAccepted("contact_1", "group_1")
+	contact, err = db.addContactRequestIncomingAccepted("contact_1", "group_1")
 	require.Error(t, err)
 	require.Empty(t, contact)
-	require.Empty(t, conversation)
 
 	// TODO:
 	t.Skip("complete test")

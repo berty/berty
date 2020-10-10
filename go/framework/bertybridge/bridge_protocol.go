@@ -19,6 +19,7 @@ import (
 	datastore "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_badger "github.com/ipfs/go-ds-badger"
+	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	"github.com/ipfs/go-ipfs/core"
 	"github.com/ipfs/go-ipfs/core/bootstrap"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
@@ -201,6 +202,13 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 				APIAddrs:          defaultAPIAddrs,
 				APIConfig:         APIConfig,
 				ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
+				IpfsConfigPatch: func(cfg *ipfs_cfg.Config) error {
+					for _, p := range rdvpeers {
+						cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
+					}
+
+					return nil
+				},
 				HostConfig: func(h host.Host, _ routing.Routing) error {
 					var err error
 					var rdvClients []tinder.AsyncableDriver
@@ -253,8 +261,6 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 
 			bopts.BootstrapAddrs = defaultProtocolBootstrap
 
-			// should be a valid rendezvous peer
-			bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, defaultProtocolRendezVousPeers...)
 			if len(config.swarmListeners) > 0 {
 				bopts.SwarmAddrs = append(bopts.SwarmAddrs, config.swarmListeners...)
 			}

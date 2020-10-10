@@ -218,7 +218,7 @@ const MessageList: React.FC<{ id: string; scrollToMessage?: string }> = ({
 	id,
 	scrollToMessage,
 }) => {
-	const [{ overflow, row, flex, margin }, { scaleHeight }] = useStyles()
+	const [{ overflow, row, column, flex, margin }, { scaleHeight, windowHeight }] = useStyles()
 	const conversation = useConversation(id)
 	const ctx = useMsgrContext()
 	const members = (ctx as any).members[id] || {}
@@ -232,7 +232,7 @@ const MessageList: React.FC<{ id: string; scrollToMessage?: string }> = ({
 	const initialScrollIndex = React.useMemo(() => {
 		if (scrollToMessage) {
 			for (let i = 0; i < interactions.length; i++) {
-				if (interactions[i].cid === scrollToMessage) {
+				if (interactions[i] && interactions[i].cid === scrollToMessage) {
 					return i
 				}
 			}
@@ -259,25 +259,19 @@ const MessageList: React.FC<{ id: string; scrollToMessage?: string }> = ({
 			onScrollToIndexFailed={onScrollToIndexFailed}
 			ref={flatListRef}
 			keyboardDismissMode='on-drag'
-			style={[
-				overflow,
-				row.item.fill,
-				flex.tiny,
-				margin.bottom.medium,
-				{ marginTop: 140 * scaleHeight },
-			]}
+			style={[overflow, margin.bottom.medium, { marginTop: 140 * scaleHeight }]}
 			data={items}
 			inverted
 			ListFooterComponent={<InfosMultiMember {...conversation} />}
-			keyExtractor={(item) => item.cid}
+			keyExtractor={(item, index) => item?.cid || `${item}`}
 			renderItem={({ item, index }: { item: any; index: number }) => (
 				<Message
-					id={item.cid}
+					id={item?.cid || `${index}`}
 					convKind={messengerpb.Conversation.Type.MultiMemberType}
 					convPK={conversation.publicKey}
 					members={members}
-					previousMessageId={items[index + 1]?.cid || ''}
-					nextMessageId={items[index - 1]?.cid || ''}
+					previousMessageId={index < items.length - 1 ? items[index + 1]?.cid || '' : ''}
+					nextMessageId={index > 0 ? items[index - 1]?.cid || '' : ''}
 				/>
 			)}
 		/>

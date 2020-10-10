@@ -27,7 +27,8 @@ export const ChatFooter: React.FC<{
 	isFocused: boolean
 	setFocus: React.Dispatch<React.SetStateAction<any>>
 	convPk: string
-}> = ({ isFocused, setFocus, convPk }) => {
+	disabled: boolean
+}> = ({ isFocused, setFocus, convPk, disabled }) => {
 	const ctx: any = useMsgrContext()
 
 	const [message, setMessage] = useState('')
@@ -35,7 +36,7 @@ export const ChatFooter: React.FC<{
 	const inputRef = useRef<TextInput>(null)
 	const _isFocused = isFocused || inputRef?.current?.isFocused() || false
 	const _styles = useStylesChatFooter()
-	const [{ row, padding, flex, border, color }] = useStyles()
+	const [{ row, padding, flex, border, color, text }] = useStyles()
 
 	const usermsg = { body: message, sentDate: Date.now() }
 	const buf = messengerpb.AppMessage.UserMessage.encode(usermsg).finish()
@@ -79,7 +80,7 @@ export const ChatFooter: React.FC<{
 							row.fill,
 							{
 								alignItems: 'center',
-								backgroundColor: _isFocused ? '#E8E9FC99' : '#EDEFF3',
+								backgroundColor: _isFocused ? '#E8E9FC99' : '#F7F8FF',
 								marginBottom: _isFocused ? 0 : 16,
 							},
 						]}
@@ -88,6 +89,7 @@ export const ChatFooter: React.FC<{
 							value={message}
 							ref={inputRef}
 							multiline
+							editable={disabled ? false : true}
 							onFocus={() => setFocus(true)}
 							onBlur={() => setFocus(false)}
 							onChange={({ nativeEvent }) => {
@@ -107,9 +109,13 @@ export const ChatFooter: React.FC<{
 							style={[
 								_styles.textInput,
 								_isFocused && { color: color.blue } && _styles.focusTextInput,
+								text.bold.small,
+								{ fontFamily: 'Open Sans' },
 							]}
-							placeholder='Write a secure message...'
-							placeholderTextColor={_isFocused ? color.blue : color.grey}
+							placeholder={
+								disabled ? 'Accept the request to write here...' : 'Write a secure message...'
+							}
+							placeholderTextColor={_isFocused ? color.blue : '#AFB1C0'}
 						/>
 						<TouchableOpacity
 							style={[flex.tiny, { justifyContent: 'center', alignItems: 'center' }]}
@@ -126,9 +132,9 @@ export const ChatFooter: React.FC<{
 						>
 							<Icon
 								name='paper-plane-outline'
-								width={30}
-								height={30}
-								fill={!isFake && message.length >= 1 ? color.blue : color.grey}
+								width={26}
+								height={26}
+								fill={!isFake && message.length >= 1 ? color.blue : '#AFB1C0'}
 							/>
 						</TouchableOpacity>
 					</View>
@@ -152,7 +158,7 @@ const useStylesChatDate = () => {
 	const [{ padding, text }] = useStyles()
 	return {
 		date: [padding.horizontal.scale(8), padding.vertical.scale(2)],
-		dateText: [text.size.small, text.color.grey, text.align.center],
+		dateText: [text.size.small, text.align.center],
 	}
 }
 
@@ -163,10 +169,14 @@ const formatTimestamp = (date: Date) => {
 
 export const ChatDate: React.FC<ChatDateProps> = ({ date }) => {
 	const _styles = useStylesChatDate()
-	const [{ border, row, background }] = useStyles()
+	const [{ border, row }] = useStyles()
+	const backgroundColor = '#F7F8FF'
+	const textColor = '#AFB1C0'
 	return (
-		<View style={[row.item.justify, border.radius.medium, background.light.grey, _styles.date]}>
-			<Text style={_styles.dateText}>{formatTimestamp(new Date(date))}</Text>
+		<View style={[row.item.justify, border.radius.medium, _styles.date, { backgroundColor }]}>
+			<Text style={[_styles.dateText, { color: textColor }]}>
+				{formatTimestamp(new Date(date))}
+			</Text>
 		</View>
 	)
 }

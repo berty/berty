@@ -55,6 +55,7 @@ func verifyRunningLeakDetection(t *testing.T) {
 		goleak.IgnoreTopFunction("github.com/libp2p/go-nat.DiscoverGateway"),                                                 // upstream code - DiscoverGateway() using context.Background() with timeout is 10s
 		goleak.IgnoreTopFunction("net.(*netFD).connect.func2"),                                                               // FIXME - many libraries used this code
 		goleak.IgnoreTopFunction("github.com/libp2p/go-nat.discoverNATPMP.func1"),                                            // upstream code
+		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*session).run"),                                         // sometimes happening on CI
 	)
 }
 

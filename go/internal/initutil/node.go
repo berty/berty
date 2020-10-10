@@ -490,7 +490,7 @@ func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServ
 		if m.Node.Messenger.DisableNotifications {
 			notifmanager = notification.NewLoggerManager(notifLogger)
 		} else {
-			notifmanager = notification.NewDesktopManager(notifLogger, pkger.Include("/assets/logo.svg"))
+			notifmanager = notification.NewDesktopManager(notifLogger, pkger.Include("/assets/Buck_Berty_Icon_Card.svg"))
 		}
 	}
 

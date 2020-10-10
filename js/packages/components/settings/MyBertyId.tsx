@@ -223,13 +223,7 @@ const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
 									onPress={goBack}
 									style={{ alignItems: 'center', justifyContent: 'center' }}
 								>
-									<Icon
-										// name='arrow-back-outline'
-										name='arrow-down-outline'
-										width={30}
-										height={30}
-										fill={color.white}
-									/>
+									<Icon name='arrow-down-outline' width={30} height={30} fill={color.white} />
 								</TouchableOpacity>
 								<Text
 									style={[

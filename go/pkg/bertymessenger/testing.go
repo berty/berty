@@ -3,14 +3,18 @@ package bertymessenger
 import (
 	"context"
 	"io"
+	"net"
 	"strconv"
 	"sync"
 	"testing"
 	"time"
 
+	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
+	grpc "google.golang.org/grpc"
+	"google.golang.org/grpc/test/bufconn"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"moul.io/u"
@@ -69,6 +73,45 @@ func TestingService(ctx context.Context, t *testing.T, opts *TestingServiceOpts)
 	cleanup = u.CombineFuncs(func() { server.Close() }, cleanup)
 
 	return server, cleanup
+}
+
+func TestingInfra(ctx context.Context, t *testing.T, amount int, logger *zap.Logger) ([]MessengerServiceClient, func()) {
+	t.Helper()
+	mocknet := libp2p_mocknet.New(ctx)
+
+	protocols, cleanup := bertyprotocol.NewTestingProtocolWithMockedPeers(ctx, t, &bertyprotocol.TestingOpts{Logger: logger, Mocknet: mocknet}, nil, amount)
+	clients := make([]MessengerServiceClient, amount)
+
+	for i, p := range protocols {
+		// new messenger service
+		svc, cleanupMessengerService := TestingService(ctx, t, &TestingServiceOpts{Logger: logger, Client: p.Client, Index: i})
+
+		// new messenger client
+		lis := bufconn.Listen(1024 * 1024)
+		s := grpc.NewServer()
+		RegisterMessengerServiceServer(s, svc)
+		go func() {
+			err := s.Serve(lis)
+			require.NoError(t, err)
+		}()
+		conn, err := grpc.DialContext(ctx, "bufnet", grpc.WithContextDialer(mkBufDialer(lis)), grpc.WithInsecure())
+		require.NoError(t, err)
+		cleanup = u.CombineFuncs(func() {
+			require.NoError(t, conn.Close())
+			cleanupMessengerService()
+		}, cleanup)
+		clients[i] = NewMessengerServiceClient(conn)
+	}
+
+	require.NoError(t, mocknet.ConnectAllButSelf())
+
+	return clients, cleanup
+}
+
+func mkBufDialer(l *bufconn.Listener) func(context.Context, string) (net.Conn, error) {
+	return func(context.Context, string) (net.Conn, error) {
+		return l.Dial()
+	}
 }
 
 type TestingAccount struct {

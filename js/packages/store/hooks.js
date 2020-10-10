@@ -1,95 +1,13 @@
-import { useContext, useMemo, useEffect, useCallback } from 'react'
-import { omitBy } from 'lodash'
-import flatten from 'lodash/flatten'
+import { useContext, useMemo, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 
-import methods from './methods'
 import { MsgrContext, useMsgrContext } from './context'
-import {
-	fakeContacts,
-	fake1To1Conversations,
-	fakeMultiMemberConversations,
-	fakeMessages,
-} from './faker'
-
-const AppMessageType = messengerpb.AppMessage.Type
-
-const listHuman = (state) => {
-	return Object.values(state.conversations)
-}
+import { fakeContacts, fakeMultiMemberConversations, fakeMessages } from './faker'
+import { pbDateToNum } from '@berty-tech/components/helpers'
 
 export { useMsgrContext }
-
-const searchOne = (state, { searchText, convId, id }) => {
-	const intes = state.interactions[convId]
-	if (!intes) {
-		return undefined
-	}
-	const inte = intes[id]
-	return inte &&
-		inte.type === AppMessageType.TypeUserMessage &&
-		inte.payload.body &&
-		inte.payload.body.toLowerCase().includes(searchText.toLowerCase())
-		? inte
-		: undefined
-}
-
-const messageToConvMapper = (conv) => (inte, messageIndex) => ({
-	conversationId: conv.publicKey,
-	id: inte.cid,
-	conversationTitle: conv.displayName,
-	messageIndex,
-	interaction: inte,
-})
-
-export const useGetMessageSearchResultWithMetadata = (searchText) => {
-	const ctx = useContext(MsgrContext)
-
-	if (!searchText) {
-		return []
-	}
-
-	// map all messages to conversation ID
-
-	const conversations = listHuman(ctx)
-
-	if (conversations.length > 30) {
-		console.warn(
-			'useGetMessageSearchResultWithMetadata: You have more than 30 conversations, this might take a while...',
-		)
-	}
-
-	const messagesWithConv = flatten(
-		conversations.map((conv) =>
-			Object.values(ctx.interactions[conv.publicKey] || {}).map(messageToConvMapper(conv)),
-		),
-	)
-
-	if (messagesWithConv.length > 200) {
-		console.warn(
-			'useGetMessageSearchResultWithMetadata: You have more than 200 messages, this might take a while...',
-		)
-	}
-
-	// search messages for search match
-	const messageIdsForConversationsWithMatch = messagesWithConv
-		.map(({ conversationId, conversationTitle, messageIndex, id }) => ({
-			id,
-			conversationId,
-			conversationTitle,
-			messageIndex,
-			message: searchOne(ctx, { searchText, convId: conversationId, id }),
-		}))
-		.filter(({ message }) => !!message && message.type === AppMessageType.TypeUserMessage)
-		.sort(
-			({ message: { sentDate: sentDateA } }, { message: { sentDate: sentDateB } }) =>
-				sentDateB - sentDateA,
-		)
-
-	return messageIdsForConversationsWithMatch
-}
 
 export const useGetMessage = (id, convId) => {
 	const ctx = useContext(MsgrContext)
@@ -176,6 +94,18 @@ export const useOutgoingContactRequests = () => {
 export const useConversationList = () => {
 	const ctx = useMsgrContext()
 	return Object.values(ctx.conversations)
+}
+
+export const useSortedConversationList = () => {
+	const convs = useConversationList()
+	return useMemo(
+		() =>
+			convs.sort(
+				(a, b) =>
+					pbDateToNum(b.lastUpdate || b.createdDate) - pbDateToNum(a.lastUpdate || a.createdDate),
+			),
+		[convs],
+	)
 }
 
 export const useConversation = (publicKey) => {
@@ -309,7 +239,8 @@ export const useReadEffect = (publicKey, timeout) => {
 
 	const ctx = useMsgrContext()
 
-	const fake = useConversation(publicKey).fake || false
+	const conv = useConversation(publicKey)
+	const fake = (conv && conv.fake) || false
 
 	useEffect(() => {
 		if (fake) {

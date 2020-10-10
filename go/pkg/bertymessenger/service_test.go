@@ -205,7 +205,17 @@ func TestUnstableServiceContactRequest(t *testing.T) {
 		require.Equal(t, contact.GetDisplayName(), contactName)
 		require.Equal(t, contact.GetState(), Contact_OutgoingRequestEnqueued)
 		assert.Len(t, node.contacts, 1)
-		assert.Len(t, node.conversations, 0)
+	}
+
+	// check for the ConversationUpdated event
+	{
+		event := node.NextEvent(t)
+		require.Equal(t, event.GetType(), StreamEvent_TypeConversationUpdated)
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		conversation := payload.(*StreamEvent_ConversationUpdated).Conversation
+		require.NotNil(t, conversation)
+		assert.Len(t, node.conversations, 1)
 	}
 
 	// no more event
@@ -313,7 +323,7 @@ func TestBroken1To1AddContact(t *testing.T) {
 	defer cleanup()
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	clients, cleanup := testingInfra(ctx, t, 2, logger)
+	clients, cleanup := TestingInfra(ctx, t, 2, logger)
 	defer cleanup()
 
 	// Init accounts
@@ -360,7 +370,7 @@ func TestBroken1To1Exchange(t *testing.T) {
 	defer cleanup()
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	clients, cleanup := testingInfra(ctx, t, 2, logger)
+	clients, cleanup := TestingInfra(ctx, t, 2, logger)
 	defer cleanup()
 
 	// Init accounts
@@ -415,7 +425,7 @@ func TestBrokenPeersCreateJoinConversation(t *testing.T) {
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
 	accountsAmount := 3
-	clients, cleanup := testingInfra(ctx, t, accountsAmount, logger)
+	clients, cleanup := TestingInfra(ctx, t, accountsAmount, logger)
 	defer cleanup()
 
 	// create nodes
@@ -499,7 +509,7 @@ func TestBroken3PeersExchange(t *testing.T) {
 	defer cancel()
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
-	clients, cleanup := testingInfra(ctx, t, 3, logger)
+	clients, cleanup := TestingInfra(ctx, t, 3, logger)
 	defer cleanup()
 
 	// create nodes
@@ -558,7 +568,7 @@ func TestBrokenConversationInvitation(t *testing.T) {
 	defer cancel()
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
-	clients, cleanup := testingInfra(ctx, t, 3, logger)
+	clients, cleanup := TestingInfra(ctx, t, 3, logger)
 	defer cleanup()
 
 	// create nodes
@@ -624,7 +634,7 @@ func TestBrokenConversationInvitationAndExchange(t *testing.T) {
 	defer cancel()
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
-	clients, cleanup := testingInfra(ctx, t, 3, logger)
+	clients, cleanup := TestingInfra(ctx, t, 3, logger)
 	defer cleanup()
 
 	// create nodes
@@ -698,7 +708,7 @@ func TestBrokenConversationOpenClose(t *testing.T) {
 	defer cleanup()
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	clients, cleanup := testingInfra(ctx, t, 2, logger)
+	clients, cleanup := TestingInfra(ctx, t, 2, logger)
 	defer cleanup()
 
 	// Init accounts

@@ -1,0 +1,76 @@
+version: '3.7'
+
+services:
+  daemon1:
+    container_name: testbot_daemon1
+    image: bertytech/berty:latest
+    restart: always
+    entrypoint: sh
+    #labels:
+    #  com.centurylinklabs.watchtower.enable: "true"
+    environment:
+      - ANNOUNCE_SERVER
+      - BERTY_STORE_DIR=/store/run
+      - BERTY_NODE_NO_NOTIF=true
+      - BERTY_NODE_LISTENERS=/ip4/0.0.0.0/tcp/9091
+      - BERTY_P2P_IPFS_LISTENERS=/ip4/0.0.0.0/tcp/6002,/ip4/0.0.0.0/udp/6002/quic
+      - BERTY_P2P_IPFS_ANNOUNCE=/ip4/${ANNOUNCE_SERVER}/tcp/6002,/ip4/${ANNOUNCE_SERVER}/udp/6002/quic
+    # copy "clean" db into run, then start the daemon.
+    # be careful if you edit this command, it looks like multiline but will be joined inline.
+    command: -xec "
+      rm -rf /store/run;
+      cp -rf /store/clean /store/run;
+      env;
+      berty daemon;
+      "
+    volumes:
+      - ./data/daemon1:/store
+    ports:
+      - 6002:6002
+
+  daemon2:
+    container_name: testbot_daemon2
+    image: bertytech/berty:latest
+    restart: always
+    entrypoint: sh
+    #labels:
+    #  com.centurylinklabs.watchtower.enable: "true"
+    environment:
+      - ANNOUNCE_SERVER
+      - BERTY_STORE_DIR=/store/run
+      - BERTY_NODE_NO_NOTIF=true
+      - BERTY_NODE_LISTENERS=/ip4/0.0.0.0/tcp/9091
+      - BERTY_P2P_IPFS_LISTENERS=/ip4/0.0.0.0/tcp/6003,/ip4/0.0.0.0/udp/6003/quic
+      - BERTY_P2P_IPFS_ANNOUNCE=/ip4/${ANNOUNCE_SERVER}/tcp/6003,/ip4/${ANNOUNCE_SERVER}/udp/6003/quic
+    # copy "clean" db into run, then start the daemon.
+    # be careful if you edit this command, it looks like multiline but will be joined inline.
+    command: -xec "
+      rm -rf /store/run;
+      cp -rf /store/clean /store/run;
+      env;
+      berty daemon;
+      "
+    volumes:
+      - ./data/daemon2:/store
+    ports:
+      - 6003:6003
+
+  bot:
+    container_name: testbot_bot
+    image: bertytech/berty:latest
+    restart: always
+    entrypoint: testbot
+    links:
+      - daemon1
+      - daemon2
+    #labels:
+    #  com.centurylinklabs.watchtower.enable: "true"
+    command:
+      - -name1=TestBot
+      - -name2=TestBot Companion
+      - -addr1=daemon1:9091
+      - -addr2=daemon2:9091
+      - -debug
+    depends_on:
+      - daemon1
+      - daemon2
