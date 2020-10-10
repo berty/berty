@@ -116,6 +116,7 @@ const DeleteContactButton: React.FC<{ id: string }> = ({ id }) => {
 			icon='trash-2-outline'
 			iconColor={color.red}
 			onPress={() => deleteContact({ id })}
+			disabled
 		/>
 	)
 }
