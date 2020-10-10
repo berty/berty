@@ -110,7 +110,7 @@ const OneToOneHeaderButtons: React.FC<{}> = () => {
 	)
 }
 
-const OneToOneBody: React.FC<any> = ({ publicKey }) => {
+const OneToOneBody: React.FC<any> = ({ publicKey, isIncoming }) => {
 	const [{ padding, color }] = useStyles()
 	const navigation = useNavigation()
 
@@ -125,15 +125,17 @@ const OneToOneBody: React.FC<any> = ({ publicKey }) => {
 				state={{ value: '3 mutuals', color: color.blue, bgColor: color.light.blue }}
 				disabled
 			/>
-			<ButtonSetting
-				name='Save conversation on server'
-				icon='cloud-upload-outline'
-				iconSize={30}
-				actionIcon='arrow-ios-forward'
-				onPress={() => {
-					navigation.navigate.chat.replicateGroupSettings({ convId: publicKey })
-				}}
-			/>
+			{!isIncoming && (
+				<ButtonSetting
+					name='Save conversation on server'
+					icon='cloud-upload-outline'
+					iconSize={30}
+					actionIcon='arrow-ios-forward'
+					onPress={() => {
+						navigation.navigate.chat.replicateGroupSettings({ convId: publicKey })
+					}}
+				/>
+			)}
 			<ButtonSetting
 				name='Erase conversation'
 				icon='message-circle-outline'
@@ -156,6 +158,8 @@ export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({
 		goBack()
 		return null
 	}
+	const isIncoming = contact && contact.state === messengerpb.Contact.State.IncomingRequest
+
 	return (
 		<ScrollView
 			style={[flex.tiny, background.white]}
@@ -173,7 +177,7 @@ export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({
 						<OneToOneHeaderButtons />
 					</View>
 				</HeaderSettings>
-				<OneToOneBody {...conv} />
+				<OneToOneBody {...conv} isIncoming={isIncoming} />
 			</SwipeNavRecognizer>
 		</ScrollView>
 	)
