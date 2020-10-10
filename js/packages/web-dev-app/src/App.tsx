@@ -6,7 +6,8 @@ import {
 	useAccountContactSearchResults,
 	useFirstConversationWithContact,
 	useContactsList,
-	useConversationList
+	useConversationList,
+	useMountEffect,
 } from '@berty-tech/store/hooks'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
@@ -46,11 +47,7 @@ const Account: React.FC = () => {
 
 const AccountGate: React.FC = ({ children }) => {
 	const ctx = React.useContext(MsgrContext)
-	return ctx.account && ctx.account.displayName !== '' ? (
-		<>{children}</>
-	) : (
-		<CreateAccount />
-	)
+	return ctx.account && ctx.account.displayName !== '' ? <>{children}</> : <CreateAccount />
 }
 
 const AddContact: React.FC = () => {
@@ -168,31 +165,25 @@ const Contacts: React.FC = () => {
 	)
 }
 
-// TODO: use acknowledeged flag on Interaction
-const isAcknowledged = (ctx: any, cid: string) =>
-	!!Object.values(ctx.interactions).find((convIntes: any[]) =>
-		Object.values(convIntes).find(
-			(inte) =>
-				inte.type === messengerpb.AppMessage.Type.TypeAcknowledge && cid === inte.payload.target,
-		),
-	)
-
 const Interaction: React.FC<{ value: any }> = ({ value }) => {
 	const ctx = React.useContext(MsgrContext)
 	console.log('render inte', value)
 
 	const [error, setError] = useState(null)
-	const handleJoin = React.useCallback(({ link}) => {
-		setError(null)
-		ctx.client.conversationJoin({ link }).catch((err: any) => setError(err))
-	}, [ctx.client])
+	const handleJoin = React.useCallback(
+		({ link }) => {
+			setError(null)
+			ctx.client.conversationJoin({ link }).catch((err: any) => setError(err))
+		},
+		[ctx.client],
+	)
 	const conversations = useConversationList()
 
 	if (value.type === messengerpb.AppMessage.Type.TypeUserMessage) {
 		const payload = value.payload
 		return (
 			<div style={{ textAlign: value.isMe ? 'right' : 'left' }}>
-				{value.isMe && isAcknowledged(ctx, value.cid) && '✓ '}
+				{value.isMe && value.acknowledged && '✓ '}
 				{payload.body}
 			</div>
 		)
@@ -201,8 +192,15 @@ const Interaction: React.FC<{ value: any }> = ({ value }) => {
 		return (
 			<div style={{ textAlign: value.isMe ? 'right' : 'left' }}>
 				{value.isMe ? 'Sent group invitation!' : 'Received group invitation!'}
-				{!value.isMe && <button onClick={() => handleJoin({link: payload.link})} disabled={conversations.find(c => c.link === payload.link)}>Accept</button>}
-				<Error value={error}/>
+				{!value.isMe && (
+					<button
+						onClick={() => handleJoin({ link: payload.link })}
+						disabled={conversations.find((c: any) => c.link === payload.link)}
+					>
+						Accept
+					</button>
+				)}
+				<Error value={error} />
 			</div>
 		)
 	}
@@ -212,10 +210,23 @@ const Interaction: React.FC<{ value: any }> = ({ value }) => {
 const Conversation: React.FC<{ publicKey: string }> = ({ publicKey }) => {
 	const ctx = React.useContext(MsgrContext)
 	const conv = (ctx.conversations as any)[publicKey] || {}
-	const displayName = conv.displayName || (ctx.contacts as any)[conv.contactPublicKey]?.displayName || '<undefined displayName>'
+	const displayName =
+		conv.displayName ||
+		(ctx.contacts as any)[conv.contactPublicKey]?.displayName ||
+		'<undefined displayName>'
 	const interactions = Object.values((ctx.interactions as any)[publicKey] || {})
 	const [message, setMessage] = useState('')
 	const [error, setError] = useState(null)
+	useMountEffect(() => {
+		ctx.client.conversationOpen({ groupPk: conv.publicKey }).catch((err) => {
+			console.warn('failed to open conversation,', err)
+		})
+		return () => {
+			ctx.client.conversationClose({ groupPk: conv.publicKey }).catch((err) => {
+				console.warn('failed to close conversation,', err)
+			})
+		}
+	}, [ctx.client])
 
 	const usermsg = { body: message }
 	console.log('sending', usermsg)
@@ -273,6 +284,27 @@ const Conversation: React.FC<{ publicKey: string }> = ({ publicKey }) => {
 	)
 }
 
+const ConvButton: React.FC<{ conv: any; onSelect: any; selected: string }> = ({
+	conv,
+	onSelect,
+	selected,
+}) => {
+	const ctx = React.useContext(MsgrContext)
+	const unreadCount = parseInt(conv.unreadCount, 10)
+	return (
+		<button
+			key={conv.publicKey}
+			disabled={selected === conv.publicKey}
+			onClick={() => onSelect(conv.publicKey)}
+		>
+			{conv.displayName ||
+				(ctx.contacts as any)[conv.contactPublicKey]?.displayName ||
+				'<undefined displayName>'}{' '}
+			{unreadCount != 0 && '(' + unreadCount + ')'}
+		</button>
+	)
+}
+
 const Conversations: React.FC = () => {
 	const ctx = React.useContext(MsgrContext)
 	const conversations = React.useMemo(
@@ -284,17 +316,9 @@ const Conversations: React.FC = () => {
 		<>
 			<h2>Conversations</h2>
 			<div style={{ display: 'flex' }}>
-				{conversations.map((conv: any) => {
-					return (
-						<button
-							key={conv.publicKey}
-							disabled={selected === conv.publicKey}
-							onClick={() => setSelected(conv.publicKey)}
-						>
-							{conv.displayName || (ctx.contacts as any)[conv.contactPublicKey]?.displayName || '<undefined displayName>'}
-						</button>
-					)
-				})}
+				{conversations.map((conv: any) => (
+					<ConvButton key={conv.publicKey} conv={conv} onSelect={setSelected} selected={selected} />
+				))}
 			</div>
 			{!!selected && <Conversation publicKey={selected} />}
 		</>
@@ -318,7 +342,11 @@ const CreateMultiMember = () => {
 	const [groupName, setGroupName] = useState('My group')
 	const [error, setError] = useState(null)
 	const [members, setMembers] = useState([])
-	const { refresh, error: errorReply, done } = (messengerMethodsHooks as any).useConversationCreate()
+	const {
+		refresh,
+		error: errorReply,
+		done,
+	} = (messengerMethodsHooks as any).useConversationCreate()
 	const createGroup = React.useCallback(
 		() => refresh({ displayName: groupName, contactsToInvite: members.map((m) => m.publicKey) }),
 		[groupName, members, refresh],
@@ -334,13 +362,21 @@ const CreateMultiMember = () => {
 	}, [done, errorReply])
 	return (
 		<>
-		{contactList.filter((contact: any) => contact.state === messengerpb.Contact.State.Accepted).map((contact: any) => <button
-		key={`${contact.publicKey}`}
-		onClick={
-			() => members.find(m => m.publicKey === contact.publicKey) ? setMembers(members.filter(member => member.publicKey !== contact.publicKey)) : setMembers([...members, contact])
-			}>
-			{contact.displayName}{' '}{members.find(m => m.publicKey === contact.publicKey) ? '🅧' : '+'}
-			</button>)}
+			{contactList
+				.filter((contact: any) => contact.state === messengerpb.Contact.State.Accepted)
+				.map((contact: any) => (
+					<button
+						key={`${contact.publicKey}`}
+						onClick={() =>
+							members.find((m) => m.publicKey === contact.publicKey)
+								? setMembers(members.filter((member) => member.publicKey !== contact.publicKey))
+								: setMembers([...members, contact])
+						}
+					>
+						{contact.displayName}{' '}
+						{members.find((m) => m.publicKey === contact.publicKey) ? '🅧' : '+'}
+					</button>
+				))}
 			<input
 				type='text'
 				value={groupName}
@@ -469,7 +505,7 @@ const TABS = {
 	Search: Search,
 	MultiMember: MultiMember,
 	DumpStore: DumpStore,
-	SendToAll: SendToAll
+	SendToAll: SendToAll,
 }
 
 type TabKey = keyof typeof TABS

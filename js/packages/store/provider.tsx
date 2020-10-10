@@ -53,7 +53,7 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 		case T.TypeInteractionDeleted:
 			delete state.interactions[action.payload.cid]
 			break
-		case T.TypeListEnd:
+		case T.TypeListEnded:
 			state.listDone = true
 			break
 		case T.TypeInteractionUpdated:

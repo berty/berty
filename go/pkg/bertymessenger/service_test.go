@@ -37,7 +37,7 @@ func TestUnstableServiceStream(t *testing.T) {
 	// second event is list end
 	{
 		event := node.NextEvent(t)
-		require.Equal(t, event.Type, StreamEvent_TypeListEnd)
+		require.Equal(t, event.Type, StreamEvent_TypeListEnded)
 		require.Empty(t, event.Payload)
 	}
 
@@ -74,7 +74,7 @@ func TestUnstableServiceSetName(t *testing.T) {
 	// second event is list end
 	{
 		event := node.NextEvent(t)
-		require.Equal(t, event.Type, StreamEvent_TypeListEnd)
+		require.Equal(t, event.Type, StreamEvent_TypeListEnded)
 		require.Empty(t, event.Payload)
 	}
 
@@ -108,7 +108,7 @@ func TestUnstableServiceSetNameAsync(t *testing.T) {
 	// second event is list end
 	{
 		event := node.NextEvent(t)
-		require.Equal(t, event.Type, StreamEvent_TypeListEnd)
+		require.Equal(t, event.Type, StreamEvent_TypeListEnded)
 		require.Empty(t, event.Payload)
 	}
 
@@ -306,7 +306,7 @@ func TestUnstableServiceConversationCreateAsync(t *testing.T) {
 	// then, the list end event
 	{
 		event := node.NextEvent(t)
-		require.Equal(t, event.GetType(), StreamEvent_TypeListEnd)
+		require.Equal(t, event.GetType(), StreamEvent_TypeListEnded)
 	}
 
 	// no more event

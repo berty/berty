@@ -100,7 +100,7 @@ func (b *Bot) Start(ctx context.Context) error {
 		}
 
 		if b.isReplaying {
-			if gme.Event.Type == bertymessenger.StreamEvent_TypeListEnd {
+			if gme.Event.Type == bertymessenger.StreamEvent_TypeListEnded {
 				b.logger.Info("finished replaying logs from the previous sessions", zap.Uint("count", b.handledEvents))
 				b.isReplaying = false
 			}

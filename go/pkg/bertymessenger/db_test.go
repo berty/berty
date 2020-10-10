@@ -211,7 +211,7 @@ func Test_dbWrapper_addContactRequestIncomingReceived(t *testing.T) {
 	createdDate := contact.CreatedDate
 
 	contact, err = db.addContactRequestIncomingReceived(contact1PK, "contact1OtherName", "")
-	require.NoError(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrDBEntryAlreadyExists))
 	require.NotEmpty(t, contact)
 	require.Equal(t, contact1PK, contact.PublicKey)
 	require.Equal(t, contact1Name, contact.DisplayName)
@@ -258,10 +258,16 @@ func Test_dbWrapper_addContactRequestOutgoingEnqueued(t *testing.T) {
 	contact, err = db.addContactRequestOutgoingEnqueued(contactPK, displayName, convPK)
 	require.NoError(t, err)
 	require.NotNil(t, contact)
+	require.Equal(t, displayName, contact.DisplayName)
+	require.Equal(t, contactPK, contact.PublicKey)
+	require.Equal(t, convPK, contact.ConversationPublicKey)
 
-	contact, err = db.addContactRequestOutgoingEnqueued(contactPK, displayName, convPK)
-	require.NoError(t, err)
+	contact, err = db.addContactRequestOutgoingEnqueued(contactPK, "other_display_name", "other_conv_pk")
+	require.True(t, errcode.Is(err, errcode.ErrDBEntryAlreadyExists))
 	require.NotNil(t, contact)
+	require.Equal(t, displayName, contact.DisplayName)
+	require.Equal(t, contactPK, contact.PublicKey)
+	require.Equal(t, convPK, contact.ConversationPublicKey)
 }
 
 func Test_dbWrapper_addContactRequestOutgoingSent(t *testing.T) {
@@ -406,7 +412,7 @@ func Test_dbWrapper_addInteraction(t *testing.T) {
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
-	i, err := db.addInteraction(Interaction{
+	i, _, err := db.addInteraction(Interaction{
 		CID:     "",
 		Payload: []byte("payload1"),
 	})
@@ -414,7 +420,7 @@ func Test_dbWrapper_addInteraction(t *testing.T) {
 	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Nil(t, i)
 
-	i, err = db.addInteraction(Interaction{
+	i, isNew, err := db.addInteraction(Interaction{
 		CID:     "Qm00001",
 		Payload: []byte("payload1"),
 	})
@@ -422,9 +428,10 @@ func Test_dbWrapper_addInteraction(t *testing.T) {
 	require.NotNil(t, i)
 	require.Equal(t, "Qm00001", i.CID)
 	require.Equal(t, []byte("payload1"), i.Payload)
+	require.True(t, isNew)
 
 	// Data should not be updated
-	i, err = db.addInteraction(Interaction{
+	i, isNew, err = db.addInteraction(Interaction{
 		CID:     "Qm00001",
 		Payload: []byte("payload2"),
 	})
@@ -432,8 +439,9 @@ func Test_dbWrapper_addInteraction(t *testing.T) {
 	require.NotNil(t, i)
 	require.Equal(t, "Qm00001", i.CID)
 	require.Equal(t, []byte("payload1"), i.Payload)
+	require.False(t, isNew)
 
-	i, err = db.addInteraction(Interaction{
+	i, isNew, err = db.addInteraction(Interaction{
 		CID:     "Qm00002",
 		Payload: []byte("payload2"),
 	})
@@ -441,12 +449,13 @@ func Test_dbWrapper_addInteraction(t *testing.T) {
 	require.NotNil(t, i)
 	require.Equal(t, "Qm00002", i.CID)
 	require.Equal(t, []byte("payload2"), i.Payload)
+	require.True(t, isNew)
 
 	// Test relations
 	require.NoError(t, db.db.Create(&Conversation{PublicKey: "conversation_3"}).Error)
 	require.NoError(t, db.db.Create(&Member{PublicKey: "member_3"}).Error)
 
-	i, err = db.addInteraction(Interaction{
+	i, isNew, err = db.addInteraction(Interaction{
 		CID:                   "Qm00003",
 		Payload:               []byte("payload3"),
 		MemberPublicKey:       "member_3",
@@ -459,6 +468,7 @@ func Test_dbWrapper_addInteraction(t *testing.T) {
 	require.NotEmpty(t, i.Conversation)
 	require.Equal(t, i.MemberPublicKey, i.Member.PublicKey)
 	require.Equal(t, i.ConversationPublicKey, i.Conversation.PublicKey)
+	require.True(t, isNew)
 }
 
 func Test_dbWrapper_addMember(t *testing.T) {
@@ -475,13 +485,6 @@ func Test_dbWrapper_addMember(t *testing.T) {
 	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Nil(t, member)
 
-	member, err = db.addMember("member_1", "conversation_1", "")
-	require.NoError(t, err)
-	require.NotNil(t, member)
-	require.Equal(t, "member_1", member.PublicKey)
-	require.Equal(t, "conversation_1", member.ConversationPublicKey)
-	require.NotEmpty(t, member.DisplayName)
-
 	member, err = db.addMember("member_1", "conversation_1", "Display1")
 	require.NoError(t, err)
 	require.NotNil(t, member)
@@ -489,12 +492,23 @@ func Test_dbWrapper_addMember(t *testing.T) {
 	require.Equal(t, "conversation_1", member.ConversationPublicKey)
 	require.Equal(t, "Display1", member.DisplayName)
 
+	member, err = db.addMember("member_1", "conversation_1", "Display2")
+	require.True(t, errcode.Is(err, errcode.ErrDBEntryAlreadyExists))
+	require.NotNil(t, member)
+	require.Equal(t, "member_1", member.PublicKey)
+	require.Equal(t, "conversation_1", member.ConversationPublicKey)
+	require.Equal(t, "Display1", member.DisplayName)
+
 	member, err = db.addMember("member_1", "conversation_2", "Display1")
-	require.Error(t, err)
-	require.Nil(t, member)
+	require.NoError(t, err)
+	require.NotNil(t, member)
+	require.Equal(t, "member_1", member.PublicKey)
+	require.Equal(t, "conversation_2", member.ConversationPublicKey)
+	require.Equal(t, "Display1", member.DisplayName)
 
 	member, err = db.addMember("member_2", "conversation_1", "Display2")
 	require.NoError(t, err)
+	require.NotNil(t, member)
 	require.Equal(t, "member_2", member.PublicKey)
 	require.Equal(t, "conversation_1", member.ConversationPublicKey)
 	require.Equal(t, "Display2", member.DisplayName)
@@ -885,33 +899,37 @@ func Test_dbWrapper_updateConversation(t *testing.T) {
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
-	err := db.updateConversation(Conversation{})
+	_, err := db.updateConversation(Conversation{})
 	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Error(t, err)
 
-	err = db.updateConversation(Conversation{PublicKey: "conv_1"})
+	isNew, err := db.updateConversation(Conversation{PublicKey: "conv_1"})
 	require.NoError(t, err)
+	require.True(t, isNew)
 
 	c := &Conversation{}
 	require.NoError(t, db.db.Where(&Conversation{PublicKey: "conv_1"}).First(&c).Error)
 
-	err = db.updateConversation(Conversation{PublicKey: "conv_1", DisplayName: "DisplayName1"})
+	isNew, err = db.updateConversation(Conversation{PublicKey: "conv_1", DisplayName: "DisplayName1"})
 	require.NoError(t, err)
+	require.False(t, isNew)
 
 	c = &Conversation{}
 	require.NoError(t, db.db.Where(&Conversation{PublicKey: "conv_1"}).First(&c).Error)
 	require.Equal(t, "DisplayName1", c.DisplayName)
 
-	err = db.updateConversation(Conversation{PublicKey: "conv_1", Link: "https://link1/"})
+	isNew, err = db.updateConversation(Conversation{PublicKey: "conv_1", Link: "https://link1/"})
 	require.NoError(t, err)
+	require.False(t, isNew)
 
 	c = &Conversation{}
 	require.NoError(t, db.db.Where(&Conversation{PublicKey: "conv_1"}).First(&c).Error)
 	require.Equal(t, "DisplayName1", c.DisplayName)
 	require.Equal(t, "https://link1/", c.Link)
 
-	err = db.updateConversation(Conversation{PublicKey: "conv_1", Link: "https://link2/", DisplayName: "DisplayName2"})
+	isNew, err = db.updateConversation(Conversation{PublicKey: "conv_1", Link: "https://link2/", DisplayName: "DisplayName2"})
 	require.NoError(t, err)
+	require.False(t, isNew)
 
 	c = &Conversation{}
 	require.NoError(t, db.db.Where(&Conversation{PublicKey: "conv_1"}).First(&c).Error)
@@ -1015,21 +1033,26 @@ func Test_dbWrapper_getMemberByPK(t *testing.T) {
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
-	member, err := db.getMemberByPK("")
+	member, err := db.getMemberByPK("", "")
 	require.Error(t, err)
 	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Nil(t, member)
 
-	member, err = db.getMemberByPK("unknown")
+	member, err = db.getMemberByPK("unknown", "")
 	require.Error(t, err)
 	require.Nil(t, member)
 
-	db.db.Create(&Member{PublicKey: "member_1"})
+	db.db.Create(&Member{PublicKey: "member_1", ConversationPublicKey: "conv_1"})
 
-	member, err = db.getMemberByPK("member_1")
+	member, err = db.getMemberByPK("member_1", "conv_1")
 	require.NoError(t, err)
 	require.NotNil(t, member)
 	require.Equal(t, "member_1", member.PublicKey)
+	require.Equal(t, "conv_1", member.ConversationPublicKey)
+
+	member, err = db.getMemberByPK("member_1", "conv_2")
+	require.Error(t, err)
+	require.Nil(t, member)
 }
 
 func Test_dbWrapper_initDB(t *testing.T) {

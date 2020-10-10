@@ -373,12 +373,12 @@ message ConversationReplicationInfo {
   string replication_server = 5;
 }
 
-message Member {
+message Member { // Composite primary key
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
   string display_name = 2;
-  string conversation_public_key = 3 [(gogoproto.moretags) = "gorm:\"index\""];
+  string conversation_public_key = 3 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
   Conversation conversation = 4;
-  repeated Device devices = 5 [(gogoproto.moretags) = "gorm:\"foreignKey:MemberPublicKey\""];
+  repeated Device devices = 5;
 }
 
 message Device {
@@ -391,21 +391,22 @@ message ContactMetadata {
 }
 
 message StreamEvent {
-  // DRAFT
   Type type = 1;
   bytes payload = 2;
+  // specific to "*Updated" events
+  bool is_new = 3;
 
   enum Type {
     Undefined = 0;
-    TypeListEnd = 1;
+    TypeListEnded = 1;
     TypeConversationUpdated = 2;
     TypeConversationDeleted = 3;
     TypeInteractionUpdated = 4;
-    TypeInteractionDeleted = 9;
-    TypeContactUpdated = 5;
-    TypeAccountUpdated = 6;
-    TypeMemberUpdated = 7;
-    TypeDeviceUpdated = 8;
+    TypeInteractionDeleted = 5;
+    TypeContactUpdated = 6;
+    TypeAccountUpdated = 7;
+    TypeMemberUpdated = 8;
+    TypeDeviceUpdated = 9;
     TypeNotified = 10;
   }
   message ConversationUpdated {
@@ -432,7 +433,7 @@ message StreamEvent {
   message DeviceUpdated {
     Device device = 1;
   }
-  message ListEnd {}
+  message ListEnded {}
   message Notified {
     Type type = 1;
     string title = 3;

@@ -14,14 +14,15 @@ func TestDispatcher(t *testing.T) {
 	called := false
 	var n NotifieeBundle
 	const errStr = "Test error"
-	n.StreamEventImpl = func(*StreamEvent) error {
+	n.StreamEventImpl = func(e *StreamEvent) error {
+		require.True(t, e.GetIsNew())
 		called = true
 		return errors.New(errStr)
 	}
 	d.Register(&n)
 	defer d.Unregister(&n)
 
-	err := d.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{})
+	err := d.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{}, true)
 	errs := multierr.Errors(err)
 	require.True(t, called)
 	require.Equal(t, len(errs), 1)

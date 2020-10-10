@@ -115,7 +115,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 		handlerMutex:   sync.Mutex{},
 	}
 
-	svc.eventHandler = newEventHandler(ctx, db, client, opts.Logger, &svc)
+	svc.eventHandler = newEventHandler(ctx, db, client, opts.Logger, &svc, false)
 
 	icr, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
 	if err != nil {

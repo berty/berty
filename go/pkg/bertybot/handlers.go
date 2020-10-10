@@ -136,7 +136,7 @@ func (b *Bot) handleEvent(ctx context.Context, event *bertymessenger.StreamEvent
 		context.Member = payload.(*bertymessenger.StreamEvent_MemberUpdated).Member
 		b.callHandlers(context, MemberUpdatedHandler)
 
-	case bertymessenger.StreamEvent_TypeListEnd:
+	case bertymessenger.StreamEvent_TypeListEnded:
 		b.callHandlers(context, EndOfReplayHandler)
 
 	case bertymessenger.StreamEvent_TypeNotified:

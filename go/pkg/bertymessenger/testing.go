@@ -199,7 +199,7 @@ func (a *TestingAccount) GetClient() MessengerServiceClient {
 func (a *TestingAccount) DrainInitEvents(t *testing.T) {
 	for {
 		event := a.TryNextEvent(t, 100*time.Millisecond)
-		if event.Type == StreamEvent_TypeListEnd {
+		if event.Type == StreamEvent_TypeListEnded {
 			return
 		}
 	}

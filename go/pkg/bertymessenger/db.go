@@ -148,9 +148,17 @@ func (d *dbWrapper) addConversation(groupPK string) (*Conversation, error) {
 	return d.getConversationByPK(groupPK)
 }
 
-func (d *dbWrapper) updateConversation(c Conversation) error {
+func (d *dbWrapper) updateConversation(c Conversation) (bool, error) {
 	if c.PublicKey == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
+		return false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
+	}
+
+	isNew := false
+	_, err := d.getConversationByPK(c.GetPublicKey())
+	if err == gorm.ErrRecordNotFound {
+		isNew = true
+	} else if err != nil {
+		return isNew, err
 	}
 
 	columns := []string(nil)
@@ -170,20 +178,22 @@ func (d *dbWrapper) updateConversation(c Conversation) error {
 		columns = append(columns, "account_member_public_key")
 	}
 
-	cl := clause.OnConflict{ // Maybe DoNothing ?
-		Columns: []clause.Column{{Name: "public_key"}},
-	}
+	db := d.db
+
 	if len(columns) > 0 {
-		cl.DoUpdates = clause.AssignmentColumns(columns)
-	} else {
-		cl.DoNothing = true
+		db = db.Clauses(clause.OnConflict{
+			Columns:   []clause.Column{{Name: "public_key"}},
+			DoUpdates: clause.AssignmentColumns(columns),
+		})
+	} else if !isNew { // no update needed
+		return false, nil
 	}
 
-	if err := d.db.Clauses(cl).Create(&c).Error; err != nil {
-		return errcode.ErrInternal.Wrap(err)
+	if err := db.Create(&c).Error; err != nil {
+		return isNew, errcode.ErrInternal.Wrap(err)
 	}
 
-	return nil
+	return isNew, nil
 }
 
 func (d *dbWrapper) updateConversationReadState(pk string, newUnread bool, eventDate time.Time) error {
@@ -324,14 +334,17 @@ func (d *dbWrapper) getConversationByPK(publicKey string) (*Conversation, error)
 	return conversation, nil
 }
 
-func (d *dbWrapper) getMemberByPK(publicKey string) (*Member, error) {
+func (d *dbWrapper) getMemberByPK(publicKey string, convPK string) (*Member, error) {
 	if publicKey == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("member public key cannot be empty"))
+	}
+	if convPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("conversation public key cannot be empty"))
 	}
 
 	member := &Member{}
 
-	if err := d.db.First(&member, &Member{PublicKey: publicKey}).Error; err != nil {
+	if err := d.db.First(&member, &Member{PublicKey: publicKey, ConversationPublicKey: convPK}).Error; err != nil {
 		return nil, err
 	}
 
@@ -382,6 +395,13 @@ func (d *dbWrapper) addContactRequestOutgoingEnqueued(contactPK, displayName, co
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
 	}
 
+	ec, err := d.getContactByPK(contactPK)
+	if err == nil {
+		return ec, errcode.ErrDBEntryAlreadyExists
+	} else if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+
 	contact := &Contact{
 		PublicKey:             contactPK,
 		DisplayName:           displayName,
@@ -390,7 +410,7 @@ func (d *dbWrapper) addContactRequestOutgoingEnqueued(contactPK, displayName, co
 		ConversationPublicKey: convPK,
 	}
 
-	tx := d.db.Where(&Contact{PublicKey: contactPK}).FirstOrCreate(&contact)
+	tx := d.db.Where(&Contact{PublicKey: contactPK}).Create(&contact)
 
 	// if tx.Error == nil && tx.RowsAffected == 0 {
 	// Maybe update DisplayName in some cases?
@@ -424,13 +444,19 @@ func (d *dbWrapper) addContactRequestOutgoingSent(contactPK string) (*Contact, e
 	return contact, d.db.Where(&Contact{PublicKey: contactPK}).First(&contact).Error
 }
 
-func (d *dbWrapper) addContactRequestIncomingReceived(contactPK, displayName string, groupPk string) (*Contact, error) {
+func (d *dbWrapper) addContactRequestIncomingReceived(contactPK, displayName, groupPk string) (*Contact, error) {
 	if contactPK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
 	}
 
+	ec, err := d.getContactByPK(contactPK)
+	if err == nil {
+		return ec, errcode.ErrDBEntryAlreadyExists
+	} else if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+
 	if err := d.db.
-		Clauses(clause.OnConflict{DoNothing: true}).
 		Create(&Contact{
 			DisplayName:           displayName,
 			PublicKey:             contactPK,
@@ -438,9 +464,7 @@ func (d *dbWrapper) addContactRequestIncomingReceived(contactPK, displayName str
 			CreatedDate:           timestampMs(time.Now()),
 			ConversationPublicKey: groupPk,
 		}).
-		Error; isSQLiteError(err, sqlite3.ErrConstraint) {
-		return d.getContactByPK(contactPK)
-	} else if err != nil {
+		Error; err != nil {
 		return nil, errcode.ErrDBWrite.Wrap(err)
 	}
 
@@ -630,16 +654,24 @@ func (d *dbWrapper) updateContact(contact Contact) error {
 	})
 }
 
-func (d *dbWrapper) addInteraction(i Interaction) (*Interaction, error) {
-	if i.CID == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
+func (d *dbWrapper) addInteraction(rawInte Interaction) (*Interaction, bool, error) {
+	if rawInte.CID == "" {
+		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
 	}
 
-	if err := d.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&i).Error; err != nil {
-		return nil, err
+	_, err := d.getInteractionByCID(rawInte.CID)
+	isNew := false
+	if err == gorm.ErrRecordNotFound {
+		if err := d.db.Create(&rawInte).Error; err != nil {
+			return nil, true, err
+		}
+		isNew = true
+	} else if err != nil {
+		return nil, false, err
 	}
 
-	return d.getInteractionByCID(i.CID)
+	i, err := d.getInteractionByCID(rawInte.CID)
+	return i, isNew, err
 }
 
 func (d *dbWrapper) getReplyOptionsCIDForConversation(pk string) (string, error) {
@@ -736,49 +768,83 @@ func (d *dbWrapper) addMember(memberPK, groupPK, displayName string) (*Member, e
 	}
 
 	if err := d.tx(func(tx *dbWrapper) error {
-		// Check if member already exists for another conversation
-		{
-			count := int64(0)
-
-			if err := tx.db.
-				Model(&Member{}).
-				Where("public_key == ? AND conversation_public_key != ?", memberPK, groupPK).
-				Count(&count).
-				Error; err != nil {
-				return err
-			}
-
-			if count > 0 {
-				return errcode.ErrDBAddConversation.Wrap(fmt.Errorf("a conversation already exists for this contact"))
-			}
+		// Check if member already exists
+		if m, err := tx.getMemberByPK(memberPK, groupPK); err == nil {
+			member = m
+			return errcode.ErrDBEntryAlreadyExists
+		} else if err != nil && err != gorm.ErrRecordNotFound {
+			return err
 		}
 
-		onConflict := clause.OnConflict{
-			Columns:   []clause.Column{{Name: "public_key"}},
-			DoUpdates: clause.AssignmentColumns([]string{"display_name"}),
-		}
-
+		// Ensure a display name
 		if displayName == "" {
 			nameSuffix := "1337"
 			if len(memberPK) >= 4 {
 				nameSuffix = memberPK[:4]
 			}
 			displayName = "anon#" + nameSuffix
-
-			onConflict = clause.OnConflict{
-				Columns:   []clause.Column{{Name: "public_key"}},
-				DoNothing: true,
-			}
 		}
-
 		member.DisplayName = displayName
 
-		return tx.db.Clauses(&onConflict).Create(&member).Error
-	}); err != nil {
+		return tx.db.Create(&member).Error
+	}); errcode.Is(err, errcode.ErrDBEntryAlreadyExists) {
+		return member, err
+	} else if err != nil {
 		return nil, err
 	}
 
 	return member, nil
+}
+
+func (d *dbWrapper) upsertMember(memberPK, groupPK, displayName string) (*Member, bool, error) {
+	if memberPK == "" {
+		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("member public key cannot be empty"))
+	}
+
+	if groupPK == "" {
+		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("conversation public key cannot be empty"))
+	}
+
+	isNew := false
+	em, err := d.getMemberByPK(memberPK, groupPK)
+	if err == gorm.ErrRecordNotFound {
+		isNew = true
+	} else if err != nil {
+		return nil, isNew, err
+	}
+
+	if displayName == "" {
+		nameSuffix := "1337"
+		if len(memberPK) >= 4 {
+			nameSuffix = memberPK[:4]
+		}
+		displayName = "anon#" + nameSuffix
+	}
+
+	m := Member{
+		PublicKey:             memberPK,
+		ConversationPublicKey: groupPK,
+		DisplayName:           displayName,
+	}
+
+	columns := []string(nil)
+	if displayName != "" && em.GetDisplayName() != m.GetDisplayName() {
+		columns = append(columns, "display_name")
+	}
+
+	db := d.db
+
+	if len(columns) > 0 {
+		db = db.Clauses(clause.OnConflict{DoUpdates: clause.AssignmentColumns(columns)})
+	} else if !isNew { // no update or create needed
+		return em, false, nil
+	}
+
+	if err := db.Create(&m).Error; err != nil {
+		return nil, isNew, errcode.ErrInternal.Wrap(err)
+	}
+
+	return &m, isNew, nil
 }
 
 func (d *dbWrapper) setConversationIsOpenStatus(conversationPK string, status bool) (*Conversation, bool, error) {
