@@ -8,8 +8,9 @@ import { TabBar } from '../shared-components/TabBar'
 import HeaderSettings from '../shared-components/Header'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
-import { useContacts } from '@berty-tech/store/hooks'
+import { useContacts, usePersistentOptions } from '@berty-tech/store/hooks'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import Logo from '../main/1_berty_picto.svg'
 
 const ContactSettingsHeaderContent: React.FC = ({ children }) => {
 	const [{ margin }] = useStyles()
@@ -29,8 +30,13 @@ const SelectedContent: React.FC<{ contentName: string; publicKey: string }> = ({
 }
 
 const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
-	const [{ border, background, padding, row, absolute, text }] = useStyles()
+	const [{ border, background, padding, row, absolute, text, margin }] = useStyles()
 	const [selectedContent, setSelectedContent] = useState('Fingerprint')
+
+	const persistOpts = usePersistentOptions()
+	const isBetabot =
+		persistOpts && contact.publicKey.toString() === persistOpts.betabot.convPk.toString()
+	const betabotAvatarSize = 100
 	return (
 		<View style={[padding.medium, padding.top.scale(50)]}>
 			<View
@@ -42,11 +48,36 @@ const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 				]}
 			>
 				<View style={[row.item.justify, absolute.scale({ top: -50 })]}>
-					<ProceduralCircleAvatar
-						seed={contact.publicKey}
-						style={[border.shadow.big]}
-						diffSize={30}
-					/>
+					{!isBetabot ? (
+						<ProceduralCircleAvatar
+							seed={contact.publicKey}
+							style={[border.shadow.big]}
+							diffSize={30}
+						/>
+					) : (
+						<View
+							style={[
+								border.radius.scale(betabotAvatarSize),
+								border.shadow.medium,
+								background.white,
+								margin.right.small,
+								{
+									justifyContent: 'center',
+									alignItems: 'center',
+									display: 'flex',
+									width: betabotAvatarSize,
+									height: betabotAvatarSize,
+									alignSelf: 'center',
+								},
+							]}
+						>
+							<Logo
+								width={betabotAvatarSize - 35}
+								height={betabotAvatarSize - 35}
+								style={{ right: -1, top: -1 }}
+							/>
+						</View>
+					)}
 				</View>
 				<View style={[padding.horizontal.medium, padding.bottom.medium, padding.top.scale(65)]}>
 					<Text style={[text.size.big, text.color.black, text.align.center, text.bold.small]}>
