@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import { useContactsList, useAccountContactSearchResults } from '@berty-tech/store/hooks'
+import { messenger as messengerpb } from '@berty-tech/api/index.js'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { Header } from './HomeModal'
@@ -129,7 +130,8 @@ const AddMembers: React.FC<AddMembersProps> = ({
 	const [searchText, setSearchText] = useState('')
 	const searchContacts = useAccountContactSearchResults(searchText)
 	const accountContacts = useContactsList()
-	const contacts = searchText.length ? searchContacts : accountContacts
+	let contacts = searchText.length ? searchContacts : accountContacts
+	contacts = contacts.filter((contact: any) => contact.state === messengerpb.Contact.State.Accepted)
 
 	return (
 		<View>
