@@ -271,7 +271,7 @@ export const CreateGroupHeader: React.FC<{}> = () => {
 					New Group
 				</Text>
 			</View>
-			<Icon name='people-outline' width={40} height={40} fill={color.white} />
+			<Icon name='users' pack='custom' width={35} height={35} fill={color.white} />
 		</View>
 	)
 }
