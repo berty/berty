@@ -19,6 +19,8 @@ export const fakeContacts = (length, start) => {
 		const convPk = `fake_pk_contact_conv_${index + start}` // TODO: set to empty depending on state
 		const contactPk = `fake_pk_contact_${index + start}`
 		const name = faker.name.findName()
+		const createdDate =
+			Date.now() - Math.floor(Math.random() * (50 * 24 * 60 * 60 * 1000)).toString()
 		if (state === messengerpb.Contact.State.Accepted) {
 			conversationList.push({
 				publicKey: convPk,
@@ -26,6 +28,7 @@ export const fakeContacts = (length, start) => {
 				displayName: name,
 				type: messengerpb.Conversation.Type.ContactType,
 				fake: true,
+				createdDate,
 			})
 		}
 		return {

@@ -1,4 +1,5 @@
 import { google } from '@berty-tech/api'
+import moment from 'moment'
 
 export const promiseResolved = (): Promise<void> => new Promise((res): any => setTimeout(res, 1000))
 // export const promiseRejected = (): Promise<void> =>
@@ -19,60 +20,34 @@ export const timestamp = (date: Date): google.protobuf.ITimestamp => ({
 	nanos: (date.getTime() % 1000) * 1000,
 })
 
-export const deepFilterEqual = <T extends any>(
-	a: T,
-	b: T,
-	opts: { exclude?: Array<string>; noPrivate?: boolean } = {},
-): boolean => {
-	const { exclude = [], noPrivate = true } = opts
-	if (!a) {
-		return true
-	}
-	if (typeof a !== typeof b) {
-		return false
-	}
-	if (typeof a === 'object') {
-		if (Array.isArray(a)) {
-			if (!Array.isArray(b)) {
-				return false
-			}
-			return a.every((av: T) => b.some((bv: T) => deepFilterEqual(av, bv)))
-		}
-		return Object.keys(a).every(
-			(k: string) =>
-				(noPrivate && k[0] === '_') ||
-				exclude.some((excludeKey) => excludeKey === k) ||
-				deepFilterEqual(a[k], b[k]),
-		)
-	}
-	return a === b
+const getValidDateMoment = (date: number | Date): moment.Moment => {
+	const mDate = moment(date)
+	return mDate.isValid() ? mDate : moment(0)
 }
 
-export const deepEqual = <T extends any>(
-	a: T,
-	b: T,
-	opts: { exclude?: Array<string>; noPrivate?: boolean } = {},
-): boolean => {
-	const { exclude = [], noPrivate = true } = opts
-	if (typeof a !== typeof b) {
-		return false
+const fmtTimestamp1 = (date: number | Date): string => {
+	const now = moment()
+	const mDate = getValidDateMoment(date)
+	if (now.isSame(mDate, 'day')) {
+		return mDate.format('hh:mm a')
+	} else if (now.isSame(mDate, 'week')) {
+		// return mDate.format('DD/MM')
+		return mDate.format('dddd')
+	} else {
+		return mDate.format('DD/MM/YY')
 	}
-	if (typeof a === 'object') {
-		if (Array.isArray(a)) {
-			if (!Array.isArray(b)) {
-				return false
-			}
-			return a.every((av: T) => b.some((bv: T) => deepEqual(av, bv)))
-		}
-		if (Array.isArray(b)) {
-			return false
-		}
-		return Object.keys(a).every(
-			(k) =>
-				(noPrivate && k[0] === '_') ||
-				exclude.some((excludeKey) => excludeKey === k) ||
-				deepEqual(a[k], b[k]),
-		)
-	}
-	return a === b
+}
+
+const fmtTimestamp2 = (date: number | Date): string => {
+	const mDate = getValidDateMoment(date)
+	return mDate.format('MMM D YYYY')
+}
+
+export const timeFormat = { fmtTimestamp1, fmtTimestamp2 }
+
+export const strToTimestamp = (dateStr?: string): number =>
+	new Date(parseInt(dateStr || '0', 10)).getTime()
+
+export const pbDateToNum = (pbTimestamp?: number | Long | string | null): number => {
+	return !pbTimestamp ? 0 : parseInt(pbTimestamp as string, 10)
 }

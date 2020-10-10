@@ -625,7 +625,7 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: string }> = ({
 	const initialScrollIndex = React.useMemo(() => {
 		if (scrollToMessage) {
 			for (let i = 0; i < messages.length; i++) {
-				if (messages[i].cid === scrollToMessage) {
+				if (messages[i] && messages[i].cid === scrollToMessage) {
 					return i
 				}
 			}
@@ -640,7 +640,7 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: string }> = ({
 
 	const persistOpts = usePersistentOptions()
 	const isBetabot =
-		persistOpts && conv.contactPublicKey.toString() === persistOpts.betabot.convPk.toString()
+		persistOpts && conv?.contactPublicKey?.toString() === persistOpts?.betabot?.convPk?.toString()
 	const isBetabotAdded = persistOpts && persistOpts.betabot.added
 
 	return (
@@ -652,21 +652,21 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: string }> = ({
 			keyboardDismissMode='on-drag'
 			data={items}
 			inverted
-			keyExtractor={(item: any) => item.cid}
+			keyExtractor={(item: any, index: number) => item?.cid || `${index}`}
 			ListFooterComponent={
 				<InfosChat {...conv} isBetabot={isBetabot} isBetabotAdded={isBetabotAdded} />
 			}
 			renderItem={({ item, index }: { item: any; index: number }) => {
-				if (isBetabot && !isBetabotAdded) {
+				if ((isBetabot && !isBetabotAdded) || !item || !item.cid) {
 					return null
 				}
 				return (
 					<Message
-						id={item.cid}
+						id={item?.cid || `${index}`}
 						convKind={messengerpb.Conversation.Type.ContactType}
 						convPK={conv.publicKey}
-						previousMessageId={index > 0 ? items[index + 1]?.cid : ''}
-						nextMessageId={items[index - 1]?.cid || ''}
+						previousMessageId={index < items.length - 1 ? items[index + 1]?.cid : ''}
+						nextMessageId={index > 0 ? items[index - 1]?.cid : ''}
 					/>
 				)
 			}}

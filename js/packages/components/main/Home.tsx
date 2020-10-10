@@ -15,8 +15,6 @@ import { SafeAreaConsumer, SafeAreaView } from 'react-native-safe-area-context'
 import { Icon, Text } from 'react-native-ui-kitten'
 import LinearGradient from 'react-native-linear-gradient'
 
-import moment from 'moment'
-
 import { ScreenProps, useNavigation, Routes } from '@berty-tech/navigation'
 import {
 	useConversationLength,
@@ -25,6 +23,7 @@ import {
 	useMsgrContext,
 	useLastConvInteraction,
 	usePersistentOptions,
+	useSortedConversationList,
 } from '@berty-tech/store/hooks'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
@@ -32,6 +31,7 @@ import * as api from '@berty-tech/api/index.pb'
 import { useStyles } from '@berty-tech/styles'
 
 import { useLayout } from '../hooks'
+import { pbDateToNum, strToTimestamp, timeFormat } from '../helpers'
 import FromNow from '../shared-components/FromNow'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { SwipeHelperReactNavTabBar } from '../shared-components/SwipeNavRecognizer'
@@ -278,13 +278,15 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 		type = messengerpb.Conversation.Type.ContactType,
 		unreadCount,
 		contactPublicKey,
+		createdDate,
+		lastUpdate,
 	} = props
 
 	const ctx = useMsgrContext()
 
 	const lastInte = useLastConvInteraction(publicKey, interactionsFilter)
 
-	const sentDate = lastInte ? parseInt(lastInte.sentDate, 10) : Date.now()
+	const displayDate = lastUpdate || createdDate ? pbDateToNum(lastUpdate || createdDate) : null
 
 	const contact =
 		Object.values(ctx.contacts).find((c: any) => c.conversationPublicKey === publicKey) || null
@@ -398,17 +400,20 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 							) : (
 								<>
 									<UnreadCount value={unreadCount} isConvBadge />
-									<Text
-										style={[
-											padding.left.small,
-											text.size.small,
-											unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
-										]}
-									>
-										{Date.now() - new Date(sentDate).getTime() > 86400000
+									{displayDate && (
+										<Text
+											style={[
+												padding.left.small,
+												text.size.small,
+												unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
+											]}
+										>
+											{/* {Date.now() - new Date(sentDate).getTime() > 86400000
 											? moment(sentDate).format('DD/MM/YYYY')
-											: moment(sentDate).format('hh:mm')}
-									</Text>
+											: moment(sentDate).format('hh:mm')} */}
+											{timeFormat.fmtTimestamp1(strToTimestamp(displayDate))}
+										</Text>
+									)}
 								</>
 							)}
 							{lastInte && lastInte.isMe && (
@@ -531,7 +536,7 @@ const HomeHeader: React.FC<
 export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	// TODO: do something to animate the requests
 	const requests: any[] = useIncomingContactRequests()
-	const conversations: any[] = useConversationList() // TODO: sort
+	const conversations: any[] = useSortedConversationList()
 	const isConversation: number = useConversationLength()
 	const [layoutRequests, onLayoutRequests] = useLayout()
 	const [layoutHeader, onLayoutHeader] = useLayout()
