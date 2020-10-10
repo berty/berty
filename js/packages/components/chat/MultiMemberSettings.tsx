@@ -117,6 +117,7 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 							// previewValueColor={color.blue}
 							// state={{ value: 'Not a contact', color: color.grey, bgColor: color.light.grey }}
 							alone={false}
+							actionIcon={null}
 						/>
 					)
 				})}

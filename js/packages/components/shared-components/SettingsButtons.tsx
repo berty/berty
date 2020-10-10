@@ -30,7 +30,7 @@ type SettingButtonProps = {
 	}
 	alone?: boolean
 	toggled?: boolean
-	actionIcon?: string
+	actionIcon?: string | null
 	actionIconSize?: number
 	actionIconColor?: string
 	actionToggle?: React.Dispatch<React.SetStateAction<any>>
