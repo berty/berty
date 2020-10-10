@@ -136,16 +136,18 @@ const AddMembers: React.FC<AddMembersProps> = ({
 	return (
 		<View>
 			<View style={[padding.horizontal.large, padding.top.small, background.white]}>
-				<View style={[background.light.grey, padding.small, row.left, border.radius.medium]}>
+				<View
+					style={[padding.small, row.left, border.radius.medium, { backgroundColor: '#F7F8FF' }]}
+				>
 					<Icon
 						name='search-outline'
 						width={30}
 						height={30}
-						fill={color.grey}
+						fill='#AFB1C0'
 						style={row.item.justify}
 					/>
 					<TextInput
-						style={[text.color.grey, margin.left.small, row.item.justify]}
+						style={[margin.left.small, row.item.justify, { color: '#AFB1C0' }]}
 						placeholder={'Search'}
 						onChangeText={setSearchText}
 						autoCorrect={false}
