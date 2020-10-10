@@ -197,7 +197,7 @@ const InfosMultiMember: React.FC<api.berty.messenger.v1.IConversation> = ({
 	return (
 		<View>
 			<ChatDate date={createdDate} />
-			<View style={[margin.top.medium]}>
+			<View style={[margin.vertical.medium]}>
 				<Text style={[text.align.center, text.color.black, text.bold.medium]}>Group joined</Text>
 			</View>
 			{/*<MemberList members={Object.keys(members)} />*/}
