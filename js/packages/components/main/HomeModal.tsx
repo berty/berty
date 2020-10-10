@@ -362,9 +362,6 @@ export const HomeModal: React.FC<{}> = () => {
 					<Header title='Add contact' icon='user-plus' iconPack='custom' first>
 						<AddContact />
 					</Header>
-					<Header title='Requests sent' icon='paper-plane-outline'>
-						<OutgoingRequests />
-					</Header>
 					<Header
 						title='New group'
 						icon='users'

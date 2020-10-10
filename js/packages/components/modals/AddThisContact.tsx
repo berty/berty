@@ -54,8 +54,8 @@ const AddThisContact: React.FC<{
 
 	React.useEffect(() => {
 		if (done && !error) {
-			navigation.goBack()
-			navigation.navigate('Main.HomeModal')
+			// navigation.goBack()
+			navigation.navigate('Main.Home')
 		}
 	}, [done, error, navigation])
 

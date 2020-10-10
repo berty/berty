@@ -72,6 +72,7 @@ const ScanBody: React.FC<{}> = () => {
 				cameraProps={{ captureAudio: false }}
 				containerStyle={[borderRadius, { width: '100%', height: '100%', overflow: 'hidden' }]}
 				cameraStyle={{ width: '100%', height: '100%', aspectRatio: 1 }}
+				reactivate
 				// flashMode={RNCamera.Constants.FlashMode.torch}
 			/>
 			<ScanTarget height='75%' width='75%' style={{ position: 'absolute' }} />

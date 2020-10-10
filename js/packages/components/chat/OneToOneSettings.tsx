@@ -1,6 +1,6 @@
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { useContact, useConversation } from '@berty-tech/store/hooks'
+import { useContact, useConversation, usePersistentOptions } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 import React from 'react'
 import { ScrollView, View } from 'react-native'
@@ -9,6 +9,7 @@ import HeaderSettings from '../shared-components/Header'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import Logo from '../main/1_berty_picto.svg'
 
 //
 // OneToOneSettings
@@ -27,14 +28,44 @@ const useStylesOneToOne = () => {
 
 const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 	const _styles = useStylesOneToOne()
-	const [{ text, padding, border, row }] = useStyles()
+	const [{ text, padding, border, row, background, margin }] = useStyles()
+
+	const persistOpts = usePersistentOptions()
+	const isBetabot =
+		persistOpts && contact.publicKey.toString() === persistOpts.betabot.convPk.toString()
+	const betabotAvatarSize = 100
 	return (
 		<View style={[_styles.headerAvatar]}>
-			<ProceduralCircleAvatar
-				seed={contact.publicKey}
-				style={[border.shadow.big, row.center]}
-				diffSize={30}
-			/>
+			{!isBetabot ? (
+				<ProceduralCircleAvatar
+					seed={contact.publicKey}
+					style={[border.shadow.big, row.center]}
+					diffSize={30}
+				/>
+			) : (
+				<View
+					style={[
+						border.radius.scale(betabotAvatarSize),
+						border.shadow.medium,
+						background.white,
+						margin.right.small,
+						{
+							justifyContent: 'center',
+							alignItems: 'center',
+							display: 'flex',
+							width: betabotAvatarSize,
+							height: betabotAvatarSize,
+							alignSelf: 'center',
+						},
+					]}
+				>
+					<Logo
+						width={betabotAvatarSize - 35}
+						height={betabotAvatarSize - 35}
+						style={{ right: -1, top: -1 }}
+					/>
+				</View>
+			)}
 			<Text
 				numberOfLines={1}
 				style={[text.size.scale(18), text.color.white, text.align.center, padding.top.small]}
