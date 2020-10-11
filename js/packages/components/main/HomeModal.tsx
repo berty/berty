@@ -343,7 +343,7 @@ export const HomeModal: React.FC<{}> = () => {
 	const [{ absolute }, { windowHeight }] = useStyles()
 
 	const handleOnDrag = (e: Interactable.IDragEvent) => {
-		if (e.nativeEvent.y >= Math.min(250, windowHeight * 0.9)) {
+		if (e.nativeEvent.y >= Math.min(80, windowHeight * 0.9)) {
 			navigation.goBack()
 		}
 	}
@@ -355,7 +355,7 @@ export const HomeModal: React.FC<{}> = () => {
 			<View style={[absolute.bottom, absolute.left, absolute.right]}>
 				<Interactable.View
 					verticalOnly={true}
-					snapPoints={[{ x: 0 }, { x: -300 }]}
+					snapPoints={[{ x: 0 }, { x: -200 }]}
 					onDrag={(e) => handleOnDrag(e)}
 					boundaries={{ top: 0 }}
 				>

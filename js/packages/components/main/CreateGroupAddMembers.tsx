@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import { useContactsList, useAccountContactSearchResults } from '@berty-tech/store/hooks'
+import { messenger as messengerpb } from '@berty-tech/api/index.js'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { Header } from './HomeModal'
@@ -129,21 +130,24 @@ const AddMembers: React.FC<AddMembersProps> = ({
 	const [searchText, setSearchText] = useState('')
 	const searchContacts = useAccountContactSearchResults(searchText)
 	const accountContacts = useContactsList()
-	const contacts = searchText.length ? searchContacts : accountContacts
+	let contacts = searchText.length ? searchContacts : accountContacts
+	contacts = contacts.filter((contact: any) => contact.state === messengerpb.Contact.State.Accepted)
 
 	return (
 		<View>
 			<View style={[padding.horizontal.large, padding.top.small, background.white]}>
-				<View style={[background.light.grey, padding.small, row.left, border.radius.medium]}>
+				<View
+					style={[padding.small, row.left, border.radius.medium, { backgroundColor: '#F7F8FF' }]}
+				>
 					<Icon
 						name='search-outline'
 						width={30}
 						height={30}
-						fill={color.grey}
+						fill='#AFB1C0'
 						style={row.item.justify}
 					/>
 					<TextInput
-						style={[text.color.grey, margin.left.small, row.item.justify]}
+						style={[margin.left.small, row.item.justify, { color: '#AFB1C0' }]}
 						placeholder={'Search'}
 						onChangeText={setSearchText}
 						autoCorrect={false}
@@ -271,7 +275,7 @@ export const CreateGroupHeader: React.FC<{}> = () => {
 					New Group
 				</Text>
 			</View>
-			<Icon name='people-outline' width={40} height={40} fill={color.white} />
+			<Icon name='users' pack='custom' width={35} height={35} fill={color.white} />
 		</View>
 	)
 }

@@ -1,6 +1,8 @@
 import React from 'react'
 import { View, TouchableOpacity } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
+import LinearGradient from 'react-native-linear-gradient'
+
 import { useStyles } from '@berty-tech/styles'
 
 type FooterCreateGroupProps = {
@@ -23,39 +25,48 @@ export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, ico
 	const _styles = useStylesCreateGroup()
 
 	return (
-		<View style={[absolute.bottom, absolute.left, absolute.right, _styles.footerCreateGroup]}>
-			<TouchableOpacity onPress={() => action()}>
-				<View
-					style={[
-						background.light.blue,
-						padding.horizontal.medium,
-						padding.vertical.small,
-						{
-							flexDirection: 'row',
-							justifyContent: 'center',
-						},
-						_styles.footerCreateGroupButton,
-					]}
-				>
-					<View style={[row.item.justify]}>
-						<Text
-							style={[
-								text.bold.medium,
-								text.color.blue,
-								text.align.center,
-								_styles.footerCreateGroupText,
-							]}
-						>
-							{title}
-						</Text>
-					</View>
-					{icon && (
-						<View style={[row.item.justify, padding.left.medium]}>
-							<Icon name='arrow-forward-outline' width={25} height={25} fill={color.blue} />
+		<>
+			<LinearGradient
+				style={[
+					absolute.bottom,
+					{ alignItems: 'center', justifyContent: 'center', height: '15%', width: '100%' },
+				]}
+				colors={['#ffffff00', '#ffffff80', '#ffffffc0', '#ffffffff']}
+			/>
+			<View style={[absolute.bottom, absolute.left, absolute.right, _styles.footerCreateGroup]}>
+				<TouchableOpacity onPress={() => action()}>
+					<View
+						style={[
+							background.light.blue,
+							padding.horizontal.medium,
+							padding.vertical.small,
+							{
+								flexDirection: 'row',
+								justifyContent: 'center',
+							},
+							_styles.footerCreateGroupButton,
+						]}
+					>
+						<View style={[row.item.justify]}>
+							<Text
+								style={[
+									text.bold.medium,
+									text.color.blue,
+									text.align.center,
+									_styles.footerCreateGroupText,
+								]}
+							>
+								{title}
+							</Text>
 						</View>
-					)}
-				</View>
-			</TouchableOpacity>
-		</View>
+						{icon && (
+							<View style={[row.item.justify, padding.left.medium]}>
+								<Icon name='arrow-forward-outline' width={25} height={25} fill={color.blue} />
+							</View>
+						)}
+					</View>
+				</TouchableOpacity>
+			</View>
+		</>
 	)
 }

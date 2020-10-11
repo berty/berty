@@ -754,6 +754,12 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 	const isBetabot =
 		persistOpts && conv?.contactPublicKey?.toString() === persistOpts?.betabot?.convPk?.toString()
 	const isBetabotAdded = persistOpts && persistOpts.betabot.added
+	const isFooterDisable = isIncoming || (isBetabot && !isBetabotAdded)
+	const placeholder = isFooterDisable
+		? isBetabot
+			? 'Add betabot to write here...'
+			: 'Accept the request to write here...'
+		: 'Write a secure message...'
 
 	const [stickyDate, setStickyDate] = useState(conv?.lastUpdate || null)
 	const [showStickyDate, setShowStickyDate] = useState(false)
@@ -783,7 +789,8 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 						convPk={params?.convId}
 						isFocused={inputIsFocused}
 						setFocus={setInputFocus}
-						disabled={isIncoming || (isBetabot && !isBetabotAdded)}
+						disabled={isFooterDisable}
+						placeholder={placeholder}
 					/>
 					<ChatHeader convPk={params?.convId || ''} {...{ stickyDate, showStickyDate }} />
 				</KeyboardAvoidingView>
