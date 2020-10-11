@@ -411,7 +411,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 											{/* {Date.now() - new Date(sentDate).getTime() > 86400000
 											? moment(sentDate).format('DD/MM/YYYY')
 											: moment(sentDate).format('hh:mm')} */}
-											{timeFormat.fmtTimestamp1(strToTimestamp(displayDate))}
+											{timeFormat.fmtTimestamp1(displayDate)}
 										</Text>
 									)}
 								</>

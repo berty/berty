@@ -7,6 +7,10 @@ import {
 	ActivityIndicator,
 	KeyboardAvoidingView,
 	Text as TextNative,
+	SectionListRenderItem,
+	SectionListData,
+	SectionList,
+	ViewToken,
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { CommonActions } from '@react-navigation/native'
@@ -39,6 +43,9 @@ import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import Logo from '../main/1_berty_picto.svg'
 import Avatar from '../modals/Buck_Berty_Icon_Card.svg'
+import { groupBy } from 'lodash'
+import { pbDateToNum } from '../helpers'
+import { useLayout } from '../hooks'
 
 //
 // Chat
@@ -90,7 +97,7 @@ const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) 
 	)
 }
 
-export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
+export const ChatHeader: React.FC<any> = ({ convPk, stickyDate, showStickyDate }) => {
 	const { navigate, goBack } = useNavigation()
 	const conv = useConversation(convPk)
 	const contact = useContact(conv?.contactPublicKey || null)
@@ -100,6 +107,8 @@ export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
 		{ row, padding, column, margin, text, flex, opacity, color, border, background },
 		{ scaleHeight },
 	] = useStyles()
+
+	const [layoutHeader, onLayoutHeader] = useLayout() // to position date under blur
 
 	const persistOpts = usePersistentOptions()
 	const isBetabot =
@@ -131,7 +140,7 @@ export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
 	}
 	const title = conv.fake ? `FAKE - ${contact.displayName}` : contact?.displayName || ''
 	return (
-		<View style={{ position: 'absolute', top: 0, left: 0, right: 0 }}>
+		<View style={{ position: 'absolute', top: 0, left: 0, right: 0 }} onLayout={onLayoutHeader}>
 			<BlurView
 				blurType='light'
 				blurAmount={30}
@@ -231,10 +240,23 @@ export const ChatHeader: React.FC<{ convPk: any }> = ({ convPk }) => {
 					</TouchableOpacity>
 				</View>
 			</View>
+			{stickyDate && showStickyDate && layoutHeader?.height && (
+				<View
+					style={{
+						position: 'absolute',
+						top: layoutHeader.height + 10,
+						left: 0,
+						right: 0,
+					}}
+				>
+					<ChatDate date={stickyDate} />
+				</View>
+			)}
 		</View>
 	)
 }
 
+// TODO: refactor CSS; this uses almost the same styles as chat invitation wrapper
 const ContactInitiatedWrapper: React.FC<{ children: any }> = ({ children }) => {
 	const [
 		{ padding, border, flex, margin, width, background, height, minWidth },
@@ -599,10 +621,12 @@ const InfosChat: React.FC<api.berty.messenger.v1.IConversation & any> = ({
 	)
 }
 
-const MessageList: React.FC<{ convPk: string; scrollToMessage?: string }> = ({
-	convPk,
-	scrollToMessage,
-}) => {
+const MessageList: React.FC<{
+	convPk: string
+	scrollToMessage?: string
+	setStickyDate: any
+	setShowStickyDate?: any
+}> = ({ convPk, scrollToMessage, setStickyDate, setShowStickyDate }) => {
 	const ctx: any = useMsgrContext()
 	const conv = ctx.conversations[convPk]
 	const messages = useSortedConvInteractions(convPk).filter(
@@ -614,14 +638,13 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: string }> = ({
 	if (conv.replyOptions !== null) {
 		messages.push(conv.replyOptions)
 	}
-
+	const [{ overflow, row, flex, margin }, { scaleHeight }] = useStyles()
 	const flatListRef: any = useRef(null)
 
 	const onScrollToIndexFailed = () => {
 		// Not sure why this happens (something to do with item/screen dimensions I think)
 		flatListRef.current?.scrollToIndex({ index: 0 })
 	}
-
 	const initialScrollIndex = React.useMemo(() => {
 		if (scrollToMessage) {
 			for (let i = 0; i < messages.length; i++) {
@@ -632,45 +655,86 @@ const MessageList: React.FC<{ convPk: string; scrollToMessage?: string }> = ({
 		}
 	}, [messages, scrollToMessage])
 
-	const [{ overflow, row, flex }, { scaleHeight }] = useStyles()
-
-	const items: any = React.useMemo(() => {
-		return messages?.reverse() || []
-	}, [messages])
-
 	const persistOpts = usePersistentOptions()
 	const isBetabot =
 		persistOpts && conv?.contactPublicKey?.toString() === persistOpts?.betabot?.convPk?.toString()
 	const isBetabotAdded = persistOpts && persistOpts.betabot.added
 
-	return (
-		<FlatList
-			initialScrollIndex={initialScrollIndex}
-			onScrollToIndexFailed={onScrollToIndexFailed}
-			style={[overflow, row.item.fill, flex.tiny, { marginTop: 105 * scaleHeight }]}
-			ref={flatListRef}
-			keyboardDismissMode='on-drag'
-			data={items}
-			inverted
-			keyExtractor={(item: any, index: number) => item?.cid || `${index}`}
-			ListFooterComponent={
-				<InfosChat {...conv} isBetabot={isBetabot} isBetabotAdded={isBetabotAdded} />
+	const items: any = React.useMemo(() => {
+		return messages?.reverse() || []
+	}, [messages])
+
+	const sections: any = React.useMemo(() => {
+		try {
+			const grouped = groupBy(items, (m) =>
+				moment(pbDateToNum(m?.sentDate || Date.now())).format('DD/MM/YYYY'),
+			)
+			const mapped = Object.entries(grouped).map(([k, v], i) => ({ title: k, data: v, index: i }))
+			return mapped
+		} catch (e) {
+			console.warn('could not make sections from data:', e)
+			return []
+		}
+	}, [items])
+
+	const renderDateFooter: (info: { section: SectionListData<any> }) => React.ReactElement<any> = ({
+		section,
+	}) => {
+		return (
+			<View style={[margin.bottom.tiny]}>
+				{section?.index > 0 && (
+					<ChatDate date={moment(section.title, 'DD/MM/YYYY').unix() * 1000} />
+				)}
+			</View>
+		)
+	}
+	const renderItem: SectionListRenderItem<any> = ({ item, index }) => {
+		return (
+			<Message
+				id={item?.cid || `${index}`}
+				convKind={messengerpb.Conversation.Type.ContactType}
+				convPK={conv.publicKey}
+				previousMessageId={index < items.length - 1 ? items[index + 1]?.cid : ''}
+				nextMessageId={index > 0 ? items[index - 1]?.cid : ''}
+			/>
+		)
+	}
+
+	const updateStickyDate: (info: { viewableItems: ViewToken[] }) => void = ({ viewableItems }) => {
+		if (viewableItems && viewableItems.length) {
+			const minDate = viewableItems[viewableItems.length - 1]?.section?.title
+			if (minDate) {
+				setStickyDate(moment(minDate, 'DD/MM/YYYY').unix() * 1000)
 			}
-			renderItem={({ item, index }: { item: any; index: number }) => {
-				if ((isBetabot && !isBetabotAdded) || !item || !item.cid) {
-					return null
+		}
+	}
+
+	return (
+		<>
+			<SectionList
+				initialScrollIndex={initialScrollIndex}
+				onScrollToIndexFailed={onScrollToIndexFailed}
+				style={[overflow, row.item.fill, flex.tiny, { marginTop: 105 * scaleHeight }]}
+				ref={flatListRef}
+				keyboardDismissMode='on-drag'
+				sections={sections}
+				inverted
+				keyExtractor={(item: any, index: number) => item?.cid || `${index}`}
+				ListFooterComponent={
+					<InfosChat {...conv} isBetabot={isBetabot} isBetabotAdded={isBetabotAdded} />
 				}
-				return (
-					<Message
-						id={item?.cid || `${index}`}
-						convKind={messengerpb.Conversation.Type.ContactType}
-						convPK={conv.publicKey}
-						previousMessageId={index < items.length - 1 ? items[index + 1]?.cid : ''}
-						nextMessageId={index > 0 ? items[index - 1]?.cid : ''}
-					/>
-				)
-			}}
-		/>
+				renderSectionFooter={renderDateFooter}
+				renderItem={renderItem}
+				onViewableItemsChanged={updateStickyDate}
+				initialNumToRender={20}
+				onScrollBeginDrag={(e) => {
+					setShowStickyDate(true) // TODO: Not if start of conversation is visible
+				}}
+				onScrollEndDrag={(e) => {
+					setTimeout(() => setShowStickyDate(false), 2000)
+				}}
+			/>
+		</>
 	)
 }
 
@@ -682,14 +746,17 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 
 	const ctx: any = useMsgrContext()
 	const conv = ctx.conversations[params?.convId]
-	const contact =
+	const contact: any =
 		Object.values(ctx.contacts).find((c: any) => c.conversationPublicKey === conv?.publicKey) ||
 		null
-	const isIncoming = contact.state === messengerpb.Contact.State.IncomingRequest
+	const isIncoming = contact?.state === messengerpb.Contact.State.IncomingRequest
 	const persistOpts = usePersistentOptions()
 	const isBetabot =
 		persistOpts && conv?.contactPublicKey?.toString() === persistOpts?.betabot?.convPk?.toString()
 	const isBetabotAdded = persistOpts && persistOpts.betabot.added
+
+	const [stickyDate, setStickyDate] = useState(conv?.lastUpdate || null)
+	const [showStickyDate, setShowStickyDate] = useState(false)
 
 	return (
 		<View style={[StyleSheet.absoluteFill, background.white, { flex: 1 }]}>
@@ -707,14 +774,18 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 					style={[flex.tiny, { justifyContent: 'flex-start' }]}
 					behavior='padding'
 				>
-					<MessageList convPk={params?.convId} scrollToMessage={params?.scrollToMessage || '0'} />
+					<MessageList
+						convPk={params?.convId}
+						scrollToMessage={params?.scrollToMessage || '0'}
+						{...{ setStickyDate, setShowStickyDate }}
+					/>
 					<ChatFooter
 						convPk={params?.convId}
 						isFocused={inputIsFocused}
 						setFocus={setInputFocus}
 						disabled={isIncoming || (isBetabot && !isBetabotAdded)}
 					/>
-					<ChatHeader convPk={params?.convId || ''} />
+					<ChatHeader convPk={params?.convId || ''} {...{ stickyDate, showStickyDate }} />
 				</KeyboardAvoidingView>
 			</SwipeNavRecognizer>
 		</View>
