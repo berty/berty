@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import {
 	TouchableOpacity,
 	View,
@@ -8,14 +8,21 @@ import {
 	Image,
 	ActivityIndicator,
 	Text as TextNative,
+	SectionListRenderItem,
+	SectionListData,
+	SectionList,
+	ViewToken,
 } from 'react-native'
 import { Text, Icon } from 'react-native-ui-kitten'
 import { CommonActions } from '@react-navigation/native'
+import { groupBy } from 'lodash'
+import moment from 'moment'
 
 import { useStyles } from '@berty-tech/styles'
 import { Routes, ScreenProps, useNavigation } from '@berty-tech/navigation'
 import {
 	useConversation,
+	useLastConvInteraction,
 	useMsgrContext,
 	useReadEffect,
 	useSortedConvInteractions,
@@ -24,11 +31,16 @@ import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import * as api from '@berty-tech/api/index.pb'
 
 import { ChatFooter, ChatDate } from './shared-components/Chat'
-import { ConversationProceduralAvatar } from '../shared-components/ProceduralCircleAvatar'
+import {
+	ConversationProceduralAvatar,
+	ProceduralCircleAvatar,
+} from '../shared-components/ProceduralCircleAvatar'
 import { Message } from './shared-components/Message'
 import BlurView from '../shared-components/BlurView'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import AvatarGroup19 from '../main/Avatar_Group_Copy_19.png'
+import { useLayout } from '../hooks'
+import { pbDateToNum } from '../helpers'
 
 //
 // MultiMember
@@ -36,51 +48,71 @@ import AvatarGroup19 from '../main/Avatar_Group_Copy_19.png'
 
 // Styles
 
-const HeaderMultiMember: React.FC<{ id: string }> = ({ id }) => {
+const HeaderMultiMember: React.FC<{
+	id: string
+	stickyDate?: number
+	showStickyDate?: boolean
+}> = ({ id, stickyDate, showStickyDate }) => {
 	const { navigate, goBack } = useNavigation()
-	const [{ row, padding, flex, text, column, absolute }, { scaleHeight }] = useStyles()
+	const [{ row, padding, flex, text, column, absolute, margin, color }] = useStyles()
 	const conversation = useConversation(id)
+	const [layoutHeader, onLayoutHeader] = useLayout() // to position date under blur
+
 	return (
-		<BlurView
-			style={[
-				padding.horizontal.medium,
-				absolute.top,
-				absolute.right,
-				absolute.left,
-				{ alignItems: 'center' },
-			]}
-			blurType='light'
-			blurAmount={30}
-		>
+		<View style={{ position: 'absolute', top: 0, left: 0, right: 0 }} onLayout={onLayoutHeader}>
+			<BlurView
+				blurType='light'
+				blurAmount={30}
+				style={{ position: 'absolute', bottom: 0, top: 0, left: 0, right: 0 }}
+			/>
 			<View
 				style={[
-					{
-						alignItems: 'center',
-						flexDirection: 'row',
-						marginTop: 50 * scaleHeight,
-						paddingBottom: 15 * scaleHeight,
-					},
+					flex.align.center,
+					flex.direction.row,
+					padding.right.medium,
+					padding.left.tiny,
+					margin.top.scale(50),
+					padding.bottom.scale(20),
 				]}
 			>
-				<TouchableOpacity style={[flex.small, row.left]} onPress={goBack}>
-					<Icon style={[column.item.center]} name='arrow-back-outline' width={30} height={30} />
-				</TouchableOpacity>
-				<View style={[flex.small, row.item.justify]}>
-					<TextNative
-						numberOfLines={1}
-						style={[text.align.center, text.bold.medium, text.size.scale(20), text.color.black]}
-					>
-						{conversation?.displayName || ''}
-					</TextNative>
-				</View>
 				<TouchableOpacity
-					style={[flex.small, row.right]}
-					onPress={() => navigate.chat.groupSettings({ convId: id })}
+					style={[flex.tiny, flex.justify.center, flex.align.center]}
+					onPress={goBack}
 				>
-					<Image source={AvatarGroup19} style={{ width: 40, height: 40 }} />
+					<Icon name='arrow-back-outline' width={25} height={25} fill={color.black} />
 				</TouchableOpacity>
+				<View style={[flex.large, column.justify, row.item.justify, margin.top.small]}>
+					<View style={[flex.direction.row, flex.justify.center, flex.align.center]}>
+						<Text
+							numberOfLines={1}
+							style={[text.align.center, text.bold.medium, text.size.scale(20)]}
+						>
+							{conversation?.displayName || ''}
+						</Text>
+					</View>
+				</View>
+				<View style={[flex.tiny, row.fill, { alignItems: 'center' }]}>
+					<TouchableOpacity
+						style={[flex.small, row.right]}
+						onPress={() => navigate.chat.groupSettings({ convId: id })}
+					>
+						<Image source={AvatarGroup19} style={{ width: 40, height: 40 }} />
+					</TouchableOpacity>
+				</View>
 			</View>
-		</BlurView>
+			{!!stickyDate && !!showStickyDate && layoutHeader?.height ? (
+				<View
+					style={{
+						position: 'absolute',
+						top: layoutHeader.height + 10,
+						left: 0,
+						right: 0,
+					}}
+				>
+					<ChatDate date={stickyDate} />
+				</View>
+			) : null}
+		</View>
 	)
 }
 
@@ -214,11 +246,26 @@ const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) 
 	)
 }
 
-const MessageList: React.FC<{ id: string; scrollToMessage?: string }> = ({
-	id,
-	scrollToMessage,
-}) => {
-	const [{ overflow, row, column, flex, margin }, { scaleHeight, windowHeight }] = useStyles()
+const _createSections = (items: any[]) => {
+	try {
+		const grouped = groupBy(items, (m) =>
+			moment(pbDateToNum(m?.sentDate || Date.now())).format('DD/MM/YYYY'),
+		)
+		const mapped = Object.entries(grouped).map(([k, v], i) => ({ title: k, data: v, index: i }))
+		return mapped
+	} catch (e) {
+		console.warn('could not make sections from data:', e)
+		return []
+	}
+}
+
+const MessageList: React.FC<{
+	id: string
+	scrollToMessage?: string
+	setStickyDate: any
+	setShowStickyDate: any
+}> = ({ id, scrollToMessage, setStickyDate, setShowStickyDate }) => {
+	const [{ overflow, margin, row, flex }, { scaleHeight, windowHeight }] = useStyles()
 	const conversation = useConversation(id)
 	const ctx = useMsgrContext()
 	const members = (ctx as any).members[id] || {}
@@ -249,31 +296,66 @@ const MessageList: React.FC<{ id: string; scrollToMessage?: string }> = ({
 		return interactions?.reverse() || []
 	}, [interactions])
 
+	const sections = React.useMemo(() => _createSections(items), [items])
+
+	const renderDateFooter: (info: { section: SectionListData<any> }) => React.ReactElement<any> = ({
+		section,
+	}) => {
+		return (
+			<View style={[margin.bottom.tiny]}>
+				{section?.index > 0 && (
+					<ChatDate date={moment(section.title, 'DD/MM/YYYY').unix() * 1000} />
+				)}
+			</View>
+		)
+	}
+	const renderItem: SectionListRenderItem<any> = ({ item, index }) => {
+		return (
+			<Message
+				id={item?.cid || `${index}`}
+				convKind={messengerpb.Conversation.Type.MultiMemberType}
+				convPK={conversation.publicKey}
+				members={members}
+				previousMessageId={index < items.length - 1 ? items[index + 1]?.cid : ''}
+				nextMessageId={index > 0 ? items[index - 1]?.cid : ''}
+			/>
+		)
+	}
+
+	const updateStickyDate: (info: { viewableItems: ViewToken[] }) => void = ({ viewableItems }) => {
+		if (viewableItems && viewableItems.length) {
+			const minDate = viewableItems[viewableItems.length - 1]?.section?.title
+			if (minDate) {
+				setStickyDate(moment(minDate, 'DD/MM/YYYY').unix() * 1000)
+			}
+		}
+	}
+
 	if (!conversation) {
 		return <CenteredActivityIndicator />
 	}
 
 	return (
-		<FlatList
+		<SectionList
 			initialScrollIndex={initialScrollIndex}
 			onScrollToIndexFailed={onScrollToIndexFailed}
+			style={[overflow, row.item.fill, flex.tiny, { marginTop: 105 * scaleHeight }]}
 			ref={flatListRef}
 			keyboardDismissMode='on-drag'
-			style={[overflow, margin.bottom.medium, { marginTop: 140 * scaleHeight }]}
-			data={items}
+			sections={sections}
 			inverted
+			keyExtractor={(item: any, index: number) => item?.cid || `${index}`}
 			ListFooterComponent={<InfosMultiMember {...conversation} />}
-			keyExtractor={(item, index) => item?.cid || `${item}`}
-			renderItem={({ item, index }: { item: any; index: number }) => (
-				<Message
-					id={item?.cid || `${index}`}
-					convKind={messengerpb.Conversation.Type.MultiMemberType}
-					convPK={conversation.publicKey}
-					members={members}
-					previousMessageId={index < items.length - 1 ? items[index + 1]?.cid || '' : ''}
-					nextMessageId={index > 0 ? items[index - 1]?.cid || '' : ''}
-				/>
-			)}
+			renderSectionFooter={renderDateFooter}
+			renderItem={renderItem}
+			onViewableItemsChanged={updateStickyDate}
+			initialNumToRender={20}
+			onScrollBeginDrag={(e) => {
+				setShowStickyDate(true) // TODO: Not if start of conversation is visible
+			}}
+			onScrollEndDrag={(e) => {
+				setTimeout(() => setShowStickyDate(false), 2000)
+			}}
 		/>
 	)
 }
@@ -283,6 +365,12 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 	const [{ background, flex }] = useStyles()
 	const { dispatch } = useNavigation()
 	useReadEffect(params.convId, 1000)
+	const conv = useConversation(params?.convId)
+
+	const lastInte = useLastConvInteraction(params?.convId || '')
+	const lastUpdate = conv?.lastUpdate || lastInte?.sentDate || conv?.createdDate || null
+	const [stickyDate, setStickyDate] = useState(lastUpdate || null)
+	const [showStickyDate, setShowStickyDate] = useState(false)
 
 	return (
 		<View style={[flex.tiny, background.white]}>
@@ -298,14 +386,14 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 			>
 				<KeyboardAvoidingView style={[flex.tiny]} behavior='padding'>
 					<StatusBar backgroundColor='#00BCD4' barStyle='dark-content' />
-					<MessageList id={params?.convId} />
+					<MessageList id={params?.convId} {...{ setStickyDate, setShowStickyDate }} />
 					<ChatFooter
 						convPk={params?.convId}
 						isFocused={inputIsFocused}
 						setFocus={setInputFocus}
 						placeholder='Write a secure message...'
 					/>
-					<HeaderMultiMember id={params?.convId} />
+					<HeaderMultiMember id={params?.convId} {...{ stickyDate, showStickyDate }} />
 				</KeyboardAvoidingView>
 			</SwipeNavRecognizer>
 		</View>

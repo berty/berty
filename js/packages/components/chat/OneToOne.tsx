@@ -51,15 +51,6 @@ import { useLayout } from '../hooks'
 // Chat
 //
 
-// Styles
-const useStylesChat = () => {
-	const [{ flex, text }] = useStyles()
-	return {
-		headerName: flex.large,
-		headerNameText: text.size.scale(20),
-	}
-}
-
 const useStylesAddBetabot = () => {
 	const [{ width, border, padding, margin }] = useStyles()
 	return {
@@ -102,10 +93,8 @@ export const ChatHeader: React.FC<any> = ({ convPk, stickyDate, showStickyDate }
 	const conv = useConversation(convPk)
 	const contact = useContact(conv?.contactPublicKey || null)
 
-	const _styles = useStylesChat()
 	const [
 		{ row, padding, column, margin, text, flex, opacity, color, border, background },
-		{ scaleHeight },
 	] = useStyles()
 
 	const [layoutHeader, onLayoutHeader] = useLayout() // to position date under blur
@@ -113,25 +102,6 @@ export const ChatHeader: React.FC<any> = ({ convPk, stickyDate, showStickyDate }
 	const persistOpts = usePersistentOptions()
 	const isBetabot =
 		persistOpts && conv.contactPublicKey.toString() === persistOpts.betabot.convPk.toString()
-
-	// const lastDate = Messenger.useGetDateLastContactMessage(convPk)
-	// const lastDate = new Date()
-	// const debugGroup = Settings.useDebugGroup({ pk: conv?.pk || '' })
-	// const main = Settings?.useSettings()
-	// const state = main?.debugGroup?.state
-
-	// useEffect(() => {
-	// 	if (!state) {
-	// 		debugGroup()
-	// 	}
-	// })
-
-	// useEffect(() => {
-	// 	const interval = setInterval(() => {
-	// 		debugGroup()
-	// 	}, 10000)
-	// 	return () => clearInterval(interval)
-	// }, [debugGroup])
 
 	if (!conv || !contact) {
 		goBack()
@@ -148,42 +118,28 @@ export const ChatHeader: React.FC<any> = ({ convPk, stickyDate, showStickyDate }
 			/>
 			<View
 				style={[
+					flex.align.center,
+					flex.direction.row,
 					padding.right.medium,
 					padding.left.tiny,
-					{
-						alignItems: 'center',
-						flexDirection: 'row',
-						marginTop: 50 * scaleHeight,
-						paddingBottom: 20 * scaleHeight,
-					},
+					margin.top.scale(50),
+					padding.bottom.scale(20),
 				]}
 			>
 				<TouchableOpacity
-					style={[flex.tiny, { justifyContent: 'center', alignItems: 'center' }]}
+					style={[flex.tiny, flex.justify.center, flex.align.center]}
 					onPress={goBack}
 				>
 					<Icon name='arrow-back-outline' width={25} height={25} fill={color.black} />
 				</TouchableOpacity>
-				<View
-					style={[
-						flex.huge,
-						column.justify,
-						row.item.justify,
-						margin.top.small,
-						_styles.headerName,
-					]}
-				>
-					<View style={[{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }]}>
-						<TouchableOpacity
-						// onPress={() => debugGroup()}
+				<View style={[flex.large, column.justify, row.item.justify, margin.top.small]}>
+					<View style={[flex.direction.row, flex.justify.center, flex.align.center]}>
+						<Text
+							numberOfLines={1}
+							style={[text.align.center, text.bold.medium, text.size.scale(20)]}
 						>
-							<Text
-								numberOfLines={1}
-								style={[text.align.center, text.bold.medium, _styles.headerNameText]}
-							>
-								{title}
-							</Text>
-						</TouchableOpacity>
+							{title}
+						</Text>
 						{/* {state === 'error' && (
 							<Icon name='close-outline' width={14} height={14} fill={color.red} />
 						)} */}
@@ -621,6 +577,19 @@ const InfosChat: React.FC<api.berty.messenger.v1.IConversation & any> = ({
 	)
 }
 
+const _createSections = (items: any[]) => {
+	try {
+		const grouped = groupBy(items, (m) =>
+			moment(pbDateToNum(m?.sentDate || Date.now())).format('DD/MM/YYYY'),
+		)
+		const mapped = Object.entries(grouped).map(([k, v], i) => ({ title: k, data: v, index: i }))
+		return mapped
+	} catch (e) {
+		console.warn('could not make sections from data:', e)
+		return []
+	}
+}
+
 const MessageList: React.FC<{
 	convPk: string
 	scrollToMessage?: string
@@ -664,18 +633,7 @@ const MessageList: React.FC<{
 		return messages?.reverse() || []
 	}, [messages])
 
-	const sections: any = React.useMemo(() => {
-		try {
-			const grouped = groupBy(items, (m) =>
-				moment(pbDateToNum(m?.sentDate || Date.now())).format('DD/MM/YYYY'),
-			)
-			const mapped = Object.entries(grouped).map(([k, v], i) => ({ title: k, data: v, index: i }))
-			return mapped
-		} catch (e) {
-			console.warn('could not make sections from data:', e)
-			return []
-		}
-	}, [items])
+	const sections: any = React.useMemo(() => _createSections(items), [items])
 
 	const renderDateFooter: (info: { section: SectionListData<any> }) => React.ReactElement<any> = ({
 		section,
@@ -710,31 +668,29 @@ const MessageList: React.FC<{
 	}
 
 	return (
-		<>
-			<SectionList
-				initialScrollIndex={initialScrollIndex}
-				onScrollToIndexFailed={onScrollToIndexFailed}
-				style={[overflow, row.item.fill, flex.tiny, { marginTop: 105 * scaleHeight }]}
-				ref={flatListRef}
-				keyboardDismissMode='on-drag'
-				sections={sections}
-				inverted
-				keyExtractor={(item: any, index: number) => item?.cid || `${index}`}
-				ListFooterComponent={
-					<InfosChat {...conv} isBetabot={isBetabot} isBetabotAdded={isBetabotAdded} />
-				}
-				renderSectionFooter={renderDateFooter}
-				renderItem={renderItem}
-				onViewableItemsChanged={updateStickyDate}
-				initialNumToRender={20}
-				onScrollBeginDrag={(e) => {
-					setShowStickyDate(true) // TODO: Not if start of conversation is visible
-				}}
-				onScrollEndDrag={(e) => {
-					setTimeout(() => setShowStickyDate(false), 2000)
-				}}
-			/>
-		</>
+		<SectionList
+			initialScrollIndex={initialScrollIndex}
+			onScrollToIndexFailed={onScrollToIndexFailed}
+			style={[overflow, row.item.fill, flex.tiny, { marginTop: 105 * scaleHeight }]}
+			ref={flatListRef}
+			keyboardDismissMode='on-drag'
+			sections={sections}
+			inverted
+			keyExtractor={(item: any, index: number) => item?.cid || `${index}`}
+			ListFooterComponent={
+				<InfosChat {...conv} isBetabot={isBetabot} isBetabotAdded={isBetabotAdded} />
+			}
+			renderSectionFooter={renderDateFooter}
+			renderItem={renderItem}
+			onViewableItemsChanged={updateStickyDate}
+			initialNumToRender={20}
+			onScrollBeginDrag={(e) => {
+				setShowStickyDate(true) // TODO: Not if start of conversation is visible
+			}}
+			onScrollEndDrag={(e) => {
+				setTimeout(() => setShowStickyDate(false), 2000)
+			}}
+		/>
 	)
 }
 
