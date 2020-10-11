@@ -351,7 +351,7 @@ const MessageList: React.FC<{
 			onViewableItemsChanged={updateStickyDate}
 			initialNumToRender={20}
 			onScrollBeginDrag={(e) => {
-				setShowStickyDate(true) // TODO: Not if start of conversation is visible
+				setShowStickyDate(false) // TODO: tmp until hide if start of conversation is visible
 			}}
 			onScrollEndDrag={(e) => {
 				setTimeout(() => setShowStickyDate(false), 2000)

@@ -101,7 +101,7 @@ export const ChatHeader: React.FC<any> = ({ convPk, stickyDate, showStickyDate }
 
 	const persistOpts = usePersistentOptions()
 	const isBetabot =
-		persistOpts && conv.contactPublicKey.toString() === persistOpts.betabot.convPk.toString()
+		persistOpts && conv?.contactPublicKey?.toString() === persistOpts?.betabot?.convPk?.toString()
 
 	if (!conv || !contact) {
 		goBack()
@@ -685,7 +685,7 @@ const MessageList: React.FC<{
 			onViewableItemsChanged={updateStickyDate}
 			initialNumToRender={20}
 			onScrollBeginDrag={(e) => {
-				setShowStickyDate(true) // TODO: Not if start of conversation is visible
+				setShowStickyDate(true) // TODO: tmp
 			}}
 			onScrollEndDrag={(e) => {
 				setTimeout(() => setShowStickyDate(false), 2000)
@@ -709,7 +709,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 	const persistOpts = usePersistentOptions()
 	const isBetabot =
 		persistOpts && conv?.contactPublicKey?.toString() === persistOpts?.betabot?.convPk?.toString()
-	const isBetabotAdded = persistOpts && persistOpts.betabot.added
+	const isBetabotAdded = persistOpts && persistOpts?.betabot?.added
 	const isFooterDisable = isIncoming || (isBetabot && !isBetabotAdded)
 	const placeholder = isFooterDisable
 		? isBetabot
