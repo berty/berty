@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { CommonActions, useNavigation as useNativeNavigation } from '@react-navigation/native'
+import React, { useMemo, useRef, useState } from 'react'
+import { CommonActions } from '@react-navigation/native'
 import { Translation } from 'react-i18next'
 import {
 	ScrollView,
@@ -9,7 +9,6 @@ import {
 	View,
 	ViewProps,
 	Image,
-	StyleProp,
 } from 'react-native'
 import { SafeAreaConsumer, SafeAreaView } from 'react-native-safe-area-context'
 import { Icon, Text } from 'react-native-ui-kitten'
@@ -18,7 +17,6 @@ import LinearGradient from 'react-native-linear-gradient'
 import { ScreenProps, useNavigation, Routes } from '@berty-tech/navigation'
 import {
 	useConversationLength,
-	useConversationList,
 	useIncomingContactRequests,
 	useMsgrContext,
 	useLastConvInteraction,
@@ -50,6 +48,63 @@ type ConversationsProps = ViewProps & {
 
 type ConversationsItemProps = any
 
+//
+// Styles
+//
+
+const useStylesContactRequest: any = () => {
+	const [{ border, padding, margin, width, height, row, background, flex }] = useStyles()
+	return {
+		contactReqContainer: [
+			background.white,
+			border.radius.medium,
+			border.shadow.medium,
+			flex.align.center,
+			flex.justify.flexEnd,
+			height(160),
+			margin.medium,
+			margin.top.huge,
+			padding.horizontal.tiny,
+			padding.top.scale(33),
+			padding.bottom.medium,
+			width(121),
+		],
+		declineButton: [
+			background.white,
+			border.color.light.grey,
+			border.medium,
+			border.medium,
+			border.radius.tiny,
+			border.shadow.tiny,
+			flex.align.center,
+			height(25),
+			padding.tiny,
+			{ flexShrink: 2, flexGrow: 0 },
+		],
+		acceptButton: [
+			background.light.blue,
+			border.radius.tiny,
+			border.shadow.tiny,
+			flex.align.center,
+			height(25),
+			padding.horizontal.tiny,
+			row.fill,
+			row.item.justify,
+		],
+		buttonsWrapper: [
+			flex.align.center,
+			row.center,
+			{
+				flexGrow: 2,
+				flexShrink: 0,
+				marginBottom: -4,
+				marginTop: 3,
+				width: '100%',
+			},
+		],
+	}
+}
+
 // Functions
 
 const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
@@ -61,29 +116,22 @@ const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 	const { refresh: accept } = messengerMethodsHooks.useContactAccept()
 	const decline: any = () => {} // Messenger.useDiscardContactRequest()
 	const { dispatch } = useNavigation()
+	const {
+		contactReqContainer,
+		declineButton,
+		acceptButton,
+		buttonsWrapper,
+	} = useStylesContactRequest()
 
 	const id = publicKey
-	const [
-		{ border, padding, margin, width, height, column, row, background, absolute, text, color },
-	] = useStyles()
+	const [{ border, padding, row, absolute, text, color }, { scaleSize }] = useStyles()
 	const createdDate = typeof createdDateStr === 'string' ? parseInt(createdDateStr, 10) : Date.now()
 	const textColor = '#AFB1C0'
 	return (
 		<Translation>
 			{(t): React.ReactNode => (
 				<TouchableOpacity
-					style={[
-						column.fill,
-						width(121),
-						height(160),
-						background.white,
-						margin.medium,
-						margin.top.huge,
-						padding.vertical.medium,
-						padding.top.huge,
-						border.radius.medium,
-						border.shadow.medium,
-					]}
+					style={contactReqContainer}
 					onPress={() => {
 						if (conversationPublicKey) {
 							dispatch(
@@ -99,46 +147,59 @@ const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 					}}
 				>
 					<ProceduralCircleAvatar
-						style={[absolute.center, border.shadow.medium, absolute.scale({ top: -32.5 })]}
+						style={[absolute.center, border.shadow.medium, absolute.scale({ top: -27.5 })]}
 						seed={publicKey}
-						size={65}
-						diffSize={20}
+						size={55}
+						diffSize={16}
 					/>
-					<Text style={[text.align.center, text.color.black, text.size.medium]} numberOfLines={2}>
-						{displayName || ''}
-					</Text>
-					<Text
-						style={[
-							text.size.scale(8),
-							text.align.center,
-							{ lineHeight: (text.size.scale(8) as any).fontSize * 1, color: textColor },
-						]}
+					<View
+						style={{
+							flexGrow: 2,
+							justifyContent: 'center',
+							flexShrink: 0,
+							flexBasis: 45,
+						}}
 					>
-						Incoming contact request!
-					</Text>
-					<Text
-						style={[
-							text.size.scale(8),
-							text.align.center,
-							{ lineHeight: (text.size.scale(8) as any).fontSize * 1, color: textColor },
-						]}
+						<Text
+							style={[text.align.center, text.color.black, text.bold.small, text.size.scale(14)]}
+							numberOfLines={2}
+						>
+							{displayName || ''}
+						</Text>
+					</View>
+					<View
+						style={{
+							flexGrow: 1,
+							flexShrink: 0,
+							justifyContent: 'flex-end',
+							alignSelf: 'center',
+						}}
 					>
-						<FromNow date={createdDate} />
-					</Text>
-					<View style={[row.center]}>
-						<TouchableOpacity
+						<Text
 							style={[
-								border.medium,
-								border.color.light.grey,
-								row.item.justify,
-								border.medium,
-								border.radius.tiny,
-								border.shadow.tiny,
-								background.white,
-								padding.tiny,
-								height(25),
-								{ alignItems: 'center' },
+								text.size.scale(11),
+								text.align.center,
+								{
+									lineHeight: (text.size.scale(11) as any).fontSize * 1.6,
+									color: textColor,
+								},
 							]}
+						>
+							Contact request!
+						</Text>
+						<Text
+							style={[
+								text.size.scale(10),
+								text.align.center,
+								{ lineHeight: (text.size.scale(11) as any).fontSize * 2, color: '#888' },
+							]}
+						>
+							<FromNow date={createdDate} />
+						</Text>
+					</View>
+					<View style={buttonsWrapper}>
+						<TouchableOpacity
+							style={declineButton}
 							onPress={(): void => {
 								decline({ id })
 							}}
@@ -146,36 +207,24 @@ const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 							<Icon
 								name='close-outline'
 								fill={textColor}
-								width={17}
-								height={17}
+								width={17 * scaleSize}
+								height={17 * scaleSize}
 								style={[padding.tiny, row.item.justify]}
 							/>
 						</TouchableOpacity>
 						<TouchableOpacity
-							style={[
-								background.light.blue,
-								row.item.justify,
-								border.radius.tiny,
-								border.shadow.tiny,
-								padding.horizontal.tiny,
-								height(25),
-								row.fill,
-								{ alignItems: 'center' },
-							]}
+							style={acceptButton}
 							onPress={() => {
 								accept({ publicKey })
 							}}
 						>
-							<Icon name='checkmark-outline' fill={color.blue} width={17} height={17} />
-							<Text
-								style={[
-									text.size.scale(9),
-									text.color.blue,
-									row.item.justify,
-									padding.tiny,
-									{ top: -1 },
-								]}
-							>
+							<Icon
+								name='checkmark-outline'
+								fill={color.blue}
+								width={17 * scaleSize}
+								height={17 * scaleSize}
+							/>
+							<Text style={[text.size.scale(10), text.color.blue, padding.horizontal.tiny]}>
 								{t('main.requests.accept')}
 							</Text>
 						</TouchableOpacity>
@@ -270,7 +319,6 @@ const MessageStatus: React.FC<{ interaction: any; isAccepted: boolean }> = ({
 const interactionsFilter = (inte: any) => inte.type === messengerpb.AppMessage.Type.TypeUserMessage
 
 const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
-	// const { dispatch } = useNavigation()
 	const {
 		publicKey = '',
 		displayName = '',
