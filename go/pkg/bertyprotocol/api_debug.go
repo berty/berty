@@ -7,6 +7,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p-core/network"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
@@ -222,6 +223,69 @@ func (s *service) SystemInfo(ctx context.Context, request *bertytypes.SystemInfo
 		for _, err := range multierr.Errors(errs) {
 			reply.Warns = append(reply.Warns, err.Error())
 		}
+	}
+
+	return &reply, nil
+}
+
+func (s *service) PeerList(ctx context.Context, request *bertytypes.PeerList_Request) (*bertytypes.PeerList_Reply, error) {
+	reply := bertytypes.PeerList_Reply{}
+	api := s.IpfsCoreAPI()
+	if api == nil {
+		return nil, errcode.TODO.Wrap(fmt.Errorf("IPFS Core API is not available"))
+	}
+	peers, err := api.Swarm().Peers(ctx)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	for _, peer := range peers {
+		// https://pkg.go.dev/github.com/ipfs/interface-go-ipfs-core#ConnectionInfo
+
+		errs := []string{}
+
+		latencyMs := int64(0)
+		{
+			latency, err := peer.Latency()
+			if err != nil {
+				errs = append(errs, err.Error())
+			} else {
+				latencyMs = latency.Milliseconds()
+			}
+		}
+
+		direction := bertytypes.UnknownDir
+		switch peer.Direction() {
+		case network.DirInbound:
+			direction = bertytypes.InboundDir
+		case network.DirOutbound:
+			direction = bertytypes.OutboundDir
+		}
+
+		streams := []*bertytypes.PeerList_Stream{}
+		{
+			peerStreams, err := peer.Streams()
+			if err != nil {
+				errs = append(errs, err.Error())
+			} else {
+				for _, peerStream := range peerStreams {
+					streams = append(streams, &bertytypes.PeerList_Stream{
+						ID: string(peerStream),
+					})
+				}
+			}
+		}
+
+		reply.Peers = append(reply.Peers, &bertytypes.PeerList_Peer{
+			ID:        peer.ID().Pretty(),
+			Address:   peer.Address().String(),
+			Direction: direction,
+			Latency:   latencyMs,
+			Streams:   streams,
+			Errors:    errs,
+		})
+
+		// FIXME: add metrics about "amount of times seen", "first time seen", "bandwidth"
 	}
 
 	return &reply, nil

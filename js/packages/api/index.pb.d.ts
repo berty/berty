@@ -606,6 +606,8 @@ export namespace berty {
                 public servicesTokenList(request: berty.types.v1.ServicesTokenList.IRequest): Promise<berty.types.v1.ServicesTokenList.Reply>;
                 public replicationServiceRegisterGroup(request: berty.types.v1.ReplicationServiceRegisterGroup.IRequest, callback: berty.protocol.v1.ProtocolService.ReplicationServiceRegisterGroupCallback): void;
                 public replicationServiceRegisterGroup(request: berty.types.v1.ReplicationServiceRegisterGroup.IRequest): Promise<berty.types.v1.ReplicationServiceRegisterGroup.Reply>;
+                public peerList(request: berty.types.v1.PeerList.IRequest, callback: berty.protocol.v1.ProtocolService.PeerListCallback): void;
+                public peerList(request: berty.types.v1.PeerList.IRequest): Promise<berty.types.v1.PeerList.Reply>;
             }
 
             namespace ProtocolService {
@@ -675,6 +677,8 @@ export namespace berty {
                 type ServicesTokenListCallback = (error: (Error|null), response?: berty.types.v1.ServicesTokenList.Reply) => void;
 
                 type ReplicationServiceRegisterGroupCallback = (error: (Error|null), response?: berty.types.v1.ReplicationServiceRegisterGroup.Reply) => void;
+
+                type PeerListCallback = (error: (Error|null), response?: berty.types.v1.PeerList.Reply) => void;
             }
         }
     }
@@ -3524,6 +3528,111 @@ export namespace berty {
                     public static toObject(message: berty.types.v1.SystemInfo.Process, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
+            }
+
+            interface IPeerList {
+            }
+
+            class PeerList implements IPeerList {
+
+                public static create(properties?: berty.types.v1.IPeerList): berty.types.v1.PeerList;
+                public static encode(message: berty.types.v1.IPeerList, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.types.v1.IPeerList, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.PeerList;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.PeerList;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.types.v1.PeerList;
+                public static toObject(message: berty.types.v1.PeerList, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace PeerList {
+
+                interface IRequest {
+                }
+
+                class Request implements IRequest {
+
+                    public static create(properties?: berty.types.v1.PeerList.IRequest): berty.types.v1.PeerList.Request;
+                    public static encode(message: berty.types.v1.PeerList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.types.v1.PeerList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.PeerList.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.PeerList.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.types.v1.PeerList.Request;
+                    public static toObject(message: berty.types.v1.PeerList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    peers?: (berty.types.v1.PeerList.IPeer[]|null);
+                }
+
+                class Reply implements IReply {
+
+                    public peers: berty.types.v1.PeerList.IPeer[];
+                    public static create(properties?: berty.types.v1.PeerList.IReply): berty.types.v1.PeerList.Reply;
+                    public static encode(message: berty.types.v1.PeerList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.types.v1.PeerList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.PeerList.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.PeerList.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.types.v1.PeerList.Reply;
+                    public static toObject(message: berty.types.v1.PeerList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IPeer {
+                    id?: (string|null);
+                    address?: (string|null);
+                    direction?: (berty.types.v1.Direction|null);
+                    latency?: (number|Long|null);
+                    streams?: (berty.types.v1.PeerList.IStream[]|null);
+                    errors?: (string[]|null);
+                }
+
+                class Peer implements IPeer {
+
+                    public id: string;
+                    public address: string;
+                    public direction: berty.types.v1.Direction;
+                    public latency: (number|Long);
+                    public streams: berty.types.v1.PeerList.IStream[];
+                    public errors: string[];
+                    public static create(properties?: berty.types.v1.PeerList.IPeer): berty.types.v1.PeerList.Peer;
+                    public static encode(message: berty.types.v1.PeerList.IPeer, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.types.v1.PeerList.IPeer, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.PeerList.Peer;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.PeerList.Peer;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.types.v1.PeerList.Peer;
+                    public static toObject(message: berty.types.v1.PeerList.Peer, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IStream {
+                    id?: (string|null);
+                }
+
+                class Stream implements IStream {
+
+                    public id: string;
+                    public static create(properties?: berty.types.v1.PeerList.IStream): berty.types.v1.PeerList.Stream;
+                    public static encode(message: berty.types.v1.PeerList.IStream, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.types.v1.PeerList.IStream, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.PeerList.Stream;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.PeerList.Stream;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.types.v1.PeerList.Stream;
+                    public static toObject(message: berty.types.v1.PeerList.Stream, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            enum Direction {
+                UnknownDir = 0,
+                InboundDir = 1,
+                OutboundDir = 2
             }
         }
     }

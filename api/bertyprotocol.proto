@@ -90,7 +90,7 @@ service ProtocolService {
 
   rpc DebugGroup (types.v1.DebugGroup.Request) returns (types.v1.DebugGroup.Reply);
 
-  rpc SystemInfo(types.v1.SystemInfo.Request) returns (types.v1.SystemInfo.Reply);
+  rpc SystemInfo (types.v1.SystemInfo.Request) returns (types.v1.SystemInfo.Reply);
 
   // AuthServiceInitFlow Initialize an authentication flow
   rpc AuthServiceInitFlow (types.v1.AuthServiceInitFlow.Request) returns (types.v1.AuthServiceInitFlow.Reply);
@@ -103,4 +103,7 @@ service ProtocolService {
 
   // ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents
   rpc ReplicationServiceRegisterGroup (types.v1.ReplicationServiceRegisterGroup.Request) returns (types.v1.ReplicationServiceRegisterGroup.Reply);
+
+  // PeerList returns a list of P2P peers
+  rpc PeerList(types.v1.PeerList.Request) returns (types.v1.PeerList.Reply);
 }

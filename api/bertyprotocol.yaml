@@ -102,3 +102,6 @@ http:
  - selector: berty.protocol.v1.ProtocolService.ReplicationServiceRegisterGroup
    post: /berty.protocol.v1/ProtocolService/ReplicationServiceRegisterGroup
    body: "*"
+ - selector: berty.protocol.v1.ProtocolService.PeerList
+   post: /berty.protocol.v1/ProtocolService/PeerList
+   body: "*"
