@@ -321,8 +321,8 @@ I’m here to help you with the onboarding process.
 Let's test out some features together!
 Just type 'yes' to let me know you copy that.`
 		options := []*bertymessenger.ReplyOption{
-			{Payload: "yes", Display: "Text offering a *yes* option"},
-			{Payload: "no", Display: "Text offering a *no* option"},
+			{Payload: "yes", Display: "Sure, go for it!"},
+			{Payload: "no", Display: "Show me all you can do instead!"},
 		}
 		if err := bot.interactUserMessage(ctx, body, contact.ConversationPublicKey, options); err != nil {
 			return fmt.Errorf("interact user message failed: %w", err)
@@ -380,8 +380,8 @@ func doStep0(ctx context.Context, conv *Conversation, bot *Bot, receivedMessage 
 Would you like me to invite you to a group chat to test multimember conversations?
 Type 'yes' to receive it! 💌`
 		options := []*bertymessenger.ReplyOption{
-			{Payload: "yes", Display: "Yes i want to receive it!"},
-			{Payload: "no", Display: "Nope sorry, i'm solitary."},
+			{Payload: "yes", Display: "Sure, go for it!"},
+			{Payload: "no", Display: "Show me all you can do instead!"},
 		}
 		if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey, options); err != nil {
 			return false, fmt.Errorf("interact user message failed: %w", err)
