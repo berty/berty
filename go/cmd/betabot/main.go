@@ -320,7 +320,11 @@ func (bot *Bot) handleContactUpdated(ctx context.Context, _ *bertymessenger.Even
 I’m here to help you with the onboarding process.
 Let's test out some features together!
 Just type 'yes' to let me know you copy that.`
-		if err := bot.interactUserMessage(ctx, body, contact.ConversationPublicKey); err != nil {
+		options := []*bertymessenger.ReplyOption{
+			{Payload: "yes", Display: "Text offering a *yes* option"},
+			{Payload: "no", Display: "Text offering a *no* option"},
+		}
+		if err := bot.interactUserMessage(ctx, body, contact.ConversationPublicKey, options); err != nil {
 			return fmt.Errorf("interact user message failed: %w", err)
 		}
 	}
@@ -356,7 +360,7 @@ func (bot *Bot) handleUserMessageInteractionUpdated(ctx context.Context, _ *bert
 		}
 		// auto-reply to user's messages
 		answer := getRandomReply()
-		if err := bot.interactUserMessage(ctx, answer, interaction.ConversationPublicKey); err != nil {
+		if err := bot.interactUserMessage(ctx, answer, interaction.ConversationPublicKey, defaultReplyOption()); err != nil {
 			return fmt.Errorf("interact user message failed: %w", err)
 		}
 	}
@@ -375,7 +379,11 @@ func doStep0(ctx context.Context, conv *Conversation, bot *Bot, receivedMessage 
 		body := `Okay, perfect! 🤙
 Would you like me to invite you to a group chat to test multimember conversations?
 Type 'yes' to receive it! 💌`
-		if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey); err != nil {
+		options := []*bertymessenger.ReplyOption{
+			{Payload: "yes", Display: "Yes i want to receive it!"},
+			{Payload: "no", Display: "Nope sorry, i'm solitary."},
+		}
+		if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey, options); err != nil {
 			return false, fmt.Errorf("interact user message failed: %w", err)
 		}
 		return true, nil
@@ -394,7 +402,7 @@ func doStep1(ctx context.Context, conv *Conversation, bot *Bot, receivedMessage 
 		body := `Okay, I'm inviting you! 🤝
 I'll also invite some staff members to join the group!
 I’m cool, but humans are sometimes cooler than me… 🤖 ❤️`
-		if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey); err != nil {
+		if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey, nil); err != nil {
 			return false, fmt.Errorf("interact user message failed: %w", err)
 		}
 
@@ -424,7 +432,7 @@ I’m cool, but humans are sometimes cooler than me… 🤖 ❤️`
 		body = `Okay, done! 👏 👍
 Welcome and thanks for joining our community. You're part of the revolution now! 🔥
 Type /help when you need info about available test commands! 📖`
-		if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey); err != nil {
+		if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey, defaultReplyOption()); err != nil {
 			return false, fmt.Errorf("interact user message failed: %w", err)
 		}
 		bot.logger.Info("scenario finished")
@@ -438,6 +446,7 @@ func doStep2(ctx context.Context, _ *Conversation, bot *Bot, receivedMessage *be
 	unlock()
 	msg := receivedMessage.GetBody()
 	if msg[0] == '/' {
+		options := defaultReplyOption()
 		switch strings.ToLower(msg[1:]) {
 		case "help":
 			body := `In this conversation, you can type all theses commands :
@@ -446,7 +455,7 @@ func doStep2(ctx context.Context, _ *Conversation, bot *Bot, receivedMessage *be
 /demo share
 /demo contact "Here is the QR code of manfred, just add him!"
 /demo version`
-			if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey); err != nil {
+			if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey, options); err != nil {
 				return false, fmt.Errorf("interact user message failed: %w", err)
 			}
 		case "demo version":
@@ -456,12 +465,12 @@ func doStep2(ctx context.Context, _ *Conversation, bot *Bot, receivedMessage *be
 			} else {
 				body = "berty " + bertyversion.Version + " https://github.com/berty/berty/commits/" + bertyversion.VcsRef + "\n" + runtime.Version()
 			}
-			if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey); err != nil {
+			if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey, options); err != nil {
 				return false, fmt.Errorf("interact user message failed: %w", err)
 			}
 		default:
 			body := fmt.Sprintf("Sorry but the command %q is not yet known.", msg)
-			if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey); err != nil {
+			if err := bot.interactUserMessage(ctx, body, interaction.ConversationPublicKey, options); err != nil {
 				return false, fmt.Errorf("interact user message failed: %w", err)
 			}
 		}
@@ -521,7 +530,7 @@ For the moment i can't send a group invitation so i share the link of the conver
 			userName,
 			conversation.GetLink(),
 		)
-		if err := bot.interactUserMessage(ctx, body, bot.store.StaffConvPK); err != nil {
+		if err := bot.interactUserMessage(ctx, body, bot.store.StaffConvPK, nil); err != nil {
 			return fmt.Errorf("interact user message failed: %w", err)
 		}
 
@@ -550,7 +559,7 @@ For the moment i can't send a group invitation so i share the link of the conver
 
 // internal stuff
 
-func (bot *Bot) interactUserMessage(ctx context.Context, body string, conversationPK string) error {
+func (bot *Bot) interactUserMessage(ctx context.Context, body string, conversationPK string, replyOption []*bertymessenger.ReplyOption) error {
 	userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{Body: body})
 	if err != nil {
 		return fmt.Errorf("marshal user message failed: %w", err)
@@ -561,8 +570,28 @@ func (bot *Bot) interactUserMessage(ctx context.Context, body string, conversati
 		ConversationPublicKey: conversationPK,
 	})
 	if err != nil {
-		return fmt.Errorf("interact failed: %w", err)
+		return fmt.Errorf("interact user message failed: %w", err)
 	}
+
+	// send reply options
+	{
+		convPKBytes, err := base64.RawURLEncoding.DecodeString(conversationPK)
+		if err != nil {
+			return fmt.Errorf("conversation convPK failed: %w", err)
+		}
+		if replyOption != nil {
+			_, err := bot.client.SendReplyOptions(ctx, &bertymessenger.SendReplyOptions_Request{
+				GroupPK: convPKBytes,
+				Options: &bertymessenger.AppMessage_ReplyOptions{
+					Options: replyOption,
+				},
+			})
+			if err != nil {
+				return fmt.Errorf("interact reply options failed: %w", err)
+			}
+		}
+	}
+
 	return nil
 }
 
@@ -627,6 +656,13 @@ func safeDefaultDisplayName() string {
 		name = "Anonymous4242"
 	}
 	return fmt.Sprintf("%s (betabot)", name)
+}
+
+func defaultReplyOption() []*bertymessenger.ReplyOption {
+	return []*bertymessenger.ReplyOption{
+		{Payload: "/help", Display: "Display betabot commands"},
+		{Payload: "/demo version", Display: "What is the demo version?reload"},
+	}
 }
 
 func getRandomReply() string {
