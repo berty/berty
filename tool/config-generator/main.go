@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"path"
 
+	qrterminal "github.com/mdp/qrterminal/v3"
 	yaml "gopkg.in/yaml.v3"
 	"moul.io/u"
 
@@ -18,6 +20,7 @@ var (
 	ConfigJSON = path.Join("config", "config.gen.json")
 	JSGlobal   = path.Join("js", "packages", "config", "global.gen.js")
 	GoConfig   = path.Join("go", "internal", "config", "config.gen.go")
+	TmpDir     = path.Join("config", ".tmp")
 )
 
 func main() {
@@ -72,9 +75,22 @@ func init() {
 		checkErr(err)
 	}
 
-	// TODO: generate go file"
+	log.Printf("[+] generating QRcodes in .tmp dir")
+	{
+		p := path.Join(root, TmpDir)
+		err := os.MkdirAll(p, 0o755)
+		checkErr(err)
+		for idx, contact := range config.Berty.Contacts {
+			p := path.Join(root, TmpDir, fmt.Sprintf("qr-%s.txt", idx))
+			f, err := os.OpenFile(p, os.O_RDWR|os.O_CREATE, 0755)
+			checkErr(err)
+			qrterminal.GenerateHalfBlock(contact.Link, qrterminal.L, f)
+			fmt.Fprintln(f, contact.Link)
+			f.Close()
+		}
+	}
+
 	// TODO: generate .env file" for CI
-	// TODO: generate qr images for READMEs
 }
 
 func checkErr(err error) {

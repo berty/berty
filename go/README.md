@@ -47,30 +47,30 @@ TODO
 foo@bar:~$ berty share-invite
 █████████████████████████████████████████████████
 █████████████████████████████████████████████████
-████ ▄▄▄▄▄ ██████▄▀▀▀  ▀▀   ▀█▄ ▀ ▄▀▀█ ▄▄▄▄▄ ████
-████ █   █ █▄ ▀     ▀█▀███ ▀▄█▀█▀███ █ █   █ ████
-████ █▄▄▄█ ███  ▀▀▄▀ ▄▄ ▀  ▀█▀  █▀█ ██ █▄▄▄█ ████
-████▄▄▄▄▄▄▄█ ▀ █▄▀▄▀▄▀ ▀ ▀▄▀ ▀▄▀ ▀ █▄█▄▄▄▄▄▄▄████
-████  ▄▀ ▄▄▄ ██▀▄ █▀▀▄█▀ ██▀▀▀▀█ ▀▀█   ▀█▀▄█▀████
-████▀ ▀▄▀█▄ █▄▀█▄▀ █▀ ▀▀   ▀▀  ██ ███▀██▄██  ████
-████▄▀▀▄▀▄▄█▄▄   ▀   ▀▄▄  ▄▄     ███▀ ▄ █ ██▀████
-████  █  ▄▄▄▄ ▀▄  ▄▄  ▀▀ ▀▀▀█▀█▀▀▀▄▀ ▄▀▀▄▄▄▄▄████
-████▀█ ▀▀▀▄▄▀█   ▄   █▀▀  ██ ▄██  ▀  ▀ ████  ████
-██████ ▄  ▄▄   ▀▄▄██▄▄██  ██▄▀▄▀▀ █▀▀█   █▄▄ ████
-████ ▄ █▄▄▄▀██  █▀█▀███▄ ▄█▄  ▀█   ▄    █ ▀▀▀████
-████▀▀▄▄ ▀▄▀▄▀█▀█▀ ▀█▀▄▀▀ ▀▀▄  ▀ ▀██▄█ ██▄▄  ████
-████▄  ▄█ ▄█▀▄█▀▀ ███ █  █▀ ▀▀█ ▀ ███  ██▀ ▀▄████
-████▄██   ▄██ █▀▀▀ █▀▀ █▀ █▀  ██▀ █▀█▀█▄▀ ▄▄▄████
-█████▀▀ ▀█▄█ █▀  █ ▀ ▀ ▄█ █▀▀▄▄▀ ▄  ▀▄▄██ ▀▀▀████
-████▄▀ ▀ █▄▄▀▀ ▄ ▀▄▄  ▄▀▀▀▀█▀▀███▀ ▀ █▀▀███▄▄████
-████▄█▄██▄▄▄▀▀ ▄ ██▄█▄▀▀ ▀█▀▀███▀▀██ ▄▄▄ ▀ ▄ ████
-████ ▄▄▄▄▄ █  ▄█▀▄██▀▄██▀▀ █▀▀▀█▄  ▄ █▄█ ▀█▄▄████
-████ █   █ █▄█ ▀███▀████ ▄██ █▀▄█ ██▄▄▄  █▀▄ ████
-████ █▄▄▄█ █  ▄▀█▀ ▀█▀▄▀▀▀▀█▀▀ ▀█ █  ▀██ █▄ ▄████
-████▄▄▄▄▄▄▄█▄███▄▄███▄█▄▄██▄▄▄██▄██▄▄▄█▄███▄▄████
+████ ▄▄▄▄▄ ██▄█▀▀▄▀ █ ▀ █▀  ███ ▀  ▀▀█ ▄▄▄▄▄ ████
+████ █   █ █▄▄ █▄  ▀ █▀█▄▀▀▄▄▀  █▀ █▄█ █   █ ████
+████ █▄▄▄█ ████▀▄▀ ▀ █  ▀█▀▀██▀ █▀  ██ █▄▄▄█ ████
+████▄▄▄▄▄▄▄█ ▀▄▀▄▀▄▀▄▀▄▀ ▀▄▀▄▀ █ ▀▄▀ █▄▄▄▄▄▄▄████
+████▄▄ █▄ ▄▄▄   ▀  █▀█▀█▀▀▀ ▀  ▀ ███   ▀█▀▄█▀████
+████▄▀ ▄▀▀▄█▄▄  █▀ █  ▀█▀▀ ▀█▀▀▀█ ▄█████▄██ ▄████
+████ ▀ ▀ ▄▄  ▀   ▀   ▀▄█ ▄▄▄ ▄█▄███▀ ▄▄ █ ▀█▀████
+████  █ █▀▄▄██ ▄ ▀▄▄ ▀ ▀ ▀▄██▀ ▀▀▀██ ▄▀█▄██▄▄████
+████ ██ ▀▀▄▀██  ▀█▀▄ ▄█▀ ▀███▄█▄█ █  ▀ ██▄▄▄ ████
+████ ▀███▀▄█ █ █▄▄██▄▄█▀█ █▀█ ▀▀█  ▀▀▀█  █▄▄ ████
+████▀▄██▀▀▄▀▀  ▀███▀█▀██  █   ▀▀ ██  ▄▄▄▄▄█  ████
+████ █ ▄ ▄▄▀▄▄ ▀█ ▀▀█ ▄▀▀ ██▄ ███ █▀██ ▄ █▄  ████
+█████▀██ █▄ ▀▀▄▀ ▀▀██▀█ ▀▄▀█ ▀█▀▀████  ██▀ ▀▄████
+████ █▄▀█ ▄▄██▀▀█▀ ▀ ▀ █▄ █▀ ▀▄▀▄▀▀▀█▀▄▄▀ ▄▄▄████
+█████▀▄▄▄▀▄████  ▀ ▀ ▀ ██ ██ █▀▄ ██▄  ▄██ ▀▀▀████
+████▄▀█ ▀█▄▀▄  ▄  ▄▄ ▀ ▀▀  █▄  ▀█  ▀▄█▀▄██▄▄▄████
+████▄██▄▄▄▄█▀▀▀▄▀██▄ █▀█▀ ▀▄ ▀██ ▀██ ▄▄▄ ▀▀▄▄████
+████ ▄▄▄▄▄ █ ▄▄█▀▄█▀ ▄███▀ █▀  █ ▀▀▄ █▄█ ▀█▄▄████
+████ █   █ █▄▄ ▀███▀█▀██  █▄ ▀██ ▄ █▄▄▄  ███▀████
+████ █▄▄▄█ █ ▄ ▀█▀ ▀█  ▀▀▀▀▀█  █▀▀█▄ ▀██ ▄█ ▄████
+████▄▄▄▄▄▄▄█▄█▄█▄▄█████▄█▄██▄██████▄▄▄▄▄█▄▄▄▄████
 █████████████████████████████████████████████████
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-html url: https://berty.tech/id#key=CiAXtiFJwUkmdTcLIgTZmQlEoUMGONLMKgXbxw72OWPb1hIgmXEyKjqiJLbf08ChSdRlry6F63a3LeDsc8v-_gXadLk&name=demo
+html url: https://berty.tech/id#key=CiDLnKLVhQ9Gw9fKCOdi9ZfXFsusrQGxvQbASTd2npt0_RIgyBYYGxzTHgWmT9XPApaNDlJCME7acM6bUopSAjbChEQ&name=demo
 ```
 
 ### Info
@@ -81,25 +81,27 @@ foo@bar:~$ berty info
 {
   "protocol": {
     "process": {
+      "version": "v2.180.1-dev.2+g6952cb2d",
+      "vcsRef": "6952cb2d",
+      "uptimeMs": "14",
+      "userCpuTimeMs": "1022",
+      "systemCpuTimeMs": "178",
+      "startedAt": "1602556036",
       "rlimitCur": "1024",
-      "numGoroutine": "473",
-      "nofile": "41",
-      "startedAt": "1600443153",
+      "numGoroutine": "489",
+      "nofile": "32",
       "numCpu": "12",
-      "goVersion": "go1.15.2",
+      "goVersion": "go1.15",
       "operatingSystem": "linux",
       "hostName": "REDACTED",
       "arch": "amd64",
-      "version": "v2.149.0-3-g8b6591d7",
-      "vcsRef": "8b6591d7",
-      "selfRusage": "{\"Utime\":{\"Sec\":1,\"Usec\":268952},\"Stime\":{\"Sec\":0,\"Usec\":254625},\"Maxrss\":77740,\"Ixrss\":0,\"Idrss\":0,\"Isrss\":0,\"Minflt\":8498,\"Majflt\":0,\"Nswap\":0,\"Inblock\":0,\"Oublock\":0,\"Msgsnd\":0,\"Msgrcv\":0,\"Nsignals\":0,\"Nvcsw\":9241,\"Nivcsw\":65}",
-      "childrenRusage": "{\"Utime\":{\"Sec\":1,\"Usec\":610485},\"Stime\":{\"Sec\":0,\"Usec\":295980},\"Maxrss\":33524,\"Ixrss\":0,\"Idrss\":0,\"Isrss\":0,\"Minflt\":10260,\"Majflt\":0,\"Nswap\":0,\"Inblock\":0,\"Oublock\":0,\"Msgsnd\":0,\"Msgrcv\":0,\"Nsignals\":0,\"Nvcsw\":12825,\"Nivcsw\":597}",
       "rlimitMax": "1048576",
-      "pid": "3730",
-      "ppid": "3729",
+      "pid": "30403",
+      "ppid": "30402",
       "priority": "20",
       "uid": "1000",
-      "workingDir": "REDACTED"
+      "workingDir": "REDACTED",
+      "systemUsername": "anon#1337"
     },
     "p2p": {
       "connectedPeers": "10"
@@ -254,16 +256,19 @@ USAGE
   berty [global flags] token-server [flags]
 
 FLAGS
-  -l 8080      http listener
-  -s ...       comma separated list of supported services as name@ip:port
-  -secret ...  base64 encoded secret
-  -sk ...      base64 encoded signature key
+  -auth.secret ...               base64 encoded secret
+  -auth.sk ...                   base64 encoded signature key
+  -http.listener 127.0.0.1:8080  http listener
+  -svc ...                       comma separated list of supported services as name@ip:port
 
 foo@bar:~$ berty repl-server -h
 USAGE
   berty [global flags] repl-server [flags]
 
 FLAGS
+  -node.auth-pk ...                                               Protocol API Authentication Public Key (base64 encoded)
+  -node.auth-secret ...                                           Protocol API Authentication Secret (base64 encoded)
+  -node.listeners /ip4/127.0.0.1/tcp/9091/grpc                    gRPC API listeners
   -p2p.ipfs-announce ...                                          IPFS announce addrs
   -p2p.ipfs-api-listeners ...                                     IPFS API listeners
   -p2p.ipfs-listeners /ip4/0.0.0.0/tcp/0,/ip4/0.0.0.0/udp/0/quic  IPFS listeners
@@ -272,6 +277,7 @@ FLAGS
   -p2p.max-backoff 1m0s                                           maximum p2p backoff duration
   -p2p.min-backoff 1s                                             minimum p2p backoff duration
   -p2p.rdvp []                                                    list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
+  -p2p.webui-listener :3999                                       IPFS WebUI listener
   -store.dir /home/moul/.config/berty-tech/berty                  root datastore directory
   -store.inmem false                                              disable datastore persistence
 ```
@@ -291,9 +297,9 @@ SUBCOMMANDS
   genkey  
 
 FLAGS
-  -logfile stderr                           if specified, will log everything in JSON into a file and nothing on stderr
-  -logfilters info,warn:bty,bty.* error+:*  logged namespaces
-  -logformat color                          if specified, will override default log format
+  -log.file stderr      if specified, will log everything in JSON into a file and nothing on stderr
+  -log.filters info+:*  logged namespaces
+  -log.format color     if specified, will override default log format
 
 foo@bar:~$ rdvp serve -h
 USAGE
@@ -304,6 +310,7 @@ EXAMPLE
   rdvp serve -pk `cat rdvp.key` -db ./rdvp-store
 
 FLAGS
+  -announce ...                                        addrs that will be announce by this server
   -db :memory:                                         rdvp sqlite URN
   -l /ip4/0.0.0.0/tcp/4040,/ip4/0.0.0.0/udp/4141/quic  lists of listeners of (m)addrs separate by a comma
   -pk ...                                              private key (generated by `rdvp genkey`)
@@ -326,5 +333,9 @@ Usage of betabot:
   -addr string
     	remote 'berty daemon' address (default "127.0.0.1:9091")
   -display-name string
-    	bot's display name (default "moul (bot)")
+    	bot's display name (default "moul (betabot)")
+  -staff-conversation-link string
+    	link of the staff's conversation to join
+  -store string
+    	store file path (default "./betabot.store")
 ```

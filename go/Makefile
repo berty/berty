@@ -224,7 +224,6 @@ doc.generate: md.generate depaware.generate
 
 md.generate: install
 	mkdir -p .tmp
-	GO111MODULE=off go get github.com/campoy/embedmd
 
 	# generate embeddable outputs
 	echo 'foo@bar:~$$ berty -h' > .tmp/berty-usage.txt
@@ -258,7 +257,7 @@ md.generate: install
 
 	# FIXME: generate output for berty mini
 
-	embedmd -w README.md
+	go run github.com/campoy/embedmd -w README.md
 	#rm -rf .tmp
 .PHONY: md.generate
 
