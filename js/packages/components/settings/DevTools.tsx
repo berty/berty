@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { View, ScrollView, Vibration, Alert } from 'react-native'
 import { Layout } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
+import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
@@ -282,6 +283,7 @@ const BodyDevTools: React.FC<{}> = () => {
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, color, text }] = useStyles()
 	const { navigate } = useNavigation()
+	const navigation = useNativeNavigation()
 	const ctx = useMsgrContext()
 
 	return (
@@ -292,6 +294,13 @@ const BodyDevTools: React.FC<{}> = () => {
 				iconSize={30}
 				iconColor={color.dark.grey}
 				onPress={navigate.settings.systemInfo}
+			/>
+			<ButtonSetting
+				name='Add bots'
+				icon='info-outline'
+				iconSize={30}
+				iconColor={color.dark.grey}
+				onPress={() => navigation.navigate('Settings.AddContactList')}
 			/>
 			<TracingButton />
 			<DiscordShareButton />
