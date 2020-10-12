@@ -275,6 +275,10 @@ export const Navigation: React.FC = () => {
 				component={Components.Settings.DevTools}
 			/>
 			<NavigationStack.Screen
+				name={Routes.Settings.AddContactList}
+				component={Components.Settings.AddContactList}
+			/>
+			<NavigationStack.Screen
 				name={Routes.Settings.SystemInfo}
 				component={Components.Settings.SystemInfo}
 			/>
