@@ -282,13 +282,18 @@ _gen.pbjs:
 	rm -f packages/api/index.pb.d.ts.bak
 	eslint --cache --quiet --fix --no-ignore packages/api/index.gen.js packages/codegen/index.gen.js
 
+#### config
+
+_gen.config:
+	cd ../config; make generate
+
 #### gen.sum
 
 gensum_src := Makefile $(pbhbs_templates) ../api/bertyprotocol.proto ../api/bertymessenger.proto ../api/bertytypes.proto
 gen.sum: $(gensum_src)
 	$(call check-program, shasum)
 	@shasum $(gensum_src) | sort > gen.sum.tmp
-	@diff -q gen.sum.tmp gen.sum || $(MAKE) _gen.pbhbs _gen.pbjs _write_gen_sum
+	@diff -q gen.sum.tmp gen.sum || $(MAKE) _gen.pbhbs _gen.pbjs _write_gen_sum _gen.config
 .PHONY: _write_gen_sum
 _write_gen_sum:
 	  shasum $(gensum_src) | sort > gen.sum.tmp

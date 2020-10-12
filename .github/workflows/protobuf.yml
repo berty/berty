@@ -124,12 +124,15 @@ jobs:
     container: bertytech/protoc:25
     steps:
       - uses: actions/checkout@v2
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: make gen.clean
-        run: cd js && make gen.clean
+
+      - run: make gen.clean
+        working-directory: js
+
       - name: Cache Node.js modules
         uses: actions/cache@v2
         with:
@@ -140,19 +143,29 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-genjs-
             ${{ runner.OS }}-
+
       - name: "Fetch deps"
         # FIXME: find a way of only downloading the required packages or install them directly in the bertytech/protoc image
-        run: cd js && make deps
+        run: make deps
+        working-directory: js
         env:
           CI: true
+
       - name: Preload Go vendors
         run: go mod download
-      - name: make _gen.pbhbs
-        run: cd js && make _gen.pbhbs
-      - name: make _gen.pbjs
-        run: cd js && make _gen.pbjs
-      - name: make _write_gen_sum
-        run: cd js && make _write_gen_sum
+
+      - run: make _gen.pbhbs
+        working-directory: js
+
+      - run: make _gen.pbjs
+        working-directory: js
+
+      - run: make _write_gen_sum
+        working-directory: js
+
+      - run: rm -f gen.sum && make generate
+        working-directory: js
+
       - name: check diff
         run: |
           git status | cat

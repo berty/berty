@@ -10,6 +10,7 @@ client/common/openssl/built/* linguist-vendored
 *.gen.go linguist-generated
 *.gen.graphql linguist-generated
 *.gen.js linguist-generated
+*.gen.json linguist-generated
 *.gen.ts linguist-generated
 *.gen.tsx linguist-generated
 *.gen.yml linguist-generated
