@@ -288,13 +288,27 @@ const MessageInvitationReceived: React.FC<{ message: any }> = ({ message }) => {
 					onPress={handleAccept}
 					activeOpacity={!conv ? 0.2 : 1}
 					icon='checkmark-outline'
-					color={!conv ? color.blue : color.green}
+					color={error ? color.grey : !conv ? color.blue : color.green}
 					title={!conv ? 'ACCEPT' : 'ACCEPTED'}
-					backgroundColor={!conv ? color.light.blue : color.light.green}
+					backgroundColor={error ? color.white : !conv ? color.light.blue : color.light.green}
 					styleOpacity={acceptDisabled ? 0.6 : undefined}
 					disabled={acceptDisabled}
 				/>
 			</View>
+			{error && (
+				<Text
+					style={[
+						margin.top.small,
+						margin.horizontal.small,
+						text.size.small,
+						text.bold.small,
+						text.color.red,
+						text.align.center,
+					]}
+				>
+					Error adding you to the group ☹️ Our bad!
+				</Text>
+			)}
 		</React.Fragment>
 	)
 }
