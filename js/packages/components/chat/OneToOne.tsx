@@ -647,7 +647,7 @@ const MessageList: React.FC<{
 		)
 	}
 	const renderItem: SectionListRenderItem<any> = ({ item, index }) => {
-		return (
+		return isBetabot && !isBetabotAdded ? null : (
 			<Message
 				id={item?.cid || `${index}`}
 				convKind={messengerpb.Conversation.Type.ContactType}

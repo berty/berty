@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native'
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext } from '@berty-tech/store/context'
 import messengerMethodsHooks from '@berty-tech/store/methods'
+import { globals } from '@berty-tech/config'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
@@ -33,8 +34,7 @@ const CreateAccountBody = ({ next }) => {
 			.accountUpdate({ displayName })
 			.then(async () => {
 				requestContact({
-					link:
-						'https://berty.tech/id#key=CiBYAkJkmvcCZOl2hWuSK34arbzSpcpQGLowIvi7ZsEdyRIgMmKs-zHKksC74gjOfSj5puOAQQGWNhsC8o9gEtQ8zrQ&name=BetaBot',
+					link: globals.berty.contacts.betabot.link,
 				})
 			})
 			.catch((err2) => setError(err2))
