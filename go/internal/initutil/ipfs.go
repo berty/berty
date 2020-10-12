@@ -31,10 +31,12 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.Protocol.IPFSListeners, "p2p.ipfs-listeners", "/ip4/0.0.0.0/tcp/0,/ip4/0.0.0.0/udp/0/quic", "IPFS listeners")
 	fs.StringVar(&m.Node.Protocol.IPFSAPIListeners, "p2p.ipfs-api-listeners", "", "IPFS API listeners")
 	fs.StringVar(&m.Node.Protocol.Announce, "p2p.ipfs-announce", "", "IPFS announce addrs")
+
 	fs.StringVar(&m.Node.Protocol.NoAnnounce, "p2p.ipfs-no-announce", "", "IPFS exclude announce addrs")
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute, "maximum p2p backoff duration")
 	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "local discovery")
+	fs.BoolVar(&m.Node.Protocol.Metrics, "p2p.metrics", false, "if enable, will register ipfs collector ")
 	fs.Var(&m.Node.Protocol.RdvpMaddrs, "p2p.rdvp", `list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp`)
 }
 
@@ -106,8 +108,18 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 			return nil
 		},
+
 		HostConfig: func(h host.Host, _ routing.Routing) error {
 			var err error
+
+			registry, err := m.getMetricsRegistery()
+			if err != nil {
+				return err
+			}
+
+			if err = registry.Register(ipfsutil.NewHostCollector(h)); err != nil {
+				return err
+			}
 
 			var rdvClients []tinder.AsyncableDriver
 			if lenrdvpeers := len(rdvpeers); lenrdvpeers > 0 {
@@ -163,25 +175,25 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		return nil, nil, errcode.TODO.Wrap(err)
 	}
 
-	// drivers := []tinder.Driver{}
-	// if rdvpeer != nil {
-	// 	if rdvpeer != nil {
-	// 		node.Peerstore.AddAddrs(rdvpeer.ID, rdvpeer.Addrs, peerstore.PermanentAddrTTL)
-	// 		// @FIXME(gfanton): use rand as argument
-	// 		rdvClient := tinder.NewRendezvousDiscovery(logger, node.PeerHost, rdvpeer.ID, rand.New(rand.NewSource(rand.Int63())))
-	// 		drivers = append(drivers, rdvClient)
-	// 	}
-	// 	// if localDiscovery {
-	// 	localDiscovery := tinder.NewLocalDiscovery(logger, node.PeerHost, rand.New(rand.NewSource(rand.Int63())))
-	// 	drivers = append(drivers, localDiscovery)
-	// 	// }
-	// 	bopts.BootstrapAddrs = append(bopts.BootstrapAddrs, p2pRdvpMaddr)
-	// }
-
 	// PubSub
 	psapi := ipfsutil.NewPubSubAPI(m.ctx, logger.Named("ps"), m.Node.Protocol.discovery, m.Node.Protocol.pubsub)
 	m.Node.Protocol.ipfsAPI = ipfsutil.InjectPubSubCoreAPIExtendedAdaptater(m.Node.Protocol.ipfsAPI, psapi)
+
+	// enable conn logger
 	ipfsutil.EnableConnLogger(m.ctx, logger, m.Node.Protocol.ipfsNode.PeerHost)
+
+	// register metrics
+	if m.Node.Protocol.Metrics {
+		registry, err := m.getMetricsRegistery()
+		if err != nil {
+			return nil, nil, err
+		}
+
+		err = registry.Register(ipfsutil.NewBandwidthCollector(m.Node.Protocol.ipfsNode))
+		if err != nil {
+			return nil, nil, err
+		}
+	}
 
 	return m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, nil
 }

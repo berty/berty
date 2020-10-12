@@ -11,6 +11,7 @@ import (
 	"github.com/ipfs/go-ipfs/core"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/oklog/run"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/shibukawa/configdir"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -35,6 +36,12 @@ type Manager struct {
 		zapLogger *zap.Logger
 		cleanup   func()
 	}
+	Metrics struct {
+		Registery *prometheus.Registry
+		Listener  string
+		Handler   string
+		Pedantic  bool
+	}
 	Datastore struct {
 		Dir      string
 		InMemory bool
@@ -55,6 +62,7 @@ type Manager struct {
 			MinBackoff         time.Duration
 			MaxBackoff         time.Duration
 			DisableIPFSNetwork bool
+			Metrics            bool
 			// RdvpMaddrs store a list of rdvp server maddr.
 			// The entry : `:dev:` will add the devs servers to the list (default).
 			// The netry : `:none:` will disable all rdvp servers.
@@ -101,6 +109,7 @@ type Manager struct {
 			bufServerListener *grpcutil.BufListener
 			gatewayMux        *runtime.ServeMux
 		}
+
 		orbitDB *bertyprotocol.BertyOrbitDB
 	}
 
