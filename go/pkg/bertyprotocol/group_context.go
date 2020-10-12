@@ -14,12 +14,12 @@ type groupContext struct {
 	group           *bertytypes.Group
 	metadataStore   *metadataStore
 	messageStore    *messageStore
-	messageKeystore *MessageKeystore
+	messageKeystore *messageKeystore
 	memberDevice    *ownMemberDevice
 	logger          *zap.Logger
 }
 
-func (gc *groupContext) MessageKeystore() *MessageKeystore {
+func (gc *groupContext) MessageKeystore() *messageKeystore {
 	return gc.messageKeystore
 }
 
@@ -54,7 +54,7 @@ func (gc *groupContext) Close() error {
 	return nil
 }
 
-func newContextGroup(group *bertytypes.Group, metadataStore *metadataStore, messageStore *messageStore, messageKeystore *MessageKeystore, memberDevice *ownMemberDevice, logger *zap.Logger) *groupContext {
+func newContextGroup(group *bertytypes.Group, metadataStore *metadataStore, messageStore *messageStore, messageKeystore *messageKeystore, memberDevice *ownMemberDevice, logger *zap.Logger) *groupContext {
 	if logger == nil {
 		logger = zap.NewNop()
 	}

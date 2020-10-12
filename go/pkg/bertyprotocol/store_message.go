@@ -27,7 +27,7 @@ type messageStore struct {
 	basestore.BaseStore
 
 	devKS  DeviceKeystore
-	mks    *MessageKeystore
+	mks    *messageKeystore
 	g      *bertytypes.Group
 	logger *zap.Logger
 }

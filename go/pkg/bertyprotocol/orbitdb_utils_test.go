@@ -20,7 +20,7 @@ type mockedPeer struct {
 	CoreAPI ipfsutil.CoreAPIMock
 	DB      *BertyOrbitDB
 	GC      *groupContext
-	MKS     *MessageKeystore
+	MKS     *messageKeystore
 	DevKS   DeviceKeystore
 }
 
@@ -104,7 +104,7 @@ func createPeersWithGroup(ctx context.Context, t testing.TB, pathBase string, me
 				require.NoError(t, err, "deviceKeystore from existing keys")
 			}
 
-			mk, cleanupMessageKeystore := NewInMemMessageKeystore()
+			mk, cleanupMessageKeystore := newInMemMessageKeystore()
 
 			db, err := NewBertyOrbitDB(ctx, ca.API(), &NewOrbitDBOptions{
 				DeviceKeystore:  devKS,
