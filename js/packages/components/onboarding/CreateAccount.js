@@ -20,18 +20,24 @@ const CreateAccountBody = ({ next }) => {
 	const [isPressed, setIsPressed] = useState(false)
 	const { call: requestContact, err, done } = messengerMethodsHooks.useContactRequest()
 
+	React.useEffect(() => {
+		ctx.client
+			.getUsername()
+			.then(({ username }) => setName(username))
+			.catch((err2) => console.warn('Failed to fetch username:', err2))
+	}, [ctx.client])
+
 	const onPress = React.useCallback(() => {
 		const displayName = name || `anon#${ctx.account.publicKey.substr(0, 4)}`
 		ctx.client
 			.accountUpdate({ displayName })
 			.then(async () => {
-				// TODO: check that account is in "ready" state
 				requestContact({
 					link:
 						'https://berty.tech/id#key=CiB5MKppSY2DNwaCk24HrrK0blm0poO1tdS2RFoQJlJsSxIgrAO6ncyUPIiMnwL3Lg1CIQlbLDa7eQ34Z3vFBjt7MLg&name=BetaBot',
 				})
 			})
-			.catch((err) => setError(err))
+			.catch((err2) => setError(err2))
 	}, [ctx.client, ctx.account.publicKey, name, requestContact])
 
 	React.useEffect(() => {
