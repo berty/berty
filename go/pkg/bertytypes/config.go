@@ -1,5 +1,6 @@
-package bertyconfig
+package bertytypes
 
+// Config represents the configuration file defined in /config/config.yml
 type Config struct {
 	Berty struct {
 		Contacts map[string]struct {
