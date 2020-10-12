@@ -24,6 +24,7 @@ restorecleandb: down
 	cp -rf data/daemon/clean data/daemon/run
 
 initdb:
+	@if [ -d data/daemon/clean ]; then echo "[-] init already done"; exit 1; fi
 	docker-compose run daemon -xec "berty share-invite"
 	cp -rf data/daemon/run data/daemon/clean
 
