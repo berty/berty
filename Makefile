@@ -9,16 +9,17 @@ test:
 
 generate:
 	touch api/*.proto
+	cd config; make generate
 	cd go; make generate
-	cd js; make generate
 	cd docs; make generate
+	cd js; make generate
 .PHONY: generate
 
 
 regenerate tidy:
-	cd go; make $@
-	cd js; make $@
-	cd docs; make $@
+	go mod tidy
+	cd js; go mod tidy
+	cd tool; go mod tidy
 .PHONY: regenerate tidy
 
 

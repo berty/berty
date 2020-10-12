@@ -1,6 +1,6 @@
 09dce4356bbe7167535afb1de747f85e2ba6bbed  ../api/bertytypes.proto
+6eb50218d102d85b7f7c72c156510f713569c71f  Makefile
 8294c28699c62f110ca306150e0428edbaf00376  packages/codegen/index.gen.js.hbs
-9cdf0c887400d37dfa4aa5497188d8cdcc0083fd  Makefile
 c0780732a41bed0d8e686d2178ac969e11ca6d5c  packages/api/index.gen.js.hbs
 d0217673022c3a06902761936566c033e36fce08  ../api/bertymessenger.proto
 d6a4ae84dc55f2af4e863767e9edb8e001f61486  ../api/bertyprotocol.proto
