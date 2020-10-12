@@ -85,7 +85,7 @@ func (s *service) DebugInspectGroupStore(req *bertytypes.DebugInspectGroupStore_
 				nexts    = make([][]byte, len(e.GetNext()))
 			)
 
-			if evt, err := cg.messageStore.openMessage(srv.Context(), e); err != nil {
+			if evt, err := cg.messageStore.openMessage(srv.Context(), e, false); err != nil {
 				s.logger.Error("unable to open message", zap.Error(err))
 			} else {
 				devicePK = evt.Headers.DevicePK

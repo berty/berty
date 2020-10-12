@@ -976,6 +976,9 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB) iface.StoreConstructor {
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
 		}
 
+		// Enable logs in the metadata index
+		store.setLogger(s.Logger())
+
 		return store, nil
 	}
 }
