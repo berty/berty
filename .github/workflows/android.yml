@@ -57,6 +57,13 @@ jobs:
           key: ${{ runner.OS }}-node-${{ hashFiles('js/**/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-
 
+      - name: Cache Gomobile .aar
+        uses: actions/cache@v2
+        with:
+          path: js/packages/go-bridge/android/libs/gobridge.aar
+          key: android-gomobile-${{ hashFiles('go/**/*.go', 'go.sum') }}
+          restore-keys: android-gomobile-
+
       - name: Setup Java
         uses: actions/setup-java@v1
         with:

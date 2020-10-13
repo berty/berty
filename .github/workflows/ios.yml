@@ -69,6 +69,13 @@ jobs:
           key: ${{ runner.OS }}-bundle-${{ hashFiles('js/Gemfile.lock') }}
           restore-keys: ${{ runner.OS }}-bundle-
 
+      - name: Cache Gomobile .framework
+        uses: actions/cache@v2
+        with:
+          path: js/packages/go-bridge/ios/Frameworks/Bertybridge.framework
+          key: ios-gomobile-${{ hashFiles('go/**/*.go', 'go/**/*.m', 'go/**/*.h', 'go.sum') }}
+          restore-keys: ios-gomobile-
+
       - name: Setup macOS keychain
         working-directory: tool/build/dummy-identity
         run: |
