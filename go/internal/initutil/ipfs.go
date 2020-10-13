@@ -18,11 +18,15 @@ import (
 	"github.com/libp2p/go-libp2p-core/routing"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	"github.com/markbates/pkger"
 	"moul.io/srand"
 
+	// Embeding torrcs.
+	_ "berty.tech/berty/v2/go/assets"
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
+	"berty.tech/berty/v2/go/internal/packingutil"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -143,14 +147,28 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 				swarmAddrs = append(swarmAddrs, tor.NopMaddr3Str)
 			}
 
-			// If we allow AnonymityMode allow tcp dial.
+			var torrc *packingutil.PseudoFile
 			if m.Node.Protocol.AnonymityMode {
+				// If we allow AnonymityMode allow tcp dial.
 				torOpts = torcfg.Merge(torOpts, torcfg.AllowTcpDial)
+			} else {
+				// Else we setup a one hop mode.
+				torrc, err = packingutil.EmbedToSHM(pkger.Include("/go/internal/config/torconf/single-hop.torrc"))
+				if err != nil {
+					return nil, nil, errcode.TODO.Wrap(err)
+				}
+				torOpts = torcfg.Merge(torOpts, torcfg.SetTorrcPath(torrc.Name()))
 			}
 			torBuilder, err := tor.NewBuilder(torOpts)
 			if err != nil {
 				return nil, nil, errcode.TODO.Wrap(err)
 			}
+
+			if torrc != nil {
+				// If we have a torrc pseudo file ensure it's closed.
+				torBuilder = wrapTorTransport(torBuilder, torrc)
+			}
+
 			p2pOpts = libp2p.Transport(torBuilder)
 		}
 		if m.Node.Protocol.AnonymityMode {
