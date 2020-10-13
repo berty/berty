@@ -57,6 +57,13 @@ jobs:
           key: ${{ runner.OS }}-node-${{ hashFiles('js/**/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-
 
+      - name: Cache Gomobile .aar
+        uses: actions/cache@v2
+        with:
+          path: js/packages/go-bridge/android/libs/gobridge.aar
+          key: android-gomobile-${{ hashFiles('go/**/*.go', 'go.sum') }}
+          restore-keys: android-gomobile-
+
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
@@ -70,18 +77,32 @@ jobs:
           if [ "$SHAKEBUGS_API_ID" != "" ] && [ "$SHAKEBUGS_API_SECRET" != "" ]; then
             echo "SHAKE_API_ID=$SHAKEBUGS_API_ID\nSHAKE_API_SECRET=$SHAKEBUGS_API_SECRET" >> js/.env
           else
-            cat tool/build/ci/.env >> js/.env
+            cat tool/build/shakebugs-infos/env >> js/.env
           fi
 
       - name: Build the APK
         working-directory: js
         env:
           CI: "true"
-        run: make android.release
+        run: |
+          make android.app_deps
+          ### TODO: sign with release keystore on Yolo ###
+          mkdir -p $HOME/.android
+          cp packages/berty-app/android/app/debug.keystore $HOME/.android
+          ################################################
+          (cd packages/berty-app/android && ./gradlew bundleRelease)
+          wget \
+            https://github.com/google/bundletool/releases/download/1.2.0/bundletool-all-1.2.0.jar \
+            -O /tmp/bundletool.jar
+          java -jar /tmp/bundletool.jar build-apks \
+            --bundle=packages/berty-app/android/app/build/outputs/bundle/release/app-release.aab \
+            --output=${{ github.workspace }}/app.apks \
+            --mode=universal
+          cd ${{ github.workspace }} && unzip app.apks
 
       - name: Upload the APK
         uses: actions/upload-artifact@v2
         with:
-          path: js/packages/berty-app/android/universal.apk
+          path: ${{ github.workspace }}/universal.apk
           name: berty-universal-${{github.sha}}.apk
           if-no-files-found: error

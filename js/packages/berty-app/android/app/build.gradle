@@ -177,23 +177,45 @@ android {
             keyPassword 'android'
         }
         release {
-            if (project.hasProperty('BERTY_RELEASE_STORE_RAW_B64')) {
-                print "decoding base64 keystore... "
-                def rawFile = BERTY_RELEASE_STORE_RAW_B64.decodeBase64()
-                println "SUCCESS"
+            // Get release keystore if any
+            def bertyReleaseKeystore = ""
+            def bertyReleaseKeystoreEnvValue = getEnvValue('BERTY_RELEASE_KEYSTORE_B64')
+            def bertyReleaseKeystoreEnvFile = getEnvValue('BERTY_RELEASE_KEYSTORE_FILE')
+
+            if (bertyReleaseKeystoreEnvValue != "") {
+                print "Decoding base64 keystore env value... "
+                def rawFile = bertyReleaseKeystoreEnvValue.decodeBase64()
+                println "Success!"
                 def file = File.createTempFile("berty", "keystore", null)
-                print "generating keystore into ${file.getAbsolutePath()}... "
+                print "Generating keystore into ${file.getAbsolutePath()}... "
                 def stream = new FileOutputStream(file.getAbsolutePath())
                 stream.write(rawFile)
-                project.ext { BERTY_RELEASE_STORE_FILE = file.getAbsolutePath() }
-                println "SUCCESS"
-            } else if (project.hasProperty('BERTY_RELEASE_STORE_FILE')) {
-                println "app will be signed using ${BERTY_RELEASE_STORE_FILE}"
-                storeFile file(BERTY_RELEASE_STORE_FILE)
-                storePassword BERTY_RELEASE_STORE_PASSWORD
-                keyAlias BERTY_RELEASE_KEY_ALIAS
-                keyPassword BERTY_RELEASE_KEY_PASSWORD
+                bertyReleaseKeystore = file.getAbsolutePath()
+                println "Success!"
+            } else if (bertyReleaseKeystoreEnvFile != "" && file(bertyReleaseKeystoreEnvFile).exists) {
+                print "Getting file keystore env value ($bertyReleaseKeystoreEnvFile)... "
+                bertyReleaseKeystore = file(bertyReleaseKeystoreEnvFile).getAbsolutePath()
+                println "Success!"
+            } else if (file('release.keystore').exists()) {
+                print "Getting local file keystore (release.keystore)... "
+                bertyReleaseKeystore = file('release.keystore').getAbsolutePath()
+                println "Success!"
+            }
+
+            // Sign app with relase keystore or if not found, with debug keystore
+            if (bertyReleaseKeystore != "" && file(bertyReleaseKeystore).exists()) {
+                println "App will be signed using Berty release keystore"
+                storeFile file(bertyReleaseKeystore)
+
+                def bertyReleaseKeystorePasswordEnvValue = getEnvValue('BERTY_RELEASE_KEYSTORE_PASSWORD')
+                def bertyReleaseKeyAliasEnvValue = getEnvValue('BERTY_RELEASE_KEY_ALIAS')
+                def bertyReleaseKeyPasswordEnvValue = getEnvValue('BERTY_RELEASE_KEY_PASSWORD')
+
+                storePassword bertyReleaseKeystorePasswordEnvValue
+                keyAlias bertyReleaseKeyAliasEnvValue
+                keyPassword bertyReleaseKeyPasswordEnvValue
             } else {
+                println "App will be signed using debug keystore"
                 storeFile file('debug.keystore')
                 storePassword 'android'
                 keyAlias 'androiddebugkey'

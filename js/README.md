@@ -51,27 +51,38 @@ $ make help
 
 💡 First, verify you have the [relevant Requirements](#requirements) 😉
 
-```shell
+```console
+## Optional if not modifying any .proto file
+## Generate files using protobuf
 $ make generate
 
-## Mobile app development building
+## Build and serve UI
 $ make metro.start
 
-## Optional if using one device.
-$ BERTY_DAEMON_PORT=1337 make.bridge
-## Run this with multiple different ports to test with multiple clients.
-## $ BERTY_DAEMON_PORT=1338 make.bridge
+## Optional if using only one device
+## Run this with different ports to test with multiple devices
+$ BERTY_DAEMON_PORT=1337 make daemon.start
+$ BERTY_DAEMON_PORT=1338 make daemon.start
 
 ## iOS
-## Install generate xcode project
-$ make ios.xcodegen
-## Run on device
-$ IOS_DEVICE=__IOS_DEVICE_NAME__ make ios.run
-## Run multiple devices to connect them to different running bridge ports!
+## Run iOS app in debug mode
+$ make ios.debug
+## Optional if using only one device
+## Run this with different iOS device names
+$ IOS_DEVICE=__IOS_DEVICE_NAME_1__ make ios.debug
+$ IOS_DEVICE=__IOS_DEVICE_NAME_2__ make ios.debug
+
+💡 You can check available virtual iOS devices with `xcrun simctl list`
 
 ## Android
-$ emulator -avd __ANDROID DEVICE_NAME__
-ANDROID_DEVICE=__ANDROID_DEVICE_ID__ make android.run
+## Run Android app in debug mode
+$ make android.debug
+## Optional if using only one device
+## Run this with different Android device IDs
+$ ANDROID_DEVICE=__ANDROID_DEVICE_ID_1__ make android.debug
+$ ANDROID_DEVICE=__ANDROID_DEVICE_ID_2__ make android.debug
+
+💡 You can check available Android Virtual Devices with `adb devices`
 ```
 
 ### Running the web dev app
@@ -85,16 +96,16 @@ ANDROID_DEVICE=__ANDROID_DEVICE_ID__ make android.run
 #### 2. Run required services
 
 - `cd packages/web-dev-app && yarn && yarn start`
-- `BERTY_DAEMON_PORT=1337 make bridge.start`
-- `BERTY_DAEMON_PORT=1338 make bridge.start`
+- `BERTY_DAEMON_PORT=1337 make daemon.start`
+- `BERTY_DAEMON_PORT=1338 make daemon.start`
 
 #### 3. Navigate to the app
 
 `yarn start` should have opened a browser tab already but if that's not the case, navigate to `localhost:3000`
 
-#### 4. Create an account and choose a bridge
+#### 4. Create an account and choose a daemon
 
-In the app's ui, you have to choose a bridge port when you create your account, if you started the services using the commands above, you will have a service on port `1337` and one on port `1338`
+In the app's ui, you have to choose a daemon port when you create your account, if you started the services using the commands above, you will have a service on port `1337` and one on port `1338`
 
 You can use one normal tab and one private tab to have two accounts at the same time
 
@@ -120,9 +131,6 @@ You can use one normal tab and one private tab to have two accounts at the same 
 
 - Mac OS X
 - XCode _(latest stable)_
-- CocoaPods (`sudo gem install cocoapods` or follow official [sudo-less instructions](https://guides.cocoapods.org/using/getting-started.html#sudo-less-installation))
-
-💡 You can check available virtual iOS devices with `xcrun simctl list`
 
 ### Android dev requirements
 
@@ -137,7 +145,6 @@ You can use one normal tab and one private tab to have two accounts at the same 
 - **Java 8**. If you already have another version of Java, you can use a version manager and Homebrew to add another installation. Some nice instructions are given [here](https://java.christmas/2019/16).
 
 💡 Check you can run all the commands `sdkmanager`, `emulator`, `ndk-bundle`, and `adb` (these are binaries in `$ANDROID_HOME` subfolders)
-💡 Check there is at least one device in the output of `emulator -list-avds`
 
 ### web-dev-app requirements
 

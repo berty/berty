@@ -24,10 +24,19 @@ target 'Berty' do
   # you should disable these next few lines.
   use_flipper!
   post_install do |installer|
-      flipper_post_install(installer)
-      # disable arm64 on simulator for all pods
-      installer.pods_project.build_configurations.each do |config|
-          config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
+    flipper_post_install(installer)
+
+    # set excluded archs for all pods
+    installer.pods_project.build_configurations.each do |config|
+      config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "armv7 armv7s arm64 arm64e"
+      config.build_settings["EXCLUDED_ARCHS[sdk=iphoneos*]"] = "armv7 armv7s i386 x86_64"
+    end
+
+    # set ios deployment target for all pods
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
       end
+    end
   end
 end

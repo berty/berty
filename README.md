@@ -17,7 +17,6 @@
     <a href="https://github.com/berty/berty/actions?query=workflow%3ARelease"><img src="https://github.com/berty/berty/workflows/Release/badge.svg" /></a>
     <a href="https://github.com/berty/berty/actions?query=workflow%3AAndroid"><img src="https://github.com/berty/berty/workflows/Android/badge.svg" /></a>
     <a href="https://github.com/berty/berty/actions?query=workflow%3AiOS"><img src="https://github.com/berty/berty/workflows/iOS/badge.svg" /></a>
-    <a href="https://buildkite.com/berty"><img src="https://img.shields.io/buildkite/331d828ccb643f90f6302b13ea77ab716ec78d6631af54c987?label=Mobile%20App" /></a>
 </p>
 <p align="center">
   <a href="https://pkg.go.dev/berty.tech/berty/v2/go?tab=subdirectories"><img alt="GoDoc" src="https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white" /></a>
@@ -116,6 +115,20 @@ We want to contribute to the world of free, secure communication without fear of
 Open source is more secure, since anyone can examine the code, improve it and maintain it. Our ultimate goal is to completely lose control of Berty and have it evolve as a global community project.
 
 More info on [berty/community](https://github.com/berty/community).
+
+## Install
+
+### Mobile
+
+To compile and run the mobile app on your device, see [js/README.md](js/README.md).
+
+### CLI
+
+You can `go run` or `go install` the CLI tool located in `go/cmd/berty`.
+The two main commands are:
+
+- `berty mini`: CLI messenger app using Berty Protocol.
+- `berty daemon`: full node manageable through Berty Protocol API.
 
 ## Contributing
 

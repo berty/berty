@@ -24,15 +24,17 @@ jobs:
     name: Build for iOS
     runs-on: macos-latest
     steps:
-      - uses: maxim-lobanov/setup-xcode@v1.1
-        with:
-          xcode-version: '12.0'
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}  # see https://github.com/actions/checkout/issues/299
+
+      - name: Setup XCode
+        uses: maxim-lobanov/setup-xcode@v1.1
+        with:
+          xcode-version: '12.0'
 
       - name: Setup Go
         uses: actions/setup-go@v2
@@ -63,12 +65,42 @@ jobs:
       - name: Cache Ruby modules
         uses: actions/cache@v2
         with:
-          path: js/vendor
+          path: js/vendor/bundle
           key: ${{ runner.OS }}-bundle-${{ hashFiles('js/Gemfile.lock') }}
           restore-keys: ${{ runner.OS }}-bundle-
 
+      - name: Cache Gomobile .framework
+        uses: actions/cache@v2
+        with:
+          path: js/packages/go-bridge/ios/Frameworks/Bertybridge.framework
+          key: ios-gomobile-${{ hashFiles('go/**/*.go', 'go/**/*.m', 'go/**/*.h', 'go.sum') }}
+          restore-keys: ios-gomobile-
+
+      - name: Cache XCodeGen
+        uses: actions/cache@v2
+        with:
+          path: js/vendor/xcodegen
+          key: ios-xcodegen-${{ hashFiles('js/XCodeGen.version') }}
+          restore-keys: ios-xcodegen-
+
+      - name: Cache XCode project
+        uses: actions/cache@v2
+        with:
+          path: js/packages/berty-app/ios/Berty.xcodeproj
+          key: ios-xcodeproj-${{ hashFiles('js/packages/berty-app/ios/*.yaml') }}
+          restore-keys: ios-xcodeproj-
+
+      - name: Cache Pods and XCode workspace
+        uses: actions/cache@v2
+        with:
+          path: |
+            js/packages/berty-app/ios/Berty.xcworkspace
+            js/packages/berty-app/ios/Pods
+          key: ios-xcodeworkspace-${{ hashFiles('js/packages/berty-app/ios/Podfile.lock', 'js/**/yarn.lock') }}
+          restore-keys: ios-xcodeworkspace-
+
       - name: Setup macOS keychain
-        working-directory: tool/dummy-identity
+        working-directory: tool/build/dummy-identity
         run: |
           security create-keychain -p "dummypass" dummy.keychain
           security default-keychain -s dummy.keychain
@@ -85,13 +117,13 @@ jobs:
           if [ "$SHAKEBUGS_API_ID" != "" ] && [ "$SHAKEBUGS_API_SECRET" != "" ]; then
             echo "SHAKE_API_ID=$SHAKEBUGS_API_ID\nSHAKE_API_SECRET=$SHAKEBUGS_API_SECRET" >> js/.env
           else
-            cat tool/build/ci/.env >> js/.env
+            cat tool/build/shakebugs-infos/env >> js/.env
           fi
 
       - name: Build the Archive
         working-directory: js
         run: |
-          make deps ios.gomobile packages/berty-app/ios/Berty.xcworkspace
+          make ios.app_deps
           xcodebuild archive \
                 -workspace packages/berty-app/ios/Berty.xcworkspace \
                 -scheme "Berty Yolo" \
