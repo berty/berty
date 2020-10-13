@@ -14,6 +14,7 @@ require (
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
 	github.com/atotto/clipboard v0.1.2
 	github.com/buicongtan1997/protoc-gen-swagger-config v0.0.0-20190801162412-b6396e884596
+	github.com/campoy/embedmd v1.0.0
 	github.com/cheekybits/is v0.0.0-20150225183255-68e9c0620927 // indirect
 	github.com/daixiang0/gci v0.2.4
 	github.com/davidlazar/go-crypto v0.0.0-20200604182044-b73af7476f6c // indirect
