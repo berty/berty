@@ -30,8 +30,7 @@ bridge_src := $(call rwildcard,../go,*.go *.m *.h) ../go.sum
 react-native := $(abspath node_modules/.bin/react-native)
 xcodegen_yml := $(wildcard $(PWD)/packages/berty-app/ios/*.yaml)
 required_java_ver = 18
-xcodegen = vendor/xcodegen
-xcodegen_ver = 2.18.0
+xcodegen_ver = $(shell cat XcodeGen.version)
 
 ## User commands
 
@@ -339,26 +338,27 @@ packages/berty-app/ios/Berty.xcworkspace: $(pkg_desc) packages/berty-app/ios/Ber
 	cd packages/berty-app/ios && bundle exec pod install
 	touch $@
 
-packages/berty-app/ios/Berty.xcodeproj: $(xcodegen) $(xcodegen_yml)
+packages/berty-app/ios/Berty.xcodeproj: vendor/xcodegen $(xcodegen_yml)
 	mkdir -p packages/berty-app/ios/Berty
 	touch packages/berty-app/ios/Berty/main.jsbundle
 
 	IOS_BUNDLE_VERSION=$(shell echo -n $(shell git rev-list HEAD | wc -l)) \
 	IOS_SHORT_BUNDLE_VERSION=$(shell echo "$(VERSION)" | cut -c2-) \
 	IOS_COMMIT=$(shell git rev-parse HEAD) \
-	swift run --package-path $(xcodegen) xcodegen \
+	swift run --package-path vendor/xcodegen xcodegen \
 		--spec packages/berty-app/ios/berty.yaml \
-		--cache-path $(xcodegen)/.cache/berty-app \
+		--cache-path vendor/xcodegen/.cache/berty-app \
 		--use-cache
 
 	touch $@
 
-$(xcodegen):
+vendor/xcodegen: XcodeGen.version
 	mkdir -p $@ $(TMP)/xcodegen_dl
 	wget https://github.com/yonaskolb/XcodeGen/archive/$(xcodegen_ver).zip -O $(TMP)/xcodegen_dl/xcodegen.zip
 	unzip $(TMP)/xcodegen_dl/xcodegen.zip -d $(TMP)/xcodegen_dl
 	cp -rf $(TMP)/xcodegen_dl/*/* $@
 	rm -rf $(TMP)/xcodegen_dl
+	touch $@
 
 vendor/bundle: Gemfile
 	bundle install
@@ -391,7 +391,7 @@ packages/berty-app/node_modules/react-native/react.gradle.orig: packages/berty-a
 
 $(pkg_mod): $(pkg_desc)
 	$(call check-program, yarn)
-	yarn $(if $(filter $(CI), true), --frozen-lockfile) --network-timeout 1200000 # Giving 2 minutes for packages resolution, the MacOS CI have a flaky internet.
+	yarn $(if $(filter $(CI), true), --frozen-lockfile) --network-timeout 1200000 # Giving 20 minutes for packages resolution, the MacOS CI have a flaky internet.
 	./node_modules/.bin/lerna --reject-cycles --concurrency=8 bootstrap
 	# remove duplicate instance of $(react-native)
 	rm -rf `find node_modules -type d -name react-native -path '*/node_modules/*'  | grep 'node_modules/react-native$$'`

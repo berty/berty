@@ -65,7 +65,7 @@ jobs:
       - name: Cache Ruby modules
         uses: actions/cache@v2
         with:
-          path: js/vendor
+          path: js/vendor/bundle
           key: ${{ runner.OS }}-bundle-${{ hashFiles('js/Gemfile.lock') }}
           restore-keys: ${{ runner.OS }}-bundle-
 
@@ -75,6 +75,29 @@ jobs:
           path: js/packages/go-bridge/ios/Frameworks/Bertybridge.framework
           key: ios-gomobile-${{ hashFiles('go/**/*.go', 'go/**/*.m', 'go/**/*.h', 'go.sum') }}
           restore-keys: ios-gomobile-
+
+      - name: Cache XCodeGen
+        uses: actions/cache@v2
+        with:
+          path: js/vendor/xcodegen
+          key: ios-xcodegen-${{ hashFiles('js/XCodeGen.version') }}
+          restore-keys: ios-xcodegen-
+
+      - name: Cache XCode project
+        uses: actions/cache@v2
+        with:
+          path: js/packages/berty-app/ios/Berty.xcodeproj
+          key: ios-xcodeproj-${{ hashFiles('js/packages/berty-app/ios/*.yaml') }}
+          restore-keys: ios-xcodeproj-
+
+      - name: Cache Pods and XCode workspace
+        uses: actions/cache@v2
+        with:
+          path: |
+            js/packages/berty-app/ios/Berty.xcworkspace
+            js/packages/berty-app/ios/Pods
+          key: ios-xcodeworkspace-${{ hashFiles('js/packages/berty-app/ios/Podfile.lock', 'js/**/yarn.lock') }}
+          restore-keys: ios-xcodeworkspace-
 
       - name: Setup macOS keychain
         working-directory: tool/build/dummy-identity
