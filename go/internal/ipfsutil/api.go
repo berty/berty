@@ -2,7 +2,6 @@ package ipfsutil
 
 import (
 	"context"
-	"fmt"
 
 	ds "github.com/ipfs/go-datastore"
 	dsync "github.com/ipfs/go-datastore/sync"
@@ -136,7 +135,6 @@ func CreateBuildConfig(repo ipfs_repo.Repo, opts *CoreAPIConfig) (*ipfs_node.Bui
 
 	hostOpt := ipfs_libp2p.DefaultHostOption
 	if opts.Host != nil {
-		fmt.Println("custom host")
 		hostOpt = opts.Host
 	}
 

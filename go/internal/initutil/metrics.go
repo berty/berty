@@ -13,20 +13,20 @@ import (
 const metricsHandler = "/metrics"
 
 func (m *Manager) SetupMetricsFlags(fs *flag.FlagSet) {
-	fs.StringVar(&m.Metrics.Listener, "metrics.listener", ":8888", "Metrics listeners")
-	fs.BoolVar(&m.Metrics.Pedantic, "metrics.pedantic", true, "Enable Metrics pedantic")
+	fs.StringVar(&m.Metrics.Listener, "metrics.listener", "", "Metrics listener, will enable metrics")
+	fs.BoolVar(&m.Metrics.Pedantic, "metrics.pedantic", false, "Enable Metrics pedantic for debug")
 }
 
-func (m *Manager) GetMetricsRegistery() (*prometheus.Registry, error) {
+func (m *Manager) GetMetricsRegistry() (*prometheus.Registry, error) {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 
-	return m.getMetricsRegistery()
+	return m.getMetricsRegistry()
 }
 
-func (m *Manager) getMetricsRegistery() (*prometheus.Registry, error) {
-	if m.Metrics.Registery != nil {
-		return m.Metrics.Registery, nil
+func (m *Manager) getMetricsRegistry() (*prometheus.Registry, error) {
+	if m.Metrics.Registry != nil {
+		return m.Metrics.Registry, nil
 	}
 
 	logger, err := m.getLogger()
@@ -40,20 +40,19 @@ func (m *Manager) getMetricsRegistery() (*prometheus.Registry, error) {
 	}
 
 	if m.Metrics.Pedantic {
-		m.Metrics.Registery = prometheus.NewPedanticRegistry()
+		m.Metrics.Registry = prometheus.NewPedanticRegistry()
 	} else {
-		m.Metrics.Registery = prometheus.NewRegistry()
+		m.Metrics.Registry = prometheus.NewRegistry()
 	}
 
-	m.Metrics.Registery.MustRegister(prometheus.NewBuildInfoCollector())
-	m.Metrics.Registery.MustRegister(prometheus.NewGoCollector())
+	m.Metrics.Registry.MustRegister(prometheus.NewBuildInfoCollector())
+	m.Metrics.Registry.MustRegister(prometheus.NewGoCollector())
 
 	mux := http.NewServeMux()
 	m.workers.Add(func() error {
 		handerfor := promhttp.HandlerFor(
-
-			m.Metrics.Registery,
-			promhttp.HandlerOpts{Registry: m.Metrics.Registery},
+			m.Metrics.Registry,
+			promhttp.HandlerOpts{Registry: m.Metrics.Registry},
 		)
 
 		mux.Handle(metricsHandler, handerfor)
@@ -65,5 +64,5 @@ func (m *Manager) getMetricsRegistery() (*prometheus.Registry, error) {
 		l.Close()
 	})
 
-	return m.Metrics.Registery, nil
+	return m.Metrics.Registry, nil
 }

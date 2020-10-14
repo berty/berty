@@ -1,13 +1,9 @@
 package ipfsutil
 
 import (
-	"regexp"
-
 	metrics "github.com/libp2p/go-libp2p-core/metrics"
 	prometheus "github.com/prometheus/client_golang/prometheus"
 )
-
-var reSpecialChar = regexp.MustCompile(`[^\w]+`)
 
 var (
 	protocolsBandwidthInDesc = prometheus.NewDesc(

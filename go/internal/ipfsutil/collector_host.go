@@ -23,7 +23,6 @@ var (
 	// 	Help:    "stream duration",
 	// 	Buckets: prometheus.LinearBuckets(0, 10, 6),
 	// }
-
 )
 
 const UnknownProtocol = "UnknownProtocol"
@@ -55,9 +54,9 @@ func (cc *HostCollector) Collect(cmetric chan<- prometheus.Metric) {
 	for _, c := range cc.host.Network().Conns() {
 		for _, s := range c.GetStreams() {
 			if s.Protocol() != "" {
-				streamsMap[s.Protocol()] += 1
+				streamsMap[s.Protocol()]++
 			} else {
-				streamsMap[UnknownProtocol] += 1
+				streamsMap[UnknownProtocol]++
 			}
 		}
 	}
@@ -79,12 +78,15 @@ func (cc *HostCollector) Describe(ch chan<- *prometheus.Desc) {
 
 func (cc *HostCollector) Listen(network.Network, ma.Multiaddr)      {}
 func (cc *HostCollector) ListenClose(network.Network, ma.Multiaddr) {}
+
 func (cc *HostCollector) Connected(n network.Network, c network.Conn) {
 	cc.connsCollector.Inc()
 }
+
 func (cc *HostCollector) Disconnected(n network.Network, c network.Conn) {
 	cc.connsCollector.Dec()
 }
+
 func (cc *HostCollector) OpenedStream(n network.Network, s network.Stream) {}
 func (cc *HostCollector) ClosedStream(n network.Network, s network.Stream) {
 	// elpased := time.Since(s.Stat().Opened)

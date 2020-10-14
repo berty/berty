@@ -36,7 +36,6 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute, "maximum p2p backoff duration")
 	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "local discovery")
-	fs.BoolVar(&m.Node.Protocol.Metrics, "p2p.metrics", false, "if enable, will register ipfs collector ")
 	fs.Var(&m.Node.Protocol.RdvpMaddrs, "p2p.rdvp", `list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp`)
 }
 
@@ -112,13 +111,15 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		HostConfig: func(h host.Host, _ routing.Routing) error {
 			var err error
 
-			registry, err := m.getMetricsRegistery()
-			if err != nil {
-				return err
-			}
+			if m.Metrics.Listener != "" {
+				registry, err := m.getMetricsRegistry()
+				if err != nil {
+					return err
+				}
 
-			if err = registry.Register(ipfsutil.NewHostCollector(h)); err != nil {
-				return err
+				if err = registry.Register(ipfsutil.NewHostCollector(h)); err != nil {
+					return err
+				}
 			}
 
 			var rdvClients []tinder.AsyncableDriver
@@ -183,8 +184,8 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	ipfsutil.EnableConnLogger(m.ctx, logger, m.Node.Protocol.ipfsNode.PeerHost)
 
 	// register metrics
-	if m.Node.Protocol.Metrics {
-		registry, err := m.getMetricsRegistery()
+	if m.Metrics.Listener != "" {
+		registry, err := m.getMetricsRegistry()
 		if err != nil {
 			return nil, nil, err
 		}

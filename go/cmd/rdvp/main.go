@@ -186,16 +186,16 @@ func main() {
 					return errcode.TODO.Wrap(err)
 				}
 
-				registery := prometheus.NewRegistry()
-				registery.MustRegister(prometheus.NewBuildInfoCollector())
-				registery.MustRegister(prometheus.NewGoCollector())
-				registery.MustRegister(ipfsutil.NewHostCollector(host))
-				registery.MustRegister(ipfsutil.NewBandwidthCollector(reporter))
+				registry := prometheus.NewRegistry()
+				registry.MustRegister(prometheus.NewBuildInfoCollector())
+				registry.MustRegister(prometheus.NewGoCollector())
+				registry.MustRegister(ipfsutil.NewHostCollector(host))
+				registry.MustRegister(ipfsutil.NewBandwidthCollector(reporter))
 				// @TODO(gfanton): add rdvp specific collector...
 
 				handerfor := promhttp.HandlerFor(
-					registery,
-					promhttp.HandlerOpts{Registry: registery},
+					registry,
+					promhttp.HandlerOpts{Registry: registry},
 				)
 
 				mux := http.NewServeMux()
@@ -208,7 +208,6 @@ func main() {
 				}, func(error) {
 					ml.Close()
 				})
-
 			}
 
 			if err = gServe.Run(); err != nil {

@@ -37,10 +37,9 @@ type Manager struct {
 		cleanup   func()
 	}
 	Metrics struct {
-		Registery *prometheus.Registry
-		Listener  string
-		Handler   string
-		Pedantic  bool
+		Registry *prometheus.Registry
+		Listener string
+		Pedantic bool
 	}
 	Datastore struct {
 		Dir      string
@@ -62,7 +61,6 @@ type Manager struct {
 			MinBackoff         time.Duration
 			MaxBackoff         time.Duration
 			DisableIPFSNetwork bool
-			Metrics            bool
 			// RdvpMaddrs store a list of rdvp server maddr.
 			// The entry : `:dev:` will add the devs servers to the list (default).
 			// The netry : `:none:` will disable all rdvp servers.
