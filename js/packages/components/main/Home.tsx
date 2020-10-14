@@ -356,7 +356,17 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 		type !== messengerpb.Conversation.Type.MultiMemberType &&
 		contactPublicKey.toString() === persistOpts.betabot.convPk.toString()
 	const isBetabotAdded = persistOpts && persistOpts.betabot.added
-
+	let description
+	if (isBetabot && !isBetabotAdded) {
+		description = 'Click here to add the Beta Bot!'
+	} else {
+		if (lastInte?.type === messengerpb.AppMessage.Type.TypeUserMessage) {
+			description = lastInte.payload.body
+		} else {
+			description = ''
+		}
+	}
+	console.log(isBetabot, isBetabotAdded, lastInte)
 	return !isIncoming ? (
 		<TouchableHighlight
 			underlayColor={color.light.grey}
@@ -483,13 +493,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 								: text.color.grey,
 						]}
 					>
-						{lastInte?.type === messengerpb.AppMessage.Type.TypeUserMessage
-							? isBetabot && !isBetabotAdded
-								? 'Click here to add the Beta Bot!'
-								: lastInte.payload.body
-							: !isAccepted && type !== messengerpb.Conversation.Type.MultiMemberType
-							? 'Request is sent. Pending...'
-							: ''}
+						{description}
 					</Text>
 				</View>
 			</View>
