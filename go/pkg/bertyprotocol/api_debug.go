@@ -3,21 +3,16 @@ package bertyprotocol
 import (
 	"context"
 	"fmt"
-	"os"
-	"runtime"
-	"syscall"
 	"time"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
-	"moul.io/openfiles"
 
+	"berty.tech/berty/v2/go/internal/sysutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
-	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/username"
 	"berty.tech/go-orbit-db/stores/operation"
 )
 
@@ -178,66 +173,11 @@ func (s *service) DebugGroup(ctx context.Context, request *bertytypes.DebugGroup
 	return rep, nil
 }
 
-func SystemInfoProcess() (*bertytypes.SystemInfo_Process, error) {
-	var errs error
-
-	// rlimit
-	rlimitNofile := syscall.Rlimit{}
-	err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rlimitNofile)
-	errs = multierr.Append(errs, err)
-
-	// rusage
-	rusage := syscall.Rusage{}
-	err = syscall.Getrusage(syscall.RUSAGE_SELF, &rusage)
-	errs = multierr.Append(errs, err)
-
-	// openfiles
-	nofile, nofileErr := openfiles.Count()
-	errs = multierr.Append(errs, nofileErr)
-
-	// hostname
-	hn, err := os.Hostname()
-	errs = multierr.Append(errs, err)
-
-	// process priority
-	prio, err := syscall.Getpriority(syscall.PRIO_PROCESS, 0)
-	errs = multierr.Append(errs, err)
-
-	// working dir
-	wd, err := syscall.Getwd()
-	errs = multierr.Append(errs, err)
-
-	reply := bertytypes.SystemInfo_Process{
-		RlimitCur:        rlimitNofile.Cur,
-		Nofile:           nofile,
-		TooManyOpenFiles: openfiles.IsTooManyError(nofileErr),
-		NumCPU:           int64(runtime.NumCPU()),
-		GoVersion:        runtime.Version(),
-		HostName:         hn,
-		NumGoroutine:     int64(runtime.NumGoroutine()),
-		OperatingSystem:  runtime.GOOS,
-		Arch:             runtime.GOARCH,
-		Version:          bertyversion.Version,
-		VcsRef:           bertyversion.VcsRef,
-		RlimitMax:        rlimitNofile.Max,
-		Priority:         int64(prio),
-		PID:              int64(syscall.Getpid()),
-		UID:              int64(syscall.Getuid()),
-		PPID:             int64(syscall.Getppid()),
-		WorkingDir:       wd,
-		SystemUsername:   username.GetUsername(),
-		UserCPUTimeMS:    int64(rusage.Utime.Sec*1000) + int64(rusage.Utime.Usec/1000), // nolint:unconvert // on some archs, those vars may be int32 instead of int64
-		SystemCPUTimeMS:  int64(rusage.Stime.Sec*1000) + int64(rusage.Stime.Usec/1000), // nolint:unconvert // on some archs, those vars may be int32 instead of int64
-	}
-
-	return &reply, errs
-}
-
 func (s *service) SystemInfo(ctx context.Context, request *bertytypes.SystemInfo_Request) (*bertytypes.SystemInfo_Reply, error) {
 	reply := bertytypes.SystemInfo_Reply{}
 
 	// process
-	process, errs := SystemInfoProcess()
+	process, errs := sysutil.SystemInfoProcess()
 	reply.Process = process
 	reply.Process.StartedAt = s.startedAt.Unix()
 	reply.Process.UptimeMS = time.Since(s.startedAt).Milliseconds()

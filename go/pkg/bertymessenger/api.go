@@ -13,6 +13,7 @@ import (
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/discordlog"
+	"berty.tech/berty/v2/go/internal/sysutil"
 	"berty.tech/berty/v2/go/pkg/banner"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
@@ -359,7 +360,7 @@ func (svc *service) SystemInfo(ctx context.Context, req *SystemInfo_Request) (*S
 	var process *bertytypes.SystemInfo_Process
 	{
 		var err error
-		process, err = bertyprotocol.SystemInfoProcess()
+		process, err = sysutil.SystemInfoProcess()
 		errs = multierr.Append(errs, err)
 		reply.Messenger = &SystemInfo_Messenger{Process: process}
 		reply.Messenger.Process.StartedAt = svc.startedAt.Unix()

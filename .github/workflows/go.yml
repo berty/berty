@@ -216,14 +216,14 @@ jobs:
       #  env:
       #    TEST_SPEED: any
       #  run: go.exe test ./... -buildmode=exe -v -timeout=1200s -count=1 -race -cover -coverprofile=coverage.txt -covermode=atomic
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          file: ./coverage.txt
-          flags: unittests
-          env_vars: OS,GOLANG
-          name: codecov-umbrella
-          fail_ci_if_error: false
+      #- name: Upload coverage to Codecov
+      #  uses: codecov/codecov-action@v1
+      #  with:
+      #    file: ./coverage.txt
+      #    flags: unittests
+      #    env_vars: OS,GOLANG
+      #    name: codecov-umbrella
+      #    fail_ci_if_error: false
 
 # TODO: consider adding a go-tests-on-darwin.
 #       it can validate that the test suite runs successfully on macos.
