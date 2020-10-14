@@ -70,15 +70,7 @@ jobs:
           java-version: 1.8
 
       - name: Build .env
-        env:
-          SHAKEBUGS_API_ID: ${{ secrets.SHAKEBUGS_API_ID }}
-          SHAKEBUGS_API_SECRET: ${{ secrets.SHAKEBUGS_API_SECRET }}
-        run: |
-          if [ "$SHAKEBUGS_API_ID" != "" ] && [ "$SHAKEBUGS_API_SECRET" != "" ]; then
-            echo "SHAKE_API_ID=$SHAKEBUGS_API_ID\nSHAKE_API_SECRET=$SHAKEBUGS_API_SECRET" >> js/.env
-          else
-            cat tool/build/shakebugs-infos/env >> js/.env
-          fi
+        run: cat tool/build/shakebugs-infos/env >> js/.env
 
       - name: Build the APK
         working-directory: js
