@@ -54,7 +54,7 @@ jobs:
           path: |
             js/node_modules
             js/packages/*/node_modules
-          key: ${{ runner.OS }}-node-${{ hashFiles('js/**/yarn.lock') }}
+          key: ${{ runner.OS }}-node-${{ hashFiles('js/yarn.lock', 'js/packages/*/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-
 
       - name: Cache Gomobile .aar
