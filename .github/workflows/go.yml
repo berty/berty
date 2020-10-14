@@ -20,7 +20,8 @@ on:
       - '.github/workflows/go.yml'
 
 jobs:
-  goreleaser:
+  goreleaser-dryrun:
+    name: "GoReleaser (dry-run)"
     runs-on: ubuntu-latest
     needs: golangci-lint
     steps:
@@ -46,6 +47,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   golangci-lint:
+    name: "GolangCI-lint"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -57,7 +59,17 @@ jobs:
           args: --timeout=10m
           # only-new-issues: true
 
+  # this is unusual to have a job that checks the unstable tests.
+  #
+  # reason: some tests are unstable, they works, but not always;
+  #         this job checks that they are working sometimes.
+  #         if this job fails, then a tests switched from "unstable" to "broken".
+  #
+  #         summary: this job checks that "unstable tests" do not become "broken tests".
+  #
+  # we hope we can remove this job because all the tests are stable 100% of the time :)
   unstable-tests:
+    name: "Unstable tests"
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -83,8 +95,7 @@ jobs:
       - name: Avoid triggering make generate
         run: touch go/gen.sum
       - name: Fetch dependencies
-        run: |
-          go mod download
+        run: go mod download
       - name: Compile the testing binaries
         run: |
           pushd ./go/pkg/bertyprotocol  && go test -c -o ./tests.bin . && popd
@@ -95,13 +106,15 @@ jobs:
           git --no-pager diff go.mod go.sum
           git --no-pager diff --quiet go.mod go.sum
       - name: Run fast unstable tests
-        run: |
-          cd go
-          TEST_SPEED=fast TEST_STABILITY=unstable make go.unstable-tests
-          # FIXME: coverage
+        working-directory: go
+        env:
+          TEST_SPEED: fast
+          TEST_STABILITY: unstable
+        run: make go.unstable-tests
+      # FIXME: coverage
 
   go-tests-on-linux:
-    #needs: golangci-lint
+    name: "Stable tests (linux)"
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -127,8 +140,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
       - name: Compile the project on Unix-like operating systems
+        working-directory: go
         run: |
-          cd go
           touch gen.sum # avoid triggering make generate
           make go.install
       - name: Check go.mod and go.sum
@@ -137,25 +150,23 @@ jobs:
           git --no-pager diff go.mod go.sum
           git --no-pager diff --quiet go.mod go.sum
       - name: Run fast tests multiple times
-        run: |
-          cd go
-          TEST_SPEED=fast make go.unittest GO_TEST_OPTS="-v -test.timeout=600s -count 5"
+        working-directory: go
+        env:
+          TEST_SPEED: fast
+          GO_TEST_OPTS: -v -test.timeout=600s -count 5
+        run: make go.unittest
       - name: Run all tests
-        run: |
-          cd go
-          TEST_SPEED=any make go.unittest GO_TEST_OPTS="-v -test.timeout=600s -count 1"
-      #- name: Run all tests with race flag and generate coverage
-      #  uses: nick-invision/retry@v1
-      #  with:
-      #    timeout_minutes: 21
-      #    max_attempts: 5
-      #    command: |
-      #      cd go
-      #      TEST_SPEED=any make go.unittest GO_TEST_OPTS="-v -test.timeout=1200s -count 1 -race -cover -coverprofile=coverage.txt -covermode=atomic"
+        working-directory: go
+        env:
+          TEST_SPEED: any
+          GO_TEST_OPTS: -v -test.timeout=600s -count 1
+        run: make go.unittest
       - name: Run all tests with race flag and generate coverage
-        run: |
-          cd go
-          TEST_SPEED=any make go.unittest GO_TEST_OPTS="-v -test.timeout=1200s -count 1 -race -cover -coverprofile=coverage.txt -covermode=atomic"
+        working-directory: go
+        env:
+          TEST_SPEED: any
+          GO_TEST_OPTS: -v -test.timeout=1200s -count=1 -race -cover -coverprofile=coverage.txt -covermode=atomic
+        run: make go.unittest
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
@@ -165,5 +176,59 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: false
 
-  # TODO: go-tests-on-windows:
-  # TODO: go-tests-on-darwin:
+  go-tests-on-windows:
+    name: "Stable tests (windows)"
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15.x
+      - name: Cache Go modules
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Compile the project on Windows
+        run: go.exe install -buildmode=exe -v ./go/cmd/...
+      - name: Check go.mod and go.sum
+        run: |
+          go mod tidy -v
+          git --no-pager diff go.mod go.sum
+          git --no-pager diff --quiet go.mod go.sum
+      - name: Run fast tests multiple times
+        working-directory: go
+        env:
+          TEST_SPEED: fast
+        run: go.exe test ./... -buildmode=exe -v -timeout=600s -count=5
+      - name: Run all tests
+        working-directory: go
+        env:
+          TEST_SPEED: any
+        run: go.exe test ./... -buildmode=exe -v -timeout=600s -count=1
+      # broken
+      #- name: Run all tests with race flag and generate coverage
+      #  working-directory: go
+      #  env:
+      #    TEST_SPEED: any
+      #  run: go.exe test ./... -buildmode=exe -v -timeout=1200s -count=1 -race -cover -coverprofile=coverage.txt -covermode=atomic
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage.txt
+          flags: unittests
+          env_vars: OS,GOLANG
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+# TODO: consider adding a go-tests-on-darwin.
+#       it can validate that the test suite runs successfully on macos.
+#       concern: it will take a precious slot of darwin builder on github-actions
+#       maybe we should just run it with a cron and not on each push
+
+# TODO: consider adding various GOARCH check per OS.
+#       i.e., to validate that we build on 32/64bit.
