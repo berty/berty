@@ -20,12 +20,19 @@ const SetupFinishedBody = () => {
 	const { setPersistentOption, contacts, persistentOptions } = useMsgrContext()
 
 	React.useEffect(() => {
-		if (!persistentOptions && Object.values(contacts).length) {
-			setPersistentOption('betabot', {
+		const handlePersistentOptions = async () => {
+			await setPersistentOption('betabot', {
 				added: false,
 				convPk: Object.values(contacts)[0].publicKey,
 			})
+			await setPersistentOption('notifications', {
+				enable: true,
+			})
 		}
+		if (!persistentOptions && Object.values(contacts).length) {
+			return () => handlePersistentOptions()
+		}
+		return
 	}, [persistentOptions, contacts, setPersistentOption])
 
 	return (

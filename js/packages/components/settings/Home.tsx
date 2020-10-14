@@ -126,6 +126,8 @@ const HomeBodySettings: React.FC<{}> = () => {
 	const account: berty.messenger.v1.Account = useAccount()
 	const replicationServices = services.filter((s) => s.serviceType === serviceTypes.Replication)
 	const ctx = useMsgrContext()
+	const enableNotif =
+		ctx.persistentOptions.notifications && ctx.persistentOptions.notifications.enable
 
 	return (
 		<View style={[flex.tiny, padding.horizontal.medium, margin.top.medium]}>
@@ -133,7 +135,11 @@ const HomeBodySettings: React.FC<{}> = () => {
 				name='Notifications'
 				icon='bell-outline'
 				iconColor={color.blue}
-				state={{ value: 'Current', color: color.white, bgColor: color.blue }}
+				state={{
+					value: enableNotif ? 'Current' : 'Disable',
+					color: color.white,
+					bgColor: enableNotif ? color.blue : color.red,
+				}}
 				onPress={navigate.settings.notifications}
 			/>
 			<ButtonSetting

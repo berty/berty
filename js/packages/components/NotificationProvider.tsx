@@ -23,7 +23,12 @@ const NotificationBridge: React.FC = withInAppNotification(({ showNotification }
 				contact.state !== messengerpb.Contact.State.IncomingRequest &&
 				contact.state !== messengerpb.Contact.State.Undefined
 			// check if message comes from valid contact
-			if (isValid && persistentOptions && persistentOptions.convPk !== evt.payload.publicKey) {
+			if (
+				isValid &&
+				persistentOptions &&
+				persistentOptions.convPk !== evt.payload.publicKey &&
+				persistentOptions.notifcations.enable
+			) {
 				showNotification({
 					title: evt.payload.title,
 					message: evt.payload.body,

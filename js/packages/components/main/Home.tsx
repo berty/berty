@@ -366,7 +366,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 			description = ''
 		}
 	}
-	console.log(isBetabot, isBetabotAdded, lastInte)
+
 	return !isIncoming ? (
 		<TouchableHighlight
 			underlayColor={color.light.grey}
