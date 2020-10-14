@@ -10,9 +10,10 @@ import (
 	"go.uber.org/zap"
 )
 
+const metricsHandler = "/metrics"
+
 func (m *Manager) SetupMetricsFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Metrics.Listener, "metrics.listener", ":8888", "Metrics listeners")
-	fs.StringVar(&m.Metrics.Handler, "metrics.handler", "/metrics", "Metrics handler path")
 	fs.BoolVar(&m.Metrics.Pedantic, "metrics.pedantic", true, "Enable Metrics pedantic")
 }
 
@@ -55,8 +56,10 @@ func (m *Manager) getMetricsRegistery() (*prometheus.Registry, error) {
 			promhttp.HandlerOpts{Registry: m.Metrics.Registery},
 		)
 
-		mux.Handle(m.Metrics.Handler, handerfor)
-		logger.Info("metrics listener", zap.String("handler", m.Metrics.Handler), zap.String("listener", l.Addr().String()))
+		mux.Handle(metricsHandler, handerfor)
+		logger.Info("metrics listener",
+			zap.String("handler", metricsHandler),
+			zap.String("listener", l.Addr().String()))
 		return http.Serve(l, mux)
 	}, func(error) {
 		l.Close()

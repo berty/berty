@@ -15,6 +15,7 @@ func miniCommand() *ffcli.Command {
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("berty mini", flag.ExitOnError)
 		fs.StringVar(&groupFlag, "mini.group", groupFlag, "group to join, leave empty to create a new group")
+		manager.SetupMetricsFlags(fs)              // add flags to enable metrics
 		manager.SetupLocalMessengerServerFlags(fs) // add flags to allow creating a full node in the same process
 		manager.SetupEmptyGRPCListenersFlags(fs)   // by default, we don't want to expose gRPC server for mini
 		manager.SetupRemoteNodeFlags(fs)           // mini can be run against an already running server

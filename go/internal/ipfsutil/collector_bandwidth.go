@@ -3,7 +3,7 @@ package ipfsutil
 import (
 	"regexp"
 
-	ipfs_core "github.com/ipfs/go-ipfs/core"
+	metrics "github.com/libp2p/go-libp2p-core/metrics"
 	prometheus "github.com/prometheus/client_golang/prometheus"
 )
 
@@ -26,15 +26,15 @@ var (
 var _ prometheus.Collector = (*BandwidthCollector)(nil)
 
 type BandwidthCollector struct {
-	node *ipfs_core.IpfsNode
+	reporter *metrics.BandwidthCounter
 }
 
-func NewBandwidthCollector(node *ipfs_core.IpfsNode) *BandwidthCollector {
-	return &BandwidthCollector{node}
+func NewBandwidthCollector(reporter *metrics.BandwidthCounter) *BandwidthCollector {
+	return &BandwidthCollector{reporter}
 }
 
 func (bc *BandwidthCollector) Collect(cmetric chan<- prometheus.Metric) {
-	for p, s := range bc.node.Reporter.GetBandwidthByProtocol() {
+	for p, s := range bc.reporter.GetBandwidthByProtocol() {
 		if p == "" {
 			continue
 		}

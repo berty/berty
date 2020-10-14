@@ -189,7 +189,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 			return nil, nil, err
 		}
 
-		err = registry.Register(ipfsutil.NewBandwidthCollector(m.Node.Protocol.ipfsNode))
+		err = registry.Register(ipfsutil.NewBandwidthCollector(m.Node.Protocol.ipfsNode.Reporter))
 		if err != nil {
 			return nil, nil, err
 		}
