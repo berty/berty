@@ -98,8 +98,12 @@ func (event *StreamEvent) UnmarshalPayload() (proto.Message, error) {
 		message = &StreamEvent_ContactUpdated{}
 	case StreamEvent_TypeConversationUpdated:
 		message = &StreamEvent_ConversationUpdated{}
+	case StreamEvent_TypeConversationDeleted:
+		message = &StreamEvent_ConversationDeleted{}
 	case StreamEvent_TypeInteractionUpdated:
 		message = &StreamEvent_InteractionUpdated{}
+	case StreamEvent_TypeInteractionDeleted:
+		message = &StreamEvent_InteractionDeleted{}
 	case StreamEvent_TypeMemberUpdated:
 		message = &StreamEvent_MemberUpdated{}
 	case StreamEvent_TypeDeviceUpdated:

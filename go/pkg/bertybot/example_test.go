@@ -22,9 +22,9 @@ func Example() {
 		bertybot.WithLogger(logger.Named("botlib")),                                  // configure a logger
 		bertybot.WithDisplayName("example bot"),                                      // bot name
 		bertybot.WithInsecureMessengerGRPCAddr("127.0.0.1:9091"),                     // connect to running berty messenger daemon
-		bertybot.WithSkipReplay(),                                                    // skip old events, only consume fresh ones
-		bertybot.WithSkipAcknowledge(),                                               // skip acknowledge events
-		bertybot.WithSkipMyself(),                                                    // skip my own interactions
+		bertybot.WithReplay(),                                                        // replay old events as if they are just happening
+		bertybot.WithEntityUpdates(),                                                 // include entity updates; i.e., acknowledge
+		bertybot.WithFromMyself(),                                                    // trigger hooks for events authored by the bot itself
 		bertybot.WithRecipe(bertybot.DebugEventRecipe(logger.Named("debug"))),        // debug events
 		bertybot.WithRecipe(bertybot.DelayResponseRecipe(time.Second)),               // add a delay before sending replies
 		bertybot.WithRecipe(bertybot.AutoAcceptIncomingContactRequestRecipe()),       // accept incoming contact requests

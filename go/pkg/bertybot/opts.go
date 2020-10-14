@@ -59,10 +59,10 @@ func WithDisplayName(name string) NewOption {
 	}
 }
 
-// WithSkipReplay will ignore all events that were already processed before starting to listen to Messenger events.
-func WithSkipReplay() NewOption {
+// WithReplay will process replayed (old) events as if they just happened.
+func WithReplay() NewOption {
 	return func(b *Bot) error {
-		b.skipReplay = true
+		b.withReplay = true
 		return nil
 	}
 }
@@ -87,18 +87,18 @@ func WithRecipe(recipe Recipe) NewOption {
 	}
 }
 
-// WithSkipAcknowledge disables sending Acknowledge events.
-func WithSkipAcknowledge() NewOption {
+// WithEntityUpdates sets the bot to call handlers for new entity events and also for entity updates (acknowledges, etc).
+func WithEntityUpdates() NewOption {
 	return func(b *Bot) error {
-		b.skipAcknowledge = true
+		b.withEntityUpdates = true
 		return nil
 	}
 }
 
-// WithSkipMyself disables sending events sent by myself.
-func WithSkipMyself() NewOption {
+// WithFromMyself sets the bot to call handlers for its own events.
+func WithFromMyself() NewOption {
 	return func(b *Bot) error {
-		b.skipMyself = true
+		b.withFromMyself = true
 		return nil
 	}
 }
