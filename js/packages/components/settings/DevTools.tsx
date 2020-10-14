@@ -302,6 +302,13 @@ const BodyDevTools: React.FC<{}> = () => {
 				iconColor={color.dark.grey}
 				onPress={() => navigation.navigate('Settings.AddContactList')}
 			/>
+			<ButtonSetting
+				name='Add conversations'
+				icon='info-outline'
+				iconSize={30}
+				iconColor={color.dark.grey}
+				onPress={() => navigation.navigate('Settings.AddConversationList')}
+			/>
 			<TracingButton />
 			<DiscordShareButton />
 			<NativeCallButton />
