@@ -17,6 +17,7 @@ func daemonCommand() *ffcli.Command {
 		fs := flag.NewFlagSet("protocol client", flag.ExitOnError)
 		manager.SetupLocalMessengerServerFlags(fs) // we want to configure a local messenger server
 		manager.SetupDefaultGRPCListenersFlags(fs)
+		manager.SetupMetricsFlags(fs)
 		return fs, nil
 	}
 

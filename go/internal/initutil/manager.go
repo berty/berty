@@ -11,6 +11,7 @@ import (
 	"github.com/ipfs/go-ipfs/core"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/oklog/run"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/shibukawa/configdir"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -34,6 +35,11 @@ type Manager struct {
 
 		zapLogger *zap.Logger
 		cleanup   func()
+	}
+	Metrics struct {
+		Registry *prometheus.Registry
+		Listener string
+		Pedantic bool
 	}
 	Datastore struct {
 		Dir      string
@@ -101,6 +107,7 @@ type Manager struct {
 			bufServerListener *grpcutil.BufListener
 			gatewayMux        *runtime.ServeMux
 		}
+
 		orbitDB *bertyprotocol.BertyOrbitDB
 	}
 
