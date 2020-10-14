@@ -82,12 +82,9 @@ func (testbot *TestBot) InitBot1() error {
 		bertybot.WithLogger(logger.Named("lib")),                                  // configure a logger
 		bertybot.WithDisplayName(*displayName1),                                   // bot name
 		bertybot.WithInsecureMessengerGRPCAddr(*node1Addr),                        // connect to running berty messenger daemon
-		bertybot.WithSkipAcknowledge(),                                            // skip acknowledge events
-		bertybot.WithSkipMyself(),                                                 // skip my own interactions
 		bertybot.WithRecipe(bertybot.AutoAcceptIncomingContactRequestRecipe()),    // accept incoming contact requests
 		bertybot.WithRecipe(bertybot.WelcomeMessageRecipe("welcome to testbot1")), // send welcome message to new contacts and new conversations
 		bertybot.WithRecipe(bertybot.EchoRecipe("you said1: ")),                   // reply to messages with the same message
-		bertybot.WithSkipReplay(),
 		// FIXME: with auto-send `/help` suggestion on welcome
 		bertybot.WithCommand("version", "show version", testbot.VersionCommand),
 	)
@@ -118,12 +115,9 @@ func (testbot *TestBot) InitBot2() error {
 		bertybot.WithLogger(logger.Named("lib")),                                  // configure a logger
 		bertybot.WithDisplayName(*displayName2),                                   // bot name
 		bertybot.WithInsecureMessengerGRPCAddr(*node2Addr),                        // connect to running berty messenger daemon
-		bertybot.WithSkipAcknowledge(),                                            // skip acknowledge events
-		bertybot.WithSkipMyself(),                                                 // skip my own interactions
 		bertybot.WithRecipe(bertybot.AutoAcceptIncomingContactRequestRecipe()),    // accept incoming contact requests
 		bertybot.WithRecipe(bertybot.WelcomeMessageRecipe("welcome to testbot2")), // send welcome message to new contacts and new conversations
 		bertybot.WithRecipe(bertybot.EchoRecipe("you said2: ")),                   // reply to messages with the same message
-		bertybot.WithSkipReplay(),
 	)
 	if *debug {
 		opts = append(opts, bertybot.WithRecipe(bertybot.DebugEventRecipe(logger.Named("debug")))) // debug events

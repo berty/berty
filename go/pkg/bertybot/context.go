@@ -22,6 +22,7 @@ type Context struct {
 	IsReplay     bool // whether the event is a replayed or a fresh event
 	IsMe         bool // whether the bot is the author
 	IsAck        bool // whether the event is an ack
+	IsNew        bool // whether the event is new or an entity update
 
 	// parsed payloads, depending on the context
 	Contact        *bertymessenger.Contact      `json:"Contact,omitempty"`

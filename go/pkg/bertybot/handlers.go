@@ -56,6 +56,7 @@ func (b *Bot) handleEvent(ctx context.Context, event *bertymessenger.StreamEvent
 		IsReplay:     b.isReplaying,
 		Client:       b.client,
 		Logger:       b.logger,
+		IsNew:        event.IsNew,
 	}
 
 	// raw messenger events
@@ -151,10 +152,10 @@ func (b *Bot) handleEvent(ctx context.Context, event *bertymessenger.StreamEvent
 }
 
 func (b *Bot) callHandlers(context *Context, typ HandlerType) {
-	if b.skipMyself && context.IsMe {
+	if !b.withFromMyself && context.IsMe {
 		return
 	}
-	if b.skipAcknowledge && !context.IsReplay && context.IsAck {
+	if !b.withEntityUpdates && !context.IsNew {
 		return
 	}
 

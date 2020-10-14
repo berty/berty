@@ -13,18 +13,18 @@ import (
 )
 
 type Bot struct {
-	client          bertymessenger.MessengerServiceClient
-	logger          *zap.Logger
-	displayName     string
-	bertyID         *bertymessenger.InstanceShareableBertyID_Reply
-	skipReplay      bool
-	skipAcknowledge bool
-	skipMyself      bool
-	handlers        map[HandlerType][]Handler
-	isReplaying     bool
-	handledEvents   uint
-	commands        map[string]command
-	store           struct {
+	client            bertymessenger.MessengerServiceClient
+	logger            *zap.Logger
+	displayName       string
+	bertyID           *bertymessenger.InstanceShareableBertyID_Reply
+	withReplay        bool
+	withFromMyself    bool
+	withEntityUpdates bool
+	handlers          map[HandlerType][]Handler
+	isReplaying       bool
+	handledEvents     uint
+	commands          map[string]command
+	store             struct {
 		conversations map[string]*bertymessenger.Conversation
 		mutex         sync.Mutex
 	}
@@ -106,7 +106,7 @@ func (b *Bot) Start(ctx context.Context) error {
 			}
 			b.handledEvents++
 
-			if b.skipReplay {
+			if !b.withReplay {
 				continue
 			}
 		}

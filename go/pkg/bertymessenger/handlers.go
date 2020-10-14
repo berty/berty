@@ -85,7 +85,9 @@ func (h *eventHandler) handleMetadataEvent(gme *bertytypes.GroupMetadataEvent) e
 }
 
 func (h *eventHandler) handleAppMessage(gpk string, gme *bertytypes.GroupMessageEvent, am *AppMessage) error {
-	h.logger.Info("handling app message", zap.String("type", am.GetType().String()))
+	if am.GetType() != AppMessage_TypeAcknowledge {
+		h.logger.Info("handling app message", zap.String("type", am.GetType().String()))
+	}
 
 	// build interaction
 	i, err := interactionFromAppMessage(h, gpk, gme, am)
