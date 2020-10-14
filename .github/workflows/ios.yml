@@ -59,7 +59,7 @@ jobs:
           path: |
             js/node_modules
             js/packages/*/node_modules
-          key: ${{ runner.OS }}-node-${{ hashFiles('js/**/yarn.lock') }}
+          key: ${{ runner.OS }}-node-${{ hashFiles('js/yarn.lock', 'js/packages/*/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-
 
       - name: Cache Ruby modules
@@ -96,7 +96,7 @@ jobs:
           path: |
             js/packages/berty-app/ios/Berty.xcworkspace
             js/packages/berty-app/ios/Pods
-          key: ios-xcodeworkspace-${{ hashFiles('js/packages/berty-app/ios/Podfile.lock', 'js/**/yarn.lock') }}
+          key: ios-xcodeworkspace-${{ hashFiles('js/packages/berty-app/ios/Podfile.lock', 'js/yarn.lock', 'js/packages/*/yarn.lock') }}
           restore-keys: ios-xcodeworkspace-
 
       - name: Setup macOS keychain
