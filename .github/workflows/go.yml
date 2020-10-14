@@ -164,3 +164,6 @@ jobs:
           env_vars: OS,GOLANG
           name: codecov-umbrella
           fail_ci_if_error: false
+
+  # TODO: go-tests-on-windows:
+  # TODO: go-tests-on-darwin:
