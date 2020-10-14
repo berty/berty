@@ -20,6 +20,7 @@ import (
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
+	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -27,7 +28,8 @@ import (
 )
 
 type Manager struct {
-	Logging struct {
+	IsMobile bool
+	Logging  struct {
 		Format  string
 		Logfile string
 		Filters string
@@ -52,11 +54,11 @@ type Manager struct {
 	Node struct {
 		Protocol struct {
 			// IPFS
-			IPFSListeners      string
-			IPFSAPIListeners   string
+			IPFSListeners      flagStringSlice
+			IPFSAPIListeners   flagStringSlice
 			IPFSWebUIListener  string
-			Announce           string
-			NoAnnounce         string
+			Announce           flagStringSlice
+			NoAnnounce         flagStringSlice
 			LocalDiscovery     bool
 			MinBackoff         time.Duration
 			MaxBackoff         time.Duration
@@ -88,13 +90,14 @@ type Manager struct {
 			MessengerSqliteOpts  string
 
 			// internal
-			protocolClient   bertyprotocol.Client
-			server           bertymessenger.Service
-			lcmanager        *lifecycle.Manager
-			client           bertymessenger.MessengerServiceClient
-			db               *gorm.DB
-			dbCleanup        func()
-			requiredByClient bool
+			protocolClient      bertyprotocol.Client
+			server              bertymessenger.Service
+			lcmanager           *lifecycle.Manager
+			notificationManager notification.Manager
+			client              bertymessenger.MessengerServiceClient
+			db                  *gorm.DB
+			dbCleanup           func()
+			requiredByClient    bool
 		}
 		GRPC struct {
 			RemoteAddr string
@@ -139,6 +142,32 @@ func New(ctx context.Context) (*Manager, error) {
 	}
 
 	return &m, nil
+}
+
+type MobileParams struct {
+	Logger              *zap.Logger
+	LoggerCleanup       func()
+	NotificationManager notification.Manager
+	IPFSListeners       []string
+	IPFSAPIListeners    []string
+	RootDirectory       string
+	LocalDiscovery      bool
+}
+
+func NewFromMobile(ctx context.Context, mc MobileParams) (*Manager, error) {
+	m := &Manager{
+		IsMobile:   true,
+		initLogger: zap.NewNop(),
+	}
+	m.ctx, m.ctxCancel = context.WithCancel(ctx)
+	m.Datastore.Dir = mc.RootDirectory
+	m.Logging.zapLogger = mc.Logger
+	m.Node.Protocol.IPFSListeners = mc.IPFSListeners
+	m.Node.Protocol.IPFSAPIListeners = mc.IPFSAPIListeners
+	m.Node.Protocol.LocalDiscovery = mc.LocalDiscovery
+	m.Node.Messenger.notificationManager = mc.NotificationManager
+
+	return m, nil
 }
 
 func (m *Manager) GetContext() context.Context {

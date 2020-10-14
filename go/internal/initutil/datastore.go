@@ -42,7 +42,11 @@ func (m *Manager) getDatastoreDir() (string, error) {
 		return InMemoryDir, nil
 	}
 
-	m.Datastore.dir = path.Join(m.Datastore.Dir, "berty")
+	if m.IsMobile {
+		m.Datastore.dir = path.Join(m.Datastore.Dir, "store")
+	} else {
+		m.Datastore.dir = path.Join(m.Datastore.Dir, "berty")
+	}
 	_, err = os.Stat(m.Datastore.dir)
 	switch {
 	case os.IsNotExist(err):

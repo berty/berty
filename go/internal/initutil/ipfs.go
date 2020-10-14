@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	mrand "math/rand"
-	"strings"
 	"time"
 
 	datastore "github.com/ipfs/go-datastore"
@@ -28,11 +27,10 @@ import (
 )
 
 func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
-	fs.StringVar(&m.Node.Protocol.IPFSListeners, "p2p.ipfs-listeners", "/ip4/0.0.0.0/tcp/0,/ip4/0.0.0.0/udp/0/quic", "IPFS listeners")
-	fs.StringVar(&m.Node.Protocol.IPFSAPIListeners, "p2p.ipfs-api-listeners", "", "IPFS API listeners")
-	fs.StringVar(&m.Node.Protocol.Announce, "p2p.ipfs-announce", "", "IPFS announce addrs")
-
-	fs.StringVar(&m.Node.Protocol.NoAnnounce, "p2p.ipfs-no-announce", "", "IPFS exclude announce addrs")
+	fs.Var(&m.Node.Protocol.IPFSListeners, "p2p.ipfs-listeners", "IPFS listeners")
+	fs.Var(&m.Node.Protocol.IPFSAPIListeners, "p2p.ipfs-api-listeners", "IPFS API listeners")
+	fs.Var(&m.Node.Protocol.Announce, "p2p.ipfs-announce", "IPFS announce addrs")
+	fs.Var(&m.Node.Protocol.NoAnnounce, "p2p.ipfs-no-announce", "IPFS exclude announce addrs")
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute, "maximum p2p backoff duration")
 	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "local discovery")
@@ -72,24 +70,24 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 	ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceIPFSDatastore))
 
-	swarmAddrs := []string{}
-	if m.Node.Protocol.IPFSListeners != "" {
-		swarmAddrs = strings.Split(m.Node.Protocol.IPFSListeners, ",")
+	swarmAddrs := []string{"/ip4/0.0.0.0/tcp/0", "/ip4/0.0.0.0/udp/0/quic"}
+	if len(m.Node.Protocol.IPFSListeners) != 0 {
+		swarmAddrs = m.Node.Protocol.IPFSListeners
 	}
 
 	apiAddrs := []string{}
-	if m.Node.Protocol.IPFSAPIListeners != "" {
-		apiAddrs = strings.Split(m.Node.Protocol.IPFSAPIListeners, ",")
+	if len(m.Node.Protocol.IPFSAPIListeners) != 0 {
+		apiAddrs = m.Node.Protocol.IPFSAPIListeners
 	}
 
 	announce := []string{}
-	if m.Node.Protocol.Announce != "" {
-		announce = strings.Split(m.Node.Protocol.Announce, ",")
+	if len(m.Node.Protocol.Announce) != 0 {
+		announce = m.Node.Protocol.Announce
 	}
 
 	noannounce := []string{}
-	if m.Node.Protocol.NoAnnounce != "" {
-		noannounce = strings.Split(m.Node.Protocol.NoAnnounce, ",")
+	if len(m.Node.Protocol.NoAnnounce) != 0 {
+		noannounce = m.Node.Protocol.NoAnnounce
 	}
 
 	opts := ipfsutil.CoreAPIConfig{

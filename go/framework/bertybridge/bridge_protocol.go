@@ -4,54 +4,26 @@ import (
 	"context"
 	"fmt"
 	mrand "math/rand"
-	"os"
-	"path/filepath"
 	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
 
-	badger_opts "github.com/dgraph-io/badger/options"
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	datastore "github.com/ipfs/go-datastore"
-	ds_sync "github.com/ipfs/go-datastore/sync"
-	ipfs_badger "github.com/ipfs/go-ds-badger"
-	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	"github.com/ipfs/go-ipfs/core"
 	"github.com/ipfs/go-ipfs/core/bootstrap"
-	ipfs_repo "github.com/ipfs/go-ipfs/repo"
-	libp2p "github.com/libp2p/go-libp2p"
-	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/peerstore"
-	"github.com/libp2p/go-libp2p-core/routing"
-	discovery "github.com/libp2p/go-libp2p-discovery"
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	"github.com/pkg/errors"
-	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"moul.io/srand"
-	"moul.io/zapgorm2"
 
 	"berty.tech/berty/v2/go/internal/config"
+	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
-	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
 	"berty.tech/berty/v2/go/internal/notification"
-	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 var (
@@ -153,137 +125,36 @@ func (pc *MessengerConfig) DisableLocalDiscovery() {
 }
 
 func NewMessengerBridge(config *MessengerConfig) (*MessengerBridge, error) {
-	logger, cleanup, err := newLogger(config.logFilters, config.dLogger)
+	managerConfig := initutil.MobileParams{
+		IPFSListeners:    config.swarmListeners,
+		IPFSAPIListeners: []string{":3000"},
+		RootDirectory:    config.rootDirectory,
+		LocalDiscovery:   config.localDiscovery,
+	}
+
+	var err error
+	managerConfig.Logger, managerConfig.LoggerCleanup, err = newLogger(config.logFilters, config.dLogger)
 	if err != nil {
 		return nil, err
 	}
 
-	bridge, err := newProtocolBridge(context.Background(), logger, config)
+	// Setting up notifications
+	if config.notifdriver == nil {
+		managerConfig.NotificationManager = notification.NewLoggerManager(managerConfig.Logger)
+	} else {
+		managerConfig.NotificationManager = newNotificationManagerAdaptater(managerConfig.Logger, config.notifdriver)
+	}
+
+	// Creating the manager
+	manager, err := initutil.NewFromMobile(context.Background(), managerConfig)
 	if err != nil {
 		return nil, err
 	}
 
-	bridge.loggerCleanup = cleanup
-	return bridge, nil
-}
-
-func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *MessengerConfig) (*MessengerBridge, error) {
-	// setup coreapi if needed
-	var (
-		protocolClient bertyprotocol.Client
-		api            ipfsutil.ExtendedCoreAPI
-		node           *core.IpfsNode
-		ps             *pubsub.PubSub
-		repo           ipfs_repo.Repo
-		disc           tinder.Driver
-	)
-
-	bridgeLogger := logger.Named("bridge")
-
-	{
-		var err error
-
-		if api = config.coreAPI; api == nil {
-			// load repo
-
-			if repo, err = getIPFSRepo(config.rootDirectory); err != nil {
-				return nil, errors.Wrap(err, "failed to get ipfs repo")
-			}
-
-			var rdvpeers []*peer.AddrInfo
-
-			if rdvpeers, err = ipfsutil.ParseAndResolveRdvpMaddrs(ctx, logger, defaultProtocolRendezVousPeers); err != nil {
-				return nil, err
-			}
-
-			bopts := ipfsutil.CoreAPIConfig{
-				DisableCorePubSub: true,
-				SwarmAddrs:        defaultSwarmAddrs,
-				APIAddrs:          defaultAPIAddrs,
-				APIConfig:         APIConfig,
-				ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
-				IpfsConfigPatch: func(cfg *ipfs_cfg.Config) error {
-					for _, p := range rdvpeers {
-						cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
-					}
-
-					return nil
-				},
-				HostConfig: func(h host.Host, _ routing.Routing) error {
-					var err error
-					var rdvClients []tinder.AsyncableDriver
-
-					if lenrdvpeers := len(rdvpeers); lenrdvpeers > 0 {
-						drivers := make([]tinder.AsyncableDriver, lenrdvpeers)
-						for i, peer := range rdvpeers {
-							h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
-							rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
-							drivers[i] = tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
-						}
-						rdvClients = append(rdvClients, drivers...)
-					}
-
-					var rdvClient tinder.AsyncableDriver
-					switch len(rdvClients) {
-					case 0:
-						// FIXME: Check if this isn't called when DisableIPFSNetwork true.
-						return errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't create an IPFS node without any discovery"))
-					case 1:
-						rdvClient = rdvClients[0]
-					default:
-						rdvClient = tinder.NewAsyncMultiDriver(logger, rdvClients...)
-					}
-
-					minBackoff, maxBackoff := time.Second, time.Minute
-					serviceRng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
-					disc, err = tinder.NewService(
-						logger,
-						rdvClient,
-						discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, serviceRng),
-					)
-					if err != nil {
-						return err
-					}
-
-					ps, err = pubsub.NewGossipSub(ctx, h,
-						pubsub.WithMessageSigning(true),
-						pubsub.WithFloodPublish(true),
-						pubsub.WithDiscovery(disc),
-					)
-
-					if err != nil {
-						return err
-					}
-
-					return nil
-				},
-			}
-
-			bopts.BootstrapAddrs = defaultProtocolBootstrap
-
-			if len(config.swarmListeners) > 0 {
-				bopts.SwarmAddrs = append(bopts.SwarmAddrs, config.swarmListeners...)
-			}
-
-			api, node, err = ipfsutil.NewCoreAPIFromRepo(ctx, repo, &bopts)
-			if err != nil {
-				return nil, errcode.TODO.Wrap(err)
-			}
-
-			psapi := ipfsutil.NewPubSubAPI(ctx, logger, disc, ps)
-			api = ipfsutil.InjectPubSubCoreAPIExtendedAdaptater(api, psapi)
-
-			// construct http api endpoint
-			// ignore error to allow two berty instances in the same place
-			err = ipfsutil.ServeHTTPApi(logger, node, config.rootDirectory+"/ipfs")
-			if err != nil {
-				logger.Warn("API Ipfs error", zap.Error(err))
-			}
-
-			// serve the embedded ipfs webui
-			ipfsutil.ServeHTTPWebui(":3000", logger)
-			ipfsutil.EnableConnLogger(ctx, logger, node.PeerHost)
-		}
+	// Fetch IPFS
+	_, node, err := manager.GetLocalIPFS()
+	if err != nil {
+		return nil, err
 	}
 
 	// init tracing
@@ -296,173 +167,56 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 		tracer.InitTracer(defaultTracingHost, svcName)
 	}
 
-	// load datastore
-	var rootds datastore.Batching
-	{
-		var err error
-
-		if rootds, err = getRootDatastore(config.rootDirectory); err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-	}
-
-	// setup protocol
-	var service bertyprotocol.Service
-	{
-		var err error
-		deviceDS := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(rootds, datastore.NewKey(bertyprotocol.NamespaceDeviceKeystore)))
-		deviceKS := bertyprotocol.NewDeviceKeystore(deviceDS)
-
-		// initialize new protocol client
-		protocolOpts := bertyprotocol.Opts{
-			PubSub:         ps,
-			Logger:         logger,
-			RootDatastore:  rootds,
-			DeviceKeystore: deviceKS,
-			IpfsCoreAPI:    api,
-			TinderDriver:   disc,
-		}
-
-		if node != nil {
-			protocolOpts.Host = node.PeerHost
-		}
-
-		service, err = bertyprotocol.New(ctx, protocolOpts)
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-	}
-
-	// register protocol service
-	var grpcServer *grpc.Server
-	{
-		grpcLogger := logger.Named("grpc")
-		// Define customfunc to handle panic
-		panicHandler := func(p interface{}) (err error) {
-			return status.Errorf(codes.Unknown, "panic recover: %v", p)
-		}
-
-		// Shared options for the logger, with a custom gRPC code to log level function.
-		recoverOpts := []grpc_recovery.Option{
-			grpc_recovery.WithRecoveryHandler(panicHandler),
-		}
-
-		// setup grpc with zap
-		// grpc_zap.ReplaceGrpcLoggerV2(grpcLogger)
-
-		trServer := tracer.New("grpc-server")
-		serverOpts := []grpc.ServerOption{
-			grpc_middleware.WithUnaryServerChain(
-				grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-				grpc_zap.UnaryServerInterceptor(grpcLogger),
-				grpc_recovery.UnaryServerInterceptor(recoverOpts...),
-				grpc_trace.UnaryServerInterceptor(trServer),
-			),
-			grpc_middleware.WithStreamServerChain(
-				grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
-				grpc_zap.StreamServerInterceptor(grpcLogger),
-				grpc_recovery.StreamServerInterceptor(recoverOpts...),
-				grpc_trace.StreamServerInterceptor(trServer),
-			),
-		}
-
-		grpcServer = grpc.NewServer(serverOpts...)
-		bertyprotocol.RegisterProtocolServiceServer(grpcServer, service)
-	}
-
-	var notifmanager notification.Manager
-	{
-		if config.notifdriver != nil {
-			notifmanager = newNotificationManagerAdaptater(logger, config.notifdriver)
-		} else {
-			notifmanager = notification.NewLoggerManager(logger)
-		}
-	}
-
-	lcmanager := lifecycle.NewManager(bertymessenger.StateActive)
-
-	// register messenger service
-	var messenger bertymessenger.Service
-	var db *gorm.DB
-	{
-		var err error
-		protocolClient, err = bertyprotocol.NewClient(ctx, service, nil, nil)
-
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-
-		zapLogger := zapgorm2.New(logger.Named("gorm"))
-		zapLogger.SetAsDefault()
-
-		// setup db
-		shouldPersist := config.rootDirectory != "" && config.rootDirectory != memPath
-		cfg := gorm.Config{
-			Logger:                                   zapLogger,
-			DisableForeignKeyConstraintWhenMigrating: true,
-		}
-		if shouldPersist {
-			dbPath := config.rootDirectory + "/messenger.db"
-			bridgeLogger.Debug("using db", zap.String("path", dbPath))
-			db, err = gorm.Open(sqlite.Open(dbPath), &cfg)
-		} else {
-			db, err = gorm.Open(sqlite.Open("file::memory:?cache=shared"), &cfg)
-		}
-		if err != nil {
-			if cErr := protocolClient.Close(); cErr != nil {
-				bridgeLogger.Error("failed to close protocol client", zap.Error(cErr))
-			}
-			return nil, errcode.TODO.Wrap(err)
-		}
-
-		opts := bertymessenger.Opts{
-			Logger:              logger,
-			NotificationManager: notifmanager,
-			LifeCycleManager:    lcmanager,
-			DB:                  db,
-		}
-		tmpBridge := &MessengerBridge{
-			logger:          bridgeLogger,
-			protocolService: service,
-			node:            node,
-			ds:              rootds,
-			msngrDB:         db,
-			protocolClient:  protocolClient,
-		}
-		messenger, err = bertymessenger.New(protocolClient, &opts)
-		if err != nil {
-			cErr := tmpBridge.Close()
-			if cErr != nil {
-				logger.Error("failed to close messenger", zap.Error(cErr))
-			}
-			return nil, errcode.TODO.Wrap(err)
-		}
-		bertymessenger.RegisterMessengerServiceServer(grpcServer, messenger)
-	}
-
 	// setup bridge
-	var bridge *Bridge
-	{
-		var err error
+	bridge, err := newBridge(manager)
+	if err != nil {
+		return nil, err
+	}
 
-		bridge, err = newBridge(ctx, grpcServer, bridgeLogger, config.Config)
+	// setup messengerBridge
+	var messengerBridge *MessengerBridge
+	{
+		logger, err := manager.GetLogger()
 		if err != nil {
 			return nil, err
 		}
-	}
+		service, err := manager.GetLocalProtocolServer()
+		if err != nil {
+			return nil, err
+		}
+		rootds, err := manager.GetRootDatastore()
+		if err != nil {
+			return nil, err
+		}
+		messenger, err := manager.GetLocalMessengerServer()
+		if err != nil {
+			return nil, err
+		}
+		db, err := manager.GetMessengerDB()
+		if err != nil {
+			return nil, err
+		}
+		protocolClient, err := manager.GetProtocolClient()
+		if err != nil {
+			return nil, err
+		}
+		notifmanager, err := manager.GetNotificationManager()
+		if err != nil {
+			return nil, err
+		}
+		messengerBridge = &MessengerBridge{
+			Bridge: bridge,
 
-	messengerBridge := &MessengerBridge{
-		Bridge: bridge,
-
-		lcmanager:        lcmanager,
-		logger:           bridgeLogger,
-		protocolService:  service,
-		node:             node,
-		ds:               rootds,
-		messengerService: messenger,
-		msngrDB:          db,
-		protocolClient:   protocolClient,
-		notification:     notifmanager,
+			lcmanager:        manager.GetLifecycleManager(),
+			logger:           logger,
+			protocolService:  service,
+			node:             node,
+			ds:               rootds,
+			messengerService: noopCloserMessengerServiceServer{messenger},
+			msngrDB:          db,
+			protocolClient:   noopCloserProtocolServiceClient{protocolClient},
+			notification:     notifmanager,
+		}
 	}
 
 	// setup lifecycle
@@ -479,6 +233,20 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 	}
 
 	return messengerBridge, nil
+}
+
+type noopCloserMessengerServiceServer struct {
+	bertymessenger.MessengerServiceServer
+}
+
+func (noopCloserMessengerServiceServer) Close() {}
+
+type noopCloserProtocolServiceClient struct {
+	bertyprotocol.ProtocolServiceClient
+}
+
+func (noopCloserProtocolServiceClient) Close() error {
+	return nil
 }
 
 var _ LifeCycleHandler = (*MessengerBridge)(nil)
@@ -602,51 +370,4 @@ func (p *MessengerBridge) Close() error {
 	}
 
 	return errs
-}
-
-func getRootDatastore(path string) (datastore.Batching, error) {
-	if path == "" || path == memPath {
-		baseds := ds_sync.MutexWrap(datastore.NewMapDatastore())
-		return baseds, nil
-	}
-
-	basepath := filepath.Join(path, "store")
-	_, err := os.Stat(basepath)
-	if err != nil {
-		if !os.IsNotExist(err) {
-			return nil, errors.Wrap(err, "unable get directory")
-		}
-		if err := os.MkdirAll(basepath, 0o700); err != nil {
-			return nil, errors.Wrap(err, "unable to create datastore directory")
-		}
-	}
-
-	baseds, err := ipfs_badger.NewDatastore(basepath, &ipfs_badger.Options{
-		Options: ipfs_badger.DefaultOptions.WithValueLogLoadingMode(badger_opts.FileIO),
-	})
-	if err != nil {
-		return nil, errors.Wrapf(err, "failed to load datastore on: `%s`", basepath)
-	}
-
-	return baseds, nil
-}
-
-func getIPFSRepo(path string) (ipfs_repo.Repo, error) {
-	if path == "" || path == memPath {
-		repods := ds_sync.MutexWrap(datastore.NewMapDatastore())
-		return ipfsutil.CreateMockedRepo(repods)
-	}
-
-	basepath := filepath.Join(path, "ipfs")
-	_, err := os.Stat(basepath)
-	if err != nil {
-		if !os.IsNotExist(err) {
-			return nil, errors.Wrap(err, "unable get orbitdb directory")
-		}
-		if err := os.MkdirAll(basepath, 0o700); err != nil {
-			return nil, errors.Wrap(err, "unable to create orbitdb directory")
-		}
-	}
-
-	return ipfsutil.LoadRepoFromPath(basepath)
 }

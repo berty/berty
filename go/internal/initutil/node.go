@@ -18,7 +18,6 @@ import (
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpcgw "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	datastore "github.com/ipfs/go-datastore"
-	"github.com/markbates/pkger"
 	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -31,7 +30,6 @@ import (
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
-	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -75,8 +73,8 @@ func (m *Manager) SetupRemoteNodeFlags(fs *flag.FlagSet) {
 func (m *Manager) SetupLocalMessengerServerFlags(fs *flag.FlagSet) {
 	m.Node.Messenger.requiredByClient = true
 	m.SetupLocalProtocolServerFlags(fs)
+	m.SetupNotificationManagerFlags(fs)
 	fs.BoolVar(&m.Node.Messenger.RebuildSqlite, "node.rebuild-db", false, "reconstruct messenger DB from OrbitDB logs")
-	fs.BoolVar(&m.Node.Messenger.DisableNotifications, "node.no-notif", false, "disable desktop notifications")
 	fs.StringVar(&m.Node.Messenger.DisplayName, "node.display-name", safeDefaultDisplayName(), "display name")
 	// node.db-opts // see https://github.com/mattn/go-sqlite3#connection-string
 }
@@ -117,7 +115,7 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 
 	// construct http api endpoint
 	// ignore error to allow two berty instances in the same place
-	if m.Node.Protocol.IPFSAPIListeners != "" {
+	if m.Node.Protocol.IPFSAPIListeners != nil {
 		err = ipfsutil.ServeHTTPApi(logger, m.Node.Protocol.ipfsNode, "")
 		if err != nil {
 			logger.Warn("API Ipfs error", zap.Error(err))
@@ -484,14 +482,9 @@ func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServ
 	}
 
 	// configure notifications
-	var notifmanager notification.Manager
-	{
-		notifLogger := logger.Named("notif")
-		if m.Node.Messenger.DisableNotifications {
-			notifmanager = notification.NewLoggerManager(notifLogger)
-		} else {
-			notifmanager = notification.NewDesktopManager(notifLogger, pkger.Include("/assets/Buck_Berty_Icon_Card.svg"))
-		}
+	notifmanager, err := m.getNotificationManager()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	// local protocol server

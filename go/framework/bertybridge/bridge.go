@@ -15,6 +15,7 @@ import (
 
 	"berty.tech/berty/v2/go/framework/bertybridge/internal/bridgepb"
 	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
@@ -57,12 +58,7 @@ type Bridge struct {
 	listeners   []grpcutil.Listener
 }
 
-// newBridge is the main entrypoint for gomobile and should only take simple configuration as argument
-func newBridge(ctx context.Context, s *grpc.Server, logger *zap.Logger, config *Config) (*Bridge, error) {
-	if config == nil {
-		config = NewConfig()
-	}
-
+func newBridge(m *initutil.Manager) (*Bridge, error) {
 	b := &Bridge{
 		cerr:   make(chan error),
 		cclose: make(chan struct{}),
@@ -98,6 +94,8 @@ func newBridge(ctx context.Context, s *grpc.Server, logger *zap.Logger, config *
 			}
 		}
 	}
+
+	ctx := m.GetContext()
 
 	// setup lazy grpc listener
 	bl := grpcutil.NewBufListener(ctx, ClientBufferSize)

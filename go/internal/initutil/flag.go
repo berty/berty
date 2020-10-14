@@ -2,6 +2,7 @@ package initutil
 
 import (
 	"fmt"
+	"strings"
 )
 
 type flagStringSlice []string
@@ -11,6 +12,6 @@ func (i *flagStringSlice) String() string {
 }
 
 func (i *flagStringSlice) Set(value string) error {
-	*i = append(*i, value)
+	*i = append(*i, strings.Split(value, ",")...)
 	return nil
 }
