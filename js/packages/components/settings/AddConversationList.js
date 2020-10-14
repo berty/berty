@@ -10,13 +10,13 @@ import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { useStyles } from '@berty-tech/styles'
 import { globals } from '@berty-tech/config'
 
-const BodyAddContactList = () => {
+const BodyAddConversationList = () => {
 	const [{ color, padding, flex, margin }] = useStyles()
 	const navigation = useNavigation()
 
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
-			{Object.values(globals.berty.contacts).map((value) => {
+			{Object.values(globals.berty.conversations).map((value) => {
 				return (
 					<ButtonSetting
 						name={'Add ' + value.name}
@@ -38,7 +38,7 @@ const BodyAddContactList = () => {
 	)
 }
 
-export const AddContactList = () => {
+export const AddConversationList = () => {
 	const [{ color, padding, flex, background }] = useStyles()
 	const { goBack } = useNavigation()
 
@@ -47,7 +47,7 @@ export const AddContactList = () => {
 			<SwipeNavRecognizer>
 				<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
 					<HeaderSettings title='Add contacts list' bgColor={color.dark.grey} undo={goBack} />
-					<BodyAddContactList />
+					<BodyAddConversationList />
 				</ScrollView>
 			</SwipeNavRecognizer>
 		</Layout>

@@ -34,7 +34,9 @@ const CreateAccountBody = ({ next }) => {
 			.accountUpdate({ displayName })
 			.then(async () => {
 				requestContact({
-					link: globals.berty.contacts.betabot.link,
+					link: __DEV__
+						? globals.berty.contacts['betabot-dev'].link
+						: globals.berty.contacts.betabot.link,
 				})
 			})
 			.catch((err2) => setError(err2))
