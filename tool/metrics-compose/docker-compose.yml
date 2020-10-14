@@ -1,0 +1,63 @@
+version: '3.7'
+
+services:
+  grafana:
+    image: grafana/grafana
+    container_name: metrics_grafana
+    image: grafana/grafana
+    restart: on-failure
+    links:
+      - prometheus
+    depends_on:
+      - berty
+      - prometheus
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./config/grafana:/etc/grafana
+    ports:
+      - 3000:3000
+
+  prometheus:
+    container_name: metrics_prometheus
+    image: prom/prometheus
+    volumes:
+      - ./config/prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    ports:
+      - 9090:9090
+    depends_on:
+      - berty
+    links:
+      - berty
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    environment:
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+    restart: on-failure
+
+  berty:
+    container_name: metrics_berty_daemon
+    build: ../../
+    restart: on-failure
+    entrypoint: berty
+    environment:
+      - ANNOUNCE_SERVER
+    command:
+      - daemon
+      - "-store.dir=/store"
+      - "-p2p.metrics"
+      - "-node.no-notif"
+      - "-node.listeners=/ip4/0.0.0.0/tcp/9091"
+      - "-p2p.ipfs-listeners=/ip4/0.0.0.0/tcp/6001,/ip4/0.0.0.0/udp/6001/quic"
+    volumes:
+      - ./data/daemon/store:/store
+    ports:
+      - 6001:6001
+
+volumes:
+    prometheus_data: {}
+    grafana_data: {}

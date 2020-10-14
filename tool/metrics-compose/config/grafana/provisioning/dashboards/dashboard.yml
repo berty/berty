@@ -1,0 +1,21 @@
+apiVersion: 1
+
+providers:
+  # <string> provider name
+- name: 'default'
+  # <int> org id. will default to orgId 1 if not specified
+  orgId: 1
+  # <string, required> name of the dashboard folder. Required
+  folder: ''
+  # <string> folder UID. will be automatically generated if not specified
+  folderUid: ''
+  # <string, required> provider type. Required
+  type: file
+  # <bool> disable dashboard deletion
+  disableDeletion: false
+  # <bool> enable dashboard editing
+  editable: true
+  # <int> how often Grafana will scan for changed dashboards
+  updateIntervalSeconds: 10
+  options:
+    path: /etc/grafana/provisioning/dashboards
