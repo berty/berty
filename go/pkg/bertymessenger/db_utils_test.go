@@ -15,6 +15,7 @@ type modelAccountV1 struct {
 	DisplayName                     string
 	ReplicateNewGroupsAutomatically sql.NullBool `gorm:"default:true"`
 }
+
 type modelConversationV1 struct {
 	PublicKey   string `gorm:"primaryKey"`
 	IsOpen      bool
@@ -22,15 +23,19 @@ type modelConversationV1 struct {
 	UnreadCount int32
 }
 
-type modelAccountV2 modelAccountV1
-type modelConversationV2 modelConversationV1
-type modelInteractionV2 struct {
-	CID     string `gorm:"primaryKey;column:cid"`
-	Payload []byte
-}
+type (
+	modelAccountV2      modelAccountV1
+	modelConversationV2 modelConversationV1
+	modelInteractionV2  struct {
+		CID     string `gorm:"primaryKey;column:cid"`
+		Payload []byte
+	}
+)
 
-type modelAccountV3 modelAccountV2
-type modelConversationV3 modelConversationV2
+type (
+	modelAccountV3      modelAccountV2
+	modelConversationV3 modelConversationV2
+)
 
 type modelAccountV4 struct {
 	PublicKey                       string `gorm:"primaryKey"`
@@ -40,17 +45,21 @@ type modelAccountV4 struct {
 }
 type modelConversationV4 modelConversationV3
 
-type modelAccountV5 modelAccountV4
-type modelConversationV5 modelConversationV4
+type (
+	modelAccountV5      modelAccountV4
+	modelConversationV5 modelConversationV4
+)
 
-type modelAccountV6 modelAccountV5
-type modelConversationV6 struct {
-	ID          int32 `gorm:"primaryKey,autoIncrement"`
-	PublicKey   string
-	IsOpen      bool
-	DisplayName string
-	UnreadCount int32
-}
+type (
+	modelAccountV6      modelAccountV5
+	modelConversationV6 struct {
+		ID          int32 `gorm:"primaryKey,autoIncrement"`
+		PublicKey   string
+		IsOpen      bool
+		DisplayName string
+		UnreadCount int32
+	}
+)
 
 func (modelAccountV1) TableName() string      { return "accounts" }
 func (modelAccountV2) TableName() string      { return "accounts" }

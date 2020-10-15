@@ -43,6 +43,7 @@ require (
 	github.com/ipfs/go-ipfs-keystore v0.0.1
 	github.com/ipfs/go-log/v2 v2.1.1
 	github.com/ipfs/interface-go-ipfs-core v0.4.0
+	github.com/ipld/go-car v0.1.1-0.20201015032735-ff6ccdc46acc // indirect
 	github.com/itsTurnip/dishooks v0.0.0-20200206125049-b4fc7c7b042e
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
 	github.com/kisielk/errcheck v1.4.0 // indirect
@@ -113,7 +114,6 @@ require (
 replace (
 	bazil.org/fuse => bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc // specific version for iOS building
 	github.com/agl/ed25519 => github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // latest commit before the author shutdown the repo; see https://github.com/golang/go/issues/20504
-	github.com/ipld/go-car => github.com/Jorropo/go-car v0.1.1 // temporary, see https://github.com/ipld/go-car/pull/34
 	github.com/lucas-clemente/quic-go => github.com/lucas-clemente/quic-go v0.18.0 // required by go1.15
 	github.com/peterbourgon/ff/v3 => github.com/moul/ff/v3 v3.0.1 // temporary, see https://github.com/peterbourgon/ff/pull/67, https://github.com/peterbourgon/ff/issues/68
 )

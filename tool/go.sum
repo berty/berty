@@ -1,7 +1,7 @@
 bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc/go.mod h1:FbcW6z/2VytnFDhZfumh8Ss8zxHE6qpMP5sHTRe0EaM=
 bazil.org/fuse v0.0.0-20200524192727-fb710f7dfd05/go.mod h1:h0h5FBYpXThbvSfTqthw+0I4nmHnhTHkO5BoOHsBWqg=
 berty.tech/go-ipfs-log v1.2.6/go.mod h1:4v7G/bAeHNQWqziNC9oZREEFYpSiejSE3+DB4G4nf9M=
-berty.tech/go-orbit-db v1.10.8/go.mod h1:Gl6pmjtt7Db5yA+2S14VP0XJ93Q2OslpyW/eSE9QNCg=
+berty.tech/go-orbit-db v1.10.9/go.mod h1:Gl6pmjtt7Db5yA+2S14VP0XJ93Q2OslpyW/eSE9QNCg=
 berty.tech/ipfs-webui-packed v1.0.0-v2.9.0-4/go.mod h1:n+M4wWEjVxnA0itc1m9oOLAXrNyZr2tiOxLnA1tVnrQ=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.31.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
@@ -432,6 +432,7 @@ github.com/ipfs/interface-go-ipfs-core v0.3.0/go.mod h1:Tihp8zxGpUeE3Tokr94L6zWZ
 github.com/ipfs/interface-go-ipfs-core v0.4.0/go.mod h1:UJBcU6iNennuI05amq3FQ7g0JHUkibHFAfhfUIy927o=
 github.com/ipld/go-car v0.1.0/go.mod h1:RCWzaUh2i4mOEkB3W45Vc+9jnS/M6Qay5ooytiBHl3g=
 github.com/ipld/go-car v0.1.1-0.20200429200904-c222d793c339/go.mod h1:eajxljm6I8o3LitnFeVEmucwZmz7+yLSiKce9yYMefg=
+github.com/ipld/go-car v0.1.1-0.20201015032735-ff6ccdc46acc/go.mod h1:WdIgzcEjFqydQ7jH+BXzGYxVCmLeAs5nP8Vu3Rege2Y=
 github.com/ipld/go-ipld-prime v0.0.2-0.20191108012745-28a82f04c785/go.mod h1:bDDSvVz7vaK12FNvMeRYnpRFkSUPNQOiCYQezMD/P3w=
 github.com/ipld/go-ipld-prime v0.0.2-0.20200428162820-8b59dc292b8e/go.mod h1:uVIwe/u0H4VdKv3kaN1ck7uCb6yD9cFLS9/ELyXbsw8=
 github.com/ipld/go-ipld-prime v0.5.1-0.20200828233916-988837377a7f/go.mod h1:0xEgdD6MKbZ1vF0GC+YcR/C4SQCAlRuOjIJ2i0HxqzM=
