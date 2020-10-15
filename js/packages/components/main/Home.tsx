@@ -54,6 +54,7 @@ type ConversationsItemProps = any
 
 const useStylesContactRequest: any = () => {
 	const [{ border, padding, margin, width, height, row, background, flex }] = useStyles()
+
 	return {
 		contactReqContainer: [
 			background.white,
@@ -61,10 +62,11 @@ const useStylesContactRequest: any = () => {
 			border.shadow.medium,
 			flex.align.center,
 			flex.justify.flexEnd,
-			height(160),
+			height(180),
 			margin.medium,
 			margin.top.huge,
-			padding.horizontal.tiny,
+			margin.bottom.medium,
+			padding.horizontal.small,
 			padding.top.scale(33),
 			padding.bottom.medium,
 			width(121),
@@ -88,18 +90,23 @@ const useStylesContactRequest: any = () => {
 			flex.align.center,
 			height(25),
 			padding.horizontal.tiny,
-			row.fill,
-			row.item.justify,
+			flex.justify.center,
+			{
+				flexWrap: 'wrap',
+			},
 		],
 		buttonsWrapper: [
 			flex.align.center,
-			row.center,
+
+			flex.direction.row,
+			flex.justify.spaceAround,
+			margin.top.scale(3),
+			row.item.bottom,
 			{
-				flexGrow: 2,
-				flexShrink: 0,
-				marginBottom: -4,
-				marginTop: 3,
+				flexGrow: 0,
+				flexShrink: 2,
 				width: '100%',
+				minHeight: 0,
 			},
 		],
 	}
@@ -156,8 +163,9 @@ const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 						style={{
 							flexGrow: 2,
 							justifyContent: 'center',
-							flexShrink: 0,
+							flexShrink: 1,
 							flexBasis: 45,
+							minHeight: 0,
 						}}
 					>
 						<Text
@@ -170,9 +178,10 @@ const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 					<View
 						style={{
 							flexGrow: 1,
-							flexShrink: 0,
+							flexShrink: 1,
 							justifyContent: 'flex-end',
 							alignSelf: 'center',
+							minHeight: 0,
 						}}
 					>
 						<Text
