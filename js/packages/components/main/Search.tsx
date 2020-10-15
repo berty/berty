@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 import { EdgeInsets, SafeAreaConsumer } from 'react-native-safe-area-context'
 import { Icon, Layout, Text } from 'react-native-ui-kitten'
-import { CommonActions } from '@react-navigation/native'
+import { CommonActions, useIsFocused } from '@react-navigation/native'
 import LinearGradient from 'react-native-linear-gradient'
 import pickBy from 'lodash/pickBy'
 
@@ -29,7 +29,7 @@ import * as api from '@berty-tech/api/index.pb'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { SwipeHelperReactNavTabBar } from '../shared-components/SwipeNavRecognizer'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { pbDateToNum } from '../helpers'
+import { pbDateToNum, timeFormat } from '../helpers'
 
 // Styles
 
@@ -42,7 +42,7 @@ const _searchBarIconSize = 25
 const _approxFooterHeight = 90
 
 const useStylesSearch = () => {
-	const [{ row, text, background, opacity, margin }, { scaleSize, fontScale }] = useStyles()
+	const [{ row, flex, text, background, opacity, margin }, { scaleSize, fontScale }] = useStyles()
 
 	return {
 		searchResultHighlightText: [
@@ -63,30 +63,56 @@ const useStylesSearch = () => {
 			margin.bottom.large,
 			{ fontFamily: 'Open Sans', lineHeight: 30 * fontScale },
 		],
-	}
-}
-
-// Utility - TODO Replace with moment
-
-const formatTimestamp = (date: Date) => {
-	const now = new Date(Date.now())
-	const isToday =
-		now.getDate() === date.getDate() &&
-		date.getMonth() === now.getMonth() &&
-		date.getFullYear() === now.getFullYear()
-	if (!isToday) {
-		return dayjs(date).format('DD/MM')
-	} else if (now.getFullYear() !== date.getFullYear()) {
-		return dayjs(date).format('DD/MM/YYYY')
-	} else {
-		const arr = date.toString().split(' ')
-		const hours = arr[4].split(':')
-		const hour = hours[0] + ':' + hours[1]
-		return hour
+		searchTitleText: [
+			text.size.big,
+			text.bold.medium,
+			text.color.white,
+			text.align.center,
+			flex.align.center,
+			flex.justify.center,
+			{
+				flexShrink: 0,
+				flexGrow: 1,
+			},
+		],
+		searchTitleWrapper: [
+			flex.direction.row,
+			flex.justify.center,
+			flex.align.center,
+			{
+				marginLeft: 30,
+			},
+		],
 	}
 }
 
 // Components
+
+//
+
+const SearchTitle: React.FC<{}> = () => {
+	const [{ color }] = useStyles()
+	const { searchTitleText, searchTitleWrapper } = useStylesSearch()
+	const { dispatch } = useNavigation()
+	return (
+		<View style={searchTitleWrapper}>
+			<Text style={searchTitleText}>Search</Text>
+			<Icon
+				style={[
+					{
+						flexShrink: 0,
+						flexGrow: 0,
+					},
+				]}
+				name='arrow-forward-outline'
+				width={30}
+				height={30}
+				fill={color.white}
+				onPress={() => dispatch(CommonActions.navigate(Routes.Main.Home))}
+			/>
+		</View>
+	)
+}
 
 const initialSearchText = ''
 
@@ -95,10 +121,17 @@ const SearchBar: React.FC<{
 	searchText: string
 }> = ({ onChange, searchText }) => {
 	const [{ row, color, background, text, margin, padding }, { scaleSize }] = useStyles()
+	const inputRef: any = useRef(null)
 	const onClear = (): void => {
 		onChange('')
 		Keyboard.dismiss()
 	}
+
+	const isFocusedSearchScreen = useIsFocused()
+
+	useEffect(() => {
+		isFocusedSearchScreen && inputRef?.current?.focus()
+	}, [isFocusedSearchScreen])
 
 	return (
 		<ScrollView
@@ -125,6 +158,7 @@ const SearchBar: React.FC<{
 				autoCorrect={false}
 				autoCapitalize='none'
 				value={searchText}
+				ref={inputRef}
 			/>
 			{searchText.length > 0 && (
 				<Icon
@@ -352,7 +386,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 			return null
 	}
 
-	const date = parseInt((inte?.sentDate as string | undefined) || '0', 10)
+	const date = pbDateToNum(inte?.sentDate)
 
 	const MessageDisplay = () => {
 		let content
@@ -398,7 +432,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 	const TimeStamp = () => {
 		return (
 			<Text style={[padding.left.small, text.size.small, text.color.grey]}>
-				{formatTimestamp(new Date(date))}
+				{timeFormat.fmtTimestamp1(date)}
 			</Text>
 		)
 	}
@@ -562,12 +596,23 @@ const SearchComponent: React.FC<{
 			{/* SearchBar */}
 			<View
 				style={[
+					margin.top.medium,
+					{
+						marginLeft: Math.max(validInsets.left, 16),
+						marginRight: Math.max(validInsets.right, 16),
+					},
+				]}
+			>
+				<SearchTitle />
+			</View>
+			<View
+				style={[
 					padding.small,
 					margin.horizontal.medium,
 					margin.bottom.medium,
 					background.light.yellow,
 					border.radius.small,
-					margin.top.huge,
+					margin.top.medium,
 					{
 						marginLeft: Math.max(validInsets.left, 16),
 						marginRight: Math.max(validInsets.right, 16),
@@ -638,7 +683,6 @@ export const Search: React.FC<{}> = () => {
 			(searchIn || '').toLowerCase().includes(lowSearchText),
 		[lowSearchText],
 	)
-	const { navigate } = useNavigation()
 
 	const ctx = useMsgrContext()
 
