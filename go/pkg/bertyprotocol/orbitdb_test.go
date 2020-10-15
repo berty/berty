@@ -123,10 +123,10 @@ func TestDifferentStores(t *testing.T) {
 	g2b, err := odb2.openGroup(ctx, gB, nil)
 	require.NoError(t, err)
 
-	require.NoError(t, ActivateGroupContext(ctx, g1a))
-	require.NoError(t, ActivateGroupContext(ctx, g2a))
-	require.NoError(t, ActivateGroupContext(ctx, g1b))
-	require.NoError(t, ActivateGroupContext(ctx, g2b))
+	require.NoError(t, ActivateGroupContext(ctx, g1a, nil))
+	require.NoError(t, ActivateGroupContext(ctx, g2a, nil))
+	require.NoError(t, ActivateGroupContext(ctx, g1b, nil))
+	require.NoError(t, ActivateGroupContext(ctx, g2b, nil))
 
 	assert.Equal(t, g1a.MetadataStore().Address().String(), g2a.MetadataStore().Address().String())
 	assert.Equal(t, g1b.MetadataStore().Address().String(), g2b.MetadataStore().Address().String())

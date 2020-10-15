@@ -192,8 +192,8 @@ func TestReplicationService_Flow(t *testing.T) {
 	g2a, err := odb2.openGroup(ctx, gA, nil)
 	require.NoError(t, err)
 
-	require.NoError(t, ActivateGroupContext(ctx, g1a))
-	require.NoError(t, ActivateGroupContext(ctx, g2a))
+	require.NoError(t, ActivateGroupContext(ctx, g1a, nil))
+	require.NoError(t, ActivateGroupContext(ctx, g2a, nil))
 
 	groupReplicable, err := gA.FilterForReplication()
 	require.NoError(t, err)

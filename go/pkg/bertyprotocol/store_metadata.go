@@ -335,15 +335,7 @@ func (m *metadataStore) GetIncomingContactRequestsStatus() (bool, *bertytypes.Sh
 }
 
 func (m *metadataStore) ListMembers() []crypto.PubKey {
-	if m.typeChecker(isAccountGroup) {
-		return nil
-	}
-
-	if m.typeChecker(isContactGroup) {
-		return nil
-	}
-
-	if m.typeChecker(isMultiMemberGroup) {
+	if m.typeChecker(isAccountGroup, isContactGroup, isMultiMemberGroup) {
 		return m.Index().(*metadataStoreIndex).listMembers()
 	}
 
@@ -425,6 +417,26 @@ func (m *metadataStore) ListContactsByStatus(states ...bertytypes.ContactState) 
 	}
 
 	return contacts
+}
+
+func (m *metadataStore) GetContactFromGroupPK(groupPK []byte) *bertytypes.ShareableContact {
+	if !m.typeChecker(isAccountGroup) {
+		return nil
+	}
+
+	idx, ok := m.Index().(*metadataStoreIndex)
+	if !ok {
+		return nil
+	}
+	idx.lock.Lock()
+	defer idx.lock.Unlock()
+
+	contact, ok := idx.contactsFromGroupPK[string(groupPK)]
+	if !ok || contact == nil {
+		return nil
+	}
+
+	return contact.contact
 }
 
 func (m *metadataStore) checkIfInGroup(pk []byte) bool {
@@ -970,7 +982,7 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB) iface.StoreConstructor {
 			}
 		}()
 
-		options.Index = newMetadataIndex(ctx, store, g, md.Public())
+		options.Index = newMetadataIndex(ctx, store, g, md.Public(), s.deviceKeystore)
 
 		if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)

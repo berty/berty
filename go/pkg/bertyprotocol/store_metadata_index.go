@@ -24,6 +24,7 @@ type metadataStoreIndex struct {
 	sentSecrets              map[string]struct{}
 	admins                   map[crypto.PubKey]struct{}
 	contacts                 map[string]*accountContact
+	contactsFromGroupPK      map[string]*accountContact
 	groups                   map[string]*accountGroup
 	serviceTokens            map[string]*bertytypes.ServiceToken
 	contactRequestMetadata   map[string][]byte
@@ -36,6 +37,7 @@ type metadataStoreIndex struct {
 	otherAliasKey            []byte
 	g                        *bertytypes.Group
 	ownMemberDevice          *memberDevice
+	deviceKeystore           DeviceKeystore
 	ctx                      context.Context
 	eventEmitter             events.EmitterInterface
 	lock                     sync.RWMutex
@@ -62,6 +64,7 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 
 	// Resetting state
 	m.contacts = map[string]*accountContact{}
+	m.contactsFromGroupPK = map[string]*accountContact{}
 	m.groups = map[string]*accountGroup{}
 	m.serviceTokens = map[string]*bertytypes.ServiceToken{}
 	m.contactRequestMetadata = map[string][]byte{}
@@ -395,6 +398,31 @@ func (m *metadataStoreIndex) handleContactRequestReferenceReset(event proto.Mess
 	return nil
 }
 
+func (m *metadataStoreIndex) registerContactFromGroupPK(ac *accountContact) error {
+	if m.g.GroupType != bertytypes.GroupTypeAccount {
+		return errcode.ErrGroupInvalidType
+	}
+
+	contactPK, err := crypto.UnmarshalEd25519PublicKey(ac.contact.PK)
+	if err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	sk, err := m.deviceKeystore.ContactGroupPrivKey(contactPK)
+	if err != nil {
+		return err
+	}
+
+	g, err := getGroupForContact(sk)
+	if err != nil {
+		return errcode.ErrOrbitDBOpen.Wrap(err)
+	}
+
+	m.contactsFromGroupPK[string(g.PublicKey)] = ac
+
+	return nil
+}
+
 func (m *metadataStoreIndex) handleContactRequestOutgoingEnqueued(event proto.Message) error {
 	evt, ok := event.(*bertytypes.AccountContactRequestEnqueued)
 	if ko := !ok || evt.Contact == nil; ko {
@@ -417,7 +445,7 @@ func (m *metadataStoreIndex) handleContactRequestOutgoingEnqueued(event proto.Me
 		m.contactRequestMetadata[string(evt.Contact.PK)] = evt.OwnMetadata
 	}
 
-	m.contacts[string(evt.Contact.PK)] = &accountContact{
+	ac := &accountContact{
 		state: bertytypes.ContactStateToRequest,
 		contact: &bertytypes.ShareableContact{
 			PK:                   evt.Contact.PK,
@@ -426,7 +454,10 @@ func (m *metadataStoreIndex) handleContactRequestOutgoingEnqueued(event proto.Me
 		},
 	}
 
-	return nil
+	m.contacts[string(evt.Contact.PK)] = ac
+	err := m.registerContactFromGroupPK(ac)
+
+	return err
 }
 
 func (m *metadataStoreIndex) handleContactRequestOutgoingSent(event proto.Message) error {
@@ -439,14 +470,17 @@ func (m *metadataStoreIndex) handleContactRequestOutgoingSent(event proto.Messag
 		return nil
 	}
 
-	m.contacts[string(evt.ContactPK)] = &accountContact{
+	ac := &accountContact{
 		state: bertytypes.ContactStateAdded,
 		contact: &bertytypes.ShareableContact{
 			PK: evt.ContactPK,
 		},
 	}
 
-	return nil
+	m.contacts[string(evt.ContactPK)] = ac
+	err := m.registerContactFromGroupPK(ac)
+
+	return err
 }
 
 func (m *metadataStoreIndex) handleContactRequestIncomingReceived(event proto.Message) error {
@@ -467,7 +501,7 @@ func (m *metadataStoreIndex) handleContactRequestIncomingReceived(event proto.Me
 		return nil
 	}
 
-	m.contacts[string(evt.ContactPK)] = &accountContact{
+	ac := &accountContact{
 		state: bertytypes.ContactStateReceived,
 		contact: &bertytypes.ShareableContact{
 			PK:                   evt.ContactPK,
@@ -476,7 +510,10 @@ func (m *metadataStoreIndex) handleContactRequestIncomingReceived(event proto.Me
 		},
 	}
 
-	return nil
+	m.contacts[string(evt.ContactPK)] = ac
+	err := m.registerContactFromGroupPK(ac)
+
+	return err
 }
 
 func (m *metadataStoreIndex) handleContactRequestIncomingDiscarded(event proto.Message) error {
@@ -489,14 +526,17 @@ func (m *metadataStoreIndex) handleContactRequestIncomingDiscarded(event proto.M
 		return nil
 	}
 
-	m.contacts[string(evt.ContactPK)] = &accountContact{
+	ac := &accountContact{
 		state: bertytypes.ContactStateDiscarded,
 		contact: &bertytypes.ShareableContact{
 			PK: evt.ContactPK,
 		},
 	}
 
-	return nil
+	m.contacts[string(evt.ContactPK)] = ac
+	err := m.registerContactFromGroupPK(ac)
+
+	return err
 }
 
 func (m *metadataStoreIndex) handleContactRequestIncomingAccepted(event proto.Message) error {
@@ -509,14 +549,17 @@ func (m *metadataStoreIndex) handleContactRequestIncomingAccepted(event proto.Me
 		return nil
 	}
 
-	m.contacts[string(evt.ContactPK)] = &accountContact{
+	ac := &accountContact{
 		state: bertytypes.ContactStateAdded,
 		contact: &bertytypes.ShareableContact{
 			PK: evt.ContactPK,
 		},
 	}
 
-	return nil
+	m.contacts[string(evt.ContactPK)] = ac
+	err := m.registerContactFromGroupPK(ac)
+
+	return err
 }
 
 func (m *metadataStoreIndex) handleContactBlocked(event proto.Message) error {
@@ -529,14 +572,17 @@ func (m *metadataStoreIndex) handleContactBlocked(event proto.Message) error {
 		return nil
 	}
 
-	m.contacts[string(evt.ContactPK)] = &accountContact{
+	ac := &accountContact{
 		state: bertytypes.ContactStateBlocked,
 		contact: &bertytypes.ShareableContact{
 			PK: evt.ContactPK,
 		},
 	}
 
-	return nil
+	m.contacts[string(evt.ContactPK)] = ac
+	err := m.registerContactFromGroupPK(ac)
+
+	return err
 }
 
 func (m *metadataStoreIndex) handleContactUnblocked(event proto.Message) error {
@@ -549,14 +595,17 @@ func (m *metadataStoreIndex) handleContactUnblocked(event proto.Message) error {
 		return nil
 	}
 
-	m.contacts[string(evt.ContactPK)] = &accountContact{
+	ac := &accountContact{
 		state: bertytypes.ContactStateRemoved,
 		contact: &bertytypes.ShareableContact{
 			PK: evt.ContactPK,
 		},
 	}
 
-	return nil
+	m.contacts[string(evt.ContactPK)] = ac
+	err := m.registerContactFromGroupPK(ac)
+
+	return err
 }
 
 func (m *metadataStoreIndex) handleContactAliasKeyAdded(event proto.Message) error {
@@ -715,7 +764,7 @@ func (m *metadataStoreIndex) postHandlerSentAliases() error {
 }
 
 // newMetadataIndex returns a new index to manage the list of the group members
-func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface, g *bertytypes.Group, md *memberDevice) iface.IndexConstructor {
+func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface, g *bertytypes.Group, md *memberDevice, devKS DeviceKeystore) iface.IndexConstructor {
 	return func(publicKey []byte) iface.StoreIndex {
 		m := &metadataStoreIndex{
 			members:                map[string][]*memberDevice{},
@@ -724,12 +773,14 @@ func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface,
 			sentSecrets:            map[string]struct{}{},
 			handledEvents:          map[string]struct{}{},
 			contacts:               map[string]*accountContact{},
+			contactsFromGroupPK:    map[string]*accountContact{},
 			groups:                 map[string]*accountGroup{},
 			serviceTokens:          map[string]*bertytypes.ServiceToken{},
 			contactRequestMetadata: map[string][]byte{},
 			g:                      g,
 			eventEmitter:           eventEmitter,
 			ownMemberDevice:        md,
+			deviceKeystore:         devKS,
 			ctx:                    ctx,
 			logger:                 zap.NewNop(),
 		}

@@ -9,7 +9,6 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/iface"
-	"berty.tech/go-orbit-db/stores"
 )
 
 func (s *service) indexGroups() error {
@@ -153,35 +152,29 @@ func (s *service) activateGroup(pk crypto.PubKey, localOnly bool) error {
 	case bertytypes.GroupTypeContact, bertytypes.GroupTypeMultiMember:
 		dbOpts := &iface.CreateDBOptions{LocalOnly: &localOnly}
 
-		cg, err := s.odb.openGroup(s.ctx, g, dbOpts)
+		gc, err := s.odb.openGroup(s.ctx, g, dbOpts)
 		if err != nil {
 			return errcode.TODO.Wrap(err)
 		}
 
-		err = ActivateGroupContext(s.ctx, cg)
-		if err != nil {
+		var contactPK crypto.PubKey
+		if g.GroupType == bertytypes.GroupTypeContact {
+			contact := s.accountGroup.metadataStore.GetContactFromGroupPK(id)
+			if contact != nil {
+				contactPK, err = contact.GetPubKey()
+				if err != nil {
+					return errcode.TODO.Wrap(err)
+				}
+			}
+		}
+
+		if err := ActivateGroupContext(s.ctx, gc, contactPK); err != nil {
 			return errcode.TODO.Wrap(err)
 		}
 
-		s.openedGroups[string(id)] = cg
+		s.openedGroups[string(id)] = gc
 
-		chSub1 := cg.metadataStore.Subscribe(s.ctx)
-		go func() {
-			for e := range chSub1 {
-				if evt, ok := e.(*stores.EventNewPeer); ok {
-					s.ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, fmt.Sprintf("grp_%s", string(id)), 42)
-				}
-			}
-		}()
-
-		chSub2 := cg.messageStore.Subscribe(s.ctx)
-		go func() {
-			for e := range chSub2 {
-				if evt, ok := e.(*stores.EventNewPeer); ok {
-					s.ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, fmt.Sprintf("grp_%s", string(id)), 42)
-				}
-			}
-		}()
+		TagGroupContextPeers(s.ctx, gc, s.ipfsCoreAPI, 42)
 
 		return nil
 	case bertytypes.GroupTypeAccount:

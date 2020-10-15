@@ -21,6 +21,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/baseorbitdb"
+	"berty.tech/go-orbit-db/iface"
 )
 
 var _ Service = (*service)(nil)
@@ -62,6 +63,7 @@ type Opts struct {
 	RendezvousRotationBase time.Duration
 	Host                   host.Host
 	PubSub                 *pubsub.PubSub
+	LocalOnly              bool
 	close                  func() error
 }
 
@@ -151,7 +153,9 @@ func New(ctx context.Context, opts Opts) (Service, error) {
 	opts.Logger = opts.Logger.Named("pt")
 	opts.Logger.Debug("initializing protocol", zap.String("version", bertyversion.Version))
 
-	acc, err := opts.OrbitDB.openAccountGroup(ctx, nil)
+	dbOpts := &iface.CreateDBOptions{LocalOnly: &opts.LocalOnly}
+
+	acc, err := opts.OrbitDB.openAccountGroup(ctx, dbOpts, opts.IpfsCoreAPI)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
