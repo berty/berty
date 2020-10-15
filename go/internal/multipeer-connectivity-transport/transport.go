@@ -20,63 +20,61 @@ const DefaultBind = "/mc/Qmeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
 
 // logger is global because HandleFoundPeer must be able to call it
 // FIXME: remove global logger
-var logger *zap.Logger = zap.L().Named("mc-transport")
+var logger *zap.Logger = zap.NewNop()
 
 // Transport is a tpt.transport.
-var _ tpt.Transport = &Transport{}
+var _ tpt.Transport = &ProximityTransport{}
 
-// Transport represents any device by which you can connect to and accept
+// ProximityTransport represents any device by which you can connect to and accept
 // connections from other peers.
-type Transport struct {
+type ProximityTransport struct {
 	host     host.Host
 	upgrader *tptu.Upgrader
+
+	ctx context.Context
 }
 
-func NewTransportConstructorWithLogger(l *zap.Logger) func(h host.Host, u *tptu.Upgrader) (*Transport, error) {
+func ProximityTransportConstructor(ctx context.Context, l *zap.Logger) func(h host.Host, u *tptu.Upgrader) (*ProximityTransport, error) {
 	if l != nil {
-		l.Named("MC Transport")
-		logger = l
+		logger = l.Named("ProximityTransport")
 	}
-	return NewTransport
-}
-
-// NewTransport creates a transport object that tracks dialers and listener.
-// It also starts the discovery service.
-func NewTransport(h host.Host, u *tptu.Upgrader) (*Transport, error) {
-	logger.Debug("New multipeer connectivity transport")
-	return &Transport{
-		host:     h,
-		upgrader: u,
-	}, nil
+	return func(h host.Host, u *tptu.Upgrader) (*ProximityTransport, error) {
+		logger.Debug("ProximityTransportConstructor()")
+		return &ProximityTransport{
+			host:     h,
+			upgrader: u,
+			ctx:      ctx,
+		}, nil
+	}
 }
 
 // Dial dials the peer at the remote address.
-// With MC you can only dial a device that is already connected with the native driver.
-func (t *Transport) Dial(ctx context.Context, remoteMa ma.Multiaddr, remotePID peer.ID) (tpt.CapableConn, error) {
-	// MC transport needs to have a running listener in order to dial other peer
+// With proximity connections (e.g. MC, BLE, Nearby) you can only dial a device that is already connected with the native driver.
+func (t *ProximityTransport) Dial(ctx context.Context, remoteMa ma.Multiaddr, remotePID peer.ID) (tpt.CapableConn, error) {
+	// ProximityTransport needs to have a running listener in order to dial other peer
 	// because native driver is initialized during listener creation.
 	gLock.RLock()
 	defer gLock.RUnlock()
 	if gListener == nil {
-		return nil, errors.New("transport dialing peer failed: no active listener")
+		return nil, errors.New("proximityTransport: ProximityTransport.Dial: no active listener")
 	}
 
-	// remoteAddr is supposed to be equal to remotePID since with MC transport:
-	// multiaddr = /mc/<peerID>
+	// remoteAddr is supposed to be equal to remotePID since with proximity transports:
+	// multiaddr = /<protocol>/<peerID>
 	remoteAddr, err := remoteMa.ValueForProtocol(mcma.P_MC)
 	if err != nil || remoteAddr != remotePID.Pretty() {
-		return nil, errors.Wrap(err, "transport dialing peer failed: wrong multiaddr")
+		return nil, errors.Wrap(err, "proximityTransport: ProximityTransport.Dial: wrong multiaddr")
 	}
 
 	// Check if native driver is already connected to peer's device.
-	// With MC you can't really dial, only auto-connect with peer nearby.
+	// With proximity connections you can't really dial, only auto-connect with peer nearby.
 	if !mcdrv.DialPeer(remoteAddr) {
-		return nil, errors.New("transport dialing peer failed: peer not connected through MC")
+		return nil, errors.New("proximityTransport: ProximityTransport.Dial: peer not connected through the native driver")
 	}
 
 	// Can't have two connections on the same multiaddr
 	if _, ok := connMap.Load(remoteAddr); ok {
-		return nil, errors.New("transport dialing peer failed: already connected to this address")
+		return nil, errors.New("proximityTransport: ProximityTransport.Dial: already connected to this address")
 	}
 
 	// Returns an outbound conn.
@@ -85,19 +83,19 @@ func (t *Transport) Dial(ctx context.Context, remoteMa ma.Multiaddr, remotePID p
 
 // CanDial returns true if this transport believes it can dial the given
 // multiaddr.
-func (t *Transport) CanDial(remoteMa ma.Multiaddr) bool {
+func (t *ProximityTransport) CanDial(remoteMa ma.Multiaddr) bool {
 	return mcma.MC.Matches(remoteMa)
 }
 
 // Listen listens on the given multiaddr.
-// MC can't listen on more than one listener.
-func (t *Transport) Listen(localMa ma.Multiaddr) (tpt.Listener, error) {
+// Proximity connections can't listen on more than one listener.
+func (t *ProximityTransport) Listen(localMa ma.Multiaddr) (tpt.Listener, error) {
 	// localAddr is supposed to be equal to the localPID
-	// or to DefaultBind since multiaddr == /mc/<peerID>
+	// or to DefaultBind since multiaddr == /<protocol>/<peerID>
 	localPID := t.host.ID().Pretty()
 	localAddr, err := localMa.ValueForProtocol(mcma.P_MC)
 	if err != nil || (localMa.String() != DefaultBind && localAddr != localPID) {
-		return nil, errors.Wrap(err, "transport listen failed: wrong multiaddr")
+		return nil, errors.Wrap(err, "proximityTransport: ProximityTransport.Listen: wrong multiaddr")
 	}
 
 	// Replaces default bind by local host peerID
@@ -112,23 +110,23 @@ func (t *Transport) Listen(localMa ma.Multiaddr) (tpt.Listener, error) {
 	gLock.RLock()
 	if gListener != nil {
 		gLock.RUnlock()
-		return nil, errors.New("transport listen failed: one listener maximum")
+		return nil, errors.New("proximityTransport: ProximityTransport.Listen: one listener maximum")
 	}
 	gLock.RUnlock()
 
-	return newListener(localMa, t), nil
+	return newListener(t.ctx, localMa, t), nil
 }
 
 // Proxy returns true if this transport proxies.
-func (t *Transport) Proxy() bool {
+func (t *ProximityTransport) Proxy() bool {
 	return false
 }
 
 // Protocols returns the set of protocols handled by this transport.
-func (t *Transport) Protocols() []int {
+func (t *ProximityTransport) Protocols() []int {
 	return []int{mcma.P_MC}
 }
 
-func (t *Transport) String() string {
+func (t *ProximityTransport) String() string {
 	return "MC"
 }

@@ -10,16 +10,20 @@ package driver
 */
 import "C"
 
-import "unsafe"
+import (
+	"unsafe"
+)
 
 var (
 	GoHandleFoundPeer func(remotePID string) bool            = nil
+	GoHandleLostPeer  func(remotePID string)                 = nil
 	GoReceiveFromPeer func(remotePID string, payload []byte) = nil
 )
 
 // Native -> Go functions
-func BindNativeToGoFunctions(hfp func(string) bool, rfp func(string, []byte)) {
+func BindNativeToGoFunctions(hfp func(string) bool, hlp func(string), rfp func(string, []byte)) {
 	GoHandleFoundPeer = hfp
+	GoHandleLostPeer = hlp
 	GoReceiveFromPeer = rfp
 }
 
@@ -35,13 +39,20 @@ func StopMCDriver() {
 }
 
 //export HandleFoundPeer
-func HandleFoundPeer(remotePID *C.char) C.int {
+func HandleFoundPeer(remotePID *C.char) int {
 	goPID := C.GoString(remotePID)
 
 	if GoHandleFoundPeer(goPID) {
 		return 1
 	}
 	return 0
+}
+
+//export HandleLostPeer
+func HandleLostPeer(remotePID *C.char) {
+	goPID := C.GoString(remotePID)
+
+	GoHandleLostPeer(goPID)
 }
 
 //export ReceiveFromPeer
@@ -58,20 +69,14 @@ func SendToPeer(remotePID string, payload []byte) bool {
 	cPayload := C.CBytes(payload)
 	defer C.free(cPayload)
 
-	if C.SendToPeer(cPID, cPayload, C.int(len(payload))) == 1 {
-		return true
-	}
-	return false
+	return C.SendToPeer(cPID, cPayload, C.int(len(payload))) == 1
 }
 
 func DialPeer(remotePID string) bool {
 	cPID := C.CString(remotePID)
 	defer C.free(unsafe.Pointer(cPID))
 
-	if C.DialPeer(cPID) == 1 {
-		return true
-	}
-	return false
+	return C.DialPeer(cPID) == 1
 }
 
 func CloseConnWithPeer(remotePID string) {

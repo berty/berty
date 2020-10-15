@@ -7,6 +7,7 @@
 
 // This functions are Go functions so they aren't defined here
 extern int HandleFoundPeer(char *);
+extern void HandleLostPeer(char *);
 extern void ReceiveFromPeer(char *, void *, unsigned long);
 
 int driverStarted = 0;
@@ -70,6 +71,11 @@ int BridgeHandleFoundPeer(NSString *remotePID) {
         return (1);
     }
     return (0);
+}
+
+void BridgeHandleLostPeer(NSString *remotePID) {
+    char *cPID = (char *)[remotePID UTF8String];
+    HandleLostPeer(cPID);
 }
 
 void BridgeReceiveFromPeer(NSString *remotePID, NSData *payload) {
