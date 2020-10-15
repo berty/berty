@@ -335,7 +335,8 @@ packages/go-bridge/ios/Frameworks/Bertybridge.framework: $(bridge_src)
 	@mkdir -p "packages/go-bridge/ios/Frameworks"
 	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
 		-o js/$@ \
-		-v $(ext_ldflags) \
+		-v -x $(ext_ldflags) \
+		-tags=embedTor
 		-target ios \
 		-iosversion $(minimum_ios_ver) \
 		./go/framework/bertybridge
@@ -383,7 +384,8 @@ packages/go-bridge/android/libs/gobridge.aar: $(bridge_src)
 	@mkdir -p "packages/go-bridge/android/libs"
 	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
 		-o js/$@ \
-		-v $(ext_ldflags) \
+		-v -x $(ext_ldflags) \
+		-tags=embedTor
 		-target android \
 		-androidapi $(minimum_android_ver) \
 		./go/framework/bertybridge
