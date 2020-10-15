@@ -8,18 +8,23 @@ import (
 
 	"github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/zap"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
+	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
+
+func noopReplayer(_ *dbWrapper) error { return nil }
 
 type getInMemoryTestDBOpts int32
 
 const (
 	getInMemoryTestDBOptsUndefined = iota
 	getInMemoryTestDBOptsNoInit
+	getInMemoryTestDBOptsStdOutLogger
 )
 
 var _ = getInMemoryTestDBOptsUndefined
@@ -28,9 +33,15 @@ func getInMemoryTestDB(t testing.TB, opts ...getInMemoryTestDBOpts) (*dbWrapper,
 	t.Helper()
 
 	init := true
+	log := zap.NewNop()
+	loggerCleanup := func() {}
+
 	for _, o := range opts {
-		if o == getInMemoryTestDBOptsNoInit {
+		switch o {
+		case getInMemoryTestDBOptsNoInit:
 			init = false
+		case getInMemoryTestDBOptsStdOutLogger:
+			log, loggerCleanup = testutil.Logger(t)
 		}
 	}
 
@@ -41,10 +52,10 @@ func getInMemoryTestDB(t testing.TB, opts ...getInMemoryTestDBOpts) (*dbWrapper,
 		t.Fatal(err)
 	}
 
-	wrappedDB := newDBWrapper(db)
+	wrappedDB := newDBWrapper(db, log)
 
 	if init {
-		if err := wrappedDB.initDB(); err != nil {
+		if err := wrappedDB.initDB(noopReplayer); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -54,7 +65,10 @@ func getInMemoryTestDB(t testing.TB, opts ...getInMemoryTestDBOpts) (*dbWrapper,
 		t.Fatal(err)
 	}
 
-	return wrappedDB, func() { _ = d.Close() }
+	return wrappedDB, func() {
+		_ = d.Close()
+		loggerCleanup()
+	}
 }
 
 func Test_dbWrapper_addConversation(t *testing.T) {
@@ -1065,7 +1079,7 @@ func Test_dbWrapper_initDB(t *testing.T) {
 	require.NoError(t, err)
 	require.Empty(t, tables)
 
-	err = db.initDB()
+	err = db.initDB(noopReplayer)
 	require.NoError(t, err)
 
 	err = db.db.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").Scan(&tables).Error
