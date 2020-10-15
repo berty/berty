@@ -363,7 +363,11 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 		if (lastInte?.type === messengerpb.AppMessage.Type.TypeUserMessage) {
 			description = lastInte.payload.body
 		} else {
-			description = ''
+			if (contact?.state === messengerpb.Contact.State.OutgoingRequestSent) {
+				description = 'Request is sent. Pending...'
+			} else {
+				description = ''
+			}
 		}
 	}
 	console.log(isBetabot, isBetabotAdded, lastInte)
