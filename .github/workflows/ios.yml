@@ -114,6 +114,8 @@ jobs:
       - name: Build the Archive
         working-directory: js
         run: |
+          chmod -R +w ~/go/pkg
+          rm -rf ~/go/pkg
           make ios.app_deps
           xcodebuild archive \
                 -workspace ios/Berty.xcworkspace \

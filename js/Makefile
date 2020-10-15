@@ -285,14 +285,22 @@ _write_gen_sum:
 
 #### iOS
 
-ios/Frameworks/Bertybridge.framework: $(bridge_src)
+# Theses prebuilt libs fool go in building a Tor with shared libs.
+../tool/build/torIOSPrefix/torPrefix:
+	cd ../tool/build/torIOSPrefix && tar xf torPrefix.tar.xz
+
+ios/Frameworks/Bertybridge.framework: BASE_PREFIX=$(shell (cd ../tool/build/torIOSPrefix/ && printf "%s" "$$(pwd)/torPrefix"))
+ios/Frameworks/Bertybridge.framework: export LIBRARY_PATH=$(shell printf "%s" "$(BASE_PREFIX)/lib:$${LIBRARY_PATH}")
+ios/Frameworks/Bertybridge.framework: export CPATH=$(shell printf "%s" "$(BASE_PREFIX)/include:$${CPATH}")
+ios/Frameworks/Bertybridge.framework: $(bridge_src) ../tool/build/torIOSPrefix/torPrefix
 	cd .. && go mod download
 	cd .. && go run golang.org/x/mobile/cmd/gomobile init
 	@mkdir -p "ios/Frameworks"
 	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
 		-o js/$@ \
-		-v $(ext_ldflags) \
-		-target ios \
+		-v -x $(ext_ldflags) \
+		-tags embedTor \
+		-target ios/arm64 \
 		-iosversion $(minimum_ios_ver) \
 		./go/framework/bertybridge
 	touch $@
@@ -336,7 +344,8 @@ android/libs/gobridge.aar: $(bridge_src)
 	@mkdir -p "android/libs"
 	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
 		-o js/$@ \
-		-v $(ext_ldflags) \
+		-v -x $(ext_ldflags) \
+		-tags="embedTor staticOpenssl staticLibevent staticZlib" \
 		-target android \
 		-androidapi $(minimum_android_ver) \
 		./go/framework/bertybridge
