@@ -49,7 +49,6 @@ func Test_keepAutoReplicateFlag(t *testing.T) {
 
 	require.NoError(t, db.db.Exec(`UPDATE accounts SET replicate_new_groups_automatically = true WHERE public_key = "pk_1"`).Error)
 	require.Equal(t, true, keepAutoReplicateFlag(db.db, log))
-
 }
 
 func Test_keepConversationsUnreadCounts(t *testing.T) {
