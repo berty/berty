@@ -1,12 +1,13 @@
-// +build unix
+// +build linux darwin
 
 package sysutil
 
 import (
 	"syscall"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"go.uber.org/multierr"
+
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 )
 
 func appendCustomSystemInfo(reply *bertytypes.SystemInfo_Process) error {
