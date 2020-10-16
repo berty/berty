@@ -4,6 +4,7 @@ import (
 	"crypto/ed25519"
 	crand "crypto/rand"
 	"encoding/hex"
+	"fmt"
 	"math"
 	"math/big"
 	"strings"
@@ -24,6 +25,7 @@ type DeviceKeystore interface {
 	DevicePrivKey() (crypto.PrivKey, error)
 	ContactGroupPrivKey(pk crypto.PubKey) (crypto.PrivKey, error)
 	MemberDeviceForGroup(g *bertytypes.Group) (*ownMemberDevice, error)
+	RestoreAccountKeys(accountKey crypto.PrivKey, accountProofKey crypto.PrivKey) error
 }
 
 type deviceKeystore struct {
@@ -201,6 +203,44 @@ func (a *deviceKeystore) getOrComputeDeviceKeyForGroupMember(pk crypto.PubKey) (
 	}
 
 	return a.getOrComputeECDH(keyMember, pk, accountProofSK)
+}
+
+func (a *deviceKeystore) RestoreAccountKeys(sk crypto.PrivKey, proofSK crypto.PrivKey) error {
+	if sk == nil {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing account key"))
+	}
+
+	if proofSK == nil {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing account proof key"))
+	}
+
+	ok, err := a.ks.Has(keyAccount)
+	if err != nil {
+		return err
+	}
+
+	if ok {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("an account key is already set in this keystore"))
+	}
+
+	ok, err = a.ks.Has(keyAccountProof)
+	if err != nil {
+		return err
+	}
+
+	if ok {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("an account proof key is already set in this keystore"))
+	}
+
+	if err := a.ks.Put(keyAccount, sk); err != nil {
+		return err
+	}
+
+	if err := a.ks.Put(keyAccountProof, proofSK); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // ownMemberDevice is own local device part of a group

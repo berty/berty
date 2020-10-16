@@ -1226,3 +1226,25 @@ func (svc *service) ReplicationSetAutoEnable(ctx context.Context, request *Repli
 
 	return &ReplicationSetAutoEnable_Reply{}, nil
 }
+
+func (svc *service) InstanceExportData(request *InstanceExportData_Request, server MessengerService_InstanceExportDataServer) error {
+	cl, err := svc.protocolClient.InstanceExportData(server.Context(), &bertytypes.InstanceExportData_Request{})
+	if err != nil {
+		return err
+	}
+
+	for {
+		chunk, err := cl.Recv()
+		if err == io.EOF {
+			return nil
+		} else if err != nil {
+			return err
+		}
+
+		if err := server.Send(&InstanceExportData_Reply{ExportedData: chunk.ExportedData}); err != nil {
+			return err
+		}
+	}
+
+	// TODO: add messenger info
+}

@@ -88,6 +88,7 @@
     - [GroupAddDeviceSecret](#berty.types.v1.GroupAddDeviceSecret)
     - [GroupAddMemberDevice](#berty.types.v1.GroupAddMemberDevice)
     - [GroupEnvelope](#berty.types.v1.GroupEnvelope)
+    - [GroupHeadsExport](#berty.types.v1.GroupHeadsExport)
     - [GroupInfo](#berty.types.v1.GroupInfo)
     - [GroupInfo.Reply](#berty.types.v1.GroupInfo.Reply)
     - [GroupInfo.Request](#berty.types.v1.GroupInfo.Request)
@@ -184,7 +185,7 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| InstanceExportData | [.berty.types.v1.InstanceExportData.Request](#berty.types.v1.InstanceExportData.Request) | [.berty.types.v1.InstanceExportData.Reply](#berty.types.v1.InstanceExportData.Reply) | InstanceExportData exports instance data |
+| InstanceExportData | [.berty.types.v1.InstanceExportData.Request](#berty.types.v1.InstanceExportData.Request) | [.berty.types.v1.InstanceExportData.Reply](#berty.types.v1.InstanceExportData.Reply) stream | InstanceExportData exports instance data |
 | InstanceGetConfiguration | [.berty.types.v1.InstanceGetConfiguration.Request](#berty.types.v1.InstanceGetConfiguration.Request) | [.berty.types.v1.InstanceGetConfiguration.Reply](#berty.types.v1.InstanceGetConfiguration.Reply) | InstanceGetConfiguration gets current configuration of this protocol instance |
 | ContactRequestReference | [.berty.types.v1.ContactRequestReference.Request](#berty.types.v1.ContactRequestReference.Request) | [.berty.types.v1.ContactRequestReference.Reply](#berty.types.v1.ContactRequestReference.Reply) | ContactRequestReference retrieves the information required to create a reference (types.v1.ie. included in a shareable link) to the current account |
 | ContactRequestDisable | [.berty.types.v1.ContactRequestDisable.Request](#berty.types.v1.ContactRequestDisable.Request) | [.berty.types.v1.ContactRequestDisable.Reply](#berty.types.v1.ContactRequestDisable.Reply) | ContactRequestDisable disables incoming contact requests |
@@ -809,6 +810,17 @@ GroupEnvelope is a publicly exposed structure containing a group metadata event
 | ----- | ---- | ----- | ----------- |
 | nonce | [bytes](#bytes) |  | nonce is used to encrypt the message |
 | event | [bytes](#bytes) |  | event is encrypted using a symmetric key shared among group members |
+
+<a name="berty.types.v1.GroupHeadsExport"></a>
+
+### GroupHeadsExport
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| public_key | [bytes](#bytes) |  | public_key is the identifier of the group, it signs the group secret and the initial member of a multi-member group |
+| sign_pub | [bytes](#bytes) |  | sign_pub is the signature public key used to verify entries |
+| metadata_heads_cids | [bytes](#bytes) | repeated | metadata_heads_cids are the heads of the metadata store that should be restored from an export |
+| messages_heads_cids | [bytes](#bytes) | repeated | messages_heads_cids are the heads of the metadata store that should be restored from an export |
 
 <a name="berty.types.v1.GroupInfo"></a>
 

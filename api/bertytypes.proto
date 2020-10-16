@@ -144,6 +144,20 @@ message Group {
   bytes sign_pub = 5;
 }
 
+message GroupHeadsExport {
+  // public_key is the identifier of the group, it signs the group secret and the initial member of a multi-member group
+  bytes public_key = 1;
+
+  // sign_pub is the signature public key used to verify entries
+  bytes sign_pub = 2;
+
+  // metadata_heads_cids are the heads of the metadata store that should be restored from an export
+  repeated bytes metadata_heads_cids = 3 [(gogoproto.customname) = "MetadataHeadsCIDs"];
+
+  // messages_heads_cids are the heads of the metadata store that should be restored from an export
+  repeated bytes messages_heads_cids = 4 [(gogoproto.customname) = "MessagesHeadsCIDs"];
+}
+
 // GroupMetadata is used in GroupEnvelope and only readable by invited group members
 message GroupMetadata {
   // event_type defines which event type is used

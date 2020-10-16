@@ -556,6 +556,48 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/InstanceExportData": {
+      "post": {
+        "summary": "InstanceExportData exports instance data",
+        "operationId": "MessengerService_InstanceExportData",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/bertymessengerv1InstanceExportDataReply"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of bertymessengerv1InstanceExportDataReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/bertymessengerv1InstanceExportDataRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/InstanceShareableBertyID": {
       "post": {
         "summary": "InstanceShareableBertyID returns a Berty ID that can be shared as a string, QR code or deep link.",
@@ -1197,6 +1239,18 @@
           "format": "boolean"
         }
       }
+    },
+    "bertymessengerv1InstanceExportDataReply": {
+      "type": "object",
+      "properties": {
+        "exported_data": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "bertymessengerv1InstanceExportDataRequest": {
+      "type": "object"
     },
     "bertymessengerv1ReplicationServiceRegisterGroupReply": {
       "type": "object"

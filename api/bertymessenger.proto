@@ -78,6 +78,9 @@ service MessengerService {
 
   // GetUsername returns the name of the device/user using Android/iOS/universal API
   rpc GetUsername(GetUsername.Request) returns (GetUsername.Reply);
+
+  // InstanceExportData exports instance data
+  rpc InstanceExportData (InstanceExportData.Request) returns (stream InstanceExportData.Reply);
 }
 
 message ConversationOpen {
@@ -552,5 +555,12 @@ message GetUsername {
   message Request {}
   message Reply {
     string username = 1;
+  }
+}
+
+message InstanceExportData {
+  message Request {}
+  message Reply {
+    bytes exported_data = 1;
   }
 }

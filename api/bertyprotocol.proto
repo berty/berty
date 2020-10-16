@@ -10,7 +10,7 @@ option go_package = "berty.tech/berty/go/pkg/bertyprotocol";
 // Each Berty Protocol Instance is considered as a Berty device and is associated with a Berty user.
 service ProtocolService {
   // InstanceExportData exports instance data
-  rpc InstanceExportData (types.v1.InstanceExportData.Request) returns (types.v1.InstanceExportData.Reply);
+  rpc InstanceExportData (types.v1.InstanceExportData.Request) returns (stream types.v1.InstanceExportData.Reply);
 
   // InstanceGetConfiguration gets current configuration of this protocol instance
   rpc InstanceGetConfiguration (types.v1.InstanceGetConfiguration.Request) returns (types.v1.InstanceGetConfiguration.Reply);

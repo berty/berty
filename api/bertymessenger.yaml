@@ -87,3 +87,6 @@ http:
  - selector: berty.messenger.v1.MessengerService.GetUsername
    post: /berty.messenger.v1/MessengerService/GetUsername
    body: "*"
+ - selector: berty.messenger.v1.MessengerService.InstanceExportData
+   post: /berty.messenger.v1/MessengerService/InstanceExportData
+   body: "*"

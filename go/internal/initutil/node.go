@@ -75,6 +75,7 @@ func (m *Manager) SetupRemoteNodeFlags(fs *flag.FlagSet) {
 func (m *Manager) SetupLocalMessengerServerFlags(fs *flag.FlagSet) {
 	m.Node.Messenger.requiredByClient = true
 	m.SetupLocalProtocolServerFlags(fs)
+	fs.StringVar(&m.Node.Messenger.ExportPathToRestore, "node.restore-export-path", "", "inits node from a specified export path")
 	fs.BoolVar(&m.Node.Messenger.RebuildSqlite, "node.rebuild-db", false, "reconstruct messenger DB from OrbitDB logs")
 	fs.BoolVar(&m.Node.Messenger.DisableNotifications, "node.no-notif", false, "disable desktop notifications")
 	fs.StringVar(&m.Node.Messenger.DisplayName, "node.display-name", safeDefaultDisplayName(), "display name")
@@ -269,6 +270,12 @@ func (m *Manager) getMessengerClient() (bertymessenger.MessengerServiceClient, e
 		return m.Node.Messenger.client, nil
 	}
 
+	if m.Node.Messenger.ExportPathToRestore != "" {
+		if err := m.restoreMessengerDataFromExport(); err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
+	}
+
 	grpcClient, err := m.getGRPCClientConn()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -452,6 +459,35 @@ func (m *Manager) getMessengerDB() (*gorm.DB, error) {
 		}
 	}
 	return m.Node.Messenger.db, nil
+}
+
+func (m *Manager) restoreMessengerDataFromExport() error {
+	exportPath := m.Node.Messenger.ExportPathToRestore
+	f, err := os.Open(exportPath)
+	if err != nil {
+		return err
+	}
+
+	logger, err := m.getLogger()
+	if err != nil {
+		return errcode.ErrInternal.Wrap(err)
+	}
+
+	coreAPI, _, err := m.getLocalIPFS()
+	if err != nil {
+		return errcode.ErrInternal.Wrap(err)
+	}
+
+	odb, err := m.getOrbitDB()
+	if err != nil {
+		return errcode.ErrInternal.Wrap(err)
+	}
+
+	if err := bertymessenger.RestoreFromAccountExport(m.ctx, f, coreAPI, odb, logger); err != nil {
+		return errcode.ErrInternal.Wrap(err)
+	}
+
+	return nil
 }
 
 func (m *Manager) GetLocalMessengerServer() (bertymessenger.MessengerServiceServer, error) {

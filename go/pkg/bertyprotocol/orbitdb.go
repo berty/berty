@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"sync"
 
-	datastore "github.com/ipfs/go-datastore"
+	"github.com/ipfs/go-cid"
+	"github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -186,6 +187,66 @@ func (s *BertyOrbitDB) openAccountGroup(ctx context.Context, options *orbitdb.Cr
 	TagGroupContextPeers(ctx, gc, ipfsCoreAPI, 84)
 
 	return gc, nil
+}
+
+func (s *BertyOrbitDB) setHeadsForGroup(ctx context.Context, g *bertytypes.Group, metaHeads, messageHeads []cid.Cid) error {
+	id := g.GroupIDAsString()
+
+	var (
+		err                    error
+		metaImpl, messagesImpl orbitdb.Store
+	)
+
+	existingGC, err := s.getGroupContext(id)
+	if err != nil && !errcode.Is(err, errcode.ErrMissingMapKey) {
+		return errcode.ErrInternal.Wrap(err)
+	}
+	if err == nil {
+		metaImpl = existingGC.metadataStore
+		messagesImpl = existingGC.messageStore
+	}
+
+	if metaImpl == nil || messagesImpl == nil {
+		groupID := g.GroupIDAsString()
+		s.groups.Store(groupID, g)
+
+		if err := s.registerGroupSigningPubKey(g); err != nil {
+			return errcode.ErrInternal.Wrap(err)
+		}
+
+		s.Logger().Debug("openGroup", zap.Any("public key", g.PublicKey), zap.Any("secret", g.Secret), zap.Stringer("type", g.GroupType))
+
+		if metaImpl == nil {
+			metaImpl, err = s.storeForGroup(ctx, s, g, nil, groupMetadataStoreType, GroupOpenModeReplicate)
+			if err != nil {
+				return errcode.ErrOrbitDBOpen.Wrap(err)
+			}
+
+			defer func() { _ = metaImpl.Close() }()
+		}
+
+		if messagesImpl == nil {
+			messagesImpl, err = s.storeForGroup(ctx, s, g, nil, groupMessageStoreType, GroupOpenModeReplicate)
+			if err != nil {
+				return errcode.ErrOrbitDBOpen.Wrap(err)
+			}
+
+			defer func() { _ = messagesImpl.Close() }()
+		}
+	}
+
+	if messagesImpl == nil {
+		return errcode.ErrInternal.Wrap(fmt.Errorf("message store is nil"))
+	}
+
+	if metaImpl == nil {
+		return errcode.ErrInternal.Wrap(fmt.Errorf("metadata store is nil"))
+	}
+
+	messagesImpl.Replicator().Load(ctx, messageHeads)
+	metaImpl.Replicator().Load(ctx, metaHeads)
+
+	return nil
 }
 
 func (s *BertyOrbitDB) openGroup(ctx context.Context, g *bertytypes.Group, options *orbitdb.CreateDBOptions) (*groupContext, error) {

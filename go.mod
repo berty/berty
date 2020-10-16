@@ -6,7 +6,7 @@ require (
 	bazil.org/fuse v0.0.0-20200524192727-fb710f7dfd05 // indirect
 	berty.tech/go-ipfs-log v1.2.6
 	berty.tech/go-libp2p-tor-transport v0.8.1
-	berty.tech/go-orbit-db v1.10.9
+	berty.tech/go-orbit-db v1.10.10
 	berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
@@ -42,6 +42,7 @@ require (
 	github.com/ipfs/go-ipfs v0.7.0
 	github.com/ipfs/go-ipfs-config v0.9.0
 	github.com/ipfs/go-ipfs-keystore v0.0.1
+	github.com/ipfs/go-ipld-cbor v0.0.4
 	github.com/ipfs/go-log/v2 v2.1.1
 	github.com/ipfs/interface-go-ipfs-core v0.4.0
 	github.com/ipld/go-car v0.1.1-0.20201015032735-ff6ccdc46acc // indirect
