@@ -14,11 +14,6 @@ type NativeLoggerDriver interface {
 	LevelEnabler(level string) bool
 }
 
-// type noopNativeLoggerDriver struct{}
-
-// func (n *noopNativeLoggerDriver) Log(level, namespace, message string) error { return nil }
-// func (n *noopNativeLoggerDriver) LevelEnabler(level string) bool             { return false }
-
 type nativeLogger struct {
 	zapcore.Core
 	enc zapcore.Encoder
@@ -70,12 +65,6 @@ func newLogger(filters string, mlogger NativeLoggerDriver) (*zap.Logger, func(),
 
 	// create logger
 	logger := zap.New(nativeCore)
-
-	// bind ipfs logger with zap
-	// @FIXME(gfanton): find a way to bind libp2p logger
-	// if err := ipfsutil.ConfigureLogger("*", logger, loglevel); err != nil {
-	// 	return nil, err
-	// }
 
 	logger.Info("logger initialized", zap.String("filters", filters))
 	return logutil.DecorateLogger(logger, filters)

@@ -8,12 +8,6 @@ import (
 	"berty.tech/berty/v2/go/internal/notification"
 )
 
-type LocalNotification struct {
-	Title    string
-	Body     string
-	Interval float64
-}
-
 type NotificationDriver interface {
 	Post(notif *LocalNotification) error
 }
@@ -55,4 +49,10 @@ func (a *notificationManagerAdaptater) Schedule(notif *notification.Notification
 		Body:     notif.Body,
 		Interval: interval.Seconds(),
 	})
+}
+
+type LocalNotification struct {
+	Title    string
+	Body     string
+	Interval float64
 }

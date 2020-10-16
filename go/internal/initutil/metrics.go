@@ -25,8 +25,10 @@ func (m *Manager) GetMetricsRegistry() (*prometheus.Registry, error) {
 }
 
 func (m *Manager) getMetricsRegistry() (*prometheus.Registry, error) {
-	if m.Metrics.Registry != nil {
-		return m.Metrics.Registry, nil
+	m.applyDefaults()
+
+	if m.Metrics.registry != nil {
+		return m.Metrics.registry, nil
 	}
 
 	logger, err := m.getLogger()
@@ -40,19 +42,19 @@ func (m *Manager) getMetricsRegistry() (*prometheus.Registry, error) {
 	}
 
 	if m.Metrics.Pedantic {
-		m.Metrics.Registry = prometheus.NewPedanticRegistry()
+		m.Metrics.registry = prometheus.NewPedanticRegistry()
 	} else {
-		m.Metrics.Registry = prometheus.NewRegistry()
+		m.Metrics.registry = prometheus.NewRegistry()
 	}
 
-	m.Metrics.Registry.MustRegister(prometheus.NewBuildInfoCollector())
-	m.Metrics.Registry.MustRegister(prometheus.NewGoCollector())
+	m.Metrics.registry.MustRegister(prometheus.NewBuildInfoCollector())
+	m.Metrics.registry.MustRegister(prometheus.NewGoCollector())
 
 	mux := http.NewServeMux()
 	m.workers.Add(func() error {
 		handerfor := promhttp.HandlerFor(
-			m.Metrics.Registry,
-			promhttp.HandlerOpts{Registry: m.Metrics.Registry},
+			m.Metrics.registry,
+			promhttp.HandlerOpts{Registry: m.Metrics.registry},
 		)
 
 		mux.Handle(metricsHandler, handerfor)
@@ -64,5 +66,5 @@ func (m *Manager) getMetricsRegistry() (*prometheus.Registry, error) {
 		l.Close()
 	})
 
-	return m.Metrics.Registry, nil
+	return m.Metrics.registry, nil
 }

@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	AppStateUnknow int = iota
+	AppStateUnknown int = iota
 	AppStateActive
 	AppStateInactive
 	AppStateBackground
@@ -44,7 +44,7 @@ type backgroundTask struct {
 	cancel context.CancelFunc
 }
 
-func NewBackgroundTask(logger *zap.Logger, task func(context.Context) error) LifeCycleBackgroundTask {
+func newBackgroundTask(logger *zap.Logger, task func(context.Context) error) LifeCycleBackgroundTask {
 	ctx, cancel := context.WithCancel(context.Background())
 	return &backgroundTask{
 		finish: make(chan struct{}),
@@ -83,9 +83,6 @@ var _ LifeCycleDriver = (*noopLifeCycleDriver)(nil)
 
 type noopLifeCycleDriver struct{}
 
-func (*noopLifeCycleDriver) GetCurrentState() int               { return AppStateUnknow }
+func (*noopLifeCycleDriver) GetCurrentState() int               { return AppStateUnknown }
 func (*noopLifeCycleDriver) RegisterHandler(_ LifeCycleHandler) {}
-
-func newNoopLifeCycleDriver() LifeCycleDriver {
-	return &noopLifeCycleDriver{}
-}
+func newNoopLifeCycleDriver() LifeCycleDriver                   { return &noopLifeCycleDriver{} }

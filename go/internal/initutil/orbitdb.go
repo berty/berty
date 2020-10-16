@@ -14,8 +14,10 @@ import (
 )
 
 func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
-	if m.Node.orbitDB != nil {
-		return m.Node.orbitDB, nil
+	m.applyDefaults()
+
+	if m.Node.Protocol.orbitDB != nil {
+		return m.Node.Protocol.orbitDB, nil
 	}
 
 	ipfs, node, err := m.getLocalIPFS()
@@ -53,14 +55,14 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 			Cache:     cache,
 			Directory: &orbitDirectory,
 			Logger:    logger,
-			Tracer:    tracer.New("berty-orbitdb"),
+			Tracer:    tracer.New("orbitdb"),
 		},
 		Datastore:      rootDS,
 		DeviceKeystore: deviceKS,
 	}
 
 	if node.PubSub != nil {
-		self, err := ipfs.Key().Self(m.ctx)
+		self, err := ipfs.Key().Self(m.GetContext())
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -68,12 +70,12 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 		opts.PubSub = pubsubraw.NewPubSub(node.PubSub, self.ID(), opts.Logger, nil)
 	}
 
-	odb, err := bertyprotocol.NewBertyOrbitDB(m.ctx, ipfs, opts)
+	odb, err := bertyprotocol.NewBertyOrbitDB(m.GetContext(), ipfs, opts)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	m.Node.orbitDB = odb
+	m.Node.Protocol.orbitDB = odb
 
 	return odb, nil
 }
