@@ -132,7 +132,7 @@ const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 
 	const id = publicKey
 	const [{ border, padding, row, absolute, text, color }, { scaleSize }] = useStyles()
-	const createdDate = typeof createdDateStr === 'string' ? parseInt(createdDateStr, 10) : Date.now()
+	const createdDate = pbDateToNum(createdDateStr) || Date.now()
 	const textColor = '#AFB1C0'
 	return (
 		<Translation>

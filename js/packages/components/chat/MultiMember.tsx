@@ -265,7 +265,7 @@ const MessageList: React.FC<{
 	setStickyDate: any
 	setShowStickyDate: any
 }> = ({ id, scrollToMessage, setStickyDate, setShowStickyDate }) => {
-	const [{ overflow, margin, row, flex }, { scaleHeight, windowHeight }] = useStyles()
+	const [{ overflow, margin, row, flex }, { scaleHeight }] = useStyles()
 	const conversation = useConversation(id)
 	const ctx = useMsgrContext()
 	const members = (ctx as any).members[id] || {}

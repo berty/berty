@@ -44,7 +44,7 @@ import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import Logo from '../main/1_berty_picto.svg'
 import Avatar from '../modals/Buck_Berty_Icon_Card.svg'
 import { groupBy } from 'lodash'
-import { pbDateToNum } from '../helpers'
+import { pbDateToNum, timeFormat } from '../helpers'
 import { useLayout } from '../hooks'
 
 //
@@ -526,8 +526,7 @@ const InfosChat: React.FC<api.berty.messenger.v1.IConversation & any> = ({
 	isBetabotAdded,
 }) => {
 	const [{ flex, text, padding, margin }] = useStyles()
-	const createdDate =
-		(createdDateStr && parseInt((createdDateStr as unknown) as string, 10)) || Date.now()
+	const createdDate = pbDateToNum(createdDateStr) || Date.now()
 	const ctx = useMsgrContext()
 	const contact =
 		Object.values(ctx.contacts).find((c: any) => c.conversationPublicKey === publicKey) || null
@@ -559,9 +558,7 @@ const InfosChat: React.FC<api.berty.messenger.v1.IConversation & any> = ({
 				<>
 					<View style={[flex.align.center]}>
 						<Text style={[text.size.tiny, text.color.grey, margin.top.tiny]}>
-							{Date.now() - new Date(createdDate).getTime() > 86400000
-								? moment(createdDate).format('DD/MM/YYYY')
-								: moment(createdDate).format('hh:mm')}
+							{timeFormat.fmtTimestamp1(pbDateToNum(createdDate))}
 						</Text>
 					</View>
 					<InfosContactState

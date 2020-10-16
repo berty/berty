@@ -25,6 +25,10 @@ const getValidDateMoment = (date: number | Date): moment.Moment => {
 	return mDate.isValid() ? mDate : moment(0)
 }
 
+/**
+ * When we show time or date, depending on recency
+ * (e.g. conversation list)
+ */
 const fmtTimestamp1 = (date: number | Date): string => {
 	const now = moment()
 	const mDate = getValidDateMoment(date)
@@ -38,6 +42,9 @@ const fmtTimestamp1 = (date: number | Date): string => {
 	}
 }
 
+/**
+ * When we just care about the day (e.g. 1-1 chat confirmed header)
+ */
 const fmtTimestamp2 = (date: number | Date): string => {
 	const now = moment()
 	const mDate = getValidDateMoment(date)
@@ -49,11 +56,26 @@ const fmtTimestamp2 = (date: number | Date): string => {
 	return mDate.format('MMM D YYYY')
 }
 
-export const timeFormat = { fmtTimestamp1, fmtTimestamp2 }
+/**
+ * Only show time
+ * Use for messages in chatrooms
+ * (We don't need to show the date; it is in the sticky header)
+ */
+const fmtTimestamp3 = (date: number | Date): string => {
+	const mDate = getValidDateMoment(date)
+	return mDate.format('hh:mm a')
+}
+
+export const timeFormat = { fmtTimestamp1, fmtTimestamp2, fmtTimestamp3 }
 
 export const strToTimestamp = (dateStr?: string): number =>
 	new Date(parseInt(dateStr || '0', 10)).getTime()
 
 export const pbDateToNum = (pbTimestamp?: number | Long | string | null): number => {
-	return !pbTimestamp ? 0 : parseInt(pbTimestamp as string, 10)
+	try {
+		return !pbTimestamp ? 0 : parseInt(pbTimestamp as string, 10)
+	} catch (e) {
+		console.warn(`Error parsing date ${pbTimestamp}; returning zero`)
+		return 0
+	}
 }
