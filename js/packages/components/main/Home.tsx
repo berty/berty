@@ -29,7 +29,7 @@ import * as api from '@berty-tech/api/index.pb'
 import { useStyles } from '@berty-tech/styles'
 
 import { useLayout } from '../hooks'
-import { pbDateToNum, strToTimestamp, timeFormat } from '../helpers'
+import { pbDateToNum, timeFormat } from '../helpers'
 import FromNow from '../shared-components/FromNow'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { SwipeHelperReactNavTabBar } from '../shared-components/SwipeNavRecognizer'
@@ -149,7 +149,6 @@ const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 									},
 								}),
 							)
-							// display({ contactId: id })
 						}
 					}}
 				>
@@ -309,19 +308,18 @@ const MessageStatus: React.FC<{ interaction: any; isAccepted: boolean }> = ({
 	if (interaction?.type !== messengerpb.AppMessage.Type.TypeUserMessage && isAccepted) {
 		return null
 	}
+
 	return (
-		<View style={{ width: 25, justifyContent: 'center', alignItems: 'center' }}>
-			<Icon
-				name={
-					(interaction && !interaction.acknowledged) || !isAccepted
-						? 'navigation-2-outline'
-						: 'navigation-2'
-				}
-				width={14}
-				height={14}
-				fill={color.blue}
-			/>
-		</View>
+		<Icon
+			name={
+				(interaction && !interaction.acknowledged) || !isAccepted
+					? 'navigation-2-outline'
+					: 'navigation-2'
+			}
+			width={14}
+			height={14}
+			fill={color.blue}
+		/>
 	)
 }
 
@@ -351,10 +349,9 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	const isIncoming = contact && contact.state === messengerpb.Contact.State.IncomingRequest
 
 	const [
-		{ color, row, border, flex, column, padding, text, opacity, background, margin },
-		{ scaleHeight },
+		{ color, row, border, flex, column, padding, text, opacity, background, margin, width },
+		{ scaleHeight, scaleSize },
 	] = useStyles()
-	// TODO: Last message, unread count, navigate to chatroom
 	const { dispatch } = useNavigation()
 
 	const persistOpts = usePersistentOptions()
@@ -408,43 +405,74 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 			<View
 				style={[row.center, border.bottom.medium, border.color.light.grey, padding.vertical.small]}
 			>
-				{type === messengerpb.Conversation.Type.MultiMemberType ? (
-					<View style={[padding.tiny, padding.left.small, row.item.justify]}>
-						<Image source={AvatarGroup19} style={{ width: 40, height: 40 }} />
-					</View>
-				) : isBetabot ? (
-					<View style={[padding.horizontal.tiny]}>
+				{/* Avatar */}
+				<View
+					style={[
+						row.item.center,
+						flex.align.center,
+						flex.justify.center,
+						margin.right.small,
+						{
+							flex: 1,
+							flexBasis: 45,
+							flexGrow: 0,
+							flexShrink: 0,
+						},
+					]}
+				>
+					{type === messengerpb.Conversation.Type.MultiMemberType ? (
+						<Image
+							source={AvatarGroup19}
+							style={{
+								width: 40,
+								height: 40,
+							}}
+						/>
+					) : isBetabot ? (
 						<View
 							style={[
 								border.radius.scale(25),
 								border.shadow.medium,
 								background.white,
-								margin.right.small,
+								flex.justify.center,
+								flex.align.center,
 								{
-									justifyContent: 'center',
-									alignItems: 'center',
-									display: 'flex',
 									width: 40,
 									height: 40,
-									alignSelf: 'center',
-									right: -(5 * scaleHeight),
-									top: 9 * scaleHeight,
 								},
 							]}
 						>
 							<Logo width={25} height={25} style={{ right: -1, top: -1 }} />
 						</View>
-					</View>
-				) : (
-					<ProceduralCircleAvatar
-						seed={contact?.publicKey}
-						size={50}
-						style={[padding.tiny, row.item.justify]}
-					/>
-				)}
-				<View style={[flex.big, column.fill, padding.small]}>
-					<View style={[row.fill]}>
-						<View style={[row.left, { flexShrink: 1 }]}>
+					) : (
+						<ProceduralCircleAvatar
+							seed={contact?.publicKey}
+							size={40 / scaleSize}
+							diffSize={10}
+							style={[border.shadow.medium]}
+						/>
+					)}
+				</View>
+				<View
+					style={[
+						padding.tiny,
+						{
+							flex: 2,
+							flexGrow: 1,
+							flexShrink: 0,
+						},
+					]}
+				>
+					{/* Conversation title, unread count, and time */}
+					<View style={[flex.direction.row, flex.justify.flexStart]}>
+						{/* Title */}
+						<View
+							style={[
+								{
+									flexShrink: 1,
+								},
+							]}
+						>
 							<Text numberOfLines={1} style={[text.size.medium, text.color.black]}>
 								{(fake && 'FAKE - ') || ''}
 								{type === messengerpb.Conversation.Type.MultiMemberType
@@ -452,15 +480,18 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 									: contact?.displayName || ''}
 							</Text>
 						</View>
-						<View style={[row.right, { alignItems: 'center' }]}>
+						{/* Timestamp and unread count */}
+						<View
+							style={[
+								flex.direction.row,
+								flex.align.center,
+								flex.justify.flexEnd,
+								{ marginLeft: 'auto' },
+							]}
+						>
 							{isBetabot && !isBetabotAdded ? (
 								<View
-									style={{
-										width: 25,
-										justifyContent: 'center',
-										alignItems: 'center',
-										top: 10 * scaleHeight,
-									}}
+									style={[{ transform: [{ translateY: Math.floor(text.size.medium.fontSize) }] }]}
 								>
 									<Icon name='info-outline' fill={color.blue} width={20} height={20} />
 								</View>
@@ -475,14 +506,49 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 												unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
 											]}
 										>
-											{/* {Date.now() - new Date(sentDate).getTime() > 86400000
-											? moment(sentDate).format('DD/MM/YYYY')
-											: moment(sentDate).format('hh:mm')} */}
 											{timeFormat.fmtTimestamp1(displayDate)}
 										</Text>
 									)}
 								</>
 							)}
+						</View>
+					</View>
+					<View
+						style={[
+							flex.direction.row,
+							flex.align.center,
+							{
+								height: text.size.medium.fontSize * 1.6, // Keep row height even if no description/message
+							},
+						]}
+					>
+						<Text
+							numberOfLines={1}
+							style={[
+								{ flexGrow: 2, flexShrink: 1 },
+								text.size.medium,
+								unreadCount
+									? isBetabot && !isBetabotAdded
+										? text.color.grey
+										: [text.bold.medium, text.color.black]
+									: text.color.grey,
+							]}
+						>
+							{description}
+						</Text>
+
+						{/* Message status */}
+						<View
+							style={[
+								row.item.center,
+								row.right,
+								{
+									flexBasis: 16,
+									flexGrow: 0,
+									flexShrink: 0,
+								},
+							]}
+						>
 							{lastInte && lastInte.isMe && (
 								<MessageStatus
 									interaction={lastInte}
@@ -491,19 +557,6 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 							)}
 						</View>
 					</View>
-					<Text
-						numberOfLines={1}
-						style={[
-							text.size.small,
-							unreadCount
-								? isBetabot && !isBetabotAdded
-									? text.color.grey
-									: [text.bold.medium, text.color.black]
-								: text.color.grey,
-						]}
-					>
-						{description}
-					</Text>
 				</View>
 			</View>
 		</TouchableHighlight>
@@ -511,7 +564,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 }
 
 const Conversations: React.FC<ConversationsProps> = ({ items, style, onLayout }) => {
-	const [{ background, padding }] = useStyles()
+	const [{ background }] = useStyles()
 	return items?.length ? (
 		<SafeAreaConsumer>
 			{(insets) => (

@@ -492,7 +492,7 @@ export const Message: React.FC<{
 										padding.right.scale(5),
 										_styles.dateMessage,
 										isFollowedMessage && margin.left.scale(35),
-										{ fontSize: 9 },
+										text.size.scale(11),
 									]}
 								>
 									{sentDate ? formatTimestamp(sentDate) : ''}{' '}
