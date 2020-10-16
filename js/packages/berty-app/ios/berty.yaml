@@ -113,12 +113,13 @@ targets:
         SWIFT_OBJC_INTERFACE_HEADER_NAME: Berty-Swift.h
         CODE_SIGN_STYLE: Automatic
         INTERFACE_ORIENTATION: [UIInterfaceOrientationPortrait] # default
+        INTERFACE_ORIENTATION_IPAD: [UIInterfaceOrientationPortrait] # default
       configs:
         Debug:
           DEVELOPMENT_TEAM: WMBQ84HN4T
           PRODUCT_NAME: Berty Debug
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).debug
-          INTERFACE_ORIENTATION: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+          INTERFACE_ORIENTATION_IPAD: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeRight, UIInterfaceOrientationLandscapeLeft]
         AppStore:
           DEVELOPMENT_TEAM: WMBQ84HN4T
           PRODUCT_NAME: Berty Release
@@ -131,7 +132,7 @@ targets:
           DEVELOPMENT_TEAM: GR5463T564
           PRODUCT_NAME: Berty Yolo
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).yolo
-          INTERFACE_ORIENTATION: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+          INTERFACE_ORIENTATION_IPAD: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeRight, UIInterfaceOrientationLandscapeLeft]
 
 
     sources:

@@ -60,4 +60,5 @@ targets:
         UILaunchStoryboardName: LaunchScreen
         UIRequiredDeviceCapabilities: [armv7]
         UISupportedInterfaceOrientations: "$(INTERFACE_ORIENTATION)"
+        UISupportedInterfaceOrientations~ipad: "$(INTERFACE_ORIENTATION_IPAD)"
         UIViewControllerBasedStatusBarAppearance: false
