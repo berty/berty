@@ -91,6 +91,8 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 	const pk = publicKey
 	const members = ctx.members[pk] || {}
 	const navigation = useNavigation()
+	const memberLength = Object.values(members).length
+	const memberText = memberLength < 2 ? 'member' : 'members'
 
 	return (
 		<View style={[padding.medium]}>
@@ -101,7 +103,7 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 				icon='users'
 				iconPack='custom'
 				state={{
-					value: `${Object.values(members).length} members`,
+					value: `${memberLength} ${memberText}`,
 					color: color.blue,
 					bgColor: color.light.blue,
 				}}

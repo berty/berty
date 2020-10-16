@@ -5,6 +5,7 @@ import {
 	useInteraction,
 	useMsgrContext,
 	useOneToOneContact,
+	useLastConvInteraction,
 } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 import Color from 'color'
@@ -316,6 +317,9 @@ export const MessageInvitation: React.FC<{ message: any }> = ({ message }) => {
 	)
 }
 
+const interactionsFilter = (inte: any) =>
+	inte.type === messengerpb.AppMessage.Type.TypeUserMessage && inte.isMe
+
 export const Message: React.FC<{
 	id: string
 	convKind: any
@@ -331,6 +335,7 @@ export const Message: React.FC<{
 	const navigation = useNativeNavigation()
 	const _styles = useStylesMessage()
 	const [{ row, margin, padding, column, text, border, color }, { scaleSize }] = useStyles()
+	const lastInte = useLastConvInteraction(convPK, interactionsFilter)
 	if (!inte) {
 		return null
 	}
@@ -481,7 +486,7 @@ export const Message: React.FC<{
 									{sentDate > 0 ? timeFormat.fmtTimestamp3(sentDate) : ''}{' '}
 								</Text>
 							)}
-							{!cmd && !isWithinCollapseDuration && (
+							{!cmd && !isWithinCollapseDuration && lastInte?.cid.toString() === id.toString() && (
 								<>
 									{inte.isMe && (
 										<Icon
