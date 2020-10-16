@@ -59,5 +59,5 @@ targets:
         - processing
         UILaunchStoryboardName: LaunchScreen
         UIRequiredDeviceCapabilities: [armv7]
-        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        UISupportedInterfaceOrientations: "$(INTERFACE_ORIENTATION)"
         UIViewControllerBasedStatusBarAppearance: false
