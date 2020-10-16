@@ -1204,6 +1204,32 @@ func (svc *service) SendReplyOptions(ctx context.Context, request *SendReplyOpti
 	return &SendReplyOptions_Reply{}, err
 }
 
+func (svc *service) SetGroupName(ctx context.Context, request *SetGroupName_Request) (*SetGroupName_Reply, error) {
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+
+	payload, err := AppMessage_TypeSetGroupName.MarshalPayload(timestampMs(time.Now()), request.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	{
+		pk, err := b64DecodeBytes(request.GroupPK)
+		if err != nil {
+			return nil, err
+		}
+		_, err = svc.protocolClient.AppMetadataSend(ctx, &bertytypes.AppMetadataSend_Request{
+			GroupPK: pk,
+			Payload: payload,
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return &SetGroupName_Reply{}, err
+}
+
 func (svc *service) ReplicationSetAutoEnable(ctx context.Context, request *ReplicationSetAutoEnable_Request) (*ReplicationSetAutoEnable_Reply, error) {
 	config, err := svc.protocolClient.InstanceGetConfiguration(svc.ctx, &bertytypes.InstanceGetConfiguration_Request{})
 	if err != nil {

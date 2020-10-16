@@ -3726,6 +3726,8 @@ export namespace berty {
                 public getUsername(request: berty.messenger.v1.GetUsername.IRequest): Promise<berty.messenger.v1.GetUsername.Reply>;
                 public instanceExportData(request: berty.messenger.v1.InstanceExportData.IRequest, callback: berty.messenger.v1.MessengerService.InstanceExportDataCallback): void;
                 public instanceExportData(request: berty.messenger.v1.InstanceExportData.IRequest): Promise<berty.messenger.v1.InstanceExportData.Reply>;
+                public setGroupName(request: berty.messenger.v1.SetGroupName.IRequest, callback: berty.messenger.v1.MessengerService.SetGroupNameCallback): void;
+                public setGroupName(request: berty.messenger.v1.SetGroupName.IRequest): Promise<berty.messenger.v1.SetGroupName.Reply>;
             }
 
             namespace MessengerService {
@@ -3787,6 +3789,8 @@ export namespace berty {
                 type GetUsernameCallback = (error: (Error|null), response?: berty.messenger.v1.GetUsername.Reply) => void;
 
                 type InstanceExportDataCallback = (error: (Error|null), response?: berty.messenger.v1.InstanceExportData.Reply) => void;
+
+                type SetGroupNameCallback = (error: (Error|null), response?: berty.messenger.v1.SetGroupName.Reply) => void;
             }
 
             interface IConversationOpen {
@@ -6070,6 +6074,61 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.InstanceExportData.Reply;
                     public static toObject(message: berty.messenger.v1.InstanceExportData.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface ISetGroupName {
+            }
+
+            class SetGroupName implements ISetGroupName {
+
+                public static create(properties?: berty.messenger.v1.ISetGroupName): berty.messenger.v1.SetGroupName;
+                public static encode(message: berty.messenger.v1.ISetGroupName, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.ISetGroupName, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.SetGroupName;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.SetGroupName;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.SetGroupName;
+                public static toObject(message: berty.messenger.v1.SetGroupName, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace SetGroupName {
+
+                interface IRequest {
+                    groupPk?: (string|null);
+                    name?: (berty.messenger.v1.AppMessage.ISetGroupName|null);
+                }
+
+                class Request implements IRequest {
+
+                    public groupPk: string;
+                    public name?: (berty.messenger.v1.AppMessage.ISetGroupName|null);
+                    public static create(properties?: berty.messenger.v1.SetGroupName.IRequest): berty.messenger.v1.SetGroupName.Request;
+                    public static encode(message: berty.messenger.v1.SetGroupName.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.SetGroupName.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.SetGroupName.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.SetGroupName.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.SetGroupName.Request;
+                    public static toObject(message: berty.messenger.v1.SetGroupName.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                }
+
+                class Reply implements IReply {
+
+                    public static create(properties?: berty.messenger.v1.SetGroupName.IReply): berty.messenger.v1.SetGroupName.Reply;
+                    public static encode(message: berty.messenger.v1.SetGroupName.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.SetGroupName.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.SetGroupName.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.SetGroupName.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.SetGroupName.Reply;
+                    public static toObject(message: berty.messenger.v1.SetGroupName.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }

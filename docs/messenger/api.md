@@ -96,6 +96,9 @@
     - [SendReplyOptions.Reply](#berty.messenger.v1.SendReplyOptions.Reply)
     - [SendReplyOptions.Request](#berty.messenger.v1.SendReplyOptions.Request)
     - [ServiceToken](#berty.messenger.v1.ServiceToken)
+    - [SetGroupName](#berty.messenger.v1.SetGroupName)
+    - [SetGroupName.Reply](#berty.messenger.v1.SetGroupName.Reply)
+    - [SetGroupName.Request](#berty.messenger.v1.SetGroupName.Request)
     - [ShareableBertyGroup](#berty.messenger.v1.ShareableBertyGroup)
     - [ShareableBertyGroup.Reply](#berty.messenger.v1.ShareableBertyGroup.Reply)
     - [ShareableBertyGroup.Request](#berty.messenger.v1.ShareableBertyGroup.Request)
@@ -785,6 +788,23 @@ Composite primary key
 | authentication_url | [string](#string) |  |  |
 | expiration | [int64](#int64) |  |  |
 
+<a name="berty.messenger.v1.SetGroupName"></a>
+
+### SetGroupName
+
+<a name="berty.messenger.v1.SetGroupName.Reply"></a>
+
+### SetGroupName.Reply
+
+<a name="berty.messenger.v1.SetGroupName.Request"></a>
+
+### SetGroupName.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [string](#string) |  |  |
+| name | [AppMessage.SetGroupName](#berty.messenger.v1.AppMessage.SetGroupName) |  |  |
+
 <a name="berty.messenger.v1.ShareableBertyGroup"></a>
 
 ### ShareableBertyGroup
@@ -1074,6 +1094,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | BannerQuote | [BannerQuote.Request](#berty.messenger.v1.BannerQuote.Request) | [BannerQuote.Reply](#berty.messenger.v1.BannerQuote.Reply) | BannerQuote returns the quote of the day. |
 | GetUsername | [GetUsername.Request](#berty.messenger.v1.GetUsername.Request) | [GetUsername.Reply](#berty.messenger.v1.GetUsername.Reply) | GetUsername returns the name of the device/user using Android/iOS/universal API |
 | InstanceExportData | [InstanceExportData.Request](#berty.messenger.v1.InstanceExportData.Request) | [InstanceExportData.Reply](#berty.messenger.v1.InstanceExportData.Reply) stream | InstanceExportData exports instance data |
+| SetGroupName | [SetGroupName.Request](#berty.messenger.v1.SetGroupName.Request) | [SetGroupName.Reply](#berty.messenger.v1.SetGroupName.Reply) | SetGroupName returns the name of a multimember group |
 
  
 

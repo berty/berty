@@ -936,6 +936,39 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/SetGroupName": {
+      "post": {
+        "summary": "SetGroupName returns the name of a multimember group",
+        "operationId": "MessengerService_SetGroupName",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SetGroupNameReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1SetGroupNameRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/ShareableBertyGroup": {
       "post": {
         "summary": "ShareableBertyGroup returns a Berty Group that can be shared as a string, QR code or deep link.",
@@ -1418,6 +1451,14 @@
       "type": "object",
       "properties": {
         "display_name": {
+          "type": "string"
+        }
+      }
+    },
+    "v1AppMessageSetGroupName": {
+      "type": "object",
+      "properties": {
+        "name": {
           "type": "string"
         }
       }
@@ -2114,6 +2155,20 @@
     },
     "v1ServicesTokenListRequest": {
       "type": "object"
+    },
+    "v1SetGroupNameReply": {
+      "type": "object"
+    },
+    "v1SetGroupNameRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string"
+        },
+        "name": {
+          "$ref": "#/definitions/v1AppMessageSetGroupName"
+        }
+      }
     },
     "v1ShareableBertyGroupReply": {
       "type": "object",

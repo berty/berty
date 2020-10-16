@@ -357,11 +357,11 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	const persistOpts = usePersistentOptions()
 	const isBetabot =
 		persistOpts &&
-		persistOpts.betabot &&
-		persistOpts.betabot.convPk &&
+		persistOpts?.betabot &&
+		persistOpts?.betabot.convPk &&
 		type !== messengerpb.Conversation.Type.MultiMemberType &&
 		contactPublicKey.toString() === persistOpts.betabot.convPk.toString()
-	const isBetabotAdded = persistOpts && persistOpts.betabot.added
+	const isBetabotAdded = persistOpts && persistOpts.betabot && persistOpts.betabot.added
 	let description
 	if (isBetabot && !isBetabotAdded) {
 		description = 'Click here to add the Beta Bot!'

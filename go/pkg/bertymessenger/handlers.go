@@ -65,6 +65,7 @@ func newEventHandler(ctx context.Context, db *dbWrapper, protocolClient bertypro
 		AppMessage_TypeUserMessage:     {h.handleAppMessageUserMessage, true},
 		AppMessage_TypeSetUserName:     {h.handleAppMessageSetUserName, false},
 		AppMessage_TypeReplyOptions:    {h.handleAppMessageReplyOptions, true},
+		AppMessage_TypeSetGroupName:    {h.handleAppMessageSetGroupName, true},
 	}
 
 	return h
@@ -927,6 +928,36 @@ func (h *eventHandler) interactionConsumeAck(tx *dbWrapper, i *Interaction) erro
 }
 
 func (h *eventHandler) handleAppMessageReplyOptions(tx *dbWrapper, i *Interaction, _ proto.Message) (*Interaction, bool, error) {
+	i, isNew, err := tx.addInteraction(*i)
+	if err != nil {
+		return nil, isNew, err
+	}
+
+	if h.svc == nil {
+		return i, isNew, nil
+	}
+
+	if err := h.svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{i}, isNew); err != nil {
+		return nil, isNew, err
+	}
+
+	return i, isNew, nil
+}
+
+func (h *eventHandler) handleAppMessageSetGroupName(tx *dbWrapper, i *Interaction, amPayload proto.Message) (*Interaction, bool, error) {
+	payload := amPayload.(*AppMessage_SetGroupName)
+
+	conv, err := tx.getConversationByPK(i.ConversationPublicKey)
+	if err != nil {
+		return nil, false, err
+	}
+
+	conv.DisplayName = payload.Name
+	_, err = tx.updateConversation(*conv)
+	if err != nil {
+		return nil, false, err
+	}
+
 	i, isNew, err := tx.addInteraction(*i)
 	if err != nil {
 		return nil, isNew, err

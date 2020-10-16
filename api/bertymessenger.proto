@@ -81,6 +81,9 @@ service MessengerService {
 
   // InstanceExportData exports instance data
   rpc InstanceExportData (InstanceExportData.Request) returns (stream InstanceExportData.Reply);
+
+  // SetGroupName returns the name of a multimember group
+  rpc SetGroupName(SetGroupName.Request) returns (SetGroupName.Reply);
 }
 
 message ConversationOpen {
@@ -563,4 +566,12 @@ message InstanceExportData {
   message Reply {
     bytes exported_data = 1;
   }
+}
+
+message SetGroupName {
+  message Request {
+    string group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+    AppMessage.SetGroupName name = 2;
+  }
+  message Reply {}
 }

@@ -2558,6 +2558,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "InstanceExportData.Request",
                     responseType: "InstanceExportData.Reply",
                     responseStream: true
+                  },
+                  SetGroupName: {
+                    requestType: "SetGroupName.Request",
+                    responseType: "SetGroupName.Reply"
                   }
                 }
               },
@@ -3900,6 +3904,29 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         id: 1
                       }
                     }
+                  }
+                }
+              },
+              SetGroupName: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      },
+                      name: {
+                        type: "AppMessage.SetGroupName",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
                   }
                 }
               }

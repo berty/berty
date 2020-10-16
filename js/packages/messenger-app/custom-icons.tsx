@@ -10,6 +10,7 @@ import Bubble from './custom-icons-svgs/bubble.svg'
 import Users from './custom-icons-svgs/users.svg'
 import UserPlus from './custom-icons-svgs/user-plus.svg'
 import Quote from './custom-icons-svgs/quote.svg'
+import Edit from './custom-icons-svgs/edit.svg'
 
 const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	fingerprint: Fingerprint,
@@ -20,6 +21,7 @@ const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	users: Users,
 	'user-plus': UserPlus,
 	quote: Quote,
+	edit: Edit,
 }
 
 const CustomIcon: React.FC<{

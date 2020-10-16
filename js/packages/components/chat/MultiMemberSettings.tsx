@@ -1,6 +1,6 @@
-import React from 'react'
-import { View, ScrollView, Share, Image } from 'react-native'
-import { Layout, Text } from '@ui-kitten/components'
+import React, { useState } from 'react'
+import { View, ScrollView, Share, Image, TouchableOpacity } from 'react-native'
+import { Layout, Text, Icon, Input } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import {
 	ButtonSetting,
@@ -9,6 +9,7 @@ import {
 } from '../shared-components/SettingsButtons'
 import HeaderSettings from '../shared-components/Header'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
+import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useConversation, useMsgrContext } from '@berty-tech/store/hooks'
 import AvatarGroup19 from '../main/Avatar_Group_Copy_19.png'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
@@ -63,20 +64,65 @@ const GroupChatSettingsHeaderButtons: React.FC<any> = ({ link, publicKey }) => {
 	)
 }
 
-const GroupChatSettingsHeader: React.FC<messenger.conversation.Entity> = ({ displayName }) => {
-	const [{ text, margin, row }] = useStyles()
+const GroupChatSettingsHeader: React.FC<{ displayName: any; publicKey: any }> = ({
+	displayName,
+	publicKey,
+}) => {
+	const [{ border, text, margin, row, color }] = useStyles()
+	const [isInput, setIsInput] = useState(false)
+	const [input, setInput] = useState(displayName || '')
+	const { call } = (messengerMethodsHooks as any).useSetGroupName()
+
+	const handleSubmit = (name: any) => {
+		call({ name: { name }, groupPk: publicKey })
+		setIsInput(false)
+	}
+
 	return (
 		<View>
 			<View style={[row.center]}>
 				<Image source={AvatarGroup19} style={{ width: 80, height: 80 }} />
 			</View>
-			<Text
-				numberOfLines={1}
-				ellipsizeMode='tail'
-				style={[text.align.center, text.color.white, margin.top.small, text.bold.medium]}
-			>
-				{displayName || ''}
-			</Text>
+			<View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+				{isInput ? (
+					<Input
+						autoFocus
+						numberOfLines={1}
+						value={input}
+						onChangeText={(s) => setInput(s)}
+						onBlur={() => setIsInput(false)}
+						onKeyPress={(e) => console.log(e.nativeEvent.key)}
+						onSubmitEditing={(e) => handleSubmit(e.nativeEvent.text)}
+						style={[
+							text.align.center,
+							text.color.white,
+							margin.top.small,
+							text.bold.medium,
+							{ fontFamily: 'Open Sans' },
+							text.size.medium,
+							border.radius.small,
+						]}
+					/>
+				) : (
+					<Text
+						numberOfLines={1}
+						ellipsizeMode='tail'
+						style={[text.align.center, text.color.white, margin.top.small, text.bold.medium]}
+					>
+						{displayName || ''}
+					</Text>
+				)}
+				<TouchableOpacity onPress={() => setIsInput(true)}>
+					<Icon
+						name='edit'
+						pack='custom'
+						width={15}
+						height={15}
+						fill={color.white}
+						style={[margin.left.small]}
+					/>
+				</TouchableOpacity>
+			</View>
 		</View>
 	)
 }
