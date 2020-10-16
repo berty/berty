@@ -29,8 +29,10 @@ pkg_desc := $(patsubst %, %/package.json, $(pkg)) package.json
 bridge_src := $(call rwildcard,../go,*.go *.m *.h) ../go.sum
 react-native := $(abspath node_modules/.bin/react-native)
 xcodegen_yml := $(wildcard $(PWD)/packages/berty-app/ios/*.yaml)
-required_java_ver = 18
 xcodegen_ver = $(shell cat XcodeGen.version)
+required_java_ver = 18
+minimum_ios_ver = 12.0
+minimum_android_ver = 21
 
 ## User commands
 
@@ -331,7 +333,12 @@ packages/go-bridge/ios/Frameworks/Bertybridge.framework: $(bridge_src)
 	cd .. && go mod download
 	cd .. && go run golang.org/x/mobile/cmd/gomobile init
 	@mkdir -p "packages/go-bridge/ios/Frameworks"
-	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind -o js/$@ -v $(ext_ldflags) -target ios ./go/framework/bertybridge
+	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
+		-o js/$@ \
+		-v $(ext_ldflags) \
+		-target ios \
+		-iosversion $(minimum_ios_ver) \
+		./go/framework/bertybridge
 	touch $@
 
 packages/berty-app/ios/Berty.xcworkspace: $(pkg_desc) packages/berty-app/ios/Berty.xcodeproj packages/berty-app/ios/Podfile vendor/bundle
@@ -374,7 +381,12 @@ packages/go-bridge/android/libs/gobridge.aar: $(bridge_src)
 	cd .. && go run golang.org/x/mobile/cmd/gomobile init
 	rm -fr packages/go-bridge/android/build # remove broken cache
 	@mkdir -p "packages/go-bridge/android/libs"
-	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind -o js/$@ -v $(ext_ldflags) -target android ./go/framework/bertybridge
+	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
+		-o js/$@ \
+		-v $(ext_ldflags) \
+		-target android \
+		-androidapi $(minimum_android_ver) \
+		./go/framework/bertybridge
 	touch $@
 
 packages/berty-app/android/app/debug.keystore:
