@@ -17,6 +17,7 @@ import { SHA3 } from 'sha3'
 import Logo from '../../main/1_berty_picto.svg'
 import { ProceduralCircleAvatar } from '../../shared-components'
 import { useNavigation as useNativeNavigation } from '@react-navigation/core'
+import { pbDateToNum, timeFormat } from '../../helpers'
 
 const pal = palette('tol-rainbow', 256)
 
@@ -53,24 +54,6 @@ const useStylesMessage = () => {
 		dateMessageWithState: [padding.right.scale(5), text.size.tiny],
 		stateMessageValue: [padding.left.scale(1.5), text.size.tiny],
 	}
-}
-
-const formatTimestamp = (date: Date | number) => {
-	let d = date
-	if (typeof date === 'number') {
-		d = new Date()
-		d.setTime(date)
-	}
-	if (!d) {
-		return 'x'
-	}
-	const arr = d.toString().split(' ')
-	if (!arr[4]) {
-		return '?'
-	}
-	const hours = arr[4].split(':')
-	const hour = hours[0] + ':' + hours[1]
-	return hour
 }
 
 export const MessageInvitationButton: React.FC<{
@@ -357,7 +340,7 @@ export const Message: React.FC<{
 	let isFollowupMessage = false
 	let isFollowedMessage = false
 	let isWithinCollapseDuration = false
-	const sentDate = inte?.sentDate && parseInt(inte.sentDate, 10)
+	const sentDate = pbDateToNum(inte?.sentDate)
 	if (inte.type === messengerpb.AppMessage.Type.TypeUserMessage) {
 		if (inte.memberPublicKey && members && members[inte.memberPublicKey]) {
 			name = members[inte.memberPublicKey].displayName
@@ -495,7 +478,7 @@ export const Message: React.FC<{
 										text.size.scale(11),
 									]}
 								>
-									{sentDate ? formatTimestamp(sentDate) : ''}{' '}
+									{sentDate > 0 ? timeFormat.fmtTimestamp3(sentDate) : ''}{' '}
 								</Text>
 							)}
 							{!cmd && !isWithinCollapseDuration && (
@@ -539,7 +522,7 @@ export const Message: React.FC<{
 							_styles.dateMessage,
 						]}
 					>
-						{sentDate ? formatTimestamp(sentDate) : ''}{' '}
+						{sentDate ? timeFormat.fmtTimestamp3(sentDate) : ''}{' '}
 					</Text>
 				</View>
 				<MessageInvitation message={inte} />
