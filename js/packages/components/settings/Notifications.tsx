@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
 import { Layout, Text, Icon } from 'react-native-ui-kitten'
 import { useStyles } from '@berty-tech/styles'
+import { useMsgrContext } from '@berty-tech/store/hooks'
 import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
@@ -98,6 +99,7 @@ const HeaderNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 	const _styles = useStylesNotifications()
 	const [{ flex, padding, margin, color }] = useStyles()
+	const ctx = useMsgrContext()
 	return (
 		<View
 			style={[
@@ -113,10 +115,15 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 				iconSize={30}
 				iconColor={color.blue}
 				toggled
-				disabled
+				varToggle={ctx.persistentOptions.notifications.enable}
+				actionToggle={async () => {
+					await ctx.setPersistentOption('notifications', {
+						enable: ctx.persistentOptions.notifications.enable ? false : true,
+					})
+				}}
 			/>
 			<ButtonSetting
-				name='ContactRequests'
+				name='Contact Request'
 				toggled={true}
 				icon='user-plus'
 				iconPack='custom'
@@ -125,7 +132,7 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 				disabled
 			>
 				<Text style={[_styles.buttonSettingText]}>
-					Receive a notification everytime someones sends you a contact request
+					Receive a notification everytime someone sends you a contact request
 				</Text>
 			</ButtonSetting>
 			<FactionButtonSetting
@@ -191,13 +198,19 @@ export const Notifications: React.FC<ScreenProps.Settings.Notifications> = () =>
 	const [isAuthorize, setIsAuthorize] = useState(true)
 	const { goBack } = useNavigation()
 	const [{ padding, flex, background }] = useStyles()
+	const ctx = useMsgrContext()
+
 	return (
 		<Layout style={[flex.tiny, background.white]}>
 			<SwipeNavRecognizer>
 				<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
 					<HeaderSettings
 						title='Notifications'
-						desc='You have not yet activated notifications for this app'
+						desc={
+							ctx.persistentOptions.notifications.enable
+								? 'You have activated notifications!'
+								: 'You have not yet activated notifications for this app'
+						}
 						undo={goBack}
 					>
 						<HeaderNotifications isAuthorize={isAuthorize} />
