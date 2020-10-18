@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
+import { Layout, Text, Icon } from '@ui-kitten/components'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { useStyles } from '@berty-tech/styles'

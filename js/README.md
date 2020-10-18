@@ -21,24 +21,22 @@ This folder contains most of the Typescript and Javascript code needed for the B
 
 ## 📦 Packages
 
-| directory                                                                   | description                                                                                                                                           |
-| --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [api/](https://github.com/berty/berty/tree/master/js/packages/api)          | Interfaces with the [Berty golang services](https://github.com/berty/berty/tree/master/go/pkg)                                                        |
-| [babel-preset/](https://github.com/berty/berty/tree/master/js/packages/api) | Defines babel config                                                                                                                                  |
-| [berty-app/](./packages/berty-app/)                                         | Core Berty Messenger code                                                                                                                             |
-| [berty-i18n/](./packages/berty-i18n)                                        | Locale support files                                                                                                                                  |
-| [codegen/](./packages/codegen)                                              | Creates types from api data structures                                                                                                                |  | [components](./packages/components) | React Native components |
-| [eslint-config/](./packages/eslint-config)                                  | JavaScript/TypeScript linter config                                                                                                                   |
-| [go-bridge/](./packages/go-bridge)                                          | Connects golang berty node codebase to native mobile code                                                                                             |
-| [grpc-bridge/](./packages/grpc-bridge)                                      | Collection of grpc utilities                                                                                                                          |
-| [hooks/](./packages/hooks)                                                  | React hooks that allow us to connect the app state to React components                                                                                |
-| [navigation/](./packages/navigation)                                        | React Native navigation configuration                                                                                                                 |
-| [prettier-config/](./packages/prettier-config)                              | [prettier](https://prettier.io/) code formatting config                                                                                               |
-| [store/](./packages/store)                                                  | App state control using [React Redux sagas](https://redux-saga.js.org/)                                                                               |
-| [storybook-mobile/](./packages/storybook-mobile)                            | Allows independent development of React Native components using [Storybook for Ract Native](https://storybook.js.org/docs/guides/guide-react-native/) |
-| [storybook-web/](./packages/storybook-web)                                  | Same goal as `storybook-mobile`, but allows component development in the browser                                                                      |
-| [styles/](./packages/styles)                                                | Generates StyleSheet utilities and styles that conform to our design specs                                                                            |
-| [web-dev-app/](./packages/web-dev-app)                                      | A minimal React web app that allows us to easily test our `hooks` and `store` functionality                                                           |
+| directory                                                                   | description                                                                                    |
+| --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| [api/](https://github.com/berty/berty/tree/master/js/packages/api)          | Interfaces with the [Berty golang services](https://github.com/berty/berty/tree/master/go/pkg) |
+| [babel-preset/](https://github.com/berty/berty/tree/master/js/packages/api) | Defines babel config                                                                           |
+| [berty-app/](./packages/berty-app/)                                         | Core Berty Messenger code                                                                      |
+| [berty-i18n/](./packages/berty-i18n)                                        | Locale support files                                                                           |
+| [codegen/](./packages/codegen)                                              | Creates types from api data structures                                                         |  | [components](./packages/components) | React Native components |
+| [eslint-config/](./packages/eslint-config)                                  | JavaScript/TypeScript linter config                                                            |
+| [go-bridge/](./packages/go-bridge)                                          | Connects golang berty node codebase to native mobile code                                      |
+| [grpc-bridge/](./packages/grpc-bridge)                                      | Collection of grpc utilities                                                                   |
+| [hooks/](./packages/hooks)                                                  | React hooks that allow us to connect the app state to React components                         |
+| [navigation/](./packages/navigation)                                        | React Native navigation configuration                                                          |
+| [prettier-config/](./packages/prettier-config)                              | [prettier](https://prettier.io/) code formatting config                                        |
+| [store/](./packages/store)                                                  | App state control using [React Redux sagas](https://redux-saga.js.org/)                        |
+| [styles/](./packages/styles)                                                | Generates StyleSheet utilities and styles that conform to our design specs                     |
+| [web-dev-app/](./packages/web-dev-app)                                      | A minimal React web app that allows us to easily test our `hooks` and `store` functionality    |
 
 ## 🔨 Usage
 
@@ -152,5 +150,4 @@ You can use one normal tab and one private tab to have two accounts at the same 
 
 ## 🚧 Known issues and troubleshooting
 
-- `make storybook.*` outputs error `Error: => Create a storybook config file in "./.storybook/config.{ext}".` during build
 - gRPC errors on iOS and Android views (usually you can dismiss these and/or quit and re-open the app)

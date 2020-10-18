@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { View, ScrollView, TouchableOpacity, Linking } from 'react-native'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
+import { Layout, Text, Icon } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
 import {
@@ -207,7 +207,6 @@ const BodyAboutBerty: React.FC<AboutbertyProps> = () => {
 }
 
 export const AboutBerty: React.FC<ScreenProps.Settings.AboutBerty> = () => {
-	const [version, setVersion] = useState(true)
 	const { goBack } = useNavigation()
 	const [{ flex, background, padding }] = useStyles()
 
@@ -216,9 +215,9 @@ export const AboutBerty: React.FC<ScreenProps.Settings.AboutBerty> = () => {
 			<SwipeNavRecognizer>
 				<ScrollView bounces={false} contentContainerStyle={[padding.bottom.huge]}>
 					<HeaderSettings title='About Berty' undo={goBack}>
-						<HeaderAboutBerty version={version} />
+						<HeaderAboutBerty version />
 					</HeaderSettings>
-					<BodyAboutBerty version={version} />
+					<BodyAboutBerty version />
 				</ScrollView>
 			</SwipeNavRecognizer>
 		</Layout>

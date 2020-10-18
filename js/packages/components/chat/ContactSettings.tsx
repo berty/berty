@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, ScrollView, ActivityIndicator } from 'react-native'
-import { Text } from 'react-native-ui-kitten'
+import { Text } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { FingerprintContent } from '../shared-components/FingerprintContent'

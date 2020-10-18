@@ -1,6 +1,6 @@
 import React from 'react'
-import { TextInput, SafeAreaView, Text } from 'react-native'
-import { Button } from 'react-native-ui-kitten'
+import { SafeAreaView, Text } from 'react-native'
+import { Button } from '@ui-kitten/components'
 import { useNavigation } from '@berty-tech/navigation'
 
 export const DevText: React.FC<{ route: { params: { text: string } } }> = ({

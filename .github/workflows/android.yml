@@ -51,16 +51,14 @@ jobs:
       - name: Cache Node modules
         uses: actions/cache@v2
         with:
-          path: |
-            js/node_modules
-            js/packages/*/node_modules
-          key: ${{ runner.OS }}-node-${{ hashFiles('js/yarn.lock', 'js/packages/*/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-node-
+          path: js/node_modules
+          key: ${{ runner.OS }}-node-v2-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-node-v2-
 
       - name: Cache Gomobile .aar
         uses: actions/cache@v2
         with:
-          path: js/packages/go-bridge/android/libs/gobridge.aar
+          path: js/android/libs/gobridge.aar
           key: android-gomobile-${{ hashFiles('go/**/*.go', 'go.sum') }}
           restore-keys: android-gomobile-
 
@@ -80,14 +78,14 @@ jobs:
           make android.app_deps
           ### TODO: sign with release keystore on Yolo ###
           mkdir -p $HOME/.android
-          cp packages/berty-app/android/app/debug.keystore $HOME/.android
+          cp android/app/debug.keystore $HOME/.android
           ################################################
-          (cd packages/berty-app/android && ./gradlew bundleRelease)
+          (cd android && ./gradlew bundleRelease)
           wget \
             https://github.com/google/bundletool/releases/download/1.2.0/bundletool-all-1.2.0.jar \
             -O /tmp/bundletool.jar
           java -jar /tmp/bundletool.jar build-apks \
-            --bundle=packages/berty-app/android/app/build/outputs/bundle/release/app-release.aab \
+            --bundle=android/app/build/outputs/bundle/release/app-release.aab \
             --output=${{ github.workspace }}/app.apks \
             --mode=universal
           cd ${{ github.workspace }} && unzip app.apks

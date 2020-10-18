@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 import { useConversation, useMsgrContext } from '@berty-tech/store/hooks'
 import HeaderSettings from '../shared-components/Header'
 import { ButtonSetting, FactionButtonSetting } from '../shared-components'
-import { Layout } from 'react-native-ui-kitten'
+import { Layout } from '@ui-kitten/components'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { ScreenProps } from '@berty-tech/navigation'
 import {

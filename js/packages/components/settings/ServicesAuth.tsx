@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, ScrollView } from 'react-native'
-import { Layout, Input } from 'react-native-ui-kitten'
+import { Layout, Input } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings, ButtonSetting, FactionButtonSetting } from '../shared-components'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'

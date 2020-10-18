@@ -51,7 +51,7 @@ const unary = (options: grpc.ClientRpcOptions) => async (
 		client.onMessage((message: grpc.ProtobufMessage): void => {
 			resolve(message.serializeBinary())
 		})
-		client.onEnd((code: grpc.Code, message: string, trailers: grpc.Metadata): void => {
+		client.onEnd((code: grpc.Code, message: string /*, trailers: grpc.Metadata*/): void => {
 			if (code !== grpc.Code.OK) {
 				reject(new Error(message))
 			}
@@ -85,7 +85,7 @@ const stream = (options: grpc.ClientRpcOptions) => async (
 				client.onMessage((message: grpc.ProtobufMessage): void => {
 					callback(message.serializeBinary(), null)
 				})
-				client.onEnd((code: grpc.Code, message: string, metadata: grpc.Metadata) => {
+				client.onEnd((code: grpc.Code, message: string /*, metadata: grpc.Metadata*/) => {
 					if (code !== grpc.Code.OK) {
 						callback(null, new Error(`grpc error(${code}): ${message}`))
 					} else {

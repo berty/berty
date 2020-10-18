@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, TextInput, Button, TouchableOpacity, Vibration, ScrollView } from 'react-native'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
+import { Layout, Text, Icon } from '@ui-kitten/components'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
 import Interactable from 'react-native-interactable'
@@ -163,7 +163,7 @@ const ScanComponent: React.FC<any> = () => {
 								flex.align.center,
 								margin.bottom.scale(40),
 							]}
-							onTouchStart={(e) => {
+							onTouchStart={() => {
 								setIsTouchingHeader(true)
 							}}
 							onTouchCancel={() => setIsTouchingHeader(false)}

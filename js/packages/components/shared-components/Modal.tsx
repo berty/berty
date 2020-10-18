@@ -6,7 +6,7 @@ import {
 	StyleSheet,
 	ViewStyle,
 } from 'react-native'
-import { Icon } from 'react-native-ui-kitten'
+import { Icon } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/navigation'
 import BlurView from './BlurView'

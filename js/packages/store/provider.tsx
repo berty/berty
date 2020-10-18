@@ -5,7 +5,7 @@ import { grpcweb as rpcWeb, bridge as rpcBridge } from '@berty-tech/grpc-bridge/
 import { Service, EOF } from '@berty-tech/grpc-bridge'
 import ExternalTransport from './externalTransport'
 import cloneDeep from 'lodash/cloneDeep'
-import GoBridge, { GoLogLevel } from '@berty-tech/go-bridge'
+import GoBridge from '@berty-tech/go-bridge'
 import MsgrContext, { initialState } from './context'
 import pickBy from 'lodash/pickBy'
 import mapValues from 'lodash/mapValues'

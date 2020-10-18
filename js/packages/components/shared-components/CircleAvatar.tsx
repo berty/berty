@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Image, StyleProp } from 'react-native'
-import { Icon } from 'react-native-ui-kitten'
+import { Icon } from '@ui-kitten/components'
 import { useStyles, ColorsStyles } from '@berty-tech/styles'
 
 //

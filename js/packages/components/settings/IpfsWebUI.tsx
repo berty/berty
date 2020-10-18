@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import { View, ScrollView, StyleSheet, Text } from 'react-native'
-import { Layout } from 'react-native-ui-kitten'
+import React from 'react'
+import { View, ScrollView } from 'react-native'
+import { Layout } from '@ui-kitten/components'
 import { HeaderSettings } from '../shared-components/Header'
 import { WebView } from 'react-native-webview'
 import { useStyles } from '@berty-tech/styles'
@@ -10,19 +10,8 @@ import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 // IpfsWebUI
 //
 
-// Styles
-const useStylesIpfsWebUI = () => {
-	const [{ margin, height }] = useStyles()
-	return {
-		buttonRow: [margin.right.scale(20), height(90)],
-		lastButtonRow: height(90),
-		buttonRowMarginTop: margin.top.scale(20),
-	}
-}
-
 const BodyIpfsWebUI: React.FC<{}> = () => {
-	const _styles = useStylesIpfsWebUI()
-	const [{ padding, flex, margin, color, text }] = useStyles()
+	const [{ padding, flex, margin }] = useStyles()
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<WebView

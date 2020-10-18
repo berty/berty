@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, TouchableOpacity } from 'react-native'
-import { Text, Icon } from 'react-native-ui-kitten'
+import { Text, Icon } from '@ui-kitten/components'
 import LinearGradient from 'react-native-linear-gradient'
 
 import { useStyles } from '@berty-tech/styles'
@@ -21,7 +21,7 @@ const useStylesCreateGroup = () => {
 }
 
 export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({ title, icon, action }) => {
-	const [{ absolute, background, row, padding, color, text, margin }] = useStyles()
+	const [{ absolute, background, row, padding, color, text }] = useStyles()
 	const _styles = useStylesCreateGroup()
 
 	return (

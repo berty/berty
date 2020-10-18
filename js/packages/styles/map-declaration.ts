@@ -59,10 +59,9 @@ export const defaultStylesDeclaration: Declaration = {
 
 export const mapDeclarationWithDims = (
 	decl: Declaration,
-	{ fontScale, scaleSize, scaleHeight } = {
+	{ fontScale, scaleSize } = {
 		fontScale: initialFontScale,
 		scaleSize: initialScaleSize,
-		scaleHeight: initialScaleHeight,
 	},
 ): Styles => {
 	return {

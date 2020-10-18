@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
+import { Layout, Text, Icon } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
@@ -195,7 +195,7 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 }
 
 export const Notifications: React.FC<ScreenProps.Settings.Notifications> = () => {
-	const [isAuthorize, setIsAuthorize] = useState(true)
+	const [isAuthorize] = useState(true)
 	const { goBack } = useNavigation()
 	const [{ padding, flex, background }] = useStyles()
 	const ctx = useMsgrContext()

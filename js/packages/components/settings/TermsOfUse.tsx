@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, ScrollView } from 'react-native'
-import { Layout, Text } from 'react-native-ui-kitten'
+import { Layout, Text } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { useNavigation } from '@berty-tech/navigation'

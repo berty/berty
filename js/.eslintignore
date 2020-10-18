@@ -96,6 +96,9 @@ android/core/core.aar
 # Optional eslint cache
 .eslintcache
 
+# xcodegen cache
+.xcodegen
+
 # VScode
 jsconfig.json
 
@@ -120,3 +123,5 @@ __generated__/
 # osx
 dist/
 osx/Berty.app
+*.pb.*
+*.gen.*

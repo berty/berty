@@ -6,10 +6,10 @@ import {
 	Text as TextNative,
 	StyleSheet,
 } from 'react-native'
-import { Text, Icon } from 'react-native-ui-kitten'
+import { Text, Icon } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useMsgrContext, usePersistentOptions } from '@berty-tech/store/hooks'
+import { useMsgrContext } from '@berty-tech/store/hooks'
 import { useNavigation } from '@react-navigation/native'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
@@ -217,7 +217,6 @@ export const AddBetabotBody = () => {
 
 export const AddBetabot = () => {
 	const navigation = useNavigation()
-	const [{ absolute }] = useStyles()
 
 	return (
 		<>

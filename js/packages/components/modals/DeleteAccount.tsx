@@ -8,7 +8,7 @@ import {
 	Vibration,
 	Text as TextNative,
 } from 'react-native'
-import { Text, Icon } from 'react-native-ui-kitten'
+import { Text, Icon } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { Routes } from '@berty-tech/navigation'
 import { useNavigation, CommonActions } from '@react-navigation/native'

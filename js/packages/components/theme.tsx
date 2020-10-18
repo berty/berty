@@ -1,5 +1,5 @@
 import React from 'react'
-import { ApplicationProvider } from 'react-native-ui-kitten'
+import { ApplicationProvider } from '@ui-kitten/components'
 import { mapping, light } from '@eva-design/eva'
 import { StatusBarWrapper } from './shared-components'
 

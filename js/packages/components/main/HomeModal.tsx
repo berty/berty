@@ -1,26 +1,18 @@
 import React from 'react'
 import {
 	View,
-	ScrollView,
 	TouchableOpacity,
 	StyleSheet,
 	TouchableWithoutFeedback,
 	Text as TextNative,
 } from 'react-native'
-import { Text, Icon } from 'react-native-ui-kitten'
-import { useStyles } from '@berty-tech/styles'
-import BlurView from '../shared-components/BlurView'
-import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
-import { useNavigation, Routes } from '@berty-tech/navigation'
-import { Messenger } from '@berty-tech/store/oldhooks'
-
-import { CommonActions } from '@react-navigation/core'
+import { Text, Icon } from '@ui-kitten/components'
 import Interactable from 'react-native-interactable'
-import FromNow from '../shared-components/FromNow'
-import EmptyContact from './empty_contact.svg'
-import { useOutgoingContactRequests } from '@berty-tech/store/hooks'
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
-import * as api from '@berty-tech/api/index.pb'
+
+import { useStyles } from '@berty-tech/styles'
+import { useNavigation } from '@berty-tech/navigation'
+
+import BlurView from '../shared-components/BlurView'
 
 const useStylesList = () => {
 	const shortScreenMax = 640
@@ -122,123 +114,9 @@ export const Header: React.FC<{
 	)
 }
 
-const OutgoingRequestItem: React.FC<api.berty.messenger.v1.IContact> = ({
-	displayName: name,
-	publicKey,
-	state,
-	sentDate: sentDateStr,
-}) => {
-	const { dispatch } = useNavigation()
-	const _styles = useStylesList()
-	const [
-		{ border, column, flex, row, padding, text, background, color },
-		{ scaleSize },
-	] = useStyles()
-	const isSent = state === messengerpb.Contact.State.OutgoingRequestSent
-	const sentDate = isSent && parseInt(sentDateStr, 10)
-	return (
-		<TouchableOpacity
-			style={[_styles.tinyCard, border.shadow.medium, column.justify]}
-			onPress={() =>
-				dispatch(
-					CommonActions.navigate({
-						name: Routes.Main.RequestSent,
-						params: {
-							contactPublicKey: publicKey,
-						},
-					}),
-				)
-			}
-		>
-			<ProceduralCircleAvatar
-				style={[_styles.tinyAvatar]}
-				seed={publicKey}
-				size={70}
-				diffSize={30}
-			/>
-			<Text
-				style={[flex.tiny, text.align.center, padding.top.medium, { maxWidth: 100 }]}
-				numberOfLines={1}
-			>
-				{name}
-			</Text>
-			<Text
-				category='c1'
-				style={[padding.vertical.medium, text.align.center, text.size.tiny, text.color.grey]}
-			>
-				{isSent ? <FromNow date={sentDate || Date.now()} /> : 'Not sent yet'}
-			</Text>
-			<View style={[row.fill]}>
-				<TouchableOpacity
-					style={[_styles.tinyDiscardButton, border.scale(1), row.item.justify]}
-					disabled
-				>
-					<Icon
-						name='close-outline'
-						width={20 * scaleSize}
-						height={20 * scaleSize}
-						fill={color.grey}
-					/>
-				</TouchableOpacity>
-				<TouchableOpacity
-					disabled={!isSent}
-					style={[_styles.tinyAcceptButton, background.light.green, row.fill]}
-				>
-					<View style={[row.item.justify, padding.right.scale(3)]}>
-						<Icon
-							name='paper-plane-outline'
-							width={17 * scaleSize}
-							height={17 * scaleSize}
-							fill={color.green}
-							style={column.justify}
-						/>
-					</View>
-					<Text style={[text.color.green, text.align.center, text.size.tiny, row.item.justify]}>
-						Resend
-					</Text>
-				</TouchableOpacity>
-			</View>
-		</TouchableOpacity>
-	)
-}
-
 const EmptyTab: React.FC<{}> = ({ children }) => {
 	const [{ padding, background, row }] = useStyles()
 	return <View style={[background.white, row.center, padding.bottom.medium]}>{children}</View>
-}
-
-const OutgoingRequests: React.FC<{}> = () => {
-	const [
-		{ padding, background, column, text, opacity },
-		{ scaleHeight, isGteIpadSize },
-	] = useStyles()
-	const { isShortWindow } = useStylesList()
-
-	const requests = useOutgoingContactRequests()
-
-	return requests.length > 0 ? (
-		<View style={[background.white]}>
-			<View style={[background.white, padding.bottom.medium]}>
-				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
-					{requests.map((req) => (
-						<OutgoingRequestItem key={req.publicKey} {...req} />
-					))}
-				</ScrollView>
-			</View>
-		</View>
-	) : (
-		<EmptyTab>
-			<View
-				style={[
-					column.justify,
-					{ height: isShortWindow && !isGteIpadSize ? 0 : 200 * scaleHeight },
-				]}
-			>
-				{!isShortWindow && <EmptyContact width='75%' height='75%' style={[column.item.center]} />}
-				<Text style={[text.color.grey, opacity(0.4)]}>You don't have any pending requests</Text>
-			</View>
-		</EmptyTab>
-	)
 }
 
 const AddContact: React.FC<{}> = () => {

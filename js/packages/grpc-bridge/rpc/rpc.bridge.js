@@ -29,7 +29,7 @@ const getErrorFromResponse = (method, response) => {
 
 const makeStreamClient = (streamid, method, bridgeClient) => {
 	const requestType = method.resolvedRequestType
-	const responseType = method.resolvedResponseType
+	// const responseType = method.resolvedResponseType
 	const eventEmitter = {
 		events: [],
 		started: false,

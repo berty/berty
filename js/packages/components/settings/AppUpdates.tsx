@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, ScrollView, TouchableOpacity } from 'react-native'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
+import { Layout, Text, Icon } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
@@ -187,7 +187,7 @@ const BodyUpdates: React.FC<{ update: boolean }> = ({ update }) => {
 }
 
 export const AppUpdates: React.FC<ScreenProps.Settings.AppUpdates> = () => {
-	const [update, setUpdate] = useState(false)
+	const [update] = useState(false)
 	const { goBack } = useNavigation()
 	const [{ flex, background, padding }] = useStyles()
 

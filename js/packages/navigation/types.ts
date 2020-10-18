@@ -13,7 +13,6 @@ export namespace ScreenProps {
 	export namespace Main {
 		export type Home = RouteProps<void>
 		export type ContactRequest = RouteProps<{ contactId: string }>
-		export type GroupRequest = RouteProps<{ convId: string }>
 		export type Scan = RouteProps<void>
 		export type HomeModal = RouteProps<void>
 		export type Search = RouteProps<void>
@@ -75,7 +74,6 @@ export namespace Routes {
 	export enum Main {
 		Home = 'Main.Home',
 		ContactRequest = 'Main.ContactRequest',
-		GroupRequest = 'Main.GroupRequest',
 		Scan = 'Main.Scan',
 		HomeModal = 'Main.HomeModal',
 		Search = 'Main.Search',

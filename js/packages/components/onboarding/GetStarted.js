@@ -1,6 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
-import { Text } from 'react-native-ui-kitten'
+import { Text } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 import { SafeAreaView } from 'react-native-safe-area-context'
 

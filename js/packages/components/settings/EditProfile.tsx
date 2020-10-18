@@ -1,6 +1,6 @@
 import React from 'react'
 import { SafeAreaView, View, TouchableOpacity, StyleSheet } from 'react-native'
-import { Icon, Input, Text } from 'react-native-ui-kitten'
+import { Icon, Input, Text } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps } from '@berty-tech/navigation'
 import BlurView from '../shared-components/BlurView'

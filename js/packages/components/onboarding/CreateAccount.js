@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, TextInput, Vibration } from 'react-native'
-import { Text } from 'react-native-ui-kitten'
+import { Text } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { useNavigation } from '@react-navigation/native'

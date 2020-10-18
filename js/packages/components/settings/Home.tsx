@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native'
-import { Text, Icon } from 'react-native-ui-kitten'
+import { Text, Icon } from '@ui-kitten/components'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import LinearGradient from 'react-native-linear-gradient'
 

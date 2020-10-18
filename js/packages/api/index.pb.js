@@ -4251,15 +4251,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
   google: {
     nested: {
       protobuf: {
-        options: {
-          go_package: "github.com/golang/protobuf/protoc-gen-go/descriptor;descriptor",
-          java_package: "com.google.protobuf",
-          java_outer_classname: "DescriptorProtos",
-          csharp_namespace: "Google.Protobuf.Reflection",
-          objc_class_prefix: "GPB",
-          cc_enable_arenas: true,
-          optimize_for: "SPEED"
-        },
         nested: {
           FileDescriptorSet: {
             fields: {
@@ -4396,10 +4387,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   end: {
                     type: "int32",
                     id: 2
-                  },
-                  options: {
-                    type: "ExtensionRangeOptions",
-                    id: 3
                   }
                 }
               },
@@ -4416,21 +4403,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 }
               }
             }
-          },
-          ExtensionRangeOptions: {
-            fields: {
-              uninterpretedOption: {
-                rule: "repeated",
-                type: "UninterpretedOption",
-                id: 999
-              }
-            },
-            extensions: [
-              [
-                1000,
-                536870911
-              ]
-            ]
           },
           FieldDescriptorProto: {
             fields: {
@@ -4533,30 +4505,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               options: {
                 type: "EnumOptions",
                 id: 3
-              },
-              reservedRange: {
-                rule: "repeated",
-                type: "EnumReservedRange",
-                id: 4
-              },
-              reservedName: {
-                rule: "repeated",
-                type: "string",
-                id: 5
-              }
-            },
-            nested: {
-              EnumReservedRange: {
-                fields: {
-                  start: {
-                    type: "int32",
-                    id: 1
-                  },
-                  end: {
-                    type: "int32",
-                    id: 2
-                  }
-                }
               }
             }
           },
@@ -4613,17 +4561,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               },
               clientStreaming: {
                 type: "bool",
-                id: 5,
-                options: {
-                  "default": false
-                }
+                id: 5
               },
               serverStreaming: {
                 type: "bool",
-                id: 6,
-                options: {
-                  "default": false
-                }
+                id: 6
               }
             }
           },
@@ -4639,10 +4581,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               },
               javaMultipleFiles: {
                 type: "bool",
-                id: 10,
-                options: {
-                  "default": false
-                }
+                id: 10
               },
               javaGenerateEqualsAndHash: {
                 type: "bool",
@@ -4653,10 +4592,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               },
               javaStringCheckUtf8: {
                 type: "bool",
-                id: 27,
-                options: {
-                  "default": false
-                }
+                id: 27
               },
               optimizeFor: {
                 type: "OptimizeMode",
@@ -4671,45 +4607,23 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               },
               ccGenericServices: {
                 type: "bool",
-                id: 16,
-                options: {
-                  "default": false
-                }
+                id: 16
               },
               javaGenericServices: {
                 type: "bool",
-                id: 17,
-                options: {
-                  "default": false
-                }
+                id: 17
               },
               pyGenericServices: {
                 type: "bool",
-                id: 18,
-                options: {
-                  "default": false
-                }
-              },
-              phpGenericServices: {
-                type: "bool",
-                id: 42,
-                options: {
-                  "default": false
-                }
+                id: 18
               },
               deprecated: {
                 type: "bool",
-                id: 23,
-                options: {
-                  "default": false
-                }
+                id: 23
               },
               ccEnableArenas: {
                 type: "bool",
-                id: 31,
-                options: {
-                  "default": false
-                }
+                id: 31
               },
               objcClassPrefix: {
                 type: "string",
@@ -4718,26 +4632,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               csharpNamespace: {
                 type: "string",
                 id: 37
-              },
-              swiftPrefix: {
-                type: "string",
-                id: 39
-              },
-              phpClassPrefix: {
-                type: "string",
-                id: 40
-              },
-              phpNamespace: {
-                type: "string",
-                id: 41
-              },
-              phpMetadataNamespace: {
-                type: "string",
-                id: 44
-              },
-              rubyPackage: {
-                type: "string",
-                id: 45
               },
               uninterpretedOption: {
                 rule: "repeated",
@@ -4771,24 +4665,15 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
             fields: {
               messageSetWireFormat: {
                 type: "bool",
-                id: 1,
-                options: {
-                  "default": false
-                }
+                id: 1
               },
               noStandardDescriptorAccessor: {
                 type: "bool",
-                id: 2,
-                options: {
-                  "default": false
-                }
+                id: 2
               },
               deprecated: {
                 type: "bool",
-                id: 3,
-                options: {
-                  "default": false
-                }
+                id: 3
               },
               mapEntry: {
                 type: "bool",
@@ -4810,10 +4695,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               [
                 8,
                 8
-              ],
-              [
-                9,
-                9
               ]
             ]
           },
@@ -4839,24 +4720,15 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               },
               lazy: {
                 type: "bool",
-                id: 5,
-                options: {
-                  "default": false
-                }
+                id: 5
               },
               deprecated: {
                 type: "bool",
-                id: 3,
-                options: {
-                  "default": false
-                }
+                id: 3
               },
               weak: {
                 type: "bool",
-                id: 10,
-                options: {
-                  "default": false
-                }
+                id: 10
               },
               uninterpretedOption: {
                 rule: "repeated",
@@ -4916,10 +4788,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               },
               deprecated: {
                 type: "bool",
-                id: 3,
-                options: {
-                  "default": false
-                }
+                id: 3
               },
               uninterpretedOption: {
                 rule: "repeated",
@@ -4932,22 +4801,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 1000,
                 536870911
               ]
-            ],
-            reserved: [
-              [
-                5,
-                5
-              ]
             ]
           },
           EnumValueOptions: {
             fields: {
               deprecated: {
                 type: "bool",
-                id: 1,
-                options: {
-                  "default": false
-                }
+                id: 1
               },
               uninterpretedOption: {
                 rule: "repeated",
@@ -4966,10 +4826,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
             fields: {
               deprecated: {
                 type: "bool",
-                id: 33,
-                options: {
-                  "default": false
-                }
+                id: 33
               },
               uninterpretedOption: {
                 rule: "repeated",
@@ -4988,17 +4845,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
             fields: {
               deprecated: {
                 type: "bool",
-                id: 33,
-                options: {
-                  "default": false
-                }
-              },
-              idempotencyLevel: {
-                type: "IdempotencyLevel",
-                id: 34,
-                options: {
-                  "default": "IDEMPOTENCY_UNKNOWN"
-                }
+                id: 33
               },
               uninterpretedOption: {
                 rule: "repeated",
@@ -5011,16 +4858,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 1000,
                 536870911
               ]
-            ],
-            nested: {
-              IdempotencyLevel: {
-                values: {
-                  IDEMPOTENCY_UNKNOWN: 0,
-                  NO_SIDE_EFFECTS: 1,
-                  IDEMPOTENT: 2
-                }
-              }
-            }
+            ]
           },
           UninterpretedOption: {
             fields: {

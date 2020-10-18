@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity } from 'react-native'
-import { Text, Icon } from 'react-native-ui-kitten'
+import { Text, Icon } from '@ui-kitten/components'
 import { useNavigation } from '@react-navigation/native'
 import { useStyles } from '@berty-tech/styles'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'

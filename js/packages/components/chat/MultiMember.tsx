@@ -1,19 +1,17 @@
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import {
 	TouchableOpacity,
 	View,
 	KeyboardAvoidingView,
-	FlatList,
 	StatusBar,
 	Image,
 	ActivityIndicator,
-	Text as TextNative,
 	SectionListRenderItem,
 	SectionListData,
 	SectionList,
 	ViewToken,
 } from 'react-native'
-import { Text, Icon } from 'react-native-ui-kitten'
+import { Text, Icon } from '@ui-kitten/components'
 import { CommonActions } from '@react-navigation/native'
 import { groupBy } from 'lodash'
 import moment from 'moment'
@@ -31,10 +29,6 @@ import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import * as api from '@berty-tech/api/index.pb'
 
 import { ChatFooter, ChatDate } from './shared-components/Chat'
-import {
-	ConversationProceduralAvatar,
-	ProceduralCircleAvatar,
-} from '../shared-components/ProceduralCircleAvatar'
 import { Message } from './shared-components/Message'
 import BlurView from '../shared-components/BlurView'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
@@ -54,7 +48,7 @@ const HeaderMultiMember: React.FC<{
 	showStickyDate?: boolean
 }> = ({ id, stickyDate, showStickyDate }) => {
 	const { navigate, goBack } = useNavigation()
-	const [{ row, padding, flex, text, column, absolute, margin, color }] = useStyles()
+	const [{ row, padding, flex, text, column, margin, color }] = useStyles()
 	const conversation = useConversation(id)
 	const [layoutHeader, onLayoutHeader] = useLayout() // to position date under blur
 
@@ -238,7 +232,7 @@ const InfosMultiMember: React.FC<api.berty.messenger.v1.IConversation> = ({
 }
 
 const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) => {
-	const { children, ...propsToPass } = props
+	const { ...propsToPass } = props
 	return (
 		<View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
 			<ActivityIndicator {...propsToPass} />
@@ -350,10 +344,10 @@ const MessageList: React.FC<{
 			renderItem={renderItem}
 			onViewableItemsChanged={updateStickyDate}
 			initialNumToRender={20}
-			onScrollBeginDrag={(e) => {
+			onScrollBeginDrag={() => {
 				setShowStickyDate(false) // TODO: tmp until hide if start of conversation is visible
 			}}
-			onScrollEndDrag={(e) => {
+			onScrollEndDrag={() => {
 				setTimeout(() => setShowStickyDate(false), 2000)
 			}}
 		/>

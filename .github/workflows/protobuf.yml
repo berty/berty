@@ -136,12 +136,10 @@ jobs:
       - name: Cache Node.js modules
         uses: actions/cache@v2
         with:
-          path: |
-            js/node_modules
-            js/packages/*/node_modules
-          key: ${{ runner.OS }}-genjs-${{ hashFiles('js/yarn.lock', 'js/packages/*/yarn.lock') }}
+          path: js/node_modules
+          key: ${{ runner.OS }}-genjs-v2-${{ hashFiles('js/yarn.lock') }}
           restore-keys: |
-            ${{ runner.OS }}-genjs-
+            ${{ runner.OS }}-genjs-v2-
             ${{ runner.OS }}-
 
       - name: "Fetch deps"
@@ -153,9 +151,6 @@ jobs:
 
       - name: Preload Go vendors
         run: go mod download
-
-      - run: make _gen.pbhbs
-        working-directory: js
 
       - run: make _gen.pbjs
         working-directory: js

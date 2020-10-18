@@ -1,0 +1,9 @@
+rootProject.name = 'Berty'
+apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
+
+// remove when https://github.com/wix/react-native-interactable/pull/288 is merged
+include ':react-native-interactable'
+project(':react-native-interactable').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-interactable/lib/android')
+//
+
+include ':app'
