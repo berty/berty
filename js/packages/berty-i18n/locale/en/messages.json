@@ -18,7 +18,7 @@
         "fast-message": "Fastest message delivery"
       },
       "high-level": {
-        "title": "Highest level of Privacy",
+        "title": "Highest level of privacy",
         "desc": "For advanced users - Less metadatas",
         "disable-push-notif": "Push notifications disabled",
         "disable-local-peer-discovery": "Local peer discovery disabled",
@@ -33,12 +33,12 @@
       "button": "CREATE MY ACCOUNT"
     },
     "generate-key": {
-      "title": "Starting the Berty node..",
+      "title": "Starting the Berty node…",
       "desc": "This might take a few seconds"
     },
     "notifications": {
       "header": "Don't miss ant new message or contact request",
-      "recommanded": "Recommanded",
+      "recommanded": "Recommended",
       "title": "Notifications",
       "desc": "You need to authorize push notifications from Berty on your phone",
       "button": "AUTHORIZE NOTIFICATIONS",
@@ -53,7 +53,7 @@
       "skip": "SKIP AND DO THIS LATER"
     },
     "setup-finished": {
-      "title": "Setup finished !",
+      "title": "Setup finished!",
       "desc": "You can now use the app, start adding contacts and talk freely and privately with them",
       "button": "START USING APP"
     }

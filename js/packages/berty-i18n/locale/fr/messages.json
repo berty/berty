@@ -4,24 +4,24 @@
     "fuzzy-month-day": "dd/MM",
     "fuzzy-year-month": "MM/YY",
     "datetime": "MMM Do YYYY hh:mm",
-    "started-ago": "Started {{date}} ago"
+    "started-ago": "Débuté il y a {{date}}"
   },
   "onboarding": {
-    "getstarted": "L'application sécurisée fonctionne avec ou sans accès internet, avec les données du téléphone ou ayez confiance en internet",
+    "getstarted": "L'application sécurisée qui fonctionne en pair à pair, avec ou sans accès à internet",
     "select-mode": {
       "performance": {
         "title": "Performance",
         "desc": "Utilisation simple - Toutes les options",
-        "push-notif": "Recevoir notifications d'envois",
+        "push-notif": "Recevoir les notifications push",
         "offline-message": "Messagerie hors-ligne",
         "add-contact": "Ajout facile de contacts",
-        "fast-message": "Messagerie instantannée"
+        "fast-message": "Messagerie instantanée"
       },
       "high-level": {
-        "title": "Haut level de sécurité",
-        "desc": "Pour les utilisateurs plus avancés - Metadatas",
-        "disable-push-notif": "Notifications d'envoi désactivées",
-        "disable-local-peer-discovery": "Découverte de peer désactivée",
+        "title": "Plus haut niveau de confidentialité",
+        "desc": "Moins de metadonnées",
+        "disable-push-notif": "Notifications push désactivées",
+        "disable-local-peer-discovery": "Découverte de nœuds locaux désactivée",
         "disable-contact-request": "Demande d'ami désactivée"
       }
     },
@@ -33,36 +33,36 @@
       "button": "CRÉER MON COMPTE"
     },
     "generate-key": {
-      "title": "Génération de la clé ...",
-      "desc": "Cette tâche peut prendre plusieurs secondes"
+      "title": "Démarrage du nœud Berty…",
+      "desc": "Cette tâche peut prendre quelques secondes"
     },
     "notifications": {
       "header": "Ne ratez pas de messages ou de demandes de contacts",
       "recommanded": "Recommandé",
       "title": "Notifications",
-      "desc": "Vous devez authoriser l'envoi de notifications de Berty sur votre telephone ",
-      "button": "AUTHORISER NOTIFICATIONS",
-      "skip": "PASSER ET FAIRE CA PLUS TARD"
+      "desc": "Vous devez autoriser l'envoi de notifications push",
+      "button": "AUTHORISER LES NOTIFICATIONS",
+      "skip": "PASSER ET FAIRE ÇA PLUS TARD"
     },
     "bluetooth": {
-      "header": "Communiquer sans internet (wifi ou données mobiles) en se connectant directement avec vos amis près de vous",
-      "optional": "Optionel",
+      "header": "Communiquer sans internet (wifi ou cellulaire) en vous connectant directement avec vos amis près de vous",
+      "optional": "Optionnel",
       "title": "Bluetooth",
-      "desc": "Pour utiliser cette option veuillez activer le bluetooth sur votre telephone",
-      "button": "AUTHORISER BLUETOOTH",
-      "skip": "PASSER ET FAIRE CA PLUS TARD"
+      "desc": "Pour utiliser cette fonctionnalité, vous devez autoriser l'utilisation du Bluetooth sur votre téléphone",
+      "button": "AUTORISER LE BLUETOOTH",
+      "skip": "PASSER ET FAIRE ÇA PLUS TARD"
     },
     "setup-finished": {
-      "title": "Configuration terminée",
-      "desc": "Vous pouvez dés maintenant utiliser l'application, ajoutez vos contacts et parler en toute tranquilité et liberté avec eux",
-      "button": "UTILISER L'APPLICATION"
+      "title": "Configuration terminée !",
+      "desc": "Vous pouvez dés maintenant utiliser l'application, ajoutez vos contacts et parler en toute tranquillité avec eux",
+      "button": "LANCER L'APPLICATION"
     }
   },
   "main": {
     "requests": {
-      "title": "Requests",
-      "received-at": "Received",
-      "accept": "Accept"
+      "title": "Requêtes",
+      "received-at": "Reçu",
+      "accept": "Accepter"
     },
     "messages": {
       "title": "Messages"
