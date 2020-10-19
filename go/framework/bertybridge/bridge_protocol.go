@@ -52,10 +52,9 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/tempdir"
+	/*"berty.tech/berty/v2/go/pkg/tempdir"
 	tor "berty.tech/go-libp2p-tor-transport"
-	torcfg "berty.tech/go-libp2p-tor-transport/config"
-)
+	torcfg "berty.tech/go-libp2p-tor-transport/config"*/)
 
 var (
 	defaultProtocolRendezVousPeers = config.BertyMobile.RendezVousPeers
@@ -200,20 +199,22 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 			}
 
 			// Setuping tor
-			torBuilder, err := tor.NewBuilder(torcfg.Merge(
+			/*torBuilder, err := tor.NewBuilder(torcfg.Merge(
 				torcfg.SetTemporaryDirectory(tempdir.TempDir()),
 				torcfg.EnableEmbeded,
 			))
 			if err != nil {
 				return nil, errcode.TODO.Wrap(err)
-			}
+			}*/
 
 			bopts := ipfsutil.CoreAPIConfig{
 				DisableCorePubSub: true,
-				SwarmAddrs:        append(defaultSwarmAddrs, tor.NopMaddr3Str),
-				APIAddrs:          defaultAPIAddrs,
-				APIConfig:         APIConfig,
-				ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(torBuilder), libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
+				//SwarmAddrs:        append(defaultSwarmAddrs, tor.NopMaddr3Str),
+				SwarmAddrs: defaultSwarmAddrs,
+				APIAddrs:   defaultAPIAddrs,
+				APIConfig:  APIConfig,
+				//ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(torBuilder), libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
+				ExtraLibp2pOption: libp2p.Transport(mc.NewTransportConstructorWithLogger(logger)),
 				IpfsConfigPatch: func(cfg *ipfs_cfg.Config) error {
 					for _, p := range rdvpeers {
 						cfg.Peering.Peers = append(cfg.Peering.Peers, *p)

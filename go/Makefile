@@ -9,9 +9,7 @@ GO_TEST_OPTS ?= -test.timeout=300s -race -cover -coverprofile=coverage.txt -cove
 GO_TEST_PATH ?= ./...
 
 BUILD_DATE ?= `date +%s`
-VCS_REF ?= `git rev-parse --short HEAD`
-VERSION ?= `go run github.com/mdomke/git-semver/v5`
-LDFLAGS ?= -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
+LDFLAGS ?= -ldflags=""
 
 
 ##

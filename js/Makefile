@@ -1,7 +1,5 @@
 ## User variables
 
-VERSION ?= `go run -mod=readonly -modfile=../go.mod github.com/mdomke/git-semver/v5`
-VCS_REF ?= `git rev-parse --short HEAD`
 BUILD_DATE ?= `date +%s`
 TMP ?= /tmp
 CI ?= false
@@ -22,7 +20,7 @@ check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,
 kill-program-using-port = $(foreach port,$(1),$(eval pid ?= $(shell lsof -t -i :$(port))) $(if $(pid),$(shell kill $(pid)),))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
 author = Berty Technologies <oss@berty.tech>
-ext_ldflags = -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
+ext_ldflags = -ldflags=""
 pkg := $(dir $(wildcard $(PWD)/packages/*/package.json))
 pkg_mod := $(patsubst %, %/node_modules, $(pkg)) node_modules
 pkg_desc := $(patsubst %, %/package.json, $(pkg)) package.json
@@ -336,7 +334,7 @@ packages/go-bridge/ios/Frameworks/Bertybridge.framework: $(bridge_src)
 	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
 		-o js/$@ \
 		-v -x $(ext_ldflags) \
-		-tags=embedTor
+		-tags=embedTor \
 		-target ios \
 		-iosversion $(minimum_ios_ver) \
 		./go/framework/bertybridge
@@ -385,7 +383,7 @@ packages/go-bridge/android/libs/gobridge.aar: $(bridge_src)
 	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
 		-o js/$@ \
 		-v -x $(ext_ldflags) \
-		-tags=embedTor
+		-tags=embedTor \
 		-target android \
 		-androidapi $(minimum_android_ver) \
 		./go/framework/bertybridge
