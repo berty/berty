@@ -201,12 +201,18 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 				SwarmAddrs:        defaultSwarmAddrs,
 				APIAddrs:          defaultAPIAddrs,
 				APIConfig:         APIConfig,
-				ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.ProximityTransportConstructor(ctx, logger))),
+
+				ExtraLibp2pOption: libp2p.ChainOptions(
+					libp2p.Transport(mc.ProximityTransportConstructor(ctx, logger)),
+					libp2p.ForceReachabilityPrivate(),
+				),
 				IpfsConfigPatch: func(cfg *ipfs_cfg.Config) error {
 					for _, p := range rdvpeers {
 						cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
 					}
 
+					cfg.AutoNAT.ServiceMode = ipfs_cfg.AutoNATServiceDisabled
+					cfg.Swarm.EnableRelayHop = false
 					return nil
 				},
 				HostConfig: func(h host.Host, _ routing.Routing) error {
