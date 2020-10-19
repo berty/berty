@@ -50,6 +50,10 @@ type Manager struct {
 		rootDS     datastore.Batching
 	}
 	Node struct {
+		Preset Preset
+		// Enum :
+		// - "" : none, default
+		// - "anonymity" : Enforced anonymity
 		Protocol struct {
 			// IPFS
 			IPFSListeners      string
@@ -65,6 +69,12 @@ type Manager struct {
 			// The entry : `:dev:` will add the devs servers to the list (default).
 			// The netry : `:none:` will disable all rdvp servers.
 			RdvpMaddrs flagStringSlice
+
+			// Tor
+			Tor struct {
+				Enabled    bool
+				BinaryPath string // if "" that mean embedded must be used.
+			}
 
 			// Auth
 			AuthSecret    string
