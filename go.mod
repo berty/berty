@@ -7,7 +7,7 @@ require (
 	berty.tech/go-ipfs-log v1.2.6
 	berty.tech/go-libp2p-tor-transport v0.8.0
 	berty.tech/go-orbit-db v1.10.9
-	berty.tech/ipfs-webui-packed v1.0.0-v2.9.0-4
+	berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Masterminds/sprig v2.22.0+incompatible // indirect
