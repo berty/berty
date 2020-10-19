@@ -10,10 +10,12 @@ import (
 )
 
 // HandleFoundPeer is called by the native driver when a new peer is found.
+// Adds the peer in the PeerStore and initiates a connection with it
 func HandleFoundPeer(sRemotePID string) bool {
+	logger.Debug("HandleFoundPeer", zap.String("remotePID", sRemotePID))
 	remotePID, err := peer.Decode(sRemotePID)
 	if err != nil {
-		logger.Error("discovery handle peer failed: wrong remote peerID")
+		logger.Error("HandleFoundPeer: wrong remote peerID")
 		return false
 	}
 
@@ -28,7 +30,7 @@ func HandleFoundPeer(sRemotePID string) bool {
 
 	if gListener == nil || gListener.ctx.Err() != nil {
 		gLock.RUnlock()
-		logger.Error("discovery handle peer failed: listener not running")
+		logger.Error("HandleFoundPeer: listener not running")
 		return false
 	}
 
@@ -44,6 +46,7 @@ func HandleFoundPeer(sRemotePID string) bool {
 
 	// Peer with lexicographical smallest peerID inits libp2p connection.
 	if listener.Addr().String() < sRemotePID {
+		logger.Debug("HandleFoundPeer: outgoing libp2p connection")
 		// Async connect so HandleFoundPeer can return and unlock the native driver.
 		// Needed to read and write during the connect handshake.
 		go func() {
@@ -53,13 +56,14 @@ func HandleFoundPeer(sRemotePID string) bool {
 				Addrs: []ma.Multiaddr{remoteMa},
 			})
 			if err != nil {
-				logger.Error("async connect", zap.Error(err))
+				logger.Error("HandleFoundPeer: async connect error", zap.Error(err))
 			}
 		}()
 
 		return true
 	}
 
+	logger.Debug("HandleFoundPeer: incoming libp2p connection")
 	// Peer with lexicographical biggest peerID accepts incoming connection.
 	// FIXME : consider to push this code in go routine to prevent blocking native driver
 	select {
@@ -70,5 +74,36 @@ func HandleFoundPeer(sRemotePID string) bool {
 		return true
 	case <-listener.ctx.Done():
 		return false
+	}
+}
+
+// HandleLostPeer is called by the native driver when the connection with the peer is lost.
+// Closes connections with the peer.
+func HandleLostPeer(sRemotePID string) {
+	logger.Debug("HandleLostPeer", zap.String("remotePID", sRemotePID))
+	remotePID, err := peer.Decode(sRemotePID)
+	if err != nil {
+		logger.Error("HandleLostPeer: wrong remote peerID")
+		return
+	}
+
+	// Checks if a listener is currently running.
+	gLock.RLock()
+
+	if gListener == nil || gListener.ctx.Err() != nil {
+		gLock.RUnlock()
+		logger.Error("HandleLostPeer: listener not running")
+		return
+	}
+
+	// Get snapshot of gListener
+	listener := gListener
+
+	// unblock here to prevent blocking other APIs of Listener or Transport
+	gLock.RUnlock()
+
+	// Close connections with the peer.
+	if err = listener.transport.host.Network().ClosePeer(remotePID); err != nil {
+		logger.Error("HandleLostPeer: ClosePeer error", zap.Error(err))
 	}
 }

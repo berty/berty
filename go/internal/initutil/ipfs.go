@@ -171,7 +171,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 			// Setup MC
 			if m.Node.Preset != PresetAnonymity {
-				mcOpt := libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))
+				mcOpt := libp2p.Transport(mc.ProximityTransportConstructor(m.ctx, logger))
 				if p2pOpts == nil {
 					p2pOpts = mcOpt
 				} else {

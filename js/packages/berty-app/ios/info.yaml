@@ -23,6 +23,7 @@ targets:
             localhost:
               NSExceptionAllowsInsecureHTTPLoads: true
         NSCameraUsageDescription: Used to scan QRCodes
+        NSLocalNetworkUsageDescription: Used for local communications
         NSLocationWhenInUseUsageDescription: ""
         Shake:
           APIClientID: "$(SHAKE_API_ID)"

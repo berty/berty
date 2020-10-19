@@ -19,8 +19,9 @@ import (
 var connMap sync.Map
 
 // newConn returns an inbound or outbound tpt.CapableConn upgraded from a Conn.
-func newConn(ctx context.Context, t *Transport, remoteMa ma.Multiaddr,
+func newConn(ctx context.Context, t *ProximityTransport, remoteMa ma.Multiaddr,
 	remotePID peer.ID, inbound bool) (tpt.CapableConn, error) {
+	logger.Debug("newConn()", zap.String("remoteMa", remoteMa.String()), zap.Bool("inbound", inbound))
 	// Creates a manet.Conn
 	pr, pw := io.Pipe()
 	connCtx, cancel := context.WithCancel(gListener.ctx)
@@ -54,16 +55,13 @@ func ReceiveFromPeer(remotePID string, payload []byte) {
 		if ok {
 			_, err := c.(*Conn).readIn.Write(payload)
 			if err != nil {
-				logger.Error("receive from peer: write", zap.Error(err))
+				logger.Error("ReceiveFromPeer: write error", zap.Error(err))
 			}
 			return
 		}
 		time.Sleep(1 * time.Millisecond)
 	}
 
-	logger.Error(
-		"connmgr failed to read from conn: unknown conn",
-		zap.String("remote address", remotePID),
-	)
+	logger.Error("ReceiveFromPeer: connmgr failed to read from conn: unknown conn", zap.String("remote address", remotePID))
 	mcdrv.CloseConnWithPeer(remotePID)
 }

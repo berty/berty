@@ -616,7 +616,7 @@ SPEC CHECKSUMS:
   BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
   CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
   CocoaLibEvent: 2fab71b8bd46dd33ddb959f7928ec5909f838e3f
-  DoubleConversion: cde416483dac037923206447da6e1454df403714
+  DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
   FBLazyVector: 878b59e31113e289e275165efbe4b54fa614d43d
   FBReactNativeSpec: 7da9338acfb98d4ef9e5536805a0704572d33c2f
   Firebase: 210f41ca352067d83b1ba4fd2e7fb49a0c017397
@@ -632,7 +632,7 @@ SPEC CHECKSUMS:
   Flipper-RSocket: 64e7431a55835eb953b0bf984ef3b90ae9fdddd7
   FlipperKit: ab353d41aea8aae2ea6daaf813e67496642f3d7d
   Folly: b73c3869541e86821df3c387eb0af5f65addfab4
-  glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
+  glog: 1f3da668190260b06b429bb211bfbee5cd790c28
   go-bridge: de774afc40774b684cc0e3f07eb7f7b21888a004
   GoogleDataTransport: 672fb0ce96fe7f7f31d43672fca62ad2c9c86f7b
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3

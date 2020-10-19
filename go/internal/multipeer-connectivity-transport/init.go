@@ -10,6 +10,7 @@ func init() {
 	// Bind native to golang bridge functions
 	mcdrv.BindNativeToGoFunctions(
 		HandleFoundPeer,
+		HandleLostPeer,
 		ReceiveFromPeer,
 	)
 }

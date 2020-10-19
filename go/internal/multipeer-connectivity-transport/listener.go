@@ -29,7 +29,7 @@ var _ tpt.Listener = &Listener{}
 // package, and also exposes a Multiaddr method as opposed to a regular Addr
 // method.
 type Listener struct {
-	transport      *Transport
+	transport      *ProximityTransport
 	localMa        ma.Multiaddr
 	inboundConnReq chan connReq // Chan used to accept inbound conn.
 	ctx            context.Context
@@ -43,8 +43,9 @@ type connReq struct {
 }
 
 // newListener starts the native driver then returns a new Listener.
-func newListener(localMa ma.Multiaddr, t *Transport) *Listener {
-	ctx, cancel := context.WithCancel(context.Background())
+func newListener(ctx context.Context, localMa ma.Multiaddr, t *ProximityTransport) *Listener {
+	logger.Debug("newListener()")
+	ctx, cancel := context.WithCancel(ctx)
 
 	listener := &Listener{
 		transport:      t,
@@ -80,7 +81,7 @@ func (l *Listener) Accept() (tpt.CapableConn, error) {
 				return conn, nil
 			}
 		case <-l.ctx.Done():
-			return nil, errors.New("listener accept failed: listener already closed")
+			return nil, errors.New("proximityTransport: Listener.Accept failed: listener already closed")
 		}
 	}
 }

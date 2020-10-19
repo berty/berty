@@ -14,4 +14,5 @@ int SendToPeer(char *remotePID, void *payload, int length);
 int DialPeer(char *remotePID);
 void CloseConnWithPeer(char *remotePID);
 int BridgeHandleFoundPeer(NSString *remotePID);
+void BridgeHandleLostPeer(NSString *remotePID);
 void BridgeReceiveFromPeer(NSString *remotePID, NSData *payload);

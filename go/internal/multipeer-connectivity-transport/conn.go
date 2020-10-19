@@ -36,12 +36,12 @@ type Conn struct {
 // Timeout handled by the native driver.
 func (c *Conn) Read(payload []byte) (n int, err error) {
 	if c.ctx.Err() != nil {
-		return 0, fmt.Errorf("conn read failed: conn already closed")
+		return 0, fmt.Errorf("proximityTransport: Conn.Read failed: conn already closed")
 	}
 
 	n, err = c.readOut.Read(payload)
 	if err != nil {
-		err = errors.Wrap(err, "conn read failed")
+		err = errors.Wrap(err, "proximityTransport: Conn.Read failed: native read failed")
 	}
 
 	return n, err
@@ -51,12 +51,12 @@ func (c *Conn) Read(payload []byte) (n int, err error) {
 // Timeout handled by the native driver.
 func (c *Conn) Write(payload []byte) (n int, err error) {
 	if c.ctx.Err() != nil {
-		return 0, fmt.Errorf("conn write failed: conn already closed")
+		return 0, fmt.Errorf("proximityTransport: Conn.Write failed: conn already closed")
 	}
 
 	// Write to the peer's device using native driver.
 	if !mcdrv.SendToPeer(c.RemoteAddr().String(), payload) {
-		return 0, fmt.Errorf("conn write failed: native write failed")
+		return 0, fmt.Errorf("proximityTransport: Conn.Write failed: native write failed")
 	}
 
 	return len(payload), nil
@@ -65,6 +65,7 @@ func (c *Conn) Write(payload []byte) (n int, err error) {
 // Close closes the connection.
 // Any blocked Read or Write operations will be unblocked and return errors.
 func (c *Conn) Close() error {
+	logger.Debug("Conn.Close()")
 	c.cancel()
 
 	// Closes read pipe

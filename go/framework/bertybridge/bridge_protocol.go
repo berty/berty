@@ -201,7 +201,7 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 				SwarmAddrs:        defaultSwarmAddrs,
 				APIAddrs:          defaultAPIAddrs,
 				APIConfig:         APIConfig,
-				ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.NewTransportConstructorWithLogger(logger))),
+				ExtraLibp2pOption: libp2p.ChainOptions(libp2p.Transport(mc.ProximityTransportConstructor(ctx, logger))),
 				IpfsConfigPatch: func(cfg *ipfs_cfg.Config) error {
 					for _, p := range rdvpeers {
 						cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
