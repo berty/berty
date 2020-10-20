@@ -1,13 +1,21 @@
-package multiaddr
+package mc
 
 import (
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	ma "github.com/multiformats/go-multiaddr"
 )
 
-// TranscoderMC is a multipeer-connectivity multiaddr transcoder
-// See https://github.com/multiformats/go-multiaddr/blob/master/transcoders.go
-var TranscoderMC = ma.NewTranscoderFromFunctions(mcStB, mcBtS, mcVal)
+func newProtocol() ma.Protocol {
+	transcoderMC := ma.NewTranscoderFromFunctions(mcStB, mcBtS, mcVal)
+	return ma.Protocol{
+		Name:       ProtocolName,
+		Code:       PMC,
+		VCode:      ma.CodeToVarint(PMC),
+		Size:       -1,
+		Path:       false,
+		Transcoder: transcoderMC,
+	}
+}
 
 func mcStB(s string) ([]byte, error) {
 	_, err := peer.Decode(s)

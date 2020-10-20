@@ -1,4 +1,4 @@
-package mc
+package proximitytransport
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 
 // HandleFoundPeer is called by the native driver when a new peer is found.
 // Adds the peer in the PeerStore and initiates a connection with it
-func HandleFoundPeer(sRemotePID string) bool {
+func (t *ProximityTransport) HandleFoundPeer(sRemotePID string) bool {
 	logger.Debug("HandleFoundPeer", zap.String("remotePID", sRemotePID))
 	remotePID, err := peer.Decode(sRemotePID)
 	if err != nil {
@@ -19,7 +19,7 @@ func HandleFoundPeer(sRemotePID string) bool {
 		return false
 	}
 
-	remoteMa, err := ma.NewMultiaddr(fmt.Sprintf("/mc/%s", sRemotePID))
+	remoteMa, err := ma.NewMultiaddr(fmt.Sprintf("/%s/%s", t.driver.ProtocolName(), sRemotePID))
 	if err != nil {
 		// Should never occur
 		panic(err)
@@ -79,7 +79,7 @@ func HandleFoundPeer(sRemotePID string) bool {
 
 // HandleLostPeer is called by the native driver when the connection with the peer is lost.
 // Closes connections with the peer.
-func HandleLostPeer(sRemotePID string) {
+func (t *ProximityTransport) HandleLostPeer(sRemotePID string) {
 	logger.Debug("HandleLostPeer", zap.String("remotePID", sRemotePID))
 	remotePID, err := peer.Decode(sRemotePID)
 	if err != nil {

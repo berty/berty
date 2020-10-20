@@ -1,4 +1,4 @@
-package mc
+package proximitytransport
 
 import (
 	"context"
@@ -10,8 +10,6 @@ import (
 	tpt "github.com/libp2p/go-libp2p-core/transport"
 	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
-
-	mcdrv "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/driver"
 )
 
 // Connmgr keeps tracks of opened conn so the native driver can read from them
@@ -33,6 +31,7 @@ func newConn(ctx context.Context, t *ProximityTransport, remoteMa ma.Multiaddr,
 		remoteMa: remoteMa,
 		ctx:      connCtx,
 		cancel:   cancel,
+		t:        t,
 	}
 
 	// Stores the conn in connMap, will be deleted during conn.Close()
@@ -46,7 +45,7 @@ func newConn(ctx context.Context, t *ProximityTransport, remoteMa ma.Multiaddr,
 }
 
 // ReceiveFromPeer is called by native driver when peer's device sent data.
-func ReceiveFromPeer(remotePID string, payload []byte) {
+func (t *ProximityTransport) ReceiveFromPeer(remotePID string, payload []byte) {
 	// TODO: implement a cleaner way to do that
 	// Checks during 100 ms if the conn is available, because remote device can
 	// be ready to write while local device is still creating the new conn.
@@ -63,5 +62,5 @@ func ReceiveFromPeer(remotePID string, payload []byte) {
 	}
 
 	logger.Error("ReceiveFromPeer: connmgr failed to read from conn: unknown conn", zap.String("remote address", remotePID))
-	mcdrv.CloseConnWithPeer(remotePID)
+	t.driver.CloseConnWithPeer(remotePID)
 }

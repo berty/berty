@@ -10,9 +10,10 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	ma "github.com/multiformats/go-multiaddr"
+	mafmt "github.com/multiformats/go-multiaddr-fmt"
 	manet "github.com/multiformats/go-multiaddr/net"
 
-	mcma "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/multiaddr"
+	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 )
 
 const recProtocolID = protocol.ID("berty/p2p/localrecord")
@@ -41,7 +42,7 @@ func (lr *LocalRecord) ListenClose(network.Network, ma.Multiaddr) {}
 // called when a connection opened
 func (lr *LocalRecord) Connected(net network.Network, c network.Conn) {
 	go func() {
-		if manet.IsPrivateAddr(c.RemoteMultiaddr()) || mcma.MC.Matches(c.RemoteMultiaddr()) {
+		if manet.IsPrivateAddr(c.RemoteMultiaddr()) || mafmt.Base(mc.PMC).Matches(c.RemoteMultiaddr()) {
 			if err := lr.sendLocalRecord(c); err != nil {
 				return
 			}

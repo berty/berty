@@ -21,7 +21,8 @@ import (
 
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
+	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
+	proximity "berty.tech/berty/v2/go/internal/proximity-transport"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -171,7 +172,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 			// Setup MC
 			if m.Node.Preset != PresetAnonymity {
-				mcOpt := libp2p.Transport(mc.ProximityTransportConstructor(m.ctx, logger))
+				mcOpt := libp2p.Transport(proximity.NewTransport(m.ctx, logger, mc.NewDriver(logger)))
 				if p2pOpts == nil {
 					p2pOpts = mcOpt
 				} else {

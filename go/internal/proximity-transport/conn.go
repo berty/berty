@@ -1,4 +1,4 @@
-package mc
+package proximitytransport
 
 import (
 	"context"
@@ -10,9 +10,6 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 	"github.com/pkg/errors"
-
-	mcdrv "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/driver"
-	mcma "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/multiaddr"
 )
 
 // Conn is a manet.Conn.
@@ -30,6 +27,7 @@ type Conn struct {
 
 	ctx    context.Context
 	cancel func()
+	t      *ProximityTransport
 }
 
 // Read reads data from the connection.
@@ -55,7 +53,7 @@ func (c *Conn) Write(payload []byte) (n int, err error) {
 	}
 
 	// Write to the peer's device using native driver.
-	if !mcdrv.SendToPeer(c.RemoteAddr().String(), payload) {
+	if !c.t.driver.SendToPeer(c.RemoteAddr().String(), payload) {
 		return 0, fmt.Errorf("proximityTransport: Conn.Write failed: native write failed")
 	}
 
@@ -76,24 +74,26 @@ func (c *Conn) Close() error {
 	connMap.Delete(c.RemoteAddr().String())
 
 	// Notify the native driver that the conn was cloed with this peer.
-	mcdrv.CloseConnWithPeer(c.RemoteAddr().String())
+	c.t.driver.CloseConnWithPeer(c.RemoteAddr().String())
 
 	return nil
 }
 
 // LocalAddr returns the local network address.
 func (c *Conn) LocalAddr() net.Addr {
-	lAddr, _ := c.LocalMultiaddr().ValueForProtocol(mcma.P_MC)
+	lAddr, _ := c.LocalMultiaddr().ValueForProtocol(c.t.driver.ProtocolCode())
 	return &Addr{
 		Address: lAddr,
+		t:       c.t,
 	}
 }
 
 // LocalAddr returns the remote network address.
 func (c *Conn) RemoteAddr() net.Addr {
-	rAddr, _ := c.RemoteMultiaddr().ValueForProtocol(mcma.P_MC)
+	rAddr, _ := c.RemoteMultiaddr().ValueForProtocol(c.t.driver.ProtocolCode())
 	return &Addr{
 		Address: rAddr,
+		t:       c.t,
 	}
 }
 
