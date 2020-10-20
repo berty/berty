@@ -18,7 +18,7 @@
         "fast-message": "Messagerie instantanée"
       },
       "high-level": {
-        "title": "Highest level of privacy",
+        "title": "Plus haut niveau de confidentialité",
         "desc": "Moins de metadonnées",
         "disable-push-notif": "Notifications push désactivées",
         "disable-local-peer-discovery": "Découverte de nœuds locaux désactivée",
@@ -33,12 +33,12 @@
       "button": "CRÉER MON COMPTE"
     },
     "generate-key": {
-      "title": "Starting the Berty node…",
+      "title": "Démarrage du nœud Berty…",
       "desc": "Cette tâche peut prendre quelques secondes"
     },
     "notifications": {
       "header": "Ne ratez pas de messages ou de demandes de contacts",
-      "recommanded": "Recommended",
+      "recommanded": "Recommandé",
       "title": "Notifications",
       "desc": "Vous devez autoriser l'envoi de notifications push",
       "button": "AUTHORISER LES NOTIFICATIONS",
@@ -53,7 +53,7 @@
       "skip": "PASSER ET FAIRE ÇA PLUS TARD"
     },
     "setup-finished": {
-      "title": "Setup finished!",
+      "title": "Configuration terminée !",
       "desc": "Vous pouvez dés maintenant utiliser l'application, ajoutez vos contacts et parler en toute tranquillité avec eux",
       "button": "LANCER L'APPLICATION"
     }
