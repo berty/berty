@@ -211,8 +211,11 @@ func newProtocolBridge(ctx context.Context, logger *zap.Logger, config *Messenge
 						cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
 					}
 
-					cfg.AutoNAT.ServiceMode = ipfs_cfg.AutoNATServiceDisabled
+					cfg.AutoNAT.ServiceMode = ipfs_cfg.AutoNATServiceEnabled
 					cfg.Swarm.EnableRelayHop = false
+					cfg.Addresses.NoAnnounce = []string{
+						"/ip4/127.0.0.1/ipcidr/8", // disable local addrs
+					}
 					return nil
 				},
 				HostConfig: func(h host.Host, _ routing.Routing) error {
