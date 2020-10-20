@@ -1,6 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
-import { Text } from 'react-native-ui-kitten'
+import { Text } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { SHA3 } from 'sha3'
 

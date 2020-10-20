@@ -1,99 +1,98 @@
 {
-  "name": "@berty-tech/js-monorepo",
-  "version": "1.0.0",
+  "name": "@berty-tech/js",
+  "version": "0.0.1",
   "private": true,
-  "description": "Berty's client",
-  "license": "(Apache-2.0 OR MIT)",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/berty/berty.git"
-  },
-  "bugs": {
-    "url": "https://github.com/berty/berty/issues"
-  },
-  "homepage": "https://github.com/berty/berty#readme",
-  "author": "Berty Technologies <oss@berty.tech>",
-  "contributors": [
-    "Clement Girard <clemntgirard@gmail.com>",
-    "Godefroy Ponsinet <godefroy.ponsinet@outlook.com>"
-  ],
-  "main": "index.js",
   "scripts": {
-    "cli": "babel-node --extensions '.es6,.js,.es,.jsx,.mjs,.ts,.tsx'",
-    "test": "jest --passWithNoTests"
-  },
-  "jest": {
-    "globals": {
-      "__DEV__": true
-    },
-    "testPathIgnorePatterns": [
-      "packages/web-dev-app/"
-    ]
-  },
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ],
-    "nohoist": [
-      "**/react-native",
-      "**/jsc-*",
-      "**/hermes-engine",
-      "**/metro-*",
-      "**/@react-native-community/cli-*",
-      "**/react-native-svg-transformer",
-      "**/@webpack-cli/serve",
-      "**/@shakebugs/react-native-shake"
-    ]
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@types/node": "^13.5.0",
-    "babel-jest": "^25.1.0",
-    "caser": "^0.1.1",
-    "create-react-native-module": "^0.11.1",
-    "eslint-plugin-jest": "^22.17.0",
-    "eslint_d": "^8.0.0",
-    "json": "^9.0.6",
-    "lerna": "^3.18.3",
-    "lerna-update-wizard": "^0.16.0",
+    "@eva-design/eva": "^2.0.0",
+    "@improbable-eng/grpc-web": "^0.13.0",
+    "@react-native-community/async-storage": "^1.12.1",
+    "@react-native-community/blur": "^3.6.0",
+    "@react-native-community/hooks": "^2.6.0",
+    "@react-native-community/masked-view": "^0.1.10",
+    "@react-native-firebase/app": "^8.4.6",
+    "@react-native-firebase/crashlytics": "^8.4.10",
+    "@react-navigation/material-top-tabs": "^5.2.19",
+    "@react-navigation/native": "^5.7.6",
+    "@shakebugs/react-native-shake": "^10.0.3",
+    "@ui-kitten/components": "^5.0.0",
+    "@ui-kitten/eva-icons": "^5.0.0",
+    "case": "^1.6.3",
+    "faker": "^5.1.0",
+    "google-palette": "^1.1.0",
+    "google-protobuf": "^3.2.0",
+    "i18next": "^19.8.2",
+    "lottie-react-native": "^3.5.0",
+    "mem": "^8.0.0",
+    "moment": "^2.29.1",
+    "node-libs-react-native": "^1.2.0",
+    "prop-types": "^15.5.10",
+    "protobufjs": "^6.10.1",
     "react": "16.13.1",
-    "react-native-create-library": "^3.1.2",
-    "text-transform-cli": "^1.5.0",
-    "update-versions": "^2.0.0"
+    "react-i18next": "^11.7.3",
+    "react-native": "0.63.3",
+    "react-native-camera": ">=1.0.2",
+    "react-native-elements": "^2.3.2",
+    "react-native-gesture-handler": "^1.8.0",
+    "react-native-hyperlink": "^0.0.19",
+    "react-native-in-app-notification": "^3.1.0",
+    "react-native-inappbrowser-reborn": "^3.4.0",
+    "react-native-interactable": "^2.0.1",
+    "react-native-jdenticon": "^0.0.3",
+    "react-native-linear-gradient": "^2.5.6",
+    "react-native-permissions": "^2.2.2",
+    "react-native-qrcode-scanner": "^1.4.1",
+    "react-native-qrcode-svg": "^6.0.6",
+    "react-native-reanimated": "^1.13.1",
+    "react-native-safe-area-context": "^3.1.8",
+    "react-native-screens": "^2.11.0",
+    "react-native-svg": "^11.0.1",
+    "react-native-tab-view": ">= 2.0.0",
+    "react-native-vector-icons": "^7.1.0",
+    "react-native-webview": "^10.9.2",
+    "sha3": "^2.1.3"
   },
   "devDependencies": {
-    "@berty-tech/babel-preset": "^0.0.0",
-    "@berty-tech/eslint-config": "^0.0.0",
-    "@berty-tech/prettier-config": "^0.0.0",
-    "@react-native-community/eslint-plugin": "^1.1.0",
-    "@types/jest": "^24.0.18",
-    "@types/lodash": "^4.14.139",
-    "@types/react": "^16.9.49",
-    "@types/react-dom": "^16.9.8",
-    "@types/react-native": "^0.63.15",
-    "@types/react-test-renderer": "^16.9.3",
-    "@types/storybook__react": "^4.0.2",
-    "@types/storybook__react-native": "^3.0.5",
-    "@types/webpack-env": "^1.14.0",
-    "@typescript-eslint/eslint-plugin": "^3.1.0",
-    "@typescript-eslint/parser": "^3.1.0",
-    "babel-eslint": "10.1.0",
-    "check-deps-sync": "^1.0.2",
-    "eslint": "^7.2.0",
-    "eslint-config-prettier": "^6.5.0",
-    "eslint-config-standard": "^14.1.0",
-    "eslint-plugin-babel": "^5.3.0",
-    "eslint-plugin-dependencies": "^2.4.0",
-    "eslint-plugin-eslint-comments": "^3.1.2",
-    "eslint-plugin-flowtype": "4.6.0",
-    "eslint-plugin-import": "2.20.1",
-    "eslint-plugin-node": "^10.0.0",
-    "eslint-plugin-prettier": "^3.1.1",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-react": "7.20.6",
-    "eslint-plugin-react-hooks": "^4.1.0",
-    "eslint-plugin-react-native": "^3.9.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "prettier": "2.0.5",
-    "typescript": "^3.9.5"
+    "@babel/core": "^7.8.4",
+    "@babel/runtime": "^7.8.4",
+    "@react-native-community/eslint-config": "^1.1.0",
+    "@types/jest": "^25.2.3",
+    "@types/lodash": "^4.14.162",
+    "@types/react-native": "^0.63.2",
+    "@types/react-test-renderer": "^16.9.2",
+    "@typescript-eslint/eslint-plugin": "^2.27.0",
+    "@typescript-eslint/parser": "^2.27.0",
+    "babel-jest": "^25.1.0",
+    "babel-plugin-inline-react-svg": "^1.1.1",
+    "babel-plugin-module-resolver": "^4.0.0",
+    "eslint": "^6.5.1",
+    "jest": "^25.1.0",
+    "metro-config": "^0.63.0",
+    "metro-react-native-babel-preset": "^0.59.0",
+    "react-dev-utils": "^10.2.1",
+    "react-native-svg-transformer": "^0.14.3",
+    "react-test-renderer": "16.13.1",
+    "typescript": "^3.8.3"
+  },
+  "jest": {
+    "preset": "react-native",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/packages/web-dev-app/"
+    ]
   }
 }

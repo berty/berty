@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, ScrollView } from 'react-native'
-import { Layout } from 'react-native-ui-kitten'
+import { Layout } from '@ui-kitten/components'
 
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
@@ -8,7 +8,7 @@ import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
-// import { Messenger } from '@berty-tech/store/oldhooks'
+
 import {
 	useGenerateFakeContacts,
 	useGenerateFakeMultiMembers,

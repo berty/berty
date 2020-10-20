@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { View, StyleProp, TouchableOpacity, ViewStyle } from 'react-native'
-import { Text, Icon, Toggle } from 'react-native-ui-kitten'
+import { Text, Icon, Toggle } from '@ui-kitten/components'
 import { useStyles, ColorsTypes } from '@berty-tech/styles'
 import { TabBar } from './TabBar'
 import { FingerprintContent } from './FingerprintContent'
@@ -88,15 +88,11 @@ type RequestAvatarProps = {
 }
 
 export const RequestAvatar: React.FC<RequestAvatarProps> = ({
-	seed,
 	name,
-	size = 130,
-	secondAvatarUri = null,
-	isGroup = false,
 	style = null,
 	isVerified = false,
 }) => {
-	const [{ height, row, flex, text, margin, color }] = useStyles()
+	const [{ row, flex, text, margin, color }] = useStyles()
 	return (
 		<View style={[row.left, flex.tiny, { justifyContent: 'center' }, style]}>
 			<View style={[flex.tiny, row.item.bottom, row.center]}>

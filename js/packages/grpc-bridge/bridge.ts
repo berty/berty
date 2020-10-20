@@ -62,9 +62,9 @@ const grpcBridge: GRPCBridge = (options, metadata): pb.RPCImpl => (
 	// initialize client
 	const client = grpc.client(_method, options)
 	client.start(new grpc.Metadata(metadata))
-	client.onHeaders((headers: grpc.Metadata) => {
+	/*client.onHeaders((headers: grpc.Metadata) => {
 		// console.log('onHeaders: ', headers)
-	})
+	})*/
 	client.onMessage((message: grpc.ProtobufMessage): void => {
 		// console.log('onMessage: ', message.toObject())
 		callback(null, message.serializeBinary())

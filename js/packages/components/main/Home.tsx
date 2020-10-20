@@ -11,7 +11,7 @@ import {
 	Image,
 } from 'react-native'
 import { SafeAreaConsumer, SafeAreaView } from 'react-native-safe-area-context'
-import { Icon, Text } from 'react-native-ui-kitten'
+import { Icon, Text } from '@ui-kitten/components'
 import LinearGradient from 'react-native-linear-gradient'
 
 import { ScreenProps, useNavigation, Routes } from '@berty-tech/navigation'
@@ -278,7 +278,7 @@ const UnreadCount: React.FC<{ value: number; isConvBadge?: boolean }> = ({
 }
 
 const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
-	const [{ padding, text, background, row }, { scaleHeight, scaleSize }] = useStyles()
+	const [{ padding, text, background, row }, { scaleSize }] = useStyles()
 	return items?.length ? (
 		<SafeAreaView onLayout={onLayout} style={[background.blue]}>
 			<View style={[padding.top.medium]}>
@@ -349,8 +349,8 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	const isIncoming = contact && contact.state === messengerpb.Contact.State.IncomingRequest
 
 	const [
-		{ color, row, border, flex, column, padding, text, opacity, background, margin, width },
-		{ scaleHeight, scaleSize },
+		{ color, row, border, flex, padding, text, opacity, background, margin },
+		{ scaleSize },
 	] = useStyles()
 	const { dispatch } = useNavigation()
 
@@ -657,8 +657,8 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const conversations: any[] = useSortedConversationList()
 	const isConversation: number = useConversationLength()
 	const [layoutRequests, onLayoutRequests] = useLayout()
-	const [layoutHeader, onLayoutHeader] = useLayout()
-	const [layoutConvs, onLayoutConvs] = useLayout()
+	const [, onLayoutHeader] = useLayout()
+	const [, onLayoutConvs] = useLayout()
 	const [isOnTop, setIsOnTop] = useState<boolean>(false)
 
 	const [

@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityIndicator as Spinner, Text, TouchableOpacity, ViewStyle } from 'react-native'
+import { Text, TouchableOpacity, ViewStyle } from 'react-native'
 
 import { useStyles } from '@berty-tech/styles'
 
@@ -8,8 +8,7 @@ const Button: React.FC<{
 	onPress: () => void
 	style?: ViewStyle
 }> = ({ children, onPress, style = null }) => {
-	const [{ margin, padding, color, text, border }] = useStyles()
-	const [loading, setLoading] = React.useState(false)
+	const [{ margin, padding, text, border }] = useStyles()
 	return (
 		<TouchableOpacity
 			style={[
@@ -22,13 +21,9 @@ const Button: React.FC<{
 			]}
 			onPress={onPress}
 		>
-			{loading ? (
-				<Spinner style={[text.size.medium]} color={color.white} />
-			) : (
-				<Text style={[text.size.medium, text.color.blue, text.align.center, text.bold.medium]}>
-					{children}
-				</Text>
-			)}
+			<Text style={[text.size.medium, text.color.blue, text.align.center, text.bold.medium]}>
+				{children}
+			</Text>
 		</TouchableOpacity>
 	)
 }

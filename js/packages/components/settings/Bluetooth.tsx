@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
+import { Layout, Text, Icon } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
@@ -124,7 +124,7 @@ const BodyBluetooth: React.FC<BluetoothProps> = ({ isBluetooth }) => {
 }
 
 export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
-	const [isBluetooth, setIsBluetooth] = useState(true)
+	const [isBluetooth] = useState(true)
 	const { goBack } = useNavigation()
 	const [{ flex, background }] = useStyles()
 	return (

@@ -1,9 +1,8 @@
-import React, { useState, useRef, useMemo, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import {
 	TouchableOpacity,
 	View,
 	StyleSheet,
-	FlatList,
 	ActivityIndicator,
 	KeyboardAvoidingView,
 	Text as TextNative,
@@ -12,7 +11,7 @@ import {
 	SectionList,
 	ViewToken,
 } from 'react-native'
-import { Text, Icon } from 'react-native-ui-kitten'
+import { Text, Icon } from '@ui-kitten/components'
 import { CommonActions } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
@@ -80,7 +79,7 @@ const useStylesAddBetabot = () => {
 }
 
 const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) => {
-	const { children, ...propsToPass } = props
+	const { ...propsToPass } = props
 	return (
 		<View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
 			<ActivityIndicator {...propsToPass} />
@@ -681,10 +680,10 @@ const MessageList: React.FC<{
 			renderItem={renderItem}
 			onViewableItemsChanged={updateStickyDate}
 			initialNumToRender={20}
-			onScrollBeginDrag={(e) => {
+			onScrollBeginDrag={() => {
 				setShowStickyDate(true) // TODO: tmp
 			}}
-			onScrollEndDrag={(e) => {
+			onScrollEndDrag={() => {
 				setTimeout(() => setShowStickyDate(false), 2000)
 			}}
 		/>

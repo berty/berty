@@ -4,7 +4,7 @@ import { useContact, useConversation, usePersistentOptions } from '@berty-tech/s
 import { useStyles } from '@berty-tech/styles'
 import React from 'react'
 import { ScrollView, View } from 'react-native'
-import { Text } from 'react-native-ui-kitten'
+import { Text } from '@ui-kitten/components'
 import HeaderSettings from '../shared-components/Header'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'

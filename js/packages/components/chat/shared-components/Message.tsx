@@ -13,12 +13,13 @@ import palette from 'google-palette'
 import React, { useMemo, useState } from 'react'
 import { Linking, Text as TextNative, TouchableOpacity, View } from 'react-native'
 import Hyperlink from 'react-native-hyperlink'
-import { Icon, Text } from 'react-native-ui-kitten'
+import { Icon, Text } from '@ui-kitten/components'
 import { SHA3 } from 'sha3'
 import Logo from '../../main/1_berty_picto.svg'
 import { ProceduralCircleAvatar } from '../../shared-components'
 import { useNavigation as useNativeNavigation } from '@react-navigation/core'
 import { pbDateToNum, timeFormat } from '../../helpers'
+import { Buffer } from 'buffer'
 
 const pal = palette('tol-rainbow', 256)
 

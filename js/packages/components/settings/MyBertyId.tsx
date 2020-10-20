@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, ScrollView, Share } from 'react-native'
-import { Layout, Text, Icon } from 'react-native-ui-kitten'
+import { Layout, Text, Icon } from '@ui-kitten/components'
 import Interactable from 'react-native-interactable'
 import QRCode from 'react-native-qrcode-svg'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
 
 import { useStyles } from '@berty-tech/styles'
-import { Messenger } from '@berty-tech/store/oldhooks'
 import { useNavigation } from '@berty-tech/navigation'
+import { useAccount } from '@berty-tech/store/hooks'
 
 import { TabBar } from '../shared-components/TabBar'
 import { RequestAvatar } from '../shared-components/Request'
@@ -56,7 +56,7 @@ const BertyIdContent: React.FC<{}> = ({ children }) => {
 }
 
 const ContactRequestQR = () => {
-	const account = Messenger.useAccount()
+	const account = useAccount()
 	const [{ padding }, { windowHeight, windowWidth, isGteIpadSize }] = useStyles()
 	const { titleSize, bertyIdContentScaleFactor } = useStylesBertyId()
 
@@ -79,7 +79,7 @@ const ContactRequestQR = () => {
 }
 
 const Fingerprint: React.FC = () => {
-	const account = Messenger.useAccount()
+	const account = useAccount()
 	const [{ padding }, { windowHeight, windowWidth, isGteIpadSize }] = useStyles()
 	const { bertyIdContentScaleFactor } = useStylesBertyId()
 
@@ -118,7 +118,7 @@ const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
 	const [{ background, border, margin, padding, opacity }] = useStyles()
 	const { styleBertyIdContent, requestAvatarSize } = useStylesBertyId()
 	const [selectedContent, setSelectedContent] = useState('QR')
-	const account = Messenger.useAccount()
+	const account = useAccount()
 
 	return (
 		<View
@@ -158,7 +158,7 @@ const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
 const BertyIdShare: React.FC<{}> = () => {
 	const [{ row, border, background, flex, color }] = useStyles()
 	const { styleBertyIdButton, iconShareSize } = useStylesBertyId()
-	const account = Messenger.useAccount()
+	const account = useAccount()
 	const url = account?.link
 	if (!url) {
 		return null

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, ScrollView, StyleSheet, Vibration } from 'react-native'
-import { Layout, Text } from 'react-native-ui-kitten'
+import { Layout, Text } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
@@ -175,7 +175,7 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 }
 
 export const Mode: React.FC<{}> = () => {
-	const [isMode, setIsMode] = useState(true)
+	const [isMode] = useState(true)
 	const { goBack } = useNavigation()
 	const [{ flex, background, padding }] = useStyles()
 	return (

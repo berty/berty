@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, ScrollView, Vibration, Alert } from 'react-native'
-import { Layout } from 'react-native-ui-kitten'
+import { Layout } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { HeaderSettings } from '../shared-components/Header'
@@ -66,25 +66,6 @@ const HeaderDevTools: React.FC<{}> = () => {
 				styleText={[text.bold.medium]}
 			/>
 		</View>
-	)
-}
-
-const TracingButton: React.FC = () => {
-	//const toggleTracing = Settings.useToggleTracing()
-	const settings = null /*Settings.useSettings()*/
-	if (!settings || settings.nodeConfig.type === 'external') {
-		return null
-	}
-	return (
-		<ButtonSetting
-			name='Tracing'
-			icon='activity-outline'
-			iconSize={30}
-			iconColor='grey'
-			actionToggle={toggleTracing}
-			varToggle={settings.nodeConfig.opts.tracing}
-			toggled
-		/>
 	)
 }
 
@@ -302,14 +283,6 @@ const BodyDevTools: React.FC<{}> = () => {
 				iconColor={color.dark.grey}
 				onPress={() => navigation.navigate('Settings.AddContactList')}
 			/>
-			<ButtonSetting
-				name='Add conversations'
-				icon='info-outline'
-				iconSize={30}
-				iconColor={color.dark.grey}
-				onPress={() => navigation.navigate('Settings.AddConversationList')}
-			/>
-			<TracingButton />
 			<DiscordShareButton />
 			<NativeCallButton />
 			<DumpAccount />

@@ -1,13 +1,12 @@
 import React from 'react'
-import { View, ScrollView, Share, Image, Vibration } from 'react-native'
-import { Layout, Text } from 'react-native-ui-kitten'
+import { View, ScrollView, Share, Image } from 'react-native'
+import { Layout, Text } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import {
 	ButtonSetting,
 	FactionButtonSetting,
 	ButtonSettingRow,
 } from '../shared-components/SettingsButtons'
-import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import HeaderSettings from '../shared-components/Header'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 import { useConversation, useMsgrContext } from '@berty-tech/store/hooks'
@@ -64,11 +63,8 @@ const GroupChatSettingsHeaderButtons: React.FC<any> = ({ link, publicKey }) => {
 	)
 }
 
-const GroupChatSettingsHeader: React.FC<messenger.conversation.Entity> = ({
-	displayName,
-	publicKey,
-}) => {
-	const [{ text, margin, row }, { scaleHeight }] = useStyles()
+const GroupChatSettingsHeader: React.FC<messenger.conversation.Entity> = ({ displayName }) => {
+	const [{ text, margin, row }] = useStyles()
 	return (
 		<View>
 			<View style={[row.center]}>
@@ -109,7 +105,7 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 				}}
 				style={[margin.top.medium]}
 			>
-				{Object.entries(members).map(([k, v]) => {
+				{Object.entries(members).map(([k]) => {
 					return (
 						<ButtonSetting
 							style={[padding.horizontal.small]}

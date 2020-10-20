@@ -1,13 +1,6 @@
 import React, { useState } from 'react'
-import {
-	View,
-	ScrollView,
-	TouchableOpacity,
-	FlatList,
-	TextInput,
-	Text as TextNative,
-} from 'react-native'
-import { Layout, Text, Icon, CheckBox } from 'react-native-ui-kitten'
+import { View, ScrollView, TouchableOpacity, TextInput, Text as TextNative } from 'react-native'
+import { Layout, Text, Icon, CheckBox } from '@ui-kitten/components'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { useNavigation } from '@berty-tech/navigation'
@@ -61,7 +54,7 @@ const AddMembersItem: React.FC<AddMembersItemProps> = ({
 	added,
 	separateBar = true,
 }) => {
-	const [{ row, margin, padding, flex }] = useStyles()
+	const [{ row, margin, padding }] = useStyles()
 	const _styles = useStylesCreateGroup()
 	return (
 		<View>
@@ -119,12 +112,11 @@ export const AddMembersHeader: React.FC<{ style?: any }> = ({ style }) => {
 const AddMembers: React.FC<AddMembersProps> = ({
 	onSetMember,
 	onRemoveMember,
-	paddingBottom,
 	members,
 	layout,
 }) => {
 	const [
-		{ padding, background, row, color, height, text, margin, border },
+		{ padding, background, row, height, margin, border },
 		{ windowHeight, scaleHeight },
 	] = useStyles()
 	const [searchText, setSearchText] = useState('')
@@ -212,7 +204,7 @@ export const MemberList: React.FC<{
 	members: any[]
 	onRemoveMember: (id: string) => void
 }> = ({ members, onRemoveMember }) => {
-	const [{ height, padding, border }] = useStyles()
+	const [{ height, padding }] = useStyles()
 
 	return (
 		<View style={[height(135)]}>

@@ -1,7 +1,7 @@
 import React from 'react'
 import QRCode from 'react-native-qrcode-svg'
 import { View } from 'react-native'
-import { Button } from 'react-native-ui-kitten'
+import { Button } from '@ui-kitten/components'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
 
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'

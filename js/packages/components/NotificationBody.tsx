@@ -1,13 +1,12 @@
 import React, { useEffect, useRef } from 'react'
-import { TouchableOpacity, StatusBar, View, Text, Vibration } from 'react-native'
+import { TouchableOpacity, View, Text, Vibration } from 'react-native'
 import GestureRecognizer from 'react-native-swipe-gestures'
 import { SafeAreaContext } from 'react-native-safe-area-context'
 
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { useStyles } from '@berty-tech/styles'
-import { useInteraction, useConversation, useOneToOneContact } from '@berty-tech/store/hooks'
+import { useInteraction, useConversation } from '@berty-tech/store/hooks'
 
-import BlurView from './shared-components/BlurView'
 import Logo from './main/1_berty_picto.svg'
 import { navigate, Routes } from '@berty-tech/navigation'
 

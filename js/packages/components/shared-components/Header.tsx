@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, TouchableOpacity, Insets } from 'react-native'
-import { Text, Icon } from 'react-native-ui-kitten'
+import { Text, Icon } from '@ui-kitten/components'
 import { useStyles, defaultStylesDeclaration } from '@berty-tech/styles'
 import { SafeAreaView } from 'react-native-safe-area-context'
 

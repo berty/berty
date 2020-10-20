@@ -51,7 +51,7 @@ export const ctx: React.Context<any> = createContext<any>([
 			Math.max(initialHeight, initialWidth) >= iPadLongEdge,
 		isLandscape: initialWidth > initialHeight,
 	},
-	(decl: Declaration) => {},
+	() => {},
 ])
 
 export const Provider: React.FC = ({ children }) => {

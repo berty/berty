@@ -3,7 +3,6 @@ import { MsgrState } from './context'
 import { Alert } from 'react-native'
 import { useAccount } from './hooks'
 import { berty } from '@berty-tech/api'
-import { NavigationProp } from '@react-navigation/native'
 
 export enum serviceTypes {
 	Replication = 'rpl',

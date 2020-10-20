@@ -9,7 +9,7 @@ import {
 	Text as TextNative,
 } from 'react-native'
 import { EdgeInsets, SafeAreaConsumer } from 'react-native-safe-area-context'
-import { Icon, Layout, Text } from 'react-native-ui-kitten'
+import { Icon, Layout, Text } from '@ui-kitten/components'
 import { CommonActions, useIsFocused } from '@react-navigation/native'
 import LinearGradient from 'react-native-linear-gradient'
 import pickBy from 'lodash/pickBy'
@@ -41,7 +41,7 @@ const _searchBarIconSize = 25
 const _approxFooterHeight = 90
 
 const useStylesSearch = () => {
-	const [{ row, flex, text, background, opacity, margin }, { scaleSize, fontScale }] = useStyles()
+	const [{ flex, text, background, opacity, margin }, { fontScale }] = useStyles()
 
 	return {
 		searchResultHighlightText: [
@@ -174,7 +174,7 @@ const SearchBar: React.FC<{
 }
 
 const SearchHintReadyBody: React.FC<any> = ({ bannerQuote = {} }) => {
-	const [{ color, opacity, row, text, margin }, { scaleSize }] = useStyles()
+	const [{ opacity, row, text }, { scaleSize }] = useStyles()
 	const { searchHintBodyText } = useStylesSearch()
 	return !bannerQuote?.quote ? null : (
 		<View>

@@ -9,6 +9,7 @@ import { ScreenProps } from '@berty-tech/navigation'
 import { ManageGroupInvitation } from './ManageGroupInvitation'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import { Buffer } from 'buffer'
 
 const base64ToURLBase64 = (str: string) =>
 	str.replace(/\+/, '-').replace(/\//, '_').replace(/\=/, '')
