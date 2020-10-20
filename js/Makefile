@@ -273,7 +273,7 @@ _gen.pbjs:
 ##### config
 
 _gen.config:
-	cd ../config; make generate
+	cd ../config; $(MAKE) generate
 
 ##### gen.sum
 

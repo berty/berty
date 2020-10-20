@@ -3,16 +3,16 @@ all: generate test
 
 
 test:
-	cd go; make test
+	cd go; $(MAKE) test
 .PHONY: test
 
 
 generate:
 	touch api/*.proto
-	cd config; make generate
-	cd go; make generate
-	cd docs; make generate
-	cd js; make generate
+	cd config; $(MAKE) generate
+	cd go; $(MAKE) generate
+	cd docs; $(MAKE) generate
+	cd js; $(MAKE) generate
 .PHONY: generate
 
 
@@ -24,7 +24,7 @@ regenerate tidy:
 
 
 docker.build:
-	cd go; make docker.build
+	cd go; $(MAKE) docker.build
 .PHONY: docker.build
 
 
