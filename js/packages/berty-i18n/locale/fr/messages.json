@@ -19,7 +19,7 @@
       },
       "high-level": {
         "title": "Plus haut niveau de confidentialité",
-        "desc": "Moins de metadonnées",
+        "desc": "Moins de meta-données",
         "disable-push-notif": "Notifications push désactivées",
         "disable-local-peer-discovery": "Découverte de nœuds locaux désactivée",
         "disable-contact-request": "Demande d'ami désactivée"
