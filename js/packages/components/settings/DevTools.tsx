@@ -277,6 +277,13 @@ const BodyDevTools: React.FC<{}> = () => {
 				onPress={navigate.settings.systemInfo}
 			/>
 			<ButtonSetting
+				name='Network Map'
+				icon='share-outline'
+				iconSize={30}
+				iconColor={color.dark.grey}
+				onPress={() => navigation.navigate('Settings.NetworkMap')}
+			/>
+			<ButtonSetting
 				name='Add bots'
 				icon='info-outline'
 				iconSize={30}

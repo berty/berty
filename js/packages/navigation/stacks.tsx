@@ -295,6 +295,10 @@ export const Navigation: React.FC = () => {
 				component={Components.Settings.DevText}
 			/>
 			<NavigationStack.Screen
+				name={Routes.Settings.NetworkMap}
+				component={Components.Settings.NetworkMap}
+			/>
+			<NavigationStack.Screen
 				name={'Modals'}
 				component={ModalsNavigation}
 				options={{
