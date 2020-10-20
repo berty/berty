@@ -17,14 +17,14 @@ import (
 func systemInfoCommand() *ffcli.Command {
 	var (
 		refreshEveryFlag time.Duration
-		anonimizeFlag    bool
+		anonymizeFlag    bool
 	)
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("info", flag.ExitOnError)
 		manager.SetupLocalMessengerServerFlags(fs) // by default, start a new local messenger server,
 		manager.SetupRemoteNodeFlags(fs)           // but allow to set a remote server instead
 		fs.DurationVar(&refreshEveryFlag, "info.refresh", refreshEveryFlag, "refresh every DURATION (0: no refresh)")
-		fs.BoolVar(&anonimizeFlag, "info.anonimize", false, "anonimize output for sharing")
+		fs.BoolVar(&anonymizeFlag, "info.anonymize", false, "anonymize output for sharing")
 		return fs, nil
 	}
 
@@ -55,7 +55,7 @@ func systemInfoCommand() *ffcli.Command {
 					ret.Messenger.Process = nil
 				}
 
-				if anonimizeFlag {
+				if anonymizeFlag {
 					if ret.Messenger != nil && ret.Messenger.Process != nil {
 						redactStringPtr(&ret.Messenger.Process.HostName)
 						redactStringPtr(&ret.Messenger.Process.WorkingDir)

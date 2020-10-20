@@ -104,6 +104,8 @@ export const berty = {
 				'.berty.types.v1.ReplicationServiceReplicateGroup',
 			),
 			SystemInfo: jsonPb.lookup('.berty.types.v1.SystemInfo'),
+			PeerList: jsonPb.lookup('.berty.types.v1.PeerList'),
+			Direction: jsonPb.lookup('.berty.types.v1.Direction'),
 		},
 	},
 	messenger: {

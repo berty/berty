@@ -130,6 +130,11 @@
     - [MultiMemberGroupLeave.Reply](#berty.types.v1.MultiMemberGroupLeave.Reply)
     - [MultiMemberGroupLeave.Request](#berty.types.v1.MultiMemberGroupLeave.Request)
     - [MultiMemberInitialMember](#berty.types.v1.MultiMemberInitialMember)
+    - [PeerList](#berty.types.v1.PeerList)
+    - [PeerList.Peer](#berty.types.v1.PeerList.Peer)
+    - [PeerList.Reply](#berty.types.v1.PeerList.Reply)
+    - [PeerList.Request](#berty.types.v1.PeerList.Request)
+    - [PeerList.Stream](#berty.types.v1.PeerList.Stream)
     - [ReplicationServiceRegisterGroup](#berty.types.v1.ReplicationServiceRegisterGroup)
     - [ReplicationServiceRegisterGroup.Reply](#berty.types.v1.ReplicationServiceRegisterGroup.Reply)
     - [ReplicationServiceRegisterGroup.Request](#berty.types.v1.ReplicationServiceRegisterGroup.Request)
@@ -153,6 +158,7 @@
   
     - [ContactState](#berty.types.v1.ContactState)
     - [DebugInspectGroupLogType](#berty.types.v1.DebugInspectGroupLogType)
+    - [Direction](#berty.types.v1.Direction)
     - [EventType](#berty.types.v1.EventType)
     - [GroupType](#berty.types.v1.GroupType)
     - [InstanceGetConfiguration.SettingState](#berty.types.v1.InstanceGetConfiguration.SettingState)
@@ -211,6 +217,7 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | AuthServiceCompleteFlow | [.berty.types.v1.AuthServiceCompleteFlow.Request](#berty.types.v1.AuthServiceCompleteFlow.Request) | [.berty.types.v1.AuthServiceCompleteFlow.Reply](#berty.types.v1.AuthServiceCompleteFlow.Reply) | AuthServiceCompleteFlow Completes an authentication flow |
 | ServicesTokenList | [.berty.types.v1.ServicesTokenList.Request](#berty.types.v1.ServicesTokenList.Request) | [.berty.types.v1.ServicesTokenList.Reply](#berty.types.v1.ServicesTokenList.Reply) stream | ServicesTokenList Retrieves the list of services tokens |
 | ReplicationServiceRegisterGroup | [.berty.types.v1.ReplicationServiceRegisterGroup.Request](#berty.types.v1.ReplicationServiceRegisterGroup.Request) | [.berty.types.v1.ReplicationServiceRegisterGroup.Reply](#berty.types.v1.ReplicationServiceRegisterGroup.Reply) | ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents |
+| PeerList | [.berty.types.v1.PeerList.Request](#berty.types.v1.PeerList.Request) | [.berty.types.v1.PeerList.Reply](#berty.types.v1.PeerList.Reply) | PeerList returns a list of P2P peers |
 
  
 
@@ -1114,6 +1121,43 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | ----- | ---- | ----- | ----------- |
 | member_pk | [bytes](#bytes) |  | member_pk is the public key of the member who is the group creator |
 
+<a name="berty.types.v1.PeerList"></a>
+
+### PeerList
+
+<a name="berty.types.v1.PeerList.Peer"></a>
+
+### PeerList.Peer
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [string](#string) |  | id is the libp2p.PeerID |
+| address | [string](#string) |  | Address is the multiaddress via which we are connected with the peer |
+| direction | [Direction](#berty.types.v1.Direction) |  | direction is which way the connection was established |
+| latency | [int64](#int64) |  | latency is the last known round trip time to the peer in ms |
+| streams | [PeerList.Stream](#berty.types.v1.PeerList.Stream) | repeated | streams returns list of streams established with the peer |
+| errors | [string](#string) | repeated | errors is a list of errors related to the peer |
+
+<a name="berty.types.v1.PeerList.Reply"></a>
+
+### PeerList.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| peers | [PeerList.Peer](#berty.types.v1.PeerList.Peer) | repeated |  |
+
+<a name="berty.types.v1.PeerList.Request"></a>
+
+### PeerList.Request
+
+<a name="berty.types.v1.PeerList.Stream"></a>
+
+### PeerList.Stream
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [string](#string) |  | id is an identifier used to write protocol headers in streams. |
+
 <a name="berty.types.v1.ReplicationServiceRegisterGroup"></a>
 
 ### ReplicationServiceRegisterGroup
@@ -1308,6 +1352,16 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | DebugInspectGroupLogTypeUndefined | 0 |  |
 | DebugInspectGroupLogTypeMessage | 1 |  |
 | DebugInspectGroupLogTypeMetadata | 2 |  |
+
+<a name="berty.types.v1.Direction"></a>
+
+### Direction
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| UnknownDir | 0 |  |
+| InboundDir | 1 |  |
+| OutboundDir | 2 |  |
 
 <a name="berty.types.v1.EventType"></a>
 

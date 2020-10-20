@@ -531,6 +531,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   ReplicationServiceRegisterGroup: {
                     requestType: "types.v1.ReplicationServiceRegisterGroup.Request",
                     responseType: "types.v1.ReplicationServiceRegisterGroup.Reply"
+                  },
+                  PeerList: {
+                    requestType: "types.v1.PeerList.Request",
+                    responseType: "types.v1.PeerList.Reply"
                   }
                 }
               }
@@ -2319,6 +2323,74 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       }
                     }
                   }
+                }
+              },
+              PeerList: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      peers: {
+                        rule: "repeated",
+                        type: "Peer",
+                        id: 1
+                      }
+                    }
+                  },
+                  Peer: {
+                    fields: {
+                      id: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "ID"
+                        }
+                      },
+                      address: {
+                        type: "string",
+                        id: 2
+                      },
+                      direction: {
+                        type: "Direction",
+                        id: 3
+                      },
+                      latency: {
+                        type: "int64",
+                        id: 4
+                      },
+                      streams: {
+                        rule: "repeated",
+                        type: "Stream",
+                        id: 5
+                      },
+                      errors: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 6
+                      }
+                    }
+                  },
+                  Stream: {
+                    fields: {
+                      id: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "ID"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              Direction: {
+                values: {
+                  UnknownDir: 0,
+                  InboundDir: 1,
+                  OutboundDir: 2
                 }
               }
             }

@@ -985,3 +985,41 @@ message SystemInfo {
     string system_username = 28;
   }
 }
+
+message PeerList {
+  message Request {}
+  message Reply {
+    repeated Peer peers = 1;
+  }
+
+  message Peer {
+    // id is the libp2p.PeerID
+    string id = 1 [(gogoproto.customname) = "ID"];
+
+    // Address is the multiaddress via which we are connected with the peer
+    string address = 2;
+
+    // direction is which way the connection was established
+    Direction direction = 3;
+
+    // latency is the last known round trip time to the peer in ms
+    int64 latency = 4;
+
+    // streams returns list of streams established with the peer
+    repeated Stream streams = 5;
+
+    // errors is a list of errors related to the peer
+    repeated string errors = 6;
+  }
+
+  message Stream {
+    // id is an identifier used to write protocol headers in streams.
+    string id = 1 [(gogoproto.customname) = "ID"];
+  }
+}
+
+enum Direction {
+  UnknownDir = 0;
+  InboundDir = 1;
+  OutboundDir = 2;
+}

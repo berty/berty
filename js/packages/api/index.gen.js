@@ -182,6 +182,15 @@ export const berty = {
 				'.berty.types.v1.ReplicationServiceReplicateGroup',
 			),
 			SystemInfo: jsonPb.lookup('.berty.types.v1.SystemInfo'),
+			PeerList: jsonPb.lookup('.berty.types.v1.PeerList'),
+			Direction: {
+				UnknownDir: 0,
+				0: 'UnknownDir',
+				InboundDir: 1,
+				1: 'InboundDir',
+				OutboundDir: 2,
+				2: 'OutboundDir',
+			},
 		},
 	},
 	messenger: {
