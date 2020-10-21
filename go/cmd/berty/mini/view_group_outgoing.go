@@ -7,11 +7,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"os"
 	"strings"
 
 	"github.com/atotto/clipboard"
-	cid "github.com/ipfs/go-cid"
-	qrterminal "github.com/mdp/qrterminal/v3"
+	"github.com/ipfs/go-cid"
+	"github.com/mdp/qrterminal/v3"
 	"moul.io/godev"
 
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
@@ -186,8 +187,13 @@ func commandList() []*command {
 		},
 		{
 			title: "reply-options",
-			help:  `Send a list of quick responses from JSON: [{"display": "Text offering a *yes* option", "payload": "yes"}]`,
+			help:  `Sends a list of quick responses from JSON: [{"display": "Text offering a *yes* option", "payload": "yes"}]`,
 			cmd:   sendReplyOptions,
+		},
+		{
+			title: "export",
+			help:  `Saves an export of the current instance to the specified path`,
+			cmd:   exportAccount,
 		},
 		{
 			title:     "/",
@@ -212,6 +218,39 @@ func sendReplyOptions(ctx context.Context, v *groupView, cmd string) error {
 	})
 
 	return err
+}
+
+func exportAccount(ctx context.Context, v *groupView, path string) error {
+	path = strings.TrimSpace(path)
+
+	f, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+
+	defer func() { _ = f.Close() }()
+
+	cl, err := v.v.messenger.InstanceExportData(ctx, &bertymessenger.InstanceExportData_Request{})
+	if err != nil {
+		return err
+	}
+
+	for {
+		chunk, err := cl.Recv()
+		if err == io.EOF {
+			v.messages.Append(&historyMessage{
+				payload: []byte("Account exported"),
+			})
+
+			return nil
+		} else if err != nil {
+			return err
+		}
+
+		if _, err := f.Write(chunk.ExportedData); err != nil {
+			return err
+		}
+	}
 }
 
 func authInit(ctx context.Context, v *groupView, cmd string) error {

@@ -1,8 +1,8 @@
 41a24aadd7901a76a4dce50c2ad175d0eba77c4e  ../api/bertybridge.proto
-d0217673022c3a06902761936566c033e36fce08  ../api/bertymessenger.proto
-effbc6298054d1b65b531112ac207a28f4539c54  ../api/bertyprotocol.proto
+632066266410cec220b85d1615924893d14d8ba7  ../api/bertymessenger.proto
+d4d6abe48c659796c97173f742d620bb7f874490  ../api/bertyprotocol.proto
 23e393a8bba7426244b4747d7adb6188830756aa  ../api/bertyreplication.proto
-be7fad6a9a0886bdbff257b1eecefd4548c6d412  ../api/bertytypes.proto
+5bbbc86cd312ef5595ec37244faaee11819fcfa1  ../api/bertytypes.proto
 358a979bdb2969b4af1cb2ce6c3e60f4d5fcf3e5  ../api/errcode.proto
 c314cc3d08e8849bd0693039e42da117c39efef5  ../api/go-internal/handshake.proto
 9b4665f0290b8e94e5ef4b80572a9304f587c2c7  ../api/go-internal/records.proto

@@ -3,11 +3,13 @@ package bertymessenger
 import (
 	"context"
 	"errors"
+	"io"
 	"sync"
 	"time"
 
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
+	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"go.uber.org/zap"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -85,6 +87,11 @@ func (opts *Opts) applyDefaults() (func(), error) {
 	}
 
 	return cleanup, nil
+}
+
+func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_interface.CoreAPI, odb *bertyprotocol.BertyOrbitDB, logger *zap.Logger) error {
+	return bertyprotocol.RestoreAccountExport(ctx, reader, coreAPI, odb, logger)
+	// TODO: restore messenger specific data
 }
 
 func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error) {

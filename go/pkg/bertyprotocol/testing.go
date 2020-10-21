@@ -43,6 +43,9 @@ type TestingOpts struct {
 	TracerProvider trace.Provider
 	Mocknet        libp2p_mocknet.Mocknet
 	RDVPeer        peer.AddrInfo
+	DeviceKeystore DeviceKeystore
+	CoreAPIMock    ipfsutil.CoreAPIMock
+	OrbitDB        *BertyOrbitDB
 }
 
 func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds datastore.Batching) (*TestingProtocol, func()) {
@@ -64,18 +67,31 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds
 		Datastore: ds,
 	}
 
-	node, cleanupNode := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsopts)
-	deviceKeystore := NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(ds, datastore.NewKey(NamespaceDeviceKeystore))))
+	node := opts.CoreAPIMock
+	cleanupNode := func() {}
+	if node == nil {
+		node, cleanupNode = ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsopts)
+	}
 
-	odb, err := NewBertyOrbitDB(ctx, node.API(), &NewOrbitDBOptions{
-		NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
-			PubSub: pubsubraw.NewPubSub(node.PubSub(), node.MockNode().PeerHost.ID(), opts.Logger, nil),
-			Logger: opts.Logger,
-		},
-		Datastore:      ds,
-		DeviceKeystore: deviceKeystore,
-	})
-	require.NoError(t, err)
+	deviceKeystore := opts.DeviceKeystore
+	if deviceKeystore == nil {
+		deviceKeystore = NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(ds, datastore.NewKey(NamespaceDeviceKeystore))))
+	}
+
+	odb := opts.OrbitDB
+	if odb == nil {
+		var err error
+
+		odb, err = NewBertyOrbitDB(ctx, node.API(), &NewOrbitDBOptions{
+			NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
+				PubSub: pubsubraw.NewPubSub(node.PubSub(), node.MockNode().PeerHost.ID(), opts.Logger, nil),
+				Logger: opts.Logger,
+			},
+			Datastore:      ds,
+			DeviceKeystore: deviceKeystore,
+		})
+		require.NoError(t, err)
+	}
 
 	serviceOpts := Opts{
 		Host:           node.MockNode().PeerHost,

@@ -776,9 +776,18 @@
         "operationId": "ProtocolService_InstanceExportData",
         "responses": {
           "200": {
-            "description": "A successful response.",
+            "description": "A successful response.(streaming responses)",
             "schema": {
-              "$ref": "#/definitions/v1InstanceExportDataReply"
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1InstanceExportDataReply"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of v1InstanceExportDataReply"
             }
           },
           "default": {

@@ -96,6 +96,7 @@ type Manager struct {
 			DisableNotifications bool
 			RebuildSqlite        bool
 			MessengerSqliteOpts  string
+			ExportPathToRestore  string
 
 			// internal
 			protocolClient   bertyprotocol.Client

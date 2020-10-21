@@ -397,7 +397,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 methods: {
                   InstanceExportData: {
                     requestType: "types.v1.InstanceExportData.Request",
-                    responseType: "types.v1.InstanceExportData.Reply"
+                    responseType: "types.v1.InstanceExportData.Reply",
+                    responseStream: true
                   },
                   InstanceGetConfiguration: {
                     requestType: "types.v1.InstanceGetConfiguration.Request",
@@ -629,6 +630,34 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   signPub: {
                     type: "bytes",
                     id: 5
+                  }
+                }
+              },
+              GroupHeadsExport: {
+                fields: {
+                  publicKey: {
+                    type: "bytes",
+                    id: 1
+                  },
+                  signPub: {
+                    type: "bytes",
+                    id: 2
+                  },
+                  metadataHeadsCids: {
+                    rule: "repeated",
+                    type: "bytes",
+                    id: 3,
+                    options: {
+                      "(gogoproto.customname)": "MetadataHeadsCIDs"
+                    }
+                  },
+                  messagesHeadsCids: {
+                    rule: "repeated",
+                    type: "bytes",
+                    id: 4,
+                    options: {
+                      "(gogoproto.customname)": "MessagesHeadsCIDs"
+                    }
                   }
                 }
               },
@@ -2524,6 +2553,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   GetUsername: {
                     requestType: "GetUsername.Request",
                     responseType: "GetUsername.Reply"
+                  },
+                  InstanceExportData: {
+                    requestType: "InstanceExportData.Request",
+                    responseType: "InstanceExportData.Reply",
+                    responseStream: true
                   }
                 }
               },
@@ -3847,6 +3881,22 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       username: {
                         type: "string",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              InstanceExportData: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      exportedData: {
+                        type: "bytes",
                         id: 1
                       }
                     }

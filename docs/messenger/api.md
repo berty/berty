@@ -62,6 +62,9 @@
     - [GetUsername](#berty.messenger.v1.GetUsername)
     - [GetUsername.Reply](#berty.messenger.v1.GetUsername.Reply)
     - [GetUsername.Request](#berty.messenger.v1.GetUsername.Request)
+    - [InstanceExportData](#berty.messenger.v1.InstanceExportData)
+    - [InstanceExportData.Reply](#berty.messenger.v1.InstanceExportData.Reply)
+    - [InstanceExportData.Request](#berty.messenger.v1.InstanceExportData.Request)
     - [InstanceShareableBertyID](#berty.messenger.v1.InstanceShareableBertyID)
     - [InstanceShareableBertyID.Reply](#berty.messenger.v1.InstanceShareableBertyID.Reply)
     - [InstanceShareableBertyID.Request](#berty.messenger.v1.InstanceShareableBertyID.Request)
@@ -545,6 +548,22 @@
 <a name="berty.messenger.v1.GetUsername.Request"></a>
 
 ### GetUsername.Request
+
+<a name="berty.messenger.v1.InstanceExportData"></a>
+
+### InstanceExportData
+
+<a name="berty.messenger.v1.InstanceExportData.Reply"></a>
+
+### InstanceExportData.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| exported_data | [bytes](#bytes) |  |  |
+
+<a name="berty.messenger.v1.InstanceExportData.Request"></a>
+
+### InstanceExportData.Request
 
 <a name="berty.messenger.v1.InstanceShareableBertyID"></a>
 
@@ -1054,6 +1073,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | ReplicationSetAutoEnable | [ReplicationSetAutoEnable.Request](#berty.messenger.v1.ReplicationSetAutoEnable.Request) | [ReplicationSetAutoEnable.Reply](#berty.messenger.v1.ReplicationSetAutoEnable.Reply) | ReplicationSetAutoEnable Sets whether new groups should be replicated automatically or not |
 | BannerQuote | [BannerQuote.Request](#berty.messenger.v1.BannerQuote.Request) | [BannerQuote.Reply](#berty.messenger.v1.BannerQuote.Reply) | BannerQuote returns the quote of the day. |
 | GetUsername | [GetUsername.Request](#berty.messenger.v1.GetUsername.Request) | [GetUsername.Reply](#berty.messenger.v1.GetUsername.Reply) | GetUsername returns the name of the device/user using Android/iOS/universal API |
+| InstanceExportData | [InstanceExportData.Request](#berty.messenger.v1.InstanceExportData.Request) | [InstanceExportData.Reply](#berty.messenger.v1.InstanceExportData.Reply) stream | InstanceExportData exports instance data |
 
  
 
