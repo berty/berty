@@ -8,6 +8,8 @@ const BridgeConsole = {
 
 import { GoBridgeInterface, GoBridgeOpts, GoLogLevel } from './types'
 
+export { GoBridgeDefaultOpts } from './defaults'
+
 export type { GoBridgeInterface, GoBridgeOpts }
 
 export { GoLogLevel, BridgeConsole }

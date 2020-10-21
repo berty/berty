@@ -5,7 +5,7 @@ import { grpcweb as rpcWeb, bridge as rpcBridge } from '@berty-tech/grpc-bridge/
 import { Service, EOF } from '@berty-tech/grpc-bridge'
 import ExternalTransport from './externalTransport'
 import cloneDeep from 'lodash/cloneDeep'
-import GoBridge from '@berty-tech/go-bridge'
+import GoBridge, { GoBridgeDefaultOpts } from '@berty-tech/go-bridge'
 import MsgrContext, { initialState } from './context'
 import pickBy from 'lodash/pickBy'
 import mapValues from 'lodash/mapValues'
@@ -218,11 +218,7 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 			return
 		}
 		console.log('starting daemon')
-		GoBridge.startProtocol({
-			persistence: true,
-			tracing: true,
-			logFilters: 'info,warn:bty,bty.* error+:*',
-		})
+		GoBridge.startProtocol(GoBridgeDefaultOpts)
 			.then(() => {
 				setNodeStarted(true)
 			})

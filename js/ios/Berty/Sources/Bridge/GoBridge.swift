@@ -30,7 +30,7 @@ class GoBridge: NSObject {
     let logger = LoggerDriver("tech.berty", "react")
 
     // protocol
-    var bridgeMessenger: BertybridgeMessengerBridge?
+    var bridgeMessenger: BertybridgeBridge?
     let rootdir: URL
 
     static func requiresMainQueueSetup() -> Bool {
@@ -95,46 +95,19 @@ class GoBridge: NSObject {
 
             // gather opts
             let optPersistence = opts.get(bool: "persistence")
-            let optLogFilters = opts.get(string: "logFilters", defaultValue: "info,warn:bty,bty.* error+:*")
-            let optGrpcListeners = opts.get(array: "grpcListeners", defaultValue: ["/ip4/127.0.0.1/tcp/0/grpcws"])
-            let optSwarmListeners = opts.get(array: "swarmListeners", defaultValue: ["/ip4/0.0.0.0/tcp/0", "/ip6/0.0.0.0/tcp/0"])
-            let optTracing = opts.get(bool: "tracing")
-            let optTracingPrefix = opts.get(string: "tracingPrefix")
-            let optLocalDiscovery = opts.get(bool: "localDiscovery")
+            let cliArgs = opts.get(array: "cliArgs", defaultValue: [])
 
             var err: NSError?
-            guard let config = BertybridgeNewMessengerConfig() else {
+            guard let config = BertybridgeNewConfig() else {
                 throw NSError(domain: "unable to create config", code: 1)
             }
 
-            // set life cycle driver
-            config.lifeCycleDriver(LifeCycleDriver.shared)
+            config.setLoggerDriver(LoggerDriver("tech.berty", "protocol"))
+            config.setLifeCycleDriver(LifeCycleDriver.shared)
+            config.setNotificationDriver(NotificationDriver.shared)
 
-            // init logger driver
-            let logger = LoggerDriver("tech.berty", "protocol")
-
-            config.setLogFilters(optLogFilters)
-            config.loggerDriver(logger)
-
-            // setup notification
-            config.notificationDriver(NotificationDriver.shared)
-
-            // configure grpc listener
-            for obj in optGrpcListeners {
-                guard let listener = obj as? String else {
-                    throw NSError(domain: "unable to get listener", code: 1)
-                }
-
-                config.addGRPCListener(listener)
-            }
-
-            // configure swarm listeners
-            for obj in optSwarmListeners {
-                guard let listener = obj as? String else {
-                    throw NSError(domain: "unable to get listener", code: 1)
-                }
-
-                config.addSwarmListener(listener)
+            for arg in cliArgs {
+              config.appendCLIArg(arg as? String)
             }
 
             // set persistence if needed
@@ -146,20 +119,14 @@ class GoBridge: NSObject {
                 }
 
                 NSLog("root dir: `%@`", self.rootdir.path)
-                config.rootDirectory(self.rootdir.path)
+                config.appendCLIArg("--store.dir")
+                config.appendCLIArg(self.rootdir.path)
             }
 
-            if optTracing {
-                config.enableTracing()
-                config.setTracingPrefix(optTracingPrefix)
-            }
 
-            if !optLocalDiscovery {
-                config.disableLocalDiscovery()
-            }
 
             NSLog("bflifecycle: calling BertybridgeNewMessengerBridge")
-            let bridgeMessenger = BertybridgeNewMessengerBridge(config, &err)
+            let bridgeMessenger = BertybridgeNewBridge(config, &err)
             NSLog("bflifecycle: done BertybridgeNewMessengerBridge")
             if err != nil {
                 throw err!

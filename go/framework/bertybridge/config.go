@@ -26,6 +26,7 @@ func (c *Config) SetLoggerDriver(dLogger NativeLoggerDriver)      { c.dLogger = 
 func (c *Config) SetNotificationDriver(driver NotificationDriver) { c.notifdriver = driver }
 func (c *Config) SetLifeCycleDriver(lc LifeCycleDriver)           { c.lc = lc }
 func (c *Config) SetCLIArgs(args []string)                        { c.cliArgs = args }
+func (c *Config) AppendCLIArg(arg string)                         { c.cliArgs = append(c.cliArgs, arg) }
 
 func (c *Config) manager() (*initutil.Manager, func(), error) {
 	manager := initutil.Manager{}
