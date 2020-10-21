@@ -78,6 +78,13 @@ const useStylesAddBetabot = () => {
 	}
 }
 
+const useStylesOneToOne = () => {
+	const [{ text }] = useStyles()
+	return {
+		dateMessage: [text.size.scale(11), text.bold.small, text.color.grey],
+	}
+}
+
 const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) => {
 	const { ...propsToPass } = props
 	return (
@@ -525,6 +532,7 @@ const InfosChat: React.FC<api.berty.messenger.v1.IConversation & any> = ({
 	isBetabotAdded,
 }) => {
 	const [{ flex, text, padding, margin }] = useStyles()
+	const { dateMessage } = useStylesOneToOne()
 	const createdDate = pbDateToNum(createdDateStr) || Date.now()
 	const ctx = useMsgrContext()
 	const contact =
@@ -556,7 +564,7 @@ const InfosChat: React.FC<api.berty.messenger.v1.IConversation & any> = ({
 			{!isAccepted && contact.state !== messengerpb.Contact.State.Undefined && (
 				<>
 					<View style={[flex.align.center]}>
-						<Text style={[text.size.tiny, text.color.grey, margin.top.tiny]}>
+						<Text style={[margin.top.tiny, dateMessage]}>
 							{timeFormat.fmtTimestamp1(pbDateToNum(createdDate))}
 						</Text>
 					</View>
