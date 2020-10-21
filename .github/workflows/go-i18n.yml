@@ -1,0 +1,35 @@
+name: Go i18n
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+    paths:
+      - 'go/**/i18n.go'
+      - 'go/internal/i18n/generate-json.py'
+      - '.github/workflows/i18n.yml'
+  pull_request:
+    paths:
+      - 'go/**/i18n.go'
+      - 'go/internal/i18n/generate-json.py'
+      - '.github/workflows/i18n.yml'
+
+jobs:
+  build:
+    name: Check the go i18n generation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}  # see https://github.com/actions/checkout/issues/299
+
+      - name: Run the Script
+        run: |
+          cd go/internal/i18n/
+          mv locales/en.json locales/en.json.old
+          ./generate-json.py
+          diff locales/en.json.old locales/en.json

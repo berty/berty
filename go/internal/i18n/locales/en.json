@@ -1,0 +1,7 @@
+{
+  "./internal/initutil#initutil": {
+    "IPFSAPIListeners": "IPFS API listeners",
+    "IPFSAnnouncedListeners": "IPFS announce addrs",
+    "IPFSListeners": "IPFS listeners"
+  }
+}

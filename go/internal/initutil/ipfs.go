@@ -32,9 +32,9 @@ import (
 )
 
 func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
-	fs.StringVar(&m.Node.Protocol.IPFSListeners, "p2p.ipfs-listeners", "/ip4/0.0.0.0/tcp/0,/ip4/0.0.0.0/udp/0/quic", "IPFS listeners")
-	fs.StringVar(&m.Node.Protocol.IPFSAPIListeners, "p2p.ipfs-api-listeners", "", "IPFS API listeners")
-	fs.StringVar(&m.Node.Protocol.Announce, "p2p.ipfs-announce", "", "IPFS announce addrs")
+	fs.StringVar(&m.Node.Protocol.IPFSListeners, "p2p.ipfs-listeners", "/ip4/0.0.0.0/tcp/0,/ip4/0.0.0.0/udp/0/quic", i18nIPFSListeners)
+	fs.StringVar(&m.Node.Protocol.IPFSAPIListeners, "p2p.ipfs-api-listeners", "", i18nIPFSAPIListeners)
+	fs.StringVar(&m.Node.Protocol.Announce, "p2p.ipfs-announce", "", i18nIPFSAnnouncedListeners)
 
 	fs.StringVar(&m.Node.Protocol.NoAnnounce, "p2p.ipfs-no-announce", "", "IPFS exclude announce addrs")
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")

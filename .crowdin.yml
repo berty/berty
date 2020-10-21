@@ -14,5 +14,9 @@ files: [
  {
   "source" : "/js/packages/berty-i18n/locale/en/messages.json",
   "translation" : "/js/packages/berty-i18n/locale/%two_letters_code%/%original_file_name%",
+ },
+ {
+  "source" : "/go/internal/i18n/locales/en.json,
+  "translation" : "/go/internal/i18n/locales/%two_letters_code%.json",
  }
 ]
