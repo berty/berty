@@ -45,7 +45,7 @@
       "skip": "SKIP AND DO THIS LATER"
     },
     "bluetooth": {
-      "header": "Communicate whithout an internet connection (wifi or data) by connecting your phone directly with peers nearby",
+      "header": "Communicate without an internet connection (wifi or data) by connecting your phone directly with peers nearby",
       "optional": "Optional",
       "title": "Bluetooth",
       "desc": "To use this feature you need to autorize the use of Bluetooth on your phone",
