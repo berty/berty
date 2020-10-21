@@ -54,20 +54,14 @@ help:
 	@echo "  ios.release          Launch iOS app in release mode          IOS_DEVICE=<virtual/real device>"
 	@echo "  lint                 Run eslint"
 	@echo "  lint.fix             Run eslint and fix erros"
-	@echo "  lint.quick           Run eslint without verifying deps"
 	@echo "  metro.start          Start React-Native Metro (app debug)"
 	@echo "  regenerate           Clean and generate Protobuf files"
 	@echo "  test                 Run tests"
-	@echo "  test.quick           Run tests without verifying deps"
 
 #### Test
 
 .PHONY: test
 test: node_mod
-	yarn test
-
-.PHONY: test.quick
-test.quick:
 	yarn test
 
 #### Gen
@@ -148,13 +142,6 @@ lint.fix: node_mod
 	echo '*.pb.*' >> .eslintignore
 	echo '*.gen.*' >> .eslintignore
 	$(eslint) --cache --quiet --ext=.js,.jsx,.ts,.tsx --fix .
-
-.PHONY: lint.quick
-lint.quick:
-	cp .gitignore .eslintignore
-	echo '*.pb.*' >> .eslintignore
-	echo '*.gen.*' >> .eslintignore
-	$(eslint) --cache --quiet --ext=.js,.jsx,.ts,.tsx .
 
 ###################
 # Build/Run rules #

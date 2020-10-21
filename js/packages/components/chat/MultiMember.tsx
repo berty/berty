@@ -29,7 +29,7 @@ import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import * as api from '@berty-tech/api/index.pb'
 
 import { ChatFooter, ChatDate } from './shared-components/Chat'
-import { Message } from './shared-components/Message'
+import { Message, MessageSystemWrapper } from './shared-components/Message'
 import BlurView from '../shared-components/BlurView'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import AvatarGroup19 from '../main/Avatar_Group_Copy_19.png'
@@ -217,15 +217,16 @@ const MemberList: React.FC<{ members: any }> = ({ members }) => {
 const InfosMultiMember: React.FC<api.berty.messenger.v1.IConversation> = ({
 	createdDate: createdDateStr,
 }) => {
-	const [{ margin, text }] = useStyles()
+	const [{ margin, text, flex }] = useStyles()
 	// const members = useConvMembers(publicKey)
 	const createdDate = parseInt((createdDateStr as unknown) as string, 10)
+	const textColor = '#4E58BF'
 	return (
-		<View>
+		<View style={[flex.align.center, flex.justify.center]}>
 			<ChatDate date={createdDate} />
-			<View style={[margin.vertical.medium]}>
-				<Text style={[text.align.center, text.color.black, text.bold.medium]}>Group joined</Text>
-			</View>
+			<MessageSystemWrapper styleContainer={[margin.top.large, margin.bottom.medium]}>
+				<Text style={[text.align.center, { color: textColor }]}>Group joined! 👍</Text>
+			</MessageSystemWrapper>
 			{/*<MemberList members={Object.keys(members)} />*/}
 		</View>
 	)
