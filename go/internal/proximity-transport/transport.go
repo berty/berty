@@ -3,6 +3,7 @@ package proximitytransport
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	host "github.com/libp2p/go-libp2p-core/host"
 	peer "github.com/libp2p/go-libp2p-core/peer"
@@ -14,12 +15,11 @@ import (
 	"go.uber.org/zap"
 )
 
-// logger is global because HandleFoundPeer must be able to call it
-// FIXME: remove global logger
-var logger *zap.Logger = zap.NewNop()
-
 // Transport is a tpt.transport.
 var _ tpt.Transport = &ProximityTransport{}
+
+// TransportMap keeps tracks of existing Transport to prevent multiple utilizations
+var TransportMap sync.Map
 
 // ProximityTransport represents any device by which you can connect to and accept
 // connections from other peers.
@@ -27,32 +27,31 @@ type ProximityTransport struct {
 	host     host.Host
 	upgrader *tptu.Upgrader
 
-	driver NativeDriver
-	ctx    context.Context
+	connMap  sync.Map
+	lock     sync.RWMutex
+	listener *Listener
+	driver   NativeDriver
+	logger   *zap.Logger
+	ctx      context.Context
 }
 
 func NewTransport(ctx context.Context, l *zap.Logger, driver NativeDriver) func(h host.Host, u *tptu.Upgrader) (*ProximityTransport, error) {
-	logger = l.Named("ProximityTransport")
+	l = l.Named("ProximityTransport")
 
 	if driver == nil {
-		logger.Error("ProximityTransportConstructor: driver is nil")
+		l.Error("error: NewTransport: driver is nil")
 		driver = &NoopNativeDriver{}
 	}
 
 	return func(h host.Host, u *tptu.Upgrader) (*ProximityTransport, error) {
-		logger.Debug("ProximityTransportConstructor()")
+		l.Debug("NewTransport()")
 		transport := &ProximityTransport{
 			host:     h,
 			upgrader: u,
 			driver:   driver,
+			logger:   l,
 			ctx:      ctx,
 		}
-
-		driver.BindNativeToGoFunctions(
-			transport.HandleFoundPeer,
-			transport.HandleLostPeer,
-			transport.ReceiveFromPeer,
-		)
 
 		return transport, nil
 	}
@@ -63,28 +62,28 @@ func NewTransport(ctx context.Context, l *zap.Logger, driver NativeDriver) func(
 func (t *ProximityTransport) Dial(ctx context.Context, remoteMa ma.Multiaddr, remotePID peer.ID) (tpt.CapableConn, error) {
 	// ProximityTransport needs to have a running listener in order to dial other peer
 	// because native driver is initialized during listener creation.
-	gLock.RLock()
-	defer gLock.RUnlock()
-	if gListener == nil {
-		return nil, errors.New("proximityTransport: ProximityTransport.Dial: no active listener")
+	t.lock.RLock()
+	defer t.lock.RUnlock()
+	if t.listener == nil {
+		return nil, errors.New("error: ProximityTransport.Dial: no active listener")
 	}
 
 	// remoteAddr is supposed to be equal to remotePID since with proximity transports:
 	// multiaddr = /<protocol>/<peerID>
 	remoteAddr, err := remoteMa.ValueForProtocol(t.driver.ProtocolCode())
 	if err != nil || remoteAddr != remotePID.Pretty() {
-		return nil, errors.Wrap(err, "proximityTransport: ProximityTransport.Dial: wrong multiaddr")
+		return nil, errors.Wrap(err, "error: ProximityTransport.Dial: wrong multiaddr")
 	}
 
 	// Check if native driver is already connected to peer's device.
 	// With proximity connections you can't really dial, only auto-connect with peer nearby.
 	if !t.driver.DialPeer(remoteAddr) {
-		return nil, errors.New("proximityTransport: ProximityTransport.Dial: peer not connected through the native driver")
+		return nil, errors.New("error: ProximityTransport.Dial: peer not connected through the native driver")
 	}
 
 	// Can't have two connections on the same multiaddr
-	if _, ok := connMap.Load(remoteAddr); ok {
-		return nil, errors.New("proximityTransport: ProximityTransport.Dial: already connected to this address")
+	if _, ok := t.connMap.Load(remoteAddr); ok {
+		return nil, errors.New("error: ProximityTransport.Dial: already connected to this address")
 	}
 
 	// Returns an outbound conn.
@@ -106,7 +105,7 @@ func (t *ProximityTransport) Listen(localMa ma.Multiaddr) (tpt.Listener, error) 
 	localPID := t.host.ID().Pretty()
 	localAddr, err := localMa.ValueForProtocol(t.driver.ProtocolCode())
 	if err != nil || (localMa.String() != t.driver.DefaultAddr() && localAddr != localPID) {
-		return nil, errors.Wrap(err, "proximityTransport: ProximityTransport.Listen: wrong multiaddr")
+		return nil, errors.Wrap(err, "error: ProximityTransport.Listen: wrong multiaddr")
 	}
 
 	// Replaces default bind by local host peerID
@@ -117,15 +116,24 @@ func (t *ProximityTransport) Listen(localMa ma.Multiaddr) (tpt.Listener, error) 
 		}
 	}
 
-	// If a global listener already exists, returns an error.
-	gLock.RLock()
-	if gListener != nil {
-		gLock.RUnlock()
-		return nil, errors.New("proximityTransport: ProximityTransport.Listen: one listener maximum")
+	t.lock.RLock()
+	// If the a listener already exists for this driver, returns an error.
+	_, ok := TransportMap.Load(t.driver.ProtocolName())
+	if ok || t.listener != nil {
+		t.lock.RUnlock()
+		return nil, errors.New("error: ProximityTransport.Listen: one listener maximum")
 	}
-	gLock.RUnlock()
+	t.lock.RUnlock()
 
-	return newListener(t.ctx, localMa, t), nil
+	// Register this transport
+	TransportMap.Store(t.driver.ProtocolName(), t)
+
+	t.lock.Lock()
+	defer t.lock.Unlock()
+
+	t.listener = newListener(t.ctx, localMa, t)
+
+	return t.listener, err
 }
 
 // Proxy returns true if this transport proxies.

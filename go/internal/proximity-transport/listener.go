@@ -4,18 +4,10 @@ import (
 	"context"
 	"errors"
 	"net"
-	"sync"
 
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	tpt "github.com/libp2p/go-libp2p-core/transport"
 	ma "github.com/multiformats/go-multiaddr"
-)
-
-// Global listener is used by discovery (to send incoming conn request to Accept())
-// and transport (to ensure that only one listener is running at a time).
-var (
-	gListener *Listener
-	gLock     sync.RWMutex
 )
 
 // Listener is a tpt.Listener.
@@ -41,7 +33,7 @@ type connReq struct {
 
 // newListener starts the native driver then returns a new Listener.
 func newListener(ctx context.Context, localMa ma.Multiaddr, t *ProximityTransport) *Listener {
-	logger.Debug("newListener()")
+	t.logger.Debug("newListener()")
 	ctx, cancel := context.WithCancel(ctx)
 
 	listener := &Listener{
@@ -56,11 +48,6 @@ func newListener(ctx context.Context, localMa ma.Multiaddr, t *ProximityTranspor
 	// If it failed, don't return a error because no other transport
 	// on the libp2p node will be created.
 	t.driver.Start(t.host.ID().Pretty())
-
-	// Sets listener as global listener
-	gLock.Lock()
-	gListener = listener
-	gLock.Unlock()
 
 	return listener
 }
@@ -78,7 +65,7 @@ func (l *Listener) Accept() (tpt.CapableConn, error) {
 				return conn, nil
 			}
 		case <-l.ctx.Done():
-			return nil, errors.New("proximityTransport: Listener.Accept failed: listener already closed")
+			return nil, errors.New("error: Listener.Accept failed: listener already closed")
 		}
 	}
 }
@@ -86,15 +73,19 @@ func (l *Listener) Accept() (tpt.CapableConn, error) {
 // Close closes the listener.
 // Any blocked Accept operations will be unblocked and return errors.
 func (l *Listener) Close() error {
+	l.transport.logger.Debug("Listener.Close()")
 	l.cancel()
 
 	// Stops the native driver.
 	l.transport.driver.Stop()
 
-	// Removes global listener so transport can instantiate a new one later.
-	gLock.Lock()
-	gListener = nil
-	gLock.Unlock()
+	// Removes listener so transport can instantiate a new one later.
+	l.transport.lock.Lock()
+	l.transport.listener = nil
+	l.transport.lock.Unlock()
+
+	// Unregister this transport
+	TransportMap.Delete(l.transport.driver.ProtocolName())
 
 	return nil
 }

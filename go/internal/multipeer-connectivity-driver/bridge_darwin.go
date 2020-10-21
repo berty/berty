@@ -18,12 +18,6 @@ import (
 	proximity "berty.tech/berty/v2/go/internal/proximity-transport"
 )
 
-var (
-	GoHandleFoundPeer func(remotePID string) bool            = nil
-	GoHandleLostPeer  func(remotePID string)                 = nil
-	GoReceiveFromPeer func(remotePID string, payload []byte) = nil
-)
-
 type Driver struct {
 	protocolCode int
 	protocolName string
@@ -44,18 +38,15 @@ func NewDriver(logger *zap.Logger) proximity.NativeDriver {
 	}
 }
 
-// Native -> Go functions
-func (d *Driver) BindNativeToGoFunctions(hfp func(string) bool, hlp func(string), rfp func(string, []byte)) {
-	GoHandleFoundPeer = hfp
-	GoHandleLostPeer = hlp
-	GoReceiveFromPeer = rfp
-}
-
 //export HandleFoundPeer
 func HandleFoundPeer(remotePID *C.char) int {
 	goPID := C.GoString(remotePID)
 
-	if GoHandleFoundPeer(goPID) {
+	t, ok := proximity.TransportMap.Load(ProtocolName)
+	if !ok {
+		return 0
+	}
+	if t.(*proximity.ProximityTransport).HandleFoundPeer(goPID) {
 		return 1
 	}
 	return 0
@@ -65,7 +56,11 @@ func HandleFoundPeer(remotePID *C.char) int {
 func HandleLostPeer(remotePID *C.char) {
 	goPID := C.GoString(remotePID)
 
-	GoHandleLostPeer(goPID)
+	t, ok := proximity.TransportMap.Load(ProtocolName)
+	if !ok {
+		return
+	}
+	t.(*proximity.ProximityTransport).HandleLostPeer(goPID)
 }
 
 //export ReceiveFromPeer
@@ -73,7 +68,11 @@ func ReceiveFromPeer(remotePID *C.char, payload unsafe.Pointer, length C.int) {
 	goPID := C.GoString(remotePID)
 	goPayload := C.GoBytes(payload, length)
 
-	GoReceiveFromPeer(goPID, goPayload)
+	t, ok := proximity.TransportMap.Load(ProtocolName)
+	if !ok {
+		return
+	}
+	t.(*proximity.ProximityTransport).ReceiveFromPeer(goPID, goPayload)
 }
 
 func (d *Driver) Start(localPID string) {

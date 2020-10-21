@@ -1,9 +1,6 @@
 package proximitytransport
 
 type NativeDriver interface {
-	// Bind Go functions to native function pointers
-	BindNativeToGoFunctions(handleFoundPeer func(string) bool, handleLostPeer func(string), receiveFromPeer func(string, []byte))
-
 	// Start the native driver
 	Start(localPID string)
 
@@ -30,9 +27,6 @@ type NativeDriver interface {
 }
 
 type NoopNativeDriver struct{}
-
-func (d *NoopNativeDriver) BindNativeToGoFunctions(_ func(string) bool, _ func(string), _ func(string, []byte)) {
-}
 
 func (d *NoopNativeDriver) Start(_ string) {}
 
