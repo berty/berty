@@ -9,10 +9,10 @@ test:
 
 generate:
 	touch api/*.proto
-	cd config; $(MAKE) generate
 	cd go; $(MAKE) generate
 	cd docs; $(MAKE) generate
 	cd js; $(MAKE) generate
+	cd config; $(MAKE) generate
 .PHONY: generate
 
 
