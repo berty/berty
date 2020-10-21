@@ -38,7 +38,7 @@
     },
     "notifications": {
       "header": "Don't miss ant new message or contact request",
-      "recommanded": "Recommended",
+      "recommended": "Recommended",
       "title": "Notifications",
       "desc": "You need to authorize push notifications from Berty on your phone",
       "button": "AUTHORIZE NOTIFICATIONS",
