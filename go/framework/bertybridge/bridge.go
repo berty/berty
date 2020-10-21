@@ -2,7 +2,6 @@ package bertybridge
 
 import (
 	"context"
-	"fmt"
 	mrand "math/rand"
 	"strings"
 	"sync"
@@ -192,30 +191,21 @@ var backgroundCounter int32
 func (b *Bridge) HandleTask() LifeCycleBackgroundTask {
 	return newBackgroundTask(b.logger, func(ctx context.Context) error {
 		counter := atomic.AddInt32(&backgroundCounter, 1)
-		b.logger.Info("starting background task", zap.Int("counter", int(backgroundCounter)))
+		b.logger.Info("starting background task", zap.Int("counter", int(counter)))
 
 		started := time.Now()
 		n := time.Duration(mrand.Intn(60) + 5) // nolint:gosec
 		ctx, cancel := context.WithTimeout(ctx, time.Second*n)
 		defer cancel()
 
-		if err := b.notification.Notify(&notification.Notification{
-			Title: fmt.Sprintf("GoBackgroundTask #%d", counter),
-			Body:  "started",
-		}); err != nil {
-			b.logger.Error("unable to notify", zap.Error(err))
-		}
+		// background task started
 
 		<-ctx.Done()
 
-		if err := b.notification.Notify(&notification.Notification{
-			Title: fmt.Sprintf("GoBackgroundTask #%d", counter),
-			Body:  fmt.Sprintf("ended (duration: %s)", time.Since(started).Truncate(time.Second)),
-		}); err != nil {
-			b.logger.Error("unable to notify", zap.Error(err))
-		}
+		// background task ended
+
 		b.logger.Info("ending background task",
-			zap.Int("counter", int(backgroundCounter)),
+			zap.Int("counter", int(counter)),
 			zap.Duration("duration", time.Since(started)),
 		)
 
