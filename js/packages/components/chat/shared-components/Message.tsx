@@ -52,9 +52,8 @@ const useStylesMessage = () => {
 		circleAvatarUserMessage: [row.item.bottom, width(40)],
 		messageItem: [],
 		personNameInGroup: text.size.tiny,
-		dateMessage: text.size.tiny,
-		dateMessageWithState: [padding.right.scale(5), text.size.tiny],
-		stateMessageValue: [padding.left.scale(1.5), text.size.tiny],
+		dateMessage: [text.size.scale(11), text.bold.small, text.color.grey],
+		stateMessageValueMe: [padding.left.scale(1.5), text.size.scale(11), text.color.blue],
 	}
 }
 
@@ -335,7 +334,7 @@ export const Message: React.FC<{
 	const client: any = useClient()
 	const navigation = useNativeNavigation()
 	const _styles = useStylesMessage()
-	const [{ row, margin, padding, column, text, border, color }, { scaleSize }] = useStyles()
+	const [{ row, margin, padding, column, text, border, color, flex }, { scaleSize }] = useStyles()
 	const lastInte = useLastConvInteraction(convPK, interactionsFilter)
 	if (!inte) {
 		return null
@@ -472,22 +471,21 @@ export const Message: React.FC<{
 							</Text>
 						</Hyperlink>
 					</View>
-					<View style={[inte.isMe && row.item.bottom]}>
-						<View style={[row.left, { alignItems: 'center' }]}>
-							{!isWithinCollapseDuration && (
-								<Text
-									style={[
-										text.color.grey,
-										padding.right.scale(5),
-										_styles.dateMessage,
-										isFollowedMessage && margin.left.scale(35),
-										text.size.scale(11),
-									]}
-								>
-									{sentDate > 0 ? timeFormat.fmtTimestamp3(sentDate) : ''}{' '}
-								</Text>
-							)}
-							{!cmd && !isWithinCollapseDuration && lastInte?.cid.toString() === id.toString() && (
+					{/* Timestamp & status */}
+					{!isWithinCollapseDuration && (
+						<View
+							style={[
+								row.left,
+								flex.align.center,
+								margin.top.tiny,
+								margin.bottom.tiny,
+								inte.isMe && row.item.bottom,
+							]}
+						>
+							<Text style={[_styles.dateMessage, isFollowedMessage && margin.left.scale(35)]}>
+								{sentDate > 0 ? timeFormat.fmtTimestamp3(sentDate) : ''}{' '}
+							</Text>
+							{!cmd && lastInte?.cid.toString() === id.toString() && (
 								<>
 									{inte.isMe && (
 										<Icon
@@ -495,22 +493,18 @@ export const Message: React.FC<{
 											width={12}
 											height={12}
 											fill={color.blue}
+											style={[padding.left.tiny, { marginTop: 1 * scaleSize }]}
 										/>
 									)}
-									<Text
-										style={[
-											text.color.blue,
-											padding.left.scale(2),
-											_styles.dateMessage,
-											{ fontSize: 10, lineHeight: 11, textAlignVertical: 'center' },
-										]}
-									>
-										{inte.isMe ? (inte.acknowledged ? 'sent' : 'sending...') : ''}
-									</Text>
+									{inte.isMe && (
+										<Text style={[_styles.stateMessageValueMe]}>
+											{inte.acknowledged ? 'sent' : 'sending...'}
+										</Text>
+									)}
 								</>
 							)}
 						</View>
-					</View>
+					)}
 				</View>
 			</View>
 		)
