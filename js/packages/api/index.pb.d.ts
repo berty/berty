@@ -6180,14 +6180,12 @@ export namespace google {
             interface IExtensionRange {
                 start?: (number|null);
                 end?: (number|null);
-                options?: (google.protobuf.IExtensionRangeOptions|null);
             }
 
             class ExtensionRange implements IExtensionRange {
 
                 public start: number;
                 public end: number;
-                public options?: (google.protobuf.IExtensionRangeOptions|null);
                 public static create(properties?: google.protobuf.DescriptorProto.IExtensionRange): google.protobuf.DescriptorProto.ExtensionRange;
                 public static encode(message: google.protobuf.DescriptorProto.IExtensionRange, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: google.protobuf.DescriptorProto.IExtensionRange, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6218,24 +6216,6 @@ export namespace google {
                 public static toObject(message: google.protobuf.DescriptorProto.ReservedRange, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
-        }
-
-        interface IExtensionRangeOptions {
-            uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
-        }
-
-        class ExtensionRangeOptions implements IExtensionRangeOptions {
-
-            public uninterpretedOption: google.protobuf.IUninterpretedOption[];
-            public static create(properties?: google.protobuf.IExtensionRangeOptions): google.protobuf.ExtensionRangeOptions;
-            public static encode(message: google.protobuf.IExtensionRangeOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: google.protobuf.IExtensionRangeOptions, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.ExtensionRangeOptions;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.ExtensionRangeOptions;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): google.protobuf.ExtensionRangeOptions;
-            public static toObject(message: google.protobuf.ExtensionRangeOptions, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
         }
 
         interface IFieldDescriptorProto {
@@ -6328,8 +6308,6 @@ export namespace google {
             name?: (string|null);
             value?: (google.protobuf.IEnumValueDescriptorProto[]|null);
             options?: (google.protobuf.IEnumOptions|null);
-            reservedRange?: (google.protobuf.EnumDescriptorProto.IEnumReservedRange[]|null);
-            reservedName?: (string[]|null);
         }
 
         class EnumDescriptorProto implements IEnumDescriptorProto {
@@ -6337,8 +6315,6 @@ export namespace google {
             public name: string;
             public value: google.protobuf.IEnumValueDescriptorProto[];
             public options?: (google.protobuf.IEnumOptions|null);
-            public reservedRange: google.protobuf.EnumDescriptorProto.IEnumReservedRange[];
-            public reservedName: string[];
             public static create(properties?: google.protobuf.IEnumDescriptorProto): google.protobuf.EnumDescriptorProto;
             public static encode(message: google.protobuf.IEnumDescriptorProto, writer?: $protobuf.Writer): $protobuf.Writer;
             public static encodeDelimited(message: google.protobuf.IEnumDescriptorProto, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6348,29 +6324,6 @@ export namespace google {
             public static fromObject(object: { [k: string]: any }): google.protobuf.EnumDescriptorProto;
             public static toObject(message: google.protobuf.EnumDescriptorProto, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
-        }
-
-        namespace EnumDescriptorProto {
-
-            interface IEnumReservedRange {
-                start?: (number|null);
-                end?: (number|null);
-            }
-
-            class EnumReservedRange implements IEnumReservedRange {
-
-                public start: number;
-                public end: number;
-                public static create(properties?: google.protobuf.EnumDescriptorProto.IEnumReservedRange): google.protobuf.EnumDescriptorProto.EnumReservedRange;
-                public static encode(message: google.protobuf.EnumDescriptorProto.IEnumReservedRange, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: google.protobuf.EnumDescriptorProto.IEnumReservedRange, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.EnumDescriptorProto.EnumReservedRange;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.EnumDescriptorProto.EnumReservedRange;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): google.protobuf.EnumDescriptorProto.EnumReservedRange;
-                public static toObject(message: google.protobuf.EnumDescriptorProto.EnumReservedRange, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
         }
 
         interface IEnumValueDescriptorProto {
@@ -6456,16 +6409,10 @@ export namespace google {
             ccGenericServices?: (boolean|null);
             javaGenericServices?: (boolean|null);
             pyGenericServices?: (boolean|null);
-            phpGenericServices?: (boolean|null);
             deprecated?: (boolean|null);
             ccEnableArenas?: (boolean|null);
             objcClassPrefix?: (string|null);
             csharpNamespace?: (string|null);
-            swiftPrefix?: (string|null);
-            phpClassPrefix?: (string|null);
-            phpNamespace?: (string|null);
-            phpMetadataNamespace?: (string|null);
-            rubyPackage?: (string|null);
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
             ".gogoproto.goprotoGettersAll"?: (boolean|null);
             ".gogoproto.goprotoEnumPrefixAll"?: (boolean|null);
@@ -6513,16 +6460,10 @@ export namespace google {
             public ccGenericServices: boolean;
             public javaGenericServices: boolean;
             public pyGenericServices: boolean;
-            public phpGenericServices: boolean;
             public deprecated: boolean;
             public ccEnableArenas: boolean;
             public objcClassPrefix: string;
             public csharpNamespace: string;
-            public swiftPrefix: string;
-            public phpClassPrefix: string;
-            public phpNamespace: string;
-            public phpMetadataNamespace: string;
-            public rubyPackage: string;
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
             public static create(properties?: google.protobuf.IFileOptions): google.protobuf.FileOptions;
             public static encode(message: google.protobuf.IFileOptions, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6741,14 +6682,12 @@ export namespace google {
 
         interface IMethodOptions {
             deprecated?: (boolean|null);
-            idempotencyLevel?: (google.protobuf.MethodOptions.IdempotencyLevel|null);
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
         }
 
         class MethodOptions implements IMethodOptions {
 
             public deprecated: boolean;
-            public idempotencyLevel: google.protobuf.MethodOptions.IdempotencyLevel;
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
             public static create(properties?: google.protobuf.IMethodOptions): google.protobuf.MethodOptions;
             public static encode(message: google.protobuf.IMethodOptions, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6759,15 +6698,6 @@ export namespace google {
             public static fromObject(object: { [k: string]: any }): google.protobuf.MethodOptions;
             public static toObject(message: google.protobuf.MethodOptions, options?: $protobuf.IConversionOptions): { [k: string]: any };
             public toJSON(): { [k: string]: any };
-        }
-
-        namespace MethodOptions {
-
-            enum IdempotencyLevel {
-                IDEMPOTENCY_UNKNOWN = 0,
-                NO_SIDE_EFFECTS = 1,
-                IDEMPOTENT = 2
-            }
         }
 
         interface IUninterpretedOption {

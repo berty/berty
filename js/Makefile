@@ -277,7 +277,7 @@ _gen.config:
 
 _gen.locale:
 	mkdir -p ./packages/berty-i18n/locale/debug
-	go run ../tool/generate-i18n-testlang/main.go -source=./packages/berty-i18n/locale/en/messages.json > ./packages/berty-i18n/locale/debug/messages.json
+	cd .. && go run ./tool/generate-i18n-testlang/main.go -source=./js/packages/berty-i18n/locale/en/messages.json > ./js/packages/berty-i18n/locale/debug/messages.json
 
 ##### gen.sum
 
