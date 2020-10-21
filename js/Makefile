@@ -270,10 +270,14 @@ _gen.pbjs:
 	sed -E -i.bak 's/^.*constructor.*$$//g' packages/api/index.pb.d.ts
 	rm -f packages/api/index.pb.d.ts.bak
 
-##### config
+##### other generation
 
 _gen.config:
 	cd ../config; $(MAKE) generate
+
+_gen.locale:
+	mkdir -p ./packages/berty-i18n/locale/debug
+	cd .. && go run ./tool/generate-i18n-testlang/main.go -source=./js/packages/berty-i18n/locale/en/messages.json > ./js/packages/berty-i18n/locale/debug/messages.json
 
 ##### gen.sum
 
@@ -281,7 +285,7 @@ gensum_src := Makefile ../api/bertyprotocol.proto ../api/bertymessenger.proto ..
 gen.sum: $(gensum_src)
 	$(call check-program, shasum)
 	@shasum $(gensum_src) | sort > gen.sum.tmp
-	@diff -q gen.sum.tmp gen.sum || $(MAKE) _gen.pbjs _write_gen_sum _gen.config
+	@diff -q gen.sum.tmp gen.sum || $(MAKE) _gen.pbjs _gen.config _gen.locale _write_gen_sum
 
 .PHONY: _write_gen_sum
 _write_gen_sum:

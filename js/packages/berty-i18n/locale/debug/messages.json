@@ -1,0 +1,71 @@
+{
+  "main": {
+    "messages": {
+      "title": ".main.messages.title"
+    },
+    "requests": {
+      "accept": ".main.requests.accept",
+      "received-at": ".main.requests.received-at",
+      "title": ".main.requests.title"
+    }
+  },
+  "onboarding": {
+    "bluetooth": {
+      "button": ".onboarding.bluetooth.button",
+      "desc": ".onboarding.bluetooth.desc",
+      "header": ".onboarding.bluetooth.header",
+      "optional": ".onboarding.bluetooth.optional",
+      "skip": ".onboarding.bluetooth.skip",
+      "title": ".onboarding.bluetooth.title"
+    },
+    "create-account": {
+      "button": ".onboarding.create-account.button",
+      "desc": ".onboarding.create-account.desc",
+      "placeholder": ".onboarding.create-account.placeholder",
+      "required": ".onboarding.create-account.required",
+      "title": ".onboarding.create-account.title"
+    },
+    "generate-key": {
+      "desc": ".onboarding.generate-key.desc",
+      "title": ".onboarding.generate-key.title"
+    },
+    "getstarted": ".onboarding.getstarted",
+    "notifications": {
+      "button": ".onboarding.notifications.button",
+      "desc": ".onboarding.notifications.desc",
+      "header": ".onboarding.notifications.header",
+      "recommended": ".onboarding.notifications.recommended",
+      "skip": ".onboarding.notifications.skip",
+      "title": ".onboarding.notifications.title"
+    },
+    "select-mode": {
+      "high-level": {
+        "desc": ".onboarding.select-mode.high-level.desc",
+        "disable-contact-request": ".onboarding.select-mode.high-level.disable-contact-request",
+        "disable-local-peer-discovery": ".onboarding.select-mode.high-level.disable-local-peer-discovery",
+        "disable-push-notif": ".onboarding.select-mode.high-level.disable-push-notif",
+        "title": ".onboarding.select-mode.high-level.title"
+      },
+      "performance": {
+        "add-contact": ".onboarding.select-mode.performance.add-contact",
+        "desc": ".onboarding.select-mode.performance.desc",
+        "fast-message": ".onboarding.select-mode.performance.fast-message",
+        "offline-message": ".onboarding.select-mode.performance.offline-message",
+        "push-notif": ".onboarding.select-mode.performance.push-notif",
+        "title": ".onboarding.select-mode.performance.title"
+      }
+    },
+    "setup-finished": {
+      "button": ".onboarding.setup-finished.button",
+      "desc": ".onboarding.setup-finished.desc",
+      "title": ".onboarding.setup-finished.title"
+    }
+  },
+  "time": {
+    "datetime": ".time.datetime",
+    "fuzzy-month-day": ".time.fuzzy-month-day",
+    "fuzzy-time": ".time.fuzzy-time",
+    "fuzzy-year-month": ".time.fuzzy-year-month",
+    "started-ago": ".time.started-ago"
+  }
+}

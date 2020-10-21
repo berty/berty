@@ -17,9 +17,8 @@ on:
       - 'go.*'
       - '**.go'
       - 'js/**'
+      - '!js/packages/berty-i18n/locale/*/*.json'
       - '.github/workflows/ios.yml'
-    paths-ignore:
-      - 'js/packages/berty-i18n/local/**'
 
 jobs:
   build:
