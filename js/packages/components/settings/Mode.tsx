@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, ScrollView, StyleSheet, Vibration } from 'react-native'
+import { View, ScrollView, Vibration } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
@@ -21,20 +21,14 @@ type BodyModeProps = {
 const useStylesMode = () => {
 	const [{ text, margin }] = useStyles()
 	return {
-		buttonListUnderStateText: [text.size.scale(8), margin.right.scale(60)],
+		buttonListUnderStateText: [text.bold.small, text.size.tiny, margin.right.scale(60)],
+		buttonSettingText: [text.bold.small, text.size.small, { color: 'rgba(43,46,77,0.8)' }], // TODO: Fix horizontal alignment
 	}
 }
-const _modeStyles = StyleSheet.create({
-	buttonSettingText: {
-		fontSize: 9,
-		color: 'rgba(43,46,77,0.8)',
-		marginLeft: 39,
-	},
-})
 
 const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 	const _styles = useStylesMode()
-	const [{ flex, padding, margin, color, text, row }] = useStyles()
+	const [{ flex, padding, margin, color, text, column }, { scaleSize }] = useStyles()
 	const navigation = useReactNavigation()
 
 	return (
@@ -56,10 +50,10 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 			>
 				<Text
 					style={[
-						text.bold.medium,
-						row.item.bottom,
+						column.item.right,
 						_styles.buttonListUnderStateText,
 						isMode ? text.color.blue : text.color.red,
+						margin.bottom.small,
 					]}
 				>
 					Easy to use - All the features
@@ -67,10 +61,12 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 				<View style={[padding.right.small]}>
 					<ButtonSettingItem
 						value='Receive push notifications'
-						color='rgba(43,46,77,0.8)'
+						// color='rgba(43,46,77,0.8)'
 						icon={isMode ? 'checkmark-circle-2' : 'close-circle'}
 						iconColor={isMode ? color.blue : color.red}
 						disabled
+						styleText={[text.color.grey]}
+						styleContainer={[margin.bottom.tiny]}
 					/>
 					<ButtonSettingItem
 						value='Receive contact requests'
@@ -78,6 +74,8 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 						icon={isMode ? 'checkmark-circle-2' : 'close-circle'}
 						iconColor={isMode ? color.blue : color.red}
 						disabled
+						styleText={[text.color.grey]}
+						styleContainer={[margin.bottom.tiny]}
 					/>
 					<ButtonSettingItem
 						value='Local peer discovery (BLE & Multicast DNS)'
@@ -85,6 +83,8 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 						icon={isMode ? 'checkmark-circle-2' : 'close-circle'}
 						iconColor={isMode ? color.blue : color.red}
 						disabled
+						styleText={[text.color.grey]}
+						styleContainer={[margin.bottom.tiny]}
 					/>
 				</View>
 			</ButtonSetting>
@@ -142,7 +142,15 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 				toggled
 				disabled
 			>
-				<Text style={[text.bold.medium, _modeStyles.buttonSettingText]}>Local Peer discovery</Text>
+				<Text
+					style={[
+						_styles.buttonSettingText,
+						text.color.grey,
+						{ marginLeft: margin.left.big.marginLeft + 3 * scaleSize },
+					]}
+				>
+					Local Peer discovery
+				</Text>
 			</ButtonSetting>
 			<ButtonSetting
 				name='Blocked contacts'

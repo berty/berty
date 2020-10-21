@@ -49,7 +49,7 @@ const useStylesSettingButton = () => {
 	const [{ flex, padding, margin }] = useStyles()
 	return {
 		settingButton: flex.tiny,
-		statePaddingBox: [padding.vertical.scale(2), padding.horizontal.scale(8)],
+		statePaddingBox: [padding.vertical.tiny, padding.horizontal.small],
 		descBox: [margin.left.scale(20), margin.bottom.medium],
 	}
 }
@@ -171,7 +171,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 								<Text
 									style={[
 										text.align.center,
-										text.size.scale(8),
+										text.size.tiny,
 										text.bold.medium,
 										{ color: state.color },
 									]}
@@ -319,7 +319,7 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 									<Text
 										style={[
 											row.item.justify,
-											text.size.scale(8),
+											text.size.tiny,
 											text.bold.medium,
 											{ color: state.color },
 										]}
@@ -433,6 +433,8 @@ type ButtonSettingItem = {
 	icon?: string
 	iconSize?: number
 	iconColor?: string
+	styleContainer?: any
+	styleText?: any
 }
 
 // Styles
@@ -449,18 +451,22 @@ export const ButtonSettingItem: React.FC<ButtonSettingItem> = ({
 	icon = 'checkmark-circle-2',
 	iconSize = 12,
 	iconColor,
+	styleContainer = {},
+	styleText = {},
 }) => {
 	const _styles = useStylesButtonSettingItem()
 	const [{ row, padding, text, color: stylesColor }] = useStyles()
 	return (
-		<View style={[row.left, padding.left.small, { alignItems: 'center' }]}>
+		<View style={[row.left, padding.left.small, { alignItems: 'center' }, styleContainer]}>
 			<Icon
 				name={icon}
 				width={iconSize}
 				height={iconSize}
 				fill={iconColor || stylesColor.light.blue}
 			/>
-			<Text style={[text.bold.medium, _styles.updateFeatureText, { color }]}>{value}</Text>
+			<Text style={[text.bold.medium, _styles.updateFeatureText, { color }, styleText]}>
+				{value}
+			</Text>
 		</View>
 	)
 }
