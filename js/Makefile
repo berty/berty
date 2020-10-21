@@ -2,8 +2,7 @@
 
 VERSION ?= `go run -mod=readonly -modfile=../go.mod github.com/mdomke/git-semver/v5`
 VCS_REF ?= `git rev-parse --short HEAD`
-BUILD_DATE ?= `date +%s`
-TMP ?= /tmp
+TMP ?= $(TMPDIR)
 CI ?= false
 BERTY_DAEMON_HOST ?= 127.0.0.1
 BERTY_DAEMON_PORT ?= 1337
@@ -19,19 +18,22 @@ rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subs
 check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,$(error "Missing deps: no '$(exec)' in PATH")))
 kill-program-using-port = $(foreach port,$(1),$(eval pid ?= $(shell lsof -t -i :$(port))) $(if $(pid),$(shell kill $(pid)),))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
-author = Berty Technologies <oss@berty.tech>
 ext_ldflags = -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
-pkg := $(dir $(wildcard $(PWD)/packages/*/package.json))
-pkg_mod := $(patsubst %, %/node_modules, $(pkg)) node_modules
-pkg_desc := $(patsubst %, %/package.json, $(pkg)) package.json
 bridge_src := $(call rwildcard,../go,*.go *.m *.h) ../go.sum
 react-native := $(abspath node_modules/.bin/react-native)
 eslint := $(abspath node_modules/.bin/eslint)
 xcodegen_yml := $(wildcard $(PWD)/ios/*.yaml)
-xcodegen_ver = $(shell cat XcodeGen.version)
+xcodegen_ver = $(shell cat ios/XcodeGen.version)
 required_java_ver = 18
 minimum_ios_ver = 12.0
 minimum_android_ver = 21
+
+## if (PWD != Makefile directory) then exit
+
+makefile_dir = $(realpath $(dir $(realpath $(firstword $(MAKEFILE_LIST)))))
+ifneq ($(PWD),$(makefile_dir))
+    $(error make should be executed from '$(makefile_dir)' instead of '$(PWD)')
+endif
 
 ## User commands
 
@@ -61,13 +63,13 @@ help:
 #### Test
 
 .PHONY: test
-test: node_mod
+test: node_modules
 	yarn test
 
 #### Gen
 
 .PHONY: generate
-generate: node_mod gen.sum
+generate: node_modules gen.sum
 
 .PHONY: regenerate
 regenerate: gen.clean generate
@@ -79,6 +81,7 @@ clean:
 	# React-Native cmd
 	yarn cache clean -f
 	$(call kill-program-using-port, $(METRO_RN_PORT))
+
 	# Android cmd
 	cd android && ./gradlew clean || true
 
@@ -90,8 +93,8 @@ endif
 	# React-Native files
 	rm -rf .tmp
 	rm -rf $(pkg_mod)
-	rm -rf $(TMP)/react-native-packager-cache-*
-	rm -rf $(TMP)/metro-bundler-cache-*
+	rm -rf /tmp/react-native-packager-cache-*
+	rm -rf /tmp/metro-bundler-cache-*
 	rm -rf .eslintcache
 
 	# Android files
@@ -104,7 +107,7 @@ endif
 	rm -rf ios/build
 	rm -rf ios/Pods
 	rm -rf ios/Frameworks/Bertybridge.framework
-	rm -rf vendor
+	rm -rf ios/vendor
 	rm -rf ios/Berty.xcodeproj
 	rm -rf ios/Berty.xcworkspace
 
@@ -130,14 +133,14 @@ gen.clean:
 #### Lint
 
 .PHONY: lint
-lint: node_mod
+lint: node_modules
 	cp .gitignore .eslintignore
 	echo '*.pb.*' >> .eslintignore
 	echo '*.gen.*' >> .eslintignore
 	$(eslint) --cache --quiet --ext=.js,.jsx,.ts,.tsx .
 
 .PHONY: lint.fix
-lint.fix: node_mod
+lint.fix: node_modules
 	cp .gitignore .eslintignore
 	echo '*.pb.*' >> .eslintignore
 	echo '*.gen.*' >> .eslintignore
@@ -150,7 +153,7 @@ lint.fix: node_mod
 #### iOS
 
 .PHONY: ios.app_deps
-ios.app_deps: node_mod ios.gomobile ios.project
+ios.app_deps: node_modules ios.gomobile ios.project
 
 .PHONY: ios.debug
 ios.debug: ios.app_deps
@@ -173,11 +176,11 @@ ios.gomobile: ios/Frameworks/Bertybridge.framework
 #### Android
 
 .PHONY: android.app_deps
-android.app_deps: node_mod android.gomobile android/app/debug.keystore
+android.app_deps: node_modules android.gomobile
 
 .PHONY: android.debug
 android.debug: android.app_deps
-	$(eval CURRENT_JAVA_VER ?= `java -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*"/\1\2/p;'`)
+	$(eval CURRENT_JAVA_VER ?= $(shell java -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*"/\1\2/p;'))
 	@if [ "$(CURRENT_JAVA_VER)" != "$(required_java_ver)" ]; then \
 	  >&2 echo "ERROR: Invalid java version, want $(required_java_ver), got $(CURRENT_JAVA_VER)"; exit 1; \
 	fi
@@ -185,7 +188,7 @@ android.debug: android.app_deps
 
 .PHONY: android.release
 android.release: android.app_deps
-	$(eval CURRENT_JAVA_VER ?= `java -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*"/\1\2/p;'`)
+	$(eval CURRENT_JAVA_VER ?= $(shell java -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*"/\1\2/p;'))
 	@if [ "$(CURRENT_JAVA_VER)" != "$(required_java_ver)" ]; then \
 	  >&2 echo "ERROR: Invalid java version, want $(required_java_ver), got $(CURRENT_JAVA_VER)"; exit 1; \
 	fi
@@ -201,16 +204,16 @@ android.log:
 .PHONY: android.emulator
 android.emulator:
 	$(call check-program, adb emulator)
-	$(eval ANDROID_EMULATOR ?= `emulator -list-avds | head -n1`)
+	$(eval ANDROID_EMULATOR ?= $(shell emulator -list-avds | head -n1))
 	@if [ -z "$(ANDROID_EMULATOR)" ]; then \
 	  >&2 echo "ERROR: no Android emulator AVD found"; exit 1; \
 	fi
-	emulator @$(ANDROID_EMULATOR) -logcat *:i
+	emulator @$(ANDROID_EMULATOR) -logcat *:i -no-snapshot-save
 
 .PHONY: android.reverse_tcp
 android.reverse_tcp:
 	$(call check-program, adb)
-	$(eval ANDROID_DEVICE ?= `adb devices | tail +2 | head -1 | cut -f 1`)
+	$(if $(ANDROID_DEVICE),,$(eval ANDROID_DEVICE = $(shell adb devices | tail +2 | head -1 | cut -f 1)))
 	@if [ -z "$(ANDROID_DEVICE)" ]; then \
 	  >&2 echo "ERROR: no Android device found"; exit 1; \
 	fi
@@ -226,12 +229,9 @@ web-dev-app.start:
 #### React
 
 .PHONY: metro.start
-metro.start: node_mod
+metro.start: node_modules
 	$(call kill-program-using-port, $(METRO_RN_PORT))
 	$(react-native) start --port=$(METRO_RN_PORT)
-
-.PHONY: node_mod
-node_mod: $(pkg_mod)
 
 #### Go daemon
 
@@ -288,7 +288,7 @@ _write_gen_sum:
 ios/Frameworks/Bertybridge.framework: $(bridge_src)
 	cd .. && go mod download
 	cd .. && go run golang.org/x/mobile/cmd/gomobile init
-	@mkdir -p "ios/Frameworks"
+	mkdir -p "ios/Frameworks"
 	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
 		-o js/$@ \
 		-v $(ext_ldflags) \
@@ -297,34 +297,33 @@ ios/Frameworks/Bertybridge.framework: $(bridge_src)
 		./go/framework/bertybridge
 	touch $@
 
-ios/Berty.xcworkspace: $(pkg_desc) ios/Berty.xcodeproj ios/Podfile vendor/bundle
+ios/Berty.xcworkspace: $(pkg_desc) ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle
 	cd ios && bundle exec pod install
 	touch $@
 
-ios/Berty.xcodeproj: vendor/xcodegen $(xcodegen_yml)
+ios/Berty.xcodeproj: ios/vendor/xcodegen $(xcodegen_yml)
 	mkdir -p ios/Berty
 	touch ios/Berty/main.jsbundle
-
 	IOS_BUNDLE_VERSION=$(shell echo -n $(shell git rev-list HEAD | wc -l)) \
 	IOS_SHORT_BUNDLE_VERSION=$(shell echo "$(VERSION)" | cut -c2-) \
 	IOS_COMMIT=$(shell git rev-parse HEAD) \
-	swift run --package-path vendor/xcodegen xcodegen \
+	swift run --package-path ios/vendor/xcodegen xcodegen \
 		--spec ios/berty.yaml \
-		--cache-path vendor/xcodegen/.cache/berty-app \
+		--cache-path ios/vendor/xcodegen/.cache/berty-app \
 		--use-cache
-
 	touch $@
 
-vendor/xcodegen: XcodeGen.version
-	mkdir -p $@ $(TMP)/xcodegen_dl
+ios/vendor/xcodegen: ios/XcodeGen.version
+	mkdir -p $(TMP)/xcodegen_dl
 	wget https://github.com/yonaskolb/XcodeGen/archive/$(xcodegen_ver).zip -O $(TMP)/xcodegen_dl/xcodegen.zip
 	unzip $(TMP)/xcodegen_dl/xcodegen.zip -d $(TMP)/xcodegen_dl
+	mkdir -p $@
 	cp -rf $(TMP)/xcodegen_dl/*/* $@
 	rm -rf $(TMP)/xcodegen_dl
 	touch $@
 
-vendor/bundle: Gemfile
-	bundle install
+ios/vendor/bundle: ios/Gemfile
+	cd ios && bundle install
 	touch $@
 
 #### Android
@@ -332,8 +331,7 @@ vendor/bundle: Gemfile
 android/libs/gobridge.aar: $(bridge_src)
 	cd .. && go mod download
 	cd .. && go run golang.org/x/mobile/cmd/gomobile init
-	rm -fr android/build # remove broken cache
-	@mkdir -p "android/libs"
+	mkdir -p "android/libs"
 	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
 		-o js/$@ \
 		-v $(ext_ldflags) \
@@ -342,14 +340,9 @@ android/libs/gobridge.aar: $(bridge_src)
 		./go/framework/bertybridge
 	touch $@
 
-android/app/debug.keystore:
-	cp node_modules/react-native/template/android/app/debug.keystore $@
-
 #### React
 
-$(pkg_mod): $(pkg_desc)
+node_modules: package.json
 	$(call check-program, yarn)
-	yarn $(if $(filter $(CI), true), --frozen-lockfile) --network-timeout 1200000 # Giving 20 minutes for packages resolution, the MacOS CI have a flaky internet.
-	mkdir -p $(pkg_mod)
-	touch $(pkg_mod)
-	touch node_modules/go.mod # avoid go to lookup in this directorys
+	yarn $(if $(filter $(CI), true), --frozen-lockfile --network-timeout 1200000)
+	touch $@
