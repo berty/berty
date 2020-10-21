@@ -19,7 +19,7 @@
       },
       "high-level": {
         "title": "Plus haut niveau de confidentialité",
-        "desc": "Moins de meta-données",
+        "desc": "Moins de metadonnées",
         "disable-push-notif": "Notifications push désactivées",
         "disable-local-peer-discovery": "Découverte de nœuds locaux désactivée",
         "disable-contact-request": "Demande d'ami désactivée"
@@ -38,7 +38,7 @@
     },
     "notifications": {
       "header": "Ne ratez pas de messages ou de demandes de contacts",
-      "recommanded": "Recommandé",
+      "recommended": "Recommandé",
       "title": "Notifications",
       "desc": "Vous devez autoriser l'envoi de notifications push",
       "button": "AUTHORISER LES NOTIFICATIONS",
