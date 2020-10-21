@@ -1,6 +1,6 @@
 generate:
 	go run ../tool/config-generator/main.go
-	goimports -w ../go/internal/config/config.gen.go
+	go run golang.org/x/tools/cmd/goimports -w ../go/internal/config/config.gen.go
 	go run github.com/campoy/embedmd -w ../go/cmd/testbot/README.md
 	go run github.com/campoy/embedmd -w ../go/cmd/betabot/README.md
 
