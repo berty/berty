@@ -18,6 +18,8 @@ on:
       - '**.go'
       - 'js/**'
       - '.github/workflows/android.yml'
+    paths-ignore:
+      - 'js/packages/berty-i18n/local/**'
 
 jobs:
   build:
