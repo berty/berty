@@ -1,5 +1,14 @@
-commit_message: 'fix: new translations %original_file_name% from Crowdin'
-append_commit_message: false
-files:
-  - source: /js/packages/berty-i18n/locale/en/messages.json
-    translation: /js/packages/berty-i18n/locale/%two_letters_code%/%original_file_name%
+"project_id" : "2"
+"api_token" : "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJ3UUVxdmhVM3ZMT2EyWGljbVV5VCIsImp0aSI6Ijg3MTFhNjVkMjVhYWQ4MDAzOTFhMzYwZjU5OGY2OGU4YzVmOWFmZTUzNTg1Mzk4ZmJjYmFiYTMzNjhlYWUwZmYzYzM0NzllN2M5MWI3ZmJjIiwiaWF0IjoxNjAzMjc0MDA2LCJuYmYiOjE2MDMyNzQwMDYsImV4cCI6MTYwNTg2NjAwMywic3ViIjoiMiIsImRvbWFpbiI6ImJlcnR5Iiwic2NvcGVzIjpbInByb2plY3QiXSwiYXNzb2NpYXRpb25zIjpbIioiXSwic2Vzc2lvbiI6MCwic2VjdXJpdHkiOjE2MDMyNzQyNjR9.bBp4siAH8KzECoErCDw9qF5EvMjgskf2ogD7z4PFzj3-_0m_rS9dk7P1CKTvqyeTXbIyxpDxEcFkjQTSQWlvGDSqxVxKn_Rlu6UcCsqzUb2mNw6KwmkkPdgcKRQ0H6uBXSj-JFU4z869CHPcZMPIkkpdygoKYQYn7-yDRbrOKhDrZ4G4yNalKqBScsZWenRk6dyyXX0RjysblH-Y2SUnxxNx00Kx3yhPU7fCPjVPSbzBYKOZZsOEYklpoIsVqglnc9AK-x3J9BUgs60sttO3y-RUqnD1QMkVyXaHzrzqZr1hmv6tlfX_0es06btuGjFHUW8gqkIjMXK0CKJn0M4OKPW_i9qkkxKw9AsLxDQh31S9DFe_D8PIWxbLY-u3B3RCCNl6wfKuIVsh-xXJX_-WHPa5oU9XO6QrPaxqYPAgUZrqrWKilAUOI0WSwrlFm3ac82m7T68R-u3W3bvxKq0mdY23OSErXvhEQEUNukMMNNeHzrqCskn7cidpDyAK03p4tynnPvU9A6UsLwxSKxp8OwNx06S1R0a0yxLsbxsNdPE0sSsyF8hc-f4TDhyfmWdK8wFo13ry8CjsyA95gpTHeFTXWkmdZOb9ZOonZc69KLfJyMAH1C-Dpl3kVQKUkbKsL3Ou9l_HloWQv6hVef9Y48pgPQStOZLZfiina5YChnw"
+"base_path" : "."
+"base_url" : "https://berty.crowdin.com"
+"commit_message": "fix(i18n): new %two_letters_code% translations\n\nSigned-off-by: Crowdin <bots>"
+"append_commit_message": false
+"preserve_hierarchy": true
+
+files: [
+ {
+  "source" : "/js/packages/berty-i18n/locale/en/messages.json",
+  "translation" : "/js/packages/berty-i18n/locale/%two_letters_code%/%original_file_name%",
+ }
+]
