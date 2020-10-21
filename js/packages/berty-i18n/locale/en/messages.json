@@ -1,71 +1,71 @@
 {
   "time": {
-    "fuzzy-time": "",
-    "fuzzy-month-day": "",
-    "fuzzy-year-month": "",
-    "datetime": "",
-    "started-ago": ""
+    "fuzzy-time": "hh:mm",
+    "fuzzy-month-day": "dd/MM",
+    "fuzzy-year-month": "MM/YY",
+    "datetime": "MMM Do YYYY hh:mm",
+    "started-ago": "Started {{date}} ago"
   },
   "onboarding": {
-    "getstarted": "",
+    "getstarted": "The secure peer-to-peer messaging app that works with or without internet access, cellular data or trust in the network",
     "select-mode": {
       "performance": {
-        "title": "",
-        "desc": "",
-        "push-notif": "",
-        "offline-message": "",
-        "add-contact": "",
-        "fast-message": ""
+        "title": "Performance",
+        "desc": "Easy to use - All the features",
+        "push-notif": "Receive push notifications",
+        "offline-message": "Offline messaging",
+        "add-contact": "Add contacts easily",
+        "fast-message": "Fastest message delivery"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
-        "disable-push-notif": "",
-        "disable-local-peer-discovery": "",
-        "disable-contact-request": ""
+        "title": "Highest level of privacy",
+        "desc": "For advanced users - Less metadatas",
+        "disable-push-notif": "Push notifications disabled",
+        "disable-local-peer-discovery": "Local peer discovery disabled",
+        "disable-contact-request": "Contact requests disabled"
       }
     },
     "create-account": {
-      "title": "",
-      "desc": "",
-      "required": "",
-      "placeholder": "",
-      "button": ""
+      "title": "Create your account",
+      "desc": "A name is the only information required",
+      "required": "Required",
+      "placeholder": "Name",
+      "button": "CREATE MY ACCOUNT"
     },
     "generate-key": {
-      "title": "",
-      "desc": ""
+      "title": "Starting the Berty node…",
+      "desc": "This might take a few seconds"
     },
     "notifications": {
       "header": "Don't miss any new message or contact request",
-      "recommended": "",
-      "title": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "recommended": "Recommended",
+      "title": "Notifications",
+      "desc": "You need to authorize push notifications from Berty on your phone",
+      "button": "AUTHORIZE NOTIFICATIONS",
+      "skip": "SKIP AND DO THIS LATER"
     },
     "bluetooth": {
-      "header": "",
-      "optional": "",
-      "title": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "header": "Communicate whithout an internet connection (wifi or data) by connecting your phone directly with peers nearby",
+      "optional": "Optional",
+      "title": "Bluetooth",
+      "desc": "To use this feature you need to autorize the use of Bluetooth on your phone",
+      "button": "AUTHORIZE BLUETOOTH",
+      "skip": "SKIP AND DO THIS LATER"
     },
     "setup-finished": {
-      "title": "",
-      "desc": "",
-      "button": ""
+      "title": "Setup finished!",
+      "desc": "You can now use the app, start adding contacts and talk freely and privately with them",
+      "button": "START USING APP"
     }
   },
   "main": {
     "requests": {
-      "title": "",
-      "received-at": "",
-      "accept": ""
+      "title": "Requests",
+      "received-at": "Received",
+      "accept": "Accept"
     },
     "messages": {
-      "title": ""
+      "title": "Messages"
     }
   }
 }
