@@ -417,7 +417,6 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 						flex.justify.center,
 						margin.right.small,
 						{
-							flex: 1,
 							flexBasis: 45,
 							flexGrow: 0,
 							flexShrink: 0,
@@ -459,10 +458,10 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 				</View>
 				<View
 					style={[
-						padding.tiny,
+						flex.justify.spaceAround,
 						{
-							flex: 2,
-							flexGrow: 1,
+							flexBasis: 2,
+							flexGrow: 2,
 							flexShrink: 0,
 						},
 					]}
@@ -471,11 +470,9 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 					<View style={[flex.direction.row, flex.justify.flexStart]}>
 						{/* Title */}
 						<View
-							style={[
-								{
-									flexShrink: 1,
-								},
-							]}
+							style={{
+								flexShrink: 1,
+							}}
 						>
 							<Text numberOfLines={1} style={[text.size.medium, text.color.black]}>
 								{(fake && 'FAKE - ') || ''}
@@ -493,13 +490,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 								{ marginLeft: 'auto' },
 							]}
 						>
-							{isBetabot && !isBetabotAdded ? (
-								<View
-									style={[{ transform: [{ translateY: Math.floor(text.size.medium.fontSize) }] }]}
-								>
-									<Icon name='info-outline' fill={color.blue} width={20} height={20} />
-								</View>
-							) : (
+							{isBetabot && !isBetabotAdded ? null : (
 								<>
 									<UnreadCount value={unreadCount} isConvBadge />
 									{displayDate && (
@@ -522,7 +513,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 							flex.direction.row,
 							flex.align.center,
 							{
-								height: text.size.medium.fontSize * 1.6, // Keep row height even if no description/message
+								height: text.size.small.fontSize * 1.8, // Keep row height even if no description/message
 							},
 						]}
 					>
@@ -530,7 +521,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 							numberOfLines={1}
 							style={[
 								{ flexGrow: 2, flexShrink: 1 },
-								text.size.medium,
+								text.size.small,
 								unreadCount
 									? isBetabot && !isBetabotAdded
 										? text.color.grey
@@ -562,6 +553,11 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 						</View>
 					</View>
 				</View>
+				{isBetabot && !isBetabotAdded && (
+					<View style={[flex.justify.center]}>
+						<Icon name='info-outline' fill={color.blue} width={20} height={20} />
+					</View>
+				)}
 			</View>
 		</TouchableHighlight>
 	) : null
@@ -637,7 +633,6 @@ const HomeHeader: React.FC<
 									text.size.huge,
 									text.bold.medium,
 									padding.medium,
-									padding.top.big,
 									margin.horizontal.medium,
 								]}
 							>
