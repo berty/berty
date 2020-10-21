@@ -5,7 +5,7 @@
 "commit_message": 'fix(i18n): new %language% translations
 
 
-Signed-off-by: Crowdin <bots>'
+Signed-off-by: Crowdin Bot <bot@crowdin.com>'
 
 "append_commit_message": false
 "preserve_hierarchy": true
