@@ -72,6 +72,8 @@
     - [Interact.Reply](#berty.messenger.v1.Interact.Reply)
     - [Interact.Request](#berty.messenger.v1.Interact.Request)
     - [Interaction](#berty.messenger.v1.Interaction)
+    - [LocalConversationState](#berty.messenger.v1.LocalConversationState)
+    - [LocalDatabaseState](#berty.messenger.v1.LocalDatabaseState)
     - [Member](#berty.messenger.v1.Member)
     - [ParseDeepLink](#berty.messenger.v1.ParseDeepLink)
     - [ParseDeepLink.Reply](#berty.messenger.v1.ParseDeepLink.Reply)
@@ -626,6 +628,27 @@ TODO: return cid
 | sent_date | [int64](#int64) |  |  |
 | acknowledged | [bool](#bool) |  |  |
 | target_cid | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.LocalConversationState"></a>
+
+### LocalConversationState
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| public_key | [string](#string) |  |  |
+| unread_count | [int32](#int32) |  |  |
+| is_open | [bool](#bool) |  |  |
+
+<a name="berty.messenger.v1.LocalDatabaseState"></a>
+
+### LocalDatabaseState
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| public_key | [string](#string) |  |  |
+| display_name | [string](#string) |  |  |
+| replicate_flag | [bool](#bool) |  |  |
+| local_conversations_state | [LocalConversationState](#berty.messenger.v1.LocalConversationState) | repeated |  |
 
 <a name="berty.messenger.v1.Member"></a>
 

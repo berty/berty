@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 
@@ -1219,24 +1221,60 @@ func (svc *service) ReplicationSetAutoEnable(ctx context.Context, request *Repli
 	return &ReplicationSetAutoEnable_Reply{}, nil
 }
 
-func (svc *service) InstanceExportData(request *InstanceExportData_Request, server MessengerService_InstanceExportDataServer) error {
+func (svc *service) InstanceExportData(_ *InstanceExportData_Request, server MessengerService_InstanceExportDataServer) error {
+	tmpFile, err := ioutil.TempFile(os.TempDir(), "export-")
+	if err != nil {
+		return errcode.ErrInternal.Wrap(err)
+	}
+
+	defer os.Remove(tmpFile.Name())
+
 	cl, err := svc.protocolClient.InstanceExportData(server.Context(), &bertytypes.InstanceExportData_Request{})
 	if err != nil {
-		return err
+		return errcode.ErrInternal.Wrap(err)
 	}
 
 	for {
 		chunk, err := cl.Recv()
 		if err == io.EOF {
-			return nil
+			break
 		} else if err != nil {
-			return err
+			return errcode.ErrInternal.Wrap(err)
 		}
 
-		if err := server.Send(&InstanceExportData_Reply{ExportedData: chunk.ExportedData}); err != nil {
-			return err
+		if _, err := tmpFile.Write(chunk.ExportedData); err != nil {
+			return errcode.ErrInternal.Wrap(err)
 		}
 	}
 
-	// TODO: add messenger info
+	// Remove trailing headers to append messenger data
+	_, err = tmpFile.Seek(-1024, io.SeekEnd)
+	if err != nil {
+		return errcode.ErrInternal.Wrap(err)
+	}
+
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+
+	if err := exportMessengerData(tmpFile, svc.db.db, svc.logger); err != nil {
+		return errcode.ErrInternal.Wrap(err)
+	}
+
+	if _, err = tmpFile.Seek(0, io.SeekStart); err != nil {
+		return errcode.ErrInternal.Wrap(err)
+	}
+
+	buffer := make([]byte, 1024)
+	for {
+		_, err := tmpFile.Read(buffer)
+		if err == io.EOF {
+			return nil
+		} else if err != nil {
+			return errcode.ErrInternal.Wrap(err)
+		}
+
+		if err := server.Send(&InstanceExportData_Reply{ExportedData: buffer}); err != nil {
+			return errcode.ErrInternal.Wrap(err)
+		}
+	}
 }

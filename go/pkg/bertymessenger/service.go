@@ -1,8 +1,11 @@
 package bertymessenger
 
 import (
+	"archive/tar"
+	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"sync"
 	"time"
@@ -89,9 +92,40 @@ func (opts *Opts) applyDefaults() (func(), error) {
 	return cleanup, nil
 }
 
-func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_interface.CoreAPI, odb *bertyprotocol.BertyOrbitDB, logger *zap.Logger) error {
-	return bertyprotocol.RestoreAccountExport(ctx, reader, coreAPI, odb, logger)
-	// TODO: restore messenger specific data
+func databaseStateRestoreAccountHandler(db *gorm.DB) bertyprotocol.RestoreAccountHandler {
+	return bertyprotocol.RestoreAccountHandler{
+		Handler: func(header *tar.Header, reader *tar.Reader) (bool, error) {
+			if header.Name != exportLocalDBState {
+				return false, nil
+			}
+
+			backupContents := new(bytes.Buffer)
+			size, err := io.Copy(backupContents, reader)
+			if err != nil {
+				return true, errcode.ErrInternal.Wrap(fmt.Errorf("unable to read %d bytes: %w", header.Size, err))
+			}
+
+			if size != header.Size {
+				return true, errcode.ErrInternal.Wrap(fmt.Errorf("unexpected file size"))
+			}
+
+			state := &LocalDatabaseState{}
+			if err := proto.Unmarshal(backupContents.Bytes(), state); err != nil {
+				return true, errcode.ErrDeserialization.Wrap(err)
+			}
+
+			wrappedDB := newDBWrapper(db, zap.NewNop())
+			if err := restoreDatabaseLocalState(wrappedDB, state); err != nil {
+				return true, errcode.TODO.Wrap(fmt.Errorf("unable to restore database state"))
+			}
+
+			return true, nil
+		},
+	}
+}
+
+func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_interface.CoreAPI, odb *bertyprotocol.BertyOrbitDB, db *gorm.DB, logger *zap.Logger) error {
+	return bertyprotocol.RestoreAccountExport(ctx, reader, coreAPI, odb, logger, databaseStateRestoreAccountHandler(db))
 }
 
 func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error) {

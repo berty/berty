@@ -1,7 +1,12 @@
 package bertymessenger
 
 import (
+	"archive/tar"
+	"bytes"
 	"context"
+	"io"
+	"io/ioutil"
+	"os"
 	"strconv"
 	"testing"
 	"time"
@@ -1332,4 +1337,43 @@ func testCreateConversation(ctx context.Context, t *testing.T, creator *TestingA
 	}
 
 	return createdConv
+}
+
+func Test_exportMessengerData(t *testing.T) {
+	db, cleanup := getInMemoryTestDB(t)
+	defer cleanup()
+
+	db.db.Create(&Account{PublicKey: "pk_account_1", DisplayName: "display_name", ReplicateNewGroupsAutomatically: true})
+	db.db.Create(&Conversation{PublicKey: "pk_conv_1", UnreadCount: 1000, IsOpen: false})
+	db.db.Create(&Conversation{PublicKey: "pk_conv_2", UnreadCount: 2000, IsOpen: true})
+	db.db.Create(&Conversation{PublicKey: "pk_conv_3", UnreadCount: 3000, IsOpen: false})
+
+	tmpFile, err := ioutil.TempFile(os.TempDir(), "messenger-export-")
+	require.NoError(t, err)
+
+	err = exportMessengerData(tmpFile, db.db, zap.NewNop())
+	require.NoError(t, err)
+
+	_, err = tmpFile.Seek(0, io.SeekStart)
+	require.NoError(t, err)
+
+	reader := tar.NewReader(tmpFile)
+	header, err := reader.Next()
+	require.NoError(t, err)
+
+	require.Equal(t, exportLocalDBState, header.Name)
+	require.NotEmpty(t, header.Size)
+
+	stateBuffer := new(bytes.Buffer)
+	size, err := io.Copy(stateBuffer, reader)
+	require.Equal(t, size, header.Size)
+	require.NoError(t, err)
+
+	state := &LocalDatabaseState{}
+	err = proto.Unmarshal(stateBuffer.Bytes(), state)
+	require.NoError(t, err)
+
+	require.Equal(t, "pk_account_1", state.PublicKey)
+	require.Equal(t, "display_name", state.DisplayName)
+	require.Equal(t, true, state.ReplicateFlag)
 }

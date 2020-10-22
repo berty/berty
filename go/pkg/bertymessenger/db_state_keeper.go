@@ -5,18 +5,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type conversationLocalData struct {
-	PublicKey   string
-	UnreadCount int32
-	IsOpen      bool
-}
-
-type databaseState struct {
-	username              string
-	replicateFlag         bool
-	conversationLocalData []*conversationLocalData
-}
-
 func keepDisplayName(db *gorm.DB, logger *zap.Logger) string {
 	if logger == nil {
 		logger = zap.NewNop()
@@ -67,12 +55,12 @@ func keepAutoReplicateFlag(db *gorm.DB, logger *zap.Logger) bool {
 	return true
 }
 
-func keepConversationsLocalData(db *gorm.DB, logger *zap.Logger) []*conversationLocalData {
+func keepConversationsLocalData(db *gorm.DB, logger *zap.Logger) []*LocalConversationState {
 	if logger == nil {
 		logger = zap.NewNop()
 	}
 
-	result := []*conversationLocalData{}
+	result := []*LocalConversationState{}
 
 	err := db.Table("conversations").Scan(&result).Error
 
@@ -85,10 +73,36 @@ func keepConversationsLocalData(db *gorm.DB, logger *zap.Logger) []*conversation
 	return nil
 }
 
-func keepDatabaseLocalState(db *gorm.DB, logger *zap.Logger) *databaseState {
-	return &databaseState{
-		username:              keepDisplayName(db, logger),
-		replicateFlag:         keepAutoReplicateFlag(db, logger),
-		conversationLocalData: keepConversationsLocalData(db, logger),
+func keepAccountPK(db *gorm.DB, logger *zap.Logger) string {
+	if logger == nil {
+		logger = zap.NewNop()
+	}
+
+	result := ""
+	count := int64(0)
+
+	if err := db.Table("accounts").Count(&count).Order("ROWID").Limit(1).Pluck("public_key", &result).Error; err == nil {
+		if count != 1 {
+			logger.Warn("expected one result", zap.Int64("count", count))
+		}
+
+		if result != "" && count > 0 {
+			return result
+		}
+	} else {
+		logger.Warn("attempt at retrieving public key failed", zap.Error(err))
+	}
+
+	logger.Warn("nothing found returning an empty value")
+
+	return ""
+}
+
+func keepDatabaseLocalState(db *gorm.DB, logger *zap.Logger) *LocalDatabaseState {
+	return &LocalDatabaseState{
+		PublicKey:               keepAccountPK(db, logger),
+		DisplayName:             keepDisplayName(db, logger),
+		ReplicateFlag:           keepAutoReplicateFlag(db, logger),
+		LocalConversationsState: keepConversationsLocalData(db, logger),
 	}
 }
