@@ -47,7 +47,7 @@
     "bluetooth": {
       "header": "",
       "optional": "",
-      "title": "",
+      "title": "Bluetooth",
       "desc": "",
       "button": "",
       "skip": ""
