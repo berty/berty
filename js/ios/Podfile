@@ -18,5 +18,22 @@ target 'Berty' do
   use_flipper!
   post_install do |installer|
     flipper_post_install(installer)
+
+    # enable only active arch for all pods
+    installer.pods_project.build_configurations.each do |config|
+      config.build_settings['ONLY_ACTIVE_ARCH'] = 'YES'
+    end
+
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        # set ios deployment target for all pods
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+
+        # replace swift version 4.X -> 5.0
+        if config.build_settings.key?('SWIFT_VERSION') && config.build_settings['SWIFT_VERSION'].start_with?('4.')
+          config.build_settings['SWIFT_VERSION'] = '5.0'
+        end
+      end
+    end
   end
 end

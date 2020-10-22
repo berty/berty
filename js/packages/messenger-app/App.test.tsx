@@ -435,6 +435,12 @@ jest.mock('react-native-screens', () => {
 	}
 })
 
+jest.mock('@shakebugs/react-native-shake', () => {
+	return {
+		start: jest.fn(() => {}),
+	}
+})
+
 it('renders correctly', () => {
 	renderer.create(<App />)
 })
