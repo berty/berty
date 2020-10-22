@@ -9,6 +9,8 @@ export const GoBridgeDefaultOpts = {
 		'--node.display-name',
 		'',
 
+		'--store.fileio=true',
+
 		'--node.listeners',
 		'/ip4/127.0.0.1/tcp/0/grpcws',
 

@@ -6,6 +6,7 @@ import (
 	"os"
 	"path"
 
+	badger_opts "github.com/dgraph-io/badger/options"
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
@@ -19,6 +20,7 @@ const InMemoryDir = ":memory:"
 func (m *Manager) SetupDatastoreFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Datastore.Dir, "store.dir", m.Datastore.defaultDir, "root datastore directory")
 	fs.BoolVar(&m.Datastore.InMemory, "store.inmem", false, "disable datastore persistence")
+	fs.BoolVar(&m.Datastore.FileIO, "store.fileio", false, "enable FileIO Option, files will be loaded using standard I/O")
 }
 
 func (m *Manager) GetDatastoreDir() (string, error) {
@@ -80,7 +82,14 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 		return sync_ds.MutexWrap(datastore.NewMapDatastore()), nil
 	}
 
-	ds, err := badger.NewDatastore(dir, nil)
+	var opts *badger.Options
+	if m.Datastore.FileIO {
+		opts = &badger.Options{
+			Options: badger.DefaultOptions.WithValueLogLoadingMode(badger_opts.FileIO),
+		}
+	}
+
+	ds, err := badger.NewDatastore(dir, opts)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

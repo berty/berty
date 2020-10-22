@@ -47,6 +47,7 @@ type Manager struct {
 	Datastore struct {
 		Dir      string `json:"Dir,omitempty"`
 		InMemory bool   `json:"InMemory,omitempty"`
+		FileIO   bool   `json:"FileIO,omitempty"`
 
 		defaultDir string
 		dir        string
