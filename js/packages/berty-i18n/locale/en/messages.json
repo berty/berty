@@ -7,12 +7,14 @@
     "started-ago": "Started {{date}} ago"
   },
   "onboarding": {
-    "open-registered-account": "Open a registered account",
-    "getstarted-intro": "The secure peer-to-peer messaging app that works with or without internet access, cellular data or trust in the network",
-    "getstarted-button": "Get started",
-    "getstarted-import-button": "Import data from an existing account",
-    "account-selector-create-button": "Create a new account",
-    "getstarted-more-options": "More options",
+    "getstarted": {
+      "desc": "The secure peer-to-peer messaging app that works with or without internet access, cellular data or trust in the network",
+      "open-registered-account": "Open a registered account",
+      "import-button": "Import data from an existing account",
+      "account-selector-create-button": "Create a new account",
+      "more-options": "More options",
+      "button": "GET STARTED"
+    },
     "select-mode": {
       "performance": {
         "title": "Performance",
@@ -36,6 +38,14 @@
       "required": "Required",
       "placeholder": "Name",
       "button": "CREATE MY ACCOUNT"
+    },
+    "services-auth": {
+      "header": "Authenticate to services",
+      "title": "Services",
+      "recommended": "Recommended",
+      "desc": "This will automatically replicate your conversations on a server",
+      "button": "Use Berty operated services",
+      "skip": "SKIP AND DO THIS LATER"
     },
     "generate-key": {
       "title": "Starting the Berty node…",

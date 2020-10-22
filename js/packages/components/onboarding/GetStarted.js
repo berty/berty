@@ -5,15 +5,14 @@ import { Translation } from 'react-i18next'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { useStyles } from '@berty-tech/styles'
+import { useNavigation } from '@react-navigation/native'
 
-import { MessengerActions, useMsgrContext } from '@berty-tech/store/context'
 import Logo from './berty_gradient_square.svg'
 import Button from './Button'
 
 export const GetStarted = () => {
-	const [{ absolute, background, column, flex, padding, text, margin, color }] = useStyles()
-	const { dispatch } = useMsgrContext()
-
+	const { navigate } = useNavigation()
+	const [{ absolute, background, column, flex, padding, text }] = useStyles()
 	return (
 		<Translation>
 			{(t) => (
@@ -28,31 +27,9 @@ export const GetStarted = () => {
 						</Text>
 					</View>
 					<View style={[flex.medium]}>
-						<Button
-							style={column.item.center}
-							textStyle={{ textTransform: 'uppercase' }}
-							onPress={() => dispatch({ type: MessengerActions.SetStateOnBoarding })}
-						>
+						<Button style={column.item.center} onPress={() => navigate('Onboarding.CreateAccount')}>
 							{t('onboarding.getstarted.button')}
 						</Button>
-						<Text
-							style={[
-								column.item.center,
-								padding.horizontal.big,
-								margin.top.medium,
-								padding.medium,
-								{
-									textTransform: 'uppercase',
-									fontWeight: 'normal',
-									color: color.grey,
-								},
-							]}
-							onPress={() => {
-								dispatch({ type: MessengerActions.SetStateDeleting })
-							}}
-						>
-							{t('onboarding.getstarted.more-options')}
-						</Text>
 					</View>
 				</SafeAreaView>
 			)}

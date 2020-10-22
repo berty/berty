@@ -22,15 +22,15 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 		<Translation>
 			{(t) => (
 				<SwiperCard
-					header={'Authenticate to services'}
-					label='Recommended'
-					title={t('Services')}
-					description={'This will automatically replicate your conversations on a server'}
+					header={t('onboarding.services-auth.header')}
+					label={t('onboarding.services-auth.recommended')}
+					title={t('onboarding.services-auth.title')}
+					description={t('onboarding.services-auth.desc')}
 					button={
 						accountServices.length > 0
 							? undefined
 							: {
-									text: 'Use Berty operated services',
+									text: t('onboarding.services-auth.button'),
 									onPress: async () => {
 										await servicesAuthViaDefault(ctx)
 									},
