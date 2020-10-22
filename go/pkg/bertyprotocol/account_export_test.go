@@ -117,6 +117,8 @@ func Test_service_exportAccountProofKey(t *testing.T) {
 }
 
 func TestRestoreAccount(t *testing.T) {
+	testutil.FilterStability(t, testutil.Unstable)
+
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
 
