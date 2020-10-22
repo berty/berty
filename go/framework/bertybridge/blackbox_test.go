@@ -28,16 +28,14 @@ func Example() {
 				config.SetLoggerDriver(nil)
 				config.SetNotificationDriver(nil)
 			}
-			config.SetCLIArgs([]string{
-				"--log.filters", "info+:bty*,-*.grpc warn+:*.grpc error+:*",
-				"--log.format", "console",
-				"--node.display-name", "",
-				"--node.listeners", "/ip4/127.0.0.1/tcp/0/grpcws",
-				"--p2p.ipfs-listeners", "/ip4/0.0.0.0/tcp/0,/ip6/0.0.0.0/tcp/0",
-				"--p2p.local-discovery=false",
-				"--p2p.webui-listener", ":3000",
-				"--store.dir", tmpdir,
-			})
+			config.AppendCLIArg("--log.filters=info+:bty*,-*.grpc warn+:*.grpc error+:*")
+			config.AppendCLIArg("--log.format=console")
+			config.AppendCLIArg("--node.display-name=")
+			config.AppendCLIArg("--node.listeners=/ip4/127.0.0.1/tcp/0/grpcws")
+			config.AppendCLIArg("--p2p.ipfs-listeners=/ip4/0.0.0.0/tcp/0,/ip6/0.0.0.0/tcp/0")
+			config.AppendCLIArg("--p2p.local-discovery=false")
+			config.AppendCLIArg("--p2p.webui-listener=:3000")
+			config.AppendCLIArg("--store.dir=" + tmpdir)
 		}
 
 		bridge, err = bertybridge.NewBridge(config)
