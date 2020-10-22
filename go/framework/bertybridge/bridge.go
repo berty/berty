@@ -2,160 +2,267 @@ package bertybridge
 
 import (
 	"context"
-	"fmt"
+	mrand "math/rand"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
+	"github.com/ipfs/go-ipfs/core"
+	"github.com/ipfs/go-ipfs/core/bootstrap"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/oklog/run"
 	"github.com/pkg/errors"
+	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/framework/bertybridge/internal/bridgepb"
 	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/initutil"
+	"berty.tech/berty/v2/go/internal/lifecycle"
+	"berty.tech/berty/v2/go/internal/notification"
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
-const ClientBufferSize = 256 * 1024
-
-type PromiseBlock interface {
-	CallResolve(reply string)
-	CallReject(error error)
-}
-
-type Config struct {
-	bridgeGrpcAddrs []string
-}
-
-func NewConfig() *Config {
-	return &Config{
-		bridgeGrpcAddrs: make([]string, 0),
-	}
-}
-
-// AddGRPCListener create a grpc listener with the given multiaddr
-// if a normal addr is given, it will listen by default on grpcweb
-// (ex: ":0" -> "/ip4/127.0.0.1/tcp/0/grpcweb")
-func (c *Config) AddGRPCListener(addr string) {
-	c.bridgeGrpcAddrs = append(c.bridgeGrpcAddrs, addr)
-}
+const bufListenerSize = 256 * 1024
 
 type Bridge struct {
-	cerr       chan error
-	cclose     chan struct{}
-	once       sync.Once
-	workers    run.Group
-	grpcServer *grpc.Server
-	logger     *zap.Logger
-
-	clientBridgeService *Client
-
-	bufListener *grpcutil.BufListener
-	listeners   []grpcutil.Listener
+	initManager        *initutil.Manager
+	initManagerCleanup func()
+	node               *core.IpfsNode
+	lifecycleDriver    LifeCycleDriver
+	logger             *zap.Logger
+	currentAppState    int
+	notification       notification.Manager
+	lifecycleManager   *lifecycle.Manager
+	handleStateMutex   sync.Mutex
+	errc               chan error
+	closec             chan struct{}
+	onceCloser         sync.Once
+	workers            run.Group
+	grpcServer         *grpc.Server
+	client             *client
 }
 
-// newBridge is the main entrypoint for gomobile and should only take simple configuration as argument
-func newBridge(ctx context.Context, s *grpc.Server, logger *zap.Logger, config *Config) (*Bridge, error) {
-	if config == nil {
-		config = NewConfig()
+var _ LifeCycleHandler = (*Bridge)(nil)
+
+func NewBridge(config *Config) (*Bridge, error) {
+	manager, managerCleanup, err := config.manager()
+	if err != nil {
+		return nil, err
 	}
 
+	ctx := manager.GetContext()
+
+	// get logger
+	logger, err := manager.GetLogger()
+	if err != nil {
+		return nil, err
+	}
+
+	// get local IPFS
+	_, node, err := manager.GetLocalIPFS()
+	if err != nil {
+		return nil, err
+	}
+
+	// get gRPC server
+	grpcServer, _, err := manager.GetGRPCServer()
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = manager.GetLocalMessengerServer()
+	if err != nil {
+		return nil, err
+	}
+
+	notifmanager, err := manager.GetNotificationManager()
+	if err != nil {
+		return nil, err
+	}
+
+	// create bridge instance
 	b := &Bridge{
-		cerr:   make(chan error),
-		cclose: make(chan struct{}),
-
-		// noop opt
-		grpcServer: s,
-		logger:     logger,
+		errc:               make(chan error),
+		closec:             make(chan struct{}),
+		grpcServer:         grpcServer,
+		logger:             logger,
+		initManager:        manager,
+		initManagerCleanup: managerCleanup,
+		notification:       notifmanager,
+		lifecycleDriver:    config.lc,
+		lifecycleManager:   manager.GetLifecycleManager(),
+		node:               node,
 	}
 
-	// Create cancel service
-	b.workers.Add(func() error {
-		// wait for closing signal
-		<-b.cclose
-		return errcode.ErrBridgeInterrupted
-	}, func(error) {
-		b.once.Do(func() {
-			close(b.cclose)
-		})
-	})
-
-	// setup grpc listeners
+	// gRPC services
 	{
-		var err error
-		for _, addr := range config.bridgeGrpcAddrs {
-			if addr == "" {
-				err = fmt.Errorf("addr can't be empty")
-			} else {
-				err = b.addGRPCListenner(addr)
-			}
+		// create cancel service
+		{
+			b.workers.Add(func() error {
+				// wait for closing signal
+				<-b.closec
+				return errcode.ErrBridgeInterrupted
+			}, func(error) {
+				b.onceCloser.Do(func() { close(b.closec) })
+			})
+		}
 
+		// setup bridge client
+		{
+			clientConn, err := manager.GetGRPCClientConn()
 			if err != nil {
-				return nil, errors.Wrap(err, "init gRPC listener failed")
+				return nil, err
 			}
+
+			// register services for bridge client
+			service := newServiceFromClientConn(clientConn)
+			s := grpc.NewServer()
+			bridgepb.RegisterBridgeServiceServer(s, service)
+
+			bl := grpcutil.NewBufListener(ctx, bufListenerSize)
+			b.workers.Add(func() error {
+				return s.Serve(bl)
+			}, func(error) {
+				bl.Close()
+				service.Close()
+			})
+
+			// create native bridge client
+			ccBridge, err := bl.NewClientConn()
+			if err != nil {
+				return nil, errors.Wrap(err, "unable to get bridge gRPC ClientConn")
+			}
+			b.client = &client{ccBridge}
 		}
 	}
 
-	// setup lazy grpc listener
-	bl := grpcutil.NewBufListener(ctx, ClientBufferSize)
-	b.workers.Add(func() error {
-		return b.grpcServer.Serve(bl)
-	}, func(error) {
-		bl.Close()
-	})
-
-	// setup lazy grpc listener for services
-	var ccServices *grpc.ClientConn
-	var bufListener *grpcutil.BufListener
+	// hook the lifecycle manager
 	{
-		var err error
-
-		bufListener = grpcutil.NewBufListener(ctx, ClientBufferSize)
-		b.workers.Add(func() error {
-			return b.grpcServer.Serve(bufListener)
-		}, func(error) {
-			bufListener.Close()
-		})
-
-		if ccServices, err = bufListener.NewClientConn(); err != nil {
-			return nil, errors.Wrap(err, "unable to get services gRPC ClientConn")
-		}
+		b.HandleState(config.lc.GetCurrentState())
+		config.lc.RegisterHandler(b)
 	}
-	b.bufListener = bufListener
-
-	// setup bridge client
-	var ccBridge *grpc.ClientConn
-	{
-		var err error
-
-		service := NewServiceFromClientConn(ccServices)
-		s := grpc.NewServer()
-		bridgepb.RegisterBridgeServiceServer(s, service)
-
-		bl := grpcutil.NewBufListener(ctx, ClientBufferSize)
-		b.workers.Add(func() error {
-			return s.Serve(bl)
-		}, func(error) {
-			bl.Close()
-			service.Close()
-		})
-
-		if ccBridge, err = bl.NewClientConn(); err != nil {
-			return nil, errors.Wrap(err, "unable to get bridge gRPC ClientConn")
-		}
-	}
-	b.clientBridgeService = &Client{ccBridge}
 
 	// start Bridge
 	b.logger.Debug("starting Bridge")
 	go func() {
-		b.cerr <- b.workers.Run()
+		b.errc <- b.workers.Run()
 	}()
+	time.Sleep(10 * time.Millisecond) // let some time to the goroutine to warm up
 
 	return b, nil
+}
+
+func (b *Bridge) HandleState(appstate int) {
+	b.handleStateMutex.Lock()
+	defer b.handleStateMutex.Unlock()
+
+	if appstate != b.currentAppState {
+		switch appstate {
+		case AppStateBackground:
+			b.lifecycleManager.UpdateState(bertymessenger.StateInactive)
+			b.logger.Info("app is in Background State")
+		case AppStateActive:
+			b.lifecycleManager.UpdateState(bertymessenger.StateActive)
+			b.logger.Info("app is in Active State")
+			if b.node != nil {
+				bootstrapConfig := bootstrap.BootstrapConfig{
+					MinPeerThreshold:  5,
+					Period:            10 * time.Second,
+					ConnectionTimeout: 5 * time.Second, // Period / 2
+				}
+				if err := b.node.Bootstrap(bootstrapConfig); err != nil {
+					b.logger.Warn("unable to boostrap node", zap.Error(err))
+				}
+			}
+		case AppStateInactive:
+			b.lifecycleManager.UpdateState(bertymessenger.StateInactive)
+			b.logger.Info("app is in Inactive State")
+		}
+		b.currentAppState = appstate
+	}
+}
+
+var backgroundCounter int32
+
+func (b *Bridge) HandleTask() LifeCycleBackgroundTask {
+	return newBackgroundTask(b.logger, func(ctx context.Context) error {
+		counter := atomic.AddInt32(&backgroundCounter, 1)
+		b.logger.Info("starting background task", zap.Int("counter", int(counter)))
+
+		started := time.Now()
+		n := time.Duration(mrand.Intn(60) + 5) // nolint:gosec
+		ctx, cancel := context.WithTimeout(ctx, time.Second*n)
+		defer cancel()
+
+		// background task started
+
+		<-ctx.Done()
+
+		// background task ended
+
+		b.logger.Info("ending background task",
+			zap.Int("counter", int(counter)),
+			zap.Duration("duration", time.Since(started)),
+		)
+
+		return nil
+	})
+}
+
+func (b *Bridge) WillTerminate() {
+	if err := b.Close(); err != nil {
+		errs := multierr.Errors(err)
+		errFields := make([]zap.Field, len(errs))
+		for i, err := range errs {
+			errFields[i] = zap.Error(err)
+		}
+		b.logger.Error("unable to close messenger properly", errFields...)
+	} else {
+		b.logger.Info("messenger has been closed")
+	}
+}
+
+func (b *Bridge) Close() error {
+	b.logger.Info("Bridge.Close called")
+
+	var errs error
+
+	// close gRPC bridge
+	if !b.isClosed() {
+		// send close signal
+		b.onceCloser.Do(func() { close(b.closec) })
+
+		// set close timeout
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*4)
+
+		// wait or die
+		var err error
+		select {
+		case err = <-b.errc:
+		case <-ctx.Done():
+			err = ctx.Err()
+		}
+
+		b.grpcServer.Stop()
+
+		if !errcode.Is(err, errcode.ErrBridgeInterrupted) {
+			errs = multierr.Append(errs, err)
+		}
+
+		cancel()
+	}
+
+	b.initManagerCleanup()
+	return errs
+}
+
+type PromiseBlock interface {
+	CallResolve(reply string)
+	CallReject(error error)
 }
 
 func (b *Bridge) InvokeBridgeMethodWithPromiseBlock(promise PromiseBlock, method string, b64message string) {
@@ -173,16 +280,16 @@ func (b *Bridge) InvokeBridgeMethodWithPromiseBlock(promise PromiseBlock, method
 }
 
 func (b *Bridge) InvokeBridgeMethod(method string, b64message string) (string, error) {
-	return b.clientBridgeService.UnaryRequestFromBase64(method, b64message)
+	return b.client.UnaryRequestFromBase64(method, b64message)
 }
 
-func (b *Bridge) GRPCListenerAddr() string          { return b.GetGRPCAddrFor("ip4/tcp/grpc") }
-func (b *Bridge) GRPCWebListenerAddr() string       { return b.GetGRPCAddrFor("ip4/tcp/grpcweb") }
-func (b *Bridge) GRPCWebSocketListenerAddr() string { return b.GetGRPCAddrFor("ip4/tcp/grpcws") }
+// func (b *Bridge) GRPCListenerAddr() string          { return b.getGRPCAddrFor("ip4/tcp/grpc") }
+func (b *Bridge) GRPCWebListenerAddr() string       { return b.getGRPCAddrFor("ip4/tcp/grpcweb") }
+func (b *Bridge) GRPCWebSocketListenerAddr() string { return b.getGRPCAddrFor("ip4/tcp/grpcws") }
 
-// GetGRPCAddrFor the given protocols, if not found return an empty string
-func (b *Bridge) GetGRPCAddrFor(protos string) string {
-	for _, l := range b.listeners {
+// getGRPCAddrFor the given protocols, if not found return an empty string
+func (b *Bridge) getGRPCAddrFor(protos string) string {
+	for _, l := range b.initManager.GetGRPCListeners() {
 		ps := make([]string, 0)
 		ma.ForEach(l.GRPCMultiaddr(), func(c ma.Component) bool {
 			ps = append(ps, c.Protocol().Name)
@@ -197,87 +304,11 @@ func (b *Bridge) GetGRPCAddrFor(protos string) string {
 	return ""
 }
 
-// NewGRPCClient return client service on success
-func (b *Bridge) NewGRPCClient() (client *Client, cleanup func(), err error) {
-	var grpcClient *grpc.ClientConn
-	if grpcClient, err = b.bufListener.NewClientConn(); err != nil {
-		return
-	}
-
-	client = &Client{grpcClient}
-	cleanup = func() {
-		_ = client.Close()
-	}
-
-	return
-}
-
-// Close Bridge
-func (b *Bridge) Close() (err error) {
-	if b.isClosed() {
-		return errcode.ErrBridgeNotRunning
-	}
-
-	b.logger.Info("Bridge.Close called")
-
-	// send close signal
-	b.once.Do(func() { close(b.cclose) })
-
-	// set close timeout
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*4)
-	defer cancel()
-
-	// wait or die
-	select {
-	case err = <-b.cerr:
-	case <-ctx.Done():
-		err = ctx.Err()
-	}
-
-	b.grpcServer.Stop()
-	b.bufListener.Close()
-
-	if !errcode.Is(err, errcode.ErrBridgeInterrupted) {
-		return errcode.TODO.Wrap(err)
-	}
-
-	return nil
-}
-
 func (b *Bridge) isClosed() bool {
 	select {
-	case <-b.cclose:
+	case <-b.closec:
 		return true
 	default:
 		return false
 	}
-}
-
-func (b *Bridge) addGRPCListenner(maddr string) error {
-	m, err := ipfsutil.ParseAddr(maddr)
-	if err != nil {
-		return err
-	}
-
-	b.logger.Info("add gRPC listener", zap.Stringer("addr", m))
-	l, err := grpcutil.Listen(m)
-	if err != nil {
-		return err
-	}
-
-	server := &grpcutil.Server{GRPCServer: b.grpcServer}
-	b.workers.Add(func() (err error) {
-		if err = server.Serve(l); err != nil {
-			b.logger.Error("grpc serve server",
-				zap.String("maddr", maddr),
-				zap.Error(err))
-		}
-
-		return
-	}, func(err error) {
-		l.Close()
-	})
-
-	b.listeners = append(b.listeners, l)
-	return nil
 }

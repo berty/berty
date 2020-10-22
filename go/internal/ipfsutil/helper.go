@@ -14,7 +14,6 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-// parseIpfsAddr is a function that takes in addr string and return ipfsAddrs
 func ParseAndResolveIpfsAddr(ctx context.Context, addr string) (*peer.AddrInfo, error) {
 	maddr, err := ma.NewMultiaddr(addr)
 	if err != nil {

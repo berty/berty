@@ -18,12 +18,26 @@ func (m *Manager) SetupLoggingFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Logging.Logfile, "log.file", "", "if specified, will log everything in JSON into a file and nothing on stderr")
 	fs.StringVar(&m.Logging.Format, "log.format", "color", "can be: json, console, color, light-console, light-color")
 	fs.StringVar(&m.Logging.Tracer, "log.tracer", "", `specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger`)
+	fs.StringVar(&m.Logging.Service, "log.service", "berty", `service name, used by the tracer`)
 }
 
 func (m *Manager) GetLogger() (*zap.Logger, error) {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 	return m.getLogger()
+}
+
+func (m *Manager) SetLogger(logger *zap.Logger) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
+	// the following check is here to help developers avoid having
+	// strange states by using multiple instances of the logger
+	if m.Logging.zapLogger != nil {
+		panic("initutil.SetLogger was called but there was already an existing value")
+	}
+
+	m.Logging.zapLogger = logger
 }
 
 func (m *Manager) getLogger() (*zap.Logger, error) {
@@ -33,7 +47,7 @@ func (m *Manager) getLogger() (*zap.Logger, error) {
 
 	m.Logging.Filters = strings.ReplaceAll(m.Logging.Filters, ":default:", defaultLoggingFilters)
 
-	tracerFlush := tracer.InitTracer(m.Logging.Tracer, "berty")
+	tracerFlush := tracer.InitTracer(m.Logging.Tracer, m.Logging.Service)
 	logger, loggerCleanup, err := logutil.NewLogger(
 		m.Logging.Filters,
 		m.Logging.Format,

@@ -115,10 +115,10 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 				iconSize={30}
 				iconColor={color.blue}
 				toggled
-				varToggle={ctx.persistentOptions.notifications.enable}
+				varToggle={ctx.persistentOptions?.notifications.enable}
 				actionToggle={async () => {
 					await ctx.setPersistentOption('notifications', {
-						enable: ctx.persistentOptions.notifications.enable ? false : true,
+						enable: ctx.persistentOptions?.notifications.enable ? false : true,
 					})
 				}}
 			/>
@@ -207,7 +207,7 @@ export const Notifications: React.FC<ScreenProps.Settings.Notifications> = () =>
 					<HeaderSettings
 						title='Notifications'
 						desc={
-							ctx.persistentOptions.notifications.enable
+							ctx.persistentOptions?.notifications.enable
 								? 'You have activated notifications!'
 								: 'You have not yet activated notifications for this app'
 						}

@@ -2,9 +2,11 @@ package initutil
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"path"
 
+	badger_opts "github.com/dgraph-io/badger/options"
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	badger "github.com/ipfs/go-ds-badger"
@@ -18,6 +20,7 @@ const InMemoryDir = ":memory:"
 func (m *Manager) SetupDatastoreFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Datastore.Dir, "store.dir", m.Datastore.defaultDir, "root datastore directory")
 	fs.BoolVar(&m.Datastore.InMemory, "store.inmem", false, "disable datastore persistence")
+	fs.BoolVar(&m.Datastore.FileIO, "store.fileio", false, "enable FileIO Option, files will be loaded using standard I/O")
 }
 
 func (m *Manager) GetDatastoreDir() (string, error) {
@@ -27,23 +30,23 @@ func (m *Manager) GetDatastoreDir() (string, error) {
 }
 
 func (m *Manager) getDatastoreDir() (string, error) {
-	_, err := m.getLogger() // needed by m.initLogger below
-	if err != nil {
-		return "", err
-	}
+	m.applyDefaults()
 
 	if m.Datastore.dir != "" {
 		return m.Datastore.dir, nil
 	}
 	switch {
+	case m.Datastore.Dir == "" && !m.Datastore.InMemory:
+		return "", errcode.TODO.Wrap(fmt.Errorf("--store.dir is empty"))
 	case m.Datastore.Dir == InMemoryDir,
 		m.Datastore.Dir == "",
 		m.Datastore.InMemory:
 		return InMemoryDir, nil
 	}
 
-	m.Datastore.dir = path.Join(m.Datastore.Dir, "berty")
-	_, err = os.Stat(m.Datastore.dir)
+	m.Datastore.dir = path.Join(m.Datastore.Dir, "account0") // account0 is a suffix that will be used with multi-account later
+
+	_, err := os.Stat(m.Datastore.dir)
 	switch {
 	case os.IsNotExist(err):
 		if err := os.MkdirAll(m.Datastore.dir, 0o700); err != nil {
@@ -64,6 +67,8 @@ func (m *Manager) GetRootDatastore() (datastore.Batching, error) {
 }
 
 func (m *Manager) getRootDatastore() (datastore.Batching, error) {
+	m.applyDefaults()
+
 	if m.Datastore.rootDS != nil {
 		return m.Datastore.rootDS, nil
 	}
@@ -77,7 +82,14 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 		return sync_ds.MutexWrap(datastore.NewMapDatastore()), nil
 	}
 
-	ds, err := badger.NewDatastore(dir, nil)
+	var opts *badger.Options
+	if m.Datastore.FileIO {
+		opts = &badger.Options{
+			Options: badger.DefaultOptions.WithValueLogLoadingMode(badger_opts.FileIO),
+		}
+	}
+
+	ds, err := badger.NewDatastore(dir, opts)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

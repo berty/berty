@@ -18,9 +18,9 @@ import (
 )
 
 // Service is BridgeServiceServer
-var _ pb.BridgeServiceServer = (*Service)(nil)
+var _ pb.BridgeServiceServer = (*service)(nil)
 
-type Service struct {
+type service struct {
 	cc *grpc.ClientConn
 
 	rootCtx    context.Context
@@ -31,9 +31,9 @@ type Service struct {
 	muStreams sync.RWMutex
 }
 
-func NewServiceFromClientConn(cc *grpc.ClientConn) *Service {
+func newServiceFromClientConn(cc *grpc.ClientConn) *service {
 	rootCtx, cancel := context.WithCancel(context.Background())
-	return &Service{
+	return &service{
 		cc:         cc,
 		rootCtx:    rootCtx,
 		rootCancel: cancel,
@@ -51,7 +51,7 @@ type cancelStream struct {
 }
 
 // ClientInvokeUnary invoke a unary method
-func (s *Service) ClientInvokeUnary(ctx context.Context, req *pb.ClientInvokeUnary_Request) (*pb.ClientInvokeUnary_Reply, error) {
+func (s *service) ClientInvokeUnary(ctx context.Context, req *pb.ClientInvokeUnary_Request) (*pb.ClientInvokeUnary_Reply, error) {
 	res := &pb.ClientInvokeUnary_Reply{}
 	if req.MethodDesc == nil {
 		return res, fmt.Errorf("cannot invoke `ClientInvokeUnary` without a `MethodDesc``")
@@ -80,7 +80,7 @@ func (s *Service) ClientInvokeUnary(ctx context.Context, req *pb.ClientInvokeUna
 }
 
 // CreateStream create a stream
-func (s *Service) CreateClientStream(ctx context.Context, req *pb.ClientCreateStream_Request) (*pb.ClientCreateStream_Reply, error) {
+func (s *service) CreateClientStream(ctx context.Context, req *pb.ClientCreateStream_Request) (*pb.ClientCreateStream_Reply, error) {
 	id := s.newStreamID()
 	res := &pb.ClientCreateStream_Reply{
 		StreamId: id,
@@ -95,8 +95,7 @@ func (s *Service) CreateClientStream(ctx context.Context, req *pb.ClientCreateSt
 	}
 
 	desc := &grpc.StreamDesc{
-		StreamName: req.MethodDesc.Name,
-
+		StreamName:    req.MethodDesc.Name,
 		ServerStreams: req.MethodDesc.IsServerStream,
 		ClientStreams: req.MethodDesc.IsClientStream,
 	}
@@ -143,7 +142,7 @@ func (s *Service) CreateClientStream(ctx context.Context, req *pb.ClientCreateSt
 }
 
 // Send Message over the given stream
-func (s *Service) ClientStreamSend(ctx context.Context, req *pb.ClientStreamSend_Request) (*pb.ClientStreamSend_Reply, error) {
+func (s *service) ClientStreamSend(ctx context.Context, req *pb.ClientStreamSend_Request) (*pb.ClientStreamSend_Reply, error) {
 	id := req.StreamId
 
 	s.muStreams.RLock()
@@ -171,7 +170,7 @@ func (s *Service) ClientStreamSend(ctx context.Context, req *pb.ClientStreamSend
 }
 
 // Recv message over the given stream
-func (s *Service) ClientStreamRecv(ctx context.Context, req *pb.ClientStreamRecv_Request) (*pb.ClientStreamRecv_Reply, error) {
+func (s *service) ClientStreamRecv(ctx context.Context, req *pb.ClientStreamRecv_Request) (*pb.ClientStreamRecv_Reply, error) {
 	id := req.StreamId
 
 	s.muStreams.RLock()
@@ -203,7 +202,7 @@ func (s *Service) ClientStreamRecv(ctx context.Context, req *pb.ClientStreamRecv
 }
 
 // Close the given stream
-func (s *Service) ClientStreamClose(ctx context.Context, req *pb.ClientStreamClose_Request) (*pb.ClientStreamClose_Reply, error) {
+func (s *service) ClientStreamClose(ctx context.Context, req *pb.ClientStreamClose_Request) (*pb.ClientStreamClose_Reply, error) {
 	id := req.StreamId
 	res := &pb.ClientStreamClose_Reply{
 		StreamId: id,
@@ -219,12 +218,12 @@ func (s *Service) ClientStreamClose(ctx context.Context, req *pb.ClientStreamClo
 	return res, nil
 }
 
-func (s *Service) Close() error {
+func (s *service) Close() error {
 	s.rootCancel()
 	return nil
 }
 
-func (s *Service) newStreamID() string {
+func (s *service) newStreamID() string {
 	new := atomic.AddUint64(&s.streamids, 1)
 	return strconv.FormatUint(new, 16)
 }
@@ -259,24 +258,6 @@ func convertMetadata(in metadata.MD) []*pb.Metadata {
 
 	return out
 }
-
-// func getTrailerFromContext(ctx context.Context) []*pb.Metadata {
-// 	// get trailer
-// 	var trailer []*pb.Metadata
-// 	if outmd, ok := metadata.FromIncomingContext(ctx); ok {
-// 		trailer = make([]*pb.Metadata, outmd.Len())
-// 		i := 0
-// 		for k, v := range outmd {
-// 			trailer[i] = &pb.Metadata{
-// 				Key:    k,
-// 				Values: v,
-// 			}
-// 			i++
-// 		}
-// 	}
-
-// 	return trailer
-// }
 
 func getSerivceError(err error) *pb.Error {
 	if err == nil {

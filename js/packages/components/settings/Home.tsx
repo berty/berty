@@ -127,7 +127,7 @@ const HomeBodySettings: React.FC<{}> = () => {
 	const replicationServices = services.filter((s) => s.serviceType === serviceTypes.Replication)
 	const ctx = useMsgrContext()
 	const enableNotif =
-		ctx.persistentOptions.notifications && ctx.persistentOptions.notifications.enable
+		ctx.persistentOptions?.notifications && ctx.persistentOptions?.notifications.enable
 
 	return (
 		<View style={[flex.tiny, padding.horizontal.medium, margin.top.medium]}>

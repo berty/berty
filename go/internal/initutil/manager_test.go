@@ -99,7 +99,7 @@ func Example_flags() {
 	fmt.Println("after ", u.JSON(manager.Node.GRPC))
 
 	// Output:
-	// before {"RemoteAddr":"","Listeners":""}
+	// before {}
 	// after  {"RemoteAddr":"1.2.3.4:5678","Listeners":"/ip4/127.0.0.1/tcp/9091/grpc"}
 }
 

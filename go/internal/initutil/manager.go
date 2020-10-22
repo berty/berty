@@ -20,6 +20,7 @@ import (
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
+	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -28,57 +29,49 @@ import (
 
 type Manager struct {
 	Logging struct {
-		Format  string
-		Logfile string
-		Filters string
-		Tracer  string
+		Format  string `json:"Format,omitempty"`
+		Logfile string `json:"Logfile,omitempty"`
+		Filters string `json:"Filters,omitempty"`
+		Tracer  string `json:"Tracer,omitempty"`
+		Service string `json:"Service,omitempty"`
 
 		zapLogger *zap.Logger
 		cleanup   func()
-	}
+	} `json:"Logging,omitempty"`
 	Metrics struct {
-		Registry *prometheus.Registry
-		Listener string
-		Pedantic bool
-	}
+		Listener string `json:"Listener,omitempty"`
+		Pedantic bool   `json:"Pedantic,omitempty"`
+
+		registry *prometheus.Registry
+	} `json:"Metrics,omitempty"`
 	Datastore struct {
-		Dir      string
-		InMemory bool
+		Dir      string `json:"Dir,omitempty"`
+		InMemory bool   `json:"InMemory,omitempty"`
+		FileIO   bool   `json:"FileIO,omitempty"`
 
 		defaultDir string
 		dir        string
 		rootDS     datastore.Batching
-	}
+	} `json:"Datastore,omitempty"`
 	Node struct {
-		Preset Preset
-		// Enum :
-		// - "" : none, default
-		// - "anonymity" : Enforced anonymity
+		Preset   Preset
 		Protocol struct {
-			// IPFS
-			IPFSListeners      string
-			IPFSAPIListeners   string
-			IPFSWebUIListener  string
-			Announce           string
-			NoAnnounce         string
-			LocalDiscovery     bool
-			MinBackoff         time.Duration
-			MaxBackoff         time.Duration
-			DisableIPFSNetwork bool
-			// RdvpMaddrs store a list of rdvp server maddr.
-			// The entry : `:dev:` will add the devs servers to the list (default).
-			// The netry : `:none:` will disable all rdvp servers.
-			RdvpMaddrs flagStringSlice
-
-			// Tor
-			Tor struct {
-				Enabled    bool
-				BinaryPath string // if "" that mean embedded must be used.
-			}
-
-			// Auth
-			AuthSecret    string
-			AuthPublicKey string
+			IPFSListeners      flagStringSlice `json:"IPFSListeners,omitempty"`
+			IPFSAPIListeners   flagStringSlice `json:"IPFSAPIListeners,omitempty"`
+			IPFSWebUIListener  string          `json:"IPFSWebUIListener,omitempty"`
+			Announce           flagStringSlice `json:"Announce,omitempty"`
+			NoAnnounce         flagStringSlice `json:"NoAnnounce,omitempty"`
+			LocalDiscovery     bool            `json:"LocalDiscovery,omitempty"`
+			MinBackoff         time.Duration   `json:"MinBackoff,omitempty"`
+			MaxBackoff         time.Duration   `json:"MaxBackoff,omitempty"`
+			DisableIPFSNetwork bool            `json:"DisableIPFSNetwork,omitempty"`
+			RdvpMaddrs         flagStringSlice `json:"RdvpMaddrs,omitempty"`
+			AuthSecret         string          `json:"AuthSecret,omitempty"`
+			AuthPublicKey      string          `json:"AuthPublicKey,omitempty"`
+			Tor                struct {
+				Enabled    bool   `json:"Enabled,omitempty"`
+				BinaryPath string `json:"BinaryPath,omitempty"`
+			} `json:"Tor,omitempty"`
 
 			// internal
 			needAuth         bool
@@ -90,26 +83,28 @@ type Manager struct {
 			client           bertyprotocol.ProtocolServiceClient
 			requiredByClient bool
 			ipfsWebUICleanup func()
+			orbitDB          *bertyprotocol.BertyOrbitDB
 		}
 		Messenger struct {
-			DisplayName          string
-			DisableNotifications bool
-			RebuildSqlite        bool
-			MessengerSqliteOpts  string
-			ExportPathToRestore  string
+			DisplayName          string `json:"DisplayName,omitempty"`
+			DisableNotifications bool   `json:"DisableNotifications,omitempty"`
+			RebuildSqlite        bool   `json:"RebuildSqlite,omitempty"`
+			MessengerSqliteOpts  string `json:"MessengerSqliteOpts,omitempty"`
+			ExportPathToRestore  string `json:"ExportPathToRestore,omitempty"`
 
 			// internal
-			protocolClient   bertyprotocol.Client
-			server           bertymessenger.Service
-			lcmanager        *lifecycle.Manager
-			client           bertymessenger.MessengerServiceClient
-			db               *gorm.DB
-			dbCleanup        func()
-			requiredByClient bool
+			protocolClient      bertyprotocol.Client
+			server              bertymessenger.Service
+			lcmanager           *lifecycle.Manager
+			notificationManager notification.Manager
+			client              bertymessenger.MessengerServiceClient
+			db                  *gorm.DB
+			dbCleanup           func()
+			requiredByClient    bool
 		}
 		GRPC struct {
-			RemoteAddr string
-			Listeners  string
+			RemoteAddr string `json:"RemoteAddr,omitempty"`
+			Listeners  string `json:"Listeners,omitempty"`
 
 			// internal
 			clientConn        *grpc.ClientConn
@@ -117,10 +112,9 @@ type Manager struct {
 			bufServer         *grpc.Server
 			bufServerListener *grpcutil.BufListener
 			gatewayMux        *runtime.ServeMux
-		}
-
-		orbitDB *bertyprotocol.BertyOrbitDB
-	}
+			listeners         []grpcutil.Listener
+		} `json:"GRPC,omitempty"`
+	} `json:"Node,omitempty"`
 
 	// internal
 	ctx        context.Context
@@ -131,9 +125,7 @@ type Manager struct {
 }
 
 func New(ctx context.Context) (*Manager, error) {
-	m := Manager{
-		initLogger: zap.NewNop(),
-	}
+	m := Manager{}
 	m.ctx, m.ctxCancel = context.WithCancel(ctx)
 
 	// storage path
@@ -152,14 +144,27 @@ func New(ctx context.Context) (*Manager, error) {
 	return &m, nil
 }
 
+func (m *Manager) applyDefaults() {
+	if m.initLogger == nil {
+		if m.Logging.zapLogger != nil {
+			m.initLogger = m.Logging.zapLogger.Named("init")
+		} else {
+			m.initLogger = zap.NewNop()
+		}
+	}
+}
+
 func (m *Manager) GetContext() context.Context {
+	if m.ctx == nil {
+		m.ctx, m.ctxCancel = context.WithCancel(context.Background())
+	}
 	return m.ctx
 }
 
 func (m *Manager) RunWorkers() error {
 	m.workers.Add(func() error {
-		<-m.ctx.Done()
-		return m.ctx.Err()
+		<-m.GetContext().Done()
+		return m.GetContext().Err()
 	}, func(error) {
 		m.ctxCancel()
 	})
@@ -170,7 +175,9 @@ func (m *Manager) Close() error {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 
-	m.ctxCancel()
+	if m.ctxCancel != nil {
+		m.ctxCancel()
+	}
 
 	if m.Node.GRPC.clientConn != nil {
 		m.Node.GRPC.clientConn.Close()

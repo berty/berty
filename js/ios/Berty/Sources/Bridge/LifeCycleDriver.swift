@@ -19,7 +19,7 @@ public class LifeCycleDriver: NSObject, BertybridgeLifeCycleDriverProtocol {
     public static var shared: LifeCycleDriver = LifeCycleDriver()
     var handler: BertybridgeLifeCycleHandlerProtocol? = nil
     let logger: LoggerDriver = LoggerDriver("tech.berty", "lifecycle")
-        
+
     public func register(_ handler: BertybridgeLifeCycleHandlerProtocol?) {
         self.handler = handler
     }
@@ -28,14 +28,14 @@ public class LifeCycleDriver: NSObject, BertybridgeLifeCycleDriverProtocol {
         if (Thread.current.isMainThread) {
             return UIApplication.shared.applicationState.getBertybridgeState()
         }
-        
-        return BertybridgeAppStateUnknow
+
+        return BertybridgeAppStateUnknown
     }
-    
+
     public func handleBackgroundTask() -> BertybridgeLifeCycleBackgroundTaskProtocol? {
         return self.handler?.handleTask()
     }
-        
+
     public func updateState(state: UIApplication.State) {
         if let handler = self.handler {
             handler.handleState(state.getBertybridgeState())
@@ -43,7 +43,7 @@ public class LifeCycleDriver: NSObject, BertybridgeLifeCycleDriverProtocol {
             self.logger.print("no state handler set", level: .warn)
         }
     }
-    
+
     public func willTerminate() {
         if let handler = self.handler {
             handler.willTerminate()
@@ -64,7 +64,7 @@ extension UIApplication.State {
         case .inactive:
             return BertybridgeAppStateInactive
         default:
-            return BertybridgeAppStateUnknow
+            return BertybridgeAppStateUnknown
         }
     }
 }
