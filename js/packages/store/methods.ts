@@ -1,6 +1,6 @@
 import { useReducer, useCallback } from 'react'
 import { useMsgrContext } from './context'
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import { messenger as messengerpb, protocol as protocolpb } from '@berty-tech/api/index.js'
 
 const initialState = { error: null, reply: null, done: false, called: false }
 
@@ -78,6 +78,54 @@ const getMessengerMethods = () => {
 
 const messengerMethodsHooks = Object.keys(getMessengerMethods()).reduce(
 	(r, key) => ({ ...r, ['use' + key]: messengerMethodHook(key) }),
+	{},
+)
+
+const protocolMethodHook = (key: any) => () => {
+	const ctx = useMsgrContext()
+
+	const [state, dispatch] = useReducer(methodReducer, initialState)
+
+	const call = useCallback(
+		(payload) => {
+			const clientKey = uncap(key)
+			if (!Object.keys(ctx.protocolClient).includes(clientKey)) {
+				dispatch(errorAction(new Error(`Couldn't find method '${key}'`)))
+				return
+			}
+			dispatch(callAction())
+			ctx.protocolClient[clientKey](payload)
+				.then((reply) => {
+					dispatch(doneAction(reply))
+				})
+				.catch((err) => {
+					dispatch(errorAction(err))
+				})
+		},
+		[ctx.protocolClient],
+	)
+
+	const refresh = useCallback(
+		(payload) => {
+			console.warn('Using deprecated "refresh" in messenger method hook, please use "call" instead')
+			call(payload)
+		},
+		[call],
+	)
+
+	return { call, refresh, ...state }
+}
+
+const getProtocolMethods = () => {
+	try {
+		return protocolpb.ProtocolService.resolveAll().methods
+	} catch (e) {
+		return {}
+	}
+}
+
+export const protocolMethodsHooks = Object.keys(getProtocolMethods()).reduce(
+	(r, key) => ({ ...r, ['use' + key]: protocolMethodHook(key) }),
 	{},
 )
 

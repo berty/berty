@@ -1,5 +1,5 @@
 import React from 'react'
-import { berty } from '@berty-tech/api'
+import { messenger as messengerpb, protocol as protocolpb } from '@berty-tech/api'
 
 export type MsgrState = {
 	account: any
@@ -7,7 +7,8 @@ export type MsgrState = {
 	contacts: { [key: string]: any }
 	interactions: { [key: string]: { [key: string]: any } }
 	members: { [key: string]: any }
-	client: berty.messenger.v1.MessengerService | null
+	client: messengerpb.MessengerService | null
+	protocolClient: protocolpb.ProtocolService | null
 	listDone: boolean
 	streamError: any
 	addNotificationListener: (cb: (evt: any) => void) => void
@@ -22,6 +23,7 @@ export const initialState = {
 	interactions: {},
 	members: {},
 	client: null,
+	protocolClient: null,
 	listDone: false,
 	streamError: null,
 	addNotificationListener: () => {},

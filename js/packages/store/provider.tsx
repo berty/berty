@@ -1,6 +1,6 @@
 import React from 'react'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import { messenger as messengerpb, protocol as protocolpb } from '@berty-tech/api/index.js'
 import { grpcweb as rpcWeb, bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
 import { Service, EOF } from '@berty-tech/grpc-bridge'
 import ExternalTransport from './externalTransport'
@@ -17,6 +17,7 @@ const T = messengerpb.StreamEvent.Type
 const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 	const state = cloneDeep(oldState) // TODO: optimize rerenders
 	state.client = oldState.client
+	state.protocolClient = oldState.protocolClient
 	state.persistentOptions = oldState.persistentOptions
 	console.log('reducing', action)
 	switch (action.type) {
@@ -27,6 +28,9 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 			return { ...initialState, embedded: oldState.embedded, daemonAddress: oldState.daemonAddress }
 		case 'SET_CLIENT':
 			state.client = action.payload.client
+			break
+		case 'SET_PROTOCOL_CLIENT':
+			state.protocolClient = action.payload.client
 			break
 		case 'DELETE_STATE_UPDATED':
 			state.deleteState = action.payload.state
@@ -256,9 +260,11 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 		}
 
 		const messengerClient = Service(messengerpb.MessengerService, rpc, messengerMiddlewares)
+		const protocolClient = Service(protocolpb.ProtocolService, rpc, null)
 
 		dispatch({ type: 'CLEAR' })
 		dispatch({ type: 'SET_CLIENT', payload: { client: messengerClient } })
+		dispatch({ type: 'SET_PROTOCOL_CLIENT', payload: { client: protocolClient } })
 
 		let precancel = false
 		let cancel = () => {
