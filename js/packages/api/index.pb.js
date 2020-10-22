@@ -3935,6 +3935,43 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     }
                   }
                 }
+              },
+              LocalDatabaseState: {
+                fields: {
+                  publicKey: {
+                    type: "string",
+                    id: 1
+                  },
+                  displayName: {
+                    type: "string",
+                    id: 2
+                  },
+                  replicateFlag: {
+                    type: "bool",
+                    id: 3
+                  },
+                  localConversationsState: {
+                    rule: "repeated",
+                    type: "LocalConversationState",
+                    id: 4
+                  }
+                }
+              },
+              LocalConversationState: {
+                fields: {
+                  publicKey: {
+                    type: "string",
+                    id: 1
+                  },
+                  unreadCount: {
+                    type: "int32",
+                    id: 2
+                  },
+                  isOpen: {
+                    type: "bool",
+                    id: 3
+                  }
+                }
               }
             }
           }

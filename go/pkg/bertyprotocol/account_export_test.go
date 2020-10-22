@@ -46,7 +46,7 @@ func Test_service_exportAccountKey(t *testing.T) {
 	err = tw.Close()
 	require.NoError(t, err)
 
-	_, err = tmpFile.Seek(0, 0)
+	_, err = tmpFile.Seek(0, io.SeekStart)
 	require.NoError(t, err)
 
 	tr := tar.NewReader(tmpFile)
@@ -94,7 +94,7 @@ func Test_service_exportAccountProofKey(t *testing.T) {
 	err = tw.Close()
 	require.NoError(t, err)
 
-	_, err = tmpFile.Seek(0, 0)
+	_, err = tmpFile.Seek(0, io.SeekStart)
 	require.NoError(t, err)
 
 	tr := tar.NewReader(tmpFile)
@@ -187,7 +187,7 @@ func TestUnstableRestoreAccount(t *testing.T) {
 		require.NoError(t, dsA.Close())
 	}
 
-	_, err = tmpFile.Seek(0, 0)
+	_, err = tmpFile.Seek(0, io.SeekStart)
 	require.NoError(t, err)
 
 	{

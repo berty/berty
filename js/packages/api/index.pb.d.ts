@@ -6103,6 +6103,52 @@ export namespace berty {
                     public toJSON(): { [k: string]: any };
                 }
             }
+
+            interface ILocalDatabaseState {
+                publicKey?: (string|null);
+                displayName?: (string|null);
+                replicateFlag?: (boolean|null);
+                localConversationsState?: (berty.messenger.v1.ILocalConversationState[]|null);
+            }
+
+            class LocalDatabaseState implements ILocalDatabaseState {
+
+                public publicKey: string;
+                public displayName: string;
+                public replicateFlag: boolean;
+                public localConversationsState: berty.messenger.v1.ILocalConversationState[];
+                public static create(properties?: berty.messenger.v1.ILocalDatabaseState): berty.messenger.v1.LocalDatabaseState;
+                public static encode(message: berty.messenger.v1.ILocalDatabaseState, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.ILocalDatabaseState, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.LocalDatabaseState;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.LocalDatabaseState;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.LocalDatabaseState;
+                public static toObject(message: berty.messenger.v1.LocalDatabaseState, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface ILocalConversationState {
+                publicKey?: (string|null);
+                unreadCount?: (number|null);
+                isOpen?: (boolean|null);
+            }
+
+            class LocalConversationState implements ILocalConversationState {
+
+                public publicKey: string;
+                public unreadCount: number;
+                public isOpen: boolean;
+                public static create(properties?: berty.messenger.v1.ILocalConversationState): berty.messenger.v1.LocalConversationState;
+                public static encode(message: berty.messenger.v1.ILocalConversationState, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.ILocalConversationState, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.LocalConversationState;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.LocalConversationState;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.LocalConversationState;
+                public static toObject(message: berty.messenger.v1.LocalConversationState, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
         }
     }
 }

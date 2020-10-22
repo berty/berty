@@ -547,7 +547,12 @@ func (m *Manager) restoreMessengerDataFromExport() error {
 		return errcode.ErrInternal.Wrap(err)
 	}
 
-	if err := bertymessenger.RestoreFromAccountExport(m.ctx, f, coreAPI, odb, logger); err != nil {
+	db, err := m.getMessengerDB()
+	if err != nil {
+		return errcode.ErrInternal.Wrap(err)
+	}
+
+	if err := bertymessenger.RestoreFromAccountExport(m.ctx, f, coreAPI, odb, db, logger); err != nil {
 		return errcode.ErrInternal.Wrap(err)
 	}
 

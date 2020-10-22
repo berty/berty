@@ -102,20 +102,42 @@ func compareDBSchema(dbA map[string][]*ColumnInfo, dbB map[string][]*ColumnInfo)
 	return errs
 }
 
-func restoreDatabaseLocalState(db *gorm.DB, values *databaseState) error {
-	if err := db.Model(&Account{}).Where("1=1").Updates(map[string]interface{}{
-		"display_name":                       values.username,
-		"replicate_new_groups_automatically": values.replicateFlag,
-	}).Error; err != nil {
-		return err
+func restoreDatabaseLocalState(db *dbWrapper, state *LocalDatabaseState) error {
+	count := int64(0)
+
+	if err := db.db.Table("accounts").Where("public_key = ?", state.PublicKey).Count(&count).Error; err != nil {
+		return errcode.ErrInternal.Wrap(fmt.Errorf("unable to check if conversation exists: %w", err))
 	}
 
-	for _, value := range values.conversationLocalData {
-		if err := db.Model(&Conversation{}).Where("public_key = ?", value.PublicKey).Updates(map[string]interface{}{
-			"is_open":      value.IsOpen,
-			"unread_count": value.UnreadCount,
-		}).Error; err != nil {
-			return err
+	accountUpdateValues := map[string]interface{}{
+		"public_key":                         state.PublicKey,
+		"display_name":                       state.DisplayName,
+		"replicate_new_groups_automatically": state.ReplicateFlag,
+	}
+
+	if count == 0 {
+		if err := db.db.Table("accounts").Create(accountUpdateValues).Error; err != nil {
+			return errcode.ErrInternal.Wrap(fmt.Errorf("unable to create account: %w", err))
+		}
+	} else {
+		if err := db.db.Table("accounts").Where("public_key", state.PublicKey).Updates(accountUpdateValues).Error; err != nil {
+			return errcode.ErrInternal.Wrap(fmt.Errorf("unable to update account: %w", err))
+		}
+	}
+
+	for _, c := range state.LocalConversationsState {
+		if err := db.db.Table("conversations").Where("public_key = ?", c.PublicKey).Count(&count).Error; err != nil {
+			return errcode.ErrInternal.Wrap(fmt.Errorf("unable to check if conversation exists: %w", err))
+		}
+
+		if count == 0 {
+			if err := db.db.Table("conversations").Create(c).Error; err != nil {
+				return errcode.ErrInternal.Wrap(fmt.Errorf("unable to create conversation: %w", err))
+			}
+		} else {
+			if err := db.db.Table("conversations").Where("public_key", c.PublicKey).Updates(c).Error; err != nil {
+				return errcode.ErrInternal.Wrap(fmt.Errorf("unable to update conversation: %w", err))
+			}
 		}
 	}
 

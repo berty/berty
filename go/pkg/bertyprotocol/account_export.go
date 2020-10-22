@@ -341,10 +341,112 @@ func readExportCBORNode(expectedSize int64, cidStr string, reader *tar.Reader) (
 	return node, nil
 }
 
-func RestoreAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_interface.CoreAPI, odb *BertyOrbitDB, logger *zap.Logger) error {
-	var (
-		tr                          = tar.NewReader(reader)
-		accountKey, accountProofKey crypto.PrivKey
+type RestoreAccountHandler struct {
+	Handler     func(header *tar.Header, reader *tar.Reader) (bool, error)
+	PostProcess func() error
+}
+
+type restoreAccountState struct {
+	keys map[string]crypto.PrivKey
+}
+
+func (state *restoreAccountState) readKey(keyName string) RestoreAccountHandler {
+	return RestoreAccountHandler{
+		Handler: func(header *tar.Header, reader *tar.Reader) (bool, error) {
+			if header.Name != keyName {
+				return false, nil
+			}
+
+			if state.keys[keyName] != nil {
+				return false, errcode.ErrInternal.Wrap(fmt.Errorf("multiple keys found in archive"))
+			}
+
+			var err error
+
+			state.keys[keyName], err = readExportSecretKeyFile(header.Size, reader)
+			if err != nil {
+				return true, errcode.ErrInternal.Wrap(err)
+			}
+
+			return true, nil
+		},
+	}
+}
+
+func (state *restoreAccountState) restoreKeys(odb *BertyOrbitDB) RestoreAccountHandler {
+	return RestoreAccountHandler{
+		PostProcess: func() error {
+			if err := odb.deviceKeystore.RestoreAccountKeys(state.keys[exportAccountKeyFilename], state.keys[exportAccountProofKeyFilename]); err != nil {
+				return errcode.ErrInternal.Wrap(err)
+			}
+
+			return nil
+		},
+	}
+}
+
+func restoreOrbitDBEntry(ctx context.Context, coreAPI ipfs_interface.CoreAPI) RestoreAccountHandler {
+	return RestoreAccountHandler{
+		Handler: func(header *tar.Header, reader *tar.Reader) (bool, error) {
+			if !strings.HasPrefix(header.Name, exportOrbitDBEntriesPrefix) {
+				return false, nil
+			}
+
+			cidStr := strings.TrimPrefix(header.Name, exportOrbitDBEntriesPrefix)
+
+			node, err := readExportCBORNode(header.Size, cidStr, reader)
+			if err != nil {
+				return true, errcode.ErrInternal.Wrap(err)
+			}
+
+			if err := coreAPI.Dag().Add(ctx, node); err != nil {
+				return true, errcode.ErrInternal.Wrap(err)
+			}
+
+			return true, nil
+		},
+	}
+}
+
+func restoreOrbitDBHeads(ctx context.Context, odb *BertyOrbitDB) RestoreAccountHandler {
+	return RestoreAccountHandler{
+		Handler: func(header *tar.Header, reader *tar.Reader) (bool, error) {
+			if !strings.HasPrefix(header.Name, exportOrbitDBHeadsPrefix) {
+				return false, nil
+			}
+
+			heads, metaCIDs, messageCIDs, err := readExportOrbitDBGroupHeads(header.Size, reader)
+			if err != nil {
+				return true, errcode.ErrInternal.Wrap(err)
+			}
+
+			if err := odb.setHeadsForGroup(ctx, &bertytypes.Group{
+				PublicKey: heads.PublicKey,
+				SignPub:   heads.SignPub,
+			}, metaCIDs, messageCIDs); err != nil {
+				return true, errcode.ErrOrbitDBAppend.Wrap(fmt.Errorf("error while restoring db head: %w", err))
+			}
+
+			return true, nil
+		},
+	}
+}
+
+func RestoreAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_interface.CoreAPI, odb *BertyOrbitDB, logger *zap.Logger, handlers ...RestoreAccountHandler) error {
+	tr := tar.NewReader(reader)
+	state := restoreAccountState{
+		keys: map[string]crypto.PrivKey{},
+	}
+
+	handlers = append(
+		[]RestoreAccountHandler{
+			state.readKey(exportAccountKeyFilename),
+			state.readKey(exportAccountProofKeyFilename),
+			state.restoreKeys(odb),
+			restoreOrbitDBEntry(ctx, coreAPI),
+			restoreOrbitDBHeads(ctx, odb),
+		},
+		handlers...,
 	)
 
 	for {
@@ -361,59 +463,37 @@ func RestoreAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_in
 			continue
 		}
 
-		switch {
-		case header.Name == exportAccountKeyFilename:
-			if accountKey != nil {
-				return errcode.ErrInternal.Wrap(fmt.Errorf("multiple account keys found in archive"))
+		notHandled := true
+
+		for _, h := range handlers {
+			if h.Handler == nil {
+				continue
 			}
 
-			accountKey, err = readExportSecretKeyFile(header.Size, tr)
+			handled, err := h.Handler(header, tr)
 			if err != nil {
 				return errcode.ErrInternal.Wrap(err)
 			}
 
-		case header.Name == exportAccountProofKeyFilename:
-			if accountProofKey != nil {
-				return errcode.ErrInternal.Wrap(fmt.Errorf("multiple account proof keys found in archive"))
+			if handled {
+				notHandled = false
+				break
 			}
+		}
 
-			accountProofKey, err = readExportSecretKeyFile(header.Size, tr)
-			if err != nil {
-				return errcode.ErrInternal.Wrap(err)
-			}
-
-		case strings.HasPrefix(header.Name, exportOrbitDBEntriesPrefix):
-			cidStr := strings.TrimPrefix(header.Name, exportOrbitDBEntriesPrefix)
-
-			node, err := readExportCBORNode(header.Size, cidStr, tr)
-			if err != nil {
-				return errcode.ErrInternal.Wrap(err)
-			}
-
-			if err := coreAPI.Dag().Add(ctx, node); err != nil {
-				return errcode.ErrInternal.Wrap(err)
-			}
-
-		case strings.HasPrefix(header.Name, exportOrbitDBHeadsPrefix):
-			heads, metaCIDs, messageCIDs, err := readExportOrbitDBGroupHeads(header.Size, tr)
-			if err != nil {
-				return errcode.ErrInternal.Wrap(err)
-			}
-
-			if err := odb.setHeadsForGroup(ctx, &bertytypes.Group{
-				PublicKey: heads.PublicKey,
-				SignPub:   heads.SignPub,
-			}, metaCIDs, messageCIDs); err != nil {
-				return errcode.ErrOrbitDBAppend.Wrap(fmt.Errorf("error while restoring db head: %w", err))
-			}
-
-		default:
+		if notHandled {
 			logger.Warn("unknown export entry", zap.String("filename", header.Name))
 		}
 	}
 
-	if err := odb.deviceKeystore.RestoreAccountKeys(accountKey, accountProofKey); err != nil {
-		return errcode.ErrInternal.Wrap(err)
+	for _, h := range handlers {
+		if h.PostProcess == nil {
+			continue
+		}
+
+		if err := h.PostProcess(); err != nil {
+			return errcode.ErrInternal.Wrap(err)
+		}
 	}
 
 	return nil
