@@ -19,6 +19,7 @@ func bannerCommand() *ffcli.Command {
 
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("banner", flag.ExitOnError)
+		manager.SetupLoggingFlags(fs) // also available at root level
 		fs.BoolVar(&lightFlag, "light", lightFlag, "light mode")
 		fs.BoolVar(&randomFlag, "random", randomFlag, "pick a random quote")
 		return fs, nil
@@ -30,6 +31,7 @@ func bannerCommand() *ffcli.Command {
 		ShortHelp:      "print the Berty banner of the day",
 		FlagSetBuilder: fsBuilder,
 		Options:        []ff.Option{ff.WithEnvVarPrefix("BERTY")},
+		UsageFunc:      usageFunc,
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp

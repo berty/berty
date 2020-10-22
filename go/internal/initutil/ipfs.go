@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	mrand "math/rand"
+	"strings"
 	"time"
 
 	datastore "github.com/ipfs/go-datastore"
@@ -32,19 +33,44 @@ import (
 )
 
 func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
-	fs.Var(&m.Node.Protocol.IPFSListeners, "p2p.ipfs-listeners", "IPFS listeners")
-	fs.Var(&m.Node.Protocol.IPFSAPIListeners, "p2p.ipfs-api-listeners", "IPFS API listeners")
-	fs.Var(&m.Node.Protocol.Announce, "p2p.ipfs-announce", "IPFS announce addrs")
-	fs.Var(&m.Node.Protocol.NoAnnounce, "p2p.ipfs-no-announce", "IPFS exclude announce addrs")
+	m.SetupPresetFlags(fs)
+	fs.StringVar(&m.Node.Protocol.SwarmListeners, "p2p.swarm-listeners", ":default:", "IPFS swarm listeners")
+	fs.StringVar(&m.Node.Protocol.IPFSAPIListeners, "p2p.ipfs-api-listeners", "", "IPFS API listeners")
+	fs.StringVar(&m.Node.Protocol.Announce, "p2p.ipfs-announce", "", "IPFS announce addrs")
+	fs.StringVar(&m.Node.Protocol.NoAnnounce, "p2p.ipfs-no-announce", "", "IPFS exclude announce addrs")
+	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "if true local discovery will be enabled")
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute, "maximum p2p backoff duration")
-	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "if true local discovery will be enabled")
+	fs.StringVar(&m.Node.Protocol.RdvpMaddrs, "p2p.rdvp", ":default:", `list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp`)
 	fs.BoolVar(&m.Node.Protocol.MultipeerConnectivity, "p2p.multipeer-connectivity", true, "if true Multipeer Connectivity will be enabled")
-	fs.Var(&m.Node.Protocol.RdvpMaddrs, "p2p.rdvp", `list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp`)
-	fs.BoolVar(&m.Node.Protocol.Tor.Enabled, "tor.enable", defaultTorEnabliness, "if true tor will be enabled")
+	fs.StringVar(&m.Node.Protocol.Tor.Mode, "tor.mode", defaultTorMode, "if true tor will be enabled")
 	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
-	// FIXME: Create a custom command for help and listing about presets, they will quickly get crowded here.
-	fs.Var(&m.Node.Preset, "preset", `if set berty will use a preset instead of the default one. Curently only "anonymity" is available.`)
+	fs.BoolVar(&m.Node.Protocol.DisableIPFSNetwork, "p2p.disable-ipfs-network", false, "disable as much networking feature as possible, useful during development")
+
+	m.longHelp = append(m.longHelp, [2]string{
+		"-p2p.swarm-listeners=:default:,CUSTOM",
+		fmt.Sprintf("equivalent to -p2p.swarm-listeners=%s,CUSTOM", strings.Join(ipfsutil.DefaultSwarmListeners, ",")),
+	})
+	m.longHelp = append(m.longHelp, [2]string{
+		"-p2p.rdvp=:default:,CUSTOM",
+		fmt.Sprintf("equivalent to -p2p.rdvp=%s...,CUSTOM", config.Config.P2P.RDVP[0].Maddr[:42]),
+	})
+	m.longHelp = append(m.longHelp, [2]string{
+		"",
+		"-> full list available at https://github.com/berty/berty/tree/master/config)",
+	})
+	m.longHelp = append(m.longHelp, [2]string{
+		"-tor.mode=" + TorDisabled,
+		"tor is completely disabled",
+	})
+	m.longHelp = append(m.longHelp, [2]string{
+		"-tor.mode=" + TorOptional,
+		"tor is added to the list of existing transports and can be used to contact other tor-ready nodes",
+	})
+	m.longHelp = append(m.longHelp, [2]string{
+		"-tor.mode=" + TorRequired,
+		"tor is the only available transport; you can only communicate with other tor-ready nodes",
+	})
 }
 
 func (m *Manager) GetLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
@@ -56,6 +82,9 @@ func (m *Manager) GetLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
 	m.applyDefaults()
+	if err := m.applyPreset(); err != nil {
+		return nil, nil, errcode.TODO.Wrap(err)
+	}
 
 	if m.Node.Protocol.ipfsAPI != nil {
 		if m.Node.Protocol.ipfsNode == nil {
@@ -82,53 +111,52 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 	ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceIPFSDatastore))
 
-	swarmAddrs := []string{"/ip4/0.0.0.0/tcp/0", "/ip4/0.0.0.0/udp/0/quic"}
-	if len(m.Node.Protocol.IPFSListeners) != 0 {
-		swarmAddrs = m.Node.Protocol.IPFSListeners
-	}
+	swarmAddrs := m.getSwarmAddrs()
 
 	apiAddrs := []string{}
-	if len(m.Node.Protocol.IPFSAPIListeners) != 0 {
-		apiAddrs = m.Node.Protocol.IPFSAPIListeners
+	if m.Node.Protocol.IPFSAPIListeners != "" {
+		apiAddrs = strings.Split(m.Node.Protocol.IPFSAPIListeners, ",")
 	}
 
 	announce := []string{}
-	if len(m.Node.Protocol.Announce) != 0 {
-		announce = m.Node.Protocol.Announce
+	if m.Node.Protocol.Announce != "" {
+		announce = strings.Split(m.Node.Protocol.Announce, ",")
 	}
 
 	noannounce := []string{}
-	if len(m.Node.Protocol.NoAnnounce) != 0 {
-		noannounce = m.Node.Protocol.NoAnnounce
+	if m.Node.Protocol.NoAnnounce != "" {
+		noannounce = strings.Split(m.Node.Protocol.NoAnnounce, ",")
 	}
 
-	// Tor
-	var p2pOpts libp2p.Option
-	var ipfsConfigPatch ipfsutil.IpfsConfigPatcher
-	{
-		setListenTor := true
-		// Scan all maddrs to see if an `/onion{,3}/*` were set, if don't auto add the `tor.NopMaddr3Str`.
-		for _, v := range swarmAddrs {
-			maddr, err := ma.NewMultiaddr(v)
+	var (
+		ipfsConfigPatch ipfsutil.IpfsConfigPatcher
+		p2pOpts         libp2p.Option
+	)
+	if !m.Node.Protocol.DisableIPFSNetwork {
+		// tor is enabled (optional or required)
+		if m.torIsEnabled() {
+			torOpts := torcfg.SetTemporaryDirectory(tempdir.TempDir())
+			if m.Node.Protocol.Tor.BinaryPath == "" {
+				torOpts = torcfg.Merge(torOpts, torcfg.EnableEmbeded)
+			} else {
+				torOpts = torcfg.Merge(torOpts, torcfg.SetBinaryPath(m.Node.Protocol.Tor.BinaryPath))
+			}
+
+			if !hasTorMaddr(swarmAddrs) {
+				swarmAddrs = append(swarmAddrs, tor.NopMaddr3Str)
+			}
+
+			if m.Node.Protocol.Tor.Mode == TorRequired {
+				torOpts = torcfg.Merge(torOpts, torcfg.AllowTcpDial)
+			}
+			torBuilder, err := tor.NewBuilder(torOpts)
 			if err != nil {
-				// This error is not our business and will be dealt later.
-				continue
+				return nil, nil, errcode.TODO.Wrap(err)
 			}
-			protos := maddr.Protocols()
-			if len(protos) == 0 {
-				continue
-			}
-			if proto := protos[0].Code; proto == ma.P_ONION3 || proto == ma.P_ONION {
-				setListenTor = false
-				break
-			}
+			p2pOpts = libp2p.ChainOptions(p2pOpts, libp2p.Transport(torBuilder))
 		}
-		if m.Node.Preset == PresetAnonymity {
-			// Force tor in this mode
-			m.Node.Protocol.Tor.Enabled = true
-			// Disable proximity communications
-			m.Node.Protocol.LocalDiscovery = false
-			m.Node.Protocol.MultipeerConnectivity = false
+		// -tor.mode==required: disable everything except tor
+		if m.Node.Protocol.Tor.Mode == TorRequired {
 			// Patch the IPFS config to make it complient with an anonymous node.
 			ipfsConfigPatch = func(c *ipfs_cfg.Config) error {
 				// Disable IP transports
@@ -139,49 +167,46 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 				// Disable MDNS
 				c.Discovery.MDNS.Enabled = false
 
-				// Replace listens
-				if setListenTor {
-					c.Addresses.Swarm = []string{tor.NopMaddr3Str}
-				} else {
-					c.Addresses.Swarm = nil
+				// Only keep tor listeners
+				c.Addresses.Swarm = []string{}
+				for _, maddr := range swarmAddrs {
+					if isTorMaddr(maddr) {
+						c.Addresses.Swarm = append(c.Addresses.Swarm, maddr)
+					}
 				}
 				return nil
 			}
 		}
-		if !m.Node.Protocol.DisableIPFSNetwork {
-			if m.Node.Protocol.Tor.Enabled {
-				torOpts := torcfg.SetTemporaryDirectory(tempdir.TempDir())
-				if m.Node.Protocol.Tor.BinaryPath == "" {
-					torOpts = torcfg.Merge(torOpts, torcfg.EnableEmbeded)
-				} else {
-					torOpts = torcfg.Merge(torOpts, torcfg.SetBinaryPath(m.Node.Protocol.Tor.BinaryPath))
-				}
 
-				if setListenTor {
-					swarmAddrs = append(swarmAddrs, tor.NopMaddr3Str)
-				}
+		// Setup MC
+		if m.Node.Protocol.MultipeerConnectivity {
+			swarmAddrs = append(swarmAddrs, mc.DefaultAddr)
+			mcOpt := libp2p.Transport(proximity.NewTransport(m.ctx, logger, mc.NewDriver(logger)))
+			p2pOpts = libp2p.ChainOptions(p2pOpts, mcOpt)
+		}
 
-				// If we allow AnonymityMode allow tcp dial.
-				if m.Node.Preset == PresetAnonymity {
-					torOpts = torcfg.Merge(torOpts, torcfg.AllowTcpDial)
+		// prefill peerstore with known rdvp servers
+		if m.Node.Protocol.Tor.Mode != TorRequired {
+			ipfsConfigPatch = ipfsutil.ChainIpfsConfigPatch(ipfsConfigPatch, func(cfg *ipfs_cfg.Config) error {
+				for _, p := range rdvpeers {
+					cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
 				}
-				torBuilder, err := tor.NewBuilder(torOpts)
-				if err != nil {
-					return nil, nil, errcode.TODO.Wrap(err)
-				}
-				p2pOpts = libp2p.Transport(torBuilder)
-			}
+				return nil
+			})
+		}
+	} else {
+		ipfsConfigPatch = func(c *ipfs_cfg.Config) error {
+			// Disable IP transports
+			c.Swarm.Transports.Network.QUIC = ipfs_cfg.False
+			c.Swarm.Transports.Network.TCP = ipfs_cfg.False
+			c.Swarm.Transports.Network.Websocket = ipfs_cfg.False
 
-			// Setup MC
-			if m.Node.Protocol.MultipeerConnectivity {
-				swarmAddrs = append(swarmAddrs, mc.DefaultAddr)
-				mcOpt := libp2p.Transport(proximity.NewTransport(m.ctx, logger, mc.NewDriver(logger)))
-				if p2pOpts == nil {
-					p2pOpts = mcOpt
-				} else {
-					p2pOpts = libp2p.ChainOptions(p2pOpts, mcOpt)
-				}
-			}
+			// Disable MDNS
+			c.Discovery.MDNS.Enabled = false
+
+			// Remove all swarm listeners
+			c.Addresses.Swarm = []string{}
+			return nil
 		}
 	}
 
@@ -199,13 +224,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		DisableCorePubSub: true,
 		BootstrapAddrs:    ipfs_cfg.DefaultBootstrapAddresses,
 		ExtraLibp2pOption: p2pOpts,
-		IpfsConfigPatch: ipfsutil.ChainIpfsConfigPatch(ipfsConfigPatch, func(cfg *ipfs_cfg.Config) error {
-			for _, p := range rdvpeers {
-				cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
-			}
-
-			return nil
-		}),
+		IpfsConfigPatch:   ipfsConfigPatch,
 		HostConfig: func(h host.Host, _ routing.Routing) error {
 			var err error
 
@@ -282,12 +301,12 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	if m.Metrics.Listener != "" {
 		registry, err := m.getMetricsRegistry()
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, errcode.TODO.Wrap(err)
 		}
 
 		err = registry.Register(ipfsutil.NewBandwidthCollector(m.Node.Protocol.ipfsNode.Reporter))
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, errcode.TODO.Wrap(err)
 		}
 	}
 
@@ -302,22 +321,77 @@ func (m *Manager) getRdvpMaddrs() ([]*peer.AddrInfo, error) {
 		defaultMaddrs = append(defaultMaddrs, entry.Maddr)
 	}
 
-	var addrs []string
-	if len(m.Node.Protocol.RdvpMaddrs) == 0 {
-		addrs = defaultMaddrs
+	if m.Node.Protocol.RdvpMaddrs == "" {
+		return nil, nil
 	}
 
-	for _, v := range m.Node.Protocol.RdvpMaddrs {
-		if v == ":default:" {
+	var addrs []string
+	for _, v := range strings.Split(m.Node.Protocol.RdvpMaddrs, ",") {
+		switch v {
+		case ":default:":
 			addrs = append(addrs, defaultMaddrs...)
-			continue
-		}
-		if v == ":none:" {
-			m.initLogger.Debug("no rendezvous peer set")
+		case ":none:":
 			return nil, nil
+		default:
+			addrs = append(addrs, v)
 		}
-		addrs = append(addrs, v)
 	}
 
 	return ipfsutil.ParseAndResolveRdvpMaddrs(m.GetContext(), m.initLogger, addrs)
+}
+
+func (m *Manager) getSwarmAddrs() []string {
+	if m.Node.Protocol.SwarmListeners == "" {
+		return nil
+	}
+
+	swarmAddrs := []string{}
+	for _, addr := range strings.Split(m.Node.Protocol.SwarmListeners, ",") {
+		switch addr {
+		case ":default:":
+			swarmAddrs = append(swarmAddrs, ipfsutil.DefaultSwarmListeners...)
+		case ":none:":
+			return nil
+		default:
+			swarmAddrs = append(swarmAddrs, addr)
+		}
+	}
+	return swarmAddrs
+}
+
+func isTorMaddr(maddr string) bool {
+	parsed, err := ma.NewMultiaddr(maddr)
+	if err != nil {
+		// This error is not our business and will be dealt later.
+		return false
+	}
+
+	protos := parsed.Protocols()
+	if len(protos) == 0 {
+		return false
+	}
+
+	proto := protos[0].Code
+	if proto == ma.P_ONION3 || proto == ma.P_ONION {
+		return true
+	}
+	return false
+}
+
+func hasTorMaddr(maddrs []string) bool {
+	// Scan all maddrs to see if an `/onion{,3}/*` were set, if don't auto add the `tor.NopMaddr3Str`.
+	for _, maddr := range maddrs {
+		if isTorMaddr(maddr) {
+			return true
+		}
+	}
+	return false
+}
+
+func (m *Manager) torIsEnabled() bool {
+	switch m.Node.Protocol.Tor.Mode {
+	case TorOptional, TorRequired:
+		return true
+	}
+	return false
 }

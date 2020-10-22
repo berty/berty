@@ -51,6 +51,7 @@ func tokenServerCommand() *ffcli.Command {
 	)
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("token issuer server p", flag.ExitOnError)
+		manager.SetupLoggingFlags(fs) // also available at root level
 		fs.StringVar(&secretFlag, "auth.secret", secretFlag, "base64 encoded secret")
 		fs.StringVar(&authSKFlag, "auth.sk", authSKFlag, "base64 encoded signature key")
 		fs.StringVar(&listenerFlag, "http.listener", listenerFlag, "http listener")
@@ -64,6 +65,7 @@ func tokenServerCommand() *ffcli.Command {
 		ShortHelp:      "token server, a basic token server issuer without auth or logging",
 		FlagSetBuilder: fsBuilder,
 		Options:        []ff.Option{ff.WithEnvVarPrefix("BERTY")},
+		UsageFunc:      usageFunc,
 		Exec: func(ctx context.Context, args []string) error {
 			ctx, cancel := context.WithCancel(ctx)
 			defer cancel()

@@ -18,6 +18,7 @@ func versionCommand() *ffcli.Command {
 		ShortUsage: "berty version",
 		ShortHelp:  "print software version",
 		Options:    []ff.Option{ff.WithEnvVarPrefix("BERTY")},
+		UsageFunc:  usageFunc,
 		Exec: func(_ context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp

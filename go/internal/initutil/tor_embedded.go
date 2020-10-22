@@ -2,4 +2,4 @@
 
 package initutil
 
-const defaultTorEnabliness = true
+const defaultTorMode = "optional"

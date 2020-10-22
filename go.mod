@@ -58,7 +58,7 @@ require (
 	github.com/libp2p/go-libp2p-pubsub v0.3.6
 	github.com/libp2p/go-libp2p-quic-transport v0.8.2
 	github.com/libp2p/go-libp2p-record v0.1.3
-	github.com/libp2p/go-libp2p-rendezvous v0.0.0
+	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20180418151804-b7dd840ce441
 	github.com/libp2p/go-libp2p-swarm v0.3.0 // indirect
 	github.com/libp2p/go-libp2p-transport-upgrader v0.3.0
 	github.com/libp2p/go-libp2p-yamux v0.3.0 // indirect
@@ -88,7 +88,7 @@ require (
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/stretchr/testify v1.6.1
-	github.com/tailscale/depaware v0.0.0-20200914232109-e09ee10c1824
+	github.com/tailscale/depaware v0.0.0-20201003033024-5d95aab075be
 	go.opentelemetry.io/otel v0.8.0
 	go.opentelemetry.io/otel/exporters/trace/jaeger v0.8.0
 	go.uber.org/goleak v1.1.10
@@ -98,7 +98,7 @@ require (
 	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de
 	golang.org/x/net v0.0.0-20201026091529-146b70c837a4
 	golang.org/x/sys v0.0.0-20201026133411-418715ba6fdd // indirect
-	golang.org/x/tools v0.0.0-20201023174141-c8cfbd0f21e6
+	golang.org/x/tools v0.0.0-20201030010431-2feb2bb1ff51
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 	google.golang.org/genproto v0.0.0-20201022181438-0ff5f38871d5 // indirect
 	google.golang.org/grpc v1.33.1
@@ -123,7 +123,7 @@ replace (
 	github.com/agl/ed25519 => github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // latest commit before the author shutdown the repo; see https://github.com/golang/go/issues/20504
 	github.com/libp2p/go-libp2p-core => github.com/libp2p/go-libp2p-core v0.6.1 //  v0.7.0 breaks backward compatibility for multiple packages - https://github.com/libp2p/go-libp2p-core/issues/168
 	github.com/libp2p/go-libp2p-pubsub => github.com/libp2p/go-libp2p-pubsub v0.3.5 // github.com/ipfs/go-ipfs@v0.7.0 is not compatible with >=v0.3.6 due to https://github.com/libp2p/go-libp2p-pubsub/pull/388
-	github.com/libp2p/go-libp2p-rendezvous v0.0.0 => github.com/berty/go-libp2p-rendezvous v0.0.0-20201028141428-5b2e7e8ff19a // use berty fork of go-libp2p-rendezvous
+	github.com/libp2p/go-libp2p-rendezvous => github.com/berty/go-libp2p-rendezvous v0.0.0-20201028141428-5b2e7e8ff19a // use berty fork of go-libp2p-rendezvous
 	github.com/libp2p/go-libp2p-swarm => github.com/Jorropo/go-libp2p-swarm v0.2.11 // temporary, see https://github.com/libp2p/go-libp2p-swarm/pull/227
 	github.com/peterbourgon/ff/v3 => github.com/moul/ff/v3 v3.0.1 // temporary, see https://github.com/peterbourgon/ff/pull/67, https://github.com/peterbourgon/ff/issues/68
 )

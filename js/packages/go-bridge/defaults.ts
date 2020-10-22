@@ -1,26 +1,13 @@
 export const GoBridgeDefaultOpts = {
 	cliArgs: [
-		'--log.filters',
-		'info+:bty*,-*.grpc warn+:*.grpc error+:*',
-
-		'--log.format',
-		'console',
-
-		'--node.display-name',
-		'',
-
+		'--log.filters=info+:bty*,-*.grpc warn+:*.grpc error+:*',
+		'--log.format=console',
+		'--node.display-name=',
 		'--store.fileio=true',
-
-		'--node.listeners',
-		'/ip4/127.0.0.1/tcp/0/grpcws',
-
-		'--p2p.ipfs-listeners',
-		'/ip4/0.0.0.0/tcp/0,/ip6/0.0.0.0/tcp/0',
-
+		'--node.listeners=/ip4/127.0.0.1/tcp/0/grpcws',
+		'--p2p.swarm-listeners=/ip4/0.0.0.0/tcp/0,/ip6/0.0.0.0/tcp/0',
 		'--p2p.local-discovery=false',
-
-		'--p2p.webui-listener',
-		':3000',
+		'--p2p.webui-listener=:3000',
 	],
 	persistence: true,
 }

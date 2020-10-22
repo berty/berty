@@ -32,7 +32,7 @@ func Example() {
 			config.AppendCLIArg("--log.format=console")
 			config.AppendCLIArg("--node.display-name=")
 			config.AppendCLIArg("--node.listeners=/ip4/127.0.0.1/tcp/0/grpcws")
-			config.AppendCLIArg("--p2p.ipfs-listeners=/ip4/0.0.0.0/tcp/0,/ip6/0.0.0.0/tcp/0")
+			config.AppendCLIArg("--p2p.swarm-listeners=/ip4/0.0.0.0/tcp/0,/ip6/0.0.0.0/tcp/0")
 			config.AppendCLIArg("--p2p.local-discovery=false")
 			config.AppendCLIArg("--p2p.webui-listener=:3000")
 			config.AppendCLIArg("--store.dir=" + tmpdir)
