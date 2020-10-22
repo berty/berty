@@ -36,6 +36,11 @@ var quotes = []Quote{
 	{"Tim Cook", "Right to privacy is really important. You pull that brick out and another and pretty soon the house falls."},
 	{"Tom Smothers", "The only valid censorship of ideas is the right of people not to listen."},
 	{"Voltaire", "We have a natural right to make use of our pens as of our tongue, at our peril, risk and hazard."},
+	{"Stephen King", "Friends don’t spy; true friendship is about privacy, too."},
+	{"Gabriel García Márquez", "All human beings have three lives: public, private, and secret."},
+	{"Katherine Neville", "All human beings have three lives: public, private, and secret."},
+	{"Earl Warren", "The fantastic advances in the field of electronic communication constitute a greater danger to the privacy of the individual."},
+	{"Ursula K. Le Guin", "Privacy, in fact, was almost as desirable for physics as it was for sex."},
 }
 
 // RandomQuote returns a random quote from the quote list.
