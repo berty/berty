@@ -26,11 +26,13 @@ const reducer = (oldState: any, action: { type: string; payload?: any }) => {
 			break
 		case 'CLEAR':
 			return { ...initialState, embedded: oldState.embedded, daemonAddress: oldState.daemonAddress }
-		case 'SET_CLIENT':
-			state.client = action.payload.client
-			break
-		case 'SET_PROTOCOL_CLIENT':
-			state.protocolClient = action.payload.client
+		case 'SET_CLIENTS':
+			if (action.payload.messengerClient) {
+				state.client = action.payload.messengerClient
+			}
+			if (action.payload.protocolClient) {
+				state.protocolClient = action.payload.protocolClient
+			}
 			break
 		case 'DELETE_STATE_UPDATED':
 			state.deleteState = action.payload.state
@@ -263,8 +265,7 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 		const protocolClient = Service(protocolpb.ProtocolService, rpc, null)
 
 		dispatch({ type: 'CLEAR' })
-		dispatch({ type: 'SET_CLIENT', payload: { client: messengerClient } })
-		dispatch({ type: 'SET_PROTOCOL_CLIENT', payload: { client: protocolClient } })
+		dispatch({ type: 'SET_CLIENTS', payload: { messengerClient, protocolClient } })
 
 		let precancel = false
 		let cancel = () => {
