@@ -96,6 +96,7 @@ func (m *Manager) SetupLocalMessengerServerFlags(fs *flag.FlagSet) {
 	m.SetupNotificationManagerFlags(fs)
 	fs.StringVar(&m.Node.Messenger.ExportPathToRestore, "node.restore-export-path", "", "inits node from a specified export path")
 	fs.BoolVar(&m.Node.Messenger.RebuildSqlite, "node.rebuild-db", false, "reconstruct messenger DB from OrbitDB logs")
+	fs.BoolVar(&m.Node.Messenger.DisableGroupMonitor, "node.disable-group-monitor", false, "disable group monitoring")
 	fs.StringVar(&m.Node.Messenger.DisplayName, "node.display-name", safeDefaultDisplayName(), "display name")
 	// node.db-opts // see https://github.com/mattn/go-sqlite3#connection-string
 }
@@ -611,6 +612,7 @@ func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServ
 
 	// messenger server
 	opts := bertymessenger.Opts{
+		EnableGroupMonitor:  !m.Node.Messenger.DisableGroupMonitor,
 		DB:                  db,
 		Logger:              logger,
 		NotificationManager: notifmanager,

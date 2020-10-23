@@ -1366,7 +1366,8 @@
         "TypeSetGroupName",
         "TypeSetUserName",
         "TypeAcknowledge",
-        "TypeReplyOptions"
+        "TypeReplyOptions",
+        "TypeMonitorMetadata"
       ],
       "default": "Undefined"
     },

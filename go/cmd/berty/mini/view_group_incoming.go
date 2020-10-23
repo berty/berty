@@ -294,6 +294,48 @@ func handlerNoop(_ context.Context, _ *groupView, _ *bertytypes.GroupMetadataEve
 	return nil
 }
 
+func groupMonitorEventHandler(logger *zap.Logger, v *groupView, e *bertytypes.MonitorGroup_EventMonitor) {
+	var payload string
+
+	switch t := e.GetType(); t {
+	case bertytypes.TypeEventMonitorPeerJoin:
+		peerjoin := e.GetPeerJoin()
+		if peerjoin.IsSelf {
+			payload = "you just joined this group"
+		} else {
+			activeAddr := "<unknown>"
+			if len(peerjoin.GetMaddrs()) > 0 {
+				activeAddr = peerjoin.Maddrs[0]
+			}
+			payload = fmt.Sprintf("peer joined <%.15s> on: %s", peerjoin.GetPeerID(), activeAddr)
+		}
+
+	case bertytypes.TypeEventMonitorPeerLeave:
+		peerleave := e.GetPeerLeave()
+		if peerleave.IsSelf {
+			payload = "you just leaved this group"
+		} else {
+			payload = fmt.Sprintf("peer leaved <%.15s>", peerleave.GetPeerID())
+		}
+	case bertytypes.TypeEventMonitorAdvertiseGroup:
+		advertisegroup := e.GetAdvertiseGroup()
+		payload = fmt.Sprintf("local peer advertised <%.15s> on `%s`, with %d maddrs",
+			advertisegroup.GetPeerID(), advertisegroup.GetDriverName(), len(advertisegroup.GetMaddrs()))
+	case bertytypes.TypeEventMonitorPeerFound:
+		peerfound := e.GetPeerFound()
+		payload = fmt.Sprintf("new peer found <%.15s> on `%s`, with %d maddrs",
+			peerfound.GetPeerID(), peerfound.GetDriverName(), len(peerfound.GetMaddrs()))
+	default:
+		logger.Warn("unknow monitor event received")
+		return
+	}
+
+	v.messages.Append(&historyMessage{
+		messageType: messageTypeMeta,
+		payload:     []byte(payload),
+	})
+}
+
 func metadataEventHandler(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool, logger *zap.Logger) {
 	actions := map[bertytypes.EventType]func(context.Context, *groupView, *bertytypes.GroupMetadataEvent, bool) error{
 		bertytypes.EventTypeAccountContactBlocked:                  nil, // do it later

@@ -18,6 +18,7 @@ import (
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	ma "github.com/multiformats/go-multiaddr"
+	"github.com/pkg/errors"
 	"moul.io/srand"
 
 	ble "berty.tech/berty/v2/go/internal/ble-driver"
@@ -305,10 +306,19 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 				for i, peer := range rdvpeers {
 					h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
 					rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
-					drivers[i] = tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
+					disc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
+
+					// monitor this driver
+					disc, err := tinder.MonitorDriverAsync(logger, h, disc)
+					if err != nil {
+						return errors.Wrap(err, "unable to monitor discovery driver")
+					}
+
+					drivers[i] = disc
 				}
 				rdvClients = append(rdvClients, drivers...)
 			}
+
 			var rdvClient tinder.Driver
 			switch len(rdvClients) {
 			case 0:
@@ -330,11 +340,16 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 				return err
 			}
 
+			pt, err := ipfsutil.NewPubsubMonitor(logger, h)
+			if err != nil {
+				return err
+			}
 			m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.GetContext(), h,
 				pubsub.WithMessageSigning(true),
 				pubsub.WithFloodPublish(true),
 				pubsub.WithDiscovery(m.Node.Protocol.discovery),
 				pubsub.WithPeerExchange(true),
+				pt.EventTracerOption(),
 			)
 			if err != nil {
 				return err
