@@ -1,7 +1,6 @@
-package tech.berty.app;
+package tech.berty.android;
 
 import com.facebook.react.ReactActivity;
-
 
 import com.shakebugs.shake.Shake;
 import android.view.MotionEvent;

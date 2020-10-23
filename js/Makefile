@@ -16,6 +16,7 @@ ANDROID_DEVICE ?=
 
 rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,$(error "Missing deps: no '$(exec)' in PATH")))
+check-java-ver = $(if $(patsubst $(shell java -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*"/\1\2/p;'),,$(1)),$(error "wrong java version (required $(1))"),)
 kill-program-using-port = $(foreach port,$(1),$(eval pid ?= $(shell lsof -t -i :$(port))) $(if $(pid),$(shell kill $(pid)),))
 export PATH := $(PWD)/node_modules/.bin:$(PATH)
 ext_ldflags = -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
@@ -64,6 +65,7 @@ help:
 
 .PHONY: test
 test: node_modules
+	$(call check-program, yarn)
 	yarn test
 
 #### Gen
@@ -78,6 +80,7 @@ regenerate: gen.clean generate
 
 .PHONY: clean
 clean:
+	$(call check-program, yarn)
 	# React-Native cmd
 	yarn cache clean -f
 	$(call kill-program-using-port, $(METRO_RN_PORT))
@@ -92,7 +95,7 @@ endif
 
 	# React-Native files
 	rm -rf .tmp
-	rm -rf $(pkg_mod)
+	rm -rf node_modules
 	rm -rf /tmp/react-native-packager-cache-*
 	rm -rf /tmp/metro-bundler-cache-*
 	rm -rf .eslintcache
@@ -157,11 +160,21 @@ ios.app_deps: node_modules ios.gomobile ios.project
 
 .PHONY: ios.debug
 ios.debug: ios.app_deps
-	$(react-native) run-ios --no-packager --configuration='Debug' --scheme='Berty Debug' $(if $(IOS_DEVICE),--simulator='$(IOS_DEVICE)',)
+	$(react-native) run-ios \
+		--no-packager \
+		--port="$(METRO_RN_PORT)" \
+		--configuration='Debug' \
+		--scheme='Berty Debug' \
+		$(if $(IOS_DEVICE),--simulator='$(IOS_DEVICE)',)
 
 .PHONY: ios.release
 ios.release: ios.app_deps
-	$(react-native) run-ios --no-packager --configuration='AppStore Release' --scheme='Berty AppStore'  $(if $(IOS_DEVICE),--simulator='$(IOS_DEVICE)',)
+	$(react-native) run-ios \
+		--no-packager \
+		--port="$(METRO_RN_PORT)" \
+		--configuration='AppStore Release' \
+		--scheme='Berty AppStore' \
+		$(if $(IOS_DEVICE),--simulator='$(IOS_DEVICE)',)
 
 .PHONY: ios.log
 ios.log:
@@ -180,19 +193,22 @@ android.app_deps: node_modules android.gomobile
 
 .PHONY: android.debug
 android.debug: android.app_deps
-	$(eval CURRENT_JAVA_VER ?= $(shell java -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*"/\1\2/p;'))
-	@if [ "$(CURRENT_JAVA_VER)" != "$(required_java_ver)" ]; then \
-	  >&2 echo "ERROR: Invalid java version, want $(required_java_ver), got $(CURRENT_JAVA_VER)"; exit 1; \
-	fi
-	$(react-native) run-android --no-packager --variant=Debug $(if $(ANDROID_DEVICE),--deviceId='$(ANDROID_DEVICE)',)
+	$(call check-java-ver,$(required_java_ver))
+	$(react-native) run-android \
+		--no-packager \
+		--port="$(METRO_RN_PORT)" \
+		--variant=Debug \
+		--appIdSuffix=debug \
+		$(if $(ANDROID_DEVICE),--deviceId='$(ANDROID_DEVICE)',)
 
 .PHONY: android.release
 android.release: android.app_deps
-	$(eval CURRENT_JAVA_VER ?= $(shell java -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*"/\1\2/p;'))
-	@if [ "$(CURRENT_JAVA_VER)" != "$(required_java_ver)" ]; then \
-	  >&2 echo "ERROR: Invalid java version, want $(required_java_ver), got $(CURRENT_JAVA_VER)"; exit 1; \
-	fi
-	$(react-native) run-android --no-packager --variant=Store $(if $(ANDROID_DEVICE),--deviceId='$(ANDROID_DEVICE)',)
+	$(call check-java-ver,$(required_java_ver))
+	$(react-native) run-android \
+		--no-packager \
+		--port="$(METRO_RN_PORT)" \
+		--variant=Release \
+		$(if $(ANDROID_DEVICE),--deviceId='$(ANDROID_DEVICE)',)
 
 .PHONY: android.gomobile
 android.gomobile: android/libs/gobridge.aar
@@ -203,12 +219,12 @@ android.log:
 
 .PHONY: android.emulator
 android.emulator:
-	$(call check-program, adb emulator)
-	$(eval ANDROID_EMULATOR ?= $(shell emulator -list-avds | head -n1))
-	@if [ -z "$(ANDROID_EMULATOR)" ]; then \
+	$(call check-program, emulator)
+	$(eval android_emulator = $(shell emulator -list-avds | head -n1))
+	@if [ -z "$(android_emulator)" ]; then \
 	  >&2 echo "ERROR: no Android emulator AVD found"; exit 1; \
 	fi
-	emulator @$(ANDROID_EMULATOR) -logcat *:i -no-snapshot-save
+	emulator @$(android_emulator) -logcat *:i -no-snapshot-save
 
 .PHONY: android.reverse_tcp
 android.reverse_tcp:
@@ -224,6 +240,7 @@ android.reverse_tcp:
 
 .PHONY: web-dev-app.start
 web-dev-app.start:
+	$(call check-program, yarn)
 	cd packages/web-dev-app && yarn && yarn start
 
 #### React
@@ -276,8 +293,9 @@ gen.sum: $(gensum_src)
 
 .PHONY: _write_gen_sum
 _write_gen_sum:
-	  shasum $(gensum_src) | sort > gen.sum.tmp
-	  mv gen.sum.tmp gen.sum;
+	$(call check-program, shasum)
+	shasum $(gensum_src) | sort > gen.sum.tmp
+	mv gen.sum.tmp gen.sum;
 
 #############################
 # Internal/File-based rules #
@@ -298,10 +316,12 @@ ios/Frameworks/Bertybridge.framework: $(bridge_src)
 	touch $@
 
 ios/Berty.xcworkspace: $(pkg_desc) ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle
+	$(call check-program, bundle)
 	cd ios && bundle exec pod install
 	touch $@
 
 ios/Berty.xcodeproj: ios/vendor/xcodegen $(xcodegen_yml)
+	$(call check-program, swift)
 	mkdir -p ios/Berty
 	touch ios/Berty/main.jsbundle
 	IOS_BUNDLE_VERSION=$(shell echo -n $(shell git rev-list HEAD | wc -l)) \
@@ -314,6 +334,7 @@ ios/Berty.xcodeproj: ios/vendor/xcodegen $(xcodegen_yml)
 	touch $@
 
 ios/vendor/xcodegen: ios/XcodeGen.version
+	$(call check-program, wget unzip)
 	mkdir -p $(TMP)/xcodegen_dl
 	wget https://github.com/yonaskolb/XcodeGen/archive/$(xcodegen_ver).zip -O $(TMP)/xcodegen_dl/xcodegen.zip
 	unzip $(TMP)/xcodegen_dl/xcodegen.zip -d $(TMP)/xcodegen_dl
@@ -323,6 +344,7 @@ ios/vendor/xcodegen: ios/XcodeGen.version
 	touch $@
 
 ios/vendor/bundle: ios/Gemfile
+	$(call check-program, bundle)
 	cd ios && bundle install
 	touch $@
 
