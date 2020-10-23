@@ -58,12 +58,6 @@ service MessengerService {
   rpc ConversationOpen(ConversationOpen.Request) returns (ConversationOpen.Reply);
   rpc ConversationClose(ConversationClose.Request) returns (ConversationClose.Reply);
 
-  // AuthServiceInitFlow Initialize an authentication flow
-  rpc AuthServiceInitFlow (types.v1.AuthServiceInitFlow.Request) returns (types.v1.AuthServiceInitFlow.Reply);
-
-  // AuthServiceCompleteFlow Completes an authentication flow
-  rpc AuthServiceCompleteFlow (types.v1.AuthServiceCompleteFlow.Request) returns (types.v1.AuthServiceCompleteFlow.Reply);
-
   // ServicesTokenList Retrieves the list of service server tokens
   rpc ServicesTokenList(types.v1.ServicesTokenList.Request) returns (stream types.v1.ServicesTokenList.Reply);
 

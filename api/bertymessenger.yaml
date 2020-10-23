@@ -66,12 +66,6 @@ http:
  - selector: berty.messenger.v1.MessengerService.ConversationClose
    post: /berty.messenger.v1/MessengerService/ConversationClose
    body: "*"
- - selector: berty.messenger.v1.MessengerService.AuthServiceInitFlow
-   post: /berty.messenger.v1/MessengerService/AuthServiceInitFlow
-   body: "*"
- - selector: berty.messenger.v1.MessengerService.AuthServiceCompleteFlow
-   post: /berty.messenger.v1/MessengerService/AuthServiceCompleteFlow
-   body: "*"
  - selector: berty.messenger.v1.MessengerService.ServicesTokenList
    post: /berty.messenger.v1/MessengerService/ServicesTokenList
    body: "*"

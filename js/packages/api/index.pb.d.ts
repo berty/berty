@@ -3710,10 +3710,6 @@ export namespace berty {
                 public conversationOpen(request: berty.messenger.v1.ConversationOpen.IRequest): Promise<berty.messenger.v1.ConversationOpen.Reply>;
                 public conversationClose(request: berty.messenger.v1.ConversationClose.IRequest, callback: berty.messenger.v1.MessengerService.ConversationCloseCallback): void;
                 public conversationClose(request: berty.messenger.v1.ConversationClose.IRequest): Promise<berty.messenger.v1.ConversationClose.Reply>;
-                public authServiceInitFlow(request: berty.types.v1.AuthServiceInitFlow.IRequest, callback: berty.messenger.v1.MessengerService.AuthServiceInitFlowCallback): void;
-                public authServiceInitFlow(request: berty.types.v1.AuthServiceInitFlow.IRequest): Promise<berty.types.v1.AuthServiceInitFlow.Reply>;
-                public authServiceCompleteFlow(request: berty.types.v1.AuthServiceCompleteFlow.IRequest, callback: berty.messenger.v1.MessengerService.AuthServiceCompleteFlowCallback): void;
-                public authServiceCompleteFlow(request: berty.types.v1.AuthServiceCompleteFlow.IRequest): Promise<berty.types.v1.AuthServiceCompleteFlow.Reply>;
                 public servicesTokenList(request: berty.types.v1.ServicesTokenList.IRequest, callback: berty.messenger.v1.MessengerService.ServicesTokenListCallback): void;
                 public servicesTokenList(request: berty.types.v1.ServicesTokenList.IRequest): Promise<berty.types.v1.ServicesTokenList.Reply>;
                 public replicationServiceRegisterGroup(request: berty.messenger.v1.ReplicationServiceRegisterGroup.IRequest, callback: berty.messenger.v1.MessengerService.ReplicationServiceRegisterGroupCallback): void;
@@ -3771,10 +3767,6 @@ export namespace berty {
                 type ConversationOpenCallback = (error: (Error|null), response?: berty.messenger.v1.ConversationOpen.Reply) => void;
 
                 type ConversationCloseCallback = (error: (Error|null), response?: berty.messenger.v1.ConversationClose.Reply) => void;
-
-                type AuthServiceInitFlowCallback = (error: (Error|null), response?: berty.types.v1.AuthServiceInitFlow.Reply) => void;
-
-                type AuthServiceCompleteFlowCallback = (error: (Error|null), response?: berty.types.v1.AuthServiceCompleteFlow.Reply) => void;
 
                 type ServicesTokenListCallback = (error: (Error|null), response?: berty.types.v1.ServicesTokenList.Reply) => void;
 
