@@ -2,9 +2,9 @@ import { useReducer, useCallback } from 'react'
 import { useMsgrContext } from './context'
 import { messenger as messengerpb, protocol as protocolpb } from '@berty-tech/api/index.js'
 
-const initialState = { error: null, reply: null, done: false, called: false }
+const initialState: MethodState<any> = { error: null, reply: null, done: false, called: false }
 
-const methodReducer = (state, action = {}) => {
+const methodReducer = (state: MethodState<any>, action: any) => {
 	switch (action.type) {
 		case 'ERROR':
 			return { ...state, error: action.payload.error, done: true }
@@ -18,48 +18,52 @@ const methodReducer = (state, action = {}) => {
 	}
 }
 
-const uncap = (v) => {
+const uncap = (v: any) => {
 	if (typeof v !== 'string') {
 		return v
 	}
 	return v.charAt(0).toLowerCase() + v.slice(1)
 }
 
-const errorAction = (error) => ({ type: 'ERROR', payload: { error } })
+const errorAction = (error: any) => ({ type: 'ERROR', payload: { error } })
 
-const doneAction = (reply) => ({ type: 'DONE', payload: { reply } })
+const doneAction = (reply: any) => ({ type: 'DONE', payload: { reply } })
 
 const callAction = () => ({ type: 'CALL' })
 
 // TODO: UnknownMethod class
 
-const messengerMethodHook = (key) => () => {
+const makeMethodHook = <R>(getClient: (ctx: any) => any, key: string) => () => {
 	const ctx = useMsgrContext()
+	const client = getClient(ctx)
 
-	const [state, dispatch] = useReducer(methodReducer, initialState)
+	const [state, dispatch] = useReducer<(state: MethodState<R>, action: any) => MethodState<R>>(
+		methodReducer,
+		initialState,
+	)
 
 	const call = useCallback(
 		(payload) => {
 			const clientKey = uncap(key)
-			if (!Object.keys(ctx.client).includes(clientKey)) {
+			if (!Object.keys(client).includes(clientKey)) {
 				dispatch(errorAction(new Error(`Couldn't find method '${key}'`)))
 				return
 			}
 			dispatch(callAction())
-			ctx.client[clientKey](payload)
-				.then((reply) => {
+			client[clientKey](payload)
+				.then((reply: R) => {
 					dispatch(doneAction(reply))
 				})
-				.catch((err) => {
+				.catch((err: any) => {
 					dispatch(errorAction(err))
 				})
 		},
-		[ctx.client],
+		[client],
 	)
 
 	const refresh = useCallback(
 		(payload) => {
-			console.warn('Using deprecated "refresh" in messenger method hook, please use "call" instead')
+			console.warn('Using deprecated "refresh" in method hook, please use "call" instead')
 			call(payload)
 		},
 		[call],
@@ -68,65 +72,35 @@ const messengerMethodHook = (key) => () => {
 	return { call, refresh, ...state }
 }
 
-const getMessengerMethods = () => {
+const getServiceMethods = (service: any) => {
 	try {
-		return messengerpb.MessengerService.resolveAll().methods
+		return service.resolveAll().methods
 	} catch (e) {
 		return {}
 	}
 }
 
-const messengerMethodsHooks = Object.keys(getMessengerMethods()).reduce(
-	(r, key) => ({ ...r, ['use' + key]: messengerMethodHook(key) }),
-	{},
+const makeServiceHooks = (service: any, getClient: any) =>
+	Object.keys(getServiceMethods(service)).reduce(
+		(r, key) => ({ ...r, ['use' + key]: makeMethodHook(getClient, key) }),
+		{},
+	)
+
+export const messengerMethodsHooks = makeServiceHooks(
+	messengerpb.MessengerService,
+	(ctx: any) => ctx.client,
 )
 
-const protocolMethodHook = (key: any) => () => {
-	const ctx = useMsgrContext()
-
-	const [state, dispatch] = useReducer(methodReducer, initialState)
-
-	const call = useCallback(
-		(payload) => {
-			const clientKey = uncap(key)
-			if (!Object.keys(ctx.protocolClient).includes(clientKey)) {
-				dispatch(errorAction(new Error(`Couldn't find method '${key}'`)))
-				return
-			}
-			dispatch(callAction())
-			ctx.protocolClient[clientKey](payload)
-				.then((reply) => {
-					dispatch(doneAction(reply))
-				})
-				.catch((err) => {
-					dispatch(errorAction(err))
-				})
-		},
-		[ctx.protocolClient],
-	)
-
-	const refresh = useCallback(
-		(payload) => {
-			console.warn('Using deprecated "refresh" in messenger method hook, please use "call" instead')
-			call(payload)
-		},
-		[call],
-	)
-
-	return { call, refresh, ...state }
-}
-
-const getProtocolMethods = () => {
-	try {
-		return protocolpb.ProtocolService.resolveAll().methods
-	} catch (e) {
-		return {}
-	}
-}
-
-export const protocolMethodsHooks = Object.keys(getProtocolMethods()).reduce(
-	(r, key) => ({ ...r, ['use' + key]: protocolMethodHook(key) }),
-	{},
+export const protocolMethodsHooks = makeServiceHooks(
+	protocolpb.ProtocolService,
+	(ctx: any) => ctx.protocolClient,
 )
 
 export default messengerMethodsHooks as any
+
+type MethodState<R> = {
+	error: any
+	reply: R
+	done: boolean
+	called: boolean
+}
