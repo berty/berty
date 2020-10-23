@@ -3,6 +3,7 @@ import { View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-nat
 import { Text, Icon } from '@ui-kitten/components'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import LinearGradient from 'react-native-linear-gradient'
+import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 
@@ -122,6 +123,7 @@ const HomeHeader: React.FC = () => {
 const HomeBodySettings: React.FC<{}> = () => {
 	const [{ flex, color, padding, margin }] = useStyles()
 	const { navigate } = useNavigation()
+	const navigation = useNativeNavigation()
 	const services = useAccountServices()
 	const account: berty.messenger.v1.Account = useAccount()
 	const replicationServices = services.filter((s) => s.serviceType === serviceTypes.Replication)
@@ -148,7 +150,13 @@ const HomeBodySettings: React.FC<{}> = () => {
 				iconColor={color.blue}
 				onPress={navigate.settings.bluetooth}
 			/>
-
+			<ButtonSetting
+				name='Network List'
+				icon='earth'
+				iconPack='custom'
+				iconColor={color.blue}
+				onPress={() => navigation.navigate('Settings.NetworkMap')}
+			/>
 			<ButtonSetting
 				name='External services'
 				icon='cube-outline'
