@@ -1,12 +1,10 @@
-package bertybridge
+package bridge
 
 import (
 	"os"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-
-	"berty.tech/berty/v2/go/internal/logutil"
 )
 
 type NativeLoggerDriver interface {
@@ -37,13 +35,13 @@ func (mc *nativeLogger) Write(entry zapcore.Entry, fields []zapcore.Field) error
 	return mc.l.Log(entry.Level.CapitalString(), entry.LoggerName, buff.String())
 }
 
-func newLogger(filters string, mlogger NativeLoggerDriver) (*zap.Logger, func(), error) {
-	if filters == "" {
-		return zap.NewNop(), func() {}, nil
-	}
+func newLogger(mlogger NativeLoggerDriver) (*zap.Logger, error) {
+	// if filters == "" {
+	// 	return zap.NewNop(), func() {}, nil
+	// }
 
 	if mlogger == nil {
-		return logutil.NewLogger(filters, "console", "stderr")
+		return zap.NewNop(), nil
 	}
 
 	// native logger
@@ -66,6 +64,7 @@ func newLogger(filters string, mlogger NativeLoggerDriver) (*zap.Logger, func(),
 	// create logger
 	logger := zap.New(nativeCore)
 
-	logger.Info("logger initialized", zap.String("filters", filters))
-	return logutil.DecorateLogger(logger, filters)
+	// logger.Info("logger initialized", zap.String("filters", filters))
+	return logger, nil
+	// return logutil.DecorateLogger(logger, filters)
 }

@@ -21,8 +21,7 @@
 RCT_EXTERN_METHOD(clearStorage:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
 
-RCT_EXTERN_METHOD(startProtocol:(NSDictionary)opts
-                  resolve:(RCTPromiseResolveBlock)resolve
+RCT_EXTERN_METHOD(initBridge:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
 
 RCT_EXTERN_METHOD(log:(NSDictionary)opts);

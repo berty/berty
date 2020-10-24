@@ -9,14 +9,6 @@
 import Foundation
 import Bertybridge
 
-extension NSDictionary {
-    func get(bool: String, defaultValue: Bool = false) -> Bool { return self[bool] as? Bool ?? defaultValue }
-    func get(string: String, defaultValue: String = "") -> String { return self[string] as? String ?? defaultValue }
-    func get(int: String, defaultValue: Int = 0) -> Int { return self[int] as? Int ?? defaultValue }
-    func get(array: String, defaultValue: NSArray = []) -> NSArray { return self[array] as? NSArray ?? defaultValue }
-    func get(object: NSDictionary, defaultValue: NSDictionary = [:]) -> NSDictionary { return self[object] as? NSDictionary ?? defaultValue }
-}
-
 struct BridgeError: LocalizedError {
     let value: String
     init(_ value: String)  {
@@ -30,7 +22,7 @@ class GoBridge: NSObject {
     let logger = LoggerDriver("tech.berty", "react")
 
     // protocol
-    var bridgeMessenger: BertybridgeBridge?
+    var bridgeMessenger: BridgeBridge?
     let rootdir: URL
 
     static func requiresMainQueueSetup() -> Bool {
@@ -87,18 +79,18 @@ class GoBridge: NSObject {
     // Protocol //
     //////////////
 
-    @objc func startProtocol(_ opts: NSDictionary, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    @objc func initBridge(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
             if self.bridgeMessenger != nil {
                 throw NSError(domain: "already started", code: 1)
             }
 
             // gather opts
-            let optPersistence = opts.get(bool: "persistence")
-            let cliArgs = opts.get(array: "cliArgs", defaultValue: [])
+            // let optPersistence = opts.get(bool: "persistence")
+            // let cliArgs = opts.get(array: "cliArgs", defaultValue: [])
 
             var err: NSError?
-            guard let config = BertybridgeNewConfig() else {
+            guard let config = BridgeNewConfig() else {
                 throw NSError(domain: "unable to create config", code: 1)
             }
 
@@ -106,28 +98,25 @@ class GoBridge: NSObject {
             config.setLifeCycleDriver(LifeCycleDriver.shared)
             config.setNotificationDriver(NotificationDriver.shared)
 
-            for arg in cliArgs {
-              config.appendCLIArg(arg as? String)
-            }
-
             // set persistence if needed
-            if optPersistence {
-                var isDirectory: ObjCBool = true
-                let exist = FileManager.default.fileExists(atPath: self.rootdir.path, isDirectory: &isDirectory)
-                if !exist {
-                    try FileManager.default.createDirectory(atPath: self.rootdir.path, withIntermediateDirectories: true, attributes: nil)
-                }
+            // if optPersistence {
+            //    var isDirectory: ObjCBool = true
+            //    let exist = FileManager.default.fileExists(atPath: self.rootdir.path, isDirectory: &isDirectory)
+            //    if !exist {
+            //        try FileManager.default.createDirectory(atPath: self.rootdir.path, withIntermediateDirectories: true, attributes: nil)
+            //    }
 
                 NSLog("root dir: `%@`", self.rootdir.path)
-                config.appendCLIArg("--store.dir")
-                config.appendCLIArg(self.rootdir.path)
-            }
+                config.setRootDir(self.rootdir.path)
+                // config.appendCLIArg("--store.dir")
+                // config.appendCLIArg(self.rootdir.path)
+            //}
 
 
 
-            NSLog("bflifecycle: calling BertybridgeNewMessengerBridge")
-            let bridgeMessenger = BertybridgeNewBridge(config, &err)
-            NSLog("bflifecycle: done BertybridgeNewMessengerBridge")
+            NSLog("bflifecycle: calling BridgeNewMessengerBridge")
+            let bridgeMessenger = BridgeNew(config, &err)
+            NSLog("bflifecycle: done BridgeNewMessengerBridge")
             if err != nil {
                 throw err!
             }
@@ -173,8 +162,8 @@ class GoBridge: NSObject {
                 throw NSError(domain: "bridgeMessenger isn't started", code: 1)
             }
 
-            let addr = bridgeMessenger.grpcWebSocketListenerAddr()
-            resolve(addr)
+          let addr: [String] = []
+          resolve(addr)
         } catch let error as NSError {
             reject("\(String(describing: error.code))", error.userInfo.description, error)
         }

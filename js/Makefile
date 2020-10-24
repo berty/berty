@@ -312,7 +312,7 @@ ios/Frameworks/Bertybridge.framework: $(bridge_src)
 		-v $(ext_ldflags) \
 		-target ios \
 		-iosversion $(minimum_ios_ver) \
-		./go/framework/bertybridge
+		./go/framework/bridge
 	touch $@
 
 ios/Berty.xcworkspace: $(pkg_desc) ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle package.json

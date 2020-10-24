@@ -11,7 +11,7 @@ import Bertybridge
 import UserNotifications
 import CoreMotion
 
-public class NotificationDriver: NSObject, BertybridgeNotificationDriverProtocol {
+public class NotificationDriver: NSObject, BridgeNotificationDriverProtocol {
     public static var shared: NotificationDriver = NotificationDriver()
     public static var identifier: String = "tech.berty.ios.bridge.notification"
     let logger: LoggerDriver = LoggerDriver("tech.berty", "notif")
@@ -20,7 +20,7 @@ public class NotificationDriver: NSObject, BertybridgeNotificationDriverProtocol
         NotificationDriver.identifier = identifier
     }
 
-    func schedule(_ notif: BertybridgeLocalNotification) {
+    func schedule(_ notif: BridgeLocalNotification) {
         let content = UNMutableNotificationContent()
         content.title = notif.title
         content.body = notif.body
@@ -40,7 +40,7 @@ public class NotificationDriver: NSObject, BertybridgeNotificationDriverProtocol
         }
     }
 
-    public func post(_ notif: BertybridgeLocalNotification?) throws {
+    public func post(_ notif: BridgeLocalNotification?) throws {
         guard let notif = notif else {
             throw BridgeError("Empty notification request")
         }

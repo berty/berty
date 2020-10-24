@@ -1,4 +1,4 @@
-package bertybridge
+package bridge
 
 import (
 	"time"

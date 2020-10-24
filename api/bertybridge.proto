@@ -4,9 +4,20 @@ package berty.bridge.v1;
 
 import "errcode.proto";
 
-option go_package = "berty.tech/berty/go/framework/bertybridge/internal/bridgepb";
+option go_package = "berty.tech/berty/go/pkg/bertybridge";
 
 service BridgeService {
+  /// Account
+
+  // OpenAccount, start berty node
+  rpc OpenAccount (OpenAccount.Request) returns (OpenAccount.Reply);
+
+
+  /// GRPC Adaptater
+
+  // GetGRPCListenerAddrs return current listeners addrs available on this bridge
+  rpc GetGRPCListenerAddrs (GetGRPCListenerAddrs.Request) returns (GetGRPCListenerAddrs.Reply);
+
   // ClientInvokeUnary invoke a unary method
   rpc ClientInvokeUnary (ClientInvokeUnary.Request) returns (ClientInvokeUnary.Reply);
 
@@ -22,6 +33,30 @@ service BridgeService {
   // Close the given stream (should not be used)
   rpc ClientStreamClose (ClientStreamClose.Request) returns (ClientStreamClose.Reply);
 }
+
+message OpenAccount {
+  message Request {
+    repeated string args = 1;
+  }
+  message Reply {
+  }
+}
+
+message CloseAccount {
+  message Request {
+  }
+  message Reply {
+  }
+}
+
+message GetGRPCListenerAddrs {
+  message Request {}
+  message Reply {
+    // maps <proto,addrs>
+    map<string,string> maddrs = 1;
+  }
+}
+
 
 message ClientInvokeUnary {
   message Request {

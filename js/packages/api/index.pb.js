@@ -9,11 +9,19 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         nested: {
           v1: {
             options: {
-              go_package: "berty.tech/berty/go/framework/bertybridge/internal/bridgepb"
+              go_package: "berty.tech/berty/go/pkg/bertybridge"
             },
             nested: {
               BridgeService: {
                 methods: {
+                  OpenAccount: {
+                    requestType: "OpenAccount.Request",
+                    responseType: "OpenAccount.Reply"
+                  },
+                  GetGRPCListenerAddrs: {
+                    requestType: "GetGRPCListenerAddrs.Request",
+                    responseType: "GetGRPCListenerAddrs.Reply"
+                  },
                   ClientInvokeUnary: {
                     requestType: "ClientInvokeUnary.Request",
                     responseType: "ClientInvokeUnary.Reply"
@@ -33,6 +41,51 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   ClientStreamClose: {
                     requestType: "ClientStreamClose.Request",
                     responseType: "ClientStreamClose.Reply"
+                  }
+                }
+              },
+              OpenAccount: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      args: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              CloseAccount: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              GetGRPCListenerAddrs: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      maddrs: {
+                        keyType: "string",
+                        type: "string",
+                        id: 1
+                      }
+                    }
                   }
                 }
               },

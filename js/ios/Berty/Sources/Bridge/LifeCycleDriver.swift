@@ -15,30 +15,30 @@ public enum AppState {
     case active
 }
 
-public class LifeCycleDriver: NSObject, BertybridgeLifeCycleDriverProtocol {
+public class LifeCycleDriver: NSObject, BridgeLifeCycleDriverProtocol {
     public static var shared: LifeCycleDriver = LifeCycleDriver()
-    var handler: BertybridgeLifeCycleHandlerProtocol? = nil
+    var handler: BridgeLifeCycleHandlerProtocol? = nil
     let logger: LoggerDriver = LoggerDriver("tech.berty", "lifecycle")
 
-    public func register(_ handler: BertybridgeLifeCycleHandlerProtocol?) {
+    public func register(_ handler: BridgeLifeCycleHandlerProtocol?) {
         self.handler = handler
     }
 
     public func getCurrentState() -> Int {
         if (Thread.current.isMainThread) {
-            return UIApplication.shared.applicationState.getBertybridgeState()
+            return UIApplication.shared.applicationState.getBridgeState()
         }
 
-        return BertybridgeAppStateUnknown
+        return BridgeAppStateUnknown
     }
 
-    public func handleBackgroundTask() -> BertybridgeLifeCycleBackgroundTaskProtocol? {
+    public func handleBackgroundTask() -> BridgeLifeCycleBackgroundTaskProtocol? {
         return self.handler?.handleTask()
     }
 
     public func updateState(state: UIApplication.State) {
         if let handler = self.handler {
-            handler.handleState(state.getBertybridgeState())
+            handler.handleState(state.getBridgeState())
         } else {
             self.logger.print("no state handler set", level: .warn)
         }
@@ -55,16 +55,16 @@ public class LifeCycleDriver: NSObject, BertybridgeLifeCycleDriverProtocol {
 }
 
 extension UIApplication.State {
-    func getBertybridgeState() -> Int {
+    func getBridgeState() -> Int {
         switch self {
         case .active:
-            return BertybridgeAppStateActive
+            return BridgeAppStateActive
         case .background:
-            return BertybridgeAppStateBackground
+            return BridgeAppStateBackground
         case .inactive:
-            return BertybridgeAppStateInactive
+            return BridgeAppStateInactive
         default:
-            return BertybridgeAppStateUnknown
+            return BridgeAppStateUnknown
         }
     }
 }

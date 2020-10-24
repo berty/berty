@@ -29,6 +29,10 @@ func (m *LazyMessage) Bytes() []byte {
 }
 
 func (m *LazyMessage) FromBytes(buf []byte) *LazyMessage {
+	if buf == nil {
+		buf = []byte{}
+	}
+
 	m.buf = buf
 	return m
 }
