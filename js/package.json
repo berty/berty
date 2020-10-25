@@ -74,7 +74,7 @@
     "eslint": "^6.5.1",
     "jest": "^25.1.0",
     "metro-config": "^0.63.0",
-    "metro-react-native-babel-preset": "^0.59.0",
+    "metro-react-native-babel-preset": "^0.63.0",
     "react-dev-utils": "^10.2.1",
     "react-native-svg-transformer": "^0.14.3",
     "react-test-renderer": "16.13.1",
