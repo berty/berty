@@ -56,19 +56,20 @@ type Manager struct {
 	Node struct {
 		Preset   Preset
 		Protocol struct {
-			IPFSListeners      flagStringSlice `json:"IPFSListeners,omitempty"`
-			IPFSAPIListeners   flagStringSlice `json:"IPFSAPIListeners,omitempty"`
-			IPFSWebUIListener  string          `json:"IPFSWebUIListener,omitempty"`
-			Announce           flagStringSlice `json:"Announce,omitempty"`
-			NoAnnounce         flagStringSlice `json:"NoAnnounce,omitempty"`
-			LocalDiscovery     bool            `json:"LocalDiscovery,omitempty"`
-			MinBackoff         time.Duration   `json:"MinBackoff,omitempty"`
-			MaxBackoff         time.Duration   `json:"MaxBackoff,omitempty"`
-			DisableIPFSNetwork bool            `json:"DisableIPFSNetwork,omitempty"`
-			RdvpMaddrs         flagStringSlice `json:"RdvpMaddrs,omitempty"`
-			AuthSecret         string          `json:"AuthSecret,omitempty"`
-			AuthPublicKey      string          `json:"AuthPublicKey,omitempty"`
-			Tor                struct {
+			IPFSListeners         flagStringSlice `json:"IPFSListeners,omitempty"`
+			IPFSAPIListeners      flagStringSlice `json:"IPFSAPIListeners,omitempty"`
+			IPFSWebUIListener     string          `json:"IPFSWebUIListener,omitempty"`
+			Announce              flagStringSlice `json:"Announce,omitempty"`
+			NoAnnounce            flagStringSlice `json:"NoAnnounce,omitempty"`
+			LocalDiscovery        bool            `json:"LocalDiscovery,omitempty"`
+			MultipeerConnectivity bool            `json:"MultipeerConnectivity,omitempty"`
+			MinBackoff            time.Duration   `json:"MinBackoff,omitempty"`
+			MaxBackoff            time.Duration   `json:"MaxBackoff,omitempty"`
+			DisableIPFSNetwork    bool            `json:"DisableIPFSNetwork,omitempty"`
+			RdvpMaddrs            flagStringSlice `json:"RdvpMaddrs,omitempty"`
+			AuthSecret            string          `json:"AuthSecret,omitempty"`
+			AuthPublicKey         string          `json:"AuthPublicKey,omitempty"`
+			Tor                   struct {
 				Enabled    bool   `json:"Enabled,omitempty"`
 				BinaryPath string `json:"BinaryPath,omitempty"`
 			} `json:"Tor,omitempty"`

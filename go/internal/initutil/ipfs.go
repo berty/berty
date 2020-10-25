@@ -38,7 +38,8 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.Var(&m.Node.Protocol.NoAnnounce, "p2p.ipfs-no-announce", "IPFS exclude announce addrs")
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute, "maximum p2p backoff duration")
-	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "local discovery")
+	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "if true local discovery will be enabled")
+	fs.BoolVar(&m.Node.Protocol.MultipeerConnectivity, "p2p.multipeer-connectivity", true, "if true Multipeer Connectivity will be enabled")
 	fs.Var(&m.Node.Protocol.RdvpMaddrs, "p2p.rdvp", `list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp`)
 	fs.BoolVar(&m.Node.Protocol.Tor.Enabled, "tor.enable", defaultTorEnabliness, "if true tor will be enabled")
 	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
@@ -125,8 +126,9 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		if m.Node.Preset == PresetAnonymity {
 			// Force tor in this mode
 			m.Node.Protocol.Tor.Enabled = true
-			// Disable local discovery
+			// Disable proximity communications
 			m.Node.Protocol.LocalDiscovery = false
+			m.Node.Protocol.MultipeerConnectivity = false
 			// Patch the IPFS config to make it complient with an anonymous node.
 			ipfsConfigPatch = func(c *ipfs_cfg.Config) error {
 				// Disable IP transports
@@ -171,7 +173,8 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 			}
 
 			// Setup MC
-			if m.Node.Preset != PresetAnonymity {
+			if m.Node.Protocol.MultipeerConnectivity {
+				swarmAddrs = append(swarmAddrs, mc.DefaultAddr)
 				mcOpt := libp2p.Transport(proximity.NewTransport(m.ctx, logger, mc.NewDriver(logger)))
 				if p2pOpts == nil {
 					p2pOpts = mcOpt
