@@ -1007,28 +1007,48 @@ message PeerList {
   }
 
   message Peer {
-    // id is the libp2p.PeerID
+    // id is the libp2p.PeerID.
     string id = 1 [(gogoproto.customname) = "ID"];
 
-    // Address is the multiaddress via which we are connected with the peer
+    // routes are the list of active and known maddr.
+    repeated Route routes = 2;
+
+    // errors is a list of errors related to the peer.
+    repeated string errors = 3;
+
+    // Features is a list of available features.
+    repeated Feature features = 4;
+  }
+
+  message Route {
+    // IsActive indicates whether the address is currently used or just known.
+    bool is_active = 1;
+
+    // Address is the multiaddress via which we are connected with the peer.
     string address = 2;
 
-    // direction is which way the connection was established
+    // direction is which way the connection was established.
     Direction direction = 3;
 
-    // latency is the last known round trip time to the peer in ms
+    // latency is the last known round trip time to the peer in ms.
     int64 latency = 4;
 
-    // streams returns list of streams established with the peer
+    // streams returns list of streams established with the peer.
     repeated Stream streams = 5;
-
-    // errors is a list of errors related to the peer
-    repeated string errors = 6;
-  }
+}
 
   message Stream {
     // id is an identifier used to write protocol headers in streams.
     string id = 1 [(gogoproto.customname) = "ID"];
+  }
+
+  enum Feature {
+    UnknownFeature = 0;
+    BertyFeature = 1;
+    BLEFeature = 2;
+    LocalFeature = 3;
+    TorFeature = 4;
+    QuicFeature = 5;
   }
 }
 

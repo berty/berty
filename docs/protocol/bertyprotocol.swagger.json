@@ -1216,39 +1216,75 @@
         }
       }
     },
+    "PeerListFeature": {
+      "type": "string",
+      "enum": [
+        "UnknownFeature",
+        "BertyFeature",
+        "BLEFeature",
+        "LocalFeature",
+        "TorFeature",
+        "QuicFeature"
+      ],
+      "default": "UnknownFeature"
+    },
     "PeerListPeer": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string",
-          "title": "id is the libp2p.PeerID"
+          "description": "id is the libp2p.PeerID."
         },
-        "address": {
-          "type": "string",
-          "title": "Address is the multiaddress via which we are connected with the peer"
-        },
-        "direction": {
-          "$ref": "#/definitions/v1Direction",
-          "title": "direction is which way the connection was established"
-        },
-        "latency": {
-          "type": "string",
-          "format": "int64",
-          "title": "latency is the last known round trip time to the peer in ms"
-        },
-        "streams": {
+        "routes": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/PeerListStream"
+            "$ref": "#/definitions/PeerListRoute"
           },
-          "title": "streams returns list of streams established with the peer"
+          "description": "routes are the list of active and known maddr."
         },
         "errors": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "title": "errors is a list of errors related to the peer"
+          "description": "errors is a list of errors related to the peer."
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PeerListFeature"
+          },
+          "description": "Features is a list of available features."
+        }
+      }
+    },
+    "PeerListRoute": {
+      "type": "object",
+      "properties": {
+        "is_active": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "IsActive indicates whether the address is currently used or just known."
+        },
+        "address": {
+          "type": "string",
+          "description": "Address is the multiaddress via which we are connected with the peer."
+        },
+        "direction": {
+          "$ref": "#/definitions/v1Direction",
+          "description": "direction is which way the connection was established."
+        },
+        "latency": {
+          "type": "string",
+          "format": "int64",
+          "description": "latency is the last known round trip time to the peer in ms."
+        },
+        "streams": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PeerListStream"
+          },
+          "description": "streams returns list of streams established with the peer."
         }
       }
     },

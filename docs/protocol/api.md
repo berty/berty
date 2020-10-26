@@ -135,6 +135,7 @@
     - [PeerList.Peer](#berty.types.v1.PeerList.Peer)
     - [PeerList.Reply](#berty.types.v1.PeerList.Reply)
     - [PeerList.Request](#berty.types.v1.PeerList.Request)
+    - [PeerList.Route](#berty.types.v1.PeerList.Route)
     - [PeerList.Stream](#berty.types.v1.PeerList.Stream)
     - [ReplicationServiceRegisterGroup](#berty.types.v1.ReplicationServiceRegisterGroup)
     - [ReplicationServiceRegisterGroup.Reply](#berty.types.v1.ReplicationServiceRegisterGroup.Reply)
@@ -163,6 +164,7 @@
     - [EventType](#berty.types.v1.EventType)
     - [GroupType](#berty.types.v1.GroupType)
     - [InstanceGetConfiguration.SettingState](#berty.types.v1.InstanceGetConfiguration.SettingState)
+    - [PeerList.Feature](#berty.types.v1.PeerList.Feature)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -1143,12 +1145,10 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| id | [string](#string) |  | id is the libp2p.PeerID |
-| address | [string](#string) |  | Address is the multiaddress via which we are connected with the peer |
-| direction | [Direction](#berty.types.v1.Direction) |  | direction is which way the connection was established |
-| latency | [int64](#int64) |  | latency is the last known round trip time to the peer in ms |
-| streams | [PeerList.Stream](#berty.types.v1.PeerList.Stream) | repeated | streams returns list of streams established with the peer |
-| errors | [string](#string) | repeated | errors is a list of errors related to the peer |
+| id | [string](#string) |  | id is the libp2p.PeerID. |
+| routes | [PeerList.Route](#berty.types.v1.PeerList.Route) | repeated | routes are the list of active and known maddr. |
+| errors | [string](#string) | repeated | errors is a list of errors related to the peer. |
+| features | [PeerList.Feature](#berty.types.v1.PeerList.Feature) | repeated | Features is a list of available features. |
 
 <a name="berty.types.v1.PeerList.Reply"></a>
 
@@ -1161,6 +1161,18 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 <a name="berty.types.v1.PeerList.Request"></a>
 
 ### PeerList.Request
+
+<a name="berty.types.v1.PeerList.Route"></a>
+
+### PeerList.Route
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| is_active | [bool](#bool) |  | IsActive indicates whether the address is currently used or just known. |
+| address | [string](#string) |  | Address is the multiaddress via which we are connected with the peer. |
+| direction | [Direction](#berty.types.v1.Direction) |  | direction is which way the connection was established. |
+| latency | [int64](#int64) |  | latency is the last known round trip time to the peer in ms. |
+| streams | [PeerList.Stream](#berty.types.v1.PeerList.Stream) | repeated | streams returns list of streams established with the peer. |
 
 <a name="berty.types.v1.PeerList.Stream"></a>
 
@@ -1426,6 +1438,19 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | Enabled | 1 |  |
 | Disabled | 2 |  |
 | Unavailable | 3 |  |
+
+<a name="berty.types.v1.PeerList.Feature"></a>
+
+### PeerList.Feature
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| UnknownFeature | 0 |  |
+| BertyFeature | 1 |  |
+| BLEFeature | 2 |  |
+| LocalFeature | 3 |  |
+| TorFeature | 4 |  |
+| QuicFeature | 5 |  |
 
  
 
