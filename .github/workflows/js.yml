@@ -37,7 +37,7 @@ jobs:
     - name: "Fetch deps"
       run: |
         cd js
-        make node_mod
+        make node_modules
       env:
         CI: true
     - name: "Run tests"

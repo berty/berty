@@ -4,6 +4,7 @@ import { IconRegistry } from '@ui-kitten/components'
 import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { NavigationContainer } from '@react-navigation/native'
+import Shake from '@shakebugs/react-native-shake'
 
 import '@berty-tech/berty-i18n'
 import { Provider as ThemeProvider } from '@berty-tech/components/theme'
@@ -21,6 +22,8 @@ enableScreens()
 
 export const App: React.FC = () => {
 	React.useEffect(() => {
+		Shake.start()
+
 		return () => {
 			isReadyRef.current = false
 		}

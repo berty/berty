@@ -1,4 +1,4 @@
-package tech.berty.app;
+package tech.berty.android;
 
 import android.app.Application;
 import android.content.Context;
@@ -52,6 +52,13 @@ public class MainApplication extends Application implements ReactApplication {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+    if (BuildConfig.DEBUG) {
+        Shake.getReportConfiguration().setShowFloatingReportButton(true);
+        Shake.getReportConfiguration().setInvokeShakeOnShakeDeviceEvent(false);
+    } else {
+        Shake.getReportConfiguration().setShowFloatingReportButton(false);
+        Shake.getReportConfiguration().setInvokeShakeOnShakeDeviceEvent(true);
+    }
 	Shake.start(this);
   }
 
@@ -70,7 +77,7 @@ public class MainApplication extends Application implements ReactApplication {
          We use reflection here to pick up the class that initializes Flipper,
         since Flipper library is not available in release mode
         */
-        Class<?> aClass = Class.forName("tech.berty.app.ReactNativeFlipper");
+        Class<?> aClass = Class.forName("tech.berty.android.ReactNativeFlipper");
         aClass
             .getMethod("initializeFlipper", Context.class, ReactInstanceManager.class)
             .invoke(null, context, reactInstanceManager);

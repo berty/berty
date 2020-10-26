@@ -45,8 +45,7 @@ build/
 .settings/
 .project
 *.classpath
-
-# local.properties
+local.properties
 *.iml
 android-sourcemap.*
 *.hprof

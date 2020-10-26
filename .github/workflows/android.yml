@@ -77,19 +77,19 @@ jobs:
           CI: "true"
         run: |
           make android.app_deps
-          ### TODO: sign with release keystore on Yolo ###
+          (cd android && ./gradlew app:bundleReleaseYolo)
+          ### TODO: move this part on Yolo and use release keystore ###
           mkdir -p $HOME/.android
           cp android/app/debug.keystore $HOME/.android
-          ################################################
-          (cd android && ./gradlew bundleRelease)
           wget \
             https://github.com/google/bundletool/releases/download/1.2.0/bundletool-all-1.2.0.jar \
             -O /tmp/bundletool.jar
           java -jar /tmp/bundletool.jar build-apks \
-            --bundle=android/app/build/outputs/bundle/release/app-release.aab \
+            --bundle=android/app/build/outputs/bundle/releaseYolo/app-releaseYolo.aab \
             --output=${{ github.workspace }}/app.apks \
             --mode=universal
           cd ${{ github.workspace }} && unzip app.apks
+          ################################################
 
       - name: Upload the APK
         uses: actions/upload-artifact@v2

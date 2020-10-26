@@ -1,5 +1,8 @@
 apply plugin: "com.android.application"
 
+// TODO: remove this after closed beta
+apply plugin: 'com.google.firebase.crashlytics'
+
 import com.android.build.OutputFile
 
 /**
@@ -129,13 +132,22 @@ android {
     }
 
     defaultConfig {
-        applicationId "tech.berty.app"
+        applicationId "tech.berty.android"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
         missingDimensionStrategy 'react-native-camera', 'general'
         multiDexEnabled true // fix for "The number of method references in a .dex file cannot exceed 64K"
+
+        def addEnvVar = {key ->
+            def value = getEnvValue(key)
+            manifestPlaceholders += [(key):value]
+            buildConfigField "String", "${key}", "\"${value}\""
+        }
+
+        addEnvVar("SHAKE_API_ID")
+        addEnvVar("SHAKE_API_SECRET")
     }
     splits {
         abi {
@@ -155,6 +167,7 @@ android {
     }
     buildTypes {
         debug {
+            applicationIdSuffix ".debug"
             signingConfig signingConfigs.debug
         }
         release {
@@ -163,6 +176,20 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+
+            firebaseCrashlytics {
+                nativeSymbolUploadEnabled true
+            }
+        }
+        releaseStaff {
+            initWith release
+            applicationIdSuffix ".staff"
+            matchingFallbacks = ['release']
+        }
+        releaseYolo {
+            initWith release
+            applicationIdSuffix ".yolo"
+            matchingFallbacks = ['release']
         }
     }
 

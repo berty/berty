@@ -116,11 +116,17 @@ jobs:
         run: |
           make ios.app_deps
           xcodebuild archive \
+                CODE_SIGN_IDENTITY="" \
+                CODE_SIGNING_ALLOWED=NO \
+                ONLY_ACTIVE_ARCH=NO  \
+                EXCLUDED_ARCHS='armv7 armv7s' \
                 -workspace ios/Berty.xcworkspace \
                 -scheme "Berty Yolo" \
                 -sdk iphoneos \
-                -archivePath /tmp/Berty.xcarchive \
-                CODE_SIGN_IDENTITY="" CODE_SIGNING_ALLOWED=NO
+                -archivePath /tmp/Berty.xcarchive
+          for lib in /tmp/Berty.xcarchive/Products/Applications/Berty\ Yolo.app/Frameworks/*.dylib; do
+            lipo -remove armv7 -remove armv7s "$lib" -output "$lib"
+          done
           codesign -fs "Berty Dummy" /tmp/Berty.xcarchive/Products/Applications/Berty\ Yolo.app
           mkdir Payload
           mv /tmp/Berty.xcarchive/Products/Applications/Berty\ Yolo.app Payload/

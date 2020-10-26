@@ -15,6 +15,9 @@ buildscript {
         classpath("com.android.tools.build:gradle:3.5.3")
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+
+        // TODO: remove this after closed beta
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.0.0'
     }
 }
 
@@ -34,4 +37,28 @@ allprojects {
         jcenter()
         maven { url 'https://www.jitpack.io' }
     }
+}
+
+task importEnvFile {
+    def envFile = file("${rootDir.getPath()}/../.env")
+
+    if (envFile.exists()) {
+        envFile.readLines().each() {
+            if (!it.isEmpty() && !it.startsWith("#")) {
+                def (key, value) = it.tokenize('=')
+                if (key) {
+                    System.properties[key] = (value ? value : '')
+                }
+            }
+        }
+    }
+}
+
+ext.getEnvValue = { key ->
+    if (System.getenv(key)) { // Get var from system env first
+        return System.getenv(key)
+    } else if (System.getProperty(key)) { // if null, get var from env file
+        return System.getProperty(key)
+    }
+    return "" // if null, return an empty string
 }

@@ -1,0 +1,155 @@
+{
+  "project_info": {
+    "project_number": "214345352632",
+    "firebase_url": "https://bertymessenger.firebaseio.com",
+    "project_id": "bertymessenger",
+    "storage_bucket": "bertymessenger.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:214345352632:android:43c32a7ae46ee66cea7b4d",
+        "android_client_info": {
+          "package_name": "tech.berty.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "214345352632-1phg7rbukn6hk5t90glbpjltl65i0mtb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCSQ40sVsj7NkkI2jHwaZd7OwEz-zHpos"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "214345352632-1phg7rbukn6hk5t90glbpjltl65i0mtb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "214345352632-1t5n40lkgbegmdplp9jgafchnpcrpbfe.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "tech.berty.ios"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:214345352632:android:1b3ae37c0adb2cc0ea7b4d",
+        "android_client_info": {
+          "package_name": "tech.berty.android.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "214345352632-1phg7rbukn6hk5t90glbpjltl65i0mtb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCSQ40sVsj7NkkI2jHwaZd7OwEz-zHpos"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "214345352632-1phg7rbukn6hk5t90glbpjltl65i0mtb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "214345352632-1t5n40lkgbegmdplp9jgafchnpcrpbfe.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "tech.berty.ios"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:214345352632:android:4e71537dbad81ecaea7b4d",
+        "android_client_info": {
+          "package_name": "tech.berty.android.staff"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "214345352632-1phg7rbukn6hk5t90glbpjltl65i0mtb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCSQ40sVsj7NkkI2jHwaZd7OwEz-zHpos"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "214345352632-1phg7rbukn6hk5t90glbpjltl65i0mtb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "214345352632-1t5n40lkgbegmdplp9jgafchnpcrpbfe.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "tech.berty.ios"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:214345352632:android:5b7f8902b4c17766ea7b4d",
+        "android_client_info": {
+          "package_name": "tech.berty.android.yolo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "214345352632-1phg7rbukn6hk5t90glbpjltl65i0mtb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCSQ40sVsj7NkkI2jHwaZd7OwEz-zHpos"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "214345352632-1phg7rbukn6hk5t90glbpjltl65i0mtb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "214345352632-1t5n40lkgbegmdplp9jgafchnpcrpbfe.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "tech.berty.ios"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
