@@ -41,21 +41,25 @@ func newConn(ctx context.Context, t *ProximityTransport, remoteMa ma.Multiaddr,
 
 // ReceiveFromPeer is called by native driver when peer's device sent data.
 func (t *ProximityTransport) ReceiveFromPeer(remotePID string, payload []byte) {
+	t.logger.Debug("ReceiveFromPeer()", zap.String("remotePID", remotePID))
 	// TODO: implement a cleaner way to do that
 	// Checks during 100 ms if the conn is available, because remote device can
 	// be ready to write while local device is still creating the new conn.
-	for i := 0; i < 100; i++ {
-		c, ok := t.connMap.Load(remotePID)
-		if ok {
-			_, err := c.(*Conn).readIn.Write(payload)
-			if err != nil {
-				t.logger.Error("ReceiveFromPeer: write error", zap.Error(err))
+	// Need to be async because the native driver must be available (for writing)
+	go func() {
+		for i := 0; i < 100; i++ {
+			c, ok := t.connMap.Load(remotePID)
+			if ok {
+				_, err := c.(*Conn).readIn.Write(payload)
+				if err != nil {
+					t.logger.Error("ReceiveFromPeer: write error", zap.Error(err))
+				}
+				return
 			}
-			return
+			time.Sleep(1 * time.Millisecond)
 		}
-		time.Sleep(1 * time.Millisecond)
-	}
 
-	t.logger.Error("ReceiveFromPeer: connmgr failed to read from conn: unknown conn", zap.String("remote address", remotePID))
-	t.driver.CloseConnWithPeer(remotePID)
+		t.logger.Error("ReceiveFromPeer: connmgr failed to read from conn: unknown conn", zap.String("remote address", remotePID))
+		t.driver.CloseConnWithPeer(remotePID)
+	}()
 }

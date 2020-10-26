@@ -22,6 +22,8 @@ targets:
           NSExceptionDomains:
             localhost:
               NSExceptionAllowsInsecureHTTPLoads: true
+        NSBonjourServices:
+          - _berty-mc._tcp
         NSCameraUsageDescription: Used to scan QRCodes
         NSLocalNetworkUsageDescription: Used for local communications
         NSLocationWhenInUseUsageDescription: ""

@@ -57,6 +57,8 @@ func (t *ProximityTransport) HandleFoundPeer(sRemotePID string) bool {
 			})
 			if err != nil {
 				t.logger.Error("HandleFoundPeer: async connect error", zap.Error(err))
+				t.host.Peerstore().SetAddr(remotePID, remoteMa, 0)
+				t.driver.CloseConnWithPeer(sRemotePID)
 			}
 		}()
 
@@ -87,8 +89,12 @@ func (t *ProximityTransport) HandleLostPeer(sRemotePID string) {
 		return
 	}
 
-	// Close connections with the peer.
-	if err = t.host.Network().ClosePeer(remotePID); err != nil {
-		t.logger.Error("HandleLostPeer: ClosePeer error", zap.Error(err))
+	remoteMa, err := ma.NewMultiaddr(fmt.Sprintf("/%s/%s", t.driver.ProtocolName(), sRemotePID))
+	if err != nil {
+		// Should never occur
+		panic(err)
 	}
+
+	// Remove peer's address to peerstore.
+	t.host.Peerstore().SetAddr(remotePID, remoteMa, 0)
 }

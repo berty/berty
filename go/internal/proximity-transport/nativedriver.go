@@ -26,7 +26,19 @@ type NativeDriver interface {
 	DefaultAddr() string
 }
 
-type NoopNativeDriver struct{}
+type NoopNativeDriver struct {
+	protocolCode int
+	protocolName string
+	defaultAddr  string
+}
+
+func NewNoopNativeDriver(protocolCode int, protocolName, defaultAddr string) *NoopNativeDriver {
+	return &NoopNativeDriver{
+		protocolCode: protocolCode,
+		protocolName: protocolName,
+		defaultAddr:  defaultAddr,
+	}
+}
 
 func (d *NoopNativeDriver) Start(_ string) {}
 
@@ -38,8 +50,14 @@ func (d *NoopNativeDriver) SendToPeer(_ string, _ []byte) bool { return false }
 
 func (d *NoopNativeDriver) CloseConnWithPeer(_ string) {}
 
-func (d *NoopNativeDriver) ProtocolCode() int { return 0 }
+func (d *NoopNativeDriver) ProtocolCode() int { return d.protocolCode }
 
-func (d *NoopNativeDriver) ProtocolName() string { return "" }
+func (d *NoopNativeDriver) ProtocolName() string { return d.protocolName }
 
-func (d *NoopNativeDriver) DefaultAddr() string { return "" }
+func (d *NoopNativeDriver) DefaultAddr() string { return d.defaultAddr }
+
+func (d *NoopNativeDriver) SetProtocolCode(protocolCode int) { d.protocolCode = protocolCode }
+
+func (d *NoopNativeDriver) SetProtocolName(protocolName string) { d.protocolName = protocolName }
+
+func (d *NoopNativeDriver) SetDefaultAddr(protocolAddr string) { d.defaultAddr = protocolAddr }

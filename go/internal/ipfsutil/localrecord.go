@@ -42,7 +42,7 @@ func (lr *LocalRecord) ListenClose(network.Network, ma.Multiaddr) {}
 // called when a connection opened
 func (lr *LocalRecord) Connected(net network.Network, c network.Conn) {
 	go func() {
-		if manet.IsPrivateAddr(c.RemoteMultiaddr()) || mafmt.Base(mc.PMC).Matches(c.RemoteMultiaddr()) {
+		if manet.IsPrivateAddr(c.RemoteMultiaddr()) || mafmt.Base(mc.ProtocolCode).Matches(c.RemoteMultiaddr()) {
 			if err := lr.sendLocalRecord(c); err != nil {
 				return
 			}

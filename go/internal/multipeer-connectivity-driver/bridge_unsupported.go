@@ -15,5 +15,6 @@ const Supported = false
 func NewDriver(logger *zap.Logger) proximity.NativeDriver {
 	logger = logger.Named("MC")
 	logger.Info("NewDriver(): incompatible system")
-	return &proximity.NoopNativeDriver{}
+
+	return proximity.NewNoopNativeDriver(ProtocolCode, ProtocolName, DefaultAddr)
 }
