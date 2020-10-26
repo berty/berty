@@ -2,8 +2,6 @@ package config
 
 import (
 	config "github.com/ipfs/go-ipfs-config"
-
-	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport"
 )
 
 type BertyConfig struct {
@@ -29,7 +27,6 @@ var BertyDev = &BertyConfig{
 		"/ip4/51.75.127.200/udp/4141/quic/p2p/12D3KooWPwRwwKatdy5yzRVCYPHib3fntYgbFB4nqrJPHWAqXD7z",
 	},
 	DefaultSwarmAddrs: []string{
-		mc.DefaultBind,
 		"/ip4/0.0.0.0/tcp/0",
 		"/ip6/::/tcp/0",
 		"/ip4/0.0.0.0/udp/0/quic",
@@ -58,7 +55,6 @@ var BertyMobile = &BertyConfig{
 		"/ip4/51.75.127.200/udp/4141/quic/p2p/12D3KooWPwRwwKatdy5yzRVCYPHib3fntYgbFB4nqrJPHWAqXD7z",
 	},
 	DefaultSwarmAddrs: []string{
-		mc.DefaultBind,
 		"/ip4/0.0.0.0/tcp/0",
 		"/ip6/::/tcp/0",
 		"/ip4/0.0.0.0/udp/0/quic",

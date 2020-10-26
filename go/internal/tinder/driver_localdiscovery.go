@@ -16,11 +16,12 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	ma "github.com/multiformats/go-multiaddr"
+	mafmt "github.com/multiformats/go-multiaddr-fmt"
 	manet "github.com/multiformats/go-multiaddr/net"
 	msmux "github.com/multiformats/go-multistream"
 	"go.uber.org/zap"
 
-	mcma "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/multiaddr"
+	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 )
 
 const recProtocolID = protocol.ID("berty/p2p/localrecord")
@@ -280,7 +281,7 @@ func (ld *localDiscovery) ListenClose(network.Network, ma.Multiaddr) {}
 // Called when a connection is opened by discovery.Discoverer's FindPeers()
 func (ld *localDiscovery) Connected(net network.Network, c network.Conn) {
 	go func() {
-		if manet.IsPrivateAddr(c.RemoteMultiaddr()) || mcma.MC.Matches(c.RemoteMultiaddr()) {
+		if manet.IsPrivateAddr(c.RemoteMultiaddr()) || mafmt.Base(mc.PMC).Matches(c.RemoteMultiaddr()) {
 			if err := ld.sendLocalRecord(c); err != nil {
 				return
 			}

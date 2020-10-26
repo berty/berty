@@ -1,4 +1,4 @@
-package mc
+package proximitytransport
 
 import (
 	"context"
@@ -10,9 +10,6 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 	"github.com/pkg/errors"
-
-	mcdrv "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/driver"
-	mcma "berty.tech/berty/v2/go/internal/multipeer-connectivity-transport/multiaddr"
 )
 
 // Conn is a manet.Conn.
@@ -28,20 +25,21 @@ type Conn struct {
 	localMa  ma.Multiaddr
 	remoteMa ma.Multiaddr
 
-	ctx    context.Context
-	cancel func()
+	ctx       context.Context
+	cancel    func()
+	transport *ProximityTransport
 }
 
 // Read reads data from the connection.
 // Timeout handled by the native driver.
 func (c *Conn) Read(payload []byte) (n int, err error) {
 	if c.ctx.Err() != nil {
-		return 0, fmt.Errorf("proximityTransport: Conn.Read failed: conn already closed")
+		return 0, fmt.Errorf("error: Conn.Read failed: conn already closed")
 	}
 
 	n, err = c.readOut.Read(payload)
 	if err != nil {
-		err = errors.Wrap(err, "proximityTransport: Conn.Read failed: native read failed")
+		err = errors.Wrap(err, "error: Conn.Read failed: native read failed")
 	}
 
 	return n, err
@@ -51,12 +49,13 @@ func (c *Conn) Read(payload []byte) (n int, err error) {
 // Timeout handled by the native driver.
 func (c *Conn) Write(payload []byte) (n int, err error) {
 	if c.ctx.Err() != nil {
-		return 0, fmt.Errorf("proximityTransport: Conn.Write failed: conn already closed")
+		return 0, fmt.Errorf("error: Conn.Write failed: conn already closed")
 	}
 
 	// Write to the peer's device using native driver.
-	if !mcdrv.SendToPeer(c.RemoteAddr().String(), payload) {
-		return 0, fmt.Errorf("proximityTransport: Conn.Write failed: native write failed")
+	if !c.transport.driver.SendToPeer(c.RemoteAddr().String(), payload) {
+		c.transport.logger.Debug("Conn.Write failed")
+		return 0, fmt.Errorf("error: Conn.Write failed: native write failed")
 	}
 
 	return len(payload), nil
@@ -65,7 +64,7 @@ func (c *Conn) Write(payload []byte) (n int, err error) {
 // Close closes the connection.
 // Any blocked Read or Write operations will be unblocked and return errors.
 func (c *Conn) Close() error {
-	logger.Debug("Conn.Close()")
+	c.transport.logger.Debug("Conn.Close()")
 	c.cancel()
 
 	// Closes read pipe
@@ -73,27 +72,29 @@ func (c *Conn) Close() error {
 	c.readOut.Close()
 
 	// Removes conn from connmgr's connMap
-	connMap.Delete(c.RemoteAddr().String())
+	c.transport.connMap.Delete(c.RemoteAddr().String())
 
 	// Notify the native driver that the conn was cloed with this peer.
-	mcdrv.CloseConnWithPeer(c.RemoteAddr().String())
+	c.transport.driver.CloseConnWithPeer(c.RemoteAddr().String())
 
 	return nil
 }
 
 // LocalAddr returns the local network address.
 func (c *Conn) LocalAddr() net.Addr {
-	lAddr, _ := c.LocalMultiaddr().ValueForProtocol(mcma.P_MC)
+	lAddr, _ := c.LocalMultiaddr().ValueForProtocol(c.transport.driver.ProtocolCode())
 	return &Addr{
-		Address: lAddr,
+		Address:   lAddr,
+		transport: c.transport,
 	}
 }
 
 // LocalAddr returns the remote network address.
 func (c *Conn) RemoteAddr() net.Addr {
-	rAddr, _ := c.RemoteMultiaddr().ValueForProtocol(mcma.P_MC)
+	rAddr, _ := c.RemoteMultiaddr().ValueForProtocol(c.transport.driver.ProtocolCode())
 	return &Addr{
-		Address: rAddr,
+		Address:   rAddr,
+		transport: c.transport,
 	}
 }
 

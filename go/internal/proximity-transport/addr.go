@@ -1,4 +1,4 @@
-package mc
+package proximitytransport
 
 import "net"
 
@@ -7,11 +7,12 @@ var _ net.Addr = &Addr{}
 
 // Addr represents a network end point address.
 type Addr struct {
-	Address string
+	Address   string
+	transport *ProximityTransport
 }
 
 // Network returns the address's network name.
-func (b *Addr) Network() string { return "mc" }
+func (b *Addr) Network() string { return b.transport.driver.ProtocolName() }
 
 // String return's the string form of the address.
 func (b *Addr) String() string { return b.Address }
