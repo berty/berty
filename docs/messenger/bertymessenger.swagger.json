@@ -75,72 +75,6 @@
         ]
       }
     },
-    "/berty.messenger.v1/MessengerService/AuthServiceCompleteFlow": {
-      "post": {
-        "summary": "AuthServiceCompleteFlow Completes an authentication flow",
-        "operationId": "MessengerService_AuthServiceCompleteFlow",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1AuthServiceCompleteFlowReply"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1AuthServiceCompleteFlowRequest"
-            }
-          }
-        ],
-        "tags": [
-          "MessengerService"
-        ]
-      }
-    },
-    "/berty.messenger.v1/MessengerService/AuthServiceInitFlow": {
-      "post": {
-        "summary": "AuthServiceInitFlow Initialize an authentication flow",
-        "operationId": "MessengerService_AuthServiceInitFlow",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1AuthServiceInitFlowReply"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1AuthServiceInitFlowRequest"
-            }
-          }
-        ],
-        "tags": [
-          "MessengerService"
-        ]
-      }
-    },
     "/berty.messenger.v1/MessengerService/BannerQuote": {
       "post": {
         "summary": "BannerQuote returns the quote of the day.",
@@ -1435,37 +1369,6 @@
         "TypeReplyOptions"
       ],
       "default": "Undefined"
-    },
-    "v1AuthServiceCompleteFlowReply": {
-      "type": "object"
-    },
-    "v1AuthServiceCompleteFlowRequest": {
-      "type": "object",
-      "properties": {
-        "callback_url": {
-          "type": "string"
-        }
-      }
-    },
-    "v1AuthServiceInitFlowReply": {
-      "type": "object",
-      "properties": {
-        "url": {
-          "type": "string"
-        },
-        "secure_url": {
-          "type": "boolean",
-          "format": "boolean"
-        }
-      }
-    },
-    "v1AuthServiceInitFlowRequest": {
-      "type": "object",
-      "properties": {
-        "auth_url": {
-          "type": "string"
-        }
-      }
     },
     "v1BannerQuoteReply": {
       "type": "object",

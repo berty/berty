@@ -37,7 +37,7 @@ export const servicesAuthViaURL = async (ctx: MsgrState, url: string): Promise<v
 
 	try {
 		// PKCE OAuth flow
-		const resp = await ctx.client?.authServiceInitFlow({
+		const resp = await ctx.protocolClient?.authServiceInitFlow({
 			authUrl: url,
 		})
 
@@ -85,7 +85,7 @@ export const servicesAuthViaURL = async (ctx: MsgrState, url: string): Promise<v
 			.then(async (response) => {
 				const responseURL: String | undefined = response.url
 				if (responseURL) {
-					await ctx.client?.authServiceCompleteFlow({
+					await ctx.protocolClient?.authServiceCompleteFlow({
 						callbackUrl: responseURL,
 					})
 				}

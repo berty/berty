@@ -2525,14 +2525,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "ConversationClose.Request",
                     responseType: "ConversationClose.Reply"
                   },
-                  AuthServiceInitFlow: {
-                    requestType: "types.v1.AuthServiceInitFlow.Request",
-                    responseType: "types.v1.AuthServiceInitFlow.Reply"
-                  },
-                  AuthServiceCompleteFlow: {
-                    requestType: "types.v1.AuthServiceCompleteFlow.Request",
-                    responseType: "types.v1.AuthServiceCompleteFlow.Reply"
-                  },
                   ServicesTokenList: {
                     requestType: "types.v1.ServicesTokenList.Request",
                     responseType: "types.v1.ServicesTokenList.Reply",

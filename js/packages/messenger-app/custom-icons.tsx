@@ -10,6 +10,9 @@ import Bubble from './custom-icons-svgs/bubble.svg'
 import Users from './custom-icons-svgs/users.svg'
 import UserPlus from './custom-icons-svgs/user-plus.svg'
 import Quote from './custom-icons-svgs/quote.svg'
+import Earth from './custom-icons-svgs/Earth_.svg'
+import Network from './custom-icons-svgs/chart-network-light.svg'
+import Tor from './custom-icons-svgs/Tor.svg'
 
 const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	fingerprint: Fingerprint,
@@ -20,6 +23,9 @@ const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	users: Users,
 	'user-plus': UserPlus,
 	quote: Quote,
+	earth: Earth,
+	network: Network,
+	tor: Tor,
 }
 
 const CustomIcon: React.FC<{

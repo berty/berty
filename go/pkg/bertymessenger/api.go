@@ -1105,14 +1105,6 @@ func (svc *service) ConversationClose(ctx context.Context, req *ConversationClos
 	return &ret, nil
 }
 
-func (svc *service) AuthServiceInitFlow(ctx context.Context, request *bertytypes.AuthServiceInitFlow_Request) (*bertytypes.AuthServiceInitFlow_Reply, error) {
-	return svc.protocolClient.AuthServiceInitFlow(ctx, request)
-}
-
-func (svc *service) AuthServiceCompleteFlow(ctx context.Context, request *bertytypes.AuthServiceCompleteFlow_Request) (*bertytypes.AuthServiceCompleteFlow_Reply, error) {
-	return svc.protocolClient.AuthServiceCompleteFlow(ctx, request)
-}
-
 func (svc *service) ServicesTokenList(request *bertytypes.ServicesTokenList_Request, server MessengerService_ServicesTokenListServer) error {
 	cl, err := svc.protocolClient.ServicesTokenList(server.Context(), request)
 	if err != nil {

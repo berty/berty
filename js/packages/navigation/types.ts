@@ -51,6 +51,7 @@ export namespace ScreenProps {
 		export type AddContactList = RouteProps<void>
 		export type AddConversationList = RouteProps<void>
 		export type DevText = RouteProps<{ text: string }>
+		export type NetworkMap = RouteProps<void>
 	}
 	export namespace Modals {
 		export type ManageDeepLink = RouteProps<{ type: 'qr' | 'link'; value: string }>
@@ -112,6 +113,7 @@ export namespace Routes {
 		FakeData = 'Settings.FakeData',
 		AddContactList = 'Settings.AddContactList',
 		AddConversationList = 'Settings.AddConversationList',
+		NetworkMap = 'Settings.NetworkMap',
 	}
 	export enum Modals {
 		SendContactRequest = 'SendContactRequest',
