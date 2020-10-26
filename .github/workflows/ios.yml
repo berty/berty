@@ -43,7 +43,7 @@ jobs:
           go-version: 1.15.x
 
       - name: Setup Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2.1.2
         with:
           node-version: 14.x
 
