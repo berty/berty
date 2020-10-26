@@ -44,7 +44,7 @@ type TestBot struct {
 }
 
 func Main() error {
-	logger := zapconfig.Configurator{}.MustBuildLogger()
+	logger := zapconfig.Configurator{}.MustBuild()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
