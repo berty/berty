@@ -7,11 +7,10 @@ import (
 	"runtime"
 
 	"go.opentelemetry.io/otel/api/global"
-	"go.opentelemetry.io/otel/api/kv"
-	"go.opentelemetry.io/otel/api/propagation"
 	"go.opentelemetry.io/otel/api/trace"
+	"go.opentelemetry.io/otel/exporters/stdout"
 	"go.opentelemetry.io/otel/exporters/trace/jaeger"
-	"go.opentelemetry.io/otel/exporters/trace/stdout"
+	"go.opentelemetry.io/otel/label"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
@@ -98,11 +97,11 @@ func NewJaegerProvider(host, service string) (trace.Provider, func(), error) {
 		jaeger.WithCollectorEndpoint(host),
 		jaeger.WithProcess(jaeger.Process{
 			ServiceName: service,
-			Tags: []kv.KeyValue{
-				kv.String("exporter", "jaeger"),
-				kv.String("os", runtime.GOOS),
-				kv.String("arch", runtime.GOARCH),
-				kv.String("go", runtime.Version()),
+			Tags: []label.KeyValue{
+				label.String("exporter", "jaeger"),
+				label.String("os", runtime.GOOS),
+				label.String("arch", runtime.GOARCH),
+				label.String("go", runtime.Version()),
 			},
 		}),
 		jaeger.WithSDK(&sdktrace.Config{DefaultSampler: sdktrace.AlwaysSample()}),
@@ -115,8 +114,4 @@ func New(name string) trace.Tracer {
 
 func From(ctx context.Context) trace.Tracer {
 	return trace.SpanFromContext(ctx).Tracer()
-}
-
-func Propagators() propagation.Propagators {
-	return global.Propagators()
 }

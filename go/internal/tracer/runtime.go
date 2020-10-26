@@ -5,8 +5,8 @@ import (
 	"runtime"
 	"strings"
 
-	"go.opentelemetry.io/otel/api/kv"
 	"go.opentelemetry.io/otel/api/trace"
+	"go.opentelemetry.io/otel/label"
 )
 
 type RuntimeProvider struct {
@@ -33,8 +33,8 @@ type RuntimeTracer struct {
 func (rt *RuntimeTracer) Start(ctx context.Context, spanName string, opts ...trace.StartOption) (context.Context, trace.Span) {
 	callerName, pkgName := retrieveCaller(rt.skipCall)
 	opts = append(opts, trace.WithAttributes(
-		kv.String("runtime.package", pkgName),
-		kv.String("runtime.caller", callerName)))
+		label.String("runtime.package", pkgName),
+		label.String("runtime.caller", callerName)))
 
 	if spanName == "" {
 		spanName = callerName
@@ -47,8 +47,8 @@ func (rt *RuntimeTracer) Start(ctx context.Context, spanName string, opts ...tra
 func (rt *RuntimeTracer) WithSpan(ctx context.Context, spanName string, fn func(ctx context.Context) error, opts ...trace.StartOption) error {
 	callerName, pkgName := retrieveCaller(rt.skipCall)
 	opts = append(opts, trace.WithAttributes(
-		kv.String("runtime.package", pkgName),
-		kv.String("runtime.caller", callerName)))
+		label.String("runtime.package", pkgName),
+		label.String("runtime.caller", callerName)))
 
 	if spanName == "" {
 		spanName = callerName

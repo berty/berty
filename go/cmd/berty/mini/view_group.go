@@ -14,8 +14,8 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
 	"github.com/rivo/tview"
-	"go.opentelemetry.io/otel/api/kv"
 	"go.opentelemetry.io/otel/api/trace"
+	"go.opentelemetry.io/otel/label"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/tracer"
@@ -58,7 +58,7 @@ func (v *groupView) commandParser(ctx context.Context, input string) error {
 					}
 				}
 
-				ctx, span := tr.Start(ctx, attrs.title, trace.WithAttributes(kv.String("input", input)))
+				ctx, span := tr.Start(ctx, attrs.title, trace.WithAttributes(label.String("input", input)))
 				defer span.End()
 
 				if attrs.cmd == nil {
