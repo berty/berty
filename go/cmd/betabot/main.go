@@ -109,7 +109,7 @@ func betabot() error {
 
 	// init logger
 	{
-		logger, err := zapconfig.Configurator{}.BuildLogger()
+		logger, err := zapconfig.Configurator{}.Build()
 		if err != nil {
 			return fmt.Errorf("build zap logger failed: %w", err)
 		}
