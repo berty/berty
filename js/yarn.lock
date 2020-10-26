@@ -7779,10 +7779,10 @@ react-native-in-app-notification@^3.1.0:
     react-native-iphone-x-helper "^1.2.0"
     react-native-swipe-gestures "^1.0.2"
 
-react-native-inappbrowser-reborn@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/react-native-inappbrowser-reborn/-/react-native-inappbrowser-reborn-3.4.0.tgz#fe449722e309c1611fa5e3a742a7e449aaf5a9e5"
-  integrity sha512-buHTc8xvjtO1pDKrGxgXetyV1D3XdmXJ+b8x1AW+PrKeLg8lzBdlVmSUtpIQBg98WPwK3FA08l/CvShocmvOyg==
+react-native-inappbrowser-reborn@^3.5.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/react-native-inappbrowser-reborn/-/react-native-inappbrowser-reborn-3.5.1.tgz#a17e6548ac7864f074f5df6171781601d179d638"
+  integrity sha512-pEM9DSvW3LYoI7x1sfr4GtTA1/BSzSoQvHeNRtbJwOpujgRBqnEQrapBwC/24l2pIRhKDWmXGfqc12478IXY3Q==
   dependencies:
     invariant "^2.2.4"
     opencollective-postinstall "^2.0.2"
