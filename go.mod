@@ -23,13 +23,13 @@ require (
 	github.com/dgraph-io/badger v1.6.1
 	github.com/dgraph-io/ristretto v0.0.3 // indirect
 	github.com/fabiokung/shm v0.0.0-20150728212823-2852b0d79bae
-	github.com/gdamore/tcell v1.3.0
+	github.com/gdamore/tcell v1.4.0
 	github.com/gen2brain/beeep v0.0.0-20200526185328-e9c15c258e28
 	github.com/githubnemo/CompileDaemon v1.2.1
 	github.com/gobuffalo/here v0.6.2 // indirect
 	github.com/gofrs/uuid v3.3.0+incompatible
 	github.com/gogo/protobuf v1.3.1
-	github.com/golang/protobuf v1.4.2
+	github.com/golang/protobuf v1.4.3
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0
 	github.com/grpc-ecosystem/grpc-gateway v1.14.6
 	github.com/huandu/xstrings v1.3.2 // indirect
@@ -54,7 +54,7 @@ require (
 	github.com/libp2p/go-libp2p-circuit v0.3.1
 	github.com/libp2p/go-libp2p-core v0.6.1
 	github.com/libp2p/go-libp2p-discovery v0.5.0
-	github.com/libp2p/go-libp2p-kad-dht v0.9.0
+	github.com/libp2p/go-libp2p-kad-dht v0.10.0
 	github.com/libp2p/go-libp2p-pubsub v0.3.5
 	github.com/libp2p/go-libp2p-quic-transport v0.8.1
 	github.com/libp2p/go-libp2p-record v0.1.3
@@ -101,13 +101,13 @@ require (
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1
 	gorm.io/driver/sqlite v1.1.3
-	gorm.io/gorm v1.20.2
+	gorm.io/gorm v1.20.5
 	moul.io/godev v1.7.0
 	moul.io/openfiles v1.2.0
 	moul.io/srand v1.6.0
 	moul.io/testman v1.5.0
 	moul.io/u v1.18.0
-	moul.io/zapconfig v1.0.0
+	moul.io/zapconfig v1.2.0
 	moul.io/zapfilter v1.6.0
 	moul.io/zapgorm2 v1.0.1
 	mvdan.cc/gofumpt v0.0.0-20200802201014-ab5a8192947d
