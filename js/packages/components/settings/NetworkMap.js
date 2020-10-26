@@ -199,7 +199,13 @@ const NetworkMapBody = ({ peers }) => {
 					<>
 						{sortPeers.map((value) => {
 							const elem = prevPeers?.find((v) => value.id.toString() === v.id.toString())
-							return <PeerItem item={value} highlighted={elem ? false : prevPeers ? true : false} />
+							return (
+								<PeerItem
+									key={value.id}
+									item={value}
+									highlighted={elem ? false : prevPeers ? true : false}
+								/>
+							)
 						})}
 					</>
 				</View>

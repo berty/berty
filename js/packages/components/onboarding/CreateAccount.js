@@ -40,7 +40,7 @@ const CreateAccountBody = ({ next }) => {
 				})
 			})
 			.catch((err2) => setError(err2))
-	}, [ctx.client, ctx.account.publicKey, name, requestContact])
+	}, [ctx.client, ctx.account, name, requestContact])
 
 	React.useEffect(() => {
 		if (done && !err) {

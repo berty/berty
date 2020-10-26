@@ -4,7 +4,7 @@ import { Translation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { useNavigation as useReactNavigation, CommonActions } from '@react-navigation/native'
 
-import { useMsgrContext } from '@berty-tech/store/context'
+import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 import { Routes } from '@berty-tech/navigation'
 
 import SwiperCard from './SwiperCard'
@@ -21,15 +21,24 @@ const SetupFinishedBody = () => {
 
 	React.useEffect(() => {
 		const handlePersistentOptions = async () => {
-			await setPersistentOption('betabot', {
-				added: false,
-				convPk: Object.values(contacts)[0].publicKey,
+			await setPersistentOption({
+				type: PersistentOptionsKeys.BetaBot,
+				payload: {
+					added: false,
+					convPk: Object.values(contacts)[0].publicKey,
+				},
 			})
-			await setPersistentOption('i18n', {
-				language: 'en',
+			await setPersistentOption({
+				type: PersistentOptionsKeys.I18N,
+				payload: {
+					language: 'en',
+				},
 			})
-			await setPersistentOption('notifications', {
-				enable: true,
+			await setPersistentOption({
+				type: PersistentOptionsKeys.Notifications,
+				payload: {
+					enable: true,
+				},
 			})
 		}
 		if (!persistentOptions && Object.values(contacts).length) {

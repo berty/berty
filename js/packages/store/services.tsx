@@ -2,7 +2,7 @@ import InAppBrowser from 'react-native-inappbrowser-reborn'
 import { MsgrState } from './context'
 import { Alert } from 'react-native'
 import { useAccount } from './hooks'
-import { berty } from '@berty-tech/api'
+import { berty } from '@berty-tech/api/index.pb'
 
 export enum serviceTypes {
 	Replication = 'rpl',
@@ -16,7 +16,7 @@ export const bertyOperatedServer = 'https://services.berty.tech/'
 
 export const useAccountServices = (): Array<berty.messenger.v1.IServiceToken> => {
 	const account: berty.messenger.v1.IAccount = useAccount()
-	if (account.serviceTokens === undefined || account.serviceTokens === null) {
+	if (!account || account.serviceTokens === undefined || account.serviceTokens === null) {
 		return []
 	}
 
@@ -33,8 +33,11 @@ export const servicesAuthViaDefault = async (ctx: MsgrState): Promise<void> => {
 }
 
 export const servicesAuthViaURL = async (ctx: MsgrState, url: string): Promise<void> => {
-	let authURL = ''
+	if (!ctx.protocolClient) {
+		return
+	}
 
+	let authURL = ''
 	try {
 		// PKCE OAuth flow
 		const resp = await ctx.protocolClient?.authServiceInitFlow({
@@ -72,27 +75,29 @@ export const servicesAuthViaURL = async (ctx: MsgrState, url: string): Promise<v
 	}
 
 	if (await InAppBrowser.isAvailable()) {
-		InAppBrowser.openAuth(authURL, 'berty://', {
-			dismissButtonStyle: 'cancel',
-			readerMode: false,
-			modalPresentationStyle: 'pageSheet',
-			modalEnabled: true,
-			showTitle: true,
-			enableDefaultShare: false,
-			ephemeralWebSession: true,
-			// forceCloseOnRedirection: false,
-		})
-			.then(async (response) => {
-				const responseURL: String | undefined = response.url
-				if (responseURL) {
-					await ctx.protocolClient?.authServiceCompleteFlow({
-						callbackUrl: responseURL,
-					})
-				}
+		try {
+			const response: any = await InAppBrowser.openAuth(authURL, 'berty://', {
+				dismissButtonStyle: 'cancel',
+				readerMode: false,
+				modalPresentationStyle: 'pageSheet',
+				modalEnabled: true,
+				showTitle: true,
+				enableDefaultShare: false,
+				ephemeralWebSession: true,
+				// forceCloseOnRedirection: false,
 			})
-			.catch((e) => {
-				console.warn(e)
+
+			if (!response.url) {
+				return
+			}
+
+			const responseURL = response.url
+			await ctx.protocolClient?.authServiceCompleteFlow({
+				callbackUrl: responseURL,
 			})
+		} catch (e) {
+			console.warn(e)
+		}
 	}
 }
 
@@ -118,6 +123,10 @@ export const replicateGroup = async (
 			)
 		}))
 	) {
+		return
+	}
+
+	if (!ctx.client) {
 		return
 	}
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, TouchableOpacity, ViewStyle } from 'react-native'
+import { Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native'
 
 import { useStyles } from '@berty-tech/styles'
 
@@ -7,7 +7,8 @@ const Button: React.FC<{
 	children: string
 	onPress: () => void
 	style?: ViewStyle
-}> = ({ children, onPress, style = null }) => {
+	textStyle?: TextStyle
+}> = ({ children, onPress, style = null, textStyle = null }) => {
 	const [{ margin, padding, text, border }] = useStyles()
 	return (
 		<TouchableOpacity
@@ -21,7 +22,9 @@ const Button: React.FC<{
 			]}
 			onPress={onPress}
 		>
-			<Text style={[text.size.medium, text.color.blue, text.align.center, text.bold.medium]}>
+			<Text
+				style={[text.size.medium, text.color.blue, text.align.center, text.bold.medium, textStyle]}
+			>
 				{children}
 			</Text>
 		</TouchableOpacity>

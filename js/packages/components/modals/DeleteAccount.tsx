@@ -1,21 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
 	View,
 	StyleSheet,
 	TouchableOpacity,
 	TextInput,
-	ActivityIndicator,
 	Vibration,
 	Text as TextNative,
 } from 'react-native'
-import { useNavigation, CommonActions } from '@react-navigation/native'
 import { Text, Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
-import { Routes } from '@berty-tech/navigation'
-import { useMsgrContext, useAccount } from '@berty-tech/store/hooks'
-
-import { usePrevious } from '../hooks'
+import { useDeleteAccount } from '@berty-tech/store/hooks'
+import { useNavigation as useReactNavigation } from '@react-navigation/core'
 
 const useStylesDeleteAccount = () => {
 	const [{ width, height, border, text, padding, margin }] = useStyles()
@@ -99,37 +95,12 @@ const DELETE_STR = 'delete'
 const DeleteAccountContent: React.FC<{}> = () => {
 	const _styles = useStylesDeleteAccount()
 	const [{ row, margin, background, border, color, padding, text, column }] = useStyles()
-	const navigation = useNavigation()
-	const account = useAccount()
-	// const prevAccount = usePrevious(account)
-	const [startDelete, setStartDelete] = useState(false)
-	const startedDelete = usePrevious(startDelete)
-	const ctx = useMsgrContext()
-	const deleteAccount = ctx.deleteAccount
+	const navigation = useReactNavigation()
+	const deleteAccount = useDeleteAccount()
 	const [deleteConfirmation, setDeleteConfirmation] = useState<string>()
 	const confirmed = deleteConfirmation === DELETE_STR
 
-	useEffect(() => {
-		if (!account.displayName || account.displayName === '') {
-			navigation.dispatch(
-				CommonActions.reset({
-					routes: [{ name: Routes.Onboarding.GetStarted }],
-				}),
-			)
-		}
-	})
-
-	useEffect(() => {
-		if (!startedDelete && startDelete && account) {
-			deleteAccount()
-		}
-	})
-
-	return startDelete ? (
-		<View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 100 }}>
-			<ActivityIndicator size='large' />
-		</View>
-	) : (
+	return (
 		<>
 			<DeleteAccountError error={'Are you sure you want to delete your account?'} />
 			<View style={[padding.horizontal.medium, padding.bottom.medium]}>
@@ -157,7 +128,13 @@ const DeleteAccountContent: React.FC<{}> = () => {
 						style={[row.fill, margin.bottom.medium, _styles.dismissButton]}
 						onPress={() => navigation.goBack()}
 					>
-						<Icon name='close' width={30} height={30} fill={color.grey} style={row.item.justify} />
+						<Icon
+							name='arrow-back-outline'
+							width={30}
+							height={30}
+							fill={color.grey}
+							style={row.item.justify}
+						/>
 						<Text
 							style={[text.color.grey, padding.left.small, row.item.justify, _styles.dismissText]}
 						>
@@ -173,7 +150,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 						]}
 						onPress={() => {
 							Vibration.vibrate(500)
-							setStartDelete(true)
+							deleteAccount()
 						}}
 						disabled={!confirmed}
 					>

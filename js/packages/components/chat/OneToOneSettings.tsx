@@ -32,7 +32,10 @@ const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 
 	const persistOpts = usePersistentOptions()
 	const isBetabot =
-		persistOpts && contact.publicKey.toString() === persistOpts.betabot.convPk.toString()
+		persistOpts &&
+		persistOpts.betabot &&
+		persistOpts.betabot.convPk &&
+		contact.publicKey.toString() === persistOpts.betabot.convPk.toString()
 	const betabotAvatarSize = 100
 	return (
 		<View style={[_styles.headerAvatar]}>

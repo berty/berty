@@ -35,7 +35,8 @@ const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 
 	const persistOpts = usePersistentOptions()
 	const isBetabot =
-		persistOpts && contact.publicKey.toString() === persistOpts.betabot.convPk.toString()
+		persistOpts.betabot.convPk &&
+		contact.publicKey.toString() === persistOpts.betabot.convPk.toString()
 	const betabotAvatarSize = 100
 	return (
 		<View style={[padding.medium, padding.top.scale(50)]}>
@@ -109,7 +110,9 @@ const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 const DeleteContactButton: React.FC<{ id: string }> = ({ id }) => {
 	const [{ color }] = useStyles()
 	// const deleteContact = Messenger.useDeleteContact()
-	const deleteContact = () => {}
+	const deleteContact = ({ id }: { id: string }) => {
+		console.warn(`attempted to delete ${id}, operation not implemented`)
+	}
 	return (
 		<ButtonSetting
 			name='Delete contact'

@@ -29,7 +29,10 @@
       "desc": ".onboarding.generate-key.desc",
       "title": ".onboarding.generate-key.title"
     },
-    "getstarted": ".onboarding.getstarted",
+    "getstarted-intro": ".onboarding.getstarted-intro",
+    "getstarted-button": ".onboarding.getstarted-button",
+    "getstarted-import-button": ".onboarding.getstarted-import-button",
+    "getstarted-more-options": ".onboarding-getstarted-more-options",
     "notifications": {
       "button": ".onboarding.notifications.button",
       "desc": ".onboarding.notifications.desc",

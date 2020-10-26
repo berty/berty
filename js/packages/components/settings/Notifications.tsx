@@ -7,6 +7,7 @@ import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 //
 // Notifications
@@ -117,8 +118,11 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 				toggled
 				varToggle={ctx.persistentOptions?.notifications.enable}
 				actionToggle={async () => {
-					await ctx.setPersistentOption('notifications', {
-						enable: ctx.persistentOptions?.notifications.enable ? false : true,
+					await ctx.setPersistentOption({
+						type: PersistentOptionsKeys.Notifications,
+						payload: {
+							enable: !ctx.persistentOptions?.notifications.enable,
+						},
 					})
 				}}
 			/>
