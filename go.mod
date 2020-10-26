@@ -23,7 +23,7 @@ require (
 	github.com/dgraph-io/badger v1.6.1
 	github.com/dgraph-io/ristretto v0.0.3 // indirect
 	github.com/fabiokung/shm v0.0.0-20150728212823-2852b0d79bae
-	github.com/gdamore/tcell v1.3.0
+	github.com/gdamore/tcell v1.4.0
 	github.com/gen2brain/beeep v0.0.0-20200526185328-e9c15c258e28
 	github.com/githubnemo/CompileDaemon v1.2.1
 	github.com/gobuffalo/here v0.6.2 // indirect
