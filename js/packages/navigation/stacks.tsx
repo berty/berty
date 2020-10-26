@@ -139,12 +139,10 @@ export const TabNavigation: React.FC = () => {
 	return (
 		<TabStack.Navigator
 			initialRouteName={Routes.Main.Home}
-			tabBar={({ state }) => <Components.Main.Footer selected={state.routes[state.index].name} />}
+			tabBar={() => <Components.Main.Footer />}
 			tabBarPosition='bottom'
 		>
-			<TabStack.Screen name={Routes.Main.Search} component={Components.Main.Search} />
 			<TabStack.Screen name={Routes.Main.Home} component={Components.Main.Home} />
-			<TabStack.Screen name={Routes.Settings.Home} component={Components.Settings.Home} />
 		</TabStack.Navigator>
 	)
 }
@@ -236,6 +234,7 @@ export const Navigation: React.FC = () => {
 					contentStyle: { backgroundColor: 'transparent' },
 				}}
 			/>
+			<NavigationStack.Screen name={Routes.Settings.Home} component={Components.Settings.Home} />
 			<NavigationStack.Screen
 				name={Routes.Settings.AppUpdates}
 				component={Components.Settings.AppUpdates}

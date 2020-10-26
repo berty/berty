@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react'
-import { CommonActions } from '@react-navigation/native'
+import { CommonActions, useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { Translation } from 'react-i18next'
 import {
 	ScrollView,
@@ -9,10 +9,10 @@ import {
 	View,
 	ViewProps,
 	Image,
+	TextInput,
 } from 'react-native'
 import { SafeAreaConsumer, SafeAreaView } from 'react-native-safe-area-context'
 import { Icon, Text } from '@ui-kitten/components'
-import LinearGradient from 'react-native-linear-gradient'
 
 import { ScreenProps, useNavigation, Routes } from '@berty-tech/navigation'
 import {
@@ -22,6 +22,7 @@ import {
 	useLastConvInteraction,
 	usePersistentOptions,
 	useSortedConversationList,
+	useAccount,
 } from '@berty-tech/store/hooks'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
@@ -32,7 +33,7 @@ import { useLayout } from '../hooks'
 import { pbDateToNum, timeFormat } from '../helpers'
 import FromNow from '../shared-components/FromNow'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
-import { SwipeHelperReactNavTabBar } from '../shared-components/SwipeNavRecognizer'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 import Logo from './1_berty_picto.svg'
 import EmptyChat from './empty_chat.svg'
@@ -280,10 +281,18 @@ const UnreadCount: React.FC<{ value: number; isConvBadge?: boolean }> = ({
 const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
 	const [{ padding, text, background, row }, { scaleSize }] = useStyles()
 	return items?.length ? (
-		<SafeAreaView onLayout={onLayout} style={[background.blue]}>
-			<View style={[padding.top.medium]}>
+		<View onLayout={onLayout} style={[background.blue, padding.top.scale(50)]}>
+			<View>
 				<View style={[row.left]}>
-					<Text style={[text.color.white, text.size.huge, text.bold.medium, padding.medium]}>
+					<Text
+						style={[
+							text.color.white,
+							text.size.huge,
+							text.bold.medium,
+							padding.horizontal.medium,
+							padding.bottom.small,
+						]}
+					>
 						Requests
 					</Text>
 					<View style={{ position: 'relative', top: -2, left: -(23 * scaleSize) }}>
@@ -296,7 +305,7 @@ const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
 					})}
 				</ScrollView>
 			</View>
-		</SafeAreaView>
+		</View>
 	) : null
 }
 
@@ -382,6 +391,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 			underlayColor={color.light.grey}
 			style={[
 				padding.horizontal.medium,
+				padding.vertical.scale(7),
 				!isAccepted && type !== messengerpb.Conversation.Type.MultiMemberType && opacity(0.6),
 			]}
 			onPress={
@@ -575,6 +585,7 @@ const Conversations: React.FC<ConversationsProps> = ({ items, style, onLayout })
 						background.white,
 						{
 							paddingBottom: 100 - (insets?.bottom || 0) + (insets?.bottom || 0),
+							paddingLeft: 10,
 						},
 					]}
 				>
@@ -594,50 +605,114 @@ const HomeHeader: React.FC<
 		isOnTop: boolean
 	}
 > = ({ hasRequests, scrollRef, onLayout, isOnTop }) => {
-	const [{ border, padding, margin, text, background }, { scaleHeight }] = useStyles()
+	const [
+		{ color, border, width, height, padding, margin, text, background },
+		{ scaleHeight },
+	] = useStyles()
+	const account = useAccount()
+	const { navigate } = useNativeNavigation()
 
 	return (
 		<View onLayout={onLayout}>
 			<Translation>
 				{(t): React.ReactNode => (
-					<View
-						style={[
-							background.white,
-							border.radius.top.big,
-							padding.horizontal.scale(27),
-							{
-								alignItems: 'center',
-								flexDirection: 'row',
-								justifyContent: 'space-between',
-								paddingTop: !hasRequests
-									? 40 * scaleHeight
-									: isOnTop
-									? 40 * scaleHeight
-									: 20 * scaleHeight,
-							},
-						]}
-					>
+					<View>
 						<View
-							style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}
+							style={[
+								background.white,
+								border.radius.top.big,
+								padding.horizontal.scale(27),
+								{
+									alignItems: 'center',
+									paddingTop: !hasRequests
+										? 40 * scaleHeight
+										: isOnTop
+										? 40 * scaleHeight
+										: 20 * scaleHeight,
+								},
+							]}
 						>
-							<Logo
-								width={35}
-								height={35}
-								onPress={() => {
-									scrollRef.current?.scrollTo({ y: 0, animated: true })
+							{hasRequests && !isOnTop && (
+								<View style={[width(42), height(4), { backgroundColor: '#F1F4F6' }]} />
+							)}
+							<View
+								style={{
+									display: 'flex',
+									flex: 1,
+									flexDirection: 'row',
+									justifyContent: 'space-evenly',
+									alignItems: 'center',
+									left: 0,
+									right: 0,
+									paddingVertical: 15,
 								}}
-							/>
-							<Text
-								style={[
-									text.color.black,
-									text.size.huge,
-									text.bold.medium,
-									padding.medium,
-									margin.horizontal.medium,
-								]}
 							>
-								{t('main.messages.title')}
-							</Text>
+								<View
+									style={{
+										flex: 2,
+										justifyContent: 'center',
+										alignItems: 'center',
+									}}
+								>
+									<Logo
+										width={25}
+										height={25}
+										onPress={() => {
+											scrollRef.current?.scrollTo({ y: 0, animated: true })
+										}}
+									/>
+								</View>
+								<View
+									style={[
+										{
+											flex: 10,
+											flexDirection: 'row',
+											justifyContent: 'center',
+											alignItems: 'center',
+											backgroundColor: '#F1F4F6',
+										},
+										padding.vertical.scale(12),
+										padding.horizontal.medium,
+										border.radius.small,
+									]}
+								>
+									<View style={[{ flex: 1 }]}>
+										<Icon name='search-outline' fill='#8F9BB3' width={20} height={20} />
+									</View>
+									<View style={[{ flex: 6 }]}>
+										<TextInput
+											placeholder='Search for contacts'
+											placeholderTextColor='#D3D9E1'
+											autoCorrect={false}
+											autoCapitalize='none'
+											style={[
+												{ fontFamily: 'Open Sans', color: '#D3D9E1' },
+												text.bold.small,
+												text.align.center,
+												padding.right.medium,
+											]}
+										/>
+									</View>
+									<View style={[{ flex: 1 }]} />
+								</View>
+								<TouchableOpacity
+									style={{
+										flex: 2,
+										flexDirection: 'row',
+										justifyContent: 'center',
+										alignItems: 'center',
+										marginLeft: 5,
+									}}
+									onPress={() => navigate('Settings.Home')}
+								>
+									<ProceduralCircleAvatar
+										seed={account?.publicKey}
+										size={40 / scaleHeight}
+										diffSize={10}
+										style={[border.shadow.medium]}
+									/>
+								</TouchableOpacity>
+							</View>
 						</View>
 					</View>
 				)}
@@ -656,8 +731,10 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const [, onLayoutConvs] = useLayout()
 	const [isOnTop, setIsOnTop] = useState<boolean>(false)
 
+	const { navigate } = useNativeNavigation()
+
 	const [
-		{ text, opacity, flex, margin, background, absolute },
+		{ text, opacity, flex, margin, background },
 		{ windowHeight, scaleSize, scaleHeight },
 	] = useStyles()
 	const scrollRef = useRef<ScrollView>(null)
@@ -670,7 +747,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	return (
 		<>
 			<View style={[flex.tiny, styleBackground]}>
-				<SwipeHelperReactNavTabBar>
+				<SwipeNavRecognizer onSwipeLeft={() => navigate('Settings.Home')}>
 					<ScrollView
 						ref={scrollRef}
 						stickyHeaderIndices={[1]}
@@ -729,15 +806,8 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 							/>
 						)}
 					</ScrollView>
-				</SwipeHelperReactNavTabBar>
+				</SwipeNavRecognizer>
 			</View>
-			<LinearGradient
-				style={[
-					absolute.bottom,
-					{ alignItems: 'center', justifyContent: 'center', height: '15%', width: '100%' },
-				]}
-				colors={['#ffffff00', '#ffffff80', '#ffffffc0', '#ffffffff']}
-			/>
 		</>
 	)
 }

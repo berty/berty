@@ -31,7 +31,7 @@ const useStylesHome = () => {
 		secondHeaderButton: [margin.right.scale(20), height(90)],
 		thirdHeaderButton: height(90),
 		headerNameText: text.size.scale(13),
-		scrollViewPadding: padding.bottom.scale(116),
+		scrollViewPadding: padding.bottom.scale(50),
 	}
 }
 
@@ -75,7 +75,7 @@ const HomeHeaderAvatar: React.FC = () => {
 	const account = useAccount()
 	const navigation = useNavigation()
 	return (
-		<View style={[row.center, margin.top.scale(50)]}>
+		<View style={[row.center, margin.top.scale(30)]}>
 			<TouchableOpacity
 				style={[background.white, border.radius.medium, padding.scale(20), padding.top.scale(40)]}
 				onPress={() => navigation.navigate.settings.myBertyId()}
@@ -84,7 +84,7 @@ const HomeHeaderAvatar: React.FC = () => {
 					<View style={{ position: 'absolute', top: -80 * scaleSize }}>
 						<ProceduralCircleAvatar
 							seed={account?.publicKey}
-							size={80}
+							size={70}
 							diffSize={25}
 							style={[border.shadow.big]}
 						/>
@@ -100,8 +100,8 @@ const HomeHeaderAvatar: React.FC = () => {
 						<Icon
 							name='qr'
 							pack='custom'
-							width={140 * scaleSize}
-							height={140 * scaleSize}
+							width={110 * scaleSize}
+							height={110 * scaleSize}
 							fill={color.blue}
 						/>
 					</View>
@@ -112,11 +112,20 @@ const HomeHeaderAvatar: React.FC = () => {
 }
 
 const HomeHeader: React.FC = () => {
-	const [{ margin }] = useStyles()
+	const navigation = useNativeNavigation()
+	const [{ color }] = useStyles()
 	return (
-		<SafeAreaView style={[margin.bottom.medium]}>
+		<View>
+			<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+				<TouchableOpacity onPress={() => navigation.goBack()}>
+					<Icon name='arrow-back-outline' width={25} height={25} fill={color.white} />
+				</TouchableOpacity>
+				<TouchableOpacity onPress={() => navigation.navigate('Settings.MyBertyId')}>
+					<Icon name='edit-outline' width={25} height={25} fill={color.white} />
+				</TouchableOpacity>
+			</View>
 			<HomeHeaderAvatar />
-		</SafeAreaView>
+		</View>
 	)
 }
 
@@ -206,7 +215,7 @@ const HomeBodySettings: React.FC<{}> = () => {
 export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 	const account = useAccount()
 	const _styles = useStylesHome()
-	const [{ flex, background, row, absolute }] = useStyles()
+	const [{ flex, background, row }] = useStyles()
 
 	return (
 		<>
@@ -227,13 +236,6 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 					)}
 				</SwipeHelperReactNavTabBar>
 			</View>
-			<LinearGradient
-				style={[
-					absolute.bottom,
-					{ alignItems: 'center', justifyContent: 'center', height: '15%', width: '100%' },
-				]}
-				colors={['#ffffff00', '#ffffff80', '#ffffffc0', '#ffffffff']}
-			/>
 		</>
 	)
 }
