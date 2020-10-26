@@ -1,5 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { ScrollView, View, Text as TextNative, ActivityIndicator } from 'react-native'
+import {
+	ScrollView,
+	View,
+	Text as TextNative,
+	ActivityIndicator,
+	TouchableOpacity,
+} from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import { HeaderSettings } from '../shared-components/Header'
 import { useStyles } from '@berty-tech/styles'
@@ -7,32 +13,40 @@ import { useNavigation } from '@berty-tech/navigation'
 import { protocolMethodsHooks } from '@berty-tech/store/methods'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
-const PeerItem = ({ id, latency, highlighted }) => {
+const PeerItem = ({ item, highlighted }) => {
+	const { id, latency } = item
 	const [{ padding, border, color, text, row }] = useStyles()
+	const [isDropdown, setIsDropdown] = useState(false)
 	return (
-		<View
-			style={[
-				padding.small,
-				border.scale(1),
-				border.color.light.grey,
-				border.radius.small,
-				{ justifyContent: 'space-evenly', flexDirection: 'row', alignItems: 'center' },
-				highlighted && { backgroundColor: color.light.yellow },
-			]}
-		>
-			<View style={[row.center, { flex: 2 }]}>
-				<Icon name='earth' pack='custom' fill={color.dark.grey} width={25} height={25} />
+		<View style={[padding.small, border.scale(1), border.color.light.grey, border.radius.small]}>
+			<View
+				style={[
+					{ justifyContent: 'space-evenly', flexDirection: 'row', alignItems: 'center' },
+					highlighted && { backgroundColor: color.light.yellow },
+				]}
+			>
+				<View style={[row.center, { flex: 2 }]}>
+					<Icon name='earth' pack='custom' fill={color.dark.grey} width={25} height={25} />
+				</View>
+				<View style={[row.center, { flex: 2 }]}>
+					<Icon name='network' pack='custom' fill={color.dark.grey} width={25} height={25} />
+				</View>
+				<Text style={[text.align.center, { flex: 4 }]}>{id.substr(0, 9)}</Text>
+				<Text numberOfLines={1} style={[text.align.center, { flex: 3 }]}>
+					{latency ? latency + 'ms' : '?'}
+				</Text>
+				<TouchableOpacity
+					style={[row.center, { flex: 1 }]}
+					onPress={() => setIsDropdown(!isDropdown)}
+				>
+					<Icon name='arrow-ios-downward' fill={color.dark.grey} width={25} height={25} />
+				</TouchableOpacity>
 			</View>
-			<View style={[row.center, { flex: 2 }]}>
-				<Icon name='network' pack='custom' fill={color.dark.grey} width={25} height={25} />
-			</View>
-			<Text style={[text.align.center, { flex: 4 }]}>{id.substr(0, 9)}</Text>
-			<Text numberOfLines={1} style={[text.align.center, { flex: 3 }]}>
-				{latency ? latency + 'ms' : '?'}
-			</Text>
-			<View style={[row.center, { flex: 1 }]}>
-				<Icon name='arrow-ios-downward' fill={color.dark.grey} width={25} height={25} />
-			</View>
+			{isDropdown && (
+				<View style={[padding.small]}>
+					<Text>{JSON.stringify(item, null, 2)}</Text>
+				</View>
+			)}
 		</View>
 	)
 }
@@ -87,7 +101,7 @@ const NetworkMapBody = ({ peers }) => {
 					<>
 						{sortPeers.map((value) => {
 							const elem = prevPeers?.find((v) => value.id.toString() === v.id.toString())
-							return <PeerItem {...value} highlighted={elem ? false : prevPeers ? true : false} />
+							return <PeerItem item={value} highlighted={elem ? false : prevPeers ? true : false} />
 						})}
 					</>
 				</View>
