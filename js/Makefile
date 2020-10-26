@@ -309,8 +309,8 @@ ios/Frameworks/Bertybridge.framework: $(bridge_src)
 	mkdir -p "ios/Frameworks"
 	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
 		-o js/$@ \
-		-v $(ext_ldflags) \
-		-target ios \
+		-v -x $(ext_ldflags) \
+		-target ios/amd64,ios/arm64 -tags="embedTor prefixGoLibtor staticOpenssl staticZlib staticLibevent" \
 		-iosversion $(minimum_ios_ver) \
 		./go/framework/bertybridge
 	touch $@
