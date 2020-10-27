@@ -40,7 +40,7 @@ require (
 	github.com/ipfs/go-ds-badger v0.2.6
 	github.com/ipfs/go-graphsync v0.2.0 // indirect
 	github.com/ipfs/go-ipfs v0.7.0
-	github.com/ipfs/go-ipfs-config v0.9.0
+	github.com/ipfs/go-ipfs-config v0.10.0
 	github.com/ipfs/go-ipfs-keystore v0.0.1
 	github.com/ipfs/go-ipld-cbor v0.0.4
 	github.com/ipfs/go-log/v2 v2.1.1
@@ -56,11 +56,14 @@ require (
 	github.com/libp2p/go-libp2p-discovery v0.5.0
 	github.com/libp2p/go-libp2p-kad-dht v0.10.0
 	github.com/libp2p/go-libp2p-pubsub v0.3.5
-	github.com/libp2p/go-libp2p-quic-transport v0.8.1
+	github.com/libp2p/go-libp2p-quic-transport v0.8.2
 	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20190708065449-737144165c9e
+	github.com/libp2p/go-libp2p-swarm v0.3.0 // indirect
 	github.com/libp2p/go-libp2p-transport-upgrader v0.3.0
-	github.com/libp2p/go-yamux v1.3.8 // indirect
+	github.com/libp2p/go-libp2p-yamux v0.3.0 // indirect
+	github.com/libp2p/go-mplex v0.2.0 // indirect
+	github.com/libp2p/go-yamux v1.4.0 // indirect
 	github.com/markbates/pkger v0.17.1
 	github.com/matryer/resync v0.0.0-20161211202428-d39c09a11215
 	github.com/mattn/go-sqlite3 v1.14.4
@@ -118,7 +121,8 @@ require (
 replace (
 	bazil.org/fuse => bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc // specific version for iOS building
 	github.com/agl/ed25519 => github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // latest commit before the author shutdown the repo; see https://github.com/golang/go/issues/20504
+	github.com/libp2p/go-libp2p-core => github.com/libp2p/go-libp2p-core v0.6.1 //  v0.7.0 breaks backward compatibility for multiple packages - https://github.com/libp2p/go-libp2p-core/issues/168
+	github.com/libp2p/go-libp2p-pubsub => github.com/libp2p/go-libp2p-pubsub v0.3.5 // github.com/ipfs/go-ipfs@v0.7.0 is not compatible with >=v0.3.6 due to https://github.com/libp2p/go-libp2p-pubsub/pull/388
 	github.com/libp2p/go-libp2p-swarm => github.com/Jorropo/go-libp2p-swarm v0.2.11 // temporary, see https://github.com/libp2p/go-libp2p-swarm/pull/227
-	github.com/lucas-clemente/quic-go => github.com/lucas-clemente/quic-go v0.18.0 // required by go1.15
 	github.com/peterbourgon/ff/v3 => github.com/moul/ff/v3 v3.0.1 // temporary, see https://github.com/peterbourgon/ff/pull/67, https://github.com/peterbourgon/ff/issues/68
 )
