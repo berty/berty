@@ -37,6 +37,7 @@ import FromNow from '../shared-components/FromNow'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { createSections } from './Search'
+import { HintBody } from '../shared-components/HintBody'
 
 import Logo from './1_berty_picto.svg'
 import EmptyChat from './empty_chat.svg'
@@ -616,6 +617,8 @@ const HomeHeader: React.FC<
 	] = useStyles()
 	const account = useAccount()
 	const { navigate } = useNativeNavigation()
+	const [focus, setFocus] = useState<any>(null)
+
 	let paddingTop: any
 	if (!value?.length) {
 		if (!hasRequests) {
@@ -633,110 +636,109 @@ const HomeHeader: React.FC<
 
 	return (
 		<View onLayout={onLayout}>
-			<Translation>
-				{(t): React.ReactNode => (
-					<View>
+			<View>
+				<View
+					style={[
+						background.white,
+						border.radius.top.big,
+						padding.horizontal.scale(27),
+						{
+							alignItems: 'center',
+							paddingTop: paddingTop * scaleHeight,
+						},
+					]}
+				>
+					{hasRequests && !isOnTop && !value?.length && (
+						<View style={[width(42), height(4), { backgroundColor: '#F1F4F6' }]} />
+					)}
+					<View
+						style={{
+							display: 'flex',
+							flex: 1,
+							flexDirection: 'row',
+							justifyContent: 'space-evenly',
+							alignItems: 'center',
+							left: 0,
+							right: 0,
+							paddingVertical: 15,
+						}}
+					>
 						<View
-							style={[
-								background.white,
-								border.radius.top.big,
-								padding.horizontal.scale(27),
-								{
-									alignItems: 'center',
-									paddingTop: paddingTop * scaleHeight,
-								},
-							]}
+							style={{
+								flex: 2,
+								justifyContent: 'center',
+								alignItems: 'center',
+							}}
 						>
-							{hasRequests && !isOnTop && !value?.length && (
-								<View style={[width(42), height(4), { backgroundColor: '#F1F4F6' }]} />
-							)}
-							<View
-								style={{
-									display: 'flex',
-									flex: 1,
-									flexDirection: 'row',
-									justifyContent: 'space-evenly',
-									alignItems: 'center',
-									left: 0,
-									right: 0,
-									paddingVertical: 15,
+							<Logo
+								width={25}
+								height={25}
+								onPress={() => {
+									scrollRef.current?.scrollTo({ y: 0, animated: true })
 								}}
-							>
-								<View
-									style={{
-										flex: 2,
-										justifyContent: 'center',
-										alignItems: 'center',
-									}}
-								>
-									<Logo
-										width={25}
-										height={25}
-										onPress={() => {
-											scrollRef.current?.scrollTo({ y: 0, animated: true })
-										}}
-									/>
-								</View>
-								<View
-									style={[
-										{
-											flex: 10,
-											flexDirection: 'row',
-											justifyContent: 'flex-start',
-											alignItems: 'center',
-											backgroundColor: value?.length ? '#FFF0D5' : '#F1F4F6',
-										},
-										padding.vertical.scale(12),
-										padding.horizontal.medium,
-										margin.horizontal.small,
-										border.radius.small,
-									]}
-								>
-									<View style={[row.center]}>
-										{!value?.length ? (
-											<Icon name='search-outline' fill='#8F9BB3' width={20} height={20} />
-										) : null}
-									</View>
-									<View style={[margin.left.medium]}>
-										<TextInput
-											placeholder='Search for contacts'
-											placeholderTextColor='#D3D9E1'
-											autoCorrect={false}
-											autoCapitalize='none'
-											value={value}
-											onChangeText={(s: string) => onChange(s)}
-											style={[
-												{ fontFamily: 'Open Sans', color: '#FFAE3A' },
-												text.bold.small,
-												text.align.center,
-												text.size.medium,
-												padding.right.medium,
-											]}
-										/>
-									</View>
-								</View>
-								<TouchableOpacity
-									style={{
-										flex: 2,
-										flexDirection: 'row',
-										justifyContent: 'center',
-										alignItems: 'center',
-										marginLeft: 10,
-									}}
-									onPress={() => navigate('Settings.Home')}
-								>
-									<ProceduralCircleAvatar
-										seed={account?.publicKey}
-										size={40 / scaleSize}
-										diffSize={10}
-										style={[border.shadow.medium]}
-									/>
-								</TouchableOpacity>
-							</View>
+							/>
 						</View>
+						<TouchableOpacity
+							style={[
+								{
+									flex: 10,
+									flexDirection: 'row',
+									justifyContent: 'flex-start',
+									alignItems: 'center',
+									backgroundColor: value?.length ? '#FFF0D5' : '#F1F4F6',
+								},
+								padding.vertical.scale(12),
+								padding.horizontal.medium,
+								margin.horizontal.small,
+								border.radius.small,
+							]}
+							activeOpacity={1}
+							onPress={() => focus?.focus()}
+						>
+							<View style={[row.center]}>
+								{!value?.length ? (
+									<Icon name='search-outline' fill='#8F9BB3' width={20} height={20} />
+								) : null}
+							</View>
+							<View style={[margin.left.medium]}>
+								<TextInput
+									ref={(ref) => setFocus(ref)}
+									placeholder='Search for contacts'
+									placeholderTextColor='#D3D9E1'
+									autoCorrect={false}
+									autoCapitalize='none'
+									value={value}
+									onChangeText={(s: string) => onChange(s)}
+									style={[
+										{ fontFamily: 'Open Sans', color: '#FFAE3A' },
+										text.bold.small,
+										text.align.center,
+										text.size.medium,
+										padding.right.medium,
+									]}
+								/>
+							</View>
+						</TouchableOpacity>
+						<TouchableOpacity
+							style={{
+								flex: 2,
+								flexDirection: 'row',
+								justifyContent: 'center',
+								alignItems: 'center',
+								marginLeft: 10,
+							}}
+							onPress={() => navigate('Settings.Home')}
+						>
+							<ProceduralCircleAvatar
+								seed={account?.publicKey}
+								size={40 / scaleSize}
+								diffSize={10}
+								style={[border.shadow.medium]}
+							/>
+						</TouchableOpacity>
 					</View>
-				)}
-			</Translation>
+				</View>
+			</View>
 		</View>
 	)
 }
@@ -749,7 +751,10 @@ const SearchComponent: React.FC<{
 	hasResults: boolean
 	value: string
 }> = ({ insets, conversations, contacts, interactions, hasResults, value }) => {
-	const [{ height, width, background, padding, text, border, margin }] = useStyles()
+	const [
+		{ height, width, background, padding, text, border, margin },
+		{ scaleHeight },
+	] = useStyles()
 	const validInsets = useMemo(() => insets || { top: 0, bottom: 0, left: 0, right: 0 }, [insets])
 
 	const sortedConversations = useMemo(() => {
@@ -768,6 +773,11 @@ const SearchComponent: React.FC<{
 		() => createSections(sortedConversations, Object.values(contacts), sortedInteractions, value),
 		[contacts, sortedConversations, sortedInteractions, value],
 	)
+
+	useEffect(() => {
+		console.log(value, hasResults)
+	})
+
 	return hasResults ? (
 		<SectionList
 			style={{
@@ -837,7 +847,7 @@ const SearchComponent: React.FC<{
 			)}
 		/>
 	) : (
-		<View style={{ top: -50 }}>
+		<View style={{ top: 50 }}>
 			<TextNative
 				style={[
 					text.color.black,
@@ -847,8 +857,11 @@ const SearchComponent: React.FC<{
 					{ fontFamily: 'Open Sans' },
 				]}
 			>
-				No results
+				No results found
 			</TextNative>
+			<View style={[margin.top.scale(120 * scaleHeight)]}>
+				<HintBody />
+			</View>
 		</View>
 	)
 }
@@ -925,10 +938,6 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 		() => (requests.length > 0 && !searchText?.length ? background.blue : background.white),
 		[background.blue, background.white, requests.length, searchText],
 	)
-
-	useEffect(() => {
-		console.log(searchText)
-	})
 
 	return (
 		<>

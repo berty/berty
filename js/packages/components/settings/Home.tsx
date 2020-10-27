@@ -1,8 +1,6 @@
 import React from 'react'
 import { View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import LinearGradient from 'react-native-linear-gradient'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
@@ -11,19 +9,12 @@ import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsBu
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import HeaderSettings from '../shared-components/Header'
 import { SwipeHelperReactNavTabBar } from '../shared-components/SwipeNavRecognizer'
+import { HintBody } from '../shared-components/HintBody'
 
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { serviceTypes, useAccountServices } from '@berty-tech/store/services'
 import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
-import { berty } from '@berty-tech/api'
 
-//
-// Home Vue
-//
-
-// Type
-
-// Style
 const useStylesHome = () => {
 	const [{ height, margin, padding, text }] = useStyles()
 	return {
@@ -69,6 +60,7 @@ const HomeHeaderGroupButton: React.FC = () => {
 		</View>
 	)
 }
+
 const HomeHeaderAvatar: React.FC = () => {
 	const _styles = useStylesHome()
 	const [{ row, margin, background, border, color, padding }, { scaleSize }] = useStyles()
@@ -215,7 +207,7 @@ const HomeBodySettings: React.FC<{}> = () => {
 export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 	const account = useAccount()
 	const _styles = useStylesHome()
-	const [{ flex, background, row }] = useStyles()
+	const [{ flex, background, row, color }, { windowHeight }] = useStyles()
 
 	return (
 		<>
@@ -224,7 +216,7 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 					{account == null ? (
 						<ActivityIndicator size='large' style={[row.center]} />
 					) : (
-						<ScrollView bounces={false} contentContainerStyle={[_styles.scrollViewPadding]}>
+						<ScrollView contentContainerStyle={[_styles.scrollViewPadding]}>
 							<HeaderSettings>
 								<View>
 									<HomeHeader />
@@ -232,6 +224,25 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 								</View>
 							</HeaderSettings>
 							<HomeBodySettings />
+							<View
+								style={{
+									position: 'absolute',
+									bottom: -300,
+									height: 200,
+									width: '100%',
+								}}
+							>
+								<HintBody />
+							</View>
+							<View
+								style={{
+									position: 'absolute',
+									top: windowHeight * -1,
+									width: '100%',
+									height: windowHeight,
+									backgroundColor: color.blue,
+								}}
+							/>
 						</ScrollView>
 					)}
 				</SwipeHelperReactNavTabBar>

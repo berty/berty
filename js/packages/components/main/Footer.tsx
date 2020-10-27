@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { useIsFocused } from '@react-navigation/native'
 import { Icon } from '@ui-kitten/components'
