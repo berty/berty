@@ -1370,12 +1370,12 @@
     react-is "^16.13.0"
     use-subscription "^1.5.0"
 
-"@react-navigation/material-top-tabs@^5.2.19":
-  version "5.2.19"
-  resolved "https://registry.yarnpkg.com/@react-navigation/material-top-tabs/-/material-top-tabs-5.2.19.tgz#ae40903263da715ae01b22400ddb1941e0f0d2f6"
-  integrity sha512-OiLdteZvXMvdRHNfUQ05zjH33Z0ceHW6aEs5E3v3v+o4oqX4lFH7Ctm9IgTEvnFUaUZnwJYT1XxXb+X4S9yV9w==
+"@react-navigation/material-top-tabs@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@react-navigation/material-top-tabs/-/material-top-tabs-5.3.0.tgz#f6b79fa51a1f9c4a9567db057465fc3d245810bc"
+  integrity sha512-1gfYbF3hEnCawLxEd+jNX12rzjko6yO4Esa9uVAG/A1PLH01RNSufuhRTWW/bu/8FSiIg0ciacHDpzu1sviVdw==
   dependencies:
-    color "^3.1.2"
+    color "^3.1.3"
 
 "@react-navigation/native@^5.8.0":
   version "5.8.0"
@@ -2837,7 +2837,7 @@ color-support@^1.1.3:
   resolved "https://registry.yarnpkg.com/color-support/-/color-support-1.1.3.tgz#93834379a1cc9a0c61f82f52f0d04322251bd5a2"
   integrity sha512-qiBjkpbMLO/HL68y+lh4q0/O1MZFj2RX6X/KmMa3+gJD3z+WwI1ZzDHysvqHGS3mP6mznPckpXmw1nI9cJjyRg==
 
-color@^3.1.0, color@^3.1.2:
+color@^3.1.0, color@^3.1.3:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/color/-/color-3.1.3.tgz#ca67fb4e7b97d611dcde39eceed422067d91596e"
   integrity sha512-xgXAcTHa2HeFCGLE9Xs/R82hujGtu9Jd9x4NW3T34+OMs7VoPsjwzRczKHvTAHeJwWFwX5j15+MgAppE8ztObQ==
