@@ -40,7 +40,7 @@ require (
 	github.com/ipfs/go-ds-badger v0.2.6
 	github.com/ipfs/go-graphsync v0.2.0 // indirect
 	github.com/ipfs/go-ipfs v0.7.0
-	github.com/ipfs/go-ipfs-config v0.9.0
+	github.com/ipfs/go-ipfs-config v0.10.0
 	github.com/ipfs/go-ipfs-keystore v0.0.1
 	github.com/ipfs/go-ipld-cbor v0.0.4
 	github.com/ipfs/go-log/v2 v2.1.1
