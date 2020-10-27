@@ -64,6 +64,7 @@ type Manager struct {
 			Announce              string        `json:"Announce,omitempty"`
 			NoAnnounce            string        `json:"NoAnnounce,omitempty"`
 			LocalDiscovery        bool          `json:"LocalDiscovery,omitempty"`
+			Ble                   bool          `json:"Ble,omitempty"`
 			MultipeerConnectivity bool          `json:"MultipeerConnectivity,omitempty"`
 			MinBackoff            time.Duration `json:"MinBackoff,omitempty"`
 			MaxBackoff            time.Duration `json:"MaxBackoff,omitempty"`
