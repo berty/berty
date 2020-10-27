@@ -15,7 +15,6 @@ export namespace ScreenProps {
 		export type ContactRequest = RouteProps<{ contactId: string }>
 		export type Scan = RouteProps<void>
 		export type HomeModal = RouteProps<void>
-		export type Search = RouteProps<void>
 		export type RequestSent = RouteProps<void>
 		export namespace CreateGroup {
 			export type CreateGroupAddMembers = RouteProps<void>
@@ -77,7 +76,6 @@ export namespace Routes {
 		ContactRequest = 'Main.ContactRequest',
 		Scan = 'Main.Scan',
 		HomeModal = 'Main.HomeModal',
-		Search = 'Main.Search',
 		RequestSent = 'Main.RequestSent',
 	}
 	export enum CreateGroup {

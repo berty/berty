@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useMemo, useRef, useState, useEffect } from 'react'
 import { CommonActions, useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { Translation } from 'react-i18next'
 import {
@@ -10,9 +10,11 @@ import {
 	ViewProps,
 	Image,
 	TextInput,
+	SectionList,
 } from 'react-native'
-import { SafeAreaConsumer, SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaConsumer, EdgeInsets } from 'react-native-safe-area-context'
 import { Icon, Text } from '@ui-kitten/components'
+import pickBy from 'lodash/pickBy'
 
 import { ScreenProps, useNavigation, Routes } from '@berty-tech/navigation'
 import {
@@ -34,6 +36,7 @@ import { pbDateToNum, timeFormat } from '../helpers'
 import FromNow from '../shared-components/FromNow'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { createSections } from './Search'
 
 import Logo from './1_berty_picto.svg'
 import EmptyChat from './empty_chat.svg'
@@ -603,14 +606,30 @@ const HomeHeader: React.FC<
 		hasRequests: boolean
 		scrollRef: React.RefObject<ScrollView>
 		isOnTop: boolean
+		value: string
+		onChange: any
 	}
-> = ({ hasRequests, scrollRef, onLayout, isOnTop }) => {
+> = ({ hasRequests, scrollRef, onLayout, isOnTop, value, onChange }) => {
 	const [
-		{ color, border, width, height, padding, margin, text, background },
-		{ scaleHeight },
+		{ border, width, height, padding, text, background, margin, row },
+		{ scaleSize, scaleHeight },
 	] = useStyles()
 	const account = useAccount()
 	const { navigate } = useNativeNavigation()
+	let paddingTop: any
+	if (!value?.length) {
+		if (!hasRequests) {
+			paddingTop = 40
+		} else {
+			if (isOnTop) {
+				paddingTop = 40
+			} else {
+				paddingTop = 20
+			}
+		}
+	} else {
+		paddingTop = 40
+	}
 
 	return (
 		<View onLayout={onLayout}>
@@ -624,15 +643,11 @@ const HomeHeader: React.FC<
 								padding.horizontal.scale(27),
 								{
 									alignItems: 'center',
-									paddingTop: !hasRequests
-										? 40 * scaleHeight
-										: isOnTop
-										? 40 * scaleHeight
-										: 20 * scaleHeight,
+									paddingTop: paddingTop * scaleHeight,
 								},
 							]}
 						>
-							{hasRequests && !isOnTop && (
+							{hasRequests && !isOnTop && !value?.length && (
 								<View style={[width(42), height(4), { backgroundColor: '#F1F4F6' }]} />
 							)}
 							<View
@@ -667,33 +682,38 @@ const HomeHeader: React.FC<
 										{
 											flex: 10,
 											flexDirection: 'row',
-											justifyContent: 'center',
+											justifyContent: 'flex-start',
 											alignItems: 'center',
-											backgroundColor: '#F1F4F6',
+											backgroundColor: value?.length ? '#FFF0D5' : '#F1F4F6',
 										},
 										padding.vertical.scale(12),
 										padding.horizontal.medium,
+										margin.horizontal.small,
 										border.radius.small,
 									]}
 								>
-									<View style={[{ flex: 1 }]}>
-										<Icon name='search-outline' fill='#8F9BB3' width={20} height={20} />
+									<View style={[row.center]}>
+										{!value?.length ? (
+											<Icon name='search-outline' fill='#8F9BB3' width={20} height={20} />
+										) : null}
 									</View>
-									<View style={[{ flex: 6 }]}>
+									<View style={[margin.left.medium]}>
 										<TextInput
 											placeholder='Search for contacts'
 											placeholderTextColor='#D3D9E1'
 											autoCorrect={false}
 											autoCapitalize='none'
+											value={value}
+											onChangeText={(s: string) => onChange(s)}
 											style={[
-												{ fontFamily: 'Open Sans', color: '#D3D9E1' },
+												{ fontFamily: 'Open Sans', color: '#FFAE3A' },
 												text.bold.small,
 												text.align.center,
+												text.size.medium,
 												padding.right.medium,
 											]}
 										/>
 									</View>
-									<View style={[{ flex: 1 }]} />
 								</View>
 								<TouchableOpacity
 									style={{
@@ -701,13 +721,13 @@ const HomeHeader: React.FC<
 										flexDirection: 'row',
 										justifyContent: 'center',
 										alignItems: 'center',
-										marginLeft: 5,
+										marginLeft: 10,
 									}}
 									onPress={() => navigate('Settings.Home')}
 								>
 									<ProceduralCircleAvatar
 										seed={account?.publicKey}
-										size={40 / scaleHeight}
+										size={40 / scaleSize}
 										diffSize={10}
 										style={[border.shadow.medium]}
 									/>
@@ -721,6 +741,120 @@ const HomeHeader: React.FC<
 	)
 }
 
+const SearchComponent: React.FC<{
+	insets: EdgeInsets | null
+	conversations: { [key: string]: api.berty.messenger.v1.IConversation }
+	contacts: { [key: string]: api.berty.messenger.v1.IContact }
+	interactions: { [key: string]: api.berty.messenger.v1.IInteraction }
+	hasResults: boolean
+	value: string
+}> = ({ insets, conversations, contacts, interactions, hasResults, value }) => {
+	const [{ height, width, background, padding, text, border, margin }] = useStyles()
+	const validInsets = useMemo(() => insets || { top: 0, bottom: 0, left: 0, right: 0 }, [insets])
+
+	const sortedConversations = useMemo(() => {
+		return Object.values(conversations).sort((a, b) => {
+			return pbDateToNum(b?.lastUpdate) - pbDateToNum(a?.lastUpdate)
+		})
+	}, [conversations])
+
+	const sortedInteractions = useMemo(() => {
+		return Object.values(interactions).sort((a, b) => {
+			return pbDateToNum(b?.sentDate) - pbDateToNum(a?.sentDate)
+		})
+	}, [interactions])
+
+	const sections = useMemo(
+		() => createSections(sortedConversations, Object.values(contacts), sortedInteractions, value),
+		[contacts, sortedConversations, sortedInteractions, value],
+	)
+	return hasResults ? (
+		<SectionList
+			style={{
+				marginLeft: validInsets.left,
+				marginRight: validInsets.right,
+			}}
+			stickySectionHeadersEnabled={false}
+			bounces={false}
+			keyExtractor={(item: any) => item.cid || item.publicKey}
+			sections={sections}
+			renderSectionHeader={({ section }) => {
+				const { title } = section
+				let isFirst
+				sections?.map((value: any, key: any) => {
+					if (value.data?.length && value.title === section.title) {
+						switch (key) {
+							case 0:
+								isFirst = true
+								break
+							case 1:
+								isFirst = sections[0].data?.length ? false : true
+								break
+							case 2:
+								isFirst = sections[0].data?.length || sections[1].data?.length ? false : true
+								break
+						}
+					}
+				})
+				return title ? (
+					<View
+						style={[
+							!isFirst && border.radius.top.big,
+							background.white,
+							!isFirst && {
+								shadowOpacity: 0.1,
+								shadowRadius: 8,
+								shadowOffset: { width: 0, height: -12 },
+							},
+						]}
+					>
+						<View style={[padding.horizontal.medium]}>
+							<View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+								<View
+									style={[width(42), height(4), margin.top.medium, { backgroundColor: '#F1F4F6' }]}
+								/>
+							</View>
+							<TextNative
+								style={[
+									text.size.scale(25),
+									text.color.black,
+									text.bold.medium,
+									{ fontFamily: 'Open Sans' },
+								]}
+							>
+								{title}
+							</TextNative>
+						</View>
+					</View>
+				) : null
+			}}
+			ListFooterComponent={() => (
+				// empty div at bottom of list
+
+				// Workaround to make sure nothing is hidden behind footer;
+				// adding padding/margin to this or a wrapping parent doesn't work
+				<View style={[height(_approxFooterHeight + 20)]} />
+			)}
+		/>
+	) : (
+		<View style={{ top: -50 }}>
+			<TextNative
+				style={[
+					text.color.black,
+					text.size.big,
+					text.bold.small,
+					text.align.center,
+					{ fontFamily: 'Open Sans' },
+				]}
+			>
+				No results
+			</TextNative>
+		</View>
+	)
+}
+
+const _approxFooterHeight = 90
+
 export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	// TODO: do something to animate the requests
 	const requests: any[] = useIncomingContactRequests()
@@ -730,6 +864,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const [, onLayoutHeader] = useLayout()
 	const [, onLayoutConvs] = useLayout()
 	const [isOnTop, setIsOnTop] = useState<boolean>(false)
+	const [searchText, setSearchText] = useState<string>('')
 
 	const { navigate } = useNativeNavigation()
 
@@ -739,73 +874,147 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	] = useStyles()
 	const scrollRef = useRef<ScrollView>(null)
 
-	const styleBackground = useMemo(
-		() => (requests.length > 0 ? background.blue : background.white),
-		[background.blue, background.white, requests.length],
+	const searching = !!searchText
+	const lowSearchText = searchText.toLowerCase()
+	const searchCheck = React.useCallback(
+		(searchIn?: string | null | false | 0) =>
+			(searchIn || '').toLowerCase().includes(lowSearchText),
+		[lowSearchText],
 	)
+
+	const ctx = useMsgrContext()
+
+	const searchConversations = React.useMemo(
+		() =>
+			searching
+				? pickBy(
+						ctx.conversations,
+						(val: any) =>
+							val.type === messengerpb.Conversation.Type.MultiMemberType &&
+							searchCheck(val.displayName),
+				  )
+				: {},
+		[ctx.conversations, searchCheck, searching],
+	)
+
+	const searchContacts = React.useMemo(
+		() => (searching ? pickBy(ctx.contacts, (val: any) => searchCheck(val.displayName)) : {}),
+		[ctx.contacts, searchCheck, searching],
+	)
+
+	const searchInteractions = React.useMemo(() => {
+		if (!searching) {
+			return {}
+		}
+		const allInteractions: any = Object.values(ctx.interactions).reduce(
+			(r: any, intes: any) => ({ ...r, ...intes }),
+			{},
+		)
+		return pickBy(
+			allInteractions,
+			(inte) =>
+				inte.type === messengerpb.AppMessage.Type.TypeUserMessage &&
+				searchCheck(inte.payload?.body),
+		)
+	}, [ctx.interactions, searchCheck, searching])
+
+	const hasResults = [searchConversations, searchContacts, searchInteractions].some(
+		(c) => Object.keys(c).length > 0,
+	)
+	const styleBackground = useMemo(
+		() => (requests.length > 0 && !searchText?.length ? background.blue : background.white),
+		[background.blue, background.white, requests.length, searchText],
+	)
+
+	useEffect(() => {
+		console.log(searchText)
+	})
 
 	return (
 		<>
 			<View style={[flex.tiny, styleBackground]}>
 				<SwipeNavRecognizer onSwipeLeft={() => navigate('Settings.Home')}>
-					<ScrollView
-						ref={scrollRef}
-						stickyHeaderIndices={[1]}
-						showsVerticalScrollIndicator={false}
-						scrollEventThrottle={16}
-						onScroll={(e) => {
-							if (e.nativeEvent.contentOffset) {
-								if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
-									setIsOnTop(true)
-								} else {
-									setIsOnTop(false)
-								}
-							}
-						}}
-					>
-						<IncomingRequests items={requests} onLayout={onLayoutRequests} />
-						<HomeHeader
-							isOnTop={isOnTop}
-							hasRequests={requests.length > 0}
-							scrollRef={scrollRef}
-							onLayout={onLayoutHeader}
-						/>
-						{isConversation ? (
-							<Conversations items={conversations} onLayout={onLayoutConvs} />
-						) : (
-							<View style={[background.white]}>
-								<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
-									<View>
-										<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
-										<TextNative
-											style={[
-												text.align.center,
-												text.color.grey,
-												text.bold.small,
-												opacity(0.3),
-												margin.top.big,
-											]}
-										>
-											You don't have any contacts or chat yet
-										</TextNative>
-									</View>
-								</View>
-							</View>
+					<SafeAreaConsumer>
+						{(insets: EdgeInsets | null) => (
+							<ScrollView
+								ref={scrollRef}
+								stickyHeaderIndices={!searchText?.length && !hasResults ? [1] : [0]}
+								showsVerticalScrollIndicator={false}
+								scrollEventThrottle={16}
+								onScroll={(e) => {
+									if (e.nativeEvent.contentOffset) {
+										if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
+											setIsOnTop(true)
+										} else {
+											setIsOnTop(false)
+										}
+									}
+								}}
+							>
+								{!searchText?.length && (
+									<IncomingRequests items={requests} onLayout={onLayoutRequests} />
+								)}
+								<HomeHeader
+									isOnTop={isOnTop}
+									hasRequests={requests.length > 0}
+									scrollRef={scrollRef}
+									onLayout={onLayoutHeader}
+									value={searchText}
+									onChange={setSearchText}
+								/>
+								{searchText?.length ? (
+									<SearchComponent
+										insets={insets}
+										conversations={searchConversations}
+										contacts={searchContacts}
+										interactions={searchInteractions}
+										value={searchText}
+										hasResults={hasResults}
+									/>
+								) : (
+									<>
+										{isConversation ? (
+											<Conversations items={conversations} onLayout={onLayoutConvs} />
+										) : (
+											<View style={[background.white]}>
+												<View
+													style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}
+												>
+													<View>
+														<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
+														<TextNative
+															style={[
+																text.align.center,
+																text.color.grey,
+																text.bold.small,
+																opacity(0.3),
+																margin.top.big,
+															]}
+														>
+															You don't have any contacts or chat yet
+														</TextNative>
+													</View>
+												</View>
+											</View>
+										)}
+										{requests.length > 0 && (
+											<View
+												style={[
+													{
+														backgroundColor: 'white',
+														position: 'absolute',
+														bottom: windowHeight * -1,
+														height: windowHeight,
+														width: '100%',
+													},
+												]}
+											/>
+										)}
+									</>
+								)}
+							</ScrollView>
 						)}
-						{requests.length > 0 && (
-							<View
-								style={[
-									{
-										backgroundColor: 'white',
-										position: 'absolute',
-										bottom: windowHeight * -1,
-										height: windowHeight,
-										width: '100%',
-									},
-								]}
-							/>
-						)}
-					</ScrollView>
+					</SafeAreaConsumer>
 				</SwipeNavRecognizer>
 			</View>
 		</>
