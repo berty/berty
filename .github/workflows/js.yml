@@ -6,12 +6,12 @@ on:
     branches:
       - master
     paths:
-      - 'js/**'
-      - '.github/workflows/js.yml'
+      - "js/**"
+      - ".github/workflows/js.yml"
   pull_request:
     paths:
-      - 'js/**'
-      - '.github/workflows/js.yml'
+      - "js/**"
+      - ".github/workflows/js.yml"
 
 jobs:
   build-and-lint:
@@ -23,32 +23,40 @@ jobs:
           #- 12.x
           - 14.x
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2.1.2
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Cache Node.js modules
-      uses: actions/cache@v2
-      with:
-        path: js/node_modules
-        key: ${{ runner.OS }}-node-v2-${{ hashFiles('js/yarn.lock') }}
-        restore-keys: ${{ runner.OS }}-node-v2-
-    - name: "Fetch deps"
-      run: |
-        cd js
-        make node_modules
-      env:
-        CI: true
-    - name: "Run tests"
-      run: |
-        cd js
-        make test
-      env:
-        CI: true
-    - name: "Run lint"
-      run: |
-        cd js
-        make lint
-      env:
-        CI: true
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: js/node_modules
+          key: ${{ runner.OS }}-node-v2-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-node-v2-
+      - name: "Fetch deps"
+        run: |
+          cd js
+          make node_modules
+        env:
+          CI: true
+      - name: "Run tests"
+        run: |
+          cd js
+          make test
+        env:
+          CI: true
+      - name: "Run lint"
+        run: |
+          cd js
+          make lint
+        env:
+          CI: true
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./js/coverage/coverage-final.json
+          flags: unittests
+          env_vars: OS,TYPESCRIPT
+          name: codecov-umbrella
+          fail_ci_if_error: false
