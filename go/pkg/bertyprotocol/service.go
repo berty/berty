@@ -49,6 +49,7 @@ type service struct {
 	authSession    atomic.Value
 	close          func() error
 	startedAt      time.Time
+	host           host.Host
 }
 
 // Opts contains optional configuration flags for building a new Client
@@ -173,6 +174,7 @@ func New(ctx context.Context, opts Opts) (Service, error) {
 
 	return &service{
 		ctx:            ctx,
+		host:           opts.Host,
 		ipfsCoreAPI:    opts.IpfsCoreAPI,
 		logger:         opts.Logger,
 		odb:            opts.OrbitDB,

@@ -3,11 +3,13 @@ package bertyprotocol
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/network"
+	peer "github.com/libp2p/go-libp2p-core/peer"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
@@ -234,59 +236,179 @@ func (s *service) PeerList(ctx context.Context, request *bertytypes.PeerList_Req
 	if api == nil {
 		return nil, errcode.TODO.Wrap(fmt.Errorf("IPFS Core API is not available"))
 	}
-	peers, err := api.Swarm().Peers(ctx)
+	swarmPeers, err := api.Swarm().Peers(ctx) // https://pkg.go.dev/github.com/ipfs/interface-go-ipfs-core#ConnectionInfo
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	for _, peer := range peers {
-		// https://pkg.go.dev/github.com/ipfs/interface-go-ipfs-core#ConnectionInfo
+	peers := map[peer.ID]*bertytypes.PeerList_Peer{}
 
-		errs := []string{}
+	// each peer in the swarm should be visible
+	for _, swarmPeer := range swarmPeers {
+		peers[swarmPeer.ID()] = &bertytypes.PeerList_Peer{
+			ID:     swarmPeer.ID().Pretty(),
+			Errors: []string{},
+			Routes: []*bertytypes.PeerList_Route{},
+		}
+	}
+	// FIXME: do not restrict on swarm peers, also print some other important ones (old, etc)
 
-		latencyMs := int64(0)
-		{
-			latency, err := peer.Latency()
-			if err != nil {
-				errs = append(errs, err.Error())
-			} else {
-				latencyMs = latency.Milliseconds()
+	// append peer addrs from peerstore
+	for peerID, peer := range peers {
+		info := s.host.Peerstore().PeerInfo(peerID)
+		for _, addr := range info.Addrs {
+			peer.Routes = append(peer.Routes, &bertytypes.PeerList_Route{
+				Address: addr.String(),
+			})
+		}
+	}
+
+	// append more info for active connections
+	for _, swarmPeer := range swarmPeers {
+		peer, ok := peers[swarmPeer.ID()]
+		if !ok {
+			peer = &bertytypes.PeerList_Peer{
+				ID:     swarmPeer.ID().Pretty(),
+				Errors: []string{},
+				Routes: []*bertytypes.PeerList_Route{},
+			}
+			peer.Errors = append(peer.Errors, "peer in swarm peers, but not in peerstore")
+			peers[swarmPeer.ID()] = peer
+		}
+
+		address := swarmPeer.Address().String()
+		found := false
+		var selectedRoute *bertytypes.PeerList_Route
+		for _, route := range peer.Routes {
+			if route.Address == address {
+				found = true
+				selectedRoute = route
 			}
 		}
-
-		direction := bertytypes.UnknownDir
-		switch peer.Direction() {
-		case network.DirInbound:
-			direction = bertytypes.InboundDir
-		case network.DirOutbound:
-			direction = bertytypes.OutboundDir
+		if !found {
+			newRoute := bertytypes.PeerList_Route{Address: address}
+			peer.Routes = append(peer.Routes, &newRoute)
+			selectedRoute = &newRoute
 		}
-
-		streams := []*bertytypes.PeerList_Stream{}
+		selectedRoute.IsActive = true
+		// latency
 		{
-			peerStreams, err := peer.Streams()
+			latency, err := swarmPeer.Latency()
 			if err != nil {
-				errs = append(errs, err.Error())
+				peer.Errors = append(peer.Errors, err.Error())
 			} else {
+				selectedRoute.Latency = latency.Milliseconds()
+			}
+		}
+		// direction
+		{
+			switch swarmPeer.Direction() {
+			case network.DirInbound:
+				selectedRoute.Direction = bertytypes.InboundDir
+			case network.DirOutbound:
+				selectedRoute.Direction = bertytypes.OutboundDir
+			}
+		}
+		// streams
+		{
+			peerStreams, err := swarmPeer.Streams()
+			if err != nil {
+				peer.Errors = append(peer.Errors, err.Error())
+			} else {
+				selectedRoute.Streams = []*bertytypes.PeerList_Stream{}
 				for _, peerStream := range peerStreams {
-					streams = append(streams, &bertytypes.PeerList_Stream{
+					if peerStream == "" {
+						continue
+					}
+					selectedRoute.Streams = append(selectedRoute.Streams, &bertytypes.PeerList_Stream{
 						ID: string(peerStream),
 					})
 				}
 			}
 		}
-
-		reply.Peers = append(reply.Peers, &bertytypes.PeerList_Peer{
-			ID:        peer.ID().Pretty(),
-			Address:   peer.Address().String(),
-			Direction: direction,
-			Latency:   latencyMs,
-			Streams:   streams,
-			Errors:    errs,
-		})
-
-		// FIXME: add metrics about "amount of times seen", "first time seen", "bandwidth"
 	}
 
+	// compute features
+	for _, peer := range peers {
+		features := map[bertytypes.PeerList_Feature]bool{}
+		for _, route := range peer.Routes {
+			// FIXME: use the multiaddr library instead of string comparisons
+			if strings.Contains(route.Address, "/quic") {
+				features[bertytypes.QuicFeature] = true
+			}
+			if strings.Contains(route.Address, "/mc/") {
+				features[bertytypes.BLEFeature] = true
+				features[bertytypes.BertyFeature] = true
+			}
+			if strings.Contains(route.Address, "/tor/") {
+				features[bertytypes.TorFeature] = true
+			}
+			for _, stream := range route.Streams {
+				if stream.ID == "/berty/contact_req/1.0.0" {
+					features[bertytypes.BertyFeature] = true
+				}
+				if stream.ID == "/rendezvous/1.0.0" {
+					features[bertytypes.BertyFeature] = true
+				}
+			}
+		}
+		for feature := range features {
+			peer.Features = append(peer.Features, feature)
+		}
+	}
+
+	// compute peer-level aggregates
+	for _, peer := range peers {
+		// aggregate direction
+		for _, route := range peer.Routes {
+			if route.Direction == bertytypes.UnknownDir {
+				continue
+			}
+			switch {
+			case peer.Direction == bertytypes.UnknownDir: // first route with a direction
+				peer.Direction = route.Direction
+			case peer.Direction == bertytypes.BiDir: // peer aggregate is already maximal
+				// noop
+			case route.Direction == peer.Direction: // another route with the same direction
+				// noop
+			case route.Direction == bertytypes.InboundDir && peer.Direction == bertytypes.OutboundDir:
+				peer.Direction = bertytypes.BiDir
+			case route.Direction == bertytypes.OutboundDir && peer.Direction == bertytypes.InboundDir:
+				peer.Direction = bertytypes.BiDir
+			default:
+				peer.Errors = append(peer.Errors, "failed to compute direction aggregate")
+			}
+		}
+
+		// aggregate latency
+		for _, route := range peer.Routes {
+			if route.Latency == 0 {
+				continue
+			}
+			switch {
+			case peer.MinLatency == 0: // first route with a latency
+				peer.MinLatency = route.Latency
+			case peer.MinLatency > route.Latency: // smaller value
+				peer.MinLatency = route.Latency
+			}
+		}
+
+		// aggregate isActive
+		for _, route := range peer.Routes {
+			if route.IsActive {
+				peer.IsActive = true
+				break
+			}
+		}
+	}
+
+	// FIXME: compute pubsub peers too?
+
+	// FIXME: add metrics about "amount of times seen", "first time seen", "bandwidth"
+
+	// use protobuf format
+	for _, peer := range peers {
+		reply.Peers = append(reply.Peers, peer)
+	}
 	return &reply, nil
 }

@@ -3608,21 +3608,23 @@ export namespace berty {
 
                 interface IPeer {
                     id?: (string|null);
-                    address?: (string|null);
-                    direction?: (berty.types.v1.Direction|null);
-                    latency?: (number|Long|null);
-                    streams?: (berty.types.v1.PeerList.IStream[]|null);
+                    routes?: (berty.types.v1.PeerList.IRoute[]|null);
                     errors?: (string[]|null);
+                    features?: (berty.types.v1.PeerList.Feature[]|null);
+                    minLatency?: (number|Long|null);
+                    isActive?: (boolean|null);
+                    direction?: (berty.types.v1.Direction|null);
                 }
 
                 class Peer implements IPeer {
 
                     public id: string;
-                    public address: string;
-                    public direction: berty.types.v1.Direction;
-                    public latency: (number|Long);
-                    public streams: berty.types.v1.PeerList.IStream[];
+                    public routes: berty.types.v1.PeerList.IRoute[];
                     public errors: string[];
+                    public features: berty.types.v1.PeerList.Feature[];
+                    public minLatency: (number|Long);
+                    public isActive: boolean;
+                    public direction: berty.types.v1.Direction;
                     public static create(properties?: berty.types.v1.PeerList.IPeer): berty.types.v1.PeerList.Peer;
                     public static encode(message: berty.types.v1.PeerList.IPeer, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.types.v1.PeerList.IPeer, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3631,6 +3633,32 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.types.v1.PeerList.Peer;
                     public static toObject(message: berty.types.v1.PeerList.Peer, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IRoute {
+                    isActive?: (boolean|null);
+                    address?: (string|null);
+                    direction?: (berty.types.v1.Direction|null);
+                    latency?: (number|Long|null);
+                    streams?: (berty.types.v1.PeerList.IStream[]|null);
+                }
+
+                class Route implements IRoute {
+
+                    public isActive: boolean;
+                    public address: string;
+                    public direction: berty.types.v1.Direction;
+                    public latency: (number|Long);
+                    public streams: berty.types.v1.PeerList.IStream[];
+                    public static create(properties?: berty.types.v1.PeerList.IRoute): berty.types.v1.PeerList.Route;
+                    public static encode(message: berty.types.v1.PeerList.IRoute, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.types.v1.PeerList.IRoute, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.PeerList.Route;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.PeerList.Route;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.types.v1.PeerList.Route;
+                    public static toObject(message: berty.types.v1.PeerList.Route, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -3651,12 +3679,22 @@ export namespace berty {
                     public static toObject(message: berty.types.v1.PeerList.Stream, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
+
+                enum Feature {
+                    UnknownFeature = 0,
+                    BertyFeature = 1,
+                    BLEFeature = 2,
+                    LocalFeature = 3,
+                    TorFeature = 4,
+                    QuicFeature = 5
+                }
             }
 
             enum Direction {
                 UnknownDir = 0,
                 InboundDir = 1,
-                OutboundDir = 2
+                OutboundDir = 2,
+                BiDir = 3
             }
         }
     }

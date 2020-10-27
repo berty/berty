@@ -2378,6 +2378,41 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                           "(gogoproto.customname)": "ID"
                         }
                       },
+                      routes: {
+                        rule: "repeated",
+                        type: "Route",
+                        id: 2
+                      },
+                      errors: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 3
+                      },
+                      features: {
+                        rule: "repeated",
+                        type: "Feature",
+                        id: 4
+                      },
+                      minLatency: {
+                        type: "int64",
+                        id: 5
+                      },
+                      isActive: {
+                        type: "bool",
+                        id: 6
+                      },
+                      direction: {
+                        type: "Direction",
+                        id: 7
+                      }
+                    }
+                  },
+                  Route: {
+                    fields: {
+                      isActive: {
+                        type: "bool",
+                        id: 1
+                      },
                       address: {
                         type: "string",
                         id: 2
@@ -2394,11 +2429,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         rule: "repeated",
                         type: "Stream",
                         id: 5
-                      },
-                      errors: {
-                        rule: "repeated",
-                        type: "string",
-                        id: 6
                       }
                     }
                   },
@@ -2412,6 +2442,16 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         }
                       }
                     }
+                  },
+                  Feature: {
+                    values: {
+                      UnknownFeature: 0,
+                      BertyFeature: 1,
+                      BLEFeature: 2,
+                      LocalFeature: 3,
+                      TorFeature: 4,
+                      QuicFeature: 5
+                    }
                   }
                 }
               },
@@ -2419,7 +2459,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 values: {
                   UnknownDir: 0,
                   InboundDir: 1,
-                  OutboundDir: 2
+                  OutboundDir: 2,
+                  BiDir: 3
                 }
               }
             }
