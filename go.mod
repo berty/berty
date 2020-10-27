@@ -56,7 +56,7 @@ require (
 	github.com/libp2p/go-libp2p-discovery v0.5.0
 	github.com/libp2p/go-libp2p-kad-dht v0.10.0
 	github.com/libp2p/go-libp2p-pubsub v0.3.5
-	github.com/libp2p/go-libp2p-quic-transport v0.8.1
+	github.com/libp2p/go-libp2p-quic-transport v0.8.2
 	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20190708065449-737144165c9e
 	github.com/libp2p/go-libp2p-transport-upgrader v0.3.0
