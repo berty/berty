@@ -51,15 +51,14 @@ require (
 	github.com/kisielk/errcheck v1.4.0 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/libp2p/go-libp2p v0.11.0
-	github.com/libp2p/go-libp2p-circuit v0.3.1
-	github.com/libp2p/go-libp2p-core v0.6.1
+	github.com/libp2p/go-libp2p-circuit v0.4.0
+	github.com/libp2p/go-libp2p-core v0.7.0
 	github.com/libp2p/go-libp2p-discovery v0.5.0
 	github.com/libp2p/go-libp2p-kad-dht v0.10.0
 	github.com/libp2p/go-libp2p-pubsub v0.3.5
 	github.com/libp2p/go-libp2p-quic-transport v0.8.2
 	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20190708065449-737144165c9e
-	github.com/libp2p/go-libp2p-swarm v0.3.0 // indirect
 	github.com/libp2p/go-libp2p-transport-upgrader v0.3.0
 	github.com/libp2p/go-libp2p-yamux v0.3.0 // indirect
 	github.com/libp2p/go-mplex v0.2.0 // indirect
