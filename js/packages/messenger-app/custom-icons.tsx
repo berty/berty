@@ -13,6 +13,7 @@ import Quote from './custom-icons-svgs/quote.svg'
 import Earth from './custom-icons-svgs/Earth_.svg'
 import Network from './custom-icons-svgs/chart-network-light.svg'
 import Tor from './custom-icons-svgs/Tor.svg'
+import Berty from './custom-icons-svgs/berty_picto.svg'
 
 const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	fingerprint: Fingerprint,
@@ -26,6 +27,7 @@ const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	earth: Earth,
 	network: Network,
 	tor: Tor,
+	berty: Berty,
 }
 
 const CustomIcon: React.FC<{
