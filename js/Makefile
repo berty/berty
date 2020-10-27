@@ -66,7 +66,7 @@ help:
 .PHONY: test
 test: node_modules
 	$(call check-program, yarn)
-	yarn test
+	yarn test --coverage
 
 #### Gen
 
