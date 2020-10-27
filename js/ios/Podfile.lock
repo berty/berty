@@ -300,7 +300,7 @@ PODS:
   - react-native-shake (10.0.3):
     - React
     - Shake (~> 10.0.0)
-  - react-native-webview (10.9.2):
+  - react-native-webview (10.10.0):
     - React-Core
   - React-RCTActionSheet (0.63.3):
     - React-Core/RCTActionSheetHeaders (= 0.63.3)
@@ -369,14 +369,14 @@ PODS:
   - RNFBApp (8.4.6):
     - Firebase/CoreOnly (~> 6.34.0)
     - React-Core
-  - RNFBCrashlytics (8.4.10):
+  - RNFBCrashlytics (8.4.11):
     - Firebase/Crashlytics (~> 6.34.0)
     - React-Core
     - RNFBApp
   - RNGestureHandler (1.8.0):
     - React
-  - RNInAppBrowser (3.4.0):
-    - React
+  - RNInAppBrowser (3.5.1):
+    - React-Core
   - RNPermissions (2.2.2):
     - React-Core
   - RNReanimated (1.13.1):
@@ -626,7 +626,7 @@ SPEC CHECKSUMS:
   react-native-camera: 35854c4f764a4a6cf61c1c3525888b92f0fe4b31
   react-native-safe-area-context: 79fea126c6830c85f65947c223a5e3058a666937
   react-native-shake: 753c2c0feec3e2ed57daf521ccce13c144abea3a
-  react-native-webview: 4e96d493f9f90ba4f03b28933f30b2964df07e39
+  react-native-webview: 73e409ecc987c189772bda27ba7f0e2f3dcd2e81
   React-RCTActionSheet: 53ea72699698b0b47a6421cb1c8b4ab215a774aa
   React-RCTAnimation: 1befece0b5183c22ae01b966f5583f42e69a83c2
   React-RCTBlob: 0b284339cbe4b15705a05e2313a51c6d8b51fa40
@@ -640,9 +640,9 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: b03032fdbdb725bea0bd9e5ec5a7272865ae7398
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNFBApp: 7eacc7da7ab19f96c05e434017d44a9f09410da8
-  RNFBCrashlytics: 4870c14cf8833053b6b5648911abefe1923854d2
+  RNFBCrashlytics: e35507742eebf1483d518efe70425ee931d555e6
   RNGestureHandler: 7a5833d0f788dbd107fbb913e09aa0c1ff333c39
-  RNInAppBrowser: c1a0dad2734458d79bcb6c8f4297ba8658a1da9f
+  RNInAppBrowser: 48b95ba7a4eaff5cc223bca338d3e319561dbd1b
   RNPermissions: 5df468064df661a4c8c017e2791ce90d7695eea5
   RNReanimated: dd8c286ab5dd4ba36d3a7fef8bff7e08711b5476
   RNScreens: 0e91da98ab26d5d04c7b59a9b6bd694124caf88c
