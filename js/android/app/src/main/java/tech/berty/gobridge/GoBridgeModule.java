@@ -26,12 +26,15 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
   // protocol
   private static Bridge bridgeMessenger = null;
   private static File rootDir = null;
+  private static File tempDir = null;
 
   public GoBridgeModule(ReactApplicationContext reactContext) {
     super(reactContext);
     this.reactContext = reactContext;
     this.rootDir = new File(reactContext.getFilesDir().getAbsolutePath() + "/berty");
     System.out.println("root dir: " + this.rootDir.getAbsolutePath());
+    this.tempDir = new File(reactContext.getCacheDir().getAbsolutePath() + "/berty");
+    System.out.println("temp dir: " + this.tempDir.getAbsolutePath());
   }
 
   @Override
@@ -46,8 +49,13 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
         if (!deleteRecursive(this.rootDir)) {
           throw new Exception("can't delete rootDir");
         }
-        promise.resolve(true);
       }
+      if (this.tempDir != null && this.tempDir.exists()) {
+        if (!deleteRecursive(this.tempDir)) {
+          throw new Exception("can't delete tempDir");
+        }
+      }
+      promise.resolve(true);
     } catch (Exception err) {
       promise.reject(err);
     }
@@ -115,6 +123,14 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
         config.appendCLIArg("--store.dir");
         config.appendCLIArg(this.rootDir.getAbsolutePath());
       }
+
+      // set temp dir
+      if (this.tempDir != null && !this.tempDir.exists()) {
+        if (!this.tempDir.mkdirs()) {
+          throw new Exception("tempdir directory creation failed");
+        }
+      }
+      config.setAndroidCacheDir(this.tempDir.getAbsolutePath());
 
       System.out.println("bflifecycle: calling Bertybridge.newBridge");
       this.bridgeMessenger = Bertybridge.newBridge(config);
