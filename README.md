@@ -80,7 +80,7 @@ _We will open betas for the different packages and apps soon, so anyone will be 
 ### Berty Protocol
 
 [![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white)](https://pkg.go.dev/berty.tech/berty/v2/go/pkg/bertyprotocol?tab=doc)
-[![Code coverage](https://codecov.io/gh/berty/berty/branch/master/graph/badge.svg?token=rBPpNHNNow)](https://codecov.io/gh/berty/berty)
+[![Code coverage](https://codecov.io/gh/berty/berty/branch/master/graph/badge.svg?token=rBPpNHNNow&flag=go.unittests)](https://codecov.io/gh/berty/berty)
 
 A generic SDK that allows developers to write P2P applications. It contains everything needed (encryption, identities, network routing, group management, account management, device management, application lifecycle) so you can just focus on the high-level features of your app.
 
@@ -91,6 +91,8 @@ The main concept of the _Berty Protocol_ is the "group", a virtual place where m
 Get it: `go get -u berty.tech/berty/v2`
 
 ### Berty Messenger
+
+[![Code coverage](https://codecov.io/gh/berty/berty/branch/master/graph/badge.svg?token=rBPpNHNNow&flag=js.unittests)](https://codecov.io/gh/berty/berty)
 
 A messenger application written in [React Native](https://reactnative.dev/), that uses the Berty Protocol using [gomobile-ipfs](https://github.com/ipfs-shipyard/gomobile-ipfs), which, in its turn, is using [gomobile](https://github.com/golang/mobile).
 
@@ -140,8 +142,9 @@ We really welcome contributions. Your input is the most precious material. We're
 There are plenty of ways to get involved and act for our community. It has been divided into two distinct parts: everything that is related to the code and everything that is not.
 
 To put it very simply:
-* Code-related = Github
-* Not code-related = Open task
+
+- Code-related = Github
+- Not code-related = Open task
 
 Everything on contribution is sum up here: [CONTRIBUTING.MD](https://github.com/berty/community/blob/master/CONTRIBUTING.md)
 

@@ -17,3 +17,9 @@ ignore:
   - "**/*.pb.go"
   - "**/*.pb.gw.go"
   - "**/gen/**"
+
+flags:
+  go.unittests:
+    carryforward: true
+  js.unittests:
+    carryforward: true

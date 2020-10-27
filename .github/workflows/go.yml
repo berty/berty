@@ -6,18 +6,18 @@ on:
     branches:
       - master
     paths:
-      - 'go/**'
-      - '.goreleaser'
-      - 'go.*'
-      - '**.go'
-      - '.github/workflows/go.yml'
+      - "go/**"
+      - ".goreleaser"
+      - "go.*"
+      - "**.go"
+      - ".github/workflows/go.yml"
   pull_request:
     paths:
-      - 'go/**'
-      - '.goreleaser'
-      - 'go.*'
-      - '**.go'
-      - '.github/workflows/go.yml'
+      - "go/**"
+      - ".goreleaser"
+      - "go.*"
+      - "**.go"
+      - ".github/workflows/go.yml"
 
 jobs:
   goreleaser-dryrun:
@@ -171,7 +171,7 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           file: ./go/coverage.txt
-          flags: unittests
+          flags: go.unittests
           env_vars: OS,GOLANG
           name: codecov-umbrella
           fail_ci_if_error: false
@@ -224,7 +224,6 @@ jobs:
       #    env_vars: OS,GOLANG
       #    name: codecov-umbrella
       #    fail_ci_if_error: false
-
 # TODO: consider adding a go-tests-on-darwin.
 #       it can validate that the test suite runs successfully on macos.
 #       concern: it will take a precious slot of darwin builder on github-actions
