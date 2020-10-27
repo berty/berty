@@ -56,7 +56,7 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           file: ./js/coverage/coverage-final.json
-          flags: unittests
-          env_vars: OS,TYPESCRIPT
+          flags: js.unittests
+          env_vars: OS,NODE_VERSION
           name: codecov-umbrella
           fail_ci_if_error: false
