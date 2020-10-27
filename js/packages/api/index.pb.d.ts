@@ -3611,6 +3611,9 @@ export namespace berty {
                     routes?: (berty.types.v1.PeerList.IRoute[]|null);
                     errors?: (string[]|null);
                     features?: (berty.types.v1.PeerList.Feature[]|null);
+                    minLatency?: (number|Long|null);
+                    isActive?: (boolean|null);
+                    direction?: (berty.types.v1.Direction|null);
                 }
 
                 class Peer implements IPeer {
@@ -3619,6 +3622,9 @@ export namespace berty {
                     public routes: berty.types.v1.PeerList.IRoute[];
                     public errors: string[];
                     public features: berty.types.v1.PeerList.Feature[];
+                    public minLatency: (number|Long);
+                    public isActive: boolean;
+                    public direction: berty.types.v1.Direction;
                     public static create(properties?: berty.types.v1.PeerList.IPeer): berty.types.v1.PeerList.Peer;
                     public static encode(message: berty.types.v1.PeerList.IPeer, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.types.v1.PeerList.IPeer, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3687,7 +3693,8 @@ export namespace berty {
             enum Direction {
                 UnknownDir = 0,
                 InboundDir = 1,
-                OutboundDir = 2
+                OutboundDir = 2,
+                BiDir = 3
             }
         }
     }

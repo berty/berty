@@ -357,6 +357,51 @@ func (s *service) PeerList(ctx context.Context, request *bertytypes.PeerList_Req
 		}
 	}
 
+	// compute peer-level aggregates
+	for _, peer := range peers {
+		// aggregate direction
+		for _, route := range peer.Routes {
+			if route.Direction == bertytypes.UnknownDir {
+				continue
+			}
+			switch {
+			case peer.Direction == bertytypes.UnknownDir: // first route with a direction
+				peer.Direction = route.Direction
+			case peer.Direction == bertytypes.BiDir: // peer aggregate is already maximal
+				// noop
+			case route.Direction == peer.Direction: // another route with the same direction
+				// noop
+			case route.Direction == bertytypes.InboundDir && peer.Direction == bertytypes.OutboundDir:
+				peer.Direction = bertytypes.BiDir
+			case route.Direction == bertytypes.OutboundDir && peer.Direction == bertytypes.InboundDir:
+				peer.Direction = bertytypes.BiDir
+			default:
+				peer.Errors = append(peer.Errors, "failed to compute direction aggregate")
+			}
+		}
+
+		// aggregate latency
+		for _, route := range peer.Routes {
+			if route.Latency == 0 {
+				continue
+			}
+			switch {
+			case peer.MinLatency == 0: // first route with a latency
+				peer.MinLatency = route.Latency
+			case peer.MinLatency > route.Latency: // smaller value
+				peer.MinLatency = route.Latency
+			}
+		}
+
+		// aggregate isActive
+		for _, route := range peer.Routes {
+			if route.IsActive {
+				peer.IsActive = true
+				break
+			}
+		}
+	}
+
 	// FIXME: compute pubsub peers too?
 
 	// FIXME: add metrics about "amount of times seen", "first time seen", "bandwidth"

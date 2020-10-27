@@ -1255,6 +1255,20 @@
             "$ref": "#/definitions/PeerListFeature"
           },
           "description": "Features is a list of available features."
+        },
+        "min_latency": {
+          "type": "string",
+          "format": "int64",
+          "description": "MinLatency is the minimum latency across all the peer routes."
+        },
+        "is_active": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "IsActive is true if at least one of the route is active."
+        },
+        "direction": {
+          "$ref": "#/definitions/v1Direction",
+          "description": "Direction is the aggregate of all the routes's direction."
         }
       }
     },
@@ -1272,19 +1286,19 @@
         },
         "direction": {
           "$ref": "#/definitions/v1Direction",
-          "description": "direction is which way the connection was established."
+          "description": "Direction is which way the connection was established."
         },
         "latency": {
           "type": "string",
           "format": "int64",
-          "description": "latency is the last known round trip time to the peer in ms."
+          "description": "Latency is the last known round trip time to the peer in ms."
         },
         "streams": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/PeerListStream"
           },
-          "description": "streams returns list of streams established with the peer."
+          "description": "Streams returns list of streams established with the peer."
         }
       }
     },
@@ -1791,7 +1805,8 @@
       "enum": [
         "UnknownDir",
         "InboundDir",
-        "OutboundDir"
+        "OutboundDir",
+        "BiDir"
       ],
       "default": "UnknownDir"
     },

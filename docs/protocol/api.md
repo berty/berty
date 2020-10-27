@@ -1149,6 +1149,9 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | routes | [PeerList.Route](#berty.types.v1.PeerList.Route) | repeated | routes are the list of active and known maddr. |
 | errors | [string](#string) | repeated | errors is a list of errors related to the peer. |
 | features | [PeerList.Feature](#berty.types.v1.PeerList.Feature) | repeated | Features is a list of available features. |
+| min_latency | [int64](#int64) |  | MinLatency is the minimum latency across all the peer routes. |
+| is_active | [bool](#bool) |  | IsActive is true if at least one of the route is active. |
+| direction | [Direction](#berty.types.v1.Direction) |  | Direction is the aggregate of all the routes&#39;s direction. |
 
 <a name="berty.types.v1.PeerList.Reply"></a>
 
@@ -1170,9 +1173,9 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | ----- | ---- | ----- | ----------- |
 | is_active | [bool](#bool) |  | IsActive indicates whether the address is currently used or just known. |
 | address | [string](#string) |  | Address is the multiaddress via which we are connected with the peer. |
-| direction | [Direction](#berty.types.v1.Direction) |  | direction is which way the connection was established. |
-| latency | [int64](#int64) |  | latency is the last known round trip time to the peer in ms. |
-| streams | [PeerList.Stream](#berty.types.v1.PeerList.Stream) | repeated | streams returns list of streams established with the peer. |
+| direction | [Direction](#berty.types.v1.Direction) |  | Direction is which way the connection was established. |
+| latency | [int64](#int64) |  | Latency is the last known round trip time to the peer in ms. |
+| streams | [PeerList.Stream](#berty.types.v1.PeerList.Stream) | repeated | Streams returns list of streams established with the peer. |
 
 <a name="berty.types.v1.PeerList.Stream"></a>
 
@@ -1386,6 +1389,7 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | UnknownDir | 0 |  |
 | InboundDir | 1 |  |
 | OutboundDir | 2 |  |
+| BiDir | 3 |  |
 
 <a name="berty.types.v1.EventType"></a>
 

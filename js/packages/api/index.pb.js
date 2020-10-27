@@ -2392,6 +2392,18 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         rule: "repeated",
                         type: "Feature",
                         id: 4
+                      },
+                      minLatency: {
+                        type: "int64",
+                        id: 5
+                      },
+                      isActive: {
+                        type: "bool",
+                        id: 6
+                      },
+                      direction: {
+                        type: "Direction",
+                        id: 7
                       }
                     }
                   },
@@ -2447,7 +2459,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 values: {
                   UnknownDir: 0,
                   InboundDir: 1,
-                  OutboundDir: 2
+                  OutboundDir: 2,
+                  BiDir: 3
                 }
               }
             }

@@ -1018,6 +1018,15 @@ message PeerList {
 
     // Features is a list of available features.
     repeated Feature features = 4;
+
+    // MinLatency is the minimum latency across all the peer routes.
+    int64 min_latency = 5;
+
+    // IsActive is true if at least one of the route is active.
+    bool is_active = 6;
+
+    // Direction is the aggregate of all the routes's direction.
+    Direction direction = 7;
   }
 
   message Route {
@@ -1027,13 +1036,13 @@ message PeerList {
     // Address is the multiaddress via which we are connected with the peer.
     string address = 2;
 
-    // direction is which way the connection was established.
+    // Direction is which way the connection was established.
     Direction direction = 3;
 
-    // latency is the last known round trip time to the peer in ms.
+    // Latency is the last known round trip time to the peer in ms.
     int64 latency = 4;
 
-    // streams returns list of streams established with the peer.
+    // Streams returns list of streams established with the peer.
     repeated Stream streams = 5;
 }
 
@@ -1049,6 +1058,7 @@ message PeerList {
     LocalFeature = 3;
     TorFeature = 4;
     QuicFeature = 5;
+
   }
 }
 
@@ -1056,4 +1066,5 @@ enum Direction {
   UnknownDir = 0;
   InboundDir = 1;
   OutboundDir = 2;
+  BiDir = 3;
 }
