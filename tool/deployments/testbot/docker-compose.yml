@@ -52,6 +52,10 @@ services:
       "
     volumes:
       - ./data/daemon2:/store
+    deploy:
+      resources:
+        limits:
+          memory: 2000M
     ports:
       - 6003:6003
 

@@ -15,5 +15,9 @@ services:
       - "--pk=$RDVP_PK"
       - "-l"
       - "/ip4/0.0.0.0/tcp/4040,/ip4/0.0.0.0/udp/4040/quic"
+    deploy:
+      resources:
+        limits:
+          memory: 2000M
     labels:
       - 'com.centurylinklabs.watchtower.enable=true'

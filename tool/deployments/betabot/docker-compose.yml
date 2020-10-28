@@ -20,7 +20,10 @@ services:
       - ./data/daemon:/store
     ports:
       - 6001:6001
-
+    deploy:
+     resources:
+       limits:
+         memory: 2000M
   bot:
     container_name: betabot_bot
     image: bertytech/berty:latest
