@@ -32,7 +32,10 @@ goreleaser.dry-run:
 	goreleaser release --rm-dist --snapshot --skip-publish
 .PHONY: goreleaser.dry-run
 
-
 doctor:
-	go run ./tool/doctor/main.go
+	cd go && $(MAKE) doctor
 .PHONY: doctor
+
+doctor.verbose:
+	cd go && $(MAKE) doctor.verbose
+.PHONY: doctor.verbose
