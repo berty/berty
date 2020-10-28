@@ -21,7 +21,7 @@ $(gen_sum): $(gen_src)
 	@shasum $(gen_src) | sort -k 2 > $(gen_sum).tmp
 	@diff -q $(gen_sum).tmp $(gen_sum) || ( \
 	  set -xe; \
-	  (set -e; cd .. && GO111MODULE=on go mod download); \
+	  (set -e; GO111MODULE=on go mod download); \
 	  docker run \
 	    --user=`id -u` \
 	    --volume="$(PWD)/..:/go/src/berty.tech/berty" \
