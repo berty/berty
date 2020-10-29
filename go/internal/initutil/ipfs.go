@@ -186,13 +186,18 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	}
 
 	opts := ipfsutil.CoreAPIConfig{
-		SwarmAddrs:        swarmAddrs,
-		APIAddrs:          apiAddrs,
-		APIConfig:         config.BertyDev.APIConfig,
+		SwarmAddrs: swarmAddrs,
+		APIAddrs:   apiAddrs,
+		APIConfig: ipfs_cfg.API{
+			HTTPHeaders: map[string][]string{
+				"Access-Control-Allow-Origin":  {"*"},
+				"Access-Control-Allow-Methods": {"POST", "PUT"},
+			},
+		},
 		Announce:          announce,
 		NoAnnounce:        noannounce,
 		DisableCorePubSub: true,
-		BootstrapAddrs:    config.BertyDev.Bootstrap,
+		BootstrapAddrs:    ipfs_cfg.DefaultBootstrapAddresses,
 		ExtraLibp2pOption: p2pOpts,
 		IpfsConfigPatch: ipfsutil.ChainIpfsConfigPatch(ipfsConfigPatch, func(cfg *ipfs_cfg.Config) error {
 			for _, p := range rdvpeers {
@@ -292,21 +297,26 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 func (m *Manager) getRdvpMaddrs() ([]*peer.AddrInfo, error) {
 	m.applyDefaults()
 
+	defaultMaddrs := []string{}
+	for _, entry := range config.Config.P2P.RDVP {
+		defaultMaddrs = append(defaultMaddrs, entry.Maddr)
+	}
+
 	var addrs []string
 	if len(m.Node.Protocol.RdvpMaddrs) == 0 {
-		addrs = config.BertyDev.RendezVousPeers
-	} else {
-		for _, v := range m.Node.Protocol.RdvpMaddrs {
-			if v == ":dev:" {
-				addrs = append(addrs, config.BertyDev.RendezVousPeers...)
-				continue
-			}
-			if v == ":none:" {
-				m.initLogger.Debug("no rendezvous peer set")
-				return nil, nil
-			}
-			addrs = append(addrs, v)
+		addrs = defaultMaddrs
+	}
+
+	for _, v := range m.Node.Protocol.RdvpMaddrs {
+		if v == ":default:" {
+			addrs = append(addrs, defaultMaddrs...)
+			continue
 		}
+		if v == ":none:" {
+			m.initLogger.Debug("no rendezvous peer set")
+			return nil, nil
+		}
+		addrs = append(addrs, v)
 	}
 
 	return ipfsutil.ParseAndResolveRdvpMaddrs(m.GetContext(), m.initLogger, addrs)
