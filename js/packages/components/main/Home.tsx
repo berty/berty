@@ -395,6 +395,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 			underlayColor={color.light.grey}
 			style={[
 				padding.horizontal.medium,
+				padding.right.scale(30),
 				padding.vertical.scale(7),
 				!isAccepted && type !== messengerpb.Conversation.Type.MultiMemberType && opacity(0.6),
 			]}
@@ -587,10 +588,7 @@ const Conversations: React.FC<ConversationsProps> = ({ items, style, onLayout })
 					style={[
 						style,
 						background.white,
-						{
-							paddingBottom: 100 - (insets?.bottom || 0) + (insets?.bottom || 0),
-							paddingLeft: 10,
-						},
+						{ paddingBottom: 100 - (insets?.bottom || 0) + (insets?.bottom || 0) },
 					]}
 				>
 					{items &&
@@ -613,9 +611,8 @@ const HomeHeader: React.FC<
 > = ({ hasRequests, scrollRef, onLayout, isOnTop, value, onChange }) => {
 	const [
 		{ border, width, height, padding, text, background, margin, row },
-		{ scaleSize, scaleHeight },
+		{ scaleHeight },
 	] = useStyles()
-	const account = useAccount()
 	const { navigate } = useNativeNavigation()
 	const [focus, setFocus] = useState<any>(null)
 
@@ -653,21 +650,15 @@ const HomeHeader: React.FC<
 					)}
 					<View
 						style={{
-							display: 'flex',
-							flex: 1,
 							flexDirection: 'row',
-							justifyContent: 'space-evenly',
 							alignItems: 'center',
-							left: 0,
-							right: 0,
 							paddingVertical: 15,
 						}}
 					>
 						<View
 							style={{
-								flex: 2,
-								justifyContent: 'center',
-								alignItems: 'center',
+								flex: 1,
+								alignItems: 'flex-end',
 							}}
 						>
 							<Logo
@@ -681,29 +672,30 @@ const HomeHeader: React.FC<
 						<TouchableOpacity
 							style={[
 								{
-									flex: 10,
+									flex: 12,
 									flexDirection: 'row',
 									justifyContent: 'flex-start',
 									alignItems: 'center',
 									backgroundColor: value?.length ? '#FFF0D5' : '#F1F4F6',
 								},
 								padding.vertical.scale(12),
-								padding.horizontal.medium,
-								margin.horizontal.small,
+								padding.left.medium,
+								margin.left.medium,
+								margin.right.scale(25),
 								border.radius.small,
 							]}
 							activeOpacity={1}
 							onPress={() => focus?.focus()}
 						>
-							<View style={[row.center]}>
-								{!value?.length ? (
+							{!value?.length ? (
+								<View style={[row.center]}>
 									<Icon name='search-outline' fill='#8F9BB3' width={20} height={20} />
-								) : null}
-							</View>
+								</View>
+							) : null}
 							<View style={[margin.left.medium]}>
 								<TextInput
 									ref={(ref) => setFocus(ref)}
-									placeholder='Search for contacts'
+									placeholder='Search keyword'
 									placeholderTextColor='#D3D9E1'
 									autoCorrect={false}
 									autoCapitalize='none'
@@ -711,30 +703,32 @@ const HomeHeader: React.FC<
 									onChangeText={(s: string) => onChange(s)}
 									style={[
 										{ fontFamily: 'Open Sans', color: '#FFAE3A' },
+										value?.length ? padding.right.scale(25) : padding.right.medium,
 										text.bold.small,
 										text.align.center,
 										text.size.medium,
-										padding.right.medium,
 									]}
 								/>
 							</View>
+							{value?.length ? (
+								<TouchableOpacity
+									style={{ justifyContent: 'flex-end', flex: 1, flexDirection: 'row' }}
+									onPress={() => onChange('')}
+								>
+									<Icon name='close-circle' fill='#FFAE3A' width={20} height={20} />
+								</TouchableOpacity>
+							) : null}
 						</TouchableOpacity>
 						<TouchableOpacity
 							style={{
-								flex: 2,
+								flex: 1,
 								flexDirection: 'row',
 								justifyContent: 'center',
 								alignItems: 'center',
-								marginLeft: 10,
 							}}
 							onPress={() => navigate('Settings.Home')}
 						>
-							<ProceduralCircleAvatar
-								seed={account?.publicKey}
-								size={40 / scaleSize}
-								diffSize={10}
-								style={[border.shadow.medium]}
-							/>
+							<Icon name='account-berty' pack='custom' fill='#8F9BB3' width={40} height={40} />
 						</TouchableOpacity>
 					</View>
 				</View>
@@ -950,6 +944,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 								stickyHeaderIndices={!searchText?.length && !hasResults ? [1] : [0]}
 								showsVerticalScrollIndicator={false}
 								scrollEventThrottle={16}
+								keyboardShouldPersistTaps={'handled'}
 								onScroll={(e) => {
 									if (e.nativeEvent.contentOffset) {
 										if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {

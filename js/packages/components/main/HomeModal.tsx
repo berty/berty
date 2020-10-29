@@ -15,11 +15,12 @@ const HomeModalButton: React.FC<{
 	value: string
 	bgColor: string
 	icon: string
+	iconSize?: number
 	iconPack: string
 	left?: boolean
 	right?: boolean
 	onPress: any
-}> = ({ value, bgColor, icon, iconPack, right, left, onPress }) => {
+}> = ({ value, bgColor, icon, iconSize = 30, iconPack, right, left, onPress }) => {
 	const [{ border, width, height, padding, color, text, margin }] = useStyles()
 
 	return (
@@ -41,14 +42,16 @@ const HomeModalButton: React.FC<{
 			]}
 			onPress={onPress}
 		>
-			<Icon name={icon} pack={iconPack} fill={color.white} width={25} height={25} />
+			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+				<Icon name={icon} pack={iconPack} fill={color.white} width={iconSize} height={iconSize} />
+			</View>
 			<TextNative
 				numberOfLines={1}
 				style={[
 					text.color.white,
 					text.bold.medium,
+					margin.top.tiny,
 					text.align.center,
-					padding.top.tiny,
 					text.size.scale(18),
 					{ fontFamily: 'Open Sans' },
 				]}
@@ -61,16 +64,24 @@ const HomeModalButton: React.FC<{
 
 export const HomeModal: React.FC<{}> = () => {
 	const navigation = useNativeNavigation()
-	const [{ absolute, color, margin }] = useStyles()
+	const [{ absolute, color, margin }, { windowWidth, scaleSize }] = useStyles()
 
 	return (
 		<>
 			<TouchableWithoutFeedback style={[StyleSheet.absoluteFill]} onPress={navigation.goBack}>
 				<View style={{ width: '100%', height: '100%' }} />
 			</TouchableWithoutFeedback>
-			<View style={[absolute.bottom, absolute.left, absolute.right]}>
+			<View
+				style={[
+					absolute.bottom,
+					margin.bottom.scale(100),
+					{ marginLeft: windowWidth / 2 - 85 * scaleSize },
+				]}
+			>
 				<View
-					style={[{ flexDirection: 'row', justifyContent: 'center' }, margin.bottom.scale(100)]}
+					style={[
+						{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
+					]}
 				>
 					<HomeModalButton
 						value='Scan'

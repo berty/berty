@@ -34,6 +34,8 @@ const fmtTimestamp1 = (date: number | Date): string => {
 	const mDate = getValidDateMoment(date)
 	if (now.isSame(mDate, 'day')) {
 		return mDate.format('hh:mm a')
+	} else if (now.subtract(1, 'day').isSame(mDate, 'day')) {
+		return 'Yesterday'
 	} else if (now.isSame(mDate, 'week')) {
 		// return mDate.format('DD/MM')
 		return mDate.format('dddd')

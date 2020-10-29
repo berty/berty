@@ -111,7 +111,11 @@ export const CreateGroupNavigation: React.FC = () => {
 		<CreateGroupStack.Navigator screenOptions={{ headerShown: false }}>
 			<CreateGroupStack.Screen
 				name={Routes.CreateGroup.CreateGroupAddMembers}
-				options={{ stackPresentation: 'containedModal' }}
+				options={{
+					stackPresentation: 'containedTransparentModal',
+					contentStyle: { backgroundColor: 'transparent' },
+					stackAnimation: 'none',
+				}}
 			>
 				{() => (
 					// should use setParams ? maybe, tis weird
@@ -124,7 +128,11 @@ export const CreateGroupNavigation: React.FC = () => {
 			</CreateGroupStack.Screen>
 			<CreateGroupStack.Screen
 				name={Routes.CreateGroup.CreateGroupFinalize}
-				options={{ stackPresentation: 'containedModal' }}
+				options={{
+					stackPresentation: 'containedTransparentModal',
+					contentStyle: { backgroundColor: 'transparent' },
+					stackAnimation: 'none',
+				}}
 			>
 				{() => (
 					<Components.Main.CreateGroupFinalize members={members} onRemoveMember={removeMember} />
@@ -174,6 +182,7 @@ export const Navigation: React.FC = () => {
 				component={Components.Main.Scan}
 				options={{
 					stackPresentation: 'containedTransparentModal',
+					stackAnimation: 'none',
 					contentStyle: { backgroundColor: 'transparent' },
 				}}
 			/>
@@ -215,7 +224,11 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={Routes.CreateGroup.CreateGroupAddMembers}
 				component={CreateGroupNavigation}
-				options={{ stackPresentation: 'containedModal' }}
+				options={{
+					stackPresentation: 'containedTransparentModal',
+					contentStyle: { backgroundColor: 'transparent' },
+					stackAnimation: 'none',
+				}}
 			/>
 			<NavigationStack.Screen name={Routes.Root.Tabs} component={TabNavigation} />
 			<NavigationStack.Screen

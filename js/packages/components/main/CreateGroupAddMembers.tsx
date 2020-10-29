@@ -17,6 +17,7 @@ import { messenger as messengerpb } from '@berty-tech/api/index.js'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 // Styles
 const useStylesCreateGroup = () => {
@@ -53,7 +54,7 @@ type AddMembersProps = {
 	members: any[]
 }
 
-const Header: React.FC<{
+export const Header: React.FC<{
 	title: string
 	icon?: string
 	iconPack?: string
@@ -364,25 +365,32 @@ export const CreateGroupAddMembers: React.FC<{
 
 	return (
 		<Layout style={[flex.tiny]}>
-			<SafeAreaView style={[background.blue]}>
-				<View onLayout={(e) => setLayout(e.nativeEvent.layout.height)}>
-					<CreateGroupHeader />
-					<MemberList members={members} onRemoveMember={onRemoveMember} />
-				</View>
-				<Header title='Add members' first style={[margin.bottom.scale(-1)]} />
-				<AddMembers
-					members={members}
-					onSetMember={onSetMember}
-					onRemoveMember={onRemoveMember}
-					paddingBottom={120}
-					layout={layout}
+			<SwipeNavRecognizer
+				onSwipeUp={() => navigation.goBack()}
+				onSwipeDown={() => navigation.goBack()}
+				onSwipeLeft={() => navigation.goBack()}
+				onSwipeRight={() => navigation.goBack()}
+			>
+				<SafeAreaView style={[background.blue]}>
+					<View onLayout={(e) => setLayout(e.nativeEvent.layout.height)}>
+						<CreateGroupHeader />
+						<MemberList members={members} onRemoveMember={onRemoveMember} />
+					</View>
+					<Header title='Add members' first style={[margin.bottom.scale(-1)]} />
+					<AddMembers
+						members={members}
+						onSetMember={onSetMember}
+						onRemoveMember={onRemoveMember}
+						paddingBottom={120}
+						layout={layout}
+					/>
+				</SafeAreaView>
+				<FooterCreateGroup
+					title='CONTINUE'
+					icon='arrow-forward-outline'
+					action={navigation.navigate.main.createGroup.createGroupFinalize}
 				/>
-			</SafeAreaView>
-			<FooterCreateGroup
-				title='CONTINUE'
-				icon='arrow-forward-outline'
-				action={navigation.navigate.main.createGroup.createGroupFinalize}
-			/>
+			</SwipeNavRecognizer>
 		</Layout>
 	)
 }

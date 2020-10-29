@@ -14,17 +14,22 @@ import { useNavigation } from '@berty-tech/navigation'
 
 const navSwipeVelocityThreshold = 0.3
 const onSwipeHorizontalOffsetThreshold = 100
+const onSwipeVerticalOffsetThreshold = 90
 
 export const SwipeNavRecognizer: React.FC<{
 	children: any
 	onSwipeRight?: () => void
 	onSwipeLeft?: () => void
+	onSwipeUp?: () => void
+	onSwipeDown?: () => void
 	styles?: any
 	noActionOnRightSwipe?: boolean
 }> = ({
 	children,
 	onSwipeRight,
 	onSwipeLeft,
+	onSwipeUp,
+	onSwipeDown,
 	styles = { flex: 1 },
 	noActionOnRightSwipe = false,
 }) => {
@@ -37,25 +42,34 @@ export const SwipeNavRecognizer: React.FC<{
 		: goBack
 
 	const swipeLeftHandler: (() => void) | undefined = onSwipeLeft || undefined
+	const swipeUpHandler: (() => void) | undefined = onSwipeUp || undefined
+	const swipeDownHandler: (() => void) | undefined = onSwipeDown || undefined
 
 	const onSwipeHandler = React.useCallback(
 		(_, gestureState) => {
-			const gestureName =
-				gestureState.dx > onSwipeHorizontalOffsetThreshold ? 'SWIPE_RIGHT' : 'SWIPE_LEFT'
-			return gestureName === 'SWIPE_LEFT'
-				? swipeLeftHandler && swipeLeftHandler()
-				: swipeRightHandler && swipeRightHandler()
+			if (gestureState.dy > onSwipeVerticalOffsetThreshold) {
+				return swipeDownHandler && swipeDownHandler()
+			} else if (gestureState.dy < -onSwipeVerticalOffsetThreshold) {
+				return swipeUpHandler && swipeUpHandler()
+			} else if (gestureState.dx > onSwipeHorizontalOffsetThreshold) {
+				return swipeRightHandler && swipeRightHandler()
+			}
+			return swipeLeftHandler && swipeLeftHandler()
 		},
-		[swipeLeftHandler, swipeRightHandler],
+		[swipeUpHandler, swipeDownHandler, swipeLeftHandler, swipeRightHandler],
 	)
 
-	const isHorizontalSwipe = React.useCallback(
+	const isSwipe = React.useCallback(
 		(evt: GestureResponderEvent, gestureState: PanResponderGestureState) => {
 			const toSwipe =
-				evt.nativeEvent.touches.length === 1 &&
-				Math.abs(gestureState.dx) > onSwipeHorizontalOffsetThreshold &&
-				Math.abs(gestureState.vx) > navSwipeVelocityThreshold &&
-				Math.abs(gestureState.dy) < Math.abs(gestureState.dx)
+				(evt.nativeEvent.touches.length === 1 &&
+					Math.abs(gestureState.dy) > onSwipeVerticalOffsetThreshold &&
+					Math.abs(gestureState.vy) > navSwipeVelocityThreshold &&
+					Math.abs(gestureState.dx) < Math.abs(gestureState.dy)) ||
+				(evt.nativeEvent.touches.length === 1 &&
+					Math.abs(gestureState.dx) > onSwipeHorizontalOffsetThreshold &&
+					Math.abs(gestureState.vx) > navSwipeVelocityThreshold &&
+					Math.abs(gestureState.dy) < Math.abs(gestureState.dx))
 			return toSwipe
 		},
 		[],
@@ -66,9 +80,9 @@ export const SwipeNavRecognizer: React.FC<{
 			onPanResponderRelease: onSwipeHandler,
 			onPanResponderTerminate: onSwipeHandler,
 			onStartShouldSetPanResponder: () => false,
-			onMoveShouldSetPanResponder: isHorizontalSwipe,
+			onMoveShouldSetPanResponder: isSwipe,
 		})
-	}, [onSwipeHandler, isHorizontalSwipe])
+	}, [onSwipeHandler, isSwipe])
 
 	return (
 		<View style={styles} {...panResponder.panHandlers}>

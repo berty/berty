@@ -2,6 +2,7 @@ import React from 'react'
 import { View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
+import QRCode from 'react-native-qrcode-svg'
 
 import { useStyles } from '@berty-tech/styles'
 
@@ -63,9 +64,14 @@ const HomeHeaderGroupButton: React.FC = () => {
 
 const HomeHeaderAvatar: React.FC = () => {
 	const _styles = useStylesHome()
-	const [{ row, margin, background, border, color, padding }, { scaleSize }] = useStyles()
+	const [
+		{ row, margin, background, border, padding },
+		{ windowWidth, windowHeight, scaleHeight },
+	] = useStyles()
 	const account = useAccount()
 	const navigation = useNavigation()
+	const qrCodeSize = Math.min(windowHeight, windowWidth) * 0.3
+
 	return (
 		<View style={[row.center, margin.top.scale(30)]}>
 			<TouchableOpacity
@@ -73,7 +79,7 @@ const HomeHeaderAvatar: React.FC = () => {
 				onPress={() => navigation.navigate.settings.myBertyId()}
 			>
 				<View style={[{ alignItems: 'center' }]}>
-					<View style={{ position: 'absolute', top: -80 * scaleSize }}>
+					<View style={{ position: 'absolute', top: -75 }}>
 						<ProceduralCircleAvatar
 							seed={account?.publicKey}
 							size={70}
@@ -82,20 +88,8 @@ const HomeHeaderAvatar: React.FC = () => {
 						/>
 					</View>
 					<Text style={[_styles.headerNameText]}>{account?.displayName || ''}</Text>
-					<View
-						style={[
-							// { paddingLeft: 12, paddingTop: 20 },
-							padding.left.scale(12),
-							padding.top.scale(20),
-						]}
-					>
-						<Icon
-							name='qr'
-							pack='custom'
-							width={110 * scaleSize}
-							height={110 * scaleSize}
-							fill={color.blue}
-						/>
+					<View style={[padding.top.scale(20 * scaleHeight)]}>
+						<QRCode size={qrCodeSize} value={account.link} />
 					</View>
 				</View>
 			</TouchableOpacity>
@@ -112,9 +106,7 @@ const HomeHeader: React.FC = () => {
 				<TouchableOpacity onPress={() => navigation.goBack()}>
 					<Icon name='arrow-back-outline' width={25} height={25} fill={color.white} />
 				</TouchableOpacity>
-				<TouchableOpacity onPress={() => navigation.navigate('Settings.MyBertyId')}>
-					<Icon name='edit-outline' width={25} height={25} fill={color.white} />
-				</TouchableOpacity>
+				<View />
 			</View>
 			<HomeHeaderAvatar />
 		</View>
@@ -135,6 +127,13 @@ const HomeBodySettings: React.FC<{}> = () => {
 	return (
 		<View style={[flex.tiny, padding.horizontal.medium, margin.top.medium]}>
 			<ButtonSetting
+				name='Network List'
+				icon='earth'
+				iconPack='custom'
+				iconColor={color.blue}
+				onPress={() => navigation.navigate('Settings.NetworkMap')}
+			/>
+			<ButtonSetting
 				name='Notifications'
 				icon='bell-outline'
 				iconColor={color.blue}
@@ -150,13 +149,6 @@ const HomeBodySettings: React.FC<{}> = () => {
 				icon='bluetooth-outline'
 				iconColor={color.blue}
 				onPress={navigate.settings.bluetooth}
-			/>
-			<ButtonSetting
-				name='Network List'
-				icon='earth'
-				iconPack='custom'
-				iconColor={color.blue}
-				onPress={() => navigation.navigate('Settings.NetworkMap')}
 			/>
 			<ButtonSetting
 				name='External services'
