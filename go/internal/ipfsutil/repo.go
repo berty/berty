@@ -16,7 +16,6 @@ import (
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
 
-	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
@@ -101,7 +100,12 @@ func createBaseConfig() (*ipfs_cfg.Config, error) {
 	c.Discovery.MDNS.Interval = 5
 
 	// swarm listeners
-	c.Addresses.Swarm = config.BertyDev.DefaultSwarmAddrs
+	c.Addresses.Swarm = []string{
+		"/ip4/0.0.0.0/tcp/0",
+		"/ip6/::/tcp/0",
+		"/ip4/0.0.0.0/udp/0/quic",
+		"/ip6/::/udp/0/quic",
+	}
 
 	// Swarm
 	c.Swarm.EnableAutoRelay = true
