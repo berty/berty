@@ -24,7 +24,6 @@ import {
 	useLastConvInteraction,
 	usePersistentOptions,
 	useSortedConversationList,
-	useAccount,
 } from '@berty-tech/store/hooks'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
@@ -692,7 +691,16 @@ const HomeHeader: React.FC<
 									<Icon name='search-outline' fill='#8F9BB3' width={20} height={20} />
 								</View>
 							) : null}
-							<View style={[margin.left.medium]}>
+							<View
+								style={[
+									!value?.length && margin.left.medium,
+									{
+										flex: 6,
+										flexDirection: 'row',
+										alignItems: 'flex-start',
+									},
+								]}
+							>
 								<TextInput
 									ref={(ref) => setFocus(ref)}
 									placeholder='Search keyword'
@@ -712,7 +720,11 @@ const HomeHeader: React.FC<
 							</View>
 							{value?.length ? (
 								<TouchableOpacity
-									style={{ justifyContent: 'flex-end', flex: 1, flexDirection: 'row' }}
+									style={{
+										justifyContent: 'center',
+										flex: 1,
+										flexDirection: 'row',
+									}}
 									onPress={() => onChange('')}
 								>
 									<Icon name='close-circle' fill='#FFAE3A' width={20} height={20} />

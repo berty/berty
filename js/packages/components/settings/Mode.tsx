@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
 import { View, ScrollView, Vibration } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
+
 import { useStyles } from '@berty-tech/styles'
+import { useMsgrContext, useAccount } from '@berty-tech/store/hooks'
+import { serviceTypes, useAccountServices } from '@berty-tech/store/services'
+import { useNavigation } from '@berty-tech/navigation'
+
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
-import { useNavigation } from '@berty-tech/navigation'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
@@ -30,7 +34,15 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 	const _styles = useStylesMode()
 	const [{ flex, padding, margin, color, text, column }, { scaleSize }] = useStyles()
 	const navigation = useReactNavigation()
+	const account: berty.messenger.v1.Account = useAccount()
+	const services = useAccountServices()
+	const replicationServices = services.filter(
+		(s: any) => s.serviceType === serviceTypes.Replication,
+	)
 
+	const ctx = useMsgrContext()
+	const enableNotif =
+		ctx.persistentOptions?.notifications && ctx.persistentOptions?.notifications.enable
 	return (
 		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
 			<ButtonSetting
@@ -88,43 +100,23 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 					/>
 				</View>
 			</ButtonSetting>
+			<ButtonSetting name='Dark mode' icon='moon-outline' iconColor={color.blue} toggled disabled />
 			<ButtonSetting
 				name='Notifications'
 				icon='bell-outline'
 				iconColor={color.blue}
-				iconSize={30}
-				state={
-					isMode
-						? {
-								value: 'Enabled',
-								color: color.green,
-								bgColor: color.light.green,
-						  }
-						: { value: 'Disabled', color: color.red, bgColor: color.light.red }
-				}
-				actionIcon='arrow-ios-forward'
-				disabled
+				state={{
+					value: enableNotif ? 'Enabled' : 'Disabled',
+					color: enableNotif ? color.green : color.red,
+					bgColor: enableNotif ? color.light.green : color.light.red,
+				}}
+				onPress={() => navigation.navigate('Settings.Notifications')}
 			/>
 			<ButtonSetting
 				name='Bluetooth'
 				icon='bluetooth-outline'
 				iconColor={color.blue}
-				iconSize={30}
-				state={
-					isMode
-						? {
-								value: 'Enabled',
-								color: color.green,
-								bgColor: color.light.green,
-						  }
-						: {
-								value: 'Disabled',
-								color: color.red,
-								bgColor: color.light.red,
-						  }
-				}
-				actionIcon='arrow-ios-forward'
-				disabled
+				onPress={() => navigation.navigate('Settings.Bluetooth')}
 			/>
 			<ButtonSetting
 				name='Receive contact requests'
@@ -133,6 +125,35 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 				iconSize={30}
 				toggled
 				disabled
+			/>
+			<ButtonSetting
+				name='External services'
+				icon='cube-outline'
+				iconColor={color.blue}
+				iconSize={30}
+				actionIcon='arrow-ios-forward'
+				onPress={() => navigation.navigate('Settings.ServicesAuth')}
+			/>
+			<ButtonSetting
+				name='Auto replicate'
+				icon='cloud-upload-outline'
+				iconColor={color.blue}
+				actionIcon={
+					// TODO: make toggle usable and use it
+					replicationServices.length !== 0 && account.replicateNewGroupsAutomatically
+						? 'toggle-right'
+						: 'toggle-left-outline'
+				}
+				disabled={replicationServices.length === 0}
+				onPress={async () => {
+					if (replicationServices.length === 0) {
+						return
+					}
+
+					await ctx.client.replicationSetAutoEnable({
+						enabled: !account.replicateNewGroupsAutomatically,
+					})
+				}}
 			/>
 			<ButtonSetting
 				name='Multicast DNS'

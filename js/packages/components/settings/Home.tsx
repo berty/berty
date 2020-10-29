@@ -9,12 +9,10 @@ import { useStyles } from '@berty-tech/styles'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import HeaderSettings from '../shared-components/Header'
-import { SwipeHelperReactNavTabBar } from '../shared-components/SwipeNavRecognizer'
-import { HintBody } from '../shared-components/HintBody'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { serviceTypes, useAccountServices } from '@berty-tech/store/services'
-import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
+import { useAccount } from '@berty-tech/store/hooks'
 
 const useStylesHome = () => {
 	const [{ height, margin, padding, text }] = useStyles()
@@ -32,22 +30,22 @@ const HomeHeaderGroupButton: React.FC = () => {
 	const [{ padding, color }] = useStyles()
 	const { navigate } = useNavigation()
 	return (
-		<View style={[padding.horizontal.medium]}>
+		<View style={[padding.horizontal.medium, padding.top.small]}>
 			<ButtonSettingRow
 				state={[
-					{
-						name: 'Updates',
-						icon: 'arrow-upward-outline',
-						color: color.blue,
-						style: _styles.firstHeaderButton,
-						onPress: navigate.settings.appUpdates,
-					},
 					{
 						name: 'Help',
 						icon: 'question-mark-circle-outline',
 						color: color.red,
-						style: _styles.secondHeaderButton,
+						style: _styles.firstHeaderButton,
 						onPress: navigate.settings.help,
+					},
+					{
+						name: 'Devtools',
+						icon: 'options-2-outline',
+						color: color.dark.grey,
+						style: _styles.secondHeaderButton,
+						onPress: navigate.settings.devTools,
 					},
 					{
 						name: 'Settings',
@@ -115,14 +113,7 @@ const HomeHeader: React.FC = () => {
 
 const HomeBodySettings: React.FC<{}> = () => {
 	const [{ flex, color, padding, margin }] = useStyles()
-	const { navigate } = useNavigation()
 	const navigation = useNativeNavigation()
-	const services = useAccountServices()
-	const account: berty.messenger.v1.Account = useAccount()
-	const replicationServices = services.filter((s) => s.serviceType === serviceTypes.Replication)
-	const ctx = useMsgrContext()
-	const enableNotif =
-		ctx.persistentOptions?.notifications && ctx.persistentOptions?.notifications.enable
 
 	return (
 		<View style={[flex.tiny, padding.horizontal.medium, margin.top.medium]}>
@@ -133,82 +124,28 @@ const HomeBodySettings: React.FC<{}> = () => {
 				iconColor={color.blue}
 				onPress={() => navigation.navigate('Settings.NetworkMap')}
 			/>
-			<ButtonSetting
-				name='Notifications'
-				icon='bell-outline'
-				iconColor={color.blue}
-				state={{
-					value: enableNotif ? 'Current' : 'Disable',
-					color: color.white,
-					bgColor: enableNotif ? color.blue : color.red,
-				}}
-				onPress={navigate.settings.notifications}
-			/>
-			<ButtonSetting
-				name='Bluetooth'
-				icon='bluetooth-outline'
-				iconColor={color.blue}
-				onPress={navigate.settings.bluetooth}
-			/>
-			<ButtonSetting
-				name='External services'
-				icon='cube-outline'
-				iconColor={color.blue}
-				iconSize={30}
-				actionIcon='arrow-ios-forward'
-				onPress={navigate.settings.servicesAuth}
-			/>
-			<ButtonSetting name='Dark mode' icon='moon-outline' iconColor={color.blue} toggled disabled />
-			<ButtonSetting
-				name='Auto replicate'
-				icon='cloud-upload-outline'
-				iconColor={color.blue}
-				actionIcon={
-					// TODO: make toggle usable and use it
-					replicationServices.length !== 0 && account.replicateNewGroupsAutomatically
-						? 'toggle-right'
-						: 'toggle-left-outline'
-				}
-				disabled={replicationServices.length === 0}
-				onPress={async () => {
-					if (replicationServices.length === 0) {
-						return
-					}
-
-					await ctx.client.replicationSetAutoEnable({
-						enabled: !account.replicateNewGroupsAutomatically,
-					})
-				}}
-			/>
-			<ButtonSetting
-				name='About Berty'
-				icon='info-outline'
-				iconColor={color.blue}
-				onPress={navigate.settings.aboutBerty}
-			/>
-			<ButtonSetting
-				name='DevTools'
-				icon='options-2-outline'
-				iconColor={color.blue}
-				onPress={navigate.settings.devTools}
-			/>
 		</View>
 	)
 }
 
 export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 	const account = useAccount()
-	const _styles = useStylesHome()
-	const [{ flex, background, row, color }, { windowHeight }] = useStyles()
+	const [{ flex, background, row }] = useStyles()
+	const navigation = useNativeNavigation()
 
 	return (
 		<>
 			<View style={[flex.tiny, background.white]}>
-				<SwipeHelperReactNavTabBar>
+				<SwipeNavRecognizer
+					onSwipeUp={() => navigation.goBack()}
+					onSwipeLeft={() => navigation.goBack()}
+					onSwipeRight={() => navigation.goBack()}
+					onSwipeDown={() => navigation.goBack()}
+				>
 					{account == null ? (
 						<ActivityIndicator size='large' style={[row.center]} />
 					) : (
-						<ScrollView contentContainerStyle={[_styles.scrollViewPadding]}>
+						<ScrollView bounces={false}>
 							<HeaderSettings>
 								<View>
 									<HomeHeader />
@@ -216,28 +153,9 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 								</View>
 							</HeaderSettings>
 							<HomeBodySettings />
-							<View
-								style={{
-									position: 'absolute',
-									bottom: -300,
-									height: 200,
-									width: '100%',
-								}}
-							>
-								<HintBody />
-							</View>
-							<View
-								style={{
-									position: 'absolute',
-									top: windowHeight * -1,
-									width: '100%',
-									height: windowHeight,
-									backgroundColor: color.blue,
-								}}
-							/>
 						</ScrollView>
 					)}
-				</SwipeHelperReactNavTabBar>
+				</SwipeNavRecognizer>
 			</View>
 		</>
 	)

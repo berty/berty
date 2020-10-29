@@ -162,7 +162,7 @@ const ScanComponent: React.FC<any> = () => {
 	const { goBack } = useNavigation()
 	const [{ color, padding, flex, margin, background }, { scaleSize }] = useStyles()
 	const { titleSize } = useStylesScan()
-	const [touchingHeader, setIsTouchingHeader] = useState(false)
+	const [, setIsTouchingHeader] = useState(false)
 
 	return (
 		<SafeAreaConsumer>

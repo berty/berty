@@ -12,15 +12,16 @@ import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { useStyles } from '@berty-tech/styles'
 
 const HomeModalButton: React.FC<{
-	value: string
-	bgColor: string
-	icon: string
+	value?: string
+	bgColor?: string
+	icon?: string
 	iconSize?: number
-	iconPack: string
+	iconPack?: string
 	left?: boolean
 	right?: boolean
 	onPress: any
-}> = ({ value, bgColor, icon, iconSize = 30, iconPack, right, left, onPress }) => {
+	children?: any
+}> = ({ value, bgColor, icon, iconSize = 30, iconPack, right, left, onPress, children = null }) => {
 	const [{ border, width, height, padding, color, text, margin }] = useStyles()
 
 	return (
@@ -42,29 +43,41 @@ const HomeModalButton: React.FC<{
 			]}
 			onPress={onPress}
 		>
-			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-				<Icon name={icon} pack={iconPack} fill={color.white} width={iconSize} height={iconSize} />
-			</View>
-			<TextNative
-				numberOfLines={1}
-				style={[
-					text.color.white,
-					text.bold.medium,
-					margin.top.tiny,
-					text.align.center,
-					text.size.scale(18),
-					{ fontFamily: 'Open Sans' },
-				]}
-			>
-				{value}
-			</TextNative>
+			{children ? (
+				children
+			) : (
+				<>
+					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+						<Icon
+							name={icon}
+							pack={iconPack}
+							fill={color.white}
+							width={iconSize}
+							height={iconSize}
+						/>
+					</View>
+					<TextNative
+						numberOfLines={1}
+						style={[
+							text.color.white,
+							text.bold.medium,
+							margin.top.tiny,
+							text.align.center,
+							text.size.scale(18),
+							{ fontFamily: 'Open Sans' },
+						]}
+					>
+						{value}
+					</TextNative>
+				</>
+			)}
 		</TouchableOpacity>
 	)
 }
 
 export const HomeModal: React.FC<{}> = () => {
 	const navigation = useNativeNavigation()
-	const [{ absolute, color, margin }, { windowWidth, scaleSize }] = useStyles()
+	const [{ absolute, color, margin, text }, { windowWidth, scaleSize }] = useStyles()
 
 	return (
 		<>
@@ -92,13 +105,37 @@ export const HomeModal: React.FC<{}> = () => {
 						left
 					/>
 					<HomeModalButton
-						value='Group'
 						bgColor='#527FEC'
-						icon='users'
-						iconPack='custom'
 						onPress={() => navigation.navigate('Main.CreateGroupAddMembers')}
 						right
-					/>
+					>
+						<>
+							<View style={{ flexDirection: 'row', alignItems: 'center', paddingRight: 7 }}>
+								<Icon
+									name='plus'
+									pack='custom'
+									fill={color.white}
+									width={15}
+									height={15}
+									style={{ top: -2, left: 3 }}
+								/>
+								<Icon name='users' pack='custom' fill={color.white} width={30} height={30} />
+							</View>
+							<TextNative
+								numberOfLines={1}
+								style={[
+									text.color.white,
+									text.bold.medium,
+									margin.top.tiny,
+									text.align.center,
+									text.size.scale(18),
+									{ fontFamily: 'Open Sans' },
+								]}
+							>
+								{'Group'}
+							</TextNative>
+						</>
+					</HomeModalButton>
 				</View>
 			</View>
 		</>
