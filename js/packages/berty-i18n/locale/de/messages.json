@@ -1,13 +1,20 @@
 {
   "time": {
-    "fuzzy-time": "",
-    "fuzzy-month-day": "",
-    "fuzzy-year-month": "",
-    "datetime": "",
+    "fuzzy-time": "hh:mm",
+    "fuzzy-month-day": "dd/MM",
+    "fuzzy-year-month": "MM/YY",
+    "datetime": "MMM Tun YYYY hh:mm",
     "started-ago": "Vor {{date}} gestartet"
   },
   "onboarding": {
-    "getstarted": "",
+    "getstarted": {
+      "desc": "Die sichere Peer-to-Peer-Messaging-App, die mit oder ohne Internetzugang, Mobilfunkdaten oder Vertrauen in das Netzwerk funktioniert",
+      "open-registered-account": "Eröffnen eines registrierten Kontos",
+      "import-button": "Daten von einem bestehenden Konto importieren",
+      "account-selector-create-button": "Ihr Konto erstellen",
+      "more-options": "Weitere Optionen",
+      "button": ""
+    },
     "select-mode": {
       "performance": {
         "title": "Leistung",
@@ -15,57 +22,366 @@
         "push-notif": "Push-Benachrichtigungen erhalten",
         "offline-message": "Offline-Nachrichten",
         "add-contact": "Kontakte einfach hinzufügen",
-        "fast-message": ""
+        "fast-message": "Schnellste Nachrichtenlieferung"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
-        "disable-push-notif": "",
-        "disable-local-peer-discovery": "",
-        "disable-contact-request": ""
+        "title": "Höchste Privatsphäre",
+        "desc": "Für fortgeschrittene Benutzer - Weniger Metadaten",
+        "disable-push-notif": "Push Benachrichtigungen deaktiviert",
+        "disable-local-peer-discovery": "Lokale Peer-Entdeckung deaktiviert",
+        "disable-contact-request": "Kontaktanfragen deaktiviert"
       }
     },
     "create-account": {
-      "title": "",
-      "desc": "",
-      "required": "",
+      "title": "Ihr Konto erstellen",
+      "desc": "Ein Spitzname ist die einzige erforderliche Information",
+      "required": "Erforderlich",
       "placeholder": "Name",
       "button": "MEIN KONTO ERSTELLEN"
     },
+    "services-auth": {
+      "header": "",
+      "title": "",
+      "recommended": "Empfohlen",
+      "desc": "",
+      "button": "",
+      "skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
+    },
     "generate-key": {
       "title": "Starte den Berty Router…",
-      "desc": ""
+      "desc": "Dies könnte einige Sekunden dauern"
     },
     "notifications": {
-      "header": "",
+      "header": "Verpassen Sie keine neue Nachricht oder Kontaktanfrage",
       "recommended": "Empfohlen",
-      "title": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "title": "Benachrichtigungen",
+      "desc": "Du musst Push-Benachrichtigungen von Berty auf deinem Handy autorisieren",
+      "button": "BENACHRICHTIGUNGEN AUTHORIS",
+      "skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
     },
     "bluetooth": {
-      "header": "",
-      "optional": "",
+      "header": "Kommunizieren ohne Internetverbindung (WiFi oder Daten), indem Sie Ihr Telefon direkt mit Kollegen in der Nähe verbinden",
+      "optional": "Fakultativ",
       "title": "Bluetooth",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "desc": "Um diese Funktion nutzen zu können, müssen Sie Bluetooth auf Ihrem Telefon autorisieren",
+      "button": "BLUETOOTH AUTORISIEREN",
+      "skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
     },
     "setup-finished": {
-      "title": "",
-      "desc": "",
-      "button": ""
+      "title": "Einrichtung beendet!",
+      "desc": "Sie können jetzt die App benutzen, Kontakte hinzufügen und sich frei und privat mit ihnen unterhalten",
+      "button": "BERTY VERWENDEN"
     }
   },
   "main": {
-    "requests": {
-      "title": "Anfragen",
-      "received-at": "Erhalten",
-      "accept": "Akzeptieren"
+    "home": {
+      "requests": {
+        "title": "Anfragen",
+        "received-at": "Erhalten",
+        "accept": "Akzeptieren",
+        "card-title": ""
+      },
+      "messages": {
+        "title": "Nachrichten"
+      },
+      "input-placeholder": "",
+      "no-contacts": "",
+      "search": {
+        "no-results": ""
+      }
     },
-    "messages": {
-      "title": "Nachrichten"
+    "home-modal": {
+      "left-button": "",
+      "right-button": ""
+    }
+  },
+  "settings": {
+    "home": {
+      "header-left-button": "",
+      "header-center-button": "",
+      "header-right-button": "Einstellungen",
+      "network-button": ""
+    },
+    "network-map": {
+      "title": "",
+      "online-peers": ""
+    },
+    "mode": {
+      "title": "Einstellungen",
+      "desc": "Passen Sie alles an, um die App zu erhalten, die Ihren Bedürfnissen entspricht",
+      "notifications-button": {
+        "title": "Benachrichtigungen",
+        "tag-enabled": "",
+        "tag-disabled": ""
+      },
+      "bluetooth-button": {
+        "title": "Bluetooth",
+        "tag-enabled": "",
+        "tag-disabled": ""
+      },
+      "app-mode-button": {
+        "title": "",
+        "performance-tag": "Leistung",
+        "privacy-tag": "",
+        "description-tag": "Einfach zu bedienen - Alle Funktionen",
+        "first-bullet-point": "Push-Benachrichtigungen erhalten",
+        "second-bullet-point": "",
+        "third-bullet-point": ""
+      },
+      "dark-mode-button": "",
+      "receive-contact-requests-button": "",
+      "external-services-button": "",
+      "auto-replicate-button": "",
+      "multicast-dns-button": {
+        "title": "",
+        "desc": ""
+      },
+      "blocked-contacts-button": {
+        "title": "",
+        "tag": ""
+      },
+      "delete-account-button": ""
+    },
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "enabled-desc": "",
+      "disabled-desc": "",
+      "activate-button": "",
+      "contact-request-button": {
+        "title": "",
+        "desc": ""
+      },
+      "messages-notifications-button": {
+        "title": "",
+        "display-button": "",
+        "preview-button": "",
+        "sound-button": "",
+        "exceptions-button": {
+          "title": "",
+          "preview-value": "",
+          "tag": ""
+        }
+      },
+      "group-notifications-button": {
+        "title": "",
+        "display-button": "",
+        "preview-button": "",
+        "sound-button": "",
+        "exceptions-button": {
+          "title": "",
+          "preview-value": "",
+          "tag": ""
+        }
+      }
+    },
+    "bluetooth": {
+      "title": "Bluetooth",
+      "desc": "",
+      "activate-button": ""
+    },
+    "services-auth": {
+      "title": "",
+      "operated-services-button": "",
+      "register-service-button": {
+        "title": "",
+        "input-placeholder": "",
+        "action": ""
+      },
+      "registered-services-button": {
+        "title": "",
+        "sample-no-services": "",
+        "sample-unknown-service": ""
+      }
+    },
+    "delete-account": {
+      "title": "",
+      "first-desc": "",
+      "begin-second-desc": "",
+      "bold-second-desc": "",
+      "end-second-desc": "",
+      "cancel-button": "",
+      "delete-button": ""
+    },
+    "help": {
+      "title": "",
+      "security-privacy-button": {
+        "title": "",
+        "desc": ""
+      },
+      "updates-button": "",
+      "about-button": "",
+      "account-button": "",
+      "contact-button": "",
+      "message-button": "Nachrichten",
+      "group-button": "",
+      "settings-button": "Einstellungen",
+      "ask-button": "",
+      "report-button": ""
+    },
+    "about": {
+      "title": "",
+      "top-left-button": "",
+      "top-right-button": "",
+      "bottom-left-button": "",
+      "bottom-right-button": "",
+      "terms-button": "",
+      "privacy-button": "",
+      "software-button": "",
+      "contact-button": "",
+      "website-button": ""
+    },
+    "updates": {
+      "title": "",
+      "up-to-date-desc": "",
+      "version": "",
+      "current-tag": "",
+      "installed-tag": "",
+      "initial-tag": "",
+      "not-installed-tag": ""
+    },
+    "devtools": {
+      "title": "",
+      "header-left-button": "",
+      "header-middle-button": "",
+      "header-right-button": "",
+      "system-info-button": "",
+      "add-bots-button": "",
+      "share-button": {
+        "title": "",
+        "alert-title": "",
+        "alert-message": "",
+        "alert-accept-button": "",
+        "alert-cancel-button": ""
+      },
+      "native-bridge-button": "",
+      "dump-account-button": "",
+      "dump-contacts-button": "",
+      "dump-conversations-button": "",
+      "dump-interactions-button": "",
+      "dump-members-button": "",
+      "stop-node-button": "",
+      "bot-mode-button": "",
+      "local-grpc-button": "",
+      "console-logs-button": "",
+      "ipfs-webui-button": "",
+      "notifications-button": "Benachrichtigungen",
+      "send-to-all-button": {
+        "title": "",
+        "sending": "",
+        "test": "",
+        "begin-tried": "",
+        "end-tried": ""
+      },
+      "footer-left-button": "",
+      "footer-middle-button": "",
+      "footer-right-button": ""
+    },
+    "system-info": {
+      "title": ""
+    },
+    "fake-data": {
+      "title": "",
+      "contacts-button": "",
+      "multi-members-button": "",
+      "messages-button": "",
+      "delete-button": ""
+    },
+    "add-contact-list": {
+      "title": "",
+      "add": ""
+    },
+    "ipfs-webui": {
+      "title": ""
+    }
+  },
+  "modals": {
+    "manage-deep-link": {
+      "invalid-link": "",
+      "invalid-qr": "",
+      "error": ""
+    },
+    "invalid-scan": {
+      "dismiss-button": ""
+    },
+    "add-this-contact": {
+      "fingerprint": "",
+      "info": "",
+      "devices": ""
+    },
+    "group-invitation": {
+      "fingerprint": "",
+      "info": "",
+      "devices": ""
+    }
+  },
+  "chat": {
+    "contact-settings": {
+      "mark-button": "",
+      "block-button": "",
+      "delete-button": "",
+      "fingerprint": "",
+      "info": "",
+      "devices": ""
+    },
+    "multi-member": {
+      "input-placeholder": ""
+    },
+    "multi-member-settings": {
+      "header-left-button": "",
+      "header-middle-button": "",
+      "header-right-button": "",
+      "media-button": "",
+      "notifications-button": "",
+      "members-button": {
+        "title": "",
+        "unknown": ""
+      },
+      "add-member-button": "",
+      "invite-button": "",
+      "save-button": "",
+      "erase-button": "",
+      "leave-button": ""
+    },
+    "one-to-one": {
+      "contact-request-box": {
+        "title": "",
+        "refuse-button": "",
+        "accept-button": "",
+        "accepted-button": ""
+      },
+      "betabot-box": {
+        "title": "",
+        "begin-desc": "",
+        "bold-desc": "",
+        "end-desc": "",
+        "skip-button": "",
+        "add-button": ""
+      },
+      "infos-chat": {
+        "connection-confirmed": "",
+        "request-sent": "",
+        "incoming": "",
+        "outgoing": ""
+      },
+      "betabot-input-placeholder": "",
+      "incoming-input-placeholder": "",
+      "input-placeholder": ""
+    },
+    "one-to-one-settings": {
+      "header-left-button": "",
+      "header-middle-button": "",
+      "header-right-button": "",
+      "media-button": "",
+      "notifications-button": "",
+      "mutual-button": "",
+      "save-button": "",
+      "erase-button": ""
+    },
+    "replicate-group-settings": {
+      "title": "",
+      "no-registered-button": "",
+      "connect-button": "",
+      "manage-add-button": ""
     }
   }
 }
