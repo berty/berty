@@ -238,7 +238,7 @@ md.generate: install
 	berty --log.filters="" share-invite -store.inmem -node.display-name=demo >> .tmp/berty-share-invite.txt
 
 	echo 'foo@bar:~$$ berty info' > .tmp/berty-info.txt
-	berty --log.filters="" info --info.anonimize -store.inmem >> .tmp/berty-info.txt
+	berty --log.filters="" info --info.anonymize -store.inmem >> .tmp/berty-info.txt
 
 	echo 'foo@bar:~$$ berty daemon' > .tmp/berty-daemon.txt
 	expect -c "set timeout 10; spawn -noecho docker run bertytech/berty --log.format=console --log.filters=info+:bty daemon -store.inmem; expect serving" >> .tmp/berty-daemon.txt

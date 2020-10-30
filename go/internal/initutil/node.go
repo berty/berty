@@ -36,12 +36,20 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
+const (
+	PerformancePreset = "performance"
+	AnonymityPreset   = "anonymity"
+
+	TorDisabled = "disabled"
+	TorOptional = "optional"
+	TorRequired = "required"
+)
+
 func (m *Manager) SetupLocalProtocolServerFlags(fs *flag.FlagSet) {
 	m.Node.Protocol.requiredByClient = true
 	m.SetupDatastoreFlags(fs)
 	m.SetupLocalIPFSFlags(fs)
 	// p2p.remote-ipfs
-	// p2p.no-ble
 }
 
 func (m *Manager) SetupProtocolAuth(fs *flag.FlagSet) {
@@ -57,6 +65,18 @@ func (m *Manager) SetupEmptyGRPCListenersFlags(fs *flag.FlagSet) {
 func (m *Manager) SetupDefaultGRPCListenersFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.GRPC.Listeners, "node.listeners", "/ip4/127.0.0.1/tcp/9091/grpc", "gRPC API listeners")
 	fs.StringVar(&m.Node.Protocol.IPFSWebUIListener, "p2p.webui-listener", ":3999", "IPFS WebUI listener")
+}
+
+func (m *Manager) SetupPresetFlags(fs *flag.FlagSet) {
+	fs.StringVar(&m.Node.Preset, "preset", "", "applies various default values, see ADVANCED section below")
+	m.longHelp = append(m.longHelp, [2]string{
+		"-preset=" + PerformancePreset,
+		"better performance: current development defaults",
+	})
+	m.longHelp = append(m.longHelp, [2]string{
+		"-preset=" + AnonymityPreset,
+		"better privacy: -tor.mode=" + TorRequired + " -p2p.local-discovery=false -p2p.multipeer-connectivity=false",
+	})
 }
 
 func (m *Manager) DisableIPFSNetwork() {
@@ -78,6 +98,27 @@ func (m *Manager) SetupLocalMessengerServerFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Messenger.RebuildSqlite, "node.rebuild-db", false, "reconstruct messenger DB from OrbitDB logs")
 	fs.StringVar(&m.Node.Messenger.DisplayName, "node.display-name", safeDefaultDisplayName(), "display name")
 	// node.db-opts // see https://github.com/mattn/go-sqlite3#connection-string
+}
+
+func (m *Manager) applyPreset() error {
+	switch m.Node.Preset {
+	case "":
+		// noop
+	case PerformancePreset:
+		// will do later
+	case AnonymityPreset:
+		// Force tor in this mode
+		m.Node.Protocol.Tor.Mode = TorRequired
+		// FIXME: raise an error if tor is not available on the node
+
+		// Disable proximity communications
+		m.Node.Protocol.LocalDiscovery = false
+		m.Node.Protocol.MultipeerConnectivity = false
+		// FIXME: disable other BLE transports
+	default:
+		return fmt.Errorf("unknown preset: %q", m.Node.Preset)
+	}
+	return nil
 }
 
 func (m *Manager) GetLocalProtocolServer() (bertyprotocol.Service, error) {
@@ -116,10 +157,10 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 
 	// construct http api endpoint
 	// ignore error to allow two berty instances in the same place
-	if m.Node.Protocol.IPFSAPIListeners != nil {
+	if m.Node.Protocol.IPFSAPIListeners != "" {
 		err = ipfsutil.ServeHTTPApi(logger, m.Node.Protocol.ipfsNode, "")
 		if err != nil {
-			logger.Warn("API Ipfs error", zap.Error(err))
+			logger.Warn("IPFS API error", zap.Error(err))
 		}
 	}
 

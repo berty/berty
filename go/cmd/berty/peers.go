@@ -18,6 +18,7 @@ func peersCommand() *ffcli.Command {
 	var refreshEveryFlag time.Duration = time.Second
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("peers", flag.ExitOnError)
+		manager.SetupLoggingFlags(fs)             // also available at root level
 		manager.SetupLocalProtocolServerFlags(fs) // by default, start a new local messenger server,
 		manager.SetupRemoteNodeFlags(fs)          // but allow to set a remote server instead
 		fs.DurationVar(&refreshEveryFlag, "peers.refresh", refreshEveryFlag, "refresh every DURATION (0: no refresh)")
@@ -30,6 +31,7 @@ func peersCommand() *ffcli.Command {
 		ShortHelp:      "list peers",
 		FlagSetBuilder: fsBuilder,
 		Options:        []ff.Option{ff.WithEnvVarPrefix("BERTY")},
+		UsageFunc:      usageFunc,
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp

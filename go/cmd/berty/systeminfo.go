@@ -21,6 +21,7 @@ func systemInfoCommand() *ffcli.Command {
 	)
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("info", flag.ExitOnError)
+		manager.SetupLoggingFlags(fs)              // also available at root level
 		manager.SetupLocalMessengerServerFlags(fs) // by default, start a new local messenger server,
 		manager.SetupRemoteNodeFlags(fs)           // but allow to set a remote server instead
 		fs.DurationVar(&refreshEveryFlag, "info.refresh", refreshEveryFlag, "refresh every DURATION (0: no refresh)")
@@ -34,6 +35,7 @@ func systemInfoCommand() *ffcli.Command {
 		ShortHelp:      "display system info",
 		FlagSetBuilder: fsBuilder,
 		Options:        []ff.Option{ff.WithEnvVarPrefix("BERTY")},
+		UsageFunc:      usageFunc,
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp

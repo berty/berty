@@ -14,7 +14,8 @@ import (
 
 func daemonCommand() *ffcli.Command {
 	fsBuilder := func() (*flag.FlagSet, error) {
-		fs := flag.NewFlagSet("protocol client", flag.ExitOnError)
+		fs := flag.NewFlagSet("berty daemon", flag.ExitOnError)
+		manager.SetupLoggingFlags(fs)              // also available at root level
 		manager.SetupLocalMessengerServerFlags(fs) // we want to configure a local messenger server
 		manager.SetupDefaultGRPCListenersFlags(fs)
 		manager.SetupMetricsFlags(fs)
@@ -27,6 +28,7 @@ func daemonCommand() *ffcli.Command {
 		ShortHelp:      "start a full Berty instance (Berty Protocol + Berty Messenger)",
 		Options:        []ff.Option{ff.WithEnvVarPrefix("BERTY")},
 		FlagSetBuilder: fsBuilder,
+		UsageFunc:      usageFunc,
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp

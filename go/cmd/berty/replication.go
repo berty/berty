@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 
+	ff "github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -13,6 +14,7 @@ import (
 func replicationServerCommand() *ffcli.Command {
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("berty repl-server", flag.ExitOnError)
+		manager.SetupLoggingFlags(fs) // also available at root level
 		manager.SetupProtocolAuth(fs)
 		manager.SetupLocalProtocolServerFlags(fs)
 		manager.SetupDefaultGRPCListenersFlags(fs)
@@ -24,6 +26,8 @@ func replicationServerCommand() *ffcli.Command {
 		ShortHelp:      "replication server",
 		ShortUsage:     "berty [global flags] repl-server [flags]",
 		FlagSetBuilder: fsBuilder,
+		UsageFunc:      usageFunc,
+		Options:        []ff.Option{ff.WithEnvVarPrefix("BERTY")},
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp

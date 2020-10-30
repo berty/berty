@@ -58,6 +58,7 @@ func runMain(args []string) error {
 			FlagSet:    fs,
 			Options:    []ff.Option{ff.WithEnvVarPrefix("BERTY")},
 			Exec:       func(context.Context, []string) error { return flag.ErrHelp },
+			UsageFunc:  usageFunc,
 			Subcommands: []*ffcli.Command{
 				daemonCommand(),
 				miniCommand(),
@@ -96,4 +97,12 @@ func runMain(args []string) error {
 		}
 		return err
 	}
+}
+
+func usageFunc(c *ffcli.Command) string {
+	advanced := manager.AdvancedHelp()
+	if advanced == "" {
+		return ffcli.DefaultUsageFunc(c)
+	}
+	return ffcli.DefaultUsageFunc(c) + "\n\n" + advanced
 }

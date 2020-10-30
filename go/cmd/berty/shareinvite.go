@@ -21,6 +21,7 @@ func shareInviteCommand() *ffcli.Command {
 	)
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("berty share-invite", flag.ExitOnError)
+		manager.SetupLoggingFlags(fs)              // also available at root level
 		manager.SetupLocalMessengerServerFlags(fs) // by default, start a new local messenger server,
 		manager.SetupRemoteNodeFlags(fs)           // but allow to set a remote server instead
 		fs.BoolVar(&shareOnDevChannelFlag, "dev-channel", shareOnDevChannelFlag, "post qrcode on dev channel")
@@ -34,6 +35,7 @@ func shareInviteCommand() *ffcli.Command {
 		ShortHelp:      "share invite link on your terminal or in the dev channel on Discord",
 		FlagSetBuilder: fsBuilder,
 		Options:        []ff.Option{ff.WithEnvVarPrefix("BERTY")},
+		UsageFunc:      usageFunc,
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp

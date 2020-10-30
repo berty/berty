@@ -3,7 +3,9 @@ package initutil
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
+	"text/tabwriter"
 	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -54,23 +56,23 @@ type Manager struct {
 		rootDS     datastore.Batching
 	} `json:"Datastore,omitempty"`
 	Node struct {
-		Preset   Preset
+		Preset   string `json:"preset"`
 		Protocol struct {
-			IPFSListeners         flagStringSlice `json:"IPFSListeners,omitempty"`
-			IPFSAPIListeners      flagStringSlice `json:"IPFSAPIListeners,omitempty"`
-			IPFSWebUIListener     string          `json:"IPFSWebUIListener,omitempty"`
-			Announce              flagStringSlice `json:"Announce,omitempty"`
-			NoAnnounce            flagStringSlice `json:"NoAnnounce,omitempty"`
-			LocalDiscovery        bool            `json:"LocalDiscovery,omitempty"`
-			MultipeerConnectivity bool            `json:"MultipeerConnectivity,omitempty"`
-			MinBackoff            time.Duration   `json:"MinBackoff,omitempty"`
-			MaxBackoff            time.Duration   `json:"MaxBackoff,omitempty"`
-			DisableIPFSNetwork    bool            `json:"DisableIPFSNetwork,omitempty"`
-			RdvpMaddrs            flagStringSlice `json:"RdvpMaddrs,omitempty"`
-			AuthSecret            string          `json:"AuthSecret,omitempty"`
-			AuthPublicKey         string          `json:"AuthPublicKey,omitempty"`
+			SwarmListeners        string        `json:"SwarmListeners,omitempty"`
+			IPFSAPIListeners      string        `json:"IPFSAPIListeners,omitempty"`
+			IPFSWebUIListener     string        `json:"IPFSWebUIListener,omitempty"`
+			Announce              string        `json:"Announce,omitempty"`
+			NoAnnounce            string        `json:"NoAnnounce,omitempty"`
+			LocalDiscovery        bool          `json:"LocalDiscovery,omitempty"`
+			MultipeerConnectivity bool          `json:"MultipeerConnectivity,omitempty"`
+			MinBackoff            time.Duration `json:"MinBackoff,omitempty"`
+			MaxBackoff            time.Duration `json:"MaxBackoff,omitempty"`
+			DisableIPFSNetwork    bool          `json:"DisableIPFSNetwork,omitempty"`
+			RdvpMaddrs            string        `json:"RdvpMaddrs,omitempty"`
+			AuthSecret            string        `json:"AuthSecret,omitempty"`
+			AuthPublicKey         string        `json:"AuthPublicKey,omitempty"`
 			Tor                   struct {
-				Enabled    bool   `json:"Enabled,omitempty"`
+				Mode       string `json:"Mode,omitempty"`
 				BinaryPath string `json:"BinaryPath,omitempty"`
 			} `json:"Tor,omitempty"`
 
@@ -123,11 +125,28 @@ type Manager struct {
 	initLogger *zap.Logger
 	workers    run.Group // replace by something more accurate
 	mutex      sync.Mutex
+	longHelp   [][2]string
 }
 
 func New(ctx context.Context) (*Manager, error) {
 	m := Manager{}
 	m.ctx, m.ctxCancel = context.WithCancel(ctx)
+
+	// special default values:
+	// this is not the good place to put all the default values.
+	//
+	// the values here are always set even if the initutil was not
+	// configured to allow changing the value through CLI.
+	//
+	// this is a good place for:
+	// * most of the root-level values;
+	// * values that are a good default in every circumstance;
+	// * values that are reused across various CLI depths.
+	//
+	// the good location for other variables is in the initutil.SetupFoo functions.
+	m.Logging.Filters = defaultLoggingFilters
+	m.Logging.Format = "color"
+	m.Logging.Service = "berty"
 
 	// storage path
 	{
@@ -222,4 +241,24 @@ func (m *Manager) Close() error {
 	}
 
 	return nil
+}
+
+func (m *Manager) AdvancedHelp() string {
+	if len(m.longHelp) == 0 {
+		return ""
+	}
+	var b strings.Builder
+	fmt.Fprintf(&b, "ADVANCED\n")
+	tw := tabwriter.NewWriter(&b, 0, 2, 2, ' ', 0)
+	seen := map[string]bool{}
+	for _, entry := range m.longHelp {
+		line := fmt.Sprintf("  %s\t%s\n", entry[0], entry[1])
+		if _, found := seen[line]; found {
+			continue
+		}
+		seen[line] = true
+		fmt.Fprint(tw, line)
+	}
+	tw.Flush()
+	return strings.TrimSpace(b.String())
 }

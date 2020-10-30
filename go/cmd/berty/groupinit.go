@@ -17,11 +17,19 @@ func groupinitCommand() *ffcli.Command {
 	// FIXME: share on discord
 	// FIXME: print QR
 	// FIXME: print berty.tech URL
+	fsBuilder := func() (*flag.FlagSet, error) {
+		fs := flag.NewFlagSet("berty groupinit", flag.ExitOnError)
+		manager.SetupLoggingFlags(fs) // also available at root level
+		return fs, nil
+	}
+
 	return &ffcli.Command{
-		Name:       "groupinit",
-		ShortHelp:  "initialize a new multi-member group",
-		ShortUsage: "berty groupinit",
-		Options:    []ff.Option{ff.WithEnvVarPrefix("BERTY")},
+		Name:           "groupinit",
+		ShortHelp:      "initialize a new multi-member group",
+		ShortUsage:     "berty groupinit",
+		FlagSetBuilder: fsBuilder,
+		Options:        []ff.Option{ff.WithEnvVarPrefix("BERTY")},
+		UsageFunc:      usageFunc,
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp
