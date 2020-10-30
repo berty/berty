@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, ScrollView, Share } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
-import Interactable from 'react-native-interactable'
 import QRCode from 'react-native-qrcode-svg'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
 
@@ -12,6 +11,7 @@ import { useAccount } from '@berty-tech/store/hooks'
 import { TabBar } from '../shared-components/TabBar'
 import { RequestAvatar } from '../shared-components/Request'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //
 // Settings My Berty ID Vue
@@ -257,25 +257,19 @@ const MyBertyIdComponent: React.FC<{ user: any }> = ({ user }) => {
 }
 
 export const MyBertyId: React.FC<{ user: any }> = ({ user }) => {
-	const [{ flex }, { windowHeight }] = useStyles()
+	const [{ flex }] = useStyles()
 	const navigation = useNavigation()
-
-	const handleOnDrag = (e: Interactable.IDragEvent) => {
-		if (e.nativeEvent.y >= Math.min(250, windowHeight * 0.9)) {
-			navigation.goBack()
-		}
-	}
 
 	return (
 		<Layout style={[flex.tiny, { backgroundColor: 'transparent' }]}>
-			<Interactable.View
-				verticalOnly={true}
-				onDrag={(e) => handleOnDrag(e)}
-				snapPoints={[{ x: 0 }, { x: -300 }]}
-				boundaries={{ top: 0 }}
+			<SwipeNavRecognizer
+				onSwipeUp={() => navigation.goBack()}
+				onSwipeDown={() => navigation.goBack()}
+				onSwipeLeft={() => navigation.goBack()}
+				onSwipeRight={() => navigation.goBack()}
 			>
 				<MyBertyIdComponent user={user} />
-			</Interactable.View>
+			</SwipeNavRecognizer>
 		</Layout>
 	)
 }

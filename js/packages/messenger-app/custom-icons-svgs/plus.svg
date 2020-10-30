@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="9px" height="9px" viewBox="0 0 9 9" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>+</title>
+    <g id="berty" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" font-family="OpenSans-SemiBold, Open Sans" font-size="16" font-weight="500">
+        <g id="newsimplerUI/homeWithPlusandButtons-Activated" transform="translate(-210.000000, -667.000000)" fill="#FFFFFF">
+            <g id="btn/createnewgroupbutton" transform="translate(194.000000, 641.000000)">
+                <g id="Group-2" transform="translate(12.000000, 19.000000)">
+                    <text id="+">
+                        <tspan x="3.93359375" y="17">+</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

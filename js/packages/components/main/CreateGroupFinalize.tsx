@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { View, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/navigation'
@@ -9,9 +10,10 @@ import messengerMethodsHooks from '@berty-tech/store/methods'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { CreateGroupHeader } from './CreateGroupAddMembers'
-import { Header } from './HomeModal'
+import { Header } from './CreateGroupAddMembers'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 const useStylesCreateGroup = () => {
 	const [{ padding, height, width, absolute, border, column, text, background }] = useStyles()
@@ -224,6 +226,7 @@ export const CreateGroupFinalize: React.FC<{
 	onRemoveMember: (id: string) => void
 }> = ({ members, onRemoveMember }) => {
 	const navigation = useNavigation()
+	const { navigate } = useNativeNavigation()
 	const [groupName, setGroupName] = useState('New group')
 	const { refresh, error, done } = (messengerMethodsHooks as any).useConversationCreate()
 	const createGroup = React.useCallback(
@@ -245,30 +248,37 @@ export const CreateGroupFinalize: React.FC<{
 	}, [done, error, navigation.navigate.main])
 
 	return (
-		<Layout style={[flex.medium]}>
-			<SafeAreaView style={[flex.medium, background.blue]}>
-				<View onLayout={(e) => setLayout(e.nativeEvent.layout.height)}>
-					<CreateGroupHeader />
-					<MemberList members={members} onRemoveMember={onRemoveMember} />
-					<Header
-						title='Add members'
-						onPress={navigation.goBack}
-						style={[padding.bottom.small]}
-						first
-					/>
-				</View>
-				<View style={[{ top: -5 }]}>
-					<Header title='Group info'>
-						<GroupInfo onGroupNameChange={setGroupName} layout={layout} />
-					</Header>
-				</View>
-			</SafeAreaView>
-			<FooterCreateGroup
-				title='CREATE A GROUP'
-				action={() => {
-					createGroup()
-				}}
-			/>
+		<Layout style={[flex.tiny]}>
+			<SwipeNavRecognizer
+				onSwipeUp={() => navigate('Main.HomeModal')}
+				onSwipeDown={() => navigate('Main.HomeModal')}
+				onSwipeLeft={() => navigate('Main.HomeModal')}
+				onSwipeRight={() => navigate('Main.HomeModal')}
+			>
+				<SafeAreaView style={[background.blue]}>
+					<View onLayout={(e) => setLayout(e.nativeEvent.layout.height)}>
+						<CreateGroupHeader />
+						<MemberList members={members} onRemoveMember={onRemoveMember} />
+						<Header
+							title='Add members'
+							onPress={navigation.goBack}
+							style={[padding.bottom.small]}
+							first
+						/>
+					</View>
+					<View style={[{ top: -5 }]}>
+						<Header title='Group info'>
+							<GroupInfo onGroupNameChange={setGroupName} layout={layout} />
+						</Header>
+					</View>
+				</SafeAreaView>
+				<FooterCreateGroup
+					title='CREATE A GROUP'
+					action={() => {
+						createGroup()
+					}}
+				/>
+			</SwipeNavRecognizer>
 		</Layout>
 	)
 }

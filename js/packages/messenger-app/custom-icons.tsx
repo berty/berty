@@ -12,6 +12,8 @@ import UserPlus from './custom-icons-svgs/user-plus.svg'
 import Quote from './custom-icons-svgs/quote.svg'
 import Earth from './custom-icons-svgs/Earth_.svg'
 import Network from './custom-icons-svgs/chart-network-light.svg'
+import Plus from './custom-icons-svgs/plus.svg'
+import AccountBerty from './custom-icons-svgs/account-berty.svg'
 import Tor from './custom-icons-svgs/Tor.svg'
 import Berty from './custom-icons-svgs/berty_picto.svg'
 
@@ -28,6 +30,8 @@ const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	network: Network,
 	tor: Tor,
 	berty: Berty,
+	plus: Plus,
+	'account-berty': AccountBerty,
 }
 
 const CustomIcon: React.FC<{

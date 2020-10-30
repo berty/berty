@@ -1,14 +1,21 @@
 import React, { useState } from 'react'
-import { View, TextInput, Button, TouchableOpacity, Vibration, ScrollView } from 'react-native'
+import {
+	View,
+	TextInput,
+	Button,
+	TouchableOpacity,
+	Vibration,
+	Text as TextNative,
+} from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
-import Interactable from 'react-native-interactable'
 
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@react-navigation/native'
 
 import ScanTarget from './scan_target.svg'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer.tsx'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -22,11 +29,15 @@ type ScanInfosTextProps = {
 // Styles
 
 const useStylesScan = () => {
-	const [{ border, height, width }, { fontScale }] = useStyles()
+	const [{ border, height, width }, { fontScale, scaleSize }] = useStyles()
 	return {
 		titleSize: 26 * fontScale,
 		styles: {
-			infosPoint: [width(10), height(10), border.radius.scale(5)],
+			infosPoint: [
+				width(10 * scaleSize),
+				height(10 * scaleSize),
+				border.radius.scale(5 * scaleSize),
+			],
 		},
 	}
 }
@@ -47,7 +58,7 @@ const ScanBody: React.FC<{}> = () => {
 		<View
 			style={[
 				background.black,
-				margin.small,
+				margin.horizontal.small,
 				column.item.center,
 				flex.align.center,
 				flex.justify.center,
@@ -85,7 +96,7 @@ const ScanInfosText: React.FC<ScanInfosTextProps> = ({ textProps }) => {
 	const [{ row, padding, background, margin, text }] = useStyles()
 
 	return (
-		<View style={[row.left, padding.medium]}>
+		<View style={[row.left, padding.horizontal.medium, padding.bottom.medium]}>
 			<View
 				style={[
 					background.light.grey,
@@ -94,7 +105,17 @@ const ScanInfosText: React.FC<ScanInfosTextProps> = ({ textProps }) => {
 					_styles.styles.infosPoint,
 				]}
 			/>
-			<Text style={[text.color.light.grey, row.item.justify]}>{textProps}</Text>
+			<TextNative
+				style={[
+					text.color.light.grey,
+					text.bold.small,
+					text.size.medium,
+					row.item.justify,
+					{ fontFamily: 'Open Sans' },
+				]}
+			>
+				{textProps}
+			</TextNative>
 		</View>
 	)
 }
@@ -141,20 +162,18 @@ const ScanComponent: React.FC<any> = () => {
 	const { goBack } = useNavigation()
 	const [{ color, padding, flex, margin, background }, { scaleSize }] = useStyles()
 	const { titleSize } = useStylesScan()
-	const [touchingHeader, setIsTouchingHeader] = useState(false)
+	const [, setIsTouchingHeader] = useState(false)
 
 	return (
 		<SafeAreaConsumer>
 			{(insets) => {
 				return (
-					<ScrollView
-						bounces={false}
+					<View
 						style={[
 							padding.medium,
 							background.red,
 							{ paddingTop: scaleSize * ((insets?.top || 0) + 16), flexGrow: 2, flexBasis: '100%' },
 						]}
-						scrollEnabled={!touchingHeader}
 					>
 						<View
 							style={[
@@ -190,7 +209,7 @@ const ScanComponent: React.FC<any> = () => {
 						</View>
 						<ScanBody />
 						<ScanInfos />
-					</ScrollView>
+					</View>
 				)
 			}}
 		</SafeAreaConsumer>
@@ -198,25 +217,19 @@ const ScanComponent: React.FC<any> = () => {
 }
 
 export const Scan: React.FC<{}> = () => {
-	const [{ flex }, { windowHeight }] = useStyles()
+	const [{ flex }] = useStyles()
 	const navigation = useNavigation()
-
-	const handleOnDrag = (e: Interactable.IDragEvent) => {
-		if (e.nativeEvent.y >= Math.min(250, windowHeight * 0.7)) {
-			navigation.goBack()
-		}
-	}
 
 	return (
 		<Layout style={[flex.tiny, { backgroundColor: 'transparent' }]}>
-			<Interactable.View
-				verticalOnly={true}
-				onDrag={(e) => handleOnDrag(e)}
-				snapPoints={[{ x: 0 }, { x: -300 }]}
-				boundaries={{ top: 0 }}
+			<SwipeNavRecognizer
+				onSwipeRight={() => navigation.goBack()}
+				onSwipeLeft={() => navigation.goBack()}
+				onSwipeUp={() => navigation.goBack()}
+				onSwipeDown={() => navigation.goBack()}
 			>
 				<ScanComponent />
-			</Interactable.View>
+			</SwipeNavRecognizer>
 		</Layout>
 	)
 }

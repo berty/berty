@@ -41,7 +41,7 @@ const HeaderHelp: React.FC<{}> = () => {
 				disabled={true}
 			>
 				<Text style={[text.bold.medium, _helpStyles.headerButtonText]}>
-					Keep your data safe & your life private
+					{'Keep your data safe & your life private'}
 				</Text>
 			</ButtonSetting>
 		</View>
@@ -51,8 +51,21 @@ const HeaderHelp: React.FC<{}> = () => {
 const BodyHelp: React.FC<{}> = () => {
 	const _styles = useStylesHelp()
 	const [{ padding, color }] = useStyles()
+	const { navigate } = useNavigation()
 	return (
 		<View style={padding.medium}>
+			<ButtonSetting
+				name='Updates'
+				icon='arrow-upward-outline'
+				iconColor={color.red}
+				onPress={navigate.settings.appUpdates}
+			/>
+			<ButtonSetting
+				name='About Berty'
+				icon='info-outline'
+				iconColor={color.red}
+				onPress={navigate.settings.aboutBerty}
+			/>
 			<ButtonSetting
 				name='Account & Berty ID'
 				icon='person-outline'

@@ -1,5 +1,12 @@
 import React, { useState } from 'react'
-import { View, ScrollView, TouchableOpacity, TextInput, Text as TextNative } from 'react-native'
+import {
+	View,
+	ScrollView,
+	TouchableOpacity,
+	TextInput,
+	Text as TextNative,
+	TouchableWithoutFeedback,
+} from 'react-native'
 import { Layout, Text, Icon, CheckBox } from '@ui-kitten/components'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -9,8 +16,8 @@ import { useContactsList, useAccountContactSearchResults } from '@berty-tech/sto
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
-import { Header } from './HomeModal'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 // Styles
 const useStylesCreateGroup = () => {
@@ -45,6 +52,78 @@ type AddMembersProps = {
 	onSetMember: (contact: any) => void
 	onRemoveMember: (id: string) => void
 	members: any[]
+}
+
+export const Header: React.FC<{
+	title: string
+	icon?: string
+	iconPack?: string
+	first?: boolean
+	disabled?: boolean
+	onPress?: any
+	style?: any
+}> = ({
+	children,
+	title,
+	icon,
+	iconPack,
+	first = false,
+	disabled = false,
+	onPress = null,
+	style = null,
+}) => {
+	const [
+		{ height, border, margin, row, padding, text, column, color, background, opacity },
+	] = useStyles()
+	return (
+		<View style={[!first && background.white]}>
+			<TouchableWithoutFeedback onPress={onPress}>
+				<View
+					style={[
+						background.white,
+						border.radius.top.scale(30),
+						border.shadow.big,
+						disabled && opacity(0.5),
+						style,
+					]}
+				>
+					<View style={[height(90)]}>
+						<View
+							style={[
+								margin.top.small,
+								row.item.justify,
+								border.scale(2.5),
+								border.color.light.grey,
+								border.radius.scale(4),
+								{
+									backgroundColor: '#E8E9FC',
+									width: '14%',
+								},
+							]}
+						/>
+						<View style={[margin.top.small]}>
+							<View style={[row.fill, padding.horizontal.medium, padding.top.small]}>
+								<TextNative
+									style={[
+										text.bold.medium,
+										text.size.scale(25),
+										text.color.black,
+										column.item.center,
+									]}
+								>
+									{title}
+								</TextNative>
+								{icon && (
+									<Icon name={icon} pack={iconPack} width={30} height={30} fill={color.black} />
+								)}
+							</View>
+						</View>
+					</View>
+					{children && <View>{children}</View>}
+				</View>
+			</TouchableWithoutFeedback>
+		</View>
+	)
 }
 
 const AddMembersItem: React.FC<AddMembersItemProps> = ({
@@ -286,25 +365,32 @@ export const CreateGroupAddMembers: React.FC<{
 
 	return (
 		<Layout style={[flex.tiny]}>
-			<SafeAreaView style={[background.blue]}>
-				<View onLayout={(e) => setLayout(e.nativeEvent.layout.height)}>
-					<CreateGroupHeader />
-					<MemberList members={members} onRemoveMember={onRemoveMember} />
-				</View>
-				<Header title='Add members' first style={[margin.bottom.scale(-1)]} />
-				<AddMembers
-					members={members}
-					onSetMember={onSetMember}
-					onRemoveMember={onRemoveMember}
-					paddingBottom={120}
-					layout={layout}
+			<SwipeNavRecognizer
+				onSwipeUp={() => navigation.goBack()}
+				onSwipeDown={() => navigation.goBack()}
+				onSwipeLeft={() => navigation.goBack()}
+				onSwipeRight={() => navigation.goBack()}
+			>
+				<SafeAreaView style={[background.blue]}>
+					<View onLayout={(e) => setLayout(e.nativeEvent.layout.height)}>
+						<CreateGroupHeader />
+						<MemberList members={members} onRemoveMember={onRemoveMember} />
+					</View>
+					<Header title='Add members' first style={[margin.bottom.scale(-1)]} />
+					<AddMembers
+						members={members}
+						onSetMember={onSetMember}
+						onRemoveMember={onRemoveMember}
+						paddingBottom={120}
+						layout={layout}
+					/>
+				</SafeAreaView>
+				<FooterCreateGroup
+					title='CONTINUE'
+					icon='arrow-forward-outline'
+					action={navigation.navigate.main.createGroup.createGroupFinalize}
 				/>
-			</SafeAreaView>
-			<FooterCreateGroup
-				title='CONTINUE'
-				icon='arrow-forward-outline'
-				action={navigation.navigate.main.createGroup.createGroupFinalize}
-			/>
+			</SwipeNavRecognizer>
 		</Layout>
 	)
 }

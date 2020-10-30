@@ -111,7 +111,11 @@ export const CreateGroupNavigation: React.FC = () => {
 		<CreateGroupStack.Navigator screenOptions={{ headerShown: false }}>
 			<CreateGroupStack.Screen
 				name={Routes.CreateGroup.CreateGroupAddMembers}
-				options={{ stackPresentation: 'containedModal' }}
+				options={{
+					stackPresentation: 'containedTransparentModal',
+					contentStyle: { backgroundColor: 'transparent' },
+					stackAnimation: 'none',
+				}}
 			>
 				{() => (
 					// should use setParams ? maybe, tis weird
@@ -124,7 +128,11 @@ export const CreateGroupNavigation: React.FC = () => {
 			</CreateGroupStack.Screen>
 			<CreateGroupStack.Screen
 				name={Routes.CreateGroup.CreateGroupFinalize}
-				options={{ stackPresentation: 'containedModal' }}
+				options={{
+					stackPresentation: 'containedTransparentModal',
+					contentStyle: { backgroundColor: 'transparent' },
+					stackAnimation: 'none',
+				}}
 			>
 				{() => (
 					<Components.Main.CreateGroupFinalize members={members} onRemoveMember={removeMember} />
@@ -139,12 +147,10 @@ export const TabNavigation: React.FC = () => {
 	return (
 		<TabStack.Navigator
 			initialRouteName={Routes.Main.Home}
-			tabBar={({ state }) => <Components.Main.Footer selected={state.routes[state.index].name} />}
+			tabBar={() => <Components.Main.Footer />}
 			tabBarPosition='bottom'
 		>
-			<TabStack.Screen name={Routes.Main.Search} component={Components.Main.Search} />
 			<TabStack.Screen name={Routes.Main.Home} component={Components.Main.Home} />
-			<TabStack.Screen name={Routes.Settings.Home} component={Components.Settings.Home} />
 		</TabStack.Navigator>
 	)
 }
@@ -176,6 +182,7 @@ export const Navigation: React.FC = () => {
 				component={Components.Main.Scan}
 				options={{
 					stackPresentation: 'containedTransparentModal',
+					stackAnimation: 'none',
 					contentStyle: { backgroundColor: 'transparent' },
 				}}
 			/>
@@ -217,7 +224,11 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={Routes.CreateGroup.CreateGroupAddMembers}
 				component={CreateGroupNavigation}
-				options={{ stackPresentation: 'containedModal' }}
+				options={{
+					stackPresentation: 'containedTransparentModal',
+					contentStyle: { backgroundColor: 'transparent' },
+					stackAnimation: 'none',
+				}}
 			/>
 			<NavigationStack.Screen name={Routes.Root.Tabs} component={TabNavigation} />
 			<NavigationStack.Screen
@@ -236,6 +247,7 @@ export const Navigation: React.FC = () => {
 					contentStyle: { backgroundColor: 'transparent' },
 				}}
 			/>
+			<NavigationStack.Screen name={Routes.Settings.Home} component={Components.Settings.Home} />
 			<NavigationStack.Screen
 				name={Routes.Settings.AppUpdates}
 				component={Components.Settings.AppUpdates}
