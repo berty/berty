@@ -15,6 +15,7 @@ import ExternalTransport from './externalTransport'
 import GoBridge, { GoBridgeDefaultOpts } from '@berty-tech/go-bridge'
 import { EventEmitter } from 'events'
 import AsyncStorage from '@react-native-community/async-storage'
+import cloneDeep from 'lodash/cloneDeep'
 import {
 	defaultPersistentOptions,
 	MessengerActions,
@@ -264,17 +265,45 @@ export const openingLocalSettings = (
 }
 
 // handle state OpeningWaitingForDaemon
-export const openingDaemon = (
+export const openingDaemon = async (
 	dispatch: (arg0: reducerAction) => void,
 	appState: MessengerAppState,
-	accountId: string | null,
+	selectedAccount: number | null,
 ) => {
 	if (appState !== MessengerAppState.OpeningWaitingForDaemon) {
 		return
 	}
 
-	if (!accountId) {
+	if (selectedAccount === null) {
+		console.warn('no account opened')
 		return
+	}
+
+	// Apply store options
+	let bridgeOpts
+	try {
+		let opts = {}
+		let store
+		store = await AsyncStorage.getItem(storageKeyForAccount(selectedAccount))
+		if (store !== null) {
+			opts = JSON.parse(store)
+		}
+		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
+
+		// set ble flag
+		bridgeOpts.cliArgs =
+			opts?.ble && !opts.ble.enable
+				? [...bridgeOpts.cliArgs, '--p2p.ble=false']
+				: [...bridgeOpts.cliArgs, '--p2p.ble=true']
+
+		// set mc flag
+		bridgeOpts.cliArgs =
+			opts?.mc && !opts.mc.enable
+				? [...bridgeOpts.cliArgs, '--p2p.multipeer-connectivity=false']
+				: [...bridgeOpts.cliArgs, '--p2p.multipeer-connectivity=true']
+	} catch (e) {
+		console.warn('store getPersistentOptions Failed:', e)
+		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
 	}
 
 	GoBridge.initBridge()
@@ -284,8 +313,8 @@ export const openingDaemon = (
 		})
 		.then(() =>
 			accountClient.openAccount({
-				args: GoBridgeDefaultOpts.cliArgs,
-				accountId: accountId,
+				args: bridgeOpts.cliArgs,
+				accountId: selectedAccount,
 			}),
 		)
 		.then(() => {

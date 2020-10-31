@@ -182,6 +182,9 @@
       "desc": "Le Bluetooth vous permet d'utiliser l'application Berty lorsque vous n'avez pas de connexion réseau (wifi ou données) en connectant votre téléphone directement avec les pairs à proximité",
       "activate-button": "Activer le bluetooth"
     },
+    "mc": {
+      "activate-button": "Activer le Multipeer Connectivity"
+    },
     "services-auth": {
       "title": "Services externes",
       "operated-services-button": "Utiliser les services opérés par Berty",
