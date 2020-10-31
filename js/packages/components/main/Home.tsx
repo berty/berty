@@ -15,6 +15,7 @@ import {
 import { SafeAreaConsumer, EdgeInsets } from 'react-native-safe-area-context'
 import { Icon, Text } from '@ui-kitten/components'
 import pickBy from 'lodash/pickBy'
+import LottieView from 'lottie-react-native'
 
 import { ScreenProps, useNavigation, Routes } from '@berty-tech/navigation'
 import {
@@ -606,14 +607,17 @@ const HomeHeader: React.FC<
 		isOnTop: boolean
 		value: string
 		onChange: any
+		refresh: boolean
+		setRefresh: any
 	}
-> = ({ hasRequests, scrollRef, onLayout, isOnTop, value, onChange }) => {
+> = ({ hasRequests, scrollRef, onLayout, isOnTop, value, onChange, refresh, setRefresh }) => {
 	const [
 		{ border, width, height, padding, text, background, margin, row },
 		{ scaleHeight },
 	] = useStyles()
 	const { navigate } = useNativeNavigation()
 	const [focus, setFocus] = useState<any>(null)
+	const animate = useRef<any>(null)
 
 	let paddingTop: any
 	if (!value?.length) {
@@ -629,6 +633,13 @@ const HomeHeader: React.FC<
 	} else {
 		paddingTop = 40
 	}
+
+	useEffect(() => {
+		if (refresh) {
+			setRefresh(false)
+			animate.current.play()
+		}
+	}, [refresh, setRefresh, animate])
 
 	return (
 		<View onLayout={onLayout}>
@@ -658,15 +669,23 @@ const HomeHeader: React.FC<
 							style={{
 								flex: 1,
 								alignItems: 'flex-end',
+								marginLeft: 5,
 							}}
 						>
-							<Logo
-								width={25}
-								height={25}
+							<TouchableOpacity
+								activeOpacity={1}
 								onPress={() => {
+									animate.current.play()
 									scrollRef.current?.scrollTo({ y: 0, animated: true })
 								}}
-							/>
+							>
+								<LottieView
+									ref={animate}
+									style={{ width: 40 }}
+									source={require('./berty_logo_animated.json')}
+									loop={false}
+								/>
+							</TouchableOpacity>
 						</View>
 						<TouchableOpacity
 							style={[
@@ -679,7 +698,7 @@ const HomeHeader: React.FC<
 								},
 								padding.vertical.scale(12),
 								padding.left.medium,
-								margin.left.medium,
+								margin.left.small,
 								margin.right.scale(25),
 								border.radius.small,
 							]}
@@ -884,6 +903,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const [, onLayoutConvs] = useLayout()
 	const [isOnTop, setIsOnTop] = useState<boolean>(false)
 	const [searchText, setSearchText] = useState<string>('')
+	const [refresh, setRefresh] = useState<boolean>(false)
 
 	const { navigate } = useNativeNavigation()
 
@@ -957,6 +977,11 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 								showsVerticalScrollIndicator={false}
 								scrollEventThrottle={16}
 								keyboardShouldPersistTaps={'handled'}
+								onScrollEndDrag={(e) => {
+									if (e.nativeEvent.contentOffset.y < 0) {
+										setRefresh(true)
+									}
+								}}
 								onScroll={(e) => {
 									if (e.nativeEvent.contentOffset) {
 										if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
@@ -977,6 +1002,8 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 									onLayout={onLayoutHeader}
 									value={searchText}
 									onChange={setSearchText}
+									refresh={refresh}
+									setRefresh={setRefresh}
 								/>
 								{searchText?.length ? (
 									<SearchComponent
