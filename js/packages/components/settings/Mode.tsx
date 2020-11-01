@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { View, ScrollView, Vibration } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
+import DropDownPicker from 'react-native-dropdown-picker'
 
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext, useAccount } from '@berty-tech/store/hooks'
 import { serviceTypes, useAccountServices } from '@berty-tech/store/services'
 import { useNavigation } from '@berty-tech/navigation'
+import i18n from '@berty-tech/berty-i18n'
 
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
@@ -43,8 +45,46 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 	const ctx = useMsgrContext()
 	const enableNotif =
 		ctx.persistentOptions?.notifications && ctx.persistentOptions?.notifications.enable
+
+	const itemsKey = Object.keys(Object.values(i18n.store)[1])
+	let items = Object.values(Object.values(i18n.store)[1])
+	items = items.map((value: any, key: any) => {
+		return {
+			label: value.localName,
+			value: itemsKey[key],
+		}
+	})
 	return (
 		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
+			<DropDownPicker
+				items={items}
+				defaultValue={ctx.persistentOptions?.i18n.language || 'en'}
+				value={ctx.persistentOptions?.i18n.language || 'en'}
+				containerStyle={[{ marginTop: 22, height: 60 }]}
+				onChangeItem={(item: any) => {
+					i18n.changeLanguage(item.value)
+					ctx.setPersistentOption('i18n', {
+						language: item.value,
+					})
+				}}
+			/>
+			<ButtonSetting
+				name='Notifications'
+				icon='bell-outline'
+				iconColor={color.blue}
+				state={{
+					value: enableNotif ? 'Enabled' : 'Disabled',
+					color: enableNotif ? color.green : color.red,
+					bgColor: enableNotif ? color.light.green : color.light.red,
+				}}
+				onPress={() => navigation.navigate('Settings.Notifications')}
+			/>
+			<ButtonSetting
+				name='Bluetooth'
+				icon='bluetooth-outline'
+				iconColor={color.blue}
+				onPress={() => navigation.navigate('Settings.Bluetooth')}
+			/>
 			<ButtonSetting
 				name='App mode'
 				icon='options-outline'
@@ -101,23 +141,6 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 				</View>
 			</ButtonSetting>
 			<ButtonSetting name='Dark mode' icon='moon-outline' iconColor={color.blue} toggled disabled />
-			<ButtonSetting
-				name='Notifications'
-				icon='bell-outline'
-				iconColor={color.blue}
-				state={{
-					value: enableNotif ? 'Enabled' : 'Disabled',
-					color: enableNotif ? color.green : color.red,
-					bgColor: enableNotif ? color.light.green : color.light.red,
-				}}
-				onPress={() => navigation.navigate('Settings.Notifications')}
-			/>
-			<ButtonSetting
-				name='Bluetooth'
-				icon='bluetooth-outline'
-				iconColor={color.blue}
-				onPress={() => navigation.navigate('Settings.Bluetooth')}
-			/>
 			<ButtonSetting
 				name='Receive contact requests'
 				icon='person-done-outline'

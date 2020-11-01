@@ -38,6 +38,7 @@
     "react-i18next": "^11.7.3",
     "react-native": "0.63.3",
     "react-native-camera": ">=1.0.2",
+    "react-native-dropdown-picker": "^3.7.1",
     "react-native-elements": "^2.3.2",
     "react-native-gesture-handler": "^1.8.0",
     "react-native-hyperlink": "^0.0.19",

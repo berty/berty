@@ -7771,6 +7771,13 @@ react-native-crypto@^2.0.1:
     public-encrypt "^4.0.0"
     randomfill "^1.0.3"
 
+react-native-dropdown-picker@^3.7.1:
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/react-native-dropdown-picker/-/react-native-dropdown-picker-3.7.1.tgz#ead80b69108bfe8cf56fef5a68d5545d5063b33c"
+  integrity sha512-YyT4q+CgMw299ypSlvSOt/tZiYD0bsTmnNKazLwpYM3ouGaj34NTDS+MHVyiYpyZbn4XSs+FHRcs12PupWS7Cg==
+  dependencies:
+    react-native-vector-icons "^7.0.0"
+
 react-native-elements@^2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/react-native-elements/-/react-native-elements-2.3.2.tgz#f6b974127a3484bb46ebd98fbc012fb2208decd7"
@@ -7945,7 +7952,7 @@ react-native-swipe-gestures@^1.0.2:
   resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-2.15.2.tgz#4bc7832d33a119306614efee667509672a7ee64e"
   integrity sha512-2hxLkBnZtEKFDyfvNO5EUywhy3f/EiLOBO8SWqKj4BMBTO0QwnybaPE5MVF00Fhz+VA4+h/iI40Dkrrtq70dGg==
 
-react-native-vector-icons@^7.1.0:
+react-native-vector-icons@^7.0.0, react-native-vector-icons@^7.1.0:
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-7.1.0.tgz#145487d617b2a81d395d2cf64e6e065fcab3a454"
   integrity sha512-V2a1zJ4i+kS8O4j183gIwX14St9AxxXabxwYpFBgRhvr2NDXyFcjHDEAgrOYYlt2W57e20aN1tBDU/I+wn9WtQ==

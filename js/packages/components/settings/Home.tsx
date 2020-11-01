@@ -5,14 +5,13 @@ import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import QRCode from 'react-native-qrcode-svg'
 
 import { useStyles } from '@berty-tech/styles'
+import { ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { useAccount } from '@berty-tech/store/hooks'
 
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import HeaderSettings from '../shared-components/Header'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-
-import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { useAccount } from '@berty-tech/store/hooks'
 
 const useStylesHome = () => {
 	const [{ height, margin, padding, text }] = useStyles()

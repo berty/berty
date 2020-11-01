@@ -25,6 +25,9 @@ const SetupFinishedBody = () => {
 				added: false,
 				convPk: Object.values(contacts)[0].publicKey,
 			})
+			await setPersistentOption('i18n', {
+				language: 'en',
+			})
 			await setPersistentOption('notifications', {
 				enable: true,
 			})
