@@ -558,7 +558,8 @@ const MessageList: React.FC<{
 
 	const onScrollToIndexFailed = () => {
 		// Not sure why this happens (something to do with item/screen dimensions I think)
-		flatListRef.current?.scrollToIndex({ index: 0 })
+		// FIXME: next line is crashing the app
+		// flatListRef.current?.scrollToIndex({ index: 0 })
 	}
 	const initialScrollIndex = React.useMemo(() => {
 		if (scrollToMessage) {
