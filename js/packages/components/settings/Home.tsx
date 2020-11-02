@@ -29,7 +29,13 @@ const HomeHeaderGroupButton: React.FC = () => {
 	const [{ padding, color }] = useStyles()
 	const { navigate } = useNavigation()
 	return (
-		<View style={[padding.horizontal.medium, padding.top.small]}>
+		<View
+			style={[
+				padding.horizontal.medium,
+				padding.top.small,
+				{ position: 'absolute', width: '100%', bottom: -40 },
+			]}
+		>
 			<ButtonSettingRow
 				state={[
 					{
@@ -70,7 +76,7 @@ const HomeHeaderAvatar: React.FC = () => {
 	const qrCodeSize = Math.min(windowHeight, windowWidth) * 0.3
 
 	return (
-		<View style={[row.center, margin.top.scale(30)]}>
+		<View style={[row.center, margin.top.scale(30), padding.bottom.scale(70)]}>
 			<TouchableOpacity
 				style={[background.white, border.radius.medium, padding.scale(20), padding.top.scale(40)]}
 				onPress={() => navigation.navigate.settings.myBertyId()}
@@ -96,14 +102,22 @@ const HomeHeaderAvatar: React.FC = () => {
 
 const HomeHeader: React.FC = () => {
 	const navigation = useNativeNavigation()
-	const [{ color }] = useStyles()
+	const [{ color, margin }] = useStyles()
 	return (
-		<View>
-			<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+		<View style={{ width: '100%' }}>
+			<View
+				style={[
+					margin.top.scale(10),
+					{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' },
+				]}
+			>
 				<TouchableOpacity onPress={() => navigation.goBack()}>
-					<Icon name='arrow-back-outline' width={25} height={25} fill={color.white} />
+					<Icon name='arrow-back-outline' width={30} height={30} fill={color.white} />
 				</TouchableOpacity>
 				<View />
+				<TouchableOpacity onPress={() => navigation.goBack()}>
+					<Icon name='edit-outline' width={30} height={30} fill={color.white} />
+				</TouchableOpacity>
 			</View>
 			<HomeHeaderAvatar />
 		</View>
@@ -115,7 +129,7 @@ const HomeBodySettings: React.FC<{}> = () => {
 	const navigation = useNativeNavigation()
 
 	return (
-		<View style={[flex.tiny, padding.horizontal.medium, margin.top.medium]}>
+		<View style={[flex.tiny, padding.horizontal.medium, padding.bottom.medium, margin.top.medium]}>
 			<ButtonSetting
 				name='Network List'
 				icon='earth'
@@ -129,7 +143,7 @@ const HomeBodySettings: React.FC<{}> = () => {
 
 export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 	const account = useAccount()
-	const [{ flex, background, row }] = useStyles()
+	const [{ flex, background, row, margin }] = useStyles()
 	const navigation = useNativeNavigation()
 
 	return (
@@ -145,12 +159,14 @@ export const Home: React.FC<ScreenProps.Settings.Home> = () => {
 						<ActivityIndicator size='large' style={[row.center]} />
 					) : (
 						<ScrollView bounces={false}>
-							<HeaderSettings>
-								<View>
-									<HomeHeader />
-									<HomeHeaderGroupButton />
-								</View>
-							</HeaderSettings>
+							<View style={[margin.bottom.scale(20)]}>
+								<HeaderSettings>
+									<View>
+										<HomeHeader />
+										<HomeHeaderGroupButton />
+									</View>
+								</HeaderSettings>
+							</View>
 							<HomeBodySettings />
 						</ScrollView>
 					)}
