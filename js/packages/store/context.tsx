@@ -105,6 +105,7 @@ export enum PersistentOptionsKeys {
 	I18N = 'i18n',
 	Notifications = 'notifications',
 	BetaBot = 'betabot',
+	Auth = 'authenticate',
 }
 
 export type PersistentOptionsI18N = {
@@ -121,6 +122,11 @@ export type PersistentOptionsBetaBot = {
 	toggledModal: boolean
 }
 
+export type PersistentOptionsAuth = {
+	touchID: boolean
+	authenticated: boolean
+}
+
 export type PersistentOptionsUpdate =
 	| {
 			type: typeof PersistentOptionsKeys.I18N
@@ -134,11 +140,16 @@ export type PersistentOptionsUpdate =
 			type: typeof PersistentOptionsKeys.BetaBot
 			payload: Partial<PersistentOptionsBetaBot>
 	  }
+	| {
+			type: typeof PersistentOptionsKeys.Auth
+			payload: Partial<PersistentOptionsAuth>
+	  }
 
 export type PersistentOptions = {
 	[PersistentOptionsKeys.I18N]: PersistentOptionsI18N
 	[PersistentOptionsKeys.Notifications]: PersistentOptionsNotifications
 	[PersistentOptionsKeys.BetaBot]: PersistentOptionsBetaBot
+	[PersistentOptionsKeys.Auth]: PersistentOptionsAuth
 }
 
 export const defaultPersistentOptions = (): PersistentOptions => ({
@@ -152,6 +163,10 @@ export const defaultPersistentOptions = (): PersistentOptions => ({
 		added: false,
 		convPk: null,
 		toggledModal: false,
+	},
+	[PersistentOptionsKeys.Auth]: {
+		touchID: false,
+		authenticated: false,
 	},
 })
 

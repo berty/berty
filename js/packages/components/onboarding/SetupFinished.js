@@ -40,6 +40,13 @@ const SetupFinishedBody = () => {
 					enable: true,
 				},
 			})
+			await setPersistentOption({
+				type: PersistentOptionsKeys.Auth,
+				payload: {
+					touchID: false,
+					authenticated: true,
+				},
+			})
 		}
 		if (!persistentOptions && Object.values(contacts).length) {
 			return () => handlePersistentOptions()

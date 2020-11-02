@@ -96,6 +96,22 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 				onPress={() => navigation.navigate('Settings.Bluetooth')}
 			/>
 			<ButtonSetting
+				name='Touch ID at launch'
+				icon='info-outline'
+				iconColor={color.blue}
+				toggled
+				varToggle={ctx.persistentOptions?.authenticate.touchID}
+				actionToggle={async () =>
+					await ctx.setPersistentOption({
+						type: PersistentOptionsKeys.Auth,
+						payload: {
+							touchID: ctx.persistentOptions?.authenticate.touchID ? false : true,
+							authenticated: true,
+						},
+					})
+				}
+			/>
+			<ButtonSetting
 				name='App mode'
 				icon='options-outline'
 				iconSize={30}

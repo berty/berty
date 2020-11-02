@@ -156,6 +156,10 @@ const getPersistentOptions = async (
 			await i18n.changeLanguage(opts.i18n.language)
 		}
 
+		if (opts.authenticate.touchID) {
+			opts.authenticate.authenticated = false
+		}
+
 		dispatch({
 			type: MessengerActions.SetPersistentOption,
 			payload: opts,

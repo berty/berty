@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Linking } from 'react-native'
+import { Alert, Linking } from 'react-native'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from 'react-native-screens/native-stack'
 // import { createStackNavigator } from '@react-navigation/stack'
@@ -9,8 +9,9 @@ import { useMsgrContext } from '@berty-tech/store/hooks'
 import { Routes } from './types'
 // import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
-import { isClosing, MessengerAppState } from '@berty-tech/store/context'
+import { isClosing, MessengerAppState, PersistentOptionsKeys } from '@berty-tech/store/context'
 import { dispatch, navigate } from '@berty-tech/navigation/rootRef'
+import TouchID from 'react-native-touch-id'
 
 function useLinking() {
 	const [url, setUrl] = useState<string | null>(null)
@@ -146,7 +147,39 @@ export const CreateGroupNavigation: React.FC = () => {
 
 const TabStack = createMaterialTopTabNavigator() // provides swipe animation
 export const TabNavigation: React.FC = () => {
-	return (
+	const ctx = useMsgrContext()
+	useEffect(() => {
+		if (
+			ctx.persistentOptions?.authenticate.touchID &&
+			!ctx.persistentOptions?.authenticate.authenticated
+		) {
+			TouchID.authenticate('to demo this react-native component', {
+				passcodeFallback: true,
+				fallbackLabel: 'Enter password',
+			})
+				.then(async () => {
+					await ctx.setPersistentOption({
+						type: PersistentOptionsKeys.Auth,
+						payload: {
+							touchID: true,
+							authenticated: true,
+						},
+					})
+					Alert.alert(
+						'Authentication successful 🎉',
+						'Congrats',
+						[{ text: 'OK 👍', onPress: () => console.log('OK Pressed') }],
+						{ cancelable: false },
+					)
+				})
+				.catch(() => {
+					console.log('Authentication Failed')
+				})
+		}
+	}, [ctx])
+
+	return ctx.persistentOptions?.authenticate.touchID &&
+		!ctx.persistentOptions?.authenticate.authenticated ? null : (
 		<TabStack.Navigator
 			initialRouteName={Routes.Main.Home}
 			tabBar={() => <Components.Main.Footer />}

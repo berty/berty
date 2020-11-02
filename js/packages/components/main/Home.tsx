@@ -11,6 +11,7 @@ import {
 	Image,
 	TextInput,
 	SectionList,
+	Alert,
 } from 'react-native'
 import { SafeAreaConsumer, EdgeInsets } from 'react-native-safe-area-context'
 import { Icon, Text } from '@ui-kitten/components'
@@ -43,6 +44,8 @@ import { playSound } from '../sounds'
 import Logo from './1_berty_picto.svg'
 import EmptyChat from './empty_chat.svg'
 import AvatarGroup19 from './Avatar_Group_Copy_19.png'
+import TouchID from 'react-native-touch-id'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 //
 // Main List

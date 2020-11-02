@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { View, ScrollView, Vibration, Alert } from 'react-native'
+import TouchID from 'react-native-touch-id'
 import { Layout } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
@@ -294,8 +295,33 @@ const BodyDevTools: React.FC<{}> = () => {
 	const navigation = useNativeNavigation()
 	const ctx = useMsgrContext()
 
+	const handleTouchID = () => {
+		TouchID.authenticate('to demo this react-native component', {
+			passcodeFallback: true,
+			fallbackLabel: 'Enter password',
+		})
+			.then(() => {
+				Alert.alert(
+					'Authentication successful 🎉',
+					'Congrats',
+					[{ text: 'OK 👍', onPress: () => console.log('OK Pressed') }],
+					{ cancelable: false },
+				)
+			})
+			.catch(() => {
+				console.log('Authentication Failed')
+			})
+	}
+
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
+			<ButtonSetting
+				name='Test touch ID'
+				icon='info-outline'
+				iconSize={30}
+				iconColor={color.dark.grey}
+				onPress={() => handleTouchID()}
+			/>
 			<ButtonSetting
 				name='System info'
 				icon='info-outline'
