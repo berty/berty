@@ -316,9 +316,14 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 func (m *Manager) getRdvpMaddrs() ([]*peer.AddrInfo, error) {
 	m.applyDefaults()
 
-	defaultMaddrs := []string{}
-	for _, entry := range config.Config.P2P.RDVP {
-		defaultMaddrs = append(defaultMaddrs, entry.Maddr)
+	var defaultMaddrs []string
+	{
+		i := len(config.Config.P2P.RDVP)
+		defaultMaddrs = make([]string, i)
+		for i > 0 {
+			i--
+			defaultMaddrs[i] = config.Config.P2P.RDVP[i].Maddr
+		}
 	}
 
 	if m.Node.Protocol.RdvpMaddrs == "" {

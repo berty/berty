@@ -9,6 +9,7 @@ services:
     entrypoint: rdvp
     ports:
       - 4040:4040
+      - 4040:4040/udp
     command:
       - serve
       - "--db=:memory:"
