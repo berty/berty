@@ -5,7 +5,12 @@ import { SafeAreaContext } from 'react-native-safe-area-context'
 
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { useStyles } from '@berty-tech/styles'
-import { useInteraction, useConversation } from '@berty-tech/store/hooks'
+import {
+	useInteraction,
+	useConversation,
+	useContacts,
+	usePersistentOptions,
+} from '@berty-tech/store/hooks'
 
 import Logo from './main/1_berty_picto.svg'
 import { navigate, Routes } from '@berty-tech/navigation'
@@ -145,6 +150,26 @@ const NotificationBasic: React.FC<any> = ({ onClose, title, message, additionalP
 }
 
 const NotificationBody: React.FC<any> = (props) => {
+	const contacts = useContacts()
+	const persistentOptions = usePersistentOptions()
+
+	const evt = props.additionalProps
+
+	const contact = Object.values(contacts).find(
+		(c: any) => c.conversationPublicKey === evt?.payload?.publicKey,
+	)
+
+	const isValid =
+		contact?.state !== messengerpb.Contact.State.IncomingRequest &&
+		contact?.state !== messengerpb.Contact.State.Undefined
+	// check if message comes from valid contact
+
+	console.log('isValid', isValid)
+
+	if (!(isValid && persistentOptions?.notifications?.enable)) {
+		return null
+	}
+
 	console.log('RENDERING NOTIFICATION', props)
 
 	const prevProps = usePrevious(props)
