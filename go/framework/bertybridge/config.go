@@ -30,9 +30,6 @@ func (c *Config) AppendCLIArg(arg string)                         { c.cliArgs = 
 func (c *Config) manager() (*initutil.Manager, func(), error) {
 	manager := initutil.Manager{}
 
-	// FIXME: Disable this option once the discovery is fixed.
-	manager.Node.Protocol.RelayHack = true
-
 	// configure flagset options
 	fs := flag.NewFlagSet("bridge", flag.ContinueOnError)
 	manager.SetupLoggingFlags(fs)
