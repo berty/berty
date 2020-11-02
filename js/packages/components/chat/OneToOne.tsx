@@ -25,12 +25,12 @@ import {
 	useReadEffect,
 	useSortedConvInteractions,
 	usePersistentOptions,
+	useClient,
 } from '@berty-tech/store/hooks'
 
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { Message, MessageSystemWrapper, MessageInvitationButton } from './shared-components/Message'
 import BlurView from '../shared-components/BlurView'
-import messengerMethodsHooks from '@berty-tech/store/methods'
 
 import moment from 'moment'
 
@@ -41,6 +41,7 @@ import Avatar from '../modals/Buck_Berty_Icon_Card.svg'
 import { groupBy } from 'lodash'
 import { pbDateToNum, timeFormat } from '../helpers'
 import { useLayout } from '../hooks'
+import { playSound } from '../sounds'
 
 //
 // Chat
@@ -248,7 +249,7 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 	const [{ row, flex, text, margin, color }] = useStyles()
 	const [acceptDisabled, setAcceptDisabled] = useState<boolean>(false)
 
-	const { refresh: accept } = messengerMethodsHooks.useContactAccept()
+	const client = useClient()
 	const decline: any = () => {}
 
 	useEffect(() => {
@@ -297,7 +298,14 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 					disabled
 				/>
 				<MessageInvitationButton
-					onPress={() => accept({ publicKey })}
+					onPress={() =>
+						client
+							.contactAccept({ publicKey })
+							.then(() => {
+								playSound('contactRequestAccepted')
+							})
+							.catch((err: any) => console.warn('Failed to accept contact request:', err))
+					}
 					activeOpacity={!acceptDisabled ? 0.2 : 1}
 					icon='checkmark-outline'
 					color={!acceptDisabled ? color.blue : color.green}
@@ -479,6 +487,7 @@ const InfosChat: React.FC<api.berty.messenger.v1.IConversation & any> = ({
 	const ctx = useMsgrContext()
 	const contact =
 		Object.values(ctx.contacts).find((c: any) => c.conversationPublicKey === publicKey) || null
+
 	const isAccepted = contact.state === messengerpb.Contact.State.Accepted
 	const isIncoming = contact.state === messengerpb.Contact.State.IncomingRequest
 	const textColor = '#4E58BF'
@@ -558,7 +567,8 @@ const MessageList: React.FC<{
 
 	const onScrollToIndexFailed = () => {
 		// Not sure why this happens (something to do with item/screen dimensions I think)
-		flatListRef.current?.scrollToIndex({ index: 0 })
+		// FIXME: next line is crashing the app
+		// flatListRef.current?.scrollToIndex({ index: 0 })
 	}
 	const initialScrollIndex = React.useMemo(() => {
 		if (scrollToMessage) {

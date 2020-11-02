@@ -25,8 +25,8 @@ import {
 	useLastConvInteraction,
 	usePersistentOptions,
 	useSortedConversationList,
+	useClient,
 } from '@berty-tech/store/hooks'
-import messengerMethodsHooks from '@berty-tech/store/methods'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import * as api from '@berty-tech/api/index.pb'
 import { useStyles } from '@berty-tech/styles'
@@ -38,6 +38,7 @@ import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAva
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { createSections } from './Search'
 import { HintBody } from '../shared-components/HintBody'
+import { playSound } from '../sounds'
 
 import Logo from './1_berty_picto.svg'
 import EmptyChat from './empty_chat.svg'
@@ -125,7 +126,7 @@ const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 	conversationPublicKey,
 	createdDate: createdDateStr,
 }) => {
-	const { refresh: accept } = messengerMethodsHooks.useContactAccept()
+	const client = useClient()
 	const decline: any = () => {} // Messenger.useDiscardContactRequest()
 	const { dispatch } = useNavigation()
 	const {
@@ -227,9 +228,14 @@ const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 						</TouchableOpacity>
 						<TouchableOpacity
 							style={acceptButton}
-							onPress={() => {
-								accept({ publicKey })
-							}}
+							onPress={() =>
+								client
+									.contactAccept({ publicKey })
+									.then(() => {
+										playSound('contactRequestAccepted')
+									})
+									.catch((err: any) => console.warn('Failed to accept contact request:', err))
+							}
 						>
 							<Icon
 								name='checkmark-outline'

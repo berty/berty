@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
 	ScrollView,
 	View,
@@ -13,6 +13,7 @@ import { useNavigation } from '@berty-tech/navigation'
 import { protocolMethodsHooks } from '@berty-tech/store/methods'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { types } from '@berty-tech/api/index.js'
+import { usePrevious } from '../hooks'
 
 const PeerItem = ({ item, highlighted }) => {
 	const { id, minLatency, isActive, features } = item
@@ -78,15 +79,6 @@ const PeerItem = ({ item, highlighted }) => {
 			)}
 		</View>
 	)
-}
-
-function usePrevious(value) {
-	// https://blog.logrocket.com/how-to-get-previous-props-state-with-react-hooks/
-	const ref = useRef()
-	useEffect(() => {
-		ref.current = value
-	})
-	return ref.current
 }
 
 function getPeersTypes(peers) {

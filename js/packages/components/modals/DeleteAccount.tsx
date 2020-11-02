@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
 	View,
 	StyleSheet,
@@ -8,11 +8,14 @@ import {
 	Vibration,
 	Text as TextNative,
 } from 'react-native'
+import { useNavigation, CommonActions } from '@react-navigation/native'
 import { Text, Icon } from '@ui-kitten/components'
+
 import { useStyles } from '@berty-tech/styles'
 import { Routes } from '@berty-tech/navigation'
-import { useNavigation, CommonActions } from '@react-navigation/native'
 import { useMsgrContext, useAccount } from '@berty-tech/store/hooks'
+
+import { usePrevious } from '../hooks'
 
 const useStylesDeleteAccount = () => {
 	const [{ width, height, border, text, padding, margin }] = useStyles()
@@ -89,15 +92,6 @@ const DeleteAccountError: React.FC<{ error: string }> = ({ error }) => {
 			<Text style={[text.color.red, text.align.center, text.bold.medium]}>{error}</Text>
 		</View>
 	)
-}
-
-function usePrevious<T>(value: T) {
-	// https://blog.logrocket.com/how-to-get-previous-props-state-with-react-hooks/
-	const ref = useRef<T>()
-	useEffect(() => {
-		ref.current = value
-	})
-	return ref.current
 }
 
 const DELETE_STR = 'delete'

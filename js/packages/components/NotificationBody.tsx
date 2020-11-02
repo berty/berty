@@ -1,14 +1,21 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import { TouchableOpacity, View, Text, Vibration } from 'react-native'
 import GestureRecognizer from 'react-native-swipe-gestures'
 import { SafeAreaContext } from 'react-native-safe-area-context'
 
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { useStyles } from '@berty-tech/styles'
-import { useInteraction, useConversation } from '@berty-tech/store/hooks'
+import {
+	useInteraction,
+	useConversation,
+	useContacts,
+	usePersistentOptions,
+} from '@berty-tech/store/hooks'
+import { navigate, Routes } from '@berty-tech/navigation'
 
 import Logo from './main/1_berty_picto.svg'
-import { navigate, Routes } from '@berty-tech/navigation'
+import { playSound } from './sounds'
+import { usePrevious } from './hooks'
 
 //
 // Styles
@@ -21,15 +28,6 @@ const useStylesNotification = () => {
 		innerTouchable: [flex.direction.row, { padding: 15, flexGrow: 0, flexShrink: 1 }],
 		titleAndTextWrapper: [flex.justify.spaceAround, { marginLeft: 15, flexShrink: 1, flexGrow: 0 }],
 	}
-}
-
-function usePrevious(value) {
-	// https://blog.logrocket.com/how-to-get-previous-props-state-with-react-hooks/
-	const ref = useRef()
-	useEffect(() => {
-		ref.current = value
-	})
-	return ref.current
 }
 
 //
@@ -63,12 +61,18 @@ const NotificationTmpLogo: React.FC<{}> = () => {
 	)
 }
 
-const NotificationMessage: React.FC<any> = ({ onClose, title, message, ...props }) => {
+const NotificationMessage: React.FC<any> = ({ onClose, title, message, justOpened, ...props }) => {
 	const [{ text }] = useStyles()
 	const _styles = useStylesNotification()
 	const { payload } = props?.additionalProps?.payload || {}
 	const convExists = useConversation(payload.conversation?.publicKey)
 	const inteExists = useInteraction(payload?.interaction?.cid, payload.conversation?.publicKey)
+
+	useEffect(() => {
+		if (justOpened) {
+			playSound('messageReceived')
+		}
+	}, [justOpened])
 
 	const handlePressConvMessage = () => {
 		if (convExists && inteExists) {
@@ -111,13 +115,10 @@ const NotificationMessage: React.FC<any> = ({ onClose, title, message, ...props 
 	)
 }
 
-const NotificationBasic: React.FC<any> = ({ onClose, title, message, additionalProps: notif }) => {
+const NotificationBasic: React.FC<any> = ({ onClose, title, message }) => {
 	const [{ text }] = useStyles()
 	const _styles = useStylesNotification()
-	console.log('notif', notif)
-	if (!notif) {
-		return null
-	}
+
 	return (
 		<TouchableOpacity
 			style={_styles.touchable}
@@ -145,24 +146,20 @@ const NotificationBasic: React.FC<any> = ({ onClose, title, message, additionalP
 }
 
 const NotificationBody: React.FC<any> = (props) => {
-	console.log('RENDERING NOTIFICATION', props)
-
 	const prevProps = usePrevious(props)
+	const justOpened = props.isOpen && !prevProps?.isOpen
+
 	useEffect(() => {
-		if ((prevProps?.vibrate || props.vibrate) && props.isOpen && !prevProps?.isOpen) {
+		if ((prevProps?.vibrate || props.vibrate) && justOpened) {
 			Vibration.vibrate(400)
 		}
 	})
 
 	const [{ border, flex, column, background }] = useStyles()
 
-	if (!props.isOpen) {
-		return null
-	}
-
 	const NotificationContents = () =>
-		props?.additionalProps?.type === 2 ? (
-			<NotificationMessage {...props} />
+		props?.additionalProps?.type === messengerpb.StreamEvent.Notified.Type.TypeMessageReceived ? (
+			<NotificationMessage {...props} justOpened={justOpened} />
 		) : (
 			<NotificationBasic {...props} />
 		)
@@ -197,4 +194,28 @@ const NotificationBody: React.FC<any> = (props) => {
 	)
 }
 
-export default NotificationBody
+const GatedNotificationBody: React.FC<any> = (props) => {
+	const contacts = useContacts()
+	const persistentOptions = usePersistentOptions()
+
+	const evt = props.additionalProps
+
+	const contact = Object.values(contacts).find(
+		(c: any) => c.conversationPublicKey === evt?.payload?.publicKey,
+	)
+
+	const isValid =
+		evt &&
+		props.isOpen &&
+		persistentOptions?.notifications?.enable &&
+		contact?.state !== messengerpb.Contact.State.IncomingRequest &&
+		contact?.state !== messengerpb.Contact.State.Undefined
+
+	if (!isValid) {
+		return null
+	}
+
+	return <NotificationBody {...props} />
+}
+
+export default GatedNotificationBody
