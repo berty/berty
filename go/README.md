@@ -9,14 +9,20 @@ This folder contains most of the go code needed by the project.
 
 ## Download
 
-Main binary: `go get -u berty.tech/berty/v2/go/cmd/berty`
+Main binary:
+```sh
+git clone https://github.com/berty/berty
+cd berty/go
+make install
 
-Fetch library to your go cache: `go get -u berty.tech/berty/v2`
+# if things go wrong, please run and share the result of
+make doctor
+```
 
 ## Main components
 
 * [`./cmd/...`](./cmd): binaries / entrypoints
-    * `go get -v berty.tech/berty/v2/go/cmd/berty`
+    * `cd go; make install`
 * [`./pkg/...`](./pkg): packages especially made to be imported by other projects
     * [`./bertyprotocol`](./pkg/bertyprotocol): the [Berty Protocol](https://berty.tech/protocol)
     * ...
@@ -496,8 +502,8 @@ USAGE
   rdvp [global flags] <subcommand>
 
 SUBCOMMANDS
-  serve   
-  genkey  
+  serve
+  genkey
 
 FLAGS
   -log.file stderr      if specified, will log everything in JSON into a file and nothing on stderr

@@ -88,7 +88,11 @@ The main concept of the _Berty Protocol_ is the "group", a virtual place where m
 
 <!-- _TODO: add usage examples_ -->
 
-Get it: `go get -u berty.tech/berty/v2`
+Get it:
+
+```
+git clone https://github.com/berty/berty
+```
 
 ### Berty Messenger
 

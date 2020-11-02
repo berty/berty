@@ -4,9 +4,18 @@
 
 __Please, read the main [`README.md`](../../../README.md) file first.__
 
+## Usage
+
+```go
+import "berty.tech/berty/v2/go/pkg/bertymessenger"
+```
+
 ## Get the code
 
-`go get -u berty.tech/berty/v2/go/pkg/bertymessenger`
+```
+git clone https://github.com/berty/berty
+cd berty/go/pkg/bertymessenger
+```
 
 <!--
 ## Examples

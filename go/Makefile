@@ -279,3 +279,7 @@ depaware_pkgs = ./cmd/berty ./cmd/rdvp ./framework/bertybridge ./cmd/betabot
 depaware.check:
 	@set -xe; for pkg in $(depaware_pkgs); do $(GO) run github.com/tailscale/depaware --check $$pkg; done
 .PHONY: depaware.check
+
+doctor:
+	go run ../tool/doctor/main.go
+.PHONY: doctor
