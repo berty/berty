@@ -315,7 +315,7 @@ ios/Frameworks/Bertybridge.framework: $(bridge_src)
 		./go/framework/bertybridge
 	touch $@
 
-ios/Berty.xcworkspace: $(pkg_desc) ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle
+ios/Berty.xcworkspace: $(pkg_desc) ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle package.json
 	$(call check-program, bundle)
 	cd ios && bundle exec pod install
 	touch $@
