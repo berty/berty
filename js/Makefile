@@ -320,7 +320,7 @@ ios/Berty.xcworkspace: $(pkg_desc) ios/Berty.xcodeproj ios/Podfile ios/vendor/bu
 	cd ios && bundle exec pod install
 	touch $@
 
-ios/Berty.xcodeproj: ios/vendor/xcodegen $(xcodegen_yml)
+ios/Berty.xcodeproj: ios/vendor/xcodegen $(xcodegen_yml) $(call rwildcard,ios/Berty/Source,*)
 	$(call check-program, swift)
 	mkdir -p ios/Berty
 	touch ios/Berty/main.jsbundle
