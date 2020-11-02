@@ -20,6 +20,7 @@ services:
       - ./data/daemon:/store
     ports:
       - 6001:6001
+      - 6001:6001/udp
     deploy:
      resources:
        limits:
