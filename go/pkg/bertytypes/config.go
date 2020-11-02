@@ -18,5 +18,6 @@ type Config struct {
 		RDVP []struct {
 			Maddr string `json:"maddr"`
 		} `json:"rdvp"`
+		RelayHack []string `json:"relayHack" yaml:"relayHack"`
 	} `json:"p2p"`
 }

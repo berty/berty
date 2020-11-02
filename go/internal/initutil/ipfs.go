@@ -46,6 +46,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.Protocol.Tor.Mode, "tor.mode", defaultTorMode, "if true tor will be enabled")
 	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
 	fs.BoolVar(&m.Node.Protocol.DisableIPFSNetwork, "p2p.disable-ipfs-network", false, "disable as much networking feature as possible, useful during development")
+	fs.BoolVar(&m.Node.Protocol.RelayHack, "p2p.relay-hack", false, "*temporary flag*; if set, Berty will use relays from the config optimistically")
 
 	m.longHelp = append(m.longHelp, [2]string{
 		"-p2p.swarm-listeners=:default:,CUSTOM",
@@ -181,8 +182,54 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		// Setup MC
 		if m.Node.Protocol.MultipeerConnectivity {
 			swarmAddrs = append(swarmAddrs, mc.DefaultAddr)
-			mcOpt := libp2p.Transport(proximity.NewTransport(m.ctx, logger, mc.NewDriver(logger)))
-			p2pOpts = libp2p.ChainOptions(p2pOpts, mcOpt)
+			p2pOpts = libp2p.ChainOptions(p2pOpts,
+				libp2p.Transport(proximity.NewTransport(m.ctx, logger, mc.NewDriver(logger))),
+			)
+		}
+
+		if m.Node.Protocol.RelayHack {
+			// Resolving addresses
+			pis, err := ipfsutil.ParseAndResolveRdvpMaddrs(m.GetContext(), m.initLogger, config.Config.P2P.RelayHack)
+			if err != nil {
+				return nil, nil, errcode.TODO.Wrap(err)
+			}
+
+			lenPis := len(pis)
+			pickFrom := make([]peer.AddrInfo, lenPis)
+			for lenPis > 0 {
+				lenPis--
+				pickFrom[lenPis] = *pis[lenPis]
+			}
+
+			// Selecting 2 random one
+			rng := mrand.New(mrand.NewSource(srand.SafeFast())) //nolint:gosec
+			var relays []peer.AddrInfo
+			if len(pickFrom) <= 2 {
+				relays = pickFrom
+			} else {
+				for i := 2; i > 0; i-- {
+					lenPickFrom := len(pickFrom)
+					n := rng.Intn(lenPickFrom)
+					relays = append(relays, pickFrom[n])
+					if n == 0 {
+						pickFrom = pickFrom[1:]
+						continue
+					}
+					if n == lenPickFrom-1 {
+						pickFrom = pickFrom[:n-2]
+						continue
+					}
+					pickFrom = append(pickFrom[:n-1], pickFrom[n+1:]...)
+				}
+			}
+
+			for _, relay := range relays {
+				for _, addr := range relay.Addrs {
+					announce = append(announce, addr.String()+"/p2p-circuit")
+				}
+			}
+
+			p2pOpts = libp2p.ChainOptions(p2pOpts, libp2p.StaticRelays(relays))
 		}
 
 		// prefill peerstore with known rdvp servers
