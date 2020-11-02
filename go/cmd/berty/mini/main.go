@@ -13,9 +13,8 @@ import (
 	"github.com/rivo/tview"
 	"go.uber.org/zap"
 
-	// Embeding assets.
-	_ "berty.tech/berty/v2/go/assets"
 	"berty.tech/berty/v2/go/internal/lifecycle"
+	assets "berty.tech/berty/v2/go/pkg/assets"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
@@ -34,6 +33,8 @@ type Opts struct {
 var globalLogger *zap.Logger
 
 func Main(ctx context.Context, opts *Opts) error {
+	assets.Noop() // embed assets
+
 	if opts.MessengerClient == nil {
 		return errcode.ErrMissingInput.Wrap(fmt.Errorf("missing messenger client"))
 	}

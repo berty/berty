@@ -206,7 +206,7 @@ go.fmt:
 .PHONY: go.fmt
 
 pkger.generate:
-	$(GO) run github.com/markbates/pkger/cmd/pkger -o go/assets/
+	$(GO) run github.com/markbates/pkger/cmd/pkger -o go/pkg/assets/
 .PHONY: pkger.generate
 
 gen.clean:
