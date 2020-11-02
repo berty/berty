@@ -2,6 +2,7 @@ import React from 'react'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
 import { messenger as messengerpb, protocol as protocolpb } from '@berty-tech/api/index.js'
 import { grpcweb as rpcWeb, bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
+import i18n from '@berty-tech/berty-i18n'
 import { Service, EOF } from '@berty-tech/grpc-bridge'
 import ExternalTransport from './externalTransport'
 import cloneDeep from 'lodash/cloneDeep'
@@ -194,6 +195,7 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 		try {
 			let store = await AsyncStorage.getItem('persistentOptions')
 			store = JSON.parse(store)
+			i18n.changeLanguage(store?.i18n.language)
 			dispatch({
 				type: 'SET_PERSISTENT_OPTION',
 				payload: { persistOpts: store },
