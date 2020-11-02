@@ -24,6 +24,7 @@ type rendezvousDiscovery struct {
 	peerCacheMux sync.RWMutex
 	rng          *mrand.Rand
 	rngMux       sync.Mutex
+	selfID       peer.ID
 }
 
 type rpCache struct {
@@ -44,6 +45,7 @@ func NewRendezvousDiscovery(logger *zap.Logger, host host.Host, rdvPeer peer.ID,
 		rp:        rp,
 		rng:       rng,
 		peerCache: make(map[string]*rpCache),
+		selfID:    host.ID(),
 	}
 }
 
@@ -272,6 +274,14 @@ func (c *rendezvousDiscovery) FindPeersAsync(ctx context.Context, chPeer chan<- 
 }
 
 func (c *rendezvousDiscovery) Unregister(ctx context.Context, ns string) error {
+	c.peerCacheMux.RLock()
+	cache, ok := c.peerCache[ns]
+	c.peerCacheMux.RUnlock()
+	if ok {
+		cache.mux.Lock()
+		delete(cache.recs, c.selfID)
+		cache.mux.Unlock()
+	}
 	return c.rp.Unregister(ctx, ns)
 }
 

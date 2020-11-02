@@ -271,7 +271,7 @@ depaware.generate: ./cmd/berty/depaware.txt
 .PHONY: depaware.generate
 
 
-depaware_pkgs = ./cmd/berty ./cmd/rdvp ./framework/bertybridge ./cmd/betabot
+depaware_pkgs = ./cmd/berty ./cmd/rdvp ./framework/bertybridge ./cmd/betabot ./cmd/bertydoctor
 ./cmd/*/depaware.txt: ../go.sum
 	@set -xe; for pkg in $(depaware_pkgs); do $(GO) run github.com/tailscale/depaware --update $$pkg; done
 
@@ -281,5 +281,9 @@ depaware.check:
 .PHONY: depaware.check
 
 doctor:
-	go run ../tool/doctor/main.go
+	go run ./cmd/bertydoctor/
 .PHONY: doctor
+
+doctor.verbose:
+	go run ./cmd/bertydoctor/ -v
+.PHONY: doctor.verbose
