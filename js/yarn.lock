@@ -1150,6 +1150,15 @@
   dependencies:
     deep-assign "^3.0.0"
 
+"@react-native-community/audio-toolkit@^2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@react-native-community/audio-toolkit/-/audio-toolkit-2.0.3.tgz#4b07b5369ad1149c497bf8f9f219a13b62840bdb"
+  integrity sha512-l1LuCvTAO+RBJQicLhe3uYyifozIK1bsl6DqGlBLeO8ofKd05f+3rsE8Iz80eir5rJh4y5Dw2Gao2c0SjcgwAA==
+  dependencies:
+    async "^2.6.3"
+    eventemitter3 "^1.2.0"
+    lodash "^4.17.15"
+
 "@react-native-community/blur@^3.6.0":
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/@react-native-community/blur/-/blur-3.6.0.tgz#31c9e0f2770519c9b5c4f99418f192246f0d4db8"
@@ -2019,7 +2028,7 @@ astral-regex@^1.0.0:
   resolved "https://registry.yarnpkg.com/astral-regex/-/astral-regex-1.0.0.tgz#6c8c3fb827dd43ee3918f27b82782ab7658a6fd9"
   integrity sha512-+Ryf6g3BKoRc7jfp7ad8tM4TtMiaWvbF/1/sQcZPkkS7ag3D5nMBCe2UfOTONtAkaG0tO0ij3C5Lwmf1EiyjHg==
 
-async@^2.4.0:
+async@^2.4.0, async@^2.6.3:
   version "2.6.3"
   resolved "https://registry.yarnpkg.com/async/-/async-2.6.3.tgz#d72625e2344a3656e3a3ad4fa749fa83299d82ff"
   integrity sha512-zflvls11DCy+dQWzTW2dzuilv8Z5X/pjfmZOWba6TNIVDm+2UDaJmXSOXlasHKfNBs8oo3M0aT50fDEWfKZjXg==
@@ -3664,6 +3673,11 @@ event-target-shim@^5.0.0, event-target-shim@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/event-target-shim/-/event-target-shim-5.0.1.tgz#5d4d3ebdf9583d63a5333ce2deb7480ab2b05789"
   integrity sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==
+
+eventemitter3@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-1.2.0.tgz#1c86991d816ad1e504750e73874224ecf3bec508"
+  integrity sha1-HIaZHYFq0eUEdQ5zh0Ik7PO+xQg=
 
 eventemitter3@^3.0.0:
   version "3.1.2"

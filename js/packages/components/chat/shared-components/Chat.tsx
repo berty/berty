@@ -1,13 +1,14 @@
 import React, { useRef, useState } from 'react'
 import { TouchableOpacity, SafeAreaView, View, TextInput } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
+
 import { useStyles } from '@berty-tech/styles'
-
-import BlurView from '../../shared-components/BlurView'
-
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { useMsgrContext } from '@berty-tech/store/hooks'
+
 import { timeFormat } from '../../helpers'
+import { playSound } from '../../sounds'
+import BlurView from '../../shared-components/BlurView'
 
 // import { SafeAreaView } from 'react-native-safe-area-context'
 //
@@ -52,6 +53,9 @@ export const ChatFooter: React.FC<{
 				conversationPublicKey: convPk,
 				type: messengerpb.AppMessage.Type.TypeUserMessage,
 				payload: buf,
+			})
+			.then(() => {
+				playSound('messageSent')
 			})
 			.catch((e: any) => {
 				console.warn('e sending message:', e)

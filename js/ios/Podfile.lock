@@ -362,6 +362,8 @@ PODS:
     - React-Core (= 0.63.3)
     - React-cxxreact (= 0.63.3)
     - React-jsi (= 0.63.3)
+  - ReactNativeAudioToolkit (2.0.3):
+    - React
   - RNCAsyncStorage (1.12.1):
     - React-Core
   - RNCMaskedView (0.1.10):
@@ -448,6 +450,7 @@ DEPENDENCIES:
   - React-RCTText (from `../node_modules/react-native/Libraries/Text`)
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - "ReactNativeAudioToolkit (from `../node_modules/@react-native-community/audio-toolkit`)"
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
@@ -556,6 +559,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/Vibration"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  ReactNativeAudioToolkit:
+    :path: "../node_modules/@react-native-community/audio-toolkit"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-community/async-storage"
   RNCMaskedView:
@@ -637,6 +642,7 @@ SPEC CHECKSUMS:
   React-RCTText: 65a6de06a7389098ce24340d1d3556015c38f746
   React-RCTVibration: 8e9fb25724a0805107fc1acc9075e26f814df454
   ReactCommon: 4167844018c9ed375cc01a843e9ee564399e53c3
+  ReactNativeAudioToolkit: de9610f323e855ac6574be8c99621f3d57c5df06
   RNCAsyncStorage: b03032fdbdb725bea0bd9e5ec5a7272865ae7398
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNFBApp: 7eacc7da7ab19f96c05e434017d44a9f09410da8

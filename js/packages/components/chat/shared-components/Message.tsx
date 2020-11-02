@@ -348,6 +348,7 @@ export const Message: React.FC<{
 	if (!inte) {
 		return null
 	}
+
 	const isGroup = convKind === messengerpb.Conversation.Type.MultiMemberType
 	let name
 	let baseColor = color.blue

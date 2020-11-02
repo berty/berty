@@ -25,6 +25,7 @@ import {
 	useReadEffect,
 	useSortedConvInteractions,
 	usePersistentOptions,
+	useClient,
 } from '@berty-tech/store/hooks'
 
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
@@ -41,6 +42,7 @@ import Avatar from '../modals/Buck_Berty_Icon_Card.svg'
 import { groupBy } from 'lodash'
 import { pbDateToNum, timeFormat } from '../helpers'
 import { useLayout } from '../hooks'
+import { playSound } from '../sounds'
 
 //
 // Chat
@@ -248,7 +250,7 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 	const [{ row, flex, text, margin, color }] = useStyles()
 	const [acceptDisabled, setAcceptDisabled] = useState<boolean>(false)
 
-	const { refresh: accept } = messengerMethodsHooks.useContactAccept()
+	const client = useClient()
 	const decline: any = () => {}
 
 	useEffect(() => {
@@ -297,7 +299,14 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 					disabled
 				/>
 				<MessageInvitationButton
-					onPress={() => accept({ publicKey })}
+					onPress={() =>
+						client
+							.contactAccept({ publicKey })
+							.then(() => {
+								playSound('contactRequestAccepted')
+							})
+							.catch((err: any) => console.warn('Failed to accept contact request:', err))
+					}
 					activeOpacity={!acceptDisabled ? 0.2 : 1}
 					icon='checkmark-outline'
 					color={!acceptDisabled ? color.blue : color.green}
@@ -467,6 +476,16 @@ export const AddBetabotBox = () => {
 	)
 }
 
+// FIXME: put in some file
+function usePrevious<T>(value: T) {
+	// https://blog.logrocket.com/how-to-get-previous-props-state-with-react-hooks/
+	const ref = React.useRef<T>()
+	React.useEffect(() => {
+		ref.current = value
+	})
+	return ref.current
+}
+
 const InfosChat: React.FC<api.berty.messenger.v1.IConversation & any> = ({
 	createdDate: createdDateStr,
 	publicKey,
@@ -479,6 +498,7 @@ const InfosChat: React.FC<api.berty.messenger.v1.IConversation & any> = ({
 	const ctx = useMsgrContext()
 	const contact =
 		Object.values(ctx.contacts).find((c: any) => c.conversationPublicKey === publicKey) || null
+
 	const isAccepted = contact.state === messengerpb.Contact.State.Accepted
 	const isIncoming = contact.state === messengerpb.Contact.State.IncomingRequest
 	const textColor = '#4E58BF'

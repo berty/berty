@@ -14,6 +14,8 @@ import GoBridge from '@berty-tech/go-bridge'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { Player } from '@react-native-community/audio-toolkit'
+import { playSound } from '../sounds'
 
 //
 // DevTools
@@ -260,6 +262,30 @@ const DumpMembers: React.FC = () => {
 	return <DumpButton name='Dump members' text={text} />
 }
 
+const PlaySound: React.FC = () => {
+	const [{ color }] = useStyles()
+	return (
+		<>
+			<ButtonSetting
+				name={'Play sound'}
+				icon='speaker-outline'
+				iconSize={30}
+				iconColor={color.dark.grey}
+				onPress={() => {
+					new Player('Notif_Berty02.mp3', { mixWithOthers: true }).play()
+				}}
+			/>
+			<ButtonSetting
+				name={'Play preloaded sound'}
+				icon='speaker-outline'
+				iconSize={30}
+				iconColor={color.dark.grey}
+				onPress={() => playSound('contactRequestSent')}
+			/>
+		</>
+	)
+}
+
 const BodyDevTools: React.FC<{}> = () => {
 	const _styles = useStylesDevTools()
 	const [{ padding, flex, margin, color, text }] = useStyles()
@@ -353,6 +379,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				disabled
 			/>
 			<SendToAll />
+			<PlaySound />
 			<ButtonSettingRow
 				state={[
 					{

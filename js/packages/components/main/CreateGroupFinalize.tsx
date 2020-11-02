@@ -14,6 +14,7 @@ import { Header } from './CreateGroupAddMembers'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { playSound } from '../sounds'
 
 const useStylesCreateGroup = () => {
 	const [{ padding, height, width, absolute, border, column, text, background }] = useStyles()
@@ -276,6 +277,7 @@ export const CreateGroupFinalize: React.FC<{
 					title='CREATE A GROUP'
 					action={() => {
 						createGroup()
+						playSound('groupCreated')
 					}}
 				/>
 			</SwipeNavRecognizer>

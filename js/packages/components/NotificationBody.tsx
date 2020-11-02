@@ -11,9 +11,10 @@ import {
 	useContacts,
 	usePersistentOptions,
 } from '@berty-tech/store/hooks'
+import { navigate, Routes } from '@berty-tech/navigation'
 
 import Logo from './main/1_berty_picto.svg'
-import { navigate, Routes } from '@berty-tech/navigation'
+import { playSound } from './sounds'
 
 //
 // Styles
@@ -28,6 +29,7 @@ const useStylesNotification = () => {
 	}
 }
 
+// FIXME: put in some file
 function usePrevious(value) {
 	// https://blog.logrocket.com/how-to-get-previous-props-state-with-react-hooks/
 	const ref = useRef()
@@ -68,12 +70,18 @@ const NotificationTmpLogo: React.FC<{}> = () => {
 	)
 }
 
-const NotificationMessage: React.FC<any> = ({ onClose, title, message, ...props }) => {
+const NotificationMessage: React.FC<any> = ({ onClose, title, message, justOpened, ...props }) => {
 	const [{ text }] = useStyles()
 	const _styles = useStylesNotification()
 	const { payload } = props?.additionalProps?.payload || {}
 	const convExists = useConversation(payload.conversation?.publicKey)
 	const inteExists = useInteraction(payload?.interaction?.cid, payload.conversation?.publicKey)
+
+	useEffect(() => {
+		if (justOpened) {
+			playSound('messageReceived')
+		}
+	}, [justOpened])
 
 	const handlePressConvMessage = () => {
 		if (convExists && inteExists) {
@@ -187,7 +195,7 @@ const NotificationBody: React.FC<any> = (props) => {
 
 	const NotificationContents = () =>
 		props?.additionalProps?.type === 2 ? (
-			<NotificationMessage {...props} />
+			<NotificationMessage {...props} justOpened={props.isOpen && !prevProps?.isOpen} />
 		) : (
 			<NotificationBasic {...props} />
 		)

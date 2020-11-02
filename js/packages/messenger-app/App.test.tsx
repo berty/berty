@@ -441,6 +441,29 @@ jest.mock('@shakebugs/react-native-shake', () => {
 	}
 })
 
+jest.mock('@react-native-community/audio-toolkit', () => {
+	class Player {
+		prepare(cb: any) {
+			if (cb) {
+				cb()
+			}
+		}
+		play(cb: any) {
+			if (cb) {
+				cb()
+			}
+		}
+		seek(_: any, cb: any) {
+			if (cb) {
+				cb()
+			}
+		}
+	}
+	return {
+		Player,
+	}
+})
+
 it('renders correctly', () => {
 	renderer.create(<App />)
 })
