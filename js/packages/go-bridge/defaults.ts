@@ -8,6 +8,7 @@ export const GoBridgeDefaultOpts = {
 		'--p2p.swarm-listeners=/ip4/0.0.0.0/tcp/0,/ip6/0.0.0.0/tcp/0',
 		'--p2p.local-discovery=false',
 		'--p2p.webui-listener=:3000',
+		'--p2p.relay-hack=true',
 	],
 	persistence: true,
 }
