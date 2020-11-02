@@ -75,6 +75,8 @@ type Manager struct {
 				Mode       string `json:"Mode,omitempty"`
 				BinaryPath string `json:"BinaryPath,omitempty"`
 			} `json:"Tor,omitempty"`
+			// FIXME: Remove this option, this is a temporary fix
+			RelayHack bool `json:"RelayHack,omitempty"`
 
 			// internal
 			needAuth         bool
