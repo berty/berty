@@ -381,8 +381,8 @@ PODS:
     - React-Core
   - RNReanimated (1.13.1):
     - React
-  - RNScreens (2.11.0):
-    - React
+  - RNScreens (2.12.0):
+    - React-Core
   - RNSVG (11.0.1):
     - React
   - RNVectorIcons (7.1.0):
@@ -645,7 +645,7 @@ SPEC CHECKSUMS:
   RNInAppBrowser: 48b95ba7a4eaff5cc223bca338d3e319561dbd1b
   RNPermissions: 5df468064df661a4c8c017e2791ce90d7695eea5
   RNReanimated: dd8c286ab5dd4ba36d3a7fef8bff7e08711b5476
-  RNScreens: 0e91da98ab26d5d04c7b59a9b6bd694124caf88c
+  RNScreens: 4b488fdf9537bbce829e2910c8cce1d17f6d9be8
   RNSVG: 67f1f12dae2cef6ed59a42cae74a6b8f5a9e7b46
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
   Shake: 5dbd59e3e3363cea29bef608cc14aa13b09f96fc
