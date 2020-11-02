@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyleSheet, ActivityIndicator } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import BlurView from '../shared-components/BlurView'
 import InvalidScan from './InvalidScan'
 import { useStyles } from '@berty-tech/styles'
@@ -17,6 +18,7 @@ const base64ToURLBase64 = (str: string) =>
 export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 	route: { params },
 }) => {
+	const { t } = useTranslation()
 	const { reply: pdlReply, error, call, done, called } = messengerMethodsHooks.useParseDeepLink()
 	React.useEffect(() => {
 		if (!called) {
@@ -31,11 +33,11 @@ export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 	} else if (error) {
 		let title
 		if (dataType === 'link') {
-			title = 'Invalid link!'
+			title = t('modals.manage-deep-link.invalid-link')
 		} else if (dataType === 'qr') {
-			title = 'Invalid QR code!'
+			title = t('modals.manage-deep-link.invalid-qr')
 		} else {
-			title = 'Error!'
+			title = t('modals.manage-deep-link.error')
 		}
 		content = <InvalidScan title={title} error={error.toString()} />
 	} else if (pdlReply.kind === messengerpb.ParseDeepLink.Kind.BertyGroup) {

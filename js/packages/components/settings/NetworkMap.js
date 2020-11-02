@@ -7,6 +7,7 @@ import {
 	TouchableOpacity,
 } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
+import { Translation } from 'react-i18next'
 import { HeaderSettings } from '../shared-components/Header'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/navigation'
@@ -139,91 +140,97 @@ const NetworkMapBody = ({ peers }) => {
 	}, [peers])
 
 	return (
-		<View style={[{ flexDirection: 'column' }]}>
-			{sortPeers?.length ? (
-				<View>
-					<View style={[margin.medium]}>
-						<TextNative
-							style={[
-								{ fontFamily: 'Open Sans' },
-								text.bold.medium,
-								text.size.large,
-								text.color.dark.grey,
-							]}
-						>
-							{`Online Peers ${sortPeers.length}`}
-						</TextNative>
-						<View
-							style={{
-								flexDirection: 'row',
-								alignItems: 'center',
-								justifyContent: 'space-around',
-								marginTop: 15,
-							}}
-						>
-							<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-								<Icon name='berty' pack='custom' width={25} height={25} />
+		<Translation>
+			{(t) => (
+				<View style={[{ flexDirection: 'column' }]}>
+					{sortPeers?.length ? (
+						<View>
+							<View style={[margin.medium]}>
 								<TextNative
 									style={[
 										{ fontFamily: 'Open Sans' },
 										text.bold.medium,
 										text.size.large,
 										text.color.dark.grey,
-										margin.left.tiny,
 									]}
 								>
-									{typesPeers?.berty}
+									{`${t('settings.network-map.online-peers')} ${sortPeers.length}`}
 								</TextNative>
-							</View>
-							<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-								<Icon name='network' pack='custom' fill={color.dark.grey} width={25} height={25} />
-								<TextNative
-									style={[
-										{ fontFamily: 'Open Sans' },
-										text.bold.medium,
-										text.size.large,
-										text.color.dark.grey,
-										margin.left.tiny,
-									]}
+								<View
+									style={{
+										flexDirection: 'row',
+										alignItems: 'center',
+										justifyContent: 'space-around',
+										marginTop: 15,
+									}}
 								>
-									{typesPeers?.quic}
-								</TextNative>
+									<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+										<Icon name='berty' pack='custom' width={25} height={25} />
+										<TextNative
+											style={[
+												{ fontFamily: 'Open Sans' },
+												text.bold.medium,
+												text.size.large,
+												text.color.dark.grey,
+												margin.left.tiny,
+											]}
+										>
+											{typesPeers?.berty}
+										</TextNative>
+									</View>
+									<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+										<Icon
+											name='network'
+											pack='custom'
+											fill={color.dark.grey}
+											width={25}
+											height={25}
+										/>
+										<TextNative
+											style={[
+												{ fontFamily: 'Open Sans' },
+												text.bold.medium,
+												text.size.large,
+												text.color.dark.grey,
+												margin.left.tiny,
+											]}
+										>
+											{typesPeers?.quic}
+										</TextNative>
+									</View>
+									<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+										<Icon name='bluetooth' fill={color.dark.grey} width={25} height={25} />
+										<TextNative
+											style={[
+												{ fontFamily: 'Open Sans' },
+												text.bold.medium,
+												text.size.large,
+												text.color.dark.grey,
+												margin.left.tiny,
+											]}
+										>
+											{typesPeers?.ble}
+										</TextNative>
+									</View>
+								</View>
 							</View>
-							<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-								<Icon name='bluetooth' fill={color.dark.grey} width={25} height={25} />
-								<TextNative
-									style={[
-										{ fontFamily: 'Open Sans' },
-										text.bold.medium,
-										text.size.large,
-										text.color.dark.grey,
-										margin.left.tiny,
-									]}
-								>
-									{typesPeers?.ble}
-								</TextNative>
-							</View>
+							<>
+								{sortPeers.map((value) => {
+									const elem = prevPeers?.find((v) => value.id.toString() === v.id.toString())
+									return (
+										<PeerItem item={value} highlighted={elem ? false : prevPeers ? true : false} />
+									)
+								})}
+							</>
 						</View>
-					</View>
-					<>
-						{sortPeers.map((value) => {
-							const elem = prevPeers?.find((v) => value.id.toString() === v.id.toString())
-							return (
-								<PeerItem
-									key={value.id}
-									item={value}
-									highlighted={elem ? false : prevPeers ? true : false}
-								/>
-							)
-						})}
-					</>
-				</View>
-			) : (
-				<View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 100 }}>
-					<ActivityIndicator size='large' />
+					) : (
+						<View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 100 }}>
+							<ActivityIndicator size='large' />
+						</View>
+					)}
 				</View>
 			)}
-		</View>
+		</Translation>
 	)
 }
 
@@ -239,19 +246,23 @@ export const NetworkMap = () => {
 	}, [called, call])
 
 	return (
-		<Layout style={[background.white, flex.tiny]}>
-			<SwipeNavRecognizer>
-				<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(30)}>
-					<HeaderSettings
-						title='Network List'
-						bgColor={color.dark.grey}
-						undo={goBack}
-						action={() => call()}
-						actionIcon='refresh-outline'
-					/>
-					<NetworkMapBody peers={peers} />
-				</ScrollView>
-			</SwipeNavRecognizer>
-		</Layout>
+		<Translation>
+			{(t) => (
+				<Layout style={[background.white, flex.tiny]}>
+					<SwipeNavRecognizer>
+						<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(30)}>
+							<HeaderSettings
+								title={t('settings.network-map.title')}
+								bgColor={color.dark.grey}
+								undo={goBack}
+								action={() => call()}
+								actionIcon='refresh-outline'
+							/>
+							<NetworkMapBody peers={peers} />
+						</ScrollView>
+					</SwipeNavRecognizer>
+				</Layout>
+			)}
+		</Translation>
 	)
 }

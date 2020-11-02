@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { View, TouchableOpacity } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useNavigation } from '@react-navigation/native'
+import { useTranslation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { TabBar } from '../shared-components/TabBar'
@@ -49,6 +50,7 @@ const AddThisContact: React.FC<{
 	const { call: requestContact, error, done } = messengerMethodsHooks.useContactRequest()
 	const [selectedContent, setSelectedContent] = useState('Fingerprint')
 	const _styles = useStylesModal()
+	const { t } = useTranslation()
 
 	// TODO: handle error (shouldn't happen since we checked the link previously, but still)
 
@@ -62,11 +64,11 @@ const AddThisContact: React.FC<{
 	if (error) {
 		let title
 		if (type === 'link') {
-			title = 'Invalid link!'
+			title = t('modals.manage-deep-link.invalid-link')
 		} else if (type === 'qr') {
-			title = 'Invalid QR code!'
+			title = t('modals.manage-deep-link.invalid-qr')
 		} else {
-			title = 'Error!'
+			title = t('modals.manage-deep-link.error')
 		}
 		return <InvalidScan title={title} error={error.toString()} />
 	}
@@ -95,10 +97,18 @@ const AddThisContact: React.FC<{
 					<Text style={{ textAlign: 'center' }}>{displayName}</Text>
 					<TabBar
 						tabs={[
-							{ name: 'Fingerprint', icon: 'fingerprint', iconPack: 'custom' } as any, // TODO: fix typing
-							{ name: 'Info', icon: 'info-outline', buttonDisabled: true },
 							{
-								name: 'Devices',
+								name: t('modals.add-this-contact.fingerprint'),
+								icon: 'fingerprint',
+								iconPack: 'custom',
+							} as any, // TODO: fix typing
+							{
+								name: t('modals.add-this-contact.info'),
+								icon: 'info-outline',
+								buttonDisabled: true,
+							},
+							{
+								name: t('modals.add-this-contact.devices'),
 								icon: 'smartphone',
 								iconSize: 20,
 								iconPack: 'feather',

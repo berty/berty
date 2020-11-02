@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, ScrollView, ActivityIndicator } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
@@ -10,6 +11,7 @@ export const SystemInfo: React.FC<ScreenProps.Settings.SystemInfo> = () => {
 	const { goBack } = useNavigation()
 	const [{ background, flex, color, padding }] = useStyles()
 	const { reply: systemInfo, done, error, call } = messengerMethodsHooks.useSystemInfo()
+	const { t } = useTranslation()
 
 	React.useEffect(() => {
 		call()
@@ -19,7 +21,7 @@ export const SystemInfo: React.FC<ScreenProps.Settings.SystemInfo> = () => {
 		<Layout style={[background.white, flex.tiny]}>
 			<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
 				<HeaderSettings
-					title='System info'
+					title={t('settings.system-info.title')}
 					bgColor={color.dark.grey}
 					undo={goBack}
 					actionIcon='refresh-outline'

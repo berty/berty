@@ -13,6 +13,7 @@ import {
 } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 import { CommonActions } from '@react-navigation/native'
+import { Translation, useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { Routes, ScreenProps, useNavigation } from '@berty-tech/navigation'
@@ -260,64 +261,78 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 	}, [isAccepted])
 
 	return (
-		<View>
-			<View style={[row.left, flex.align.center, flex.justify.center]}>
-				<TextNative
-					style={[
-						text.color.black,
-						text.size.scale(15),
-						text.bold.medium,
-						{ fontFamily: 'Open Sans' },
-					]}
-				>
-					CONTACT REQUEST
-				</TextNative>
-			</View>
-			<View style={[margin.top.small, flex.align.center, flex.justify.center]}>
-				<ProceduralCircleAvatar seed={publicKey || '42'} size={40} style={[margin.bottom.small]} />
-				<TextNative
-					style={[
-						text.color.black,
-						text.size.scale(13),
-						text.bold.small,
-						margin.bottom.small,
-						{ fontFamily: 'Open Sans' },
-					]}
-				>
-					{displayName}
-				</TextNative>
-			</View>
-			<View style={[row.center, flex.justify.spaceEvenly, flex.align.center, margin.top.medium]}>
-				<MessageInvitationButton
-					onPress={() => decline()}
-					activeOpacity={!acceptDisabled ? 0.2 : 1}
-					icon='close-outline'
-					color={color.grey}
-					title='REFUSE'
-					backgroundColor={color.white}
-					styleOpacity={0.6}
-					disabled
-				/>
-				<MessageInvitationButton
-					onPress={() =>
-						client &&
-						client
-							.contactAccept({ publicKey })
-							.then(() => {
-								playSound('contactRequestAccepted')
-							})
-							.catch((err: any) => console.warn('Failed to accept contact request:', err))
-					}
-					activeOpacity={!acceptDisabled ? 0.2 : 1}
-					icon='checkmark-outline'
-					color={!acceptDisabled ? color.blue : color.green}
-					title={!acceptDisabled ? 'ACCEPT' : 'ACCEPTED'}
-					backgroundColor={!acceptDisabled ? color.light.blue : color.light.green}
-					styleOpacity={acceptDisabled ? 0.6 : undefined}
-					disabled={acceptDisabled}
-				/>
-			</View>
-		</View>
+		<Translation>
+			{(t: any): React.ReactNode => (
+				<View>
+					<View style={[row.left, flex.align.center, flex.justify.center]}>
+						<TextNative
+							style={[
+								text.color.black,
+								text.size.scale(15),
+								text.bold.medium,
+								{ fontFamily: 'Open Sans' },
+							]}
+						>
+							{t('chat.one-to-one.contact-request-box.title')}
+						</TextNative>
+					</View>
+					<View style={[margin.top.small, flex.align.center, flex.justify.center]}>
+						<ProceduralCircleAvatar
+							seed={publicKey || '42'}
+							size={40}
+							style={[margin.bottom.small]}
+						/>
+						<TextNative
+							style={[
+								text.color.black,
+								text.size.scale(13),
+								text.bold.small,
+								margin.bottom.small,
+								{ fontFamily: 'Open Sans' },
+							]}
+						>
+							{displayName}
+						</TextNative>
+					</View>
+					<View
+						style={[row.center, flex.justify.spaceEvenly, flex.align.center, margin.top.medium]}
+					>
+						<MessageInvitationButton
+							onPress={() => decline()}
+							activeOpacity={!acceptDisabled ? 0.2 : 1}
+							icon='close-outline'
+							color={color.grey}
+							title={t('chat.one-to-one.contact-request-box.refuse-button')}
+							backgroundColor={color.white}
+							styleOpacity={0.6}
+							disabled
+						/>
+						<MessageInvitationButton
+							onPress={() =>
+								client &&
+								client
+									.contactAccept({ publicKey })
+									.then(() => {
+										playSound('contactRequestAccepted')
+									})
+									.catch((err: any) => console.warn('Failed to accept contact request:', err))
+							}
+							activeOpacity={!acceptDisabled ? 0.2 : 1}
+							icon='checkmark-outline'
+							color={!acceptDisabled ? color.blue : color.green}
+							title={
+								!acceptDisabled
+									? t('chat.one-to-one.contact-request-box.accept-button')
+									: t('chat.one-to-one.contact-request-box.accepted-button')
+							}
+							backgroundColor={!acceptDisabled ? color.light.blue : color.light.green}
+							styleOpacity={acceptDisabled ? 0.6 : undefined}
+							disabled={acceptDisabled}
+						/>
+					</View>
+				</View>
+			)}
+		</Translation>
 	)
 }
 
@@ -330,153 +345,161 @@ export const AddBetabotBox = () => {
 	const { setPersistentOption, persistentOptions } = useMsgrContext()
 
 	return (
-		<View
-			style={[
-				{
-					justifyContent: 'center',
-					alignItems: 'center',
-				},
-				padding.medium,
-			]}
-		>
-			<View
-				style={[
-					{
-						width: 80 * scaleHeight,
-						height: 80 * scaleHeight,
-						backgroundColor: 'white',
-						justifyContent: 'center',
-						alignItems: 'center',
-						position: 'relative',
-						top: 10,
-						zIndex: 1,
-						shadowOpacity: 0.1,
-						shadowRadius: 5,
-						shadowOffset: { width: 0, height: 3 },
-					},
-					background.white,
-					border.radius.scale(60),
-				]}
-			>
-				<Avatar width={80 * scaleHeight} height={80 * scaleHeight} />
-			</View>
-			<View
-				style={[
-					background.white,
-					padding.horizontal.medium,
-					padding.bottom.medium,
-					border.radius.large,
-					border.shadow.huge,
-					{ width: '100%' },
-				]}
-			>
-				<View style={[padding.top.scale(35)]}>
-					<Icon
-						name='info-outline'
-						fill={color.blue}
-						width={60 * scaleHeight}
-						height={60 * scaleHeight}
-						style={[row.item.justify, padding.top.large]}
-					/>
-					<TextNative
+		<Translation>
+			{(t: any): React.ReactNode => (
+				<View
+					style={[
+						{
+							justifyContent: 'center',
+							alignItems: 'center',
+						},
+						padding.medium,
+					]}
+				>
+					<View
 						style={[
-							text.align.center,
-							padding.top.small,
-							text.size.large,
-							text.bold.medium,
-							text.color.black,
-							{ fontFamily: 'Open Sans' },
+							{
+								width: 80 * scaleHeight,
+								height: 80 * scaleHeight,
+								backgroundColor: 'white',
+								justifyContent: 'center',
+								alignItems: 'center',
+								position: 'relative',
+								top: 10,
+								zIndex: 1,
+								shadowOpacity: 0.1,
+								shadowRadius: 5,
+								shadowOffset: { width: 0, height: 3 },
+							},
+							background.white,
+							border.radius.scale(60),
 						]}
 					>
-						ADD BETA BOT?
-					</TextNative>
-					<Text style={[text.align.center, padding.top.scale(20), padding.horizontal.medium]}>
-						<TextNative
-							style={[
-								text.bold.small,
-								text.size.medium,
-								text.color.black,
-								{ fontFamily: 'Open Sans' },
-							]}
-						>
-							You don't have any contacts yet would you like to add the
-						</TextNative>
-						<TextNative
-							style={[
-								text.bold.medium,
-								text.size.medium,
-								text.color.black,
-								{ fontFamily: 'Open Sans' },
-							]}
-						>
-							{' '}
-							Beta Bot
-						</TextNative>
-						<TextNative
-							style={[
-								text.bold.small,
-								text.color.black,
-								text.size.medium,
-								{ fontFamily: 'Open Sans' },
-							]}
-						>
-							{' '}
-							to discover and test conversations?
-						</TextNative>
-					</Text>
-				</View>
-				<View style={[row.center, padding.top.medium]}>
-					<TouchableOpacity
-						style={[row.fill, margin.bottom.medium, opacity(0.5), _styles.skipButton]}
+						<Avatar width={80 * scaleHeight} height={80 * scaleHeight} />
+					</View>
+					<View
+						style={[
+							background.white,
+							padding.horizontal.medium,
+							padding.bottom.medium,
+							border.radius.large,
+							border.shadow.huge,
+							{ width: '100%' },
+						]}
 					>
-						<Icon name='close' width={30} height={30} fill={color.grey} style={row.item.justify} />
-						<TextNative
-							style={[
-								text.color.grey,
-								padding.left.small,
-								row.item.justify,
-								text.size.scale(16),
-								text.bold.medium,
-								{ fontFamily: 'Open Sans' },
-							]}
-						>
-							SKIP
-						</TextNative>
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={[row.fill, margin.bottom.medium, background.light.blue, _styles.addButton]}
-						onPress={async () => {
-							await setPersistentOption({
-								type: PersistentOptionsKeys.BetaBot,
-								payload: {
-									added: true,
-									convPk: persistentOptions.betabot.convPk,
-								},
-							})
-						}}
-					>
-						<Icon
-							name='checkmark-outline'
-							width={30}
-							height={30}
-							fill={color.blue}
-							style={row.item.justify}
-						/>
-						<TextNative
-							style={[
-								text.color.blue,
-								padding.left.small,
-								row.item.justify,
-								text.size.scale(16),
-								text.bold.medium,
-							]}
-						>
-							ADD !
-						</TextNative>
-					</TouchableOpacity>
+						<View style={[padding.top.scale(35)]}>
+							<Icon
+								name='info-outline'
+								fill={color.blue}
+								width={60 * scaleHeight}
+								height={60 * scaleHeight}
+								style={[row.item.justify, padding.top.large]}
+							/>
+							<TextNative
+								style={[
+									text.align.center,
+									padding.top.small,
+									text.size.large,
+									text.bold.medium,
+									text.color.black,
+									{ fontFamily: 'Open Sans' },
+								]}
+							>
+								{t('chat.one-to-one.betabot-box.title')}
+							</TextNative>
+							<Text style={[text.align.center, padding.top.scale(20), padding.horizontal.medium]}>
+								<TextNative
+									style={[
+										text.bold.small,
+										text.size.medium,
+										text.color.black,
+										{ fontFamily: 'Open Sans' },
+									]}
+								>
+									{t('chat.one-to-one.betabot-box.begin-desc')}
+								</TextNative>
+								<TextNative
+									style={[
+										text.bold.medium,
+										text.size.medium,
+										text.color.black,
+										{ fontFamily: 'Open Sans' },
+									]}
+								>
+									{t('chat.one-to-one.betabot-box.bold-desc')}
+								</TextNative>
+								<TextNative
+									style={[
+										text.bold.small,
+										text.color.black,
+										text.size.medium,
+										{ fontFamily: 'Open Sans' },
+									]}
+								>
+									{t('chat.one-to-one.betabot-box.end-desc')}
+								</TextNative>
+							</Text>
+						</View>
+						<View style={[row.center, padding.top.medium]}>
+							<TouchableOpacity
+								style={[row.fill, margin.bottom.medium, opacity(0.5), _styles.skipButton]}
+							>
+								<Icon
+									name='close'
+									width={30}
+									height={30}
+									fill={color.grey}
+									style={row.item.justify}
+								/>
+								<TextNative
+									style={[
+										text.color.grey,
+										padding.left.small,
+										row.item.justify,
+										text.size.scale(16),
+										text.bold.medium,
+										{ fontFamily: 'Open Sans' },
+									]}
+								>
+									{t('chat.one-to-one.betabot-box.skip-button')}
+								</TextNative>
+							</TouchableOpacity>
+							<TouchableOpacity
+								style={[row.fill, margin.bottom.medium, background.light.blue, _styles.addButton]}
+								onPress={async () => {
+									await setPersistentOption({
+										type: PersistentOptionsKeys.BetaBot,
+										payload: {
+											added: true,
+											convPk: persistentOptions.betabot.convPk,
+										},
+									})
+								}}
+							>
+								<Icon
+									name='checkmark-outline'
+									width={30}
+									height={30}
+									fill={color.blue}
+									style={row.item.justify}
+								/>
+								<TextNative
+									style={[
+										text.color.blue,
+										padding.left.small,
+										row.item.justify,
+										text.size.scale(16),
+										text.bold.medium,
+									]}
+								>
+									{t('chat.one-to-one.betabot-box.add-button')}
+								</TextNative>
+							</TouchableOpacity>
+						</View>
+					</View>
 				</View>
-			</View>
-		</View>
+			)}
+		</Translation>
 	)
 }
 
@@ -498,42 +521,48 @@ const InfosChat: React.FC<api.berty.messenger.v1.IConversation & any> = ({
 	const textColor = '#4E58BF'
 
 	return (
-		<View style={[padding.medium, flex.align.center]}>
-			<ChatDate date={createdDate} />
-			{!isIncoming ? (
-				<>
-					{isBetabot && !isBetabotAdded ? (
-						<AddBetabotBox />
+		<Translation>
+			{(t: any): React.ReactNode => (
+				<View style={[padding.medium, flex.align.center]}>
+					<ChatDate date={createdDate} />
+					{!isIncoming ? (
+						<>
+							{isBetabot && !isBetabotAdded ? (
+								<AddBetabotBox />
+							) : (
+								<MessageSystemWrapper styleContainer={[margin.bottom.small, margin.top.large]}>
+									<Text style={[text.align.center, { color: textColor }]}>
+										{isAccepted
+											? t('chat.one-to-one.infos-chat.connection-confirmed')
+											: t('chat.one-to-one.infos-chat.request-sent')}
+									</Text>
+								</MessageSystemWrapper>
+							)}
+						</>
 					) : (
-						<MessageSystemWrapper styleContainer={[margin.bottom.small, margin.top.large]}>
-							<Text style={[text.align.center, { color: textColor }]}>
-								{isAccepted ? '👋 Berty connection confirmed! 🎉' : 'Request Sent ✈️'}
-							</Text>
+						<MessageSystemWrapper>
+							<ContactRequestBox contact={contact} isAccepted={isAccepted} />
 						</MessageSystemWrapper>
 					)}
-				</>
-			) : (
-				<MessageSystemWrapper>
-					<ContactRequestBox contact={contact} isAccepted={isAccepted} />
-				</MessageSystemWrapper>
+					{!isAccepted && contact.state !== messengerpb.Contact.State.Undefined && (
+						<>
+							<View style={[flex.align.center]}>
+								<Text style={[margin.top.tiny, dateMessage]}>
+									{timeFormat.fmtTimestamp1(pbDateToNum(createdDate))}
+								</Text>
+							</View>
+							<InfosContactState
+								state={
+									isIncoming
+										? t('chat.one-to-one.infos-chat.incoming')
+										: t('chat.one-to-one.infos-chat.outgoing')
+								}
+							/>
+						</>
+					)}
+				</View>
 			)}
-			{!isAccepted && contact.state !== messengerpb.Contact.State.Undefined && (
-				<>
-					<View style={[flex.align.center]}>
-						<Text style={[margin.top.tiny, dateMessage]}>
-							{timeFormat.fmtTimestamp1(pbDateToNum(createdDate))}
-						</Text>
-					</View>
-					<InfosContactState
-						state={
-							isIncoming
-								? 'Accept this request to reply!'
-								: 'Waiting for your contact reply to connect!'
-						}
-					/>
-				</>
-			)}
-		</View>
+		</Translation>
 	)
 }
 
@@ -660,6 +689,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 	const [{ flex, background }] = useStyles()
 	useReadEffect(params?.convId, 1000)
 	const { dispatch } = useNavigation()
+	const { t } = useTranslation()
 
 	const ctx: any = useMsgrContext()
 	const conv = ctx.conversations[params?.convId]
@@ -674,9 +704,9 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 	const isFooterDisable = isIncoming || (isBetabot && !isBetabotAdded)
 	const placeholder = isFooterDisable
 		? isBetabot
-			? 'Add betabot to write here...'
-			: 'Accept the request to write here...'
-		: 'Write a secure message...'
+			? t('chat.one-to-one.betabot-input-placeholder')
+			: t('chat.one-to-one.incoming-input-placeholder')
+		: t('chat.one-to-one.input-placeholder')
 
 	const [stickyDate, setStickyDate] = useState(conv?.lastUpdate || null)
 	const [showStickyDate, setShowStickyDate] = useState(false)

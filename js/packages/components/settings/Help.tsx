@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, ScrollView, StyleSheet } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
+import { Translation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
@@ -31,20 +32,24 @@ const _helpStyles = StyleSheet.create({
 const HeaderHelp: React.FC<{}> = () => {
 	const [{ color, text }] = useStyles()
 	return (
-		<View>
-			<ButtonSetting
-				name='Security & Privacy'
-				icon='shield-outline'
-				iconSize={30}
-				iconColor={color.red}
-				actionIcon='arrow-ios-forward'
-				disabled={true}
-			>
-				<Text style={[text.bold.medium, _helpStyles.headerButtonText]}>
-					{'Keep your data safe & your life private'}
-				</Text>
-			</ButtonSetting>
-		</View>
+		<Translation>
+			{(t: any): React.ReactNode => (
+				<View>
+					<ButtonSetting
+						name={t('settings.help.security-privacy-button.title')}
+						icon='shield-outline'
+						iconSize={30}
+						iconColor={color.red}
+						actionIcon='arrow-ios-forward'
+						disabled={true}
+					>
+						<Text style={[text.bold.medium, _helpStyles.headerButtonText]}>
+							{t('settings.help.security-privacy-button.desc')}
+						</Text>
+					</ButtonSetting>
+				</View>
+			)}
+		</Translation>
 	)
 }
 
@@ -54,82 +59,86 @@ const BodyHelp: React.FC<{}> = () => {
 	const { navigate } = useNavigation()
 
 	return (
-		<View style={padding.medium}>
-			<ButtonSetting
-				name='Updates'
-				icon='arrow-upward-outline'
-				iconColor={color.red}
-				onPress={() => navigate.settings.appUpdates()}
-			/>
-			<ButtonSetting
-				name='About Berty'
-				icon='info-outline'
-				iconColor={color.red}
-				onPress={() => navigate.settings.aboutBerty()}
-			/>
-			<ButtonSetting
-				name='Account & Berty ID'
-				icon='person-outline'
-				iconSize={30}
-				iconColor={color.red}
-				actionIcon='arrow-ios-forward'
-				disabled={true}
-			/>
-			<ButtonSetting
-				name='Contacts & Requests'
-				icon='user-plus'
-				iconPack='custom'
-				iconSize={30}
-				iconColor={color.red}
-				actionIcon='arrow-ios-forward'
-				disabled={true}
-			/>
-			<ButtonSetting
-				name='Messages'
-				icon='paper-plane-outline'
-				iconSize={30}
-				iconColor={color.red}
-				actionIcon='arrow-ios-forward'
-				disabled={true}
-			/>
-			<ButtonSetting
-				name='Groups'
-				icon='users'
-				iconPack='custom'
-				iconSize={30}
-				iconColor={color.red}
-				actionIcon='arrow-ios-forward'
-				disabled={true}
-			/>
-			<ButtonSetting
-				name='Settings'
-				icon='settings-2-outline'
-				iconSize={30}
-				iconColor={color.red}
-				actionIcon='arrow-ios-forward'
-				disabled={true}
-			/>
-			<View style={[_styles.rowButtons]}>
-				<ButtonSettingRow
-					state={[
-						{
-							name: 'Ask a question',
-							icon: 'question-mark-circle-outline',
-							color: color.red,
-							style: _styles.firstRowButton,
-							disabled: true,
-						},
-						{
-							name: 'Report a bug',
-							icon: 'bulb-outline',
-							color: color.red,
-							style: _styles.secondRowButton,
-							disabled: true,
-						},
-					]}
-				/>
-			</View>
-		</View>
+		<Translation>
+			{(t: any): React.ReactNode => (
+				<View style={padding.medium}>
+					<ButtonSetting
+						name={t('settings.help.updates-button')}
+						icon='arrow-upward-outline'
+						iconColor={color.red}
+						onPress={navigate.settings.appUpdates}
+					/>
+					<ButtonSetting
+						name={t('settings.help.about-button')}
+						icon='info-outline'
+						iconColor={color.red}
+						onPress={navigate.settings.aboutBerty}
+					/>
+					<ButtonSetting
+						name={t('settings.help.account-button')}
+						icon='person-outline'
+						iconSize={30}
+						iconColor={color.red}
+						actionIcon='arrow-ios-forward'
+						disabled={true}
+					/>
+					<ButtonSetting
+						name={t('settings.help.contact-button')}
+						icon='user-plus'
+						iconPack='custom'
+						iconSize={30}
+						iconColor={color.red}
+						actionIcon='arrow-ios-forward'
+						disabled={true}
+					/>
+					<ButtonSetting
+						name={t('settings.help.message-button')}
+						icon='paper-plane-outline'
+						iconSize={30}
+						iconColor={color.red}
+						actionIcon='arrow-ios-forward'
+						disabled={true}
+					/>
+					<ButtonSetting
+						name={t('settings.help.group-button')}
+						icon='users'
+						iconPack='custom'
+						iconSize={30}
+						iconColor={color.red}
+						actionIcon='arrow-ios-forward'
+						disabled={true}
+					/>
+					<ButtonSetting
+						name={t('settings.help.settings-button')}
+						icon='settings-2-outline'
+						iconSize={30}
+						iconColor={color.red}
+						actionIcon='arrow-ios-forward'
+						disabled={true}
+					/>
+					<View style={[_styles.rowButtons]}>
+						<ButtonSettingRow
+							state={[
+								{
+									name: t('settings.help.ask-button'),
+									icon: 'question-mark-circle-outline',
+									color: color.red,
+									style: _styles.firstRowButton,
+									disabled: true,
+								},
+								{
+									name: t('settings.help.report-button'),
+									icon: 'bulb-outline',
+									color: color.red,
+									style: _styles.secondRowButton,
+									disabled: true,
+								},
+							]}
+						/>
+					</View>
+				</View>
+			)}
+		</Translation>
 	)
 }
 
@@ -137,15 +146,19 @@ export const Help: React.FC<ScreenProps.Settings.Help> = () => {
 	const { goBack } = useNavigation()
 	const [{ background, flex, color, padding }] = useStyles()
 	return (
-		<Layout style={[background.white, flex.tiny]}>
-			<SwipeNavRecognizer>
-				<ScrollView bounces={false} contentContainerStyle={[padding.bottom.huge]}>
-					<HeaderSettings title='Help' bgColor={color.red} undo={goBack}>
-						<HeaderHelp />
-					</HeaderSettings>
-					<BodyHelp />
-				</ScrollView>
-			</SwipeNavRecognizer>
-		</Layout>
+		<Translation>
+			{(t: any): React.ReactNode => (
+				<Layout style={[background.white, flex.tiny]}>
+					<SwipeNavRecognizer>
+						<ScrollView bounces={false} contentContainerStyle={[padding.bottom.huge]}>
+							<HeaderSettings title={t('settings.help.title')} bgColor={color.red} undo={goBack}>
+								<HeaderHelp />
+							</HeaderSettings>
+							<BodyHelp />
+						</ScrollView>
+					</SwipeNavRecognizer>
+				</Layout>
+			)}
+		</Translation>
 	)
 }

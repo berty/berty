@@ -8,6 +8,7 @@ import {
 } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
+import { Translation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 
@@ -80,64 +81,68 @@ export const HomeModal: React.FC<{}> = () => {
 	const [{ absolute, color, margin, text }, { windowWidth, scaleSize }] = useStyles()
 
 	return (
-		<>
-			<TouchableWithoutFeedback style={[StyleSheet.absoluteFill]} onPress={navigation.goBack}>
-				<View style={{ width: '100%', height: '100%' }} />
-			</TouchableWithoutFeedback>
-			<View
-				style={[
-					absolute.bottom,
-					margin.bottom.scale(100),
-					{ marginLeft: windowWidth / 2 - 85 * scaleSize },
-				]}
-			>
-				<View
-					style={[
-						{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
-					]}
-				>
-					<HomeModalButton
-						value='Scan'
-						bgColor={color.red}
-						icon='qr'
-						iconPack='custom'
-						onPress={() => navigation.navigate('Main.Scan')}
-						left
-					/>
-					<HomeModalButton
-						bgColor='#527FEC'
-						onPress={() => navigation.navigate('Main.CreateGroupAddMembers')}
-						right
+		<Translation>
+			{(t: any): React.ReactNode => (
+				<>
+					<TouchableWithoutFeedback style={[StyleSheet.absoluteFill]} onPress={navigation.goBack}>
+						<View style={{ width: '100%', height: '100%' }} />
+					</TouchableWithoutFeedback>
+					<View
+						style={[
+							absolute.bottom,
+							margin.bottom.scale(100),
+							{ marginLeft: windowWidth / 2 - 85 * scaleSize },
+						]}
 					>
-						<>
-							<View style={{ flexDirection: 'row', alignItems: 'center', paddingRight: 7 }}>
-								<Icon
-									name='plus'
-									pack='custom'
-									fill={color.white}
-									width={15}
-									height={15}
-									style={{ top: -2, left: 3 }}
-								/>
-								<Icon name='users' pack='custom' fill={color.white} width={30} height={30} />
-							</View>
-							<TextNative
-								numberOfLines={1}
-								style={[
-									text.color.white,
-									text.bold.medium,
-									margin.top.tiny,
-									text.align.center,
-									text.size.scale(18),
-									{ fontFamily: 'Open Sans' },
-								]}
+						<View
+							style={[
+								{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
+							]}
+						>
+							<HomeModalButton
+								value={t('main.home-modal.left-button')}
+								bgColor={color.red}
+								icon='qr'
+								iconPack='custom'
+								onPress={() => navigation.navigate('Main.Scan')}
+								left
+							/>
+							<HomeModalButton
+								bgColor='#527FEC'
+								onPress={() => navigation.navigate('Main.CreateGroupAddMembers')}
+								right
 							>
-								{'Group'}
-							</TextNative>
-						</>
-					</HomeModalButton>
-				</View>
-			</View>
-		</>
+								<>
+									<View style={{ flexDirection: 'row', alignItems: 'center', paddingRight: 7 }}>
+										<Icon
+											name='plus'
+											pack='custom'
+											fill={color.white}
+											width={15}
+											height={15}
+											style={{ top: -2, left: 3 }}
+										/>
+										<Icon name='users' pack='custom' fill={color.white} width={30} height={30} />
+									</View>
+									<TextNative
+										numberOfLines={1}
+										style={[
+											text.color.white,
+											text.bold.medium,
+											margin.top.tiny,
+											text.align.center,
+											text.size.scale(18),
+											{ fontFamily: 'Open Sans' },
+										]}
+									>
+										{t('main.home-modal.right-button')}
+									</TextNative>
+								</>
+							</HomeModalButton>
+						</View>
+					</View>
+				</>
+			)}
+		</Translation>
 	)
 }

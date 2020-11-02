@@ -8,6 +8,7 @@ import {
 	Text as TextNative,
 } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
+import { Translation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { useDeleteAccount } from '@berty-tech/store/hooks'
@@ -101,69 +102,93 @@ const DeleteAccountContent: React.FC<{}> = () => {
 	const confirmed = deleteConfirmation === DELETE_STR
 
 	return (
-		<>
-			<DeleteAccountError error={'Are you sure you want to delete your account?'} />
-			<View style={[padding.horizontal.medium, padding.bottom.medium]}>
-				<Text style={[text.color.red, text.align.center, text.bold.small]}>
-					Please type <Text style={[text.bold.huge, text.color.red]}>delete</Text> to confirm
-				</Text>
-			</View>
-			<View style={[column.justify]}>
-				<TextInput
-					style={[
-						padding.small,
-						background.light.grey,
-						text.size.large,
-						border.radius.small,
-						margin.medium,
-						text.color.black,
-					]}
-					value={deleteConfirmation}
-					onChangeText={setDeleteConfirmation}
-					autoCorrect={false}
-					autoCapitalize='none'
-				/>
-				<View style={row.center}>
-					<TouchableOpacity
-						style={[row.fill, margin.bottom.medium, _styles.dismissButton]}
-						onPress={() => navigation.goBack()}
-					>
-						<Icon
-							name='arrow-back-outline'
-							width={30}
-							height={30}
-							fill={color.grey}
-							style={row.item.justify}
+		<Translation>
+			{(t: any): React.ReactNode => (
+				<>
+					<DeleteAccountError error={t('settings.delete-account.first-desc')} />
+					<View style={[padding.horizontal.medium, padding.bottom.medium]}>
+						<Text style={[text.color.red, text.align.center, text.bold.small]}>
+							{t('settings.delete-account.begin-second-desc')}
+							<Text style={[text.bold.huge, text.color.red]}>
+								{t('settings.delete-account.bold-second-desc')}
+							</Text>
+							{t('settings.delete-account.end-second-desc')}
+						</Text>
+					</View>
+					<View style={[column.justify]}>
+						<TextInput
+							style={[
+								padding.small,
+								background.light.grey,
+								text.size.large,
+								border.radius.small,
+								margin.medium,
+								text.color.black,
+							]}
+							value={deleteConfirmation}
+							onChangeText={setDeleteConfirmation}
+							autoCorrect={false}
+							autoCapitalize='none'
 						/>
-						<Text
-							style={[text.color.grey, padding.left.small, row.item.justify, _styles.dismissText]}
-						>
-							CANCEL
-						</Text>
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={[
-							row.fill,
-							margin.bottom.medium,
-							_styles.deleteButton,
-							!confirmed && { opacity: 0.5 },
-						]}
-						onPress={() => {
-							Vibration.vibrate(500)
-							deleteAccount()
-						}}
-						disabled={!confirmed}
-					>
-						<Icon name='close' width={30} height={30} fill={color.red} style={row.item.justify} />
-						<Text
-							style={[text.color.red, padding.left.small, row.item.justify, _styles.dismissText]}
-						>
-							DELETE
-						</Text>
-					</TouchableOpacity>
-				</View>
-			</View>
-		</>
+						<View style={row.center}>
+							<TouchableOpacity
+								style={[row.fill, margin.bottom.medium, _styles.dismissButton]}
+								onPress={() => navigation.goBack()}
+							>
+								<Icon
+									name='arrow-back-outline'
+									width={30}
+									height={30}
+									fill={color.grey}
+									style={row.item.justify}
+								/>
+								<Text
+									style={[
+										text.color.grey,
+										padding.left.small,
+										row.item.justify,
+										_styles.dismissText,
+									]}
+								>
+									{t('settings.delete-account.cancel-button')}
+								</Text>
+							</TouchableOpacity>
+							<TouchableOpacity
+								style={[
+									row.fill,
+									margin.bottom.medium,
+									_styles.deleteButton,
+									!confirmed && { opacity: 0.5 },
+								]}
+								onPress={() => {
+									Vibration.vibrate(500)
+									deleteAccount()
+								}}
+								disabled={!confirmed}
+							>
+								<Icon
+									name='close'
+									width={30}
+									height={30}
+									fill={color.red}
+									style={row.item.justify}
+								/>
+								<Text
+									style={[
+										text.color.red,
+										padding.left.small,
+										row.item.justify,
+										_styles.dismissText,
+									]}
+								>
+									{t('settings.delete-account.delete-button')}
+								</Text>
+							</TouchableOpacity>
+						</View>
+					</View>
+				</>
+			)}
+		</Translation>
 	)
 }
 
@@ -172,22 +197,28 @@ export const DeleteAccount: React.FC<{}> = () => {
 	const [{ background, padding, border }] = useStyles()
 
 	return (
-		<View style={[padding.medium, background.red, { justifyContent: 'center', height: '100%' }]}>
-			<View
-				onLayout={(e) => !layout && setLayout(e.nativeEvent.layout.height)}
-				style={[
-					background.white,
-					padding.medium,
-					border.radius.medium,
-					layout && { height: layout - 90 },
-				]}
-			>
-				<View style={[_deleteAccountStyles.body]}>
-					<DeleteAccountHeader title='Delete account!' />
-					<DeleteAccountContent />
+		<Translation>
+			{(t: any): React.ReactNode => (
+				<View
+					style={[padding.medium, background.red, { justifyContent: 'center', height: '100%' }]}
+				>
+					<View
+						onLayout={(e) => !layout && setLayout(e.nativeEvent.layout.height)}
+						style={[
+							background.white,
+							padding.medium,
+							border.radius.medium,
+							layout && { height: layout - 90 },
+						]}
+					>
+						<View style={[_deleteAccountStyles.body]}>
+							<DeleteAccountHeader title={t('settings.delete-account.title')} />
+							<DeleteAccountContent />
+						</View>
+					</View>
 				</View>
-			</View>
-		</View>
+			)}
+		</Translation>
 	)
 }
 

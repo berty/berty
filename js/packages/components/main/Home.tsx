@@ -142,7 +142,7 @@ const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 	const textColor = '#AFB1C0'
 	return (
 		<Translation>
-			{(t): React.ReactNode => (
+			{(t: any): React.ReactNode => (
 				<TouchableOpacity
 					style={contactReqContainer}
 					onPress={() => {
@@ -199,7 +199,7 @@ const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 								},
 							]}
 						>
-							Contact request!
+							{t('main.home.requests.card-title')}
 						</Text>
 						<Text
 							style={[
@@ -244,7 +244,7 @@ const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 								height={17 * scaleSize}
 							/>
 							<Text style={[text.size.scale(10), text.color.blue, padding.horizontal.tiny]}>
-								{t('main.requests.accept')}
+								{t('main.home.requests.accept')}
 							</Text>
 						</TouchableOpacity>
 					</View>
@@ -291,31 +291,35 @@ const UnreadCount: React.FC<{ value: number; isConvBadge?: boolean }> = ({
 const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
 	const [{ padding, text, background, row }, { scaleSize }] = useStyles()
 	return items?.length ? (
-		<View onLayout={onLayout} style={[background.blue, padding.top.scale(50)]}>
-			<View>
-				<View style={[row.left]}>
-					<Text
-						style={[
-							text.color.white,
-							text.size.huge,
-							text.bold.medium,
-							padding.horizontal.medium,
-							padding.bottom.small,
-						]}
-					>
-						Requests
-					</Text>
-					<View style={{ position: 'relative', top: -2, left: -(23 * scaleSize) }}>
-						<UnreadCount value={items.length} />
+		<Translation>
+			{(t: any): React.ReactNode => (
+				<View onLayout={onLayout} style={[background.blue, padding.top.scale(50)]}>
+					<View>
+						<View style={[row.left]}>
+							<Text
+								style={[
+									text.color.white,
+									text.size.huge,
+									text.bold.medium,
+									padding.horizontal.medium,
+									padding.bottom.small,
+								]}
+							>
+								{t('main.home.requests.title')}
+							</Text>
+							<View style={{ position: 'relative', top: -2, left: -(23 * scaleSize) }}>
+								<UnreadCount value={items.length} />
+							</View>
+						</View>
+						<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+							{items.map((c: any) => {
+								return <ContactRequest key={c.publicKey} {...c} />
+							})}
+						</ScrollView>
 					</View>
 				</View>
-				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
-					{items.map((c: any) => {
-						return <ContactRequest key={c.publicKey} {...c} />
-					})}
-				</ScrollView>
-			</View>
-		</View>
+			)}
+		</Translation>
 	) : null
 }
 
@@ -647,127 +651,131 @@ const HomeHeader: React.FC<
 
 	return (
 		<View onLayout={onLayout}>
-			<View>
-				<View
-					style={[
-						background.white,
-						border.radius.top.big,
-						padding.horizontal.scale(27),
-						{
-							alignItems: 'center',
-							paddingTop: paddingTop * scaleHeight,
-						},
-					]}
-				>
-					{hasRequests && !isOnTop && !value?.length && (
-						<View style={[width(42), height(4), { backgroundColor: '#F1F4F6' }]} />
-					)}
-					<View
-						style={{
-							flexDirection: 'row',
-							alignItems: 'center',
-							paddingVertical: 15,
-						}}
-					>
+			<Translation>
+				{(t: any): React.ReactNode => (
+					<View>
 						<View
-							style={{
-								flex: 1,
-								alignItems: 'flex-end',
-								marginLeft: 5,
-							}}
+							style={[
+								background.white,
+								border.radius.top.big,
+								padding.horizontal.scale(27),
+								{
+									alignItems: 'center',
+									paddingTop: paddingTop * scaleHeight,
+								},
+							]}
 						>
-							<TouchableOpacity
-								activeOpacity={1}
-								onPress={() => {
-									animate.current.play()
-									scrollRef.current?.scrollTo({ y: 0, animated: true })
+							{hasRequests && !isOnTop && !value?.length && (
+								<View style={[width(42), height(4), { backgroundColor: '#F1F4F6' }]} />
+							)}
+							<View
+								style={{
+									flexDirection: 'row',
+									alignItems: 'center',
+									paddingVertical: 15,
 								}}
 							>
-								<LottieView
-									ref={animate}
-									style={{ width: 40 }}
-									source={require('./berty_logo_animated.json')}
-									loop={false}
-								/>
-							</TouchableOpacity>
-						</View>
-						<TouchableOpacity
-							style={[
-								{
-									flex: 12,
-									flexDirection: 'row',
-									justifyContent: 'flex-start',
-									alignItems: 'center',
-									backgroundColor: value?.length ? '#FFF0D5' : '#F1F4F6',
-								},
-								padding.vertical.scale(12),
-								padding.left.medium,
-								margin.left.small,
-								margin.right.scale(25),
-								border.radius.small,
-							]}
-							activeOpacity={1}
-							onPress={() => focus?.focus()}
-						>
-							{!value?.length ? (
-								<View style={[row.center]}>
-									<Icon name='search-outline' fill='#8F9BB3' width={20} height={20} />
+								<View
+									style={{
+										flex: 1,
+										alignItems: 'flex-end',
+										marginLeft: 5,
+									}}
+								>
+									<TouchableOpacity
+										activeOpacity={1}
+										onPress={() => {
+											animate.current.play()
+											scrollRef.current?.scrollTo({ y: 0, animated: true })
+										}}
+									>
+										<LottieView
+											ref={animate}
+											style={{ width: 40 }}
+											source={require('./berty_logo_animated.json')}
+											loop={false}
+										/>
+									</TouchableOpacity>
 								</View>
-							) : null}
-							<View
-								style={[
-									!value?.length && margin.left.medium,
-									{
-										flex: 6,
-										flexDirection: 'row',
-										alignItems: 'flex-start',
-									},
-								]}
-							>
-								<TextInput
-									ref={(ref) => setFocus(ref)}
-									placeholder='Search keyword'
-									placeholderTextColor='#D3D9E1'
-									autoCorrect={false}
-									autoCapitalize='none'
-									value={value}
-									onChangeText={(s: string) => onChange(s)}
+								<TouchableOpacity
 									style={[
-										{ fontFamily: 'Open Sans', color: '#FFAE3A' },
-										value?.length ? padding.right.scale(25) : padding.right.medium,
-										text.bold.small,
-										text.align.center,
-										text.size.medium,
+										{
+											flex: 12,
+											flexDirection: 'row',
+											justifyContent: 'flex-start',
+											alignItems: 'center',
+											backgroundColor: value?.length ? '#FFF0D5' : '#F1F4F6',
+										},
+										padding.vertical.scale(12),
+										padding.left.medium,
+										margin.left.small,
+										margin.right.scale(25),
+										border.radius.small,
 									]}
-								/>
-							</View>
-							{value?.length ? (
+									activeOpacity={1}
+									onPress={() => focus?.focus()}
+								>
+									{!value?.length ? (
+										<View style={[row.center]}>
+											<Icon name='search-outline' fill='#8F9BB3' width={20} height={20} />
+										</View>
+									) : null}
+									<View
+										style={[
+											!value?.length && margin.left.medium,
+											{
+												flex: 6,
+												flexDirection: 'row',
+												alignItems: 'flex-start',
+											},
+										]}
+									>
+										<TextInput
+											ref={(ref) => setFocus(ref)}
+											placeholder={t('main.home.input-placeholder')}
+											placeholderTextColor='#D3D9E1'
+											autoCorrect={false}
+											autoCapitalize='none'
+											value={value}
+											onChangeText={(s: string) => onChange(s)}
+											style={[
+												{ fontFamily: 'Open Sans', color: '#FFAE3A' },
+												value?.length ? padding.right.scale(25) : padding.right.medium,
+												text.bold.small,
+												text.align.center,
+												text.size.medium,
+											]}
+										/>
+									</View>
+									{value?.length ? (
+										<TouchableOpacity
+											style={{
+												justifyContent: 'center',
+												flex: 1,
+												flexDirection: 'row',
+											}}
+											onPress={() => onChange('')}
+										>
+											<Icon name='close-circle' fill='#FFAE3A' width={20} height={20} />
+										</TouchableOpacity>
+									) : null}
+								</TouchableOpacity>
 								<TouchableOpacity
 									style={{
-										justifyContent: 'center',
 										flex: 1,
 										flexDirection: 'row',
+										justifyContent: 'center',
+										alignItems: 'center',
 									}}
-									onPress={() => onChange('')}
+									onPress={() => navigate('Settings.Home')}
 								>
-									<Icon name='close-circle' fill='#FFAE3A' width={20} height={20} />
+									<Icon name='account-berty' pack='custom' fill='#8F9BB3' width={40} height={40} />
 								</TouchableOpacity>
-							) : null}
-						</TouchableOpacity>
-						<TouchableOpacity
-							style={{
-								flex: 1,
-								flexDirection: 'row',
-								justifyContent: 'center',
-								alignItems: 'center',
-							}}
-							onPress={() => navigate('Settings.Home')}
-						>
-							<Icon name='account-berty' pack='custom' fill='#8F9BB3' width={40} height={40} />
-						</TouchableOpacity>
+							</View>
+						</View>
 					</View>
-				</View>
-			</View>
+				)}
+			</Translation>
 		</View>
 	)
 }
@@ -877,17 +885,21 @@ const SearchComponent: React.FC<{
 		/>
 	) : (
 		<View style={{ top: 50 }}>
-			<TextNative
-				style={[
-					text.color.black,
-					text.size.big,
-					text.bold.small,
-					text.align.center,
-					{ fontFamily: 'Open Sans' },
-				]}
-			>
-				No results found
-			</TextNative>
+			<Translation>
+				{(t: any): React.ReactNode => (
+					<TextNative
+						style={[
+							text.color.black,
+							text.size.big,
+							text.bold.small,
+							text.align.center,
+							{ fontFamily: 'Open Sans' },
+						]}
+					>
+						{t('main.search.no-results')}
+					</TextNative>
+				)}
+			</Translation>
 			<View style={[margin.top.scale(120 * scaleHeight)]}>
 				<HintBody />
 			</View>
@@ -971,102 +983,103 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 
 	return (
 		<>
-			<View style={[flex.tiny, styleBackground]}>
-				<SwipeNavRecognizer
-					onSwipeLeft={() => navigate('Settings.Home')}
-					noActionOnRightSwipe={true}
-				>
-					<SafeAreaConsumer>
-						{(insets: EdgeInsets | null) => (
-							<ScrollView
-								ref={scrollRef}
-								stickyHeaderIndices={!searchText?.length && !hasResults ? [1] : [0]}
-								showsVerticalScrollIndicator={false}
-								scrollEventThrottle={16}
-								keyboardShouldPersistTaps={'handled'}
-								onScrollEndDrag={(e) => {
-									if (e.nativeEvent.contentOffset.y < 0) {
-										setRefresh(true)
-									}
-								}}
-								onScroll={(e) => {
-									if (e.nativeEvent.contentOffset) {
-										if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
-											setIsOnTop(true)
-										} else {
-											setIsOnTop(false)
-										}
-									}
-								}}
-							>
-								{!searchText?.length && (
-									<IncomingRequests items={requests} onLayout={onLayoutRequests} />
-								)}
-								<HomeHeader
-									isOnTop={isOnTop}
-									hasRequests={requests.length > 0}
-									scrollRef={scrollRef}
-									onLayout={onLayoutHeader}
-									value={searchText}
-									onChange={setSearchText}
-									refresh={refresh}
-									setRefresh={setRefresh}
-								/>
-								{searchText?.length ? (
-									<SearchComponent
-										insets={insets}
-										conversations={searchConversations}
-										contacts={searchContacts}
-										interactions={searchInteractions}
-										value={searchText}
-										hasResults={hasResults}
-									/>
-								) : (
-									<>
-										{isConversation ? (
-											<Conversations items={conversations} onLayout={onLayoutConvs} />
-										) : (
-											<View style={[background.white]}>
-												<View
-													style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}
-												>
-													<View>
-														<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
-														<TextNative
-															style={[
-																text.align.center,
-																text.color.grey,
-																text.bold.small,
-																opacity(0.3),
-																margin.top.big,
-															]}
-														>
-															You don't have any contacts or chat yet
-														</TextNative>
-													</View>
-												</View>
-											</View>
+			<Translation>
+				{(t: any): React.ReactNode => (
+					<View style={[flex.tiny, styleBackground]}>
+						<SwipeNavRecognizer onSwipeLeft={() => navigate('Settings.Home')}>
+							<SafeAreaConsumer>
+								{(insets: EdgeInsets | null) => (
+									<ScrollView
+										ref={scrollRef}
+										stickyHeaderIndices={!searchText?.length && !hasResults ? [1] : [0]}
+										showsVerticalScrollIndicator={false}
+										scrollEventThrottle={16}
+										keyboardShouldPersistTaps={'handled'}
+										onScrollEndDrag={(e) => {
+											if (e.nativeEvent.contentOffset.y < 0) {
+												setRefresh(true)
+											}
+										}}
+										onScroll={(e) => {
+											if (e.nativeEvent.contentOffset) {
+												if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
+													setIsOnTop(true)
+												} else {
+													setIsOnTop(false)
+												}
+											}
+										}}
+									>
+										{!searchText?.length && (
+											<IncomingRequests items={requests} onLayout={onLayoutRequests} />
 										)}
-										{requests.length > 0 && (
-											<View
-												style={[
-													{
-														backgroundColor: 'white',
-														position: 'absolute',
-														bottom: windowHeight * -1,
-														height: windowHeight,
-														width: '100%',
-													},
-												]}
+										<HomeHeader
+											isOnTop={isOnTop}
+											hasRequests={requests.length > 0}
+											scrollRef={scrollRef}
+											onLayout={onLayoutHeader}
+											value={searchText}
+											onChange={setSearchText}
+											refresh={refresh}
+											setRefresh={setRefresh}
+										/>
+										{searchText?.length ? (
+											<SearchComponent
+												insets={insets}
+												conversations={searchConversations}
+												contacts={searchContacts}
+												interactions={searchInteractions}
+												value={searchText}
+												hasResults={hasResults}
 											/>
+										) : (
+											<>
+												{isConversation ? (
+													<Conversations items={conversations} onLayout={onLayoutConvs} />
+												) : (
+													<View style={[background.white]}>
+														<View
+															style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}
+														>
+															<View>
+																<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
+																<TextNative
+																	style={[
+																		text.align.center,
+																		text.color.grey,
+																		text.bold.small,
+																		opacity(0.3),
+																		margin.top.big,
+																	]}
+																>
+																	{t('main.home.no-contacts')}
+																</TextNative>
+															</View>
+														</View>
+													</View>
+												)}
+												{requests.length > 0 && (
+													<View
+														style={[
+															{
+																backgroundColor: 'white',
+																position: 'absolute',
+																bottom: windowHeight * -1,
+																height: windowHeight,
+																width: '100%',
+															},
+														]}
+													/>
+												)}
+											</>
 										)}
-									</>
+									</ScrollView>
 								)}
-							</ScrollView>
-						)}
-					</SafeAreaConsumer>
-				</SwipeNavRecognizer>
-			</View>
+							</SafeAreaConsumer>
+						</SwipeNavRecognizer>
+					</View>
+				)}
+			</Translation>
 		</>
 	)
 }
