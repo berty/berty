@@ -31,7 +31,6 @@ import {
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { Message, MessageSystemWrapper, MessageInvitationButton } from './shared-components/Message'
 import BlurView from '../shared-components/BlurView'
-import messengerMethodsHooks from '@berty-tech/store/methods'
 
 import moment from 'moment'
 
@@ -474,16 +473,6 @@ export const AddBetabotBox = () => {
 			</View>
 		</View>
 	)
-}
-
-// FIXME: put in some file
-function usePrevious<T>(value: T) {
-	// https://blog.logrocket.com/how-to-get-previous-props-state-with-react-hooks/
-	const ref = React.useRef<T>()
-	React.useEffect(() => {
-		ref.current = value
-	})
-	return ref.current
 }
 
 const InfosChat: React.FC<api.berty.messenger.v1.IConversation & any> = ({

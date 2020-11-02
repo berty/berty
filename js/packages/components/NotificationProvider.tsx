@@ -1,7 +1,6 @@
 import React from 'react'
 import { InAppNotificationProvider, withInAppNotification } from 'react-native-in-app-notification'
 
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { useMsgrContext } from '@berty-tech/store/hooks'
 
 import NotificationBody from './NotificationBody'

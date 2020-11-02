@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 
 export const useScroll = (): [React.NativeScrollEvent, ScrollViewProps.onScroll] => {
 	const [scroll, setScroll] = useState({
@@ -20,4 +20,13 @@ export const useLayout = (): [React.NativeLayoutEvent, LayoutViewProps.onLayout]
 	})
 	const onLayout = useCallback((e) => setLayout(e.nativeEvent.layout), [])
 	return [layout, onLayout]
+}
+
+export function usePrevious<T>(value: T) {
+	// https://blog.logrocket.com/how-to-get-previous-props-state-with-react-hooks/
+	const ref = useRef<T>()
+	useEffect(() => {
+		ref.current = value
+	})
+	return ref.current
 }

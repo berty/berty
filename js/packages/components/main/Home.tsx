@@ -27,7 +27,6 @@ import {
 	useSortedConversationList,
 	useClient,
 } from '@berty-tech/store/hooks'
-import messengerMethodsHooks from '@berty-tech/store/methods'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import * as api from '@berty-tech/api/index.pb'
 import { useStyles } from '@berty-tech/styles'
