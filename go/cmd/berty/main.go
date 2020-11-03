@@ -70,6 +70,7 @@ func runMain(args []string) error {
 				tokenServerCommand(),
 				replicationServerCommand(),
 				peersCommand(),
+				exportCommand(),
 			},
 		}
 	}
