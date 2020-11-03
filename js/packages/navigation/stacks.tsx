@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Linking } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { CommonActions, useNavigation } from '@react-navigation/native'
 import { createNativeStackNavigator } from 'react-native-screens/native-stack'
 // import { createStackNavigator } from '@react-navigation/stack'
 import * as RawComponents from '@berty-tech/components'
 import mapValues from 'lodash/mapValues'
-import { useAccount } from '@berty-tech/store/hooks'
+import { useMsgrContext } from '@berty-tech/store/hooks'
 import { Routes } from './types'
 // import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
+import { isClosing, MessengerAppState } from '@berty-tech/store/context'
+import { dispatch, navigate } from '@berty-tech/navigation/rootRef'
 
 function useLinking() {
-	const [url, setUrl] = useState(null)
+	const [url, setUrl] = useState<string | null>(null)
 	const [error, setError] = useState()
 
 	async function initialUrl() {
@@ -31,9 +33,11 @@ function useLinking() {
 			setUrl(ev.url)
 		}
 
-		initialUrl() // for initial render
+		// for initial render
+		initialUrl().then(() => {
+			Linking.addEventListener('url', handleOpenUrl)
+		})
 
-		Linking.addEventListener('url', handleOpenUrl)
 		return () => Linking.removeEventListener('url', handleOpenUrl)
 	}, [])
 
@@ -45,12 +49,7 @@ const DeepLinkBridge: React.FC = () => {
 	const [url, error] = useLinking()
 
 	useEffect(() => {
-		if (
-			url &&
-			!error &&
-			typeof url === 'string' &&
-			!(url as string).startsWith('berty://services-auth')
-		) {
+		if (url && !error && !(url as string).startsWith('berty://services-auth')) {
 			navigation.navigate('Modals', {
 				screen: 'ManageDeepLink',
 				params: { type: 'link', value: url },
@@ -61,7 +60,10 @@ const DeepLinkBridge: React.FC = () => {
 	return null
 }
 
-const Components = mapValues(RawComponents, (SubComponents) =>
+let Components: typeof RawComponents
+
+// @ts-ignore
+Components = mapValues(RawComponents, (SubComponents) =>
 	mapValues(SubComponents, (Component: React.FC) => (props: any) => (
 		<>
 			<DeepLinkBridge />
@@ -157,12 +159,46 @@ export const TabNavigation: React.FC = () => {
 
 const NavigationStack = createNativeStackNavigator()
 export const Navigation: React.FC = () => {
-	const account: any = useAccount()
+	const context = useMsgrContext()
+
+	useEffect(() => {
+		if (context.appState === MessengerAppState.Closed || isClosing(context.appState)) {
+			dispatch(
+				CommonActions.reset({
+					routes: [{ name: Routes.Onboarding.AccountSelector }],
+				}),
+			)
+		}
+
+		switch (context.appState) {
+			case MessengerAppState.GetStarted:
+				dispatch(
+					CommonActions.reset({
+						routes: [{ name: Routes.Onboarding.GetStarted }],
+					}),
+				)
+				return
+
+			case MessengerAppState.OnBoarding:
+				navigate(Routes.Onboarding.CreateAccount, {})
+				return
+
+			case MessengerAppState.Ready:
+				dispatch(
+					CommonActions.reset({
+						routes: [{ name: Routes.Root.Tabs, params: { screen: Routes.Main.Home } }],
+					}),
+				)
+				return
+		}
+	}, [context.appState])
 
 	return (
 		<NavigationStack.Navigator
 			initialRouteName={
-				account?.displayName !== '' ? Routes.Root.Tabs : Routes.Onboarding.GetStarted
+				context.appState === MessengerAppState.Ready
+					? Routes.Root.Tabs
+					: Routes.Onboarding.AccountSelector
 			}
 			screenOptions={{
 				headerShown: false,
@@ -318,6 +354,10 @@ export const Navigation: React.FC = () => {
 					contentStyle: { backgroundColor: 'transparent' },
 					stackAnimation: 'fade',
 				}}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Onboarding.AccountSelector}
+				component={Components.Onboarding.AccountSelector}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Onboarding.GetStarted}

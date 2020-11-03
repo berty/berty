@@ -1,9 +1,16 @@
 import React from 'react'
-import { Text, Button, View, ActivityIndicator, TextInput, Image } from 'react-native'
+import { ActivityIndicator, Button, Image, Text, TextInput, View } from 'react-native'
 
-import { useMsgrContext } from '@berty-tech/store/hooks'
+import { useDeleteAccount, useMsgrContext, useRestart } from '@berty-tech/store/hooks'
 
 import LoaderDots from './shared-components/loader_dots.gif'
+import {
+	isClosing,
+	isDeletingState,
+	isReadyingBasics,
+	MessengerActions,
+	MessengerAppState,
+} from '@berty-tech/store/context'
 
 const expandSelfAndCenterContent: any = {
 	alignItems: 'center',
@@ -15,25 +22,20 @@ const expandSelfAndCenterContent: any = {
 const gutter = 50
 
 export const StreamGate: React.FC = ({ children }) => {
-	const {
-		streamError,
-		restart,
-		daemonAddress,
-		embedded,
-		dispatch,
-		deleteAccount,
-	} = useMsgrContext()
+	const { streamError, daemonAddress, embedded, dispatch } = useMsgrContext()
 	const [newAddress, setNewAddress] = React.useState(daemonAddress)
 	const changeAddress = React.useCallback(() => {
-		dispatch({ type: 'SET_DAEMON_ADDRESS', payload: { value: newAddress } })
+		dispatch({ type: MessengerActions.SetDaemonAddress, payload: { value: newAddress } })
 	}, [dispatch, newAddress])
+	const restart = useRestart()
+	const deleteAccount = useDeleteAccount()
 
 	if (streamError) {
 		return (
 			<View style={[expandSelfAndCenterContent, { padding: gutter }]}>
 				<Text style={{ color: 'red' }}>{streamError.toString()}</Text>
 				<Text style={{ marginTop: gutter }}>
-					Likely couldn't connect to the node, or the connection droped
+					Likely couldn't connect to the node, or the connection dropped
 				</Text>
 				{embedded || (
 					<>
@@ -46,10 +48,10 @@ export const StreamGate: React.FC = ({ children }) => {
 					</>
 				)}
 				<View style={{ marginTop: gutter }}>
-					<Button onPress={restart} title='Restart' />
+					<Button onPress={() => restart()} title='Restart' />
 				</View>
 				<View style={{ marginTop: gutter }}>
-					<Button onPress={deleteAccount} title='Delete account' />
+					<Button onPress={() => deleteAccount()} title='Delete account' />
 				</View>
 			</View>
 		)
@@ -60,31 +62,29 @@ export const StreamGate: React.FC = ({ children }) => {
 export const ListGate: React.FC = ({ children }) => {
 	const ctx = useMsgrContext()
 
-	if (ctx && ctx.listDone) {
+	if (ctx && !isClosing(ctx.appState) && !isReadyingBasics(ctx.appState)) {
 		return <>{children}</>
-	} else {
-		return (
-			<View style={expandSelfAndCenterContent}>
-				<Image source={LoaderDots} style={{ width: 170, height: 80 }} />
-			</View>
-		)
 	}
+
+	return (
+		<View style={expandSelfAndCenterContent}>
+			<Image source={LoaderDots} style={{ width: 170, height: 80 }} />
+		</View>
+	)
 }
 
 const DeleteProgressScreen = () => {
 	const ctx = useMsgrContext()
 	let text = 'Unknown state'
-	switch (ctx.deleteState) {
-		case 'STOPPING_DAEMON':
+	switch (ctx.appState) {
+		case MessengerAppState.DeletingClosingDaemon:
 			text = 'Stopping node..'
 			break
-		case 'CLEARING_STORAGE':
+		case MessengerAppState.DeletingClearingStorage:
 			text = 'Clearing storage..'
 			break
-		case 'DONE':
-			text = 'Your account was deleted'
-			break
 	}
+
 	return (
 		<View style={[expandSelfAndCenterContent, { padding: gutter }]}>
 			<Text>{text}</Text>
@@ -95,7 +95,8 @@ const DeleteProgressScreen = () => {
 
 export const DeleteGate: React.FC = ({ children }) => {
 	const ctx = useMsgrContext()
-	if (ctx && ctx.deleteState) {
+
+	if (ctx && isDeletingState(ctx.appState)) {
 		return <DeleteProgressScreen />
 	} else {
 		return <>{children}</>

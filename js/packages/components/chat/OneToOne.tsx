@@ -1,27 +1,27 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
-	TouchableOpacity,
-	View,
-	StyleSheet,
 	ActivityIndicator,
 	KeyboardAvoidingView,
-	Text as TextNative,
-	SectionListRenderItem,
-	SectionListData,
 	SectionList,
+	SectionListData,
+	SectionListRenderItem,
+	StyleSheet,
+	Text as TextNative,
+	TouchableOpacity,
+	View,
 	ViewToken,
 } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
+import { Icon, Text } from '@ui-kitten/components'
 import { CommonActions } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
-import { useNavigation, ScreenProps, Routes } from '@berty-tech/navigation'
+import { Routes, ScreenProps, useNavigation } from '@berty-tech/navigation'
 import * as api from '@berty-tech/api/index.pb'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import {
-	useMsgrContext,
-	useConversation,
 	useContact,
+	useConversation,
+	useMsgrContext,
 	useReadEffect,
 	useSortedConvInteractions,
 	usePersistentOptions,
@@ -29,12 +29,12 @@ import {
 } from '@berty-tech/store/hooks'
 
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
-import { Message, MessageSystemWrapper, MessageInvitationButton } from './shared-components/Message'
+import { Message, MessageInvitationButton, MessageSystemWrapper } from './shared-components/Message'
 import BlurView from '../shared-components/BlurView'
 
 import moment from 'moment'
 
-import { ChatFooter, ChatDate } from './shared-components/Chat'
+import { ChatDate, ChatFooter } from './shared-components/Chat'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import Logo from '../main/1_berty_picto.svg'
 import Avatar from '../modals/Buck_Berty_Icon_Card.svg'
@@ -42,6 +42,7 @@ import { groupBy } from 'lodash'
 import { pbDateToNum, timeFormat } from '../helpers'
 import { useLayout } from '../hooks'
 import { playSound } from '../sounds'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 //
 // Chat
@@ -299,6 +300,7 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 				/>
 				<MessageInvitationButton
 					onPress={() =>
+						client &&
 						client
 							.contactAccept({ publicKey })
 							.then(() => {
@@ -443,10 +445,13 @@ export const AddBetabotBox = () => {
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={[row.fill, margin.bottom.medium, background.light.blue, _styles.addButton]}
-						onPress={() => {
-							setPersistentOption('betabot', {
-								added: true,
-								convPk: persistentOptions.betabot.convPk,
+						onPress={async () => {
+							await setPersistentOption({
+								type: PersistentOptionsKeys.BetaBot,
+								payload: {
+									added: true,
+									convPk: persistentOptions.betabot.convPk,
+								},
 							})
 						}}
 					>
@@ -583,7 +588,7 @@ const MessageList: React.FC<{
 	const persistOpts = usePersistentOptions()
 	const isBetabot =
 		persistOpts && conv?.contactPublicKey?.toString() === persistOpts?.betabot?.convPk?.toString()
-	const isBetabotAdded = persistOpts && persistOpts.betabot.added
+	const isBetabotAdded = persistOpts.betabot.added
 
 	const items: any = React.useMemo(() => {
 		return messages?.reverse() || []

@@ -14,6 +14,7 @@ import { useNavigation } from '@react-navigation/native'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
 import BlurView from '../shared-components/BlurView'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 const useStylesAddBetabot = () => {
 	const [{ width, border, padding, margin }] = useStyles()
@@ -161,8 +162,11 @@ export const AddBetabotBody = () => {
 				<View style={[row.center, padding.top.medium]}>
 					<TouchableOpacity
 						style={[row.fill, margin.bottom.medium, opacity(0.5), _styles.skipButton]}
-						onPress={() => {
-							setPersistentOption('betabot', { toggledModal: true })
+						onPress={async () => {
+							await setPersistentOption({
+								type: PersistentOptionsKeys.BetaBot,
+								payload: { toggledModal: true },
+							})
 							navigation.goBack()
 						}}
 					>
@@ -182,8 +186,14 @@ export const AddBetabotBody = () => {
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={[row.fill, margin.bottom.medium, background.light.blue, _styles.addButton]}
-						onPress={() => {
-							setPersistentOption('betabot', { added: true, toggledModal: true })
+						onPress={async () => {
+							await setPersistentOption({
+								type: PersistentOptionsKeys.BetaBot,
+								payload: {
+									added: true,
+									toggledModal: true,
+								},
+							})
 							requestContact({
 								link:
 									'https://berty.tech/id#key=CiBYAkJkmvcCZOl2hWuSK34arbzSpcpQGLowIvi7ZsEdyRIgMmKs-zHKksC74gjOfSj5puOAQQGWNhsC8o9gEtQ8zrQ&name=BetaBot',

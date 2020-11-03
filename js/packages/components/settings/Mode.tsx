@@ -8,11 +8,14 @@ import { useMsgrContext, useAccount } from '@berty-tech/store/hooks'
 import { serviceTypes, useAccountServices } from '@berty-tech/store/services'
 import { useNavigation } from '@berty-tech/navigation'
 import i18n from '@berty-tech/berty-i18n'
+import { berty } from '@berty-tech/api/index.pb'
 
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
+import { languages } from '@berty-tech/berty-i18n/locale/languages'
 
 //
 // Mode
@@ -43,28 +46,28 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 	)
 
 	const ctx = useMsgrContext()
-	const enableNotif =
-		ctx.persistentOptions?.notifications && ctx.persistentOptions?.notifications.enable
+	const enableNotif = ctx.persistentOptions.notifications.enable
 
-	const itemsKey = Object.keys(Object.values(i18n.store)[1])
-	let items = Object.values(Object.values(i18n.store)[1])
-	items = items.map((value: any, key: any) => {
-		return {
-			label: value.localName,
-			value: itemsKey[key],
-		}
-	})
+	const items = Object.entries(languages).map(([key, attrs]) => ({
+		label: attrs.localName,
+		value: key,
+	}))
+
+	const currentLanguage = ctx.persistentOptions.i18n.language
+
 	return (
 		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
 			<DropDownPicker
 				items={items}
-				defaultValue={ctx.persistentOptions?.i18n.language || 'en'}
-				value={ctx.persistentOptions?.i18n.language || 'en'}
+				defaultValue={currentLanguage}
 				containerStyle={[{ marginTop: 22, height: 60 }]}
-				onChangeItem={(item: any) => {
-					i18n.changeLanguage(item.value)
-					ctx.setPersistentOption('i18n', {
-						language: item.value,
+				onChangeItem={async (item: any) => {
+					await i18n.changeLanguage(item.value)
+					await ctx.setPersistentOption({
+						type: PersistentOptionsKeys.I18N,
+						payload: {
+							language: item.value,
+						},
 					})
 				}}
 			/>

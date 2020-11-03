@@ -44,6 +44,11 @@ const makeMethodHook = <R>(getClient: (ctx: any) => any, key: string) => () => {
 
 	const call = useCallback(
 		(payload) => {
+			if (client === null) {
+				console.warn('client is null')
+				return
+			}
+
 			const clientKey = uncap(key)
 			if (!Object.keys(client).includes(clientKey)) {
 				dispatch(errorAction(new Error(`Couldn't find method '${key}'`)))

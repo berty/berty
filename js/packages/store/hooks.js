@@ -1,4 +1,4 @@
-import { useContext, useMemo, useEffect } from 'react'
+import { useContext, useMemo, useEffect, useCallback } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
@@ -6,6 +6,7 @@ import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { MsgrContext, useMsgrContext } from './context'
 import { fakeContacts, fakeMultiMemberConversations, fakeMessages } from './faker'
 import { pbDateToNum } from '@berty-tech/components/helpers'
+import { MessengerActions } from '@berty-tech/store/context'
 
 export { useMsgrContext }
 
@@ -146,7 +147,26 @@ export const useConvMemberList = (publicKey) => {
 
 export const usePersistentOptions = () => {
 	const ctx = useMsgrContext()
-	return ctx.persistentOptions
+	return ctx.persistentOptions || {}
+}
+
+export const useRestart = () => {
+	const ctx = useMsgrContext()
+	return useCallback(() => ctx.dispatch({ type: MessengerActions.Restart }), [ctx])
+}
+
+export const useDeleteAccount = () => {
+	const ctx = useMsgrContext()
+	return useCallback(() => ctx.dispatch({ type: MessengerActions.SetStateDeleting }), [ctx])
+}
+
+export const useSwitchToAccount = () => {
+	const ctx = useMsgrContext()
+
+	return useCallback(
+		(accountID) => ctx.dispatch({ type: MessengerActions.SetNextAccount, payload: accountID }),
+		[ctx],
+	)
 }
 
 //
@@ -160,7 +180,7 @@ export const useGenerateFakeContacts = () => {
 	return (length = 10) => {
 		const payload = fakeContacts(length, prevFakeCount)
 		ctx.dispatch({
-			type: 'ADD_FAKE_DATA',
+			type: MessengerActions.AddFakeData,
 			payload,
 		})
 	}
@@ -175,7 +195,7 @@ export const useGenerateFakeMultiMembers = () => {
 	return (length = 10) => {
 		const payload = fakeMultiMemberConversations(length, prevFakeCount)
 		ctx.dispatch({
-			type: 'ADD_FAKE_DATA',
+			type: MessengerActions.AddFakeData,
 			payload,
 		})
 	}
@@ -200,7 +220,7 @@ export const useGenerateFakeMessages = () => {
 	console.log('prevFakeCount', prevFakeCount)
 	return (length = 10) => {
 		ctx.dispatch({
-			type: 'ADD_FAKE_DATA',
+			type: MessengerActions.AddFakeData,
 			payload: {
 				interactions: fakeMessages(
 					length,
@@ -218,7 +238,7 @@ export const useDeleteFakeData = () => {
 	const ctx = useMsgrContext()
 	return () =>
 		ctx.dispatch({
-			type: 'DELETE_FAKE_DATA',
+			type: MessengerActions.DeleteFakeData,
 		})
 }
 

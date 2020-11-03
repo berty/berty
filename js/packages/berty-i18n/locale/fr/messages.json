@@ -7,7 +7,11 @@
     "started-ago": "Débuté il y a {{date}}"
   },
   "onboarding": {
-    "getstarted": "L'application sécurisée qui fonctionne en pair à pair, avec ou sans accès à internet",
+    "getstarted-intro": "L'application sécurisée qui fonctionne en pair à pair, avec ou sans accès à internet",
+    "getstarted-button": "Démarrer",
+    "getstarted-import-button": "Importer un compte existant",
+    "getstarted-more-options": "Plus d'options",
+    "account-selector-create-button": "Créer un nouveau compte",
     "select-mode": {
       "performance": {
         "title": "Performance",

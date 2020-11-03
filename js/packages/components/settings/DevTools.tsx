@@ -16,6 +16,7 @@ import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { Player } from '@react-native-community/audio-toolkit'
 import { playSound } from '../sounds'
+import { MessengerActions } from '@berty-tech/store/context'
 
 //
 // DevTools
@@ -332,7 +333,7 @@ const BodyDevTools: React.FC<{}> = () => {
 					actionIcon='arrow-ios-forward'
 					onPress={() => {
 						ctx.dispatch({
-							type: 'SET_DAEMON_ADDRESS',
+							type: MessengerActions.SetDaemonAddress,
 							payload: { value: 'http://localhost:1338' },
 						})
 					}}
