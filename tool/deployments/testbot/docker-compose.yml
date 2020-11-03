@@ -27,7 +27,8 @@ services:
       - ./data/daemon1:/store
     ports:
       - 6002:6002
-
+      - 6002:6002/udp
+      
   daemon2:
     container_name: testbot_daemon2
     image: bertytech/berty:latest
