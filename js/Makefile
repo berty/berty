@@ -140,6 +140,8 @@ lint: node_modules
 	cp .gitignore .eslintignore
 	echo '*.pb.*' >> .eslintignore
 	echo '*.gen.*' >> .eslintignore
+	# ignore web-dev-app until it's integrated with new tools config
+	echo '/packages/web-dev-app/' >> .eslintignore
 	$(eslint) --cache --quiet --ext=.js,.jsx,.ts,.tsx .
 
 .PHONY: lint.fix
@@ -147,6 +149,8 @@ lint.fix: node_modules
 	cp .gitignore .eslintignore
 	echo '*.pb.*' >> .eslintignore
 	echo '*.gen.*' >> .eslintignore
+	# ignore web-dev-app until it's integrated with new tools config
+	echo '/packages/web-dev-app/' >> .eslintignore
 	$(eslint) --cache --quiet --ext=.js,.jsx,.ts,.tsx --fix .
 
 ###################

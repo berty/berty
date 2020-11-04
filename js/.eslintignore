@@ -57,6 +57,7 @@ node_modules/
 npm-debug.log
 yarn-error.log
 lerna-debug.log
+/coverage/
 
 # BUCK
 buck-out/
@@ -124,3 +125,4 @@ dist/
 osx/Berty.app
 *.pb.*
 *.gen.*
+/packages/web-dev-app/
