@@ -608,7 +608,7 @@ func (bot *Bot) saveStore() {
 	if err := ioutil.WriteFile(bot.storePath, data, 0o600); err != nil {
 		panic(fmt.Errorf("write store file: %w", err))
 	}
-	bot.storeWholeConvLock.RUnlock()
+	bot.storeWholeConvLock.Unlock()
 	bot.storeMutex.RUnlock()
 }
 
