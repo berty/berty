@@ -1,6 +1,6 @@
 // +build android
 
-package bertybridge
+package bertyaccount
 
 import "berty.tech/berty/v2/go/pkg/tempdir"
 

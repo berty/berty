@@ -1,4 +1,4 @@
-package bertybridge
+package bertyaccount
 
 import (
 	"go.uber.org/zap"

@@ -9,10 +9,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         nested: {
           v1: {
             options: {
-              go_package: "berty.tech/berty/go/pkg/bertybridge"
+              go_package: "berty.tech/berty/go/pkg/bertyaccount"
             },
             nested: {
-              BridgeService: {
+              AccountService: {
                 methods: {
                   OpenAccount: {
                     requestType: "OpenAccount.Request",

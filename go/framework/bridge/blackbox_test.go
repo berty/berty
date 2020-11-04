@@ -9,7 +9,7 @@ import (
 	"github.com/gogo/protobuf/proto"
 
 	"berty.tech/berty/v2/go/framework/bridge"
-	"berty.tech/berty/v2/go/pkg/bertybridge"
+	"berty.tech/berty/v2/go/pkg/bertyaccount"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 )
 
@@ -49,7 +49,7 @@ func Example() {
 	// open account
 	{
 		// create `OpenAccount_Request` Input
-		reqb64, err := encodeProtoMessage(&bertybridge.OpenAccount_Request{
+		reqb64, err := encodeProtoMessage(&bertyaccount.OpenAccount_Request{
 			Args: args,
 		})
 		checkErr(err)
@@ -59,7 +59,7 @@ func Example() {
 		checkErr(err)
 
 		// deserialize reply
-		var res bertybridge.ClientInvokeUnary_Reply
+		var res bertyaccount.ClientInvokeUnary_Reply
 		err = decodeProtoMessage(ret, &res)
 		checkErr(err)
 
@@ -69,7 +69,7 @@ func Example() {
 	// check for GRPC listeners
 	{
 		// create `GetGRPCListenerAddrs_Request` Input
-		reqb64, err := encodeProtoMessage(&bertybridge.GetGRPCListenerAddrs_Request{})
+		reqb64, err := encodeProtoMessage(&bertyaccount.GetGRPCListenerAddrs_Request{})
 		checkErr(err)
 
 		// invoke through bridge client
@@ -77,7 +77,7 @@ func Example() {
 		checkErr(err)
 
 		// deserialize reply
-		var res bertybridge.GetGRPCListenerAddrs_Reply
+		var res bertyaccount.GetGRPCListenerAddrs_Reply
 		err = decodeProtoMessage(ret, &res)
 		checkErr(err)
 
@@ -95,8 +95,8 @@ func Example() {
 		checkErr(err)
 
 		// Serialize request
-		in := &bertybridge.ClientInvokeUnary_Request{
-			MethodDesc: &bertybridge.MethodDesc{
+		in := &bertyaccount.ClientInvokeUnary_Request{
+			MethodDesc: &bertyaccount.MethodDesc{
 				Name: "/berty.protocol.v1.ProtocolService/InstanceGetConfiguration",
 			},
 			Payload: payload,
@@ -109,7 +109,7 @@ func Example() {
 		ret, err := b.InvokeBridgeMethod("/berty.bridge.v1.BridgeService/ClientInvokeUnary", reqb64)
 		checkErr(err)
 
-		var output bertybridge.ClientInvokeUnary_Reply
+		var output bertyaccount.ClientInvokeUnary_Reply
 		err = decodeProtoMessage(ret, &output)
 		checkErr(err)
 

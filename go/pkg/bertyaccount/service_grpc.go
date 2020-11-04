@@ -1,4 +1,4 @@
-package bertybridge
+package bertyaccount
 
 import (
 	"context"

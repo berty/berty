@@ -1,4 +1,4 @@
-package bertybridge
+package bertyaccount
 
 import (
 	"context"
@@ -16,11 +16,11 @@ import (
 	"berty.tech/berty/v2/go/internal/notification"
 )
 
-// Servicex is BridgeServiceServer
-var _ BridgeServiceServer = (*service)(nil)
+// Servicex is AccountServiceServer
+var _ AccountServiceServer = (*service)(nil)
 
 type Service interface {
-	BridgeServiceServer
+	AccountServiceServer
 
 	Close() error
 }
@@ -136,7 +136,7 @@ func (s *service) newManager(args ...string) (*initutil.Manager, error) {
 	manager := initutil.Manager{}
 
 	// configure flagset options
-	fs := flag.NewFlagSet("bridge", flag.ContinueOnError)
+	fs := flag.NewFlagSet("account", flag.ContinueOnError)
 	manager.SetupLoggingFlags(fs)
 	manager.SetupLocalMessengerServerFlags(fs)
 	manager.SetupEmptyGRPCListenersFlags(fs)

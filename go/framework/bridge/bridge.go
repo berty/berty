@@ -15,7 +15,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
-	"berty.tech/berty/v2/go/pkg/bertybridge"
+	"berty.tech/berty/v2/go/pkg/bertyaccount"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
@@ -25,7 +25,7 @@ const bufListenerSize = 256 * 1024
 var _ LifeCycleHandler = (*Bridge)(nil)
 
 type Bridge struct {
-	service             bertybridge.Service
+	service             bertyaccount.Service
 	bridgeServiceClient *grpcutil.LazyClient
 	grpcServer          *grpc.Server
 	closec              chan struct{}
@@ -88,14 +88,14 @@ func New(config *Config) (*Bridge, error) {
 
 	// setup berty bridge service
 	{
-		opts := bertybridge.Options{
+		opts := bertyaccount.Options{
 			NotificationManager: newNotificationManagerAdaptater(b.logger, config.notifdriver),
 			Logger:              b.logger,
 			RootDirectory:       config.rootDir,
 		}
 
 		var err error
-		if b.service, err = bertybridge.NewService(&opts); err != nil {
+		if b.service, err = bertyaccount.NewService(&opts); err != nil {
 			return nil, err
 		}
 	}
@@ -104,7 +104,7 @@ func New(config *Config) (*Bridge, error) {
 	{
 		// register services for bridge client
 		s := grpc.NewServer()
-		bertybridge.RegisterBridgeServiceServer(s, b.service)
+		bertyaccount.RegisterAccountServiceServer(s, b.service)
 
 		bl := grpcutil.NewBufListener(ctx, bufListenerSize)
 		b.workers.Add(func() error {
@@ -127,8 +127,8 @@ func New(config *Config) (*Bridge, error) {
 
 	// hook the lifecycle manager
 	{
-		// b.HandleState(config.lc.GetCurrentState())
-		// config.lc.RegisterHandler(b)
+		b.HandleState(config.lc.GetCurrentState())
+		config.lc.RegisterHandler(b)
 	}
 
 	// start Bridge

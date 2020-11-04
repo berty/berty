@@ -5,26 +5,26 @@ export namespace berty {
 
         namespace v1 {
 
-            class BridgeService extends $protobuf.rpc.Service {
+            class AccountService extends $protobuf.rpc.Service {
 
-                public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): BridgeService;
-                public openAccount(request: berty.bridge.v1.OpenAccount.IRequest, callback: berty.bridge.v1.BridgeService.OpenAccountCallback): void;
+                public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): AccountService;
+                public openAccount(request: berty.bridge.v1.OpenAccount.IRequest, callback: berty.bridge.v1.AccountService.OpenAccountCallback): void;
                 public openAccount(request: berty.bridge.v1.OpenAccount.IRequest): Promise<berty.bridge.v1.OpenAccount.Reply>;
-                public getGRPCListenerAddrs(request: berty.bridge.v1.GetGRPCListenerAddrs.IRequest, callback: berty.bridge.v1.BridgeService.GetGRPCListenerAddrsCallback): void;
+                public getGRPCListenerAddrs(request: berty.bridge.v1.GetGRPCListenerAddrs.IRequest, callback: berty.bridge.v1.AccountService.GetGRPCListenerAddrsCallback): void;
                 public getGRPCListenerAddrs(request: berty.bridge.v1.GetGRPCListenerAddrs.IRequest): Promise<berty.bridge.v1.GetGRPCListenerAddrs.Reply>;
-                public clientInvokeUnary(request: berty.bridge.v1.ClientInvokeUnary.IRequest, callback: berty.bridge.v1.BridgeService.ClientInvokeUnaryCallback): void;
+                public clientInvokeUnary(request: berty.bridge.v1.ClientInvokeUnary.IRequest, callback: berty.bridge.v1.AccountService.ClientInvokeUnaryCallback): void;
                 public clientInvokeUnary(request: berty.bridge.v1.ClientInvokeUnary.IRequest): Promise<berty.bridge.v1.ClientInvokeUnary.Reply>;
-                public createClientStream(request: berty.bridge.v1.ClientCreateStream.IRequest, callback: berty.bridge.v1.BridgeService.CreateClientStreamCallback): void;
+                public createClientStream(request: berty.bridge.v1.ClientCreateStream.IRequest, callback: berty.bridge.v1.AccountService.CreateClientStreamCallback): void;
                 public createClientStream(request: berty.bridge.v1.ClientCreateStream.IRequest): Promise<berty.bridge.v1.ClientCreateStream.Reply>;
-                public clientStreamSend(request: berty.bridge.v1.ClientStreamSend.IRequest, callback: berty.bridge.v1.BridgeService.ClientStreamSendCallback): void;
+                public clientStreamSend(request: berty.bridge.v1.ClientStreamSend.IRequest, callback: berty.bridge.v1.AccountService.ClientStreamSendCallback): void;
                 public clientStreamSend(request: berty.bridge.v1.ClientStreamSend.IRequest): Promise<berty.bridge.v1.ClientStreamSend.Reply>;
-                public clientStreamRecv(request: berty.bridge.v1.ClientStreamRecv.IRequest, callback: berty.bridge.v1.BridgeService.ClientStreamRecvCallback): void;
+                public clientStreamRecv(request: berty.bridge.v1.ClientStreamRecv.IRequest, callback: berty.bridge.v1.AccountService.ClientStreamRecvCallback): void;
                 public clientStreamRecv(request: berty.bridge.v1.ClientStreamRecv.IRequest): Promise<berty.bridge.v1.ClientStreamRecv.Reply>;
-                public clientStreamClose(request: berty.bridge.v1.ClientStreamClose.IRequest, callback: berty.bridge.v1.BridgeService.ClientStreamCloseCallback): void;
+                public clientStreamClose(request: berty.bridge.v1.ClientStreamClose.IRequest, callback: berty.bridge.v1.AccountService.ClientStreamCloseCallback): void;
                 public clientStreamClose(request: berty.bridge.v1.ClientStreamClose.IRequest): Promise<berty.bridge.v1.ClientStreamClose.Reply>;
             }
 
-            namespace BridgeService {
+            namespace AccountService {
 
                 type OpenAccountCallback = (error: (Error|null), response?: berty.bridge.v1.OpenAccount.Reply) => void;
 

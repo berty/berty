@@ -1,4 +1,4 @@
-package bertybridge
+package bertyaccount
 
 import (
 	"context"
@@ -82,8 +82,3 @@ func (s *service) OpenAccount(_ context.Context, req *OpenAccount_Request) (*Ope
 
 	return &OpenAccount_Reply{}, nil
 }
-
-// CloseAccount, close berty node
-// func (s *service) CloseAccount(context.Context, *CloseAccount_Request) (*CloseAccount_Reply, error) {
-// 	return &CloseAccount_Reply{}, nil
-// }

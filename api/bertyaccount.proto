@@ -4,9 +4,9 @@ package berty.bridge.v1;
 
 import "errcode.proto";
 
-option go_package = "berty.tech/berty/go/pkg/bertybridge";
+option go_package = "berty.tech/berty/go/pkg/bertyaccount";
 
-service BridgeService {
+service AccountService {
   /// Account
 
   // OpenAccount, start berty node
