@@ -10,6 +10,7 @@
     }
   },
   "onboarding": {
+    "account-selector-create-button": ".onboarding.account-selector-create-button",
     "bluetooth": {
       "button": ".onboarding.bluetooth.button",
       "desc": ".onboarding.bluetooth.desc",
@@ -29,10 +30,10 @@
       "desc": ".onboarding.generate-key.desc",
       "title": ".onboarding.generate-key.title"
     },
-    "getstarted-intro": ".onboarding.getstarted-intro",
     "getstarted-button": ".onboarding.getstarted-button",
     "getstarted-import-button": ".onboarding.getstarted-import-button",
-    "getstarted-more-options": ".onboarding-getstarted-more-options",
+    "getstarted-intro": ".onboarding.getstarted-intro",
+    "getstarted-more-options": ".onboarding.getstarted-more-options",
     "notifications": {
       "button": ".onboarding.notifications.button",
       "desc": ".onboarding.notifications.desc",
@@ -41,6 +42,7 @@
       "skip": ".onboarding.notifications.skip",
       "title": ".onboarding.notifications.title"
     },
+    "open-registered-account": ".onboarding.open-registered-account",
     "select-mode": {
       "high-level": {
         "desc": ".onboarding.select-mode.high-level.desc",
