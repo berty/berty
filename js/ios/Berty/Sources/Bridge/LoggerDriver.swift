@@ -30,7 +30,7 @@ public enum Visibility {
   case hidden
 }
 
-public class LoggerDriver: NSObject, BridgeNativeLoggerDriverProtocol {
+public class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
   var subsytem: String
   var category: String
   var scope: Visibility

@@ -14,7 +14,7 @@ let promisesQueue = DispatchQueue(label: "tech.berty.ios.promises.queue")
 
 // PromiseBlock aim to keep reference over promise object so go can play with
 // until the promise is resolved
-class PromiseBlock: NSObject, BridgePromiseBlockProtocol {
+class PromiseBlock: NSObject, BertybridgePromiseBlockProtocol {
 
   var resolve: RCTPromiseResolveBlock
   var reject: RCTPromiseRejectBlock

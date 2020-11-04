@@ -15,12 +15,12 @@ public enum AppState {
     case active
 }
 
-public class LifeCycleDriver: NSObject, BridgeLifeCycleDriverProtocol {
+public class LifeCycleDriver: NSObject, BertybridgeLifeCycleDriverProtocol {
     public static var shared: LifeCycleDriver = LifeCycleDriver()
-    var handler: BridgeLifeCycleHandlerProtocol? = nil
+    var handler: BertybridgeLifeCycleHandlerProtocol? = nil
     let logger: LoggerDriver = LoggerDriver("tech.berty", "lifecycle")
 
-    public func register(_ handler: BridgeLifeCycleHandlerProtocol?) {
+    public func register(_ handler: BertybridgeLifeCycleHandlerProtocol?) {
         self.handler = handler
     }
 
@@ -29,10 +29,10 @@ public class LifeCycleDriver: NSObject, BridgeLifeCycleDriverProtocol {
             return UIApplication.shared.applicationState.getBridgeState()
         }
 
-        return BridgeAppStateUnknown
+        return BertybridgeAppStateUnknown
     }
 
-    public func handleBackgroundTask() -> BridgeLifeCycleBackgroundTaskProtocol? {
+    public func handleBackgroundTask() -> BertybridgeLifeCycleBackgroundTaskProtocol? {
         return self.handler?.handleTask()
     }
 
@@ -58,13 +58,13 @@ extension UIApplication.State {
     func getBridgeState() -> Int {
         switch self {
         case .active:
-            return BridgeAppStateActive
+            return BertybridgeAppStateActive
         case .background:
-            return BridgeAppStateBackground
+            return BertybridgeAppStateBackground
         case .inactive:
-            return BridgeAppStateInactive
+            return BertybridgeAppStateInactive
         default:
-            return BridgeAppStateUnknown
+            return BertybridgeAppStateUnknown
         }
     }
 }

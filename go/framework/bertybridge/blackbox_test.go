@@ -1,4 +1,4 @@
-package bridge_test
+package bertybridge_test
 
 import (
 	"encoding/base64"
@@ -8,7 +8,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	"berty.tech/berty/v2/go/framework/bridge"
+	"berty.tech/berty/v2/go/framework/bertybridge"
 	"berty.tech/berty/v2/go/pkg/bertyaccount"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 )
@@ -19,16 +19,16 @@ func Example() {
 	defer os.RemoveAll(tmpdir)
 
 	// create and start the bridge
-	var b *bridge.Bridge
+	var b *bertybridge.Bridge
 	{
-		config := bridge.NewConfig()
+		config := bertybridge.NewConfig()
 		if false { // disabled in example, but not commented to be sure that compiler performs various checks
 			config.SetLifeCycleDriver(nil)
 			config.SetLoggerDriver(nil)
 			config.SetNotificationDriver(nil)
 		}
 
-		b, err = bridge.New(config)
+		b, err = bridge.NewBridge(config)
 		checkErr(err)
 
 		defer b.Close()

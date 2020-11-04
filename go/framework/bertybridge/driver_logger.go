@@ -1,4 +1,4 @@
-package bridge
+package bertybridge
 
 import (
 	"os"

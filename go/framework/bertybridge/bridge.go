@@ -1,4 +1,4 @@
-package bridge
+package bertybridge
 
 import (
 	"context"
@@ -42,7 +42,7 @@ type Bridge struct {
 	lifecycleDriver  LifeCycleDriver
 }
 
-func New(config *Config) (*Bridge, error) {
+func NewBridge(config *Config) (*Bridge, error) {
 	ctx := context.Background()
 
 	// create bridge instance

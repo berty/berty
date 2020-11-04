@@ -138,20 +138,6 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void getProtocolAddr(Promise promise) {
-    try {
-      if (this.bridgeMessenger == null) {
-        throw new Exception("bridge not started");
-      }
-
-      String addr = this.bridgeMessenger.grpcWebSocketListenerAddr();
-      promise.resolve(addr);
-    } catch (Exception err) {
-      promise.reject(err);
-    }
-  }
-
-  @ReactMethod
   public void invokeBridgeMethod(String method, String b64message, Promise promise) {
     try {
       if (this.bridgeMessenger == null) {

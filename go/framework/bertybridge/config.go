@@ -1,6 +1,6 @@
-package bridge
+package bertybridge
 
-// Config is used to build a bridge configuration using only simple types or types returned by the bridge package.
+// Config is used to build a bertybridge configuration using only simple types or types returned by the bertybridge package.
 type Config struct {
 	dLogger     NativeLoggerDriver
 	lc          LifeCycleDriver

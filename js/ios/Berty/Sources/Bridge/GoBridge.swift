@@ -22,7 +22,7 @@ class GoBridge: NSObject {
     let logger = LoggerDriver("tech.berty", "react")
 
     // protocol
-    var bridgeMessenger: BridgeBridge?
+    var bridgeMessenger: BertybridgeBridge?
     let rootdir: URL
 
     static func requiresMainQueueSetup() -> Bool {
@@ -86,7 +86,7 @@ class GoBridge: NSObject {
             }
 
             var err: NSError?
-            guard let config = BridgeNewConfig() else {
+            guard let config = BertybridgeNewConfig() else {
                 throw NSError(domain: "unable to create config", code: 1)
             }
 
@@ -105,7 +105,7 @@ class GoBridge: NSObject {
             config.setRootDir(self.rootdir.path)
 
             NSLog("bflifecycle: calling BridgeNewMessengerBridge")
-            let bridgeMessenger = BridgeNew(config, &err)
+            let bridgeMessenger = BertybridgeNewBridge(config, &err)
             NSLog("bflifecycle: done BridgeNewMessengerBridge")
             if err != nil {
                 throw err!
