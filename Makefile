@@ -16,11 +16,11 @@ generate:
 .PHONY: generate
 
 
-regenerate tidy:
+tidy:
 	go mod tidy
 	cd js; go mod tidy
 	cd tool; go mod tidy
-.PHONY: regenerate tidy
+.PHONY: tidy
 
 
 docker.build:
