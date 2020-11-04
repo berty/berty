@@ -6,15 +6,17 @@ services:
     image: bertytech/berty:latest
     restart: always
     entrypoint: sh
-    #labels:
-    #  com.centurylinklabs.watchtower.enable: "true"
+    # labels:
+    #   com.centurylinklabs.watchtower.enable: "true"
     environment:
       - ANNOUNCE_SERVER
       - BERTY_STORE_DIR=/store/run
       - BERTY_NODE_NO_NOTIF=true
-      - BERTY_NODE_LISTENERS=/ip4/0.0.0.0/tcp/9091
-      - BERTY_P2P_IPFS_LISTENERS=/ip4/0.0.0.0/tcp/6001,/ip4/0.0.0.0/udp/6001/quic
+      - BERTY_NODE_LISTENERS=/ip4/0.0.0.0/tcp/9091/grpc
+      - BERTY_P2P_SWARM_LISTENERS=/ip4/0.0.0.0/tcp/6001,/ip4/0.0.0.0/udp/6001/quic
       - BERTY_P2P_IPFS_ANNOUNCE=/ip4/${ANNOUNCE_SERVER}/tcp/6001,/ip4/${ANNOUNCE_SERVER}/udp/6001/quic
+      # - BERTY_LOG_FILTERS=*,-*.mdns,-ipfs.dht
+      # - BERTY_LOG_FILTERS=bty.*
     command: -xec "berty daemon"
     volumes:
       - ./data/daemon:/store
@@ -32,8 +34,8 @@ services:
     entrypoint: betabot
     links:
       - daemon
-    #labels:
-    #  com.centurylinklabs.watchtower.enable: "true"
+    # labels:
+    #   com.centurylinklabs.watchtower.enable: "true"
     command:
       - -display-name=BetaBot
       - -addr=daemon:9091
