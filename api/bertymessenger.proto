@@ -440,11 +440,19 @@ message StreamEvent {
       Unknown = 0;
       TypeBasic = 1;
       TypeMessageReceived = 2;
+      TypeContactRequestSent = 3;
+      TypeContactRequestReceived = 4;
     }
     message Basic {}
     message MessageReceived {
       Interaction interaction = 1;
       Conversation conversation = 2;
+      Contact contact = 3;
+    }
+    message ContactRequestSent {
+      Contact contact = 3;
+    }
+    message ContactRequestReceived {
       Contact contact = 3;
     }
   }
