@@ -5350,7 +5350,9 @@ export namespace berty {
                     enum Type {
                         Unknown = 0,
                         TypeBasic = 1,
-                        TypeMessageReceived = 2
+                        TypeMessageReceived = 2,
+                        TypeContactRequestSent = 3,
+                        TypeContactRequestReceived = 4
                     }
 
                     interface IBasic {
@@ -5388,6 +5390,42 @@ export namespace berty {
                         public static verify(message: { [k: string]: any }): (string|null);
                         public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.Notified.MessageReceived;
                         public static toObject(message: berty.messenger.v1.StreamEvent.Notified.MessageReceived, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                        public toJSON(): { [k: string]: any };
+                    }
+
+                    interface IContactRequestSent {
+                        contact?: (berty.messenger.v1.IContact|null);
+                    }
+
+                    class ContactRequestSent implements IContactRequestSent {
+
+                        public contact?: (berty.messenger.v1.IContact|null);
+                        public static create(properties?: berty.messenger.v1.StreamEvent.Notified.IContactRequestSent): berty.messenger.v1.StreamEvent.Notified.ContactRequestSent;
+                        public static encode(message: berty.messenger.v1.StreamEvent.Notified.IContactRequestSent, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static encodeDelimited(message: berty.messenger.v1.StreamEvent.Notified.IContactRequestSent, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.StreamEvent.Notified.ContactRequestSent;
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.StreamEvent.Notified.ContactRequestSent;
+                        public static verify(message: { [k: string]: any }): (string|null);
+                        public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.Notified.ContactRequestSent;
+                        public static toObject(message: berty.messenger.v1.StreamEvent.Notified.ContactRequestSent, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                        public toJSON(): { [k: string]: any };
+                    }
+
+                    interface IContactRequestReceived {
+                        contact?: (berty.messenger.v1.IContact|null);
+                    }
+
+                    class ContactRequestReceived implements IContactRequestReceived {
+
+                        public contact?: (berty.messenger.v1.IContact|null);
+                        public static create(properties?: berty.messenger.v1.StreamEvent.Notified.IContactRequestReceived): berty.messenger.v1.StreamEvent.Notified.ContactRequestReceived;
+                        public static encode(message: berty.messenger.v1.StreamEvent.Notified.IContactRequestReceived, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static encodeDelimited(message: berty.messenger.v1.StreamEvent.Notified.IContactRequestReceived, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.StreamEvent.Notified.ContactRequestReceived;
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.StreamEvent.Notified.ContactRequestReceived;
+                        public static verify(message: { [k: string]: any }): (string|null);
+                        public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.Notified.ContactRequestReceived;
+                        public static toObject(message: berty.messenger.v1.StreamEvent.Notified.ContactRequestReceived, options?: $protobuf.IConversionOptions): { [k: string]: any };
                         public toJSON(): { [k: string]: any };
                     }
                 }

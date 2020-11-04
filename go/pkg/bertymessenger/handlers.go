@@ -352,6 +352,16 @@ func (h *eventHandler) accountContactRequestOutgoingSent(gme *bertytypes.GroupMe
 			return err
 		}
 
+		err = h.svc.dispatcher.Notify(
+			StreamEvent_Notified_TypeContactRequestSent,
+			"Contact request sent",
+			"To: "+contact.GetDisplayName(),
+			&StreamEvent_Notified_ContactRequestSent{Contact: contact},
+		)
+		if err != nil {
+			h.logger.Warn("failed to notify", zap.Error(err))
+		}
+
 		groupPK, err := groupPKFromContactPK(h.ctx, h.protocolClient, ev.GetContactPK())
 		if err != nil {
 			return err
@@ -417,6 +427,16 @@ func (h *eventHandler) accountContactRequestIncomingReceived(gme *bertytypes.Gro
 
 		if err = h.svc.dispatcher.StreamEvent(StreamEvent_TypeConversationUpdated, &StreamEvent_ConversationUpdated{conversation}, true); err != nil {
 			return err
+		}
+
+		err = h.svc.dispatcher.Notify(
+			StreamEvent_Notified_TypeContactRequestReceived,
+			"Contact request received",
+			"From: "+contact.GetDisplayName(),
+			&StreamEvent_Notified_ContactRequestReceived{Contact: contact},
+		)
+		if err != nil {
+			h.logger.Warn("failed to notify", zap.Error(err))
 		}
 	}
 

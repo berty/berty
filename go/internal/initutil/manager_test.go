@@ -50,6 +50,7 @@ func verifyRunningLeakDetection(t *testing.T) {
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/discovery.(*mdnsService).pollForEntries.func1"),            // upstream issue of mdns, go wakeup periodiclly to do action before check exist, timeout about 10 seconds
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/basic.(*BasicHost).dialPeer"),                         // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/relay.(*AutoRelay).background"),                       // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/relay.(*AutoRelay).findRelays"),                       // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/protocol/identify.(*IDService).loop.func1"),                // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-mplex.(*Multiplex).Accept"),                                           // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-mplex.(*Multiplex).handleOutgoing"),                                   // sometimes happening on CI, need more investigation

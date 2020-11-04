@@ -113,6 +113,8 @@
     - [StreamEvent.MemberUpdated](#berty.messenger.v1.StreamEvent.MemberUpdated)
     - [StreamEvent.Notified](#berty.messenger.v1.StreamEvent.Notified)
     - [StreamEvent.Notified.Basic](#berty.messenger.v1.StreamEvent.Notified.Basic)
+    - [StreamEvent.Notified.ContactRequestReceived](#berty.messenger.v1.StreamEvent.Notified.ContactRequestReceived)
+    - [StreamEvent.Notified.ContactRequestSent](#berty.messenger.v1.StreamEvent.Notified.ContactRequestSent)
     - [StreamEvent.Notified.MessageReceived](#berty.messenger.v1.StreamEvent.Notified.MessageReceived)
     - [SystemInfo](#berty.messenger.v1.SystemInfo)
     - [SystemInfo.DB](#berty.messenger.v1.SystemInfo.DB)
@@ -925,6 +927,22 @@ Composite primary key
 
 ### StreamEvent.Notified.Basic
 
+<a name="berty.messenger.v1.StreamEvent.Notified.ContactRequestReceived"></a>
+
+### StreamEvent.Notified.ContactRequestReceived
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| contact | [Contact](#berty.messenger.v1.Contact) |  |  |
+
+<a name="berty.messenger.v1.StreamEvent.Notified.ContactRequestSent"></a>
+
+### StreamEvent.Notified.ContactRequestSent
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| contact | [Contact](#berty.messenger.v1.Contact) |  |  |
+
 <a name="berty.messenger.v1.StreamEvent.Notified.MessageReceived"></a>
 
 ### StreamEvent.Notified.MessageReceived
@@ -1037,6 +1055,8 @@ Composite primary key
 | Unknown | 0 |  |
 | TypeBasic | 1 |  |
 | TypeMessageReceived | 2 |  |
+| TypeContactRequestSent | 3 |  |
+| TypeContactRequestReceived | 4 |  |
 
 <a name="berty.messenger.v1.StreamEvent.Type"></a>
 

@@ -146,7 +146,7 @@ export const defaultPersistentOptions = (): PersistentOptions => ({
 		language: 'en',
 	},
 	[PersistentOptionsKeys.Notifications]: {
-		enable: false,
+		enable: true,
 	},
 	[PersistentOptionsKeys.BetaBot]: {
 		added: false,
