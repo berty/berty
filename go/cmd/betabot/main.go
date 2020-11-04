@@ -17,7 +17,6 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
-	"github.com/matryer/resync"
 	qrterminal "github.com/mdp/qrterminal/v3"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -61,7 +60,6 @@ type Bot struct {
 	// conversations locks.
 	storeWholeConvLock sync.RWMutex
 	storeMutex         sync.RWMutex
-	storeOnce          resync.Once
 	isReplaying        bool
 	logger             *zap.Logger
 }
@@ -596,31 +594,22 @@ func (bot *Bot) interactUserMessage(ctx context.Context, body string, conversati
 }
 
 func (bot *Bot) saveStore() {
-	var done bool
-	// Prevent concurrent saves
-	bot.storeOnce.Do(func() {
-		done = true
-		// Prevent data race with a writing goroutine.
-		bot.storeMutex.RLock()
-		// Prevent data race on conversations
-		bot.storeWholeConvLock.Lock()
-		// marshal
-		data, err := json.MarshalIndent(bot.store, "", "  ")
-		if err != nil {
-			panic(fmt.Errorf("marshal: %w", err))
-		}
-
-		// write file
-		if err := ioutil.WriteFile(bot.storePath, data, 0o600); err != nil {
-			panic(fmt.Errorf("write store file: %w", err))
-		}
-	})
-	if done {
-		// Allow continuation of saves.
-		bot.storeOnce.Reset()
-		bot.storeWholeConvLock.Unlock()
-		bot.storeMutex.RUnlock()
+	// Prevent data race with a writing goroutine.
+	bot.storeMutex.RLock()
+	// Prevent data race on conversations
+	bot.storeWholeConvLock.Lock()
+	// marshal
+	data, err := json.MarshalIndent(bot.store, "", "  ")
+	if err != nil {
+		panic(fmt.Errorf("marshal: %w", err))
 	}
+
+	// write file
+	if err := ioutil.WriteFile(bot.storePath, data, 0o600); err != nil {
+		panic(fmt.Errorf("write store file: %w", err))
+	}
+	bot.storeWholeConvLock.RUnlock()
+	bot.storeMutex.RUnlock()
 }
 
 func checkValidationMessage(s string) bool {
