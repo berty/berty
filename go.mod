@@ -16,7 +16,6 @@ require (
 	github.com/atotto/clipboard v0.1.2
 	github.com/buicongtan1997/protoc-gen-swagger-config v0.0.0-20190801162412-b6396e884596
 	github.com/campoy/embedmd v1.0.0
-	github.com/cheekybits/is v0.0.0-20150225183255-68e9c0620927 // indirect
 	github.com/daixiang0/gci v0.2.4
 	github.com/davidlazar/go-crypto v0.0.0-20200604182044-b73af7476f6c // indirect
 	github.com/denisbrodbeck/machineid v1.0.1
@@ -67,7 +66,6 @@ require (
 	github.com/libp2p/go-mplex v0.2.0 // indirect
 	github.com/libp2p/go-yamux v1.4.0 // indirect
 	github.com/markbates/pkger v0.17.1
-	github.com/matryer/resync v0.0.0-20161211202428-d39c09a11215
 	github.com/mattn/go-sqlite3 v1.14.4
 	github.com/mdomke/git-semver/v5 v5.0.0
 	github.com/mdp/qrterminal/v3 v3.0.0
