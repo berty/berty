@@ -68,7 +68,7 @@ func (d *dbWrapper) getUpdatedDB(models []interface{}, replayer func(db *dbWrapp
 			return err
 		}
 
-		if err := restoreDatabaseLocalState(d.db, currentState); err != nil {
+		if err := restoreDatabaseLocalState(d, currentState); err != nil {
 			return err
 		}
 	}
@@ -249,23 +249,12 @@ func (d *dbWrapper) updateConversationReadState(pk string, newUnread bool, event
 	return nil
 }
 
-func (d *dbWrapper) addAccount(pk, url string) error {
+func (d *dbWrapper) addAccount(pk, link string) error {
 	if pk == "" {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("an account public key is required"))
 	}
 
-	acc := &Account{
-		PublicKey: pk,
-		Link:      url,
-	}
-
-	if pk == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("pk cannot be nil"))
-	}
-
-	if err := d.db.Create(&acc).Error; isSQLiteError(err, sqlite3.ErrConstraint) {
-		return nil
-	} else if err != nil {
+	if err := d.db.Model(&Account{}).FirstOrCreate(&Account{}, &Account{PublicKey: pk, Link: link}).Error; err != nil && !isSQLiteError(err, sqlite3.ErrConstraint) {
 		return err
 	}
 
