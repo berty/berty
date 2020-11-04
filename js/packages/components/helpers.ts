@@ -1,5 +1,5 @@
-import { google } from '@berty-tech/api'
 import moment from 'moment'
+import { Long } from 'protobufjs/light'
 
 export const promiseResolved = (): Promise<void> => new Promise((res): any => setTimeout(res, 1000))
 // export const promiseRejected = (): Promise<void> =>
@@ -15,7 +15,7 @@ export const randomLength = (mod = 20): number => Math.floor(Math.random() * 100
 export const randomArray = <T extends unknown>(mod: number): Array<T> =>
 	new Array(randomLength(mod)).fill({})
 
-export const timestamp = (date: Date): google.protobuf.ITimestamp => ({
+export const timestamp = (date: Date): any => ({
 	seconds: Math.floor(date.getTime() / 1000),
 	nanos: (date.getTime() % 1000) * 1000,
 })

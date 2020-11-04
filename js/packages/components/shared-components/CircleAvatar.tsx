@@ -126,7 +126,7 @@ export const Avatar: React.FC<{
 	)
 }
 
-type ConversationAvatarProp = messenger.conversation.Entity & {
+type ConversationAvatarProp = {
 	size?: number
 	diffSize?: number
 	style?: StyleProp<any>

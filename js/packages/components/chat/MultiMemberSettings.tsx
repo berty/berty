@@ -63,7 +63,7 @@ const GroupChatSettingsHeaderButtons: React.FC<any> = ({ link, publicKey }) => {
 	)
 }
 
-const GroupChatSettingsHeader: React.FC<messenger.conversation.Entity> = ({ displayName }) => {
+const GroupChatSettingsHeader: React.FC<any> = ({ displayName }) => {
 	const [{ text, margin, row }] = useStyles()
 	return (
 		<View>
