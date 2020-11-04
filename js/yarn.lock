@@ -1399,10 +1399,10 @@
     react-is "^16.13.0"
     use-subscription "^1.5.0"
 
-"@react-navigation/material-top-tabs@^5.3.2":
-  version "5.3.2"
-  resolved "https://registry.yarnpkg.com/@react-navigation/material-top-tabs/-/material-top-tabs-5.3.2.tgz#a2484161bbbcbf71df1fabcfb3baa5917b245538"
-  integrity sha512-OtsgtVfbTJ8ZECVbD4akUiES4tFrXHhVdejFBjl2KlxwrfZcF7mTrOAwahyGL1PAoxJpX87P91qEarNDh2ZlLQ==
+"@react-navigation/material-top-tabs@^5.3.5":
+  version "5.3.5"
+  resolved "https://registry.yarnpkg.com/@react-navigation/material-top-tabs/-/material-top-tabs-5.3.5.tgz#fa63e401ec65ec5aab535adfbb13acf319f68fba"
+  integrity sha512-Q8j0Og700xGs5j5VVA7hlHRLaIN39rPqb01SkQbEk9vnpYc6fhUnXNf5SClhZOEMjEwJ38Qt+eTubQ6GxvMm8A==
   dependencies:
     color "^3.1.3"
 
