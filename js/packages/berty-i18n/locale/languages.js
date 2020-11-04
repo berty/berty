@@ -26,7 +26,6 @@ import tr from './tr/messages.json'
 import uk from './uk/messages.json'
 import vi from './vi/messages.json'
 import zh from './zh/messages.json'
-import debug from './debug/messages.json'
 
 export const languages = {
 	af: { englishName: 'Afrikaans', localName: 'Afrikaans', translation: af },
@@ -57,5 +56,4 @@ export const languages = {
 	uk: { englishName: 'Ukrainian', localName: 'Українська', translation: uk },
 	vi: { englishName: 'Vietnamese', localName: 'Tiếng Việt', translation: vi },
 	zh: { englishName: 'Chinese', localName: '简体中文', translation: zh },
-	debug: { englishName: 'Debug', localName: 'Debug', translation: debug },
 }

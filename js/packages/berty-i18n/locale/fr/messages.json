@@ -71,5 +71,9 @@
     "messages": {
       "title": "Messages"
     }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "title-description": "Personnalisez l'app pour qu'elle corresponde à vos besoins"
   }
 }
