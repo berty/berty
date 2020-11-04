@@ -216,10 +216,10 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 						continue
 					}
 					if n == lenPickFrom-1 {
-						pickFrom = pickFrom[:n-2]
+						pickFrom = pickFrom[:n-1]
 						continue
 					}
-					pickFrom = append(pickFrom[:n-1], pickFrom[n+1:]...)
+					pickFrom = append(pickFrom[:n], pickFrom[n+1:]...)
 				}
 			}
 
