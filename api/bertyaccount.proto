@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package berty.bridge.v1;
+package berty.account.v1;
 
 import "errcode.proto";
 
@@ -11,6 +11,9 @@ service AccountService {
 
   // OpenAccount, start berty node
   rpc OpenAccount (OpenAccount.Request) returns (OpenAccount.Reply);
+
+  // CloseAccount, close the current account
+  rpc CloseAccount (CloseAccount.Request) returns (CloseAccount.Reply);
 
 
   /// GRPC Adaptater
@@ -37,16 +40,14 @@ service AccountService {
 message OpenAccount {
   message Request {
     repeated string args = 1;
+    bool persistence = 2;
   }
-  message Reply {
-  }
+  message Reply {}
 }
 
 message CloseAccount {
-  message Request {
-  }
-  message Reply {
-  }
+  message Request {}
+  message Reply {}
 }
 
 message GetGRPCListenerAddrs {

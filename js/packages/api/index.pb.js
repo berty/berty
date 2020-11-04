@@ -5,7 +5,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
 .addJSON({
   berty: {
     nested: {
-      bridge: {
+      account: {
         nested: {
           v1: {
             options: {
@@ -17,6 +17,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   OpenAccount: {
                     requestType: "OpenAccount.Request",
                     responseType: "OpenAccount.Reply"
+                  },
+                  CloseAccount: {
+                    requestType: "CloseAccount.Request",
+                    responseType: "CloseAccount.Reply"
                   },
                   GetGRPCListenerAddrs: {
                     requestType: "GetGRPCListenerAddrs.Request",
@@ -53,6 +57,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         rule: "repeated",
                         type: "string",
                         id: 1
+                      },
+                      persistence: {
+                        type: "bool",
+                        id: 2
                       }
                     }
                   },

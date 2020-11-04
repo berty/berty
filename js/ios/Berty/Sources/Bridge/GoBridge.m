@@ -26,7 +26,7 @@ RCT_EXTERN_METHOD(initBridge:(RCTPromiseResolveBlock)resolve
 
 RCT_EXTERN_METHOD(log:(NSDictionary)opts);
 
-RCT_EXTERN_METHOD(stopProtocol:(RCTPromiseResolveBlock)resolve
+RCT_EXTERN_METHOD(closeBridge:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
 
 RCT_EXTERN_METHOD(invokeBridgeMethod:(NSString)method

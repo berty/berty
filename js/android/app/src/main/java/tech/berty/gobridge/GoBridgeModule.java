@@ -85,17 +85,11 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
   //////////////
 
   @ReactMethod
-  public void startProtocol(ReadableMap opts, Promise promise) {
+  public void initBridge(Promise promise) {
     try {
       if (this.bridgeMessenger != null) {
         promise.resolve(false);
         return;
-      }
-
-      final boolean optPersistence = opts.hasKey("persistence") && opts.getBoolean("persistence");
-      String[] optCLIArgs = {};
-      if (opts.hasKey("cliArgs") && opts.getType("cliArgs") == ReadableType.Array) {
-          optCLIArgs = readableArrayToStringArray(opts.getArray("cliArgs"));
       }
 
       final Config config = Bertybridge.newConfig();
@@ -107,22 +101,9 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
       LoggerDriver logger = new LoggerDriver("tech.berty", "protocol");
       config.setLoggerDriver(logger);
 
-      // pass js args
-      for (String arg: optCLIArgs) {
-          config.appendCLIArg(arg);
-      }
-
       // set root dir
-      if (optPersistence) {
-        if (this.rootDir != null && !this.rootDir.exists()) {
-            if (!this.rootDir.mkdirs()) {
-                throw new Exception("rootdir directory creation failed");
-            }
-        }
-        Log.i(TAG, "root dir: " + this.rootDir.getAbsolutePath());
-        config.appendCLIArg("--store.dir");
-        config.appendCLIArg(this.rootDir.getAbsolutePath());
-      }
+      Log.i(TAG, "root dir: " + this.rootDir.getAbsolutePath());
+      config.setRootDir(this.rootDir.getAbsolutePath());
 
       // set temp dir
       if (this.tempDir != null && !this.tempDir.exists()) {
@@ -142,7 +123,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void stopProtocol(Promise promise) {
+  public void closeBridge(Promise promise) {
     try {
       if (this.bridgeMessenger != null) {
         System.out.println("bflifecycle: calling bridgeMessenger.close()");

@@ -18,7 +18,7 @@ export type GoLoggerOpts = {
 export interface GoBridgeInterface {
 	log(_: GoLoggerOpts): void
 	initBridge(): Promise<void>
-	stopProtocol(): Promise<void>
+	closeBridge(): Promise<void>
 	getProtocolAddr(): Promise<string>
 	clearStorage(): Promise<void>
 }

@@ -85,10 +85,6 @@ class GoBridge: NSObject {
                 throw NSError(domain: "already started", code: 1)
             }
 
-            // gather opts
-            // let optPersistence = opts.get(bool: "persistence")
-            // let cliArgs = opts.get(array: "cliArgs", defaultValue: [])
-
             var err: NSError?
             guard let config = BridgeNewConfig() else {
                 throw NSError(domain: "unable to create config", code: 1)
@@ -98,21 +94,15 @@ class GoBridge: NSObject {
             config.setLifeCycleDriver(LifeCycleDriver.shared)
             config.setNotificationDriver(NotificationDriver.shared)
 
-            // set persistence if needed
-            // if optPersistence {
-            //    var isDirectory: ObjCBool = true
-            //    let exist = FileManager.default.fileExists(atPath: self.rootdir.path, isDirectory: &isDirectory)
-            //    if !exist {
-            //        try FileManager.default.createDirectory(atPath: self.rootdir.path, withIntermediateDirectories: true, attributes: nil)
-            //    }
+            // @TODO(gfanton): make this dir in golang
+            var isDirectory: ObjCBool = true
+            let exist = FileManager.default.fileExists(atPath: self.rootdir.path, isDirectory: &isDirectory)
+            if !exist {
+                try FileManager.default.createDirectory(atPath: self.rootdir.path, withIntermediateDirectories: true, attributes: nil)
+            }
 
-                NSLog("root dir: `%@`", self.rootdir.path)
-                config.setRootDir(self.rootdir.path)
-                // config.appendCLIArg("--store.dir")
-                // config.appendCLIArg(self.rootdir.path)
-            //}
-
-
+            NSLog("root dir: `%@`", self.rootdir.path)
+            config.setRootDir(self.rootdir.path)
 
             NSLog("bflifecycle: calling BridgeNewMessengerBridge")
             let bridgeMessenger = BridgeNew(config, &err)
@@ -129,7 +119,7 @@ class GoBridge: NSObject {
         }
     }
 
-    @objc func stopProtocol(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    @objc func closeBridge(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
             if self.bridgeMessenger != nil {
                 NSLog("bflifecycle: calling try self.messengerProtocol?.close()")

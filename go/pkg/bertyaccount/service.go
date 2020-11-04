@@ -2,7 +2,6 @@ package bertyaccount
 
 import (
 	"context"
-	"flag"
 	fmt "fmt"
 	"sync"
 
@@ -22,6 +21,10 @@ var _ AccountServiceServer = (*service)(nil)
 type Service interface {
 	AccountServiceServer
 
+	// WakeUp should be used for background task or similar task
+	WakeUp(ctx context.Context) error
+
+	// Close the service
 	Close() error
 }
 
@@ -104,16 +107,6 @@ func (s *service) Close() error {
 	return nil
 }
 
-func (s *service) handleLifecycle(ctx context.Context) {
-	var currentState lifecycle.State
-	for {
-		currentState = s.lifecycleManager.GetCurrentState()
-		if !s.lifecycleManager.WaitForStateChange(ctx, currentState) {
-			return
-		}
-	}
-}
-
 func (s *service) getServiceClient() (c *grpcutil.LazyClient, err error) {
 	s.muService.RLock()
 	if c = s.servicesClient; c == nil {
@@ -130,33 +123,4 @@ func (s *service) getInitManager() (m *initutil.Manager, err error) {
 	}
 	s.muService.RUnlock()
 	return
-}
-
-func (s *service) newManager(args ...string) (*initutil.Manager, error) {
-	manager := initutil.Manager{}
-
-	// configure flagset options
-	fs := flag.NewFlagSet("account", flag.ContinueOnError)
-	manager.SetupLoggingFlags(fs)
-	manager.SetupLocalMessengerServerFlags(fs)
-	manager.SetupEmptyGRPCListenersFlags(fs)
-	// manager.SetupMetricsFlags(fs)
-	err := fs.Parse(args)
-	if err != nil {
-		return nil, err
-	}
-	if len(fs.Args()) > 0 {
-		return nil, fmt.Errorf("invalid CLI args, should only have flags")
-	}
-
-	// minimal requirements
-	{
-		// here we can add various checks that return an error early if some settings are invalid or missing
-	}
-
-	manager.SetLogger(s.logger)
-	s.logger.Info("init", zap.Any("manager", &manager))
-
-	manager.SetNotificationManager(s.notifManager)
-	return &manager, nil
 }
