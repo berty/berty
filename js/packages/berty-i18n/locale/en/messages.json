@@ -72,5 +72,9 @@
     "messages": {
       "title": "Messages"
     }
+  },
+  "settings": {
+    "title": "Settings",
+    "title-description": "Customize everything to get the app that fits your needs"
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { View, ScrollView, Vibration } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import DropDownPicker from 'react-native-dropdown-picker'
@@ -16,6 +16,7 @@ import { useNavigation as useReactNavigation } from '@react-navigation/native'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
 import { languages } from '@berty-tech/berty-i18n/locale/languages'
+import { Translation } from 'react-i18next'
 
 //
 // Mode
@@ -48,10 +49,16 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 	const ctx = useMsgrContext()
 	const enableNotif = ctx.persistentOptions.notifications.enable
 
-	const items = Object.entries(languages).map(([key, attrs]) => ({
-		label: attrs.localName,
-		value: key,
-	}))
+	const items = useMemo(() => {
+		const items = Object.entries(languages).map(([key, attrs]) => ({
+			label: attrs.localName,
+			value: key,
+		}))
+
+		items.push({ label: 'Debug', value: 'cimode' })
+
+		return items
+	}, [])
 
 	const currentLanguage = ctx.persistentOptions.i18n.language
 
@@ -234,17 +241,21 @@ export const Mode: React.FC<{}> = () => {
 	const { goBack } = useNavigation()
 	const [{ flex, background, padding }] = useStyles()
 	return (
-		<Layout style={[flex.tiny, background.white]}>
-			<SwipeNavRecognizer>
-				<ScrollView bounces={false} contentContainerStyle={[padding.bottom.scale(90)]}>
-					<HeaderSettings
-						title='Settings'
-						desc='Customize everything to get the app that fits your needs'
-						undo={goBack}
-					/>
-					<BodyMode isMode={isMode} />
-				</ScrollView>
-			</SwipeNavRecognizer>
-		</Layout>
+		<Translation>
+			{(t) => (
+				<Layout style={[flex.tiny, background.white]}>
+					<SwipeNavRecognizer>
+						<ScrollView bounces={false} contentContainerStyle={[padding.bottom.scale(90)]}>
+							<HeaderSettings
+								title={t('settings.title')}
+								desc={t('settings.title-description')}
+								undo={goBack}
+							/>
+							<BodyMode isMode={isMode} />
+						</ScrollView>
+					</SwipeNavRecognizer>
+				</Layout>
+			)}
+		</Translation>
 	)
 }
