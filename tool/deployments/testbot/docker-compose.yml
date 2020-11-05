@@ -6,8 +6,8 @@ services:
     image: bertytech/berty:latest
     restart: always
     entrypoint: sh
-    #labels:
-    #  com.centurylinklabs.watchtower.enable: "true"
+    # labels:
+    #   com.centurylinklabs.watchtower.enable: "true"
     environment:
       - ANNOUNCE_SERVER
       - BERTY_STORE_DIR=/store/run

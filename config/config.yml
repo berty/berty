@@ -15,6 +15,11 @@ berty:
       link: "https://berty.tech/id#key=CiBQHH6a84AHwdahXR6NQcOxTKjUHeqLdQfIAzxAYSoD1xIgT-tFTYrU-tD55bYgaXbBNTlqTHubq-_Qb8ksv2bSH9o&name=BetaBot%20Dev"
       description: "Dev BetaBot"
       #icon:
+    testbot-dev:
+      name: "TestBot Dev"
+      link: "https://berty.tech/id#key=CiAxSP1RYrv4yi7PsQZtqFH9fepMiqDD1M7y1aIZAzMmghIg_fXVz1J-HfCd6gtRlUN0GsWiIlfgVPamj7lgFIUqfOA&name=TestBot%20Dev"
+      description: "Dev TestBot"
+      #icon:
     #support:
     #staff:
     #berty-tv:

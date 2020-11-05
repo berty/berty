@@ -18,9 +18,13 @@ import (
 const InMemoryDir = ":memory:"
 
 func (m *Manager) SetupDatastoreFlags(fs *flag.FlagSet) {
-	fs.StringVar(&m.Datastore.Dir, "store.dir", m.Datastore.defaultDir, "root datastore directory")
-	fs.BoolVar(&m.Datastore.InMemory, "store.inmem", false, "disable datastore persistence")
-	fs.BoolVar(&m.Datastore.FileIO, "store.fileio", false, "enable FileIO Option, files will be loaded using standard I/O")
+	dir := m.Datastore.Dir
+	if dir == "" {
+		dir = m.Datastore.defaultDir
+	}
+	fs.StringVar(&m.Datastore.Dir, "store.dir", dir, "root datastore directory")
+	fs.BoolVar(&m.Datastore.InMemory, "store.inmem", m.Datastore.InMemory, "disable datastore persistence")
+	fs.BoolVar(&m.Datastore.FileIO, "store.fileio", m.Datastore.FileIO, "enable FileIO Option, files will be loaded using standard I/O")
 }
 
 func (m *Manager) GetDatastoreDir() (string, error) {

@@ -1,0 +1,68 @@
+name: Integration
+on:
+  schedule:
+    - cron: '0 * * * *'
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+    paths:
+      - 'go/**'
+      - '!go/**.md'
+      - 'go.*'
+      - '**.go'
+      - 'js/**'
+      - '!js/packages/berty-i18n/locale/*/*.json'
+      - '.github/workflows/integration.yaml'
+  pull_request:
+    paths:
+      - 'go/**'
+      - '!go/**.md'
+      - 'go.*'
+      - '**.go'
+      - 'js/**'
+      - '!js/packages/berty-i18n/locale/*/*.json'
+      - '.github/workflows/integration.yaml'
+
+# FIXME:
+# * test on production periodically with env=production
+# * test against a fresh docker-compose infra on each commit
+# * store performance logs for comparison
+
+jobs:
+  unstable-tests:
+    name: "env=production"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        golang:
+          - 1.15.x
+    env:
+      OS: ubuntu-latest
+      GOLANG: ${{ matrix.golang }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.golang }}
+      - name: Cache Go modules
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Avoid triggering make generate
+        run: touch go/gen.sum
+      - name: Fetch dependencies
+        run: go mod download
+      - name: Compile the integration binary
+        working-directory: go
+        run: go install ./cmd/berty-integration
+      - name: Run integration tests with production config
+        run: |
+          berty-integration \
+            -integration.testbot=`cat ./config/config.gen.json | jq -r '.berty.contacts["testbot"].link'`

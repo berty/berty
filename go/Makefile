@@ -277,10 +277,30 @@ depaware.check:
 	@set -xe; for pkg in $(depaware_pkgs); do $(GO) run github.com/tailscale/depaware --check $$pkg; done
 .PHONY: depaware.check
 
+
+##
+## doctor
+##
+
+
 doctor:
 	go run ./cmd/bertydoctor/
 .PHONY: doctor
 
+
 doctor.verbose:
 	go run ./cmd/bertydoctor/ -v
 .PHONY: doctor.verbose
+
+
+## integration
+
+
+integration.dev:
+	go run ./cmd/berty-integration
+.PHONY: integration.prod
+
+
+integration.prod:
+	go run ./cmd/berty-integration -integration.testbot=`cat ../config/config.gen.json | jq -r '.berty.contacts["testbot"].link'`
+.PHONY: integration.prod
