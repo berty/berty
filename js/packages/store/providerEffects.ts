@@ -1,7 +1,14 @@
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
-import { NativeModules } from 'react-native'
-import { messenger as messengerpb, protocol as protocolpb, account as accountpb, errcode } from '@berty-tech/api/index.js'
-import { bridge as rpcBridge, grpcweb as rpcWeb, native as rpcNative } from '@berty-tech/grpc-bridge/rpc'
+import {
+	messenger as messengerpb,
+	protocol as protocolpb,
+	account as accountpb,
+} from '@berty-tech/api/index.js'
+import {
+	bridge as rpcBridge,
+	grpcweb as rpcWeb,
+	native as rpcNative,
+} from '@berty-tech/grpc-bridge/rpc'
 import i18n from '@berty-tech/berty-i18n'
 import { EOF, Service } from '@berty-tech/grpc-bridge'
 import ExternalTransport from './externalTransport'
@@ -196,17 +203,17 @@ export const openingDaemon = (
 		return
 	}
 
-
 	GoBridge.initBridge()
 		.then(() => console.log('bridge init done'))
-		.catch(err => {
+		.catch((err) => {
 			console.error('unable to init bridge', err)
 		})
 		.then(() =>
 			accountCient.openAccount({
 				args: GoBridgeDefaultOpts.cliArgs,
 				persistence: GoBridgeDefaultOpts.persistence,
-			}))
+			}),
+		)
 		.then(() => {
 			dispatch({
 				type: MessengerActions.SetStateOpeningClients,

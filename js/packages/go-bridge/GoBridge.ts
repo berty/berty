@@ -5,7 +5,7 @@ class NoopGoBirdge implements GoBridgeInterface {
 		return Promise.reject()
 	}
 
-	initBridge() {
+	closeBridge() {
 		return Promise.reject()
 	}
 

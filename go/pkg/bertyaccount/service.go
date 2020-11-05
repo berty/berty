@@ -7,7 +7,6 @@ import (
 
 	"github.com/ipfs/go-ipfs/core"
 	"go.uber.org/zap"
-	grpc "google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/initutil"
@@ -38,15 +37,10 @@ type service struct {
 	notifManager notification.Manager
 	logger       *zap.Logger
 
-	// initManager
-	// lifecycleDriver  LifeCycleDriver
-
 	rootdir          string
 	muService        sync.RWMutex
 	initManager      *initutil.Manager
-	notification     notification.Manager
 	lifecycleManager *lifecycle.Manager
-	grpcServer       *grpc.Server
 	node             *core.IpfsNode
 	servicesClient   *grpcutil.LazyClient
 }
@@ -58,7 +52,7 @@ type Options struct {
 	Logger              *zap.Logger
 }
 
-func (o *Options) applyDefault() error {
+func (o *Options) applyDefault() {
 	if o.Logger == nil {
 		o.Logger = zap.NewNop()
 	}
@@ -70,14 +64,10 @@ func (o *Options) applyDefault() error {
 	if o.NotificationManager == nil {
 		o.NotificationManager = notification.NewLoggerManager(o.Logger)
 	}
-
-	return nil
 }
 
 func NewService(opts *Options) (Service, error) {
-	if err := opts.applyDefault(); err != nil {
-		return nil, err
-	}
+	opts.applyDefault()
 
 	rootCtx, rootCancelCtx := context.WithCancel(context.Background())
 	s := &service{

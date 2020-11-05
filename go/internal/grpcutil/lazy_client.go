@@ -2,7 +2,6 @@ package grpcutil
 
 import (
 	"context"
-	"sync"
 	"sync/atomic"
 
 	"github.com/gogo/protobuf/proto"
@@ -13,7 +12,6 @@ var lazyCodec = NewLazyCodec()
 
 type LazyClient struct {
 	cc        *grpc.ClientConn
-	muclose   sync.RWMutex
 	streamsid uint64
 }
 

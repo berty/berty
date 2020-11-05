@@ -35,13 +35,9 @@ func (mc *nativeLogger) Write(entry zapcore.Entry, fields []zapcore.Field) error
 	return mc.l.Log(entry.Level.CapitalString(), entry.LoggerName, buff.String())
 }
 
-func newLogger(mlogger NativeLoggerDriver) (*zap.Logger, error) {
-	// if filters == "" {
-	// 	return zap.NewNop(), func() {}, nil
-	// }
-
+func newLogger(mlogger NativeLoggerDriver) *zap.Logger {
 	if mlogger == nil {
-		return zap.NewNop(), nil
+		return zap.NewNop()
 	}
 
 	// native logger
@@ -64,7 +60,5 @@ func newLogger(mlogger NativeLoggerDriver) (*zap.Logger, error) {
 	// create logger
 	logger := zap.New(nativeCore)
 
-	// logger.Info("logger initialized", zap.String("filters", filters))
-	return logger, nil
-	// return logutil.DecorateLogger(logger, filters)
+	return logger
 }

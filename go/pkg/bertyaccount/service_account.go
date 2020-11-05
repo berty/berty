@@ -5,11 +5,13 @@ import (
 	"flag"
 	fmt "fmt"
 
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	grpc "google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/initutil"
+	"berty.tech/berty/v2/go/internal/logutil"
 )
 
 // OpenAccount, start berty node
@@ -27,6 +29,20 @@ func (s *service) OpenAccount(_ context.Context, req *OpenAccount_Request) (*Ope
 		return nil, fmt.Errorf("an account is already opened, close it before open it again")
 	}
 
+	// setup logger
+	var logger *zap.Logger
+	{
+		var err error
+
+		logger = s.logger
+		if filters := req.LoggerFilters; filters != "" {
+			logger, _, err = logutil.DecorateLogger(logger, filters)
+			if err != nil {
+				return nil, errors.Wrap(err, "unable to decorate logger")
+			}
+		}
+	}
+
 	s.logger.Info("opening account",
 		zap.Strings("args", req.GetArgs()),
 		zap.Bool("persistence", req.GetPersistence()),
@@ -37,7 +53,7 @@ func (s *service) OpenAccount(_ context.Context, req *OpenAccount_Request) (*Ope
 	{
 		var err error
 
-		manager, err = s.newManager(args...)
+		manager, err = s.newManager(logger, args...)
 		if err != nil {
 			return nil, err
 		}
@@ -54,6 +70,8 @@ func (s *service) OpenAccount(_ context.Context, req *OpenAccount_Request) (*Ope
 				manager.Close()
 			}
 		}()
+
+		// ensure requirement for manager
 
 		// get logger
 		if _, err = manager.GetLogger(); err != nil {
@@ -97,6 +115,10 @@ func (s *service) CloseAccount(_ context.Context, req *CloseAccount_Request) (*C
 
 	// close previous initManager
 	if s.initManager != nil {
+		if l, err := s.initManager.GetLogger(); err == nil {
+			_ = l.Sync() // cleanup logger
+		}
+
 		if err := s.initManager.Close(); err != nil {
 			s.logger.Warn("unable to close account", zap.Error(err))
 			return nil, err
@@ -108,7 +130,7 @@ func (s *service) CloseAccount(_ context.Context, req *CloseAccount_Request) (*C
 	return &CloseAccount_Reply{}, nil
 }
 
-func (s *service) newManager(args ...string) (*initutil.Manager, error) {
+func (s *service) newManager(logger *zap.Logger, args ...string) (*initutil.Manager, error) {
 	manager := initutil.Manager{}
 
 	// configure flagset options
@@ -130,9 +152,9 @@ func (s *service) newManager(args ...string) (*initutil.Manager, error) {
 		// here we can add various checks that return an error early if some settings are invalid or missing
 	}
 
-	manager.SetLogger(s.logger)
-	s.logger.Info("init", zap.Any("manager", &manager))
-
+	manager.SetLogger(logger)
 	manager.SetNotificationManager(s.notifManager)
+
+	s.logger.Info("init", zap.Any("manager", &manager))
 	return &manager, nil
 }

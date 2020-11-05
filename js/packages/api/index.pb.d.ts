@@ -66,12 +66,14 @@ export namespace berty {
                 interface IRequest {
                     args?: (string[]|null);
                     persistence?: (boolean|null);
+                    loggerFilters?: (string|null);
                 }
 
                 class Request implements IRequest {
 
                     public args: string[];
                     public persistence: boolean;
+                    public loggerFilters: string;
                     public static create(properties?: berty.account.v1.OpenAccount.IRequest): berty.account.v1.OpenAccount.Request;
                     public static encode(message: berty.account.v1.OpenAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.OpenAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -186,12 +188,12 @@ export namespace berty {
                 }
 
                 interface IReply {
-                    maddrs?: ({ [k: string]: string }|null);
+                    entries?: (berty.account.v1.GetGRPCListenerAddrs.Reply.IEntry[]|null);
                 }
 
                 class Reply implements IReply {
 
-                    public maddrs: { [k: string]: string };
+                    public entries: berty.account.v1.GetGRPCListenerAddrs.Reply.IEntry[];
                     public static create(properties?: berty.account.v1.GetGRPCListenerAddrs.IReply): berty.account.v1.GetGRPCListenerAddrs.Reply;
                     public static encode(message: berty.account.v1.GetGRPCListenerAddrs.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.GetGRPCListenerAddrs.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -201,6 +203,29 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.GetGRPCListenerAddrs.Reply;
                     public static toObject(message: berty.account.v1.GetGRPCListenerAddrs.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
+                }
+
+                namespace Reply {
+
+                    interface IEntry {
+                        proto?: (string|null);
+                        maddr?: (string|null);
+                    }
+
+                    class Entry implements IEntry {
+
+                        public proto: string;
+                        public maddr: string;
+                        public static create(properties?: berty.account.v1.GetGRPCListenerAddrs.Reply.IEntry): berty.account.v1.GetGRPCListenerAddrs.Reply.Entry;
+                        public static encode(message: berty.account.v1.GetGRPCListenerAddrs.Reply.IEntry, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static encodeDelimited(message: berty.account.v1.GetGRPCListenerAddrs.Reply.IEntry, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.GetGRPCListenerAddrs.Reply.Entry;
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.GetGRPCListenerAddrs.Reply.Entry;
+                        public static verify(message: { [k: string]: any }): (string|null);
+                        public static fromObject(object: { [k: string]: any }): berty.account.v1.GetGRPCListenerAddrs.Reply.Entry;
+                        public static toObject(message: berty.account.v1.GetGRPCListenerAddrs.Reply.Entry, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                        public toJSON(): { [k: string]: any };
+                    }
                 }
             }
 

@@ -41,6 +41,7 @@ message OpenAccount {
   message Request {
     repeated string args = 1;
     bool persistence = 2;
+    string logger_filters = 3;
   }
   message Reply {}
 }
@@ -53,11 +54,13 @@ message CloseAccount {
 message GetGRPCListenerAddrs {
   message Request {}
   message Reply {
-    // maps <proto,addrs>
-    map<string,string> maddrs = 1;
+    repeated Entry entries = 1;
+    message Entry {
+      string proto = 1;
+      string maddr = 2;
+    }
   }
 }
-
 
 message ClientInvokeUnary {
   message Request {

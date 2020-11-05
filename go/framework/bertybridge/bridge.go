@@ -37,9 +37,6 @@ type Bridge struct {
 
 	lifecycleManager    *lifecycle.Manager
 	notificationManager notification.Manager
-
-	handleStateMutex sync.Mutex
-	lifecycleDriver  LifeCycleDriver
 }
 
 func NewBridge(config *Config) (*Bridge, error) {
@@ -64,11 +61,8 @@ func NewBridge(config *Config) (*Bridge, error) {
 
 	// setup logger
 	{
-		var err error
 		if nativeLogger := config.dLogger; nativeLogger != nil {
-			if b.logger, err = newLogger(nativeLogger); err != nil {
-				return nil, err
-			}
+			b.logger = newLogger(nativeLogger)
 		} else {
 			log.Println("WARN: no logger set")
 			b.logger = zap.NewNop()

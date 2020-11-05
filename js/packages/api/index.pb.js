@@ -61,6 +61,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       persistence: {
                         type: "bool",
                         id: 2
+                      },
+                      loggerFilters: {
+                        type: "string",
+                        id: 3
                       }
                     }
                   },
@@ -88,10 +92,24 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Reply: {
                     fields: {
-                      maddrs: {
-                        keyType: "string",
-                        type: "string",
+                      entries: {
+                        rule: "repeated",
+                        type: "Entry",
                         id: 1
+                      }
+                    },
+                    nested: {
+                      Entry: {
+                        fields: {
+                          proto: {
+                            type: "string",
+                            id: 1
+                          },
+                          maddr: {
+                            type: "string",
+                            id: 2
+                          }
+                        }
                       }
                     }
                   }

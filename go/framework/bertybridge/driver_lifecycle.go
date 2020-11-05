@@ -79,10 +79,9 @@ func (bt *backgroundTask) Cancel() {
 
 // noop driver
 
-var _ LifeCycleDriver = (*noopLifeCycleDriver)(nil)
+// var _ LifeCycleDriver = (*noopLifeCycleDriver)(nil)
 
-type noopLifeCycleDriver struct{}
+// type noopLifeCycleDriver struct{}
 
-func (*noopLifeCycleDriver) GetCurrentState() int               { return AppStateUnknown }
-func (*noopLifeCycleDriver) RegisterHandler(_ LifeCycleHandler) {}
-func newNoopLifeCycleDriver() LifeCycleDriver                   { return &noopLifeCycleDriver{} }
+// func (*noopLifeCycleDriver) GetCurrentState() int               { return AppStateUnknown }
+// func (*noopLifeCycleDriver) RegisterHandler(_ LifeCycleHandler) {}
