@@ -5,15 +5,27 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
 .addJSON({
   berty: {
     nested: {
-      bridge: {
+      account: {
         nested: {
           v1: {
             options: {
-              go_package: "berty.tech/berty/go/framework/bertybridge/internal/bridgepb"
+              go_package: "berty.tech/berty/go/pkg/bertyaccount"
             },
             nested: {
-              BridgeService: {
+              AccountService: {
                 methods: {
+                  OpenAccount: {
+                    requestType: "OpenAccount.Request",
+                    responseType: "OpenAccount.Reply"
+                  },
+                  CloseAccount: {
+                    requestType: "CloseAccount.Request",
+                    responseType: "CloseAccount.Reply"
+                  },
+                  GetGRPCListenerAddrs: {
+                    requestType: "GetGRPCListenerAddrs.Request",
+                    responseType: "GetGRPCListenerAddrs.Reply"
+                  },
                   ClientInvokeUnary: {
                     requestType: "ClientInvokeUnary.Request",
                     responseType: "ClientInvokeUnary.Reply"
@@ -33,6 +45,73 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   ClientStreamClose: {
                     requestType: "ClientStreamClose.Request",
                     responseType: "ClientStreamClose.Reply"
+                  }
+                }
+              },
+              OpenAccount: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      args: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 1
+                      },
+                      persistence: {
+                        type: "bool",
+                        id: 2
+                      },
+                      loggerFilters: {
+                        type: "string",
+                        id: 3
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              CloseAccount: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              GetGRPCListenerAddrs: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      entries: {
+                        rule: "repeated",
+                        type: "Entry",
+                        id: 1
+                      }
+                    },
+                    nested: {
+                      Entry: {
+                        fields: {
+                          proto: {
+                            type: "string",
+                            id: 1
+                          },
+                          maddr: {
+                            type: "string",
+                            id: 2
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               },

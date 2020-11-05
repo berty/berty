@@ -1,10 +1,10 @@
 import { Service } from '..'
 import rpcNative from './rpc.native'
-import { bridge, errcode } from '@berty-tech/api/index.js'
+import { account, errcode } from '@berty-tech/api/index.js'
 import { getServiceName, EOF } from './utils'
 
 const protocolErrors = errcode.lookup('ErrCode')
-const grpcErrors = bridge.lookup('GRPCErrCode')
+const grpcErrors = account.lookup('GRPCErrCode')
 const getErrorFromResponse = (method, response) => {
 	if (response.error) {
 		if (response.error.grpcErrorCode === grpcErrors.values.CANCELED) {
@@ -27,7 +27,7 @@ const getErrorFromResponse = (method, response) => {
 	return null
 }
 
-const makeStreamClient = (streamid, method, bridgeClient) => {
+const makeStreamClient = (streamid, method, accountClient) => {
 	const requestType = method.resolvedRequestType
 	// const responseType = method.resolvedResponseType
 	const eventEmitter = {
@@ -42,7 +42,7 @@ const makeStreamClient = (streamid, method, bridgeClient) => {
 		},
 		async emit(payload) {
 			const request = requestType.encode(payload).finish()
-			const response = await bridgeClient.clientStreamSend({
+			const response = await accountClient.clientStreamSend({
 				streamId: streamid,
 				payload: request,
 			})
@@ -60,7 +60,7 @@ const makeStreamClient = (streamid, method, bridgeClient) => {
 
 			var response
 			for (;;) {
-				response = await bridgeClient.clientStreamRecv({ streamId: streamid })
+				response = await accountClient.clientStreamRecv({ streamId: streamid })
 				const err = getErrorFromResponse(method, response)
 
 				if (err) {
@@ -76,7 +76,7 @@ const makeStreamClient = (streamid, method, bridgeClient) => {
 				throw new Error('client stream not started or has been closed')
 			}
 
-			const response = await bridgeClient.clientStreamClose({ streamId: streamid })
+			const response = await accountClient.clientStreamClose({ streamId: streamid })
 			const err = getErrorFromResponse(method, response)
 			if (err) {
 				throw err
@@ -92,12 +92,12 @@ const makeStreamClient = (streamid, method, bridgeClient) => {
 	}
 }
 
-const unary = (bridgeClient) => async (method, request, metadata) => {
+const unary = (accountClient) => async (method, request, metadata) => {
 	const methodDesc = {
 		name: `/${getServiceName(method)}/${method.name}`,
 	}
 
-	const response = await bridgeClient.clientInvokeUnary({
+	const response = await accountClient.clientInvokeUnary({
 		methodDesc: methodDesc,
 		payload: request,
 		metadata: {}, // @TODO: pass metdate object
@@ -110,7 +110,7 @@ const unary = (bridgeClient) => async (method, request, metadata) => {
 	return response.payload
 }
 
-const stream = (bridgeClient) => async (method, request, metadata) => {
+const stream = (accountClient) => async (method, request, metadata) => {
 	const methodDesc = {
 		name: `/${getServiceName(method)}/${method.name}`,
 
@@ -118,7 +118,7 @@ const stream = (bridgeClient) => async (method, request, metadata) => {
 		isServerStream: !!method.responseStream,
 	}
 
-	const response = await bridgeClient.createClientStream({
+	const response = await accountClient.createClientStream({
 		methodDesc: methodDesc,
 		payload: request,
 		metadata: {},
@@ -129,13 +129,13 @@ const stream = (bridgeClient) => async (method, request, metadata) => {
 		throw err
 	}
 
-	return makeStreamClient(response.streamId, method, bridgeClient)
+	return makeStreamClient(response.streamId, method, accountClient)
 }
 
-const client = (bridgeClient) => ({
-	unaryCall: unary(bridgeClient),
-	streamCall: stream(bridgeClient),
+const client = (accountClient) => ({
+	unaryCall: unary(accountClient),
+	streamCall: stream(accountClient),
 })
 
-const bridgeClient = Service(bridge.BridgeService, rpcNative)
-export default client(bridgeClient)
+const accountClient = Service(account.AccountService, rpcNative)
+export default client(accountClient)

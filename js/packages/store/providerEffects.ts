@@ -1,6 +1,14 @@
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
-import { messenger as messengerpb, protocol as protocolpb } from '@berty-tech/api/index.js'
-import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
+import {
+	messenger as messengerpb,
+	protocol as protocolpb,
+	account as accountpb,
+} from '@berty-tech/api/index.js'
+import {
+	bridge as rpcBridge,
+	grpcweb as rpcWeb,
+	native as rpcNative,
+} from '@berty-tech/grpc-bridge/rpc'
 import i18n from '@berty-tech/berty-i18n'
 import { EOF, Service } from '@berty-tech/grpc-bridge'
 import ExternalTransport from './externalTransport'
@@ -16,6 +24,8 @@ import {
 } from '@berty-tech/store/context'
 import { berty } from '@berty-tech/api/index.pb'
 import { reducerAction } from '@berty-tech/store/providerReducer'
+
+const accountCient = Service(accountpb.AccountService, rpcNative)
 
 export const storageKeyForAccount = (accountID: number) => `storage_${accountID}`
 
@@ -193,13 +203,23 @@ export const openingDaemon = (
 		return
 	}
 
-	GoBridge.startProtocol(GoBridgeDefaultOpts)
+	GoBridge.initBridge()
+		.then(() => console.log('bridge init done'))
+		.catch((err) => {
+			console.error('unable to init bridge', err)
+		})
+		.then(() =>
+			accountCient.openAccount({
+				args: GoBridgeDefaultOpts.cliArgs,
+				persistence: GoBridgeDefaultOpts.persistence,
+			}),
+		)
 		.then(() => {
 			dispatch({
 				type: MessengerActions.SetStateOpeningClients,
 				payload: {
 					clearDaemon: () => {
-						GoBridge.stopProtocol()
+						GoBridge.closeBridge()
 					},
 				},
 			})

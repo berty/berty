@@ -1,11 +1,11 @@
 import { GoBridgeInterface } from './types'
 
 class NoopGoBirdge implements GoBridgeInterface {
-	startProtocol() {
+	initBridge() {
 		return Promise.reject()
 	}
 
-	stopProtocol() {
+	closeBridge() {
 		return Promise.reject()
 	}
 

@@ -2,148 +2,128 @@ package bertybridge
 
 import (
 	"context"
-	mrand "math/rand"
-	"strings"
 	"sync"
-	"sync/atomic"
 	"time"
 
-	"github.com/ipfs/go-ipfs/core"
-	"github.com/ipfs/go-ipfs/core/bootstrap"
-	ma "github.com/multiformats/go-multiaddr"
 	"github.com/oklog/run"
 	"github.com/pkg/errors"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
-	"berty.tech/berty/v2/go/framework/bertybridge/internal/bridgepb"
 	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/notification"
+	"berty.tech/berty/v2/go/pkg/bertyaccount"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 const bufListenerSize = 256 * 1024
 
-type Bridge struct {
-	initManager        *initutil.Manager
-	initManagerCleanup func()
-	node               *core.IpfsNode
-	lifecycleDriver    LifeCycleDriver
-	logger             *zap.Logger
-	currentAppState    int
-	notification       notification.Manager
-	lifecycleManager   *lifecycle.Manager
-	handleStateMutex   sync.Mutex
-	errc               chan error
-	closec             chan struct{}
-	onceCloser         sync.Once
-	workers            run.Group
-	grpcServer         *grpc.Server
-	client             *client
-}
-
 var _ LifeCycleHandler = (*Bridge)(nil)
 
+type Bridge struct {
+	errc   chan error
+	closec chan struct{}
+
+	service             bertyaccount.Service
+	bridgeServiceClient *grpcutil.LazyClient
+	grpcServer          *grpc.Server
+	onceCloser          sync.Once
+	workers             run.Group
+	logger              *zap.Logger
+
+	lifecycleManager    *lifecycle.Manager
+	notificationManager notification.Manager
+}
+
 func NewBridge(config *Config) (*Bridge, error) {
-	manager, managerCleanup, err := config.manager()
-	if err != nil {
-		return nil, err
-	}
-
-	ctx := manager.GetContext()
-
-	// get logger
-	logger, err := manager.GetLogger()
-	if err != nil {
-		return nil, err
-	}
-
-	// get local IPFS
-	_, node, err := manager.GetLocalIPFS()
-	if err != nil {
-		return nil, err
-	}
-
-	// get gRPC server
-	grpcServer, _, err := manager.GetGRPCServer()
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = manager.GetLocalMessengerServer()
-	if err != nil {
-		return nil, err
-	}
-
-	notifmanager, err := manager.GetNotificationManager()
-	if err != nil {
-		return nil, err
-	}
+	ctx := context.Background()
 
 	// create bridge instance
 	b := &Bridge{
-		errc:               make(chan error),
-		closec:             make(chan struct{}),
-		grpcServer:         grpcServer,
-		logger:             logger,
-		initManager:        manager,
-		initManagerCleanup: managerCleanup,
-		notification:       notifmanager,
-		lifecycleDriver:    config.lc,
-		lifecycleManager:   manager.GetLifecycleManager(),
-		node:               node,
+		errc:   make(chan error),
+		closec: make(chan struct{}),
 	}
 
-	// gRPC services
+	// create cancel service
 	{
-		// create cancel service
-		{
-			b.workers.Add(func() error {
-				// wait for closing signal
-				<-b.closec
-				return errcode.ErrBridgeInterrupted
-			}, func(error) {
-				b.onceCloser.Do(func() { close(b.closec) })
-			})
-		}
+		b.workers.Add(func() error {
+			// wait for closing signal
+			<-b.closec
+			return errcode.ErrBridgeInterrupted
+		}, func(error) {
+			b.onceCloser.Do(func() { close(b.closec) })
+		})
+	}
 
-		// setup bridge client
-		{
-			clientConn, err := manager.GetGRPCClientConn()
-			if err != nil {
-				return nil, err
-			}
-
-			// register services for bridge client
-			service := newServiceFromClientConn(clientConn)
-			s := grpc.NewServer()
-			bridgepb.RegisterBridgeServiceServer(s, service)
-
-			bl := grpcutil.NewBufListener(ctx, bufListenerSize)
-			b.workers.Add(func() error {
-				return s.Serve(bl)
-			}, func(error) {
-				bl.Close()
-				service.Close()
-			})
-
-			// create native bridge client
-			ccBridge, err := bl.NewClientConn()
-			if err != nil {
-				return nil, errors.Wrap(err, "unable to get bridge gRPC ClientConn")
-			}
-			b.client = &client{ccBridge}
+	// setup logger
+	{
+		if nativeLogger := config.dLogger; nativeLogger != nil {
+			b.logger = newLogger(nativeLogger)
+		} else {
+			b.logger = zap.NewNop()
 		}
 	}
 
-	// hook the lifecycle manager
+	// setup notification manager
 	{
-		b.HandleState(config.lc.GetCurrentState())
-		config.lc.RegisterHandler(b)
+		if nativeNotification := config.notifdriver; nativeNotification != nil {
+			b.notificationManager = newNotificationManagerAdaptater(b.logger, config.notifdriver)
+		} else {
+			b.logger.Warn("no native notification set")
+			b.notificationManager = notification.NewLoggerManager(b.logger)
+		}
+	}
+
+	// setup lifecycle manager
+	{
+		b.lifecycleManager = lifecycle.NewManager(bertymessenger.StateActive)
+		if lifecycleHandler := config.lc; lifecycleHandler != nil {
+			lifecycleHandler.RegisterHandler(b)
+		}
+	}
+
+	// setup berty bridge service
+	{
+		opts := bertyaccount.Options{
+			RootDirectory: config.rootDir,
+
+			NotificationManager: b.notificationManager,
+			Logger:              b.logger,
+			LifecycleManager:    b.lifecycleManager,
+		}
+
+		var err error
+		if b.service, err = bertyaccount.NewService(&opts); err != nil {
+			return nil, err
+		}
+	}
+
+	// setup bridge client
+	{
+		// register services for bridge client
+		s := grpc.NewServer()
+		bertyaccount.RegisterAccountServiceServer(s, b.service)
+
+		bl := grpcutil.NewBufListener(ctx, bufListenerSize)
+		b.workers.Add(func() error {
+			return s.Serve(bl)
+		}, func(error) {
+			bl.Close()
+			b.service.Close()
+		})
+
+		b.grpcServer = s
+
+		// create native bridge client
+		ccBridge, err := bl.NewClientConn()
+		if err != nil {
+			return nil, errors.Wrap(err, "unable to get bridge gRPC ClientConn")
+		}
+
+		b.bridgeServiceClient = grpcutil.NewLazyClient(ccBridge)
 	}
 
 	// start Bridge
@@ -151,65 +131,31 @@ func NewBridge(config *Config) (*Bridge, error) {
 	go func() {
 		b.errc <- b.workers.Run()
 	}()
-	time.Sleep(10 * time.Millisecond) // let some time to the goroutine to warm up
+	// time.Sleep(10 * time.Millisecond) // let some time to the goroutine to warm up
 
 	return b, nil
 }
 
 func (b *Bridge) HandleState(appstate int) {
-	b.handleStateMutex.Lock()
-	defer b.handleStateMutex.Unlock()
-
-	if appstate != b.currentAppState {
-		switch appstate {
-		case AppStateBackground:
-			b.lifecycleManager.UpdateState(bertymessenger.StateInactive)
-			b.logger.Info("app is in Background State")
-		case AppStateActive:
-			b.lifecycleManager.UpdateState(bertymessenger.StateActive)
-			b.logger.Info("app is in Active State")
-			if b.node != nil {
-				bootstrapConfig := bootstrap.BootstrapConfig{
-					MinPeerThreshold:  5,
-					Period:            10 * time.Second,
-					ConnectionTimeout: 5 * time.Second, // Period / 2
-				}
-				if err := b.node.Bootstrap(bootstrapConfig); err != nil {
-					b.logger.Warn("unable to boostrap node", zap.Error(err))
-				}
-			}
-		case AppStateInactive:
-			b.lifecycleManager.UpdateState(bertymessenger.StateInactive)
-			b.logger.Info("app is in Inactive State")
-		}
-		b.currentAppState = appstate
+	switch appstate {
+	case AppStateBackground:
+		b.lifecycleManager.UpdateState(bertymessenger.StateInactive)
+		b.logger.Info("app is in Background State")
+	case AppStateActive:
+		b.lifecycleManager.UpdateState(bertymessenger.StateActive)
+		b.logger.Info("app is in Active State")
+	case AppStateInactive:
+		b.lifecycleManager.UpdateState(bertymessenger.StateInactive)
+		b.logger.Info("app is in Inactive State")
 	}
 }
 
-var backgroundCounter int32
-
 func (b *Bridge) HandleTask() LifeCycleBackgroundTask {
 	return newBackgroundTask(b.logger, func(ctx context.Context) error {
-		counter := atomic.AddInt32(&backgroundCounter, 1)
-		b.logger.Info("starting background task", zap.Int("counter", int(counter)))
-
-		started := time.Now()
-		n := time.Duration(mrand.Intn(60) + 5) // nolint:gosec
-		ctx, cancel := context.WithTimeout(ctx, time.Second*n)
-		defer cancel()
-
-		// background task started
-
-		<-ctx.Done()
-
-		// background task ended
-
-		b.logger.Info("ending background task",
-			zap.Int("counter", int(counter)),
-			zap.Duration("duration", time.Since(started)),
-		)
-
-		return nil
+		b.lifecycleManager.UpdateState(bertymessenger.StateActive)
+		err := b.service.WakeUp(ctx)
+		b.lifecycleManager.UpdateState(bertymessenger.StateInactive)
+		return err
 	})
 }
 
@@ -256,7 +202,6 @@ func (b *Bridge) Close() error {
 		cancel()
 	}
 
-	b.initManagerCleanup()
 	return errs
 }
 
@@ -279,31 +224,6 @@ func (b *Bridge) InvokeBridgeMethodWithPromiseBlock(promise PromiseBlock, method
 	}()
 }
 
-func (b *Bridge) InvokeBridgeMethod(method string, b64message string) (string, error) {
-	return b.client.UnaryRequestFromBase64(method, b64message)
-}
-
-// func (b *Bridge) GRPCListenerAddr() string          { return b.getGRPCAddrFor("ip4/tcp/grpc") }
-func (b *Bridge) GRPCWebListenerAddr() string       { return b.getGRPCAddrFor("ip4/tcp/grpcweb") }
-func (b *Bridge) GRPCWebSocketListenerAddr() string { return b.getGRPCAddrFor("ip4/tcp/grpcws") }
-
-// getGRPCAddrFor the given protocols, if not found return an empty string
-func (b *Bridge) getGRPCAddrFor(protos string) string {
-	for _, l := range b.initManager.GetGRPCListeners() {
-		ps := make([]string, 0)
-		ma.ForEach(l.GRPCMultiaddr(), func(c ma.Component) bool {
-			ps = append(ps, c.Protocol().Name)
-			return true
-		})
-
-		if strings.Join(ps, "/") == protos {
-			return l.Addr().String()
-		}
-	}
-
-	return ""
-}
-
 func (b *Bridge) isClosed() bool {
 	select {
 	case <-b.closec:
@@ -311,4 +231,21 @@ func (b *Bridge) isClosed() bool {
 	default:
 		return false
 	}
+}
+
+func (b *Bridge) InvokeBridgeMethod(method string, b64message string) (string, error) {
+	in, err := grpcutil.NewLazyMessage().FromBase64(b64message)
+	if err != nil {
+		return "", err
+	}
+	desc := &grpcutil.LazyMethodDesc{
+		Name: method,
+	}
+
+	out, err := b.bridgeServiceClient.InvokeUnary(context.Background(), desc, in)
+	if err != nil {
+		return "", err
+	}
+
+	return out.Base64(), nil
 }

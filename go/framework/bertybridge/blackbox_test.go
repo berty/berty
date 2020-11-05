@@ -9,7 +9,7 @@ import (
 	"github.com/gogo/protobuf/proto"
 
 	"berty.tech/berty/v2/go/framework/bertybridge"
-	"berty.tech/berty/v2/go/framework/bertybridge/internal/bridgepb"
+	"berty.tech/berty/v2/go/pkg/bertyaccount"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 )
 
@@ -19,35 +19,84 @@ func Example() {
 	defer os.RemoveAll(tmpdir)
 
 	// create and start the bridge
-	var bridge *bertybridge.Bridge
+	var b *bertybridge.Bridge
 	{
 		config := bertybridge.NewConfig()
-		{
-			if false { // disabled in example, but not commented to be sure that compiler performs various checks
-				config.SetLifeCycleDriver(nil)
-				config.SetLoggerDriver(nil)
-				config.SetNotificationDriver(nil)
-			}
-			config.AppendCLIArg("--log.filters=info+:bty*,-*.grpc warn+:*.grpc error+:*")
-			config.AppendCLIArg("--log.format=console")
-			config.AppendCLIArg("--node.display-name=")
-			config.AppendCLIArg("--node.listeners=/ip4/127.0.0.1/tcp/0/grpcws")
-			config.AppendCLIArg("--p2p.swarm-listeners=/ip4/0.0.0.0/tcp/0,/ip6/0.0.0.0/tcp/0")
-			config.AppendCLIArg("--p2p.local-discovery=false")
-			config.AppendCLIArg("--p2p.webui-listener=:3000")
-			config.AppendCLIArg("--store.dir=" + tmpdir)
+		if false { // disabled in example, but not commented to be sure that compiler performs various checks
+			config.SetLifeCycleDriver(nil)
+			config.SetLoggerDriver(nil)
+			config.SetNotificationDriver(nil)
 		}
 
-		bridge, err = bertybridge.NewBridge(config)
+		b, err = bertybridge.NewBridge(config)
 		checkErr(err)
-		defer bridge.Close()
+
+		defer b.Close()
 		fmt.Println("[+] initialized.")
 	}
 
-	fmt.Println("[+] has grpc-web listener:           ", bridge.GRPCWebListenerAddr() != "")       // no, because `--node.listeners` does not contain grpcweb
-	fmt.Println("[+] has websocket listener:          ", bridge.GRPCWebSocketListenerAddr() != "") // yes, because `--node.listeners`` contains grpcws
+	args := []string{
+		"--log.filters=info+:bty*,-*.grpc warn+:*.grpc error+:*",
+		"--log.format=console",
+		"--node.display-name=",
+		"--node.listeners=/ip4/127.0.0.1/tcp/0/grpcws",
+		"--p2p.swarm-listeners=/ip4/0.0.0.0/tcp/0,/ip6/0.0.0.0/tcp/0",
+		"--p2p.local-discovery=false",
+		"--p2p.webui-listener=:3000",
+		"--store.dir=" + tmpdir,
+	}
 
-	// unary client call
+	// open account
+	{
+		// create `OpenAccount_Request` Input
+		reqb64, err := encodeProtoMessage(&bertyaccount.OpenAccount_Request{
+			Args: args,
+		})
+		checkErr(err)
+
+		// invoke through bridge client
+		ret, err := b.InvokeBridgeMethod("/berty.account.v1.AccountService/OpenAccount", reqb64)
+		checkErr(err)
+
+		// deserialize reply
+		var res bertyaccount.ClientInvokeUnary_Reply
+		err = decodeProtoMessage(ret, &res)
+		checkErr(err)
+
+		fmt.Println("[+] account opened.")
+	}
+
+	// check for GRPC listeners
+	{
+		// create `GetGRPCListenerAddrs_Request` Input
+		reqb64, err := encodeProtoMessage(&bertyaccount.GetGRPCListenerAddrs_Request{})
+		checkErr(err)
+
+		// invoke through bridge client
+		ret, err := b.InvokeBridgeMethod("/berty.account.v1.AccountService/GetGRPCListenerAddrs", reqb64)
+		checkErr(err)
+
+		// deserialize reply
+		var res bertyaccount.GetGRPCListenerAddrs_Reply
+		err = decodeProtoMessage(ret, &res)
+		checkErr(err)
+
+		hasGRPCWeb := false
+		hasGRPCWebSocket := false
+		for _, entry := range res.Entries {
+			switch entry.Proto {
+			case "ip4/tcp/grpcweb":
+				hasGRPCWeb = true
+			case "ip4/tcp/grpcws":
+				hasGRPCWebSocket = true
+			}
+		}
+
+		fmt.Println("[+] has grpc-web listener:           ", hasGRPCWeb)       // no, because `--node.listeners` does not contain grpcweb
+		fmt.Println("[+] has websocket listener:          ", hasGRPCWebSocket) // yes, because `--node.listeners`` contains grpcws
+	}
+
+	// make unary call to underlying `BertyMessenger` Service
 	{
 		// create `InstanceGetConfiguration` Input
 		input := &bertytypes.InstanceGetConfiguration_Request{}
@@ -55,43 +104,35 @@ func Example() {
 		checkErr(err)
 
 		// Serialize request
-		req := &bridgepb.ClientInvokeUnary_Request{
-			MethodDesc: &bridgepb.MethodDesc{
-				Name:           "/berty.protocol.v1.ProtocolService/InstanceGetConfiguration",
-				IsClientStream: false,
-				IsServerStream: false,
+		in := &bertyaccount.ClientInvokeUnary_Request{
+			MethodDesc: &bertyaccount.MethodDesc{
+				Name: "/berty.protocol.v1.ProtocolService/InstanceGetConfiguration",
 			},
 			Payload: payload,
 		}
-		reqb64, err := encodeProtoMessage(req)
+
+		reqb64, err := encodeProtoMessage(in)
 		checkErr(err)
 
 		// invoke through bridge client
-		ret, err := bridge.InvokeBridgeMethod("/berty.bridge.v1.BridgeService/ClientInvokeUnary", reqb64)
+		ret, err := b.InvokeBridgeMethod("/berty.account.v1.AccountService/ClientInvokeUnary", reqb64)
 		checkErr(err)
 
-		// deserialize reply
-		var res bridgepb.ClientInvokeUnary_Reply
-		err = decodeProtoMessage(ret, &res)
+		var output bertyaccount.ClientInvokeUnary_Reply
+		err = decodeProtoMessage(ret, &output)
 		checkErr(err)
 
-		// check for error
-		if res.Error != nil {
-			fmt.Fprintf(os.Stderr, "bridge client error: `[%s] %s`\n", res.Error.ErrorCode.String(), res.Error.Message)
-			panic(err)
-		}
-
-		// deserialize output
-		var output bertytypes.InstanceGetConfiguration_Reply
-		err = proto.Unmarshal(res.Payload, &output)
+		var res bertytypes.InstanceGetConfiguration_Reply
+		err = proto.Unmarshal(output.Payload, &res)
 		checkErr(err)
 
-		fmt.Println("[+] has more than one swarm listener:", len(output.Listeners) > 1)
+		fmt.Println("[+] has more than one swarm listener:", len(res.Listeners) > 1)
 		// log.Println("ret", godev.PrettyJSON(output))
 	}
 
 	// Output:
 	// [+] initialized.
+	// [+] account opened.
 	// [+] has grpc-web listener:            false
 	// [+] has websocket listener:           true
 	// [+] has more than one swarm listener: true

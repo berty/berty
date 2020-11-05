@@ -322,7 +322,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				icon='activity-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
-				onPress={() => GoBridge.stopProtocol()}
+				onPress={() => GoBridge.closeBridge()}
 			/>
 			{!ctx.embedded && ctx.daemonAddress != 'http://localhost:1338' && (
 				<ButtonSetting

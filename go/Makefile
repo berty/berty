@@ -184,14 +184,13 @@ generate_local:
 	$(GO) run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/bertyprotocol.proto -o ../api/bertyprotocol.yaml
 	$(GO) run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/bertyreplication.proto -o ../api/bertyreplication.yaml
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/errcode.proto
-	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertybridge.proto
+	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertyaccount.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertytypes.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/go-internal/records.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/go-internal/handshake.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/bertyprotocol.yaml:$(GOPATH)/src ../api/bertyprotocol.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/bertymessenger.yaml:$(GOPATH)/src ../api/bertymessenger.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/bertyreplication.yaml:$(GOPATH)/src ../api/bertyreplication.proto
-	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./framework/bertybridge/internal/bridgepb/*.pb.go
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.go
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.gw.go
 	$(MAKE) go.fmt
@@ -270,11 +269,9 @@ md.generate: install
 depaware.generate: ./cmd/berty/depaware.txt
 .PHONY: depaware.generate
 
-
-depaware_pkgs = ./cmd/berty ./cmd/rdvp ./framework/bertybridge ./cmd/betabot ./cmd/bertydoctor
+depaware_pkgs = ./cmd/berty ./cmd/rdvp ./framework/bertybridge ./cmd/betabot  ./cmd/bertydoctor
 ./cmd/*/depaware.txt: ../go.sum
 	@set -xe; for pkg in $(depaware_pkgs); do $(GO) run github.com/tailscale/depaware --update $$pkg; done
-
 
 depaware.check:
 	@set -xe; for pkg in $(depaware_pkgs); do $(GO) run github.com/tailscale/depaware --check $$pkg; done

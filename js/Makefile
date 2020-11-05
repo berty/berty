@@ -273,8 +273,8 @@ daemon.start.docker:
 pbjs_flags := -p ../api -p node_modules/@googleapis/googleapis -p `go list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `go list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src
 .PHONY: _gen.pbjs
 _gen.pbjs:
-	pbjs $(pbjs_flags) --no-comments --es6 -w es6 -t json-module   -o packages/api/index.pb.js ../api/bertybridge.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto
-	pbjs $(pbjs_flags) -t static-module ../api/bertybridge.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto | pbts --no-comments -o packages/api/index.pb.d.ts -
+	pbjs $(pbjs_flags) --no-comments --es6 -w es6 -t json-module   -o packages/api/index.pb.js ../api/bertyaccount.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto
+	pbjs $(pbjs_flags) -t static-module ../api/bertyaccount.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto | pbts --no-comments -o packages/api/index.pb.d.ts -
 	sed -E -i.bak 's/^.*constructor.*$$//g' packages/api/index.pb.d.ts
 	rm -f packages/api/index.pb.d.ts.bak
 
