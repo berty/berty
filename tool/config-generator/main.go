@@ -58,18 +58,20 @@ export const globals = %s;
 		output := fmt.Sprintf(`// file generated. see /config.
 package config
 
+import "encoding/json"
 import "berty.tech/berty/v2/go/pkg/bertytypes"
 
 var Config bertytypes.Config
 
 // FIXME: make it more nicely
 func init() {
-	err := json.Unmarshal([]byte(%q), &Config)
+        var input = %s
+	err := json.Unmarshal([]byte(input), &Config)
 	if err != nil {
 		panic(err)
 	}
 }
-`, u.JSON(config))
+`, "`\n"+u.PrettyJSON(config)+"`")
 		p := path.Join(root, GoConfig)
 		err := ioutil.WriteFile(p, []byte(output), 0o644)
 		checkErr(err)
