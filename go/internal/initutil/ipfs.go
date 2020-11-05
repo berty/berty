@@ -42,7 +42,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute, "maximum p2p backoff duration")
 	fs.StringVar(&m.Node.Protocol.RdvpMaddrs, "p2p.rdvp", ":default:", `list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp`)
-	fs.BoolVar(&m.Node.Protocol.MultipeerConnectivity, "p2p.multipeer-connectivity", true, "if true Multipeer Connectivity will be enabled")
+	fs.BoolVar(&m.Node.Protocol.MultipeerConnectivity, "p2p.multipeer-connectivity", mc.Supported, "if true Multipeer Connectivity will be enabled")
 	fs.StringVar(&m.Node.Protocol.Tor.Mode, "tor.mode", defaultTorMode, "if true tor will be enabled")
 	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
 	fs.BoolVar(&m.Node.Protocol.DisableIPFSNetwork, "p2p.disable-ipfs-network", false, "disable as much networking feature as possible, useful during development")
@@ -181,10 +181,14 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 		// Setup MC
 		if m.Node.Protocol.MultipeerConnectivity {
-			swarmAddrs = append(swarmAddrs, mc.DefaultAddr)
-			p2pOpts = libp2p.ChainOptions(p2pOpts,
-				libp2p.Transport(proximity.NewTransport(m.ctx, logger, mc.NewDriver(logger))),
-			)
+			if mc.Supported {
+				swarmAddrs = append(swarmAddrs, mc.DefaultAddr)
+				p2pOpts = libp2p.ChainOptions(p2pOpts,
+					libp2p.Transport(proximity.NewTransport(m.ctx, logger, mc.NewDriver(logger))),
+				)
+			} else {
+				m.initLogger.Warn("cannot enable Multipeer-Connectivity on an unsupported platform")
+			}
 		}
 
 		if m.Node.Protocol.RelayHack {

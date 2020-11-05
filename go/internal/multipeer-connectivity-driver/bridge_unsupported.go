@@ -8,6 +8,8 @@ import (
 	proximity "berty.tech/berty/v2/go/internal/proximity-transport"
 )
 
+const Supported = false
+
 // Noop implementation for platform that are not Darwin
 
 func NewDriver(logger *zap.Logger) proximity.NativeDriver {
