@@ -25,3 +25,6 @@ go/cmd/bertydoctor/bertydoctor
 go/cmd/rdvp/rdvp
 go/cmd/betabot/betabot
 betabot.store
+
+# Delve's binaries
+*__debug_bin

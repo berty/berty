@@ -18,6 +18,8 @@ import (
 	proximity "berty.tech/berty/v2/go/internal/proximity-transport"
 )
 
+const Supported = true
+
 type Driver struct {
 	protocolCode int
 	protocolName string
