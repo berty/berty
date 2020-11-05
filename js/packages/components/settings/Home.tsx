@@ -28,6 +28,7 @@ const HomeHeaderGroupButton: React.FC = () => {
 	const _styles = useStylesHome()
 	const [{ padding, color }] = useStyles()
 	const { navigate } = useNavigation()
+
 	return (
 		<View
 			style={[
@@ -43,21 +44,21 @@ const HomeHeaderGroupButton: React.FC = () => {
 						icon: 'question-mark-circle-outline',
 						color: color.red,
 						style: _styles.firstHeaderButton,
-						onPress: navigate.settings.help,
+						onPress: () => navigate.settings.help(),
 					},
 					{
 						name: 'Devtools',
 						icon: 'options-2-outline',
 						color: color.dark.grey,
 						style: _styles.secondHeaderButton,
-						onPress: navigate.settings.devTools,
+						onPress: () => navigate.settings.devTools(),
 					},
 					{
 						name: 'Settings',
 						icon: 'settings-2-outline',
 						color: color.blue,
 						style: _styles.thirdHeaderButton,
-						onPress: navigate.settings.mode,
+						onPress: () => navigate.settings.mode(),
 					},
 				]}
 			/>

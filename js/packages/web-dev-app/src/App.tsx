@@ -343,13 +343,13 @@ const CreateMultiMember = () => {
 	const [error, setError] = useState(null)
 	const [members, setMembers] = useState([])
 	const {
-		refresh,
+		call,
 		error: errorReply,
 		done,
 	} = (messengerMethodsHooks as any).useConversationCreate()
 	const createGroup = React.useCallback(
-		() => refresh({ displayName: groupName, contactsToInvite: members.map((m) => m.publicKey) }),
-		[groupName, members, refresh],
+		() => call({ displayName: groupName, contactsToInvite: members.map((m) => m.publicKey) }),
+		[groupName, members, call],
 	)
 	const contactList = useContactsList()
 	React.useEffect(() => {

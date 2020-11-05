@@ -19,6 +19,7 @@ const BodyAddContactList = () => {
 			{Object.values(globals.berty.contacts).map((value) => {
 				return (
 					<ButtonSetting
+						key={value.link}
 						name={'Add ' + value.name}
 						icon='book-outline'
 						iconSize={30}

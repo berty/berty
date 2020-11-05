@@ -229,10 +229,10 @@ export const CreateGroupFinalize: React.FC<{
 	const navigation = useNavigation()
 	const { navigate } = useNativeNavigation()
 	const [groupName, setGroupName] = useState('New group')
-	const { refresh, error, done } = (messengerMethodsHooks as any).useConversationCreate()
+	const { call, error, done } = (messengerMethodsHooks as any).useConversationCreate()
 	const createGroup = React.useCallback(
-		() => refresh({ displayName: groupName, contactsToInvite: members.map((m) => m.publicKey) }),
-		[groupName, members, refresh],
+		() => call({ displayName: groupName, contactsToInvite: members.map((m) => m.publicKey) }),
+		[groupName, members, call],
 	)
 	const [layout, setLayout] = useState<number>(0)
 	const [{ flex, background, padding }] = useStyles()

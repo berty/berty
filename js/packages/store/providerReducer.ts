@@ -319,6 +319,11 @@ export const reducerActions: {
 
 		return reducer(oldState, { type: MessengerActions.SetStateClosed })
 	},
+
+	[messengerpb.StreamEvent.Type.TypeDeviceUpdated]: (oldState, __) => {
+		console.info('ignored event type TypeDeviceUpdated')
+		return oldState
+	},
 }
 
 export const reducer = (oldState: MsgrState, action: reducerAction): MsgrState => {

@@ -57,7 +57,16 @@ const PeerItem = ({ item, highlighted }) => {
 										fill = color.dark.grey
 										break
 								}
-								return <Icon name={name} pack={pack} fill={fill || null} width={25} height={25} />
+								return (
+									<Icon
+										key={value}
+										name={name}
+										pack={pack}
+										fill={fill || null}
+										width={25}
+										height={25}
+									/>
+								)
 						  })
 						: null}
 				</View>
