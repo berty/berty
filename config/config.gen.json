@@ -15,6 +15,11 @@
         "link": "https://berty.tech/id#key=CiCTp8uUnxfqlZaebiJEEt_zY-NUnHAWJl4jbGpB7rXsbxIg6_Grg-eLJ-GtqrdARnoTY35k7AI_g5AxqyFVe2elIaA\u0026name=TestBot",
         "name": "TestBot",
         "description": "Official TestBot"
+      },
+      "testbot-dev": {
+        "link": "https://berty.tech/id#key=CiAxSP1RYrv4yi7PsQZtqFH9fepMiqDD1M7y1aIZAzMmghIg_fXVz1J-HfCd6gtRlUN0GsWiIlfgVPamj7lgFIUqfOA\u0026name=TestBot%20Dev",
+        "name": "TestBot Dev",
+        "description": "Dev TestBot"
       }
     },
     "conversations": {
