@@ -1394,12 +1394,12 @@
   dependencies:
     stacktrace-js "^2.0.0"
 
-"@react-navigation/core@^5.13.5":
-  version "5.13.5"
-  resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-5.13.5.tgz#6d7df178200da45a46b6a438358580bf462043c1"
-  integrity sha512-YYXvkQWL3fH2YOWPIqRA0XMv2kamF3b2rHdEIvoxXTuZ61wSpYQvNfn5A7EeuYClmlVeKVylokQey1bn//geFg==
+"@react-navigation/core@^5.14.0":
+  version "5.14.0"
+  resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-5.14.0.tgz#7cfba86ca3042ddc4542bd3422b73b3cf3553f61"
+  integrity sha512-FAF7pFxqUtpkY7ylod5IYmwz0rbuYul4qqn0jKc8LHzHdZJd9pbKrJb9GIjx9Y0Zucj8XUEyE8S0SEM0JiF9PA==
   dependencies:
-    "@react-navigation/routers" "^5.5.1"
+    "@react-navigation/routers" "^5.6.0"
     escape-string-regexp "^4.0.0"
     nanoid "^3.1.15"
     query-string "^6.13.6"
@@ -1412,19 +1412,19 @@
   dependencies:
     color "^3.1.3"
 
-"@react-navigation/native@^5.8.5":
-  version "5.8.5"
-  resolved "https://registry.yarnpkg.com/@react-navigation/native/-/native-5.8.5.tgz#4cadb2220211477d99ac96d05e76a2a623f02129"
-  integrity sha512-p6Z7mQGgKS285dQoluxe1XwaDx3k3iA0ECfJM9meB6ZKr2BQ03w0YEnTx8hrHMuI57eqj3bWeJhoOhH/FBdMTg==
+"@react-navigation/native@^5.8.6":
+  version "5.8.6"
+  resolved "https://registry.yarnpkg.com/@react-navigation/native/-/native-5.8.6.tgz#a853a93a7daf995beb0bb1051693caf9efc4c31e"
+  integrity sha512-MCfOF1gZaugElyT0KxSA15VXGBt5RBCIW2SevZwIy41juKBxJeiCa41HTE7o5tbasp1EHtE0SzgIYz/0tneoxQ==
   dependencies:
-    "@react-navigation/core" "^5.13.5"
+    "@react-navigation/core" "^5.14.0"
     escape-string-regexp "^4.0.0"
     nanoid "^3.1.15"
 
-"@react-navigation/routers@^5.5.1":
-  version "5.5.1"
-  resolved "https://registry.yarnpkg.com/@react-navigation/routers/-/routers-5.5.1.tgz#ece34180e0734e453a7f30dbeeaf3856f25afa00"
-  integrity sha512-Unn2T5+xnolyGzEhiuFnHEGfgvh7+1OJ5KzBY7T65e4gHWT7E1CO8unRbDxRI0KYkXflmRPCfuDjobVTj5xepw==
+"@react-navigation/routers@^5.6.0":
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/@react-navigation/routers/-/routers-5.6.0.tgz#90f56691b68cbab8d144503a66fa2a1742234d7e"
+  integrity sha512-sQRJVv5g0Zou1wouEnX/zKQi5QJEIccTd7oLy9ex2MJKjALTsfWUMWaFCZQLZjBJqT7Hz2GKp+VKlep6Dzq7Wg==
   dependencies:
     nanoid "^3.1.15"
 
