@@ -297,7 +297,7 @@ PODS:
     - React-Core
   - react-native-safe-area-context (3.1.8):
     - React-Core
-  - react-native-shake (10.0.3):
+  - react-native-shake (10.0.4):
     - React
     - Shake (~> 10.0.0)
   - react-native-webview (10.10.0):
@@ -368,10 +368,10 @@ PODS:
     - React-Core
   - RNCMaskedView (0.1.10):
     - React
-  - RNFBApp (8.4.6):
+  - RNFBApp (8.4.7):
     - Firebase/CoreOnly (~> 6.34.0)
     - React-Core
-  - RNFBCrashlytics (8.4.11):
+  - RNFBCrashlytics (8.4.12):
     - Firebase/Crashlytics (~> 6.34.0)
     - React-Core
     - RNFBApp
@@ -383,9 +383,9 @@ PODS:
     - React-Core
   - RNReanimated (1.13.1):
     - React
-  - RNScreens (2.12.0):
+  - RNScreens (2.13.0):
     - React-Core
-  - RNSVG (11.0.1):
+  - RNSVG (12.1.0):
     - React
   - RNVectorIcons (7.1.0):
     - React
@@ -630,7 +630,7 @@ SPEC CHECKSUMS:
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-camera: 35854c4f764a4a6cf61c1c3525888b92f0fe4b31
   react-native-safe-area-context: 79fea126c6830c85f65947c223a5e3058a666937
-  react-native-shake: 753c2c0feec3e2ed57daf521ccce13c144abea3a
+  react-native-shake: 168b18d4656c9c90a787ecf41822f88be7b532ec
   react-native-webview: 73e409ecc987c189772bda27ba7f0e2f3dcd2e81
   React-RCTActionSheet: 53ea72699698b0b47a6421cb1c8b4ab215a774aa
   React-RCTAnimation: 1befece0b5183c22ae01b966f5583f42e69a83c2
@@ -645,14 +645,14 @@ SPEC CHECKSUMS:
   ReactNativeAudioToolkit: de9610f323e855ac6574be8c99621f3d57c5df06
   RNCAsyncStorage: b03032fdbdb725bea0bd9e5ec5a7272865ae7398
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
-  RNFBApp: 7eacc7da7ab19f96c05e434017d44a9f09410da8
-  RNFBCrashlytics: e35507742eebf1483d518efe70425ee931d555e6
+  RNFBApp: 804b98033f45c3a3e35b56de8c894f85ef5e4388
+  RNFBCrashlytics: 99a37e88b45e599908d8b2fabfda1f98420ae48a
   RNGestureHandler: 7a5833d0f788dbd107fbb913e09aa0c1ff333c39
   RNInAppBrowser: 48b95ba7a4eaff5cc223bca338d3e319561dbd1b
   RNPermissions: 5df468064df661a4c8c017e2791ce90d7695eea5
   RNReanimated: dd8c286ab5dd4ba36d3a7fef8bff7e08711b5476
-  RNScreens: 4b488fdf9537bbce829e2910c8cce1d17f6d9be8
-  RNSVG: 67f1f12dae2cef6ed59a42cae74a6b8f5a9e7b46
+  RNScreens: 13f23e5498fb4aa749d19a5eda7f8792fbb9d01f
+  RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
   Shake: 5dbd59e3e3363cea29bef608cc14aa13b09f96fc
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
