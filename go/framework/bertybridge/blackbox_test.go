@@ -28,7 +28,7 @@ func Example() {
 			config.SetNotificationDriver(nil)
 		}
 
-		b, err = bridge.NewBridge(config)
+		b, err = bertybridge.NewBridge(config)
 		checkErr(err)
 
 		defer b.Close()
@@ -40,7 +40,7 @@ func Example() {
 		"--log.format=console",
 		"--node.display-name=",
 		"--node.listeners=/ip4/127.0.0.1/tcp/0/grpcws",
-		"--p2p.ipfs-listeners=/ip4/0.0.0.0/tcp/0,/ip6/0.0.0.0/tcp/0",
+		"--p2p.swarm-listeners=/ip4/0.0.0.0/tcp/0,/ip6/0.0.0.0/tcp/0",
 		"--p2p.local-discovery=false",
 		"--p2p.webui-listener=:3000",
 		"--store.dir=" + tmpdir,
@@ -55,7 +55,7 @@ func Example() {
 		checkErr(err)
 
 		// invoke through bridge client
-		ret, err := b.InvokeBridgeMethod("/berty.bridge.v1.BridgeService/OpenAccount", reqb64)
+		ret, err := b.InvokeBridgeMethod("/berty.account.v1.AccountService/OpenAccount", reqb64)
 		checkErr(err)
 
 		// deserialize reply
@@ -73,7 +73,7 @@ func Example() {
 		checkErr(err)
 
 		// invoke through bridge client
-		ret, err := b.InvokeBridgeMethod("/berty.bridge.v1.BridgeService/GetGRPCListenerAddrs", reqb64)
+		ret, err := b.InvokeBridgeMethod("/berty.account.v1.AccountService/GetGRPCListenerAddrs", reqb64)
 		checkErr(err)
 
 		// deserialize reply
@@ -81,8 +81,17 @@ func Example() {
 		err = decodeProtoMessage(ret, &res)
 		checkErr(err)
 
-		_, hasGRPCWeb := res.Maddrs["ip4/tcp/grpcweb"]
-		_, hasGRPCWebSocket := res.Maddrs["ip4/tcp/grpcws"]
+		hasGRPCWeb := false
+		hasGRPCWebSocket := false
+		for _, entry := range res.Entries {
+			switch entry.Proto {
+			case "ip4/tcp/grpcweb":
+				hasGRPCWeb = true
+			case "ip4/tcp/grpcws":
+				hasGRPCWebSocket = true
+			}
+		}
+
 		fmt.Println("[+] has grpc-web listener:           ", hasGRPCWeb)       // no, because `--node.listeners` does not contain grpcweb
 		fmt.Println("[+] has websocket listener:          ", hasGRPCWebSocket) // yes, because `--node.listeners`` contains grpcws
 	}
@@ -106,7 +115,7 @@ func Example() {
 		checkErr(err)
 
 		// invoke through bridge client
-		ret, err := b.InvokeBridgeMethod("/berty.bridge.v1.BridgeService/ClientInvokeUnary", reqb64)
+		ret, err := b.InvokeBridgeMethod("/berty.account.v1.AccountService/ClientInvokeUnary", reqb64)
 		checkErr(err)
 
 		var output bertyaccount.ClientInvokeUnary_Reply

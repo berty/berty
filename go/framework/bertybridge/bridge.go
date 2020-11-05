@@ -2,7 +2,6 @@ package bertybridge
 
 import (
 	"context"
-	"log"
 	"sync"
 	"time"
 
@@ -64,7 +63,6 @@ func NewBridge(config *Config) (*Bridge, error) {
 		if nativeLogger := config.dLogger; nativeLogger != nil {
 			b.logger = newLogger(nativeLogger)
 		} else {
-			log.Println("WARN: no logger set")
 			b.logger = zap.NewNop()
 		}
 	}

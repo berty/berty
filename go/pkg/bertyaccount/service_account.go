@@ -29,83 +29,40 @@ func (s *service) OpenAccount(_ context.Context, req *OpenAccount_Request) (*Ope
 		return nil, fmt.Errorf("an account is already opened, close it before open it again")
 	}
 
-	// setup logger
-	var logger *zap.Logger
+	// setup manager logger
+	logger := s.logger
 	{
 		var err error
-
-		logger = s.logger
 		if filters := req.LoggerFilters; filters != "" {
-			logger, _, err = logutil.DecorateLogger(logger, filters)
-			if err != nil {
+			if logger, _, err = logutil.DecorateLogger(logger, filters); err != nil {
 				return nil, errors.Wrap(err, "unable to decorate logger")
 			}
 		}
 	}
 
-	s.logger.Info("opening account",
-		zap.Strings("args", req.GetArgs()),
-		zap.Bool("persistence", req.GetPersistence()),
-	)
+	s.logger.Info("opening account", zap.Strings("args", args), zap.Bool("persistence", req.GetPersistence()))
 
-	// create new `InitManager`
-	var manager *initutil.Manager
+	// setup manager
+	var initManager *initutil.Manager
 	{
 		var err error
-
-		manager, err = s.newManager(logger, args...)
-		if err != nil {
+		if initManager, err = s.openManager(logger, args...); err != nil {
 			return nil, err
 		}
 	}
 
-	// setup `InitManager`
+	// get manager client conn
 	var ccServices *grpc.ClientConn
 	{
 		var err error
-
-		// close and cleanup manager in case of failure
-		defer func() {
-			if err != nil {
-				manager.Close()
-			}
-		}()
-
-		// ensure requirement for manager
-
-		// get logger
-		if _, err = manager.GetLogger(); err != nil {
-			return nil, err
-		}
-
-		// get local IPFS node
-		if _, s.node, err = manager.GetLocalIPFS(); err != nil {
-			return nil, err
-		}
-
-		// get gRPC server
-		if _, _, err = manager.GetGRPCServer(); err != nil {
-			return nil, err
-		}
-
-		if _, err = manager.GetLocalMessengerServer(); err != nil {
-			return nil, err
-		}
-
-		if _, err = manager.GetNotificationManager(); err != nil {
-			return nil, err
-		}
-
-		// get manager client conn
-		ccServices, err = manager.GetGRPCClientConn()
-		if err != nil {
+		if ccServices, err = initManager.GetGRPCClientConn(); err != nil {
+			initManager.Close()
 			return nil, err
 		}
 	}
-	s.servicesClient = grpcutil.NewLazyClient(ccServices)
 
-	// assign the new manager
-	s.initManager = manager
+	s.servicesClient = grpcutil.NewLazyClient(ccServices)
+	s.initManager = initManager
 	return &OpenAccount_Reply{}, nil
 }
 
@@ -130,7 +87,7 @@ func (s *service) CloseAccount(_ context.Context, req *CloseAccount_Request) (*C
 	return &CloseAccount_Reply{}, nil
 }
 
-func (s *service) newManager(logger *zap.Logger, args ...string) (*initutil.Manager, error) {
+func (s *service) openManager(logger *zap.Logger, args ...string) (*initutil.Manager, error) {
 	manager := initutil.Manager{}
 
 	// configure flagset options
@@ -138,6 +95,7 @@ func (s *service) newManager(logger *zap.Logger, args ...string) (*initutil.Mana
 	manager.SetupLoggingFlags(fs)
 	manager.SetupLocalMessengerServerFlags(fs)
 	manager.SetupEmptyGRPCListenersFlags(fs)
+
 	// manager.SetupMetricsFlags(fs)
 	err := fs.Parse(args)
 	if err != nil {
@@ -154,6 +112,48 @@ func (s *service) newManager(logger *zap.Logger, args ...string) (*initutil.Mana
 
 	manager.SetLogger(logger)
 	manager.SetNotificationManager(s.notifManager)
+
+	// setup `InitManager`
+	{
+		var err error
+
+		// close and cleanup manager in case of failure
+		defer func() {
+			if err != nil {
+				manager.Close()
+			}
+		}()
+
+		// ensure requirement for manager
+
+		// get logger
+		if _, err = manager.GetLogger(); err != nil {
+			return nil, err
+		}
+
+		// get local IPFS node
+		if _, _, err = manager.GetLocalIPFS(); err != nil {
+			return nil, err
+		}
+
+		// get gRPC server
+		if _, _, err = manager.GetGRPCServer(); err != nil {
+			return nil, err
+		}
+
+		if _, err = manager.GetLocalMessengerServer(); err != nil {
+			return nil, err
+		}
+
+		if _, err = manager.GetNotificationManager(); err != nil {
+			return nil, err
+		}
+
+		// get manager client conn
+		if _, err = manager.GetGRPCClientConn(); err != nil {
+			return nil, err
+		}
+	}
 
 	s.logger.Info("init", zap.Any("manager", &manager))
 	return &manager, nil

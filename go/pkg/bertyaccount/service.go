@@ -5,7 +5,6 @@ import (
 	fmt "fmt"
 	"sync"
 
-	"github.com/ipfs/go-ipfs/core"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
@@ -41,7 +40,6 @@ type service struct {
 	muService        sync.RWMutex
 	initManager      *initutil.Manager
 	lifecycleManager *lifecycle.Manager
-	node             *core.IpfsNode
 	servicesClient   *grpcutil.LazyClient
 }
 
