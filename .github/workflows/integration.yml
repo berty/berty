@@ -14,7 +14,7 @@ on:
       - '**.go'
       - 'js/**'
       - '!js/packages/berty-i18n/locale/*/*.json'
-      - '.github/workflows/integration.yaml'
+      - '.github/workflows/integration.yml'
   pull_request:
     paths:
       - 'go/**'
@@ -23,7 +23,7 @@ on:
       - '**.go'
       - 'js/**'
       - '!js/packages/berty-i18n/locale/*/*.json'
-      - '.github/workflows/integration.yaml'
+      - '.github/workflows/integration.yml'
 
 # FIXME:
 # * test on production periodically with env=production
@@ -62,10 +62,14 @@ jobs:
         run: |
           berty-integration \
             -integration.testbot=`cat ./config/config.gen.json | jq -r '.berty.contacts["testbot"].link'`
+      - name: Generate run's URL
+        id: url
+        run: |
+          echo "::set-output name=runUrl::https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
       - name: Discord notification
         if: github.event_name == 'schedule' && failure()
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_DEV_WEBHOOK }}
         uses: Ilshidur/action-discord@0.3.0
         with:
-          args: 'Integration failed, see https://github.com/berty/berty/actions?query=workflow%3AIntegration.'
+          args: 'Integration failed, see ${{ steps.url.outputs.runUrl }}'
