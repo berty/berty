@@ -58,7 +58,7 @@ const ImportExistingButton = () => {
 		<Translation>
 			{(t) => (
 				<ListEntry
-					title={t('onboarding.getstarted-import-button')}
+					title={t('onboarding.getstarted.import-button')}
 					onPress={async () => {
 						console.warn('unimplemented')
 						// try {
@@ -75,7 +75,7 @@ const ImportExistingButton = () => {
 						// 	}
 						// }
 					}}
-					icon={'file-add-outline'}
+					icon={'upload-outline'}
 				/>
 			)}
 		</Translation>
@@ -89,7 +89,7 @@ const CreateButton = () => {
 		<Translation>
 			{(t) => (
 				<ListEntry
-					title={t('onboarding.account-selector-create-button')}
+					title={t('onboarding.getstarted.account-selector-create-button')}
 					onPress={async () => {
 						createNewAccount()
 					}}
@@ -100,7 +100,7 @@ const CreateButton = () => {
 	)
 }
 
-const OpenRegisteredButton = ({ id, account }: { id: number; account: any }) => {
+const OpenRegisteredButton = ({ id, account }: { id: string; account: any }) => {
 	const switchToAccount = useSwitchToAccount()
 
 	return (
@@ -133,8 +133,14 @@ export const AccountSelector = () => {
 			</View>
 			<View style={[flex.big]}>
 				<ScrollView>
-					{Object.entries(accounts).map(([id, account]) => {
-						return <OpenRegisteredButton account={account} key={id} id={account.id} />
+					{accounts.map((account) => {
+						return (
+							<OpenRegisteredButton
+								account={account}
+								key={account.accountId}
+								id={account.accountId || ''}
+							/>
+						)
 					})}
 					{embedded && <CreateButton />}
 					{embedded && <ImportExistingButton />}

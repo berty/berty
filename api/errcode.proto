@@ -149,6 +149,26 @@ enum ErrCode {
   ErrServiceReplication = 4100;
   ErrServiceReplicationServer = 4101;
   ErrServiceReplicationMissingEndpoint = 4102;
+
+
+  ErrBertyAccount                  = 5000;
+  ErrBertyAccountNoIDSpecified     = 5001;
+  ErrBertyAccountAlreadyOpened     = 5002;
+  ErrBertyAccountInvalidIDFormat   = 5003;
+  ErrBertyAccountLoggerDecorator   = 5004;
+  ErrBertyAccountGRPCClient        = 5005;
+  ErrBertyAccountOpenAccount       = 5006;
+  ErrBertyAccountDataNotFound      = 5007;
+  ErrBertyAccountMetadataUpdate    = 5008;
+  ErrBertyAccountManagerOpen       = 5009;
+  ErrBertyAccountManagerClose      = 5010;
+  ErrBertyAccountInvalidCLIArgs    = 5011;
+  ErrBertyAccountFSError           = 5012;
+  ErrBertyAccountAlreadyExists     = 5013;
+  ErrBertyAccountNoBackupSpecified = 5014;
+  ErrBertyAccountIDGenFailed       = 5015;
+  ErrBertyAccountCreationFailed    = 5016;
+
 }
 
 message ErrDetails {

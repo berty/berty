@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package berty.account.v1;
 
+import "gogoproto/gogo.proto";
 import "errcode.proto";
 
 option go_package = "berty.tech/berty/go/pkg/bertyaccount";
@@ -15,8 +16,19 @@ service AccountService {
   // CloseAccount, close the current account
   rpc CloseAccount (CloseAccount.Request) returns (CloseAccount.Reply);
 
+  // ListAccounts retrieves a list of local accounts
+  rpc ListAccounts (ListAccounts.Request) returns (ListAccounts.Reply);
 
-  /// GRPC Adaptater
+  // DeleteAccount deletes an account
+  rpc DeleteAccount (DeleteAccount.Request) returns (DeleteAccount.Reply);
+
+  // ImportAccount imports existing data
+  rpc ImportAccount (ImportAccount.Request) returns (ImportAccount.Reply);
+
+  // CreateAccount creates a new account
+  rpc CreateAccount (CreateAccount.Request) returns (CreateAccount.Reply);
+
+  /// GRPC Adapter
 
   // GetGRPCListenerAddrs return current listeners addrs available on this bridge
   rpc GetGRPCListenerAddrs (GetGRPCListenerAddrs.Request) returns (GetGRPCListenerAddrs.Reply);
@@ -40,7 +52,7 @@ service AccountService {
 message OpenAccount {
   message Request {
     repeated string args = 1;
-    bool persistence = 2;
+    string account_id = 2 [(gogoproto.customname) = "AccountID"];
     string logger_filters = 3;
   }
   message Reply {}
@@ -49,6 +61,52 @@ message OpenAccount {
 message CloseAccount {
   message Request {}
   message Reply {}
+}
+
+message AccountMetadata {
+  string account_id = 1 [(gogoproto.customname) = "AccountID"];
+  string name = 2;
+  int64 last_opened = 3;
+}
+
+message ListAccounts {
+  message Request {}
+  message Reply {
+    repeated AccountMetadata accounts = 1;
+  }
+}
+
+message DeleteAccount {
+  message Request {
+    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+  }
+  message Reply {
+  }
+}
+
+message ImportAccount {
+  message Request {
+    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_name = 2;
+    string backup_path = 3;
+    repeated string args = 4;
+    string logger_filters = 5;
+  }
+  message Reply {
+    AccountMetadata account_metadata = 1;
+  }
+}
+
+message CreateAccount {
+  message Request {
+    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_name = 2;
+    repeated string args = 3;
+    string logger_filters = 4;
+  }
+  message Reply {
+    AccountMetadata account_metadata = 1;
+  }
 }
 
 message GetGRPCListenerAddrs {

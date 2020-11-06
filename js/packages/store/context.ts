@@ -2,7 +2,8 @@ import { Dispatch, createContext, useContext } from 'react'
 import { berty } from '@berty-tech/api/index.pb'
 
 export enum MessengerAppState {
-	Closed = 0,
+	Init = 0,
+	Closed,
 	OpeningWaitingForDaemon,
 	OpeningWaitingForClients,
 	OpeningListingEvents,
@@ -17,6 +18,7 @@ export enum MessengerAppState {
 }
 
 export enum MessengerActions {
+	SetInitDone = 'SET_INIT_DONE',
 	SetStreamError = 'SET_STREAM_ERROR',
 	AddFakeData = 'ADD_FAKE_DATA',
 	DeleteFakeData = 'DELETE_FAKE_DATA',
@@ -25,6 +27,7 @@ export enum MessengerActions {
 	SetNextAccount = 'SET_NEXT_ACCOUNT',
 	SetStateClosed = 'SET_STATE_CLOSED',
 	SetStateOnBoarding = 'SET_STATE_ON_BOARDING',
+	SetCreatedAccount = 'SET_STATE_CREATED_ACCOUNT',
 	SetStateOpening = 'SET_STATE_OPENING',
 	SetStateOpeningClients = 'SET_STATE_OPENING_CLIENTS',
 	SetStateOpeningListingEvents = 'SET_STATE_LISTING_EVENTS',
@@ -54,6 +57,11 @@ export const isReadyingBasics = (state: MessengerAppState): boolean =>
 	state === MessengerAppState.OpeningGettingLocalSettings
 
 const expectedAppStateChanges = {
+	[MessengerAppState.Init]: [
+		MessengerAppState.Closed,
+		MessengerAppState.OpeningWaitingForClients,
+		MessengerAppState.OpeningWaitingForDaemon,
+	],
 	[MessengerAppState.Closed]: [
 		MessengerAppState.OpeningWaitingForClients,
 		MessengerAppState.OpeningWaitingForDaemon,
@@ -169,8 +177,8 @@ export type NotificationsInhibitor = (
 ) => boolean | 'sound-only'
 
 export type MsgrState = {
-	selectedAccount: number | null
-	nextSelectedAccount: number | null
+	selectedAccount: string | null
+	nextSelectedAccount: string | null
 	daemonAddress: string
 
 	appState: MessengerAppState
@@ -192,10 +200,10 @@ export type MsgrState = {
 	notificationsInhibitors: NotificationsInhibitor[]
 
 	persistentOptions: PersistentOptions
-	accounts: { [key: number]: any }
+	accounts: berty.account.v1.IAccountMetadata[]
 	initialListComplete: boolean
-	clearDaemon: (() => void) | null
-	clearClients: (() => void) | null
+	clearDaemon: (() => Promise<void>) | null
+	clearClients: (() => Promise<void>) | null
 
 	embedded: boolean
 	dispatch: Dispatch<{
@@ -208,7 +216,7 @@ export type MsgrState = {
 }
 
 export const initialState = {
-	appState: MessengerAppState.Closed,
+	appState: MessengerAppState.Init,
 	selectedAccount: null,
 	nextSelectedAccount: null,
 	account: null,
@@ -235,7 +243,7 @@ export const initialState = {
 	setPersistentOption: async () => {},
 	createNewAccount: () => {},
 	importAccount: async () => {},
-	accounts: {},
+	accounts: [],
 }
 
 export const MsgrContext = createContext<MsgrState>(initialState)

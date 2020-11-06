@@ -179,12 +179,11 @@ export const reducerActions: {
 	[MessengerActions.SetStateClosed]: (oldState, _) => {
 		const ret = {
 			...initialState,
+			accounts: oldState.accounts,
 			embedded: oldState.embedded,
 			daemonAddress: oldState.daemonAddress,
 			appState: MessengerAppState.Closed,
-			nextSelectedAccount: 0,
-			// TODO: multi-account and/or logged-out state
-			// nextSelectedAccount: oldState.embedded ? oldState.nextSelectedAccount : 0,
+			nextSelectedAccount: oldState.embedded ? oldState.nextSelectedAccount : '0',
 		}
 
 		if (ret.nextSelectedAccount !== null) {
@@ -214,7 +213,10 @@ export const reducerActions: {
 			nextSelectedAccount: action.payload,
 		}
 
-		if (oldState.appState === MessengerAppState.Closed) {
+		if (
+			oldState.appState === MessengerAppState.Closed ||
+			oldState.appState === MessengerAppState.Init
+		) {
 			return reducer(ret, { type: MessengerActions.SetStateOpening })
 		}
 
@@ -349,6 +351,15 @@ export const reducerActions: {
 	[messengerpb.StreamEvent.Type.TypeDeviceUpdated]: (oldState, __) => {
 		console.info('ignored event type TypeDeviceUpdated')
 		return oldState
+	},
+
+	[MessengerActions.SetCreatedAccount]: (oldState, action) => {
+		return {
+			...oldState,
+			selectedAccount: action.payload.accountId,
+			clearDaemon: action.payload.clearDaemon,
+			appState: MessengerAppState.OpeningWaitingForClients,
+		}
 	},
 }
 

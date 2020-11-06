@@ -2,23 +2,19 @@ import React, { useState } from 'react'
 import { View, ActivityIndicator as Spinner, Vibration } from 'react-native'
 import { Translation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
-import { useNavigation as useReactNavigation, CommonActions } from '@react-navigation/native'
-
-import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 import { Routes } from '@berty-tech/navigation'
 import { useNotificationsInhibitor } from '@berty-tech/store/hooks'
-
+import { MessengerActions, PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
 
 const SetupFinishedBody = () => {
-	const navigation = useReactNavigation()
 	const [isGeneration, setIsGeneration] = useState(1)
 	const [isGenerated, setIsGenerated] = useState(false)
 	const [isFinished, setIsFinished] = useState(false)
 	const [isAccount, setIsAccount] = useState(false)
 	const client = {}
-	const { setPersistentOption, contacts, persistentOptions } = useMsgrContext()
+	const { setPersistentOption, contacts, persistentOptions, dispatch } = useMsgrContext()
 
 	React.useEffect(() => {
 		const handlePersistentOptions = async () => {
@@ -43,9 +39,10 @@ const SetupFinishedBody = () => {
 			})
 		}
 		if (!persistentOptions && Object.values(contacts).length) {
-			return () => handlePersistentOptions()
+			return () => {
+				handlePersistentOptions().catch((e) => console.warn(e))
+			}
 		}
-		return
 	}, [persistentOptions, contacts, setPersistentOption])
 
 	return (
@@ -105,11 +102,7 @@ const SetupFinishedBody = () => {
 									text: t('onboarding.setup-finished.button'),
 									onPress: () => {
 										Vibration.vibrate([500])
-										navigation.dispatch(
-											CommonActions.reset({
-												routes: [{ name: Routes.Root.Tabs, params: { screen: Routes.Main.Home } }],
-											}),
-										)
+										dispatch({ type: MessengerActions.SetStateReady })
 									},
 								}}
 							/>

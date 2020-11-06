@@ -22,6 +22,22 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "CloseAccount.Request",
                     responseType: "CloseAccount.Reply"
                   },
+                  ListAccounts: {
+                    requestType: "ListAccounts.Request",
+                    responseType: "ListAccounts.Reply"
+                  },
+                  DeleteAccount: {
+                    requestType: "DeleteAccount.Request",
+                    responseType: "DeleteAccount.Reply"
+                  },
+                  ImportAccount: {
+                    requestType: "ImportAccount.Request",
+                    responseType: "ImportAccount.Reply"
+                  },
+                  CreateAccount: {
+                    requestType: "CreateAccount.Request",
+                    responseType: "CreateAccount.Reply"
+                  },
                   GetGRPCListenerAddrs: {
                     requestType: "GetGRPCListenerAddrs.Request",
                     responseType: "GetGRPCListenerAddrs.Reply"
@@ -58,9 +74,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         type: "string",
                         id: 1
                       },
-                      persistence: {
-                        type: "bool",
-                        id: 2
+                      accountId: {
+                        type: "string",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "AccountID"
+                        }
                       },
                       loggerFilters: {
                         type: "string",
@@ -81,6 +100,139 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Reply: {
                     fields: {}
+                  }
+                }
+              },
+              AccountMetadata: {
+                fields: {
+                  accountId: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "AccountID"
+                    }
+                  },
+                  name: {
+                    type: "string",
+                    id: 2
+                  },
+                  lastOpened: {
+                    type: "int64",
+                    id: 3
+                  }
+                }
+              },
+              ListAccounts: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      accounts: {
+                        rule: "repeated",
+                        type: "AccountMetadata",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              DeleteAccount: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      accountId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "AccountID"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              ImportAccount: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      accountId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "AccountID"
+                        }
+                      },
+                      accountName: {
+                        type: "string",
+                        id: 2
+                      },
+                      backupPath: {
+                        type: "string",
+                        id: 3
+                      },
+                      args: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 4
+                      },
+                      loggerFilters: {
+                        type: "string",
+                        id: 5
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      accountMetadata: {
+                        type: "AccountMetadata",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              CreateAccount: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      accountId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "AccountID"
+                        }
+                      },
+                      accountName: {
+                        type: "string",
+                        id: 2
+                      },
+                      args: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 3
+                      },
+                      loggerFilters: {
+                        type: "string",
+                        id: 4
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      accountMetadata: {
+                        type: "AccountMetadata",
+                        id: 1
+                      }
+                    }
                   }
                 }
               },
@@ -451,7 +603,24 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrServicesAuthInvalidURL: 4009,
               ErrServiceReplication: 4100,
               ErrServiceReplicationServer: 4101,
-              ErrServiceReplicationMissingEndpoint: 4102
+              ErrServiceReplicationMissingEndpoint: 4102,
+              ErrBertyAccount: 5000,
+              ErrBertyAccountNoIDSpecified: 5001,
+              ErrBertyAccountAlreadyOpened: 5002,
+              ErrBertyAccountInvalidIDFormat: 5003,
+              ErrBertyAccountLoggerDecorator: 5004,
+              ErrBertyAccountGRPCClient: 5005,
+              ErrBertyAccountOpenAccount: 5006,
+              ErrBertyAccountDataNotFound: 5007,
+              ErrBertyAccountMetadataUpdate: 5008,
+              ErrBertyAccountManagerOpen: 5009,
+              ErrBertyAccountManagerClose: 5010,
+              ErrBertyAccountInvalidCLIArgs: 5011,
+              ErrBertyAccountFSError: 5012,
+              ErrBertyAccountAlreadyExists: 5013,
+              ErrBertyAccountNoBackupSpecified: 5014,
+              ErrBertyAccountIDGenFailed: 5015,
+              ErrBertyAccountCreationFailed: 5016
             }
           },
           ErrDetails: {

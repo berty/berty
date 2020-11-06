@@ -100,7 +100,8 @@
       "header-left-button": "Help",
       "header-center-button": "Devtools",
       "header-right-button": "Settings",
-      "network-button": "Network List"
+      "network-button": "Network List",
+      "switch-accounts": "Use another account"
     },
     "network-map": {
       "title": "Network List",

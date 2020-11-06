@@ -100,7 +100,8 @@
       "header-left-button": "Aide",
       "header-center-button": "Devtools",
       "header-right-button": "Paramètres",
-      "network-button": "Réseaux"
+      "network-button": "Réseaux",
+      "switch-accounts": "Changer de compte"
     },
     "network-map": {
       "title": "Réseaux",

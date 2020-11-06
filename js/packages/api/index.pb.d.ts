@@ -12,6 +12,14 @@ export namespace berty {
                 public openAccount(request: berty.account.v1.OpenAccount.IRequest): Promise<berty.account.v1.OpenAccount.Reply>;
                 public closeAccount(request: berty.account.v1.CloseAccount.IRequest, callback: berty.account.v1.AccountService.CloseAccountCallback): void;
                 public closeAccount(request: berty.account.v1.CloseAccount.IRequest): Promise<berty.account.v1.CloseAccount.Reply>;
+                public listAccounts(request: berty.account.v1.ListAccounts.IRequest, callback: berty.account.v1.AccountService.ListAccountsCallback): void;
+                public listAccounts(request: berty.account.v1.ListAccounts.IRequest): Promise<berty.account.v1.ListAccounts.Reply>;
+                public deleteAccount(request: berty.account.v1.DeleteAccount.IRequest, callback: berty.account.v1.AccountService.DeleteAccountCallback): void;
+                public deleteAccount(request: berty.account.v1.DeleteAccount.IRequest): Promise<berty.account.v1.DeleteAccount.Reply>;
+                public importAccount(request: berty.account.v1.ImportAccount.IRequest, callback: berty.account.v1.AccountService.ImportAccountCallback): void;
+                public importAccount(request: berty.account.v1.ImportAccount.IRequest): Promise<berty.account.v1.ImportAccount.Reply>;
+                public createAccount(request: berty.account.v1.CreateAccount.IRequest, callback: berty.account.v1.AccountService.CreateAccountCallback): void;
+                public createAccount(request: berty.account.v1.CreateAccount.IRequest): Promise<berty.account.v1.CreateAccount.Reply>;
                 public getGRPCListenerAddrs(request: berty.account.v1.GetGRPCListenerAddrs.IRequest, callback: berty.account.v1.AccountService.GetGRPCListenerAddrsCallback): void;
                 public getGRPCListenerAddrs(request: berty.account.v1.GetGRPCListenerAddrs.IRequest): Promise<berty.account.v1.GetGRPCListenerAddrs.Reply>;
                 public clientInvokeUnary(request: berty.account.v1.ClientInvokeUnary.IRequest, callback: berty.account.v1.AccountService.ClientInvokeUnaryCallback): void;
@@ -31,6 +39,14 @@ export namespace berty {
                 type OpenAccountCallback = (error: (Error|null), response?: berty.account.v1.OpenAccount.Reply) => void;
 
                 type CloseAccountCallback = (error: (Error|null), response?: berty.account.v1.CloseAccount.Reply) => void;
+
+                type ListAccountsCallback = (error: (Error|null), response?: berty.account.v1.ListAccounts.Reply) => void;
+
+                type DeleteAccountCallback = (error: (Error|null), response?: berty.account.v1.DeleteAccount.Reply) => void;
+
+                type ImportAccountCallback = (error: (Error|null), response?: berty.account.v1.ImportAccount.Reply) => void;
+
+                type CreateAccountCallback = (error: (Error|null), response?: berty.account.v1.CreateAccount.Reply) => void;
 
                 type GetGRPCListenerAddrsCallback = (error: (Error|null), response?: berty.account.v1.GetGRPCListenerAddrs.Reply) => void;
 
@@ -65,14 +81,14 @@ export namespace berty {
 
                 interface IRequest {
                     args?: (string[]|null);
-                    persistence?: (boolean|null);
+                    accountId?: (string|null);
                     loggerFilters?: (string|null);
                 }
 
                 class Request implements IRequest {
 
                     public args: string[];
-                    public persistence: boolean;
+                    public accountId: string;
                     public loggerFilters: string;
                     public static create(properties?: berty.account.v1.OpenAccount.IRequest): berty.account.v1.OpenAccount.Request;
                     public static encode(message: berty.account.v1.OpenAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -149,6 +165,258 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.account.v1.CloseAccount.Reply;
                     public static toObject(message: berty.account.v1.CloseAccount.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IAccountMetadata {
+                accountId?: (string|null);
+                name?: (string|null);
+                lastOpened?: (number|Long|null);
+            }
+
+            class AccountMetadata implements IAccountMetadata {
+
+                public accountId: string;
+                public name: string;
+                public lastOpened: (number|Long);
+                public static create(properties?: berty.account.v1.IAccountMetadata): berty.account.v1.AccountMetadata;
+                public static encode(message: berty.account.v1.IAccountMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.account.v1.IAccountMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.AccountMetadata;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.AccountMetadata;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.account.v1.AccountMetadata;
+                public static toObject(message: berty.account.v1.AccountMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IListAccounts {
+            }
+
+            class ListAccounts implements IListAccounts {
+
+                public static create(properties?: berty.account.v1.IListAccounts): berty.account.v1.ListAccounts;
+                public static encode(message: berty.account.v1.IListAccounts, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.account.v1.IListAccounts, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.ListAccounts;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.ListAccounts;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.account.v1.ListAccounts;
+                public static toObject(message: berty.account.v1.ListAccounts, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace ListAccounts {
+
+                interface IRequest {
+                }
+
+                class Request implements IRequest {
+
+                    public static create(properties?: berty.account.v1.ListAccounts.IRequest): berty.account.v1.ListAccounts.Request;
+                    public static encode(message: berty.account.v1.ListAccounts.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.ListAccounts.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.ListAccounts.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.ListAccounts.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.ListAccounts.Request;
+                    public static toObject(message: berty.account.v1.ListAccounts.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    accounts?: (berty.account.v1.IAccountMetadata[]|null);
+                }
+
+                class Reply implements IReply {
+
+                    public accounts: berty.account.v1.IAccountMetadata[];
+                    public static create(properties?: berty.account.v1.ListAccounts.IReply): berty.account.v1.ListAccounts.Reply;
+                    public static encode(message: berty.account.v1.ListAccounts.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.ListAccounts.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.ListAccounts.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.ListAccounts.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.ListAccounts.Reply;
+                    public static toObject(message: berty.account.v1.ListAccounts.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IDeleteAccount {
+            }
+
+            class DeleteAccount implements IDeleteAccount {
+
+                public static create(properties?: berty.account.v1.IDeleteAccount): berty.account.v1.DeleteAccount;
+                public static encode(message: berty.account.v1.IDeleteAccount, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.account.v1.IDeleteAccount, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.DeleteAccount;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.DeleteAccount;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.account.v1.DeleteAccount;
+                public static toObject(message: berty.account.v1.DeleteAccount, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace DeleteAccount {
+
+                interface IRequest {
+                    accountId?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public accountId: string;
+                    public static create(properties?: berty.account.v1.DeleteAccount.IRequest): berty.account.v1.DeleteAccount.Request;
+                    public static encode(message: berty.account.v1.DeleteAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.DeleteAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.DeleteAccount.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.DeleteAccount.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.DeleteAccount.Request;
+                    public static toObject(message: berty.account.v1.DeleteAccount.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                }
+
+                class Reply implements IReply {
+
+                    public static create(properties?: berty.account.v1.DeleteAccount.IReply): berty.account.v1.DeleteAccount.Reply;
+                    public static encode(message: berty.account.v1.DeleteAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.DeleteAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.DeleteAccount.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.DeleteAccount.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.DeleteAccount.Reply;
+                    public static toObject(message: berty.account.v1.DeleteAccount.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IImportAccount {
+            }
+
+            class ImportAccount implements IImportAccount {
+
+                public static create(properties?: berty.account.v1.IImportAccount): berty.account.v1.ImportAccount;
+                public static encode(message: berty.account.v1.IImportAccount, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.account.v1.IImportAccount, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.ImportAccount;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.ImportAccount;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.account.v1.ImportAccount;
+                public static toObject(message: berty.account.v1.ImportAccount, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace ImportAccount {
+
+                interface IRequest {
+                    accountId?: (string|null);
+                    accountName?: (string|null);
+                    backupPath?: (string|null);
+                    args?: (string[]|null);
+                    loggerFilters?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public accountId: string;
+                    public accountName: string;
+                    public backupPath: string;
+                    public args: string[];
+                    public loggerFilters: string;
+                    public static create(properties?: berty.account.v1.ImportAccount.IRequest): berty.account.v1.ImportAccount.Request;
+                    public static encode(message: berty.account.v1.ImportAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.ImportAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.ImportAccount.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.ImportAccount.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.ImportAccount.Request;
+                    public static toObject(message: berty.account.v1.ImportAccount.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    accountMetadata?: (berty.account.v1.IAccountMetadata|null);
+                }
+
+                class Reply implements IReply {
+
+                    public accountMetadata?: (berty.account.v1.IAccountMetadata|null);
+                    public static create(properties?: berty.account.v1.ImportAccount.IReply): berty.account.v1.ImportAccount.Reply;
+                    public static encode(message: berty.account.v1.ImportAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.ImportAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.ImportAccount.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.ImportAccount.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.ImportAccount.Reply;
+                    public static toObject(message: berty.account.v1.ImportAccount.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface ICreateAccount {
+            }
+
+            class CreateAccount implements ICreateAccount {
+
+                public static create(properties?: berty.account.v1.ICreateAccount): berty.account.v1.CreateAccount;
+                public static encode(message: berty.account.v1.ICreateAccount, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.account.v1.ICreateAccount, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.CreateAccount;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.CreateAccount;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.account.v1.CreateAccount;
+                public static toObject(message: berty.account.v1.CreateAccount, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace CreateAccount {
+
+                interface IRequest {
+                    accountId?: (string|null);
+                    accountName?: (string|null);
+                    args?: (string[]|null);
+                    loggerFilters?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public accountId: string;
+                    public accountName: string;
+                    public args: string[];
+                    public loggerFilters: string;
+                    public static create(properties?: berty.account.v1.CreateAccount.IRequest): berty.account.v1.CreateAccount.Request;
+                    public static encode(message: berty.account.v1.CreateAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.CreateAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.CreateAccount.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.CreateAccount.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.CreateAccount.Request;
+                    public static toObject(message: berty.account.v1.CreateAccount.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    accountMetadata?: (berty.account.v1.IAccountMetadata|null);
+                }
+
+                class Reply implements IReply {
+
+                    public accountMetadata?: (berty.account.v1.IAccountMetadata|null);
+                    public static create(properties?: berty.account.v1.CreateAccount.IReply): berty.account.v1.CreateAccount.Reply;
+                    public static encode(message: berty.account.v1.CreateAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.CreateAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.CreateAccount.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.CreateAccount.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.CreateAccount.Reply;
+                    public static toObject(message: berty.account.v1.CreateAccount.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -707,7 +975,24 @@ export namespace berty {
             ErrServicesAuthInvalidURL = 4009,
             ErrServiceReplication = 4100,
             ErrServiceReplicationServer = 4101,
-            ErrServiceReplicationMissingEndpoint = 4102
+            ErrServiceReplicationMissingEndpoint = 4102,
+            ErrBertyAccount = 5000,
+            ErrBertyAccountNoIDSpecified = 5001,
+            ErrBertyAccountAlreadyOpened = 5002,
+            ErrBertyAccountInvalidIDFormat = 5003,
+            ErrBertyAccountLoggerDecorator = 5004,
+            ErrBertyAccountGRPCClient = 5005,
+            ErrBertyAccountOpenAccount = 5006,
+            ErrBertyAccountDataNotFound = 5007,
+            ErrBertyAccountMetadataUpdate = 5008,
+            ErrBertyAccountManagerOpen = 5009,
+            ErrBertyAccountManagerClose = 5010,
+            ErrBertyAccountInvalidCLIArgs = 5011,
+            ErrBertyAccountFSError = 5012,
+            ErrBertyAccountAlreadyExists = 5013,
+            ErrBertyAccountNoBackupSpecified = 5014,
+            ErrBertyAccountIDGenFailed = 5015,
+            ErrBertyAccountCreationFailed = 5016
         }
 
         interface IErrDetails {
