@@ -173,7 +173,7 @@ $(gen_sum): $(gen_src)
 	    --rm \
 	    bertytech/protoc:25 \
 	    -xec 'make generate_local'; \
-	    $(MAKE) tidy \
+	  $(MAKE) tidy \
 	)
 .PHONY: pb.generate
 
