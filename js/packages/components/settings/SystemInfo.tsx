@@ -9,11 +9,11 @@ import messengerMethodsHooks from '@berty-tech/store/methods'
 export const SystemInfo: React.FC<ScreenProps.Settings.SystemInfo> = () => {
 	const { goBack } = useNavigation()
 	const [{ background, flex, color, padding }] = useStyles()
-	const { reply: systemInfo, done, error, refresh } = messengerMethodsHooks.useSystemInfo()
+	const { reply: systemInfo, done, error, call } = messengerMethodsHooks.useSystemInfo()
 
 	React.useEffect(() => {
-		refresh()
-	}, [refresh])
+		call()
+	}, [call])
 
 	return (
 		<Layout style={[background.white, flex.tiny]}>
@@ -23,7 +23,7 @@ export const SystemInfo: React.FC<ScreenProps.Settings.SystemInfo> = () => {
 					bgColor={color.dark.grey}
 					undo={goBack}
 					actionIcon='refresh-outline'
-					action={refresh}
+					action={call}
 				/>
 				{done ? (
 					error ? (

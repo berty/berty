@@ -972,7 +972,10 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	return (
 		<>
 			<View style={[flex.tiny, styleBackground]}>
-				<SwipeNavRecognizer onSwipeLeft={() => navigate('Settings.Home')}>
+				<SwipeNavRecognizer
+					onSwipeLeft={() => navigate('Settings.Home')}
+					noActionOnRightSwipe={true}
+				>
 					<SafeAreaConsumer>
 						{(insets: EdgeInsets | null) => (
 							<ScrollView

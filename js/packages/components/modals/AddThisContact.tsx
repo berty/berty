@@ -46,7 +46,7 @@ const AddThisContact: React.FC<{
 }> = ({ displayName, publicKey, link, type }) => {
 	const [{ row, text, column, color, flex, absolute, padding, background, border }] = useStyles()
 	const navigation = useNavigation()
-	const { refresh: requestContact, error, done } = messengerMethodsHooks.useContactRequest()
+	const { call: requestContact, error, done } = messengerMethodsHooks.useContactRequest()
 	const [selectedContent, setSelectedContent] = useState('Fingerprint')
 	const _styles = useStylesModal()
 

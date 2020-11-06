@@ -165,7 +165,7 @@ const BodyAboutBerty: React.FC<AboutbertyProps> = () => {
 				iconSize={30}
 				iconColor={color.blue}
 				actionIcon='arrow-ios-forward'
-				onPress={navigation.navigate.settings.termsOfUse}
+				onPress={() => navigation.navigate.settings.termsOfUse()}
 			/>
 			<ButtonSetting
 				name='Privacy policy'
@@ -186,14 +186,20 @@ const BodyAboutBerty: React.FC<AboutbertyProps> = () => {
 			<ButtonSettingRow
 				state={[
 					{
-						onPress: () => Linking.openURL('mailto:hello@berty.tech'),
+						onPress: () =>
+							Linking.openURL('mailto:hello@berty.tech').catch((e) => {
+								console.warn(e)
+							}),
 						name: 'Contact us',
 						icon: 'email-outline',
 						color: color.blue,
 						style: _styles.firstButtonRow,
 					},
 					{
-						onPress: () => Linking.openURL('https://berty.tech'),
+						onPress: () =>
+							Linking.openURL('https://berty.tech').catch((e) => {
+								console.warn(e)
+							}),
 						name: 'Website',
 						icon: 'globe-outline',
 						color: color.blue,

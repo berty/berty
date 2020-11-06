@@ -68,11 +68,16 @@ const expectedAppStateChanges = {
 		MessengerAppState.OnBoarding,
 		MessengerAppState.GetStarted,
 	],
-	[MessengerAppState.GetStarted]: [MessengerAppState.OnBoarding],
-	[MessengerAppState.OnBoarding]: [
+	[MessengerAppState.GetStarted]: [
+		MessengerAppState.OnBoarding,
 		MessengerAppState.DeletingClosingDaemon,
 		MessengerAppState.Closed,
 		MessengerAppState.Ready,
+	],
+	[MessengerAppState.OnBoarding]: [
+		MessengerAppState.Closed,
+		MessengerAppState.Ready,
+		MessengerAppState.DeletingClosingDaemon,
 	],
 	[MessengerAppState.Ready]: [
 		MessengerAppState.DeletingClosingDaemon,

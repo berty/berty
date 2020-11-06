@@ -48,8 +48,7 @@ export const GetStarted = () => {
 								},
 							]}
 							onPress={() => {
-								// TODO: import/multi account
-								// dispatch({ type: MessengerActions.SetStateDeleting })
+								dispatch({ type: MessengerActions.SetStateDeleting })
 							}}
 						>
 							{t('onboarding.getstarted-more-options')}

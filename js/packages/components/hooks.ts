@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
+import { LayoutChangeEvent, LayoutRectangle } from 'react-native'
 
 export const useScroll = (): [any, any] => {
 	const [scroll, setScroll] = useState({
@@ -11,14 +12,24 @@ export const useScroll = (): [any, any] => {
 	return [scroll, onScroll]
 }
 
-export const useLayout = (): [any, any] => {
-	const [layout, setLayout] = useState({
+export const useLayout = (): [LayoutRectangle, (e: LayoutChangeEvent) => void] => {
+	const [layout, setLayout] = useState<LayoutRectangle>({
 		x: 0,
 		y: 0,
 		width: 0,
 		height: 0,
 	})
-	const onLayout = useCallback((e) => setLayout(e.nativeEvent.layout), [])
+
+	const onLayout = useCallback(
+		(e: LayoutChangeEvent) =>
+			setLayout({
+				x: e.nativeEvent.layout.x,
+				y: e.nativeEvent.layout.y,
+				width: e.nativeEvent.layout.width,
+				height: e.nativeEvent.layout.height,
+			}),
+		[],
+	)
 	return [layout, onLayout]
 }
 

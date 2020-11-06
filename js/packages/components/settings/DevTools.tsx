@@ -125,7 +125,7 @@ const NativeCallButton: React.FC = () => {
 const DiscordShareButton: React.FC = () => {
 	const { navigate, goBack } = useNavigation()
 	const account: any = useAccount()
-	const { refresh, done, error } = messengerMethodsHooks.useDevShareInstanceBertyID()
+	const { call, done, error } = messengerMethodsHooks.useDevShareInstanceBertyID()
 	const [{ color }] = useStyles()
 
 	React.useEffect(() => {
@@ -153,7 +153,7 @@ const DiscordShareButton: React.FC = () => {
 				{
 					text: 'Yep 👍',
 					onPress: () => {
-						refresh({
+						call({
 							displayName: account.displayName,
 						})
 					},
@@ -301,7 +301,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				icon='info-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
-				onPress={navigate.settings.systemInfo}
+				onPress={() => navigate.settings.systemInfo()}
 			/>
 			<ButtonSetting
 				name='Add bots'
@@ -324,7 +324,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				iconColor={color.dark.grey}
 				onPress={() => GoBridge.closeBridge()}
 			/>
-			{!ctx.embedded && ctx.daemonAddress != 'http://localhost:1338' && (
+			{!ctx.embedded && ctx.daemonAddress !== 'http://localhost:1338' && (
 				<ButtonSetting
 					name='Switch to 1338 node'
 					icon='folder-outline'
@@ -369,7 +369,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				iconSize={30}
 				iconColor={color.dark.grey}
 				actionIcon='arrow-ios-forward'
-				onPress={navigate.settings.ipfsWebUI}
+				onPress={() => navigate.settings.ipfsWebUI()}
 			/>
 			<ButtonSetting
 				name='Notifications'

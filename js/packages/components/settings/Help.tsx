@@ -52,19 +52,20 @@ const BodyHelp: React.FC<{}> = () => {
 	const _styles = useStylesHelp()
 	const [{ padding, color }] = useStyles()
 	const { navigate } = useNavigation()
+
 	return (
 		<View style={padding.medium}>
 			<ButtonSetting
 				name='Updates'
 				icon='arrow-upward-outline'
 				iconColor={color.red}
-				onPress={navigate.settings.appUpdates}
+				onPress={() => navigate.settings.appUpdates()}
 			/>
 			<ButtonSetting
 				name='About Berty'
 				icon='info-outline'
 				iconColor={color.red}
-				onPress={navigate.settings.aboutBerty}
+				onPress={() => navigate.settings.aboutBerty()}
 			/>
 			<ButtonSetting
 				name='Account & Berty ID'

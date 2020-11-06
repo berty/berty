@@ -52,7 +52,7 @@ export const AddBetabotBody = () => {
 	const _styles = useStylesAddBetabot()
 	const navigation = useNavigation()
 	const { setPersistentOption } = useMsgrContext()
-	const { refresh: requestContact, error, done } = messengerMethodsHooks.useContactRequest()
+	const { call: requestContact, error, done } = messengerMethodsHooks.useContactRequest()
 
 	useEffect(() => {
 		if (done && !error) {

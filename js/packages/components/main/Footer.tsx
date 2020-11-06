@@ -85,9 +85,10 @@ export const Footer: React.FC<{}> = () => {
 	const [{ absolute }] = useStyles()
 	const { navigate } = useNavigation()
 	const isFocused = useIsFocused()
+
 	const props = {
 		icon: 'plus-outline',
-		onPress: navigate.main.listModal,
+		onPress: () => navigate.main.listModal(),
 		selected: true,
 	}
 
