@@ -14,7 +14,7 @@ services:
       - BERTY_NODE_NO_NOTIF=true
       - BERTY_NODE_LISTENERS=/ip4/0.0.0.0/tcp/9091/grpc
       - BERTY_P2P_SWARM_LISTENERS=/ip4/0.0.0.0/tcp/6001,/ip4/0.0.0.0/udp/6001/quic
-      - BERTY_P2P_IPFS_ANNOUNCE=/ip4/${ANNOUNCE_SERVER}/tcp/6001,/ip4/${ANNOUNCE_SERVER}/udp/6001/quic
+      - BERTY_P2P_SWARM_ANNOUNCE=/ip4/${ANNOUNCE_SERVER}/tcp/6001,/ip4/${ANNOUNCE_SERVER}/udp/6001/quic
       # - BERTY_LOG_FILTERS=*,-*.mdns,-ipfs.dht
       # - BERTY_LOG_FILTERS=bty.*
     command: -xec "berty daemon"

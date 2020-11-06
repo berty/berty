@@ -62,11 +62,11 @@ Usage of integration:
     	inits node from a specified export path
   -p2p.disable-ipfs-network
     	disable as much networking feature as possible, useful during development
-  -p2p.ipfs-announce string
+  -p2p.swarm-announce string
     	IPFS announce addrs
   -p2p.ipfs-api-listeners string
     	IPFS API listeners
-  -p2p.ipfs-no-announce string
+  -p2p.swarm-no-announce string
     	IPFS exclude announce addrs
   -p2p.local-discovery
     	if true local discovery will be enabled (default true)
@@ -95,7 +95,7 @@ Usage of integration:
   -tor.binary-path string
     	if set berty will use this external tor binary instead of his builtin one
   -tor.mode string
-    	if true tor will be enabled (default "disabled")
+    	changes the behavior of libp2p regarding tor, see advanced help for more details (default "disabled")
 ```
 
 ### Examples
