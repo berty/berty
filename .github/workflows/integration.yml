@@ -38,6 +38,10 @@ jobs:
       OS: ubuntu-latest
       GOLANG: 1.15.x
     steps:
+      - name: Generate run's URL
+        id: url
+        run: |
+          echo "::set-output name=runUrl::https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
       - name: Checkout
         uses: actions/checkout@master
       - name: Set up Go
@@ -79,10 +83,6 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           #alert-comment-cc-users: '@foobar'
           #auto-push: true
-      - name: Generate run's URL
-        id: url
-        run: |
-          echo "::set-output name=runUrl::https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
       - name: Discord notification
         if: github.event_name == 'schedule' && failure()
         env:
