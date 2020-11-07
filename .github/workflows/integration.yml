@@ -73,6 +73,7 @@ jobs:
           path: ./cache
           key: ${{runner.os}}-integration-benchmark
       - name: Store benchmark result
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
         uses: rhysd/github-action-benchmark@v1
         with:
           tool: 'googlecpp'
