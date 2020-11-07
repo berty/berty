@@ -89,6 +89,7 @@ require (
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/stretchr/testify v1.6.1
 	github.com/tailscale/depaware v0.0.0-20201003033024-5d95aab075be
+	github.com/zcalusic/sysinfo v0.0.0-20200820110305-ef1bb2697bc2
 	go.opentelemetry.io/otel v0.8.0
 	go.opentelemetry.io/otel/exporters/trace/jaeger v0.8.0
 	go.uber.org/goleak v1.1.10

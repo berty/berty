@@ -1,3 +1,5 @@
+// +build !windows
+
 package main
 
 import (
@@ -8,8 +10,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"runtime"
 	"time"
 
+	"github.com/zcalusic/sysinfo"
 	"go.uber.org/zap"
 	"moul.io/u"
 
@@ -19,7 +23,11 @@ import (
 )
 
 func main() {
-	i := &integration{startedAt: time.Now()}
+	i := &integration{
+		startedAt:    time.Now(),
+		previousStep: time.Now(),
+		benchmarks:   []benchmark{},
+	}
 
 	i.checkErr(i.init(), "init")
 	i.checkErr(i.testbotAdd(), "testbot.add")
@@ -31,20 +39,28 @@ func main() {
 	// i.checkErr(i.rdvpConnect(), "connect-to-rdvp")
 
 	i.cleanup()
-	fmt.Printf("[+] finished - %s\n", u.ShortDuration(time.Since(i.startedAt)))
+	totalDuration := time.Since(i.startedAt)
+	fmt.Fprintf(os.Stderr, "[+] finished - %s\n", u.ShortDuration(totalDuration))
+	i.addBenchmark("total", totalDuration)
+	if i.opts.benchmark {
+		fmt.Println(i.benchmarkResult())
+	}
 }
 
 type integration struct {
-	tempdir   string
-	startedAt time.Time
-	manager   initutil.Manager
-	logger    *zap.Logger
-	ctx       context.Context
-	client    bertymessenger.MessengerServiceClient
-	opts      struct {
+	tempdir      string
+	startedAt    time.Time
+	previousStep time.Time
+	manager      initutil.Manager
+	logger       *zap.Logger
+	ctx          context.Context
+	client       bertymessenger.MessengerServiceClient
+	opts         struct {
 		betabotAddr string
 		testbotAddr string
+		benchmark   bool
 	}
+	benchmarks []benchmark
 }
 
 func (i *integration) init() error {
@@ -61,6 +77,7 @@ func (i *integration) init() error {
 	fs := flag.NewFlagSet("integration", flag.ExitOnError)
 	fs.StringVar(&i.opts.betabotAddr, "integration.betabot", config.Config.Berty.Contacts["betabot-dev"].Link, "betabot addr")
 	fs.StringVar(&i.opts.testbotAddr, "integration.testbot", config.Config.Berty.Contacts["testbot-dev"].Link, "testbot addr")
+	fs.BoolVar(&i.opts.benchmark, "integration.benchmark", false, "print benchmark result in JSON")
 	i.manager.SetupLoggingFlags(fs)
 	i.manager.SetupLocalMessengerServerFlags(fs)
 	i.manager.SetupEmptyGRPCListenersFlags(fs)
@@ -186,10 +203,54 @@ func (i *integration) cleanup() {
 
 func (i *integration) checkErr(err error, step string) {
 	if err != nil {
-		fmt.Printf("[-] %s: %v - %s\n", step, err, u.ShortDuration(time.Since(i.startedAt)))
+		fmt.Fprintf(os.Stderr, "[-] %s: %v - %s\n", step, err, u.ShortDuration(time.Since(i.startedAt)))
 		i.cleanup()
 		os.Exit(1)
 	} else {
-		fmt.Printf("[+] %s - %s\n", step, u.ShortDuration(time.Since(i.startedAt)))
+		i.addBenchmark(step, time.Since(i.previousStep))
+		i.previousStep = time.Now()
+
+		fmt.Fprintf(os.Stderr, "[+] %s - %s\n", step, u.ShortDuration(time.Since(i.startedAt)))
 	}
+}
+
+func (i *integration) addBenchmark(name string, duration time.Duration) {
+	dur := duration.Nanoseconds()
+	i.benchmarks = append(i.benchmarks, benchmark{
+		Name:       name,
+		Iterations: 1,
+		TimeUnit:   "ns",
+		RealTime:   dur,
+		CPUTime:    dur, // FIXME: compute real CPU time
+	})
+}
+
+type benchmark struct {
+	Name       string `json:"name"`
+	Iterations int    `json:"iterations"`
+	RealTime   int64  `json:"real_time"`
+	CPUTime    int64  `json:"cpu_time"`
+	TimeUnit   string `json:"time_unit"`
+}
+
+func (i *integration) benchmarkResult() string {
+	type result struct {
+		Context struct {
+			Date              string `json:"date"`
+			NumCPUs           int    `json:"num_cpus"`
+			MhzPerCPU         uint   `json:"mhz_per_cpu"`
+			CPUScalingEnabled bool   `json:"cpu_scaling_enabled"`
+			LibraryBuildType  string `json:"library_build_type"`
+		} `json:"context"`
+		Benchmarks []benchmark `json:"benchmarks"`
+	}
+	res := result{Benchmarks: i.benchmarks}
+	res.Context.Date = time.Now().String()
+	res.Context.NumCPUs = runtime.NumCPU()
+	var si sysinfo.SysInfo
+	si.GetSysInfo()
+	res.Context.MhzPerCPU = si.CPU.Speed
+	res.Context.LibraryBuildType = "debug"
+	res.Context.CPUScalingEnabled = false // FIXME: dynamic
+	return u.PrettyJSON(res)
 }
