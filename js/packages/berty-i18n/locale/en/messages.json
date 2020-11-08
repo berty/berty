@@ -8,12 +8,12 @@
   },
   "onboarding": {
     "getstarted": {
-      "desc": "",
-      "open-registered-account": "",
-      "import-button": "",
-      "account-selector-create-button": "",
-      "more-options": "",
-      "button": ""
+      "desc": "The secure peer-to-peer messaging app that works with or without internet access, cellular data or trust in the network",
+      "open-registered-account": "Open a registered account",
+      "import-button": "Import data from an existing account",
+      "account-selector-create-button": "Create a new account",
+      "more-options": "More options",
+      "button": "GET STARTED"
     },
     "select-mode": {
       "performance": {
@@ -40,12 +40,12 @@
       "button": "CREATE MY ACCOUNT"
     },
     "services-auth": {
-      "header": "",
-      "title": "",
-      "recommended": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "header": "Authenticate to services",
+      "title": "Services",
+      "recommended": "Recommended",
+      "desc": "This will automatically replicate your conversations on a server",
+      "button": "Use Berty operated services",
+      "skip": "SKIP AND DO THIS LATER"
     },
     "generate-key": {
       "title": "Starting the Berty node…",
@@ -76,129 +76,129 @@
   "main": {
     "home": {
       "requests": {
-        "title": "",
-        "received-at": "",
-        "accept": "",
-        "card-title": ""
+        "title": "Requests",
+        "received-at": "Received",
+        "accept": "Accept",
+        "card-title": "Contact request!"
       },
       "messages": {
-        "title": ""
+        "title": "Messages"
       },
-      "input-placeholder": "",
-      "no-contacts": "",
+      "input-placeholder": "Search keyword",
+      "no-contacts": "You don't have any contacts or chat yet",
       "search": {
-        "no-results": ""
+        "no-results": "No results found"
       }
     },
     "home-modal": {
-      "left-button": "",
+      "left-button": "Scan",
       "right-button": ""
     }
   },
   "settings": {
     "home": {
-      "header-left-button": "",
-      "header-center-button": "",
-      "header-right-button": "",
-      "network-button": ""
+      "header-left-button": "Help",
+      "header-center-button": "Devtools",
+      "header-right-button": "Settings",
+      "network-button": "Network List"
     },
     "network-map": {
-      "title": "",
-      "online-peers": ""
+      "title": "Network List",
+      "online-peers": "Online Peers"
     },
     "mode": {
-      "title": "",
-      "desc": "",
+      "title": "Settings",
+      "desc": "Customize everything to get the app that fits your needs",
       "notifications-button": {
-        "title": "",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "title": "Notifications",
+        "tag-enabled": "Enabled",
+        "tag-disabled": "Disabled"
       },
       "bluetooth-button": {
-        "title": "",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "title": "Bluetooth",
+        "tag-enabled": "Enabled",
+        "tag-disabled": "Disabled"
       },
       "app-mode-button": {
-        "title": "",
-        "performance-tag": "",
-        "privacy-tag": "",
-        "description-tag": "",
-        "first-bullet-point": "",
-        "second-bullet-point": "",
-        "third-bullet-point": ""
+        "title": "App mode",
+        "performance-tag": "Performance",
+        "privacy-tag": "Privacy",
+        "description-tag": "Easy to use - All the features",
+        "first-bullet-point": "Receive push notifications",
+        "second-bullet-point": "Receive contact requests",
+        "third-bullet-point": "Local peer discovery (BLE & Multicast DNS)"
       },
-      "dark-mode-button": "",
-      "receive-contact-requests-button": "",
-      "external-services-button": "",
-      "auto-replicate-button": "",
+      "dark-mode-button": "Dark mode",
+      "receive-contact-requests-button": "Receive contact requests",
+      "external-services-button": "External services",
+      "auto-replicate-button": "Auto replicate",
       "multicast-dns-button": {
-        "title": "",
-        "desc": ""
+        "title": "Multicast DNS",
+        "desc": "Local Peer discovery"
       },
       "blocked-contacts-button": {
-        "title": "",
-        "tag": ""
+        "title": "Blocked contacts",
+        "tag": "blocked"
       },
-      "delete-account-button": ""
+      "delete-account-button": "Delete my account"
     },
     "notifications": {
-      "title": "",
-      "enabled-desc": "",
-      "disabled-desc": "",
-      "activate-button": "",
+      "title": "Notifications",
+      "enabled-desc": "You have activated notifications!",
+      "disabled-desc": "You have not activated notifications for this app",
+      "activate-button": "Activate notifications",
       "contact-request-button": {
-        "title": "",
-        "desc": ""
+        "title": "Contact request",
+        "desc": "Receive a notification everytime someone sends you a contact request"
       },
       "messages-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
+        "title": "Messages notifications",
+        "display-button": "Display notifications",
+        "preview-button": "Messages preview",
+        "sound-button": "Sound",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
-          "tag": ""
+          "title": "Exceptions",
+          "preview-value": "Add",
+          "tag": "exceptions"
         }
       },
       "group-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
+        "title": "Groups notifications",
+        "display-button": "Display notifications",
+        "preview-button": "Messages preview",
+        "sound-button": "Sound",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
-          "tag": ""
+          "title": "Exceptions",
+          "preview-value": "Add",
+          "tag": "exceptions"
         }
       }
     },
     "bluetooth": {
-      "title": "",
-      "desc": "",
-      "activate-button": ""
+      "title": "Bluetooth",
+      "desc": "Bluetooth allows you top use the Berty app when you don't have a network connection (wifi or data) by connecting your phone directly with peers nearby",
+      "activate-button": "Activate bluetooth"
     },
     "services-auth": {
-      "title": "",
-      "operated-services-button": "",
+      "title": "External services",
+      "operated-services-button": "Use Berty operated services",
       "register-service-button": {
-        "title": "",
-        "input-placeholder": "",
-        "action": ""
+        "title": "Register a custom service provider",
+        "input-placeholder": "Service URL",
+        "action": "Add"
       },
       "registered-services-button": {
-        "title": "",
-        "sample-no-services": "",
-        "sample-unknown-service": ""
+        "title": "Currently registered services",
+        "sample-no-services": "No services registered",
+        "sample-unknown-service": "Unknown service"
       }
     },
     "delete-account": {
-      "title": "",
-      "first-desc": "",
-      "begin-second-desc": "",
-      "bold-second-desc": "",
-      "end-second-desc": "",
+      "title": "Delete account!",
+      "first-desc": "Are you sure you want to delete your account?",
+      "begin-second-desc": "Please type ",
+      "bold-second-desc": "delete",
+      "end-second-desc": " to confirm",
       "cancel-button": "",
       "delete-button": ""
     },
@@ -261,127 +261,127 @@
       "dump-members-button": "",
       "stop-node-button": "",
       "bot-mode-button": "",
-      "local-grpc-button": "",
-      "console-logs-button": "",
-      "ipfs-webui-button": "",
-      "notifications-button": "",
+      "local-grpc-button": "local gRPC",
+      "console-logs-button": "Console logs",
+      "ipfs-webui-button": "IPFS WebUI",
+      "notifications-button": "Notifications",
       "send-to-all-button": {
-        "title": "",
-        "sending": "",
-        "test": "",
-        "begin-tried": "",
-        "end-tried": ""
+        "title": "Send messages to all contacts",
+        "sending": "Sending...",
+        "test": "Test, ",
+        "begin-tried": "✔ Tried sending to ",
+        "end-tried": " contacts"
       },
-      "footer-left-button": "",
-      "footer-middle-button": "",
-      "footer-right-button": ""
+      "footer-left-button": "Device infos",
+      "footer-middle-button": "List events",
+      "footer-right-button": "Restart daemon"
     },
     "system-info": {
-      "title": ""
+      "title": "System info"
     },
     "fake-data": {
-      "title": "",
-      "contacts-button": "",
-      "multi-members-button": "",
-      "messages-button": "",
-      "delete-button": ""
+      "title": "Generate fake data",
+      "contacts-button": "Gen fake contacts",
+      "multi-members-button": "Gen fake multi-members",
+      "messages-button": "Gen fake messages",
+      "delete-button": "Delete fake data"
     },
     "add-contact-list": {
-      "title": "",
-      "add": ""
+      "title": "Add contacts list",
+      "add": "Add"
     },
     "ipfs-webui": {
-      "title": ""
+      "title": "IPFS WebUI"
     }
   },
   "modals": {
     "manage-deep-link": {
-      "invalid-link": "",
-      "invalid-qr": "",
-      "error": ""
+      "invalid-link": "Invalid link!",
+      "invalid-qr": "Invalid QR code!",
+      "error": "Error!"
     },
     "invalid-scan": {
-      "dismiss-button": ""
+      "dismiss-button": "DISMISS"
     },
     "add-this-contact": {
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "fingerprint": "Fingerprint",
+      "info": "Info",
+      "devices": "Devices"
     },
     "group-invitation": {
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "fingerprint": "Fingerprint",
+      "info": "Infos",
+      "devices": "Devices"
     }
   },
   "chat": {
     "contact-settings": {
-      "mark-button": "",
-      "block-button": "",
-      "delete-button": "",
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "mark-button": "Mark as verified",
+      "block-button": "Block contact",
+      "delete-button": "Delete contact",
+      "fingerprint": "Fingerprint",
+      "info": "Infos",
+      "devices": "Devices"
     },
     "multi-member": {
-      "input-placeholder": ""
+      "input-placeholder": "Write a secure message..."
     },
     "multi-member-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "media-button": "",
-      "notifications-button": "",
+      "header-left-button": "Search",
+      "header-middle-button": "Call",
+      "header-right-button": "Share",
+      "media-button": "Medias, links & docs",
+      "notifications-button": "Receive notifications",
       "members-button": {
-        "title": "",
-        "unknown": ""
+        "title": "Members",
+        "unknown": "Unknown"
       },
-      "add-member-button": "",
-      "invite-button": "",
-      "save-button": "",
-      "erase-button": "",
-      "leave-button": ""
+      "add-member-button": "Add member",
+      "invite-button": "Invite by link",
+      "save-button": "Save conversation on server",
+      "erase-button": "Erase conversation",
+      "leave-button": "Leave group"
     },
     "one-to-one": {
       "contact-request-box": {
-        "title": "",
-        "refuse-button": "",
-        "accept-button": "",
-        "accepted-button": ""
+        "title": "CONTACT REQUEST",
+        "refuse-button": "REFUSE",
+        "accept-button": "ACCEPT",
+        "accepted-button": "ACCEPTED"
       },
       "betabot-box": {
-        "title": "",
-        "begin-desc": "",
-        "bold-desc": "",
-        "end-desc": "",
-        "skip-button": "",
-        "add-button": ""
+        "title": "ADD BETA BOT?",
+        "begin-desc": "You don't have any contacts yet would you like to add the",
+        "bold-desc": " Beta Bot",
+        "end-desc": " to discover and test conversations?",
+        "skip-button": "SKIP",
+        "add-button": "ADD !"
       },
       "infos-chat": {
-        "connection-confirmed": "",
-        "request-sent": "",
-        "incoming": "",
-        "outgoing": ""
+        "connection-confirmed": "👋 Berty connection confirmed! 🎉",
+        "request-sent": "Request Sent ✈",
+        "incoming": "Accept this request to reply!",
+        "outgoing": "Waiting for your contact reply to connect!"
       },
-      "betabot-input-placeholder": "",
-      "incoming-input-placeholder": "",
-      "input-placeholder": ""
+      "betabot-input-placeholder": "Add betabot to write here...",
+      "incoming-input-placeholder": "Accept the request to write here...",
+      "input-placeholder": "Write a secure message..."
     },
     "one-to-one-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "media-button": "",
-      "notifications-button": "",
-      "mutual-button": "",
-      "save-button": "",
-      "erase-button": ""
+      "header-left-button": "Search",
+      "header-middle-button": "Call",
+      "header-right-button": "Share",
+      "media-button": "Medias, links & docs",
+      "notifications-button": "Receive notifications",
+      "mutual-button": "Mutual groups",
+      "save-button": "Save conversation on server",
+      "erase-button": "Erase conversation"
     },
     "replicate-group-settings": {
-      "title": "",
-      "no-registered-button": "",
-      "connect-button": "",
-      "manage-add-button": ""
+      "title": "Register conversation on server",
+      "no-registered-button": "No replication service registered",
+      "connect-button": "Connect to Berty operated services",
+      "manage-add-button": "Manage or add services"
     }
   }
 }
