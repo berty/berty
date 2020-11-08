@@ -3,6 +3,7 @@ import { View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-nat
 import { Text, Icon } from '@ui-kitten/components'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import QRCode from 'react-native-qrcode-svg'
+import { Translation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
@@ -30,39 +31,43 @@ const HomeHeaderGroupButton: React.FC = () => {
 	const { navigate } = useNavigation()
 
 	return (
-		<View
-			style={[
-				padding.horizontal.medium,
-				padding.top.small,
-				{ position: 'absolute', width: '100%', bottom: -40 },
-			]}
-		>
-			<ButtonSettingRow
-				state={[
-					{
-						name: 'Help',
-						icon: 'question-mark-circle-outline',
-						color: color.red,
-						style: _styles.firstHeaderButton,
-						onPress: () => navigate.settings.help(),
-					},
-					{
-						name: 'Devtools',
-						icon: 'options-2-outline',
-						color: color.dark.grey,
-						style: _styles.secondHeaderButton,
-						onPress: () => navigate.settings.devTools(),
-					},
-					{
-						name: 'Settings',
-						icon: 'settings-2-outline',
-						color: color.blue,
-						style: _styles.thirdHeaderButton,
-						onPress: () => navigate.settings.mode(),
-					},
-				]}
-			/>
-		</View>
+		<Translation>
+			{(t: any): React.ReactNode => (
+				<View
+					style={[
+						padding.horizontal.medium,
+						padding.top.small,
+						{ position: 'absolute', width: '100%', bottom: -40 },
+					]}
+				>
+					<ButtonSettingRow
+						state={[
+							{
+								name: t('settings.home.header-left-button'),
+								icon: 'question-mark-circle-outline',
+								color: color.red,
+								style: _styles.firstHeaderButton,
+								onPress: navigate.settings.help,
+							},
+							{
+								name: t('settings.home.header-center-button'),
+								icon: 'options-2-outline',
+								color: color.dark.grey,
+								style: _styles.secondHeaderButton,
+								onPress: navigate.settings.devTools,
+							},
+							{
+								name: t('settings.home.header-right-button'),
+								icon: 'settings-2-outline',
+								color: color.blue,
+								style: _styles.thirdHeaderButton,
+								onPress: navigate.settings.mode,
+							},
+						]}
+					/>
+				</View>
+			)}
+		</Translation>
 	)
 }
 
@@ -126,19 +131,23 @@ const HomeHeader: React.FC = () => {
 }
 
 const HomeBodySettings: React.FC<{}> = () => {
-	const [{ flex, color, padding, margin }] = useStyles()
+	const [{ flex, color, padding }] = useStyles()
 	const navigation = useNativeNavigation()
 
 	return (
-		<View style={[flex.tiny, padding.horizontal.medium, padding.bottom.medium, margin.top.medium]}>
-			<ButtonSetting
-				name='Network List'
-				icon='earth'
-				iconPack='custom'
-				iconColor={color.blue}
-				onPress={() => navigation.navigate('Settings.NetworkMap')}
-			/>
-		</View>
+		<Translation>
+			{(t: any): React.ReactNode => (
+				<View style={[flex.tiny, padding.horizontal.medium]}>
+					<ButtonSetting
+						name={t('settings.home.network-button')}
+						icon='earth'
+						iconPack='custom'
+						iconColor={color.blue}
+						onPress={() => navigation.navigate('Settings.NetworkMap')}
+					/>
+				</View>
+			)}
+		</Translation>
 	)
 }
 

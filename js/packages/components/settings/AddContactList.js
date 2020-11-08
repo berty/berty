@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, ScrollView } from 'react-native'
 import { Layout } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
 
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
@@ -11,6 +12,7 @@ import { useStyles } from '@berty-tech/styles'
 import { globals } from '@berty-tech/config'
 
 const BodyAddContactList = () => {
+	const { t } = useTranslation()
 	const [{ color, padding, flex, margin }] = useStyles()
 	const navigation = useNavigation()
 
@@ -20,7 +22,7 @@ const BodyAddContactList = () => {
 				return (
 					<ButtonSetting
 						key={value.link}
-						name={'Add ' + value.name}
+						name={t('settings.add-contact-list.add') + value.name}
 						icon='book-outline'
 						iconSize={30}
 						iconColor={color.dark.grey}
@@ -40,6 +42,7 @@ const BodyAddContactList = () => {
 }
 
 export const AddContactList = () => {
+	const { t } = useTranslation()
 	const [{ color, padding, flex, background }] = useStyles()
 	const { goBack } = useNavigation()
 
@@ -47,7 +50,11 @@ export const AddContactList = () => {
 		<Layout style={[background.white, flex.tiny]}>
 			<SwipeNavRecognizer>
 				<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
-					<HeaderSettings title='Add contacts list' bgColor={color.dark.grey} undo={goBack} />
+					<HeaderSettings
+						title={t('settings.add-contact-list.title')}
+						bgColor={color.dark.grey}
+						undo={goBack}
+					/>
 					<BodyAddContactList />
 				</ScrollView>
 			</SwipeNavRecognizer>

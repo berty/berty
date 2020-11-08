@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, ScrollView } from 'react-native'
 import { Layout } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
 
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
@@ -17,6 +18,7 @@ import {
 } from '@berty-tech/store/hooks'
 
 const BodyFakeData = () => {
+	const { t } = useTranslation()
 	const [{ color, padding, flex, margin }] = useStyles()
 	const generateFakeContacts = useGenerateFakeContacts()
 	const generateFakeMM = useGenerateFakeMultiMembers()
@@ -26,7 +28,7 @@ const BodyFakeData = () => {
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<ButtonSetting
-				name='Gen fake contacts'
+				name={t('settings.fake-data.contacts-button')}
 				icon='book-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
@@ -34,7 +36,7 @@ const BodyFakeData = () => {
 				onPress={() => generateFakeContacts(5)}
 			/>
 			<ButtonSetting
-				name='Gen fake multi-members'
+				name={t('settings.fake-data.multi-members-button')}
 				icon='book-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
@@ -42,7 +44,7 @@ const BodyFakeData = () => {
 				onPress={() => generateFakeMM(5)}
 			/>
 			<ButtonSetting
-				name='Gen fake messages'
+				name={t('settings.fake-data.messages-button')}
 				icon='book-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
@@ -50,7 +52,7 @@ const BodyFakeData = () => {
 				onPress={() => convGenMsg(3)}
 			/>
 			<ButtonSetting
-				name='Delete fake data'
+				name={t('settings.fake-data.delete-button')}
 				icon='book-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
@@ -64,12 +66,17 @@ const BodyFakeData = () => {
 export const FakeData = () => {
 	const [{ color, padding, flex, background }] = useStyles()
 	const { goBack } = useNavigation()
+	const { t } = useTranslation()
 
 	return (
 		<Layout style={[background.white, flex.tiny]}>
 			<SwipeNavRecognizer>
 				<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
-					<HeaderSettings title='Generate fake data' bgColor={color.dark.grey} undo={goBack} />
+					<HeaderSettings
+						title={t('settings.fake-data.title')}
+						bgColor={color.dark.grey}
+						undo={goBack}
+					/>
 					<BodyFakeData />
 				</ScrollView>
 			</SwipeNavRecognizer>

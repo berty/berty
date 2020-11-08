@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { View, ScrollView, Vibration, Alert } from 'react-native'
 import { Layout } from '@ui-kitten/components'
+import { Translation, useTranslation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { HeaderSettings } from '../shared-components/Header'
@@ -34,6 +35,7 @@ const useStylesDevTools = () => {
 
 const HeaderDevTools: React.FC<{}> = () => {
 	const { navigate } = useNavigation()
+	const { t } = useTranslation()
 	const _styles = useStylesDevTools()
 	const [{ color, text }] = useStyles()
 
@@ -42,14 +44,14 @@ const HeaderDevTools: React.FC<{}> = () => {
 			<ButtonSettingRow
 				state={[
 					{
-						name: 'Device infos',
+						name: t('settings.devtools.header-left-button'),
 						icon: 'smartphone-outline',
 						color: color.dark.grey,
 						style: _styles.buttonRow,
 						disabled: true,
 					},
 					{
-						name: 'Generate fake data',
+						name: t('settings.devtools.header-middle-button'),
 						icon: 'book-outline',
 						color: color.dark.grey,
 						style: _styles.buttonRow,
@@ -58,7 +60,7 @@ const HeaderDevTools: React.FC<{}> = () => {
 						},
 					},
 					{
-						name: 'Restart daemon',
+						name: t('settings.devtools.header-right-button'),
 						icon: 'repeat-outline',
 						color: color.blue,
 						style: _styles.lastButtonRow,
@@ -83,10 +85,11 @@ const NativeCallButton: React.FC = () => {
 		rpcBridge,
 		messengerMiddlewares,
 	)
+	const { t } = useTranslation()
 	let i = 0
 	return (
 		<ButtonSetting
-			name='Test Native Bridge'
+			name={t('settings.devtools.native-bridge-button')}
 			icon='activity-outline'
 			iconSize={30}
 			iconColor='grey'
@@ -127,6 +130,7 @@ const DiscordShareButton: React.FC = () => {
 	const account: any = useAccount()
 	const { call, done, error } = messengerMethodsHooks.useDevShareInstanceBertyID()
 	const [{ color }] = useStyles()
+	const { t } = useTranslation()
 
 	React.useEffect(() => {
 		if (done) {
@@ -143,15 +147,15 @@ const DiscordShareButton: React.FC = () => {
 
 	const createDiscordShareAlert = () =>
 		Alert.alert(
-			'Do you want to share your QR code to "#dev-logs" on Berty Discord?',
-			'This will allow other staff to scan your QR code or copy your contact link.',
+			t('settings.devtools.share-button.alert-title'),
+			t('settings.devtools.share-button.alert-message'),
 			[
 				{
-					text: 'Nope',
+					text: t('settings.devtools.share-button.alert-cancel-button'),
 					style: 'cancel',
 				},
 				{
-					text: 'Yep 👍',
+					text: t('settings.devtools.share-button.alert-accept-button'),
 					onPress: () => {
 						call({
 							displayName: account.displayName,
@@ -165,7 +169,7 @@ const DiscordShareButton: React.FC = () => {
 
 	return (
 		<ButtonSetting
-			name='Share ID on discord'
+			name={t('settings.devtools.share-button.title')}
 			icon='activity-outline'
 			iconSize={30}
 			iconColor={color.dark.grey}
@@ -193,40 +197,47 @@ const DumpButton: React.FC<{ text: string; name: string }> = ({ text, name }) =>
 const DumpAccount: React.FC = () => {
 	const acc = useAccount()
 	const text = JSON.stringify(acc, null, 2)
-	return <DumpButton name='Dump account' text={text} />
+	const { t } = useTranslation()
+	return <DumpButton name={t('settings.devtools.dump-account-button')} text={text} />
 }
 
 const DumpContacts: React.FC = () => {
 	const ctx = useMsgrContext()
 	const text = JSON.stringify(ctx.contacts, null, 2)
-	return <DumpButton name='Dump contacts' text={text} />
+	const { t } = useTranslation()
+	return <DumpButton name={t('settings.devtools.dump-contacts-button')} text={text} />
 }
 
 const DumpConversations: React.FC = () => {
 	const ctx = useMsgrContext()
 	const text = JSON.stringify(ctx.conversations, null, 2)
-	return <DumpButton name='Dump conversations' text={text} />
+	const { t } = useTranslation()
+	return <DumpButton name={t('settings.devtools.dump-conversations-button')} text={text} />
 }
 
 const DumpInteractions: React.FC = () => {
 	const ctx = useMsgrContext()
 	const text = JSON.stringify(ctx.interactions, null, 2)
-	return <DumpButton name='Dump interactions' text={text} />
+	const { t } = useTranslation()
+	return <DumpButton name={t('settings.devtools.dump-interactions-button')} text={text} />
 }
 
 const SendToAll: React.FC = () => {
 	const [{ color }] = useStyles()
 	const [disabled, setDisabled] = useState(false)
-	const [name, setName] = useState('Send message to all contacts')
+	const { t } = useTranslation()
+	const [name, setName] = useState<any>(t('settings.devtools.send-to-all-button.title'))
 	const ctx = useMsgrContext()
 	const convs: any[] = Object.values(ctx.conversations).filter(
 		(conv: any) => conv.type === messengerpb.Conversation.Type.ContactType && !conv.fake,
 	)
-	const body = `Test, ${new Date(Date.now()).toLocaleString()}`
+	const body = `${t('settings.devtools.send-to-all-button.test')}${new Date(
+		Date.now(),
+	).toLocaleString()}`
 	const buf: string = messengerpb.AppMessage.UserMessage.encode({ body }).finish()
 	const handleSendToAll = React.useCallback(async () => {
 		setDisabled(true)
-		setName('Sending...')
+		setName(t('settings.devtools.send-to-all-button.sending'))
 		for (const conv of convs) {
 			try {
 				await ctx.client?.interact({
@@ -239,9 +250,13 @@ const SendToAll: React.FC = () => {
 			}
 		}
 		setDisabled(false)
-		setName(`✔ Tried sending to ${convs.length} contacts`)
-		setTimeout(() => setName('Send message to all contacts'), 1000)
-	}, [buf, convs, ctx.client])
+		setName(
+			`${t('settings.devtools.send-to-all-button.begin-tried')}${convs.length}${t(
+				'settings.devtools.send-to-all-button.end-tried',
+			)}`,
+		)
+		setTimeout(() => setName(t('settings.devtools.send-to-all-button.title')), 1000)
+	}, [buf, convs, ctx.client, t])
 	return (
 		<ButtonSetting
 			name={name}
@@ -260,7 +275,8 @@ const SendToAll: React.FC = () => {
 const DumpMembers: React.FC = () => {
 	const ctx = useMsgrContext()
 	const text = JSON.stringify(ctx.members, null, 2)
-	return <DumpButton name='Dump members' text={text} />
+	const { t } = useTranslation()
+	return <DumpButton name={t('settings.devtools.dump-members-button')} text={text} />
 }
 
 const PlaySound: React.FC = () => {
@@ -293,18 +309,19 @@ const BodyDevTools: React.FC<{}> = () => {
 	const { navigate } = useNavigation()
 	const navigation = useNativeNavigation()
 	const ctx = useMsgrContext()
+	const { t } = useTranslation()
 
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<ButtonSetting
-				name='System info'
+				name={t('settings.devtools.system-info-button')}
 				icon='info-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
 				onPress={() => navigate.settings.systemInfo()}
 			/>
 			<ButtonSetting
-				name='Add bots'
+				name={t('settings.devtools.add-bots-button')}
 				icon='info-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
@@ -318,7 +335,7 @@ const BodyDevTools: React.FC<{}> = () => {
 			<DumpInteractions />
 			<DumpMembers />
 			<ButtonSetting
-				name={'Stop node'}
+				name={t('settings.devtools.stop-node-button')}
 				icon='activity-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
@@ -340,7 +357,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				/>
 			)}
 			<ButtonSetting
-				name='Bot mode'
+				name={t('settings.devtools.bot-mode-button')}
 				icon='briefcase-outline'
 				iconSize={30}
 				iconColor={color.green}
@@ -348,7 +365,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				disabled
 			/>
 			<ButtonSetting
-				name='local gRPC'
+				name={t('settings.devtools.local-grpc-button')}
 				icon='hard-drive-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
@@ -356,7 +373,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				disabled
 			/>
 			<ButtonSetting
-				name='Console logs'
+				name={t('settings.devtools.console-logs-button')}
 				icon='folder-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
@@ -364,7 +381,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				disabled
 			/>
 			<ButtonSetting
-				name='Ipfs WebUI'
+				name={t('settings.devtools.ipfs-webui-button')}
 				icon='smartphone-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
@@ -372,7 +389,7 @@ const BodyDevTools: React.FC<{}> = () => {
 				onPress={() => navigate.settings.ipfsWebUI()}
 			/>
 			<ButtonSetting
-				name='Notifications'
+				name={t('settings.devtools.notifications-button')}
 				icon='bell-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
@@ -384,21 +401,21 @@ const BodyDevTools: React.FC<{}> = () => {
 			<ButtonSettingRow
 				state={[
 					{
-						name: 'Device infos',
+						name: t('settings.devtools.footer-left-button'),
 						icon: 'smartphone-outline',
 						color: color.dark.grey,
 						style: _styles.buttonRow,
 						disabled: true,
 					},
 					{
-						name: 'List events',
+						name: t('settings.devtools.footer-middle-button'),
 						icon: 'list-outline',
 						color: color.dark.grey,
 						style: _styles.buttonRow,
 						disabled: true,
 					},
 					{
-						name: 'Restart daemon',
+						name: t('settings.devtools.footer-right-button'),
 						icon: 'repeat-outline',
 						color: color.red,
 						style: _styles.lastButtonRow,
@@ -416,15 +433,23 @@ export const DevTools: React.FC<ScreenProps.Settings.DevTools> = () => {
 	const { goBack } = useNavigation()
 	const [{ background, flex, color, padding }] = useStyles()
 	return (
-		<Layout style={[background.white, flex.tiny]}>
-			<SwipeNavRecognizer>
-				<ScrollView bounces={false} contentContainerStyle={padding.bottom.huge}>
-					<HeaderSettings title='Dev tools' bgColor={color.dark.grey} undo={goBack}>
-						<HeaderDevTools />
-					</HeaderSettings>
-					<BodyDevTools />
-				</ScrollView>
-			</SwipeNavRecognizer>
-		</Layout>
+		<Translation>
+			{(t: any): React.ReactNode => (
+				<Layout style={[background.white, flex.tiny]}>
+					<SwipeNavRecognizer>
+						<ScrollView bounces={false} contentContainerStyle={padding.bottom.huge}>
+							<HeaderSettings
+								title={t('settings.devtools.title')}
+								bgColor={color.dark.grey}
+								undo={goBack}
+							>
+								<HeaderDevTools />
+							</HeaderSettings>
+							<BodyDevTools />
+						</ScrollView>
+					</SwipeNavRecognizer>
+				</Layout>
+			)}
+		</Translation>
 	)
 }

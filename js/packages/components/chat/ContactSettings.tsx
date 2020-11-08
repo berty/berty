@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { View, ScrollView, ActivityIndicator } from 'react-native'
 import { Text } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
+import { useTranslation } from 'react-i18next'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { TabBar } from '../shared-components/TabBar'
@@ -38,6 +39,8 @@ const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 		persistOpts.betabot.convPk &&
 		contact.publicKey.toString() === persistOpts.betabot.convPk.toString()
 	const betabotAvatarSize = 100
+	const { t } = useTranslation()
+
 	return (
 		<View style={[padding.medium, padding.top.scale(50)]}>
 			<View
@@ -86,10 +89,14 @@ const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 					</Text>
 					<TabBar
 						tabs={[
-							{ name: 'Fingerprint', icon: 'fingerprint', iconPack: 'custom' },
-							{ name: 'Infos', icon: 'info-outline', buttonDisabled: true },
 							{
-								name: 'Devices',
+								name: t('chat.contact-settings.fingerprint'),
+								icon: 'fingerprint',
+								iconPack: 'custom',
+							},
+							{ name: t('chat.contact-settings.info'), icon: 'info-outline', buttonDisabled: true },
+							{
+								name: t('chat.contact-settings.devices'),
 								icon: 'smartphone',
 								iconPack: 'feather',
 								iconTransform: [{ rotate: '22.5deg' }, { scale: 0.8 }],
@@ -113,9 +120,10 @@ const DeleteContactButton: React.FC<{ id: string }> = ({ id }) => {
 	const deleteContact = ({ id }: { id: string }) => {
 		console.warn(`attempted to delete ${id}, operation not implemented`)
 	}
+	const { t } = useTranslation()
 	return (
 		<ButtonSetting
-			name='Delete contact'
+			name={t('chat.contact-settings.delete-button')}
 			icon='trash-2-outline'
 			iconColor={color.red}
 			onPress={() => deleteContact({ id })}
@@ -126,16 +134,22 @@ const DeleteContactButton: React.FC<{ id: string }> = ({ id }) => {
 
 const ContactSettingsBody: React.FC<{ id: string }> = ({ id }) => {
 	const [{ padding, color }] = useStyles()
+	const { t } = useTranslation()
 	return (
 		<View style={padding.medium}>
 			<ButtonSetting
+				name={t('chat.contact-settings.mark-button')}
 				icon='checkmark-circle-2'
-				name='Mark as verified'
 				iconDependToggle
 				toggled
 				disabled
 			/>
-			<ButtonSetting name='Block contact' icon='slash-outline' iconColor={color.red} disabled />
+			<ButtonSetting
+				name={t('chat.contact-settings.block-button')}
+				icon='slash-outline'
+				iconColor={color.red}
+				disabled
+			/>
 			<DeleteContactButton id={id} />
 		</View>
 	)

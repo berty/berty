@@ -15,6 +15,7 @@ import { Text, Icon } from '@ui-kitten/components'
 import { CommonActions } from '@react-navigation/native'
 import { groupBy } from 'lodash'
 import moment from 'moment'
+import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { Routes, ScreenProps, useNavigation } from '@berty-tech/navigation'
@@ -361,6 +362,7 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 	const { dispatch } = useNavigation()
 	useReadEffect(params.convId, 1000)
 	const conv = useConversation(params?.convId)
+	const { t } = useTranslation()
 
 	const lastInte = useLastConvInteraction(params?.convId || '')
 	const lastUpdate = conv?.lastUpdate || lastInte?.sentDate || conv?.createdDate || null
@@ -386,7 +388,7 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 						convPk={params?.convId}
 						isFocused={inputIsFocused}
 						setFocus={setInputFocus}
-						placeholder='Write a secure message...'
+						placeholder={t('chat.multi-member.input-placeholder')}
 					/>
 					<HeaderMultiMember id={params?.convId} {...{ stickyDate, showStickyDate }} />
 				</KeyboardAvoidingView>

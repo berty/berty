@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
+import { Translation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
 import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
@@ -103,23 +104,27 @@ const HeaderBluetooth: React.FC<BluetoothProps> = ({ isBluetooth }) => {
 const BodyBluetooth: React.FC<BluetoothProps> = ({ isBluetooth }) => {
 	const [{ flex, padding, margin, color }] = useStyles()
 	return (
-		<View
-			style={[
-				flex.tiny,
-				padding.medium,
-				margin.bottom.medium,
-				!isBluetooth ? _bluetoothStyles.bodyNotAuthorize : null,
-			]}
-		>
-			<ButtonSetting
-				name='Activate Bluetooth'
-				icon='bluetooth-outline'
-				iconSize={30}
-				iconColor={color.blue}
-				toggled
-				disabled
-			/>
-		</View>
+		<Translation>
+			{(t: any): React.ReactNode => (
+				<View
+					style={[
+						flex.tiny,
+						padding.medium,
+						margin.bottom.medium,
+						!isBluetooth ? _bluetoothStyles.bodyNotAuthorize : null,
+					]}
+				>
+					<ButtonSetting
+						name={t('settings.bluetooth.activate-button')}
+						icon='bluetooth-outline'
+						iconSize={30}
+						iconColor={color.blue}
+						toggled
+						disabled
+					/>
+				</View>
+			)}
+		</Translation>
 	)
 }
 
@@ -128,20 +133,23 @@ export const Bluetooth: React.FC<ScreenProps.Settings.Bluetooth> = () => {
 	const { goBack } = useNavigation()
 	const [{ flex, background }] = useStyles()
 	return (
-		<Layout style={[flex.tiny, background.white]}>
-			<SwipeNavRecognizer>
-				<ScrollView bounces={false}>
-					<HeaderSettings
-						title='Bluetooth'
-						desc="Bluetooth allows you to use the Berty app when you don't have a network connection (wifi or data) by connecting
-					your phone directly with peers nearby"
-						undo={goBack}
-					>
-						<HeaderBluetooth isBluetooth={isBluetooth} />
-					</HeaderSettings>
-					<BodyBluetooth isBluetooth={isBluetooth} />
-				</ScrollView>
-			</SwipeNavRecognizer>
-		</Layout>
+		<Translation>
+			{(t: any): React.ReactNode => (
+				<Layout style={[flex.tiny, background.white]}>
+					<SwipeNavRecognizer>
+						<ScrollView bounces={false}>
+							<HeaderSettings
+								title={t('settings.bluetooth.title')}
+								desc={t('settings.bluetooth.desc')}
+								undo={goBack}
+							>
+								<HeaderBluetooth isBluetooth={isBluetooth} />
+							</HeaderSettings>
+							<BodyBluetooth isBluetooth={isBluetooth} />
+						</ScrollView>
+					</SwipeNavRecognizer>
+				</Layout>
+			)}
+		</Translation>
 	)
 }

@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { View, ScrollView, Vibration } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import DropDownPicker from 'react-native-dropdown-picker'
+import { Translation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext, useAccount } from '@berty-tech/store/hooks'
@@ -14,9 +15,7 @@ import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
 import { languages } from '@berty-tech/berty-i18n/locale/languages'
-import { Translation } from 'react-i18next'
 
 //
 // Mode
@@ -60,179 +59,189 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 		return items
 	}, [])
 
-	const currentLanguage = ctx.persistentOptions.i18n.language
-
 	return (
-		<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
-			<DropDownPicker
-				items={items}
-				defaultValue={currentLanguage}
-				containerStyle={[{ marginTop: 22, height: 60 }]}
-				onChangeItem={async (item: any) => {
-					await i18n.changeLanguage(item.value)
-					await ctx.setPersistentOption({
-						type: PersistentOptionsKeys.I18N,
-						payload: {
-							language: item.value,
-						},
-					})
-				}}
-			/>
-			<ButtonSetting
-				name='Notifications'
-				icon='bell-outline'
-				iconColor={color.blue}
-				state={{
-					value: enableNotif ? 'Enabled' : 'Disabled',
-					color: enableNotif ? color.green : color.red,
-					bgColor: enableNotif ? color.light.green : color.light.red,
-				}}
-				onPress={() => navigation.navigate('Settings.Notifications')}
-			/>
-			<ButtonSetting
-				name='Bluetooth'
-				icon='bluetooth-outline'
-				iconColor={color.blue}
-				onPress={() => navigation.navigate('Settings.Bluetooth')}
-			/>
-			<ButtonSetting
-				name='App mode'
-				icon='options-outline'
-				iconSize={30}
-				iconColor={color.blue}
-				actionIcon='arrow-ios-forward'
-				state={{
-					value: isMode ? 'Performance' : 'Privacy',
-					color: color.white,
-					bgColor: isMode ? color.blue : color.red,
-					stateIcon: isMode ? 'flash-outline' : 'lock-outline',
-					stateIconColor: color.white,
-				}}
-				disabled
-			>
-				<Text
-					style={[
-						column.item.right,
-						_styles.buttonListUnderStateText,
-						isMode ? text.color.blue : text.color.red,
-						margin.bottom.small,
-					]}
-				>
-					Easy to use - All the features
-				</Text>
-				<View style={[padding.right.small]}>
-					<ButtonSettingItem
-						value='Receive push notifications'
-						// color='rgba(43,46,77,0.8)'
-						icon={isMode ? 'checkmark-circle-2' : 'close-circle'}
-						iconColor={isMode ? color.blue : color.red}
-						disabled
-						styleText={[text.color.grey]}
-						styleContainer={[margin.bottom.tiny]}
+		<Translation>
+			{(t: any): React.ReactNode => (
+				<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
+					<DropDownPicker
+						items={items}
+						defaultValue={ctx.persistentOptions?.i18n.language || 'en'}
+						value={ctx.persistentOptions?.i18n.language || 'en'}
+						containerStyle={[{ marginTop: 22, height: 60 }]}
+						onChangeItem={(item: any) => {
+							i18n.changeLanguage(item.value)
+							ctx.setPersistentOption('i18n', {
+								language: item.value,
+							})
+						}}
 					/>
-					<ButtonSettingItem
-						value='Receive contact requests'
-						color='rgba(43,46,77,0.8)'
-						icon={isMode ? 'checkmark-circle-2' : 'close-circle'}
-						iconColor={isMode ? color.blue : color.red}
-						disabled
-						styleText={[text.color.grey]}
-						styleContainer={[margin.bottom.tiny]}
+					<ButtonSetting
+						name={t('settings.mode.notifications-button.title')}
+						icon='bell-outline'
+						iconColor={color.blue}
+						state={{
+							value: enableNotif
+								? t('settings.mode.notifications-button.tag-enabled')
+								: t('settings.mode.notifications-button.tag-disabled'),
+							color: enableNotif ? color.green : color.red,
+							bgColor: enableNotif ? color.light.green : color.light.red,
+						}}
+						onPress={() => navigation.navigate('Settings.Notifications')}
 					/>
-					<ButtonSettingItem
-						value='Local peer discovery (BLE & Multicast DNS)'
-						color='rgba(43,46,77,0.8)'
-						icon={isMode ? 'checkmark-circle-2' : 'close-circle'}
-						iconColor={isMode ? color.blue : color.red}
+					<ButtonSetting
+						name={t('settings.mode.bluetooth-button.title')}
+						icon='bluetooth-outline'
+						iconColor={color.blue}
+						onPress={() => navigation.navigate('Settings.Bluetooth')}
+					/>
+					<ButtonSetting
+						name={t('settings.mode.app-mode-button.title')}
+						icon='options-outline'
+						iconSize={30}
+						iconColor={color.blue}
+						actionIcon='arrow-ios-forward'
+						state={{
+							value: isMode
+								? t('settings.mode.app-mode-button.performance-tag')
+								: t('settings.mode.app-mode-button.privacy-tag'),
+							color: color.white,
+							bgColor: isMode ? color.blue : color.red,
+							stateIcon: isMode ? 'flash-outline' : 'lock-outline',
+							stateIconColor: color.white,
+						}}
 						disabled
-						styleText={[text.color.grey]}
-						styleContainer={[margin.bottom.tiny]}
+					>
+						<Text
+							style={[
+								column.item.right,
+								_styles.buttonListUnderStateText,
+								isMode ? text.color.blue : text.color.red,
+								margin.bottom.small,
+							]}
+						>
+							{t('settings.mode.app-mode-button.description-tag')}
+						</Text>
+						<View style={[padding.right.small]}>
+							<ButtonSettingItem
+								value={t('settings.mode.app-mode-button.first-bullet-point')}
+								// color='rgba(43,46,77,0.8)'
+								icon={isMode ? 'checkmark-circle-2' : 'close-circle'}
+								iconColor={isMode ? color.blue : color.red}
+								disabled
+								styleText={[text.color.grey]}
+								styleContainer={[margin.bottom.tiny]}
+							/>
+							<ButtonSettingItem
+								value={t('settings.mode.app-mode-button.second-bullet-point')}
+								color='rgba(43,46,77,0.8)'
+								icon={isMode ? 'checkmark-circle-2' : 'close-circle'}
+								iconColor={isMode ? color.blue : color.red}
+								disabled
+								styleText={[text.color.grey]}
+								styleContainer={[margin.bottom.tiny]}
+							/>
+							<ButtonSettingItem
+								value={t('settings.mode.app-mode-button.third-bullet-point')}
+								color='rgba(43,46,77,0.8)'
+								icon={isMode ? 'checkmark-circle-2' : 'close-circle'}
+								iconColor={isMode ? color.blue : color.red}
+								disabled
+								styleText={[text.color.grey]}
+								styleContainer={[margin.bottom.tiny]}
+							/>
+						</View>
+					</ButtonSetting>
+					<ButtonSetting
+						name={t('settings.mode.dark-mode-button')}
+						icon='moon-outline'
+						iconColor={color.blue}
+						toggled
+						disabled
+					/>
+					<ButtonSetting
+						name={t('settings.mode.receive-contact-requests-button')}
+						icon='person-done-outline'
+						iconColor={color.blue}
+						iconSize={30}
+						toggled
+						disabled
+					/>
+					<ButtonSetting
+						name={t('settings.mode.external-services-button')}
+						icon='cube-outline'
+						iconColor={color.blue}
+						iconSize={30}
+						actionIcon='arrow-ios-forward'
+						onPress={() => navigation.navigate('Settings.ServicesAuth')}
+					/>
+					<ButtonSetting
+						name={t('settings.mode.auto-replicate-button')}
+						icon='cloud-upload-outline'
+						iconColor={color.blue}
+						actionIcon={
+							// TODO: make toggle usable and use it
+							replicationServices.length !== 0 && account.replicateNewGroupsAutomatically
+								? 'toggle-right'
+								: 'toggle-left-outline'
+						}
+						disabled={replicationServices.length === 0}
+						onPress={async () => {
+							if (replicationServices.length === 0) {
+								return
+							}
+
+							await ctx.client.replicationSetAutoEnable({
+								enabled: !account.replicateNewGroupsAutomatically,
+							})
+						}}
+					/>
+					<ButtonSetting
+						name={t('settings.mode.multicast-dns-button.title')}
+						icon='upload'
+						iconColor={color.blue}
+						iconSize={30}
+						toggled
+						disabled
+					>
+						<Text
+							style={[
+								_styles.buttonSettingText,
+								text.color.grey,
+								{ marginLeft: margin.left.big.marginLeft + 3 * scaleSize },
+							]}
+						>
+							{t('settings.mode.multicast-dns-button.desc')}
+						</Text>
+					</ButtonSetting>
+					<ButtonSetting
+						name={t('settings.mode.blocked-contacts-button.title')}
+						icon='person-delete-outline'
+						iconSize={30}
+						iconColor={color.blue}
+						state={{
+							value: `3 ${t('settings.mode.blocked-contacts-button.tag')}`,
+							color: color.blue,
+							bgColor: color.light.blue,
+						}}
+						actionIcon='arrow-ios-forward'
+						disabled
+					/>
+					<ButtonSetting
+						name={t('settings.mode.delete-account-button')}
+						icon='trash-2-outline'
+						iconSize={30}
+						iconColor={'red'}
+						actionIcon='arrow-ios-forward'
+						onPress={() => {
+							Vibration.vibrate([1000, 250, 1000])
+							navigation.navigate('Modals', {
+								screen: 'DeleteAccount',
+							})
+						}}
 					/>
 				</View>
-			</ButtonSetting>
-			<ButtonSetting name='Dark mode' icon='moon-outline' iconColor={color.blue} toggled disabled />
-			<ButtonSetting
-				name='Receive contact requests'
-				icon='person-done-outline'
-				iconColor={color.blue}
-				iconSize={30}
-				toggled
-				disabled
-			/>
-			<ButtonSetting
-				name='External services'
-				icon='cube-outline'
-				iconColor={color.blue}
-				iconSize={30}
-				actionIcon='arrow-ios-forward'
-				onPress={() => navigation.navigate('Settings.ServicesAuth')}
-			/>
-			<ButtonSetting
-				name='Auto replicate'
-				icon='cloud-upload-outline'
-				iconColor={color.blue}
-				actionIcon={
-					// TODO: make toggle usable and use it
-					replicationServices.length !== 0 && account.replicateNewGroupsAutomatically
-						? 'toggle-right'
-						: 'toggle-left-outline'
-				}
-				disabled={replicationServices.length === 0}
-				onPress={async () => {
-					if (replicationServices.length === 0) {
-						return
-					}
-
-					await ctx.client.replicationSetAutoEnable({
-						enabled: !account.replicateNewGroupsAutomatically,
-					})
-				}}
-			/>
-			<ButtonSetting
-				name='Multicast DNS'
-				icon='upload'
-				iconColor={color.blue}
-				iconSize={30}
-				toggled
-				disabled
-			>
-				<Text
-					style={[
-						_styles.buttonSettingText,
-						text.color.grey,
-						{ marginLeft: margin.left.big.marginLeft + 3 * scaleSize },
-					]}
-				>
-					Local Peer discovery
-				</Text>
-			</ButtonSetting>
-			<ButtonSetting
-				name='Blocked contacts'
-				icon='person-delete-outline'
-				iconSize={30}
-				iconColor={color.blue}
-				state={{
-					value: '3 blocked',
-					color: color.blue,
-					bgColor: color.light.blue,
-				}}
-				actionIcon='arrow-ios-forward'
-				disabled
-			/>
-			<ButtonSetting
-				name='Delete my account'
-				icon='trash-2-outline'
-				iconSize={30}
-				iconColor={'red'}
-				actionIcon='arrow-ios-forward'
-				onPress={() => {
-					Vibration.vibrate([1000, 250, 1000])
-					navigation.navigate('Modals', {
-						screen: 'DeleteAccount',
-					})
-				}}
-			/>
-		</View>
+			)}
+		</Translation>
 	)
 }
 
@@ -242,13 +251,13 @@ export const Mode: React.FC<{}> = () => {
 	const [{ flex, background, padding }] = useStyles()
 	return (
 		<Translation>
-			{(t) => (
+			{(t: any): React.ReactNode => (
 				<Layout style={[flex.tiny, background.white]}>
 					<SwipeNavRecognizer>
-						<ScrollView bounces={false} contentContainerStyle={[padding.bottom.scale(90)]}>
+						<ScrollView bounces={false} contentContainerStyle={[padding.bottom.scale(20)]}>
 							<HeaderSettings
-								title={t('settings.title')}
-								desc={t('settings.title-description')}
+								title={t('settings.mode.title')}
+								desc={t('settings.mode.desc')}
 								undo={goBack}
 							/>
 							<BodyMode isMode={isMode} />

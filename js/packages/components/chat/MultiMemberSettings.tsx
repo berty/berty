@@ -2,6 +2,7 @@ import React from 'react'
 import { View, ScrollView, Share, Image } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
+import { useTranslation } from 'react-i18next'
 import {
 	ButtonSetting,
 	FactionButtonSetting,
@@ -31,26 +32,27 @@ const GroupChatSettingsHeaderButtons: React.FC<any> = ({ link, publicKey }) => {
 	const { navigate } = useNavigation()
 	const _styles = useStylesChatSettings()
 	const [{ padding, margin, color }] = useStyles()
+	const { t } = useTranslation()
 	return (
 		<View style={[padding.top.medium, margin.top.medium]}>
 			<ButtonSettingRow
 				state={[
 					{
-						name: 'Search',
+						name: t('chat.multi-member-settings.header-left-button'),
 						icon: 'search-outline',
 						color: color.blue,
 						style: _styles.firstHeaderButton,
 						disabled: true,
 					},
 					{
-						name: 'Call',
+						name: t('chat.multi-member-settings.header-middle-button'),
 						icon: 'phone-outline',
 						color: color.green,
 						style: _styles.secondHeaderButton,
 						disabled: true,
 					},
 					{
-						name: 'Share',
+						name: t('chat.multi-member-settings.header-right-button'),
 						icon: 'upload',
 						color: color.blue,
 						style: _styles.thirdHeaderButton,
@@ -89,13 +91,23 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 	const navigation = useNavigation()
 	const memberLength = Object.values(members).length
 	const memberText = memberLength < 2 ? 'member' : 'members'
+	const { t } = useTranslation()
 
 	return (
 		<View style={[padding.medium]}>
-			<ButtonSetting name='Medias, links & docs' icon='image-outline' disabled />
-			<ButtonSetting name='Receive notifications' icon='bell-outline' toggled disabled />
+			<ButtonSetting
+				name={t('chat.multi-member-settings.media-button')}
+				icon='image-outline'
+				disabled
+			/>
+			<ButtonSetting
+				name={t('chat.multi-member-settings.notifications-button')}
+				icon='bell-outline'
+				toggled
+				disabled
+			/>
 			<FactionButtonSetting
-				name='Members'
+				name={t('chat.multi-member-settings.members-button.title')}
 				icon='users'
 				iconPack='custom'
 				state={{
@@ -109,20 +121,24 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 					return (
 						<ButtonSetting
 							style={[padding.horizontal.small]}
-							name={`${(members && members[k].displayName) || 'Unknown'}: ${members[k].publicKey}`}
-							// image={seed}
-							// previewValue="Me"
-							// previewValueColor={color.blue}
-							// state={{ value: 'Not a contact', color: color.grey, bgColor: color.light.grey }}
+							name={`${
+								(members && members[k].displayName) ||
+								t('chat.multi-member-settings.members-button.unknown')
+							}: ${members[k].publicKey}`}
 							alone={false}
 							actionIcon={null}
 						/>
 					)
 				})}
 			</FactionButtonSetting>
-			<ButtonSetting name='Add member' icon='user-plus' iconPack='custom' disabled />
 			<ButtonSetting
-				name='Invite by link'
+				name={t('chat.multi-member-settings.add-member-button')}
+				icon='user-plus'
+				iconPack='custom'
+				disabled
+			/>
+			<ButtonSetting
+				name={t('chat.multi-member-settings.invite-button')}
 				icon='attach-outline'
 				onPress={
 					link
@@ -138,7 +154,7 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 				disabled={!link || undefined}
 			/>
 			<ButtonSetting
-				name='Save conversation on server'
+				name={t('chat.multi-member-settings.save-button')}
 				icon='cloud-upload-outline'
 				iconSize={30}
 				actionIcon='arrow-ios-forward'
@@ -147,12 +163,17 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 				}}
 			/>
 			<ButtonSetting
-				name='Erase conversation'
+				name={t('chat.multi-member-settings.erase-button')}
 				icon='message-circle-outline'
 				iconColor={color.red}
 				disabled
 			/>
-			<ButtonSetting name='Leave group' icon='log-out-outline' iconColor={color.red} disabled />
+			<ButtonSetting
+				name={t('chat.multi-member-settings.leave-button')}
+				icon='log-out-outline'
+				iconColor={color.red}
+				disabled
+			/>
 		</View>
 	)
 }

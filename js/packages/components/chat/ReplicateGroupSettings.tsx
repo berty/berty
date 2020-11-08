@@ -1,7 +1,8 @@
 import React from 'react'
 import { ScrollView, View } from 'react-native'
-import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@react-navigation/native'
+import { useTranslation } from 'react-i18next'
+import { useStyles } from '@berty-tech/styles'
 import { useConversation, useMsgrContext } from '@berty-tech/store/hooks'
 import HeaderSettings from '../shared-components/Header'
 import { ButtonSetting, FactionButtonSetting } from '../shared-components'
@@ -101,6 +102,7 @@ const ReplicateGroupContent: React.FC<{
 	const services = useAccountServices()
 	const navigation = useNavigation()
 	const [{ margin, color, flex, padding }] = useStyles()
+	const { t } = useTranslation()
 
 	const replicationStatus = getAllReplicationStatusForConversation(conversation, services)
 
@@ -126,10 +128,14 @@ const ReplicateGroupContent: React.FC<{
 					))}
 				</FactionButtonSetting>
 			) : (
-				<ButtonSetting name={'No replication service registered'} disabled alone={true} />
+				<ButtonSetting
+					name={t('chat.replicate-group-settings.no-registered-button')}
+					disabled
+					alone={true}
+				/>
 			)}
 			<ButtonSetting
-				name='Connect to Berty operated services'
+				name={t('chat.replicate-group-settings.connect-button')}
 				icon='plus-circle-outline'
 				iconSize={30}
 				iconColor={color.blue}
@@ -139,7 +145,7 @@ const ReplicateGroupContent: React.FC<{
 				}}
 			/>
 			<ButtonSetting
-				name='Manage or add services'
+				name={t('chat.replicate-group-settings.manage-add-button')}
 				icon='plus-circle-outline'
 				iconSize={30}
 				iconColor={color.blue}
@@ -157,6 +163,7 @@ export const ReplicateGroupSettings: React.FC<ScreenProps.Chat.ReplicateGroupSet
 	const [{ padding, flex }] = useStyles()
 	const { goBack } = useNavigation()
 	const conv = useConversation(convId)
+	const { t } = useTranslation()
 
 	if (!conv) {
 		goBack()
@@ -170,7 +177,7 @@ export const ReplicateGroupSettings: React.FC<ScreenProps.Chat.ReplicateGroupSet
 					<HeaderSettings
 						actionIcon='edit-outline'
 						undo={goBack}
-						title={'Register conversation on server'}
+						title={t('chat.replicate-group-settings.title')}
 					/>
 					<ReplicateGroupContent conversationPublicKey={conv.publicKey} />
 				</ScrollView>

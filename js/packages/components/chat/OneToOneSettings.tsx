@@ -1,10 +1,11 @@
+import React from 'react'
+import { ScrollView, View } from 'react-native'
+import { Text } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useContact, useConversation, usePersistentOptions } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
-import React from 'react'
-import { ScrollView, View } from 'react-native'
-import { Text } from '@ui-kitten/components'
 import HeaderSettings from '../shared-components/Header'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
@@ -82,26 +83,27 @@ const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 const OneToOneHeaderButtons: React.FC<{}> = () => {
 	const _styles = useStylesOneToOne()
 	const [{ padding, color }] = useStyles()
+	const { t } = useTranslation()
 	return (
 		<View style={[padding.horizontal.medium, padding.top.medium]}>
 			<ButtonSettingRow
 				state={[
 					{
-						name: 'Search',
+						name: t('chat.one-to-one-settings.header-left-button'),
 						icon: 'search-outline',
 						color: color.blue,
 						style: _styles.firstHeaderButton,
 						disabled: true,
 					},
 					{
-						name: 'Call',
+						name: t('chat.one-to-one-settings.header-middle-button'),
 						icon: 'phone-outline',
 						color: color.green,
 						style: _styles.secondHeaderButton,
 						disabled: true,
 					},
 					{
-						name: 'Share',
+						name: t('chat.one-to-one-settings.header-right-button'),
 						icon: 'upload',
 						color: color.blue,
 						style: _styles.thirdHeaderButton,
@@ -116,13 +118,23 @@ const OneToOneHeaderButtons: React.FC<{}> = () => {
 const OneToOneBody: React.FC<any> = ({ publicKey, isIncoming }) => {
 	const [{ padding, color }] = useStyles()
 	const navigation = useNavigation()
+	const { t } = useTranslation()
 
 	return (
 		<View style={[padding.horizontal.medium]}>
-			<ButtonSetting name='Medias, links & docs' icon='image-outline' disabled />
-			<ButtonSetting name='Receive notifications' icon='bell-outline' toggled disabled />
 			<ButtonSetting
-				name='Mutual groups'
+				name={t('chat.one-to-one-settings.media-button')}
+				icon='image-outline'
+				disabled
+			/>
+			<ButtonSetting
+				name={t('chat.one-to-one-settings.notifications-button')}
+				icon='bell-outline'
+				toggled
+				disabled
+			/>
+			<ButtonSetting
+				name={t('chat.one-to-one-settings.mutual-button')}
 				icon='users'
 				iconPack='custom'
 				state={{ value: '3 mutuals', color: color.blue, bgColor: color.light.blue }}
@@ -130,7 +142,7 @@ const OneToOneBody: React.FC<any> = ({ publicKey, isIncoming }) => {
 			/>
 			{!isIncoming && (
 				<ButtonSetting
-					name='Save conversation on server'
+					name={t('chat.one-to-one-settings.save-button')}
 					icon='cloud-upload-outline'
 					iconSize={30}
 					actionIcon='arrow-ios-forward'
@@ -140,7 +152,7 @@ const OneToOneBody: React.FC<any> = ({ publicKey, isIncoming }) => {
 				/>
 			)}
 			<ButtonSetting
-				name='Erase conversation'
+				name={t('chat.one-to-one-settings.erase-button')}
 				icon='message-circle-outline'
 				iconColor={color.red}
 				disabled

@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
-import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@react-navigation/native'
+import { Translation } from 'react-i18next'
+import { useStyles } from '@berty-tech/styles'
 
 //
 // Scan Invalid
@@ -88,24 +89,30 @@ const InvalidScanDismissButton: React.FC<{}> = () => {
 	const navigation = useNavigation()
 
 	return (
-		<View style={row.center}>
-			<TouchableOpacity
-				style={[row.fill, margin.bottom.medium, _styles.dismissButton]}
-				onPress={() => {
-					try {
-						navigation.goBack()
-					} catch (e) {
-						console.warn("couldn't go back:", e)
-						navigation.navigate('Tabs')
-					}
-				}}
-			>
-				<Icon name='close' width={30} height={30} fill={color.grey} style={row.item.justify} />
-				<Text style={[text.color.grey, padding.left.small, row.item.justify, _styles.dismissText]}>
-					DISMISS
-				</Text>
-			</TouchableOpacity>
-		</View>
+		<Translation>
+			{(t: any): React.ReactNode => (
+				<View style={row.center}>
+					<TouchableOpacity
+						style={[row.fill, margin.bottom.medium, _styles.dismissButton]}
+						onPress={() => {
+							try {
+								navigation.goBack()
+							} catch (e) {
+								console.warn("couldn't go back:", e)
+								navigation.navigate('Tabs')
+							}
+						}}
+					>
+						<Icon name='close' width={30} height={30} fill={color.grey} style={row.item.justify} />
+						<Text
+							style={[text.color.grey, padding.left.small, row.item.justify, _styles.dismissText]}
+						>
+							{t('modals.invalid-scan.dismiss-button')}
+						</Text>
+					</TouchableOpacity>
+				</View>
+			)}
+		</Translation>
 	)
 }
 

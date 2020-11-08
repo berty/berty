@@ -81,8 +81,8 @@ const CreateAccountBody = ({ next }) => {
 					</View>
 					<View style={{ flex: 1 }}>
 						<SwiperCard
-							label='Required'
-							title='Create your account'
+							label={t('onboarding.create-account.required')}
+							title={t('onboarding.create-account.title')}
 							description={t('onboarding.create-account.desc')}
 							button={{
 								text: t('onboarding.create-account.button'),
