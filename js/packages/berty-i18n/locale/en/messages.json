@@ -199,16 +199,16 @@
       "begin-second-desc": "Please type ",
       "bold-second-desc": "delete",
       "end-second-desc": " to confirm",
-      "cancel-button": "",
-      "delete-button": ""
+      "cancel-button": "CANCEL",
+      "delete-button": "DELETE"
     },
     "help": {
-      "title": "",
+      "title": "Help",
       "security-privacy-button": {
-        "title": "",
-        "desc": ""
+        "title": "Security & Privacy",
+        "desc": "Keep your data safe & your life private"
       },
-      "updates-button": "",
+      "updates-button": "Updates",
       "about-button": "",
       "account-button": "",
       "contact-button": "",
