@@ -9,11 +9,11 @@
   "onboarding": {
     "getstarted": {
       "desc": "L'application sécurisée qui fonctionne en pair à pair, avec ou sans accès à internet",
-      "open-registered-account": "",
+      "open-registered-account": "Ouvrir un compte enregistré",
       "import-button": "Importer un compte existant",
       "account-selector-create-button": "Créer un nouveau compte",
       "more-options": "Plus d'options",
-      "button": ""
+      "button": "COMMENCER"
     },
     "select-mode": {
       "performance": {
@@ -40,11 +40,11 @@
       "button": "CRÉER MON COMPTE"
     },
     "services-auth": {
-      "header": "",
-      "title": "",
+      "header": "S'authentifier aux services",
+      "title": "Services",
       "recommended": "Recommandé",
-      "desc": "",
-      "button": "",
+      "desc": "Cela répliquera automatiquement vos conversations sur un serveur",
+      "button": "Utiliser les services opérés par Berty",
       "skip": "PASSER ET FAIRE ÇA PLUS TARD"
     },
     "generate-key": {
@@ -79,216 +79,216 @@
         "title": "Requêtes",
         "received-at": "Reçu",
         "accept": "Accepter",
-        "card-title": ""
+        "card-title": "Demande de contact !"
       },
       "messages": {
         "title": "Messages"
       },
-      "input-placeholder": "",
-      "no-contacts": "",
+      "input-placeholder": "Mots-clés de recherche",
+      "no-contacts": "Vous n'avez pas encore de contact ou de conversation",
       "search": {
-        "no-results": ""
+        "no-results": "Aucun résultat"
       }
     },
     "home-modal": {
-      "left-button": "",
+      "left-button": "Scanner",
       "right-button": ""
     }
   },
   "settings": {
     "home": {
-      "header-left-button": "",
-      "header-center-button": "",
+      "header-left-button": "Aide",
+      "header-center-button": "Devtools",
       "header-right-button": "Paramètres",
-      "network-button": ""
+      "network-button": "Réseaux"
     },
     "network-map": {
-      "title": "",
-      "online-peers": ""
+      "title": "Réseaux",
+      "online-peers": "Pairs en ligne"
     },
     "mode": {
       "title": "Paramètres",
       "desc": "Personnalisez l'app pour qu'elle corresponde à vos besoins",
       "notifications-button": {
         "title": "Notifications",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "tag-enabled": "Activé",
+        "tag-disabled": "Désactivé"
       },
       "bluetooth-button": {
         "title": "Bluetooth",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "tag-enabled": "Activé",
+        "tag-disabled": "Désactivé"
       },
       "app-mode-button": {
-        "title": "",
+        "title": "Mode de l'application",
         "performance-tag": "Performance",
-        "privacy-tag": "",
+        "privacy-tag": "Confidentialité",
         "description-tag": "Utilisation simple - Toutes les options",
         "first-bullet-point": "Recevoir les notifications push",
-        "second-bullet-point": "",
-        "third-bullet-point": ""
+        "second-bullet-point": "Recevoir les demandes de contact",
+        "third-bullet-point": "Découverte locale de pairs (BLE & Multicast DNS)"
       },
-      "dark-mode-button": "",
-      "receive-contact-requests-button": "",
-      "external-services-button": "",
-      "auto-replicate-button": "",
+      "dark-mode-button": "Mode foncé",
+      "receive-contact-requests-button": "Recevoir les demandes de contact",
+      "external-services-button": "Services externes",
+      "auto-replicate-button": "Réplication automatique",
       "multicast-dns-button": {
-        "title": "",
-        "desc": ""
+        "title": "Multicast DNS",
+        "desc": "Découverte locale des pairs"
       },
       "blocked-contacts-button": {
-        "title": "",
-        "tag": ""
+        "title": "Contacts bloqués",
+        "tag": "bloqué"
       },
-      "delete-account-button": ""
+      "delete-account-button": "Supprimer mon compte"
     },
     "notifications": {
       "title": "Notifications",
-      "enabled-desc": "",
-      "disabled-desc": "",
-      "activate-button": "",
+      "enabled-desc": "Vous avez activé les notifications !",
+      "disabled-desc": "Vous n'avez pas activé les notifications pour cette application",
+      "activate-button": "Activer les notifications",
       "contact-request-button": {
-        "title": "",
-        "desc": ""
+        "title": "Demande de contact",
+        "desc": "Recevoir une notification chaque fois que quelqu'un vous envoie une demande de contact"
       },
       "messages-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
+        "title": "Notifications de messages",
+        "display-button": "Afficher les notifications",
+        "preview-button": "Aperçu des messages",
+        "sound-button": "Sons",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
-          "tag": ""
+          "title": "Exceptions",
+          "preview-value": "Ajouter",
+          "tag": "exceptions"
         }
       },
       "group-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
+        "title": "Notifications de groupes",
+        "display-button": "Afficher les notifications",
+        "preview-button": "Aperçu des messages",
+        "sound-button": "Sons",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
-          "tag": ""
+          "title": "Exceptions",
+          "preview-value": "Ajouter",
+          "tag": "exceptions"
         }
       }
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "",
-      "activate-button": ""
+      "desc": "Le Bluetooth vous permet d'utiliser l'application Berty lorsque vous n'avez pas de connexion réseau (wifi ou données) en connectant votre téléphone directement avec les pairs à proximité",
+      "activate-button": "Activer le bluetooth"
     },
     "services-auth": {
-      "title": "",
-      "operated-services-button": "",
+      "title": "Services externes",
+      "operated-services-button": "Utiliser les services opérés par Berty",
       "register-service-button": {
-        "title": "",
-        "input-placeholder": "",
-        "action": ""
+        "title": "Enregistrer un fournisseur de service personnalisé",
+        "input-placeholder": "URL du service",
+        "action": "Ajouter"
       },
       "registered-services-button": {
-        "title": "",
-        "sample-no-services": "",
-        "sample-unknown-service": ""
+        "title": "Services actuellement enregistrés",
+        "sample-no-services": "Aucun service enregistré",
+        "sample-unknown-service": "Service inconnu"
       }
     },
     "delete-account": {
-      "title": "",
-      "first-desc": "",
+      "title": "Supprimer le compte !",
+      "first-desc": "Êtes-vous sûr de vouloir supprimer votre compte ?",
       "begin-second-desc": "",
-      "bold-second-desc": "",
+      "bold-second-desc": "supprimer",
       "end-second-desc": "",
-      "cancel-button": "",
-      "delete-button": ""
+      "cancel-button": "ANNULER",
+      "delete-button": "SUPPRIMER"
     },
     "help": {
-      "title": "",
+      "title": "Aide",
       "security-privacy-button": {
-        "title": "",
-        "desc": ""
+        "title": "Sécurité et confidentialité",
+        "desc": "Gardez vos données en sécurité et votre vie privée"
       },
-      "updates-button": "",
-      "about-button": "",
-      "account-button": "",
-      "contact-button": "",
+      "updates-button": "Mises à jour",
+      "about-button": "À propos de Berty",
+      "account-button": "Compte & ID Berty",
+      "contact-button": "Contacts et requêtes",
       "message-button": "Messages",
-      "group-button": "",
+      "group-button": "Groupes",
       "settings-button": "Paramètres",
-      "ask-button": "",
-      "report-button": ""
+      "ask-button": "Poser une question",
+      "report-button": "Signaler un bug"
     },
     "about": {
-      "title": "",
-      "top-left-button": "",
-      "top-right-button": "",
-      "bottom-left-button": "",
-      "bottom-right-button": "",
-      "terms-button": "",
-      "privacy-button": "",
-      "software-button": "",
-      "contact-button": "",
-      "website-button": ""
+      "title": "À propos de Berty",
+      "top-left-button": "Privé & sécurisé",
+      "top-right-button": "Réseau pair à pair",
+      "bottom-left-button": "Internet n'est pas nécessaire",
+      "bottom-right-button": "Pas de confiance dans le réseau nécessaire",
+      "terms-button": "Conditions d'utilisation",
+      "privacy-button": "Politique de confidentialité",
+      "software-button": "Licence logicielle",
+      "contact-button": "Contactez-nous",
+      "website-button": "Site web"
     },
     "updates": {
-      "title": "",
-      "up-to-date-desc": "",
-      "version": "",
-      "current-tag": "",
-      "installed-tag": "",
-      "initial-tag": "",
-      "not-installed-tag": ""
+      "title": "Mises à jour de l'application",
+      "up-to-date-desc": "Votre application est à jour",
+      "version": "Version",
+      "current-tag": "Actuelle",
+      "installed-tag": "Installées",
+      "initial-tag": "Installation initiale",
+      "not-installed-tag": "Non installées"
     },
     "devtools": {
       "title": "",
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "system-info-button": "",
-      "add-bots-button": "",
+      "header-left-button": "Infos sur l'appareil",
+      "header-middle-button": "Générer de fausses données",
+      "header-right-button": "Redémarrer le démon",
+      "system-info-button": "Infos système",
+      "add-bots-button": "Ajouter des bots",
       "share-button": {
-        "title": "",
+        "title": "Partager l'ID sur Discord",
         "alert-title": "",
         "alert-message": "",
-        "alert-accept-button": "",
-        "alert-cancel-button": ""
+        "alert-accept-button": "Oui 👍",
+        "alert-cancel-button": "Non"
       },
-      "native-bridge-button": "",
+      "native-bridge-button": "Tester la passerelle native",
       "dump-account-button": "",
       "dump-contacts-button": "",
       "dump-conversations-button": "",
       "dump-interactions-button": "",
       "dump-members-button": "",
-      "stop-node-button": "",
-      "bot-mode-button": "",
+      "stop-node-button": "Arrêter le nœud",
+      "bot-mode-button": "Mode Bot",
       "local-grpc-button": "",
-      "console-logs-button": "",
+      "console-logs-button": "Journal de la console",
       "ipfs-webui-button": "",
       "notifications-button": "Notifications",
       "send-to-all-button": {
-        "title": "",
-        "sending": "",
+        "title": "Envoyer des messages à tous les contacts",
+        "sending": "Envoi...",
         "test": "",
         "begin-tried": "",
-        "end-tried": ""
+        "end-tried": " contacts"
       },
-      "footer-left-button": "",
-      "footer-middle-button": "",
-      "footer-right-button": ""
+      "footer-left-button": "Infos sur l'appareil",
+      "footer-middle-button": "Lister les événements",
+      "footer-right-button": "Redémarrer le démon"
     },
     "system-info": {
-      "title": ""
+      "title": "Infos système"
     },
     "fake-data": {
-      "title": "",
+      "title": "Générer de fausses données",
       "contacts-button": "",
       "multi-members-button": "",
       "messages-button": "",
-      "delete-button": ""
+      "delete-button": "Supprimer les fausses données"
     },
     "add-contact-list": {
       "title": "",
-      "add": ""
+      "add": "Ajouter"
     },
     "ipfs-webui": {
       "title": ""
@@ -296,92 +296,92 @@
   },
   "modals": {
     "manage-deep-link": {
-      "invalid-link": "",
-      "invalid-qr": "",
-      "error": ""
+      "invalid-link": "Lien invalide !",
+      "invalid-qr": "QR code invalide !",
+      "error": "Erreur !"
     },
     "invalid-scan": {
       "dismiss-button": ""
     },
     "add-this-contact": {
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "fingerprint": "Empreinte numérique",
+      "info": "Infos",
+      "devices": "Appareils"
     },
     "group-invitation": {
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "fingerprint": "Empreinte digitale",
+      "info": "Infos",
+      "devices": "Appareils"
     }
   },
   "chat": {
     "contact-settings": {
-      "mark-button": "",
+      "mark-button": "Marquer comme vérifié",
       "block-button": "",
       "delete-button": "",
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "fingerprint": "Empreinte digitale",
+      "info": "Infos",
+      "devices": "Appareils"
     },
     "multi-member": {
       "input-placeholder": ""
     },
     "multi-member-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
+      "header-left-button": "Rechercher",
+      "header-middle-button": "Appel",
+      "header-right-button": "Partager",
       "media-button": "",
       "notifications-button": "",
       "members-button": {
-        "title": "",
-        "unknown": ""
+        "title": "Membres",
+        "unknown": "Inconnu"
       },
-      "add-member-button": "",
-      "invite-button": "",
-      "save-button": "",
-      "erase-button": "",
-      "leave-button": ""
+      "add-member-button": "Ajouter un membre",
+      "invite-button": "Inviter par lien",
+      "save-button": "Enregistrer la conversation sur un serveur",
+      "erase-button": "Effacer la conversation",
+      "leave-button": "Quitter le groupe"
     },
     "one-to-one": {
       "contact-request-box": {
-        "title": "",
-        "refuse-button": "",
-        "accept-button": "",
-        "accepted-button": ""
+        "title": "DEMANDE DE CONTACT",
+        "refuse-button": "REFUSER",
+        "accept-button": "ACCEPTER",
+        "accepted-button": "ACCEPTÉ"
       },
       "betabot-box": {
-        "title": "",
+        "title": "AJOUTER BETA BOT ?",
         "begin-desc": "",
         "bold-desc": "",
         "end-desc": "",
-        "skip-button": "",
-        "add-button": ""
+        "skip-button": "PASSER",
+        "add-button": "AJOUTER !"
       },
       "infos-chat": {
         "connection-confirmed": "",
-        "request-sent": "",
-        "incoming": "",
-        "outgoing": ""
+        "request-sent": "Demande envoyée ✈",
+        "incoming": "Accepter cette demande pour répondre !",
+        "outgoing": "En attente de votre réponse pour vous connecter !"
       },
-      "betabot-input-placeholder": "",
-      "incoming-input-placeholder": "",
-      "input-placeholder": ""
+      "betabot-input-placeholder": "Ajouter le BetaBot pour écrire ici...",
+      "incoming-input-placeholder": "Accepter la demande pour écrire ici...",
+      "input-placeholder": "Écrire un message sécurisé..."
     },
     "one-to-one-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "media-button": "",
-      "notifications-button": "",
-      "mutual-button": "",
-      "save-button": "",
-      "erase-button": ""
+      "header-left-button": "Rechercher",
+      "header-middle-button": "Appel",
+      "header-right-button": "Partager",
+      "media-button": "Médias, liens & documents",
+      "notifications-button": "Recevoir les notifications",
+      "mutual-button": "Groupes communs",
+      "save-button": "Enregistrer la conversation sur un serveur",
+      "erase-button": "Effacer la conversation"
     },
     "replicate-group-settings": {
-      "title": "",
-      "no-registered-button": "",
-      "connect-button": "",
-      "manage-add-button": ""
+      "title": "Enregistrer la conversation sur un serveur",
+      "no-registered-button": "Aucun service de réplication enregistré",
+      "connect-button": "Se connecter aux services opérés par Berty",
+      "manage-add-button": "Gérer ou ajouter des services"
     }
   }
 }
