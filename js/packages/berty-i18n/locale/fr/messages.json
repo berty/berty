@@ -70,7 +70,7 @@
     "setup-finished": {
       "title": "Configuration terminée !",
       "desc": "Vous pouvez dés maintenant utiliser l'application, ajoutez vos contacts et parler en toute tranquillité avec eux",
-      "button": "LANCER L'APPLICATION"
+      "button": ""
     }
   },
   "main": {
@@ -298,7 +298,7 @@
   "modals": {
     "manage-deep-link": {
       "invalid-link": "Lien invalide !",
-      "invalid-qr": "QR code invalide !",
+      "invalid-qr": "",
       "error": "Erreur !"
     },
     "invalid-scan": {
@@ -306,7 +306,7 @@
     },
     "add-this-contact": {
       "fingerprint": "Empreinte numérique",
-      "info": "Infos",
+      "info": "",
       "devices": "Appareils"
     },
     "group-invitation": {
