@@ -70,7 +70,7 @@
     "setup-finished": {
       "title": "Setup finished!",
       "desc": "You can now use the app, start adding contacts and talk freely and privately with them",
-      "button": "START USING APP"
+      "button": "START USING BERTY"
     }
   },
   "main": {
@@ -250,7 +250,7 @@
         "title": "Share ID on discord",
         "alert-title": "Do you want to share your QR code to \"#dev-logs\" on Berty Discord?",
         "alert-message": "This will allow other staff to scan your QR code or copy your contact link.",
-        "alert-accept-button": "Yep \uD83D\uDC4D",
+        "alert-accept-button": "Yep 👍",
         "alert-cancel-button": "Nope"
       },
       "native-bridge-button": "Test Native Bridge",
@@ -263,7 +263,7 @@
       "bot-mode-button": "Bot mode",
       "local-grpc-button": "local gRPC",
       "console-logs-button": "Console logs",
-      "ipfs-webui-button": "Ipfs WebUI",
+      "ipfs-webui-button": "IPFS WebUI",
       "notifications-button": "Notifications",
       "send-to-all-button": {
         "title": "Send messages to all contacts",
@@ -291,13 +291,13 @@
       "add": "Add"
     },
     "ipfs-webui": {
-      "title": "Ipfs WebUI"
+      "title": "IPFS WebUI"
     }
   },
   "modals": {
     "manage-deep-link": {
       "invalid-link": "Invalid link!",
-      "invalid-qr": "Invalid Qr code!",
+      "invalid-qr": "Invalid QR code!",
       "error": "Error!"
     },
     "invalid-scan": {
@@ -305,7 +305,7 @@
     },
     "add-this-contact": {
       "fingerprint": "Fingerprint",
-      "info": "Infos",
+      "info": "Info",
       "devices": "Devices"
     },
     "group-invitation": {
@@ -358,7 +358,7 @@
         "add-button": "ADD !"
       },
       "infos-chat": {
-        "connection-confirmed": "\uD83D\uDC4B Berty connection confirmed! \uD83C\uDF89",
+        "connection-confirmed": "👋 Berty connection confirmed! 🎉",
         "request-sent": "Request Sent ✈",
         "incoming": "Accept this request to reply!",
         "outgoing": "Waiting for your contact reply to connect!"
