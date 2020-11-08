@@ -9,11 +9,11 @@
   "onboarding": {
     "getstarted": {
       "desc": "L'application sécurisée qui fonctionne en pair à pair, avec ou sans accès à internet",
-      "open-registered-account": "Ouvrir un compte connecté",
+      "open-registered-account": "",
       "import-button": "Importer un compte existant",
       "account-selector-create-button": "Créer un nouveau compte",
       "more-options": "Plus d'options",
-      "button": "DÉMARRER"
+      "button": ""
     },
     "select-mode": {
       "performance": {
@@ -38,6 +38,14 @@
       "required": "Requis",
       "placeholder": "Nom",
       "button": "CRÉER MON COMPTE"
+    },
+    "services-auth": {
+      "header": "",
+      "title": "",
+      "recommended": "Recommandé",
+      "desc": "",
+      "button": "",
+      "skip": "PASSER ET FAIRE ÇA PLUS TARD"
     },
     "generate-key": {
       "title": "Démarrage du nœud Berty…",
@@ -66,17 +74,314 @@
     }
   },
   "main": {
-    "requests": {
-      "title": "Requêtes",
-      "received-at": "Reçu",
-      "accept": "Accepter"
+    "home": {
+      "requests": {
+        "title": "Requêtes",
+        "received-at": "Reçu",
+        "accept": "Accepter",
+        "card-title": ""
+      },
+      "messages": {
+        "title": "Messages"
+      },
+      "input-placeholder": "",
+      "no-contacts": "",
+      "search": {
+        "no-results": ""
+      }
     },
-    "messages": {
-      "title": "Messages"
+    "home-modal": {
+      "left-button": "",
+      "right-button": ""
     }
   },
   "settings": {
-    "title": "Paramètres",
-    "title-description": "Personnalisez l'app pour qu'elle corresponde à vos besoins"
+    "home": {
+      "header-left-button": "",
+      "header-center-button": "",
+      "header-right-button": "Paramètres",
+      "network-button": ""
+    },
+    "network-map": {
+      "title": "",
+      "online-peers": ""
+    },
+    "mode": {
+      "title": "Paramètres",
+      "desc": "Personnalisez l'app pour qu'elle corresponde à vos besoins",
+      "notifications-button": {
+        "title": "Notifications",
+        "tag-enabled": "",
+        "tag-disabled": ""
+      },
+      "bluetooth-button": {
+        "title": "Bluetooth",
+        "tag-enabled": "",
+        "tag-disabled": ""
+      },
+      "app-mode-button": {
+        "title": "",
+        "performance-tag": "Performance",
+        "privacy-tag": "",
+        "description-tag": "Utilisation simple - Toutes les options",
+        "first-bullet-point": "Recevoir les notifications push",
+        "second-bullet-point": "",
+        "third-bullet-point": ""
+      },
+      "dark-mode-button": "",
+      "receive-contact-requests-button": "",
+      "external-services-button": "",
+      "auto-replicate-button": "",
+      "multicast-dns-button": {
+        "title": "",
+        "desc": ""
+      },
+      "blocked-contacts-button": {
+        "title": "",
+        "tag": ""
+      },
+      "delete-account-button": ""
+    },
+    "notifications": {
+      "title": "Notifications",
+      "enabled-desc": "",
+      "disabled-desc": "",
+      "activate-button": "",
+      "contact-request-button": {
+        "title": "",
+        "desc": ""
+      },
+      "messages-notifications-button": {
+        "title": "",
+        "display-button": "",
+        "preview-button": "",
+        "sound-button": "",
+        "exceptions-button": {
+          "title": "",
+          "preview-value": "",
+          "tag": ""
+        }
+      },
+      "group-notifications-button": {
+        "title": "",
+        "display-button": "",
+        "preview-button": "",
+        "sound-button": "",
+        "exceptions-button": {
+          "title": "",
+          "preview-value": "",
+          "tag": ""
+        }
+      }
+    },
+    "bluetooth": {
+      "title": "Bluetooth",
+      "desc": "",
+      "activate-button": ""
+    },
+    "services-auth": {
+      "title": "",
+      "operated-services-button": "",
+      "register-service-button": {
+        "title": "",
+        "input-placeholder": "",
+        "action": ""
+      },
+      "registered-services-button": {
+        "title": "",
+        "sample-no-services": "",
+        "sample-unknown-service": ""
+      }
+    },
+    "delete-account": {
+      "title": "",
+      "first-desc": "",
+      "begin-second-desc": "",
+      "bold-second-desc": "",
+      "end-second-desc": "",
+      "cancel-button": "",
+      "delete-button": ""
+    },
+    "help": {
+      "title": "",
+      "security-privacy-button": {
+        "title": "",
+        "desc": ""
+      },
+      "updates-button": "",
+      "about-button": "",
+      "account-button": "",
+      "contact-button": "",
+      "message-button": "Messages",
+      "group-button": "",
+      "settings-button": "Paramètres",
+      "ask-button": "",
+      "report-button": ""
+    },
+    "about": {
+      "title": "",
+      "top-left-button": "",
+      "top-right-button": "",
+      "bottom-left-button": "",
+      "bottom-right-button": "",
+      "terms-button": "",
+      "privacy-button": "",
+      "software-button": "",
+      "contact-button": "",
+      "website-button": ""
+    },
+    "updates": {
+      "title": "",
+      "up-to-date-desc": "",
+      "version": "",
+      "current-tag": "",
+      "installed-tag": "",
+      "initial-tag": "",
+      "not-installed-tag": ""
+    },
+    "devtools": {
+      "title": "",
+      "header-left-button": "",
+      "header-middle-button": "",
+      "header-right-button": "",
+      "system-info-button": "",
+      "add-bots-button": "",
+      "share-button": {
+        "title": "",
+        "alert-title": "",
+        "alert-message": "",
+        "alert-accept-button": "",
+        "alert-cancel-button": ""
+      },
+      "native-bridge-button": "",
+      "dump-account-button": "",
+      "dump-contacts-button": "",
+      "dump-conversations-button": "",
+      "dump-interactions-button": "",
+      "dump-members-button": "",
+      "stop-node-button": "",
+      "bot-mode-button": "",
+      "local-grpc-button": "",
+      "console-logs-button": "",
+      "ipfs-webui-button": "",
+      "notifications-button": "Notifications",
+      "send-to-all-button": {
+        "title": "",
+        "sending": "",
+        "test": "",
+        "begin-tried": "",
+        "end-tried": ""
+      },
+      "footer-left-button": "",
+      "footer-middle-button": "",
+      "footer-right-button": ""
+    },
+    "system-info": {
+      "title": ""
+    },
+    "fake-data": {
+      "title": "",
+      "contacts-button": "",
+      "multi-members-button": "",
+      "messages-button": "",
+      "delete-button": ""
+    },
+    "add-contact-list": {
+      "title": "",
+      "add": ""
+    },
+    "ipfs-webui": {
+      "title": ""
+    }
+  },
+  "modals": {
+    "manage-deep-link": {
+      "invalid-link": "",
+      "invalid-qr": "",
+      "error": ""
+    },
+    "invalid-scan": {
+      "dismiss-button": ""
+    },
+    "add-this-contact": {
+      "fingerprint": "",
+      "info": "",
+      "devices": ""
+    },
+    "group-invitation": {
+      "fingerprint": "",
+      "info": "",
+      "devices": ""
+    }
+  },
+  "chat": {
+    "contact-settings": {
+      "mark-button": "",
+      "block-button": "",
+      "delete-button": "",
+      "fingerprint": "",
+      "info": "",
+      "devices": ""
+    },
+    "multi-member": {
+      "input-placeholder": ""
+    },
+    "multi-member-settings": {
+      "header-left-button": "",
+      "header-middle-button": "",
+      "header-right-button": "",
+      "media-button": "",
+      "notifications-button": "",
+      "members-button": {
+        "title": "",
+        "unknown": ""
+      },
+      "add-member-button": "",
+      "invite-button": "",
+      "save-button": "",
+      "erase-button": "",
+      "leave-button": ""
+    },
+    "one-to-one": {
+      "contact-request-box": {
+        "title": "",
+        "refuse-button": "",
+        "accept-button": "",
+        "accepted-button": ""
+      },
+      "betabot-box": {
+        "title": "",
+        "begin-desc": "",
+        "bold-desc": "",
+        "end-desc": "",
+        "skip-button": "",
+        "add-button": ""
+      },
+      "infos-chat": {
+        "connection-confirmed": "",
+        "request-sent": "",
+        "incoming": "",
+        "outgoing": ""
+      },
+      "betabot-input-placeholder": "",
+      "incoming-input-placeholder": "",
+      "input-placeholder": ""
+    },
+    "one-to-one-settings": {
+      "header-left-button": "",
+      "header-middle-button": "",
+      "header-right-button": "",
+      "media-button": "",
+      "notifications-button": "",
+      "mutual-button": "",
+      "save-button": "",
+      "erase-button": ""
+    },
+    "replicate-group-settings": {
+      "title": "",
+      "no-registered-button": "",
+      "connect-button": "",
+      "manage-add-button": ""
+    }
   }
 }
