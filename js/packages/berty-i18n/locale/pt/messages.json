@@ -1,14 +1,14 @@
 {
   "time": {
-    "fuzzy-time": "",
-    "fuzzy-month-day": "",
-    "fuzzy-year-month": "",
-    "datetime": "",
-    "started-ago": ""
+    "fuzzy-time": "hh:mm",
+    "fuzzy-month-day": "dd/MM",
+    "fuzzy-year-month": "MM/AA",
+    "datetime": "MMM Do YYYY hh:mm",
+    "started-ago": "Started {{date}} ago"
   },
   "onboarding": {
     "getstarted": {
-      "desc": "",
+      "desc": "O aplicativo seguro de mensagens ponto a ponto que funciona com ou sem acesso à internet, dados móveis ou confiando na rede",
       "open-registered-account": "",
       "import-button": "",
       "account-selector-create-button": "",
@@ -17,72 +17,72 @@
     },
     "select-mode": {
       "performance": {
-        "title": "",
-        "desc": "",
-        "push-notif": "",
-        "offline-message": "",
-        "add-contact": "",
-        "fast-message": ""
+        "title": "Desempenho",
+        "desc": "Fácil de usar - Todas as funcionalidades",
+        "push-notif": "Receber notificações por push",
+        "offline-message": "Mensagens offline",
+        "add-contact": "Adicione contatos facilmente",
+        "fast-message": "Entrega de mensagem mais rápida"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
-        "disable-push-notif": "",
-        "disable-local-peer-discovery": "",
-        "disable-contact-request": ""
+        "title": "Maior nível de privacidade",
+        "desc": "Para usuários avançados - Menos metadados",
+        "disable-push-notif": "Push notification desativado",
+        "disable-local-peer-discovery": "Descoberta de par local desativada",
+        "disable-contact-request": "Solicitações de contato desativadas"
       }
     },
     "create-account": {
-      "title": "",
-      "desc": "",
-      "required": "",
-      "placeholder": "",
-      "button": ""
+      "title": "Criar sua conta",
+      "desc": "O nome é a única informação obrigatória",
+      "required": "Obrigatório",
+      "placeholder": "Nome",
+      "button": "CRIAR MINHA CONTA"
     },
     "services-auth": {
       "header": "",
       "title": "",
-      "recommended": "",
+      "recommended": "Recomendado",
       "desc": "",
       "button": "",
-      "skip": ""
+      "skip": "PULAR E FAZER MAIS TARDE"
     },
     "generate-key": {
-      "title": "",
-      "desc": ""
+      "title": "Iniciando o nó do Berty…",
+      "desc": "Isto pode levar alguns segundos"
     },
     "notifications": {
-      "header": "",
-      "recommended": "",
-      "title": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "header": "Não perca nenhuma nova mensagem ou solicitação de contato",
+      "recommended": "Recomendado",
+      "title": "Notificações",
+      "desc": "Você precisa autorizar as notificações por push do \"Berty\" no seu telefone",
+      "button": "AUTORIZAR NOTIFICAÇÕES",
+      "skip": "PULAR E FAZER MAIS TARDE"
     },
     "bluetooth": {
-      "header": "",
-      "optional": "",
+      "header": "Comunique-se sem uma conexão com a internet (wifi ou dados) por conectar o seu telefone diretamente com pares próximos",
+      "optional": "Opcional",
       "title": "Bluetooth",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "desc": "Para usar este recurso, você precisa autorizar o uso de Bluetooth no seu telefone",
+      "button": "AUTORIZAR BLUETOOTH",
+      "skip": "PULAR E FAZER MAIS TARDE"
     },
     "setup-finished": {
-      "title": "",
-      "desc": "",
+      "title": "Configuração finalizada!",
+      "desc": "Agora você pode usar o aplicativo, comece a adicionar contatos e conversar de forma livre e privada com eles",
       "button": ""
     }
   },
   "main": {
     "home": {
       "requests": {
-        "title": "",
-        "received-at": "",
-        "accept": "",
+        "title": "Solicitações",
+        "received-at": "Recebido",
+        "accept": "Aceitar",
         "card-title": ""
       },
       "messages": {
-        "title": ""
+        "title": "Mensagens"
       },
       "input-placeholder": "",
       "no-contacts": "",
@@ -110,7 +110,7 @@
       "title": "",
       "desc": "",
       "notifications-button": {
-        "title": "",
+        "title": "Notificações",
         "tag-enabled": "",
         "tag-disabled": ""
       },
@@ -121,10 +121,10 @@
       },
       "app-mode-button": {
         "title": "",
-        "performance-tag": "",
+        "performance-tag": "Desempenho",
         "privacy-tag": "",
-        "description-tag": "",
-        "first-bullet-point": "",
+        "description-tag": "Fácil de usar - Todas as funcionalidades",
+        "first-bullet-point": "Receber notificações por push",
         "second-bullet-point": "",
         "third-bullet-point": ""
       },
@@ -143,7 +143,7 @@
       "delete-account-button": ""
     },
     "notifications": {
-      "title": "",
+      "title": "Notificações",
       "enabled-desc": "",
       "disabled-desc": "",
       "activate-button": "",
@@ -212,7 +212,7 @@
       "about-button": "",
       "account-button": "",
       "contact-button": "",
-      "message-button": "",
+      "message-button": "Mensagens",
       "group-button": "",
       "settings-button": "",
       "ask-button": "",
@@ -264,7 +264,7 @@
       "local-grpc-button": "",
       "console-logs-button": "",
       "ipfs-webui-button": "",
-      "notifications-button": "",
+      "notifications-button": "Notificações",
       "send-to-all-button": {
         "title": "",
         "sending": "",
