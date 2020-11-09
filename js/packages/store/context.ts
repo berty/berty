@@ -162,7 +162,11 @@ export const defaultPersistentOptions = (): PersistentOptions => ({
 	},
 })
 
-export type NotificationsInhibitor = () => boolean
+// returns true if the notification should be inhibited
+export type NotificationsInhibitor = (
+	ctx: MsgrState,
+	evt: berty.messenger.v1.StreamEvent.INotified,
+) => boolean | 'sound-only'
 
 export type MsgrState = {
 	selectedAccount: number | null
@@ -185,7 +189,7 @@ export type MsgrState = {
 
 	addNotificationListener: (cb: (evt: any) => void) => void
 	removeNotificationListener: (cb: (...args: any[]) => void) => void
-	notificationsInhibitors: Set<NotificationsInhibitor>
+	notificationsInhibitors: NotificationsInhibitor[]
 
 	persistentOptions: PersistentOptions
 	accounts: { [key: number]: any }
@@ -218,7 +222,7 @@ export const initialState = {
 
 	addNotificationListener: () => {},
 	removeNotificationListener: () => {},
-	notificationsInhibitors: new Set([]),
+	notificationsInhibitors: [],
 
 	persistentOptions: defaultPersistentOptions(),
 	daemonAddress: '',

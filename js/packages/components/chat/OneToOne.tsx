@@ -27,6 +27,7 @@ import {
 	useSortedConvInteractions,
 	usePersistentOptions,
 	useClient,
+	useNotificationsInhibitor,
 } from '@berty-tech/store/hooks'
 
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
@@ -684,7 +685,21 @@ const MessageList: React.FC<{
 	)
 }
 
+const NT = messengerpb.StreamEvent.Notified.Type
+
 export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params } }) => {
+	useNotificationsInhibitor((_ctx, notif) => {
+		if (
+			(notif.type === NT.TypeContactRequestSent &&
+				(notif.payload as any)?.payload?.contact?.conversationPublicKey === params?.convId) ||
+			(notif.type === NT.TypeMessageReceived &&
+				(notif.payload as any)?.payload?.interaction?.conversationPublicKey === params?.convId)
+		) {
+			return 'sound-only'
+		}
+		return false
+	})
+
 	const [inputIsFocused, setInputFocus] = useState(false)
 	const [{ flex, background }] = useStyles()
 	useReadEffect(params?.convId, 1000)

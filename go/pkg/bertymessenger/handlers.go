@@ -713,15 +713,10 @@ func (h *eventHandler) handleAppMessageUserMessage(tx *dbWrapper, i *Interaction
 	}
 
 	// notify
-	// FIXME: also notify if app is in background
-	isOpened, err := tx.isConversationOpened(i.ConversationPublicKey)
-	if err != nil {
-		return nil, isNew, err
-	}
 
 	// Receiving a message for an opened conversation returning early
 	// Receiving a message for a conversation not known yet, returning early
-	if isOpened || i.Conversation == nil {
+	if i.Conversation == nil {
 		return i, isNew, nil
 	}
 

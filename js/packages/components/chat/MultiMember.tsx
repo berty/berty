@@ -25,6 +25,7 @@ import {
 	useMsgrContext,
 	useReadEffect,
 	useSortedConvInteractions,
+	useNotificationsInhibitor,
 } from '@berty-tech/store/hooks'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import * as api from '@berty-tech/api/index.pb'
@@ -356,7 +357,21 @@ const MessageList: React.FC<{
 	)
 }
 
+const NT = messengerpb.StreamEvent.Notified.Type
+
 export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params } }) => {
+	useNotificationsInhibitor((_ctx, notif) => {
+		if (
+			(notif.type === NT.TypeContactRequestSent &&
+				(notif.payload as any)?.payload?.contact?.conversationPublicKey === params?.convId) ||
+			(notif.type === NT.TypeMessageReceived &&
+				(notif.payload as any)?.payload?.interaction?.conversationPublicKey === params?.convId)
+		) {
+			return 'sound-only'
+		}
+		return false
+	})
+
 	const [inputIsFocused, setInputFocus] = useState(false)
 	const [{ background, flex }] = useStyles()
 	const { dispatch } = useNavigation()

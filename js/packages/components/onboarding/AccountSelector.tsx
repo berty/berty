@@ -7,7 +7,7 @@ import { useStyles } from '@berty-tech/styles'
 import { colors } from 'react-native-elements'
 import Logo from '../../components/main/1_berty_picto.svg'
 import { MessengerAppState, useMsgrContext } from '@berty-tech/store/context'
-import { useSwitchToAccount } from '@berty-tech/store/hooks'
+import { useSwitchToAccount, useNotificationsInhibitor } from '@berty-tech/store/hooks'
 
 const ListEntry = ({
 	title,
@@ -115,6 +115,8 @@ const OpenRegisteredButton = ({ id, account }: { id: number; account: any }) => 
 }
 
 export const AccountSelector = () => {
+	useNotificationsInhibitor(() => true)
+
 	const [{ absolute, background, column, flex, padding }] = useStyles()
 	const { accounts, embedded, appState } = useMsgrContext()
 

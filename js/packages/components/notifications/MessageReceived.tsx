@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { TouchableOpacity, View, Text } from 'react-native'
 
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
@@ -6,10 +6,9 @@ import { useStyles } from '@berty-tech/styles'
 import { useInteraction, useConversation } from '@berty-tech/store/hooks'
 import { navigate, Routes } from '@berty-tech/navigation'
 
-import { playSound } from '../sounds'
 import { useStylesNotification, NotificationTmpLogo } from './common'
 
-const MessageReceived: React.FC<any> = ({ onClose, title, message, justOpened, ...props }) => {
+const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) => {
 	const [{ text }] = useStyles()
 	const _styles = useStylesNotification()
 
@@ -33,12 +32,6 @@ const MessageReceived: React.FC<any> = ({ onClose, title, message, justOpened, .
 			onClose()
 		}
 	}
-
-	useEffect(() => {
-		if (justOpened) {
-			playSound('messageReceived')
-		}
-	}, [justOpened])
 
 	return (
 		<TouchableOpacity

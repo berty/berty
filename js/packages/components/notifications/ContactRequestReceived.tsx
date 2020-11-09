@@ -1,20 +1,13 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { TouchableOpacity, View, Text } from 'react-native'
 
 import { useStyles } from '@berty-tech/styles'
 import { useConversation } from '@berty-tech/store/hooks'
 import { navigate, Routes } from '@berty-tech/navigation'
 
-import { playSound } from '../sounds'
 import { useStylesNotification, NotificationTmpLogo } from './common'
 
-const ContactRequestReceived: React.FC<any> = ({
-	onClose,
-	title,
-	message,
-	justOpened,
-	...props
-}) => {
+const ContactRequestReceived: React.FC<any> = ({ onClose, title, message, ...props }) => {
 	const [{ text }] = useStyles()
 	const _styles = useStylesNotification()
 
@@ -31,12 +24,6 @@ const ContactRequestReceived: React.FC<any> = ({
 			onClose()
 		}
 	}
-
-	useEffect(() => {
-		if (justOpened) {
-			playSound('contactRequestReceived')
-		}
-	}, [justOpened])
 
 	return (
 		<TouchableOpacity

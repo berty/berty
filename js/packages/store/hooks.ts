@@ -271,16 +271,35 @@ export const useLastConvInteraction = (
 	return intes[intes.length - 1]
 }
 
-export const useNotificationsInhibitor = (inhibitor: Maybe<NotificationsInhibitor>) => {
+const useDispatch = () => {
 	const ctx = useMsgrContext()
-	useEffect(() => {
+	return ctx.dispatch
+}
+
+export const useNotificationsInhibitor = (inhibitor: Maybe<NotificationsInhibitor>) => {
+	const dispatch = useDispatch()
+	const navigation = useNavigation()
+	useMountEffect(() => {
 		if (!inhibitor) {
 			return
 		}
-		ctx.dispatch({ type: MessengerActions.AddNotificationInhibitor, payload: { inhibitor } })
-		return () =>
-			ctx.dispatch({ type: MessengerActions.RemoveNotificationInhibitor, payload: { inhibitor } })
-	}, [inhibitor, ctx])
+
+		const inhibit = () =>
+			dispatch({ type: MessengerActions.AddNotificationInhibitor, payload: { inhibitor } })
+		const revert = () =>
+			dispatch({ type: MessengerActions.RemoveNotificationInhibitor, payload: { inhibitor } })
+
+		const unsubscribeBlur = navigation.addListener('blur', revert)
+		const unsubscribeFocus = navigation.addListener('focus', inhibit)
+
+		inhibit()
+
+		return () => {
+			unsubscribeFocus()
+			unsubscribeBlur()
+			revert()
+		}
+	})
 }
 
 export const useReadEffect = (publicKey: Maybe<string>, timeout: Maybe<number>) => {
