@@ -19,7 +19,7 @@ import LottieView from 'lottie-react-native'
 
 import { ScreenProps, useNavigation, Routes } from '@berty-tech/navigation'
 import {
-	useConversationLength,
+	useConversationsCount,
 	useIncomingContactRequests,
 	useMsgrContext,
 	useLastConvInteraction,
@@ -913,7 +913,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	// TODO: do something to animate the requests
 	const requests: any[] = useIncomingContactRequests()
 	const conversations: any[] = useSortedConversationList()
-	const isConversation: number = useConversationLength()
+	const isConversation: number = useConversationsCount()
 	const [layoutRequests, onLayoutRequests] = useLayout()
 	const [, onLayoutHeader] = useLayout()
 	const [, onLayoutConvs] = useLayout()

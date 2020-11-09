@@ -1,4 +1,4 @@
-import React from 'react'
+import { Dispatch, createContext, useContext } from 'react'
 import { berty } from '@berty-tech/api/index.pb'
 
 export enum MessengerAppState {
@@ -36,6 +36,8 @@ export enum MessengerActions {
 	SetAccounts = 'SET_ACCOUNTS',
 	Restart = 'RESTART',
 	BridgeClosed = 'BRIDGE_CLOSED',
+	AddNotificationInhibitor = 'ADD_NOTIFICATION_INHIBITOR',
+	RemoveNotificationInhibitor = 'REMOVE_NOTIFICATION_INHIBITOR',
 }
 
 export const isDeletingState = (state: MessengerAppState): boolean =>
@@ -160,6 +162,8 @@ export const defaultPersistentOptions = (): PersistentOptions => ({
 	},
 })
 
+export type NotificationsInhibitor = () => boolean
+
 export type MsgrState = {
 	selectedAccount: number | null
 	nextSelectedAccount: number | null
@@ -167,15 +171,22 @@ export type MsgrState = {
 
 	appState: MessengerAppState
 	account: any
-	conversations: { [key: string]: any }
-	contacts: { [key: string]: any }
-	interactions: { [key: string]: { [key: string]: any } }
-	members: { [key: string]: any }
+	conversations: { [key: string]: berty.messenger.v1.IConversation | undefined }
+	contacts: { [key: string]: berty.messenger.v1.IContact | undefined }
+	interactions: {
+		[key: string]: { [key: string]: berty.messenger.v1.IInteraction | undefined } | undefined
+	}
+	members: {
+		[key: string]: { [key: string]: berty.messenger.v1.IMember | undefined } | undefined
+	}
 	client: berty.messenger.v1.MessengerService | null
 	protocolClient: berty.protocol.v1.ProtocolService | null
 	streamError: any
+
 	addNotificationListener: (cb: (evt: any) => void) => void
 	removeNotificationListener: (cb: (...args: any[]) => void) => void
+	notificationsInhibitors: Set<NotificationsInhibitor>
+
 	persistentOptions: PersistentOptions
 	accounts: { [key: number]: any }
 	initialListComplete: boolean
@@ -183,7 +194,7 @@ export type MsgrState = {
 	clearClients: (() => void) | null
 
 	embedded: boolean
-	dispatch: React.Dispatch<{
+	dispatch: Dispatch<{
 		type: berty.messenger.v1.StreamEvent.Type | MessengerActions
 		payload?: any
 	}>
@@ -204,8 +215,11 @@ export const initialState = {
 	client: null,
 	protocolClient: null,
 	streamError: null,
+
 	addNotificationListener: () => {},
 	removeNotificationListener: () => {},
+	notificationsInhibitors: new Set([]),
+
 	persistentOptions: defaultPersistentOptions(),
 	daemonAddress: '',
 	initialListComplete: false,
@@ -220,8 +234,8 @@ export const initialState = {
 	accounts: {},
 }
 
-export const MsgrContext = React.createContext<MsgrState>(initialState)
+export const MsgrContext = createContext<MsgrState>(initialState)
 
 export default MsgrContext
 
-export const useMsgrContext = (): MsgrState => React.useContext(MsgrContext)
+export const useMsgrContext = (): MsgrState => useContext(MsgrContext)

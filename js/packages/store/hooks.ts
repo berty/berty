@@ -1,42 +1,35 @@
-import { useContext, useMemo, useEffect, useCallback } from 'react'
+import { useContext, useMemo, useEffect, useCallback, EffectCallback } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import { berty } from '@berty-tech/api/index.pb'
 
-import { MsgrContext, useMsgrContext } from './context'
+import { MsgrContext, useMsgrContext, NotificationsInhibitor } from './context'
 import { fakeContacts, fakeMultiMemberConversations, fakeMessages } from './faker'
 import { pbDateToNum } from '@berty-tech/components/helpers'
 import { MessengerActions } from '@berty-tech/store/context'
 
 export { useMsgrContext }
 
-export const useGetMessage = (id, convId) => {
+export type Maybe<T> = T | null | undefined
+
+export const useGetMessage = (id: Maybe<string>, convId: Maybe<string>) => {
 	const ctx = useContext(MsgrContext)
-	const intes = ctx.interactions[convId]
+	const intes = ctx.interactions[convId as string]
 	if (!intes) {
 		return undefined
 	}
-	return intes[id]
+	return intes[id as string]
 }
 
-export const useAccountContactSearchResults = (searchText) => {
-	const ctx = useContext(MsgrContext)
-	if (!searchText) {
-		return []
-	}
-	return Object.values(ctx.contacts).filter((contact) =>
-		contact.displayName.toLowerCase().includes(searchText.toLowerCase()),
-	)
-}
-
-export const useFirstConversationWithContact = (contactPk) => {
+export const useFirstConversationWithContact = (contactPk: Maybe<string>) => {
 	const ctx = useContext(MsgrContext)
 	const conversations = ctx.conversations
-	const contact = ctx.contacts[contactPk]
+	const contact = ctx.contacts[contactPk as string]
 	if (!contact) {
 		return undefined
 	}
-	return conversations[contact.conversationPublicKey]
+	return conversations[contact.conversationPublicKey as string]
 }
 
 export const useAccount = () => {
@@ -49,19 +42,17 @@ export const useClient = () => {
 	return ctx.client
 }
 
-export const useOneToOneContact = (convPk = '') => {
-	const ctx = useMsgrContext()
-	const conversation = ctx.conversations[convPk]
-	try {
-		return ctx.contacts[conversation.contactPublicKey]
-	} catch (e) {
-		return null
-	}
+export const useOneToOneContact = (convPk: Maybe<string>) => {
+	const conv = useConversation(convPk)
+	return useContact(conv?.contactPublicKey)
 }
 
-export const useContact = (contactPk = '') => {
+export const useContact = (contactPk: Maybe<string>) => {
 	const ctx = useMsgrContext()
-	return ctx.contacts[contactPk] || null
+	if (!contactPk) {
+		return undefined
+	}
+	return ctx.contacts[contactPk]
 }
 
 export const useContacts = () => {
@@ -69,20 +60,20 @@ export const useContacts = () => {
 	return ctx.contacts
 }
 
-export const useContactsList = () => {
+export const useContactList = () => {
 	const contacts = useContacts()
-	return Object.values(contacts)
+	return Object.values(contacts) as berty.messenger.v1.IContact[]
 }
 
 const ContactState = messengerpb.Contact.State
 
 export const useIncomingContactRequests = () => {
-	const contacts = useContactsList()
+	const contacts = useContactList()
 	return useMemo(() => contacts.filter((c) => c.state === ContactState.IncomingRequest), [contacts])
 }
 
 export const useOutgoingContactRequests = () => {
-	const contacts = useContactsList()
+	const contacts = useContactList()
 	return useMemo(
 		() =>
 			contacts.filter((c) =>
@@ -92,9 +83,19 @@ export const useOutgoingContactRequests = () => {
 	)
 }
 
+export const useAccountContactSearchResults = (searchText: Maybe<string>) => {
+	const contacts = useContactList()
+	if (!searchText) {
+		return []
+	}
+	return contacts.filter((contact) =>
+		contact.displayName?.toLowerCase().includes(searchText.toLowerCase()),
+	)
+}
+
 export const useConversationList = () => {
 	const ctx = useMsgrContext()
-	return Object.values(ctx.conversations)
+	return Object.values(ctx.conversations) as berty.messenger.v1.IConversation[]
 }
 
 export const useSortedConversationList = () => {
@@ -109,40 +110,46 @@ export const useSortedConversationList = () => {
 	)
 }
 
-export const useConversation = (publicKey) => {
+export const useConversation = (publicKey: Maybe<string>) => {
 	const ctx = useMsgrContext()
+	if (!publicKey) {
+		return undefined
+	}
 	return ctx.conversations[publicKey]
 }
 
-export const useConvInteractions = (publicKey) => {
+export const useConvInteractions = (publicKey: Maybe<string>) => {
 	const ctx = useMsgrContext()
-	return ctx.interactions[publicKey] || {}
+	return ctx.interactions[publicKey as string] || {}
 }
 
-export const useSortedConvInteractions = (publicKey) => {
+export const useConvInteractionsList = (publicKey: Maybe<string>) => {
 	const intes = useConvInteractions(publicKey)
-	return Object.values(intes).sort((a, b) => {
-		return parseInt(a.sentDate, 10) - parseInt(b.sentDate, 10)
-	})
+	return Object.values(intes) as berty.messenger.v1.IInteraction[]
 }
 
-export const useInteraction = (cid, convPk) => {
+export const useSortedConvInteractions = (publicKey: Maybe<string>) => {
+	const intes = useConvInteractionsList(publicKey)
+	return intes.sort((a, b) => pbDateToNum(a.sentDate) - pbDateToNum(b.sentDate))
+}
+
+export const useInteraction = (cid: Maybe<string>, convPk: Maybe<string>) => {
 	const intes = useConvInteractions(convPk)
-	return intes && intes[cid]
+	return intes && intes[cid as string]
 }
 
-export const useConversationLength = () => {
+export const useConversationsCount = () => {
 	return useConversationList().length
 }
 
-export const useConvMembers = (publicKey) => {
+export const useConvMembers = (publicKey: Maybe<string>) => {
 	const ctx = useMsgrContext()
-	return ctx.members[publicKey] || {}
+	return ctx.members[publicKey as string] || {}
 }
 
-export const useConvMemberList = (publicKey) => {
-	const members = useConvMembers()
-	return Object.values(members)
+export const useConvMemberList = (publicKey: Maybe<string>) => {
+	const members = useConvMembers(publicKey)
+	return Object.values(members) as berty.messenger.v1.IMember[]
 }
 
 export const usePersistentOptions = () => {
@@ -176,7 +183,10 @@ export const useSwitchToAccount = () => {
 // Generate n fake conversations with n fake contacts, one UserMessage per conv
 export const useGenerateFakeContacts = () => {
 	const ctx = useMsgrContext()
-	const prevFakeCount = Object.values(ctx.contacts).reduce((r, c) => (c.fake ? r + 1 : r), 0)
+	const prevFakeCount: number = Object.values(ctx.contacts).reduce(
+		(r, c) => ((c as any).fake ? r + 1 : r),
+		0,
+	)
 	return (length = 10) => {
 		const payload = fakeContacts(length, prevFakeCount)
 		ctx.dispatch({
@@ -189,7 +199,8 @@ export const useGenerateFakeContacts = () => {
 export const useGenerateFakeMultiMembers = () => {
 	const ctx = useMsgrContext()
 	const prevFakeCount = Object.values(ctx.conversations).reduce(
-		(r, c) => (c.fake && c.type === messengerpb.Conversation.Type.MultiMemberType ? r + 1 : r),
+		(r, c) =>
+			(c as any).fake && c?.type === messengerpb.Conversation.Type.MultiMemberType ? r + 1 : r,
 		0,
 	)
 	return (length = 10) => {
@@ -204,15 +215,15 @@ export const useGenerateFakeMultiMembers = () => {
 // Generate n fake messages for all fake conversations
 export const useGenerateFakeMessages = () => {
 	const ctx = useMsgrContext()
-	const fakeConversationList = useConversationList().filter((c) => c.fake === true)
+	const fakeConversationList = useConversationList().filter((c) => (c as any).fake === true)
 	const fakeMembersListList = fakeConversationList.map((conv) =>
-		Object.values(ctx.members[conv.publicKey] || {}).filter((member) => member.fake),
+		Object.values(ctx.members[conv.publicKey || ''] || {}).filter((member: any) => member.fake),
 	)
 	console.log('fakeConvCount', fakeConversationList.length)
-	const prevFakeCount = fakeConversationList.reduce(
+	const prevFakeCount: number = fakeConversationList.reduce(
 		(r, fakeConv) =>
-			Object.values(ctx.interactions[fakeConv.publicKey] || {}).reduce(
-				(r2, inte) => (inte.fake ? r2 + 1 : r2),
+			Object.values(ctx.interactions[fakeConv.publicKey || ''] || {}).reduce(
+				(r2, inte) => ((inte as any).fake ? r2 + 1 : r2),
 				r,
 			),
 		0,
@@ -242,7 +253,14 @@ export const useDeleteFakeData = () => {
 		})
 }
 
-export const useLastConvInteraction = (convPublicKey, filterFunc) => {
+export type SortedConvsFilter = Parameters<
+	ReturnType<typeof useSortedConvInteractions>['filter']
+>[0]
+
+export const useLastConvInteraction = (
+	convPublicKey: Maybe<string>,
+	filterFunc: Maybe<SortedConvsFilter>,
+) => {
 	let intes = useSortedConvInteractions(convPublicKey)
 	if (filterFunc) {
 		intes = intes.filter(filterFunc)
@@ -253,28 +271,44 @@ export const useLastConvInteraction = (convPublicKey, filterFunc) => {
 	return intes[intes.length - 1]
 }
 
-export const useReadEffect = (publicKey, timeout) => {
+export const useNotificationsInhibitor = (inhibitor: Maybe<NotificationsInhibitor>) => {
+	const ctx = useMsgrContext()
+	useEffect(() => {
+		if (!inhibitor) {
+			return
+		}
+		ctx.dispatch({ type: MessengerActions.AddNotificationInhibitor, payload: { inhibitor } })
+		return () =>
+			ctx.dispatch({ type: MessengerActions.RemoveNotificationInhibitor, payload: { inhibitor } })
+	}, [inhibitor, ctx])
+}
+
+export const useReadEffect = (publicKey: Maybe<string>, timeout: Maybe<number>) => {
 	// timeout is the duration (in ms) that the user must stay on the page to set messages as read
 	const navigation = useNavigation()
 
 	const ctx = useMsgrContext()
 
 	const conv = useConversation(publicKey)
-	const fake = (conv && conv.fake) || false
+	const fake = (conv && (conv as any).fake) || false
 
 	useEffect(() => {
 		if (fake) {
 			return
 		}
-		let timeoutID = null
+		let timeoutID: ReturnType<typeof setTimeout> | null = null
 		const handleStart = () => {
 			if (timeoutID === null) {
+				let t = timeout
+				if (typeof t !== 'number') {
+					t = 1000
+				}
 				timeoutID = setTimeout(() => {
 					timeoutID = null
-					ctx.client.conversationOpen({ groupPk: publicKey }).catch((err) => {
+					ctx.client?.conversationOpen({ groupPk: publicKey }).catch((err) => {
 						console.warn('failed to open conversation,', err)
 					})
-				}, timeout)
+				}, t)
 			}
 		}
 		handleStart()
@@ -284,7 +318,7 @@ export const useReadEffect = (publicKey, timeout) => {
 				clearTimeout(timeoutID)
 				timeoutID = null
 			}
-			ctx.client.conversationClose({ groupPk: publicKey }).catch((err) => {
+			ctx.client?.conversationClose({ groupPk: publicKey }).catch((err) => {
 				console.warn('failed to close conversation,', err)
 			})
 		}
@@ -298,4 +332,4 @@ export const useReadEffect = (publicKey, timeout) => {
 }
 
 // eslint-disable-next-line react-hooks/exhaustive-deps
-export const useMountEffect = (effect) => useEffect(effect, [])
+export const useMountEffect = (effect: EffectCallback) => useEffect(effect, [])
