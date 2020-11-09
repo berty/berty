@@ -226,9 +226,31 @@ jobs:
       #    env_vars: OS,GOLANG
       #    name: codecov-umbrella
       #    fail_ci_if_error: false
-  # TODO: consider adding a go-tests-on-darwin.
-  #       it can validate that the test suite runs successfully on macos.
-  #       concern: it will take a precious slot of darwin builder on github-actions
-  #       maybe we should just run it with a cron and not on each push
+
+  go-install-on-darwin:
+    name: "make install (darwin)"
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15.x
+      - name: Cache Go modules
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Install the project on Darwin
+        run: cd go && make install
+      - name: Check go.mod and go.sum
+        run: |
+          go mod tidy -v
+          git --no-pager diff go.mod go.sum
+          git --no-pager diff --quiet go.mod go.sum
+
   # TODO: consider adding various GOARCH check per OS.
   #       i.e., to validate that we build on 32/64bit.

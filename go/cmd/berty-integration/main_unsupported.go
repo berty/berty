@@ -1,9 +1,14 @@
-// +build windows
+// +build windows darwin
 
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+	"runtime"
+)
 
 func main() {
-	fmt.Println("windows not supported")
+	fmt.Println(runtime.GOOS + "/" + runtime.GOARCH + " not supported")
+	os.Exit(1)
 }
