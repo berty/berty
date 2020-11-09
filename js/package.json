@@ -19,7 +19,7 @@
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-firebase/app": "^8.4.7",
     "@react-native-firebase/crashlytics": "^8.4.12",
-    "@react-navigation/material-top-tabs": "^5.3.6",
+    "@react-navigation/material-top-tabs": "^5.3.7",
     "@react-navigation/native": "^5.8.6",
     "@shakebugs/react-native-shake": "^10.0.4",
     "@ui-kitten/components": "^5.0.0",
