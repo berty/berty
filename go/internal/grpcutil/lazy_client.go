@@ -8,11 +8,13 @@ import (
 	"google.golang.org/grpc"
 )
 
-var lazyCodec = NewLazyCodec()
+var (
+	lazyCodec        = NewLazyCodec()
+	streamids uint64 = 0
+)
 
 type LazyClient struct {
-	cc        *grpc.ClientConn
-	streamsid uint64
+	cc *grpc.ClientConn
 }
 
 type LazyMethodDesc struct {
@@ -58,7 +60,7 @@ func (lc *LazyClient) InvokeStream(ctx context.Context, desc *LazyMethodDesc, in
 	}
 
 	return &LazyStream{
-		id:           atomic.AddUint64(&lc.streamsid, 1),
+		id:           atomic.AddUint64(&streamids, 1),
 		ClientStream: cstream,
 		CancelFunc:   cancel,
 	}, nil
