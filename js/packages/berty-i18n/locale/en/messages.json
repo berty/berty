@@ -70,7 +70,7 @@
     "setup-finished": {
       "title": "Setup finished!",
       "desc": "You can now use the app, start adding contacts and talk freely and privately with them",
-      "button": ""
+      "button": "START USING BERTY"
     }
   },
   "main": {
@@ -264,7 +264,7 @@
       "bot-mode-button": "Bot mode",
       "local-grpc-button": "local gRPC",
       "console-logs-button": "Console logs",
-      "ipfs-webui-button": "",
+      "ipfs-webui-button": "IPFS WebUI",
       "notifications-button": "Notifications",
       "send-to-all-button": {
         "title": "Send messages to all contacts",
@@ -291,13 +291,13 @@
       "add": "Add"
     },
     "ipfs-webui": {
-      "title": ""
+      "title": "IPFS WebUI"
     }
   },
   "modals": {
     "manage-deep-link": {
       "invalid-link": "Invalid link!",
-      "invalid-qr": "",
+      "invalid-qr": "Invalid QR code!",
       "error": "Error!"
     },
     "invalid-scan": {
@@ -305,7 +305,7 @@
     },
     "add-this-contact": {
       "fingerprint": "Fingerprint",
-      "info": "",
+      "info": "Info",
       "devices": "Devices"
     },
     "group-invitation": {
