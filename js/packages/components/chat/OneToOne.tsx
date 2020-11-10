@@ -417,27 +417,7 @@ export const AddBetabotBox = () => {
 										{ fontFamily: 'Open Sans' },
 									]}
 								>
-									{t('chat.one-to-one.betabot-box.begin-desc')}
-								</TextNative>
-								<TextNative
-									style={[
-										text.bold.medium,
-										text.size.medium,
-										text.color.black,
-										{ fontFamily: 'Open Sans' },
-									]}
-								>
-									{t('chat.one-to-one.betabot-box.bold-desc')}
-								</TextNative>
-								<TextNative
-									style={[
-										text.bold.small,
-										text.color.black,
-										text.size.medium,
-										{ fontFamily: 'Open Sans' },
-									]}
-								>
-									{t('chat.one-to-one.betabot-box.end-desc')}
+									{t('chat.one-to-one.betabot-box.desc')}
 								</TextNative>
 							</Text>
 						</View>

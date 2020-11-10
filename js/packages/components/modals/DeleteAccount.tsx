@@ -108,11 +108,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 					<DeleteAccountError error={t('settings.delete-account.first-desc')} />
 					<View style={[padding.horizontal.medium, padding.bottom.medium]}>
 						<Text style={[text.color.red, text.align.center, text.bold.small]}>
-							{t('settings.delete-account.begin-second-desc')}
-							<Text style={[text.bold.huge, text.color.red]}>
-								{t('settings.delete-account.bold-second-desc')}
-							</Text>
-							{t('settings.delete-account.end-second-desc')}
+							{t('settings.delete-account.desc')}
 						</Text>
 					</View>
 					<View style={[column.justify]}>

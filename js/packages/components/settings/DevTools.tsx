@@ -250,11 +250,7 @@ const SendToAll: React.FC = () => {
 			}
 		}
 		setDisabled(false)
-		setName(
-			`${t('settings.devtools.send-to-all-button.begin-tried')}${convs.length}${t(
-				'settings.devtools.send-to-all-button.end-tried',
-			)}`,
-		)
+		setName(`${t('settings.devtools.send-to-all-button.tried', { length: convs.length })}`)
 		setTimeout(() => setName(t('settings.devtools.send-to-all-button.title')), 1000)
 	}, [buf, convs, ctx.client, t])
 	return (
