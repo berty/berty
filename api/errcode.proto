@@ -35,6 +35,7 @@ enum ErrCode {
   ErrMissingMapKey = 107;
   ErrDBWrite = 108;
   ErrDBRead = 109;
+  ErrClosing = 110;
 
   // Crypto errors
 
