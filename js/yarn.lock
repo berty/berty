@@ -1405,10 +1405,10 @@
     query-string "^6.13.6"
     react-is "^16.13.0"
 
-"@react-navigation/material-top-tabs@^5.3.7":
-  version "5.3.7"
-  resolved "https://registry.yarnpkg.com/@react-navigation/material-top-tabs/-/material-top-tabs-5.3.7.tgz#7643cdd04d2f873987912cfd9b5ee1b3bbaf9ef4"
-  integrity sha512-4MbFUo+MCYpv9sEKkSDxtmFczuoSoDye6tw2VX04CpYps9K+m/4QzhiFYP1TaWzztm3dSpSdACQFM4Dww0oAhg==
+"@react-navigation/material-top-tabs@^5.3.8":
+  version "5.3.8"
+  resolved "https://registry.yarnpkg.com/@react-navigation/material-top-tabs/-/material-top-tabs-5.3.8.tgz#6f96d9e58eefef935e5996b90a5e8726483efab6"
+  integrity sha512-mZDvR8E6tyzvdILvBlVPyIgNCoAeJTSxprH4qdQ2zpIVz/RoxvtvRZef76OkNWO3IrxeTe8LiSgSzvwunM4kOg==
   dependencies:
     color "^3.1.3"
 
