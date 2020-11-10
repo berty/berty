@@ -6,6 +6,7 @@ import { useNavigation as useReactNavigation, CommonActions } from '@react-navig
 
 import { PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
 import { Routes } from '@berty-tech/navigation'
+import { useNotificationsInhibitor } from '@berty-tech/store/hooks'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
@@ -183,10 +184,13 @@ const SetupFinishedBody = () => {
 	)
 }
 
-export const SetupFinished = () => (
-	<OnboardingWrapper>
-		<SetupFinishedBody />
-	</OnboardingWrapper>
-)
+export const SetupFinished = () => {
+	useNotificationsInhibitor(() => true)
+	return (
+		<OnboardingWrapper>
+			<SetupFinishedBody />
+		</OnboardingWrapper>
+	)
+}
 
 export default SetupFinished

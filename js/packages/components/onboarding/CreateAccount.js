@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext } from '@berty-tech/store/context'
+import { useNotificationsInhibitor } from '@berty-tech/store/hooks'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { globals } from '@berty-tech/config'
 
@@ -115,6 +116,7 @@ const CreateAccountBody = ({ next }) => {
 }
 
 export const CreateAccount = () => {
+	useNotificationsInhibitor(() => true)
 	const { navigate } = useNavigation()
 
 	return (

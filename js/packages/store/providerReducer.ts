@@ -96,7 +96,7 @@ export const reducerActions: {
 							[gpk]: {
 								...(oldState.interactions[gpk] || {}),
 								[inte.payload.target]: {
-									...oldState.interactions[gpk][inte.payload.target],
+									...(oldState.interactions[gpk] || {})[inte.payload.target],
 									acknowledged: true,
 								},
 							},
@@ -146,10 +146,14 @@ export const reducerActions: {
 
 	[MessengerActions.DeleteFakeData]: (oldState, _) => ({
 		...oldState,
-		conversations: pickBy(oldState.conversations, (conv) => !conv.fake),
-		contacts: pickBy(oldState.contacts, (contact) => !contact.fake),
-		interactions: mapValues(oldState.interactions, (intes) => pickBy(intes, (inte) => !inte.fake)),
-		members: mapValues(oldState.members, (members) => pickBy(members, (member) => !member.fake)),
+		conversations: pickBy(oldState.conversations, (conv) => !(conv as any).fake),
+		contacts: pickBy(oldState.contacts, (contact) => !(contact as any).fake),
+		interactions: mapValues(oldState.interactions, (intes) =>
+			pickBy(intes, (inte) => !(inte as any).fake),
+		),
+		members: mapValues(oldState.members, (members) =>
+			pickBy(members, (member) => !(member as any).fake),
+		),
 	}),
 
 	[MessengerActions.SetDaemonAddress]: (oldState, action) => ({
@@ -318,6 +322,28 @@ export const reducerActions: {
 		}
 
 		return reducer(oldState, { type: MessengerActions.SetStateClosed })
+	},
+
+	[MessengerActions.AddNotificationInhibitor]: (oldState, action) => {
+		if (oldState.notificationsInhibitors.includes(action.payload.inhibitor)) {
+			return oldState
+		}
+		return {
+			...oldState,
+			notificationsInhibitors: [...oldState.notificationsInhibitors, action.payload.inhibitor],
+		}
+	},
+
+	[MessengerActions.RemoveNotificationInhibitor]: (oldState, action) => {
+		if (!oldState.notificationsInhibitors.includes(action.payload.inhibitor)) {
+			return oldState
+		}
+		return {
+			...oldState,
+			notificationsInhibitors: oldState.notificationsInhibitors.filter(
+				(inh) => inh != action.payload.inhibitor,
+			),
+		}
 	},
 
 	[messengerpb.StreamEvent.Type.TypeDeviceUpdated]: (oldState, __) => {

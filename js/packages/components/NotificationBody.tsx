@@ -4,11 +4,14 @@ import GestureRecognizer from 'react-native-swipe-gestures'
 import { SafeAreaContext } from 'react-native-safe-area-context'
 
 import { berty } from '@berty-tech/api/index.pb'
+import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { useStyles } from '@berty-tech/styles'
-import { usePersistentOptions } from '@berty-tech/store/hooks'
+import { usePersistentOptions, useMsgrContext } from '@berty-tech/store/hooks'
+import { NotificationsInhibitor } from '@berty-tech/store/context'
 
 import { usePrevious } from './hooks'
 import notifications, { DefaultNotification } from './notifications'
+import { playSound, SoundKey } from './sounds'
 
 const NotificationContents: React.FC<{
 	additionalProps: { type: berty.messenger.v1.StreamEvent.Notified.Type }
@@ -21,15 +24,6 @@ const NotificationContents: React.FC<{
 }
 
 const NotificationBody: React.FC<any> = (props) => {
-	const prevProps = usePrevious(props)
-	const justOpened = props.isOpen && !prevProps?.isOpen
-
-	useEffect(() => {
-		if ((prevProps?.vibrate || props.vibrate) && justOpened) {
-			Vibration.vibrate(400)
-		}
-	})
-
 	const [{ border, flex, column, background }] = useStyles()
 
 	return (
@@ -55,21 +49,55 @@ const NotificationBody: React.FC<any> = (props) => {
 						},
 					]}
 				>
-					<NotificationContents {...props} justOpened={justOpened} />
+					<NotificationContents {...props} />
 				</GestureRecognizer>
 			)}
 		</SafeAreaContext.Consumer>
 	)
 }
 
+const T = messengerpb.StreamEvent.Notified.Type
+
+const notifsSounds: { [key: number]: SoundKey } = {
+	[T.TypeContactRequestReceived]: 'contactRequestReceived',
+	[T.TypeMessageReceived]: 'messageReceived',
+	[T.TypeContactRequestSent]: 'contactRequestSent',
+}
+
 const GatedNotificationBody: React.FC<any> = (props) => {
+	const prevProps = usePrevious(props)
+	const justOpened = props.isOpen && !prevProps?.isOpen
+
+	const ctx = useMsgrContext()
 	const persistentOptions = usePersistentOptions()
 
-	const evt = props.additionalProps
+	const notif = props.additionalProps as berty.messenger.v1.StreamEvent.INotified | undefined
 
-	const isValid = evt && props.isOpen && persistentOptions?.notifications?.enable
+	const isValid = notif && props.isOpen && persistentOptions?.notifications?.enable
 
-	if (!isValid) {
+	const inhibit = isValid
+		? ctx.notificationsInhibitors.reduce<ReturnType<NotificationsInhibitor>>((r, inh) => {
+				if (r === false) {
+					return inh(ctx, notif as any)
+				}
+				return r
+		  }, false)
+		: true
+
+	const notifType = notif?.type || 0
+
+	useEffect(() => {
+		const sound: SoundKey | undefined = notifsSounds[notifType]
+		if (justOpened && sound && (!inhibit || inhibit === 'sound-only')) {
+			Vibration.vibrate(400)
+			playSound(sound)
+		}
+	}, [notifType, justOpened, inhibit])
+
+	if (!isValid || inhibit) {
+		if (props.isOpen) {
+			props.onClose()
+		}
 		return null
 	}
 

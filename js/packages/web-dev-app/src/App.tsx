@@ -5,7 +5,7 @@ import { MsgrProvider } from '@berty-tech/store/provider'
 import {
 	useAccountContactSearchResults,
 	useFirstConversationWithContact,
-	useContactsList,
+	useContactList,
 	useConversationList,
 	useMountEffect,
 } from '@berty-tech/store/hooks'
@@ -351,7 +351,7 @@ const CreateMultiMember = () => {
 		() => call({ displayName: groupName, contactsToInvite: members.map((m) => m.publicKey) }),
 		[groupName, members, call],
 	)
-	const contactList = useContactsList()
+	const contactList = useContactList()
 	React.useEffect(() => {
 		// TODO: better handle error
 		if (done) {

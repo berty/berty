@@ -19,13 +19,14 @@ import LottieView from 'lottie-react-native'
 
 import { ScreenProps, useNavigation, Routes } from '@berty-tech/navigation'
 import {
-	useConversationLength,
+	useConversationsCount,
 	useIncomingContactRequests,
 	useMsgrContext,
 	useLastConvInteraction,
 	usePersistentOptions,
 	useSortedConversationList,
 	useClient,
+	useNotificationsInhibitor,
 } from '@berty-tech/store/hooks'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import * as api from '@berty-tech/api/index.pb'
@@ -909,11 +910,20 @@ const SearchComponent: React.FC<{
 
 const _approxFooterHeight = 90
 
+const T = messengerpb.StreamEvent.Notified.Type
+
 export const Home: React.FC<ScreenProps.Main.Home> = () => {
+	useNotificationsInhibitor((_ctx, notif) =>
+		[T.TypeMessageReceived, T.TypeContactRequestReceived, T.TypeContactRequestSent].includes(
+			notif.type,
+		)
+			? 'sound-only'
+			: false,
+	)
 	// TODO: do something to animate the requests
 	const requests: any[] = useIncomingContactRequests()
 	const conversations: any[] = useSortedConversationList()
-	const isConversation: number = useConversationLength()
+	const isConversation: number = useConversationsCount()
 	const [layoutRequests, onLayoutRequests] = useLayout()
 	const [, onLayoutHeader] = useLayout()
 	const [, onLayoutConvs] = useLayout()

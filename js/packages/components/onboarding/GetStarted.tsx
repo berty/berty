@@ -4,13 +4,15 @@ import { Text } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
+import { MessengerActions, useMsgrContext } from '@berty-tech/store/context'
+import { useNotificationsInhibitor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 
-import { MessengerActions, useMsgrContext } from '@berty-tech/store/context'
 import Logo from './berty_gradient_square.svg'
 import Button from './Button'
 
 export const GetStarted = () => {
+	useNotificationsInhibitor(() => true)
 	const [{ absolute, background, column, flex, padding, text, margin, color }] = useStyles()
 	const { dispatch } = useMsgrContext()
 
@@ -24,7 +26,7 @@ export const GetStarted = () => {
 					</View>
 					<View style={[flex.medium]}>
 						<Text style={[padding.horizontal.medium, text.align.center, text.align.bottom]}>
-							{t('onboarding.getstarted.desc')}
+							{t('onboarding.getstarted.desc') as any}
 						</Text>
 					</View>
 					<View style={[flex.medium]}>
@@ -51,7 +53,7 @@ export const GetStarted = () => {
 								dispatch({ type: MessengerActions.SetStateDeleting })
 							}}
 						>
-							{t('onboarding.getstarted.more-options')}
+							{t('onboarding.getstarted.more-options') as any}
 						</Text>
 					</View>
 				</SafeAreaView>

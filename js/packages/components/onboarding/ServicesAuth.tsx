@@ -3,7 +3,7 @@ import { Translation } from 'react-i18next'
 import { useNavigation } from '@react-navigation/native'
 
 import { servicesAuthViaDefault, useAccountServices } from '@berty-tech/store/services'
-import { useMsgrContext } from '@berty-tech/store/hooks'
+import { useMsgrContext, useNotificationsInhibitor } from '@berty-tech/store/hooks'
 
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
@@ -47,6 +47,7 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 }
 
 export const ServicesAuth: React.FC<{}> = () => {
+	useNotificationsInhibitor(() => true)
 	const { navigate } = useNavigation()
 
 	return (

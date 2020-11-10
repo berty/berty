@@ -25,7 +25,7 @@ import {
 import { berty } from '@berty-tech/api/index.pb'
 import { reducerAction } from '@berty-tech/store/providerReducer'
 
-const accountCient = Service(accountpb.AccountService, rpcNative)
+const accountClient: berty.account.v1.AccountService = Service(accountpb.AccountService, rpcNative)
 
 export const storageKeyForAccount = (accountID: number) => `storage_${accountID}`
 
@@ -108,7 +108,7 @@ export const setPersistentOption = async (
 export const refreshAccountList = (
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
-): { [key: number]: any } => {
+): { [key: number]: any } | Promise<{ [key: number]: any }> => {
 	try {
 		let accounts: { [key: number]: any }
 
@@ -209,7 +209,7 @@ export const openingDaemon = (
 			console.error('unable to init bridge', err)
 		})
 		.then(() =>
-			accountCient.openAccount({
+			accountClient.openAccount({
 				args: GoBridgeDefaultOpts.cliArgs,
 				persistence: GoBridgeDefaultOpts.persistence,
 			}),
@@ -385,7 +385,7 @@ export const openingCloseConvos = (
 
 // handle states DeletingClosingDaemon, ClosingDaemon
 export const closingDaemon = (
-	clearBridge: (() => void) | null,
+	clearBridge: (() => void | Promise<void>) | null,
 	clearClients: (() => void) | null,
 	dispatch: (arg0: reducerAction) => void,
 ) => {
