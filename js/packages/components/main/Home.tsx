@@ -717,11 +717,15 @@ const HomeHeader: React.FC<
 									activeOpacity={1}
 									onPress={() => focus?.focus()}
 								>
-								
 									<View style={[row.center]}>
-										<Icon name='search-outline' fill={value?.length ? '#FFAE3A' : '#8F9BB3'} width={20} height={20} />
+										<Icon
+											name='search-outline'
+											fill={value?.length ? '#FFAE3A' : '#8F9BB3'}
+											width={20}
+											height={20}
+										/>
 									</View>
-								
+
 									<View
 										style={[
 											!value?.length && margin.left.medium,
@@ -770,24 +774,33 @@ const HomeHeader: React.FC<
 										alignItems: 'center',
 									}}
 									onPress={() => navigate('Settings.Home')}
-								><View style={{
-									backgroundColor: 'white',
-									borderRadius: 30,
-									height: 44,
-									width: 44,
-									alignItems: 'center',
-									justifyContent: 'center',
-									shadowColor: '#000',
-									shadowOffset: {
-										width: 0,
-										height: 1,
-									},
-									shadowOpacity: 0.18,
-									shadowRadius: 1.00,
-									elevation: 1,
-								}}>
-									<Icon name='account-berty' pack='custom' fill='#8F9BB3' width={40} height={40}  />
-								</View>
+								>
+									<View
+										style={{
+											backgroundColor: 'white',
+											borderRadius: 30,
+											height: 44,
+											width: 44,
+											alignItems: 'center',
+											justifyContent: 'center',
+											shadowColor: '#000',
+											shadowOffset: {
+												width: 0,
+												height: 1,
+											},
+											shadowOpacity: 0.18,
+											shadowRadius: 1.0,
+											elevation: 1,
+										}}
+									>
+										<Icon
+											name='account-berty'
+											pack='custom'
+											fill='#8F9BB3'
+											width={40}
+											height={40}
+										/>
+									</View>
 								</TouchableOpacity>
 							</View>
 						</View>
@@ -902,7 +915,7 @@ const SearchComponent: React.FC<{
 			)}
 		/>
 	) : (
-		<View style={{ position:"relative" }}>
+		<View style={{ position: 'relative' }}>
 			<Translation>
 				{(t: any): React.ReactNode => (
 					<TextNative
@@ -911,14 +924,14 @@ const SearchComponent: React.FC<{
 							text.size.big,
 							text.bold.small,
 							text.align.center,
-							{ 
+							{
 								fontFamily: 'Open Sans',
 								position: 'absolute',
 								top: 230,
 								left: 0,
 								right: 0,
-								color: '#FFAE3A'
-						},
+								color: '#FFAE3A',
+							},
 						]}
 					>
 						{t('main.home.search.no-results')}
@@ -931,7 +944,7 @@ const SearchComponent: React.FC<{
 				height={500}
 				fill='#FFFBF6'
 				style={{ position: 'absolute', top: 0, right: -63 }}
-				/>
+			/>
 			<View style={[margin.top.scale(370 * scaleHeight)]}>
 				<HintBody />
 			</View>
@@ -1031,92 +1044,96 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 							<SafeAreaConsumer>
 								{(insets: EdgeInsets | null) => (
 									<>
-									<ScrollView
-										ref={scrollRef}
-										stickyHeaderIndices={!searchText?.length && !hasResults ? [1] : [0]}
-										showsVerticalScrollIndicator={false}
-										scrollEventThrottle={16}
-										keyboardShouldPersistTaps={'handled'}
-										onScrollEndDrag={(e) => {
-											if (e.nativeEvent.contentOffset.y < 0) {
-												setRefresh(true)
-											}
-										}}
-										onScroll={(e) => {
-											if (e.nativeEvent.contentOffset) {
-												if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
-													setIsOnTop(true)
-												} else {
-													setIsOnTop(false)
+										<ScrollView
+											ref={scrollRef}
+											stickyHeaderIndices={!searchText?.length && !hasResults ? [1] : [0]}
+											showsVerticalScrollIndicator={false}
+											scrollEventThrottle={16}
+											keyboardShouldPersistTaps={'handled'}
+											onScrollEndDrag={(e) => {
+												if (e.nativeEvent.contentOffset.y < 0) {
+													setRefresh(true)
 												}
-											}
-										}}
-									>
-										{!searchText?.length && (
-											<IncomingRequests items={requests} onLayout={onLayoutRequests} />
-										)}
-										<HomeHeader
-											isOnTop={isOnTop}
-											hasRequests={requests.length > 0}
-											scrollRef={scrollRef}
-											onLayout={onLayoutHeader}
-											value={searchText}
-											onChange={setSearchText}
-											refresh={refresh}
-											setRefresh={setRefresh}
-										/>
-										{searchText?.length ? (
-											<SearchComponent
-												insets={insets}
-												conversations={searchConversations}
-												contacts={searchContacts}
-												interactions={searchInteractions}
+											}}
+											onScroll={(e) => {
+												if (e.nativeEvent.contentOffset) {
+													if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
+														setIsOnTop(true)
+													} else {
+														setIsOnTop(false)
+													}
+												}
+											}}
+										>
+											{!searchText?.length && (
+												<IncomingRequests items={requests} onLayout={onLayoutRequests} />
+											)}
+											<HomeHeader
+												isOnTop={isOnTop}
+												hasRequests={requests.length > 0}
+												scrollRef={scrollRef}
+												onLayout={onLayoutHeader}
 												value={searchText}
-												hasResults={hasResults}
+												onChange={setSearchText}
+												refresh={refresh}
+												setRefresh={setRefresh}
 											/>
-										) : (
-											<>
-												{isConversation ? (
-													<Conversations items={conversations} onLayout={onLayoutConvs} />
-												) : (
-													<View style={[background.white]}>
-														<View
-															style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}
-														>
-															<View>
-																<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
-																<TextNative
-																	style={[
-																		text.align.center,
-																		text.color.grey,
-																		text.bold.small,
-																		opacity(0.3),
-																		margin.top.big,
-																	]}
-																>
-																	{t('main.home.no-contacts')}
-																</TextNative>
+											{searchText?.length ? (
+												<SearchComponent
+													insets={insets}
+													conversations={searchConversations}
+													contacts={searchContacts}
+													interactions={searchInteractions}
+													value={searchText}
+													hasResults={hasResults}
+												/>
+											) : (
+												<>
+													{isConversation ? (
+														<Conversations items={conversations} onLayout={onLayoutConvs} />
+													) : (
+														<View style={[background.white]}>
+															<View
+																style={[
+																	flex.justify.center,
+																	flex.align.center,
+																	margin.top.scale(60),
+																]}
+															>
+																<View>
+																	<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
+																	<TextNative
+																		style={[
+																			text.align.center,
+																			text.color.grey,
+																			text.bold.small,
+																			opacity(0.3),
+																			margin.top.big,
+																		]}
+																	>
+																		{t('main.home.no-contacts')}
+																	</TextNative>
+																</View>
 															</View>
 														</View>
-													</View>
-												)}
-												{requests.length > 0 && (
-													<View
-														style={[
-															{
-																backgroundColor: 'white',
-																position: 'absolute',
-																bottom: windowHeight * -1,
-																height: windowHeight,
-																width: '100%',
-															},
-														]}
-													/>
-												)}
-											</>
-										)}
-									</ScrollView>
-									{!searchText?.length && <Footer />}
+													)}
+													{requests.length > 0 && (
+														<View
+															style={[
+																{
+																	backgroundColor: 'white',
+																	position: 'absolute',
+																	bottom: windowHeight * -1,
+																	height: windowHeight,
+																	width: '100%',
+																},
+															]}
+														/>
+													)}
+												</>
+											)}
+										</ScrollView>
+										{!searchText?.length && <Footer />}
 									</>
 								)}
 							</SafeAreaConsumer>

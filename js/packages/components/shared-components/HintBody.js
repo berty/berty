@@ -46,7 +46,7 @@ export const HintBody = () => {
 					text.bold.medium,
 					{
 						fontFamily: 'Open Sans',
-						color:"#DADDE6",
+						color: '#DADDE6',
 						marginHorizontal: _landingIconSize * scaleSize, // room for speech bubble icon
 					},
 				]}
@@ -60,7 +60,9 @@ export const HintBody = () => {
 				height={_landingIconSize * scaleSize}
 				style={[row.item.justify, opacity(0.8), { position: 'absolute', bottom: 40, right: 20 }]}
 			/>
-			<TextNative style={[searchHintBodyText,{color: '#DBE1EC'}]}>{bannerQuote?.quote || ''}</TextNative>
+			<TextNative style={[searchHintBodyText, { color: '#DBE1EC' }]}>
+				{bannerQuote?.quote || ''}
+			</TextNative>
 			{bannerQuote?.author && (
 				<View style={[{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }]}>
 					<TextNative

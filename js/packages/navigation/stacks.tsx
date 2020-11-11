@@ -8,7 +8,6 @@ import mapValues from 'lodash/mapValues'
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import { Routes } from './types'
 // import { messenger as messengerpb } from '@berty-tech/api/index.js'
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import { isClosing, MessengerAppState } from '@berty-tech/store/context'
 import { dispatch, navigate } from '@berty-tech/navigation/rootRef'
 
@@ -143,7 +142,6 @@ export const CreateGroupNavigation: React.FC = () => {
 		</CreateGroupStack.Navigator>
 	)
 }
-
 
 const NavigationStack = createNativeStackNavigator()
 export const Navigation: React.FC = () => {
