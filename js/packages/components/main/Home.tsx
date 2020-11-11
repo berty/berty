@@ -11,6 +11,7 @@ import {
 	Image,
 	TextInput,
 	SectionList,
+	StyleSheet
 } from 'react-native'
 import { SafeAreaConsumer, EdgeInsets } from 'react-native-safe-area-context'
 import { Icon, Text } from '@ui-kitten/components'
@@ -43,6 +44,7 @@ import { playSound } from '../sounds'
 
 import Logo from './1_berty_picto.svg'
 import EmptyChat from './empty_chat.svg'
+import Search from './search.svg'
 import AvatarGroup19 from './Avatar_Group_Copy_19.png'
 
 //
@@ -885,14 +887,18 @@ const SearchComponent: React.FC<{
 			)}
 		/>
 	) : (
-		<View style={{ top: 50 }}>
+		<>
+		<View style={{ ...StyleSheet.absoluteFillObject }}>
+			<Search style={{ left: '2%', opacity: 0.25, top: 100 }} width={'96%'} />
+		</View>
+		<View style={{ top: 200 }}>
 			<Translation>
 				{(t: any): React.ReactNode => (
 					<TextNative
 						style={[
-							text.color.black,
+							text.color.yellow,
 							text.size.big,
-							text.bold.small,
+							text.bold.medium,
 							text.align.center,
 							{ fontFamily: 'Open Sans' },
 						]}
@@ -905,6 +911,7 @@ const SearchComponent: React.FC<{
 				<HintBody />
 			</View>
 		</View>
+	</>
 	)
 }
 
