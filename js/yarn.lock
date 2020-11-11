@@ -1394,10 +1394,10 @@
   dependencies:
     stacktrace-js "^2.0.0"
 
-"@react-navigation/core@^5.14.2":
-  version "5.14.2"
-  resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-5.14.2.tgz#973c4d63b934bf4eb5b0a933dc73b79298d0ce6b"
-  integrity sha512-gmEGo6Fr0ktg+4Ao5ogRAVWtSrCm2qQkn7GlQSe3hxDaTLVrlS3K30SAQHs88j11I7qtaFaMiFD0VN7F1gWXCw==
+"@react-navigation/core@^5.14.3":
+  version "5.14.3"
+  resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-5.14.3.tgz#6bbbfe1fb90aa64068fdb69bbb6c55120b7b24f1"
+  integrity sha512-l4zCfIfPC4DYuDcluiisaWKg7GO5yAjBrIL0pzEw8bIBj+R6vnZnyG9AWgnwo5fl241DX+1sfgzGEUQgpIJNew==
   dependencies:
     "@react-navigation/routers" "^5.6.2"
     escape-string-regexp "^4.0.0"
@@ -1412,12 +1412,12 @@
   dependencies:
     color "^3.1.3"
 
-"@react-navigation/native@^5.8.8":
-  version "5.8.8"
-  resolved "https://registry.yarnpkg.com/@react-navigation/native/-/native-5.8.8.tgz#55216b0f95dcd6971198c9d3717b7d7af6a5faee"
-  integrity sha512-l3cMrAJ9NR4F4oZqWRzeok0NJpJF8u2Dl/EKpMG/T54Xpt5mUzylBVolCvmgkCCATJYOx1dSu8r50Reh31csFA==
+"@react-navigation/native@^5.8.9":
+  version "5.8.9"
+  resolved "https://registry.yarnpkg.com/@react-navigation/native/-/native-5.8.9.tgz#67ee2afef6af6ef40c425e02264bd25d1530b361"
+  integrity sha512-d1oihLxp9UDVsZyvHNcwJfj+LKsEo0m8vEBBV6jhLJAXs1d2DEBzBXGeP907uG+877TK7luh2h79Or4w7/+p+g==
   dependencies:
-    "@react-navigation/core" "^5.14.2"
+    "@react-navigation/core" "^5.14.3"
     escape-string-regexp "^4.0.0"
     nanoid "^3.1.15"
 
