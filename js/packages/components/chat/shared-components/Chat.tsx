@@ -35,7 +35,6 @@ export const ChatFooter: React.FC<{
 	const ctx: any = useMsgrContext()
 
 	const [message, setMessage] = useState('')
-	const [isSubmit, setIsSubmit] = useState(false)
 	const inputRef = useRef<TextInput>(null)
 	const _isFocused = isFocused || inputRef?.current?.isFocused() || false
 	const _styles = useStylesChatFooter()
@@ -98,20 +97,8 @@ export const ChatFooter: React.FC<{
 							editable={disabled ? false : true}
 							onFocus={() => setFocus(true)}
 							onBlur={() => setFocus(false)}
-							onChange={({ nativeEvent }) => {
-								isSubmit ? setMessage('') : setMessage(nativeEvent.text)
-								setIsSubmit(false)
-							}}
+							onChange={({ nativeEvent }) => setMessage(nativeEvent.text)}
 							autoCorrect={false}
-							onSubmitEditing={() => {
-								setIsSubmit(true)
-								if (isFake) {
-									return
-								}
-								if (message) {
-									handleSend()
-								}
-							}}
 							style={[
 								_styles.textInput,
 								_isFocused && { color: color.blue } && _styles.focusTextInput,
