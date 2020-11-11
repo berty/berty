@@ -712,16 +712,16 @@ const HomeHeader: React.FC<
 										padding.left.medium,
 										margin.left.small,
 										margin.right.scale(25),
-										border.radius.small,
+										border.radius.medium,
 									]}
 									activeOpacity={1}
 									onPress={() => focus?.focus()}
 								>
-									{!value?.length ? (
-										<View style={[row.center]}>
-											<Icon name='search-outline' fill='#8F9BB3' width={20} height={20} />
-										</View>
-									) : null}
+								
+									<View style={[row.center]}>
+										<Icon name='search-outline' fill={value?.length ? '#FFAE3A' : '#8F9BB3'} width={20} height={20} />
+									</View>
+								
 									<View
 										style={[
 											!value?.length && margin.left.medium,
@@ -758,7 +758,7 @@ const HomeHeader: React.FC<
 											}}
 											onPress={() => onChange('')}
 										>
-											<Icon name='close-circle' fill='#FFAE3A' width={20} height={20} />
+											<Icon name='close-circle-outline' fill='#FFAE3A' width={20} height={20} />
 										</TouchableOpacity>
 									) : null}
 								</TouchableOpacity>
@@ -770,8 +770,24 @@ const HomeHeader: React.FC<
 										alignItems: 'center',
 									}}
 									onPress={() => navigate('Settings.Home')}
-								>
-									<Icon name='account-berty' pack='custom' fill='#8F9BB3' width={40} height={40} />
+								><View style={{
+									backgroundColor: 'white',
+									borderRadius: 30,
+									height: 44,
+									width: 44,
+									alignItems: 'center',
+									justifyContent: 'center',
+									shadowColor: '#000',
+									shadowOffset: {
+										width: 0,
+										height: 1,
+									},
+									shadowOpacity: 0.18,
+									shadowRadius: 1.00,
+									elevation: 1,
+								}}>
+									<Icon name='account-berty' pack='custom' fill='#8F9BB3' width={40} height={40}  />
+								</View>
 								</TouchableOpacity>
 							</View>
 						</View>
@@ -886,7 +902,7 @@ const SearchComponent: React.FC<{
 			)}
 		/>
 	) : (
-		<View style={{ top: 50 }}>
+		<View style={{ position:"relative" }}>
 			<Translation>
 				{(t: any): React.ReactNode => (
 					<TextNative
@@ -895,14 +911,28 @@ const SearchComponent: React.FC<{
 							text.size.big,
 							text.bold.small,
 							text.align.center,
-							{ fontFamily: 'Open Sans' },
+							{ 
+								fontFamily: 'Open Sans',
+								position: 'absolute',
+								top: 230,
+								left: 0,
+								right: 0,
+								color: '#FFAE3A'
+						},
 						]}
 					>
 						{t('main.home.search.no-results')}
 					</TextNative>
 				)}
 			</Translation>
-			<View style={[margin.top.scale(120 * scaleHeight)]}>
+			<Icon
+				name='search'
+				width={500}
+				height={500}
+				fill='#FFFBF6'
+				style={{ position: 'absolute', top: 0, right: -63 }}
+				/>
+			<View style={[margin.top.scale(370 * scaleHeight)]}>
 				<HintBody />
 			</View>
 		</View>
