@@ -144,18 +144,6 @@ export const CreateGroupNavigation: React.FC = () => {
 	)
 }
 
-const TabStack = createMaterialTopTabNavigator() // provides swipe animation
-export const TabNavigation: React.FC = () => {
-	return (
-		<TabStack.Navigator
-			initialRouteName={Routes.Main.Home}
-			tabBar={() => <Components.Main.Footer />}
-			tabBarPosition='bottom'
-		>
-			<TabStack.Screen name={Routes.Main.Home} component={Components.Main.Home} />
-		</TabStack.Navigator>
-	)
-}
 
 const NavigationStack = createNativeStackNavigator()
 export const Navigation: React.FC = () => {
@@ -266,7 +254,7 @@ export const Navigation: React.FC = () => {
 					stackAnimation: 'none',
 				}}
 			/>
-			<NavigationStack.Screen name={Routes.Root.Tabs} component={TabNavigation} />
+			<NavigationStack.Screen name={Routes.Root.Tabs} component={Components.Main.Home} />
 			<NavigationStack.Screen
 				name={Routes.Settings.MyBertyId}
 				component={Components.Settings.MyBertyId}

@@ -40,6 +40,7 @@ import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { createSections } from './Search'
 import { HintBody } from '../shared-components/HintBody'
 import { playSound } from '../sounds'
+import { Footer } from './Footer'
 
 import Logo from './1_berty_picto.svg'
 import EmptyChat from './empty_chat.svg'
@@ -999,6 +1000,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 						<SwipeNavRecognizer onSwipeLeft={() => navigate('Settings.Home')}>
 							<SafeAreaConsumer>
 								{(insets: EdgeInsets | null) => (
+									<>
 									<ScrollView
 										ref={scrollRef}
 										stickyHeaderIndices={!searchText?.length && !hasResults ? [1] : [0]}
@@ -1084,6 +1086,8 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 											</>
 										)}
 									</ScrollView>
+									{!searchText?.length && <Footer />}
+									</>
 								)}
 							</SafeAreaConsumer>
 						</SwipeNavRecognizer>
