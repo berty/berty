@@ -903,7 +903,7 @@ const SearchComponent: React.FC<{
 								{ fontFamily: 'Open Sans' },
 							]}
 						>
-							{t('main.search.no-results')}
+							{t('main.home.search.no-results')}
 						</TextNative>
 					)}
 				</Translation>
