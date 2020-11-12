@@ -53,7 +53,7 @@
     "react-native-qrcode-svg": "^6.0.6",
     "react-native-reanimated": "^1.13.1",
     "react-native-safe-area-context": "^3.1.9",
-    "react-native-screens": "^2.13.0",
+    "react-native-screens": "^2.14.0",
     "react-native-svg": "^12.1.0",
     "react-native-tab-view": ">= 2.0.0",
     "react-native-vector-icons": "^7.1.0",
