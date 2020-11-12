@@ -76,7 +76,7 @@ require (
 	github.com/multiformats/go-multiaddr-dns v0.2.0
 	github.com/multiformats/go-multiaddr-fmt v0.1.0
 	github.com/multiformats/go-multihash v0.0.14
-	github.com/multiformats/go-multistream v0.1.2
+	github.com/multiformats/go-multistream v0.2.0
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/oklog/run v1.1.0
 	github.com/pborman/uuid v1.2.1 // indirect
