@@ -213,9 +213,10 @@ const BodyNotifications: React.FC<NotificationsPorps> = ({ isAuthorize }) => {
 							name={t('settings.notifications.group-notifications-button.exceptions-button.title')}
 							actionIcon='arrow-ios-forward'
 							state={{
-								value: `3 ${t(
+								value: t(
 									'settings.notifications.group-notifications-button.exceptions-button.tag',
-								)}`,
+									{ count: 2 },
+								),
 								color: color.blue,
 								bgColor: color.light.blue,
 							}}

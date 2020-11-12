@@ -63,7 +63,7 @@
       "header": "Communicate without an internet connection (wifi or data) by connecting your phone directly with peers nearby",
       "optional": "Optional",
       "title": "Bluetooth",
-      "desc": "To use this feature you need to autorize the use of Bluetooth on your phone",
+      "desc": "To use this feature you need to authorize the use of Bluetooth on your phone",
       "button": "AUTHORIZE BLUETOOTH",
       "skip": "SKIP AND DO THIS LATER"
     },
@@ -92,7 +92,7 @@
     },
     "home-modal": {
       "left-button": "Scan",
-      "right-button": ""
+      "right-button": "Group"
     }
   },
   "settings": {
@@ -159,7 +159,8 @@
         "exceptions-button": {
           "title": "Exceptions",
           "preview-value": "Add",
-          "tag": "exceptions"
+          "tag": "{{count}} exception",
+          "tag_plural": "{{count}} exceptions"
         }
       },
       "group-notifications-button": {
@@ -170,7 +171,8 @@
         "exceptions-button": {
           "title": "Exceptions",
           "preview-value": "Add",
-          "tag": "exceptions"
+          "tag": "{{count}} exception",
+          "tag_plural": "{{count}} exceptions"
         }
       }
     },
@@ -196,9 +198,7 @@
     "delete-account": {
       "title": "Delete account!",
       "first-desc": "Are you sure you want to delete your account?",
-      "begin-second-desc": "Please type ",
-      "bold-second-desc": "delete",
-      "end-second-desc": " to confirm",
+      "desc": "Please type delete to confirm",
       "cancel-button": "CANCEL",
       "delete-button": "DELETE"
     },
@@ -269,8 +269,7 @@
         "title": "Send messages to all contacts",
         "sending": "Sending...",
         "test": "Test, ",
-        "begin-tried": "✔ Tried sending to ",
-        "end-tried": " contacts"
+        "tried": "✔ Tried sending to {{length}} contacts"
       },
       "footer-left-button": "Device infos",
       "footer-middle-button": "List events",
@@ -351,9 +350,7 @@
       },
       "betabot-box": {
         "title": "ADD BETA BOT?",
-        "begin-desc": "You don't have any contacts yet would you like to add the",
-        "bold-desc": " Beta Bot",
-        "end-desc": " to discover and test conversations?",
+        "desc": "You don't have any contacts yet would you like to add the Beta Bot to discover and test conversations?",
         "skip-button": "SKIP",
         "add-button": "ADD !"
       },
