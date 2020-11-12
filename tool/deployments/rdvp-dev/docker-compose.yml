@@ -1,12 +1,17 @@
 version: '3.7'
 
 services:
-  server:
+  rdvp:
     image: bertytech/berty:latest
     restart: on-failure
     environment:
       - RDVP_PK # loaded from .env
+      - DOMAIN_SANS
+      - DOMAIN_MAIN
+    network_mode: bridge
     entrypoint: rdvp
+    expose:
+      - 8888
     ports:
       - 4040:4040
       - 4040:4040/udp
@@ -14,11 +19,23 @@ services:
       - serve
       - "--db=:memory:"
       - "--pk=$RDVP_PK"
-      - "-l"
-      - "/ip4/0.0.0.0/tcp/4040,/ip4/0.0.0.0/udp/4040/quic"
+      - "-metrics=:8888"
+      - "-l=/ip4/0.0.0.0/tcp/4040,/ip4/0.0.0.0/udp/4040/quic"
+      - "-announce=/ip4/${ANNOUNCE_SERVER}/tcp/4040,/ip4/${ANNOUNCE_SERVER}/udp/4040/quic"
     deploy:
       resources:
         limits:
           memory: 2000M
     labels:
       - 'com.centurylinklabs.watchtower.enable=true'
+      - 'traefik.enable=true'
+      - "traefik.http.routers.rdvp.rule=Host(`${DOMAIN_SANS}`)"
+      - 'traefik.http.routers.rdvp.service=rdvp'
+      - "traefik.http.routers.rdvp.middlewares=bauth@docker"
+      - 'traefik.http.routers.rdvp.entryPoints=https'
+      - 'traefik.http.routers.rdvp.tls=true'
+      - 'traefik.http.routers.rdvp.tls.certresolver=cf'
+      - "traefik.http.routers.rdvp.tls.domains[0].main=${DOMAIN_MAIN}"
+      - "traefik.http.routers.rdvp.tls.domains[0].sans=${DOMAIN_SANS}"
+      - 'traefik.http.services.rdvp.loadbalancer.server.port=8888'
+
