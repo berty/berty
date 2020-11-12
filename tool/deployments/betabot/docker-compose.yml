@@ -10,32 +10,52 @@ services:
     #   com.centurylinklabs.watchtower.enable: "true"
     environment:
       - ANNOUNCE_SERVER
+      - DAEMON_DOMAIN_MAIN
+      - DAEMON_DOMAIN_SANS
       - BERTY_STORE_DIR=/store/run
       - BERTY_NODE_NO_NOTIF=true
       - BERTY_NODE_LISTENERS=/ip4/0.0.0.0/tcp/9091/grpc
       - BERTY_P2P_SWARM_LISTENERS=/ip4/0.0.0.0/tcp/6001,/ip4/0.0.0.0/udp/6001/quic
       - BERTY_P2P_SWARM_ANNOUNCE=/ip4/${ANNOUNCE_SERVER}/tcp/6001,/ip4/${ANNOUNCE_SERVER}/udp/6001/quic
+      - BERTY_METRICS_LISTENER=:8888
       # - BERTY_LOG_FILTERS=*,-*.mdns,-ipfs.dht
       # - BERTY_LOG_FILTERS=bty.*
     command: -xec "berty daemon"
+    network_mode: bridge
     volumes:
       - ./data/daemon:/store
     ports:
       - 6001:6001
       - 6001:6001/udp
+    expose:
+      - 8888
     deploy:
      resources:
        limits:
          memory: 2000M
+    labels:
+      - 'com.centurylinklabs.watchtower.enable=true'
+      - 'traefik.enable=true'
+      - "traefik.http.routers.betabot.rule=Host(`${DAEMON_DOMAIN_SANS}`)"
+      - 'traefik.http.routers.betabot.service=betabot'
+      - "traefik.http.routers.betabot.middlewares=bauth@docker"
+      - 'traefik.http.routers.betabot.entryPoints=https'
+      - 'traefik.http.routers.betabot.tls=true'
+      - 'traefik.http.routers.betabot.tls.certresolver=cf'
+      - "traefik.http.routers.betabot.tls.domains[0].main=${DAEMON_DOMAIN_MAIN}"
+      - "traefik.http.routers.betabot.tls.domains[0].sans=${DAEMON_DOMAIN_SANS}"
+      - 'traefik.http.services.betabot.loadbalancer.server.port=8888'
+
   bot:
     container_name: betabot_bot
     image: bertytech/berty:latest
     restart: always
     entrypoint: betabot
+    network_mode: bridge
     links:
       - daemon
-    # labels:
-    #   com.centurylinklabs.watchtower.enable: "true"
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     command:
       - -display-name=BetaBot
       - -addr=daemon:9091
