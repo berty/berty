@@ -51,20 +51,16 @@ require (
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
 	github.com/kisielk/errcheck v1.4.0 // indirect
 	github.com/kr/text v0.2.0 // indirect
-	github.com/libp2p/go-libp2p v0.11.0
-	github.com/libp2p/go-libp2p-circuit v0.3.1
+	github.com/libp2p/go-libp2p v0.12.0
+	github.com/libp2p/go-libp2p-circuit v0.4.0
 	github.com/libp2p/go-libp2p-core v0.7.0
 	github.com/libp2p/go-libp2p-discovery v0.5.0
-	github.com/libp2p/go-libp2p-kad-dht v0.10.0
+	github.com/libp2p/go-libp2p-kad-dht v0.11.0
 	github.com/libp2p/go-libp2p-pubsub v0.3.6
 	github.com/libp2p/go-libp2p-quic-transport v0.9.0
 	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20180418151804-b7dd840ce441
-	github.com/libp2p/go-libp2p-swarm v0.3.0 // indirect
 	github.com/libp2p/go-libp2p-transport-upgrader v0.3.0
-	github.com/libp2p/go-libp2p-yamux v0.3.0 // indirect
-	github.com/libp2p/go-mplex v0.2.0 // indirect
-	github.com/libp2p/go-yamux v1.4.0 // indirect
 	github.com/markbates/pkger v0.17.1
 	github.com/mattn/go-sqlite3 v1.14.4
 	github.com/mdomke/git-semver/v5 v5.0.0
@@ -76,7 +72,7 @@ require (
 	github.com/multiformats/go-multiaddr-dns v0.2.0
 	github.com/multiformats/go-multiaddr-fmt v0.1.0
 	github.com/multiformats/go-multihash v0.0.14
-	github.com/multiformats/go-multistream v0.1.2
+	github.com/multiformats/go-multistream v0.2.0
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/oklog/run v1.1.0
 	github.com/pborman/uuid v1.2.1 // indirect
