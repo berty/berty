@@ -8,7 +8,7 @@ require (
 	berty.tech/berty/v2 v2.0.0
 	github.com/mdp/qrterminal/v3 v3.0.0
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776
-	moul.io/u v1.18.0
+	moul.io/u v1.19.0
 )
 
 replace berty.tech/berty/v2 => ../
