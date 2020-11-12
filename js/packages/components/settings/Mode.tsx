@@ -6,7 +6,7 @@ import { Translation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { useMsgrContext, useAccount } from '@berty-tech/store/hooks'
-import { serviceTypes, useAccountServices } from '@berty-tech/store/services'
+import { exportAccountToFile, serviceTypes, useAccountServices } from '@berty-tech/store/services'
 import { useNavigation } from '@berty-tech/navigation'
 import i18n from '@berty-tech/berty-i18n'
 import { berty } from '@berty-tech/api/index.pb'
@@ -16,7 +16,6 @@ import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsB
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { languages } from '@berty-tech/berty-i18n/locale/languages'
-
 //
 // Mode
 //
@@ -225,6 +224,14 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 						}}
 						actionIcon='arrow-ios-forward'
 						disabled
+					/>
+					<ButtonSetting
+						name={t('settings.mode.backup-account-button')}
+						icon='save-outline'
+						iconSize={30}
+						iconColor={color.blue}
+						actionIcon='arrow-ios-forward'
+						onPress={() => exportAccountToFile()}
 					/>
 					<ButtonSetting
 						name={t('settings.mode.delete-account-button')}
