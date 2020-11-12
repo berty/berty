@@ -88,7 +88,7 @@ require (
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/stretchr/testify v1.6.1
-	github.com/tailscale/depaware v0.0.0-20201003033024-5d95aab075be
+	github.com/tailscale/depaware v0.0.0-20201102210757-e2f543bafb1d
 	github.com/zcalusic/sysinfo v0.0.0-20200820110305-ef1bb2697bc2
 	go.opentelemetry.io/otel v0.8.0
 	go.opentelemetry.io/otel/exporters/trace/jaeger v0.8.0
@@ -112,7 +112,7 @@ require (
 	moul.io/openfiles v1.2.0
 	moul.io/srand v1.6.1
 	moul.io/testman v1.5.0
-	moul.io/u v1.18.0
+	moul.io/u v1.19.0
 	moul.io/zapconfig v1.2.0
 	moul.io/zapfilter v1.6.1
 	moul.io/zapgorm2 v1.0.1
