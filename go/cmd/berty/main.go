@@ -56,9 +56,11 @@ func runMain(args []string) error {
 		root = &ffcli.Command{
 			ShortUsage: "berty [global flags] <subcommand> [flags] [args...]",
 			FlagSet:    fs,
-			Options:    []ff.Option{ff.WithEnvVarPrefix("BERTY")},
-			Exec:       func(context.Context, []string) error { return flag.ErrHelp },
-			UsageFunc:  usageFunc,
+			Options: []ff.Option{
+				ff.WithEnvVarPrefix("BERTY"),
+			},
+			Exec:      func(context.Context, []string) error { return flag.ErrHelp },
+			UsageFunc: usageFunc,
 			Subcommands: []*ffcli.Command{
 				daemonCommand(),
 				miniCommand(),
@@ -106,4 +108,12 @@ func usageFunc(c *ffcli.Command) string {
 		return ffcli.DefaultUsageFunc(c)
 	}
 	return ffcli.DefaultUsageFunc(c) + "\n\n" + advanced
+}
+
+func ffSubcommandOptions() []ff.Option {
+	return []ff.Option{
+		ff.WithEnvVarPrefix("BERTY"),
+		ff.WithConfigFileFlag("config"),
+		ff.WithConfigFileParser(ff.PlainParser),
+	}
 }

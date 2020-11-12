@@ -6,7 +6,6 @@ import (
 	"fmt"
 	mrand "math/rand"
 
-	ff "github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
@@ -19,6 +18,7 @@ func groupinitCommand() *ffcli.Command {
 	// FIXME: print berty.tech URL
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("berty groupinit", flag.ExitOnError)
+		fs.String("config", "", "config file (optional)")
 		manager.SetupLoggingFlags(fs) // also available at root level
 		return fs, nil
 	}
@@ -28,7 +28,7 @@ func groupinitCommand() *ffcli.Command {
 		ShortHelp:      "initialize a new multi-member group",
 		ShortUsage:     "berty groupinit",
 		FlagSetBuilder: fsBuilder,
-		Options:        []ff.Option{ff.WithEnvVarPrefix("BERTY")},
+		Options:        ffSubcommandOptions(),
 		UsageFunc:      usageFunc,
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {

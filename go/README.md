@@ -37,13 +37,6 @@ make doctor
 [embedmd]:# (.tmp/berty-daemon.txt console)
 ```console
 foo@bar:~$ berty daemon
-Unable to find image 'bertytech/berty:latest' locally
-latest: Pulling from bertytech/berty
-
-[1A[2K188c0c94c7c5: Pulling fs layer [1B
-[1A[2K43348fd2b7b8: Pulling fs layer [1B
-[1A[2Kd80477436c57: Pulling fs layer [1B[3A[2K188c0c94c7c5: Downloading [>                                                  ]  29.17kB/2.797MB[3B[1A[2Kd80477436c57: Downloading [>                                                  ]  531.7kB/130MB[1B[3A[2K188c0c94c7c5: Download complete [3B[3A[2K188c0c94c7c5: Extracting [>                                                  ]  32.77kB/2.797MB[3B[3A[2K188c0c94c7c5: Extracting [==================================================>]  2.797MB/2.797MB[3B[1A[2Kd80477436c57: Downloading [===>                                               ]   8.01MB/130MB[1B[3A[2K188c0c94c7c5: Pull complete [3B[1A[2Kd80477436c57: Downloading [=======>                                           ]  19.79MB/130MB[1B[1A[2Kd80477436c57: Downloading [=========>                                         ]  24.06MB/130MB[1B[1A[2Kd80477436c57: Downloading [============>                                      ]  33.18MB/130MB[1B[1A[2Kd80477436c57: Downloading [==============>                                    ]  37.49MB/130MB[1B[1A[2Kd80477436c57: Downloading [=================>                                 ]  44.97MB/130MB[1B[2A[2K43348fd2b7b8: Downloading [>                                                  ]  4.107kB/321.7kB[2B[1A[2Kd80477436c57: Downloading [====================>                              ]  54.05MB/130MB[1B[2A[2K43348fd2b7b8: Download complete [2B[2A[2K43348fd2b7b8: Extracting [=====>                                             ]  32.77kB/321.7kB[2B[2A[2K43348fd2b7b8: Extracting [==================================================>]  321.7kB/321.7kB[2B[2A[2K43348fd2b7b8: Extracting [==================================================>]  321.7kB/321.7kB[2B[1A[2Kd80477436c57: Downloading [======================>                            ]  57.82MB/130MB[1B[2A[2K43348fd2b7b8: Pull complete [2B[1A[2Kd80477436c57: Downloading [==========================>                        ]  68.52MB/130MB[1B[1A[2Kd80477436c57: Downloading [=============================>                     ]  77.57MB/130MB[1B[1A[2Kd80477436c57: Downloading [=================================>                 ]  86.71MB/130MB[1B[1A[2Kd80477436c57: Downloading [=====================================>             ]  97.95MB/130MB[1B[1A[2Kd80477436c57: Downloading [=========================================>         ]  108.1MB/130MB[1B[1A[2Kd80477436c57: Downloading [=============================================>     ]  117.7MB/130MB[1B[1A[2Kd80477436c57: Verifying Checksum [1B[1A[2Kd80477436c57: Download complete [1B[1A[2Kd80477436c57: Extracting [>                                                  ]  557.1kB/130MB[1B[1A[2Kd80477436c57: Extracting [==>                                                ]  7.242MB/130MB[1B[1A[2Kd80477436c57: Extracting [=====>                                             ]  13.93MB/130MB[1B[1A[2Kd80477436c57: Extracting [========>                                          ]  22.28MB/130MB[1B[1A[2Kd80477436c57: Extracting [=============>                                     ]  33.98MB/130MB[1B[1A[2Kd80477436c57: Extracting [================>                                  ]  44.01MB/130MB[1B[1A[2Kd80477436c57: Extracting [===================>                               ]  51.81MB/130MB[1B[1A[2Kd80477436c57: Extracting [======================>                            ]  58.49MB/130MB[1B[1A[2Kd80477436c57: Extracting [============================>                      ]  73.53MB/130MB[1B[1A[2Kd80477436c57: Extracting [==============================>                    ]  80.22MB/130MB[1B[1A[2Kd80477436c57: Extracting [=================================>                 ]  88.01MB/130MB[1B[1A[2Kd80477436c57: Extracting [======================================>            ]  100.8MB/130MB[1B[1A[2Kd80477436c57: Extracting [=========================================>         ]  108.6MB/130MB[1B[1A[2Kd80477436c57: Extracting [============================================>      ]    117MB/130MB[1B[1A[2Kd80477436c57: Extracting [==================================================>]    130MB/130MB[1B[1A[2Kd80477436c57: Pull complete [1BDigest: sha256:779d82a6dbb025f0181e18eeb8403f28c1876feffe39535c253b2d74d5484597
-Status: Downloaded newer image for bertytech/berty:latest
 ...
 ```
 
@@ -60,30 +53,30 @@ TODO
 foo@bar:~$ berty share-invite
 █████████████████████████████████████████████████
 █████████████████████████████████████████████████
-████ ▄▄▄▄▄ ██▀▄▀ ▄  ▀  ▀▀█▀  ▄▀▀█▄▄▀▀█ ▄▄▄▄▄ ████
-████ █   █ █▄▀ ▄█  ▀ █▀▄██ █ ██▀██▄█ █ █   █ ████
-████ █▄▄▄█ ██ ▀ █▄ ▀ █▄ ▀▀▄ █▀█▀█▀▀ ██ █▄▄▄█ ████
-████▄▄▄▄▄▄▄█ █ █ ▀ ▀▄▀ ▀ ▀ █▄▀▄█▄▀▄█ █▄▄▄▄▄▄▄████
-████   ▀▄ ▄ ▄▄▄▄█ ▀█ ▄█▀ ▀██ ▄ ▄▀▀▀█   ▀█▀▄██████
-████ █▀█▄█▄▀ ▄   ▀ █▀ ▀▀   ▀█▀▄▀█▀ ███▄█▄██ ▄████
-████▀▄ █ ▀▄ ██   ▀ ▀ ▀▄▄  ▄█▀▀▀    ▀ ▄▄▄▄ ██▀████
-██████▀█▄█▄▀▀▄▄▄   ▄ ▀ ▀  ███ ▀▀█▀▄▀█▄▀▀ ██▄▄████
-████▀▄██▀█▄█▀█ ▄█▄ ▄█▄ ▀  █▄ ██ ▀ █▀ ▀ ██▄▄▄ ████
-██████▄▄▄▀▄▄▀█▀█▄▄██▄▄██▄ █▀█▀▄▀▄  ▀▀▄▄  █▄█ ████
-████▀ ▄ ▄▄▄█▀▄█▀█▀█ █▀██ ▄█  ▄ ▄ ▀▀ ▀█ ▄█ █  ████
-████▄ ▀█▄█▄▀▀▀▄▀█ ▀▀█▀▀▀▀ ▀▀▀▀▄▀▀ ▀▀ █   ▄▄  ████
-████▄▀ █▀█▄▄█▀ █▀▀█▀▀  ▄█▄██  ▀▀ ▄█▄█  ██ ▀█▄████
-█████  ██ ▄▀▀▄██▄▀ ▀▄▀ ▀  ███▀▄▀▀ ▄▀█▄▄▄▀ ▄▄ ████
-█████▄▄ ▀▄▄ █  ▀ ▀   █ ██▄█▄█▀██▀██  ▄ █▄▄█▀ ████
-████▄▀▀ █▀▄▄█▄█▄  ▄▄ ▀▄▀▀▀██▀ ▄▀█▀▄█ █▀██ ▄▄▄████
-████▄█▄██▄▄█ ▀ ▄███▄ ▄██▀  █ ▄ ▄ ▄ █ ▄▄▄  ▀▄ ████
-████ ▄▄▄▄▄ █ ▄ █▀▄██▀▄███▀ █▀  █▄ ▀▄ █▄█ ▀█▄▄████
-████ █   █ █▄ ▀▀███▀████  ██  ▀▀▀ ██▄▄▄  ███▀████
-████ █▄▄▄█ █  █▀█▀ ▀█  ▀▀ ▄▀▀▀▄▀▀▀ ▄ ▀██ █▄ ▄████
-████▄▄▄▄▄▄▄█▄▄▄█▄▄███▄▄▄████▄▄█▄█▄█▄▄▄█▄█▄▄▄▄████
+████ ▄▄▄▄▄ ████ █▄▀   ▀ ▀█▄ ▀▀▄ ▀  ▀▀█ ▄▄▄▄▄ ████
+████ █   █ █▄▀▄▄▄  ▀ █▀ ██ █▄█ █ ███▄█ █   █ ████
+████ █▄▄▄█ ██▀█▄▀▀ ▀ ▄▄ ▀█▄▀██▄  ██ ██ █▄▄▄█ ████
+████▄▄▄▄▄▄▄█ ▀▄█ ▀ ▀▄▀▄▀ ▀▄▀ ▀ █ ▀▄▀▄█▄▄▄▄▄▄▄████
+████▄▄ ▀▄▄▄▄ ▄▀██▀▀▀▀▄ █▀███ ▄▀▀▀▀██   ▀█▀▄▀▀████
+█████ ▀██▀▄▀▄█▀▄▄▀ ▀█ ▀▀  ▀█▄ ▄▀▄▀▄███ █▄██  ████
+█████▀▄▀▄ ▄ █▄▀  ▀   ▀▄█  ▄█ ▄▀██████ ▄█▄ ▀▄ ████
+████▀▄  ▄█▄ ▀█▀▄ ▀▀▄ ▀█▀  ▀▀▄▀ ▀ ▀▄▀█▄▀▄▄▄▄▄▄████
+████▀ ██▄ ▄█▀▀▀▄ ▄▀▄▀██▀ ▀▀▀ ▄██▀▄█▀ ▀ ██▄▄▄ ████
+████▀ ▀ ▄▄▄▀▀▀██▀▄██▀▄██▄ ██▀▀▄▀█ ▄▀▀▀█  █▄ ▄████
+████▄█▄ ▀▀▄██  ▀█▀█ ████  ███████ █  █ ▄▄ █  ████
+████▄▀▄▄ ▄▄▄▀ ▀▀█▀▄▀█▀ ▀▀ ▄▀█ ▄██▀▀▀▀█ ▀ ▄▄  ████
+████▀█▄▀▀ ▄▀▄▄▄█ ▀▀█   ▄ ███ ▀▀█▀▄ ▄█  ██▀▀█▄████
+██████▄▄ ▀▄  ▄▄█▄▀ █ ▀ ▀  ██▄ ▀▀▀ █▀█▄▄▄▀ ▄▄▄████
+████▄▀▄██▀▄▄█▄▀▀ ▀   ▀ ██ █▀ ▄███▄█▄▄█ ██▄▀▀▀████
+████▄▀▄ ▄█▄▄ ▄█▄  ▄▄ ▀▀▀▀  ██▀▄▀█▀ ▀██▀█▀▄▄▄▄████
+████▄████▄▄▄ ▄▄ ▀██▄ ▄▀█▀▀▀▀▀██▄█▄▀█ ▄▄▄ ▀▀ ▄████
+████ ▄▄▄▄▄ █ ▄██▀▄█▀▄▄█▀ ▀ █▀  ██ ▄▄ █▄█ ▀█ ▄████
+████ █   █ █▄▀█▀███ █▀█▄ ▄█  ▄ ▄▀  █▄▄▄  ▀██▀████
+████ █▄▄▄█ █   ▀█▀ ▀█ ▀▀▀ ▀▀█ ▀▀  ▀▄ ▀██ ▄█ ▄████
+████▄▄▄▄▄▄▄█▄███▄▄█████▄▄▄██▄███▄███▄▄▄▄██▄▄▄████
 █████████████████████████████████████████████████
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-html url: https://berty.tech/id#key=CiDPgh1reHYtP7Hr0gkiai1Fol2St2LOCa58k7hZ7aos7BIg2r9sW8RQu4VIxQU5svLQFz13ZOmYuiJO8X0Kug5Krvc&name=demo
+html url: https://berty.tech/id#key=CiBHe9wK5qpYcyjXOORgBibGRC_ltbDwz4I5wXnoyQ5UpRIgRghITviQmcNhUCH511-A0m0Jnj4y3470jxGk1CA0dBo&name=demo
 ```
 
 ### Info
@@ -94,30 +87,30 @@ foo@bar:~$ berty info
 {
   "protocol": {
     "process": {
-      "version": "v2.203.1-dev.7+g55f966f6",
-      "vcsRef": "55f966f6",
-      "uptimeMs": "7",
-      "userCpuTimeMs": "509",
-      "systemCpuTimeMs": "72",
-      "startedAt": "1604672821",
+      "version": "v2.206.0",
+      "vcsRef": "6d78fbc9",
+      "uptimeMs": "31",
+      "userCpuTimeMs": "1090",
+      "systemCpuTimeMs": "200",
+      "startedAt": "1605200620",
       "rlimitCur": "1024",
-      "numGoroutine": "503",
-      "nofile": "35",
+      "numGoroutine": "528",
+      "nofile": "36",
       "numCpu": "12",
-      "goVersion": "go1.15.3",
+      "goVersion": "go1.15.2",
       "operatingSystem": "linux",
       "hostName": "REDACTED",
       "arch": "amd64",
       "rlimitMax": "1048576",
-      "pid": "31258",
-      "ppid": "31257",
+      "pid": "7035",
+      "ppid": "7034",
       "priority": "20",
       "uid": "1000",
       "workingDir": "REDACTED",
-      "systemUsername": "Hugo"
+      "systemUsername": "anon#1337"
     },
     "p2p": {
-      "connectedPeers": "6"
+      "connectedPeers": "8"
     },
     "orbitdb": {
       "accountMetadata": {
@@ -172,6 +165,7 @@ USAGE
   berty [global flags] daemon [flags]
 
 FLAGS
+  -config ...                                     config file (optional)
   -log.file ...                                   if specified, will log everything in JSON into a file and nothing on stderr
   -log.filters info+:bty*,-*.grpc error+:*        zapfilter configuration
   -log.format color                               can be: json, console, color, light-console, light-color
@@ -179,7 +173,7 @@ FLAGS
   -log.tracer ...                                 specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
   -metrics.listener ...                           Metrics listener, will enable metrics
   -metrics.pedantic false                         Enable Metrics pedantic for debug
-  -node.display-name hugo (cli)                   display name
+  -node.display-name moul (cli)                   display name
   -node.listeners /ip4/127.0.0.1/tcp/9091/grpc    gRPC API listeners
   -node.no-notif false                            disable desktop notifications
   -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
@@ -197,7 +191,7 @@ FLAGS
   -p2p.swarm-no-announce ...                      IPFS exclude announce addrs
   -p2p.webui-listener :3999                       IPFS WebUI listener
   -preset ...                                     applies various default values, see ADVANCED section below
-  -store.dir /home/hugo/.config/berty-tech/berty  root datastore directory
+  -store.dir /home/moul/.config/berty-tech/berty  root datastore directory
   -store.fileio false                             enable FileIO Option, files will be loaded using standard I/O
   -store.inmem false                              disable datastore persistence
   -tor.binary-path ...                            if set berty will use this external tor binary instead of his builtin one
@@ -220,6 +214,7 @@ USAGE
   berty [global flags] mini [flags]
 
 FLAGS
+  -config ...                                     config file (optional)
   -log.file ...                                   if specified, will log everything in JSON into a file and nothing on stderr
   -log.filters info+:bty*,-*.grpc error+:*        zapfilter configuration
   -log.format color                               can be: json, console, color, light-console, light-color
@@ -228,7 +223,7 @@ FLAGS
   -metrics.listener ...                           Metrics listener, will enable metrics
   -metrics.pedantic false                         Enable Metrics pedantic for debug
   -mini.group ...                                 group to join, leave empty to create a new group
-  -node.display-name hugo (cli)                   display name
+  -node.display-name moul (cli)                   display name
   -node.listeners ...                             gRPC API listeners
   -node.no-notif false                            disable desktop notifications
   -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
@@ -247,7 +242,7 @@ FLAGS
   -p2p.swarm-no-announce ...                      IPFS exclude announce addrs
   -p2p.webui-listener ...                         IPFS WebUI listener
   -preset ...                                     applies various default values, see ADVANCED section below
-  -store.dir /home/hugo/.config/berty-tech/berty  root datastore directory
+  -store.dir /home/moul/.config/berty-tech/berty  root datastore directory
   -store.fileio false                             enable FileIO Option, files will be loaded using standard I/O
   -store.inmem false                              disable datastore persistence
   -tor.binary-path ...                            if set berty will use this external tor binary instead of his builtin one
@@ -270,6 +265,7 @@ USAGE
   berty banner [flags]
 
 FLAGS
+  -config ...                               config file (optional)
   -light false                              light mode
   -log.file ...                             if specified, will log everything in JSON into a file and nothing on stderr
   -log.filters info+:bty*,-*.grpc error+:*  zapfilter configuration
@@ -295,6 +291,7 @@ USAGE
   berty [global flags] info [flags]
 
 FLAGS
+  -config ...                                     config file (optional)
   -info.anonymize false                           anonymize output for sharing
   -info.refresh 0s                                refresh every DURATION (0: no refresh)
   -log.file ...                                   if specified, will log everything in JSON into a file and nothing on stderr
@@ -302,7 +299,7 @@ FLAGS
   -log.format color                               can be: json, console, color, light-console, light-color
   -log.service berty                              service name, used by the tracer
   -log.tracer ...                                 specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
-  -node.display-name hugo (cli)                   display name
+  -node.display-name moul (cli)                   display name
   -node.no-notif false                            disable desktop notifications
   -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
   -node.remote-addr ...                           remote Berty gRPC API address
@@ -319,7 +316,7 @@ FLAGS
   -p2p.swarm-listeners :default:                  IPFS swarm listeners
   -p2p.swarm-no-announce ...                      IPFS exclude announce addrs
   -preset ...                                     applies various default values, see ADVANCED section below
-  -store.dir /home/hugo/.config/berty-tech/berty  root datastore directory
+  -store.dir /home/moul/.config/berty-tech/berty  root datastore directory
   -store.fileio false                             enable FileIO Option, files will be loaded using standard I/O
   -store.inmem false                              disable datastore persistence
   -tor.binary-path ...                            if set berty will use this external tor binary instead of his builtin one
@@ -342,6 +339,7 @@ USAGE
   berty groupinit
 
 FLAGS
+  -config ...                               config file (optional)
   -log.file ...                             if specified, will log everything in JSON into a file and nothing on stderr
   -log.filters info+:bty*,-*.grpc error+:*  zapfilter configuration
   -log.format color                         can be: json, console, color, light-console, light-color
@@ -357,6 +355,7 @@ USAGE
   berty [global flags] share-invite [flags]
 
 FLAGS
+  -config ...                                     config file (optional)
   -dev-channel false                              post qrcode on dev channel
   -log.file ...                                   if specified, will log everything in JSON into a file and nothing on stderr
   -log.filters info+:bty*,-*.grpc error+:*        zapfilter configuration
@@ -364,7 +363,7 @@ FLAGS
   -log.service berty                              service name, used by the tracer
   -log.tracer ...                                 specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
   -no-term false                                  do not print the QR code in terminal
-  -node.display-name hugo (cli)                   display name
+  -node.display-name moul (cli)                   display name
   -node.no-notif false                            disable desktop notifications
   -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
   -node.remote-addr ...                           remote Berty gRPC API address
@@ -381,7 +380,7 @@ FLAGS
   -p2p.swarm-listeners :default:                  IPFS swarm listeners
   -p2p.swarm-no-announce ...                      IPFS exclude announce addrs
   -preset ...                                     applies various default values, see ADVANCED section below
-  -store.dir /home/hugo/.config/berty-tech/berty  root datastore directory
+  -store.dir /home/moul/.config/berty-tech/berty  root datastore directory
   -store.fileio false                             enable FileIO Option, files will be loaded using standard I/O
   -store.inmem false                              disable datastore persistence
   -tor.binary-path ...                            if set berty will use this external tor binary instead of his builtin one
@@ -406,6 +405,7 @@ USAGE
 FLAGS
   -auth.secret ...                          base64 encoded secret
   -auth.sk ...                              base64 encoded signature key
+  -config ...                               config file (optional)
   -http.listener 127.0.0.1:8080             http listener
   -log.file ...                             if specified, will log everything in JSON into a file and nothing on stderr
   -log.filters info+:bty*,-*.grpc error+:*  zapfilter configuration
@@ -423,6 +423,7 @@ USAGE
   berty [global flags] repl-server [flags]
 
 FLAGS
+  -config ...                                     config file (optional)
   -log.file ...                                   if specified, will log everything in JSON into a file and nothing on stderr
   -log.filters info+:bty*,-*.grpc error+:*        zapfilter configuration
   -log.format color                               can be: json, console, color, light-console, light-color
@@ -444,7 +445,7 @@ FLAGS
   -p2p.swarm-no-announce ...                      IPFS exclude announce addrs
   -p2p.webui-listener :3999                       IPFS WebUI listener
   -preset ...                                     applies various default values, see ADVANCED section below
-  -store.dir /home/hugo/.config/berty-tech/berty  root datastore directory
+  -store.dir /home/moul/.config/berty-tech/berty  root datastore directory
   -store.fileio false                             enable FileIO Option, files will be loaded using standard I/O
   -store.inmem false                              disable datastore persistence
   -tor.binary-path ...                            if set berty will use this external tor binary instead of his builtin one
@@ -467,6 +468,7 @@ USAGE
   berty [global flags] peers [flags]
 
 FLAGS
+  -config ...                                     config file (optional)
   -log.file ...                                   if specified, will log everything in JSON into a file and nothing on stderr
   -log.filters info+:bty*,-*.grpc error+:*        zapfilter configuration
   -log.format color                               can be: json, console, color, light-console, light-color
@@ -486,7 +488,7 @@ FLAGS
   -p2p.swarm-no-announce ...                      IPFS exclude announce addrs
   -peers.refresh 1s                               refresh every DURATION (0: no refresh)
   -preset ...                                     applies various default values, see ADVANCED section below
-  -store.dir /home/hugo/.config/berty-tech/berty  root datastore directory
+  -store.dir /home/moul/.config/berty-tech/berty  root datastore directory
   -store.fileio false                             enable FileIO Option, files will be loaded using standard I/O
   -store.inmem false                              disable datastore persistence
   -tor.binary-path ...                            if set berty will use this external tor binary instead of his builtin one
@@ -509,13 +511,14 @@ USAGE
   berty [global flags] export [flags]
 
 FLAGS
+  -config ...                                     config file (optional)
   -export-path ...                                path of the export tarball
   -log.file ...                                   if specified, will log everything in JSON into a file and nothing on stderr
   -log.filters info+:bty*,-*.grpc error+:*        zapfilter configuration
   -log.format color                               can be: json, console, color, light-console, light-color
   -log.service berty                              service name, used by the tracer
   -log.tracer ...                                 specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
-  -node.display-name hugo (cli)                   display name
+  -node.display-name moul (cli)                   display name
   -node.no-notif false                            disable desktop notifications
   -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
   -node.remote-addr ...                           remote Berty gRPC API address
@@ -532,7 +535,7 @@ FLAGS
   -p2p.swarm-listeners :default:                  IPFS swarm listeners
   -p2p.swarm-no-announce ...                      IPFS exclude announce addrs
   -preset ...                                     applies various default values, see ADVANCED section below
-  -store.dir /home/hugo/.config/berty-tech/berty  root datastore directory
+  -store.dir /home/moul/.config/berty-tech/berty  root datastore directory
   -store.fileio false                             enable FileIO Option, files will be loaded using standard I/O
   -store.inmem false                              disable datastore persistence
   -tor.binary-path ...                            if set berty will use this external tor binary instead of his builtin one
@@ -579,10 +582,8 @@ EXAMPLE
   rdvp serve -pk `cat rdvp.key` -db ./rdvp-store
 
 FLAGS
-  -announce ...                                        addrs that will be announce by this server
   -db :memory:                                         rdvp sqlite URN
   -l /ip4/0.0.0.0/tcp/4040,/ip4/0.0.0.0/udp/4141/quic  lists of listeners of (m)addrs separate by a comma
-  -metrics ...                                         metrics listener, if empty will disable metrics
   -pk ...                                              private key (generated by `rdvp genkey`)
 
 foo@bar:~$ rdvp genkey -h
@@ -603,7 +604,7 @@ Usage of betabot:
   -addr string
     	remote 'berty daemon' address (default "127.0.0.1:9091")
   -display-name string
-    	bot's display name (default "hugo (betabot)")
+    	bot's display name (default "moul (bot)")
   -staff-conversation-link string
     	link of the staff's conversation to join
   -store string

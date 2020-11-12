@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"time"
 
-	ff "github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"moul.io/godev"
 
@@ -18,6 +17,7 @@ func peersCommand() *ffcli.Command {
 	var refreshEveryFlag time.Duration = time.Second
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("peers", flag.ExitOnError)
+		fs.String("config", "", "config file (optional)")
 		manager.SetupLoggingFlags(fs)             // also available at root level
 		manager.SetupLocalProtocolServerFlags(fs) // by default, start a new local messenger server,
 		manager.SetupRemoteNodeFlags(fs)          // but allow to set a remote server instead
@@ -30,7 +30,7 @@ func peersCommand() *ffcli.Command {
 		ShortUsage:     "berty [global flags] peers [flags]",
 		ShortHelp:      "list peers",
 		FlagSetBuilder: fsBuilder,
-		Options:        []ff.Option{ff.WithEnvVarPrefix("BERTY")},
+		Options:        ffSubcommandOptions(),
 		UsageFunc:      usageFunc,
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {

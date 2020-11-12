@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/oklog/run"
-	ff "github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"golang.org/x/crypto/ed25519"
 
@@ -51,6 +50,7 @@ func tokenServerCommand() *ffcli.Command {
 	)
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("token issuer server p", flag.ExitOnError)
+		fs.String("config", "", "config file (optional)")
 		manager.SetupLoggingFlags(fs) // also available at root level
 		fs.StringVar(&secretFlag, "auth.secret", secretFlag, "base64 encoded secret")
 		fs.StringVar(&authSKFlag, "auth.sk", authSKFlag, "base64 encoded signature key")
@@ -64,7 +64,7 @@ func tokenServerCommand() *ffcli.Command {
 		ShortUsage:     "berty [global flags] token-server [flags]",
 		ShortHelp:      "token server, a basic token server issuer without auth or logging",
 		FlagSetBuilder: fsBuilder,
-		Options:        []ff.Option{ff.WithEnvVarPrefix("BERTY")},
+		Options:        ffSubcommandOptions(),
 		UsageFunc:      usageFunc,
 		Exec: func(ctx context.Context, args []string) error {
 			ctx, cancel := context.WithCancel(ctx)
