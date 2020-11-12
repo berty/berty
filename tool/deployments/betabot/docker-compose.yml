@@ -6,8 +6,6 @@ services:
     image: bertytech/berty:latest
     restart: always
     entrypoint: sh
-    # labels:
-    #   com.centurylinklabs.watchtower.enable: "true"
     environment:
       - ANNOUNCE_SERVER
       - DAEMON_DOMAIN_MAIN
@@ -18,8 +16,6 @@ services:
       - BERTY_P2P_SWARM_LISTENERS=/ip4/0.0.0.0/tcp/6001,/ip4/0.0.0.0/udp/6001/quic
       - BERTY_P2P_SWARM_ANNOUNCE=/ip4/${ANNOUNCE_SERVER}/tcp/6001,/ip4/${ANNOUNCE_SERVER}/udp/6001/quic
       - BERTY_METRICS_LISTENER=:8888
-      # - BERTY_LOG_FILTERS=*,-*.mdns,-ipfs.dht
-      # - BERTY_LOG_FILTERS=bty.*
     command: -xec "berty daemon"
     network_mode: bridge
     volumes:
@@ -55,6 +51,7 @@ services:
     links:
       - daemon
     labels:
+      - 'traefik.enable=false'
       - "com.centurylinklabs.watchtower.enable=true"
     command:
       - -display-name=BetaBot
