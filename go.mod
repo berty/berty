@@ -43,7 +43,7 @@ require (
 	github.com/ipfs/go-ipfs v0.7.0
 	github.com/ipfs/go-ipfs-config v0.10.0
 	github.com/ipfs/go-ipfs-keystore v0.0.1
-	github.com/ipfs/go-ipld-cbor v0.0.4
+	github.com/ipfs/go-ipld-cbor v0.0.5
 	github.com/ipfs/go-log/v2 v2.1.1
 	github.com/ipfs/interface-go-ipfs-core v0.4.0
 	github.com/ipld/go-car v0.1.1-0.20201015032735-ff6ccdc46acc // indirect
@@ -76,7 +76,7 @@ require (
 	github.com/multiformats/go-multiaddr-dns v0.2.0
 	github.com/multiformats/go-multiaddr-fmt v0.1.0
 	github.com/multiformats/go-multihash v0.0.14
-	github.com/multiformats/go-multistream v0.1.2
+	github.com/multiformats/go-multistream v0.2.0
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/oklog/run v1.1.0
 	github.com/pborman/uuid v1.2.1 // indirect
@@ -88,7 +88,7 @@ require (
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/stretchr/testify v1.6.1
-	github.com/tailscale/depaware v0.0.0-20201003033024-5d95aab075be
+	github.com/tailscale/depaware v0.0.0-20201102210757-e2f543bafb1d
 	github.com/zcalusic/sysinfo v0.0.0-20200820110305-ef1bb2697bc2
 	go.opentelemetry.io/otel v0.8.0
 	go.opentelemetry.io/otel/exporters/trace/jaeger v0.8.0
@@ -112,7 +112,7 @@ require (
 	moul.io/openfiles v1.2.0
 	moul.io/srand v1.6.1
 	moul.io/testman v1.5.0
-	moul.io/u v1.18.0
+	moul.io/u v1.19.0
 	moul.io/zapconfig v1.2.0
 	moul.io/zapfilter v1.6.1
 	moul.io/zapgorm2 v1.0.1
