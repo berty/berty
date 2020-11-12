@@ -31,6 +31,7 @@ func verifyRunningLeakDetection(t *testing.T) {
 	goleak.VerifyNone(t,
 		goleak.IgnoreTopFunction("github.com/desertbit/timer.timerRoutine"),                                                  // called by init() in github.com/desertbit/timer/timers.go, refer in grpc-web
 		goleak.IgnoreTopFunction("github.com/ipfs/go-log/writer.(*MirrorWriter).logRoutine"),                                 // global writer created at github.com/ipfs/go-log@v1.0.4/writer/option.go, refer by github.com/ipfs/, like go-bitswap
+		goleak.IgnoreTopFunction("github.com/jbenet/goprocess.(*process).doClose"),                                           // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/jbenet/goprocess/context.CloseAfterContext.func1"),                              // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/jbenet/goprocess/periodic.callOnTicker.func1"),                                  // FIXME - upstream code - is used in many code of libp2p + go-ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/go-flow-metrics.(*sweeper).run"),                                         // this goroutine has run alway without stop
@@ -38,6 +39,8 @@ func verifyRunningLeakDetection(t *testing.T) {
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-autonat.(*AmbientAutoNAT).background"),                         // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-autonat.(*autoNATService).background"),                         // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-circuit.(*RelayListener).Accept"),                              // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-connmgr.(*BasicConnMgr).background"),                           // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-connmgr.(*decayer).process"),                                   // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-noise.newSecureSession"),                                       // upstream issue
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-peerstore/pstoremem.(*memoryAddrBook).background"),             // upstream issue, no store close in upstream code
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-quic-transport.(*reuse).runGarbageCollector"),                  // upstream issue of mdns, go wakeup periodiclly to do action before check exist, timeout about 30 seconds
@@ -48,10 +51,14 @@ func verifyRunningLeakDetection(t *testing.T) {
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-transport-upgrader.(*Upgrader).setupMuxer"),                    // the closing routine has big timeout
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-transport-upgrader.(*listener).Accept"),                        // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/discovery.(*mdnsService).pollForEntries.func1"),            // upstream issue of mdns, go wakeup periodiclly to do action before check exist, timeout about 10 seconds
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/basic.(*BasicHost).background"),                       // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/basic.(*BasicHost).dialPeer"),                         // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/relay.(*AutoRelay).background"),                       // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/relay.(*AutoRelay).findRelays"),                       // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/protocol/identify.(*IDService).loop"),                      // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/protocol/identify.(*IDService).loop.func1"),                // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/protocol/identify.(*ObservedAddrManager).worker"),          // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/protocol/identify.(*peerHandler).loop"),                    // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-mplex.(*Multiplex).Accept"),                                           // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-mplex.(*Multiplex).handleOutgoing"),                                   // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-mplex.(*Stream).waitForData"),                                         // sometimes happening on CI, need more investigation

@@ -4,9 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"sync"
+	"time"
 
-	peer "github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-libp2p-core/peer"
 	ma "github.com/multiformats/go-multiaddr"
 	madns "github.com/multiformats/go-multiaddr-dns"
 	"go.uber.org/multierr"
@@ -104,4 +107,31 @@ func ParseAndResolveRdvpMaddrs(ctx context.Context, log *zap.Logger, addrs []str
 	}
 
 	return outPeers, nil
+}
+
+var ErrExpectedEOF = errors.New("red data when expecting EOF")
+
+const DefaultCloseTimeout = time.Second * 5
+
+func FullClose(s network.Stream) error {
+	// Start the close.
+	err := s.CloseWrite()
+	if err != nil {
+		return err
+	}
+
+	// We don't want to wait indefinitely
+	_ = s.SetDeadline(time.Now().Add(DefaultCloseTimeout))
+
+	// Trying with a long slice to fetch `n`.
+	n, err := s.Read([]byte{0})
+	if n > 0 || err == nil {
+		_ = s.Reset()
+		return ErrExpectedEOF
+	}
+	if err == io.EOF {
+		return nil
+	}
+	_ = s.Reset()
+	return err
 }
