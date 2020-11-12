@@ -72,13 +72,18 @@ func main() {
 	serveFlags.StringVar(&serveMetricsListeners, "metrics", serveMetricsListeners, "metrics listener, if empty will disable metrics")
 	genkeyFlags.StringVar(&genkeyType, "type", genkeyType, "Type of the private key generated, one of : Ed25519, ECDSA, Secp256k1, RSA")
 	genkeyFlags.IntVar(&genkeyLength, "length", genkeyLength, "The length (in bits) of the key generated.")
+	serveFlags.String("config", "", "config file (optional)")
 
 	serve := &ffcli.Command{
 		Name:       "serve",
 		ShortUsage: "rdvp [global flags] serve [flags]",
 		LongHelp:   "EXAMPLE\n  rdvp genkey > rdvp.key\n  rdvp serve -pk `cat rdvp.key` -db ./rdvp-store",
 		FlagSet:    serveFlags,
-		Options:    []ff.Option{ff.WithEnvVarPrefix("RDVP")},
+		Options: []ff.Option{
+			ff.WithEnvVarPrefix("RDVP"),
+			ff.WithConfigFileFlag("config"),
+			ff.WithConfigFileParser(ff.PlainParser),
+		},
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp

@@ -7,7 +7,6 @@ import (
 	"os"
 
 	qrterminal "github.com/mdp/qrterminal/v3"
-	ff "github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
@@ -21,6 +20,7 @@ func shareInviteCommand() *ffcli.Command {
 	)
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("berty share-invite", flag.ExitOnError)
+		fs.String("config", "", "config file (optional)")
 		manager.SetupLoggingFlags(fs)              // also available at root level
 		manager.SetupLocalMessengerServerFlags(fs) // by default, start a new local messenger server,
 		manager.SetupRemoteNodeFlags(fs)           // but allow to set a remote server instead
@@ -34,7 +34,7 @@ func shareInviteCommand() *ffcli.Command {
 		ShortUsage:     "berty [global flags] share-invite [flags]",
 		ShortHelp:      "share invite link on your terminal or in the dev channel on Discord",
 		FlagSetBuilder: fsBuilder,
-		Options:        []ff.Option{ff.WithEnvVarPrefix("BERTY")},
+		Options:        ffSubcommandOptions(),
 		UsageFunc:      usageFunc,
 		Exec: func(ctx context.Context, args []string) error {
 			if len(args) > 0 {
