@@ -15,6 +15,16 @@ down:
 ps pull:
 	docker-compose $@
 
+restorecleandb: down
+	# this command trashes the runtime db and restores a clean db that only has the same private key
+	rm -rf data/bkp-current
+	mkdir -p data/bkp-current data/bkps
+	mv data/daemon1/run data/bkp-current/daemon1
+	mv data/daemon2/run data/bkp-current/daemon2
+	mv data/bkp-current data/bkps/`date +%s`
+	cp -rf data/daemon1/clean data/daemon1/run
+	cp -rf data/daemon2/clean data/daemon2/run
+
 initdb:
 	# initialize a daemon and quit
 	docker-compose run daemon1 -xec "berty share-invite"
