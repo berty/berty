@@ -49,13 +49,13 @@ func Example() {
 	// open account
 	{
 		// create `OpenAccount_Request` Input
-		reqb64, err := encodeProtoMessage(&bertyaccount.OpenAccount_Request{
+		reqb64, err := encodeProtoMessage(&bertyaccount.CreateAccount_Request{
 			Args: args,
 		})
 		checkErr(err)
 
 		// invoke through bridge client
-		ret, err := b.InvokeBridgeMethod("/berty.account.v1.AccountService/OpenAccount", reqb64)
+		ret, err := b.InvokeBridgeMethod("/berty.account.v1.AccountService/CreateAccount", reqb64)
 		checkErr(err)
 
 		// deserialize reply

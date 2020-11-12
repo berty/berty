@@ -7,12 +7,13 @@ import { Translation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { useAccount } from '@berty-tech/store/hooks'
+import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
 
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import HeaderSettings from '../shared-components/Header'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { MessengerActions } from '@berty-tech/store/context'
 
 const useStylesHome = () => {
 	const [{ height, margin, padding, text }] = useStyles()
@@ -47,21 +48,21 @@ const HomeHeaderGroupButton: React.FC = () => {
 								icon: 'question-mark-circle-outline',
 								color: color.red,
 								style: _styles.firstHeaderButton,
-								onPress: navigate.settings.help,
+								onPress: () => navigate.settings.help(),
 							},
 							{
 								name: t('settings.home.header-center-button'),
 								icon: 'options-2-outline',
 								color: color.dark.grey,
 								style: _styles.secondHeaderButton,
-								onPress: navigate.settings.devTools,
+								onPress: () => navigate.settings.devTools(),
 							},
 							{
 								name: t('settings.home.header-right-button'),
 								icon: 'settings-2-outline',
 								color: color.blue,
 								style: _styles.thirdHeaderButton,
-								onPress: navigate.settings.mode,
+								onPress: () => navigate.settings.mode(),
 							},
 						]}
 					/>
@@ -133,6 +134,7 @@ const HomeHeader: React.FC = () => {
 const HomeBodySettings: React.FC<{}> = () => {
 	const [{ flex, color, padding }] = useStyles()
 	const navigation = useNativeNavigation()
+	const ctx = useMsgrContext()
 
 	return (
 		<Translation>
@@ -144,6 +146,12 @@ const HomeBodySettings: React.FC<{}> = () => {
 						iconPack='custom'
 						iconColor={color.blue}
 						onPress={() => navigation.navigate('Settings.NetworkMap')}
+					/>
+					<ButtonSetting
+						name={t('settings.home.switch-accounts')}
+						icon='log-out-outline'
+						iconColor={color.red}
+						onPress={() => ctx.dispatch({ type: MessengerActions.SetStateClosing })}
 					/>
 				</View>
 			)}
