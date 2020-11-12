@@ -1379,18 +1379,18 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/masked-view/-/masked-view-0.1.10.tgz#5dda643e19e587793bc2034dd9bf7398ad43d401"
   integrity sha512-rk4sWFsmtOw8oyx8SD3KSvawwaK7gRBSEIy2TAwURyGt+3TizssXP1r8nx3zY+R7v2vYYHXZ+k2/GULAT/bcaQ==
 
-"@react-native-firebase/app@^8.4.7":
-  version "8.4.7"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-8.4.7.tgz#7393ba7af36bd815bd5af7c64a20b0dd8a7e3341"
-  integrity sha512-jN788Q17aMOHc49wKc74RC3iZNhFoS+yTZhMBHFVyytf64uK3ofYAk3hjvukkylUTKF0Ni/L+04M0IDv8kStKg==
+"@react-native-firebase/app@^9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-9.0.0.tgz#12ecdd86eb99057cff783d66f3cc836b0b7f2f46"
+  integrity sha512-OanSnKv/1RmNuhoAD71AsKWoZxLy0dbOleJ+z2CprHhzPWFNlfSrAQCjs2tHvGkV1Auxt9U4K3Vod0KoQcsYmQ==
   dependencies:
     opencollective-postinstall "^2.0.1"
     superstruct "^0.6.2"
 
-"@react-native-firebase/crashlytics@^8.5.0":
-  version "8.5.0"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/crashlytics/-/crashlytics-8.5.0.tgz#5c9c4ac41caefec232dd71e6a4adf886bfb94807"
-  integrity sha512-s3NmJqwiD+nfopafYtfRRhqPJZJ4XUCpyETIiHgHVq5H2QBu5eeMBU1GORy2guHB2kZYpiOk+pEsrpv0vZ9oNw==
+"@react-native-firebase/crashlytics@^8.5.2":
+  version "8.5.2"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/crashlytics/-/crashlytics-8.5.2.tgz#6d49a24f0a4f1b3e26d589ed525cde2ffb53932b"
+  integrity sha512-7wZiaHapsXEhTljGE86/lGVWbDUsZrI4PPNLiTx4+ovt8aKSwPrb9h35VGo0dEtlpU0x/ahB1IJ+TxFLqFDeXw==
   dependencies:
     stacktrace-js "^2.0.0"
 
