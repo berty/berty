@@ -63,7 +63,7 @@
       "header": "Communicate without an internet connection (wifi or data) by connecting your phone directly with peers nearby",
       "optional": "Optional",
       "title": "Bluetooth",
-      "desc": "",
+      "desc": "To use this feature you need to authorize the use of Bluetooth on your phone",
       "button": "AUTHORIZE BLUETOOTH",
       "skip": "SKIP AND DO THIS LATER"
     },
@@ -92,7 +92,7 @@
     },
     "home-modal": {
       "left-button": "Scan",
-      "right-button": ""
+      "right-button": "Group"
     }
   },
   "settings": {
@@ -101,7 +101,7 @@
       "header-center-button": "Devtools",
       "header-right-button": "Settings",
       "network-button": "Network List",
-      "switch-accounts": ""
+      "switch-accounts": "Use another account"
     },
     "network-map": {
       "title": "Network List",
@@ -160,8 +160,8 @@
         "exceptions-button": {
           "title": "Exceptions",
           "preview-value": "Add",
-          "tag": "",
-          "tag_plural": ""
+          "tag": "{{count}} exception",
+          "tag_plural": "{{count}} exceptions"
         }
       },
       "group-notifications-button": {
@@ -172,8 +172,8 @@
         "exceptions-button": {
           "title": "Exceptions",
           "preview-value": "Add",
-          "tag": "",
-          "tag_plural": ""
+          "tag": "{{count}} exception",
+          "tag_plural": "{{count}} exceptions"
         }
       }
     },
@@ -199,7 +199,7 @@
     "delete-account": {
       "title": "Delete account!",
       "first-desc": "Are you sure you want to delete your account?",
-      "desc": "",
+      "desc": "Please type delete to confirm",
       "cancel-button": "CANCEL",
       "delete-button": "DELETE"
     },
@@ -270,7 +270,7 @@
         "title": "Send messages to all contacts",
         "sending": "Sending...",
         "test": "Test, ",
-        "tried": ""
+        "tried": "✔ Tried sending to {{length}} contacts"
       },
       "footer-left-button": "Device infos",
       "footer-middle-button": "List events",
@@ -351,7 +351,7 @@
       },
       "betabot-box": {
         "title": "ADD BETA BOT?",
-        "desc": "",
+        "desc": "You don't have any contacts yet would you like to add the Beta Bot to discover and test conversations?",
         "skip-button": "SKIP",
         "add-button": "ADD !"
       },
