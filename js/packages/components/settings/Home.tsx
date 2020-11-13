@@ -14,6 +14,7 @@ import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAva
 import HeaderSettings from '../shared-components/Header'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { MessengerActions } from '@berty-tech/store/context'
+import logo from '../main/1_berty_picto.png'
 
 const useStylesHome = () => {
 	const [{ height, margin, padding, text }] = useStyles()
@@ -99,7 +100,7 @@ const HomeHeaderAvatar: React.FC = () => {
 					</View>
 					<Text style={[_styles.headerNameText]}>{account?.displayName || ''}</Text>
 					<View style={[padding.top.scale(20 * scaleHeight)]}>
-						<QRCode size={qrCodeSize} value={account.link} color='#3845E0' />
+						<QRCode size={qrCodeSize} logo={logo} value={account.link} color='#3845E0' />
 					</View>
 				</View>
 			</TouchableOpacity>
