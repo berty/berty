@@ -99,7 +99,7 @@ const HomeHeaderAvatar: React.FC = () => {
 					</View>
 					<Text style={[_styles.headerNameText]}>{account?.displayName || ''}</Text>
 					<View style={[padding.top.scale(20 * scaleHeight)]}>
-						<QRCode size={qrCodeSize} value={account.link} />
+						<QRCode size={qrCodeSize} value={account.link} color='#3845E0' />
 					</View>
 				</View>
 			</TouchableOpacity>
