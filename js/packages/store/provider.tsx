@@ -22,11 +22,9 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 
 	useEffect(() => initialLaunch(dispatch, embedded), [embedded])
 
-	useEffect(() => openingDaemon(dispatch, state.appState, state.selectedAccount), [
-		embedded,
-		state.appState,
-		state.selectedAccount,
-	])
+	useEffect(() => {
+		openingDaemon(dispatch, state.appState, state.selectedAccount)
+	}, [embedded, state.appState, state.selectedAccount])
 
 	useEffect(() => openingClients(dispatch, state.appState, eventEmitter, daemonAddress, embedded), [
 		daemonAddress,

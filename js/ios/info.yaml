@@ -22,8 +22,12 @@ targets:
           NSExceptionDomains:
             localhost:
               NSExceptionAllowsInsecureHTTPLoads: true
+        NSBluetoothAlwaysUsageDescription: Used for Bluetooth communications
+        NSBluetoothPeripheralUsageDescription: Used for Bluetooth communications
+        NSBonjourServices:
+          - _berty-mc._tcp
         NSCameraUsageDescription: Used to scan QRCodes
-        NSLocalNetworkUsageDescription: Used for local communications
+        NSLocalNetworkUsageDescription: Used for proximity communications
         NSLocationWhenInUseUsageDescription: ""
         Shake:
           APIClientID: "$(SHAKE_API_ID)"

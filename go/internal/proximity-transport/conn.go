@@ -74,9 +74,6 @@ func (c *Conn) Close() error {
 	// Removes conn from connmgr's connMap
 	c.transport.connMap.Delete(c.RemoteAddr().String())
 
-	// Notify the native driver that the conn was cloed with this peer.
-	c.transport.driver.CloseConnWithPeer(c.RemoteAddr().String())
-
 	return nil
 }
 

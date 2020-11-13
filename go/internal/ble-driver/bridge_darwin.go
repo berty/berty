@@ -1,12 +1,12 @@
 // +build darwin,cgo
 
-package mc
+package ble
 
 /*
 #cgo CFLAGS: -x objective-c
-#cgo darwin LDFLAGS: -framework Foundation -framework MultipeerConnectivity
+#cgo darwin LDFLAGS: -framework Foundation -framework CoreBluetooth
 #include <stdlib.h>
-#include "mc-driver.h"
+#import "BleInterface_darwin.h"
 */
 import "C"
 
@@ -30,7 +30,7 @@ type Driver struct {
 var _ proximity.NativeDriver = (*Driver)(nil)
 
 func NewDriver(logger *zap.Logger) proximity.NativeDriver {
-	logger = logger.Named("MC")
+	logger = logger.Named("BLE")
 	logger.Debug("NewDriver()")
 
 	return &Driver{
@@ -40,8 +40,8 @@ func NewDriver(logger *zap.Logger) proximity.NativeDriver {
 	}
 }
 
-//export HandleFoundPeer
-func HandleFoundPeer(remotePID *C.char) int {
+//export BLEHandleFoundPeer
+func BLEHandleFoundPeer(remotePID *C.char) int { // nolint:golint // Need to prefix func name to avoid duplicate symbols between proximity drivers
 	goPID := C.GoString(remotePID)
 
 	t, ok := proximity.TransportMap.Load(ProtocolName)
@@ -54,8 +54,8 @@ func HandleFoundPeer(remotePID *C.char) int {
 	return 0
 }
 
-//export HandleLostPeer
-func HandleLostPeer(remotePID *C.char) {
+//export BLEHandleLostPeer
+func BLEHandleLostPeer(remotePID *C.char) { // nolint:golint // Need to prefix func name to avoid duplicate symbols between proximity drivers
 	goPID := C.GoString(remotePID)
 
 	t, ok := proximity.TransportMap.Load(ProtocolName)
@@ -65,8 +65,8 @@ func HandleLostPeer(remotePID *C.char) {
 	t.(*proximity.ProximityTransport).HandleLostPeer(goPID)
 }
 
-//export ReceiveFromPeer
-func ReceiveFromPeer(remotePID *C.char, payload unsafe.Pointer, length C.int) {
+//export BLEReceiveFromPeer
+func BLEReceiveFromPeer(remotePID *C.char, payload unsafe.Pointer, length C.int) { // nolint:golint // Need to prefix func name to avoid duplicate symbols between proximity drivers
 	goPID := C.GoString(remotePID)
 	goPayload := C.GoBytes(payload, length)
 
@@ -81,18 +81,18 @@ func (d *Driver) Start(localPID string) {
 	cPID := C.CString(localPID)
 	defer C.free(unsafe.Pointer(cPID))
 
-	C.StartMCDriver(cPID)
+	C.BLEStart(cPID)
 }
 
 func (d *Driver) Stop() {
-	C.StopMCDriver()
+	C.BLEStop()
 }
 
 func (d *Driver) DialPeer(remotePID string) bool {
 	cPID := C.CString(remotePID)
 	defer C.free(unsafe.Pointer(cPID))
 
-	return C.DialPeer(cPID) == 1
+	return C.BLEDialPeer(cPID) == 1
 }
 
 func (d *Driver) SendToPeer(remotePID string, payload []byte) bool {
@@ -101,14 +101,14 @@ func (d *Driver) SendToPeer(remotePID string, payload []byte) bool {
 	cPayload := C.CBytes(payload)
 	defer C.free(cPayload)
 
-	return C.SendToPeer(cPID, cPayload, C.int(len(payload))) == 1
+	return C.BLESendToPeer(cPID, cPayload, C.int(len(payload))) == 1
 }
 
 func (d *Driver) CloseConnWithPeer(remotePID string) {
 	cPID := C.CString(remotePID)
 	defer C.free(unsafe.Pointer(cPID))
 
-	C.CloseConnWithPeer(cPID)
+	C.BLECloseConnWithPeer(cPID)
 }
 
 func (d *Driver) ProtocolCode() int {

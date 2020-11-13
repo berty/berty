@@ -120,6 +120,8 @@ export enum PersistentOptionsKeys {
 	I18N = 'i18n',
 	Notifications = 'notifications',
 	BetaBot = 'betabot',
+	BLE = 'ble',
+	MC = 'mc',
 }
 
 export type PersistentOptionsI18N = {
@@ -136,6 +138,14 @@ export type PersistentOptionsBetaBot = {
 	toggledModal: boolean
 }
 
+export type PersistentOptionsBLE = {
+	enable: boolean
+}
+
+export type PersistentOptionsMC = {
+	enable: boolean
+}
+
 export type PersistentOptionsUpdate =
 	| {
 			type: typeof PersistentOptionsKeys.I18N
@@ -149,11 +159,21 @@ export type PersistentOptionsUpdate =
 			type: typeof PersistentOptionsKeys.BetaBot
 			payload: Partial<PersistentOptionsBetaBot>
 	  }
+	| {
+			type: typeof PersistentOptionsKeys.BLE
+			payload: Partial<PersistentOptionsBLE>
+	  }
+	| {
+			type: typeof PersistentOptionsKeys.MC
+			payload: Partial<PersistentOptionsMC>
+	  }
 
 export type PersistentOptions = {
 	[PersistentOptionsKeys.I18N]: PersistentOptionsI18N
 	[PersistentOptionsKeys.Notifications]: PersistentOptionsNotifications
 	[PersistentOptionsKeys.BetaBot]: PersistentOptionsBetaBot
+	[PersistentOptionsKeys.BLE]: PersistentOptionsBLE
+	[PersistentOptionsKeys.MC]: PersistentOptionsMC
 }
 
 export const defaultPersistentOptions = (): PersistentOptions => ({
@@ -167,6 +187,12 @@ export const defaultPersistentOptions = (): PersistentOptions => ({
 		added: false,
 		convPk: null,
 		toggledModal: false,
+	},
+	[PersistentOptionsKeys.BLE]: {
+		enable: true,
+	},
+	[PersistentOptionsKeys.MC]: {
+		enable: true,
 	},
 })
 

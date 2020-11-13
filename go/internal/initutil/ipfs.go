@@ -20,6 +20,7 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	"moul.io/srand"
 
+	ble "berty.tech/berty/v2/go/internal/ble-driver"
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
@@ -42,6 +43,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute, "maximum p2p backoff duration")
 	fs.StringVar(&m.Node.Protocol.RdvpMaddrs, "p2p.rdvp", ":default:", `list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp`)
+	fs.BoolVar(&m.Node.Protocol.Ble, "p2p.ble", ble.Supported, "if true Bluetooth Low Energy will be enabled")
 	fs.BoolVar(&m.Node.Protocol.MultipeerConnectivity, "p2p.multipeer-connectivity", mc.Supported, "if true Multipeer Connectivity will be enabled")
 	fs.StringVar(&m.Node.Protocol.Tor.Mode, "tor.mode", defaultTorMode, "changes the behavior of libp2p regarding tor, see advanced help for more details")
 	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
@@ -177,6 +179,13 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 				}
 				return nil
 			}
+		}
+
+		// Setup BLE
+		if m.Node.Protocol.Ble {
+			swarmAddrs = append(swarmAddrs, ble.DefaultAddr)
+			bleOpt := libp2p.Transport(proximity.NewTransport(m.ctx, logger, ble.NewDriver(logger)))
+			p2pOpts = libp2p.ChainOptions(p2pOpts, bleOpt)
 		}
 
 		// Setup MC

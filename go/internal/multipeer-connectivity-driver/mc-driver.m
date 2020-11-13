@@ -11,12 +11,14 @@ extern void HandleLostPeer(char *);
 extern void ReceiveFromPeer(char *, void *, unsigned long);
 
 int driverStarted = 0;
+os_log_t OS_LOG_MC = nil;
 
 // MCManager must be unique
 static MCManager *gMCManager = nil;
 MCManager* getMCManager(NSString *peerID) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
+		os_log_debug(OS_LOG_MC, "init MCManager");
         gMCManager = [[MCManager alloc] init:peerID];
     });
     return gMCManager;
@@ -24,9 +26,11 @@ MCManager* getMCManager(NSString *peerID) {
 
 void StartMCDriver(char *localPID) {
     if (!driverStarted) {
+		OS_LOG_MC = os_log_create("tech.berty.bty.MC", "protocol");
+		os_log_debug(OS_LOG_MC, "StartMCDriver()");
         NSString *cPID = [[NSString alloc] initWithUTF8String:localPID];
         if (!getMCManager(cPID)) {
-            NSLog(@"MC: StartMCDriver failed");
+           os_log_debug(OS_LOG_MC, "StartMCDriver failed");
             return ;
         }
         [gMCManager startServiceAdvertiser];
@@ -37,6 +41,7 @@ void StartMCDriver(char *localPID) {
 
 void StopMCDriver() {
     if (driverStarted) {
+		os_log_debug(OS_LOG_MC, "StopMCDriver()");
         [gMCManager stopServiceAdvertiser];
         [gMCManager stopServiceBrowser];
         [gMCManager closeSessions];

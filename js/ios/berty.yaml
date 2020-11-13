@@ -143,6 +143,9 @@ targets:
     - sdk: Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/MultipeerConnectivity.framework
       root: DEVELOPER_DIR
       link: true
+    - sdk: Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreBluetooth.framework
+      root: DEVELOPER_DIR
+      link: true
     - framework: ./Frameworks/Bertybridge.framework
       embed: false
 
