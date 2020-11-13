@@ -63,7 +63,7 @@
       "header": "Communiquer sans internet (wifi ou cellulaire) en vous connectant directement avec vos amis près de vous",
       "optional": "Optionnel",
       "title": "Bluetooth",
-      "desc": "Pour utiliser cette fonctionnalité, vous devez autoriser l'utilisation du Bluetooth sur votre téléphone",
+      "desc": "",
       "button": "AUTORISER LE BLUETOOTH",
       "skip": "PASSER ET FAIRE ÇA PLUS TARD"
     },
@@ -160,7 +160,8 @@
         "exceptions-button": {
           "title": "Exceptions",
           "preview-value": "Ajouter",
-          "tag": "exceptions"
+          "tag": "",
+          "tag_plural": ""
         }
       },
       "group-notifications-button": {
@@ -171,7 +172,8 @@
         "exceptions-button": {
           "title": "Exceptions",
           "preview-value": "Ajouter",
-          "tag": "exceptions"
+          "tag": "",
+          "tag_plural": ""
         }
       }
     },
@@ -197,9 +199,7 @@
     "delete-account": {
       "title": "Supprimer le compte !",
       "first-desc": "Êtes-vous sûr de vouloir supprimer votre compte ?",
-      "begin-second-desc": "Veuillez saisir ",
-      "bold-second-desc": "supprimer",
-      "end-second-desc": " pour confirmer",
+      "desc": "",
       "cancel-button": "ANNULER",
       "delete-button": "SUPPRIMER"
     },
@@ -270,8 +270,7 @@
         "title": "Envoyer des messages à tous les contacts",
         "sending": "Envoi...",
         "test": "Test, ",
-        "begin-tried": "✔ Tentative d'envoi à ",
-        "end-tried": " contacts"
+        "tried": ""
       },
       "footer-left-button": "Infos sur l'appareil",
       "footer-middle-button": "Lister les événements",
@@ -352,9 +351,7 @@
       },
       "betabot-box": {
         "title": "AJOUTER BETA BOT ?",
-        "begin-desc": "Vous n'avez aucun contact pour le moment, voulez-vous ajouter le",
-        "bold-desc": " Beta Bot",
-        "end-desc": " pour découvrir et tester les conversations ?",
+        "desc": "",
         "skip-button": "PASSER",
         "add-button": "AJOUTER !"
       },
