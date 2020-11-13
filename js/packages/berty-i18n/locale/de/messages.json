@@ -63,14 +63,14 @@
       "header": "Kommunizieren ohne Internetverbindung (WiFi oder Daten), indem Sie Ihr Telefon direkt mit Kollegen in der Nähe verbinden",
       "optional": "Fakultativ",
       "title": "Bluetooth",
-      "desc": "Um diese Funktion nutzen zu können, müssen Sie Bluetooth auf Ihrem Telefon autorisieren",
+      "desc": "",
       "button": "BLUETOOTH AUTORISIEREN",
       "skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
     },
     "setup-finished": {
       "title": "Einrichtung beendet!",
       "desc": "Sie können jetzt die App benutzen, Kontakte hinzufügen und sich frei und privat mit ihnen unterhalten",
-      "button": "BERTY VERWENDEN"
+      "button": ""
     }
   },
   "main": {
@@ -100,7 +100,8 @@
       "header-left-button": "",
       "header-center-button": "",
       "header-right-button": "Einstellungen",
-      "network-button": ""
+      "network-button": "",
+      "switch-accounts": ""
     },
     "network-map": {
       "title": "",
@@ -159,7 +160,8 @@
         "exceptions-button": {
           "title": "",
           "preview-value": "",
-          "tag": ""
+          "tag": "",
+          "tag_plural": ""
         }
       },
       "group-notifications-button": {
@@ -170,7 +172,8 @@
         "exceptions-button": {
           "title": "",
           "preview-value": "",
-          "tag": ""
+          "tag": "",
+          "tag_plural": ""
         }
       }
     },
@@ -196,9 +199,7 @@
     "delete-account": {
       "title": "",
       "first-desc": "",
-      "begin-second-desc": "",
-      "bold-second-desc": "",
-      "end-second-desc": "",
+      "desc": "",
       "cancel-button": "",
       "delete-button": ""
     },
@@ -269,8 +270,7 @@
         "title": "",
         "sending": "",
         "test": "",
-        "begin-tried": "",
-        "end-tried": ""
+        "tried": ""
       },
       "footer-left-button": "",
       "footer-middle-button": "",
@@ -351,9 +351,7 @@
       },
       "betabot-box": {
         "title": "",
-        "begin-desc": "",
-        "bold-desc": "",
-        "end-desc": "",
+        "desc": "",
         "skip-button": "",
         "add-button": ""
       },

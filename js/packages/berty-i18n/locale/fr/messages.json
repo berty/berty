@@ -63,14 +63,14 @@
       "header": "Communiquer sans internet (wifi ou cellulaire) en vous connectant directement avec vos amis près de vous",
       "optional": "Optionnel",
       "title": "Bluetooth",
-      "desc": "Pour utiliser cette fonctionnalité, vous devez autoriser l'utilisation du Bluetooth sur votre téléphone",
+      "desc": "",
       "button": "AUTORISER LE BLUETOOTH",
       "skip": "PASSER ET FAIRE ÇA PLUS TARD"
     },
     "setup-finished": {
       "title": "Configuration terminée !",
       "desc": "Vous pouvez dés maintenant utiliser l'application, ajoutez vos contacts et parler en toute tranquillité avec eux",
-      "button": "LANCER L'APPLICATION"
+      "button": "LANCER BERTY"
     }
   },
   "main": {
@@ -160,7 +160,8 @@
         "exceptions-button": {
           "title": "Exceptions",
           "preview-value": "Ajouter",
-          "tag": "exceptions"
+          "tag": "",
+          "tag_plural": ""
         }
       },
       "group-notifications-button": {
@@ -171,7 +172,8 @@
         "exceptions-button": {
           "title": "Exceptions",
           "preview-value": "Ajouter",
-          "tag": "exceptions"
+          "tag": "",
+          "tag_plural": ""
         }
       }
     },
@@ -197,9 +199,7 @@
     "delete-account": {
       "title": "Supprimer le compte !",
       "first-desc": "Êtes-vous sûr de vouloir supprimer votre compte ?",
-      "begin-second-desc": "",
-      "bold-second-desc": "supprimer",
-      "end-second-desc": "",
+      "desc": "",
       "cancel-button": "ANNULER",
       "delete-button": "SUPPRIMER"
     },
@@ -241,7 +241,7 @@
       "not-installed-tag": "Non installées"
     },
     "devtools": {
-      "title": "",
+      "title": "Outils Dev",
       "header-left-button": "Infos sur l'appareil",
       "header-middle-button": "Générer de fausses données",
       "header-right-button": "Redémarrer le démon",
@@ -249,29 +249,28 @@
       "add-bots-button": "Ajouter des bots",
       "share-button": {
         "title": "Partager l'ID sur Discord",
-        "alert-title": "",
-        "alert-message": "",
+        "alert-title": "Voulez-vous partager votre code QR sur \"#dev-logs\" sur le Discord de l'équipe Berty?",
+        "alert-message": "Cela permettra à l'équipe de Berty de scanner votre code QR ou de copier votre lien de contact.",
         "alert-accept-button": "Oui 👍",
         "alert-cancel-button": "Non"
       },
       "native-bridge-button": "Tester la passerelle native",
-      "dump-account-button": "",
-      "dump-contacts-button": "",
-      "dump-conversations-button": "",
-      "dump-interactions-button": "",
-      "dump-members-button": "",
+      "dump-account-button": "Extraire le compte",
+      "dump-contacts-button": "Extraire les contacts",
+      "dump-conversations-button": "Extraire les conversations",
+      "dump-interactions-button": "Extraire les interactions",
+      "dump-members-button": "Extraire les membres",
       "stop-node-button": "Arrêter le nœud",
       "bot-mode-button": "Mode Bot",
-      "local-grpc-button": "",
+      "local-grpc-button": "gRPC local",
       "console-logs-button": "Journal de la console",
-      "ipfs-webui-button": "",
+      "ipfs-webui-button": "Interface web IPFS",
       "notifications-button": "Notifications",
       "send-to-all-button": {
         "title": "Envoyer des messages à tous les contacts",
         "sending": "Envoi...",
-        "test": "",
-        "begin-tried": "",
-        "end-tried": " contacts"
+        "test": "Test, ",
+        "tried": ""
       },
       "footer-left-button": "Infos sur l'appareil",
       "footer-middle-button": "Lister les événements",
@@ -282,9 +281,9 @@
     },
     "fake-data": {
       "title": "Générer de fausses données",
-      "contacts-button": "",
-      "multi-members-button": "",
-      "messages-button": "",
+      "contacts-button": "Gén. faux contacts",
+      "multi-members-button": "Gén. faux membres de conversations de groupe",
+      "messages-button": "Gén. faux messages",
       "delete-button": "Supprimer les fausses données"
     },
     "add-contact-list": {
@@ -292,7 +291,7 @@
       "add": "Ajouter"
     },
     "ipfs-webui": {
-      "title": ""
+      "title": "Interface web IPFS"
     }
   },
   "modals": {
@@ -302,7 +301,7 @@
       "error": "Erreur !"
     },
     "invalid-scan": {
-      "dismiss-button": ""
+      "dismiss-button": "ANNULER"
     },
     "add-this-contact": {
       "fingerprint": "Empreinte numérique",
@@ -318,21 +317,21 @@
   "chat": {
     "contact-settings": {
       "mark-button": "Marquer comme vérifié",
-      "block-button": "",
-      "delete-button": "",
+      "block-button": "Bloquer le contact",
+      "delete-button": "Supprimer le contact",
       "fingerprint": "Empreinte digitale",
       "info": "Infos",
       "devices": "Appareils"
     },
     "multi-member": {
-      "input-placeholder": ""
+      "input-placeholder": "Écrire un message sécurisé..."
     },
     "multi-member-settings": {
       "header-left-button": "Rechercher",
       "header-middle-button": "Appel",
       "header-right-button": "Partager",
-      "media-button": "",
-      "notifications-button": "",
+      "media-button": "Médias, liens & documents",
+      "notifications-button": "Recevoir les notifications",
       "members-button": {
         "title": "Membres",
         "unknown": "Inconnu"
@@ -352,14 +351,12 @@
       },
       "betabot-box": {
         "title": "AJOUTER BETA BOT ?",
-        "begin-desc": "",
-        "bold-desc": "",
-        "end-desc": "",
+        "desc": "",
         "skip-button": "PASSER",
         "add-button": "AJOUTER !"
       },
       "infos-chat": {
-        "connection-confirmed": "",
+        "connection-confirmed": "👋 Connexion Berty confirmée ! 🎉",
         "request-sent": "Demande envoyée ✈",
         "incoming": "Accepter cette demande pour répondre !",
         "outgoing": "En attente de votre réponse pour vous connecter !"

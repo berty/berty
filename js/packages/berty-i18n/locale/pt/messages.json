@@ -63,14 +63,14 @@
       "header": "Comunique-se sem uma conexão com a internet (wifi ou dados) por conectar o seu telefone diretamente com pares próximos",
       "optional": "Opcional",
       "title": "Bluetooth",
-      "desc": "Para usar este recurso, você precisa autorizar o uso de Bluetooth no seu telefone",
+      "desc": "",
       "button": "AUTORIZAR BLUETOOTH",
       "skip": "PULAR E FAZER MAIS TARDE"
     },
     "setup-finished": {
       "title": "Configuração finalizada!",
       "desc": "Agora você pode usar o aplicativo, comece a adicionar contatos e conversar de forma livre e privada com eles",
-      "button": "COMECE A USAR O APLICATIVO"
+      "button": ""
     }
   },
   "main": {
@@ -100,7 +100,8 @@
       "header-left-button": "",
       "header-center-button": "",
       "header-right-button": "",
-      "network-button": ""
+      "network-button": "",
+      "switch-accounts": ""
     },
     "network-map": {
       "title": "",
@@ -159,7 +160,8 @@
         "exceptions-button": {
           "title": "",
           "preview-value": "",
-          "tag": ""
+          "tag": "",
+          "tag_plural": ""
         }
       },
       "group-notifications-button": {
@@ -170,7 +172,8 @@
         "exceptions-button": {
           "title": "",
           "preview-value": "",
-          "tag": ""
+          "tag": "",
+          "tag_plural": ""
         }
       }
     },
@@ -196,9 +199,7 @@
     "delete-account": {
       "title": "",
       "first-desc": "",
-      "begin-second-desc": "",
-      "bold-second-desc": "",
-      "end-second-desc": "",
+      "desc": "",
       "cancel-button": "",
       "delete-button": ""
     },
@@ -269,8 +270,7 @@
         "title": "",
         "sending": "",
         "test": "",
-        "begin-tried": "",
-        "end-tried": ""
+        "tried": ""
       },
       "footer-left-button": "",
       "footer-middle-button": "",
@@ -351,9 +351,7 @@
       },
       "betabot-box": {
         "title": "",
-        "begin-desc": "",
-        "bold-desc": "",
-        "end-desc": "",
+        "desc": "",
         "skip-button": "",
         "add-button": ""
       },
