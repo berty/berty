@@ -1,14 +1,10 @@
 package ipfsutil
 
 import (
-	"context"
-
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/connmgr"
 	ipfs_host "github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/network"
 	peer "github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
 )
 
 type ConnMgr interface {
@@ -21,10 +17,8 @@ type ConnMgr interface {
 
 type ExtendedCoreAPI interface {
 	ipfs_interface.CoreAPI
+	ipfs_host.Host
 
-	NewStream(ctx context.Context, p peer.ID, pids ...protocol.ID) (network.Stream, error)
-	SetStreamHandler(pid protocol.ID, handler network.StreamHandler)
-	RemoveStreamHandler(pid protocol.ID)
 	ConnMgr() ConnMgr
 }
 

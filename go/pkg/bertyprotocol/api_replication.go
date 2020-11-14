@@ -47,10 +47,16 @@ func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *
 		return nil, errcode.ErrServiceReplicationMissingEndpoint
 	}
 
-	cc, err := grpc.Dial(endpoint, []grpc.DialOption{
+	dialOpts := []grpc.DialOption{
 		grpc.WithPerRPCCredentials(grpcutil.NewUnsecureSimpleAuthAccess("bearer", token.Token)),
 		grpc.WithInsecure(), // TODO: remove this, enforce security
-	}...)
+		grpc.WithBlock(),    // FIXME: Is this better that way ?
+	}
+	if grpcutil.IsPeerIDOrP2PMaddr(endpoint) {
+		dialOpts = append(dialOpts, grpc.WithContextDialer(grpcutil.NewContextDialer(s.ipfsCoreAPI)))
+	}
+
+	cc, err := grpc.DialContext(ctx, endpoint, dialOpts...)
 	if err != nil {
 		return nil, errcode.ErrStreamWrite.Wrap(err)
 	}

@@ -367,6 +367,10 @@ func (m *Manager) GetGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 	return m.getGRPCServer()
 }
 
+func panicRecoverer(p interface{}) (err error) {
+	return status.Errorf(codes.Unknown, "panic recover: %v", p)
+}
+
 // grpc logger should be set only once.
 // without this singleton, we can raise race conditions in unit tests => https://github.com/grpc/grpc-go/issues/1084
 var grpcLoggerConfigured = false
@@ -385,13 +389,9 @@ func (m *Manager) getGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 
 	grpcLogger := logger.Named("grpc")
 	// Define customfunc to handle panic
-	panicHandler := func(p interface{}) (err error) {
-		return status.Errorf(codes.Unknown, "panic recover: %v", p)
-	}
-
 	// Shared options for the logger, with a custom gRPC code to log level function.
 	recoverOpts := []grpc_recovery.Option{
-		grpc_recovery.WithRecoveryHandler(panicHandler),
+		grpc_recovery.WithRecoveryHandler(panicRecoverer),
 	}
 
 	zapOpts := []grpc_zap.Option{}
@@ -434,34 +434,50 @@ func (m *Manager) getGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 
 	grpcServer := grpc.NewServer(grpcOpts...)
 	grpcGatewayMux := grpcgw.NewServeMux()
+	server := grpcutil.Server{
+		GRPCServer: grpcServer,
+		GatewayMux: grpcGatewayMux,
+	}
 
 	if m.Node.GRPC.Listeners != "" {
 		addrs := strings.Split(m.Node.GRPC.Listeners, ",")
-		maddrs, err := ipfsutil.ParseAddrs(addrs...)
-		if err != nil {
-			return nil, nil, err
-		}
-		m.Node.GRPC.listeners = make([]grpcutil.Listener, len(maddrs))
+		i := len(addrs)
+		m.Node.GRPC.listeners = make([]grpcutil.Listener, i)
+		for i > 0 {
+			i--
+			addr := addrs[i]
+			var listener grpcutil.Listener
+			// Avoid double setup of libp2p grpc
+			var libp2pSetuped bool
+			if addr == ":libp2p:" && !libp2pSetuped {
+				libp2pSetuped = true
 
-		server := grpcutil.Server{
-			GRPCServer: grpcServer,
-			GatewayMux: grpcGatewayMux,
-		}
+				host, _, err := m.getLocalIPFS()
+				if err != nil {
+					return nil, nil, errcode.TODO.Wrap(err)
+				}
 
-		for idx, maddr := range maddrs {
-			maddrStr := maddr.String()
-			l, err := grpcutil.Listen(maddr)
-			if err != nil {
-				return nil, nil, errcode.TODO.Wrap(err)
+				listener = grpcutil.ListenLibp2p(host)
+			} else {
+				maddr, err := ipfsutil.ParseAddr(addr)
+				if err != nil {
+					return nil, nil, err
+				}
+
+				listener, err = grpcutil.Listen(maddr)
+				if err != nil {
+					return nil, nil, errcode.TODO.Wrap(err)
+				}
 			}
-			m.Node.GRPC.listeners[idx] = l
+			m.Node.GRPC.listeners[i] = listener
+			addr = listener.Multiaddr().String()
 
 			m.workers.Add(func() error {
-				m.initLogger.Info("serving", zap.String("maddr", maddrStr))
-				return server.Serve(l)
+				m.initLogger.Info("serving", zap.String("maddr", addr))
+				return server.Serve(listener)
 			}, func(error) {
-				l.Close()
-				m.initLogger.Debug("closing done", zap.String("maddr", maddrStr))
+				listener.Close()
+				m.initLogger.Debug("closing done", zap.String("maddr", addr))
 			})
 		}
 	}
