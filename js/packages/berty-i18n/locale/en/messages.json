@@ -183,7 +183,7 @@
       "activate-button": "Activate bluetooth"
     },
     "mc": {
-      "activate-button": ""
+      "activate-button": "Activate Multipeer Connectivity"
     },
     "services-auth": {
       "title": "External services",
