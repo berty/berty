@@ -63,7 +63,7 @@
       "header": "Communiquer sans internet (wifi ou cellulaire) en vous connectant directement avec vos amis près de vous",
       "optional": "Optionnel",
       "title": "Bluetooth",
-      "desc": "",
+      "desc": "Pour utiliser cette fonctionnalité, vous devez autoriser l'utilisation du Bluetooth sur votre téléphone",
       "button": "AUTORISER LE BLUETOOTH",
       "skip": "PASSER ET FAIRE ÇA PLUS TARD"
     },
@@ -92,7 +92,7 @@
     },
     "home-modal": {
       "left-button": "Scanner",
-      "right-button": ""
+      "right-button": "Groupe"
     }
   },
   "settings": {
@@ -160,8 +160,8 @@
         "exceptions-button": {
           "title": "Exceptions",
           "preview-value": "Ajouter",
-          "tag": "",
-          "tag_plural": ""
+          "tag": "{{count}} exception",
+          "tag_plural": "{{count}} exceptions"
         }
       },
       "group-notifications-button": {
@@ -172,8 +172,8 @@
         "exceptions-button": {
           "title": "Exceptions",
           "preview-value": "Ajouter",
-          "tag": "",
-          "tag_plural": ""
+          "tag": "{{count}} exception",
+          "tag_plural": "{{count}} exceptions"
         }
       }
     },
@@ -183,7 +183,7 @@
       "activate-button": "Activer le bluetooth"
     },
     "mc": {
-      "activate-button": ""
+      "activate-button": "Activer la connectivité multi-pair"
     },
     "services-auth": {
       "title": "Services externes",
@@ -202,7 +202,7 @@
     "delete-account": {
       "title": "Supprimer le compte !",
       "first-desc": "Êtes-vous sûr de vouloir supprimer votre compte ?",
-      "desc": "",
+      "desc": "Veuillez saisir \"delete\" pour confirmer",
       "cancel-button": "ANNULER",
       "delete-button": "SUPPRIMER"
     },
@@ -273,7 +273,7 @@
         "title": "Envoyer des messages à tous les contacts",
         "sending": "Envoi...",
         "test": "Test, ",
-        "tried": ""
+        "tried": "✔ Tentative d'envoi aux {{length}} contacts"
       },
       "footer-left-button": "Infos sur l'appareil",
       "footer-middle-button": "Lister les événements",
@@ -354,7 +354,7 @@
       },
       "betabot-box": {
         "title": "AJOUTER BETA BOT ?",
-        "desc": "",
+        "desc": "Vous n'avez pas encore de contacts, voulez-vous ajouter le Bêta Bot pour découvrir et tester les conversations ?",
         "skip-button": "PASSER",
         "add-button": "AJOUTER !"
       },
