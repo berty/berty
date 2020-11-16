@@ -576,10 +576,12 @@ message LocalDatabaseState {
   string display_name = 2;
   bool replicate_flag = 3;
   repeated LocalConversationState local_conversations_state = 4;
+  string account_link = 5;
 }
 
 message LocalConversationState {
   string public_key = 1;
   int32 unread_count = 2;
   bool is_open = 3;
+  Conversation.Type type = 4;
 }

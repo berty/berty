@@ -91,7 +91,7 @@ const HomeHeaderAvatar: React.FC = () => {
 				<View style={[{ alignItems: 'center' }]}>
 					<View style={{ position: 'absolute', top: -75 }}>
 						<ProceduralCircleAvatar
-							seed={account?.publicKey}
+							seed={account?.publicKey || ''}
 							size={70}
 							diffSize={25}
 							style={[border.shadow.big]}
@@ -99,7 +99,7 @@ const HomeHeaderAvatar: React.FC = () => {
 					</View>
 					<Text style={[_styles.headerNameText]}>{account?.displayName || ''}</Text>
 					<View style={[padding.top.scale(20 * scaleHeight)]}>
-						<QRCode size={qrCodeSize} value={account.link} />
+						{(account.link && <QRCode size={qrCodeSize} value={account.link} />) || null}
 					</View>
 				</View>
 			</TouchableOpacity>

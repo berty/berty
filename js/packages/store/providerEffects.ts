@@ -77,19 +77,29 @@ export const importAccount = async (
 		return
 	}
 
+	await GoBridge.initBridge()
+	let resp: berty.account.v1.CreateAccount.Reply
+
 	try {
-		const accountID = (() => {
-			console.info(`importing ${path}`)
-
-			// TODO: await some rpc command for import
-			return 0
-		})()
-
-		await refreshAccountList(embedded, dispatch)
-		dispatch({ type: MessengerActions.SetNextAccount, payload: accountID })
+		resp = await accountClient.importAccount({
+			backupPath: path,
+		})
 	} catch (e) {
-		console.warn(e)
+		console.warn('unable to import account', e)
+		return
 	}
+
+	if (!resp.accountMetadata?.accountId) {
+		throw new Error('no account id returned')
+	}
+
+	await refreshAccountList(embedded, dispatch)
+	await GoBridge.closeBridge()
+
+	dispatch({
+		type: MessengerActions.SetNextAccount,
+		payload: resp.accountMetadata.accountId,
+	})
 }
 
 export const setPersistentOption = async (

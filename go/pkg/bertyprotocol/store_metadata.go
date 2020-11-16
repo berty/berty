@@ -92,7 +92,7 @@ func openMetadataEntry(log ipfslog.Log, e ipfslog.Entry, g *bertytypes.Group) (*
 
 // FIXME: use iterator instead to reduce resource usage (require go-ipfs-log improvements)
 func (m *metadataStore) ListEvents(ctx context.Context, since, until []byte, reverse bool) (<-chan *bertytypes.GroupMetadataEvent, error) {
-	entries, err := getEntriesInRange(m.OpLog().GetEntries().Slice(), since, until)
+	entries, err := getEntriesInRange(m.OpLog().GetEntries().Reverse().Slice(), since, until)
 	if err != nil {
 		return nil, err
 	}

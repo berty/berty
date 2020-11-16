@@ -13,6 +13,7 @@ import (
 type modelAccountV1 struct {
 	PublicKey                       string `gorm:"primaryKey"`
 	DisplayName                     string
+	Link                            string
 	ReplicateNewGroupsAutomatically sql.NullBool `gorm:"default:true"`
 }
 
@@ -41,6 +42,7 @@ type modelAccountV4 struct {
 	PublicKey                       string `gorm:"primaryKey"`
 	DisplayName                     string
 	Link                            string
+	OtherField                      string
 	ReplicateNewGroupsAutomatically bool `gorm:"default:true"`
 }
 type modelConversationV4 modelConversationV3

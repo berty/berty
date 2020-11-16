@@ -126,7 +126,7 @@ func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry, enableC
 
 // FIXME: use iterator instead to reduce resource usage (require go-ipfs-log improvements)
 func (m *messageStore) ListEvents(ctx context.Context, since, until []byte, reverse bool) (<-chan *bertytypes.GroupMessageEvent, error) {
-	entries, err := getEntriesInRange(m.OpLog().GetEntries().Slice(), since, until)
+	entries, err := getEntriesInRange(m.OpLog().GetEntries().Reverse().Slice(), since, until)
 	if err != nil {
 		return nil, err
 	}

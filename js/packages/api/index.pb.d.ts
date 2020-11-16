@@ -6836,6 +6836,7 @@ export namespace berty {
                 displayName?: (string|null);
                 replicateFlag?: (boolean|null);
                 localConversationsState?: (berty.messenger.v1.ILocalConversationState[]|null);
+                accountLink?: (string|null);
             }
 
             class LocalDatabaseState implements ILocalDatabaseState {
@@ -6844,6 +6845,7 @@ export namespace berty {
                 public displayName: string;
                 public replicateFlag: boolean;
                 public localConversationsState: berty.messenger.v1.ILocalConversationState[];
+                public accountLink: string;
                 public static create(properties?: berty.messenger.v1.ILocalDatabaseState): berty.messenger.v1.LocalDatabaseState;
                 public static encode(message: berty.messenger.v1.ILocalDatabaseState, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.ILocalDatabaseState, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6859,6 +6861,7 @@ export namespace berty {
                 publicKey?: (string|null);
                 unreadCount?: (number|null);
                 isOpen?: (boolean|null);
+                type?: (berty.messenger.v1.Conversation.Type|null);
             }
 
             class LocalConversationState implements ILocalConversationState {
@@ -6866,6 +6869,7 @@ export namespace berty {
                 public publicKey: string;
                 public unreadCount: number;
                 public isOpen: boolean;
+                public type: berty.messenger.v1.Conversation.Type;
                 public static create(properties?: berty.messenger.v1.ILocalConversationState): berty.messenger.v1.LocalConversationState;
                 public static encode(message: berty.messenger.v1.ILocalConversationState, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.ILocalConversationState, writer?: $protobuf.Writer): $protobuf.Writer;

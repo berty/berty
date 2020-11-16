@@ -37,8 +37,8 @@ func newDBWrapper(db *gorm.DB, log *zap.Logger) *dbWrapper {
 	}
 }
 
-func (d *dbWrapper) initDB(replayer func(d *dbWrapper) error) error {
-	return d.getUpdatedDB([]interface{}{
+func getDBModels() []interface{} {
+	return []interface{}{
 		&Conversation{},
 		&Account{},
 		&ServiceToken{},
@@ -47,7 +47,15 @@ func (d *dbWrapper) initDB(replayer func(d *dbWrapper) error) error {
 		&Member{},
 		&Device{},
 		&ConversationReplicationInfo{},
-	}, replayer, d.log)
+	}
+}
+
+func (d *dbWrapper) initDB(replayer func(d *dbWrapper) error) error {
+	if err := d.getUpdatedDB(getDBModels(), replayer, d.log); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (d *dbWrapper) getUpdatedDB(models []interface{}, replayer func(db *dbWrapper) error, logger *zap.Logger) error {

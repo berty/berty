@@ -239,6 +239,11 @@ func (m *Manager) getGRPCClientConn() (*grpc.ClientConn, error) {
 	} else {
 		// ensure protocol and messenger are initialized
 		{
+			// restore store if provided
+			if err := m.restoreMessengerDataFromExport(); err != nil {
+				return nil, errcode.TODO.Wrap(err)
+			}
+
 			if m.Node.Protocol.requiredByClient {
 				_, err := m.getLocalProtocolServer()
 				if err != nil {
@@ -323,12 +328,6 @@ func (m *Manager) getLifecycleManager() *lifecycle.Manager {
 func (m *Manager) getMessengerClient() (bertymessenger.MessengerServiceClient, error) {
 	if m.Node.Messenger.client != nil {
 		return m.Node.Messenger.client, nil
-	}
-
-	if m.Node.Messenger.ExportPathToRestore != "" {
-		if err := m.restoreMessengerDataFromExport(); err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
 	}
 
 	grpcClient, err := m.getGRPCClientConn()
@@ -520,11 +519,17 @@ func (m *Manager) getMessengerDB() (*gorm.DB, error) {
 }
 
 func (m *Manager) restoreMessengerDataFromExport() error {
-	exportPath := m.Node.Messenger.ExportPathToRestore
-	f, err := os.Open(exportPath)
+	if m.Node.Messenger.ExportPathToRestore == "" {
+		return nil
+	}
+
+	f, err := os.Open(m.Node.Messenger.ExportPathToRestore)
 	if err != nil {
 		return err
 	}
+	defer func() { _ = f.Close() }()
+
+	m.Node.Messenger.ExportPathToRestore = ""
 
 	logger, err := m.getLogger()
 	if err != nil {
@@ -541,12 +546,9 @@ func (m *Manager) restoreMessengerDataFromExport() error {
 		return errcode.ErrInternal.Wrap(err)
 	}
 
-	db, err := m.getMessengerDB()
-	if err != nil {
-		return errcode.ErrInternal.Wrap(err)
-	}
+	m.Node.Messenger.localDBState = &bertymessenger.LocalDatabaseState{}
 
-	if err := bertymessenger.RestoreFromAccountExport(m.ctx, f, coreAPI, odb, db, logger); err != nil {
+	if err := bertymessenger.RestoreFromAccountExport(m.ctx, f, coreAPI, odb, m.Node.Messenger.localDBState, logger); err != nil {
 		return errcode.ErrInternal.Wrap(err)
 	}
 
@@ -562,6 +564,11 @@ func (m *Manager) GetLocalMessengerServer() (bertymessenger.MessengerServiceServ
 func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServer, error) {
 	if m.Node.Messenger.server != nil {
 		return m.Node.Messenger.server, nil
+	}
+
+	// restore store if provided
+	if err := m.restoreMessengerDataFromExport(); err != nil {
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	// logger
@@ -610,6 +617,7 @@ func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServ
 		Logger:              logger,
 		NotificationManager: notifmanager,
 		LifeCycleManager:    lcmanager,
+		StateBackup:         m.Node.Messenger.localDBState,
 	}
 	messengerServer, err := bertymessenger.New(protocolClient, &opts)
 	if err != nil {

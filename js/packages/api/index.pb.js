@@ -4389,6 +4389,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     rule: "repeated",
                     type: "LocalConversationState",
                     id: 4
+                  },
+                  accountLink: {
+                    type: "string",
+                    id: 5
                   }
                 }
               },
@@ -4405,6 +4409,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   isOpen: {
                     type: "bool",
                     id: 3
+                  },
+                  type: {
+                    type: "Conversation.Type",
+                    id: 4
                   }
                 }
               }
