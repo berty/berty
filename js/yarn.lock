@@ -4422,10 +4422,10 @@ google-palette@^1.1.0:
   resolved "https://registry.yarnpkg.com/google-palette/-/google-palette-1.1.0.tgz#37e508568b8ca904e57976dfe28d92f701624a9a"
   integrity sha512-rg4XQMVYQ83fQUylt2qrzCQ0C06ZrGl3+gh0XIXanyX+7SOkDCtFIn7gV3UMumg/R9HUL1zHtz5Myw3Z5BHCPg==
 
-google-protobuf@^3.2.0:
-  version "3.13.0"
-  resolved "https://registry.yarnpkg.com/google-protobuf/-/google-protobuf-3.13.0.tgz#909c5983d75dd6101ed57c79e0528d000cdc3251"
-  integrity sha512-ZIf3qfLFayVrPvAjeKKxO5FRF1/NwRxt6Dko+fWEMuHwHbZx8/fcaAao9b0wCM6kr8qeg2te8XTpyuvKuD9aKw==
+google-protobuf@^3.14.0:
+  version "3.14.0"
+  resolved "https://registry.yarnpkg.com/google-protobuf/-/google-protobuf-3.14.0.tgz#20373d22046e63831a5110e11a84f713cc43651e"
+  integrity sha512-bwa8dBuMpOxg7COyqkW6muQuvNnWgVN8TX/epDRGW5m0jcrmq2QJyCyiV8ZE2/6LaIIqJtiv9bYokFhfpy/o6w==
 
 graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.3, graceful-fs@^4.1.6, graceful-fs@^4.1.9, graceful-fs@^4.2.0, graceful-fs@^4.2.4:
   version "4.2.4"

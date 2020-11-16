@@ -27,7 +27,7 @@
     "case": "^1.6.3",
     "faker": "^5.1.0",
     "google-palette": "^1.1.0",
-    "google-protobuf": "^3.2.0",
+    "google-protobuf": "^3.14.0",
     "i18next": "^19.8.3",
     "lottie-react-native": "^3.5.0",
     "mem": "^8.0.0",
