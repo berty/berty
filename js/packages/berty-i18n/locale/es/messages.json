@@ -182,6 +182,9 @@
       "desc": "",
       "activate-button": ""
     },
+    "mc": {
+      "activate-button": ""
+    },
     "services-auth": {
       "title": "",
       "operated-services-button": "",
