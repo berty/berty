@@ -110,6 +110,14 @@
     - [MessageEnvelope](#berty.types.v1.MessageEnvelope)
     - [MessageHeaders](#berty.types.v1.MessageHeaders)
     - [MessageHeaders.MetadataEntry](#berty.types.v1.MessageHeaders.MetadataEntry)
+    - [MonitorGroup](#berty.types.v1.MonitorGroup)
+    - [MonitorGroup.EventMonitor](#berty.types.v1.MonitorGroup.EventMonitor)
+    - [MonitorGroup.EventMonitorAdvertiseGroup](#berty.types.v1.MonitorGroup.EventMonitorAdvertiseGroup)
+    - [MonitorGroup.EventMonitorPeerFound](#berty.types.v1.MonitorGroup.EventMonitorPeerFound)
+    - [MonitorGroup.EventMonitorPeerJoin](#berty.types.v1.MonitorGroup.EventMonitorPeerJoin)
+    - [MonitorGroup.EventMonitorPeerLeave](#berty.types.v1.MonitorGroup.EventMonitorPeerLeave)
+    - [MonitorGroup.Reply](#berty.types.v1.MonitorGroup.Reply)
+    - [MonitorGroup.Request](#berty.types.v1.MonitorGroup.Request)
     - [MultiMemberGrantAdminRole](#berty.types.v1.MultiMemberGrantAdminRole)
     - [MultiMemberGroupAddAliasResolver](#berty.types.v1.MultiMemberGroupAddAliasResolver)
     - [MultiMemberGroupAdminRoleGrant](#berty.types.v1.MultiMemberGroupAdminRoleGrant)
@@ -164,6 +172,7 @@
     - [EventType](#berty.types.v1.EventType)
     - [GroupType](#berty.types.v1.GroupType)
     - [InstanceGetConfiguration.SettingState](#berty.types.v1.InstanceGetConfiguration.SettingState)
+    - [MonitorGroup.TypeEventMonitor](#berty.types.v1.MonitorGroup.TypeEventMonitor)
     - [PeerList.Feature](#berty.types.v1.PeerList.Feature)
   
 - [Scalar Value Types](#scalar-value-types)
@@ -212,6 +221,7 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | GroupInfo | [.berty.types.v1.GroupInfo.Request](#berty.types.v1.GroupInfo.Request) | [.berty.types.v1.GroupInfo.Reply](#berty.types.v1.GroupInfo.Reply) | GroupInfo retrieves information about a group |
 | ActivateGroup | [.berty.types.v1.ActivateGroup.Request](#berty.types.v1.ActivateGroup.Request) | [.berty.types.v1.ActivateGroup.Reply](#berty.types.v1.ActivateGroup.Reply) | ActivateGroup explicitly opens a group |
 | DeactivateGroup | [.berty.types.v1.DeactivateGroup.Request](#berty.types.v1.DeactivateGroup.Request) | [.berty.types.v1.DeactivateGroup.Reply](#berty.types.v1.DeactivateGroup.Reply) | DeactivateGroup closes a group |
+| MonitorGroup | [.berty.types.v1.MonitorGroup.Request](#berty.types.v1.MonitorGroup.Request) | [.berty.types.v1.MonitorGroup.Reply](#berty.types.v1.MonitorGroup.Reply) stream | Monitor Group events |
 | DebugListGroups | [.berty.types.v1.DebugListGroups.Request](#berty.types.v1.DebugListGroups.Request) | [.berty.types.v1.DebugListGroups.Reply](#berty.types.v1.DebugListGroups.Reply) stream |  |
 | DebugInspectGroupStore | [.berty.types.v1.DebugInspectGroupStore.Request](#berty.types.v1.DebugInspectGroupStore.Request) | [.berty.types.v1.DebugInspectGroupStore.Reply](#berty.types.v1.DebugInspectGroupStore.Reply) stream |  |
 | DebugGroup | [.berty.types.v1.DebugGroup.Request](#berty.types.v1.DebugGroup.Request) | [.berty.types.v1.DebugGroup.Reply](#berty.types.v1.DebugGroup.Reply) |  |
@@ -1004,6 +1014,82 @@ MessageHeaders is used in MessageEnvelope and only readable by invited group mem
 | key | [string](#string) |  |  |
 | value | [string](#string) |  |  |
 
+<a name="berty.types.v1.MonitorGroup"></a>
+
+### MonitorGroup
+
+<a name="berty.types.v1.MonitorGroup.EventMonitor"></a>
+
+### MonitorGroup.EventMonitor
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| type | [MonitorGroup.TypeEventMonitor](#berty.types.v1.MonitorGroup.TypeEventMonitor) |  |  |
+| advertise_group | [MonitorGroup.EventMonitorAdvertiseGroup](#berty.types.v1.MonitorGroup.EventMonitorAdvertiseGroup) |  |  |
+| peer_found | [MonitorGroup.EventMonitorPeerFound](#berty.types.v1.MonitorGroup.EventMonitorPeerFound) |  |  |
+| peer_join | [MonitorGroup.EventMonitorPeerJoin](#berty.types.v1.MonitorGroup.EventMonitorPeerJoin) |  |  |
+| peer_leave | [MonitorGroup.EventMonitorPeerLeave](#berty.types.v1.MonitorGroup.EventMonitorPeerLeave) |  |  |
+
+<a name="berty.types.v1.MonitorGroup.EventMonitorAdvertiseGroup"></a>
+
+### MonitorGroup.EventMonitorAdvertiseGroup
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| peer_id | [string](#string) |  | local peer id advertised |
+| maddrs | [string](#string) | repeated | maddrs should describe peer maddrs |
+| driver_name | [string](#string) |  | driver_name used to advertise the peer |
+| topic | [string](#string) |  | event topic |
+
+<a name="berty.types.v1.MonitorGroup.EventMonitorPeerFound"></a>
+
+### MonitorGroup.EventMonitorPeerFound
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| peer_id | [string](#string) |  | peer_id of the peer in this context |
+| maddrs | [string](#string) | repeated | maddrs of the peer in this context |
+| driver_name | [string](#string) |  | driver_name used to found the peer |
+| topic | [string](#string) |  | event topic |
+
+<a name="berty.types.v1.MonitorGroup.EventMonitorPeerJoin"></a>
+
+### MonitorGroup.EventMonitorPeerJoin
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| peer_id | [string](#string) |  | peer_id of the peer in this context |
+| maddrs | [string](#string) | repeated | maddrs of the peer in this context |
+| topic | [string](#string) |  | event topic |
+| is_self | [bool](#bool) |  | is_self indecitate if the given peer is you |
+
+<a name="berty.types.v1.MonitorGroup.EventMonitorPeerLeave"></a>
+
+### MonitorGroup.EventMonitorPeerLeave
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| peer_id | [string](#string) |  | peer_id of the peer in this context |
+| topic | [string](#string) |  | event topic |
+| is_self | [bool](#bool) |  | is_self indecitate if the given peer is you |
+
+<a name="berty.types.v1.MonitorGroup.Reply"></a>
+
+### MonitorGroup.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| event | [MonitorGroup.EventMonitor](#berty.types.v1.MonitorGroup.EventMonitor) |  | monitor event |
+| group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
+
+<a name="berty.types.v1.MonitorGroup.Request"></a>
+
+### MonitorGroup.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  | filter_group_pk, if set, will filter event by group PK |
+
 <a name="berty.types.v1.MultiMemberGrantAdminRole"></a>
 
 ### MultiMemberGrantAdminRole
@@ -1442,6 +1528,18 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | Enabled | 1 |  |
 | Disabled | 2 |  |
 | Unavailable | 3 |  |
+
+<a name="berty.types.v1.MonitorGroup.TypeEventMonitor"></a>
+
+### MonitorGroup.TypeEventMonitor
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| TypeEventMonitorUndefined | 0 |  |
+| TypeEventMonitorAdvertiseGroup | 1 |  |
+| TypeEventMonitorPeerFound | 2 |  |
+| TypeEventMonitorPeerJoin | 3 |  |
+| TypeEventMonitorPeerLeave | 4 |  |
 
 <a name="berty.types.v1.PeerList.Feature"></a>
 

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
@@ -36,21 +37,23 @@ type Service interface {
 var _ Service = (*service)(nil)
 
 type service struct {
-	logger         *zap.Logger
-	protocolClient bertyprotocol.ProtocolServiceClient
-	startedAt      time.Time
-	db             *dbWrapper
-	dispatcher     *Dispatcher
-	cancelFn       func()
-	optsCleanup    func()
-	ctx            context.Context
-	handlerMutex   sync.Mutex
-	notifmanager   notification.Manager
-	lcmanager      *lifecycle.Manager
-	eventHandler   *eventHandler
+	logger                *zap.Logger
+	isGroupMonitorEnabled bool
+	protocolClient        bertyprotocol.ProtocolServiceClient
+	startedAt             time.Time
+	db                    *dbWrapper
+	dispatcher            *Dispatcher
+	cancelFn              func()
+	optsCleanup           func()
+	ctx                   context.Context
+	handlerMutex          sync.Mutex
+	notifmanager          notification.Manager
+	lcmanager             *lifecycle.Manager
+	eventHandler          *eventHandler
 }
 
 type Opts struct {
+	EnableGroupMonitor  bool
 	Logger              *zap.Logger
 	DB                  *gorm.DB
 	NotificationManager notification.Manager
@@ -145,17 +148,18 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 
 	ctx, cancel = context.WithCancel(context.Background())
 	svc := service{
-		protocolClient: client,
-		logger:         opts.Logger,
-		startedAt:      time.Now(),
-		db:             db,
-		notifmanager:   opts.NotificationManager,
-		lcmanager:      opts.LifeCycleManager,
-		dispatcher:     NewDispatcher(),
-		cancelFn:       cancel,
-		optsCleanup:    optsCleanup,
-		ctx:            ctx,
-		handlerMutex:   sync.Mutex{},
+		protocolClient:        client,
+		logger:                opts.Logger,
+		isGroupMonitorEnabled: opts.EnableGroupMonitor,
+		startedAt:             time.Now(),
+		db:                    db,
+		notifmanager:          opts.NotificationManager,
+		lcmanager:             opts.LifeCycleManager,
+		dispatcher:            NewDispatcher(),
+		cancelFn:              cancel,
+		optsCleanup:           optsCleanup,
+		ctx:                   ctx,
+		handlerMutex:          sync.Mutex{},
 	}
 
 	svc.eventHandler = newEventHandler(ctx, db, client, opts.Logger, &svc, false)
@@ -222,7 +226,6 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 	}})
 
 	// Subscribe to account group metadata
-
 	err = svc.subscribeToMetadata(icr.GetAccountGroupPK())
 	if err != nil {
 		return nil, err
@@ -336,10 +339,68 @@ func (svc *service) subscribeToMessages(gpkb []byte) error {
 	return nil
 }
 
+var monitorCounter uint64 = 0
+
+func (svc *service) subscribeToGroupMonitor(groupPK []byte) error {
+	cl, err := svc.protocolClient.MonitorGroup(svc.ctx, &bertytypes.MonitorGroup_Request{
+		GroupPK: groupPK,
+	})
+	if err != nil {
+		return fmt.Errorf("unable to monitor group: %w", err)
+	}
+
+	go func() {
+		for {
+			seqid := atomic.AddUint64(&monitorCounter, 1)
+			evt, err := cl.Recv()
+			switch err {
+			case nil:
+			// everything fine
+			case io.EOF:
+				return
+			case context.Canceled, context.DeadlineExceeded:
+				svc.logger.Warn("monitoring group interrupted", zap.Error(err))
+				return
+			default:
+				svc.logger.Error("error while monitoring group", zap.Error(err))
+				return
+			}
+
+			payload, err := proto.Marshal(evt.Event)
+			if err != nil {
+				svc.logger.Error("unable to generate cid")
+				continue
+			}
+
+			cid := fmt.Sprintf("__monitor-group-%d", seqid)
+			i := &Interaction{
+				CID:                   cid,
+				Type:                  AppMessage_TypeMonitorMetadata,
+				ConversationPublicKey: b64EncodeBytes(evt.GetGroupPK()),
+				Payload:               payload,
+			}
+
+			err = svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{i}, true)
+			if err != nil {
+				svc.logger.Error("unable to dispatch monitor event")
+			}
+		}
+	}()
+
+	return nil
+}
+
 func (svc *service) subscribeToGroup(gpkb []byte) error {
+	if svc.isGroupMonitorEnabled {
+		if err := svc.subscribeToGroupMonitor(gpkb); err != nil {
+			return err
+		}
+	}
+
 	if err := svc.subscribeToMetadata(gpkb); err != nil {
 		return err
 	}
+
 	return svc.subscribeToMessages(gpkb)
 }
 

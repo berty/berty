@@ -211,6 +211,7 @@ message AppMessage {
     TypeSetUserName = 5;
     TypeAcknowledge = 6;
     TypeReplyOptions = 7;
+    TypeMonitorMetadata = 8;
   }
   message UserMessage {
     string body = 1;
@@ -233,6 +234,9 @@ message AppMessage {
   }
   message ReplyOptions {
     repeated ReplyOption options = 1;
+  }
+  message MonitorMetadata {
+    berty.types.v1.MonitorGroup.EventMonitor event = 1;
   }
 }
 

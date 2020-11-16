@@ -26,6 +26,7 @@ import (
 	rendezvous "github.com/libp2p/go-libp2p-rendezvous"
 	p2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlite"
 	p2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 
@@ -146,6 +147,12 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 				disc = tinder.NewDriverRouting(opts.Logger, "dht", r)
 			}
 
+			// enable discovery monitor
+			disc, err = tinder.MonitorDriver(opts.Logger, h, disc)
+			if err != nil {
+				return errors.Wrap(err, "unable to monitor discovery driver")
+			}
+
 			minBackoff, maxBackoff := time.Second, time.Minute
 			rng := rand.New(rand.NewSource(rand.Int63()))
 			disc, err = tinder.NewService(
@@ -157,11 +164,16 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 				return err
 			}
 
+			pubsubtracker, err := NewPubsubMonitor(opts.Logger, h)
+			if err != nil {
+				return err
+			}
 			ps, err = pubsub.NewGossipSub(ctx, h,
 				pubsub.WithMessageSigning(true),
 				pubsub.WithFloodPublish(true),
 				pubsub.WithDiscovery(disc),
 				pubsub.WithPeerExchange(true),
+				pubsubtracker.EventTracerOption(),
 			)
 
 			return err

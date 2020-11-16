@@ -1071,6 +1071,8 @@ export namespace berty {
                 public activateGroup(request: berty.types.v1.ActivateGroup.IRequest): Promise<berty.types.v1.ActivateGroup.Reply>;
                 public deactivateGroup(request: berty.types.v1.DeactivateGroup.IRequest, callback: berty.protocol.v1.ProtocolService.DeactivateGroupCallback): void;
                 public deactivateGroup(request: berty.types.v1.DeactivateGroup.IRequest): Promise<berty.types.v1.DeactivateGroup.Reply>;
+                public monitorGroup(request: berty.types.v1.MonitorGroup.IRequest, callback: berty.protocol.v1.ProtocolService.MonitorGroupCallback): void;
+                public monitorGroup(request: berty.types.v1.MonitorGroup.IRequest): Promise<berty.types.v1.MonitorGroup.Reply>;
                 public debugListGroups(request: berty.types.v1.DebugListGroups.IRequest, callback: berty.protocol.v1.ProtocolService.DebugListGroupsCallback): void;
                 public debugListGroups(request: berty.types.v1.DebugListGroups.IRequest): Promise<berty.types.v1.DebugListGroups.Reply>;
                 public debugInspectGroupStore(request: berty.types.v1.DebugInspectGroupStore.IRequest, callback: berty.protocol.v1.ProtocolService.DebugInspectGroupStoreCallback): void;
@@ -1142,6 +1144,8 @@ export namespace berty {
                 type ActivateGroupCallback = (error: (Error|null), response?: berty.types.v1.ActivateGroup.Reply) => void;
 
                 type DeactivateGroupCallback = (error: (Error|null), response?: berty.types.v1.DeactivateGroup.Reply) => void;
+
+                type MonitorGroupCallback = (error: (Error|null), response?: berty.types.v1.MonitorGroup.Reply) => void;
 
                 type DebugListGroupsCallback = (error: (Error|null), response?: berty.types.v1.DebugListGroups.Reply) => void;
 
@@ -3297,6 +3301,191 @@ export namespace berty {
                 }
             }
 
+            interface IMonitorGroup {
+            }
+
+            class MonitorGroup implements IMonitorGroup {
+
+                public static create(properties?: berty.types.v1.IMonitorGroup): berty.types.v1.MonitorGroup;
+                public static encode(message: berty.types.v1.IMonitorGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.types.v1.IMonitorGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MonitorGroup;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MonitorGroup;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.types.v1.MonitorGroup;
+                public static toObject(message: berty.types.v1.MonitorGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace MonitorGroup {
+
+                enum TypeEventMonitor {
+                    TypeEventMonitorUndefined = 0,
+                    TypeEventMonitorAdvertiseGroup = 1,
+                    TypeEventMonitorPeerFound = 2,
+                    TypeEventMonitorPeerJoin = 3,
+                    TypeEventMonitorPeerLeave = 4
+                }
+
+                interface IEventMonitorAdvertiseGroup {
+                    peerId?: (string|null);
+                    maddrs?: (string[]|null);
+                    driverName?: (string|null);
+                    topic?: (string|null);
+                }
+
+                class EventMonitorAdvertiseGroup implements IEventMonitorAdvertiseGroup {
+
+                    public peerId: string;
+                    public maddrs: string[];
+                    public driverName: string;
+                    public topic: string;
+                    public static create(properties?: berty.types.v1.MonitorGroup.IEventMonitorAdvertiseGroup): berty.types.v1.MonitorGroup.EventMonitorAdvertiseGroup;
+                    public static encode(message: berty.types.v1.MonitorGroup.IEventMonitorAdvertiseGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.types.v1.MonitorGroup.IEventMonitorAdvertiseGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MonitorGroup.EventMonitorAdvertiseGroup;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MonitorGroup.EventMonitorAdvertiseGroup;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MonitorGroup.EventMonitorAdvertiseGroup;
+                    public static toObject(message: berty.types.v1.MonitorGroup.EventMonitorAdvertiseGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IEventMonitorPeerFound {
+                    peerId?: (string|null);
+                    maddrs?: (string[]|null);
+                    driverName?: (string|null);
+                    topic?: (string|null);
+                }
+
+                class EventMonitorPeerFound implements IEventMonitorPeerFound {
+
+                    public peerId: string;
+                    public maddrs: string[];
+                    public driverName: string;
+                    public topic: string;
+                    public static create(properties?: berty.types.v1.MonitorGroup.IEventMonitorPeerFound): berty.types.v1.MonitorGroup.EventMonitorPeerFound;
+                    public static encode(message: berty.types.v1.MonitorGroup.IEventMonitorPeerFound, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.types.v1.MonitorGroup.IEventMonitorPeerFound, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MonitorGroup.EventMonitorPeerFound;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MonitorGroup.EventMonitorPeerFound;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MonitorGroup.EventMonitorPeerFound;
+                    public static toObject(message: berty.types.v1.MonitorGroup.EventMonitorPeerFound, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IEventMonitorPeerJoin {
+                    peerId?: (string|null);
+                    maddrs?: (string[]|null);
+                    topic?: (string|null);
+                    isSelf?: (boolean|null);
+                }
+
+                class EventMonitorPeerJoin implements IEventMonitorPeerJoin {
+
+                    public peerId: string;
+                    public maddrs: string[];
+                    public topic: string;
+                    public isSelf: boolean;
+                    public static create(properties?: berty.types.v1.MonitorGroup.IEventMonitorPeerJoin): berty.types.v1.MonitorGroup.EventMonitorPeerJoin;
+                    public static encode(message: berty.types.v1.MonitorGroup.IEventMonitorPeerJoin, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.types.v1.MonitorGroup.IEventMonitorPeerJoin, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MonitorGroup.EventMonitorPeerJoin;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MonitorGroup.EventMonitorPeerJoin;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MonitorGroup.EventMonitorPeerJoin;
+                    public static toObject(message: berty.types.v1.MonitorGroup.EventMonitorPeerJoin, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IEventMonitorPeerLeave {
+                    peerId?: (string|null);
+                    topic?: (string|null);
+                    isSelf?: (boolean|null);
+                }
+
+                class EventMonitorPeerLeave implements IEventMonitorPeerLeave {
+
+                    public peerId: string;
+                    public topic: string;
+                    public isSelf: boolean;
+                    public static create(properties?: berty.types.v1.MonitorGroup.IEventMonitorPeerLeave): berty.types.v1.MonitorGroup.EventMonitorPeerLeave;
+                    public static encode(message: berty.types.v1.MonitorGroup.IEventMonitorPeerLeave, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.types.v1.MonitorGroup.IEventMonitorPeerLeave, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MonitorGroup.EventMonitorPeerLeave;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MonitorGroup.EventMonitorPeerLeave;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MonitorGroup.EventMonitorPeerLeave;
+                    public static toObject(message: berty.types.v1.MonitorGroup.EventMonitorPeerLeave, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IEventMonitor {
+                    type?: (berty.types.v1.MonitorGroup.TypeEventMonitor|null);
+                    advertiseGroup?: (berty.types.v1.MonitorGroup.IEventMonitorAdvertiseGroup|null);
+                    peerFound?: (berty.types.v1.MonitorGroup.IEventMonitorPeerFound|null);
+                    peerJoin?: (berty.types.v1.MonitorGroup.IEventMonitorPeerJoin|null);
+                    peerLeave?: (berty.types.v1.MonitorGroup.IEventMonitorPeerLeave|null);
+                }
+
+                class EventMonitor implements IEventMonitor {
+
+                    public type: berty.types.v1.MonitorGroup.TypeEventMonitor;
+                    public advertiseGroup?: (berty.types.v1.MonitorGroup.IEventMonitorAdvertiseGroup|null);
+                    public peerFound?: (berty.types.v1.MonitorGroup.IEventMonitorPeerFound|null);
+                    public peerJoin?: (berty.types.v1.MonitorGroup.IEventMonitorPeerJoin|null);
+                    public peerLeave?: (berty.types.v1.MonitorGroup.IEventMonitorPeerLeave|null);
+                    public static create(properties?: berty.types.v1.MonitorGroup.IEventMonitor): berty.types.v1.MonitorGroup.EventMonitor;
+                    public static encode(message: berty.types.v1.MonitorGroup.IEventMonitor, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.types.v1.MonitorGroup.IEventMonitor, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MonitorGroup.EventMonitor;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MonitorGroup.EventMonitor;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MonitorGroup.EventMonitor;
+                    public static toObject(message: berty.types.v1.MonitorGroup.EventMonitor, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IRequest {
+                    groupPk?: (Uint8Array|null);
+                }
+
+                class Request implements IRequest {
+
+                    public groupPk: Uint8Array;
+                    public static create(properties?: berty.types.v1.MonitorGroup.IRequest): berty.types.v1.MonitorGroup.Request;
+                    public static encode(message: berty.types.v1.MonitorGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.types.v1.MonitorGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MonitorGroup.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MonitorGroup.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MonitorGroup.Request;
+                    public static toObject(message: berty.types.v1.MonitorGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    event?: (berty.types.v1.MonitorGroup.IEventMonitor|null);
+                    groupPk?: (Uint8Array|null);
+                }
+
+                class Reply implements IReply {
+
+                    public event?: (berty.types.v1.MonitorGroup.IEventMonitor|null);
+                    public groupPk: Uint8Array;
+                    public static create(properties?: berty.types.v1.MonitorGroup.IReply): berty.types.v1.MonitorGroup.Reply;
+                    public static encode(message: berty.types.v1.MonitorGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.types.v1.MonitorGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MonitorGroup.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MonitorGroup.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MonitorGroup.Reply;
+                    public static toObject(message: berty.types.v1.MonitorGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
             interface IDebugListGroups {
             }
 
@@ -5005,7 +5194,8 @@ export namespace berty {
                     TypeSetGroupName = 4,
                     TypeSetUserName = 5,
                     TypeAcknowledge = 6,
-                    TypeReplyOptions = 7
+                    TypeReplyOptions = 7,
+                    TypeMonitorMetadata = 8
                 }
 
                 interface IUserMessage {
@@ -5133,6 +5323,24 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.ReplyOptions;
                     public static toObject(message: berty.messenger.v1.AppMessage.ReplyOptions, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IMonitorMetadata {
+                    event?: (berty.types.v1.MonitorGroup.IEventMonitor|null);
+                }
+
+                class MonitorMetadata implements IMonitorMetadata {
+
+                    public event?: (berty.types.v1.MonitorGroup.IEventMonitor|null);
+                    public static create(properties?: berty.messenger.v1.AppMessage.IMonitorMetadata): berty.messenger.v1.AppMessage.MonitorMetadata;
+                    public static encode(message: berty.messenger.v1.AppMessage.IMonitorMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.AppMessage.IMonitorMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AppMessage.MonitorMetadata;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AppMessage.MonitorMetadata;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.MonitorMetadata;
+                    public static toObject(message: berty.messenger.v1.AppMessage.MonitorMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }

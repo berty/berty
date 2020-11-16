@@ -746,6 +746,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "types.v1.DeactivateGroup.Request",
                     responseType: "types.v1.DeactivateGroup.Reply"
                   },
+                  MonitorGroup: {
+                    requestType: "types.v1.MonitorGroup.Request",
+                    responseType: "types.v1.MonitorGroup.Reply",
+                    responseStream: true
+                  },
                   DebugListGroups: {
                     requestType: "types.v1.DebugListGroups.Request",
                     responseType: "types.v1.DebugListGroups.Reply",
@@ -2079,6 +2084,161 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
+              MonitorGroup: {
+                fields: {},
+                nested: {
+                  TypeEventMonitor: {
+                    values: {
+                      TypeEventMonitorUndefined: 0,
+                      TypeEventMonitorAdvertiseGroup: 1,
+                      TypeEventMonitorPeerFound: 2,
+                      TypeEventMonitorPeerJoin: 3,
+                      TypeEventMonitorPeerLeave: 4
+                    }
+                  },
+                  EventMonitorAdvertiseGroup: {
+                    fields: {
+                      peerId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "PeerID"
+                        }
+                      },
+                      maddrs: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 2
+                      },
+                      driverName: {
+                        type: "string",
+                        id: 3
+                      },
+                      topic: {
+                        type: "string",
+                        id: 4
+                      }
+                    }
+                  },
+                  EventMonitorPeerFound: {
+                    fields: {
+                      peerId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "PeerID"
+                        }
+                      },
+                      maddrs: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 2
+                      },
+                      driverName: {
+                        type: "string",
+                        id: 3
+                      },
+                      topic: {
+                        type: "string",
+                        id: 4
+                      }
+                    }
+                  },
+                  EventMonitorPeerJoin: {
+                    fields: {
+                      peerId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "PeerID"
+                        }
+                      },
+                      maddrs: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 2
+                      },
+                      topic: {
+                        type: "string",
+                        id: 3
+                      },
+                      isSelf: {
+                        type: "bool",
+                        id: 4
+                      }
+                    }
+                  },
+                  EventMonitorPeerLeave: {
+                    fields: {
+                      peerId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "PeerID"
+                        }
+                      },
+                      topic: {
+                        type: "string",
+                        id: 3
+                      },
+                      isSelf: {
+                        type: "bool",
+                        id: 4
+                      }
+                    }
+                  },
+                  EventMonitor: {
+                    fields: {
+                      type: {
+                        type: "TypeEventMonitor",
+                        id: 1
+                      },
+                      advertiseGroup: {
+                        type: "EventMonitorAdvertiseGroup",
+                        id: 2
+                      },
+                      peerFound: {
+                        type: "EventMonitorPeerFound",
+                        id: 3
+                      },
+                      peerJoin: {
+                        type: "EventMonitorPeerJoin",
+                        id: 4
+                      },
+                      peerLeave: {
+                        type: "EventMonitorPeerLeave",
+                        id: 5
+                      }
+                    }
+                  },
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      event: {
+                        type: "EventMonitor",
+                        id: 1
+                      },
+                      groupPk: {
+                        type: "bytes",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
               DebugListGroups: {
                 fields: {},
                 nested: {
@@ -3226,7 +3386,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       TypeSetGroupName: 4,
                       TypeSetUserName: 5,
                       TypeAcknowledge: 6,
-                      TypeReplyOptions: 7
+                      TypeReplyOptions: 7,
+                      TypeMonitorMetadata: 8
                     }
                   },
                   UserMessage: {
@@ -3286,6 +3447,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       options: {
                         rule: "repeated",
                         type: "ReplyOption",
+                        id: 1
+                      }
+                    }
+                  },
+                  MonitorMetadata: {
+                    fields: {
+                      event: {
+                        type: "berty.types.v1.MonitorGroup.EventMonitor",
                         id: 1
                       }
                     }

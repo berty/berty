@@ -14,6 +14,7 @@
     - [AppMessage](#berty.messenger.v1.AppMessage)
     - [AppMessage.Acknowledge](#berty.messenger.v1.AppMessage.Acknowledge)
     - [AppMessage.GroupInvitation](#berty.messenger.v1.AppMessage.GroupInvitation)
+    - [AppMessage.MonitorMetadata](#berty.messenger.v1.AppMessage.MonitorMetadata)
     - [AppMessage.ReplyOptions](#berty.messenger.v1.AppMessage.ReplyOptions)
     - [AppMessage.SetGroupName](#berty.messenger.v1.AppMessage.SetGroupName)
     - [AppMessage.SetUserName](#berty.messenger.v1.AppMessage.SetUserName)
@@ -207,6 +208,14 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | link | [string](#string) |  | TODO: optimize message size |
+
+<a name="berty.messenger.v1.AppMessage.MonitorMetadata"></a>
+
+### AppMessage.MonitorMetadata
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| event | [berty.types.v1.MonitorGroup.EventMonitor](#berty.types.v1.MonitorGroup.EventMonitor) |  |  |
 
 <a name="berty.messenger.v1.AppMessage.ReplyOptions"></a>
 
@@ -1012,6 +1021,7 @@ Composite primary key
 | TypeSetUserName | 5 |  |
 | TypeAcknowledge | 6 |  |
 | TypeReplyOptions | 7 |  |
+| TypeMonitorMetadata | 8 |  |
 
 <a name="berty.messenger.v1.Contact.State"></a>
 

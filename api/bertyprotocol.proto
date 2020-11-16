@@ -84,6 +84,9 @@ service ProtocolService {
   // DeactivateGroup closes a group
   rpc DeactivateGroup (types.v1.DeactivateGroup.Request) returns (types.v1.DeactivateGroup.Reply);
 
+  // Monitor Group events
+  rpc MonitorGroup (types.v1.MonitorGroup.Request) returns (stream types.v1.MonitorGroup.Reply);
+
   rpc DebugListGroups (types.v1.DebugListGroups.Request) returns (stream types.v1.DebugListGroups.Reply);
 
   rpc DebugInspectGroupStore (types.v1.DebugInspectGroupStore.Request) returns (stream types.v1.DebugInspectGroupStore.Reply);

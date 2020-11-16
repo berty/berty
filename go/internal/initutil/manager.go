@@ -92,6 +92,7 @@ type Manager struct {
 			orbitDB          *bertyprotocol.BertyOrbitDB
 		}
 		Messenger struct {
+			DisableGroupMonitor  bool   `json:"DisableGroupMonitor,omitempty"`
 			DisplayName          string `json:"DisplayName,omitempty"`
 			DisableNotifications bool   `json:"DisableNotifications,omitempty"`
 			RebuildSqlite        bool   `json:"RebuildSqlite,omitempty"`
