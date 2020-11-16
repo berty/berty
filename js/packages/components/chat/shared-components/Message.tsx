@@ -349,6 +349,7 @@ export const Message: React.FC<{
 		return null
 	}
 
+	console.log('Heeere', inte.type)
 	const isGroup = convKind === messengerpb.Conversation.Type.MultiMemberType
 	let name
 	let baseColor = color.blue
@@ -544,6 +545,12 @@ export const Message: React.FC<{
 				<View style={[padding.horizontal.medium]}>
 					<QuickReplyOptions convPk={convPK} options={inte.payload.options} />
 				</View>
+			</>
+		)
+	} else if (inte.type === messengerpb.AppMessage.Type.TypeMonitorMetadata) {
+		return (
+			<>
+				<Text>{inte?.event}</Text>
 			</>
 		)
 	} else {
