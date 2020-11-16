@@ -141,7 +141,8 @@
         "title": "Contacts bloqués",
         "tag": "bloqué"
       },
-      "delete-account-button": "Supprimer mon compte"
+      "delete-account-button": "Supprimer mon compte",
+      "backup-account-button": "Créer une sauvegarde du compte"
     },
     "notifications": {
       "title": "Notifications",
