@@ -1,4 +1,4 @@
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import { messenger as messengerpb, types as typespb } from '@berty-tech/api/index.js'
 import {
 	useClient,
 	useConversation,
@@ -329,6 +329,7 @@ export const MessageInvitation: React.FC<{ message: any }> = ({ message }) => {
 const interactionsFilter = (inte: any) =>
 	inte.type === messengerpb.AppMessage.Type.TypeUserMessage && inte.isMe
 
+const eventMonitorTypes = typespb.MonitorGroup.TypeEventMonitor
 export const Message: React.FC<{
 	id: string
 	convKind: any
@@ -349,7 +350,28 @@ export const Message: React.FC<{
 		return null
 	}
 
-	console.log('Heeere', inte.type)
+	if (inte.type === messengerpb.AppMessage.Type.TypeMonitorMetadata) {
+		/* typespb.MonitorGroup.TypeEventMonitor */
+		console.log(inte)
+		const monitorEvent = inte.payload.event
+		switch (monitorEvent.type) {
+			case eventMonitorTypes.TypeEventMonitorAdvertiseGroup:
+				console.log('advertise', monitorEvent.advertiseGroup)
+				break
+			case eventMonitorTypes.TypeEventMonitorPeerFound:
+				console.log('peerFound', monitorEvent.peerFound)
+				break
+			case eventMonitorTypes.TypeEventMonitorPeerJoin:
+				console.log('peerJoin', monitorEvent.peerJoin)
+				break
+			case eventMonitorTypes.TypeEventMonitorPeerLeave:
+				console.log('peerLeave', monitorEvent.peerLeave)
+				break
+			default:
+				console.log('undefined event type', monitorEvent)
+		}
+	}
+
 	const isGroup = convKind === messengerpb.Conversation.Type.MultiMemberType
 	let name
 	let baseColor = color.blue
@@ -549,9 +571,11 @@ export const Message: React.FC<{
 		)
 	} else if (inte.type === messengerpb.AppMessage.Type.TypeMonitorMetadata) {
 		return (
-			<>
-				<Text>{inte?.event}</Text>
-			</>
+			<View style={{ alignItems: 'center' }}>
+				<MessageSystemWrapper>
+					<Text style={{ textAlign: 'center' }}>Yessss</Text>
+				</MessageSystemWrapper>
+			</View>
 		)
 	} else {
 		return null

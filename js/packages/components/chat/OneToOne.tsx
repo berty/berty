@@ -571,7 +571,8 @@ const MessageList: React.FC<{
 	const messages = useSortedConvInteractions(convPk).filter(
 		(msg) =>
 			msg.type === messengerpb.AppMessage.Type.TypeUserMessage ||
-			msg.type === messengerpb.AppMessage.Type.TypeGroupInvitation,
+			msg.type === messengerpb.AppMessage.Type.TypeGroupInvitation ||
+			msg.type === messengerpb.AppMessage.Type.TypeMonitorMetadata,
 	)
 
 	if (conv.replyOptions !== null) {

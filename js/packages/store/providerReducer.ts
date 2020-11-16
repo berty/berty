@@ -83,7 +83,8 @@ export const reducerActions: {
 				throw new Error('failed to find a protobuf object matching the event type')
 			}
 			inte.name = name
-			inte.payload = pbobj.decode(inte.payload).toJSON()
+
+			inte.payload = pbobj.decode(inte.payload)
 			console.log('jsoned payload', inte.payload)
 			console.log('received inte', inte)
 
