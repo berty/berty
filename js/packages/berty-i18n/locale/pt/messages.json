@@ -141,7 +141,8 @@
         "title": "",
         "tag": ""
       },
-      "delete-account-button": ""
+      "delete-account-button": "",
+      "backup-account-button": ""
     },
     "notifications": {
       "title": "Notificações",
