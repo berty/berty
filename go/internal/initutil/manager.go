@@ -27,6 +27,7 @@ import (
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/notification"
+	proximity "berty.tech/berty/v2/go/internal/proximity-transport"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -64,13 +65,16 @@ type Manager struct {
 	Node struct {
 		Preset   string `json:"preset"`
 		Protocol struct {
-			SwarmListeners        string        `json:"SwarmListeners,omitempty"`
-			IPFSAPIListeners      string        `json:"IPFSAPIListeners,omitempty"`
-			IPFSWebUIListener     string        `json:"IPFSWebUIListener,omitempty"`
-			Announce              string        `json:"Announce,omitempty"`
-			NoAnnounce            string        `json:"NoAnnounce,omitempty"`
-			LocalDiscovery        bool          `json:"LocalDiscovery,omitempty"`
-			Ble                   bool          `json:"Ble,omitempty"`
+			SwarmListeners    string `json:"SwarmListeners,omitempty"`
+			IPFSAPIListeners  string `json:"IPFSAPIListeners,omitempty"`
+			IPFSWebUIListener string `json:"IPFSWebUIListener,omitempty"`
+			Announce          string `json:"Announce,omitempty"`
+			NoAnnounce        string `json:"NoAnnounce,omitempty"`
+			LocalDiscovery    bool   `json:"LocalDiscovery,omitempty"`
+			Ble               struct {
+				Enable bool                   `json:"Enable,omitempty"`
+				Driver proximity.NativeDriver `json:"Driver,omitempty"`
+			}
 			MultipeerConnectivity bool          `json:"MultipeerConnectivity,omitempty"`
 			MinBackoff            time.Duration `json:"MinBackoff,omitempty"`
 			MaxBackoff            time.Duration `json:"MaxBackoff,omitempty"`

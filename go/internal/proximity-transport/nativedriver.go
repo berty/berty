@@ -55,9 +55,3 @@ func (d *NoopNativeDriver) ProtocolCode() int { return d.protocolCode }
 func (d *NoopNativeDriver) ProtocolName() string { return d.protocolName }
 
 func (d *NoopNativeDriver) DefaultAddr() string { return d.defaultAddr }
-
-func (d *NoopNativeDriver) SetProtocolCode(protocolCode int) { d.protocolCode = protocolCode }
-
-func (d *NoopNativeDriver) SetProtocolName(protocolName string) { d.protocolName = protocolName }
-
-func (d *NoopNativeDriver) SetDefaultAddr(protocolAddr string) { d.defaultAddr = protocolAddr }

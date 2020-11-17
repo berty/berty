@@ -15,6 +15,7 @@ import (
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/notification"
+	proximity "berty.tech/berty/v2/go/internal/proximity-transport"
 	account_svc "berty.tech/berty/v2/go/pkg/bertyaccount"
 	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
@@ -35,6 +36,7 @@ type Bridge struct {
 	grpcServer     *grpc.Server
 	onceCloser     sync.Once
 	workers        run.Group
+	bleDriver      proximity.NativeDriver
 	logger         *zap.Logger
 
 	lifecycleManager    *lifecycle.Manager
@@ -83,6 +85,11 @@ func NewBridge(config *Config) (*Bridge, error) {
 		}
 	}
 
+	// setup ble driver
+	{
+		b.bleDriver = config.bleDriver
+	}
+
 	// setup lifecycle manager
 	{
 		b.lifecycleManager = lifecycle.NewManager(bertymessenger.StateActive)
@@ -128,6 +135,7 @@ func NewBridge(config *Config) (*Bridge, error) {
 			NotificationManager:   b.notificationManager,
 			Logger:                b.logger,
 			LifecycleManager:      b.lifecycleManager,
+			BleDriver:             b.bleDriver,
 		}
 
 		var err error

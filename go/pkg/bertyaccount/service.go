@@ -10,6 +10,7 @@ import (
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/notification"
+	proximity "berty.tech/berty/v2/go/internal/proximity-transport"
 	"berty.tech/berty/v2/go/pkg/bertybridge"
 )
 
@@ -32,6 +33,7 @@ type Options struct {
 	ServiceClientRegister bertybridge.ServiceClientRegister
 	LifecycleManager      *lifecycle.Manager
 	NotificationManager   notification.Manager
+	BleDriver             proximity.NativeDriver
 	Logger                *zap.Logger
 }
 
@@ -47,6 +49,7 @@ type service struct {
 	initManager      *initutil.Manager
 	lifecycleManager *lifecycle.Manager
 	sclients         bertybridge.ServiceClientRegister
+	bleDriver        proximity.NativeDriver
 }
 
 func (o *Options) applyDefault() {
@@ -79,6 +82,7 @@ func NewService(opts *Options) (Service, error) {
 		lifecycleManager: opts.LifecycleManager,
 		notifManager:     opts.NotificationManager,
 		sclients:         opts.ServiceClientRegister,
+		bleDriver:        opts.BleDriver,
 	}
 
 	go s.handleLifecycle(rootCtx)

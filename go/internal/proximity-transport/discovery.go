@@ -11,7 +11,7 @@ import (
 
 // HandleFoundPeer is called by the native driver when a new peer is found.
 // Adds the peer in the PeerStore and initiates a connection with it
-func (t *ProximityTransport) HandleFoundPeer(sRemotePID string) bool {
+func (t *proximityTransport) HandleFoundPeer(sRemotePID string) bool {
 	t.logger.Debug("HandleFoundPeer", zap.String("remotePID", sRemotePID))
 	remotePID, err := peer.Decode(sRemotePID)
 	if err != nil {
@@ -81,7 +81,7 @@ func (t *ProximityTransport) HandleFoundPeer(sRemotePID string) bool {
 
 // HandleLostPeer is called by the native driver when the connection with the peer is lost.
 // Closes connections with the peer.
-func (t *ProximityTransport) HandleLostPeer(sRemotePID string) {
+func (t *proximityTransport) HandleLostPeer(sRemotePID string) {
 	t.logger.Debug("HandleLostPeer", zap.String("remotePID", sRemotePID))
 	remotePID, err := peer.Decode(sRemotePID)
 	if err != nil {

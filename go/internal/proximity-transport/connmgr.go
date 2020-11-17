@@ -12,7 +12,7 @@ import (
 )
 
 // newConn returns an inbound or outbound tpt.CapableConn upgraded from a Conn.
-func newConn(ctx context.Context, t *ProximityTransport, remoteMa ma.Multiaddr,
+func newConn(ctx context.Context, t *proximityTransport, remoteMa ma.Multiaddr,
 	remotePID peer.ID, inbound bool) (tpt.CapableConn, error) {
 	t.logger.Debug("newConn()", zap.String("remoteMa", remoteMa.String()), zap.Bool("inbound", inbound))
 	// Creates a manet.Conn
@@ -40,7 +40,7 @@ func newConn(ctx context.Context, t *ProximityTransport, remoteMa ma.Multiaddr,
 }
 
 // ReceiveFromPeer is called by native driver when peer's device sent data.
-func (t *ProximityTransport) ReceiveFromPeer(remotePID string, payload []byte) {
+func (t *proximityTransport) ReceiveFromPeer(remotePID string, payload []byte) {
 	t.logger.Debug("ReceiveFromPeer()", zap.String("remotePID", remotePID))
 	// TODO: implement a cleaner way to do that
 	// Checks during 100 ms if the conn is available, because remote device can

@@ -27,7 +27,7 @@ type Conn struct {
 
 	ctx       context.Context
 	cancel    func()
-	transport *ProximityTransport
+	transport *proximityTransport
 }
 
 // Read reads data from the connection.

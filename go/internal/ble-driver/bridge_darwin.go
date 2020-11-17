@@ -48,7 +48,7 @@ func BLEHandleFoundPeer(remotePID *C.char) int { // nolint:golint // Need to pre
 	if !ok {
 		return 0
 	}
-	if t.(*proximity.ProximityTransport).HandleFoundPeer(goPID) {
+	if t.(proximity.ProximityTransport).HandleFoundPeer(goPID) {
 		return 1
 	}
 	return 0
@@ -62,7 +62,7 @@ func BLEHandleLostPeer(remotePID *C.char) { // nolint:golint // Need to prefix f
 	if !ok {
 		return
 	}
-	t.(*proximity.ProximityTransport).HandleLostPeer(goPID)
+	t.(proximity.ProximityTransport).HandleLostPeer(goPID)
 }
 
 //export BLEReceiveFromPeer
@@ -74,7 +74,7 @@ func BLEReceiveFromPeer(remotePID *C.char, payload unsafe.Pointer, length C.int)
 	if !ok {
 		return
 	}
-	t.(*proximity.ProximityTransport).ReceiveFromPeer(goPID, goPayload)
+	t.(proximity.ProximityTransport).ReceiveFromPeer(goPID, goPayload)
 }
 
 func (d *Driver) Start(localPID string) {

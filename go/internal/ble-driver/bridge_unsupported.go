@@ -1,4 +1,4 @@
-// +build !darwin !cgo
+// +build !darwin,!android
 
 package ble
 
