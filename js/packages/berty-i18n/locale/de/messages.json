@@ -141,7 +141,8 @@
         "title": "Blockierte Kontakte",
         "tag": "blockiert"
       },
-      "delete-account-button": "Mein Konto löschen"
+      "delete-account-button": "Mein Konto löschen",
+      "backup-account-button": ""
     },
     "notifications": {
       "title": "Benachrichtigungen",
