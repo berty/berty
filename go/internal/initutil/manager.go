@@ -47,9 +47,9 @@ type Manager struct {
 		registry *prometheus.Registry
 	} `json:"Metrics,omitempty"`
 	Datastore struct {
-		Dir      string `json:"Dir,omitempty"`
-		InMemory bool   `json:"InMemory,omitempty"`
-		FileIO   bool   `json:"FileIO,omitempty"`
+		Dir              string `json:"Dir,omitempty"`
+		InMemory         bool   `json:"InMemory,omitempty"`
+		LowMemoryProfile bool   `json:"LowMemoryProfile,omitempty"`
 
 		defaultDir string
 		dir        string

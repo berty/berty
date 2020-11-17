@@ -368,10 +368,6 @@ func (m *Manager) GetGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 	return m.getGRPCServer()
 }
 
-// grpc logger should be set only once.
-// without this singleton, we can raise race conditions in unit tests => https://github.com/grpc/grpc-go/issues/1084
-var grpcLoggerConfigured = false
-
 func (m *Manager) getGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 	m.applyDefaults()
 
@@ -397,13 +393,10 @@ func (m *Manager) getGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 
 	zapOpts := []grpc_zap.Option{}
 
-	tr := tracer.New("grpc-server")
-	// setup grpc with zap
-	if !grpcLoggerConfigured {
-		grpc_zap.ReplaceGrpcLoggerV2(grpcLogger)
-		grpcLoggerConfigured = true
-	}
+	// override grpc logger
+	ReplaceGRPCLogger(grpcLogger)
 
+	tr := tracer.New("grpc-server")
 	// noop auth func
 	authFunc := func(ctx context.Context) (context.Context, error) { return ctx, nil }
 

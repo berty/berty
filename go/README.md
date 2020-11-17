@@ -37,6 +37,7 @@ make doctor
 [embedmd]:# (.tmp/berty-daemon.txt console)
 ```console
 foo@bar:~$ berty daemon
+2020-11-16T20:46:31Z	INFO 	bty               	metrics listener	{"handler": "/bty/metrics", "listener": "[::]:8888"}
 ...
 ```
 
@@ -53,30 +54,30 @@ TODO
 foo@bar:~$ berty share-invite
 █████████████████████████████████████████████████
 █████████████████████████████████████████████████
-████ ▄▄▄▄▄ ████ █▄▀   ▀ ▀█▄ ▀▀▄ ▀  ▀▀█ ▄▄▄▄▄ ████
-████ █   █ █▄▀▄▄▄  ▀ █▀ ██ █▄█ █ ███▄█ █   █ ████
-████ █▄▄▄█ ██▀█▄▀▀ ▀ ▄▄ ▀█▄▀██▄  ██ ██ █▄▄▄█ ████
-████▄▄▄▄▄▄▄█ ▀▄█ ▀ ▀▄▀▄▀ ▀▄▀ ▀ █ ▀▄▀▄█▄▄▄▄▄▄▄████
-████▄▄ ▀▄▄▄▄ ▄▀██▀▀▀▀▄ █▀███ ▄▀▀▀▀██   ▀█▀▄▀▀████
-█████ ▀██▀▄▀▄█▀▄▄▀ ▀█ ▀▀  ▀█▄ ▄▀▄▀▄███ █▄██  ████
-█████▀▄▀▄ ▄ █▄▀  ▀   ▀▄█  ▄█ ▄▀██████ ▄█▄ ▀▄ ████
-████▀▄  ▄█▄ ▀█▀▄ ▀▀▄ ▀█▀  ▀▀▄▀ ▀ ▀▄▀█▄▀▄▄▄▄▄▄████
-████▀ ██▄ ▄█▀▀▀▄ ▄▀▄▀██▀ ▀▀▀ ▄██▀▄█▀ ▀ ██▄▄▄ ████
-████▀ ▀ ▄▄▄▀▀▀██▀▄██▀▄██▄ ██▀▀▄▀█ ▄▀▀▀█  █▄ ▄████
-████▄█▄ ▀▀▄██  ▀█▀█ ████  ███████ █  █ ▄▄ █  ████
-████▄▀▄▄ ▄▄▄▀ ▀▀█▀▄▀█▀ ▀▀ ▄▀█ ▄██▀▀▀▀█ ▀ ▄▄  ████
-████▀█▄▀▀ ▄▀▄▄▄█ ▀▀█   ▄ ███ ▀▀█▀▄ ▄█  ██▀▀█▄████
-██████▄▄ ▀▄  ▄▄█▄▀ █ ▀ ▀  ██▄ ▀▀▀ █▀█▄▄▄▀ ▄▄▄████
-████▄▀▄██▀▄▄█▄▀▀ ▀   ▀ ██ █▀ ▄███▄█▄▄█ ██▄▀▀▀████
-████▄▀▄ ▄█▄▄ ▄█▄  ▄▄ ▀▀▀▀  ██▀▄▀█▀ ▀██▀█▀▄▄▄▄████
-████▄████▄▄▄ ▄▄ ▀██▄ ▄▀█▀▀▀▀▀██▄█▄▀█ ▄▄▄ ▀▀ ▄████
-████ ▄▄▄▄▄ █ ▄██▀▄█▀▄▄█▀ ▀ █▀  ██ ▄▄ █▄█ ▀█ ▄████
-████ █   █ █▄▀█▀███ █▀█▄ ▄█  ▄ ▄▀  █▄▄▄  ▀██▀████
-████ █▄▄▄█ █   ▀█▀ ▀█ ▀▀▀ ▀▀█ ▀▀  ▀▄ ▀██ ▄█ ▄████
-████▄▄▄▄▄▄▄█▄███▄▄█████▄▄▄██▄███▄███▄▄▄▄██▄▄▄████
+████ ▄▄▄▄▄ ██▄▀▀▄▄▀     ▄▀█ ▀▄█▀▀█▄▀▀█ ▄▄▄▄▄ ████
+████ █   █ █▄▀█▀▀  ▀▀█▀█▄█▀ █▀ ▄▀▀ █ █ █   █ ████
+████ █▄▄▄█ ██▄ ▀▄ ▄▀    ▀▀  ▀█▀ ▀▀  ▀█ █▄▄▄█ ████
+████▄▄▄▄▄▄▄█ █▄█ ▀ ▀▄▀ ▀ ▀ █▄▀ █ ▀▄█ █▄▄▄▄▄▄▄████
+████▄▄▄▀▄ ▄  ▄▀█▄▀▀█ ██▀ █▀█▀ █▀▀▄█▄   ▀█▀▄██████
+████ ▀ ▀▀▀▄▄█▀▀▀▄▀ █▀ ▀▀▄  ▀ ▀█▀▀ ███  █▄██▄▄████
+██████▄▄█▄▄▀██▀  ▀   █▄█  ▄▀▀██ ▀██▀ ▄▄██▄█▄▀████
+████▀█▄ ▀▀▄▄▀▄▄▄ ▀▄▄   ▀ ▀█▀█▀█▀▄ ▄██▄▀▀ ▄█▄▄████
+████▄█ ▀ █▄▀ ▄▄▄▀▄█  ▄███▀▀█ ▄▄▄ ▄█  ▀ ███▄  ████
+████▀▀ ▀ ▀▄█▀▄ ▀█▄██▄▄█▀  ███▀▄▀█▀█▀▀█   █▄█ ████
+████▄ ▄▄▄▄▄█  ▄▀███ █▀█▄  █ ▀▄  ▀▄   ▄▄ █ ▀▀ ████
+████ ▄█▄▀ ▄▄█▄▄▀█▀▀▀█ ▀▀▀▀ ▀▀▀▀█▄ ▀▀ █   ▄▄  ████
+████▀▄█ █ ▄  ▀█▀▀▀█▀▀    █▀█ ▀▀▄ ▀▀██  ██▀▀▀▄████
+████▀█ ▀▀▀▄▀████ ▀ ██▀ ▀▀ █▀  ▄█ ▀▄▀█▀█▄▀ ▄▄ ████
+████▄██▄██▄█▀▄ ▀ ▀ ▀ █ ▄█ █▄████▀ █▄█▄ █▄ ▀  ████
+████▄▀▀▄ ▀▄   █▄  ▄▄ ▀▄▀▀ ▀█▀▀▄▀▄ ▄▀██▀▄███▄▄████
+████▄██▄▄▄▄█ ▄▄  ██▄ ███  █▀ ██▀▀█▀█ ▄▄▄ ▀  ▄████
+████ ▄▄▄▄▄ █ ▀██▀▄██▀▄█▀ ▀ █▀ ▀█▀▀▄▄ █▄█ ▀█▄ ████
+████ █   █ █▄█ ▀███ █▀██ ▄██▀▄ ▄██▀█▄▄▄  ███ ████
+████ █▄▄▄█ █ █▄▀█▀ ▀█ ▀▀▀ ▀█▄ ███▀ ▄▄▀██ ██ ▄████
+████▄▄▄▄▄▄▄█▄▄██▄▄█████▄▄███▄▄██▄▄█▄▄▄█▄█▄█▄▄████
 █████████████████████████████████████████████████
 ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-html url: https://berty.tech/id#key=CiBHe9wK5qpYcyjXOORgBibGRC_ltbDwz4I5wXnoyQ5UpRIgRghITviQmcNhUCH511-A0m0Jnj4y3470jxGk1CA0dBo&name=demo
+html url: https://berty.tech/id#key=CiDjoRYoVim_Wl-XNgLkdwuTQWoDmL0H-Kg8G_cZOe9PmBIgFQsGC-WIjFwI8fSXsQ4KOrNL0hS0zXWzTH2O2w5QSak&name=demo
 ```
 
 ### Info
@@ -87,30 +88,29 @@ foo@bar:~$ berty info
 {
   "protocol": {
     "process": {
-      "version": "v2.206.0",
-      "vcsRef": "6d78fbc9",
-      "uptimeMs": "31",
-      "userCpuTimeMs": "1090",
-      "systemCpuTimeMs": "200",
-      "startedAt": "1605200620",
-      "rlimitCur": "1024",
-      "numGoroutine": "528",
-      "nofile": "36",
-      "numCpu": "12",
-      "goVersion": "go1.15.2",
-      "operatingSystem": "linux",
+      "version": "v2.210.2-dev.1+g73f9f964",
+      "vcsRef": "73f9f964",
+      "uptimeMs": "6544",
+      "userCpuTimeMs": "1105",
+      "systemCpuTimeMs": "468",
+      "startedAt": "1605559580",
+      "rlimitCur": "2560",
+      "numGoroutine": "657",
+      "nofile": "57",
+      "numCpu": "4",
+      "goVersion": "go1.15.4",
+      "operatingSystem": "darwin",
       "hostName": "REDACTED",
       "arch": "amd64",
-      "rlimitMax": "1048576",
-      "pid": "7035",
-      "ppid": "7034",
-      "priority": "20",
-      "uid": "1000",
+      "rlimitMax": "9223372036854775807",
+      "pid": "22456",
+      "ppid": "22455",
+      "uid": "501",
       "workingDir": "REDACTED",
-      "systemUsername": "anon#1337"
+      "systemUsername": "Guilhem Fanton"
     },
     "p2p": {
-      "connectedPeers": "8"
+      "connectedPeers": "30"
     },
     "orbitdb": {
       "accountMetadata": {
@@ -122,7 +122,9 @@ foo@bar:~$ berty info
   "messenger": {
     "protocolInSameProcess": true,
     "db": {
-      "accounts": "1"
+      "accounts": "1",
+      "members": "1",
+      "devices": "1"
     }
   }
 }
@@ -165,37 +167,39 @@ USAGE
   berty [global flags] daemon [flags]
 
 FLAGS
-  -config ...                                     config file (optional)
-  -log.file ...                                   if specified, will log everything in JSON into a file and nothing on stderr
-  -log.filters info+:bty*,-*.grpc error+:*        zapfilter configuration
-  -log.format color                               can be: json, console, color, light-console, light-color
-  -log.service berty                              service name, used by the tracer
-  -log.tracer ...                                 specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
-  -metrics.listener ...                           Metrics listener, will enable metrics
-  -metrics.pedantic false                         Enable Metrics pedantic for debug
-  -node.display-name moul (cli)                   display name
-  -node.listeners /ip4/127.0.0.1/tcp/9091/grpc    gRPC API listeners
-  -node.no-notif false                            disable desktop notifications
-  -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
-  -node.restore-export-path ...                   inits node from a specified export path
-  -p2p.disable-ipfs-network false                 disable as much networking feature as possible, useful during development
-  -p2p.ipfs-api-listeners ...                     IPFS API listeners
-  -p2p.local-discovery true                       if true local discovery will be enabled
-  -p2p.max-backoff 1m0s                           maximum p2p backoff duration
-  -p2p.min-backoff 1s                             minimum p2p backoff duration
-  -p2p.multipeer-connectivity false               if true Multipeer Connectivity will be enabled
-  -p2p.rdvp :default:                             list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
-  -p2p.relay-hack false                           *temporary flag*; if set, Berty will use relays from the config optimistically
-  -p2p.swarm-announce ...                         IPFS announce addrs
-  -p2p.swarm-listeners :default:                  IPFS swarm listeners
-  -p2p.swarm-no-announce ...                      IPFS exclude announce addrs
-  -p2p.webui-listener :3999                       IPFS WebUI listener
-  -preset ...                                     applies various default values, see ADVANCED section below
-  -store.dir /home/moul/.config/berty-tech/berty  root datastore directory
-  -store.fileio false                             enable FileIO Option, files will be loaded using standard I/O
-  -store.inmem false                              disable datastore persistence
-  -tor.binary-path ...                            if set berty will use this external tor binary instead of his builtin one
-  -tor.mode disabled                              changes the behavior of libp2p regarding tor, see advanced help for more details
+  -config ...                                                                   config file (optional)
+  -log.file ...                                                                 if specified, will log everything in JSON into a file and nothing on stderr
+  -log.filters info+:bty*,-*.grpc error+:*                                      zapfilter configuration
+  -log.format color                                                             can be: json, console, color, light-console, light-color
+  -log.service berty                                                            service name, used by the tracer
+  -log.tracer ...                                                               specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
+  -metrics.listener ...                                                         Metrics listener, will enable metrics
+  -metrics.pedantic false                                                       Enable Metrics pedantic for debug
+  -node.disable-group-monitor false                                             disable group monitoring
+  -node.display-name guilhemfanton (cli)                                        display name
+  -node.listeners /ip4/127.0.0.1/tcp/9091/grpc                                  gRPC API listeners
+  -node.no-notif false                                                          disable desktop notifications
+  -node.rebuild-db false                                                        reconstruct messenger DB from OrbitDB logs
+  -node.restore-export-path ...                                                 inits node from a specified export path
+  -p2p.ble true                                                                 if true Bluetooth Low Energy will be enabled
+  -p2p.disable-ipfs-network false                                               disable as much networking feature as possible, useful during development
+  -p2p.ipfs-api-listeners ...                                                   IPFS API listeners
+  -p2p.local-discovery true                                                     if true local discovery will be enabled
+  -p2p.max-backoff 1m0s                                                         maximum p2p backoff duration
+  -p2p.min-backoff 1s                                                           minimum p2p backoff duration
+  -p2p.multipeer-connectivity true                                              if true Multipeer Connectivity will be enabled
+  -p2p.rdvp :default:                                                           list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
+  -p2p.relay-hack false                                                         *temporary flag*; if set, Berty will use relays from the config optimistically
+  -p2p.swarm-announce ...                                                       IPFS announce addrs
+  -p2p.swarm-listeners :default:                                                IPFS swarm listeners
+  -p2p.swarm-no-announce ...                                                    IPFS exclude announce addrs
+  -p2p.webui-listener :3999                                                     IPFS WebUI listener
+  -preset ...                                                                   applies various default values, see ADVANCED section below
+  -store.dir /Users/guilhemfanton/Library/Application Support/berty-tech/berty  root datastore directory
+  -store.inmem false                                                            disable datastore persistence
+  -store.lowmem false                                                           enable LowMemory Profile, useful for mobile environment
+  -tor.binary-path ...                                                          if set berty will use this external tor binary instead of his builtin one
+  -tor.mode disabled                                                            changes the behavior of libp2p regarding tor, see advanced help for more details
 
 ADVANCED
   -log.filters=':default: CUSTOM'        equivalent to -log.filters='info+:bty*,-*.grpc error+:* CUSTOM'
@@ -214,39 +218,41 @@ USAGE
   berty [global flags] mini [flags]
 
 FLAGS
-  -config ...                                     config file (optional)
-  -log.file ...                                   if specified, will log everything in JSON into a file and nothing on stderr
-  -log.filters info+:bty*,-*.grpc error+:*        zapfilter configuration
-  -log.format color                               can be: json, console, color, light-console, light-color
-  -log.service berty                              service name, used by the tracer
-  -log.tracer ...                                 specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
-  -metrics.listener ...                           Metrics listener, will enable metrics
-  -metrics.pedantic false                         Enable Metrics pedantic for debug
-  -mini.group ...                                 group to join, leave empty to create a new group
-  -node.display-name moul (cli)                   display name
-  -node.listeners ...                             gRPC API listeners
-  -node.no-notif false                            disable desktop notifications
-  -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
-  -node.remote-addr ...                           remote Berty gRPC API address
-  -node.restore-export-path ...                   inits node from a specified export path
-  -p2p.disable-ipfs-network false                 disable as much networking feature as possible, useful during development
-  -p2p.ipfs-api-listeners ...                     IPFS API listeners
-  -p2p.local-discovery true                       if true local discovery will be enabled
-  -p2p.max-backoff 1m0s                           maximum p2p backoff duration
-  -p2p.min-backoff 1s                             minimum p2p backoff duration
-  -p2p.multipeer-connectivity false               if true Multipeer Connectivity will be enabled
-  -p2p.rdvp :default:                             list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
-  -p2p.relay-hack false                           *temporary flag*; if set, Berty will use relays from the config optimistically
-  -p2p.swarm-announce ...                         IPFS announce addrs
-  -p2p.swarm-listeners :default:                  IPFS swarm listeners
-  -p2p.swarm-no-announce ...                      IPFS exclude announce addrs
-  -p2p.webui-listener ...                         IPFS WebUI listener
-  -preset ...                                     applies various default values, see ADVANCED section below
-  -store.dir /home/moul/.config/berty-tech/berty  root datastore directory
-  -store.fileio false                             enable FileIO Option, files will be loaded using standard I/O
-  -store.inmem false                              disable datastore persistence
-  -tor.binary-path ...                            if set berty will use this external tor binary instead of his builtin one
-  -tor.mode disabled                              changes the behavior of libp2p regarding tor, see advanced help for more details
+  -config ...                                                                   config file (optional)
+  -log.file ...                                                                 if specified, will log everything in JSON into a file and nothing on stderr
+  -log.filters info+:bty*,-*.grpc error+:*                                      zapfilter configuration
+  -log.format color                                                             can be: json, console, color, light-console, light-color
+  -log.service berty                                                            service name, used by the tracer
+  -log.tracer ...                                                               specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
+  -metrics.listener ...                                                         Metrics listener, will enable metrics
+  -metrics.pedantic false                                                       Enable Metrics pedantic for debug
+  -mini.group ...                                                               group to join, leave empty to create a new group
+  -node.disable-group-monitor false                                             disable group monitoring
+  -node.display-name guilhemfanton (cli)                                        display name
+  -node.listeners ...                                                           gRPC API listeners
+  -node.no-notif false                                                          disable desktop notifications
+  -node.rebuild-db false                                                        reconstruct messenger DB from OrbitDB logs
+  -node.remote-addr ...                                                         remote Berty gRPC API address
+  -node.restore-export-path ...                                                 inits node from a specified export path
+  -p2p.ble true                                                                 if true Bluetooth Low Energy will be enabled
+  -p2p.disable-ipfs-network false                                               disable as much networking feature as possible, useful during development
+  -p2p.ipfs-api-listeners ...                                                   IPFS API listeners
+  -p2p.local-discovery true                                                     if true local discovery will be enabled
+  -p2p.max-backoff 1m0s                                                         maximum p2p backoff duration
+  -p2p.min-backoff 1s                                                           minimum p2p backoff duration
+  -p2p.multipeer-connectivity true                                              if true Multipeer Connectivity will be enabled
+  -p2p.rdvp :default:                                                           list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
+  -p2p.relay-hack false                                                         *temporary flag*; if set, Berty will use relays from the config optimistically
+  -p2p.swarm-announce ...                                                       IPFS announce addrs
+  -p2p.swarm-listeners :default:                                                IPFS swarm listeners
+  -p2p.swarm-no-announce ...                                                    IPFS exclude announce addrs
+  -p2p.webui-listener ...                                                       IPFS WebUI listener
+  -preset ...                                                                   applies various default values, see ADVANCED section below
+  -store.dir /Users/guilhemfanton/Library/Application Support/berty-tech/berty  root datastore directory
+  -store.inmem false                                                            disable datastore persistence
+  -store.lowmem false                                                           enable LowMemory Profile, useful for mobile environment
+  -tor.binary-path ...                                                          if set berty will use this external tor binary instead of his builtin one
+  -tor.mode disabled                                                            changes the behavior of libp2p regarding tor, see advanced help for more details
 
 ADVANCED
   -log.filters=':default: CUSTOM'        equivalent to -log.filters='info+:bty*,-*.grpc error+:* CUSTOM'
@@ -291,36 +297,38 @@ USAGE
   berty [global flags] info [flags]
 
 FLAGS
-  -config ...                                     config file (optional)
-  -info.anonymize false                           anonymize output for sharing
-  -info.refresh 0s                                refresh every DURATION (0: no refresh)
-  -log.file ...                                   if specified, will log everything in JSON into a file and nothing on stderr
-  -log.filters info+:bty*,-*.grpc error+:*        zapfilter configuration
-  -log.format color                               can be: json, console, color, light-console, light-color
-  -log.service berty                              service name, used by the tracer
-  -log.tracer ...                                 specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
-  -node.display-name moul (cli)                   display name
-  -node.no-notif false                            disable desktop notifications
-  -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
-  -node.remote-addr ...                           remote Berty gRPC API address
-  -node.restore-export-path ...                   inits node from a specified export path
-  -p2p.disable-ipfs-network false                 disable as much networking feature as possible, useful during development
-  -p2p.ipfs-api-listeners ...                     IPFS API listeners
-  -p2p.local-discovery true                       if true local discovery will be enabled
-  -p2p.max-backoff 1m0s                           maximum p2p backoff duration
-  -p2p.min-backoff 1s                             minimum p2p backoff duration
-  -p2p.multipeer-connectivity false               if true Multipeer Connectivity will be enabled
-  -p2p.rdvp :default:                             list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
-  -p2p.relay-hack false                           *temporary flag*; if set, Berty will use relays from the config optimistically
-  -p2p.swarm-announce ...                         IPFS announce addrs
-  -p2p.swarm-listeners :default:                  IPFS swarm listeners
-  -p2p.swarm-no-announce ...                      IPFS exclude announce addrs
-  -preset ...                                     applies various default values, see ADVANCED section below
-  -store.dir /home/moul/.config/berty-tech/berty  root datastore directory
-  -store.fileio false                             enable FileIO Option, files will be loaded using standard I/O
-  -store.inmem false                              disable datastore persistence
-  -tor.binary-path ...                            if set berty will use this external tor binary instead of his builtin one
-  -tor.mode disabled                              changes the behavior of libp2p regarding tor, see advanced help for more details
+  -config ...                                                                   config file (optional)
+  -info.anonymize false                                                         anonymize output for sharing
+  -info.refresh 0s                                                              refresh every DURATION (0: no refresh)
+  -log.file ...                                                                 if specified, will log everything in JSON into a file and nothing on stderr
+  -log.filters info+:bty*,-*.grpc error+:*                                      zapfilter configuration
+  -log.format color                                                             can be: json, console, color, light-console, light-color
+  -log.service berty                                                            service name, used by the tracer
+  -log.tracer ...                                                               specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
+  -node.disable-group-monitor false                                             disable group monitoring
+  -node.display-name guilhemfanton (cli)                                        display name
+  -node.no-notif false                                                          disable desktop notifications
+  -node.rebuild-db false                                                        reconstruct messenger DB from OrbitDB logs
+  -node.remote-addr ...                                                         remote Berty gRPC API address
+  -node.restore-export-path ...                                                 inits node from a specified export path
+  -p2p.ble true                                                                 if true Bluetooth Low Energy will be enabled
+  -p2p.disable-ipfs-network false                                               disable as much networking feature as possible, useful during development
+  -p2p.ipfs-api-listeners ...                                                   IPFS API listeners
+  -p2p.local-discovery true                                                     if true local discovery will be enabled
+  -p2p.max-backoff 1m0s                                                         maximum p2p backoff duration
+  -p2p.min-backoff 1s                                                           minimum p2p backoff duration
+  -p2p.multipeer-connectivity true                                              if true Multipeer Connectivity will be enabled
+  -p2p.rdvp :default:                                                           list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
+  -p2p.relay-hack false                                                         *temporary flag*; if set, Berty will use relays from the config optimistically
+  -p2p.swarm-announce ...                                                       IPFS announce addrs
+  -p2p.swarm-listeners :default:                                                IPFS swarm listeners
+  -p2p.swarm-no-announce ...                                                    IPFS exclude announce addrs
+  -preset ...                                                                   applies various default values, see ADVANCED section below
+  -store.dir /Users/guilhemfanton/Library/Application Support/berty-tech/berty  root datastore directory
+  -store.inmem false                                                            disable datastore persistence
+  -store.lowmem false                                                           enable LowMemory Profile, useful for mobile environment
+  -tor.binary-path ...                                                          if set berty will use this external tor binary instead of his builtin one
+  -tor.mode disabled                                                            changes the behavior of libp2p regarding tor, see advanced help for more details
 
 ADVANCED
   -log.filters=':default: CUSTOM'        equivalent to -log.filters='info+:bty*,-*.grpc error+:* CUSTOM'
@@ -355,36 +363,38 @@ USAGE
   berty [global flags] share-invite [flags]
 
 FLAGS
-  -config ...                                     config file (optional)
-  -dev-channel false                              post qrcode on dev channel
-  -log.file ...                                   if specified, will log everything in JSON into a file and nothing on stderr
-  -log.filters info+:bty*,-*.grpc error+:*        zapfilter configuration
-  -log.format color                               can be: json, console, color, light-console, light-color
-  -log.service berty                              service name, used by the tracer
-  -log.tracer ...                                 specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
-  -no-term false                                  do not print the QR code in terminal
-  -node.display-name moul (cli)                   display name
-  -node.no-notif false                            disable desktop notifications
-  -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
-  -node.remote-addr ...                           remote Berty gRPC API address
-  -node.restore-export-path ...                   inits node from a specified export path
-  -p2p.disable-ipfs-network false                 disable as much networking feature as possible, useful during development
-  -p2p.ipfs-api-listeners ...                     IPFS API listeners
-  -p2p.local-discovery true                       if true local discovery will be enabled
-  -p2p.max-backoff 1m0s                           maximum p2p backoff duration
-  -p2p.min-backoff 1s                             minimum p2p backoff duration
-  -p2p.multipeer-connectivity false               if true Multipeer Connectivity will be enabled
-  -p2p.rdvp :default:                             list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
-  -p2p.relay-hack false                           *temporary flag*; if set, Berty will use relays from the config optimistically
-  -p2p.swarm-announce ...                         IPFS announce addrs
-  -p2p.swarm-listeners :default:                  IPFS swarm listeners
-  -p2p.swarm-no-announce ...                      IPFS exclude announce addrs
-  -preset ...                                     applies various default values, see ADVANCED section below
-  -store.dir /home/moul/.config/berty-tech/berty  root datastore directory
-  -store.fileio false                             enable FileIO Option, files will be loaded using standard I/O
-  -store.inmem false                              disable datastore persistence
-  -tor.binary-path ...                            if set berty will use this external tor binary instead of his builtin one
-  -tor.mode disabled                              changes the behavior of libp2p regarding tor, see advanced help for more details
+  -config ...                                                                   config file (optional)
+  -dev-channel false                                                            post qrcode on dev channel
+  -log.file ...                                                                 if specified, will log everything in JSON into a file and nothing on stderr
+  -log.filters info+:bty*,-*.grpc error+:*                                      zapfilter configuration
+  -log.format color                                                             can be: json, console, color, light-console, light-color
+  -log.service berty                                                            service name, used by the tracer
+  -log.tracer ...                                                               specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
+  -no-term false                                                                do not print the QR code in terminal
+  -node.disable-group-monitor false                                             disable group monitoring
+  -node.display-name guilhemfanton (cli)                                        display name
+  -node.no-notif false                                                          disable desktop notifications
+  -node.rebuild-db false                                                        reconstruct messenger DB from OrbitDB logs
+  -node.remote-addr ...                                                         remote Berty gRPC API address
+  -node.restore-export-path ...                                                 inits node from a specified export path
+  -p2p.ble true                                                                 if true Bluetooth Low Energy will be enabled
+  -p2p.disable-ipfs-network false                                               disable as much networking feature as possible, useful during development
+  -p2p.ipfs-api-listeners ...                                                   IPFS API listeners
+  -p2p.local-discovery true                                                     if true local discovery will be enabled
+  -p2p.max-backoff 1m0s                                                         maximum p2p backoff duration
+  -p2p.min-backoff 1s                                                           minimum p2p backoff duration
+  -p2p.multipeer-connectivity true                                              if true Multipeer Connectivity will be enabled
+  -p2p.rdvp :default:                                                           list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
+  -p2p.relay-hack false                                                         *temporary flag*; if set, Berty will use relays from the config optimistically
+  -p2p.swarm-announce ...                                                       IPFS announce addrs
+  -p2p.swarm-listeners :default:                                                IPFS swarm listeners
+  -p2p.swarm-no-announce ...                                                    IPFS exclude announce addrs
+  -preset ...                                                                   applies various default values, see ADVANCED section below
+  -store.dir /Users/guilhemfanton/Library/Application Support/berty-tech/berty  root datastore directory
+  -store.inmem false                                                            disable datastore persistence
+  -store.lowmem false                                                           enable LowMemory Profile, useful for mobile environment
+  -tor.binary-path ...                                                          if set berty will use this external tor binary instead of his builtin one
+  -tor.mode disabled                                                            changes the behavior of libp2p regarding tor, see advanced help for more details
 
 ADVANCED
   -log.filters=':default: CUSTOM'        equivalent to -log.filters='info+:bty*,-*.grpc error+:* CUSTOM'
@@ -423,33 +433,34 @@ USAGE
   berty [global flags] repl-server [flags]
 
 FLAGS
-  -config ...                                     config file (optional)
-  -log.file ...                                   if specified, will log everything in JSON into a file and nothing on stderr
-  -log.filters info+:bty*,-*.grpc error+:*        zapfilter configuration
-  -log.format color                               can be: json, console, color, light-console, light-color
-  -log.service berty                              service name, used by the tracer
-  -log.tracer ...                                 specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
-  -node.auth-pk ...                               Protocol API Authentication Public Key (base64 encoded)
-  -node.auth-secret ...                           Protocol API Authentication Secret (base64 encoded)
-  -node.listeners /ip4/127.0.0.1/tcp/9091/grpc    gRPC API listeners
-  -p2p.disable-ipfs-network false                 disable as much networking feature as possible, useful during development
-  -p2p.ipfs-api-listeners ...                     IPFS API listeners
-  -p2p.local-discovery true                       if true local discovery will be enabled
-  -p2p.max-backoff 1m0s                           maximum p2p backoff duration
-  -p2p.min-backoff 1s                             minimum p2p backoff duration
-  -p2p.multipeer-connectivity false               if true Multipeer Connectivity will be enabled
-  -p2p.rdvp :default:                             list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
-  -p2p.relay-hack false                           *temporary flag*; if set, Berty will use relays from the config optimistically
-  -p2p.swarm-announce ...                         IPFS announce addrs
-  -p2p.swarm-listeners :default:                  IPFS swarm listeners
-  -p2p.swarm-no-announce ...                      IPFS exclude announce addrs
-  -p2p.webui-listener :3999                       IPFS WebUI listener
-  -preset ...                                     applies various default values, see ADVANCED section below
-  -store.dir /home/moul/.config/berty-tech/berty  root datastore directory
-  -store.fileio false                             enable FileIO Option, files will be loaded using standard I/O
-  -store.inmem false                              disable datastore persistence
-  -tor.binary-path ...                            if set berty will use this external tor binary instead of his builtin one
-  -tor.mode disabled                              changes the behavior of libp2p regarding tor, see advanced help for more details
+  -config ...                                                                   config file (optional)
+  -log.file ...                                                                 if specified, will log everything in JSON into a file and nothing on stderr
+  -log.filters info+:bty*,-*.grpc error+:*                                      zapfilter configuration
+  -log.format color                                                             can be: json, console, color, light-console, light-color
+  -log.service berty                                                            service name, used by the tracer
+  -log.tracer ...                                                               specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
+  -node.auth-pk ...                                                             Protocol API Authentication Public Key (base64 encoded)
+  -node.auth-secret ...                                                         Protocol API Authentication Secret (base64 encoded)
+  -node.listeners /ip4/127.0.0.1/tcp/9091/grpc                                  gRPC API listeners
+  -p2p.ble true                                                                 if true Bluetooth Low Energy will be enabled
+  -p2p.disable-ipfs-network false                                               disable as much networking feature as possible, useful during development
+  -p2p.ipfs-api-listeners ...                                                   IPFS API listeners
+  -p2p.local-discovery true                                                     if true local discovery will be enabled
+  -p2p.max-backoff 1m0s                                                         maximum p2p backoff duration
+  -p2p.min-backoff 1s                                                           minimum p2p backoff duration
+  -p2p.multipeer-connectivity true                                              if true Multipeer Connectivity will be enabled
+  -p2p.rdvp :default:                                                           list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
+  -p2p.relay-hack false                                                         *temporary flag*; if set, Berty will use relays from the config optimistically
+  -p2p.swarm-announce ...                                                       IPFS announce addrs
+  -p2p.swarm-listeners :default:                                                IPFS swarm listeners
+  -p2p.swarm-no-announce ...                                                    IPFS exclude announce addrs
+  -p2p.webui-listener :3999                                                     IPFS WebUI listener
+  -preset ...                                                                   applies various default values, see ADVANCED section below
+  -store.dir /Users/guilhemfanton/Library/Application Support/berty-tech/berty  root datastore directory
+  -store.inmem false                                                            disable datastore persistence
+  -store.lowmem false                                                           enable LowMemory Profile, useful for mobile environment
+  -tor.binary-path ...                                                          if set berty will use this external tor binary instead of his builtin one
+  -tor.mode disabled                                                            changes the behavior of libp2p regarding tor, see advanced help for more details
 
 ADVANCED
   -log.filters=':default: CUSTOM'        equivalent to -log.filters='info+:bty*,-*.grpc error+:* CUSTOM'
@@ -468,31 +479,32 @@ USAGE
   berty [global flags] peers [flags]
 
 FLAGS
-  -config ...                                     config file (optional)
-  -log.file ...                                   if specified, will log everything in JSON into a file and nothing on stderr
-  -log.filters info+:bty*,-*.grpc error+:*        zapfilter configuration
-  -log.format color                               can be: json, console, color, light-console, light-color
-  -log.service berty                              service name, used by the tracer
-  -log.tracer ...                                 specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
-  -node.remote-addr ...                           remote Berty gRPC API address
-  -p2p.disable-ipfs-network false                 disable as much networking feature as possible, useful during development
-  -p2p.ipfs-api-listeners ...                     IPFS API listeners
-  -p2p.local-discovery true                       if true local discovery will be enabled
-  -p2p.max-backoff 1m0s                           maximum p2p backoff duration
-  -p2p.min-backoff 1s                             minimum p2p backoff duration
-  -p2p.multipeer-connectivity false               if true Multipeer Connectivity will be enabled
-  -p2p.rdvp :default:                             list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
-  -p2p.relay-hack false                           *temporary flag*; if set, Berty will use relays from the config optimistically
-  -p2p.swarm-announce ...                         IPFS announce addrs
-  -p2p.swarm-listeners :default:                  IPFS swarm listeners
-  -p2p.swarm-no-announce ...                      IPFS exclude announce addrs
-  -peers.refresh 1s                               refresh every DURATION (0: no refresh)
-  -preset ...                                     applies various default values, see ADVANCED section below
-  -store.dir /home/moul/.config/berty-tech/berty  root datastore directory
-  -store.fileio false                             enable FileIO Option, files will be loaded using standard I/O
-  -store.inmem false                              disable datastore persistence
-  -tor.binary-path ...                            if set berty will use this external tor binary instead of his builtin one
-  -tor.mode disabled                              changes the behavior of libp2p regarding tor, see advanced help for more details
+  -config ...                                                                   config file (optional)
+  -log.file ...                                                                 if specified, will log everything in JSON into a file and nothing on stderr
+  -log.filters info+:bty*,-*.grpc error+:*                                      zapfilter configuration
+  -log.format color                                                             can be: json, console, color, light-console, light-color
+  -log.service berty                                                            service name, used by the tracer
+  -log.tracer ...                                                               specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
+  -node.remote-addr ...                                                         remote Berty gRPC API address
+  -p2p.ble true                                                                 if true Bluetooth Low Energy will be enabled
+  -p2p.disable-ipfs-network false                                               disable as much networking feature as possible, useful during development
+  -p2p.ipfs-api-listeners ...                                                   IPFS API listeners
+  -p2p.local-discovery true                                                     if true local discovery will be enabled
+  -p2p.max-backoff 1m0s                                                         maximum p2p backoff duration
+  -p2p.min-backoff 1s                                                           minimum p2p backoff duration
+  -p2p.multipeer-connectivity true                                              if true Multipeer Connectivity will be enabled
+  -p2p.rdvp :default:                                                           list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
+  -p2p.relay-hack false                                                         *temporary flag*; if set, Berty will use relays from the config optimistically
+  -p2p.swarm-announce ...                                                       IPFS announce addrs
+  -p2p.swarm-listeners :default:                                                IPFS swarm listeners
+  -p2p.swarm-no-announce ...                                                    IPFS exclude announce addrs
+  -peers.refresh 1s                                                             refresh every DURATION (0: no refresh)
+  -preset ...                                                                   applies various default values, see ADVANCED section below
+  -store.dir /Users/guilhemfanton/Library/Application Support/berty-tech/berty  root datastore directory
+  -store.inmem false                                                            disable datastore persistence
+  -store.lowmem false                                                           enable LowMemory Profile, useful for mobile environment
+  -tor.binary-path ...                                                          if set berty will use this external tor binary instead of his builtin one
+  -tor.mode disabled                                                            changes the behavior of libp2p regarding tor, see advanced help for more details
 
 ADVANCED
   -log.filters=':default: CUSTOM'        equivalent to -log.filters='info+:bty*,-*.grpc error+:* CUSTOM'
@@ -511,35 +523,37 @@ USAGE
   berty [global flags] export [flags]
 
 FLAGS
-  -config ...                                     config file (optional)
-  -export-path ...                                path of the export tarball
-  -log.file ...                                   if specified, will log everything in JSON into a file and nothing on stderr
-  -log.filters info+:bty*,-*.grpc error+:*        zapfilter configuration
-  -log.format color                               can be: json, console, color, light-console, light-color
-  -log.service berty                              service name, used by the tracer
-  -log.tracer ...                                 specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
-  -node.display-name moul (cli)                   display name
-  -node.no-notif false                            disable desktop notifications
-  -node.rebuild-db false                          reconstruct messenger DB from OrbitDB logs
-  -node.remote-addr ...                           remote Berty gRPC API address
-  -node.restore-export-path ...                   inits node from a specified export path
-  -p2p.disable-ipfs-network false                 disable as much networking feature as possible, useful during development
-  -p2p.ipfs-api-listeners ...                     IPFS API listeners
-  -p2p.local-discovery true                       if true local discovery will be enabled
-  -p2p.max-backoff 1m0s                           maximum p2p backoff duration
-  -p2p.min-backoff 1s                             minimum p2p backoff duration
-  -p2p.multipeer-connectivity false               if true Multipeer Connectivity will be enabled
-  -p2p.rdvp :default:                             list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
-  -p2p.relay-hack false                           *temporary flag*; if set, Berty will use relays from the config optimistically
-  -p2p.swarm-announce ...                         IPFS announce addrs
-  -p2p.swarm-listeners :default:                  IPFS swarm listeners
-  -p2p.swarm-no-announce ...                      IPFS exclude announce addrs
-  -preset ...                                     applies various default values, see ADVANCED section below
-  -store.dir /home/moul/.config/berty-tech/berty  root datastore directory
-  -store.fileio false                             enable FileIO Option, files will be loaded using standard I/O
-  -store.inmem false                              disable datastore persistence
-  -tor.binary-path ...                            if set berty will use this external tor binary instead of his builtin one
-  -tor.mode disabled                              changes the behavior of libp2p regarding tor, see advanced help for more details
+  -config ...                                                                   config file (optional)
+  -export-path ...                                                              path of the export tarball
+  -log.file ...                                                                 if specified, will log everything in JSON into a file and nothing on stderr
+  -log.filters info+:bty*,-*.grpc error+:*                                      zapfilter configuration
+  -log.format color                                                             can be: json, console, color, light-console, light-color
+  -log.service berty                                                            service name, used by the tracer
+  -log.tracer ...                                                               specify "stdout" to output tracing on stdout or <hostname:port> to trace on jaeger
+  -node.disable-group-monitor false                                             disable group monitoring
+  -node.display-name guilhemfanton (cli)                                        display name
+  -node.no-notif false                                                          disable desktop notifications
+  -node.rebuild-db false                                                        reconstruct messenger DB from OrbitDB logs
+  -node.remote-addr ...                                                         remote Berty gRPC API address
+  -node.restore-export-path ...                                                 inits node from a specified export path
+  -p2p.ble true                                                                 if true Bluetooth Low Energy will be enabled
+  -p2p.disable-ipfs-network false                                               disable as much networking feature as possible, useful during development
+  -p2p.ipfs-api-listeners ...                                                   IPFS API listeners
+  -p2p.local-discovery true                                                     if true local discovery will be enabled
+  -p2p.max-backoff 1m0s                                                         maximum p2p backoff duration
+  -p2p.min-backoff 1s                                                           minimum p2p backoff duration
+  -p2p.multipeer-connectivity true                                              if true Multipeer Connectivity will be enabled
+  -p2p.rdvp :default:                                                           list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp
+  -p2p.relay-hack false                                                         *temporary flag*; if set, Berty will use relays from the config optimistically
+  -p2p.swarm-announce ...                                                       IPFS announce addrs
+  -p2p.swarm-listeners :default:                                                IPFS swarm listeners
+  -p2p.swarm-no-announce ...                                                    IPFS exclude announce addrs
+  -preset ...                                                                   applies various default values, see ADVANCED section below
+  -store.dir /Users/guilhemfanton/Library/Application Support/berty-tech/berty  root datastore directory
+  -store.inmem false                                                            disable datastore persistence
+  -store.lowmem false                                                           enable LowMemory Profile, useful for mobile environment
+  -tor.binary-path ...                                                          if set berty will use this external tor binary instead of his builtin one
+  -tor.mode disabled                                                            changes the behavior of libp2p regarding tor, see advanced help for more details
 
 ADVANCED
   -log.filters=':default: CUSTOM'        equivalent to -log.filters='info+:bty*,-*.grpc error+:* CUSTOM'
@@ -582,8 +596,11 @@ EXAMPLE
   rdvp serve -pk `cat rdvp.key` -db ./rdvp-store
 
 FLAGS
+  -announce ...                                        addrs that will be announce by this server
+  -config ...                                          config file (optional)
   -db :memory:                                         rdvp sqlite URN
   -l /ip4/0.0.0.0/tcp/4040,/ip4/0.0.0.0/udp/4141/quic  lists of listeners of (m)addrs separate by a comma
+  -metrics ...                                         metrics listener, if empty will disable metrics
   -pk ...                                              private key (generated by `rdvp genkey`)
 
 foo@bar:~$ rdvp genkey -h
@@ -604,7 +621,7 @@ Usage of betabot:
   -addr string
     	remote 'berty daemon' address (default "127.0.0.1:9091")
   -display-name string
-    	bot's display name (default "moul (bot)")
+    	bot's display name (default "guilhemfanton (betabot)")
   -staff-conversation-link string
     	link of the staff's conversation to join
   -store string
