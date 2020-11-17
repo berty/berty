@@ -619,7 +619,7 @@ export const Message: React.FC<{
 						text.size.small,
 					]}
 				>
-					{timeFormat.fmtTimestampUnix(sentDate)}
+					{timeFormat.fmtTimestamp3(sentDate)}
 				</Text>
 			</View>
 		)

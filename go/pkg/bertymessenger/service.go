@@ -382,7 +382,7 @@ func (svc *service) subscribeToGroupMonitor(groupPK []byte) error {
 				Type:                  AppMessage_TypeMonitorMetadata,
 				ConversationPublicKey: b64EncodeBytes(evt.GetGroupPK()),
 				Payload:               payload,
-				SentDate:              time.Now().Unix(),
+				SentDate:              timestampMs(time.Now()),
 			}
 
 			err = svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{i}, true)

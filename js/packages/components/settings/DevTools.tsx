@@ -307,7 +307,6 @@ const BodyDevTools: React.FC<{}> = () => {
 	const ctx = useMsgrContext()
 	const { t } = useTranslation()
 
-	console.log(ctx?.persistentOptions.debug.enable)
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<ButtonSetting
