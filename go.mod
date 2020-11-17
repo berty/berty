@@ -66,7 +66,7 @@ require (
 	github.com/libp2p/go-mplex v0.2.0 // indirect
 	github.com/libp2p/go-yamux v1.4.0 // indirect
 	github.com/markbates/pkger v0.17.1
-	github.com/mattn/go-sqlite3 v1.14.4
+	github.com/mattn/go-sqlite3 v1.14.5
 	github.com/mdomke/git-semver/v5 v5.0.0
 	github.com/mdp/qrterminal/v3 v3.0.0
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect

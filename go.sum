@@ -1030,6 +1030,8 @@ github.com/mattn/go-sqlite3 v1.14.3 h1:j7a/xn1U6TKA/PHHxqZuzh64CdtRc7rU9M+AvkOl5
 github.com/mattn/go-sqlite3 v1.14.3/go.mod h1:WVKg1VTActs4Qso6iwGbiFih2UIHo0ENGwNd0Lj+XmI=
 github.com/mattn/go-sqlite3 v1.14.4 h1:4rQjbDxdu9fSgI/r3KN72G3c2goxknAqHHgPWWs8UlI=
 github.com/mattn/go-sqlite3 v1.14.4/go.mod h1:WVKg1VTActs4Qso6iwGbiFih2UIHo0ENGwNd0Lj+XmI=
+github.com/mattn/go-sqlite3 v1.14.5 h1:1IdxlwTNazvbKJQSxoJ5/9ECbEeaTTyeU7sEAZ5KKTQ=
+github.com/mattn/go-sqlite3 v1.14.5/go.mod h1:WVKg1VTActs4Qso6iwGbiFih2UIHo0ENGwNd0Lj+XmI=
 github.com/matttproud/golang_protobuf_extensions v1.0.1 h1:4hp9jkHxhMHkqkrB3Ix0jegS5sx/RkqARlsWZ6pIwiU=
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=
 github.com/mdomke/git-semver/v5 v5.0.0 h1:By50HK/pTLR64WUUmDVtQNrVNDXsCehujhjBTAIyCHk=
