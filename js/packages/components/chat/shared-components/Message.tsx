@@ -20,6 +20,7 @@ import { ProceduralCircleAvatar } from '../../shared-components'
 import { useNavigation as useNativeNavigation } from '@react-navigation/core'
 import { pbDateToNum, timeFormat } from '../../helpers'
 import { Buffer } from 'buffer'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 const pal = palette('tol-rainbow', 256)
 
@@ -338,6 +339,7 @@ export const Message: React.FC<{
 	previousMessageId: string
 	nextMessageId: string
 }> = ({ id, convKind, members, previousMessageId, nextMessageId, convPK }) => {
+	const ctx = useMsgrContext()
 	const inte = useInteraction(id, convPK)
 	const previousMessage = useInteraction(previousMessageId, convPK)
 	const nextMessage = useInteraction(nextMessageId, convPK)
@@ -349,29 +351,52 @@ export const Message: React.FC<{
 	if (!inte) {
 		return null
 	}
-
+	let monitorPayload
 	if (inte.type === messengerpb.AppMessage.Type.TypeMonitorMetadata) {
 		/* typespb.MonitorGroup.TypeEventMonitor */
-		console.log(inte)
 		const monitorEvent = inte.payload.event
 		switch (monitorEvent.type) {
 			case eventMonitorTypes.TypeEventMonitorAdvertiseGroup:
-				console.log('advertise', monitorEvent.advertiseGroup)
+				monitorPayload = `local peer advertised ${monitorEvent.advertiseGroup.peerId.substr(
+					monitorEvent.advertiseGroup.peerId.length - 10,
+				)} on ${monitorEvent.advertiseGroup.driverName}, with ${
+					monitorEvent.advertiseGroup.maddrs.length
+				} maddrs`
 				break
 			case eventMonitorTypes.TypeEventMonitorPeerFound:
-				console.log('peerFound', monitorEvent.peerFound)
+				monitorPayload = `new peer found ${monitorEvent.peerFound.peerId.substr(
+					monitorEvent.peerFound.peerId.length - 10,
+				)} on ${monitorEvent.peerFound.driverName}, with ${
+					monitorEvent.peerFound.maddrs.length
+				} maddrs`
 				break
 			case eventMonitorTypes.TypeEventMonitorPeerJoin:
-				console.log('peerJoin', monitorEvent.peerJoin)
+				if (monitorEvent.peerJoin.isSelf) {
+					monitorPayload = 'you just joined this group'
+				} else {
+					let activeAddr = '<unknown>'
+					if (monitorEvent.peerJoin.maddrs.length) {
+						activeAddr = monitorEvent.peerJoin.maddrs[0]
+					}
+					monitorPayload = `peer joined ${monitorEvent.peerJoin.peerId.substr(
+						monitorEvent.peerJoin.peerId.length - 10,
+					)} on: ${activeAddr}`
+				}
 				break
 			case eventMonitorTypes.TypeEventMonitorPeerLeave:
-				console.log('peerLeave', monitorEvent.peerLeave)
+				if (monitorEvent.peerLeave.isSelf) {
+					monitorPayload = 'you just leaved this group'
+				} else {
+					monitorPayload = `peer leaved ${monitorEvent.peerLeave.peerId.substr(
+						monitorEvent.peerLeave.peerId.length - 10,
+					)}`
+				}
 				break
 			default:
 				console.log('undefined event type', monitorEvent)
+				monitorPayload = 'undefined'
 		}
 	}
-
 	const isGroup = convKind === messengerpb.Conversation.Type.MultiMemberType
 	let name
 	let baseColor = color.blue
@@ -569,12 +594,33 @@ export const Message: React.FC<{
 				</View>
 			</>
 		)
-	} else if (inte.type === messengerpb.AppMessage.Type.TypeMonitorMetadata) {
+	} else if (
+		inte.type === messengerpb.AppMessage.Type.TypeMonitorMetadata &&
+		ctx?.persistentOptions[PersistentOptionsKeys.Debug].enable
+	) {
 		return (
-			<View style={{ alignItems: 'center' }}>
-				<MessageSystemWrapper>
-					<Text style={{ textAlign: 'center' }}>Yessss</Text>
-				</MessageSystemWrapper>
+			<View style={[padding.vertical.tiny, padding.horizontal.medium]}>
+				<Text
+					numberOfLines={1}
+					style={[
+						{ textAlign: 'center', fontFamily: 'Open Sans' },
+						text.color.black,
+						text.bold.small,
+						text.size.scale(14),
+					]}
+				>
+					{monitorPayload}
+				</Text>
+				<Text
+					style={[
+						{ fontFamily: 'Open Sans', alignSelf: 'flex-end' },
+						text.bold.small,
+						text.color.black,
+						text.size.small,
+					]}
+				>
+					{timeFormat.fmtTimestampUnix(sentDate)}
+				</Text>
 			</View>
 		)
 	} else {

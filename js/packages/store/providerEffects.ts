@@ -1,4 +1,3 @@
-import * as middleware from '@berty-tech/grpc-bridge/middleware'
 import {
 	messenger as messengerpb,
 	protocol as protocolpb,
@@ -349,10 +348,7 @@ export const openingClients = (
 
 	console.log('starting stream')
 
-	const messengerMiddlewares = middleware.chain(
-		__DEV__ ? middleware.logger.create('MESSENGER') : null,
-	)
-
+	const messengerMiddlewares = null
 	let rpc
 	if (embedded) {
 		rpc = rpcBridge

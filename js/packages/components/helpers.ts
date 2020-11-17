@@ -68,7 +68,12 @@ const fmtTimestamp3 = (date: number | Date): string => {
 	return mDate.format('hh:mm a')
 }
 
-export const timeFormat = { fmtTimestamp1, fmtTimestamp2, fmtTimestamp3 }
+const fmtTimestampUnix = (date: number): any => {
+	const mdate = moment.unix(date)
+	return mdate.format('hh:mm a')
+}
+
+export const timeFormat = { fmtTimestamp1, fmtTimestamp2, fmtTimestamp3, fmtTimestampUnix }
 
 export const strToTimestamp = (dateStr?: string): number =>
 	new Date(parseInt(dateStr || '0', 10)).getTime()

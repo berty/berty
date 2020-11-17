@@ -250,6 +250,7 @@
       "header-middle-button": "Generate fake data",
       "header-right-button": "Restart daemon",
       "system-info-button": "System info",
+      "debug-button": "Debug",
       "add-bots-button": "Add bots",
       "share-button": {
         "title": "Share ID on discord",
