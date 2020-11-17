@@ -142,7 +142,7 @@
         "tag": "bloqué"
       },
       "delete-account-button": "Supprimer mon compte",
-      "backup-account-button": "Faire une sauvegarde de mon compte"
+      "backup-account-button": "Créer une sauvegarde du compte"
     },
     "notifications": {
       "title": "Notifications",
