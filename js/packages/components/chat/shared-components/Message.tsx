@@ -1,4 +1,4 @@
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import { messenger as messengerpb, types as typespb } from '@berty-tech/api/index.js'
 import {
 	useClient,
 	useConversation,
@@ -20,6 +20,7 @@ import { ProceduralCircleAvatar } from '../../shared-components'
 import { useNavigation as useNativeNavigation } from '@react-navigation/core'
 import { pbDateToNum, timeFormat } from '../../helpers'
 import { Buffer } from 'buffer'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 const pal = palette('tol-rainbow', 256)
 
@@ -329,6 +330,7 @@ export const MessageInvitation: React.FC<{ message: any }> = ({ message }) => {
 const interactionsFilter = (inte: any) =>
 	inte.type === messengerpb.AppMessage.Type.TypeUserMessage && inte.isMe
 
+const eventMonitorTypes = typespb.MonitorGroup.TypeEventMonitor
 export const Message: React.FC<{
 	id: string
 	convKind: any
@@ -337,6 +339,7 @@ export const Message: React.FC<{
 	previousMessageId: string
 	nextMessageId: string
 }> = ({ id, convKind, members, previousMessageId, nextMessageId, convPK }) => {
+	const ctx = useMsgrContext()
 	const inte = useInteraction(id, convPK)
 	const previousMessage = useInteraction(previousMessageId, convPK)
 	const nextMessage = useInteraction(nextMessageId, convPK)
@@ -348,7 +351,52 @@ export const Message: React.FC<{
 	if (!inte) {
 		return null
 	}
-
+	let monitorPayload
+	if (inte.type === messengerpb.AppMessage.Type.TypeMonitorMetadata) {
+		/* typespb.MonitorGroup.TypeEventMonitor */
+		const monitorEvent = inte.payload.event
+		switch (monitorEvent.type) {
+			case eventMonitorTypes.TypeEventMonitorAdvertiseGroup:
+				monitorPayload = `local peer advertised ${monitorEvent.advertiseGroup.peerId.substr(
+					monitorEvent.advertiseGroup.peerId.length - 10,
+				)} on ${monitorEvent.advertiseGroup.driverName}, with ${
+					monitorEvent.advertiseGroup.maddrs.length
+				} maddrs`
+				break
+			case eventMonitorTypes.TypeEventMonitorPeerFound:
+				monitorPayload = `new peer found ${monitorEvent.peerFound.peerId.substr(
+					monitorEvent.peerFound.peerId.length - 10,
+				)} on ${monitorEvent.peerFound.driverName}, with ${
+					monitorEvent.peerFound.maddrs.length
+				} maddrs`
+				break
+			case eventMonitorTypes.TypeEventMonitorPeerJoin:
+				if (monitorEvent.peerJoin.isSelf) {
+					monitorPayload = 'you just joined this group'
+				} else {
+					let activeAddr = '<unknown>'
+					if (monitorEvent.peerJoin.maddrs.length) {
+						activeAddr = monitorEvent.peerJoin.maddrs[0]
+					}
+					monitorPayload = `peer joined ${monitorEvent.peerJoin.peerId.substr(
+						monitorEvent.peerJoin.peerId.length - 10,
+					)} on: ${activeAddr}`
+				}
+				break
+			case eventMonitorTypes.TypeEventMonitorPeerLeave:
+				if (monitorEvent.peerLeave.isSelf) {
+					monitorPayload = 'you just leaved this group'
+				} else {
+					monitorPayload = `peer leaved ${monitorEvent.peerLeave.peerId.substr(
+						monitorEvent.peerLeave.peerId.length - 10,
+					)}`
+				}
+				break
+			default:
+				console.log('undefined event type', monitorEvent)
+				monitorPayload = 'undefined'
+		}
+	}
 	const isGroup = convKind === messengerpb.Conversation.Type.MultiMemberType
 	let name
 	let baseColor = color.blue
@@ -545,6 +593,35 @@ export const Message: React.FC<{
 					<QuickReplyOptions convPk={convPK} options={inte.payload.options} />
 				</View>
 			</>
+		)
+	} else if (
+		inte.type === messengerpb.AppMessage.Type.TypeMonitorMetadata &&
+		ctx?.persistentOptions[PersistentOptionsKeys.Debug].enable
+	) {
+		return (
+			<View style={[padding.vertical.tiny, padding.horizontal.medium]}>
+				<Text
+					numberOfLines={1}
+					style={[
+						{ textAlign: 'center', fontFamily: 'Open Sans' },
+						text.color.black,
+						text.bold.small,
+						text.size.scale(14),
+					]}
+				>
+					{monitorPayload}
+				</Text>
+				<Text
+					style={[
+						{ fontFamily: 'Open Sans', alignSelf: 'flex-end' },
+						text.bold.small,
+						text.color.black,
+						text.size.small,
+					]}
+				>
+					{timeFormat.fmtTimestamp3(sentDate)}
+				</Text>
+			</View>
 		)
 	} else {
 		return null
