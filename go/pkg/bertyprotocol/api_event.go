@@ -9,6 +9,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/events"
+	"berty.tech/go-orbit-db/stores"
 )
 
 func checkParametersConsistency(sinceID, untilID []byte, sinceNow, untilNow, reverseOrder bool) error {
@@ -35,9 +36,9 @@ func checkParametersConsistency(sinceID, untilID []byte, sinceNow, untilNow, rev
 // GroupMetadataList replays previous and subscribes to new metadata events from the group
 func (s *service) GroupMetadataList(req *bertytypes.GroupMetadataList_Request, sub ProtocolService_GroupMetadataListServer) error {
 	var (
-		previousEvents <-chan *bertytypes.GroupMetadataEvent
-		newEvents      <-chan events.Event
-		sentEvents     = map[string]bool{}
+		newEvents            <-chan events.Event
+		sentEvents                = map[string]bool{}
+		firstReplicatedFound bool = true
 	)
 
 	// Get group context / check if the group is opened
@@ -56,15 +57,15 @@ func (s *service) GroupMetadataList(req *bertytypes.GroupMetadataList_Request, s
 		newEvents = cg.MetadataStore().Subscribe(sub.Context())
 	}
 
-	// Subscribe to previous metadata events and stream them if requested
-	if !req.SinceNow {
+	listPreviousMessages := func() error {
+		var previousEvents <-chan *bertytypes.GroupMetadataEvent
 		previousEvents, err = cg.MetadataStore().ListEvents(sub.Context(), req.SinceID, req.UntilID, req.ReverseOrder)
 		if err != nil {
 			return err
 		}
 
 		for event := range previousEvents {
-			if event == nil {
+			if event == nil || sentEvents[string(event.EventContext.ID)] {
 				continue
 			}
 
@@ -78,11 +79,31 @@ func (s *service) GroupMetadataList(req *bertytypes.GroupMetadataList_Request, s
 			cg.logger.Info("service - metadata store - sent 1 event from log history")
 			sentEvents[string(event.EventContext.ID)] = true
 		}
+
+		return nil
+	}
+
+	// Subscribe to previous metadata events and stream them if requested
+	if !req.SinceNow {
+		if err := listPreviousMessages(); err != nil {
+			return err
+		}
+		firstReplicatedFound = false
 	}
 
 	// Subscribe to new metadata events and stream them if requested
 	if req.UntilID == nil && !req.UntilNow {
 		for event := range newEvents {
+			if !firstReplicatedFound {
+				if _, ok := event.(*stores.EventReplicated); ok {
+					if err := listPreviousMessages(); err != nil {
+						return err
+					}
+					firstReplicatedFound = true
+					continue
+				}
+			}
+
 			e, ok := event.(*bertytypes.GroupMetadataEvent)
 			if !ok || sentEvents[string(e.EventContext.ID)] { // Avoid sending two times the same event
 				continue
@@ -96,6 +117,10 @@ func (s *service) GroupMetadataList(req *bertytypes.GroupMetadataList_Request, s
 				return err
 			}
 
+			if !firstReplicatedFound {
+				sentEvents[string(e.EventContext.ID)] = true
+			}
+
 			cg.logger.Info("service - metadata store - sent 1 event from log subscription")
 		}
 	}
@@ -106,9 +131,9 @@ func (s *service) GroupMetadataList(req *bertytypes.GroupMetadataList_Request, s
 // GroupMessageList replays previous and subscribes to new message events from the group
 func (s *service) GroupMessageList(req *bertytypes.GroupMessageList_Request, sub ProtocolService_GroupMessageListServer) error {
 	var (
-		previousEvents <-chan *bertytypes.GroupMessageEvent
-		newEvents      <-chan events.Event
-		sentEvents     = map[string]bool{}
+		newEvents            <-chan events.Event
+		sentEvents                = map[string]bool{}
+		firstReplicatedFound bool = true
 	)
 
 	// Get group context / check if the group is opened
@@ -127,15 +152,15 @@ func (s *service) GroupMessageList(req *bertytypes.GroupMessageList_Request, sub
 		newEvents = cg.MessageStore().Subscribe(sub.Context())
 	}
 
-	// Subscribe to previous message events and stream them if requested
-	if !req.SinceNow {
+	listPreviousMessages := func() error {
+		var previousEvents <-chan *bertytypes.GroupMessageEvent
 		previousEvents, err = cg.MessageStore().ListEvents(sub.Context(), req.SinceID, req.UntilID, req.ReverseOrder)
 		if err != nil {
 			return err
 		}
 
 		for event := range previousEvents {
-			if event == nil {
+			if event == nil || sentEvents[string(event.EventContext.ID)] {
 				continue
 			}
 
@@ -149,11 +174,31 @@ func (s *service) GroupMessageList(req *bertytypes.GroupMessageList_Request, sub
 			cg.logger.Info("service - message store - sent 1 event from log history")
 			sentEvents[string(event.EventContext.ID)] = true
 		}
+
+		return nil
+	}
+
+	// Subscribe to previous message events and stream them if requested
+	if !req.SinceNow {
+		if err := listPreviousMessages(); err != nil {
+			return err
+		}
+		firstReplicatedFound = false
 	}
 
 	// Subscribe to new message events and stream them if requested
 	if req.UntilID == nil && !req.UntilNow {
 		for event := range newEvents {
+			if !firstReplicatedFound {
+				if _, ok := event.(*stores.EventReplicated); ok {
+					if err := listPreviousMessages(); err != nil {
+						return err
+					}
+					firstReplicatedFound = true
+					continue
+				}
+			}
+
 			e, ok := event.(*bertytypes.GroupMessageEvent)
 			if !ok || sentEvents[string(e.EventContext.ID)] { // Avoid sending two times the same event
 				continue
@@ -168,6 +213,10 @@ func (s *service) GroupMessageList(req *bertytypes.GroupMessageList_Request, sub
 				}
 				cg.logger.Error("error while sending message", zap.Error(err))
 				return err
+			}
+
+			if !firstReplicatedFound {
+				sentEvents[string(e.EventContext.ID)] = true
 			}
 
 			cg.logger.Info("service - message store - sent 1 event from log subscription")
