@@ -357,18 +357,22 @@ export const Message: React.FC<{
 		const monitorEvent = inte.payload.event
 		switch (monitorEvent.type) {
 			case eventMonitorTypes.TypeEventMonitorAdvertiseGroup:
-				monitorPayload = `local peer advertised ${monitorEvent.advertiseGroup.peerId.substr(
+				const msgAdvertise = `local peer advertised ${monitorEvent.advertiseGroup.peerId.substr(
 					monitorEvent.advertiseGroup.peerId.length - 10,
 				)} on ${monitorEvent.advertiseGroup.driverName}, with ${
 					monitorEvent.advertiseGroup.maddrs.length
-				} maddrs`
+				} maddrs:`
+				const addrsAdvertise = monitorEvent.advertiseGroup.maddrs.map((addr: string) => `--${addr}`)
+				monitorPayload = [msgAdvertise, ...addrsAdvertise].join('\n')
 				break
 			case eventMonitorTypes.TypeEventMonitorPeerFound:
-				monitorPayload = `new peer found ${monitorEvent.peerFound.peerId.substr(
+				const msgPeerFound = `new peer found ${monitorEvent.peerFound.peerId.substr(
 					monitorEvent.peerFound.peerId.length - 10,
 				)} on ${monitorEvent.peerFound.driverName}, with ${
 					monitorEvent.peerFound.maddrs.length
-				} maddrs`
+				} maddrs:`
+				const addrsPeerFound = monitorEvent.peerFound.maddrs.map((addr: string) => `--${addr}`)
+				monitorPayload = [msgPeerFound, ...addrsPeerFound].join('\n')
 				break
 			case eventMonitorTypes.TypeEventMonitorPeerJoin:
 				if (monitorEvent.peerJoin.isSelf) {
@@ -601,7 +605,6 @@ export const Message: React.FC<{
 		return (
 			<View style={[padding.vertical.tiny, padding.horizontal.medium]}>
 				<Text
-					numberOfLines={1}
 					style={[
 						{ textAlign: 'center', fontFamily: 'Open Sans' },
 						text.color.black,

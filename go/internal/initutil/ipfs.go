@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	mrand "math/rand"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -104,17 +105,10 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		return nil, nil, errcode.TODO.Wrap(err)
 	}
 
-	rootDS, err := m.getRootDatastore()
-	if err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
-	}
-
 	rdvpeers, err := m.getRdvpMaddrs()
 	if err != nil {
 		return nil, nil, errcode.TODO.Wrap(err)
 	}
-
-	ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceIPFSDatastore))
 
 	swarmAddrs := m.getSwarmAddrs()
 
@@ -363,11 +357,31 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 			return nil
 		},
 	}
-	// FIXME: continue disabling things to speedup the node when DisableIPFSNetwork==true
 
-	m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, err = ipfsutil.NewCoreAPIFromDatastore(m.GetContext(), ipfsDS, &opts)
-	if err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
+	// FIXME: continue disabling things to speedup the node when DisableIPFSNetwork==true
+	if m.Datastore.InMemory {
+		rootDS, err := m.getRootDatastore()
+		if err != nil {
+			return nil, nil, errcode.TODO.Wrap(err)
+		}
+
+		ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceIPFSDatastore))
+
+		m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, err = ipfsutil.NewCoreAPIFromDatastore(m.GetContext(), ipfsDS, &opts)
+		if err != nil {
+			return nil, nil, errcode.TODO.Wrap(err)
+		}
+	} else {
+		repopath := filepath.Join(m.Datastore.Dir, "ipfs")
+		repo, err := ipfsutil.LoadRepoFromPath(repopath)
+		if err != nil {
+			return nil, nil, errcode.TODO.Wrap(err)
+		}
+
+		m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, err = ipfsutil.NewCoreAPIFromRepo(m.GetContext(), repo, &opts)
+		if err != nil {
+			return nil, nil, errcode.TODO.Wrap(err)
+		}
 	}
 
 	// PubSub
