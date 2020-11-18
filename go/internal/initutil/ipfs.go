@@ -279,8 +279,6 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 				"Access-Control-Allow-Methods": {"POST", "PUT"},
 			},
 		},
-		Announce:          announce,
-		NoAnnounce:        noannounce,
 		DisableCorePubSub: true,
 		BootstrapAddrs:    ipfs_cfg.DefaultBootstrapAddresses,
 		ExtraLibp2pOption: p2pOpts,
@@ -356,6 +354,14 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 			return nil
 		},
+	}
+
+	if len(noannounce) > 0 {
+		opts.NoAnnounce = noannounce
+	}
+
+	if len(announce) > 0 {
+		opts.Announce = announce
 	}
 
 	// FIXME: continue disabling things to speedup the node when DisableIPFSNetwork==true
