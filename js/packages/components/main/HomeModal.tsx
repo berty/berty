@@ -31,17 +31,19 @@ const HomeModalButton: React.FC<{
 	onPress: any
 	children?: any
 	hasMarginBottom?: boolean
+	hasShadow?: boolean
 }> = ({
 	value,
 	bgColor,
 	icon,
-	iconSize = 50,
+	iconSize = 60,
 	iconPack,
 	onPress,
 	children = null,
 	hasMarginBottom,
+	hasShadow = false,
 }) => {
-	const [{ border, padding, color, text, margin }] = useStyles()
+	const [{ border, color, text, margin }] = useStyles()
 
 	return (
 		<TouchableOpacity
@@ -64,6 +66,12 @@ const HomeModalButton: React.FC<{
 						style={[
 							{
 								backgroundColor: bgColor,
+								paddingVertical: 22,
+								paddingHorizontal: 15,
+							},
+							border.radius.medium,
+							margin.right.large,
+							hasShadow && {
 								shadowColor: '#000',
 								shadowOffset: {
 									width: 0,
@@ -71,13 +79,8 @@ const HomeModalButton: React.FC<{
 								},
 								shadowOpacity: 0.4,
 								shadowRadius: 4,
-
 								elevation: 16,
 							},
-							border.radius.medium,
-							padding.vertical.medium,
-							padding.horizontal.small,
-							margin.right.large,
 						]}
 					>
 						<Icon
@@ -107,7 +110,7 @@ const HomeModalButton: React.FC<{
 
 export const HomeModal: React.FC<{}> = () => {
 	const navigation = useNativeNavigation()
-	const [{ absolute, color, margin, text, border, padding }] = useStyles()
+	const [{ absolute, color, margin, border, padding }] = useStyles()
 	const [animateSwipe] = useState(new Animated.Value(0))
 
 	function onPanGestureEvent(event: PanGestureHandlerGestureEvent): void {
@@ -152,10 +155,12 @@ export const HomeModal: React.FC<{}> = () => {
 								justifyContent: 'center',
 								height: '100%',
 								width: '100%',
-								opacity: 0.6,
+								opacity: 0.5,
 							},
 						]}
 						colors={['white', 'black']}
+						start={{ x: 0, y: 0.2 }}
+						end={{ x: 0, y: 1 }}
 					/>
 					<TouchableWithoutFeedback style={[StyleSheet.absoluteFill]} onPress={navigation.goBack}>
 						<View style={{ width: '100%', height: '100%' }} />
@@ -205,53 +210,22 @@ export const HomeModal: React.FC<{}> = () => {
 										border.radius.small,
 										margin.bottom.medium,
 									]}
-								></View>
+								/>
 								<HomeModalButton
+									value={t('main.home-modal.top-button')}
 									bgColor='#527FEC'
 									onPress={() => navigation.navigate('Main.CreateGroupAddMembers')}
 									hasMarginBottom
-								>
-									<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-										<View
-											style={[
-												{
-													backgroundColor: '#527FEC',
-												},
-												border.radius.medium,
-												padding.vertical.medium,
-												padding.horizontal.small,
-												margin.right.large,
-											]}
-										>
-											<Icon
-												name='plus'
-												pack='custom'
-												fill={color.white}
-												width={15}
-												height={15}
-												style={{ top: 30, left: -7 }}
-											/>
-											<Icon name='users' pack='custom' fill={color.white} width={50} height={50} />
-										</View>
-										<TextNative
-											numberOfLines={1}
-											style={[
-												text.color.black,
-												text.bold.medium,
-												text.size.scale(18),
-												{ fontFamily: 'Open Sans' },
-											]}
-										>
-											{t('main.home-modal.top-button')}
-										</TextNative>
-									</View>
-								</HomeModalButton>
+									icon='add-new-group'
+									iconPack='custom'
+								/>
 								<HomeModalButton
 									value={t('main.home-modal.bottom-button')}
 									bgColor={color.red}
 									icon='qr'
 									iconPack='custom'
 									onPress={() => navigation.navigate('Main.Scan')}
+									hasShadow
 								/>
 							</View>
 						</Animated.View>
