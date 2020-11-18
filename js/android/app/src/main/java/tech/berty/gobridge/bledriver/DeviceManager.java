@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class DeviceManager {
-    private static final String TAG = "DeviceManager";
+    private static final String TAG = "bty.ble.DeviceManager";
 
     private static HashMap<String, PeerDevice> mPeerDevices = new HashMap<>();
 
@@ -26,14 +26,21 @@ public class DeviceManager {
     }
 
     public static synchronized PeerDevice get(String key) {
-        Log.d(TAG, "get() called");
+        Log.v(TAG, "get() called");
         PeerDevice peerDevice = mPeerDevices.get(key);
         if (peerDevice != null) {
-            Log.d(TAG, "get(): device found");
+            Log.v(TAG, "get(): device found");
         } else {
             Log.d(TAG, "get(): device not found");
         }
         return peerDevice;
+    }
+
+    public static synchronized void closeDeviceConnection(String key) {
+        PeerDevice peerDevice;
+        if ((peerDevice = DeviceManager.get(key)) != null) {
+            peerDevice.disconnect();
+        }
     }
 
     public static synchronized void closeAllDeviceConnections() {
@@ -41,12 +48,14 @@ public class DeviceManager {
         while (iterator.hasNext()) {
             Map.Entry mapElement = (Map.Entry)iterator.next();
             PeerDevice peerDevice = (PeerDevice)mapElement.getValue();
-            peerDevice.close();
+            peerDevice.disconnect();
         }
     }
 
-    public static PeerDevice addDevice(@NonNull PeerDevice peerDevice) {
+    public static synchronized void addDevice(@NonNull PeerDevice peerDevice) {
         String key = peerDevice.getMACAddress();
-        return put(key, peerDevice);
+        if (get(key) == null) {
+            put(key, peerDevice);
+        }
     }
 }
