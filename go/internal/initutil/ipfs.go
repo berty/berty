@@ -238,7 +238,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 			for _, relay := range relays {
 				for _, addr := range relay.Addrs {
-					announce = append(announce, addr.String()+"/p2p-circuit")
+					announce = append(announce, addr.String()+"/p2p/"+relay.ID.String()+"/p2p-circuit")
 				}
 			}
 
