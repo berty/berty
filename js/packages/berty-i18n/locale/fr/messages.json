@@ -250,6 +250,7 @@
       "header-middle-button": "Générer de fausses données",
       "header-right-button": "Redémarrer le démon",
       "system-info-button": "Infos système",
+      "debug-button": "",
       "add-bots-button": "Ajouter des bots",
       "share-button": {
         "title": "Partager l'ID sur Discord",
