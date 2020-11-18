@@ -347,6 +347,9 @@
       "erase-button": "",
       "leave-button": ""
     },
+    "multi-member-qr": {
+      "title": ""
+    },
     "one-to-one": {
       "contact-request-box": {
         "title": "",
