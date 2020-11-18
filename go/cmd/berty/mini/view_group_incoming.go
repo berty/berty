@@ -296,6 +296,7 @@ func handlerNoop(_ context.Context, _ *groupView, _ *bertytypes.GroupMetadataEve
 
 func groupMonitorEventHandler(logger *zap.Logger, v *groupView, e *bertytypes.MonitorGroup_EventMonitor) {
 	var payload string
+	var metadata []string
 
 	switch t := e.GetType(); t {
 	case bertytypes.TypeEventMonitorPeerJoin:
@@ -309,7 +310,6 @@ func groupMonitorEventHandler(logger *zap.Logger, v *groupView, e *bertytypes.Mo
 			}
 			payload = fmt.Sprintf("peer joined <%.15s> on: %s", peerjoin.GetPeerID(), activeAddr)
 		}
-
 	case bertytypes.TypeEventMonitorPeerLeave:
 		peerleave := e.GetPeerLeave()
 		if peerleave.IsSelf {
@@ -321,10 +321,13 @@ func groupMonitorEventHandler(logger *zap.Logger, v *groupView, e *bertytypes.Mo
 		advertisegroup := e.GetAdvertiseGroup()
 		payload = fmt.Sprintf("local peer advertised <%.15s> on `%s`, with %d maddrs",
 			advertisegroup.GetPeerID(), advertisegroup.GetDriverName(), len(advertisegroup.GetMaddrs()))
+		metadata = advertisegroup.GetMaddrs()
+
 	case bertytypes.TypeEventMonitorPeerFound:
 		peerfound := e.GetPeerFound()
 		payload = fmt.Sprintf("new peer found <%.15s> on `%s`, with %d maddrs",
 			peerfound.GetPeerID(), peerfound.GetDriverName(), len(peerfound.GetMaddrs()))
+		metadata = peerfound.GetMaddrs()
 	default:
 		logger.Warn("unknow monitor event received")
 		return
@@ -334,6 +337,15 @@ func groupMonitorEventHandler(logger *zap.Logger, v *groupView, e *bertytypes.Mo
 		messageType: messageTypeMeta,
 		payload:     []byte(payload),
 	})
+
+	for _, meta := range metadata {
+		msg := fmt.Sprintf("--- %s", meta)
+		v.messages.Append(&historyMessage{
+			messageType: messageTypeMeta,
+			payload:     []byte(msg),
+		})
+	}
+
 }
 
 func metadataEventHandler(ctx context.Context, v *groupView, e *bertytypes.GroupMetadataEvent, isHistory bool, logger *zap.Logger) {

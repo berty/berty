@@ -236,7 +236,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 			}
 		}
 
-		if m.Node.Protocol.RelayOnlyMode {
+		if m.Node.Protocol.RelayOnlyMode || m.Node.Protocol.RelayHack {
 			for _, relay := range relays {
 				for _, addr := range relay.Addrs {
 					announce = append(announce, addr.String()+"/p2p/"+relay.ID.String()+"/p2p-circuit")

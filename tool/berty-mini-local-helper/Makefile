@@ -3,7 +3,7 @@ FORMAT ?= json
 TMPDIR ?= /tmp
 RUN_OPTS ?=
 NAME ?= $(USER)-mini-$(ID)
-MINI_OPTS ?= --p2p.relay-only
+MINI_OPTS ?= --p2p.relay-hack --p2p.relay-only
 
 .PHONY: run
 run:
