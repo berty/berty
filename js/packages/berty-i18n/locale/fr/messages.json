@@ -250,6 +250,7 @@
       "header-middle-button": "Générer de fausses données",
       "header-right-button": "Redémarrer le démon",
       "system-info-button": "Infos système",
+      "debug-button": "Debug",
       "add-bots-button": "Ajouter des bots",
       "share-button": {
         "title": "Partager l'ID sur Discord",
@@ -345,6 +346,9 @@
       "save-button": "Enregistrer la conversation sur un serveur",
       "erase-button": "Effacer la conversation",
       "leave-button": "Quitter le groupe"
+    },
+    "multi-member-qr": {
+      "title": ""
     },
     "one-to-one": {
       "contact-request-box": {

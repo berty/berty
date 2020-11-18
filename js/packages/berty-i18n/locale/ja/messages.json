@@ -141,7 +141,8 @@
         "title": "",
         "tag": ""
       },
-      "delete-account-button": ""
+      "delete-account-button": "",
+      "backup-account-button": ""
     },
     "notifications": {
       "title": "通知",
@@ -249,6 +250,7 @@
       "header-middle-button": "",
       "header-right-button": "",
       "system-info-button": "",
+      "debug-button": "",
       "add-bots-button": "",
       "share-button": {
         "title": "",
@@ -344,6 +346,9 @@
       "save-button": "",
       "erase-button": "",
       "leave-button": ""
+    },
+    "multi-member-qr": {
+      "title": ""
     },
     "one-to-one": {
       "contact-request-box": {
