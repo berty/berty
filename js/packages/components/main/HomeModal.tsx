@@ -1,16 +1,22 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
 	View,
 	TouchableOpacity,
 	StyleSheet,
 	TouchableWithoutFeedback,
 	Text as TextNative,
+	Animated,
 } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { Translation } from 'react-i18next'
 import LinearGradient from 'react-native-linear-gradient'
-import { PanGestureHandler, State } from 'react-native-gesture-handler'
+import {
+	PanGestureHandler,
+	State,
+	PanGestureHandlerGestureEvent,
+	PanGestureHandlerStateChangeEvent,
+} from 'react-native-gesture-handler'
 
 import { useStyles } from '@berty-tech/styles'
 
@@ -102,6 +108,37 @@ const HomeModalButton: React.FC<{
 export const HomeModal: React.FC<{}> = () => {
 	const navigation = useNativeNavigation()
 	const [{ absolute, color, margin, text, border, padding }] = useStyles()
+	const [animateSwipe] = useState(new Animated.Value(0))
+
+	function onPanGestureEvent(event: PanGestureHandlerGestureEvent): void {
+		let toValue = 0
+		if (event.nativeEvent.translationY > 0) {
+			toValue = -event.nativeEvent.translationY
+		} else {
+			toValue = 0
+		}
+
+		toValue &&
+			Animated.timing(animateSwipe, {
+				toValue,
+				duration: 100,
+				useNativeDriver: false,
+			}).start()
+	}
+
+	function onHandlerStateChange(event: PanGestureHandlerStateChangeEvent): void {
+		if (event.nativeEvent.oldState === State.ACTIVE) {
+			if (event.nativeEvent.translationY > 100 || event.nativeEvent.velocityY > 100) {
+				navigation.goBack()
+			} else {
+				Animated.timing(animateSwipe, {
+					toValue: 0,
+					duration: 100,
+					useNativeDriver: false,
+				}).start()
+			}
+		}
+	}
 
 	return (
 		<Translation>
@@ -123,95 +160,101 @@ export const HomeModal: React.FC<{}> = () => {
 					<TouchableWithoutFeedback style={[StyleSheet.absoluteFill]} onPress={navigation.goBack}>
 						<View style={{ width: '100%', height: '100%' }} />
 					</TouchableWithoutFeedback>
-					<View
-						style={[
-							absolute.bottom,
-							margin.bottom.scale(95),
-							{
-								width: '100%',
-							},
-						]}
+					<PanGestureHandler
+						onGestureEvent={onPanGestureEvent}
+						onHandlerStateChange={onHandlerStateChange}
 					>
-						<View
+						<Animated.View
 							style={[
+								absolute.bottom,
+								margin.bottom.scale(95),
 								{
-									backgroundColor: 'white',
-									flex: 1,
-									shadowColor: '#000',
-									shadowOffset: {
-										width: 0,
-										height: 9,
-									},
-									shadowOpacity: 0.48,
-									shadowRadius: 11.95,
-									elevation: 18,
+									width: '100%',
+									bottom: animateSwipe,
 								},
-								border.radius.medium,
-								padding.large,
-								padding.top.medium,
 							]}
 						>
 							<View
 								style={[
 									{
-										backgroundColor: '#EDEFF3',
-										height: 5,
-										width: 70,
-										alignSelf: 'center',
+										backgroundColor: 'white',
+										flex: 1,
+										shadowColor: '#000',
+										shadowOffset: {
+											width: 0,
+											height: 9,
+										},
+										shadowOpacity: 0.48,
+										shadowRadius: 11.95,
+										elevation: 18,
 									},
-									border.radius.small,
-									margin.bottom.medium,
+									border.radius.medium,
+									padding.large,
+									padding.top.medium,
 								]}
-							></View>
-							<HomeModalButton
-								bgColor='#527FEC'
-								onPress={() => navigation.navigate('Main.CreateGroupAddMembers')}
-								hasMarginBottom
 							>
-								<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-									<View
-										style={[
-											{
-												backgroundColor: '#527FEC',
-											},
-											border.radius.large,
-											padding.vertical.large,
-											padding.horizontal.medium,
-											margin.right.large,
-										]}
-									>
-										<Icon
-											name='plus'
-											pack='custom'
-											fill={color.white}
-											width={15}
-											height={15}
-											style={{ top: 30, left: -7 }}
-										/>
-										<Icon name='users' pack='custom' fill={color.white} width={60} height={60} />
+								<View
+									style={[
+										{
+											backgroundColor: '#EDEFF3',
+											height: 5,
+											width: 70,
+											alignSelf: 'center',
+										},
+										border.radius.small,
+										margin.bottom.medium,
+									]}
+								></View>
+								<HomeModalButton
+									bgColor='#527FEC'
+									onPress={() => navigation.navigate('Main.CreateGroupAddMembers')}
+									hasMarginBottom
+								>
+									<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+										<View
+											style={[
+												{
+													backgroundColor: '#527FEC',
+												},
+												border.radius.large,
+												padding.vertical.large,
+												padding.horizontal.medium,
+												margin.right.large,
+											]}
+										>
+											<Icon
+												name='plus'
+												pack='custom'
+												fill={color.white}
+												width={15}
+												height={15}
+												style={{ top: 30, left: -7 }}
+											/>
+											<Icon name='users' pack='custom' fill={color.white} width={60} height={60} />
+										</View>
+										<TextNative
+											numberOfLines={1}
+											style={[
+												text.color.black,
+												text.bold.medium,
+												text.size.scale(18),
+												{ fontFamily: 'Open Sans' },
+											]}
+										>
+											{t('main.home-modal.top-button')}
+										</TextNative>
 									</View>
-									<TextNative
-										numberOfLines={1}
-										style={[
-											text.color.black,
-											text.bold.medium,
-											text.size.scale(18),
-											{ fontFamily: 'Open Sans' },
-										]}
-									>
-										{t('main.home-modal.top-button')}
-									</TextNative>
-								</View>
-							</HomeModalButton>
-							<HomeModalButton
-								value={t('main.home-modal.bottom-button')}
-								bgColor={color.red}
-								icon='qr'
-								iconPack='custom'
-								onPress={() => navigation.navigate('Main.Scan')}
-							/>
-						</View>
-					</View>
+								</HomeModalButton>
+								<HomeModalButton
+									value={t('main.home-modal.bottom-button')}
+									bgColor={color.red}
+									icon='qr'
+									iconPack='custom'
+									onPress={() => navigation.navigate('Main.Scan')}
+								/>
+							</View>
+						</Animated.View>
+					</PanGestureHandler>
 				</View>
 			)}
 		</Translation>
