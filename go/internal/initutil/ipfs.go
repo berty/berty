@@ -3,6 +3,7 @@ package initutil
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	mrand "math/rand"
 	"strings"
 	"time"
@@ -139,7 +140,11 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	if !m.Node.Protocol.DisableIPFSNetwork {
 		// tor is enabled (optional or required)
 		if m.torIsEnabled() {
-			torOpts := torcfg.SetTemporaryDirectory(tempdir.TempDir())
+			torOpts := torcfg.Merge(
+				torcfg.SetTemporaryDirectory(tempdir.TempDir()),
+				// FIXME: Write an io.Writer to zap logger mapper.
+				torcfg.SetNodeDebug(ioutil.Discard),
+			)
 			if m.Node.Protocol.Tor.BinaryPath == "" {
 				torOpts = torcfg.Merge(torOpts, torcfg.EnableEmbeded)
 			} else {
