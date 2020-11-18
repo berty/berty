@@ -33,7 +33,7 @@
       }
     },
     "create-account": {
-      "title": "",
+      "title": "Създадете собствена сметка",
       "desc": "",
       "required": "",
       "placeholder": "",
@@ -346,6 +346,9 @@
       "save-button": "",
       "erase-button": "",
       "leave-button": ""
+    },
+    "multi-member-qr": {
+      "title": ""
     },
     "one-to-one": {
       "contact-request-box": {
