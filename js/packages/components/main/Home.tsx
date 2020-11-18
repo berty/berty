@@ -16,6 +16,8 @@ import { SafeAreaConsumer, EdgeInsets } from 'react-native-safe-area-context'
 import { Icon, Text } from '@ui-kitten/components'
 import pickBy from 'lodash/pickBy'
 import LottieView from 'lottie-react-native'
+import BlurView from '../shared-components/BlurView'
+import { useIsFocused } from '@react-navigation/native'
 
 import { ScreenProps, useNavigation, Routes } from '@berty-tech/navigation'
 import {
@@ -930,6 +932,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const [isOnTop, setIsOnTop] = useState<boolean>(false)
 	const [searchText, setSearchText] = useState<string>('')
 	const [refresh, setRefresh] = useState<boolean>(false)
+	const isFocused = useIsFocused()
 
 	const { navigate } = useNativeNavigation()
 
@@ -999,91 +1002,113 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 						<SwipeNavRecognizer onSwipeLeft={() => navigate('Settings.Home')}>
 							<SafeAreaConsumer>
 								{(insets: EdgeInsets | null) => (
-									<ScrollView
-										ref={scrollRef}
-										stickyHeaderIndices={!searchText?.length && !hasResults ? [1] : [0]}
-										showsVerticalScrollIndicator={false}
-										scrollEventThrottle={16}
-										keyboardShouldPersistTaps={'handled'}
-										onScrollEndDrag={(e) => {
-											if (e.nativeEvent.contentOffset.y < 0) {
-												setRefresh(true)
-											}
-										}}
-										onScroll={(e) => {
-											if (e.nativeEvent.contentOffset) {
-												if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
-													setIsOnTop(true)
-												} else {
-													setIsOnTop(false)
+									<View>
+										<ScrollView
+											ref={scrollRef}
+											stickyHeaderIndices={!searchText?.length && !hasResults ? [1] : [0]}
+											showsVerticalScrollIndicator={false}
+											scrollEventThrottle={16}
+											keyboardShouldPersistTaps={'handled'}
+											onScrollEndDrag={(e) => {
+												if (e.nativeEvent.contentOffset.y < 0) {
+													setRefresh(true)
 												}
-											}
-										}}
-									>
-										{!searchText?.length && (
-											<IncomingRequests items={requests} onLayout={onLayoutRequests} />
-										)}
-										<HomeHeader
-											isOnTop={isOnTop}
-											hasRequests={requests.length > 0}
-											scrollRef={scrollRef}
-											onLayout={onLayoutHeader}
-											value={searchText}
-											onChange={setSearchText}
-											refresh={refresh}
-											setRefresh={setRefresh}
-										/>
-										{searchText?.length ? (
-											<SearchComponent
-												insets={insets}
-												conversations={searchConversations}
-												contacts={searchContacts}
-												interactions={searchInteractions}
+											}}
+											onScroll={(e) => {
+												if (e.nativeEvent.contentOffset) {
+													if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
+														setIsOnTop(true)
+													} else {
+														setIsOnTop(false)
+													}
+												}
+											}}
+										>
+											{!searchText?.length && (
+												<IncomingRequests items={requests} onLayout={onLayoutRequests} />
+											)}
+
+											<HomeHeader
+												isOnTop={isOnTop}
+												hasRequests={requests.length > 0}
+												scrollRef={scrollRef}
+												onLayout={onLayoutHeader}
 												value={searchText}
-												hasResults={hasResults}
+												onChange={setSearchText}
+												refresh={refresh}
+												setRefresh={setRefresh}
 											/>
-										) : (
-											<>
-												{isConversation ? (
-													<Conversations items={conversations} onLayout={onLayoutConvs} />
-												) : (
-													<View style={[background.white]}>
-														<View
-															style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}
-														>
-															<View>
-																<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
-																<TextNative
-																	style={[
-																		text.align.center,
-																		text.color.grey,
-																		text.bold.small,
-																		opacity(0.3),
-																		margin.top.big,
-																	]}
-																>
-																	{t('main.home.no-contacts')}
-																</TextNative>
+
+											{searchText?.length ? (
+												<SearchComponent
+													insets={insets}
+													conversations={searchConversations}
+													contacts={searchContacts}
+													interactions={searchInteractions}
+													value={searchText}
+													hasResults={hasResults}
+												/>
+											) : (
+												<>
+													{isConversation ? (
+														<Conversations items={conversations} onLayout={onLayoutConvs} />
+													) : (
+														<View style={[background.white]}>
+															<View
+																style={[
+																	flex.justify.center,
+																	flex.align.center,
+																	margin.top.scale(60),
+																]}
+															>
+																<View>
+																	<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
+																	<TextNative
+																		style={[
+																			text.align.center,
+																			text.color.grey,
+																			text.bold.small,
+																			opacity(0.3),
+																			margin.top.big,
+																		]}
+																	>
+																		{t('main.home.no-contacts')}
+																	</TextNative>
+																</View>
 															</View>
 														</View>
-													</View>
-												)}
-												{requests.length > 0 && (
-													<View
-														style={[
-															{
-																backgroundColor: 'white',
-																position: 'absolute',
-																bottom: windowHeight * -1,
-																height: windowHeight,
-																width: '100%',
-															},
-														]}
-													/>
-												)}
-											</>
+													)}
+													{requests.length > 0 && (
+														<View
+															style={[
+																{
+																	backgroundColor: 'white',
+																	position: 'absolute',
+																	bottom: windowHeight * -1,
+																	height: windowHeight,
+																	width: '100%',
+																},
+															]}
+														/>
+													)}
+												</>
+											)}
+										</ScrollView>
+										{!isFocused && (
+											<BlurView
+												blurType='dark'
+												style={{
+													position: 'absolute',
+													left: 0,
+													right: 0,
+													top: 0,
+													bottom: 0,
+													height: windowHeight,
+													opacity: 0.85,
+												}}
+											/>
 										)}
-									</ScrollView>
+									</View>
 								)}
 							</SafeAreaConsumer>
 						</SwipeNavRecognizer>

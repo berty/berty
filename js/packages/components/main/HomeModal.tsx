@@ -11,6 +11,7 @@ import { Icon } from '@ui-kitten/components'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { Translation } from 'react-i18next'
 import LinearGradient from 'react-native-linear-gradient'
+
 import {
 	PanGestureHandler,
 	State,
@@ -142,7 +143,7 @@ export const HomeModal: React.FC<{}> = () => {
 			}
 		}
 	}
-
+	console.log('border test', JSON.stringify(border))
 	return (
 		<Translation>
 			{(t: any): React.ReactNode => (
@@ -155,7 +156,7 @@ export const HomeModal: React.FC<{}> = () => {
 								justifyContent: 'center',
 								height: '100%',
 								width: '100%',
-								opacity: 0.5,
+								opacity: 0.4,
 							},
 						]}
 						colors={['white', 'black']}
@@ -172,7 +173,6 @@ export const HomeModal: React.FC<{}> = () => {
 						<Animated.View
 							style={[
 								absolute.bottom,
-								margin.bottom.scale(95),
 								{
 									width: '100%',
 									bottom: animateSwipe,
@@ -193,7 +193,7 @@ export const HomeModal: React.FC<{}> = () => {
 										shadowRadius: 11.95,
 										elevation: 18,
 									},
-									border.radius.medium,
+									border.radius.top.medium,
 									padding.vertical.large,
 									padding.horizontal.medium,
 									padding.top.medium,
