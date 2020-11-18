@@ -14,8 +14,8 @@ import LinearGradient from 'react-native-linear-gradient'
 import {
 	PanGestureHandler,
 	State,
-	PanGestureHandlerGestureEvent,
 	PanGestureHandlerStateChangeEvent,
+	PanGestureHandlerGestureEvent,
 } from 'react-native-gesture-handler'
 
 import { useStyles } from '@berty-tech/styles'
@@ -35,7 +35,7 @@ const HomeModalButton: React.FC<{
 	value,
 	bgColor,
 	icon,
-	iconSize = 60,
+	iconSize = 50,
 	iconPack,
 	onPress,
 	children = null,
@@ -74,9 +74,9 @@ const HomeModalButton: React.FC<{
 
 								elevation: 16,
 							},
-							border.radius.large,
-							padding.vertical.large,
-							padding.horizontal.medium,
+							border.radius.medium,
+							padding.vertical.medium,
+							padding.horizontal.small,
 							margin.right.large,
 						]}
 					>
@@ -189,7 +189,8 @@ export const HomeModal: React.FC<{}> = () => {
 										elevation: 18,
 									},
 									border.radius.medium,
-									padding.large,
+									padding.vertical.large,
+									padding.horizontal.medium,
 									padding.top.medium,
 								]}
 							>
@@ -216,9 +217,9 @@ export const HomeModal: React.FC<{}> = () => {
 												{
 													backgroundColor: '#527FEC',
 												},
-												border.radius.large,
-												padding.vertical.large,
-												padding.horizontal.medium,
+												border.radius.medium,
+												padding.vertical.medium,
+												padding.horizontal.small,
 												margin.right.large,
 											]}
 										>
@@ -230,7 +231,7 @@ export const HomeModal: React.FC<{}> = () => {
 												height={15}
 												style={{ top: 30, left: -7 }}
 											/>
-											<Icon name='users' pack='custom' fill={color.white} width={60} height={60} />
+											<Icon name='users' pack='custom' fill={color.white} width={50} height={50} />
 										</View>
 										<TextNative
 											numberOfLines={1}

@@ -1,5 +1,5 @@
-import React from 'react'
-import { TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useMemo } from 'react'
+import { TouchableOpacity, View, Animated, Easing } from 'react-native'
 import { useIsFocused } from '@react-navigation/native'
 import { Icon } from '@ui-kitten/components'
 import LinearGradient from 'react-native-linear-gradient'
@@ -14,6 +14,7 @@ type ButtonFooterProps = {
 	selected: boolean
 	disabled?: boolean
 	selectedElemSize?: number
+	isFocused: boolean
 }
 
 const ButtonFooter: React.FC<ButtonFooterProps> = ({
@@ -22,6 +23,7 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 	onPress,
 	selected,
 	disabled = false,
+	isFocused = false,
 }) => {
 	const [{ border, column, color, opacity }] = useStyles()
 	const selectedSize = 59
@@ -35,6 +37,20 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 	const elemColor = selected ? selectedElemColor : color.blue
 	const selectedBackgroundColor = color.blue
 	const backgroundColor = selected ? selectedBackgroundColor : backgroundColorProp
+	let rotateValue = useMemo(() => new Animated.Value(0), [])
+	useEffect(() => {
+		Animated.timing(rotateValue, {
+			toValue: isFocused ? 0 : 1,
+			duration: 300,
+			easing: Easing.linear,
+			useNativeDriver: false,
+		}).start()
+	}, [isFocused, rotateValue])
+
+	const rotateAnimation = rotateValue.interpolate({
+		inputRange: [0, 1],
+		outputRange: ['0deg', '45deg'],
+	})
 
 	return (
 		<View
@@ -60,9 +76,18 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 					},
 				]}
 			>
-				<View
+				<Animated.View
 					style={[
-						{ justifyContent: 'center', alignItems: 'center' },
+						{
+							justifyContent: 'center',
+							alignItems: 'center',
+
+							transform: [
+								{
+									rotate: rotateAnimation,
+								},
+							],
+						},
 						disabled ? opacity(0.5) : null,
 					]}
 				>
@@ -73,7 +98,7 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 						height={elemSize}
 						fill={elemColor}
 					/>
-				</View>
+				</Animated.View>
 			</TouchableOpacity>
 		</View>
 	)
@@ -90,6 +115,7 @@ export const Footer: React.FC<{}> = () => {
 		icon: 'plus-outline',
 		onPress: () => navigate.main.listModal(),
 		selected: true,
+		isFocused,
 	}
 
 	return (
