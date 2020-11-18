@@ -347,6 +347,9 @@
       "erase-button": "Erase conversation",
       "leave-button": "Leave group"
     },
+    "multi-member-qr": {
+      "title": "QR Group"
+    },
     "one-to-one": {
       "contact-request-box": {
         "title": "CONTACT REQUEST",
