@@ -152,5 +152,8 @@ func (psm *pubsubMessageAPI) Seq() []byte {
 
 // // Topics returns list of topics this message was set to
 func (psm *pubsubMessageAPI) Topics() []string {
-	return psm.Message.GetTopicIDs()
+	if psm.Message.Topic == nil {
+		return nil
+	}
+	return []string{*psm.Message.Topic}
 }

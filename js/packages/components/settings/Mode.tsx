@@ -16,6 +16,8 @@ import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsB
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { languages } from '@berty-tech/berty-i18n/locale/languages'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
+
 //
 // Mode
 //
@@ -67,10 +69,13 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 						defaultValue={ctx.persistentOptions?.i18n.language || 'en'}
 						value={ctx.persistentOptions?.i18n.language || 'en'}
 						containerStyle={[{ marginTop: 22, height: 60 }]}
-						onChangeItem={(item: any) => {
+						onChangeItem={async (item: any) => {
 							i18n.changeLanguage(item.value)
-							ctx.setPersistentOption('i18n', {
-								language: item.value,
+							await ctx.setPersistentOption({
+								type: PersistentOptionsKeys.I18N,
+								payload: {
+									language: item.value,
+								},
 							})
 						}}
 					/>

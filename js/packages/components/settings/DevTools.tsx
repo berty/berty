@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, ScrollView, Vibration, Alert } from 'react-native'
+import { Alert, ScrollView, Vibration, View } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { Translation, useTranslation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
@@ -10,14 +10,14 @@ import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
-import { Service, EOF } from '@berty-tech/grpc-bridge'
+import { EOF, Service } from '@berty-tech/grpc-bridge'
 import GoBridge from '@berty-tech/go-bridge'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { Player } from '@react-native-community/audio-toolkit'
 import { playSound } from '../sounds'
-import { MessengerActions } from '@berty-tech/store/context'
+import { MessengerActions, PersistentOptionsKeys } from '@berty-tech/store/context'
 
 //
 // DevTools
@@ -315,6 +315,22 @@ const BodyDevTools: React.FC<{}> = () => {
 				iconSize={30}
 				iconColor={color.dark.grey}
 				onPress={() => navigate.settings.systemInfo()}
+			/>
+			<ButtonSetting
+				name={t('settings.devtools.debug-button')}
+				icon='info-outline'
+				iconSize={30}
+				iconColor={color.dark.grey}
+				toggled
+				varToggle={ctx?.persistentOptions.debug.enable}
+				actionToggle={async () => {
+					await ctx.setPersistentOption({
+						type: PersistentOptionsKeys.Debug,
+						payload: {
+							enable: !ctx.persistentOptions?.debug.enable,
+						},
+					})
+				}}
 			/>
 			<ButtonSetting
 				name={t('settings.devtools.add-bots-button')}

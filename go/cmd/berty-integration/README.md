@@ -88,8 +88,8 @@ Usage of integration:
     	applies various default values, see ADVANCED section below
   -store.dir string
     	root datastore directory (default "/tmp/berty-integration004419521")
-  -store.fileio
-    	enable FileIO Option, files will be loaded using standard I/O
+  -store.lowmem
+    	enable LowMemory Profile, useful for mobile environment
   -store.inmem
     	disable datastore persistence
   -tor.binary-path string

@@ -9,7 +9,7 @@ import (
 	badger_opts "github.com/dgraph-io/badger/options"
 	datastore "github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
-	badger "github.com/ipfs/go-ds-badger"
+	ipfsbadger "github.com/ipfs/go-ds-badger"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -24,7 +24,7 @@ func (m *Manager) SetupDatastoreFlags(fs *flag.FlagSet) {
 	}
 	fs.StringVar(&m.Datastore.Dir, "store.dir", dir, "root datastore directory")
 	fs.BoolVar(&m.Datastore.InMemory, "store.inmem", m.Datastore.InMemory, "disable datastore persistence")
-	fs.BoolVar(&m.Datastore.FileIO, "store.fileio", m.Datastore.FileIO, "enable FileIO Option, files will be loaded using standard I/O")
+	fs.BoolVar(&m.Datastore.LowMemoryProfile, "store.lowmem", m.Datastore.LowMemoryProfile, "enable LowMemory Profile, useful for mobile environment")
 }
 
 func (m *Manager) GetDatastoreDir() (string, error) {
@@ -86,14 +86,12 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 		return sync_ds.MutexWrap(datastore.NewMapDatastore()), nil
 	}
 
-	var opts *badger.Options
-	if m.Datastore.FileIO {
-		opts = &badger.Options{
-			Options: badger.DefaultOptions.WithValueLogLoadingMode(badger_opts.FileIO),
-		}
+	opts := ipfsbadger.DefaultOptions
+	if m.Datastore.LowMemoryProfile {
+		applyBadgerLowMemoryProfile(m.initLogger, &opts)
 	}
 
-	ds, err := badger.NewDatastore(dir, opts)
+	ds, err := ipfsbadger.NewDatastore(dir, &opts)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -102,4 +100,12 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 	m.Datastore.rootDS = sync_ds.MutexWrap(m.Datastore.rootDS)
 	m.initLogger.Debug("datastore", zap.Bool("in-memory", dir == InMemoryDir))
 	return m.Datastore.rootDS, nil
+}
+
+func applyBadgerLowMemoryProfile(logger *zap.Logger, o *ipfsbadger.Options) {
+	logger.Info("Using Badger with low memory options")
+	o.Options = o.Options.WithValueLogLoadingMode(badger_opts.FileIO)
+	o.Options = o.Options.WithTableLoadingMode(badger_opts.FileIO)
+	o.Options = o.Options.WithValueLogFileSize(16 << 20) // 16 MB value log file
+	o.Options = o.Options.WithMaxTableSize(8 << 20)      // should already be set by ipfs
 }

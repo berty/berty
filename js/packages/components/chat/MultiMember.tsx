@@ -267,7 +267,9 @@ const MessageList: React.FC<{
 	const ctx = useMsgrContext()
 	const members = (ctx as any).members[id] || {}
 	const interactions = useSortedConvInteractions(id).filter(
-		(msg) => msg.type === messengerpb.AppMessage.Type.TypeUserMessage,
+		(msg) =>
+			msg.type === messengerpb.AppMessage.Type.TypeUserMessage ||
+			msg.type === messengerpb.AppMessage.Type.TypeMonitorMetadata,
 	)
 
 	if (conversation.replyOptions !== null && conversation.replyOptions !== undefined) {

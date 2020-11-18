@@ -20,6 +20,7 @@ import (
 	qrterminal "github.com/mdp/qrterminal/v3"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/connectivity"
 	"moul.io/srand"
 	"moul.io/u"
 	"moul.io/zapconfig"
@@ -145,11 +146,27 @@ func betabot() error {
 
 	// init messenger gRPC client
 	{
-		bot.logger.Info("connecting to remote berty messenger node", zap.String("addr", *nodeAddr))
-		cc, err := grpc.Dial(*nodeAddr, grpc.WithInsecure())
+		cc, err := grpc.DialContext(ctx, *nodeAddr, grpc.WithInsecure())
 		if err != nil {
-			return fmt.Errorf("connect to remote berty messenger node: %w", err)
+			return fmt.Errorf("unable to connect with remote berty messenger node: %w", err)
 		}
+
+		// monitor grpc state
+		var state connectivity.State
+		go func() {
+			for cc.WaitForStateChange(ctx, state) {
+				state = cc.GetState()
+
+				switch state {
+				case connectivity.Idle:
+					break // ignore idle connection state
+				case connectivity.TransientFailure, connectivity.Shutdown:
+					bot.logger.Warn("connection with berty daemon", zap.String("status", state.String()), zap.String("addr", *nodeAddr))
+				default:
+					bot.logger.Info("connection with berty daemon", zap.String("status", state.String()), zap.String("addr", *nodeAddr))
+				}
+			}
+		}()
 		bot.client = bertymessenger.NewMessengerServiceClient(cc)
 	}
 
