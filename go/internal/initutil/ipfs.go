@@ -52,6 +52,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
 	fs.BoolVar(&m.Node.Protocol.DisableIPFSNetwork, "p2p.disable-ipfs-network", false, "disable as much networking feature as possible, useful during development")
 	fs.BoolVar(&m.Node.Protocol.RelayHack, "p2p.relay-hack", false, "*temporary flag*; if set, Berty will use relays from the config optimistically")
+	fs.BoolVar(&m.Node.Protocol.RelayOnlyMode, "p2p.relay-only", false, "enable relay only mode")
 
 	m.longHelp = append(m.longHelp, [2]string{
 		"-p2p.swarm-listeners=:default:,CUSTOM",
@@ -200,50 +201,50 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 			}
 		}
 
-		if m.Node.Protocol.RelayHack {
-			// Resolving addresses
-			pis, err := ipfsutil.ParseAndResolveRdvpMaddrs(m.GetContext(), m.initLogger, config.Config.P2P.RelayHack)
-			if err != nil {
-				return nil, nil, errcode.TODO.Wrap(err)
-			}
+		// Resolving addresses
+		pis, err := ipfsutil.ParseAndResolveRdvpMaddrs(m.GetContext(), m.initLogger, config.Config.P2P.RelayHack)
+		if err != nil {
+			return nil, nil, errcode.TODO.Wrap(err)
+		}
 
-			lenPis := len(pis)
-			pickFrom := make([]peer.AddrInfo, lenPis)
-			for lenPis > 0 {
-				lenPis--
-				pickFrom[lenPis] = *pis[lenPis]
-			}
+		lenPis := len(pis)
+		pickFrom := make([]peer.AddrInfo, lenPis)
+		for lenPis > 0 {
+			lenPis--
+			pickFrom[lenPis] = *pis[lenPis]
+		}
 
-			// Selecting 2 random one
-			rng := mrand.New(mrand.NewSource(srand.SafeFast())) //nolint:gosec
-			var relays []peer.AddrInfo
-			if len(pickFrom) <= 2 {
-				relays = pickFrom
-			} else {
-				for i := 2; i > 0; i-- {
-					lenPickFrom := len(pickFrom)
-					n := rng.Intn(lenPickFrom)
-					relays = append(relays, pickFrom[n])
-					if n == 0 {
-						pickFrom = pickFrom[1:]
-						continue
-					}
-					if n == lenPickFrom-1 {
-						pickFrom = pickFrom[:n-1]
-						continue
-					}
-					pickFrom = append(pickFrom[:n], pickFrom[n+1:]...)
+		// Selecting 2 random one
+		rng := mrand.New(mrand.NewSource(srand.SafeFast())) //nolint:gosec
+		var relays []peer.AddrInfo
+		if len(pickFrom) <= 2 {
+			relays = pickFrom
+		} else {
+			for i := 2; i > 0; i-- {
+				lenPickFrom := len(pickFrom)
+				n := rng.Intn(lenPickFrom)
+				relays = append(relays, pickFrom[n])
+				if n == 0 {
+					pickFrom = pickFrom[1:]
+					continue
 				}
+				if n == lenPickFrom-1 {
+					pickFrom = pickFrom[:n-1]
+					continue
+				}
+				pickFrom = append(pickFrom[:n], pickFrom[n+1:]...)
 			}
+		}
 
+		if m.Node.Protocol.RelayOnlyMode {
 			for _, relay := range relays {
 				for _, addr := range relay.Addrs {
 					announce = append(announce, addr.String()+"/p2p/"+relay.ID.String()+"/p2p-circuit")
 				}
 			}
-
-			p2pOpts = libp2p.ChainOptions(p2pOpts, libp2p.StaticRelays(relays))
 		}
+
+		p2pOpts = libp2p.ChainOptions(p2pOpts, libp2p.StaticRelays(relays))
 
 		// prefill peerstore with known rdvp servers
 		if m.Node.Protocol.Tor.Mode != TorRequired {
@@ -251,6 +252,12 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 				for _, p := range rdvpeers {
 					cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
 				}
+
+				if m.Node.Protocol.RelayOnlyMode {
+					// Disable MDNS
+					cfg.Discovery.MDNS.Enabled = false
+				}
+
 				return nil
 			})
 		}
@@ -303,7 +310,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 				for i, peer := range rdvpeers {
 					h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
 					rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
-					disc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
+					disc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng, fmt.Sprintf("%d", i))
 
 					// monitor this driver
 					disc, err := tinder.MonitorDriverAsync(logger, h, disc)

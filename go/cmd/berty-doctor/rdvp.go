@@ -136,6 +136,7 @@ func testRDVPs(ctx context.Context, gwg *sync.WaitGroup, addrs []string) {
 							host,
 							tgtPi.ID,
 							rand.New(rand.NewSource(srand.SafeFast())), //nolint:gosec
+							"doctor",
 						)
 
 						// Generate a good key (mostly avoid colision with concurrent `make doctor` runs across the network).

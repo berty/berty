@@ -3,10 +3,11 @@ FORMAT ?= json
 TMPDIR ?= /tmp
 RUN_OPTS ?=
 NAME ?= $(USER)-mini-$(ID)
+MINI_OPTS ?= --p2p.relay-only
 
 .PHONY: run
 run:
-	berty $(RUN_OPTS) --log.format=$(FORMAT) --log.file=$(TMPDIR)/berty-mini-$(ID).log mini -store.dir $(TMPDIR)/berty-mini-$(ID)
+	berty $(RUN_OPTS) --log.format=$(FORMAT) --log.file=$(TMPDIR)/berty-mini-$(ID).log mini -store.dir $(TMPDIR)/berty-mini-$(ID) $(MINI_OPTS)
 
 .PHONY: tail
 tail:
