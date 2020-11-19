@@ -4,22 +4,26 @@
       "betabot": {
         "link": "https://berty.tech/id#key=CiBYAkJkmvcCZOl2hWuSK34arbzSpcpQGLowIvi7ZsEdyRIgMmKs-zHKksC74gjOfSj5puOAQQGWNhsC8o9gEtQ8zrQ\u0026name=BetaBot",
         "name": "BetaBot",
-        "description": "Official BetaBot"
+        "description": "Official BetaBot",
+        "kind": "Bot"
       },
       "betabot-dev": {
         "link": "https://berty.tech/id#key=CiBQHH6a84AHwdahXR6NQcOxTKjUHeqLdQfIAzxAYSoD1xIgT-tFTYrU-tD55bYgaXbBNTlqTHubq-_Qb8ksv2bSH9o\u0026name=BetaBot%20Dev",
         "name": "BetaBot Dev",
-        "description": "Dev BetaBot"
+        "description": "Dev BetaBot",
+        "kind": "Bot"
       },
       "testbot": {
         "link": "https://berty.tech/id#key=CiCTp8uUnxfqlZaebiJEEt_zY-NUnHAWJl4jbGpB7rXsbxIg6_Grg-eLJ-GtqrdARnoTY35k7AI_g5AxqyFVe2elIaA\u0026name=TestBot",
         "name": "TestBot",
-        "description": "Official TestBot"
+        "description": "Official TestBot",
+        "kind": "Bot"
       },
       "testbot-dev": {
         "link": "https://berty.tech/id#key=CiAxSP1RYrv4yi7PsQZtqFH9fepMiqDD1M7y1aIZAzMmghIg_fXVz1J-HfCd6gtRlUN0GsWiIlfgVPamj7lgFIUqfOA\u0026name=TestBot%20Dev",
         "name": "TestBot Dev",
-        "description": "Dev TestBot"
+        "description": "Dev TestBot",
+        "kind": "Bot"
       }
     },
     "conversations": {

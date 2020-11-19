@@ -15,6 +15,9 @@ const BodyAddContactList = () => {
 	const { t } = useTranslation()
 	const [{ color, padding, flex, margin }] = useStyles()
 	const navigation = useNavigation()
+	const tagBot = t('settings.add-dev-conversations.tag-bot')
+	const tagContact = t('settings.add-dev-conversations.tag-contact')
+	const tagConversation = t('settings.add-dev-conversations.tag-conversation')
 
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
@@ -22,11 +25,40 @@ const BodyAddContactList = () => {
 				return (
 					<ButtonSetting
 						key={value.link}
-						name={t('settings.add-contact-list.add') + value.name}
+						name={t('settings.add-dev-conversations.add', { name: value.name })}
 						icon='book-outline'
 						iconSize={30}
 						iconColor={color.dark.grey}
 						actionIcon={null}
+						state={{
+							value: value.kind === tagBot ? tagBot : tagContact,
+							color: value.kind === tagBot ? color.yellow : color.blue,
+							bgColor: value.kind === tagBot ? color.light.yellow : color.light.blue,
+						}}
+						onPress={() => {
+							navigation.navigate('Main.Home')
+							navigation.navigate('Modals', {
+								screen: 'ManageDeepLink',
+								params: { type: 'link', value: value.link },
+							})
+						}}
+					/>
+				)
+			})}
+			{Object.values(globals.berty.conversations).map((value) => {
+				return (
+					<ButtonSetting
+						key={value.link}
+						name={t('settings.add-dev-conversations.add') + ' ' + value.name}
+						icon='book-outline'
+						iconSize={30}
+						iconColor={color.dark.grey}
+						actionIcon={null}
+						state={{
+							value: tagConversation,
+							color: color.green,
+							bgColor: color.light.green,
+						}}
 						onPress={() => {
 							navigation.navigate('Main.Home')
 							navigation.navigate('Modals', {
@@ -41,7 +73,7 @@ const BodyAddContactList = () => {
 	)
 }
 
-export const AddContactList = () => {
+export const AddDevConversations = () => {
 	const { t } = useTranslation()
 	const [{ color, padding, flex, background }] = useStyles()
 	const { goBack } = useNavigation()
@@ -51,7 +83,7 @@ export const AddContactList = () => {
 			<SwipeNavRecognizer>
 				<ScrollView bounces={false} contentContainerStyle={padding.bottom.scale(90)}>
 					<HeaderSettings
-						title={t('settings.add-contact-list.title')}
+						title={t('settings.add-dev-conversations.title')}
 						bgColor={color.dark.grey}
 						undo={goBack}
 					/>
