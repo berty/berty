@@ -59,7 +59,7 @@ require (
 	github.com/libp2p/go-libp2p-kad-dht v0.11.0
 	github.com/libp2p/go-libp2p-noise v0.1.2 // indirect
 	github.com/libp2p/go-libp2p-pubsub v0.4.0
-	github.com/libp2p/go-libp2p-quic-transport v0.9.0
+	github.com/libp2p/go-libp2p-quic-transport v0.9.1
 	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20180418151804-b7dd840ce441
 	github.com/libp2p/go-libp2p-transport-upgrader v0.3.0
@@ -109,7 +109,7 @@ require (
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1
 	gorm.io/driver/sqlite v1.1.3
-	gorm.io/gorm v1.20.6
+	gorm.io/gorm v1.20.7
 	moul.io/godev v1.7.0
 	moul.io/openfiles v1.2.0
 	moul.io/srand v1.6.1

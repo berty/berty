@@ -24,11 +24,11 @@ docs/*/api.md linguist-generated merge=ours -diff
 *.swagger.json linguist-generated merge=ours -diff
 api/*.yaml linguist-generated merge=ours -diff
 /js/packages/store/protocol/grpc-web-gen/** linguist-generated merge=ours -diff
-go.sum linguist-generated text -diff
+go.sum linguist-generated text
 yarn.lock linguist-generated text -diff
 Podfile.lock linguist-generated text -diff
 package.json linguist-generated
-go.mod linguist-generated
+go.mod text
 
 # Reduce conflicts on markdown files
 *.md merge=union
