@@ -143,7 +143,7 @@ export const HomeModal: React.FC<{}> = () => {
 			}
 		}
 	}
-	console.log('border test', JSON.stringify(border))
+
 	return (
 		<Translation>
 			{(t: any): React.ReactNode => (
@@ -159,9 +159,28 @@ export const HomeModal: React.FC<{}> = () => {
 								opacity: 0.4,
 							},
 						]}
-						colors={['white', 'black']}
-						start={{ x: 0, y: 0.2 }}
-						end={{ x: 0, y: 1 }}
+						colors={['#5D5D6D', 'black', 'black']}
+						start={{
+							x: 0,
+							y: 0.3,
+						}}
+						end={{
+							x: 0,
+							y: 1,
+						}}
+					/>
+					<View
+						style={[
+							absolute.bottom,
+							{
+								alignItems: 'center',
+								backgroundColor: '#11114C',
+								justifyContent: 'center',
+								height: '100%',
+								width: '100%',
+								opacity: 0.4,
+							},
+						]}
 					/>
 					<TouchableWithoutFeedback style={[StyleSheet.absoluteFill]} onPress={navigation.goBack}>
 						<View style={{ width: '100%', height: '100%' }} />
@@ -184,14 +203,6 @@ export const HomeModal: React.FC<{}> = () => {
 									{
 										backgroundColor: 'white',
 										flex: 1,
-										shadowColor: '#000',
-										shadowOffset: {
-											width: 0,
-											height: 9,
-										},
-										shadowOpacity: 0.48,
-										shadowRadius: 11.95,
-										elevation: 18,
 									},
 									border.radius.top.medium,
 									padding.vertical.large,

@@ -1096,7 +1096,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 										</ScrollView>
 										{!isFocused && (
 											<BlurView
-												blurType='dark'
+												blurType='light'
 												style={{
 													position: 'absolute',
 													left: 0,
