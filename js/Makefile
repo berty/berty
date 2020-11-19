@@ -325,7 +325,7 @@ ios/Berty.xcodeproj: ios/vendor/xcodegen $(xcodegen_yml) $(call rwildcard,ios/Be
 	mkdir -p ios/Berty
 	touch ios/Berty/main.jsbundle
 	IOS_BUNDLE_VERSION=$(shell echo -n $(shell git rev-list HEAD | wc -l)) \
-	IOS_SHORT_BUNDLE_VERSION=$(shell echo "$(VERSION)" | cut -c2-) \
+	IOS_SHORT_BUNDLE_VERSION=$(shell echo "$(VERSION)" | cut -c2- | cut -f1 -d '-') \
 	IOS_COMMIT=$(shell git rev-parse HEAD) \
 	swift run --package-path ios/vendor/xcodegen xcodegen \
 		--spec ios/berty.yaml \

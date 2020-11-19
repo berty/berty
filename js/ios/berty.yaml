@@ -109,23 +109,28 @@ targets:
         SWIFT_OBJC_BRIDGING_HEADER: Berty/Berty-Bridging-Header.h
         SWIFT_OBJC_INTERFACE_HEADER_NAME: Berty-Swift.h
         CODE_SIGN_STYLE: Automatic
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
       configs:
         Debug:
           DEVELOPMENT_TEAM: WMBQ84HN4T
           PRODUCT_NAME: Berty Debug
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).debug
+          ASSETCATALOG_COMPILER_APPICON_NAME: AppIconDebug
         AppStore:
           DEVELOPMENT_TEAM: WMBQ84HN4T
           PRODUCT_NAME: Berty
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER)
+          ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         Staff:
           DEVELOPMENT_TEAM: WMBQ84HN4T
           PRODUCT_NAME: Berty Staff
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).staff
+          ASSETCATALOG_COMPILER_APPICON_NAME: AppIconStaff
         Yolo:
           DEVELOPMENT_TEAM: GR5463T564
           PRODUCT_NAME: Berty Yolo
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).yolo
+          ASSETCATALOG_COMPILER_APPICON_NAME: AppIconYolo
 
 
     sources:
