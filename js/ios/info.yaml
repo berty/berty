@@ -6,7 +6,7 @@ targets:
         BGTaskSchedulerPermittedIdentifiers:
         - tech.berty.ios.task.gobridge-process
         - tech.berty.ios.task.gobridge-refresh
-        CFBundleIconName: "${IOS_APPICON_PATH}"
+        CFBundleIconName: "${ASSETCATALOG_COMPILER_APPICON_NAME}"
         CFBundleVersion: "${IOS_BUNDLE_VERSION}"
         CFBundleShortVersionString: "${IOS_SHORT_BUNDLE_VERSION}"
         Commit: "${IOS_COMMIT}"
