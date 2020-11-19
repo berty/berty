@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -35,7 +34,7 @@ func (svc *service) DevShareInstanceBertyID(ctx context.Context, req *DevShareIn
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	err = discordlog.ShareQRLink(ret.BertyID.DisplayName, discordlog.QRCodeRoom, "Add me on Berty!", ret.DeepLink, ret.HTMLURL)
+	err = discordlog.ShareQRLink(ret.Link.BertyID.DisplayName, discordlog.QRCodeRoom, "Add me on Berty!", ret.InternalURL, ret.WebURL)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -92,31 +91,22 @@ func (svc *service) internalInstanceShareableBertyID(ctx context.Context, req *I
 	}
 
 	displayName := strings.TrimSpace(req.DisplayName)
-	ret := InstanceShareableBertyID_Reply{
-		BertyID: &BertyID{
-			DisplayName:          displayName,
-			PublicRendezvousSeed: res.PublicRendezvousSeed,
-			AccountPK:            config.AccountPK,
-		},
+	id := &BertyID{
+		DisplayName:          displayName,
+		PublicRendezvousSeed: res.PublicRendezvousSeed,
+		AccountPK:            config.AccountPK,
 	}
-	bertyIDPayloadBytes, _ := proto.Marshal(ret.BertyID)
-	ret.BertyIDPayload = b64EncodeBytes(bertyIDPayloadBytes)
+	link := id.GetBertyLink()
+	internal, web, err := link.Marshal()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
 
-	// create QRCodes with standalone display_name variable
-	lightID := BertyID{
-		PublicRendezvousSeed: ret.BertyID.PublicRendezvousSeed,
-		AccountPK:            ret.BertyID.AccountPK,
+	ret := InstanceShareableBertyID_Reply{
+		Link:        link,
+		InternalURL: internal,
+		WebURL:      web,
 	}
-	lightIDBytes, _ := proto.Marshal(&lightID)
-	lightIDPayload := b64EncodeBytes(lightIDBytes)
-	v := url.Values{}
-	v.Set("key", url.QueryEscape(lightIDPayload)) // double-encoding to keep "+" as "+" and not as spaces
-	if displayName != "" {
-		v.Set("name", displayName)
-	}
-	fragment := v.Encode()
-	ret.DeepLink = fmt.Sprintf("berty://id/#%s", fragment)
-	ret.HTMLURL = fmt.Sprintf("https://berty.tech/id#%s", fragment)
 	return &ret, nil
 }
 
@@ -124,106 +114,13 @@ func (svc *service) ParseDeepLink(_ context.Context, req *ParseDeepLink_Request)
 	if req == nil {
 		return nil, errcode.ErrMissingInput
 	}
-	return DecodeDeepLink(req.Link)
-}
-
-func NormalizeDeepLinkURL(input string) (url.Values, string, error) {
-	u, err := url.Parse(input)
-	if err != nil {
-		return url.Values{}, "", errcode.ErrMessengerInvalidDeepLink.Wrap(err)
-	}
-
-	var method string
-	qs := u.Fragment
-
-	switch {
-	case u.Scheme == "berty":
-		method = "/" + u.Host
-	case u.Scheme == "https" && u.Host == "berty.tech":
-		method = u.Path
-	}
-	query, err := url.ParseQuery(qs)
-	if err != nil {
-		return url.Values{}, "", errcode.ErrMessengerInvalidDeepLink.Wrap(err)
-	}
-
-	return query, method, nil
-}
-
-func ParseGroupInviteURLQuery(query url.Values) (*ParseDeepLink_Reply, error) {
 	ret := ParseDeepLink_Reply{}
 
-	ret.Kind = ParseDeepLink_BertyGroup
-	ret.BertyGroup = &BertyGroup{
-		Group: &bertytypes.Group{},
-	}
-
-	invite := query.Get("invite")
-	if invite == "" {
-		return nil, errcode.ErrMessengerInvalidDeepLink
-	}
-	payload, err := b64DecodeBytes(invite)
+	link, err := UnmarshalLink(req.Link)
 	if err != nil {
 		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
 	}
-	err = proto.Unmarshal(payload, ret.BertyGroup.Group)
-
-	if err != nil {
-		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
-	}
-
-	if err := ret.BertyGroup.Group.IsValid(); err != nil {
-		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
-	}
-
-	if name := query.Get("name"); name != "" {
-		ret.BertyGroup.DisplayName = name
-	}
-
-	return &ret, nil
-}
-
-func DecodeDeepLink(link string) (*ParseDeepLink_Reply, error) {
-	if link == "" {
-		return nil, errcode.ErrMissingInput
-	}
-
-	ret := ParseDeepLink_Reply{}
-
-	query, method, err := NormalizeDeepLinkURL(link)
-	if err != nil {
-		return nil, errcode.ErrInvalidInput.Wrap(err)
-	}
-
-	switch method {
-	case "/id":
-		ret.Kind = ParseDeepLink_BertyID
-		ret.BertyID = &BertyID{}
-		key := query.Get("key")
-		if key == "" {
-			return nil, errcode.ErrMessengerInvalidDeepLink
-		}
-		payload, err := b64DecodeBytes(key)
-		if err != nil {
-			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
-		}
-		err = proto.Unmarshal(payload, ret.BertyID)
-		if err != nil {
-			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
-		}
-		if len(ret.BertyID.PublicRendezvousSeed) == 0 || len(ret.BertyID.AccountPK) == 0 {
-			return nil, errcode.ErrMessengerInvalidDeepLink
-		}
-		if name := query.Get("name"); name != "" {
-			ret.BertyID.DisplayName = name
-		}
-
-	case "/group":
-		return ParseGroupInviteURLQuery(query)
-
-	default:
-		return nil, errcode.ErrMessengerInvalidDeepLink
-	}
+	ret.Link = link
 
 	return &ret, nil
 }
@@ -243,47 +140,22 @@ func (svc *service) ShareableBertyGroup(ctx context.Context, request *ShareableB
 		return nil, err
 	}
 
-	rep := &ShareableBertyGroup_Reply{}
-	rep.BertyGroup = &BertyGroup{
+	group := &BertyGroup{
 		Group:       grpInfo.Group,
 		DisplayName: request.GroupName,
 	}
-
-	bertyGroupPayload, err := proto.Marshal(rep.BertyGroup)
+	link := group.GetBertyLink()
+	internal, web, err := link.Marshal()
 	if err != nil {
-		return nil, err
+		return nil, errcode.TODO.Wrap(err)
 	}
 
-	rep.BertyGroupPayload = b64EncodeBytes(bertyGroupPayload)
-	rep.DeepLink, rep.HTMLURL, err = ShareableBertyGroupURL(grpInfo.Group, request.GroupName)
-	if err != nil {
-		return nil, err
+	rep := ShareableBertyGroup_Reply{
+		Link:        link,
+		InternalURL: internal,
+		WebURL:      web,
 	}
-
-	return rep, nil
-}
-
-func ShareableBertyGroupURL(g *bertytypes.Group, groupName string) (string, string, error) {
-	if g.GroupType != bertytypes.GroupTypeMultiMember {
-		return "", "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't share a %s group type", g.GroupType.String()))
-	}
-
-	invite, err := g.Marshal()
-	if err != nil {
-		return "", "", err
-	}
-
-	inviteB64 := b64EncodeBytes(invite)
-
-	v := url.Values{}
-	v.Set("invite", url.QueryEscape(inviteB64)) // double-encoding to keep "+" as "+" and not as spaces
-	if groupName != "" {
-		v.Set("name", groupName)
-	}
-
-	fragment := v.Encode()
-
-	return fmt.Sprintf("berty://group/#%s", fragment), fmt.Sprintf("https://berty.tech/group#%s", fragment), nil
+	return &rep, nil
 }
 
 // maybe we should preserve the previous generic api
@@ -669,7 +541,12 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	_, htmlURL, err := ShareableBertyGroupURL(gir.GetGroup(), req.GetDisplayName())
+	group := &BertyGroup{
+		Group:       gir.GetGroup(),
+		DisplayName: req.GetDisplayName(),
+	}
+	link := group.GetBertyLink()
+	_, webURL, err := link.Marshal()
 	if err != nil {
 		return nil, err
 	}
@@ -679,7 +556,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 		AccountMemberPublicKey: b64EncodeBytes(gir.GetMemberPK()),
 		PublicKey:              pkStr,
 		DisplayName:            dn,
-		Link:                   htmlURL,
+		Link:                   webURL,
 		Type:                   Conversation_MultiMemberType,
 		LocalDevicePublicKey:   b64EncodeBytes(gir.GetDevicePK()),
 		CreatedDate:            timestampMs(time.Now()),
@@ -750,34 +627,26 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 }
 
 func (svc *service) ConversationJoin(ctx context.Context, req *ConversationJoin_Request) (*ConversationJoin_Reply, error) {
-	link := req.GetLink()
-	if link == "" {
+	url := req.GetLink()
+	if url == "" {
 		return nil, errcode.ErrMissingInput
 	}
 
-	query, method, err := NormalizeDeepLinkURL(req.Link)
+	link, err := UnmarshalLink(url)
 	if err != nil {
-		return nil, errcode.ErrInvalidInput.Wrap(err)
+		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
 	}
-
-	var pdlr *ParseDeepLink_Reply
-	switch method {
-	case "/group":
-		pdlr, err = ParseGroupInviteURLQuery(query)
-		if err != nil {
-			return nil, errcode.ErrInvalidInput.Wrap(err)
-		}
-	default:
-		return nil, errcode.ErrInvalidInput.Wrap(err)
+	if !link.IsGroup() {
+		return nil, errcode.ErrInvalidInput
 	}
 
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	bgroup := pdlr.GetBertyGroup()
+	bgroup := link.GetBertyGroup()
 	gpkb := bgroup.GetGroup().GetPublicKey()
 
-	mmgjReq := &bertytypes.MultiMemberGroupJoin_Request{Group: pdlr.GetBertyGroup().GetGroup()}
+	mmgjReq := &bertytypes.MultiMemberGroupJoin_Request{Group: bgroup.GetGroup()}
 	if _, err := svc.protocolClient.MultiMemberGroupJoin(ctx, mmgjReq); err != nil {
 		// Rollback db ?
 		return nil, errcode.TODO.Wrap(err)
@@ -800,7 +669,7 @@ func (svc *service) ConversationJoin(ctx context.Context, req *ConversationJoin_
 		AccountMemberPublicKey: b64EncodeBytes(gir.GetMemberPK()),
 		PublicKey:              b64EncodeBytes(gpkb),
 		DisplayName:            bgroup.GetDisplayName(),
-		Link:                   link,
+		Link:                   url,
 		Type:                   Conversation_MultiMemberType,
 		LocalDevicePublicKey:   b64EncodeBytes(gir.GetDevicePK()),
 		CreatedDate:            timestampMs(time.Now()),
@@ -885,7 +754,7 @@ func (svc *service) AccountUpdate(ctx context.Context, req *AccountUpdate_Reques
 			return err
 		}
 
-		acc, err = tx.updateAccount(acc.PublicKey, ret.GetHTMLURL(), dn, avatarCID)
+		acc, err = tx.updateAccount(acc.PublicKey, ret.GetWebURL(), dn, avatarCID)
 		if err != nil {
 			svc.logger.Error("AccountUpdate: updating account in db", zap.Error(err))
 			return err
@@ -927,38 +796,12 @@ func imin(a, b int) int {
 }
 
 func (svc *service) ContactRequest(ctx context.Context, req *ContactRequest_Request) (*ContactRequest_Reply, error) {
-	query, method, err := NormalizeDeepLinkURL(req.GetLink())
+	link, err := UnmarshalLink(req.GetLink())
 	if err != nil {
-		return nil, errcode.ErrInvalidInput.Wrap(err)
+		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
 	}
-
-	var bid *BertyID
-
-	switch method {
-	case "/id":
-		bid = &BertyID{}
-		key := query.Get("key")
-		if key == "" {
-			return nil, errcode.ErrMessengerInvalidDeepLink
-		}
-		payload, err := b64DecodeBytes(key)
-		if err != nil {
-			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
-		}
-		err = proto.Unmarshal(payload, bid)
-		if err != nil {
-			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
-		}
-		if len(bid.GetPublicRendezvousSeed()) == 0 || len(bid.GetAccountPK()) == 0 {
-			return nil, errcode.ErrMessengerInvalidDeepLink
-		}
-		name := query.Get("name")
-		svc.logger.Info("query display name", zap.String("dn", name))
-		if name != "" {
-			bid.DisplayName = name
-		}
-	default:
-		return nil, errcode.ErrInvalidInput
+	if !link.IsContact() {
+		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
 	}
 
 	svc.handlerMutex.Lock()
@@ -973,15 +816,15 @@ func (svc *service) ContactRequest(ctx context.Context, req *ContactRequest_Requ
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	m, err := proto.Marshal(&ContactMetadata{DisplayName: bid.GetDisplayName()})
+	m, err := proto.Marshal(&ContactMetadata{DisplayName: link.BertyID.GetDisplayName()})
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
 	contactRequest := bertytypes.ContactRequestSend_Request{
 		Contact: &bertytypes.ShareableContact{
-			PK:                   bid.GetAccountPK(),
-			PublicRendezvousSeed: bid.GetPublicRendezvousSeed(),
+			PK:                   link.BertyID.GetAccountPK(),
+			PublicRendezvousSeed: link.BertyID.GetPublicRendezvousSeed(),
 			Metadata:             m,
 		},
 		OwnMetadata: om,

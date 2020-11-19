@@ -13,18 +13,18 @@ func NewParser() Parser {
 func (p bertyParser) Parse(previous *ResultReturn) *ResultReturn {
 	str, ok := previous.Object.(string)
 	if ok {
-		r, err := bertymessenger.DecodeDeepLink(str)
+		r, err := bertymessenger.UnmarshalLink(str)
 		if err != nil {
 			return nil
 		}
 		switch r.Kind {
-		case bertymessenger.ParseDeepLink_BertyID:
+		case bertymessenger.BertyLink_ContactInviteV1Kind:
 			return &ResultReturn{
 				Object:   r.BertyID,
 				Finder:   p,
 				Previous: previous,
 			}
-		case bertymessenger.ParseDeepLink_BertyGroup:
+		case bertymessenger.BertyLink_GroupV1Kind:
 			return &ResultReturn{
 				Object:   r.BertyGroup,
 				Finder:   p,

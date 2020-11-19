@@ -949,6 +949,15 @@
         }
       }
     },
+    "BertyLinkKind": {
+      "type": "string",
+      "enum": [
+        "UnknownKind",
+        "ContactInviteV1Kind",
+        "GroupV1Kind"
+      ],
+      "default": "UnknownKind"
+    },
     "ContactState": {
       "type": "string",
       "enum": [
@@ -980,15 +989,6 @@
           "format": "int64"
         }
       }
-    },
-    "ParseDeepLinkKind": {
-      "type": "string",
-      "enum": [
-        "UnknownKind",
-        "BertyID",
-        "BertyGroup"
-      ],
-      "default": "UnknownKind"
     },
     "SystemInfoDB": {
       "type": "object",
@@ -1420,6 +1420,20 @@
         }
       }
     },
+    "v1BertyLink": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/BertyLinkKind"
+        },
+        "berty_id": {
+          "$ref": "#/definitions/v1BertyID"
+        },
+        "berty_group": {
+          "$ref": "#/definitions/v1BertyGroup"
+        }
+      }
+    },
     "v1Contact": {
       "type": "object",
       "properties": {
@@ -1781,16 +1795,13 @@
     "v1InstanceShareableBertyIDReply": {
       "type": "object",
       "properties": {
-        "berty_id": {
-          "$ref": "#/definitions/v1BertyID"
+        "link": {
+          "$ref": "#/definitions/v1BertyLink"
         },
-        "berty_id_payload": {
+        "internal_url": {
           "type": "string"
         },
-        "deep_link": {
-          "type": "string"
-        },
-        "html_url": {
+        "web_url": {
           "type": "string"
         }
       }
@@ -1901,14 +1912,8 @@
     "v1ParseDeepLinkReply": {
       "type": "object",
       "properties": {
-        "kind": {
-          "$ref": "#/definitions/ParseDeepLinkKind"
-        },
-        "berty_id": {
-          "$ref": "#/definitions/v1BertyID"
-        },
-        "berty_group": {
-          "$ref": "#/definitions/v1BertyGroup"
+        "link": {
+          "$ref": "#/definitions/v1BertyLink"
         }
       }
     },
@@ -2035,16 +2040,13 @@
     "v1ShareableBertyGroupReply": {
       "type": "object",
       "properties": {
-        "berty_group": {
-          "$ref": "#/definitions/v1BertyGroup"
+        "link": {
+          "$ref": "#/definitions/v1BertyLink"
         },
-        "berty_group_payload": {
+        "internal_url": {
           "type": "string"
         },
-        "deep_link": {
-          "type": "string"
-        },
-        "html_url": {
+        "web_url": {
           "type": "string"
         }
       }

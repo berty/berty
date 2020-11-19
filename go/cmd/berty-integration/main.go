@@ -122,7 +122,7 @@ func (i *integration) testbotAdd() error {
 
 	// send contact request
 	_, err = i.client.SendContactRequest(ctx, &bertymessenger.SendContactRequest_Request{
-		BertyID: parsed.BertyID,
+		BertyID: parsed.GetLink().GetBertyID(),
 	})
 	if err != nil {
 		return err
@@ -163,7 +163,7 @@ func (i *integration) testbotAdd() error {
 			}
 		case bertymessenger.StreamEvent_TypeConversationUpdated:
 			conversation := payload.(*bertymessenger.StreamEvent_ConversationUpdated).Conversation
-			if base64.RawURLEncoding.EncodeToString(parsed.BertyID.AccountPK) != conversation.ContactPublicKey {
+			if base64.RawURLEncoding.EncodeToString(parsed.GetLink().GetBertyID().GetAccountPK()) != conversation.ContactPublicKey {
 				continue
 			}
 			conversationReady = true
@@ -178,7 +178,7 @@ func (i *integration) testbotAdd() error {
 				}
 				body := payload.(*bertymessenger.AppMessage_UserMessage).Body
 
-				if base64.RawURLEncoding.EncodeToString(parsed.BertyID.AccountPK) != interaction.Conversation.ContactPublicKey {
+				if base64.RawURLEncoding.EncodeToString(parsed.GetLink().GetBertyID().GetAccountPK()) != interaction.Conversation.ContactPublicKey {
 					continue
 				}
 				if body != "welcome to testbot1" {
