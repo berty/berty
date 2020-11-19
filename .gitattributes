@@ -7,28 +7,28 @@ vendor/* linguist-vendored
 client/common/openssl/built/* linguist-vendored
 
 # Collapse generated files on GitHub
-*.gen.go linguist-generated
-*.gen.graphql linguist-generated
-*.gen.js linguist-generated
-*.gen.json linguist-generated
-*.gen.ts linguist-generated
-*.gen.tsx linguist-generated
-*.gen.yml linguist-generated
-*.pb.d.ts linguist-generated
-*.pb.go linguist-generated
-*.pb.gw.go linguist-generated
-*.pb.js linguist-generated
-*pb_test.go linguist-generated
-docs/*/api.md linguist-generated
-gen.sum linguist-generated
-go.mod linguist-generated
-go.sum linguist-generated
-yarn.lock linguist-generated
+gen.sum linguist-generated merge=ours -diff
+*.gen.go linguist-generated merge=ours -diff
+*.gen.graphql linguist-generated merge=ours -diff
+*.gen.js linguist-generated merge=ours -diff
+*.gen.json linguist-generated merge=ours -diff
+*.gen.ts linguist-generated merge=ours -diff
+*.gen.tsx linguist-generated merge=ours -diff
+*.gen.yml linguist-generated merge=ours -diff
+*.pb.d.ts linguist-generated merge=ours -diff
+*.pb.go linguist-generated merge=ours -diff
+*.pb.gw.go linguist-generated merge=ours -diff
+*.pb.js linguist-generated merge=ours -diff
+*pb_test.go linguist-generated merge=ours -diff
+docs/*/api.md linguist-generated merge=ours -diff
+*.swagger.json linguist-generated merge=ours -diff
+api/*.yaml linguist-generated merge=ours -diff
+/js/packages/store/protocol/grpc-web-gen/** linguist-generated merge=ours -diff
+go.sum linguist-generated text -diff
+yarn.lock linguist-generated text -diff
+Podfile.lock linguist-generated text -diff
 package.json linguist-generated
-Podfile.lock linguist-generated
-/js/packages/store/protocol/grpc-web-gen/** linguist-generated
-api/*.yaml linguist-generated
-*.swagger.json linguist-generated
+go.mod linguist-generated
 
 # Reduce conflicts on markdown files
 *.md merge=union
