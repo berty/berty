@@ -6,6 +6,7 @@ import {
 	TransitionSpecs,
 	HeaderStyleInterpolators,
 	StackCardInterpolationProps,
+	StackNavigationOptions,
 } from '@react-navigation/stack'
 
 import * as RawComponents from '@berty-tech/components'
@@ -17,7 +18,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { isClosing, MessengerAppState } from '@berty-tech/store/context'
 import { dispatch, navigate } from '@berty-tech/navigation/rootRef'
 
-const CustomTransitionOptions = {
+const CustomTransitionOptions: StackNavigationOptions = {
 	headerShown: false,
 	gestureEnabled: true,
 	gestureDirection: 'horizontal',
@@ -56,7 +57,7 @@ const CustomTransitionOptions = {
 	},
 }
 
-const ModalScreenOptions = {
+const ModalScreenOptions: StackNavigationOptions = {
 	headerShown: false,
 	cardStyle: { backgroundColor: 'transparent' },
 	transitionSpec: {
