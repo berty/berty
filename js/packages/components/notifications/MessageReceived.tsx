@@ -1,12 +1,13 @@
 import React from 'react'
 import { TouchableOpacity, View, Text } from 'react-native'
 
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { useInteraction, useConversation } from '@berty-tech/store/hooks'
 import { navigate, Routes } from '@berty-tech/navigation'
 
-import { useStylesNotification, NotificationTmpLogo } from './common'
+import { useStylesNotification } from './common'
+import { ConversationAvatar } from '../avatars'
 
 const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) => {
 	const [{ text }] = useStyles()
@@ -20,7 +21,7 @@ const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) =
 		if (convExists && inteExists) {
 			// TODO: Investigate: doesn't work if app crashes and is restarted
 			navigate(
-				payload.conversation.type === messengerpb.Conversation.Type.ContactType
+				payload.conversation.type === beapi.messenger.Conversation.Type.ContactType
 					? Routes.Chat.OneToOne
 					: Routes.Chat.Group,
 				{ convId: payload.conversation?.publicKey, scrollToMessage: payload?.interaction?.cid },
@@ -41,7 +42,7 @@ const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) =
 			onPress={handlePressConvMessage}
 		>
 			<View style={_styles.innerTouchable}>
-				<NotificationTmpLogo />
+				<ConversationAvatar publicKey={payload.conversation?.publicKey} size={40} />
 				<View style={_styles.titleAndTextWrapper}>
 					<Text numberOfLines={1} style={[text.color.black, text.bold.medium]}>
 						{title}

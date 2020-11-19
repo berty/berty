@@ -1157,6 +1157,9 @@
         "display_name": {
           "type": "string"
         },
+        "avatar_cid": {
+          "type": "string"
+        },
         "link": {
           "type": "string"
         },
@@ -1350,6 +1353,9 @@
       "properties": {
         "display_name": {
           "type": "string"
+        },
+        "avatar_cid": {
+          "type": "string"
         }
       }
     },
@@ -1360,8 +1366,8 @@
         "TypeUserMessage",
         "TypeUserReaction",
         "TypeGroupInvitation",
-        "TypeSetGroupName",
-        "TypeSetUserName",
+        "TypeSetGroupInfo",
+        "TypeSetUserInfo",
         "TypeAcknowledge",
         "TypeReplyOptions",
         "TypeMonitorMetadata"
@@ -1432,6 +1438,9 @@
         "display_name": {
           "type": "string"
         },
+        "avatar_cid": {
+          "type": "string"
+        },
         "created_date": {
           "type": "string",
           "format": "int64"
@@ -1446,6 +1455,10 @@
           "items": {
             "$ref": "#/definitions/v1Device"
           }
+        },
+        "info_date": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },
@@ -1484,6 +1497,9 @@
           "type": "boolean"
         },
         "display_name": {
+          "type": "string"
+        },
+        "avatar_cid": {
           "type": "string"
         },
         "link": {
@@ -1861,8 +1877,15 @@
         "display_name": {
           "type": "string"
         },
+        "avatar_cid": {
+          "type": "string"
+        },
         "conversation_public_key": {
           "type": "string"
+        },
+        "info_date": {
+          "type": "string",
+          "format": "int64"
         },
         "conversation": {
           "$ref": "#/definitions/v1Conversation"

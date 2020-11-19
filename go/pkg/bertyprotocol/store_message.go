@@ -106,7 +106,7 @@ func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry, enableC
 		ownPK = md.device.GetPublic()
 	}
 
-	headers, payload, err := m.mks.OpenEnvelope(ctx, m.g, ownPK, op.GetValue(), e.GetHash())
+	headers, msg, attachmentsCIDs, err := m.mks.OpenEnvelope(ctx, m.g, ownPK, op.GetValue(), e.GetHash())
 	if err != nil {
 		if enableCache && errcode.Is(err, errcode.ErrCryptoDecryptPayload) {
 			// Saving this message in the cache waiting for the corresponding secret to be received
@@ -116,11 +116,17 @@ func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry, enableC
 		return nil, err
 	}
 
-	eventContext := newEventContext(e.GetHash(), e.GetNext(), m.g)
+	err = m.devKS.AttachmentSecretSlicePut(attachmentsCIDs, msg.GetProtocolMetadata().GetAttachmentsSecrets())
+	if err != nil {
+		m.logger.Error("unable to put attachments keys in keystore", zap.Error(err))
+		return nil, err
+	}
+
+	eventContext := newEventContext(e.GetHash(), e.GetNext(), m.g, attachmentsCIDs)
 	return &bertytypes.GroupMessageEvent{
 		EventContext: eventContext,
 		Headers:      headers,
-		Message:      payload,
+		Message:      msg.GetPlaintext(),
 	}, err
 }
 
@@ -154,13 +160,26 @@ func (m *messageStore) ListEvents(ctx context.Context, since, until []byte, reve
 	return out, nil
 }
 
-func (m *messageStore) AddMessage(ctx context.Context, payload []byte) (operation.Operation, error) {
+func (m *messageStore) AddMessage(ctx context.Context, payload []byte, attachmentsCIDs [][]byte) (operation.Operation, error) {
 	md, err := m.devKS.MemberDeviceForGroup(m.g)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	env, err := m.mks.SealEnvelope(ctx, m.g, md.device, payload)
+	attachmentsSecrets, err := m.devKS.AttachmentSecretSlice(attachmentsCIDs)
+	if err != nil {
+		return nil, errcode.ErrKeystoreGet.Wrap(err)
+	}
+
+	msg, err := (&bertytypes.EncryptedMessage{
+		Plaintext:        payload,
+		ProtocolMetadata: &bertytypes.ProtocolMetadata{AttachmentsSecrets: attachmentsSecrets},
+	}).Marshal()
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	env, err := m.mks.SealEnvelope(ctx, m.g, md.device, msg, attachmentsCIDs)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
 	}

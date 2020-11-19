@@ -6,11 +6,10 @@ import { CommonActions } from '@react-navigation/native'
 import { Routes, useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import { useConversation, useContact, useSortedConvInteractions } from '@berty-tech/store/hooks'
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
-import * as api from '@berty-tech/api/index.pb'
+import beapi from '@berty-tech/api'
 
-import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { pbDateToNum, timeFormat } from '../helpers'
+import { ContactAvatar, ConversationAvatar } from '../avatars'
 
 // Styles
 
@@ -126,38 +125,38 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 			contactPk = ''
 			break
 		case SearchResultKind.Interaction:
-			contactPk = conv?.contactPublicKey
+			contactPk = conv?.contactPublicKey || ''
 			break
 	}
 	const contact = useContact(contactPk)
 
 	const interactions = useSortedConvInteractions(conv?.publicKey).filter(
-		(inte) => inte.type === messengerpb.AppMessage.Type.TypeUserMessage,
+		(inte) => inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage,
 	)
 	const lastInteraction =
 		interactions && interactions.length > 0 ? interactions[interactions.length - 1] : null
 
 	let name: string
-	let inte: api.berty.messenger.v1.IInteraction | null
-	let avatarSeed: string
+	let inte: beapi.messenger.IInteraction | null
+	let avatar: JSX.Element
 	switch (kind) {
 		case SearchResultKind.Contact:
-			avatarSeed = data.publicKey
+			avatar = <ContactAvatar publicKey={contactPk} size={_resultAvatarSize} />
 			name = data.displayName || ''
 			inte = lastInteraction || null
 			break
 		case SearchResultKind.Conversation:
-			avatarSeed = convPk
+			avatar = <ConversationAvatar publicKey={convPk} size={_resultAvatarSize} />
 			name = data.displayName || ''
 			inte = lastInteraction || null
 			break
 		case SearchResultKind.Interaction:
-			if (conv?.type === messengerpb.Conversation.Type.ContactType) {
+			if (conv?.type === beapi.messenger.Conversation.Type.ContactType) {
 				name = contact?.displayName || ''
-				avatarSeed = contact?.publicKey
+				avatar = <ContactAvatar publicKey={contact?.publicKey} size={_resultAvatarSize} />
 			} else {
 				name = conv?.displayName || ''
-				avatarSeed = convPk
+				avatar = <ConversationAvatar publicKey={convPk} size={_resultAvatarSize} />
 			}
 			inte = data || null
 			break
@@ -172,13 +171,13 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 		switch (kind) {
 			case SearchResultKind.Contact:
 				switch (data.state) {
-					case messengerpb.Contact.State.IncomingRequest:
+					case beapi.messenger.Contact.State.IncomingRequest:
 						content = '📬 Incoming request'
 						break
-					case messengerpb.Contact.State.OutgoingRequestEnqueued:
+					case beapi.messenger.Contact.State.OutgoingRequestEnqueued:
 						content = '📪 Outgoing request enqueued'
 						break
-					case messengerpb.Contact.State.OutgoingRequestSent:
+					case beapi.messenger.Contact.State.OutgoingRequestSent:
 						content = '📫 Outgoing request sent'
 						break
 					default:
@@ -221,7 +220,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 			underlayColor={!conv ? 'transparent' : color.light.grey}
 			onPress={() =>
 				!conv
-					? data.state === messengerpb.Contact.State.IncomingRequest
+					? data.state === beapi.messenger.Contact.State.IncomingRequest
 						? navigate.main.contactRequest({ contactId: data.publicKey })
 						: dispatch(
 								CommonActions.navigate({
@@ -234,7 +233,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 					: dispatch(
 							CommonActions.navigate({
 								name:
-									conv.type === messengerpb.Conversation.Type.ContactType
+									conv.type === beapi.messenger.Conversation.Type.ContactType
 										? Routes.Chat.OneToOne
 										: Routes.Chat.Group,
 								params: {
@@ -246,12 +245,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 			}
 		>
 			<View style={[row.center, padding.medium, border.bottom.tiny, border.color.light.grey]}>
-				<ProceduralCircleAvatar
-					seed={avatarSeed}
-					size={_resultAvatarSize}
-					diffSize={9}
-					style={[padding.tiny, row.item.justify]}
-				/>
+				{avatar}
 				<View style={[flex.medium, column.justify, padding.left.medium]}>
 					<View style={[margin.right.big]}>
 						<Text numberOfLines={1} style={[column.item.fill, text.bold.medium]}>

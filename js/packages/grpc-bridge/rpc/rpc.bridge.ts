@@ -1,23 +1,30 @@
 import { Service } from '..'
 import rpcNative from './rpc.native'
-import { account, errcode } from '@berty-tech/api/index.js'
+import beapi from '@berty-tech/api'
 import { getServiceName, EOF } from './utils'
+import * as pbjs from 'protobufjs'
+import { ServiceClientType } from '../welsh-clients.gen'
 
-const protocolErrors = errcode.lookup('ErrCode')
-const grpcErrors = account.lookup('GRPCErrCode')
-const getErrorFromResponse = (method, response) => {
+const getErrorFromResponse = <M extends pbjs.Method>(
+	method: M,
+	response: beapi.account.ClientStreamRecv.IReply,
+) => {
 	if (response.error) {
-		if (response.error.grpcErrorCode === grpcErrors.values.CANCELED) {
-			throw EOF
+		if (
+			response.error.grpcErrorCode === beapi.account.GRPCErrCode.CANCELED ||
+			(response.error.grpcErrorCode === beapi.account.GRPCErrCode.UNKNOWN &&
+				response.error.message === 'EOF')
+		) {
+			return EOF
 		}
 
-		if (response.error.errorCode > 0) {
-			const name = protocolErrors.valuesById[response.error.errorCode]
+		if (response.error.errorCode || 0 > 0) {
+			const name = beapi.errcode.ErrCode[response.error.errorCode || 0]
 			return new Error(`${method.name} error: ${name}(${response.error.errorCode})`)
 		}
 
-		if (response.error.grpcErrorCode > 0) {
-			const name = grpcErrors.valuesById[response.error.grpcErrorCode]
+		if (response.error.grpcErrorCode || 0 > 0) {
+			const name = beapi.account.GRPCErrCode[response.error.grpcErrorCode || 0]
 			return new Error(`${method.name} error: GRPC_${name}(${response.error.grpcErrorCode})`)
 		}
 
@@ -27,24 +34,25 @@ const getErrorFromResponse = (method, response) => {
 	return null
 }
 
-const makeStreamClient = (streamid, method, accountClient) => {
-	const requestType = method.resolvedRequestType
-	// const responseType = method.resolvedResponseType
+const makeStreamClient = <M extends pbjs.Method>(
+	streamid: string,
+	method: M,
+	accountClient: ServiceClientType<beapi.account.AccountService>,
+) => {
 	const eventEmitter = {
-		events: [],
+		events: [] as ((...a: unknown[]) => void)[],
 		started: false,
 
-		_publish(...args) {
+		_publish(...args: unknown[]) {
 			this.events.forEach((listener) => listener.apply(this, args))
 		},
-		onMessage(listener) {
+		onMessage(listener: (...a: unknown[]) => void) {
 			this.events.push(listener)
 		},
-		async emit(payload) {
-			const request = requestType.encode(payload).finish()
+		async emit(payload: Uint8Array) {
 			const response = await accountClient.clientStreamSend({
 				streamId: streamid,
-				payload: request,
+				payload,
 			})
 
 			const err = getErrorFromResponse(method, response)
@@ -58,9 +66,10 @@ const makeStreamClient = (streamid, method, accountClient) => {
 			}
 			this.started = true
 
-			var response
+			var response: beapi.account.ClientStreamRecv.IReply
 			for (;;) {
 				response = await accountClient.clientStreamRecv({ streamId: streamid })
+
 				const err = getErrorFromResponse(method, response)
 
 				if (err) {
@@ -75,13 +84,25 @@ const makeStreamClient = (streamid, method, accountClient) => {
 			if (!this.started) {
 				throw new Error('client stream not started or has been closed')
 			}
-
 			const response = await accountClient.clientStreamClose({ streamId: streamid })
 			const err = getErrorFromResponse(method, response)
 			if (err) {
 				throw err
 			}
 			return
+		},
+		async stopAndRecv() {
+			if (this.started) {
+				throw new Error('client stream not started or has been closed')
+			}
+
+			const response = await accountClient.clientStreamCloseAndRecv({ streamId: streamid })
+
+			const err = getErrorFromResponse(method, response)
+			if (err) {
+				throw err
+			}
+			return method.resolvedResponseType?.decode(response.payload)
 		},
 	}
 
@@ -92,7 +113,13 @@ const makeStreamClient = (streamid, method, accountClient) => {
 	}
 }
 
-const unary = (accountClient) => async (method, request, metadata) => {
+const unary = (accountClient: ServiceClientType<beapi.account.AccountService>) => async <
+	M extends pbjs.Method
+>(
+	method: M,
+	request: Uint8Array,
+	_metadata?: never,
+) => {
 	const methodDesc = {
 		name: `/${getServiceName(method)}/${method.name}`,
 	}
@@ -100,7 +127,7 @@ const unary = (accountClient) => async (method, request, metadata) => {
 	const response = await accountClient.clientInvokeUnary({
 		methodDesc: methodDesc,
 		payload: request,
-		metadata: {}, // @TODO: pass metdate object
+		// metadata: {}, // @TODO: pass metdate object
 	})
 	const err = getErrorFromResponse(method, response)
 	if (err !== null) {
@@ -110,7 +137,13 @@ const unary = (accountClient) => async (method, request, metadata) => {
 	return response.payload
 }
 
-const stream = (accountClient) => async (method, request, metadata) => {
+const stream = (accountClient: ServiceClientType<beapi.account.AccountService>) => async <
+	M extends pbjs.Method
+>(
+	method: M,
+	request: Uint8Array,
+	_metadata?: never,
+) => {
 	const methodDesc = {
 		name: `/${getServiceName(method)}/${method.name}`,
 
@@ -121,7 +154,7 @@ const stream = (accountClient) => async (method, request, metadata) => {
 	const response = await accountClient.createClientStream({
 		methodDesc: methodDesc,
 		payload: request,
-		metadata: {},
+		// metadata: {},
 	})
 
 	const err = getErrorFromResponse(method, response)
@@ -132,10 +165,10 @@ const stream = (accountClient) => async (method, request, metadata) => {
 	return makeStreamClient(response.streamId, method, accountClient)
 }
 
-const client = (accountClient) => ({
+const client = (accountClient: ServiceClientType<beapi.account.AccountService>) => ({
 	unaryCall: unary(accountClient),
 	streamCall: stream(accountClient),
 })
 
-const accountClient = Service(account.AccountService, rpcNative)
+const accountClient = Service(beapi.account.AccountService, rpcNative)
 export default client(accountClient)

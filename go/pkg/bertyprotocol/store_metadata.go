@@ -71,18 +71,18 @@ func (m *metadataStore) setLogger(l *zap.Logger) {
 	}
 }
 
-func openMetadataEntry(log ipfslog.Log, e ipfslog.Entry, g *bertytypes.Group) (*bertytypes.GroupMetadataEvent, proto.Message, error) {
+func openMetadataEntry(log ipfslog.Log, e ipfslog.Entry, g *bertytypes.Group, devKS DeviceKeystore) (*bertytypes.GroupMetadataEvent, proto.Message, error) {
 	op, err := operation.ParseOperation(e)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	meta, event, err := openGroupEnvelope(g, op.GetValue())
+	meta, event, attachmentsCIDs, err := openGroupEnvelope(g, op.GetValue(), devKS)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	metaEvent, err := newGroupMetadataEventFromEntry(log, e, meta, event, g)
+	metaEvent, err := newGroupMetadataEventFromEntry(log, e, meta, event, g, attachmentsCIDs)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -104,7 +104,7 @@ func (m *metadataStore) ListEvents(ctx context.Context, since, until []byte, rev
 			entries,
 			reverse,
 			func(entry ipliface.IPFSLogEntry) {
-				event, _, err := openMetadataEntry(m.OpLog(), entry, m.g)
+				event, _, err := openMetadataEntry(m.OpLog(), entry, m.g, m.devKS)
 				if err != nil {
 					m.logger.Error("unable to open metadata event", zap.Error(err))
 				} else {
@@ -164,7 +164,7 @@ func metadataStoreAddDeviceToGroup(ctx context.Context, m *metadataStore, g *ber
 
 	m.logger.Info("announcing device on store")
 
-	return metadataStoreAddEvent(ctx, m, g, bertytypes.EventTypeGroupMemberDeviceAdded, event, sig)
+	return metadataStoreAddEvent(ctx, m, g, bertytypes.EventTypeGroupMemberDeviceAdded, event, sig, nil)
 }
 
 func (m *metadataStore) SendSecret(ctx context.Context, memberPK crypto.PubKey) (operation.Operation, error) {
@@ -221,7 +221,7 @@ func metadataStoreSendSecret(ctx context.Context, m *metadataStore, g *bertytype
 		return nil, errcode.ErrCryptoSignature.Wrap(err)
 	}
 
-	return metadataStoreAddEvent(ctx, m, g, bertytypes.EventTypeGroupDeviceSecretAdded, event, sig)
+	return metadataStoreAddEvent(ctx, m, g, bertytypes.EventTypeGroupDeviceSecretAdded, event, sig, nil)
 }
 
 func (m *metadataStore) ClaimGroupOwnership(ctx context.Context, groupSK crypto.PrivKey) (operation.Operation, error) {
@@ -248,7 +248,7 @@ func (m *metadataStore) ClaimGroupOwnership(ctx context.Context, groupSK crypto.
 		return nil, errcode.ErrCryptoSignature.Wrap(err)
 	}
 
-	return metadataStoreAddEvent(ctx, m, m.g, bertytypes.EventTypeMultiMemberGroupInitialMemberAnnounced, event, sig)
+	return metadataStoreAddEvent(ctx, m, m.g, bertytypes.EventTypeMultiMemberGroupInitialMemberAnnounced, event, sig, nil)
 }
 
 func signProto(message proto.Message, sk crypto.PrivKey) ([]byte, error) {
@@ -265,8 +265,13 @@ func signProto(message proto.Message, sk crypto.PrivKey) ([]byte, error) {
 	return sig, nil
 }
 
-func metadataStoreAddEvent(ctx context.Context, m *metadataStore, g *bertytypes.Group, eventType bertytypes.EventType, event proto.Marshaler, sig []byte) (operation.Operation, error) {
-	env, err := sealGroupEnvelope(g, eventType, event, sig)
+func metadataStoreAddEvent(ctx context.Context, m *metadataStore, g *bertytypes.Group, eventType bertytypes.EventType, event proto.Marshaler, sig []byte, attachmentsCIDs [][]byte) (operation.Operation, error) {
+	attachmentsSecrets, err := m.devKS.AttachmentSecretSlice(attachmentsCIDs)
+	if err != nil {
+		return nil, errcode.ErrKeystoreGet.Wrap(err)
+	}
+
+	env, err := sealGroupEnvelope(g, eventType, event, sig, attachmentsCIDs, attachmentsSecrets)
 	if err != nil {
 		return nil, errcode.ErrCryptoSignature.Wrap(err)
 	}
@@ -471,7 +476,7 @@ func (m *metadataStore) GroupJoin(ctx context.Context, g *bertytypes.Group) (ope
 
 	return m.attributeSignAndAddEvent(ctx, &bertytypes.AccountGroupJoined{
 		Group: g,
-	}, bertytypes.EventTypeAccountGroupJoined)
+	}, bertytypes.EventTypeAccountGroupJoined, nil)
 }
 
 // GroupLeave indicates the payload includes that the deviceKeystore has left a group
@@ -502,7 +507,7 @@ func (m *metadataStore) ContactRequestDisable(ctx context.Context) (operation.Op
 		return nil, errcode.ErrGroupInvalidType
 	}
 
-	return m.attributeSignAndAddEvent(ctx, &bertytypes.AccountContactRequestDisabled{}, bertytypes.EventTypeAccountContactRequestDisabled)
+	return m.attributeSignAndAddEvent(ctx, &bertytypes.AccountContactRequestDisabled{}, bertytypes.EventTypeAccountContactRequestDisabled, nil)
 }
 
 // ContactRequestEnable indicates the payload includes that the deviceKeystore has enabled incoming contact requests
@@ -511,7 +516,7 @@ func (m *metadataStore) ContactRequestEnable(ctx context.Context) (operation.Ope
 		return nil, errcode.ErrGroupInvalidType
 	}
 
-	return m.attributeSignAndAddEvent(ctx, &bertytypes.AccountContactRequestEnabled{}, bertytypes.EventTypeAccountContactRequestEnabled)
+	return m.attributeSignAndAddEvent(ctx, &bertytypes.AccountContactRequestEnabled{}, bertytypes.EventTypeAccountContactRequestEnabled, nil)
 }
 
 // ContactRequestReferenceReset indicates the payload includes that the deviceKeystore has a new contact request reference
@@ -527,7 +532,7 @@ func (m *metadataStore) ContactRequestReferenceReset(ctx context.Context) (opera
 
 	return m.attributeSignAndAddEvent(ctx, &bertytypes.AccountContactRequestReferenceReset{
 		PublicRendezvousSeed: seed,
-	}, bertytypes.EventTypeAccountContactRequestReferenceReset)
+	}, bertytypes.EventTypeAccountContactRequestReferenceReset, nil)
 }
 
 // ContactRequestOutgoingEnqueue indicates the payload includes that the deviceKeystore will attempt to send a new contact request
@@ -569,7 +574,7 @@ func (m *metadataStore) ContactRequestOutgoingEnqueue(ctx context.Context, conta
 			Metadata:             contact.Metadata,
 		},
 		OwnMetadata: ownMetadata,
-	}, bertytypes.EventTypeAccountContactRequestOutgoingEnqueued)
+	}, bertytypes.EventTypeAccountContactRequestOutgoingEnqueued, nil)
 }
 
 // ContactRequestOutgoingSent indicates the payload includes that the deviceKeystore has sent a contact request
@@ -646,7 +651,7 @@ func (m *metadataStore) ContactRequestIncomingReceived(ctx context.Context, cont
 		ContactPK:             contact.PK,
 		ContactRendezvousSeed: contact.PublicRendezvousSeed,
 		ContactMetadata:       contact.Metadata,
-	}, bertytypes.EventTypeAccountContactRequestIncomingReceived)
+	}, bertytypes.EventTypeAccountContactRequestIncomingReceived, nil)
 }
 
 // ContactRequestIncomingDiscard indicates the payload includes that the deviceKeystore has ignored a contact request
@@ -727,7 +732,7 @@ func (m *metadataStore) ContactSendAliasKey(ctx context.Context) (operation.Oper
 
 	return m.attributeSignAndAddEvent(ctx, &bertytypes.ContactAddAliasKey{
 		AliasPK: alias,
-	}, bertytypes.EventTypeContactAliasKeyAdded)
+	}, bertytypes.EventTypeContactAliasKeyAdded, nil)
 }
 
 func (m *metadataStore) SendAliasProof(ctx context.Context) (operation.Operation, error) {
@@ -741,13 +746,13 @@ func (m *metadataStore) SendAliasProof(ctx context.Context) (operation.Operation
 	return m.attributeSignAndAddEvent(ctx, &bertytypes.MultiMemberGroupAddAliasResolver{
 		AliasResolver: resolver,
 		AliasProof:    proof,
-	}, bertytypes.EventTypeMultiMemberGroupAliasResolverAdded)
+	}, bertytypes.EventTypeMultiMemberGroupAliasResolverAdded, nil)
 }
 
-func (m *metadataStore) SendAppMetadata(ctx context.Context, message []byte) (operation.Operation, error) {
+func (m *metadataStore) SendAppMetadata(ctx context.Context, message []byte, attachmentsCIDs [][]byte) (operation.Operation, error) {
 	return m.attributeSignAndAddEvent(ctx, &bertytypes.AppMetadata{
 		Message: message,
-	}, bertytypes.EventTypeGroupMetadataPayloadSent)
+	}, bertytypes.EventTypeGroupMetadataPayloadSent, attachmentsCIDs)
 }
 
 func (m *metadataStore) SendAccountServiceTokenAdded(ctx context.Context, token *bertytypes.ServiceToken) (operation.Operation, error) {
@@ -765,7 +770,7 @@ func (m *metadataStore) SendAccountServiceTokenAdded(ctx context.Context, token 
 
 	return m.attributeSignAndAddEvent(ctx, &bertytypes.AccountServiceTokenAdded{
 		ServiceToken: token,
-	}, bertytypes.EventTypeAccountServiceTokenAdded)
+	}, bertytypes.EventTypeAccountServiceTokenAdded, nil)
 }
 
 func (m *metadataStore) SendAccountServiceTokenRemoved(ctx context.Context, tokenID string) (operation.Operation, error) {
@@ -785,14 +790,14 @@ func (m *metadataStore) SendAccountServiceTokenRemoved(ctx context.Context, toke
 
 	return m.attributeSignAndAddEvent(ctx, &bertytypes.AccountServiceTokenRemoved{
 		TokenID: tokenID,
-	}, bertytypes.EventTypeAccountServiceTokenRemoved)
+	}, bertytypes.EventTypeAccountServiceTokenRemoved, nil)
 }
 
 func (m *metadataStore) SendGroupReplicating(ctx context.Context, t *bertytypes.ServiceToken, endpoint string) (operation.Operation, error) {
 	return m.attributeSignAndAddEvent(ctx, &bertytypes.GroupReplicating{
 		AuthenticationURL: t.AuthenticationURL,
 		ReplicationServer: endpoint,
-	}, bertytypes.EventTypeGroupReplicating)
+	}, bertytypes.EventTypeGroupReplicating, nil)
 }
 
 type accountSignableEvent interface {
@@ -811,7 +816,7 @@ type accountGroupEvent interface {
 	SetGroupPK([]byte)
 }
 
-func (m *metadataStore) attributeSignAndAddEvent(ctx context.Context, evt accountSignableEvent, eventType bertytypes.EventType) (operation.Operation, error) {
+func (m *metadataStore) attributeSignAndAddEvent(ctx context.Context, evt accountSignableEvent, eventType bertytypes.EventType, attachmentsCIDs [][]byte) (operation.Operation, error) {
 	md, err := m.devKS.MemberDeviceForGroup(m.g)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
@@ -829,7 +834,7 @@ func (m *metadataStore) attributeSignAndAddEvent(ctx context.Context, evt accoun
 		return nil, errcode.ErrCryptoSignature.Wrap(err)
 	}
 
-	return metadataStoreAddEvent(ctx, m, m.g, eventType, evt, sig)
+	return metadataStoreAddEvent(ctx, m, m.g, eventType, evt, sig, attachmentsCIDs)
 }
 
 func (m *metadataStore) contactAction(ctx context.Context, pk crypto.PubKey, event accountContactEvent, evtType bertytypes.EventType) (operation.Operation, error) {
@@ -844,7 +849,7 @@ func (m *metadataStore) contactAction(ctx context.Context, pk crypto.PubKey, eve
 
 	event.SetContactPK(pkBytes)
 
-	return m.attributeSignAndAddEvent(ctx, event, evtType)
+	return m.attributeSignAndAddEvent(ctx, event, evtType, nil)
 }
 
 func (m *metadataStore) groupAction(ctx context.Context, pk crypto.PubKey, event accountGroupEvent, evtType bertytypes.EventType) (operation.Operation, error) {
@@ -855,7 +860,7 @@ func (m *metadataStore) groupAction(ctx context.Context, pk crypto.PubKey, event
 
 	event.SetGroupPK(pkBytes)
 
-	return m.attributeSignAndAddEvent(ctx, event, evtType)
+	return m.attributeSignAndAddEvent(ctx, event, evtType, nil)
 }
 
 func (m *metadataStore) getContactStatus(pk crypto.PubKey) bertytypes.ContactState {
@@ -966,7 +971,7 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB) iface.StoreConstructor {
 
 				store.logger.Debug("received store event", zap.Any("raw event", e))
 
-				metaEvent, event, err := openMetadataEntry(store.OpLog(), entry, g)
+				metaEvent, event, err := openMetadataEntry(store.OpLog(), entry, g, store.devKS)
 				if err != nil {
 					store.logger.Error("unable to open metadata payload", zap.Error(err))
 					continue

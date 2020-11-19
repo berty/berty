@@ -1,19 +1,26 @@
-const lowerFirst = (str) => str.charAt(0).toLowerCase() + str.substring(1)
+import * as pbjs from 'protobufjs'
+import { ServiceClientType } from './welsh-clients.gen'
+
+const lowerFirst = (str: string) => str.charAt(0).toLowerCase() + str.substring(1)
 
 // Unary generator
-const createUnaryMethod = (method, unaryCall) => {
+const createUnaryMethod = <M extends pbjs.Method>(method: M, unaryCall: unknown) => {
 	const requestType = method.resolvedRequestType
 	const responseType = method.resolvedResponseType
-	return async (payload, metadata) => {
-		const req = requestType.encode(payload).finish()
+	return async (payload: Uint8Array, metadata: unknown) => {
+		const req = requestType?.encode(payload).finish()
 		const res = await unaryCall(method, req, metadata)
-		return responseType.decode(res)
+		return responseType?.decode(res)
 	}
 }
 
-const createUnaryMethodList = (service, rpcImpl, middleware) => {
-	let methods = {}
-	Object.keys(service.methods || {}).forEach((key) => {
+const createUnaryMethodList = <S extends pbjs.Service>(
+	service: S,
+	rpcImpl: unknown,
+	middleware: unknown,
+) => {
+	const methods = {}
+	Object.keys(service.methods || {}).forEach((key: keyof typeof service.methods) => {
 		const method = service.methods[key]
 		if (!method.responseStream && !method.requestStream) {
 			const lkey = lowerFirst(key)
@@ -25,11 +32,11 @@ const createUnaryMethodList = (service, rpcImpl, middleware) => {
 }
 
 // Streams generator
-const createStreamMethod = (method, streamCall) => {
+const createStreamMethod = <M extends pbjs.Method>(method: M, streamCall: unknown) => {
 	const requestType = method.resolvedRequestType
 	const responseType = method.resolvedResponseType
-	return async (payload, metadata) => {
-		const req = requestType.encode(payload).finish()
+	return async (payload: Uint8Array, metadata: unknown) => {
+		const req = requestType?.encode(payload).finish()
 		const stream = await streamCall(method, req, metadata)
 		return {
 			onMessage: (listener) => {
@@ -53,12 +60,17 @@ const createStreamMethod = (method, streamCall) => {
 			},
 			start: async () => stream.start(),
 			stop: async () => stream.stop(),
+			stopAndRecv: async () => stream.stopAndRecv(),
 		}
 	}
 }
 
-const createStreamMethodList = (service, rpcImpl, middleware) => {
-	let methods = {}
+const createStreamMethodList = <S extends typeof pbjs.rpc.Service>(
+	service: S,
+	rpcImpl: unknown,
+	middleware: unknown,
+) => {
+	const methods = {}
 	Object.keys(service.methods || {}).forEach((key) => {
 		const method = service.methods[key]
 		if (method.responseStream || method.requestStream) {
@@ -70,17 +82,25 @@ const createStreamMethodList = (service, rpcImpl, middleware) => {
 	return methods
 }
 
-export const createService = (service, rpcImpl, middleware) => {
+export const createService = <T extends typeof pbjs.rpc.Service, S extends InstanceType<T>>(
+	service: T,
+	rpcImpl: unknown,
+	middleware?: unknown,
+): ServiceClientType<S> => {
+	if (!service) {
+		throw new Error('invalid service')
+	}
+
 	if (typeof rpcImpl === 'undefined') {
 		throw new Error('no rpc implem provided')
 	}
 
 	if (!middleware) {
-		middleware = (method, call) => call
+		middleware = (method: unknown, call: unknown) => call
 	}
 
-	const rootService = service.resolveAll()
-	const unaryMethods = createUnaryMethodList(rootService, rpcImpl, middleware)
-	const streamMethods = createStreamMethodList(rootService, rpcImpl, middleware)
+	const sr = service.resolveAll()
+	const unaryMethods = createUnaryMethodList(sr, rpcImpl, middleware)
+	const streamMethods = createStreamMethodList(sr, rpcImpl, middleware)
 	return Object.assign(unaryMethods, streamMethods)
 }

@@ -40,7 +40,7 @@ func sealPayload(payload []byte, ds *bertytypes.DeviceSecret, deviceSK crypto.Pr
 	return secretbox.Seal(nil, payload, uint64AsNonce(ds.Counter+1), &msgKey), sig, nil
 }
 
-func sealEnvelopeInternal(ctx context.Context, payload []byte, ds *bertytypes.DeviceSecret, deviceSK crypto.PrivKey, g *bertytypes.Group) ([]byte, error) {
+func sealEnvelopeInternal(ctx context.Context, payload []byte, ds *bertytypes.DeviceSecret, deviceSK crypto.PrivKey, g *bertytypes.Group, attachmentsCIDs [][]byte) ([]byte, error) {
 	encryptedPayload, sig, err := sealPayload(payload, ds, deviceSK, g)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
@@ -64,22 +64,23 @@ func sealEnvelopeInternal(ctx context.Context, payload []byte, ds *bertytypes.De
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	sk, err := g.GetSharedSecret()
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
-
 	nonce, err := cryptoutil.GenerateNonce()
 	if err != nil {
 		return nil, errcode.ErrCryptoNonceGeneration.Wrap(err)
 	}
 
-	encryptedHeaders := secretbox.Seal(nil, headers, nonce, sk)
+	encryptedHeaders := secretbox.Seal(nil, headers, nonce, g.GetSharedSecret())
+
+	encryptedAttachmentsCIDs, err := attachmentCIDSliceEncrypt(g, attachmentsCIDs)
+	if err != nil {
+		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
+	}
 
 	env, err := proto.Marshal(&bertytypes.MessageEnvelope{
-		MessageHeaders: encryptedHeaders,
-		Message:        encryptedPayload,
-		Nonce:          nonce[:],
+		MessageHeaders:          encryptedHeaders,
+		Message:                 encryptedPayload,
+		Nonce:                   nonce[:],
+		EncryptedAttachmentCIDs: encryptedAttachmentsCIDs,
 	})
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
@@ -95,17 +96,12 @@ func openEnvelopeHeaders(data []byte, g *bertytypes.Group) (*bertytypes.MessageE
 		return nil, nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	sk, err := g.GetSharedSecret()
-	if err != nil {
-		return nil, nil, errcode.ErrSerialization.Wrap(err)
-	}
-
 	nonce, err := cryptoutil.NonceSliceToArray(env.Nonce)
 	if err != nil {
 		return nil, nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	headersBytes, ok := secretbox.Open(nil, env.MessageHeaders, nonce, sk)
+	headersBytes, ok := secretbox.Open(nil, env.MessageHeaders, nonce, g.GetSharedSecret())
 	if !ok {
 		return nil, nil, errcode.ErrCryptoDecrypt.Wrap(fmt.Errorf("secretbox failed to open headers"))
 	}

@@ -269,7 +269,7 @@ func (d *dbWrapper) addAccount(pk, link string) error {
 	return nil
 }
 
-func (d *dbWrapper) updateAccount(pk, url, displayName string) (*Account, error) {
+func (d *dbWrapper) updateAccount(pk, url, displayName, avatarCID string) (*Account, error) {
 	if pk == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an account public key is required"))
 	}
@@ -280,9 +280,11 @@ func (d *dbWrapper) updateAccount(pk, url, displayName string) (*Account, error)
 	if url != "" {
 		values["link"] = url
 	}
-
 	if displayName != "" {
 		values["display_name"] = displayName
+	}
+	if avatarCID != "" {
+		values["avatar_cid"] = avatarCID
 	}
 
 	tx := d.db.Model(&Account{}).Where(&Account{PublicKey: pk}).Updates(values).First(&acc)
@@ -650,23 +652,21 @@ func (d *dbWrapper) addDevice(devicePK string, memberPK string) (*Device, error)
 	return d.getDeviceByPK(devicePK)
 }
 
-func (d *dbWrapper) updateContact(contact Contact) error {
-	if contact.PublicKey == "" {
+func (d *dbWrapper) updateContact(pk string, contact Contact) error {
+	if pk == "" {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no public key specified"))
 	}
 
-	return d.tx(func(tx *dbWrapper) error {
-		count := int64(0)
-		if err := d.db.Model(&Contact{}).Where(&Contact{PublicKey: contact.PublicKey}).Count(&count).Error; err != nil {
-			return err
-		}
+	count := int64(0)
+	if err := d.db.Model(&Contact{}).Where(&Contact{PublicKey: pk}).Count(&count).Error; err != nil {
+		return err
+	}
 
-		if count == 0 {
-			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("contact not found"))
-		}
+	if count == 0 {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("contact not found"))
+	}
 
-		return d.db.Updates(&contact).Error
-	})
+	return d.db.Model(&Contact{PublicKey: pk}).Updates(&contact).Error
 }
 
 func (d *dbWrapper) addInteraction(rawInte Interaction) (*Interaction, bool, error) {
@@ -740,7 +740,7 @@ func (d *dbWrapper) attributeBacklogInteractions(devicePK, groupPK, memberPK str
 		res := tx.db.
 			Model(&Interaction{}).
 			Where("device_public_key = ? AND conversation_public_key = ? AND member_public_key = \"\"", devicePK, groupPK).
-			Order("ROWID asc")
+			Order("sent_date asc")
 
 		if err := res.
 			Pluck("cid", &cids).
@@ -768,7 +768,7 @@ func (d *dbWrapper) attributeBacklogInteractions(devicePK, groupPK, memberPK str
 	return backlog, nil
 }
 
-func (d *dbWrapper) addMember(memberPK, groupPK, displayName string) (*Member, error) {
+func (d *dbWrapper) addMember(memberPK, groupPK, displayName string, avatarCID string) (*Member, error) {
 	if memberPK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("member public key cannot be empty"))
 	}
@@ -780,6 +780,7 @@ func (d *dbWrapper) addMember(memberPK, groupPK, displayName string) (*Member, e
 	member := &Member{
 		PublicKey:             memberPK,
 		ConversationPublicKey: groupPK,
+		AvatarCID:             avatarCID,
 	}
 
 	if err := d.tx(func(tx *dbWrapper) error {
@@ -811,11 +812,10 @@ func (d *dbWrapper) addMember(memberPK, groupPK, displayName string) (*Member, e
 	return member, nil
 }
 
-func (d *dbWrapper) upsertMember(memberPK, groupPK, displayName string) (*Member, bool, error) {
+func (d *dbWrapper) upsertMember(memberPK, groupPK string, m Member) (*Member, bool, error) {
 	if memberPK == "" {
 		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("member public key cannot be empty"))
 	}
-
 	if groupPK == "" {
 		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("conversation public key cannot be empty"))
 	}
@@ -825,41 +825,35 @@ func (d *dbWrapper) upsertMember(memberPK, groupPK, displayName string) (*Member
 	if err == gorm.ErrRecordNotFound {
 		isNew = true
 	} else if err != nil {
-		return nil, isNew, err
+		return nil, isNew, errcode.ErrDBRead.Wrap(err)
 	}
 
-	if displayName == "" {
+	if em.GetDisplayName() == "" && m.DisplayName == "" {
 		nameSuffix := "1337"
 		if len(memberPK) >= 4 {
 			nameSuffix = memberPK[:4]
 		}
-		displayName = "anon#" + nameSuffix
+		m.DisplayName = "anon#" + nameSuffix
 	}
 
-	m := Member{
-		PublicKey:             memberPK,
-		ConversationPublicKey: groupPK,
-		DisplayName:           displayName,
+	if isNew {
+		err := d.db.Create(&m).Error
+		if err != nil {
+			return nil, isNew, errcode.ErrDBWrite.Wrap(err)
+		}
+	} else {
+		err := d.db.Model(em).Updates(&m).Error
+		if err != nil {
+			return nil, false, errcode.ErrDBWrite.Wrap(err)
+		}
 	}
 
-	columns := []string(nil)
-	if displayName != "" && em.GetDisplayName() != m.GetDisplayName() {
-		columns = append(columns, "display_name")
+	um, err := d.getMemberByPK(memberPK, groupPK)
+	if err != nil {
+		return nil, false, errcode.ErrDBRead.Wrap(err)
 	}
 
-	db := d.db
-
-	if len(columns) > 0 {
-		db = db.Clauses(clause.OnConflict{DoUpdates: clause.AssignmentColumns(columns)})
-	} else if !isNew { // no update or create needed
-		return em, false, nil
-	}
-
-	if err := db.Create(&m).Error; err != nil {
-		return nil, isNew, errcode.ErrInternal.Wrap(err)
-	}
-
-	return &m, isNew, nil
+	return um, isNew, nil
 }
 
 func (d *dbWrapper) setConversationIsOpenStatus(conversationPK string, status bool) (*Conversation, bool, error) {

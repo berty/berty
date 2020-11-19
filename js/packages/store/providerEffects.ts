@@ -1,9 +1,4 @@
 import {
-	messenger as messengerpb,
-	protocol as protocolpb,
-	account as accountpb,
-} from '@berty-tech/api/index.js'
-import {
 	bridge as rpcBridge,
 	grpcweb as rpcWeb,
 	native as rpcNative,
@@ -11,7 +6,7 @@ import {
 import i18n from '@berty-tech/berty-i18n'
 import { EOF, Service } from '@berty-tech/grpc-bridge'
 import ExternalTransport from './externalTransport'
-import GoBridge, { GoBridgeDefaultOpts } from '@berty-tech/go-bridge'
+import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
 import { EventEmitter } from 'events'
 import AsyncStorage from '@react-native-community/async-storage'
 import cloneDeep from 'lodash/cloneDeep'
@@ -22,14 +17,11 @@ import {
 	PersistentOptionsKeys,
 	PersistentOptionsUpdate,
 } from '@berty-tech/store/context'
-import { berty } from '@berty-tech/api/index.pb'
+import beapi from '@berty-tech/api'
 import { reducerAction } from '@berty-tech/store/providerReducer'
+import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
-const accountClient = Service(
-	accountpb.AccountService,
-	rpcNative,
-	null,
-) as berty.account.v1.AccountService
+const accountClient = Service(beapi.account.AccountService, rpcNative, null)
 
 export const storageKeyForAccount = (accountID: string) => `storage_${accountID}`
 
@@ -42,7 +34,7 @@ export const createNewAccount = async (
 	}
 
 	await GoBridge.initBridge()
-	let resp: berty.account.v1.CreateAccount.Reply
+	let resp: beapi.account.CreateAccount.Reply
 
 	try {
 		resp = await accountClient.createAccount({})
@@ -78,7 +70,7 @@ export const importAccount = async (
 	}
 
 	await GoBridge.initBridge()
-	let resp: berty.account.v1.CreateAccount.Reply
+	let resp: beapi.account.CreateAccount.Reply
 
 	try {
 		resp = await accountClient.importAccount({
@@ -176,7 +168,7 @@ function callWithBridge<T>(func: () => Promise<T>): Promise<T> {
 export const refreshAccountList = async (
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
-): Promise<berty.account.v1.IAccountMetadata[]> => {
+): Promise<beapi.account.IAccountMetadata[]> => {
 	try {
 		if (embedded) {
 			const resp = await callWithBridge(async () => accountClient.listAccounts({}))
@@ -289,7 +281,7 @@ export const openingDaemon = async (
 	}
 
 	// Apply store options
-	let bridgeOpts
+	let bridgeOpts: GoBridgeOpts
 	try {
 		let opts = {}
 		let store
@@ -370,17 +362,9 @@ export const openingClients = (
 		rpc = rpcWeb(opts)
 	}
 
-	const messengerClient = Service(
-		messengerpb.MessengerService,
-		rpc,
-		messengerMiddlewares,
-	) as berty.messenger.v1.MessengerService
+	const messengerClient = Service(beapi.messenger.MessengerService, rpc, messengerMiddlewares)
 
-	const protocolClient = Service(
-		protocolpb.ProtocolService,
-		rpc,
-		null,
-	) as berty.protocol.v1.ProtocolService
+	const protocolClient = Service(beapi.protocol.ProtocolService, rpc, null)
 
 	let precancel = false
 	let cancel = () => {
@@ -393,7 +377,7 @@ export const openingClients = (
 				return
 			}
 			stream.onMessage(
-				(msg: { event: berty.messenger.v1.IStreamEvent | undefined }, err: Error | null) => {
+				(msg: { event: beapi.messenger.IStreamEvent | undefined }, err: Error | null) => {
 					if (err) {
 						console.warn('events stream onMessage error:', err)
 						dispatch({ type: MessengerActions.SetStreamError, payload: { error: err } })
@@ -405,8 +389,8 @@ export const openingClients = (
 						return
 					}
 
-					const enumName = Object.keys(messengerpb.StreamEvent.Type).find(
-						(name) => messengerpb.StreamEvent.Type[name] === evt.type,
+					const enumName = Object.keys(beapi.messenger.StreamEvent.Type).find(
+						(name) => (beapi.messenger.StreamEvent.Type as any)[name] === evt.type,
 					)
 					if (!enumName) {
 						console.warn('failed to get event type name')
@@ -414,15 +398,16 @@ export const openingClients = (
 					}
 
 					const payloadName = enumName.substr('Type'.length)
-					const pbobj = messengerpb.StreamEvent[payloadName]
+					const pbobj = (beapi.messenger.StreamEvent as any)[payloadName]
 					if (!pbobj) {
 						console.warn('failed to find a protobuf object matching the event type')
 						return
 					}
 					const eventPayload = pbobj.decode(evt.payload)
-					if (evt.type === messengerpb.StreamEvent.Type.TypeNotified) {
-						const enumName = Object.keys(messengerpb.StreamEvent.Notified.Type).find(
-							(name) => messengerpb.StreamEvent.Notified.Type[name] === eventPayload.type,
+					if (evt.type === beapi.messenger.StreamEvent.Type.TypeNotified) {
+						const enumName = Object.keys(beapi.messenger.StreamEvent.Notified.Type).find(
+							(name) =>
+								(beapi.messenger.StreamEvent.Notified.Type as any)[name] === eventPayload.type,
 						)
 						if (!enumName) {
 							console.warn('failed to get event type name')
@@ -430,7 +415,7 @@ export const openingClients = (
 						}
 
 						const payloadName = enumName.substr('Type'.length)
-						const pbobj = messengerpb.StreamEvent.Notified[payloadName]
+						const pbobj = (beapi.messenger.StreamEvent.Notified as any)[payloadName]
 						if (!pbobj) {
 							console.warn('failed to find a protobuf object matching the notification type')
 							return
@@ -472,7 +457,7 @@ export const openingClients = (
 export const openingCloseConvos = (
 	appState: MessengerAppState,
 	dispatch: (arg0: reducerAction) => void,
-	client: berty.messenger.v1.MessengerService | null,
+	client: ServiceClientType<beapi.messenger.MessengerService> | null,
 	conversations: { [key: string]: any },
 ) => {
 	if (appState !== MessengerAppState.OpeningMarkConversationsAsClosed) {

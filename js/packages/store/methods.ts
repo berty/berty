@@ -1,6 +1,6 @@
 import { useReducer, useCallback } from 'react'
 import { useMsgrContext } from './context'
-import { messenger as messengerpb, protocol as protocolpb } from '@berty-tech/api/index.js'
+import beapi from '@berty-tech/api'
 
 const initialState: MethodState<any> = { error: null, reply: null, done: false, called: false }
 
@@ -92,12 +92,12 @@ const makeServiceHooks = (service: any, getClient: any) =>
 	)
 
 export const messengerMethodsHooks = makeServiceHooks(
-	messengerpb.MessengerService,
+	beapi.messenger.MessengerService,
 	(ctx: any) => ctx.client,
 )
 
 export const protocolMethodsHooks = makeServiceHooks(
-	protocolpb.ProtocolService,
+	beapi.protocol.ProtocolService,
 	(ctx: any) => ctx.protocolClient,
 )
 

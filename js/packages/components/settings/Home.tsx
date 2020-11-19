@@ -8,12 +8,12 @@ import { Translation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
+import { MessengerActions } from '@berty-tech/store/context'
 
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
-import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import HeaderSettings from '../shared-components/Header'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-import { MessengerActions } from '@berty-tech/store/context'
+import { AccountAvatar } from '../avatars'
 
 const useStylesHome = () => {
 	const [{ height, margin, padding, text }] = useStyles()
@@ -89,17 +89,17 @@ const HomeHeaderAvatar: React.FC = () => {
 				onPress={() => navigation.navigate.settings.myBertyId()}
 			>
 				<View style={[{ alignItems: 'center' }]}>
-					<View style={{ position: 'absolute', top: -75 }}>
-						<ProceduralCircleAvatar
-							seed={account?.publicKey || ''}
-							size={70}
-							diffSize={25}
-							style={[border.shadow.big]}
-						/>
+					<View
+						style={{
+							position: 'absolute',
+							top: -73,
+						}}
+					>
+						<AccountAvatar size={64} />
 					</View>
 					<Text style={[_styles.headerNameText]}>{account?.displayName || ''}</Text>
 					<View style={[padding.top.scale(20 * scaleHeight)]}>
-						{(account.link && <QRCode size={qrCodeSize} value={account.link} />) || null}
+						{(account?.link && <QRCode size={qrCodeSize} value={account.link} />) || null}
 					</View>
 				</View>
 			</TouchableOpacity>
@@ -122,7 +122,7 @@ const HomeHeader: React.FC = () => {
 					<Icon name='arrow-back-outline' width={30} height={30} fill={color.white} />
 				</TouchableOpacity>
 				<View />
-				<TouchableOpacity onPress={() => navigation.goBack()}>
+				<TouchableOpacity onPress={() => navigation.navigate('Settings.EditProfile')}>
 					<Icon name='edit-outline' width={30} height={30} fill={color.white} />
 				</TouchableOpacity>
 			</View>

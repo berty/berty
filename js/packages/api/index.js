@@ -1,7 +1,9 @@
-import { default as pb } from './index.pb'
+import { default as pb } from './root.pb'
 
-export const account = pb.lookup('berty.account.v1')
-export const protocol = pb.lookup('berty.protocol.v1')
-export const messenger = pb.lookup('berty.messenger.v1')
-export const types = pb.lookup('berty.types.v1')
-export const errcode = pb.lookup('berty.errcode')
+export default {
+	account: pb.lookup('berty.account.v1'),
+	messenger: pb.lookup('.berty.messenger.v1'),
+	protocol: pb.lookup('.berty.protocol.v1'),
+	types: pb.lookup('.berty.types.v1'),
+	errcode: pb.lookup('.berty.errcode'),
+}

@@ -5,9 +5,10 @@ import {
 	ErrorStreamNotImplemented,
 	getServiceName,
 } from './utils'
+import * as pb from 'protobufjs'
 
 // native rpc implem
-const unary = async (method, request, metadata) => {
+const unary = async <T extends pb.Method>(method: T, request: Uint8Array, _metadata?: never) => {
 	const methodName = `/${getServiceName(method)}/${method.name}`
 	const req64 = serializeToBase64(request)
 	return GoBridge.invokeBridgeMethod(methodName, req64).then((res64) =>
@@ -15,7 +16,7 @@ const unary = async (method, request, metadata) => {
 	)
 }
 
-const stream = async (method, request, metadata) => {
+const stream = async (_method: unknown, _request: unknown, _metadata: unknown) => {
 	throw ErrorStreamNotImplemented
 }
 

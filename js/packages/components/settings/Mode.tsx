@@ -9,7 +9,7 @@ import { useMsgrContext, useAccount } from '@berty-tech/store/hooks'
 import { exportAccountToFile, serviceTypes, useAccountServices } from '@berty-tech/store/services'
 import { useNavigation } from '@berty-tech/navigation'
 import i18n from '@berty-tech/berty-i18n'
-import { berty } from '@berty-tech/api/index.pb'
+import beapi from '@berty-tech/api'
 
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
@@ -40,7 +40,7 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 	const _styles = useStylesMode()
 	const [{ flex, padding, margin, color, text, column }, { scaleSize }] = useStyles()
 	const navigation = useReactNavigation()
-	const account: berty.messenger.v1.Account = useAccount()
+	const account: beapi.messenger.Account = useAccount()
 	const services = useAccountServices()
 	const replicationServices = services.filter(
 		(s: any) => s.serviceType === serviceTypes.Replication,

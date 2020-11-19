@@ -36,7 +36,7 @@ const BodyAddContactList = () => {
 							bgColor: value.kind === tagBot ? color.light.yellow : color.light.blue,
 						}}
 						onPress={() => {
-							navigation.navigate('Main.Home')
+							navigation.navigate('Tabs')
 							navigation.navigate('Modals', {
 								screen: 'ManageDeepLink',
 								params: { type: 'link', value: value.link },
@@ -60,7 +60,7 @@ const BodyAddContactList = () => {
 							bgColor: color.light.green,
 						}}
 						onPress={() => {
-							navigation.navigate('Main.Home')
+							navigation.navigate('Tabs')
 							navigation.navigate('Modals', {
 								screen: 'ManageDeepLink',
 								params: { type: 'link', value: value.link },
