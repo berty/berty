@@ -142,7 +142,7 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 				// opts.Mocknet.ConnectPeers(node.Identity, opts.RDVPeer.ID)
 				h.Peerstore().AddAddrs(opts.RDVPeer.ID, opts.RDVPeer.Addrs, peerstore.PermanentAddrTTL)
 				// @FIXME(gfanton): use rand as argument
-				disc = tinder.NewRendezvousDiscovery(opts.Logger, h, opts.RDVPeer.ID, rand.New(rand.NewSource(rand.Int63())))
+				disc = tinder.NewRendezvousDiscovery(opts.Logger, h, opts.RDVPeer.ID, rand.New(rand.NewSource(rand.Int63())), "testing")
 			} else {
 				disc = tinder.NewDriverRouting(opts.Logger, "dht", r)
 			}

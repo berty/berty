@@ -5,6 +5,7 @@ package tinder
 
 import (
 	"context"
+	fmt "fmt"
 	"math"
 	mrand "math/rand"
 	"sync"
@@ -25,6 +26,7 @@ type rendezvousDiscovery struct {
 	rng          *mrand.Rand
 	rngMux       sync.Mutex
 	selfID       peer.ID
+	name         string
 }
 
 type rpCache struct {
@@ -38,7 +40,7 @@ type rpRecord struct {
 	expire int64
 }
 
-func NewRendezvousDiscovery(logger *zap.Logger, host host.Host, rdvPeer peer.ID, rng *mrand.Rand) AsyncableDriver {
+func NewRendezvousDiscovery(logger *zap.Logger, host host.Host, rdvPeer peer.ID, rng *mrand.Rand, suffix string) AsyncableDriver {
 	rp := p2p_rp.NewRendezvousPoint(host, rdvPeer)
 	return &rendezvousDiscovery{
 		logger:    logger.Named("tinder/rdvp"),
@@ -46,6 +48,7 @@ func NewRendezvousDiscovery(logger *zap.Logger, host host.Host, rdvPeer peer.ID,
 		rng:       rng,
 		peerCache: make(map[string]*rpCache),
 		selfID:    host.ID(),
+		name:      fmt.Sprintf("rdvp-%s", suffix),
 	}
 }
 
@@ -285,4 +288,4 @@ func (c *rendezvousDiscovery) Unregister(ctx context.Context, ns string) error {
 	return c.rp.Unregister(ctx, ns)
 }
 
-func (*rendezvousDiscovery) Name() string { return "rdvp" }
+func (c *rendezvousDiscovery) Name() string { return c.name }
