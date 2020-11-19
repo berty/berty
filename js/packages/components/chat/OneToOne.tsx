@@ -14,11 +14,12 @@ import {
 import { Icon, Text } from '@ui-kitten/components'
 import { CommonActions } from '@react-navigation/native'
 import { Translation, useTranslation } from 'react-i18next'
+import moment from 'moment'
+import { groupBy } from 'lodash'
 
-import { useStyles } from '@berty-tech/styles'
-import { Routes, ScreenProps, useNavigation } from '@berty-tech/navigation'
-import * as api from '@berty-tech/api/index.pb'
 import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import * as api from '@berty-tech/api/index.pb'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
 import {
 	useContact,
 	useConversation,
@@ -29,22 +30,24 @@ import {
 	useClient,
 	useNotificationsInhibitor,
 } from '@berty-tech/store/hooks'
+import { Routes, ScreenProps, useNavigation } from '@berty-tech/navigation'
+import { useStyles } from '@berty-tech/styles'
 
-import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
-import { Message, MessageInvitationButton, MessageSystemWrapper } from './shared-components/Message'
-import BlurView from '../shared-components/BlurView'
-
-import moment from 'moment'
-
-import { ChatDate, ChatFooter } from './shared-components/Chat'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-import Logo from '../main/1_berty_picto.svg'
-import Avatar from '../modals/Buck_Berty_Icon_Card.svg'
-import { groupBy } from 'lodash'
 import { pbDateToNum, timeFormat } from '../helpers'
 import { useLayout } from '../hooks'
 import { playSound } from '../sounds'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
+
+import { Message } from './message'
+import { MessageInvitationButton } from './message/MessageInvitation'
+import { MessageSystemWrapper } from './message/MessageSystemWrapper'
+import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
+
+import BlurView from '../shared-components/BlurView'
+import { ChatDate, ChatFooter } from './shared-components/Chat'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+
+import Logo from '../main/1_berty_picto.svg'
+import Avatar from '../modals/Buck_Berty_Icon_Card.svg'
 
 //
 // Chat
