@@ -333,11 +333,11 @@ const BodyDevTools: React.FC<{}> = () => {
 				}}
 			/>
 			<ButtonSetting
-				name={t('settings.devtools.add-bots-button')}
-				icon='info-outline'
+				name={t('settings.devtools.add-dev-conversations-button')}
+				icon='plus-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
-				onPress={() => navigation.navigate('Settings.AddContactList')}
+				onPress={() => navigation.navigate('Settings.AddDevConversations')}
 			/>
 			<DiscordShareButton />
 			<NativeCallButton />
