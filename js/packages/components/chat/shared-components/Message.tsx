@@ -604,21 +604,24 @@ export const Message: React.FC<{
 	) {
 		return (
 			<View style={[padding.vertical.tiny, padding.horizontal.medium]}>
+				<View style={{ justifyContent: 'center', alignItems: 'center' }}>
+					<Icon name='monitor-outline' fill='#4E58BF' width={25} height={25} />
+					<Text
+						style={[
+							{ textAlign: 'center', fontFamily: 'Open Sans', color: '#4E58BF' },
+							text.bold.small,
+							text.italic,
+							text.size.scale(14),
+						]}
+					>
+						{monitorPayload}
+					</Text>
+				</View>
 				<Text
 					style={[
-						{ textAlign: 'center', fontFamily: 'Open Sans' },
-						text.color.black,
+						{ fontFamily: 'Open Sans', alignSelf: 'flex-end', color: '#4E58BF' },
 						text.bold.small,
-						text.size.scale(14),
-					]}
-				>
-					{monitorPayload}
-				</Text>
-				<Text
-					style={[
-						{ fontFamily: 'Open Sans', alignSelf: 'flex-end' },
-						text.bold.small,
-						text.color.black,
+						text.italic,
 						text.size.small,
 					]}
 				>
