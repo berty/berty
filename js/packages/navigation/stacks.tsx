@@ -269,11 +269,6 @@ export const Navigation: React.FC = () => {
 				options={ModalScreenOptions}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Main.RequestSent}
-				component={Components.Main.RequestSent}
-				options={{ stackPresentation: 'containedModal' }}
-			/>
-			<NavigationStack.Screen
 				name={Routes.CreateGroup.CreateGroupAddMembers}
 				component={CreateGroupNavigation}
 				options={ModalScreenOptions}
