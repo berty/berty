@@ -509,10 +509,7 @@ export const Message: React.FC<{
 						<Hyperlink
 							onPress={async (url) => {
 								if (await isBertyDeepLink(client, url)) {
-									navigation.navigate('Modals', {
-										screen: 'ManageDeepLink',
-										params: { type: 'link', value: url },
-									})
+									navigation.navigate('ManageDeepLink', { type: 'link', value: url })
 									return
 								}
 

@@ -73,10 +73,7 @@ const ScanBody: React.FC<{}> = () => {
 				onRead={({ data, type }) => {
 					if ((type as string) === 'QR_CODE' || (type as string) === 'org.iso.QRCode') {
 						// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
-						navigation.navigate('Modals', {
-							screen: 'ManageDeepLink',
-							params: { type: 'qr', value: data },
-						})
+						navigation.navigate('ManageDeepLink', { type: 'qr', value: data })
 						Vibration.vibrate(1000)
 					}
 				}}
@@ -135,10 +132,7 @@ const DevReferenceInput = () => {
 			<Button
 				title='Submit'
 				onPress={() => {
-					navigation.navigate('Modals', {
-						screen: 'ManageDeepLink',
-						params: { type: 'link', value: ref },
-					})
+					navigation.navigate('ManageDeepLink', { type: 'link', value: ref })
 					Vibration.vibrate(1000)
 				}}
 			/>

@@ -246,9 +246,7 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 						actionIcon='arrow-ios-forward'
 						onPress={() => {
 							Vibration.vibrate([1000, 250, 1000])
-							navigation.navigate('Modals', {
-								screen: 'DeleteAccount',
-							})
+							navigation.navigate('DeleteAccount')
 						}}
 					/>
 				</View>

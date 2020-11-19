@@ -21,6 +21,7 @@
     "@react-native-firebase/crashlytics": "^8.5.0",
     "@react-navigation/material-top-tabs": "^5.3.8",
     "@react-navigation/native": "^5.8.8",
+    "@react-navigation/stack": "^5.12.6",
     "@shakebugs/react-native-shake": "^10.0.4",
     "@ui-kitten/components": "^5.0.0",
     "@ui-kitten/eva-icons": "^5.0.0",

@@ -29,10 +29,7 @@ const BodyAddContactList = () => {
 						actionIcon={null}
 						onPress={() => {
 							navigation.navigate('Main.Home')
-							navigation.navigate('Modals', {
-								screen: 'ManageDeepLink',
-								params: { type: 'link', value: value.link },
-							})
+							navigation.navigate('ManageDeepLink', { type: 'link', value: value.link })
 						}}
 					/>
 				)
