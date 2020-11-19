@@ -31,8 +31,8 @@ on:
 # * store performance logs for comparison
 
 jobs:
-  unstable-tests:
-    name: "env=production"
+  integration:
+    name: "integration (production)"
     runs-on: ubuntu-latest
     env:
       OS: ubuntu-latest
@@ -91,3 +91,43 @@ jobs:
         uses: Ilshidur/action-discord@0.3.0
         with:
           args: 'Integration failed, see ${{ steps.url.outputs.runUrl }}'
+  doctor:
+    name: "doctor (production)"
+    runs-on: ubuntu-latest
+    env:
+      OS: ubuntu-latest
+      GOLANG: 1.15.x
+    steps:
+      - name: Generate run's URL
+        id: url
+        run: |
+          echo "::set-output name=runUrl::https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15.x
+      - name: Cache Go modules
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Avoid triggering make generate
+        run: touch go/gen.sum
+      - name: Fetch dependencies
+        run: go mod download
+      - name: Compile the doctor binary
+        working-directory: go
+        run: go install ./cmd/berty-doctor
+      - name: Run doctor
+        run: berty-doctor -v
+      - name: Discord notification
+        if: github.event_name == 'schedule' && failure()
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_DEV_WEBHOOK }}
+        uses: Ilshidur/action-discord@0.3.0
+        with:
+          args: 'Doctor failed, see ${{ steps.url.outputs.runUrl }}'
