@@ -199,7 +199,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 				return nil, err
 			}
 
-			if err = svc.db.addAccount(pkStr, ret.GetHTMLURL()); err != nil {
+			if err = svc.db.addAccount(pkStr, ret.GetWebURL()); err != nil {
 				return nil, err
 			}
 		case err != nil: // internal error

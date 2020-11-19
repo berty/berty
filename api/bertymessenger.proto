@@ -108,10 +108,9 @@ message InstanceShareableBertyID {
     string display_name = 2;
   }
   message Reply {
-    BertyID berty_id = 1 [(gogoproto.customname) = "BertyID"];
-    string berty_id_payload = 2 [(gogoproto.customname) = "BertyIDPayload"];
-    string deep_link = 3 [(gogoproto.customname) = "DeepLink"];
-    string html_url = 4 [(gogoproto.customname) = "HTMLURL"];
+    BertyLink link = 1;
+    string internal_url = 2 [(gogoproto.customname) = "InternalURL"];
+    string web_url = 3 [(gogoproto.customname) = "WebURL"];
   }
 }
 
@@ -121,10 +120,9 @@ message ShareableBertyGroup {
     string group_name = 2;
   }
   message Reply {
-    BertyGroup berty_group = 1 [(gogoproto.customname) = "BertyGroup"];
-    string berty_group_payload = 2 [(gogoproto.customname) = "BertyGroupPayload"];
-    string deep_link = 3 [(gogoproto.customname) = "DeepLink"];
-    string html_url = 4 [(gogoproto.customname) = "HTMLURL"];
+    BertyLink link = 1;
+    string internal_url = 2 [(gogoproto.customname) = "InternalURL"];
+    string web_url = 3 [(gogoproto.customname) = "WebURL"];
   }
 }
 
@@ -142,14 +140,20 @@ message ParseDeepLink {
     string link = 1;
   }
   message Reply {
-    Kind kind = 1;
-    BertyID berty_id = 3 [(gogoproto.customname) = "BertyID"];
-    BertyGroup berty_group = 4 [(gogoproto.customname) = "BertyGroup"];
+    BertyLink link = 1;
   }
+}
+
+message BertyLink {
+  Kind kind = 1;
+  BertyID berty_id = 2 [(gogoproto.customname) = "BertyID"];
+  BertyGroup berty_group = 3 [(gogoproto.customname) = "BertyGroup"];
+  // bool enc = 4;
+
   enum Kind {
     UnknownKind = 0;
-    BertyID = 1;
-    BertyGroup = 2;
+    ContactInviteV1Kind = 1;
+    GroupV1Kind = 2;
   }
 }
 

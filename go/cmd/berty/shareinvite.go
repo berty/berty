@@ -16,7 +16,8 @@ import (
 func shareInviteCommand() *ffcli.Command {
 	var (
 		shareOnDevChannelFlag = false
-		noTerminalFlag        = false
+		noQRFlag              = false
+		nameFlag              = ""
 	)
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("berty share-invite", flag.ExitOnError)
@@ -24,8 +25,9 @@ func shareInviteCommand() *ffcli.Command {
 		manager.SetupLoggingFlags(fs)              // also available at root level
 		manager.SetupLocalMessengerServerFlags(fs) // by default, start a new local messenger server,
 		manager.SetupRemoteNodeFlags(fs)           // but allow to set a remote server instead
+		fs.StringVar(&nameFlag, "name", "", "override display name")
 		fs.BoolVar(&shareOnDevChannelFlag, "dev-channel", shareOnDevChannelFlag, "post qrcode on dev channel")
-		fs.BoolVar(&noTerminalFlag, "no-term", noTerminalFlag, "do not print the QR code in terminal")
+		fs.BoolVar(&noQRFlag, "no-qr", noQRFlag, "do not print the QR code in terminal")
 		return fs, nil
 	}
 
@@ -49,18 +51,24 @@ func shareInviteCommand() *ffcli.Command {
 				return err
 			}
 
+			// override display name
+			name := manager.Node.Messenger.DisplayName
+			if nameFlag != "" {
+				name = nameFlag
+			}
+
 			// get shareable ID
-			ret, err := messenger.InstanceShareableBertyID(ctx, &bertymessenger.InstanceShareableBertyID_Request{DisplayName: manager.Node.Messenger.DisplayName})
+			ret, err := messenger.InstanceShareableBertyID(ctx, &bertymessenger.InstanceShareableBertyID_Request{DisplayName: name})
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
-			if !noTerminalFlag {
-				qrterminal.GenerateHalfBlock(ret.DeepLink, qrterminal.L, os.Stdout) // FIXME: show deeplink
+			fmt.Println(ret.WebURL)
+			if !noQRFlag {
+				fmt.Fprintln(os.Stderr, ret.InternalURL)
+				qrterminal.GenerateHalfBlock(ret.InternalURL, qrterminal.L, os.Stderr)
 			}
-			fmt.Printf("html url: %s\n", ret.HTMLURL)
-			// fmt.Printf("deeplink: %s\n", ret.DeepLink)
 			if shareOnDevChannelFlag {
-				_, err = messenger.DevShareInstanceBertyID(ctx, &bertymessenger.DevShareInstanceBertyID_Request{DisplayName: manager.Node.Messenger.DisplayName})
+				_, err = messenger.DevShareInstanceBertyID(ctx, &bertymessenger.DevShareInstanceBertyID_Request{DisplayName: name})
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}

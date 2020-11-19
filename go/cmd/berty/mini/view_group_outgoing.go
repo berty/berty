@@ -17,6 +17,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 type command struct {
@@ -69,11 +70,6 @@ func commandList() []*command {
 			help:  "Creates joins an existing group, a group invite must be supplied",
 			cmd:   groupJoinCommand,
 		},
-		// {
-		// 	title: "contact received",
-		// 	help:  "Fakes an incoming contact request, a shareable contact must be supplied",
-		// 	cmd:   contactReceivedCommand,
-		// },
 		{
 			title: "contact accept all",
 			help:  "Accepts all pending contact requests",
@@ -668,7 +664,7 @@ func groupInviteCommand(renderFunc func(*groupView, string)) func(ctx context.Co
 			return err
 		}
 
-		renderFunc(v, res.DeepLink)
+		renderFunc(v, res.WebURL)
 
 		return nil
 	}
@@ -705,29 +701,6 @@ func cmdHelp(ctx context.Context, v *groupView, cmd string) error {
 func newSlashMessageCommand(ctx context.Context, v *groupView, cmd string) error {
 	return newMessageCommand(ctx, v, strings.TrimPrefix(cmd, "/"))
 }
-
-// func contactReceivedCommand(ctx context.Context, v *groupView, cmd string) error {
-// 	contactBytes, err := base64.StdEncoding.DecodeString(cmd)
-// 	if err != nil {
-// 		return err
-// 	}
-//
-// 	contact := &bertytypes.ShareableContact{}
-// 	if err := contact.Unmarshal(contactBytes); err != nil {
-// 		return err
-// 	}
-//
-// 	_, err = crypto.UnmarshalEd25519PublicKey(contact.PK)
-// 	if err != nil {
-// 		return err
-// 	}
-//
-// 	if _, err = v.cg.MetadataStore().ContactRequestIncomingReceived(ctx, contact); err != nil {
-// 		return err
-// 	}
-//
-// 	return nil
-// }
 
 func contactAcceptCommand(ctx context.Context, v *groupView, cmd string) error {
 	pkBytes, err := base64.StdEncoding.DecodeString(cmd)
@@ -783,17 +756,18 @@ func contactRequestCommand(ctx context.Context, v *groupView, cmd string) error 
 	displayName := v.v.displayName
 	v.v.lock.Unlock()
 
-	res, err := v.v.messenger.ParseDeepLink(ctx, &bertymessenger.ParseDeepLink_Request{
-		Link: cmd,
-	})
+	link, err := bertymessenger.UnmarshalLink(cmd)
 	if err != nil {
-		return err
+		return errcode.ErrInvalidInput.Wrap(err)
+	}
+	if !link.IsContact() {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected a contact URL, got %q instead", link.GetKind()))
 	}
 
 	contact := &bertytypes.ShareableContact{
-		PK:                   res.BertyID.AccountPK,
-		PublicRendezvousSeed: res.BertyID.PublicRendezvousSeed,
-		Metadata:             []byte(res.BertyID.DisplayName),
+		PK:                   link.BertyID.AccountPK,
+		PublicRendezvousSeed: link.BertyID.PublicRendezvousSeed,
+		Metadata:             []byte(link.BertyID.DisplayName),
 	}
 
 	_, err = v.v.protocol.ContactRequestSend(ctx, &bertytypes.ContactRequestSend_Request{
@@ -830,7 +804,7 @@ func contactShareCommand(displayFunc func(*groupView, string)) func(ctx context.
 			return err
 		}
 
-		displayFunc(v, res.DeepLink)
+		displayFunc(v, res.WebURL)
 
 		return nil
 	}

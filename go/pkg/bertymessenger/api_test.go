@@ -6,7 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -28,26 +27,26 @@ func TestServiceInstanceShareableBertyID(t *testing.T) {
 	ret1, err := svc.InstanceShareableBertyID(ctx, nil)
 	require.NoError(t, err)
 	testParseInstanceShareable(ctx, t, svc, ret1)
-	assert.Equal(t, ret1.BertyID.DisplayName, "")
+	assert.Equal(t, ret1.Link.BertyID.DisplayName, "")
 
 	ret2, err := svc.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{})
 	require.NoError(t, err)
 	testParseInstanceShareable(ctx, t, svc, ret2)
-	assert.Equal(t, ret2.BertyID.DisplayName, "")
+	assert.Equal(t, ret2.Link.BertyID.DisplayName, "")
 	assert.Equal(t, ret1, ret2)
 
 	ret3, err := svc.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{DisplayName: "Hello World! 👋"})
 	require.NoError(t, err)
 	testParseInstanceShareable(ctx, t, svc, ret3)
-	assert.Equal(t, ret3.BertyID.DisplayName, "Hello World! 👋")
-	assert.NotEqual(t, ret2.BertyID, ret3.BertyID)
+	assert.Equal(t, ret3.Link.BertyID.DisplayName, "Hello World! 👋")
+	assert.NotEqual(t, ret2.Link.BertyID, ret3.Link.BertyID)
 
 	ret4, err := svc.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{Reset_: true})
 	require.NoError(t, err)
 	testParseInstanceShareable(ctx, t, svc, ret4)
-	assert.Equal(t, ret4.BertyID.DisplayName, "")
-	assert.NotEqual(t, ret1.BertyID, ret4.BertyID)
-	assert.NotEqual(t, ret3.BertyID, ret4.BertyID)
+	assert.Equal(t, ret4.Link.BertyID.DisplayName, "")
+	assert.NotEqual(t, ret1.Link.BertyID, ret4.Link.BertyID)
+	assert.NotEqual(t, ret3.Link.BertyID, ret4.Link.BertyID)
 
 	ret5, err := svc.InstanceShareableBertyID(ctx, nil)
 	require.NoError(t, err)
@@ -57,22 +56,22 @@ func TestServiceInstanceShareableBertyID(t *testing.T) {
 
 func testParseInstanceShareable(ctx context.Context, t *testing.T, svc MessengerServiceServer, ret *InstanceShareableBertyID_Reply) {
 	t.Helper()
-	assert.NotEmpty(t, ret.BertyID)
-	assert.NotEmpty(t, ret.BertyID.PublicRendezvousSeed)
-	assert.NotEmpty(t, ret.BertyID.AccountPK)
-	assert.NotEmpty(t, ret.HTMLURL)
-	assert.NotEmpty(t, ret.DeepLink)
-	assert.NotEqual(t, ret.HTMLURL, ret.DeepLink)
+	assert.NotEmpty(t, ret.Link.BertyID)
+	assert.NotEmpty(t, ret.Link.BertyID.PublicRendezvousSeed)
+	assert.NotEmpty(t, ret.Link.BertyID.AccountPK)
+	assert.NotEmpty(t, ret.WebURL)
+	assert.NotEmpty(t, ret.InternalURL)
+	assert.NotEqual(t, ret.WebURL, ret.InternalURL)
 
-	parsed1, err := svc.ParseDeepLink(ctx, &ParseDeepLink_Request{Link: ret.DeepLink})
+	parsed1, err := svc.ParseDeepLink(ctx, &ParseDeepLink_Request{Link: ret.InternalURL})
 	require.NoError(t, err)
-	parsed2, err := svc.ParseDeepLink(ctx, &ParseDeepLink_Request{Link: ret.HTMLURL})
+	parsed2, err := svc.ParseDeepLink(ctx, &ParseDeepLink_Request{Link: ret.WebURL})
 	require.NoError(t, err)
 
 	assert.Equal(t, parsed1, parsed2)
-	assert.Equal(t, parsed1.BertyID.PublicRendezvousSeed, ret.BertyID.PublicRendezvousSeed)
-	assert.Equal(t, parsed1.BertyID.AccountPK, ret.BertyID.AccountPK)
-	assert.Equal(t, parsed1.BertyID.DisplayName, ret.BertyID.DisplayName)
+	assert.Equal(t, parsed1.Link.BertyID.PublicRendezvousSeed, ret.Link.BertyID.PublicRendezvousSeed)
+	assert.Equal(t, parsed1.Link.BertyID.AccountPK, ret.Link.BertyID.AccountPK)
+	assert.Equal(t, parsed1.Link.BertyID.DisplayName, ret.Link.BertyID.DisplayName)
 }
 
 func TestServiceParseDeepLink(t *testing.T) {
@@ -85,13 +84,14 @@ func TestServiceParseDeepLink(t *testing.T) {
 	}{
 		{"nil", nil, errcode.ErrMissingInput, false, false},
 		{"empty", &ParseDeepLink_Request{}, errcode.ErrMissingInput, false, false},
-		{"invalid", &ParseDeepLink_Request{Link: "invalid"}, errcode.ErrMessengerInvalidDeepLink, false, false},
-		{"invalid2", &ParseDeepLink_Request{Link: "berty://id/#key=blah&name=blih"}, errcode.ErrMessengerInvalidDeepLink, false, false},
-		{"invalid3", &ParseDeepLink_Request{Link: "https://berty.tech/id#key=blah&name=blih"}, errcode.ErrMessengerInvalidDeepLink, false, false},
-		{"deeplink", &ParseDeepLink_Request{Link: "berty://id/#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA&name=Alice"}, nil, true, true},
-		{"htmlurl", &ParseDeepLink_Request{Link: "https://berty.tech/id#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA&name=Alice"}, nil, true, true},
-		{"deeplink-noname", &ParseDeepLink_Request{Link: "berty://id/#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA"}, nil, true, false},
-		{"htmlurl-noname", &ParseDeepLink_Request{Link: "https://berty.tech/id#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA"}, nil, true, false},
+		{"invalid", &ParseDeepLink_Request{Link: "foobar"}, errcode.ErrMessengerInvalidDeepLink, false, false},
+		{"invalid2", &ParseDeepLink_Request{Link: "BERTY://FOOBAR"}, errcode.ErrMessengerInvalidDeepLink, false, false},
+		{"invalid2", &ParseDeepLink_Request{Link: "berty://foobar"}, errcode.ErrMessengerInvalidDeepLink, false, false},
+		{"invalid3", &ParseDeepLink_Request{Link: "https://berty.tech/id#foobar"}, errcode.ErrMessengerInvalidDeepLink, false, false},
+		{"internal", &ParseDeepLink_Request{Link: "BERTY://" + validContactInternalBlob}, nil, true, true},
+		{"internal-2", &ParseDeepLink_Request{Link: "berty://" + validContactInternalBlob}, nil, true, true},
+		{"weburl", &ParseDeepLink_Request{Link: "https://berty.tech/id#contact/" + validContactBlob + "/name=Alice"}, nil, true, true},
+		{"weburl-noname", &ParseDeepLink_Request{Link: "https://berty.tech/id#contact/" + validContactBlob}, nil, true, false},
 	}
 
 	for _, tt := range tests {
@@ -110,16 +110,16 @@ func TestServiceParseDeepLink(t *testing.T) {
 			}
 			assert.Equal(t, errcode.Code(err), tt.expectedErrcode)
 			if tt.expectedValidID {
-				assert.NotEmpty(t, ret.BertyID.PublicRendezvousSeed)
-				assert.NotEmpty(t, ret.BertyID.AccountPK)
+				assert.NotEmpty(t, ret.GetLink().GetBertyID().GetPublicRendezvousSeed())
+				assert.NotEmpty(t, ret.GetLink().GetBertyID().GetAccountPK())
 			} else {
-				assert.True(t, ret == nil || ret.BertyID == nil || ret.BertyID.PublicRendezvousSeed == nil)
-				assert.True(t, ret == nil || ret.BertyID == nil || ret.BertyID.AccountPK == nil)
+				assert.True(t, ret == nil || ret.GetLink().GetBertyID().GetPublicRendezvousSeed() == nil)
+				assert.True(t, ret == nil || ret.GetLink().GetBertyID().GetAccountPK() == nil)
 			}
 			if tt.expectedName {
-				assert.NotEmpty(t, ret.BertyID.DisplayName)
+				assert.NotEmpty(t, ret.GetLink().GetBertyID().GetDisplayName())
 			} else {
-				assert.True(t, ret == nil || ret.BertyID == nil || ret.BertyID.DisplayName == "")
+				assert.True(t, ret == nil || ret.GetLink().GetBertyID().GetDisplayName() == "")
 			}
 		})
 	}
@@ -142,10 +142,10 @@ func TestServiceSendContactRequest(t *testing.T) {
 	assert.Equal(t, errcode.Code(err), errcode.ErrMissingInput)
 	assert.Nil(t, ret)
 
-	parseRet, err := svc.ParseDeepLink(ctx, &ParseDeepLink_Request{Link: "https://berty.tech/id#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA&name=Alice"})
+	parseRet, err := svc.ParseDeepLink(ctx, &ParseDeepLink_Request{Link: "https://berty.tech/id#contact/" + validContactBlob + "/name=Alice"})
 	require.NoError(t, err)
 
-	ret, err = svc.SendContactRequest(ctx, &SendContactRequest_Request{BertyID: parseRet.BertyID})
+	ret, err = svc.SendContactRequest(ctx, &SendContactRequest_Request{BertyID: parseRet.Link.BertyID})
 	require.NoError(t, err)
 	assert.NotNil(t, ret)
 }
@@ -175,20 +175,21 @@ func TestSystemInfo(t *testing.T) {
 
 func testParseSharedGroup(t *testing.T, g *bertytypes.Group, name string, ret *ShareableBertyGroup_Reply) {
 	t.Helper()
-	uri, url, err := ShareableBertyGroupURL(g, name)
+	group := &BertyGroup{
+		Group:       g,
+		DisplayName: name,
+	}
+	link := group.GetBertyLink()
+	internal, web, err := link.Marshal()
 
 	assert.NoError(t, err)
-	assert.Equal(t, uri, ret.DeepLink)
-	assert.Equal(t, url, ret.HTMLURL)
-	assert.Equal(t, name, ret.BertyGroup.DisplayName)
-	assert.Equal(t, g.PublicKey, ret.BertyGroup.Group.PublicKey)
-	assert.Equal(t, g.GroupType, ret.BertyGroup.Group.GroupType)
-	assert.Equal(t, g.Secret, ret.BertyGroup.Group.Secret)
-	assert.Equal(t, g.SecretSig, ret.BertyGroup.Group.SecretSig)
-
-	marshaled, err := proto.Marshal(ret.BertyGroup)
-	assert.NoError(t, err)
-	assert.Equal(t, b64EncodeBytes(marshaled), ret.BertyGroupPayload)
+	assert.Equal(t, internal, ret.InternalURL)
+	assert.Equal(t, web, ret.WebURL)
+	assert.Equal(t, name, ret.Link.BertyGroup.DisplayName)
+	assert.Equal(t, g.PublicKey, ret.Link.BertyGroup.Group.PublicKey)
+	assert.Equal(t, g.GroupType, ret.Link.BertyGroup.Group.GroupType)
+	assert.Equal(t, g.Secret, ret.Link.BertyGroup.Group.Secret)
+	assert.Equal(t, g.SecretSig, ret.Link.BertyGroup.Group.SecretSig)
 }
 
 func TestServiceShareableBertyGroup(t *testing.T) {
