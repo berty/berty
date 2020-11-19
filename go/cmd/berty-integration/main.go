@@ -32,7 +32,7 @@ func main() {
 	i.checkErr(i.init(), "init")
 	i.checkErr(i.testbotAdd(), "testbot.add")
 	// i.checkErr(i.testbotFoo(), "testbot.echo")
-	// i.checkErr(i.betabotAdd(), "betabot.add")
+	i.checkErr(i.betabotAdd(), "betabot.add")
 	// i.checkErr(i.testbotBar(), "testbot.bar")
 	// i.checkErr(i.testbotBar(), "services.register")
 	// i.checkErr(i.testbotBar(), "services.use")
