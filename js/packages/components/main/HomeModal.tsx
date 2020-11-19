@@ -156,10 +156,10 @@ export const HomeModal: React.FC<{}> = () => {
 								justifyContent: 'center',
 								height: '100%',
 								width: '100%',
-								opacity: 0.4,
+								opacity: 0.3,
 							},
 						]}
-						colors={['#5D5D6D', 'black', 'black']}
+						colors={['#ACACFF', '#06068A']}
 						start={{
 							x: 0,
 							y: 0.3,
@@ -178,7 +178,7 @@ export const HomeModal: React.FC<{}> = () => {
 								justifyContent: 'center',
 								height: '100%',
 								width: '100%',
-								opacity: 0.4,
+								opacity: 0.3,
 							},
 						]}
 					/>

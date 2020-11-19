@@ -1104,7 +1104,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 													top: 0,
 													bottom: 0,
 													height: windowHeight,
-													opacity: 0.95,
+													opacity: 0.94,
 												}}
 											/>
 										)}
