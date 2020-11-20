@@ -8,7 +8,6 @@ import mapValues from 'lodash/mapValues'
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import { Routes } from './types'
 // import { messenger as messengerpb } from '@berty-tech/api/index.js'
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import { isClosing, MessengerAppState } from '@berty-tech/store/context'
 import { dispatch, navigate } from '@berty-tech/navigation/rootRef'
 
@@ -144,19 +143,6 @@ export const CreateGroupNavigation: React.FC = () => {
 	)
 }
 
-const TabStack = createMaterialTopTabNavigator() // provides swipe animation
-export const TabNavigation: React.FC = () => {
-	return (
-		<TabStack.Navigator
-			initialRouteName={Routes.Main.Home}
-			tabBar={() => <Components.Main.Footer />}
-			tabBarPosition='bottom'
-		>
-			<TabStack.Screen name={Routes.Main.Home} component={Components.Main.Home} />
-		</TabStack.Navigator>
-	)
-}
-
 const NavigationStack = createNativeStackNavigator()
 export const Navigation: React.FC = () => {
 	const context = useMsgrContext()
@@ -266,7 +252,7 @@ export const Navigation: React.FC = () => {
 					stackAnimation: 'none',
 				}}
 			/>
-			<NavigationStack.Screen name={Routes.Root.Tabs} component={TabNavigation} />
+			<NavigationStack.Screen name={Routes.Root.Tabs} component={Components.Main.Home} />
 			<NavigationStack.Screen
 				name={Routes.Settings.MyBertyId}
 				component={Components.Settings.MyBertyId}
