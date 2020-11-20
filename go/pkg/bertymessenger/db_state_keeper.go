@@ -73,7 +73,7 @@ func keepConversationsLocalData(db *gorm.DB, logger *zap.Logger) []*LocalConvers
 	return nil
 }
 
-func keepAccountPK(db *gorm.DB, logger *zap.Logger) string {
+func keepAccountStringField(db *gorm.DB, field string, logger *zap.Logger) string {
 	if logger == nil {
 		logger = zap.NewNop()
 	}
@@ -81,7 +81,7 @@ func keepAccountPK(db *gorm.DB, logger *zap.Logger) string {
 	result := ""
 	count := int64(0)
 
-	if err := db.Table("accounts").Count(&count).Order("ROWID").Limit(1).Pluck("public_key", &result).Error; err == nil {
+	if err := db.Table("accounts").Count(&count).Order("ROWID").Limit(1).Pluck(field, &result).Error; err == nil {
 		if count != 1 {
 			logger.Warn("expected one result", zap.Int64("count", count))
 		}
@@ -90,7 +90,7 @@ func keepAccountPK(db *gorm.DB, logger *zap.Logger) string {
 			return result
 		}
 	} else {
-		logger.Warn("attempt at retrieving public key failed", zap.Error(err))
+		logger.Warn("attempt at retrieving field failed", zap.String("field-name", field), zap.Error(err))
 	}
 
 	logger.Warn("nothing found returning an empty value")
@@ -100,9 +100,10 @@ func keepAccountPK(db *gorm.DB, logger *zap.Logger) string {
 
 func keepDatabaseLocalState(db *gorm.DB, logger *zap.Logger) *LocalDatabaseState {
 	return &LocalDatabaseState{
-		PublicKey:               keepAccountPK(db, logger),
+		PublicKey:               keepAccountStringField(db, "public_key", logger),
 		DisplayName:             keepDisplayName(db, logger),
 		ReplicateFlag:           keepAutoReplicateFlag(db, logger),
 		LocalConversationsState: keepConversationsLocalData(db, logger),
+		AccountLink:             keepAccountStringField(db, "link", logger),
 	}
 }

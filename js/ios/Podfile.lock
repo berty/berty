@@ -104,7 +104,7 @@ PODS:
     - GoogleUtilities/Logger
   - Interactable (2.0.1):
     - React
-  - lottie-ios (3.1.8)
+  - lottie-ios (3.1.9)
   - lottie-react-native (3.5.0):
     - lottie-ios (~> 3.1.8)
     - React
@@ -295,6 +295,8 @@ PODS:
     - React-Core
   - react-native-camera/RN (3.40.0):
     - React-Core
+  - react-native-document-picker (4.1.0):
+    - React-Core
   - react-native-safe-area-context (3.1.9):
     - React-Core
   - react-native-shake (10.0.4):
@@ -373,7 +375,7 @@ PODS:
   - RNFBApp (8.4.7):
     - Firebase/CoreOnly (~> 6.34.0)
     - React-Core
-  - RNFBCrashlytics (8.5.0):
+  - RNFBCrashlytics (8.5.2):
     - Firebase/Crashlytics (~> 6.34.0)
     - React-Core
     - RNFBApp
@@ -387,7 +389,7 @@ PODS:
     - React-Core
   - RNReanimated (1.13.1):
     - React
-  - RNScreens (2.13.0):
+  - RNScreens (2.14.0):
     - React-Core
   - RNShare (4.1.0):
     - React-Core
@@ -443,6 +445,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-camera (from `../node_modules/react-native-camera`)
+  - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-shake (from `../node_modules/@shakebugs/react-native-shake`)"
   - react-native-webview (from `../node_modules/react-native-webview`)
@@ -542,6 +545,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/blur"
   react-native-camera:
     :path: "../node_modules/react-native-camera"
+  react-native-document-picker:
+    :path: "../node_modules/react-native-document-picker"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-shake:
@@ -626,7 +631,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: f56af7caa4ed338dc8e138a5d7c5973e66440833
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
   Interactable: 411887c89fa16ac41f8e7898aca06dcad55e5f22
-  lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
+  lottie-ios: 3a3758ef5a008e762faec9c9d50a39842f26d124
   lottie-react-native: 1fb4ce21d6ad37dab8343eaff8719df76035bd93
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   OpenSSL-Universal: ff34003318d5e1163e9529b08470708e389ffcdd
@@ -644,6 +649,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 8e68ffbfe23880d3ee9bafa8be2777f60b25cbe2
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-camera: 35854c4f764a4a6cf61c1c3525888b92f0fe4b31
+  react-native-document-picker: d870e0a41510b241d5b764e7a2b5ccf129af7967
   react-native-safe-area-context: b6e0e284002381d2ff29fa4fff42b4d8282e3c94
   react-native-shake: 168b18d4656c9c90a787ecf41822f88be7b532ec
   react-native-webview: 0aa2cde4ee7e3e1c5fffdf64dbce9c709aa18155
@@ -662,13 +668,13 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: b03032fdbdb725bea0bd9e5ec5a7272865ae7398
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNFBApp: 804b98033f45c3a3e35b56de8c894f85ef5e4388
-  RNFBCrashlytics: f7370237cc954f15dc8b1483b1b632bc1d4f40f7
+  RNFBCrashlytics: 501d01e5dd0cd6affedba60762b9b8d7d579cea8
   RNFS: 2bd9eb49dc82fa9676382f0585b992c424cd59df
   RNGestureHandler: 7a5833d0f788dbd107fbb913e09aa0c1ff333c39
   RNInAppBrowser: 48b95ba7a4eaff5cc223bca338d3e319561dbd1b
   RNPermissions: 5df468064df661a4c8c017e2791ce90d7695eea5
   RNReanimated: dd8c286ab5dd4ba36d3a7fef8bff7e08711b5476
-  RNScreens: 13f23e5498fb4aa749d19a5eda7f8792fbb9d01f
+  RNScreens: 2e278a90eb15092ed261d4f2271e3fc9b60d08d4
   RNShare: 106a76243ac90f43ddb9028dcb78ade406b8adff
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59

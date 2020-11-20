@@ -1387,17 +1387,17 @@
     opencollective-postinstall "^2.0.1"
     superstruct "^0.6.2"
 
-"@react-native-firebase/crashlytics@^8.5.0":
-  version "8.5.0"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/crashlytics/-/crashlytics-8.5.0.tgz#5c9c4ac41caefec232dd71e6a4adf886bfb94807"
-  integrity sha512-s3NmJqwiD+nfopafYtfRRhqPJZJ4XUCpyETIiHgHVq5H2QBu5eeMBU1GORy2guHB2kZYpiOk+pEsrpv0vZ9oNw==
+"@react-native-firebase/crashlytics@^8.5.2":
+  version "8.5.2"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/crashlytics/-/crashlytics-8.5.2.tgz#6d49a24f0a4f1b3e26d589ed525cde2ffb53932b"
+  integrity sha512-7wZiaHapsXEhTljGE86/lGVWbDUsZrI4PPNLiTx4+ovt8aKSwPrb9h35VGo0dEtlpU0x/ahB1IJ+TxFLqFDeXw==
   dependencies:
     stacktrace-js "^2.0.0"
 
-"@react-navigation/core@^5.14.2":
-  version "5.14.2"
-  resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-5.14.2.tgz#973c4d63b934bf4eb5b0a933dc73b79298d0ce6b"
-  integrity sha512-gmEGo6Fr0ktg+4Ao5ogRAVWtSrCm2qQkn7GlQSe3hxDaTLVrlS3K30SAQHs88j11I7qtaFaMiFD0VN7F1gWXCw==
+"@react-navigation/core@^5.14.3":
+  version "5.14.3"
+  resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-5.14.3.tgz#6bbbfe1fb90aa64068fdb69bbb6c55120b7b24f1"
+  integrity sha512-l4zCfIfPC4DYuDcluiisaWKg7GO5yAjBrIL0pzEw8bIBj+R6vnZnyG9AWgnwo5fl241DX+1sfgzGEUQgpIJNew==
   dependencies:
     "@react-navigation/routers" "^5.6.2"
     escape-string-regexp "^4.0.0"
@@ -1405,19 +1405,19 @@
     query-string "^6.13.6"
     react-is "^16.13.0"
 
-"@react-navigation/material-top-tabs@^5.3.8":
-  version "5.3.8"
-  resolved "https://registry.yarnpkg.com/@react-navigation/material-top-tabs/-/material-top-tabs-5.3.8.tgz#6f96d9e58eefef935e5996b90a5e8726483efab6"
-  integrity sha512-mZDvR8E6tyzvdILvBlVPyIgNCoAeJTSxprH4qdQ2zpIVz/RoxvtvRZef76OkNWO3IrxeTe8LiSgSzvwunM4kOg==
+"@react-navigation/material-top-tabs@^5.3.9":
+  version "5.3.9"
+  resolved "https://registry.yarnpkg.com/@react-navigation/material-top-tabs/-/material-top-tabs-5.3.9.tgz#8a43c3213313abdc896bf5d59eb447ec67a66593"
+  integrity sha512-y7Ny5Emjuo5NsmiXX5mkAn1j160dzYocV+r8H/tiQUfR9cTLRu22jym7eLGpeKM0yzpeT2o2D+kRclom4oxMjg==
   dependencies:
     color "^3.1.3"
 
-"@react-navigation/native@^5.8.8":
-  version "5.8.8"
-  resolved "https://registry.yarnpkg.com/@react-navigation/native/-/native-5.8.8.tgz#55216b0f95dcd6971198c9d3717b7d7af6a5faee"
-  integrity sha512-l3cMrAJ9NR4F4oZqWRzeok0NJpJF8u2Dl/EKpMG/T54Xpt5mUzylBVolCvmgkCCATJYOx1dSu8r50Reh31csFA==
+"@react-navigation/native@^5.8.9":
+  version "5.8.9"
+  resolved "https://registry.yarnpkg.com/@react-navigation/native/-/native-5.8.9.tgz#67ee2afef6af6ef40c425e02264bd25d1530b361"
+  integrity sha512-d1oihLxp9UDVsZyvHNcwJfj+LKsEo0m8vEBBV6jhLJAXs1d2DEBzBXGeP907uG+877TK7luh2h79Or4w7/+p+g==
   dependencies:
-    "@react-navigation/core" "^5.14.2"
+    "@react-navigation/core" "^5.14.3"
     escape-string-regexp "^4.0.0"
     nanoid "^3.1.15"
 
@@ -7831,6 +7831,11 @@ react-native-crypto@^2.0.1:
     public-encrypt "^4.0.0"
     randomfill "^1.0.3"
 
+react-native-document-picker@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-document-picker/-/react-native-document-picker-4.1.0.tgz#8092c09727018587da34358bf731fe948d4171a5"
+  integrity sha512-tHYNng9GrnVrOoLk9K2j+T1xa8gAfC2Mk2dbJq32QBYD3zkHGMkFYGd2FZt0nuYxCBnd768tOQWuEZXwXM1tsg==
+
 react-native-dropdown-picker@^3.7.1:
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/react-native-dropdown-picker/-/react-native-dropdown-picker-3.7.1.tgz#ead80b69108bfe8cf56fef5a68d5545d5063b33c"
@@ -7982,10 +7987,10 @@ react-native-safe-modules@^1.0.0:
   dependencies:
     dedent "^0.6.0"
 
-react-native-screens@^2.13.0:
-  version "2.13.0"
-  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.13.0.tgz#6360dfd65d51f73479bea14373a8e289cd58a327"
-  integrity sha512-B0kPYq5ZK/2G7pPhcAFLflDfm+HXktdVEeLFHnP/+oPnao+b28hXsOBCi0IgK72gxbdPtnpZME8KONRIKOBDug==
+react-native-screens@^2.14.0:
+  version "2.14.0"
+  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.14.0.tgz#2f0534c76e5bd0a95908ca61ec5d1cb7818d5f1e"
+  integrity sha512-7EfxpYiJVvlFQNb1NlkEz7JRELVMLNIsrKo8jHq0+vXbDq+UxnAm/dMeYIXi8hY5iwqzk43uNPL8VyGPcLfBGQ==
 
 react-native-share@^4.1.0:
   version "4.1.0"

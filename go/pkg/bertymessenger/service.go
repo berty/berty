@@ -58,6 +58,7 @@ type Opts struct {
 	DB                  *gorm.DB
 	NotificationManager notification.Manager
 	LifeCycleManager    *lifecycle.Manager
+	StateBackup         *LocalDatabaseState
 }
 
 func (opts *Opts) applyDefaults() (func(), error) {
@@ -95,7 +96,7 @@ func (opts *Opts) applyDefaults() (func(), error) {
 	return cleanup, nil
 }
 
-func databaseStateRestoreAccountHandler(db *gorm.DB) bertyprotocol.RestoreAccountHandler {
+func databaseStateRestoreAccountHandler(statePointer *LocalDatabaseState) bertyprotocol.RestoreAccountHandler {
 	return bertyprotocol.RestoreAccountHandler{
 		Handler: func(header *tar.Header, reader *tar.Reader) (bool, error) {
 			if header.Name != exportLocalDBState {
@@ -112,23 +113,20 @@ func databaseStateRestoreAccountHandler(db *gorm.DB) bertyprotocol.RestoreAccoun
 				return true, errcode.ErrInternal.Wrap(fmt.Errorf("unexpected file size"))
 			}
 
-			state := &LocalDatabaseState{}
-			if err := proto.Unmarshal(backupContents.Bytes(), state); err != nil {
+			if err := proto.Unmarshal(backupContents.Bytes(), statePointer); err != nil {
 				return true, errcode.ErrDeserialization.Wrap(err)
-			}
-
-			wrappedDB := newDBWrapper(db, zap.NewNop())
-			if err := restoreDatabaseLocalState(wrappedDB, state); err != nil {
-				return true, errcode.TODO.Wrap(fmt.Errorf("unable to restore database state"))
 			}
 
 			return true, nil
 		},
+		PostProcess: func() error {
+			return nil
+		},
 	}
 }
 
-func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_interface.CoreAPI, odb *bertyprotocol.BertyOrbitDB, db *gorm.DB, logger *zap.Logger) error {
-	return bertyprotocol.RestoreAccountExport(ctx, reader, coreAPI, odb, logger, databaseStateRestoreAccountHandler(db))
+func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_interface.CoreAPI, odb *bertyprotocol.BertyOrbitDB, localDBState *LocalDatabaseState, logger *zap.Logger) error {
+	return bertyprotocol.RestoreAccountExport(ctx, reader, coreAPI, odb, logger, databaseStateRestoreAccountHandler(localDBState))
 }
 
 func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error) {
@@ -141,9 +139,29 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 
 	ctx, cancel := context.WithCancel(context.Background())
 	db := newDBWrapper(opts.DB, opts.Logger)
-	if err := db.initDB(getEventsReplayerForDB(ctx, client)); err != nil {
+
+	if opts.StateBackup != nil {
+		opts.Logger.Info("restoring db state")
+
+		if err := dropAllTables(db.db); err != nil {
+			return nil, errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to drop database schema: %w", err))
+		}
+
+		if err := db.db.AutoMigrate(getDBModels()...); err != nil {
+			return nil, errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to create database schema: %w", err))
+		}
+
+		if err := replayLogsToDB(ctx, client, db); err != nil {
+			return nil, errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to replay logs to database: %w", err))
+		}
+
+		if err := restoreDatabaseLocalState(db, opts.StateBackup); err != nil {
+			return nil, errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to restore database local state: %w", err))
+		}
+	} else if err := db.initDB(getEventsReplayerForDB(ctx, client)); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
+
 	cancel()
 
 	ctx, cancel = context.WithCancel(context.Background())

@@ -649,6 +649,7 @@ TODO: return cid
 | public_key | [string](#string) |  |  |
 | unread_count | [int32](#int32) |  |  |
 | is_open | [bool](#bool) |  |  |
+| type | [Conversation.Type](#berty.messenger.v1.Conversation.Type) |  |  |
 
 <a name="berty.messenger.v1.LocalDatabaseState"></a>
 
@@ -660,6 +661,7 @@ TODO: return cid
 | display_name | [string](#string) |  |  |
 | replicate_flag | [bool](#bool) |  |  |
 | local_conversations_state | [LocalConversationState](#berty.messenger.v1.LocalConversationState) | repeated |  |
+| account_link | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.Member"></a>
 
