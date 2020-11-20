@@ -251,7 +251,7 @@
       "header-right-button": "Daemon neu starten",
       "system-info-button": "System-Info",
       "debug-button": "",
-      "add-bots-button": "Bots hinzufügen",
+      "add-dev-conversations-button": "",
       "share-button": {
         "title": "ID auf Discord teilen",
         "alert-title": "Möchten Sie Ihren QR-Code auf Berty Discord im Kanal \"#dev-logs\" veröffentlichen?",
@@ -291,9 +291,12 @@
       "messages-button": "Fake-Nachrichten generieren",
       "delete-button": "Fake-Daten löschen"
     },
-    "add-contact-list": {
-      "title": "Kontaktliste hinzufügen",
-      "add": "Neu"
+    "add-dev-conversations": {
+      "title": "",
+      "add": "",
+      "tag-bot": "",
+      "tag-contact": "",
+      "tag-conversation": ""
     },
     "ipfs-webui": {
       "title": "IPFS Webinterface"
