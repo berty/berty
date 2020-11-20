@@ -23,7 +23,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -56,7 +56,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -89,7 +89,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -122,7 +122,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -155,7 +155,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -188,7 +188,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -221,7 +221,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -254,7 +254,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -287,7 +287,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -320,7 +320,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -353,7 +353,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -386,7 +386,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -419,7 +419,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -452,7 +452,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -485,7 +485,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -518,7 +518,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -550,7 +550,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -591,7 +591,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -632,7 +632,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -665,7 +665,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -707,7 +707,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -749,7 +749,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -791,7 +791,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -824,7 +824,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -866,7 +866,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -899,7 +899,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -932,7 +932,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -965,7 +965,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -998,7 +998,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -1031,7 +1031,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -1064,7 +1064,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -1097,7 +1097,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -1130,7 +1130,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -1172,7 +1172,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -1204,7 +1204,7 @@
             }
           },
           "default": {
-            "description": "An unexpected error response",
+            "description": "An unexpected error response.",
             "schema": {
               "$ref": "#/definitions/runtimeError"
             }
@@ -1325,7 +1325,6 @@
         },
         "is_self": {
           "type": "boolean",
-          "format": "boolean",
           "title": "is_self indecitate if the given peer is you"
         }
       }
@@ -1343,7 +1342,6 @@
         },
         "is_self": {
           "type": "boolean",
-          "format": "boolean",
           "title": "is_self indecitate if the given peer is you"
         }
       }
@@ -1427,7 +1425,6 @@
         },
         "is_active": {
           "type": "boolean",
-          "format": "boolean",
           "description": "IsActive is true if at least one of the route is active."
         },
         "direction": {
@@ -1441,7 +1438,6 @@
       "properties": {
         "is_active": {
           "type": "boolean",
-          "format": "boolean",
           "description": "IsActive indicates whether the address is currently used or just known."
         },
         "address": {
@@ -1530,8 +1526,7 @@
           "format": "int64"
         },
         "too_many_open_files": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "num_cpu": {
           "type": "string",
@@ -1648,7 +1643,6 @@
         },
         "local_only": {
           "type": "boolean",
-          "format": "boolean",
           "title": "local_only will open the group without enabling network interactions\nwith other members"
         }
       }
@@ -1707,8 +1701,7 @@
           "type": "string"
         },
         "secure_url": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         }
       }
     },
@@ -1801,7 +1794,6 @@
         },
         "enabled": {
           "type": "boolean",
-          "format": "boolean",
           "title": "enabled indicates if incoming contact requests are enabled"
         }
       }
@@ -2125,7 +2117,6 @@
         },
         "since_now": {
           "type": "boolean",
-          "format": "boolean",
           "title": "since_now will list only new event to come\nsince_id must not be set"
         },
         "until_id": {
@@ -2135,12 +2126,10 @@
         },
         "until_now": {
           "type": "boolean",
-          "format": "boolean",
           "title": "until_now will not list new event to come\nuntil_id must not be set"
         },
         "reverse_order": {
           "type": "boolean",
-          "format": "boolean",
           "title": "reverse_order indicates whether the previous events should be returned in\nreverse chronological order"
         }
       }
@@ -2198,7 +2187,6 @@
         },
         "since_now": {
           "type": "boolean",
-          "format": "boolean",
           "title": "since_now will list only new event to come\nsince_id must not be set"
         },
         "until_id": {
@@ -2208,12 +2196,10 @@
         },
         "until_now": {
           "type": "boolean",
-          "format": "boolean",
           "title": "until_now will not list new event to come\nuntil_id must not be set"
         },
         "reverse_order": {
           "type": "boolean",
-          "format": "boolean",
           "title": "reverse_order indicates whether the previous events should be returned in\nreverse chronological order"
         }
       }
