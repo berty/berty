@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="50px" height="52px" viewBox="0 0 50 52" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="50px" height="52px" viewBox="0 0 50 52" version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>Shape</title>
     <defs>
         <filter x="-17.4%" y="-14.8%" width="134.8%" height="129.6%" filterUnits="objectBoundingBox" id="filter-1">
@@ -13,7 +15,7 @@
         </filter>
     </defs>
     <g id="berty" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="newsimplerUI/home-v5-Copy" transform="translate(-23.000000, -643.000000)" fill="#FFFFFF" fill-rule="nonzero">
+        <g id="newsimplerUI/home-v5-Copy" transform="translate(-23.000000, -643.000000)" fill="currentColor" fill-rule="nonzero">
             <g id="Quick-Change-Account" transform="translate(-62.431169, 197.890137)">
                 <g id="Scan-contact-or-group" transform="translate(67.431169, 192.109863)">
                     <g id="btn/scan-qr-code" filter="url(#filter-1)" transform="translate(8.000000, 236.000000)">
