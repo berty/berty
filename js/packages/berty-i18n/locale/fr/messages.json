@@ -251,7 +251,7 @@
       "header-right-button": "Redémarrer le démon",
       "system-info-button": "Infos système",
       "debug-button": "Debug",
-      "add-bots-button": "Ajouter des bots",
+      "add-dev-conversations-button": "",
       "share-button": {
         "title": "Partager l'ID sur Discord",
         "alert-title": "Voulez-vous partager votre code QR sur \"#dev-logs\" sur le Discord de l'équipe Berty?",
@@ -291,9 +291,12 @@
       "messages-button": "Gén. faux messages",
       "delete-button": "Supprimer les fausses données"
     },
-    "add-contact-list": {
+    "add-dev-conversations": {
       "title": "",
-      "add": "Ajouter"
+      "add": "",
+      "tag-bot": "",
+      "tag-contact": "",
+      "tag-conversation": "Groupe"
     },
     "ipfs-webui": {
       "title": "Interface web IPFS"
