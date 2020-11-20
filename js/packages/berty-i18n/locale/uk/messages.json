@@ -251,7 +251,7 @@
       "header-right-button": "",
       "system-info-button": "",
       "debug-button": "",
-      "add-bots-button": "",
+      "add-dev-conversations-button": "",
       "share-button": {
         "title": "",
         "alert-title": "",
@@ -291,9 +291,12 @@
       "messages-button": "",
       "delete-button": ""
     },
-    "add-contact-list": {
+    "add-dev-conversations": {
       "title": "",
-      "add": ""
+      "add": "",
+      "tag-bot": "",
+      "tag-contact": "",
+      "tag-conversation": ""
     },
     "ipfs-webui": {
       "title": ""
