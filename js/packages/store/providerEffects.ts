@@ -11,7 +11,7 @@ import {
 import i18n from '@berty-tech/berty-i18n'
 import { EOF, Service } from '@berty-tech/grpc-bridge'
 import ExternalTransport from './externalTransport'
-import GoBridge, { GoBridgeDefaultOpts } from '@berty-tech/go-bridge'
+import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
 import { EventEmitter } from 'events'
 import AsyncStorage from '@react-native-community/async-storage'
 import cloneDeep from 'lodash/cloneDeep'
@@ -21,6 +21,7 @@ import {
 	MessengerAppState,
 	PersistentOptionsKeys,
 	PersistentOptionsUpdate,
+	PersistentOptions,
 } from '@berty-tech/store/context'
 import { berty } from '@berty-tech/api/index.pb'
 import { reducerAction } from '@berty-tech/store/providerReducer'
@@ -289,27 +290,24 @@ export const openingDaemon = async (
 	}
 
 	// Apply store options
-	let bridgeOpts
+	let bridgeOpts: GoBridgeOpts
 	try {
-		let opts = {}
-		let store
-		store = await AsyncStorage.getItem(storageKeyForAccount(selectedAccount))
-		if (store !== null) {
-			opts = JSON.parse(store)
-		}
+		const store = await AsyncStorage.getItem(storageKeyForAccount(selectedAccount.toString()))
+		if (!store) return
+		const opts: PersistentOptions = JSON.parse(store)
 		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
 
 		// set ble flag
 		bridgeOpts.cliArgs =
 			opts?.ble && !opts.ble.enable
-				? [...bridgeOpts.cliArgs, '--p2p.ble=false']
-				: [...bridgeOpts.cliArgs, '--p2p.ble=true']
+				? [...bridgeOpts.cliArgs!, '--p2p.ble=false']
+				: [...bridgeOpts.cliArgs!, '--p2p.ble=true']
 
 		// set mc flag
 		bridgeOpts.cliArgs =
 			opts?.mc && !opts.mc.enable
-				? [...bridgeOpts.cliArgs, '--p2p.multipeer-connectivity=false']
-				: [...bridgeOpts.cliArgs, '--p2p.multipeer-connectivity=true']
+				? [...bridgeOpts.cliArgs!, '--p2p.multipeer-connectivity=false']
+				: [...bridgeOpts.cliArgs!, '--p2p.multipeer-connectivity=true']
 	} catch (e) {
 		console.warn('store getPersistentOptions Failed:', e)
 		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
@@ -323,7 +321,7 @@ export const openingDaemon = async (
 		.then(() =>
 			accountClient.openAccount({
 				args: bridgeOpts.cliArgs,
-				accountId: selectedAccount,
+				accountId: selectedAccount.toString(),
 			}),
 		)
 		.then(() => {
