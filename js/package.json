@@ -29,7 +29,7 @@
     "faker": "^5.1.0",
     "google-palette": "^1.1.0",
     "google-protobuf": "^3.2.0",
-    "i18next": "^19.8.3",
+    "i18next": "^19.8.4",
     "lottie-react-native": "^3.5.0",
     "mem": "^8.0.0",
     "moment": "^2.29.1",
