@@ -124,6 +124,7 @@ require (
 replace (
 	bazil.org/fuse => bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc // specific version for iOS building
 	github.com/agl/ed25519 => github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // latest commit before the author shutdown the repo; see https://github.com/golang/go/issues/20504
+	github.com/daixiang0/gci => github.com/kwo/gci v0.2.6-0.20201120125248-316c2a0df03b // tmp, see https://github.com/daixiang0/gci/pull/24
 	github.com/libp2p/go-libp2p-rendezvous => github.com/berty/go-libp2p-rendezvous v0.0.0-20201028141428-5b2e7e8ff19a // use berty fork of go-libp2p-rendezvous
 	github.com/libp2p/go-libp2p-swarm => github.com/Jorropo/go-libp2p-swarm v0.3.4 // temporary, see https://github.com/libp2p/go-libp2p-swarm/pull/227
 	github.com/peterbourgon/ff/v3 => github.com/moul/ff/v3 v3.0.1 // temporary, see https://github.com/peterbourgon/ff/pull/67, https://github.com/peterbourgon/ff/issues/68
