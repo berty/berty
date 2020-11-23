@@ -1379,10 +1379,10 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/masked-view/-/masked-view-0.1.10.tgz#5dda643e19e587793bc2034dd9bf7398ad43d401"
   integrity sha512-rk4sWFsmtOw8oyx8SD3KSvawwaK7gRBSEIy2TAwURyGt+3TizssXP1r8nx3zY+R7v2vYYHXZ+k2/GULAT/bcaQ==
 
-"@react-native-firebase/app@^8.4.7":
-  version "8.4.7"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-8.4.7.tgz#7393ba7af36bd815bd5af7c64a20b0dd8a7e3341"
-  integrity sha512-jN788Q17aMOHc49wKc74RC3iZNhFoS+yTZhMBHFVyytf64uK3ofYAk3hjvukkylUTKF0Ni/L+04M0IDv8kStKg==
+"@react-native-firebase/app@^10.0.0":
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-10.0.0.tgz#dc18af26accb31028eab00dd36f486fee046e63e"
+  integrity sha512-hvmEOj3vMeaoYX8Q7f2UZCSVGv0VMvTR/RUUka0y7Xmyzg3kpdb2EHCOoqLIN9ySPf5b/At5I6GVazQugbZqLA==
   dependencies:
     opencollective-postinstall "^2.0.1"
     superstruct "^0.6.2"

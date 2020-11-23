@@ -17,7 +17,7 @@
     "@react-native-community/blur": "^3.6.0",
     "@react-native-community/hooks": "^2.6.0",
     "@react-native-community/masked-view": "^0.1.10",
-    "@react-native-firebase/app": "^8.4.7",
+    "@react-native-firebase/app": "^10.0.0",
     "@react-native-firebase/crashlytics": "^8.5.2",
     "@react-navigation/material-top-tabs": "^5.3.9",
     "@react-navigation/native": "^5.8.9",
