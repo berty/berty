@@ -33,6 +33,7 @@ on:
 jobs:
   integration:
     name: "integration (production)"
+    if: "! contains(github.event.head_commit.message, '[skip-ci]') && ! contains(github.event.head_commit.message, '[skip-integration]')"
     runs-on: ubuntu-latest
     env:
       OS: ubuntu-latest
