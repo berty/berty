@@ -24,7 +24,7 @@
     "@shakebugs/react-native-shake": "^10.0.4",
     "@ui-kitten/components": "^5.0.0",
     "@ui-kitten/eva-icons": "^5.0.0",
-    "buffer": "^6.0.2",
+    "buffer": "^6.0.3",
     "case": "^1.6.3",
     "faker": "^5.1.0",
     "google-palette": "^1.1.0",
