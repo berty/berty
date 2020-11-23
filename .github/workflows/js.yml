@@ -1,6 +1,16 @@
 name: JS
 on:
   push:
+    tags:
+      - v*
+    branches:
+      - master
+    paths:
+      - "js/**"
+      - "config/**"
+      - "tool/generate-i18n-testlang"
+      - ".github/workflows/js.yml"
+  pull_request:
     paths:
       - "js/**"
       - "config/**"
@@ -10,7 +20,6 @@ on:
 jobs:
   build-and-lint:
     runs-on: ubuntu-latest
-    if: "! contains(toJson(github.event.commits.*.message), '[skip-ci]') && ! contains(toJson(github.event.commits.*.message), '[skip-js]')"
     strategy:
       matrix:
         node-version:

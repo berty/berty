@@ -1,12 +1,12 @@
 name: Push
 
-on: push
+on: [push, pull_request]
 
 jobs:
   cancel:
     name: 'Cancel Previous Workflows'
     runs-on: ubuntu-latest
-    if: "github.ref != 'refs/heads/master' && ! contains(toJson(github.event.commits.*.message), '[skip-ci]')"
+    if: github.ref != 'refs/heads/master'
     timeout-minutes: 3
     steps:
       - name: Checkout
