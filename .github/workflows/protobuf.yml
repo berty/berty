@@ -1,10 +1,6 @@
 name: Protobuf
 on:
   push:
-    tags:
-      - v*
-    branches:
-      - master
     paths:
       - "api/**"
       - "Makefile"
@@ -34,39 +30,11 @@ on:
       - "**/yarn.lock"
       - "**/package.json"
       - "**/Podfile.lock"
-  pull_request:
-    paths:
-      - "api/**"
-      - "Makefile"
-      - "js/Makefile"
-      - "go/Makefile"
-      - "config/**"
-      - "docs/Makefile"
-      - ".github/workflows/protobuf.yml"
-      - "js/packages/berty-i18n/locale/en/messages.json"
-      - "tool/generate-i18n-testlang"
-      - "**/gen.sum"
-      - "**.pb.go"
-      - "**.gen.go"
-      - "**.gen.graphql"
-      - "**.gen.js"
-      - "**.gen.ts"
-      - "**.gen.tsx"
-      - "**.gen.yml"
-      - "**.pb.d.ts"
-      - "**.pb.go"
-      - "**.pb.js"
-      - "**/pb_test.go"
-      - "**/docs/*/api.md"
-      - "**/gen.sum"
-      - "**/go.mod"
-      - "**/go.sum"
-      - "**/yarn.lock"
-      - "**/package.json"
-      - "**/Podfile.lock"
+
 jobs:
   gen-go-and-docs:
     runs-on: ubuntu-latest
+    if: "! contains(toJson(github.event.commits.*.message), '[skip-ci]') && ! contains(toJson(github.event.commits.*.message), '[skip-protobuf]')"
     container: bertytech/protoc:26
     steps:
       - name: checkout
@@ -127,6 +95,7 @@ jobs:
       #    file: docs/.tmp/openapi/bertymessenger.swagger.json
   gen-js:
     runs-on: ubuntu-latest
+    if: "! contains(toJson(github.event.commits.*.message), '[skip-ci]') && ! contains(toJson(github.event.commits.*.message), '[skip-protobuf]')"
     container: bertytech/protoc:26
     steps:
       - uses: actions/checkout@v2

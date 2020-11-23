@@ -3,19 +3,6 @@ on:
   schedule:
     - cron: '0 * * * *'
   push:
-    tags:
-      - v*
-    branches:
-      - master
-    paths:
-      - 'go/**'
-      - '!go/**.md'
-      - 'go.*'
-      - '**.go'
-      - 'js/**'
-      - '!js/packages/berty-i18n/locale/*/*.json'
-      - '.github/workflows/integration.yml'
-  pull_request:
     paths:
       - 'go/**'
       - '!go/**.md'
@@ -34,6 +21,7 @@ jobs:
   integration:
     name: "integration (production)"
     runs-on: ubuntu-latest
+    if: "! contains(toJson(github.event.commits.*.message), '[skip-ci]') && ! contains(toJson(github.event.commits.*.message), '[skip-integration]')"
     env:
       OS: ubuntu-latest
       GOLANG: 1.15.x
@@ -93,6 +81,7 @@ jobs:
           args: 'Integration failed, see ${{ steps.url.outputs.runUrl }}'
   doctor:
     name: "doctor (production)"
+    if: "! contains(toJson(github.event.commits.*.message), '[skip-ci]') && ! contains(toJson(github.event.commits.*.message), '[skip-integration]')"
     runs-on: ubuntu-latest
     env:
       OS: ubuntu-latest
