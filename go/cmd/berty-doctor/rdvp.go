@@ -17,7 +17,9 @@ import (
 	p2p "github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/peerstore"
 	quic "github.com/libp2p/go-libp2p-quic-transport"
+	"github.com/libp2p/go-libp2p/p2p/protocol/ping"
 	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
 	"moul.io/srand"
@@ -25,6 +27,8 @@ import (
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/tinder"
 )
+
+const timeRounding = time.Microsecond * 10
 
 func testRDVPs(ctx context.Context, gwg *sync.WaitGroup, addrs []string) {
 	defer (*gwg).Done()
@@ -128,7 +132,16 @@ func testRDVPs(ctx context.Context, gwg *sync.WaitGroup, addrs []string) {
 						}
 
 						// Check if that particular addr is fine.
-						host.Peerstore().AddAddrs(tgtPi.ID, tgtPi.Addrs, math.MaxInt64)
+						host.Peerstore().AddAddrs(tgtPi.ID, tgtPi.Addrs, peerstore.PermanentAddrTTL)
+
+						// Ping if we are in verbose
+						if verbose {
+							pingChan := ping.Ping(ctx, host, tgtPi.ID)
+
+							defer func() {
+								rtr.ping = <-pingChan
+							}()
+						}
 
 						// Setup discovery
 						disc := tinder.NewRendezvousDiscovery(
@@ -160,6 +173,7 @@ func testRDVPs(ctx context.Context, gwg *sync.WaitGroup, addrs []string) {
 
 						// Advertise
 						{
+							start := time.Now()
 							duration, err := disc.Advertise(ctx, key, discovery.TTL(timeout))
 							if err != nil {
 								rtr.message = fmt.Sprintf("Error advertising on %q: %s", tgtMaddr, err)
@@ -168,46 +182,52 @@ func testRDVPs(ctx context.Context, gwg *sync.WaitGroup, addrs []string) {
 							// We want at least an Hour of time from the RDVP, else our timeout is fine.
 							if duration < timeout || duration >= time.Hour {
 								rtr.message = fmt.Sprintf("Wrong time (%d) while advertising on %q", duration, tgtMaddr)
-								disc.Unregister(ctx, key) //nolint:errcheck
+								_ = disc.Unregister(ctx, key)
 								return
 							}
+							rtr.t.advertise = time.Since(start)
 						}
 
 						// FindPeers
 						hid := host.ID()
 						{
+							start := time.Now()
 							// ReturnChannel
 							rc, err := disc.FindPeers(ctx, key)
 							if err != nil {
 								rtr.message = fmt.Sprintf("Error finding peers on %q: %s", tgtMaddr, err)
-								disc.Unregister(ctx, key) //nolint:errcheck
+								_ = disc.Unregister(ctx, key)
 								return
 							}
 
 							for v := range rc {
 								if hid == v.ID {
 									// Success !
+									rtr.t.fetch = time.Since(start)
 									goto TryingCheckUnregister
 								}
 							}
 							// Error we weren't able to find us
 							rtr.message = fmt.Sprintf("Wasn't able to find us on maddr %q", tgtMaddr)
-							disc.Unregister(ctx, key) //nolint:errcheck
+							_ = disc.Unregister(ctx, key)
 							return
 						}
 
 					TryingCheckUnregister:
 						// Unregister
 						{
+							start := time.Now()
 							err = disc.Unregister(ctx, key)
 							if err != nil {
 								rtr.message = fmt.Sprintf("Error unregistering us on %q: %s", tgtMaddr, err)
 								return
 							}
+							rtr.t.unregister = time.Since(start)
 						}
 
 						// FindPeers again but this time we shouldn't be there.
 						{
+							start := time.Now()
 							// ReturnChannel
 							rc, err := disc.FindPeers(ctx, key)
 							if err != nil {
@@ -221,6 +241,7 @@ func testRDVPs(ctx context.Context, gwg *sync.WaitGroup, addrs []string) {
 									return
 								}
 							}
+							rtr.t.fetchUnregistered = time.Since(start)
 						}
 						rtr.success = true
 					}(lenAddrs)
@@ -236,9 +257,18 @@ func testRDVPs(ctx context.Context, gwg *sync.WaitGroup, addrs []string) {
 	{
 		// Does at least one were successful ?
 		var successCount uint
+		advertiseFetchRTTMinimal := time.Duration(math.MaxInt64)
 		for _, v := range errs {
 			if v.success {
 				successCount++
+				for _, w := range v.addrs {
+					if w.success {
+						wrtt := w.t.advertise + w.t.fetch
+						if wrtt < advertiseFetchRTTMinimal {
+							advertiseFetchRTTMinimal = wrtt
+						}
+					}
+				}
 			}
 		}
 		if verbose || successCount == 0 {
@@ -258,7 +288,18 @@ func testRDVPs(ctx context.Context, gwg *sync.WaitGroup, addrs []string) {
 				fmt.Printf("RDVP %s:\n", server.id)
 				for _, addr := range server.addrs {
 					if addr.success {
-						fmt.Printf("   [%s]     %q\n", green("+"), addr.target)
+						fmt.Printf("   [%s]     %q (A: %s, F: %s, U: %s, FU: %s",
+							green("+"),
+							addr.target,
+							addr.t.advertise.Round(timeRounding).String(),
+							addr.t.fetch.Round(timeRounding).String(),
+							addr.t.unregister.Round(timeRounding).String(),
+							addr.t.fetchUnregistered.Round(timeRounding).String(),
+						)
+						if addr.ping.Error == nil {
+							fmt.Printf(", P: %s", addr.ping.RTT.Round(timeRounding).String())
+						}
+						fmt.Print(")\n")
 					} else {
 						fmt.Printf("   [%s]     %q: %s\n", red("-"), addr.target, addr.message)
 					}
@@ -266,7 +307,7 @@ func testRDVPs(ctx context.Context, gwg *sync.WaitGroup, addrs []string) {
 			}
 			talkLock.Unlock()
 		} else {
-			newOkS("RDVP (%d/%d)", successCount, len(errs))
+			newOkS("RDVP (%d/%d, min A+F: %s)", successCount, len(errs), advertiseFetchRTTMinimal.Round(timeRounding).String())
 		}
 	}
 }
@@ -281,6 +322,13 @@ type discReturn struct {
 	success bool
 	target  ma.Multiaddr
 	message string
+	ping    ping.Result
+	t       struct {
+		advertise         time.Duration
+		fetch             time.Duration
+		unregister        time.Duration
+		fetchUnregistered time.Duration
+	}
 }
 
 func doWriteOnHash(h io.Writer, buf []byte) {
