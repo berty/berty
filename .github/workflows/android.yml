@@ -1,10 +1,6 @@
 name: Android
 on:
   push:
-    tags:
-      - v*
-    branches:
-      - master
     paths:
       - 'go/**'
       - '!go/**.md'
@@ -12,19 +8,12 @@ on:
       - '**.go'
       - 'js/**'
       - '.github/workflows/android.yml'
-  pull_request:
-    paths:
-      - 'go/**'
-      - '!go/**.md'
-      - 'go.*'
-      - '**.go'
-      - 'js/**'
-      - '!js/packages/berty-i18n/locale/*/*.json'
-      - '.github/workflows/android.yml'
+      #- '!js/packages/berty-i18n/locale/*/*.json'
 
 jobs:
   build:
     name: Build for Android
+    if: "! contains(toJson(github.event.commits.*.message), '[skip-ci]') && ! contains(toJson(github.event.commits.*.message), '[skip-android]') && ! contains(toJson(github.event.commits.*.message), '[skip-mobile]')"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
