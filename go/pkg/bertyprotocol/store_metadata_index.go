@@ -81,7 +81,7 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 			continue
 		}
 
-		metaEvent, event, err := openMetadataEntry(log, e, m.g)
+		metaEvent, event, err := openMetadataEntry(log, e, m.g, m.deviceKeystore)
 		if err != nil {
 			m.logger.Error("unable to open metadata entry", zap.Error(err))
 			continue

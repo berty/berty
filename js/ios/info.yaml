@@ -29,6 +29,7 @@ targets:
         NSCameraUsageDescription: Used to scan QRCodes
         NSLocalNetworkUsageDescription: Used for proximity communications
         NSLocationWhenInUseUsageDescription: ""
+        NSPhotoLibraryUsageDescription: Used to personalize the app and send photos
         Shake:
           APIClientID: "$(SHAKE_API_ID)"
           APIClientSecret: "$(SHAKE_API_SECRET)"

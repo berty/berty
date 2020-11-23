@@ -117,9 +117,9 @@ func (s *service) DebugInspectGroupStore(req *bertytypes.DebugInspectGroupStore_
 
 			if op, err := operation.ParseOperation(e); err != nil {
 				s.logger.Error("unable to parse operation", zap.Error(err))
-			} else if meta, event, err := openGroupEnvelope(cg.group, op.GetValue()); err != nil {
+			} else if meta, event, _, err := openGroupEnvelope(cg.group, op.GetValue(), s.deviceKeystore); err != nil {
 				s.logger.Error("unable to open group envelope", zap.Error(err))
-			} else if metaEvent, err := newGroupMetadataEventFromEntry(log, e, meta, event, cg.group); err != nil {
+			} else if metaEvent, err := newGroupMetadataEventFromEntry(log, e, meta, event, cg.group, nil); err != nil {
 				s.logger.Error("unable to get group metadata event from entry", zap.Error(err))
 			} else {
 				payload = metaEvent.Event

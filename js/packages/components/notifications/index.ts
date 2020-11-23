@@ -1,11 +1,11 @@
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import beapi from '@berty-tech/api'
 
 import Basic from './Basic'
 import ContactRequestReceived from './ContactRequestReceived'
 import ContactRequestSent from './ContactRequestSent'
 import MessageReceived from './MessageReceived'
 
-const T = messengerpb.StreamEvent.Notified.Type
+const T = beapi.messenger.StreamEvent.Notified.Type
 
 const notifications = {
 	[T.Unknown]: Basic,

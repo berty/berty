@@ -207,8 +207,8 @@ message AppMessage {
     TypeUserMessage = 1;
     TypeUserReaction = 2;
     TypeGroupInvitation = 3;
-    TypeSetGroupName = 4;
-    TypeSetUserName = 5;
+    TypeSetGroupInfo = 4;
+    TypeSetUserInfo = 5;
     TypeAcknowledge = 6;
     TypeReplyOptions = 7;
     TypeMonitorMetadata = 8;
@@ -223,11 +223,13 @@ message AppMessage {
   message GroupInvitation {
     string link = 2; // TODO: optimize message size
   }
-  message SetGroupName {
-    string name = 2;
+  message SetGroupInfo {
+    string display_name = 1;
+    string avatar_cid = 2; // TODO: optimize message size
   }
-  message SetUserName {
-    string name = 2;
+  message SetUserInfo {
+    string display_name = 1;
+    string avatar_cid = 2 [(gogoproto.customname) = "AvatarCID"]; // TODO: optimize message size
   }
   message Acknowledge {
     string target = 2; // TODO: optimize message size
@@ -286,6 +288,7 @@ message ConversationJoin {
 message Account {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
   string display_name = 2;
+  string avatar_cid = 7 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
   string link = 3;
   repeated ServiceToken service_tokens = 5 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
   bool replicate_new_groups_automatically = 6 [(gogoproto.moretags) = "gorm:\"default:true\""];
@@ -320,10 +323,12 @@ message Contact {
   Conversation conversation = 3;
   State state = 4;
   string display_name = 5;
+  string avatar_cid = 9  [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
   int64 created_date = 7;
   // specific to outgoing requests
   int64 sent_date = 8;
   repeated Device devices = 6 [(gogoproto.moretags) = "gorm:\"foreignKey:MemberPublicKey\""];
+  int64 info_date = 10;
 
   enum State {
     Undefined = 0;
@@ -339,6 +344,7 @@ message Conversation {
   Type type = 2;
   bool is_open = 3;
   string display_name = 4;
+  string avatar_cid = 17 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
   string link = 5;
   int32 unread_count = 6;
   // last_update is used to sort conversations, it should be updated for each "visible" event
@@ -355,8 +361,6 @@ message Conversation {
   string reply_options_cid = 14 [(gogoproto.moretags) = "gorm:\"column:reply_options_cid\"", (gogoproto.customname) = "ReplyOptionsCID"];
   Interaction reply_options = 15 [(gogoproto.customname) = "ReplyOptions"];
   repeated ConversationReplicationInfo replication_info = 16 [(gogoproto.moretags) = "gorm:\"foreignKey:ConversationPublicKey\""];
-
-  // TODO: avatar_cid
 
   enum Type {
     Undefined = 0;
@@ -377,7 +381,9 @@ message ConversationReplicationInfo {
 message Member { // Composite primary key
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
   string display_name = 2;
+  string avatar_cid = 6 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
   string conversation_public_key = 3 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  int64 info_date = 7;
   Conversation conversation = 4;
   repeated Device devices = 5;
 }
@@ -502,6 +508,7 @@ message EventStream {
 message AccountUpdate {
   message Request {
     string display_name = 1;
+    string avatar_cid = 2 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
   }
   message Reply {}
 }

@@ -4,7 +4,6 @@ import {
 	View,
 	KeyboardAvoidingView,
 	StatusBar,
-	Image,
 	ActivityIndicator,
 	SectionListRenderItem,
 	SectionListData,
@@ -27,17 +26,16 @@ import {
 	useSortedConvInteractions,
 	useNotificationsInhibitor,
 } from '@berty-tech/store/hooks'
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
-import * as api from '@berty-tech/api/index.pb'
+import beapi from '@berty-tech/api'
 
 import { ChatFooter, ChatDate } from './shared-components/Chat'
 import { Message } from './message'
 import { MessageSystemWrapper } from './message/MessageSystemWrapper'
 import BlurView from '../shared-components/BlurView'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-import AvatarGroup19 from '../main/Avatar_Group_Copy_19.png'
 import { useLayout } from '../hooks'
 import { pbDateToNum } from '../helpers'
+import { MultiMemberAvatar } from '../avatars'
 
 //
 // MultiMember
@@ -93,7 +91,7 @@ const HeaderMultiMember: React.FC<{
 						style={[flex.small, row.right]}
 						onPress={() => navigate.chat.groupSettings({ convId: id })}
 					>
-						<Image source={AvatarGroup19} style={{ width: 40, height: 40 }} />
+						<MultiMemberAvatar size={40} />
 					</TouchableOpacity>
 				</View>
 			</View>
@@ -113,111 +111,7 @@ const HeaderMultiMember: React.FC<{
 	)
 }
 
-// const MultiMemberMemberItem: React.FC<berty.chatmodel.IMember> = ({
-// 	avatarUri,
-// 	name,
-// 	contactId,
-// 	role,
-// }) => {
-// 	const [layout, setLayout] = useState()
-// 	const [contactGetReply] = Store.useContactGet({ id: contactId })
-// 	const [state, icon, itemColor, bgColor, lightBgColor] = {
-// 		[berty.chatmodel.Member.Role.Owner]: ['Owner', 'checkmark-circle-2', 'white', 'blue', false],
-// 		[berty.chatmodel.Member.Role.Admin]: ['Admin', 'checkmark-circle-2', 'red', 'red', true],
-// 		[berty.chatmodel.Member.Role.Regular]: [
-// 			'Regular',
-// 			'checkmark-circle-2',
-// 			'green',
-// 			'green',
-// 			true,
-// 		],
-// 		[berty.chatmodel.Member.Role.Invited]: ['Invited', 'clock', 'yellow', 'yellow', true],
-// 		[berty.chatmodel.Member.Role.Unknown]: [
-// 			'Unknown',
-// 			'question-mark-circle',
-// 			'grey',
-// 			'grey',
-// 			true,
-// 		],
-// 	}[role ?? berty.chatmodel.Member.Role.Unknown]
-// 	const [{ color, background, border, margin, padding, width, row, text }] = useStyles()
-
-// 	return (
-// 		<View
-// 			onLayout={(e) => !layout && setLayout(e.nativeEvent.layout.height)}
-// 			style={[
-// 				border.radius.medium,
-// 				border.shadow.small,
-// 				background.white,
-// 				padding.vertical.medium,
-// 				margin.right.medium,
-// 				width(90),
-// 			]}
-// 		>
-// 			<View style={[{ alignItems: 'center' }]}>
-// 				<View style={[padding.horizontal.small]}>
-// 					<CircleAvatar
-// 						avatarUri={avatarUri || contactGetReply?.contact?.avatarUri}
-// 						diffSize={5}
-// 						size={60}
-// 						color={!lightBgColor ? color[bgColor] : color.light[bgColor]}
-// 						state={{ icon, iconColor: color[bgColor] }}
-// 					/>
-// 					<Text numberOfLines={1} style={[text.align.center, text.size.small, margin.top.small]}>
-// 						{name || contactGetReply?.contact?.name}
-// 					</Text>
-// 				</View>
-// 				<View
-// 					style={[
-// 						margin.top.small,
-// 						row.center,
-// 						border.radius.medium,
-// 						{ backgroundColor: !lightBgColor ? color[bgColor] : color.light[bgColor] },
-// 					]}
-// 				>
-// 					<Text
-// 						numberOfLines={1}
-// 						style={[
-// 							text.bold.medium,
-// 							text.size.tiny,
-// 							padding.horizontal.small,
-// 							{ color: color[itemColor] },
-// 						]}
-// 					>
-// 						{state}
-// 					</Text>
-// 				</View>
-// 			</View>
-// 		</View>
-// 	)
-// }
-
-/*const MemberItem: React.FC<{ publicKey: any }> = ({ publicKey }) => {
-	const [, { scaleHeight }] = useStyles()
-	return (
-		<View>
-			<TextNative style={{ paddingLeft: 10 * scaleHeight }}>{publicKey}</TextNative>
-		</View>
-	)
-}
-
-const MemberList: React.FC<{ members: any }> = ({ members }) => {
-	const [{ padding, margin }] = useStyles()
-	return (
-		<ScrollView
-			style={[margin.top.big, padding.medium]}
-			horizontal
-			showsHorizontalScrollIndicator={false}
-		>
-			{members &&
-				members?.map((member: any) =>
-					member ? <MemberItem publicKey={member.publicKey} /> : null,
-				)}
-		</ScrollView>
-	)
-}*/
-
-const InfosMultiMember: React.FC<api.berty.messenger.v1.IConversation> = ({
+const InfosMultiMember: React.FC<beapi.messenger.IConversation> = ({
 	createdDate: createdDateStr,
 }) => {
 	const [{ margin, text, flex }] = useStyles()
@@ -269,11 +163,11 @@ const MessageList: React.FC<{
 	const members = (ctx as any).members[id] || {}
 	const interactions = useSortedConvInteractions(id).filter(
 		(msg) =>
-			msg.type === messengerpb.AppMessage.Type.TypeUserMessage ||
-			msg.type === messengerpb.AppMessage.Type.TypeMonitorMetadata,
+			msg.type === beapi.messenger.AppMessage.Type.TypeUserMessage ||
+			msg.type === beapi.messenger.AppMessage.Type.TypeMonitorMetadata,
 	)
 
-	if (conversation.replyOptions !== null && conversation.replyOptions !== undefined) {
+	if (conversation?.replyOptions !== null && conversation?.replyOptions !== undefined) {
 		interactions.push(conversation.replyOptions)
 	}
 	const initialScrollIndex = React.useMemo(() => {
@@ -313,8 +207,8 @@ const MessageList: React.FC<{
 		return (
 			<Message
 				id={item?.cid || `${index}`}
-				convKind={messengerpb.Conversation.Type.MultiMemberType}
-				convPK={conversation.publicKey}
+				convKind={beapi.messenger.Conversation.Type.MultiMemberType}
+				convPK={conversation?.publicKey || ''}
 				members={members}
 				previousMessageId={index < items.length - 1 ? items[index + 1]?.cid : ''}
 				nextMessageId={index > 0 ? items[index - 1]?.cid : ''}
@@ -360,7 +254,7 @@ const MessageList: React.FC<{
 	)
 }
 
-const NT = messengerpb.StreamEvent.Notified.Type
+const NT = beapi.messenger.StreamEvent.Notified.Type
 
 export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params } }) => {
 	useNotificationsInhibitor((_ctx, notif) => {
@@ -408,7 +302,7 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 						setFocus={setInputFocus}
 						placeholder={t('chat.multi-member.input-placeholder')}
 					/>
-					<HeaderMultiMember id={params?.convId} {...{ stickyDate, showStickyDate }} />
+					<HeaderMultiMember id={params?.convId} {...({ stickyDate, showStickyDate } as any)} />
 				</KeyboardAvoidingView>
 			</SwipeNavRecognizer>
 		</View>

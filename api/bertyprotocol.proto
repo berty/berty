@@ -109,4 +109,10 @@ service ProtocolService {
 
   // PeerList returns a list of P2P peers
   rpc PeerList(types.v1.PeerList.Request) returns (types.v1.PeerList.Reply);
+
+  // AttachmentPrepare ...
+  rpc AttachmentPrepare(stream types.v1.AttachmentPrepare.Request) returns (types.v1.AttachmentPrepare.Reply);
+
+  // AttachmentRetrieve returns an attachment data
+  rpc AttachmentRetrieve(types.v1.AttachmentRetrieve.Request) returns (stream types.v1.AttachmentRetrieve.Reply);
 }

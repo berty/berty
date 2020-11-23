@@ -144,6 +144,15 @@
       "delete-account-button": "Delete my account",
       "backup-account-button": "Backup my account"
     },
+    "edit-profile": {
+      "title": "Edit my profile",
+      "qr-will-update": "Your Berty ID (QR code) will be updated",
+      "ocr-wont-update": "Your pending contact requests won’t be updated",
+      "save": "Save changes",
+      "cancel": "Cancel",
+      "name-input-placeholder": "Name...",
+      "name-input-label": "Name"
+    },
     "notifications": {
       "title": "Notifications",
       "enabled-desc": "You have activated notifications!",

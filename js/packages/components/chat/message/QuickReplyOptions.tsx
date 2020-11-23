@@ -2,7 +2,7 @@ import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { Text } from '@ui-kitten/components'
 
-import { messenger as messengerpb } from '@berty-tech/api'
+import beapi from '@berty-tech/api'
 import { useMsgrContext } from '@berty-tech/store/context'
 import { useStyles } from '@berty-tech/styles'
 
@@ -17,12 +17,12 @@ const QuickReplyOption: React.FC<{
 		<TouchableOpacity
 			onPress={() => {
 				const usermsg = { body: option.payload, sentDate: Date.now() }
-				const buf = messengerpb.AppMessage.UserMessage.encode(usermsg).finish()
+				const buf = beapi.messenger.AppMessage.UserMessage.encode(usermsg).finish()
 
 				ctx.client
 					?.interact({
 						conversationPublicKey: convPk,
-						type: messengerpb.AppMessage.Type.TypeUserMessage,
+						type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 						payload: buf,
 					})
 					.catch((e: any) => {

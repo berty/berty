@@ -2,15 +2,16 @@ import React from 'react'
 import { ScrollView, View } from 'react-native'
 import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
+
+import beapi from '@berty-tech/api'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { useContact, useConversation, usePersistentOptions } from '@berty-tech/store/hooks'
+import { useContact, useConversation } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
+
 import HeaderSettings from '../shared-components/Header'
-import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-import Logo from '../main/1_berty_picto.svg'
+import { ContactAvatar } from '../avatars'
 
 //
 // OneToOneSettings
@@ -29,47 +30,11 @@ const useStylesOneToOne = () => {
 
 const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 	const _styles = useStylesOneToOne()
-	const [{ text, padding, border, row, background, margin }] = useStyles()
+	const [{ text, padding }] = useStyles()
 
-	const persistOpts = usePersistentOptions()
-	const isBetabot =
-		persistOpts &&
-		persistOpts.betabot &&
-		persistOpts.betabot.convPk &&
-		contact.publicKey.toString() === persistOpts.betabot.convPk.toString()
-	const betabotAvatarSize = 100
 	return (
-		<View style={[_styles.headerAvatar]}>
-			{!isBetabot ? (
-				<ProceduralCircleAvatar
-					seed={contact.publicKey}
-					style={[border.shadow.big, row.center]}
-					diffSize={30}
-				/>
-			) : (
-				<View
-					style={[
-						border.radius.scale(betabotAvatarSize),
-						border.shadow.medium,
-						background.white,
-						margin.right.small,
-						{
-							justifyContent: 'center',
-							alignItems: 'center',
-							display: 'flex',
-							width: betabotAvatarSize,
-							height: betabotAvatarSize,
-							alignSelf: 'center',
-						},
-					]}
-				>
-					<Logo
-						width={betabotAvatarSize - 35}
-						height={betabotAvatarSize - 35}
-						style={{ right: -1, top: -1 }}
-					/>
-				</View>
-			)}
+		<View style={[_styles.headerAvatar, { alignItems: 'center' }]}>
+			<ContactAvatar size={100} publicKey={contact.publicKey} />
 			<Text
 				numberOfLines={1}
 				style={[text.size.scale(18), text.color.white, text.align.center, padding.top.small]}
@@ -169,11 +134,11 @@ export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({
 	const { convId } = params
 	const conv = useConversation(convId)
 	const contact = useContact(conv.contactPublicKey)
-	if (!(conv && conv.type === messengerpb.Conversation.Type.ContactType && contact)) {
+	if (!(conv && conv.type === beapi.messenger.Conversation.Type.ContactType && contact)) {
 		goBack()
 		return null
 	}
-	const isIncoming = contact && contact.state === messengerpb.Contact.State.IncomingRequest
+	const isIncoming = contact && contact.state === beapi.messenger.Contact.State.IncomingRequest
 
 	return (
 		<ScrollView

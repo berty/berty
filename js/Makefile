@@ -18,11 +18,8 @@ rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subs
 check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,$(error "Missing deps: no '$(exec)' in PATH")))
 check-java-ver = $(if $(patsubst $(shell java -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*"/\1\2/p;'),,$(1)),$(error "wrong java version (required $(1))"),)
 kill-program-using-port = $(foreach port,$(1),$(eval pid ?= $(shell lsof -t -i :$(port))) $(if $(pid),$(shell kill $(pid)),))
-export PATH := $(PWD)/node_modules/.bin:$(PATH)
 ext_ldflags = -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
 bridge_src := $(call rwildcard,../go,*.go *.m *.h) ../go.sum
-react-native := $(abspath node_modules/.bin/react-native)
-eslint := $(abspath node_modules/.bin/eslint)
 xcodegen_yml := $(wildcard $(PWD)/ios/*.yaml)
 xcodegen_ver = $(shell cat ios/XcodeGen.version)
 required_java_ver = 18
@@ -127,6 +124,7 @@ gen.clean:
 	rm -f gen.sum
 	rm -f $(wildcard \
 	  packages/*/*.gen.tsx \
+	  packages/*/*.gen.ts \
 	  packages/*/*.gen.js \
 	  packages/*/*.pb.js \
 	  packages/*/*.pb.d.ts \
@@ -137,21 +135,23 @@ gen.clean:
 
 .PHONY: lint
 lint: node_modules
+	$(call check-program, npx)
 	cp .gitignore .eslintignore
 	echo '*.pb.*' >> .eslintignore
 	echo '*.gen.*' >> .eslintignore
 	# ignore web-dev-app until it's integrated with new tools config
 	echo '/packages/web-dev-app/' >> .eslintignore
-	$(eslint) --cache --quiet --ext=.js,.jsx,.ts,.tsx .
+	npx eslint --cache --quiet --ext=.js,.jsx,.ts,.tsx .
 
 .PHONY: lint.fix
 lint.fix: node_modules
+	$(call check-program, npx)
 	cp .gitignore .eslintignore
 	echo '*.pb.*' >> .eslintignore
 	echo '*.gen.*' >> .eslintignore
 	# ignore web-dev-app until it's integrated with new tools config
 	echo '/packages/web-dev-app/' >> .eslintignore
-	$(eslint) --cache --quiet --ext=.js,.jsx,.ts,.tsx --fix .
+	npx eslint --cache --quiet --ext=.js,.jsx,.ts,.tsx --fix .
 
 ###################
 # Build/Run rules #
@@ -164,7 +164,8 @@ ios.app_deps: node_modules ios.gomobile ios.project
 
 .PHONY: ios.debug
 ios.debug: ios.app_deps
-	$(react-native) run-ios \
+	$(call check-program, npx)
+	npx react-native run-ios \
 		--no-packager \
 		--port="$(METRO_RN_PORT)" \
 		--configuration='Debug' \
@@ -173,7 +174,8 @@ ios.debug: ios.app_deps
 
 .PHONY: ios.release
 ios.release: ios.app_deps
-	$(react-native) run-ios \
+	$(call check-program, npx)
+	npx react-native run-ios \
 		--no-packager \
 		--port="$(METRO_RN_PORT)" \
 		--configuration='AppStore Release' \
@@ -182,7 +184,8 @@ ios.release: ios.app_deps
 
 .PHONY: ios.log
 ios.log:
-	$(react-native) log-ios
+	$(call check-program, npx)
+	npx react-native log-ios
 
 .PHONY: ios.project
 ios.project: ios/Berty.xcworkspace
@@ -197,8 +200,9 @@ android.app_deps: node_modules android.gomobile
 
 .PHONY: android.debug
 android.debug: android.app_deps
+	$(call check-program, npx)
 	$(call check-java-ver,$(required_java_ver))
-	$(react-native) run-android \
+	npx react-native run-android \
 		--no-packager \
 		--port="$(METRO_RN_PORT)" \
 		--variant=Debug \
@@ -207,8 +211,9 @@ android.debug: android.app_deps
 
 .PHONY: android.release
 android.release: android.app_deps
+	$(call check-program, npx)
 	$(call check-java-ver,$(required_java_ver))
-	$(react-native) run-android \
+	npx react-native run-android \
 		--no-packager \
 		--port="$(METRO_RN_PORT)" \
 		--variant=Release \
@@ -219,7 +224,8 @@ android.gomobile: android/libs/gobridge.aar
 
 .PHONY: android.log
 android.log:
-	$(react-native) log-android
+	$(call check-program, npx)
+	npx react-native log-android
 
 .PHONY: android.emulator
 android.emulator:
@@ -251,8 +257,9 @@ web-dev-app.start:
 
 .PHONY: metro.start
 metro.start: node_modules
+	$(call check-program, npx)
 	$(call kill-program-using-port, $(METRO_RN_PORT))
-	$(react-native) start --port=$(METRO_RN_PORT)
+	npx react-native start --port=$(METRO_RN_PORT)
 
 #### Go daemon
 
@@ -270,13 +277,33 @@ daemon.start.docker:
 
 ##### pbjs
 
-pbjs_flags := -p ../api -p node_modules/@googleapis/googleapis -p `go list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `go list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src
+pbjs_common_flags := --force-long -p ../api -p node_modules/@googleapis/googleapis -p `go list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `go list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src
+
+packages/api/root.pb.js: $(wildcard ../api/*) node_modules
+	$(call check-program, npx)
+	npx pbjs $(pbjs_common_flags) \
+		--no-comments \
+		-t json-module \
+		-w es6 \
+		-o $@ \
+		../api/bertyaccount.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto
+
+packages/api/root.pb.d.ts: $(wildcard ../api/*) node_modules
+	$(call check-program, npx)
+	npx pbjs $(pbjs_common_flags) \
+		-t static-module \
+		../api/bertyaccount.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto \
+		| npx pbts --no-comments -o $@ -
+	sed -E -i.bak 's/^.*constructor.*$$//g' $@ # json-module codegen doesn't support new
+	rm -f $@.bak
+
+packages/grpc-bridge/welsh-clients.gen.ts: packages/grpc-bridge/gen-clients.js packages/api/root.pb.js node_modules
+	$(call check-program, npx)
+	npx babel-node packages/grpc-bridge/gen-clients.js > $@
+	npx eslint --no-ignore --fix $@
+
+_gen.pbjs: packages/api/root.pb.js packages/api/root.pb.d.ts packages/grpc-bridge/welsh-clients.gen.ts
 .PHONY: _gen.pbjs
-_gen.pbjs:
-	pbjs $(pbjs_flags) --no-comments --es6 -w es6 -t json-module   -o packages/api/index.pb.js ../api/bertyaccount.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto
-	pbjs $(pbjs_flags) -t static-module ../api/bertyaccount.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto | pbts --no-comments -o packages/api/index.pb.d.ts -
-	sed -E -i.bak 's/^.*constructor.*$$//g' packages/api/index.pb.d.ts
-	rm -f packages/api/index.pb.d.ts.bak
 
 ##### other generation
 

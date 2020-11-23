@@ -61,6 +61,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   ClientStreamClose: {
                     requestType: "ClientStreamClose.Request",
                     responseType: "ClientStreamClose.Reply"
+                  },
+                  ClientStreamCloseAndRecv: {
+                    requestType: "ClientStreamCloseAndRecv.Request",
+                    responseType: "ClientStreamCloseAndRecv.Reply"
                   }
                 }
               },
@@ -443,6 +447,40 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
+              ClientStreamCloseAndRecv: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      streamId: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      streamId: {
+                        type: "string",
+                        id: 1
+                      },
+                      payload: {
+                        type: "bytes",
+                        id: 2
+                      },
+                      trailer: {
+                        rule: "repeated",
+                        type: "Metadata",
+                        id: 3
+                      },
+                      error: {
+                        type: "Error",
+                        id: 4
+                      }
+                    }
+                  }
+                }
+              },
               MethodDesc: {
                 fields: {
                   name: {
@@ -544,11 +582,19 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrCryptoDecryptPayload: 206,
               ErrCryptoEncrypt: 207,
               ErrCryptoKeyConversion: 208,
+              ErrCryptoCipherInit: 209,
+              ErrCryptoKeyDerivation: 210,
+              ErrMap: 300,
+              ErrForEach: 301,
+              ErrKeystoreGet: 400,
+              ErrKeystorePut: 401,
               ErrOrbitDBInit: 1000,
               ErrOrbitDBOpen: 1001,
               ErrOrbitDBAppend: 1002,
               ErrOrbitDBDeserialization: 1003,
               ErrOrbitDBStoreCast: 1004,
+              ErrIPFSAdd: 1050,
+              ErrIPFSGet: 1051,
               ErrHandshakeOwnEphemeralKeyGenSend: 1100,
               ErrHandshakePeerEphemeralKeyRecv: 1101,
               ErrHandshakeRequesterAuthenticateBoxKeyGen: 1102,
@@ -590,6 +636,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrDBMultipleRecords: 2107,
               ErrReplayProcessGroupMetadata: 2200,
               ErrReplayProcessGroupMessage: 2201,
+              ErrPrepareAttachment: 2300,
+              ErrRetrieveAttachment: 2301,
+              ErrProtocolSend: 2302,
               ErrCLINoTermcaps: 3001,
               ErrServicesAuth: 4000,
               ErrServicesAuthNotInitialized: 4001,
@@ -789,6 +838,16 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   PeerList: {
                     requestType: "types.v1.PeerList.Request",
                     responseType: "types.v1.PeerList.Reply"
+                  },
+                  AttachmentPrepare: {
+                    requestType: "types.v1.AttachmentPrepare.Request",
+                    requestStream: true,
+                    responseType: "types.v1.AttachmentPrepare.Reply"
+                  },
+                  AttachmentRetrieve: {
+                    requestType: "types.v1.AttachmentRetrieve.Request",
+                    responseType: "types.v1.AttachmentRetrieve.Reply",
+                    responseStream: true
                   }
                 }
               }
@@ -927,6 +986,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   sig: {
                     type: "bytes",
                     id: 3
+                  },
+                  protocolMetadata: {
+                    type: "ProtocolMetadata",
+                    id: 4
                   }
                 }
               },
@@ -939,6 +1002,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   event: {
                     type: "bytes",
                     id: 2
+                  },
+                  encryptedAttachmentCids: {
+                    rule: "repeated",
+                    type: "bytes",
+                    id: 3,
+                    options: {
+                      "(gogoproto.customname)": "EncryptedAttachmentCIDs"
+                    }
                   }
                 }
               },
@@ -966,6 +1037,27 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
+              ProtocolMetadata: {
+                fields: {
+                  attachmentsSecrets: {
+                    rule: "repeated",
+                    type: "bytes",
+                    id: 1
+                  }
+                }
+              },
+              EncryptedMessage: {
+                fields: {
+                  plaintext: {
+                    type: "bytes",
+                    id: 1
+                  },
+                  protocolMetadata: {
+                    type: "ProtocolMetadata",
+                    id: 2
+                  }
+                }
+              },
               MessageEnvelope: {
                 fields: {
                   messageHeaders: {
@@ -979,6 +1071,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   nonce: {
                     type: "bytes",
                     id: 3
+                  },
+                  encryptedAttachmentCids: {
+                    rule: "repeated",
+                    type: "bytes",
+                    id: 4,
+                    options: {
+                      "(gogoproto.customname)": "EncryptedAttachmentCIDs"
+                    }
                   }
                 }
               },
@@ -1004,6 +1104,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     id: 3,
                     options: {
                       "(gogoproto.customname)": "GroupPK"
+                    }
+                  },
+                  attachmentCids: {
+                    rule: "repeated",
+                    type: "bytes",
+                    id: 4,
+                    options: {
+                      "(gogoproto.customname)": "AttachmentCIDs"
                     }
                   }
                 }
@@ -1850,6 +1958,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       payload: {
                         type: "bytes",
                         id: 2
+                      },
+                      attachmentCids: {
+                        rule: "repeated",
+                        type: "bytes",
+                        id: 3,
+                        options: {
+                          "(gogoproto.customname)": "AttachmentCIDs"
+                        }
                       }
                     }
                   },
@@ -1873,6 +1989,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       payload: {
                         type: "bytes",
                         id: 2
+                      },
+                      attachmentCids: {
+                        rule: "repeated",
+                        type: "bytes",
+                        id: 3,
+                        options: {
+                          "(gogoproto.customname)": "AttachmentCIDs"
+                        }
                       }
                     }
                   },
@@ -2870,6 +2994,58 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   OutboundDir: 2,
                   BiDir: 3
                 }
+              },
+              AttachmentPrepare: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      block: {
+                        type: "bytes",
+                        id: 1
+                      },
+                      disableEncryption: {
+                        type: "bool",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      attachmentCid: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "AttachmentCID"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              AttachmentRetrieve: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      attachmentCid: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "AttachmentCID"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      block: {
+                        type: "bytes",
+                        id: 2
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -3383,8 +3559,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       TypeUserMessage: 1,
                       TypeUserReaction: 2,
                       TypeGroupInvitation: 3,
-                      TypeSetGroupName: 4,
-                      TypeSetUserName: 5,
+                      TypeSetGroupInfo: 4,
+                      TypeSetUserInfo: 5,
                       TypeAcknowledge: 6,
                       TypeReplyOptions: 7,
                       TypeMonitorMetadata: 8
@@ -3418,19 +3594,30 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       }
                     }
                   },
-                  SetGroupName: {
+                  SetGroupInfo: {
                     fields: {
-                      name: {
+                      displayName: {
+                        type: "string",
+                        id: 1
+                      },
+                      avatarCid: {
                         type: "string",
                         id: 2
                       }
                     }
                   },
-                  SetUserName: {
+                  SetUserInfo: {
                     fields: {
-                      name: {
+                      displayName: {
                         type: "string",
-                        id: 2
+                        id: 1
+                      },
+                      avatarCid: {
+                        type: "string",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "AvatarCID"
+                        }
                       }
                     }
                   },
@@ -3582,6 +3769,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 2
                   },
+                  avatarCid: {
+                    type: "string",
+                    id: 7,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:column:avatar_cid",
+                      "(gogoproto.customname)": "AvatarCID"
+                    }
+                  },
                   link: {
                     type: "string",
                     id: 3
@@ -3732,6 +3927,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 5
                   },
+                  avatarCid: {
+                    type: "string",
+                    id: 9,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:column:avatar_cid",
+                      "(gogoproto.customname)": "AvatarCID"
+                    }
+                  },
                   createdDate: {
                     type: "int64",
                     id: 7
@@ -3747,6 +3950,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     options: {
                       "(gogoproto.moretags)": "gorm:foreignKey:MemberPublicKey"
                     }
+                  },
+                  infoDate: {
+                    type: "int64",
+                    id: 10
                   }
                 },
                 nested: {
@@ -3781,6 +3988,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   displayName: {
                     type: "string",
                     id: 4
+                  },
+                  avatarCid: {
+                    type: "string",
+                    id: 17,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:column:avatar_cid",
+                      "(gogoproto.customname)": "AvatarCID"
+                    }
                   },
                   link: {
                     type: "string",
@@ -3898,12 +4113,24 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 2
                   },
+                  avatarCid: {
+                    type: "string",
+                    id: 6,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:column:avatar_cid",
+                      "(gogoproto.customname)": "AvatarCID"
+                    }
+                  },
                   conversationPublicKey: {
                     type: "string",
                     id: 3,
                     options: {
                       "(gogoproto.moretags)": "gorm:primaryKey"
                     }
+                  },
+                  infoDate: {
+                    type: "int64",
+                    id: 7
                   },
                   conversation: {
                     type: "Conversation",
@@ -4211,6 +4438,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       displayName: {
                         type: "string",
                         id: 1
+                      },
+                      avatarCid: {
+                        type: "string",
+                        id: 2,
+                        options: {
+                          "(gogoproto.moretags)": "gorm:column:avatar_cid",
+                          "(gogoproto.customname)": "AvatarCID"
+                        }
                       }
                     }
                   },
