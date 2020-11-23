@@ -39,6 +39,7 @@ import (
 const (
 	PerformancePreset = "performance"
 	AnonymityPreset   = "anonymity"
+	VolatilePreset    = "volatile"
 
 	TorDisabled = "disabled"
 	TorOptional = "optional"
@@ -72,10 +73,12 @@ func (m *Manager) SetupPresetFlags(fs *flag.FlagSet) {
 	m.longHelp = append(m.longHelp, [2]string{
 		"-preset=" + PerformancePreset,
 		"better performance: current development defaults",
-	})
-	m.longHelp = append(m.longHelp, [2]string{
+	}, [2]string{
 		"-preset=" + AnonymityPreset,
 		"better privacy: -tor.mode=" + TorRequired + " -p2p.local-discovery=false -p2p.multipeer-connectivity=false",
+	}, [2]string{
+		"-preset=" + VolatilePreset,
+		"similar to " + PerformancePreset + ` but optimize for a quick throwable node: -store.inmem=true -p2p.ipfs-api-listeners="" -p2p.swarm-listeners="" -p2p.webui-listener=""`,
 	})
 }
 
@@ -116,6 +119,11 @@ func (m *Manager) applyPreset() error {
 		m.Node.Protocol.LocalDiscovery = false
 		m.Node.Protocol.MultipeerConnectivity = false
 		// FIXME: disable other BLE transports
+	case VolatilePreset:
+		m.Datastore.InMemory = true
+		m.Node.Protocol.SwarmListeners = ""
+		m.Node.Protocol.IPFSAPIListeners = ""
+		m.Node.Protocol.IPFSWebUIListener = ""
 	default:
 		return fmt.Errorf("unknown preset: %q", m.Node.Preset)
 	}

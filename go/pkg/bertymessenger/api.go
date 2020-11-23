@@ -120,49 +120,11 @@ func (svc *service) internalInstanceShareableBertyID(ctx context.Context, req *I
 	return &ret, nil
 }
 
-func (svc *service) ParseDeepLink(ctx context.Context, req *ParseDeepLink_Request) (*ParseDeepLink_Reply, error) {
-	if req == nil || req.Link == "" {
+func (svc *service) ParseDeepLink(_ context.Context, req *ParseDeepLink_Request) (*ParseDeepLink_Reply, error) {
+	if req == nil {
 		return nil, errcode.ErrMissingInput
 	}
-
-	ret := ParseDeepLink_Reply{}
-
-	query, method, err := NormalizeDeepLinkURL(req.Link)
-	if err != nil {
-		return nil, errcode.ErrInvalidInput.Wrap(err)
-	}
-
-	switch method {
-	case "/id":
-		ret.Kind = ParseDeepLink_BertyID
-		ret.BertyID = &BertyID{}
-		key := query.Get("key")
-		if key == "" {
-			return nil, errcode.ErrMessengerInvalidDeepLink
-		}
-		payload, err := b64DecodeBytes(key)
-		if err != nil {
-			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
-		}
-		err = proto.Unmarshal(payload, ret.BertyID)
-		if err != nil {
-			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
-		}
-		if len(ret.BertyID.PublicRendezvousSeed) == 0 || len(ret.BertyID.AccountPK) == 0 {
-			return nil, errcode.ErrMessengerInvalidDeepLink
-		}
-		if name := query.Get("name"); name != "" {
-			ret.BertyID.DisplayName = name
-		}
-
-	case "/group":
-		return ParseGroupInviteURLQuery(query)
-
-	default:
-		return nil, errcode.ErrMessengerInvalidDeepLink
-	}
-
-	return &ret, nil
+	return DecodeDeepLink(req.Link)
 }
 
 func NormalizeDeepLinkURL(input string) (url.Values, string, error) {
@@ -216,6 +178,51 @@ func ParseGroupInviteURLQuery(query url.Values) (*ParseDeepLink_Reply, error) {
 
 	if name := query.Get("name"); name != "" {
 		ret.BertyGroup.DisplayName = name
+	}
+
+	return &ret, nil
+}
+
+func DecodeDeepLink(link string) (*ParseDeepLink_Reply, error) {
+	if link == "" {
+		return nil, errcode.ErrMissingInput
+	}
+
+	ret := ParseDeepLink_Reply{}
+
+	query, method, err := NormalizeDeepLinkURL(link)
+	if err != nil {
+		return nil, errcode.ErrInvalidInput.Wrap(err)
+	}
+
+	switch method {
+	case "/id":
+		ret.Kind = ParseDeepLink_BertyID
+		ret.BertyID = &BertyID{}
+		key := query.Get("key")
+		if key == "" {
+			return nil, errcode.ErrMessengerInvalidDeepLink
+		}
+		payload, err := b64DecodeBytes(key)
+		if err != nil {
+			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
+		}
+		err = proto.Unmarshal(payload, ret.BertyID)
+		if err != nil {
+			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
+		}
+		if len(ret.BertyID.PublicRendezvousSeed) == 0 || len(ret.BertyID.AccountPK) == 0 {
+			return nil, errcode.ErrMessengerInvalidDeepLink
+		}
+		if name := query.Get("name"); name != "" {
+			ret.BertyID.DisplayName = name
+		}
+
+	case "/group":
+		return ParseGroupInviteURLQuery(query)
+
+	default:
+		return nil, errcode.ErrMessengerInvalidDeepLink
 	}
 
 	return &ret, nil
