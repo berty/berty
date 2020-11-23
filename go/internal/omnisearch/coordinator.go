@@ -10,8 +10,6 @@ type Coordinator interface {
 	// Do execute a search with the currently available ressources.
 	// The chan will be closed once finished.
 	Do(context.Context, ...interface{}) <-chan *ResultReturn
-	// DoStr is the same as Do but accept a list of string.
-	DoStr(context.Context, ...string) <-chan *ResultReturn
 }
 
 type coordinator struct {
@@ -91,20 +89,6 @@ func (c *coordinator) Do(ctx context.Context, parents ...interface{}) <-chan *Re
 	go s.wgWatcher()
 
 	return s.rc
-}
-
-func (c *coordinator) DoStr(ctx context.Context, parentsStr ...string) <-chan *ResultReturn {
-	var parents []interface{}
-	{
-		i := len(parentsStr)
-		parents = make([]interface{}, i)
-		for i > 0 {
-			i--
-			parents[i] = parentsStr[i]
-		}
-	}
-
-	return c.Do(ctx, parents...)
 }
 
 func (s *search) manager() {

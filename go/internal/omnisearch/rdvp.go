@@ -1,4 +1,4 @@
-package rdvp
+package omnisearch
 
 import (
 	"context"
@@ -13,7 +13,6 @@ import (
 	"moul.io/srand"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/omnisearch"
 	"berty.tech/berty/v2/go/internal/tinder"
 )
 
@@ -21,8 +20,8 @@ type rdvpProvider struct {
 	rdvp tinder.AsyncableDriver
 }
 
-func NewConstructorFromStr(addrs ...string) func(context.Context, *zap.Logger, host.Host) (omnisearch.Provider, error) {
-	return func(ctx context.Context, log *zap.Logger, h host.Host) (omnisearch.Provider, error) {
+func NewRdvpConstructorFromStr(addrs ...string) func(context.Context, *zap.Logger, host.Host) (Provider, error) {
+	return func(ctx context.Context, log *zap.Logger, h host.Host) (Provider, error) {
 		var pis []peer.AddrInfo
 		{
 			maddrs, err := ipfsutil.ParseAndResolveRdvpMaddrs(ctx, log, addrs)
@@ -36,12 +35,12 @@ func NewConstructorFromStr(addrs ...string) func(context.Context, *zap.Logger, h
 				pis[i] = *maddrs[i]
 			}
 		}
-		return NewConstructorFromPeerInfo(pis...)(log, h)
+		return NewRdvpConstructorFromPeerInfo(pis...)(log, h)
 	}
 }
 
-func NewConstructorFromPeerInfo(pis ...peer.AddrInfo) func(*zap.Logger, host.Host) (omnisearch.Provider, error) {
-	return func(log *zap.Logger, h host.Host) (omnisearch.Provider, error) {
+func NewRdvpConstructorFromPeerInfo(pis ...peer.AddrInfo) func(*zap.Logger, host.Host) (Provider, error) {
+	return func(log *zap.Logger, h host.Host) (Provider, error) {
 		var rdvClients []tinder.AsyncableDriver
 		if lenrdvpeers := len(pis); lenrdvpeers > 0 {
 			drivers := make([]tinder.AsyncableDriver, lenrdvpeers)

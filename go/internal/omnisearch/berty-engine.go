@@ -1,4 +1,4 @@
-package berty
+package omnisearch
 
 import (
 	"context"
@@ -11,7 +11,6 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/internal/omnisearch"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 )
@@ -20,7 +19,7 @@ type bertyEngine struct {
 	s *bertyprotocol.Swiper
 }
 
-func New(ctx context.Context, h host.Host, disc discovery.Discovery) (omnisearch.Engine, error) {
+func NewEngine(ctx context.Context, h host.Host, disc discovery.Discovery) (Engine, error) {
 	ps, err := pubsub.NewGossipSub(ctx, h,
 		pubsub.WithMessageSigning(true),
 		pubsub.WithFloodPublish(true),
@@ -33,12 +32,12 @@ func New(ctx context.Context, h host.Host, disc discovery.Discovery) (omnisearch
 	return &bertyEngine{s: bertyprotocol.NewSwiper(zap.NewNop(), ps, time.Hour*24)}, nil
 }
 
-func (p *bertyEngine) Search(octx context.Context, gwg *sync.WaitGroup, rc chan<- *omnisearch.ResultReturn, previous *omnisearch.ResultReturn) {
+func (p *bertyEngine) Search(octx context.Context, gwg *sync.WaitGroup, rc chan<- *ResultReturn, previous *ResultReturn) {
 	if v, ok := previous.Object.(*bertymessenger.BertyID); ok {
 		(*gwg).Add(1)
 		go func() {
 			defer func() {
-				rc <- &omnisearch.ResultReturn{Decrement: true} // (*gwg).Done()
+				rc <- &ResultReturn{Decrement: true} // (*gwg).Done()
 			}()
 			ctx, cancel := context.WithTimeout(octx, time.Minute)
 			lrc := make(chan peer.AddrInfo)
@@ -53,7 +52,7 @@ func (p *bertyEngine) Search(octx context.Context, gwg *sync.WaitGroup, rc chan<
 			for {
 				select {
 				case pi := <-lrc:
-					rc <- &omnisearch.ResultReturn{
+					rc <- &ResultReturn{
 						Finder: p,
 						Object: pi,
 					}

@@ -120,7 +120,10 @@ func (svc *service) internalInstanceShareableBertyID(ctx context.Context, req *I
 }
 
 func (svc *service) ParseDeepLink(_ context.Context, req *ParseDeepLink_Request) (*ParseDeepLink_Reply, error) {
-	return DecodeDeepLink(req)
+	if req == nil {
+		return nil, errcode.ErrMissingInput
+	}
+	return DecodeDeepLink(req.Link)
 }
 
 func NormalizeDeepLinkURL(input string) (url.Values, string, error) {
@@ -179,14 +182,14 @@ func ParseGroupInviteURLQuery(query url.Values) (*ParseDeepLink_Reply, error) {
 	return &ret, nil
 }
 
-func DecodeDeepLink(req *ParseDeepLink_Request) (*ParseDeepLink_Reply, error) {
-	if req == nil || req.Link == "" {
+func DecodeDeepLink(link string) (*ParseDeepLink_Reply, error) {
+	if link == "" {
 		return nil, errcode.ErrMissingInput
 	}
 
 	ret := ParseDeepLink_Reply{}
 
-	query, method, err := NormalizeDeepLinkURL(req.Link)
+	query, method, err := NormalizeDeepLinkURL(link)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}

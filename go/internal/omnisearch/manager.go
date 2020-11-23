@@ -1,5 +1,4 @@
-// manager uses berty's initutil to provide various capabilities
-package manager
+package omnisearch
 
 import (
 	"context"
@@ -13,7 +12,6 @@ import (
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/notification"
-	"berty.tech/berty/v2/go/internal/omnisearch"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 )
@@ -22,11 +20,11 @@ type provider struct {
 	m *initutil.Manager
 }
 
-func NewFromManager(m *initutil.Manager) omnisearch.Provider {
+func NewManagerFromManager(m *initutil.Manager) Provider {
 	return provider{m: m}
 }
 
-func NewFromNothing(ctx context.Context) (omnisearch.Provider, error) {
+func NewManagerFromNothing(ctx context.Context) (Provider, error) {
 	m, err := initutil.New(ctx)
 	if err != nil {
 		return nil, err
