@@ -3,6 +3,7 @@ targets:
     info:
       path: Berty/Info.plist
       properties:
+        ITSAppUsesNonExemptEncryption: false
         BGTaskSchedulerPermittedIdentifiers:
         - tech.berty.ios.task.gobridge-process
         - tech.berty.ios.task.gobridge-refresh
@@ -25,7 +26,7 @@ targets:
         NSBluetoothAlwaysUsageDescription: Used for Bluetooth communications
         NSBluetoothPeripheralUsageDescription: Used for Bluetooth communications
         NSBonjourServices:
-          - _berty-mc._tcp
+        - _berty-mc._tcp
         NSCameraUsageDescription: Used to scan QRCodes
         NSLocalNetworkUsageDescription: Used for proximity communications
         NSLocationWhenInUseUsageDescription: ""
