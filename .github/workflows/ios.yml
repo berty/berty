@@ -1,6 +1,10 @@
 name: iOS
 on:
   push:
+    tags:
+      - v*
+    branches:
+      - master
     paths:
       - 'go/**'
       - '!go/**.md'
@@ -8,12 +12,19 @@ on:
       - '**.go'
       - 'js/**'
       - '.github/workflows/ios.yml'
-      #- '!js/packages/berty-i18n/locale/*/*.json'
+  pull_request:
+    paths:
+      - 'go/**'
+      - '!go/**.md'
+      - 'go.*'
+      - '**.go'
+      - 'js/**'
+      - '!js/packages/berty-i18n/locale/*/*.json'
+      - '.github/workflows/ios.yml'
 
 jobs:
   build:
     name: Build for iOS
-    if: "! contains(toJson(github.event.commits.*.message), '[skip-ci]') && ! contains(toJson(github.event.commits.*.message), '[skip-ios]') && ! contains(toJson(github.event.commits.*.message), '[skip-mobile]')"
     runs-on: macos-latest
     steps:
       - name: Checkout

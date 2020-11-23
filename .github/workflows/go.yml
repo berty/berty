@@ -1,6 +1,18 @@
 name: Go
 on:
   push:
+    tags:
+      - v*
+    branches:
+      - master
+    paths:
+      - "go/**"
+      - "!go/**.md"
+      - ".goreleaser"
+      - "go.*"
+      - "**.go"
+      - ".github/workflows/go.yml"
+  pull_request:
     paths:
       - "go/**"
       - "!go/**.md"
@@ -11,7 +23,6 @@ on:
 
 jobs:
   goreleaser-dryrun:
-    if: "! contains(toJson(github.event.commits.*.message), '[skip-ci]') && ! contains(toJson(github.event.commits.*.message), '[skip-go]')"
     name: "GoReleaser (dry-run)"
     runs-on: ubuntu-latest
     needs: golangci-lint
@@ -39,7 +50,6 @@ jobs:
 
   golangci-lint:
     name: "GolangCI-lint"
-    if: "! contains(toJson(github.event.commits.*.message), '[skip-ci]') && ! contains(toJson(github.event.commits.*.message), '[skip-go]')"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -62,7 +72,6 @@ jobs:
   # we hope we can remove this job because all the tests are stable 100% of the time :)
   unstable-tests:
     name: "Unstable tests"
-    if: "! contains(toJson(github.event.commits.*.message), '[skip-ci]') && ! contains(toJson(github.event.commits.*.message), '[skip-go]')"
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -108,7 +117,6 @@ jobs:
 
   go-tests-on-linux:
     name: "Stable tests (linux)"
-    if: "! contains(toJson(github.event.commits.*.message), '[skip-ci]') && ! contains(toJson(github.event.commits.*.message), '[skip-go]')"
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -172,7 +180,6 @@ jobs:
 
   go-tests-on-windows:
     name: "Stable tests (windows)"
-    if: "! contains(toJson(github.event.commits.*.message), '[skip-ci]') && ! contains(toJson(github.event.commits.*.message), '[skip-go]')"
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -222,7 +229,6 @@ jobs:
 
   go-install-on-darwin:
     name: "make install (darwin)"
-    if: "! contains(toJson(github.event.commits.*.message), '[skip-ci]') && ! contains(toJson(github.event.commits.*.message), '[skip-go]')"
     runs-on: macos-latest
     steps:
       - name: Checkout
