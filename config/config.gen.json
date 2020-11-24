@@ -2,7 +2,7 @@
   "berty": {
     "contacts": {
       "betabot": {
-        "link": "https://berty.tech/id#key=CiC35BD9vmG_Jm0Ghfd_R15QjcaFaKQzAe3H4XSW-I9fkhIgB2WfJXaStZ3I9fX75lnEiVkUNZnuJaNKoiUmNWNX7UM\u0026name=BetaBot",
+        "link": "https://berty.tech/id#contact/oZBLFkhRFWg9NXmy8wtjzZKeeUwfaWQVkUXfNY6h9z4QnGXuXSox8zs2yXeFHzt9DKJ8B4WHy7Zjy1g8tSat6ee2Jh7vp4J/name=BetaBot",
         "name": "BetaBot",
         "description": "Official BetaBot",
         "kind": "Bot"
@@ -14,7 +14,7 @@
         "kind": "Bot"
       },
       "testbot": {
-        "link": "https://berty.tech/id#key=CiAedii3fLdXjfm47RPDhY71ADZNQ1C9DhwWRwsqk3Jg3RIgHvcSW0wWdW0nit2JdLJeJpDxS1EJ2AbqNTn_Igv0vEU\u0026name=TestBot",
+        "link": "https://berty.tech/id#contact/oZBLG8gg1RTwCW2u1AxA44dT1Lum2PAr2nBra6WdmTpozq7vdDkae9FjyCW3QZ86AE9pMAudh4GKTfNj1jELcdvtJy44Rbp/name=TestBot",
         "name": "TestBot",
         "description": "Official TestBot",
         "kind": "Bot"
@@ -28,8 +28,13 @@
     },
     "conversations": {
       "dev-test": {
-        "link": "https://berty.tech/group#invite=CiAbnwpJK0_Zg-pNE9bpcWKeI2J-RmCVuM7uNXQv7MEizBIg2EBkfV2eRm_SP5GX04H8zf9cpjsPTvMAcSeob3-GQsAaQPLmDQSArZfQ8QdANRX4uCrgQuivtF41pWnRYKEqDI_b1xb8mHExObf4RF9gcs4ktyMYVD6ZpCROyZfCg0f1GAAgAw\u0026name=Dev+Test",
+        "link": "https://berty.tech/id#group/5QdUv6Fn3uvi3AchNcqFECaZvngDzWGUJV4wntYCWuYyjXrNi4ykvnP2ZCeWA1YLTmCSFbZaimXzp8rZtkKqby8nGv7S2AXyJPggo3aMghJS3rpeuDx6pbbNqEoNXJK67pWVpcLB6VrXM54zRNbi4zhEsLdATGzguWoruShcRHzFpuP75nyvRnXnfRaHPjdbyC/name=Dev+Test",
         "name": "Dev Test",
+        "description": "Simple Conversation with Replication"
+      },
+      "dev-test-2": {
+        "link": "https://berty.tech/id#group/5QdUv6Fn3uwSPQZpLUXcNpQ24bR9y1TUK6xJfE9khJo4jrP8jF4QfdgpTT73Us58y6XZhtvJHLDCouXfgsKDxXqZAsfLDhUZLb48PDcBYYVUk7nzxh1MKh5a6Ug1bP4KpdrVDYQx1gCZA4HZavEUgUBbC1pYBZ2DaY27sCMfqxpt79RjZCBwmVqW1DbbuYCUoc/name=Dev+Test+2",
+        "name": "Dev Test 2",
         "description": "Simple Conversation with Replication"
       }
     }
