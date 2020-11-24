@@ -144,6 +144,15 @@
       "delete-account-button": "",
       "backup-account-button": ""
     },
+    "edit-profile": {
+      "title": "",
+      "qr-will-update": "",
+      "ocr-wont-update": "",
+      "save": "",
+      "cancel": "",
+      "name-input-placeholder": "",
+      "name-input-label": ""
+    },
     "notifications": {
       "title": "",
       "enabled-desc": "",
