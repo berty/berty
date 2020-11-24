@@ -36,8 +36,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: js/node_modules
-          key: ${{ runner.OS }}-node-v2-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-node-v2-
+          key: ${{ runner.OS }}-node-v4-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-node-v4-
       - name: "Fetch deps"
         run: |
           cd js
