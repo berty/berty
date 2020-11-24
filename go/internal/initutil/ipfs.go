@@ -3,7 +3,9 @@ package initutil
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	mrand "math/rand"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -18,8 +20,10 @@ import (
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	ma "github.com/multiformats/go-multiaddr"
+	"github.com/pkg/errors"
 	"moul.io/srand"
 
+	ble "berty.tech/berty/v2/go/internal/ble-driver"
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
@@ -42,6 +46,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute, "maximum p2p backoff duration")
 	fs.StringVar(&m.Node.Protocol.RdvpMaddrs, "p2p.rdvp", ":default:", `list of rendezvous point maddr, ":dev:" will add the default devs servers, ":none:" will disable rdvp`)
+	fs.BoolVar(&m.Node.Protocol.Ble, "p2p.ble", ble.Supported, "if true Bluetooth Low Energy will be enabled")
 	fs.BoolVar(&m.Node.Protocol.MultipeerConnectivity, "p2p.multipeer-connectivity", mc.Supported, "if true Multipeer Connectivity will be enabled")
 	fs.StringVar(&m.Node.Protocol.Tor.Mode, "tor.mode", defaultTorMode, "changes the behavior of libp2p regarding tor, see advanced help for more details")
 	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
@@ -100,17 +105,10 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		return nil, nil, errcode.TODO.Wrap(err)
 	}
 
-	rootDS, err := m.getRootDatastore()
-	if err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
-	}
-
 	rdvpeers, err := m.getRdvpMaddrs()
 	if err != nil {
 		return nil, nil, errcode.TODO.Wrap(err)
 	}
-
-	ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceIPFSDatastore))
 
 	swarmAddrs := m.getSwarmAddrs()
 
@@ -136,7 +134,11 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	if !m.Node.Protocol.DisableIPFSNetwork {
 		// tor is enabled (optional or required)
 		if m.torIsEnabled() {
-			torOpts := torcfg.SetTemporaryDirectory(tempdir.TempDir())
+			torOpts := torcfg.Merge(
+				torcfg.SetTemporaryDirectory(tempdir.TempDir()),
+				// FIXME: Write an io.Writer to zap logger mapper.
+				torcfg.SetNodeDebug(ioutil.Discard),
+			)
 			if m.Node.Protocol.Tor.BinaryPath == "" {
 				torOpts = torcfg.Merge(torOpts, torcfg.EnableEmbeded)
 			} else {
@@ -177,6 +179,13 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 				}
 				return nil
 			}
+		}
+
+		// Setup BLE
+		if m.Node.Protocol.Ble {
+			swarmAddrs = append(swarmAddrs, ble.DefaultAddr)
+			bleOpt := libp2p.Transport(proximity.NewTransport(m.ctx, logger, ble.NewDriver(logger)))
+			p2pOpts = libp2p.ChainOptions(p2pOpts, bleOpt)
 		}
 
 		// Setup MC
@@ -229,7 +238,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 			for _, relay := range relays {
 				for _, addr := range relay.Addrs {
-					announce = append(announce, addr.String()+"/p2p-circuit")
+					announce = append(announce, addr.String()+"/p2p/"+relay.ID.String()+"/p2p-circuit")
 				}
 			}
 
@@ -296,10 +305,19 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 				for i, peer := range rdvpeers {
 					h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
 					rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
-					drivers[i] = tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
+					disc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
+
+					// monitor this driver
+					disc, err := tinder.MonitorDriverAsync(logger, h, disc)
+					if err != nil {
+						return errors.Wrap(err, "unable to monitor discovery driver")
+					}
+
+					drivers[i] = disc
 				}
 				rdvClients = append(rdvClients, drivers...)
 			}
+
 			var rdvClient tinder.Driver
 			switch len(rdvClients) {
 			case 0:
@@ -321,11 +339,16 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 				return err
 			}
 
+			pt, err := ipfsutil.NewPubsubMonitor(logger, h)
+			if err != nil {
+				return err
+			}
 			m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.GetContext(), h,
 				pubsub.WithMessageSigning(true),
 				pubsub.WithFloodPublish(true),
 				pubsub.WithDiscovery(m.Node.Protocol.discovery),
 				pubsub.WithPeerExchange(true),
+				pt.EventTracerOption(),
 			)
 			if err != nil {
 				return err
@@ -334,11 +357,31 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 			return nil
 		},
 	}
-	// FIXME: continue disabling things to speedup the node when DisableIPFSNetwork==true
 
-	m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, err = ipfsutil.NewCoreAPIFromDatastore(m.GetContext(), ipfsDS, &opts)
-	if err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
+	// FIXME: continue disabling things to speedup the node when DisableIPFSNetwork==true
+	if m.Datastore.InMemory {
+		rootDS, err := m.getRootDatastore()
+		if err != nil {
+			return nil, nil, errcode.TODO.Wrap(err)
+		}
+
+		ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceIPFSDatastore))
+
+		m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, err = ipfsutil.NewCoreAPIFromDatastore(m.GetContext(), ipfsDS, &opts)
+		if err != nil {
+			return nil, nil, errcode.TODO.Wrap(err)
+		}
+	} else {
+		repopath := filepath.Join(m.Datastore.Dir, "ipfs")
+		repo, err := ipfsutil.LoadRepoFromPath(repopath)
+		if err != nil {
+			return nil, nil, errcode.TODO.Wrap(err)
+		}
+
+		m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, err = ipfsutil.NewCoreAPIFromRepo(m.GetContext(), repo, &opts)
+		if err != nil {
+			return nil, nil, errcode.TODO.Wrap(err)
+		}
 	}
 
 	// PubSub

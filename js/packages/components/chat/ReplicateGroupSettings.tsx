@@ -15,7 +15,7 @@ import {
 	serviceTypes,
 	replicateGroup,
 } from '@berty-tech/store/services'
-import { berty } from '@berty-tech/api'
+import beapi from '@berty-tech/api'
 import { colors } from 'react-native-elements'
 
 enum replicationServerStatus {
@@ -25,16 +25,16 @@ enum replicationServerStatus {
 }
 
 type TokenUsageStatus = {
-	service: berty.messenger.v1.IServiceToken
+	service: beapi.messenger.IServiceToken
 	status: replicationServerStatus
 }
 
 const getAllReplicationStatusForConversation = (
-	conversation: berty.messenger.v1.Conversation,
-	services: Array<berty.messenger.v1.IServiceToken>,
+	conversation: beapi.messenger.Conversation,
+	services: Array<beapi.messenger.IServiceToken>,
 ): Array<TokenUsageStatus> => {
 	const allServers = conversation.replicationInfo.reduce<{
-		[key: string]: { service: berty.messenger.v1.IServiceToken; status: replicationServerStatus }
+		[key: string]: { service: beapi.messenger.IServiceToken; status: replicationServerStatus }
 	}>((servers, r) => {
 		if (typeof r.authenticationUrl !== 'string') {
 			return servers
@@ -98,7 +98,7 @@ const ReplicateGroupContent: React.FC<{
 	conversationPublicKey: string
 }> = ({ conversationPublicKey }) => {
 	const ctx = useMsgrContext()
-	const conversation: berty.messenger.v1.Conversation = ctx.conversations[conversationPublicKey]
+	const conversation: beapi.messenger.Conversation = ctx.conversations[conversationPublicKey]
 	const services = useAccountServices()
 	const navigation = useNavigation()
 	const [{ margin, color, flex, padding }] = useStyles()

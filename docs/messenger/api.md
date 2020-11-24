@@ -14,9 +14,10 @@
     - [AppMessage](#berty.messenger.v1.AppMessage)
     - [AppMessage.Acknowledge](#berty.messenger.v1.AppMessage.Acknowledge)
     - [AppMessage.GroupInvitation](#berty.messenger.v1.AppMessage.GroupInvitation)
+    - [AppMessage.MonitorMetadata](#berty.messenger.v1.AppMessage.MonitorMetadata)
     - [AppMessage.ReplyOptions](#berty.messenger.v1.AppMessage.ReplyOptions)
-    - [AppMessage.SetGroupName](#berty.messenger.v1.AppMessage.SetGroupName)
-    - [AppMessage.SetUserName](#berty.messenger.v1.AppMessage.SetUserName)
+    - [AppMessage.SetGroupInfo](#berty.messenger.v1.AppMessage.SetGroupInfo)
+    - [AppMessage.SetUserInfo](#berty.messenger.v1.AppMessage.SetUserInfo)
     - [AppMessage.UserMessage](#berty.messenger.v1.AppMessage.UserMessage)
     - [AppMessage.UserReaction](#berty.messenger.v1.AppMessage.UserReaction)
     - [BannerQuote](#berty.messenger.v1.BannerQuote)
@@ -146,6 +147,7 @@
 | ----- | ---- | ----- | ----------- |
 | public_key | [string](#string) |  |  |
 | display_name | [string](#string) |  |  |
+| avatar_cid | [string](#string) |  |  |
 | link | [string](#string) |  |  |
 | service_tokens | [ServiceToken](#berty.messenger.v1.ServiceToken) | repeated |  |
 | replicate_new_groups_automatically | [bool](#bool) |  |  |
@@ -181,6 +183,7 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | display_name | [string](#string) |  |  |
+| avatar_cid | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.AppMessage"></a>
 
@@ -208,6 +211,14 @@
 | ----- | ---- | ----- | ----------- |
 | link | [string](#string) |  | TODO: optimize message size |
 
+<a name="berty.messenger.v1.AppMessage.MonitorMetadata"></a>
+
+### AppMessage.MonitorMetadata
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| event | [berty.types.v1.MonitorGroup.EventMonitor](#berty.types.v1.MonitorGroup.EventMonitor) |  |  |
+
 <a name="berty.messenger.v1.AppMessage.ReplyOptions"></a>
 
 ### AppMessage.ReplyOptions
@@ -216,21 +227,23 @@
 | ----- | ---- | ----- | ----------- |
 | options | [ReplyOption](#berty.messenger.v1.ReplyOption) | repeated |  |
 
-<a name="berty.messenger.v1.AppMessage.SetGroupName"></a>
+<a name="berty.messenger.v1.AppMessage.SetGroupInfo"></a>
 
-### AppMessage.SetGroupName
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| name | [string](#string) |  |  |
-
-<a name="berty.messenger.v1.AppMessage.SetUserName"></a>
-
-### AppMessage.SetUserName
+### AppMessage.SetGroupInfo
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| name | [string](#string) |  |  |
+| display_name | [string](#string) |  |  |
+| avatar_cid | [string](#string) |  | TODO: optimize message size |
+
+<a name="berty.messenger.v1.AppMessage.SetUserInfo"></a>
+
+### AppMessage.SetUserInfo
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| display_name | [string](#string) |  |  |
+| avatar_cid | [string](#string) |  | TODO: optimize message size |
 
 <a name="berty.messenger.v1.AppMessage.UserMessage"></a>
 
@@ -300,9 +313,11 @@
 | conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
 | state | [Contact.State](#berty.messenger.v1.Contact.State) |  |  |
 | display_name | [string](#string) |  |  |
+| avatar_cid | [string](#string) |  |  |
 | created_date | [int64](#int64) |  |  |
 | sent_date | [int64](#int64) |  | specific to outgoing requests |
 | devices | [Device](#berty.messenger.v1.Device) | repeated |  |
+| info_date | [int64](#int64) |  |  |
 
 <a name="berty.messenger.v1.ContactAccept"></a>
 
@@ -354,6 +369,7 @@
 | type | [Conversation.Type](#berty.messenger.v1.Conversation.Type) |  |  |
 | is_open | [bool](#bool) |  |  |
 | display_name | [string](#string) |  |  |
+| avatar_cid | [string](#string) |  |  |
 | link | [string](#string) |  |  |
 | unread_count | [int32](#int32) |  |  |
 | last_update | [int64](#int64) |  | last_update is used to sort conversations, it should be updated for each &#34;visible&#34; event |
@@ -640,6 +656,7 @@ TODO: return cid
 | public_key | [string](#string) |  |  |
 | unread_count | [int32](#int32) |  |  |
 | is_open | [bool](#bool) |  |  |
+| type | [Conversation.Type](#berty.messenger.v1.Conversation.Type) |  |  |
 
 <a name="berty.messenger.v1.LocalDatabaseState"></a>
 
@@ -651,6 +668,7 @@ TODO: return cid
 | display_name | [string](#string) |  |  |
 | replicate_flag | [bool](#bool) |  |  |
 | local_conversations_state | [LocalConversationState](#berty.messenger.v1.LocalConversationState) | repeated |  |
+| account_link | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.Member"></a>
 
@@ -661,7 +679,9 @@ Composite primary key
 | ----- | ---- | ----- | ----------- |
 | public_key | [string](#string) |  |  |
 | display_name | [string](#string) |  |  |
+| avatar_cid | [string](#string) |  |  |
 | conversation_public_key | [string](#string) |  |  |
+| info_date | [int64](#int64) |  |  |
 | conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
 | devices | [Device](#berty.messenger.v1.Device) | repeated |  |
 
@@ -1008,10 +1028,11 @@ Composite primary key
 | TypeUserMessage | 1 |  |
 | TypeUserReaction | 2 |  |
 | TypeGroupInvitation | 3 |  |
-| TypeSetGroupName | 4 |  |
-| TypeSetUserName | 5 |  |
+| TypeSetGroupInfo | 4 |  |
+| TypeSetUserInfo | 5 |  |
 | TypeAcknowledge | 6 |  |
 | TypeReplyOptions | 7 |  |
+| TypeMonitorMetadata | 8 |  |
 
 <a name="berty.messenger.v1.Contact.State"></a>
 

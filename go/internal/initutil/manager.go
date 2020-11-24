@@ -47,9 +47,9 @@ type Manager struct {
 		registry *prometheus.Registry
 	} `json:"Metrics,omitempty"`
 	Datastore struct {
-		Dir      string `json:"Dir,omitempty"`
-		InMemory bool   `json:"InMemory,omitempty"`
-		FileIO   bool   `json:"FileIO,omitempty"`
+		Dir              string `json:"Dir,omitempty"`
+		InMemory         bool   `json:"InMemory,omitempty"`
+		LowMemoryProfile bool   `json:"LowMemoryProfile,omitempty"`
 
 		defaultDir string
 		dir        string
@@ -64,6 +64,7 @@ type Manager struct {
 			Announce              string        `json:"Announce,omitempty"`
 			NoAnnounce            string        `json:"NoAnnounce,omitempty"`
 			LocalDiscovery        bool          `json:"LocalDiscovery,omitempty"`
+			Ble                   bool          `json:"Ble,omitempty"`
 			MultipeerConnectivity bool          `json:"MultipeerConnectivity,omitempty"`
 			MinBackoff            time.Duration `json:"MinBackoff,omitempty"`
 			MaxBackoff            time.Duration `json:"MaxBackoff,omitempty"`
@@ -91,6 +92,7 @@ type Manager struct {
 			orbitDB          *bertyprotocol.BertyOrbitDB
 		}
 		Messenger struct {
+			DisableGroupMonitor  bool   `json:"DisableGroupMonitor,omitempty"`
 			DisplayName          string `json:"DisplayName,omitempty"`
 			DisableNotifications bool   `json:"DisableNotifications,omitempty"`
 			RebuildSqlite        bool   `json:"RebuildSqlite,omitempty"`
@@ -106,6 +108,7 @@ type Manager struct {
 			db                  *gorm.DB
 			dbCleanup           func()
 			requiredByClient    bool
+			localDBState        *bertymessenger.LocalDatabaseState
 		}
 		GRPC struct {
 			RemoteAddr string `json:"RemoteAddr,omitempty"`

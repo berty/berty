@@ -36,6 +36,24 @@ const SetupFinishedBody = () => {
 					enable: true,
 				},
 			})
+			await setPersistentOption({
+				type: PersistentOptionsKeys.BLE,
+				payload: {
+					enable: true,
+				},
+			})
+			await setPersistentOption({
+				type: PersistentOptionsKeys.MC,
+				payload: {
+					enable: true,
+				},
+			})
+			await setPersistentOption({
+				type: PersistentOptionsKeys.Debug,
+				payload: {
+					enable: false,
+				},
+			})
 		}
 		if (!persistentOptions && Object.values(contacts).length) {
 			return () => {

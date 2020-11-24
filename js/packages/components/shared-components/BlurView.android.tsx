@@ -6,7 +6,7 @@ const BlurView: React.FC<{ blurAmount: number; style: any }> = ({
 	blurAmount = 10,
 	style,
 }) => (
-	<View style={[{ backgroundColor: 'white', opacity: 1 - blurAmount / 100 }, style]}>
+	<View style={[{ backgroundColor: 'lightgrey', opacity: 1 - blurAmount / 100 }, style]}>
 		{children}
 	</View>
 )

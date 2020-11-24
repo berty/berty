@@ -26,7 +26,7 @@ NSString *BERTY_DRIVER_MC = @"berty-mc";
         if ((peerID = [NSKeyedUnarchiver unarchivedObjectOfClass:[MCPeerID class] fromData:peerIDData error:&error])) {
             return (peerID);
         }
-        NSLog(@"MC: getMCPeerID unarchive error: %@", error);
+        os_log_debug(OS_LOG_MC, "getMCPeerID unarchive error: %{public}@", error);
     }
     peerID = [[MCPeerID alloc] initWithDisplayName:appPID];
     if ((peerIDData = [NSKeyedArchiver archivedDataWithRootObject:peerID requiringSecureCoding:true error:&error])) {
@@ -34,7 +34,7 @@ NSString *BERTY_DRIVER_MC = @"berty-mc";
         [defaults setObject:appPID forKey:kAppPID];
         [defaults synchronize];
     } else {
-        NSLog(@"MC: getMCPeerID archive error: %@", error);
+        os_log_debug(OS_LOG_MC, "getMCPeerID archive error: %{public}@", error);
     }
     return (peerID);
 }
@@ -43,7 +43,7 @@ NSString *BERTY_DRIVER_MC = @"berty-mc";
     if (self = [super init]) {
         self.mPeerID = [[MCPeerID alloc] initWithDisplayName:peerID];
         if (!(self.mSession = [[MCSession alloc] initWithPeer:self.mPeerID securityIdentity:nil encryptionPreference:MCEncryptionRequired])) {
-            NSLog(@"MC: MCSession init failed");
+            os_log_debug(OS_LOG_MC, "MCSession init failed");
             return (self = nil);
         }
         self.mSession.delegate = self;
@@ -53,7 +53,7 @@ NSString *BERTY_DRIVER_MC = @"berty-mc";
 
 - (int)startServiceAdvertiser {
     if (!(self.mServiceAdvertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:self.mPeerID discoveryInfo:nil serviceType:BERTY_DRIVER_MC])) {
-        NSLog(@"MC: MCNearbyServiceAdvertiser init failed");
+        os_log_debug(OS_LOG_MC, "MCNearbyServiceAdvertiser init failed");
         return (0);
     }
     self.mServiceAdvertiser.delegate = self;
@@ -63,7 +63,7 @@ NSString *BERTY_DRIVER_MC = @"berty-mc";
 
 - (int)startServiceBrowser {
     if (!(self.mServiceBrowser = [[MCNearbyServiceBrowser alloc] initWithPeer:self.mPeerID serviceType:BERTY_DRIVER_MC])) {
-        NSLog(@"MC: MCNearbyServiceBrowser init failed");
+        os_log_debug(OS_LOG_MC, "MCNearbyServiceBrowser init failed");
         return (0);
     }
     self.mServiceBrowser.delegate = self;
@@ -97,7 +97,7 @@ NSString *BERTY_DRIVER_MC = @"berty-mc";
         NSString *reason = [error localizedFailureReason] ?
             [error localizedFailureReason] :
             NSLocalizedString(@"Unknown reason", nil);
-        NSLog(@"MC: sendToPeer error: %@: %@", description, reason);
+        os_log_debug(OS_LOG_MC, "sendToPeer error: %{public}@: %{public}@", description, reason);
     }
     return (0);
 }
@@ -119,14 +119,14 @@ NSString *BERTY_DRIVER_MC = @"berty-mc";
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state{
     switch (state) {
     case MCSessionStateConnecting:
-            NSLog(@"MC: Connecting: %@", [peerID displayName]);
+            os_log_debug(OS_LOG_MC, "Connecting: %{public}@", [peerID displayName]);
         break;
     case MCSessionStateConnected:
-        NSLog(@"MC: Connected: %@", [peerID displayName]);
+        os_log(OS_LOG_MC, "Connected: %{public}@", [peerID displayName]);
         BridgeHandleFoundPeer([peerID displayName]);
         break;
     case MCSessionStateNotConnected:
-        NSLog(@"MC: Not connected: %@", [peerID displayName]);
+        os_log(OS_LOG_MC, "Not connected: %{public}@", [peerID displayName]);
 		BridgeHandleLostPeer([peerID displayName]);
         break;
     }
@@ -156,11 +156,11 @@ NSString *BERTY_DRIVER_MC = @"berty-mc";
  */
 
 - (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser didNotStartAdvertisingPeer:(NSError *)error {
-    NSLog(@"MC: didNotStartAdvertisingPeer: %@", error);
+    os_log_debug(OS_LOG_MC, "didNotStartAdvertisingPeer: %{public}@", error);
 }
 
 - (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(NSData *)context invitationHandler:(void (^)(BOOL, MCSession * _Nullable))invitationHandler {
-    NSLog(@"MC: didReceiveInvationFromPeer: %@", [peerID displayName]);
+    os_log_debug(OS_LOG_MC, "didReceiveInvationFromPeer: %{public}@", [peerID displayName]);
     invitationHandler(true, self.mSession);
 }
 
@@ -169,15 +169,15 @@ NSString *BERTY_DRIVER_MC = @"berty-mc";
  */
 
 - (void)browser:(MCNearbyServiceBrowser *)browser lostPeer:(MCPeerID *)peerID {
-    NSLog(@"MC: lostPeer: %@", [peerID displayName]);
+    os_log_debug(OS_LOG_MC, "lostPeer: %{public}@", [peerID displayName]);
 }
 
 - (void)browser:(MCNearbyServiceBrowser *)browser didNotStartBrowsingForPeers:(NSError *)error {
-    NSLog(@"MC: didNotStartBrowsingForPeers: %@", error);
+    os_log_debug(OS_LOG_MC, "didNotStartBrowsingForPeers: %{public}@", error);
 }
 
 - (void)browser:(MCNearbyServiceBrowser *)browser foundPeer:(MCPeerID *)peerID withDiscoveryInfo:(NSDictionary<NSString *,NSString *> *)info {
-    NSLog(@"MC: foundPeer: %@", [peerID displayName]);
+    os_log_debug(OS_LOG_MC, "foundPeer: %{public}@", [peerID displayName]);
     [browser invitePeer:peerID toSession:self.mSession withContext:nil timeout:10];
 }
 

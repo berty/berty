@@ -6,7 +6,7 @@ targets:
         BGTaskSchedulerPermittedIdentifiers:
         - tech.berty.ios.task.gobridge-process
         - tech.berty.ios.task.gobridge-refresh
-        CFBundleIconName: Berty/Images.xcassets/AppIcon.appiconset
+        CFBundleIconName: "${ASSETCATALOG_COMPILER_APPICON_NAME}"
         CFBundleVersion: "${IOS_BUNDLE_VERSION}"
         CFBundleShortVersionString: "${IOS_SHORT_BUNDLE_VERSION}"
         Commit: "${IOS_COMMIT}"
@@ -22,9 +22,14 @@ targets:
           NSExceptionDomains:
             localhost:
               NSExceptionAllowsInsecureHTTPLoads: true
+        NSBluetoothAlwaysUsageDescription: Used for Bluetooth communications
+        NSBluetoothPeripheralUsageDescription: Used for Bluetooth communications
+        NSBonjourServices:
+          - _berty-mc._tcp
         NSCameraUsageDescription: Used to scan QRCodes
-        NSLocalNetworkUsageDescription: Used for local communications
+        NSLocalNetworkUsageDescription: Used for proximity communications
         NSLocationWhenInUseUsageDescription: ""
+        NSPhotoLibraryUsageDescription: Used to personalize the app and send photos
         Shake:
           APIClientID: "$(SHAKE_API_ID)"
           APIClientSecret: "$(SHAKE_API_SECRET)"
@@ -61,4 +66,9 @@ targets:
         UILaunchStoryboardName: LaunchScreen
         UIRequiredDeviceCapabilities: [armv7]
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        UISupportedInterfaceOrientations~ipad:
+        - UIInterfaceOrientationPortrait
+        - UIInterfaceOrientationLandscapeRight
+        - UIInterfaceOrientationLandscapeLeft
+        - UIInterfaceOrientationPortraitUpsideDown
         UIViewControllerBasedStatusBarAppearance: false

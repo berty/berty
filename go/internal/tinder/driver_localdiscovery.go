@@ -281,7 +281,7 @@ func (ld *localDiscovery) ListenClose(network.Network, ma.Multiaddr) {}
 // Called when a connection is opened by discovery.Discoverer's FindPeers()
 func (ld *localDiscovery) Connected(net network.Network, c network.Conn) {
 	go func() {
-		if manet.IsPrivateAddr(c.RemoteMultiaddr()) || mafmt.Base(mc.PMC).Matches(c.RemoteMultiaddr()) {
+		if manet.IsPrivateAddr(c.RemoteMultiaddr()) || mafmt.Base(mc.ProtocolCode).Matches(c.RemoteMultiaddr()) {
 			if err := ld.sendLocalRecord(c); err != nil {
 				return
 			}

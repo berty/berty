@@ -100,7 +100,8 @@
       "header-left-button": "",
       "header-center-button": "",
       "header-right-button": "",
-      "network-button": ""
+      "network-button": "",
+      "switch-accounts": ""
     },
     "network-map": {
       "title": "",
@@ -140,7 +141,8 @@
         "title": "",
         "tag": ""
       },
-      "delete-account-button": ""
+      "delete-account-button": "",
+      "backup-account-button": ""
     },
     "notifications": {
       "title": "",
@@ -159,7 +161,8 @@
         "exceptions-button": {
           "title": "",
           "preview-value": "",
-          "tag": ""
+          "tag": "",
+          "tag_plural": ""
         }
       },
       "group-notifications-button": {
@@ -170,13 +173,17 @@
         "exceptions-button": {
           "title": "",
           "preview-value": "",
-          "tag": ""
+          "tag": "",
+          "tag_plural": ""
         }
       }
     },
     "bluetooth": {
       "title": "",
       "desc": "",
+      "activate-button": ""
+    },
+    "mc": {
       "activate-button": ""
     },
     "services-auth": {
@@ -196,9 +203,7 @@
     "delete-account": {
       "title": "",
       "first-desc": "",
-      "begin-second-desc": "",
-      "bold-second-desc": "",
-      "end-second-desc": "",
+      "desc": "",
       "cancel-button": "",
       "delete-button": ""
     },
@@ -245,7 +250,8 @@
       "header-middle-button": "",
       "header-right-button": "",
       "system-info-button": "",
-      "add-bots-button": "",
+      "debug-button": "",
+      "add-dev-conversations-button": "",
       "share-button": {
         "title": "",
         "alert-title": "",
@@ -269,8 +275,7 @@
         "title": "",
         "sending": "",
         "test": "",
-        "begin-tried": "",
-        "end-tried": ""
+        "tried": ""
       },
       "footer-left-button": "",
       "footer-middle-button": "",
@@ -286,9 +291,12 @@
       "messages-button": "",
       "delete-button": ""
     },
-    "add-contact-list": {
+    "add-dev-conversations": {
       "title": "",
-      "add": ""
+      "add": "",
+      "tag-bot": "",
+      "tag-contact": "",
+      "tag-conversation": ""
     },
     "ipfs-webui": {
       "title": ""
@@ -342,6 +350,9 @@
       "erase-button": "",
       "leave-button": ""
     },
+    "multi-member-qr": {
+      "title": ""
+    },
     "one-to-one": {
       "contact-request-box": {
         "title": "",
@@ -351,9 +362,7 @@
       },
       "betabot-box": {
         "title": "",
-        "begin-desc": "",
-        "bold-desc": "",
-        "end-desc": "",
+        "desc": "",
         "skip-button": "",
         "add-button": ""
       },

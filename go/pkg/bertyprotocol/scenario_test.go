@@ -227,7 +227,6 @@ func TestScenario_MessageAccountAndContactGroups(t *testing.T) {
 		t.Log("===== Send Messages on Contact Group =====")
 		// Add accounts as contacts
 		addAsContact(ctx, t, tps, tps)
-
 		// Send messages between all accounts on contact groups
 		messages := []string{"contact1", "contact2", "contact3"}
 		sendMessageToContact(ctx, t, messages, tps)

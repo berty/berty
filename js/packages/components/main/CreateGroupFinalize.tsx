@@ -12,9 +12,9 @@ import { FooterCreateGroup } from './CreateGroupFooter'
 import { CreateGroupHeader } from './CreateGroupAddMembers'
 import { Header } from './CreateGroupAddMembers'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
-import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { playSound } from '../sounds'
+import { ContactAvatar } from '../avatars'
 
 const useStylesCreateGroup = () => {
 	const [{ padding, height, width, absolute, border, column, text, background }] = useStyles()
@@ -59,7 +59,7 @@ const MemberItem: React.FC<{ member: any; onRemove: () => void }> = ({ member, o
 	return (
 		<View style={[padding.horizontal.medium, maxWidth(100)]}>
 			<View style={[column.top, padding.top.small]}>
-				<ProceduralCircleAvatar seed={member.publicKey} diffSize={20} size={70} />
+				<ContactAvatar publicKey={member.publicKey} size={70} />
 				<Text style={[text.color.white, column.item.center, padding.top.tiny]} numberOfLines={1}>
 					{member.displayName}
 				</Text>

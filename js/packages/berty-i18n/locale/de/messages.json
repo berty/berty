@@ -13,7 +13,7 @@
       "import-button": "Daten von einem bestehenden Konto importieren",
       "account-selector-create-button": "Ihr Konto erstellen",
       "more-options": "Weitere Optionen",
-      "button": ""
+      "button": "Loslegen"
     },
     "select-mode": {
       "performance": {
@@ -40,11 +40,11 @@
       "button": "MEIN KONTO ERSTELLEN"
     },
     "services-auth": {
-      "header": "",
-      "title": "",
+      "header": "Authentifizieren bei Diensten",
+      "title": "Dienste",
       "recommended": "Empfohlen",
-      "desc": "",
-      "button": "",
+      "desc": "Dadurch werden Ihre Unterhaltungen automatisch auf einen Server kopiert",
+      "button": "Von Berty betriebene Dienste verwenden",
       "skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
     },
     "generate-key": {
@@ -63,14 +63,14 @@
       "header": "Kommunizieren ohne Internetverbindung (WiFi oder Daten), indem Sie Ihr Telefon direkt mit Kollegen in der Nähe verbinden",
       "optional": "Fakultativ",
       "title": "Bluetooth",
-      "desc": "Um diese Funktion nutzen zu können, müssen Sie Bluetooth auf Ihrem Telefon autorisieren",
+      "desc": "Um diese Funktion nutzen zu können, müssen Sie die Benutzung von Bluetooth auf Ihrem Smartphone erlauben",
       "button": "BLUETOOTH AUTORISIEREN",
       "skip": "ÜBERSPRINGEN UND DIES SPÄTER TUN"
     },
     "setup-finished": {
       "title": "Einrichtung beendet!",
       "desc": "Sie können jetzt die App benutzen, Kontakte hinzufügen und sich frei und privat mit ihnen unterhalten",
-      "button": "BERTY VERWENDEN"
+      "button": "Fertig - Berty benutzen"
     }
   },
   "main": {
@@ -79,15 +79,15 @@
         "title": "Anfragen",
         "received-at": "Erhalten",
         "accept": "Akzeptieren",
-        "card-title": ""
+        "card-title": "Kontaktanfrage!"
       },
       "messages": {
         "title": "Nachrichten"
       },
       "input-placeholder": "",
-      "no-contacts": "",
+      "no-contacts": "Sie haben noch keine Kontakte oder Chats",
       "search": {
-        "no-results": ""
+        "no-results": "Keine Ergebnisse gefunden"
       }
     },
     "home-modal": {
@@ -97,291 +97,300 @@
   },
   "settings": {
     "home": {
-      "header-left-button": "",
-      "header-center-button": "",
+      "header-left-button": "Hilfe",
+      "header-center-button": "Für Entwickler",
       "header-right-button": "Einstellungen",
-      "network-button": ""
+      "network-button": "Netzwerke",
+      "switch-accounts": "Anderes Konto verwenden"
     },
     "network-map": {
-      "title": "",
-      "online-peers": ""
+      "title": "Netzwerke",
+      "online-peers": "Verbindungen zu anderen Nutzern"
     },
     "mode": {
       "title": "Einstellungen",
       "desc": "Passen Sie alles an, um die App zu erhalten, die Ihren Bedürfnissen entspricht",
       "notifications-button": {
         "title": "Benachrichtigungen",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "tag-enabled": "Aktiviert",
+        "tag-disabled": "Deaktiviert"
       },
       "bluetooth-button": {
         "title": "Bluetooth",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "tag-enabled": "Aktiviert",
+        "tag-disabled": "Deaktiviert"
       },
       "app-mode-button": {
-        "title": "",
+        "title": "App-Modus",
         "performance-tag": "Leistung",
-        "privacy-tag": "",
+        "privacy-tag": "Privatsphäre",
         "description-tag": "Einfach zu bedienen - Alle Funktionen",
         "first-bullet-point": "Push-Benachrichtigungen erhalten",
-        "second-bullet-point": "",
-        "third-bullet-point": ""
+        "second-bullet-point": "Kontaktanfragen empfangen",
+        "third-bullet-point": "Lokale Berty-Nutzer finden (Bluetooth und gleiches Netz)"
       },
-      "dark-mode-button": "",
-      "receive-contact-requests-button": "",
-      "external-services-button": "",
-      "auto-replicate-button": "",
+      "dark-mode-button": "Dunkler Modus",
+      "receive-contact-requests-button": "Kontaktanfragen empfangen",
+      "external-services-button": "Externe Dienste",
+      "auto-replicate-button": "Autom. Serverkopien",
       "multicast-dns-button": {
-        "title": "",
-        "desc": ""
+        "title": "Lokales Netz",
+        "desc": "Berty-Benutzer im gleichen lokalen Netz finden"
       },
       "blocked-contacts-button": {
-        "title": "",
-        "tag": ""
+        "title": "Blockierte Kontakte",
+        "tag": "blockiert"
       },
-      "delete-account-button": ""
+      "delete-account-button": "Mein Konto löschen",
+      "backup-account-button": ""
     },
     "notifications": {
       "title": "Benachrichtigungen",
-      "enabled-desc": "",
-      "disabled-desc": "",
-      "activate-button": "",
+      "enabled-desc": "Sie haben Benachrichtigungen aktiviert!",
+      "disabled-desc": "Sie haben keine Benachrichtigungen für diese App aktiviert",
+      "activate-button": "Benachrichtigungen aktivieren",
       "contact-request-button": {
-        "title": "",
-        "desc": ""
+        "title": "Kontaktanfrage",
+        "desc": "Benachrichtigungen für erhaltene Kontaktanfragen"
       },
       "messages-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
+        "title": "Benachrichtigung für erhaltene Nachrichten",
+        "display-button": "Benachrichtigung auf Bildschirm",
+        "preview-button": "Vorschau der Nachrichten",
+        "sound-button": "Benachrichtigungs-Ton",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
-          "tag": ""
+          "title": "Benachrichtigung bei Fehlern in der App",
+          "preview-value": "Vorschau des Fehlers",
+          "tag": "{{count}} Fehler",
+          "tag_plural": "{{count}} Fehler"
         }
       },
       "group-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
+        "title": "Benachrichtigung bei neuen Gruppen-Nachrichten",
+        "display-button": "Benachrichtigung auf Bildschirm",
+        "preview-button": "Vorschau der Nachrichten",
+        "sound-button": "Benachrichtigungs-Ton",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
-          "tag": ""
+          "title": "Benachrichtigung bei Fehlern in der App",
+          "preview-value": "Vorschau des Fehlers",
+          "tag": "{{count}} Fehler",
+          "tag_plural": "{{count}} Fehler"
         }
       }
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "",
-      "activate-button": ""
+      "desc": "Wenn Sie keine Netzwerkverbindung (WLAN/Funknetz) haben, kann Berty über Bluetooth mit Partnern in Ihrer näheren Umgebung kommunizieren",
+      "activate-button": "Bluetooth aktivieren"
+    },
+    "mc": {
+      "activate-button": "Verbindung zu mehreren Partnern aktivieren"
     },
     "services-auth": {
-      "title": "",
-      "operated-services-button": "",
+      "title": "Externe Dienste",
+      "operated-services-button": "Von Berty betriebene Dienste verwenden",
       "register-service-button": {
-        "title": "",
-        "input-placeholder": "",
-        "action": ""
+        "title": "Einen externen Dienst registrieren",
+        "input-placeholder": "Dienst-URL",
+        "action": "Hinzufügen"
       },
       "registered-services-button": {
-        "title": "",
-        "sample-no-services": "",
-        "sample-unknown-service": ""
+        "title": "Momentan registrierte Dienste",
+        "sample-no-services": "Keine Dienste registriert",
+        "sample-unknown-service": "Unbekannter Dienst"
       }
     },
     "delete-account": {
-      "title": "",
-      "first-desc": "",
-      "begin-second-desc": "",
-      "bold-second-desc": "",
-      "end-second-desc": "",
-      "cancel-button": "",
-      "delete-button": ""
+      "title": "Mein Konto löschen!",
+      "first-desc": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten?",
+      "desc": "",
+      "cancel-button": "Abbrechen",
+      "delete-button": "Löschen"
     },
     "help": {
-      "title": "",
+      "title": "Hilfe",
       "security-privacy-button": {
-        "title": "",
-        "desc": ""
+        "title": "Sicherheit & Privatsphäre",
+        "desc": "Halten Sie Ihre Daten sicher und Ihr Leben privat"
       },
-      "updates-button": "",
-      "about-button": "",
-      "account-button": "",
-      "contact-button": "",
+      "updates-button": "Aktualisierungen",
+      "about-button": "Über Berty",
+      "account-button": "Konto & Berty ID",
+      "contact-button": "Kontakte & Anfragen",
       "message-button": "Nachrichten",
-      "group-button": "",
+      "group-button": "Gruppen",
       "settings-button": "Einstellungen",
-      "ask-button": "",
-      "report-button": ""
+      "ask-button": "Frage stellen",
+      "report-button": "Fehler melden"
     },
     "about": {
-      "title": "",
-      "top-left-button": "",
-      "top-right-button": "",
-      "bottom-left-button": "",
-      "bottom-right-button": "",
-      "terms-button": "",
-      "privacy-button": "",
-      "software-button": "",
-      "contact-button": "",
-      "website-button": ""
+      "title": "Über Berty",
+      "top-left-button": "Privat und sicher",
+      "top-right-button": "Peer-to-Peer-Netzwerk",
+      "bottom-left-button": "Kein Internet notwendig",
+      "bottom-right-button": "Kein Vertrauen zum Netz notwendig",
+      "terms-button": "Nutzungsbedingungen",
+      "privacy-button": "Datenschutzerklärung",
+      "software-button": "Softwarelizenz",
+      "contact-button": "Kontaktiere uns",
+      "website-button": "Webseite"
     },
     "updates": {
-      "title": "",
-      "up-to-date-desc": "",
-      "version": "",
-      "current-tag": "",
-      "installed-tag": "",
-      "initial-tag": "",
-      "not-installed-tag": ""
+      "title": "App-Aktualisierungen",
+      "up-to-date-desc": "Ihre App ist auf dem neuesten Stand",
+      "version": "Version",
+      "current-tag": "Aktuell",
+      "installed-tag": "Installiert",
+      "initial-tag": "Erstinstallation",
+      "not-installed-tag": "Nicht installiert"
     },
     "devtools": {
-      "title": "",
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "system-info-button": "",
-      "add-bots-button": "",
+      "title": "Entwicklerwerkzeuge",
+      "header-left-button": "Geräteinformationen",
+      "header-middle-button": "Fake-Daten generieren",
+      "header-right-button": "Daemon neu starten",
+      "system-info-button": "System-Info",
+      "debug-button": "",
+      "add-dev-conversations-button": "",
       "share-button": {
-        "title": "",
-        "alert-title": "",
-        "alert-message": "",
-        "alert-accept-button": "",
-        "alert-cancel-button": ""
+        "title": "ID auf Discord teilen",
+        "alert-title": "Möchten Sie Ihren QR-Code auf Berty Discord im Kanal \"#dev-logs\" veröffentlichen?",
+        "alert-message": "Das erlaubt Anderen Ihren QR-Code zu scannen bzw. Ihren Kontakt-Link zu kopieren.",
+        "alert-accept-button": "Ja 👍",
+        "alert-cancel-button": "Nein"
       },
-      "native-bridge-button": "",
-      "dump-account-button": "",
-      "dump-contacts-button": "",
-      "dump-conversations-button": "",
-      "dump-interactions-button": "",
-      "dump-members-button": "",
-      "stop-node-button": "",
-      "bot-mode-button": "",
-      "local-grpc-button": "",
-      "console-logs-button": "",
-      "ipfs-webui-button": "",
+      "native-bridge-button": "Native Bridge testen",
+      "dump-account-button": "Kontodaten exportieren",
+      "dump-contacts-button": "Kontakte exportieren",
+      "dump-conversations-button": "Unterhaltungen exportieren",
+      "dump-interactions-button": "Interaktionen exportieren",
+      "dump-members-button": "Mitglieder exportieren",
+      "stop-node-button": "Node stoppen",
+      "bot-mode-button": "Bot-Modus",
+      "local-grpc-button": "lokale gRPC",
+      "console-logs-button": "Konsolen-Protokolle",
+      "ipfs-webui-button": "IPFS Webinterface",
       "notifications-button": "Benachrichtigungen",
       "send-to-all-button": {
-        "title": "",
-        "sending": "",
-        "test": "",
-        "begin-tried": "",
-        "end-tried": ""
+        "title": "Nachrichten an alle Kontakte senden",
+        "sending": "Wird gesendet...",
+        "test": "Test, ",
+        "tried": "✔ Senden an {{length}} Kontakte versucht"
       },
-      "footer-left-button": "",
-      "footer-middle-button": "",
-      "footer-right-button": ""
+      "footer-left-button": "Geräteinformationen",
+      "footer-middle-button": "Events auflisten",
+      "footer-right-button": "Daemon neu starten"
     },
     "system-info": {
-      "title": ""
+      "title": "System-Info"
     },
     "fake-data": {
-      "title": "",
-      "contacts-button": "",
-      "multi-members-button": "",
-      "messages-button": "",
-      "delete-button": ""
+      "title": "Fake-Daten generieren",
+      "contacts-button": "Fake-Kontakte generieren",
+      "multi-members-button": "Fake-Mehrfachmitglieder generieren",
+      "messages-button": "Fake-Nachrichten generieren",
+      "delete-button": "Fake-Daten löschen"
     },
-    "add-contact-list": {
+    "add-dev-conversations": {
       "title": "",
-      "add": ""
+      "add": "",
+      "tag-bot": "",
+      "tag-contact": "",
+      "tag-conversation": ""
     },
     "ipfs-webui": {
-      "title": ""
+      "title": "IPFS Webinterface"
     }
   },
   "modals": {
     "manage-deep-link": {
-      "invalid-link": "",
-      "invalid-qr": "",
-      "error": ""
+      "invalid-link": "Ungültiger Link!",
+      "invalid-qr": "Ungültiger QR-Code!",
+      "error": "Fehler!"
     },
     "invalid-scan": {
-      "dismiss-button": ""
+      "dismiss-button": "Schließen"
     },
     "add-this-contact": {
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "fingerprint": "Fingerabdruck",
+      "info": "Info",
+      "devices": "Geräte"
     },
     "group-invitation": {
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "fingerprint": "Fingerabdruck",
+      "info": "Infos",
+      "devices": "Geräte"
     }
   },
   "chat": {
     "contact-settings": {
-      "mark-button": "",
-      "block-button": "",
-      "delete-button": "",
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "mark-button": "Als bestätigt markieren",
+      "block-button": "Kontakt blockieren",
+      "delete-button": "Kontakt löschen",
+      "fingerprint": "Fingerabdruck",
+      "info": "Infos",
+      "devices": "Geräte"
     },
     "multi-member": {
-      "input-placeholder": ""
+      "input-placeholder": "Sichere Nachricht schreiben..."
     },
     "multi-member-settings": {
-      "header-left-button": "",
+      "header-left-button": "Suchen",
       "header-middle-button": "",
-      "header-right-button": "",
-      "media-button": "",
-      "notifications-button": "",
+      "header-right-button": "Teilen",
+      "media-button": "Medien, Links & Dokumente",
+      "notifications-button": "Benachrichtigungen aktivieren",
       "members-button": {
-        "title": "",
-        "unknown": ""
+        "title": "Mitglieder",
+        "unknown": "Unbekannt"
       },
-      "add-member-button": "",
-      "invite-button": "",
-      "save-button": "",
-      "erase-button": "",
-      "leave-button": ""
+      "add-member-button": "Mitglied hinzufügen",
+      "invite-button": "Per Link einladen",
+      "save-button": "Unterhaltung auf Server speichern",
+      "erase-button": "Unterhaltung löschen",
+      "leave-button": "Gruppe verlassen"
+    },
+    "multi-member-qr": {
+      "title": ""
     },
     "one-to-one": {
       "contact-request-box": {
-        "title": "",
-        "refuse-button": "",
-        "accept-button": "",
-        "accepted-button": ""
+        "title": "KONTAKT-ANFRAGE",
+        "refuse-button": "Ablehnen",
+        "accept-button": "Annehmen",
+        "accepted-button": "Angenommen"
       },
       "betabot-box": {
-        "title": "",
-        "begin-desc": "",
-        "bold-desc": "",
-        "end-desc": "",
-        "skip-button": "",
-        "add-button": ""
+        "title": "BETA BOT hinzufügen?",
+        "desc": "Sie haben noch keine Kontakte. Möchten Sie den Beta-Bot hinzufügen, um Nachrichten in Berty auszuprobieren?",
+        "skip-button": "Überspringen",
+        "add-button": "Hinzufügen!"
       },
       "infos-chat": {
-        "connection-confirmed": "",
-        "request-sent": "",
-        "incoming": "",
-        "outgoing": ""
+        "connection-confirmed": "👋 Berty Verbindung bestätigt! 🎉",
+        "request-sent": "Anfrage gesendet ✈",
+        "incoming": "Nehmen Sie die Anfrage an, um antworten zu können!",
+        "outgoing": "Warte auf Verbindung, um die Antwort zu senden!"
       },
-      "betabot-input-placeholder": "",
-      "incoming-input-placeholder": "",
-      "input-placeholder": ""
+      "betabot-input-placeholder": "Beta-Bot hinzufügen, um hier schreiben zu können ...",
+      "incoming-input-placeholder": "Nehmen Sie die Anfrage an, um hier schreiben zu können ...",
+      "input-placeholder": "Sichere Nachricht schreiben..."
     },
     "one-to-one-settings": {
-      "header-left-button": "",
+      "header-left-button": "Suchen",
       "header-middle-button": "",
-      "header-right-button": "",
-      "media-button": "",
-      "notifications-button": "",
-      "mutual-button": "",
-      "save-button": "",
-      "erase-button": ""
+      "header-right-button": "Teilen",
+      "media-button": "Medien, Links & Dokumente",
+      "notifications-button": "Benachrichtigungen aktivieren",
+      "mutual-button": "Gemeinsame Gruppen",
+      "save-button": "Unterhaltung auf Server speichern",
+      "erase-button": "Unterhaltung löschen"
     },
     "replicate-group-settings": {
-      "title": "",
-      "no-registered-button": "",
-      "connect-button": "",
-      "manage-add-button": ""
+      "title": "Unterhaltung auf Server speichern",
+      "no-registered-button": "Kein Replikationsdienst registriert",
+      "connect-button": "Zu von Berty betriebenen Diensten verbinden",
+      "manage-add-button": "Dienste verwalten oder hinzufügen"
     }
   }
 }

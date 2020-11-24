@@ -9,8 +9,8 @@ func newProtocol() ma.Protocol {
 	transcoderMC := ma.NewTranscoderFromFunctions(mcStB, mcBtS, mcVal)
 	return ma.Protocol{
 		Name:       ProtocolName,
-		Code:       PMC,
-		VCode:      ma.CodeToVarint(PMC),
+		Code:       ProtocolCode,
+		VCode:      ma.CodeToVarint(ProtocolCode),
 		Size:       -1,
 		Path:       false,
 		Transcoder: transcoderMC,

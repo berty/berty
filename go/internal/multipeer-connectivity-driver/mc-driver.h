@@ -7,6 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <os/log.h>
+
+extern os_log_t OS_LOG_MC;
 
 void StartMCDriver(char *localPId);
 void StopMCDriver(void);

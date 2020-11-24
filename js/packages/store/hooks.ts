@@ -1,13 +1,12 @@
 import { useContext, useMemo, useEffect, useCallback, EffectCallback } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
-import { berty } from '@berty-tech/api/index.pb'
+import beapi from '@berty-tech/api'
+import { pbDateToNum } from '@berty-tech/components/helpers'
+import { MessengerActions } from '@berty-tech/store/context'
 
 import { MsgrContext, useMsgrContext, NotificationsInhibitor } from './context'
 import { fakeContacts, fakeMultiMemberConversations, fakeMessages } from './faker'
-import { pbDateToNum } from '@berty-tech/components/helpers'
-import { MessengerActions } from '@berty-tech/store/context'
 
 export { useMsgrContext }
 
@@ -62,10 +61,10 @@ export const useContacts = () => {
 
 export const useContactList = () => {
 	const contacts = useContacts()
-	return Object.values(contacts) as berty.messenger.v1.IContact[]
+	return Object.values(contacts) as beapi.messenger.IContact[]
 }
 
-const ContactState = messengerpb.Contact.State
+const ContactState = beapi.messenger.Contact.State
 
 export const useIncomingContactRequests = () => {
 	const contacts = useContactList()
@@ -76,8 +75,12 @@ export const useOutgoingContactRequests = () => {
 	const contacts = useContactList()
 	return useMemo(
 		() =>
-			contacts.filter((c) =>
-				[ContactState.OutgoingRequestEnqueued, ContactState.OutgoingRequestSent].includes(c.state),
+			contacts.filter(
+				(c) =>
+					c.state &&
+					[ContactState.OutgoingRequestEnqueued, ContactState.OutgoingRequestSent].includes(
+						c.state,
+					),
 			),
 		[contacts],
 	)
@@ -95,7 +98,7 @@ export const useAccountContactSearchResults = (searchText: Maybe<string>) => {
 
 export const useConversationList = () => {
 	const ctx = useMsgrContext()
-	return Object.values(ctx.conversations) as berty.messenger.v1.IConversation[]
+	return Object.values(ctx.conversations) as beapi.messenger.IConversation[]
 }
 
 export const useSortedConversationList = () => {
@@ -125,7 +128,7 @@ export const useConvInteractions = (publicKey: Maybe<string>) => {
 
 export const useConvInteractionsList = (publicKey: Maybe<string>) => {
 	const intes = useConvInteractions(publicKey)
-	return Object.values(intes) as berty.messenger.v1.IInteraction[]
+	return Object.values(intes) as beapi.messenger.IInteraction[]
 }
 
 export const useSortedConvInteractions = (publicKey: Maybe<string>) => {
@@ -135,7 +138,7 @@ export const useSortedConvInteractions = (publicKey: Maybe<string>) => {
 
 export const useInteraction = (cid: Maybe<string>, convPk: Maybe<string>) => {
 	const intes = useConvInteractions(convPk)
-	return intes && intes[cid as string]
+	return intes[cid as string]
 }
 
 export const useConversationsCount = () => {
@@ -147,9 +150,19 @@ export const useConvMembers = (publicKey: Maybe<string>) => {
 	return ctx.members[publicKey as string] || {}
 }
 
+export const useMember = <
+	T extends { publicKey: Maybe<string>; conversationPublicKey: Maybe<string> }
+>(
+	props: T,
+) => {
+	const { publicKey, conversationPublicKey } = props
+	const members = useConvMembers(conversationPublicKey)
+	return members[publicKey as string]
+}
+
 export const useConvMemberList = (publicKey: Maybe<string>) => {
 	const members = useConvMembers(publicKey)
-	return Object.values(members) as berty.messenger.v1.IMember[]
+	return Object.values(members) as beapi.messenger.IMember[]
 }
 
 export const usePersistentOptions = () => {
@@ -200,7 +213,7 @@ export const useGenerateFakeMultiMembers = () => {
 	const ctx = useMsgrContext()
 	const prevFakeCount = Object.values(ctx.conversations).reduce(
 		(r, c) =>
-			(c as any).fake && c?.type === messengerpb.Conversation.Type.MultiMemberType ? r + 1 : r,
+			(c as any).fake && c?.type === beapi.messenger.Conversation.Type.MultiMemberType ? r + 1 : r,
 		0,
 	)
 	return (length = 10) => {
@@ -259,7 +272,7 @@ export type SortedConvsFilter = Parameters<
 
 export const useLastConvInteraction = (
 	convPublicKey: Maybe<string>,
-	filterFunc: Maybe<SortedConvsFilter>,
+	filterFunc?: Maybe<SortedConvsFilter>,
 ) => {
 	let intes = useSortedConvInteractions(convPublicKey)
 	if (filterFunc) {
@@ -324,7 +337,7 @@ export const useReadEffect = (publicKey: Maybe<string>, timeout: Maybe<number>) 
 				}
 				timeoutID = setTimeout(() => {
 					timeoutID = null
-					ctx.client?.conversationOpen({ groupPk: publicKey }).catch((err) => {
+					ctx.client?.conversationOpen({ groupPk: publicKey }).catch((err: unknown) => {
 						console.warn('failed to open conversation,', err)
 					})
 				}, t)
@@ -337,7 +350,7 @@ export const useReadEffect = (publicKey: Maybe<string>, timeout: Maybe<number>) 
 				clearTimeout(timeoutID)
 				timeoutID = null
 			}
-			ctx.client?.conversationClose({ groupPk: publicKey }).catch((err) => {
+			ctx.client?.conversationClose({ groupPk: publicKey }).catch((err: unknown) => {
 				console.warn('failed to close conversation,', err)
 			})
 		}

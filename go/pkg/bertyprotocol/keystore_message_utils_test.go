@@ -284,7 +284,8 @@ func Test_EncryptMessageEnvelope(t *testing.T) {
 	ds2, err := newDeviceSecret()
 	assert.NoError(t, err)
 
-	payloadRef1 := []byte("Test payload 1")
+	payloadRef1, err := (&bertytypes.EncryptedMessage{Plaintext: []byte("Test payload 1")}).Marshal()
+	assert.NoError(t, err)
 
 	err = mkh2.RegisterChainKey(g, omd2.device.GetPublic(), ds2, true)
 	assert.NoError(t, err)
@@ -292,15 +293,18 @@ func Test_EncryptMessageEnvelope(t *testing.T) {
 	err = mkh2.RegisterChainKey(g, omd1.device.GetPublic(), ds1, false)
 	assert.NoError(t, err)
 
-	env1, err := sealEnvelopeInternal(ctx, payloadRef1, ds1, omd1.device, g)
+	env1, err := sealEnvelopeInternal(ctx, payloadRef1, ds1, omd1.device, g, nil)
 	assert.NoError(t, err)
 
-	headers, payloadClr1, err := mkh2.OpenEnvelope(ctx, g, omd2.device.GetPublic(), env1, cid.Undef)
+	headers, payloadClr1, _, err := mkh2.OpenEnvelope(ctx, g, omd2.device.GetPublic(), env1, cid.Undef)
 	assert.NoError(t, err)
 
 	devRaw, err := omd1.device.GetPublic().Raw()
 	assert.Equal(t, headers.DevicePK, devRaw)
-	assert.Equal(t, payloadRef1, payloadClr1)
+
+	payloadClrlBytes, err := payloadClr1.Marshal()
+	assert.NoError(t, err)
+	assert.Equal(t, payloadRef1, payloadClrlBytes)
 }
 
 func Test_EncryptMessageEnvelopeAndDerive(t *testing.T) {
@@ -348,8 +352,9 @@ func Test_EncryptMessageEnvelopeAndDerive(t *testing.T) {
 	initialCounter := ds1.Counter
 
 	for i := 0; i < 1000; i++ {
-		payloadRef := []byte(fmt.Sprintf("Test payload %d", i))
-		envEncrypted, err := mkh1.SealEnvelope(ctx, g, omd1.device, payloadRef)
+		payloadRef, err := (&bertytypes.EncryptedMessage{Plaintext: []byte("Test payload 1")}).Marshal()
+		assert.NoError(t, err)
+		envEncrypted, err := mkh1.SealEnvelope(ctx, g, omd1.device, payloadRef, nil)
 		assert.NoError(t, err)
 
 		ds, err := mkh1.getDeviceChainKey(gPK, gc1.DevicePubKey())
@@ -358,7 +363,7 @@ func Test_EncryptMessageEnvelopeAndDerive(t *testing.T) {
 		}
 		assert.Equal(t, ds.Counter, initialCounter+uint64(i+1))
 
-		headers, payloadClr, err := mkh2.OpenEnvelope(ctx, g, omd2.device.GetPublic(), envEncrypted, cid.Undef)
+		headers, payloadClr, _, err := mkh2.OpenEnvelope(ctx, g, omd2.device.GetPublic(), envEncrypted, cid.Undef)
 		if !assert.NoError(t, err) {
 			t.Fatalf("failed at i = %d", i)
 		}
@@ -368,7 +373,10 @@ func Test_EncryptMessageEnvelopeAndDerive(t *testing.T) {
 			assert.NoError(t, err)
 
 			assert.Equal(t, headers.DevicePK, devRaw)
-			assert.Equal(t, payloadRef, payloadClr)
+
+			payloadClrBytes, err := payloadClr.Marshal()
+			assert.NoError(t, err)
+			assert.Equal(t, payloadRef, payloadClrBytes)
 		} else {
 			break
 		}

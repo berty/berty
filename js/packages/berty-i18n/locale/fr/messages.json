@@ -70,7 +70,7 @@
     "setup-finished": {
       "title": "Configuration terminée !",
       "desc": "Vous pouvez dés maintenant utiliser l'application, ajoutez vos contacts et parler en toute tranquillité avec eux",
-      "button": "LANCER L'APPLICATION"
+      "button": "LANCER BERTY"
     }
   },
   "main": {
@@ -92,7 +92,7 @@
     },
     "home-modal": {
       "left-button": "Scanner",
-      "right-button": ""
+      "right-button": "Groupe"
     }
   },
   "settings": {
@@ -141,7 +141,8 @@
         "title": "Contacts bloqués",
         "tag": "bloqué"
       },
-      "delete-account-button": "Supprimer mon compte"
+      "delete-account-button": "Supprimer mon compte",
+      "backup-account-button": "Créer une sauvegarde du compte"
     },
     "notifications": {
       "title": "Notifications",
@@ -160,7 +161,8 @@
         "exceptions-button": {
           "title": "Exceptions",
           "preview-value": "Ajouter",
-          "tag": "exceptions"
+          "tag": "{{count}} exception",
+          "tag_plural": "{{count}} exceptions"
         }
       },
       "group-notifications-button": {
@@ -171,7 +173,8 @@
         "exceptions-button": {
           "title": "Exceptions",
           "preview-value": "Ajouter",
-          "tag": "exceptions"
+          "tag": "{{count}} exception",
+          "tag_plural": "{{count}} exceptions"
         }
       }
     },
@@ -179,6 +182,9 @@
       "title": "Bluetooth",
       "desc": "Le Bluetooth vous permet d'utiliser l'application Berty lorsque vous n'avez pas de connexion réseau (wifi ou données) en connectant votre téléphone directement avec les pairs à proximité",
       "activate-button": "Activer le bluetooth"
+    },
+    "mc": {
+      "activate-button": "Activer la connectivité multi-pair"
     },
     "services-auth": {
       "title": "Services externes",
@@ -197,9 +203,7 @@
     "delete-account": {
       "title": "Supprimer le compte !",
       "first-desc": "Êtes-vous sûr de vouloir supprimer votre compte ?",
-      "begin-second-desc": "",
-      "bold-second-desc": "supprimer",
-      "end-second-desc": "",
+      "desc": "Veuillez saisir \"delete\" pour confirmer",
       "cancel-button": "ANNULER",
       "delete-button": "SUPPRIMER"
     },
@@ -241,37 +245,37 @@
       "not-installed-tag": "Non installées"
     },
     "devtools": {
-      "title": "",
+      "title": "Outils Dev",
       "header-left-button": "Infos sur l'appareil",
       "header-middle-button": "Générer de fausses données",
       "header-right-button": "Redémarrer le démon",
       "system-info-button": "Infos système",
-      "add-bots-button": "Ajouter des bots",
+      "debug-button": "Debug",
+      "add-dev-conversations-button": "Ajouter conversations de dev",
       "share-button": {
         "title": "Partager l'ID sur Discord",
-        "alert-title": "",
-        "alert-message": "",
+        "alert-title": "Voulez-vous partager votre code QR sur \"#dev-logs\" sur le Discord de l'équipe Berty?",
+        "alert-message": "Cela permettra à l'équipe de Berty de scanner votre code QR ou de copier votre lien de contact.",
         "alert-accept-button": "Oui 👍",
         "alert-cancel-button": "Non"
       },
       "native-bridge-button": "Tester la passerelle native",
-      "dump-account-button": "",
-      "dump-contacts-button": "",
-      "dump-conversations-button": "",
-      "dump-interactions-button": "",
-      "dump-members-button": "",
+      "dump-account-button": "Extraire le compte",
+      "dump-contacts-button": "Extraire les contacts",
+      "dump-conversations-button": "Extraire les conversations",
+      "dump-interactions-button": "Extraire les interactions",
+      "dump-members-button": "Extraire les membres",
       "stop-node-button": "Arrêter le nœud",
       "bot-mode-button": "Mode Bot",
-      "local-grpc-button": "",
+      "local-grpc-button": "gRPC local",
       "console-logs-button": "Journal de la console",
-      "ipfs-webui-button": "",
+      "ipfs-webui-button": "Interface web IPFS",
       "notifications-button": "Notifications",
       "send-to-all-button": {
         "title": "Envoyer des messages à tous les contacts",
         "sending": "Envoi...",
-        "test": "",
-        "begin-tried": "",
-        "end-tried": " contacts"
+        "test": "Test, ",
+        "tried": "✔ Tentative d'envoi aux {{length}} contacts"
       },
       "footer-left-button": "Infos sur l'appareil",
       "footer-middle-button": "Lister les événements",
@@ -282,17 +286,20 @@
     },
     "fake-data": {
       "title": "Générer de fausses données",
-      "contacts-button": "",
-      "multi-members-button": "",
-      "messages-button": "",
+      "contacts-button": "Gén. faux contacts",
+      "multi-members-button": "Gén. faux membres de conversations de groupe",
+      "messages-button": "Gén. faux messages",
       "delete-button": "Supprimer les fausses données"
     },
-    "add-contact-list": {
-      "title": "",
-      "add": "Ajouter"
+    "add-dev-conversations": {
+      "title": "Ajouter conversations de dev",
+      "add": "Ajouter {{name}}",
+      "tag-bot": "Bot",
+      "tag-contact": "Contact",
+      "tag-conversation": "Groupe"
     },
     "ipfs-webui": {
-      "title": ""
+      "title": "Interface web IPFS"
     }
   },
   "modals": {
@@ -302,7 +309,7 @@
       "error": "Erreur !"
     },
     "invalid-scan": {
-      "dismiss-button": ""
+      "dismiss-button": "ANNULER"
     },
     "add-this-contact": {
       "fingerprint": "Empreinte numérique",
@@ -318,21 +325,21 @@
   "chat": {
     "contact-settings": {
       "mark-button": "Marquer comme vérifié",
-      "block-button": "",
-      "delete-button": "",
+      "block-button": "Bloquer le contact",
+      "delete-button": "Supprimer le contact",
       "fingerprint": "Empreinte digitale",
       "info": "Infos",
       "devices": "Appareils"
     },
     "multi-member": {
-      "input-placeholder": ""
+      "input-placeholder": "Écrire un message sécurisé..."
     },
     "multi-member-settings": {
       "header-left-button": "Rechercher",
       "header-middle-button": "Appel",
       "header-right-button": "Partager",
-      "media-button": "",
-      "notifications-button": "",
+      "media-button": "Médias, liens & documents",
+      "notifications-button": "Recevoir les notifications",
       "members-button": {
         "title": "Membres",
         "unknown": "Inconnu"
@@ -343,6 +350,9 @@
       "erase-button": "Effacer la conversation",
       "leave-button": "Quitter le groupe"
     },
+    "multi-member-qr": {
+      "title": "Groupe QR"
+    },
     "one-to-one": {
       "contact-request-box": {
         "title": "DEMANDE DE CONTACT",
@@ -352,14 +362,12 @@
       },
       "betabot-box": {
         "title": "AJOUTER BETA BOT ?",
-        "begin-desc": "",
-        "bold-desc": "",
-        "end-desc": "",
+        "desc": "Vous n'avez pas encore de contacts, voulez-vous ajouter le Bêta Bot pour découvrir et tester les conversations ?",
         "skip-button": "PASSER",
         "add-button": "AJOUTER !"
       },
       "infos-chat": {
-        "connection-confirmed": "",
+        "connection-confirmed": "👋 Connexion Berty confirmée ! 🎉",
         "request-sent": "Demande envoyée ✈",
         "incoming": "Accepter cette demande pour répondre !",
         "outgoing": "En attente de votre réponse pour vous connecter !"

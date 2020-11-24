@@ -14,6 +14,7 @@ require (
 	github.com/aead/ecdh v0.2.0
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
 	github.com/atotto/clipboard v0.1.2
+	github.com/btcsuite/btcd v0.21.0-beta // indirect
 	github.com/buicongtan1997/protoc-gen-swagger-config v0.0.0-20190801162412-b6396e884596
 	github.com/campoy/embedmd v1.0.0
 	github.com/daixiang0/gci v0.2.4
@@ -31,6 +32,7 @@ require (
 	github.com/gofrs/uuid v3.3.0+incompatible
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.4.3
+	github.com/google/gopacket v1.1.19 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/huandu/xstrings v1.3.2 // indirect
@@ -39,34 +41,33 @@ require (
 	github.com/ipfs/go-cid v0.0.7
 	github.com/ipfs/go-datastore v0.4.5
 	github.com/ipfs/go-ds-badger v0.2.6
-	github.com/ipfs/go-graphsync v0.2.0 // indirect
-	github.com/ipfs/go-ipfs v0.7.0
+	github.com/ipfs/go-ipfs v0.7.1-0.20201116220946-79a55305e935
 	github.com/ipfs/go-ipfs-config v0.10.0
+	github.com/ipfs/go-ipfs-files v0.0.8
 	github.com/ipfs/go-ipfs-keystore v0.0.1
 	github.com/ipfs/go-ipld-cbor v0.0.5
 	github.com/ipfs/go-log/v2 v2.1.1
 	github.com/ipfs/interface-go-ipfs-core v0.4.0
-	github.com/ipld/go-car v0.1.1-0.20201015032735-ff6ccdc46acc // indirect
 	github.com/itsTurnip/dishooks v0.0.0-20200206125049-b4fc7c7b042e
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
 	github.com/kisielk/errcheck v1.4.0 // indirect
+	github.com/koron/go-ssdp v0.0.2 // indirect
 	github.com/kr/text v0.2.0 // indirect
-	github.com/libp2p/go-libp2p v0.11.0
-	github.com/libp2p/go-libp2p-circuit v0.3.1
+	github.com/libp2p/go-libp2p v0.12.0
+	github.com/libp2p/go-libp2p-circuit v0.4.0
 	github.com/libp2p/go-libp2p-core v0.7.0
 	github.com/libp2p/go-libp2p-discovery v0.5.0
-	github.com/libp2p/go-libp2p-kad-dht v0.10.0
-	github.com/libp2p/go-libp2p-pubsub v0.3.6
-	github.com/libp2p/go-libp2p-quic-transport v0.9.0
+	github.com/libp2p/go-libp2p-kad-dht v0.11.0
+	github.com/libp2p/go-libp2p-noise v0.1.2 // indirect
+	github.com/libp2p/go-libp2p-pubsub v0.4.0
+	github.com/libp2p/go-libp2p-quic-transport v0.9.2
 	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20180418151804-b7dd840ce441
-	github.com/libp2p/go-libp2p-swarm v0.3.0 // indirect
 	github.com/libp2p/go-libp2p-transport-upgrader v0.3.0
-	github.com/libp2p/go-libp2p-yamux v0.3.0 // indirect
-	github.com/libp2p/go-mplex v0.2.0 // indirect
-	github.com/libp2p/go-yamux v1.4.0 // indirect
+	github.com/libp2p/go-netroute v0.1.4 // indirect
+	github.com/libp2p/go-yamux v1.4.1 // indirect
 	github.com/markbates/pkger v0.17.1
-	github.com/mattn/go-sqlite3 v1.14.4
+	github.com/mattn/go-sqlite3 v1.14.5
 	github.com/mdomke/git-semver/v5 v5.0.0
 	github.com/mdp/qrterminal/v3 v3.0.0
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
@@ -90,15 +91,17 @@ require (
 	github.com/stretchr/testify v1.6.1
 	github.com/tailscale/depaware v0.0.0-20201102210757-e2f543bafb1d
 	github.com/zcalusic/sysinfo v0.0.0-20200820110305-ef1bb2697bc2
+	go.opencensus.io v0.22.5 // indirect
 	go.opentelemetry.io/otel v0.8.0
 	go.opentelemetry.io/otel/exporters/trace/jaeger v0.8.0
 	go.uber.org/goleak v1.1.10
 	go.uber.org/multierr v1.6.0
 	go.uber.org/zap v1.16.0
-	golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897
+	golang.org/x/crypto v0.0.0-20201112155050-0c6587e931a9
 	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de
-	golang.org/x/net v0.0.0-20201026091529-146b70c837a4
-	golang.org/x/sys v0.0.0-20201026133411-418715ba6fdd // indirect
+	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
+	golang.org/x/sys v0.0.0-20201112073958-5cba982894dd // indirect
+	golang.org/x/text v0.3.4 // indirect
 	golang.org/x/tools v0.0.0-20201030010431-2feb2bb1ff51
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 	google.golang.org/genproto v0.0.0-20201022181438-0ff5f38871d5 // indirect
@@ -107,7 +110,7 @@ require (
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1
 	gorm.io/driver/sqlite v1.1.3
-	gorm.io/gorm v1.20.6
+	gorm.io/gorm v1.20.7
 	moul.io/godev v1.7.0
 	moul.io/openfiles v1.2.0
 	moul.io/srand v1.6.1
@@ -122,9 +125,7 @@ require (
 replace (
 	bazil.org/fuse => bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc // specific version for iOS building
 	github.com/agl/ed25519 => github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // latest commit before the author shutdown the repo; see https://github.com/golang/go/issues/20504
-	github.com/libp2p/go-libp2p-core => github.com/libp2p/go-libp2p-core v0.6.1 //  v0.7.0 breaks backward compatibility for multiple packages - https://github.com/libp2p/go-libp2p-core/issues/168
-	github.com/libp2p/go-libp2p-pubsub => github.com/libp2p/go-libp2p-pubsub v0.3.5 // github.com/ipfs/go-ipfs@v0.7.0 is not compatible with >=v0.3.6 due to https://github.com/libp2p/go-libp2p-pubsub/pull/388
 	github.com/libp2p/go-libp2p-rendezvous => github.com/berty/go-libp2p-rendezvous v0.0.0-20201028141428-5b2e7e8ff19a // use berty fork of go-libp2p-rendezvous
-	github.com/libp2p/go-libp2p-swarm => github.com/Jorropo/go-libp2p-swarm v0.2.11 // temporary, see https://github.com/libp2p/go-libp2p-swarm/pull/227
+	github.com/libp2p/go-libp2p-swarm => github.com/Jorropo/go-libp2p-swarm v0.3.4 // temporary, see https://github.com/libp2p/go-libp2p-swarm/pull/227
 	github.com/peterbourgon/ff/v3 => github.com/moul/ff/v3 v3.0.1 // temporary, see https://github.com/peterbourgon/ff/pull/67, https://github.com/peterbourgon/ff/issues/68
 )

@@ -4,6 +4,8 @@ all: generate test
 
 test:
 	cd go; $(MAKE) test
+	cd js; $(MAKE) test
+	cd js; $(MAKE) lint
 .PHONY: test
 
 
@@ -14,6 +16,15 @@ generate:
 	cd js; $(MAKE) generate
 	cd config; $(MAKE) generate
 .PHONY: generate
+
+
+regenerate:
+	touch api/*.proto
+	cd go; $(MAKE) regenerate
+	cd docs; $(MAKE) regenerate
+	cd js; $(MAKE) regenerate
+	cd config; $(MAKE) generate
+.PHONY: regenerate
 
 
 tidy:

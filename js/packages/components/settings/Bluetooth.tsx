@@ -3,10 +3,12 @@ import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
+import { useMsgrContext } from '@berty-tech/store/hooks'
 import { HeaderInfoSettings, HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 //
 // Bluetooth
@@ -103,6 +105,8 @@ const HeaderBluetooth: React.FC<BluetoothProps> = ({ isBluetooth }) => {
 
 const BodyBluetooth: React.FC<BluetoothProps> = ({ isBluetooth }) => {
 	const [{ flex, padding, margin, color }] = useStyles()
+	const ctx = useMsgrContext()
+
 	return (
 		<Translation>
 			{(t: any): React.ReactNode => (
@@ -120,7 +124,32 @@ const BodyBluetooth: React.FC<BluetoothProps> = ({ isBluetooth }) => {
 						iconSize={30}
 						iconColor={color.blue}
 						toggled
-						disabled
+						varToggle={ctx.persistentOptions?.ble.enable}
+						actionToggle={async () => {
+							await ctx.setPersistentOption({
+								type: PersistentOptionsKeys.BLE,
+								payload: {
+									enable: !ctx.persistentOptions?.ble.enable,
+								},
+							})
+						}}
+					/>
+
+					<ButtonSetting
+						name={t('settings.mc.activate-button')}
+						icon='wifi-outline'
+						iconSize={30}
+						iconColor={color.blue}
+						toggled
+						varToggle={ctx.persistentOptions?.mc.enable}
+						actionToggle={async () => {
+							await ctx.setPersistentOption({
+								type: PersistentOptionsKeys.MC,
+								payload: {
+									enable: !ctx.persistentOptions?.mc.enable,
+								},
+							})
+						}}
 					/>
 				</View>
 			)}

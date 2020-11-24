@@ -155,12 +155,12 @@ func TestUnstableRestoreAccount(t *testing.T) {
 		testPayload3 := []byte("testMessage3")
 		testPayload4 := []byte("testMessage4")
 
-		op, err := serviceA.accountGroup.messageStore.AddMessage(ctx, testPayload1)
+		op, err := serviceA.accountGroup.messageStore.AddMessage(ctx, testPayload1, nil)
 		require.NoError(t, err)
 
 		expectedMessages[op.GetEntry().GetHash()] = testPayload1
 
-		op, err = serviceA.accountGroup.messageStore.AddMessage(ctx, testPayload2)
+		op, err = serviceA.accountGroup.messageStore.AddMessage(ctx, testPayload2, nil)
 		require.NoError(t, err)
 
 		expectedMessages[op.GetEntry().GetHash()] = testPayload2
@@ -171,12 +171,12 @@ func TestUnstableRestoreAccount(t *testing.T) {
 		_, err = nodeA.Client.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{GroupPK: g.PublicKey})
 		require.NoError(t, err)
 
-		op, err = serviceA.openedGroups[string(g.PublicKey)].messageStore.AddMessage(ctx, testPayload3)
+		op, err = serviceA.openedGroups[string(g.PublicKey)].messageStore.AddMessage(ctx, testPayload3, nil)
 		require.NoError(t, err)
 
 		expectedMessages[op.GetEntry().GetHash()] = testPayload3
 
-		op, err = serviceA.openedGroups[string(g.PublicKey)].messageStore.AddMessage(ctx, testPayload4)
+		op, err = serviceA.openedGroups[string(g.PublicKey)].messageStore.AddMessage(ctx, testPayload4, nil)
 		require.NoError(t, err)
 
 		expectedMessages[op.GetEntry().GetHash()] = testPayload4

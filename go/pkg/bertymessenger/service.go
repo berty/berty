@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
@@ -36,25 +37,28 @@ type Service interface {
 var _ Service = (*service)(nil)
 
 type service struct {
-	logger         *zap.Logger
-	protocolClient bertyprotocol.ProtocolServiceClient
-	startedAt      time.Time
-	db             *dbWrapper
-	dispatcher     *Dispatcher
-	cancelFn       func()
-	optsCleanup    func()
-	ctx            context.Context
-	handlerMutex   sync.Mutex
-	notifmanager   notification.Manager
-	lcmanager      *lifecycle.Manager
-	eventHandler   *eventHandler
+	logger                *zap.Logger
+	isGroupMonitorEnabled bool
+	protocolClient        bertyprotocol.ProtocolServiceClient
+	startedAt             time.Time
+	db                    *dbWrapper
+	dispatcher            *Dispatcher
+	cancelFn              func()
+	optsCleanup           func()
+	ctx                   context.Context
+	handlerMutex          sync.Mutex
+	notifmanager          notification.Manager
+	lcmanager             *lifecycle.Manager
+	eventHandler          *eventHandler
 }
 
 type Opts struct {
+	EnableGroupMonitor  bool
 	Logger              *zap.Logger
 	DB                  *gorm.DB
 	NotificationManager notification.Manager
 	LifeCycleManager    *lifecycle.Manager
+	StateBackup         *LocalDatabaseState
 }
 
 func (opts *Opts) applyDefaults() (func(), error) {
@@ -92,7 +96,7 @@ func (opts *Opts) applyDefaults() (func(), error) {
 	return cleanup, nil
 }
 
-func databaseStateRestoreAccountHandler(db *gorm.DB) bertyprotocol.RestoreAccountHandler {
+func databaseStateRestoreAccountHandler(statePointer *LocalDatabaseState) bertyprotocol.RestoreAccountHandler {
 	return bertyprotocol.RestoreAccountHandler{
 		Handler: func(header *tar.Header, reader *tar.Reader) (bool, error) {
 			if header.Name != exportLocalDBState {
@@ -109,23 +113,20 @@ func databaseStateRestoreAccountHandler(db *gorm.DB) bertyprotocol.RestoreAccoun
 				return true, errcode.ErrInternal.Wrap(fmt.Errorf("unexpected file size"))
 			}
 
-			state := &LocalDatabaseState{}
-			if err := proto.Unmarshal(backupContents.Bytes(), state); err != nil {
+			if err := proto.Unmarshal(backupContents.Bytes(), statePointer); err != nil {
 				return true, errcode.ErrDeserialization.Wrap(err)
-			}
-
-			wrappedDB := newDBWrapper(db, zap.NewNop())
-			if err := restoreDatabaseLocalState(wrappedDB, state); err != nil {
-				return true, errcode.TODO.Wrap(fmt.Errorf("unable to restore database state"))
 			}
 
 			return true, nil
 		},
+		PostProcess: func() error {
+			return nil
+		},
 	}
 }
 
-func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_interface.CoreAPI, odb *bertyprotocol.BertyOrbitDB, db *gorm.DB, logger *zap.Logger) error {
-	return bertyprotocol.RestoreAccountExport(ctx, reader, coreAPI, odb, logger, databaseStateRestoreAccountHandler(db))
+func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_interface.CoreAPI, odb *bertyprotocol.BertyOrbitDB, localDBState *LocalDatabaseState, logger *zap.Logger) error {
+	return bertyprotocol.RestoreAccountExport(ctx, reader, coreAPI, odb, logger, databaseStateRestoreAccountHandler(localDBState))
 }
 
 func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error) {
@@ -138,24 +139,45 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 
 	ctx, cancel := context.WithCancel(context.Background())
 	db := newDBWrapper(opts.DB, opts.Logger)
-	if err := db.initDB(getEventsReplayerForDB(ctx, client)); err != nil {
+
+	if opts.StateBackup != nil {
+		opts.Logger.Info("restoring db state")
+
+		if err := dropAllTables(db.db); err != nil {
+			return nil, errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to drop database schema: %w", err))
+		}
+
+		if err := db.db.AutoMigrate(getDBModels()...); err != nil {
+			return nil, errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to create database schema: %w", err))
+		}
+
+		if err := replayLogsToDB(ctx, client, db); err != nil {
+			return nil, errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to replay logs to database: %w", err))
+		}
+
+		if err := restoreDatabaseLocalState(db, opts.StateBackup); err != nil {
+			return nil, errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to restore database local state: %w", err))
+		}
+	} else if err := db.initDB(getEventsReplayerForDB(ctx, client)); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
+
 	cancel()
 
 	ctx, cancel = context.WithCancel(context.Background())
 	svc := service{
-		protocolClient: client,
-		logger:         opts.Logger,
-		startedAt:      time.Now(),
-		db:             db,
-		notifmanager:   opts.NotificationManager,
-		lcmanager:      opts.LifeCycleManager,
-		dispatcher:     NewDispatcher(),
-		cancelFn:       cancel,
-		optsCleanup:    optsCleanup,
-		ctx:            ctx,
-		handlerMutex:   sync.Mutex{},
+		protocolClient:        client,
+		logger:                opts.Logger,
+		isGroupMonitorEnabled: opts.EnableGroupMonitor,
+		startedAt:             time.Now(),
+		db:                    db,
+		notifmanager:          opts.NotificationManager,
+		lcmanager:             opts.LifeCycleManager,
+		dispatcher:            NewDispatcher(),
+		cancelFn:              cancel,
+		optsCleanup:           optsCleanup,
+		ctx:                   ctx,
+		handlerMutex:          sync.Mutex{},
 	}
 
 	svc.eventHandler = newEventHandler(ctx, db, client, opts.Logger, &svc, false)
@@ -222,7 +244,6 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 	}})
 
 	// Subscribe to account group metadata
-
 	err = svc.subscribeToMetadata(icr.GetAccountGroupPK())
 	if err != nil {
 		return nil, err
@@ -336,11 +357,174 @@ func (svc *service) subscribeToMessages(gpkb []byte) error {
 	return nil
 }
 
+var monitorCounter uint64 = 0
+
+func (svc *service) subscribeToGroupMonitor(groupPK []byte) error {
+	cl, err := svc.protocolClient.MonitorGroup(svc.ctx, &bertytypes.MonitorGroup_Request{
+		GroupPK: groupPK,
+	})
+	if err != nil {
+		return fmt.Errorf("unable to monitor group: %w", err)
+	}
+
+	go func() {
+		for {
+			seqid := atomic.AddUint64(&monitorCounter, 1)
+			evt, err := cl.Recv()
+			switch err {
+			case nil:
+			// everything fine
+			case io.EOF:
+				return
+			case context.Canceled, context.DeadlineExceeded:
+				svc.logger.Warn("monitoring group interrupted", zap.Error(err))
+				return
+			default:
+				svc.logger.Error("error while monitoring group", zap.Error(err))
+				return
+			}
+
+			meta := AppMessage_MonitorMetadata{
+				Event: evt.Event,
+			}
+
+			payload, err := proto.Marshal(&meta)
+			if err != nil {
+				svc.logger.Error("unable to marshal event")
+				continue
+			}
+
+			cid := fmt.Sprintf("__monitor-group-%d", seqid)
+			i := &Interaction{
+				CID:                   cid,
+				Type:                  AppMessage_TypeMonitorMetadata,
+				ConversationPublicKey: b64EncodeBytes(evt.GetGroupPK()),
+				Payload:               payload,
+				SentDate:              timestampMs(time.Now()),
+			}
+
+			err = svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{i}, true)
+			if err != nil {
+				svc.logger.Error("unable to dispatch monitor event")
+			}
+		}
+	}()
+
+	return nil
+}
+
 func (svc *service) subscribeToGroup(gpkb []byte) error {
+	if svc.isGroupMonitorEnabled {
+		if err := svc.subscribeToGroupMonitor(gpkb); err != nil {
+			return err
+		}
+	}
+
 	if err := svc.subscribeToMetadata(gpkb); err != nil {
 		return err
 	}
+
 	return svc.subscribeToMessages(gpkb)
+}
+
+func (svc *service) prepareAttachment(data []byte) ([]byte, error) {
+	// TODO: stream
+
+	stream, err := svc.protocolClient.AttachmentPrepare(svc.ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// send header
+	if err := stream.Send(&bertytypes.AttachmentPrepare_Request{}); err != nil {
+		return nil, err
+	}
+
+	// send body
+	max := len(data)
+	for i := 0; i < max; {
+		next := i + (1024 * 64)
+		block := data[i:imin(next, max)]
+		if err := stream.Send(&bertytypes.AttachmentPrepare_Request{Block: block}); err != nil {
+			return nil, err
+		}
+		i = next
+	}
+
+	// signal end of data and wait for cid
+	reply, err := stream.CloseAndRecv()
+	if err != nil {
+		return nil, err
+	}
+
+	return reply.GetAttachmentCID(), nil
+}
+
+func (svc *service) retrieveAttachment(cid string) ([]byte, error) {
+	// TODO: stream
+
+	cidBytes, err := b64DecodeBytes(cid)
+	if err != nil {
+		return nil, err
+	}
+
+	stream, err := svc.protocolClient.AttachmentRetrieve(svc.ctx, &bertytypes.AttachmentRetrieve_Request{AttachmentCID: cidBytes})
+	if err != nil {
+		return nil, err
+	}
+
+	data := []byte(nil)
+	for {
+		reply, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		data = append(data, reply.GetBlock()...)
+	}
+
+	return data, nil
+}
+
+func (svc *service) sendAccountUserInfo(groupPK string) error {
+	acc, err := svc.db.getAccount()
+	if err != nil {
+		return errcode.ErrDBRead.Wrap(err)
+	}
+
+	var avatarCID string
+	var attachmentCIDs [][]byte
+	if acc.GetAvatarCID() != "" {
+		avatarBytes, err := svc.retrieveAttachment(acc.GetAvatarCID())
+		if err != nil {
+			return errcode.ErrRetrieveAttachment.Wrap(err)
+		}
+		avatarCIDBytes, err := svc.prepareAttachment(avatarBytes)
+		if err != nil {
+			return errcode.ErrPrepareAttachment.Wrap(err)
+		}
+		avatarCID = b64EncodeBytes(avatarCIDBytes)
+		attachmentCIDs = [][]byte{avatarCIDBytes}
+	}
+
+	am, err := AppMessage_TypeSetUserInfo.MarshalPayload(timestampMs(time.Now()),
+		&AppMessage_SetUserInfo{DisplayName: acc.GetDisplayName(), AvatarCID: avatarCID},
+	)
+	if err != nil {
+		return errcode.ErrSerialization.Wrap(err)
+	}
+	pk, err := b64DecodeBytes(groupPK)
+	if err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+	_, err = svc.protocolClient.AppMetadataSend(svc.ctx, &bertytypes.AppMetadataSend_Request{GroupPK: pk, Payload: am, AttachmentCIDs: attachmentCIDs})
+	if err != nil {
+		return errcode.ErrProtocolSend.Wrap(err)
+	}
+
+	return nil
 }
 
 func (svc *service) Close() {

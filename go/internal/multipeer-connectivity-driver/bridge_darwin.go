@@ -34,7 +34,7 @@ func NewDriver(logger *zap.Logger) proximity.NativeDriver {
 	logger.Debug("NewDriver()")
 
 	return &Driver{
-		protocolCode: PMC,
+		protocolCode: ProtocolCode,
 		protocolName: ProtocolName,
 		defaultAddr:  DefaultAddr,
 	}

@@ -350,9 +350,9 @@ func (m *messageKeystore) putKeyForCID(id cid.Cid, key *[32]byte) error {
 	return nil
 }
 
-func (m *messageKeystore) OpenEnvelope(ctx context.Context, g *bertytypes.Group, ownPK crypto.PubKey, data []byte, id cid.Cid) (*bertytypes.MessageHeaders, []byte, error) {
+func (m *messageKeystore) OpenEnvelope(ctx context.Context, g *bertytypes.Group, ownPK crypto.PubKey, data []byte, id cid.Cid) (*bertytypes.MessageHeaders, *bertytypes.EncryptedMessage, [][]byte, error) {
 	if m == nil || g == nil {
-		return nil, nil, errcode.ErrInvalidInput
+		return nil, nil, nil, errcode.ErrInvalidInput
 	}
 
 	m.lock.Lock()
@@ -360,24 +360,35 @@ func (m *messageKeystore) OpenEnvelope(ctx context.Context, g *bertytypes.Group,
 
 	gPK, err := g.GetPubKey()
 	if err != nil {
-		return nil, nil, errcode.ErrDeserialization.Wrap(err)
+		return nil, nil, nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
 	env, headers, err := openEnvelopeHeaders(data, g)
 	if err != nil {
-		return nil, nil, errcode.ErrCryptoDecrypt.Wrap(err)
+		return nil, nil, nil, errcode.ErrCryptoDecrypt.Wrap(err)
 	}
 
-	msg, decryptInfo, err := m.openPayload(id, gPK, env.Message, headers)
+	msgBytes, decryptInfo, err := m.openPayload(id, gPK, env.Message, headers)
 	if err != nil {
-		return headers, nil, errcode.ErrCryptoDecryptPayload.Wrap(err)
+		return headers, nil, nil, errcode.ErrCryptoDecryptPayload.Wrap(err)
 	}
 
 	if err := m.postDecryptActions(decryptInfo, g, ownPK, headers); err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
+		return nil, nil, nil, errcode.TODO.Wrap(err)
 	}
 
-	return headers, msg, nil
+	var msg bertytypes.EncryptedMessage
+	err = msg.Unmarshal(msgBytes)
+	if err != nil {
+		return nil, nil, nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	attachmentsCIDs, err := attachmentCIDSliceDecrypt(g, env.GetEncryptedAttachmentCIDs())
+	if err != nil {
+		return nil, nil, nil, errcode.ErrCryptoDecrypt.Wrap(err)
+	}
+
+	return headers, &msg, attachmentsCIDs, nil
 }
 
 func (m *messageKeystore) openPayload(id cid.Cid, groupPK crypto.PubKey, payload []byte, headers *bertytypes.MessageHeaders) ([]byte, *decryptInfo, error) {
@@ -477,7 +488,7 @@ func (m *messageKeystore) putDeviceChainKey(groupPK, device crypto.PubKey, ds *b
 	return nil
 }
 
-func (m *messageKeystore) SealEnvelope(ctx context.Context, g *bertytypes.Group, deviceSK crypto.PrivKey, payload []byte) ([]byte, error) {
+func (m *messageKeystore) SealEnvelope(ctx context.Context, g *bertytypes.Group, deviceSK crypto.PrivKey, payload []byte, attachmentsCIDs [][]byte) ([]byte, error) {
 	if m == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -499,7 +510,7 @@ func (m *messageKeystore) SealEnvelope(ctx context.Context, g *bertytypes.Group,
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	env, err := sealEnvelopeInternal(ctx, payload, ds, deviceSK, g)
+	env, err := sealEnvelopeInternal(ctx, payload, ds, deviceSK, g, attachmentsCIDs)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
 	}

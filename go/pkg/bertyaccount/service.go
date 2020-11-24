@@ -80,6 +80,9 @@ func NewService(opts *Options) (Service, error) {
 
 	go s.handleLifecycle(rootCtx)
 
+	// override grpc logger before manager start to avoid race condition
+	initutil.ReplaceGRPCLogger(opts.Logger.Named("grpc"))
+
 	return s, nil
 }
 

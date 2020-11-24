@@ -1,5 +1,7 @@
 import { Dispatch, createContext, useContext } from 'react'
-import { berty } from '@berty-tech/api/index.pb'
+
+import beapi from '@berty-tech/api'
+import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
 export enum MessengerAppState {
 	Init = 0,
@@ -120,6 +122,9 @@ export enum PersistentOptionsKeys {
 	I18N = 'i18n',
 	Notifications = 'notifications',
 	BetaBot = 'betabot',
+	BLE = 'ble',
+	MC = 'mc',
+	Debug = 'debug',
 }
 
 export type PersistentOptionsI18N = {
@@ -136,6 +141,18 @@ export type PersistentOptionsBetaBot = {
 	toggledModal: boolean
 }
 
+export type PersistentOptionsBLE = {
+	enable: boolean
+}
+
+export type PersistentOptionsMC = {
+	enable: boolean
+}
+
+export type PersistentOptionsDebug = {
+	enable: boolean
+}
+
 export type PersistentOptionsUpdate =
 	| {
 			type: typeof PersistentOptionsKeys.I18N
@@ -149,11 +166,26 @@ export type PersistentOptionsUpdate =
 			type: typeof PersistentOptionsKeys.BetaBot
 			payload: Partial<PersistentOptionsBetaBot>
 	  }
+	| {
+			type: typeof PersistentOptionsKeys.BLE
+			payload: Partial<PersistentOptionsBLE>
+	  }
+	| {
+			type: typeof PersistentOptionsKeys.MC
+			payload: Partial<PersistentOptionsMC>
+	  }
+	| {
+			type: typeof PersistentOptionsKeys.Debug
+			payload: Partial<PersistentOptionsDebug>
+	  }
 
 export type PersistentOptions = {
 	[PersistentOptionsKeys.I18N]: PersistentOptionsI18N
 	[PersistentOptionsKeys.Notifications]: PersistentOptionsNotifications
 	[PersistentOptionsKeys.BetaBot]: PersistentOptionsBetaBot
+	[PersistentOptionsKeys.BLE]: PersistentOptionsBLE
+	[PersistentOptionsKeys.MC]: PersistentOptionsMC
+	[PersistentOptionsKeys.Debug]: PersistentOptionsDebug
 }
 
 export const defaultPersistentOptions = (): PersistentOptions => ({
@@ -168,12 +200,21 @@ export const defaultPersistentOptions = (): PersistentOptions => ({
 		convPk: null,
 		toggledModal: false,
 	},
+	[PersistentOptionsKeys.BLE]: {
+		enable: true,
+	},
+	[PersistentOptionsKeys.MC]: {
+		enable: true,
+	},
+	[PersistentOptionsKeys.Debug]: {
+		enable: false,
+	},
 })
 
 // returns true if the notification should be inhibited
 export type NotificationsInhibitor = (
 	ctx: MsgrState,
-	evt: berty.messenger.v1.StreamEvent.INotified,
+	evt: beapi.messenger.StreamEvent.INotified,
 ) => boolean | 'sound-only'
 
 export type MsgrState = {
@@ -182,17 +223,17 @@ export type MsgrState = {
 	daemonAddress: string
 
 	appState: MessengerAppState
-	account: any
-	conversations: { [key: string]: berty.messenger.v1.IConversation | undefined }
-	contacts: { [key: string]: berty.messenger.v1.IContact | undefined }
+	account?: beapi.messenger.IAccount | null
+	conversations: { [key: string]: beapi.messenger.IConversation | undefined }
+	contacts: { [key: string]: beapi.messenger.IContact | undefined }
 	interactions: {
-		[key: string]: { [key: string]: berty.messenger.v1.IInteraction | undefined } | undefined
+		[key: string]: { [key: string]: beapi.messenger.IInteraction | undefined } | undefined
 	}
 	members: {
-		[key: string]: { [key: string]: berty.messenger.v1.IMember | undefined } | undefined
+		[key: string]: { [key: string]: beapi.messenger.IMember | undefined } | undefined
 	}
-	client: berty.messenger.v1.MessengerService | null
-	protocolClient: berty.protocol.v1.ProtocolService | null
+	client: ServiceClientType<beapi.messenger.MessengerService> | null
+	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null
 	streamError: any
 
 	addNotificationListener: (cb: (evt: any) => void) => void
@@ -200,14 +241,14 @@ export type MsgrState = {
 	notificationsInhibitors: NotificationsInhibitor[]
 
 	persistentOptions: PersistentOptions
-	accounts: berty.account.v1.IAccountMetadata[]
+	accounts: beapi.account.IAccountMetadata[]
 	initialListComplete: boolean
 	clearDaemon: (() => Promise<void>) | null
 	clearClients: (() => Promise<void>) | null
 
 	embedded: boolean
 	dispatch: Dispatch<{
-		type: berty.messenger.v1.StreamEvent.Type | MessengerActions
+		type: beapi.messenger.StreamEvent.Type | MessengerActions
 		payload?: any
 	}>
 	setPersistentOption: (arg0: PersistentOptionsUpdate) => Promise<void>
@@ -219,7 +260,6 @@ export const initialState = {
 	appState: MessengerAppState.Init,
 	selectedAccount: null,
 	nextSelectedAccount: null,
-	account: null,
 	conversations: {},
 	contacts: {},
 	interactions: {},

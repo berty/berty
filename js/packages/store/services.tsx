@@ -2,7 +2,14 @@ import InAppBrowser from 'react-native-inappbrowser-reborn'
 import { MsgrState } from './context'
 import { Alert } from 'react-native'
 import { useAccount } from './hooks'
-import { berty } from '@berty-tech/api/index.pb'
+import * as middleware from '@berty-tech/grpc-bridge/middleware'
+import { EOF, Service } from '@berty-tech/grpc-bridge'
+import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
+import RNFS from 'react-native-fs'
+import RNFetchBlob from 'rn-fetch-blob'
+import beapi from '@berty-tech/api'
+import Share from 'react-native-share'
+import { Buffer } from 'buffer'
 
 export enum serviceTypes {
 	Replication = 'rpl',
@@ -14,9 +21,9 @@ export const serviceNames: { [key: string]: string } = {
 
 export const bertyOperatedServer = 'https://services.berty.tech/'
 
-export const useAccountServices = (): Array<berty.messenger.v1.IServiceToken> => {
-	const account: berty.messenger.v1.IAccount = useAccount()
-	if (!account || account.serviceTokens === undefined || account.serviceTokens === null) {
+export const useAccountServices = (): Array<beapi.messenger.IServiceToken> => {
+	const account = useAccount()
+	if (!account?.serviceTokens) {
 		return []
 	}
 
@@ -147,4 +154,45 @@ export const replicateGroup = async (
 			'An error occurred while registering the conversation on the server',
 		)
 	}
+}
+
+export const exportAccountToFile = async () => {
+	const messengerMiddlewares = middleware.chain(
+		__DEV__ ? middleware.logger.create('MESSENGER') : null,
+	)
+
+	const messengerClient = Service(beapi.messenger.MessengerService, rpcBridge, messengerMiddlewares)
+
+	const outFile = RNFS.TemporaryDirectoryPath + 'berty-' + String(Date.now()).slice(-4) + '.tar'
+
+	const outputStream = await RNFetchBlob.fs.writeStream(outFile, 'base64')
+	await messengerClient
+		.instanceExportData({})
+		.then((stream) => {
+			stream.onMessage(async (res) => {
+				if (!res || !res.exportedData) {
+					return
+				}
+
+				await outputStream.write(Buffer.from(res.exportedData).toString('base64'))
+			})
+			return stream.start()
+		})
+		.then(async () => {
+			await outputStream.close()
+
+			await Share.open({
+				url: `file://${outFile}`,
+				type: 'application/x-tar',
+			})
+		})
+		.catch(async (err) => {
+			if (err === EOF) {
+			} else {
+				console.warn(err)
+			}
+		})
+		.finally(async () => {
+			await RNFS.unlink(outFile)
+		})
 }

@@ -137,8 +137,10 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
         missingDimensionStrategy 'react-native-camera', 'general'
         multiDexEnabled true // fix for "The number of method references in a .dex file cannot exceed 64K"
+        vectorDrawables.useSupportLibrary = true // needed for image picker
 
         def addEnvVar = {key ->
             def value = getEnvValue(key)
@@ -217,6 +219,8 @@ dependencies {
     implementation project(path: ":react-native-interactable") // remove when https://github.com/wix/react-native-interactable/pull/288 is merged
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+
+    implementation project(':react-native-share')
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
