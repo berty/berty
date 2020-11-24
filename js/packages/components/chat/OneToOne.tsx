@@ -14,11 +14,13 @@ import {
 import { Icon, Text } from '@ui-kitten/components'
 import { CommonActions } from '@react-navigation/native'
 import { Translation, useTranslation } from 'react-i18next'
+import moment from 'moment'
+import { groupBy } from 'lodash'
 
 import { useStyles } from '@berty-tech/styles'
 import { Routes, ScreenProps, useNavigation } from '@berty-tech/navigation'
-import * as api from '@berty-tech/api/index.pb'
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import beapi from '@berty-tech/api'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
 import {
 	useContact,
 	useConversation,
@@ -30,21 +32,18 @@ import {
 	useNotificationsInhibitor,
 } from '@berty-tech/store/hooks'
 
-import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
-import { Message, MessageInvitationButton, MessageSystemWrapper } from './shared-components/Message'
+import { Message } from './message'
+import { MessageInvitationButton } from './message/MessageInvitation'
+import { MessageSystemWrapper } from './message/MessageSystemWrapper'
 import BlurView from '../shared-components/BlurView'
-
-import moment from 'moment'
-
+import { ContactAvatar } from '../avatars'
+import { pbDateToNum, timeFormat } from '../helpers'
+import { useLayout } from '../hooks'
+import { playSound } from '../sounds'
 import { ChatDate, ChatFooter } from './shared-components/Chat'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import Logo from '../main/1_berty_picto.svg'
 import Avatar from '../modals/Buck_Berty_Icon_Card.svg'
-import { groupBy } from 'lodash'
-import { pbDateToNum, timeFormat } from '../helpers'
-import { useLayout } from '../hooks'
-import { playSound } from '../sounds'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
 
 //
 // Chat
@@ -114,7 +113,7 @@ export const ChatHeader: React.FC<any> = ({ convPk, stickyDate, showStickyDate }
 		console.warn('OneToOne: no conv', conv, contact)
 		return <CenteredActivityIndicator />
 	}
-	const title = conv.fake ? `FAKE - ${contact.displayName}` : contact?.displayName || ''
+	const title = (conv as any).fake ? `FAKE - ${contact.displayName}` : contact?.displayName || ''
 	return (
 		<View style={{ position: 'absolute', top: 0, left: 0, right: 0 }} onLayout={onLayoutHeader}>
 			<BlurView
@@ -178,7 +177,7 @@ export const ChatHeader: React.FC<any> = ({ convPk, stickyDate, showStickyDate }
 						onPress={() => navigate.chat.oneToOneSettings({ convId: convPk })}
 					>
 						{!isBetabot ? (
-							<ProceduralCircleAvatar size={45} diffSize={9} seed={conv.contactPublicKey} />
+							<ContactAvatar size={45} publicKey={conv.contactPublicKey} />
 						) : (
 							<View
 								style={[
@@ -278,11 +277,7 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 						</TextNative>
 					</View>
 					<View style={[margin.top.small, flex.align.center, flex.justify.center]}>
-						<ProceduralCircleAvatar
-							seed={publicKey || '42'}
-							size={40}
-							style={[margin.bottom.small]}
-						/>
+						<ContactAvatar publicKey={publicKey} size={40} style={margin.bottom.small} />
 						<TextNative
 							style={[
 								text.color.black,
@@ -484,12 +479,9 @@ export const AddBetabotBox = () => {
 	)
 }
 
-const InfosChat: React.FC<api.berty.messenger.v1.IConversation & any> = ({
-	createdDate: createdDateStr,
-	publicKey,
-	isBetabot,
-	isBetabotAdded,
-}) => {
+const InfosChat: React.FC<
+	beapi.messenger.IConversation & { isBetabot: boolean; isBetabotAdded: boolean }
+> = ({ createdDate: createdDateStr, publicKey, isBetabot, isBetabotAdded }) => {
 	const [{ flex, text, padding, margin }] = useStyles()
 	const { dateMessage } = useStylesOneToOne()
 	const createdDate = pbDateToNum(createdDateStr) || Date.now()
@@ -497,8 +489,8 @@ const InfosChat: React.FC<api.berty.messenger.v1.IConversation & any> = ({
 	const contact =
 		Object.values(ctx.contacts).find((c: any) => c.conversationPublicKey === publicKey) || null
 
-	const isAccepted = contact.state === messengerpb.Contact.State.Accepted
-	const isIncoming = contact.state === messengerpb.Contact.State.IncomingRequest
+	const isAccepted = contact?.state === beapi.messenger.Contact.State.Accepted
+	const isIncoming = contact?.state === beapi.messenger.Contact.State.IncomingRequest
 	const textColor = '#4E58BF'
 
 	return (
@@ -525,7 +517,7 @@ const InfosChat: React.FC<api.berty.messenger.v1.IConversation & any> = ({
 							<ContactRequestBox contact={contact} isAccepted={isAccepted} />
 						</MessageSystemWrapper>
 					)}
-					{!isAccepted && contact.state !== messengerpb.Contact.State.Undefined && (
+					{!isAccepted && contact?.state !== beapi.messenger.Contact.State.Undefined && (
 						<>
 							<View style={[flex.align.center]}>
 								<Text style={[margin.top.tiny, dateMessage]}>
@@ -570,8 +562,9 @@ const MessageList: React.FC<{
 	const conv = ctx.conversations[convPk]
 	const messages = useSortedConvInteractions(convPk).filter(
 		(msg) =>
-			msg.type === messengerpb.AppMessage.Type.TypeUserMessage ||
-			msg.type === messengerpb.AppMessage.Type.TypeGroupInvitation,
+			msg.type === beapi.messenger.AppMessage.Type.TypeUserMessage ||
+			msg.type === beapi.messenger.AppMessage.Type.TypeGroupInvitation ||
+			msg.type === beapi.messenger.AppMessage.Type.TypeMonitorMetadata,
 	)
 
 	if (conv.replyOptions !== null) {
@@ -621,7 +614,7 @@ const MessageList: React.FC<{
 		return isBetabot && !isBetabotAdded ? null : (
 			<Message
 				id={item?.cid || `${index}`}
-				convKind={messengerpb.Conversation.Type.ContactType}
+				convKind={beapi.messenger.Conversation.Type.ContactType}
 				convPK={conv.publicKey}
 				previousMessageId={index < items.length - 1 ? items[index + 1]?.cid : ''}
 				nextMessageId={index > 0 ? items[index - 1]?.cid : ''}
@@ -665,7 +658,7 @@ const MessageList: React.FC<{
 	)
 }
 
-const NT = messengerpb.StreamEvent.Notified.Type
+const NT = beapi.messenger.StreamEvent.Notified.Type
 
 export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params } }) => {
 	useNotificationsInhibitor((_ctx, notif) => {
@@ -691,7 +684,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 	const contact: any =
 		Object.values(ctx.contacts).find((c: any) => c.conversationPublicKey === conv?.publicKey) ||
 		null
-	const isIncoming = contact?.state === messengerpb.Contact.State.IncomingRequest
+	const isIncoming = contact?.state === beapi.messenger.Contact.State.IncomingRequest
 	const persistOpts = usePersistentOptions()
 	const isBetabot =
 		persistOpts && conv?.contactPublicKey?.toString() === persistOpts?.betabot?.convPk?.toString()

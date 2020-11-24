@@ -12,4 +12,7 @@ module.exports = {
 		'no-catch-shadow': 0,
 		'no-mixed-spaces-and-tabs': [2, 'smart-tabs'],
 	},
+	globals: {
+		JSX: 'readonly',
+	},
 }

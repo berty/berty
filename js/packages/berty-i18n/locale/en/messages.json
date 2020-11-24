@@ -144,6 +144,15 @@
       "delete-account-button": "Delete my account",
       "backup-account-button": "Backup my account"
     },
+    "edit-profile": {
+      "title": "Edit my profile",
+      "qr-will-update": "Your Berty ID (QR code) will be updated",
+      "ocr-wont-update": "Your pending contact requests won’t be updated",
+      "save": "Save changes",
+      "cancel": "Cancel",
+      "name-input-placeholder": "Name...",
+      "name-input-label": "Name"
+    },
     "notifications": {
       "title": "Notifications",
       "enabled-desc": "You have activated notifications!",
@@ -250,7 +259,8 @@
       "header-middle-button": "Generate fake data",
       "header-right-button": "Restart daemon",
       "system-info-button": "System info",
-      "add-bots-button": "Add bots",
+      "debug-button": "Debug",
+      "add-dev-conversations-button": "Add dev conversations",
       "share-button": {
         "title": "Share ID on discord",
         "alert-title": "Do you want to share your QR code to \"#dev-logs\" on Berty Discord?",
@@ -290,9 +300,12 @@
       "messages-button": "Gen fake messages",
       "delete-button": "Delete fake data"
     },
-    "add-contact-list": {
-      "title": "Add contacts list",
-      "add": "Add"
+    "add-dev-conversations": {
+      "title": "Add dev conversations",
+      "add": "Add {{name}}",
+      "tag-bot": "Bot",
+      "tag-contact": "Contact",
+      "tag-conversation": "Group"
     },
     "ipfs-webui": {
       "title": "IPFS WebUI"
@@ -345,6 +358,9 @@
       "save-button": "Save conversation on server",
       "erase-button": "Erase conversation",
       "leave-button": "Leave group"
+    },
+    "multi-member-qr": {
+      "title": "QR Group"
     },
     "one-to-one": {
       "contact-request-box": {

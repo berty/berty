@@ -435,6 +435,7 @@ type ButtonSettingItem = {
 	iconColor?: string
 	styleContainer?: any
 	styleText?: any
+	disabled?: boolean
 }
 
 // Styles

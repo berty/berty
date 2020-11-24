@@ -8,7 +8,6 @@ import (
 
 	ggio "github.com/gogo/protobuf/io"
 	"github.com/libp2p/go-libp2p-core/crypto"
-	p2phelpers "github.com/libp2p/go-libp2p-core/helpers"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"go.uber.org/zap"
@@ -267,7 +266,7 @@ const contactRequestV1 = "/berty/contact_req/1.0.0"
 
 func (c *contactRequestsManager) incomingHandler(stream network.Stream) {
 	defer func() {
-		if err := p2phelpers.FullClose(stream); err != nil {
+		if err := ipfsutil.FullClose(stream); err != nil {
 			c.logger.Warn("error while closing stream with other peer", zap.Error(err))
 		}
 	}()
@@ -316,7 +315,7 @@ func (c *contactRequestsManager) incomingHandler(stream network.Stream) {
 
 func (c *contactRequestsManager) performSend(otherPK crypto.PubKey, stream network.Stream) error {
 	defer func() {
-		if err := p2phelpers.FullClose(stream); err != nil {
+		if err := ipfsutil.FullClose(stream); err != nil {
 			c.logger.Warn("error while closing stream with other peer", zap.Error(err))
 		}
 	}()

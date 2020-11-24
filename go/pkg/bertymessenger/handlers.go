@@ -7,7 +7,7 @@ import (
 
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
-	ipfsCid "github.com/ipfs/go-cid"
+	ipfscid "github.com/ipfs/go-cid"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 
@@ -63,7 +63,7 @@ func newEventHandler(ctx context.Context, db *dbWrapper, protocolClient bertypro
 		AppMessage_TypeAcknowledge:     {h.handleAppMessageAcknowledge, false},
 		AppMessage_TypeGroupInvitation: {h.handleAppMessageGroupInvitation, true},
 		AppMessage_TypeUserMessage:     {h.handleAppMessageUserMessage, true},
-		AppMessage_TypeSetUserName:     {h.handleAppMessageSetUserName, false},
+		AppMessage_TypeSetUserInfo:     {h.handleAppMessageSetUserInfo, false},
 		AppMessage_TypeReplyOptions:    {h.handleAppMessageReplyOptions, true},
 	}
 
@@ -175,7 +175,7 @@ func (h *eventHandler) groupReplicating(gme *bertytypes.GroupMetadataEvent) erro
 		return errcode.ErrDeserialization.Wrap(err)
 	}
 
-	_, cid, err := ipfsCid.CidFromBytes(gme.GetEventContext().GetID())
+	cid, err := ipfscid.Cast(gme.GetEventContext().GetID())
 	if err != nil {
 		return err
 	}
@@ -371,6 +371,10 @@ func (h *eventHandler) accountContactRequestOutgoingSent(gme *bertytypes.GroupMe
 			h.logger.Warn("failed to activate group", zap.String("pk", b64EncodeBytes(groupPK)))
 		}
 
+		if err := h.svc.sendAccountUserInfo(b64EncodeBytes(groupPK)); err != nil {
+			h.svc.logger.Error("failed to set user info after outgoing request sent", zap.Error(err))
+		}
+
 		return h.svc.subscribeToMetadata(groupPK)
 	}
 
@@ -474,6 +478,10 @@ func (h *eventHandler) accountContactRequestIncomingAccepted(gme *bertytypes.Gro
 			h.svc.logger.Warn("failed to activate group", zap.String("pk", b64EncodeBytes(groupPK)))
 		}
 
+		if err := h.svc.sendAccountUserInfo(b64EncodeBytes(groupPK)); err != nil {
+			h.svc.logger.Error("failed to set user info after incoming request accepted", zap.Error(err))
+		}
+
 		// subscribe to group messages
 		return h.svc.subscribeToGroup(groupPK)
 	}
@@ -500,7 +508,7 @@ func (h *eventHandler) contactRequestAccepted(contact *Contact, memberPK []byte)
 		var err error
 
 		// update existing contact
-		if err = tx.updateContact(*contact); err != nil {
+		if err = tx.updateContact(contact.GetPublicKey(), *contact); err != nil {
 			return err
 		}
 
@@ -592,7 +600,7 @@ func (h *eventHandler) groupMemberDeviceAdded(gme *bertytypes.GroupMetadataEvent
 			return err
 		}
 
-		displayName := ""
+		userInfo := (*AppMessage_SetUserInfo)(nil)
 
 		for _, elem := range backlog {
 			h.logger.Info("found elem in backlog", zap.String("type", elem.GetType().String()), zap.String("device-pk", elem.GetDevicePublicKey()), zap.String("conv", elem.GetConversationPublicKey()))
@@ -600,14 +608,14 @@ func (h *eventHandler) groupMemberDeviceAdded(gme *bertytypes.GroupMetadataEvent
 			elem.MemberPublicKey = mpk
 
 			switch elem.GetType() {
-			case AppMessage_TypeSetUserName:
-				var payload AppMessage_SetUserName
+			case AppMessage_TypeSetUserInfo:
+				var payload AppMessage_SetUserInfo
 
 				if err := proto.Unmarshal(elem.GetPayload(), &payload); err != nil {
 					return err
 				}
 
-				displayName = payload.GetName()
+				userInfo = &payload
 
 				if err := h.db.deleteInteractions([]string{elem.CID}); err != nil {
 					return err
@@ -628,7 +636,7 @@ func (h *eventHandler) groupMemberDeviceAdded(gme *bertytypes.GroupMetadataEvent
 			}
 		}
 
-		member, err := h.db.addMember(mpk, gpk, displayName)
+		member, err := h.db.addMember(mpk, gpk, userInfo.GetDisplayName(), userInfo.GetAvatarCID())
 		if err != nil {
 			return err
 		}
@@ -751,35 +759,86 @@ func (h *eventHandler) handleAppMessageUserMessage(tx *dbWrapper, i *Interaction
 	return i, isNew, nil
 }
 
-func (h *eventHandler) handleAppMessageSetUserName(tx *dbWrapper, i *Interaction, amPayload proto.Message) (*Interaction, bool, error) {
+func (h *eventHandler) handleAppMessageSetUserInfo(tx *dbWrapper, i *Interaction, amPayload proto.Message) (*Interaction, bool, error) {
 	if i.IsMe {
-		h.logger.Info("ignoring SetUserName because isMe")
+		h.logger.Info("ignoring SetUserInfo because isMe")
 		return i, false, nil
 	}
 
-	h.logger.Debug("interesting SetUserName")
+	payload := amPayload.(*AppMessage_SetUserInfo)
 
-	payload := amPayload.(*AppMessage_SetUserName)
+	if i.GetConversation().GetType() == Conversation_ContactType {
+		cpk := i.GetConversation().GetContactPublicKey()
+		c, err := tx.getContactByPK(cpk)
+		if err != nil {
+			return nil, false, err
+		}
+
+		if c.GetInfoDate() > i.GetSentDate() {
+			return i, false, nil
+		}
+		h.logger.Debug("interesting contact SetUserInfo")
+
+		c.DisplayName = payload.GetDisplayName()
+		c.AvatarCID = payload.GetAvatarCID()
+		err = tx.updateContact(cpk, Contact{DisplayName: c.GetDisplayName(), AvatarCID: c.GetAvatarCID(), InfoDate: i.GetSentDate()})
+		if err != nil {
+			return nil, false, err
+		}
+
+		c, err = tx.getContactByPK(i.GetConversation().GetContactPublicKey())
+		if err != nil {
+			return nil, false, err
+		}
+
+		if h.svc != nil {
+			err := h.svc.dispatcher.StreamEvent(StreamEvent_TypeContactUpdated, &StreamEvent_ContactUpdated{Contact: c}, false)
+			if err != nil {
+				return nil, false, err
+			}
+			h.logger.Debug("dispatched contact update", zap.String("name", c.GetDisplayName()), zap.String("device-pk", i.GetDevicePublicKey()), zap.String("conv", i.ConversationPublicKey))
+		}
+
+		return i, false, nil
+	}
 
 	if i.MemberPublicKey == "" {
 		// store in backlog
-		h.logger.Info("storing SetUserName in backlog", zap.String("name", payload.GetName()), zap.String("device-pk", i.GetDevicePublicKey()), zap.String("conv", i.ConversationPublicKey))
-		ni, _, err := tx.addInteraction(*i)
-		return ni, false, err
+		h.logger.Info("storing SetUserInfo in backlog", zap.String("name", payload.GetDisplayName()), zap.String("device-pk", i.GetDevicePublicKey()), zap.String("conv", i.ConversationPublicKey))
+		ni, isNew, err := tx.addInteraction(*i)
+		if err != nil {
+			return nil, false, err
+		}
+		return ni, isNew, nil
 	}
 
-	member, isNew, err := tx.upsertMember(i.MemberPublicKey, i.ConversationPublicKey, payload.GetName())
+	isNew := false
+	existingMember, err := tx.getMemberByPK(i.MemberPublicKey, i.ConversationPublicKey)
+	if err == gorm.ErrRecordNotFound {
+		isNew = true
+	} else if err != nil {
+		return nil, false, err
+	}
+
+	if !isNew && existingMember.GetInfoDate() > i.GetSentDate() {
+		return i, false, nil
+	}
+	h.logger.Debug("interesting member SetUserInfo")
+
+	member, isNew, err := tx.upsertMember(i.MemberPublicKey, i.ConversationPublicKey,
+		Member{DisplayName: payload.GetDisplayName(), AvatarCID: payload.GetAvatarCID(), InfoDate: i.GetSentDate()},
+	)
 	if err != nil {
-		return i, false, err
+		return nil, false, err
 	}
 
 	if h.svc != nil {
 		err = h.svc.dispatcher.StreamEvent(StreamEvent_TypeMemberUpdated, &StreamEvent_MemberUpdated{Member: member}, isNew)
 		if err != nil {
-			return i, false, err
+			return nil, false, err
 		}
 
-		h.logger.Debug("dispatched member update", zap.String("name", payload.GetName()), zap.String("device-pk", i.GetDevicePublicKey()), zap.String("conv", i.ConversationPublicKey))
+		h.logger.Debug("dispatched member update", zap.String("name", payload.GetDisplayName()), zap.String("device-pk", i.GetDevicePublicKey()), zap.String("conv", i.ConversationPublicKey))
 	}
 
 	return i, false, nil
@@ -787,7 +846,7 @@ func (h *eventHandler) handleAppMessageSetUserName(tx *dbWrapper, i *Interaction
 
 func interactionFromAppMessage(h *eventHandler, gpk string, gme *bertytypes.GroupMessageEvent, am *AppMessage) (*Interaction, error) {
 	amt := am.GetType()
-	_, cid, err := ipfsCid.CidFromBytes(gme.GetEventContext().GetID())
+	cid, err := ipfscid.Cast(gme.GetEventContext().GetID())
 	if err != nil {
 		return nil, err
 	}

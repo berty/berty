@@ -9,13 +9,15 @@ import { useMsgrContext, useAccount } from '@berty-tech/store/hooks'
 import { exportAccountToFile, serviceTypes, useAccountServices } from '@berty-tech/store/services'
 import { useNavigation } from '@berty-tech/navigation'
 import i18n from '@berty-tech/berty-i18n'
-import { berty } from '@berty-tech/api/index.pb'
+import beapi from '@berty-tech/api'
 
 import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { useNavigation as useReactNavigation } from '@react-navigation/native'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { languages } from '@berty-tech/berty-i18n/locale/languages'
+import { PersistentOptionsKeys } from '@berty-tech/store/context'
+
 //
 // Mode
 //
@@ -38,7 +40,7 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 	const _styles = useStylesMode()
 	const [{ flex, padding, margin, color, text, column }, { scaleSize }] = useStyles()
 	const navigation = useReactNavigation()
-	const account: berty.messenger.v1.Account = useAccount()
+	const account: beapi.messenger.Account = useAccount()
 	const services = useAccountServices()
 	const replicationServices = services.filter(
 		(s: any) => s.serviceType === serviceTypes.Replication,
@@ -67,10 +69,13 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 						defaultValue={ctx.persistentOptions?.i18n.language || 'en'}
 						value={ctx.persistentOptions?.i18n.language || 'en'}
 						containerStyle={[{ marginTop: 22, height: 60 }]}
-						onChangeItem={(item: any) => {
+						onChangeItem={async (item: any) => {
 							i18n.changeLanguage(item.value)
-							ctx.setPersistentOption('i18n', {
-								language: item.value,
+							await ctx.setPersistentOption({
+								type: PersistentOptionsKeys.I18N,
+								payload: {
+									language: item.value,
+								},
 							})
 						}}
 					/>
@@ -241,9 +246,7 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 						actionIcon='arrow-ios-forward'
 						onPress={() => {
 							Vibration.vibrate([1000, 250, 1000])
-							navigation.navigate('Modals', {
-								screen: 'DeleteAccount',
-							})
+							navigation.navigate('DeleteAccount')
 						}}
 					/>
 				</View>

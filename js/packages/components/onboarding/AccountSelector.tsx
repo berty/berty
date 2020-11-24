@@ -8,6 +8,7 @@ import { colors } from 'react-native-elements'
 import Logo from '../../components/main/1_berty_picto.svg'
 import { MessengerAppState, useMsgrContext } from '@berty-tech/store/context'
 import { useSwitchToAccount, useNotificationsInhibitor } from '@berty-tech/store/hooks'
+import DocumentPicker from 'react-native-document-picker'
 
 const ListEntry = ({
 	title,
@@ -54,26 +55,28 @@ const ListEntry = ({
 }
 
 const ImportExistingButton = () => {
+	const { importAccount } = useMsgrContext()
+
 	return (
 		<Translation>
 			{(t) => (
 				<ListEntry
 					title={t('onboarding.getstarted.import-button')}
 					onPress={async () => {
-						console.warn('unimplemented')
-						// try {
-						// 	const res = await DocumentPicker.pick({
-						// 		type: ['public.tar-archive'],
-						// 	})
-						//
-						// 	await importAccount(res.uri.replace(/^file:\/\//, ''))
-						// } catch (err) {
-						// 	if (DocumentPicker.isCancel(err)) {
-						// 		// ignore
-						// 	} else {
-						// 		console.error(err)
-						// 	}
-						// }
+						try {
+							const res = await DocumentPicker.pick({
+								// @ts-ignore
+								type: ['public.tar-archive', '*/*'],
+							})
+
+							await importAccount(res.uri.replace(/^file:\/\//, ''))
+						} catch (err) {
+							if (DocumentPicker.isCancel(err)) {
+								// ignore
+							} else {
+								console.error(err)
+							}
+						}
 					}}
 					icon={'upload-outline'}
 				/>

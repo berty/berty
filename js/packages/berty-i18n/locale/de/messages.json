@@ -141,7 +141,8 @@
         "title": "Blockierte Kontakte",
         "tag": "blockiert"
       },
-      "delete-account-button": "Mein Konto löschen"
+      "delete-account-button": "Mein Konto löschen",
+      "backup-account-button": ""
     },
     "notifications": {
       "title": "Benachrichtigungen",
@@ -249,7 +250,8 @@
       "header-middle-button": "Fake-Daten generieren",
       "header-right-button": "Daemon neu starten",
       "system-info-button": "System-Info",
-      "add-bots-button": "Bots hinzufügen",
+      "debug-button": "",
+      "add-dev-conversations-button": "",
       "share-button": {
         "title": "ID auf Discord teilen",
         "alert-title": "Möchten Sie Ihren QR-Code auf Berty Discord im Kanal \"#dev-logs\" veröffentlichen?",
@@ -289,9 +291,12 @@
       "messages-button": "Fake-Nachrichten generieren",
       "delete-button": "Fake-Daten löschen"
     },
-    "add-contact-list": {
-      "title": "Kontaktliste hinzufügen",
-      "add": "Neu"
+    "add-dev-conversations": {
+      "title": "",
+      "add": "",
+      "tag-bot": "",
+      "tag-contact": "",
+      "tag-conversation": ""
     },
     "ipfs-webui": {
       "title": "IPFS Webinterface"
@@ -344,6 +349,9 @@
       "save-button": "Unterhaltung auf Server speichern",
       "erase-button": "Unterhaltung löschen",
       "leave-button": "Gruppe verlassen"
+    },
+    "multi-member-qr": {
+      "title": ""
     },
     "one-to-one": {
       "contact-request-box": {

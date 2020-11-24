@@ -163,30 +163,30 @@ func (s *service) openManager(logger *zap.Logger, args ...string) (*initutil.Man
 
 		// get logger
 		if _, err = manager.GetLogger(); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("unable to setup logger: %w", err)
 		}
 
 		// get local IPFS node
 		if _, _, err = manager.GetLocalIPFS(); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("unable to setup Local IPFS Node: %w", err)
 		}
 
 		// get gRPC server
 		if _, _, err = manager.GetGRPCServer(); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("unable to setup GRPC Server: %w", err)
 		}
 
 		if _, err = manager.GetLocalMessengerServer(); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("unable to setup Messenger Server: %w", err)
 		}
 
 		if _, err = manager.GetNotificationManager(); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("unable to setup Notification Manager: %w", err)
 		}
 
 		// get manager client conn
 		if _, err = manager.GetGRPCClientConn(); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("unable to setup GRPC Client Conn: %w", err)
 		}
 	}
 
@@ -342,6 +342,14 @@ func (s *service) ImportAccount(_ context.Context, req *ImportAccount_Request) (
 	if req.BackupPath == "" {
 		return nil, errcode.ErrBertyAccountNoBackupSpecified
 	}
+
+	if stat, err := os.Stat(req.BackupPath); err != nil {
+		return nil, errcode.ErrBertyAccountDataNotFound.Wrap(err)
+	} else if stat.IsDir() {
+		return nil, errcode.ErrBertyAccountDataNotFound.Wrap(fmt.Errorf("specified path is a directory"))
+	}
+
+	s.logger.Info("importing berty messenger account", zap.String("path", req.BackupPath))
 
 	meta, err := s.createAccount(&CreateAccount_Request{
 		AccountID:     req.AccountID,

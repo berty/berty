@@ -1,16 +1,76 @@
 import React, { useEffect, useState } from 'react'
 import { Linking } from 'react-native'
 import { CommonActions, useNavigation } from '@react-navigation/native'
-import { createNativeStackNavigator } from 'react-native-screens/native-stack'
-// import { createStackNavigator } from '@react-navigation/stack'
+import {
+	createStackNavigator,
+	TransitionSpecs,
+	HeaderStyleInterpolators,
+	StackCardInterpolationProps,
+	StackNavigationOptions,
+} from '@react-navigation/stack'
+
 import * as RawComponents from '@berty-tech/components'
 import mapValues from 'lodash/mapValues'
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import { Routes } from './types'
-// import { messenger as messengerpb } from '@berty-tech/api/index.js'
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import { isClosing, MessengerAppState } from '@berty-tech/store/context'
 import { dispatch, navigate } from '@berty-tech/navigation/rootRef'
+
+const CustomTransitionOptions: StackNavigationOptions = {
+	headerShown: false,
+	gestureEnabled: true,
+	gestureDirection: 'horizontal',
+	transitionSpec: {
+		open: TransitionSpecs.TransitionIOSSpec,
+		close: TransitionSpecs.TransitionIOSSpec,
+	},
+	headerStyleInterpolator: HeaderStyleInterpolators.forFade,
+	cardStyleInterpolator: ({ current, next, layouts }: StackCardInterpolationProps) => {
+		return {
+			cardStyle: {
+				transform: [
+					{
+						translateX: current.progress.interpolate({
+							inputRange: [0, 1],
+							outputRange: [layouts.screen.width, 0],
+						}),
+					},
+					{
+						scale: next
+							? next.progress.interpolate({
+									inputRange: [0, 1],
+									outputRange: [1, 0.9],
+							  })
+							: 1,
+					},
+				],
+			},
+			overlayStyle: {
+				opacity: current.progress.interpolate({
+					inputRange: [0, 1],
+					outputRange: [0, 0.5],
+				}),
+			},
+		}
+	},
+}
+
+const ModalScreenOptions: StackNavigationOptions = {
+	headerShown: false,
+	cardStyle: { backgroundColor: 'transparent' },
+	transitionSpec: {
+		open: TransitionSpecs.TransitionIOSSpec,
+		close: TransitionSpecs.TransitionIOSSpec,
+	},
+	headerStyleInterpolator: HeaderStyleInterpolators.forFade,
+	cardStyleInterpolator: ({ current }: StackCardInterpolationProps) => {
+		return {
+			cardStyle: {
+				opacity: current.progress,
+			},
+		}
+	},
+}
 
 function useLinking() {
 	const [url, setUrl] = useState<string | null>(null)
@@ -50,10 +110,7 @@ const DeepLinkBridge: React.FC = () => {
 
 	useEffect(() => {
 		if (url && !error && !(url as string).startsWith('berty://services-auth')) {
-			navigation.navigate('Modals', {
-				screen: 'ManageDeepLink',
-				params: { type: 'link', value: url },
-			})
+			navigation.navigate('ManageDeepLink', { type: 'link', value: url })
 		}
 	}, [url, error, navigation])
 
@@ -72,28 +129,7 @@ Components = mapValues(RawComponents, (SubComponents) =>
 	)),
 )
 
-const ModalsStack = createNativeStackNavigator()
-export const ModalsNavigation: React.FC = () => (
-	<ModalsStack.Navigator
-		screenOptions={{
-			headerShown: false,
-			stackPresentation: 'containedTransparentModal',
-			contentStyle: { backgroundColor: 'transparent' },
-			stackAnimation: 'fade',
-		}}
-	>
-		<ModalsStack.Screen
-			name={Routes.Modals.DeleteAccount}
-			component={Components.Modals.DeleteAccount}
-		/>
-		<ModalsStack.Screen
-			name={Routes.Modals.ManageDeepLink}
-			component={Components.Modals.ManageDeepLink}
-		/>
-		<ModalsStack.Screen name={Routes.Modals.AddBetabot} component={Components.Modals.AddBetabot} />
-	</ModalsStack.Navigator>
-)
-const CreateGroupStack = createNativeStackNavigator()
+const CreateGroupStack = createStackNavigator()
 export const CreateGroupNavigation: React.FC = () => {
 	const [members, setMembers] = useState([] as any[])
 	const setMember = (contact: any) => {
@@ -113,11 +149,7 @@ export const CreateGroupNavigation: React.FC = () => {
 		<CreateGroupStack.Navigator screenOptions={{ headerShown: false }}>
 			<CreateGroupStack.Screen
 				name={Routes.CreateGroup.CreateGroupAddMembers}
-				options={{
-					stackPresentation: 'containedTransparentModal',
-					contentStyle: { backgroundColor: 'transparent' },
-					stackAnimation: 'none',
-				}}
+				options={ModalScreenOptions}
 			>
 				{() => (
 					// should use setParams ? maybe, tis weird
@@ -130,11 +162,7 @@ export const CreateGroupNavigation: React.FC = () => {
 			</CreateGroupStack.Screen>
 			<CreateGroupStack.Screen
 				name={Routes.CreateGroup.CreateGroupFinalize}
-				options={{
-					stackPresentation: 'containedTransparentModal',
-					contentStyle: { backgroundColor: 'transparent' },
-					stackAnimation: 'none',
-				}}
+				options={ModalScreenOptions}
 			>
 				{() => (
 					<Components.Main.CreateGroupFinalize members={members} onRemoveMember={removeMember} />
@@ -144,20 +172,7 @@ export const CreateGroupNavigation: React.FC = () => {
 	)
 }
 
-const TabStack = createMaterialTopTabNavigator() // provides swipe animation
-export const TabNavigation: React.FC = () => {
-	return (
-		<TabStack.Navigator
-			initialRouteName={Routes.Main.Home}
-			tabBar={() => <Components.Main.Footer />}
-			tabBarPosition='bottom'
-		>
-			<TabStack.Screen name={Routes.Main.Home} component={Components.Main.Home} />
-		</TabStack.Navigator>
-	)
-}
-
-const NavigationStack = createNativeStackNavigator()
+const NavigationStack = createStackNavigator()
 export const Navigation: React.FC = () => {
 	const context = useMsgrContext()
 
@@ -200,27 +215,17 @@ export const Navigation: React.FC = () => {
 					? Routes.Root.Tabs
 					: Routes.Onboarding.AccountSelector
 			}
-			screenOptions={{
-				headerShown: false,
-			}}
+			screenOptions={CustomTransitionOptions}
 		>
 			<NavigationStack.Screen
 				name={Routes.Main.ContactRequest}
 				component={Components.Main.ContactRequest}
-				options={{
-					stackPresentation: 'containedTransparentModal',
-					stackAnimation: 'fade',
-					contentStyle: { backgroundColor: 'transparent' },
-				}}
+				options={ModalScreenOptions}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Main.Scan}
 				component={Components.Main.Scan}
-				options={{
-					stackPresentation: 'containedTransparentModal',
-					stackAnimation: 'none',
-					contentStyle: { backgroundColor: 'transparent' },
-				}}
+				options={ModalScreenOptions}
 			/>
 			<NavigationStack.Screen name={Routes.Chat.OneToOne} component={Components.Chat.OneToOne} />
 			<NavigationStack.Screen name={Routes.Chat.Group} component={Components.Chat.MultiMember} />
@@ -247,41 +252,23 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={Routes.Main.HomeModal}
 				component={Components.Main.HomeModal}
-				options={{
-					stackPresentation: 'containedTransparentModal',
-					contentStyle: { backgroundColor: 'transparent' },
-				}}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Main.RequestSent}
-				component={Components.Main.RequestSent}
-				options={{ stackPresentation: 'containedModal' }}
+				options={ModalScreenOptions}
 			/>
 			<NavigationStack.Screen
 				name={Routes.CreateGroup.CreateGroupAddMembers}
 				component={CreateGroupNavigation}
-				options={{
-					stackPresentation: 'containedTransparentModal',
-					contentStyle: { backgroundColor: 'transparent' },
-					stackAnimation: 'none',
-				}}
+				options={ModalScreenOptions}
 			/>
-			<NavigationStack.Screen name={Routes.Root.Tabs} component={TabNavigation} />
+			<NavigationStack.Screen name={Routes.Root.Tabs} component={Components.Main.Home} />
 			<NavigationStack.Screen
 				name={Routes.Settings.MyBertyId}
 				component={Components.Settings.MyBertyId}
-				options={{
-					stackPresentation: 'containedTransparentModal',
-					contentStyle: { backgroundColor: 'transparent' },
-				}}
+				options={ModalScreenOptions}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Settings.EditProfile}
 				component={Components.Settings.EditProfile}
-				options={{
-					stackPresentation: 'containedTransparentModal',
-					contentStyle: { backgroundColor: 'transparent' },
-				}}
+				options={ModalScreenOptions}
 			/>
 			<NavigationStack.Screen name={Routes.Settings.Home} component={Components.Settings.Home} />
 			<NavigationStack.Screen
@@ -323,12 +310,8 @@ export const Navigation: React.FC = () => {
 				component={Components.Settings.DevTools}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.AddContactList}
-				component={Components.Settings.AddContactList}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Settings.AddConversationList}
-				component={Components.Settings.AddConversationList}
+				name={Routes.Settings.AddDevConversations}
+				component={Components.Settings.AddDevConversations}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Settings.SystemInfo}
@@ -345,15 +328,6 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={Routes.Settings.NetworkMap}
 				component={Components.Settings.NetworkMap}
-			/>
-			<NavigationStack.Screen
-				name={'Modals'}
-				component={ModalsNavigation}
-				options={{
-					stackPresentation: 'containedTransparentModal',
-					contentStyle: { backgroundColor: 'transparent' },
-					stackAnimation: 'fade',
-				}}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Onboarding.AccountSelector}
@@ -374,6 +348,21 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={Routes.Onboarding.SetupFinished}
 				component={Components.Onboarding.SetupFinished}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Modals.DeleteAccount}
+				component={Components.Modals.DeleteAccount}
+				options={ModalScreenOptions}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Modals.ManageDeepLink}
+				component={Components.Modals.ManageDeepLink}
+				options={ModalScreenOptions}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Modals.AddBetabot}
+				component={Components.Modals.AddBetabot}
+				options={ModalScreenOptions}
 			/>
 		</NavigationStack.Navigator>
 	)

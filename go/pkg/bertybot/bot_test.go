@@ -18,7 +18,7 @@ func TestUnstableBotCommunication(t *testing.T) {
 	defer cancel()
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
-	clients, cleanup := bertymessenger.TestingInfra(ctx, t, 2, logger)
+	clients, _, cleanup := bertymessenger.TestingInfra(ctx, t, 2, logger)
 	defer cleanup()
 
 	botClient, userClient := clients[0], clients[1]

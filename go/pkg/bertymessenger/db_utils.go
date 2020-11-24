@@ -103,41 +103,34 @@ func compareDBSchema(dbA map[string][]*ColumnInfo, dbB map[string][]*ColumnInfo)
 }
 
 func restoreDatabaseLocalState(db *dbWrapper, state *LocalDatabaseState) error {
-	count := int64(0)
-
-	if err := db.db.Table("accounts").Where("public_key = ?", state.PublicKey).Count(&count).Error; err != nil {
-		return errcode.ErrInternal.Wrap(fmt.Errorf("unable to check if conversation exists: %w", err))
+	if state == nil {
+		return nil
 	}
 
-	accountUpdateValues := map[string]interface{}{
-		"public_key":                         state.PublicKey,
-		"display_name":                       state.DisplayName,
-		"replicate_new_groups_automatically": state.ReplicateFlag,
-	}
-
-	if count == 0 {
-		if err := db.db.Table("accounts").Create(accountUpdateValues).Error; err != nil {
-			return errcode.ErrInternal.Wrap(fmt.Errorf("unable to create account: %w", err))
-		}
-	} else {
-		if err := db.db.Table("accounts").Where("public_key", state.PublicKey).Updates(accountUpdateValues).Error; err != nil {
-			return errcode.ErrInternal.Wrap(fmt.Errorf("unable to update account: %w", err))
-		}
+	if res := db.db.
+		Table("accounts").
+		Where("public_key", state.PublicKey).
+		Updates(map[string]interface{}{
+			"display_name":                       state.DisplayName,
+			"link":                               state.AccountLink,
+			"replicate_new_groups_automatically": state.ReplicateFlag,
+		}); res.Error != nil {
+		return errcode.ErrInternal.Wrap(fmt.Errorf("unable to update account: %w", res.Error))
+	} else if res.RowsAffected == 0 {
+		return errcode.ErrInternal.Wrap(fmt.Errorf("unable to update account: account not found"))
 	}
 
 	for _, c := range state.LocalConversationsState {
-		if err := db.db.Table("conversations").Where("public_key = ?", c.PublicKey).Count(&count).Error; err != nil {
-			return errcode.ErrInternal.Wrap(fmt.Errorf("unable to check if conversation exists: %w", err))
-		}
-
-		if count == 0 {
-			if err := db.db.Table("conversations").Create(c).Error; err != nil {
-				return errcode.ErrInternal.Wrap(fmt.Errorf("unable to create conversation: %w", err))
-			}
-		} else {
-			if err := db.db.Table("conversations").Where("public_key", c.PublicKey).Updates(c).Error; err != nil {
-				return errcode.ErrInternal.Wrap(fmt.Errorf("unable to update conversation: %w", err))
-			}
+		if res := db.db.
+			Table("conversations").
+			Where("public_key", c.PublicKey).
+			Updates(map[string]interface{}{
+				"is_open":      c.IsOpen,
+				"unread_count": c.UnreadCount,
+			}); res.Error != nil {
+			return errcode.ErrInternal.Wrap(fmt.Errorf("unable to update conversation: %w", res.Error))
+		} else if res.RowsAffected == 0 {
+			return errcode.ErrInternal.Wrap(fmt.Errorf("unable to update conversation: conversation not found"))
 		}
 	}
 

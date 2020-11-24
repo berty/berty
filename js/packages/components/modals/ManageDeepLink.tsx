@@ -9,7 +9,7 @@ import AddThisContact from './AddThisContact'
 import { ScreenProps } from '@berty-tech/navigation'
 import { ManageGroupInvitation } from './ManageGroupInvitation'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import beapi from '@berty-tech/api'
 import { Buffer } from 'buffer'
 
 const base64ToURLBase64 = (str: string) =>
@@ -40,7 +40,7 @@ export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 			title = t('modals.manage-deep-link.error')
 		}
 		content = <InvalidScan title={title} error={error.toString()} />
-	} else if (pdlReply.kind === messengerpb.ParseDeepLink.Kind.BertyGroup) {
+	} else if (pdlReply.kind === beapi.messenger.ParseDeepLink.Kind.BertyGroup) {
 		content = (
 			<ManageGroupInvitation
 				link={params.value}
@@ -51,7 +51,7 @@ export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 				type={params.type}
 			/>
 		)
-	} else if (pdlReply.kind === messengerpb.ParseDeepLink.Kind.BertyID) {
+	} else if (pdlReply.kind === beapi.messenger.ParseDeepLink.Kind.BertyID) {
 		content = (
 			<AddThisContact
 				link={params.value}

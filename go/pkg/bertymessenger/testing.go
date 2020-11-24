@@ -75,7 +75,7 @@ func TestingService(ctx context.Context, t *testing.T, opts *TestingServiceOpts)
 	return server, cleanup
 }
 
-func TestingInfra(ctx context.Context, t *testing.T, amount int, logger *zap.Logger) ([]MessengerServiceClient, func()) {
+func TestingInfra(ctx context.Context, t *testing.T, amount int, logger *zap.Logger) ([]MessengerServiceClient, []*bertyprotocol.TestingProtocol, func()) {
 	t.Helper()
 	mocknet := libp2p_mocknet.New(ctx)
 
@@ -105,7 +105,7 @@ func TestingInfra(ctx context.Context, t *testing.T, amount int, logger *zap.Log
 
 	require.NoError(t, mocknet.ConnectAllButSelf())
 
-	return clients, cleanup
+	return clients, protocols, cleanup
 }
 
 func mkBufDialer(l *bufconn.Listener) func(context.Context, string) (net.Conn, error) {
@@ -118,6 +118,7 @@ type TestingAccount struct {
 	ctx            context.Context
 	logger         *zap.Logger
 	client         MessengerServiceClient
+	protocolClient bertyprotocol.ProtocolServiceClient
 	stream         MessengerService_EventStreamClient
 	openStreamOnce sync.Once
 	closed         bool
@@ -133,17 +134,18 @@ type TestingAccount struct {
 	members       map[string]*Member
 }
 
-func NewTestingAccount(ctx context.Context, t *testing.T, client MessengerServiceClient, logger *zap.Logger) *TestingAccount {
+func NewTestingAccount(ctx context.Context, t *testing.T, client MessengerServiceClient, protocolClient bertyprotocol.ProtocolServiceClient, logger *zap.Logger) *TestingAccount {
 	t.Helper()
 	ctx, cancel := context.WithCancel(ctx)
 	return &TestingAccount{
-		ctx:           ctx,
-		cancelFunc:    cancel,
-		client:        client,
-		logger:        logger,
-		conversations: make(map[string]*Conversation),
-		contacts:      make(map[string]*Contact),
-		members:       make(map[string]*Member),
+		ctx:            ctx,
+		cancelFunc:     cancel,
+		client:         client,
+		protocolClient: protocolClient,
+		logger:         logger,
+		conversations:  make(map[string]*Conversation),
+		contacts:       make(map[string]*Contact),
+		members:        make(map[string]*Member),
 	}
 }
 
@@ -163,6 +165,48 @@ func (a *TestingAccount) openStream(t *testing.T) {
 	})
 }
 
+func (a *TestingAccount) ProcessWholeStream(t *testing.T) func() {
+	ch := make(chan struct{})
+
+	a.openStream(t)
+	go func() {
+		for {
+			rsp, err := a.stream.Recv()
+			if err == io.EOF {
+				return
+			}
+			select {
+			case _, ok := <-ch:
+				if !ok {
+					return
+				}
+			default:
+			}
+			require.NoError(t, err)
+			evt := rsp.GetEvent()
+			require.NotNil(t, evt)
+			a.processEvent(t, evt)
+
+		}
+	}()
+
+	return func() { close(ch) }
+}
+
+func (a *TestingAccount) GetLink() string {
+	a.processMutex.Lock()
+	defer a.processMutex.Unlock()
+	return a.account.GetLink()
+}
+
+func (a *TestingAccount) GetConversation(t *testing.T, pk string) *Conversation {
+	a.processMutex.Lock()
+	defer a.processMutex.Unlock()
+	conv, ok := a.conversations[pk]
+	require.True(t, ok)
+	return conv
+}
+
 func (a *TestingAccount) processEvent(t *testing.T, event *StreamEvent) {
 	a.processMutex.Lock()
 	defer a.processMutex.Unlock()
@@ -178,6 +222,7 @@ func (a *TestingAccount) processEvent(t *testing.T, event *StreamEvent) {
 		require.NoError(t, err)
 		contact := payload.(*StreamEvent_ContactUpdated).Contact
 		a.contacts[contact.GetPublicKey()] = contact
+		t.Log("contact updated in", a.GetAccount().GetDisplayName(), ", name:", contact.GetDisplayName(), ", mpk:", contact.GetPublicKey(), ", acid: ", contact.GetAvatarCID())
 	case StreamEvent_TypeConversationUpdated:
 		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)

@@ -10,7 +10,7 @@ import {
 	useMountEffect,
 } from '@berty-tech/store/hooks'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import beapi from '@berty-tech/api'
 
 const CreateAccount: React.FC = () => {
 	const [name, setName] = useState('')
@@ -84,7 +84,7 @@ const ContactSearchResultLastMessage: React.FC<{ convId: string }> = ({ convId }
 		return null
 	}
 	const messages = Object.values(intes).filter(
-		(inte: any) => inte.isMe && inte.type === messengerpb.AppMessage.Type.TypeUserMessage,
+		(inte: any) => inte.isMe && inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage,
 	)
 	if (messages.length <= 0) {
 		return null
@@ -155,7 +155,7 @@ const Contacts: React.FC = () => {
 				{Object.values(ctx.contacts).map((contact: any) => (
 					<div style={{ border: '1px solid black' }} key={contact.publicKey}>
 						<JSONed value={contact} />
-						{contact.state === messengerpb.Contact.State.IncomingRequest && (
+						{contact.state === beapi.messenger.Contact.State.IncomingRequest && (
 							<AcceptButton publicKey={contact.publicKey} />
 						)}
 					</div>
@@ -179,7 +179,7 @@ const Interaction: React.FC<{ value: any }> = ({ value }) => {
 	)
 	const conversations = useConversationList()
 
-	if (value.type === messengerpb.AppMessage.Type.TypeUserMessage) {
+	if (value.type === beapi.messenger.AppMessage.Type.TypeUserMessage) {
 		const payload = value.payload
 		return (
 			<div style={{ textAlign: value.isMe ? 'right' : 'left' }}>
@@ -187,7 +187,7 @@ const Interaction: React.FC<{ value: any }> = ({ value }) => {
 				{payload.body}
 			</div>
 		)
-	} else if (value.type === messengerpb.AppMessage.Type.TypeGroupInvitation) {
+	} else if (value.type === beapi.messenger.AppMessage.Type.TypeGroupInvitation) {
 		const payload = value.payload
 		return (
 			<div style={{ textAlign: value.isMe ? 'right' : 'left' }}>
@@ -230,9 +230,9 @@ const Conversation: React.FC<{ publicKey: string }> = ({ publicKey }) => {
 
 	const usermsg = { body: message }
 	console.log('sending', usermsg)
-	const buf = messengerpb.AppMessage.UserMessage.encode(usermsg).finish()
+	const buf = beapi.messenger.AppMessage.UserMessage.encode(usermsg).finish()
 	console.log('encoded', buf)
-	const decoded = messengerpb.AppMessage.UserMessage.decode(buf)
+	const decoded = beapi.messenger.AppMessage.UserMessage.decode(buf)
 	console.log('decoded', decoded)
 
 	const handleSend = React.useCallback(() => {
@@ -240,7 +240,7 @@ const Conversation: React.FC<{ publicKey: string }> = ({ publicKey }) => {
 		ctx.client
 			.interact({
 				conversationPublicKey: publicKey,
-				type: messengerpb.AppMessage.Type.TypeUserMessage,
+				type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 				payload: buf,
 			})
 			.catch((e: any) => setError(e))
@@ -363,7 +363,7 @@ const CreateMultiMember = () => {
 	return (
 		<>
 			{contactList
-				.filter((contact: any) => contact.state === messengerpb.Contact.State.Accepted)
+				.filter((contact: any) => contact.state === beapi.messenger.Contact.State.Accepted)
 				.map((contact: any) => (
 					<button
 						key={`${contact.publicKey}`}
@@ -395,10 +395,10 @@ const SendToAll: React.FC = () => {
 	const [disabled, setDisabled] = useState(false)
 	const ctx: any = React.useContext(MsgrContext)
 	const convs: any[] = Object.values(ctx.conversations).filter(
-		(conv: any) => conv.type === messengerpb.Conversation.Type.ContactType && !conv.fake,
+		(conv: any) => conv.type === beapi.messenger.Conversation.Type.ContactType && !conv.fake,
 	)
 	const body = `Test, ${new Date(Date.now()).toLocaleString()}`
-	const buf: string = messengerpb.AppMessage.UserMessage.encode({ body }).finish()
+	const buf: string = beapi.messenger.AppMessage.UserMessage.encode({ body }).finish()
 	const [sentToDisplayNames, setSentToDisplayNames] = useState([])
 
 	const handleSend = React.useCallback(async () => {
@@ -410,7 +410,7 @@ const SendToAll: React.FC = () => {
 			try {
 				await ctx.client.interact({
 					conversationPublicKey: conv.publicKey,
-					type: messengerpb.AppMessage.Type.TypeUserMessage,
+					type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 					payload: buf,
 				})
 			} catch (e) {
@@ -465,7 +465,7 @@ const JoinMultiMember = () => {
 const MultiMemberList = () => {
 	const ctx = React.useContext(MsgrContext)
 	const convs = Object.values(ctx.conversations).filter(
-		(conv) => conv.type === messengerpb.Conversation.Type.MultiMemberType,
+		(conv) => conv.type === beapi.messenger.Conversation.Type.MultiMemberType,
 	)
 	return (
 		<>

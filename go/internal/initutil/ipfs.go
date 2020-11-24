@@ -3,7 +3,9 @@ package initutil
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	mrand "math/rand"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -103,17 +105,10 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		return nil, nil, errcode.TODO.Wrap(err)
 	}
 
-	rootDS, err := m.getRootDatastore()
-	if err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
-	}
-
 	rdvpeers, err := m.getRdvpMaddrs()
 	if err != nil {
 		return nil, nil, errcode.TODO.Wrap(err)
 	}
-
-	ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceIPFSDatastore))
 
 	swarmAddrs := m.getSwarmAddrs()
 
@@ -139,7 +134,11 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	if !m.Node.Protocol.DisableIPFSNetwork {
 		// tor is enabled (optional or required)
 		if m.torIsEnabled() {
-			torOpts := torcfg.SetTemporaryDirectory(tempdir.TempDir())
+			torOpts := torcfg.Merge(
+				torcfg.SetTemporaryDirectory(tempdir.TempDir()),
+				// FIXME: Write an io.Writer to zap logger mapper.
+				torcfg.SetNodeDebug(ioutil.Discard),
+			)
 			if m.Node.Protocol.Tor.BinaryPath == "" {
 				torOpts = torcfg.Merge(torOpts, torcfg.EnableEmbeded)
 			} else {
@@ -239,7 +238,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 			for _, relay := range relays {
 				for _, addr := range relay.Addrs {
-					announce = append(announce, addr.String()+"/p2p-circuit")
+					announce = append(announce, addr.String()+"/p2p/"+relay.ID.String()+"/p2p-circuit")
 				}
 			}
 
@@ -358,11 +357,31 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 			return nil
 		},
 	}
-	// FIXME: continue disabling things to speedup the node when DisableIPFSNetwork==true
 
-	m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, err = ipfsutil.NewCoreAPIFromDatastore(m.GetContext(), ipfsDS, &opts)
-	if err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
+	// FIXME: continue disabling things to speedup the node when DisableIPFSNetwork==true
+	if m.Datastore.InMemory {
+		rootDS, err := m.getRootDatastore()
+		if err != nil {
+			return nil, nil, errcode.TODO.Wrap(err)
+		}
+
+		ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceIPFSDatastore))
+
+		m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, err = ipfsutil.NewCoreAPIFromDatastore(m.GetContext(), ipfsDS, &opts)
+		if err != nil {
+			return nil, nil, errcode.TODO.Wrap(err)
+		}
+	} else {
+		repopath := filepath.Join(m.Datastore.Dir, "ipfs")
+		repo, err := ipfsutil.LoadRepoFromPath(repopath)
+		if err != nil {
+			return nil, nil, errcode.TODO.Wrap(err)
+		}
+
+		m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, err = ipfsutil.NewCoreAPIFromRepo(m.GetContext(), repo, &opts)
+		if err != nil {
+			return nil, nil, errcode.TODO.Wrap(err)
+		}
 	}
 
 	// PubSub

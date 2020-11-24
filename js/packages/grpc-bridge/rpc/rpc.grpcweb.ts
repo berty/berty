@@ -28,9 +28,10 @@ export type GRPCBridge = (
 	metadata?: { [key: string]: string | Array<string> },
 ) => pb.RPCImpl
 
-const LazyMessageClass: grpc.ProtobufMessageClass<grpc.ProtobufMessage> = LazyMessage
-const unary = (options: grpc.ClientRpcOptions) => async (
-	method: any,
+const LazyMessageClass = (LazyMessage as unknown) as grpc.ProtobufMessageClass<grpc.ProtobufMessage>
+
+const unary = <T extends pb.Method>(options: grpc.ClientRpcOptions) => async (
+	method: T,
 	request: Uint8Array,
 	metadata: grpc.Metadata,
 ) => {
@@ -62,16 +63,18 @@ const unary = (options: grpc.ClientRpcOptions) => async (
 	})
 }
 
-const stream = (options: grpc.ClientRpcOptions) => async (
-	method: any,
+const stream = <T extends pb.Method>(options: grpc.ClientRpcOptions) => async (
+	method: T,
 	request: Uint8Array,
 	metadata: grpc.Metadata,
 ) => {
+	const serviceName = getServiceName(method)
+	if (serviceName === undefined) {
+		throw new Error('failed to get service name')
+	}
 	const methodDesc: grpc.MethodDefinition<grpc.ProtobufMessage, grpc.ProtobufMessage> = {
 		methodName: method.name,
-		service: {
-			serviceName: getServiceName(method),
-		},
+		service: { serviceName },
 		requestStream: method.requestStream || false,
 		responseStream: method.responseStream || false,
 		requestType: LazyMessageClass,

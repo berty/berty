@@ -73,6 +73,7 @@ func runMain(args []string) error {
 				replicationServerCommand(),
 				peersCommand(),
 				exportCommand(),
+				omnisearchCommand(),
 			},
 		}
 	}

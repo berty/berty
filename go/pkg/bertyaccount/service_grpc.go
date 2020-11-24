@@ -42,7 +42,7 @@ func (s *service) ClientInvokeUnary(ctx context.Context, req *ClientInvokeUnary_
 	in := grpcutil.NewLazyMessage().FromBytes(req.Payload)
 	out, err := serviceClient.InvokeUnary(ctx, desc, in)
 	if err != nil {
-		res.Error = getSerivceError(err)
+		res.Error = getServiceError(err)
 		return res, nil
 	}
 
@@ -77,7 +77,7 @@ func (s *service) CreateClientStream(ctx context.Context, req *ClientCreateStrea
 	in := grpcutil.NewLazyMessage().FromBytes(req.Payload)
 	cstream, err := serviceClient.InvokeStream(sctx, desc, in)
 	if err != nil {
-		res.Error = getSerivceError(err)
+		res.Error = getServiceError(err)
 		return res, nil
 	}
 
@@ -99,7 +99,7 @@ func (s *service) ClientStreamSend(ctx context.Context, req *ClientStreamSend_Re
 
 	in := grpcutil.NewLazyMessage().FromBytes(req.Payload)
 	if err := cstream.SendMsg(in); err != nil {
-		res.Error = getSerivceError(err)
+		res.Error = getServiceError(err)
 		res.Trailer = convertMetadata(cstream.Trailer())
 
 		s.muStreams.Lock()
@@ -118,22 +118,7 @@ func (s *service) ClientStreamRecv(ctx context.Context, req *ClientStreamRecv_Re
 		return nil, err
 	}
 
-	res := &ClientStreamRecv_Reply{StreamId: id}
-
-	out := grpcutil.NewLazyMessage()
-	if err := cstream.RecvMsg(out); err != nil {
-		s.muStreams.Lock()
-
-		res.Error = getSerivceError(err)
-		res.Trailer = convertMetadata(cstream.Trailer())
-		delete(s.streams, id)
-
-		s.muStreams.Unlock()
-		return res, nil
-	}
-
-	res.Payload = out.Bytes()
-	return res, nil
+	return s.clientStreamRecv(id, cstream), nil
 }
 
 // Close the given stream
@@ -143,12 +128,28 @@ func (s *service) ClientStreamClose(ctx context.Context, req *ClientStreamClose_
 	if err != nil {
 		return nil, err
 	}
-
 	cstream.Close()
 	return &ClientStreamClose_Reply{}, nil
 }
 
-// Close the given stream
+// Close send on the given stream and return reply
+func (s *service) ClientStreamCloseAndRecv(ctx context.Context, req *ClientStreamCloseAndRecv_Request) (*ClientStreamCloseAndRecv_Reply, error) {
+	id := req.StreamId
+	cstream, err := s.getSream(id)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := cstream.CloseSend(); err != nil {
+		return nil, err
+	}
+
+	reply := s.clientStreamRecv(id, cstream)
+
+	return &ClientStreamCloseAndRecv_Reply{StreamId: id, Error: reply.Error, Payload: reply.Payload, Trailer: reply.Trailer}, nil
+}
+
+// Get GRPC listener addresses
 func (s *service) GetGRPCListenerAddrs(ctx context.Context, req *GetGRPCListenerAddrs_Request) (*GetGRPCListenerAddrs_Reply, error) {
 	m, err := s.getInitManager()
 	if err != nil {
@@ -223,7 +224,7 @@ func convertMetadata(in metadata.MD) []*Metadata {
 	return out
 }
 
-func getSerivceError(err error) *Error {
+func getServiceError(err error) *Error {
 	if err == nil {
 		return nil
 	}
@@ -246,4 +247,23 @@ func getSerivceError(err error) *Error {
 		ErrorCode:     errCode,
 		Message:       err.Error(),
 	}
+}
+
+func (s *service) clientStreamRecv(id string, cstream *grpcutil.LazyStream) *ClientStreamRecv_Reply {
+	res := &ClientStreamRecv_Reply{StreamId: id}
+
+	out := grpcutil.NewLazyMessage()
+	if err := cstream.RecvMsg(out); err != nil {
+		s.muStreams.Lock()
+
+		res.Error = getServiceError(err)
+		res.Trailer = convertMetadata(cstream.Trailer())
+		delete(s.streams, id)
+
+		s.muStreams.Unlock()
+		return res
+	}
+
+	res.Payload = out.Bytes()
+	return res
 }

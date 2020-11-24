@@ -16,7 +16,6 @@ export namespace ScreenProps {
 		export type ContactRequest = RouteProps<{ contactId: string }>
 		export type Scan = RouteProps<void>
 		export type HomeModal = RouteProps<void>
-		export type RequestSent = RouteProps<void>
 		export namespace CreateGroup {
 			export type CreateGroupAddMembers = RouteProps<void>
 			export type CreateGroupFinalize = RouteProps<void>
@@ -48,8 +47,7 @@ export namespace ScreenProps {
 		export type IpfsWebUI = RouteProps<void>
 		export type SystemInfo = RouteProps<void>
 		export type FakeData = RouteProps<void>
-		export type AddContactList = RouteProps<void>
-		export type AddConversationList = RouteProps<void>
+		export type AddDevConversations = RouteProps<void>
 		export type DevText = RouteProps<{ text: string }>
 		export type NetworkMap = RouteProps<void>
 	}
@@ -78,7 +76,6 @@ export namespace Routes {
 		ContactRequest = 'Main.ContactRequest',
 		Scan = 'Main.Scan',
 		HomeModal = 'Main.HomeModal',
-		RequestSent = 'Main.RequestSent',
 	}
 	export enum CreateGroup {
 		CreateGroupAddMembers = 'Main.CreateGroupAddMembers',
@@ -111,8 +108,7 @@ export namespace Routes {
 		IpfsWebUI = 'Settings.IpfsWebUI',
 		DevText = 'Settings.DevText',
 		FakeData = 'Settings.FakeData',
-		AddContactList = 'Settings.AddContactList',
-		AddConversationList = 'Settings.AddConversationList',
+		AddDevConversations = 'Settings.AddDevConversations',
 		NetworkMap = 'Settings.NetworkMap',
 	}
 	export enum Modals {

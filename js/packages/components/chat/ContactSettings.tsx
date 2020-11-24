@@ -1,17 +1,18 @@
 import React, { useState } from 'react'
 import { View, ScrollView, ActivityIndicator } from 'react-native'
 import { Text } from '@ui-kitten/components'
-import { useStyles } from '@berty-tech/styles'
 import { useTranslation } from 'react-i18next'
+
+import { useStyles } from '@berty-tech/styles'
+import { useContacts } from '@berty-tech/store/hooks'
+import { useNavigation, ScreenProps } from '@berty-tech/navigation'
+
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { TabBar } from '../shared-components/TabBar'
 import HeaderSettings from '../shared-components/Header'
-import { useNavigation, ScreenProps } from '@berty-tech/navigation'
-import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
-import { useContacts, usePersistentOptions } from '@berty-tech/store/hooks'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-import Logo from '../main/1_berty_picto.svg'
+import { ContactAvatar } from '../avatars'
 
 const ContactSettingsHeaderContent: React.FC = ({ children }) => {
 	const [{ margin }] = useStyles()
@@ -31,14 +32,8 @@ const SelectedContent: React.FC<{ contentName: string; publicKey: string }> = ({
 }
 
 const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
-	const [{ border, background, padding, row, absolute, text, margin }] = useStyles()
+	const [{ border, background, padding, row, absolute, text }] = useStyles()
 	const [selectedContent, setSelectedContent] = useState('Fingerprint')
-
-	const persistOpts = usePersistentOptions()
-	const isBetabot =
-		persistOpts.betabot.convPk &&
-		contact.publicKey.toString() === persistOpts.betabot.convPk.toString()
-	const betabotAvatarSize = 100
 	const { t } = useTranslation()
 
 	return (
@@ -52,36 +47,7 @@ const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 				]}
 			>
 				<View style={[row.item.justify, absolute.scale({ top: -50 })]}>
-					{!isBetabot ? (
-						<ProceduralCircleAvatar
-							seed={contact.publicKey}
-							style={[border.shadow.big]}
-							diffSize={30}
-						/>
-					) : (
-						<View
-							style={[
-								border.radius.scale(betabotAvatarSize),
-								border.shadow.medium,
-								background.white,
-								margin.right.small,
-								{
-									justifyContent: 'center',
-									alignItems: 'center',
-									display: 'flex',
-									width: betabotAvatarSize,
-									height: betabotAvatarSize,
-									alignSelf: 'center',
-								},
-							]}
-						>
-							<Logo
-								width={betabotAvatarSize - 35}
-								height={betabotAvatarSize - 35}
-								style={{ right: -1, top: -1 }}
-							/>
-						</View>
-					)}
+					<ContactAvatar size={100} publicKey={contact.publicKey} />
 				</View>
 				<View style={[padding.horizontal.medium, padding.bottom.medium, padding.top.scale(65)]}>
 					<Text style={[text.size.big, text.color.black, text.align.center, text.bold.small]}>

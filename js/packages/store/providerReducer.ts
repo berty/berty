@@ -1,4 +1,3 @@
-import { messenger as messengerpb } from '@berty-tech/api'
 import {
 	initialState,
 	isExpectedAppStateChange,
@@ -8,10 +7,10 @@ import {
 } from '@berty-tech/store/context'
 import pickBy from 'lodash/pickBy'
 import mapValues from 'lodash/mapValues'
-import { berty } from '@berty-tech/api/index.pb'
+import beapi from '@berty-tech/api'
 
 export declare type reducerAction = {
-	type: berty.messenger.v1.StreamEvent.Type | MessengerActions
+	type: beapi.messenger.StreamEvent.Type | MessengerActions
 	payload?: any
 	name?: string
 }
@@ -19,7 +18,7 @@ export declare type reducerAction = {
 export const reducerActions: {
 	[key: string]: (oldState: MsgrState, action: reducerAction) => MsgrState
 } = {
-	[messengerpb.StreamEvent.Type.TypeConversationUpdated]: (oldState, action) => ({
+	[beapi.messenger.StreamEvent.Type.TypeConversationUpdated]: (oldState, action) => ({
 		...oldState,
 		conversations: {
 			...oldState.conversations,
@@ -27,12 +26,12 @@ export const reducerActions: {
 		},
 	}),
 
-	[messengerpb.StreamEvent.Type.TypeAccountUpdated]: (oldState, action) => ({
+	[beapi.messenger.StreamEvent.Type.TypeAccountUpdated]: (oldState, action) => ({
 		...oldState,
 		account: action.payload.account,
 	}),
 
-	[messengerpb.StreamEvent.Type.TypeContactUpdated]: (oldState, action) => ({
+	[beapi.messenger.StreamEvent.Type.TypeContactUpdated]: (oldState, action) => ({
 		...oldState,
 		contacts: {
 			...oldState.contacts,
@@ -40,7 +39,7 @@ export const reducerActions: {
 		},
 	}),
 
-	[messengerpb.StreamEvent.Type.TypeMemberUpdated]: (oldState, action) => {
+	[beapi.messenger.StreamEvent.Type.TypeMemberUpdated]: (oldState, action) => {
 		const member = action.payload.member
 
 		return {
@@ -55,7 +54,7 @@ export const reducerActions: {
 		}
 	},
 
-	[messengerpb.StreamEvent.Type.TypeInteractionDeleted]: (oldState, action) => {
+	[beapi.messenger.StreamEvent.Type.TypeInteractionDeleted]: (oldState, action) => {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { [action.payload.cid]: _, ...withoutDeletedInteraction } = oldState.interactions
 
@@ -65,29 +64,30 @@ export const reducerActions: {
 		}
 	},
 
-	[messengerpb.StreamEvent.Type.TypeListEnded]: (oldState, _) => ({
+	[beapi.messenger.StreamEvent.Type.TypeListEnded]: (oldState, _) => ({
 		...oldState,
 		initialListComplete: true,
 	}),
 
-	[messengerpb.StreamEvent.Type.TypeInteractionUpdated]: (oldState, action) => {
+	[beapi.messenger.StreamEvent.Type.TypeInteractionUpdated]: (oldState, action) => {
 		try {
 			const inte = action.payload.interaction
 			const gpk = inte.conversationPublicKey
-			const typeName = Object.keys(messengerpb.AppMessage.Type).find(
-				(name) => messengerpb.AppMessage.Type[name] === inte.type,
+			const typeName = Object.keys(beapi.messenger.AppMessage.Type).find(
+				(name) => beapi.messenger.AppMessage.Type[name] === inte.type,
 			)
 			const name = typeName?.substr('Type'.length)
-			const pbobj = messengerpb.AppMessage[name]
+			const pbobj = beapi.messenger.AppMessage[name]
 			if (!pbobj) {
 				throw new Error('failed to find a protobuf object matching the event type')
 			}
 			inte.name = name
-			inte.payload = pbobj.decode(inte.payload).toJSON()
+
+			inte.payload = pbobj.decode(inte.payload)
 			console.log('jsoned payload', inte.payload)
 			console.log('received inte', inte)
 
-			if (inte.type === messengerpb.AppMessage.Type.TypeAcknowledge) {
+			if (inte.type === beapi.messenger.AppMessage.Type.TypeAcknowledge) {
 				if ((oldState.interactions[gpk] || {})[inte.payload.target]) {
 					return {
 						...oldState,
@@ -348,7 +348,7 @@ export const reducerActions: {
 		}
 	},
 
-	[messengerpb.StreamEvent.Type.TypeDeviceUpdated]: (oldState, __) => {
+	[beapi.messenger.StreamEvent.Type.TypeDeviceUpdated]: (oldState, __) => {
 		console.info('ignored event type TypeDeviceUpdated')
 		return oldState
 	},
