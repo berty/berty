@@ -11,7 +11,6 @@ import { Icon } from '@ui-kitten/components'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { Translation } from 'react-i18next'
 import LinearGradient from 'react-native-linear-gradient'
-
 import {
 	PanGestureHandler,
 	State,
@@ -109,10 +108,30 @@ const HomeModalButton: React.FC<{
 	)
 }
 
-export const HomeModal: React.FC<{}> = () => {
+export const HomeModal: React.FC<{
+	closeModal: () => void
+}> = ({ closeModal }) => {
 	const navigation = useNativeNavigation()
 	const [{ absolute, color, margin, border, padding }] = useStyles()
-	const [animateSwipe] = useState(new Animated.Value(0))
+	const [animateSwipe] = useState(new Animated.Value(-100))
+
+	function slideUp() {
+		Animated.timing(animateSwipe, {
+			toValue: 0,
+			duration: 250,
+			useNativeDriver: false,
+		}).start()
+	}
+
+	function slideDown() {
+		Animated.timing(animateSwipe, {
+			toValue: -100,
+			duration: 200,
+			useNativeDriver: false,
+		}).start(closeModal)
+	}
+
+	React.useEffect(slideUp, [animateSwipe])
 
 	function onPanGestureEvent(event: PanGestureHandlerGestureEvent): void {
 		let toValue = 0
@@ -133,13 +152,9 @@ export const HomeModal: React.FC<{}> = () => {
 	function onHandlerStateChange(event: PanGestureHandlerStateChangeEvent): void {
 		if (event.nativeEvent.oldState === State.ACTIVE) {
 			if (event.nativeEvent.translationY > 100 || event.nativeEvent.velocityY > 100) {
-				navigation.goBack()
+				slideDown()
 			} else {
-				Animated.timing(animateSwipe, {
-					toValue: 0,
-					duration: 100,
-					useNativeDriver: false,
-				}).start()
+				slideUp()
 			}
 		}
 	}
@@ -147,7 +162,7 @@ export const HomeModal: React.FC<{}> = () => {
 	return (
 		<Translation>
 			{(t: any): React.ReactNode => (
-				<View>
+				<View style={[StyleSheet.absoluteFill, { zIndex: 1, elevation: 4 }]}>
 					<LinearGradient
 						style={[
 							absolute.bottom,
@@ -156,7 +171,7 @@ export const HomeModal: React.FC<{}> = () => {
 								justifyContent: 'center',
 								height: '100%',
 								width: '100%',
-								opacity: 0.3,
+								opacity: 0.1,
 							},
 						]}
 						colors={['#ACACFF', '#06068A']}
@@ -178,11 +193,11 @@ export const HomeModal: React.FC<{}> = () => {
 								justifyContent: 'center',
 								height: '100%',
 								width: '100%',
-								opacity: 0.3,
+								opacity: 0.1,
 							},
 						]}
 					/>
-					<TouchableWithoutFeedback style={[StyleSheet.absoluteFill]} onPress={navigation.goBack}>
+					<TouchableWithoutFeedback style={{ flex: 1 }} onPress={slideDown}>
 						<View style={{ width: '100%', height: '100%' }} />
 					</TouchableWithoutFeedback>
 					<PanGestureHandler

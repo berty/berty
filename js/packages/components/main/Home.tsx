@@ -16,7 +16,7 @@ import { Icon, Text } from '@ui-kitten/components'
 import pickBy from 'lodash/pickBy'
 import LottieView from 'lottie-react-native'
 import BlurView from '../shared-components/BlurView'
-import { useIsFocused } from '@react-navigation/native'
+import { HomeModal } from './HomeModal'
 
 import { ScreenProps, useNavigation, Routes } from '@berty-tech/navigation'
 import {
@@ -914,7 +914,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const [isOnTop, setIsOnTop] = useState<boolean>(false)
 	const [searchText, setSearchText] = useState<string>('')
 	const [refresh, setRefresh] = useState<boolean>(false)
-	const isFocused = useIsFocused()
+	const [isModalVisible, setModalVisibility] = useState<boolean>(false)
 
 	const { navigate } = useNativeNavigation()
 
@@ -981,7 +981,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 			<Translation>
 				{(t: any): React.ReactNode => (
 					<View style={[flex.tiny, styleBackground]}>
-						<SwipeNavRecognizer onSwipeLeft={() => navigate('Settings.Home')}>
+						<SwipeNavRecognizer onSwipeLeft={() => !isModalVisible && navigate('Settings.Home')}>
 							<SafeAreaConsumer>
 								{(insets: EdgeInsets | null) => (
 									<>
@@ -1074,21 +1074,30 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 												</>
 											)}
 										</ScrollView>
-										{!isFocused && (
-											<BlurView
-												blurType='light'
-												style={{
-													position: 'absolute',
-													left: 0,
-													right: 0,
-													top: 0,
-													bottom: 0,
-													height: windowHeight,
-													opacity: 0.94,
-												}}
+										{isModalVisible && (
+											<>
+												<BlurView
+													blurType='light'
+													style={{
+														position: 'absolute',
+														left: 0,
+														right: 0,
+														top: 0,
+														bottom: 0,
+														height: windowHeight,
+														opacity: 0.94,
+														backgroundColor: 'transparent',
+													}}
+												/>
+												<HomeModal closeModal={() => setModalVisibility(false)} />
+											</>
+										)}
+										{!searchText?.length && (
+											<Footer
+												openModal={() => setModalVisibility(true)}
+												isModalVisible={isModalVisible}
 											/>
 										)}
-										{!searchText?.length && <Footer />}
 									</>
 								)}
 							</SafeAreaConsumer>
