@@ -25,7 +25,10 @@ go/cmd/berty-doctor/berty-doctor
 go/cmd/berty-integration/berty-integration
 go/cmd/betabot/betabot
 go/cmd/rdvp/rdvp
+
+# Various berty outputs
 betabot.store
+benchmark_result.json
 
 # Delve's binaries
 *__debug_bin

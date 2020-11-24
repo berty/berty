@@ -27,8 +27,8 @@ func (m *Manager) SetNotificationManager(manager notification.Manager) {
 }
 
 func (m *Manager) GetNotificationManager() (notification.Manager, error) {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
+	defer m.prepareForGetter()()
+
 	return m.getNotificationManager()
 }
 

@@ -20,6 +20,7 @@ func miniCommand() *ffcli.Command {
 		manager.SetupLocalMessengerServerFlags(fs) // add flags to allow creating a full node in the same process
 		manager.SetupEmptyGRPCListenersFlags(fs)   // by default, we don't want to expose gRPC server for mini
 		manager.SetupRemoteNodeFlags(fs)           // mini can be run against an already running server
+		manager.SetupInitTimeout(fs)
 		return fs, nil
 	}
 

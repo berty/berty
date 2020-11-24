@@ -2,6 +2,7 @@ package initutil
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"strings"
 	"sync"
@@ -123,6 +124,7 @@ type Manager struct {
 			listeners         []grpcutil.Listener
 		} `json:"GRPC,omitempty"`
 	} `json:"Node,omitempty"`
+	InitTimeout time.Duration `json:"InitTimeout,omitempty"`
 
 	// internal
 	ctx        context.Context
@@ -180,6 +182,12 @@ func (m *Manager) applyDefaults() {
 }
 
 func (m *Manager) GetContext() context.Context {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	return m.getContext()
+}
+
+func (m *Manager) getContext() context.Context {
 	if m.ctx == nil {
 		m.ctx, m.ctxCancel = context.WithCancel(context.Background())
 	}
@@ -188,8 +196,8 @@ func (m *Manager) GetContext() context.Context {
 
 func (m *Manager) RunWorkers() error {
 	m.workers.Add(func() error {
-		<-m.GetContext().Done()
-		return m.GetContext().Err()
+		<-m.getContext().Done()
+		return m.getContext().Err()
 	}, func(error) {
 		m.ctxCancel()
 	})
@@ -266,4 +274,32 @@ func (m *Manager) AdvancedHelp() string {
 	}
 	tw.Flush()
 	return strings.TrimSpace(b.String())
+}
+
+func (m *Manager) SetupInitTimeout(fs *flag.FlagSet) {
+	fs.DurationVar(&m.InitTimeout, "node.init-timeout", time.Minute, "maximum time allowed for the initialization")
+}
+
+// prepareForGetter prepare locks and ctx timeouts for an external getter.
+// it returns a cleanup and should be defered.
+func (m *Manager) prepareForGetter() func() {
+	m.mutex.Lock()
+	if m.InitTimeout > 0 {
+		finishChan := make(chan struct{})
+		ticker := time.NewTimer(m.InitTimeout)
+		go func() {
+			select {
+			case <-finishChan:
+			case <-m.ctx.Done():
+			case <-ticker.C:
+				m.ctxCancel()
+			}
+		}()
+		return func() {
+			close(finishChan)
+			ticker.Stop()
+			m.mutex.Unlock()
+		}
+	}
+	return m.mutex.Unlock
 }

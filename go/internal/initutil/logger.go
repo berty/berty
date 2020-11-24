@@ -34,8 +34,8 @@ func (m *Manager) SetupLoggingFlags(fs *flag.FlagSet) {
 }
 
 func (m *Manager) GetLogger() (*zap.Logger, error) {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
+	defer m.prepareForGetter()()
+
 	return m.getLogger()
 }
 
