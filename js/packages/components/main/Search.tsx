@@ -222,7 +222,14 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 				!conv
 					? data.state === beapi.messenger.Contact.State.IncomingRequest
 						? navigate.main.contactRequest({ contactId: data.publicKey })
-						: null
+						: dispatch(
+								CommonActions.navigate({
+									name: Routes.Main.RequestSent,
+									params: {
+										contactPublicKey: data.publicKey,
+									},
+								}),
+						  )
 					: dispatch(
 							CommonActions.navigate({
 								name:

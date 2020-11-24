@@ -54,6 +54,7 @@ const createNavigation = ({
 				scan: createNavigateFunc<ScreenProps.Main.Scan>(navigate, Routes.Main.Scan),
 
 				listModal: createNavigateFunc<ScreenProps.Main.HomeModal>(navigate, Routes.Main.HomeModal),
+				requestSent: createNavigateFunc(navigate, Routes.Main.RequestSent),
 				createGroup: {
 					createGroupAddMembers: createNavigateFunc(
 						navigate,

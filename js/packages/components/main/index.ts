@@ -1,6 +1,7 @@
 export { Home } from './Home'
 export { ContactRequest } from './ContactRequest'
 export { Scan } from './Scan'
+export { RequestSent } from './RequestSent'
 export { HomeModal } from './HomeModal'
 export { CreateGroupAddMembers } from './CreateGroupAddMembers'
 export { CreateGroupFinalize } from './CreateGroupFinalize'
