@@ -8,9 +8,9 @@
         "kind": "Bot"
       },
       "betabot-dev": {
-        "link": "https://berty.tech/id#key=CiBQHH6a84AHwdahXR6NQcOxTKjUHeqLdQfIAzxAYSoD1xIgT-tFTYrU-tD55bYgaXbBNTlqTHubq-_Qb8ksv2bSH9o\u0026name=BetaBot%20Dev",
+        "link": "https://berty.tech/id#contact/oZBLFQQTqmZ25yvcRRUVgzzZCpDY7YAVXDEz3g8kmwcSPCmnQrqiMbLrfSp1GRLaNBX6ZRarid8jkSUX4yQYL4oBZcLDtFY/name=BetaBot-Dev",
         "name": "BetaBot Dev",
-        "description": "Dev BetaBot",
+        "description": "BetaBot-Dev",
         "kind": "Bot"
       },
       "testbot": {
@@ -20,9 +20,9 @@
         "kind": "Bot"
       },
       "testbot-dev": {
-        "link": "https://berty.tech/id#key=CiAxSP1RYrv4yi7PsQZtqFH9fepMiqDD1M7y1aIZAzMmghIg_fXVz1J-HfCd6gtRlUN0GsWiIlfgVPamj7lgFIUqfOA\u0026name=TestBot%20Dev",
+        "link": "https://berty.tech/id#contact/oZBLFG6fwy21Dn4o511HC6ghxEghB5apq2QhjFepXCkbhfCWjzvRzhetVCGYwWhCtrWVL1TmExtHvdgGBvx1WK1RnXTdato/name=TestBot-Dev",
         "name": "TestBot Dev",
-        "description": "Dev TestBot",
+        "description": "TestBot-Dev",
         "kind": "Bot"
       }
     },
