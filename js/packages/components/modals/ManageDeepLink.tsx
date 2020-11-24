@@ -40,24 +40,26 @@ export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 			title = t('modals.manage-deep-link.error')
 		}
 		content = <InvalidScan title={title} error={error.toString()} />
-	} else if (pdlReply.kind === beapi.messenger.ParseDeepLink.Kind.BertyGroup) {
+	} else if (pdlReply.link.kind === beapi.messenger.BertyLink.Kind.GroupV1Kind) {
 		content = (
 			<ManageGroupInvitation
 				link={params.value}
-				displayName={pdlReply.bertyGroup.displayName}
+				displayName={pdlReply.link.bertyGroup.displayName}
 				publicKey={base64ToURLBase64(
-					new Buffer(pdlReply.bertyGroup.group.publicKey).toString('base64'),
+					new Buffer(pdlReply.link.bertyGroup.group.publicKey).toString('base64'),
 				)}
 				type={params.type}
 			/>
 		)
-	} else if (pdlReply.kind === beapi.messenger.ParseDeepLink.Kind.BertyID) {
+	} else if (pdlReply.link.kind === beapi.messenger.BertyLink.Kind.ContactInviteV1Kind) {
 		content = (
 			<AddThisContact
 				link={params.value}
 				type={params.type}
-				displayName={pdlReply.bertyId.displayName}
-				publicKey={base64ToURLBase64(new Buffer(pdlReply.bertyId.accountPk).toString('base64'))}
+				displayName={pdlReply.link.bertyId.displayName}
+				publicKey={base64ToURLBase64(
+					new Buffer(pdlReply.link.bertyId.accountPk).toString('base64'),
+				)}
 			/>
 		)
 	}

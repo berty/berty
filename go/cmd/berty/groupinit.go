@@ -5,7 +5,9 @@ import (
 	"flag"
 	"fmt"
 	mrand "math/rand"
+	"os"
 
+	qrterminal "github.com/mdp/qrterminal/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
@@ -14,11 +16,12 @@ import (
 
 func groupinitCommand() *ffcli.Command {
 	// FIXME: share on discord
-	// FIXME: print QR
 	// FIXME: print berty.tech URL
+	var noQRFlag bool
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("berty groupinit", flag.ExitOnError)
 		fs.String("config", "", "config file (optional)")
+		fs.BoolVar(&noQRFlag, "no-qr", noQRFlag, "do not print the QR code in terminal")
 		manager.SetupLoggingFlags(fs) // also available at root level
 		return fs, nil
 	}
@@ -41,12 +44,23 @@ func groupinitCommand() *ffcli.Command {
 			}
 
 			name := fmt.Sprintf("random-group-%d", mrand.Int31()%65535) // nolint:gosec
-			deepLink, _, err := bertymessenger.ShareableBertyGroupURL(g, name)
+			group := &bertymessenger.BertyGroup{
+				Group:       g,
+				DisplayName: name,
+			}
+			link := group.GetBertyLink()
+			internal, web, err := link.Marshal()
 			if err != nil {
 				return err
 			}
 
-			fmt.Println(deepLink)
+			fmt.Println(web)
+			if !noQRFlag {
+				fmt.Fprintln(os.Stderr)
+				fmt.Fprintln(os.Stderr, internal)
+				qrterminal.GenerateHalfBlock(internal, qrterminal.L, os.Stderr)
+			}
+
 			return nil
 		},
 	}

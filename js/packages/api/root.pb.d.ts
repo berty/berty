@@ -4937,18 +4937,16 @@ export namespace berty {
                 }
 
                 interface IReply {
-                    bertyId?: (berty.messenger.v1.IBertyID|null);
-                    bertyIdPayload?: (string|null);
-                    deepLink?: (string|null);
-                    htmlUrl?: (string|null);
+                    link?: (berty.messenger.v1.IBertyLink|null);
+                    internalUrl?: (string|null);
+                    webUrl?: (string|null);
                 }
 
                 class Reply implements IReply {
 
-                    public bertyId?: (berty.messenger.v1.IBertyID|null);
-                    public bertyIdPayload: string;
-                    public deepLink: string;
-                    public htmlUrl: string;
+                    public link?: (berty.messenger.v1.IBertyLink|null);
+                    public internalUrl: string;
+                    public webUrl: string;
                     public static create(properties?: berty.messenger.v1.InstanceShareableBertyID.IReply): berty.messenger.v1.InstanceShareableBertyID.Reply;
                     public static encode(message: berty.messenger.v1.InstanceShareableBertyID.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.InstanceShareableBertyID.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5000,18 +4998,16 @@ export namespace berty {
                 }
 
                 interface IReply {
-                    bertyGroup?: (berty.messenger.v1.IBertyGroup|null);
-                    bertyGroupPayload?: (string|null);
-                    deepLink?: (string|null);
-                    htmlUrl?: (string|null);
+                    link?: (berty.messenger.v1.IBertyLink|null);
+                    internalUrl?: (string|null);
+                    webUrl?: (string|null);
                 }
 
                 class Reply implements IReply {
 
-                    public bertyGroup?: (berty.messenger.v1.IBertyGroup|null);
-                    public bertyGroupPayload: string;
-                    public deepLink: string;
-                    public htmlUrl: string;
+                    public link?: (berty.messenger.v1.IBertyLink|null);
+                    public internalUrl: string;
+                    public webUrl: string;
                     public static create(properties?: berty.messenger.v1.ShareableBertyGroup.IReply): berty.messenger.v1.ShareableBertyGroup.Reply;
                     public static encode(message: berty.messenger.v1.ShareableBertyGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.ShareableBertyGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5116,16 +5112,12 @@ export namespace berty {
                 }
 
                 interface IReply {
-                    kind?: (berty.messenger.v1.ParseDeepLink.Kind|null);
-                    bertyId?: (berty.messenger.v1.IBertyID|null);
-                    bertyGroup?: (berty.messenger.v1.IBertyGroup|null);
+                    link?: (berty.messenger.v1.IBertyLink|null);
                 }
 
                 class Reply implements IReply {
 
-                    public kind: berty.messenger.v1.ParseDeepLink.Kind;
-                    public bertyId?: (berty.messenger.v1.IBertyID|null);
-                    public bertyGroup?: (berty.messenger.v1.IBertyGroup|null);
+                    public link?: (berty.messenger.v1.IBertyLink|null);
                     public static create(properties?: berty.messenger.v1.ParseDeepLink.IReply): berty.messenger.v1.ParseDeepLink.Reply;
                     public static encode(message: berty.messenger.v1.ParseDeepLink.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.ParseDeepLink.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5136,11 +5128,36 @@ export namespace berty {
                     public static toObject(message: berty.messenger.v1.ParseDeepLink.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
+            }
+
+            interface IBertyLink {
+                kind?: (berty.messenger.v1.BertyLink.Kind|null);
+                bertyId?: (berty.messenger.v1.IBertyID|null);
+                bertyGroup?: (berty.messenger.v1.IBertyGroup|null);
+            }
+
+            class BertyLink implements IBertyLink {
+
+                public kind: berty.messenger.v1.BertyLink.Kind;
+                public bertyId?: (berty.messenger.v1.IBertyID|null);
+                public bertyGroup?: (berty.messenger.v1.IBertyGroup|null);
+                public static create(properties?: berty.messenger.v1.IBertyLink): berty.messenger.v1.BertyLink;
+                public static encode(message: berty.messenger.v1.IBertyLink, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IBertyLink, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.BertyLink;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.BertyLink;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.BertyLink;
+                public static toObject(message: berty.messenger.v1.BertyLink, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace BertyLink {
 
                 enum Kind {
                     UnknownKind = 0,
-                    BertyID = 1,
-                    BertyGroup = 2
+                    ContactInviteV1Kind = 1,
+                    GroupV1Kind = 2
                 }
             }
 

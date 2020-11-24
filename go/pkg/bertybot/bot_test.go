@@ -63,7 +63,7 @@ func TestUnstableBotCommunication(t *testing.T) {
 		parsed, err := botClient.ParseDeepLink(ctx, &bertymessenger.ParseDeepLink_Request{Link: bot.BertyIDURL()})
 		require.NoError(t, err)
 		_, err = userClient.SendContactRequest(ctx, &bertymessenger.SendContactRequest_Request{
-			BertyID: parsed.BertyID,
+			BertyID: parsed.GetLink().GetBertyID(),
 		})
 		require.NoError(t, err)
 		time.Sleep(200 * time.Millisecond) // FIXME: replace with dynamic waiting

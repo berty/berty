@@ -182,16 +182,16 @@ func TestUnstableServiceContactRequest(t *testing.T) {
 	node.DrainInitEvents(t)
 
 	// send contact request
-	const contactName = "zxxma-iphone"
 	{
-		link := "https://berty.tech/id#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA&name=" + contactName
+		link := "https://berty.tech/id#contact/" + validContactBlob + "/name=Alice"
 		ownMetadata := []byte("bar")
-		metadata, err := proto.Marshal(&ContactMetadata{DisplayName: contactName})
+		metadata, err := proto.Marshal(&ContactMetadata{DisplayName: "Alice"})
 		require.NoError(t, err)
 		deeplinkReply, err := node.GetClient().ParseDeepLink(ctx, &ParseDeepLink_Request{Link: link})
 		require.NoError(t, err)
+		require.NoError(t, deeplinkReply.Link.IsValid())
 		req := &SendContactRequest_Request{
-			BertyID:     deeplinkReply.BertyID,
+			BertyID:     deeplinkReply.Link.BertyID,
 			Metadata:    metadata,
 			OwnMetadata: ownMetadata,
 		}
@@ -209,7 +209,7 @@ func TestUnstableServiceContactRequest(t *testing.T) {
 		require.NoError(t, err)
 		contact := payload.(*StreamEvent_ContactUpdated).Contact
 		require.NotNil(t, contact)
-		require.Equal(t, contact.GetDisplayName(), contactName)
+		require.Equal(t, contact.GetDisplayName(), "Alice")
 		require.Equal(t, contact.GetState(), Contact_OutgoingRequestEnqueued)
 		assert.Len(t, node.contacts, 1)
 	}
@@ -465,7 +465,7 @@ func TestBrokenPeersCreateJoinConversation(t *testing.T) {
 
 	// joiners join the conversation
 	for _, joiner := range joiners {
-		ret, err := joiner.GetClient().ConversationJoin(ctx, &ConversationJoin_Request{Link: sbg.GetHTMLURL()})
+		ret, err := joiner.GetClient().ConversationJoin(ctx, &ConversationJoin_Request{Link: sbg.GetWebURL()})
 		require.NoError(t, err)
 		require.Empty(t, ret)
 	}

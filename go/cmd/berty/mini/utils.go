@@ -9,21 +9,15 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
-func openGroupFromString(data string) (*bertytypes.Group, error) {
-	query, method, err := bertymessenger.NormalizeDeepLinkURL(data)
-
+func openGroupFromString(url string) (*bertytypes.Group, error) {
+	link, err := bertymessenger.UnmarshalLink(url)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
-	} else if method != "/group" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected a /group URL, got %s instead", method))
 	}
-
-	res, err := bertymessenger.ParseGroupInviteURLQuery(query)
-	if err != nil {
-		return nil, err
+	if !link.IsGroup() {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected a group URL, got %q instead", link.GetKind()))
 	}
-
-	return res.BertyGroup.Group, nil
+	return link.GetBertyGroup().GetGroup(), nil
 }
 
 func pkAsShortID(pk []byte) string {
