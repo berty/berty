@@ -144,6 +144,15 @@
       "delete-account-button": "Supprimer mon compte",
       "backup-account-button": "Créer une sauvegarde du compte"
     },
+    "edit-profile": {
+      "title": "",
+      "qr-will-update": "",
+      "ocr-wont-update": "",
+      "save": "",
+      "cancel": "",
+      "name-input-placeholder": "",
+      "name-input-label": "Nom"
+    },
     "notifications": {
       "title": "Notifications",
       "enabled-desc": "Vous avez activé les notifications !",
