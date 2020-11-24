@@ -145,12 +145,12 @@
       "backup-account-button": "Créer une sauvegarde du compte"
     },
     "edit-profile": {
-      "title": "",
-      "qr-will-update": "",
-      "ocr-wont-update": "",
-      "save": "",
-      "cancel": "",
-      "name-input-placeholder": "",
+      "title": "Modifier mon profil",
+      "qr-will-update": "Votre Berty ID (code QR) sera mis à jour",
+      "ocr-wont-update": "Vos demandes de contact en attente ne seront pas mises à jour",
+      "save": "Enregistrer les modifications",
+      "cancel": "Annuler",
+      "name-input-placeholder": "Nom...",
       "name-input-label": "Nom"
     },
     "notifications": {
