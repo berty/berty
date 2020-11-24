@@ -393,5 +393,5 @@ android/libs/gobridge.aar: $(bridge_src)
 
 node_modules: package.json
 	$(call check-program, yarn)
-	yarn $(if $(filter $(CI), true), --frozen-lockfile --network-timeout 1200000)
+	yarn $(if $(filter $(CI), true), --frozen-lockfile --network-timeout 1200000 --network-concurrency 1)
 	touch $@
