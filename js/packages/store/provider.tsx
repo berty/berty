@@ -20,7 +20,9 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 	const [state, dispatch] = React.useReducer(reducer, { ...initialState, daemonAddress, embedded })
 	const [eventEmitter] = React.useState(new EventEmitter())
 
-	useEffect(() => initialLaunch(dispatch, embedded), [embedded])
+	useEffect(() => {
+		initialLaunch(dispatch, embedded)
+	}, [embedded])
 
 	useEffect(() => {
 		openingDaemon(dispatch, state.appState, state.selectedAccount)
@@ -50,10 +52,7 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 		state.conversations,
 	])
 
-	useEffect(() => closingDaemon(state.clearDaemon, state.clearClients, dispatch), [
-		state.clearDaemon,
-		state.clearClients,
-	])
+	useEffect(() => closingDaemon(state.clearClients, dispatch), [state.clearClients])
 
 	useEffect(() => deletingStorage(state.appState, dispatch, embedded, state.selectedAccount), [
 		state.appState,

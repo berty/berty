@@ -22,7 +22,7 @@ import beapi from '@berty-tech/api'
 import { reducerAction } from '@berty-tech/store/providerReducer'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
-const accountClient = Service(beapi.account.AccountService, rpcNative, null)
+const accountService = Service(beapi.account.AccountService, rpcNative, null)
 
 export const storageKeyForAccount = (accountID: string) => `storage_${accountID}`
 
@@ -34,11 +34,10 @@ export const createNewAccount = async (
 		return
 	}
 
-	await GoBridge.initBridge()
 	let resp: beapi.account.CreateAccount.Reply
 
 	try {
-		resp = await accountClient.createAccount({})
+		resp = await accountService.createAccount({})
 	} catch (e) {
 		console.warn('unable to create account', e)
 		return
@@ -54,9 +53,6 @@ export const createNewAccount = async (
 		type: MessengerActions.SetCreatedAccount,
 		payload: {
 			accountId: resp.accountMetadata.accountId,
-			clearDaemon: () => {
-				GoBridge.closeBridge()
-			},
 		},
 	})
 }
@@ -70,11 +66,11 @@ export const importAccount = async (
 		return
 	}
 
-	await GoBridge.initBridge()
+	// TODO: check if bridge is running
 	let resp: beapi.account.CreateAccount.Reply
 
 	try {
-		resp = await accountClient.importAccount({
+		resp = await accountService.importAccount({
 			backupPath: path,
 		})
 	} catch (e) {
@@ -87,7 +83,7 @@ export const importAccount = async (
 	}
 
 	await refreshAccountList(embedded, dispatch)
-	await GoBridge.closeBridge()
+	await accountService.closeAccount({})
 
 	dispatch({
 		type: MessengerActions.SetNextAccount,
@@ -133,46 +129,13 @@ export const setPersistentOption = async (
 	}
 }
 
-// callWithBridge wraps a function, creates a bridge if necessary and closes it
-function callWithBridge<T>(func: () => Promise<T>): Promise<T> {
-	return new Promise<T>((resolve, reject) => {
-		let bridgeInitiated = false
-
-		GoBridge.getProtocolAddr()
-			.catch(() => {
-				bridgeInitiated = true
-				return GoBridge.initBridge()
-			})
-			.catch((err) => {
-				console.warn('unable to init bridge')
-				reject(err)
-			})
-			.then(func)
-			.then((result) => {
-				if (!bridgeInitiated) {
-					resolve(result)
-					return
-				}
-
-				GoBridge.closeBridge().catch((err) => {
-					console.error(err)
-				})
-
-				return resolve(result)
-			})
-			.catch((err) => {
-				reject(err)
-			})
-	})
-}
-
 export const refreshAccountList = async (
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 ): Promise<beapi.account.IAccountMetadata[]> => {
 	try {
 		if (embedded) {
-			const resp = await callWithBridge(async () => accountClient.listAccounts({}))
+			const resp = await accountService.listAccounts({})
 
 			if (!resp.accounts) {
 				return []
@@ -229,7 +192,12 @@ const getPersistentOptions = async (
 	}
 }
 
-export const initialLaunch = (dispatch: (arg0: reducerAction) => void, embedded: boolean) => {
+export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, embedded: boolean) => {
+	await GoBridge.initBridge()
+		.then(() => console.log('bridge init done'))
+		.catch((err) => {
+			console.error('unable to init bridge ', Object.keys(err), err.domain)
+		})
 	const f = async () => {
 		const accounts = await refreshAccountList(embedded, dispatch)
 
@@ -285,7 +253,6 @@ export const openingDaemon = async (
 	let bridgeOpts: GoBridgeOpts
 	try {
 		const store = await AsyncStorage.getItem(storageKeyForAccount(selectedAccount.toString()))
-		if (!store) return
 		const opts: PersistentOptions = JSON.parse(store)
 		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
 
@@ -305,33 +272,18 @@ export const openingDaemon = async (
 		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
 	}
 
-	GoBridge.initBridge()
-		.then(() => console.log('bridge init done'))
-		.catch((err) => {
-			console.error('unable to init bridge', err)
+	try {
+		await accountService.openAccount({
+			args: bridgeOpts.cliArgs,
+			accountId: selectedAccount.toString(),
 		})
-		.then(() =>
-			accountClient.openAccount({
-				args: bridgeOpts.cliArgs,
-				accountId: selectedAccount.toString(),
-			}),
-		)
-		.then(() => {
-			dispatch({
-				type: MessengerActions.SetStateOpeningClients,
-				payload: {
-					clearDaemon: () => {
-						GoBridge.closeBridge()
-					},
-				},
-			})
+		dispatch({ type: MessengerActions.SetStateOpeningClients })
+	} catch (err) {
+		dispatch({
+			type: MessengerActions.SetStreamError,
+			payload: { error: new Error(`Failed to start node: ${err}`) },
 		})
-		.catch((err) =>
-			dispatch({
-				type: MessengerActions.SetStreamError,
-				payload: { error: new Error(`Failed to start node: ${err}`) },
-			}),
-		)
+	}
 }
 
 // handle state OpeningWaitingForClients
@@ -478,22 +430,16 @@ export const openingCloseConvos = (
 
 // handle states DeletingClosingDaemon, ClosingDaemon
 export const closingDaemon = (
-	clearBridge: (() => Promise<void>) | null,
 	clearClients: (() => Promise<void>) | null,
 	dispatch: (arg0: reducerAction) => void,
 ) => {
-	if (clearBridge === null) {
-		return
-	}
-
 	return () => {
 		const f = async () => {
 			try {
 				if (clearClients) {
 					await clearClients()
 				}
-
-				await clearBridge()
+				await accountService.closeAccount({})
 			} catch (e) {
 				console.warn('unable to stop protocol', e)
 			}
@@ -520,7 +466,7 @@ export const deletingStorage = (
 
 	const f = async () => {
 		if (selectedAccount !== null) {
-			await callWithBridge(async () => accountClient.deleteAccount({ accountId: selectedAccount }))
+			await accountService.deleteAccount({ accountId: selectedAccount })
 			await AsyncStorage.removeItem(storageKeyForAccount(selectedAccount))
 			await refreshAccountList(embedded, dispatch)
 		} else {
