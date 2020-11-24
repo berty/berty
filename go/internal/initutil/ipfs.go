@@ -182,9 +182,14 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 		// Setup BLE
 		if m.Node.Protocol.Ble {
-			swarmAddrs = append(swarmAddrs, ble.DefaultAddr)
-			bleOpt := libp2p.Transport(proximity.NewTransport(m.ctx, logger, ble.NewDriver(logger)))
-			p2pOpts = libp2p.ChainOptions(p2pOpts, bleOpt)
+			if ble.Supported {
+				swarmAddrs = append(swarmAddrs, ble.DefaultAddr)
+				p2pOpts = libp2p.ChainOptions(p2pOpts,
+					libp2p.Transport(proximity.NewTransport(m.ctx, logger, ble.NewDriver(logger))),
+				)
+			} else {
+				m.initLogger.Warn("cannot enable BLE on an unsupported platform")
+			}
 		}
 
 		// Setup MC
