@@ -1,4 +1,6 @@
-export const GoBridgeDefaultOpts = {
+import { GoBridgeOpts } from './types'
+
+export const GoBridgeDefaultOpts: GoBridgeOpts = {
 	cliArgs: [
 		'--log.filters=info+:bty*,-*.grpc warn+:*.grpc error+:*',
 		'--log.format=console',

@@ -3,8 +3,7 @@ import { Vibration } from 'react-native'
 import GestureRecognizer from 'react-native-swipe-gestures'
 import { SafeAreaContext } from 'react-native-safe-area-context'
 
-import { berty } from '@berty-tech/api/index.pb'
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { usePersistentOptions, useMsgrContext } from '@berty-tech/store/hooks'
 import { NotificationsInhibitor } from '@berty-tech/store/context'
@@ -14,7 +13,7 @@ import notifications, { DefaultNotification } from './notifications'
 import { playSound, SoundKey } from './sounds'
 
 const NotificationContents: React.FC<{
-	additionalProps: { type: berty.messenger.v1.StreamEvent.Notified.Type }
+	additionalProps: { type: beapi.messenger.StreamEvent.Notified.Type }
 }> = (props) => {
 	const NotificationComponent = notifications[props?.additionalProps?.type]
 	if (NotificationComponent) {
@@ -56,7 +55,7 @@ const NotificationBody: React.FC<any> = (props) => {
 	)
 }
 
-const T = messengerpb.StreamEvent.Notified.Type
+const T = beapi.messenger.StreamEvent.Notified.Type
 
 const notifsSounds: { [key: number]: SoundKey } = {
 	[T.TypeContactRequestReceived]: 'contactRequestReceived',
@@ -71,7 +70,7 @@ const GatedNotificationBody: React.FC<any> = (props) => {
 	const ctx = useMsgrContext()
 	const persistentOptions = usePersistentOptions()
 
-	const notif = props.additionalProps as berty.messenger.v1.StreamEvent.INotified | undefined
+	const notif = props.additionalProps as beapi.messenger.StreamEvent.INotified | undefined
 
 	const isValid = notif && props.isOpen && persistentOptions?.notifications?.enable
 

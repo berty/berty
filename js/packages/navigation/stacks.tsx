@@ -13,8 +13,6 @@ import * as RawComponents from '@berty-tech/components'
 import mapValues from 'lodash/mapValues'
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import { Routes } from './types'
-// import { messenger as messengerpb } from '@berty-tech/api/index.js'
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import { isClosing, MessengerAppState } from '@berty-tech/store/context'
 import { dispatch, navigate } from '@berty-tech/navigation/rootRef'
 
@@ -174,19 +172,6 @@ export const CreateGroupNavigation: React.FC = () => {
 	)
 }
 
-const TabStack = createMaterialTopTabNavigator() // provides swipe animation
-export const TabNavigation: React.FC = () => {
-	return (
-		<TabStack.Navigator
-			initialRouteName={Routes.Main.Home}
-			tabBar={() => <Components.Main.Footer />}
-			tabBarPosition='bottom'
-		>
-			<TabStack.Screen name={Routes.Main.Home} component={Components.Main.Home} />
-		</TabStack.Navigator>
-	)
-}
-
 const NavigationStack = createStackNavigator()
 export const Navigation: React.FC = () => {
 	const context = useMsgrContext()
@@ -274,7 +259,7 @@ export const Navigation: React.FC = () => {
 				component={CreateGroupNavigation}
 				options={ModalScreenOptions}
 			/>
-			<NavigationStack.Screen name={Routes.Root.Tabs} component={TabNavigation} />
+			<NavigationStack.Screen name={Routes.Root.Tabs} component={Components.Main.Home} />
 			<NavigationStack.Screen
 				name={Routes.Settings.MyBertyId}
 				component={Components.Settings.MyBertyId}
@@ -325,12 +310,8 @@ export const Navigation: React.FC = () => {
 				component={Components.Settings.DevTools}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Settings.AddContactList}
-				component={Components.Settings.AddContactList}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Settings.AddConversationList}
-				component={Components.Settings.AddConversationList}
+				name={Routes.Settings.AddDevConversations}
+				component={Components.Settings.AddDevConversations}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Settings.SystemInfo}

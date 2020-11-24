@@ -1,18 +1,20 @@
 import React from 'react'
-import { View, ScrollView, Share, Image } from 'react-native'
+import { View, ScrollView, Share } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
-import { useStyles } from '@berty-tech/styles'
 import { useTranslation } from 'react-i18next'
+
+import { useStyles } from '@berty-tech/styles'
+import { useNavigation, ScreenProps } from '@berty-tech/navigation'
+import { useConversation, useMsgrContext } from '@berty-tech/store/hooks'
+
 import {
 	ButtonSetting,
 	FactionButtonSetting,
 	ButtonSettingRow,
 } from '../shared-components/SettingsButtons'
 import HeaderSettings from '../shared-components/Header'
-import { useNavigation, ScreenProps } from '@berty-tech/navigation'
-import { useConversation, useMsgrContext } from '@berty-tech/store/hooks'
-import AvatarGroup19 from '../main/Avatar_Group_Copy_19.png'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { MemberAvatar, MultiMemberAvatar } from '../avatars'
 
 //
 // GroupChatSettings
@@ -70,7 +72,7 @@ const GroupChatSettingsHeader: React.FC<any> = ({ displayName }) => {
 	return (
 		<View>
 			<View style={[row.center]}>
-				<Image source={AvatarGroup19} style={{ width: 80, height: 80 }} />
+				<MultiMemberAvatar size={80} />
 			</View>
 			<Text
 				numberOfLines={1}
@@ -119,15 +121,27 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 			>
 				{Object.entries(members).map(([k]) => {
 					return (
-						<ButtonSetting
-							style={[padding.horizontal.small]}
-							name={`${
-								(members && members[k].displayName) ||
-								t('chat.multi-member-settings.members-button.unknown')
-							}: ${members[k].publicKey}`}
-							alone={false}
-							actionIcon={null}
-						/>
+						<View
+							style={{
+								flexDirection: 'row',
+								alignItems: 'center',
+							}}
+						>
+							<MemberAvatar
+								publicKey={members[k]?.publicKey}
+								conversationPublicKey={publicKey}
+								size={30}
+							/>
+							<ButtonSetting
+								style={[padding.horizontal.small]}
+								name={`${
+									(members && members[k].displayName) ||
+									t('chat.multi-member-settings.members-button.unknown')
+								}: ${members[k].publicKey.slice(0, 20)}..`}
+								alone={false}
+								actionIcon={null}
+							/>
+						</View>
 					)
 				})}
 			</FactionButtonSetting>

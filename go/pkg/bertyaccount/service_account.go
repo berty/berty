@@ -343,6 +343,14 @@ func (s *service) ImportAccount(_ context.Context, req *ImportAccount_Request) (
 		return nil, errcode.ErrBertyAccountNoBackupSpecified
 	}
 
+	if stat, err := os.Stat(req.BackupPath); err != nil {
+		return nil, errcode.ErrBertyAccountDataNotFound.Wrap(err)
+	} else if stat.IsDir() {
+		return nil, errcode.ErrBertyAccountDataNotFound.Wrap(fmt.Errorf("specified path is a directory"))
+	}
+
+	s.logger.Info("importing berty messenger account", zap.String("path", req.BackupPath))
+
 	meta, err := s.createAccount(&CreateAccount_Request{
 		AccountID:     req.AccountID,
 		AccountName:   req.AccountName,

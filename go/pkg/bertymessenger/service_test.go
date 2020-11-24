@@ -4,6 +4,7 @@ import (
 	"archive/tar"
 	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -17,6 +18,7 @@ import (
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/bertytypes"
 )
 
 func TestUnstableServiceStream(t *testing.T) {
@@ -328,13 +330,13 @@ func TestBroken1To1AddContact(t *testing.T) {
 	defer cleanup()
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	clients, cleanup := TestingInfra(ctx, t, 2, logger)
+	clients, _, cleanup := TestingInfra(ctx, t, 2, logger)
 	defer cleanup()
 
 	// Init accounts
 	var (
-		alice = NewTestingAccount(ctx, t, clients[0], logger)
-		bob   = NewTestingAccount(ctx, t, clients[1], logger)
+		alice = NewTestingAccount(ctx, t, clients[0], nil, logger)
+		bob   = NewTestingAccount(ctx, t, clients[1], nil, logger)
 	)
 	{
 		defer alice.Close()
@@ -375,13 +377,13 @@ func TestBroken1To1Exchange(t *testing.T) {
 	defer cleanup()
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	clients, cleanup := TestingInfra(ctx, t, 2, logger)
+	clients, _, cleanup := TestingInfra(ctx, t, 2, logger)
 	defer cleanup()
 
 	// Init accounts
 	var (
-		alice = NewTestingAccount(ctx, t, clients[0], logger)
-		bob   = NewTestingAccount(ctx, t, clients[1], logger)
+		alice = NewTestingAccount(ctx, t, clients[0], nil, logger)
+		bob   = NewTestingAccount(ctx, t, clients[1], nil, logger)
 	)
 	{
 		defer alice.Close()
@@ -430,20 +432,20 @@ func TestBrokenPeersCreateJoinConversation(t *testing.T) {
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
 	accountsAmount := 3
-	clients, cleanup := TestingInfra(ctx, t, accountsAmount, logger)
+	clients, _, cleanup := TestingInfra(ctx, t, accountsAmount, logger)
 	defer cleanup()
 
 	// create nodes
 	var creator *TestingAccount
 	{
-		creator = NewTestingAccount(ctx, t, clients[0], logger)
+		creator = NewTestingAccount(ctx, t, clients[0], nil, logger)
 		defer creator.Close()
 		creator.SetName(t, "Creator")
 	}
 	joiners := make([]*TestingAccount, accountsAmount-1)
 	{
 		for i := 0; i < accountsAmount-1; i++ {
-			joiners[i] = NewTestingAccount(ctx, t, clients[i+1], logger)
+			joiners[i] = NewTestingAccount(ctx, t, clients[i+1], nil, logger)
 			defer joiners[i].Close()
 			joiners[i].SetName(t, "Joiner #"+strconv.Itoa(i))
 		}
@@ -514,13 +516,13 @@ func TestBroken3PeersExchange(t *testing.T) {
 	defer cancel()
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
-	clients, cleanup := TestingInfra(ctx, t, 3, logger)
+	clients, _, cleanup := TestingInfra(ctx, t, 3, logger)
 	defer cleanup()
 
 	// create nodes
 	var creator *TestingAccount
 	{
-		creator = NewTestingAccount(ctx, t, clients[0], logger)
+		creator = NewTestingAccount(ctx, t, clients[0], nil, logger)
 		defer creator.Close()
 		creator.DrainInitEvents(t)
 		creator.SetNameAndDrainUpdate(t, "Creator")
@@ -528,7 +530,7 @@ func TestBroken3PeersExchange(t *testing.T) {
 	joiners := make([]*TestingAccount, 2)
 	{
 		for i := 0; i < 2; i++ {
-			joiners[i] = NewTestingAccount(ctx, t, clients[i+1], logger)
+			joiners[i] = NewTestingAccount(ctx, t, clients[i+1], nil, logger)
 			defer joiners[i].Close()
 			joiners[i].DrainInitEvents(t)
 			joiners[i].SetNameAndDrainUpdate(t, "Joiner #"+strconv.Itoa(i))
@@ -573,23 +575,23 @@ func TestBrokenConversationInvitation(t *testing.T) {
 	defer cancel()
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
-	clients, cleanup := TestingInfra(ctx, t, 3, logger)
+	clients, _, cleanup := TestingInfra(ctx, t, 3, logger)
 	defer cleanup()
 
 	// create nodes
 	var alice, bob, john *TestingAccount
 	{
-		alice = NewTestingAccount(ctx, t, clients[0], logger)
+		alice = NewTestingAccount(ctx, t, clients[0], nil, logger)
 		defer alice.Close()
 		alice.SetName(t, "Alice")
 		alice.DrainInitEvents(t)
 
-		bob = NewTestingAccount(ctx, t, clients[1], logger)
+		bob = NewTestingAccount(ctx, t, clients[1], nil, logger)
 		defer bob.Close()
 		bob.SetName(t, "Bob")
 		bob.DrainInitEvents(t)
 
-		john = NewTestingAccount(ctx, t, clients[2], logger)
+		john = NewTestingAccount(ctx, t, clients[2], nil, logger)
 		defer john.Close()
 		john.SetName(t, "John")
 		john.DrainInitEvents(t)
@@ -639,23 +641,23 @@ func TestBrokenConversationInvitationAndExchange(t *testing.T) {
 	defer cancel()
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
-	clients, cleanup := TestingInfra(ctx, t, 3, logger)
+	clients, _, cleanup := TestingInfra(ctx, t, 3, logger)
 	defer cleanup()
 
 	// create nodes
 	var alice, bob, john *TestingAccount
 	{
-		alice = NewTestingAccount(ctx, t, clients[0], logger)
+		alice = NewTestingAccount(ctx, t, clients[0], nil, logger)
 		defer alice.Close()
 		alice.SetName(t, "Alice")
 		alice.DrainInitEvents(t)
 
-		bob = NewTestingAccount(ctx, t, clients[1], logger)
+		bob = NewTestingAccount(ctx, t, clients[1], nil, logger)
 		defer bob.Close()
 		bob.SetName(t, "Bob")
 		bob.DrainInitEvents(t)
 
-		john = NewTestingAccount(ctx, t, clients[2], logger)
+		john = NewTestingAccount(ctx, t, clients[2], nil, logger)
 		defer john.Close()
 		john.SetName(t, "John")
 		john.DrainInitEvents(t)
@@ -713,13 +715,13 @@ func TestBrokenConversationOpenClose(t *testing.T) {
 	defer cleanup()
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	clients, cleanup := TestingInfra(ctx, t, 2, logger)
+	clients, _, cleanup := TestingInfra(ctx, t, 2, logger)
 	defer cleanup()
 
 	// Init accounts
 	var (
-		alice = NewTestingAccount(ctx, t, clients[0], logger)
-		bob   = NewTestingAccount(ctx, t, clients[1], logger)
+		alice = NewTestingAccount(ctx, t, clients[0], nil, logger)
+		bob   = NewTestingAccount(ctx, t, clients[1], nil, logger)
 	)
 	{
 		defer alice.Close()
@@ -1337,6 +1339,294 @@ func testCreateConversation(ctx context.Context, t *testing.T, creator *TestingA
 	}
 
 	return createdConv
+}
+
+func TestAccountUpdate(t *testing.T) {
+	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
+
+	// PREPARE
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	const l = 3
+
+	clients, protocols, cleanup := TestingInfra(ctx, t, l, logger)
+	defer cleanup()
+
+	nodes := make([]*TestingAccount, l)
+	for i := range nodes {
+		nodes[i] = NewTestingAccount(ctx, t, clients[i], protocols[i].Client, logger)
+		nodes[i].SetName(t, fmt.Sprintf("node-%d", i))
+		close := nodes[i].ProcessWholeStream(t)
+		defer close()
+	}
+
+	logger.Info("Started nodes")
+	time.Sleep(4 * time.Second)
+
+	user := nodes[0]
+	userPK := user.account.GetPublicKey()
+	friends := nodes[1:]
+	for _, friend := range friends {
+		_, err := user.client.ContactRequest(ctx, &ContactRequest_Request{Link: friend.account.GetLink()})
+		require.NoError(t, err)
+		time.Sleep(1 * time.Second)
+		_, err = friend.client.ContactAccept(ctx, &ContactAccept_Request{PublicKey: userPK})
+		require.NoError(t, err)
+	}
+
+	logger.Info("waiting for requests propagation")
+	time.Sleep(4 * time.Second)
+
+	// REAL TEST
+
+	logger.Info("Starting test")
+
+	testBlock := []byte("hello world!")
+
+	stream, err := user.protocolClient.AttachmentPrepare(ctx)
+	require.NoError(t, err)
+	require.NoError(t, stream.Send(&bertytypes.AttachmentPrepare_Request{})) // send header
+	const split = 5
+	require.NoError(t, stream.Send(&bertytypes.AttachmentPrepare_Request{Block: testBlock[0:split]})) // send block
+	require.NoError(t, stream.Send(&bertytypes.AttachmentPrepare_Request{Block: testBlock[split:]}))  // send block
+	reply, err := stream.CloseAndRecv()
+	require.NoError(t, err)
+
+	userAvatarCID := b64EncodeBytes(reply.GetAttachmentCID())
+
+	logger.Info("starting update")
+	const testName = "user"
+	_, err = user.client.AccountUpdate(ctx, &AccountUpdate_Request{DisplayName: testName, AvatarCID: userAvatarCID})
+	require.NoError(t, err)
+	logger.Info("waiting for propagation")
+	time.Sleep(4 * time.Second)
+	logger.Info("done waiting for propagation")
+
+	logger.Info("checking friends")
+	cids := []string(nil)
+	for _, friend := range friends {
+		logger.Info("checking node", zap.String("name", friend.account.GetDisplayName()))
+		userInFriend, ok := friend.contacts[userPK]
+		require.True(t, ok)
+		require.Equal(t, testName, userInFriend.GetDisplayName())
+		avatarCIDInFriend := userInFriend.GetAvatarCID()
+		require.NotEqual(t, userAvatarCID, avatarCIDInFriend)
+		for _, existingCID := range cids {
+			require.NotEqual(t, existingCID, avatarCIDInFriend)
+		}
+		cids = append(cids, userInFriend.GetAvatarCID())
+
+		// check attachment
+		cidBytes, err := b64DecodeBytes(avatarCIDInFriend)
+		require.NoError(t, err)
+		stream, err := friend.protocolClient.AttachmentRetrieve(ctx, &bertytypes.AttachmentRetrieve_Request{AttachmentCID: cidBytes})
+		require.NoError(t, err)
+		data := []byte(nil)
+		for {
+			rsp, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			require.NoError(t, err)
+			data = append(data, rsp.GetBlock()...)
+		}
+		require.Equal(t, testBlock, data)
+	}
+
+	logger.Error("test done")
+}
+
+func TestAccountUpdateGroup(t *testing.T) {
+	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
+
+	// PREPARE
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	const l = 3
+
+	clients, protocols, cleanup := TestingInfra(ctx, t, l, logger)
+	defer cleanup()
+
+	nodes := make([]*TestingAccount, l)
+	for i := range nodes {
+		nodes[i] = NewTestingAccount(ctx, t, clients[i], protocols[i].Client, logger)
+		nodes[i].SetName(t, fmt.Sprintf("node-%d", i))
+		close := nodes[i].ProcessWholeStream(t)
+		defer close()
+	}
+
+	logger.Info("Started nodes")
+	time.Sleep(4 * time.Second)
+
+	user := nodes[0]
+	friends := nodes[1:]
+
+	ccReply, err := user.client.ConversationCreate(ctx, &ConversationCreate_Request{DisplayName: "test conv"})
+	require.NoError(t, err)
+	require.NotEmpty(t, ccReply.GetPublicKey())
+
+	logger.Info("waiting for creation settlement")
+	time.Sleep(4 * time.Second)
+
+	conv := user.GetConversation(t, ccReply.GetPublicKey())
+	require.NotEmpty(t, conv.GetLink())
+
+	for _, friend := range friends {
+		_, err = friend.client.ConversationJoin(ctx, &ConversationJoin_Request{Link: conv.GetLink()})
+		require.NoError(t, err)
+	}
+
+	logger.Info("waiting for requests propagation")
+	time.Sleep(4 * time.Second)
+
+	// REAL TEST
+
+	logger.Info("Starting test")
+
+	testBlock := []byte("hello world!")
+
+	stream, err := user.protocolClient.AttachmentPrepare(ctx)
+	require.NoError(t, err)
+	require.NoError(t, stream.Send(&bertytypes.AttachmentPrepare_Request{})) // send header
+	const split = 5
+	require.NoError(t, stream.Send(&bertytypes.AttachmentPrepare_Request{Block: testBlock[0:split]})) // send block
+	require.NoError(t, stream.Send(&bertytypes.AttachmentPrepare_Request{Block: testBlock[split:]}))  // send block
+	reply, err := stream.CloseAndRecv()
+	require.NoError(t, err)
+
+	userAvatarCID := b64EncodeBytes(reply.GetAttachmentCID())
+
+	logger.Info("starting update")
+	const testName = "user"
+	_, err = user.client.AccountUpdate(ctx, &AccountUpdate_Request{DisplayName: testName, AvatarCID: userAvatarCID})
+	require.NoError(t, err)
+	logger.Info("waiting for propagation")
+
+	time.Sleep(4 * time.Second)
+	logger.Info("done waiting for propagation")
+
+	logger.Info("checking friends")
+	cids := []string(nil)
+	for _, friend := range friends {
+		logger.Info("checking node", zap.String("name", friend.account.GetDisplayName()))
+		userInFriend, ok := friend.members[conv.GetAccountMemberPublicKey()]
+		require.True(t, ok)
+		require.Equal(t, testName, userInFriend.GetDisplayName())
+		avatarCIDInFriend := userInFriend.GetAvatarCID()
+		require.NotEqual(t, userAvatarCID, avatarCIDInFriend)
+		for _, existingCID := range cids {
+			require.Equal(t, existingCID, avatarCIDInFriend)
+		}
+		cids = append(cids, userInFriend.GetAvatarCID())
+
+		// check attachment
+		cidBytes, err := b64DecodeBytes(avatarCIDInFriend)
+		require.NoError(t, err)
+		stream, err := friend.protocolClient.AttachmentRetrieve(ctx, &bertytypes.AttachmentRetrieve_Request{AttachmentCID: cidBytes})
+		require.NoError(t, err)
+		data := []byte(nil)
+		for {
+			rsp, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			require.NoError(t, err)
+			data = append(data, rsp.GetBlock()...)
+		}
+		require.Equal(t, testBlock, data)
+	}
+
+	logger.Error("test done")
+}
+
+func TestSendAttachment(t *testing.T) {
+	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
+
+	// PREPARE
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	const l = 2
+
+	clients, protocols, cleanup := TestingInfra(ctx, t, l, logger)
+	defer cleanup()
+
+	nodes := make([]*TestingAccount, l)
+	for i := range nodes {
+		nodes[i] = NewTestingAccount(ctx, t, clients[i], protocols[i].Client, logger)
+		nodes[i].SetName(t, fmt.Sprintf("node-%d", i))
+		close := nodes[i].ProcessWholeStream(t)
+		defer close()
+	}
+
+	logger.Info("Started nodes")
+	time.Sleep(4 * time.Second)
+
+	user := nodes[0]
+	friend := nodes[1]
+	userPK := user.account.GetPublicKey()
+
+	_, err := user.client.ContactRequest(ctx, &ContactRequest_Request{Link: friend.GetLink()})
+	require.NoError(t, err)
+	time.Sleep(1 * time.Second)
+	_, err = friend.client.ContactAccept(ctx, &ContactAccept_Request{PublicKey: userPK})
+	require.NoError(t, err)
+
+	logger.Info("waiting for requests propagation")
+	time.Sleep(4 * time.Second)
+
+	// REAL TEST
+
+	logger.Info("Starting test")
+
+	testBlock := []byte("hello world!")
+
+	stream, err := user.protocolClient.AttachmentPrepare(ctx)
+	require.NoError(t, err)
+	require.NoError(t, stream.Send(&bertytypes.AttachmentPrepare_Request{})) // send header
+	const split = 5
+	require.NoError(t, stream.Send(&bertytypes.AttachmentPrepare_Request{Block: testBlock[0:split]})) // send block
+	require.NoError(t, stream.Send(&bertytypes.AttachmentPrepare_Request{Block: testBlock[split:]}))  // send block
+	reply, err := stream.CloseAndRecv()
+	require.NoError(t, err)
+
+	// attachmentCID := b64EncodeBytes(reply.GetAttachmentCID())
+
+	logger.Info("starting update")
+	const testName = "user"
+
+	friendAsContact, ok := user.contacts[friend.account.GetPublicKey()]
+	require.True(t, ok)
+
+	gpkb, err := b64DecodeBytes(friendAsContact.GetConversationPublicKey())
+	require.NoError(t, err)
+
+	_, err = user.protocolClient.AppMessageSend(ctx,
+		&bertytypes.AppMessageSend_Request{GroupPK: gpkb, AttachmentCIDs: [][]byte{reply.GetAttachmentCID()}},
+	)
+	require.NoError(t, err)
+	logger.Info("waiting for propagation")
+	time.Sleep(4 * time.Second)
+	logger.Info("done waiting for propagation")
+
+	logger.Info("checking friends")
+
+	logger.Info("checking node", zap.String("name", friend.account.GetDisplayName()))
+	_, ok = friend.contacts[userPK]
+	require.True(t, ok)
+
+	// FIXME: check that we recive an interaction with the correct attachment
 }
 
 func Test_exportMessengerData(t *testing.T) {

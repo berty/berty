@@ -3,7 +3,7 @@ import { TouchableOpacity, SafeAreaView, View, TextInput } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import beapi from '@berty-tech/api'
 import { useMsgrContext } from '@berty-tech/store/hooks'
 
 import { timeFormat } from '../../helpers'
@@ -41,7 +41,7 @@ export const ChatFooter: React.FC<{
 	const [{ row, padding, flex, border, color, text }] = useStyles()
 
 	const usermsg = { body: message, sentDate: Date.now() }
-	const buf = messengerpb.AppMessage.UserMessage.encode(usermsg).finish()
+	const buf = beapi.messenger.AppMessage.UserMessage.encode(usermsg).finish()
 
 	const conversation = ctx.conversations[convPk]
 
@@ -50,7 +50,7 @@ export const ChatFooter: React.FC<{
 		ctx.client
 			?.interact({
 				conversationPublicKey: convPk,
-				type: messengerpb.AppMessage.Type.TypeUserMessage,
+				type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 				payload: buf,
 			})
 			.then(() => {

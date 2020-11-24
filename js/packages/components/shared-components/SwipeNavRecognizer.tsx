@@ -90,39 +90,3 @@ export const SwipeNavRecognizer: React.FC<{
 		</View>
 	)
 }
-
-//
-// cancels onPress callbacks when swiping
-//
-// workaround to allow createMaterialTopNavigator swipe gesture option
-// on TabBar views with full-screen-width TouchableOpacity items
-//
-
-export const SwipeHelperReactNavTabBar: React.FC<{
-	children: any
-	styles?: any
-}> = ({ children, styles = { flex: 1 } }) => {
-	const isHorizontalSwipe = React.useCallback(
-		(evt: GestureResponderEvent, gestureState: PanResponderGestureState) => {
-			const toSwipe =
-				evt.nativeEvent.touches.length === 1 &&
-				Math.abs(gestureState.dx) > onSwipeHorizontalOffsetThreshold &&
-				Math.abs(gestureState.vx) > navSwipeVelocityThreshold &&
-				Math.abs(gestureState.dy) < Math.abs(gestureState.dx)
-			return toSwipe
-		},
-		[],
-	)
-
-	const panResponder = React.useMemo(() => {
-		return PanResponder.create({
-			onMoveShouldSetPanResponder: isHorizontalSwipe,
-		})
-	}, [isHorizontalSwipe])
-
-	return (
-		<View style={styles} {...panResponder.panHandlers}>
-			{children}
-		</View>
-	)
-}

@@ -47,6 +47,9 @@ service AccountService {
 
   // Close the given stream (should not be used)
   rpc ClientStreamClose (ClientStreamClose.Request) returns (ClientStreamClose.Reply);
+
+  // Close the writing end of a stream and return the next reply
+  rpc ClientStreamCloseAndRecv (ClientStreamCloseAndRecv.Request) returns (ClientStreamCloseAndRecv.Reply);
 }
 
 message OpenAccount {
@@ -178,6 +181,18 @@ message ClientStreamClose {
     string stream_id = 1;
     repeated Metadata trailer = 2;
     Error error = 3;
+  };
+}
+
+message ClientStreamCloseAndRecv {
+  message Request {
+    string stream_id = 1;
+  }
+  message Reply {
+    string stream_id = 1;
+    bytes payload = 2;
+    repeated Metadata trailer = 3;
+    Error error = 4;
   };
 }
 

@@ -1,15 +1,15 @@
 import faker from 'faker'
 
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import beapi from '@berty-tech/api'
 import { keyBy, flatten } from 'lodash'
 
 const fakeArray = (length) => new Array(length).fill({})
 
 const contactStates = [
-	messengerpb.Contact.State.Accepted,
-	messengerpb.Contact.State.OutgoingRequestSent,
-	messengerpb.Contact.State.OutgoingRequestEnqueued,
-	messengerpb.Contact.State.IncomingRequest,
+	beapi.messenger.Contact.State.Accepted,
+	beapi.messenger.Contact.State.OutgoingRequestSent,
+	beapi.messenger.Contact.State.OutgoingRequestEnqueued,
+	beapi.messenger.Contact.State.IncomingRequest,
 ]
 
 export const fakeContacts = (length, start) => {
@@ -21,12 +21,12 @@ export const fakeContacts = (length, start) => {
 		const name = faker.name.findName()
 		const createdDate =
 			Date.now() - Math.floor(Math.random() * (50 * 24 * 60 * 60 * 1000)).toString()
-		if (state === messengerpb.Contact.State.Accepted) {
+		if (state === beapi.messenger.Contact.State.Accepted) {
 			conversationList.push({
 				publicKey: convPk,
 				contactPublicKey: contactPk,
 				displayName: name,
-				type: messengerpb.Conversation.Type.ContactType,
+				type: beapi.messenger.Conversation.Type.ContactType,
 				fake: true,
 				createdDate,
 			})
@@ -74,7 +74,7 @@ export const fakeMultiMemberConversations = (length, start) => {
 				publicKey,
 				displayName,
 				link,
-				type: messengerpb.Conversation.Type.MultiMemberType,
+				type: beapi.messenger.Conversation.Type.MultiMemberType,
 				fake: true,
 				createdDate,
 			},
@@ -99,7 +99,7 @@ export const fakeMessages = (length, conversationList = [], membersListList, sta
 			.map((conversation, i) => {
 				const membersCount = membersListList[i].length
 				if (
-					conversation.type === messengerpb.Conversation.Type.MultiMemberType &&
+					conversation.type === beapi.messenger.Conversation.Type.MultiMemberType &&
 					membersCount <= 0
 				) {
 					return null
@@ -108,7 +108,7 @@ export const fakeMessages = (length, conversationList = [], membersListList, sta
 					let isMe = true
 					let memberPublicKey = ''
 
-					if (conversation.type === messengerpb.Conversation.Type.MultiMemberType) {
+					if (conversation.type === beapi.messenger.Conversation.Type.MultiMemberType) {
 						const memberIndex = Math.floor(Math.random() * (membersCount + 1))
 						if (memberIndex < membersCount) {
 							isMe = false
@@ -120,7 +120,7 @@ export const fakeMessages = (length, conversationList = [], membersListList, sta
 
 					return {
 						cid: `fake_interaction_${i * length + idx + start}`,
-						type: messengerpb.AppMessage.Type.TypeUserMessage,
+						type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 						conversationPublicKey: conversation.publicKey,
 						memberPublicKey,
 						payload: { body: faker.lorem.sentences() },

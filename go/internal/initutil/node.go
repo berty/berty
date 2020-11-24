@@ -39,6 +39,7 @@ import (
 const (
 	PerformancePreset = "performance"
 	AnonymityPreset   = "anonymity"
+	VolatilePreset    = "volatile"
 
 	TorDisabled = "disabled"
 	TorOptional = "optional"
@@ -72,10 +73,12 @@ func (m *Manager) SetupPresetFlags(fs *flag.FlagSet) {
 	m.longHelp = append(m.longHelp, [2]string{
 		"-preset=" + PerformancePreset,
 		"better performance: current development defaults",
-	})
-	m.longHelp = append(m.longHelp, [2]string{
+	}, [2]string{
 		"-preset=" + AnonymityPreset,
 		"better privacy: -tor.mode=" + TorRequired + " -p2p.local-discovery=false -p2p.multipeer-connectivity=false",
+	}, [2]string{
+		"-preset=" + VolatilePreset,
+		"similar to " + PerformancePreset + ` but optimize for a quick throwable node: -store.inmem=true -p2p.ipfs-api-listeners="" -p2p.swarm-listeners="" -p2p.webui-listener=""`,
 	})
 }
 
@@ -116,6 +119,11 @@ func (m *Manager) applyPreset() error {
 		m.Node.Protocol.LocalDiscovery = false
 		m.Node.Protocol.MultipeerConnectivity = false
 		// FIXME: disable other BLE transports
+	case VolatilePreset:
+		m.Datastore.InMemory = true
+		m.Node.Protocol.SwarmListeners = ""
+		m.Node.Protocol.IPFSAPIListeners = ""
+		m.Node.Protocol.IPFSWebUIListener = ""
 	default:
 		return fmt.Errorf("unknown preset: %q", m.Node.Preset)
 	}
@@ -239,6 +247,11 @@ func (m *Manager) getGRPCClientConn() (*grpc.ClientConn, error) {
 	} else {
 		// ensure protocol and messenger are initialized
 		{
+			// restore store if provided
+			if err := m.restoreMessengerDataFromExport(); err != nil {
+				return nil, errcode.TODO.Wrap(err)
+			}
+
 			if m.Node.Protocol.requiredByClient {
 				_, err := m.getLocalProtocolServer()
 				if err != nil {
@@ -323,12 +336,6 @@ func (m *Manager) getLifecycleManager() *lifecycle.Manager {
 func (m *Manager) getMessengerClient() (bertymessenger.MessengerServiceClient, error) {
 	if m.Node.Messenger.client != nil {
 		return m.Node.Messenger.client, nil
-	}
-
-	if m.Node.Messenger.ExportPathToRestore != "" {
-		if err := m.restoreMessengerDataFromExport(); err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
 	}
 
 	grpcClient, err := m.getGRPCClientConn()
@@ -520,11 +527,17 @@ func (m *Manager) getMessengerDB() (*gorm.DB, error) {
 }
 
 func (m *Manager) restoreMessengerDataFromExport() error {
-	exportPath := m.Node.Messenger.ExportPathToRestore
-	f, err := os.Open(exportPath)
+	if m.Node.Messenger.ExportPathToRestore == "" {
+		return nil
+	}
+
+	f, err := os.Open(m.Node.Messenger.ExportPathToRestore)
 	if err != nil {
 		return err
 	}
+	defer func() { _ = f.Close() }()
+
+	m.Node.Messenger.ExportPathToRestore = ""
 
 	logger, err := m.getLogger()
 	if err != nil {
@@ -541,12 +554,9 @@ func (m *Manager) restoreMessengerDataFromExport() error {
 		return errcode.ErrInternal.Wrap(err)
 	}
 
-	db, err := m.getMessengerDB()
-	if err != nil {
-		return errcode.ErrInternal.Wrap(err)
-	}
+	m.Node.Messenger.localDBState = &bertymessenger.LocalDatabaseState{}
 
-	if err := bertymessenger.RestoreFromAccountExport(m.ctx, f, coreAPI, odb, db, logger); err != nil {
+	if err := bertymessenger.RestoreFromAccountExport(m.ctx, f, coreAPI, odb, m.Node.Messenger.localDBState, logger); err != nil {
 		return errcode.ErrInternal.Wrap(err)
 	}
 
@@ -562,6 +572,11 @@ func (m *Manager) GetLocalMessengerServer() (bertymessenger.MessengerServiceServ
 func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServer, error) {
 	if m.Node.Messenger.server != nil {
 		return m.Node.Messenger.server, nil
+	}
+
+	// restore store if provided
+	if err := m.restoreMessengerDataFromExport(); err != nil {
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	// logger
@@ -610,6 +625,7 @@ func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServ
 		Logger:              logger,
 		NotificationManager: notifmanager,
 		LifeCycleManager:    lcmanager,
+		StateBackup:         m.Node.Messenger.localDBState,
 	}
 	messengerServer, err := bertymessenger.New(protocolClient, &opts)
 	if err != nil {

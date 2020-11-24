@@ -1,5 +1,7 @@
 import { Dispatch, createContext, useContext } from 'react'
-import { berty } from '@berty-tech/api/index.pb'
+
+import beapi from '@berty-tech/api'
+import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
 export enum MessengerAppState {
 	Init = 0,
@@ -212,7 +214,7 @@ export const defaultPersistentOptions = (): PersistentOptions => ({
 // returns true if the notification should be inhibited
 export type NotificationsInhibitor = (
 	ctx: MsgrState,
-	evt: berty.messenger.v1.StreamEvent.INotified,
+	evt: beapi.messenger.StreamEvent.INotified,
 ) => boolean | 'sound-only'
 
 export type MsgrState = {
@@ -221,17 +223,17 @@ export type MsgrState = {
 	daemonAddress: string
 
 	appState: MessengerAppState
-	account: any
-	conversations: { [key: string]: berty.messenger.v1.IConversation | undefined }
-	contacts: { [key: string]: berty.messenger.v1.IContact | undefined }
+	account?: beapi.messenger.IAccount | null
+	conversations: { [key: string]: beapi.messenger.IConversation | undefined }
+	contacts: { [key: string]: beapi.messenger.IContact | undefined }
 	interactions: {
-		[key: string]: { [key: string]: berty.messenger.v1.IInteraction | undefined } | undefined
+		[key: string]: { [key: string]: beapi.messenger.IInteraction | undefined } | undefined
 	}
 	members: {
-		[key: string]: { [key: string]: berty.messenger.v1.IMember | undefined } | undefined
+		[key: string]: { [key: string]: beapi.messenger.IMember | undefined } | undefined
 	}
-	client: berty.messenger.v1.MessengerService | null
-	protocolClient: berty.protocol.v1.ProtocolService | null
+	client: ServiceClientType<beapi.messenger.MessengerService> | null
+	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null
 	streamError: any
 
 	addNotificationListener: (cb: (evt: any) => void) => void
@@ -239,14 +241,14 @@ export type MsgrState = {
 	notificationsInhibitors: NotificationsInhibitor[]
 
 	persistentOptions: PersistentOptions
-	accounts: berty.account.v1.IAccountMetadata[]
+	accounts: beapi.account.IAccountMetadata[]
 	initialListComplete: boolean
 	clearDaemon: (() => Promise<void>) | null
 	clearClients: (() => Promise<void>) | null
 
 	embedded: boolean
 	dispatch: Dispatch<{
-		type: berty.messenger.v1.StreamEvent.Type | MessengerActions
+		type: beapi.messenger.StreamEvent.Type | MessengerActions
 		payload?: any
 	}>
 	setPersistentOption: (arg0: PersistentOptionsUpdate) => Promise<void>
@@ -258,7 +260,6 @@ export const initialState = {
 	appState: MessengerAppState.Init,
 	selectedAccount: null,
 	nextSelectedAccount: null,
-	account: null,
 	conversations: {},
 	contacts: {},
 	interactions: {},

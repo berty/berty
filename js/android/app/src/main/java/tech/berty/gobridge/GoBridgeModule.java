@@ -170,4 +170,17 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
     }
     return fileOrDirectory.delete();
   }
+
+
+  @ReactMethod
+  public void getProtocolAddr(Promise promise) {
+    try {
+      if (this.bridgeMessenger == null) {
+        throw new Exception("bridge not started");
+      }
+      promise.resolve(null);
+    } catch (Exception err) {
+      promise.reject(err);
+    }
+  }
 }

@@ -137,8 +137,10 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
         missingDimensionStrategy 'react-native-camera', 'general'
         multiDexEnabled true // fix for "The number of method references in a .dex file cannot exceed 64K"
+        vectorDrawables.useSupportLibrary = true // needed for image picker
 
         def addEnvVar = {key ->
             def value = getEnvValue(key)
