@@ -13,7 +13,7 @@ import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/navigation'
 import { protocolMethodsHooks } from '@berty-tech/store/methods'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-import { types } from '@berty-tech/api/index.js'
+import beapi from '@berty-tech/api'
 import { usePrevious } from '../hooks'
 
 const PeerItem = ({ item, highlighted }) => {
@@ -48,11 +48,11 @@ const PeerItem = ({ item, highlighted }) => {
 						? features.map((value) => {
 								let name, pack, fill
 								switch (value) {
-									case types.PeerList.Feature.BertyFeature:
+									case beapi.types.PeerList.Feature.BertyFeature:
 										name = 'berty'
 										pack = 'custom'
 										break
-									case types.PeerList.Feature.QuicFeature:
+									case beapi.types.PeerList.Feature.QuicFeature:
 										name = 'network'
 										pack = 'custom'
 										fill = color.dark.grey
@@ -101,10 +101,10 @@ function getPeersTypes(peers) {
 	peers?.forEach((value) => {
 		value?.features?.forEach((feature) => {
 			switch (feature) {
-				case types.PeerList.Feature.BertyFeature:
+				case beapi.types.PeerList.Feature.BertyFeature:
 					peersTypes.berty += 1
 					break
-				case types.PeerList.Feature.QuicFeature:
+				case beapi.types.PeerList.Feature.QuicFeature:
 					peersTypes.quic += 1
 					break
 			}

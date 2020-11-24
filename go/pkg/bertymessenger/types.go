@@ -63,10 +63,10 @@ func (am AppMessage) UnmarshalPayload() (proto.Message, error) {
 		message = &AppMessage_UserReaction{}
 	case AppMessage_TypeGroupInvitation:
 		message = &AppMessage_GroupInvitation{}
-	case AppMessage_TypeSetGroupName:
-		message = &AppMessage_SetGroupName{}
-	case AppMessage_TypeSetUserName:
-		message = &AppMessage_SetUserName{}
+	case AppMessage_TypeSetGroupInfo:
+		message = &AppMessage_SetGroupInfo{}
+	case AppMessage_TypeSetUserInfo:
+		message = &AppMessage_SetUserInfo{}
 	case AppMessage_TypeReplyOptions:
 		message = &AppMessage_ReplyOptions{}
 	case AppMessage_TypeMonitorMetadata:

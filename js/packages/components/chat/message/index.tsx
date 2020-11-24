@@ -2,7 +2,7 @@ import React from 'react'
 import { View } from 'react-native'
 import { Text } from '@ui-kitten/components'
 
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import beapi from '@berty-tech/api'
 import { useInteraction, useMsgrContext } from '@berty-tech/store/hooks'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
 import { useStyles } from '@berty-tech/styles'
@@ -32,7 +32,7 @@ export const Message: React.FC<{
 		return null
 	}
 	const sentDate = pbDateToNum(inte?.sentDate)
-	if (inte.type === messengerpb.AppMessage.Type.TypeUserMessage) {
+	if (inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage) {
 		return (
 			<UserMessage
 				inte={inte}
@@ -44,8 +44,8 @@ export const Message: React.FC<{
 			/>
 		)
 	} else if (
-		inte.type === messengerpb.AppMessage.Type.TypeGroupInvitation &&
-		convKind === messengerpb.Conversation.Type.ContactType
+		inte.type === beapi.messenger.AppMessage.Type.TypeGroupInvitation &&
+		convKind === beapi.messenger.Conversation.Type.ContactType
 	) {
 		return (
 			<>
@@ -65,7 +65,7 @@ export const Message: React.FC<{
 				<MessageInvitation message={inte} />
 			</>
 		)
-	} else if (inte.type === messengerpb.AppMessage.Type.TypeReplyOptions) {
+	} else if (inte.type === beapi.messenger.AppMessage.Type.TypeReplyOptions) {
 		return (
 			<>
 				<View style={[padding.horizontal.medium]}>
@@ -74,7 +74,7 @@ export const Message: React.FC<{
 			</>
 		)
 	} else if (
-		inte.type === messengerpb.AppMessage.Type.TypeMonitorMetadata &&
+		inte.type === beapi.messenger.AppMessage.Type.TypeMonitorMetadata &&
 		ctx?.persistentOptions[PersistentOptionsKeys.Debug].enable
 	) {
 		return <MessageMonitorMetadata inte={inte} />

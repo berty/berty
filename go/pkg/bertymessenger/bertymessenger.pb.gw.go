@@ -20,6 +20,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
 	"berty.tech/berty/v2/go/pkg/bertytypes"
@@ -33,6 +34,7 @@ var (
 	_ = runtime.String
 	_ = utilities.NewDoubleArray
 	_ = descriptor.ForMessage
+	_ = metadata.Join
 )
 
 func request_MessengerService_InstanceShareableBertyID_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -862,10 +864,13 @@ func request_MessengerService_InstanceExportData_0(ctx context.Context, marshale
 // RegisterMessengerServiceHandlerServer registers the http handlers for service MessengerService to "mux".
 // UnaryRPC     :call MessengerServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
+// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterMessengerServiceHandlerFromEndpoint instead.
 func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server MessengerServiceServer) error {
 	mux.Handle("POST", pattern_MessengerService_InstanceShareableBertyID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -873,6 +878,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_InstanceShareableBertyID_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -885,6 +891,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_ShareableBertyGroup_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -892,6 +900,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_ShareableBertyGroup_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -904,6 +913,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_DevShareInstanceBertyID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -911,6 +922,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_DevShareInstanceBertyID_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -923,6 +935,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_ParseDeepLink_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -930,6 +944,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_ParseDeepLink_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -942,6 +957,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_SendContactRequest_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -949,6 +966,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_SendContactRequest_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -961,6 +979,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_SendMessage_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -968,6 +988,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_SendMessage_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -980,6 +1001,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_SendReplyOptions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -987,6 +1010,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_SendReplyOptions_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -999,6 +1023,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_SendAck_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -1006,6 +1032,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_SendAck_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1018,6 +1045,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_SystemInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -1025,6 +1054,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_SystemInfo_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1058,6 +1088,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_ConversationCreate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -1065,6 +1097,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_ConversationCreate_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1077,6 +1110,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_ConversationJoin_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -1084,6 +1119,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_ConversationJoin_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1096,6 +1132,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_AccountGet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -1103,6 +1141,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_AccountGet_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1115,6 +1154,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_AccountUpdate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -1122,6 +1163,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_AccountUpdate_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1134,6 +1176,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_ContactRequest_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -1141,6 +1185,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_ContactRequest_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1153,6 +1198,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_ContactAccept_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -1160,6 +1207,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_ContactAccept_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1172,6 +1220,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_Interact_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -1179,6 +1229,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_Interact_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1191,6 +1242,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_ConversationOpen_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -1198,6 +1251,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_ConversationOpen_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1210,6 +1264,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_ConversationClose_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -1217,6 +1273,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_ConversationClose_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1236,6 +1293,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_ReplicationServiceRegisterGroup_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -1243,6 +1302,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_ReplicationServiceRegisterGroup_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1255,6 +1315,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_ReplicationSetAutoEnable_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -1262,6 +1324,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_ReplicationSetAutoEnable_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1274,6 +1337,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_BannerQuote_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -1281,6 +1346,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_BannerQuote_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1293,6 +1359,8 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 	mux.Handle("POST", pattern_MessengerService_GetUsername_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
@@ -1300,6 +1368,7 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 		resp, md, err := local_request_MessengerService_GetUsername_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)

@@ -168,6 +168,9 @@ message GroupMetadata {
 
   // sig is the signature of the payload, it depends on the event_type for the used key
   bytes sig = 3;
+
+  // protocol_metadata is protocol layer data 
+  ProtocolMetadata protocol_metadata = 4;
 }
 
 // GroupEnvelope is a publicly exposed structure containing a group metadata event
@@ -178,7 +181,8 @@ message GroupEnvelope {
   // event is encrypted using a symmetric key shared among group members
   bytes event = 2;
 
-  // TODO: Add more readable information here if necessary (eg. CIDs for replication service)
+  // encrypted_attachment_cids is a list of attachment CIDs encrypted specifically for replication services
+  repeated bytes encrypted_attachment_cids = 3  [(gogoproto.customname) = "EncryptedAttachmentCIDs"];
 }
 
 // MessageHeaders is used in MessageEnvelope and only readable by invited group members
@@ -196,6 +200,20 @@ message MessageHeaders {
   map<string, string> metadata = 4;
 }
 
+message ProtocolMetadata {
+  // attachments_secrets is a list of secret keys used retrieve attachments
+  repeated bytes attachments_secrets = 1;
+}
+
+// EncryptedMessage is used in MessageEnvelope and only readable by groups members that joined before the message was sent
+message EncryptedMessage {
+  // plaintext is the app layer data
+  bytes plaintext = 1;
+
+  // protocol_metadata is protocol layer data 
+  ProtocolMetadata protocol_metadata = 2;
+}
+
 // MessageEnvelope is a publicly exposed structure containing a group secure message
 message MessageEnvelope {
   // message_headers is an encrypted serialization using a symmetric key of a MessageHeaders message
@@ -207,14 +225,15 @@ message MessageEnvelope {
   // nonce is a nonce for message headers
   bytes nonce = 3;
 
-  // TODO: Add more readable information here if necessary (eg. CIDs for replication service)
+  // encrypted_attachment_cids is a list of attachment CIDs encrypted specifically for replication services
+  repeated bytes encrypted_attachment_cids = 4 [(gogoproto.customname) = "EncryptedAttachmentCIDs"];
 }
 
 // ***************************************************************************
 // Group event types
 // ***************************************************************************
 
-// EventContext adds context (its id and its parents) to an event
+// EventContext adds context (its id, its parents and its attachments) to an event
 message EventContext {
   // id is the CID of the underlying OrbitDB event
   bytes id = 1 [(gogoproto.customname) = "ID"];
@@ -224,6 +243,9 @@ message EventContext {
 
   // group_pk receiving the event
   bytes group_pk = 3[(gogoproto.customname) = "GroupPK"];
+
+  // attachment_cids is a list of attachment that can be retrieved
+  repeated bytes attachment_cids = 4 [(gogoproto.customname) = "AttachmentCIDs"];
 }
 
 // AppMetadata is an app defined message, accessible to future group members
@@ -667,6 +689,9 @@ message AppMetadataSend {
 
     // payload is the payload to send
     bytes payload = 2;
+
+    // attachment_cids is a list of attachment cids
+    repeated bytes attachment_cids = 3 [(gogoproto.customname) = "AttachmentCIDs"];
   }
 
   message Reply {}
@@ -679,6 +704,9 @@ message AppMessageSend {
 
     // payload is the payload to send
     bytes payload = 2;
+
+    // attachment_cids is a list of attachment cids
+    repeated bytes attachment_cids = 3 [(gogoproto.customname) = "AttachmentCIDs"];
   }
 
   message Reply {}
@@ -777,7 +805,7 @@ message GroupInfo {
     // member_pk is the identifier of the current member in the group
     bytes member_pk = 2 [(gogoproto.customname) = "MemberPK"];
 
-    // member_pk is the identifier of the current device in the group
+    // device_pk is the identifier of the current device in the group
     bytes device_pk = 3 [(gogoproto.customname) = "DevicePK"];
   }
 }
@@ -1119,7 +1147,7 @@ message PeerList {
 
     // Streams returns list of streams established with the peer.
     repeated Stream streams = 5;
-}
+  }
 
   message Stream {
     // id is an identifier used to write protocol headers in streams.
@@ -1142,4 +1170,35 @@ enum Direction {
   InboundDir = 1;
   OutboundDir = 2;
   BiDir = 3;
+}
+
+message AttachmentPrepare {
+  message Request {
+    // block is a plaintext block to append
+    bytes block = 1;
+
+    /* Header data:
+    ** IMPORTANT: The first request must contain the header data and no block. Header data in following requests will be ignored
+    */
+  
+    // disable_encryption tells the protocol to store the file as plain text
+    bool disable_encryption = 2;
+  }
+
+  message Reply {
+    // attachment_cid is the cid of the (encrypted) file
+    bytes attachment_cid = 1 [(gogoproto.customname) = "AttachmentCID"];
+  }
+}
+
+message AttachmentRetrieve {
+  message Request {
+    // attachment_cid is the cid of the (encrypted) file
+    bytes attachment_cid = 1 [(gogoproto.customname) = "AttachmentCID"];
+  }
+
+  message Reply {
+    // block is a plaintext block to append
+    bytes block = 2;
+  }
 }

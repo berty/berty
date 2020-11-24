@@ -13,7 +13,7 @@ func (s *service) AppMetadataSend(ctx context.Context, req *bertytypes.AppMetada
 		return nil, errcode.ErrGroupMissing.Wrap(err)
 	}
 
-	if _, err := g.MetadataStore().SendAppMetadata(ctx, req.Payload); err != nil {
+	if _, err := g.MetadataStore().SendAppMetadata(ctx, req.Payload, req.GetAttachmentCIDs()); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
@@ -26,7 +26,7 @@ func (s *service) AppMessageSend(ctx context.Context, req *bertytypes.AppMessage
 		return nil, errcode.ErrGroupMissing.Wrap(err)
 	}
 
-	if _, err := g.MessageStore().AddMessage(ctx, req.Payload); err != nil {
+	if _, err := g.MessageStore().AddMessage(ctx, req.Payload, req.GetAttachmentCIDs()); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 

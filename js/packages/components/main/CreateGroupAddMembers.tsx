@@ -13,11 +13,11 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 import { useContactList, useAccountContactSearchResults } from '@berty-tech/store/hooks'
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import beapi from '@berty-tech/api'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
-import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { ContactAvatar } from '../avatars'
 
 // Styles
 const useStylesCreateGroup = () => {
@@ -139,7 +139,7 @@ const AddMembersItem: React.FC<AddMembersItemProps> = ({
 		<View>
 			<View style={[row.fill, padding.right.small]}>
 				<View style={[row.left, row.item.justify, { flexShrink: 1 }]}>
-					<ProceduralCircleAvatar seed={contact.publicKey} diffSize={30} size={80} />
+					<ContactAvatar size={80} publicKey={contact.publicKey} />
 					<Text numberOfLines={1} style={[margin.left.small, row.item.justify, { flexShrink: 1 }]}>
 						{contact.displayName}
 					</Text>
@@ -202,7 +202,9 @@ const AddMembers: React.FC<AddMembersProps> = ({
 	const searchContacts = useAccountContactSearchResults(searchText)
 	const accountContacts = useContactList()
 	let contacts = searchText.length ? searchContacts : accountContacts
-	contacts = contacts.filter((contact: any) => contact.state === messengerpb.Contact.State.Accepted)
+	contacts = contacts.filter(
+		(contact: any) => contact.state === beapi.messenger.Contact.State.Accepted,
+	)
 
 	return (
 		<View>
@@ -252,7 +254,7 @@ const MemberItem: React.FC<{ member: any; onRemove: () => void }> = ({ member, o
 	return (
 		<View style={[padding.horizontal.medium, maxWidth(100)]}>
 			<View style={[column.top, padding.top.small]}>
-				<ProceduralCircleAvatar seed={member.publicKey} diffSize={20} size={70} />
+				<ContactAvatar size={70} publicKey={member.publicKey} />
 				<TextNative
 					numberOfLines={1}
 					style={[

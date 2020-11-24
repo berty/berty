@@ -47,6 +47,18 @@ enum ErrCode {
   ErrCryptoDecryptPayload = 206;
   ErrCryptoEncrypt = 207;
   ErrCryptoKeyConversion = 208;
+  ErrCryptoCipherInit = 209;
+  ErrCryptoKeyDerivation = 210;
+
+  // Pattern errors
+
+  ErrMap = 300;
+  ErrForEach = 301;
+
+  // Keystore errors
+
+  ErrKeystoreGet = 400;
+  ErrKeystorePut = 401;
 
   //-----------------
   // Specific errors
@@ -59,6 +71,11 @@ enum ErrCode {
   ErrOrbitDBAppend = 1002;
   ErrOrbitDBDeserialization = 1003;
   ErrOrbitDBStoreCast = 1004;
+
+  // IPFS errors
+
+  ErrIPFSAdd = 1050;
+  ErrIPFSGet = 1051;
 
   // Handshake errors
 
@@ -128,6 +145,11 @@ enum ErrCode {
 
   ErrReplayProcessGroupMetadata = 2200;
   ErrReplayProcessGroupMessage = 2201;
+
+  // API internals errors
+  ErrPrepareAttachment = 2300;
+  ErrRetrieveAttachment = 2301;
+  ErrProtocolSend = 2302;
 
   // -----------------
   // CLI

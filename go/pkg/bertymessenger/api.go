@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
+	ipfscid "github.com/ipfs/go-cid"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
@@ -119,49 +120,11 @@ func (svc *service) internalInstanceShareableBertyID(ctx context.Context, req *I
 	return &ret, nil
 }
 
-func (svc *service) ParseDeepLink(ctx context.Context, req *ParseDeepLink_Request) (*ParseDeepLink_Reply, error) {
-	if req == nil || req.Link == "" {
+func (svc *service) ParseDeepLink(_ context.Context, req *ParseDeepLink_Request) (*ParseDeepLink_Reply, error) {
+	if req == nil {
 		return nil, errcode.ErrMissingInput
 	}
-
-	ret := ParseDeepLink_Reply{}
-
-	query, method, err := NormalizeDeepLinkURL(req.Link)
-	if err != nil {
-		return nil, errcode.ErrInvalidInput.Wrap(err)
-	}
-
-	switch method {
-	case "/id":
-		ret.Kind = ParseDeepLink_BertyID
-		ret.BertyID = &BertyID{}
-		key := query.Get("key")
-		if key == "" {
-			return nil, errcode.ErrMessengerInvalidDeepLink
-		}
-		payload, err := b64DecodeBytes(key)
-		if err != nil {
-			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
-		}
-		err = proto.Unmarshal(payload, ret.BertyID)
-		if err != nil {
-			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
-		}
-		if len(ret.BertyID.PublicRendezvousSeed) == 0 || len(ret.BertyID.AccountPK) == 0 {
-			return nil, errcode.ErrMessengerInvalidDeepLink
-		}
-		if name := query.Get("name"); name != "" {
-			ret.BertyID.DisplayName = name
-		}
-
-	case "/group":
-		return ParseGroupInviteURLQuery(query)
-
-	default:
-		return nil, errcode.ErrMessengerInvalidDeepLink
-	}
-
-	return &ret, nil
+	return DecodeDeepLink(req.Link)
 }
 
 func NormalizeDeepLinkURL(input string) (url.Values, string, error) {
@@ -215,6 +178,51 @@ func ParseGroupInviteURLQuery(query url.Values) (*ParseDeepLink_Reply, error) {
 
 	if name := query.Get("name"); name != "" {
 		ret.BertyGroup.DisplayName = name
+	}
+
+	return &ret, nil
+}
+
+func DecodeDeepLink(link string) (*ParseDeepLink_Reply, error) {
+	if link == "" {
+		return nil, errcode.ErrMissingInput
+	}
+
+	ret := ParseDeepLink_Reply{}
+
+	query, method, err := NormalizeDeepLinkURL(link)
+	if err != nil {
+		return nil, errcode.ErrInvalidInput.Wrap(err)
+	}
+
+	switch method {
+	case "/id":
+		ret.Kind = ParseDeepLink_BertyID
+		ret.BertyID = &BertyID{}
+		key := query.Get("key")
+		if key == "" {
+			return nil, errcode.ErrMessengerInvalidDeepLink
+		}
+		payload, err := b64DecodeBytes(key)
+		if err != nil {
+			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
+		}
+		err = proto.Unmarshal(payload, ret.BertyID)
+		if err != nil {
+			return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
+		}
+		if len(ret.BertyID.PublicRendezvousSeed) == 0 || len(ret.BertyID.AccountPK) == 0 {
+			return nil, errcode.ErrMessengerInvalidDeepLink
+		}
+		if name := query.Get("name"); name != "" {
+			ret.BertyID.DisplayName = name
+		}
+
+	case "/group":
+		return ParseGroupInviteURLQuery(query)
+
+	default:
+		return nil, errcode.ErrMessengerInvalidDeepLink
 	}
 
 	return &ret, nil
@@ -694,7 +702,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 	// Try to put group name in group metadata
 	{
 		err := func() error {
-			am, err := AppMessage_TypeSetGroupName.MarshalPayload(0, &AppMessage_SetGroupName{Name: dn})
+			am, err := AppMessage_TypeSetGroupInfo.MarshalPayload(0, &AppMessage_SetGroupInfo{DisplayName: dn})
 			if err != nil {
 				return err
 			}
@@ -712,29 +720,8 @@ func (svc *service) ConversationCreate(ctx context.Context, req *ConversationCre
 	** It would make sense to offer it as an option for privacy sensitive groups of small sizes though
 	** In the case that the group invitation leaks after an user leaves it, this user's name will be inaccessible to new users joining the group
 	 */
-
-	// Try to put user name 3 times in group metadata
-	// FIXME: only do it once, once replication is ok
-	{
-		for i := 0; i < 3; i++ {
-			err := func() error {
-				acc, err := svc.db.getAccount()
-				if err != nil {
-					return err
-				}
-
-				am, err := AppMessage_TypeSetUserName.MarshalPayload(0, &AppMessage_SetUserName{Name: acc.GetDisplayName()})
-				if err != nil {
-					return err
-				}
-
-				_, err = svc.protocolClient.AppMetadataSend(ctx, &bertytypes.AppMetadataSend_Request{GroupPK: pk, Payload: am})
-				return err
-			}()
-			if err != nil {
-				svc.logger.Error("failed to set creator username in group", zap.Error(err))
-			}
-		}
+	if err := svc.sendAccountUserInfo(pkStr); err != nil {
+		svc.logger.Error("failed to set creator username in group", zap.Error(err))
 	}
 
 	for _, contactPK := range req.GetContactsToInvite() {
@@ -834,68 +821,109 @@ func (svc *service) ConversationJoin(ctx context.Context, req *ConversationJoin_
 	}
 
 	// Try to put user name in group metadata 3 times
-	{
-		for i := 0; i < 3; i++ {
-			err := func() error {
-				acc, err := svc.db.getAccount()
-				if err != nil {
-					return err
-				}
-
-				am, err := AppMessage_TypeSetUserName.MarshalPayload(0, &AppMessage_SetUserName{Name: acc.GetDisplayName()})
-				if err != nil {
-					return err
-				}
-
-				_, err = svc.protocolClient.AppMetadataSend(ctx, &bertytypes.AppMetadataSend_Request{GroupPK: gpkb, Payload: am})
-				return err
-			}()
-			if err != nil {
-				svc.logger.Error("failed to set username in group", zap.Error(err))
-			}
+	for i := 0; i < 3; i++ {
+		if err := svc.sendAccountUserInfo(conv.PublicKey); err != nil {
+			svc.logger.Error("failed to set username in group", zap.Error(err))
 		}
 	}
 
 	return &ConversationJoin_Reply{}, nil
 }
 
+func ensureValidBase64CID(str string) error {
+	cidBytes, err := b64DecodeBytes(str)
+	if err != nil {
+		return fmt.Errorf("decode base64: %s", err.Error())
+	}
+
+	_, err = ipfscid.Cast(cidBytes)
+	if err != nil {
+		return fmt.Errorf("decode cid: %s", err.Error())
+	}
+
+	return nil
+}
+
 func (svc *service) AccountUpdate(ctx context.Context, req *AccountUpdate_Request) (*AccountUpdate_Reply, error) {
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	acc, err := svc.db.getAccount()
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+	avatarCID := req.GetAvatarCID()
+	if avatarCID != "" {
+		if err := ensureValidBase64CID(avatarCID); err != nil {
+			err = fmt.Errorf("couldn't ensure the avatar cid is a valid ipfs cid: %s", err)
+			svc.logger.Error("AccountUpdate: bad avatar cid", zap.Error(err))
+			return nil, errcode.ErrInvalidInput.Wrap(err)
+		}
 	}
 
-	updated := false
+	err := svc.db.tx(func(tx *dbWrapper) error {
+		acc, err := tx.getAccount()
+		if err != nil {
+			svc.logger.Error("AccountUpdate: failed to get account", zap.Error(err))
+			return errcode.TODO.Wrap(err)
+		}
 
-	dn := req.GetDisplayName()
-	if dn != "" && dn != acc.GetDisplayName() {
-		svc.logger.Debug("updating account", zap.String("display_name", dn))
-		updated = true
-	}
+		updated := false
+		dn := req.GetDisplayName()
+		if dn != "" && dn != acc.GetDisplayName() {
+			updated = true
+		}
+		if avatarCID != "" && avatarCID != acc.GetAvatarCID() {
+			updated = true
+		}
 
-	if !updated {
-		return &AccountUpdate_Reply{}, nil
-	}
+		if !updated {
+			svc.logger.Debug("AccountUpdate: nothing to do")
+			return nil
+		}
+		svc.logger.Debug("AccountUpdate: updating account", zap.String("display_name", dn), zap.String("avatar_cid", avatarCID))
 
-	ret, err := svc.internalInstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{DisplayName: dn})
+		ret, err := svc.internalInstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{DisplayName: dn})
+		if err != nil {
+			svc.logger.Error("AccountUpdate: account link", zap.Error(err))
+			return err
+		}
+
+		acc, err = tx.updateAccount(acc.PublicKey, ret.GetHTMLURL(), dn, avatarCID)
+		if err != nil {
+			svc.logger.Error("AccountUpdate: updating account in db", zap.Error(err))
+			return err
+		}
+
+		// dispatch event
+		err = svc.dispatcher.StreamEvent(StreamEvent_TypeAccountUpdated, &StreamEvent_AccountUpdated{Account: acc}, false)
+		if err != nil {
+			svc.logger.Error("AccountUpdate: failed to dispatch update", zap.Error(err))
+			return err
+		}
+
+		return nil
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	acc, err = svc.db.updateAccount(acc.PublicKey, ret.GetHTMLURL(), dn)
+	convos, err := svc.db.getAllConversations()
 	if err != nil {
-		return nil, err
+		svc.logger.Error("AccountUpdate: get conversations", zap.Error(err))
+	} else {
+		for _, conv := range convos {
+			if err := svc.sendAccountUserInfo(conv.GetPublicKey()); err != nil {
+				svc.logger.Error("AccountUpdate: send user info", zap.Error(err))
+			}
+		}
 	}
 
-	// dispatch event
-	if err := svc.dispatcher.StreamEvent(StreamEvent_TypeAccountUpdated, &StreamEvent_AccountUpdated{Account: acc}, false); err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
+	svc.logger.Debug("AccountUpdate finished", zap.Error(err))
+	return &AccountUpdate_Reply{}, err
+}
 
-	return &AccountUpdate_Reply{}, nil
+func imin(a, b int) int {
+	if b < a {
+		return b
+	}
+	return a
 }
 
 func (svc *service) ContactRequest(ctx context.Context, req *ContactRequest_Request) (*ContactRequest_Reply, error) {

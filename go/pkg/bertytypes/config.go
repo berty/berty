@@ -7,6 +7,7 @@ type Config struct {
 			Link        string `json:"link"`
 			Name        string `json:"name"`
 			Description string `json:"description"`
+			Kind        string `json:"kind"`
 		} `json:"contacts"`
 		Conversations map[string]struct {
 			Link        string `json:"link"`

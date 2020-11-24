@@ -4,20 +4,22 @@ import { Icon, Text } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
 import { pbDateToNum, timeFormat } from '../../helpers'
-import { types as typespb } from '@berty-tech/api'
+import beapi from '@berty-tech/api'
 
 const getMonitorEventKeys = () => {
 	return ['undefined', 'advertiseGroup', 'peerFound', 'peerJoin', 'peerLeave']
 }
 
-const eventMonitorTypes = typespb.MonitorGroup.TypeEventMonitor
+const eventMonitorTypes = beapi.types.MonitorGroup.TypeEventMonitor
 
-export const MessageMonitorMetadata: React.FC<{ inte: any }> = ({ inte }) => {
+export const MessageMonitorMetadata: React.FC<{ inte: beapi.messenger.IInteraction }> = ({
+	inte,
+}) => {
 	const [{ padding, text, margin }] = useStyles()
 	const sentDate = pbDateToNum(inte?.sentDate)
 
-	/* typespb.MonitorGroup.TypeEventMonitor */
-	const monitorEvent = inte.payload.event
+	/* beapi.types.MonitorGroup.TypeEventMonitor */
+	const monitorEvent = (inte.payload as any)?.event
 	const monitorEventKeys = getMonitorEventKeys()
 	const { peerId, driverName, maddrs, isSelf } = monitorEvent[monitorEventKeys[monitorEvent.type]]
 

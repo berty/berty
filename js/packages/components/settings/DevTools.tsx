@@ -8,7 +8,7 @@ import { HeaderSettings } from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
+import beapi from '@berty-tech/api'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
 import { EOF, Service } from '@berty-tech/grpc-bridge'
 import GoBridge from '@berty-tech/go-bridge'
@@ -81,7 +81,7 @@ const NativeCallButton: React.FC = () => {
 	)
 
 	const messengerClient: any = Service(
-		messengerpb.MessengerService,
+		beapi.messenger.MessengerService,
 		rpcBridge,
 		messengerMiddlewares,
 	)
@@ -229,12 +229,12 @@ const SendToAll: React.FC = () => {
 	const [name, setName] = useState<any>(t('settings.devtools.send-to-all-button.title'))
 	const ctx = useMsgrContext()
 	const convs: any[] = Object.values(ctx.conversations).filter(
-		(conv: any) => conv.type === messengerpb.Conversation.Type.ContactType && !conv.fake,
+		(conv: any) => conv.type === beapi.messenger.Conversation.Type.ContactType && !conv.fake,
 	)
 	const body = `${t('settings.devtools.send-to-all-button.test')}${new Date(
 		Date.now(),
 	).toLocaleString()}`
-	const buf: string = messengerpb.AppMessage.UserMessage.encode({ body }).finish()
+	const buf = beapi.messenger.AppMessage.UserMessage.encode({ body }).finish()
 	const handleSendToAll = React.useCallback(async () => {
 		setDisabled(true)
 		setName(t('settings.devtools.send-to-all-button.sending'))
@@ -242,7 +242,7 @@ const SendToAll: React.FC = () => {
 			try {
 				await ctx.client?.interact({
 					conversationPublicKey: conv.publicKey,
-					type: messengerpb.AppMessage.Type.TypeUserMessage,
+					type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 					payload: buf,
 				})
 			} catch (e) {
@@ -333,11 +333,11 @@ const BodyDevTools: React.FC<{}> = () => {
 				}}
 			/>
 			<ButtonSetting
-				name={t('settings.devtools.add-bots-button')}
-				icon='info-outline'
+				name={t('settings.devtools.add-dev-conversations-button')}
+				icon='plus-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
-				onPress={() => navigation.navigate('Settings.AddContactList')}
+				onPress={() => navigation.navigate('Settings.AddDevConversations')}
 			/>
 			<DiscordShareButton />
 			<NativeCallButton />

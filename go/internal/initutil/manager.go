@@ -108,6 +108,7 @@ type Manager struct {
 			db                  *gorm.DB
 			dbCleanup           func()
 			requiredByClient    bool
+			localDBState        *bertymessenger.LocalDatabaseState
 		}
 		GRPC struct {
 			RemoteAddr string `json:"RemoteAddr,omitempty"`

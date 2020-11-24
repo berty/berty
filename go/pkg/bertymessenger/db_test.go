@@ -489,38 +489,38 @@ func Test_dbWrapper_addMember(t *testing.T) {
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
-	member, err := db.addMember("member_1", "", "Display1")
+	member, err := db.addMember("member_1", "", "Display1", "")
 	require.Error(t, err)
 	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Nil(t, member)
 
-	member, err = db.addMember("", "conversation_1", "Display1")
+	member, err = db.addMember("", "conversation_1", "Display1", "")
 	require.Error(t, err)
 	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Nil(t, member)
 
-	member, err = db.addMember("member_1", "conversation_1", "Display1")
+	member, err = db.addMember("member_1", "conversation_1", "Display1", "")
 	require.NoError(t, err)
 	require.NotNil(t, member)
 	require.Equal(t, "member_1", member.PublicKey)
 	require.Equal(t, "conversation_1", member.ConversationPublicKey)
 	require.Equal(t, "Display1", member.DisplayName)
 
-	member, err = db.addMember("member_1", "conversation_1", "Display2")
+	member, err = db.addMember("member_1", "conversation_1", "Display2", "")
 	require.True(t, errcode.Is(err, errcode.ErrDBEntryAlreadyExists))
 	require.NotNil(t, member)
 	require.Equal(t, "member_1", member.PublicKey)
 	require.Equal(t, "conversation_1", member.ConversationPublicKey)
 	require.Equal(t, "Display1", member.DisplayName)
 
-	member, err = db.addMember("member_1", "conversation_2", "Display1")
+	member, err = db.addMember("member_1", "conversation_2", "Display1", "")
 	require.NoError(t, err)
 	require.NotNil(t, member)
 	require.Equal(t, "member_1", member.PublicKey)
 	require.Equal(t, "conversation_2", member.ConversationPublicKey)
 	require.Equal(t, "Display1", member.DisplayName)
 
-	member, err = db.addMember("member_2", "conversation_1", "Display2")
+	member, err = db.addMember("member_2", "conversation_1", "Display2", "")
 	require.NoError(t, err)
 	require.NotNil(t, member)
 	require.Equal(t, "member_2", member.PublicKey)
@@ -838,36 +838,36 @@ func Test_dbWrapper_updateAccount(t *testing.T) {
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
-	acc, err := db.updateAccount("", "https://url1/", "DisplayName1")
+	acc, err := db.updateAccount("", "https://url1/", "DisplayName1", "")
 	require.Error(t, err)
 	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Nil(t, acc)
 
-	acc, err = db.updateAccount("pk_1", "https://url1/", "DisplayName1")
+	acc, err = db.updateAccount("pk_1", "https://url1/", "DisplayName1", "")
 	require.Error(t, err)
 	require.Nil(t, acc)
 
 	db.db.Create(&Account{PublicKey: "pk_1"})
 
-	acc, err = db.updateAccount("pk_1", "", "")
+	acc, err = db.updateAccount("pk_1", "", "", "")
 	require.NoError(t, err)
 	require.NotNil(t, acc)
 	require.Equal(t, "", acc.Link)
 	require.Equal(t, "", acc.DisplayName)
 
-	acc, err = db.updateAccount("pk_1", "https://url1/", "DisplayName1")
+	acc, err = db.updateAccount("pk_1", "https://url1/", "DisplayName1", "")
 	require.NoError(t, err)
 	require.NotNil(t, acc)
 	require.Equal(t, "https://url1/", acc.Link)
 	require.Equal(t, "DisplayName1", acc.DisplayName)
 
-	acc, err = db.updateAccount("pk_1", "https://url2/", "")
+	acc, err = db.updateAccount("pk_1", "https://url2/", "", "")
 	require.NoError(t, err)
 	require.NotNil(t, acc)
 	require.Equal(t, "https://url2/", acc.Link)
 	require.Equal(t, "DisplayName1", acc.DisplayName)
 
-	acc, err = db.updateAccount("pk_1", "", "DisplayName2")
+	acc, err = db.updateAccount("pk_1", "", "DisplayName2", "")
 	require.NoError(t, err)
 	require.NotNil(t, acc)
 	require.Equal(t, "https://url2/", acc.Link)
@@ -878,19 +878,19 @@ func Test_dbWrapper_updateContact(t *testing.T) {
 	db, dispose := getInMemoryTestDB(t)
 	defer dispose()
 
-	err := db.updateContact(Contact{})
+	err := db.updateContact("", Contact{})
 	require.Error(t, err)
 	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 
-	err = db.updateContact(Contact{PublicKey: "pk_1"})
+	err = db.updateContact("pk_1", Contact{})
 	require.Error(t, err)
 
 	require.NoError(t, db.db.Create(&Contact{PublicKey: "pk_1"}).Error)
 
-	err = db.updateContact(Contact{PublicKey: "pk_1"})
+	err = db.updateContact("pk_1", Contact{})
 	require.NoError(t, err)
 
-	err = db.updateContact(Contact{PublicKey: "pk_1", DisplayName: "DisplayName1"})
+	err = db.updateContact("pk_1", Contact{DisplayName: "DisplayName1"})
 	require.NoError(t, err)
 
 	c := &Contact{}
@@ -899,7 +899,7 @@ func Test_dbWrapper_updateContact(t *testing.T) {
 	require.Equal(t, "DisplayName1", c.DisplayName)
 	require.Equal(t, Contact_Undefined, c.State)
 
-	err = db.updateContact(Contact{PublicKey: "pk_1", State: Contact_Accepted})
+	err = db.updateContact("pk_1", Contact{State: Contact_Accepted})
 	require.NoError(t, err)
 
 	c = &Contact{}

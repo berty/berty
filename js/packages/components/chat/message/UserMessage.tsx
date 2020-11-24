@@ -5,11 +5,11 @@ import palette from 'google-palette'
 import Color from 'color'
 import { Text } from '@ui-kitten/components'
 
-import { messenger as messengerpb } from '@berty-tech/api'
+import beapi from '@berty-tech/api'
 import { useInteraction, useLastConvInteraction } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 
-import { ProceduralCircleAvatar } from '../../shared-components'
+import { MemberAvatar } from '../../avatars'
 import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageComponents'
 import { pbDateToNum } from '../../helpers'
 
@@ -27,7 +27,7 @@ const useStylesMessage = () => {
 }
 
 const interactionsFilter = (inte: any) =>
-	inte.type === messengerpb.AppMessage.Type.TypeUserMessage && inte.isMe
+	inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage && inte.isMe
 
 const getUserMessageState = (
 	inte: any,
@@ -48,7 +48,7 @@ const getUserMessageState = (
 	let msgTextColor, msgBackgroundColor, msgBorderColor, msgSenderColor
 
 	const cmd = null /*messenger.message.isCommandMessage(payload.body)*/
-	if (convKind === messengerpb.Conversation.Type.ContactType) {
+	if (convKind === beapi.messenger.Conversation.Type.ContactType) {
 		// State of OneToOne conversation
 		msgTextColor = inte.isMe
 			? inte.acknowledged
@@ -131,7 +131,7 @@ export const UserMessage: React.FC<{
 	const _styles = useStylesMessage()
 	const [{ row, margin, padding, column, text, border, color }, { scaleSize }] = useStyles()
 
-	const isGroup = convKind === messengerpb.Conversation.Type.MultiMemberType
+	const isGroup = convKind === beapi.messenger.Conversation.Type.MultiMemberType
 
 	const {
 		name,
@@ -155,11 +155,21 @@ export const UserMessage: React.FC<{
 			]}
 		>
 			{!inte.isMe && isGroup && !isFollowedMessage && (
-				<ProceduralCircleAvatar
-					style={_styles.circleAvatarUserMessage}
-					seed={inte.memberPublicKey}
-					size={40 * scaleSize}
-				/>
+				<View
+					style={{
+						paddingRight: 5 * scaleSize,
+						paddingBottom: 5 * scaleSize,
+						justifyContent: 'center',
+						alignItems: 'center',
+						alignSelf: 'flex-end',
+					}}
+				>
+					<MemberAvatar
+						publicKey={inte.memberPublicKey}
+						conversationPublicKey={inte.conversationPublicKey}
+						size={30 * scaleSize}
+					/>
+				</View>
 			)}
 			<View style={[column.top, _styles.messageItem]}>
 				{!inte.isMe && isGroup && !isFollowupMessage && (

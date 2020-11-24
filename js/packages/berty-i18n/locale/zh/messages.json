@@ -141,7 +141,8 @@
         "title": "",
         "tag": ""
       },
-      "delete-account-button": ""
+      "delete-account-button": "",
+      "backup-account-button": ""
     },
     "notifications": {
       "title": "消息通知",
@@ -249,7 +250,8 @@
       "header-middle-button": "",
       "header-right-button": "",
       "system-info-button": "",
-      "add-bots-button": "",
+      "debug-button": "",
+      "add-dev-conversations-button": "",
       "share-button": {
         "title": "",
         "alert-title": "",
@@ -289,9 +291,12 @@
       "messages-button": "",
       "delete-button": ""
     },
-    "add-contact-list": {
+    "add-dev-conversations": {
       "title": "",
-      "add": ""
+      "add": "",
+      "tag-bot": "",
+      "tag-contact": "",
+      "tag-conversation": ""
     },
     "ipfs-webui": {
       "title": ""
@@ -344,6 +349,9 @@
       "save-button": "",
       "erase-button": "",
       "leave-button": ""
+    },
+    "multi-member-qr": {
+      "title": ""
     },
     "one-to-one": {
       "contact-request-box": {

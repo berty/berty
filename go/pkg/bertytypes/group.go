@@ -64,11 +64,11 @@ func (m *Group) GroupIDAsString() string {
 	return hex.EncodeToString(m.PublicKey)
 }
 
-func (m *Group) GetSharedSecret() (*[32]byte, error) {
+func (m *Group) GetSharedSecret() *[32]byte {
 	sharedSecret := [32]byte{}
 	copy(sharedSecret[:], m.Secret)
 
-	return &sharedSecret, nil
+	return &sharedSecret
 }
 
 func (m *Group) FilterForReplication() (*Group, error) {

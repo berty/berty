@@ -204,10 +204,10 @@ func TestReplicationService_Flow(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte("From 1 - 1"))
+	_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte("From 1 - 1"), nil)
 	require.NoError(t, err)
 
-	_, err = g2a.MetadataStore().SendAppMetadata(ctx, []byte("From 2 - 1"))
+	_, err = g2a.MetadataStore().SendAppMetadata(ctx, []byte("From 2 - 1"), nil)
 	require.NoError(t, err)
 
 	time.Sleep(time.Millisecond * 250)
@@ -228,7 +228,7 @@ func TestReplicationService_Flow(t *testing.T) {
 	odb2.Close()
 	cleanupAPI2()
 
-	_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte("From 1 - 2"))
+	_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte("From 1 - 2"), nil)
 	require.NoError(t, err)
 
 	time.Sleep(time.Millisecond * 250)

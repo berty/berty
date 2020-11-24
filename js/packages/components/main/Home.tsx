@@ -8,11 +8,10 @@ import {
 	TouchableOpacity,
 	View,
 	ViewProps,
-	Image,
 	TextInput,
 	SectionList,
 } from 'react-native'
-import { SafeAreaConsumer, EdgeInsets } from 'react-native-safe-area-context'
+import { EdgeInsets, SafeAreaConsumer } from 'react-native-safe-area-context'
 import { Icon, Text } from '@ui-kitten/components'
 import pickBy from 'lodash/pickBy'
 import LottieView from 'lottie-react-native'
@@ -28,22 +27,19 @@ import {
 	useClient,
 	useNotificationsInhibitor,
 } from '@berty-tech/store/hooks'
-import { messenger as messengerpb } from '@berty-tech/api/index.js'
-import * as api from '@berty-tech/api/index.pb'
+import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 
 import { useLayout } from '../hooks'
 import { pbDateToNum, timeFormat } from '../helpers'
 import FromNow from '../shared-components/FromNow'
-import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { createSections } from './Search'
 import { HintBody } from '../shared-components/HintBody'
 import { playSound } from '../sounds'
-
-import Logo from './1_berty_picto.svg'
+import { Footer } from './Footer'
+import { AccountAvatar, ConversationAvatar, ContactAvatar } from '../avatars'
 import EmptyChat from './empty_chat.svg'
-import AvatarGroup19 from './Avatar_Group_Copy_19.png'
 
 //
 // Main List
@@ -121,7 +117,7 @@ const useStylesContactRequest: any = () => {
 
 // Functions
 
-const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
+const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 	displayName,
 	publicKey,
 	conversationPublicKey,
@@ -159,12 +155,9 @@ const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 						}
 					}}
 				>
-					<ProceduralCircleAvatar
-						style={[absolute.center, border.shadow.medium, absolute.scale({ top: -27.5 })]}
-						seed={publicKey}
-						size={55}
-						diffSize={16}
-					/>
+					<View style={[absolute.center, border.shadow.medium, absolute.scale({ top: -27.5 })]}>
+						<ContactAvatar publicKey={publicKey} size={54} />
+					</View>
 					<View
 						style={{
 							flexGrow: 2,
@@ -231,7 +224,7 @@ const ContactRequest: React.FC<api.berty.messenger.v1.IContact> = ({
 							style={acceptButton}
 							onPress={() =>
 								client
-									.contactAccept({ publicKey })
+									?.contactAccept({ publicKey })
 									.then(() => {
 										playSound('contactRequestAccepted')
 									})
@@ -329,7 +322,7 @@ const MessageStatus: React.FC<{ interaction: any; isAccepted: boolean }> = ({
 	isAccepted,
 }) => {
 	const [{ color }] = useStyles()
-	if (interaction?.type !== messengerpb.AppMessage.Type.TypeUserMessage && isAccepted) {
+	if (interaction?.type !== beapi.messenger.AppMessage.Type.TypeUserMessage && isAccepted) {
 		return null
 	}
 
@@ -347,14 +340,15 @@ const MessageStatus: React.FC<{ interaction: any; isAccepted: boolean }> = ({
 	)
 }
 
-const interactionsFilter = (inte: any) => inte.type === messengerpb.AppMessage.Type.TypeUserMessage
+const interactionsFilter = (inte: any) =>
+	inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage
 
 const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	const {
 		publicKey = '',
 		displayName = '',
 		fake = false,
-		type = messengerpb.Conversation.Type.ContactType,
+		type = beapi.messenger.Conversation.Type.ContactType,
 		unreadCount,
 		contactPublicKey,
 		createdDate,
@@ -369,29 +363,26 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 
 	const contact =
 		Object.values(ctx.contacts).find((c: any) => c.conversationPublicKey === publicKey) || null
-	const isAccepted = contact && contact.state === messengerpb.Contact.State.Accepted
-	const isIncoming = contact && contact.state === messengerpb.Contact.State.IncomingRequest
+	const isAccepted = contact && contact.state === beapi.messenger.Contact.State.Accepted
+	const isIncoming = contact && contact.state === beapi.messenger.Contact.State.IncomingRequest
 
-	const [
-		{ color, row, border, flex, padding, text, opacity, background, margin },
-		{ scaleSize },
-	] = useStyles()
+	const [{ color, row, border, flex, padding, text, opacity, margin }] = useStyles()
 	const { dispatch } = useNavigation()
 
 	const persistOpts = usePersistentOptions()
 	const isBetabot =
 		persistOpts.betabot.convPk &&
-		type !== messengerpb.Conversation.Type.MultiMemberType &&
+		type !== beapi.messenger.Conversation.Type.MultiMemberType &&
 		contactPublicKey.toString() === persistOpts.betabot.convPk.toString()
 	const isBetabotAdded = persistOpts.betabot.added
 	let description
 	if (isBetabot && !isBetabotAdded) {
 		description = 'Click here to add the Beta Bot!'
 	} else {
-		if (lastInte?.type === messengerpb.AppMessage.Type.TypeUserMessage) {
-			description = lastInte.payload.body
+		if (lastInte?.type === beapi.messenger.AppMessage.Type.TypeUserMessage) {
+			description = (lastInte.payload as any)?.body
 		} else {
-			if (contact?.state === messengerpb.Contact.State.OutgoingRequestSent) {
+			if (contact?.state === beapi.messenger.Contact.State.OutgoingRequestSent) {
 				description = 'Request is sent. Pending...'
 			} else {
 				description = ''
@@ -404,12 +395,10 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 			underlayColor={color.light.grey}
 			style={[
 				padding.horizontal.medium,
-				padding.right.scale(30),
-				padding.vertical.scale(7),
-				!isAccepted && type !== messengerpb.Conversation.Type.MultiMemberType && opacity(0.6),
+				!isAccepted && type !== beapi.messenger.Conversation.Type.MultiMemberType && opacity(0.6),
 			]}
 			onPress={
-				type === messengerpb.Conversation.Type.MultiMemberType
+				type === beapi.messenger.Conversation.Type.MultiMemberType
 					? () =>
 							dispatch(
 								CommonActions.navigate({
@@ -431,9 +420,13 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 			}
 		>
 			<View
-				style={[row.center, border.bottom.medium, border.color.light.grey, padding.vertical.small]}
+				style={[
+					row.center,
+					border.bottom.medium,
+					border.color.light.grey,
+					padding.vertical.scale(7),
+				]}
 			>
-				{/* Avatar */}
 				<View
 					style={[
 						row.item.center,
@@ -447,38 +440,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 						},
 					]}
 				>
-					{type === messengerpb.Conversation.Type.MultiMemberType ? (
-						<Image
-							source={AvatarGroup19}
-							style={{
-								width: 40,
-								height: 40,
-							}}
-						/>
-					) : isBetabot ? (
-						<View
-							style={[
-								border.radius.scale(25),
-								border.shadow.medium,
-								background.white,
-								flex.justify.center,
-								flex.align.center,
-								{
-									width: 40,
-									height: 40,
-								},
-							]}
-						>
-							<Logo width={25} height={25} style={{ right: -1, top: -1 }} />
-						</View>
-					) : (
-						<ProceduralCircleAvatar
-							seed={contact?.publicKey}
-							size={40 / scaleSize}
-							diffSize={10}
-							style={[border.shadow.medium]}
-						/>
-					)}
+					<ConversationAvatar size={40} publicKey={publicKey} />
 				</View>
 				<View
 					style={[
@@ -500,7 +462,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 						>
 							<Text numberOfLines={1} style={[text.size.medium, text.color.black]}>
 								{(fake && 'FAKE - ') || ''}
-								{type === messengerpb.Conversation.Type.MultiMemberType
+								{type === beapi.messenger.Conversation.Type.MultiMemberType
 									? displayName
 									: contact?.displayName || ''}
 							</Text>
@@ -571,7 +533,9 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 							{lastInte && lastInte.isMe && (
 								<MessageStatus
 									interaction={lastInte}
-									isAccepted={isAccepted || type === messengerpb.Conversation.Type.MultiMemberType}
+									isAccepted={
+										isAccepted || type === beapi.messenger.Conversation.Type.MultiMemberType
+									}
 								/>
 							)}
 						</View>
@@ -711,16 +675,20 @@ const HomeHeader: React.FC<
 										padding.left.medium,
 										margin.left.small,
 										margin.right.scale(25),
-										border.radius.small,
+										border.radius.medium,
 									]}
 									activeOpacity={1}
 									onPress={() => focus?.focus()}
 								>
-									{!value?.length ? (
-										<View style={[row.center]}>
-											<Icon name='search-outline' fill='#8F9BB3' width={20} height={20} />
-										</View>
-									) : null}
+									<View style={[row.center]}>
+										<Icon
+											name='search-outline'
+											fill={value?.length ? '#FFAE3A' : '#8F9BB3'}
+											width={20}
+											height={20}
+										/>
+									</View>
+
 									<View
 										style={[
 											!value?.length && margin.left.medium,
@@ -757,7 +725,7 @@ const HomeHeader: React.FC<
 											}}
 											onPress={() => onChange('')}
 										>
-											<Icon name='close-circle' fill='#FFAE3A' width={20} height={20} />
+											<Icon name='close-circle-outline' fill='#FFAE3A' width={20} height={20} />
 										</TouchableOpacity>
 									) : null}
 								</TouchableOpacity>
@@ -770,7 +738,7 @@ const HomeHeader: React.FC<
 									}}
 									onPress={() => navigate('Settings.Home')}
 								>
-									<Icon name='account-berty' pack='custom' fill='#8F9BB3' width={40} height={40} />
+									<AccountAvatar size={40} />
 								</TouchableOpacity>
 							</View>
 						</View>
@@ -783,9 +751,9 @@ const HomeHeader: React.FC<
 
 const SearchComponent: React.FC<{
 	insets: EdgeInsets | null
-	conversations: { [key: string]: api.berty.messenger.v1.IConversation }
-	contacts: { [key: string]: api.berty.messenger.v1.IContact }
-	interactions: { [key: string]: api.berty.messenger.v1.IInteraction }
+	conversations: { [key: string]: beapi.messenger.IConversation | undefined }
+	contacts: { [key: string]: beapi.messenger.IContact | undefined }
+	interactions: { [key: string]: beapi.messenger.IInteraction | undefined }
 	hasResults: boolean
 	value: string
 }> = ({ insets, conversations, contacts, interactions, hasResults, value }) => {
@@ -885,7 +853,7 @@ const SearchComponent: React.FC<{
 			)}
 		/>
 	) : (
-		<View style={{ top: 50 }}>
+		<View style={{ position: 'relative' }}>
 			<Translation>
 				{(t: any): React.ReactNode => (
 					<TextNative
@@ -894,14 +862,28 @@ const SearchComponent: React.FC<{
 							text.size.big,
 							text.bold.small,
 							text.align.center,
-							{ fontFamily: 'Open Sans' },
+							{
+								fontFamily: 'Open Sans',
+								position: 'absolute',
+								top: 230,
+								left: 0,
+								right: 0,
+								color: '#FFAE3A',
+							},
 						]}
 					>
-						{t('main.search.no-results')}
+						{t('main.home.search.no-results')}
 					</TextNative>
 				)}
 			</Translation>
-			<View style={[margin.top.scale(120 * scaleHeight)]}>
+			<Icon
+				name='search'
+				width={500}
+				height={500}
+				fill='#FFFBF6'
+				style={{ position: 'absolute', top: 0, right: -63 }}
+			/>
+			<View style={[margin.top.scale(370 * scaleHeight)]}>
 				<HintBody />
 			</View>
 		</View>
@@ -910,12 +892,12 @@ const SearchComponent: React.FC<{
 
 const _approxFooterHeight = 90
 
-const T = messengerpb.StreamEvent.Notified.Type
+const T = beapi.messenger.StreamEvent.Notified.Type
 
 export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	useNotificationsInhibitor((_ctx, notif) =>
 		[T.TypeMessageReceived, T.TypeContactRequestReceived, T.TypeContactRequestSent].includes(
-			notif.type,
+			notif.type as any,
 		)
 			? 'sound-only'
 			: false,
@@ -955,7 +937,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 				? pickBy(
 						ctx.conversations,
 						(val: any) =>
-							val.type === messengerpb.Conversation.Type.MultiMemberType &&
+							val.type === beapi.messenger.Conversation.Type.MultiMemberType &&
 							searchCheck(val.displayName),
 				  )
 				: {},
@@ -978,7 +960,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 		return pickBy(
 			allInteractions,
 			(inte) =>
-				inte.type === messengerpb.AppMessage.Type.TypeUserMessage &&
+				inte.type === beapi.messenger.AppMessage.Type.TypeUserMessage &&
 				searchCheck(inte.payload?.body),
 		)
 	}, [ctx.interactions, searchCheck, searching])
@@ -999,91 +981,98 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 						<SwipeNavRecognizer onSwipeLeft={() => navigate('Settings.Home')}>
 							<SafeAreaConsumer>
 								{(insets: EdgeInsets | null) => (
-									<ScrollView
-										ref={scrollRef}
-										stickyHeaderIndices={!searchText?.length && !hasResults ? [1] : [0]}
-										showsVerticalScrollIndicator={false}
-										scrollEventThrottle={16}
-										keyboardShouldPersistTaps={'handled'}
-										onScrollEndDrag={(e) => {
-											if (e.nativeEvent.contentOffset.y < 0) {
-												setRefresh(true)
-											}
-										}}
-										onScroll={(e) => {
-											if (e.nativeEvent.contentOffset) {
-												if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
-													setIsOnTop(true)
-												} else {
-													setIsOnTop(false)
+									<>
+										<ScrollView
+											ref={scrollRef}
+											stickyHeaderIndices={!searchText?.length && !hasResults ? [1] : [0]}
+											showsVerticalScrollIndicator={false}
+											scrollEventThrottle={16}
+											keyboardShouldPersistTaps={'handled'}
+											onScrollEndDrag={(e) => {
+												if (e.nativeEvent.contentOffset.y < 0) {
+													setRefresh(true)
 												}
-											}
-										}}
-									>
-										{!searchText?.length && (
-											<IncomingRequests items={requests} onLayout={onLayoutRequests} />
-										)}
-										<HomeHeader
-											isOnTop={isOnTop}
-											hasRequests={requests.length > 0}
-											scrollRef={scrollRef}
-											onLayout={onLayoutHeader}
-											value={searchText}
-											onChange={setSearchText}
-											refresh={refresh}
-											setRefresh={setRefresh}
-										/>
-										{searchText?.length ? (
-											<SearchComponent
-												insets={insets}
-												conversations={searchConversations}
-												contacts={searchContacts}
-												interactions={searchInteractions}
+											}}
+											onScroll={(e) => {
+												if (e.nativeEvent.contentOffset) {
+													if (e.nativeEvent.contentOffset.y >= layoutRequests.height) {
+														setIsOnTop(true)
+													} else {
+														setIsOnTop(false)
+													}
+												}
+											}}
+										>
+											{!searchText?.length && (
+												<IncomingRequests items={requests} onLayout={onLayoutRequests} />
+											)}
+											<HomeHeader
+												isOnTop={isOnTop}
+												hasRequests={requests.length > 0}
+												scrollRef={scrollRef}
+												onLayout={onLayoutHeader}
 												value={searchText}
-												hasResults={hasResults}
+												onChange={setSearchText}
+												refresh={refresh}
+												setRefresh={setRefresh}
 											/>
-										) : (
-											<>
-												{isConversation ? (
-													<Conversations items={conversations} onLayout={onLayoutConvs} />
-												) : (
-													<View style={[background.white]}>
-														<View
-															style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}
-														>
-															<View>
-																<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
-																<TextNative
-																	style={[
-																		text.align.center,
-																		text.color.grey,
-																		text.bold.small,
-																		opacity(0.3),
-																		margin.top.big,
-																	]}
-																>
-																	{t('main.home.no-contacts')}
-																</TextNative>
+											{searchText?.length ? (
+												<SearchComponent
+													insets={insets}
+													conversations={searchConversations}
+													contacts={searchContacts}
+													interactions={searchInteractions}
+													value={searchText}
+													hasResults={hasResults}
+												/>
+											) : (
+												<>
+													{isConversation ? (
+														<Conversations items={conversations} onLayout={onLayoutConvs} />
+													) : (
+														<View style={[background.white]}>
+															<View
+																style={[
+																	flex.justify.center,
+																	flex.align.center,
+																	margin.top.scale(60),
+																]}
+															>
+																<View>
+																	<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
+																	<TextNative
+																		style={[
+																			text.align.center,
+																			text.color.grey,
+																			text.bold.small,
+																			opacity(0.3),
+																			margin.top.big,
+																		]}
+																	>
+																		{t('main.home.no-contacts')}
+																	</TextNative>
+																</View>
 															</View>
 														</View>
-													</View>
-												)}
-												{requests.length > 0 && (
-													<View
-														style={[
-															{
-																backgroundColor: 'white',
-																position: 'absolute',
-																bottom: windowHeight * -1,
-																height: windowHeight,
-																width: '100%',
-															},
-														]}
-													/>
-												)}
-											</>
-										)}
-									</ScrollView>
+													)}
+													{requests.length > 0 && (
+														<View
+															style={[
+																{
+																	backgroundColor: 'white',
+																	position: 'absolute',
+																	bottom: windowHeight * -1,
+																	height: windowHeight,
+																	width: '100%',
+																},
+															]}
+														/>
+													)}
+												</>
+											)}
+										</ScrollView>
+										{!searchText?.length && <Footer />}
+									</>
 								)}
 							</SafeAreaConsumer>
 						</SwipeNavRecognizer>

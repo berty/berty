@@ -125,7 +125,7 @@ func Test_eventHandler_handleAppMessageGroupInvitation(t *testing.T) {
 	t.Skip("TODO")
 }
 
-func Test_eventHandler_handleAppMessageSetUserName(t *testing.T) {
+func Test_eventHandler_handleAppMessageSetUserInfo(t *testing.T) {
 	// TODO
 	t.Skip("TODO")
 }

@@ -15,9 +15,9 @@ const useStylesHint = () => {
 			text.size.medium,
 			text.bold.small,
 			opacity(0.8),
-			margin.top.medium,
-			margin.bottom.large,
-			{ fontFamily: 'Open Sans', lineHeight: 30 * fontScale },
+			margin.top.large,
+			margin.bottom.small,
+			{ fontFamily: 'Open Sans', lineHeight: 20 * fontScale },
 		],
 	}
 }
@@ -41,12 +41,12 @@ export const HintBody = () => {
 				style={[
 					text.align.center,
 					row.item.justify,
-					text.color.black,
 					text.size.scale(30),
 					opacity(0.8),
 					text.bold.medium,
 					{
 						fontFamily: 'Open Sans',
+						color: '#DADDE6',
 						marginHorizontal: _landingIconSize * scaleSize, // room for speech bubble icon
 					},
 				]}
@@ -58,9 +58,11 @@ export const HintBody = () => {
 				pack='custom'
 				width={_landingIconSize * scaleSize}
 				height={_landingIconSize * scaleSize}
-				style={[row.item.justify, opacity(0.8), { position: 'absolute', bottom: 20, right: 10 }]}
+				style={[row.item.justify, opacity(0.8), { position: 'absolute', bottom: 40, right: 20 }]}
 			/>
-			<TextNative style={searchHintBodyText}>{bannerQuote?.quote || ''}</TextNative>
+			<TextNative style={[searchHintBodyText, { color: '#DBE1EC' }]}>
+				{bannerQuote?.quote || ''}
+			</TextNative>
 			{bannerQuote?.author && (
 				<View style={[{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }]}>
 					<TextNative
@@ -69,7 +71,7 @@ export const HintBody = () => {
 							text.size.medium,
 							text.bold.small,
 							opacity(0.8),
-							{ fontFamily: 'Open Sans' },
+							{ fontFamily: 'Open Sans', color: '#DBE1EC' },
 						]}
 					>
 						{'— ' + bannerQuote?.author}

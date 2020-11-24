@@ -1,5 +1,5 @@
-import React from 'react'
-import { Linking, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Linking, View, TouchableOpacity } from 'react-native'
 import Hyperlink from 'react-native-hyperlink'
 import { useNavigation as useNativeNavigation } from '@react-navigation/core'
 import { Icon, Text } from '@ui-kitten/components'
@@ -8,6 +8,9 @@ import { useClient } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 
 import { pbDateToNum, timeFormat } from '../../helpers'
+
+const READ_MORE_MESSAGE_LENGTH = 325
+const READ_MORE_SUBSTR_LENGTH = 300
 
 const useStylesMessage = () => {
 	const [{ text, padding }] = useStyles()
@@ -39,9 +42,18 @@ export const HyperlinkUserMessage: React.FC<{
 	msgBackgroundColor: any
 	msgTextColor: any
 }> = ({ inte, msgBorderColor, isFollowedMessage, msgBackgroundColor, msgTextColor }) => {
+	const {
+		payload: { body: message },
+	} = inte
+
 	const client: any = useClient()
 	const navigation = useNativeNavigation()
 	const [{ margin, padding, column, border }] = useStyles()
+	const [isReadMore, setReadMore] = useState(false)
+
+	useEffect(() => {
+		setReadMore(message.length > READ_MORE_MESSAGE_LENGTH)
+	}, [message])
 
 	return (
 		<View
@@ -81,8 +93,17 @@ export const HyperlinkUserMessage: React.FC<{
 						},
 					]}
 				>
-					{inte.payload.body}
+					{isReadMore ? message.substr(0, READ_MORE_SUBSTR_LENGTH).concat('...') : message}
 				</Text>
+				{isReadMore && (
+					<TouchableOpacity onPress={() => setReadMore(false)}>
+						<Text
+							style={[{ color: '#9391A2', fontSize: 12, alignSelf: 'center' }, margin.top.tiny]}
+						>
+							Read more
+						</Text>
+					</TouchableOpacity>
+				)}
 			</Hyperlink>
 		</View>
 	)

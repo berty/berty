@@ -7,12 +7,12 @@ import (
 	"time"
 
 	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
-	p2phelpers "github.com/libp2p/go-libp2p-core/helpers"
 	p2pnetwork "github.com/libp2p/go-libp2p-core/network"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/nacl/box"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
@@ -25,7 +25,7 @@ func TestValidHandshake(t *testing.T) {
 		stream p2pnetwork.Stream,
 		mh *mockedHandshake,
 	) {
-		defer p2phelpers.FullClose(stream)
+		defer ipfsutil.FullClose(stream)
 
 		err := Request(
 			stream,
@@ -42,7 +42,7 @@ func TestValidHandshake(t *testing.T) {
 		wg *sync.WaitGroup,
 	) {
 		defer wg.Done()
-		defer p2phelpers.FullClose(stream)
+		defer ipfsutil.FullClose(stream)
 
 		peerAccountID, err := Response(stream, mh.responder.accountID)
 		require.NoError(t, err, "handshake response failed")
@@ -69,7 +69,7 @@ func TestInvalidRequesterHello(t *testing.T) {
 			stream p2pnetwork.Stream,
 			_ *mockedHandshake,
 		) {
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		var responderTest responderTestFunc = func(
@@ -79,7 +79,7 @@ func TestInvalidRequesterHello(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			require.Contains(t, errcode.Codes(err), errcode.ErrHandshakeRequesterHello)
@@ -103,7 +103,7 @@ func TestInvalidResponderHello(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			err := Request(
 				stream,
@@ -126,7 +126,7 @@ func TestInvalidResponderHello(t *testing.T) {
 			err := hc.receiveRequesterHello()
 			require.NoError(t, err, "receive RequesterHello failed")
 
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)
@@ -159,7 +159,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			require.NoError(t, err, "receive ResponderHello failed")
 
 			// Interrupt step by closing stream
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		var responderTest responderTestFunc = func(
@@ -169,7 +169,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			_, err := Response(stream, mh.requester.accountID)
 			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAuthenticate, errcode.ErrStreamRead})
@@ -222,7 +222,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 
 			hc.writer.WriteMsg(&BoxEnvelope{Box: boxContent})
 
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		var responderTest responderTestFunc = func(
@@ -232,7 +232,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAuthenticate, errcode.ErrDeserialization})
@@ -290,7 +290,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 
 			hc.writer.WriteMsg(&BoxEnvelope{Box: boxContent})
 
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		var responderTest responderTestFunc = func(
@@ -300,7 +300,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAuthenticate, errcode.ErrCryptoSignatureVerification})
@@ -358,7 +358,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 
 			hc.writer.WriteMsg(&BoxEnvelope{Box: boxContent})
 
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		var responderTest responderTestFunc = func(
@@ -368,7 +368,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAuthenticate, errcode.ErrCryptoSignatureVerification})
@@ -423,7 +423,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 
 			hc.writer.WriteMsg(&BoxEnvelope{Box: boxContent})
 
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		var responderTest responderTestFunc = func(
@@ -433,7 +433,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAuthenticate, errcode.ErrCryptoSignatureVerification})
@@ -479,7 +479,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 
 			hc.writer.WriteMsg(&BoxEnvelope{Box: boxContent})
 
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		var responderTest responderTestFunc = func(
@@ -489,7 +489,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAuthenticate, errcode.ErrDeserialization})
@@ -544,7 +544,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 
 			hc.writer.WriteMsg(&BoxEnvelope{Box: boxContent})
 
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		var responderTest responderTestFunc = func(
@@ -554,7 +554,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAuthenticate, errcode.ErrCryptoDecrypt})
@@ -612,7 +612,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 
 			hc.writer.WriteMsg(&BoxEnvelope{Box: boxContent})
 
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		var responderTest responderTestFunc = func(
@@ -622,7 +622,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAuthenticate, errcode.ErrCryptoDecrypt})
@@ -656,7 +656,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			// Send invalid box content
 			hc.writer.WriteMsg(&BoxEnvelope{Box: []byte("WrongBoxContent")})
 
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		var responderTest responderTestFunc = func(
@@ -666,7 +666,7 @@ func TestInvalidRequesterAuthenticate(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAuthenticate, errcode.ErrCryptoDecrypt})
@@ -689,7 +689,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			err := Request(
 				stream,
@@ -718,7 +718,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			err = hc.receiveRequesterAuthenticate()
 			require.NoError(t, err, "receive RequesterAuthenticate failed")
 
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)
@@ -734,7 +734,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			err := Request(
 				stream,
@@ -787,7 +787,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 
 			hc.writer.WriteMsg(&BoxEnvelope{Box: boxContent})
 
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)
@@ -803,7 +803,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			err := Request(
 				stream,
@@ -853,7 +853,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 
 			hc.writer.WriteMsg(&BoxEnvelope{Box: boxContent})
 
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)
@@ -869,7 +869,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			err := Request(
 				stream,
@@ -913,7 +913,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 
 			hc.writer.WriteMsg(&BoxEnvelope{Box: boxContent})
 
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)
@@ -929,7 +929,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			err := Request(
 				stream,
@@ -979,7 +979,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 
 			hc.writer.WriteMsg(&BoxEnvelope{Box: boxContent})
 
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)
@@ -995,7 +995,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			err := Request(
 				stream,
@@ -1048,7 +1048,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 
 			hc.writer.WriteMsg(&BoxEnvelope{Box: boxContent})
 
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)
@@ -1064,7 +1064,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			stream p2pnetwork.Stream,
 			mh *mockedHandshake,
 		) {
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			err := Request(
 				stream,
@@ -1096,7 +1096,7 @@ func TestInvalidResponderAccept(t *testing.T) {
 			// Send wrong boxContent
 			hc.writer.WriteMsg(&BoxEnvelope{Box: []byte("WrongBoxContent")})
 
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		runHandshakeTest(t, requesterTest, responderTest)
@@ -1134,7 +1134,7 @@ func TestInvalidResponderAcceptAck(t *testing.T) {
 			err = hc.receiveResponderAccept()
 			require.NoError(t, err, "receive ResponderAccept failed")
 
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		var responderTest responderTestFunc = func(
@@ -1144,7 +1144,7 @@ func TestInvalidResponderAcceptAck(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAcknowledge, errcode.ErrStreamRead})
@@ -1184,7 +1184,7 @@ func TestInvalidResponderAcceptAck(t *testing.T) {
 			acknowledge := &RequesterAcknowledgePayload{Success: false}
 			hc.writer.WriteMsg(acknowledge)
 
-			p2phelpers.FullClose(stream)
+			ipfsutil.FullClose(stream)
 		}
 
 		var responderTest responderTestFunc = func(
@@ -1194,7 +1194,7 @@ func TestInvalidResponderAcceptAck(t *testing.T) {
 			wg *sync.WaitGroup,
 		) {
 			defer wg.Done()
-			defer p2phelpers.FullClose(stream)
+			defer ipfsutil.FullClose(stream)
 
 			_, err := Response(stream, mh.responder.accountID)
 			require.Equal(t, errcode.Codes(err), []errcode.ErrCode{errcode.ErrHandshakeRequesterAcknowledge, errcode.ErrInvalidInput})
