@@ -45,7 +45,7 @@
     "react-native-dropdown-picker": "^3.7.1",
     "react-native-elements": "^2.3.2",
     "react-native-fs": "^2.16.6",
-    "react-native-gesture-handler": "^1.8.0",
+    "react-native-gesture-handler": "^1.9.0",
     "react-native-hyperlink": "^0.0.19",
     "react-native-image-crop-picker": "^0.35.1",
     "react-native-in-app-notification": "^3.1.0",
