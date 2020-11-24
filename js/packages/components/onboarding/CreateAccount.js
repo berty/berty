@@ -60,7 +60,6 @@ const CreateAccountBody = ({ next }) => {
 							loop
 							style={{ width: '100%' }}
 						/>
-
 						{!isPressed ? (
 							<LottieView
 								source={require('./Berty_onboard_animation_assets2/Startup animation assets/Shield appear.json')}
