@@ -13,6 +13,7 @@ import { MessengerActions } from '@berty-tech/store/context'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import HeaderSettings from '../shared-components/Header'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import logo from '../main/1_berty_picto.png'
 import { AccountAvatar } from '../avatars'
 
 const useStylesHome = () => {
@@ -99,7 +100,10 @@ const HomeHeaderAvatar: React.FC = () => {
 					</View>
 					<Text style={[_styles.headerNameText]}>{account?.displayName || ''}</Text>
 					<View style={[padding.top.scale(20 * scaleHeight)]}>
-						{(account?.link && <QRCode size={qrCodeSize} value={account.link} />) || null}
+						{(account?.link && (
+							<QRCode size={qrCodeSize} value={account.link} logo={logo} color='#3845E0' />
+						)) ||
+							null}
 					</View>
 				</View>
 			</TouchableOpacity>

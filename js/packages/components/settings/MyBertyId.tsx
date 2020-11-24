@@ -12,6 +12,7 @@ import { TabBar } from '../shared-components/TabBar'
 import { RequestAvatar } from '../shared-components/Request'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import logo from '../main/1_berty_picto.png'
 
 //
 // Settings My Berty ID Vue
@@ -73,7 +74,7 @@ const ContactRequestQR = () => {
 	// I would like to use binary mode in QR but the scanner used seems to not support it, extended tests were done
 	return (
 		<View style={[padding.top.big]}>
-			<QRCode size={qrCodeSize} value={account.link} />
+			<QRCode logo={logo} size={qrCodeSize} value={account.link} color='#3845E0' />
 		</View>
 	)
 }
