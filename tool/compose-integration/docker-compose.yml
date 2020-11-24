@@ -1,0 +1,130 @@
+version: '3.7'
+
+services:
+  integration:
+    build: ../..
+    volumes:
+      - shared:/shared
+    entrypoint: sh
+    networks:
+      - integration__testbot_daemon1
+      - rdvp__integration
+    command: -xec "
+      while [ ! -f /shared/testbot_daemon1.txt ]; do
+        sleep 1;
+      done;
+      sleep 60;
+      echo this sleep could be replace by something that auto-retry sending contact requests again and again;
+      berty-integration
+        -integration.testbot `cat /shared/testbot_daemon1.txt`
+        -p2p.rdvp=/dns4/rdvp/tcp/4040/p2p/`cat /shared/rdvp-pub.txt`
+      ;"
+    links:
+      - testbot
+      - rdvp
+    depends_on:
+      - testbot
+      - rdvp
+
+  testbot:
+    build: ../..
+    restart: unless-stopped
+    entrypoint: testbot
+    networks:
+      - testbot__testbot_daemon1
+      - testbot__testbot_daemon2
+    command:
+      - -addr1=testbot_daemon1:9091
+      - -addr2=testbot_daemon2:9091
+    links:
+      - testbot_daemon1
+      - testbot_daemon2
+    depends_on:
+      - testbot_daemon1
+      - testbot_daemon2
+  testbot_daemon1:
+    build: ../..
+    restart: unless-stopped
+    entrypoint: sh
+    volumes:
+      - shared:/shared
+    networks:
+      - testbot__testbot_daemon1
+      - integration__testbot_daemon1
+      - rdvp__testbot1
+    command: -xec "
+      berty share-invite > /shared/testbot_daemon1.txt.tmp;
+      mv /shared/testbot_daemon1.txt.tmp /shared/testbot_daemon1.txt;
+      berty daemon
+        -node.listeners=/ip4/0.0.0.0/tcp/9091/grpc
+        -p2p.local-discovery=false
+        -p2p.rdvp=/dns4/rdvp/tcp/4040/p2p/`cat /shared/rdvp-pub.txt`
+      "
+    depends_on:
+      - rdvp
+    links:
+      - rdvp
+  testbot_daemon2:
+    build: ../..
+    restart: unless-stopped
+    entrypoint: sh
+    volumes:
+      - shared:/shared
+    networks:
+      - testbot__testbot_daemon2
+      - rdvp__testbot2
+    command: -xec "
+      berty share-invite > /shared/testbot_daemon2.txt.tmp;
+      mv /shared/testbot_daemon2.txt.tmp /shared/testbot_daemon2.txt;
+      berty daemon
+        -node.listeners=/ip4/0.0.0.0/tcp/9091/grpc
+        -p2p.local-discovery=false
+        -p2p.rdvp=/dns4/rdvp/tcp/4040/p2p/`cat /shared/rdvp-pub.txt`
+      "
+    depends_on:
+      - rdvp
+    links:
+      - rdvp
+
+  rdvp:
+    build: ../..
+    restart: unless-stopped
+    entrypoint: sh
+    volumes:
+      - shared:/shared
+    networks:
+      - rdvp__testbot1
+      - rdvp__testbot2
+      - rdvp__integration
+    command: -xec "
+      rdvp genkey > /shared/rdvp-priv.txt;
+      rdvp sharekey -pk `cat /shared/rdvp-priv.txt` > /shared/rdvp-pub.txt;
+      rdvp serve -pk `cat /shared/rdvp-priv.txt`;
+      "
+
+  # replication:
+  # betabot:
+  # betabot_daemon:
+
+volumes:
+  shared:
+
+networks:
+  integration__testbot_daemon1:
+    internal: true
+    driver: bridge
+  testbot__testbot_daemon1:
+    internal: true
+    driver: bridge
+  testbot__testbot_daemon2:
+    internal: true
+    driver: bridge
+  rdvp__testbot1:
+    internal: true
+    driver: bridge
+  rdvp__testbot2:
+    internal: true
+    driver: bridge
+  rdvp__integration:
+    internal: true
+    driver: bridge
