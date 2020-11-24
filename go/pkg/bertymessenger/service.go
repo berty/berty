@@ -22,6 +22,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/notification"
+	"berty.tech/berty/v2/go/internal/streamutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
@@ -427,65 +428,47 @@ func (svc *service) subscribeToGroup(gpkb []byte) error {
 	return svc.subscribeToMessages(gpkb)
 }
 
-func (svc *service) prepareAttachment(data []byte) ([]byte, error) {
-	// TODO: stream
-
+func (svc *service) attachmentPrepare(attachment io.Reader) ([]byte, error) {
 	stream, err := svc.protocolClient.AttachmentPrepare(svc.ctx)
 	if err != nil {
-		return nil, err
+		return nil, errcode.ErrAttachmentPrepare.Wrap(err)
 	}
 
 	// send header
 	if err := stream.Send(&bertytypes.AttachmentPrepare_Request{}); err != nil {
-		return nil, err
+		return nil, errcode.ErrStreamHeaderWrite.Wrap(err)
 	}
 
 	// send body
-	max := len(data)
-	for i := 0; i < max; {
-		next := i + (1024 * 64)
-		block := data[i:imin(next, max)]
-		if err := stream.Send(&bertytypes.AttachmentPrepare_Request{Block: block}); err != nil {
-			return nil, err
-		}
-		i = next
+	if err := streamutil.FuncSink(make([]byte, 64*1024), attachment, func(b []byte) error {
+		return stream.Send(&bertytypes.AttachmentPrepare_Request{Block: b})
+	}); err != nil {
+		return nil, errcode.ErrStreamSink.Wrap(err)
 	}
 
-	// signal end of data and wait for cid
+	// signal end of data and pass cid
 	reply, err := stream.CloseAndRecv()
 	if err != nil {
-		return nil, err
+		return nil, errcode.ErrStreamCloseAndRecv.Wrap(err)
 	}
-
 	return reply.GetAttachmentCID(), nil
 }
 
-func (svc *service) retrieveAttachment(cid string) ([]byte, error) {
-	// TODO: stream
-
+func (svc *service) attachmentRetrieve(cid string) (*io.PipeReader, error) {
 	cidBytes, err := b64DecodeBytes(cid)
 	if err != nil {
-		return nil, err
+		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
 	stream, err := svc.protocolClient.AttachmentRetrieve(svc.ctx, &bertytypes.AttachmentRetrieve_Request{AttachmentCID: cidBytes})
 	if err != nil {
-		return nil, err
+		return nil, errcode.ErrAttachmentRetrieve.Wrap(err)
 	}
 
-	data := []byte(nil)
-	for {
+	return streamutil.FuncReader(func() ([]byte, error) {
 		reply, err := stream.Recv()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return nil, err
-		}
-		data = append(data, reply.GetBlock()...)
-	}
-
-	return data, nil
+		return reply.GetBlock(), err
+	}, svc.logger), nil
 }
 
 func (svc *service) sendAccountUserInfo(groupPK string) error {
@@ -496,20 +479,30 @@ func (svc *service) sendAccountUserInfo(groupPK string) error {
 
 	var avatarCID string
 	var attachmentCIDs [][]byte
+	var medias []*Media
 	if acc.GetAvatarCID() != "" {
-		avatarBytes, err := svc.retrieveAttachment(acc.GetAvatarCID())
+		// TODO: add AttachmentRecrypt to bertyprotocol
+		avatar, err := svc.attachmentRetrieve(acc.GetAvatarCID())
 		if err != nil {
-			return errcode.ErrRetrieveAttachment.Wrap(err)
+			return errcode.ErrAttachmentRetrieve.Wrap(err)
 		}
-		avatarCIDBytes, err := svc.prepareAttachment(avatarBytes)
+		avatarCIDBytes, err := svc.attachmentPrepare(avatar)
 		if err != nil {
-			return errcode.ErrPrepareAttachment.Wrap(err)
+			return errcode.ErrAttachmentPrepare.Wrap(err)
 		}
 		avatarCID = b64EncodeBytes(avatarCIDBytes)
 		attachmentCIDs = [][]byte{avatarCIDBytes}
+
+		if medias, err = svc.db.getMedias([]string{acc.GetAvatarCID()}); err != nil {
+			return errcode.ErrDBRead.Wrap(err)
+		}
+		if len(medias) < 1 {
+			return errcode.ErrInternal
+		}
+		medias[0].CID = avatarCID
 	}
 
-	am, err := AppMessage_TypeSetUserInfo.MarshalPayload(timestampMs(time.Now()),
+	am, err := AppMessage_TypeSetUserInfo.MarshalPayload(timestampMs(time.Now()), medias,
 		&AppMessage_SetUserInfo{DisplayName: acc.GetDisplayName(), AvatarCID: avatarCID},
 	)
 	if err != nil {

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Image, ImageProps, ActivityIndicator, View } from 'react-native'
+import { Image, ImageProps, ActivityIndicator, View, TouchableOpacity } from 'react-native'
 import { Buffer } from 'buffer'
 
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import { EOF } from '@berty-tech/grpc-bridge'
 import { WelshProtocolServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
+import { navigate } from '@berty-tech/navigation'
 
-let cache: { [key: string]: Promise<string> } = {}
+let cache: { cid: string; prom: Promise<string> }[] = []
 
 const fetchSource = async (
 	protocolClient: WelshProtocolServiceClient,
@@ -32,23 +33,34 @@ const fetchSource = async (
 		})
 		stream.start()
 	})
-	return 'data:image/jpeg;base64,' + data.toString('base64')
+	return data.toString('base64')
 }
 
 const getSource = async (
 	protocolClient: WelshProtocolServiceClient,
 	cid: string,
 ): Promise<string> => {
-	if (!cache[cid]) {
-		cache[cid] = fetchSource(protocolClient, cid)
+	if (!cache.find((item) => item.cid === cid)) {
+		if (cache.length >= 20) {
+			// evict
+			cache = cache.slice(1)
+		}
+		cache.push({ cid, prom: fetchSource(protocolClient, cid) })
 	}
-	return cache[cid]
+	const cached = cache.find((item) => item.cid === cid)
+	if (!cached) {
+		throw new Error('unexpected cache miss')
+	}
+	return cached.prom
 }
 
-const AttachmentImage: React.FC<{ cid: string } & Omit<ImageProps, 'source'>> = (props) => {
-	const { protocolClient } = useMsgrContext()
+const AttachmentImage: React.FC<
+	{ cid: string; notPressable?: boolean } & Omit<ImageProps, 'source'>
+> = (props) => {
+	const { protocolClient, medias } = useMsgrContext()
 	const [source, setSource] = useState('')
 	const { cid, ...imageProps } = props
+	const mimeType = medias[cid]?.mimeType || 'image/jpeg'
 
 	useEffect(() => {
 		if (!protocolClient) {
@@ -58,14 +70,14 @@ const AttachmentImage: React.FC<{ cid: string } & Omit<ImageProps, 'source'>> = 
 		getSource(protocolClient, cid)
 			.then((src) => {
 				if (!cancel) {
-					setSource(src)
+					setSource(`data:${mimeType};base64,${src}`)
 				}
 			})
 			.catch((e) => console.error('failed to get attachment image:', e))
 		return () => {
 			cancel = true
 		}
-	}, [protocolClient, cid])
+	}, [protocolClient, cid, mimeType])
 
 	if (!source) {
 		return (
@@ -75,7 +87,13 @@ const AttachmentImage: React.FC<{ cid: string } & Omit<ImageProps, 'source'>> = 
 		)
 	}
 
-	return <Image source={{ uri: source }} {...imageProps} />
+	return props.notPressable ? (
+		<Image source={{ uri: source }} {...imageProps} />
+	) : (
+		<TouchableOpacity onPress={() => navigate('Image', { cid })}>
+			<Image source={{ uri: source }} {...imageProps} />
+		</TouchableOpacity>
+	)
 }
 
 export default AttachmentImage

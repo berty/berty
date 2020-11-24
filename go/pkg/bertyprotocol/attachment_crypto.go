@@ -15,6 +15,7 @@ import (
 	"golang.org/x/crypto/sha3"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/internal/streamutil"
 	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
@@ -72,38 +73,14 @@ func attachmentSealer(plaintext io.Reader, l *zap.Logger) (libp2pcrypto.PrivKey,
 		return nil, nil, errcode.ErrCryptoCipherInit.Wrap(err)
 	}
 
-	in, out := io.Pipe()
+	return sk, streamutil.FuncBlockTransformer(make([]byte, attachmentCipherblockSize-16), plaintext, l, func(pt []byte) ([]byte, error) {
+		ct := ac.aead.Seal([]byte(nil), ac.nonceBuf[:], pt, []byte(nil))
 
-	buf := make([]byte, attachmentCipherblockSize-16)
-	go func() {
-		err := func() error {
-			for {
-				n, readErr := io.ReadFull(plaintext, buf)
-				if readErr == io.EOF {
-					return nil
-				}
-				if readErr != nil && readErr != io.ErrUnexpectedEOF {
-					return errcode.ErrStreamRead.Wrap(readErr)
-				}
+		ac.nonce.Add(ac.nonce, bigOne)
+		bigIntFillBytes(ac.nonce, ac.nonceBuf[:])
 
-				ciphertext := ac.aead.Seal([]byte(nil), ac.nonceBuf[:], buf[:n], []byte(nil))
-
-				if _, err := out.Write(ciphertext); err != nil {
-					return errcode.ErrStreamWrite.Wrap(err)
-				}
-
-				if readErr == io.ErrUnexpectedEOF {
-					return nil // last block can be smaller
-				}
-
-				ac.nonce.Add(ac.nonce, bigOne)
-				bigIntFillBytes(ac.nonce, ac.nonceBuf[:])
-			}
-		}()
-		closePipeOut(out, err, "attachmentSealer: failed to properly close ciphertext out", l)
-	}()
-
-	return sk, in, nil
+		return ct, nil
+	}), nil
 }
 
 func attachmentOpener(ciphertext io.Reader, sk libp2pcrypto.PrivKey, l *zap.Logger) (*io.PipeReader, error) {
@@ -112,41 +89,17 @@ func attachmentOpener(ciphertext io.Reader, sk libp2pcrypto.PrivKey, l *zap.Logg
 		return nil, errcode.ErrCryptoCipherInit.Wrap(err)
 	}
 
-	in, out := io.Pipe()
+	return streamutil.FuncBlockTransformer(make([]byte, attachmentCipherblockSize), ciphertext, l, func(ct []byte) ([]byte, error) {
+		pt, err := ac.aead.Open([]byte(nil), ac.nonceBuf[:], ct, []byte(nil))
+		if err != nil {
+			return nil, errcode.ErrCryptoDecrypt.Wrap(err)
+		}
 
-	buf := make([]byte, attachmentCipherblockSize)
-	go func() {
-		err := func() error {
-			for {
-				n, readErr := io.ReadFull(ciphertext, buf)
-				if readErr == io.EOF {
-					return nil
-				}
-				if readErr != nil && readErr != io.ErrUnexpectedEOF {
-					return errcode.ErrStreamRead.Wrap(readErr)
-				}
+		ac.nonce.Add(ac.nonce, bigOne)
+		bigIntFillBytes(ac.nonce, ac.nonceBuf[:])
 
-				plaintext, err := ac.aead.Open([]byte(nil), ac.nonceBuf[:], buf[:n], []byte(nil))
-				if err != nil {
-					return errcode.ErrCryptoDecrypt.Wrap(err)
-				}
-
-				if _, err := out.Write(plaintext); err != nil {
-					return errcode.ErrStreamWrite.Wrap(err)
-				}
-
-				if readErr == io.ErrUnexpectedEOF {
-					return nil // last block can be smaller
-				}
-
-				ac.nonce.Add(ac.nonce, bigOne)
-				bigIntFillBytes(ac.nonce, ac.nonceBuf[:])
-			}
-		}()
-		closePipeOut(out, err, "attachmentOpener: failed to properly close plaintext out", l)
-	}()
-
-	return in, nil
+		return pt, nil
+	}), nil
 }
 
 // - KEY SERIALIZATION

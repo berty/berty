@@ -1,13 +1,14 @@
+import pickBy from 'lodash/pickBy'
+import mapValues from 'lodash/mapValues'
+
+import beapi from '@berty-tech/api'
 import {
 	initialState,
 	isExpectedAppStateChange,
 	MessengerActions,
 	MessengerAppState,
 	MsgrState,
-} from '@berty-tech/store/context'
-import pickBy from 'lodash/pickBy'
-import mapValues from 'lodash/mapValues'
-import beapi from '@berty-tech/api'
+} from './context'
 
 export declare type reducerAction = {
 	type: beapi.messenger.StreamEvent.Type | MessengerActions
@@ -36,6 +37,14 @@ export const reducerActions: {
 		contacts: {
 			...oldState.contacts,
 			[action.payload.contact.publicKey]: action.payload.contact,
+		},
+	}),
+
+	[beapi.messenger.StreamEvent.Type.TypeMediaUpdated]: (oldState, action) => ({
+		...oldState,
+		medias: {
+			...oldState.medias,
+			[action.payload.media.cid]: action.payload.media,
 		},
 	}),
 
@@ -74,10 +83,10 @@ export const reducerActions: {
 			const inte = action.payload.interaction
 			const gpk = inte.conversationPublicKey
 			const typeName = Object.keys(beapi.messenger.AppMessage.Type).find(
-				(name) => beapi.messenger.AppMessage.Type[name] === inte.type,
+				(name) => beapi.messenger.AppMessage.Type[name as any] === inte.type,
 			)
 			const name = typeName?.substr('Type'.length)
-			const pbobj = beapi.messenger.AppMessage[name]
+			const pbobj = (beapi.messenger.AppMessage as any)[name as any]
 			if (!pbobj) {
 				throw new Error('failed to find a protobuf object matching the event type')
 			}

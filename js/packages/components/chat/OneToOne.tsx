@@ -40,7 +40,7 @@ import { ContactAvatar } from '../avatars'
 import { pbDateToNum, timeFormat } from '../helpers'
 import { useLayout } from '../hooks'
 import { playSound } from '../sounds'
-import { ChatDate, ChatFooter } from './shared-components/Chat'
+import { ChatDate, ChatFooter } from './common'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import Logo from '../main/1_berty_picto.svg'
 import Avatar from '../modals/Buck_Berty_Icon_Card.svg'
@@ -699,11 +699,24 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 
 	const [stickyDate, setStickyDate] = useState(conv?.lastUpdate || null)
 	const [showStickyDate, setShowStickyDate] = useState(false)
-	const [showAddFileMenu, setShowAddFileMenu] = useState(false)
+	const [{ addMedias }, setAddMedias] = useState<{ addMedias: (mediaCids: string[]) => void }>({
+		addMedias: () => {},
+	})
+	const [showAddFileMenu, setShowAddFileMenu] = useState<boolean>(false)
 
 	return (
 		<View style={[StyleSheet.absoluteFill, background.white, { flex: 1 }]}>
-			{showAddFileMenu && <AddFileMenu close={() => setShowAddFileMenu(false)} />}
+			{showAddFileMenu && (
+				<AddFileMenu
+					onClose={(medias) => {
+						setShowAddFileMenu(false)
+						if (typeof addMedias !== 'function') {
+							return
+						}
+						addMedias(medias)
+					}}
+				/>
+			)}
 			<SwipeNavRecognizer
 				onSwipeLeft={() =>
 					dispatch(
@@ -729,7 +742,10 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 						setFocus={setInputFocus}
 						disabled={isFooterDisable}
 						placeholder={placeholder}
-						onFileMenuPress={() => setShowAddFileMenu(true)}
+						onFileMenuPress={(newAddMedias) => {
+							setAddMedias({ addMedias: newAddMedias })
+							setShowAddFileMenu(true)
+						}}
 					/>
 					<ChatHeader convPk={params?.convId || ''} {...{ stickyDate, showStickyDate }} />
 				</KeyboardAvoidingView>

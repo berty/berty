@@ -1,16 +1,15 @@
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { Text as TextNative, TouchableOpacity, View } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
 
 import { useClient, useConversation, useOneToOneContact } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
+import { InteractionGroupInvitation } from '@berty-tech/store/types.gen'
 
-import { ProceduralCircleAvatar } from '../../shared-components/ProceduralCircleAvatar'
 import { MessageSystemWrapper } from './MessageSystemWrapper'
-
-const base64ToURLBase64 = (str: string) =>
-	str.replace(/\+/, '-').replace(/\//, '_').replace(/\=/, '')
+import { ConversationAvatar } from '../../avatars'
+import { base64ToURLBase64 } from '../../utils'
 
 export const MessageInvitationButton: React.FC<{
 	onPress?: any
@@ -68,7 +67,7 @@ export const MessageInvitationButton: React.FC<{
 	)
 }
 
-const MessageInvitationSent: React.FC<{ message: any }> = ({ message }) => {
+const MessageInvitationSent: React.FC<{ message: InteractionGroupInvitation }> = ({ message }) => {
 	const [{ text }] = useStyles()
 	const conversationContact = useOneToOneContact(message.conversationPublicKey)
 	return (
@@ -78,38 +77,35 @@ const MessageInvitationSent: React.FC<{ message: any }> = ({ message }) => {
 	)
 }
 
-const MessageInvitationReceived: React.FC<{ message: any }> = ({ message }) => {
+const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation }> = ({
+	message,
+}) => {
 	const [{ row, flex, text, margin, color }] = useStyles()
-	const client: any = useClient()
+	const client = useClient()
 	const [error, setError] = useState(false)
 	const [{ convPk, displayName }, setPdlInfo] = useState({ convPk: '', displayName: '' })
 	const [accepting, setAccepting] = useState(false)
 	const conv = useConversation(convPk)
 	const { link } = message.payload || {}
-	const acceptDisabled = useMemo(() => accepting || conv || !convPk || error, [
-		accepting,
-		conv,
-		convPk,
-		error,
-	])
+	const acceptDisabled = !!(accepting || conv || !convPk || error)
 
 	// Parse deep link
 	React.useEffect(() => {
-		if (!convPk && link && !conv) {
+		if (client && !convPk && link && !conv) {
 			setError(false)
 			client
 				.parseDeepLink({
 					link,
 				})
-				.then((reply: any) => {
+				.then((reply) => {
 					setPdlInfo({
-						displayName: reply.bertyGroup.displayName,
+						displayName: reply.link?.bertyGroup?.displayName || '',
 						convPk: base64ToURLBase64(
-							new Buffer(reply?.bertyGroup?.group?.publicKey || '').toString('base64'),
+							Buffer.from(reply.link?.bertyGroup?.group?.publicKey || '').toString('base64'),
 						),
 					})
 				})
-				.catch((err: any) => {
+				.catch((err) => {
 					console.warn(err)
 					setError(true)
 				})
@@ -117,11 +113,11 @@ const MessageInvitationReceived: React.FC<{ message: any }> = ({ message }) => {
 	}, [convPk, conv, link, client])
 
 	const handleAccept = React.useCallback(() => {
-		if (convPk && !conv && !accepting && !error) {
+		if (client && convPk && !conv && !accepting && !error) {
 			setAccepting(true)
 			client
 				.conversationJoin({ link })
-				.catch((err: any) => {
+				.catch((err) => {
 					console.warn(err)
 					setError(true)
 				})
@@ -132,7 +128,7 @@ const MessageInvitationReceived: React.FC<{ message: any }> = ({ message }) => {
 	}, [client, link, conv, convPk, accepting, error])
 
 	return (
-		<React.Fragment>
+		<>
 			<View style={[row.left, flex.align.center, flex.justify.center]}>
 				<TextNative
 					style={[
@@ -146,7 +142,7 @@ const MessageInvitationReceived: React.FC<{ message: any }> = ({ message }) => {
 				</TextNative>
 			</View>
 			<View style={[margin.top.small, flex.align.center, flex.justify.center]}>
-				<ProceduralCircleAvatar seed={convPk || '42'} size={40} style={[margin.bottom.small]} />
+				<ConversationAvatar publicKey={convPk} size={40} style={margin.bottom.small} />
 				<TextNative
 					style={[
 						text.color.black,
@@ -195,11 +191,13 @@ const MessageInvitationReceived: React.FC<{ message: any }> = ({ message }) => {
 					Error adding you to the group ☹️ Our bad!
 				</Text>
 			)}
-		</React.Fragment>
+		</>
 	)
 }
 
-export const MessageInvitation: React.FC<{ message: any }> = ({ message }) => {
+export const MessageInvitation: React.FC<{ message: InteractionGroupInvitation }> = ({
+	message,
+}) => {
 	const [{ row, padding, margin }] = useStyles()
 
 	return (

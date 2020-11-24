@@ -570,6 +570,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrDeserialization: 104,
               ErrStreamRead: 105,
               ErrStreamWrite: 106,
+              ErrStreamTransform: 110,
+              ErrStreamSendAndClose: 111,
+              ErrStreamHeaderWrite: 112,
+              ErrStreamHeaderRead: 115,
+              ErrStreamSink: 113,
+              ErrStreamCloseAndRecv: 114,
               ErrMissingMapKey: 107,
               ErrDBWrite: 108,
               ErrDBRead: 109,
@@ -636,8 +642,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrDBMultipleRecords: 2107,
               ErrReplayProcessGroupMetadata: 2200,
               ErrReplayProcessGroupMessage: 2201,
-              ErrPrepareAttachment: 2300,
-              ErrRetrieveAttachment: 2301,
+              ErrAttachmentPrepare: 2300,
+              ErrAttachmentRetrieve: 2301,
               ErrProtocolSend: 2302,
               ErrCLINoTermcaps: 3001,
               ErrServicesAuth: 4000,
@@ -3175,6 +3181,16 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "InstanceExportData.Request",
                     responseType: "InstanceExportData.Reply",
                     responseStream: true
+                  },
+                  MediaPrepare: {
+                    requestType: "MediaPrepare.Request",
+                    requestStream: true,
+                    responseType: "MediaPrepare.Reply"
+                  },
+                  MediaRetrieve: {
+                    requestType: "MediaRetrieve.Request",
+                    responseType: "MediaRetrieve.Reply",
+                    responseStream: true
                   }
                 }
               },
@@ -3540,6 +3556,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     options: {
                       "(gogoproto.jsontag)": "sentDate"
                     }
+                  },
+                  medias: {
+                    rule: "repeated",
+                    type: "Media",
+                    id: 4
                   }
                 },
                 nested: {
@@ -3553,7 +3574,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       TypeSetUserInfo: 5,
                       TypeAcknowledge: 6,
                       TypeReplyOptions: 7,
-                      TypeMonitorMetadata: 8
+                      TypeMonitorMetadata: 100
                     }
                   },
                   UserMessage: {
@@ -3889,6 +3910,61 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       "(gogoproto.moretags)": "gorm:index;column:target_cid",
                       "(gogoproto.customname)": "TargetCID"
                     }
+                  },
+                  medias: {
+                    rule: "repeated",
+                    type: "Media",
+                    id: 15
+                  }
+                }
+              },
+              Media: {
+                fields: {
+                  cid: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primaryKey;column:cid",
+                      "(gogoproto.customname)": "CID"
+                    }
+                  },
+                  mimeType: {
+                    type: "string",
+                    id: 2
+                  },
+                  filename: {
+                    type: "string",
+                    id: 3
+                  },
+                  displayName: {
+                    type: "string",
+                    id: 4
+                  },
+                  interactionCid: {
+                    type: "string",
+                    id: 100,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:index;column:interaction_cid",
+                      "(gogoproto.customname)": "InteractionCID"
+                    }
+                  },
+                  state: {
+                    type: "State",
+                    id: 103
+                  }
+                },
+                nested: {
+                  State: {
+                    values: {
+                      StateUnknown: 0,
+                      StateNeverDownloaded: 1,
+                      StatePartiallyDownloaded: 2,
+                      StateDownloaded: 3,
+                      StateInCache: 4,
+                      StateInvalidCrypto: 5,
+                      StatePrepared: 100,
+                      StateAttached: 101
+                    }
                   }
                 }
               },
@@ -4187,7 +4263,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       TypeAccountUpdated: 7,
                       TypeMemberUpdated: 8,
                       TypeDeviceUpdated: 9,
-                      TypeNotified: 10
+                      TypeNotified: 10,
+                      TypeMediaUpdated: 11
                     }
                   },
                   ConversationUpdated: {
@@ -4259,6 +4336,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   ListEnded: {
                     fields: {}
+                  },
+                  MediaUpdated: {
+                    fields: {
+                      media: {
+                        type: "Media",
+                        id: 1
+                      }
+                    }
                   },
                   Notified: {
                     fields: {
@@ -4492,6 +4577,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       conversationPublicKey: {
                         type: "string",
                         id: 3
+                      },
+                      mediaCids: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 4
                       }
                     }
                   },
@@ -4638,6 +4728,60 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   type: {
                     type: "Conversation.Type",
                     id: 4
+                  }
+                }
+              },
+              MediaPrepare: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      block: {
+                        type: "bytes",
+                        id: 1
+                      },
+                      info: {
+                        type: "Media",
+                        id: 2
+                      },
+                      uri: {
+                        type: "string",
+                        id: 3
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      cid: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              MediaRetrieve: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      cid: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      block: {
+                        type: "bytes",
+                        id: 1
+                      },
+                      info: {
+                        type: "Media",
+                        id: 2
+                      }
+                    }
                   }
                 }
               }

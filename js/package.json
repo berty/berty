@@ -105,7 +105,8 @@
     ],
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "/packages/web-dev-app/"
+      "/packages/web-dev-app/",
+      "/android/.gomobile-cache"
     ]
   }
 }

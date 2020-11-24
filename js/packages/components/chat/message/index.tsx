@@ -69,7 +69,7 @@ export const Message: React.FC<{
 		return (
 			<>
 				<View style={[padding.horizontal.medium]}>
-					<QuickReplyOptions convPk={convPK} options={inte?.payload?.options} />
+					<QuickReplyOptions convPk={convPK} options={inte.payload.options} />
 				</View>
 			</>
 		)

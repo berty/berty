@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, ScrollView } from 'react-native'
 import { SHA3 } from 'sha3'
 import palette from 'google-palette'
 import Color from 'color'
@@ -12,6 +12,8 @@ import { useStyles } from '@berty-tech/styles'
 import { MemberAvatar } from '../../avatars'
 import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageComponents'
 import { pbDateToNum } from '../../helpers'
+import AttachmentImage from '@berty-tech/components/AttachmentImage'
+import { InteractionUserMessage } from '@berty-tech/store/types.gen'
 
 const pal = palette('tol-rainbow', 256)
 
@@ -117,7 +119,7 @@ const getUserMessageState = (
 }
 
 export const UserMessage: React.FC<{
-	inte: any
+	inte: InteractionUserMessage
 	members?: { [key: string]: any }
 	convPK: string
 	convKind: any
@@ -171,7 +173,37 @@ export const UserMessage: React.FC<{
 					/>
 				</View>
 			)}
+
 			<View style={[column.top, _styles.messageItem]}>
+				{(inte.medias?.length || 0) > 0 && (
+					<View
+						style={{
+							justifyContent: inte.isMe ? 'flex-end' : 'flex-start',
+							flexWrap: inte.isMe ? 'wrap-reverse' : 'wrap',
+							flexDirection: 'row',
+							marginBottom: 10,
+							...(inte.isMe
+								? { borderRightColor: 'blue', borderRightWidth: 1, borderTopRightRadius: 15 }
+								: { borderLeftColor: 'blue', borderLeftWidth: 1, borderTopLeftRadius: 15 }),
+						}}
+					>
+						{inte.medias?.map((media) => {
+							if (media.mimeType?.startsWith('image') && media.cid) {
+								return (
+									<AttachmentImage
+										style={{ height: 100, width: 100, margin: 5, resizeMode: 'contain' }}
+										cid={media.cid}
+									/>
+								)
+							}
+							return (
+								<ScrollView style={{ height: 100, width: 100 }}>
+									<Text>{JSON.stringify(media, null, 4)}</Text>
+								</ScrollView>
+							)
+						})}
+					</View>
+				)}
 				{!inte.isMe && isGroup && !isFollowupMessage && (
 					<View style={[isFollowedMessage && margin.left.scale(40)]}>
 						<Text style={[text.bold.medium, _styles.personNameInGroup, { color: msgSenderColor }]}>
@@ -179,13 +211,19 @@ export const UserMessage: React.FC<{
 						</Text>
 					</View>
 				)}
-				<HyperlinkUserMessage
-					inte={inte}
-					msgBorderColor={msgBorderColor}
-					isFollowedMessage={isFollowedMessage}
-					msgBackgroundColor={msgBackgroundColor}
-					msgTextColor={msgTextColor}
-				/>
+				{inte.payload.body ? (
+					<HyperlinkUserMessage
+						inte={inte}
+						msgBorderColor={msgBorderColor}
+						isFollowedMessage={isFollowedMessage}
+						msgBackgroundColor={msgBackgroundColor}
+						msgTextColor={msgTextColor}
+					/>
+				) : (
+					(inte.medias?.length || 0) === 0 && (
+						<Text style={{ textAlign: 'right', color: 'grey' }}>-</Text>
+					)
+				)}
 				{!isWithinCollapseDuration && (
 					<TimestampStatusUserMessage
 						inte={inte}

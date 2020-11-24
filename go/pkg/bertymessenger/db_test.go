@@ -1040,7 +1040,7 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 	tables := []string(nil)
 	err = db.db.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").Scan(&tables).Error
 	require.NoError(t, err)
-	require.Equal(t, 8, len(tables))
+	require.Equal(t, 9, len(tables))
 }
 
 func Test_dbWrapper_getMemberByPK(t *testing.T) {
@@ -1396,4 +1396,129 @@ func Test_dbWrapper_getReplyOptionsCIDForConversation(t *testing.T) {
 	cid, err = db.getReplyOptionsCIDForConversation("conv_1")
 	require.NoError(t, err)
 	require.Equal(t, "", cid)
+}
+
+func Test_dbWrapper_addMedias_none(t *testing.T) {
+	db, dispose := getInMemoryTestDB(t)
+	defer dispose()
+
+	added, err := db.addMedias([]*Media{})
+	require.NoError(t, err)
+	require.Equal(t, []bool{}, added)
+
+	var medias []*Media
+	require.NoError(t, db.db.Find(&medias).Error)
+	require.Empty(t, medias)
+}
+
+func Test_dbWrapper_addMedias_one(t *testing.T) {
+	db, dispose := getInMemoryTestDB(t)
+	defer dispose()
+
+	media := Media{
+		CID: "EiBnLu1b0PFzPcVd_QPPfhzIs0kmzAH2g0VUfiAqvIXMLg", InteractionCID: "testInteractionCID",
+		MimeType: "testMimeType", Filename: "testFilename", DisplayName: "testDisplayName",
+		State: Media_StateDownloaded,
+	}
+
+	added, err := db.addMedias([]*Media{&media})
+	require.NoError(t, err)
+	require.Equal(t, []bool{true}, added)
+
+	var medias []*Media
+	require.NoError(t, db.db.Find(&medias).Error)
+
+	require.Equal(t, 1, len(medias))
+	require.Equal(t, &media, medias[0])
+}
+
+func Test_dbWrapper_addMedias_mix(t *testing.T) {
+	db, dispose := getInMemoryTestDB(t)
+	defer dispose()
+
+	testMedias := []*Media{
+		{CID: "EiBnLu1b0PFzPcVd_QPPfhzIs0kmzAH2g0VUfiAqvIXMLg"},
+		{CID: "EiBnLu1b0PFzPcVd_QPPfhzIs1kmzAH2g0VUfiAqvIXMLg", MimeType: "testMimeType1", Filename: "testFilename1"},
+		{
+			CID: "EiBnLu1b0PFzPcVd_QPPfhzIs2kmzAH2g0VUfiAqvIXMLg", InteractionCID: "testInteractionCID", MimeType: "testMimeType2",
+			Filename: "testFilename2", DisplayName: "testDisplayName", State: Media_StateDownloaded,
+		},
+	}
+
+	added, err := db.addMedias(testMedias)
+	require.NoError(t, err)
+	require.Equal(t, []bool{true, true, true}, added)
+	added, err = db.addMedias(testMedias)
+	require.NoError(t, err)
+	require.Equal(t, []bool{false, false, false}, added)
+
+	var medias []*Media
+	require.NoError(t, db.db.Find(&medias).Error)
+	require.Equal(t, testMedias, medias)
+}
+
+func Test_dbWrapper_getMedias_none(t *testing.T) {
+	db, dispose := getInMemoryTestDB(t)
+	defer dispose()
+
+	medias, err := db.getMedias(nil)
+	require.NoError(t, err)
+	require.Empty(t, medias)
+
+	medias, err = db.getMedias([]string{})
+	require.NoError(t, err)
+	require.Empty(t, medias)
+
+	testMedia := Media{CID: "EiBnLu1b0PFzPcVd_QPPfhzIs0kmzAH2g0VUfiAqvIXMLg"}
+	medias, err = db.getMedias([]string{testMedia.CID})
+	require.NoError(t, err)
+	require.Equal(t, 1, len(medias))
+	require.Equal(t, &testMedia, medias[0])
+}
+
+func Test_dbWrapper_getMedias_one(t *testing.T) {
+	db, dispose := getInMemoryTestDB(t)
+	defer dispose()
+
+	testMedia := Media{
+		CID: "EiBnLu1b0PFzPcVd_QPPfhzIs0kmzAH2g0VUfiAqvIXMLg", InteractionCID: "testInteractionCID",
+		MimeType: "testMimeType", Filename: "testFilename", DisplayName: "testDisplayName",
+		State: Media_StateDownloaded,
+	}
+
+	added, err := db.addMedias([]*Media{&testMedia})
+	require.NoError(t, err)
+	require.Equal(t, []bool{true}, added)
+
+	medias, err := db.getMedias([]string{testMedia.CID})
+	require.NoError(t, err)
+	require.Equal(t, 1, len(medias))
+	require.Equal(t, &testMedia, medias[0])
+}
+
+func Test_dbWrapper_getMedias_mix(t *testing.T) {
+	db, dispose := getInMemoryTestDB(t)
+	defer dispose()
+
+	testMedias := []*Media{
+		{CID: "EiBnLu1b0PFzPcVd_QPPfhzIs0kmzAH2g0VUfiAqvIXMLg"},
+		{CID: "EiBnLu1b0PFzPcVd_QPPfhzIs1kmzAH2g0VUfiAqvIXMLg", MimeType: "testMimeType1", Filename: "testFilename1"},
+		{
+			CID: "EiBnLu1b0PFzPcVd_QPPfhzIs2kmzAH2g0VUfiAqvIXMLg", InteractionCID: "testInteractionCID", MimeType: "testMimeType2",
+			Filename: "testFilename2", DisplayName: "testDisplayName", State: Media_StateDownloaded,
+		},
+	}
+
+	added, err := db.addMedias(testMedias)
+	require.NoError(t, err)
+	require.Equal(t, []bool{true, true, true}, added)
+
+	cids := make([]string, len(testMedias))
+	for i, m := range testMedias {
+		cids[i] = m.GetCID()
+	}
+
+	medias, err := db.getMedias(cids)
+	require.NoError(t, err)
+	require.Equal(t, testMedias, medias)
 }

@@ -40,6 +40,7 @@ const GenericAvatar: React.FC<{
 			<AttachmentImage
 				cid={cid}
 				style={{ width: innerSize, height: innerSize, borderRadius: innerSize / 2 }}
+				notPressable
 			/>
 		)
 	} else {

@@ -103,9 +103,16 @@ func (h *eventHandler) handleAppMessage(gpk string, gme *bertytypes.GroupMessage
 		return nil
 	}
 
+	medias := i.GetMedias()
+	var mediasAdded []bool
+
 	// start a transaction
 	var isNew bool
 	if err := h.db.tx(func(tx *dbWrapper) error {
+		if mediasAdded, err = tx.addMedias(medias); err != nil {
+			return err
+		}
+
 		if err := h.interactionFetchRelations(tx, i); err != nil {
 			return err
 		}
@@ -133,6 +140,14 @@ func (h *eventHandler) handleAppMessage(gpk string, gme *bertytypes.GroupMessage
 	if handler.isVisibleEvent && isNew {
 		if err := h.dispatchVisibleInteraction(i); err != nil {
 			h.logger.Error("unable to dispatch notification for interaction", zap.String("cid", i.CID), zap.Error(err))
+		}
+	}
+
+	for i, media := range medias {
+		if mediasAdded[i] {
+			if err := h.svc.dispatcher.StreamEvent(StreamEvent_TypeMediaUpdated, &StreamEvent_MediaUpdated{Media: media}, true); err != nil {
+				h.logger.Error("unable to dispatch notification for media", zap.String("cid", media.CID), zap.Error(err))
+			}
 		}
 	}
 
@@ -859,9 +874,9 @@ func interactionFromAppMessage(h *eventHandler, gpk string, gme *bertytypes.Grou
 	dpkb := gme.GetHeaders().GetDevicePK()
 	dpk := b64EncodeBytes(dpkb)
 
-	h.logger.Debug("received app message", zap.String("type", amt.String()))
+	h.logger.Debug("received app message", zap.String("type", amt.String()), zap.Int("numMedias", len(am.GetMedias())))
 
-	return &Interaction{
+	i := Interaction{
 		CID:                   cid.String(),
 		Type:                  amt,
 		Payload:               am.GetPayload(),
@@ -869,7 +884,15 @@ func interactionFromAppMessage(h *eventHandler, gpk string, gme *bertytypes.Grou
 		ConversationPublicKey: gpk,
 		SentDate:              am.GetSentDate(),
 		DevicePublicKey:       dpk,
-	}, nil
+		Medias:                am.GetMedias(),
+	}
+
+	for _, media := range i.Medias {
+		media.InteractionCID = i.CID
+		media.State = Media_StateNeverDownloaded
+	}
+
+	return &i, nil
 }
 
 func (h *eventHandler) interactionFetchRelations(tx *dbWrapper, i *Interaction) error {
@@ -952,7 +975,7 @@ func (h *eventHandler) sendAck(cid, conversationPK string) error {
 
 	// Don't send ack if message is already acked to prevent spam in multimember groups
 	// Maybe wait a few seconds before checking since we're likely to receive the message before any ack
-	amp, err := AppMessage_TypeAcknowledge.MarshalPayload(0, &AppMessage_Acknowledge{Target: cid})
+	amp, err := AppMessage_TypeAcknowledge.MarshalPayload(0, nil, &AppMessage_Acknowledge{Target: cid})
 	if err != nil {
 		return err
 	}

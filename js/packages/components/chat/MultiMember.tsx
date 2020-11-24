@@ -28,7 +28,7 @@ import {
 } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
 
-import { ChatFooter, ChatDate } from './shared-components/Chat'
+import { ChatFooter, ChatDate } from './common'
 import { Message } from './message'
 import { MessageSystemWrapper } from './message/MessageSystemWrapper'
 import BlurView from '../shared-components/BlurView'
@@ -37,6 +37,7 @@ import { useLayout } from '../hooks'
 import { pbDateToNum } from '../helpers'
 import { MultiMemberAvatar } from '../avatars'
 import { AddFileMenu } from './file-uploads/AddFileMenu'
+import { ParsedInteraction } from '@berty-tech/store/types.gen'
 
 //
 // MultiMember
@@ -168,8 +169,8 @@ const MessageList: React.FC<{
 			msg.type === beapi.messenger.AppMessage.Type.TypeMonitorMetadata,
 	)
 
-	if (conversation?.replyOptions !== null && conversation?.replyOptions !== undefined) {
-		interactions.push(conversation.replyOptions)
+	if (conversation?.replyOptions) {
+		interactions.push(conversation.replyOptions as ParsedInteraction)
 	}
 	const initialScrollIndex = React.useMemo(() => {
 		if (scrollToMessage) {
@@ -260,10 +261,8 @@ const NT = beapi.messenger.StreamEvent.Notified.Type
 export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params } }) => {
 	useNotificationsInhibitor((_ctx, notif) => {
 		if (
-			(notif.type === NT.TypeContactRequestSent &&
-				(notif.payload as any)?.payload?.contact?.conversationPublicKey === params?.convId) ||
-			(notif.type === NT.TypeMessageReceived &&
-				(notif.payload as any)?.payload?.interaction?.conversationPublicKey === params?.convId)
+			notif.type === NT.TypeMessageReceived &&
+			(notif.payload as any)?.payload?.interaction?.conversationPublicKey === params?.convId
 		) {
 			return 'sound-only'
 		}
@@ -281,11 +280,21 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 	const lastUpdate = conv?.lastUpdate || lastInte?.sentDate || conv?.createdDate || null
 	const [stickyDate, setStickyDate] = useState(lastUpdate || null)
 	const [showStickyDate, setShowStickyDate] = useState(false)
-	const [showAddFileMenu, setShowAddFileMenu] = useState(false)
+	const [{ addMedias }, setAddMedias] = useState<{ addMedias: (mediaCids: string[]) => void }>({
+		addMedias: () => {},
+	})
+	const [showAddFileMenu, setShowAddFileMenu] = useState<boolean>(false)
 
 	return (
 		<View style={[flex.tiny, background.white]}>
-			{showAddFileMenu && <AddFileMenu close={() => setShowAddFileMenu(false)} />}
+			{showAddFileMenu && (
+				<AddFileMenu
+					onClose={(newMedias) => {
+						addMedias(newMedias)
+						setShowAddFileMenu(false)
+					}}
+				/>
+			)}
 			<SwipeNavRecognizer
 				onSwipeLeft={() =>
 					dispatch(
@@ -304,7 +313,10 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 						isFocused={inputIsFocused}
 						setFocus={setInputFocus}
 						placeholder={t('chat.multi-member.input-placeholder')}
-						onFileMenuPress={() => setShowAddFileMenu(true)}
+						onFileMenuPress={(newAddMedias) => {
+							setAddMedias({ addMedias: newAddMedias })
+							setShowAddFileMenu(true)
+						}}
 					/>
 					<HeaderMultiMember id={params?.convId} {...({ stickyDate, showStickyDate } as any)} />
 				</KeyboardAvoidingView>

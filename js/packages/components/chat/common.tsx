@@ -6,9 +6,9 @@ import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
 import { useMsgrContext } from '@berty-tech/store/hooks'
 
-import { timeFormat } from '../../helpers'
-import { playSound } from '../../sounds'
-import BlurView from '../../shared-components/BlurView'
+import { timeFormat } from '../helpers'
+import { playSound } from '../sounds'
+import BlurView from '../shared-components/BlurView'
 
 // import { SafeAreaView } from 'react-native-safe-area-context'
 //
@@ -31,41 +31,56 @@ export const ChatFooter: React.FC<{
 	convPk: string
 	disabled?: boolean
 	placeholder: string
-	onFileMenuPress: () => void
+	onFileMenuPress: (cb: (newMedias: string[]) => void) => void
 }> = ({ isFocused, setFocus, convPk, disabled = false, placeholder, onFileMenuPress }) => {
-	const ctx: any = useMsgrContext()
+	const ctx = useMsgrContext()
 
 	const [message, setMessage] = useState('')
 	const inputRef = useRef<TextInput>(null)
 	const _isFocused = isFocused || inputRef?.current?.isFocused() || false
 	const _styles = useStylesChatFooter()
 	const [{ row, padding, flex, border, color, text, margin }] = useStyles()
+	const [mediaCids, setMediaCids] = useState<string[]>([])
 
-	const usermsg = { body: message, sentDate: Date.now() }
-	const buf = beapi.messenger.AppMessage.UserMessage.encode(usermsg).finish()
+	const buf = beapi.messenger.AppMessage.UserMessage.encode({ body: message }).finish()
 
 	const conversation = ctx.conversations[convPk]
 
+	const isFake = (conversation as { fake: boolean }).fake
+	const sendEnabled = !!(!isFake && (message || mediaCids.length > 0))
+
 	// TODO: Debug, error on restarting node
-	const handleSend = React.useCallback(() => {
+	const handlePressSend = React.useCallback(() => {
+		console.log('recompute handleSend', mediaCids)
+		if (!sendEnabled) {
+			return
+		}
 		ctx.client
 			?.interact({
 				conversationPublicKey: convPk,
 				type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 				payload: buf,
+				mediaCids,
 			})
 			.then(() => {
+				setMessage('')
+				setMediaCids([])
 				playSound('messageSent')
 			})
-			.catch((e: any) => {
+			.catch((e) => {
 				console.warn('e sending message:', e)
 			})
-	}, [convPk, ctx.client, buf])
+	}, [convPk, ctx.client, buf, mediaCids, sendEnabled])
+
+	const handlePressAddMedia = React.useCallback(() => {
+		console.log('common.tsx')
+		onFileMenuPress((newMedias) => setMediaCids([...mediaCids, ...newMedias]))
+	}, [onFileMenuPress, mediaCids])
 
 	if (!conversation) {
 		return null
 	}
-	const isFake = conversation.fake
+
 	return (
 		<BlurView blurType='light' blurAmount={30}>
 			<SafeAreaView>
@@ -90,8 +105,9 @@ export const ChatFooter: React.FC<{
 							border.radius.small,
 							margin.right.small,
 						]}
-						onPress={onFileMenuPress}
+						onPress={handlePressAddMedia}
 					>
+						{mediaCids.length > 0 && <Text>{mediaCids.length}</Text>}
 						<Icon name='plus' width={26} height={26} fill='#C7C8D8' />
 					</TouchableOpacity>
 					<View
@@ -127,22 +143,14 @@ export const ChatFooter: React.FC<{
 						/>
 						<TouchableOpacity
 							style={[flex.tiny, { justifyContent: 'center', alignItems: 'center' }]}
-							disabled={isFake}
-							onPress={() => {
-								if (isFake) {
-									return
-								}
-								if (message) {
-									handleSend()
-								}
-								setMessage('')
-							}}
+							disabled={!sendEnabled}
+							onPress={handlePressSend}
 						>
 							<Icon
 								name='paper-plane-outline'
 								width={26}
 								height={26}
-								fill={!isFake && message.length >= 1 ? color.blue : '#AFB1C0'}
+								fill={sendEnabled ? color.blue : '#AFB1C0'}
 							/>
 						</TouchableOpacity>
 					</View>

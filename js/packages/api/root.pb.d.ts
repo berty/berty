@@ -969,6 +969,12 @@ export namespace berty {
             ErrDeserialization = 104,
             ErrStreamRead = 105,
             ErrStreamWrite = 106,
+            ErrStreamTransform = 110,
+            ErrStreamSendAndClose = 111,
+            ErrStreamHeaderWrite = 112,
+            ErrStreamHeaderRead = 115,
+            ErrStreamSink = 113,
+            ErrStreamCloseAndRecv = 114,
             ErrMissingMapKey = 107,
             ErrDBWrite = 108,
             ErrDBRead = 109,
@@ -1035,8 +1041,8 @@ export namespace berty {
             ErrDBMultipleRecords = 2107,
             ErrReplayProcessGroupMetadata = 2200,
             ErrReplayProcessGroupMessage = 2201,
-            ErrPrepareAttachment = 2300,
-            ErrRetrieveAttachment = 2301,
+            ErrAttachmentPrepare = 2300,
+            ErrAttachmentRetrieve = 2301,
             ErrProtocolSend = 2302,
             ErrCLINoTermcaps = 3001,
             ErrServicesAuth = 4000,
@@ -4676,6 +4682,10 @@ export namespace berty {
                 public getUsername(request: berty.messenger.v1.GetUsername.IRequest): Promise<berty.messenger.v1.GetUsername.Reply>;
                 public instanceExportData(request: berty.messenger.v1.InstanceExportData.IRequest, callback: berty.messenger.v1.MessengerService.InstanceExportDataCallback): void;
                 public instanceExportData(request: berty.messenger.v1.InstanceExportData.IRequest): Promise<berty.messenger.v1.InstanceExportData.Reply>;
+                public mediaPrepare(request: berty.messenger.v1.MediaPrepare.IRequest, callback: berty.messenger.v1.MessengerService.MediaPrepareCallback): void;
+                public mediaPrepare(request: berty.messenger.v1.MediaPrepare.IRequest): Promise<berty.messenger.v1.MediaPrepare.Reply>;
+                public mediaRetrieve(request: berty.messenger.v1.MediaRetrieve.IRequest, callback: berty.messenger.v1.MessengerService.MediaRetrieveCallback): void;
+                public mediaRetrieve(request: berty.messenger.v1.MediaRetrieve.IRequest): Promise<berty.messenger.v1.MediaRetrieve.Reply>;
             }
 
             namespace MessengerService {
@@ -4733,6 +4743,10 @@ export namespace berty {
                 type GetUsernameCallback = (error: (Error|null), response?: berty.messenger.v1.GetUsername.Reply) => void;
 
                 type InstanceExportDataCallback = (error: (Error|null), response?: berty.messenger.v1.InstanceExportData.Reply) => void;
+
+                type MediaPrepareCallback = (error: (Error|null), response?: berty.messenger.v1.MediaPrepare.Reply) => void;
+
+                type MediaRetrieveCallback = (error: (Error|null), response?: berty.messenger.v1.MediaRetrieve.Reply) => void;
             }
 
             interface IConversationOpen {
@@ -5429,6 +5443,7 @@ export namespace berty {
                 type?: (berty.messenger.v1.AppMessage.Type|null);
                 payload?: (Uint8Array|null);
                 sentDate?: (Long|null);
+                medias?: (berty.messenger.v1.IMedia[]|null);
             }
 
             class AppMessage implements IAppMessage {
@@ -5436,6 +5451,7 @@ export namespace berty {
                 public type: berty.messenger.v1.AppMessage.Type;
                 public payload: Uint8Array;
                 public sentDate: Long;
+                public medias: berty.messenger.v1.IMedia[];
                 public static create(properties?: berty.messenger.v1.IAppMessage): berty.messenger.v1.AppMessage;
                 public static encode(message: berty.messenger.v1.IAppMessage, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IAppMessage, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5458,7 +5474,7 @@ export namespace berty {
                     TypeSetUserInfo = 5,
                     TypeAcknowledge = 6,
                     TypeReplyOptions = 7,
-                    TypeMonitorMetadata = 8
+                    TypeMonitorMetadata = 100
                 }
 
                 interface IUserMessage {
@@ -5863,6 +5879,7 @@ export namespace berty {
                 sentDate?: (Long|null);
                 acknowledged?: (boolean|null);
                 targetCid?: (string|null);
+                medias?: (berty.messenger.v1.IMedia[]|null);
             }
 
             class Interaction implements IInteraction {
@@ -5879,6 +5896,7 @@ export namespace berty {
                 public sentDate: Long;
                 public acknowledged: boolean;
                 public targetCid: string;
+                public medias: berty.messenger.v1.IMedia[];
                 public static create(properties?: berty.messenger.v1.IInteraction): berty.messenger.v1.Interaction;
                 public static encode(message: berty.messenger.v1.IInteraction, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IInteraction, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5888,6 +5906,48 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.Interaction;
                 public static toObject(message: berty.messenger.v1.Interaction, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
+            }
+
+            interface IMedia {
+                cid?: (string|null);
+                mimeType?: (string|null);
+                filename?: (string|null);
+                displayName?: (string|null);
+                interactionCid?: (string|null);
+                state?: (berty.messenger.v1.Media.State|null);
+            }
+
+            class Media implements IMedia {
+
+                public cid: string;
+                public mimeType: string;
+                public filename: string;
+                public displayName: string;
+                public interactionCid: string;
+                public state: berty.messenger.v1.Media.State;
+                public static create(properties?: berty.messenger.v1.IMedia): berty.messenger.v1.Media;
+                public static encode(message: berty.messenger.v1.IMedia, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IMedia, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.Media;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.Media;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.Media;
+                public static toObject(message: berty.messenger.v1.Media, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace Media {
+
+                enum State {
+                    StateUnknown = 0,
+                    StateNeverDownloaded = 1,
+                    StatePartiallyDownloaded = 2,
+                    StateDownloaded = 3,
+                    StateInCache = 4,
+                    StateInvalidCrypto = 5,
+                    StatePrepared = 100,
+                    StateAttached = 101
+                }
             }
 
             interface IContact {
@@ -6126,7 +6186,8 @@ export namespace berty {
                     TypeAccountUpdated = 7,
                     TypeMemberUpdated = 8,
                     TypeDeviceUpdated = 9,
-                    TypeNotified = 10
+                    TypeNotified = 10,
+                    TypeMediaUpdated = 11
                 }
 
                 interface IConversationUpdated {
@@ -6286,6 +6347,24 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.ListEnded;
                     public static toObject(message: berty.messenger.v1.StreamEvent.ListEnded, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IMediaUpdated {
+                    media?: (berty.messenger.v1.IMedia|null);
+                }
+
+                class MediaUpdated implements IMediaUpdated {
+
+                    public media?: (berty.messenger.v1.IMedia|null);
+                    public static create(properties?: berty.messenger.v1.StreamEvent.IMediaUpdated): berty.messenger.v1.StreamEvent.MediaUpdated;
+                    public static encode(message: berty.messenger.v1.StreamEvent.IMediaUpdated, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.StreamEvent.IMediaUpdated, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.StreamEvent.MediaUpdated;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.StreamEvent.MediaUpdated;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.MediaUpdated;
+                    public static toObject(message: berty.messenger.v1.StreamEvent.MediaUpdated, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -6806,6 +6885,7 @@ export namespace berty {
                     type?: (berty.messenger.v1.AppMessage.Type|null);
                     payload?: (Uint8Array|null);
                     conversationPublicKey?: (string|null);
+                    mediaCids?: (string[]|null);
                 }
 
                 class Request implements IRequest {
@@ -6813,6 +6893,7 @@ export namespace berty {
                     public type: berty.messenger.v1.AppMessage.Type;
                     public payload: Uint8Array;
                     public conversationPublicKey: string;
+                    public mediaCids: string[];
                     public static create(properties?: berty.messenger.v1.Interact.IRequest): berty.messenger.v1.Interact.Request;
                     public static encode(message: berty.messenger.v1.Interact.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.Interact.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -7160,6 +7241,122 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.LocalConversationState;
                 public static toObject(message: berty.messenger.v1.LocalConversationState, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
+            }
+
+            interface IMediaPrepare {
+            }
+
+            class MediaPrepare implements IMediaPrepare {
+
+                public static create(properties?: berty.messenger.v1.IMediaPrepare): berty.messenger.v1.MediaPrepare;
+                public static encode(message: berty.messenger.v1.IMediaPrepare, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IMediaPrepare, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.MediaPrepare;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.MediaPrepare;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MediaPrepare;
+                public static toObject(message: berty.messenger.v1.MediaPrepare, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace MediaPrepare {
+
+                interface IRequest {
+                    block?: (Uint8Array|null);
+                    info?: (berty.messenger.v1.IMedia|null);
+                    uri?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public block: Uint8Array;
+                    public info?: (berty.messenger.v1.IMedia|null);
+                    public uri: string;
+                    public static create(properties?: berty.messenger.v1.MediaPrepare.IRequest): berty.messenger.v1.MediaPrepare.Request;
+                    public static encode(message: berty.messenger.v1.MediaPrepare.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.MediaPrepare.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.MediaPrepare.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.MediaPrepare.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MediaPrepare.Request;
+                    public static toObject(message: berty.messenger.v1.MediaPrepare.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    cid?: (string|null);
+                }
+
+                class Reply implements IReply {
+
+                    public cid: string;
+                    public static create(properties?: berty.messenger.v1.MediaPrepare.IReply): berty.messenger.v1.MediaPrepare.Reply;
+                    public static encode(message: berty.messenger.v1.MediaPrepare.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.MediaPrepare.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.MediaPrepare.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.MediaPrepare.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MediaPrepare.Reply;
+                    public static toObject(message: berty.messenger.v1.MediaPrepare.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IMediaRetrieve {
+            }
+
+            class MediaRetrieve implements IMediaRetrieve {
+
+                public static create(properties?: berty.messenger.v1.IMediaRetrieve): berty.messenger.v1.MediaRetrieve;
+                public static encode(message: berty.messenger.v1.IMediaRetrieve, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IMediaRetrieve, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.MediaRetrieve;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.MediaRetrieve;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MediaRetrieve;
+                public static toObject(message: berty.messenger.v1.MediaRetrieve, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace MediaRetrieve {
+
+                interface IRequest {
+                    cid?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public cid: string;
+                    public static create(properties?: berty.messenger.v1.MediaRetrieve.IRequest): berty.messenger.v1.MediaRetrieve.Request;
+                    public static encode(message: berty.messenger.v1.MediaRetrieve.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.MediaRetrieve.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.MediaRetrieve.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.MediaRetrieve.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MediaRetrieve.Request;
+                    public static toObject(message: berty.messenger.v1.MediaRetrieve.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    block?: (Uint8Array|null);
+                    info?: (berty.messenger.v1.IMedia|null);
+                }
+
+                class Reply implements IReply {
+
+                    public block: Uint8Array;
+                    public info?: (berty.messenger.v1.IMedia|null);
+                    public static create(properties?: berty.messenger.v1.MediaRetrieve.IReply): berty.messenger.v1.MediaRetrieve.Reply;
+                    public static encode(message: berty.messenger.v1.MediaRetrieve.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.MediaRetrieve.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.MediaRetrieve.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.MediaRetrieve.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MediaRetrieve.Reply;
+                    public static toObject(message: berty.messenger.v1.MediaRetrieve.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
             }
         }
     }

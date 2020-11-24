@@ -8,15 +8,21 @@ import {
 } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
-import { HeaderSettings } from '../shared-components/Header'
+
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/navigation'
 import { protocolMethodsHooks } from '@berty-tech/store/methods'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import beapi from '@berty-tech/api'
-import { usePrevious } from '../hooks'
 
-const PeerItem = ({ item, highlighted }) => {
+import { HeaderSettings } from '../shared-components/Header'
+import { usePrevious } from '../hooks'
+import { pbDateToNum } from '../helpers'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+
+const PeerItem: React.FC<{ item: beapi.types.PeerList.IPeer; highlighted: boolean }> = ({
+	item,
+	highlighted,
+}) => {
 	const { id, minLatency, isActive, features } = item
 	const [{ padding, border, color, text, row, height, width }] = useStyles()
 	const [isDropdown, setIsDropdown] = useState(false)
@@ -71,7 +77,7 @@ const PeerItem = ({ item, highlighted }) => {
 						  })
 						: null}
 				</View>
-				<Text style={[text.align.center, { flex: 4 }]}>{id.substr(0, 9)}</Text>
+				<Text style={[text.align.center, { flex: 4 }]}>{id?.substr(0, 9)}</Text>
 				<Text numberOfLines={1} style={[text.align.center, { flex: 3 }]}>
 					{minLatency ? minLatency + 'ms' : '?'}
 				</Text>
@@ -91,7 +97,13 @@ const PeerItem = ({ item, highlighted }) => {
 	)
 }
 
-function getPeersTypes(peers) {
+type PeersTypes = {
+	berty: number
+	quic: number
+	ble: number
+}
+
+function getPeersTypes(peers: beapi.types.PeerList.IPeer[] | null) {
 	let peersTypes = {
 		berty: 0,
 		quic: 0,
@@ -115,25 +127,19 @@ function getPeersTypes(peers) {
 	return peersTypes
 }
 
-const NetworkMapBody = ({ peers }) => {
+const NetworkMapBody: React.FC<{ peers: beapi.types.PeerList.IReply | null }> = ({ peers }) => {
 	const [{ margin, text, color }] = useStyles()
-	const [sortPeers, setSortPeers] = useState(null)
-	const [typesPeers, setTypesPeers] = useState(null)
+	const [sortPeers, setSortPeers] = useState<beapi.types.PeerList.IPeer[] | null>(null)
+	const [typesPeers, setTypesPeers] = useState<PeersTypes | null>(null)
 
 	const prevPeers = usePrevious(sortPeers)
 
 	useEffect(() => {
 		if (peers?.peers) {
 			setSortPeers(
-				Object.values(peers.peers).sort((a, b) => {
-					if (!a.minLatency) {
-						return 1
-					}
-					if (!b.minLatency) {
-						return -1
-					}
-					return a.minLatency > b.minLatency
-				}),
+				Object.values(peers.peers).sort(
+					(a, b) => pbDateToNum(a.minLatency) - pbDateToNum(b.minLatency),
+				),
 			)
 			setTypesPeers(getPeersTypes(peers.peers))
 		}
@@ -216,7 +222,7 @@ const NetworkMapBody = ({ peers }) => {
 							</View>
 							<>
 								{sortPeers.map((value) => {
-									const elem = prevPeers?.find((v) => value.id.toString() === v.id.toString())
+									const elem = prevPeers?.find((v) => value.id?.toString() === v.id?.toString())
 									return (
 										<PeerItem item={value} highlighted={elem ? false : prevPeers ? true : false} />
 									)

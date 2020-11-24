@@ -4,10 +4,12 @@ import Hyperlink from 'react-native-hyperlink'
 import { useNavigation as useNativeNavigation } from '@react-navigation/core'
 import { Icon, Text } from '@ui-kitten/components'
 
-import { useClient } from '@berty-tech/store/hooks'
+import { Maybe, useClient } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 
 import { pbDateToNum, timeFormat } from '../../helpers'
+import { InteractionUserMessage, ParsedInteraction } from '@berty-tech/store/types.gen'
+import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
 const READ_MORE_MESSAGE_LENGTH = 325
 const READ_MORE_SUBSTR_LENGTH = 300
@@ -20,7 +22,7 @@ const useStylesMessage = () => {
 	}
 }
 
-async function isBertyDeepLink(client: any, url: String): Promise<boolean> {
+async function isBertyDeepLink(client: WelshMessengerServiceClient, url: string): Promise<boolean> {
 	return new Promise((resolve) => {
 		client
 			.parseDeepLink({
@@ -36,7 +38,7 @@ async function isBertyDeepLink(client: any, url: String): Promise<boolean> {
 }
 
 export const HyperlinkUserMessage: React.FC<{
-	inte: any
+	inte: InteractionUserMessage
 	msgBorderColor: any
 	isFollowedMessage: boolean | undefined
 	msgBackgroundColor: any
@@ -46,7 +48,7 @@ export const HyperlinkUserMessage: React.FC<{
 		payload: { body: message },
 	} = inte
 
-	const client: any = useClient()
+	const client = useClient()
 	const navigation = useNativeNavigation()
 	const [{ margin, padding, column, border }] = useStyles()
 	const [isReadMore, setReadMore] = useState(false)
@@ -73,7 +75,7 @@ export const HyperlinkUserMessage: React.FC<{
 		>
 			<Hyperlink
 				onPress={async (url) => {
-					if (await isBertyDeepLink(client, url)) {
+					if (client && (await isBertyDeepLink(client, url))) {
 						navigation.navigate('Modals', {
 							screen: 'ManageDeepLink',
 							params: { type: 'link', value: url },
@@ -110,12 +112,12 @@ export const HyperlinkUserMessage: React.FC<{
 }
 
 export const TimestampStatusUserMessage: React.FC<{
-	inte: any
-	lastInte: any
+	inte: ParsedInteraction
+	lastInte: Maybe<ParsedInteraction>
 	isFollowedMessage: boolean | undefined
 	cmd: any
 }> = ({ inte, lastInte, isFollowedMessage, cmd }) => {
-	const sentDate = pbDateToNum(inte?.sentDate)
+	const sentDate = pbDateToNum(inte.sentDate)
 	const [{ row, margin, padding, color, flex }, { scaleSize }] = useStyles()
 	const _styles = useStylesMessage()
 
@@ -132,7 +134,7 @@ export const TimestampStatusUserMessage: React.FC<{
 			<Text style={[_styles.dateMessage, isFollowedMessage && margin.left.scale(35)]}>
 				{sentDate > 0 ? timeFormat.fmtTimestamp3(sentDate) : ''}
 			</Text>
-			{!cmd && lastInte?.cid?.toString() === inte?.cid.toString() && (
+			{!cmd && lastInte?.cid?.toString() === inte.cid?.toString() && (
 				<>
 					{inte.isMe && (
 						<Icon
