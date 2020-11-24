@@ -14,14 +14,14 @@ berty:
       #icon:
     betabot-dev:
       name: "BetaBot Dev"
-      link: "https://berty.tech/id#key=CiBQHH6a84AHwdahXR6NQcOxTKjUHeqLdQfIAzxAYSoD1xIgT-tFTYrU-tD55bYgaXbBNTlqTHubq-_Qb8ksv2bSH9o&name=BetaBot%20Dev"
-      description: "Dev BetaBot"
+      link: "https://berty.tech/id#contact/oZBLFQQTqmZ25yvcRRUVgzzZCpDY7YAVXDEz3g8kmwcSPCmnQrqiMbLrfSp1GRLaNBX6ZRarid8jkSUX4yQYL4oBZcLDtFY/name=BetaBot-Dev"
+      description: "BetaBot-Dev"
       kind: "Bot"
       #icon:
     testbot-dev:
       name: "TestBot Dev"
-      link: "https://berty.tech/id#key=CiAxSP1RYrv4yi7PsQZtqFH9fepMiqDD1M7y1aIZAzMmghIg_fXVz1J-HfCd6gtRlUN0GsWiIlfgVPamj7lgFIUqfOA&name=TestBot%20Dev"
-      description: "Dev TestBot"
+      link: "https://berty.tech/id#contact/oZBLFG6fwy21Dn4o511HC6ghxEghB5apq2QhjFepXCkbhfCWjzvRzhetVCGYwWhCtrWVL1TmExtHvdgGBvx1WK1RnXTdato/name=TestBot-Dev"
+      description: "TestBot-Dev"
       kind: "Bot"
       #icon:
     #support:
