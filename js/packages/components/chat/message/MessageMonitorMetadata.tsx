@@ -15,7 +15,7 @@ const eventMonitorTypes = beapi.types.MonitorGroup.TypeEventMonitor
 export const MessageMonitorMetadata: React.FC<{ inte: beapi.messenger.IInteraction }> = ({
 	inte,
 }) => {
-	const [{ padding, text, margin }] = useStyles()
+	const [{ padding, text }] = useStyles()
 	const sentDate = pbDateToNum(inte?.sentDate)
 
 	/* beapi.types.MonitorGroup.TypeEventMonitor */
@@ -23,84 +23,58 @@ export const MessageMonitorMetadata: React.FC<{ inte: beapi.messenger.IInteracti
 	const monitorEventKeys = getMonitorEventKeys()
 	const { peerId, driverName, maddrs, isSelf } = monitorEvent[monitorEventKeys[monitorEvent.type]]
 
-	let monitorPayloadTitle
-	let monitorPayloadSubtitle
+	let monitorPayload
 	switch (monitorEvent.type) {
 		case eventMonitorTypes.TypeEventMonitorAdvertiseGroup:
 			const msgAdvertise = `local peer advertised ${peerId.substr(
 				peerId.length - 10,
 			)} on ${driverName}, with ${maddrs.length} maddrs:`
-			monitorPayloadSubtitle = maddrs.map((addr: string) => `--${addr}`)
-			monitorPayloadTitle = msgAdvertise
+			const addrsAdvertise = maddrs.map((addr: string) => `--${addr}`)
+			monitorPayload = [msgAdvertise, ...addrsAdvertise].join('\n')
 			break
 		case eventMonitorTypes.TypeEventMonitorPeerFound:
-			monitorPayloadTitle = `new peer found ${peerId.substr(
+			const msgPeerFound = `new peer found ${peerId.substr(
 				peerId.length - 10,
 			)} on ${driverName}, with ${maddrs.length} maddrs:`
-			monitorPayloadSubtitle = maddrs.map((addr: string) => `--${addr}`)
+			const addrsPeerFound = maddrs.map((addr: string) => `--${addr}`)
+			monitorPayload = [msgPeerFound, ...addrsPeerFound].join('\n')
 			break
 		case eventMonitorTypes.TypeEventMonitorPeerJoin:
 			if (isSelf) {
-				monitorPayloadTitle = 'you just joined this group'
+				monitorPayload = 'you just joined this group'
 			} else {
 				let activeAddr = '<unknown>'
 				if (maddrs.length) {
 					activeAddr = maddrs[0]
 				}
-				monitorPayloadTitle = `peer joined ${peerId.substr(peerId.length - 10)} on: ${activeAddr}`
+				monitorPayload = `peer joined ${peerId.substr(peerId.length - 10)} on: ${activeAddr}`
 			}
 			break
 		case eventMonitorTypes.TypeEventMonitorPeerLeave:
 			if (isSelf) {
-				monitorPayloadTitle = 'you just leaved this group'
+				monitorPayload = 'you just leaved this group'
 			} else {
-				monitorPayloadTitle = `peer leaved ${peerId.substr(peerId.length - 10)}`
+				monitorPayload = `peer leaved ${peerId.substr(peerId.length - 10)}`
 			}
 			break
 		default:
 			console.log('undefined event type', monitorEvent)
-			monitorPayloadTitle = 'undefined'
+			monitorPayload = 'undefined'
 	}
 	return (
 		<View style={[padding.vertical.tiny, padding.horizontal.medium]}>
-			<View style={[{ justifyContent: 'center', alignItems: 'flex-start' }, padding.small]}>
-				<View
-					style={[
-						{
-							alignItems: 'center',
-							justifyContent: 'center',
-							width: '100%',
-						},
-						margin.bottom.small,
-					]}
-				>
-					<Icon name='monitor-outline' fill='#4E58BF' width={25} height={25} />
-				</View>
+			<View style={{ justifyContent: 'center', alignItems: 'center' }}>
+				<Icon name='monitor-outline' fill='#4E58BF' width={25} height={25} />
 				<Text
 					style={[
-						{ textAlign: 'left', fontFamily: 'Open Sans', color: '#4E58BF' },
+						{ textAlign: 'center', fontFamily: 'Open Sans', color: '#4E58BF' },
 						text.bold.small,
 						text.italic,
 						text.size.scale(14),
 					]}
 				>
-					{monitorPayloadTitle}
+					{monitorPayload}
 				</Text>
-
-				{monitorPayloadSubtitle &&
-					monitorPayloadSubtitle.map((subtitle: string) => (
-						<Text
-							style={[
-								{ textAlign: 'left', fontFamily: 'Open Sans', color: '#4E58BF' },
-								text.bold.small,
-								text.italic,
-								text.size.scale(14),
-								margin.top.tiny,
-							]}
-						>
-							{subtitle}
-						</Text>
-					))}
 			</View>
 			<Text
 				style={[
