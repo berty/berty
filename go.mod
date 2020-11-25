@@ -120,7 +120,7 @@ require (
 	moul.io/srand v1.6.1
 	moul.io/testman v1.5.0
 	moul.io/u v1.19.0
-	moul.io/zapconfig v1.2.0
+	moul.io/zapconfig v1.3.0
 	moul.io/zapfilter v1.6.1
 	moul.io/zapgorm2 v1.0.1
 	mvdan.cc/gofumpt v0.0.0-20200802201014-ab5a8192947d
