@@ -256,6 +256,7 @@
     "devtools": {
       "title": "Outils Dev",
       "header-left-button": "Infos sur l'appareil",
+      "simulate-button": "",
       "header-middle-button": "Générer de fausses données",
       "header-right-button": "Redémarrer le démon",
       "system-info-button": "Infos système",
