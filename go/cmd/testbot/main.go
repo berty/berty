@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"strings"
 	"syscall"
 
 	qrterminal "github.com/mdp/qrterminal/v3"
@@ -21,11 +22,12 @@ import (
 
 var (
 	username     = u.CurrentUsername("anon")
-	node1Addr    = flag.String("addr1", "127.0.0.1:9092", "first remote 'berty daemon' address")
-	node2Addr    = flag.String("addr2", "127.0.0.1:9093", "second remote 'berty daemon' address")
+	node1Addr    = flag.String("addr1", "127.0.0.1:9091", "first remote 'berty daemon' address")
+	node2Addr    = flag.String("addr2", "127.0.0.1:9092", "second remote 'berty daemon' address")
 	displayName1 = flag.String("name1", username+" (testbot1)", "first bot's display name")
 	displayName2 = flag.String("name2", username+" (testbot2)", "second bot's display name")
 	debug        = flag.Bool("debug", false, "debug mode")
+	logFormat    = flag.String("log-format", "console", strings.Join(zapconfig.AvailablePresets, ", "))
 )
 
 func main() {
@@ -44,7 +46,9 @@ type TestBot struct {
 }
 
 func Main() error {
-	logger := zapconfig.Configurator{}.MustBuild()
+	config := zapconfig.Configurator{}
+	config.SetPreset(*logFormat)
+	logger := config.MustBuild()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 

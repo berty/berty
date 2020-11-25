@@ -31,14 +31,15 @@ export const ChatFooter: React.FC<{
 	convPk: string
 	disabled?: boolean
 	placeholder: string
-}> = ({ isFocused, setFocus, convPk, disabled = false, placeholder }) => {
+	onFileMenuPress: () => void
+}> = ({ isFocused, setFocus, convPk, disabled = false, placeholder, onFileMenuPress }) => {
 	const ctx: any = useMsgrContext()
 
 	const [message, setMessage] = useState('')
 	const inputRef = useRef<TextInput>(null)
 	const _isFocused = isFocused || inputRef?.current?.isFocused() || false
 	const _styles = useStylesChatFooter()
-	const [{ row, padding, flex, border, color, text }] = useStyles()
+	const [{ row, padding, flex, border, color, text, margin }] = useStyles()
 
 	const usermsg = { body: message, sentDate: Date.now() }
 	const buf = beapi.messenger.AppMessage.UserMessage.encode(usermsg).finish()
@@ -77,6 +78,22 @@ export const ChatFooter: React.FC<{
 						{ alignItems: 'center' },
 					]}
 				>
+					<TouchableOpacity
+						style={[
+							{
+								justifyContent: 'center',
+								alignItems: 'center',
+								backgroundColor: '#F7F8FF',
+								marginBottom: _isFocused ? 0 : 16,
+							},
+							padding.small,
+							border.radius.small,
+							margin.right.small,
+						]}
+						onPress={onFileMenuPress}
+					>
+						<Icon name='plus' width={26} height={26} fill='#C7C8D8' />
+					</TouchableOpacity>
 					<View
 						style={[
 							flex.tiny,

@@ -38,6 +38,7 @@ var (
 	displayName   = flag.String("display-name", safeDefaultDisplayName(), "bot's display name")
 	staffConvLink = flag.String("staff-conversation-link", "", "link of the staff's conversation to join")
 	storePath     = flag.String("store", "./betabot.store", "store file path")
+	logFormat     = flag.String("log-format", "console", strings.Join(zapconfig.AvailablePresets, ", "))
 )
 
 func main() {
@@ -108,7 +109,9 @@ func betabot() error {
 
 	// init logger
 	{
-		logger, err := zapconfig.Configurator{}.Build()
+		config := zapconfig.Configurator{}
+		config.SetPreset(*logFormat)
+		logger, err := config.Build()
 		if err != nil {
 			return fmt.Errorf("build zap logger failed: %w", err)
 		}
