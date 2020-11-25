@@ -36,6 +36,7 @@ import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { useLayout } from '../hooks'
 import { pbDateToNum } from '../helpers'
 import { MultiMemberAvatar } from '../avatars'
+import { AddFileMenu } from './file-uploads/AddFileMenu'
 
 //
 // MultiMember
@@ -280,9 +281,11 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 	const lastUpdate = conv?.lastUpdate || lastInte?.sentDate || conv?.createdDate || null
 	const [stickyDate, setStickyDate] = useState(lastUpdate || null)
 	const [showStickyDate, setShowStickyDate] = useState(false)
+	const [showAddFileMenu, setShowAddFileMenu] = useState(false)
 
 	return (
 		<View style={[flex.tiny, background.white]}>
+			{showAddFileMenu && <AddFileMenu close={() => setShowAddFileMenu(false)} />}
 			<SwipeNavRecognizer
 				onSwipeLeft={() =>
 					dispatch(
@@ -301,6 +304,7 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 						isFocused={inputIsFocused}
 						setFocus={setInputFocus}
 						placeholder={t('chat.multi-member.input-placeholder')}
+						onFileMenuPress={() => setShowAddFileMenu(true)}
 					/>
 					<HeaderMultiMember id={params?.convId} {...({ stickyDate, showStickyDate } as any)} />
 				</KeyboardAvoidingView>

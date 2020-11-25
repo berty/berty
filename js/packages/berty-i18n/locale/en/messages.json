@@ -400,6 +400,12 @@
       "no-registered-button": "No replication service registered",
       "connect-button": "Connect to Berty operated services",
       "manage-add-button": "Manage or add services"
+    },
+    "files": {
+      "record-sound":"Record a sound message",
+      "media":"Access to Media Gallery",
+      "emojis":"Emojis & Bertyzzz !"
+
     }
   }
 }

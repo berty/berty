@@ -16,6 +16,9 @@ import Plus from './custom-icons-svgs/plus.svg'
 import AccountBerty from './custom-icons-svgs/account-berty.svg'
 import Tor from './custom-icons-svgs/Tor.svg'
 import Berty from './custom-icons-svgs/berty_picto.svg'
+import Bertyzzz from './custom-icons-svgs/bertyzzz.svg'
+import AddPicture from './custom-icons-svgs/add-picture.svg'
+import Microphone from './custom-icons-svgs/microphone.svg'
 
 const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	fingerprint: Fingerprint,
@@ -32,6 +35,9 @@ const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	berty: Berty,
 	plus: Plus,
 	'account-berty': AccountBerty,
+	bertyzzz: Bertyzzz,
+	'add-picture': AddPicture,
+	microphone: Microphone,
 }
 
 const CustomIcon: React.FC<{
