@@ -243,7 +243,6 @@ export type MsgrState = {
 	persistentOptions: PersistentOptions
 	accounts: beapi.account.IAccountMetadata[]
 	initialListComplete: boolean
-	clearDaemon: (() => Promise<void>) | null
 	clearClients: (() => Promise<void>) | null
 
 	embedded: boolean
@@ -275,7 +274,6 @@ export const initialState = {
 	persistentOptions: defaultPersistentOptions(),
 	daemonAddress: '',
 	initialListComplete: false,
-	clearDaemon: null,
 	clearClients: null,
 
 	embedded: true,

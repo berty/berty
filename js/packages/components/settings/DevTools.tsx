@@ -317,6 +317,18 @@ const BodyDevTools: React.FC<{}> = () => {
 				onPress={() => navigate.settings.systemInfo()}
 			/>
 			<ButtonSetting
+				name={t('settings.devtools.simulate-button')}
+				icon='info-outline'
+				iconSize={30}
+				iconColor={color.dark.grey}
+				onPress={() =>
+					ctx.dispatch({
+						type: MessengerActions.SetStreamError,
+						payload: { error: t('settings.devtools.simulate-button') },
+					})
+				}
+			/>
+			<ButtonSetting
 				name={t('settings.devtools.debug-button')}
 				icon='info-outline'
 				iconSize={30}

@@ -25,6 +25,7 @@
     - [BannerQuote.Request](#berty.messenger.v1.BannerQuote.Request)
     - [BertyGroup](#berty.messenger.v1.BertyGroup)
     - [BertyID](#berty.messenger.v1.BertyID)
+    - [BertyLink](#berty.messenger.v1.BertyLink)
     - [Contact](#berty.messenger.v1.Contact)
     - [ContactAccept](#berty.messenger.v1.ContactAccept)
     - [ContactAccept.Reply](#berty.messenger.v1.ContactAccept.Reply)
@@ -124,9 +125,9 @@
     - [SystemInfo.Request](#berty.messenger.v1.SystemInfo.Request)
   
     - [AppMessage.Type](#berty.messenger.v1.AppMessage.Type)
+    - [BertyLink.Kind](#berty.messenger.v1.BertyLink.Kind)
     - [Contact.State](#berty.messenger.v1.Contact.State)
     - [Conversation.Type](#berty.messenger.v1.Conversation.Type)
-    - [ParseDeepLink.Kind](#berty.messenger.v1.ParseDeepLink.Kind)
     - [StreamEvent.Notified.Type](#berty.messenger.v1.StreamEvent.Notified.Type)
     - [StreamEvent.Type](#berty.messenger.v1.StreamEvent.Type)
   
@@ -301,6 +302,16 @@
 | public_rendezvous_seed | [bytes](#bytes) |  |  |
 | account_pk | [bytes](#bytes) |  |  |
 | display_name | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.BertyLink"></a>
+
+### BertyLink
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| kind | [BertyLink.Kind](#berty.messenger.v1.BertyLink.Kind) |  |  |
+| berty_id | [BertyID](#berty.messenger.v1.BertyID) |  |  |
+| berty_group | [BertyGroup](#berty.messenger.v1.BertyGroup) |  | bool enc = 4; |
 
 <a name="berty.messenger.v1.Contact"></a>
 
@@ -595,10 +606,9 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| berty_id | [BertyID](#berty.messenger.v1.BertyID) |  |  |
-| berty_id_payload | [string](#string) |  |  |
-| deep_link | [string](#string) |  |  |
-| html_url | [string](#string) |  |  |
+| link | [BertyLink](#berty.messenger.v1.BertyLink) |  |  |
+| internal_url | [string](#string) |  |  |
+| web_url | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.InstanceShareableBertyID.Request"></a>
 
@@ -695,9 +705,7 @@ Composite primary key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| kind | [ParseDeepLink.Kind](#berty.messenger.v1.ParseDeepLink.Kind) |  |  |
-| berty_id | [BertyID](#berty.messenger.v1.BertyID) |  |  |
-| berty_group | [BertyGroup](#berty.messenger.v1.BertyGroup) |  |  |
+| link | [BertyLink](#berty.messenger.v1.BertyLink) |  |  |
 
 <a name="berty.messenger.v1.ParseDeepLink.Request"></a>
 
@@ -840,10 +848,9 @@ Composite primary key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| berty_group | [BertyGroup](#berty.messenger.v1.BertyGroup) |  |  |
-| berty_group_payload | [string](#string) |  |  |
-| deep_link | [string](#string) |  |  |
-| html_url | [string](#string) |  |  |
+| link | [BertyLink](#berty.messenger.v1.BertyLink) |  |  |
+| internal_url | [string](#string) |  |  |
+| web_url | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.ShareableBertyGroup.Request"></a>
 
@@ -1034,6 +1041,16 @@ Composite primary key
 | TypeReplyOptions | 7 |  |
 | TypeMonitorMetadata | 8 |  |
 
+<a name="berty.messenger.v1.BertyLink.Kind"></a>
+
+### BertyLink.Kind
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| UnknownKind | 0 |  |
+| ContactInviteV1Kind | 1 |  |
+| GroupV1Kind | 2 |  |
+
 <a name="berty.messenger.v1.Contact.State"></a>
 
 ### Contact.State
@@ -1056,16 +1073,6 @@ Composite primary key
 | AccountType | 1 |  |
 | ContactType | 2 |  |
 | MultiMemberType | 3 |  |
-
-<a name="berty.messenger.v1.ParseDeepLink.Kind"></a>
-
-### ParseDeepLink.Kind
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| UnknownKind | 0 |  |
-| BertyID | 1 |  |
-| BertyGroup | 2 |  |
 
 <a name="berty.messenger.v1.StreamEvent.Notified.Type"></a>
 

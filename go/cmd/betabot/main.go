@@ -38,6 +38,7 @@ var (
 	displayName   = flag.String("display-name", safeDefaultDisplayName(), "bot's display name")
 	staffConvLink = flag.String("staff-conversation-link", "", "link of the staff's conversation to join")
 	storePath     = flag.String("store", "./betabot.store", "store file path")
+	logFormat     = flag.String("log-format", "console", strings.Join(zapconfig.AvailablePresets, ", "))
 )
 
 func main() {
@@ -108,7 +109,9 @@ func betabot() error {
 
 	// init logger
 	{
-		logger, err := zapconfig.Configurator{}.Build()
+		config := zapconfig.Configurator{}
+		config.SetPreset(*logFormat)
+		logger, err := config.Build()
 		if err != nil {
 			return fmt.Errorf("build zap logger failed: %w", err)
 		}
@@ -177,8 +180,8 @@ func betabot() error {
 		if err != nil {
 			return fmt.Errorf("get instance shareable berty ID failed: %w", err)
 		}
-		bot.logger.Info("retrieve instance Berty ID", zap.String("link", res.HTMLURL))
-		qrterminal.GenerateHalfBlock(res.HTMLURL, qrterminal.L, os.Stdout)
+		bot.logger.Info("retrieve instance Berty ID", zap.String("link", res.WebURL))
+		qrterminal.GenerateHalfBlock(res.InternalURL, qrterminal.L, os.Stdout)
 	}
 
 	// join staff conversation
@@ -207,28 +210,15 @@ func betabot() error {
 			}
 
 			// store staffConvPk
-			link := req.GetLink()
-			if link == "" {
-				return fmt.Errorf("cannot get link")
-			}
-
-			query, method, err := bertymessenger.NormalizeDeepLinkURL(req.Link)
+			link, err := bertymessenger.UnmarshalLink(req.GetLink())
 			if err != nil {
-				return fmt.Errorf("normalize deeplink failed: %w", err)
+				return fmt.Errorf("parse conv link: %w", err)
 			}
 
-			var pdlr *bertymessenger.ParseDeepLink_Reply
-			switch method {
-			case "/group":
-				pdlr, err = bertymessenger.ParseGroupInviteURLQuery(query)
-				if err != nil {
-					return fmt.Errorf("parse group invite failed: %w", err)
-				}
-			default:
-				return fmt.Errorf("invalid link input")
+			gpkb := link.GetBertyGroup().GetGroup().GetPublicKey()
+			if gpkb == nil {
+				return fmt.Errorf("invalid group link")
 			}
-			bgroup := pdlr.GetBertyGroup()
-			gpkb := bgroup.GetGroup().GetPublicKey()
 			bot.store.StaffConvPK = base64.RawURLEncoding.EncodeToString(gpkb)
 			bot.saveStore()
 		}

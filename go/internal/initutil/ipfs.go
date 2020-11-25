@@ -80,8 +80,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 }
 
 func (m *Manager) GetLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
+	defer m.prepareForGetter()()
 
 	return m.getLocalIPFS()
 }
@@ -183,9 +182,14 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 		// Setup BLE
 		if m.Node.Protocol.Ble {
-			swarmAddrs = append(swarmAddrs, ble.DefaultAddr)
-			bleOpt := libp2p.Transport(proximity.NewTransport(m.ctx, logger, ble.NewDriver(logger)))
-			p2pOpts = libp2p.ChainOptions(p2pOpts, bleOpt)
+			if ble.Supported {
+				swarmAddrs = append(swarmAddrs, ble.DefaultAddr)
+				p2pOpts = libp2p.ChainOptions(p2pOpts,
+					libp2p.Transport(proximity.NewTransport(m.ctx, logger, ble.NewDriver(logger))),
+				)
+			} else {
+				m.initLogger.Warn("cannot enable BLE on an unsupported platform")
+			}
 		}
 
 		// Setup MC
@@ -202,7 +206,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 		if m.Node.Protocol.RelayHack {
 			// Resolving addresses
-			pis, err := ipfsutil.ParseAndResolveRdvpMaddrs(m.GetContext(), m.initLogger, config.Config.P2P.RelayHack)
+			pis, err := ipfsutil.ParseAndResolveRdvpMaddrs(m.getContext(), m.initLogger, config.Config.P2P.RelayHack)
 			if err != nil {
 				return nil, nil, errcode.TODO.Wrap(err)
 			}
@@ -343,7 +347,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 			if err != nil {
 				return err
 			}
-			m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.GetContext(), h,
+			m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.getContext(), h,
 				pubsub.WithMessageSigning(true),
 				pubsub.WithFloodPublish(true),
 				pubsub.WithDiscovery(m.Node.Protocol.discovery),
@@ -367,7 +371,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 		ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceIPFSDatastore))
 
-		m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, err = ipfsutil.NewCoreAPIFromDatastore(m.GetContext(), ipfsDS, &opts)
+		m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, err = ipfsutil.NewCoreAPIFromDatastore(m.getContext(), ipfsDS, &opts)
 		if err != nil {
 			return nil, nil, errcode.TODO.Wrap(err)
 		}
@@ -378,18 +382,18 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 			return nil, nil, errcode.TODO.Wrap(err)
 		}
 
-		m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, err = ipfsutil.NewCoreAPIFromRepo(m.GetContext(), repo, &opts)
+		m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, err = ipfsutil.NewCoreAPIFromRepo(m.getContext(), repo, &opts)
 		if err != nil {
 			return nil, nil, errcode.TODO.Wrap(err)
 		}
 	}
 
 	// PubSub
-	psapi := ipfsutil.NewPubSubAPI(m.GetContext(), logger.Named("ps"), m.Node.Protocol.discovery, m.Node.Protocol.pubsub)
+	psapi := ipfsutil.NewPubSubAPI(m.getContext(), logger.Named("ps"), m.Node.Protocol.discovery, m.Node.Protocol.pubsub)
 	m.Node.Protocol.ipfsAPI = ipfsutil.InjectPubSubCoreAPIExtendedAdaptater(m.Node.Protocol.ipfsAPI, psapi)
 
 	// enable conn logger
-	ipfsutil.EnableConnLogger(m.GetContext(), logger, m.Node.Protocol.ipfsNode.PeerHost)
+	ipfsutil.EnableConnLogger(m.getContext(), logger, m.Node.Protocol.ipfsNode.PeerHost)
 
 	// register metrics
 	if m.Metrics.Listener != "" {
@@ -436,7 +440,7 @@ func (m *Manager) getRdvpMaddrs() ([]*peer.AddrInfo, error) {
 		}
 	}
 
-	return ipfsutil.ParseAndResolveRdvpMaddrs(m.GetContext(), m.initLogger, addrs)
+	return ipfsutil.ParseAndResolveRdvpMaddrs(m.getContext(), m.initLogger, addrs)
 }
 
 func (m *Manager) getSwarmAddrs() []string {

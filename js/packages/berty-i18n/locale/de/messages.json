@@ -144,6 +144,15 @@
       "delete-account-button": "Mein Konto löschen",
       "backup-account-button": ""
     },
+    "edit-profile": {
+      "title": "",
+      "qr-will-update": "",
+      "ocr-wont-update": "",
+      "save": "",
+      "cancel": "",
+      "name-input-placeholder": "",
+      "name-input-label": "Name"
+    },
     "notifications": {
       "title": "Benachrichtigungen",
       "enabled-desc": "Sie haben Benachrichtigungen aktiviert!",

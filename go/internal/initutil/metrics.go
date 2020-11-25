@@ -18,8 +18,7 @@ func (m *Manager) SetupMetricsFlags(fs *flag.FlagSet) {
 }
 
 func (m *Manager) GetMetricsRegistry() (*prometheus.Registry, error) {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
+	defer m.prepareForGetter()()
 
 	return m.getMetricsRegistry()
 }

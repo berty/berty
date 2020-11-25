@@ -131,10 +131,10 @@ func (m *Manager) applyPreset() error {
 }
 
 func (m *Manager) GetLocalProtocolServer() (bertyprotocol.Service, error) {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
-	if m.GetContext().Err() != nil {
-		return nil, m.GetContext().Err()
+	defer m.prepareForGetter()()
+
+	if m.getContext().Err() != nil {
+		return nil, m.getContext().Err()
 	}
 	return m.getLocalProtocolServer()
 }
@@ -202,14 +202,14 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 			OrbitDB:        odb,
 		}
 
-		m.Node.Protocol.server, err = bertyprotocol.New(m.GetContext(), opts)
+		m.Node.Protocol.server, err = bertyprotocol.New(m.getContext(), opts)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 
 		// register grpc service
 		bertyprotocol.RegisterProtocolServiceServer(grpcServer, m.Node.Protocol.server)
-		if err := bertyprotocol.RegisterProtocolServiceHandlerServer(m.GetContext(), gatewayMux, m.Node.Protocol.server); err != nil {
+		if err := bertyprotocol.RegisterProtocolServiceHandlerServer(m.getContext(), gatewayMux, m.Node.Protocol.server); err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 	}
@@ -219,8 +219,8 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 }
 
 func (m *Manager) GetGRPCClientConn() (*grpc.ClientConn, error) {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
+	defer m.prepareForGetter()()
+
 	return m.getGRPCClientConn()
 }
 
@@ -271,7 +271,7 @@ func (m *Manager) getGRPCClientConn() (*grpc.ClientConn, error) {
 		grpcServer := grpc.NewServer(serverOpts...)
 
 		// buffer-based client conn
-		bl := grpcutil.NewBufListener(m.GetContext(), 256*1024)
+		bl := grpcutil.NewBufListener(m.getContext(), 256*1024)
 		cc, err := bl.NewClientConn(clientOpts...)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
@@ -300,8 +300,8 @@ func (m *Manager) getGRPCClientConn() (*grpc.ClientConn, error) {
 }
 
 func (m *Manager) GetMessengerClient() (bertymessenger.MessengerServiceClient, error) {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
+	defer m.prepareForGetter()()
+
 	return m.getMessengerClient()
 }
 
@@ -319,8 +319,8 @@ func (m *Manager) SetLifecycleManager(manager *lifecycle.Manager) {
 }
 
 func (m *Manager) GetLifecycleManager() *lifecycle.Manager {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
+	defer m.prepareForGetter()()
+
 	return m.getLifecycleManager()
 }
 
@@ -349,8 +349,8 @@ func (m *Manager) getMessengerClient() (bertymessenger.MessengerServiceClient, e
 }
 
 func (m *Manager) GetProtocolClient() (bertyprotocol.ProtocolServiceClient, error) {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
+	defer m.prepareForGetter()()
+
 	return m.getProtocolClient()
 }
 
@@ -370,8 +370,8 @@ func (m *Manager) getProtocolClient() (bertyprotocol.ProtocolServiceClient, erro
 }
 
 func (m *Manager) GetGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
+	defer m.prepareForGetter()()
+
 	return m.getGRPCServer()
 }
 
@@ -480,8 +480,8 @@ func (m *Manager) GetGRPCListeners() []grpcutil.Listener {
 }
 
 func (m *Manager) GetMessengerDB() (*gorm.DB, error) {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
+	defer m.prepareForGetter()()
+
 	return m.getMessengerDB()
 }
 
@@ -564,8 +564,8 @@ func (m *Manager) restoreMessengerDataFromExport() error {
 }
 
 func (m *Manager) GetLocalMessengerServer() (bertymessenger.MessengerServiceServer, error) {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
+	defer m.prepareForGetter()()
+
 	return m.getLocalMessengerServer()
 }
 
@@ -610,7 +610,7 @@ func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServ
 	}
 
 	// protocol client
-	protocolClient, err := bertyprotocol.NewClient(m.GetContext(), protocolServer, nil, nil) // FIXME: setup tracing
+	protocolClient, err := bertyprotocol.NewClient(m.getContext(), protocolServer, nil, nil) // FIXME: setup tracing
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -634,7 +634,7 @@ func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServ
 
 	// register grpc service
 	bertymessenger.RegisterMessengerServiceServer(grpcServer, messengerServer)
-	if err := bertymessenger.RegisterMessengerServiceHandlerServer(m.GetContext(), gatewayMux, messengerServer); err != nil {
+	if err := bertymessenger.RegisterMessengerServiceHandlerServer(m.getContext(), gatewayMux, messengerServer); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 

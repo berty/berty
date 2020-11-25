@@ -23,6 +23,7 @@ require (
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
 	github.com/dgraph-io/badger v1.6.2
 	github.com/dgraph-io/ristretto v0.0.3 // indirect
+	github.com/eknkc/basex v1.0.0
 	github.com/fabiokung/shm v0.0.0-20150728212823-2852b0d79bae
 	github.com/fatih/color v1.10.0
 	github.com/gdamore/tcell v1.4.0
@@ -69,10 +70,12 @@ require (
 	github.com/markbates/pkger v0.17.1
 	github.com/mattn/go-sqlite3 v1.14.5
 	github.com/mdomke/git-semver/v5 v5.0.0
+	github.com/mdp/qrterminal v1.0.1
 	github.com/mdp/qrterminal/v3 v3.0.0
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/mitchellh/copystructure v1.0.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
+	github.com/mr-tron/base58 v1.2.0
 	github.com/multiformats/go-multiaddr v0.3.1
 	github.com/multiformats/go-multiaddr-dns v0.2.0
 	github.com/multiformats/go-multiaddr-fmt v0.1.0
@@ -90,6 +93,7 @@ require (
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/stretchr/testify v1.6.1
 	github.com/tailscale/depaware v0.0.0-20201102210757-e2f543bafb1d
+	github.com/tj/assert v0.0.3
 	github.com/zcalusic/sysinfo v0.0.0-20200820110305-ef1bb2697bc2
 	go.opencensus.io v0.22.5 // indirect
 	go.opentelemetry.io/otel v0.8.0
@@ -116,7 +120,7 @@ require (
 	moul.io/srand v1.6.1
 	moul.io/testman v1.5.0
 	moul.io/u v1.19.0
-	moul.io/zapconfig v1.2.0
+	moul.io/zapconfig v1.3.0
 	moul.io/zapfilter v1.6.1
 	moul.io/zapgorm2 v1.0.1
 	mvdan.cc/gofumpt v0.0.0-20200802201014-ab5a8192947d
