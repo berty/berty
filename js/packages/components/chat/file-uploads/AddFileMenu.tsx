@@ -3,7 +3,7 @@ import { TouchableOpacity, View, StyleSheet } from 'react-native'
 import { useStyles } from '@berty-tech/styles'
 import { useTranslation } from 'react-i18next'
 import { Text, Icon } from '@ui-kitten/components'
-
+import DocumentPicker from 'react-native-document-picker'
 const ListItem: React.FC<{
 	title: string
 	onPress: () => void
@@ -57,7 +57,19 @@ export const AddFileMenu: React.FC<{ close: () => void }> = ({ close }) => {
 				pack: 'custom',
 			},
 			title: t('chat.files.media'),
-			onPress: () => {},
+			onPress: async () => {
+				try {
+					const res = await DocumentPicker.pickMultiple({
+						type: ['*/*'],
+					})
+					console.log(res)
+				} catch (err) {
+					if (DocumentPicker.isCancel(err)) {
+					} else {
+						console.error(err)
+					}
+				}
+			},
 		},
 		{
 			iconProps: {
