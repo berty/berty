@@ -256,6 +256,7 @@
     "devtools": {
       "title": "",
       "header-left-button": "",
+      "simulate-button": "",
       "header-middle-button": "",
       "header-right-button": "",
       "system-info-button": "",
