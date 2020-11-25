@@ -87,7 +87,7 @@ export const ChatFooter: React.FC<{
 								marginBottom: _isFocused ? 0 : 16,
 							},
 							padding.small,
-							border.radius.tiny,
+							border.radius.small,
 							margin.right.small,
 						]}
 						onPress={onFileMenuPress}
