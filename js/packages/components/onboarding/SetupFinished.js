@@ -54,6 +54,12 @@ const SetupFinishedBody = () => {
 					enable: false,
 				},
 			})
+			await setPersistentOption({
+				type: PersistentOptionsKeys.Tor,
+				payload: {
+					flag: 'disabled',
+				},
+			})
 		}
 
 		return () => {

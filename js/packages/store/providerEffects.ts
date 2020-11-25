@@ -268,6 +268,11 @@ export const openingDaemon = async (
 			opts?.mc && !opts.mc.enable
 				? [...bridgeOpts.cliArgs!, '--p2p.multipeer-connectivity=false']
 				: [...bridgeOpts.cliArgs!, '--p2p.multipeer-connectivity=true']
+
+		// set tor flag
+		bridgeOpts.cliArgs = opts?.tor?.flag.length
+			? [...bridgeOpts.cliArgs!, `--tor.mode=${opts?.tor?.flag}`]
+			: [...bridgeOpts.cliArgs!, '--tor.mode=disabled']
 	} catch (e) {
 		console.warn('store getPersistentOptions Failed:', e)
 		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Alert, ScrollView, Vibration, View } from 'react-native'
+import DropDownPicker from 'react-native-dropdown-picker'
 import { Layout } from '@ui-kitten/components'
 import { Translation, useTranslation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
@@ -307,6 +308,27 @@ const BodyDevTools: React.FC<{}> = () => {
 	const ctx = useMsgrContext()
 	const { t } = useTranslation()
 
+	const items = [
+		{
+			label: t('settings.devtools.tor-button', {
+				option: t('settings.devtools.tor-disabled-option'),
+			}),
+			value: t('settings.devtools.tor-disabled-option'),
+		},
+		{
+			label: t('settings.devtools.tor-button', {
+				option: t('settings.devtools.tor-optional-option'),
+			}),
+			value: t('settings.devtools.tor-optional-option'),
+		},
+		{
+			label: t('settings.devtools.tor-button', {
+				option: t('settings.devtools.tor-required-option'),
+			}),
+			value: t('settings.devtools.tor-required-option'),
+		},
+	]
+
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<ButtonSetting
@@ -340,6 +362,20 @@ const BodyDevTools: React.FC<{}> = () => {
 						type: PersistentOptionsKeys.Debug,
 						payload: {
 							enable: !ctx.persistentOptions?.debug.enable,
+						},
+					})
+				}}
+			/>
+			<DropDownPicker
+				items={items}
+				defaultValue={ctx.persistentOptions?.tor.flag || t('settings.devtools.tor-disabled-option')}
+				value={ctx.persistentOptions?.tor.flag || t('settings.devtools.tor-disabled-option')}
+				containerStyle={[{ marginTop: 22, height: 60 }]}
+				onChangeItem={async (item: any) => {
+					await ctx.setPersistentOption({
+						type: PersistentOptionsKeys.Tor,
+						payload: {
+							flag: item.value,
 						},
 					})
 				}}
