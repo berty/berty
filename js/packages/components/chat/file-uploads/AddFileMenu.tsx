@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { TouchableOpacity, View, StyleSheet } from 'react-native'
 import { useStyles } from '@berty-tech/styles'
 import { useTranslation } from 'react-i18next'
