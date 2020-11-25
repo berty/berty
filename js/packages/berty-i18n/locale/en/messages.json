@@ -256,7 +256,7 @@
     "devtools": {
       "title": "Dev tools",
       "header-left-button": "Device infos",
-      "simulate-button": "Simulate stream error",
+      "simulate-button": "",
       "header-middle-button": "Generate fake data",
       "header-right-button": "Restart daemon",
       "system-info-button": "System info",
