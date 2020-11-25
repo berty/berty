@@ -25,6 +25,8 @@ xcodegen_ver = $(shell cat ios/XcodeGen.version)
 required_java_ver = 18
 minimum_ios_ver = 12.0
 minimum_android_ver = 21
+go_libtor_ver = $(shell  go list -modfile=$(PWD)/../go.mod -f '{{.Version}}' -m berty.tech/go-libtor)
+go_libtor_libs_ver = $(shell cat ios/tor-deps/version 2> /dev/null)
 
 ## if (PWD != Makefile directory) then exit
 
@@ -107,6 +109,7 @@ endif
 	rm -rf ios/build
 	rm -rf ios/Pods
 	rm -rf ios/Frameworks/Bertybridge.framework
+	rm -rf ios/tor-deps
 	rm -rf ios/vendor
 	rm -rf ios/Berty.xcodeproj
 	rm -rf ios/Berty.xcworkspace
@@ -333,13 +336,30 @@ _write_gen_sum:
 ios/Frameworks/Bertybridge.framework: $(bridge_src)
 	cd .. && go mod download
 	cd .. && go run golang.org/x/mobile/cmd/gomobile init
-	mkdir -p "ios/Frameworks"
-	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
-		-o js/$@ \
-		-v $(ext_ldflags) \
-		-target ios \
-		-iosversion $(minimum_ios_ver) \
-		./go/framework/bertybridge
+	# Download required go-libtor deps if needed
+	if [ "$(go_libtor_ver)" != "$(go_libtor_libs_ver)" ]; then \
+		mkdir -p ios/tor-deps $(TMP)/tor-deps/ios && \
+		libs=$$(wget -O - "https://github.com/berty/go-libtor/releases/tag/$(go_libtor_ver)" 2> /dev/null \
+			| grep -o 'ios-.*-universal\.tar\.gz' \
+			| uniq) && \
+		for lib in $$libs; do \
+			wget "https://github.com/berty/go-libtor/releases/download/$(go_libtor_ver)/$$lib" -O "$(TMP)/tor-deps/ios/$$lib" && \
+			tar xvf "$(TMP)/tor-deps/ios/$$lib" -C ios/tor-deps; \
+		done && \
+		echo $(go_libtor_ver) > ios/tor-deps/version; \
+	fi
+	mkdir -p ios/Frameworks
+	cd .. && \
+		GO111MODULE=on \
+		LIBRARY_PATH="$(PWD)/ios/tor-deps/lib" \
+		CPATH="$(PWD)/ios/tor-deps/include" \
+		go run golang.org/x/mobile/cmd/gomobile bind \
+			-o js/$@ \
+			-v $(ext_ldflags) \
+			-target ios \
+			-tags embedTor \
+			-iosversion $(minimum_ios_ver) \
+			./go/framework/bertybridge
 	touch $@
 
 ios/Berty.xcworkspace: $(pkg_desc) ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle package.json
@@ -380,7 +400,7 @@ ios/vendor/bundle: ios/Gemfile
 android/libs/gobridge.aar: $(bridge_src)
 	cd .. && go mod download
 	cd .. && go run golang.org/x/mobile/cmd/gomobile init
-	mkdir -p "android/libs"
+	mkdir -p android/libs
 	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
 		-o js/$@ \
 		-v $(ext_ldflags) \
