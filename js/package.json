@@ -63,7 +63,7 @@
     "react-native-svg": "^12.1.0",
     "react-native-tab-view": ">= 2.0.0",
     "react-native-vector-icons": "^7.1.0",
-    "react-native-webview": "^10.10.2",
+    "react-native-webview": "^11.0.0",
     "rn-fetch-blob": "^0.12.0",
     "sha3": "^2.1.3"
   },
