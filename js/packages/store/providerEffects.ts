@@ -14,9 +14,9 @@ import {
 	defaultPersistentOptions,
 	MessengerActions,
 	MessengerAppState,
+	PersistentOptions,
 	PersistentOptionsKeys,
 	PersistentOptionsUpdate,
-	PersistentOptions,
 } from '@berty-tech/store/context'
 import beapi from '@berty-tech/api'
 import { reducerAction } from '@berty-tech/store/providerReducer'
@@ -198,6 +198,7 @@ export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, emb
 		.catch((err) => {
 			console.error('unable to init bridge ', Object.keys(err), err.domain)
 		})
+
 	const f = async () => {
 		const accounts = await refreshAccountList(embedded, dispatch)
 
@@ -272,18 +273,30 @@ export const openingDaemon = async (
 		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
 	}
 
-	try {
-		await accountService.openAccount({
-			args: bridgeOpts.cliArgs,
-			accountId: selectedAccount.toString(),
+	accountService
+		.getGRPCListenerAddrs({})
+		.then(() => {
+			// account already open
+			dispatch({ type: MessengerActions.SetStateOpeningClients })
 		})
-		dispatch({ type: MessengerActions.SetStateOpeningClients })
-	} catch (err) {
-		dispatch({
-			type: MessengerActions.SetStreamError,
-			payload: { error: new Error(`Failed to start node: ${err}`) },
+		.catch(() => {
+			// account not open
+			accountService
+				.openAccount({
+					args: bridgeOpts.cliArgs,
+					accountId: selectedAccount.toString(),
+				})
+				.then(() => {
+					console.log('account service is opened')
+					dispatch({ type: MessengerActions.SetStateOpeningClients })
+				})
+				.catch((err) => {
+					dispatch({
+						type: MessengerActions.SetStreamError,
+						payload: { error: new Error(`Failed to start node: ${err}`) },
+					})
+				})
 		})
-	}
 }
 
 // handle state OpeningWaitingForClients
@@ -399,7 +412,7 @@ export const openingClients = (
 
 	dispatch({
 		type: MessengerActions.SetStateOpeningListingEvents,
-		payload: { messengerClient, protocolClient, clearClients: cancel },
+		payload: { messengerClient, protocolClient, clearClients: () => cancel() },
 	})
 }
 
@@ -433,17 +446,17 @@ export const closingDaemon = (
 	clearClients: (() => Promise<void>) | null,
 	dispatch: (arg0: reducerAction) => void,
 ) => {
+	if (!clearClients) {
+		return
+	}
 	return () => {
 		const f = async () => {
 			try {
-				if (clearClients) {
-					await clearClients()
-				}
+				await clearClients()
 				await accountService.closeAccount({})
 			} catch (e) {
 				console.warn('unable to stop protocol', e)
 			}
-
 			dispatch({ type: MessengerActions.BridgeClosed })
 		}
 

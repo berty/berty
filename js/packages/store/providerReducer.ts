@@ -168,13 +168,15 @@ export const reducerActions: {
 		}
 	},
 
-	[MessengerActions.SetStateOpeningListingEvents]: (oldState, action) => ({
-		...oldState,
-		client: action.payload.messengerClient || oldState.client,
-		protocolClient: action.payload.protocolClient || oldState.protocolClient,
-		clearClients: action.payload.unmountClients || oldState.clearClients,
-		appState: MessengerAppState.OpeningListingEvents,
-	}),
+	[MessengerActions.SetStateOpeningListingEvents]: (oldState, action) => {
+		return {
+			...oldState,
+			client: action.payload.messengerClient || oldState.client,
+			protocolClient: action.payload.protocolClient || oldState.protocolClient,
+			clearClients: action.payload.clearClients || oldState.clearClients,
+			appState: MessengerAppState.OpeningListingEvents,
+		}
+	},
 
 	[MessengerActions.SetStateClosed]: (oldState, _) => {
 		const ret = {
