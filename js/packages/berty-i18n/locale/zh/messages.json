@@ -63,14 +63,14 @@
       "header": "无需互联网连接 (wifi或数据) 即可直接将手机与附近的对等设备连接起来进行通信",
       "optional": "可选",
       "title": "蓝牙",
-      "desc": "",
+      "desc": "要使用此功能，您需要在手机上自行启动蓝牙",
       "button": "授权蓝牙",
       "skip": "跳过并稍后再做"
     },
     "setup-finished": {
       "title": "设置完成！",
       "desc": "您现在可以使用该应用，开始添加联系人以及与他们自由私下聊天",
-      "button": ""
+      "button": "开始使用 Berty"
     }
   },
   "main": {
@@ -143,6 +143,15 @@
       },
       "delete-account-button": "",
       "backup-account-button": ""
+    },
+    "edit-profile": {
+      "title": "",
+      "qr-will-update": "",
+      "ocr-wont-update": "",
+      "save": "",
+      "cancel": "",
+      "name-input-placeholder": "",
+      "name-input-label": "名称"
     },
     "notifications": {
       "title": "消息通知",

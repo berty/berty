@@ -19,6 +19,7 @@ func daemonCommand() *ffcli.Command {
 		manager.SetupLocalMessengerServerFlags(fs) // we want to configure a local messenger server
 		manager.SetupDefaultGRPCListenersFlags(fs)
 		manager.SetupMetricsFlags(fs)
+		manager.SetupInitTimeout(fs)
 		return fs, nil
 	}
 

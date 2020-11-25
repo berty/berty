@@ -28,8 +28,8 @@ func (m *Manager) SetupDatastoreFlags(fs *flag.FlagSet) {
 }
 
 func (m *Manager) GetDatastoreDir() (string, error) {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
+	defer m.prepareForGetter()()
+
 	return m.getDatastoreDir()
 }
 
@@ -65,8 +65,8 @@ func (m *Manager) getDatastoreDir() (string, error) {
 }
 
 func (m *Manager) GetRootDatastore() (datastore.Batching, error) {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
+	defer m.prepareForGetter()()
+
 	return m.getRootDatastore()
 }
 

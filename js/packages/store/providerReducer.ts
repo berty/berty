@@ -238,10 +238,9 @@ export const reducerActions: {
 		}
 	},
 
-	[MessengerActions.SetStateOpeningClients]: (oldState, action) => ({
+	[MessengerActions.SetStateOpeningClients]: (oldState, _action) => ({
 		...oldState,
 		appState: MessengerAppState.OpeningWaitingForClients,
-		clearDaemon: action.payload.clearDaemon || oldState.clearDaemon,
 	}),
 
 	[MessengerActions.SetStateOpeningGettingLocalSettings]: (oldState, _action) => ({
@@ -273,7 +272,6 @@ export const reducerActions: {
 				oldState.appState === MessengerAppState.OpeningWaitingForDaemon
 					? MessengerAppState.Closed
 					: MessengerAppState.ClosingDaemon,
-			clearDaemon: null,
 			clearClients: null,
 		}
 	},
@@ -291,7 +289,6 @@ export const reducerActions: {
 			...oldState,
 			nextSelectedAccount: oldState.selectedAccount,
 			appState: MessengerAppState.ClosingDaemon,
-			clearDaemon: null,
 			clearClients: null,
 		}
 	},
@@ -305,7 +302,6 @@ export const reducerActions: {
 					: oldState.embedded
 					? MessengerAppState.DeletingClosingDaemon
 					: MessengerAppState.DeletingClearingStorage,
-			clearDaemon: null,
 			clearClients: null,
 		}
 	},
@@ -357,7 +353,6 @@ export const reducerActions: {
 		return {
 			...oldState,
 			selectedAccount: action.payload.accountId,
-			clearDaemon: action.payload.clearDaemon,
 			appState: MessengerAppState.OpeningWaitingForClients,
 		}
 	},

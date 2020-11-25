@@ -536,6 +536,14 @@ jest.mock('react-native-share', () => ({
 	default: jest.fn(),
 }))
 
+jest.mock('@react-navigation/stack', () => {
+	return {
+		TransitionSpecs: { TransitionIOSSpec: '' },
+		HeaderStyleInterpolators: { forFade: '' },
+		createStackNavigator: () => '',
+	}
+})
+
 it('renders correctly', () => {
 	renderer.create(<App />)
 })

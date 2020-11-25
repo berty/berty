@@ -62,7 +62,7 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 	}
 
 	if node.PubSub != nil {
-		self, err := ipfs.Key().Self(m.GetContext())
+		self, err := ipfs.Key().Self(m.getContext())
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -70,7 +70,7 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 		opts.PubSub = pubsubraw.NewPubSub(node.PubSub, self.ID(), opts.Logger, nil)
 	}
 
-	odb, err := bertyprotocol.NewBertyOrbitDB(m.GetContext(), ipfs, opts)
+	odb, err := bertyprotocol.NewBertyOrbitDB(m.getContext(), ipfs, opts)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -81,8 +81,7 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 }
 
 func (m *Manager) GetOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
+	defer m.prepareForGetter()()
 
 	return m.getOrbitDB()
 }

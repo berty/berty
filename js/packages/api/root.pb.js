@@ -3258,32 +3258,22 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Reply: {
                     fields: {
-                      bertyId: {
-                        type: "BertyID",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "BertyID"
-                        }
+                      link: {
+                        type: "BertyLink",
+                        id: 1
                       },
-                      bertyIdPayload: {
+                      internalUrl: {
                         type: "string",
                         id: 2,
                         options: {
-                          "(gogoproto.customname)": "BertyIDPayload"
+                          "(gogoproto.customname)": "InternalURL"
                         }
                       },
-                      deepLink: {
+                      webUrl: {
                         type: "string",
                         id: 3,
                         options: {
-                          "(gogoproto.customname)": "DeepLink"
-                        }
-                      },
-                      htmlUrl: {
-                        type: "string",
-                        id: 4,
-                        options: {
-                          "(gogoproto.customname)": "HTMLURL"
+                          "(gogoproto.customname)": "WebURL"
                         }
                       }
                     }
@@ -3310,32 +3300,22 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Reply: {
                     fields: {
-                      bertyGroup: {
-                        type: "BertyGroup",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "BertyGroup"
-                        }
+                      link: {
+                        type: "BertyLink",
+                        id: 1
                       },
-                      bertyGroupPayload: {
+                      internalUrl: {
                         type: "string",
                         id: 2,
                         options: {
-                          "(gogoproto.customname)": "BertyGroupPayload"
+                          "(gogoproto.customname)": "InternalURL"
                         }
                       },
-                      deepLink: {
+                      webUrl: {
                         type: "string",
                         id: 3,
                         options: {
-                          "(gogoproto.customname)": "DeepLink"
-                        }
-                      },
-                      htmlUrl: {
-                        type: "string",
-                        id: 4,
-                        options: {
-                          "(gogoproto.customname)": "HTMLURL"
+                          "(gogoproto.customname)": "WebURL"
                         }
                       }
                     }
@@ -3375,31 +3355,41 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Reply: {
                     fields: {
-                      kind: {
-                        type: "Kind",
+                      link: {
+                        type: "BertyLink",
                         id: 1
-                      },
-                      bertyId: {
-                        type: "BertyID",
-                        id: 3,
-                        options: {
-                          "(gogoproto.customname)": "BertyID"
-                        }
-                      },
-                      bertyGroup: {
-                        type: "BertyGroup",
-                        id: 4,
-                        options: {
-                          "(gogoproto.customname)": "BertyGroup"
-                        }
                       }
                     }
+                  }
+                }
+              },
+              BertyLink: {
+                fields: {
+                  kind: {
+                    type: "Kind",
+                    id: 1
                   },
+                  bertyId: {
+                    type: "BertyID",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "BertyID"
+                    }
+                  },
+                  bertyGroup: {
+                    type: "BertyGroup",
+                    id: 3,
+                    options: {
+                      "(gogoproto.customname)": "BertyGroup"
+                    }
+                  }
+                },
+                nested: {
                   Kind: {
                     values: {
                       UnknownKind: 0,
-                      BertyID: 1,
-                      BertyGroup: 2
+                      ContactInviteV1Kind: 1,
+                      GroupV1Kind: 2
                     }
                   }
                 }
