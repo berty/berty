@@ -121,6 +121,9 @@ endif
 	@echo "  rm -rf $(HOME)/.gradle/caches"
 	@echo "  rm -rf $(HOME)/Library/Developer/Xcode/DerivedData"
 	@echo "  rm -rf $(HOME)/Library/Caches/CocoaPods"
+	@echo "  sudo rm -rf $(PWD)/ios/.gomobile-cache"
+	@echo "  sudo rm -rf $(PWD)/android/.gomobile-cache"
+
 
 .PHONY: gen.clean
 gen.clean:
@@ -356,6 +359,7 @@ ios/Frameworks/Bertybridge.framework: $(bridge_src)
 		go run golang.org/x/mobile/cmd/gomobile bind \
 			-o js/$@ \
 			-v $(ext_ldflags) \
+			-cache "$(PWD)/ios/.gomobile-cache" \
 			-target ios \
 			-tags embedTor \
 			-iosversion $(minimum_ios_ver) \
@@ -404,6 +408,7 @@ android/libs/gobridge.aar: $(bridge_src)
 	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
 		-o js/$@ \
 		-v $(ext_ldflags) \
+		-cache "$(PWD)/android/.gomobile-cache" \
 		-target android \
 		-androidapi $(minimum_android_ver) \
 		./go/framework/bertybridge
