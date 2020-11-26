@@ -16,6 +16,7 @@ import Plus from './custom-icons-svgs/plus.svg'
 import AccountBerty from './custom-icons-svgs/account-berty.svg'
 import Tor from './custom-icons-svgs/Tor.svg'
 import Berty from './custom-icons-svgs/berty_picto.svg'
+import AddNewGroup from './custom-icons-svgs/add-new-group.svg'
 import Bertyzzz from './custom-icons-svgs/bertyzzz.svg'
 import AddPicture from './custom-icons-svgs/add-picture.svg'
 import Microphone from './custom-icons-svgs/microphone.svg'
@@ -23,6 +24,7 @@ import Microphone from './custom-icons-svgs/microphone.svg'
 const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	fingerprint: Fingerprint,
 	qr: QRCode,
+	'add-new-group': AddNewGroup,
 	share: Share,
 	bubble: Bubble,
 	id: Id,

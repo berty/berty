@@ -1,10 +1,8 @@
-import React from 'react'
-import { TouchableOpacity, View } from 'react-native'
-import { useIsFocused } from '@react-navigation/native'
+import React, { useEffect, useMemo } from 'react'
+import { TouchableOpacity, View, Animated, Easing } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import LinearGradient from 'react-native-linear-gradient'
 import { useStyles } from '@berty-tech/styles'
-import { useNavigation } from '@berty-tech/navigation'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
 
 type ButtonFooterProps = {
@@ -14,6 +12,7 @@ type ButtonFooterProps = {
 	selected: boolean
 	disabled?: boolean
 	selectedElemSize?: number
+	isModalVisible: boolean
 }
 
 const ButtonFooter: React.FC<ButtonFooterProps> = ({
@@ -22,6 +21,7 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 	onPress,
 	selected,
 	disabled = false,
+	isModalVisible,
 }) => {
 	const [{ border, column, color, opacity }] = useStyles()
 	const selectedSize = 59
@@ -35,6 +35,20 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 	const elemColor = selected ? selectedElemColor : color.blue
 	const selectedBackgroundColor = color.blue
 	const backgroundColor = selected ? selectedBackgroundColor : backgroundColorProp
+	let rotateValue = useMemo(() => new Animated.Value(0), [])
+	useEffect(() => {
+		Animated.timing(rotateValue, {
+			toValue: isModalVisible ? 1 : 0,
+			duration: 300,
+			easing: Easing.linear,
+			useNativeDriver: false,
+		}).start()
+	}, [isModalVisible, rotateValue])
+
+	const rotateAnimation = rotateValue.interpolate({
+		inputRange: [0, 1],
+		outputRange: ['0deg', '45deg'],
+	})
 
 	return (
 		<View
@@ -60,9 +74,18 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 					},
 				]}
 			>
-				<View
+				<Animated.View
 					style={[
-						{ justifyContent: 'center', alignItems: 'center' },
+						{
+							justifyContent: 'center',
+							alignItems: 'center',
+
+							transform: [
+								{
+									rotate: rotateAnimation,
+								},
+							],
+						},
 						disabled ? opacity(0.5) : null,
 					]}
 				>
@@ -73,7 +96,7 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 						height={elemSize}
 						fill={elemColor}
 					/>
-				</View>
+				</Animated.View>
 			</TouchableOpacity>
 		</View>
 	)
@@ -81,20 +104,22 @@ const ButtonFooter: React.FC<ButtonFooterProps> = ({
 
 const max = (a: number, b: number) => (a >= b ? a : b)
 
-export const Footer: React.FC<{}> = () => {
+export const Footer: React.FC<{
+	isModalVisible: boolean
+	openModal: () => void
+}> = ({ isModalVisible, openModal }) => {
 	const [{ absolute }] = useStyles()
-	const { navigate } = useNavigation()
-	const isFocused = useIsFocused()
 
 	const props = {
 		icon: 'plus-outline',
-		onPress: () => navigate.main.listModal(),
+		onPress: openModal,
 		selected: true,
+		isModalVisible,
 	}
 
 	return (
 		<>
-			{!isFocused && (
+			{isModalVisible && (
 				<LinearGradient
 					style={[
 						absolute.bottom,
