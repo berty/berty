@@ -2,10 +2,10 @@ bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc h1:utDghgcjE8u+EBjHOgYT+dJPcnD
 bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc/go.mod h1:FbcW6z/2VytnFDhZfumh8Ss8zxHE6qpMP5sHTRe0EaM=
 berty.tech/go-ipfs-log v1.2.6 h1:VBdyZgdkeIt17LS4UX6rJjmskqvfIHaOAEH9Z8aqvIM=
 berty.tech/go-ipfs-log v1.2.6/go.mod h1:4v7G/bAeHNQWqziNC9oZREEFYpSiejSE3+DB4G4nf9M=
-berty.tech/go-libp2p-tor-transport v0.8.2 h1:yKNH38FPT7GxzbdQV3zuxbdPIE+ofyo7ouLM7R+/RrY=
-berty.tech/go-libp2p-tor-transport v0.8.2/go.mod h1:/1ko5aihvU/uyHjKrunrHOam0b/Vumk87ptczocl14c=
-berty.tech/go-libtor v1.0.328 h1:3MRoX3KP9CjVgN5oPu7lbQYu0US00PyHj9mhihK89jQ=
-berty.tech/go-libtor v1.0.328/go.mod h1:9swOOQVb+kmvuAlsgWUK/4c52pm69AdbJsxLzk+fJEw=
+berty.tech/go-libp2p-tor-transport v0.8.3 h1:KhfPBPeuvMqW/88j6BS4O1vdTIRdlMD7bsxYBcp9rts=
+berty.tech/go-libp2p-tor-transport v0.8.3/go.mod h1:uttrniM0oeyYxHCpYy/gXcgZHu2zBy4F1doSUQm4rh0=
+berty.tech/go-libtor v1.0.333 h1:z0Uars8ZFprlGRGDAsomBtjTQfR9T7eMBmPDaZp1GRk=
+berty.tech/go-libtor v1.0.333/go.mod h1:9swOOQVb+kmvuAlsgWUK/4c52pm69AdbJsxLzk+fJEw=
 berty.tech/go-orbit-db v1.10.10 h1:4wljpof6+aICgDWVI9whyop99zF2SoWUT8dt/32JSfs=
 berty.tech/go-orbit-db v1.10.10/go.mod h1:Gl6pmjtt7Db5yA+2S14VP0XJ93Q2OslpyW/eSE9QNCg=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1 h1:xXAS7M/RcgIWia1XkXLueirm2zDXnMMNGb3UJhfRzbo=
