@@ -91,8 +91,8 @@
       }
     },
     "home-modal": {
-      "left-button": "Scanner",
-      "right-button": "Groupe"
+      "top-button": "",
+      "bottom-button": ""
     }
   },
   "settings": {
@@ -256,6 +256,7 @@
     "devtools": {
       "title": "Outils Dev",
       "header-left-button": "Infos sur l'appareil",
+      "simulate-button": "",
       "header-middle-button": "Générer de fausses données",
       "header-right-button": "Redémarrer le démon",
       "system-info-button": "Infos système",
@@ -400,6 +401,11 @@
       "no-registered-button": "Aucun service de réplication enregistré",
       "connect-button": "Se connecter aux services opérés par Berty",
       "manage-add-button": "Gérer ou ajouter des services"
+    },
+    "files": {
+      "record-sound": "",
+      "media": "",
+      "emojis": ""
     }
   }
 }
