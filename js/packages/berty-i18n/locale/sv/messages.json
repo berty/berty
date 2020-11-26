@@ -91,8 +91,8 @@
       }
     },
     "home-modal": {
-      "left-button": "",
-      "right-button": ""
+      "top-button": "",
+      "bottom-button": ""
     }
   },
   "settings": {
@@ -256,6 +256,7 @@
     "devtools": {
       "title": "",
       "header-left-button": "",
+      "simulate-button": "",
       "header-middle-button": "",
       "header-right-button": "",
       "system-info-button": "",
@@ -400,6 +401,11 @@
       "no-registered-button": "Ingen replikeringstjänst registrerad",
       "connect-button": "Anslut till Berty-drivna tjänster",
       "manage-add-button": "Hantera eller lägga till tjänster"
+    },
+    "files": {
+      "record-sound": "",
+      "media": "",
+      "emojis": ""
     }
   }
 }
