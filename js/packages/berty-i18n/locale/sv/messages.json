@@ -401,6 +401,11 @@
       "no-registered-button": "Ingen replikeringstjänst registrerad",
       "connect-button": "Anslut till Berty-drivna tjänster",
       "manage-add-button": "Hantera eller lägga till tjänster"
+    },
+    "files": {
+      "record-sound": "",
+      "media": "",
+      "emojis": ""
     }
   }
 }
