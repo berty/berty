@@ -91,8 +91,8 @@
       }
     },
     "home-modal": {
-      "left-button": "",
-      "right-button": ""
+      "top-button": "",
+      "bottom-button": ""
     }
   },
   "settings": {
@@ -256,6 +256,7 @@
     "devtools": {
       "title": "Entwicklerwerkzeuge",
       "header-left-button": "Geräteinformationen",
+      "simulate-button": "",
       "header-middle-button": "Fake-Daten generieren",
       "header-right-button": "Daemon neu starten",
       "system-info-button": "System-Info",
@@ -400,6 +401,11 @@
       "no-registered-button": "Kein Replikationsdienst registriert",
       "connect-button": "Zu von Berty betriebenen Diensten verbinden",
       "manage-add-button": "Dienste verwalten oder hinzufügen"
+    },
+    "files": {
+      "record-sound": "",
+      "media": "",
+      "emojis": ""
     }
   }
 }
