@@ -318,7 +318,7 @@ const BodyDevTools: React.FC<{}> = () => {
 			/>
 			<ButtonSetting
 				name={t('settings.devtools.simulate-button')}
-				icon='info-outline'
+				icon='alert-triangle-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
 				onPress={() =>
@@ -330,7 +330,7 @@ const BodyDevTools: React.FC<{}> = () => {
 			/>
 			<ButtonSetting
 				name={t('settings.devtools.debug-button')}
-				icon='info-outline'
+				icon='monitor-outline'
 				iconSize={30}
 				iconColor={color.dark.grey}
 				toggled
