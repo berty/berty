@@ -381,8 +381,8 @@ PODS:
     - RNFBApp
   - RNFS (2.16.6):
     - React
-  - RNGestureHandler (1.8.0):
-    - React
+  - RNGestureHandler (1.9.0):
+    - React-Core
   - RNImageCropPicker (0.35.1):
     - React-Core
     - React-RCTImage
@@ -440,6 +440,7 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - Interactable (from `../node_modules/react-native-interactable`)
   - lottie-react-native (from `../node_modules/lottie-react-native`)
+  - OpenSSL-Universal (from `./OpenSSL-Universal-Override.podspec`)
   - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -508,7 +509,6 @@ SPEC REPOS:
     - GoogleUtilities
     - lottie-ios
     - nanopb
-    - OpenSSL-Universal
     - PromisesObjC
     - Shake
     - TOCropViewController
@@ -531,6 +531,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-interactable"
   lottie-react-native:
     :path: "../node_modules/lottie-react-native"
+  OpenSSL-Universal:
+    :path: "./OpenSSL-Universal-Override.podspec"
   Permission-Camera:
     :path: "../node_modules/react-native-permissions/ios/Camera.podspec"
   RCTRequired:
@@ -648,7 +650,7 @@ SPEC CHECKSUMS:
   lottie-ios: 3a3758ef5a008e762faec9c9d50a39842f26d124
   lottie-react-native: 1fb4ce21d6ad37dab8343eaff8719df76035bd93
   nanopb: 1bf24dd71191072e120b83dd02d08f3da0d65e53
-  OpenSSL-Universal: ff34003318d5e1163e9529b08470708e389ffcdd
+  OpenSSL-Universal: 853119ea7eda1a9a6b1971ce0a9aa8a93ecdbc71
   Permission-Camera: 5d2aaf95592660b6dcb5e8d1d90ed5d0156cad02
   PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
   RCTRequired: 48884c74035a0b5b76dbb7a998bd93bcfc5f2047
@@ -684,7 +686,7 @@ SPEC CHECKSUMS:
   RNFBApp: dd793eec42bce8d09391bd95e42f2ed7511e7fef
   RNFBCrashlytics: 2ff8548152020b4eeba1963f60bb5e35c3dcfc44
   RNFS: 2bd9eb49dc82fa9676382f0585b992c424cd59df
-  RNGestureHandler: 7a5833d0f788dbd107fbb913e09aa0c1ff333c39
+  RNGestureHandler: 9b7e605a741412e20e13c512738a31bd1611759b
   RNImageCropPicker: 16951bc02411f50c4d197488ed6406a23dc3b5f1
   RNInAppBrowser: 48b95ba7a4eaff5cc223bca338d3e319561dbd1b
   RNPermissions: 5df468064df661a4c8c017e2791ce90d7695eea5
@@ -698,6 +700,6 @@ SPEC CHECKSUMS:
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: b8c53ce6d78625731c7197544089c7f2a5cf9933
+PODFILE CHECKSUM: 5c7c09955517d71a585bcd8612c506cefea43b96
 
 COCOAPODS: 1.9.3
