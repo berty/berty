@@ -404,6 +404,7 @@
     },
     "files": {
       "record-sound":"Record a sound message",
+      "recording":"Recording...",
       "media":"Access to Media Gallery",
       "emojis":"Emojis & Bertyzzz !"
 

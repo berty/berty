@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="8px" height="22px" viewBox="0 0 8 22" version="1.1"
+	xmlns="http://www.w3.org/2000/svg"
+	xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>Shape</title>
+	<g id="berty" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+		<g id="main/ConversationMedia/Preview-AfterRecord" transform="translate(-189.000000, -259.000000)" fill="currentColor" fill-rule="nonzero">
+			<g id="PAUSE-ICON" transform="translate(148.000000, 253.000000)">
+				<path d="M48.05,6 L42.35,6 C41.82465,6 41.4,6.447 41.4,7 L41.4,27 C41.4,27.553 41.82465,28 42.35,28 L48.05,28 C48.57535,28 49,27.553 49,27 L49,7 C49,6.447 48.57535,6 48.05,6 Z" id="Shape"></path>
+			</g>
+		</g>
+	</g>
+</svg>

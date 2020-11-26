@@ -19,6 +19,8 @@ import Berty from './custom-icons-svgs/berty_picto.svg'
 import Bertyzzz from './custom-icons-svgs/bertyzzz.svg'
 import AddPicture from './custom-icons-svgs/add-picture.svg'
 import Microphone from './custom-icons-svgs/microphone.svg'
+import Play from './custom-icons-svgs/play-player.svg'
+import Pause from './custom-icons-svgs/pause-player.svg'
 
 const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	fingerprint: Fingerprint,
@@ -38,6 +40,8 @@ const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	bertyzzz: Bertyzzz,
 	'add-picture': AddPicture,
 	microphone: Microphone,
+	play: Play,
+	pause: Pause,
 }
 
 const CustomIcon: React.FC<{
