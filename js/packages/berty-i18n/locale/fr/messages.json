@@ -401,6 +401,11 @@
       "no-registered-button": "Aucun service de réplication enregistré",
       "connect-button": "Se connecter aux services opérés par Berty",
       "manage-add-button": "Gérer ou ajouter des services"
+    },
+    "files": {
+      "record-sound": "",
+      "media": "",
+      "emojis": ""
     }
   }
 }
