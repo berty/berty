@@ -91,8 +91,8 @@
       }
     },
     "home-modal": {
-      "left-button": "Scan",
-      "right-button": "Group"
+      "top-button": "",
+      "bottom-button": ""
     }
   },
   "settings": {
@@ -256,7 +256,7 @@
     "devtools": {
       "title": "Dev tools",
       "header-left-button": "Device infos",
-      "simulate-button": "",
+      "simulate-button": "Simulate stream error",
       "header-middle-button": "Generate fake data",
       "header-right-button": "Restart daemon",
       "system-info-button": "System info",
@@ -403,9 +403,9 @@
       "manage-add-button": "Manage or add services"
     },
     "files": {
-      "record-sound": "",
-      "media": "",
-      "emojis": ""
+      "record-sound": "Record a sound message",
+      "media": "Access to Media Gallery",
+      "emojis": "Emojis & Bertyzzz!"
     }
   }
 }
