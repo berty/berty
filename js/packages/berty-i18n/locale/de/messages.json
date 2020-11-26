@@ -401,6 +401,11 @@
       "no-registered-button": "Kein Replikationsdienst registriert",
       "connect-button": "Zu von Berty betriebenen Diensten verbinden",
       "manage-add-button": "Dienste verwalten oder hinzufügen"
+    },
+    "files": {
+      "record-sound": "",
+      "media": "",
+      "emojis": ""
     }
   }
 }
