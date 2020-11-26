@@ -401,6 +401,11 @@
       "no-registered-button": "",
       "connect-button": "",
       "manage-add-button": ""
+    },
+    "files": {
+      "record-sound": "",
+      "media": "",
+      "emojis": ""
     }
   }
 }
