@@ -35,6 +35,7 @@ $(gen_sum): $(gen_src)
 protoc_opts := -I ../api:`go list -m -mod=mod -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis:`go list -m -mod=mod -f {{.Dir}} github.com/gogo/protobuf`:/protobuf
 .PHONY: generate_local
 generate_local:
+	mkdir -p protocol messenger
 	protoc $(protoc_opts) --doc_out=./protocol  --doc_opt=markdown,api.md.tmp ../api/bertyprotocol.proto ../api/bertytypes.proto
 	protoc $(protoc_opts) --doc_out=./messenger --doc_opt=markdown,api.md.tmp ../api/bertymessenger.proto
 	@# repace multiple empty lines with one
@@ -47,6 +48,10 @@ generate_local:
 	@# FIXME: use allow_merge=true (requires v2)
 	protoc $(protoc_opts) --swagger_out=logtostderr=true,grpc_api_configuration=../api/bertyprotocol.yaml:./protocol  ../api/bertyprotocol.proto
 	protoc $(protoc_opts) --swagger_out=logtostderr=true,grpc_api_configuration=../api/bertymessenger.yaml:./messenger ../api/bertymessenger.proto
+	mv protocol/api.md apis/bertyprotocol.md
+	mv messenger/api.md apis/bertymessenger.md
+	mv messenger/bertymessenger.swagger.json apis/
+	mv protocol/bertyprotocol.swagger.json apis/
 
 .PHONY: openapi.prepare
 openapi.prepare: gen.sum
