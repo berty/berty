@@ -37,7 +37,7 @@ func TestMarshalLink(t *testing.T) {
 			},
 			false,
 			"https://berty.tech/id#contact/3geQXHmsW9rxRfQFJdu8CEuPtWkfTWgJH13NzAoGatcnh4brusu3/name=Hello+World%21",
-			"BERTY://CAS8232WNWU-1HTSMNYD.USC3T4F.P.J.AFKOXTKI:-N4P9IJTERR3CTFD.:N$*$3RQZLIFMT3-$IN..",
+			"BERTY://PB/CAS8232WNWU-1HTSMNYD.USC3T4F.P.J.AFKOXTKI:-N4P9IJTERR3CTFD.:N$*$3RQZLIFMT3-$IN..",
 		}, {
 			"simple-group",
 			&bertymessenger.BertyLink{
@@ -55,7 +55,7 @@ func TestMarshalLink(t *testing.T) {
 			},
 			false,
 			"https://berty.tech/id#group/rUwVHzzEiMxGhM7iY4wW5yZFH3ZcjiWAhxva6tXUcfniDsoT3rmF3WdshR8955KAgeCTvirdfppTAMehPqmBV1YYjAiXYUQm98J992TuPT/name=The+Group+Name%21",
-			"BERTY://.H:8XWGCG68:21MATDM7JR8Y6JMNJEVPISAXL274Y3VVDOPPUGK0LUYZ9X$FPFN*T93E08Y3$RYFIQFHJ3FY*79I75LU.5SJAKCS1PRLRYVLO.4-502DA4KL*E8WCGKEE1WGET$-0G7O1S7",
+			"BERTY://PB/.H:8XWGCG68:21MATDM7JR8Y6JMNJEVPISAXL274Y3VVDOPPUGK0LUYZ9X$FPFN*T93E08Y3$RYFIQFHJ3FY*79I75LU.5SJAKCS1PRLRYVLO.4-502DA4KL*E8WCGKEE1WGET$-0G7O1S7",
 		}, {
 			"contact-with-unicode",
 			&bertymessenger.BertyLink{
@@ -68,7 +68,7 @@ func TestMarshalLink(t *testing.T) {
 			},
 			false,
 			"https://berty.tech/id#contact/3geQXHmsW9rxRfQFJdu8CEuPtWkfTWgJH13NzAoGatcnh4brusu3/name=%21%40%23%24%25%5E%26%2A%28%29_%2B+%3A%2F%2F%F0%9F%98%80",
-			"BERTY://BJ3W5ETGJU6$15FIE8U4:R300KUENPKC0J8YS6V02MXW9LDGPD6SVS/LU2TWQ8PGWF39R.ELP:-K:-4E30/.JNDU25WI",
+			"BERTY://PB/BJ3W5ETGJU6$15FIE8U4:R300KUENPKC0J8YS6V02MXW9LDGPD6SVS/LU2TWQ8PGWF39R.ELP:-K:-4E30/.JNDU25WI",
 		}, {
 			"group-with-unicode",
 			&bertymessenger.BertyLink{
@@ -86,7 +86,7 @@ func TestMarshalLink(t *testing.T) {
 			},
 			false,
 			"https://berty.tech/id#group/rUwVHzzEiMxGhM7iY4wW5yZFH3ZcjiWAhxva6tXUcfniDsoT3rmF3WdshR8955KAgeCTvirdfppTAMehPqmBV1YYjAiXYUQm98J992TuPT/name=%21%40%23%24%25%5E%26%2A%28%29_%3D%2B+%3A%2F%2F%F0%9F%98%80",
-			"BERTY://1FKTFXAW7RN$NCK6*$DSJREWJGK9IBQPJE:FZA4ZVM9DMH55U85P7IMU7OCQ.QE:9/98RB45ENQ61/X23FSZXH/U-XZJ.$E$4JNKK9L7-9F/8Z8DP78US/-6BZXX.$BJ6$NELVC$UREEQ8E8T//0NFE2",
+			"BERTY://PB/1FKTFXAW7RN$NCK6*$DSJREWJGK9IBQPJE:FZA4ZVM9DMH55U85P7IMU7OCQ.QE:9/98RB45ENQ61/X23FSZXH/U-XZJ.$E$4JNKK9L7-9F/8Z8DP78US/-6BZXX.$BJ6$NELVC$UREEQ8E8T//0NFE2",
 		},
 		// FIXME: invalid kind
 		// FIXME: incomplete link
@@ -156,15 +156,15 @@ func TestUnmarshalLink(t *testing.T) {
 		{"invalid14", "https://berty.tech/", errcode.ErrInvalidInput, false, false, ""},
 		{"invalid15", "https://invalid.domain/id#contact/" + validContactBlob + "/name=Alice", errcode.ErrInvalidInput, false, false, ""},
 		{"valid-web-contact-v1-with-name", "https://berty.tech/id#contact/" + validContactBlob + "/name=Alice", nil, true, false, "Alice"},
-		{"valid-internal-contact-v1", "BERTY://" + validContactInternalBlob, nil, true, false, "moul (cli)"},
-		{"valid-internal-contact-v1-alternative-scheme", "berty://" + validContactInternalBlob, nil, true, false, "moul (cli)"},
+		{"valid-internal-contact-v1", "BERTY://PB/" + validContactInternalBlob, nil, true, false, "moul (cli)"},
+		{"valid-internal-contact-v1-alternative-scheme", "berty://pb/" + validContactInternalBlob, nil, true, false, "moul (cli)"},
 		{"valid-web-contact-v1-without-name", "https://berty.tech/id#contact/" + validContactBlob, nil, true, false, ""},
 		{"valid-web-contact-v1-with-unnecessary-fields", "https://berty.tech/id#contact/" + validContactBlob + "/foo=bar", nil, true, false, ""},
 		{"valid-web-contact-v1-with-unnecessary-fields-and-name-1", "https://berty.tech/id#contact/" + validContactBlob + "/foo=bar&name=Alice", nil, true, false, "Alice"},
 		{"valid-web-contact-v1-with-unnecessary-fields-and-name-2", "https://berty.tech/id#contact/" + validContactBlob + "/name=Alice&foo=bar", nil, true, false, "Alice"},
 		{"valid-web-contact-v1-with-unnecessary-fields-and-name-3", "https://berty.tech/id#contact/" + validContactBlob + "/bar=foo&name=Alice&foo=bar", nil, true, false, "Alice"},
 		{"valid-web-group-v1", "https://berty.tech/id#group/" + validGroupBlob + "/name=random-group-34191", nil, false, true, "random-group-34191"},
-		{"valid-internal-group-v1", "BERTY://" + validGroupInternalBlob, nil, false, true, "random-group-34191"},
+		{"valid-internal-group-v1", "BERTY://PB/" + validGroupInternalBlob, nil, false, true, "random-group-34191"},
 		{"valid-escaped-name-1", "https://berty.tech/id#contact/" + validContactBlob + "/name=Alice%20Foobar", nil, true, false, "Alice Foobar"},
 		{"valid-escaped-name-2", "https://berty.tech/id#contact/" + validContactBlob + "/name=Alice+Foobar", nil, true, false, "Alice Foobar"},
 		{"valid-escaped-name-3", "https://berty.tech/id#contact/" + validContactBlob + "/name=Alice Foobar", nil, true, false, "Alice Foobar"},
