@@ -7,4 +7,4 @@ bb586c9f569c148685eeb572331af60504a19a05  ../api/bertymessenger.yaml
 efe05c869eb27277829aa4018133888bf41f5e9e  ../api/bertyreplication.yaml
 15bab772b80f15b5af4f7049de1e70e13f7b8b00  ../api/bertytypes.proto
 b3570d0af9dc0334c9d60397ec27822c33d51198  ../api/errcode.proto
-cc639cd087b8393cfac6b6f819b20a52272fbc1f  Makefile
+e853914d03c9587f688538cdb6e540572940d51c  Makefile
