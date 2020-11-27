@@ -5,21 +5,25 @@ services:
     container_name: betabot_daemon
     image: bertytech/berty:latest
     restart: always
-    entrypoint: sh
+    entrypoint: berty
     environment:
-      - ANNOUNCE_SERVER
+    command:
+      - daemon
+      - -config=/app/config.txt
+      - -p2p.swarm-listeners=/ip4/0.0.0.0/tcp/6001,/ip4/0.0.0.0/udp/6001/quic
+      - -node.listeners=/ip4/0.0.0.0/tcp/9091/grpc
+      - -metrics.listener=:8888
+      - -store.dir=/store/run
+      - -node.no-notif=true
+      - -log.filters=*,-ipfs*
+      - -log.format=json
+    network_mode: bridge
+    environment:
       - DAEMON_DOMAIN_MAIN
       - DAEMON_DOMAIN_SANS
-      - BERTY_STORE_DIR=/store/run
-      - BERTY_NODE_NO_NOTIF=true
-      - BERTY_NODE_LISTENERS=/ip4/0.0.0.0/tcp/9091/grpc
-      - BERTY_P2P_SWARM_LISTENERS=/ip4/0.0.0.0/tcp/6001,/ip4/0.0.0.0/udp/6001/quic
-      - BERTY_P2P_SWARM_ANNOUNCE=/ip4/${ANNOUNCE_SERVER}/tcp/6001,/ip4/${ANNOUNCE_SERVER}/udp/6001/quic
-      - BERTY_METRICS_LISTENER=:8888
-    command: -xec "berty daemon"
-    network_mode: bridge
     volumes:
       - ./data/daemon:/store
+      - .:/app
     ports:
       - 6001:6001
       - 6001:6001/udp
@@ -41,7 +45,7 @@ services:
       - "traefik.http.routers.betabot.tls.domains[0].main=${DAEMON_DOMAIN_MAIN}"
       - "traefik.http.routers.betabot.tls.domains[0].sans=${DAEMON_DOMAIN_SANS}"
       - 'traefik.http.services.betabot.loadbalancer.server.port=8888'
-
+      - 'com.datadoghq.ad.logs=[{"source": "go", "service": "betabot-daemon"}]'
   bot:
     container_name: betabot_bot
     image: bertytech/berty:latest
@@ -53,11 +57,13 @@ services:
     labels:
       - 'traefik.enable=false'
       - "com.centurylinklabs.watchtower.enable=true"
+      - 'com.datadoghq.ad.logs=[{"source": "go", "service": "betabot-bot"}]'
     command:
       - -display-name=BetaBot
       - -addr=daemon:9091
       - "-staff-conversation-link=${BETABOT_STAFF_CONVERSATION_LINK}"
       - -store=/data/betabot.store
+      - -log-format=json
     depends_on:
       - daemon
     volumes:
