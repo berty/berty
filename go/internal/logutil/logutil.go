@@ -70,12 +70,14 @@ func NewLogger(filters string, format string, logFile string) (*zap.Logger, func
 		config = zap.NewDevelopmentConfig()
 	case "json":
 		config = zap.NewProductionConfig()
+		config.Development = true
 		config.Encoding = jsonEncoding
 	case "light-json":
 		config = zap.NewProductionConfig()
 		config.Encoding = jsonEncoding
 		config.EncoderConfig.TimeKey = ""
 		config.EncoderConfig.EncodeLevel = stableWidthCapitalLevelEncoder
+		config.Development = true
 		config.DisableStacktrace = true
 	case "light-console":
 		config = zap.NewDevelopmentConfig()
@@ -84,6 +86,7 @@ func NewLogger(filters string, format string, logFile string) (*zap.Logger, func
 		config.EncoderConfig.EncodeLevel = stableWidthCapitalLevelEncoder
 		config.DisableStacktrace = true
 		config.EncoderConfig.EncodeName = stableWidthNameEncoder
+		config.Development = true
 	case "light-color":
 		config = zap.NewDevelopmentConfig()
 		config.Encoding = consoleEncoding
@@ -91,6 +94,7 @@ func NewLogger(filters string, format string, logFile string) (*zap.Logger, func
 		config.EncoderConfig.EncodeLevel = stableWidthCapitalColorLevelEncoder
 		config.DisableStacktrace = true
 		config.EncoderConfig.EncodeName = stableWidthNameEncoder
+		config.Development = true
 	case "console":
 		config = zap.NewDevelopmentConfig()
 		config.Encoding = consoleEncoding
@@ -98,6 +102,7 @@ func NewLogger(filters string, format string, logFile string) (*zap.Logger, func
 		config.EncoderConfig.EncodeLevel = stableWidthCapitalLevelEncoder
 		config.DisableStacktrace = true
 		config.EncoderConfig.EncodeName = stableWidthNameEncoder
+		config.Development = true
 	case "color":
 		config = zap.NewDevelopmentConfig()
 		config.Encoding = consoleEncoding
@@ -106,9 +111,12 @@ func NewLogger(filters string, format string, logFile string) (*zap.Logger, func
 		config.EncoderConfig.EncodeLevel = stableWidthCapitalColorLevelEncoder
 		config.DisableStacktrace = true
 		config.EncoderConfig.EncodeName = stableWidthNameEncoder
+		config.Development = true
 	default:
 		return nil, nil, fmt.Errorf("unknown log format: %q", format)
 	}
+
+	config.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
 
 	switch logFile {
 	case "":
@@ -117,8 +125,6 @@ func NewLogger(filters string, format string, logFile string) (*zap.Logger, func
 	default:
 		config.OutputPaths = []string{logFile}
 	}
-
-	config.Level.SetLevel(zapcore.DebugLevel)
 
 	base, err := config.Build()
 	if err != nil {
@@ -134,7 +140,7 @@ func DecorateLogger(base *zap.Logger, filters string) (*zap.Logger, func(), erro
 		return nil, nil, err
 	}
 
-	logger := zap.New(zapfilter.NewFilteringCore(base.Core(), filter))
+	logger := zap.New(zapfilter.NewFilteringCore(base.Core(), filter), zap.AddCaller())
 	zap.ReplaceGlobals(logger.Named("other"))
 
 	cleanup := func() {
