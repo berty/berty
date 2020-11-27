@@ -37,7 +37,7 @@ export const ChatFooter: React.FC<{
 
 	const [message, setMessage] = useState('')
 	const inputRef = useRef<TextInput>(null)
-	const _isFocused = isFocused || inputRef?.current?.isFocused() || false
+	const _isFocused = isFocused
 	const _styles = useStylesChatFooter()
 	const [{ row, padding, flex, border, color, text, margin }] = useStyles()
 
@@ -56,16 +56,27 @@ export const ChatFooter: React.FC<{
 			})
 			.then(() => {
 				playSound('messageSent')
+				setMessage('')
 			})
 			.catch((e: any) => {
 				console.warn('e sending message:', e)
 			})
 	}, [convPk, ctx.client, buf])
 
+	// React.useEffect(() => {
+	// 	console.log(inputRef?.current?.isFocused())
+	// 	if (inputRef?.current?.isFocused()) {
+	// 		setFocus(true)
+	// 	} else {
+	// 		setFocus(false)
+	// 	}
+	// }, [inputRef])
+
 	if (!conversation) {
 		return null
 	}
 	const isFake = conversation.fake
+
 	return (
 		<BlurView blurType='light' blurAmount={30}>
 			<SafeAreaView>
@@ -112,8 +123,16 @@ export const ChatFooter: React.FC<{
 							ref={inputRef}
 							multiline
 							editable={disabled ? false : true}
-							onFocus={() => setFocus(true)}
-							onBlur={() => setFocus(false)}
+							onFocus={() => {
+								console.log('focus')
+								inputRef?.current?.focus()
+								setFocus(true)
+							}}
+							onBlur={() => {
+								console.log('blur')
+								inputRef?.current?.blur()
+								setFocus(false)
+							}}
 							onChange={({ nativeEvent }) => setMessage(nativeEvent.text)}
 							autoCorrect={false}
 							style={[
@@ -135,7 +154,6 @@ export const ChatFooter: React.FC<{
 								if (message) {
 									handleSend()
 								}
-								setMessage('')
 							}}
 						>
 							<Icon

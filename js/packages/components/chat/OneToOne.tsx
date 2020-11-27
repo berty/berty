@@ -5,9 +5,9 @@ import {
 	SectionList,
 	SectionListData,
 	SectionListRenderItem,
-	StyleSheet,
 	Text as TextNative,
 	TouchableOpacity,
+	useWindowDimensions,
 	View,
 	ViewToken,
 } from 'react-native'
@@ -635,7 +635,7 @@ const MessageList: React.FC<{
 	return (
 		<SectionList
 			initialScrollIndex={initialScrollIndex}
-			onScrollToIndexFailed={onScrollToIndexFailed}
+			// onScrollToIndexFailed={onScrollToIndexFailed}
 			style={[overflow, row.item.fill, flex.tiny, { marginTop: 105 * scaleHeight }]}
 			ref={flatListRef}
 			keyboardDismissMode='on-drag'
@@ -649,12 +649,12 @@ const MessageList: React.FC<{
 			renderItem={renderItem}
 			onViewableItemsChanged={updateStickyDate}
 			initialNumToRender={20}
-			onScrollBeginDrag={() => {
-				setShowStickyDate(true) // TODO: tmp
-			}}
-			onScrollEndDrag={() => {
-				setTimeout(() => setShowStickyDate(false), 2000)
-			}}
+			// onScrollBeginDrag={() => {
+			// 	setShowStickyDate(true) // TODO: tmp
+			// }}
+			// onScrollEndDrag={() => {
+			// 	setTimeout(() => setShowStickyDate(false), 2000)
+			// }}
 		/>
 	)
 }
@@ -679,6 +679,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 	useReadEffect(params?.convId, 1000)
 	const { dispatch } = useNavigation()
 	const { t } = useTranslation()
+	const dimension = useWindowDimensions()
 
 	const ctx: any = useMsgrContext()
 	const conv = ctx.conversations[params?.convId]
@@ -702,7 +703,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 	const [showAddFileMenu, setShowAddFileMenu] = useState(false)
 
 	return (
-		<View style={[StyleSheet.absoluteFill, background.white, { flex: 1 }]}>
+		<View style={[background.white, { height: '100%' }]}>
 			{showAddFileMenu && <AddFileMenu close={() => setShowAddFileMenu(false)} />}
 			<SwipeNavRecognizer
 				onSwipeLeft={() =>
@@ -714,15 +715,17 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 					)
 				}
 			>
+				<MessageList
+					convPk={params?.convId}
+					scrollToMessage={params?.scrollToMessage || '0'}
+					{...{ setStickyDate, setShowStickyDate }}
+				/>
 				<KeyboardAvoidingView
-					style={[flex.tiny, { justifyContent: 'flex-start' }]}
-					behavior='padding'
+					contentContainerStyle={{ height: 380 }}
+					behavior='position'
+					keyboardVerticalOffset={-dimension.height + 380}
+					// enabled={inputIsFocused}
 				>
-					<MessageList
-						convPk={params?.convId}
-						scrollToMessage={params?.scrollToMessage || '0'}
-						{...{ setStickyDate, setShowStickyDate }}
-					/>
 					<ChatFooter
 						convPk={params?.convId}
 						isFocused={inputIsFocused}
@@ -731,8 +734,9 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 						placeholder={placeholder}
 						onFileMenuPress={() => setShowAddFileMenu(true)}
 					/>
-					<ChatHeader convPk={params?.convId || ''} {...{ stickyDate, showStickyDate }} />
 				</KeyboardAvoidingView>
+
+				<ChatHeader convPk={params?.convId || ''} {...{ stickyDate, showStickyDate }} />
 			</SwipeNavRecognizer>
 		</View>
 	)
