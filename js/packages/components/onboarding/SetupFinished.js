@@ -55,10 +55,9 @@ const SetupFinishedBody = () => {
 				},
 			})
 		}
-		if (!persistentOptions && Object.values(contacts).length) {
-			return () => {
-				handlePersistentOptions().catch((e) => console.warn(e))
-			}
+
+		return () => {
+			handlePersistentOptions().catch((e) => console.warn(e))
 		}
 	}, [persistentOptions, contacts, setPersistentOption])
 
