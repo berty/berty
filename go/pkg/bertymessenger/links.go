@@ -104,7 +104,7 @@ func (link *BertyLink) Marshal() (internal string, web string, err error) {
 			return "", "", errcode.ErrInvalidInput.Wrap(err)
 		}
 		// using uppercase to stay in the QR AlphaNum's 45chars alphabet
-		internal = LinkInternalPrefix + qrBaseEncoder.Encode(qrBin)
+		internal = LinkInternalPrefix + "PB/" + qrBaseEncoder.Encode(qrBin)
 	}
 
 	return internal, web, nil
@@ -118,18 +118,27 @@ func UnmarshalLink(uri string) (*BertyLink, error) {
 
 	// internal format
 	if strings.HasPrefix(strings.ToLower(uri), strings.ToLower(LinkInternalPrefix)) {
-		blob := uri[len(LinkInternalPrefix):]
-		qrBin, err := qrBaseEncoder.Decode(blob)
-		if err != nil {
-			return nil, errcode.ErrInvalidInput.Wrap(err)
+		right := uri[len(LinkInternalPrefix):]
+		parts := strings.Split(right, "/")
+		if len(parts) < 2 {
+			return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("URI should have at least 2 parts"))
 		}
-		var link BertyLink
-		err = proto.Unmarshal(qrBin, &link)
-		if err != nil {
-			return nil, errcode.ErrInvalidInput.Wrap(err)
+		switch strings.ToLower(parts[0]) {
+		case "pb":
+			blob := strings.Join(parts[1:], "/")
+			qrBin, err := qrBaseEncoder.Decode(blob)
+			if err != nil {
+				return nil, errcode.ErrInvalidInput.Wrap(err)
+			}
+			var link BertyLink
+			err = proto.Unmarshal(qrBin, &link)
+			if err != nil {
+				return nil, errcode.ErrInvalidInput.Wrap(err)
+			}
+			return &link, nil
+		default:
+			return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unsupported link type: %q", parts[0]))
 		}
-
-		return &link, nil
 	}
 
 	// web format
