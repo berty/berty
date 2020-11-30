@@ -53,7 +53,7 @@
     "react-native-interactable": "^2.0.1",
     "react-native-jdenticon": "^0.0.3",
     "react-native-linear-gradient": "^2.5.6",
-    "react-native-permissions": "^2.2.2",
+    "react-native-permissions": "^3.0.0",
     "react-native-qrcode-scanner": "^1.4.1",
     "react-native-qrcode-svg": "git+https://github.com/sakul-budhathoki/react-native-qrcode-svg.git#feature/circle-lines-qr-code",
     "react-native-reanimated": "^1.13.2",
