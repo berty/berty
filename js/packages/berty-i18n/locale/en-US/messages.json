@@ -220,7 +220,12 @@
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "Bluetooth allows you top use the Berty app when you don't have a network connection (wifi or data) by connecting your phone directly with peers nearby",
-      "activate-button": "Activate bluetooth"
+      "activate-button": "Activate bluetooth",
+	  "permission-title": "Berty Bluetooth permission",
+	  "permission-description": "Authorize the Berty app to use Bluetooth capabilities on your phone",
+	  "tag-neutral": "Ask me later",
+	  "tag-negative": "Cancel",
+	  "tag-positive": "OK"
     },
     "mc": {
       "activate-button": "Activate Multipeer Connectivity"
