@@ -1,9 +1,12 @@
 import React from 'react'
 import { TouchableOpacity, View, StyleSheet } from 'react-native'
-import { useStyles } from '@berty-tech/styles'
 import { useTranslation } from 'react-i18next'
 import { Text, Icon } from '@ui-kitten/components'
-import DocumentPicker from 'react-native-document-picker'
+import ImagePicker from 'react-native-image-crop-picker'
+
+import { useStyles } from '@berty-tech/styles'
+import { useClient } from '@berty-tech/store/hooks'
+
 const ListItem: React.FC<{
 	title: string
 	onPress: () => void
@@ -32,7 +35,13 @@ const ListItem: React.FC<{
 	)
 }
 
-export const AddFileMenu: React.FC<{ close: () => void }> = ({ close }) => {
+const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C) =>
+	Promise.all(arr.map(cb))
+
+export const AddFileMenu: React.FC<{ onClose: (medias: string[]) => void }> = ({ onClose }) => {
+	console.log('AddFileMenu render')
+
+	const client = useClient()
 	const [{ color, border }] = useStyles()
 	const { t } = useTranslation()
 
@@ -59,14 +68,24 @@ export const AddFileMenu: React.FC<{ close: () => void }> = ({ close }) => {
 			title: t('chat.files.media'),
 			onPress: async () => {
 				try {
-					const res = await DocumentPicker.pickMultiple({
-						type: ['*/*'],
-					})
+					const res = await ImagePicker.openPicker({ multiple: true })
 					console.log(res)
+					const mediaCids = (
+						await amap(res, async (doc) => {
+							const stream = await client?.mediaPrepare({})
+							await stream?.emit({
+								info: { filename: doc.filename, mimeType: doc.mime, displayName: doc.filename },
+								uri: doc.sourceURL || doc.path,
+							})
+							const reply = await stream?.stopAndRecv()
+							return reply?.cid
+						})
+					).filter((cid) => !!cid)
+					console.log(mediaCids)
+					onClose(mediaCids)
 				} catch (err) {
-					if (DocumentPicker.isCancel(err)) {
-					} else {
-						console.error(err)
+					if (err?.code !== 'E_PICKER_CANCELLED') {
+						console.error('failed to add media', err)
 					}
 				}
 			},
@@ -94,7 +113,7 @@ export const AddFileMenu: React.FC<{ close: () => void }> = ({ close }) => {
 				},
 			]}
 		>
-			<TouchableOpacity style={{ flex: 1 }} onPress={close}>
+			<TouchableOpacity style={{ flex: 1 }} onPress={() => onClose([])}>
 				<View></View>
 			</TouchableOpacity>
 			<View

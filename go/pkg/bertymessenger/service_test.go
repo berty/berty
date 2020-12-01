@@ -1493,16 +1493,16 @@ func TestAccountUpdateGroup(t *testing.T) {
 
 	testBlock := []byte("hello world!")
 
-	stream, err := user.protocolClient.AttachmentPrepare(ctx)
+	stream, err := user.client.MediaPrepare(ctx)
 	require.NoError(t, err)
-	require.NoError(t, stream.Send(&bertytypes.AttachmentPrepare_Request{})) // send header
+	require.NoError(t, stream.Send(&MediaPrepare_Request{Info: &Media{}})) // send header
 	const split = 5
-	require.NoError(t, stream.Send(&bertytypes.AttachmentPrepare_Request{Block: testBlock[0:split]})) // send block
-	require.NoError(t, stream.Send(&bertytypes.AttachmentPrepare_Request{Block: testBlock[split:]}))  // send block
+	require.NoError(t, stream.Send(&MediaPrepare_Request{Block: testBlock[0:split]})) // send block
+	require.NoError(t, stream.Send(&MediaPrepare_Request{Block: testBlock[split:]}))  // send block
 	reply, err := stream.CloseAndRecv()
 	require.NoError(t, err)
 
-	userAvatarCID := b64EncodeBytes(reply.GetAttachmentCID())
+	userAvatarCID := reply.GetCid()
 
 	logger.Info("starting update")
 	const testName = "user"
@@ -1547,7 +1547,7 @@ func TestAccountUpdateGroup(t *testing.T) {
 	logger.Error("test done")
 }
 
-func TestSendAttachment(t *testing.T) {
+func TestSendBlob(t *testing.T) {
 	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
 
 	// PREPARE
@@ -1570,63 +1570,230 @@ func TestSendAttachment(t *testing.T) {
 		defer close()
 	}
 
-	logger.Info("Started nodes")
+	logger.Info("Started nodes, waiting for settlement")
 	time.Sleep(4 * time.Second)
 
 	user := nodes[0]
 	friend := nodes[1]
-	userPK := user.account.GetPublicKey()
+	userPK := user.GetAccount().GetPublicKey()
 
-	_, err := user.client.ContactRequest(ctx, &ContactRequest_Request{Link: friend.GetLink()})
+	_, err := user.client.ContactRequest(ctx, &ContactRequest_Request{Link: friend.GetAccount().GetLink()})
 	require.NoError(t, err)
+	logger.Info("waiting for request propagation")
 	time.Sleep(1 * time.Second)
 	_, err = friend.client.ContactAccept(ctx, &ContactAccept_Request{PublicKey: userPK})
 	require.NoError(t, err)
 
-	logger.Info("waiting for requests propagation")
+	logger.Info("waiting for contact settlement")
 	time.Sleep(4 * time.Second)
 
 	// REAL TEST
 
-	logger.Info("Starting test")
+	logger.Info("starting test")
 
-	testBlock := []byte("hello world!")
+	testData := []byte("hello world!")
 
 	stream, err := user.protocolClient.AttachmentPrepare(ctx)
 	require.NoError(t, err)
 	require.NoError(t, stream.Send(&bertytypes.AttachmentPrepare_Request{})) // send header
 	const split = 5
-	require.NoError(t, stream.Send(&bertytypes.AttachmentPrepare_Request{Block: testBlock[0:split]})) // send block
-	require.NoError(t, stream.Send(&bertytypes.AttachmentPrepare_Request{Block: testBlock[split:]}))  // send block
+	require.NoError(t, stream.Send(&bertytypes.AttachmentPrepare_Request{Block: testData[0:split]})) // send block
+	require.NoError(t, stream.Send(&bertytypes.AttachmentPrepare_Request{Block: testData[split:]}))  // send block
 	reply, err := stream.CloseAndRecv()
 	require.NoError(t, err)
 
-	// attachmentCID := b64EncodeBytes(reply.GetAttachmentCID())
-
-	logger.Info("starting update")
+	logger.Info("starting send")
 	const testName = "user"
 
-	friendAsContact, ok := user.contacts[friend.account.GetPublicKey()]
-	require.True(t, ok)
+	friendAsContact := user.GetContact(t, friend.GetAccount().GetPublicKey())
 
-	gpkb, err := b64DecodeBytes(friendAsContact.GetConversationPublicKey())
+	testCID := reply.GetAttachmentCID()
+
+	b64CID := b64EncodeBytes(testCID)
+
+	payload, err := proto.Marshal(&AppMessage_UserMessage{})
 	require.NoError(t, err)
-
-	_, err = user.protocolClient.AppMessageSend(ctx,
-		&bertytypes.AppMessageSend_Request{GroupPK: gpkb, AttachmentCIDs: [][]byte{reply.GetAttachmentCID()}},
-	)
+	_, err = user.client.Interact(ctx, &Interact_Request{
+		ConversationPublicKey: friendAsContact.GetConversationPublicKey(),
+		MediaCids:             []string{b64CID},
+		Payload:               payload,
+		Type:                  AppMessage_TypeUserMessage,
+	})
 	require.NoError(t, err)
 	logger.Info("waiting for propagation")
 	time.Sleep(4 * time.Second)
-	logger.Info("done waiting for propagation")
 
-	logger.Info("checking friends")
+	logger.Info("checking friend", zap.String("name", friend.GetAccount().GetDisplayName()))
 
-	logger.Info("checking node", zap.String("name", friend.account.GetDisplayName()))
-	_, ok = friend.contacts[userPK]
-	require.True(t, ok)
+	inte := (*Interaction)(nil)
 
-	// FIXME: check that we recive an interaction with the correct attachment
+	for _, i := range friend.interactions {
+		if i.GetType() == AppMessage_TypeUserMessage {
+			inte = i
+			break
+		}
+	}
+
+	fmt.Println("inte", inte)
+
+	require.NotNil(t, inte)
+
+	fmt.Println("medias", inte.GetMedias())
+
+	require.NotEmpty(t, inte.GetMedias())
+	media := inte.GetMedias()[0]
+	require.NotNil(t, media)
+	cid := media.GetCID()
+	require.NotEmpty(t, cid)
+	require.Equal(t, b64EncodeBytes(testCID), cid)
+
+	// check attachment
+	cidBytes, err := b64DecodeBytes(cid)
+	require.NoError(t, err)
+	retStream, err := friend.protocolClient.AttachmentRetrieve(ctx, &bertytypes.AttachmentRetrieve_Request{AttachmentCID: cidBytes})
+	require.NoError(t, err)
+	data := []byte(nil)
+	for {
+		rsp, err := retStream.Recv()
+		if err == io.EOF {
+			break
+		}
+		require.NoError(t, err)
+		data = append(data, rsp.GetBlock()...)
+	}
+	require.Equal(t, testData, data)
+}
+
+func TestSendMedia(t *testing.T) {
+	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
+
+	// PREPARE
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 35*time.Second)
+	defer cancel()
+
+	const l = 2
+
+	clients, protocols, cleanup := TestingInfra(ctx, t, l, logger)
+	defer cleanup()
+
+	nodes := make([]*TestingAccount, l)
+	for i := range nodes {
+		nodes[i] = NewTestingAccount(ctx, t, clients[i], protocols[i].Client, logger)
+		nodes[i].SetName(t, fmt.Sprintf("node-%d", i))
+		close := nodes[i].ProcessWholeStream(t)
+		defer close()
+	}
+
+	logger.Info("Started nodes, waiting for settlement")
+	time.Sleep(4 * time.Second)
+
+	user := nodes[0]
+	friend := nodes[1]
+	userPK := user.GetAccount().GetPublicKey()
+
+	_, err := user.client.ContactRequest(ctx, &ContactRequest_Request{Link: friend.GetAccount().GetLink()})
+	require.NoError(t, err)
+	logger.Info("waiting for request propagation")
+	time.Sleep(1 * time.Second)
+	_, err = friend.client.ContactAccept(ctx, &ContactAccept_Request{PublicKey: userPK})
+	require.NoError(t, err)
+
+	logger.Info("waiting for contact settlement")
+	time.Sleep(4 * time.Second)
+
+	// REAL TEST
+
+	logger.Info("starting test")
+
+	testData := []byte("hello world!")
+	testMedia := Media{MimeType: "meme/quality", Filename: "mes super vacances.webm", DisplayName: "Clique"}
+
+	stream, err := user.client.MediaPrepare(ctx)
+	require.NoError(t, err)
+	require.NoError(t, stream.Send(&MediaPrepare_Request{Info: &testMedia})) // send header
+	const split = 5
+	require.NoError(t, stream.Send(&MediaPrepare_Request{Block: testData[0:split]})) // send block
+	require.NoError(t, stream.Send(&MediaPrepare_Request{Block: testData[split:]}))  // send block
+	reply, err := stream.CloseAndRecv()
+	require.NoError(t, err)
+
+	logger.Info("starting send")
+	const testName = "user"
+
+	friendAsContact := user.GetContact(t, friend.GetAccount().GetPublicKey())
+
+	b64CID := reply.GetCid()
+
+	payload, err := proto.Marshal(&AppMessage_UserMessage{})
+	require.NoError(t, err)
+	_, err = user.client.Interact(ctx, &Interact_Request{
+		ConversationPublicKey: friendAsContact.GetConversationPublicKey(),
+		MediaCids:             []string{b64CID},
+		Payload:               payload,
+		Type:                  AppMessage_TypeUserMessage,
+	})
+	require.NoError(t, err)
+	logger.Info("waiting for propagation")
+	time.Sleep(4 * time.Second)
+
+	logger.Info("checking friend", zap.String("name", friend.GetAccount().GetDisplayName()))
+
+	inte := (*Interaction)(nil)
+
+	for _, i := range friend.interactions {
+		if i.GetType() == AppMessage_TypeUserMessage {
+			inte = i
+			break
+		}
+	}
+
+	fmt.Println("inte", inte)
+
+	require.NotNil(t, inte)
+
+	fmt.Println("medias", inte.GetMedias())
+
+	require.NotEmpty(t, inte.GetMedias())
+	media := inte.GetMedias()[0]
+	require.NotNil(t, media)
+	cid := media.GetCID()
+	require.NotEmpty(t, cid)
+	require.Equal(t, b64CID, cid)
+
+	// check media
+	require.NoError(t, err)
+	retStream, err := friend.client.MediaRetrieve(ctx, &MediaRetrieve_Request{Cid: b64CID})
+	require.NoError(t, err)
+
+	// define expected result
+	expectedMedia := testMedia
+	expectedMedia.CID = cid
+	expectedMedia.InteractionCID = inte.GetCID()
+	expectedMedia.State = Media_StateNeverDownloaded // FIXME: should be Media_StateInCache
+
+	// get and check header
+	header, err := retStream.Recv()
+	require.NoError(t, err)
+	require.Equal(t, &expectedMedia, header.GetInfo())
+
+	// check blocks
+	data := []byte(nil)
+	for {
+		rsp, err := retStream.Recv()
+		if err == io.EOF {
+			break
+		}
+		require.NoError(t, err)
+		data = append(data, rsp.GetBlock()...)
+	}
+	require.Equal(t, testData, data)
+
+	// check that the media was sent on the event stream
+	clientMedia := friend.GetMedia(t, cid)
+	require.Equal(t, &expectedMedia, clientMedia)
 }
 
 func Test_exportMessengerData(t *testing.T) {

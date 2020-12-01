@@ -308,7 +308,12 @@ packages/grpc-bridge/welsh-clients.gen.ts: packages/grpc-bridge/gen-clients.js p
 	npx babel-node packages/grpc-bridge/gen-clients.js > $@
 	npx eslint --no-ignore --fix $@
 
-_gen.pbjs: packages/api/root.pb.js packages/api/root.pb.d.ts packages/grpc-bridge/welsh-clients.gen.ts
+packages/store/types.gen.ts: packages/store/gen-type-utils.js packages/api/root.pb.js node_modules
+	$(call check-program, npx)
+	npx babel-node packages/store/gen-type-utils.js > $@
+	npx eslint --no-ignore --fix $@
+
+_gen.pbjs: packages/api/root.pb.js packages/api/root.pb.d.ts packages/grpc-bridge/welsh-clients.gen.ts packages/store/types.gen.ts
 .PHONY: _gen.pbjs
 
 ##### other generation

@@ -3,62 +3,61 @@ import { View } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
-import { pbDateToNum, timeFormat } from '../../helpers'
 import beapi from '@berty-tech/api'
 
-const getMonitorEventKeys = () => {
-	return ['undefined', 'advertiseGroup', 'peerFound', 'peerJoin', 'peerLeave']
-}
+import { pbDateToNum, timeFormat } from '../../helpers'
+import { InteractionMonitorMetadata } from '@berty-tech/store/types.gen'
 
 const eventMonitorTypes = beapi.types.MonitorGroup.TypeEventMonitor
 
-export const MessageMonitorMetadata: React.FC<{ inte: beapi.messenger.IInteraction }> = ({
+export const MessageMonitorMetadata: React.FC<{ inte: InteractionMonitorMetadata }> = ({
 	inte,
 }) => {
 	const [{ padding, text, margin }] = useStyles()
 	const sentDate = pbDateToNum(inte?.sentDate)
 
-	/* beapi.types.MonitorGroup.TypeEventMonitor */
-	const monitorEvent = (inte.payload as any)?.event
-	const monitorEventKeys = getMonitorEventKeys()
-	const { peerId, driverName, maddrs, isSelf } = monitorEvent[monitorEventKeys[monitorEvent.type]]
+	const me = inte.payload.event
 
-	let monitorPayloadTitle
-	let monitorPayloadSubtitle
-	switch (monitorEvent.type) {
+	let monitorPayloadTitle: string
+	let monitorPayloadSubtitle: string[] | undefined
+	switch (me?.type) {
 		case eventMonitorTypes.TypeEventMonitorAdvertiseGroup:
-			const msgAdvertise = `local peer advertised ${peerId.substr(
-				peerId.length - 10,
-			)} on ${driverName}, with ${maddrs.length} maddrs:`
-			monitorPayloadSubtitle = maddrs.map((addr: string) => `--${addr}`)
+			const msgAdvertise = `local peer advertised ${me.advertiseGroup?.peerId?.substr(
+				me.advertiseGroup.peerId.length - 10,
+			)} on ${me.advertiseGroup?.driverName}, with ${me.advertiseGroup?.maddrs?.length} maddrs:`
+			monitorPayloadSubtitle = me.advertiseGroup?.maddrs?.map((addr: string) => `--${addr}`)
 			monitorPayloadTitle = msgAdvertise
 			break
 		case eventMonitorTypes.TypeEventMonitorPeerFound:
-			monitorPayloadTitle = `new peer found ${peerId.substr(
-				peerId.length - 10,
-			)} on ${driverName}, with ${maddrs.length} maddrs:`
-			monitorPayloadSubtitle = maddrs.map((addr: string) => `--${addr}`)
+			monitorPayloadTitle = `new peer found ${me.peerFound?.peerId?.substr(
+				me.peerFound.peerId.length - 10,
+			)} on ${me.peerFound?.driverName}, with ${me.peerFound?.maddrs?.length} maddrs:`
+			monitorPayloadSubtitle = me.peerFound?.maddrs?.map((addr: string) => `--${addr}`)
 			break
 		case eventMonitorTypes.TypeEventMonitorPeerJoin:
-			if (isSelf) {
+			if (me.peerJoin?.isSelf) {
 				monitorPayloadTitle = 'you just joined this group'
 			} else {
 				let activeAddr = '<unknown>'
-				if (maddrs.length) {
-					activeAddr = maddrs[0]
+				if (me.peerJoin?.maddrs?.length) {
+					activeAddr = me.peerJoin?.maddrs[0]
 				}
-				monitorPayloadTitle = `peer joined ${peerId.substr(peerId.length - 10)} on: ${activeAddr}`
+				monitorPayloadTitle = `peer joined ${me.peerJoin?.peerId?.substr(
+					me.peerJoin.peerId.length - 10,
+				)} on: ${activeAddr}`
 			}
 			break
 		case eventMonitorTypes.TypeEventMonitorPeerLeave:
-			if (isSelf) {
+			if (me.peerLeave?.isSelf) {
 				monitorPayloadTitle = 'you just leaved this group'
 			} else {
-				monitorPayloadTitle = `peer leaved ${peerId.substr(peerId.length - 10)}`
+				monitorPayloadTitle = `peer leaved ${me.peerLeave?.peerId?.substr(
+					me.peerLeave.peerId.length - 10,
+				)}`
 			}
 			break
 		default:
-			console.log('undefined event type', monitorEvent)
+			console.log('undefined event type', me)
 			monitorPayloadTitle = 'undefined'
 	}
 	return (

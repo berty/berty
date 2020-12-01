@@ -2,12 +2,11 @@ import React from 'react'
 import { ScrollView, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
-import { useStyles } from '@berty-tech/styles'
-import { useConversation, useMsgrContext } from '@berty-tech/store/hooks'
-import HeaderSettings from '../shared-components/Header'
-import { ButtonSetting, FactionButtonSetting } from '../shared-components'
 import { Layout } from '@ui-kitten/components'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
+import { colors } from 'react-native-elements'
+
+import { useStyles } from '@berty-tech/styles'
+import { useConversation, useMsgrContext, Maybe } from '@berty-tech/store/hooks'
 import { ScreenProps } from '@berty-tech/navigation'
 import {
 	servicesAuthViaDefault,
@@ -16,7 +15,10 @@ import {
 	replicateGroup,
 } from '@berty-tech/store/services'
 import beapi from '@berty-tech/api'
-import { colors } from 'react-native-elements'
+
+import HeaderSettings from '../shared-components/Header'
+import { ButtonSetting, FactionButtonSetting } from '../shared-components'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 enum replicationServerStatus {
 	KnownServerEnabled,
@@ -30,26 +32,27 @@ type TokenUsageStatus = {
 }
 
 const getAllReplicationStatusForConversation = (
-	conversation: beapi.messenger.Conversation,
+	conversation: beapi.messenger.IConversation | undefined,
 	services: Array<beapi.messenger.IServiceToken>,
 ): Array<TokenUsageStatus> => {
-	const allServers = conversation.replicationInfo.reduce<{
-		[key: string]: { service: beapi.messenger.IServiceToken; status: replicationServerStatus }
-	}>((servers, r) => {
-		if (typeof r.authenticationUrl !== 'string') {
-			return servers
-		}
+	const allServers =
+		conversation?.replicationInfo?.reduce<{
+			[key: string]: { service: beapi.messenger.IServiceToken; status: replicationServerStatus }
+		}>((servers, r) => {
+			if (typeof r.authenticationUrl !== 'string') {
+				return servers
+			}
 
-		return {
-			...servers,
-			[r.authenticationUrl]: {
-				service: {
-					authenticationUrl: r.authenticationUrl,
+			return {
+				...servers,
+				[r.authenticationUrl]: {
+					service: {
+						authenticationUrl: r.authenticationUrl,
+					},
+					status: replicationServerStatus.UnknownServerEnabled,
 				},
-				status: replicationServerStatus.UnknownServerEnabled,
-			},
-		}
-	}, {})
+			}
+		}, {}) || {}
 
 	for (const s of services.filter((t) => t.serviceType === serviceTypes.Replication)) {
 		if (typeof s.authenticationUrl !== 'string') {
@@ -95,10 +98,10 @@ const getReplicationStatusColor = (status: replicationServerStatus): string => {
 }
 
 const ReplicateGroupContent: React.FC<{
-	conversationPublicKey: string
+	conversationPublicKey?: Maybe<string>
 }> = ({ conversationPublicKey }) => {
 	const ctx = useMsgrContext()
-	const conversation: beapi.messenger.Conversation = ctx.conversations[conversationPublicKey]
+	const conversation = ctx.conversations[conversationPublicKey as string]
 	const services = useAccountServices()
 	const navigation = useNavigation()
 	const [{ margin, color, flex, padding }] = useStyles()
@@ -122,7 +125,7 @@ const ReplicateGroupContent: React.FC<{
 									return
 								}
 
-								return replicateGroup(ctx, conversationPublicKey, t.service.tokenId || '')
+								return replicateGroup(ctx, conversationPublicKey || '', t.service.tokenId || '')
 							}}
 						/>
 					))}

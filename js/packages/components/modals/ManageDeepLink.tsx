@@ -1,19 +1,19 @@
 import React from 'react'
 import { StyleSheet, ActivityIndicator } from 'react-native'
 import { useTranslation } from 'react-i18next'
-import BlurView from '../shared-components/BlurView'
-import InvalidScan from './InvalidScan'
-import { useStyles } from '@berty-tech/styles'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import AddThisContact from './AddThisContact'
-import { ScreenProps } from '@berty-tech/navigation'
-import { ManageGroupInvitation } from './ManageGroupInvitation'
-import messengerMethodsHooks from '@berty-tech/store/methods'
-import beapi from '@berty-tech/api'
 import { Buffer } from 'buffer'
 
-const base64ToURLBase64 = (str: string) =>
-	str.replace(/\+/, '-').replace(/\//, '_').replace(/\=/, '')
+import { useStyles } from '@berty-tech/styles'
+import { ScreenProps } from '@berty-tech/navigation'
+import messengerMethodsHooks from '@berty-tech/store/methods'
+import beapi from '@berty-tech/api'
+
+import { ManageGroupInvitation } from './ManageGroupInvitation'
+import AddThisContact from './AddThisContact'
+import { base64ToURLBase64 } from '../utils'
+import BlurView from '../shared-components/BlurView'
+import InvalidScan from './InvalidScan'
 
 export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 	route: { params },

@@ -47,6 +47,7 @@ func getDBModels() []interface{} {
 		&Member{},
 		&Device{},
 		&ConversationReplicationInfo{},
+		&Media{},
 	}
 }
 
@@ -981,4 +982,82 @@ func (d *dbWrapper) saveConversationReplicationInfo(c ConversationReplicationInf
 	}
 
 	return nil
+}
+
+func (d *dbWrapper) addMedias(medias []*Media) ([]bool, error) {
+	if len(medias) == 0 {
+		return []bool{}, nil
+	}
+	for _, m := range medias {
+		if err := ensureValidBase64CID(m.GetCID()); err != nil {
+			return nil, errcode.ErrInvalidInput.Wrap(err)
+		}
+	}
+
+	var dbMedias []*Media
+	cids := make([]string, len(medias))
+	for i, m := range medias {
+		cids[i] = m.GetCID()
+	}
+	err := d.db.Model(&Media{}).Where("cid IN ?", cids).Find(&dbMedias).Error
+	if err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	willAdd := make([]bool, len(medias))
+	for i, m := range medias {
+		found := false
+		for _, n := range dbMedias {
+			if m.GetCID() == n.GetCID() {
+				found = true
+				break
+			}
+		}
+		if !found {
+			willAdd[i] = true
+		}
+	}
+
+	if err := d.db.Clauses(clause.OnConflict{DoNothing: true}).Create(medias).Error; err != nil {
+		return nil, errcode.ErrDBWrite.Wrap(err)
+	}
+
+	return willAdd, nil
+}
+
+func (d *dbWrapper) getMedias(cids []string) ([]*Media, error) {
+	if len(cids) == 0 {
+		return nil, nil
+	}
+	for _, c := range cids {
+		if err := ensureValidBase64CID(c); err != nil {
+			return nil, errcode.ErrInvalidInput.Wrap(err)
+		}
+	}
+
+	var dbMedias []*Media
+	err := d.db.Model(&Media{}).Where("cid IN ?", cids).Find(&dbMedias).Error
+	if err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	medias := make([]*Media, len(cids))
+	for i, cid := range cids {
+		medias[i] = &Media{CID: cid}
+		for _, dbMedia := range dbMedias {
+			if dbMedia.GetCID() == cid {
+				medias[i] = dbMedia
+			}
+		}
+	}
+	return medias, nil
+}
+
+func (d *dbWrapper) getAllMedias() ([]*Media, error) {
+	var medias []*Media
+	err := d.db.Find(&medias).Error
+	if err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+	return medias, nil
 }

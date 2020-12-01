@@ -3,6 +3,8 @@ import { Dispatch, createContext, useContext } from 'react'
 import beapi from '@berty-tech/api'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
+import { ParsedInteraction } from './types.gen'
+
 export enum MessengerAppState {
 	Init = 0,
 	Closed,
@@ -240,10 +242,13 @@ export type MsgrState = {
 	conversations: { [key: string]: beapi.messenger.IConversation | undefined }
 	contacts: { [key: string]: beapi.messenger.IContact | undefined }
 	interactions: {
-		[key: string]: { [key: string]: beapi.messenger.IInteraction | undefined } | undefined
+		[key: string]: { [key: string]: ParsedInteraction | undefined } | undefined
 	}
 	members: {
 		[key: string]: { [key: string]: beapi.messenger.IMember | undefined } | undefined
+	}
+	medias: {
+		[key: string]: beapi.messenger.IMedia | undefined
 	}
 	client: ServiceClientType<beapi.messenger.MessengerService> | null
 	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null
@@ -276,6 +281,7 @@ export const initialState = {
 	contacts: {},
 	interactions: {},
 	members: {},
+	medias: {},
 	client: null,
 	protocolClient: null,
 	streamError: null,

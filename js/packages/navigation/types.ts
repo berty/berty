@@ -53,6 +53,7 @@ export namespace ScreenProps {
 	export namespace Modals {
 		export type ManageDeepLink = RouteProps<{ type: 'qr' | 'link'; value: string }>
 		export type AddBetabot = RouteProps<void>
+		export type Image = RouteProps<{ cid: string }>
 	}
 }
 
@@ -114,5 +115,6 @@ export namespace Routes {
 		DeleteAccount = 'DeleteAccount',
 		ManageDeepLink = 'ManageDeepLink',
 		AddBetabot = 'AddBetabot',
+		Image = 'Image',
 	}
 }

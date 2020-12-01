@@ -7,6 +7,7 @@ import { MessengerActions } from '@berty-tech/store/context'
 
 import { MsgrContext, useMsgrContext, NotificationsInhibitor } from './context'
 import { fakeContacts, fakeMultiMemberConversations, fakeMessages } from './faker'
+import { ParsedInteraction } from './types.gen'
 
 export { useMsgrContext }
 
@@ -128,7 +129,7 @@ export const useConvInteractions = (publicKey: Maybe<string>) => {
 
 export const useConvInteractionsList = (publicKey: Maybe<string>) => {
 	const intes = useConvInteractions(publicKey)
-	return Object.values(intes) as beapi.messenger.IInteraction[]
+	return Object.values(intes) as ParsedInteraction[]
 }
 
 export const useSortedConvInteractions = (publicKey: Maybe<string>) => {

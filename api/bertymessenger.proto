@@ -75,6 +75,12 @@ service MessengerService {
 
   // InstanceExportData exports instance data
   rpc InstanceExportData (InstanceExportData.Request) returns (stream InstanceExportData.Reply);
+
+  // MediaPrepare allows to upload a file and returns a cid to attach to messages
+  rpc MediaPrepare (stream MediaPrepare.Request) returns (MediaPrepare.Reply);
+
+  // MediaRetrieve allows to download a file attached to a message
+  rpc MediaRetrieve (MediaRetrieve.Request) returns (stream MediaRetrieve.Reply);
 }
 
 message ConversationOpen {
@@ -201,10 +207,12 @@ message BertyGroup {
   string display_name = 2;
 }
 
+// AppMessage is the app layer format
 message AppMessage {
   Type type = 1;
   bytes payload = 2;
   int64 sent_date = 3 [(gogoproto.jsontag) = "sentDate"];
+  repeated Media medias = 4;
 
   enum Type {
     Undefined = 0;
@@ -215,7 +223,9 @@ message AppMessage {
     TypeSetUserInfo = 5;
     TypeAcknowledge = 6;
     TypeReplyOptions = 7;
-    TypeMonitorMetadata = 8;
+
+    // these shouldn't be sent on the network
+    TypeMonitorMetadata = 100;
   }
   message UserMessage {
     string body = 1;
@@ -319,6 +329,32 @@ message Interaction {
   int64 sent_date = 9;
   bool acknowledged = 10;
   string target_cid = 13 [(gogoproto.moretags) = "gorm:\"index;column:target_cid\"", (gogoproto.customname) = "TargetCID"];
+  repeated Media medias = 15;
+}
+
+message Media {
+  string cid = 1 [(gogoproto.moretags) = "gorm:\"primaryKey;column:cid\"", (gogoproto.customname) = "CID"]; 
+  string mime_type = 2;
+  string filename = 3;
+  string display_name = 4;
+
+  // these should not be sent on the bertyprotocol layer
+  string interaction_cid = 100 [(gogoproto.moretags) = "gorm:\"index;column:interaction_cid\"", (gogoproto.customname) = "InteractionCID"];
+  State state = 103;
+  enum State {
+    StateUnknown = 0;
+
+    // specific to media received
+    StateNeverDownloaded = 1;
+    StatePartiallyDownloaded = 2;
+    StateDownloaded = 3;
+    StateInCache = 4;
+    StateInvalidCrypto = 5;
+
+    // specific to media sent
+    StatePrepared = 100;
+    StateAttached = 101;
+  }
 }
 
 message Contact {
@@ -419,6 +455,7 @@ message StreamEvent {
     TypeMemberUpdated = 8;
     TypeDeviceUpdated = 9;
     TypeNotified = 10;
+    TypeMediaUpdated = 11;
   }
   message ConversationUpdated {
     Conversation conversation = 1;
@@ -445,6 +482,9 @@ message StreamEvent {
     Device device = 1;
   }
   message ListEnded {}
+  message MediaUpdated {
+    Media media = 1;   
+  }
   message Notified {
     Type type = 1;
     string title = 3;
@@ -536,6 +576,7 @@ message Interact {
     AppMessage.Type type = 1;
     bytes payload = 2;
     string conversation_public_key = 3;
+    repeated string media_cids = 4;
   }
   message Reply {
     // TODO: return cid
@@ -595,4 +636,37 @@ message LocalConversationState {
   int32 unread_count = 2;
   bool is_open = 3;
   Conversation.Type type = 4;
+}
+
+message MediaPrepare {
+  message Request {
+    bytes block = 1;
+
+    /* Header data:
+    ** IMPORTANT: The first request must contain the header data and no block. Header data in following requests will be ignored
+    */
+  
+    Media info = 2;
+    string uri = 3;
+  }
+
+  message Reply  {
+    string cid = 1;
+  }
+}
+
+message MediaRetrieve {
+  message Request {
+    string cid = 1;
+  }
+
+  message Reply {
+    bytes block = 1;
+
+    /* Header data:
+    ** IMPORTANT: The first reply will contain the header data and no block. Header data in following replies will be empty
+    */
+
+    Media info = 2;
+  }
 }

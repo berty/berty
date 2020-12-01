@@ -132,6 +132,8 @@ type TestingAccount struct {
 	conversations map[string]*Conversation
 	contacts      map[string]*Contact
 	members       map[string]*Member
+	interactions  map[string]*Interaction
+	medias        map[string]*Media
 }
 
 func NewTestingAccount(ctx context.Context, t *testing.T, client MessengerServiceClient, protocolClient bertyprotocol.ProtocolServiceClient, logger *zap.Logger) *TestingAccount {
@@ -146,6 +148,8 @@ func NewTestingAccount(ctx context.Context, t *testing.T, client MessengerServic
 		conversations:  make(map[string]*Conversation),
 		contacts:       make(map[string]*Contact),
 		members:        make(map[string]*Member),
+		interactions:   make(map[string]*Interaction),
+		medias:         make(map[string]*Media),
 	}
 }
 
@@ -193,20 +197,6 @@ func (a *TestingAccount) ProcessWholeStream(t *testing.T) func() {
 	return func() { close(ch) }
 }
 
-func (a *TestingAccount) GetLink() string {
-	a.processMutex.Lock()
-	defer a.processMutex.Unlock()
-	return a.account.GetLink()
-}
-
-func (a *TestingAccount) GetConversation(t *testing.T, pk string) *Conversation {
-	a.processMutex.Lock()
-	defer a.processMutex.Unlock()
-	conv, ok := a.conversations[pk]
-	require.True(t, ok)
-	return conv
-}
-
 func (a *TestingAccount) processEvent(t *testing.T, event *StreamEvent) {
 	a.processMutex.Lock()
 	defer a.processMutex.Unlock()
@@ -222,7 +212,7 @@ func (a *TestingAccount) processEvent(t *testing.T, event *StreamEvent) {
 		require.NoError(t, err)
 		contact := payload.(*StreamEvent_ContactUpdated).Contact
 		a.contacts[contact.GetPublicKey()] = contact
-		t.Log("contact updated in", a.GetAccount().GetDisplayName(), ", name:", contact.GetDisplayName(), ", mpk:", contact.GetPublicKey(), ", acid: ", contact.GetAvatarCID())
+		t.Log("contact updated in", a.account.GetDisplayName(), ", name:", contact.GetDisplayName(), ", mpk:", contact.GetPublicKey(), ", acid: ", contact.GetAvatarCID())
 	case StreamEvent_TypeConversationUpdated:
 		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
@@ -233,7 +223,17 @@ func (a *TestingAccount) processEvent(t *testing.T, event *StreamEvent) {
 		require.NoError(t, err)
 		member := payload.(*StreamEvent_MemberUpdated).Member
 		a.members[member.GetPublicKey()] = member
-		t.Log("member updated in", a.GetAccount().GetDisplayName(), ", value:", member.GetDisplayName(), ", mpk:", member.GetPublicKey())
+		t.Log("member updated in", a.account.GetDisplayName(), ", value:", member.GetDisplayName(), ", mpk:", member.GetPublicKey())
+	case StreamEvent_TypeInteractionUpdated:
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		inte := payload.(*StreamEvent_InteractionUpdated).Interaction
+		a.interactions[inte.GetCID()] = inte
+	case StreamEvent_TypeMediaUpdated:
+		payload, err := event.UnmarshalPayload()
+		require.NoError(t, err)
+		media := payload.(*StreamEvent_MediaUpdated).Media
+		a.medias[media.GetCID()] = media
 	}
 }
 
@@ -295,7 +295,33 @@ func (a *TestingAccount) NextEvent(t *testing.T) *StreamEvent {
 }
 
 func (a *TestingAccount) GetAccount() *Account {
+	a.processMutex.Lock()
+	defer a.processMutex.Unlock()
 	return a.account
+}
+
+func (a *TestingAccount) GetContact(t *testing.T, pk string) *Contact {
+	a.processMutex.Lock()
+	defer a.processMutex.Unlock()
+	c, ok := a.contacts[pk]
+	require.True(t, ok)
+	return c
+}
+
+func (a *TestingAccount) GetConversation(t *testing.T, pk string) *Conversation {
+	a.processMutex.Lock()
+	defer a.processMutex.Unlock()
+	conv, ok := a.conversations[pk]
+	require.True(t, ok)
+	return conv
+}
+
+func (a *TestingAccount) GetMedia(t *testing.T, cid string) *Media {
+	a.processMutex.Lock()
+	defer a.processMutex.Unlock()
+	media, ok := a.medias[cid]
+	require.True(t, ok)
+	return media
 }
 
 func (a *TestingAccount) TryNextEvent(t *testing.T, timeout time.Duration) *StreamEvent {
