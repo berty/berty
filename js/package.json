@@ -79,7 +79,7 @@
     "@types/react-native": "^0.63.35",
     "@types/react-native-share": "^3.3.0",
     "@types/react-test-renderer": "^16.9.4",
-    "@typescript-eslint/eslint-plugin": "^4.8.1",
+    "@typescript-eslint/eslint-plugin": "^4.9.0",
     "@typescript-eslint/parser": "^4.8.1",
     "babel-jest": "^26.6.3",
     "babel-plugin-inline-react-svg": "^1.1.2",
