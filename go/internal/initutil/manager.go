@@ -73,6 +73,7 @@ type Manager struct {
 			RdvpMaddrs            string        `json:"RdvpMaddrs,omitempty"`
 			AuthSecret            string        `json:"AuthSecret,omitempty"`
 			AuthPublicKey         string        `json:"AuthPublicKey,omitempty"`
+			PollInterval          time.Duration `json:"PollInterval,omitempty"`
 			Tor                   struct {
 				Mode       string `json:"Mode,omitempty"`
 				BinaryPath string `json:"BinaryPath,omitempty"`
