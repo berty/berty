@@ -2,6 +2,7 @@ package bertyaccount
 
 import (
 	"context"
+	"encoding/base64"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -55,6 +56,15 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 	prog.Get("init").Start()
 
 	args = append(args, "--store.dir", accountStorePath)
+
+	if s.pushPlatformToken != nil {
+		data, err := s.pushPlatformToken.Marshal()
+		if err != nil {
+			return nil, errcode.ErrSerialization.Wrap(err)
+		}
+
+		args = append(args, "--node.default-push-token", base64.RawURLEncoding.EncodeToString(data))
+	}
 
 	meta, err := s.updateAccountMetadataLastOpened(req.AccountID)
 	if err != nil {
@@ -269,6 +279,7 @@ func (s *service) openManager(logger *zap.Logger, args ...string) (*initutil.Man
 
 	manager.SetLogger(logger)
 	manager.SetNotificationManager(s.notifManager)
+	manager.SetDevicePushKeyPath(s.devicePushKeyPath)
 
 	// setup `InitManager`
 	{
@@ -547,4 +558,40 @@ func (s *service) generateNewAccountID() (string, error) {
 			return "", errcode.ErrBertyAccountIDGenFailed.Wrap(err)
 		}
 	}
+}
+
+func (s *service) PushReceive(ctx context.Context, req *PushReceive_Request) (*PushReceive_Reply, error) {
+	// payload is the incoming push JSON
+	//  -> find appropriate account dispatch payload to it
+	//     -> return enhanced notification if available (ie. sender/message)
+	//  - store to un-dispatched push list otherwise
+	//     -> how long/how many should we keep
+
+	return nil, errcode.ErrNotImplemented
+}
+
+func (s *service) PushPlatformTokenRegister(ctx context.Context, request *PushPlatformTokenRegister_Request) (*PushPlatformTokenRegister_Reply, error) {
+	s.muService.Lock()
+	defer s.muService.Unlock()
+
+	s.pushPlatformToken = &protocoltypes.PushServiceReceiver{
+		TokenType: request.Receiver.TokenType,
+		BundleID:  request.Receiver.BundleID,
+		Token:     request.Receiver.Token,
+	}
+
+	if s.initManager == nil {
+		return &PushPlatformTokenRegister_Reply{}, nil
+	}
+
+	client, err := s.initManager.GetProtocolClient()
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	if _, err := client.PushSetDeviceToken(ctx, &protocoltypes.PushSetDeviceToken_Request{Receiver: request.Receiver}); err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	return &PushPlatformTokenRegister_Reply{}, nil
 }

@@ -6,7 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	sqlite3 "github.com/mattn/go-sqlite3"
+	"github.com/ipfs/go-cid"
+	"github.com/mattn/go-sqlite3"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -49,6 +50,7 @@ func getDBModels() []interface{} {
 		&messengertypes.Device{},
 		&messengertypes.ConversationReplicationInfo{},
 		&messengertypes.Media{},
+		&messengertypes.MetadataEvent{},
 	}
 }
 
@@ -204,6 +206,10 @@ func (d *dbWrapper) updateConversation(c messengertypes.Conversation) (bool, err
 
 	if c.AccountMemberPublicKey != "" {
 		columns = append(columns, "account_member_public_key")
+	}
+
+	if c.SharedPushTokenIdentifier != "" {
+		columns = append(columns, "shared_push_token_identifier")
 	}
 
 	db := d.db
@@ -413,13 +419,13 @@ func (d *dbWrapper) getAllInteractions() ([]*messengertypes.Interaction, error) 
 	return interactions, d.db.Preload(clause.Associations).Find(&interactions).Error
 }
 
-func (d *dbWrapper) getInteractionByCID(cid string) (*messengertypes.Interaction, error) {
-	if cid == "" {
+func (d *dbWrapper) getInteractionByCID(c string) (*messengertypes.Interaction, error) {
+	if c == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
 	}
 
 	interaction := &messengertypes.Interaction{}
-	return interaction, d.db.Preload(clause.Associations).First(&interaction, &messengertypes.Interaction{CID: cid}).Error
+	return interaction, d.db.Preload(clause.Associations).First(&interaction, &messengertypes.Interaction{CID: c}).Error
 }
 
 func (d *dbWrapper) addContactRequestOutgoingEnqueued(contactPK, displayName, convPK string) (*messengertypes.Contact, error) {
@@ -430,7 +436,7 @@ func (d *dbWrapper) addContactRequestOutgoingEnqueued(contactPK, displayName, co
 	ec, err := d.getContactByPK(contactPK)
 	if err == nil {
 		return ec, errcode.ErrDBEntryAlreadyExists
-	} else if err != nil && err != gorm.ErrRecordNotFound {
+	} else if err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
 
@@ -484,7 +490,7 @@ func (d *dbWrapper) addContactRequestIncomingReceived(contactPK, displayName, gr
 	ec, err := d.getContactByPK(contactPK)
 	if err == nil {
 		return ec, errcode.ErrDBEntryAlreadyExists
-	} else if err != nil && err != gorm.ErrRecordNotFound {
+	} else if err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
 
@@ -623,6 +629,12 @@ func (d *dbWrapper) getDBInfo() (*messengertypes.SystemInfo_DB, error) {
 	infos.ConversationReplicationInfo, err = d.dbModelRowsCount(messengertypes.ConversationReplicationInfo{})
 	errs = multierr.Append(errs, err)
 
+	infos.MetadataEvents, err = d.dbModelRowsCount(messengertypes.MetadataEvent{})
+	errs = multierr.Append(errs, err)
+
+	infos.Medias, err = d.dbModelRowsCount(messengertypes.Media{})
+	errs = multierr.Append(errs, err)
+
 	return infos, errs
 }
 
@@ -689,7 +701,7 @@ func (d *dbWrapper) addInteraction(rawInte messengertypes.Interaction) (*messeng
 		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
 	}
 
-	_, err := d.getInteractionByCID(rawInte.CID)
+	existing, err := d.getInteractionByCID(rawInte.CID)
 	isNew := false
 	if err == gorm.ErrRecordNotFound {
 		if err := d.db.Create(&rawInte).Error; err != nil {
@@ -698,6 +710,26 @@ func (d *dbWrapper) addInteraction(rawInte messengertypes.Interaction) (*messeng
 		isNew = true
 	} else if err != nil {
 		return nil, false, err
+	}
+
+	// FIXME: CID should not trusted when out of store,
+	//  we persist the first entry seen with a given CID
+
+	if !isNew && existing != nil {
+		if !existing.OutOfStoreMessage && rawInte.OutOfStoreMessage {
+			// push received after protocol sync, ignore interaction, return the existing one
+			return existing, false, nil
+		} else if existing.OutOfStoreMessage && !rawInte.OutOfStoreMessage {
+			// replace out-of-store interaction with synced one
+			if err := d.db.Model(&messengertypes.Interaction{}).Delete(&messengertypes.Interaction{CID: rawInte.CID}).Error; err != nil {
+				return nil, false, errcode.ErrDBWrite.Wrap(err)
+			}
+
+			if err := d.db.Create(&rawInte).Error; err != nil {
+				return nil, true, errcode.ErrDBWrite.Wrap(err)
+			}
+			isNew = true
+		}
 	}
 
 	i, err := d.getInteractionByCID(rawInte.CID)
@@ -709,7 +741,7 @@ func (d *dbWrapper) getReplyOptionsCIDForConversation(pk string) (string, error)
 		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
 	}
 
-	cid := ""
+	c := ""
 
 	if err := d.db.Model(&messengertypes.Interaction{}).
 		Raw(`SELECT cid
@@ -726,11 +758,11 @@ func (d *dbWrapper) getReplyOptionsCIDForConversation(pk string) (string, error)
 			AND type = ?
 			ORDER BY ROWID DESC
 			LIMIT 1
-		`, pk, pk, messengertypes.AppMessage_TypeReplyOptions).Scan(&cid).Error; err != nil {
+		`, pk, pk, messengertypes.AppMessage_TypeReplyOptions).Scan(&c).Error; err != nil {
 		return "", err
 	}
 
-	return cid, nil
+	return c, nil
 }
 
 func (d *dbWrapper) attributeBacklogInteractions(devicePK, groupPK, memberPK string) ([]*messengertypes.Interaction, error) {
@@ -803,7 +835,7 @@ func (d *dbWrapper) addMember(memberPK, groupPK, displayName, avatarCID string) 
 		if m, err := tx.getMemberByPK(memberPK, groupPK); err == nil {
 			member = m
 			return errcode.ErrDBEntryAlreadyExists
-		} else if err != nil && err != gorm.ErrRecordNotFound {
+		} else if err != gorm.ErrRecordNotFound {
 			return err
 		}
 
@@ -966,9 +998,9 @@ func (d *dbWrapper) addServiceToken(accountPK string, serviceToken *protocoltype
 	return nil
 }
 
-func (d *dbWrapper) accountSetReplicationAutoEnable(pk string, enabled bool) error {
+func (d *dbWrapper) accountUpdateFlag(pk string, flagName string, enabled bool) error {
 	updates := map[string]interface{}{
-		"replicate_new_groups_automatically": enabled,
+		flagName: enabled,
 	}
 
 	// db update
@@ -985,6 +1017,14 @@ func (d *dbWrapper) accountSetReplicationAutoEnable(pk string, enabled bool) err
 	return nil
 }
 
+func (d *dbWrapper) accountSetReplicationAutoEnable(pk string, enabled bool) error {
+	return d.accountUpdateFlag(pk, "replicate_new_groups_automatically", enabled)
+}
+
+func (d *dbWrapper) pushSetReplicationAutoShare(pk string, enabled bool) error {
+	return d.accountUpdateFlag(pk, "auto_share_push_token_flag", enabled)
+}
+
 func (d *dbWrapper) saveConversationReplicationInfo(c messengertypes.ConversationReplicationInfo) error {
 	if c.CID == "" {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
@@ -996,6 +1036,40 @@ func (d *dbWrapper) saveConversationReplicationInfo(c messengertypes.Conversatio
 	}
 
 	return nil
+}
+
+func (d *dbWrapper) wasMetadataEventHandled(id cid.Cid) (bool, error) {
+	c := int64(0)
+
+	return c == 1, d.db.
+		Model(&messengertypes.MetadataEvent{}).
+		Where(&messengertypes.MetadataEvent{CID: id.String()}).
+		Count(&c).
+		Error
+}
+
+func (d *dbWrapper) markMetadataEventHandled(eventContext *protocoltypes.EventContext) (bool, error) {
+	_, id, err := cid.CidFromBytes(eventContext.ID)
+	if err != nil {
+		return false, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	if newlyHandled, err := d.wasMetadataEventHandled(id); err != nil {
+		return false, errcode.ErrDBRead.Wrap(err)
+	} else if newlyHandled {
+		return false, nil
+	}
+
+	return true, d.db.Create(&messengertypes.MetadataEvent{CID: id.String()}).Error
+}
+
+func (d *dbWrapper) getAllMedias() ([]*messengertypes.Media, error) {
+	var medias []*messengertypes.Media
+	err := d.db.Find(&medias).Error
+	if err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+	return medias, nil
 }
 
 func (d *dbWrapper) addMedias(medias []*messengertypes.Media) ([]bool, error) {
@@ -1017,7 +1091,6 @@ func (d *dbWrapper) addMedias(medias []*messengertypes.Media) ([]bool, error) {
 	if err != nil {
 		return nil, errcode.ErrDBRead.Wrap(err)
 	}
-
 	willAdd := make([]bool, len(medias))
 	for i, m := range medias {
 		found := false
@@ -1039,6 +1112,44 @@ func (d *dbWrapper) addMedias(medias []*messengertypes.Media) ([]bool, error) {
 	return willAdd, nil
 }
 
+func (d *dbWrapper) updateDevicePushToken(token *protocoltypes.PushServiceReceiver) (*messengertypes.Account, error) {
+	data, err := token.Marshal()
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	acc, err := d.getAccount()
+	if err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+	acc.DevicePushToken = data
+
+	if err := d.db.Save(acc).Error; err != nil {
+		return nil, errcode.ErrDBWrite.Wrap(err)
+	}
+
+	return d.getAccount()
+}
+
+func (d *dbWrapper) updateDevicePushServer(server *protocoltypes.PushServer) (*messengertypes.Account, error) {
+	data, err := server.Marshal()
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	acc, err := d.getAccount()
+	if err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+	acc.DevicePushServer = data
+
+	if err := d.db.Save(acc).Error; err != nil {
+		return nil, errcode.ErrDBWrite.Wrap(err)
+	}
+
+	return d.getAccount()
+}
+
 func (d *dbWrapper) getMedias(cids []string) ([]*messengertypes.Media, error) {
 	if len(cids) == 0 {
 		return nil, nil
@@ -1056,22 +1167,13 @@ func (d *dbWrapper) getMedias(cids []string) ([]*messengertypes.Media, error) {
 	}
 
 	medias := make([]*messengertypes.Media, len(cids))
-	for i, cid := range cids {
-		medias[i] = &messengertypes.Media{CID: cid}
+	for i, c := range cids {
+		medias[i] = &messengertypes.Media{CID: c}
 		for _, dbMedia := range dbMedias {
-			if dbMedia.GetCID() == cid {
+			if dbMedia.GetCID() == c {
 				medias[i] = dbMedia
 			}
 		}
-	}
-	return medias, nil
-}
-
-func (d *dbWrapper) getAllMedias() ([]*messengertypes.Media, error) {
-	var medias []*messengertypes.Media
-	err := d.db.Find(&medias).Error
-	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
 	}
 	return medias, nil
 }

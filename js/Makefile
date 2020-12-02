@@ -89,7 +89,7 @@ clean:
 
 	# iOS cmd
 ifneq (, $(shell which xcodebuild))
-	cd ios && xcodebuild clean || trues
+	cd ios && xcodebuild clean || true
 endif
 
 	# React-Native files

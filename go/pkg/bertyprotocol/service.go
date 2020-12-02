@@ -2,12 +2,13 @@ package bertyprotocol
 
 import (
 	"context"
+	"fmt"
 	"path/filepath"
 	"sync"
 	"sync/atomic"
 	"time"
 
-	datastore "github.com/ipfs/go-datastore"
+	"github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
@@ -42,14 +43,16 @@ type service struct {
 	ipfsCoreAPI    ipfsutil.ExtendedCoreAPI
 	odb            *BertyOrbitDB
 	accountGroup   *groupContext
+	groupDatastore *GroupDatastore
 	deviceKeystore DeviceKeystore
 	openedGroups   map[string]*groupContext
-	groups         map[string]*protocoltypes.Group
 	lock           sync.RWMutex
 	authSession    atomic.Value
 	close          func() error
 	startedAt      time.Time
 	host           host.Host
+	pushHandler    *pushHandler
+	accountCache   datastore.Batching
 }
 
 // Opts contains optional configuration flags for building a new Client
@@ -59,6 +62,8 @@ type Opts struct {
 	DeviceKeystore         DeviceKeystore
 	DatastoreDir           string
 	RootDatastore          datastore.Batching
+	GroupDatastore         *GroupDatastore
+	AccountCache           datastore.Batching
 	OrbitDB                *BertyOrbitDB
 	TinderDriver           tinder.Driver
 	RendezvousRotationBase time.Duration
@@ -66,6 +71,7 @@ type Opts struct {
 	PubSub                 *pubsub.PubSub
 	LocalOnly              bool
 	close                  func() error
+	PushKey                *[32]byte
 }
 
 func (opts *Opts) applyDefaults(ctx context.Context) error {
@@ -84,6 +90,18 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 	if opts.DeviceKeystore == nil {
 		ks := ipfsutil.NewDatastoreKeystore(ipfsutil.NewNamespacedDatastore(opts.RootDatastore, datastore.NewKey(NamespaceDeviceKeystore)))
 		opts.DeviceKeystore = NewDeviceKeystore(ks)
+	}
+
+	if opts.GroupDatastore == nil {
+		var err error
+		opts.GroupDatastore, err = NewGroupDatastore(opts.RootDatastore)
+		if err != nil {
+			return err
+		}
+	}
+
+	if opts.AccountCache == nil {
+		opts.AccountCache = ipfsutil.NewNamespacedDatastore(opts.RootDatastore, datastore.NewKey(NamespaceAccountCacheDatastore))
 	}
 
 	if opts.RendezvousRotationBase.Nanoseconds() <= 0 {
@@ -172,6 +190,10 @@ func New(ctx context.Context, opts Opts) (Service, error) {
 		opts.Logger.Warn("no tinder driver provided, incoming and outgoing contact requests won't be enabled")
 	}
 
+	if err := opts.GroupDatastore.Put(acc.Group()); err != nil {
+		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to add account group to group datastore, err: %w", err))
+	}
+
 	return &service{
 		ctx:            ctx,
 		host:           opts.Host,
@@ -179,12 +201,12 @@ func New(ctx context.Context, opts Opts) (Service, error) {
 		logger:         opts.Logger,
 		odb:            opts.OrbitDB,
 		deviceKeystore: opts.DeviceKeystore,
+		groupDatastore: opts.GroupDatastore,
+		accountCache:   opts.AccountCache,
 		close:          opts.close,
 		accountGroup:   acc,
 		startedAt:      time.Now(),
-		groups: map[string]*protocoltypes.Group{
-			string(acc.Group().PublicKey): acc.Group(),
-		},
+		pushHandler:    newPushHandler(opts.PushKey, opts.GroupDatastore, opts.OrbitDB.messageKeystore, opts.AccountCache),
 		openedGroups: map[string]*groupContext{
 			string(acc.Group().PublicKey): acc,
 		},

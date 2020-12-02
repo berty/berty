@@ -20,12 +20,55 @@ import { useMountEffect } from '@berty-tech/store/hooks'
 
 import { FeatherIconsPack } from './feather-icons'
 import { CustomIconsPack } from './custom-icons'
+import PushNotification from 'react-native-push-notification'
+import { tokenSubscriber } from '@berty-tech/store/push'
+import { Platform } from 'react-native'
 
 const BootSplashInhibitor = () => {
 	useMountEffect(() => {
 		RNBootSplash.hide({ fade: true })
 	})
 	return null
+}
+
+PushNotification.configure({
+	// (optional) Called when Token is generated (iOS and Android)
+	onRegister: function (token: { token: string; os: string }) {
+		let tokenUIntArray = new Uint8Array(token.token.length)
+		tokenUIntArray.forEach((_, i) => {
+			tokenUIntArray[i] = token.token.charCodeAt(i)
+		})
+
+		tokenSubscriber.onNew(tokenUIntArray)
+		console.log('TOKEN:', token)
+	},
+
+	// (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
+	onRegistrationError: function (err: Error) {
+		tokenSubscriber.onError(err)
+		console.error(err.message, err)
+	},
+})
+
+if (Platform.OS === 'android') {
+	// TODO: use at least one channel per account?
+	const messageChannel = 'berty-message'
+
+	PushNotification.channelExists(messageChannel, function (exists: boolean) {
+		if (!exists) {
+			PushNotification.createChannel(
+				{
+					channelId: messageChannel, // (required)
+					channelName: 'New messages', // (required)
+					channelDescription: 'Any new incoming message', // (optional) default: undefined.
+					soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
+					importance: 4, // (optional) default: 4. Int value of the Android notification importance
+					vibrate: true, // (optional) default: true. Creates the default vibration patten if true.
+				},
+				(created: boolean) => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
+			)
+		}
+	})
 }
 
 export const App: React.FC = () => {

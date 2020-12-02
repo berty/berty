@@ -16,6 +16,9 @@ import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import i18n from '@berty-tech/berty-i18n'
 import { Service } from '@berty-tech/grpc-bridge'
 import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
+import { checkNotifications, RESULTS } from 'react-native-permissions'
+import { tokenSubscriber } from '@berty-tech/store/push'
+import { getBundleId } from 'react-native-device-info'
 
 import ExternalTransport from './externalTransport'
 import { createNewAccount } from './providerCallbacks'
@@ -155,13 +158,30 @@ const getPersistentOptions = async (
 	}
 }
 
-export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, embedded: boolean) => {
-	await GoBridge.initBridge()
-		.then(() => console.log('bridge init done'))
-		.catch((err) => {
-			console.warn('unable to init bridge ', Object.keys(err), err.domain)
-		})
+export const initialLaunch = (dispatch: (arg0: reducerAction) => void, embedded: boolean) => {
 	const f = async () => {
+		await GoBridge.initBridge()
+			.then(() => console.log('bridge init done'))
+			.catch((err) => {
+				console.error('unable to init bridge ', Object.keys(err), err.domain)
+			})
+
+		const notificationsStatus = await checkNotifications()
+		if (notificationsStatus.status !== RESULTS.BLOCKED) {
+			try {
+				const token = await tokenSubscriber.waitForToken()
+				await accountService.pushPlatformTokenRegister({
+					receiver: {
+						tokenType: beapi.protocol.PushServiceTokenType.PushTokenApplePushNotificationService,
+						bundleId: getBundleId(),
+						token: token,
+					},
+				})
+			} catch (e) {
+				console.warn('error while fetching push token', e)
+			}
+		}
+
 		const accounts = await refreshAccountList(embedded, dispatch)
 
 		if (Object.keys(accounts).length === 0) {
