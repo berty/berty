@@ -257,10 +257,10 @@
       "title": "Dev tools",
       "header-left-button": "Device infos",
       "simulate-button": "Simulate stream error",
-      "tor-button": "",
-      "tor-optional-option": "",
-      "tor-required-option": "",
-      "tor-disabled-option": "",
+      "tor-button": "Tor {{option}}",
+      "tor-optional-option": "optional",
+      "tor-required-option": "required",
+      "tor-disabled-option": "disabled",
       "header-middle-button": "Generate fake data",
       "header-right-button": "Restart daemon",
       "system-info-button": "System info",
@@ -409,7 +409,7 @@
     "files": {
       "record-sound": "Record a sound message",
       "media": "Access to Media Gallery",
-      "emojis": ""
+      "emojis": "Emojis & Bertyzzz!"
     }
   }
 }
