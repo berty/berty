@@ -48,20 +48,31 @@ func (m *Manager) getDatastoreDir() (string, error) {
 		return InMemoryDir, nil
 	}
 
-	m.Datastore.dir = path.Join(m.Datastore.Dir, "account0") // account0 is a suffix that will be used with multi-account later
+	var err error
+	m.Datastore.dir, err = getDatastoreDir(m.Datastore.Dir)
+	if err != nil {
+		return "", errcode.TODO.Wrap(err)
+	}
 
-	_, err := os.Stat(m.Datastore.dir)
+	m.initLogger.Debug("datastore dir", zap.String("dir", m.Datastore.dir))
+
+	return m.Datastore.dir, nil
+}
+
+func getDatastoreDir(dir string) (string, error) {
+	dir = path.Join(dir, "account0") // account0 is a suffix that will be used with multi-account later
+
+	_, err := os.Stat(dir)
 	switch {
 	case os.IsNotExist(err):
-		if err := os.MkdirAll(m.Datastore.dir, 0o700); err != nil {
+		if err := os.MkdirAll(dir, 0o700); err != nil {
 			return "", errcode.TODO.Wrap(err)
 		}
 	case err != nil:
 		return "", errcode.TODO.Wrap(err)
 	}
 
-	m.initLogger.Debug("datastore dir", zap.String("dir", m.Datastore.dir))
-	return m.Datastore.dir, nil
+	return dir, nil
 }
 
 func (m *Manager) GetRootDatastore() (datastore.Batching, error) {
@@ -82,6 +93,14 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
+	m.Datastore.rootDS, err = getRootDatastoreForPath(dir, m.Datastore.LowMemoryProfile, m.initLogger)
+
+	m.initLogger.Debug("datastore", zap.Bool("in-memory", dir == InMemoryDir))
+	return m.Datastore.rootDS, nil
+}
+
+func getRootDatastoreForPath(dir string, lowMemoryProfile bool, logger *zap.Logger) (datastore.Batching, error) {
+	var err error
 	inMemory := dir == InMemoryDir
 
 	var ds datastore.Batching
@@ -89,8 +108,8 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 		ds = datastore.NewMapDatastore()
 	} else {
 		opts := ipfsbadger.DefaultOptions
-		if m.Datastore.LowMemoryProfile {
-			applyBadgerLowMemoryProfile(m.initLogger, &opts)
+		if lowMemoryProfile {
+			applyBadgerLowMemoryProfile(logger, &opts)
 		}
 
 		ds, err = ipfsbadger.NewDatastore(dir, &opts)
@@ -100,9 +119,7 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 	}
 
 	ds = sync_ds.MutexWrap(ds)
-	m.Datastore.rootDS = ds
 
-	m.initLogger.Debug("datastore", zap.Bool("in-memory", inMemory))
 	return ds, nil
 }
 

@@ -61,6 +61,7 @@ type Opts struct {
 	NotificationManager notification.Manager
 	LifeCycleManager    *lifecycle.Manager
 	StateBackup         *messengertypes.LocalDatabaseState
+	PlatformPushToken   *protocoltypes.PushServiceReceiver
 }
 
 func (opts *Opts) applyDefaults() (func(), error) {
@@ -140,6 +141,8 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 	opts.Logger.Debug("initializing messenger", zap.String("version", bertyversion.Version))
 
 	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	db := newDBWrapper(opts.DB, opts.Logger)
 
 	if opts.StateBackup != nil {
@@ -293,6 +296,21 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error
 
 			if err := svc.subscribeToMetadata(gpkb); err != nil {
 				return nil, err
+			}
+		}
+	}
+
+	if opts.PlatformPushToken != nil {
+		icr, err = client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+		if err != nil {
+			return nil, err
+		}
+
+		if icr.DevicePushToken == nil || (icr.DevicePushToken.TokenType == opts.PlatformPushToken.TokenType && !bytes.Equal(icr.DevicePushToken.Token, opts.PlatformPushToken.Token)) {
+			if _, err := client.PushSetDeviceToken(ctx, &protocoltypes.PushSetDeviceToken_Request{
+				Receiver: opts.PlatformPushToken,
+			}); err != nil {
+				return nil, errcode.ErrInternal.Wrap(err)
 			}
 		}
 	}

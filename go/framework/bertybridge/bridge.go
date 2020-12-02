@@ -2,6 +2,11 @@ package bertybridge
 
 import (
 	"context"
+	crand "crypto/rand"
+	"fmt"
+	"io/ioutil"
+	"os"
+	"path"
 	"sync"
 	"time"
 
@@ -9,8 +14,10 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
+	"golang.org/x/crypto/nacl/box"
 	"google.golang.org/grpc"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
@@ -119,6 +126,36 @@ func NewBridge(config *Config) (*Bridge, error) {
 		b.client = grpcutil.NewLazyClient(ccBridge)
 	}
 
+	// retrieve or create push key
+	pushKeyPath := ""
+	if config.rootDir != "" {
+		pushKeyPath = path.Join(config.rootDir, "push-key")
+
+		if _, err := os.Stat(pushKeyPath); os.IsNotExist(err) {
+			// create
+
+			_, pushKey, err := box.GenerateKey(crand.Reader)
+			if err != nil {
+				return nil, err
+			}
+
+			if err := ioutil.WriteFile(pushKeyPath, pushKey[:], 0o600); err != nil {
+				return nil, err
+			}
+		} else {
+			// retrieve, ensure key is correctly formatted
+
+			keyBytes, err := ioutil.ReadFile(pushKeyPath)
+			if err != nil {
+				return nil, err
+			}
+
+			if len(keyBytes) != cryptoutil.KeySize {
+				return nil, errcode.ErrPush.Wrap(fmt.Errorf("invalid device push key size"))
+			}
+		}
+	}
+
 	// setup berty account service
 	{
 		opts := account_svc.Options{
@@ -128,6 +165,7 @@ func NewBridge(config *Config) (*Bridge, error) {
 			NotificationManager:   b.notificationManager,
 			Logger:                b.logger,
 			LifecycleManager:      b.lifecycleManager,
+			DevicePushKeyPath:     pushKeyPath,
 		}
 
 		var err error

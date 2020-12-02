@@ -1,6 +1,7 @@
 package bertymessenger
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"time"
@@ -54,6 +55,8 @@ func newEventHandler(ctx context.Context, db *dbWrapper, protocolClient protocol
 		protocoltypes.EventTypeGroupMetadataPayloadSent:              h.groupMetadataPayloadSent,
 		protocoltypes.EventTypeAccountServiceTokenAdded:              h.accountServiceTokenAdded,
 		protocoltypes.EventTypeGroupReplicating:                      h.groupReplicating,
+		protocoltypes.EventTypePushDeviceTokenRegistered:             h.pushDeviceTokenRegistered,
+		protocoltypes.EventTypePushDeviceServerRegistered:            h.pushDeviceServerRegistered,
 	}
 
 	h.appMessageHandlers = map[messengertypes.AppMessage_Type]struct {
@@ -572,7 +575,7 @@ func (h *eventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEv
 	gpk := b64EncodeBytes(gpkb)
 
 	// Ensure the event has is not emitted by the current user
-	if isMe, err := checkIsMe(
+	if isMe, err := isGroupMessageEventFromSelf(
 		h.ctx,
 		h.protocolClient,
 		&protocoltypes.GroupMessageEvent{
@@ -872,7 +875,7 @@ func interactionFromAppMessage(h *eventHandler, gpk string, gme *protocoltypes.G
 		return nil, err
 	}
 
-	isMe, err := checkIsMe(h.ctx, h.protocolClient, gme)
+	isMe, err := isGroupMessageEventFromSelf(h.ctx, h.protocolClient, gme)
 	if err != nil {
 		return nil, err
 	}
@@ -891,6 +894,44 @@ func interactionFromAppMessage(h *eventHandler, gpk string, gme *protocoltypes.G
 		SentDate:              am.GetSentDate(),
 		DevicePublicKey:       dpk,
 		Medias:                am.GetMedias(),
+	}
+
+	for _, media := range i.Medias {
+		media.InteractionCID = i.CID
+		media.State = messengertypes.Media_StateNeverDownloaded
+	}
+
+	return &i, nil
+}
+
+func interactionFromOutOfStoreAppMessage(h *eventHandler, gPKBytes []byte, outOfStoreMessage *protocoltypes.OutOfStoreMessage, am *messengertypes.AppMessage) (*messengertypes.Interaction, error) {
+	amt := am.GetType()
+	_, c, err := ipfscid.CidFromBytes(outOfStoreMessage.CID)
+	if err != nil {
+		return nil, err
+	}
+
+	gPK := b64EncodeBytes(gPKBytes)
+
+	isMe, err := isFromSelf(h.ctx, h.protocolClient, gPKBytes, outOfStoreMessage.DevicePK)
+	if err != nil {
+		return nil, err
+	}
+
+	dpk := b64EncodeBytes(outOfStoreMessage.DevicePK)
+
+	h.logger.Debug("received app message", zap.String("type", amt.String()), zap.Int("numMedias", len(am.GetMedias())))
+
+	i := messengertypes.Interaction{
+		CID:                   c.String(),
+		Type:                  amt,
+		Payload:               am.GetPayload(),
+		IsMe:                  isMe,
+		ConversationPublicKey: gPK,
+		SentDate:              am.GetSentDate(),
+		DevicePublicKey:       dpk,
+		Medias:                am.GetMedias(),
+		OutOfStoreMessage:     true,
 	}
 
 	for _, media := range i.Medias {
@@ -1044,4 +1085,155 @@ func (h *eventHandler) handleAppMessageReplyOptions(tx *dbWrapper, i *messengert
 	}
 
 	return i, isNew, nil
+}
+
+func (h *eventHandler) isEventFromCurrentDevice(devicePK []byte) (bool, error) {
+	conf, err := h.svc.protocolClient.InstanceGetConfiguration(h.ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+	if err != nil {
+		return false, errcode.ErrInternal.Wrap(err)
+	}
+
+	return bytes.Equal(devicePK, conf.DevicePK), nil
+}
+
+func (h *eventHandler) pushDeviceTokenRegistered(gme *protocoltypes.GroupMetadataEvent) error {
+	var ev protocoltypes.PushDeviceTokenRegistered
+	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
+		return err
+	}
+
+	if ok, err := h.isEventFromCurrentDevice(ev.DevicePK); err != nil {
+		return errcode.ErrInternal.Wrap(err)
+	} else if !ok {
+		h.logger.Info("event is from another device, ignoring")
+		return nil
+	}
+
+	if newlyHandled, err := h.db.markMetadataEventHandled(gme.EventContext); err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	} else if !newlyHandled {
+		h.logger.Info("event has already been handled, ignoring")
+		return nil
+	}
+
+	account, err := h.db.updateDevicePushToken(ev.Token)
+	if err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	}
+
+	return h.pushDeviceTokenBroadcast(account)
+}
+
+func (h *eventHandler) pushDeviceServerRegistered(gme *protocoltypes.GroupMetadataEvent) error {
+	var ev protocoltypes.PushDeviceServerRegistered
+	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
+		return err
+	}
+
+	if ok, err := h.isEventFromCurrentDevice(ev.DevicePK); err != nil {
+		return errcode.ErrInternal.Wrap(err)
+	} else if !ok {
+		return nil
+	}
+
+	if newlyHandled, err := h.db.markMetadataEventHandled(gme.EventContext); err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	} else if !newlyHandled {
+		return nil
+	}
+
+	account, err := h.db.updateDevicePushServer(ev.Server)
+	if err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	}
+
+	return h.pushDeviceTokenBroadcast(account)
+}
+
+func (h *eventHandler) pushDeviceTokenBroadcast(account *messengertypes.Account) error {
+	conversations, err := h.db.getAllConversations()
+	if err != nil {
+		return errcode.ErrDBRead.Wrap(err)
+	}
+
+	server := &protocoltypes.PushServer{}
+	if err := server.Unmarshal(account.DevicePushServer); err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	token := &protocoltypes.PushServiceReceiver{}
+	if err := token.Unmarshal(account.DevicePushToken); err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	for _, c := range conversations {
+		tokenIdentifier := makeSharedPushIdentifier(server, token) // TODO
+
+		pubKey, err := b64DecodeBytes(c.PublicKey)
+		if err != nil {
+			return errcode.ErrSerialization.Wrap(err)
+		}
+
+		if (c.SharedPushTokenIdentifier == "" && account.AutoSharePushTokenFlag) || c.SharedPushTokenIdentifier != tokenIdentifier {
+			if _, err := h.svc.protocolClient.PushShareToken(h.ctx, &protocoltypes.PushShareToken_Request{
+				GroupPK:  pubKey,
+				Server:   server,
+				Receiver: token,
+			}); err != nil {
+				return err
+			}
+
+			if _, err := h.db.updateConversation(messengertypes.Conversation{PublicKey: c.PublicKey, SharedPushTokenIdentifier: tokenIdentifier}); err != nil {
+				return errcode.ErrDBWrite.Wrap(err)
+			}
+		}
+	}
+
+	return nil
+}
+
+func makeSharedPushIdentifier(server *protocoltypes.PushServer, token *protocoltypes.PushServiceReceiver) string {
+	return fmt.Sprintf("%s-%s", server.ServerKey, token.Token)
+}
+
+func (h *eventHandler) handleOutOfStoreAppMessage(groupPK []byte, message *protocoltypes.OutOfStoreMessage, payload []byte) error {
+	if message == nil {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no message specified"))
+	}
+
+	_, c, err := ipfscid.CidFromBytes(message.CID)
+	if err != nil {
+		return errcode.ErrInvalidInput.Wrap(err)
+	}
+
+	if _, err := h.db.getInteractionByCID(c.String()); err != nil && err != gorm.ErrRecordNotFound {
+		return errcode.ErrDBRead.Wrap(err)
+	} else if err == nil {
+		h.logger.Info("push payload received but was previously handled")
+		return nil
+	}
+
+	var am messengertypes.AppMessage
+	if err := proto.Unmarshal(payload, &am); err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	// build interaction
+	i, err := interactionFromOutOfStoreAppMessage(h, groupPK, message, &am)
+	if err != nil {
+		return err
+	}
+
+	i, isNew, err := h.db.addInteraction(*i)
+	if err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	}
+
+	if isNew {
+		if err := h.svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeInteractionUpdated, &messengertypes.StreamEvent_InteractionUpdated{Interaction: i}, true); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

@@ -78,6 +78,12 @@ http:
  - selector: berty.messenger.v1.MessengerService.ReplicationSetAutoEnable
    post: /berty.messenger.v1/MessengerService/ReplicationSetAutoEnable
    body: "*"
+ - selector: berty.messenger.v1.MessengerService.PushSetAutoShare
+   post: /berty.messenger.v1/MessengerService/PushSetAutoShare
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.PushReceive
+   post: /berty.messenger.v1/MessengerService/PushReceive
+   body: "*"
  - selector: berty.messenger.v1.MessengerService.BannerQuote
    post: /berty.messenger.v1/MessengerService/BannerQuote
    body: "*"

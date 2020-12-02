@@ -121,7 +121,7 @@ func (a *AuthTokenServer) authTokenServerHTTPAuthorize(w http.ResponseWriter, r 
 
 	if r.Method == "POST" {
 		// TODO: allow client scope from "scope" query parameter
-		servicesIDs := []string{ServiceReplicationID}
+		servicesIDs := []string{ServiceReplicationID, ServicePushID}
 
 		code, err := a.issuer.IssueCode(codeChallenge, servicesIDs)
 		if err != nil {

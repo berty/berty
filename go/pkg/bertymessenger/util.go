@@ -11,19 +11,20 @@ import (
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func checkIsMe(ctx context.Context, client protocoltypes.ProtocolServiceClient, gme *protocoltypes.GroupMessageEvent) (bool, error) {
-	gpkb := gme.GetEventContext().GetGroupPK()
+func isGroupMessageEventFromSelf(ctx context.Context, client protocoltypes.ProtocolServiceClient, gme *protocoltypes.GroupMessageEvent) (bool, error) {
+	return isFromSelf(ctx, client, gme.GetEventContext().GetGroupPK(), gme.GetHeaders().GetDevicePK())
+}
 
+func isFromSelf(ctx context.Context, client protocoltypes.ProtocolServiceClient, gpkb []byte, messageDevicePK []byte) (bool, error) {
 	// TODO: support multiple devices per account
 	gi, err := client.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{GroupPK: gpkb})
 	if err != nil {
 		return false, err
 	}
 
-	dpk := gi.GetDevicePK()
-	mdpk := gme.GetHeaders().GetDevicePK()
+	groupDevicePK := gi.GetDevicePK()
 
-	return bytes.Equal(dpk, mdpk), nil
+	return bytes.Equal(groupDevicePK, messageDevicePK), nil
 }
 
 func groupPKFromContactPK(ctx context.Context, client protocoltypes.ProtocolServiceClient, contactPK []byte) ([]byte, error) {

@@ -246,6 +246,8 @@ dependencies {
     }
 
     implementation fileTree(dir: "../libs", include: ["*.jar", "*.aar"]) // go lib
+
+    implementation 'com.google.firebase:firebase-analytics:17.3.0'
 }
 
 // Run this once to be able to run the application with BUCK
@@ -256,3 +258,5 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+
+apply plugin: 'com.google.gms.google-services'

@@ -3,6 +3,7 @@ package bertymessenger
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -484,6 +485,78 @@ func Test_dbWrapper_addInteraction(t *testing.T) {
 	require.Equal(t, i.MemberPublicKey, i.Member.PublicKey)
 	require.Equal(t, i.ConversationPublicKey, i.Conversation.PublicKey)
 	require.True(t, isNew)
+}
+
+func Test_dbWrapper_addInteraction_fromPushFirst(t *testing.T) {
+	db, dispose := getInMemoryTestDB(t)
+	defer dispose()
+
+	const testCID = "Qm00001"
+
+	i, isNew, err := db.addInteraction(messengertypes.Interaction{
+		CID:               testCID,
+		Payload:           []byte("payload1"),
+		OutOfStoreMessage: true,
+	})
+	require.NoError(t, err)
+	require.True(t, isNew)
+	require.NotNil(t, i)
+	require.Equal(t, testCID, i.CID)
+	require.Equal(t, []byte("payload1"), i.Payload)
+
+	// Data should not be updated when receiving another pushed event
+	i, isNew, err = db.addInteraction(messengertypes.Interaction{
+		CID:               testCID,
+		Payload:           []byte("payload2"),
+		OutOfStoreMessage: true,
+	})
+	require.NoError(t, err)
+	require.NotNil(t, i)
+	require.Equal(t, testCID, i.CID)
+	require.Equal(t, []byte("payload1"), i.Payload)
+	require.False(t, isNew)
+
+	// Data should be updated when synchronizing messages with OrbitDB
+	i, isNew, err = db.addInteraction(messengertypes.Interaction{
+		CID:               testCID,
+		Payload:           []byte("payload3"),
+		OutOfStoreMessage: false,
+	})
+	require.NoError(t, err)
+	require.NotNil(t, i)
+	require.Equal(t, testCID, i.CID)
+	require.Equal(t, []byte("payload3"), i.Payload)
+	require.True(t, isNew)
+}
+
+func Test_dbWrapper_addInteraction_fromPushLast(t *testing.T) {
+	db, dispose := getInMemoryTestDB(t)
+	defer dispose()
+
+	const testCID = "Qm00001"
+
+	i, isNew, err := db.addInteraction(messengertypes.Interaction{
+		CID:               testCID,
+		Payload:           []byte("payload1"),
+		OutOfStoreMessage: false,
+	})
+	require.NoError(t, err)
+	require.True(t, isNew)
+	require.NotNil(t, i)
+	require.Equal(t, testCID, i.CID)
+	require.Equal(t, []byte("payload1"), i.Payload)
+
+	// Data should not be updated when receiving a pushed event
+	i, isNew, err = db.addInteraction(messengertypes.Interaction{
+		CID:               testCID,
+		Payload:           []byte("payload2"),
+		OutOfStoreMessage: true,
+	})
+	require.NoError(t, err)
+	require.NotNil(t, i)
+	require.Equal(t, testCID, i.CID)
+	require.Equal(t, []byte("payload1"), i.Payload)
+	require.False(t, isNew)
 }
 
 func Test_dbWrapper_addMember(t *testing.T) {
@@ -1026,6 +1099,14 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 		db.db.Create(&messengertypes.ConversationReplicationInfo{CID: fmt.Sprintf("%d", i)})
 	}
 
+	for i := 0; i < 9; i++ {
+		db.db.Create(&messengertypes.MetadataEvent{CID: fmt.Sprintf("%d", i)})
+	}
+
+	for i := 0; i < 10; i++ {
+		db.db.Create(&messengertypes.Media{CID: fmt.Sprintf("%d", i)})
+	}
+
 	info, err = db.getDBInfo()
 	require.NoError(t, err)
 	require.Equal(t, int64(1), info.Accounts)
@@ -1036,12 +1117,15 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 	require.Equal(t, int64(6), info.Devices)
 	require.Equal(t, int64(7), info.ServiceTokens)
 	require.Equal(t, int64(8), info.ConversationReplicationInfo)
+	require.Equal(t, int64(9), info.MetadataEvents)
+	require.Equal(t, int64(10), info.Medias)
 
 	// Ensure all tables are in the debug data
 	tables := []string(nil)
 	err = db.db.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").Scan(&tables).Error
 	require.NoError(t, err)
-	require.Equal(t, 9, len(tables))
+	expectedTablesCount := 10
+	require.Equal(t, expectedTablesCount, len(tables), fmt.Sprintf("expected %d tables in DB, got tables %s", expectedTablesCount, strings.Join(tables, ", ")))
 }
 
 func Test_dbWrapper_getMemberByPK(t *testing.T) {

@@ -48,6 +48,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "CreateAccount.Request",
                     responseType: "CreateAccount.Reply"
                   },
+                  PushReceive: {
+                    requestType: "PushReceive.Request",
+                    responseType: "PushReceive.Reply"
+                  },
+                  PushPlatformTokenRegister: {
+                    requestType: "PushPlatformTokenRegister.Request",
+                    responseType: "PushPlatformTokenRegister.Reply"
+                  },
                   GetGRPCListenerAddrs: {
                     requestType: "GetGRPCListenerAddrs.Request",
                     responseType: "GetGRPCListenerAddrs.Reply"
@@ -275,6 +283,42 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
+              PushReceive: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      payload: {
+                        type: "string",
+                        id: 1
+                      },
+                      tokenType: {
+                        type: "protocol.v1.PushServiceTokenType",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              PushPlatformTokenRegister: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      receiver: {
+                        type: "protocol.v1.PushServiceReceiver",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
               GetGRPCListenerAddrs: {
                 fields: {},
                 nested: {
@@ -479,6 +523,26 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "AttachmentRetrieve.Request",
                     responseType: "AttachmentRetrieve.Reply",
                     responseStream: true
+                  },
+                  PushReceive: {
+                    requestType: "PushReceive.Request",
+                    responseType: "PushReceive.Reply"
+                  },
+                  PushSend: {
+                    requestType: "PushSend.Request",
+                    responseType: "PushSend.Reply"
+                  },
+                  PushShareToken: {
+                    requestType: "PushShareToken.Request",
+                    responseType: "PushShareToken.Reply"
+                  },
+                  PushSetDeviceToken: {
+                    requestType: "PushSetDeviceToken.Request",
+                    responseType: "PushSetDeviceToken.Reply"
+                  },
+                  PushSetServer: {
+                    requestType: "PushSetServer.Request",
+                    responseType: "PushSetServer.Reply"
                   }
                 }
               },
@@ -514,6 +578,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   EventTypeAccountServiceTokenAdded: 401,
                   EventTypeAccountServiceTokenRemoved: 402,
                   EventTypeGroupReplicating: 403,
+                  EventTypePushMemberTokenUpdate: 404,
+                  EventTypePushDeviceTokenRegistered: 405,
+                  EventTypePushDeviceServerRegistered: 406,
                   EventTypeGroupMetadataPayloadSent: 1001
                 }
               },
@@ -1253,6 +1320,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       relayEnabled: {
                         type: "SettingState",
                         id: 9
+                      },
+                      devicePushToken: {
+                        type: "PushServiceReceiver",
+                        id: 10
+                      },
+                      devicePushServer: {
+                        type: "PushServer",
+                        id: 11
                       }
                     }
                   }
@@ -1586,7 +1661,15 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     }
                   },
                   Reply: {
-                    fields: {}
+                    fields: {
+                      cid: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "CID"
+                        }
+                      }
+                    }
                   }
                 }
               },
@@ -1617,7 +1700,15 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     }
                   },
                   Reply: {
-                    fields: {}
+                    fields: {
+                      cid: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "CID"
+                        }
+                      }
+                    }
                   }
                 }
               },
@@ -2690,6 +2781,388 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     id: 6
                   }
                 }
+              },
+              MemberWithDevices: {
+                fields: {
+                  memberPk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "MemberPK"
+                    }
+                  },
+                  devicesPks: {
+                    rule: "repeated",
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "DevicePKs"
+                    }
+                  }
+                }
+              },
+              OutOfStoreMessage: {
+                fields: {
+                  cid: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "CID"
+                    }
+                  },
+                  devicePk: {
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  counter: {
+                    type: "fixed64",
+                    id: 3
+                  },
+                  sig: {
+                    type: "bytes",
+                    id: 4
+                  },
+                  flags: {
+                    type: "fixed32",
+                    id: 5
+                  },
+                  encryptedPayload: {
+                    type: "bytes",
+                    id: 6
+                  },
+                  nonce: {
+                    type: "bytes",
+                    id: 7
+                  }
+                }
+              },
+              OutOfStoreMessageEnvelope: {
+                fields: {
+                  nonce: {
+                    type: "bytes",
+                    id: 1
+                  },
+                  box: {
+                    type: "bytes",
+                    id: 2
+                  },
+                  groupPublicKey: {
+                    type: "bytes",
+                    id: 3
+                  }
+                }
+              },
+              PushExposedData: {
+                fields: {
+                  nonce: {
+                    type: "bytes",
+                    id: 1
+                  },
+                  box: {
+                    type: "bytes",
+                    id: 2
+                  }
+                }
+              },
+              PushServicePriority: {
+                values: {
+                  PushPriorityUndefined: 0,
+                  PushPriorityLow: 1,
+                  PushPriorityNormal: 2
+                }
+              },
+              PushServiceTokenType: {
+                values: {
+                  PushTokenUndefined: 0,
+                  PushTokenMQTT: 1,
+                  PushTokenApplePushNotificationService: 2,
+                  PushTokenFirebaseCloudMessaging: 3,
+                  PushTokenWindowsPushNotificationService: 4,
+                  PushTokenHuaweiPushKit: 5,
+                  PushTokenAmazonDeviceMessaging: 6
+                }
+              },
+              PushServiceSupportedTokenType: {
+                fields: {
+                  appBundleId: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "AppBundleID"
+                    }
+                  },
+                  tokenType: {
+                    type: "PushServiceTokenType",
+                    id: 2
+                  }
+                }
+              },
+              PushServiceReceiver: {
+                fields: {
+                  tokenType: {
+                    type: "PushServiceTokenType",
+                    id: 1
+                  },
+                  bundleId: {
+                    type: "string",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "BundleID"
+                    }
+                  },
+                  token: {
+                    type: "bytes",
+                    id: 3
+                  },
+                  recipientPublicKey: {
+                    type: "bytes",
+                    id: 4
+                  }
+                }
+              },
+              PushServiceOpaqueReceiver: {
+                fields: {
+                  opaqueToken: {
+                    type: "bytes",
+                    id: 1
+                  },
+                  serviceAddr: {
+                    type: "string",
+                    id: 2
+                  }
+                }
+              },
+              PushServer: {
+                fields: {
+                  serverKey: {
+                    type: "bytes",
+                    id: 1
+                  },
+                  serviceAddr: {
+                    type: "string",
+                    id: 2
+                  }
+                }
+              },
+              PushDeviceTokenRegistered: {
+                fields: {
+                  token: {
+                    type: "PushServiceReceiver",
+                    id: 1
+                  },
+                  devicePk: {
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  }
+                }
+              },
+              PushDeviceServerRegistered: {
+                fields: {
+                  server: {
+                    type: "PushServer",
+                    id: 1
+                  },
+                  devicePk: {
+                    type: "bytes",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  }
+                }
+              },
+              PushMemberTokenUpdate: {
+                fields: {
+                  server: {
+                    type: "PushServer",
+                    id: 1
+                  },
+                  token: {
+                    type: "bytes",
+                    id: 2
+                  },
+                  devicePk: {
+                    type: "bytes",
+                    id: 3,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  }
+                }
+              },
+              PushReceive: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      payload: {
+                        type: "bytes",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      message: {
+                        type: "OutOfStoreMessage",
+                        id: 1
+                      },
+                      cleartext: {
+                        type: "bytes",
+                        id: 2
+                      },
+                      groupPublicKey: {
+                        type: "bytes",
+                        id: 3
+                      }
+                    }
+                  }
+                }
+              },
+              PushSend: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      cid: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "CID"
+                        }
+                      },
+                      groupPublicKey: {
+                        type: "bytes",
+                        id: 2
+                      },
+                      groupMembers: {
+                        rule: "repeated",
+                        type: "MemberWithDevices",
+                        id: 3
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      groupMembers: {
+                        rule: "repeated",
+                        type: "MemberWithDevices",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              PushServiceServerInfo: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      publicKey: {
+                        type: "bytes",
+                        id: 1
+                      },
+                      supportedTokenTypes: {
+                        rule: "repeated",
+                        type: "PushServiceSupportedTokenType",
+                        id: 2
+                      }
+                    }
+                  }
+                }
+              },
+              PushShareToken: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      },
+                      server: {
+                        type: "PushServer",
+                        id: 2
+                      },
+                      receiver: {
+                        type: "PushServiceReceiver",
+                        id: 3
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              PushSetDeviceToken: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      receiver: {
+                        type: "PushServiceReceiver",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              PushSetServer: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      server: {
+                        type: "PushServer",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              PushServiceSend: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      envelope: {
+                        type: "OutOfStoreMessageEnvelope",
+                        id: 1
+                      },
+                      priority: {
+                        type: "PushServicePriority",
+                        id: 2
+                      },
+                      receivers: {
+                        rule: "repeated",
+                        type: "PushServiceOpaqueReceiver",
+                        id: 3
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
               }
             }
           }
@@ -2824,7 +3297,18 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrBertyAccountAlreadyExists: 5013,
               ErrBertyAccountNoBackupSpecified: 5014,
               ErrBertyAccountIDGenFailed: 5015,
-              ErrBertyAccountCreationFailed: 5016
+              ErrBertyAccountCreationFailed: 5016,
+              ErrPush: 6000,
+              ErrPushWrongAccount: 6001,
+              ErrPushUnableToDecrypt: 6002,
+              ErrPushInvalidPayload: 6003,
+              ErrPushInvalidServerConfig: 6004,
+              ErrPushMissingBundleID: 6005,
+              ErrPushUnknownDestination: 6006,
+              ErrPushProvider: 6007,
+              ErrPushUnknownProvider: 6008,
+              ErrNoProvidersConfigured: 6009,
+              ErrInvalidPrivateKey: 6010
             }
           },
           ErrDetails: {
@@ -3274,6 +3758,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   ReplicationSetAutoEnable: {
                     requestType: "ReplicationSetAutoEnable.Request",
                     responseType: "ReplicationSetAutoEnable.Reply"
+                  },
+                  PushSetAutoShare: {
+                    requestType: "PushSetAutoShare.Request",
+                    responseType: "PushSetAutoShare.Reply"
+                  },
+                  PushReceive: {
+                    requestType: "PushReceive.Request",
+                    responseType: "PushReceive.Reply"
                   },
                   BannerQuote: {
                     requestType: "BannerQuote.Request",
@@ -3942,6 +4434,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       conversationReplicationInfo: {
                         type: "int64",
                         id: 8
+                      },
+                      metadataEvents: {
+                        type: "int64",
+                        id: 9
+                      },
+                      medias: {
+                        type: "int64",
+                        id: 10
                       }
                     }
                   }
@@ -3980,14 +4480,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 2
                   },
-                  avatarCid: {
-                    type: "string",
-                    id: 7,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:column:avatar_cid",
-                      "(gogoproto.customname)": "AvatarCID"
-                    }
-                  },
                   link: {
                     type: "string",
                     id: 3
@@ -4006,6 +4498,29 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     options: {
                       "(gogoproto.moretags)": "gorm:default:true"
                     }
+                  },
+                  avatarCid: {
+                    type: "string",
+                    id: 7,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:column:avatar_cid",
+                      "(gogoproto.customname)": "AvatarCID"
+                    }
+                  },
+                  autoSharePushTokenFlag: {
+                    type: "bool",
+                    id: 8,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:default:true"
+                    }
+                  },
+                  devicePushToken: {
+                    type: "bytes",
+                    id: 9
+                  },
+                  devicePushServer: {
+                    type: "bytes",
+                    id: 10
                   }
                 }
               },
@@ -4044,6 +4559,33 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   expiration: {
                     type: "int64",
                     id: 5
+                  }
+                }
+              },
+              MetadataEvent: {
+                fields: {
+                  cid: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primaryKey;column:cid",
+                      "(gogoproto.customname)": "CID"
+                    }
+                  },
+                  conversationPublicKey: {
+                    type: "string",
+                    id: 2,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:index"
+                    }
+                  },
+                  metadataEventType: {
+                    type: "protocol.v1.EventType",
+                    id: 3
+                  },
+                  payload: {
+                    type: "bytes",
+                    id: 4
                   }
                 }
               },
@@ -4115,6 +4657,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     rule: "repeated",
                     type: "Media",
                     id: 15
+                  },
+                  outOfStoreMessage: {
+                    type: "bool",
+                    id: 16
                   }
                 }
               },
@@ -4255,14 +4801,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 4
                   },
-                  avatarCid: {
-                    type: "string",
-                    id: 17,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:column:avatar_cid",
-                      "(gogoproto.customname)": "AvatarCID"
-                    }
-                  },
                   link: {
                     type: "string",
                     id: 5
@@ -4322,6 +4860,18 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     options: {
                       "(gogoproto.moretags)": "gorm:foreignKey:ConversationPublicKey"
                     }
+                  },
+                  avatarCid: {
+                    type: "string",
+                    id: 17,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:column:avatar_cid",
+                      "(gogoproto.customname)": "AvatarCID"
+                    }
+                  },
+                  sharedPushTokenIdentifier: {
+                    type: "string",
+                    id: 18
                   }
                 },
                 nested: {
@@ -4833,6 +5383,38 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
+              PushSetAutoShare: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      enabled: {
+                        type: "bool",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              PushReceive: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      payload: {
+                        type: "bytes",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
               BannerQuote: {
                 fields: {},
                 nested: {
@@ -4912,6 +5494,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   accountLink: {
                     type: "string",
                     id: 5
+                  },
+                  autoSharePushTokenFlag: {
+                    type: "bool",
+                    id: 6
                   }
                 }
               },

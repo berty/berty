@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
-	ipfscid "github.com/ipfs/go-cid"
+	"github.com/ipfs/go-cid"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
@@ -739,7 +739,7 @@ func ensureValidBase64CID(str string) error {
 		return fmt.Errorf("decode base64: %s", err.Error())
 	}
 
-	_, err = ipfscid.Cast(cidBytes)
+	_, err = cid.Cast(cidBytes)
 	if err != nil {
 		return fmt.Errorf("decode cid: %s", err.Error())
 	}
@@ -919,6 +919,8 @@ func (svc *service) Interact(ctx context.Context, req *messengertypes.Interact_R
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
+	var apiRet *protocoltypes.AppMessageSend_Reply
+
 	switch req.GetType() {
 	case messengertypes.AppMessage_TypeUserMessage:
 		var p messengertypes.AppMessage_UserMessage
@@ -940,13 +942,18 @@ func (svc *service) Interact(ctx context.Context, req *messengertypes.Interact_R
 				return nil, errcode.ErrDeserialization.Wrap(err)
 			}
 		}
-		_, err = svc.protocolClient.AppMessageSend(ctx, &protocoltypes.AppMessageSend_Request{GroupPK: gpkb, Payload: fp, AttachmentCIDs: cids})
+		apiRet, err = svc.protocolClient.AppMessageSend(ctx, &protocoltypes.AppMessageSend_Request{GroupPK: gpkb, Payload: fp, AttachmentCIDs: cids})
 		if err != nil {
 			return nil, err
 		}
 	case messengertypes.AppMessage_TypeAcknowledge:
 		// trick gocritic
 	}
+
+	go func() {
+		svc.interactionDelayedActions(apiRet.CID, gpkb)
+	}()
+
 	return &messengertypes.Interact_Reply{}, nil
 }
 
@@ -1254,7 +1261,7 @@ func (svc *service) MediaPrepare(srv messengertypes.MessengerService_MediaPrepar
 	if err != nil {
 		return errcode.ErrAttachmentPrepare.Wrap(err)
 	}
-	cid := b64EncodeBytes(cidBytes)
+	mediaCID := b64EncodeBytes(cidBytes)
 
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
@@ -1262,7 +1269,7 @@ func (svc *service) MediaPrepare(srv messengertypes.MessengerService_MediaPrepar
 	return svc.db.tx(func(tx *dbWrapper) error {
 		// add to db
 		media := *header.Info
-		media.CID = cid
+		media.CID = mediaCID
 		media.State = messengertypes.Media_StatePrepared
 		added, err := tx.addMedias([]*messengertypes.Media{&media})
 		if err != nil {
@@ -1277,7 +1284,7 @@ func (svc *service) MediaPrepare(srv messengertypes.MessengerService_MediaPrepar
 		}
 
 		// reply
-		if err := srv.SendAndClose(&messengertypes.MediaPrepare_Reply{Cid: cid}); err != nil {
+		if err := srv.SendAndClose(&messengertypes.MediaPrepare_Reply{Cid: mediaCID}); err != nil {
 			return errcode.ErrStreamSendAndClose.Wrap(err)
 		}
 
@@ -1326,4 +1333,88 @@ func (svc *service) MediaRetrieve(req *messengertypes.MediaRetrieve_Request, srv
 
 	// success
 	return nil
+}
+
+func (svc *service) PushSetAutoShare(ctx context.Context, request *messengertypes.PushSetAutoShare_Request) (*messengertypes.PushSetAutoShare_Reply, error) {
+	config, err := svc.protocolClient.InstanceGetConfiguration(svc.ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := svc.db.pushSetReplicationAutoShare(b64EncodeBytes(config.AccountPK), request.Enabled); err != nil {
+		return nil, err
+	}
+
+	acc, err := svc.db.getAccount()
+	if err != nil {
+		return nil, err
+	}
+
+	// dispatch event
+	if err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeAccountUpdated, &messengertypes.StreamEvent_AccountUpdated{Account: acc}, false); err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	return &messengertypes.PushSetAutoShare_Reply{}, nil
+}
+
+func (svc *service) interactionDelayedActions(id []byte, groupPK []byte) {
+	// TODO: decouple action from this method
+
+	if len(id) == 0 {
+		svc.logger.Error("empty cid supplied")
+		return
+	}
+
+	_, c, err := cid.CidFromBytes(id)
+	if err != nil {
+		svc.logger.Error("invalid cid supplied", zap.Error(err), zap.Binary("cid", id))
+		return
+	}
+
+	// TODO: lower delay?
+	time.Sleep(time.Second * 5)
+
+	i, err := svc.db.getInteractionByCID(c.String())
+	if err != nil {
+		svc.logger.Error("unable to retrieve interaction", zap.Error(err), zap.Binary("cid", id))
+		return
+	}
+
+	if i.Type != messengertypes.AppMessage_TypeUserMessage {
+		// Nothing to do, move along
+		return
+	}
+
+	// TODO: avoid pushing acknowledged events
+	// TODO: watch for currently active devices?
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+
+	_, err = svc.protocolClient.PushSend(svc.ctx, &protocoltypes.PushSend_Request{
+		CID:            id,
+		GroupPublicKey: groupPK,
+	})
+	if err != nil {
+		svc.logger.Error("unable to push interaction", zap.Error(err), zap.Binary("cid", id))
+		return
+	}
+}
+
+func (svc *service) PushReceive(ctx context.Context, request *protocoltypes.PushReceive_Request) (*protocoltypes.PushReceive_Reply, error) {
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+
+	clear, err := svc.protocolClient.PushReceive(ctx, &protocoltypes.PushReceive_Request{
+		Payload: request.Payload,
+	})
+	if err != nil {
+		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
+	}
+
+	if err := svc.eventHandler.handleOutOfStoreAppMessage(clear.GroupPublicKey, clear.Message, clear.Cleartext); err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	return &protocoltypes.PushReceive_Reply{}, nil
 }

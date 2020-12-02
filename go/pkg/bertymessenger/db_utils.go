@@ -115,6 +115,7 @@ func restoreDatabaseLocalState(db *dbWrapper, state *messengertypes.LocalDatabas
 			"display_name":                       state.DisplayName,
 			"link":                               state.AccountLink,
 			"replicate_new_groups_automatically": state.ReplicateFlag,
+			"auto_share_push_token_flag":         state.AutoSharePushTokenFlag,
 		}); res.Error != nil {
 		return errcode.ErrInternal.Wrap(fmt.Errorf("unable to update account: %w", res.Error))
 	} else if res.RowsAffected == 0 {

@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/user"
 	"path"
@@ -17,7 +18,7 @@ import (
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpcgw "github.com/grpc-ecosystem/grpc-gateway/runtime"
-	datastore "github.com/ipfs/go-datastore"
+	"github.com/ipfs/go-datastore"
 	grpc_trace "go.opentelemetry.io/otel/instrumentation/grpctrace"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -27,6 +28,7 @@ import (
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
 
+	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
@@ -50,6 +52,7 @@ const (
 
 func (m *Manager) SetupLocalProtocolServerFlags(fs *flag.FlagSet) {
 	m.Node.Protocol.requiredByClient = true
+	fs.StringVar(&m.Node.Protocol.PushPlatformToken, "node.default-push-token", "", "base 64 encoded default platform push token")
 	m.SetupDatastoreFlags(fs)
 	m.SetupLocalIPFSFlags(fs)
 	// p2p.remote-ipfs
@@ -192,6 +195,22 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 			deviceKS = bertyprotocol.NewDeviceKeystore(deviceDS)
 		)
 
+		pushKey := &[cryptoutil.KeySize]byte{}
+		if m.Node.Protocol.DevicePushKeyPath != "" {
+			data, err := ioutil.ReadFile(m.Node.Protocol.DevicePushKeyPath)
+			if err != nil {
+				return nil, errcode.ErrInvalidInput.Wrap(err)
+			}
+
+			if l := len(data); l != cryptoutil.KeySize {
+				return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("push key should be %d byte length, got %d", cryptoutil.KeySize, l))
+			}
+
+			for i, c := range data {
+				pushKey[i] = c
+			}
+		}
+
 		// initialize new protocol client
 		opts := bertyprotocol.Opts{
 			Host:           m.Node.Protocol.ipfsNode.PeerHost,
@@ -202,6 +221,7 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 			RootDatastore:  rootDS,
 			DeviceKeystore: deviceKS,
 			OrbitDB:        odb,
+			PushKey:        pushKey,
 		}
 
 		m.Node.Protocol.server, err = bertyprotocol.New(m.getContext(), opts)
@@ -502,6 +522,15 @@ func (m *Manager) getMessengerDB() (*gorm.DB, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
+	m.Node.Messenger.db, m.Node.Messenger.dbCleanup, err = getMessengerDBForPath(dir, logger)
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	return m.Node.Messenger.db, nil
+}
+
+func getMessengerDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), error) {
 	var sqliteConn string
 	if dir == InMemoryDir {
 		sqliteConn = ":memory:"
@@ -513,19 +542,18 @@ func (m *Manager) getMessengerDB() (*gorm.DB, error) {
 		Logger:                                   zapgorm2.New(logger.Named("gorm")),
 		DisableForeignKeyConstraintWhenMigrating: true,
 	}
+
 	db, err := gorm.Open(sqlite.Open(sqliteConn), cfg)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.TODO.Wrap(err)
 	}
 
-	m.Node.Messenger.db = db
-	m.Node.Messenger.dbCleanup = func() {
+	return db, func() {
 		sqlDB, _ := db.DB()
 		if sqlDB != nil {
 			sqlDB.Close()
 		}
-	}
-	return m.Node.Messenger.db, nil
+	}, nil
 }
 
 func (m *Manager) restoreMessengerDataFromExport() error {
@@ -620,6 +648,20 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 
 	lcmanager := m.getLifecycleManager()
 
+	pushPlatformToken := (*protocoltypes.PushServiceReceiver)(nil)
+	if m.Node.Protocol.PushPlatformToken != "" {
+		pushPlatformToken = &protocoltypes.PushServiceReceiver{}
+
+		data, err := base64.RawURLEncoding.DecodeString(m.Node.Protocol.PushPlatformToken)
+		if err != nil {
+			return nil, errcode.ErrDeserialization.Wrap(err)
+		}
+
+		if err := pushPlatformToken.Unmarshal(data); err != nil {
+			return nil, errcode.ErrDeserialization.Wrap(err)
+		}
+	}
+
 	// messenger server
 	opts := bertymessenger.Opts{
 		EnableGroupMonitor:  !m.Node.Messenger.DisableGroupMonitor,
@@ -628,6 +670,7 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 		NotificationManager: notifmanager,
 		LifeCycleManager:    lcmanager,
 		StateBackup:         m.Node.Messenger.localDBState,
+		PlatformPushToken:   pushPlatformToken,
 	}
 	messengerServer, err := bertymessenger.New(protocolClient, &opts)
 	if err != nil {

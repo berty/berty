@@ -70,6 +70,12 @@ service MessengerService {
   // ReplicationSetAutoEnable Sets whether new groups should be replicated automatically or not
   rpc ReplicationSetAutoEnable(ReplicationSetAutoEnable.Request) returns (ReplicationSetAutoEnable.Reply);
 
+  // PushSetAutoShare Sets whether new groups should receive our push token automatically or not
+  rpc PushSetAutoShare(PushSetAutoShare.Request) returns (PushSetAutoShare.Reply);
+
+  // PushReceive handles a push payload, decrypts it if possible, adds it to the local store
+  rpc PushReceive(protocol.v1.PushReceive.Request) returns (protocol.v1.PushReceive.Reply);
+
   // BannerQuote returns the quote of the day.
   rpc BannerQuote(BannerQuote.Request) returns (BannerQuote.Reply);
 
@@ -338,6 +344,8 @@ message SystemInfo {
     int64 devices = 6;
     int64 service_tokens = 7;
     int64 conversation_replication_info = 8;
+    int64 metadata_events = 9;
+    int64 medias = 10;
     // older, more recent
   }
 }
@@ -358,10 +366,13 @@ message ConversationJoin {
 message Account {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
   string display_name = 2;
-  string avatar_cid = 7 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
   string link = 3;
   repeated ServiceToken service_tokens = 5 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
   bool replicate_new_groups_automatically = 6 [(gogoproto.moretags) = "gorm:\"default:true\""];
+  string avatar_cid = 7 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
+  bool auto_share_push_token_flag = 8 [(gogoproto.moretags) = "gorm:\"default:true\""];
+  bytes device_push_token = 9;
+  bytes device_push_server = 10;
 }
 
 message ServiceToken {
@@ -370,6 +381,13 @@ message ServiceToken {
   string service_type = 3 [(gogoproto.moretags) = "gorm:\"primaryKey\"", (gogoproto.customname) = "ServiceType"];
   string authentication_url = 4  [(gogoproto.customname) = "AuthenticationURL"];
   int64 expiration = 5;
+}
+
+message MetadataEvent {
+  string cid = 1 [(gogoproto.moretags) = "gorm:\"primaryKey;column:cid\"", (gogoproto.customname) = "CID"];
+  string conversation_public_key = 2 [(gogoproto.moretags) = "gorm:\"index\""];
+  protocol.v1.EventType metadata_event_type = 3;
+  bytes payload = 4;
 }
 
 message Interaction {
@@ -386,6 +404,7 @@ message Interaction {
   bool acknowledged = 10;
   string target_cid = 13 [(gogoproto.moretags) = "gorm:\"index;column:target_cid\"", (gogoproto.customname) = "TargetCID"];
   repeated Media medias = 15;
+  bool out_of_store_message = 16;
 }
 
 message Media {
@@ -440,7 +459,6 @@ message Conversation {
   Type type = 2;
   bool is_open = 3;
   string display_name = 4;
-  string avatar_cid = 17 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
   string link = 5;
   int32 unread_count = 6;
   // last_update is used to sort conversations, it should be updated for each "visible" event
@@ -457,6 +475,8 @@ message Conversation {
   string reply_options_cid = 14 [(gogoproto.moretags) = "gorm:\"column:reply_options_cid\"", (gogoproto.customname) = "ReplyOptionsCID"];
   Interaction reply_options = 15 [(gogoproto.customname) = "ReplyOptions"];
   repeated ConversationReplicationInfo replication_info = 16 [(gogoproto.moretags) = "gorm:\"foreignKey:ConversationPublicKey\""];
+  string avatar_cid = 17 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
+  string shared_push_token_identifier = 18;
 
   enum Type {
     Undefined = 0;
@@ -657,6 +677,14 @@ message ReplicationSetAutoEnable {
   }
 }
 
+message PushSetAutoShare {
+  message Request {
+    bool enabled = 1;
+  }
+  message Reply {
+  }
+}
+
 message BannerQuote {
   message Request {
     bool random = 1;
@@ -687,6 +715,7 @@ message LocalDatabaseState {
   bool replicate_flag = 3;
   repeated LocalConversationState local_conversations_state = 4;
   string account_link = 5;
+  bool auto_share_push_token_flag = 6;
 }
 
 message LocalConversationState {

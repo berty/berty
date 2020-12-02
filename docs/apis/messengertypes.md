@@ -88,9 +88,13 @@
     - [MediaRetrieve.Reply](#berty.messenger.v1.MediaRetrieve.Reply)
     - [MediaRetrieve.Request](#berty.messenger.v1.MediaRetrieve.Request)
     - [Member](#berty.messenger.v1.Member)
+    - [MetadataEvent](#berty.messenger.v1.MetadataEvent)
     - [ParseDeepLink](#berty.messenger.v1.ParseDeepLink)
     - [ParseDeepLink.Reply](#berty.messenger.v1.ParseDeepLink.Reply)
     - [ParseDeepLink.Request](#berty.messenger.v1.ParseDeepLink.Request)
+    - [PushSetAutoShare](#berty.messenger.v1.PushSetAutoShare)
+    - [PushSetAutoShare.Reply](#berty.messenger.v1.PushSetAutoShare.Reply)
+    - [PushSetAutoShare.Request](#berty.messenger.v1.PushSetAutoShare.Request)
     - [ReplicationServiceRegisterGroup](#berty.messenger.v1.ReplicationServiceRegisterGroup)
     - [ReplicationServiceRegisterGroup.Reply](#berty.messenger.v1.ReplicationServiceRegisterGroup.Reply)
     - [ReplicationServiceRegisterGroup.Request](#berty.messenger.v1.ReplicationServiceRegisterGroup.Request)
@@ -161,10 +165,13 @@
 | ----- | ---- | ----- | ----------- |
 | public_key | [string](#string) |  |  |
 | display_name | [string](#string) |  |  |
-| avatar_cid | [string](#string) |  |  |
 | link | [string](#string) |  |  |
 | service_tokens | [ServiceToken](#berty.messenger.v1.ServiceToken) | repeated |  |
 | replicate_new_groups_automatically | [bool](#bool) |  |  |
+| avatar_cid | [string](#string) |  |  |
+| auto_share_push_token_flag | [bool](#bool) |  |  |
+| device_push_token | [bytes](#bytes) |  |  |
+| device_push_server | [bytes](#bytes) |  |  |
 
 <a name="berty.messenger.v1.AccountGet"></a>
 
@@ -421,7 +428,6 @@ to test more false-positive guesses.
 | type | [Conversation.Type](#berty.messenger.v1.Conversation.Type) |  |  |
 | is_open | [bool](#bool) |  |  |
 | display_name | [string](#string) |  |  |
-| avatar_cid | [string](#string) |  |  |
 | link | [string](#string) |  |  |
 | unread_count | [int32](#int32) |  |  |
 | last_update | [int64](#int64) |  | last_update is used to sort conversations, it should be updated for each &#34;visible&#34; event |
@@ -434,6 +440,8 @@ to test more false-positive guesses.
 | reply_options_cid | [string](#string) |  |  |
 | reply_options | [Interaction](#berty.messenger.v1.Interaction) |  |  |
 | replication_info | [ConversationReplicationInfo](#berty.messenger.v1.ConversationReplicationInfo) | repeated |  |
+| avatar_cid | [string](#string) |  |  |
+| shared_push_token_identifier | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.ConversationClose"></a>
 
@@ -723,6 +731,7 @@ TODO: return cid
 | acknowledged | [bool](#bool) |  |  |
 | target_cid | [string](#string) |  |  |
 | medias | [Media](#berty.messenger.v1.Media) | repeated |  |
+| out_of_store_message | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.LocalConversationState"></a>
 
@@ -746,6 +755,7 @@ TODO: return cid
 | replicate_flag | [bool](#bool) |  |  |
 | local_conversations_state | [LocalConversationState](#berty.messenger.v1.LocalConversationState) | repeated |  |
 | account_link | [string](#string) |  |  |
+| auto_share_push_token_flag | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.Media"></a>
 
@@ -818,6 +828,17 @@ Composite primary key
 | conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
 | devices | [Device](#berty.messenger.v1.Device) | repeated |  |
 
+<a name="berty.messenger.v1.MetadataEvent"></a>
+
+### MetadataEvent
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| cid | [string](#string) |  |  |
+| conversation_public_key | [string](#string) |  |  |
+| metadata_event_type | [berty.protocol.v1.EventType](#berty.protocol.v1.EventType) |  |  |
+| payload | [bytes](#bytes) |  |  |
+
 <a name="berty.messenger.v1.ParseDeepLink"></a>
 
 ### ParseDeepLink
@@ -838,6 +859,22 @@ Composite primary key
 | ----- | ---- | ----- | ----------- |
 | link | [string](#string) |  |  |
 | passphrase | [bytes](#bytes) |  | optional passphase to decrypt the link |
+
+<a name="berty.messenger.v1.PushSetAutoShare"></a>
+
+### PushSetAutoShare
+
+<a name="berty.messenger.v1.PushSetAutoShare.Reply"></a>
+
+### PushSetAutoShare.Reply
+
+<a name="berty.messenger.v1.PushSetAutoShare.Request"></a>
+
+### PushSetAutoShare.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| enabled | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.ReplicationServiceRegisterGroup"></a>
 
@@ -1129,7 +1166,9 @@ Composite primary key
 | members | [int64](#int64) |  |  |
 | devices | [int64](#int64) |  |  |
 | service_tokens | [int64](#int64) |  |  |
-| conversation_replication_info | [int64](#int64) |  | older, more recent |
+| conversation_replication_info | [int64](#int64) |  |  |
+| metadata_events | [int64](#int64) |  |  |
+| medias | [int64](#int64) |  | older, more recent |
 
 <a name="berty.messenger.v1.SystemInfo.Messenger"></a>
 
@@ -1290,6 +1329,8 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | ServicesTokenList | [.berty.protocol.v1.ServicesTokenList.Request](#berty.protocol.v1.ServicesTokenList.Request) | [.berty.protocol.v1.ServicesTokenList.Reply](#berty.protocol.v1.ServicesTokenList.Reply) stream | ServicesTokenList Retrieves the list of service server tokens |
 | ReplicationServiceRegisterGroup | [ReplicationServiceRegisterGroup.Request](#berty.messenger.v1.ReplicationServiceRegisterGroup.Request) | [ReplicationServiceRegisterGroup.Reply](#berty.messenger.v1.ReplicationServiceRegisterGroup.Reply) | ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents |
 | ReplicationSetAutoEnable | [ReplicationSetAutoEnable.Request](#berty.messenger.v1.ReplicationSetAutoEnable.Request) | [ReplicationSetAutoEnable.Reply](#berty.messenger.v1.ReplicationSetAutoEnable.Reply) | ReplicationSetAutoEnable Sets whether new groups should be replicated automatically or not |
+| PushSetAutoShare | [PushSetAutoShare.Request](#berty.messenger.v1.PushSetAutoShare.Request) | [PushSetAutoShare.Reply](#berty.messenger.v1.PushSetAutoShare.Reply) | PushSetAutoShare Sets whether new groups should receive our push token automatically or not |
+| PushReceive | [.berty.protocol.v1.PushReceive.Request](#berty.protocol.v1.PushReceive.Request) | [.berty.protocol.v1.PushReceive.Reply](#berty.protocol.v1.PushReceive.Reply) | PushReceive handles a push payload, decrypts it if possible, adds it to the local store |
 | BannerQuote | [BannerQuote.Request](#berty.messenger.v1.BannerQuote.Request) | [BannerQuote.Reply](#berty.messenger.v1.BannerQuote.Reply) | BannerQuote returns the quote of the day. |
 | GetUsername | [GetUsername.Request](#berty.messenger.v1.GetUsername.Request) | [GetUsername.Reply](#berty.messenger.v1.GetUsername.Reply) | GetUsername returns the name of the device/user using Android/iOS/universal API |
 | InstanceExportData | [InstanceExportData.Request](#berty.messenger.v1.InstanceExportData.Request) | [InstanceExportData.Reply](#berty.messenger.v1.InstanceExportData.Reply) stream | InstanceExportData exports instance data |
