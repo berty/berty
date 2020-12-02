@@ -91,8 +91,8 @@
       }
     },
     "home-modal": {
-      "top-button": "",
-      "bottom-button": ""
+      "top-button": "Créer un nouveau groupe",
+      "bottom-button": "Scanner le contact ou le groupe"
     }
   },
   "settings": {
@@ -256,7 +256,11 @@
     "devtools": {
       "title": "Outils Dev",
       "header-left-button": "Infos sur l'appareil",
-      "simulate-button": "",
+      "simulate-button": "Simuler une erreur de stream",
+      "tor-button": "Tor {{option}}",
+      "tor-optional-option": "optionnel",
+      "tor-required-option": "requis",
+      "tor-disabled-option": "désactivé",
       "header-middle-button": "Générer de fausses données",
       "header-right-button": "Redémarrer le démon",
       "system-info-button": "Infos système",
@@ -403,9 +407,9 @@
       "manage-add-button": "Gérer ou ajouter des services"
     },
     "files": {
-      "record-sound": "",
-      "media": "",
-      "emojis": ""
+      "record-sound": "Enregistrer un message sonore",
+      "media": "Accès à la galerie de médias",
+      "emojis": "Emojis & Bertyzzz!"
     }
   }
 }
