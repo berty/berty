@@ -131,7 +131,7 @@ export const ChatFooter: React.FC<{
 							onFocus={() => setFocus(true)}
 							onBlur={() => setFocus(false)}
 							onChange={({ nativeEvent }) => setMessage(nativeEvent.text)}
-							autoCorrect={false}
+							autoCorrect
 							style={[
 								_styles.textInput,
 								_isFocused && { color: color.blue } && _styles.focusTextInput,
