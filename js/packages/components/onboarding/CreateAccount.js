@@ -20,7 +20,6 @@ const CreateAccountBody = ({ next }) => {
 	const [name, setName] = React.useState('')
 	const [error, setError] = React.useState()
 	const [isPressed, setIsPressed] = useState(false)
-	const { call: requestContact, err, done } = messengerMethodsHooks.useContactRequest()
 
 	React.useEffect(() => {
 		ctx.client
@@ -34,20 +33,10 @@ const CreateAccountBody = ({ next }) => {
 		ctx.client
 			.accountUpdate({ displayName })
 			.then(async () => {
-				requestContact({
-					link: __DEV__
-						? globals.berty.contacts['betabot-dev'].link
-						: globals.berty.contacts.betabot.link,
-				})
+				setIsPressed(true)
 			})
 			.catch((err2) => setError(err2))
-	}, [ctx.client, ctx.account, name, requestContact])
-
-	React.useEffect(() => {
-		if (done && !err) {
-			setIsPressed(true)
-		}
-	}, [done, err])
+	}, [ctx.client, ctx.account, name])
 
 	return (
 		<Translation>

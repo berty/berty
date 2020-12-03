@@ -20,14 +20,12 @@ import { groupBy } from 'lodash'
 import { useStyles } from '@berty-tech/styles'
 import { Routes, ScreenProps, useNavigation } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'
-import { PersistentOptionsKeys } from '@berty-tech/store/context'
 import {
 	useContact,
 	useConversation,
 	useMsgrContext,
 	useReadEffect,
 	useSortedConvInteractions,
-	usePersistentOptions,
 	useClient,
 	useNotificationsInhibitor,
 } from '@berty-tech/store/hooks'
@@ -36,46 +34,16 @@ import { Message } from './message'
 import { MessageInvitationButton } from './message/MessageInvitation'
 import { MessageSystemWrapper } from './message/MessageSystemWrapper'
 import BlurView from '../shared-components/BlurView'
-import { ContactAvatar } from '../avatars'
+import { ContactAvatar, BotAvatar } from '../avatars'
 import { pbDateToNum, timeFormat } from '../helpers'
 import { useLayout } from '../hooks'
 import { playSound } from '../sounds'
 import { ChatDate, ChatFooter } from './common'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-import Logo from '../main/1_berty_picto.svg'
-import Avatar from '../modals/Buck_Berty_Icon_Card.svg'
 
 //
 // Chat
 //
-
-const useStylesAddBetabot = () => {
-	const [{ width, border, padding, margin }] = useStyles()
-	return {
-		skipButton: [
-			border.color.light.grey,
-			border.scale(2),
-			border.radius.small,
-			margin.top.scale(15),
-			padding.left.small,
-			padding.right.medium,
-			padding.top.small,
-			padding.bottom.small,
-			width(120),
-		],
-		addButton: [
-			border.color.light.blue,
-			border.scale(2),
-			border.radius.small,
-			margin.top.scale(15),
-			padding.left.small,
-			padding.right.medium,
-			padding.top.small,
-			padding.bottom.small,
-			width(120),
-		],
-	}
-}
 
 const useStylesOneToOne = () => {
 	const [{ text }] = useStyles()
@@ -93,20 +61,14 @@ const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) 
 	)
 }
 
-export const ChatHeader: React.FC<any> = ({ convPk, stickyDate, showStickyDate }) => {
+export const ChatHeader: React.FC<any> = ({ convPk, stickyDate, showStickyDate, isSuggestion }) => {
 	const { navigate, goBack } = useNavigation()
 	const conv = useConversation(convPk)
 	const contact = useContact(conv?.contactPublicKey || null)
 
-	const [
-		{ row, padding, column, margin, text, flex, opacity, color, border, background },
-	] = useStyles()
+	const [{ row, padding, column, margin, text, flex, opacity, color }] = useStyles()
 
 	const [layoutHeader, onLayoutHeader] = useLayout() // to position date under blur
-
-	const persistOpts = usePersistentOptions()
-	const isBetabot =
-		persistOpts && conv?.contactPublicKey?.toString() === persistOpts?.betabot?.convPk?.toString()
 
 	if (!conv || !contact) {
 		goBack()
@@ -176,27 +138,10 @@ export const ChatHeader: React.FC<any> = ({ convPk, stickyDate, showStickyDate }
 						style={[flex.tiny, row.item.justify, !contact ? opacity(0.5) : null]}
 						onPress={() => navigate.chat.oneToOneSettings({ convId: convPk })}
 					>
-						{!isBetabot ? (
-							<ContactAvatar size={45} publicKey={conv.contactPublicKey} />
+						{isSuggestion ? (
+							<BotAvatar size={45} />
 						) : (
-							<View
-								style={[
-									border.radius.scale(25),
-									border.shadow.medium,
-									background.white,
-									margin.right.small,
-									{
-										justifyContent: 'center',
-										alignItems: 'center',
-										display: 'flex',
-										width: 40,
-										height: 40,
-										alignSelf: 'center',
-									},
-								]}
-							>
-								<Logo width={25} height={25} style={{ right: -1, top: -1 }} />
-							</View>
+							<ContactAvatar size={45} publicKey={conv.contactPublicKey} />
 						)}
 					</TouchableOpacity>
 				</View>
@@ -332,156 +277,10 @@ const ContactRequestBox: React.FC<{ contact: any; isAccepted: boolean }> = ({
 	)
 }
 
-export const AddBetabotBox = () => {
-	const [
-		{ row, text, margin, color, padding, background, border, opacity },
-		{ scaleHeight },
-	] = useStyles()
-	const _styles = useStylesAddBetabot()
-	const { setPersistentOption, persistentOptions } = useMsgrContext()
-
-	return (
-		<Translation>
-			{(t: any): React.ReactNode => (
-				<View
-					style={[
-						{
-							justifyContent: 'center',
-							alignItems: 'center',
-						},
-						padding.medium,
-					]}
-				>
-					<View
-						style={[
-							{
-								width: 80 * scaleHeight,
-								height: 80 * scaleHeight,
-								backgroundColor: 'white',
-								justifyContent: 'center',
-								alignItems: 'center',
-								position: 'relative',
-								top: 10,
-								zIndex: 1,
-								shadowOpacity: 0.1,
-								shadowRadius: 5,
-								shadowOffset: { width: 0, height: 3 },
-							},
-							background.white,
-							border.radius.scale(60),
-						]}
-					>
-						<Avatar width={80 * scaleHeight} height={80 * scaleHeight} />
-					</View>
-					<View
-						style={[
-							background.white,
-							padding.horizontal.medium,
-							padding.bottom.medium,
-							border.radius.large,
-							border.shadow.huge,
-							{ width: '100%' },
-						]}
-					>
-						<View style={[padding.top.scale(35)]}>
-							<Icon
-								name='info-outline'
-								fill={color.blue}
-								width={60 * scaleHeight}
-								height={60 * scaleHeight}
-								style={[row.item.justify, padding.top.large]}
-							/>
-							<TextNative
-								style={[
-									text.align.center,
-									padding.top.small,
-									text.size.large,
-									text.bold.medium,
-									text.color.black,
-									{ fontFamily: 'Open Sans' },
-								]}
-							>
-								{t('chat.one-to-one.betabot-box.title')}
-							</TextNative>
-							<Text style={[text.align.center, padding.top.scale(20), padding.horizontal.medium]}>
-								<TextNative
-									style={[
-										text.bold.small,
-										text.size.medium,
-										text.color.black,
-										{ fontFamily: 'Open Sans' },
-									]}
-								>
-									{t('chat.one-to-one.betabot-box.desc')}
-								</TextNative>
-							</Text>
-						</View>
-						<View style={[row.center, padding.top.medium]}>
-							<TouchableOpacity
-								style={[row.fill, margin.bottom.medium, opacity(0.5), _styles.skipButton]}
-							>
-								<Icon
-									name='close'
-									width={30}
-									height={30}
-									fill={color.grey}
-									style={row.item.justify}
-								/>
-								<TextNative
-									style={[
-										text.color.grey,
-										padding.left.small,
-										row.item.justify,
-										text.size.scale(16),
-										text.bold.medium,
-										{ fontFamily: 'Open Sans' },
-									]}
-								>
-									{t('chat.one-to-one.betabot-box.skip-button')}
-								</TextNative>
-							</TouchableOpacity>
-							<TouchableOpacity
-								style={[row.fill, margin.bottom.medium, background.light.blue, _styles.addButton]}
-								onPress={async () => {
-									await setPersistentOption({
-										type: PersistentOptionsKeys.BetaBot,
-										payload: {
-											added: true,
-											convPk: persistentOptions.betabot.convPk,
-										},
-									})
-								}}
-							>
-								<Icon
-									name='checkmark-outline'
-									width={30}
-									height={30}
-									fill={color.blue}
-									style={row.item.justify}
-								/>
-								<TextNative
-									style={[
-										text.color.blue,
-										padding.left.small,
-										row.item.justify,
-										text.size.scale(16),
-										text.bold.medium,
-									]}
-								>
-									{t('chat.one-to-one.betabot-box.add-button')}
-								</TextNative>
-							</TouchableOpacity>
-						</View>
-					</View>
-				</View>
-			)}
-		</Translation>
-	)
-}
-
-const InfosChat: React.FC<
-	beapi.messenger.IConversation & { isBetabot: boolean; isBetabotAdded: boolean }
-> = ({ createdDate: createdDateStr, publicKey, isBetabot, isBetabotAdded }) => {
+const InfosChat: React.FC<beapi.messenger.IConversation> = ({
+	createdDate: createdDateStr,
+	publicKey,
+}) => {
 	const [{ flex, text, padding, margin }] = useStyles()
 	const { dateMessage } = useStylesOneToOne()
 	const createdDate = pbDateToNum(createdDateStr) || Date.now()
@@ -499,19 +298,13 @@ const InfosChat: React.FC<
 				<View style={[padding.medium, flex.align.center]}>
 					<ChatDate date={createdDate} />
 					{!isIncoming ? (
-						<>
-							{isBetabot && !isBetabotAdded ? (
-								<AddBetabotBox />
-							) : (
-								<MessageSystemWrapper styleContainer={[margin.bottom.small, margin.top.large]}>
-									<Text style={[text.align.center, { color: textColor }]}>
-										{isAccepted
-											? t('chat.one-to-one.infos-chat.connection-confirmed')
-											: t('chat.one-to-one.infos-chat.request-sent')}
-									</Text>
-								</MessageSystemWrapper>
-							)}
-						</>
+						<MessageSystemWrapper styleContainer={[margin.bottom.small, margin.top.large]}>
+							<Text style={[text.align.center, { color: textColor }]}>
+								{isAccepted
+									? t('chat.one-to-one.infos-chat.connection-confirmed')
+									: t('chat.one-to-one.infos-chat.request-sent')}
+							</Text>
+						</MessageSystemWrapper>
 					) : (
 						<MessageSystemWrapper>
 							<ContactRequestBox contact={contact} isAccepted={isAccepted} />
@@ -588,11 +381,6 @@ const MessageList: React.FC<{
 		}
 	}, [messages, scrollToMessage])
 
-	const persistOpts = usePersistentOptions()
-	const isBetabot =
-		persistOpts && conv?.contactPublicKey?.toString() === persistOpts?.betabot?.convPk?.toString()
-	const isBetabotAdded = persistOpts.betabot.added
-
 	const items: any = React.useMemo(() => {
 		return messages?.reverse() || []
 	}, [messages])
@@ -611,7 +399,7 @@ const MessageList: React.FC<{
 		)
 	}
 	const renderItem: SectionListRenderItem<any> = ({ item, index }) => {
-		return isBetabot && !isBetabotAdded ? null : (
+		return (
 			<Message
 				id={item?.cid || `${index}`}
 				convKind={beapi.messenger.Conversation.Type.ContactType}
@@ -641,9 +429,7 @@ const MessageList: React.FC<{
 			sections={sections}
 			inverted
 			keyExtractor={(item: any, index: number) => item?.cid || `${index}`}
-			ListFooterComponent={
-				<InfosChat {...conv} isBetabot={isBetabot} isBetabotAdded={isBetabotAdded} />
-			}
+			ListFooterComponent={<InfosChat {...conv} />}
 			renderSectionFooter={renderDateFooter}
 			renderItem={renderItem}
 			onViewableItemsChanged={updateStickyDate}
@@ -685,20 +471,17 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 		Object.values(ctx.contacts).find((c: any) => c.conversationPublicKey === conv?.publicKey) ||
 		null
 	const isIncoming = contact?.state === beapi.messenger.Contact.State.IncomingRequest
-	const persistOpts = usePersistentOptions()
-	const isBetabot =
-		persistOpts && conv?.contactPublicKey?.toString() === persistOpts?.betabot?.convPk?.toString()
-	const isBetabotAdded = persistOpts && persistOpts?.betabot?.added
-	const isFooterDisable = isIncoming || (isBetabot && !isBetabotAdded)
+	const isFooterDisable = isIncoming
 	const placeholder = isFooterDisable
-		? isBetabot
-			? t('chat.one-to-one.betabot-input-placeholder')
-			: t('chat.one-to-one.incoming-input-placeholder')
+		? t('chat.one-to-one.incoming-input-placeholder')
 		: t('chat.one-to-one.input-placeholder')
 
 	const [stickyDate, setStickyDate] = useState(conv?.lastUpdate || null)
 	const [showStickyDate, setShowStickyDate] = useState(false)
 	const [isSwipe, setSwipe] = useState(true)
+	const isSuggestion = Object.values(ctx.persistentOptions?.suggestions).find(
+		(v: any) => v.pk === contact?.publicKey,
+	)
 
 	return (
 		<View style={[StyleSheet.absoluteFill, background.white, { flex: 1 }]}>
@@ -730,7 +513,11 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 						placeholder={placeholder}
 						setSwipe={setSwipe}
 					/>
-					<ChatHeader convPk={params?.convId || ''} {...{ stickyDate, showStickyDate }} />
+					<ChatHeader
+						isSuggestion={isSuggestion}
+						convPk={params?.convId || ''}
+						{...{ stickyDate, showStickyDate }}
+					/>
 				</KeyboardAvoidingView>
 			</SwipeNavRecognizer>
 		</View>

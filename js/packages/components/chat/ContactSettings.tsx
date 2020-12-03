@@ -4,7 +4,7 @@ import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { useContacts } from '@berty-tech/store/hooks'
+import { useContacts, useMsgrContext } from '@berty-tech/store/hooks'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
@@ -12,7 +12,7 @@ import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { TabBar } from '../shared-components/TabBar'
 import HeaderSettings from '../shared-components/Header'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-import { ContactAvatar } from '../avatars'
+import { BotAvatar, ContactAvatar } from '../avatars'
 
 const ContactSettingsHeaderContent: React.FC = ({ children }) => {
 	const [{ margin }] = useStyles()
@@ -34,6 +34,10 @@ const SelectedContent: React.FC<{ contentName: string; publicKey: string }> = ({
 const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 	const [{ border, background, padding, row, absolute, text }] = useStyles()
 	const [selectedContent, setSelectedContent] = useState('Fingerprint')
+	const ctx = useMsgrContext()
+	const isSuggestion = Object.values(ctx.persistentOptions?.suggestions).find(
+		(v: any) => v.pk === contact?.publicKey,
+	)
 	const { t } = useTranslation()
 
 	return (
@@ -47,7 +51,11 @@ const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 				]}
 			>
 				<View style={[row.item.justify, absolute.scale({ top: -50 })]}>
-					<ContactAvatar size={100} publicKey={contact.publicKey} />
+					{isSuggestion ? (
+						<BotAvatar size={100} />
+					) : (
+						<ContactAvatar size={100} publicKey={contact.publicKey} />
+					)}
 				</View>
 				<View style={[padding.horizontal.medium, padding.bottom.medium, padding.top.scale(65)]}>
 					<Text style={[text.size.big, text.color.black, text.align.center, text.bold.small]}>

@@ -4,6 +4,7 @@ import beapi from '@berty-tech/api'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
 import { ParsedInteraction } from './types.gen'
+import { globals } from '@berty-tech/config'
 
 export enum MessengerAppState {
 	Init = 0,
@@ -123,7 +124,7 @@ export const isExpectedAppStateChange = (
 export enum PersistentOptionsKeys {
 	I18N = 'i18n',
 	Notifications = 'notifications',
-	BetaBot = 'betabot',
+	Suggestions = 'suggestions',
 	BLE = 'ble',
 	MC = 'mc',
 	Debug = 'debug',
@@ -138,10 +139,16 @@ export type PersistentOptionsNotifications = {
 	enable: boolean
 }
 
-export type PersistentOptionsBetaBot = {
-	convPk: string | null
-	added: boolean
-	toggledModal: boolean
+export type Suggestion = {
+	link: string
+	displayName: string
+	// added | skipped | unread
+	state: string
+	pk: string
+}
+
+export type PersistentOptionsSuggestions = {
+	[key: string]: Suggestion
 }
 
 export type PersistentOptionsBLE = {
@@ -170,8 +177,8 @@ export type PersistentOptionsUpdate =
 			payload: Partial<PersistentOptionsNotifications>
 	  }
 	| {
-			type: typeof PersistentOptionsKeys.BetaBot
-			payload: Partial<PersistentOptionsBetaBot>
+			type: typeof PersistentOptionsKeys.Suggestions
+			payload: Partial<PersistentOptionsSuggestions>
 	  }
 	| {
 			type: typeof PersistentOptionsKeys.BLE
@@ -193,38 +200,50 @@ export type PersistentOptionsUpdate =
 export type PersistentOptions = {
 	[PersistentOptionsKeys.I18N]: PersistentOptionsI18N
 	[PersistentOptionsKeys.Notifications]: PersistentOptionsNotifications
-	[PersistentOptionsKeys.BetaBot]: PersistentOptionsBetaBot
+	[PersistentOptionsKeys.Suggestions]: PersistentOptionsSuggestions
 	[PersistentOptionsKeys.BLE]: PersistentOptionsBLE
 	[PersistentOptionsKeys.MC]: PersistentOptionsMC
 	[PersistentOptionsKeys.Debug]: PersistentOptionsDebug
 	[PersistentOptionsKeys.Tor]: PersistentOptionsTor
 }
 
-export const defaultPersistentOptions = (): PersistentOptions => ({
-	[PersistentOptionsKeys.I18N]: {
-		language: 'enUS',
-	},
-	[PersistentOptionsKeys.Notifications]: {
-		enable: true,
-	},
-	[PersistentOptionsKeys.BetaBot]: {
-		added: false,
-		convPk: null,
-		toggledModal: false,
-	},
-	[PersistentOptionsKeys.BLE]: {
-		enable: true,
-	},
-	[PersistentOptionsKeys.MC]: {
-		enable: true,
-	},
-	[PersistentOptionsKeys.Debug]: {
-		enable: false,
-	},
-	[PersistentOptionsKeys.Tor]: {
-		flag: 'disabled',
-	},
-})
+export const defaultPersistentOptions = (): PersistentOptions => {
+	let suggestions: PersistentOptionsSuggestions = {}
+	Object.values(globals.berty.contacts).forEach(async (value) => {
+		if (value.suggestion) {
+			suggestions = {
+				...suggestions,
+				[value.name]: {
+					link: value.link,
+					displayName: value.name,
+					state: 'unread',
+					pk: '',
+				},
+			}
+		}
+	})
+	return {
+		[PersistentOptionsKeys.I18N]: {
+			language: 'enUS',
+		},
+		[PersistentOptionsKeys.Notifications]: {
+			enable: true,
+		},
+		[PersistentOptionsKeys.Suggestions]: suggestions,
+		[PersistentOptionsKeys.BLE]: {
+			enable: true,
+		},
+		[PersistentOptionsKeys.MC]: {
+			enable: true,
+		},
+		[PersistentOptionsKeys.Debug]: {
+			enable: false,
+		},
+		[PersistentOptionsKeys.Tor]: {
+			flag: 'disabled',
+		},
+	}
+}
 
 // returns true if the notification should be inhibited
 export type NotificationsInhibitor = (

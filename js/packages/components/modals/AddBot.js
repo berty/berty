@@ -15,6 +15,8 @@ import { useNavigation } from '@react-navigation/native'
 import Avatar from './Buck_Berty_Icon_Card.svg'
 import BlurView from '../shared-components/BlurView'
 import { PersistentOptionsKeys } from '@berty-tech/store/context'
+import { base64ToURLBase64 } from '@berty-tech/components/utils'
+import { Buffer } from 'buffer'
 
 const useStylesAddBetabot = () => {
 	const [{ width, border, padding, margin }] = useStyles()
@@ -44,33 +46,41 @@ const useStylesAddBetabot = () => {
 	}
 }
 
-export const AddBetabotBody = () => {
+export const AddBotBody = ({ displayName, link, closeModal }) => {
 	const [
 		{ row, text, margin, color, padding, background, border, opacity },
 		{ scaleHeight },
 	] = useStyles()
 	const _styles = useStylesAddBetabot()
-	const navigation = useNavigation()
-	const { setPersistentOption } = useMsgrContext()
-	const { call: requestContact, error, done } = messengerMethodsHooks.useContactRequest()
+	const { setPersistentOption, persistentOptions } = useMsgrContext()
+	const { call: requestContact, done, error } = messengerMethodsHooks.useContactRequest()
+	const {
+		reply: pdlReply,
+		error: pdlError,
+		call,
+		done: pdlDone,
+	} = messengerMethodsHooks.useParseDeepLink()
+
+	useEffect(() => {
+		call({ link })
+	}, [call, link])
 
 	useEffect(() => {
 		if (done && !error) {
-			navigation.goBack()
+			closeModal()
 		}
-	}, [done, error, navigation])
+	}, [done, error, closeModal])
 
-	return (
+	return pdlReply?.link?.bertyId?.accountPk ? (
 		<View
 			style={[
 				{
 					justifyContent: 'center',
 					alignItems: 'center',
-					height: '100%',
-					position: 'relative',
-					top: -60,
+					height: 250 * scaleHeight,
+					top: 140,
 				},
-				padding.big,
+				margin.big,
 			]}
 		>
 			<View
@@ -82,7 +92,7 @@ export const AddBetabotBody = () => {
 						justifyContent: 'center',
 						alignItems: 'center',
 						position: 'relative',
-						top: 40,
+						top: 50,
 						zIndex: 1,
 						shadowOpacity: 0.1,
 						shadowRadius: 5,
@@ -101,10 +111,9 @@ export const AddBetabotBody = () => {
 					padding.bottom.medium,
 					border.radius.large,
 					border.shadow.huge,
-					{ width: '100%' },
 				]}
 			>
-				<View style={[padding.top.scale(52)]}>
+				<View style={[margin.top.scale(60)]}>
 					<Icon
 						name='info-outline'
 						fill={color.blue}
@@ -122,7 +131,7 @@ export const AddBetabotBody = () => {
 							{ fontFamily: 'Open Sans' },
 						]}
 					>
-						👋 ADD BETA BOT?
+						{`👋 ADD ${displayName}?`}
 					</TextNative>
 					<Text style={[text.align.center, padding.top.scale(20), padding.horizontal.medium]}>
 						<TextNative
@@ -143,8 +152,7 @@ export const AddBetabotBody = () => {
 								{ fontFamily: 'Open Sans' },
 							]}
 						>
-							{' '}
-							Beta Bot
+							{displayName}
 						</TextNative>
 						<TextNative
 							style={[
@@ -154,7 +162,6 @@ export const AddBetabotBody = () => {
 								{ fontFamily: 'Open Sans' },
 							]}
 						>
-							{' '}
 							to discover and test conversations?
 						</TextNative>
 					</Text>
@@ -164,10 +171,16 @@ export const AddBetabotBody = () => {
 						style={[row.fill, margin.bottom.medium, opacity(0.5), _styles.skipButton]}
 						onPress={async () => {
 							await setPersistentOption({
-								type: PersistentOptionsKeys.BetaBot,
-								payload: { toggledModal: true },
+								type: PersistentOptionsKeys.Suggestions,
+								payload: {
+									...persistentOptions.suggestions,
+									[displayName]: {
+										...persistentOptions.suggestions[displayName],
+										state: 'skipped',
+									},
+								},
 							})
-							navigation.goBack()
+							closeModal()
 						}}
 					>
 						<Icon name='close' width={30} height={30} fill={color.grey} style={row.item.justify} />
@@ -187,17 +200,25 @@ export const AddBetabotBody = () => {
 					<TouchableOpacity
 						style={[row.fill, margin.bottom.medium, background.light.blue, _styles.addButton]}
 						onPress={async () => {
-							await setPersistentOption({
-								type: PersistentOptionsKeys.BetaBot,
-								payload: {
-									added: true,
-									toggledModal: true,
-								},
-							})
-							requestContact({
-								link:
-									'https://berty.tech/id#key=CiBYAkJkmvcCZOl2hWuSK34arbzSpcpQGLowIvi7ZsEdyRIgMmKs-zHKksC74gjOfSj5puOAQQGWNhsC8o9gEtQ8zrQ&name=BetaBot',
-							})
+							if (pdlDone && !pdlError) {
+								console.log('heeere')
+								await setPersistentOption({
+									type: PersistentOptionsKeys.Suggestions,
+									payload: {
+										...persistentOptions.suggestions,
+										[displayName]: {
+											...persistentOptions.suggestions[displayName],
+											state: 'added',
+											pk: base64ToURLBase64(
+												new Buffer(pdlReply.link.bertyId.accountPk).toString('base64'),
+											),
+										},
+									},
+								})
+								await requestContact({
+									link,
+								})
+							}
 						}}
 					>
 						<Icon
@@ -222,22 +243,34 @@ export const AddBetabotBody = () => {
 				</View>
 			</View>
 		</View>
-	)
+	) : null
 }
 
-export const AddBetabot = () => {
-	const navigation = useNavigation()
+export const AddBot = ({ link, displayName, closeModal }) => {
+	const [{}, { windowHeight }] = useStyles()
 
 	return (
-		<>
-			<TouchableWithoutFeedback style={[StyleSheet.absoluteFill]} onPress={navigation.goBack}>
+		<View style={[StyleSheet.absoluteFill]}>
+			<TouchableOpacity
+				activeOpacity={0}
+				style={[
+					StyleSheet.absoluteFill,
+					{
+						position: 'absolute',
+						top: 0,
+						bottom: 0,
+						left: 0,
+						right: 0,
+						height: windowHeight,
+					},
+				]}
+				onPress={() => closeModal()}
+			>
 				<BlurView style={[StyleSheet.absoluteFill]} blurType='light' />
-			</TouchableWithoutFeedback>
-			<View>
-				<AddBetabotBody />
-			</View>
-		</>
+			</TouchableOpacity>
+			<AddBotBody displayName={displayName} link={link} closeModal={closeModal} />
+		</View>
 	)
 }
 
-export default AddBetabot
+export default AddBot

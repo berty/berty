@@ -1,15 +1,15 @@
-import React, { useMemo, useRef, useState, useEffect } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { CommonActions, useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { Translation } from 'react-i18next'
 import {
 	ScrollView,
+	SectionList,
 	Text as TextNative,
+	TextInput,
 	TouchableHighlight,
 	TouchableOpacity,
 	View,
 	ViewProps,
-	TextInput,
-	SectionList,
 } from 'react-native'
 import { EdgeInsets, SafeAreaConsumer } from 'react-native-safe-area-context'
 import { Icon, Text } from '@ui-kitten/components'
@@ -18,16 +18,15 @@ import LottieView from 'lottie-react-native'
 import BlurView from '../shared-components/BlurView'
 import { HomeModal } from './HomeModal'
 
-import { ScreenProps, useNavigation, Routes } from '@berty-tech/navigation'
+import { Routes, ScreenProps, useNavigation } from '@berty-tech/navigation'
 import {
+	useClient,
 	useConversationsCount,
 	useIncomingContactRequests,
-	useMsgrContext,
 	useLastConvInteraction,
-	usePersistentOptions,
-	useSortedConversationList,
-	useClient,
+	useMsgrContext,
 	useNotificationsInhibitor,
+	useSortedConversationList,
 } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
@@ -40,8 +39,9 @@ import { createSections } from './Search'
 import { HintBody } from '../shared-components/HintBody'
 import { playSound } from '../sounds'
 import { Footer } from './Footer'
-import { AccountAvatar, ConversationAvatar, ContactAvatar } from '../avatars'
+import { AccountAvatar, BotAvatar, ContactAvatar, ConversationAvatar } from '../avatars'
 import EmptyChat from './empty_chat.svg'
+import { AddBot } from '@berty-tech/components/modals'
 
 //
 // Main List
@@ -49,6 +49,8 @@ import EmptyChat from './empty_chat.svg'
 
 type ConversationsProps = ViewProps & {
 	items: Array<any>
+	suggestions: Array<any>
+	addBot: any
 }
 
 type ConversationsItemProps = any
@@ -352,7 +354,6 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 		fake = false,
 		type = beapi.messenger.Conversation.Type.ContactType,
 		unreadCount,
-		contactPublicKey,
 		createdDate,
 		lastUpdate,
 	} = props
@@ -370,25 +371,18 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 
 	const [{ color, row, border, flex, padding, text, opacity, margin }] = useStyles()
 	const { dispatch } = useNavigation()
+	const isSuggestion = Object.values(ctx.persistentOptions?.suggestions).find(
+		(v: any) => v.pk === contact?.publicKey,
+	)
 
-	const persistOpts = usePersistentOptions()
-	const isBetabot =
-		persistOpts.betabot.convPk &&
-		type !== beapi.messenger.Conversation.Type.MultiMemberType &&
-		contactPublicKey.toString() === persistOpts.betabot.convPk.toString()
-	const isBetabotAdded = persistOpts.betabot.added
 	let description
-	if (isBetabot && !isBetabotAdded) {
-		description = 'Click here to add the Beta Bot!'
+	if (lastInte?.type === beapi.messenger.AppMessage.Type.TypeUserMessage) {
+		description = (lastInte.payload as any)?.body
 	} else {
-		if (lastInte?.type === beapi.messenger.AppMessage.Type.TypeUserMessage) {
-			description = (lastInte.payload as any)?.body
+		if (contact?.state === beapi.messenger.Contact.State.OutgoingRequestSent) {
+			description = 'Request is sent. Pending...'
 		} else {
-			if (contact?.state === beapi.messenger.Contact.State.OutgoingRequestSent) {
-				description = 'Request is sent. Pending...'
-			} else {
-				description = ''
-			}
+			description = ''
 		}
 	}
 
@@ -463,7 +457,11 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 						},
 					]}
 				>
-					<ConversationAvatar size={40} publicKey={publicKey} />
+					{isSuggestion ? (
+						<BotAvatar size={40} />
+					) : (
+						<ConversationAvatar size={40} publicKey={publicKey} />
+					)}
 				</View>
 				<View
 					style={[
@@ -496,22 +494,20 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 								{ marginLeft: 'auto' },
 							]}
 						>
-							{isBetabot && !isBetabotAdded ? null : (
-								<>
-									<UnreadCount value={unreadCount} isConvBadge />
-									{displayDate && (
-										<Text
-											style={[
-												padding.left.small,
-												text.size.small,
-												unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
-											]}
-										>
-											{timeFormat.fmtTimestamp1(displayDate)}
-										</Text>
-									)}
-								</>
-							)}
+							<>
+								<UnreadCount value={unreadCount} isConvBadge />
+								{displayDate && (
+									<Text
+										style={[
+											padding.left.small,
+											text.size.small,
+											unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
+										]}
+									>
+										{timeFormat.fmtTimestamp1(displayDate)}
+									</Text>
+								)}
+							</>
 						</View>
 					</View>
 					<View
@@ -537,11 +533,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 							style={[
 								{ flexGrow: 2, flexShrink: 1 },
 								text.size.small,
-								unreadCount
-									? isBetabot && !isBetabotAdded
-										? text.color.grey
-										: [text.bold.medium, text.color.black]
-									: text.color.grey,
+								unreadCount ? [text.bold.medium, text.color.black] : text.color.grey,
 							]}
 						>
 							{description}
@@ -570,19 +562,119 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 						</View>
 					</View>
 				</View>
-				{isBetabot && !isBetabotAdded && (
-					<View style={[flex.justify.center]}>
-						<Icon name='info-outline' fill={color.blue} width={20} height={20} />
-					</View>
-				)}
 			</View>
 		</TouchableHighlight>
 	) : null
 }
 
-const Conversations: React.FC<ConversationsProps> = ({ items, style, onLayout }) => {
+const SuggestionsItem: React.FC<{ displayName: string; link: string; addBot: any }> = ({
+	displayName,
+	link,
+	addBot,
+}) => {
+	const [{ color, row, border, flex, padding, text, margin }] = useStyles()
+	return (
+		<>
+			<TouchableHighlight
+				underlayColor={color.light.grey}
+				style={[
+					padding.horizontal.medium,
+					// !isAccepted && type !== beapi.messenger.Conversation.Type.MultiMemberType && opacity(0.6),
+				]}
+				onPress={() => addBot({ displayName, link, isVisible: true })}
+			>
+				<View
+					style={[
+						row.center,
+						border.bottom.medium,
+						border.color.light.grey,
+						padding.vertical.scale(7),
+					]}
+				>
+					<View
+						style={[
+							row.item.center,
+							flex.align.center,
+							flex.justify.center,
+							margin.right.small,
+							{
+								flexBasis: 45,
+								flexGrow: 0,
+								flexShrink: 0,
+							},
+						]}
+					>
+						<BotAvatar size={40} />
+					</View>
+					<View
+						style={[
+							flex.justify.spaceAround,
+							{
+								flexBasis: 2,
+								flexGrow: 2,
+								flexShrink: 0,
+							},
+						]}
+					>
+						{/* Conversation title, unread count, and time */}
+						<View style={[flex.direction.row, flex.justify.flexStart]}>
+							{/* Title */}
+							<View
+								style={{
+									flexShrink: 1,
+								}}
+							>
+								<Text numberOfLines={1} style={[text.size.medium, text.color.black]}>
+									{displayName}
+								</Text>
+							</View>
+						</View>
+						<View
+							style={[
+								flex.direction.row,
+								flex.align.center,
+								{
+									height: text.size.small.fontSize * 1.8, // Keep row height even if no description/message
+								},
+							]}
+						>
+							<Text
+								numberOfLines={1}
+								style={[{ flexGrow: 2, flexShrink: 1 }, text.size.small, text.color.grey]}
+							>
+								{`Click here to add ${displayName}`}
+							</Text>
+							{/* Message status */}
+							<View
+								style={[
+									row.item.center,
+									row.right,
+									{
+										flexBasis: 16,
+										flexGrow: 0,
+										flexShrink: 0,
+									},
+								]}
+							>
+								<Icon name='info-outline' width={15} height={15} fill={color.dark.blue} />
+							</View>
+						</View>
+					</View>
+				</View>
+			</TouchableHighlight>
+		</>
+	)
+}
+
+const Conversations: React.FC<ConversationsProps> = ({
+	items,
+	suggestions,
+	style,
+	onLayout,
+	addBot,
+}) => {
 	const [{ background }] = useStyles()
-	return items?.length ? (
+	return items.length || suggestions.length ? (
 		<SafeAreaConsumer>
 			{(insets) => (
 				<View
@@ -593,9 +685,12 @@ const Conversations: React.FC<ConversationsProps> = ({ items, style, onLayout })
 						{ paddingBottom: 100 - (insets?.bottom || 0) + (insets?.bottom || 0) },
 					]}
 				>
-					{items &&
-						items.length &&
-						items.map((i) => <ConversationsItem key={i.publicKey} {...i} />)}
+					{items.map((i) => (
+						<ConversationsItem key={i.publicKey} {...i} />
+					))}
+					{suggestions.map((i: any) => (
+						<SuggestionsItem {...i} addBot={addBot} />
+					))}
 				</View>
 			)}
 		</SafeAreaConsumer>
@@ -942,6 +1037,11 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const [searchText, setSearchText] = useState<string>('')
 	const [refresh, setRefresh] = useState<boolean>(false)
 	const [isModalVisible, setModalVisibility] = useState<boolean>(false)
+	const [isAddBot, setIsAddBot] = useState({
+		link: '',
+		displayName: '',
+		isVisible: false,
+	})
 
 	const { navigate } = useNativeNavigation()
 
@@ -960,6 +1060,10 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	)
 
 	const ctx = useMsgrContext()
+	const suggestions = Object.values(ctx.persistentOptions?.suggestions).filter(
+		(i: any) => i.state === 'unread',
+	)
+	const isSuggestion: number = suggestions.length
 
 	const searchConversations = React.useMemo(
 		() =>
@@ -1057,9 +1161,13 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 												/>
 											) : (
 												<>
-													{isConversation ? (
-														<Conversations items={conversations} onLayout={onLayoutConvs} />
-													) : (
+													<Conversations
+														items={conversations}
+														suggestions={suggestions}
+														onLayout={onLayoutConvs}
+														addBot={setIsAddBot}
+													/>
+													{!isConversation && !isSuggestion && (
 														<View style={[background.white]}>
 															<View
 																style={[
@@ -1119,10 +1227,18 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 												<HomeModal closeModal={() => setModalVisibility(false)} />
 											</>
 										)}
+
 										{!searchText?.length && (
 											<Footer
 												openModal={() => setModalVisibility(true)}
 												isModalVisible={isModalVisible}
+											/>
+										)}
+										{isAddBot.isVisible && (
+											<AddBot
+												link={isAddBot.link}
+												displayName={isAddBot.displayName}
+												closeModal={() => setIsAddBot({ ...isAddBot, isVisible: false })}
 											/>
 										)}
 									</>
