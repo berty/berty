@@ -58,12 +58,12 @@ jobs:
           key: ${{ runner.OS }}-node-v4-${{ hashFiles('js/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-v4-
 
-      - name: Cache Gomobile .aar
+      - name: Cache Gomobile artifacts
         uses: actions/cache@v2
         with:
-          path: js/android/libs/gobridge.aar
-          key: android-gomobile-${{ hashFiles('go/**/*.go', 'go.sum') }}
-          restore-keys: android-gomobile-
+          path: js/android/.gomobile-cache
+          key: android-gomobile-v2-${{ hashFiles('go.sum') }}
+          restore-keys: android-gomobile-v2-
 
       - name: Setup Java
         uses: actions/setup-java@v1
