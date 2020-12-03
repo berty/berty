@@ -31,7 +31,8 @@ on:
 # * store performance logs for comparison
 
 jobs:
-  integration:
+  integration-prod:
+    if: github.event_name == 'schedule'
     name: "integration (production)"
     runs-on: ubuntu-latest
     env:
@@ -73,7 +74,6 @@ jobs:
           path: ./cache
           key: ${{runner.os}}-integration-benchmark
       - name: Store benchmark result
-        if: github.event_name == 'push' || github.event_name == 'pull_request'
         uses: rhysd/github-action-benchmark@v1
         with:
           tool: 'googlecpp'
@@ -85,13 +85,31 @@ jobs:
           #alert-comment-cc-users: '@foobar'
           #auto-push: true
       - name: Discord notification
-        if: github.event_name == 'schedule' && failure()
+        if: failure()
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_PROD_WEBHOOK }}
         uses: Ilshidur/action-discord@0.3.0
         with:
           args: 'Integration failed, see ${{ steps.url.outputs.runUrl }}'
-  doctor:
+
+  integration-local:
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    name: "integration (local)"
+    runs-on: ubuntu-latest
+    env:
+      OS: ubuntu-latest
+      GOLANG: 1.15.x
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Build Docker images
+        working-directory: tool/compose-integration
+        run: docker-compose build
+      - name: Run integration test suite
+        working-directory: tool/compose-integration
+        run: make
+
+  doctor-production:
     name: "doctor (production)"
     runs-on: ubuntu-latest
     env:
