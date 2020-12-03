@@ -62,8 +62,10 @@ jobs:
         uses: actions/cache@v2
         with:
           path: js/android/.gomobile-cache
-          key: android-gomobile-v2-${{ hashFiles('go.sum') }}
-          restore-keys: android-gomobile-v2-
+          key: android-gomobile-v2-${{ hashFiles('go.sum') }}-${{ hashFiles('go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
+          restore-keys:
+          - android-gomobile-v2-${{ hashFiles('go.sum') }}-
+          - android-gomobile-v2-
 
       - name: Setup Java
         uses: actions/setup-java@v1
