@@ -5,7 +5,6 @@ module.exports = {
 	plugins: ['@typescript-eslint'],
 	rules: {
 		semi: [2, 'never'],
-		'no-unused-vars': 2,
 		'react-native/no-inline-styles': 0,
 		'jsx-quotes': [2, 'prefer-single'],
 		'no-shadow': 0,
