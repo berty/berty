@@ -73,17 +73,6 @@ jobs:
         with:
           path: ./cache
           key: ${{runner.os}}-integration-benchmark
-      - name: Store benchmark result
-        uses: rhysd/github-action-benchmark@v1
-        with:
-          tool: 'googlecpp'
-          output-file-path: benchmark_result.json
-          external-data-json-path: ./cache/benchmark-data.json
-          fail-on-alert: false
-          comment-on-alert: true
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          #alert-comment-cc-users: '@foobar'
-          #auto-push: true
       - name: Discord notification
         if: failure()
         env:
@@ -108,6 +97,17 @@ jobs:
       - name: Run integration test suite
         working-directory: tool/compose-integration
         run: make
+      #- name: Store benchmark result
+      #  uses: rhysd/github-action-benchmark@v1
+      #  with:
+      #    tool: 'googlecpp'
+      #    output-file-path: benchmark_result.json
+      #    external-data-json-path: ./cache/benchmark-data.json
+      #    fail-on-alert: false
+      #    comment-on-alert: true
+      #    github-token: ${{secrets.GITHUB_TOKEN}}
+      #    #alert-comment-cc-users: '@foobar'
+      #    #auto-push: true
 
   doctor-production:
     name: "doctor (production)"
