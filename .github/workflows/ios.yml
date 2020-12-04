@@ -70,9 +70,9 @@ jobs:
       - name: Cache Ruby modules
         uses: actions/cache@v2
         with:
-          path: js/vendor/bundle
-          key: ${{ runner.OS }}-bundle-${{ hashFiles('js/Gemfile.lock') }}
-          restore-keys: ${{ runner.OS }}-bundle-
+          path: js/ios/vendor/bundle
+          key: ${{ runner.OS }}-bundle-v0-${{ hashFiles('js/Gemfile.lock') }}
+          restore-keys: ${{ runner.OS }}-bundle-v0-
 
       - name: Get full go version
         id: go-version
@@ -113,9 +113,9 @@ jobs:
       - name: Cache XCodeGen
         uses: actions/cache@v2
         with:
-          path: js/vendor/xcodegen
-          key: ios-xcodegen-${{ hashFiles('js/ios/XcodeGen.version') }}-${{ hashFiles('js/yarn.lock', 'js/ios/Podfile.lock', 'go.sum', 'js/Makefile', 'go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
-          restore-keys: ios-xcodegen-${{ hashFiles('js/ios/XcodeGen.version') }}-
+          path: js/ios/vendor/xcodegen
+          key: ios-xcodegen-v0-${{ hashFiles('js/ios/XcodeGen.version') }}-${{ hashFiles('js/yarn.lock', 'js/ios/Podfile.lock', 'go.sum', 'js/Makefile', 'go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
+          restore-keys: ios-xcodegen-${{ hashFiles('js/ios/XcodeGen.version') }}-v0-
 
       - name: Cache XCode project
         uses: actions/cache@v2
@@ -127,10 +127,9 @@ jobs:
       - name: Cache CocoaPods
         uses: actions/cache@v2
         with:
-          path: ios/Pods
-          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pods-
+          path: js/ios/Pods
+          key: ${{ runner.os }}-pods-v0-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: ${{ runner.os }}-pods-v0-
 
       - name: Cache XCode workspace
         uses: actions/cache@v2
