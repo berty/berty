@@ -87,12 +87,13 @@ jobs:
 
       - name: Touch Gomobile framework
         if: steps.cache-gomobile-framework.outputs.cache-hit == 'true'
-        run: touch -c js/ios/Frameworks/Bertybridge.framework
+        run: find js/ios/Frameworks/Bertybridge.framework -exec touch -c {} +
 
       - name: Get xcodebuild version
         id: xcodebuild-version
         run: echo "::set-output name=version::$(xcodebuild -version | head -n 1 | cut -d ' ' -f 2)"
 
+      # FIXME: make xcode use this cache
       # - name: Cache Xcode DerivedData
       #   uses: actions/cache@v2
       #   with:
