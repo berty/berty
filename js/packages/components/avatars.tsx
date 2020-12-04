@@ -29,7 +29,7 @@ const GenericAvatar: React.FC<{
 	style?: AvatarStyle
 }> = ({ cid, size, fallbackSeed, style }) => {
 	const [{ border, background }] = useStyles()
-	const padding = Math.round(size / 15)
+	const padding = Math.round(size / 10)
 	let innerSize = Math.round(size - 2 * padding)
 	let content: JSX.Element
 	if (cid) {
