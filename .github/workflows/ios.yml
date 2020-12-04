@@ -124,19 +124,14 @@ jobs:
           key: ios-xcodeproj-${{ hashFiles('js/ios/*.yaml') }}
           restore-keys: ios-xcodeproj-
 
-      - name: Cache CocoaPods
+      - name: Cache XCode workspace and CocoaPods
         uses: actions/cache@v2
         with:
-          path: js/ios/Pods
-          key: ${{ runner.os }}-pods-v0-${{ hashFiles('**/Podfile.lock') }}
-          restore-keys: ${{ runner.os }}-pods-v0-
-
-      - name: Cache XCode workspace
-        uses: actions/cache@v2
-        with:
-          path: js/ios/Berty.xcworkspace
-          key: ios-xcodeworkspace-${{ hashFiles('js/ios/Podfile.lock', 'js/yarn.lock') }}
-          restore-keys: ios-xcodeworkspace-
+          path: |
+            js/ios/Berty.xcworkspace
+            js/ios/Pods
+          key: ios-xcodeworkspace-v0-${{ hashFiles('js/ios/Podfile.lock', 'js/yarn.lock') }}
+          restore-keys: ios-xcodeworkspace-v0-
 
       - name: Setup macOS keychain
         working-directory: tool/build/dummy-identity
