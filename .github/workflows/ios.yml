@@ -78,16 +78,16 @@ jobs:
         id: go-version
         run: echo "::set-output name=version::$(go version | cut -d ' ' -f 3)"
 
-      # - name: Cache Gomobile framework
-      #   id: cache-gomobile-framework
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: js/ios/Frameworks/Bertybridge.framework
-      #     key: ios-gomobileframework-v0-${{ steps.go-version.outputs.version }}-${{ hashFiles('go.sum', 'js/Makefile', 'go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
+      - name: Cache Gomobile framework
+        id: cache-gomobile-framework
+        uses: actions/cache@v2
+        with:
+          path: js/ios/Frameworks/Bertybridge.framework
+          key: ios-gomobileframework-v1-${{ steps.go-version.outputs.version }}-${{ hashFiles('go.sum', 'js/Makefile', 'go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
 
-      # - name: Touch Gomobile framework
-      #   if: steps.cache-gomobile-framework.outputs.cache-hit == 'true'
-      #   run: touch -c js/ios/Frameworks/Bertybridge.framework
+      - name: Touch Gomobile framework
+        if: steps.cache-gomobile-framework.outputs.cache-hit == 'true'
+        run: touch -c js/ios/Frameworks/Bertybridge.framework
 
       - name: Get xcodebuild version
         id: xcodebuild-version
