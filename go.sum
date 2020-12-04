@@ -868,8 +868,8 @@ github.com/libp2p/go-libp2p-pubsub-router v0.4.0/go.mod h1:hs0j0ugcBjMOMgJ6diOlZ
 github.com/libp2p/go-libp2p-quic-transport v0.8.0/go.mod h1:F2FG/6Bzz0U6essUVxDzE0s9CrY4XGLbl7QEmDNvU7A=
 github.com/libp2p/go-libp2p-quic-transport v0.9.0 h1:WPuq5nV/chmIZIzvrkC2ulSdAQ0P0BDvgvAhZFOZ59E=
 github.com/libp2p/go-libp2p-quic-transport v0.9.0/go.mod h1:xyY+IgxL0qsW7Kiutab0+NlxM0/p9yRtrGTYsuMWf70=
-github.com/libp2p/go-libp2p-quic-transport v0.9.2 h1:0uKv1AofBFyca4pW9LGDSRwC+oSOuy8jR6Z3YqU/3nU=
-github.com/libp2p/go-libp2p-quic-transport v0.9.2/go.mod h1:ZcBDR+oWQV4LyUNfbzHzor0IGYmBCMu7405lEafhCSk=
+github.com/libp2p/go-libp2p-quic-transport v0.9.3 h1:e6eLN55agvemeYzdJTzIylVbLD5PJr0RJANr9HM+FVc=
+github.com/libp2p/go-libp2p-quic-transport v0.9.3/go.mod h1:STiznVmrLMFPXCrkEbNna/VxgdxBatcK0SA+1FSdxnI=
 github.com/libp2p/go-libp2p-record v0.0.1/go.mod h1:grzqg263Rug/sRex85QrDOLntdFAymLDLm7lxMgU79Q=
 github.com/libp2p/go-libp2p-record v0.1.0/go.mod h1:ujNc8iuE5dlKWVy6wuL6dd58t0n7xI4hAIl8pE6wu5Q=
 github.com/libp2p/go-libp2p-record v0.1.1/go.mod h1:VRgKajOyMVgP/F0L5g3kH7SVskp17vFi2xheb5uMJtg=
@@ -995,8 +995,8 @@ github.com/lightstep/lightstep-tracer-go v0.18.1/go.mod h1:jlF1pusYV4pidLvZ+XD0U
 github.com/lucas-clemente/quic-go v0.18.0/go.mod h1:yXttHsSNxQi8AWijC/vLP+OJczXqzHSOcJrM5ITUlCg=
 github.com/lucas-clemente/quic-go v0.18.1 h1:DMR7guC0NtVS8zNZR3IO7NARZvZygkSC56GGtC6cyys=
 github.com/lucas-clemente/quic-go v0.18.1/go.mod h1:yXttHsSNxQi8AWijC/vLP+OJczXqzHSOcJrM5ITUlCg=
-github.com/lucas-clemente/quic-go v0.19.2 h1:w8BBYUx5Z+kNpeaOeQW/KzcNsKWhh4O6PeQhb0nURPg=
-github.com/lucas-clemente/quic-go v0.19.2/go.mod h1:ZUygOqIoai0ASXXLJ92LTnKdbqh9MHCLTX6Nr1jUrK0=
+github.com/lucas-clemente/quic-go v0.19.3 h1:eCDQqvGBB+kCTkA0XrAFtNe81FMa0/fn4QSoeAbmiF4=
+github.com/lucas-clemente/quic-go v0.19.3/go.mod h1:ADXpNbTQjq1hIzCpB+y/k5iz4n4z4IwqoLb94Kh5Hu8=
 github.com/lucasb-eyer/go-colorful v1.0.2/go.mod h1:0MS4r+7BZKSJ5mw4/S5MPN+qHFF1fYclkSPilDOKW0s=
 github.com/lucasb-eyer/go-colorful v1.0.3 h1:QIbQXiugsb+q10B+MI+7DI1oQLdmnep86tWFlaaUAac=
 github.com/lucasb-eyer/go-colorful v1.0.3/go.mod h1:R4dSotOR9KMtayYi1e77YzuveK+i7ruzyGqttikkLy0=

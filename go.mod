@@ -61,7 +61,7 @@ require (
 	github.com/libp2p/go-libp2p-kad-dht v0.11.0
 	github.com/libp2p/go-libp2p-noise v0.1.2 // indirect
 	github.com/libp2p/go-libp2p-pubsub v0.4.0
-	github.com/libp2p/go-libp2p-quic-transport v0.9.2
+	github.com/libp2p/go-libp2p-quic-transport v0.9.3
 	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-20180418151804-b7dd840ce441
 	github.com/libp2p/go-libp2p-transport-upgrader v0.3.0
