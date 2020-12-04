@@ -341,10 +341,9 @@ _write_gen_sum:
 
 #### iOS
 
-ios/Frameworks/Bertybridge.framework: $(bridge_src)
+ios.tor:
 	cd .. && go mod download
 	cd .. && go run golang.org/x/mobile/cmd/gomobile init
-	# Download required go-libtor deps if needed
 	if [ "$(go_libtor_ver)" != "$(go_libtor_libs_ver)" ]; then \
 		set -o pipefail; \
 		mkdir -p ios/tor-deps $(TMP)/tor-deps/ios && \
@@ -357,6 +356,13 @@ ios/Frameworks/Bertybridge.framework: $(bridge_src)
 		done && \
 		echo $(go_libtor_ver) > ios/tor-deps/version; \
 	fi
+.PHONY: ios.tor
+
+ios/Frameworks/Bertybridge.framework: $(bridge_src)
+	cd .. && go mod download
+	cd .. && go run golang.org/x/mobile/cmd/gomobile init
+	# Download required go-libtor deps if needed
+	$(MAKE) ios.tor
 	mkdir -p ios/Frameworks
 	# TODO: uncomment this when Tor transport will be fixed
 	# cd .. && \

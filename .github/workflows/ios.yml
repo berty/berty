@@ -85,9 +85,12 @@ jobs:
           path: js/ios/Frameworks/Bertybridge.framework
           key: ios-gomobileframework-v1-${{ steps.go-version.outputs.version }}-${{ hashFiles('go.sum', 'js/Makefile', 'go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
 
-      - name: Touch Gomobile framework
+      - name: Touch Gomobile framework and get tor
         if: steps.cache-gomobile-framework.outputs.cache-hit == 'true'
-        run: find js/ios/Frameworks/Bertybridge.framework -exec touch -c {} +
+        run: |
+          touch js/ios/Frameworks/Bertybridge.framework
+          cd js
+          make ios.tor
 
       - name: Get xcodebuild version
         id: xcodebuild-version
