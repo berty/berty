@@ -70,14 +70,28 @@ jobs:
           key: ${{ runner.OS }}-bundle-${{ hashFiles('js/Gemfile.lock') }}
           restore-keys: ${{ runner.OS }}-bundle-
 
+      - name: Get full go version
+        id: go-version
+        run: echo "::set-output name=version::$(go version | cut -d ' ' -f 3)"
+
+      - name: Cache Gomobile framework
+        id: cache-gomobile-framework
+        uses: actions/cache@v2
+        with:
+          path: js/ios/Frameworks/Bertybridge.framework
+          key: ios-gomobileframework-v0-${{ steps.go-version.outputs.version }}-${{ hashFiles('go.sum', 'js/Makefile', 'go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
+
+      - name: Touch Gomobile framework
+        if: steps.cache-gomobile-framework.outputs.cache-hit == 'true'
+        run: touch -c js/ios/Frameworks/Bertybridge.framework
+
       - name: Cache Gomobile artifacts
+        if: steps.cache-gomobile-framework.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           path: js/ios/.gomobile-cache
-          key: ios-gomobile-v3-${{ hashFiles('go.sum') }}-${{ hashFiles('go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
-          restore-keys: |
-            android-gomobile-v3-${{ hashFiles('go.sum') }}-
-            android-gomobile-v3-
+          key: ios-gomobile-v3-${{ steps.go-version.outputs.version }}-${{ hashFiles('go.sum') }}
+          restore-keys: ios-gomobile-v3-${{ steps.go-version.outputs.version }}-
 
       - name: Cache XCodeGen
         uses: actions/cache@v2
@@ -115,7 +129,11 @@ jobs:
       - name: Build .env
         run: cat tool/build/shakebugs-infos/env >> js/.env
 
-      - name: Build the Archive
+      - name: Build the framework
+        working-directory: js
+        run: make ios.gomobile
+
+      - name: Build the archive
         working-directory: js
         run: |
           make ios.app_deps

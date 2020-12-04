@@ -49,16 +49,12 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: Get full go version
-        id: go-version
-        run: echo "::set-output name=version::$(go version | cut -d " " -f 3)"
-
       - name: Cache Go modules
         uses: actions/cache@v2
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-${{ steps.go-version.outputs.version }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-${{ steps.go-version.outputs.version }}-
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -81,6 +77,10 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
+
+      - name: Get full go version
+        id: go-version
+        run: echo "::set-output name=version::$(go version | cut -d ' ' -f 3)"
 
       - name: Cache Gomobile framework
         id: cache-gomobile-framework
@@ -122,7 +122,8 @@ jobs:
           cp android/app/debug.keystore $HOME/.android
           wget \
             https://github.com/google/bundletool/releases/download/1.2.0/bundletool-all-1.2.0.jar \
-            -O /tmp/bundletool.jar
+            -O /tmp/bundletool.jar \
+            --no-verbose
           java -jar /tmp/bundletool.jar build-apks \
             --bundle=android/app/build/outputs/bundle/releaseYolo/app-releaseYolo.aab \
             --output=${{ github.workspace }}/app.apks \
