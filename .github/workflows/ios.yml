@@ -74,10 +74,10 @@ jobs:
         uses: actions/cache@v2
         with:
           path: js/ios/.gomobile-cache
-          key: ios-gomobile-v2-${{ hashFiles('go.sum') }}-${{ hashFiles('go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
+          key: ios-gomobile-v3-${{ hashFiles('go.sum') }}-${{ hashFiles('go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
           restore-keys:
-          - ios-gomobile-v2-${{ hashFiles('go.sum') }}-
-          - ios-gomobile-v2-
+          - ios-gomobile-v3-${{ hashFiles('go.sum') }}-
+          - ios-gomobile-v3-
 
       - name: Cache XCodeGen
         uses: actions/cache@v2
