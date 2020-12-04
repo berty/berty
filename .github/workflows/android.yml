@@ -44,26 +44,50 @@ jobs:
         with:
           node-version: 14.x
 
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Get full go version
+        id: go-version
+        run: echo "::set-output name=version::$(go version | cut -d " " -f 3)"
+
       - name: Cache Go modules
         uses: actions/cache@v2
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-
+          key: ${{ runner.os }}-${{ steps.go-version.outputs.version }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-${{ steps.go-version.outputs.version }}-
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
 
       - name: Cache Node modules
         uses: actions/cache@v2
         with:
-          path: js/node_modules
-          key: ${{ runner.OS }}-node-v4-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-node-v4-
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Cache Gradle artifacts
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       - name: Cache Gomobile framework
         id: cache-gomobile-framework
         uses: actions/cache@v2
         with:
           path: js/android/libs/gobridge.aar
-          key: android-gomobileframework-v0-${{ hashFiles('go.sum', 'js/Makefile', 'go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
+          key: android-gomobileframework-v0-${{ steps.go-version.outputs.version }}-${{ hashFiles('go.sum', 'js/Makefile', 'go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
 
       - name: Touch Gomobile framework
         if: steps.cache-gomobile-framework.outputs.cache-hit == 'true'
@@ -74,16 +98,17 @@ jobs:
         uses: actions/cache@v2
         with:
           path: js/android/.gomobile-cache
-          key: android-gomobile-v3-${{ hashFiles('go.sum') }}
-          restore-keys: android-gomobile-v3-
-
-      - name: Setup Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
+          key: android-gomobile-v3-${{ steps.go-version.outputs.version }}-${{ hashFiles('go.sum') }}
+          restore-keys: android-gomobile-v3-${{ steps.go-version.outputs.version }}-
 
       - name: Build .env
         run: cat tool/build/shakebugs-infos/env >> js/.env
+
+      - name: Build the framework
+        working-directory: js
+        env:
+          CI: "true"
+        run: make android.gomobile
 
       - name: Build the APK
         working-directory: js
