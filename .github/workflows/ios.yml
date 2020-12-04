@@ -85,6 +85,18 @@ jobs:
         if: steps.cache-gomobile-framework.outputs.cache-hit == 'true'
         run: touch -c js/ios/Frameworks/Bertybridge.framework
 
+      - name: Get xcodebuild version
+        id: xcodebuild-version
+        run: echo "::set-output name=version::$(xcodebuild -version) | head -n 1 | cut -d ' ' -f 2"
+
+      - name: Cache Xcode DerivedData
+        uses: actions/cache@v2
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: ios-deriveddata-v0-${{ steps.xcodebuild-version.outputs.version }}-${{ hashFiles('js/yarn.lock', 'js/ios/Podfile.lock', 'go.sum', 'js/Makefile', 'go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
+          restore-keys: |
+            ios-deriveddata-v0-${{ steps.xcodebuild-version.outputs.version }}-
+
       # FIXME: see the comments on the same step in ./android.yml
       # - name: Cache Gomobile artifacts
       #   if: steps.cache-gomobile-framework.outputs.cache-hit != 'true'
