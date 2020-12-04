@@ -87,7 +87,7 @@ jobs:
 
       - name: Get xcodebuild version
         id: xcodebuild-version
-        run: echo "::set-output name=version::$(xcodebuild -version) | head -n 1 | cut -d ' ' -f 2"
+        run: echo "::set-output name=version::$(xcodebuild -version | head -n 1 | cut -d ' ' -f 2)"
 
       - name: Cache Xcode DerivedData
         uses: actions/cache@v2

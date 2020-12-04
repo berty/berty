@@ -348,11 +348,11 @@ ios/Frameworks/Bertybridge.framework: $(bridge_src)
 	if [ "$(go_libtor_ver)" != "$(go_libtor_libs_ver)" ]; then \
 		set -o pipefail; \
 		mkdir -p ios/tor-deps $(TMP)/tor-deps/ios && \
-		libs=$$(wget -O - "https://github.com/berty/go-libtor/releases/tag/$(go_libtor_ver)" 2> /dev/null \
+		libs=$$(wget --no-verbose -O - "https://github.com/berty/go-libtor/releases/tag/$(go_libtor_ver)" 2> /dev/null \
 			| grep -o 'ios-.*-universal\.tar\.gz' \
 			| uniq) && \
 		for lib in $$libs; do \
-			wget "https://github.com/berty/go-libtor/releases/download/$(go_libtor_ver)/$$lib" -O "$(TMP)/tor-deps/ios/$$lib" && \
+			wget --no-verbose "https://github.com/berty/go-libtor/releases/download/$(go_libtor_ver)/$$lib" -O "$(TMP)/tor-deps/ios/$$lib" && \
 			tar xvf "$(TMP)/tor-deps/ios/$$lib" -C ios/tor-deps || exit 1; \
 		done && \
 		echo $(go_libtor_ver) > ios/tor-deps/version; \
@@ -402,7 +402,7 @@ ios/Berty.xcodeproj: ios/vendor/xcodegen $(xcodegen_yml) $(call rwildcard,ios/Be
 ios/vendor/xcodegen: ios/XcodeGen.version
 	$(call check-program, wget unzip)
 	mkdir -p $(TMP)/xcodegen_dl
-	wget https://github.com/yonaskolb/XcodeGen/archive/$(xcodegen_ver).zip -O $(TMP)/xcodegen_dl/xcodegen.zip
+	wget --no-verbose https://github.com/yonaskolb/XcodeGen/archive/$(xcodegen_ver).zip -O $(TMP)/xcodegen_dl/xcodegen.zip
 	unzip $(TMP)/xcodegen_dl/xcodegen.zip -d $(TMP)/xcodegen_dl
 	mkdir -p $@
 	cp -rf $(TMP)/xcodegen_dl/*/* $@
