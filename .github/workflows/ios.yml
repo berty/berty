@@ -59,9 +59,9 @@ jobs:
       - name: Cache Node modules
         uses: actions/cache@v2
         with:
-          path: js/node_modules
-          key: ${{ runner.OS }}-node-v4-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-node-v4-
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-yarn-
 
       - name: Cache Ruby modules
         uses: actions/cache@v2
