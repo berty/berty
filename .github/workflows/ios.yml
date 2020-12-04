@@ -120,12 +120,18 @@ jobs:
           key: ios-xcodeproj-${{ hashFiles('js/ios/*.yaml') }}
           restore-keys: ios-xcodeproj-
 
-      - name: Cache Pods and XCode workspace
+      - name: Cache CocoaPods
         uses: actions/cache@v2
         with:
-          path: |
-            js/ios/Berty.xcworkspace
-            js/ios/Pods
+          path: ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      - name: Cache XCode workspace
+        uses: actions/cache@v2
+        with:
+          path: js/ios/Berty.xcworkspace
           key: ios-xcodeworkspace-${{ hashFiles('js/ios/Podfile.lock', 'js/yarn.lock') }}
           restore-keys: ios-xcodeworkspace-
 
