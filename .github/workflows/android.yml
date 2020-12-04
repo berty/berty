@@ -93,13 +93,15 @@ jobs:
         if: steps.cache-gomobile-framework.outputs.cache-hit == 'true'
         run: touch -c js/android/libs/gobridge.aar
 
-      - name: Cache Gomobile artifacts
-        if: steps.cache-gomobile-framework.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
-        with:
-          path: js/android/.gomobile-cache
-          key: android-gomobile-v3-${{ steps.go-version.outputs.version }}-${{ hashFiles('go.sum') }}
-          restore-keys: android-gomobile-v3-${{ steps.go-version.outputs.version }}-
+      # FIXME:  understand why gomobile rebuilds everything even when it has 350mb of this cache (only on CI)
+      #         * it does not seem to be a timestamp-related problem since touching a file won't trigger a rebuild but changing it will (locally)
+      # - name: Cache Gomobile artifacts
+      #   if: steps.cache-gomobile-framework.outputs.cache-hit != 'true'
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: js/android/.gomobile-cache
+      #     key: android-gomobile-v3-${{ steps.go-version.outputs.version }}-${{ hashFiles('go.sum') }}
+      #     restore-keys: android-gomobile-v3-${{ steps.go-version.outputs.version }}-
 
       - name: Build .env
         run: cat tool/build/shakebugs-infos/env >> js/.env

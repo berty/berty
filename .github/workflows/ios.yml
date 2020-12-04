@@ -85,13 +85,14 @@ jobs:
         if: steps.cache-gomobile-framework.outputs.cache-hit == 'true'
         run: touch -c js/ios/Frameworks/Bertybridge.framework
 
-      - name: Cache Gomobile artifacts
-        if: steps.cache-gomobile-framework.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
-        with:
-          path: js/ios/.gomobile-cache
-          key: ios-gomobile-v3-${{ steps.go-version.outputs.version }}-${{ hashFiles('go.sum') }}
-          restore-keys: ios-gomobile-v3-${{ steps.go-version.outputs.version }}-
+      # FIXME: see the comments on the same step in ./android.yml
+      # - name: Cache Gomobile artifacts
+      #   if: steps.cache-gomobile-framework.outputs.cache-hit != 'true'
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: js/ios/.gomobile-cache
+      #     key: ios-gomobile-v3-${{ steps.go-version.outputs.version }}-${{ hashFiles('go.sum') }}
+      #     restore-keys: ios-gomobile-v3-${{ steps.go-version.outputs.version }}-
 
       - name: Cache XCodeGen
         uses: actions/cache@v2
