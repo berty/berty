@@ -138,7 +138,7 @@ jobs:
 
       - name: Touch Xcode DerivedData
         if: steps.cache-xcode-deriveddata.outputs.cache-hit == 'true'
-        run: find ~/Library/Developer/Xcode/DerivedData -exec touch {} +
+        run: find ~/Library/Developer/Xcode/DerivedData -exec touch -c {} \;
 
       - name: Setup macOS keychain
         working-directory: tool/build/dummy-identity
