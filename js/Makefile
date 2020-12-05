@@ -409,7 +409,7 @@ ios/vendor/xcodegen: ios/XcodeGen.version
 	$(call check-program, wget unzip)
 	mkdir -p $(TMP)/xcodegen_dl
 	wget --no-verbose https://github.com/yonaskolb/XcodeGen/archive/$(xcodegen_ver).zip -O $(TMP)/xcodegen_dl/xcodegen.zip
-	unzip $(TMP)/xcodegen_dl/xcodegen.zip -d $(TMP)/xcodegen_dl
+	unzip -q $(TMP)/xcodegen_dl/xcodegen.zip -d $(TMP)/xcodegen_dl
 	mkdir -p $@
 	cp -rf $(TMP)/xcodegen_dl/*/* $@
 	rm -rf $(TMP)/xcodegen_dl

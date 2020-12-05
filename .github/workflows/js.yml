@@ -39,7 +39,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: js/node_modules
-          key: ${{ runner.os }}-nodemods-${{ steps.node-version.outputs.version }}-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-nodemods-${{ steps.node-version.outputs.version }}-${{ hashFiles('js/yarn.lock') }}
           restore-keys: ${{ runner.os }}-nodemods-${{ steps.node-version.outputs.version }}-
       - name: "Fetch deps"
         run: |
