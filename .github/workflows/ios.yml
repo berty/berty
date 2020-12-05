@@ -96,15 +96,6 @@ jobs:
         id: xcodebuild-version
         run: echo "::set-output name=version::$(xcodebuild -version | head -n 1 | cut -d ' ' -f 2)"
 
-      # FIXME: make xcode use this cache
-      # - name: Cache Xcode DerivedData
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: ~/Library/Developer/Xcode/DerivedData
-      #     key: ios-deriveddata-v0-${{ steps.xcodebuild-version.outputs.version }}-${{ hashFiles('js/yarn.lock', 'js/ios/Podfile.lock', 'go.sum', 'js/Makefile', 'go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
-      #     restore-keys: |
-      #       ios-deriveddata-v0-${{ steps.xcodebuild-version.outputs.version }}-
-
       # FIXME: see the comments on the same step in ./android.yml
       # - name: Cache Gomobile artifacts
       #   if: steps.cache-gomobile-framework.outputs.cache-hit != 'true'
@@ -136,6 +127,18 @@ jobs:
             js/ios/Pods
           key: ios-xcodeworkspace-v0-${{ hashFiles('js/ios/Podfile.lock', 'js/yarn.lock') }}
           restore-keys: ios-xcodeworkspace-v0-
+
+      - name: Cache Xcode DerivedData
+        id: cache-xcode-deriveddata
+        uses: actions/cache@v2
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: ios-deriveddata-v0-${{ steps.xcodebuild-version.outputs.version }}-${{ hashFiles('js/yarn.lock', 'js/ios/Podfile.lock', 'go.sum', 'js/Makefile', 'go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
+          restore-keys: ios-deriveddata-v0-${{ steps.xcodebuild-version.outputs.version }}-
+
+      - name: Touch Xcode DerivedData
+        if: steps.cache-xcode-deriveddata.outputs.cache-hit == 'true'
+        run: find ~/Library/Developer/Xcode/DerivedData -exec touch {} +
 
       - name: Setup macOS keychain
         working-directory: tool/build/dummy-identity
