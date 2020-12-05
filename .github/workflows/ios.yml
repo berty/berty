@@ -83,6 +83,9 @@ jobs:
           key: ${{ runner.OS }}-bundle-v0-${{ hashFiles('js/Gemfile.lock') }}
           restore-keys: ${{ runner.OS }}-bundle-v0-
 
+      - name: Gather Ruby modules
+        run: cd js && make ios/vendor/bundle
+
       - name: Get full go version
         id: go-version
         run: echo "::set-output name=version::$(go version | cut -d ' ' -f 3)"
@@ -121,12 +124,18 @@ jobs:
           key: ios-xcodegen-v0-${{ hashFiles('js/ios/XcodeGen.version') }}-${{ hashFiles('js/yarn.lock', 'js/ios/Podfile.lock', 'go.sum', 'js/Makefile', 'go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
           restore-keys: ios-xcodegen-${{ hashFiles('js/ios/XcodeGen.version') }}-v0-
 
+      - name: Build XcodeGen
+        run: cd js && make ios/vendor/xcodegen
+
       - name: Cache XCode project
         uses: actions/cache@v2
         with:
           path: js/ios/Berty.xcodeproj
           key: ios-xcodeproj-${{ hashFiles('js/ios/*.yaml') }}
           restore-keys: ios-xcodeproj-
+      
+      - name: Build Xcode project
+        run: cd js && make ios/Berty.xcodeproj
 
       - name: Cache XCode workspace and CocoaPods
         uses: actions/cache@v2
@@ -136,6 +145,9 @@ jobs:
             js/ios/Pods
           key: ios-xcodeworkspace-v0-${{ hashFiles('js/ios/Podfile.lock', 'js/yarn.lock') }}
           restore-keys: ios-xcodeworkspace-v0-
+
+      - name: Build Xcode workspace and install CocoaPods
+        run: cd js && ios/Berty.xcworkspace
 
       - name: Cache Xcode DerivedData
         id: cache-xcode-deriveddata
