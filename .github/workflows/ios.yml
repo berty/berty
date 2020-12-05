@@ -50,14 +50,6 @@ jobs:
         with:
           node-version: 14.x
 
-      # cache go mods
-      - name: Cache Go modules
-        uses: actions/cache@v2
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-
-
       # xcodederived data
       - name: Cache Xcode DerivedData
         id: cache-xcode-deriveddata
@@ -93,6 +85,33 @@ jobs:
       - name: Gather Node modules
         run: cd js && make node_modules
 
+      
+      # berty framework
+      - name: Cache Go modules
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+
+      - name: Cache Gomobile framework
+        id: cache-gomobile-framework
+        uses: actions/cache@v2
+        with:
+          path: js/ios/Frameworks/Bertybridge.framework
+          key: ios-gomobileframework-v1-${{ steps.go-version.outputs.version }}-${{ hashFiles('go.sum', 'js/Makefile', 'go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
+
+      - name: Touch Gomobile framework and get tor
+        if: steps.cache-gomobile-framework.outputs.cache-hit == 'true'
+        working-directory: js
+        run: |
+          touch ios/Frameworks/Bertybridge.framework
+          make ios.tor
+
+      - name: Build Gomobile framework
+        working-directory: js
+        run: make ios.gomobile
+
       # ruby
       - name: Cache Ruby modules
         uses: actions/cache@v2
@@ -103,7 +122,6 @@ jobs:
 
       - name: Gather Ruby modules
         run: cd js && make ios/vendor/bundle
-
 
       # xcodegen
       - name: Cache XCodeGen
@@ -142,25 +160,6 @@ jobs:
       - name: Build Xcode workspace and install CocoaPods
         working-directory: js
         run: make ios/Berty.xcworkspace
-
-      # berty framework
-      - name: Cache Gomobile framework
-        id: cache-gomobile-framework
-        uses: actions/cache@v2
-        with:
-          path: js/ios/Frameworks/Bertybridge.framework
-          key: ios-gomobileframework-v1-${{ steps.go-version.outputs.version }}-${{ hashFiles('go.sum', 'js/Makefile', 'go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
-
-      - name: Touch Gomobile framework and get tor
-        if: steps.cache-gomobile-framework.outputs.cache-hit == 'true'
-        working-directory: js
-        run: |
-          touch ios/Frameworks/Bertybridge.framework
-          make ios.tor
-
-      - name: Build Gomobile framework
-        working-directory: js
-        run: make ios.gomobile
         
       # berty app
       - name: Setup macOS keychain
@@ -176,7 +175,7 @@ jobs:
       - name: Build .env
         run: cat tool/build/shakebugs-infos/env >> js/.env
 
-      - name: Build the archive
+      - name: Build App
         working-directory: js
         run: |
           make ios.app_deps
@@ -197,7 +196,7 @@ jobs:
           mv /tmp/Berty.xcarchive/Products/Applications/Berty\ Yolo.app Payload/
           zip -r ${{ github.workspace }}/Berty\ Yolo.dummy-signed-ipa Payload
 
-      - name: Upload the Archive
+      - name: Upload App
         uses: actions/upload-artifact@v2
         with:
           path: ${{ github.workspace }}/Berty Yolo.dummy-signed-ipa
