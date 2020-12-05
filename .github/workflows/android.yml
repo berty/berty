@@ -56,16 +56,16 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-
 
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
+      - name: Get node version
+        id: node-version
+        run: echo "::set-output name=version::$(node --version)"
+        
       - name: Cache Node modules
         uses: actions/cache@v2
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-yarn-
+          path: js/node_modules
+          key: ${{ runner.os }}-nodemods-${{ steps.node-version.outputs.version }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-nodemods-${{ steps.node-version.outputs.version }}-
 
       - name: Cache Gradle artifacts
         uses: actions/cache@v2

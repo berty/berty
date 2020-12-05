@@ -32,12 +32,15 @@ jobs:
         uses: actions/setup-node@v2.1.2
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Cache Node.js modules
+      - name: Get node version
+        id: node-version
+        run: echo "::set-output name=version::$(node --version)"
+      - name: Cache Node modules
         uses: actions/cache@v2
         with:
           path: js/node_modules
-          key: ${{ runner.OS }}-node-v4-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-node-v4-
+          key: ${{ runner.os }}-nodemods-${{ steps.node-version.outputs.version }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-nodemods-${{ steps.node-version.outputs.version }}-
       - name: "Fetch deps"
         run: |
           cd js
