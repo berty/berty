@@ -34,6 +34,7 @@ jobs:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}  # see https://github.com/actions/checkout/issues/299
 
+      # setup tools
       - name: Setup XCode
         uses: maxim-lobanov/setup-xcode@v1.2.1
         with:
@@ -49,6 +50,7 @@ jobs:
         with:
           node-version: 14.x
 
+      # cache go mods
       - name: Cache Go modules
         uses: actions/cache@v2
         with:
@@ -56,93 +58,7 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-
 
-      - name: Get node version
-        id: node-version
-        run: echo "::set-output name=version::$(node --version)"
-
-      - name: Cache Node modules
-        uses: actions/cache@v2
-        with:
-          path: js/node_modules
-          key: ${{ runner.os }}-nodemods-${{ steps.node-version.outputs.version }}-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-nodemods-${{ steps.node-version.outputs.version }}-
-
-      - name: Gather Node modules
-        run: cd js && make node_modules
-
-      - name: Cache Ruby modules
-        uses: actions/cache@v2
-        with:
-          path: js/ios/vendor/bundle
-          key: ${{ runner.OS }}-bundle-v0-${{ hashFiles('js/Gemfile.lock') }}
-          restore-keys: ${{ runner.OS }}-bundle-v0-
-
-      - name: Gather Ruby modules
-        run: cd js && make ios/vendor/bundle
-
-      - name: Get full go version
-        id: go-version
-        run: echo "::set-output name=version::$(go version | cut -d ' ' -f 3)"
-
-      - name: Cache Gomobile framework
-        id: cache-gomobile-framework
-        uses: actions/cache@v2
-        with:
-          path: js/ios/Frameworks/Bertybridge.framework
-          key: ios-gomobileframework-v1-${{ steps.go-version.outputs.version }}-${{ hashFiles('go.sum', 'js/Makefile', 'go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
-
-      - name: Touch Gomobile framework and get tor
-        if: steps.cache-gomobile-framework.outputs.cache-hit == 'true'
-        run: |
-          touch js/ios/Frameworks/Bertybridge.framework
-          cd js
-          make ios.tor
-
-      - name: Get xcodebuild version
-        id: xcodebuild-version
-        run: echo "::set-output name=version::$(xcodebuild -version | head -n 1 | cut -d ' ' -f 2)"
-
-      # FIXME: see the comments on the same step in ./android.yml
-      # - name: Cache Gomobile artifacts
-      #   if: steps.cache-gomobile-framework.outputs.cache-hit != 'true'
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: js/ios/.gomobile-cache
-      #     key: ios-gomobile-v3-${{ steps.go-version.outputs.version }}-${{ hashFiles('go.sum') }}
-      #     restore-keys: ios-gomobile-v3-${{ steps.go-version.outputs.version }}-
-
-      - name: Cache XCodeGen
-        uses: actions/cache@v2
-        with:
-          path: js/ios/vendor/xcodegen
-          key: ios-xcodegen-v0-${{ hashFiles('js/ios/XcodeGen.version') }}-${{ hashFiles('js/yarn.lock', 'js/ios/Podfile.lock', 'go.sum', 'js/Makefile', 'go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
-          restore-keys: ios-xcodegen-${{ hashFiles('js/ios/XcodeGen.version') }}-v0-
-
-      - name: Build XcodeGen
-        run: cd js && make ios/vendor/xcodegen
-
-      - name: Cache XCode project
-        uses: actions/cache@v2
-        with:
-          path: js/ios/Berty.xcodeproj
-          key: ios-xcodeproj-${{ hashFiles('js/ios/*.yaml') }}
-          restore-keys: ios-xcodeproj-
-      
-      - name: Build Xcode project
-        run: cd js && make ios/Berty.xcodeproj
-
-      - name: Cache XCode workspace and CocoaPods
-        uses: actions/cache@v2
-        with:
-          path: |
-            js/ios/Berty.xcworkspace
-            js/ios/Pods
-          key: ios-xcodeworkspace-v0-${{ hashFiles('js/ios/Podfile.lock', 'js/yarn.lock') }}
-          restore-keys: ios-xcodeworkspace-v0-
-
-      - name: Build Xcode workspace and install CocoaPods
-        run: cd js && make ios/Berty.xcworkspace
-
+      # xcodederived data
       - name: Cache Xcode DerivedData
         id: cache-xcode-deriveddata
         uses: actions/cache@v2
@@ -155,6 +71,98 @@ jobs:
         if: steps.cache-xcode-deriveddata.outputs.cache-hit == 'true'
         run: find ~/Library/Developer/Xcode/DerivedData -exec touch -c {} \;
 
+      # system info
+      - name: Get node version
+        id: node-version
+        run: echo "::set-output name=version::$(node --version)"
+      - name: Get full go version
+        id: go-version
+        run: echo "::set-output name=version::$(go version | cut -d ' ' -f 3)"
+      - name: Get xcodebuild version
+        id: xcodebuild-version
+        run: echo "::set-output name=version::$(xcodebuild -version | head -n 1 | cut -d ' ' -f 2)"
+
+      # node modules
+      - name: Cache Node modules
+        uses: actions/cache@v2
+        with:
+          path: js/node_modules
+          key: ${{ runner.os }}-nodemods-${{ steps.node-version.outputs.version }}-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-nodemods-${{ steps.node-version.outputs.version }}-
+
+      - name: Gather Node modules
+        run: cd js && make node_modules
+
+      # ruby
+      - name: Cache Ruby modules
+        uses: actions/cache@v2
+        with:
+          path: js/ios/vendor/bundle
+          key: ${{ runner.OS }}-bundle-v0-${{ hashFiles('js/Gemfile.lock') }}
+          restore-keys: ${{ runner.OS }}-bundle-v0-
+
+      - name: Gather Ruby modules
+        run: cd js && make ios/vendor/bundle
+
+
+      # xcodegen
+      - name: Cache XCodeGen
+        uses: actions/cache@v2
+        with:
+          path: js/ios/vendor/xcodegen
+          key: ios-xcodegen-v0-${{ hashFiles('js/ios/XcodeGen.version') }}-${{ hashFiles('js/yarn.lock', 'js/ios/Podfile.lock', 'go.sum', 'js/Makefile', 'go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
+          restore-keys: ios-xcodegen-${{ hashFiles('js/ios/XcodeGen.version') }}-v0-
+
+      - name: Build XcodeGen
+        working-directory: js
+        run: make ios/vendor/xcodegen
+
+      # xcodeproj
+      - name: Cache XCode project
+        uses: actions/cache@v2
+        with:
+          path: js/ios/Berty.xcodeproj
+          key: ios-xcodeproj-${{ hashFiles('js/ios/*.yaml') }}
+          restore-keys: ios-xcodeproj-
+      
+      - name: Build Xcode project
+        working-directory: js
+        run: make ios/Berty.xcodeproj
+
+      # xcworkspace and pods
+      - name: Cache XCode workspace and CocoaPods
+        uses: actions/cache@v2
+        with:
+          path: |
+            js/ios/Berty.xcworkspace
+            js/ios/Pods
+          key: ios-xcodeworkspace-v0-${{ hashFiles('js/ios/Podfile.lock', 'js/yarn.lock') }}
+          restore-keys: ios-xcodeworkspace-v0-
+
+      - name: Build Xcode workspace and install CocoaPods
+        working-directory: js
+        run: make ios/Berty.xcworkspace
+
+      # berty framework
+      - name: Cache Gomobile framework
+        id: cache-gomobile-framework
+        uses: actions/cache@v2
+        with:
+          path: js/ios/Frameworks/Bertybridge.framework
+          key: ios-gomobileframework-v1-${{ steps.go-version.outputs.version }}-${{ hashFiles('go.sum', 'js/Makefile', 'go/**/*.go', 'go/**/*.m', 'go/**/*.h') }}
+
+      - name: Touch Gomobile framework and get tor
+        if: steps.cache-gomobile-framework.outputs.cache-hit == 'true'
+        working-directory: js
+        run: |
+          touch ios/Frameworks/Bertybridge.framework
+          make ios.tor
+
+      - name: Build Gomobile framework
+        working-directory: js
+        run: make ios.gomobile
+        
+      # berty app
       - name: Setup macOS keychain
         working-directory: tool/build/dummy-identity
         run: |
@@ -167,10 +175,6 @@ jobs:
 
       - name: Build .env
         run: cat tool/build/shakebugs-infos/env >> js/.env
-
-      - name: Build the framework
-        working-directory: js
-        run: make ios.gomobile
 
       - name: Build the archive
         working-directory: js
