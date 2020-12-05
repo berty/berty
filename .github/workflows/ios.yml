@@ -62,18 +62,12 @@ jobs:
 
       - name: Cache Node modules
         uses: actions/cache@v2
-        id: cache-nodemods
         with:
           path: js/node_modules
           key: ${{ runner.os }}-nodemods-${{ steps.node-version.outputs.version }}-${{ hashFiles('js/yarn.lock') }}
           restore-keys: ${{ runner.os }}-nodemods-${{ steps.node-version.outputs.version }}-
 
-      - name: Touch Node modules
-        if: steps.cache-nodemods.outputs.cache-hit == 'true'
-        run: touch -c js/node_modules
-
       - name: Gather Node modules
-        if: steps.cache-nodemods.outputs.cache-hit != 'true'
         run: cd js && make node_modules
 
       - name: Cache Ruby modules
@@ -147,7 +141,7 @@ jobs:
           restore-keys: ios-xcodeworkspace-v0-
 
       - name: Build Xcode workspace and install CocoaPods
-        run: cd js && ios/Berty.xcworkspace
+        run: cd js && make ios/Berty.xcworkspace
 
       - name: Cache Xcode DerivedData
         id: cache-xcode-deriveddata
