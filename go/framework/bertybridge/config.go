@@ -18,3 +18,5 @@ func (c *Config) SetNotificationDriver(driver NotificationDriver) { c.notifdrive
 func (c *Config) SetLifeCycleDriver(lc LifeCycleDriver)           { c.lc = lc }
 func (c *Config) SetRootDir(rootdir string)                       { c.rootDir = rootdir }
 func (c *Config) AppendCLIArg(arg string)                         { c.cliArgs = append(c.cliArgs, arg) }
+
+// wololo

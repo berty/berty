@@ -487,6 +487,7 @@ func (svc *service) EventStream(req *messengertypes.EventStream_Request, sub mes
 
 	// send medias
 	{
+		fmt.Println("wololo")
 		medias, err := svc.db.getAllMedias()
 		if err != nil {
 			return err

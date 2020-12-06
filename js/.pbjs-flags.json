@@ -1,0 +1,1 @@
+["--force-long","-p","../api","-p","node_modules/@googleapis/googleapis","-p","/Users/norman/go/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.16.0\n/third_party/googleapis","-p","/Users/norman/go/pkg/mod/github.com/gogo/protobuf@v1.3.1","-p","node_modules/@protocolbuffers/protobuf/src"]

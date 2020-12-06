@@ -202,7 +202,7 @@ ios.gomobile: ios/Frameworks/Bertybridge.framework
 #### Android
 
 .PHONY: android.app_deps
-android.app_deps: node_modules android.gomobile
+android.app_deps: node_modules _gen.pbjs android.gomobile 
 
 .PHONY: android.debug
 android.debug: android.app_deps

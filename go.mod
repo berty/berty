@@ -14,6 +14,7 @@ require (
 	github.com/aead/ecdh v0.2.0
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
 	github.com/atotto/clipboard v0.1.2
+	github.com/blang/semver/v4 v4.0.0
 	github.com/btcsuite/btcd v0.21.0-beta // indirect
 	github.com/buicongtan1997/protoc-gen-swagger-config v0.0.0-20190801162412-b6396e884596
 	github.com/campoy/embedmd v1.0.0
@@ -67,6 +68,7 @@ require (
 	github.com/libp2p/go-libp2p-transport-upgrader v0.3.0
 	github.com/libp2p/go-netroute v0.1.4 // indirect
 	github.com/libp2p/go-yamux v1.4.1 // indirect
+	github.com/magefile/mage v1.10.0
 	github.com/markbates/pkger v0.17.1
 	github.com/mattn/go-sqlite3 v1.14.5
 	github.com/mdomke/git-semver/v5 v5.0.0

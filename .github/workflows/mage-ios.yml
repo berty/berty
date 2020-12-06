@@ -1,0 +1,96 @@
+name: mage-iOS
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+    paths:
+      - 'go/**'
+      - '!go/**.md'
+      - 'go.*'
+      - '**.go'
+      - 'js/**'
+      - '.github/workflows/ios.yml'
+  pull_request:
+    paths:
+      - 'go/**'
+      - '!go/**.md'
+      - 'go.*'
+      - '**.go'
+      - 'js/**'
+      - '!js/packages/berty-i18n/locale/*/*.json'
+      - '.github/workflows/ios.yml'
+
+jobs:
+  build:
+    name: Build for iOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}  # see https://github.com/actions/checkout/issues/299
+
+      - name: Setup XCode
+        uses: maxim-lobanov/setup-xcode@v1.2.1
+        with:
+          xcode-version: '12.0'
+
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15.3
+
+      - name: Setup Node
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: 14.x
+
+      - name: Setup mage
+        run: |
+          cd
+          go get -u -d github.com/magefile/mage
+          cd `go env GOPATH`/src/github.com/magefile/mage
+          go run bootstrap.go
+
+      - name: Setup macOS keychain
+        working-directory: tool/build/dummy-identity
+        run: |
+          security create-keychain -p "dummypass" dummy.keychain
+          security default-keychain -s dummy.keychain
+          security unlock-keychain -p "dummypass" dummy.keychain
+          security set-keychain-settings dummy.keychain
+          security import berty-dummy.p12 -t priv -f pkcs12 -P "dummypass" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "dummypass" dummy.keychain
+
+      - name: Build .env
+        run: cat tool/build/shakebugs-infos/env >> js/.env
+
+      - name: Init mage
+        run: mage
+
+      - name: Gather cache info
+        id: cacheInfo
+        run: |
+          echo "::set-output name=nodeModulesHash::`PRINT_CACHE_INFO=true mage nodeModules`"
+          echo "::set-output name=nodeModulesPaths::`PRINT_CACHE_PATHS=true mage nodeModules`"
+          echo "::set-output name=nodeModulesGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage nodeModules`"
+
+      - name: Cache Node modules
+        uses: actions/cache@v2
+        with:
+          path: ${{ fromJSON(steps.cacheInfo.outputs.nodeModulesGAPaths) }}
+          key: ${{ runner.OS }}-mage-nodeModules-v1-${{ steps.cacheInfo.outputs.nodeModulesHash }}
+
+      - name: Debug
+        run: ls -la
+
+      - name: Debug 2
+        run: ls -la js
+
+      - name: Build app deps
+        run: |
+          mage nodeModules
