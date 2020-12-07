@@ -114,7 +114,7 @@ require (
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1
 	gorm.io/driver/sqlite v1.1.4
-	gorm.io/gorm v1.20.7
+	gorm.io/gorm v1.20.8
 	moul.io/godev v1.7.0
 	moul.io/openfiles v1.2.0
 	moul.io/srand v1.6.1
