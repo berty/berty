@@ -9,14 +9,14 @@ import (
 	"go.uber.org/zap"
 	"moul.io/u"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 type Bot struct {
-	client            bertymessenger.MessengerServiceClient
+	client            messengertypes.MessengerServiceClient
 	logger            *zap.Logger
 	displayName       string
-	bertyID           *bertymessenger.InstanceShareableBertyID_Reply
+	bertyID           *messengertypes.InstanceShareableBertyID_Reply
 	withReplay        bool
 	withFromMyself    bool
 	withEntityUpdates bool
@@ -25,7 +25,7 @@ type Bot struct {
 	handledEvents     uint
 	commands          map[string]command
 	store             struct {
-		conversations map[string]*bertymessenger.Conversation
+		conversations map[string]*messengertypes.Conversation
 		mutex         sync.Mutex
 	}
 }
@@ -38,7 +38,7 @@ func New(opts ...NewOption) (*Bot, error) {
 		handlers: make(map[HandlerType][]Handler),
 		commands: make(map[string]command),
 	}
-	b.store.conversations = make(map[string]*bertymessenger.Conversation)
+	b.store.conversations = make(map[string]*messengertypes.Conversation)
 
 	// configure bot with options
 	for _, opt := range opts {
@@ -61,7 +61,7 @@ func New(opts ...NewOption) (*Bot, error) {
 	{
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		req := &bertymessenger.InstanceShareableBertyID_Request{
+		req := &messengertypes.InstanceShareableBertyID_Request{
 			DisplayName: b.displayName,
 		}
 		ret, err := b.client.InstanceShareableBertyID(ctx, req)
@@ -87,7 +87,7 @@ func (b *Bot) PublicKey() string {
 // Start starts the main event loop and can be stopped by canceling the passed context.
 func (b *Bot) Start(ctx context.Context) error {
 	b.logger.Info("connecting to the event stream")
-	s, err := b.client.EventStream(ctx, &bertymessenger.EventStream_Request{})
+	s, err := b.client.EventStream(ctx, &messengertypes.EventStream_Request{})
 	if err != nil {
 		return fmt.Errorf("failed to listen to EventStream: %w", err)
 	}
@@ -100,7 +100,7 @@ func (b *Bot) Start(ctx context.Context) error {
 		}
 
 		if b.isReplaying {
-			if gme.Event.Type == bertymessenger.StreamEvent_TypeListEnded {
+			if gme.Event.Type == messengertypes.StreamEvent_TypeListEnded {
 				b.logger.Info("finished replaying logs from the previous sessions", zap.Uint("count", b.handledEvents))
 				b.isReplaying = false
 			}

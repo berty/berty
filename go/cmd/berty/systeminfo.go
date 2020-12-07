@@ -9,8 +9,8 @@ import (
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"moul.io/godev"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 func systemInfoCommand() *ffcli.Command {
@@ -48,7 +48,7 @@ func systemInfoCommand() *ffcli.Command {
 			}
 
 			for {
-				ret, err := messenger.SystemInfo(ctx, &bertymessenger.SystemInfo_Request{})
+				ret, err := messenger.SystemInfo(ctx, &messengertypes.SystemInfo_Request{})
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}

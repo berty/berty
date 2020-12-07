@@ -3,9 +3,9 @@ syntax = "proto3";
 package berty.messenger.v1;
 
 import "gogoproto/gogo.proto";
-import "bertytypes.proto";
+import "protocoltypes.proto";
 
-option go_package = "berty.tech/berty/go/pkg/bertymessenger";
+option go_package = "berty.tech/berty/go/pkg/messengertypes";
 option (gogoproto.goproto_unkeyed_all) = false;
 option (gogoproto.goproto_unrecognized_all) = false;
 option (gogoproto.goproto_sizecache_all) = false;
@@ -59,7 +59,7 @@ service MessengerService {
   rpc ConversationClose(ConversationClose.Request) returns (ConversationClose.Reply);
 
   // ServicesTokenList Retrieves the list of service server tokens
-  rpc ServicesTokenList(types.v1.ServicesTokenList.Request) returns (stream types.v1.ServicesTokenList.Reply);
+  rpc ServicesTokenList(protocol.v1.ServicesTokenList.Request) returns (stream protocol.v1.ServicesTokenList.Reply);
 
   // ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents
   rpc ReplicationServiceRegisterGroup(ReplicationServiceRegisterGroup.Request) returns (ReplicationServiceRegisterGroup.Reply);
@@ -203,7 +203,7 @@ message BertyID {
 }
 
 message BertyGroup {
-  berty.types.v1.Group group = 1;
+  berty.protocol.v1.Group group = 1;
   string display_name = 2;
 }
 
@@ -252,7 +252,7 @@ message AppMessage {
     repeated ReplyOption options = 1;
   }
   message MonitorMetadata {
-    berty.types.v1.MonitorGroup.EventMonitor event = 1;
+    berty.protocol.v1.MonitorGroup.EventMonitor event = 1;
   }
 }
 
@@ -264,12 +264,12 @@ message ReplyOption {
 message SystemInfo {
   message Request {}
   message Reply {
-    berty.types.v1.SystemInfo.Reply protocol = 1;
+    berty.protocol.v1.SystemInfo.Reply protocol = 1;
     Messenger messenger = 2;
   }
 
   message Messenger {
-    berty.types.v1.SystemInfo.Process process = 1;
+    berty.protocol.v1.SystemInfo.Process process = 1;
     repeated string warns = 2;
     bool protocol_in_same_process = 3;
     DB db = 4 [(gogoproto.customname) = "DB"];
@@ -333,7 +333,7 @@ message Interaction {
 }
 
 message Media {
-  string cid = 1 [(gogoproto.moretags) = "gorm:\"primaryKey;column:cid\"", (gogoproto.customname) = "CID"]; 
+  string cid = 1 [(gogoproto.moretags) = "gorm:\"primaryKey;column:cid\"", (gogoproto.customname) = "CID"];
   string mime_type = 2;
   string filename = 3;
   string display_name = 4;
@@ -483,7 +483,7 @@ message StreamEvent {
   }
   message ListEnded {}
   message MediaUpdated {
-    Media media = 1;   
+    Media media = 1;
   }
   message Notified {
     Type type = 1;
@@ -645,7 +645,7 @@ message MediaPrepare {
     /* Header data:
     ** IMPORTANT: The first request must contain the header data and no block. Header data in following requests will be ignored
     */
-  
+
     Media info = 2;
     string uri = 3;
   }

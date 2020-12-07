@@ -3,7 +3,7 @@
 
 ## Table of Contents
 
-- [bertymessenger.proto](#bertymessenger.proto)
+- [messengertypes.proto](#messengertypes.proto)
     - [Account](#berty.messenger.v1.Account)
     - [AccountGet](#berty.messenger.v1.AccountGet)
     - [AccountGet.Reply](#berty.messenger.v1.AccountGet.Reply)
@@ -144,10 +144,10 @@
   
 - [Scalar Value Types](#scalar-value-types)
 
-<a name="bertymessenger.proto"></a>
+<a name="messengertypes.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## bertymessenger.proto
+## messengertypes.proto
 
 <a name="berty.messenger.v1.Account"></a>
 
@@ -229,7 +229,7 @@ AppMessage is the app layer format
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| event | [berty.types.v1.MonitorGroup.EventMonitor](#berty.types.v1.MonitorGroup.EventMonitor) |  |  |
+| event | [berty.protocol.v1.MonitorGroup.EventMonitor](#berty.protocol.v1.MonitorGroup.EventMonitor) |  |  |
 
 <a name="berty.messenger.v1.AppMessage.ReplyOptions"></a>
 
@@ -301,7 +301,7 @@ AppMessage is the app layer format
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| group | [berty.types.v1.Group](#berty.types.v1.Group) |  |  |
+| group | [berty.protocol.v1.Group](#berty.protocol.v1.Group) |  |  |
 | display_name | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.BertyID"></a>
@@ -1082,7 +1082,7 @@ Composite primary key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| process | [berty.types.v1.SystemInfo.Process](#berty.types.v1.SystemInfo.Process) |  |  |
+| process | [berty.protocol.v1.SystemInfo.Process](#berty.protocol.v1.SystemInfo.Process) |  |  |
 | warns | [string](#string) | repeated |  |
 | protocol_in_same_process | [bool](#bool) |  |  |
 | db | [SystemInfo.DB](#berty.messenger.v1.SystemInfo.DB) |  |  |
@@ -1093,7 +1093,7 @@ Composite primary key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| protocol | [berty.types.v1.SystemInfo.Reply](#berty.types.v1.SystemInfo.Reply) |  |  |
+| protocol | [berty.protocol.v1.SystemInfo.Reply](#berty.protocol.v1.SystemInfo.Reply) |  |  |
 | messenger | [SystemInfo.Messenger](#berty.messenger.v1.SystemInfo.Messenger) |  |  |
 
 <a name="berty.messenger.v1.SystemInfo.Request"></a>
@@ -1230,7 +1230,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | Interact | [Interact.Request](#berty.messenger.v1.Interact.Request) | [Interact.Reply](#berty.messenger.v1.Interact.Reply) |  |
 | ConversationOpen | [ConversationOpen.Request](#berty.messenger.v1.ConversationOpen.Request) | [ConversationOpen.Reply](#berty.messenger.v1.ConversationOpen.Reply) |  |
 | ConversationClose | [ConversationClose.Request](#berty.messenger.v1.ConversationClose.Request) | [ConversationClose.Reply](#berty.messenger.v1.ConversationClose.Reply) |  |
-| ServicesTokenList | [.berty.types.v1.ServicesTokenList.Request](#berty.types.v1.ServicesTokenList.Request) | [.berty.types.v1.ServicesTokenList.Reply](#berty.types.v1.ServicesTokenList.Reply) stream | ServicesTokenList Retrieves the list of service server tokens |
+| ServicesTokenList | [.berty.protocol.v1.ServicesTokenList.Request](#berty.protocol.v1.ServicesTokenList.Request) | [.berty.protocol.v1.ServicesTokenList.Reply](#berty.protocol.v1.ServicesTokenList.Reply) stream | ServicesTokenList Retrieves the list of service server tokens |
 | ReplicationServiceRegisterGroup | [ReplicationServiceRegisterGroup.Request](#berty.messenger.v1.ReplicationServiceRegisterGroup.Request) | [ReplicationServiceRegisterGroup.Reply](#berty.messenger.v1.ReplicationServiceRegisterGroup.Reply) | ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents |
 | ReplicationSetAutoEnable | [ReplicationSetAutoEnable.Request](#berty.messenger.v1.ReplicationSetAutoEnable.Request) | [ReplicationSetAutoEnable.Reply](#berty.messenger.v1.ReplicationSetAutoEnable.Reply) | ReplicationSetAutoEnable Sets whether new groups should be replicated automatically or not |
 | BannerQuote | [BannerQuote.Request](#berty.messenger.v1.BannerQuote.Request) | [BannerQuote.Reply](#berty.messenger.v1.BannerQuote.Reply) | BannerQuote returns the quote of the day. |

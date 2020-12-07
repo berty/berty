@@ -3,11 +3,11 @@ package bertyprotocol
 import (
 	"context"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func (s *service) AppMetadataSend(ctx context.Context, req *bertytypes.AppMetadataSend_Request) (*bertytypes.AppMetadataSend_Reply, error) {
+func (s *service) AppMetadataSend(ctx context.Context, req *protocoltypes.AppMetadataSend_Request) (*protocoltypes.AppMetadataSend_Reply, error) {
 	g, err := s.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrGroupMissing.Wrap(err)
@@ -17,10 +17,10 @@ func (s *service) AppMetadataSend(ctx context.Context, req *bertytypes.AppMetada
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	return &bertytypes.AppMetadataSend_Reply{}, nil
+	return &protocoltypes.AppMetadataSend_Reply{}, nil
 }
 
-func (s *service) AppMessageSend(ctx context.Context, req *bertytypes.AppMessageSend_Request) (*bertytypes.AppMessageSend_Reply, error) {
+func (s *service) AppMessageSend(ctx context.Context, req *protocoltypes.AppMessageSend_Request) (*protocoltypes.AppMessageSend_Reply, error) {
 	g, err := s.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrGroupMissing.Wrap(err)
@@ -30,5 +30,5 @@ func (s *service) AppMessageSend(ctx context.Context, req *bertytypes.AppMessage
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	return &bertytypes.AppMessageSend_Reply{}, nil
+	return &protocoltypes.AppMessageSend_Reply{}, nil
 }

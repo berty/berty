@@ -10,8 +10,9 @@ import (
 	qrterminal "github.com/mdp/qrterminal/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/internal/bertylinks"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 func groupinitCommand() *ffcli.Command {
@@ -44,12 +45,12 @@ func groupinitCommand() *ffcli.Command {
 			}
 
 			name := fmt.Sprintf("random-group-%d", mrand.Int31()%65535) // nolint:gosec
-			group := &bertymessenger.BertyGroup{
+			group := &messengertypes.BertyGroup{
 				Group:       g,
 				DisplayName: name,
 			}
 			link := group.GetBertyLink()
-			internal, web, err := link.Marshal()
+			internal, web, err := bertylinks.MarshalLink(link)
 			if err != nil {
 				return err
 			}

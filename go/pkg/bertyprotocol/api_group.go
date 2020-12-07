@@ -10,13 +10,13 @@ import (
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/tinder"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func (s *service) GroupInfo(_ context.Context, req *bertytypes.GroupInfo_Request) (*bertytypes.GroupInfo_Reply, error) {
+func (s *service) GroupInfo(_ context.Context, req *protocoltypes.GroupInfo_Request) (*protocoltypes.GroupInfo_Reply, error) {
 	var (
-		g   *bertytypes.Group
+		g   *protocoltypes.Group
 		err error
 	)
 
@@ -60,14 +60,14 @@ func (s *service) GroupInfo(_ context.Context, req *bertytypes.GroupInfo_Request
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	return &bertytypes.GroupInfo_Reply{
+	return &protocoltypes.GroupInfo_Reply{
 		Group:    g,
 		MemberPK: member,
 		DevicePK: device,
 	}, nil
 }
 
-func (s *service) ActivateGroup(ctx context.Context, req *bertytypes.ActivateGroup_Request) (*bertytypes.ActivateGroup_Reply, error) {
+func (s *service) ActivateGroup(ctx context.Context, req *protocoltypes.ActivateGroup_Request) (*protocoltypes.ActivateGroup_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -78,10 +78,10 @@ func (s *service) ActivateGroup(ctx context.Context, req *bertytypes.ActivateGro
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	return &bertytypes.ActivateGroup_Reply{}, nil
+	return &protocoltypes.ActivateGroup_Reply{}, nil
 }
 
-func (s *service) DeactivateGroup(_ context.Context, req *bertytypes.DeactivateGroup_Request) (*bertytypes.DeactivateGroup_Reply, error) {
+func (s *service) DeactivateGroup(_ context.Context, req *protocoltypes.DeactivateGroup_Request) (*protocoltypes.DeactivateGroup_Reply, error) {
 	pk, err := crypto.UnmarshalEd25519PublicKey(req.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -91,10 +91,10 @@ func (s *service) DeactivateGroup(_ context.Context, req *bertytypes.DeactivateG
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	return &bertytypes.DeactivateGroup_Reply{}, nil
+	return &protocoltypes.DeactivateGroup_Reply{}, nil
 }
 
-func (s *service) MonitorGroup(req *bertytypes.MonitorGroup_Request, srv ProtocolService_MonitorGroupServer) error {
+func (s *service) MonitorGroup(req *protocoltypes.MonitorGroup_Request, srv protocoltypes.ProtocolService_MonitorGroupServer) error {
 	g, err := s.getContextGroupForID(req.GroupPK)
 	if err != nil {
 		return errcode.ErrGroupMissing.Wrap(err)
@@ -113,7 +113,7 @@ func (s *service) MonitorGroup(req *bertytypes.MonitorGroup_Request, srv Protoco
 	// @FIXME(gfanton): cached found peers should be done inside driver monitor
 	cachedFoundPeers := make(map[peer.ID]ipfsutil.Multiaddrs)
 	for evt := range sub.Out() {
-		var monitorEvent *bertytypes.MonitorGroup_EventMonitor
+		var monitorEvent *protocoltypes.MonitorGroup_EventMonitor
 
 		switch e := evt.(type) {
 		case ipfsutil.EvtPubSubTopic:
@@ -140,12 +140,12 @@ func (s *service) MonitorGroup(req *bertytypes.MonitorGroup_Request, srv Protoco
 			cachedFoundPeers[e.AddrInfo.ID] = newMS
 			monitorEvent = monitorHandleDiscoveryEvent(&e, s.host)
 		default:
-			monitorEvent = &bertytypes.MonitorGroup_EventMonitor{
-				Type: bertytypes.TypeEventMonitorUndefined,
+			monitorEvent = &protocoltypes.MonitorGroup_EventMonitor{
+				Type: protocoltypes.TypeEventMonitorUndefined,
 			}
 		}
 
-		err := srv.Send(&bertytypes.MonitorGroup_Reply{
+		err := srv.Send(&protocoltypes.MonitorGroup_Reply{
 			GroupPK: req.GetGroupPK(),
 			Event:   monitorEvent,
 		})
@@ -157,13 +157,13 @@ func (s *service) MonitorGroup(req *bertytypes.MonitorGroup_Request, srv Protoco
 	return nil
 }
 
-func monitorHandlePubsubEvent(e *ipfsutil.EvtPubSubTopic, h host.Host) *bertytypes.MonitorGroup_EventMonitor {
-	var m bertytypes.MonitorGroup_EventMonitor
+func monitorHandlePubsubEvent(e *ipfsutil.EvtPubSubTopic, h host.Host) *protocoltypes.MonitorGroup_EventMonitor {
+	var m protocoltypes.MonitorGroup_EventMonitor
 
 	switch e.EventType {
 	case ipfsutil.TypeEventMonitorPeerJoined:
-		m.Type = bertytypes.TypeEventMonitorPeerJoin
-		m.PeerJoin = &bertytypes.MonitorGroup_EventMonitorPeerJoin{}
+		m.Type = protocoltypes.TypeEventMonitorPeerJoin
+		m.PeerJoin = &protocoltypes.MonitorGroup_EventMonitorPeerJoin{}
 
 		activeConns := h.Network().ConnsToPeer(e.PeerID)
 		m.PeerJoin.Topic = e.Topic
@@ -175,27 +175,27 @@ func monitorHandlePubsubEvent(e *ipfsutil.EvtPubSubTopic, h host.Host) *bertytyp
 		}
 
 	case ipfsutil.TypeEventMonitorPeerLeaved:
-		m.Type = bertytypes.TypeEventMonitorPeerLeave
-		m.PeerLeave = &bertytypes.MonitorGroup_EventMonitorPeerLeave{}
+		m.Type = protocoltypes.TypeEventMonitorPeerLeave
+		m.PeerLeave = &protocoltypes.MonitorGroup_EventMonitorPeerLeave{}
 
 		m.PeerLeave.PeerID = e.PeerID.String()
 		m.PeerLeave.IsSelf = e.PeerID == h.ID()
 		m.PeerLeave.Topic = e.Topic
 
 	default:
-		m.Type = bertytypes.TypeEventMonitorUndefined
+		m.Type = protocoltypes.TypeEventMonitorUndefined
 	}
 
 	return &m
 }
 
-func monitorHandleDiscoveryEvent(e *tinder.EvtDriverMonitor, _ host.Host) *bertytypes.MonitorGroup_EventMonitor {
-	var m bertytypes.MonitorGroup_EventMonitor
+func monitorHandleDiscoveryEvent(e *tinder.EvtDriverMonitor, _ host.Host) *protocoltypes.MonitorGroup_EventMonitor {
+	var m protocoltypes.MonitorGroup_EventMonitor
 
 	switch e.EventType {
 	case tinder.TypeEventMonitorAdvertise:
-		m.Type = bertytypes.TypeEventMonitorAdvertiseGroup
-		m.AdvertiseGroup = &bertytypes.MonitorGroup_EventMonitorAdvertiseGroup{}
+		m.Type = protocoltypes.TypeEventMonitorAdvertiseGroup
+		m.AdvertiseGroup = &protocoltypes.MonitorGroup_EventMonitorAdvertiseGroup{}
 
 		m.AdvertiseGroup.Topic = e.Topic
 		m.AdvertiseGroup.PeerID = e.AddrInfo.ID.String()
@@ -206,8 +206,8 @@ func monitorHandleDiscoveryEvent(e *tinder.EvtDriverMonitor, _ host.Host) *berty
 		}
 
 	case tinder.TypeEventMonitorFoundPeer:
-		m.Type = bertytypes.TypeEventMonitorPeerFound
-		m.PeerFound = &bertytypes.MonitorGroup_EventMonitorPeerFound{}
+		m.Type = protocoltypes.TypeEventMonitorPeerFound
+		m.PeerFound = &protocoltypes.MonitorGroup_EventMonitorPeerFound{}
 
 		m.PeerFound.Topic = e.Topic
 		m.PeerFound.PeerID = e.AddrInfo.ID.String()
@@ -218,7 +218,7 @@ func monitorHandleDiscoveryEvent(e *tinder.EvtDriverMonitor, _ host.Host) *berty
 		}
 
 	default:
-		m.Type = bertytypes.TypeEventMonitorUndefined
+		m.Type = protocoltypes.TypeEventMonitorUndefined
 	}
 
 	return &m

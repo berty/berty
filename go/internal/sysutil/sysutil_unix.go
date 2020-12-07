@@ -7,10 +7,10 @@ import (
 
 	"go.uber.org/multierr"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func appendCustomSystemInfo(reply *bertytypes.SystemInfo_Process) error {
+func appendCustomSystemInfo(reply *protocoltypes.SystemInfo_Process) error {
 	var errs error
 
 	// rlimit

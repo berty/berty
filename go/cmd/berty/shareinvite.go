@@ -9,8 +9,8 @@ import (
 	qrterminal "github.com/mdp/qrterminal/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 func shareInviteCommand() *ffcli.Command {
@@ -58,7 +58,7 @@ func shareInviteCommand() *ffcli.Command {
 			}
 
 			// get shareable ID
-			ret, err := messenger.InstanceShareableBertyID(ctx, &bertymessenger.InstanceShareableBertyID_Request{DisplayName: name})
+			ret, err := messenger.InstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{DisplayName: name})
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
@@ -68,7 +68,7 @@ func shareInviteCommand() *ffcli.Command {
 				qrterminal.GenerateHalfBlock(ret.InternalURL, qrterminal.L, os.Stderr)
 			}
 			if shareOnDevChannelFlag {
-				_, err = messenger.DevShareInstanceBertyID(ctx, &bertymessenger.DevShareInstanceBertyID_Request{DisplayName: name})
+				_, err = messenger.DevShareInstanceBertyID(ctx, &messengertypes.DevShareInstanceBertyID_Request{DisplayName: name})
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}

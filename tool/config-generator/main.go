@@ -12,7 +12,7 @@ import (
 	yaml "gopkg.in/yaml.v3"
 	"moul.io/u"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 var (
@@ -27,7 +27,7 @@ func main() {
 	root := ".." // maybe should be dynamic or using getwd
 
 	log.Printf("[+] parsing    %s", ConfigYML)
-	var config bertytypes.Config
+	var config protocoltypes.Config
 	{
 		p := path.Join(root, ConfigYML)
 		data, err := ioutil.ReadFile(p)
@@ -59,9 +59,9 @@ export const globals = %s;
 package config
 
 import "encoding/json"
-import "berty.tech/berty/v2/go/pkg/bertytypes"
+import "berty.tech/berty/v2/go/pkg/protocoltypes"
 
-var Config bertytypes.Config
+var Config protocoltypes.Config
 
 // FIXME: make it more nicely
 func init() {

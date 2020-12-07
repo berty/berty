@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 type getEventHandlerForTestsOptions int
@@ -33,7 +34,7 @@ func getEventHandlerForTests(t *testing.T, opts ...getEventHandlerForTestsOption
 
 	if withService {
 		var (
-			s  = MessengerServiceServer(nil)
+			s  = messengertypes.MessengerServiceServer(nil)
 			ok = true
 		)
 

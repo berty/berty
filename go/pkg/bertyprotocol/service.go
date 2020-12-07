@@ -17,9 +17,9 @@ import (
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/tinder"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/go-orbit-db/baseorbitdb"
 	"berty.tech/go-orbit-db/iface"
 )
@@ -28,7 +28,7 @@ var _ Service = (*service)(nil)
 
 // Service is the main Berty Protocol interface
 type Service interface {
-	ProtocolServiceServer
+	protocoltypes.ProtocolServiceServer
 
 	Close() error
 	Status() Status
@@ -44,7 +44,7 @@ type service struct {
 	accountGroup   *groupContext
 	deviceKeystore DeviceKeystore
 	openedGroups   map[string]*groupContext
-	groups         map[string]*bertytypes.Group
+	groups         map[string]*protocoltypes.Group
 	lock           sync.RWMutex
 	authSession    atomic.Value
 	close          func() error
@@ -182,7 +182,7 @@ func New(ctx context.Context, opts Opts) (Service, error) {
 		close:          opts.close,
 		accountGroup:   acc,
 		startedAt:      time.Now(),
-		groups: map[string]*bertytypes.Group{
+		groups: map[string]*protocoltypes.Group{
 			string(acc.Group().PublicKey): acc.Group(),
 		},
 		openedGroups: map[string]*groupContext{

@@ -11,8 +11,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-ipfs-log/identityprovider"
 	ipliface "berty.tech/go-ipfs-log/iface"
@@ -31,7 +31,7 @@ type messageStore struct {
 
 	devKS     DeviceKeystore
 	mks       *messageKeystore
-	g         *bertytypes.Group
+	g         *protocoltypes.Group
 	logger    *zap.Logger
 	cache     map[string]*ring.Ring
 	cacheLock sync.Mutex
@@ -89,7 +89,7 @@ func (m *messageStore) openMessageCacheForPK(ctx context.Context, devicePK []byt
 	m.cacheLock.Unlock()
 }
 
-func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry, enableCache bool) (*bertytypes.GroupMessageEvent, error) {
+func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry, enableCache bool) (*protocoltypes.GroupMessageEvent, error) {
 	if e == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -123,7 +123,7 @@ func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry, enableC
 	}
 
 	eventContext := newEventContext(e.GetHash(), e.GetNext(), m.g, attachmentsCIDs)
-	return &bertytypes.GroupMessageEvent{
+	return &protocoltypes.GroupMessageEvent{
 		EventContext: eventContext,
 		Headers:      headers,
 		Message:      msg.GetPlaintext(),
@@ -131,13 +131,13 @@ func (m *messageStore) openMessage(ctx context.Context, e ipfslog.Entry, enableC
 }
 
 // FIXME: use iterator instead to reduce resource usage (require go-ipfs-log improvements)
-func (m *messageStore) ListEvents(ctx context.Context, since, until []byte, reverse bool) (<-chan *bertytypes.GroupMessageEvent, error) {
+func (m *messageStore) ListEvents(ctx context.Context, since, until []byte, reverse bool) (<-chan *protocoltypes.GroupMessageEvent, error) {
 	entries, err := getEntriesInRange(m.OpLog().GetEntries().Reverse().Slice(), since, until)
 	if err != nil {
 		return nil, err
 	}
 
-	out := make(chan *bertytypes.GroupMessageEvent)
+	out := make(chan *protocoltypes.GroupMessageEvent)
 
 	go func() {
 		iterateOverEntries(
@@ -171,9 +171,9 @@ func (m *messageStore) AddMessage(ctx context.Context, payload []byte, attachmen
 		return nil, errcode.ErrKeystoreGet.Wrap(err)
 	}
 
-	msg, err := (&bertytypes.EncryptedMessage{
+	msg, err := (&protocoltypes.EncryptedMessage{
 		Plaintext:        payload,
-		ProtocolMetadata: &bertytypes.ProtocolMetadata{AttachmentsSecrets: attachmentsSecrets},
+		ProtocolMetadata: &protocoltypes.ProtocolMetadata{AttachmentsSecrets: attachmentsSecrets},
 	}).Marshal()
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)

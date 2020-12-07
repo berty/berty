@@ -4,13 +4,13 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/internal/bertylinks"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func openGroupFromString(url string) (*bertytypes.Group, error) {
-	link, err := bertymessenger.UnmarshalLink(url)
+func openGroupFromString(url string) (*protocoltypes.Group, error) {
+	link, err := bertylinks.UnmarshalLink(url)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}

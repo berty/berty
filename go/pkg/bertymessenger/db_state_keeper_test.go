@@ -6,6 +6,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
+
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 func Test_keepUsername(t *testing.T) {
@@ -70,7 +72,7 @@ func Test_keepConversationsUnreadCounts(t *testing.T) {
 	require.NoError(t, db.db.Exec(`INSERT INTO conversations (public_key, is_open, unread_count) VALUES ("pk_3", true, 3000)`).Error)
 
 	res = keepConversationsLocalData(db.db, log)
-	expectedValues := map[string]*LocalConversationState{
+	expectedValues := map[string]*messengertypes.LocalConversationState{
 		"pk_1": {IsOpen: true, UnreadCount: 1000},
 		"pk_2": {IsOpen: false, UnreadCount: 2000},
 		"pk_3": {IsOpen: true, UnreadCount: 3000},

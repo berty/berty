@@ -18,8 +18,8 @@ import (
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	orbitdb "berty.tech/go-orbit-db"
 )
 
@@ -147,7 +147,7 @@ func (s *service) exportOrbitDBGroupHeads(gc *groupContext, headsMetadata []cid.
 		return errcode.ErrSerialization.Wrap(err)
 	}
 
-	headsExport := &bertytypes.GroupHeadsExport{
+	headsExport := &protocoltypes.GroupHeadsExport{
 		PublicKey:         gc.group.PublicKey,
 		SignPub:           spkBytes,
 		MetadataHeadsCIDs: cidsMeta,
@@ -270,7 +270,7 @@ func readExportSecretKeyFile(expectedSize int64, reader *tar.Reader) (crypto.Pri
 	return sk, nil
 }
 
-func readExportOrbitDBGroupHeads(expectedSize int64, reader *tar.Reader) (*bertytypes.GroupHeadsExport, []cid.Cid, []cid.Cid, error) {
+func readExportOrbitDBGroupHeads(expectedSize int64, reader *tar.Reader) (*protocoltypes.GroupHeadsExport, []cid.Cid, []cid.Cid, error) {
 	if expectedSize == 0 {
 		return nil, nil, nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid expected node size"))
 	}
@@ -285,7 +285,7 @@ func readExportOrbitDBGroupHeads(expectedSize int64, reader *tar.Reader) (*berty
 		return nil, nil, nil, errcode.ErrInternal.Wrap(fmt.Errorf("unexpected file size"))
 	}
 
-	groupHeads := &bertytypes.GroupHeadsExport{}
+	groupHeads := &protocoltypes.GroupHeadsExport{}
 	if err := groupHeads.Unmarshal(nodeContents.Bytes()); err != nil {
 		return nil, nil, nil, errcode.ErrDeserialization.Wrap(err)
 	}
@@ -420,7 +420,7 @@ func restoreOrbitDBHeads(ctx context.Context, odb *BertyOrbitDB) RestoreAccountH
 				return true, errcode.ErrInternal.Wrap(err)
 			}
 
-			if err := odb.setHeadsForGroup(ctx, &bertytypes.Group{
+			if err := odb.setHeadsForGroup(ctx, &protocoltypes.Group{
 				PublicKey: heads.PublicKey,
 				SignPub:   heads.SignPub,
 			}, metaCIDs, messageCIDs); err != nil {

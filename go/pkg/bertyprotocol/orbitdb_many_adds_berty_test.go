@@ -18,10 +18,10 @@ import (
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, g *bertytypes.Group, pathBase string, amountToAdd, amountCurrentlyPresent int) {
+func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, g *protocoltypes.Group, pathBase string, amountToAdd, amountCurrentlyPresent int) {
 	t.Helper()
 	testutil.FilterSpeed(t, testutil.Slow)
 
@@ -91,7 +91,7 @@ func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, 
 	// Watch for incoming new messages
 	go func() {
 		for e := range gc.MessageStore().Subscribe(ctx) {
-			_, ok := e.(*bertytypes.GroupMessageEvent)
+			_, ok := e.(*protocoltypes.GroupMessageEvent)
 			if !ok {
 				continue
 			}

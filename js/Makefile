@@ -292,13 +292,13 @@ packages/api/root.pb.js: $(wildcard ../api/*) node_modules
 		-t json-module \
 		-w es6 \
 		-o $@ \
-		../api/bertyaccount.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto
+		../api/bertyaccount.proto ../api/protocoltypes.proto ../api/messengertypes.proto
 
 packages/api/root.pb.d.ts: $(wildcard ../api/*) node_modules
 	$(call check-program, npx)
 	npx pbjs $(pbjs_common_flags) \
 		-t static-module \
-		../api/bertyaccount.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto \
+		../api/bertyaccount.proto ../api/protocoltypes.proto ../api/messengertypes.proto \
 		| npx pbts --no-comments -o $@ -
 	sed -E -i.bak 's/^.*constructor.*$$//g' $@ # json-module codegen doesn't support new
 	rm -f $@.bak
@@ -323,7 +323,7 @@ _gen.config:
 
 ##### gen.sum
 
-gensum_src := Makefile ../api/bertyprotocol.proto ../api/bertymessenger.proto ../api/bertytypes.proto
+gensum_src := Makefile ../api/protocoltypes.proto ../api/messengertypes.proto
 gen.sum: $(gensum_src)
 	$(call check-program, shasum)
 	@shasum $(gensum_src) | sort > gen.sum.tmp

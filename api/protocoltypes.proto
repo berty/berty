@@ -1,15 +1,127 @@
 syntax = "proto3";
 
-package berty.types.v1;
+package berty.protocol.v1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "berty.tech/berty/go/pkg/bertytypes";
+option go_package = "berty.tech/berty/go/pkg/protocoltypes";
 
 option (gogoproto.goproto_enum_prefix_all) = false;
 option (gogoproto.marshaler_all) = true;
 option (gogoproto.unmarshaler_all) = true;
 option (gogoproto.sizer_all) = true;
+
+// ProtocolService is the top-level API to manage an instance of the Berty Protocol.
+// Each Berty Protocol Instance is considered as a Berty device and is associated with a Berty user.
+service ProtocolService {
+  // InstanceExportData exports instance data
+  rpc InstanceExportData (InstanceExportData.Request) returns (stream InstanceExportData.Reply);
+
+  // InstanceGetConfiguration gets current configuration of this protocol instance
+  rpc InstanceGetConfiguration (InstanceGetConfiguration.Request) returns (InstanceGetConfiguration.Reply);
+
+  // ContactRequestReference retrieves the information required to create a reference (ie. included in a shareable link) to the current account
+  rpc ContactRequestReference (ContactRequestReference.Request) returns (ContactRequestReference.Reply);
+
+  // ContactRequestDisable disables incoming contact requests
+  rpc ContactRequestDisable (ContactRequestDisable.Request) returns (ContactRequestDisable.Reply);
+
+  // ContactRequestEnable enables incoming contact requests
+  rpc ContactRequestEnable (ContactRequestEnable.Request) returns (ContactRequestEnable.Reply);
+
+  // ContactRequestResetReference changes the contact request reference
+  rpc ContactRequestResetReference (ContactRequestResetReference.Request) returns (ContactRequestResetReference.Reply);
+
+  // ContactRequestSend attempt to send a contact request
+  rpc ContactRequestSend (ContactRequestSend.Request) returns (ContactRequestSend.Reply);
+
+  // ContactRequestAccept accepts a contact request
+  rpc ContactRequestAccept (ContactRequestAccept.Request) returns (ContactRequestAccept.Reply);
+
+  // ContactRequestDiscard ignores a contact request, without informing the other user
+  rpc ContactRequestDiscard (ContactRequestDiscard.Request) returns (ContactRequestDiscard.Reply);
+
+  // ContactBlock blocks a contact from sending requests
+  rpc ContactBlock (ContactBlock.Request) returns (ContactBlock.Reply);
+
+  // ContactUnblock unblocks a contact from sending requests
+  rpc ContactUnblock (ContactUnblock.Request) returns (ContactUnblock.Reply);
+
+  // ContactAliasKeySend send an alias key to a contact, the contact will be able to assert that your account is being present on a multi-member group
+  rpc ContactAliasKeySend (ContactAliasKeySend.Request) returns (ContactAliasKeySend.Reply);
+
+  // MultiMemberGroupCreate creates a new multi-member group
+  rpc MultiMemberGroupCreate (MultiMemberGroupCreate.Request) returns (MultiMemberGroupCreate.Reply);
+
+  // MultiMemberGroupJoin joins a multi-member group
+  rpc MultiMemberGroupJoin (MultiMemberGroupJoin.Request) returns (MultiMemberGroupJoin.Reply);
+
+  // MultiMemberGroupLeave leaves a multi-member group
+  rpc MultiMemberGroupLeave (MultiMemberGroupLeave.Request) returns (MultiMemberGroupLeave.Reply);
+
+  // MultiMemberGroupAliasResolverDisclose discloses your alias resolver key
+  rpc MultiMemberGroupAliasResolverDisclose (MultiMemberGroupAliasResolverDisclose.Request) returns (MultiMemberGroupAliasResolverDisclose.Reply);
+
+  // MultiMemberGroupAdminRoleGrant grants an admin role to a group member
+  rpc MultiMemberGroupAdminRoleGrant (MultiMemberGroupAdminRoleGrant.Request) returns (MultiMemberGroupAdminRoleGrant.Reply);
+
+  // MultiMemberGroupInvitationCreate creates an invitation to a multi-member group
+  rpc MultiMemberGroupInvitationCreate (MultiMemberGroupInvitationCreate.Request) returns (MultiMemberGroupInvitationCreate.Reply);
+
+  // AppMetadataSend adds an app event to the metadata store, the message is encrypted using a symmetric key and readable by future group members
+  rpc AppMetadataSend (AppMetadataSend.Request) returns (AppMetadataSend.Reply);
+
+  // AppMessageSend adds an app event to the message store, the message is encrypted using a derived key and readable by current group members
+  rpc AppMessageSend (AppMessageSend.Request) returns (AppMessageSend.Reply);
+
+  // GroupMetadataList replays previous and subscribes to new metadata events from the group
+  rpc GroupMetadataList (GroupMetadataList.Request) returns (stream GroupMetadataEvent);
+
+  // GroupMessageList replays previous and subscribes to new message events from the group
+  rpc GroupMessageList (GroupMessageList.Request) returns (stream GroupMessageEvent);
+
+  // GroupInfo retrieves information about a group
+  rpc GroupInfo (GroupInfo.Request) returns (GroupInfo.Reply);
+
+  // ActivateGroup explicitly opens a group
+  rpc ActivateGroup (ActivateGroup.Request) returns (ActivateGroup.Reply);
+
+  // DeactivateGroup closes a group
+  rpc DeactivateGroup (DeactivateGroup.Request) returns (DeactivateGroup.Reply);
+
+  // Monitor Group events
+  rpc MonitorGroup (MonitorGroup.Request) returns (stream MonitorGroup.Reply);
+
+  rpc DebugListGroups (DebugListGroups.Request) returns (stream DebugListGroups.Reply);
+
+  rpc DebugInspectGroupStore (DebugInspectGroupStore.Request) returns (stream DebugInspectGroupStore.Reply);
+
+  rpc DebugGroup (DebugGroup.Request) returns (DebugGroup.Reply);
+
+  rpc SystemInfo (SystemInfo.Request) returns (SystemInfo.Reply);
+
+  // AuthServiceInitFlow Initialize an authentication flow
+  rpc AuthServiceInitFlow (AuthServiceInitFlow.Request) returns (AuthServiceInitFlow.Reply);
+
+  // AuthServiceCompleteFlow Completes an authentication flow
+  rpc AuthServiceCompleteFlow (AuthServiceCompleteFlow.Request) returns (AuthServiceCompleteFlow.Reply);
+
+  // ServicesTokenList Retrieves the list of services tokens
+  rpc ServicesTokenList (ServicesTokenList.Request) returns (stream ServicesTokenList.Reply);
+
+  // ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents
+  rpc ReplicationServiceRegisterGroup (ReplicationServiceRegisterGroup.Request) returns (ReplicationServiceRegisterGroup.Reply);
+
+  // PeerList returns a list of P2P peers
+  rpc PeerList(PeerList.Request) returns (PeerList.Reply);
+
+  // AttachmentPrepare ...
+  rpc AttachmentPrepare(stream AttachmentPrepare.Request) returns (AttachmentPrepare.Reply);
+
+  // AttachmentRetrieve returns an attachment data
+  rpc AttachmentRetrieve(AttachmentRetrieve.Request) returns (stream AttachmentRetrieve.Reply);
+}
+
 
 enum GroupType {
   // GroupTypeUndefined indicates that the value has not been set. For example, happens if group is replicated.
@@ -169,7 +281,7 @@ message GroupMetadata {
   // sig is the signature of the payload, it depends on the event_type for the used key
   bytes sig = 3;
 
-  // protocol_metadata is protocol layer data 
+  // protocol_metadata is protocol layer data
   ProtocolMetadata protocol_metadata = 4;
 }
 
@@ -210,7 +322,7 @@ message EncryptedMessage {
   // plaintext is the app layer data
   bytes plaintext = 1;
 
-  // protocol_metadata is protocol layer data 
+  // protocol_metadata is protocol layer data
   ProtocolMetadata protocol_metadata = 2;
 }
 
@@ -1180,7 +1292,7 @@ message AttachmentPrepare {
     /* Header data:
     ** IMPORTANT: The first request must contain the header data and no block. Header data in following requests will be ignored
     */
-  
+
     // disable_encryption tells the protocol to store the file as plain text
     bool disable_encryption = 2;
   }

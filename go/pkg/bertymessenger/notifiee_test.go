@@ -6,6 +6,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"go.uber.org/multierr"
+
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 func TestDispatcher(t *testing.T) {
@@ -14,7 +16,7 @@ func TestDispatcher(t *testing.T) {
 	called := false
 	var n NotifieeBundle
 	const errStr = "Test error"
-	n.StreamEventImpl = func(e *StreamEvent) error {
+	n.StreamEventImpl = func(e *messengertypes.StreamEvent) error {
 		require.True(t, e.GetIsNew())
 		called = true
 		return errors.New(errStr)
@@ -22,7 +24,7 @@ func TestDispatcher(t *testing.T) {
 	d.Register(&n)
 	defer d.Unregister(&n)
 
-	err := d.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{}, true)
+	err := d.StreamEvent(messengertypes.StreamEvent_TypeInteractionUpdated, &messengertypes.StreamEvent_InteractionUpdated{}, true)
 	errs := multierr.Errors(err)
 	require.True(t, called)
 	require.Equal(t, len(errs), 1)
@@ -34,17 +36,17 @@ func TestDispatcher(t *testing.T) {
 
 func TestNotify(t *testing.T) {
 	const errStr = "Test error"
-	const notifType StreamEvent_Notified_Type = StreamEvent_Notified_TypeBasic
+	const notifType messengertypes.StreamEvent_Notified_Type = messengertypes.StreamEvent_Notified_TypeBasic
 	const title string = "title"
 	const body string = "body"
 
 	d := NewDispatcher()
 
 	// register handler
-	var se *StreamEvent
+	var se *messengertypes.StreamEvent
 	{
 		var n NotifieeBundle
-		n.StreamEventImpl = func(e *StreamEvent) error {
+		n.StreamEventImpl = func(e *messengertypes.StreamEvent) error {
 			se = e
 			return errors.New(errStr)
 		}
@@ -61,13 +63,13 @@ func TestNotify(t *testing.T) {
 	}
 
 	// parse event
-	var notif *StreamEvent_Notified
+	var notif *messengertypes.StreamEvent_Notified
 	{
 		require.NotNil(t, se)
-		require.Equal(t, StreamEvent_TypeNotified, se.GetType())
+		require.Equal(t, messengertypes.StreamEvent_TypeNotified, se.GetType())
 		sePayload, err := se.UnmarshalPayload()
 		require.NoError(t, err)
-		notif = sePayload.(*StreamEvent_Notified)
+		notif = sePayload.(*messengertypes.StreamEvent_Notified)
 	}
 
 	// verify notif
@@ -83,16 +85,16 @@ func TestNotifyWithPayload(t *testing.T) {
 	const title string = "title"
 	const body string = "body"
 	const errStr = "Test error"
-	const notifType StreamEvent_Notified_Type = StreamEvent_Notified_TypeMessageReceived
-	conv := Conversation{DisplayName: "conv"}
+	const notifType messengertypes.StreamEvent_Notified_Type = messengertypes.StreamEvent_Notified_TypeMessageReceived
+	conv := messengertypes.Conversation{DisplayName: "conv"}
 
 	d := NewDispatcher()
 
 	// register handler
-	var se *StreamEvent
+	var se *messengertypes.StreamEvent
 	{
 		var n NotifieeBundle
-		n.StreamEventImpl = func(e *StreamEvent) error {
+		n.StreamEventImpl = func(e *messengertypes.StreamEvent) error {
 			se = e
 			return errors.New(errStr)
 		}
@@ -102,20 +104,20 @@ func TestNotifyWithPayload(t *testing.T) {
 
 	// trigger notif with payload
 	{
-		err := d.Notify(notifType, title, body, &StreamEvent_Notified_MessageReceived{Conversation: &conv})
+		err := d.Notify(notifType, title, body, &messengertypes.StreamEvent_Notified_MessageReceived{Conversation: &conv})
 		errs := multierr.Errors(err)
 		require.Equal(t, len(errs), 1)
 		require.Equal(t, errs[0].Error(), errStr)
 	}
 
 	// parse event
-	var notif *StreamEvent_Notified
+	var notif *messengertypes.StreamEvent_Notified
 	{
 		require.NotNil(t, se)
-		require.Equal(t, StreamEvent_TypeNotified, se.GetType())
+		require.Equal(t, messengertypes.StreamEvent_TypeNotified, se.GetType())
 		sePayload, err := se.UnmarshalPayload()
 		require.NoError(t, err)
-		notif = sePayload.(*StreamEvent_Notified)
+		notif = sePayload.(*messengertypes.StreamEvent_Notified)
 	}
 
 	// verify notif
@@ -129,7 +131,7 @@ func TestNotifyWithPayload(t *testing.T) {
 	{
 		notifPayload, err := notif.UnmarshalPayload()
 		require.NoError(t, err)
-		msgRecvd := notifPayload.(*StreamEvent_Notified_MessageReceived)
+		msgRecvd := notifPayload.(*messengertypes.StreamEvent_Notified_MessageReceived)
 
 		require.Equal(t, conv.DisplayName, msgRecvd.GetConversation().GetDisplayName())
 	}

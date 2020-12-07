@@ -19,8 +19,8 @@ import (
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/go-orbit-db/stores"
 )
 
@@ -28,7 +28,7 @@ const CurrentGroupVersion = 1
 
 // NewGroupMultiMember creates a new Group object and an invitation to be used by
 // the first member of the group
-func NewGroupMultiMember() (*bertytypes.Group, crypto.PrivKey, error) {
+func NewGroupMultiMember() (*protocoltypes.Group, crypto.PrivKey, error) {
 	priv, pub, err := crypto.GenerateEd25519Key(crand.Reader)
 	if err != nil {
 		return nil, nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
@@ -54,11 +54,11 @@ func NewGroupMultiMember() (*bertytypes.Group, crypto.PrivKey, error) {
 		return nil, nil, errcode.ErrCryptoSignature.Wrap(err)
 	}
 
-	group := &bertytypes.Group{
+	group := &protocoltypes.Group{
 		PublicKey: pubBytes,
 		Secret:    signingBytes,
 		SecretSig: skSig,
-		GroupType: bertytypes.GroupTypeMultiMember,
+		GroupType: protocoltypes.GroupTypeMultiMember,
 	}
 
 	return group, priv, nil
@@ -108,7 +108,7 @@ func getKeysForGroupOfContact(contactPairSK crypto.PrivKey) (crypto.PrivKey, cry
 	return groupSK, groupSecretSK, nil
 }
 
-func getGroupForContact(contactPairSK crypto.PrivKey) (*bertytypes.Group, error) {
+func getGroupForContact(contactPairSK crypto.PrivKey) (*protocoltypes.Group, error) {
 	groupSK, groupSecretSK, err := getKeysForGroupOfContact(contactPairSK)
 	if err != nil {
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
@@ -123,15 +123,15 @@ func getGroupForContact(contactPairSK crypto.PrivKey) (*bertytypes.Group, error)
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	return &bertytypes.Group{
+	return &protocoltypes.Group{
 		PublicKey: pubBytes,
 		Secret:    signingBytes,
 		SecretSig: nil,
-		GroupType: bertytypes.GroupTypeContact,
+		GroupType: protocoltypes.GroupTypeContact,
 	}, nil
 }
 
-func getGroupForAccount(priv, signing crypto.PrivKey) (*bertytypes.Group, error) {
+func getGroupForAccount(priv, signing crypto.PrivKey) (*protocoltypes.Group, error) {
 	pubBytes, err := priv.GetPublic().Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
@@ -142,16 +142,16 @@ func getGroupForAccount(priv, signing crypto.PrivKey) (*bertytypes.Group, error)
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	return &bertytypes.Group{
+	return &protocoltypes.Group{
 		PublicKey: pubBytes,
 		Secret:    signingBytes,
 		SecretSig: nil,
-		GroupType: bertytypes.GroupTypeAccount,
+		GroupType: protocoltypes.GroupTypeAccount,
 	}, nil
 }
 
-func metadataStoreListSecrets(ctx context.Context, gc *groupContext) map[crypto.PubKey]*bertytypes.DeviceSecret {
-	publishedSecrets := map[crypto.PubKey]*bertytypes.DeviceSecret{}
+func metadataStoreListSecrets(ctx context.Context, gc *groupContext) map[crypto.PubKey]*protocoltypes.DeviceSecret {
+	publishedSecrets := map[crypto.PubKey]*protocoltypes.DeviceSecret{}
 
 	m := gc.MetadataStore()
 	ownSK := gc.getMemberPrivKey()
@@ -189,12 +189,12 @@ func FillMessageKeysHolderUsingNewData(ctx context.Context, gc *groupContext) <-
 
 	go func() {
 		for evt := range sub {
-			e, ok := evt.(*bertytypes.GroupMetadataEvent)
+			e, ok := evt.(*protocoltypes.GroupMetadataEvent)
 			if !ok {
 				continue
 			}
 
-			if e.Metadata.EventType != bertytypes.EventTypeGroupDeviceSecretAdded {
+			if e.Metadata.EventType != protocoltypes.EventTypeGroupDeviceSecretAdded {
 				continue
 			}
 
@@ -373,7 +373,7 @@ func SendSecretsToExistingMembers(ctx context.Context, gctx *groupContext, conta
 	members := gctx.MetadataStore().ListMembers()
 
 	// Force sending secret to contact member in contact group
-	if gctx.group.GroupType == bertytypes.GroupTypeContact && len(members) < 2 && contact != nil {
+	if gctx.group.GroupType == protocoltypes.GroupTypeContact && len(members) < 2 && contact != nil {
 		// Check if contact member is already listed
 		found := false
 		for _, member := range members {
@@ -420,16 +420,16 @@ func WatchNewMembersAndSendSecrets(ctx context.Context, logger *zap.Logger, gctx
 
 	go func() {
 		for evt := range sub {
-			e, ok := evt.(*bertytypes.GroupMetadataEvent)
+			e, ok := evt.(*protocoltypes.GroupMetadataEvent)
 			if !ok {
 				continue
 			}
 
-			if e.Metadata.EventType != bertytypes.EventTypeGroupMemberDeviceAdded {
+			if e.Metadata.EventType != protocoltypes.EventTypeGroupMemberDeviceAdded {
 				continue
 			}
 
-			event := &bertytypes.GroupAddMemberDevice{}
+			event := &protocoltypes.GroupAddMemberDevice{}
 			if err := event.Unmarshal(e.Event); err != nil {
 				logger.Error("unable to unmarshal payload", zap.Error(err))
 				continue
@@ -456,12 +456,12 @@ func WatchNewMembersAndSendSecrets(ctx context.Context, logger *zap.Logger, gctx
 	return ch
 }
 
-func openDeviceSecret(m *bertytypes.GroupMetadata, localMemberPrivateKey crypto.PrivKey, group *bertytypes.Group) (crypto.PubKey, *bertytypes.DeviceSecret, error) {
-	if m == nil || m.EventType != bertytypes.EventTypeGroupDeviceSecretAdded {
+func openDeviceSecret(m *protocoltypes.GroupMetadata, localMemberPrivateKey crypto.PrivKey, group *protocoltypes.Group) (crypto.PubKey, *protocoltypes.DeviceSecret, error) {
+	if m == nil || m.EventType != protocoltypes.EventTypeGroupDeviceSecretAdded {
 		return nil, nil, errcode.ErrInvalidInput
 	}
 
-	s := &bertytypes.GroupAddDeviceSecret{}
+	s := &protocoltypes.GroupAddDeviceSecret{}
 	if err := s.Unmarshal(m.Payload); err != nil {
 		return nil, nil, errcode.ErrDeserialization.Wrap(err)
 	}
@@ -486,7 +486,7 @@ func openDeviceSecret(m *bertytypes.GroupMetadata, localMemberPrivateKey crypto.
 	}
 
 	nonce := groupIDToNonce(group)
-	decryptedSecret := &bertytypes.DeviceSecret{}
+	decryptedSecret := &protocoltypes.DeviceSecret{}
 	decryptedMessage, ok := box.Open(nil, s.Payload, nonce, mongPub, mongPriv)
 	if !ok {
 		return nil, nil, errcode.ErrCryptoDecrypt
@@ -500,7 +500,7 @@ func openDeviceSecret(m *bertytypes.GroupMetadata, localMemberPrivateKey crypto.
 	return senderDevicePubKey, decryptedSecret, nil
 }
 
-func groupIDToNonce(group *bertytypes.Group) *[cryptoutil.NonceSize]byte {
+func groupIDToNonce(group *protocoltypes.Group) *[cryptoutil.NonceSize]byte {
 	// Nonce doesn't need to be secret, random nor unpredictable, it just needs
 	// to be used only once for a given {sender, receiver} set and we will send
 	// only one SecretEntryPayload per {localDevicePrivKey, remoteMemberPubKey}

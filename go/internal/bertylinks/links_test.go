@@ -1,4 +1,4 @@
-package bertymessenger_test
+package bertylinks_test
 
 import (
 	"bytes"
@@ -12,24 +12,25 @@ import (
 	"github.com/tj/assert"
 	"moul.io/srand"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/internal/bertylinks"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 func TestMarshalLink(t *testing.T) {
 	cases := []struct {
 		name                string
-		input               *bertymessenger.BertyLink
+		input               *messengertypes.BertyLink
 		expectErr           bool
 		expectedWebURL      string
 		expectedInternalURL string
 	}{
 		{
 			"simple-contact",
-			&bertymessenger.BertyLink{
-				Kind: bertymessenger.BertyLink_ContactInviteV1Kind,
-				BertyID: &bertymessenger.BertyID{
+			&messengertypes.BertyLink{
+				Kind: messengertypes.BertyLink_ContactInviteV1Kind,
+				BertyID: &messengertypes.BertyID{
 					DisplayName:          "Hello World!",
 					PublicRendezvousSeed: []byte{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 					AccountPK:            []byte{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
@@ -40,15 +41,15 @@ func TestMarshalLink(t *testing.T) {
 			"BERTY://PB/CAS8232WNWU-1HTSMNYD.USC3T4F.P.J.AFKOXTKI:-N4P9IJTERR3CTFD.:N$*$3RQZLIFMT3-$IN..",
 		}, {
 			"simple-group",
-			&bertymessenger.BertyLink{
-				Kind: bertymessenger.BertyLink_GroupV1Kind,
-				BertyGroup: &bertymessenger.BertyGroup{
+			&messengertypes.BertyLink{
+				Kind: messengertypes.BertyLink_GroupV1Kind,
+				BertyGroup: &messengertypes.BertyGroup{
 					DisplayName: "The Group Name!",
-					Group: &bertytypes.Group{
+					Group: &protocoltypes.Group{
 						PublicKey: []byte{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
 						Secret:    []byte{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4},
 						SecretSig: []byte{5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5},
-						GroupType: bertytypes.GroupTypeMultiMember,
+						GroupType: protocoltypes.GroupTypeMultiMember,
 						SignPub:   []byte{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
 					},
 				},
@@ -58,9 +59,9 @@ func TestMarshalLink(t *testing.T) {
 			"BERTY://PB/.H:8XWGCG68:21MATDM7JR8Y6JMNJEVPISAXL274Y3VVDOPPUGK0LUYZ9X$FPFN*T93E08Y3$RYFIQFHJ3FY*79I75LU.5SJAKCS1PRLRYVLO.4-502DA4KL*E8WCGKEE1WGET$-0G7O1S7",
 		}, {
 			"contact-with-unicode",
-			&bertymessenger.BertyLink{
-				Kind: bertymessenger.BertyLink_ContactInviteV1Kind,
-				BertyID: &bertymessenger.BertyID{
+			&messengertypes.BertyLink{
+				Kind: messengertypes.BertyLink_ContactInviteV1Kind,
+				BertyID: &messengertypes.BertyID{
 					DisplayName:          `!@#$%^&*()_+ ://` + string(rune(0x1F600)),
 					PublicRendezvousSeed: []byte{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 					AccountPK:            []byte{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
@@ -71,15 +72,15 @@ func TestMarshalLink(t *testing.T) {
 			"BERTY://PB/BJ3W5ETGJU6$15FIE8U4:R300KUENPKC0J8YS6V02MXW9LDGPD6SVS/LU2TWQ8PGWF39R.ELP:-K:-4E30/.JNDU25WI",
 		}, {
 			"group-with-unicode",
-			&bertymessenger.BertyLink{
-				Kind: bertymessenger.BertyLink_GroupV1Kind,
-				BertyGroup: &bertymessenger.BertyGroup{
+			&messengertypes.BertyLink{
+				Kind: messengertypes.BertyLink_GroupV1Kind,
+				BertyGroup: &messengertypes.BertyGroup{
 					DisplayName: `!@#$%^&*()_=+ ://` + string(rune(0x1F600)),
-					Group: &bertytypes.Group{
+					Group: &protocoltypes.Group{
 						PublicKey: []byte{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
 						Secret:    []byte{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4},
 						SecretSig: []byte{5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5},
-						GroupType: bertytypes.GroupTypeMultiMember,
+						GroupType: protocoltypes.GroupTypeMultiMember,
 						SignPub:   []byte{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
 					},
 				},
@@ -102,7 +103,7 @@ func TestMarshalLink(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			internal, web, err := tc.input.Marshal()
+			internal, web, err := bertylinks.MarshalLink(tc.input)
 			if tc.expectErr {
 				require.Error(t, err)
 				return
@@ -119,11 +120,11 @@ func TestMarshalLink(t *testing.T) {
 			)
 
 			// unmarshal and compare with original input
-			webLink, err := bertymessenger.UnmarshalLink(web)
+			webLink, err := bertylinks.UnmarshalLink(web)
 			require.NoError(t, err)
 			assert.Equal(t, tc.input, webLink)
 
-			internalLink, err := bertymessenger.UnmarshalLink(internal)
+			internalLink, err := bertylinks.UnmarshalLink(internal)
 			require.NoError(t, err)
 			assert.Equal(t, tc.input, internalLink)
 		})
@@ -177,7 +178,7 @@ func TestUnmarshalLink(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			link, err := bertymessenger.UnmarshalLink(tc.input)
+			link, err := bertylinks.UnmarshalLink(tc.input)
 			if tc.expectedErrcode == nil {
 				tc.expectedErrcode = errcode.ErrCode(-1)
 			}
@@ -197,9 +198,9 @@ func TestUnmarshalLink(t *testing.T) {
 func TestMarshalLinkFuzzing(t *testing.T) {
 	rand.Seed(srand.Fast())
 	for i := 0; i < 100; i++ {
-		link := &bertymessenger.BertyLink{
-			Kind:    bertymessenger.BertyLink_ContactInviteV1Kind,
-			BertyID: &bertymessenger.BertyID{},
+		link := &messengertypes.BertyLink{
+			Kind:    messengertypes.BertyLink_ContactInviteV1Kind,
+			BertyID: &messengertypes.BertyID{},
 		}
 		name := []rune{}
 		for i := rand.Intn(64); i > 0; i-- {
@@ -210,7 +211,7 @@ func TestMarshalLinkFuzzing(t *testing.T) {
 			link.BertyID.PublicRendezvousSeed = append(link.BertyID.PublicRendezvousSeed, byte(rand.Intn(255)))
 			link.BertyID.AccountPK = append(link.BertyID.AccountPK, byte(rand.Intn(255)))
 		}
-		internal, web, err := link.Marshal()
+		internal, web, err := bertylinks.MarshalLink(link)
 		require.NoError(t, err)
 
 		if os.Getenv("PRINT_FUZZ_RESULTS") == "1" {
@@ -228,11 +229,11 @@ func TestMarshalLinkFuzzing(t *testing.T) {
 		)
 
 		// unmarshal and compare with original input
-		webLink, err := bertymessenger.UnmarshalLink(web)
+		webLink, err := bertylinks.UnmarshalLink(web)
 		require.NoError(t, err)
 		assert.Equal(t, link, webLink)
 
-		internalLink, err := bertymessenger.UnmarshalLink(internal)
+		internalLink, err := bertylinks.UnmarshalLink(internal)
 		require.NoError(t, err)
 		assert.Equal(t, link, internalLink)
 	}

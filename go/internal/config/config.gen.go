@@ -4,10 +4,10 @@ package config
 import (
 	"encoding/json"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-var Config bertytypes.Config
+var Config protocoltypes.Config
 
 // FIXME: make it more nicely
 func init() {

@@ -7,16 +7,15 @@ import (
 	"fmt"
 	"time"
 
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func checkIsMe(ctx context.Context, client bertyprotocol.ProtocolServiceClient, gme *bertytypes.GroupMessageEvent) (bool, error) {
+func checkIsMe(ctx context.Context, client protocoltypes.ProtocolServiceClient, gme *protocoltypes.GroupMessageEvent) (bool, error) {
 	gpkb := gme.GetEventContext().GetGroupPK()
 
 	// TODO: support multiple devices per account
-	gi, err := client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{GroupPK: gpkb})
+	gi, err := client.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{GroupPK: gpkb})
 	if err != nil {
 		return false, err
 	}
@@ -27,8 +26,8 @@ func checkIsMe(ctx context.Context, client bertyprotocol.ProtocolServiceClient, 
 	return bytes.Equal(dpk, mdpk), nil
 }
 
-func groupPKFromContactPK(ctx context.Context, client bertyprotocol.ProtocolServiceClient, contactPK []byte) ([]byte, error) {
-	req := &bertytypes.GroupInfo_Request{ContactPK: contactPK}
+func groupPKFromContactPK(ctx context.Context, client protocoltypes.ProtocolServiceClient, contactPK []byte) ([]byte, error) {
+	req := &protocoltypes.GroupInfo_Request{ContactPK: contactPK}
 	groupInfo, err := client.GroupInfo(ctx, req)
 	if err != nil {
 		return nil, err

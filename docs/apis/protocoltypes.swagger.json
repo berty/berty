@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "bertyprotocol.proto",
+    "title": "protocoltypes.proto",
     "version": "version not set"
   },
   "consumes": [
@@ -452,7 +452,7 @@
     },
     "/berty.protocol.v1/ProtocolService/ContactRequestReference": {
       "post": {
-        "summary": "ContactRequestReference retrieves the information required to create a reference (types.v1.ie. included in a shareable link) to the current account",
+        "summary": "ContactRequestReference retrieves the information required to create a reference (ie. included in a shareable link) to the current account",
         "operationId": "ProtocolService_ContactRequestReference",
         "responses": {
           "200": {

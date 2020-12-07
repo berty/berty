@@ -9,8 +9,8 @@ import (
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"moul.io/godev"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 func peersCommand() *ffcli.Command {
@@ -44,7 +44,7 @@ func peersCommand() *ffcli.Command {
 			}
 
 			for {
-				ret, err := protocol.PeerList(ctx, &bertytypes.PeerList_Request{})
+				ret, err := protocol.PeerList(ctx, &protocoltypes.PeerList_Request{})
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}

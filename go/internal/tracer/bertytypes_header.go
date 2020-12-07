@@ -7,11 +7,11 @@ import (
 	"go.opentelemetry.io/otel/api/propagation"
 	"go.opentelemetry.io/otel/api/trace"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 type metadataSupplier struct {
-	header *bertytypes.MessageHeaders
+	header *protocoltypes.MessageHeaders
 }
 
 func (m *metadataSupplier) Get(key string) string {
@@ -32,15 +32,15 @@ func (m *metadataSupplier) Set(key string, val string) {
 	m.header.Metadata[key] = val
 }
 
-func InjectSpanContextToMessageHeaders(ctx context.Context, h *bertytypes.MessageHeaders) {
+func InjectSpanContextToMessageHeaders(ctx context.Context, h *protocoltypes.MessageHeaders) {
 	propagation.InjectHTTP(ctx, Propagators(), &metadataSupplier{h})
 }
 
-func ExtractSpanContextFromMessageHeaders(ctx context.Context, h *bertytypes.MessageHeaders) context.Context {
+func ExtractSpanContextFromMessageHeaders(ctx context.Context, h *protocoltypes.MessageHeaders) context.Context {
 	return propagation.ExtractHTTP(ctx, Propagators(), &metadataSupplier{h})
 }
 
-func SpanFromMessageHeaders(ctx context.Context, h *bertytypes.MessageHeaders, name string, attrs ...kv.KeyValue) (context.Context, trace.Span) {
+func SpanFromMessageHeaders(ctx context.Context, h *protocoltypes.MessageHeaders, name string, attrs ...kv.KeyValue) (context.Context, trace.Span) {
 	hctx := ExtractSpanContextFromMessageHeaders(context.Background(), h)
 	sctx := trace.RemoteSpanContextFromContext(hctx)
 	return From(ctx).Start(hctx, name, trace.LinkedTo(sctx))

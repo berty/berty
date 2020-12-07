@@ -15,10 +15,10 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func addDummyMemberInMetadataStore(ctx context.Context, t testing.TB, ms *metadataStore, g *bertytypes.Group, memberPK crypto.PubKey, join bool) (crypto.PubKey, *bertytypes.DeviceSecret) {
+func addDummyMemberInMetadataStore(ctx context.Context, t testing.TB, ms *metadataStore, g *protocoltypes.Group, memberPK crypto.PubKey, join bool) (crypto.PubKey, *protocoltypes.DeviceSecret) {
 	t.Helper()
 
 	acc := NewDeviceKeystore(keystore.NewMemKeystore())
@@ -39,8 +39,8 @@ func addDummyMemberInMetadataStore(ctx context.Context, t testing.TB, ms *metada
 	return md.device.GetPublic(), ds
 }
 
-func mustDeviceSecret(t testing.TB) func(ds *bertytypes.DeviceSecret, err error) *bertytypes.DeviceSecret {
-	return func(ds *bertytypes.DeviceSecret, err error) *bertytypes.DeviceSecret {
+func mustDeviceSecret(t testing.TB) func(ds *protocoltypes.DeviceSecret, err error) *protocoltypes.DeviceSecret {
+	return func(ds *protocoltypes.DeviceSecret, err error) *protocoltypes.DeviceSecret {
 		t.Helper()
 
 		if err != nil {
@@ -51,7 +51,7 @@ func mustDeviceSecret(t testing.TB) func(ds *bertytypes.DeviceSecret, err error)
 	}
 }
 
-func mustMessageHeaders(t testing.TB, pk crypto.PubKey, counter uint64) *bertytypes.MessageHeaders {
+func mustMessageHeaders(t testing.TB, pk crypto.PubKey, counter uint64) *protocoltypes.MessageHeaders {
 	t.Helper()
 
 	pkB, err := pk.Raw()
@@ -59,7 +59,7 @@ func mustMessageHeaders(t testing.TB, pk crypto.PubKey, counter uint64) *bertyty
 		t.Fatal(err)
 	}
 
-	return &bertytypes.MessageHeaders{
+	return &protocoltypes.MessageHeaders{
 		Counter:  counter,
 		DevicePK: pkB,
 		Sig:      nil,
@@ -284,7 +284,7 @@ func Test_EncryptMessageEnvelope(t *testing.T) {
 	ds2, err := newDeviceSecret()
 	assert.NoError(t, err)
 
-	payloadRef1, err := (&bertytypes.EncryptedMessage{Plaintext: []byte("Test payload 1")}).Marshal()
+	payloadRef1, err := (&protocoltypes.EncryptedMessage{Plaintext: []byte("Test payload 1")}).Marshal()
 	assert.NoError(t, err)
 
 	err = mkh2.RegisterChainKey(g, omd2.device.GetPublic(), ds2, true)
@@ -352,7 +352,7 @@ func Test_EncryptMessageEnvelopeAndDerive(t *testing.T) {
 	initialCounter := ds1.Counter
 
 	for i := 0; i < 1000; i++ {
-		payloadRef, err := (&bertytypes.EncryptedMessage{Plaintext: []byte("Test payload 1")}).Marshal()
+		payloadRef, err := (&protocoltypes.EncryptedMessage{Plaintext: []byte("Test payload 1")}).Marshal()
 		assert.NoError(t, err)
 		envEncrypted, err := mkh1.SealEnvelope(ctx, g, omd1.device, payloadRef, nil)
 		assert.NoError(t, err)
@@ -403,7 +403,7 @@ func testMessageKeyHolderCatchUp(t *testing.T, expectedNewDevices int, isSlow bo
 	ms1 := peer.GC.MetadataStore()
 
 	devicesPK := make([]crypto.PubKey, expectedNewDevices)
-	deviceSecrets := make([]*bertytypes.DeviceSecret, expectedNewDevices)
+	deviceSecrets := make([]*protocoltypes.DeviceSecret, expectedNewDevices)
 
 	for i := 0; i < expectedNewDevices; i++ {
 		devicesPK[i], deviceSecrets[i] = addDummyMemberInMetadataStore(ctx, t, ms1, peer.GC.Group(), peer.GC.MemberPubKey(), true)
@@ -464,7 +464,7 @@ func testMessageKeyHolderSubscription(t *testing.T, expectedNewDevices int, isSl
 	ms1 := peer.GC.MetadataStore()
 
 	devicesPK := make([]crypto.PubKey, expectedNewDevices)
-	deviceSecrets := make([]*bertytypes.DeviceSecret, expectedNewDevices)
+	deviceSecrets := make([]*protocoltypes.DeviceSecret, expectedNewDevices)
 
 	subCtx, subCancel := context.WithCancel(ctx)
 	ch := FillMessageKeysHolderUsingNewData(subCtx, peer.GC)

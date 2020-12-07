@@ -12,8 +12,9 @@ import (
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/notification"
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 type provider struct {
@@ -36,13 +37,13 @@ var (
 	lifecycleManagerType                     = reflect.TypeOf((*(*lifecycle.Manager))(nil)).Elem()
 	ipfsutilExtendedCoreAPIType              = reflect.TypeOf((*(ipfsutil.ExtendedCoreAPI))(nil)).Elem()
 	ipfsCoreIpfsNodeType                     = reflect.TypeOf((*(*ipfsCore.IpfsNode))(nil)).Elem()
-	bertymessengerMessengerServiceServerType = reflect.TypeOf((*(bertymessenger.MessengerServiceServer))(nil)).Elem()
-	bertymessengerMessengerServiceClientType = reflect.TypeOf((*(bertymessenger.MessengerServiceClient))(nil)).Elem()
+	bertymessengerMessengerServiceServerType = reflect.TypeOf((*(messengertypes.MessengerServiceServer))(nil)).Elem()
+	bertymessengerMessengerServiceClientType = reflect.TypeOf((*(messengertypes.MessengerServiceClient))(nil)).Elem()
 	bertyprotocolServiceType                 = reflect.TypeOf((*(bertyprotocol.Service))(nil)).Elem()
 	zapLoggerType                            = reflect.TypeOf((*(*zap.Logger))(nil)).Elem()
 	notificationManager                      = reflect.TypeOf((*(notification.Manager))(nil)).Elem()
 	bertyprotocolBertyOrbitDB                = reflect.TypeOf((*(*bertyprotocol.BertyOrbitDB))(nil)).Elem()
-	bertyprotocolProtocolServiceClient       = reflect.TypeOf((*(bertyprotocol.ProtocolServiceClient))(nil)).Elem()
+	protocoltypesProtocolServiceClient       = reflect.TypeOf((*(protocoltypes.ProtocolServiceClient))(nil)).Elem()
 )
 
 func (provider) Available() []reflect.Type {
@@ -56,7 +57,7 @@ func (provider) Available() []reflect.Type {
 		zapLoggerType,
 		notificationManager,
 		bertyprotocolBertyOrbitDB,
-		bertyprotocolProtocolServiceClient,
+		protocoltypesProtocolServiceClient,
 	}
 }
 
@@ -82,7 +83,7 @@ func (p provider) Make(t reflect.Type) (reflect.Value, error) {
 		r, err = p.m.GetNotificationManager()
 	case bertyprotocolBertyOrbitDB:
 		r, err = p.m.GetOrbitDB()
-	case bertyprotocolProtocolServiceClient:
+	case protocoltypesProtocolServiceClient:
 		r, err = p.m.GetProtocolClient()
 	default:
 		err = fmt.Errorf("type %s is not available", t.Name())

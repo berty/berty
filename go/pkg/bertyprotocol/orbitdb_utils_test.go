@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 type mockedPeer struct {
@@ -177,13 +177,13 @@ func inviteAllPeersToGroup(ctx context.Context, t *testing.T, peers []*mockedPee
 
 			for e := range p.GC.MetadataStore().Subscribe(ctx) {
 				switch e.(type) {
-				case *bertytypes.GroupMetadataEvent:
-					casted, _ := e.(*bertytypes.GroupMetadataEvent)
-					if casted.Metadata.EventType != bertytypes.EventTypeGroupMemberDeviceAdded {
+				case *protocoltypes.GroupMetadataEvent:
+					casted, _ := e.(*protocoltypes.GroupMetadataEvent)
+					if casted.Metadata.EventType != protocoltypes.EventTypeGroupMemberDeviceAdded {
 						continue
 					}
 
-					memdev := &bertytypes.GroupAddMemberDevice{}
+					memdev := &protocoltypes.GroupAddMemberDevice{}
 					if err := memdev.Unmarshal(casted.Event); err != nil {
 						errChan <- err
 						wg.Done()
@@ -222,7 +222,7 @@ func inviteAllPeersToGroup(ctx context.Context, t *testing.T, peers []*mockedPee
 	}
 }
 
-func waitForBertyEventType(ctx context.Context, t *testing.T, ms *metadataStore, eventType bertytypes.EventType, eventCount int, done chan struct{}) {
+func waitForBertyEventType(ctx context.Context, t *testing.T, ms *metadataStore, eventType protocoltypes.EventType, eventCount int, done chan struct{}) {
 	t.Helper()
 
 	ctx, cancel := context.WithCancel(ctx)
@@ -232,12 +232,12 @@ func waitForBertyEventType(ctx context.Context, t *testing.T, ms *metadataStore,
 
 	for evt := range ms.Subscribe(ctx) {
 		switch evt.(type) {
-		case *bertytypes.GroupMetadataEvent:
-			if evt.(*bertytypes.GroupMetadataEvent).Metadata.EventType != eventType {
+		case *protocoltypes.GroupMetadataEvent:
+			if evt.(*protocoltypes.GroupMetadataEvent).Metadata.EventType != eventType {
 				continue
 			}
 
-			eID := string(evt.(*bertytypes.GroupMetadataEvent).EventContext.ID)
+			eID := string(evt.(*protocoltypes.GroupMetadataEvent).EventContext.ID)
 
 			if _, ok := handledEvents[eID]; ok {
 				continue
@@ -245,8 +245,8 @@ func waitForBertyEventType(ctx context.Context, t *testing.T, ms *metadataStore,
 
 			handledEvents[eID] = struct{}{}
 
-			e := &bertytypes.GroupAddDeviceSecret{}
-			if err := e.Unmarshal(evt.(*bertytypes.GroupMetadataEvent).Event); err != nil {
+			e := &protocoltypes.GroupAddDeviceSecret{}
+			if err := e.Unmarshal(evt.(*protocoltypes.GroupMetadataEvent).Event); err != nil {
 				t.Fatalf(" err: %+v\n", err.Error())
 			}
 
