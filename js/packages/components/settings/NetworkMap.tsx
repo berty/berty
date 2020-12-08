@@ -19,7 +19,7 @@ import { usePrevious } from '../hooks'
 import { pbDateToNum } from '../helpers'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
-const PeerItem: React.FC<{ item: beapi.types.PeerList.IPeer; highlighted: boolean }> = ({
+const PeerItem: React.FC<{ item: beapi.protocol.PeerList.IPeer; highlighted: boolean }> = ({
 	item,
 	highlighted,
 }) => {
@@ -54,11 +54,11 @@ const PeerItem: React.FC<{ item: beapi.types.PeerList.IPeer; highlighted: boolea
 						? features.map((value) => {
 								let name, pack, fill
 								switch (value) {
-									case beapi.types.PeerList.Feature.BertyFeature:
+									case beapi.protocol.PeerList.Feature.BertyFeature:
 										name = 'berty'
 										pack = 'custom'
 										break
-									case beapi.types.PeerList.Feature.QuicFeature:
+									case beapi.protocol.PeerList.Feature.QuicFeature:
 										name = 'network'
 										pack = 'custom'
 										fill = color.dark.grey
@@ -103,7 +103,7 @@ type PeersTypes = {
 	ble: number
 }
 
-function getPeersTypes(peers: beapi.types.PeerList.IPeer[] | null) {
+function getPeersTypes(peers: beapi.protocol.PeerList.IPeer[] | null) {
 	let peersTypes = {
 		berty: 0,
 		quic: 0,
@@ -113,10 +113,10 @@ function getPeersTypes(peers: beapi.types.PeerList.IPeer[] | null) {
 	peers?.forEach((value) => {
 		value?.features?.forEach((feature) => {
 			switch (feature) {
-				case beapi.types.PeerList.Feature.BertyFeature:
+				case beapi.protocol.PeerList.Feature.BertyFeature:
 					peersTypes.berty += 1
 					break
-				case beapi.types.PeerList.Feature.QuicFeature:
+				case beapi.protocol.PeerList.Feature.QuicFeature:
 					peersTypes.quic += 1
 					break
 			}
@@ -127,9 +127,9 @@ function getPeersTypes(peers: beapi.types.PeerList.IPeer[] | null) {
 	return peersTypes
 }
 
-const NetworkMapBody: React.FC<{ peers: beapi.types.PeerList.IReply | null }> = ({ peers }) => {
+const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }> = ({ peers }) => {
 	const [{ margin, text, color }] = useStyles()
-	const [sortPeers, setSortPeers] = useState<beapi.types.PeerList.IPeer[] | null>(null)
+	const [sortPeers, setSortPeers] = useState<beapi.protocol.PeerList.IPeer[] | null>(null)
 	const [typesPeers, setTypesPeers] = useState<PeersTypes | null>(null)
 
 	const prevPeers = usePrevious(sortPeers)

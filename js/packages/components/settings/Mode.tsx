@@ -194,7 +194,7 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 								return
 							}
 
-							await ctx.client.replicationSetAutoEnable({
+							await ctx.client?.replicationSetAutoEnable({
 								enabled: !account.replicateNewGroupsAutomatically,
 							})
 						}}

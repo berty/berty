@@ -8,7 +8,7 @@ import beapi from '@berty-tech/api'
 import { pbDateToNum, timeFormat } from '../../helpers'
 import { InteractionMonitorMetadata } from '@berty-tech/store/types.gen'
 
-const eventMonitorTypes = beapi.types.MonitorGroup.TypeEventMonitor
+const eventMonitorTypes = beapi.protocol.MonitorGroup.TypeEventMonitor
 
 export const MessageMonitorMetadata: React.FC<{ inte: InteractionMonitorMetadata }> = ({
 	inte,
