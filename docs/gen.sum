@@ -1,8 +1,8 @@
 7c41f83cba6f48f7a14a328b748dc0282a978bef  ../api/bertyaccount.proto
 4589e8f2ea76dc6030778f5559777636dc05a401  ../api/bertyreplication.proto
 efe05c869eb27277829aa4018133888bf41f5e9e  ../api/bertyreplication.yaml
-adbe4bba2219f45b651c62f839ce0c5550e9d272  ../api/errcode.proto
-ec5e41f8fe7f13dc277026f7e1f332eb174da020  ../api/messengertypes.proto
+56145f42756fdf8042b9897c32e18f7bf39d176b  ../api/errcode.proto
+7a9d57c3d1581693f3fc0040375d9ad1344629b8  ../api/messengertypes.proto
 d3dee048199ba426e4daa6dc4e1c78cc7fd5505e  ../api/messengertypes.yaml
 82be117c46950434fc992ba05d184101ab7029ca  ../api/protocoltypes.proto
 14884bc268447c0e1d04ed82b7603c0371f66a0d  ../api/protocoltypes.yaml

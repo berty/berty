@@ -632,6 +632,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrBridgeInterrupted: 1600,
               ErrBridgeNotRunning: 1601,
               ErrMessengerInvalidDeepLink: 2000,
+              ErrMessengerDeepLinkRequiresPassphrase: 2001,
               ErrDBEntryAlreadyExists: 2100,
               ErrDBAddConversation: 2101,
               ErrDBAddContactRequestOutgoingSent: 2102,
@@ -3355,6 +3356,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       link: {
                         type: "string",
                         id: 1
+                      },
+                      passphrase: {
+                        type: "bytes",
+                        id: 2
                       }
                     }
                   },
@@ -3383,18 +3388,75 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   bertyGroup: {
                     type: "BertyGroup",
-                    id: 3,
-                    options: {
-                      "(gogoproto.customname)": "BertyGroup"
-                    }
+                    id: 3
+                  },
+                  encrypted: {
+                    type: "Encrypted",
+                    id: 4
                   }
                 },
                 nested: {
+                  Encrypted: {
+                    fields: {
+                      kind: {
+                        type: "Kind",
+                        id: 1
+                      },
+                      nonce: {
+                        type: "bytes",
+                        id: 2
+                      },
+                      displayName: {
+                        type: "string",
+                        id: 3
+                      },
+                      contactPublicRendezvousSeed: {
+                        type: "bytes",
+                        id: 10
+                      },
+                      contactAccountPk: {
+                        type: "bytes",
+                        id: 11,
+                        options: {
+                          "(gogoproto.customname)": "ContactAccountPK"
+                        }
+                      },
+                      contactDisplayName: {
+                        type: "bytes",
+                        id: 12
+                      },
+                      groupPublicKey: {
+                        type: "bytes",
+                        id: 20
+                      },
+                      groupSecret: {
+                        type: "bytes",
+                        id: 21
+                      },
+                      groupSecretSig: {
+                        type: "bytes",
+                        id: 22
+                      },
+                      groupType: {
+                        type: "berty.protocol.v1.GroupType",
+                        id: 23
+                      },
+                      groupSignPub: {
+                        type: "bytes",
+                        id: 24
+                      },
+                      groupDisplayName: {
+                        type: "bytes",
+                        id: 25
+                      }
+                    }
+                  },
                   Kind: {
                     values: {
                       UnknownKind: 0,
                       ContactInviteV1Kind: 1,
-                      GroupV1Kind: 2
+                      GroupV1Kind: 2,
+                      EncryptedV1Kind: 3
                     }
                   }
                 }
@@ -3748,6 +3810,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       link: {
                         type: "string",
                         id: 1
+                      },
+                      passphrase: {
+                        type: "bytes",
+                        id: 2
                       }
                     }
                   },
@@ -4526,6 +4592,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       link: {
                         type: "string",
                         id: 1
+                      },
+                      passphrase: {
+                        type: "bytes",
+                        id: 2
                       }
                     }
                   },

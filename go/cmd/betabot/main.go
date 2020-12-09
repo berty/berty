@@ -211,7 +211,7 @@ func betabot() error {
 			}
 
 			// store staffConvPk
-			link, err := bertylinks.UnmarshalLink(req.GetLink())
+			link, err := bertylinks.UnmarshalLink(req.GetLink(), nil)
 			if err != nil {
 				return fmt.Errorf("parse conv link: %w", err)
 			}

@@ -144,6 +144,8 @@ message DevShareInstanceBertyID {
 message ParseDeepLink {
   message Request {
     string link = 1;
+    // optional passphase to decrypt link
+    bytes passphrase = 2;
   }
   message Reply {
     BertyLink link = 1;
@@ -153,13 +155,45 @@ message ParseDeepLink {
 message BertyLink {
   Kind kind = 1;
   BertyID berty_id = 2 [(gogoproto.customname) = "BertyID"];
-  BertyGroup berty_group = 3 [(gogoproto.customname) = "BertyGroup"];
-  // bool enc = 4;
+  BertyGroup berty_group = 3;
+  Encrypted encrypted = 4;
+
+  // Encrypted is a clear structure containing clear and encrypted fields.
+  //
+  // We prefer to use a clear struct with encrypted fields instead of a simple
+  // encrypted struct, to improves chances of having a valid structure even
+  // with an invalid passphase. This will force an attacker to have more resources
+  // to test more false-positive guesses.
+  message Encrypted {
+    // kind is a clear representation of the unencrypted link type.
+    Kind kind = 1;
+    // nonce is a clear field used by scrypt as "salt" to derive the passphrase and
+    // also used by cipher.NewCTR as "iv" to initialize a stream cipher.
+    bytes nonce = 2;
+    // display_name is an optional clear representation of the display name.
+    string display_name = 3;
+
+    // contact_v1: all bytes fields are encrypted
+
+    bytes contact_public_rendezvous_seed = 10;
+    bytes contact_account_pk = 11 [(gogoproto.customname) = "ContactAccountPK"];
+    bytes contact_display_name = 12;
+
+    // group_v1: all bytes fields are encrypted
+
+    bytes group_public_key = 20;
+    bytes group_secret = 21;
+    bytes group_secret_sig = 22;
+    berty.protocol.v1.GroupType group_type = 23; // clear
+    bytes group_sign_pub = 24;
+    bytes group_display_name = 25;
+  }
 
   enum Kind {
     UnknownKind = 0;
     ContactInviteV1Kind = 1;
     GroupV1Kind = 2;
+    EncryptedV1Kind = 3;
   }
 }
 
@@ -291,6 +325,8 @@ message SystemInfo {
 message ConversationJoin {
   message Request {
     string link = 1;
+    // optional passphase to decrypt link
+    bytes passphrase = 2;
   }
   message Reply {}
 }
@@ -560,6 +596,8 @@ message AccountUpdate {
 message ContactRequest {
   message Request {
     string link = 1;
+    // optional passphase to decrypt link
+    bytes passphrase = 2;
   }
   message Reply {}
 }

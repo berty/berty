@@ -135,6 +135,7 @@ enum ErrCode {
   //------------------
 
   ErrMessengerInvalidDeepLink = 2000;
+  ErrMessengerDeepLinkRequiresPassphrase = 2001;
 
   // DB errors
 

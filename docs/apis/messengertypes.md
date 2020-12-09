@@ -26,6 +26,7 @@
     - [BertyGroup](#berty.messenger.v1.BertyGroup)
     - [BertyID](#berty.messenger.v1.BertyID)
     - [BertyLink](#berty.messenger.v1.BertyLink)
+    - [BertyLink.Encrypted](#berty.messenger.v1.BertyLink.Encrypted)
     - [Contact](#berty.messenger.v1.Contact)
     - [ContactAccept](#berty.messenger.v1.ContactAccept)
     - [ContactAccept.Reply](#berty.messenger.v1.ContactAccept.Reply)
@@ -322,7 +323,33 @@ AppMessage is the app layer format
 | ----- | ---- | ----- | ----------- |
 | kind | [BertyLink.Kind](#berty.messenger.v1.BertyLink.Kind) |  |  |
 | berty_id | [BertyID](#berty.messenger.v1.BertyID) |  |  |
-| berty_group | [BertyGroup](#berty.messenger.v1.BertyGroup) |  | bool enc = 4; |
+| berty_group | [BertyGroup](#berty.messenger.v1.BertyGroup) |  |  |
+| encrypted | [BertyLink.Encrypted](#berty.messenger.v1.BertyLink.Encrypted) |  |  |
+
+<a name="berty.messenger.v1.BertyLink.Encrypted"></a>
+
+### BertyLink.Encrypted
+Encrypted is a clear structure containing clear and encrypted fields.
+
+We prefer to use a clear struct with encrypted fields instead of a simple
+encrypted struct, to improves chances of having a valid structure even
+with an invalid passphase. This will force an attacker to have more resources
+to test more false-positive guesses.
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| kind | [BertyLink.Kind](#berty.messenger.v1.BertyLink.Kind) |  | kind is a clear representation of the unencrypted link type. |
+| nonce | [bytes](#bytes) |  | nonce is a clear field used by scrypt as &#34;salt&#34; to derive the passphrase and also used by cipher.NewCTR as &#34;iv&#34; to initialize a stream cipher. |
+| display_name | [string](#string) |  | display_name is an optional clear representation of the display name. |
+| contact_public_rendezvous_seed | [bytes](#bytes) |  |  |
+| contact_account_pk | [bytes](#bytes) |  |  |
+| contact_display_name | [bytes](#bytes) |  |  |
+| group_public_key | [bytes](#bytes) |  |  |
+| group_secret | [bytes](#bytes) |  |  |
+| group_secret_sig | [bytes](#bytes) |  |  |
+| group_type | [berty.protocol.v1.GroupType](#berty.protocol.v1.GroupType) |  | clear |
+| group_sign_pub | [bytes](#bytes) |  |  |
+| group_display_name | [bytes](#bytes) |  |  |
 
 <a name="berty.messenger.v1.Contact"></a>
 
@@ -380,6 +407,7 @@ AppMessage is the app layer format
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | link | [string](#string) |  |  |
+| passphrase | [bytes](#bytes) |  | optional passphase to decrypt link |
 
 <a name="berty.messenger.v1.Conversation"></a>
 
@@ -457,6 +485,7 @@ AppMessage is the app layer format
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | link | [string](#string) |  |  |
+| passphrase | [bytes](#bytes) |  | optional passphase to decrypt link |
 
 <a name="berty.messenger.v1.ConversationOpen"></a>
 
@@ -783,6 +812,7 @@ Composite primary key
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | link | [string](#string) |  |  |
+| passphrase | [bytes](#bytes) |  | optional passphase to decrypt link |
 
 <a name="berty.messenger.v1.ReplicationServiceRegisterGroup"></a>
 
@@ -1127,6 +1157,7 @@ Composite primary key
 | UnknownKind | 0 |  |
 | ContactInviteV1Kind | 1 |  |
 | GroupV1Kind | 2 |  |
+| EncryptedV1Kind | 3 |  |
 
 <a name="berty.messenger.v1.Contact.State"></a>
 
