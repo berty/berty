@@ -43,7 +43,7 @@ require (
 	github.com/ipfs/go-datastore v0.4.5
 	github.com/ipfs/go-ds-badger v0.2.6
 	github.com/ipfs/go-ipfs v0.7.1-0.20201116220946-79a55305e935
-	github.com/ipfs/go-ipfs-config v0.10.0
+	github.com/ipfs/go-ipfs-config v0.11.0
 	github.com/ipfs/go-ipfs-files v0.0.8
 	github.com/ipfs/go-ipfs-keystore v0.0.1
 	github.com/ipfs/go-ipld-cbor v0.0.5
@@ -58,7 +58,7 @@ require (
 	github.com/libp2p/go-libp2p-circuit v0.4.0
 	github.com/libp2p/go-libp2p-core v0.7.0
 	github.com/libp2p/go-libp2p-discovery v0.5.0
-	github.com/libp2p/go-libp2p-kad-dht v0.11.0
+	github.com/libp2p/go-libp2p-kad-dht v0.11.1
 	github.com/libp2p/go-libp2p-noise v0.1.2 // indirect
 	github.com/libp2p/go-libp2p-pubsub v0.4.0
 	github.com/libp2p/go-libp2p-quic-transport v0.9.3

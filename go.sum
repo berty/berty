@@ -538,8 +538,8 @@ github.com/ipfs/go-ipfs-chunker v0.0.5/go.mod h1:jhgdF8vxRHycr00k13FM8Y0E+6BoalY
 github.com/ipfs/go-ipfs-cmds v0.4.0 h1:xUavIxA9Ts8U6PAHmQBvDGMlGfUrQ13Rymd+5t8LIF4=
 github.com/ipfs/go-ipfs-cmds v0.4.0/go.mod h1:ZgYiWVnCk43ChwoH8hAmI1IRbuVtq3GSTHwtRB/Kqhk=
 github.com/ipfs/go-ipfs-config v0.9.0/go.mod h1:GQUxqb0NfkZmEU92PxqqqLVVFTLpoGGUlBaTyDaAqrE=
-github.com/ipfs/go-ipfs-config v0.10.0 h1:QdTFdqCg3Zpvpz6wHc6B7UGwSnierqq0h8BwyUntjGA=
-github.com/ipfs/go-ipfs-config v0.10.0/go.mod h1:Ei/FLgHGTdPyqCPK0oPCwGTe8VSnsjJjx7HZqUb6Ry0=
+github.com/ipfs/go-ipfs-config v0.11.0 h1:w4t2pz415Gtg6MTUKAq06C7ezC59/Us+k3+n1Tje+wg=
+github.com/ipfs/go-ipfs-config v0.11.0/go.mod h1:Ei/FLgHGTdPyqCPK0oPCwGTe8VSnsjJjx7HZqUb6Ry0=
 github.com/ipfs/go-ipfs-delay v0.0.0-20181109222059-70721b86a9a8/go.mod h1:8SP1YXK1M1kXuc4KJZINY3TQQ03J2rwBG9QfXmbRPrw=
 github.com/ipfs/go-ipfs-delay v0.0.1 h1:r/UXYyRcddO6thwOnhiznIAiSvxMECGgtv35Xs1IeRQ=
 github.com/ipfs/go-ipfs-delay v0.0.1/go.mod h1:8SP1YXK1M1kXuc4KJZINY3TQQ03J2rwBG9QfXmbRPrw=
@@ -816,6 +816,8 @@ github.com/libp2p/go-libp2p-interface-pnet v0.0.1/go.mod h1:el9jHpQAXK5dnTpKA4yf
 github.com/libp2p/go-libp2p-kad-dht v0.8.3/go.mod h1:HnYYy8taJWESkqiESd1ngb9XX/XGGsMA5G0Vj2HoSh4=
 github.com/libp2p/go-libp2p-kad-dht v0.11.0 h1:ZLhlmDKsFiOkPhTzfEqBrMy/1Tqx+Dk6UgbHM5//IQM=
 github.com/libp2p/go-libp2p-kad-dht v0.11.0/go.mod h1:5ojtR2acDPqh/jXf5orWy8YGb8bHQDS+qeDcoscL/PI=
+github.com/libp2p/go-libp2p-kad-dht v0.11.1 h1:FsriVQhOUZpCotWIjyFSjEDNJmUzuMma/RyyTDZanwc=
+github.com/libp2p/go-libp2p-kad-dht v0.11.1/go.mod h1:5ojtR2acDPqh/jXf5orWy8YGb8bHQDS+qeDcoscL/PI=
 github.com/libp2p/go-libp2p-kbucket v0.4.2/go.mod h1:7sCeZx2GkNK1S6lQnGUW5JYZCFPnXzAZCCBBS70lytY=
 github.com/libp2p/go-libp2p-kbucket v0.4.7 h1:spZAcgxifvFZHBD8tErvppbnNiKA5uokDu3CV7axu70=
 github.com/libp2p/go-libp2p-kbucket v0.4.7/go.mod h1:XyVo99AfQH0foSf176k4jY1xUJ2+jUJIZCSDm7r2YKk=
