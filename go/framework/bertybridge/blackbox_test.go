@@ -10,7 +10,7 @@ import (
 
 	"berty.tech/berty/v2/go/framework/bertybridge"
 	"berty.tech/berty/v2/go/pkg/bertyaccount"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 func Example() {
@@ -99,7 +99,7 @@ func Example() {
 	// make unary call to underlying `BertyMessenger` Service
 	{
 		// create `InstanceGetConfiguration` Input
-		input := &bertytypes.InstanceGetConfiguration_Request{}
+		input := &protocoltypes.InstanceGetConfiguration_Request{}
 		payload, err := proto.Marshal(input)
 		checkErr(err)
 
@@ -122,7 +122,7 @@ func Example() {
 		err = decodeProtoMessage(ret, &output)
 		checkErr(err)
 
-		var res bertytypes.InstanceGetConfiguration_Reply
+		var res protocoltypes.InstanceGetConfiguration_Reply
 		err = proto.Unmarshal(output.Payload, &res)
 		checkErr(err)
 

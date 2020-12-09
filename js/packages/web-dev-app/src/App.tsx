@@ -18,7 +18,7 @@ const CreateAccount: React.FC = () => {
 	const ctx = React.useContext(MsgrContext)
 	const handleCreate = React.useCallback(() => {
 		setError(null)
-		ctx.client.accountUpdate({ displayName: name }).catch((err: any) => setError(err))
+		ctx.client?.accountUpdate({ displayName: name }).catch((err: any) => setError(err))
 	}, [ctx.client, name])
 	return (
 		<>
@@ -56,7 +56,7 @@ const AddContact: React.FC = () => {
 	const ctx = React.useContext(MsgrContext)
 	const handleAdd = React.useCallback(() => {
 		setError(null)
-		ctx.client.contactRequest({ link }).catch((err: any) => setError(err))
+		ctx.client?.contactRequest({ link }).catch((err: any) => setError(err))
 	}, [ctx.client, link])
 	return (
 		<>
@@ -134,7 +134,7 @@ const AcceptButton: React.FC<{ publicKey: string }> = ({ publicKey }) => {
 	const [error, setError] = React.useState(null)
 	const handleAccept = React.useCallback(() => {
 		setError(null)
-		ctx.client.contactAccept({ publicKey }).catch((err: any) => setError(err))
+		ctx.client?.contactAccept({ publicKey }).catch((err: any) => setError(err))
 	}, [ctx.client, publicKey])
 	return (
 		<>
@@ -173,7 +173,7 @@ const Interaction: React.FC<{ value: any }> = ({ value }) => {
 	const handleJoin = React.useCallback(
 		({ link }) => {
 			setError(null)
-			ctx.client.conversationJoin({ link }).catch((err: any) => setError(err))
+			ctx.client?.conversationJoin({ link }).catch((err: any) => setError(err))
 		},
 		[ctx.client],
 	)
@@ -218,11 +218,11 @@ const Conversation: React.FC<{ publicKey: string }> = ({ publicKey }) => {
 	const [message, setMessage] = useState('')
 	const [error, setError] = useState(null)
 	useMountEffect(() => {
-		ctx.client.conversationOpen({ groupPk: conv.publicKey }).catch((err) => {
+		ctx.client?.conversationOpen({ groupPk: conv.publicKey }).catch((err) => {
 			console.warn('failed to open conversation,', err)
 		})
 		return () => {
-			ctx.client.conversationClose({ groupPk: conv.publicKey }).catch((err) => {
+			ctx.client?.conversationClose({ groupPk: conv.publicKey }).catch((err) => {
 				console.warn('failed to close conversation,', err)
 			})
 		}
@@ -342,11 +342,7 @@ const CreateMultiMember = () => {
 	const [groupName, setGroupName] = useState('My group')
 	const [error, setError] = useState(null)
 	const [members, setMembers] = useState([])
-	const {
-		call,
-		error: errorReply,
-		done,
-	} = (messengerMethodsHooks as any).useConversationCreate()
+	const { call, error: errorReply, done } = (messengerMethodsHooks as any).useConversationCreate()
 	const createGroup = React.useCallback(
 		() => call({ displayName: groupName, contactsToInvite: members.map((m) => m.publicKey) }),
 		[groupName, members, call],
@@ -408,7 +404,7 @@ const SendToAll: React.FC = () => {
 		let names = []
 		for (const conv of convs) {
 			try {
-				await ctx.client.interact({
+				await ctx.client?.interact({
 					conversationPublicKey: conv.publicKey,
 					type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 					payload: buf,
@@ -445,7 +441,7 @@ const JoinMultiMember = () => {
 	const ctx = React.useContext(MsgrContext)
 	const handleJoin = React.useCallback(() => {
 		setError(null)
-		ctx.client.conversationJoin({ link }).catch((err: any) => setError(err))
+		ctx.client?.conversationJoin({ link }).catch((err: any) => setError(err))
 	}, [ctx.client, link])
 	return (
 		<>

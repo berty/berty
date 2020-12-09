@@ -14,20 +14,20 @@ import (
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/sysutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/go-orbit-db/stores/operation"
 )
 
-func (s *service) DebugListGroups(req *bertytypes.DebugListGroups_Request, srv ProtocolService_DebugListGroupsServer) error {
-	if err := srv.SendMsg(&bertytypes.DebugListGroups_Reply{
+func (s *service) DebugListGroups(req *protocoltypes.DebugListGroups_Request, srv protocoltypes.ProtocolService_DebugListGroupsServer) error {
+	if err := srv.SendMsg(&protocoltypes.DebugListGroups_Reply{
 		GroupPK:   s.accountGroup.group.PublicKey,
 		GroupType: s.accountGroup.group.GroupType,
 	}); err != nil {
 		return err
 	}
 
-	for _, c := range s.accountGroup.MetadataStore().ListContactsByStatus(bertytypes.ContactStateAdded) {
+	for _, c := range s.accountGroup.MetadataStore().ListContactsByStatus(protocoltypes.ContactStateAdded) {
 		pk, err := crypto.UnmarshalEd25519PublicKey(c.PK)
 		if err != nil {
 			return errcode.ErrDeserialization.Wrap(err)
@@ -43,7 +43,7 @@ func (s *service) DebugListGroups(req *bertytypes.DebugListGroups_Request, srv P
 			return errcode.ErrOrbitDBOpen.Wrap(err)
 		}
 
-		if err := srv.SendMsg(&bertytypes.DebugListGroups_Reply{
+		if err := srv.SendMsg(&protocoltypes.DebugListGroups_Reply{
 			GroupPK:   g.PublicKey,
 			GroupType: g.GroupType,
 			ContactPK: c.PK,
@@ -53,7 +53,7 @@ func (s *service) DebugListGroups(req *bertytypes.DebugListGroups_Request, srv P
 	}
 
 	for _, g := range s.accountGroup.MetadataStore().ListMultiMemberGroups() {
-		if err := srv.SendMsg(&bertytypes.DebugListGroups_Reply{
+		if err := srv.SendMsg(&protocoltypes.DebugListGroups_Reply{
 			GroupPK:   g.PublicKey,
 			GroupType: g.GroupType,
 		}); err != nil {
@@ -64,8 +64,8 @@ func (s *service) DebugListGroups(req *bertytypes.DebugListGroups_Request, srv P
 	return nil
 }
 
-func (s *service) DebugInspectGroupStore(req *bertytypes.DebugInspectGroupStore_Request, srv ProtocolService_DebugInspectGroupStoreServer) error {
-	if req.LogType == bertytypes.DebugInspectGroupLogTypeUndefined {
+func (s *service) DebugInspectGroupStore(req *protocoltypes.DebugInspectGroupStore_Request, srv protocoltypes.ProtocolService_DebugInspectGroupStoreServer) error {
+	if req.LogType == protocoltypes.DebugInspectGroupLogTypeUndefined {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid log type specified"))
 	}
 
@@ -75,7 +75,7 @@ func (s *service) DebugInspectGroupStore(req *bertytypes.DebugInspectGroupStore_
 	}
 
 	switch req.LogType {
-	case bertytypes.DebugInspectGroupLogTypeMessage:
+	case protocoltypes.DebugInspectGroupLogTypeMessage:
 		for _, e := range cg.messageStore.OpLog().GetEntries().Slice() {
 			var (
 				payload  = []byte(nil)
@@ -94,7 +94,7 @@ func (s *service) DebugInspectGroupStore(req *bertytypes.DebugInspectGroupStore_
 				nexts[i] = n.Bytes()
 			}
 
-			if err := srv.SendMsg(&bertytypes.DebugInspectGroupStore_Reply{
+			if err := srv.SendMsg(&protocoltypes.DebugInspectGroupStore_Reply{
 				CID:        e.GetHash().Bytes(),
 				ParentCIDs: nexts,
 				DevicePK:   devicePK,
@@ -104,12 +104,12 @@ func (s *service) DebugInspectGroupStore(req *bertytypes.DebugInspectGroupStore_
 			}
 		}
 
-	case bertytypes.DebugInspectGroupLogTypeMetadata:
+	case protocoltypes.DebugInspectGroupLogTypeMetadata:
 		log := cg.metadataStore.OpLog()
 
 		for _, e := range log.GetEntries().Slice() {
 			var (
-				eventType bertytypes.EventType
+				eventType protocoltypes.EventType
 				payload   = []byte(nil)
 				devicePK  = []byte(nil)
 				nexts     = make([][]byte, len(e.GetNext()))
@@ -141,7 +141,7 @@ func (s *service) DebugInspectGroupStore(req *bertytypes.DebugInspectGroupStore_
 				nexts[i] = n.Bytes()
 			}
 
-			if err := srv.SendMsg(&bertytypes.DebugInspectGroupStore_Reply{
+			if err := srv.SendMsg(&protocoltypes.DebugInspectGroupStore_Reply{
 				CID:               e.GetHash().Bytes(),
 				ParentCIDs:        nexts,
 				Payload:           payload,
@@ -156,8 +156,8 @@ func (s *service) DebugInspectGroupStore(req *bertytypes.DebugInspectGroupStore_
 	return nil
 }
 
-func (s *service) DebugGroup(ctx context.Context, request *bertytypes.DebugGroup_Request) (*bertytypes.DebugGroup_Reply, error) {
-	rep := &bertytypes.DebugGroup_Reply{}
+func (s *service) DebugGroup(ctx context.Context, request *protocoltypes.DebugGroup_Request) (*protocoltypes.DebugGroup_Reply, error) {
+	rep := &protocoltypes.DebugGroup_Reply{}
 
 	peers, err := s.ipfsCoreAPI.Swarm().Peers(ctx)
 	if err != nil {
@@ -176,8 +176,8 @@ func (s *service) DebugGroup(ctx context.Context, request *bertytypes.DebugGroup
 	return rep, nil
 }
 
-func (s *service) SystemInfo(ctx context.Context, request *bertytypes.SystemInfo_Request) (*bertytypes.SystemInfo_Reply, error) {
-	reply := bertytypes.SystemInfo_Reply{}
+func (s *service) SystemInfo(ctx context.Context, request *protocoltypes.SystemInfo_Request) (*protocoltypes.SystemInfo_Reply, error) {
+	reply := protocoltypes.SystemInfo_Reply{}
 
 	// process
 	process, errs := sysutil.SystemInfoProcess()
@@ -190,7 +190,7 @@ func (s *service) SystemInfo(ctx context.Context, request *bertytypes.SystemInfo
 
 	// p2p
 	{
-		reply.P2P = &bertytypes.SystemInfo_P2P{}
+		reply.P2P = &protocoltypes.SystemInfo_P2P{}
 
 		// swarm metrics
 		if api := s.IpfsCoreAPI(); api != nil {
@@ -209,8 +209,8 @@ func (s *service) SystemInfo(ctx context.Context, request *bertytypes.SystemInfo
 
 	// OrbitDB
 	status := s.accountGroup.metadataStore.ReplicationStatus()
-	reply.OrbitDB = &bertytypes.SystemInfo_OrbitDB{
-		AccountMetadata: &bertytypes.SystemInfo_OrbitDB_ReplicationStatus{
+	reply.OrbitDB = &protocoltypes.SystemInfo_OrbitDB{
+		AccountMetadata: &protocoltypes.SystemInfo_OrbitDB_ReplicationStatus{
 			Progress: int64(status.GetProgress()),
 			Maximum:  int64(status.GetMax()),
 			Buffered: int64(status.GetBuffered()),
@@ -230,8 +230,8 @@ func (s *service) SystemInfo(ctx context.Context, request *bertytypes.SystemInfo
 	return &reply, nil
 }
 
-func (s *service) PeerList(ctx context.Context, request *bertytypes.PeerList_Request) (*bertytypes.PeerList_Reply, error) {
-	reply := bertytypes.PeerList_Reply{}
+func (s *service) PeerList(ctx context.Context, request *protocoltypes.PeerList_Request) (*protocoltypes.PeerList_Reply, error) {
+	reply := protocoltypes.PeerList_Reply{}
 	api := s.IpfsCoreAPI()
 	if api == nil {
 		return nil, errcode.TODO.Wrap(fmt.Errorf("IPFS Core API is not available"))
@@ -241,14 +241,14 @@ func (s *service) PeerList(ctx context.Context, request *bertytypes.PeerList_Req
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	peers := map[peer.ID]*bertytypes.PeerList_Peer{}
+	peers := map[peer.ID]*protocoltypes.PeerList_Peer{}
 
 	// each peer in the swarm should be visible
 	for _, swarmPeer := range swarmPeers {
-		peers[swarmPeer.ID()] = &bertytypes.PeerList_Peer{
+		peers[swarmPeer.ID()] = &protocoltypes.PeerList_Peer{
 			ID:     swarmPeer.ID().Pretty(),
 			Errors: []string{},
-			Routes: []*bertytypes.PeerList_Route{},
+			Routes: []*protocoltypes.PeerList_Route{},
 		}
 	}
 	// FIXME: do not restrict on swarm peers, also print some other important ones (old, etc)
@@ -257,7 +257,7 @@ func (s *service) PeerList(ctx context.Context, request *bertytypes.PeerList_Req
 	for peerID, peer := range peers {
 		info := s.host.Peerstore().PeerInfo(peerID)
 		for _, addr := range info.Addrs {
-			peer.Routes = append(peer.Routes, &bertytypes.PeerList_Route{
+			peer.Routes = append(peer.Routes, &protocoltypes.PeerList_Route{
 				Address: addr.String(),
 			})
 		}
@@ -267,10 +267,10 @@ func (s *service) PeerList(ctx context.Context, request *bertytypes.PeerList_Req
 	for _, swarmPeer := range swarmPeers {
 		peer, ok := peers[swarmPeer.ID()]
 		if !ok {
-			peer = &bertytypes.PeerList_Peer{
+			peer = &protocoltypes.PeerList_Peer{
 				ID:     swarmPeer.ID().Pretty(),
 				Errors: []string{},
-				Routes: []*bertytypes.PeerList_Route{},
+				Routes: []*protocoltypes.PeerList_Route{},
 			}
 			peer.Errors = append(peer.Errors, "peer in swarm peers, but not in peerstore")
 			peers[swarmPeer.ID()] = peer
@@ -278,7 +278,7 @@ func (s *service) PeerList(ctx context.Context, request *bertytypes.PeerList_Req
 
 		address := swarmPeer.Address().String()
 		found := false
-		var selectedRoute *bertytypes.PeerList_Route
+		var selectedRoute *protocoltypes.PeerList_Route
 		for _, route := range peer.Routes {
 			if route.Address == address {
 				found = true
@@ -286,7 +286,7 @@ func (s *service) PeerList(ctx context.Context, request *bertytypes.PeerList_Req
 			}
 		}
 		if !found {
-			newRoute := bertytypes.PeerList_Route{Address: address}
+			newRoute := protocoltypes.PeerList_Route{Address: address}
 			peer.Routes = append(peer.Routes, &newRoute)
 			selectedRoute = &newRoute
 		}
@@ -304,9 +304,9 @@ func (s *service) PeerList(ctx context.Context, request *bertytypes.PeerList_Req
 		{
 			switch swarmPeer.Direction() {
 			case network.DirInbound:
-				selectedRoute.Direction = bertytypes.InboundDir
+				selectedRoute.Direction = protocoltypes.InboundDir
 			case network.DirOutbound:
-				selectedRoute.Direction = bertytypes.OutboundDir
+				selectedRoute.Direction = protocoltypes.OutboundDir
 			}
 		}
 		// streams
@@ -315,12 +315,12 @@ func (s *service) PeerList(ctx context.Context, request *bertytypes.PeerList_Req
 			if err != nil {
 				peer.Errors = append(peer.Errors, err.Error())
 			} else {
-				selectedRoute.Streams = []*bertytypes.PeerList_Stream{}
+				selectedRoute.Streams = []*protocoltypes.PeerList_Stream{}
 				for _, peerStream := range peerStreams {
 					if peerStream == "" {
 						continue
 					}
-					selectedRoute.Streams = append(selectedRoute.Streams, &bertytypes.PeerList_Stream{
+					selectedRoute.Streams = append(selectedRoute.Streams, &protocoltypes.PeerList_Stream{
 						ID: string(peerStream),
 					})
 				}
@@ -330,25 +330,25 @@ func (s *service) PeerList(ctx context.Context, request *bertytypes.PeerList_Req
 
 	// compute features
 	for _, peer := range peers {
-		features := map[bertytypes.PeerList_Feature]bool{}
+		features := map[protocoltypes.PeerList_Feature]bool{}
 		for _, route := range peer.Routes {
 			// FIXME: use the multiaddr library instead of string comparisons
 			if strings.Contains(route.Address, "/quic") {
-				features[bertytypes.QuicFeature] = true
+				features[protocoltypes.QuicFeature] = true
 			}
 			if strings.Contains(route.Address, "/mc/") {
-				features[bertytypes.BLEFeature] = true
-				features[bertytypes.BertyFeature] = true
+				features[protocoltypes.BLEFeature] = true
+				features[protocoltypes.BertyFeature] = true
 			}
 			if strings.Contains(route.Address, "/tor/") {
-				features[bertytypes.TorFeature] = true
+				features[protocoltypes.TorFeature] = true
 			}
 			for _, stream := range route.Streams {
 				if stream.ID == "/berty/contact_req/1.0.0" {
-					features[bertytypes.BertyFeature] = true
+					features[protocoltypes.BertyFeature] = true
 				}
 				if stream.ID == "/rendezvous/1.0.0" {
-					features[bertytypes.BertyFeature] = true
+					features[protocoltypes.BertyFeature] = true
 				}
 			}
 		}
@@ -361,20 +361,20 @@ func (s *service) PeerList(ctx context.Context, request *bertytypes.PeerList_Req
 	for _, peer := range peers {
 		// aggregate direction
 		for _, route := range peer.Routes {
-			if route.Direction == bertytypes.UnknownDir {
+			if route.Direction == protocoltypes.UnknownDir {
 				continue
 			}
 			switch {
-			case peer.Direction == bertytypes.UnknownDir: // first route with a direction
+			case peer.Direction == protocoltypes.UnknownDir: // first route with a direction
 				peer.Direction = route.Direction
-			case peer.Direction == bertytypes.BiDir: // peer aggregate is already maximal
+			case peer.Direction == protocoltypes.BiDir: // peer aggregate is already maximal
 				// noop
 			case route.Direction == peer.Direction: // another route with the same direction
 				// noop
-			case route.Direction == bertytypes.InboundDir && peer.Direction == bertytypes.OutboundDir:
-				peer.Direction = bertytypes.BiDir
-			case route.Direction == bertytypes.OutboundDir && peer.Direction == bertytypes.InboundDir:
-				peer.Direction = bertytypes.BiDir
+			case route.Direction == protocoltypes.InboundDir && peer.Direction == protocoltypes.OutboundDir:
+				peer.Direction = protocoltypes.BiDir
+			case route.Direction == protocoltypes.OutboundDir && peer.Direction == protocoltypes.InboundDir:
+				peer.Direction = protocoltypes.BiDir
 			default:
 				peer.Errors = append(peer.Errors, "failed to compute direction aggregate")
 			}

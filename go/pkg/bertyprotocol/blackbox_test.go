@@ -10,7 +10,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 func TestTestingClient_impl(t *testing.T) {
@@ -27,7 +27,7 @@ func TestTestingClient_impl(t *testing.T) {
 	defer cleanup()
 
 	// test service
-	_, _ = client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+	_, _ = client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 	status := client.Status()
 	expected := bertyprotocol.Status{}
 	assert.Equal(t, expected, status)
@@ -42,7 +42,7 @@ func ExampleNew_basic() {
 		panic(err)
 	}
 
-	ret, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+	ret, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 	if err != nil {
 		panic(err)
 	}

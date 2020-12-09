@@ -6,8 +6,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/go-orbit-db/iface"
 )
 
@@ -25,12 +25,12 @@ func (s *service) indexGroups() error {
 	}
 
 	contacts := s.accountGroup.MetadataStore().ListContactsByStatus(
-		bertytypes.ContactStateToRequest,
-		bertytypes.ContactStateReceived,
-		bertytypes.ContactStateAdded,
-		bertytypes.ContactStateRemoved,
-		bertytypes.ContactStateDiscarded,
-		bertytypes.ContactStateBlocked,
+		protocoltypes.ContactStateToRequest,
+		protocoltypes.ContactStateReceived,
+		protocoltypes.ContactStateAdded,
+		protocoltypes.ContactStateRemoved,
+		protocoltypes.ContactStateDiscarded,
+		protocoltypes.ContactStateBlocked,
 	)
 	for _, contact := range contacts {
 		if _, ok := s.groups[string(contact.PK)]; ok {
@@ -58,7 +58,7 @@ func (s *service) indexGroups() error {
 	return nil
 }
 
-func (s *service) getContactGroup(key crypto.PubKey) (*bertytypes.Group, error) {
+func (s *service) getContactGroup(key crypto.PubKey) (*protocoltypes.Group, error) {
 	sk, err := s.deviceKeystore.ContactGroupPrivKey(key)
 	if err != nil {
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
@@ -72,7 +72,7 @@ func (s *service) getContactGroup(key crypto.PubKey) (*bertytypes.Group, error) 
 	return g, nil
 }
 
-func (s *service) getGroupForPK(pk crypto.PubKey) (*bertytypes.Group, error) {
+func (s *service) getGroupForPK(pk crypto.PubKey) (*protocoltypes.Group, error) {
 	id, err := pk.Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
@@ -112,7 +112,7 @@ func (s *service) deactivateGroup(pk crypto.PubKey) error {
 		return nil
 	}
 
-	if cg.Group().GroupType == bertytypes.GroupTypeAccount {
+	if cg.Group().GroupType == protocoltypes.GroupTypeAccount {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't deactivate account group"))
 	}
 
@@ -149,7 +149,7 @@ func (s *service) activateGroup(pk crypto.PubKey, localOnly bool) error {
 	defer s.lock.Unlock()
 
 	switch g.GroupType {
-	case bertytypes.GroupTypeContact, bertytypes.GroupTypeMultiMember:
+	case protocoltypes.GroupTypeContact, protocoltypes.GroupTypeMultiMember:
 		dbOpts := &iface.CreateDBOptions{LocalOnly: &localOnly}
 
 		gc, err := s.odb.openGroup(s.ctx, g, dbOpts)
@@ -158,7 +158,7 @@ func (s *service) activateGroup(pk crypto.PubKey, localOnly bool) error {
 		}
 
 		var contactPK crypto.PubKey
-		if g.GroupType == bertytypes.GroupTypeContact {
+		if g.GroupType == protocoltypes.GroupTypeContact {
 			contact := s.accountGroup.metadataStore.GetContactFromGroupPK(id)
 			if contact != nil {
 				contactPK, err = contact.GetPubKey()
@@ -177,7 +177,7 @@ func (s *service) activateGroup(pk crypto.PubKey, localOnly bool) error {
 		TagGroupContextPeers(s.ctx, gc, s.ipfsCoreAPI, 42)
 
 		return nil
-	case bertytypes.GroupTypeAccount:
+	case protocoltypes.GroupTypeAccount:
 		return errcode.ErrInternal.Wrap(fmt.Errorf("deviceKeystore group should already be opened"))
 	}
 

@@ -15,12 +15,12 @@ import (
 
 	"berty.tech/berty/v2/go/internal/handshake"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 type pendingRequestDetails struct {
-	contact     *bertytypes.ShareableContact
+	contact     *protocoltypes.ShareableContact
 	ownMetadata []byte
 }
 
@@ -43,7 +43,7 @@ type contactRequestsManager struct {
 	toAdd          map[string]*pendingRequest
 }
 
-func (c *contactRequestsManager) metadataRequestDisabled(_ *bertytypes.GroupMetadataEvent) error {
+func (c *contactRequestsManager) metadataRequestDisabled(_ *protocoltypes.GroupMetadataEvent) error {
 	c.enabled = false
 	if c.announceCancel != nil {
 		c.announceCancel()
@@ -55,7 +55,7 @@ func (c *contactRequestsManager) metadataRequestDisabled(_ *bertytypes.GroupMeta
 	return nil
 }
 
-func (c *contactRequestsManager) metadataRequestEnabled(_ *bertytypes.GroupMetadataEvent) error {
+func (c *contactRequestsManager) metadataRequestEnabled(_ *protocoltypes.GroupMetadataEvent) error {
 	c.ipfs.SetStreamHandler(contactRequestV1, c.incomingHandler)
 
 	c.enabled = true
@@ -66,8 +66,8 @@ func (c *contactRequestsManager) metadataRequestEnabled(_ *bertytypes.GroupMetad
 	return c.enableIncomingRequests()
 }
 
-func (c *contactRequestsManager) metadataRequestReset(evt *bertytypes.GroupMetadataEvent) error {
-	e := &bertytypes.AccountContactRequestReferenceReset{}
+func (c *contactRequestsManager) metadataRequestReset(evt *protocoltypes.GroupMetadataEvent) error {
+	e := &protocoltypes.AccountContactRequestReferenceReset{}
 	if err := e.Unmarshal(evt.Event); err != nil {
 		return errcode.ErrDeserialization.Wrap(err)
 	}
@@ -81,20 +81,20 @@ func (c *contactRequestsManager) metadataRequestReset(evt *bertytypes.GroupMetad
 	return c.enableIncomingRequests()
 }
 
-func (c *contactRequestsManager) metadataRequestEnqueued(evt *bertytypes.GroupMetadataEvent) error {
-	e := &bertytypes.AccountContactRequestEnqueued{}
+func (c *contactRequestsManager) metadataRequestEnqueued(evt *protocoltypes.GroupMetadataEvent) error {
+	e := &protocoltypes.AccountContactRequestEnqueued{}
 	if err := e.Unmarshal(evt.Event); err != nil {
 		return err
 	}
 
-	return c.enqueueRequest(&bertytypes.ShareableContact{
+	return c.enqueueRequest(&protocoltypes.ShareableContact{
 		PK:                   e.Contact.PK,
 		PublicRendezvousSeed: e.Contact.PublicRendezvousSeed,
 	}, e.OwnMetadata)
 }
 
-func (c *contactRequestsManager) metadataRequestSent(evt *bertytypes.GroupMetadataEvent) error {
-	e := &bertytypes.AccountContactRequestSent{}
+func (c *contactRequestsManager) metadataRequestSent(evt *protocoltypes.GroupMetadataEvent) error {
+	e := &protocoltypes.AccountContactRequestSent{}
 	if err := e.Unmarshal(evt.Event); err != nil {
 		return err
 	}
@@ -107,8 +107,8 @@ func (c *contactRequestsManager) metadataRequestSent(evt *bertytypes.GroupMetada
 	return nil
 }
 
-func (c *contactRequestsManager) metadataRequestReceived(evt *bertytypes.GroupMetadataEvent) error {
-	e := &bertytypes.AccountContactRequestReceived{}
+func (c *contactRequestsManager) metadataRequestReceived(evt *protocoltypes.GroupMetadataEvent) error {
+	e := &protocoltypes.AccountContactRequestReceived{}
 	if err := e.Unmarshal(evt.Event); err != nil {
 		return err
 	}
@@ -121,7 +121,7 @@ func (c *contactRequestsManager) metadataRequestReceived(evt *bertytypes.GroupMe
 	return nil
 }
 
-func (c *contactRequestsManager) enqueueRequest(contact *bertytypes.ShareableContact, ownMetadata []byte) error {
+func (c *contactRequestsManager) enqueueRequest(contact *protocoltypes.ShareableContact, ownMetadata []byte) error {
 	pk, err := crypto.UnmarshalEd25519PublicKey(contact.PK)
 	if err != nil {
 		return err
@@ -202,13 +202,13 @@ func (c *contactRequestsManager) enqueueRequest(contact *bertytypes.ShareableCon
 }
 
 func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
-	handlers := map[bertytypes.EventType]func(*bertytypes.GroupMetadataEvent) error{
-		bertytypes.EventTypeAccountContactRequestDisabled:         c.metadataRequestDisabled,
-		bertytypes.EventTypeAccountContactRequestEnabled:          c.metadataRequestEnabled,
-		bertytypes.EventTypeAccountContactRequestReferenceReset:   c.metadataRequestReset,
-		bertytypes.EventTypeAccountContactRequestOutgoingEnqueued: c.metadataRequestEnqueued,
-		bertytypes.EventTypeAccountContactRequestOutgoingSent:     c.metadataRequestSent,
-		bertytypes.EventTypeAccountContactRequestIncomingReceived: c.metadataRequestReceived,
+	handlers := map[protocoltypes.EventType]func(*protocoltypes.GroupMetadataEvent) error{
+		protocoltypes.EventTypeAccountContactRequestDisabled:         c.metadataRequestDisabled,
+		protocoltypes.EventTypeAccountContactRequestEnabled:          c.metadataRequestEnabled,
+		protocoltypes.EventTypeAccountContactRequestReferenceReset:   c.metadataRequestReset,
+		protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued: c.metadataRequestEnqueued,
+		protocoltypes.EventTypeAccountContactRequestOutgoingSent:     c.metadataRequestSent,
+		protocoltypes.EventTypeAccountContactRequestIncomingReceived: c.metadataRequestReceived,
 	}
 
 	c.lock.Lock()
@@ -220,12 +220,12 @@ func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
 	}
 
 	if c.enabled && len(c.seed) > 0 {
-		if err := c.metadataRequestEnabled(&bertytypes.GroupMetadataEvent{}); err != nil {
+		if err := c.metadataRequestEnabled(&protocoltypes.GroupMetadataEvent{}); err != nil {
 			c.logger.Warn("unable to enable metadata request", zap.Error(err))
 		}
 	}
 
-	for _, contact := range c.metadataStore.ListContactsByStatus(bertytypes.ContactStateToRequest) {
+	for _, contact := range c.metadataStore.ListContactsByStatus(protocoltypes.ContactStateToRequest) {
 		ownMeta, err := c.metadataStore.GetRequestOwnMetadataForContact(contact.PK)
 		if err != nil {
 			c.logger.Warn("error while retrieving own metadata for contact", zap.Binary("pk", contact.PK), zap.Error(err))
@@ -240,7 +240,7 @@ func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
 	chSub := c.metadataStore.Subscribe(ctx)
 	go func() {
 		for evt := range chSub {
-			e, ok := evt.(*bertytypes.GroupMetadataEvent)
+			e, ok := evt.(*protocoltypes.GroupMetadataEvent)
 			if !ok {
 				continue
 			}
@@ -286,14 +286,14 @@ func (c *contactRequestsManager) incomingHandler(stream network.Stream) {
 		return
 	}
 
-	contact := &bertytypes.ShareableContact{}
+	contact := &protocoltypes.ShareableContact{}
 
 	if err := reader.ReadMsg(contact); err != nil {
 		c.logger.Error("an error occurred while retrieving contact information", zap.Error(err))
 		return
 	}
 
-	if err := contact.CheckFormat(bertytypes.ShareableContactOptionsAllowMissingRDVSeed); err != nil {
+	if err := contact.CheckFormat(protocoltypes.ShareableContactOptionsAllowMissingRDVSeed); err != nil {
 		c.logger.Error("an error occurred while verifying contact information", zap.Error(err))
 		return
 	}
@@ -303,7 +303,7 @@ func (c *contactRequestsManager) incomingHandler(stream network.Stream) {
 		return
 	}
 
-	if _, err = c.metadataStore.ContactRequestIncomingReceived(c.ctx, &bertytypes.ShareableContact{
+	if _, err = c.metadataStore.ContactRequestIncomingReceived(c.ctx, &protocoltypes.ShareableContact{
 		PK:                   otherPKBytes,
 		PublicRendezvousSeed: contact.PublicRendezvousSeed,
 		Metadata:             contact.Metadata,
@@ -321,7 +321,7 @@ func (c *contactRequestsManager) performSend(otherPK crypto.PubKey, stream netwo
 	}()
 
 	c.lock.Lock()
-	if c.metadataStore.checkContactStatus(otherPK, bertytypes.ContactStateAdded) {
+	if c.metadataStore.checkContactStatus(otherPK, protocoltypes.ContactStateAdded) {
 		// Nothing to do, contact has already been requested
 		c.lock.Unlock()
 		return nil

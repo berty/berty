@@ -1,4 +1,4 @@
-package bertytypes
+package protocoltypes
 
 // Config represents the configuration file defined in /config/config.yml
 type Config struct {

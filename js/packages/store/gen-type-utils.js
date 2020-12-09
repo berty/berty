@@ -36,8 +36,8 @@ enumMapping(
 )
 enumMapping(
 	'MonitorGroupPayloadType',
-	'berty.types.v1.MonitorGroup.TypeEventMonitor',
-	'beapi.types.MonitorGroup',
+	'berty.protocol.v1.MonitorGroup.TypeEventMonitor',
+	'beapi.protocol.MonitorGroup',
 	'EventMonitor',
 )
 
@@ -82,4 +82,4 @@ const methodsHooks = (name, svcType, prefix) => {
 }
 
 methodsHooks('MessengerMethodsHooks', 'berty.messenger.v1.MessengerService', 'beapi.messenger')
-methodsHooks('ProtocolMethodsHooks', 'berty.protocol.v1.ProtocolService', 'beapi.types')
+methodsHooks('ProtocolMethodsHooks', 'berty.protocol.v1.ProtocolService', 'beapi.protocol')

@@ -28,6 +28,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 type Manager struct {
@@ -88,7 +90,7 @@ type Manager struct {
 			pubsub           *pubsub.PubSub
 			discovery        tinder.Driver
 			server           bertyprotocol.Service
-			client           bertyprotocol.ProtocolServiceClient
+			client           protocoltypes.ProtocolServiceClient
 			requiredByClient bool
 			ipfsWebUICleanup func()
 			orbitDB          *bertyprotocol.BertyOrbitDB
@@ -106,11 +108,11 @@ type Manager struct {
 			server              bertymessenger.Service
 			lcmanager           *lifecycle.Manager
 			notificationManager notification.Manager
-			client              bertymessenger.MessengerServiceClient
+			client              messengertypes.MessengerServiceClient
 			db                  *gorm.DB
 			dbCleanup           func()
 			requiredByClient    bool
-			localDBState        *bertymessenger.LocalDatabaseState
+			localDBState        *messengertypes.LocalDatabaseState
 		}
 		GRPC struct {
 			RemoteAddr string `json:"RemoteAddr,omitempty"`

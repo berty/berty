@@ -138,7 +138,7 @@ export const replicateGroup = async (
 	}
 
 	try {
-		await ctx.client.replicationServiceRegisterGroup({
+		await ctx.client?.replicationServiceRegisterGroup({
 			tokenId: tokenID,
 			conversationPublicKey: conversationPublicKey,
 		})

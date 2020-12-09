@@ -21,6 +21,8 @@ import (
 	"moul.io/zapgorm2"
 
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 type TestingServiceOpts struct {
@@ -29,7 +31,7 @@ type TestingServiceOpts struct {
 	Index  int
 }
 
-func TestingService(ctx context.Context, t *testing.T, opts *TestingServiceOpts) (MessengerServiceServer, func()) {
+func TestingService(ctx context.Context, t *testing.T, opts *TestingServiceOpts) (messengertypes.MessengerServiceServer, func()) {
 	t.Helper()
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()
@@ -75,12 +77,12 @@ func TestingService(ctx context.Context, t *testing.T, opts *TestingServiceOpts)
 	return server, cleanup
 }
 
-func TestingInfra(ctx context.Context, t *testing.T, amount int, logger *zap.Logger) ([]MessengerServiceClient, []*bertyprotocol.TestingProtocol, func()) {
+func TestingInfra(ctx context.Context, t *testing.T, amount int, logger *zap.Logger) ([]messengertypes.MessengerServiceClient, []*bertyprotocol.TestingProtocol, func()) {
 	t.Helper()
 	mocknet := libp2p_mocknet.New(ctx)
 
 	protocols, cleanup := bertyprotocol.NewTestingProtocolWithMockedPeers(ctx, t, &bertyprotocol.TestingOpts{Logger: logger, Mocknet: mocknet}, nil, amount)
-	clients := make([]MessengerServiceClient, amount)
+	clients := make([]messengertypes.MessengerServiceClient, amount)
 
 	for i, p := range protocols {
 		// new messenger service
@@ -89,7 +91,7 @@ func TestingInfra(ctx context.Context, t *testing.T, amount int, logger *zap.Log
 		// new messenger client
 		lis := bufconn.Listen(1024 * 1024)
 		s := grpc.NewServer()
-		RegisterMessengerServiceServer(s, svc)
+		messengertypes.RegisterMessengerServiceServer(s, svc)
 		go func() {
 			err := s.Serve(lis)
 			require.NoError(t, err)
@@ -100,7 +102,7 @@ func TestingInfra(ctx context.Context, t *testing.T, amount int, logger *zap.Log
 			require.NoError(t, conn.Close())
 			cleanupMessengerService()
 		}, cleanup)
-		clients[i] = NewMessengerServiceClient(conn)
+		clients[i] = messengertypes.NewMessengerServiceClient(conn)
 	}
 
 	require.NoError(t, mocknet.ConnectAllButSelf())
@@ -117,9 +119,9 @@ func mkBufDialer(l *bufconn.Listener) func(context.Context, string) (net.Conn, e
 type TestingAccount struct {
 	ctx            context.Context
 	logger         *zap.Logger
-	client         MessengerServiceClient
-	protocolClient bertyprotocol.ProtocolServiceClient
-	stream         MessengerService_EventStreamClient
+	client         messengertypes.MessengerServiceClient
+	protocolClient protocoltypes.ProtocolServiceClient
+	stream         messengertypes.MessengerService_EventStreamClient
 	openStreamOnce sync.Once
 	closed         bool
 	cancelFunc     func()
@@ -128,15 +130,15 @@ type TestingAccount struct {
 	tryNextMutex   sync.Mutex
 
 	// store
-	account       *Account
-	conversations map[string]*Conversation
-	contacts      map[string]*Contact
-	members       map[string]*Member
-	interactions  map[string]*Interaction
-	medias        map[string]*Media
+	account       *messengertypes.Account
+	conversations map[string]*messengertypes.Conversation
+	contacts      map[string]*messengertypes.Contact
+	members       map[string]*messengertypes.Member
+	interactions  map[string]*messengertypes.Interaction
+	medias        map[string]*messengertypes.Media
 }
 
-func NewTestingAccount(ctx context.Context, t *testing.T, client MessengerServiceClient, protocolClient bertyprotocol.ProtocolServiceClient, logger *zap.Logger) *TestingAccount {
+func NewTestingAccount(ctx context.Context, t *testing.T, client messengertypes.MessengerServiceClient, protocolClient protocoltypes.ProtocolServiceClient, logger *zap.Logger) *TestingAccount {
 	t.Helper()
 	ctx, cancel := context.WithCancel(ctx)
 	return &TestingAccount{
@@ -145,11 +147,11 @@ func NewTestingAccount(ctx context.Context, t *testing.T, client MessengerServic
 		client:         client,
 		protocolClient: protocolClient,
 		logger:         logger,
-		conversations:  make(map[string]*Conversation),
-		contacts:       make(map[string]*Contact),
-		members:        make(map[string]*Member),
-		interactions:   make(map[string]*Interaction),
-		medias:         make(map[string]*Media),
+		conversations:  make(map[string]*messengertypes.Conversation),
+		contacts:       make(map[string]*messengertypes.Contact),
+		members:        make(map[string]*messengertypes.Member),
+		interactions:   make(map[string]*messengertypes.Interaction),
+		medias:         make(map[string]*messengertypes.Media),
 	}
 }
 
@@ -164,7 +166,7 @@ func (a *TestingAccount) openStream(t *testing.T) {
 	t.Helper()
 	a.openStreamOnce.Do(func() {
 		var err error
-		a.stream, err = a.client.EventStream(a.ctx, &EventStream_Request{})
+		a.stream, err = a.client.EventStream(a.ctx, &messengertypes.EventStream_Request{})
 		require.NoError(t, err)
 	})
 }
@@ -197,67 +199,67 @@ func (a *TestingAccount) ProcessWholeStream(t *testing.T) func() {
 	return func() { close(ch) }
 }
 
-func (a *TestingAccount) processEvent(t *testing.T, event *StreamEvent) {
+func (a *TestingAccount) processEvent(t *testing.T, event *messengertypes.StreamEvent) {
 	a.processMutex.Lock()
 	defer a.processMutex.Unlock()
 
 	t.Helper()
 	switch event.GetType() {
-	case StreamEvent_TypeAccountUpdated:
+	case messengertypes.StreamEvent_TypeAccountUpdated:
 		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
-		a.account = payload.(*StreamEvent_AccountUpdated).Account
-	case StreamEvent_TypeContactUpdated:
+		a.account = payload.(*messengertypes.StreamEvent_AccountUpdated).Account
+	case messengertypes.StreamEvent_TypeContactUpdated:
 		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
-		contact := payload.(*StreamEvent_ContactUpdated).Contact
+		contact := payload.(*messengertypes.StreamEvent_ContactUpdated).Contact
 		a.contacts[contact.GetPublicKey()] = contact
 		t.Log("contact updated in", a.account.GetDisplayName(), ", name:", contact.GetDisplayName(), ", mpk:", contact.GetPublicKey(), ", acid: ", contact.GetAvatarCID())
-	case StreamEvent_TypeConversationUpdated:
+	case messengertypes.StreamEvent_TypeConversationUpdated:
 		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
-		conversation := payload.(*StreamEvent_ConversationUpdated).Conversation
+		conversation := payload.(*messengertypes.StreamEvent_ConversationUpdated).Conversation
 		a.conversations[conversation.GetPublicKey()] = conversation
-	case StreamEvent_TypeMemberUpdated:
+	case messengertypes.StreamEvent_TypeMemberUpdated:
 		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
-		member := payload.(*StreamEvent_MemberUpdated).Member
+		member := payload.(*messengertypes.StreamEvent_MemberUpdated).Member
 		a.members[member.GetPublicKey()] = member
 		t.Log("member updated in", a.account.GetDisplayName(), ", value:", member.GetDisplayName(), ", mpk:", member.GetPublicKey())
-	case StreamEvent_TypeInteractionUpdated:
+	case messengertypes.StreamEvent_TypeInteractionUpdated:
 		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
-		inte := payload.(*StreamEvent_InteractionUpdated).Interaction
+		inte := payload.(*messengertypes.StreamEvent_InteractionUpdated).Interaction
 		a.interactions[inte.GetCID()] = inte
-	case StreamEvent_TypeMediaUpdated:
+	case messengertypes.StreamEvent_TypeMediaUpdated:
 		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
-		media := payload.(*StreamEvent_MediaUpdated).Media
+		media := payload.(*messengertypes.StreamEvent_MediaUpdated).Media
 		a.medias[media.GetCID()] = media
 	}
 }
 
-func (a *TestingAccount) GetClient() MessengerServiceClient {
+func (a *TestingAccount) GetClient() messengertypes.MessengerServiceClient {
 	return a.client
 }
 
 func (a *TestingAccount) DrainInitEvents(t *testing.T) {
 	for {
 		event := a.TryNextEvent(t, 100*time.Millisecond)
-		if event.Type == StreamEvent_TypeListEnded {
+		if event.Type == messengertypes.StreamEvent_TypeListEnded {
 			return
 		}
 	}
 }
 
-func (a *TestingAccount) GetStream(t *testing.T) MessengerService_EventStreamClient {
+func (a *TestingAccount) GetStream(t *testing.T) messengertypes.MessengerService_EventStreamClient {
 	a.openStream(t)
 	return a.stream
 }
 
 func (a *TestingAccount) SetName(t *testing.T, name string) {
 	t.Helper()
-	_, err := a.client.AccountUpdate(a.ctx, &AccountUpdate_Request{DisplayName: name})
+	_, err := a.client.AccountUpdate(a.ctx, &messengertypes.AccountUpdate_Request{DisplayName: name})
 	require.NoError(t, err)
 }
 
@@ -265,15 +267,15 @@ func (a *TestingAccount) SetNameAndDrainUpdate(t *testing.T, name string) {
 	t.Helper()
 	a.SetName(t, name)
 	event := a.NextEvent(t)
-	require.Equal(t, event.Type, StreamEvent_TypeAccountUpdated)
+	require.Equal(t, event.Type, messengertypes.StreamEvent_TypeAccountUpdated)
 	payload, err := event.UnmarshalPayload()
 	require.NoError(t, err)
-	account := payload.(*StreamEvent_AccountUpdated).Account
+	account := payload.(*messengertypes.StreamEvent_AccountUpdated).Account
 	require.Equal(t, a.GetAccount(), account)
 	require.Equal(t, name, account.DisplayName)
 }
 
-func (a *TestingAccount) NextEvent(t *testing.T) *StreamEvent {
+func (a *TestingAccount) NextEvent(t *testing.T) *messengertypes.StreamEvent {
 	t.Helper()
 	a.openStream(t)
 
@@ -294,13 +296,13 @@ func (a *TestingAccount) NextEvent(t *testing.T) *StreamEvent {
 	return entry.Event
 }
 
-func (a *TestingAccount) GetAccount() *Account {
+func (a *TestingAccount) GetAccount() *messengertypes.Account {
 	a.processMutex.Lock()
 	defer a.processMutex.Unlock()
 	return a.account
 }
 
-func (a *TestingAccount) GetContact(t *testing.T, pk string) *Contact {
+func (a *TestingAccount) GetContact(t *testing.T, pk string) *messengertypes.Contact {
 	a.processMutex.Lock()
 	defer a.processMutex.Unlock()
 	c, ok := a.contacts[pk]
@@ -308,7 +310,7 @@ func (a *TestingAccount) GetContact(t *testing.T, pk string) *Contact {
 	return c
 }
 
-func (a *TestingAccount) GetConversation(t *testing.T, pk string) *Conversation {
+func (a *TestingAccount) GetConversation(t *testing.T, pk string) *messengertypes.Conversation {
 	a.processMutex.Lock()
 	defer a.processMutex.Unlock()
 	conv, ok := a.conversations[pk]
@@ -316,7 +318,7 @@ func (a *TestingAccount) GetConversation(t *testing.T, pk string) *Conversation 
 	return conv
 }
 
-func (a *TestingAccount) GetMedia(t *testing.T, cid string) *Media {
+func (a *TestingAccount) GetMedia(t *testing.T, cid string) *messengertypes.Media {
 	a.processMutex.Lock()
 	defer a.processMutex.Unlock()
 	media, ok := a.medias[cid]
@@ -324,7 +326,7 @@ func (a *TestingAccount) GetMedia(t *testing.T, cid string) *Media {
 	return media
 }
 
-func (a *TestingAccount) TryNextEvent(t *testing.T, timeout time.Duration) *StreamEvent {
+func (a *TestingAccount) TryNextEvent(t *testing.T, timeout time.Duration) *messengertypes.StreamEvent {
 	t.Helper()
 	a.openStream(t)
 
@@ -332,7 +334,7 @@ func (a *TestingAccount) TryNextEvent(t *testing.T, timeout time.Duration) *Stre
 	defer a.tryNextMutex.Unlock()
 
 	done := make(chan struct{})
-	var event *StreamEvent
+	var event *messengertypes.StreamEvent
 	go func() {
 		event = a.NextEvent(t)
 		close(done)

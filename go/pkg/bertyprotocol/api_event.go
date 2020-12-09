@@ -6,8 +6,8 @@ import (
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/tracer"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/stores"
 )
@@ -34,7 +34,7 @@ func checkParametersConsistency(sinceID, untilID []byte, sinceNow, untilNow, rev
 }
 
 // GroupMetadataList replays previous and subscribes to new metadata events from the group
-func (s *service) GroupMetadataList(req *bertytypes.GroupMetadataList_Request, sub ProtocolService_GroupMetadataListServer) error {
+func (s *service) GroupMetadataList(req *protocoltypes.GroupMetadataList_Request, sub protocoltypes.ProtocolService_GroupMetadataListServer) error {
 	var (
 		newEvents            <-chan events.Event
 		sentEvents                = map[string]bool{}
@@ -58,7 +58,7 @@ func (s *service) GroupMetadataList(req *bertytypes.GroupMetadataList_Request, s
 	}
 
 	listPreviousMessages := func() error {
-		var previousEvents <-chan *bertytypes.GroupMetadataEvent
+		var previousEvents <-chan *protocoltypes.GroupMetadataEvent
 		previousEvents, err = cg.MetadataStore().ListEvents(sub.Context(), req.SinceID, req.UntilID, req.ReverseOrder)
 		if err != nil {
 			return err
@@ -104,7 +104,7 @@ func (s *service) GroupMetadataList(req *bertytypes.GroupMetadataList_Request, s
 				}
 			}
 
-			e, ok := event.(*bertytypes.GroupMetadataEvent)
+			e, ok := event.(*protocoltypes.GroupMetadataEvent)
 			if !ok || sentEvents[string(e.EventContext.ID)] { // Avoid sending two times the same event
 				continue
 			}
@@ -129,7 +129,7 @@ func (s *service) GroupMetadataList(req *bertytypes.GroupMetadataList_Request, s
 }
 
 // GroupMessageList replays previous and subscribes to new message events from the group
-func (s *service) GroupMessageList(req *bertytypes.GroupMessageList_Request, sub ProtocolService_GroupMessageListServer) error {
+func (s *service) GroupMessageList(req *protocoltypes.GroupMessageList_Request, sub protocoltypes.ProtocolService_GroupMessageListServer) error {
 	var (
 		newEvents            <-chan events.Event
 		sentEvents                = map[string]bool{}
@@ -153,7 +153,7 @@ func (s *service) GroupMessageList(req *bertytypes.GroupMessageList_Request, sub
 	}
 
 	listPreviousMessages := func() error {
-		var previousEvents <-chan *bertytypes.GroupMessageEvent
+		var previousEvents <-chan *protocoltypes.GroupMessageEvent
 		previousEvents, err = cg.MessageStore().ListEvents(sub.Context(), req.SinceID, req.UntilID, req.ReverseOrder)
 		if err != nil {
 			return err
@@ -199,7 +199,7 @@ func (s *service) GroupMessageList(req *bertytypes.GroupMessageList_Request, sub
 				}
 			}
 
-			e, ok := event.(*bertytypes.GroupMessageEvent)
+			e, ok := event.(*protocoltypes.GroupMessageEvent)
 			if !ok || sentEvents[string(e.EventContext.ID)] { // Avoid sending two times the same event
 				continue
 			}

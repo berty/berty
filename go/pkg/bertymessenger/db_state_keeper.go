@@ -3,6 +3,8 @@ package bertymessenger
 import (
 	"go.uber.org/zap"
 	"gorm.io/gorm"
+
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 func keepDisplayName(db *gorm.DB, logger *zap.Logger) string {
@@ -55,12 +57,12 @@ func keepAutoReplicateFlag(db *gorm.DB, logger *zap.Logger) bool {
 	return true
 }
 
-func keepConversationsLocalData(db *gorm.DB, logger *zap.Logger) []*LocalConversationState {
+func keepConversationsLocalData(db *gorm.DB, logger *zap.Logger) []*messengertypes.LocalConversationState {
 	if logger == nil {
 		logger = zap.NewNop()
 	}
 
-	result := []*LocalConversationState{}
+	result := []*messengertypes.LocalConversationState{}
 
 	err := db.Table("conversations").Scan(&result).Error
 
@@ -98,8 +100,8 @@ func keepAccountStringField(db *gorm.DB, field string, logger *zap.Logger) strin
 	return ""
 }
 
-func keepDatabaseLocalState(db *gorm.DB, logger *zap.Logger) *LocalDatabaseState {
-	return &LocalDatabaseState{
+func keepDatabaseLocalState(db *gorm.DB, logger *zap.Logger) *messengertypes.LocalDatabaseState {
+	return &messengertypes.LocalDatabaseState{
 		PublicKey:               keepAccountStringField(db, "public_key", logger),
 		DisplayName:             keepDisplayName(db, logger),
 		ReplicateFlag:           keepAutoReplicateFlag(db, logger),

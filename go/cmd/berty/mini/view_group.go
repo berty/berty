@@ -20,12 +20,12 @@ import (
 
 	"berty.tech/berty/v2/go/internal/tracer"
 	"berty.tech/berty/v2/go/pkg/banner"
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 type groupView struct {
-	g            *bertytypes.Group
+	g            *protocoltypes.Group
 	messages     *historyMessageList
 	v            *tabbedGroupsView
 	inputHistory *inputHistory
@@ -33,8 +33,8 @@ type groupView struct {
 	memberPK     []byte
 	devicePK     []byte
 	acks         sync.Map
-	devices      map[string]*bertytypes.GroupAddMemberDevice
-	secrets      map[string]*bertytypes.GroupAddDeviceSecret
+	devices      map[string]*protocoltypes.GroupAddMemberDevice
+	secrets      map[string]*protocoltypes.GroupAddDeviceSecret
 	muAggregates sync.Mutex
 	logger       *zap.Logger
 	hasNew       int32
@@ -96,7 +96,7 @@ func (v *groupView) OnSubmit(ctx context.Context, input string) {
 	v.inputHistory.Append(input)
 }
 
-func newViewGroup(v *tabbedGroupsView, g *bertytypes.Group, memberPK, devicePK []byte, logger *zap.Logger) *groupView {
+func newViewGroup(v *tabbedGroupsView, g *protocoltypes.Group, memberPK, devicePK []byte, logger *zap.Logger) *groupView {
 	return &groupView{
 		memberPK:     memberPK,
 		devicePK:     devicePK,
@@ -106,17 +106,17 @@ func newViewGroup(v *tabbedGroupsView, g *bertytypes.Group, memberPK, devicePK [
 		syncMessages: make(chan *historyMessage),
 		inputHistory: newInputHistory(),
 		logger:       logger.With(zap.String("group", pkAsShortID(g.PublicKey))),
-		devices:      map[string]*bertytypes.GroupAddMemberDevice{},
-		secrets:      map[string]*bertytypes.GroupAddDeviceSecret{},
+		devices:      map[string]*protocoltypes.GroupAddMemberDevice{},
+		secrets:      map[string]*protocoltypes.GroupAddDeviceSecret{},
 	}
 }
 
-func (v *groupView) ack(ctx context.Context, evt *bertytypes.GroupMessageEvent) {
-	if v.g.GroupType != bertytypes.GroupTypeContact {
+func (v *groupView) ack(ctx context.Context, evt *protocoltypes.GroupMessageEvent) {
+	if v.g.GroupType != protocoltypes.GroupTypeContact {
 		return
 	}
 
-	_, err := v.v.messenger.SendAck(ctx, &bertymessenger.SendAck_Request{
+	_, err := v.v.messenger.SendAck(ctx, &messengertypes.SendAck_Request{
 		GroupPK:   evt.EventContext.GroupPK,
 		MessageID: evt.EventContext.ID,
 	})
@@ -141,7 +141,7 @@ func (v *groupView) loop(ctx context.Context) {
 	}()
 
 	// Open group with local only first
-	if _, err := v.v.protocol.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
+	if _, err := v.v.protocol.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{
 		GroupPK: v.g.PublicKey,
 	}); err != nil {
 		v.messages.Append(&historyMessage{
@@ -154,7 +154,7 @@ func (v *groupView) loop(ctx context.Context) {
 
 	// subscribe to group metadata monitor
 	{
-		req := &bertytypes.MonitorGroup_Request{GroupPK: v.g.PublicKey}
+		req := &protocoltypes.MonitorGroup_Request{GroupPK: v.g.PublicKey}
 		cl, err := v.v.protocol.MonitorGroup(ctx, req)
 		if err != nil {
 			panic(err)
@@ -183,7 +183,7 @@ func (v *groupView) loop(ctx context.Context) {
 
 	// list group message events
 	{
-		req := &bertytypes.GroupMessageList_Request{GroupPK: v.g.PublicKey, UntilNow: true}
+		req := &protocoltypes.GroupMessageList_Request{GroupPK: v.g.PublicKey, UntilNow: true}
 		cl, err := v.v.protocol.GroupMessageList(ctx, req)
 		if err != nil {
 			panic(err)
@@ -199,7 +199,7 @@ func (v *groupView) loop(ctx context.Context) {
 			}
 			lastMessageID = evt.EventContext.ID
 
-			amp, am, err := bertymessenger.UnmarshalAppMessage(evt.GetMessage())
+			amp, am, err := messengertypes.UnmarshalAppMessage(evt.GetMessage())
 			if err != nil {
 				v.messages.Prepend(&historyMessage{
 					messageType: messageTypeMessage,
@@ -210,18 +210,18 @@ func (v *groupView) loop(ctx context.Context) {
 			}
 
 			switch am.GetType() {
-			case bertymessenger.AppMessage_TypeAcknowledge:
+			case messengertypes.AppMessage_TypeAcknowledge:
 				if !bytes.Equal(evt.Headers.DevicePK, v.devicePK) {
 					continue
 				}
-				payload := amp.(*bertymessenger.AppMessage_Acknowledge)
+				payload := amp.(*messengertypes.AppMessage_Acknowledge)
 				v.acks.Store(payload.Target, true)
 
-			case bertymessenger.AppMessage_TypeReplyOptions:
+			case messengertypes.AppMessage_TypeReplyOptions:
 				// TODO:
 
-			case bertymessenger.AppMessage_TypeUserMessage:
-				payload := amp.(*bertymessenger.AppMessage_UserMessage)
+			case messengertypes.AppMessage_TypeUserMessage:
+				payload := amp.(*messengertypes.AppMessage_UserMessage)
 				v.messages.Prepend(&historyMessage{
 					messageType: messageTypeMessage,
 					payload:     []byte(payload.Body),
@@ -235,7 +235,7 @@ func (v *groupView) loop(ctx context.Context) {
 
 	// list group metadata events
 	{
-		req := &bertytypes.GroupMetadataList_Request{GroupPK: v.g.PublicKey, UntilNow: true}
+		req := &protocoltypes.GroupMetadataList_Request{GroupPK: v.g.PublicKey, UntilNow: true}
 		cl, err := v.v.protocol.GroupMetadataList(ctx, req)
 		if err != nil {
 			panic(err)
@@ -257,9 +257,9 @@ func (v *groupView) loop(ctx context.Context) {
 
 	// subscribe to group message events
 	{
-		var evt *bertytypes.GroupMessageEvent
+		var evt *protocoltypes.GroupMessageEvent
 
-		req := &bertytypes.GroupMessageList_Request{GroupPK: v.g.PublicKey, SinceID: lastMessageID}
+		req := &protocoltypes.GroupMessageList_Request{GroupPK: v.g.PublicKey, SinceID: lastMessageID}
 		cl, err := v.v.protocol.GroupMessageList(ctx, req)
 		if err != nil {
 			panic(err)
@@ -286,7 +286,7 @@ func (v *groupView) loop(ctx context.Context) {
 					return
 				}
 
-				var am bertymessenger.AppMessage
+				var am messengertypes.AppMessage
 				err := proto.Unmarshal(evt.Message, &am)
 				if err != nil {
 					v.messages.Append(&historyMessage{
@@ -300,11 +300,11 @@ func (v *groupView) loop(ctx context.Context) {
 				}
 
 				switch am.GetType() {
-				case bertymessenger.AppMessage_TypeAcknowledge:
+				case messengertypes.AppMessage_TypeAcknowledge:
 					if !bytes.Equal(evt.Headers.DevicePK, v.devicePK) {
 						continue
 					}
-					var payload bertymessenger.AppMessage_Acknowledge
+					var payload messengertypes.AppMessage_Acknowledge
 					err := proto.Unmarshal(am.GetPayload(), &payload)
 					if err != nil {
 						v.logger.Error("failed to unmarshal Acknowledge", zap.Error(err))
@@ -312,8 +312,8 @@ func (v *groupView) loop(ctx context.Context) {
 					v.acks.Store(payload.Target, true)
 					continue
 
-				case bertymessenger.AppMessage_TypeUserMessage:
-					var payload bertymessenger.AppMessage_UserMessage
+				case messengertypes.AppMessage_TypeUserMessage:
+					var payload messengertypes.AppMessage_UserMessage
 					err := proto.Unmarshal(am.GetPayload(), &payload)
 					if err != nil {
 						v.logger.Error("failed to unmarshal UserMessage", zap.Error(err))
@@ -331,8 +331,8 @@ func (v *groupView) loop(ctx context.Context) {
 					v.addBadge()
 
 					v.ack(ctx, evt)
-				case bertymessenger.AppMessage_TypeReplyOptions:
-					var payload bertymessenger.AppMessage_ReplyOptions
+				case messengertypes.AppMessage_TypeReplyOptions:
+					var payload messengertypes.AppMessage_ReplyOptions
 					err := proto.Unmarshal(am.GetPayload(), &payload)
 					if err != nil {
 						v.logger.Error("failed to unmarshal ReplyOptions", zap.Error(err))
@@ -364,9 +364,9 @@ func (v *groupView) loop(ctx context.Context) {
 
 	// subscribe to group metadata events
 	{
-		var evt *bertytypes.GroupMetadataEvent
+		var evt *protocoltypes.GroupMetadataEvent
 
-		req := &bertytypes.GroupMetadataList_Request{GroupPK: v.g.PublicKey, SinceID: lastMetadataID}
+		req := &protocoltypes.GroupMetadataList_Request{GroupPK: v.g.PublicKey, SinceID: lastMetadataID}
 		cl, err := v.v.protocol.GroupMetadataList(ctx, req)
 		if err != nil {
 			panic(err)

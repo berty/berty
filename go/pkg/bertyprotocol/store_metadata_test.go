@@ -19,7 +19,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 func TestMetadataStoreSecret_Basic(t *testing.T) {
@@ -45,8 +45,8 @@ func TestMetadataStoreSecret_Basic(t *testing.T) {
 
 	go WatchNewMembersAndSendSecrets(ctx, logger, peers[0].GC)
 	go WatchNewMembersAndSendSecrets(ctx, logger, peers[1].GC)
-	go waitForBertyEventType(ctx, t, msA, bertytypes.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
-	go waitForBertyEventType(ctx, t, msB, bertytypes.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
+	go waitForBertyEventType(ctx, t, msA, protocoltypes.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
+	go waitForBertyEventType(ctx, t, msB, protocoltypes.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
 	inviteAllPeersToGroup(ctx, t, peers, groupSK)
 
 	devPkA := peers[0].GC.DevicePubKey()
@@ -118,7 +118,7 @@ func testMemberStore(t *testing.T, memberCount, deviceCount int) {
 	done := make(chan struct{})
 
 	for _, peer := range peers {
-		go waitForBertyEventType(ctx, t, peer.GC.MetadataStore(), bertytypes.EventTypeGroupMemberDeviceAdded, len(peers), done)
+		go waitForBertyEventType(ctx, t, peer.GC.MetadataStore(), protocoltypes.EventTypeGroupMemberDeviceAdded, len(peers), done)
 	}
 
 	for i, peer := range peers {
@@ -260,7 +260,7 @@ func TestMetadataContactLifecycle(t *testing.T) {
 		err      error
 		meta     = make([]*metadataStore, peersCount)
 		ownCG    = make([]*groupContext, peersCount)
-		contacts = make([]*bertytypes.ShareableContact, peersCount)
+		contacts = make([]*protocoltypes.ShareableContact, peersCount)
 	)
 
 	api, cleanupNode := ipfsAPIUsingMockNet(ctx, t)
@@ -305,7 +305,7 @@ func TestMetadataContactLifecycle(t *testing.T) {
 
 	require.Equal(t, len(meta[0].Index().(*metadataStoreIndex).contacts), 1)
 	require.NotNil(t, meta[0].Index().(*metadataStoreIndex).contacts[string(contact2PK)])
-	require.Equal(t, meta[0].Index().(*metadataStoreIndex).contacts[string(contact2PK)].state, bertytypes.ContactStateToRequest)
+	require.Equal(t, meta[0].Index().(*metadataStoreIndex).contacts[string(contact2PK)].state, protocoltypes.ContactStateToRequest)
 	require.Equal(t, meta[0].Index().(*metadataStoreIndex).contacts[string(contact2PK)].contact.PK, contact2PK)
 	require.Equal(t, meta[0].Index().(*metadataStoreIndex).contacts[string(contact2PK)].contact.PublicRendezvousSeed, contact2RDVS)
 	require.Equal(t, contacts[0].Metadata, meta[0].Index().(*metadataStoreIndex).contactRequestMetadata[string(contact2PK)])
@@ -329,7 +329,7 @@ func TestMetadataContactLifecycle(t *testing.T) {
 
 	require.Equal(t, 1, len(meta[0].Index().(*metadataStoreIndex).contacts))
 	require.NotNil(t, meta[0].Index().(*metadataStoreIndex).contacts[string(contact2PK)])
-	require.Equal(t, bertytypes.ContactStateToRequest, meta[0].Index().(*metadataStoreIndex).contacts[string(contact2PK)].state)
+	require.Equal(t, protocoltypes.ContactStateToRequest, meta[0].Index().(*metadataStoreIndex).contacts[string(contact2PK)].state)
 	require.Equal(t, contact2PK, meta[0].Index().(*metadataStoreIndex).contacts[string(contact2PK)].contact.PK)
 	require.Equal(t, contact2RDVS, meta[0].Index().(*metadataStoreIndex).contacts[string(contact2PK)].contact.PublicRendezvousSeed)
 	require.Equal(t, contacts[0].Metadata, meta[0].Index().(*metadataStoreIndex).contactRequestMetadata[string(contact2PK)])
@@ -349,32 +349,32 @@ func TestMetadataContactLifecycle(t *testing.T) {
 	_, err = meta[0].ContactRequestOutgoingSent(ctx, ownCG[0].MemberPubKey())
 	require.Error(t, err)
 
-	meta[0].Index().(*metadataStoreIndex).contacts[string(contacts[1].PK)].state = bertytypes.ContactStateAdded
+	meta[0].Index().(*metadataStoreIndex).contacts[string(contacts[1].PK)].state = protocoltypes.ContactStateAdded
 	_, err = meta[0].ContactRequestOutgoingSent(ctx, ownCG[1].MemberPubKey())
 	require.Error(t, err)
 
-	meta[0].Index().(*metadataStoreIndex).contacts[string(contacts[1].PK)].state = bertytypes.ContactStateToRequest
+	meta[0].Index().(*metadataStoreIndex).contacts[string(contacts[1].PK)].state = protocoltypes.ContactStateToRequest
 	_, err = meta[0].ContactRequestOutgoingSent(ctx, ownCG[1].MemberPubKey())
 	require.NoError(t, err)
 
 	require.Equal(t, len(meta[0].Index().(*metadataStoreIndex).contacts), 1)
 	require.NotNil(t, meta[0].Index().(*metadataStoreIndex).contacts[string(contacts[1].PK)])
-	require.Equal(t, bertytypes.ContactStateAdded, meta[0].Index().(*metadataStoreIndex).contacts[string(contacts[1].PK)].state)
+	require.Equal(t, protocoltypes.ContactStateAdded, meta[0].Index().(*metadataStoreIndex).contacts[string(contacts[1].PK)].state)
 	require.Equal(t, contacts[1].PK, meta[0].Index().(*metadataStoreIndex).contacts[string(contacts[1].PK)].contact.PK)
 	require.Equal(t, contacts[1].PublicRendezvousSeed, meta[0].Index().(*metadataStoreIndex).contacts[string(contacts[1].PK)].contact.PublicRendezvousSeed)
 
 	// Marking as received
 
-	_, err = meta[1].ContactRequestIncomingReceived(ctx, &bertytypes.ShareableContact{})
+	_, err = meta[1].ContactRequestIncomingReceived(ctx, &protocoltypes.ShareableContact{})
 	require.Error(t, err)
 
-	_, err = meta[1].ContactRequestIncomingReceived(ctx, &bertytypes.ShareableContact{PK: []byte("invalid"), PublicRendezvousSeed: []byte("invalid")})
+	_, err = meta[1].ContactRequestIncomingReceived(ctx, &protocoltypes.ShareableContact{PK: []byte("invalid"), PublicRendezvousSeed: []byte("invalid")})
 	require.Error(t, err)
 
-	_, err = meta[1].ContactRequestIncomingReceived(ctx, &bertytypes.ShareableContact{PK: []byte("invalid"), PublicRendezvousSeed: contacts[0].PublicRendezvousSeed})
+	_, err = meta[1].ContactRequestIncomingReceived(ctx, &protocoltypes.ShareableContact{PK: []byte("invalid"), PublicRendezvousSeed: contacts[0].PublicRendezvousSeed})
 	require.Error(t, err)
 
-	_, err = meta[1].ContactRequestIncomingReceived(ctx, &bertytypes.ShareableContact{PK: contacts[0].PK, PublicRendezvousSeed: []byte("invalid")})
+	_, err = meta[1].ContactRequestIncomingReceived(ctx, &protocoltypes.ShareableContact{PK: contacts[0].PK, PublicRendezvousSeed: []byte("invalid")})
 	require.Error(t, err)
 
 	_, err = meta[1].ContactRequestIncomingReceived(ctx, contacts[1])
@@ -385,7 +385,7 @@ func TestMetadataContactLifecycle(t *testing.T) {
 
 	require.Equal(t, len(meta[1].Index().(*metadataStoreIndex).contacts), 1)
 	require.NotNil(t, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)])
-	require.Equal(t, bertytypes.ContactStateReceived, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)].state)
+	require.Equal(t, protocoltypes.ContactStateReceived, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)].state)
 	require.Equal(t, contacts[0].PK, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)].contact.PK)
 	require.Equal(t, contacts[0].PublicRendezvousSeed, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)].contact.PublicRendezvousSeed)
 	require.Equal(t, contacts[0].Metadata, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)].contact.Metadata)
@@ -406,7 +406,7 @@ func TestMetadataContactLifecycle(t *testing.T) {
 
 	require.Equal(t, len(meta[1].Index().(*metadataStoreIndex).contacts), 1)
 	require.NotNil(t, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)])
-	require.Equal(t, bertytypes.ContactStateAdded, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)].state)
+	require.Equal(t, protocoltypes.ContactStateAdded, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)].state)
 	require.Equal(t, contacts[0].PK, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)].contact.PK)
 	require.Equal(t, contacts[0].PublicRendezvousSeed, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)].contact.PublicRendezvousSeed)
 
@@ -423,7 +423,7 @@ func TestMetadataContactLifecycle(t *testing.T) {
 
 	require.Equal(t, 2, len(meta[1].Index().(*metadataStoreIndex).contacts))
 
-	require.Equal(t, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[3].PK)].state, bertytypes.ContactStateAdded)
+	require.Equal(t, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[3].PK)].state, protocoltypes.ContactStateAdded)
 
 	// Refuse contact
 
@@ -431,7 +431,7 @@ func TestMetadataContactLifecycle(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Equal(t, len(meta[1].Index().(*metadataStoreIndex).contacts), 3)
-	require.Equal(t, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[2].PK)].state, bertytypes.ContactStateReceived)
+	require.Equal(t, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[2].PK)].state, protocoltypes.ContactStateReceived)
 
 	_, err = meta[1].ContactRequestIncomingDiscard(ctx, nil)
 	require.Error(t, err)
@@ -449,7 +449,7 @@ func TestMetadataContactLifecycle(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Equal(t, len(meta[1].Index().(*metadataStoreIndex).contacts), 3)
-	require.Equal(t, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[2].PK)].state, bertytypes.ContactStateDiscarded)
+	require.Equal(t, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[2].PK)].state, protocoltypes.ContactStateDiscarded)
 
 	// Allow receiving requests again after discarded
 
@@ -457,23 +457,23 @@ func TestMetadataContactLifecycle(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Equal(t, len(meta[1].Index().(*metadataStoreIndex).contacts), 3)
-	require.Equal(t, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[2].PK)].state, bertytypes.ContactStateReceived)
+	require.Equal(t, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[2].PK)].state, protocoltypes.ContactStateReceived)
 
 	_, err = meta[1].ContactRequestOutgoingEnqueue(ctx, contacts[2], contacts[1].Metadata)
 	require.NoError(t, err)
 
 	require.Equal(t, len(meta[1].Index().(*metadataStoreIndex).contacts), 3)
-	require.Equal(t, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[2].PK)].state, bertytypes.ContactStateAdded)
+	require.Equal(t, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[2].PK)].state, protocoltypes.ContactStateAdded)
 
 	// Auto accept discarded requests
 
-	meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[2].PK)].state = bertytypes.ContactStateDiscarded
+	meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[2].PK)].state = protocoltypes.ContactStateDiscarded
 
 	_, err = meta[1].ContactRequestOutgoingEnqueue(ctx, contacts[2], contacts[1].Metadata)
 	require.NoError(t, err)
 
 	require.Equal(t, len(meta[1].Index().(*metadataStoreIndex).contacts), 3)
-	require.Equal(t, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[2].PK)].state, bertytypes.ContactStateAdded)
+	require.Equal(t, meta[1].Index().(*metadataStoreIndex).contacts[string(contacts[2].PK)].state, protocoltypes.ContactStateAdded)
 
 	// Block contact
 
@@ -486,29 +486,29 @@ func TestMetadataContactLifecycle(t *testing.T) {
 	_, err = meta[2].ContactBlock(ctx, ownCG[0].MemberPubKey())
 	require.NoError(t, err)
 	require.Equal(t, len(meta[2].Index().(*metadataStoreIndex).contacts), 1)
-	require.Equal(t, meta[2].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)].state, bertytypes.ContactStateBlocked)
+	require.Equal(t, meta[2].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)].state, protocoltypes.ContactStateBlocked)
 
 	_, err = meta[2].ContactBlock(ctx, ownCG[0].MemberPubKey())
 	require.Error(t, err)
 	require.Equal(t, len(meta[2].Index().(*metadataStoreIndex).contacts), 1)
-	require.Equal(t, meta[2].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)].state, bertytypes.ContactStateBlocked)
+	require.Equal(t, meta[2].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)].state, protocoltypes.ContactStateBlocked)
 
 	// Unblock contact
 
 	_, err = meta[2].ContactUnblock(ctx, ownCG[1].MemberPubKey())
 	require.Error(t, err)
 	require.Equal(t, len(meta[2].Index().(*metadataStoreIndex).contacts), 1)
-	require.Equal(t, meta[2].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)].state, bertytypes.ContactStateBlocked)
+	require.Equal(t, meta[2].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)].state, protocoltypes.ContactStateBlocked)
 
 	_, err = meta[2].ContactUnblock(ctx, ownCG[0].MemberPubKey())
 	require.NoError(t, err)
 	require.Equal(t, len(meta[2].Index().(*metadataStoreIndex).contacts), 1)
-	require.Equal(t, meta[2].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)].state, bertytypes.ContactStateRemoved)
+	require.Equal(t, meta[2].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)].state, protocoltypes.ContactStateRemoved)
 
 	_, err = meta[2].ContactUnblock(ctx, ownCG[0].MemberPubKey())
 	require.Error(t, err)
 	require.Equal(t, len(meta[2].Index().(*metadataStoreIndex).contacts), 1)
-	require.Equal(t, meta[2].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)].state, bertytypes.ContactStateRemoved)
+	require.Equal(t, meta[2].Index().(*metadataStoreIndex).contacts[string(contacts[0].PK)].state, protocoltypes.ContactStateRemoved)
 }
 
 func TestMetadataAliasLifecycle(t *testing.T) {
@@ -621,30 +621,30 @@ func TestMetadataGroupsLifecycle(t *testing.T) {
 	require.Equal(t, groups[second].SecretSig, g2.SecretSig)
 	require.Equal(t, groups[second].GroupType, g2.GroupType)
 
-	_, err = ownCG.MetadataStore().GroupJoin(ctx, &bertytypes.Group{
+	_, err = ownCG.MetadataStore().GroupJoin(ctx, &protocoltypes.Group{
 		PublicKey: []byte("invalid_pk"),
 		Secret:    g3.Secret,
 		SecretSig: g3.SecretSig,
-		GroupType: bertytypes.GroupTypeMultiMember,
+		GroupType: protocoltypes.GroupTypeMultiMember,
 	})
 	require.Error(t, err)
 
 	groups = ownCG.MetadataStore().ListMultiMemberGroups()
 	require.Len(t, groups, 2)
 
-	_, err = ownCG.MetadataStore().GroupJoin(ctx, &bertytypes.Group{
+	_, err = ownCG.MetadataStore().GroupJoin(ctx, &protocoltypes.Group{
 		PublicKey: g3.PublicKey,
 		Secret:    nil,
 		SecretSig: g3.SecretSig,
-		GroupType: bertytypes.GroupTypeMultiMember,
+		GroupType: protocoltypes.GroupTypeMultiMember,
 	})
 	require.Error(t, err)
 
-	_, err = ownCG.MetadataStore().GroupJoin(ctx, &bertytypes.Group{
+	_, err = ownCG.MetadataStore().GroupJoin(ctx, &protocoltypes.Group{
 		PublicKey: g3.PublicKey,
 		Secret:    g3.Secret,
 		SecretSig: []byte("invalid_sig"),
-		GroupType: bertytypes.GroupTypeMultiMember,
+		GroupType: protocoltypes.GroupTypeMultiMember,
 	})
 	require.Error(t, err)
 
@@ -711,9 +711,9 @@ func TestMultiDevices_Basic(t *testing.T) {
 		err          error
 		meta         = make([]*metadataStore, totalDevices)
 		ownCG        = make([]*groupContext, totalDevices)
-		contacts     = make([]*bertytypes.ShareableContact, totalDevices)
+		contacts     = make([]*protocoltypes.ShareableContact, totalDevices)
 		listContacts map[string]*accountContact
-		groups       []*bertytypes.Group
+		groups       []*protocoltypes.Group
 	)
 
 	// Activate account group + contact request
@@ -739,10 +739,10 @@ func TestMultiDevices_Basic(t *testing.T) {
 	}
 
 	syncChan := make(chan struct{})
-	go waitForBertyEventType(ctx, t, meta[pi[0][0]], bertytypes.EventTypeAccountContactRequestOutgoingEnqueued, 1, syncChan)
-	go waitForBertyEventType(ctx, t, meta[pi[0][1]], bertytypes.EventTypeAccountContactRequestOutgoingEnqueued, 1, syncChan)
-	go waitForBertyEventType(ctx, t, meta[pi[1][0]], bertytypes.EventTypeAccountContactRequestIncomingReceived, 1, syncChan)
-	go waitForBertyEventType(ctx, t, meta[pi[1][1]], bertytypes.EventTypeAccountContactRequestIncomingReceived, 1, syncChan)
+	go waitForBertyEventType(ctx, t, meta[pi[0][0]], protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued, 1, syncChan)
+	go waitForBertyEventType(ctx, t, meta[pi[0][1]], protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued, 1, syncChan)
+	go waitForBertyEventType(ctx, t, meta[pi[1][0]], protocoltypes.EventTypeAccountContactRequestIncomingReceived, 1, syncChan)
+	go waitForBertyEventType(ctx, t, meta[pi[1][1]], protocoltypes.EventTypeAccountContactRequestIncomingReceived, 1, syncChan)
 
 	// Add peers to contact
 	// Enqueuing outgoing
@@ -788,8 +788,8 @@ func TestMultiDevices_Basic(t *testing.T) {
 	// Activate group for 2nd peer's 1st device
 	groups = meta[pi[1][0]].ListMultiMemberGroups()
 	require.Len(t, groups, 0)
-	go waitForBertyEventType(ctx, t, meta[pi[1][0]], bertytypes.EventTypeAccountGroupJoined, 1, syncChan)
-	go waitForBertyEventType(ctx, t, meta[pi[1][1]], bertytypes.EventTypeAccountGroupJoined, 1, syncChan)
+	go waitForBertyEventType(ctx, t, meta[pi[1][0]], protocoltypes.EventTypeAccountGroupJoined, 1, syncChan)
+	go waitForBertyEventType(ctx, t, meta[pi[1][1]], protocoltypes.EventTypeAccountGroupJoined, 1, syncChan)
 	_, err = meta[pi[1][0]].GroupJoin(ctx, peers[pi[1][0]].GC.group)
 	require.NoError(t, err)
 	for i := 0; i < 2; i++ {

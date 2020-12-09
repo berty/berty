@@ -14,8 +14,8 @@ import (
 	"golang.org/x/net/context/ctxhttp"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 const (
@@ -130,7 +130,7 @@ func (s *service) authInitURL(baseURL string) (string, error) {
 	), nil
 }
 
-func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *bertytypes.AuthServiceCompleteFlow_Request) (*bertytypes.AuthServiceCompleteFlow_Reply, error) {
+func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocoltypes.AuthServiceCompleteFlow_Request) (*protocoltypes.AuthServiceCompleteFlow_Reply, error) {
 	u, err := url.Parse(request.CallbackURL)
 	if err != nil {
 		return nil, err
@@ -195,17 +195,17 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *bertytyp
 		return nil, errcode.ErrServicesAuthInvalidResponse.Wrap(fmt.Errorf("no services returned along token"))
 	}
 
-	services := make([]*bertytypes.ServiceTokenSupportedService, len(resMsg.Services))
+	services := make([]*protocoltypes.ServiceTokenSupportedService, len(resMsg.Services))
 	i := 0
 	for k, v := range resMsg.Services {
-		services[i] = &bertytypes.ServiceTokenSupportedService{
+		services[i] = &protocoltypes.ServiceTokenSupportedService{
 			ServiceType:     k,
 			ServiceEndpoint: v,
 		}
 		i++
 	}
 
-	if _, err := s.accountGroup.metadataStore.SendAccountServiceTokenAdded(ctx, &bertytypes.ServiceToken{
+	if _, err := s.accountGroup.metadataStore.SendAccountServiceTokenAdded(ctx, &protocoltypes.ServiceToken{
 		Token:             resMsg.AccessToken,
 		AuthenticationURL: auth.baseURL,
 		SupportedServices: services,
@@ -214,28 +214,28 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *bertytyp
 		return nil, err
 	}
 
-	return &bertytypes.AuthServiceCompleteFlow_Reply{}, nil
+	return &protocoltypes.AuthServiceCompleteFlow_Reply{}, nil
 }
 
-func (s *service) AuthServiceInitFlow(ctx context.Context, request *bertytypes.AuthServiceInitFlow_Request) (*bertytypes.AuthServiceInitFlow_Reply, error) {
+func (s *service) AuthServiceInitFlow(ctx context.Context, request *protocoltypes.AuthServiceInitFlow_Request) (*protocoltypes.AuthServiceInitFlow_Reply, error) {
 	u, err := s.authInitURL(request.AuthURL)
 	if err != nil {
 		return nil, err
 	}
 
-	return &bertytypes.AuthServiceInitFlow_Reply{
+	return &protocoltypes.AuthServiceInitFlow_Reply{
 		URL:       u,
 		SecureURL: strings.HasPrefix(u, "https://"),
 	}, nil
 }
 
-func (s *service) ServicesTokenList(request *bertytypes.ServicesTokenList_Request, server ProtocolService_ServicesTokenListServer) error {
+func (s *service) ServicesTokenList(request *protocoltypes.ServicesTokenList_Request, server protocoltypes.ProtocolService_ServicesTokenListServer) error {
 	for _, t := range s.accountGroup.metadataStore.listServiceTokens() {
 		if server.Context().Err() != nil {
 			break
 		}
 
-		if err := server.Send(&bertytypes.ServicesTokenList_Reply{
+		if err := server.Send(&protocoltypes.ServicesTokenList_Reply{
 			TokenID: t.TokenID(),
 			Service: t,
 		}); err != nil {

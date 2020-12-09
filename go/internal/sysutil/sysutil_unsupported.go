@@ -2,8 +2,8 @@
 
 package sysutil
 
-import "berty.tech/berty/v2/go/pkg/bertytypes"
+import "berty.tech/berty/v2/go/pkg/protocoltypes"
 
-func appendCustomSystemInfo(reply *bertytypes.SystemInfo_Process) error {
+func appendCustomSystemInfo(reply *protocoltypes.SystemInfo_Process) error {
 	return nil
 }

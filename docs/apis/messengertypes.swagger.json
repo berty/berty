@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "bertymessenger.proto",
+    "title": "messengertypes.proto",
     "version": "version not set"
   },
   "consumes": [
@@ -1290,7 +1290,7 @@
       "type": "object",
       "properties": {
         "protocol": {
-          "$ref": "#/definitions/bertytypesv1SystemInfoReply"
+          "$ref": "#/definitions/bertyprotocolv1SystemInfoReply"
         },
         "messenger": {
           "$ref": "#/definitions/SystemInfoMessenger"
@@ -1300,7 +1300,7 @@
     "bertymessengerv1SystemInfoRequest": {
       "type": "object"
     },
-    "bertytypesv1ServiceToken": {
+    "bertyprotocolv1ServiceToken": {
       "type": "object",
       "properties": {
         "token": {
@@ -1321,7 +1321,7 @@
         }
       }
     },
-    "bertytypesv1SystemInfoReply": {
+    "bertyprotocolv1SystemInfoReply": {
       "type": "object",
       "properties": {
         "process": {
@@ -2201,7 +2201,7 @@
           "type": "string"
         },
         "service": {
-          "$ref": "#/definitions/bertytypesv1ServiceToken"
+          "$ref": "#/definitions/bertyprotocolv1ServiceToken"
         }
       }
     },

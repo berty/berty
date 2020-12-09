@@ -18,7 +18,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 )
@@ -196,21 +196,21 @@ func TestDifferentStores(t *testing.T) {
 	assert.Equal(t, 4, len(ops4))
 }
 
-func testFilterAppMetadata(t *testing.T, events <-chan *bertytypes.GroupMetadataEvent) []*bertytypes.AppMetadata {
+func testFilterAppMetadata(t *testing.T, events <-chan *protocoltypes.GroupMetadataEvent) []*protocoltypes.AppMetadata {
 	t.Helper()
 
-	out := []*bertytypes.AppMetadata(nil)
+	out := []*protocoltypes.AppMetadata(nil)
 
 	for evt := range events {
 		if evt == nil {
 			continue
 		}
 
-		if evt.Metadata.EventType != bertytypes.EventTypeGroupMetadataPayloadSent {
+		if evt.Metadata.EventType != protocoltypes.EventTypeGroupMetadataPayloadSent {
 			continue
 		}
 
-		m := &bertytypes.AppMetadata{}
+		m := &protocoltypes.AppMetadata{}
 		if err := m.Unmarshal(evt.Event); err != nil {
 			continue
 		}

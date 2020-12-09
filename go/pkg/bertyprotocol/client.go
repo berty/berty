@@ -7,18 +7,19 @@ import (
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 const ClientBufferSize = 256 * 1024
 
 type Client interface {
-	ProtocolServiceClient
+	protocoltypes.ProtocolServiceClient
 
 	Close() error
 }
 
 type client struct {
-	ProtocolServiceClient
+	protocoltypes.ProtocolServiceClient
 
 	l  *grpcutil.BufListener
 	cc *grpc.ClientConn
@@ -62,7 +63,7 @@ func NewClientFromServer(ctx context.Context, s *grpc.Server, svc Service, opts 
 		return nil, err
 	}
 
-	RegisterProtocolServiceServer(s, svc)
+	protocoltypes.RegisterProtocolServiceServer(s, svc)
 	go func() {
 		err := s.Serve(bl)
 		if err != nil && !(err == grpc.ErrServerStopped || err.Error() == "closed") {
@@ -70,6 +71,6 @@ func NewClientFromServer(ctx context.Context, s *grpc.Server, svc Service, opts 
 		}
 	}()
 
-	c := client{ProtocolServiceClient: NewProtocolServiceClient(cc), cc: cc, l: bl}
+	c := client{ProtocolServiceClient: protocoltypes.NewProtocolServiceClient(cc), cc: cc, l: bl}
 	return &c, nil
 }

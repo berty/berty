@@ -9,11 +9,11 @@ import (
 	ipfspath "github.com/ipfs/interface-go-ipfs-core/path"
 
 	"berty.tech/berty/v2/go/internal/streamutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func (s *service) AttachmentPrepare(stream ProtocolService_AttachmentPrepareServer) error {
+func (s *service) AttachmentPrepare(stream protocoltypes.ProtocolService_AttachmentPrepareServer) error {
 	// read header
 	headerMsg, err := stream.Recv()
 	if err != nil {
@@ -57,7 +57,7 @@ func (s *service) AttachmentPrepare(stream ProtocolService_AttachmentPrepareServ
 	}
 
 	// return cid to client
-	if err = stream.SendAndClose(&bertytypes.AttachmentPrepare_Reply{AttachmentCID: cid}); err != nil {
+	if err = stream.SendAndClose(&protocoltypes.AttachmentPrepare_Reply{AttachmentCID: cid}); err != nil {
 		return errcode.ErrStreamSendAndClose.Wrap(err)
 	}
 
@@ -65,7 +65,7 @@ func (s *service) AttachmentPrepare(stream ProtocolService_AttachmentPrepareServ
 	return nil
 }
 
-func (s *service) AttachmentRetrieve(req *bertytypes.AttachmentRetrieve_Request, stream ProtocolService_AttachmentRetrieveServer) error {
+func (s *service) AttachmentRetrieve(req *protocoltypes.AttachmentRetrieve_Request, stream protocoltypes.ProtocolService_AttachmentRetrieveServer) error {
 	// deserialize cid. We could do it later but it's better to fail fast
 	cid, err := ipfscid.Cast(req.GetAttachmentCID())
 	if err != nil {
@@ -96,7 +96,7 @@ func (s *service) AttachmentRetrieve(req *bertytypes.AttachmentRetrieve_Request,
 
 	// sink plaintext to client
 	if err := streamutil.FuncSink(make([]byte, 64*1024), plaintext, func(block []byte) error {
-		return stream.Send(&bertytypes.AttachmentRetrieve_Reply{Block: block})
+		return stream.Send(&protocoltypes.AttachmentRetrieve_Reply{Block: block})
 	}); err != nil {
 		return errcode.ErrStreamSink.Wrap(err)
 	}

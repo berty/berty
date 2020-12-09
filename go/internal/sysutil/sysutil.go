@@ -8,12 +8,12 @@ import (
 	"go.uber.org/multierr"
 	"moul.io/openfiles"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/username"
 )
 
-func SystemInfoProcess() (*bertytypes.SystemInfo_Process, error) {
+func SystemInfoProcess() (*protocoltypes.SystemInfo_Process, error) {
 	var errs error
 
 	// openfiles
@@ -28,7 +28,7 @@ func SystemInfoProcess() (*bertytypes.SystemInfo_Process, error) {
 	wd, err := syscall.Getwd()
 	errs = multierr.Append(errs, err)
 
-	reply := bertytypes.SystemInfo_Process{
+	reply := protocoltypes.SystemInfo_Process{
 		Nofile:           nofile,
 		TooManyOpenFiles: openfiles.IsTooManyError(nofileErr),
 		NumCPU:           int64(runtime.NumCPU()),

@@ -7,7 +7,7 @@ import (
 
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 type HandlerType uint
@@ -44,7 +44,7 @@ const (
 
 type Handler func(ctx Context)
 
-func (b *Bot) handleEvent(ctx context.Context, event *bertymessenger.StreamEvent) error {
+func (b *Bot) handleEvent(ctx context.Context, event *messengertypes.StreamEvent) error {
 	payload, err := event.UnmarshalPayload()
 	if err != nil {
 		return fmt.Errorf("unmarshal event payload failed: %w", err)
@@ -61,23 +61,23 @@ func (b *Bot) handleEvent(ctx context.Context, event *bertymessenger.StreamEvent
 
 	// raw messenger events
 	switch event.Type {
-	case bertymessenger.StreamEvent_TypeContactUpdated:
-		context.Contact = payload.(*bertymessenger.StreamEvent_ContactUpdated).Contact
+	case messengertypes.StreamEvent_TypeContactUpdated:
+		context.Contact = payload.(*messengertypes.StreamEvent_ContactUpdated).Contact
 		context.ConversationPK = context.Contact.ConversationPublicKey
 
 		// specialized events
 		switch context.Contact.State {
-		case bertymessenger.Contact_IncomingRequest:
+		case messengertypes.Contact_IncomingRequest:
 			b.callHandlers(context, IncomingContactRequestHandler)
-		case bertymessenger.Contact_Accepted:
+		case messengertypes.Contact_Accepted:
 			b.callHandlers(context, AcceptedContactHandler)
 		default:
 			return fmt.Errorf("unsupported contact state: %q", context.Contact.State)
 		}
 		b.callHandlers(context, ContactUpdatedHandler)
 
-	case bertymessenger.StreamEvent_TypeInteractionUpdated:
-		context.Interaction = payload.(*bertymessenger.StreamEvent_InteractionUpdated).Interaction
+	case messengertypes.StreamEvent_TypeInteractionUpdated:
+		context.Interaction = payload.(*messengertypes.StreamEvent_InteractionUpdated).Interaction
 		context.IsMe = context.Interaction.IsMe
 		context.ConversationPK = context.Interaction.ConversationPublicKey
 		context.IsAck = context.Interaction.Acknowledged
@@ -88,8 +88,8 @@ func (b *Bot) handleEvent(ctx context.Context, event *bertymessenger.StreamEvent
 
 		// specialized events
 		switch context.Interaction.Type {
-		case bertymessenger.AppMessage_TypeUserMessage:
-			receivedMessage := payload.(*bertymessenger.AppMessage_UserMessage)
+		case messengertypes.AppMessage_TypeUserMessage:
+			receivedMessage := payload.(*messengertypes.AppMessage_UserMessage)
 			context.UserMessage = receivedMessage.GetBody()
 			if len(b.commands) > 0 && len(context.UserMessage) > 1 && strings.HasPrefix(context.UserMessage, "/") {
 				if !context.IsMe && !context.IsReplay && !context.IsAck {
@@ -110,8 +110,8 @@ func (b *Bot) handleEvent(ctx context.Context, event *bertymessenger.StreamEvent
 		}
 		b.callHandlers(context, InteractionUpdatedHandler)
 
-	case bertymessenger.StreamEvent_TypeConversationUpdated:
-		context.Conversation = payload.(*bertymessenger.StreamEvent_ConversationUpdated).Conversation
+	case messengertypes.StreamEvent_TypeConversationUpdated:
+		context.Conversation = payload.(*messengertypes.StreamEvent_ConversationUpdated).Conversation
 		context.ConversationPK = context.Conversation.PublicKey
 		b.store.mutex.Lock()
 		_, found := b.store.conversations[context.ConversationPK]
@@ -124,23 +124,23 @@ func (b *Bot) handleEvent(ctx context.Context, event *bertymessenger.StreamEvent
 		}
 		b.callHandlers(context, ConversationUpdatedHandler)
 
-	case bertymessenger.StreamEvent_TypeDeviceUpdated:
-		context.Device = payload.(*bertymessenger.StreamEvent_DeviceUpdated).Device
+	case messengertypes.StreamEvent_TypeDeviceUpdated:
+		context.Device = payload.(*messengertypes.StreamEvent_DeviceUpdated).Device
 		b.callHandlers(context, DeviceUpdatedHandler)
 
-	case bertymessenger.StreamEvent_TypeAccountUpdated:
-		context.Account = payload.(*bertymessenger.StreamEvent_AccountUpdated).Account
+	case messengertypes.StreamEvent_TypeAccountUpdated:
+		context.Account = payload.(*messengertypes.StreamEvent_AccountUpdated).Account
 		context.IsMe = true
 		b.callHandlers(context, AccountUpdatedHandler)
 
-	case bertymessenger.StreamEvent_TypeMemberUpdated:
-		context.Member = payload.(*bertymessenger.StreamEvent_MemberUpdated).Member
+	case messengertypes.StreamEvent_TypeMemberUpdated:
+		context.Member = payload.(*messengertypes.StreamEvent_MemberUpdated).Member
 		b.callHandlers(context, MemberUpdatedHandler)
 
-	case bertymessenger.StreamEvent_TypeListEnded:
+	case messengertypes.StreamEvent_TypeListEnded:
 		b.callHandlers(context, EndOfReplayHandler)
 
-	case bertymessenger.StreamEvent_TypeNotified:
+	case messengertypes.StreamEvent_TypeNotified:
 		b.callHandlers(context, NotificationHandler)
 
 	default:

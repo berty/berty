@@ -8,14 +8,14 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 // NewOption can be passed to the `New` function to configure the bot.
 type NewOption func(*Bot) error
 
 // WithMessengerClient passes an already initialized messenger client.
-func WithMessengerClient(client bertymessenger.MessengerServiceClient) NewOption {
+func WithMessengerClient(client messengertypes.MessengerServiceClient) NewOption {
 	return func(b *Bot) error {
 		b.client = client
 		return nil
@@ -25,7 +25,7 @@ func WithMessengerClient(client bertymessenger.MessengerServiceClient) NewOption
 // WithMessengerGRPCConn configures a new Messenger client from an already initialized gRPC connection.
 func WithMessengerGRPCConn(cc *grpc.ClientConn) NewOption {
 	return func(b *Bot) error {
-		b.client = bertymessenger.NewMessengerServiceClient(cc)
+		b.client = messengertypes.NewMessengerServiceClient(cc)
 		return nil
 	}
 }
@@ -38,7 +38,7 @@ func WithInsecureMessengerGRPCAddr(addr string) NewOption {
 		if err != nil {
 			return fmt.Errorf("dial error: %w", err)
 		}
-		b.client = bertymessenger.NewMessengerServiceClient(cc)
+		b.client = messengertypes.NewMessengerServiceClient(cc)
 		return nil
 	}
 }

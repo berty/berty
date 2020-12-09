@@ -5,11 +5,13 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"go.uber.org/multierr"
+
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 // Notifiee system inspired from ipfs
 type Notifiee interface {
-	StreamEvent(*StreamEvent) error
+	StreamEvent(*messengertypes.StreamEvent) error
 }
 
 type Dispatcher struct {
@@ -39,13 +41,13 @@ func (d *Dispatcher) UnregisterAll() {
 	d.mutex.Unlock()
 }
 
-func (d *Dispatcher) StreamEvent(typ StreamEvent_Type, msg proto.Message, isNew bool) error {
+func (d *Dispatcher) StreamEvent(typ messengertypes.StreamEvent_Type, msg proto.Message, isNew bool) error {
 	payload, err := proto.Marshal(msg)
 	if err != nil {
 		return err
 	}
 
-	event := &StreamEvent{
+	event := &messengertypes.StreamEvent{
 		Type:    typ,
 		Payload: payload,
 		IsNew:   isNew,
@@ -63,7 +65,7 @@ func (d *Dispatcher) StreamEvent(typ StreamEvent_Type, msg proto.Message, isNew 
 	return errs
 }
 
-func (d *Dispatcher) Notify(typ StreamEvent_Notified_Type, title, body string, msg proto.Message) error {
+func (d *Dispatcher) Notify(typ messengertypes.StreamEvent_Notified_Type, title, body string, msg proto.Message) error {
 	var payload []byte
 	if msg != nil {
 		var err error
@@ -72,14 +74,14 @@ func (d *Dispatcher) Notify(typ StreamEvent_Notified_Type, title, body string, m
 		}
 	}
 
-	event := &StreamEvent_Notified{
+	event := &messengertypes.StreamEvent_Notified{
 		Title:   title,
 		Body:    body,
 		Type:    typ,
 		Payload: payload,
 	}
 
-	return d.StreamEvent(StreamEvent_TypeNotified, event, false)
+	return d.StreamEvent(messengertypes.StreamEvent_TypeNotified, event, false)
 }
 
 func NewDispatcher() *Dispatcher {
@@ -87,10 +89,10 @@ func NewDispatcher() *Dispatcher {
 }
 
 type NotifieeBundle struct {
-	StreamEventImpl func(c *StreamEvent) error
+	StreamEventImpl func(c *messengertypes.StreamEvent) error
 }
 
-func (nb *NotifieeBundle) StreamEvent(c *StreamEvent) error {
+func (nb *NotifieeBundle) StreamEvent(c *messengertypes.StreamEvent) error {
 	if nb.StreamEventImpl != nil {
 		return nb.StreamEventImpl(c)
 	}

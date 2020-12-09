@@ -11,8 +11,8 @@ import (
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 type bertyEngine struct {
@@ -33,7 +33,7 @@ func NewEngine(ctx context.Context, h host.Host, disc discovery.Discovery) (Engi
 }
 
 func (p *bertyEngine) Search(octx context.Context, gwg *sync.WaitGroup, rc chan<- *ResultReturn, previous *ResultReturn) {
-	if v, ok := previous.Object.(*bertymessenger.BertyID); ok {
+	if v, ok := previous.Object.(*messengertypes.BertyID); ok {
 		(*gwg).Add(1)
 		go func() {
 			defer func() {

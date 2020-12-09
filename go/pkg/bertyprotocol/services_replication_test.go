@@ -17,7 +17,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	orbitdb "berty.tech/go-orbit-db"
 )
 
@@ -75,12 +75,12 @@ func TestReplicationService_GroupSubscribe(t *testing.T) {
 	err = repl.GroupSubscribe(replGroup)
 	require.NoError(t, err)
 
-	err = repl.GroupSubscribe(&bertytypes.Group{
+	err = repl.GroupSubscribe(&protocoltypes.Group{
 		PublicKey: nil,
 	})
 	require.Error(t, err)
 
-	err = repl.GroupSubscribe(&bertytypes.Group{
+	err = repl.GroupSubscribe(&protocoltypes.Group{
 		PublicKey: nil,
 	})
 	require.Error(t, err)
@@ -199,7 +199,7 @@ func TestReplicationService_Flow(t *testing.T) {
 	require.NoError(t, err)
 
 	// TODO: handle auth
-	_, err = replPeer.Service.ReplicateGroup(ctx, &bertytypes.ReplicationServiceReplicateGroup_Request{
+	_, err = replPeer.Service.ReplicateGroup(ctx, &protocoltypes.ReplicationServiceReplicateGroup_Request{
 		Group: groupReplicable,
 	})
 	require.NoError(t, err)

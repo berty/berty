@@ -11,11 +11,11 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	ipfslog "berty.tech/go-ipfs-log"
 )
 
-func countEntries(out <-chan *bertytypes.GroupMessageEvent) int {
+func countEntries(out <-chan *protocoltypes.GroupMessageEvent) int {
 	found := 0
 
 	for range out {

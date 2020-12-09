@@ -16,8 +16,8 @@ import (
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/streamutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 // ⚠⚠⚠ FIXME: Needs thorough security review ⚠⚠⚠
@@ -165,7 +165,7 @@ func attachmentCIDDecrypt(sk *[cryptoutil.KeySize]byte, eCID []byte) ([]byte, er
 	return cid, nil
 }
 
-func attachmentCIDSliceEncrypt(g *bertytypes.Group, cids [][]byte) ([][]byte, error) {
+func attachmentCIDSliceEncrypt(g *protocoltypes.Group, cids [][]byte) ([][]byte, error) {
 	sk, err := attachmentCIDEncryptionKey(g.GetSharedSecret())
 	if err != nil {
 		return nil, errcode.ErrCryptoKeyDerivation.Wrap(err)
@@ -173,7 +173,7 @@ func attachmentCIDSliceEncrypt(g *bertytypes.Group, cids [][]byte) ([][]byte, er
 	return mapBufArray(cids, func(cid []byte) ([]byte, error) { return attachmentCIDEncrypt(sk, cid) })
 }
 
-func attachmentCIDSliceDecrypt(g *bertytypes.Group, eCIDs [][]byte) ([][]byte, error) {
+func attachmentCIDSliceDecrypt(g *protocoltypes.Group, eCIDs [][]byte) ([][]byte, error) {
 	sk, err := attachmentCIDEncryptionKey(g.GetSharedSecret())
 	if err != nil {
 		return nil, errcode.ErrCryptoKeyDerivation.Wrap(err)

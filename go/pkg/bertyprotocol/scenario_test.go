@@ -24,8 +24,8 @@ import (
 
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/internal/tracer"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 type testCase struct {
@@ -158,7 +158,7 @@ func TestScenario_MessageAccountGroup(t *testing.T) {
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*TestingProtocol) {
 		// Get account config
-		config, err := tps[0].Client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+		config, err := tps[0].Client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 		require.NoError(t, err)
 		require.NotNil(t, config)
 
@@ -194,7 +194,7 @@ func TestScenario_MessageAccountAndMultiMemberGroups(t *testing.T) {
 		// Send messages on account groups
 		for _, account := range tps {
 			// Get account config
-			config, err := account.Client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+			config, err := account.Client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 			require.NoError(t, err)
 			require.NotNil(t, config)
 
@@ -235,7 +235,7 @@ func TestScenario_MessageAccountAndContactGroups(t *testing.T) {
 		// Send messages on account groups
 		for _, account := range tps {
 			// Get account config
-			config, err := account.Client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+			config, err := account.Client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 			require.NoError(t, err)
 			require.NotNil(t, config)
 
@@ -302,9 +302,9 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 	// token, err := issuer.IssueToken([]string{ServiceReplicationID})
 	// require.NoError(t, err)
 	//
-	// _, err = nodeA.Service.(*service).accountGroup.metadataStore.SendAccountServiceTokenAdded(ctx, &bertytypes.ServiceToken{
+	// _, err = nodeA.Service.(*service).accountGroup.metadataStore.SendAccountServiceTokenAdded(ctx, &protocoltypes.ServiceToken{
 	// 	Token: token,
-	// 	SupportedServices: []*bertytypes.ServiceTokenSupportedService{
+	// 	SupportedServices: []*protocoltypes.ServiceTokenSupportedService{
 	// 		{
 	// 			ServiceType:     ServiceReplicationID,
 	// 			ServiceEndpoint: "", // TODO
@@ -317,18 +317,18 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 	require.NoError(t, err)
 
 	// TODO: handle auth
-	_, err = replPeer.Service.ReplicateGroup(ctx, &bertytypes.ReplicationServiceReplicateGroup_Request{
+	_, err = replPeer.Service.ReplicateGroup(ctx, &protocoltypes.ReplicationServiceReplicateGroup_Request{
 		Group: groupReplicable,
 	})
 	require.NoError(t, err)
 
-	_, err = nodeA.Service.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
+	_, err = nodeA.Service.AppMessageSend(ctx, &protocoltypes.AppMessageSend_Request{
 		GroupPK: group.PublicKey,
 		Payload: []byte("test1"),
 	})
 	require.NoError(t, err)
 
-	_, err = nodeB.Service.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
+	_, err = nodeB.Service.AppMessageSend(ctx, &protocoltypes.AppMessageSend_Request{
 		GroupPK: group.PublicKey,
 		Payload: []byte("test2"),
 	})
@@ -336,7 +336,7 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 
 	closeNodeB()
 
-	_, err = nodeA.Service.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
+	_, err = nodeA.Service.AppMessageSend(ctx, &protocoltypes.AppMessageSend_Request{
 		GroupPK: group.PublicKey,
 		Payload: []byte("test3"),
 	})
@@ -352,7 +352,7 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 	}, dsB)
 	defer closeNodeB()
 
-	_, err = nodeB.Service.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
+	_, err = nodeB.Service.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{
 		GroupPK: group.PublicKey,
 	})
 
@@ -445,7 +445,7 @@ func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
 	}
 }
 
-func createMultiMemberGroupInstance(ctx context.Context, t *testing.T, tps ...*TestingProtocol) *bertytypes.Group {
+func createMultiMemberGroupInstance(ctx context.Context, t *testing.T, tps ...*TestingProtocol) *protocoltypes.Group {
 	logTree(t, "Create and Join MultiMember Group", 0, true)
 	start := time.Now()
 
@@ -462,7 +462,7 @@ func createMultiMemberGroupInstance(ctx context.Context, t *testing.T, tps ...*T
 
 		// check if everything is ready
 		for _, pt := range tps {
-			_, err := pt.Client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+			_, err := pt.Client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 			require.NoError(t, err)
 		}
 
@@ -475,7 +475,7 @@ func createMultiMemberGroupInstance(ctx context.Context, t *testing.T, tps ...*T
 		start := time.Now()
 
 		for _, pt := range tps {
-			req := bertytypes.MultiMemberGroupJoin_Request{
+			req := protocoltypes.MultiMemberGroupJoin_Request{
 				Group: group,
 			}
 
@@ -495,7 +495,7 @@ func createMultiMemberGroupInstance(ctx context.Context, t *testing.T, tps ...*T
 		start := time.Now()
 
 		for i, pt := range tps {
-			res, err := pt.Client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+			res, err := pt.Client.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
 				GroupPK: group.PublicKey,
 			})
 			require.NoError(t, err)
@@ -514,7 +514,7 @@ func createMultiMemberGroupInstance(ctx context.Context, t *testing.T, tps ...*T
 		start := time.Now()
 
 		for i, pt := range tps {
-			_, err := pt.Client.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
+			_, err := pt.Client.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{
 				GroupPK: group.PublicKey,
 			})
 
@@ -546,7 +546,7 @@ func createMultiMemberGroupInstance(ctx context.Context, t *testing.T, tps ...*T
 				ctx, cancel := context.WithCancel(ctx)
 				defer cancel()
 
-				sub, inErr := tp.Client.GroupMetadataList(ctx, &bertytypes.GroupMetadataList_Request{
+				sub, inErr := tp.Client.GroupMetadataList(ctx, &protocoltypes.GroupMetadataList_Request{
 					GroupPK: group.PublicKey,
 				})
 				if inErr != nil {
@@ -622,21 +622,21 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*Testi
 			substart := time.Now()
 
 			// Get sender/receiver configs
-			senderCfg, err := sender.Client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+			senderCfg, err := sender.Client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 			require.NoError(t, err)
 			require.NotNil(t, senderCfg)
-			receiverCfg, err := receiver.Client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+			receiverCfg, err := receiver.Client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 			require.NoError(t, err)
 			require.NotNil(t, receiverCfg)
 
 			// Setup receiver's sharable contact
 			var receiverRDVSeed []byte
 
-			crf, err := receiver.Client.ContactRequestReference(ctx, &bertytypes.ContactRequestReference_Request{})
+			crf, err := receiver.Client.ContactRequestReference(ctx, &protocoltypes.ContactRequestReference_Request{})
 			if err != nil || !crf.Enabled || len(crf.PublicRendezvousSeed) == 0 {
-				_, err = receiver.Client.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})
+				_, err = receiver.Client.ContactRequestEnable(ctx, &protocoltypes.ContactRequestEnable_Request{})
 				require.NoError(t, err)
-				receiverRDV, err := receiver.Client.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
+				receiverRDV, err := receiver.Client.ContactRequestResetReference(ctx, &protocoltypes.ContactRequestResetReference_Request{})
 				require.NoError(t, err)
 				require.NotNil(t, receiverRDV)
 				receiverRDVSeed = receiverRDV.PublicRendezvousSeed
@@ -644,13 +644,13 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*Testi
 				receiverRDVSeed = crf.PublicRendezvousSeed
 			}
 
-			receiverSharableContact := &bertytypes.ShareableContact{
+			receiverSharableContact := &protocoltypes.ShareableContact{
 				PK:                   receiverCfg.AccountPK,
 				PublicRendezvousSeed: receiverRDVSeed,
 			}
 
 			// Sender sends contact request
-			_, err = sender.Client.ContactRequestSend(ctx, &bertytypes.ContactRequestSend_Request{
+			_, err = sender.Client.ContactRequestSend(ctx, &protocoltypes.ContactRequestSend_Request{
 				Contact: receiverSharableContact,
 			})
 
@@ -690,7 +690,7 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*Testi
 
 			// Receiver subscribes to handle incoming contact request
 			subCtx, subCancel := context.WithCancel(ctx)
-			subReceiver, err := receiver.Client.GroupMetadataList(subCtx, &bertytypes.GroupMetadataList_Request{
+			subReceiver, err := receiver.Client.GroupMetadataList(subCtx, &protocoltypes.GroupMetadataList_Request{
 				GroupPK: receiverCfg.AccountGroupPK,
 			})
 			require.NoError(t, err)
@@ -705,11 +705,11 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*Testi
 
 				require.NoError(t, err)
 
-				if evt == nil || evt.Metadata.EventType != bertytypes.EventTypeAccountContactRequestIncomingReceived {
+				if evt == nil || evt.Metadata.EventType != protocoltypes.EventTypeAccountContactRequestIncomingReceived {
 					continue
 				}
 
-				req := &bertytypes.AccountContactRequestReceived{}
+				req := &protocoltypes.AccountContactRequestReceived{}
 				err = req.Unmarshal(evt.Event)
 
 				require.NoError(t, err)
@@ -727,7 +727,7 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*Testi
 			substart = time.Now()
 
 			// Receiver accepts contact request
-			_, err = receiver.Client.ContactRequestAccept(ctx, &bertytypes.ContactRequestAccept_Request{
+			_, err = receiver.Client.ContactRequestAccept(ctx, &protocoltypes.ContactRequestAccept_Request{
 				ContactPK: senderCfg.AccountPK,
 			})
 
@@ -737,25 +737,25 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*Testi
 			substart = time.Now()
 
 			// Both receiver and sender activate the contact group
-			grpInfo, err := sender.Client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+			grpInfo, err := sender.Client.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
 				ContactPK: receiverCfg.AccountPK,
 			})
 			require.NoError(t, err)
 
-			_, err = sender.Client.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
+			_, err = sender.Client.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{
 				GroupPK: grpInfo.Group.PublicKey,
 			})
 
 			require.NoError(t, err)
 
-			grpInfo2, err := receiver.Client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+			grpInfo2, err := receiver.Client.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
 				ContactPK: senderCfg.AccountPK,
 			})
 			require.NoError(t, err)
 
 			require.Equal(t, grpInfo.Group.PublicKey, grpInfo2.Group.PublicKey)
 
-			_, err = receiver.Client.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
+			_, err = receiver.Client.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{
 				GroupPK: grpInfo2.Group.PublicKey,
 			})
 
@@ -787,7 +787,7 @@ func sendMessageToContact(ctx context.Context, t *testing.T, messages []string, 
 			}
 
 			// Get contact group
-			contactGroup, err := sender.Client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+			contactGroup, err := sender.Client.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
 				ContactPK: getAccountPubKey(t, receiver),
 			})
 			require.NoError(t, err)
@@ -846,7 +846,7 @@ func sendMessageOnGroup(ctx context.Context, t *testing.T, senders, receivers []
 		for _, sender := range senders {
 			senderID := getAccountB64PubKey(t, sender)
 			for _, message := range messages {
-				_, err := sender.Client.AppMessageSend(ctx, &bertytypes.AppMessageSend_Request{
+				_, err := sender.Client.AppMessageSend(ctx, &protocoltypes.AppMessageSend_Request{
 					GroupPK: groupPK,
 					Payload: []byte(senderID + " - " + message),
 				})
@@ -873,7 +873,7 @@ func sendMessageOnGroup(ctx context.Context, t *testing.T, senders, receivers []
 				defer subCancel()
 				defer wg.Done()
 
-				sub, err := receiver.Client.GroupMessageList(subCtx, &bertytypes.GroupMessageList_Request{
+				sub, err := receiver.Client.GroupMessageList(subCtx, &protocoltypes.GroupMessageList_Request{
 					GroupPK: groupPK,
 				})
 				if !assert.NoError(t, err) {
@@ -952,7 +952,7 @@ func sendMessageOnGroup(ctx context.Context, t *testing.T, senders, receivers []
 				defer subCancel()
 				defer wg.Done()
 
-				req := bertytypes.GroupMessageList_Request{
+				req := protocoltypes.GroupMessageList_Request{
 					GroupPK:  groupPK,
 					UntilNow: true,
 				}
@@ -1021,13 +1021,13 @@ func sendMessageOnGroup(ctx context.Context, t *testing.T, senders, receivers []
 	logTree(t, "duration: %s", 0, false, time.Since(start))
 }
 
-func isEventAddSecretTargetedToMember(ownRawPK []byte, evt *bertytypes.GroupMetadataEvent) ([]byte, error) {
+func isEventAddSecretTargetedToMember(ownRawPK []byte, evt *protocoltypes.GroupMetadataEvent) ([]byte, error) {
 	// Only count EventTypeGroupDeviceSecretAdded events
-	if evt.Metadata.EventType != bertytypes.EventTypeGroupDeviceSecretAdded {
+	if evt.Metadata.EventType != protocoltypes.EventTypeGroupDeviceSecretAdded {
 		return nil, nil
 	}
 
-	sec := &bertytypes.GroupAddDeviceSecret{}
+	sec := &protocoltypes.GroupAddDeviceSecret{}
 	err := sec.Unmarshal(evt.Event)
 	if err != nil {
 		return nil, err

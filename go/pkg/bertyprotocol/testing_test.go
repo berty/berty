@@ -8,11 +8,13 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 func TestClient_impl(t *testing.T) {
 	var _ Service = (*service)(nil)
-	var _ ProtocolServiceServer = (*service)(nil)
+	var _ protocoltypes.ProtocolServiceServer = (*service)(nil)
 }
 
 func TestEmptyArgs(t *testing.T) {

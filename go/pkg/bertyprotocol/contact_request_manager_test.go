@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 func TestContactRequestFlow(t *testing.T) {
@@ -31,39 +31,39 @@ func TestContactRequestFlow(t *testing.T) {
 	pts, cleanup := NewTestingProtocolWithMockedPeers(ctx, t, &opts, nil, 2)
 	defer cleanup()
 
-	_, err := pts[0].Client.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})
+	_, err := pts[0].Client.ContactRequestEnable(ctx, &protocoltypes.ContactRequestEnable_Request{})
 	require.NoError(t, err)
 
-	_, err = pts[1].Client.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})
+	_, err = pts[1].Client.ContactRequestEnable(ctx, &protocoltypes.ContactRequestEnable_Request{})
 	require.NoError(t, err)
 
-	config0, err := pts[0].Client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+	config0, err := pts[0].Client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 	require.NoError(t, err)
 	require.NotNil(t, config0)
 
-	config1, err := pts[1].Client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+	config1, err := pts[1].Client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 	require.NoError(t, err)
 	require.NotNil(t, config1)
 
-	ref0, err := pts[0].Client.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
+	ref0, err := pts[0].Client.ContactRequestResetReference(ctx, &protocoltypes.ContactRequestResetReference_Request{})
 	require.NoError(t, err)
 	require.NotNil(t, ref0)
 
-	ref1, err := pts[1].Client.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
+	ref1, err := pts[1].Client.ContactRequestResetReference(ctx, &protocoltypes.ContactRequestResetReference_Request{})
 	require.NoError(t, err)
 	require.NotNil(t, ref1)
 
 	subCtx, subCancel := context.WithCancel(ctx)
 	defer subCancel()
 
-	subMeta0, err := pts[0].Client.GroupMetadataList(subCtx, &bertytypes.GroupMetadataList_Request{
+	subMeta0, err := pts[0].Client.GroupMetadataList(subCtx, &protocoltypes.GroupMetadataList_Request{
 		GroupPK: config0.AccountGroupPK,
 	})
 	require.NoError(t, err)
 	found := false
 
-	_, err = pts[1].Client.ContactRequestSend(ctx, &bertytypes.ContactRequestSend_Request{
-		Contact: &bertytypes.ShareableContact{
+	_, err = pts[1].Client.ContactRequestSend(ctx, &protocoltypes.ContactRequestSend_Request{
+		Contact: &protocoltypes.ShareableContact{
 			PK:                   config0.AccountPK,
 			PublicRendezvousSeed: ref0.PublicRendezvousSeed,
 		},
@@ -79,11 +79,11 @@ func TestContactRequestFlow(t *testing.T) {
 
 		require.NoError(t, err)
 
-		if evt == nil || evt.Metadata.EventType != bertytypes.EventTypeAccountContactRequestIncomingReceived {
+		if evt == nil || evt.Metadata.EventType != protocoltypes.EventTypeAccountContactRequestIncomingReceived {
 			continue
 		}
 
-		req := &bertytypes.AccountContactRequestReceived{}
+		req := &protocoltypes.AccountContactRequestReceived{}
 		err = req.Unmarshal(evt.Event)
 
 		require.NoError(t, err)
@@ -95,42 +95,42 @@ func TestContactRequestFlow(t *testing.T) {
 
 	require.True(t, found)
 
-	_, err = pts[1].Client.ContactRequestAccept(ctx, &bertytypes.ContactRequestAccept_Request{
+	_, err = pts[1].Client.ContactRequestAccept(ctx, &protocoltypes.ContactRequestAccept_Request{
 		ContactPK: config0.AccountPK,
 	})
 
 	require.Error(t, err)
 
-	_, err = pts[1].Client.ContactRequestAccept(ctx, &bertytypes.ContactRequestAccept_Request{
+	_, err = pts[1].Client.ContactRequestAccept(ctx, &protocoltypes.ContactRequestAccept_Request{
 		ContactPK: config1.AccountPK,
 	})
 
 	require.Error(t, err)
 
-	_, err = pts[0].Client.ContactRequestAccept(ctx, &bertytypes.ContactRequestAccept_Request{
+	_, err = pts[0].Client.ContactRequestAccept(ctx, &protocoltypes.ContactRequestAccept_Request{
 		ContactPK: config0.AccountPK,
 	})
 
 	require.Error(t, err)
 
-	_, err = pts[0].Client.ContactRequestAccept(ctx, &bertytypes.ContactRequestAccept_Request{
+	_, err = pts[0].Client.ContactRequestAccept(ctx, &protocoltypes.ContactRequestAccept_Request{
 		ContactPK: config1.AccountPK,
 	})
 
 	require.NoError(t, err)
 
-	grpInfo, err := pts[0].Client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+	grpInfo, err := pts[0].Client.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
 		ContactPK: config1.AccountPK,
 	})
 	require.NoError(t, err)
 
-	_, err = pts[0].Client.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
+	_, err = pts[0].Client.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{
 		GroupPK: grpInfo.Group.PublicKey,
 	})
 
 	require.NoError(t, err)
 
-	_, err = pts[1].Client.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
+	_, err = pts[1].Client.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{
 		GroupPK: grpInfo.Group.PublicKey,
 	})
 
@@ -155,32 +155,32 @@ func TestContactRequestFlowWithoutIncoming(t *testing.T) {
 	pts, cleanup := NewTestingProtocolWithMockedPeers(ctx, t, &opts, nil, 2)
 	defer cleanup()
 
-	_, err := pts[0].Client.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})
+	_, err := pts[0].Client.ContactRequestEnable(ctx, &protocoltypes.ContactRequestEnable_Request{})
 	require.NoError(t, err)
 
-	config0, err := pts[0].Client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+	config0, err := pts[0].Client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 	require.NoError(t, err)
 	require.NotNil(t, config0)
 
-	config1, err := pts[1].Client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+	config1, err := pts[1].Client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 	require.NoError(t, err)
 	require.NotNil(t, config1)
 
-	ref0, err := pts[0].Client.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
+	ref0, err := pts[0].Client.ContactRequestResetReference(ctx, &protocoltypes.ContactRequestResetReference_Request{})
 	require.NoError(t, err)
 	require.NotNil(t, ref0)
 
 	subCtx, subCancel := context.WithCancel(ctx)
 	defer subCancel()
 
-	subMeta0, err := pts[0].Client.GroupMetadataList(subCtx, &bertytypes.GroupMetadataList_Request{
+	subMeta0, err := pts[0].Client.GroupMetadataList(subCtx, &protocoltypes.GroupMetadataList_Request{
 		GroupPK: config0.AccountGroupPK,
 	})
 	require.NoError(t, err)
 	found := false
 
-	_, err = pts[1].Client.ContactRequestSend(ctx, &bertytypes.ContactRequestSend_Request{
-		Contact: &bertytypes.ShareableContact{
+	_, err = pts[1].Client.ContactRequestSend(ctx, &protocoltypes.ContactRequestSend_Request{
+		Contact: &protocoltypes.ShareableContact{
 			PK:                   config0.AccountPK,
 			PublicRendezvousSeed: ref0.PublicRendezvousSeed,
 		},
@@ -196,11 +196,11 @@ func TestContactRequestFlowWithoutIncoming(t *testing.T) {
 
 		require.NoError(t, err)
 
-		if evt == nil || evt.Metadata.EventType != bertytypes.EventTypeAccountContactRequestIncomingReceived {
+		if evt == nil || evt.Metadata.EventType != protocoltypes.EventTypeAccountContactRequestIncomingReceived {
 			continue
 		}
 
-		req := &bertytypes.AccountContactRequestReceived{}
+		req := &protocoltypes.AccountContactRequestReceived{}
 		err = req.Unmarshal(evt.Event)
 
 		require.NoError(t, err)
@@ -212,13 +212,13 @@ func TestContactRequestFlowWithoutIncoming(t *testing.T) {
 
 	require.True(t, found)
 
-	_, err = pts[0].Client.ContactRequestAccept(ctx, &bertytypes.ContactRequestAccept_Request{
+	_, err = pts[0].Client.ContactRequestAccept(ctx, &protocoltypes.ContactRequestAccept_Request{
 		ContactPK: config1.AccountPK,
 	})
 
 	require.NoError(t, err)
 
-	_, err = pts[0].Client.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+	_, err = pts[0].Client.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
 		ContactPK: config1.AccountPK,
 	})
 	require.NoError(t, err)

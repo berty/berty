@@ -18,11 +18,11 @@ import (
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/tracer"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func sealPayload(payload []byte, ds *bertytypes.DeviceSecret, deviceSK crypto.PrivKey, g *bertytypes.Group) ([]byte, []byte, error) {
+func sealPayload(payload []byte, ds *protocoltypes.DeviceSecret, deviceSK crypto.PrivKey, g *protocoltypes.Group) ([]byte, []byte, error) {
 	var (
 		msgKey [32]byte
 		err    error
@@ -40,7 +40,7 @@ func sealPayload(payload []byte, ds *bertytypes.DeviceSecret, deviceSK crypto.Pr
 	return secretbox.Seal(nil, payload, uint64AsNonce(ds.Counter+1), &msgKey), sig, nil
 }
 
-func sealEnvelopeInternal(ctx context.Context, payload []byte, ds *bertytypes.DeviceSecret, deviceSK crypto.PrivKey, g *bertytypes.Group, attachmentsCIDs [][]byte) ([]byte, error) {
+func sealEnvelopeInternal(ctx context.Context, payload []byte, ds *protocoltypes.DeviceSecret, deviceSK crypto.PrivKey, g *protocoltypes.Group, attachmentsCIDs [][]byte) ([]byte, error) {
 	encryptedPayload, sig, err := sealPayload(payload, ds, deviceSK, g)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
@@ -51,7 +51,7 @@ func sealEnvelopeInternal(ctx context.Context, payload []byte, ds *bertytypes.De
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	h := &bertytypes.MessageHeaders{
+	h := &protocoltypes.MessageHeaders{
 		Counter:  ds.Counter + 1,
 		DevicePK: devicePKRaw,
 		Sig:      sig,
@@ -76,7 +76,7 @@ func sealEnvelopeInternal(ctx context.Context, payload []byte, ds *bertytypes.De
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
 	}
 
-	env, err := proto.Marshal(&bertytypes.MessageEnvelope{
+	env, err := proto.Marshal(&protocoltypes.MessageEnvelope{
 		MessageHeaders:          encryptedHeaders,
 		Message:                 encryptedPayload,
 		Nonce:                   nonce[:],
@@ -89,8 +89,8 @@ func sealEnvelopeInternal(ctx context.Context, payload []byte, ds *bertytypes.De
 	return env, nil
 }
 
-func openEnvelopeHeaders(data []byte, g *bertytypes.Group) (*bertytypes.MessageEnvelope, *bertytypes.MessageHeaders, error) {
-	env := &bertytypes.MessageEnvelope{}
+func openEnvelopeHeaders(data []byte, g *protocoltypes.Group) (*protocoltypes.MessageEnvelope, *protocoltypes.MessageHeaders, error) {
+	env := &protocoltypes.MessageEnvelope{}
 	err := env.Unmarshal(data)
 	if err != nil {
 		return nil, nil, errcode.ErrDeserialization.Wrap(err)
@@ -106,7 +106,7 @@ func openEnvelopeHeaders(data []byte, g *bertytypes.Group) (*bertytypes.MessageE
 		return nil, nil, errcode.ErrCryptoDecrypt.Wrap(fmt.Errorf("secretbox failed to open headers"))
 	}
 
-	headers := &bertytypes.MessageHeaders{}
+	headers := &protocoltypes.MessageHeaders{}
 	if err := headers.Unmarshal(headersBytes); err != nil {
 		return nil, nil, errcode.ErrDeserialization.Wrap(err)
 	}

@@ -15,9 +15,10 @@ import (
 	"github.com/mdp/qrterminal/v3"
 	"moul.io/godev"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/internal/bertylinks"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 type command struct {
@@ -201,14 +202,14 @@ func commandList() []*command {
 }
 
 func sendReplyOptions(ctx context.Context, v *groupView, cmd string) error {
-	options := []*bertymessenger.ReplyOption{}
+	options := []*messengertypes.ReplyOption{}
 	if err := json.Unmarshal([]byte(cmd), &options); err != nil {
 		return err
 	}
 
-	_, err := v.v.messenger.SendReplyOptions(ctx, &bertymessenger.SendReplyOptions_Request{
+	_, err := v.v.messenger.SendReplyOptions(ctx, &messengertypes.SendReplyOptions_Request{
 		GroupPK: v.g.PublicKey,
-		Options: &bertymessenger.AppMessage_ReplyOptions{
+		Options: &messengertypes.AppMessage_ReplyOptions{
 			Options: options,
 		},
 	})
@@ -226,7 +227,7 @@ func exportAccount(ctx context.Context, v *groupView, path string) error {
 
 	defer func() { _ = f.Close() }()
 
-	cl, err := v.v.messenger.InstanceExportData(ctx, &bertymessenger.InstanceExportData_Request{})
+	cl, err := v.v.messenger.InstanceExportData(ctx, &messengertypes.InstanceExportData_Request{})
 	if err != nil {
 		return err
 	}
@@ -250,7 +251,7 @@ func exportAccount(ctx context.Context, v *groupView, path string) error {
 }
 
 func authInit(ctx context.Context, v *groupView, cmd string) error {
-	rep, err := v.v.protocol.AuthServiceInitFlow(ctx, &bertytypes.AuthServiceInitFlow_Request{
+	rep, err := v.v.protocol.AuthServiceInitFlow(ctx, &protocoltypes.AuthServiceInitFlow_Request{
 		AuthURL: strings.TrimSpace(cmd),
 	})
 	if err != nil {
@@ -280,7 +281,7 @@ func authInit(ctx context.Context, v *groupView, cmd string) error {
 }
 
 func authComplete(ctx context.Context, v *groupView, cmd string) error {
-	_, err := v.v.protocol.AuthServiceCompleteFlow(ctx, &bertytypes.AuthServiceCompleteFlow_Request{
+	_, err := v.v.protocol.AuthServiceCompleteFlow(ctx, &protocoltypes.AuthServiceCompleteFlow_Request{
 		CallbackURL: strings.TrimSpace(cmd),
 	})
 
@@ -288,7 +289,7 @@ func authComplete(ctx context.Context, v *groupView, cmd string) error {
 }
 
 func servicesList(ctx context.Context, v *groupView, _ string) error {
-	cl, err := v.v.protocol.ServicesTokenList(ctx, &bertytypes.ServicesTokenList_Request{})
+	cl, err := v.v.protocol.ServicesTokenList(ctx, &protocoltypes.ServicesTokenList_Request{})
 	if err != nil {
 		return err
 	}
@@ -314,7 +315,7 @@ func servicesList(ctx context.Context, v *groupView, _ string) error {
 }
 
 func replGroup(ctx context.Context, v *groupView, cmd string) error {
-	if _, err := v.v.messenger.ReplicationServiceRegisterGroup(ctx, &bertymessenger.ReplicationServiceRegisterGroup_Request{
+	if _, err := v.v.messenger.ReplicationServiceRegisterGroup(ctx, &messengertypes.ReplicationServiceRegisterGroup_Request{
 		TokenID:               strings.TrimSpace(cmd),
 		ConversationPublicKey: base64.RawURLEncoding.EncodeToString(v.g.PublicKey),
 	}); err != nil {
@@ -338,7 +339,7 @@ func setDisplayName(_ context.Context, v *groupView, cmd string) error {
 }
 
 func debugIPFSCommand(ctx context.Context, v *groupView, _ string) error {
-	config, err := v.v.protocol.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+	config, err := v.v.protocol.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 	if err != nil {
 		return err
 	}
@@ -360,7 +361,7 @@ func debugIPFSCommand(ctx context.Context, v *groupView, _ string) error {
 }
 
 func debugSystemCommand(ctx context.Context, v *groupView, _ string) error {
-	info, err := v.v.messenger.SystemInfo(ctx, &bertymessenger.SystemInfo_Request{})
+	info, err := v.v.messenger.SystemInfo(ctx, &messengertypes.SystemInfo_Request{})
 	if err != nil {
 		return err
 	}
@@ -386,7 +387,7 @@ func contactDiscardAllCommand(ctx context.Context, v *groupView, cmd string) err
 	toAdd := [][]byte(nil)
 
 	for id, contactState := range v.v.contactStates {
-		if contactState != bertytypes.ContactStateReceived {
+		if contactState != protocoltypes.ContactStateReceived {
 			continue
 		}
 
@@ -408,7 +409,7 @@ func contactAcceptAllCommand(ctx context.Context, v *groupView, cmd string) erro
 	toAdd := [][]byte(nil)
 
 	for id, contactState := range v.v.contactStates {
-		if contactState != bertytypes.ContactStateReceived {
+		if contactState != protocoltypes.ContactStateReceived {
 			continue
 		}
 
@@ -439,18 +440,18 @@ func debugInspectStoreCommand(ctx context.Context, v *groupView, cmd string) err
 		return fmt.Errorf("invalid args, expected: group_pk {message,metadata} (%w)", err)
 	}
 
-	var logType bertytypes.DebugInspectGroupLogType
+	var logType protocoltypes.DebugInspectGroupLogType
 
 	switch args[1] {
 	case "message":
-		logType = bertytypes.DebugInspectGroupLogTypeMessage
+		logType = protocoltypes.DebugInspectGroupLogTypeMessage
 	case "metadata":
-		logType = bertytypes.DebugInspectGroupLogTypeMetadata
+		logType = protocoltypes.DebugInspectGroupLogTypeMetadata
 	default:
 		return fmt.Errorf("invalid args, expected: group_pk {message,metadata}")
 	}
 
-	sub, err := v.v.protocol.DebugInspectGroupStore(ctx, &bertytypes.DebugInspectGroupStore_Request{
+	sub, err := v.v.protocol.DebugInspectGroupStore(ctx, &protocoltypes.DebugInspectGroupStore_Request{
 		GroupPK: groupPK,
 		LogType: logType,
 	})
@@ -478,7 +479,7 @@ func debugInspectStoreCommand(ctx context.Context, v *groupView, cmd string) err
 	}
 }
 
-func formatDebugInspectGroupStoreReply(rep *bertytypes.DebugInspectGroupStore_Reply, storeType bertytypes.DebugInspectGroupLogType) []byte {
+func formatDebugInspectGroupStoreReply(rep *protocoltypes.DebugInspectGroupStore_Reply, storeType protocoltypes.DebugInspectGroupLogType) []byte {
 	data := []string(nil)
 
 	if rep.CID != nil {
@@ -508,15 +509,15 @@ func formatDebugInspectGroupStoreReply(rep *bertytypes.DebugInspectGroupStore_Re
 		data = append(data, fmt.Sprintf("device: %s", base64.StdEncoding.EncodeToString(rep.DevicePK)))
 	}
 
-	if storeType == bertytypes.DebugInspectGroupLogTypeMessage && len(rep.Payload) > 0 {
+	if storeType == protocoltypes.DebugInspectGroupLogTypeMessage && len(rep.Payload) > 0 {
 		data = append(data, fmt.Sprintf("payload: %s", string(rep.Payload)))
 	}
 
 	return []byte(strings.Join(data, ", "))
 }
 
-func formatDebugListGroupsReply(rep *bertytypes.DebugListGroups_Reply) []byte {
-	if rep.GroupType == bertytypes.GroupTypeContact {
+func formatDebugListGroupsReply(rep *protocoltypes.DebugListGroups_Reply) []byte {
+	if rep.GroupType == protocoltypes.GroupTypeContact {
 		return []byte(fmt.Sprintf("%s: %s (contact: %s)", rep.GroupType.String(), base64.StdEncoding.EncodeToString(rep.GroupPK), base64.StdEncoding.EncodeToString(rep.ContactPK)))
 	}
 
@@ -527,7 +528,7 @@ func debugListGroupsCommand(ctx context.Context, v *groupView, cmd string) error
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	sub, err := v.v.protocol.DebugListGroups(ctx, &bertytypes.DebugListGroups_Request{})
+	sub, err := v.v.protocol.DebugListGroups(ctx, &protocoltypes.DebugListGroups_Request{})
 	if err != nil {
 		return err
 	}
@@ -577,7 +578,7 @@ func debugListGroupCommand(ctx context.Context, v *groupView, cmd string) error 
 		payload:     []byte(fmt.Sprintf("device pk:    %s", base64.StdEncoding.EncodeToString(v.devicePK))),
 	})
 
-	if v.g.GroupType == bertytypes.GroupTypeMultiMember {
+	if v.g.GroupType == protocoltypes.GroupTypeMultiMember {
 		v.muAggregates.Lock()
 
 		v.messages.Append(&historyMessage{
@@ -607,7 +608,7 @@ func debugListGroupCommand(ctx context.Context, v *groupView, cmd string) error 
 		v.muAggregates.Unlock()
 	}
 
-	groupDebug, err := v.v.protocol.DebugGroup(ctx, &bertytypes.DebugGroup_Request{
+	groupDebug, err := v.v.protocol.DebugGroup(ctx, &protocoltypes.DebugGroup_Request{
 		GroupPK: v.g.PublicKey,
 	})
 	if err != nil {
@@ -645,7 +646,7 @@ func debugListGroupCommand(ctx context.Context, v *groupView, cmd string) error 
 // }
 
 func aliasSendCommand(ctx context.Context, v *groupView, cmd string) error {
-	if _, err := v.v.protocol.ContactAliasKeySend(ctx, &bertytypes.ContactAliasKeySend_Request{
+	if _, err := v.v.protocol.ContactAliasKeySend(ctx, &protocoltypes.ContactAliasKeySend_Request{
 		GroupPK: v.g.PublicKey,
 	}); err != nil {
 		return err
@@ -656,7 +657,7 @@ func aliasSendCommand(ctx context.Context, v *groupView, cmd string) error {
 
 func groupInviteCommand(renderFunc func(*groupView, string)) func(ctx context.Context, v *groupView, cmd string) error {
 	return func(ctx context.Context, v *groupView, cmd string) error {
-		res, err := v.v.messenger.ShareableBertyGroup(ctx, &bertymessenger.ShareableBertyGroup_Request{
+		res, err := v.v.messenger.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
 			GroupPK:   v.g.PublicKey,
 			GroupName: "some group",
 		})
@@ -708,7 +709,7 @@ func contactAcceptCommand(ctx context.Context, v *groupView, cmd string) error {
 		return err
 	}
 
-	if _, err = v.v.protocol.ContactRequestAccept(ctx, &bertytypes.ContactRequestAccept_Request{
+	if _, err = v.v.protocol.ContactRequestAccept(ctx, &protocoltypes.ContactRequestAccept_Request{
 		ContactPK: pkBytes,
 	}); err != nil {
 		return err
@@ -723,7 +724,7 @@ func contactDiscardCommand(ctx context.Context, v *groupView, cmd string) error 
 		return err
 	}
 
-	if _, err = v.v.protocol.ContactRequestDiscard(ctx, &bertytypes.ContactRequestDiscard_Request{
+	if _, err = v.v.protocol.ContactRequestDiscard(ctx, &protocoltypes.ContactRequestDiscard_Request{
 		ContactPK: pkBytes,
 	}); err != nil {
 		return err
@@ -738,7 +739,7 @@ func groupJoinCommand(ctx context.Context, v *groupView, cmd string) error {
 		return fmt.Errorf("err: can't join group %w", err)
 	}
 
-	_, err = v.v.protocol.MultiMemberGroupJoin(ctx, &bertytypes.MultiMemberGroupJoin_Request{
+	_, err = v.v.protocol.MultiMemberGroupJoin(ctx, &protocoltypes.MultiMemberGroupJoin_Request{
 		Group: g,
 	})
 
@@ -746,7 +747,7 @@ func groupJoinCommand(ctx context.Context, v *groupView, cmd string) error {
 }
 
 func groupNewCommand(ctx context.Context, v *groupView, _ string) error {
-	_, err := v.v.protocol.MultiMemberGroupCreate(ctx, &bertytypes.MultiMemberGroupCreate_Request{})
+	_, err := v.v.protocol.MultiMemberGroupCreate(ctx, &protocoltypes.MultiMemberGroupCreate_Request{})
 
 	return err
 }
@@ -756,7 +757,7 @@ func contactRequestCommand(ctx context.Context, v *groupView, cmd string) error 
 	displayName := v.v.displayName
 	v.v.lock.Unlock()
 
-	link, err := bertymessenger.UnmarshalLink(cmd)
+	link, err := bertylinks.UnmarshalLink(cmd)
 	if err != nil {
 		return errcode.ErrInvalidInput.Wrap(err)
 	}
@@ -764,13 +765,13 @@ func contactRequestCommand(ctx context.Context, v *groupView, cmd string) error 
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected a contact URL, got %q instead", link.GetKind()))
 	}
 
-	contact := &bertytypes.ShareableContact{
+	contact := &protocoltypes.ShareableContact{
 		PK:                   link.BertyID.AccountPK,
 		PublicRendezvousSeed: link.BertyID.PublicRendezvousSeed,
 		Metadata:             []byte(link.BertyID.DisplayName),
 	}
 
-	_, err = v.v.protocol.ContactRequestSend(ctx, &bertytypes.ContactRequestSend_Request{
+	_, err = v.v.protocol.ContactRequestSend(ctx, &protocoltypes.ContactRequestSend_Request{
 		Contact:     contact,
 		OwnMetadata: []byte(displayName),
 	})
@@ -783,7 +784,7 @@ func newMessageCommand(ctx context.Context, v *groupView, cmd string) error {
 		return nil
 	}
 
-	_, err := v.v.messenger.SendMessage(ctx, &bertymessenger.SendMessage_Request{
+	_, err := v.v.messenger.SendMessage(ctx, &messengertypes.SendMessage_Request{
 		GroupPK: v.g.PublicKey,
 		Message: cmd,
 	})
@@ -797,7 +798,7 @@ func contactShareCommand(displayFunc func(*groupView, string)) func(ctx context.
 		displayName := v.v.displayName
 		v.v.lock.Unlock()
 
-		res, err := v.v.messenger.InstanceShareableBertyID(ctx, &bertymessenger.InstanceShareableBertyID_Request{
+		res, err := v.v.messenger.InstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{
 			DisplayName: displayName,
 		})
 		if err != nil {
@@ -850,19 +851,19 @@ func copyToClipboard(v *groupView, txt string) {
 }
 
 func contactRequestsOnCommand(ctx context.Context, v *groupView, cmd string) error {
-	_, err := v.v.protocol.ContactRequestEnable(ctx, &bertytypes.ContactRequestEnable_Request{})
+	_, err := v.v.protocol.ContactRequestEnable(ctx, &protocoltypes.ContactRequestEnable_Request{})
 
 	return err
 }
 
 func contactRequestsOffCommand(ctx context.Context, v *groupView, cmd string) error {
-	_, err := v.v.protocol.ContactRequestDisable(ctx, &bertytypes.ContactRequestDisable_Request{})
+	_, err := v.v.protocol.ContactRequestDisable(ctx, &protocoltypes.ContactRequestDisable_Request{})
 
 	return err
 }
 
 func contactRequestsReferenceResetCommand(ctx context.Context, v *groupView, cmd string) error {
-	_, err := v.v.protocol.ContactRequestResetReference(ctx, &bertytypes.ContactRequestResetReference_Request{})
+	_, err := v.v.protocol.ContactRequestResetReference(ctx, &protocoltypes.ContactRequestResetReference_Request{})
 
 	return err
 }

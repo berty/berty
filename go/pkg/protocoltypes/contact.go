@@ -1,4 +1,4 @@
-package bertytypes
+package protocoltypes
 
 import (
 	"fmt"

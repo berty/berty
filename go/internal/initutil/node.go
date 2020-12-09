@@ -34,6 +34,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 const (
@@ -208,8 +210,8 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 		}
 
 		// register grpc service
-		bertyprotocol.RegisterProtocolServiceServer(grpcServer, m.Node.Protocol.server)
-		if err := bertyprotocol.RegisterProtocolServiceHandlerServer(m.getContext(), gatewayMux, m.Node.Protocol.server); err != nil {
+		protocoltypes.RegisterProtocolServiceServer(grpcServer, m.Node.Protocol.server)
+		if err := protocoltypes.RegisterProtocolServiceHandlerServer(m.getContext(), gatewayMux, m.Node.Protocol.server); err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 	}
@@ -278,10 +280,10 @@ func (m *Manager) getGRPCClientConn() (*grpc.ClientConn, error) {
 		}
 
 		if m.Node.Protocol.server != nil {
-			bertyprotocol.RegisterProtocolServiceServer(grpcServer, m.Node.Protocol.server)
+			protocoltypes.RegisterProtocolServiceServer(grpcServer, m.Node.Protocol.server)
 		}
 		if m.Node.Messenger.server != nil {
-			bertymessenger.RegisterMessengerServiceServer(grpcServer, m.Node.Messenger.server)
+			messengertypes.RegisterMessengerServiceServer(grpcServer, m.Node.Messenger.server)
 		}
 
 		m.Node.GRPC.bufServerListener = bl
@@ -299,7 +301,7 @@ func (m *Manager) getGRPCClientConn() (*grpc.ClientConn, error) {
 	return m.Node.GRPC.clientConn, nil
 }
 
-func (m *Manager) GetMessengerClient() (bertymessenger.MessengerServiceClient, error) {
+func (m *Manager) GetMessengerClient() (messengertypes.MessengerServiceClient, error) {
 	defer m.prepareForGetter()()
 
 	return m.getMessengerClient()
@@ -333,7 +335,7 @@ func (m *Manager) getLifecycleManager() *lifecycle.Manager {
 	return m.Node.Messenger.lcmanager
 }
 
-func (m *Manager) getMessengerClient() (bertymessenger.MessengerServiceClient, error) {
+func (m *Manager) getMessengerClient() (messengertypes.MessengerServiceClient, error) {
 	if m.Node.Messenger.client != nil {
 		return m.Node.Messenger.client, nil
 	}
@@ -342,19 +344,19 @@ func (m *Manager) getMessengerClient() (bertymessenger.MessengerServiceClient, e
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	m.Node.Messenger.client = bertymessenger.NewMessengerServiceClient(grpcClient)
+	m.Node.Messenger.client = messengertypes.NewMessengerServiceClient(grpcClient)
 
 	m.initLogger.Debug("messenger client initialized and cached")
 	return m.Node.Messenger.client, nil
 }
 
-func (m *Manager) GetProtocolClient() (bertyprotocol.ProtocolServiceClient, error) {
+func (m *Manager) GetProtocolClient() (protocoltypes.ProtocolServiceClient, error) {
 	defer m.prepareForGetter()()
 
 	return m.getProtocolClient()
 }
 
-func (m *Manager) getProtocolClient() (bertyprotocol.ProtocolServiceClient, error) {
+func (m *Manager) getProtocolClient() (protocoltypes.ProtocolServiceClient, error) {
 	if m.Node.Protocol.client != nil {
 		return m.Node.Protocol.client, nil
 	}
@@ -363,7 +365,7 @@ func (m *Manager) getProtocolClient() (bertyprotocol.ProtocolServiceClient, erro
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	m.Node.Protocol.client = bertyprotocol.NewProtocolServiceClient(grpcClient)
+	m.Node.Protocol.client = protocoltypes.NewProtocolServiceClient(grpcClient)
 
 	m.initLogger.Debug("protocol client initialized and cached")
 	return m.Node.Protocol.client, nil
@@ -554,7 +556,7 @@ func (m *Manager) restoreMessengerDataFromExport() error {
 		return errcode.ErrInternal.Wrap(err)
 	}
 
-	m.Node.Messenger.localDBState = &bertymessenger.LocalDatabaseState{}
+	m.Node.Messenger.localDBState = &messengertypes.LocalDatabaseState{}
 
 	if err := bertymessenger.RestoreFromAccountExport(m.ctx, f, coreAPI, odb, m.Node.Messenger.localDBState, logger); err != nil {
 		return errcode.ErrInternal.Wrap(err)
@@ -563,13 +565,13 @@ func (m *Manager) restoreMessengerDataFromExport() error {
 	return nil
 }
 
-func (m *Manager) GetLocalMessengerServer() (bertymessenger.MessengerServiceServer, error) {
+func (m *Manager) GetLocalMessengerServer() (messengertypes.MessengerServiceServer, error) {
 	defer m.prepareForGetter()()
 
 	return m.getLocalMessengerServer()
 }
 
-func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServer, error) {
+func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServer, error) {
 	if m.Node.Messenger.server != nil {
 		return m.Node.Messenger.server, nil
 	}
@@ -633,8 +635,8 @@ func (m *Manager) getLocalMessengerServer() (bertymessenger.MessengerServiceServ
 	}
 
 	// register grpc service
-	bertymessenger.RegisterMessengerServiceServer(grpcServer, messengerServer)
-	if err := bertymessenger.RegisterMessengerServiceHandlerServer(m.getContext(), gatewayMux, messengerServer); err != nil {
+	messengertypes.RegisterMessengerServiceServer(grpcServer, messengerServer)
+	if err := messengertypes.RegisterMessengerServiceHandlerServer(m.getContext(), gatewayMux, messengerServer); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 

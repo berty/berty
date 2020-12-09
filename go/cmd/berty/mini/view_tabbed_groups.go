@@ -10,15 +10,14 @@ import (
 	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 type tabbedGroupsView struct {
 	ctx                    context.Context
 	app                    *tview.Application
-	protocol               bertyprotocol.ProtocolServiceClient
+	protocol               protocoltypes.ProtocolServiceClient
 	topics                 *tview.Table
 	activeViewContainer    *tview.Flex
 	selectedGroupView      *groupView
@@ -26,9 +25,9 @@ type tabbedGroupsView struct {
 	contactGroupViews      []*groupView
 	multiMembersGroupViews []*groupView
 	lock                   sync.RWMutex
-	messenger              bertymessenger.MessengerServiceClient
+	messenger              messengertypes.MessengerServiceClient
 	displayName            string
-	contactStates          map[string]bertytypes.ContactState
+	contactStates          map[string]protocoltypes.ContactState
 	contactNames           map[string]string
 }
 
@@ -114,19 +113,19 @@ func (v *tabbedGroupsView) recomputeChannelList(viewChanged bool) {
 	}
 }
 
-func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *bertytypes.Group) {
+func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *protocoltypes.Group) {
 	v.lock.Lock()
 	defer v.lock.Unlock()
 
 	// Check if group already opened
 	switch g.GroupType {
-	case bertytypes.GroupTypeContact:
+	case protocoltypes.GroupTypeContact:
 		for _, vg := range v.contactGroupViews {
 			if bytes.Equal(vg.g.PublicKey, g.PublicKey) {
 				return
 			}
 		}
-	case bertytypes.GroupTypeMultiMember:
+	case protocoltypes.GroupTypeMultiMember:
 		for _, vg := range v.multiMembersGroupViews {
 			if bytes.Equal(vg.g.PublicKey, g.PublicKey) {
 				return
@@ -136,7 +135,7 @@ func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *bertytypes.Gr
 		return
 	}
 
-	info, err := v.protocol.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+	info, err := v.protocol.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
 		GroupPK: g.PublicKey,
 	})
 	if err != nil {
@@ -147,9 +146,9 @@ func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *bertytypes.Gr
 	vg.welcomeGroupEventDisplay()
 	vg.loop(v.ctx)
 
-	if g.GroupType == bertytypes.GroupTypeContact {
+	if g.GroupType == protocoltypes.GroupTypeContact {
 		v.contactGroupViews = append(v.contactGroupViews, vg)
-	} else if g.GroupType == bertytypes.GroupTypeMultiMember {
+	} else if g.GroupType == protocoltypes.GroupTypeMultiMember {
 		v.multiMembersGroupViews = append(v.multiMembersGroupViews, vg)
 	}
 }
@@ -223,14 +222,14 @@ func (v *tabbedGroupsView) GetHistory() tview.Primitive {
 	return v.activeViewContainer
 }
 
-func newTabbedGroups(ctx context.Context, g *bertytypes.GroupInfo_Reply, protocol bertyprotocol.ProtocolServiceClient, messenger bertymessenger.MessengerServiceClient, app *tview.Application, displayName string) *tabbedGroupsView {
+func newTabbedGroups(ctx context.Context, g *protocoltypes.GroupInfo_Reply, protocol protocoltypes.ProtocolServiceClient, messenger messengertypes.MessengerServiceClient, app *tview.Application, displayName string) *tabbedGroupsView {
 	v := &tabbedGroupsView{
 		ctx:           ctx,
 		topics:        tview.NewTable(),
 		protocol:      protocol,
 		messenger:     messenger,
 		app:           app,
-		contactStates: map[string]bertytypes.ContactState{},
+		contactStates: map[string]protocoltypes.ContactState{},
 		contactNames:  map[string]string{},
 		displayName:   displayName,
 	}

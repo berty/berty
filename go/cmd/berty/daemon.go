@@ -7,8 +7,8 @@ import (
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 func daemonCommand() *ffcli.Command {
@@ -58,7 +58,7 @@ func daemonCommand() *ffcli.Command {
 				if err != nil {
 					return err
 				}
-				info, err := protocolClient.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+				info, err := protocolClient.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}

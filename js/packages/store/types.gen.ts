@@ -62,16 +62,16 @@ export type AppMessagePayloadType<T> = T extends beapi.messenger.AppMessage.Type
 
 export type MonitorGroupPayloadType<
 	T
-> = T extends beapi.types.MonitorGroup.TypeEventMonitor.TypeEventMonitorUndefined
+> = T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorUndefined
 	? undefined
-	: T extends beapi.types.MonitorGroup.TypeEventMonitor.TypeEventMonitorAdvertiseGroup
-	? beapi.types.MonitorGroup.IEventMonitorAdvertiseGroup
-	: T extends beapi.types.MonitorGroup.TypeEventMonitor.TypeEventMonitorPeerFound
-	? beapi.types.MonitorGroup.IEventMonitorPeerFound
-	: T extends beapi.types.MonitorGroup.TypeEventMonitor.TypeEventMonitorPeerJoin
-	? beapi.types.MonitorGroup.IEventMonitorPeerJoin
-	: T extends beapi.types.MonitorGroup.TypeEventMonitor.TypeEventMonitorPeerLeave
-	? beapi.types.MonitorGroup.IEventMonitorPeerLeave
+	: T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorAdvertiseGroup
+	? beapi.protocol.MonitorGroup.IEventMonitorAdvertiseGroup
+	: T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorPeerFound
+	? beapi.protocol.MonitorGroup.IEventMonitorPeerFound
+	: T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorPeerJoin
+	? beapi.protocol.MonitorGroup.IEventMonitorPeerJoin
+	: T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorPeerLeave
+	? beapi.protocol.MonitorGroup.IEventMonitorPeerLeave
 	: never
 
 export type InteractionUndefined = {
@@ -280,197 +280,197 @@ export type MessengerMethodsHooks = {
 export type ProtocolMethodsHooks = {
 	useInstanceGetConfiguration: () => {
 		error: any
-		call: (req?: beapi.types.InstanceGetConfiguration.IRequest) => void
-		reply: beapi.types.InstanceGetConfiguration.IReply | null
+		call: (req?: beapi.protocol.InstanceGetConfiguration.IRequest) => void
+		reply: beapi.protocol.InstanceGetConfiguration.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useContactRequestReference: () => {
 		error: any
-		call: (req?: beapi.types.ContactRequestReference.IRequest) => void
-		reply: beapi.types.ContactRequestReference.IReply | null
+		call: (req?: beapi.protocol.ContactRequestReference.IRequest) => void
+		reply: beapi.protocol.ContactRequestReference.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useContactRequestDisable: () => {
 		error: any
-		call: (req?: beapi.types.ContactRequestDisable.IRequest) => void
-		reply: beapi.types.ContactRequestDisable.IReply | null
+		call: (req?: beapi.protocol.ContactRequestDisable.IRequest) => void
+		reply: beapi.protocol.ContactRequestDisable.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useContactRequestEnable: () => {
 		error: any
-		call: (req?: beapi.types.ContactRequestEnable.IRequest) => void
-		reply: beapi.types.ContactRequestEnable.IReply | null
+		call: (req?: beapi.protocol.ContactRequestEnable.IRequest) => void
+		reply: beapi.protocol.ContactRequestEnable.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useContactRequestResetReference: () => {
 		error: any
-		call: (req?: beapi.types.ContactRequestResetReference.IRequest) => void
-		reply: beapi.types.ContactRequestResetReference.IReply | null
+		call: (req?: beapi.protocol.ContactRequestResetReference.IRequest) => void
+		reply: beapi.protocol.ContactRequestResetReference.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useContactRequestSend: () => {
 		error: any
-		call: (req?: beapi.types.ContactRequestSend.IRequest) => void
-		reply: beapi.types.ContactRequestSend.IReply | null
+		call: (req?: beapi.protocol.ContactRequestSend.IRequest) => void
+		reply: beapi.protocol.ContactRequestSend.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useContactRequestAccept: () => {
 		error: any
-		call: (req?: beapi.types.ContactRequestAccept.IRequest) => void
-		reply: beapi.types.ContactRequestAccept.IReply | null
+		call: (req?: beapi.protocol.ContactRequestAccept.IRequest) => void
+		reply: beapi.protocol.ContactRequestAccept.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useContactRequestDiscard: () => {
 		error: any
-		call: (req?: beapi.types.ContactRequestDiscard.IRequest) => void
-		reply: beapi.types.ContactRequestDiscard.IReply | null
+		call: (req?: beapi.protocol.ContactRequestDiscard.IRequest) => void
+		reply: beapi.protocol.ContactRequestDiscard.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useContactBlock: () => {
 		error: any
-		call: (req?: beapi.types.ContactBlock.IRequest) => void
-		reply: beapi.types.ContactBlock.IReply | null
+		call: (req?: beapi.protocol.ContactBlock.IRequest) => void
+		reply: beapi.protocol.ContactBlock.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useContactUnblock: () => {
 		error: any
-		call: (req?: beapi.types.ContactUnblock.IRequest) => void
-		reply: beapi.types.ContactUnblock.IReply | null
+		call: (req?: beapi.protocol.ContactUnblock.IRequest) => void
+		reply: beapi.protocol.ContactUnblock.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useContactAliasKeySend: () => {
 		error: any
-		call: (req?: beapi.types.ContactAliasKeySend.IRequest) => void
-		reply: beapi.types.ContactAliasKeySend.IReply | null
+		call: (req?: beapi.protocol.ContactAliasKeySend.IRequest) => void
+		reply: beapi.protocol.ContactAliasKeySend.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useMultiMemberGroupCreate: () => {
 		error: any
-		call: (req?: beapi.types.MultiMemberGroupCreate.IRequest) => void
-		reply: beapi.types.MultiMemberGroupCreate.IReply | null
+		call: (req?: beapi.protocol.MultiMemberGroupCreate.IRequest) => void
+		reply: beapi.protocol.MultiMemberGroupCreate.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useMultiMemberGroupJoin: () => {
 		error: any
-		call: (req?: beapi.types.MultiMemberGroupJoin.IRequest) => void
-		reply: beapi.types.MultiMemberGroupJoin.IReply | null
+		call: (req?: beapi.protocol.MultiMemberGroupJoin.IRequest) => void
+		reply: beapi.protocol.MultiMemberGroupJoin.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useMultiMemberGroupLeave: () => {
 		error: any
-		call: (req?: beapi.types.MultiMemberGroupLeave.IRequest) => void
-		reply: beapi.types.MultiMemberGroupLeave.IReply | null
+		call: (req?: beapi.protocol.MultiMemberGroupLeave.IRequest) => void
+		reply: beapi.protocol.MultiMemberGroupLeave.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useMultiMemberGroupAliasResolverDisclose: () => {
 		error: any
-		call: (req?: beapi.types.MultiMemberGroupAliasResolverDisclose.IRequest) => void
-		reply: beapi.types.MultiMemberGroupAliasResolverDisclose.IReply | null
+		call: (req?: beapi.protocol.MultiMemberGroupAliasResolverDisclose.IRequest) => void
+		reply: beapi.protocol.MultiMemberGroupAliasResolverDisclose.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useMultiMemberGroupAdminRoleGrant: () => {
 		error: any
-		call: (req?: beapi.types.MultiMemberGroupAdminRoleGrant.IRequest) => void
-		reply: beapi.types.MultiMemberGroupAdminRoleGrant.IReply | null
+		call: (req?: beapi.protocol.MultiMemberGroupAdminRoleGrant.IRequest) => void
+		reply: beapi.protocol.MultiMemberGroupAdminRoleGrant.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useMultiMemberGroupInvitationCreate: () => {
 		error: any
-		call: (req?: beapi.types.MultiMemberGroupInvitationCreate.IRequest) => void
-		reply: beapi.types.MultiMemberGroupInvitationCreate.IReply | null
+		call: (req?: beapi.protocol.MultiMemberGroupInvitationCreate.IRequest) => void
+		reply: beapi.protocol.MultiMemberGroupInvitationCreate.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useAppMetadataSend: () => {
 		error: any
-		call: (req?: beapi.types.AppMetadataSend.IRequest) => void
-		reply: beapi.types.AppMetadataSend.IReply | null
+		call: (req?: beapi.protocol.AppMetadataSend.IRequest) => void
+		reply: beapi.protocol.AppMetadataSend.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useAppMessageSend: () => {
 		error: any
-		call: (req?: beapi.types.AppMessageSend.IRequest) => void
-		reply: beapi.types.AppMessageSend.IReply | null
+		call: (req?: beapi.protocol.AppMessageSend.IRequest) => void
+		reply: beapi.protocol.AppMessageSend.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useGroupInfo: () => {
 		error: any
-		call: (req?: beapi.types.GroupInfo.IRequest) => void
-		reply: beapi.types.GroupInfo.IReply | null
+		call: (req?: beapi.protocol.GroupInfo.IRequest) => void
+		reply: beapi.protocol.GroupInfo.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useActivateGroup: () => {
 		error: any
-		call: (req?: beapi.types.ActivateGroup.IRequest) => void
-		reply: beapi.types.ActivateGroup.IReply | null
+		call: (req?: beapi.protocol.ActivateGroup.IRequest) => void
+		reply: beapi.protocol.ActivateGroup.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useDeactivateGroup: () => {
 		error: any
-		call: (req?: beapi.types.DeactivateGroup.IRequest) => void
-		reply: beapi.types.DeactivateGroup.IReply | null
+		call: (req?: beapi.protocol.DeactivateGroup.IRequest) => void
+		reply: beapi.protocol.DeactivateGroup.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useDebugGroup: () => {
 		error: any
-		call: (req?: beapi.types.DebugGroup.IRequest) => void
-		reply: beapi.types.DebugGroup.IReply | null
+		call: (req?: beapi.protocol.DebugGroup.IRequest) => void
+		reply: beapi.protocol.DebugGroup.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useSystemInfo: () => {
 		error: any
-		call: (req?: beapi.types.SystemInfo.IRequest) => void
-		reply: beapi.types.SystemInfo.IReply | null
+		call: (req?: beapi.protocol.SystemInfo.IRequest) => void
+		reply: beapi.protocol.SystemInfo.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useAuthServiceInitFlow: () => {
 		error: any
-		call: (req?: beapi.types.AuthServiceInitFlow.IRequest) => void
-		reply: beapi.types.AuthServiceInitFlow.IReply | null
+		call: (req?: beapi.protocol.AuthServiceInitFlow.IRequest) => void
+		reply: beapi.protocol.AuthServiceInitFlow.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useAuthServiceCompleteFlow: () => {
 		error: any
-		call: (req?: beapi.types.AuthServiceCompleteFlow.IRequest) => void
-		reply: beapi.types.AuthServiceCompleteFlow.IReply | null
+		call: (req?: beapi.protocol.AuthServiceCompleteFlow.IRequest) => void
+		reply: beapi.protocol.AuthServiceCompleteFlow.IReply | null
 		done: boolean
 		called: boolean
 	}
 	useReplicationServiceRegisterGroup: () => {
 		error: any
-		call: (req?: beapi.types.ReplicationServiceRegisterGroup.IRequest) => void
-		reply: beapi.types.ReplicationServiceRegisterGroup.IReply | null
+		call: (req?: beapi.protocol.ReplicationServiceRegisterGroup.IRequest) => void
+		reply: beapi.protocol.ReplicationServiceRegisterGroup.IReply | null
 		done: boolean
 		called: boolean
 	}
 	usePeerList: () => {
 		error: any
-		call: (req?: beapi.types.PeerList.IRequest) => void
-		reply: beapi.types.PeerList.IReply | null
+		call: (req?: beapi.protocol.PeerList.IRequest) => void
+		reply: beapi.protocol.PeerList.IReply | null
 		done: boolean
 		called: boolean
 	}

@@ -1,4 +1,4 @@
-package bertymessenger
+package messengertypes
 
 import (
 	"encoding/json"
