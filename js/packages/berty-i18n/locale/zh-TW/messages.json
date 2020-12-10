@@ -1,0 +1,415 @@
+{
+  "time": {
+    "fuzzy-time": "时:分",
+    "fuzzy-month-day": "月/日",
+    "fuzzy-year-month": "年/月",
+    "datetime": "年-月-时:分",
+    "started-ago": "开始于 {{date}} 之前"
+  },
+  "onboarding": {
+    "getstarted": {
+      "desc": "安全的点对点消息应用程序，无论是否有互联网接入、蜂窝数据或网络信任",
+      "open-registered-account": "打开注册账户",
+      "import-button": "从现有帐户导入数据",
+      "account-selector-create-button": "创建新账户",
+      "more-options": "更多选项",
+      "button": "开始"
+    },
+    "select-mode": {
+      "performance": {
+        "title": "性能",
+        "desc": "简单使用 - 所有功能",
+        "push-notif": "接收新消息通知",
+        "offline-message": "离线消息",
+        "add-contact": "添加联系人",
+        "fast-message": "快速发送消息"
+      },
+      "high-level": {
+        "title": "高级隐私",
+        "desc": "对于高级用户-更少的元数据",
+        "disable-push-notif": "已禁用新消息通知",
+        "disable-local-peer-discovery": "本地对等用户发现已禁用",
+        "disable-contact-request": "已禁用联系人请求"
+      }
+    },
+    "create-account": {
+      "title": "创建您的帐户",
+      "desc": "名称是唯一需要的信息",
+      "required": "必需的",
+      "placeholder": "名称",
+      "button": "创建我的帐户"
+    },
+    "services-auth": {
+      "header": "认证服务",
+      "title": "服务",
+      "recommended": "推荐",
+      "desc": "这将自动复制您的会话到服务器",
+      "button": "使用 Berty 运营的服务",
+      "skip": "跳过并稍后再做"
+    },
+    "generate-key": {
+      "title": "正在启动 Berty 节点…",
+      "desc": "这可能需要几秒钟"
+    },
+    "notifications": {
+      "header": "不错过任何新消息或联系请求",
+      "recommended": "推荐",
+      "title": "消息通知",
+      "desc": "您需要在您的手机上授权Berty 消息通知",
+      "button": "授权通知",
+      "skip": "跳过并稍后再做"
+    },
+    "bluetooth": {
+      "header": "无需互联网连接 (wifi或数据) 即可直接将手机与附近的对等设备连接起来进行通信",
+      "optional": "可选",
+      "title": "蓝牙",
+      "desc": "",
+      "button": "授权蓝牙",
+      "skip": "跳过并稍后再做"
+    },
+    "setup-finished": {
+      "title": "设置完成！",
+      "desc": "您现在可以使用该应用，开始添加联系人以及与他们自由私下聊天",
+      "button": ""
+    }
+  },
+  "main": {
+    "home": {
+      "requests": {
+        "title": "请求",
+        "received-at": "接收",
+        "accept": "同意",
+        "card-title": "联系请求！"
+      },
+      "messages": {
+        "title": "消息"
+      },
+      "input-placeholder": "搜索关键词",
+      "no-contacts": "您还没有任何联系人或聊天",
+      "search": {
+        "no-results": ""
+      }
+    },
+    "home-modal": {
+      "top-button": "",
+      "bottom-button": ""
+    }
+  },
+  "settings": {
+    "home": {
+      "header-left-button": "",
+      "header-center-button": "",
+      "header-right-button": "",
+      "network-button": "",
+      "switch-accounts": ""
+    },
+    "network-map": {
+      "title": "",
+      "online-peers": ""
+    },
+    "mode": {
+      "title": "",
+      "desc": "",
+      "notifications-button": {
+        "title": "消息通知",
+        "tag-enabled": "",
+        "tag-disabled": ""
+      },
+      "bluetooth-button": {
+        "title": "蓝牙",
+        "tag-enabled": "",
+        "tag-disabled": ""
+      },
+      "app-mode-button": {
+        "title": "",
+        "performance-tag": "性能",
+        "privacy-tag": "",
+        "description-tag": "简单使用 - 所有功能",
+        "first-bullet-point": "接收新消息通知",
+        "second-bullet-point": "",
+        "third-bullet-point": ""
+      },
+      "dark-mode-button": "",
+      "receive-contact-requests-button": "",
+      "external-services-button": "",
+      "auto-replicate-button": "",
+      "multicast-dns-button": {
+        "title": "",
+        "desc": ""
+      },
+      "blocked-contacts-button": {
+        "title": "",
+        "tag": ""
+      },
+      "delete-account-button": "",
+      "backup-account-button": ""
+    },
+    "edit-profile": {
+      "title": "",
+      "qr-will-update": "",
+      "ocr-wont-update": "",
+      "save": "",
+      "cancel": "",
+      "name-input-placeholder": "",
+      "name-input-label": "名称"
+    },
+    "notifications": {
+      "title": "消息通知",
+      "enabled-desc": "",
+      "disabled-desc": "",
+      "activate-button": "",
+      "contact-request-button": {
+        "title": "",
+        "desc": ""
+      },
+      "messages-notifications-button": {
+        "title": "",
+        "display-button": "",
+        "preview-button": "",
+        "sound-button": "",
+        "exceptions-button": {
+          "title": "",
+          "preview-value": "",
+          "tag": "",
+          "tag_plural": ""
+        }
+      },
+      "group-notifications-button": {
+        "title": "",
+        "display-button": "",
+        "preview-button": "",
+        "sound-button": "",
+        "exceptions-button": {
+          "title": "",
+          "preview-value": "",
+          "tag": "",
+          "tag_plural": ""
+        }
+      }
+    },
+    "bluetooth": {
+      "title": "蓝牙",
+      "desc": "",
+      "activate-button": ""
+    },
+    "mc": {
+      "activate-button": ""
+    },
+    "services-auth": {
+      "title": "",
+      "operated-services-button": "",
+      "register-service-button": {
+        "title": "",
+        "input-placeholder": "",
+        "action": ""
+      },
+      "registered-services-button": {
+        "title": "",
+        "sample-no-services": "",
+        "sample-unknown-service": ""
+      }
+    },
+    "delete-account": {
+      "title": "",
+      "first-desc": "",
+      "desc": "",
+      "cancel-button": "",
+      "delete-button": ""
+    },
+    "help": {
+      "title": "",
+      "security-privacy-button": {
+        "title": "",
+        "desc": ""
+      },
+      "updates-button": "",
+      "about-button": "",
+      "account-button": "",
+      "contact-button": "",
+      "message-button": "消息",
+      "group-button": "",
+      "settings-button": "",
+      "ask-button": "",
+      "report-button": ""
+    },
+    "about": {
+      "title": "",
+      "top-left-button": "",
+      "top-right-button": "",
+      "bottom-left-button": "",
+      "bottom-right-button": "",
+      "terms-button": "",
+      "privacy-button": "",
+      "software-button": "",
+      "contact-button": "",
+      "website-button": ""
+    },
+    "updates": {
+      "title": "",
+      "up-to-date-desc": "",
+      "version": "",
+      "current-tag": "",
+      "installed-tag": "",
+      "initial-tag": "",
+      "not-installed-tag": ""
+    },
+    "devtools": {
+      "title": "",
+      "header-left-button": "",
+      "simulate-button": "",
+      "tor-button": "",
+      "tor-optional-option": "可选",
+      "tor-required-option": "必需的",
+      "tor-disabled-option": "",
+      "header-middle-button": "",
+      "header-right-button": "",
+      "system-info-button": "",
+      "debug-button": "",
+      "add-dev-conversations-button": "",
+      "share-button": {
+        "title": "",
+        "alert-title": "",
+        "alert-message": "",
+        "alert-accept-button": "",
+        "alert-cancel-button": ""
+      },
+      "native-bridge-button": "",
+      "dump-account-button": "",
+      "dump-contacts-button": "",
+      "dump-conversations-button": "",
+      "dump-interactions-button": "",
+      "dump-members-button": "",
+      "stop-node-button": "",
+      "bot-mode-button": "",
+      "local-grpc-button": "",
+      "console-logs-button": "",
+      "ipfs-webui-button": "",
+      "notifications-button": "消息通知",
+      "send-to-all-button": {
+        "title": "",
+        "sending": "",
+        "test": "",
+        "tried": ""
+      },
+      "footer-left-button": "",
+      "footer-middle-button": "",
+      "footer-right-button": ""
+    },
+    "system-info": {
+      "title": ""
+    },
+    "fake-data": {
+      "title": "",
+      "contacts-button": "",
+      "multi-members-button": "",
+      "messages-button": "",
+      "delete-button": ""
+    },
+    "add-dev-conversations": {
+      "title": "",
+      "add": "",
+      "tag-bot": "",
+      "tag-contact": "",
+      "tag-conversation": ""
+    },
+    "ipfs-webui": {
+      "title": ""
+    }
+  },
+  "modals": {
+    "manage-deep-link": {
+      "invalid-link": "",
+      "invalid-qr": "",
+      "error": ""
+    },
+    "invalid-scan": {
+      "dismiss-button": ""
+    },
+    "add-this-contact": {
+      "fingerprint": "",
+      "info": "",
+      "devices": ""
+    },
+    "group-invitation": {
+      "fingerprint": "",
+      "info": "",
+      "devices": ""
+    }
+  },
+  "chat": {
+    "contact-settings": {
+      "mark-button": "",
+      "block-button": "",
+      "delete-button": "",
+      "fingerprint": "",
+      "info": "",
+      "devices": ""
+    },
+    "multi-member": {
+      "input-placeholder": ""
+    },
+    "multi-member-settings": {
+      "header-left-button": "",
+      "header-middle-button": "",
+      "header-right-button": "",
+      "media-button": "",
+      "notifications-button": "",
+      "members-button": {
+        "title": "",
+        "unknown": ""
+      },
+      "add-member-button": "",
+      "invite-button": "",
+      "save-button": "",
+      "erase-button": "",
+      "leave-button": ""
+    },
+    "multi-member-qr": {
+      "title": ""
+    },
+    "one-to-one": {
+      "contact-request-box": {
+        "title": "",
+        "refuse-button": "",
+        "accept-button": "",
+        "accepted-button": ""
+      },
+      "betabot-box": {
+        "title": "",
+        "desc": "",
+        "skip-button": "",
+        "add-button": ""
+      },
+      "infos-chat": {
+        "connection-confirmed": "",
+        "request-sent": "",
+        "incoming": "",
+        "outgoing": ""
+      },
+      "betabot-input-placeholder": "",
+      "incoming-input-placeholder": "",
+      "input-placeholder": ""
+    },
+    "one-to-one-settings": {
+      "header-left-button": "",
+      "header-middle-button": "",
+      "header-right-button": "",
+      "media-button": "",
+      "notifications-button": "",
+      "mutual-button": "",
+      "save-button": "",
+      "erase-button": ""
+    },
+    "replicate-group-settings": {
+      "title": "",
+      "no-registered-button": "",
+      "connect-button": "",
+      "manage-add-button": ""
+    },
+    "files": {
+      "record-sound": "",
+      "media": "",
+      "emojis": ""
+    }
+  }
+}
