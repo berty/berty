@@ -5,7 +5,7 @@ import cs from './cs/messages.json'
 import da from './da/messages.json'
 import de from './de/messages.json'
 import el from './el/messages.json'
-import en from './en/messages.json'
+import enUS from './en-US/messages.json'
 import es from './es/messages.json'
 import fi from './fi/messages.json'
 import fr from './fr/messages.json'
@@ -35,7 +35,7 @@ export const languages = {
 	da: { englishName: 'Danish', localName: 'Dansk', translation: da },
 	de: { englishName: 'German', localName: 'Deutsche', translation: de },
 	el: { englishName: 'Greek', localName: 'Ελληνικά', translation: el },
-	en: { englishName: 'English', localName: 'English', translation: en },
+	en: { englishName: 'English', localName: 'English', translation: enUS },
 	es: { englishName: 'Spanish', localName: 'Español', translation: es },
 	fi: { englishName: 'Finnish', localName: 'Suomalainen', translation: fi },
 	fr: { englishName: 'French', localName: 'Français', translation: fr },
