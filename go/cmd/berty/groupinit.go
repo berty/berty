@@ -18,11 +18,15 @@ import (
 func groupinitCommand() *ffcli.Command {
 	// FIXME: share on discord
 	// FIXME: print berty.tech URL
-	var noQRFlag bool
+	var (
+		noQRFlag   bool
+		passphrase string
+	)
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("berty groupinit", flag.ExitOnError)
 		fs.String("config", "", "config file (optional)")
 		fs.BoolVar(&noQRFlag, "no-qr", noQRFlag, "do not print the QR code in terminal")
+		fs.StringVar(&passphrase, "passphrase", passphrase, "optional encryption passphrase")
 		manager.SetupLoggingFlags(fs) // also available at root level
 		return fs, nil
 	}
@@ -50,6 +54,14 @@ func groupinitCommand() *ffcli.Command {
 				DisplayName: name,
 			}
 			link := group.GetBertyLink()
+
+			if passphrase != "" {
+				link, err = bertylinks.EncryptLink(link, []byte(passphrase))
+				if err != nil {
+					return err
+				}
+			}
+
 			internal, web, err := bertylinks.MarshalLink(link)
 			if err != nil {
 				return err

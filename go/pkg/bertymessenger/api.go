@@ -102,6 +102,14 @@ func (svc *service) internalInstanceShareableBertyID(ctx context.Context, req *m
 		AccountPK:            config.AccountPK,
 	}
 	link := id.GetBertyLink()
+
+	if req.Passphrase != nil && string(req.Passphrase) != "" {
+		link, err = bertylinks.EncryptLink(link, req.Passphrase)
+		if err != nil {
+			return nil, errcode.ErrInvalidInput.Wrap(err)
+		}
+	}
+
 	internal, web, err := bertylinks.MarshalLink(link)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)

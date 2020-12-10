@@ -112,6 +112,8 @@ message InstanceShareableBertyID {
     // reset will regenerate a new link
     bool reset = 1;
     string display_name = 2;
+    // optional passphase to encrypt the link
+    bytes passphrase = 3;
   }
   message Reply {
     BertyLink link = 1;
@@ -144,7 +146,7 @@ message DevShareInstanceBertyID {
 message ParseDeepLink {
   message Request {
     string link = 1;
-    // optional passphase to decrypt link
+    // optional passphase to decrypt the link
     bytes passphrase = 2;
   }
   message Reply {
@@ -325,7 +327,7 @@ message SystemInfo {
 message ConversationJoin {
   message Request {
     string link = 1;
-    // optional passphase to decrypt link
+    // optional passphase to decrypt the link
     bytes passphrase = 2;
   }
   message Reply {}
@@ -596,7 +598,7 @@ message AccountUpdate {
 message ContactRequest {
   message Request {
     string link = 1;
-    // optional passphase to decrypt link
+    // optional passphase to decrypt the link
     bytes passphrase = 2;
   }
   message Reply {}

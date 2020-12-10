@@ -18,6 +18,7 @@ func shareInviteCommand() *ffcli.Command {
 		shareOnDevChannelFlag = false
 		noQRFlag              = false
 		nameFlag              = ""
+		passphrase            = ""
 	)
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("berty share-invite", flag.ExitOnError)
@@ -26,6 +27,7 @@ func shareInviteCommand() *ffcli.Command {
 		manager.SetupLocalMessengerServerFlags(fs) // by default, start a new local messenger server,
 		manager.SetupRemoteNodeFlags(fs)           // but allow to set a remote server instead
 		fs.StringVar(&nameFlag, "name", "", "override display name")
+		fs.StringVar(&passphrase, "passphrase", "", "optional encryption passphrase")
 		fs.BoolVar(&shareOnDevChannelFlag, "dev-channel", shareOnDevChannelFlag, "post qrcode on dev channel")
 		fs.BoolVar(&noQRFlag, "no-qr", noQRFlag, "do not print the QR code in terminal")
 		return fs, nil
@@ -58,7 +60,10 @@ func shareInviteCommand() *ffcli.Command {
 			}
 
 			// get shareable ID
-			ret, err := messenger.InstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{DisplayName: name})
+			ret, err := messenger.InstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{
+				DisplayName: name,
+				Passphrase:  []byte(passphrase),
+			})
 			if err != nil {
 				return errcode.TODO.Wrap(err)
 			}
