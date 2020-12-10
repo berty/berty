@@ -120,11 +120,11 @@ func TestMarshalLink(t *testing.T) {
 			)
 
 			// unmarshal and compare with original input
-			webLink, err := bertylinks.UnmarshalLink(web)
+			webLink, err := bertylinks.UnmarshalLink(web, nil)
 			require.NoError(t, err)
 			assert.Equal(t, tc.input, webLink)
 
-			internalLink, err := bertylinks.UnmarshalLink(internal)
+			internalLink, err := bertylinks.UnmarshalLink(internal, nil)
 			require.NoError(t, err)
 			assert.Equal(t, tc.input, internalLink)
 		})
@@ -178,7 +178,7 @@ func TestUnmarshalLink(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			link, err := bertylinks.UnmarshalLink(tc.input)
+			link, err := bertylinks.UnmarshalLink(tc.input, nil)
 			if tc.expectedErrcode == nil {
 				tc.expectedErrcode = errcode.ErrCode(-1)
 			}
@@ -229,13 +229,138 @@ func TestMarshalLinkFuzzing(t *testing.T) {
 		)
 
 		// unmarshal and compare with original input
-		webLink, err := bertylinks.UnmarshalLink(web)
+		webLink, err := bertylinks.UnmarshalLink(web, nil)
 		require.NoError(t, err)
 		assert.Equal(t, link, webLink)
 
-		internalLink, err := bertylinks.UnmarshalLink(internal)
+		internalLink, err := bertylinks.UnmarshalLink(internal, nil)
 		require.NoError(t, err)
 		assert.Equal(t, link, internalLink)
+	}
+}
+
+func TestEncryptLink(t *testing.T) {
+	cases := []struct {
+		name            string
+		link            *messengertypes.BertyLink
+		passphrase      []byte
+		expectedErrcode error
+	}{
+		{
+			"simple-contact",
+			&messengertypes.BertyLink{
+				Kind: messengertypes.BertyLink_ContactInviteV1Kind,
+				BertyID: &messengertypes.BertyID{
+					DisplayName:          "Hello World!",
+					PublicRendezvousSeed: []byte{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+					AccountPK:            []byte{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+				},
+			},
+			[]byte("s3cur3"),
+			nil,
+		}, {
+			"simple-group",
+			&messengertypes.BertyLink{
+				Kind: messengertypes.BertyLink_GroupV1Kind,
+				BertyGroup: &messengertypes.BertyGroup{
+					DisplayName: "The Group Name!",
+					Group: &protocoltypes.Group{
+						PublicKey: []byte{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+						Secret:    []byte{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4},
+						SecretSig: []byte{5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5},
+						GroupType: protocoltypes.GroupTypeMultiMember,
+						SignPub:   []byte{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
+					},
+				},
+			},
+			[]byte("s3cur3"),
+			nil,
+		}, {
+			"simple-contact-clear-name",
+			&messengertypes.BertyLink{
+				Kind: messengertypes.BertyLink_ContactInviteV1Kind,
+				Encrypted: &messengertypes.BertyLink_Encrypted{
+					DisplayName: "Hello World!",
+				},
+				BertyID: &messengertypes.BertyID{
+					DisplayName:          "Hello World!",
+					PublicRendezvousSeed: []byte{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+					AccountPK:            []byte{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+				},
+			},
+			[]byte("s3cur3"),
+			nil,
+		}, {
+			"simple-group-clear-name",
+			&messengertypes.BertyLink{
+				Kind: messengertypes.BertyLink_GroupV1Kind,
+				Encrypted: &messengertypes.BertyLink_Encrypted{
+					DisplayName: "The Group Name!",
+				},
+				BertyGroup: &messengertypes.BertyGroup{
+					DisplayName: "The Group Name!",
+					Group: &protocoltypes.Group{
+						PublicKey: []byte{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+						Secret:    []byte{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4},
+						SecretSig: []byte{5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5},
+						GroupType: protocoltypes.GroupTypeMultiMember,
+						SignPub:   []byte{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
+					},
+				},
+			},
+			[]byte("s3cur3"),
+			nil,
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			encrypted, err := bertylinks.EncryptLink(tc.link, tc.passphrase)
+			if tc.expectedErrcode == nil {
+				tc.expectedErrcode = errcode.ErrCode(-1)
+			}
+			assert.Equal(t, tc.expectedErrcode.Error(), errcode.Code(err).Error())
+
+			internalURL, httpURL, err := bertylinks.MarshalLink(encrypted)
+			require.NoError(t, err)
+
+			tc.link.Encrypted = nil // hide this before making the comparison
+
+			// decrypt with empty passphrase, and get a passphrase required error
+			{
+				link, err := bertylinks.UnmarshalLink(internalURL, nil)
+				assert.Equal(t, errcode.ErrMessengerDeepLinkRequiresPassphrase.Error(), errcode.Code(err).Error())
+				require.NotEqual(t, tc.link, link)
+			}
+			{
+				link, err := bertylinks.UnmarshalLink(httpURL, nil)
+				assert.Equal(t, errcode.ErrMessengerDeepLinkRequiresPassphrase.Error(), errcode.Code(err).Error())
+				require.NotEqual(t, tc.link, link)
+			}
+
+			// decrypt with invalid passphrase, and silently fail
+			{
+				link, err := bertylinks.UnmarshalLink(internalURL, []byte("invalid"))
+				require.NoError(t, err)
+				require.NotEqual(t, tc.link, link)
+			}
+			{
+				link, err := bertylinks.UnmarshalLink(httpURL, []byte("invalid"))
+				require.NoError(t, err)
+				require.NotEqual(t, tc.link, link)
+			}
+
+			// decrypt with good passphrase, and compare both links
+			{
+				link, err := bertylinks.UnmarshalLink(internalURL, tc.passphrase)
+				require.NoError(t, err)
+				require.Equal(t, tc.link, link)
+			}
+			{
+				link, err := bertylinks.UnmarshalLink(httpURL, tc.passphrase)
+				require.NoError(t, err)
+				require.Equal(t, tc.link, link)
+			}
+		})
 	}
 }
 

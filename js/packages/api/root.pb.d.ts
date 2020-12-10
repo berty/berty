@@ -1031,6 +1031,7 @@ export namespace berty {
             ErrBridgeInterrupted = 1600,
             ErrBridgeNotRunning = 1601,
             ErrMessengerInvalidDeepLink = 2000,
+            ErrMessengerDeepLinkRequiresPassphrase = 2001,
             ErrDBEntryAlreadyExists = 2100,
             ErrDBAddConversation = 2101,
             ErrDBAddContactRequestOutgoingSent = 2102,
@@ -5103,11 +5104,13 @@ export namespace berty {
 
                 interface IRequest {
                     link?: (string|null);
+                    passphrase?: (Uint8Array|null);
                 }
 
                 class Request implements IRequest {
 
                     public link: string;
+                    public passphrase: Uint8Array;
                     public static create(properties?: berty.messenger.v1.ParseDeepLink.IRequest): berty.messenger.v1.ParseDeepLink.Request;
                     public static encode(message: berty.messenger.v1.ParseDeepLink.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.ParseDeepLink.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5142,6 +5145,7 @@ export namespace berty {
                 kind?: (berty.messenger.v1.BertyLink.Kind|null);
                 bertyId?: (berty.messenger.v1.IBertyID|null);
                 bertyGroup?: (berty.messenger.v1.IBertyGroup|null);
+                encrypted?: (berty.messenger.v1.BertyLink.IEncrypted|null);
             }
 
             class BertyLink implements IBertyLink {
@@ -5149,6 +5153,7 @@ export namespace berty {
                 public kind: berty.messenger.v1.BertyLink.Kind;
                 public bertyId?: (berty.messenger.v1.IBertyID|null);
                 public bertyGroup?: (berty.messenger.v1.IBertyGroup|null);
+                public encrypted?: (berty.messenger.v1.BertyLink.IEncrypted|null);
                 public static create(properties?: berty.messenger.v1.IBertyLink): berty.messenger.v1.BertyLink;
                 public static encode(message: berty.messenger.v1.IBertyLink, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IBertyLink, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5162,10 +5167,51 @@ export namespace berty {
 
             namespace BertyLink {
 
+                interface IEncrypted {
+                    kind?: (berty.messenger.v1.BertyLink.Kind|null);
+                    nonce?: (Uint8Array|null);
+                    displayName?: (string|null);
+                    contactPublicRendezvousSeed?: (Uint8Array|null);
+                    contactAccountPk?: (Uint8Array|null);
+                    contactDisplayName?: (Uint8Array|null);
+                    groupPublicKey?: (Uint8Array|null);
+                    groupSecret?: (Uint8Array|null);
+                    groupSecretSig?: (Uint8Array|null);
+                    groupType?: (berty.protocol.v1.GroupType|null);
+                    groupSignPub?: (Uint8Array|null);
+                    groupDisplayName?: (Uint8Array|null);
+                }
+
+                class Encrypted implements IEncrypted {
+
+                    public kind: berty.messenger.v1.BertyLink.Kind;
+                    public nonce: Uint8Array;
+                    public displayName: string;
+                    public contactPublicRendezvousSeed: Uint8Array;
+                    public contactAccountPk: Uint8Array;
+                    public contactDisplayName: Uint8Array;
+                    public groupPublicKey: Uint8Array;
+                    public groupSecret: Uint8Array;
+                    public groupSecretSig: Uint8Array;
+                    public groupType: berty.protocol.v1.GroupType;
+                    public groupSignPub: Uint8Array;
+                    public groupDisplayName: Uint8Array;
+                    public static create(properties?: berty.messenger.v1.BertyLink.IEncrypted): berty.messenger.v1.BertyLink.Encrypted;
+                    public static encode(message: berty.messenger.v1.BertyLink.IEncrypted, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.BertyLink.IEncrypted, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.BertyLink.Encrypted;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.BertyLink.Encrypted;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.BertyLink.Encrypted;
+                    public static toObject(message: berty.messenger.v1.BertyLink.Encrypted, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
                 enum Kind {
                     UnknownKind = 0,
                     ContactInviteV1Kind = 1,
-                    GroupV1Kind = 2
+                    GroupV1Kind = 2,
+                    EncryptedV1Kind = 3
                 }
             }
 
@@ -5773,11 +5819,13 @@ export namespace berty {
 
                 interface IRequest {
                     link?: (string|null);
+                    passphrase?: (Uint8Array|null);
                 }
 
                 class Request implements IRequest {
 
                     public link: string;
+                    public passphrase: Uint8Array;
                     public static create(properties?: berty.messenger.v1.ConversationJoin.IRequest): berty.messenger.v1.ConversationJoin.Request;
                     public static encode(message: berty.messenger.v1.ConversationJoin.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.ConversationJoin.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6771,11 +6819,13 @@ export namespace berty {
 
                 interface IRequest {
                     link?: (string|null);
+                    passphrase?: (Uint8Array|null);
                 }
 
                 class Request implements IRequest {
 
                     public link: string;
+                    public passphrase: Uint8Array;
                     public static create(properties?: berty.messenger.v1.ContactRequest.IRequest): berty.messenger.v1.ContactRequest.Request;
                     public static encode(message: berty.messenger.v1.ContactRequest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.ContactRequest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;

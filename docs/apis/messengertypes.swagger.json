@@ -1025,12 +1025,67 @@
         }
       }
     },
+    "BertyLinkEncrypted": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/definitions/BertyLinkKind",
+          "description": "kind is a clear representation of the unencrypted link type."
+        },
+        "nonce": {
+          "type": "string",
+          "format": "byte",
+          "description": "nonce is a clear field used by scrypt as \"salt\" to derive the passphrase and\nalso used by cipher.NewCTR as \"iv\" to initialize a stream cipher."
+        },
+        "display_name": {
+          "type": "string",
+          "description": "display_name is an optional clear representation of the display name."
+        },
+        "contact_public_rendezvous_seed": {
+          "type": "string",
+          "format": "byte"
+        },
+        "contact_account_pk": {
+          "type": "string",
+          "format": "byte"
+        },
+        "contact_display_name": {
+          "type": "string",
+          "format": "byte"
+        },
+        "group_public_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "group_secret": {
+          "type": "string",
+          "format": "byte"
+        },
+        "group_secret_sig": {
+          "type": "string",
+          "format": "byte"
+        },
+        "group_type": {
+          "$ref": "#/definitions/v1GroupType"
+        },
+        "group_sign_pub": {
+          "type": "string",
+          "format": "byte"
+        },
+        "group_display_name": {
+          "type": "string",
+          "format": "byte"
+        }
+      },
+      "description": "Encrypted is a clear structure containing clear and encrypted fields.\n\nWe prefer to use a clear struct with encrypted fields instead of a simple\nencrypted struct, to improves chances of having a valid structure even\nwith an invalid passphase. This will force an attacker to have more resources\nto test more false-positive guesses."
+    },
     "BertyLinkKind": {
       "type": "string",
       "enum": [
         "UnknownKind",
         "ContactInviteV1Kind",
-        "GroupV1Kind"
+        "GroupV1Kind",
+        "EncryptedV1Kind"
       ],
       "default": "UnknownKind"
     },
@@ -1497,6 +1552,9 @@
         },
         "berty_group": {
           "$ref": "#/definitions/v1BertyGroup"
+        },
+        "encrypted": {
+          "$ref": "#/definitions/BertyLinkEncrypted"
         }
       }
     },
@@ -1561,6 +1619,11 @@
       "properties": {
         "link": {
           "type": "string"
+        },
+        "passphrase": {
+          "type": "string",
+          "format": "byte",
+          "title": "optional passphase to decrypt link"
         }
       }
     },
@@ -1685,6 +1748,11 @@
       "properties": {
         "link": {
           "type": "string"
+        },
+        "passphrase": {
+          "type": "string",
+          "format": "byte",
+          "title": "optional passphase to decrypt link"
         }
       }
     },
@@ -2093,6 +2161,11 @@
       "properties": {
         "link": {
           "type": "string"
+        },
+        "passphrase": {
+          "type": "string",
+          "format": "byte",
+          "title": "optional passphase to decrypt link"
         }
       }
     },

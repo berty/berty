@@ -1,6 +1,8 @@
 package cryptoutil
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
 	crand "crypto/rand"
 	"crypto/sha256"
 	"fmt"
@@ -9,13 +11,18 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	pb "github.com/libp2p/go-libp2p-core/crypto/pb"
 	"golang.org/x/crypto/ed25519"
+	"golang.org/x/crypto/scrypt"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
 const (
-	KeySize   = 32 // Key size required by box
-	NonceSize = 24 // Nonce size required by box
+	KeySize          = 32 // Key size required by box
+	NonceSize        = 24 // Nonce size required by box
+	ScryptIterations = 1 << 15
+	ScryptR          = 8
+	ScryptP          = 1
+	ScryptKeyLen     = 32
 )
 
 func ConcatAndHashSha256(slices ...[]byte) *[sha256.Size]byte {
@@ -41,6 +48,20 @@ func GenerateNonce() (*[NonceSize]byte, error) {
 	}
 
 	return &nonce, nil
+}
+
+func GenerateNonceSize(size int) ([]byte, error) {
+	nonce := make([]byte, size)
+
+	readSize, err := crand.Read(nonce)
+	if readSize != size {
+		err = fmt.Errorf("size read: %d (required %d)", readSize, size)
+	}
+	if err != nil {
+		return nil, errcode.ErrCryptoRandomGeneration.Wrap(err)
+	}
+
+	return nonce, nil
 }
 
 func NonceSliceToArray(nonceSlice []byte) (*[NonceSize]byte, error) {
@@ -83,7 +104,7 @@ func SeedFromEd25519PrivateKey(key crypto.PrivKey) ([]byte, error) {
 	return r[:ed25519.PrivateKeySize-ed25519.PublicKeySize], nil
 }
 
-// EdwardsToMontgomery converts ed25519 priv/pub keys to X25519 keys
+// EdwardsToMontgomery converts ed25519 priv/pub keys to X25519 keys.
 func EdwardsToMontgomery(privKey crypto.PrivKey, pubKey crypto.PubKey) (*[32]byte, *[32]byte, error) {
 	mongPriv, err := EdwardsToMontgomeryPriv(privKey)
 	if err != nil {
@@ -98,7 +119,7 @@ func EdwardsToMontgomery(privKey crypto.PrivKey, pubKey crypto.PubKey) (*[32]byt
 	return mongPriv, mongPub, nil
 }
 
-// EdwardsToMontgomeryPub converts ed25519 pub key to X25519 pub key
+// EdwardsToMontgomeryPub converts ed25519 pub key to X25519 pub key.
 func EdwardsToMontgomeryPub(pubKey crypto.PubKey) (*[KeySize]byte, error) {
 	var edPub, mongPub [KeySize]byte
 
@@ -122,7 +143,7 @@ func EdwardsToMontgomeryPub(pubKey crypto.PubKey) (*[KeySize]byte, error) {
 	return &mongPub, nil
 }
 
-// EdwardsToMontgomeryPriv converts ed25519 priv key to X25519 priv key
+// EdwardsToMontgomeryPriv converts ed25519 priv key to X25519 priv key.
 func EdwardsToMontgomeryPriv(privKey crypto.PrivKey) (*[KeySize]byte, error) {
 	var edPriv [64]byte
 	var mongPriv [KeySize]byte
@@ -143,4 +164,86 @@ func EdwardsToMontgomeryPriv(privKey crypto.PrivKey) (*[KeySize]byte, error) {
 	cconv.PrivateKeyToCurve25519(&mongPriv, &edPriv)
 
 	return &mongPriv, nil
+}
+
+// AESGCMEncrypt use AES+GCM to encrypt plaintext data.
+//
+// The generated output will be longer than the original plaintext input.
+func AESGCMEncrypt(key, data []byte) ([]byte, error) {
+	blockCipher, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+
+	gcm, err := cipher.NewGCM(blockCipher)
+	if err != nil {
+		return nil, err
+	}
+
+	nonce, err := GenerateNonceSize(gcm.NonceSize())
+	if err != nil {
+		return nil, err
+	}
+
+	ciphertext := gcm.Seal(nonce, nonce, data, nil)
+
+	return ciphertext, nil
+}
+
+// AESGCMDecrypt uses AES+GCM to decrypt plaintext data.
+func AESGCMDecrypt(key, data []byte) ([]byte, error) {
+	blockCipher, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+
+	gcm, err := cipher.NewGCM(blockCipher)
+	if err != nil {
+		return nil, err
+	}
+
+	nonce, ciphertext := data[:gcm.NonceSize()], data[gcm.NonceSize():]
+
+	plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return plaintext, nil
+}
+
+// AESCTRStream returns a CTR stream that can be used to produce ciphertext without padding.
+func AESCTRStream(key, iv []byte) (cipher.Stream, error) {
+	if key == nil || iv == nil {
+		return nil, errcode.ErrInvalidInput
+	}
+
+	blockCipher, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+
+	stream := cipher.NewCTR(blockCipher, iv)
+
+	return stream, nil
+}
+
+// DeriveKey takes a passphrase of any length and returns a key of fixed size.
+//
+// If no salt is provided, a new one will be created and returned.
+func DeriveKey(passphrase, salt []byte) ([]byte, []byte, error) {
+	if salt == nil {
+		var err error
+		salt, err = GenerateNonceSize(ScryptKeyLen)
+		if err != nil {
+			return nil, nil, err
+		}
+	}
+
+	key, err := scrypt.Key(passphrase, salt, ScryptIterations, ScryptR, ScryptP, ScryptKeyLen)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return key, salt, nil
 }

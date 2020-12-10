@@ -14,7 +14,7 @@ func NewParser() Parser {
 func (p bertyParser) Parse(previous *ResultReturn) *ResultReturn {
 	str, ok := previous.Object.(string)
 	if ok {
-		r, err := bertylinks.UnmarshalLink(str)
+		r, err := bertylinks.UnmarshalLink(str, nil)
 		if err != nil {
 			return nil
 		}

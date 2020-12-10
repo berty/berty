@@ -757,7 +757,7 @@ func contactRequestCommand(ctx context.Context, v *groupView, cmd string) error 
 	displayName := v.v.displayName
 	v.v.lock.Unlock()
 
-	link, err := bertylinks.UnmarshalLink(cmd)
+	link, err := bertylinks.UnmarshalLink(cmd, nil) // FIXME: support passing an optional passphrase to decrypt the link
 	if err != nil {
 		return errcode.ErrInvalidInput.Wrap(err)
 	}

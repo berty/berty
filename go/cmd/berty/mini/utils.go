@@ -10,7 +10,7 @@ import (
 )
 
 func openGroupFromString(url string) (*protocoltypes.Group, error) {
-	link, err := bertylinks.UnmarshalLink(url)
+	link, err := bertylinks.UnmarshalLink(url, nil) // FIXME: support passing an optional passphrase to decrypt the link
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}

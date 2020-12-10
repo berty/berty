@@ -102,6 +102,14 @@ func (svc *service) internalInstanceShareableBertyID(ctx context.Context, req *m
 		AccountPK:            config.AccountPK,
 	}
 	link := id.GetBertyLink()
+
+	if req.Passphrase != nil && string(req.Passphrase) != "" {
+		link, err = bertylinks.EncryptLink(link, req.Passphrase)
+		if err != nil {
+			return nil, errcode.ErrInvalidInput.Wrap(err)
+		}
+	}
+
 	internal, web, err := bertylinks.MarshalLink(link)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -121,7 +129,7 @@ func (svc *service) ParseDeepLink(_ context.Context, req *messengertypes.ParseDe
 	}
 	ret := messengertypes.ParseDeepLink_Reply{}
 
-	link, err := bertylinks.UnmarshalLink(req.Link)
+	link, err := bertylinks.UnmarshalLink(req.Link, req.Passphrase)
 	if err != nil {
 		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
 	}
@@ -655,7 +663,7 @@ func (svc *service) ConversationJoin(ctx context.Context, req *messengertypes.Co
 		return nil, errcode.ErrMissingInput
 	}
 
-	link, err := bertylinks.UnmarshalLink(url)
+	link, err := bertylinks.UnmarshalLink(url, req.Passphrase)
 	if err != nil {
 		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
 	}
@@ -812,7 +820,7 @@ func (svc *service) AccountUpdate(ctx context.Context, req *messengertypes.Accou
 }
 
 func (svc *service) ContactRequest(ctx context.Context, req *messengertypes.ContactRequest_Request) (*messengertypes.ContactRequest_Reply, error) {
-	link, err := bertylinks.UnmarshalLink(req.GetLink())
+	link, err := bertylinks.UnmarshalLink(req.GetLink(), req.Passphrase)
 	if err != nil {
 		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
 	}
