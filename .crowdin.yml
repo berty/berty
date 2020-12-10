@@ -5,14 +5,15 @@
 "commit_message": 'fix(i18n): new %language% translations
 
 
-Signed-off-by: Crowdin Bot <bot@crowdin.com>'
+Signed-off-by: Crowdin Bot <bot@crowdin.com>
+'
 
 "append_commit_message": false
 "preserve_hierarchy": true
 
 files: [
  {
-  "source" : "/js/packages/berty-i18n/locale/en/messages.json",
-  "translation" : "/js/packages/berty-i18n/locale/%two_letters_code%/%original_file_name%",
+  "source" : "/js/packages/berty-i18n/locale/en-US/messages.json",
+  "translation" : "/js/packages/berty-i18n/locale/%locale%/%original_file_name%",
  }
 ]
