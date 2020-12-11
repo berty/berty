@@ -290,6 +290,7 @@ export const openingDaemon = async (
 				.openAccount({
 					args: bridgeOpts.cliArgs,
 					accountId: selectedAccount.toString(),
+					loggerFilters: GoBridgeDefaultOpts.logFilters,
 				})
 				.then(() => {
 					console.log('account service is opened')
