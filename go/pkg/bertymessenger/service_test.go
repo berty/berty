@@ -22,8 +22,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func TestUnstableServiceStream(t *testing.T) {
-	testutil.FilterStability(t, testutil.Unstable)
+func TestServiceStream(t *testing.T) {
+	testutil.FilterStability(t, testutil.Stable)
 
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
@@ -56,8 +56,8 @@ func TestUnstableServiceStream(t *testing.T) {
 	}
 }
 
-func TestUnstableServiceSetName(t *testing.T) {
-	testutil.FilterStability(t, testutil.Unstable)
+func TestServiceSetName(t *testing.T) {
+	testutil.FilterStability(t, testutil.Stable)
 
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
@@ -93,8 +93,8 @@ func TestUnstableServiceSetName(t *testing.T) {
 	}
 }
 
-func TestUnstableServiceSetNameAsync(t *testing.T) {
-	testutil.FilterStability(t, testutil.Unstable)
+func TestServiceSetNameAsync(t *testing.T) {
+	testutil.FilterStability(t, testutil.Stable)
 
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
@@ -146,8 +146,8 @@ func TestUnstableServiceSetNameAsync(t *testing.T) {
 	}
 }
 
-func TestUnstableServiceStreamCancel(t *testing.T) {
-	testutil.FilterStability(t, testutil.Unstable)
+func TestServiceStreamCancel(t *testing.T) {
+	testutil.FilterStability(t, testutil.Stable)
 
 	ctx, ctxCancel := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
@@ -172,8 +172,8 @@ func TestUnstableServiceStreamCancel(t *testing.T) {
 	}
 }
 
-func TestUnstableServiceContactRequest(t *testing.T) {
-	testutil.FilterStability(t, testutil.Unstable)
+func TestServiceContactRequest(t *testing.T) {
+	testutil.FilterStability(t, testutil.Stable)
 
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
@@ -233,8 +233,8 @@ func TestUnstableServiceContactRequest(t *testing.T) {
 	}
 }
 
-func TestUnstableServiceConversationCreateLive(t *testing.T) {
-	testutil.FilterStability(t, testutil.Unstable)
+func TestServiceConversationCreateLive(t *testing.T) {
+	testutil.FilterStability(t, testutil.Stable)
 
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	node, cleanup := testingNode(ctx, t)
@@ -1441,8 +1441,8 @@ func TestAccountUpdate(t *testing.T) {
 	logger.Error("test done")
 }
 
-func TestUnstableAccountUpdateGroup(t *testing.T) {
-	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
+func TestAccountUpdateGroup(t *testing.T) {
+	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
 
 	// PREPARE
 	logger, cleanup := testutil.Logger(t)
@@ -1518,7 +1518,7 @@ func TestUnstableAccountUpdateGroup(t *testing.T) {
 	cids := []string(nil)
 	for _, friend := range friends {
 		logger.Info("checking node", zap.String("name", friend.account.GetDisplayName()))
-		userInFriend, ok := friend.members[conv.GetAccountMemberPublicKey()]
+		userInFriend, ok := friend.GetMember(conv.GetAccountMemberPublicKey())
 		require.True(t, ok)
 		require.Equal(t, testName, userInFriend.GetDisplayName())
 		avatarCIDInFriend := userInFriend.GetAvatarCID()

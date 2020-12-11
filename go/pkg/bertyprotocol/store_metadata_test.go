@@ -684,7 +684,7 @@ func TestMetadataGroupsLifecycle(t *testing.T) {
 }
 
 func TestMultiDevices_Basic(t *testing.T) {
-	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
+	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
 
 	memberCount := 2
 	deviceCount := 3

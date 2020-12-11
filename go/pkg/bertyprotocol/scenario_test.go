@@ -252,7 +252,7 @@ func TestScenario_MessageAccountAndContactGroups(t *testing.T) {
 }
 
 func TestScenario_ReplicateMessage(t *testing.T) {
-	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
+	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
 
 	ctx, cancel, mn, rdvPeer := testHelperIPFSSetUp(t)
 	defer cancel()

@@ -116,8 +116,8 @@ func Test_service_exportAccountProofKey(t *testing.T) {
 	require.True(t, accountProofSK.Equals(sk))
 }
 
-func TestUnstableRestoreAccount(t *testing.T) {
-	testutil.FilterStability(t, testutil.Unstable)
+func TestRestoreAccount(t *testing.T) {
+	testutil.FilterStability(t, testutil.Stable)
 
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
