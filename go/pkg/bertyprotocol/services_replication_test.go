@@ -118,7 +118,7 @@ func TestReplicationService_GroupRegister(t *testing.T) {
 }
 
 func TestReplicationService_Flow(t *testing.T) {
-	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
+	testutil.FilterStabilityAndSpeed(t, testutil.Unstable, testutil.Slow)
 
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
