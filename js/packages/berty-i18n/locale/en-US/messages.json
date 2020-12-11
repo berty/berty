@@ -81,9 +81,6 @@
         "accept": "Accept",
         "card-title": "Contact request!"
       },
-      "messages": {
-        "title": "Messages"
-      },
       "input-placeholder": "Search keyword",
       "no-contacts": "You don't have any contacts or chat yet",
       "search": {

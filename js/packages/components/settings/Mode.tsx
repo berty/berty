@@ -66,11 +66,10 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 				<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
 					<DropDownPicker
 						items={items}
-						defaultValue={ctx.persistentOptions?.i18n.language || 'en'}
-						value={ctx.persistentOptions?.i18n.language || 'en'}
+						defaultValue={ctx.persistentOptions?.i18n.language || 'enUS'}
 						containerStyle={[{ marginTop: 22, height: 60 }]}
 						onChangeItem={async (item: any) => {
-							i18n.changeLanguage(item.value)
+							await i18n.changeLanguage(item.value)
 							await ctx.setPersistentOption({
 								type: PersistentOptionsKeys.I18N,
 								payload: {

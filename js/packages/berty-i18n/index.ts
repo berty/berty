@@ -3,8 +3,8 @@ import { initReactI18next } from 'react-i18next'
 import { languages } from './locale/languages'
 
 i18next.use(initReactI18next).init({
-	fallbackLng: 'en',
-	lng: 'en',
+	fallbackLng: 'enUS',
+	lng: 'enUS',
 	resources: languages,
 	debug: true,
 })
