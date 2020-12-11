@@ -391,14 +391,14 @@
       "input-placeholder": ""
     },
     "one-to-one-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "media-button": "",
-      "notifications-button": "",
+      "header-left-button": "Szukaj",
+      "header-middle-button": "Połączenie",
+      "header-right-button": "Udostępnij",
+      "media-button": "Multimedia, linki i dokumenty",
+      "notifications-button": "Otrzymuj powiadomienia",
       "mutual-button": "",
-      "save-button": "",
-      "erase-button": ""
+      "save-button": "Zapisz konwersację na serwerze",
+      "erase-button": "Usuń konwersację"
     },
     "replicate-group-settings": {
       "title": "",
@@ -407,9 +407,9 @@
       "manage-add-button": ""
     },
     "files": {
-      "record-sound": "",
-      "media": "",
-      "emojis": ""
+      "record-sound": "Nagraj wiadomość dźwiękową",
+      "media": "Wyświetlaj zdjęcia i filmy",
+      "emojis": "Emojis & Bertyzzz!"
     }
   }
 }
