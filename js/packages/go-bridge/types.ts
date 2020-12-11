@@ -1,4 +1,5 @@
 export type GoBridgeOpts = {
+	logFilters?: string
 	cliArgs?: string[]
 	persistence?: boolean
 }
