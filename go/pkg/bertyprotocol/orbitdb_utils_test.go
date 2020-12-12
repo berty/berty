@@ -14,6 +14,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/go-orbit-db/stores"
 )
 
 type mockedPeer struct {
@@ -222,7 +223,9 @@ func inviteAllPeersToGroup(ctx context.Context, t *testing.T, peers []*mockedPee
 	}
 }
 
-func waitForBertyEventType(ctx context.Context, t *testing.T, ms *metadataStore, eventType protocoltypes.EventType, eventCount int, done chan struct{}) {
+func waitForBertyEventType(ctx context.Context, t *testing.T, ms *metadataStore, eventType protocoltypes.EventType, eventCount int, done chan struct{}, own bool) {
+
+	waitForReplicateComplete := false
 	t.Helper()
 
 	ctx, cancel := context.WithCancel(ctx)
@@ -254,9 +257,19 @@ func waitForBertyEventType(ctx context.Context, t *testing.T, ms *metadataStore,
 
 			eventCount--
 			if eventCount == 0 {
-				done <- struct{}{}
+				if own {
+					done <- struct{}{}
+					return
+				} else {
+					waitForReplicateComplete = true
+				}
 			} else {
 				// fmt.Println(eventCount, "more to go")
+			}
+		case *stores.EventReplicated:
+			if waitForReplicateComplete {
+				done <- struct{}{}
+				return
 			}
 		}
 	}
