@@ -115,7 +115,7 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 						<View style={[flex.tiny, row.item.justify]} />
 					)}
 				</View>
-				{desc && (
+				{desc?.length ? (
 					<Text
 						style={[
 							text.align.center,
@@ -126,7 +126,7 @@ export const HeaderSettings: React.FC<HeaderSettingsProps> = ({
 					>
 						{desc}
 					</Text>
-				)}
+				) : null}
 				{children}
 			</View>
 		</SafeAreaView>

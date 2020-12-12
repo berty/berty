@@ -140,9 +140,9 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 					</View>
 				</View>
 				<View style={[row.center, { alignItems: 'center' }]}>
-					{state && state.value && state.color && state.bgColor && (
+					{state && state.value && state.color && state.bgColor ? (
 						<View style={[row.left, margin.right.medium, { alignItems: 'center' }]}>
-							{state && state.icon && (
+							{state.icon && (
 								<Icon
 									style={[margin.right.small]}
 									name={state.icon}
@@ -180,7 +180,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 								</Text>
 							</View>
 						</View>
-					)}
+					) : null}
 					{previewValue && (
 						<View>
 							<Text style={[padding.right.small, text.bold.medium, { color: previewValueColor }]}>
