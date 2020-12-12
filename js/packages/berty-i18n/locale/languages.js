@@ -31,11 +31,10 @@ import viVN from './vi-VN/messages.json'
 import zhCN from './zh-CN/messages.json'
 import zhTW from './zh-TW/messages.json'
 
-
 export const languages = {
 	afZA: { englishName: 'Afrikaans', localName: 'Afrikaans', translation: afZA },
 	arSA: { englishName: 'Arabic', localName: 'عربى', translation: arSA },
-	bgBG: { englishName: 'Bulgarian', localName: 'Bǎlgarski', translation: bgBG},
+	bgBG: { englishName: 'Bulgarian', localName: 'Bǎlgarski', translation: bgBG },
 	caES: { englishName: 'Catalan', localName: 'Català', translation: caES },
 	csCZ: { englishName: 'Czech', localName: 'čeština', translation: csCZ },
 	daDK: { englishName: 'Danish', localName: 'Dansk', translation: daDK },
@@ -54,7 +53,11 @@ export const languages = {
 	nlNL: { englishName: 'Dutch', localName: 'Nederlands', translation: nlNL },
 	noNO: { englishName: 'Norwegian', localName: 'Norsk', translation: noNO },
 	plPL: { englishName: 'Polish', localName: 'Polskie', translation: plPL },
-  ptBR: { englishName: 'Portuguese, Brazilian', localName: 'Português do Brasil', translation: ptBR },
+	ptBR: {
+		englishName: 'Portuguese, Brazilian',
+		localName: 'Português do Brasil',
+		translation: ptBR,
+	},
 	ptPT: { englishName: 'Portuguese', localName: 'Português', translation: ptPT },
 	roRO: { englishName: 'Romanian', localName: 'Română', translation: roRO },
 	ruRU: { englishName: 'Russian', localName: 'русский', translation: ruRU },

@@ -202,7 +202,7 @@ export type PersistentOptions = {
 
 export const defaultPersistentOptions = (): PersistentOptions => ({
 	[PersistentOptionsKeys.I18N]: {
-		language: 'en',
+		language: 'enUS',
 	},
 	[PersistentOptionsKeys.Notifications]: {
 		enable: true,
@@ -222,7 +222,7 @@ export const defaultPersistentOptions = (): PersistentOptions => ({
 		enable: false,
 	},
 	[PersistentOptionsKeys.Tor]: {
-		enable: false,
+		flag: 'disabled',
 	},
 })
 

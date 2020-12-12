@@ -27,7 +27,7 @@ const SetupFinishedBody = () => {
 			await setPersistentOption({
 				type: PersistentOptionsKeys.I18N,
 				payload: {
-					language: 'en',
+					language: 'enUS',
 				},
 			})
 			await setPersistentOption({

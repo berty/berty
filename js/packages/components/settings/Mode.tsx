@@ -1,11 +1,11 @@
-import React, { useMemo, useState } from 'react'
-import { View, ScrollView, Vibration } from 'react-native'
+import React, { useState } from 'react'
+import { ScrollView, Vibration, View } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import DropDownPicker from 'react-native-dropdown-picker'
 import { Translation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { useMsgrContext, useAccount } from '@berty-tech/store/hooks'
+import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
 import { exportAccountToFile, serviceTypes, useAccountServices } from '@berty-tech/store/services'
 import { useNavigation } from '@berty-tech/navigation'
 import i18n from '@berty-tech/berty-i18n'
@@ -49,16 +49,12 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 	const ctx = useMsgrContext()
 	const enableNotif = ctx.persistentOptions.notifications.enable
 
-	const items = useMemo(() => {
-		const items = Object.entries(languages).map(([key, attrs]) => ({
-			label: attrs.localName,
-			value: key,
-		}))
+	const items: any = Object.entries(languages).map(([key, attrs]) => ({
+		label: attrs.localName,
+		value: key,
+	}))
 
-		items.push({ label: 'Debug', value: 'cimode' })
-
-		return items
-	}, [])
+	items.push({ label: 'Debug', value: 'cimode' })
 
 	return (
 		<Translation>
@@ -66,16 +62,16 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 				<View style={[flex.tiny, padding.medium, margin.bottom.medium]}>
 					<DropDownPicker
 						items={items}
-						defaultValue={ctx.persistentOptions?.i18n.language || 'enUS'}
+						defaultValue={ctx.persistentOptions?.i18n.language}
 						containerStyle={[{ marginTop: 22, height: 60 }]}
 						onChangeItem={async (item: any) => {
-							await i18n.changeLanguage(item.value)
 							await ctx.setPersistentOption({
 								type: PersistentOptionsKeys.I18N,
 								payload: {
 									language: item.value,
 								},
 							})
+							await i18n.changeLanguage(item.value)
 						}}
 					/>
 					<ButtonSetting

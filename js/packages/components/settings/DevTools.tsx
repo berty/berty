@@ -308,26 +308,32 @@ const BodyDevTools: React.FC<{}> = () => {
 	const ctx = useMsgrContext()
 	const { t } = useTranslation()
 
-	const items = [
-		{
-			label: t('settings.devtools.tor-button', {
-				option: t('settings.devtools.tor-disabled-option'),
-			}),
-			value: t('settings.devtools.tor-disabled-option'),
-		},
-		{
-			label: t('settings.devtools.tor-button', {
-				option: t('settings.devtools.tor-optional-option'),
-			}),
-			value: t('settings.devtools.tor-optional-option'),
-		},
-		{
-			label: t('settings.devtools.tor-button', {
-				option: t('settings.devtools.tor-required-option'),
-			}),
-			value: t('settings.devtools.tor-required-option'),
-		},
-	]
+	const items =
+		t('settings.devtools.tor-button')?.length &&
+		t('settings.devtools.tor-disabled-option')?.length &&
+		t('settings.devtools.tor-optional-option')?.length &&
+		t('settings.devtools.tor-required-option')?.length
+			? [
+					{
+						label: t('settings.devtools.tor-button', {
+							option: t('settings.devtools.tor-disabled-option'),
+						}),
+						value: t('settings.devtools.tor-disabled-option'),
+					},
+					{
+						label: t('settings.devtools.tor-button', {
+							option: t('settings.devtools.tor-optional-option'),
+						}),
+						value: t('settings.devtools.tor-optional-option'),
+					},
+					{
+						label: t('settings.devtools.tor-button', {
+							option: t('settings.devtools.tor-required-option'),
+						}),
+						value: t('settings.devtools.tor-required-option'),
+					},
+			  ]
+			: []
 
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
@@ -368,8 +374,11 @@ const BodyDevTools: React.FC<{}> = () => {
 			/>
 			<DropDownPicker
 				items={items}
-				defaultValue={ctx.persistentOptions?.tor.flag || t('settings.devtools.tor-disabled-option')}
-				value={ctx.persistentOptions?.tor.flag || t('settings.devtools.tor-disabled-option')}
+				defaultValue={
+					items?.length
+						? ctx.persistentOptions?.tor.flag || t('settings.devtools.tor-disabled-option')
+						: null
+				}
 				containerStyle={[{ marginTop: 22, height: 60 }]}
 				onChangeItem={async (item: any) => {
 					await ctx.setPersistentOption({
