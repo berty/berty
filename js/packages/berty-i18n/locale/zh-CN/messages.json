@@ -81,9 +81,6 @@
         "accept": "同意",
         "card-title": "联系请求！"
       },
-      "messages": {
-        "title": "消息"
-      },
       "input-placeholder": "搜索关键词",
       "no-contacts": "您还没有任何联系人或聊天",
       "search": {
