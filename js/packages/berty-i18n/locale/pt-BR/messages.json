@@ -81,9 +81,6 @@
         "accept": "Aceitar",
         "card-title": "Solicitação de contato!"
       },
-      "messages": {
-        "title": "Mensagens"
-      },
       "input-placeholder": "Pesquisar palavra-chave",
       "no-contacts": "Você não tem nenhum contato ou conversa ainda",
       "search": {
