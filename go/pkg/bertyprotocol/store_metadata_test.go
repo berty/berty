@@ -739,10 +739,15 @@ func TestMultiDevices_Basic(t *testing.T) {
 	}
 
 	syncChan := make(chan struct{})
-	go waitForBertyEventType(t, meta[pi[0][0]].Subscribe(ctx), protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued, 1, syncChan, true)
-	go waitForBertyEventType(t, meta[pi[0][1]].Subscribe(ctx), protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued, 1, syncChan, false)
-	go waitForBertyEventType(t, meta[pi[1][0]].Subscribe(ctx), protocoltypes.EventTypeAccountContactRequestIncomingReceived, 1, syncChan, true)
-	go waitForBertyEventType(t, meta[pi[1][1]].Subscribe(ctx), protocoltypes.EventTypeAccountContactRequestIncomingReceived, 1, syncChan, false)
+	subCh00 := meta[pi[0][0]].Subscribe(ctx)
+	subCh01 := meta[pi[0][1]].Subscribe(ctx)
+	subCh10 := meta[pi[1][0]].Subscribe(ctx)
+	subCh11 := meta[pi[1][1]].Subscribe(ctx)
+
+	go waitForBertyEventType(t, subCh00, protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued, 1, syncChan, true)
+	go waitForBertyEventType(t, subCh01, protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued, 1, syncChan, false)
+	go waitForBertyEventType(t, subCh10, protocoltypes.EventTypeAccountContactRequestIncomingReceived, 1, syncChan, true)
+	go waitForBertyEventType(t, subCh11, protocoltypes.EventTypeAccountContactRequestIncomingReceived, 1, syncChan, false)
 
 	// Add peers to contact
 	// Enqueuing outgoing
@@ -788,8 +793,11 @@ func TestMultiDevices_Basic(t *testing.T) {
 	// Activate group for 2nd peer's 1st device
 	groups = meta[pi[1][0]].ListMultiMemberGroups()
 	require.Len(t, groups, 0)
-	go waitForBertyEventType(t, meta[pi[1][0]].Subscribe(ctx), protocoltypes.EventTypeAccountGroupJoined, 1, syncChan, true)
-	go waitForBertyEventType(t, meta[pi[1][1]].Subscribe(ctx), protocoltypes.EventTypeAccountGroupJoined, 1, syncChan, false)
+	sub1Ch10 := meta[pi[1][0]].Subscribe(ctx)
+	sub1Ch11 := meta[pi[1][1]].Subscribe(ctx)
+	go waitForBertyEventType(t, sub1Ch10, protocoltypes.EventTypeAccountGroupJoined, 1, syncChan, true)
+	go waitForBertyEventType(t, sub1Ch11, protocoltypes.EventTypeAccountGroupJoined, 1, syncChan, false)
+
 	_, err = meta[pi[1][0]].GroupJoin(ctx, peers[pi[1][0]].GC.group)
 	require.NoError(t, err)
 	for i := 0; i < 2; i++ {
