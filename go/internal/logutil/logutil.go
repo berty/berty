@@ -26,20 +26,6 @@ func NewLogger(filters string, format string, logFile string) (*zap.Logger, func
 		return zap.NewNop(), cleanup, nil
 	}
 
-	// configure zap
-	var config zap.Config
-	switch logFile {
-	case "":
-		config = zap.NewDevelopmentConfig()
-	case "stdout", "stderr":
-		config = zap.NewDevelopmentConfig()
-		config.OutputPaths = []string{logFile}
-	default:
-		config = zap.NewProductionConfig()
-		config.OutputPaths = []string{logFile}
-	}
-	config.Level.SetLevel(zapcore.DebugLevel)
-
 	stableWidthNameEncoder := func(loggerName string, enc zapcore.PrimitiveArrayEncoder) {
 		enc.AppendString(fmt.Sprintf("%-18s", loggerName))
 	}
@@ -77,43 +63,67 @@ func NewLogger(filters string, format string, logFile string) (*zap.Logger, func
 		}
 	}
 
+	// configure zap
+	var config zap.Config
 	switch strings.ToLower(format) {
 	case "":
-	// noop
+		config = zap.NewDevelopmentConfig()
 	case "json":
+		config = zap.NewProductionConfig()
+		config.Development = true
 		config.Encoding = jsonEncoding
 	case "light-json":
+		config = zap.NewProductionConfig()
 		config.Encoding = jsonEncoding
 		config.EncoderConfig.TimeKey = ""
 		config.EncoderConfig.EncodeLevel = stableWidthCapitalLevelEncoder
+		config.Development = true
 		config.DisableStacktrace = true
 	case "light-console":
+		config = zap.NewDevelopmentConfig()
 		config.Encoding = consoleEncoding
 		config.EncoderConfig.TimeKey = ""
 		config.EncoderConfig.EncodeLevel = stableWidthCapitalLevelEncoder
 		config.DisableStacktrace = true
 		config.EncoderConfig.EncodeName = stableWidthNameEncoder
+		config.Development = true
 	case "light-color":
+		config = zap.NewDevelopmentConfig()
 		config.Encoding = consoleEncoding
 		config.EncoderConfig.TimeKey = ""
 		config.EncoderConfig.EncodeLevel = stableWidthCapitalColorLevelEncoder
 		config.DisableStacktrace = true
 		config.EncoderConfig.EncodeName = stableWidthNameEncoder
+		config.Development = true
 	case "console":
+		config = zap.NewDevelopmentConfig()
 		config.Encoding = consoleEncoding
 		config.EncoderConfig.EncodeTime = zapcore.RFC3339TimeEncoder
 		config.EncoderConfig.EncodeLevel = stableWidthCapitalLevelEncoder
 		config.DisableStacktrace = true
 		config.EncoderConfig.EncodeName = stableWidthNameEncoder
+		config.Development = true
 	case "color":
+		config = zap.NewDevelopmentConfig()
 		config.Encoding = consoleEncoding
 		config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 		config.EncoderConfig.EncodeDuration = zapcore.StringDurationEncoder
 		config.EncoderConfig.EncodeLevel = stableWidthCapitalColorLevelEncoder
 		config.DisableStacktrace = true
 		config.EncoderConfig.EncodeName = stableWidthNameEncoder
+		config.Development = true
 	default:
 		return nil, nil, fmt.Errorf("unknown log format: %q", format)
+	}
+
+	config.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
+
+	switch logFile {
+	case "":
+	case "stdout", "stderr":
+		config.OutputPaths = []string{logFile}
+	default:
+		config.OutputPaths = []string{logFile}
 	}
 
 	base, err := config.Build()
@@ -130,7 +140,7 @@ func DecorateLogger(base *zap.Logger, filters string) (*zap.Logger, func(), erro
 		return nil, nil, err
 	}
 
-	logger := zap.New(zapfilter.NewFilteringCore(base.Core(), filter))
+	logger := zap.New(zapfilter.NewFilteringCore(base.Core(), filter), zap.AddCaller())
 	zap.ReplaceGlobals(logger.Named("other"))
 
 	cleanup := func() {

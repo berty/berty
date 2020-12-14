@@ -133,7 +133,7 @@ export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({
 	const [{ flex, background, padding }] = useStyles()
 	const { convId } = params
 	const conv = useConversation(convId)
-	const contact = useContact(conv.contactPublicKey)
+	const contact = useContact(conv?.contactPublicKey)
 	if (!(conv && conv.type === beapi.messenger.Conversation.Type.ContactType && contact)) {
 		goBack()
 		return null
@@ -148,7 +148,7 @@ export const OneToOneSettings: React.FC<ScreenProps.Chat.OneToOneSettings> = ({
 		>
 			<SwipeNavRecognizer>
 				<HeaderSettings
-					action={() => navigate.chat.contactSettings({ contactId: conv.contactPublicKey })}
+					action={() => navigate.chat.contactSettings({ contactId: conv.contactPublicKey || '' })}
 					actionIcon='more-horizontal-outline'
 					undo={goBack}
 				>

@@ -9,7 +9,7 @@ import (
 
 	"github.com/peterbourgon/ff/v3/ffcli"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 func exportCommand() *ffcli.Command {
@@ -56,7 +56,7 @@ func exportCommand() *ffcli.Command {
 
 			defer func() { _ = f.Close() }()
 
-			cl, err := messenger.InstanceExportData(ctx, &bertymessenger.InstanceExportData_Request{})
+			cl, err := messenger.InstanceExportData(ctx, &messengertypes.InstanceExportData_Request{})
 			if err != nil {
 				return err
 			}

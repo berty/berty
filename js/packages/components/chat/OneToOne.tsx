@@ -40,11 +40,10 @@ import { ContactAvatar } from '../avatars'
 import { pbDateToNum, timeFormat } from '../helpers'
 import { useLayout } from '../hooks'
 import { playSound } from '../sounds'
-import { ChatDate, ChatFooter } from './shared-components/Chat'
+import { ChatDate, ChatFooter } from './common'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import Logo from '../main/1_berty_picto.svg'
 import Avatar from '../modals/Buck_Berty_Icon_Card.svg'
-import { AddFileMenu } from './file-uploads/AddFileMenu'
 
 //
 // Chat
@@ -699,13 +698,13 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 
 	const [stickyDate, setStickyDate] = useState(conv?.lastUpdate || null)
 	const [showStickyDate, setShowStickyDate] = useState(false)
-	const [showAddFileMenu, setShowAddFileMenu] = useState(false)
+	const [isSwipe, setSwipe] = useState(true)
 
 	return (
 		<View style={[StyleSheet.absoluteFill, background.white, { flex: 1 }]}>
-			{showAddFileMenu && <AddFileMenu close={() => setShowAddFileMenu(false)} />}
 			<SwipeNavRecognizer
 				onSwipeLeft={() =>
+					isSwipe &&
 					dispatch(
 						CommonActions.navigate({
 							name: Routes.Chat.OneToOneSettings,
@@ -729,7 +728,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 						setFocus={setInputFocus}
 						disabled={isFooterDisable}
 						placeholder={placeholder}
-						onFileMenuPress={() => setShowAddFileMenu(true)}
+						setSwipe={setSwipe}
 					/>
 					<ChatHeader convPk={params?.convId || ''} {...{ stickyDate, showStickyDate }} />
 				</KeyboardAvoidingView>

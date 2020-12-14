@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="8px" height="22px" viewBox="0 0 8 22" version="1.1"
-	xmlns="http://www.w3.org/2000/svg"
-	xmlns:xlink="http://www.w3.org/1999/xlink">
-	<title>Shape</title>
-	<g id="berty" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-		<g id="main/ConversationMedia/Preview-AfterRecord" transform="translate(-189.000000, -259.000000)" fill="currentColor" fill-rule="nonzero">
-			<g id="PAUSE-ICON" transform="translate(148.000000, 253.000000)">
-				<path d="M48.05,6 L42.35,6 C41.82465,6 41.4,6.447 41.4,7 L41.4,27 C41.4,27.553 41.82465,28 42.35,28 L48.05,28 C48.57535,28 49,27.553 49,27 L49,7 C49,6.447 48.57535,6 48.05,6 Z" id="Shape"></path>
-			</g>
-		</g>
-	</g>
+<svg width="19px" height="22px" viewBox="0 0 19 22" version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>pause</title>
+    <g id="berty" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="main/ConversationMedia/Preview-AfterRecord" transform="translate(-178.000000, -259.000000)" fill="currentColor" fill-rule="nonzero">
+            <g id="PAUSE-ICON" transform="translate(148.000000, 253.000000)">
+                <g id="Shape" transform="translate(30.000000, 6.000000)">
+                    <path d="M6.65,0 L0.95,0 C0.42465,0 -7.28306304e-13,0.447 -7.28306304e-13,1 L-7.28306304e-13,21 C-7.28306304e-13,21.553 0.42465,22 0.95,22 L6.65,22 C7.17535,22 7.6,21.553 7.6,21 L7.6,1 C7.6,0.447 7.17535,0 6.65,0 Z"></path>
+                    <path d="M18.05,0 L12.35,0 C11.82465,0 11.4,0.447 11.4,1 L11.4,21 C11.4,21.553 11.82465,22 12.35,22 L18.05,22 C18.57535,22 19,21.553 19,21 L19,1 C19,0.447 18.57535,0 18.05,0 Z"></path>
+                </g>
+            </g>
+        </g>
+    </g>
 </svg>

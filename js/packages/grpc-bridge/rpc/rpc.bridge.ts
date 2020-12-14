@@ -19,8 +19,7 @@ const getErrorFromResponse = <M extends pbjs.Method>(
 		}
 
 		if (response.error.errorCode || 0 > 0) {
-			const name = beapi.errcode.ErrCode[response.error.errorCode || 0]
-			return new Error(`${method.name} error: ${name}(${response.error.errorCode})`)
+			return new Error(`${method.name} error: ${response.error.message}`)
 		}
 
 		if (response.error.grpcErrorCode || 0 > 0) {

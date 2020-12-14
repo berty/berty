@@ -22,14 +22,16 @@ import (
 
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/notification"
+	"berty.tech/berty/v2/go/internal/streamutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 type Service interface {
-	MessengerServiceServer
+	messengertypes.MessengerServiceServer
 	Close()
 }
 
@@ -39,7 +41,7 @@ var _ Service = (*service)(nil)
 type service struct {
 	logger                *zap.Logger
 	isGroupMonitorEnabled bool
-	protocolClient        bertyprotocol.ProtocolServiceClient
+	protocolClient        protocoltypes.ProtocolServiceClient
 	startedAt             time.Time
 	db                    *dbWrapper
 	dispatcher            *Dispatcher
@@ -58,7 +60,7 @@ type Opts struct {
 	DB                  *gorm.DB
 	NotificationManager notification.Manager
 	LifeCycleManager    *lifecycle.Manager
-	StateBackup         *LocalDatabaseState
+	StateBackup         *messengertypes.LocalDatabaseState
 }
 
 func (opts *Opts) applyDefaults() (func(), error) {
@@ -96,7 +98,7 @@ func (opts *Opts) applyDefaults() (func(), error) {
 	return cleanup, nil
 }
 
-func databaseStateRestoreAccountHandler(statePointer *LocalDatabaseState) bertyprotocol.RestoreAccountHandler {
+func databaseStateRestoreAccountHandler(statePointer *messengertypes.LocalDatabaseState) bertyprotocol.RestoreAccountHandler {
 	return bertyprotocol.RestoreAccountHandler{
 		Handler: func(header *tar.Header, reader *tar.Reader) (bool, error) {
 			if header.Name != exportLocalDBState {
@@ -125,11 +127,11 @@ func databaseStateRestoreAccountHandler(statePointer *LocalDatabaseState) bertyp
 	}
 }
 
-func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_interface.CoreAPI, odb *bertyprotocol.BertyOrbitDB, localDBState *LocalDatabaseState, logger *zap.Logger) error {
+func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_interface.CoreAPI, odb *bertyprotocol.BertyOrbitDB, localDBState *messengertypes.LocalDatabaseState, logger *zap.Logger) error {
 	return bertyprotocol.RestoreAccountExport(ctx, reader, coreAPI, odb, logger, databaseStateRestoreAccountHandler(localDBState))
 }
 
-func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error) {
+func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (Service, error) {
 	optsCleanup, err := opts.applyDefaults()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -182,7 +184,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 
 	svc.eventHandler = newEventHandler(ctx, db, client, opts.Logger, &svc, false)
 
-	icr, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+	icr, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 	if err != nil {
 		return nil, err
 	}
@@ -194,7 +196,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 		switch {
 		case err == gorm.ErrRecordNotFound: // account not found, create a new one
 			svc.logger.Debug("account not found, creating a new one", zap.String("pk", pkStr))
-			ret, err := svc.internalInstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{})
+			ret, err := svc.internalInstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{})
 			if err != nil {
 				return nil, err
 			}
@@ -216,19 +218,19 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 	go svc.monitorState(ctx)
 
 	// Dispatch app notifications to native manager
-	svc.dispatcher.Register(&NotifieeBundle{StreamEventImpl: func(se *StreamEvent) error {
-		if se.GetType() != StreamEvent_TypeNotified {
+	svc.dispatcher.Register(&NotifieeBundle{StreamEventImpl: func(se *messengertypes.StreamEvent) error {
+		if se.GetType() != messengertypes.StreamEvent_TypeNotified {
 			return nil
 		}
 
-		var notif *StreamEvent_Notified
+		var notif *messengertypes.StreamEvent_Notified
 		{
 			payload, err := se.UnmarshalPayload()
 			if err != nil {
 				opts.Logger.Error("unable to unmarshal Notified", zap.Error(err))
 				return nil
 			}
-			notif = payload.(*StreamEvent_Notified)
+			notif = payload.(*messengertypes.StreamEvent_Notified)
 		}
 
 		if svc.lcmanager.GetCurrentState() == StateInactive {
@@ -261,7 +263,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 				return nil, err
 			}
 
-			_, err = svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: gpkb})
+			_, err = svc.protocolClient.ActivateGroup(svc.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gpkb})
 			if err != nil {
 				return nil, err
 			}
@@ -274,7 +276,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 
 	// subscribe to contact groups
 	{
-		contacts, err := svc.db.getContactsByState(Contact_OutgoingRequestSent)
+		contacts, err := svc.db.getContactsByState(messengertypes.Contact_OutgoingRequestSent)
 		if err != nil {
 			return nil, err
 		}
@@ -284,7 +286,7 @@ func New(client bertyprotocol.ProtocolServiceClient, opts *Opts) (Service, error
 				return nil, err
 			}
 
-			_, err = svc.protocolClient.ActivateGroup(svc.ctx, &bertytypes.ActivateGroup_Request{GroupPK: gpkb})
+			_, err = svc.protocolClient.ActivateGroup(svc.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gpkb})
 			if err != nil {
 				return nil, err
 			}
@@ -302,7 +304,7 @@ func (svc *service) subscribeToMetadata(gpkb []byte) error {
 	// subscribe
 	s, err := svc.protocolClient.GroupMetadataList(
 		svc.ctx,
-		&bertytypes.GroupMetadataList_Request{GroupPK: gpkb},
+		&protocoltypes.GroupMetadataList_Request{GroupPK: gpkb},
 	)
 	if err != nil {
 		return errcode.ErrEventListMetadata.Wrap(err)
@@ -328,7 +330,7 @@ func (svc *service) subscribeToMetadata(gpkb []byte) error {
 func (svc *service) subscribeToMessages(gpkb []byte) error {
 	ms, err := svc.protocolClient.GroupMessageList(
 		svc.ctx,
-		&bertytypes.GroupMessageList_Request{GroupPK: gpkb},
+		&protocoltypes.GroupMessageList_Request{GroupPK: gpkb},
 	)
 	if err != nil {
 		return errcode.ErrEventListMessage.Wrap(err)
@@ -341,7 +343,7 @@ func (svc *service) subscribeToMessages(gpkb []byte) error {
 				return
 			}
 
-			var am AppMessage
+			var am messengertypes.AppMessage
 			if err := proto.Unmarshal(gme.GetMessage(), &am); err != nil {
 				svc.logger.Warn("failed to unmarshal AppMessage", zap.Error(err))
 				return
@@ -360,7 +362,7 @@ func (svc *service) subscribeToMessages(gpkb []byte) error {
 var monitorCounter uint64 = 0
 
 func (svc *service) subscribeToGroupMonitor(groupPK []byte) error {
-	cl, err := svc.protocolClient.MonitorGroup(svc.ctx, &bertytypes.MonitorGroup_Request{
+	cl, err := svc.protocolClient.MonitorGroup(svc.ctx, &protocoltypes.MonitorGroup_Request{
 		GroupPK: groupPK,
 	})
 	if err != nil {
@@ -384,7 +386,7 @@ func (svc *service) subscribeToGroupMonitor(groupPK []byte) error {
 				return
 			}
 
-			meta := AppMessage_MonitorMetadata{
+			meta := messengertypes.AppMessage_MonitorMetadata{
 				Event: evt.Event,
 			}
 
@@ -395,15 +397,15 @@ func (svc *service) subscribeToGroupMonitor(groupPK []byte) error {
 			}
 
 			cid := fmt.Sprintf("__monitor-group-%d", seqid)
-			i := &Interaction{
+			i := &messengertypes.Interaction{
 				CID:                   cid,
-				Type:                  AppMessage_TypeMonitorMetadata,
+				Type:                  messengertypes.AppMessage_TypeMonitorMetadata,
 				ConversationPublicKey: b64EncodeBytes(evt.GetGroupPK()),
 				Payload:               payload,
 				SentDate:              timestampMs(time.Now()),
 			}
 
-			err = svc.dispatcher.StreamEvent(StreamEvent_TypeInteractionUpdated, &StreamEvent_InteractionUpdated{i}, true)
+			err = svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeInteractionUpdated, &messengertypes.StreamEvent_InteractionUpdated{Interaction: i}, true)
 			if err != nil {
 				svc.logger.Error("unable to dispatch monitor event")
 			}
@@ -427,65 +429,47 @@ func (svc *service) subscribeToGroup(gpkb []byte) error {
 	return svc.subscribeToMessages(gpkb)
 }
 
-func (svc *service) prepareAttachment(data []byte) ([]byte, error) {
-	// TODO: stream
-
+func (svc *service) attachmentPrepare(attachment io.Reader) ([]byte, error) {
 	stream, err := svc.protocolClient.AttachmentPrepare(svc.ctx)
 	if err != nil {
-		return nil, err
+		return nil, errcode.ErrAttachmentPrepare.Wrap(err)
 	}
 
 	// send header
-	if err := stream.Send(&bertytypes.AttachmentPrepare_Request{}); err != nil {
-		return nil, err
+	if err := stream.Send(&protocoltypes.AttachmentPrepare_Request{}); err != nil {
+		return nil, errcode.ErrStreamHeaderWrite.Wrap(err)
 	}
 
 	// send body
-	max := len(data)
-	for i := 0; i < max; {
-		next := i + (1024 * 64)
-		block := data[i:imin(next, max)]
-		if err := stream.Send(&bertytypes.AttachmentPrepare_Request{Block: block}); err != nil {
-			return nil, err
-		}
-		i = next
+	if err := streamutil.FuncSink(make([]byte, 64*1024), attachment, func(b []byte) error {
+		return stream.Send(&protocoltypes.AttachmentPrepare_Request{Block: b})
+	}); err != nil {
+		return nil, errcode.ErrStreamSink.Wrap(err)
 	}
 
-	// signal end of data and wait for cid
+	// signal end of data and pass cid
 	reply, err := stream.CloseAndRecv()
 	if err != nil {
-		return nil, err
+		return nil, errcode.ErrStreamCloseAndRecv.Wrap(err)
 	}
-
 	return reply.GetAttachmentCID(), nil
 }
 
-func (svc *service) retrieveAttachment(cid string) ([]byte, error) {
-	// TODO: stream
-
+func (svc *service) attachmentRetrieve(cid string) (*io.PipeReader, error) {
 	cidBytes, err := b64DecodeBytes(cid)
 	if err != nil {
-		return nil, err
+		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	stream, err := svc.protocolClient.AttachmentRetrieve(svc.ctx, &bertytypes.AttachmentRetrieve_Request{AttachmentCID: cidBytes})
+	stream, err := svc.protocolClient.AttachmentRetrieve(svc.ctx, &protocoltypes.AttachmentRetrieve_Request{AttachmentCID: cidBytes})
 	if err != nil {
-		return nil, err
+		return nil, errcode.ErrAttachmentRetrieve.Wrap(err)
 	}
 
-	data := []byte(nil)
-	for {
+	return streamutil.FuncReader(func() ([]byte, error) {
 		reply, err := stream.Recv()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return nil, err
-		}
-		data = append(data, reply.GetBlock()...)
-	}
-
-	return data, nil
+		return reply.GetBlock(), err
+	}, svc.logger), nil
 }
 
 func (svc *service) sendAccountUserInfo(groupPK string) error {
@@ -496,21 +480,33 @@ func (svc *service) sendAccountUserInfo(groupPK string) error {
 
 	var avatarCID string
 	var attachmentCIDs [][]byte
+	var medias []*messengertypes.Media
 	if acc.GetAvatarCID() != "" {
-		avatarBytes, err := svc.retrieveAttachment(acc.GetAvatarCID())
+		// TODO: add AttachmentRecrypt to bertyprotocol
+		avatar, err := svc.attachmentRetrieve(acc.GetAvatarCID())
 		if err != nil {
-			return errcode.ErrRetrieveAttachment.Wrap(err)
+			return errcode.ErrAttachmentRetrieve.Wrap(err)
 		}
-		avatarCIDBytes, err := svc.prepareAttachment(avatarBytes)
+		avatarCIDBytes, err := svc.attachmentPrepare(avatar)
 		if err != nil {
-			return errcode.ErrPrepareAttachment.Wrap(err)
+			return errcode.ErrAttachmentPrepare.Wrap(err)
 		}
 		avatarCID = b64EncodeBytes(avatarCIDBytes)
 		attachmentCIDs = [][]byte{avatarCIDBytes}
+
+		if medias, err = svc.db.getMedias([]string{acc.GetAvatarCID()}); err != nil {
+			return errcode.ErrDBRead.Wrap(err)
+		}
+		if len(medias) < 1 {
+			return errcode.ErrInternal
+		}
+		medias[0].CID = avatarCID
 	}
 
-	am, err := AppMessage_TypeSetUserInfo.MarshalPayload(timestampMs(time.Now()),
-		&AppMessage_SetUserInfo{DisplayName: acc.GetDisplayName(), AvatarCID: avatarCID},
+	am, err := messengertypes.AppMessage_TypeSetUserInfo.MarshalPayload(
+		timestampMs(time.Now()),
+		medias,
+		&messengertypes.AppMessage_SetUserInfo{DisplayName: acc.GetDisplayName(), AvatarCID: avatarCID},
 	)
 	if err != nil {
 		return errcode.ErrSerialization.Wrap(err)
@@ -519,7 +515,7 @@ func (svc *service) sendAccountUserInfo(groupPK string) error {
 	if err != nil {
 		return errcode.ErrDeserialization.Wrap(err)
 	}
-	_, err = svc.protocolClient.AppMetadataSend(svc.ctx, &bertytypes.AppMetadataSend_Request{GroupPK: pk, Payload: am, AttachmentCIDs: attachmentCIDs})
+	_, err = svc.protocolClient.AppMetadataSend(svc.ctx, &protocoltypes.AppMetadataSend_Request{GroupPK: pk, Payload: am, AttachmentCIDs: attachmentCIDs})
 	if err != nil {
 		return errcode.ErrProtocolSend.Wrap(err)
 	}

@@ -7,7 +7,7 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 // Context is the main argument passed to handlers.
@@ -15,9 +15,9 @@ type Context struct {
 	// common
 	HandlerType  HandlerType
 	EventPayload proto.Message `json:"-"` // content of the payload is already available in the parsed payloads
-	EventType    bertymessenger.StreamEvent_Type
+	EventType    messengertypes.StreamEvent_Type
 	Context      context.Context
-	Client       bertymessenger.MessengerServiceClient
+	Client       messengertypes.MessengerServiceClient
 	Logger       *zap.Logger
 	IsReplay     bool // whether the event is a replayed or a fresh event
 	IsMe         bool // whether the bot is the author
@@ -25,12 +25,12 @@ type Context struct {
 	IsNew        bool // whether the event is new or an entity update
 
 	// parsed payloads, depending on the context
-	Contact        *bertymessenger.Contact      `json:"Contact,omitempty"`
-	Conversation   *bertymessenger.Conversation `json:"Conversation,omitempty"`
-	Interaction    *bertymessenger.Interaction  `json:"Interaction,omitempty"`
-	Member         *bertymessenger.Member       `json:"Member,omitempty"`
-	Account        *bertymessenger.Account      `json:"Account,omitempty"`
-	Device         *bertymessenger.Device       `json:"Device,omitempty"`
+	Contact        *messengertypes.Contact      `json:"Contact,omitempty"`
+	Conversation   *messengertypes.Conversation `json:"Conversation,omitempty"`
+	Interaction    *messengertypes.Interaction  `json:"Interaction,omitempty"`
+	Member         *messengertypes.Member       `json:"Member,omitempty"`
+	Account        *messengertypes.Account      `json:"Account,omitempty"`
+	Device         *messengertypes.Device       `json:"Device,omitempty"`
 	ConversationPK string                       `json:"ConversationPK,omitempty"`
 	UserMessage    string                       `json:"UserMessage,omitempty"`
 	CommandArgs    []string
@@ -46,12 +46,12 @@ func (ctx *Context) ReplyString(text string) error {
 		return fmt.Errorf("unknown conversation PK, cannot reply")
 	}
 	// FIXME: support group conversation
-	userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{Body: text})
+	userMessage, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{Body: text})
 	if err != nil {
 		return fmt.Errorf("marshal user message failed: %w", err)
 	}
-	_, err = ctx.Client.Interact(ctx.Context, &bertymessenger.Interact_Request{
-		Type:                  bertymessenger.AppMessage_TypeUserMessage,
+	_, err = ctx.Client.Interact(ctx.Context, &messengertypes.Interact_Request{
+		Type:                  messengertypes.AppMessage_TypeUserMessage,
 		Payload:               userMessage,
 		ConversationPublicKey: ctx.ConversationPK,
 	})

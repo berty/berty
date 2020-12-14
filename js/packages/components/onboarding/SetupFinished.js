@@ -27,7 +27,7 @@ const SetupFinishedBody = () => {
 			await setPersistentOption({
 				type: PersistentOptionsKeys.I18N,
 				payload: {
-					language: 'en',
+					language: 'enUS',
 				},
 			})
 			await setPersistentOption({
@@ -54,11 +54,16 @@ const SetupFinishedBody = () => {
 					enable: false,
 				},
 			})
+			await setPersistentOption({
+				type: PersistentOptionsKeys.Tor,
+				payload: {
+					flag: 'disabled',
+				},
+			})
 		}
-		if (!persistentOptions && Object.values(contacts).length) {
-			return () => {
-				handlePersistentOptions().catch((e) => console.warn(e))
-			}
+
+		return () => {
+			handlePersistentOptions().catch((e) => console.warn(e))
 		}
 	}, [persistentOptions, contacts, setPersistentOption])
 

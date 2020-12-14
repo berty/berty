@@ -570,6 +570,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrDeserialization: 104,
               ErrStreamRead: 105,
               ErrStreamWrite: 106,
+              ErrStreamTransform: 110,
+              ErrStreamSendAndClose: 111,
+              ErrStreamHeaderWrite: 112,
+              ErrStreamHeaderRead: 115,
+              ErrStreamSink: 113,
+              ErrStreamCloseAndRecv: 114,
               ErrMissingMapKey: 107,
               ErrDBWrite: 108,
               ErrDBRead: 109,
@@ -626,6 +632,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrBridgeInterrupted: 1600,
               ErrBridgeNotRunning: 1601,
               ErrMessengerInvalidDeepLink: 2000,
+              ErrMessengerDeepLinkRequiresPassphrase: 2001,
               ErrDBEntryAlreadyExists: 2100,
               ErrDBAddConversation: 2101,
               ErrDBAddContactRequestOutgoingSent: 2102,
@@ -636,8 +643,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrDBMultipleRecords: 2107,
               ErrReplayProcessGroupMetadata: 2200,
               ErrReplayProcessGroupMessage: 2201,
-              ErrPrepareAttachment: 2300,
-              ErrRetrieveAttachment: 2301,
+              ErrAttachmentPrepare: 2300,
+              ErrAttachmentRetrieve: 2301,
               ErrProtocolSend: 2302,
               ErrCLINoTermcaps: 3001,
               ErrServicesAuth: 4000,
@@ -687,185 +694,174 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         nested: {
           v1: {
             options: {
-              go_package: "berty.tech/berty/go/pkg/bertyprotocol"
-            },
-            nested: {
-              ProtocolService: {
-                methods: {
-                  InstanceExportData: {
-                    requestType: "types.v1.InstanceExportData.Request",
-                    responseType: "types.v1.InstanceExportData.Reply",
-                    responseStream: true
-                  },
-                  InstanceGetConfiguration: {
-                    requestType: "types.v1.InstanceGetConfiguration.Request",
-                    responseType: "types.v1.InstanceGetConfiguration.Reply"
-                  },
-                  ContactRequestReference: {
-                    requestType: "types.v1.ContactRequestReference.Request",
-                    responseType: "types.v1.ContactRequestReference.Reply"
-                  },
-                  ContactRequestDisable: {
-                    requestType: "types.v1.ContactRequestDisable.Request",
-                    responseType: "types.v1.ContactRequestDisable.Reply"
-                  },
-                  ContactRequestEnable: {
-                    requestType: "types.v1.ContactRequestEnable.Request",
-                    responseType: "types.v1.ContactRequestEnable.Reply"
-                  },
-                  ContactRequestResetReference: {
-                    requestType: "types.v1.ContactRequestResetReference.Request",
-                    responseType: "types.v1.ContactRequestResetReference.Reply"
-                  },
-                  ContactRequestSend: {
-                    requestType: "types.v1.ContactRequestSend.Request",
-                    responseType: "types.v1.ContactRequestSend.Reply"
-                  },
-                  ContactRequestAccept: {
-                    requestType: "types.v1.ContactRequestAccept.Request",
-                    responseType: "types.v1.ContactRequestAccept.Reply"
-                  },
-                  ContactRequestDiscard: {
-                    requestType: "types.v1.ContactRequestDiscard.Request",
-                    responseType: "types.v1.ContactRequestDiscard.Reply"
-                  },
-                  ContactBlock: {
-                    requestType: "types.v1.ContactBlock.Request",
-                    responseType: "types.v1.ContactBlock.Reply"
-                  },
-                  ContactUnblock: {
-                    requestType: "types.v1.ContactUnblock.Request",
-                    responseType: "types.v1.ContactUnblock.Reply"
-                  },
-                  ContactAliasKeySend: {
-                    requestType: "types.v1.ContactAliasKeySend.Request",
-                    responseType: "types.v1.ContactAliasKeySend.Reply"
-                  },
-                  MultiMemberGroupCreate: {
-                    requestType: "types.v1.MultiMemberGroupCreate.Request",
-                    responseType: "types.v1.MultiMemberGroupCreate.Reply"
-                  },
-                  MultiMemberGroupJoin: {
-                    requestType: "types.v1.MultiMemberGroupJoin.Request",
-                    responseType: "types.v1.MultiMemberGroupJoin.Reply"
-                  },
-                  MultiMemberGroupLeave: {
-                    requestType: "types.v1.MultiMemberGroupLeave.Request",
-                    responseType: "types.v1.MultiMemberGroupLeave.Reply"
-                  },
-                  MultiMemberGroupAliasResolverDisclose: {
-                    requestType: "types.v1.MultiMemberGroupAliasResolverDisclose.Request",
-                    responseType: "types.v1.MultiMemberGroupAliasResolverDisclose.Reply"
-                  },
-                  MultiMemberGroupAdminRoleGrant: {
-                    requestType: "types.v1.MultiMemberGroupAdminRoleGrant.Request",
-                    responseType: "types.v1.MultiMemberGroupAdminRoleGrant.Reply"
-                  },
-                  MultiMemberGroupInvitationCreate: {
-                    requestType: "types.v1.MultiMemberGroupInvitationCreate.Request",
-                    responseType: "types.v1.MultiMemberGroupInvitationCreate.Reply"
-                  },
-                  AppMetadataSend: {
-                    requestType: "types.v1.AppMetadataSend.Request",
-                    responseType: "types.v1.AppMetadataSend.Reply"
-                  },
-                  AppMessageSend: {
-                    requestType: "types.v1.AppMessageSend.Request",
-                    responseType: "types.v1.AppMessageSend.Reply"
-                  },
-                  GroupMetadataList: {
-                    requestType: "types.v1.GroupMetadataList.Request",
-                    responseType: "types.v1.GroupMetadataEvent",
-                    responseStream: true
-                  },
-                  GroupMessageList: {
-                    requestType: "types.v1.GroupMessageList.Request",
-                    responseType: "types.v1.GroupMessageEvent",
-                    responseStream: true
-                  },
-                  GroupInfo: {
-                    requestType: "types.v1.GroupInfo.Request",
-                    responseType: "types.v1.GroupInfo.Reply"
-                  },
-                  ActivateGroup: {
-                    requestType: "types.v1.ActivateGroup.Request",
-                    responseType: "types.v1.ActivateGroup.Reply"
-                  },
-                  DeactivateGroup: {
-                    requestType: "types.v1.DeactivateGroup.Request",
-                    responseType: "types.v1.DeactivateGroup.Reply"
-                  },
-                  MonitorGroup: {
-                    requestType: "types.v1.MonitorGroup.Request",
-                    responseType: "types.v1.MonitorGroup.Reply",
-                    responseStream: true
-                  },
-                  DebugListGroups: {
-                    requestType: "types.v1.DebugListGroups.Request",
-                    responseType: "types.v1.DebugListGroups.Reply",
-                    responseStream: true
-                  },
-                  DebugInspectGroupStore: {
-                    requestType: "types.v1.DebugInspectGroupStore.Request",
-                    responseType: "types.v1.DebugInspectGroupStore.Reply",
-                    responseStream: true
-                  },
-                  DebugGroup: {
-                    requestType: "types.v1.DebugGroup.Request",
-                    responseType: "types.v1.DebugGroup.Reply"
-                  },
-                  SystemInfo: {
-                    requestType: "types.v1.SystemInfo.Request",
-                    responseType: "types.v1.SystemInfo.Reply"
-                  },
-                  AuthServiceInitFlow: {
-                    requestType: "types.v1.AuthServiceInitFlow.Request",
-                    responseType: "types.v1.AuthServiceInitFlow.Reply"
-                  },
-                  AuthServiceCompleteFlow: {
-                    requestType: "types.v1.AuthServiceCompleteFlow.Request",
-                    responseType: "types.v1.AuthServiceCompleteFlow.Reply"
-                  },
-                  ServicesTokenList: {
-                    requestType: "types.v1.ServicesTokenList.Request",
-                    responseType: "types.v1.ServicesTokenList.Reply",
-                    responseStream: true
-                  },
-                  ReplicationServiceRegisterGroup: {
-                    requestType: "types.v1.ReplicationServiceRegisterGroup.Request",
-                    responseType: "types.v1.ReplicationServiceRegisterGroup.Reply"
-                  },
-                  PeerList: {
-                    requestType: "types.v1.PeerList.Request",
-                    responseType: "types.v1.PeerList.Reply"
-                  },
-                  AttachmentPrepare: {
-                    requestType: "types.v1.AttachmentPrepare.Request",
-                    requestStream: true,
-                    responseType: "types.v1.AttachmentPrepare.Reply"
-                  },
-                  AttachmentRetrieve: {
-                    requestType: "types.v1.AttachmentRetrieve.Request",
-                    responseType: "types.v1.AttachmentRetrieve.Reply",
-                    responseStream: true
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      types: {
-        nested: {
-          v1: {
-            options: {
-              go_package: "berty.tech/berty/go/pkg/bertytypes",
+              go_package: "berty.tech/berty/go/pkg/protocoltypes",
               "(gogoproto.goproto_enum_prefix_all)": false,
               "(gogoproto.marshaler_all)": true,
               "(gogoproto.unmarshaler_all)": true,
               "(gogoproto.sizer_all)": true
             },
             nested: {
+              ProtocolService: {
+                methods: {
+                  InstanceExportData: {
+                    requestType: "InstanceExportData.Request",
+                    responseType: "InstanceExportData.Reply",
+                    responseStream: true
+                  },
+                  InstanceGetConfiguration: {
+                    requestType: "InstanceGetConfiguration.Request",
+                    responseType: "InstanceGetConfiguration.Reply"
+                  },
+                  ContactRequestReference: {
+                    requestType: "ContactRequestReference.Request",
+                    responseType: "ContactRequestReference.Reply"
+                  },
+                  ContactRequestDisable: {
+                    requestType: "ContactRequestDisable.Request",
+                    responseType: "ContactRequestDisable.Reply"
+                  },
+                  ContactRequestEnable: {
+                    requestType: "ContactRequestEnable.Request",
+                    responseType: "ContactRequestEnable.Reply"
+                  },
+                  ContactRequestResetReference: {
+                    requestType: "ContactRequestResetReference.Request",
+                    responseType: "ContactRequestResetReference.Reply"
+                  },
+                  ContactRequestSend: {
+                    requestType: "ContactRequestSend.Request",
+                    responseType: "ContactRequestSend.Reply"
+                  },
+                  ContactRequestAccept: {
+                    requestType: "ContactRequestAccept.Request",
+                    responseType: "ContactRequestAccept.Reply"
+                  },
+                  ContactRequestDiscard: {
+                    requestType: "ContactRequestDiscard.Request",
+                    responseType: "ContactRequestDiscard.Reply"
+                  },
+                  ContactBlock: {
+                    requestType: "ContactBlock.Request",
+                    responseType: "ContactBlock.Reply"
+                  },
+                  ContactUnblock: {
+                    requestType: "ContactUnblock.Request",
+                    responseType: "ContactUnblock.Reply"
+                  },
+                  ContactAliasKeySend: {
+                    requestType: "ContactAliasKeySend.Request",
+                    responseType: "ContactAliasKeySend.Reply"
+                  },
+                  MultiMemberGroupCreate: {
+                    requestType: "MultiMemberGroupCreate.Request",
+                    responseType: "MultiMemberGroupCreate.Reply"
+                  },
+                  MultiMemberGroupJoin: {
+                    requestType: "MultiMemberGroupJoin.Request",
+                    responseType: "MultiMemberGroupJoin.Reply"
+                  },
+                  MultiMemberGroupLeave: {
+                    requestType: "MultiMemberGroupLeave.Request",
+                    responseType: "MultiMemberGroupLeave.Reply"
+                  },
+                  MultiMemberGroupAliasResolverDisclose: {
+                    requestType: "MultiMemberGroupAliasResolverDisclose.Request",
+                    responseType: "MultiMemberGroupAliasResolverDisclose.Reply"
+                  },
+                  MultiMemberGroupAdminRoleGrant: {
+                    requestType: "MultiMemberGroupAdminRoleGrant.Request",
+                    responseType: "MultiMemberGroupAdminRoleGrant.Reply"
+                  },
+                  MultiMemberGroupInvitationCreate: {
+                    requestType: "MultiMemberGroupInvitationCreate.Request",
+                    responseType: "MultiMemberGroupInvitationCreate.Reply"
+                  },
+                  AppMetadataSend: {
+                    requestType: "AppMetadataSend.Request",
+                    responseType: "AppMetadataSend.Reply"
+                  },
+                  AppMessageSend: {
+                    requestType: "AppMessageSend.Request",
+                    responseType: "AppMessageSend.Reply"
+                  },
+                  GroupMetadataList: {
+                    requestType: "GroupMetadataList.Request",
+                    responseType: "GroupMetadataEvent",
+                    responseStream: true
+                  },
+                  GroupMessageList: {
+                    requestType: "GroupMessageList.Request",
+                    responseType: "GroupMessageEvent",
+                    responseStream: true
+                  },
+                  GroupInfo: {
+                    requestType: "GroupInfo.Request",
+                    responseType: "GroupInfo.Reply"
+                  },
+                  ActivateGroup: {
+                    requestType: "ActivateGroup.Request",
+                    responseType: "ActivateGroup.Reply"
+                  },
+                  DeactivateGroup: {
+                    requestType: "DeactivateGroup.Request",
+                    responseType: "DeactivateGroup.Reply"
+                  },
+                  MonitorGroup: {
+                    requestType: "MonitorGroup.Request",
+                    responseType: "MonitorGroup.Reply",
+                    responseStream: true
+                  },
+                  DebugListGroups: {
+                    requestType: "DebugListGroups.Request",
+                    responseType: "DebugListGroups.Reply",
+                    responseStream: true
+                  },
+                  DebugInspectGroupStore: {
+                    requestType: "DebugInspectGroupStore.Request",
+                    responseType: "DebugInspectGroupStore.Reply",
+                    responseStream: true
+                  },
+                  DebugGroup: {
+                    requestType: "DebugGroup.Request",
+                    responseType: "DebugGroup.Reply"
+                  },
+                  SystemInfo: {
+                    requestType: "SystemInfo.Request",
+                    responseType: "SystemInfo.Reply"
+                  },
+                  AuthServiceInitFlow: {
+                    requestType: "AuthServiceInitFlow.Request",
+                    responseType: "AuthServiceInitFlow.Reply"
+                  },
+                  AuthServiceCompleteFlow: {
+                    requestType: "AuthServiceCompleteFlow.Request",
+                    responseType: "AuthServiceCompleteFlow.Reply"
+                  },
+                  ServicesTokenList: {
+                    requestType: "ServicesTokenList.Request",
+                    responseType: "ServicesTokenList.Reply",
+                    responseStream: true
+                  },
+                  ReplicationServiceRegisterGroup: {
+                    requestType: "ReplicationServiceRegisterGroup.Request",
+                    responseType: "ReplicationServiceRegisterGroup.Reply"
+                  },
+                  PeerList: {
+                    requestType: "PeerList.Request",
+                    responseType: "PeerList.Reply"
+                  },
+                  AttachmentPrepare: {
+                    requestType: "AttachmentPrepare.Request",
+                    requestStream: true,
+                    responseType: "AttachmentPrepare.Reply"
+                  },
+                  AttachmentRetrieve: {
+                    requestType: "AttachmentRetrieve.Request",
+                    responseType: "AttachmentRetrieve.Reply",
+                    responseStream: true
+                  }
+                }
+              },
               GroupType: {
                 values: {
                   GroupTypeUndefined: 0,
@@ -3055,7 +3051,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         nested: {
           v1: {
             options: {
-              go_package: "berty.tech/berty/go/pkg/bertymessenger",
+              go_package: "berty.tech/berty/go/pkg/messengertypes",
               "(gogoproto.goproto_unkeyed_all)": false,
               "(gogoproto.goproto_unrecognized_all)": false,
               "(gogoproto.goproto_sizecache_all)": false
@@ -3151,8 +3147,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     responseType: "ConversationClose.Reply"
                   },
                   ServicesTokenList: {
-                    requestType: "types.v1.ServicesTokenList.Request",
-                    responseType: "types.v1.ServicesTokenList.Reply",
+                    requestType: "protocol.v1.ServicesTokenList.Request",
+                    responseType: "protocol.v1.ServicesTokenList.Reply",
                     responseStream: true
                   },
                   ReplicationServiceRegisterGroup: {
@@ -3174,6 +3170,16 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   InstanceExportData: {
                     requestType: "InstanceExportData.Request",
                     responseType: "InstanceExportData.Reply",
+                    responseStream: true
+                  },
+                  MediaPrepare: {
+                    requestType: "MediaPrepare.Request",
+                    requestStream: true,
+                    responseType: "MediaPrepare.Reply"
+                  },
+                  MediaRetrieve: {
+                    requestType: "MediaRetrieve.Request",
+                    responseType: "MediaRetrieve.Reply",
                     responseStream: true
                   }
                 }
@@ -3350,6 +3356,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       link: {
                         type: "string",
                         id: 1
+                      },
+                      passphrase: {
+                        type: "bytes",
+                        id: 2
                       }
                     }
                   },
@@ -3378,18 +3388,75 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   bertyGroup: {
                     type: "BertyGroup",
-                    id: 3,
-                    options: {
-                      "(gogoproto.customname)": "BertyGroup"
-                    }
+                    id: 3
+                  },
+                  encrypted: {
+                    type: "Encrypted",
+                    id: 4
                   }
                 },
                 nested: {
+                  Encrypted: {
+                    fields: {
+                      kind: {
+                        type: "Kind",
+                        id: 1
+                      },
+                      nonce: {
+                        type: "bytes",
+                        id: 2
+                      },
+                      displayName: {
+                        type: "string",
+                        id: 3
+                      },
+                      contactPublicRendezvousSeed: {
+                        type: "bytes",
+                        id: 10
+                      },
+                      contactAccountPk: {
+                        type: "bytes",
+                        id: 11,
+                        options: {
+                          "(gogoproto.customname)": "ContactAccountPK"
+                        }
+                      },
+                      contactDisplayName: {
+                        type: "bytes",
+                        id: 12
+                      },
+                      groupPublicKey: {
+                        type: "bytes",
+                        id: 20
+                      },
+                      groupSecret: {
+                        type: "bytes",
+                        id: 21
+                      },
+                      groupSecretSig: {
+                        type: "bytes",
+                        id: 22
+                      },
+                      groupType: {
+                        type: "berty.protocol.v1.GroupType",
+                        id: 23
+                      },
+                      groupSignPub: {
+                        type: "bytes",
+                        id: 24
+                      },
+                      groupDisplayName: {
+                        type: "bytes",
+                        id: 25
+                      }
+                    }
+                  },
                   Kind: {
                     values: {
                       UnknownKind: 0,
                       ContactInviteV1Kind: 1,
-                      GroupV1Kind: 2
+                      GroupV1Kind: 2,
+                      EncryptedV1Kind: 3
                     }
                   }
                 }
@@ -3515,7 +3582,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               BertyGroup: {
                 fields: {
                   group: {
-                    type: "berty.types.v1.Group",
+                    type: "berty.protocol.v1.Group",
                     id: 1
                   },
                   displayName: {
@@ -3540,6 +3607,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     options: {
                       "(gogoproto.jsontag)": "sentDate"
                     }
+                  },
+                  medias: {
+                    rule: "repeated",
+                    type: "Media",
+                    id: 4
                   }
                 },
                 nested: {
@@ -3553,7 +3625,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       TypeSetUserInfo: 5,
                       TypeAcknowledge: 6,
                       TypeReplyOptions: 7,
-                      TypeMonitorMetadata: 8
+                      TypeMonitorMetadata: 100
                     }
                   },
                   UserMessage: {
@@ -3631,7 +3703,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   MonitorMetadata: {
                     fields: {
                       event: {
-                        type: "berty.types.v1.MonitorGroup.EventMonitor",
+                        type: "berty.protocol.v1.MonitorGroup.EventMonitor",
                         id: 1
                       }
                     }
@@ -3659,7 +3731,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   Reply: {
                     fields: {
                       protocol: {
-                        type: "berty.types.v1.SystemInfo.Reply",
+                        type: "berty.protocol.v1.SystemInfo.Reply",
                         id: 1
                       },
                       messenger: {
@@ -3671,7 +3743,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   Messenger: {
                     fields: {
                       process: {
-                        type: "berty.types.v1.SystemInfo.Process",
+                        type: "berty.protocol.v1.SystemInfo.Process",
                         id: 1
                       },
                       warns: {
@@ -3738,6 +3810,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       link: {
                         type: "string",
                         id: 1
+                      },
+                      passphrase: {
+                        type: "bytes",
+                        id: 2
                       }
                     }
                   },
@@ -3888,6 +3964,61 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     options: {
                       "(gogoproto.moretags)": "gorm:index;column:target_cid",
                       "(gogoproto.customname)": "TargetCID"
+                    }
+                  },
+                  medias: {
+                    rule: "repeated",
+                    type: "Media",
+                    id: 15
+                  }
+                }
+              },
+              Media: {
+                fields: {
+                  cid: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primaryKey;column:cid",
+                      "(gogoproto.customname)": "CID"
+                    }
+                  },
+                  mimeType: {
+                    type: "string",
+                    id: 2
+                  },
+                  filename: {
+                    type: "string",
+                    id: 3
+                  },
+                  displayName: {
+                    type: "string",
+                    id: 4
+                  },
+                  interactionCid: {
+                    type: "string",
+                    id: 100,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:index;column:interaction_cid",
+                      "(gogoproto.customname)": "InteractionCID"
+                    }
+                  },
+                  state: {
+                    type: "State",
+                    id: 103
+                  }
+                },
+                nested: {
+                  State: {
+                    values: {
+                      StateUnknown: 0,
+                      StateNeverDownloaded: 1,
+                      StatePartiallyDownloaded: 2,
+                      StateDownloaded: 3,
+                      StateInCache: 4,
+                      StateInvalidCrypto: 5,
+                      StatePrepared: 100,
+                      StateAttached: 101
                     }
                   }
                 }
@@ -4187,7 +4318,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       TypeAccountUpdated: 7,
                       TypeMemberUpdated: 8,
                       TypeDeviceUpdated: 9,
-                      TypeNotified: 10
+                      TypeNotified: 10,
+                      TypeMediaUpdated: 11
                     }
                   },
                   ConversationUpdated: {
@@ -4259,6 +4391,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   ListEnded: {
                     fields: {}
+                  },
+                  MediaUpdated: {
+                    fields: {
+                      media: {
+                        type: "Media",
+                        id: 1
+                      }
+                    }
                   },
                   Notified: {
                     fields: {
@@ -4452,6 +4592,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       link: {
                         type: "string",
                         id: 1
+                      },
+                      passphrase: {
+                        type: "bytes",
+                        id: 2
                       }
                     }
                   },
@@ -4492,6 +4636,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       conversationPublicKey: {
                         type: "string",
                         id: 3
+                      },
+                      mediaCids: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 4
                       }
                     }
                   },
@@ -4638,6 +4787,60 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   type: {
                     type: "Conversation.Type",
                     id: 4
+                  }
+                }
+              },
+              MediaPrepare: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      block: {
+                        type: "bytes",
+                        id: 1
+                      },
+                      info: {
+                        type: "Media",
+                        id: 2
+                      },
+                      uri: {
+                        type: "string",
+                        id: 3
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      cid: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              MediaRetrieve: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      cid: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      block: {
+                        type: "bytes",
+                        id: 1
+                      },
+                      info: {
+                        type: "Media",
+                        id: 2
+                      }
+                    }
                   }
                 }
               }

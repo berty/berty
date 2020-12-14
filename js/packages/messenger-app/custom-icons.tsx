@@ -16,15 +16,20 @@ import Plus from './custom-icons-svgs/plus.svg'
 import AccountBerty from './custom-icons-svgs/account-berty.svg'
 import Tor from './custom-icons-svgs/Tor.svg'
 import Berty from './custom-icons-svgs/berty_picto.svg'
+import AddNewGroup from './custom-icons-svgs/add-new-group.svg'
 import Bertyzzz from './custom-icons-svgs/bertyzzz.svg'
-import AddPicture from './custom-icons-svgs/add-picture.svg'
 import Microphone from './custom-icons-svgs/microphone.svg'
 import Play from './custom-icons-svgs/play-player.svg'
 import Pause from './custom-icons-svgs/pause-player.svg'
+import Camera from './custom-icons-svgs/camera.svg'
+import Files from './custom-icons-svgs/files.svg'
+import Gallery from './custom-icons-svgs/gallery.svg'
+import Gif from './custom-icons-svgs/gif.svg'
 
 const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	fingerprint: Fingerprint,
 	qr: QRCode,
+	'add-new-group': AddNewGroup,
 	share: Share,
 	bubble: Bubble,
 	id: Id,
@@ -38,10 +43,13 @@ const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	plus: Plus,
 	'account-berty': AccountBerty,
 	bertyzzz: Bertyzzz,
-	'add-picture': AddPicture,
 	microphone: Microphone,
 	play: Play,
 	pause: Pause,
+	camera: Camera,
+	gallery: Gallery,
+	files: Files,
+	gif: Gif,
 }
 
 const CustomIcon: React.FC<{

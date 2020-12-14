@@ -16,8 +16,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 type DeviceKeystore interface {
@@ -25,7 +25,7 @@ type DeviceKeystore interface {
 	AccountProofPrivKey() (crypto.PrivKey, error)
 	DevicePrivKey() (crypto.PrivKey, error)
 	ContactGroupPrivKey(pk crypto.PubKey) (crypto.PrivKey, error)
-	MemberDeviceForGroup(g *bertytypes.Group) (*ownMemberDevice, error)
+	MemberDeviceForGroup(g *protocoltypes.Group) (*ownMemberDevice, error)
 	RestoreAccountKeys(accountKey crypto.PrivKey, accountProofKey crypto.PrivKey) error
 
 	AttachmentPrivKey(cid []byte) (crypto.PrivKey, error)
@@ -102,14 +102,14 @@ func (a *deviceKeystore) memberDeviceForMultiMemberGroup(groupPK crypto.PubKey) 
 	}, nil
 }
 
-func (a *deviceKeystore) MemberDeviceForGroup(g *bertytypes.Group) (*ownMemberDevice, error) {
+func (a *deviceKeystore) MemberDeviceForGroup(g *protocoltypes.Group) (*ownMemberDevice, error) {
 	pk, err := g.GetPubKey()
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
 	switch g.GroupType {
-	case bertytypes.GroupTypeAccount, bertytypes.GroupTypeContact:
+	case protocoltypes.GroupTypeAccount, protocoltypes.GroupTypeContact:
 		memberSK, err := a.AccountPrivKey()
 		if err != nil {
 			return nil, err
@@ -125,7 +125,7 @@ func (a *deviceKeystore) MemberDeviceForGroup(g *bertytypes.Group) (*ownMemberDe
 			device: deviceSK,
 		}, nil
 
-	case bertytypes.GroupTypeMultiMember:
+	case protocoltypes.GroupTypeMultiMember:
 		return a.memberDeviceForMultiMemberGroup(pk)
 	}
 
@@ -360,7 +360,7 @@ type memberDevice struct {
 	device crypto.PubKey
 }
 
-func newDeviceSecret() (*bertytypes.DeviceSecret, error) {
+func newDeviceSecret() (*protocoltypes.DeviceSecret, error) {
 	counter, err := crand.Int(crand.Reader, big.NewInt(0).SetUint64(math.MaxUint64))
 	if err != nil {
 		return nil, errcode.ErrCryptoRandomGeneration.Wrap(err)
@@ -372,7 +372,7 @@ func newDeviceSecret() (*bertytypes.DeviceSecret, error) {
 		return nil, errcode.ErrCryptoRandomGeneration.Wrap(err)
 	}
 
-	return &bertytypes.DeviceSecret{
+	return &protocoltypes.DeviceSecret{
 		ChainKey: chainKey,
 		Counter:  counter.Uint64(),
 	}, nil

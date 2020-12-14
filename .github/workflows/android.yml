@@ -40,7 +40,7 @@ jobs:
           go-version: 1.15.x
 
       - name: Setup Node
-        uses: actions/setup-node@v2.1.2
+        uses: actions/setup-node@v2.1.3
         with:
           node-version: 14.x
 
@@ -79,7 +79,7 @@ jobs:
           CI: "true"
         run: |
           make android.app_deps
-          (cd android && ./gradlew app:bundleReleaseYolo)
+          (yarn jetify && cd android && ./gradlew app:bundleReleaseYolo)
           ### TODO: move this part on Yolo and use release keystore ###
           mkdir -p $HOME/.android
           cp android/app/debug.keystore $HOME/.android

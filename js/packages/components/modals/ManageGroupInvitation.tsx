@@ -57,7 +57,7 @@ export const ManageGroupInvitation: React.FC<{
 	React.useEffect(() => {
 		if (done && !error) {
 			navigation.goBack()
-			navigation.navigate('Main.HomeModal')
+			navigation.navigate('Main.Home')
 		}
 	}, [done, error, navigation])
 

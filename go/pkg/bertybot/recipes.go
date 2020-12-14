@@ -6,7 +6,7 @@ import (
 
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 // Recipe is a set of handlers that performs common behaviors.
@@ -18,7 +18,7 @@ func AutoAcceptIncomingContactRequestRecipe() Recipe {
 	recipe[IncomingContactRequestHandler] = []Handler{
 		func(ctx Context) {
 			ctx.Logger.Info("auto-accepting incoming contact request", zap.Any("contact", ctx.Contact))
-			req := &bertymessenger.ContactAccept_Request{
+			req := &messengertypes.ContactAccept_Request{
 				PublicKey: ctx.Contact.PublicKey,
 			}
 			_, err := ctx.Client.ContactAccept(ctx.Context, req)

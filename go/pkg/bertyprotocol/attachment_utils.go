@@ -1,25 +1,10 @@
 package bertyprotocol
 
 import (
-	"io"
 	"math/big"
-
-	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
-
-func closePipeOut(out *io.PipeWriter, incoming error, errPrefix string, l *zap.Logger) {
-	var cErr error
-	if incoming == nil || incoming == io.EOF {
-		cErr = out.Close()
-	} else {
-		cErr = out.CloseWithError(incoming)
-	}
-	if cErr != nil {
-		l.Error(errPrefix, zap.Error(cErr))
-	}
-}
 
 // shim for go1.14
 func bigIntFillBytes(bi *big.Int, buf []byte) {

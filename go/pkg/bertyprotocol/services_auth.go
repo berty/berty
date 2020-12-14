@@ -14,8 +14,8 @@ import (
 	"gopkg.in/square/go-jose.v2"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 type ContextAuthValue uint32
@@ -110,7 +110,7 @@ func (r *AuthTokenIssuer) IssueCode(codeChallenge string, services []string) (st
 		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("no codeChallenge specified"))
 	}
 
-	codePayload := &bertytypes.ServicesTokenCode{
+	codePayload := &protocoltypes.ServicesTokenCode{
 		Services:      services,
 		CodeChallenge: codeChallenge,
 	}
@@ -151,13 +151,13 @@ func (r *AuthTokenVerifier) decryptVerify(token string) ([]byte, error) {
 	return decrypted, nil
 }
 
-func (r *AuthTokenVerifier) VerifyCode(code, codeVerifier string) (*bertytypes.ServicesTokenCode, error) {
+func (r *AuthTokenVerifier) VerifyCode(code, codeVerifier string) (*protocoltypes.ServicesTokenCode, error) {
 	decrypted, err := r.decryptVerify(code)
 	if err != nil {
 		return nil, err
 	}
 
-	codeObj := &bertytypes.ServicesTokenCode{}
+	codeObj := &protocoltypes.ServicesTokenCode{}
 	if err := codeObj.Unmarshal(decrypted); err != nil {
 		return nil, err
 	}
@@ -179,7 +179,7 @@ func (r *AuthTokenIssuer) IssueToken(services []string) (string, error) {
 		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("no services specified"))
 	}
 
-	tokenPayload := &bertytypes.ServicesTokenCode{
+	tokenPayload := &protocoltypes.ServicesTokenCode{
 		Services: services,
 		TokenID:  tokenID.String(),
 	}
@@ -192,13 +192,13 @@ func (r *AuthTokenIssuer) IssueToken(services []string) (string, error) {
 	return r.encryptSign(payload)
 }
 
-func (r *AuthTokenVerifier) VerifyToken(token, serviceID string) (*bertytypes.ServicesTokenCode, error) {
+func (r *AuthTokenVerifier) VerifyToken(token, serviceID string) (*protocoltypes.ServicesTokenCode, error) {
 	decrypted, err := r.decryptVerify(token)
 	if err != nil {
 		return nil, err
 	}
 
-	tokenObj := &bertytypes.ServicesTokenCode{}
+	tokenObj := &protocoltypes.ServicesTokenCode{}
 	if err := tokenObj.Unmarshal(decrypted); err != nil {
 		return nil, err
 	}

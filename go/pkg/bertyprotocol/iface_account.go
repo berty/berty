@@ -7,8 +7,8 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 type AccountKeys interface {
@@ -16,7 +16,7 @@ type AccountKeys interface {
 	AccountProofPrivKey() (crypto.PrivKey, error)
 	DevicePrivKey() (crypto.PrivKey, error)
 	ContactGroupPrivKey(pk crypto.PubKey) (crypto.PrivKey, error)
-	MemberDeviceForGroup(g *bertytypes.Group) (*OwnMemberDevice, error)
+	MemberDeviceForGroup(g *protocoltypes.Group) (*OwnMemberDevice, error)
 }
 
 // OwnMemberDevice is own local device part of a group
@@ -36,10 +36,10 @@ func (d *OwnMemberDevice) Public() *MemberDevice {
 type MemberDevice struct {
 	Member crypto.PubKey
 	Device crypto.PubKey
-	Secret *bertytypes.DeviceSecret
+	Secret *protocoltypes.DeviceSecret
 }
 
-func NewDeviceSecret() (*bertytypes.DeviceSecret, error) {
+func NewDeviceSecret() (*protocoltypes.DeviceSecret, error) {
 	counter, err := crand.Int(crand.Reader, big.NewInt(0).SetUint64(math.MaxUint64))
 	if err != nil {
 		return nil, errcode.ErrCryptoRandomGeneration.Wrap(err)
@@ -51,7 +51,7 @@ func NewDeviceSecret() (*bertytypes.DeviceSecret, error) {
 		return nil, errcode.ErrCryptoRandomGeneration.Wrap(err)
 	}
 
-	return &bertytypes.DeviceSecret{
+	return &protocoltypes.DeviceSecret{
 		ChainKey: chainKey,
 		Counter:  counter.Uint64(),
 	}, nil

@@ -19,7 +19,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/initutil"
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 func main() {
@@ -54,7 +54,7 @@ type integration struct {
 	manager      initutil.Manager
 	logger       *zap.Logger
 	ctx          context.Context
-	client       bertymessenger.MessengerServiceClient
+	client       messengertypes.MessengerServiceClient
 	opts         struct {
 		betabotAddr string
 		testbotAddr string
@@ -104,13 +104,13 @@ func (i *integration) testbotAdd() error {
 	defer cancel()
 
 	// parse invite URL
-	parsed, err := i.client.ParseDeepLink(ctx, &bertymessenger.ParseDeepLink_Request{Link: i.opts.testbotAddr})
+	parsed, err := i.client.ParseDeepLink(ctx, &messengertypes.ParseDeepLink_Request{Link: i.opts.testbotAddr})
 	if err != nil {
 		return err
 	}
 
 	// subscribe to events
-	s, err := i.client.EventStream(ctx, &bertymessenger.EventStream_Request{})
+	s, err := i.client.EventStream(ctx, &messengertypes.EventStream_Request{})
 	if err != nil {
 		return err
 	}
@@ -121,7 +121,7 @@ func (i *integration) testbotAdd() error {
 	}()
 
 	// send contact request
-	_, err = i.client.SendContactRequest(ctx, &bertymessenger.SendContactRequest_Request{
+	_, err = i.client.SendContactRequest(ctx, &messengertypes.SendContactRequest_Request{
 		BertyID: parsed.GetLink().GetBertyID(),
 	})
 	if err != nil {
@@ -155,28 +155,28 @@ func (i *integration) testbotAdd() error {
 		i.logger.Debug("new event", zap.Any("event", event))
 
 		switch event.GetType() {
-		case bertymessenger.StreamEvent_TypeContactUpdated:
-			contact := payload.(*bertymessenger.StreamEvent_ContactUpdated).Contact
+		case messengertypes.StreamEvent_TypeContactUpdated:
+			contact := payload.(*messengertypes.StreamEvent_ContactUpdated).Contact
 
-			if contact.State == bertymessenger.Contact_Accepted {
+			if contact.State == messengertypes.Contact_Accepted {
 				contactAccepted = true
 			}
-		case bertymessenger.StreamEvent_TypeConversationUpdated:
-			conversation := payload.(*bertymessenger.StreamEvent_ConversationUpdated).Conversation
+		case messengertypes.StreamEvent_TypeConversationUpdated:
+			conversation := payload.(*messengertypes.StreamEvent_ConversationUpdated).Conversation
 			if base64.RawURLEncoding.EncodeToString(parsed.GetLink().GetBertyID().GetAccountPK()) != conversation.ContactPublicKey {
 				continue
 			}
 			conversationReady = true
 
-		case bertymessenger.StreamEvent_TypeInteractionUpdated:
-			interaction := payload.(*bertymessenger.StreamEvent_InteractionUpdated).Interaction
+		case messengertypes.StreamEvent_TypeInteractionUpdated:
+			interaction := payload.(*messengertypes.StreamEvent_InteractionUpdated).Interaction
 
-			if interaction.GetType() == bertymessenger.AppMessage_TypeUserMessage {
+			if interaction.GetType() == messengertypes.AppMessage_TypeUserMessage {
 				payload, err := interaction.UnmarshalPayload()
 				if err != nil {
 					return err
 				}
-				body := payload.(*bertymessenger.AppMessage_UserMessage).Body
+				body := payload.(*messengertypes.AppMessage_UserMessage).Body
 
 				if base64.RawURLEncoding.EncodeToString(parsed.GetLink().GetBertyID().GetAccountPK()) != interaction.Conversation.ContactPublicKey {
 					continue

@@ -25,6 +25,8 @@ xcodegen_ver = $(shell cat ios/XcodeGen.version)
 required_java_ver = 18
 minimum_ios_ver = 12.0
 minimum_android_ver = 21
+go_libtor_ver = $(shell  go list -mod=readonly -modfile=$(PWD)/../go.mod -f '{{.Version}}' -m berty.tech/go-libtor)
+go_libtor_libs_ver = $(shell cat ios/tor-deps/version 2> /dev/null)
 
 ## if (PWD != Makefile directory) then exit
 
@@ -107,6 +109,7 @@ endif
 	rm -rf ios/build
 	rm -rf ios/Pods
 	rm -rf ios/Frameworks/Bertybridge.framework
+	rm -rf ios/tor-deps
 	rm -rf ios/vendor
 	rm -rf ios/Berty.xcodeproj
 	rm -rf ios/Berty.xcworkspace
@@ -118,6 +121,9 @@ endif
 	@echo "  rm -rf $(HOME)/.gradle/caches"
 	@echo "  rm -rf $(HOME)/Library/Developer/Xcode/DerivedData"
 	@echo "  rm -rf $(HOME)/Library/Caches/CocoaPods"
+	@echo "  sudo rm -rf $(PWD)/ios/.gomobile-cache"
+	@echo "  sudo rm -rf $(PWD)/android/.gomobile-cache"
+
 
 .PHONY: gen.clean
 gen.clean:
@@ -286,13 +292,13 @@ packages/api/root.pb.js: $(wildcard ../api/*) node_modules
 		-t json-module \
 		-w es6 \
 		-o $@ \
-		../api/bertyaccount.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto
+		../api/bertyaccount.proto ../api/protocoltypes.proto ../api/messengertypes.proto
 
 packages/api/root.pb.d.ts: $(wildcard ../api/*) node_modules
 	$(call check-program, npx)
 	npx pbjs $(pbjs_common_flags) \
 		-t static-module \
-		../api/bertyaccount.proto ../api/bertyprotocol.proto ../api/bertymessenger.proto \
+		../api/bertyaccount.proto ../api/protocoltypes.proto ../api/messengertypes.proto \
 		| npx pbts --no-comments -o $@ -
 	sed -E -i.bak 's/^.*constructor.*$$//g' $@ # json-module codegen doesn't support new
 	rm -f $@.bak
@@ -302,7 +308,12 @@ packages/grpc-bridge/welsh-clients.gen.ts: packages/grpc-bridge/gen-clients.js p
 	npx babel-node packages/grpc-bridge/gen-clients.js > $@
 	npx eslint --no-ignore --fix $@
 
-_gen.pbjs: packages/api/root.pb.js packages/api/root.pb.d.ts packages/grpc-bridge/welsh-clients.gen.ts
+packages/store/types.gen.ts: packages/store/gen-type-utils.js packages/api/root.pb.js node_modules
+	$(call check-program, npx)
+	npx babel-node packages/store/gen-type-utils.js > $@
+	npx eslint --no-ignore --fix $@
+
+_gen.pbjs: packages/api/root.pb.js packages/api/root.pb.d.ts packages/grpc-bridge/welsh-clients.gen.ts packages/store/types.gen.ts
 .PHONY: _gen.pbjs
 
 ##### other generation
@@ -312,7 +323,7 @@ _gen.config:
 
 ##### gen.sum
 
-gensum_src := Makefile ../api/bertyprotocol.proto ../api/bertymessenger.proto ../api/bertytypes.proto
+gensum_src := Makefile ../api/protocoltypes.proto ../api/messengertypes.proto
 gen.sum: $(gensum_src)
 	$(call check-program, shasum)
 	@shasum $(gensum_src) | sort > gen.sum.tmp
@@ -333,16 +344,44 @@ _write_gen_sum:
 ios/Frameworks/Bertybridge.framework: $(bridge_src)
 	cd .. && go mod download
 	cd .. && go run golang.org/x/mobile/cmd/gomobile init
-	mkdir -p "ios/Frameworks"
-	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
-		-o js/$@ \
-		-v $(ext_ldflags) \
-		-target ios \
-		-iosversion $(minimum_ios_ver) \
-		./go/framework/bertybridge
+	# Download required go-libtor deps if needed
+	if [ "$(go_libtor_ver)" != "$(go_libtor_libs_ver)" ]; then \
+		set -o pipefail; \
+		mkdir -p ios/tor-deps $(TMP)/tor-deps/ios && \
+		libs=$$(wget -O - "https://github.com/berty/go-libtor/releases/tag/$(go_libtor_ver)" 2> /dev/null \
+			| grep -o 'ios-.*-universal\.tar\.gz' \
+			| uniq) && \
+		for lib in $$libs; do \
+			wget "https://github.com/berty/go-libtor/releases/download/$(go_libtor_ver)/$$lib" -O "$(TMP)/tor-deps/ios/$$lib" && \
+			tar xvf "$(TMP)/tor-deps/ios/$$lib" -C ios/tor-deps || exit 1; \
+		done && \
+		echo $(go_libtor_ver) > ios/tor-deps/version; \
+	fi
+	mkdir -p ios/Frameworks
+	# TODO: uncomment this when Tor transport will be fixed
+	# cd .. && \
+	# 	GO111MODULE=on \
+	# 	LIBRARY_PATH="$(PWD)/ios/tor-deps/lib" \
+	# 	CPATH="$(PWD)/ios/tor-deps/include" \
+	# 	go run golang.org/x/mobile/cmd/gomobile bind \
+	# 		-o js/$@ \
+	# 		-v $(ext_ldflags) \
+	# 		-cache "$(PWD)/ios/.gomobile-cache" \
+	# 		-target ios \
+	# 		-tags embedTor \
+	# 		-iosversion $(minimum_ios_ver) \
+	# 		./go/framework/bertybridge
+	cd .. && \
+		GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
+			-o js/$@ \
+			-v $(ext_ldflags) \
+			-cache "$(PWD)/ios/.gomobile-cache" \
+			-target ios \
+			-iosversion $(minimum_ios_ver) \
+			./go/framework/bertybridge
 	touch $@
 
-ios/Berty.xcworkspace: $(pkg_desc) ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle package.json
+ios/Berty.xcworkspace: ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle package.json ios/OpenSSL-Universal-Override.podspec
 	$(call check-program, bundle)
 	cd ios && bundle exec pod install
 	touch $@
@@ -380,10 +419,11 @@ ios/vendor/bundle: ios/Gemfile
 android/libs/gobridge.aar: $(bridge_src)
 	cd .. && go mod download
 	cd .. && go run golang.org/x/mobile/cmd/gomobile init
-	mkdir -p "android/libs"
+	mkdir -p android/libs
 	cd .. && GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
 		-o js/$@ \
 		-v $(ext_ldflags) \
+		-cache "$(PWD)/android/.gomobile-cache" \
 		-target android \
 		-androidapi $(minimum_android_ver) \
 		./go/framework/bertybridge

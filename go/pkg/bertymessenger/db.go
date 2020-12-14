@@ -13,8 +13,9 @@ import (
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 type dbWrapper struct {
@@ -39,14 +40,15 @@ func newDBWrapper(db *gorm.DB, log *zap.Logger) *dbWrapper {
 
 func getDBModels() []interface{} {
 	return []interface{}{
-		&Conversation{},
-		&Account{},
-		&ServiceToken{},
-		&Contact{},
-		&Interaction{},
-		&Member{},
-		&Device{},
-		&ConversationReplicationInfo{},
+		&messengertypes.Conversation{},
+		&messengertypes.Account{},
+		&messengertypes.ServiceToken{},
+		&messengertypes.Contact{},
+		&messengertypes.Interaction{},
+		&messengertypes.Member{},
+		&messengertypes.Device{},
+		&messengertypes.ConversationReplicationInfo{},
+		&messengertypes.Media{},
 	}
 }
 
@@ -105,7 +107,7 @@ func (d *dbWrapper) tx(txFunc func(*dbWrapper) error) error {
 	})
 }
 
-func (d *dbWrapper) addConversationForContact(groupPK, contactPK string) (*Conversation, error) {
+func (d *dbWrapper) addConversationForContact(groupPK, contactPK string) (*messengertypes.Conversation, error) {
 	if groupPK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no conversation public key specified"))
 	}
@@ -115,10 +117,10 @@ func (d *dbWrapper) addConversationForContact(groupPK, contactPK string) (*Conve
 	}
 
 	if err := d.tx(func(tx *dbWrapper) error {
-		conversation := &Conversation{
+		conversation := &messengertypes.Conversation{
 			PublicKey:        groupPK,
 			ContactPublicKey: contactPK,
-			Type:             Conversation_ContactType,
+			Type:             messengertypes.Conversation_ContactType,
 			DisplayName:      "", // empty on account conversations
 			Link:             "", // empty on account conversations
 			CreatedDate:      timestampMs(time.Now()),
@@ -129,7 +131,7 @@ func (d *dbWrapper) addConversationForContact(groupPK, contactPK string) (*Conve
 			count := int64(0)
 
 			if err := tx.db.
-				Model(&Conversation{}).
+				Model(&messengertypes.Conversation{}).
 				Where("(contact_public_key == ? AND public_key != ?) OR (contact_public_key != ? AND public_key == ?)", contactPK, groupPK, contactPK, groupPK).
 				Count(&count).
 				Error; err != nil {
@@ -152,14 +154,14 @@ func (d *dbWrapper) addConversationForContact(groupPK, contactPK string) (*Conve
 	return d.getConversationByPK(groupPK)
 }
 
-func (d *dbWrapper) addConversation(groupPK string) (*Conversation, error) {
+func (d *dbWrapper) addConversation(groupPK string) (*messengertypes.Conversation, error) {
 	if groupPK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
 	}
 
-	conversation := &Conversation{
+	conversation := &messengertypes.Conversation{
 		PublicKey:   groupPK,
-		Type:        Conversation_MultiMemberType,
+		Type:        messengertypes.Conversation_MultiMemberType,
 		CreatedDate: timestampMs(time.Now()),
 	}
 
@@ -174,7 +176,7 @@ func (d *dbWrapper) addConversation(groupPK string) (*Conversation, error) {
 	return d.getConversationByPK(groupPK)
 }
 
-func (d *dbWrapper) updateConversation(c Conversation) (bool, error) {
+func (d *dbWrapper) updateConversation(c messengertypes.Conversation) (bool, error) {
 	if c.PublicKey == "" {
 		return false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
 	}
@@ -244,7 +246,7 @@ func (d *dbWrapper) updateConversationReadState(pk string, newUnread bool, event
 	updates["reply_options_cid"] = replyOptionsCID
 
 	// db update
-	tx := d.db.Model(&Conversation{}).Where(&Conversation{PublicKey: pk}).Updates(updates)
+	tx := d.db.Model(&messengertypes.Conversation{}).Where(&messengertypes.Conversation{PublicKey: pk}).Updates(updates)
 
 	if tx.Error != nil {
 		return tx.Error
@@ -262,19 +264,25 @@ func (d *dbWrapper) addAccount(pk, link string) error {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("an account public key is required"))
 	}
 
-	if err := d.db.Model(&Account{}).FirstOrCreate(&Account{}, &Account{PublicKey: pk, Link: link}).Error; err != nil && !isSQLiteError(err, sqlite3.ErrConstraint) {
+	if err := d.db.
+		Model(&messengertypes.Account{}).
+		FirstOrCreate(
+			&messengertypes.Account{},
+			&messengertypes.Account{PublicKey: pk, Link: link},
+		).
+		Error; err != nil && !isSQLiteError(err, sqlite3.ErrConstraint) {
 		return err
 	}
 
 	return nil
 }
 
-func (d *dbWrapper) updateAccount(pk, url, displayName, avatarCID string) (*Account, error) {
+func (d *dbWrapper) updateAccount(pk, url, displayName, avatarCID string) (*messengertypes.Account, error) {
 	if pk == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an account public key is required"))
 	}
 
-	acc := &Account{}
+	acc := &messengertypes.Account{}
 
 	values := map[string]interface{}{}
 	if url != "" {
@@ -287,7 +295,7 @@ func (d *dbWrapper) updateAccount(pk, url, displayName, avatarCID string) (*Acco
 		values["avatar_cid"] = avatarCID
 	}
 
-	tx := d.db.Model(&Account{}).Where(&Account{PublicKey: pk}).Updates(values).First(&acc)
+	tx := d.db.Model(&messengertypes.Account{}).Where(&messengertypes.Account{PublicKey: pk}).Updates(values).First(&acc)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
@@ -295,63 +303,70 @@ func (d *dbWrapper) updateAccount(pk, url, displayName, avatarCID string) (*Acco
 	return acc, nil
 }
 
-func (d *dbWrapper) getAccount() (*Account, error) {
+func (d *dbWrapper) getAccount() (*messengertypes.Account, error) {
 	var (
-		account = &Account{}
+		account = &messengertypes.Account{}
 		count   int64
 	)
 
-	d.db.Model(&Account{}).Count(&count)
+	d.db.Model(&messengertypes.Account{}).Count(&count)
 	if count > 1 {
 		return nil, errcode.ErrDBMultipleRecords
 	}
 
-	return account, d.db.Model(&Account{}).Preload("ServiceTokens").First(&account).Error
+	return account, d.db.Model(&messengertypes.Account{}).Preload("ServiceTokens").First(&account).Error
 }
 
-func (d *dbWrapper) getDeviceByPK(publicKey string) (*Device, error) {
+func (d *dbWrapper) getDeviceByPK(publicKey string) (*messengertypes.Device, error) {
 	if publicKey == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a device public key is required"))
 	}
 
-	device := &Device{}
+	device := &messengertypes.Device{}
 
-	if err := d.db.First(&device, &Device{PublicKey: publicKey}).Error; err != nil {
+	if err := d.db.First(&device, &messengertypes.Device{PublicKey: publicKey}).Error; err != nil {
 		return nil, err
 	}
 
 	return device, nil
 }
 
-func (d *dbWrapper) getContactByPK(publicKey string) (*Contact, error) {
+func (d *dbWrapper) getContactByPK(publicKey string) (*messengertypes.Contact, error) {
 	if publicKey == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
 	}
 
-	contact := &Contact{}
+	contact := &messengertypes.Contact{}
 
-	if err := d.db.First(&contact, &Contact{PublicKey: publicKey}).Error; err != nil {
+	if err := d.db.First(&contact, &messengertypes.Contact{PublicKey: publicKey}).Error; err != nil {
 		return nil, err
 	}
 
 	return contact, nil
 }
 
-func (d *dbWrapper) getConversationByPK(publicKey string) (*Conversation, error) {
+func (d *dbWrapper) getConversationByPK(publicKey string) (*messengertypes.Conversation, error) {
 	if publicKey == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
 	}
 
-	conversation := &Conversation{}
+	conversation := &messengertypes.Conversation{}
 
-	if err := d.db.Preload("ReplyOptions").Preload("ReplicationInfo").First(&conversation, &Conversation{PublicKey: publicKey}).Error; err != nil {
+	if err := d.db.
+		Preload("ReplyOptions").
+		Preload("ReplicationInfo").
+		First(
+			&conversation,
+			&messengertypes.Conversation{PublicKey: publicKey},
+		).
+		Error; err != nil {
 		return nil, err
 	}
 
 	return conversation, nil
 }
 
-func (d *dbWrapper) getMemberByPK(publicKey string, convPK string) (*Member, error) {
+func (d *dbWrapper) getMemberByPK(publicKey string, convPK string) (*messengertypes.Member, error) {
 	if publicKey == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("member public key cannot be empty"))
 	}
@@ -359,55 +374,55 @@ func (d *dbWrapper) getMemberByPK(publicKey string, convPK string) (*Member, err
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("conversation public key cannot be empty"))
 	}
 
-	member := &Member{}
+	member := &messengertypes.Member{}
 
-	if err := d.db.First(&member, &Member{PublicKey: publicKey, ConversationPublicKey: convPK}).Error; err != nil {
+	if err := d.db.First(&member, &messengertypes.Member{PublicKey: publicKey, ConversationPublicKey: convPK}).Error; err != nil {
 		return nil, err
 	}
 
 	return member, nil
 }
 
-func (d *dbWrapper) getAllConversations() ([]*Conversation, error) {
-	convs := []*Conversation(nil)
+func (d *dbWrapper) getAllConversations() ([]*messengertypes.Conversation, error) {
+	convs := []*messengertypes.Conversation(nil)
 
 	return convs, d.db.Preload("ReplyOptions").Preload("ReplicationInfo").Find(&convs).Error
 }
 
-func (d *dbWrapper) getAllMembers() ([]*Member, error) {
-	members := []*Member(nil)
+func (d *dbWrapper) getAllMembers() ([]*messengertypes.Member, error) {
+	members := []*messengertypes.Member(nil)
 
 	return members, d.db.Find(&members).Error
 }
 
-func (d *dbWrapper) getAllContacts() ([]*Contact, error) {
-	contacts := []*Contact(nil)
+func (d *dbWrapper) getAllContacts() ([]*messengertypes.Contact, error) {
+	contacts := []*messengertypes.Contact(nil)
 
 	return contacts, d.db.Find(&contacts).Error
 }
 
-func (d *dbWrapper) getContactsByState(state Contact_State) ([]*Contact, error) {
-	contacts := []*Contact(nil)
+func (d *dbWrapper) getContactsByState(state messengertypes.Contact_State) ([]*messengertypes.Contact, error) {
+	contacts := []*messengertypes.Contact(nil)
 
-	return contacts, d.db.Where(&Contact{State: state}).Find(&contacts).Error
+	return contacts, d.db.Where(&messengertypes.Contact{State: state}).Find(&contacts).Error
 }
 
-func (d *dbWrapper) getAllInteractions() ([]*Interaction, error) {
-	interactions := []*Interaction(nil)
+func (d *dbWrapper) getAllInteractions() ([]*messengertypes.Interaction, error) {
+	interactions := []*messengertypes.Interaction(nil)
 
 	return interactions, d.db.Preload(clause.Associations).Find(&interactions).Error
 }
 
-func (d *dbWrapper) getInteractionByCID(cid string) (*Interaction, error) {
+func (d *dbWrapper) getInteractionByCID(cid string) (*messengertypes.Interaction, error) {
 	if cid == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
 	}
 
-	interaction := &Interaction{}
-	return interaction, d.db.Preload(clause.Associations).First(&interaction, &Interaction{CID: cid}).Error
+	interaction := &messengertypes.Interaction{}
+	return interaction, d.db.Preload(clause.Associations).First(&interaction, &messengertypes.Interaction{CID: cid}).Error
 }
 
-func (d *dbWrapper) addContactRequestOutgoingEnqueued(contactPK, displayName, convPK string) (*Contact, error) {
+func (d *dbWrapper) addContactRequestOutgoingEnqueued(contactPK, displayName, convPK string) (*messengertypes.Contact, error) {
 	if contactPK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
 	}
@@ -419,15 +434,15 @@ func (d *dbWrapper) addContactRequestOutgoingEnqueued(contactPK, displayName, co
 		return nil, err
 	}
 
-	contact := &Contact{
+	contact := &messengertypes.Contact{
 		PublicKey:             contactPK,
 		DisplayName:           displayName,
-		State:                 Contact_OutgoingRequestEnqueued,
+		State:                 messengertypes.Contact_OutgoingRequestEnqueued,
 		CreatedDate:           timestampMs(time.Now()),
 		ConversationPublicKey: convPK,
 	}
 
-	tx := d.db.Where(&Contact{PublicKey: contactPK}).Create(&contact)
+	tx := d.db.Where(&messengertypes.Contact{PublicKey: contactPK}).Create(&contact)
 
 	// if tx.Error == nil && tx.RowsAffected == 0 {
 	// Maybe update DisplayName in some cases?
@@ -437,31 +452,31 @@ func (d *dbWrapper) addContactRequestOutgoingEnqueued(contactPK, displayName, co
 	return contact, tx.Error
 }
 
-func (d *dbWrapper) addContactRequestOutgoingSent(contactPK string) (*Contact, error) {
+func (d *dbWrapper) addContactRequestOutgoingSent(contactPK string) (*messengertypes.Contact, error) {
 	if contactPK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
 	}
 
-	contact := &Contact{}
+	contact := &messengertypes.Contact{}
 
 	if res := d.db.
-		Where(&Contact{
+		Where(&messengertypes.Contact{
 			PublicKey: contactPK,
-			State:     Contact_OutgoingRequestEnqueued,
+			State:     messengertypes.Contact_OutgoingRequestEnqueued,
 		}).
-		Updates(&Contact{
+		Updates(&messengertypes.Contact{
 			SentDate: timestampMs(time.Now()),
-			State:    Contact_OutgoingRequestSent,
+			State:    messengertypes.Contact_OutgoingRequestSent,
 		}); res.Error != nil {
 		return nil, res.Error
 	} else if res.RowsAffected == 0 {
 		return nil, errcode.ErrDBAddContactRequestOutgoingSent.Wrap(fmt.Errorf("nothing found"))
 	}
 
-	return contact, d.db.Where(&Contact{PublicKey: contactPK}).First(&contact).Error
+	return contact, d.db.Where(&messengertypes.Contact{PublicKey: contactPK}).First(&contact).Error
 }
 
-func (d *dbWrapper) addContactRequestIncomingReceived(contactPK, displayName, groupPk string) (*Contact, error) {
+func (d *dbWrapper) addContactRequestIncomingReceived(contactPK, displayName, groupPk string) (*messengertypes.Contact, error) {
 	if contactPK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
 	}
@@ -474,10 +489,10 @@ func (d *dbWrapper) addContactRequestIncomingReceived(contactPK, displayName, gr
 	}
 
 	if err := d.db.
-		Create(&Contact{
+		Create(&messengertypes.Contact{
 			DisplayName:           displayName,
 			PublicKey:             contactPK,
-			State:                 Contact_IncomingRequest,
+			State:                 messengertypes.Contact_IncomingRequest,
 			CreatedDate:           timestampMs(time.Now()),
 			ConversationPublicKey: groupPk,
 		}).
@@ -488,7 +503,7 @@ func (d *dbWrapper) addContactRequestIncomingReceived(contactPK, displayName, gr
 	return d.getContactByPK(contactPK)
 }
 
-func (d *dbWrapper) addContactRequestIncomingAccepted(contactPK, groupPK string) (*Contact, error) {
+func (d *dbWrapper) addContactRequestIncomingAccepted(contactPK, groupPK string) (*messengertypes.Contact, error) {
 	if contactPK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(errors.New("a contact public key is required"))
 	}
@@ -502,12 +517,12 @@ func (d *dbWrapper) addContactRequestIncomingAccepted(contactPK, groupPK string)
 		return nil, err
 	}
 
-	if contact.State != Contact_IncomingRequest {
+	if contact.State != messengertypes.Contact_IncomingRequest {
 		return nil, errcode.ErrInvalidInput.Wrap(errors.New("no incoming request"))
 	}
 
 	if err := d.db.Transaction(func(db *gorm.DB) error {
-		contact.State = Contact_Accepted
+		contact.State = messengertypes.Contact_Accepted
 		contact.ConversationPublicKey = groupPK
 
 		if err := db.Save(&contact).Error; err != nil {
@@ -527,14 +542,14 @@ func (d *dbWrapper) addContactRequestIncomingAccepted(contactPK, groupPK string)
 	return contact, nil
 }
 
-func (d *dbWrapper) markInteractionAsAcknowledged(cid string) (*Interaction, error) {
+func (d *dbWrapper) markInteractionAsAcknowledged(cid string) (*messengertypes.Interaction, error) {
 	if cid == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
 	}
 
 	count := int64(0)
 
-	if err := d.db.Model(&Interaction{}).Where(map[string]interface{}{"cid": cid}).Count(&count).Error; err != nil {
+	if err := d.db.Model(&messengertypes.Interaction{}).Where(map[string]interface{}{"cid": cid}).Count(&count).Error; err != nil {
 		return nil, err
 	}
 
@@ -542,7 +557,7 @@ func (d *dbWrapper) markInteractionAsAcknowledged(cid string) (*Interaction, err
 		return nil, gorm.ErrRecordNotFound
 	}
 
-	res := d.db.Model(&Interaction{}).Where(map[string]interface{}{"cid": cid, "acknowledged": false}).Update("acknowledged", true)
+	res := d.db.Model(&messengertypes.Interaction{}).Where(map[string]interface{}{"cid": cid, "acknowledged": false}).Update("acknowledged", true)
 
 	if res.Error != nil {
 		return nil, res.Error
@@ -562,8 +577,8 @@ func (d *dbWrapper) getAcknowledgementsCIDsForInteraction(cid string) ([]string,
 
 	var cids []string
 
-	if err := d.db.Model(&Interaction{}).Where(&Interaction{
-		Type:      AppMessage_TypeAcknowledge,
+	if err := d.db.Model(&messengertypes.Interaction{}).Where(&messengertypes.Interaction{
+		Type:      messengertypes.AppMessage_TypeAcknowledge,
 		TargetCID: cid,
 	}).Pluck("cid", &cids).Error; err != nil {
 		return nil, err
@@ -577,41 +592,41 @@ func (d *dbWrapper) deleteInteractions(cids []string) error {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("a list of cids is required"))
 	}
 
-	return d.db.Model(&Interaction{}).Delete(&Interaction{}, &cids).Error
+	return d.db.Model(&messengertypes.Interaction{}).Delete(&messengertypes.Interaction{}, &cids).Error
 }
 
-func (d *dbWrapper) getDBInfo() (*SystemInfo_DB, error) {
+func (d *dbWrapper) getDBInfo() (*messengertypes.SystemInfo_DB, error) {
 	var err, errs error
-	infos := &SystemInfo_DB{}
+	infos := &messengertypes.SystemInfo_DB{}
 
-	infos.Accounts, err = d.dbModelRowsCount(Account{})
+	infos.Accounts, err = d.dbModelRowsCount(messengertypes.Account{})
 	errs = multierr.Append(errs, err)
 
-	infos.Contacts, err = d.dbModelRowsCount(Contact{})
+	infos.Contacts, err = d.dbModelRowsCount(messengertypes.Contact{})
 	errs = multierr.Append(errs, err)
 
-	infos.Interactions, err = d.dbModelRowsCount(Interaction{})
+	infos.Interactions, err = d.dbModelRowsCount(messengertypes.Interaction{})
 	errs = multierr.Append(errs, err)
 
-	infos.Conversations, err = d.dbModelRowsCount(Conversation{})
+	infos.Conversations, err = d.dbModelRowsCount(messengertypes.Conversation{})
 	errs = multierr.Append(errs, err)
 
-	infos.Members, err = d.dbModelRowsCount(Member{})
+	infos.Members, err = d.dbModelRowsCount(messengertypes.Member{})
 	errs = multierr.Append(errs, err)
 
-	infos.Devices, err = d.dbModelRowsCount(Device{})
+	infos.Devices, err = d.dbModelRowsCount(messengertypes.Device{})
 	errs = multierr.Append(errs, err)
 
-	infos.ServiceTokens, err = d.dbModelRowsCount(ServiceToken{})
+	infos.ServiceTokens, err = d.dbModelRowsCount(messengertypes.ServiceToken{})
 	errs = multierr.Append(errs, err)
 
-	infos.ConversationReplicationInfo, err = d.dbModelRowsCount(ConversationReplicationInfo{})
+	infos.ConversationReplicationInfo, err = d.dbModelRowsCount(messengertypes.ConversationReplicationInfo{})
 	errs = multierr.Append(errs, err)
 
 	return infos, errs
 }
 
-func (d *dbWrapper) addDevice(devicePK string, memberPK string) (*Device, error) {
+func (d *dbWrapper) addDevice(devicePK string, memberPK string) (*messengertypes.Device, error) {
 	if devicePK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a device public key is required"))
 	}
@@ -626,7 +641,7 @@ func (d *dbWrapper) addDevice(devicePK string, memberPK string) (*Device, error)
 			count := int64(0)
 
 			if err := tx.db.
-				Model(&Device{}).
+				Model(&messengertypes.Device{}).
 				Where("member_public_key != ? AND public_key == ?", memberPK, devicePK).
 				Count(&count).
 				Error; err != nil {
@@ -640,7 +655,7 @@ func (d *dbWrapper) addDevice(devicePK string, memberPK string) (*Device, error)
 
 		return tx.db.
 			Clauses(clause.OnConflict{DoNothing: true}).
-			Create(&Device{
+			Create(&messengertypes.Device{
 				PublicKey:       devicePK,
 				MemberPublicKey: memberPK,
 			}).
@@ -652,13 +667,13 @@ func (d *dbWrapper) addDevice(devicePK string, memberPK string) (*Device, error)
 	return d.getDeviceByPK(devicePK)
 }
 
-func (d *dbWrapper) updateContact(pk string, contact Contact) error {
+func (d *dbWrapper) updateContact(pk string, contact messengertypes.Contact) error {
 	if pk == "" {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no public key specified"))
 	}
 
 	count := int64(0)
-	if err := d.db.Model(&Contact{}).Where(&Contact{PublicKey: pk}).Count(&count).Error; err != nil {
+	if err := d.db.Model(&messengertypes.Contact{}).Where(&messengertypes.Contact{PublicKey: pk}).Count(&count).Error; err != nil {
 		return err
 	}
 
@@ -666,10 +681,10 @@ func (d *dbWrapper) updateContact(pk string, contact Contact) error {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("contact not found"))
 	}
 
-	return d.db.Model(&Contact{PublicKey: pk}).Updates(&contact).Error
+	return d.db.Model(&messengertypes.Contact{PublicKey: pk}).Updates(&contact).Error
 }
 
-func (d *dbWrapper) addInteraction(rawInte Interaction) (*Interaction, bool, error) {
+func (d *dbWrapper) addInteraction(rawInte messengertypes.Interaction) (*messengertypes.Interaction, bool, error) {
 	if rawInte.CID == "" {
 		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
 	}
@@ -696,7 +711,7 @@ func (d *dbWrapper) getReplyOptionsCIDForConversation(pk string) (string, error)
 
 	cid := ""
 
-	if err := d.db.Model(&Interaction{}).
+	if err := d.db.Model(&messengertypes.Interaction{}).
 		Raw(`SELECT cid
 			FROM interactions
 			WHERE conversation_public_key = ?
@@ -711,14 +726,14 @@ func (d *dbWrapper) getReplyOptionsCIDForConversation(pk string) (string, error)
 			AND type = ?
 			ORDER BY ROWID DESC
 			LIMIT 1
-		`, pk, pk, AppMessage_TypeReplyOptions).Scan(&cid).Error; err != nil {
+		`, pk, pk, messengertypes.AppMessage_TypeReplyOptions).Scan(&cid).Error; err != nil {
 		return "", err
 	}
 
 	return cid, nil
 }
 
-func (d *dbWrapper) attributeBacklogInteractions(devicePK, groupPK, memberPK string) ([]*Interaction, error) {
+func (d *dbWrapper) attributeBacklogInteractions(devicePK, groupPK, memberPK string) ([]*messengertypes.Interaction, error) {
 	if devicePK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing device public key"))
 	}
@@ -732,13 +747,13 @@ func (d *dbWrapper) attributeBacklogInteractions(devicePK, groupPK, memberPK str
 	}
 
 	var (
-		backlog []*Interaction
+		backlog []*messengertypes.Interaction
 		cids    []string
 	)
 
 	if err := d.tx(func(tx *dbWrapper) error {
 		res := tx.db.
-			Model(&Interaction{}).
+			Model(&messengertypes.Interaction{}).
 			Where("device_public_key = ? AND conversation_public_key = ? AND member_public_key = \"\"", devicePK, groupPK).
 			Order("sent_date asc")
 
@@ -768,7 +783,7 @@ func (d *dbWrapper) attributeBacklogInteractions(devicePK, groupPK, memberPK str
 	return backlog, nil
 }
 
-func (d *dbWrapper) addMember(memberPK, groupPK, displayName string, avatarCID string) (*Member, error) {
+func (d *dbWrapper) addMember(memberPK, groupPK, displayName, avatarCID string) (*messengertypes.Member, error) {
 	if memberPK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("member public key cannot be empty"))
 	}
@@ -777,7 +792,7 @@ func (d *dbWrapper) addMember(memberPK, groupPK, displayName string, avatarCID s
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("conversation public key cannot be empty"))
 	}
 
-	member := &Member{
+	member := &messengertypes.Member{
 		PublicKey:             memberPK,
 		ConversationPublicKey: groupPK,
 		AvatarCID:             avatarCID,
@@ -812,7 +827,7 @@ func (d *dbWrapper) addMember(memberPK, groupPK, displayName string, avatarCID s
 	return member, nil
 }
 
-func (d *dbWrapper) upsertMember(memberPK, groupPK string, m Member) (*Member, bool, error) {
+func (d *dbWrapper) upsertMember(memberPK, groupPK string, m messengertypes.Member) (*messengertypes.Member, bool, error) {
 	if memberPK == "" {
 		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("member public key cannot be empty"))
 	}
@@ -856,7 +871,7 @@ func (d *dbWrapper) upsertMember(memberPK, groupPK string, m Member) (*Member, b
 	return um, isNew, nil
 }
 
-func (d *dbWrapper) setConversationIsOpenStatus(conversationPK string, status bool) (*Conversation, bool, error) {
+func (d *dbWrapper) setConversationIsOpenStatus(conversationPK string, status bool) (*messengertypes.Conversation, bool, error) {
 	if conversationPK == "" {
 		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
 	}
@@ -881,8 +896,8 @@ func (d *dbWrapper) setConversationIsOpenStatus(conversationPK string, status bo
 	}
 
 	if err := d.db.
-		Model(&Conversation{}).
-		Where(&Conversation{PublicKey: conversationPK}).
+		Model(&messengertypes.Conversation{}).
+		Where(&messengertypes.Conversation{PublicKey: conversationPK}).
 		Updates(values).
 		Error; err != nil {
 		return nil, false, err
@@ -899,8 +914,8 @@ func (d *dbWrapper) isConversationOpened(conversationPK string) (bool, error) {
 	var ret int64
 
 	err := d.db.
-		Model(&Conversation{}).
-		Where(&Conversation{PublicKey: conversationPK, IsOpen: true}).
+		Model(&messengertypes.Conversation{}).
+		Where(&messengertypes.Conversation{PublicKey: conversationPK, IsOpen: true}).
 		Count(&ret).Error
 
 	return ret == 1, err
@@ -919,7 +934,7 @@ func (d *dbLogWrapper) Trace(ctx context.Context, begin time.Time, fc func() (st
 	d.Interface.Trace(ctx, begin, fc, err)
 }
 
-func (d *dbWrapper) addServiceToken(accountPK string, serviceToken *bertytypes.ServiceToken) error {
+func (d *dbWrapper) addServiceToken(accountPK string, serviceToken *protocoltypes.ServiceToken) error {
 	if accountPK == "" {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("an account public key is required"))
 	}
@@ -930,7 +945,7 @@ func (d *dbWrapper) addServiceToken(accountPK string, serviceToken *bertytypes.S
 
 	if err := d.tx(func(tx *dbWrapper) error {
 		for _, s := range serviceToken.SupportedServices {
-			res := tx.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&ServiceToken{
+			res := tx.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&messengertypes.ServiceToken{
 				AccountPK:         accountPK,
 				TokenID:           serviceToken.TokenID(),
 				ServiceType:       s.ServiceType,
@@ -957,7 +972,7 @@ func (d *dbWrapper) accountSetReplicationAutoEnable(pk string, enabled bool) err
 	}
 
 	// db update
-	tx := d.db.Model(&Account{}).Where(&Account{PublicKey: pk}).Updates(updates)
+	tx := d.db.Model(&messengertypes.Account{}).Where(&messengertypes.Account{PublicKey: pk}).Updates(updates)
 
 	if tx.Error != nil {
 		return tx.Error
@@ -970,7 +985,7 @@ func (d *dbWrapper) accountSetReplicationAutoEnable(pk string, enabled bool) err
 	return nil
 }
 
-func (d *dbWrapper) saveConversationReplicationInfo(c ConversationReplicationInfo) error {
+func (d *dbWrapper) saveConversationReplicationInfo(c messengertypes.ConversationReplicationInfo) error {
 	if c.CID == "" {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
 	}
@@ -981,4 +996,82 @@ func (d *dbWrapper) saveConversationReplicationInfo(c ConversationReplicationInf
 	}
 
 	return nil
+}
+
+func (d *dbWrapper) addMedias(medias []*messengertypes.Media) ([]bool, error) {
+	if len(medias) == 0 {
+		return []bool{}, nil
+	}
+	for _, m := range medias {
+		if err := ensureValidBase64CID(m.GetCID()); err != nil {
+			return nil, errcode.ErrInvalidInput.Wrap(err)
+		}
+	}
+
+	var dbMedias []*messengertypes.Media
+	cids := make([]string, len(medias))
+	for i, m := range medias {
+		cids[i] = m.GetCID()
+	}
+	err := d.db.Model(&messengertypes.Media{}).Where("cid IN ?", cids).Find(&dbMedias).Error
+	if err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	willAdd := make([]bool, len(medias))
+	for i, m := range medias {
+		found := false
+		for _, n := range dbMedias {
+			if m.GetCID() == n.GetCID() {
+				found = true
+				break
+			}
+		}
+		if !found {
+			willAdd[i] = true
+		}
+	}
+
+	if err := d.db.Clauses(clause.OnConflict{DoNothing: true}).Create(medias).Error; err != nil {
+		return nil, errcode.ErrDBWrite.Wrap(err)
+	}
+
+	return willAdd, nil
+}
+
+func (d *dbWrapper) getMedias(cids []string) ([]*messengertypes.Media, error) {
+	if len(cids) == 0 {
+		return nil, nil
+	}
+	for _, c := range cids {
+		if err := ensureValidBase64CID(c); err != nil {
+			return nil, errcode.ErrInvalidInput.Wrap(err)
+		}
+	}
+
+	var dbMedias []*messengertypes.Media
+	err := d.db.Model(&messengertypes.Media{}).Where("cid IN ?", cids).Find(&dbMedias).Error
+	if err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	medias := make([]*messengertypes.Media, len(cids))
+	for i, cid := range cids {
+		medias[i] = &messengertypes.Media{CID: cid}
+		for _, dbMedia := range dbMedias {
+			if dbMedia.GetCID() == cid {
+				medias[i] = dbMedia
+			}
+		}
+	}
+	return medias, nil
+}
+
+func (d *dbWrapper) getAllMedias() ([]*messengertypes.Media, error) {
+	var medias []*messengertypes.Media
+	err := d.db.Find(&medias).Error
+	if err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+	return medias, nil
 }

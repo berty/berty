@@ -14,7 +14,8 @@ import { isReadyRef, navigationRef } from '@berty-tech/navigation'
 import { Navigation } from '@berty-tech/navigation/stacks'
 import { Provider as StyleProvider } from '@berty-tech/styles'
 import NotificationProvider from '@berty-tech/components/NotificationProvider'
-
+import { StickMusicPlayer } from '@berty-tech/components/shared-components/StickyMusicPlayer'
+import { MusicPlayerProvider } from '@berty-tech/music-player'
 import { FeatherIconsPack } from './feather-icons'
 import { CustomIconsPack } from './custom-icons'
 
@@ -45,7 +46,10 @@ export const App: React.FC = () => {
 								<DeleteGate>
 									<StreamGate>
 										<ListGate>
-											<Navigation />
+											<MusicPlayerProvider>
+												<StickMusicPlayer />
+												<Navigation />
+											</MusicPlayerProvider>
 										</ListGate>
 									</StreamGate>
 								</DeleteGate>

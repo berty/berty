@@ -5,11 +5,11 @@ import (
 	"io"
 	"sync"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func (s *service) InstanceExportData(_ *bertytypes.InstanceExportData_Request, server ProtocolService_InstanceExportDataServer) error {
+func (s *service) InstanceExportData(_ *protocoltypes.InstanceExportData_Request, server protocoltypes.ProtocolService_InstanceExportDataServer) error {
 	r, w := io.Pipe()
 
 	var exportErr error
@@ -31,7 +31,7 @@ func (s *service) InstanceExportData(_ *bertytypes.InstanceExportData_Request, s
 				break
 			}
 
-			if err := server.Send(&bertytypes.InstanceExportData_Reply{ExportedData: contents[:l]}); err != nil {
+			if err := server.Send(&protocoltypes.InstanceExportData_Reply{ExportedData: contents[:l]}); err != nil {
 				exportErr = errcode.ErrStreamWrite.Wrap(err)
 				break
 			}
@@ -52,7 +52,7 @@ func (s *service) InstanceExportData(_ *bertytypes.InstanceExportData_Request, s
 	return nil
 }
 
-func (s *service) InstanceGetConfiguration(ctx context.Context, req *bertytypes.InstanceGetConfiguration_Request) (*bertytypes.InstanceGetConfiguration_Reply, error) {
+func (s *service) InstanceGetConfiguration(ctx context.Context, req *protocoltypes.InstanceGetConfiguration_Request) (*protocoltypes.InstanceGetConfiguration_Reply, error) {
 	key, err := s.ipfsCoreAPI.Key().Self(ctx)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -78,7 +78,7 @@ func (s *service) InstanceGetConfiguration(ctx context.Context, req *bertytypes.
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	return &bertytypes.InstanceGetConfiguration_Reply{
+	return &protocoltypes.InstanceGetConfiguration_Reply{
 		AccountPK:      member,
 		DevicePK:       device,
 		AccountGroupPK: s.accountGroup.Group().PublicKey,

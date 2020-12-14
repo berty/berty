@@ -8,7 +8,7 @@ import { useStyles } from '@berty-tech/styles'
 
 const QuickReplyOption: React.FC<{
 	convPk: string
-	option: { display: string; payload: string }
+	option: beapi.messenger.IReplyOption
 }> = ({ convPk, option }) => {
 	const ctx: any = useMsgrContext()
 	const [{ padding, border, margin }] = useStyles()
@@ -42,7 +42,7 @@ const QuickReplyOption: React.FC<{
 					padding.vertical.scale(4),
 				]}
 			>
-				<Text>{option.display}</Text>
+				<Text>{option.display || ''}</Text>
 			</View>
 		</TouchableOpacity>
 	)
@@ -50,7 +50,7 @@ const QuickReplyOption: React.FC<{
 
 export const QuickReplyOptions: React.FC<{
 	convPk: string
-	options: Array<{ display: string; payload: string }>
+	options: beapi.messenger.IReplyOption[]
 }> = ({ convPk, options }) => {
 	const [{ flex }] = useStyles()
 

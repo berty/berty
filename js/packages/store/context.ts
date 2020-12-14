@@ -3,6 +3,8 @@ import { Dispatch, createContext, useContext } from 'react'
 import beapi from '@berty-tech/api'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
+import { ParsedInteraction } from './types.gen'
+
 export enum MessengerAppState {
 	Init = 0,
 	Closed,
@@ -125,6 +127,7 @@ export enum PersistentOptionsKeys {
 	BLE = 'ble',
 	MC = 'mc',
 	Debug = 'debug',
+	Tor = 'tor',
 }
 
 export type PersistentOptionsI18N = {
@@ -153,6 +156,10 @@ export type PersistentOptionsDebug = {
 	enable: boolean
 }
 
+export type PersistentOptionsTor = {
+	flag: string
+}
+
 export type PersistentOptionsUpdate =
 	| {
 			type: typeof PersistentOptionsKeys.I18N
@@ -178,6 +185,10 @@ export type PersistentOptionsUpdate =
 			type: typeof PersistentOptionsKeys.Debug
 			payload: Partial<PersistentOptionsDebug>
 	  }
+	| {
+			type: typeof PersistentOptionsKeys.Tor
+			payload: Partial<PersistentOptionsTor>
+	  }
 
 export type PersistentOptions = {
 	[PersistentOptionsKeys.I18N]: PersistentOptionsI18N
@@ -186,11 +197,12 @@ export type PersistentOptions = {
 	[PersistentOptionsKeys.BLE]: PersistentOptionsBLE
 	[PersistentOptionsKeys.MC]: PersistentOptionsMC
 	[PersistentOptionsKeys.Debug]: PersistentOptionsDebug
+	[PersistentOptionsKeys.Tor]: PersistentOptionsTor
 }
 
 export const defaultPersistentOptions = (): PersistentOptions => ({
 	[PersistentOptionsKeys.I18N]: {
-		language: 'en',
+		language: 'enUS',
 	},
 	[PersistentOptionsKeys.Notifications]: {
 		enable: true,
@@ -208,6 +220,9 @@ export const defaultPersistentOptions = (): PersistentOptions => ({
 	},
 	[PersistentOptionsKeys.Debug]: {
 		enable: false,
+	},
+	[PersistentOptionsKeys.Tor]: {
+		flag: 'disabled',
 	},
 })
 
@@ -227,10 +242,13 @@ export type MsgrState = {
 	conversations: { [key: string]: beapi.messenger.IConversation | undefined }
 	contacts: { [key: string]: beapi.messenger.IContact | undefined }
 	interactions: {
-		[key: string]: { [key: string]: beapi.messenger.IInteraction | undefined } | undefined
+		[key: string]: { [key: string]: ParsedInteraction | undefined } | undefined
 	}
 	members: {
 		[key: string]: { [key: string]: beapi.messenger.IMember | undefined } | undefined
+	}
+	medias: {
+		[key: string]: beapi.messenger.IMedia | undefined
 	}
 	client: ServiceClientType<beapi.messenger.MessengerService> | null
 	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null
@@ -263,6 +281,7 @@ export const initialState = {
 	contacts: {},
 	interactions: {},
 	members: {},
+	medias: {},
 	client: null,
 	protocolClient: null,
 	streamError: null,

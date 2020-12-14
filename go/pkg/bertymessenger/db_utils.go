@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 type ColumnInfo struct {
@@ -102,7 +103,7 @@ func compareDBSchema(dbA map[string][]*ColumnInfo, dbB map[string][]*ColumnInfo)
 	return errs
 }
 
-func restoreDatabaseLocalState(db *dbWrapper, state *LocalDatabaseState) error {
+func restoreDatabaseLocalState(db *dbWrapper, state *messengertypes.LocalDatabaseState) error {
 	if state == nil {
 		return nil
 	}

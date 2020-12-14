@@ -1,3 +1,5 @@
+import beapi from '@berty-tech/api'
+
 export type RouteProps<T> = { route: { params: T } }
 
 export namespace ScreenProps {
@@ -15,7 +17,6 @@ export namespace ScreenProps {
 		export type Home = RouteProps<void>
 		export type ContactRequest = RouteProps<{ contactId: string }>
 		export type Scan = RouteProps<void>
-		export type HomeModal = RouteProps<void>
 		export namespace CreateGroup {
 			export type CreateGroupAddMembers = RouteProps<void>
 			export type CreateGroupFinalize = RouteProps<void>
@@ -54,6 +55,7 @@ export namespace ScreenProps {
 	export namespace Modals {
 		export type ManageDeepLink = RouteProps<{ type: 'qr' | 'link'; value: string }>
 		export type AddBetabot = RouteProps<void>
+		export type ImageView = RouteProps<{ images: beapi.messenger.IMedia[] }>
 	}
 }
 
@@ -75,7 +77,6 @@ export namespace Routes {
 		Home = 'Main.Home',
 		ContactRequest = 'Main.ContactRequest',
 		Scan = 'Main.Scan',
-		HomeModal = 'Main.HomeModal',
 	}
 	export enum CreateGroup {
 		CreateGroupAddMembers = 'Main.CreateGroupAddMembers',
@@ -116,5 +117,6 @@ export namespace Routes {
 		DeleteAccount = 'DeleteAccount',
 		ManageDeepLink = 'ManageDeepLink',
 		AddBetabot = 'AddBetabot',
+		ImageView = 'ImageView',
 	}
 }

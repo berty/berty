@@ -251,10 +251,10 @@ export const CreateGroupFinalize: React.FC<{
 	return (
 		<Layout style={[flex.tiny]}>
 			<SwipeNavRecognizer
-				onSwipeUp={() => navigate('Main.HomeModal')}
-				onSwipeDown={() => navigate('Main.HomeModal')}
-				onSwipeLeft={() => navigate('Main.HomeModal')}
-				onSwipeRight={() => navigate('Main.HomeModal')}
+				onSwipeUp={() => navigate('Main.Home')}
+				onSwipeDown={() => navigate('Main.Home')}
+				onSwipeLeft={() => navigate('Main.Home')}
+				onSwipeRight={() => navigate('Main.Home')}
 			>
 				<SafeAreaView style={[background.blue]}>
 					<View onLayout={(e) => setLayout(e.nativeEvent.layout.height)}>

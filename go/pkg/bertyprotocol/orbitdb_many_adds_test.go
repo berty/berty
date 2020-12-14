@@ -11,7 +11,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	orbitdb "berty.tech/go-orbit-db"
 )
 
@@ -58,7 +58,7 @@ func TestAdd(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	g := &bertytypes.Group{PublicKey: pubkB, Secret: sigkB}
+	g := &protocoltypes.Group{PublicKey: pubkB, Secret: sigkB}
 	opts, err := DefaultOrbitDBOptions(g, &orbitdb.CreateDBOptions{}, ks, "log", GroupOpenModeWrite)
 	if err != nil {
 		t.Fatal(err)

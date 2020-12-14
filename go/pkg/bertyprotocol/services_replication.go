@@ -8,8 +8,8 @@ import (
 	"github.com/ipfs/go-datastore/query"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 const (
@@ -24,7 +24,7 @@ type replicationService struct {
 	ctx    context.Context
 }
 
-func (s *replicationService) GroupRegister(token string, group *bertytypes.Group) error {
+func (s *replicationService) GroupRegister(token string, group *protocoltypes.Group) error {
 	data, err := group.Marshal()
 	if err != nil {
 		s.logger.Error("error while marshaling request", zap.Error(err))
@@ -41,15 +41,15 @@ func (s *replicationService) GroupRegister(token string, group *bertytypes.Group
 	return s.GroupSubscribe(group)
 }
 
-func (s *replicationService) GroupSubscribe(group *bertytypes.Group) error {
+func (s *replicationService) GroupSubscribe(group *protocoltypes.Group) error {
 	return s.odb.openGroupReplication(s.ctx, group, nil)
 }
 
-func (s *replicationService) ReplicateGroup(_ context.Context, req *bertytypes.ReplicationServiceReplicateGroup_Request) (*bertytypes.ReplicationServiceReplicateGroup_Reply, error) {
+func (s *replicationService) ReplicateGroup(_ context.Context, req *protocoltypes.ReplicationServiceReplicateGroup_Request) (*protocoltypes.ReplicationServiceReplicateGroup_Reply, error) {
 	// TODO: retrieve auth token
 	err := s.GroupRegister("TODO", req.Group)
 
-	return &bertytypes.ReplicationServiceReplicateGroup_Reply{}, err
+	return &protocoltypes.ReplicationServiceReplicateGroup_Reply{}, err
 }
 
 func (s *replicationService) Close() error {
@@ -92,7 +92,7 @@ func NewReplicationService(ctx context.Context, store ds.Datastore, odb *BertyOr
 	}
 
 	for data := range res.Next() {
-		group := &bertytypes.Group{}
+		group := &protocoltypes.Group{}
 		if err := group.Unmarshal(data.Value); err != nil {
 			logger.Error("unable to unmarshal group data", zap.Error(err))
 			continue

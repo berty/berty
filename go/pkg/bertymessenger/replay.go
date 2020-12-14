@@ -9,20 +9,20 @@ import (
 	"github.com/golang/protobuf/proto"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func getEventsReplayerForDB(ctx context.Context, client bertyprotocol.ProtocolServiceClient) func(db *dbWrapper) error {
+func getEventsReplayerForDB(ctx context.Context, client protocoltypes.ProtocolServiceClient) func(db *dbWrapper) error {
 	return func(db *dbWrapper) error {
 		return replayLogsToDB(ctx, client, db)
 	}
 }
 
-func replayLogsToDB(ctx context.Context, client bertyprotocol.ProtocolServiceClient, wrappedDB *dbWrapper) error {
+func replayLogsToDB(ctx context.Context, client protocoltypes.ProtocolServiceClient, wrappedDB *dbWrapper) error {
 	// Get account infos
-	cfg, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+	cfg, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
@@ -59,7 +59,7 @@ func replayLogsToDB(ctx context.Context, client bertyprotocol.ProtocolServiceCli
 		// TODO: check with @glouvigny if we could launch the protocol
 		// without activating the account group
 		if !bytes.Equal(groupPK, cfg.GetAccountGroupPK()) {
-			if _, err := client.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{
+			if _, err := client.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{
 				GroupPK:   groupPK,
 				LocalOnly: true,
 			}); err != nil {
@@ -78,7 +78,7 @@ func replayLogsToDB(ctx context.Context, client bertyprotocol.ProtocolServiceCli
 
 		// Deactivate non-account groups
 		if !bytes.Equal(groupPK, cfg.GetAccountGroupPK()) {
-			if _, err := client.DeactivateGroup(ctx, &bertytypes.DeactivateGroup_Request{
+			if _, err := client.DeactivateGroup(ctx, &protocoltypes.DeactivateGroup_Request{
 				GroupPK: groupPK,
 			}); err != nil {
 				return errcode.ErrGroupDeactivate.Wrap(err)
@@ -95,7 +95,7 @@ func processMetadataList(ctx context.Context, groupPK []byte, handler *eventHand
 
 	metaList, err := handler.protocolClient.GroupMetadataList(
 		subCtx,
-		&bertytypes.GroupMetadataList_Request{
+		&protocoltypes.GroupMetadataList_Request{
 			GroupPK:  groupPK,
 			UntilNow: true,
 		},
@@ -130,7 +130,7 @@ func processMessageList(ctx context.Context, groupPK []byte, handler *eventHandl
 
 	msgList, err := handler.protocolClient.GroupMessageList(
 		subCtx,
-		&bertytypes.GroupMessageList_Request{
+		&protocoltypes.GroupMessageList_Request{
 			GroupPK:  groupPK,
 			UntilNow: true,
 		},
@@ -151,7 +151,7 @@ func processMessageList(ctx context.Context, groupPK []byte, handler *eventHandl
 			return errcode.ErrEventListMessage.Wrap(err)
 		}
 
-		var appMsg AppMessage
+		var appMsg messengertypes.AppMessage
 		if err := proto.Unmarshal(message.GetMessage(), &appMsg); err != nil {
 			return errcode.ErrDeserialization.Wrap(err)
 		}

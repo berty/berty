@@ -59,7 +59,9 @@
 			"@berty-tech/styles": ["./packages/styles"],
 			"@berty-tech/styles/*": ["./packages/styles/*"],
 			"@berty-tech/web-dev-app": ["./packages/web-dev-app"],
-			"@berty-tech/web-dev-app/*": ["./packages/web-dev-app/*"]
+			"@berty-tech/web-dev-app/*": ["./packages/web-dev-app/*"],
+			"@berty-tech/music-player": ["./packages/music-player"],
+			"@berty-tech/music-player/*": ["./packages/music-player/*"],
 		} /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
 		// "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
 		// "typeRoots": [],                       /* List of folders to include type definitions from. */

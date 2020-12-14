@@ -15,7 +15,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 )
@@ -129,7 +129,7 @@ func TestUnstableRestoreAccount(t *testing.T) {
 	require.NoError(t, err)
 
 	expectedMessages := map[cid.Cid][]byte{}
-	var nodeAInstanceConfig *bertytypes.InstanceGetConfiguration_Reply
+	var nodeAInstanceConfig *protocoltypes.InstanceGetConfiguration_Reply
 
 	g, _, err := NewGroupMultiMember()
 	require.NoError(t, err)
@@ -146,7 +146,7 @@ func TestUnstableRestoreAccount(t *testing.T) {
 		serviceA, ok := nodeA.Service.(*service)
 		require.True(t, ok)
 
-		nodeAInstanceConfig, err = nodeA.Client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+		nodeAInstanceConfig, err = nodeA.Client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 		require.NoError(t, err)
 		require.NotNil(t, nodeAInstanceConfig)
 
@@ -165,10 +165,10 @@ func TestUnstableRestoreAccount(t *testing.T) {
 
 		expectedMessages[op.GetEntry().GetHash()] = testPayload2
 
-		_, err = nodeA.Client.MultiMemberGroupJoin(ctx, &bertytypes.MultiMemberGroupJoin_Request{Group: g})
+		_, err = nodeA.Client.MultiMemberGroupJoin(ctx, &protocoltypes.MultiMemberGroupJoin_Request{Group: g})
 		require.NoError(t, err)
 
-		_, err = nodeA.Client.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{GroupPK: g.PublicKey})
+		_, err = nodeA.Client.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPK: g.PublicKey})
 		require.NoError(t, err)
 
 		op, err = serviceA.openedGroups[string(g.PublicKey)].messageStore.AddMessage(ctx, testPayload3, nil)
@@ -223,7 +223,7 @@ func TestUnstableRestoreAccount(t *testing.T) {
 		}, dsB)
 		defer closeNodeB()
 
-		nodeBInstanceConfig, err := nodeB.Client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+		nodeBInstanceConfig, err := nodeB.Client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 		require.NoError(t, err)
 
 		require.NotNil(t, nodeBInstanceConfig)
@@ -237,13 +237,13 @@ func TestUnstableRestoreAccount(t *testing.T) {
 			require.True(t, ok)
 		}
 
-		_, err = nodeB.Service.ActivateGroup(ctx, &bertytypes.ActivateGroup_Request{GroupPK: g.PublicKey})
+		_, err = nodeB.Service.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPK: g.PublicKey})
 		require.NoError(t, err)
 
 		for _, gPK := range [][]byte{nodeBInstanceConfig.AccountGroupPK, g.PublicKey} {
 			sub, err := nodeB.Client.GroupMessageList(
 				ctx,
-				&bertytypes.GroupMessageList_Request{
+				&protocoltypes.GroupMessageList_Request{
 					GroupPK:  gPK,
 					UntilNow: true,
 				},

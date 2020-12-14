@@ -10,18 +10,23 @@ import (
 	qrterminal "github.com/mdp/qrterminal/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/internal/bertylinks"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 func groupinitCommand() *ffcli.Command {
 	// FIXME: share on discord
 	// FIXME: print berty.tech URL
-	var noQRFlag bool
+	var (
+		noQRFlag   bool
+		passphrase string
+	)
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("berty groupinit", flag.ExitOnError)
 		fs.String("config", "", "config file (optional)")
 		fs.BoolVar(&noQRFlag, "no-qr", noQRFlag, "do not print the QR code in terminal")
+		fs.StringVar(&passphrase, "passphrase", passphrase, "optional encryption passphrase")
 		manager.SetupLoggingFlags(fs) // also available at root level
 		return fs, nil
 	}
@@ -44,12 +49,20 @@ func groupinitCommand() *ffcli.Command {
 			}
 
 			name := fmt.Sprintf("random-group-%d", mrand.Int31()%65535) // nolint:gosec
-			group := &bertymessenger.BertyGroup{
+			group := &messengertypes.BertyGroup{
 				Group:       g,
 				DisplayName: name,
 			}
 			link := group.GetBertyLink()
-			internal, web, err := link.Marshal()
+
+			if passphrase != "" {
+				link, err = bertylinks.EncryptLink(link, []byte(passphrase))
+				if err != nil {
+					return err
+				}
+			}
+
+			internal, web, err := bertylinks.MarshalLink(link)
 			if err != nil {
 				return err
 			}

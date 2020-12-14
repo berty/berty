@@ -8,46 +8,46 @@ import (
 	"golang.org/x/crypto/nacl/secretbox"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	ipfslog "berty.tech/go-ipfs-log"
 )
 
-var eventTypesMapper = map[bertytypes.EventType]struct {
+var eventTypesMapper = map[protocoltypes.EventType]struct {
 	Message    proto.Message
 	SigChecker sigChecker
 }{
-	bertytypes.EventTypeGroupMemberDeviceAdded:                 {Message: &bertytypes.GroupAddMemberDevice{}, SigChecker: sigCheckerMemberDeviceAdded},
-	bertytypes.EventTypeGroupDeviceSecretAdded:                 {Message: &bertytypes.GroupAddDeviceSecret{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeAccountGroupJoined:                     {Message: &bertytypes.AccountGroupJoined{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeAccountGroupLeft:                       {Message: &bertytypes.AccountGroupLeft{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeAccountContactRequestDisabled:          {Message: &bertytypes.AccountContactRequestDisabled{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeAccountContactRequestEnabled:           {Message: &bertytypes.AccountContactRequestEnabled{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeAccountContactRequestReferenceReset:    {Message: &bertytypes.AccountContactRequestReferenceReset{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeAccountContactRequestOutgoingEnqueued:  {Message: &bertytypes.AccountContactRequestEnqueued{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeAccountContactRequestOutgoingSent:      {Message: &bertytypes.AccountContactRequestSent{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeAccountContactRequestIncomingReceived:  {Message: &bertytypes.AccountContactRequestReceived{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeAccountContactRequestIncomingDiscarded: {Message: &bertytypes.AccountContactRequestDiscarded{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeAccountContactRequestIncomingAccepted:  {Message: &bertytypes.AccountContactRequestAccepted{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeAccountContactBlocked:                  {Message: &bertytypes.AccountContactBlocked{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeAccountContactUnblocked:                {Message: &bertytypes.AccountContactUnblocked{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeContactAliasKeyAdded:                   {Message: &bertytypes.ContactAddAliasKey{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeMultiMemberGroupAliasResolverAdded:     {Message: &bertytypes.MultiMemberGroupAddAliasResolver{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeMultiMemberGroupInitialMemberAnnounced: {Message: &bertytypes.MultiMemberInitialMember{}, SigChecker: sigCheckerGroupSigned},
-	bertytypes.EventTypeMultiMemberGroupAdminRoleGranted:       {Message: &bertytypes.MultiMemberGrantAdminRole{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeGroupMetadataPayloadSent:               {Message: &bertytypes.AppMetadata{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeAccountServiceTokenAdded:               {Message: &bertytypes.AccountServiceTokenAdded{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeAccountServiceTokenRemoved:             {Message: &bertytypes.AccountServiceTokenRemoved{}, SigChecker: sigCheckerDeviceSigned},
-	bertytypes.EventTypeGroupReplicating:                       {Message: &bertytypes.GroupReplicating{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeGroupMemberDeviceAdded:                 {Message: &protocoltypes.GroupAddMemberDevice{}, SigChecker: sigCheckerMemberDeviceAdded},
+	protocoltypes.EventTypeGroupDeviceSecretAdded:                 {Message: &protocoltypes.GroupAddDeviceSecret{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeAccountGroupJoined:                     {Message: &protocoltypes.AccountGroupJoined{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeAccountGroupLeft:                       {Message: &protocoltypes.AccountGroupLeft{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeAccountContactRequestDisabled:          {Message: &protocoltypes.AccountContactRequestDisabled{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeAccountContactRequestEnabled:           {Message: &protocoltypes.AccountContactRequestEnabled{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeAccountContactRequestReferenceReset:    {Message: &protocoltypes.AccountContactRequestReferenceReset{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued:  {Message: &protocoltypes.AccountContactRequestEnqueued{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeAccountContactRequestOutgoingSent:      {Message: &protocoltypes.AccountContactRequestSent{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeAccountContactRequestIncomingReceived:  {Message: &protocoltypes.AccountContactRequestReceived{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeAccountContactRequestIncomingDiscarded: {Message: &protocoltypes.AccountContactRequestDiscarded{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeAccountContactRequestIncomingAccepted:  {Message: &protocoltypes.AccountContactRequestAccepted{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeAccountContactBlocked:                  {Message: &protocoltypes.AccountContactBlocked{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeAccountContactUnblocked:                {Message: &protocoltypes.AccountContactUnblocked{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeContactAliasKeyAdded:                   {Message: &protocoltypes.ContactAddAliasKey{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeMultiMemberGroupAliasResolverAdded:     {Message: &protocoltypes.MultiMemberGroupAddAliasResolver{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeMultiMemberGroupInitialMemberAnnounced: {Message: &protocoltypes.MultiMemberInitialMember{}, SigChecker: sigCheckerGroupSigned},
+	protocoltypes.EventTypeMultiMemberGroupAdminRoleGranted:       {Message: &protocoltypes.MultiMemberGrantAdminRole{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeGroupMetadataPayloadSent:               {Message: &protocoltypes.AppMetadata{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeAccountServiceTokenAdded:               {Message: &protocoltypes.AccountServiceTokenAdded{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeAccountServiceTokenRemoved:             {Message: &protocoltypes.AccountServiceTokenRemoved{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeGroupReplicating:                       {Message: &protocoltypes.GroupReplicating{}, SigChecker: sigCheckerDeviceSigned},
 }
 
-func newEventContext(eventID cid.Cid, parentIDs []cid.Cid, g *bertytypes.Group, attachmentsCIDs [][]byte) *bertytypes.EventContext {
+func newEventContext(eventID cid.Cid, parentIDs []cid.Cid, g *protocoltypes.Group, attachmentsCIDs [][]byte) *protocoltypes.EventContext {
 	parentIDsBytes := make([][]byte, len(parentIDs))
 	for i, parentID := range parentIDs {
 		parentIDsBytes[i] = parentID.Bytes()
 	}
 
-	return &bertytypes.EventContext{
+	return &protocoltypes.EventContext{
 		ID:             eventID.Bytes(),
 		ParentIDs:      parentIDsBytes,
 		GroupPK:        g.PublicKey,
@@ -84,7 +84,7 @@ func getParentsForCID(log ipfslog.Log, c cid.Cid) []cid.Cid {
 	return ret
 }
 
-func newGroupMetadataEventFromEntry(log ipfslog.Log, e ipfslog.Entry, metadata *bertytypes.GroupMetadata, event proto.Message, g *bertytypes.Group, attachmentsCIDs [][]byte) (*bertytypes.GroupMetadataEvent, error) {
+func newGroupMetadataEventFromEntry(log ipfslog.Log, e ipfslog.Entry, metadata *protocoltypes.GroupMetadata, event proto.Message, g *protocoltypes.Group, attachmentsCIDs [][]byte) (*protocoltypes.GroupMetadataEvent, error) {
 	// TODO: if parent is a merge node we should return the next nodes of it
 
 	eventBytes, err := proto.Marshal(event)
@@ -94,7 +94,7 @@ func newGroupMetadataEventFromEntry(log ipfslog.Log, e ipfslog.Entry, metadata *
 
 	evtCtx := newEventContext(e.GetHash(), getParentsForCID(log, e.GetHash()), g, attachmentsCIDs)
 
-	gme := bertytypes.GroupMetadataEvent{
+	gme := protocoltypes.GroupMetadataEvent{
 		EventContext: evtCtx,
 		Metadata:     metadata,
 		Event:        eventBytes,
@@ -103,8 +103,8 @@ func newGroupMetadataEventFromEntry(log ipfslog.Log, e ipfslog.Entry, metadata *
 	return &gme, nil
 }
 
-func openGroupEnvelope(g *bertytypes.Group, envelopeBytes []byte, devKS DeviceKeystore) (*bertytypes.GroupMetadata, proto.Message, [][]byte, error) {
-	env := &bertytypes.GroupEnvelope{}
+func openGroupEnvelope(g *protocoltypes.Group, envelopeBytes []byte, devKS DeviceKeystore) (*protocoltypes.GroupMetadata, proto.Message, [][]byte, error) {
+	env := &protocoltypes.GroupEnvelope{}
 	if err := env.Unmarshal(envelopeBytes); err != nil {
 		return nil, nil, nil, errcode.ErrInvalidInput.Wrap(err)
 	}
@@ -119,7 +119,7 @@ func openGroupEnvelope(g *bertytypes.Group, envelopeBytes []byte, devKS DeviceKe
 		return nil, nil, nil, errcode.ErrGroupMemberLogEventOpen
 	}
 
-	metadataEvent := &bertytypes.GroupMetadata{}
+	metadataEvent := &protocoltypes.GroupMetadata{}
 
 	err = metadataEvent.Unmarshal(data)
 	if err != nil {
@@ -152,7 +152,7 @@ func openGroupEnvelope(g *bertytypes.Group, envelopeBytes []byte, devKS DeviceKe
 	return metadataEvent, payload, attachmentsCIDs, nil
 }
 
-func sealGroupEnvelope(g *bertytypes.Group, eventType bertytypes.EventType, payload proto.Marshaler, payloadSig []byte, attachmentsCIDs [][]byte, attachmentsSecrets [][]byte) ([]byte, error) {
+func sealGroupEnvelope(g *protocoltypes.Group, eventType protocoltypes.EventType, payload proto.Marshaler, payloadSig []byte, attachmentsCIDs [][]byte, attachmentsSecrets [][]byte) ([]byte, error) {
 	payloadBytes, err := payload.Marshal()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -163,11 +163,11 @@ func sealGroupEnvelope(g *bertytypes.Group, eventType bertytypes.EventType, payl
 		return nil, errcode.ErrCryptoNonceGeneration.Wrap(err)
 	}
 
-	event := &bertytypes.GroupMetadata{
+	event := &protocoltypes.GroupMetadata{
 		EventType:        eventType,
 		Payload:          payloadBytes,
 		Sig:              payloadSig,
-		ProtocolMetadata: &bertytypes.ProtocolMetadata{AttachmentsSecrets: attachmentsSecrets},
+		ProtocolMetadata: &protocoltypes.ProtocolMetadata{AttachmentsSecrets: attachmentsSecrets},
 	}
 
 	eventClearBytes, err := event.Marshal()
@@ -182,7 +182,7 @@ func sealGroupEnvelope(g *bertytypes.Group, eventType bertytypes.EventType, payl
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
 	}
 
-	env := &bertytypes.GroupEnvelope{
+	env := &protocoltypes.GroupEnvelope{
 		Event:                   eventBytes,
 		Nonce:                   nonce[:],
 		EncryptedAttachmentCIDs: eCIDs,

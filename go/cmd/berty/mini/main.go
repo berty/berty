@@ -16,14 +16,14 @@ import (
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	assets "berty.tech/berty/v2/go/pkg/assets"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 type Opts struct {
-	MessengerClient  bertymessenger.MessengerServiceClient
-	ProtocolClient   bertyprotocol.ProtocolServiceClient
+	MessengerClient  messengertypes.MessengerServiceClient
+	ProtocolClient   protocoltypes.ProtocolServiceClient
 	Logger           *zap.Logger
 	GroupInvitation  string
 	DisplayName      string
@@ -48,14 +48,14 @@ func Main(ctx context.Context, opts *Opts) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	config, err := opts.ProtocolClient.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+	config, err := opts.ProtocolClient.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
 
 	app := tview.NewApplication()
 
-	accountGroup, err := opts.ProtocolClient.GroupInfo(ctx, &bertytypes.GroupInfo_Request{
+	accountGroup, err := opts.ProtocolClient.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
 		GroupPK: config.AccountGroupPK,
 	})
 	if err != nil {
@@ -70,7 +70,7 @@ func Main(ctx context.Context, opts *Opts) error {
 
 	tabbedView := newTabbedGroups(ctx, accountGroup, opts.ProtocolClient, opts.MessengerClient, app, opts.DisplayName)
 	if len(opts.GroupInvitation) > 0 {
-		req := &bertytypes.GroupMetadataList_Request{GroupPK: accountGroup.Group.PublicKey}
+		req := &protocoltypes.GroupMetadataList_Request{GroupPK: accountGroup.Group.PublicKey}
 		cl, err := tabbedView.protocol.GroupMetadataList(ctx, req)
 		if err != nil {
 			return errcode.ErrEventListMetadata.Wrap(err)
@@ -87,7 +87,7 @@ func Main(ctx context.Context, opts *Opts) error {
 					panic(err)
 				}
 
-				if evt.Metadata.EventType != bertytypes.EventTypeAccountGroupJoined {
+				if evt.Metadata.EventType != protocoltypes.EventTypeAccountGroupJoined {
 					continue
 				}
 

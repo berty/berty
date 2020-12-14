@@ -13,7 +13,7 @@ import (
 	"moul.io/u"
 
 	"berty.tech/berty/v2/go/internal/initutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 func verifySetupLeakDetection(t *testing.T) {
@@ -143,7 +143,7 @@ func Example_noflags() {
 	}
 
 	// retrieve config
-	ret, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+	ret, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 	if err != nil {
 		panic(err)
 	}
@@ -209,7 +209,7 @@ func TestTwoConcurrentManagers(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, client)
 
-		ret, err := client.InstanceGetConfiguration(ctx2, &bertytypes.InstanceGetConfiguration_Request{})
+		ret, err := client.InstanceGetConfiguration(ctx2, &protocoltypes.InstanceGetConfiguration_Request{})
 		require.NoError(t, err)
 		require.NotNil(t, ret.AccountPK)
 	}
@@ -278,7 +278,7 @@ func TestLocalProtocolServerAndClient(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, client)
 
-	ret, err := client.InstanceGetConfiguration(ctx, &bertytypes.InstanceGetConfiguration_Request{})
+	ret, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 	require.NoError(t, err)
 	require.NotNil(t, ret.AccountPK)
 }

@@ -27,8 +27,8 @@ restorecleandb: down
 
 initdb:
 	# initialize a daemon and quit
-	docker-compose run daemon1 -xec "berty share-invite"
-	docker-compose run daemon2 -xec "berty share-invite"
+	docker-compose run daemon1 -xec "berty share-invite -store.dir=/store/run"
+	docker-compose run daemon2 -xec "berty share-invite -store.dir=/store/run"
 	# rename run dir to clean dir
 	mv data/daemon1/run data/daemon1/clean
 	mv data/daemon2/run data/daemon2/clean

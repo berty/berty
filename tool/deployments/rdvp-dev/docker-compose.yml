@@ -16,6 +16,8 @@ services:
       - 4040:4040
       - 4040:4040/udp
     command:
+      - "-log.format=json"
+      - "-log.filters=info:*,-ipfs.rendezvous error+:*"
       - serve
       - "--db=:memory:"
       - "--pk=$RDVP_PK"
@@ -38,4 +40,6 @@ services:
       - "traefik.http.routers.rdvp.tls.domains[0].main=${DOMAIN_MAIN}"
       - "traefik.http.routers.rdvp.tls.domains[0].sans=${DOMAIN_SANS}"
       - 'traefik.http.services.rdvp.loadbalancer.server.port=8888'
-
+      - 'com.datadoghq.ad.check_names=["rdvp"]'
+      - 'com.datadoghq.ad.init_configs=[{}]'
+      - 'com.datadoghq.ad.logs=[{"source": "go", "service": "rdvp"}]'

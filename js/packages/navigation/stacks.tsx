@@ -250,11 +250,6 @@ export const Navigation: React.FC = () => {
 				component={Components.Chat.ReplicateGroupSettings}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Main.HomeModal}
-				component={Components.Main.HomeModal}
-				options={ModalScreenOptions}
-			/>
-			<NavigationStack.Screen
 				name={Routes.CreateGroup.CreateGroupAddMembers}
 				component={CreateGroupNavigation}
 				options={ModalScreenOptions}
@@ -362,6 +357,11 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={Routes.Modals.AddBetabot}
 				component={Components.Modals.AddBetabot}
+				options={ModalScreenOptions}
+			/>
+			<NavigationStack.Screen
+				name={Routes.Modals.ImageView}
+				component={Components.Modals.ImageView}
 				options={ModalScreenOptions}
 			/>
 		</NavigationStack.Navigator>

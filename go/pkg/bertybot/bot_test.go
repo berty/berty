@@ -10,6 +10,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 func TestUnstableBotCommunication(t *testing.T) {
@@ -53,16 +54,16 @@ func TestUnstableBotCommunication(t *testing.T) {
 
 	// enable contact request on client
 	{
-		_, err := userClient.InstanceShareableBertyID(ctx, &bertymessenger.InstanceShareableBertyID_Request{})
+		_, err := userClient.InstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{})
 		require.NoError(t, err)
 		time.Sleep(200 * time.Millisecond) // FIXME: replace with dynamic waiting
 	}
 
 	// send contact request
 	{
-		parsed, err := botClient.ParseDeepLink(ctx, &bertymessenger.ParseDeepLink_Request{Link: bot.BertyIDURL()})
+		parsed, err := botClient.ParseDeepLink(ctx, &messengertypes.ParseDeepLink_Request{Link: bot.BertyIDURL()})
 		require.NoError(t, err)
-		_, err = userClient.SendContactRequest(ctx, &bertymessenger.SendContactRequest_Request{
+		_, err = userClient.SendContactRequest(ctx, &messengertypes.SendContactRequest_Request{
 			BertyID: parsed.GetLink().GetBertyID(),
 		})
 		require.NoError(t, err)
@@ -72,7 +73,7 @@ func TestUnstableBotCommunication(t *testing.T) {
 	require.Len(t, bot.store.conversations, 1)
 
 	// get the conversation
-	var theConv *bertymessenger.Conversation
+	var theConv *messengertypes.Conversation
 	{
 		for _, conv := range bot.store.conversations {
 			theConv = conv
@@ -81,10 +82,10 @@ func TestUnstableBotCommunication(t *testing.T) {
 
 	// send 'world!'
 	{
-		userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{Body: "world!"})
+		userMessage, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{Body: "world!"})
 		require.NoError(t, err)
-		req := &bertymessenger.Interact_Request{
-			Type:                  bertymessenger.AppMessage_TypeUserMessage,
+		req := &messengertypes.Interact_Request{
+			Type:                  messengertypes.AppMessage_TypeUserMessage,
 			Payload:               userMessage,
 			ConversationPublicKey: theConv.PublicKey,
 		}
@@ -95,10 +96,10 @@ func TestUnstableBotCommunication(t *testing.T) {
 
 	// send /ping
 	{
-		userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{Body: "/ping"})
+		userMessage, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{Body: "/ping"})
 		require.NoError(t, err)
-		req := &bertymessenger.Interact_Request{
-			Type:                  bertymessenger.AppMessage_TypeUserMessage,
+		req := &messengertypes.Interact_Request{
+			Type:                  messengertypes.AppMessage_TypeUserMessage,
 			Payload:               userMessage,
 			ConversationPublicKey: theConv.PublicKey,
 		}

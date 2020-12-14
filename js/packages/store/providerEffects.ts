@@ -14,9 +14,9 @@ import {
 	defaultPersistentOptions,
 	MessengerActions,
 	MessengerAppState,
+	PersistentOptions,
 	PersistentOptionsKeys,
 	PersistentOptionsUpdate,
-	PersistentOptions,
 } from '@berty-tech/store/context'
 import beapi from '@berty-tech/api'
 import { reducerAction } from '@berty-tech/store/providerReducer'
@@ -198,6 +198,7 @@ export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, emb
 		.catch((err) => {
 			console.error('unable to init bridge ', Object.keys(err), err.domain)
 		})
+
 	const f = async () => {
 		const accounts = await refreshAccountList(embedded, dispatch)
 
@@ -267,23 +268,41 @@ export const openingDaemon = async (
 			opts?.mc && !opts.mc.enable
 				? [...bridgeOpts.cliArgs!, '--p2p.multipeer-connectivity=false']
 				: [...bridgeOpts.cliArgs!, '--p2p.multipeer-connectivity=true']
+
+		// set tor flag
+		bridgeOpts.cliArgs = opts?.tor?.flag.length
+			? [...bridgeOpts.cliArgs!, `--tor.mode=${opts?.tor?.flag}`]
+			: [...bridgeOpts.cliArgs!, '--tor.mode=disabled']
 	} catch (e) {
 		console.warn('store getPersistentOptions Failed:', e)
 		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
 	}
 
-	try {
-		await accountService.openAccount({
-			args: bridgeOpts.cliArgs,
-			accountId: selectedAccount.toString(),
+	accountService
+		.getGRPCListenerAddrs({})
+		.then(() => {
+			// account already open
+			dispatch({ type: MessengerActions.SetStateOpeningClients })
 		})
-		dispatch({ type: MessengerActions.SetStateOpeningClients })
-	} catch (err) {
-		dispatch({
-			type: MessengerActions.SetStreamError,
-			payload: { error: new Error(`Failed to start node: ${err}`) },
+		.catch(() => {
+			// account not open
+			accountService
+				.openAccount({
+					args: bridgeOpts.cliArgs,
+					accountId: selectedAccount.toString(),
+					loggerFilters: GoBridgeDefaultOpts.logFilters,
+				})
+				.then(() => {
+					console.log('account service is opened')
+					dispatch({ type: MessengerActions.SetStateOpeningClients })
+				})
+				.catch((err) => {
+					dispatch({
+						type: MessengerActions.SetStreamError,
+						payload: { error: new Error(`Failed to start node: ${err}`) },
+					})
+				})
 		})
-	}
 }
 
 // handle state OpeningWaitingForClients
@@ -322,25 +341,41 @@ export const openingClients = (
 	}
 	messengerClient
 		.eventStream({})
-		.then(async (stream: any) => {
+		.then(async (stream) => {
 			if (precancel) {
+				await stream.stop()
 				return
 			}
-			stream.onMessage(
-				(msg: { event: beapi.messenger.IStreamEvent | undefined }, err: Error | null) => {
-					if (err) {
-						console.warn('events stream onMessage error:', err)
-						dispatch({ type: MessengerActions.SetStreamError, payload: { error: err } })
-						return
-					}
-					const evt = msg && msg.event
-					if (!evt || evt.type === null || evt.type === undefined) {
-						console.warn('received empty event')
-						return
-					}
+			cancel = () => stream.stop()
+			stream.onMessage((msg, err) => {
+				if (err) {
+					console.warn('events stream onMessage error:', err)
+					dispatch({ type: MessengerActions.SetStreamError, payload: { error: err } })
+					return
+				}
+				const evt = msg?.event
+				if (!evt || evt.type === null || evt.type === undefined) {
+					console.warn('received empty event')
+					return
+				}
 
-					const enumName = Object.keys(beapi.messenger.StreamEvent.Type).find(
-						(name) => (beapi.messenger.StreamEvent.Type as any)[name] === evt.type,
+				const enumName = beapi.messenger.StreamEvent.Type[evt.type]
+				if (!enumName) {
+					console.warn('failed to get event type name')
+					return
+				}
+
+				const payloadName = enumName.substr('Type'.length)
+				const pbobj = (beapi.messenger.StreamEvent as any)[payloadName]
+				if (!pbobj) {
+					console.warn('failed to find a protobuf object matching the event type')
+					return
+				}
+				const eventPayload = pbobj.decode(evt.payload)
+				if (evt.type === beapi.messenger.StreamEvent.Type.TypeNotified) {
+					const enumName = Object.keys(beapi.messenger.StreamEvent.Notified.Type).find(
+						(name) =>
+							(beapi.messenger.StreamEvent.Notified.Type as any)[name] === eventPayload.type,
 					)
 					if (!enumName) {
 						console.warn('failed to get event type name')
@@ -348,44 +383,26 @@ export const openingClients = (
 					}
 
 					const payloadName = enumName.substr('Type'.length)
-					const pbobj = (beapi.messenger.StreamEvent as any)[payloadName]
+					const pbobj = (beapi.messenger.StreamEvent.Notified as any)[payloadName]
 					if (!pbobj) {
-						console.warn('failed to find a protobuf object matching the event type')
+						console.warn('failed to find a protobuf object matching the notification type')
 						return
 					}
-					const eventPayload = pbobj.decode(evt.payload)
-					if (evt.type === beapi.messenger.StreamEvent.Type.TypeNotified) {
-						const enumName = Object.keys(beapi.messenger.StreamEvent.Notified.Type).find(
-							(name) =>
-								(beapi.messenger.StreamEvent.Notified.Type as any)[name] === eventPayload.type,
-						)
-						if (!enumName) {
-							console.warn('failed to get event type name')
-							return
-						}
-
-						const payloadName = enumName.substr('Type'.length)
-						const pbobj = (beapi.messenger.StreamEvent.Notified as any)[payloadName]
-						if (!pbobj) {
-							console.warn('failed to find a protobuf object matching the notification type')
-							return
-						}
-						eventPayload.payload = pbobj.decode(eventPayload.payload)
-						eventEmitter.emit('notification', {
-							type: eventPayload.type,
-							name: payloadName,
-							payload: eventPayload,
-						})
-					} else {
-						dispatch({
-							type: evt.type,
-							name: payloadName,
-							payload: eventPayload,
-						})
-					}
-				},
-			)
-			cancel = await stream.start()
+					eventPayload.payload = pbobj.decode(eventPayload.payload)
+					eventEmitter.emit('notification', {
+						type: eventPayload.type,
+						name: payloadName,
+						payload: eventPayload,
+					})
+				} else {
+					dispatch({
+						type: evt.type,
+						name: payloadName,
+						payload: eventPayload,
+					})
+				}
+			})
+			await stream.start()
 		})
 		.catch((err: Error) => {
 			if (err === EOF) {
@@ -399,7 +416,7 @@ export const openingClients = (
 
 	dispatch({
 		type: MessengerActions.SetStateOpeningListingEvents,
-		payload: { messengerClient, protocolClient, clearClients: cancel },
+		payload: { messengerClient, protocolClient, clearClients: () => cancel() },
 	})
 }
 
@@ -433,17 +450,17 @@ export const closingDaemon = (
 	clearClients: (() => Promise<void>) | null,
 	dispatch: (arg0: reducerAction) => void,
 ) => {
+	if (!clearClients) {
+		return
+	}
 	return () => {
 		const f = async () => {
 			try {
-				if (clearClients) {
-					await clearClients()
-				}
+				await clearClients()
 				await accountService.closeAccount({})
 			} catch (e) {
 				console.warn('unable to stop protocol', e)
 			}
-
 			dispatch({ type: MessengerActions.BridgeClosed })
 		}
 

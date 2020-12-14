@@ -32,6 +32,12 @@ enum ErrCode {
   ErrDeserialization = 104;
   ErrStreamRead = 105;
   ErrStreamWrite = 106;
+  ErrStreamTransform = 110;
+  ErrStreamSendAndClose = 111;
+  ErrStreamHeaderWrite = 112;
+  ErrStreamHeaderRead = 115;
+  ErrStreamSink = 113;
+  ErrStreamCloseAndRecv = 114;
   ErrMissingMapKey = 107;
   ErrDBWrite = 108;
   ErrDBRead = 109;
@@ -129,6 +135,7 @@ enum ErrCode {
   //------------------
 
   ErrMessengerInvalidDeepLink = 2000;
+  ErrMessengerDeepLinkRequiresPassphrase = 2001;
 
   // DB errors
 
@@ -147,8 +154,8 @@ enum ErrCode {
   ErrReplayProcessGroupMessage = 2201;
 
   // API internals errors
-  ErrPrepareAttachment = 2300;
-  ErrRetrieveAttachment = 2301;
+  ErrAttachmentPrepare = 2300;
+  ErrAttachmentRetrieve = 2301;
   ErrProtocolSend = 2302;
 
   // -----------------

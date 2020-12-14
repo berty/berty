@@ -138,8 +138,8 @@ const AddMembersItem: React.FC<AddMembersItemProps> = ({
 	return (
 		<View>
 			<View style={[row.fill, padding.right.small]}>
-				<View style={[row.left, row.item.justify, { flexShrink: 1 }]}>
-					<ContactAvatar size={80} publicKey={contact.publicKey} />
+				<View style={[row.left, row.item.justify, padding.vertical.small, { flexShrink: 1 }]}>
+					<ContactAvatar size={50} publicKey={contact.publicKey} />
 					<Text numberOfLines={1} style={[margin.left.small, row.item.justify, { flexShrink: 1 }]}>
 						{contact.displayName}
 					</Text>
@@ -288,7 +288,7 @@ export const MemberList: React.FC<{
 	const [{ height, padding }] = useStyles()
 
 	return (
-		<View style={[height(135)]}>
+		<View style={[members.length && height(135)]}>
 			<ScrollView
 				horizontal={true}
 				showsHorizontalScrollIndicator={false}

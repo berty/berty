@@ -3,14 +3,14 @@ package bertyprotocol
 import (
 	"encoding/hex"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/go-ipfs-log/identityprovider"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/accesscontroller"
 )
 
-func DefaultOrbitDBOptions(g *bertytypes.Group, options *orbitdb.CreateDBOptions, keystore *BertySignedKeyStore, storeType string, groupOpenMode GroupOpenMode) (*orbitdb.CreateDBOptions, error) {
+func DefaultOrbitDBOptions(g *protocoltypes.Group, options *orbitdb.CreateDBOptions, keystore *BertySignedKeyStore, storeType string, groupOpenMode GroupOpenMode) (*orbitdb.CreateDBOptions, error) {
 	var err error
 
 	if options == nil {
@@ -54,7 +54,7 @@ func DefaultOrbitDBOptions(g *bertytypes.Group, options *orbitdb.CreateDBOptions
 	return options, nil
 }
 
-func defaultACForGroup(g *bertytypes.Group, storeType string) (accesscontroller.ManifestParams, error) {
+func defaultACForGroup(g *protocoltypes.Group, storeType string) (accesscontroller.ManifestParams, error) {
 	groupID := g.GroupIDAsString()
 
 	sigPK, err := g.GetSigningPubKey()
@@ -88,7 +88,7 @@ func defaultACForGroup(g *bertytypes.Group, storeType string) (accesscontroller.
 	return param, nil
 }
 
-func defaultIdentityForGroup(g *bertytypes.Group, ks *BertySignedKeyStore) (*identityprovider.Identity, error) {
+func defaultIdentityForGroup(g *protocoltypes.Group, ks *BertySignedKeyStore) (*identityprovider.Identity, error) {
 	sigPK, err := g.GetSigningPubKey()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -111,7 +111,7 @@ func defaultIdentityForGroup(g *bertytypes.Group, ks *BertySignedKeyStore) (*ide
 	return identity, nil
 }
 
-func readIdentityForGroup(g *bertytypes.Group, ks *BertySignedKeyStore) (*identityprovider.Identity, error) {
+func readIdentityForGroup(g *protocoltypes.Group, ks *BertySignedKeyStore) (*identityprovider.Identity, error) {
 	sigPK, err := g.GetSigningPubKey()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)

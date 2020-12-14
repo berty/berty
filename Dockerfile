@@ -4,7 +4,7 @@ ARG             VCS_REF
 ARG             VERSION
 
 # build
-FROM            golang:1.15.5-alpine as builder
+FROM            golang:1.15.6-alpine as builder
 RUN             apk add --no-cache git gcc musl-dev make
 ENV             GO111MODULE=on
 WORKDIR         /go/src/berty.tech/berty
@@ -29,6 +29,6 @@ LABEL           org.label-schema.build-date=$BUILD_DATE \
                 org.label-schema.schema-version="1.0" \
                 org.label-schema.cmd="docker run -i -t --rm bertytech/berty" \
                 org.label-schema.help="docker exec -it $CONTAINER berty --help"
-COPY            --from=builder /go/bin/berty /go/bin/rdvp /go/bin/betabot /go/bin/testbot /bin/
+COPY            --from=builder /go/bin/berty /go/bin/rdvp /go/bin/betabot /go/bin/testbot /go/bin/berty-integration /bin/
 ENTRYPOINT      ["/bin/berty"]
 #CMD            []

@@ -23,7 +23,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 // Suppress "imported and not used" errors
@@ -38,7 +38,7 @@ var (
 )
 
 func request_ReplicationService_ReplicateGroup_0(ctx context.Context, marshaler runtime.Marshaler, client ReplicationServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq bertytypes.ReplicationServiceReplicateGroup_Request
+	var protoReq protocoltypes.ReplicationServiceReplicateGroup_Request
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -54,7 +54,7 @@ func request_ReplicationService_ReplicateGroup_0(ctx context.Context, marshaler 
 }
 
 func local_request_ReplicationService_ReplicateGroup_0(ctx context.Context, marshaler runtime.Marshaler, server ReplicationServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq bertytypes.ReplicationServiceReplicateGroup_Request
+	var protoReq protocoltypes.ReplicationServiceReplicateGroup_Request
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)

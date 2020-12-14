@@ -12,6 +12,10 @@ import { useStyles } from '@berty-tech/styles'
 import { MemberAvatar } from '../../avatars'
 import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageComponents'
 import { pbDateToNum } from '../../helpers'
+import { InteractionUserMessage } from '@berty-tech/store/types.gen'
+import { PictureMessage } from './PictureMessage'
+import { AudioMessage } from './AudioMessage'
+import { FileMessage } from './FileMessage'
 
 const pal = palette('tol-rainbow', 256)
 
@@ -117,7 +121,7 @@ const getUserMessageState = (
 }
 
 export const UserMessage: React.FC<{
-	inte: any
+	inte: InteractionUserMessage
 	members?: { [key: string]: any }
 	convPK: string
 	convKind: any
@@ -171,7 +175,18 @@ export const UserMessage: React.FC<{
 					/>
 				</View>
 			)}
+
 			<View style={[column.top, _styles.messageItem]}>
+				{(inte.medias?.length || 0) > 0 &&
+					(() => {
+						if (inte?.medias?.[0]?.mimeType?.startsWith('image')) {
+							return <PictureMessage medias={inte.medias} />
+						} else if (inte?.medias?.[0]?.mimeType?.startsWith('audio')) {
+							return <AudioMessage medias={inte.medias} />
+						} else {
+							return <FileMessage medias={inte.medias} />
+						}
+					})()}
 				{!inte.isMe && isGroup && !isFollowupMessage && (
 					<View style={[isFollowedMessage && margin.left.scale(40)]}>
 						<Text style={[text.bold.medium, _styles.personNameInGroup, { color: msgSenderColor }]}>
@@ -179,13 +194,19 @@ export const UserMessage: React.FC<{
 						</Text>
 					</View>
 				)}
-				<HyperlinkUserMessage
-					inte={inte}
-					msgBorderColor={msgBorderColor}
-					isFollowedMessage={isFollowedMessage}
-					msgBackgroundColor={msgBackgroundColor}
-					msgTextColor={msgTextColor}
-				/>
+				{inte.payload.body ? (
+					<HyperlinkUserMessage
+						inte={inte}
+						msgBorderColor={msgBorderColor}
+						isFollowedMessage={isFollowedMessage}
+						msgBackgroundColor={msgBackgroundColor}
+						msgTextColor={msgTextColor}
+					/>
+				) : (
+					(inte.medias?.length || 0) === 0 && (
+						<Text style={{ textAlign: 'right', color: 'grey' }}>-</Text>
+					)
+				)}
 				{!isWithinCollapseDuration && (
 					<TimestampStatusUserMessage
 						inte={inte}

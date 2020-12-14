@@ -180,16 +180,15 @@ $(gen_sum): $(gen_src)
 
 generate_local:
 	$(call check-program, shasum protoc)
-	$(GO) run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/bertymessenger.proto -o ../api/bertymessenger.yaml
-	$(GO) run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/bertyprotocol.proto -o ../api/bertyprotocol.yaml
+	$(GO) run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/messengertypes.proto -o ../api/messengertypes.yaml
+	$(GO) run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/protocoltypes.proto -o ../api/protocoltypes.yaml
 	$(GO) run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/bertyreplication.proto -o ../api/bertyreplication.yaml
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/errcode.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertyaccount.proto
-	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertytypes.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/go-internal/records.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/go-internal/handshake.proto
-	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/bertyprotocol.yaml:$(GOPATH)/src ../api/bertyprotocol.proto
-	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/bertymessenger.yaml:$(GOPATH)/src ../api/bertymessenger.proto
+	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/protocoltypes.yaml:$(GOPATH)/src ../api/protocoltypes.proto
+	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/messengertypes.yaml:$(GOPATH)/src ../api/messengertypes.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/bertyreplication.yaml:$(GOPATH)/src ../api/bertyreplication.proto
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.go
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.gw.go

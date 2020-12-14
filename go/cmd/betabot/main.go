@@ -25,8 +25,9 @@ import (
 	"moul.io/u"
 	"moul.io/zapconfig"
 
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/internal/bertylinks"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 const (
@@ -53,7 +54,7 @@ type Bot struct {
 		Convs       []*Conversation
 		StaffConvPK string
 	}
-	client           bertymessenger.MessengerServiceClient
+	client           messengertypes.MessengerServiceClient
 	storeIsNew       bool
 	storePath        string
 	storeConvMap     map[*Conversation]*sync.Mutex
@@ -170,12 +171,12 @@ func betabot() error {
 				}
 			}
 		}()
-		bot.client = bertymessenger.NewMessengerServiceClient(cc)
+		bot.client = messengertypes.NewMessengerServiceClient(cc)
 	}
 
 	// get sharing link and print qr code
 	{
-		req := &bertymessenger.InstanceShareableBertyID_Request{DisplayName: *displayName}
+		req := &messengertypes.InstanceShareableBertyID_Request{DisplayName: *displayName}
 		res, err := bot.client.InstanceShareableBertyID(ctx, req)
 		if err != nil {
 			return fmt.Errorf("get instance shareable berty ID failed: %w", err)
@@ -201,7 +202,7 @@ func betabot() error {
 			// FIXME: or should we join the group again?
 		case shouldJoin:
 			bot.logger.Info("joining staff conv")
-			req := &bertymessenger.ConversationJoin_Request{
+			req := &messengertypes.ConversationJoin_Request{
 				Link: *staffConvLink,
 			}
 			_, err := bot.client.ConversationJoin(ctx, req)
@@ -210,7 +211,7 @@ func betabot() error {
 			}
 
 			// store staffConvPk
-			link, err := bertymessenger.UnmarshalLink(req.GetLink())
+			link, err := bertylinks.UnmarshalLink(req.GetLink(), nil)
 			if err != nil {
 				return fmt.Errorf("parse conv link: %w", err)
 			}
@@ -227,7 +228,7 @@ func betabot() error {
 	// event loop
 	var wg sync.WaitGroup
 	{
-		s, err := bot.client.EventStream(ctx, &bertymessenger.EventStream_Request{})
+		s, err := bot.client.EventStream(ctx, &messengertypes.EventStream_Request{})
 		if err != nil {
 			return fmt.Errorf("failed to listen to EventStream: %w", err)
 		}
@@ -244,7 +245,7 @@ func betabot() error {
 				}
 
 				if bot.isReplaying {
-					if gme.Event.Type == bertymessenger.StreamEvent_TypeListEnded {
+					if gme.Event.Type == messengertypes.StreamEvent_TypeListEnded {
 						bot.logger.Info("finished replaying logs from the previous sessions", zap.Uint("count", handledEvents))
 						bot.isReplaying = false
 					}
@@ -272,11 +273,11 @@ func betabot() error {
 	return nil
 }
 
-func (bot *Bot) handleEvent(ctx context.Context, gme *bertymessenger.EventStream_Reply) error {
-	handlers := map[bertymessenger.StreamEvent_Type]func(ctx context.Context, gme *bertymessenger.EventStream_Reply, payload proto.Message) error{
-		bertymessenger.StreamEvent_TypeContactUpdated:      bot.handleContactUpdated,
-		bertymessenger.StreamEvent_TypeInteractionUpdated:  bot.handleInteractionUpdated,
-		bertymessenger.StreamEvent_TypeConversationUpdated: bot.handleConversationUpdated,
+func (bot *Bot) handleEvent(ctx context.Context, gme *messengertypes.EventStream_Reply) error {
+	handlers := map[messengertypes.StreamEvent_Type]func(ctx context.Context, gme *messengertypes.EventStream_Reply, payload proto.Message) error{
+		messengertypes.StreamEvent_TypeContactUpdated:      bot.handleContactUpdated,
+		messengertypes.StreamEvent_TypeInteractionUpdated:  bot.handleInteractionUpdated,
+		messengertypes.StreamEvent_TypeConversationUpdated: bot.handleConversationUpdated,
 	}
 
 	handler, found := handlers[gme.Event.Type]
@@ -298,17 +299,17 @@ func (bot *Bot) handleEvent(ctx context.Context, gme *bertymessenger.EventStream
 	return nil
 }
 
-func (bot *Bot) handleContactUpdated(ctx context.Context, _ *bertymessenger.EventStream_Reply, payload proto.Message) error {
+func (bot *Bot) handleContactUpdated(ctx context.Context, _ *messengertypes.EventStream_Reply, payload proto.Message) error {
 	// auto-accept contact requests
-	contact := payload.(*bertymessenger.StreamEvent_ContactUpdated).Contact
+	contact := payload.(*messengertypes.StreamEvent_ContactUpdated).Contact
 
-	if contact.State == bertymessenger.Contact_IncomingRequest {
-		req := &bertymessenger.ContactAccept_Request{PublicKey: contact.PublicKey}
+	if contact.State == messengertypes.Contact_IncomingRequest {
+		req := &messengertypes.ContactAccept_Request{PublicKey: contact.PublicKey}
 		_, err := bot.client.ContactAccept(ctx, req)
 		if err != nil {
 			return fmt.Errorf("contact accept failed: %w", err)
 		}
-	} else if contact.State == bertymessenger.Contact_Accepted {
+	} else if contact.State == messengertypes.Contact_Accepted {
 		// When contact was established, send message and a group invitation
 		time.Sleep(2 * time.Second)
 		bot.storeMutex.Lock()
@@ -325,7 +326,7 @@ func (bot *Bot) handleContactUpdated(ctx context.Context, _ *bertymessenger.Even
 I’m here to help you with the onboarding process.
 Let's test out some features together!
 Just type 'yes' to let me know you copy that.`
-		options := []*bertymessenger.ReplyOption{
+		options := []*messengertypes.ReplyOption{
 			{Payload: "yes", Display: "Sure, go for it!"},
 			{Payload: "no", Display: "Show me all you can do instead!"},
 		}
@@ -336,7 +337,7 @@ Just type 'yes' to let me know you copy that.`
 	return nil
 }
 
-func (bot *Bot) handleUserMessageInteractionUpdated(ctx context.Context, _ *bertymessenger.EventStream_Reply, interaction *bertymessenger.Interaction, payload proto.Message) error {
+func (bot *Bot) handleUserMessageInteractionUpdated(ctx context.Context, _ *messengertypes.EventStream_Reply, interaction *messengertypes.Interaction, payload proto.Message) error {
 	if interaction.IsMe || interaction.Acknowledged {
 		return nil
 	}
@@ -349,7 +350,7 @@ func (bot *Bot) handleUserMessageInteractionUpdated(ctx context.Context, _ *bert
 		}
 	}
 	bot.storeMutex.RUnlock()
-	receivedMessage := payload.(*bertymessenger.AppMessage_UserMessage)
+	receivedMessage := payload.(*messengertypes.AppMessage_UserMessage)
 	if conv != nil && conv.IsOneToOne {
 		unlock := bot.LockConversation(conv)
 		success, err := [3]doStepFn{
@@ -372,9 +373,9 @@ func (bot *Bot) handleUserMessageInteractionUpdated(ctx context.Context, _ *bert
 	return nil
 }
 
-type doStepFn func(context.Context, *Conversation, *Bot, *bertymessenger.AppMessage_UserMessage, *bertymessenger.Interaction, func()) (bool, error)
+type doStepFn func(context.Context, *Conversation, *Bot, *messengertypes.AppMessage_UserMessage, *messengertypes.Interaction, func()) (bool, error)
 
-func doStep0(ctx context.Context, conv *Conversation, bot *Bot, receivedMessage *bertymessenger.AppMessage_UserMessage, interaction *bertymessenger.Interaction, unlock func()) (bool, error) {
+func doStep0(ctx context.Context, conv *Conversation, bot *Bot, receivedMessage *messengertypes.AppMessage_UserMessage, interaction *messengertypes.Interaction, unlock func()) (bool, error) {
 	if checkValidationMessage(receivedMessage.GetBody()) {
 		conv.Step++
 		unlock()
@@ -384,7 +385,7 @@ func doStep0(ctx context.Context, conv *Conversation, bot *Bot, receivedMessage 
 		body := `Okay, perfect! 🤙
 Would you like me to invite you to a group chat to test multimember conversations?
 Type 'yes' to receive it! 💌`
-		options := []*bertymessenger.ReplyOption{
+		options := []*messengertypes.ReplyOption{
 			{Payload: "yes", Display: "Sure, go for it!"},
 			{Payload: "no", Display: "Show me all you can do instead!"},
 		}
@@ -397,7 +398,7 @@ Type 'yes' to receive it! 💌`
 	return false, nil
 }
 
-func doStep1(ctx context.Context, conv *Conversation, bot *Bot, receivedMessage *bertymessenger.AppMessage_UserMessage, interaction *bertymessenger.Interaction, unlock func()) (bool, error) {
+func doStep1(ctx context.Context, conv *Conversation, bot *Bot, receivedMessage *messengertypes.AppMessage_UserMessage, interaction *messengertypes.Interaction, unlock func()) (bool, error) {
 	if checkValidationMessage(receivedMessage.GetBody()) {
 		conv.Step++
 		unlock()
@@ -415,7 +416,7 @@ I’m cool, but humans are sometimes cooler than me… 🤖 ❤️`
 		time.Sleep(1 * time.Second)
 		{
 			// create staff conversation
-			createdConv, err := bot.client.ConversationCreate(ctx, &bertymessenger.ConversationCreate_Request{
+			createdConv, err := bot.client.ConversationCreate(ctx, &messengertypes.ConversationCreate_Request{
 				DisplayName: staffXConvPrefix + conv.ContactDisplayName,
 				ContactsToInvite: []string{
 					conv.ContactPublicKey,
@@ -447,7 +448,7 @@ Type /help when you need info about available test commands! 📖`
 	return false, nil
 }
 
-func doStep2(ctx context.Context, _ *Conversation, bot *Bot, receivedMessage *bertymessenger.AppMessage_UserMessage, interaction *bertymessenger.Interaction, unlock func()) (bool, error) {
+func doStep2(ctx context.Context, _ *Conversation, bot *Bot, receivedMessage *messengertypes.AppMessage_UserMessage, interaction *messengertypes.Interaction, unlock func()) (bool, error) {
 	unlock()
 	msg := receivedMessage.GetBody()
 	if msg[0] == '/' {
@@ -484,11 +485,11 @@ func doStep2(ctx context.Context, _ *Conversation, bot *Bot, receivedMessage *be
 	return false, nil
 }
 
-func (bot *Bot) handleGroupInvitationInteractionUpdated(ctx context.Context, _ *bertymessenger.EventStream_Reply, interaction *bertymessenger.Interaction, payload proto.Message) error {
+func (bot *Bot) handleGroupInvitationInteractionUpdated(ctx context.Context, _ *messengertypes.EventStream_Reply, interaction *messengertypes.Interaction, payload proto.Message) error {
 	if !interaction.IsMe {
 		// auto-accept invitations to group
-		receivedInvitation := payload.(*bertymessenger.AppMessage_GroupInvitation)
-		_, err := bot.client.ConversationJoin(ctx, &bertymessenger.ConversationJoin_Request{
+		receivedInvitation := payload.(*messengertypes.AppMessage_GroupInvitation)
+		_, err := bot.client.ConversationJoin(ctx, &messengertypes.ConversationJoin_Request{
 			Link: receivedInvitation.GetLink(),
 		})
 		if err != nil {
@@ -498,12 +499,12 @@ func (bot *Bot) handleGroupInvitationInteractionUpdated(ctx context.Context, _ *
 	return nil
 }
 
-func (bot *Bot) handleInteractionUpdated(ctx context.Context, gme *bertymessenger.EventStream_Reply, payload proto.Message) error {
-	interaction := payload.(*bertymessenger.StreamEvent_InteractionUpdated).Interaction
+func (bot *Bot) handleInteractionUpdated(ctx context.Context, gme *messengertypes.EventStream_Reply, payload proto.Message) error {
+	interaction := payload.(*messengertypes.StreamEvent_InteractionUpdated).Interaction
 
-	handlers := map[bertymessenger.AppMessage_Type]func(ctx context.Context, gme *bertymessenger.EventStream_Reply, interaction *bertymessenger.Interaction, payload proto.Message) error{
-		bertymessenger.AppMessage_TypeUserMessage:     bot.handleUserMessageInteractionUpdated,
-		bertymessenger.AppMessage_TypeGroupInvitation: bot.handleGroupInvitationInteractionUpdated,
+	handlers := map[messengertypes.AppMessage_Type]func(ctx context.Context, gme *messengertypes.EventStream_Reply, interaction *messengertypes.Interaction, payload proto.Message) error{
+		messengertypes.AppMessage_TypeUserMessage:     bot.handleUserMessageInteractionUpdated,
+		messengertypes.AppMessage_TypeGroupInvitation: bot.handleGroupInvitationInteractionUpdated,
 	}
 	handler, found := handlers[interaction.Type]
 	if !found {
@@ -523,9 +524,9 @@ func (bot *Bot) handleInteractionUpdated(ctx context.Context, gme *bertymessenge
 	return nil
 }
 
-func (bot *Bot) handleConversationUpdated(ctx context.Context, _ *bertymessenger.EventStream_Reply, payload proto.Message) error {
+func (bot *Bot) handleConversationUpdated(ctx context.Context, _ *messengertypes.EventStream_Reply, payload proto.Message) error {
 	// send to multimember staff conv that this user join us on Berty with the link of the group
-	conversation := payload.(*bertymessenger.StreamEvent_ConversationUpdated).Conversation
+	conversation := payload.(*messengertypes.StreamEvent_ConversationUpdated).Conversation
 	if bot.store.StaffConvPK != "" && strings.HasPrefix(conversation.GetDisplayName(), staffXConvPrefix) {
 		userName := strings.TrimPrefix(conversation.GetDisplayName(), staffXConvPrefix)
 		body := fmt.Sprintf(
@@ -543,14 +544,14 @@ For the moment i can't send a group invitation so i share the link of the conver
 
 		// time.Sleep(2 * time.Second)
 		// {
-		// 	groupInvitation, err := proto.Marshal(&bertymessenger.AppMessage_GroupInvitation{
+		// 	groupInvitation, err := proto.Marshal(&messengertypes.AppMessage_GroupInvitation{
 		// 		Link: conversation.GetLink(),
 		// 	})
 		// 	if err != nil {
 		// 		return err
 		// 	}
-		// 	_, err = bot.client.Interact(ctx, &bertymessenger.Interact_Request{
-		// 		Type:                  bertymessenger.AppMessage_TypeGroupInvitation,
+		// 	_, err = bot.client.Interact(ctx, &messengertypes.Interact_Request{
+		// 		Type:                  messengertypes.AppMessage_TypeGroupInvitation,
 		// 		Payload:               groupInvitation,
 		// 		ConversationPublicKey: staffConvPk,
 		// 	})
@@ -564,13 +565,13 @@ For the moment i can't send a group invitation so i share the link of the conver
 
 // internal stuff
 
-func (bot *Bot) interactUserMessage(ctx context.Context, body string, conversationPK string, replyOption []*bertymessenger.ReplyOption) error {
-	userMessage, err := proto.Marshal(&bertymessenger.AppMessage_UserMessage{Body: body})
+func (bot *Bot) interactUserMessage(ctx context.Context, body string, conversationPK string, replyOption []*messengertypes.ReplyOption) error {
+	userMessage, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{Body: body})
 	if err != nil {
 		return fmt.Errorf("marshal user message failed: %w", err)
 	}
-	_, err = bot.client.Interact(ctx, &bertymessenger.Interact_Request{
-		Type:                  bertymessenger.AppMessage_TypeUserMessage,
+	_, err = bot.client.Interact(ctx, &messengertypes.Interact_Request{
+		Type:                  messengertypes.AppMessage_TypeUserMessage,
 		Payload:               userMessage,
 		ConversationPublicKey: conversationPK,
 	})
@@ -585,9 +586,9 @@ func (bot *Bot) interactUserMessage(ctx context.Context, body string, conversati
 			return fmt.Errorf("conversation convPK failed: %w", err)
 		}
 		if replyOption != nil {
-			_, err := bot.client.SendReplyOptions(ctx, &bertymessenger.SendReplyOptions_Request{
+			_, err := bot.client.SendReplyOptions(ctx, &messengertypes.SendReplyOptions_Request{
 				GroupPK: convPKBytes,
-				Options: &bertymessenger.AppMessage_ReplyOptions{
+				Options: &messengertypes.AppMessage_ReplyOptions{
 					Options: replyOption,
 				},
 			})
@@ -654,8 +655,8 @@ func safeDefaultDisplayName() string {
 	return fmt.Sprintf("%s (betabot)", name)
 }
 
-func defaultReplyOption() []*bertymessenger.ReplyOption {
-	return []*bertymessenger.ReplyOption{
+func defaultReplyOption() []*messengertypes.ReplyOption {
+	return []*messengertypes.ReplyOption{
 		{Payload: "/help", Display: "Display betabot commands"},
 		{Payload: "/demo version", Display: "What is the demo version?reload"},
 	}

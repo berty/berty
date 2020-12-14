@@ -7,9 +7,9 @@
             <stop stop-color="#3442D9" offset="100%"></stop>
         </linearGradient>
     </defs>
-    <g id="berty" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.90443314">
-        <g id="main/ConversationMedia/SendMode" transform="translate(-30.000000, -685.000000)" fill-rule="nonzero">
-            <g id="1_berty_out" transform="translate(30.000000, 685.750983)">
+    <g id="berty" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.622978743">
+        <g id="main/ConversationMedia/SecurityAccess-Microphone" transform="translate(-177.000000, -664.000000)" fill-rule="nonzero">
+            <g id="1_berty_out" transform="translate(177.000000, 664.750983)">
                 <g id="Group" transform="translate(4.000000, 0.249017)">
                     <path d="M3.88445783,4.41486486 L1.7364759,3.26135135 C-1.56551205,9.17261261 0.586445783,16.6298198 6.52545181,19.9169369 L7.6685241,17.6981081 C2.94813253,14.9451351 1.30310241,9.16072072 3.88445783,4.41486486 Z" id="Shape" fill="#FFBF47"></path>
                     <path d="M15.7356325,7.31747748 L13.3918373,2.14252252 C11.1454518,3.15135135 9.6525,5.13927928 9.19228916,7.37099099 L12.9415663,9.43423423 C13.7934036,8.61468468 14.7337048,7.90612613 15.7356325,7.31747748 Z" id="Path" fill="#3442D9"></path>

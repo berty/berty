@@ -7,11 +7,11 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/pkg/bertytypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 type groupContext struct {
-	group           *bertytypes.Group
+	group           *protocoltypes.Group
 	metadataStore   *metadataStore
 	messageStore    *messageStore
 	messageKeystore *messageKeystore
@@ -35,7 +35,7 @@ func (gc *groupContext) MetadataStore() *metadataStore {
 	return gc.metadataStore
 }
 
-func (gc *groupContext) Group() *bertytypes.Group {
+func (gc *groupContext) Group() *protocoltypes.Group {
 	return gc.group
 }
 
@@ -54,7 +54,7 @@ func (gc *groupContext) Close() error {
 	return nil
 }
 
-func newContextGroup(group *bertytypes.Group, metadataStore *metadataStore, messageStore *messageStore, messageKeystore *messageKeystore, memberDevice *ownMemberDevice, logger *zap.Logger) *groupContext {
+func newContextGroup(group *protocoltypes.Group, metadataStore *metadataStore, messageStore *messageStore, messageKeystore *messageKeystore, memberDevice *ownMemberDevice, logger *zap.Logger) *groupContext {
 	if logger == nil {
 		logger = zap.NewNop()
 	}

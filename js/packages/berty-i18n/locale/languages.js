@@ -1,59 +1,71 @@
-import af from './af/messages.json'
-import ar from './ar/messages.json'
-import ca from './ca/messages.json'
-import cs from './cs/messages.json'
-import da from './da/messages.json'
-import de from './de/messages.json'
-import el from './el/messages.json'
-import en from './en/messages.json'
-import es from './es/messages.json'
-import fi from './fi/messages.json'
-import fr from './fr/messages.json'
-import he from './he/messages.json'
-import hu from './hu/messages.json'
-import it from './it/messages.json'
-import ja from './ja/messages.json'
-import ko from './ko/messages.json'
-import nl from './nl/messages.json'
-import no from './no/messages.json'
-import pl from './pl/messages.json'
-import pt from './pt/messages.json'
-import ro from './ro/messages.json'
-import ru from './ru/messages.json'
-import sr from './sr/messages.json'
-import sv from './sv/messages.json'
-import tr from './tr/messages.json'
-import uk from './uk/messages.json'
-import vi from './vi/messages.json'
-import zh from './zh/messages.json'
+import afZA from './af-ZA/messages.json'
+import arSA from './ar-SA/messages.json'
+import bgBG from './bg-BG/messages.json'
+import caES from './ca-ES/messages.json'
+import csCZ from './cs-CZ/messages.json'
+import daDK from './da-DK/messages.json'
+import deDE from './de-DE/messages.json'
+import elGR from './el-GR/messages.json'
+import enUS from './en-US/messages.json'
+import esES from './es-ES/messages.json'
+import fiFI from './fi-FI/messages.json'
+import frFR from './fr-FR/messages.json'
+import heIL from './he-IL/messages.json'
+import huHU from './hu-HU/messages.json'
+import idID from './id-ID/messages.json'
+import itIT from './it-IT/messages.json'
+import jaJP from './ja-JP/messages.json'
+import koKR from './ko-KR/messages.json'
+import nlNL from './nl-NL/messages.json'
+import noNO from './no-NO/messages.json'
+import plPL from './pl-PL/messages.json'
+import ptBR from './pt-BR/messages.json'
+import ptPT from './pt-PT/messages.json'
+import roRO from './ro-RO/messages.json'
+import ruRU from './ru-RU/messages.json'
+import srCyrl from './sr-Cyrl/messages.json'
+import svSE from './sv-SE/messages.json'
+import trTR from './tr-TR/messages.json'
+import ukUA from './uk-UA/messages.json'
+import viVN from './vi-VN/messages.json'
+import zhCN from './zh-CN/messages.json'
+import zhTW from './zh-TW/messages.json'
 
 export const languages = {
-	af: { englishName: 'Afrikaans', localName: 'Afrikaans', translation: af },
-	ar: { englishName: 'Arabic', localName: 'عربى', translation: ar },
-	ca: { englishName: 'Catalan', localName: 'Català', translation: ca },
-	cs: { englishName: 'Czech', localName: 'čeština', translation: cs },
-	da: { englishName: 'Danish', localName: 'Dansk', translation: da },
-	de: { englishName: 'German', localName: 'Deutsche', translation: de },
-	el: { englishName: 'Greek', localName: 'Ελληνικά', translation: el },
-	en: { englishName: 'English', localName: 'English', translation: en },
-	es: { englishName: 'Spanish', localName: 'Español', translation: es },
-	fi: { englishName: 'Finnish', localName: 'Suomalainen', translation: fi },
-	fr: { englishName: 'French', localName: 'Français', translation: fr },
-	he: { englishName: 'Hebrew', localName: 'עברית', translation: he },
-	hu: { englishName: 'Hungarian', localName: 'Magyar', translation: hu },
-	it: { englishName: 'Italian', localName: 'Italiano', translation: it },
-	ja: { englishName: 'Japanese', localName: 'ja', translation: ja },
-	ko: { englishName: 'Korean', localName: '한국어', translation: ko },
-	nl: { englishName: 'Dutch', localName: 'Nederlands', translation: nl },
-	no: { englishName: 'Norwegian', localName: 'Norsk', translation: no },
-	pl: { englishName: 'Polish', localName: 'Polskie', translation: pl },
-	pt: { englishName: 'Portuguese', localName: 'Português', translation: pt },
-	ro: { englishName: 'Romanian', localName: 'Română', translation: ro },
-	ru: { englishName: 'Russian', localName: 'русский', translation: ru },
-	sr: { englishName: 'Serbian', localName: 'Српски', translation: sr },
-	sv: { englishName: 'Swedish', localName: 'svenska', translation: sv },
-	tr: { englishName: 'Turkish', localName: 'Türk', translation: tr },
-	uk: { englishName: 'Ukrainian', localName: 'Українська', translation: uk },
-	vi: { englishName: 'Vietnamese', localName: 'Tiếng Việt', translation: vi },
-	zh: { englishName: 'Chinese', localName: '简体中文', translation: zh },
+	afZA: { englishName: 'Afrikaans', localName: 'Afrikaans', translation: afZA },
+	arSA: { englishName: 'Arabic', localName: 'عربى', translation: arSA },
+	bgBG: { englishName: 'Bulgarian', localName: 'Bǎlgarski', translation: bgBG },
+	caES: { englishName: 'Catalan', localName: 'Català', translation: caES },
+	csCZ: { englishName: 'Czech', localName: 'čeština', translation: csCZ },
+	daDK: { englishName: 'Danish', localName: 'Dansk', translation: daDK },
+	deDE: { englishName: 'German', localName: 'Deutsche', translation: deDE },
+	elGR: { englishName: 'Greek', localName: 'Ελληνικά', translation: elGR },
+	enUS: { englishName: 'English', localName: 'English', translation: enUS },
+	esES: { englishName: 'Spanish', localName: 'Español', translation: esES },
+	fiFI: { englishName: 'Finnish', localName: 'Suomalainen', translation: fiFI },
+	frFR: { englishName: 'French', localName: 'Français', translation: frFR },
+	heIL: { englishName: 'Hebrew', localName: 'עברית', translation: heIL },
+	huHU: { englishName: 'Hungarian', localName: 'Magyar', translation: huHU },
+	idID: { englishName: 'Indonesian', localName: 'Bahasa Indonesia', translation: idID },
+	itIT: { englishName: 'Italian', localName: 'Italiano', translation: itIT },
+	jaJP: { englishName: 'Japanese', localName: 'ja', translation: jaJP },
+	koKR: { englishName: 'Korean', localName: '한국어', translation: koKR },
+	nlNL: { englishName: 'Dutch', localName: 'Nederlands', translation: nlNL },
+	noNO: { englishName: 'Norwegian', localName: 'Norsk', translation: noNO },
+	plPL: { englishName: 'Polish', localName: 'Polskie', translation: plPL },
+	ptBR: {
+		englishName: 'Portuguese, Brazilian',
+		localName: 'Português do Brasil',
+		translation: ptBR,
+	},
+	ptPT: { englishName: 'Portuguese', localName: 'Português', translation: ptPT },
+	roRO: { englishName: 'Romanian', localName: 'Română', translation: roRO },
+	ruRU: { englishName: 'Russian', localName: 'русский', translation: ruRU },
+	srCyrl: { englishName: 'Serbian (Cyrillic)', localName: 'Српски', translation: srCyrl },
+	svSE: { englishName: 'Swedish', localName: 'svenska', translation: svSE },
+	trTR: { englishName: 'Turkish', localName: 'Türk', translation: trTR },
+	ukUA: { englishName: 'Ukrainian', localName: 'Українська', translation: ukUA },
+	viVN: { englishName: 'Vietnamese', localName: 'Tiếng Việt', translation: viVN },
+	zhCN: { englishName: 'Chinese Simplified', localName: '简体中文', translation: zhCN },
+	zhTW: { englishName: 'Chinese Traditional', localName: '简体中文', translation: zhTW },
 }

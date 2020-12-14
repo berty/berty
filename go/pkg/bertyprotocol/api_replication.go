@@ -9,11 +9,11 @@ import (
 	"google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *bertytypes.ReplicationServiceRegisterGroup_Request) (*bertytypes.ReplicationServiceRegisterGroup_Reply, error) {
+func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *protocoltypes.ReplicationServiceRegisterGroup_Request) (*protocoltypes.ReplicationServiceRegisterGroup_Reply, error) {
 	gc, err := s.getContextGroupForID(request.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -57,7 +57,7 @@ func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *
 
 	client := NewReplicationServiceClient(cc)
 
-	if _, err = client.ReplicateGroup(ctx, &bertytypes.ReplicationServiceReplicateGroup_Request{
+	if _, err = client.ReplicateGroup(ctx, &protocoltypes.ReplicationServiceReplicateGroup_Request{
 		Group: replGroup,
 	}); err != nil {
 		return nil, errcode.ErrServiceReplicationServer.Wrap(err)
@@ -69,5 +69,5 @@ func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *
 		s.logger.Error("error while notifying group about replication", zap.Error(err))
 	}
 
-	return &bertytypes.ReplicationServiceRegisterGroup_Reply{}, nil
+	return &protocoltypes.ReplicationServiceRegisterGroup_Reply{}, nil
 }

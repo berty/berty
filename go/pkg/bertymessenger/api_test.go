@@ -9,10 +9,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"berty.tech/berty/v2/go/internal/bertylinks"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/bertytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 func TestServiceInstanceShareableBertyID(t *testing.T) {
@@ -29,19 +31,19 @@ func TestServiceInstanceShareableBertyID(t *testing.T) {
 	testParseInstanceShareable(ctx, t, svc, ret1)
 	assert.Equal(t, ret1.Link.BertyID.DisplayName, "")
 
-	ret2, err := svc.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{})
+	ret2, err := svc.InstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{})
 	require.NoError(t, err)
 	testParseInstanceShareable(ctx, t, svc, ret2)
 	assert.Equal(t, ret2.Link.BertyID.DisplayName, "")
 	assert.Equal(t, ret1, ret2)
 
-	ret3, err := svc.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{DisplayName: "Hello World! 👋"})
+	ret3, err := svc.InstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{DisplayName: "Hello World! 👋"})
 	require.NoError(t, err)
 	testParseInstanceShareable(ctx, t, svc, ret3)
 	assert.Equal(t, ret3.Link.BertyID.DisplayName, "Hello World! 👋")
 	assert.NotEqual(t, ret2.Link.BertyID, ret3.Link.BertyID)
 
-	ret4, err := svc.InstanceShareableBertyID(ctx, &InstanceShareableBertyID_Request{Reset_: true})
+	ret4, err := svc.InstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{Reset_: true})
 	require.NoError(t, err)
 	testParseInstanceShareable(ctx, t, svc, ret4)
 	assert.Equal(t, ret4.Link.BertyID.DisplayName, "")
@@ -54,7 +56,7 @@ func TestServiceInstanceShareableBertyID(t *testing.T) {
 	assert.Equal(t, ret4, ret5)
 }
 
-func testParseInstanceShareable(ctx context.Context, t *testing.T, svc MessengerServiceServer, ret *InstanceShareableBertyID_Reply) {
+func testParseInstanceShareable(ctx context.Context, t *testing.T, svc messengertypes.MessengerServiceServer, ret *messengertypes.InstanceShareableBertyID_Reply) {
 	t.Helper()
 	assert.NotEmpty(t, ret.Link.BertyID)
 	assert.NotEmpty(t, ret.Link.BertyID.PublicRendezvousSeed)
@@ -63,9 +65,9 @@ func testParseInstanceShareable(ctx context.Context, t *testing.T, svc Messenger
 	assert.NotEmpty(t, ret.InternalURL)
 	assert.NotEqual(t, ret.WebURL, ret.InternalURL)
 
-	parsed1, err := svc.ParseDeepLink(ctx, &ParseDeepLink_Request{Link: ret.InternalURL})
+	parsed1, err := svc.ParseDeepLink(ctx, &messengertypes.ParseDeepLink_Request{Link: ret.InternalURL})
 	require.NoError(t, err)
-	parsed2, err := svc.ParseDeepLink(ctx, &ParseDeepLink_Request{Link: ret.WebURL})
+	parsed2, err := svc.ParseDeepLink(ctx, &messengertypes.ParseDeepLink_Request{Link: ret.WebURL})
 	require.NoError(t, err)
 
 	assert.Equal(t, parsed1, parsed2)
@@ -77,22 +79,22 @@ func testParseInstanceShareable(ctx context.Context, t *testing.T, svc Messenger
 func TestServiceParseDeepLink(t *testing.T) {
 	tests := []struct {
 		name            string
-		request         *ParseDeepLink_Request
+		request         *messengertypes.ParseDeepLink_Request
 		expectedErrcode error
 		expectedValidID bool
 		expectedName    bool
 	}{
 		{"nil", nil, errcode.ErrMissingInput, false, false},
-		{"empty", &ParseDeepLink_Request{}, errcode.ErrMessengerInvalidDeepLink, false, false},
-		{"invalid", &ParseDeepLink_Request{Link: "foobar"}, errcode.ErrMessengerInvalidDeepLink, false, false},
-		{"invalid2", &ParseDeepLink_Request{Link: "BERTY://FOOBAR"}, errcode.ErrMessengerInvalidDeepLink, false, false},
-		{"invalid2", &ParseDeepLink_Request{Link: "berty://foobar"}, errcode.ErrMessengerInvalidDeepLink, false, false},
-		{"invalid3", &ParseDeepLink_Request{Link: "https://berty.tech/id#foobar"}, errcode.ErrMessengerInvalidDeepLink, false, false},
-		{"internal", &ParseDeepLink_Request{Link: "BERTY://" + validContactInternalBlob}, nil, true, true},
-		{"internal-2", &ParseDeepLink_Request{Link: "berty://" + validContactInternalBlob}, nil, true, true},
-		{"weburl", &ParseDeepLink_Request{Link: "https://berty.tech/id#contact/" + validContactBlob + "/name=Alice"}, nil, true, true},
-		{"weburl-noname", &ParseDeepLink_Request{Link: "https://berty.tech/id#contact/" + validContactBlob}, nil, true, false},
-		{"test-real-case", &ParseDeepLink_Request{Link: "https://berty.tech/id#contact/oZBLEm2jFndwNvX9yQTVqcMkVuuJQYMoU1XQsmxhS9Q1n1L9npGFVhrFitqR9p8Wgd8Kf3sTLdLoQxKDmr3aK2pP9humsHz/name=moul+%28cli%29"}, nil, true, true},
+		{"empty", &messengertypes.ParseDeepLink_Request{}, errcode.ErrMessengerInvalidDeepLink, false, false},
+		{"invalid", &messengertypes.ParseDeepLink_Request{Link: "foobar"}, errcode.ErrMessengerInvalidDeepLink, false, false},
+		{"invalid2", &messengertypes.ParseDeepLink_Request{Link: "BERTY://FOOBAR"}, errcode.ErrMessengerInvalidDeepLink, false, false},
+		{"invalid2", &messengertypes.ParseDeepLink_Request{Link: "berty://foobar"}, errcode.ErrMessengerInvalidDeepLink, false, false},
+		{"invalid3", &messengertypes.ParseDeepLink_Request{Link: "https://berty.tech/id#foobar"}, errcode.ErrMessengerInvalidDeepLink, false, false},
+		{"internal", &messengertypes.ParseDeepLink_Request{Link: "BERTY://PB/" + validContactInternalBlob}, nil, true, true},
+		{"internal-2", &messengertypes.ParseDeepLink_Request{Link: "berty://pb/" + validContactInternalBlob}, nil, true, true},
+		{"weburl", &messengertypes.ParseDeepLink_Request{Link: "https://berty.tech/id#contact/" + validContactBlob + "/name=Alice"}, nil, true, true},
+		{"weburl-noname", &messengertypes.ParseDeepLink_Request{Link: "https://berty.tech/id#contact/" + validContactBlob}, nil, true, false},
+		{"test-real-case", &messengertypes.ParseDeepLink_Request{Link: "https://berty.tech/id#contact/oZBLEm2jFndwNvX9yQTVqcMkVuuJQYMoU1XQsmxhS9Q1n1L9npGFVhrFitqR9p8Wgd8Kf3sTLdLoQxKDmr3aK2pP9humsHz/name=moul+%28cli%29"}, nil, true, true},
 	}
 
 	for _, tt := range tests {
@@ -139,14 +141,14 @@ func TestServiceSendContactRequest(t *testing.T) {
 	assert.Equal(t, errcode.Code(err), errcode.ErrMissingInput)
 	assert.Nil(t, ret)
 
-	ret, err = svc.SendContactRequest(ctx, &SendContactRequest_Request{})
+	ret, err = svc.SendContactRequest(ctx, &messengertypes.SendContactRequest_Request{})
 	assert.Equal(t, errcode.Code(err), errcode.ErrMissingInput)
 	assert.Nil(t, ret)
 
-	parseRet, err := svc.ParseDeepLink(ctx, &ParseDeepLink_Request{Link: "https://berty.tech/id#contact/" + validContactBlob + "/name=Alice"})
+	parseRet, err := svc.ParseDeepLink(ctx, &messengertypes.ParseDeepLink_Request{Link: "https://berty.tech/id#contact/" + validContactBlob + "/name=Alice"})
 	require.NoError(t, err)
 
-	ret, err = svc.SendContactRequest(ctx, &SendContactRequest_Request{BertyID: parseRet.Link.BertyID})
+	ret, err = svc.SendContactRequest(ctx, &messengertypes.SendContactRequest_Request{BertyID: parseRet.Link.BertyID})
 	require.NoError(t, err)
 	assert.NotNil(t, ret)
 }
@@ -174,14 +176,14 @@ func TestSystemInfo(t *testing.T) {
 	assert.True(t, ret.Messenger.ProtocolInSameProcess)
 }
 
-func testParseSharedGroup(t *testing.T, g *bertytypes.Group, name string, ret *ShareableBertyGroup_Reply) {
+func testParseSharedGroup(t *testing.T, g *protocoltypes.Group, name string, ret *messengertypes.ShareableBertyGroup_Reply) {
 	t.Helper()
-	group := &BertyGroup{
+	group := &messengertypes.BertyGroup{
 		Group:       g,
 		DisplayName: name,
 	}
 	link := group.GetBertyLink()
-	internal, web, err := link.Marshal()
+	internal, web, err := bertylinks.MarshalLink(link)
 
 	assert.NoError(t, err)
 	assert.Equal(t, internal, ret.InternalURL)
@@ -215,7 +217,7 @@ func TestServiceShareableBertyGroup(t *testing.T) {
 	g, _, err := bertyprotocol.NewGroupMultiMember()
 	require.NoError(t, err)
 
-	_, err = protocol.Client.MultiMemberGroupJoin(ctx, &bertytypes.MultiMemberGroupJoin_Request{
+	_, err = protocol.Client.MultiMemberGroupJoin(ctx, &protocoltypes.MultiMemberGroupJoin_Request{
 		Group: g,
 	})
 	require.NoError(t, err)
@@ -223,19 +225,19 @@ func TestServiceShareableBertyGroup(t *testing.T) {
 	ret1, err := svc.ShareableBertyGroup(ctx, nil)
 	require.Error(t, err)
 
-	ret1, err = svc.ShareableBertyGroup(ctx, &ShareableBertyGroup_Request{
+	ret1, err = svc.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
 		GroupPK:   nil,
 		GroupName: "",
 	})
 	require.Error(t, err)
 
-	ret1, err = svc.ShareableBertyGroup(ctx, &ShareableBertyGroup_Request{
+	ret1, err = svc.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
 		GroupPK:   []byte("garbage id"),
 		GroupName: "",
 	})
 	require.Error(t, err)
 
-	ret1, err = svc.ShareableBertyGroup(ctx, &ShareableBertyGroup_Request{
+	ret1, err = svc.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
 		GroupPK:   g.PublicKey,
 		GroupName: "",
 	})
@@ -243,7 +245,7 @@ func TestServiceShareableBertyGroup(t *testing.T) {
 
 	testParseSharedGroup(t, g, "", ret1)
 
-	ret1, err = svc.ShareableBertyGroup(ctx, &ShareableBertyGroup_Request{
+	ret1, err = svc.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
 		GroupPK:   g.PublicKey,
 		GroupName: "named group",
 	})

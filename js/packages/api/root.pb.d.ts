@@ -969,6 +969,12 @@ export namespace berty {
             ErrDeserialization = 104,
             ErrStreamRead = 105,
             ErrStreamWrite = 106,
+            ErrStreamTransform = 110,
+            ErrStreamSendAndClose = 111,
+            ErrStreamHeaderWrite = 112,
+            ErrStreamHeaderRead = 115,
+            ErrStreamSink = 113,
+            ErrStreamCloseAndRecv = 114,
             ErrMissingMapKey = 107,
             ErrDBWrite = 108,
             ErrDBRead = 109,
@@ -1025,6 +1031,7 @@ export namespace berty {
             ErrBridgeInterrupted = 1600,
             ErrBridgeNotRunning = 1601,
             ErrMessengerInvalidDeepLink = 2000,
+            ErrMessengerDeepLinkRequiresPassphrase = 2001,
             ErrDBEntryAlreadyExists = 2100,
             ErrDBAddConversation = 2101,
             ErrDBAddContactRequestOutgoingSent = 2102,
@@ -1035,8 +1042,8 @@ export namespace berty {
             ErrDBMultipleRecords = 2107,
             ErrReplayProcessGroupMetadata = 2200,
             ErrReplayProcessGroupMessage = 2201,
-            ErrPrepareAttachment = 2300,
-            ErrRetrieveAttachment = 2301,
+            ErrAttachmentPrepare = 2300,
+            ErrAttachmentRetrieve = 2301,
             ErrProtocolSend = 2302,
             ErrCLINoTermcaps = 3001,
             ErrServicesAuth = 4000,
@@ -1097,164 +1104,158 @@ export namespace berty {
             class ProtocolService extends $protobuf.rpc.Service {
 
                 public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): ProtocolService;
-                public instanceExportData(request: berty.types.v1.InstanceExportData.IRequest, callback: berty.protocol.v1.ProtocolService.InstanceExportDataCallback): void;
-                public instanceExportData(request: berty.types.v1.InstanceExportData.IRequest): Promise<berty.types.v1.InstanceExportData.Reply>;
-                public instanceGetConfiguration(request: berty.types.v1.InstanceGetConfiguration.IRequest, callback: berty.protocol.v1.ProtocolService.InstanceGetConfigurationCallback): void;
-                public instanceGetConfiguration(request: berty.types.v1.InstanceGetConfiguration.IRequest): Promise<berty.types.v1.InstanceGetConfiguration.Reply>;
-                public contactRequestReference(request: berty.types.v1.ContactRequestReference.IRequest, callback: berty.protocol.v1.ProtocolService.ContactRequestReferenceCallback): void;
-                public contactRequestReference(request: berty.types.v1.ContactRequestReference.IRequest): Promise<berty.types.v1.ContactRequestReference.Reply>;
-                public contactRequestDisable(request: berty.types.v1.ContactRequestDisable.IRequest, callback: berty.protocol.v1.ProtocolService.ContactRequestDisableCallback): void;
-                public contactRequestDisable(request: berty.types.v1.ContactRequestDisable.IRequest): Promise<berty.types.v1.ContactRequestDisable.Reply>;
-                public contactRequestEnable(request: berty.types.v1.ContactRequestEnable.IRequest, callback: berty.protocol.v1.ProtocolService.ContactRequestEnableCallback): void;
-                public contactRequestEnable(request: berty.types.v1.ContactRequestEnable.IRequest): Promise<berty.types.v1.ContactRequestEnable.Reply>;
-                public contactRequestResetReference(request: berty.types.v1.ContactRequestResetReference.IRequest, callback: berty.protocol.v1.ProtocolService.ContactRequestResetReferenceCallback): void;
-                public contactRequestResetReference(request: berty.types.v1.ContactRequestResetReference.IRequest): Promise<berty.types.v1.ContactRequestResetReference.Reply>;
-                public contactRequestSend(request: berty.types.v1.ContactRequestSend.IRequest, callback: berty.protocol.v1.ProtocolService.ContactRequestSendCallback): void;
-                public contactRequestSend(request: berty.types.v1.ContactRequestSend.IRequest): Promise<berty.types.v1.ContactRequestSend.Reply>;
-                public contactRequestAccept(request: berty.types.v1.ContactRequestAccept.IRequest, callback: berty.protocol.v1.ProtocolService.ContactRequestAcceptCallback): void;
-                public contactRequestAccept(request: berty.types.v1.ContactRequestAccept.IRequest): Promise<berty.types.v1.ContactRequestAccept.Reply>;
-                public contactRequestDiscard(request: berty.types.v1.ContactRequestDiscard.IRequest, callback: berty.protocol.v1.ProtocolService.ContactRequestDiscardCallback): void;
-                public contactRequestDiscard(request: berty.types.v1.ContactRequestDiscard.IRequest): Promise<berty.types.v1.ContactRequestDiscard.Reply>;
-                public contactBlock(request: berty.types.v1.ContactBlock.IRequest, callback: berty.protocol.v1.ProtocolService.ContactBlockCallback): void;
-                public contactBlock(request: berty.types.v1.ContactBlock.IRequest): Promise<berty.types.v1.ContactBlock.Reply>;
-                public contactUnblock(request: berty.types.v1.ContactUnblock.IRequest, callback: berty.protocol.v1.ProtocolService.ContactUnblockCallback): void;
-                public contactUnblock(request: berty.types.v1.ContactUnblock.IRequest): Promise<berty.types.v1.ContactUnblock.Reply>;
-                public contactAliasKeySend(request: berty.types.v1.ContactAliasKeySend.IRequest, callback: berty.protocol.v1.ProtocolService.ContactAliasKeySendCallback): void;
-                public contactAliasKeySend(request: berty.types.v1.ContactAliasKeySend.IRequest): Promise<berty.types.v1.ContactAliasKeySend.Reply>;
-                public multiMemberGroupCreate(request: berty.types.v1.MultiMemberGroupCreate.IRequest, callback: berty.protocol.v1.ProtocolService.MultiMemberGroupCreateCallback): void;
-                public multiMemberGroupCreate(request: berty.types.v1.MultiMemberGroupCreate.IRequest): Promise<berty.types.v1.MultiMemberGroupCreate.Reply>;
-                public multiMemberGroupJoin(request: berty.types.v1.MultiMemberGroupJoin.IRequest, callback: berty.protocol.v1.ProtocolService.MultiMemberGroupJoinCallback): void;
-                public multiMemberGroupJoin(request: berty.types.v1.MultiMemberGroupJoin.IRequest): Promise<berty.types.v1.MultiMemberGroupJoin.Reply>;
-                public multiMemberGroupLeave(request: berty.types.v1.MultiMemberGroupLeave.IRequest, callback: berty.protocol.v1.ProtocolService.MultiMemberGroupLeaveCallback): void;
-                public multiMemberGroupLeave(request: berty.types.v1.MultiMemberGroupLeave.IRequest): Promise<berty.types.v1.MultiMemberGroupLeave.Reply>;
-                public multiMemberGroupAliasResolverDisclose(request: berty.types.v1.MultiMemberGroupAliasResolverDisclose.IRequest, callback: berty.protocol.v1.ProtocolService.MultiMemberGroupAliasResolverDiscloseCallback): void;
-                public multiMemberGroupAliasResolverDisclose(request: berty.types.v1.MultiMemberGroupAliasResolverDisclose.IRequest): Promise<berty.types.v1.MultiMemberGroupAliasResolverDisclose.Reply>;
-                public multiMemberGroupAdminRoleGrant(request: berty.types.v1.MultiMemberGroupAdminRoleGrant.IRequest, callback: berty.protocol.v1.ProtocolService.MultiMemberGroupAdminRoleGrantCallback): void;
-                public multiMemberGroupAdminRoleGrant(request: berty.types.v1.MultiMemberGroupAdminRoleGrant.IRequest): Promise<berty.types.v1.MultiMemberGroupAdminRoleGrant.Reply>;
-                public multiMemberGroupInvitationCreate(request: berty.types.v1.MultiMemberGroupInvitationCreate.IRequest, callback: berty.protocol.v1.ProtocolService.MultiMemberGroupInvitationCreateCallback): void;
-                public multiMemberGroupInvitationCreate(request: berty.types.v1.MultiMemberGroupInvitationCreate.IRequest): Promise<berty.types.v1.MultiMemberGroupInvitationCreate.Reply>;
-                public appMetadataSend(request: berty.types.v1.AppMetadataSend.IRequest, callback: berty.protocol.v1.ProtocolService.AppMetadataSendCallback): void;
-                public appMetadataSend(request: berty.types.v1.AppMetadataSend.IRequest): Promise<berty.types.v1.AppMetadataSend.Reply>;
-                public appMessageSend(request: berty.types.v1.AppMessageSend.IRequest, callback: berty.protocol.v1.ProtocolService.AppMessageSendCallback): void;
-                public appMessageSend(request: berty.types.v1.AppMessageSend.IRequest): Promise<berty.types.v1.AppMessageSend.Reply>;
-                public groupMetadataList(request: berty.types.v1.GroupMetadataList.IRequest, callback: berty.protocol.v1.ProtocolService.GroupMetadataListCallback): void;
-                public groupMetadataList(request: berty.types.v1.GroupMetadataList.IRequest): Promise<berty.types.v1.GroupMetadataEvent>;
-                public groupMessageList(request: berty.types.v1.GroupMessageList.IRequest, callback: berty.protocol.v1.ProtocolService.GroupMessageListCallback): void;
-                public groupMessageList(request: berty.types.v1.GroupMessageList.IRequest): Promise<berty.types.v1.GroupMessageEvent>;
-                public groupInfo(request: berty.types.v1.GroupInfo.IRequest, callback: berty.protocol.v1.ProtocolService.GroupInfoCallback): void;
-                public groupInfo(request: berty.types.v1.GroupInfo.IRequest): Promise<berty.types.v1.GroupInfo.Reply>;
-                public activateGroup(request: berty.types.v1.ActivateGroup.IRequest, callback: berty.protocol.v1.ProtocolService.ActivateGroupCallback): void;
-                public activateGroup(request: berty.types.v1.ActivateGroup.IRequest): Promise<berty.types.v1.ActivateGroup.Reply>;
-                public deactivateGroup(request: berty.types.v1.DeactivateGroup.IRequest, callback: berty.protocol.v1.ProtocolService.DeactivateGroupCallback): void;
-                public deactivateGroup(request: berty.types.v1.DeactivateGroup.IRequest): Promise<berty.types.v1.DeactivateGroup.Reply>;
-                public monitorGroup(request: berty.types.v1.MonitorGroup.IRequest, callback: berty.protocol.v1.ProtocolService.MonitorGroupCallback): void;
-                public monitorGroup(request: berty.types.v1.MonitorGroup.IRequest): Promise<berty.types.v1.MonitorGroup.Reply>;
-                public debugListGroups(request: berty.types.v1.DebugListGroups.IRequest, callback: berty.protocol.v1.ProtocolService.DebugListGroupsCallback): void;
-                public debugListGroups(request: berty.types.v1.DebugListGroups.IRequest): Promise<berty.types.v1.DebugListGroups.Reply>;
-                public debugInspectGroupStore(request: berty.types.v1.DebugInspectGroupStore.IRequest, callback: berty.protocol.v1.ProtocolService.DebugInspectGroupStoreCallback): void;
-                public debugInspectGroupStore(request: berty.types.v1.DebugInspectGroupStore.IRequest): Promise<berty.types.v1.DebugInspectGroupStore.Reply>;
-                public debugGroup(request: berty.types.v1.DebugGroup.IRequest, callback: berty.protocol.v1.ProtocolService.DebugGroupCallback): void;
-                public debugGroup(request: berty.types.v1.DebugGroup.IRequest): Promise<berty.types.v1.DebugGroup.Reply>;
-                public systemInfo(request: berty.types.v1.SystemInfo.IRequest, callback: berty.protocol.v1.ProtocolService.SystemInfoCallback): void;
-                public systemInfo(request: berty.types.v1.SystemInfo.IRequest): Promise<berty.types.v1.SystemInfo.Reply>;
-                public authServiceInitFlow(request: berty.types.v1.AuthServiceInitFlow.IRequest, callback: berty.protocol.v1.ProtocolService.AuthServiceInitFlowCallback): void;
-                public authServiceInitFlow(request: berty.types.v1.AuthServiceInitFlow.IRequest): Promise<berty.types.v1.AuthServiceInitFlow.Reply>;
-                public authServiceCompleteFlow(request: berty.types.v1.AuthServiceCompleteFlow.IRequest, callback: berty.protocol.v1.ProtocolService.AuthServiceCompleteFlowCallback): void;
-                public authServiceCompleteFlow(request: berty.types.v1.AuthServiceCompleteFlow.IRequest): Promise<berty.types.v1.AuthServiceCompleteFlow.Reply>;
-                public servicesTokenList(request: berty.types.v1.ServicesTokenList.IRequest, callback: berty.protocol.v1.ProtocolService.ServicesTokenListCallback): void;
-                public servicesTokenList(request: berty.types.v1.ServicesTokenList.IRequest): Promise<berty.types.v1.ServicesTokenList.Reply>;
-                public replicationServiceRegisterGroup(request: berty.types.v1.ReplicationServiceRegisterGroup.IRequest, callback: berty.protocol.v1.ProtocolService.ReplicationServiceRegisterGroupCallback): void;
-                public replicationServiceRegisterGroup(request: berty.types.v1.ReplicationServiceRegisterGroup.IRequest): Promise<berty.types.v1.ReplicationServiceRegisterGroup.Reply>;
-                public peerList(request: berty.types.v1.PeerList.IRequest, callback: berty.protocol.v1.ProtocolService.PeerListCallback): void;
-                public peerList(request: berty.types.v1.PeerList.IRequest): Promise<berty.types.v1.PeerList.Reply>;
-                public attachmentPrepare(request: berty.types.v1.AttachmentPrepare.IRequest, callback: berty.protocol.v1.ProtocolService.AttachmentPrepareCallback): void;
-                public attachmentPrepare(request: berty.types.v1.AttachmentPrepare.IRequest): Promise<berty.types.v1.AttachmentPrepare.Reply>;
-                public attachmentRetrieve(request: berty.types.v1.AttachmentRetrieve.IRequest, callback: berty.protocol.v1.ProtocolService.AttachmentRetrieveCallback): void;
-                public attachmentRetrieve(request: berty.types.v1.AttachmentRetrieve.IRequest): Promise<berty.types.v1.AttachmentRetrieve.Reply>;
+                public instanceExportData(request: berty.protocol.v1.InstanceExportData.IRequest, callback: berty.protocol.v1.ProtocolService.InstanceExportDataCallback): void;
+                public instanceExportData(request: berty.protocol.v1.InstanceExportData.IRequest): Promise<berty.protocol.v1.InstanceExportData.Reply>;
+                public instanceGetConfiguration(request: berty.protocol.v1.InstanceGetConfiguration.IRequest, callback: berty.protocol.v1.ProtocolService.InstanceGetConfigurationCallback): void;
+                public instanceGetConfiguration(request: berty.protocol.v1.InstanceGetConfiguration.IRequest): Promise<berty.protocol.v1.InstanceGetConfiguration.Reply>;
+                public contactRequestReference(request: berty.protocol.v1.ContactRequestReference.IRequest, callback: berty.protocol.v1.ProtocolService.ContactRequestReferenceCallback): void;
+                public contactRequestReference(request: berty.protocol.v1.ContactRequestReference.IRequest): Promise<berty.protocol.v1.ContactRequestReference.Reply>;
+                public contactRequestDisable(request: berty.protocol.v1.ContactRequestDisable.IRequest, callback: berty.protocol.v1.ProtocolService.ContactRequestDisableCallback): void;
+                public contactRequestDisable(request: berty.protocol.v1.ContactRequestDisable.IRequest): Promise<berty.protocol.v1.ContactRequestDisable.Reply>;
+                public contactRequestEnable(request: berty.protocol.v1.ContactRequestEnable.IRequest, callback: berty.protocol.v1.ProtocolService.ContactRequestEnableCallback): void;
+                public contactRequestEnable(request: berty.protocol.v1.ContactRequestEnable.IRequest): Promise<berty.protocol.v1.ContactRequestEnable.Reply>;
+                public contactRequestResetReference(request: berty.protocol.v1.ContactRequestResetReference.IRequest, callback: berty.protocol.v1.ProtocolService.ContactRequestResetReferenceCallback): void;
+                public contactRequestResetReference(request: berty.protocol.v1.ContactRequestResetReference.IRequest): Promise<berty.protocol.v1.ContactRequestResetReference.Reply>;
+                public contactRequestSend(request: berty.protocol.v1.ContactRequestSend.IRequest, callback: berty.protocol.v1.ProtocolService.ContactRequestSendCallback): void;
+                public contactRequestSend(request: berty.protocol.v1.ContactRequestSend.IRequest): Promise<berty.protocol.v1.ContactRequestSend.Reply>;
+                public contactRequestAccept(request: berty.protocol.v1.ContactRequestAccept.IRequest, callback: berty.protocol.v1.ProtocolService.ContactRequestAcceptCallback): void;
+                public contactRequestAccept(request: berty.protocol.v1.ContactRequestAccept.IRequest): Promise<berty.protocol.v1.ContactRequestAccept.Reply>;
+                public contactRequestDiscard(request: berty.protocol.v1.ContactRequestDiscard.IRequest, callback: berty.protocol.v1.ProtocolService.ContactRequestDiscardCallback): void;
+                public contactRequestDiscard(request: berty.protocol.v1.ContactRequestDiscard.IRequest): Promise<berty.protocol.v1.ContactRequestDiscard.Reply>;
+                public contactBlock(request: berty.protocol.v1.ContactBlock.IRequest, callback: berty.protocol.v1.ProtocolService.ContactBlockCallback): void;
+                public contactBlock(request: berty.protocol.v1.ContactBlock.IRequest): Promise<berty.protocol.v1.ContactBlock.Reply>;
+                public contactUnblock(request: berty.protocol.v1.ContactUnblock.IRequest, callback: berty.protocol.v1.ProtocolService.ContactUnblockCallback): void;
+                public contactUnblock(request: berty.protocol.v1.ContactUnblock.IRequest): Promise<berty.protocol.v1.ContactUnblock.Reply>;
+                public contactAliasKeySend(request: berty.protocol.v1.ContactAliasKeySend.IRequest, callback: berty.protocol.v1.ProtocolService.ContactAliasKeySendCallback): void;
+                public contactAliasKeySend(request: berty.protocol.v1.ContactAliasKeySend.IRequest): Promise<berty.protocol.v1.ContactAliasKeySend.Reply>;
+                public multiMemberGroupCreate(request: berty.protocol.v1.MultiMemberGroupCreate.IRequest, callback: berty.protocol.v1.ProtocolService.MultiMemberGroupCreateCallback): void;
+                public multiMemberGroupCreate(request: berty.protocol.v1.MultiMemberGroupCreate.IRequest): Promise<berty.protocol.v1.MultiMemberGroupCreate.Reply>;
+                public multiMemberGroupJoin(request: berty.protocol.v1.MultiMemberGroupJoin.IRequest, callback: berty.protocol.v1.ProtocolService.MultiMemberGroupJoinCallback): void;
+                public multiMemberGroupJoin(request: berty.protocol.v1.MultiMemberGroupJoin.IRequest): Promise<berty.protocol.v1.MultiMemberGroupJoin.Reply>;
+                public multiMemberGroupLeave(request: berty.protocol.v1.MultiMemberGroupLeave.IRequest, callback: berty.protocol.v1.ProtocolService.MultiMemberGroupLeaveCallback): void;
+                public multiMemberGroupLeave(request: berty.protocol.v1.MultiMemberGroupLeave.IRequest): Promise<berty.protocol.v1.MultiMemberGroupLeave.Reply>;
+                public multiMemberGroupAliasResolverDisclose(request: berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.IRequest, callback: berty.protocol.v1.ProtocolService.MultiMemberGroupAliasResolverDiscloseCallback): void;
+                public multiMemberGroupAliasResolverDisclose(request: berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.IRequest): Promise<berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.Reply>;
+                public multiMemberGroupAdminRoleGrant(request: berty.protocol.v1.MultiMemberGroupAdminRoleGrant.IRequest, callback: berty.protocol.v1.ProtocolService.MultiMemberGroupAdminRoleGrantCallback): void;
+                public multiMemberGroupAdminRoleGrant(request: berty.protocol.v1.MultiMemberGroupAdminRoleGrant.IRequest): Promise<berty.protocol.v1.MultiMemberGroupAdminRoleGrant.Reply>;
+                public multiMemberGroupInvitationCreate(request: berty.protocol.v1.MultiMemberGroupInvitationCreate.IRequest, callback: berty.protocol.v1.ProtocolService.MultiMemberGroupInvitationCreateCallback): void;
+                public multiMemberGroupInvitationCreate(request: berty.protocol.v1.MultiMemberGroupInvitationCreate.IRequest): Promise<berty.protocol.v1.MultiMemberGroupInvitationCreate.Reply>;
+                public appMetadataSend(request: berty.protocol.v1.AppMetadataSend.IRequest, callback: berty.protocol.v1.ProtocolService.AppMetadataSendCallback): void;
+                public appMetadataSend(request: berty.protocol.v1.AppMetadataSend.IRequest): Promise<berty.protocol.v1.AppMetadataSend.Reply>;
+                public appMessageSend(request: berty.protocol.v1.AppMessageSend.IRequest, callback: berty.protocol.v1.ProtocolService.AppMessageSendCallback): void;
+                public appMessageSend(request: berty.protocol.v1.AppMessageSend.IRequest): Promise<berty.protocol.v1.AppMessageSend.Reply>;
+                public groupMetadataList(request: berty.protocol.v1.GroupMetadataList.IRequest, callback: berty.protocol.v1.ProtocolService.GroupMetadataListCallback): void;
+                public groupMetadataList(request: berty.protocol.v1.GroupMetadataList.IRequest): Promise<berty.protocol.v1.GroupMetadataEvent>;
+                public groupMessageList(request: berty.protocol.v1.GroupMessageList.IRequest, callback: berty.protocol.v1.ProtocolService.GroupMessageListCallback): void;
+                public groupMessageList(request: berty.protocol.v1.GroupMessageList.IRequest): Promise<berty.protocol.v1.GroupMessageEvent>;
+                public groupInfo(request: berty.protocol.v1.GroupInfo.IRequest, callback: berty.protocol.v1.ProtocolService.GroupInfoCallback): void;
+                public groupInfo(request: berty.protocol.v1.GroupInfo.IRequest): Promise<berty.protocol.v1.GroupInfo.Reply>;
+                public activateGroup(request: berty.protocol.v1.ActivateGroup.IRequest, callback: berty.protocol.v1.ProtocolService.ActivateGroupCallback): void;
+                public activateGroup(request: berty.protocol.v1.ActivateGroup.IRequest): Promise<berty.protocol.v1.ActivateGroup.Reply>;
+                public deactivateGroup(request: berty.protocol.v1.DeactivateGroup.IRequest, callback: berty.protocol.v1.ProtocolService.DeactivateGroupCallback): void;
+                public deactivateGroup(request: berty.protocol.v1.DeactivateGroup.IRequest): Promise<berty.protocol.v1.DeactivateGroup.Reply>;
+                public monitorGroup(request: berty.protocol.v1.MonitorGroup.IRequest, callback: berty.protocol.v1.ProtocolService.MonitorGroupCallback): void;
+                public monitorGroup(request: berty.protocol.v1.MonitorGroup.IRequest): Promise<berty.protocol.v1.MonitorGroup.Reply>;
+                public debugListGroups(request: berty.protocol.v1.DebugListGroups.IRequest, callback: berty.protocol.v1.ProtocolService.DebugListGroupsCallback): void;
+                public debugListGroups(request: berty.protocol.v1.DebugListGroups.IRequest): Promise<berty.protocol.v1.DebugListGroups.Reply>;
+                public debugInspectGroupStore(request: berty.protocol.v1.DebugInspectGroupStore.IRequest, callback: berty.protocol.v1.ProtocolService.DebugInspectGroupStoreCallback): void;
+                public debugInspectGroupStore(request: berty.protocol.v1.DebugInspectGroupStore.IRequest): Promise<berty.protocol.v1.DebugInspectGroupStore.Reply>;
+                public debugGroup(request: berty.protocol.v1.DebugGroup.IRequest, callback: berty.protocol.v1.ProtocolService.DebugGroupCallback): void;
+                public debugGroup(request: berty.protocol.v1.DebugGroup.IRequest): Promise<berty.protocol.v1.DebugGroup.Reply>;
+                public systemInfo(request: berty.protocol.v1.SystemInfo.IRequest, callback: berty.protocol.v1.ProtocolService.SystemInfoCallback): void;
+                public systemInfo(request: berty.protocol.v1.SystemInfo.IRequest): Promise<berty.protocol.v1.SystemInfo.Reply>;
+                public authServiceInitFlow(request: berty.protocol.v1.AuthServiceInitFlow.IRequest, callback: berty.protocol.v1.ProtocolService.AuthServiceInitFlowCallback): void;
+                public authServiceInitFlow(request: berty.protocol.v1.AuthServiceInitFlow.IRequest): Promise<berty.protocol.v1.AuthServiceInitFlow.Reply>;
+                public authServiceCompleteFlow(request: berty.protocol.v1.AuthServiceCompleteFlow.IRequest, callback: berty.protocol.v1.ProtocolService.AuthServiceCompleteFlowCallback): void;
+                public authServiceCompleteFlow(request: berty.protocol.v1.AuthServiceCompleteFlow.IRequest): Promise<berty.protocol.v1.AuthServiceCompleteFlow.Reply>;
+                public servicesTokenList(request: berty.protocol.v1.ServicesTokenList.IRequest, callback: berty.protocol.v1.ProtocolService.ServicesTokenListCallback): void;
+                public servicesTokenList(request: berty.protocol.v1.ServicesTokenList.IRequest): Promise<berty.protocol.v1.ServicesTokenList.Reply>;
+                public replicationServiceRegisterGroup(request: berty.protocol.v1.ReplicationServiceRegisterGroup.IRequest, callback: berty.protocol.v1.ProtocolService.ReplicationServiceRegisterGroupCallback): void;
+                public replicationServiceRegisterGroup(request: berty.protocol.v1.ReplicationServiceRegisterGroup.IRequest): Promise<berty.protocol.v1.ReplicationServiceRegisterGroup.Reply>;
+                public peerList(request: berty.protocol.v1.PeerList.IRequest, callback: berty.protocol.v1.ProtocolService.PeerListCallback): void;
+                public peerList(request: berty.protocol.v1.PeerList.IRequest): Promise<berty.protocol.v1.PeerList.Reply>;
+                public attachmentPrepare(request: berty.protocol.v1.AttachmentPrepare.IRequest, callback: berty.protocol.v1.ProtocolService.AttachmentPrepareCallback): void;
+                public attachmentPrepare(request: berty.protocol.v1.AttachmentPrepare.IRequest): Promise<berty.protocol.v1.AttachmentPrepare.Reply>;
+                public attachmentRetrieve(request: berty.protocol.v1.AttachmentRetrieve.IRequest, callback: berty.protocol.v1.ProtocolService.AttachmentRetrieveCallback): void;
+                public attachmentRetrieve(request: berty.protocol.v1.AttachmentRetrieve.IRequest): Promise<berty.protocol.v1.AttachmentRetrieve.Reply>;
             }
 
             namespace ProtocolService {
 
-                type InstanceExportDataCallback = (error: (Error|null), response?: berty.types.v1.InstanceExportData.Reply) => void;
+                type InstanceExportDataCallback = (error: (Error|null), response?: berty.protocol.v1.InstanceExportData.Reply) => void;
 
-                type InstanceGetConfigurationCallback = (error: (Error|null), response?: berty.types.v1.InstanceGetConfiguration.Reply) => void;
+                type InstanceGetConfigurationCallback = (error: (Error|null), response?: berty.protocol.v1.InstanceGetConfiguration.Reply) => void;
 
-                type ContactRequestReferenceCallback = (error: (Error|null), response?: berty.types.v1.ContactRequestReference.Reply) => void;
+                type ContactRequestReferenceCallback = (error: (Error|null), response?: berty.protocol.v1.ContactRequestReference.Reply) => void;
 
-                type ContactRequestDisableCallback = (error: (Error|null), response?: berty.types.v1.ContactRequestDisable.Reply) => void;
+                type ContactRequestDisableCallback = (error: (Error|null), response?: berty.protocol.v1.ContactRequestDisable.Reply) => void;
 
-                type ContactRequestEnableCallback = (error: (Error|null), response?: berty.types.v1.ContactRequestEnable.Reply) => void;
+                type ContactRequestEnableCallback = (error: (Error|null), response?: berty.protocol.v1.ContactRequestEnable.Reply) => void;
 
-                type ContactRequestResetReferenceCallback = (error: (Error|null), response?: berty.types.v1.ContactRequestResetReference.Reply) => void;
+                type ContactRequestResetReferenceCallback = (error: (Error|null), response?: berty.protocol.v1.ContactRequestResetReference.Reply) => void;
 
-                type ContactRequestSendCallback = (error: (Error|null), response?: berty.types.v1.ContactRequestSend.Reply) => void;
+                type ContactRequestSendCallback = (error: (Error|null), response?: berty.protocol.v1.ContactRequestSend.Reply) => void;
 
-                type ContactRequestAcceptCallback = (error: (Error|null), response?: berty.types.v1.ContactRequestAccept.Reply) => void;
+                type ContactRequestAcceptCallback = (error: (Error|null), response?: berty.protocol.v1.ContactRequestAccept.Reply) => void;
 
-                type ContactRequestDiscardCallback = (error: (Error|null), response?: berty.types.v1.ContactRequestDiscard.Reply) => void;
+                type ContactRequestDiscardCallback = (error: (Error|null), response?: berty.protocol.v1.ContactRequestDiscard.Reply) => void;
 
-                type ContactBlockCallback = (error: (Error|null), response?: berty.types.v1.ContactBlock.Reply) => void;
+                type ContactBlockCallback = (error: (Error|null), response?: berty.protocol.v1.ContactBlock.Reply) => void;
 
-                type ContactUnblockCallback = (error: (Error|null), response?: berty.types.v1.ContactUnblock.Reply) => void;
+                type ContactUnblockCallback = (error: (Error|null), response?: berty.protocol.v1.ContactUnblock.Reply) => void;
 
-                type ContactAliasKeySendCallback = (error: (Error|null), response?: berty.types.v1.ContactAliasKeySend.Reply) => void;
+                type ContactAliasKeySendCallback = (error: (Error|null), response?: berty.protocol.v1.ContactAliasKeySend.Reply) => void;
 
-                type MultiMemberGroupCreateCallback = (error: (Error|null), response?: berty.types.v1.MultiMemberGroupCreate.Reply) => void;
+                type MultiMemberGroupCreateCallback = (error: (Error|null), response?: berty.protocol.v1.MultiMemberGroupCreate.Reply) => void;
 
-                type MultiMemberGroupJoinCallback = (error: (Error|null), response?: berty.types.v1.MultiMemberGroupJoin.Reply) => void;
+                type MultiMemberGroupJoinCallback = (error: (Error|null), response?: berty.protocol.v1.MultiMemberGroupJoin.Reply) => void;
 
-                type MultiMemberGroupLeaveCallback = (error: (Error|null), response?: berty.types.v1.MultiMemberGroupLeave.Reply) => void;
+                type MultiMemberGroupLeaveCallback = (error: (Error|null), response?: berty.protocol.v1.MultiMemberGroupLeave.Reply) => void;
 
-                type MultiMemberGroupAliasResolverDiscloseCallback = (error: (Error|null), response?: berty.types.v1.MultiMemberGroupAliasResolverDisclose.Reply) => void;
+                type MultiMemberGroupAliasResolverDiscloseCallback = (error: (Error|null), response?: berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.Reply) => void;
 
-                type MultiMemberGroupAdminRoleGrantCallback = (error: (Error|null), response?: berty.types.v1.MultiMemberGroupAdminRoleGrant.Reply) => void;
+                type MultiMemberGroupAdminRoleGrantCallback = (error: (Error|null), response?: berty.protocol.v1.MultiMemberGroupAdminRoleGrant.Reply) => void;
 
-                type MultiMemberGroupInvitationCreateCallback = (error: (Error|null), response?: berty.types.v1.MultiMemberGroupInvitationCreate.Reply) => void;
+                type MultiMemberGroupInvitationCreateCallback = (error: (Error|null), response?: berty.protocol.v1.MultiMemberGroupInvitationCreate.Reply) => void;
 
-                type AppMetadataSendCallback = (error: (Error|null), response?: berty.types.v1.AppMetadataSend.Reply) => void;
+                type AppMetadataSendCallback = (error: (Error|null), response?: berty.protocol.v1.AppMetadataSend.Reply) => void;
 
-                type AppMessageSendCallback = (error: (Error|null), response?: berty.types.v1.AppMessageSend.Reply) => void;
+                type AppMessageSendCallback = (error: (Error|null), response?: berty.protocol.v1.AppMessageSend.Reply) => void;
 
-                type GroupMetadataListCallback = (error: (Error|null), response?: berty.types.v1.GroupMetadataEvent) => void;
+                type GroupMetadataListCallback = (error: (Error|null), response?: berty.protocol.v1.GroupMetadataEvent) => void;
 
-                type GroupMessageListCallback = (error: (Error|null), response?: berty.types.v1.GroupMessageEvent) => void;
+                type GroupMessageListCallback = (error: (Error|null), response?: berty.protocol.v1.GroupMessageEvent) => void;
 
-                type GroupInfoCallback = (error: (Error|null), response?: berty.types.v1.GroupInfo.Reply) => void;
+                type GroupInfoCallback = (error: (Error|null), response?: berty.protocol.v1.GroupInfo.Reply) => void;
 
-                type ActivateGroupCallback = (error: (Error|null), response?: berty.types.v1.ActivateGroup.Reply) => void;
+                type ActivateGroupCallback = (error: (Error|null), response?: berty.protocol.v1.ActivateGroup.Reply) => void;
 
-                type DeactivateGroupCallback = (error: (Error|null), response?: berty.types.v1.DeactivateGroup.Reply) => void;
+                type DeactivateGroupCallback = (error: (Error|null), response?: berty.protocol.v1.DeactivateGroup.Reply) => void;
 
-                type MonitorGroupCallback = (error: (Error|null), response?: berty.types.v1.MonitorGroup.Reply) => void;
+                type MonitorGroupCallback = (error: (Error|null), response?: berty.protocol.v1.MonitorGroup.Reply) => void;
 
-                type DebugListGroupsCallback = (error: (Error|null), response?: berty.types.v1.DebugListGroups.Reply) => void;
+                type DebugListGroupsCallback = (error: (Error|null), response?: berty.protocol.v1.DebugListGroups.Reply) => void;
 
-                type DebugInspectGroupStoreCallback = (error: (Error|null), response?: berty.types.v1.DebugInspectGroupStore.Reply) => void;
+                type DebugInspectGroupStoreCallback = (error: (Error|null), response?: berty.protocol.v1.DebugInspectGroupStore.Reply) => void;
 
-                type DebugGroupCallback = (error: (Error|null), response?: berty.types.v1.DebugGroup.Reply) => void;
+                type DebugGroupCallback = (error: (Error|null), response?: berty.protocol.v1.DebugGroup.Reply) => void;
 
-                type SystemInfoCallback = (error: (Error|null), response?: berty.types.v1.SystemInfo.Reply) => void;
+                type SystemInfoCallback = (error: (Error|null), response?: berty.protocol.v1.SystemInfo.Reply) => void;
 
-                type AuthServiceInitFlowCallback = (error: (Error|null), response?: berty.types.v1.AuthServiceInitFlow.Reply) => void;
+                type AuthServiceInitFlowCallback = (error: (Error|null), response?: berty.protocol.v1.AuthServiceInitFlow.Reply) => void;
 
-                type AuthServiceCompleteFlowCallback = (error: (Error|null), response?: berty.types.v1.AuthServiceCompleteFlow.Reply) => void;
+                type AuthServiceCompleteFlowCallback = (error: (Error|null), response?: berty.protocol.v1.AuthServiceCompleteFlow.Reply) => void;
 
-                type ServicesTokenListCallback = (error: (Error|null), response?: berty.types.v1.ServicesTokenList.Reply) => void;
+                type ServicesTokenListCallback = (error: (Error|null), response?: berty.protocol.v1.ServicesTokenList.Reply) => void;
 
-                type ReplicationServiceRegisterGroupCallback = (error: (Error|null), response?: berty.types.v1.ReplicationServiceRegisterGroup.Reply) => void;
+                type ReplicationServiceRegisterGroupCallback = (error: (Error|null), response?: berty.protocol.v1.ReplicationServiceRegisterGroup.Reply) => void;
 
-                type PeerListCallback = (error: (Error|null), response?: berty.types.v1.PeerList.Reply) => void;
+                type PeerListCallback = (error: (Error|null), response?: berty.protocol.v1.PeerList.Reply) => void;
 
-                type AttachmentPrepareCallback = (error: (Error|null), response?: berty.types.v1.AttachmentPrepare.Reply) => void;
+                type AttachmentPrepareCallback = (error: (Error|null), response?: berty.protocol.v1.AttachmentPrepare.Reply) => void;
 
-                type AttachmentRetrieveCallback = (error: (Error|null), response?: berty.types.v1.AttachmentRetrieve.Reply) => void;
+                type AttachmentRetrieveCallback = (error: (Error|null), response?: berty.protocol.v1.AttachmentRetrieve.Reply) => void;
             }
-        }
-    }
-
-    namespace types {
-
-        namespace v1 {
 
             enum GroupType {
                 GroupTypeUndefined = 0,
@@ -1290,7 +1291,7 @@ export namespace berty {
             }
 
             interface IAccount {
-                group?: (berty.types.v1.IGroup|null);
+                group?: (berty.protocol.v1.IGroup|null);
                 accountPrivateKey?: (Uint8Array|null);
                 aliasPrivateKey?: (Uint8Array|null);
                 publicRendezvousSeed?: (Uint8Array|null);
@@ -1298,18 +1299,18 @@ export namespace berty {
 
             class Account implements IAccount {
 
-                public group?: (berty.types.v1.IGroup|null);
+                public group?: (berty.protocol.v1.IGroup|null);
                 public accountPrivateKey: Uint8Array;
                 public aliasPrivateKey: Uint8Array;
                 public publicRendezvousSeed: Uint8Array;
-                public static create(properties?: berty.types.v1.IAccount): berty.types.v1.Account;
-                public static encode(message: berty.types.v1.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.Account;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.Account;
+                public static create(properties?: berty.protocol.v1.IAccount): berty.protocol.v1.Account;
+                public static encode(message: berty.protocol.v1.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.Account;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.Account;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.Account;
-                public static toObject(message: berty.types.v1.Account, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.Account;
+                public static toObject(message: berty.protocol.v1.Account, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1317,7 +1318,7 @@ export namespace berty {
                 publicKey?: (Uint8Array|null);
                 secret?: (Uint8Array|null);
                 secretSig?: (Uint8Array|null);
-                groupType?: (berty.types.v1.GroupType|null);
+                groupType?: (berty.protocol.v1.GroupType|null);
                 signPub?: (Uint8Array|null);
             }
 
@@ -1326,16 +1327,16 @@ export namespace berty {
                 public publicKey: Uint8Array;
                 public secret: Uint8Array;
                 public secretSig: Uint8Array;
-                public groupType: berty.types.v1.GroupType;
+                public groupType: berty.protocol.v1.GroupType;
                 public signPub: Uint8Array;
-                public static create(properties?: berty.types.v1.IGroup): berty.types.v1.Group;
-                public static encode(message: berty.types.v1.IGroup, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IGroup, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.Group;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.Group;
+                public static create(properties?: berty.protocol.v1.IGroup): berty.protocol.v1.Group;
+                public static encode(message: berty.protocol.v1.IGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.Group;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.Group;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.Group;
-                public static toObject(message: berty.types.v1.Group, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.Group;
+                public static toObject(message: berty.protocol.v1.Group, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1352,38 +1353,38 @@ export namespace berty {
                 public signPub: Uint8Array;
                 public metadataHeadsCids: Uint8Array[];
                 public messagesHeadsCids: Uint8Array[];
-                public static create(properties?: berty.types.v1.IGroupHeadsExport): berty.types.v1.GroupHeadsExport;
-                public static encode(message: berty.types.v1.IGroupHeadsExport, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IGroupHeadsExport, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupHeadsExport;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupHeadsExport;
+                public static create(properties?: berty.protocol.v1.IGroupHeadsExport): berty.protocol.v1.GroupHeadsExport;
+                public static encode(message: berty.protocol.v1.IGroupHeadsExport, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IGroupHeadsExport, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupHeadsExport;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupHeadsExport;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupHeadsExport;
-                public static toObject(message: berty.types.v1.GroupHeadsExport, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupHeadsExport;
+                public static toObject(message: berty.protocol.v1.GroupHeadsExport, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
             interface IGroupMetadata {
-                eventType?: (berty.types.v1.EventType|null);
+                eventType?: (berty.protocol.v1.EventType|null);
                 payload?: (Uint8Array|null);
                 sig?: (Uint8Array|null);
-                protocolMetadata?: (berty.types.v1.IProtocolMetadata|null);
+                protocolMetadata?: (berty.protocol.v1.IProtocolMetadata|null);
             }
 
             class GroupMetadata implements IGroupMetadata {
 
-                public eventType: berty.types.v1.EventType;
+                public eventType: berty.protocol.v1.EventType;
                 public payload: Uint8Array;
                 public sig: Uint8Array;
-                public protocolMetadata?: (berty.types.v1.IProtocolMetadata|null);
-                public static create(properties?: berty.types.v1.IGroupMetadata): berty.types.v1.GroupMetadata;
-                public static encode(message: berty.types.v1.IGroupMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IGroupMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupMetadata;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupMetadata;
+                public protocolMetadata?: (berty.protocol.v1.IProtocolMetadata|null);
+                public static create(properties?: berty.protocol.v1.IGroupMetadata): berty.protocol.v1.GroupMetadata;
+                public static encode(message: berty.protocol.v1.IGroupMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IGroupMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupMetadata;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupMetadata;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupMetadata;
-                public static toObject(message: berty.types.v1.GroupMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupMetadata;
+                public static toObject(message: berty.protocol.v1.GroupMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1398,14 +1399,14 @@ export namespace berty {
                 public nonce: Uint8Array;
                 public event: Uint8Array;
                 public encryptedAttachmentCids: Uint8Array[];
-                public static create(properties?: berty.types.v1.IGroupEnvelope): berty.types.v1.GroupEnvelope;
-                public static encode(message: berty.types.v1.IGroupEnvelope, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IGroupEnvelope, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupEnvelope;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupEnvelope;
+                public static create(properties?: berty.protocol.v1.IGroupEnvelope): berty.protocol.v1.GroupEnvelope;
+                public static encode(message: berty.protocol.v1.IGroupEnvelope, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IGroupEnvelope, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupEnvelope;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupEnvelope;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupEnvelope;
-                public static toObject(message: berty.types.v1.GroupEnvelope, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupEnvelope;
+                public static toObject(message: berty.protocol.v1.GroupEnvelope, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1422,14 +1423,14 @@ export namespace berty {
                 public devicePk: Uint8Array;
                 public sig: Uint8Array;
                 public metadata: { [k: string]: string };
-                public static create(properties?: berty.types.v1.IMessageHeaders): berty.types.v1.MessageHeaders;
-                public static encode(message: berty.types.v1.IMessageHeaders, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IMessageHeaders, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MessageHeaders;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MessageHeaders;
+                public static create(properties?: berty.protocol.v1.IMessageHeaders): berty.protocol.v1.MessageHeaders;
+                public static encode(message: berty.protocol.v1.IMessageHeaders, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IMessageHeaders, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MessageHeaders;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MessageHeaders;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.MessageHeaders;
-                public static toObject(message: berty.types.v1.MessageHeaders, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MessageHeaders;
+                public static toObject(message: berty.protocol.v1.MessageHeaders, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1440,34 +1441,34 @@ export namespace berty {
             class ProtocolMetadata implements IProtocolMetadata {
 
                 public attachmentsSecrets: Uint8Array[];
-                public static create(properties?: berty.types.v1.IProtocolMetadata): berty.types.v1.ProtocolMetadata;
-                public static encode(message: berty.types.v1.IProtocolMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IProtocolMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ProtocolMetadata;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ProtocolMetadata;
+                public static create(properties?: berty.protocol.v1.IProtocolMetadata): berty.protocol.v1.ProtocolMetadata;
+                public static encode(message: berty.protocol.v1.IProtocolMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IProtocolMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ProtocolMetadata;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ProtocolMetadata;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ProtocolMetadata;
-                public static toObject(message: berty.types.v1.ProtocolMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ProtocolMetadata;
+                public static toObject(message: berty.protocol.v1.ProtocolMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
             interface IEncryptedMessage {
                 plaintext?: (Uint8Array|null);
-                protocolMetadata?: (berty.types.v1.IProtocolMetadata|null);
+                protocolMetadata?: (berty.protocol.v1.IProtocolMetadata|null);
             }
 
             class EncryptedMessage implements IEncryptedMessage {
 
                 public plaintext: Uint8Array;
-                public protocolMetadata?: (berty.types.v1.IProtocolMetadata|null);
-                public static create(properties?: berty.types.v1.IEncryptedMessage): berty.types.v1.EncryptedMessage;
-                public static encode(message: berty.types.v1.IEncryptedMessage, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IEncryptedMessage, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.EncryptedMessage;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.EncryptedMessage;
+                public protocolMetadata?: (berty.protocol.v1.IProtocolMetadata|null);
+                public static create(properties?: berty.protocol.v1.IEncryptedMessage): berty.protocol.v1.EncryptedMessage;
+                public static encode(message: berty.protocol.v1.IEncryptedMessage, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IEncryptedMessage, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.EncryptedMessage;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.EncryptedMessage;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.EncryptedMessage;
-                public static toObject(message: berty.types.v1.EncryptedMessage, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.EncryptedMessage;
+                public static toObject(message: berty.protocol.v1.EncryptedMessage, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1484,14 +1485,14 @@ export namespace berty {
                 public message: Uint8Array;
                 public nonce: Uint8Array;
                 public encryptedAttachmentCids: Uint8Array[];
-                public static create(properties?: berty.types.v1.IMessageEnvelope): berty.types.v1.MessageEnvelope;
-                public static encode(message: berty.types.v1.IMessageEnvelope, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IMessageEnvelope, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MessageEnvelope;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MessageEnvelope;
+                public static create(properties?: berty.protocol.v1.IMessageEnvelope): berty.protocol.v1.MessageEnvelope;
+                public static encode(message: berty.protocol.v1.IMessageEnvelope, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IMessageEnvelope, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MessageEnvelope;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MessageEnvelope;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.MessageEnvelope;
-                public static toObject(message: berty.types.v1.MessageEnvelope, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MessageEnvelope;
+                public static toObject(message: berty.protocol.v1.MessageEnvelope, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1508,14 +1509,14 @@ export namespace berty {
                 public parentIds: Uint8Array[];
                 public groupPk: Uint8Array;
                 public attachmentCids: Uint8Array[];
-                public static create(properties?: berty.types.v1.IEventContext): berty.types.v1.EventContext;
-                public static encode(message: berty.types.v1.IEventContext, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IEventContext, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.EventContext;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.EventContext;
+                public static create(properties?: berty.protocol.v1.IEventContext): berty.protocol.v1.EventContext;
+                public static encode(message: berty.protocol.v1.IEventContext, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IEventContext, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.EventContext;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.EventContext;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.EventContext;
-                public static toObject(message: berty.types.v1.EventContext, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.EventContext;
+                public static toObject(message: berty.protocol.v1.EventContext, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1528,14 +1529,14 @@ export namespace berty {
 
                 public devicePk: Uint8Array;
                 public message: Uint8Array;
-                public static create(properties?: berty.types.v1.IAppMetadata): berty.types.v1.AppMetadata;
-                public static encode(message: berty.types.v1.IAppMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAppMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AppMetadata;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AppMetadata;
+                public static create(properties?: berty.protocol.v1.IAppMetadata): berty.protocol.v1.AppMetadata;
+                public static encode(message: berty.protocol.v1.IAppMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAppMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AppMetadata;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AppMetadata;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AppMetadata;
-                public static toObject(message: berty.types.v1.AppMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AppMetadata;
+                public static toObject(message: berty.protocol.v1.AppMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1548,14 +1549,14 @@ export namespace berty {
 
                 public devicePk: Uint8Array;
                 public aliasPk: Uint8Array;
-                public static create(properties?: berty.types.v1.IContactAddAliasKey): berty.types.v1.ContactAddAliasKey;
-                public static encode(message: berty.types.v1.IContactAddAliasKey, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IContactAddAliasKey, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactAddAliasKey;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactAddAliasKey;
+                public static create(properties?: berty.protocol.v1.IContactAddAliasKey): berty.protocol.v1.ContactAddAliasKey;
+                public static encode(message: berty.protocol.v1.IContactAddAliasKey, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IContactAddAliasKey, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactAddAliasKey;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactAddAliasKey;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactAddAliasKey;
-                public static toObject(message: berty.types.v1.ContactAddAliasKey, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactAddAliasKey;
+                public static toObject(message: berty.protocol.v1.ContactAddAliasKey, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1570,14 +1571,14 @@ export namespace berty {
                 public memberPk: Uint8Array;
                 public devicePk: Uint8Array;
                 public memberSig: Uint8Array;
-                public static create(properties?: berty.types.v1.IGroupAddMemberDevice): berty.types.v1.GroupAddMemberDevice;
-                public static encode(message: berty.types.v1.IGroupAddMemberDevice, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IGroupAddMemberDevice, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupAddMemberDevice;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupAddMemberDevice;
+                public static create(properties?: berty.protocol.v1.IGroupAddMemberDevice): berty.protocol.v1.GroupAddMemberDevice;
+                public static encode(message: berty.protocol.v1.IGroupAddMemberDevice, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IGroupAddMemberDevice, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupAddMemberDevice;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupAddMemberDevice;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupAddMemberDevice;
-                public static toObject(message: berty.types.v1.GroupAddMemberDevice, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupAddMemberDevice;
+                public static toObject(message: berty.protocol.v1.GroupAddMemberDevice, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1590,14 +1591,14 @@ export namespace berty {
 
                 public chainKey: Uint8Array;
                 public counter: Long;
-                public static create(properties?: berty.types.v1.IDeviceSecret): berty.types.v1.DeviceSecret;
-                public static encode(message: berty.types.v1.IDeviceSecret, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IDeviceSecret, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.DeviceSecret;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.DeviceSecret;
+                public static create(properties?: berty.protocol.v1.IDeviceSecret): berty.protocol.v1.DeviceSecret;
+                public static encode(message: berty.protocol.v1.IDeviceSecret, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IDeviceSecret, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.DeviceSecret;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.DeviceSecret;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.DeviceSecret;
-                public static toObject(message: berty.types.v1.DeviceSecret, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.DeviceSecret;
+                public static toObject(message: berty.protocol.v1.DeviceSecret, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1612,14 +1613,14 @@ export namespace berty {
                 public devicePk: Uint8Array;
                 public destMemberPk: Uint8Array;
                 public payload: Uint8Array;
-                public static create(properties?: berty.types.v1.IGroupAddDeviceSecret): berty.types.v1.GroupAddDeviceSecret;
-                public static encode(message: berty.types.v1.IGroupAddDeviceSecret, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IGroupAddDeviceSecret, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupAddDeviceSecret;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupAddDeviceSecret;
+                public static create(properties?: berty.protocol.v1.IGroupAddDeviceSecret): berty.protocol.v1.GroupAddDeviceSecret;
+                public static encode(message: berty.protocol.v1.IGroupAddDeviceSecret, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IGroupAddDeviceSecret, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupAddDeviceSecret;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupAddDeviceSecret;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupAddDeviceSecret;
-                public static toObject(message: berty.types.v1.GroupAddDeviceSecret, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupAddDeviceSecret;
+                public static toObject(message: berty.protocol.v1.GroupAddDeviceSecret, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1634,14 +1635,14 @@ export namespace berty {
                 public devicePk: Uint8Array;
                 public aliasResolver: Uint8Array;
                 public aliasProof: Uint8Array;
-                public static create(properties?: berty.types.v1.IMultiMemberGroupAddAliasResolver): berty.types.v1.MultiMemberGroupAddAliasResolver;
-                public static encode(message: berty.types.v1.IMultiMemberGroupAddAliasResolver, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IMultiMemberGroupAddAliasResolver, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGroupAddAliasResolver;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGroupAddAliasResolver;
+                public static create(properties?: berty.protocol.v1.IMultiMemberGroupAddAliasResolver): berty.protocol.v1.MultiMemberGroupAddAliasResolver;
+                public static encode(message: berty.protocol.v1.IMultiMemberGroupAddAliasResolver, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IMultiMemberGroupAddAliasResolver, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGroupAddAliasResolver;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGroupAddAliasResolver;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGroupAddAliasResolver;
-                public static toObject(message: berty.types.v1.MultiMemberGroupAddAliasResolver, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGroupAddAliasResolver;
+                public static toObject(message: berty.protocol.v1.MultiMemberGroupAddAliasResolver, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1654,14 +1655,14 @@ export namespace berty {
 
                 public devicePk: Uint8Array;
                 public granteeMemberPk: Uint8Array;
-                public static create(properties?: berty.types.v1.IMultiMemberGrantAdminRole): berty.types.v1.MultiMemberGrantAdminRole;
-                public static encode(message: berty.types.v1.IMultiMemberGrantAdminRole, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IMultiMemberGrantAdminRole, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGrantAdminRole;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGrantAdminRole;
+                public static create(properties?: berty.protocol.v1.IMultiMemberGrantAdminRole): berty.protocol.v1.MultiMemberGrantAdminRole;
+                public static encode(message: berty.protocol.v1.IMultiMemberGrantAdminRole, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IMultiMemberGrantAdminRole, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGrantAdminRole;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGrantAdminRole;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGrantAdminRole;
-                public static toObject(message: berty.types.v1.MultiMemberGrantAdminRole, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGrantAdminRole;
+                public static toObject(message: berty.protocol.v1.MultiMemberGrantAdminRole, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1672,14 +1673,14 @@ export namespace berty {
             class MultiMemberInitialMember implements IMultiMemberInitialMember {
 
                 public memberPk: Uint8Array;
-                public static create(properties?: berty.types.v1.IMultiMemberInitialMember): berty.types.v1.MultiMemberInitialMember;
-                public static encode(message: berty.types.v1.IMultiMemberInitialMember, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IMultiMemberInitialMember, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberInitialMember;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberInitialMember;
+                public static create(properties?: berty.protocol.v1.IMultiMemberInitialMember): berty.protocol.v1.MultiMemberInitialMember;
+                public static encode(message: berty.protocol.v1.IMultiMemberInitialMember, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IMultiMemberInitialMember, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberInitialMember;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberInitialMember;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberInitialMember;
-                public static toObject(message: berty.types.v1.MultiMemberInitialMember, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberInitialMember;
+                public static toObject(message: berty.protocol.v1.MultiMemberInitialMember, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1692,14 +1693,14 @@ export namespace berty {
 
                 public devicePk: Uint8Array;
                 public seed: Uint8Array;
-                public static create(properties?: berty.types.v1.IGroupAddAdditionalRendezvousSeed): berty.types.v1.GroupAddAdditionalRendezvousSeed;
-                public static encode(message: berty.types.v1.IGroupAddAdditionalRendezvousSeed, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IGroupAddAdditionalRendezvousSeed, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupAddAdditionalRendezvousSeed;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupAddAdditionalRendezvousSeed;
+                public static create(properties?: berty.protocol.v1.IGroupAddAdditionalRendezvousSeed): berty.protocol.v1.GroupAddAdditionalRendezvousSeed;
+                public static encode(message: berty.protocol.v1.IGroupAddAdditionalRendezvousSeed, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IGroupAddAdditionalRendezvousSeed, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupAddAdditionalRendezvousSeed;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupAddAdditionalRendezvousSeed;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupAddAdditionalRendezvousSeed;
-                public static toObject(message: berty.types.v1.GroupAddAdditionalRendezvousSeed, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupAddAdditionalRendezvousSeed;
+                public static toObject(message: berty.protocol.v1.GroupAddAdditionalRendezvousSeed, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1712,34 +1713,34 @@ export namespace berty {
 
                 public devicePk: Uint8Array;
                 public seed: Uint8Array;
-                public static create(properties?: berty.types.v1.IGroupRemoveAdditionalRendezvousSeed): berty.types.v1.GroupRemoveAdditionalRendezvousSeed;
-                public static encode(message: berty.types.v1.IGroupRemoveAdditionalRendezvousSeed, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IGroupRemoveAdditionalRendezvousSeed, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupRemoveAdditionalRendezvousSeed;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupRemoveAdditionalRendezvousSeed;
+                public static create(properties?: berty.protocol.v1.IGroupRemoveAdditionalRendezvousSeed): berty.protocol.v1.GroupRemoveAdditionalRendezvousSeed;
+                public static encode(message: berty.protocol.v1.IGroupRemoveAdditionalRendezvousSeed, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IGroupRemoveAdditionalRendezvousSeed, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupRemoveAdditionalRendezvousSeed;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupRemoveAdditionalRendezvousSeed;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupRemoveAdditionalRendezvousSeed;
-                public static toObject(message: berty.types.v1.GroupRemoveAdditionalRendezvousSeed, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupRemoveAdditionalRendezvousSeed;
+                public static toObject(message: berty.protocol.v1.GroupRemoveAdditionalRendezvousSeed, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
             interface IAccountGroupJoined {
                 devicePk?: (Uint8Array|null);
-                group?: (berty.types.v1.IGroup|null);
+                group?: (berty.protocol.v1.IGroup|null);
             }
 
             class AccountGroupJoined implements IAccountGroupJoined {
 
                 public devicePk: Uint8Array;
-                public group?: (berty.types.v1.IGroup|null);
-                public static create(properties?: berty.types.v1.IAccountGroupJoined): berty.types.v1.AccountGroupJoined;
-                public static encode(message: berty.types.v1.IAccountGroupJoined, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAccountGroupJoined, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AccountGroupJoined;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AccountGroupJoined;
+                public group?: (berty.protocol.v1.IGroup|null);
+                public static create(properties?: berty.protocol.v1.IAccountGroupJoined): berty.protocol.v1.AccountGroupJoined;
+                public static encode(message: berty.protocol.v1.IAccountGroupJoined, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAccountGroupJoined, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AccountGroupJoined;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AccountGroupJoined;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AccountGroupJoined;
-                public static toObject(message: berty.types.v1.AccountGroupJoined, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AccountGroupJoined;
+                public static toObject(message: berty.protocol.v1.AccountGroupJoined, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1752,14 +1753,14 @@ export namespace berty {
 
                 public devicePk: Uint8Array;
                 public groupPk: Uint8Array;
-                public static create(properties?: berty.types.v1.IAccountGroupLeft): berty.types.v1.AccountGroupLeft;
-                public static encode(message: berty.types.v1.IAccountGroupLeft, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAccountGroupLeft, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AccountGroupLeft;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AccountGroupLeft;
+                public static create(properties?: berty.protocol.v1.IAccountGroupLeft): berty.protocol.v1.AccountGroupLeft;
+                public static encode(message: berty.protocol.v1.IAccountGroupLeft, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAccountGroupLeft, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AccountGroupLeft;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AccountGroupLeft;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AccountGroupLeft;
-                public static toObject(message: berty.types.v1.AccountGroupLeft, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AccountGroupLeft;
+                public static toObject(message: berty.protocol.v1.AccountGroupLeft, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1770,14 +1771,14 @@ export namespace berty {
             class AccountContactRequestDisabled implements IAccountContactRequestDisabled {
 
                 public devicePk: Uint8Array;
-                public static create(properties?: berty.types.v1.IAccountContactRequestDisabled): berty.types.v1.AccountContactRequestDisabled;
-                public static encode(message: berty.types.v1.IAccountContactRequestDisabled, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAccountContactRequestDisabled, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AccountContactRequestDisabled;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AccountContactRequestDisabled;
+                public static create(properties?: berty.protocol.v1.IAccountContactRequestDisabled): berty.protocol.v1.AccountContactRequestDisabled;
+                public static encode(message: berty.protocol.v1.IAccountContactRequestDisabled, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAccountContactRequestDisabled, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AccountContactRequestDisabled;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AccountContactRequestDisabled;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AccountContactRequestDisabled;
-                public static toObject(message: berty.types.v1.AccountContactRequestDisabled, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AccountContactRequestDisabled;
+                public static toObject(message: berty.protocol.v1.AccountContactRequestDisabled, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1788,14 +1789,14 @@ export namespace berty {
             class AccountContactRequestEnabled implements IAccountContactRequestEnabled {
 
                 public devicePk: Uint8Array;
-                public static create(properties?: berty.types.v1.IAccountContactRequestEnabled): berty.types.v1.AccountContactRequestEnabled;
-                public static encode(message: berty.types.v1.IAccountContactRequestEnabled, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAccountContactRequestEnabled, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AccountContactRequestEnabled;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AccountContactRequestEnabled;
+                public static create(properties?: berty.protocol.v1.IAccountContactRequestEnabled): berty.protocol.v1.AccountContactRequestEnabled;
+                public static encode(message: berty.protocol.v1.IAccountContactRequestEnabled, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAccountContactRequestEnabled, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AccountContactRequestEnabled;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AccountContactRequestEnabled;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AccountContactRequestEnabled;
-                public static toObject(message: berty.types.v1.AccountContactRequestEnabled, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AccountContactRequestEnabled;
+                public static toObject(message: berty.protocol.v1.AccountContactRequestEnabled, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1808,21 +1809,21 @@ export namespace berty {
 
                 public devicePk: Uint8Array;
                 public publicRendezvousSeed: Uint8Array;
-                public static create(properties?: berty.types.v1.IAccountContactRequestReferenceReset): berty.types.v1.AccountContactRequestReferenceReset;
-                public static encode(message: berty.types.v1.IAccountContactRequestReferenceReset, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAccountContactRequestReferenceReset, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AccountContactRequestReferenceReset;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AccountContactRequestReferenceReset;
+                public static create(properties?: berty.protocol.v1.IAccountContactRequestReferenceReset): berty.protocol.v1.AccountContactRequestReferenceReset;
+                public static encode(message: berty.protocol.v1.IAccountContactRequestReferenceReset, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAccountContactRequestReferenceReset, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AccountContactRequestReferenceReset;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AccountContactRequestReferenceReset;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AccountContactRequestReferenceReset;
-                public static toObject(message: berty.types.v1.AccountContactRequestReferenceReset, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AccountContactRequestReferenceReset;
+                public static toObject(message: berty.protocol.v1.AccountContactRequestReferenceReset, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
             interface IAccountContactRequestEnqueued {
                 devicePk?: (Uint8Array|null);
                 groupPk?: (Uint8Array|null);
-                contact?: (berty.types.v1.IShareableContact|null);
+                contact?: (berty.protocol.v1.IShareableContact|null);
                 ownMetadata?: (Uint8Array|null);
             }
 
@@ -1830,16 +1831,16 @@ export namespace berty {
 
                 public devicePk: Uint8Array;
                 public groupPk: Uint8Array;
-                public contact?: (berty.types.v1.IShareableContact|null);
+                public contact?: (berty.protocol.v1.IShareableContact|null);
                 public ownMetadata: Uint8Array;
-                public static create(properties?: berty.types.v1.IAccountContactRequestEnqueued): berty.types.v1.AccountContactRequestEnqueued;
-                public static encode(message: berty.types.v1.IAccountContactRequestEnqueued, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAccountContactRequestEnqueued, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AccountContactRequestEnqueued;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AccountContactRequestEnqueued;
+                public static create(properties?: berty.protocol.v1.IAccountContactRequestEnqueued): berty.protocol.v1.AccountContactRequestEnqueued;
+                public static encode(message: berty.protocol.v1.IAccountContactRequestEnqueued, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAccountContactRequestEnqueued, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AccountContactRequestEnqueued;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AccountContactRequestEnqueued;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AccountContactRequestEnqueued;
-                public static toObject(message: berty.types.v1.AccountContactRequestEnqueued, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AccountContactRequestEnqueued;
+                public static toObject(message: berty.protocol.v1.AccountContactRequestEnqueued, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1852,14 +1853,14 @@ export namespace berty {
 
                 public devicePk: Uint8Array;
                 public contactPk: Uint8Array;
-                public static create(properties?: berty.types.v1.IAccountContactRequestSent): berty.types.v1.AccountContactRequestSent;
-                public static encode(message: berty.types.v1.IAccountContactRequestSent, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAccountContactRequestSent, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AccountContactRequestSent;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AccountContactRequestSent;
+                public static create(properties?: berty.protocol.v1.IAccountContactRequestSent): berty.protocol.v1.AccountContactRequestSent;
+                public static encode(message: berty.protocol.v1.IAccountContactRequestSent, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAccountContactRequestSent, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AccountContactRequestSent;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AccountContactRequestSent;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AccountContactRequestSent;
-                public static toObject(message: berty.types.v1.AccountContactRequestSent, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AccountContactRequestSent;
+                public static toObject(message: berty.protocol.v1.AccountContactRequestSent, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1876,14 +1877,14 @@ export namespace berty {
                 public contactPk: Uint8Array;
                 public contactRendezvousSeed: Uint8Array;
                 public contactMetadata: Uint8Array;
-                public static create(properties?: berty.types.v1.IAccountContactRequestReceived): berty.types.v1.AccountContactRequestReceived;
-                public static encode(message: berty.types.v1.IAccountContactRequestReceived, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAccountContactRequestReceived, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AccountContactRequestReceived;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AccountContactRequestReceived;
+                public static create(properties?: berty.protocol.v1.IAccountContactRequestReceived): berty.protocol.v1.AccountContactRequestReceived;
+                public static encode(message: berty.protocol.v1.IAccountContactRequestReceived, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAccountContactRequestReceived, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AccountContactRequestReceived;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AccountContactRequestReceived;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AccountContactRequestReceived;
-                public static toObject(message: berty.types.v1.AccountContactRequestReceived, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AccountContactRequestReceived;
+                public static toObject(message: berty.protocol.v1.AccountContactRequestReceived, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1896,14 +1897,14 @@ export namespace berty {
 
                 public devicePk: Uint8Array;
                 public contactPk: Uint8Array;
-                public static create(properties?: berty.types.v1.IAccountContactRequestDiscarded): berty.types.v1.AccountContactRequestDiscarded;
-                public static encode(message: berty.types.v1.IAccountContactRequestDiscarded, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAccountContactRequestDiscarded, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AccountContactRequestDiscarded;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AccountContactRequestDiscarded;
+                public static create(properties?: berty.protocol.v1.IAccountContactRequestDiscarded): berty.protocol.v1.AccountContactRequestDiscarded;
+                public static encode(message: berty.protocol.v1.IAccountContactRequestDiscarded, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAccountContactRequestDiscarded, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AccountContactRequestDiscarded;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AccountContactRequestDiscarded;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AccountContactRequestDiscarded;
-                public static toObject(message: berty.types.v1.AccountContactRequestDiscarded, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AccountContactRequestDiscarded;
+                public static toObject(message: berty.protocol.v1.AccountContactRequestDiscarded, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1918,14 +1919,14 @@ export namespace berty {
                 public devicePk: Uint8Array;
                 public contactPk: Uint8Array;
                 public groupPk: Uint8Array;
-                public static create(properties?: berty.types.v1.IAccountContactRequestAccepted): berty.types.v1.AccountContactRequestAccepted;
-                public static encode(message: berty.types.v1.IAccountContactRequestAccepted, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAccountContactRequestAccepted, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AccountContactRequestAccepted;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AccountContactRequestAccepted;
+                public static create(properties?: berty.protocol.v1.IAccountContactRequestAccepted): berty.protocol.v1.AccountContactRequestAccepted;
+                public static encode(message: berty.protocol.v1.IAccountContactRequestAccepted, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAccountContactRequestAccepted, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AccountContactRequestAccepted;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AccountContactRequestAccepted;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AccountContactRequestAccepted;
-                public static toObject(message: berty.types.v1.AccountContactRequestAccepted, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AccountContactRequestAccepted;
+                public static toObject(message: berty.protocol.v1.AccountContactRequestAccepted, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1938,14 +1939,14 @@ export namespace berty {
 
                 public devicePk: Uint8Array;
                 public contactPk: Uint8Array;
-                public static create(properties?: berty.types.v1.IAccountContactBlocked): berty.types.v1.AccountContactBlocked;
-                public static encode(message: berty.types.v1.IAccountContactBlocked, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAccountContactBlocked, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AccountContactBlocked;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AccountContactBlocked;
+                public static create(properties?: berty.protocol.v1.IAccountContactBlocked): berty.protocol.v1.AccountContactBlocked;
+                public static encode(message: berty.protocol.v1.IAccountContactBlocked, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAccountContactBlocked, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AccountContactBlocked;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AccountContactBlocked;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AccountContactBlocked;
-                public static toObject(message: berty.types.v1.AccountContactBlocked, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AccountContactBlocked;
+                public static toObject(message: berty.protocol.v1.AccountContactBlocked, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1958,34 +1959,34 @@ export namespace berty {
 
                 public devicePk: Uint8Array;
                 public contactPk: Uint8Array;
-                public static create(properties?: berty.types.v1.IAccountContactUnblocked): berty.types.v1.AccountContactUnblocked;
-                public static encode(message: berty.types.v1.IAccountContactUnblocked, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAccountContactUnblocked, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AccountContactUnblocked;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AccountContactUnblocked;
+                public static create(properties?: berty.protocol.v1.IAccountContactUnblocked): berty.protocol.v1.AccountContactUnblocked;
+                public static encode(message: berty.protocol.v1.IAccountContactUnblocked, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAccountContactUnblocked, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AccountContactUnblocked;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AccountContactUnblocked;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AccountContactUnblocked;
-                public static toObject(message: berty.types.v1.AccountContactUnblocked, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AccountContactUnblocked;
+                public static toObject(message: berty.protocol.v1.AccountContactUnblocked, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
             interface IAccountServiceTokenAdded {
                 devicePk?: (Uint8Array|null);
-                serviceToken?: (berty.types.v1.IServiceToken|null);
+                serviceToken?: (berty.protocol.v1.IServiceToken|null);
             }
 
             class AccountServiceTokenAdded implements IAccountServiceTokenAdded {
 
                 public devicePk: Uint8Array;
-                public serviceToken?: (berty.types.v1.IServiceToken|null);
-                public static create(properties?: berty.types.v1.IAccountServiceTokenAdded): berty.types.v1.AccountServiceTokenAdded;
-                public static encode(message: berty.types.v1.IAccountServiceTokenAdded, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAccountServiceTokenAdded, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AccountServiceTokenAdded;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AccountServiceTokenAdded;
+                public serviceToken?: (berty.protocol.v1.IServiceToken|null);
+                public static create(properties?: berty.protocol.v1.IAccountServiceTokenAdded): berty.protocol.v1.AccountServiceTokenAdded;
+                public static encode(message: berty.protocol.v1.IAccountServiceTokenAdded, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAccountServiceTokenAdded, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AccountServiceTokenAdded;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AccountServiceTokenAdded;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AccountServiceTokenAdded;
-                public static toObject(message: berty.types.v1.AccountServiceTokenAdded, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AccountServiceTokenAdded;
+                public static toObject(message: berty.protocol.v1.AccountServiceTokenAdded, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -1998,14 +1999,14 @@ export namespace berty {
 
                 public devicePk: Uint8Array;
                 public tokenId: string;
-                public static create(properties?: berty.types.v1.IAccountServiceTokenRemoved): berty.types.v1.AccountServiceTokenRemoved;
-                public static encode(message: berty.types.v1.IAccountServiceTokenRemoved, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAccountServiceTokenRemoved, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AccountServiceTokenRemoved;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AccountServiceTokenRemoved;
+                public static create(properties?: berty.protocol.v1.IAccountServiceTokenRemoved): berty.protocol.v1.AccountServiceTokenRemoved;
+                public static encode(message: berty.protocol.v1.IAccountServiceTokenRemoved, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAccountServiceTokenRemoved, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AccountServiceTokenRemoved;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AccountServiceTokenRemoved;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AccountServiceTokenRemoved;
-                public static toObject(message: berty.types.v1.AccountServiceTokenRemoved, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AccountServiceTokenRemoved;
+                public static toObject(message: berty.protocol.v1.AccountServiceTokenRemoved, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2020,14 +2021,14 @@ export namespace berty {
                 public devicePk: Uint8Array;
                 public authenticationUrl: string;
                 public replicationServer: string;
-                public static create(properties?: berty.types.v1.IGroupReplicating): berty.types.v1.GroupReplicating;
-                public static encode(message: berty.types.v1.IGroupReplicating, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IGroupReplicating, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupReplicating;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupReplicating;
+                public static create(properties?: berty.protocol.v1.IGroupReplicating): berty.protocol.v1.GroupReplicating;
+                public static encode(message: berty.protocol.v1.IGroupReplicating, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IGroupReplicating, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupReplicating;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupReplicating;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupReplicating;
-                public static toObject(message: berty.types.v1.GroupReplicating, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupReplicating;
+                public static toObject(message: berty.protocol.v1.GroupReplicating, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2036,14 +2037,14 @@ export namespace berty {
 
             class InstanceExportData implements IInstanceExportData {
 
-                public static create(properties?: berty.types.v1.IInstanceExportData): berty.types.v1.InstanceExportData;
-                public static encode(message: berty.types.v1.IInstanceExportData, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IInstanceExportData, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.InstanceExportData;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.InstanceExportData;
+                public static create(properties?: berty.protocol.v1.IInstanceExportData): berty.protocol.v1.InstanceExportData;
+                public static encode(message: berty.protocol.v1.IInstanceExportData, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IInstanceExportData, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.InstanceExportData;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.InstanceExportData;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.InstanceExportData;
-                public static toObject(message: berty.types.v1.InstanceExportData, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.InstanceExportData;
+                public static toObject(message: berty.protocol.v1.InstanceExportData, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2054,14 +2055,14 @@ export namespace berty {
 
                 class Request implements IRequest {
 
-                    public static create(properties?: berty.types.v1.InstanceExportData.IRequest): berty.types.v1.InstanceExportData.Request;
-                    public static encode(message: berty.types.v1.InstanceExportData.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.InstanceExportData.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.InstanceExportData.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.InstanceExportData.Request;
+                    public static create(properties?: berty.protocol.v1.InstanceExportData.IRequest): berty.protocol.v1.InstanceExportData.Request;
+                    public static encode(message: berty.protocol.v1.InstanceExportData.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.InstanceExportData.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.InstanceExportData.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.InstanceExportData.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.InstanceExportData.Request;
-                    public static toObject(message: berty.types.v1.InstanceExportData.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.InstanceExportData.Request;
+                    public static toObject(message: berty.protocol.v1.InstanceExportData.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -2072,14 +2073,14 @@ export namespace berty {
                 class Reply implements IReply {
 
                     public exportedData: Uint8Array;
-                    public static create(properties?: berty.types.v1.InstanceExportData.IReply): berty.types.v1.InstanceExportData.Reply;
-                    public static encode(message: berty.types.v1.InstanceExportData.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.InstanceExportData.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.InstanceExportData.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.InstanceExportData.Reply;
+                    public static create(properties?: berty.protocol.v1.InstanceExportData.IReply): berty.protocol.v1.InstanceExportData.Reply;
+                    public static encode(message: berty.protocol.v1.InstanceExportData.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.InstanceExportData.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.InstanceExportData.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.InstanceExportData.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.InstanceExportData.Reply;
-                    public static toObject(message: berty.types.v1.InstanceExportData.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.InstanceExportData.Reply;
+                    public static toObject(message: berty.protocol.v1.InstanceExportData.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -2089,14 +2090,14 @@ export namespace berty {
 
             class InstanceGetConfiguration implements IInstanceGetConfiguration {
 
-                public static create(properties?: berty.types.v1.IInstanceGetConfiguration): berty.types.v1.InstanceGetConfiguration;
-                public static encode(message: berty.types.v1.IInstanceGetConfiguration, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IInstanceGetConfiguration, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.InstanceGetConfiguration;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.InstanceGetConfiguration;
+                public static create(properties?: berty.protocol.v1.IInstanceGetConfiguration): berty.protocol.v1.InstanceGetConfiguration;
+                public static encode(message: berty.protocol.v1.IInstanceGetConfiguration, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IInstanceGetConfiguration, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.InstanceGetConfiguration;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.InstanceGetConfiguration;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.InstanceGetConfiguration;
-                public static toObject(message: berty.types.v1.InstanceGetConfiguration, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.InstanceGetConfiguration;
+                public static toObject(message: berty.protocol.v1.InstanceGetConfiguration, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2114,14 +2115,14 @@ export namespace berty {
 
                 class Request implements IRequest {
 
-                    public static create(properties?: berty.types.v1.InstanceGetConfiguration.IRequest): berty.types.v1.InstanceGetConfiguration.Request;
-                    public static encode(message: berty.types.v1.InstanceGetConfiguration.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.InstanceGetConfiguration.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.InstanceGetConfiguration.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.InstanceGetConfiguration.Request;
+                    public static create(properties?: berty.protocol.v1.InstanceGetConfiguration.IRequest): berty.protocol.v1.InstanceGetConfiguration.Request;
+                    public static encode(message: berty.protocol.v1.InstanceGetConfiguration.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.InstanceGetConfiguration.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.InstanceGetConfiguration.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.InstanceGetConfiguration.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.InstanceGetConfiguration.Request;
-                    public static toObject(message: berty.types.v1.InstanceGetConfiguration.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.InstanceGetConfiguration.Request;
+                    public static toObject(message: berty.protocol.v1.InstanceGetConfiguration.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -2131,10 +2132,10 @@ export namespace berty {
                     accountGroupPk?: (Uint8Array|null);
                     peerId?: (string|null);
                     listeners?: (string[]|null);
-                    bleEnabled?: (berty.types.v1.InstanceGetConfiguration.SettingState|null);
-                    wifiP2pEnabled?: (berty.types.v1.InstanceGetConfiguration.SettingState|null);
-                    mdnsEnabled?: (berty.types.v1.InstanceGetConfiguration.SettingState|null);
-                    relayEnabled?: (berty.types.v1.InstanceGetConfiguration.SettingState|null);
+                    bleEnabled?: (berty.protocol.v1.InstanceGetConfiguration.SettingState|null);
+                    wifiP2pEnabled?: (berty.protocol.v1.InstanceGetConfiguration.SettingState|null);
+                    mdnsEnabled?: (berty.protocol.v1.InstanceGetConfiguration.SettingState|null);
+                    relayEnabled?: (berty.protocol.v1.InstanceGetConfiguration.SettingState|null);
                 }
 
                 class Reply implements IReply {
@@ -2144,18 +2145,18 @@ export namespace berty {
                     public accountGroupPk: Uint8Array;
                     public peerId: string;
                     public listeners: string[];
-                    public bleEnabled: berty.types.v1.InstanceGetConfiguration.SettingState;
-                    public wifiP2pEnabled: berty.types.v1.InstanceGetConfiguration.SettingState;
-                    public mdnsEnabled: berty.types.v1.InstanceGetConfiguration.SettingState;
-                    public relayEnabled: berty.types.v1.InstanceGetConfiguration.SettingState;
-                    public static create(properties?: berty.types.v1.InstanceGetConfiguration.IReply): berty.types.v1.InstanceGetConfiguration.Reply;
-                    public static encode(message: berty.types.v1.InstanceGetConfiguration.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.InstanceGetConfiguration.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.InstanceGetConfiguration.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.InstanceGetConfiguration.Reply;
+                    public bleEnabled: berty.protocol.v1.InstanceGetConfiguration.SettingState;
+                    public wifiP2pEnabled: berty.protocol.v1.InstanceGetConfiguration.SettingState;
+                    public mdnsEnabled: berty.protocol.v1.InstanceGetConfiguration.SettingState;
+                    public relayEnabled: berty.protocol.v1.InstanceGetConfiguration.SettingState;
+                    public static create(properties?: berty.protocol.v1.InstanceGetConfiguration.IReply): berty.protocol.v1.InstanceGetConfiguration.Reply;
+                    public static encode(message: berty.protocol.v1.InstanceGetConfiguration.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.InstanceGetConfiguration.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.InstanceGetConfiguration.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.InstanceGetConfiguration.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.InstanceGetConfiguration.Reply;
-                    public static toObject(message: berty.types.v1.InstanceGetConfiguration.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.InstanceGetConfiguration.Reply;
+                    public static toObject(message: berty.protocol.v1.InstanceGetConfiguration.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -2165,14 +2166,14 @@ export namespace berty {
 
             class ContactRequestReference implements IContactRequestReference {
 
-                public static create(properties?: berty.types.v1.IContactRequestReference): berty.types.v1.ContactRequestReference;
-                public static encode(message: berty.types.v1.IContactRequestReference, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IContactRequestReference, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestReference;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestReference;
+                public static create(properties?: berty.protocol.v1.IContactRequestReference): berty.protocol.v1.ContactRequestReference;
+                public static encode(message: berty.protocol.v1.IContactRequestReference, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IContactRequestReference, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestReference;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestReference;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestReference;
-                public static toObject(message: berty.types.v1.ContactRequestReference, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestReference;
+                public static toObject(message: berty.protocol.v1.ContactRequestReference, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2183,14 +2184,14 @@ export namespace berty {
 
                 class Request implements IRequest {
 
-                    public static create(properties?: berty.types.v1.ContactRequestReference.IRequest): berty.types.v1.ContactRequestReference.Request;
-                    public static encode(message: berty.types.v1.ContactRequestReference.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactRequestReference.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestReference.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestReference.Request;
+                    public static create(properties?: berty.protocol.v1.ContactRequestReference.IRequest): berty.protocol.v1.ContactRequestReference.Request;
+                    public static encode(message: berty.protocol.v1.ContactRequestReference.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactRequestReference.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestReference.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestReference.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestReference.Request;
-                    public static toObject(message: berty.types.v1.ContactRequestReference.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestReference.Request;
+                    public static toObject(message: berty.protocol.v1.ContactRequestReference.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -2203,14 +2204,14 @@ export namespace berty {
 
                     public publicRendezvousSeed: Uint8Array;
                     public enabled: boolean;
-                    public static create(properties?: berty.types.v1.ContactRequestReference.IReply): berty.types.v1.ContactRequestReference.Reply;
-                    public static encode(message: berty.types.v1.ContactRequestReference.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactRequestReference.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestReference.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestReference.Reply;
+                    public static create(properties?: berty.protocol.v1.ContactRequestReference.IReply): berty.protocol.v1.ContactRequestReference.Reply;
+                    public static encode(message: berty.protocol.v1.ContactRequestReference.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactRequestReference.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestReference.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestReference.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestReference.Reply;
-                    public static toObject(message: berty.types.v1.ContactRequestReference.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestReference.Reply;
+                    public static toObject(message: berty.protocol.v1.ContactRequestReference.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -2220,14 +2221,14 @@ export namespace berty {
 
             class ContactRequestDisable implements IContactRequestDisable {
 
-                public static create(properties?: berty.types.v1.IContactRequestDisable): berty.types.v1.ContactRequestDisable;
-                public static encode(message: berty.types.v1.IContactRequestDisable, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IContactRequestDisable, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestDisable;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestDisable;
+                public static create(properties?: berty.protocol.v1.IContactRequestDisable): berty.protocol.v1.ContactRequestDisable;
+                public static encode(message: berty.protocol.v1.IContactRequestDisable, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IContactRequestDisable, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestDisable;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestDisable;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestDisable;
-                public static toObject(message: berty.types.v1.ContactRequestDisable, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestDisable;
+                public static toObject(message: berty.protocol.v1.ContactRequestDisable, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2238,14 +2239,14 @@ export namespace berty {
 
                 class Request implements IRequest {
 
-                    public static create(properties?: berty.types.v1.ContactRequestDisable.IRequest): berty.types.v1.ContactRequestDisable.Request;
-                    public static encode(message: berty.types.v1.ContactRequestDisable.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactRequestDisable.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestDisable.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestDisable.Request;
+                    public static create(properties?: berty.protocol.v1.ContactRequestDisable.IRequest): berty.protocol.v1.ContactRequestDisable.Request;
+                    public static encode(message: berty.protocol.v1.ContactRequestDisable.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactRequestDisable.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestDisable.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestDisable.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestDisable.Request;
-                    public static toObject(message: berty.types.v1.ContactRequestDisable.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestDisable.Request;
+                    public static toObject(message: berty.protocol.v1.ContactRequestDisable.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -2254,14 +2255,14 @@ export namespace berty {
 
                 class Reply implements IReply {
 
-                    public static create(properties?: berty.types.v1.ContactRequestDisable.IReply): berty.types.v1.ContactRequestDisable.Reply;
-                    public static encode(message: berty.types.v1.ContactRequestDisable.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactRequestDisable.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestDisable.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestDisable.Reply;
+                    public static create(properties?: berty.protocol.v1.ContactRequestDisable.IReply): berty.protocol.v1.ContactRequestDisable.Reply;
+                    public static encode(message: berty.protocol.v1.ContactRequestDisable.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactRequestDisable.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestDisable.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestDisable.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestDisable.Reply;
-                    public static toObject(message: berty.types.v1.ContactRequestDisable.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestDisable.Reply;
+                    public static toObject(message: berty.protocol.v1.ContactRequestDisable.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -2271,14 +2272,14 @@ export namespace berty {
 
             class ContactRequestEnable implements IContactRequestEnable {
 
-                public static create(properties?: berty.types.v1.IContactRequestEnable): berty.types.v1.ContactRequestEnable;
-                public static encode(message: berty.types.v1.IContactRequestEnable, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IContactRequestEnable, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestEnable;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestEnable;
+                public static create(properties?: berty.protocol.v1.IContactRequestEnable): berty.protocol.v1.ContactRequestEnable;
+                public static encode(message: berty.protocol.v1.IContactRequestEnable, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IContactRequestEnable, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestEnable;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestEnable;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestEnable;
-                public static toObject(message: berty.types.v1.ContactRequestEnable, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestEnable;
+                public static toObject(message: berty.protocol.v1.ContactRequestEnable, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2289,14 +2290,14 @@ export namespace berty {
 
                 class Request implements IRequest {
 
-                    public static create(properties?: berty.types.v1.ContactRequestEnable.IRequest): berty.types.v1.ContactRequestEnable.Request;
-                    public static encode(message: berty.types.v1.ContactRequestEnable.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactRequestEnable.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestEnable.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestEnable.Request;
+                    public static create(properties?: berty.protocol.v1.ContactRequestEnable.IRequest): berty.protocol.v1.ContactRequestEnable.Request;
+                    public static encode(message: berty.protocol.v1.ContactRequestEnable.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactRequestEnable.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestEnable.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestEnable.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestEnable.Request;
-                    public static toObject(message: berty.types.v1.ContactRequestEnable.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestEnable.Request;
+                    public static toObject(message: berty.protocol.v1.ContactRequestEnable.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -2307,14 +2308,14 @@ export namespace berty {
                 class Reply implements IReply {
 
                     public publicRendezvousSeed: Uint8Array;
-                    public static create(properties?: berty.types.v1.ContactRequestEnable.IReply): berty.types.v1.ContactRequestEnable.Reply;
-                    public static encode(message: berty.types.v1.ContactRequestEnable.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactRequestEnable.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestEnable.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestEnable.Reply;
+                    public static create(properties?: berty.protocol.v1.ContactRequestEnable.IReply): berty.protocol.v1.ContactRequestEnable.Reply;
+                    public static encode(message: berty.protocol.v1.ContactRequestEnable.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactRequestEnable.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestEnable.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestEnable.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestEnable.Reply;
-                    public static toObject(message: berty.types.v1.ContactRequestEnable.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestEnable.Reply;
+                    public static toObject(message: berty.protocol.v1.ContactRequestEnable.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -2324,14 +2325,14 @@ export namespace berty {
 
             class ContactRequestResetReference implements IContactRequestResetReference {
 
-                public static create(properties?: berty.types.v1.IContactRequestResetReference): berty.types.v1.ContactRequestResetReference;
-                public static encode(message: berty.types.v1.IContactRequestResetReference, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IContactRequestResetReference, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestResetReference;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestResetReference;
+                public static create(properties?: berty.protocol.v1.IContactRequestResetReference): berty.protocol.v1.ContactRequestResetReference;
+                public static encode(message: berty.protocol.v1.IContactRequestResetReference, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IContactRequestResetReference, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestResetReference;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestResetReference;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestResetReference;
-                public static toObject(message: berty.types.v1.ContactRequestResetReference, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestResetReference;
+                public static toObject(message: berty.protocol.v1.ContactRequestResetReference, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2342,14 +2343,14 @@ export namespace berty {
 
                 class Request implements IRequest {
 
-                    public static create(properties?: berty.types.v1.ContactRequestResetReference.IRequest): berty.types.v1.ContactRequestResetReference.Request;
-                    public static encode(message: berty.types.v1.ContactRequestResetReference.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactRequestResetReference.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestResetReference.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestResetReference.Request;
+                    public static create(properties?: berty.protocol.v1.ContactRequestResetReference.IRequest): berty.protocol.v1.ContactRequestResetReference.Request;
+                    public static encode(message: berty.protocol.v1.ContactRequestResetReference.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactRequestResetReference.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestResetReference.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestResetReference.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestResetReference.Request;
-                    public static toObject(message: berty.types.v1.ContactRequestResetReference.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestResetReference.Request;
+                    public static toObject(message: berty.protocol.v1.ContactRequestResetReference.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -2360,14 +2361,14 @@ export namespace berty {
                 class Reply implements IReply {
 
                     public publicRendezvousSeed: Uint8Array;
-                    public static create(properties?: berty.types.v1.ContactRequestResetReference.IReply): berty.types.v1.ContactRequestResetReference.Reply;
-                    public static encode(message: berty.types.v1.ContactRequestResetReference.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactRequestResetReference.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestResetReference.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestResetReference.Reply;
+                    public static create(properties?: berty.protocol.v1.ContactRequestResetReference.IReply): berty.protocol.v1.ContactRequestResetReference.Reply;
+                    public static encode(message: berty.protocol.v1.ContactRequestResetReference.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactRequestResetReference.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestResetReference.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestResetReference.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestResetReference.Reply;
-                    public static toObject(message: berty.types.v1.ContactRequestResetReference.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestResetReference.Reply;
+                    public static toObject(message: berty.protocol.v1.ContactRequestResetReference.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -2377,36 +2378,36 @@ export namespace berty {
 
             class ContactRequestSend implements IContactRequestSend {
 
-                public static create(properties?: berty.types.v1.IContactRequestSend): berty.types.v1.ContactRequestSend;
-                public static encode(message: berty.types.v1.IContactRequestSend, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IContactRequestSend, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestSend;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestSend;
+                public static create(properties?: berty.protocol.v1.IContactRequestSend): berty.protocol.v1.ContactRequestSend;
+                public static encode(message: berty.protocol.v1.IContactRequestSend, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IContactRequestSend, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestSend;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestSend;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestSend;
-                public static toObject(message: berty.types.v1.ContactRequestSend, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestSend;
+                public static toObject(message: berty.protocol.v1.ContactRequestSend, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
             namespace ContactRequestSend {
 
                 interface IRequest {
-                    contact?: (berty.types.v1.IShareableContact|null);
+                    contact?: (berty.protocol.v1.IShareableContact|null);
                     ownMetadata?: (Uint8Array|null);
                 }
 
                 class Request implements IRequest {
 
-                    public contact?: (berty.types.v1.IShareableContact|null);
+                    public contact?: (berty.protocol.v1.IShareableContact|null);
                     public ownMetadata: Uint8Array;
-                    public static create(properties?: berty.types.v1.ContactRequestSend.IRequest): berty.types.v1.ContactRequestSend.Request;
-                    public static encode(message: berty.types.v1.ContactRequestSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactRequestSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestSend.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestSend.Request;
+                    public static create(properties?: berty.protocol.v1.ContactRequestSend.IRequest): berty.protocol.v1.ContactRequestSend.Request;
+                    public static encode(message: berty.protocol.v1.ContactRequestSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactRequestSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestSend.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestSend.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestSend.Request;
-                    public static toObject(message: berty.types.v1.ContactRequestSend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestSend.Request;
+                    public static toObject(message: berty.protocol.v1.ContactRequestSend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -2415,14 +2416,14 @@ export namespace berty {
 
                 class Reply implements IReply {
 
-                    public static create(properties?: berty.types.v1.ContactRequestSend.IReply): berty.types.v1.ContactRequestSend.Reply;
-                    public static encode(message: berty.types.v1.ContactRequestSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactRequestSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestSend.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestSend.Reply;
+                    public static create(properties?: berty.protocol.v1.ContactRequestSend.IReply): berty.protocol.v1.ContactRequestSend.Reply;
+                    public static encode(message: berty.protocol.v1.ContactRequestSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactRequestSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestSend.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestSend.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestSend.Reply;
-                    public static toObject(message: berty.types.v1.ContactRequestSend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestSend.Reply;
+                    public static toObject(message: berty.protocol.v1.ContactRequestSend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -2432,14 +2433,14 @@ export namespace berty {
 
             class ContactRequestAccept implements IContactRequestAccept {
 
-                public static create(properties?: berty.types.v1.IContactRequestAccept): berty.types.v1.ContactRequestAccept;
-                public static encode(message: berty.types.v1.IContactRequestAccept, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IContactRequestAccept, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestAccept;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestAccept;
+                public static create(properties?: berty.protocol.v1.IContactRequestAccept): berty.protocol.v1.ContactRequestAccept;
+                public static encode(message: berty.protocol.v1.IContactRequestAccept, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IContactRequestAccept, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestAccept;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestAccept;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestAccept;
-                public static toObject(message: berty.types.v1.ContactRequestAccept, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestAccept;
+                public static toObject(message: berty.protocol.v1.ContactRequestAccept, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2452,14 +2453,14 @@ export namespace berty {
                 class Request implements IRequest {
 
                     public contactPk: Uint8Array;
-                    public static create(properties?: berty.types.v1.ContactRequestAccept.IRequest): berty.types.v1.ContactRequestAccept.Request;
-                    public static encode(message: berty.types.v1.ContactRequestAccept.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactRequestAccept.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestAccept.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestAccept.Request;
+                    public static create(properties?: berty.protocol.v1.ContactRequestAccept.IRequest): berty.protocol.v1.ContactRequestAccept.Request;
+                    public static encode(message: berty.protocol.v1.ContactRequestAccept.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactRequestAccept.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestAccept.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestAccept.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestAccept.Request;
-                    public static toObject(message: berty.types.v1.ContactRequestAccept.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestAccept.Request;
+                    public static toObject(message: berty.protocol.v1.ContactRequestAccept.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -2468,14 +2469,14 @@ export namespace berty {
 
                 class Reply implements IReply {
 
-                    public static create(properties?: berty.types.v1.ContactRequestAccept.IReply): berty.types.v1.ContactRequestAccept.Reply;
-                    public static encode(message: berty.types.v1.ContactRequestAccept.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactRequestAccept.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestAccept.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestAccept.Reply;
+                    public static create(properties?: berty.protocol.v1.ContactRequestAccept.IReply): berty.protocol.v1.ContactRequestAccept.Reply;
+                    public static encode(message: berty.protocol.v1.ContactRequestAccept.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactRequestAccept.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestAccept.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestAccept.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestAccept.Reply;
-                    public static toObject(message: berty.types.v1.ContactRequestAccept.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestAccept.Reply;
+                    public static toObject(message: berty.protocol.v1.ContactRequestAccept.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -2485,14 +2486,14 @@ export namespace berty {
 
             class ContactRequestDiscard implements IContactRequestDiscard {
 
-                public static create(properties?: berty.types.v1.IContactRequestDiscard): berty.types.v1.ContactRequestDiscard;
-                public static encode(message: berty.types.v1.IContactRequestDiscard, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IContactRequestDiscard, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestDiscard;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestDiscard;
+                public static create(properties?: berty.protocol.v1.IContactRequestDiscard): berty.protocol.v1.ContactRequestDiscard;
+                public static encode(message: berty.protocol.v1.IContactRequestDiscard, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IContactRequestDiscard, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestDiscard;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestDiscard;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestDiscard;
-                public static toObject(message: berty.types.v1.ContactRequestDiscard, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestDiscard;
+                public static toObject(message: berty.protocol.v1.ContactRequestDiscard, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2505,14 +2506,14 @@ export namespace berty {
                 class Request implements IRequest {
 
                     public contactPk: Uint8Array;
-                    public static create(properties?: berty.types.v1.ContactRequestDiscard.IRequest): berty.types.v1.ContactRequestDiscard.Request;
-                    public static encode(message: berty.types.v1.ContactRequestDiscard.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactRequestDiscard.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestDiscard.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestDiscard.Request;
+                    public static create(properties?: berty.protocol.v1.ContactRequestDiscard.IRequest): berty.protocol.v1.ContactRequestDiscard.Request;
+                    public static encode(message: berty.protocol.v1.ContactRequestDiscard.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactRequestDiscard.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestDiscard.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestDiscard.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestDiscard.Request;
-                    public static toObject(message: berty.types.v1.ContactRequestDiscard.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestDiscard.Request;
+                    public static toObject(message: berty.protocol.v1.ContactRequestDiscard.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -2521,14 +2522,14 @@ export namespace berty {
 
                 class Reply implements IReply {
 
-                    public static create(properties?: berty.types.v1.ContactRequestDiscard.IReply): berty.types.v1.ContactRequestDiscard.Reply;
-                    public static encode(message: berty.types.v1.ContactRequestDiscard.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactRequestDiscard.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactRequestDiscard.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactRequestDiscard.Reply;
+                    public static create(properties?: berty.protocol.v1.ContactRequestDiscard.IReply): berty.protocol.v1.ContactRequestDiscard.Reply;
+                    public static encode(message: berty.protocol.v1.ContactRequestDiscard.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactRequestDiscard.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactRequestDiscard.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactRequestDiscard.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactRequestDiscard.Reply;
-                    public static toObject(message: berty.types.v1.ContactRequestDiscard.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactRequestDiscard.Reply;
+                    public static toObject(message: berty.protocol.v1.ContactRequestDiscard.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -2538,14 +2539,14 @@ export namespace berty {
 
             class ContactBlock implements IContactBlock {
 
-                public static create(properties?: berty.types.v1.IContactBlock): berty.types.v1.ContactBlock;
-                public static encode(message: berty.types.v1.IContactBlock, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IContactBlock, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactBlock;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactBlock;
+                public static create(properties?: berty.protocol.v1.IContactBlock): berty.protocol.v1.ContactBlock;
+                public static encode(message: berty.protocol.v1.IContactBlock, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IContactBlock, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactBlock;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactBlock;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactBlock;
-                public static toObject(message: berty.types.v1.ContactBlock, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactBlock;
+                public static toObject(message: berty.protocol.v1.ContactBlock, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2558,14 +2559,14 @@ export namespace berty {
                 class Request implements IRequest {
 
                     public contactPk: Uint8Array;
-                    public static create(properties?: berty.types.v1.ContactBlock.IRequest): berty.types.v1.ContactBlock.Request;
-                    public static encode(message: berty.types.v1.ContactBlock.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactBlock.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactBlock.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactBlock.Request;
+                    public static create(properties?: berty.protocol.v1.ContactBlock.IRequest): berty.protocol.v1.ContactBlock.Request;
+                    public static encode(message: berty.protocol.v1.ContactBlock.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactBlock.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactBlock.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactBlock.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactBlock.Request;
-                    public static toObject(message: berty.types.v1.ContactBlock.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactBlock.Request;
+                    public static toObject(message: berty.protocol.v1.ContactBlock.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -2574,14 +2575,14 @@ export namespace berty {
 
                 class Reply implements IReply {
 
-                    public static create(properties?: berty.types.v1.ContactBlock.IReply): berty.types.v1.ContactBlock.Reply;
-                    public static encode(message: berty.types.v1.ContactBlock.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactBlock.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactBlock.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactBlock.Reply;
+                    public static create(properties?: berty.protocol.v1.ContactBlock.IReply): berty.protocol.v1.ContactBlock.Reply;
+                    public static encode(message: berty.protocol.v1.ContactBlock.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactBlock.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactBlock.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactBlock.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactBlock.Reply;
-                    public static toObject(message: berty.types.v1.ContactBlock.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactBlock.Reply;
+                    public static toObject(message: berty.protocol.v1.ContactBlock.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -2591,14 +2592,14 @@ export namespace berty {
 
             class ContactUnblock implements IContactUnblock {
 
-                public static create(properties?: berty.types.v1.IContactUnblock): berty.types.v1.ContactUnblock;
-                public static encode(message: berty.types.v1.IContactUnblock, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IContactUnblock, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactUnblock;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactUnblock;
+                public static create(properties?: berty.protocol.v1.IContactUnblock): berty.protocol.v1.ContactUnblock;
+                public static encode(message: berty.protocol.v1.IContactUnblock, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IContactUnblock, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactUnblock;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactUnblock;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactUnblock;
-                public static toObject(message: berty.types.v1.ContactUnblock, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactUnblock;
+                public static toObject(message: berty.protocol.v1.ContactUnblock, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2611,14 +2612,14 @@ export namespace berty {
                 class Request implements IRequest {
 
                     public contactPk: Uint8Array;
-                    public static create(properties?: berty.types.v1.ContactUnblock.IRequest): berty.types.v1.ContactUnblock.Request;
-                    public static encode(message: berty.types.v1.ContactUnblock.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactUnblock.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactUnblock.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactUnblock.Request;
+                    public static create(properties?: berty.protocol.v1.ContactUnblock.IRequest): berty.protocol.v1.ContactUnblock.Request;
+                    public static encode(message: berty.protocol.v1.ContactUnblock.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactUnblock.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactUnblock.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactUnblock.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactUnblock.Request;
-                    public static toObject(message: berty.types.v1.ContactUnblock.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactUnblock.Request;
+                    public static toObject(message: berty.protocol.v1.ContactUnblock.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -2627,14 +2628,14 @@ export namespace berty {
 
                 class Reply implements IReply {
 
-                    public static create(properties?: berty.types.v1.ContactUnblock.IReply): berty.types.v1.ContactUnblock.Reply;
-                    public static encode(message: berty.types.v1.ContactUnblock.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactUnblock.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactUnblock.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactUnblock.Reply;
+                    public static create(properties?: berty.protocol.v1.ContactUnblock.IReply): berty.protocol.v1.ContactUnblock.Reply;
+                    public static encode(message: berty.protocol.v1.ContactUnblock.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactUnblock.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactUnblock.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactUnblock.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactUnblock.Reply;
-                    public static toObject(message: berty.types.v1.ContactUnblock.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactUnblock.Reply;
+                    public static toObject(message: berty.protocol.v1.ContactUnblock.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -2644,14 +2645,14 @@ export namespace berty {
 
             class ContactAliasKeySend implements IContactAliasKeySend {
 
-                public static create(properties?: berty.types.v1.IContactAliasKeySend): berty.types.v1.ContactAliasKeySend;
-                public static encode(message: berty.types.v1.IContactAliasKeySend, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IContactAliasKeySend, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactAliasKeySend;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactAliasKeySend;
+                public static create(properties?: berty.protocol.v1.IContactAliasKeySend): berty.protocol.v1.ContactAliasKeySend;
+                public static encode(message: berty.protocol.v1.IContactAliasKeySend, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IContactAliasKeySend, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactAliasKeySend;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactAliasKeySend;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactAliasKeySend;
-                public static toObject(message: berty.types.v1.ContactAliasKeySend, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactAliasKeySend;
+                public static toObject(message: berty.protocol.v1.ContactAliasKeySend, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2664,14 +2665,14 @@ export namespace berty {
                 class Request implements IRequest {
 
                     public groupPk: Uint8Array;
-                    public static create(properties?: berty.types.v1.ContactAliasKeySend.IRequest): berty.types.v1.ContactAliasKeySend.Request;
-                    public static encode(message: berty.types.v1.ContactAliasKeySend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactAliasKeySend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactAliasKeySend.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactAliasKeySend.Request;
+                    public static create(properties?: berty.protocol.v1.ContactAliasKeySend.IRequest): berty.protocol.v1.ContactAliasKeySend.Request;
+                    public static encode(message: berty.protocol.v1.ContactAliasKeySend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactAliasKeySend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactAliasKeySend.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactAliasKeySend.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactAliasKeySend.Request;
-                    public static toObject(message: berty.types.v1.ContactAliasKeySend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactAliasKeySend.Request;
+                    public static toObject(message: berty.protocol.v1.ContactAliasKeySend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -2680,14 +2681,14 @@ export namespace berty {
 
                 class Reply implements IReply {
 
-                    public static create(properties?: berty.types.v1.ContactAliasKeySend.IReply): berty.types.v1.ContactAliasKeySend.Reply;
-                    public static encode(message: berty.types.v1.ContactAliasKeySend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ContactAliasKeySend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ContactAliasKeySend.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ContactAliasKeySend.Reply;
+                    public static create(properties?: berty.protocol.v1.ContactAliasKeySend.IReply): berty.protocol.v1.ContactAliasKeySend.Reply;
+                    public static encode(message: berty.protocol.v1.ContactAliasKeySend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ContactAliasKeySend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ContactAliasKeySend.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ContactAliasKeySend.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ContactAliasKeySend.Reply;
-                    public static toObject(message: berty.types.v1.ContactAliasKeySend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ContactAliasKeySend.Reply;
+                    public static toObject(message: berty.protocol.v1.ContactAliasKeySend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -2697,14 +2698,14 @@ export namespace berty {
 
             class MultiMemberGroupCreate implements IMultiMemberGroupCreate {
 
-                public static create(properties?: berty.types.v1.IMultiMemberGroupCreate): berty.types.v1.MultiMemberGroupCreate;
-                public static encode(message: berty.types.v1.IMultiMemberGroupCreate, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IMultiMemberGroupCreate, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGroupCreate;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGroupCreate;
+                public static create(properties?: berty.protocol.v1.IMultiMemberGroupCreate): berty.protocol.v1.MultiMemberGroupCreate;
+                public static encode(message: berty.protocol.v1.IMultiMemberGroupCreate, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IMultiMemberGroupCreate, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGroupCreate;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGroupCreate;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGroupCreate;
-                public static toObject(message: berty.types.v1.MultiMemberGroupCreate, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGroupCreate;
+                public static toObject(message: berty.protocol.v1.MultiMemberGroupCreate, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2715,14 +2716,14 @@ export namespace berty {
 
                 class Request implements IRequest {
 
-                    public static create(properties?: berty.types.v1.MultiMemberGroupCreate.IRequest): berty.types.v1.MultiMemberGroupCreate.Request;
-                    public static encode(message: berty.types.v1.MultiMemberGroupCreate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.MultiMemberGroupCreate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGroupCreate.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGroupCreate.Request;
+                    public static create(properties?: berty.protocol.v1.MultiMemberGroupCreate.IRequest): berty.protocol.v1.MultiMemberGroupCreate.Request;
+                    public static encode(message: berty.protocol.v1.MultiMemberGroupCreate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.MultiMemberGroupCreate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGroupCreate.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGroupCreate.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGroupCreate.Request;
-                    public static toObject(message: berty.types.v1.MultiMemberGroupCreate.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGroupCreate.Request;
+                    public static toObject(message: berty.protocol.v1.MultiMemberGroupCreate.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -2733,14 +2734,14 @@ export namespace berty {
                 class Reply implements IReply {
 
                     public groupPk: Uint8Array;
-                    public static create(properties?: berty.types.v1.MultiMemberGroupCreate.IReply): berty.types.v1.MultiMemberGroupCreate.Reply;
-                    public static encode(message: berty.types.v1.MultiMemberGroupCreate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.MultiMemberGroupCreate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGroupCreate.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGroupCreate.Reply;
+                    public static create(properties?: berty.protocol.v1.MultiMemberGroupCreate.IReply): berty.protocol.v1.MultiMemberGroupCreate.Reply;
+                    public static encode(message: berty.protocol.v1.MultiMemberGroupCreate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.MultiMemberGroupCreate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGroupCreate.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGroupCreate.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGroupCreate.Reply;
-                    public static toObject(message: berty.types.v1.MultiMemberGroupCreate.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGroupCreate.Reply;
+                    public static toObject(message: berty.protocol.v1.MultiMemberGroupCreate.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -2750,34 +2751,34 @@ export namespace berty {
 
             class MultiMemberGroupJoin implements IMultiMemberGroupJoin {
 
-                public static create(properties?: berty.types.v1.IMultiMemberGroupJoin): berty.types.v1.MultiMemberGroupJoin;
-                public static encode(message: berty.types.v1.IMultiMemberGroupJoin, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IMultiMemberGroupJoin, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGroupJoin;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGroupJoin;
+                public static create(properties?: berty.protocol.v1.IMultiMemberGroupJoin): berty.protocol.v1.MultiMemberGroupJoin;
+                public static encode(message: berty.protocol.v1.IMultiMemberGroupJoin, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IMultiMemberGroupJoin, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGroupJoin;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGroupJoin;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGroupJoin;
-                public static toObject(message: berty.types.v1.MultiMemberGroupJoin, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGroupJoin;
+                public static toObject(message: berty.protocol.v1.MultiMemberGroupJoin, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
             namespace MultiMemberGroupJoin {
 
                 interface IRequest {
-                    group?: (berty.types.v1.IGroup|null);
+                    group?: (berty.protocol.v1.IGroup|null);
                 }
 
                 class Request implements IRequest {
 
-                    public group?: (berty.types.v1.IGroup|null);
-                    public static create(properties?: berty.types.v1.MultiMemberGroupJoin.IRequest): berty.types.v1.MultiMemberGroupJoin.Request;
-                    public static encode(message: berty.types.v1.MultiMemberGroupJoin.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.MultiMemberGroupJoin.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGroupJoin.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGroupJoin.Request;
+                    public group?: (berty.protocol.v1.IGroup|null);
+                    public static create(properties?: berty.protocol.v1.MultiMemberGroupJoin.IRequest): berty.protocol.v1.MultiMemberGroupJoin.Request;
+                    public static encode(message: berty.protocol.v1.MultiMemberGroupJoin.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.MultiMemberGroupJoin.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGroupJoin.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGroupJoin.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGroupJoin.Request;
-                    public static toObject(message: berty.types.v1.MultiMemberGroupJoin.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGroupJoin.Request;
+                    public static toObject(message: berty.protocol.v1.MultiMemberGroupJoin.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -2786,14 +2787,14 @@ export namespace berty {
 
                 class Reply implements IReply {
 
-                    public static create(properties?: berty.types.v1.MultiMemberGroupJoin.IReply): berty.types.v1.MultiMemberGroupJoin.Reply;
-                    public static encode(message: berty.types.v1.MultiMemberGroupJoin.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.MultiMemberGroupJoin.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGroupJoin.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGroupJoin.Reply;
+                    public static create(properties?: berty.protocol.v1.MultiMemberGroupJoin.IReply): berty.protocol.v1.MultiMemberGroupJoin.Reply;
+                    public static encode(message: berty.protocol.v1.MultiMemberGroupJoin.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.MultiMemberGroupJoin.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGroupJoin.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGroupJoin.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGroupJoin.Reply;
-                    public static toObject(message: berty.types.v1.MultiMemberGroupJoin.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGroupJoin.Reply;
+                    public static toObject(message: berty.protocol.v1.MultiMemberGroupJoin.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -2803,14 +2804,14 @@ export namespace berty {
 
             class MultiMemberGroupLeave implements IMultiMemberGroupLeave {
 
-                public static create(properties?: berty.types.v1.IMultiMemberGroupLeave): berty.types.v1.MultiMemberGroupLeave;
-                public static encode(message: berty.types.v1.IMultiMemberGroupLeave, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IMultiMemberGroupLeave, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGroupLeave;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGroupLeave;
+                public static create(properties?: berty.protocol.v1.IMultiMemberGroupLeave): berty.protocol.v1.MultiMemberGroupLeave;
+                public static encode(message: berty.protocol.v1.IMultiMemberGroupLeave, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IMultiMemberGroupLeave, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGroupLeave;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGroupLeave;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGroupLeave;
-                public static toObject(message: berty.types.v1.MultiMemberGroupLeave, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGroupLeave;
+                public static toObject(message: berty.protocol.v1.MultiMemberGroupLeave, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2823,14 +2824,14 @@ export namespace berty {
                 class Request implements IRequest {
 
                     public groupPk: Uint8Array;
-                    public static create(properties?: berty.types.v1.MultiMemberGroupLeave.IRequest): berty.types.v1.MultiMemberGroupLeave.Request;
-                    public static encode(message: berty.types.v1.MultiMemberGroupLeave.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.MultiMemberGroupLeave.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGroupLeave.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGroupLeave.Request;
+                    public static create(properties?: berty.protocol.v1.MultiMemberGroupLeave.IRequest): berty.protocol.v1.MultiMemberGroupLeave.Request;
+                    public static encode(message: berty.protocol.v1.MultiMemberGroupLeave.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.MultiMemberGroupLeave.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGroupLeave.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGroupLeave.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGroupLeave.Request;
-                    public static toObject(message: berty.types.v1.MultiMemberGroupLeave.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGroupLeave.Request;
+                    public static toObject(message: berty.protocol.v1.MultiMemberGroupLeave.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -2839,14 +2840,14 @@ export namespace berty {
 
                 class Reply implements IReply {
 
-                    public static create(properties?: berty.types.v1.MultiMemberGroupLeave.IReply): berty.types.v1.MultiMemberGroupLeave.Reply;
-                    public static encode(message: berty.types.v1.MultiMemberGroupLeave.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.MultiMemberGroupLeave.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGroupLeave.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGroupLeave.Reply;
+                    public static create(properties?: berty.protocol.v1.MultiMemberGroupLeave.IReply): berty.protocol.v1.MultiMemberGroupLeave.Reply;
+                    public static encode(message: berty.protocol.v1.MultiMemberGroupLeave.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.MultiMemberGroupLeave.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGroupLeave.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGroupLeave.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGroupLeave.Reply;
-                    public static toObject(message: berty.types.v1.MultiMemberGroupLeave.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGroupLeave.Reply;
+                    public static toObject(message: berty.protocol.v1.MultiMemberGroupLeave.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -2856,14 +2857,14 @@ export namespace berty {
 
             class MultiMemberGroupAliasResolverDisclose implements IMultiMemberGroupAliasResolverDisclose {
 
-                public static create(properties?: berty.types.v1.IMultiMemberGroupAliasResolverDisclose): berty.types.v1.MultiMemberGroupAliasResolverDisclose;
-                public static encode(message: berty.types.v1.IMultiMemberGroupAliasResolverDisclose, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IMultiMemberGroupAliasResolverDisclose, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGroupAliasResolverDisclose;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGroupAliasResolverDisclose;
+                public static create(properties?: berty.protocol.v1.IMultiMemberGroupAliasResolverDisclose): berty.protocol.v1.MultiMemberGroupAliasResolverDisclose;
+                public static encode(message: berty.protocol.v1.IMultiMemberGroupAliasResolverDisclose, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IMultiMemberGroupAliasResolverDisclose, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGroupAliasResolverDisclose;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGroupAliasResolverDisclose;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGroupAliasResolverDisclose;
-                public static toObject(message: berty.types.v1.MultiMemberGroupAliasResolverDisclose, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGroupAliasResolverDisclose;
+                public static toObject(message: berty.protocol.v1.MultiMemberGroupAliasResolverDisclose, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2876,14 +2877,14 @@ export namespace berty {
                 class Request implements IRequest {
 
                     public groupPk: Uint8Array;
-                    public static create(properties?: berty.types.v1.MultiMemberGroupAliasResolverDisclose.IRequest): berty.types.v1.MultiMemberGroupAliasResolverDisclose.Request;
-                    public static encode(message: berty.types.v1.MultiMemberGroupAliasResolverDisclose.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.MultiMemberGroupAliasResolverDisclose.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGroupAliasResolverDisclose.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGroupAliasResolverDisclose.Request;
+                    public static create(properties?: berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.IRequest): berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.Request;
+                    public static encode(message: berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGroupAliasResolverDisclose.Request;
-                    public static toObject(message: berty.types.v1.MultiMemberGroupAliasResolverDisclose.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.Request;
+                    public static toObject(message: berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -2892,14 +2893,14 @@ export namespace berty {
 
                 class Reply implements IReply {
 
-                    public static create(properties?: berty.types.v1.MultiMemberGroupAliasResolverDisclose.IReply): berty.types.v1.MultiMemberGroupAliasResolverDisclose.Reply;
-                    public static encode(message: berty.types.v1.MultiMemberGroupAliasResolverDisclose.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.MultiMemberGroupAliasResolverDisclose.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGroupAliasResolverDisclose.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGroupAliasResolverDisclose.Reply;
+                    public static create(properties?: berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.IReply): berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.Reply;
+                    public static encode(message: berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGroupAliasResolverDisclose.Reply;
-                    public static toObject(message: berty.types.v1.MultiMemberGroupAliasResolverDisclose.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.Reply;
+                    public static toObject(message: berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -2909,14 +2910,14 @@ export namespace berty {
 
             class MultiMemberGroupAdminRoleGrant implements IMultiMemberGroupAdminRoleGrant {
 
-                public static create(properties?: berty.types.v1.IMultiMemberGroupAdminRoleGrant): berty.types.v1.MultiMemberGroupAdminRoleGrant;
-                public static encode(message: berty.types.v1.IMultiMemberGroupAdminRoleGrant, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IMultiMemberGroupAdminRoleGrant, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGroupAdminRoleGrant;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGroupAdminRoleGrant;
+                public static create(properties?: berty.protocol.v1.IMultiMemberGroupAdminRoleGrant): berty.protocol.v1.MultiMemberGroupAdminRoleGrant;
+                public static encode(message: berty.protocol.v1.IMultiMemberGroupAdminRoleGrant, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IMultiMemberGroupAdminRoleGrant, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGroupAdminRoleGrant;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGroupAdminRoleGrant;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGroupAdminRoleGrant;
-                public static toObject(message: berty.types.v1.MultiMemberGroupAdminRoleGrant, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGroupAdminRoleGrant;
+                public static toObject(message: berty.protocol.v1.MultiMemberGroupAdminRoleGrant, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2931,14 +2932,14 @@ export namespace berty {
 
                     public groupPk: Uint8Array;
                     public memberPk: Uint8Array;
-                    public static create(properties?: berty.types.v1.MultiMemberGroupAdminRoleGrant.IRequest): berty.types.v1.MultiMemberGroupAdminRoleGrant.Request;
-                    public static encode(message: berty.types.v1.MultiMemberGroupAdminRoleGrant.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.MultiMemberGroupAdminRoleGrant.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGroupAdminRoleGrant.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGroupAdminRoleGrant.Request;
+                    public static create(properties?: berty.protocol.v1.MultiMemberGroupAdminRoleGrant.IRequest): berty.protocol.v1.MultiMemberGroupAdminRoleGrant.Request;
+                    public static encode(message: berty.protocol.v1.MultiMemberGroupAdminRoleGrant.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.MultiMemberGroupAdminRoleGrant.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGroupAdminRoleGrant.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGroupAdminRoleGrant.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGroupAdminRoleGrant.Request;
-                    public static toObject(message: berty.types.v1.MultiMemberGroupAdminRoleGrant.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGroupAdminRoleGrant.Request;
+                    public static toObject(message: berty.protocol.v1.MultiMemberGroupAdminRoleGrant.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -2947,14 +2948,14 @@ export namespace berty {
 
                 class Reply implements IReply {
 
-                    public static create(properties?: berty.types.v1.MultiMemberGroupAdminRoleGrant.IReply): berty.types.v1.MultiMemberGroupAdminRoleGrant.Reply;
-                    public static encode(message: berty.types.v1.MultiMemberGroupAdminRoleGrant.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.MultiMemberGroupAdminRoleGrant.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGroupAdminRoleGrant.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGroupAdminRoleGrant.Reply;
+                    public static create(properties?: berty.protocol.v1.MultiMemberGroupAdminRoleGrant.IReply): berty.protocol.v1.MultiMemberGroupAdminRoleGrant.Reply;
+                    public static encode(message: berty.protocol.v1.MultiMemberGroupAdminRoleGrant.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.MultiMemberGroupAdminRoleGrant.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGroupAdminRoleGrant.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGroupAdminRoleGrant.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGroupAdminRoleGrant.Reply;
-                    public static toObject(message: berty.types.v1.MultiMemberGroupAdminRoleGrant.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGroupAdminRoleGrant.Reply;
+                    public static toObject(message: berty.protocol.v1.MultiMemberGroupAdminRoleGrant.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -2964,14 +2965,14 @@ export namespace berty {
 
             class MultiMemberGroupInvitationCreate implements IMultiMemberGroupInvitationCreate {
 
-                public static create(properties?: berty.types.v1.IMultiMemberGroupInvitationCreate): berty.types.v1.MultiMemberGroupInvitationCreate;
-                public static encode(message: berty.types.v1.IMultiMemberGroupInvitationCreate, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IMultiMemberGroupInvitationCreate, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGroupInvitationCreate;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGroupInvitationCreate;
+                public static create(properties?: berty.protocol.v1.IMultiMemberGroupInvitationCreate): berty.protocol.v1.MultiMemberGroupInvitationCreate;
+                public static encode(message: berty.protocol.v1.IMultiMemberGroupInvitationCreate, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IMultiMemberGroupInvitationCreate, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGroupInvitationCreate;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGroupInvitationCreate;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGroupInvitationCreate;
-                public static toObject(message: berty.types.v1.MultiMemberGroupInvitationCreate, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGroupInvitationCreate;
+                public static toObject(message: berty.protocol.v1.MultiMemberGroupInvitationCreate, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -2984,32 +2985,32 @@ export namespace berty {
                 class Request implements IRequest {
 
                     public groupPk: Uint8Array;
-                    public static create(properties?: berty.types.v1.MultiMemberGroupInvitationCreate.IRequest): berty.types.v1.MultiMemberGroupInvitationCreate.Request;
-                    public static encode(message: berty.types.v1.MultiMemberGroupInvitationCreate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.MultiMemberGroupInvitationCreate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGroupInvitationCreate.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGroupInvitationCreate.Request;
+                    public static create(properties?: berty.protocol.v1.MultiMemberGroupInvitationCreate.IRequest): berty.protocol.v1.MultiMemberGroupInvitationCreate.Request;
+                    public static encode(message: berty.protocol.v1.MultiMemberGroupInvitationCreate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.MultiMemberGroupInvitationCreate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGroupInvitationCreate.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGroupInvitationCreate.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGroupInvitationCreate.Request;
-                    public static toObject(message: berty.types.v1.MultiMemberGroupInvitationCreate.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGroupInvitationCreate.Request;
+                    public static toObject(message: berty.protocol.v1.MultiMemberGroupInvitationCreate.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
                 interface IReply {
-                    group?: (berty.types.v1.IGroup|null);
+                    group?: (berty.protocol.v1.IGroup|null);
                 }
 
                 class Reply implements IReply {
 
-                    public group?: (berty.types.v1.IGroup|null);
-                    public static create(properties?: berty.types.v1.MultiMemberGroupInvitationCreate.IReply): berty.types.v1.MultiMemberGroupInvitationCreate.Reply;
-                    public static encode(message: berty.types.v1.MultiMemberGroupInvitationCreate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.MultiMemberGroupInvitationCreate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MultiMemberGroupInvitationCreate.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MultiMemberGroupInvitationCreate.Reply;
+                    public group?: (berty.protocol.v1.IGroup|null);
+                    public static create(properties?: berty.protocol.v1.MultiMemberGroupInvitationCreate.IReply): berty.protocol.v1.MultiMemberGroupInvitationCreate.Reply;
+                    public static encode(message: berty.protocol.v1.MultiMemberGroupInvitationCreate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.MultiMemberGroupInvitationCreate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MultiMemberGroupInvitationCreate.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MultiMemberGroupInvitationCreate.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MultiMemberGroupInvitationCreate.Reply;
-                    public static toObject(message: berty.types.v1.MultiMemberGroupInvitationCreate.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MultiMemberGroupInvitationCreate.Reply;
+                    public static toObject(message: berty.protocol.v1.MultiMemberGroupInvitationCreate.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -3019,14 +3020,14 @@ export namespace berty {
 
             class AppMetadataSend implements IAppMetadataSend {
 
-                public static create(properties?: berty.types.v1.IAppMetadataSend): berty.types.v1.AppMetadataSend;
-                public static encode(message: berty.types.v1.IAppMetadataSend, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAppMetadataSend, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AppMetadataSend;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AppMetadataSend;
+                public static create(properties?: berty.protocol.v1.IAppMetadataSend): berty.protocol.v1.AppMetadataSend;
+                public static encode(message: berty.protocol.v1.IAppMetadataSend, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAppMetadataSend, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AppMetadataSend;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AppMetadataSend;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AppMetadataSend;
-                public static toObject(message: berty.types.v1.AppMetadataSend, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AppMetadataSend;
+                public static toObject(message: berty.protocol.v1.AppMetadataSend, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -3043,14 +3044,14 @@ export namespace berty {
                     public groupPk: Uint8Array;
                     public payload: Uint8Array;
                     public attachmentCids: Uint8Array[];
-                    public static create(properties?: berty.types.v1.AppMetadataSend.IRequest): berty.types.v1.AppMetadataSend.Request;
-                    public static encode(message: berty.types.v1.AppMetadataSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.AppMetadataSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AppMetadataSend.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AppMetadataSend.Request;
+                    public static create(properties?: berty.protocol.v1.AppMetadataSend.IRequest): berty.protocol.v1.AppMetadataSend.Request;
+                    public static encode(message: berty.protocol.v1.AppMetadataSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.AppMetadataSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AppMetadataSend.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AppMetadataSend.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.AppMetadataSend.Request;
-                    public static toObject(message: berty.types.v1.AppMetadataSend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AppMetadataSend.Request;
+                    public static toObject(message: berty.protocol.v1.AppMetadataSend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -3059,14 +3060,14 @@ export namespace berty {
 
                 class Reply implements IReply {
 
-                    public static create(properties?: berty.types.v1.AppMetadataSend.IReply): berty.types.v1.AppMetadataSend.Reply;
-                    public static encode(message: berty.types.v1.AppMetadataSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.AppMetadataSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AppMetadataSend.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AppMetadataSend.Reply;
+                    public static create(properties?: berty.protocol.v1.AppMetadataSend.IReply): berty.protocol.v1.AppMetadataSend.Reply;
+                    public static encode(message: berty.protocol.v1.AppMetadataSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.AppMetadataSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AppMetadataSend.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AppMetadataSend.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.AppMetadataSend.Reply;
-                    public static toObject(message: berty.types.v1.AppMetadataSend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AppMetadataSend.Reply;
+                    public static toObject(message: berty.protocol.v1.AppMetadataSend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -3076,14 +3077,14 @@ export namespace berty {
 
             class AppMessageSend implements IAppMessageSend {
 
-                public static create(properties?: berty.types.v1.IAppMessageSend): berty.types.v1.AppMessageSend;
-                public static encode(message: berty.types.v1.IAppMessageSend, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAppMessageSend, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AppMessageSend;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AppMessageSend;
+                public static create(properties?: berty.protocol.v1.IAppMessageSend): berty.protocol.v1.AppMessageSend;
+                public static encode(message: berty.protocol.v1.IAppMessageSend, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAppMessageSend, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AppMessageSend;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AppMessageSend;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AppMessageSend;
-                public static toObject(message: berty.types.v1.AppMessageSend, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AppMessageSend;
+                public static toObject(message: berty.protocol.v1.AppMessageSend, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -3100,14 +3101,14 @@ export namespace berty {
                     public groupPk: Uint8Array;
                     public payload: Uint8Array;
                     public attachmentCids: Uint8Array[];
-                    public static create(properties?: berty.types.v1.AppMessageSend.IRequest): berty.types.v1.AppMessageSend.Request;
-                    public static encode(message: berty.types.v1.AppMessageSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.AppMessageSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AppMessageSend.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AppMessageSend.Request;
+                    public static create(properties?: berty.protocol.v1.AppMessageSend.IRequest): berty.protocol.v1.AppMessageSend.Request;
+                    public static encode(message: berty.protocol.v1.AppMessageSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.AppMessageSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AppMessageSend.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AppMessageSend.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.AppMessageSend.Request;
-                    public static toObject(message: berty.types.v1.AppMessageSend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AppMessageSend.Request;
+                    public static toObject(message: berty.protocol.v1.AppMessageSend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -3116,59 +3117,59 @@ export namespace berty {
 
                 class Reply implements IReply {
 
-                    public static create(properties?: berty.types.v1.AppMessageSend.IReply): berty.types.v1.AppMessageSend.Reply;
-                    public static encode(message: berty.types.v1.AppMessageSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.AppMessageSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AppMessageSend.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AppMessageSend.Reply;
+                    public static create(properties?: berty.protocol.v1.AppMessageSend.IReply): berty.protocol.v1.AppMessageSend.Reply;
+                    public static encode(message: berty.protocol.v1.AppMessageSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.AppMessageSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AppMessageSend.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AppMessageSend.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.AppMessageSend.Reply;
-                    public static toObject(message: berty.types.v1.AppMessageSend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AppMessageSend.Reply;
+                    public static toObject(message: berty.protocol.v1.AppMessageSend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
 
             interface IGroupMetadataEvent {
-                eventContext?: (berty.types.v1.IEventContext|null);
-                metadata?: (berty.types.v1.IGroupMetadata|null);
+                eventContext?: (berty.protocol.v1.IEventContext|null);
+                metadata?: (berty.protocol.v1.IGroupMetadata|null);
                 event?: (Uint8Array|null);
             }
 
             class GroupMetadataEvent implements IGroupMetadataEvent {
 
-                public eventContext?: (berty.types.v1.IEventContext|null);
-                public metadata?: (berty.types.v1.IGroupMetadata|null);
+                public eventContext?: (berty.protocol.v1.IEventContext|null);
+                public metadata?: (berty.protocol.v1.IGroupMetadata|null);
                 public event: Uint8Array;
-                public static create(properties?: berty.types.v1.IGroupMetadataEvent): berty.types.v1.GroupMetadataEvent;
-                public static encode(message: berty.types.v1.IGroupMetadataEvent, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IGroupMetadataEvent, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupMetadataEvent;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupMetadataEvent;
+                public static create(properties?: berty.protocol.v1.IGroupMetadataEvent): berty.protocol.v1.GroupMetadataEvent;
+                public static encode(message: berty.protocol.v1.IGroupMetadataEvent, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IGroupMetadataEvent, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupMetadataEvent;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupMetadataEvent;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupMetadataEvent;
-                public static toObject(message: berty.types.v1.GroupMetadataEvent, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupMetadataEvent;
+                public static toObject(message: berty.protocol.v1.GroupMetadataEvent, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
             interface IGroupMessageEvent {
-                eventContext?: (berty.types.v1.IEventContext|null);
-                headers?: (berty.types.v1.IMessageHeaders|null);
+                eventContext?: (berty.protocol.v1.IEventContext|null);
+                headers?: (berty.protocol.v1.IMessageHeaders|null);
                 message?: (Uint8Array|null);
             }
 
             class GroupMessageEvent implements IGroupMessageEvent {
 
-                public eventContext?: (berty.types.v1.IEventContext|null);
-                public headers?: (berty.types.v1.IMessageHeaders|null);
+                public eventContext?: (berty.protocol.v1.IEventContext|null);
+                public headers?: (berty.protocol.v1.IMessageHeaders|null);
                 public message: Uint8Array;
-                public static create(properties?: berty.types.v1.IGroupMessageEvent): berty.types.v1.GroupMessageEvent;
-                public static encode(message: berty.types.v1.IGroupMessageEvent, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IGroupMessageEvent, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupMessageEvent;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupMessageEvent;
+                public static create(properties?: berty.protocol.v1.IGroupMessageEvent): berty.protocol.v1.GroupMessageEvent;
+                public static encode(message: berty.protocol.v1.IGroupMessageEvent, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IGroupMessageEvent, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupMessageEvent;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupMessageEvent;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupMessageEvent;
-                public static toObject(message: berty.types.v1.GroupMessageEvent, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupMessageEvent;
+                public static toObject(message: berty.protocol.v1.GroupMessageEvent, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -3177,14 +3178,14 @@ export namespace berty {
 
             class GroupMetadataList implements IGroupMetadataList {
 
-                public static create(properties?: berty.types.v1.IGroupMetadataList): berty.types.v1.GroupMetadataList;
-                public static encode(message: berty.types.v1.IGroupMetadataList, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IGroupMetadataList, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupMetadataList;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupMetadataList;
+                public static create(properties?: berty.protocol.v1.IGroupMetadataList): berty.protocol.v1.GroupMetadataList;
+                public static encode(message: berty.protocol.v1.IGroupMetadataList, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IGroupMetadataList, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupMetadataList;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupMetadataList;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupMetadataList;
-                public static toObject(message: berty.types.v1.GroupMetadataList, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupMetadataList;
+                public static toObject(message: berty.protocol.v1.GroupMetadataList, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -3207,14 +3208,14 @@ export namespace berty {
                     public untilId: Uint8Array;
                     public untilNow: boolean;
                     public reverseOrder: boolean;
-                    public static create(properties?: berty.types.v1.GroupMetadataList.IRequest): berty.types.v1.GroupMetadataList.Request;
-                    public static encode(message: berty.types.v1.GroupMetadataList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.GroupMetadataList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupMetadataList.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupMetadataList.Request;
+                    public static create(properties?: berty.protocol.v1.GroupMetadataList.IRequest): berty.protocol.v1.GroupMetadataList.Request;
+                    public static encode(message: berty.protocol.v1.GroupMetadataList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.GroupMetadataList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupMetadataList.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupMetadataList.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupMetadataList.Request;
-                    public static toObject(message: berty.types.v1.GroupMetadataList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupMetadataList.Request;
+                    public static toObject(message: berty.protocol.v1.GroupMetadataList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -3224,14 +3225,14 @@ export namespace berty {
 
             class GroupMessageList implements IGroupMessageList {
 
-                public static create(properties?: berty.types.v1.IGroupMessageList): berty.types.v1.GroupMessageList;
-                public static encode(message: berty.types.v1.IGroupMessageList, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IGroupMessageList, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupMessageList;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupMessageList;
+                public static create(properties?: berty.protocol.v1.IGroupMessageList): berty.protocol.v1.GroupMessageList;
+                public static encode(message: berty.protocol.v1.IGroupMessageList, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IGroupMessageList, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupMessageList;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupMessageList;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupMessageList;
-                public static toObject(message: berty.types.v1.GroupMessageList, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupMessageList;
+                public static toObject(message: berty.protocol.v1.GroupMessageList, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -3254,14 +3255,14 @@ export namespace berty {
                     public untilId: Uint8Array;
                     public untilNow: boolean;
                     public reverseOrder: boolean;
-                    public static create(properties?: berty.types.v1.GroupMessageList.IRequest): berty.types.v1.GroupMessageList.Request;
-                    public static encode(message: berty.types.v1.GroupMessageList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.GroupMessageList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupMessageList.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupMessageList.Request;
+                    public static create(properties?: berty.protocol.v1.GroupMessageList.IRequest): berty.protocol.v1.GroupMessageList.Request;
+                    public static encode(message: berty.protocol.v1.GroupMessageList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.GroupMessageList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupMessageList.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupMessageList.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupMessageList.Request;
-                    public static toObject(message: berty.types.v1.GroupMessageList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupMessageList.Request;
+                    public static toObject(message: berty.protocol.v1.GroupMessageList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -3271,14 +3272,14 @@ export namespace berty {
 
             class GroupInfo implements IGroupInfo {
 
-                public static create(properties?: berty.types.v1.IGroupInfo): berty.types.v1.GroupInfo;
-                public static encode(message: berty.types.v1.IGroupInfo, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IGroupInfo, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupInfo;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupInfo;
+                public static create(properties?: berty.protocol.v1.IGroupInfo): berty.protocol.v1.GroupInfo;
+                public static encode(message: berty.protocol.v1.IGroupInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IGroupInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupInfo;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupInfo;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupInfo;
-                public static toObject(message: berty.types.v1.GroupInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupInfo;
+                public static toObject(message: berty.protocol.v1.GroupInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -3293,36 +3294,36 @@ export namespace berty {
 
                     public groupPk: Uint8Array;
                     public contactPk: Uint8Array;
-                    public static create(properties?: berty.types.v1.GroupInfo.IRequest): berty.types.v1.GroupInfo.Request;
-                    public static encode(message: berty.types.v1.GroupInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.GroupInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupInfo.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupInfo.Request;
+                    public static create(properties?: berty.protocol.v1.GroupInfo.IRequest): berty.protocol.v1.GroupInfo.Request;
+                    public static encode(message: berty.protocol.v1.GroupInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.GroupInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupInfo.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupInfo.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupInfo.Request;
-                    public static toObject(message: berty.types.v1.GroupInfo.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupInfo.Request;
+                    public static toObject(message: berty.protocol.v1.GroupInfo.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
                 interface IReply {
-                    group?: (berty.types.v1.IGroup|null);
+                    group?: (berty.protocol.v1.IGroup|null);
                     memberPk?: (Uint8Array|null);
                     devicePk?: (Uint8Array|null);
                 }
 
                 class Reply implements IReply {
 
-                    public group?: (berty.types.v1.IGroup|null);
+                    public group?: (berty.protocol.v1.IGroup|null);
                     public memberPk: Uint8Array;
                     public devicePk: Uint8Array;
-                    public static create(properties?: berty.types.v1.GroupInfo.IReply): berty.types.v1.GroupInfo.Reply;
-                    public static encode(message: berty.types.v1.GroupInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.GroupInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.GroupInfo.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.GroupInfo.Reply;
+                    public static create(properties?: berty.protocol.v1.GroupInfo.IReply): berty.protocol.v1.GroupInfo.Reply;
+                    public static encode(message: berty.protocol.v1.GroupInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.GroupInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupInfo.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupInfo.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.GroupInfo.Reply;
-                    public static toObject(message: berty.types.v1.GroupInfo.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupInfo.Reply;
+                    public static toObject(message: berty.protocol.v1.GroupInfo.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -3332,14 +3333,14 @@ export namespace berty {
 
             class ActivateGroup implements IActivateGroup {
 
-                public static create(properties?: berty.types.v1.IActivateGroup): berty.types.v1.ActivateGroup;
-                public static encode(message: berty.types.v1.IActivateGroup, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IActivateGroup, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ActivateGroup;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ActivateGroup;
+                public static create(properties?: berty.protocol.v1.IActivateGroup): berty.protocol.v1.ActivateGroup;
+                public static encode(message: berty.protocol.v1.IActivateGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IActivateGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ActivateGroup;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ActivateGroup;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ActivateGroup;
-                public static toObject(message: berty.types.v1.ActivateGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ActivateGroup;
+                public static toObject(message: berty.protocol.v1.ActivateGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -3354,14 +3355,14 @@ export namespace berty {
 
                     public groupPk: Uint8Array;
                     public localOnly: boolean;
-                    public static create(properties?: berty.types.v1.ActivateGroup.IRequest): berty.types.v1.ActivateGroup.Request;
-                    public static encode(message: berty.types.v1.ActivateGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ActivateGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ActivateGroup.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ActivateGroup.Request;
+                    public static create(properties?: berty.protocol.v1.ActivateGroup.IRequest): berty.protocol.v1.ActivateGroup.Request;
+                    public static encode(message: berty.protocol.v1.ActivateGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ActivateGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ActivateGroup.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ActivateGroup.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ActivateGroup.Request;
-                    public static toObject(message: berty.types.v1.ActivateGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ActivateGroup.Request;
+                    public static toObject(message: berty.protocol.v1.ActivateGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -3370,14 +3371,14 @@ export namespace berty {
 
                 class Reply implements IReply {
 
-                    public static create(properties?: berty.types.v1.ActivateGroup.IReply): berty.types.v1.ActivateGroup.Reply;
-                    public static encode(message: berty.types.v1.ActivateGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ActivateGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ActivateGroup.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ActivateGroup.Reply;
+                    public static create(properties?: berty.protocol.v1.ActivateGroup.IReply): berty.protocol.v1.ActivateGroup.Reply;
+                    public static encode(message: berty.protocol.v1.ActivateGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ActivateGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ActivateGroup.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ActivateGroup.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ActivateGroup.Reply;
-                    public static toObject(message: berty.types.v1.ActivateGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ActivateGroup.Reply;
+                    public static toObject(message: berty.protocol.v1.ActivateGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -3387,14 +3388,14 @@ export namespace berty {
 
             class DeactivateGroup implements IDeactivateGroup {
 
-                public static create(properties?: berty.types.v1.IDeactivateGroup): berty.types.v1.DeactivateGroup;
-                public static encode(message: berty.types.v1.IDeactivateGroup, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IDeactivateGroup, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.DeactivateGroup;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.DeactivateGroup;
+                public static create(properties?: berty.protocol.v1.IDeactivateGroup): berty.protocol.v1.DeactivateGroup;
+                public static encode(message: berty.protocol.v1.IDeactivateGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IDeactivateGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.DeactivateGroup;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.DeactivateGroup;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.DeactivateGroup;
-                public static toObject(message: berty.types.v1.DeactivateGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.DeactivateGroup;
+                public static toObject(message: berty.protocol.v1.DeactivateGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -3407,14 +3408,14 @@ export namespace berty {
                 class Request implements IRequest {
 
                     public groupPk: Uint8Array;
-                    public static create(properties?: berty.types.v1.DeactivateGroup.IRequest): berty.types.v1.DeactivateGroup.Request;
-                    public static encode(message: berty.types.v1.DeactivateGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.DeactivateGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.DeactivateGroup.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.DeactivateGroup.Request;
+                    public static create(properties?: berty.protocol.v1.DeactivateGroup.IRequest): berty.protocol.v1.DeactivateGroup.Request;
+                    public static encode(message: berty.protocol.v1.DeactivateGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.DeactivateGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.DeactivateGroup.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.DeactivateGroup.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.DeactivateGroup.Request;
-                    public static toObject(message: berty.types.v1.DeactivateGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.DeactivateGroup.Request;
+                    public static toObject(message: berty.protocol.v1.DeactivateGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -3423,14 +3424,14 @@ export namespace berty {
 
                 class Reply implements IReply {
 
-                    public static create(properties?: berty.types.v1.DeactivateGroup.IReply): berty.types.v1.DeactivateGroup.Reply;
-                    public static encode(message: berty.types.v1.DeactivateGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.DeactivateGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.DeactivateGroup.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.DeactivateGroup.Reply;
+                    public static create(properties?: berty.protocol.v1.DeactivateGroup.IReply): berty.protocol.v1.DeactivateGroup.Reply;
+                    public static encode(message: berty.protocol.v1.DeactivateGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.DeactivateGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.DeactivateGroup.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.DeactivateGroup.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.DeactivateGroup.Reply;
-                    public static toObject(message: berty.types.v1.DeactivateGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.DeactivateGroup.Reply;
+                    public static toObject(message: berty.protocol.v1.DeactivateGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -3440,14 +3441,14 @@ export namespace berty {
 
             class MonitorGroup implements IMonitorGroup {
 
-                public static create(properties?: berty.types.v1.IMonitorGroup): berty.types.v1.MonitorGroup;
-                public static encode(message: berty.types.v1.IMonitorGroup, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IMonitorGroup, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MonitorGroup;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MonitorGroup;
+                public static create(properties?: berty.protocol.v1.IMonitorGroup): berty.protocol.v1.MonitorGroup;
+                public static encode(message: berty.protocol.v1.IMonitorGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IMonitorGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MonitorGroup;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MonitorGroup;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.MonitorGroup;
-                public static toObject(message: berty.types.v1.MonitorGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MonitorGroup;
+                public static toObject(message: berty.protocol.v1.MonitorGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -3474,14 +3475,14 @@ export namespace berty {
                     public maddrs: string[];
                     public driverName: string;
                     public topic: string;
-                    public static create(properties?: berty.types.v1.MonitorGroup.IEventMonitorAdvertiseGroup): berty.types.v1.MonitorGroup.EventMonitorAdvertiseGroup;
-                    public static encode(message: berty.types.v1.MonitorGroup.IEventMonitorAdvertiseGroup, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.MonitorGroup.IEventMonitorAdvertiseGroup, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MonitorGroup.EventMonitorAdvertiseGroup;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MonitorGroup.EventMonitorAdvertiseGroup;
+                    public static create(properties?: berty.protocol.v1.MonitorGroup.IEventMonitorAdvertiseGroup): berty.protocol.v1.MonitorGroup.EventMonitorAdvertiseGroup;
+                    public static encode(message: berty.protocol.v1.MonitorGroup.IEventMonitorAdvertiseGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.MonitorGroup.IEventMonitorAdvertiseGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MonitorGroup.EventMonitorAdvertiseGroup;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MonitorGroup.EventMonitorAdvertiseGroup;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MonitorGroup.EventMonitorAdvertiseGroup;
-                    public static toObject(message: berty.types.v1.MonitorGroup.EventMonitorAdvertiseGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MonitorGroup.EventMonitorAdvertiseGroup;
+                    public static toObject(message: berty.protocol.v1.MonitorGroup.EventMonitorAdvertiseGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -3498,14 +3499,14 @@ export namespace berty {
                     public maddrs: string[];
                     public driverName: string;
                     public topic: string;
-                    public static create(properties?: berty.types.v1.MonitorGroup.IEventMonitorPeerFound): berty.types.v1.MonitorGroup.EventMonitorPeerFound;
-                    public static encode(message: berty.types.v1.MonitorGroup.IEventMonitorPeerFound, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.MonitorGroup.IEventMonitorPeerFound, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MonitorGroup.EventMonitorPeerFound;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MonitorGroup.EventMonitorPeerFound;
+                    public static create(properties?: berty.protocol.v1.MonitorGroup.IEventMonitorPeerFound): berty.protocol.v1.MonitorGroup.EventMonitorPeerFound;
+                    public static encode(message: berty.protocol.v1.MonitorGroup.IEventMonitorPeerFound, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.MonitorGroup.IEventMonitorPeerFound, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MonitorGroup.EventMonitorPeerFound;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MonitorGroup.EventMonitorPeerFound;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MonitorGroup.EventMonitorPeerFound;
-                    public static toObject(message: berty.types.v1.MonitorGroup.EventMonitorPeerFound, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MonitorGroup.EventMonitorPeerFound;
+                    public static toObject(message: berty.protocol.v1.MonitorGroup.EventMonitorPeerFound, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -3522,14 +3523,14 @@ export namespace berty {
                     public maddrs: string[];
                     public topic: string;
                     public isSelf: boolean;
-                    public static create(properties?: berty.types.v1.MonitorGroup.IEventMonitorPeerJoin): berty.types.v1.MonitorGroup.EventMonitorPeerJoin;
-                    public static encode(message: berty.types.v1.MonitorGroup.IEventMonitorPeerJoin, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.MonitorGroup.IEventMonitorPeerJoin, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MonitorGroup.EventMonitorPeerJoin;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MonitorGroup.EventMonitorPeerJoin;
+                    public static create(properties?: berty.protocol.v1.MonitorGroup.IEventMonitorPeerJoin): berty.protocol.v1.MonitorGroup.EventMonitorPeerJoin;
+                    public static encode(message: berty.protocol.v1.MonitorGroup.IEventMonitorPeerJoin, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.MonitorGroup.IEventMonitorPeerJoin, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MonitorGroup.EventMonitorPeerJoin;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MonitorGroup.EventMonitorPeerJoin;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MonitorGroup.EventMonitorPeerJoin;
-                    public static toObject(message: berty.types.v1.MonitorGroup.EventMonitorPeerJoin, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MonitorGroup.EventMonitorPeerJoin;
+                    public static toObject(message: berty.protocol.v1.MonitorGroup.EventMonitorPeerJoin, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -3544,40 +3545,40 @@ export namespace berty {
                     public peerId: string;
                     public topic: string;
                     public isSelf: boolean;
-                    public static create(properties?: berty.types.v1.MonitorGroup.IEventMonitorPeerLeave): berty.types.v1.MonitorGroup.EventMonitorPeerLeave;
-                    public static encode(message: berty.types.v1.MonitorGroup.IEventMonitorPeerLeave, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.MonitorGroup.IEventMonitorPeerLeave, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MonitorGroup.EventMonitorPeerLeave;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MonitorGroup.EventMonitorPeerLeave;
+                    public static create(properties?: berty.protocol.v1.MonitorGroup.IEventMonitorPeerLeave): berty.protocol.v1.MonitorGroup.EventMonitorPeerLeave;
+                    public static encode(message: berty.protocol.v1.MonitorGroup.IEventMonitorPeerLeave, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.MonitorGroup.IEventMonitorPeerLeave, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MonitorGroup.EventMonitorPeerLeave;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MonitorGroup.EventMonitorPeerLeave;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MonitorGroup.EventMonitorPeerLeave;
-                    public static toObject(message: berty.types.v1.MonitorGroup.EventMonitorPeerLeave, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MonitorGroup.EventMonitorPeerLeave;
+                    public static toObject(message: berty.protocol.v1.MonitorGroup.EventMonitorPeerLeave, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
                 interface IEventMonitor {
-                    type?: (berty.types.v1.MonitorGroup.TypeEventMonitor|null);
-                    advertiseGroup?: (berty.types.v1.MonitorGroup.IEventMonitorAdvertiseGroup|null);
-                    peerFound?: (berty.types.v1.MonitorGroup.IEventMonitorPeerFound|null);
-                    peerJoin?: (berty.types.v1.MonitorGroup.IEventMonitorPeerJoin|null);
-                    peerLeave?: (berty.types.v1.MonitorGroup.IEventMonitorPeerLeave|null);
+                    type?: (berty.protocol.v1.MonitorGroup.TypeEventMonitor|null);
+                    advertiseGroup?: (berty.protocol.v1.MonitorGroup.IEventMonitorAdvertiseGroup|null);
+                    peerFound?: (berty.protocol.v1.MonitorGroup.IEventMonitorPeerFound|null);
+                    peerJoin?: (berty.protocol.v1.MonitorGroup.IEventMonitorPeerJoin|null);
+                    peerLeave?: (berty.protocol.v1.MonitorGroup.IEventMonitorPeerLeave|null);
                 }
 
                 class EventMonitor implements IEventMonitor {
 
-                    public type: berty.types.v1.MonitorGroup.TypeEventMonitor;
-                    public advertiseGroup?: (berty.types.v1.MonitorGroup.IEventMonitorAdvertiseGroup|null);
-                    public peerFound?: (berty.types.v1.MonitorGroup.IEventMonitorPeerFound|null);
-                    public peerJoin?: (berty.types.v1.MonitorGroup.IEventMonitorPeerJoin|null);
-                    public peerLeave?: (berty.types.v1.MonitorGroup.IEventMonitorPeerLeave|null);
-                    public static create(properties?: berty.types.v1.MonitorGroup.IEventMonitor): berty.types.v1.MonitorGroup.EventMonitor;
-                    public static encode(message: berty.types.v1.MonitorGroup.IEventMonitor, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.MonitorGroup.IEventMonitor, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MonitorGroup.EventMonitor;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MonitorGroup.EventMonitor;
+                    public type: berty.protocol.v1.MonitorGroup.TypeEventMonitor;
+                    public advertiseGroup?: (berty.protocol.v1.MonitorGroup.IEventMonitorAdvertiseGroup|null);
+                    public peerFound?: (berty.protocol.v1.MonitorGroup.IEventMonitorPeerFound|null);
+                    public peerJoin?: (berty.protocol.v1.MonitorGroup.IEventMonitorPeerJoin|null);
+                    public peerLeave?: (berty.protocol.v1.MonitorGroup.IEventMonitorPeerLeave|null);
+                    public static create(properties?: berty.protocol.v1.MonitorGroup.IEventMonitor): berty.protocol.v1.MonitorGroup.EventMonitor;
+                    public static encode(message: berty.protocol.v1.MonitorGroup.IEventMonitor, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.MonitorGroup.IEventMonitor, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MonitorGroup.EventMonitor;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MonitorGroup.EventMonitor;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MonitorGroup.EventMonitor;
-                    public static toObject(message: berty.types.v1.MonitorGroup.EventMonitor, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MonitorGroup.EventMonitor;
+                    public static toObject(message: berty.protocol.v1.MonitorGroup.EventMonitor, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -3588,34 +3589,34 @@ export namespace berty {
                 class Request implements IRequest {
 
                     public groupPk: Uint8Array;
-                    public static create(properties?: berty.types.v1.MonitorGroup.IRequest): berty.types.v1.MonitorGroup.Request;
-                    public static encode(message: berty.types.v1.MonitorGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.MonitorGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MonitorGroup.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MonitorGroup.Request;
+                    public static create(properties?: berty.protocol.v1.MonitorGroup.IRequest): berty.protocol.v1.MonitorGroup.Request;
+                    public static encode(message: berty.protocol.v1.MonitorGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.MonitorGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MonitorGroup.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MonitorGroup.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MonitorGroup.Request;
-                    public static toObject(message: berty.types.v1.MonitorGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MonitorGroup.Request;
+                    public static toObject(message: berty.protocol.v1.MonitorGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
                 interface IReply {
-                    event?: (berty.types.v1.MonitorGroup.IEventMonitor|null);
+                    event?: (berty.protocol.v1.MonitorGroup.IEventMonitor|null);
                     groupPk?: (Uint8Array|null);
                 }
 
                 class Reply implements IReply {
 
-                    public event?: (berty.types.v1.MonitorGroup.IEventMonitor|null);
+                    public event?: (berty.protocol.v1.MonitorGroup.IEventMonitor|null);
                     public groupPk: Uint8Array;
-                    public static create(properties?: berty.types.v1.MonitorGroup.IReply): berty.types.v1.MonitorGroup.Reply;
-                    public static encode(message: berty.types.v1.MonitorGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.MonitorGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.MonitorGroup.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.MonitorGroup.Reply;
+                    public static create(properties?: berty.protocol.v1.MonitorGroup.IReply): berty.protocol.v1.MonitorGroup.Reply;
+                    public static encode(message: berty.protocol.v1.MonitorGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.MonitorGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.MonitorGroup.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.MonitorGroup.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.MonitorGroup.Reply;
-                    public static toObject(message: berty.types.v1.MonitorGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.MonitorGroup.Reply;
+                    public static toObject(message: berty.protocol.v1.MonitorGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -3625,14 +3626,14 @@ export namespace berty {
 
             class DebugListGroups implements IDebugListGroups {
 
-                public static create(properties?: berty.types.v1.IDebugListGroups): berty.types.v1.DebugListGroups;
-                public static encode(message: berty.types.v1.IDebugListGroups, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IDebugListGroups, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.DebugListGroups;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.DebugListGroups;
+                public static create(properties?: berty.protocol.v1.IDebugListGroups): berty.protocol.v1.DebugListGroups;
+                public static encode(message: berty.protocol.v1.IDebugListGroups, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IDebugListGroups, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.DebugListGroups;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.DebugListGroups;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.DebugListGroups;
-                public static toObject(message: berty.types.v1.DebugListGroups, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.DebugListGroups;
+                public static toObject(message: berty.protocol.v1.DebugListGroups, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -3643,36 +3644,36 @@ export namespace berty {
 
                 class Request implements IRequest {
 
-                    public static create(properties?: berty.types.v1.DebugListGroups.IRequest): berty.types.v1.DebugListGroups.Request;
-                    public static encode(message: berty.types.v1.DebugListGroups.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.DebugListGroups.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.DebugListGroups.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.DebugListGroups.Request;
+                    public static create(properties?: berty.protocol.v1.DebugListGroups.IRequest): berty.protocol.v1.DebugListGroups.Request;
+                    public static encode(message: berty.protocol.v1.DebugListGroups.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.DebugListGroups.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.DebugListGroups.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.DebugListGroups.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.DebugListGroups.Request;
-                    public static toObject(message: berty.types.v1.DebugListGroups.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.DebugListGroups.Request;
+                    public static toObject(message: berty.protocol.v1.DebugListGroups.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
                 interface IReply {
                     groupPk?: (Uint8Array|null);
-                    groupType?: (berty.types.v1.GroupType|null);
+                    groupType?: (berty.protocol.v1.GroupType|null);
                     contactPk?: (Uint8Array|null);
                 }
 
                 class Reply implements IReply {
 
                     public groupPk: Uint8Array;
-                    public groupType: berty.types.v1.GroupType;
+                    public groupType: berty.protocol.v1.GroupType;
                     public contactPk: Uint8Array;
-                    public static create(properties?: berty.types.v1.DebugListGroups.IReply): berty.types.v1.DebugListGroups.Reply;
-                    public static encode(message: berty.types.v1.DebugListGroups.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.DebugListGroups.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.DebugListGroups.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.DebugListGroups.Reply;
+                    public static create(properties?: berty.protocol.v1.DebugListGroups.IReply): berty.protocol.v1.DebugListGroups.Reply;
+                    public static encode(message: berty.protocol.v1.DebugListGroups.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.DebugListGroups.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.DebugListGroups.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.DebugListGroups.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.DebugListGroups.Reply;
-                    public static toObject(message: berty.types.v1.DebugListGroups.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.DebugListGroups.Reply;
+                    public static toObject(message: berty.protocol.v1.DebugListGroups.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -3682,14 +3683,14 @@ export namespace berty {
 
             class DebugInspectGroupStore implements IDebugInspectGroupStore {
 
-                public static create(properties?: berty.types.v1.IDebugInspectGroupStore): berty.types.v1.DebugInspectGroupStore;
-                public static encode(message: berty.types.v1.IDebugInspectGroupStore, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IDebugInspectGroupStore, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.DebugInspectGroupStore;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.DebugInspectGroupStore;
+                public static create(properties?: berty.protocol.v1.IDebugInspectGroupStore): berty.protocol.v1.DebugInspectGroupStore;
+                public static encode(message: berty.protocol.v1.IDebugInspectGroupStore, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IDebugInspectGroupStore, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.DebugInspectGroupStore;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.DebugInspectGroupStore;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.DebugInspectGroupStore;
-                public static toObject(message: berty.types.v1.DebugInspectGroupStore, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.DebugInspectGroupStore;
+                public static toObject(message: berty.protocol.v1.DebugInspectGroupStore, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -3697,28 +3698,28 @@ export namespace berty {
 
                 interface IRequest {
                     groupPk?: (Uint8Array|null);
-                    logType?: (berty.types.v1.DebugInspectGroupLogType|null);
+                    logType?: (berty.protocol.v1.DebugInspectGroupLogType|null);
                 }
 
                 class Request implements IRequest {
 
                     public groupPk: Uint8Array;
-                    public logType: berty.types.v1.DebugInspectGroupLogType;
-                    public static create(properties?: berty.types.v1.DebugInspectGroupStore.IRequest): berty.types.v1.DebugInspectGroupStore.Request;
-                    public static encode(message: berty.types.v1.DebugInspectGroupStore.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.DebugInspectGroupStore.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.DebugInspectGroupStore.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.DebugInspectGroupStore.Request;
+                    public logType: berty.protocol.v1.DebugInspectGroupLogType;
+                    public static create(properties?: berty.protocol.v1.DebugInspectGroupStore.IRequest): berty.protocol.v1.DebugInspectGroupStore.Request;
+                    public static encode(message: berty.protocol.v1.DebugInspectGroupStore.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.DebugInspectGroupStore.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.DebugInspectGroupStore.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.DebugInspectGroupStore.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.DebugInspectGroupStore.Request;
-                    public static toObject(message: berty.types.v1.DebugInspectGroupStore.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.DebugInspectGroupStore.Request;
+                    public static toObject(message: berty.protocol.v1.DebugInspectGroupStore.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
                 interface IReply {
                     cid?: (Uint8Array|null);
                     parentCids?: (Uint8Array[]|null);
-                    metadataEventType?: (berty.types.v1.EventType|null);
+                    metadataEventType?: (berty.protocol.v1.EventType|null);
                     devicePk?: (Uint8Array|null);
                     payload?: (Uint8Array|null);
                 }
@@ -3727,17 +3728,17 @@ export namespace berty {
 
                     public cid: Uint8Array;
                     public parentCids: Uint8Array[];
-                    public metadataEventType: berty.types.v1.EventType;
+                    public metadataEventType: berty.protocol.v1.EventType;
                     public devicePk: Uint8Array;
                     public payload: Uint8Array;
-                    public static create(properties?: berty.types.v1.DebugInspectGroupStore.IReply): berty.types.v1.DebugInspectGroupStore.Reply;
-                    public static encode(message: berty.types.v1.DebugInspectGroupStore.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.DebugInspectGroupStore.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.DebugInspectGroupStore.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.DebugInspectGroupStore.Reply;
+                    public static create(properties?: berty.protocol.v1.DebugInspectGroupStore.IReply): berty.protocol.v1.DebugInspectGroupStore.Reply;
+                    public static encode(message: berty.protocol.v1.DebugInspectGroupStore.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.DebugInspectGroupStore.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.DebugInspectGroupStore.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.DebugInspectGroupStore.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.DebugInspectGroupStore.Reply;
-                    public static toObject(message: berty.types.v1.DebugInspectGroupStore.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.DebugInspectGroupStore.Reply;
+                    public static toObject(message: berty.protocol.v1.DebugInspectGroupStore.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -3747,14 +3748,14 @@ export namespace berty {
 
             class DebugGroup implements IDebugGroup {
 
-                public static create(properties?: berty.types.v1.IDebugGroup): berty.types.v1.DebugGroup;
-                public static encode(message: berty.types.v1.IDebugGroup, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IDebugGroup, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.DebugGroup;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.DebugGroup;
+                public static create(properties?: berty.protocol.v1.IDebugGroup): berty.protocol.v1.DebugGroup;
+                public static encode(message: berty.protocol.v1.IDebugGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IDebugGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.DebugGroup;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.DebugGroup;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.DebugGroup;
-                public static toObject(message: berty.types.v1.DebugGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.DebugGroup;
+                public static toObject(message: berty.protocol.v1.DebugGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -3767,14 +3768,14 @@ export namespace berty {
                 class Request implements IRequest {
 
                     public groupPk: Uint8Array;
-                    public static create(properties?: berty.types.v1.DebugGroup.IRequest): berty.types.v1.DebugGroup.Request;
-                    public static encode(message: berty.types.v1.DebugGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.DebugGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.DebugGroup.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.DebugGroup.Request;
+                    public static create(properties?: berty.protocol.v1.DebugGroup.IRequest): berty.protocol.v1.DebugGroup.Request;
+                    public static encode(message: berty.protocol.v1.DebugGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.DebugGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.DebugGroup.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.DebugGroup.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.DebugGroup.Request;
-                    public static toObject(message: berty.types.v1.DebugGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.DebugGroup.Request;
+                    public static toObject(message: berty.protocol.v1.DebugGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -3785,14 +3786,14 @@ export namespace berty {
                 class Reply implements IReply {
 
                     public peerIds: string[];
-                    public static create(properties?: berty.types.v1.DebugGroup.IReply): berty.types.v1.DebugGroup.Reply;
-                    public static encode(message: berty.types.v1.DebugGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.DebugGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.DebugGroup.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.DebugGroup.Reply;
+                    public static create(properties?: berty.protocol.v1.DebugGroup.IReply): berty.protocol.v1.DebugGroup.Reply;
+                    public static encode(message: berty.protocol.v1.DebugGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.DebugGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.DebugGroup.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.DebugGroup.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.DebugGroup.Reply;
-                    public static toObject(message: berty.types.v1.DebugGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.DebugGroup.Reply;
+                    public static toObject(message: berty.protocol.v1.DebugGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -3824,14 +3825,14 @@ export namespace berty {
                 public pk: Uint8Array;
                 public publicRendezvousSeed: Uint8Array;
                 public metadata: Uint8Array;
-                public static create(properties?: berty.types.v1.IShareableContact): berty.types.v1.ShareableContact;
-                public static encode(message: berty.types.v1.IShareableContact, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IShareableContact, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ShareableContact;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ShareableContact;
+                public static create(properties?: berty.protocol.v1.IShareableContact): berty.protocol.v1.ShareableContact;
+                public static encode(message: berty.protocol.v1.IShareableContact, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IShareableContact, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ShareableContact;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ShareableContact;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ShareableContact;
-                public static toObject(message: berty.types.v1.ShareableContact, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ShareableContact;
+                public static toObject(message: berty.protocol.v1.ShareableContact, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -3844,21 +3845,21 @@ export namespace berty {
 
                 public serviceType: string;
                 public serviceEndpoint: string;
-                public static create(properties?: berty.types.v1.IServiceTokenSupportedService): berty.types.v1.ServiceTokenSupportedService;
-                public static encode(message: berty.types.v1.IServiceTokenSupportedService, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IServiceTokenSupportedService, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ServiceTokenSupportedService;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ServiceTokenSupportedService;
+                public static create(properties?: berty.protocol.v1.IServiceTokenSupportedService): berty.protocol.v1.ServiceTokenSupportedService;
+                public static encode(message: berty.protocol.v1.IServiceTokenSupportedService, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IServiceTokenSupportedService, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ServiceTokenSupportedService;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ServiceTokenSupportedService;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ServiceTokenSupportedService;
-                public static toObject(message: berty.types.v1.ServiceTokenSupportedService, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ServiceTokenSupportedService;
+                public static toObject(message: berty.protocol.v1.ServiceTokenSupportedService, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
             interface IServiceToken {
                 token?: (string|null);
                 authenticationUrl?: (string|null);
-                supportedServices?: (berty.types.v1.IServiceTokenSupportedService[]|null);
+                supportedServices?: (berty.protocol.v1.IServiceTokenSupportedService[]|null);
                 expiration?: (Long|null);
             }
 
@@ -3866,16 +3867,16 @@ export namespace berty {
 
                 public token: string;
                 public authenticationUrl: string;
-                public supportedServices: berty.types.v1.IServiceTokenSupportedService[];
+                public supportedServices: berty.protocol.v1.IServiceTokenSupportedService[];
                 public expiration: Long;
-                public static create(properties?: berty.types.v1.IServiceToken): berty.types.v1.ServiceToken;
-                public static encode(message: berty.types.v1.IServiceToken, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IServiceToken, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ServiceToken;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ServiceToken;
+                public static create(properties?: berty.protocol.v1.IServiceToken): berty.protocol.v1.ServiceToken;
+                public static encode(message: berty.protocol.v1.IServiceToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IServiceToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ServiceToken;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ServiceToken;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ServiceToken;
-                public static toObject(message: berty.types.v1.ServiceToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ServiceToken;
+                public static toObject(message: berty.protocol.v1.ServiceToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -3884,14 +3885,14 @@ export namespace berty {
 
             class AuthServiceCompleteFlow implements IAuthServiceCompleteFlow {
 
-                public static create(properties?: berty.types.v1.IAuthServiceCompleteFlow): berty.types.v1.AuthServiceCompleteFlow;
-                public static encode(message: berty.types.v1.IAuthServiceCompleteFlow, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAuthServiceCompleteFlow, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AuthServiceCompleteFlow;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AuthServiceCompleteFlow;
+                public static create(properties?: berty.protocol.v1.IAuthServiceCompleteFlow): berty.protocol.v1.AuthServiceCompleteFlow;
+                public static encode(message: berty.protocol.v1.IAuthServiceCompleteFlow, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAuthServiceCompleteFlow, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AuthServiceCompleteFlow;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AuthServiceCompleteFlow;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AuthServiceCompleteFlow;
-                public static toObject(message: berty.types.v1.AuthServiceCompleteFlow, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AuthServiceCompleteFlow;
+                public static toObject(message: berty.protocol.v1.AuthServiceCompleteFlow, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -3904,14 +3905,14 @@ export namespace berty {
                 class Request implements IRequest {
 
                     public callbackUrl: string;
-                    public static create(properties?: berty.types.v1.AuthServiceCompleteFlow.IRequest): berty.types.v1.AuthServiceCompleteFlow.Request;
-                    public static encode(message: berty.types.v1.AuthServiceCompleteFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.AuthServiceCompleteFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AuthServiceCompleteFlow.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AuthServiceCompleteFlow.Request;
+                    public static create(properties?: berty.protocol.v1.AuthServiceCompleteFlow.IRequest): berty.protocol.v1.AuthServiceCompleteFlow.Request;
+                    public static encode(message: berty.protocol.v1.AuthServiceCompleteFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.AuthServiceCompleteFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AuthServiceCompleteFlow.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AuthServiceCompleteFlow.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.AuthServiceCompleteFlow.Request;
-                    public static toObject(message: berty.types.v1.AuthServiceCompleteFlow.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AuthServiceCompleteFlow.Request;
+                    public static toObject(message: berty.protocol.v1.AuthServiceCompleteFlow.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -3920,14 +3921,14 @@ export namespace berty {
 
                 class Reply implements IReply {
 
-                    public static create(properties?: berty.types.v1.AuthServiceCompleteFlow.IReply): berty.types.v1.AuthServiceCompleteFlow.Reply;
-                    public static encode(message: berty.types.v1.AuthServiceCompleteFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.AuthServiceCompleteFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AuthServiceCompleteFlow.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AuthServiceCompleteFlow.Reply;
+                    public static create(properties?: berty.protocol.v1.AuthServiceCompleteFlow.IReply): berty.protocol.v1.AuthServiceCompleteFlow.Reply;
+                    public static encode(message: berty.protocol.v1.AuthServiceCompleteFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.AuthServiceCompleteFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AuthServiceCompleteFlow.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AuthServiceCompleteFlow.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.AuthServiceCompleteFlow.Reply;
-                    public static toObject(message: berty.types.v1.AuthServiceCompleteFlow.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AuthServiceCompleteFlow.Reply;
+                    public static toObject(message: berty.protocol.v1.AuthServiceCompleteFlow.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -3937,14 +3938,14 @@ export namespace berty {
 
             class AuthServiceInitFlow implements IAuthServiceInitFlow {
 
-                public static create(properties?: berty.types.v1.IAuthServiceInitFlow): berty.types.v1.AuthServiceInitFlow;
-                public static encode(message: berty.types.v1.IAuthServiceInitFlow, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAuthServiceInitFlow, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AuthServiceInitFlow;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AuthServiceInitFlow;
+                public static create(properties?: berty.protocol.v1.IAuthServiceInitFlow): berty.protocol.v1.AuthServiceInitFlow;
+                public static encode(message: berty.protocol.v1.IAuthServiceInitFlow, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAuthServiceInitFlow, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AuthServiceInitFlow;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AuthServiceInitFlow;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AuthServiceInitFlow;
-                public static toObject(message: berty.types.v1.AuthServiceInitFlow, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AuthServiceInitFlow;
+                public static toObject(message: berty.protocol.v1.AuthServiceInitFlow, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -3957,14 +3958,14 @@ export namespace berty {
                 class Request implements IRequest {
 
                     public authUrl: string;
-                    public static create(properties?: berty.types.v1.AuthServiceInitFlow.IRequest): berty.types.v1.AuthServiceInitFlow.Request;
-                    public static encode(message: berty.types.v1.AuthServiceInitFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.AuthServiceInitFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AuthServiceInitFlow.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AuthServiceInitFlow.Request;
+                    public static create(properties?: berty.protocol.v1.AuthServiceInitFlow.IRequest): berty.protocol.v1.AuthServiceInitFlow.Request;
+                    public static encode(message: berty.protocol.v1.AuthServiceInitFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.AuthServiceInitFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AuthServiceInitFlow.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AuthServiceInitFlow.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.AuthServiceInitFlow.Request;
-                    public static toObject(message: berty.types.v1.AuthServiceInitFlow.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AuthServiceInitFlow.Request;
+                    public static toObject(message: berty.protocol.v1.AuthServiceInitFlow.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -3977,14 +3978,14 @@ export namespace berty {
 
                     public url: string;
                     public secureUrl: boolean;
-                    public static create(properties?: berty.types.v1.AuthServiceInitFlow.IReply): berty.types.v1.AuthServiceInitFlow.Reply;
-                    public static encode(message: berty.types.v1.AuthServiceInitFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.AuthServiceInitFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AuthServiceInitFlow.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AuthServiceInitFlow.Reply;
+                    public static create(properties?: berty.protocol.v1.AuthServiceInitFlow.IReply): berty.protocol.v1.AuthServiceInitFlow.Reply;
+                    public static encode(message: berty.protocol.v1.AuthServiceInitFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.AuthServiceInitFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AuthServiceInitFlow.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AuthServiceInitFlow.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.AuthServiceInitFlow.Reply;
-                    public static toObject(message: berty.types.v1.AuthServiceInitFlow.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AuthServiceInitFlow.Reply;
+                    public static toObject(message: berty.protocol.v1.AuthServiceInitFlow.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -3994,14 +3995,14 @@ export namespace berty {
 
             class ServicesTokenList implements IServicesTokenList {
 
-                public static create(properties?: berty.types.v1.IServicesTokenList): berty.types.v1.ServicesTokenList;
-                public static encode(message: berty.types.v1.IServicesTokenList, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IServicesTokenList, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ServicesTokenList;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ServicesTokenList;
+                public static create(properties?: berty.protocol.v1.IServicesTokenList): berty.protocol.v1.ServicesTokenList;
+                public static encode(message: berty.protocol.v1.IServicesTokenList, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IServicesTokenList, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ServicesTokenList;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ServicesTokenList;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ServicesTokenList;
-                public static toObject(message: berty.types.v1.ServicesTokenList, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ServicesTokenList;
+                public static toObject(message: berty.protocol.v1.ServicesTokenList, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -4012,34 +4013,34 @@ export namespace berty {
 
                 class Request implements IRequest {
 
-                    public static create(properties?: berty.types.v1.ServicesTokenList.IRequest): berty.types.v1.ServicesTokenList.Request;
-                    public static encode(message: berty.types.v1.ServicesTokenList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ServicesTokenList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ServicesTokenList.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ServicesTokenList.Request;
+                    public static create(properties?: berty.protocol.v1.ServicesTokenList.IRequest): berty.protocol.v1.ServicesTokenList.Request;
+                    public static encode(message: berty.protocol.v1.ServicesTokenList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ServicesTokenList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ServicesTokenList.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ServicesTokenList.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ServicesTokenList.Request;
-                    public static toObject(message: berty.types.v1.ServicesTokenList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ServicesTokenList.Request;
+                    public static toObject(message: berty.protocol.v1.ServicesTokenList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
                 interface IReply {
                     tokenId?: (string|null);
-                    service?: (berty.types.v1.IServiceToken|null);
+                    service?: (berty.protocol.v1.IServiceToken|null);
                 }
 
                 class Reply implements IReply {
 
                     public tokenId: string;
-                    public service?: (berty.types.v1.IServiceToken|null);
-                    public static create(properties?: berty.types.v1.ServicesTokenList.IReply): berty.types.v1.ServicesTokenList.Reply;
-                    public static encode(message: berty.types.v1.ServicesTokenList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ServicesTokenList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ServicesTokenList.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ServicesTokenList.Reply;
+                    public service?: (berty.protocol.v1.IServiceToken|null);
+                    public static create(properties?: berty.protocol.v1.ServicesTokenList.IReply): berty.protocol.v1.ServicesTokenList.Reply;
+                    public static encode(message: berty.protocol.v1.ServicesTokenList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ServicesTokenList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ServicesTokenList.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ServicesTokenList.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ServicesTokenList.Reply;
-                    public static toObject(message: berty.types.v1.ServicesTokenList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ServicesTokenList.Reply;
+                    public static toObject(message: berty.protocol.v1.ServicesTokenList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -4055,14 +4056,14 @@ export namespace berty {
                 public services: string[];
                 public codeChallenge: string;
                 public tokenId: string;
-                public static create(properties?: berty.types.v1.IServicesTokenCode): berty.types.v1.ServicesTokenCode;
-                public static encode(message: berty.types.v1.IServicesTokenCode, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IServicesTokenCode, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ServicesTokenCode;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ServicesTokenCode;
+                public static create(properties?: berty.protocol.v1.IServicesTokenCode): berty.protocol.v1.ServicesTokenCode;
+                public static encode(message: berty.protocol.v1.IServicesTokenCode, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IServicesTokenCode, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ServicesTokenCode;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ServicesTokenCode;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ServicesTokenCode;
-                public static toObject(message: berty.types.v1.ServicesTokenCode, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ServicesTokenCode;
+                public static toObject(message: berty.protocol.v1.ServicesTokenCode, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -4071,14 +4072,14 @@ export namespace berty {
 
             class ReplicationServiceRegisterGroup implements IReplicationServiceRegisterGroup {
 
-                public static create(properties?: berty.types.v1.IReplicationServiceRegisterGroup): berty.types.v1.ReplicationServiceRegisterGroup;
-                public static encode(message: berty.types.v1.IReplicationServiceRegisterGroup, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IReplicationServiceRegisterGroup, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ReplicationServiceRegisterGroup;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ReplicationServiceRegisterGroup;
+                public static create(properties?: berty.protocol.v1.IReplicationServiceRegisterGroup): berty.protocol.v1.ReplicationServiceRegisterGroup;
+                public static encode(message: berty.protocol.v1.IReplicationServiceRegisterGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IReplicationServiceRegisterGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ReplicationServiceRegisterGroup;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ReplicationServiceRegisterGroup;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ReplicationServiceRegisterGroup;
-                public static toObject(message: berty.types.v1.ReplicationServiceRegisterGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ReplicationServiceRegisterGroup;
+                public static toObject(message: berty.protocol.v1.ReplicationServiceRegisterGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -4093,14 +4094,14 @@ export namespace berty {
 
                     public tokenId: string;
                     public groupPk: Uint8Array;
-                    public static create(properties?: berty.types.v1.ReplicationServiceRegisterGroup.IRequest): berty.types.v1.ReplicationServiceRegisterGroup.Request;
-                    public static encode(message: berty.types.v1.ReplicationServiceRegisterGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ReplicationServiceRegisterGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ReplicationServiceRegisterGroup.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ReplicationServiceRegisterGroup.Request;
+                    public static create(properties?: berty.protocol.v1.ReplicationServiceRegisterGroup.IRequest): berty.protocol.v1.ReplicationServiceRegisterGroup.Request;
+                    public static encode(message: berty.protocol.v1.ReplicationServiceRegisterGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ReplicationServiceRegisterGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ReplicationServiceRegisterGroup.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ReplicationServiceRegisterGroup.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ReplicationServiceRegisterGroup.Request;
-                    public static toObject(message: berty.types.v1.ReplicationServiceRegisterGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ReplicationServiceRegisterGroup.Request;
+                    public static toObject(message: berty.protocol.v1.ReplicationServiceRegisterGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -4109,14 +4110,14 @@ export namespace berty {
 
                 class Reply implements IReply {
 
-                    public static create(properties?: berty.types.v1.ReplicationServiceRegisterGroup.IReply): berty.types.v1.ReplicationServiceRegisterGroup.Reply;
-                    public static encode(message: berty.types.v1.ReplicationServiceRegisterGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ReplicationServiceRegisterGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ReplicationServiceRegisterGroup.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ReplicationServiceRegisterGroup.Reply;
+                    public static create(properties?: berty.protocol.v1.ReplicationServiceRegisterGroup.IReply): berty.protocol.v1.ReplicationServiceRegisterGroup.Reply;
+                    public static encode(message: berty.protocol.v1.ReplicationServiceRegisterGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ReplicationServiceRegisterGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ReplicationServiceRegisterGroup.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ReplicationServiceRegisterGroup.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ReplicationServiceRegisterGroup.Reply;
-                    public static toObject(message: berty.types.v1.ReplicationServiceRegisterGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ReplicationServiceRegisterGroup.Reply;
+                    public static toObject(message: berty.protocol.v1.ReplicationServiceRegisterGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -4126,34 +4127,34 @@ export namespace berty {
 
             class ReplicationServiceReplicateGroup implements IReplicationServiceReplicateGroup {
 
-                public static create(properties?: berty.types.v1.IReplicationServiceReplicateGroup): berty.types.v1.ReplicationServiceReplicateGroup;
-                public static encode(message: berty.types.v1.IReplicationServiceReplicateGroup, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IReplicationServiceReplicateGroup, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ReplicationServiceReplicateGroup;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ReplicationServiceReplicateGroup;
+                public static create(properties?: berty.protocol.v1.IReplicationServiceReplicateGroup): berty.protocol.v1.ReplicationServiceReplicateGroup;
+                public static encode(message: berty.protocol.v1.IReplicationServiceReplicateGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IReplicationServiceReplicateGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ReplicationServiceReplicateGroup;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ReplicationServiceReplicateGroup;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.ReplicationServiceReplicateGroup;
-                public static toObject(message: berty.types.v1.ReplicationServiceReplicateGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ReplicationServiceReplicateGroup;
+                public static toObject(message: berty.protocol.v1.ReplicationServiceReplicateGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
             namespace ReplicationServiceReplicateGroup {
 
                 interface IRequest {
-                    group?: (berty.types.v1.IGroup|null);
+                    group?: (berty.protocol.v1.IGroup|null);
                 }
 
                 class Request implements IRequest {
 
-                    public group?: (berty.types.v1.IGroup|null);
-                    public static create(properties?: berty.types.v1.ReplicationServiceReplicateGroup.IRequest): berty.types.v1.ReplicationServiceReplicateGroup.Request;
-                    public static encode(message: berty.types.v1.ReplicationServiceReplicateGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ReplicationServiceReplicateGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ReplicationServiceReplicateGroup.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ReplicationServiceReplicateGroup.Request;
+                    public group?: (berty.protocol.v1.IGroup|null);
+                    public static create(properties?: berty.protocol.v1.ReplicationServiceReplicateGroup.IRequest): berty.protocol.v1.ReplicationServiceReplicateGroup.Request;
+                    public static encode(message: berty.protocol.v1.ReplicationServiceReplicateGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ReplicationServiceReplicateGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ReplicationServiceReplicateGroup.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ReplicationServiceReplicateGroup.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ReplicationServiceReplicateGroup.Request;
-                    public static toObject(message: berty.types.v1.ReplicationServiceReplicateGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ReplicationServiceReplicateGroup.Request;
+                    public static toObject(message: berty.protocol.v1.ReplicationServiceReplicateGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -4164,14 +4165,14 @@ export namespace berty {
                 class Reply implements IReply {
 
                     public ok: boolean;
-                    public static create(properties?: berty.types.v1.ReplicationServiceReplicateGroup.IReply): berty.types.v1.ReplicationServiceReplicateGroup.Reply;
-                    public static encode(message: berty.types.v1.ReplicationServiceReplicateGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.ReplicationServiceReplicateGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.ReplicationServiceReplicateGroup.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.ReplicationServiceReplicateGroup.Reply;
+                    public static create(properties?: berty.protocol.v1.ReplicationServiceReplicateGroup.IReply): berty.protocol.v1.ReplicationServiceReplicateGroup.Reply;
+                    public static encode(message: berty.protocol.v1.ReplicationServiceReplicateGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.ReplicationServiceReplicateGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.ReplicationServiceReplicateGroup.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.ReplicationServiceReplicateGroup.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.ReplicationServiceReplicateGroup.Reply;
-                    public static toObject(message: berty.types.v1.ReplicationServiceReplicateGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.ReplicationServiceReplicateGroup.Reply;
+                    public static toObject(message: berty.protocol.v1.ReplicationServiceReplicateGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -4181,14 +4182,14 @@ export namespace berty {
 
             class SystemInfo implements ISystemInfo {
 
-                public static create(properties?: berty.types.v1.ISystemInfo): berty.types.v1.SystemInfo;
-                public static encode(message: berty.types.v1.ISystemInfo, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.ISystemInfo, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.SystemInfo;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.SystemInfo;
+                public static create(properties?: berty.protocol.v1.ISystemInfo): berty.protocol.v1.SystemInfo;
+                public static encode(message: berty.protocol.v1.ISystemInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.ISystemInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.SystemInfo;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.SystemInfo;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.SystemInfo;
-                public static toObject(message: berty.types.v1.SystemInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.SystemInfo;
+                public static toObject(message: berty.protocol.v1.SystemInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -4199,56 +4200,56 @@ export namespace berty {
 
                 class Request implements IRequest {
 
-                    public static create(properties?: berty.types.v1.SystemInfo.IRequest): berty.types.v1.SystemInfo.Request;
-                    public static encode(message: berty.types.v1.SystemInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.SystemInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.SystemInfo.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.SystemInfo.Request;
+                    public static create(properties?: berty.protocol.v1.SystemInfo.IRequest): berty.protocol.v1.SystemInfo.Request;
+                    public static encode(message: berty.protocol.v1.SystemInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.SystemInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.SystemInfo.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.SystemInfo.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.SystemInfo.Request;
-                    public static toObject(message: berty.types.v1.SystemInfo.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.SystemInfo.Request;
+                    public static toObject(message: berty.protocol.v1.SystemInfo.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
                 interface IReply {
-                    process?: (berty.types.v1.SystemInfo.IProcess|null);
-                    p2p?: (berty.types.v1.SystemInfo.IP2P|null);
-                    orbitdb?: (berty.types.v1.SystemInfo.IOrbitDB|null);
+                    process?: (berty.protocol.v1.SystemInfo.IProcess|null);
+                    p2p?: (berty.protocol.v1.SystemInfo.IP2P|null);
+                    orbitdb?: (berty.protocol.v1.SystemInfo.IOrbitDB|null);
                     warns?: (string[]|null);
                 }
 
                 class Reply implements IReply {
 
-                    public process?: (berty.types.v1.SystemInfo.IProcess|null);
-                    public p2p?: (berty.types.v1.SystemInfo.IP2P|null);
-                    public orbitdb?: (berty.types.v1.SystemInfo.IOrbitDB|null);
+                    public process?: (berty.protocol.v1.SystemInfo.IProcess|null);
+                    public p2p?: (berty.protocol.v1.SystemInfo.IP2P|null);
+                    public orbitdb?: (berty.protocol.v1.SystemInfo.IOrbitDB|null);
                     public warns: string[];
-                    public static create(properties?: berty.types.v1.SystemInfo.IReply): berty.types.v1.SystemInfo.Reply;
-                    public static encode(message: berty.types.v1.SystemInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.SystemInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.SystemInfo.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.SystemInfo.Reply;
+                    public static create(properties?: berty.protocol.v1.SystemInfo.IReply): berty.protocol.v1.SystemInfo.Reply;
+                    public static encode(message: berty.protocol.v1.SystemInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.SystemInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.SystemInfo.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.SystemInfo.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.SystemInfo.Reply;
-                    public static toObject(message: berty.types.v1.SystemInfo.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.SystemInfo.Reply;
+                    public static toObject(message: berty.protocol.v1.SystemInfo.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
                 interface IOrbitDB {
-                    accountMetadata?: (berty.types.v1.SystemInfo.OrbitDB.IReplicationStatus|null);
+                    accountMetadata?: (berty.protocol.v1.SystemInfo.OrbitDB.IReplicationStatus|null);
                 }
 
                 class OrbitDB implements IOrbitDB {
 
-                    public accountMetadata?: (berty.types.v1.SystemInfo.OrbitDB.IReplicationStatus|null);
-                    public static create(properties?: berty.types.v1.SystemInfo.IOrbitDB): berty.types.v1.SystemInfo.OrbitDB;
-                    public static encode(message: berty.types.v1.SystemInfo.IOrbitDB, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.SystemInfo.IOrbitDB, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.SystemInfo.OrbitDB;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.SystemInfo.OrbitDB;
+                    public accountMetadata?: (berty.protocol.v1.SystemInfo.OrbitDB.IReplicationStatus|null);
+                    public static create(properties?: berty.protocol.v1.SystemInfo.IOrbitDB): berty.protocol.v1.SystemInfo.OrbitDB;
+                    public static encode(message: berty.protocol.v1.SystemInfo.IOrbitDB, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.SystemInfo.IOrbitDB, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.SystemInfo.OrbitDB;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.SystemInfo.OrbitDB;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.SystemInfo.OrbitDB;
-                    public static toObject(message: berty.types.v1.SystemInfo.OrbitDB, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.SystemInfo.OrbitDB;
+                    public static toObject(message: berty.protocol.v1.SystemInfo.OrbitDB, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -4267,14 +4268,14 @@ export namespace berty {
                         public maximum: Long;
                         public buffered: Long;
                         public queued: Long;
-                        public static create(properties?: berty.types.v1.SystemInfo.OrbitDB.IReplicationStatus): berty.types.v1.SystemInfo.OrbitDB.ReplicationStatus;
-                        public static encode(message: berty.types.v1.SystemInfo.OrbitDB.IReplicationStatus, writer?: $protobuf.Writer): $protobuf.Writer;
-                        public static encodeDelimited(message: berty.types.v1.SystemInfo.OrbitDB.IReplicationStatus, writer?: $protobuf.Writer): $protobuf.Writer;
-                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.SystemInfo.OrbitDB.ReplicationStatus;
-                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.SystemInfo.OrbitDB.ReplicationStatus;
+                        public static create(properties?: berty.protocol.v1.SystemInfo.OrbitDB.IReplicationStatus): berty.protocol.v1.SystemInfo.OrbitDB.ReplicationStatus;
+                        public static encode(message: berty.protocol.v1.SystemInfo.OrbitDB.IReplicationStatus, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static encodeDelimited(message: berty.protocol.v1.SystemInfo.OrbitDB.IReplicationStatus, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.SystemInfo.OrbitDB.ReplicationStatus;
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.SystemInfo.OrbitDB.ReplicationStatus;
                         public static verify(message: { [k: string]: any }): (string|null);
-                        public static fromObject(object: { [k: string]: any }): berty.types.v1.SystemInfo.OrbitDB.ReplicationStatus;
-                        public static toObject(message: berty.types.v1.SystemInfo.OrbitDB.ReplicationStatus, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                        public static fromObject(object: { [k: string]: any }): berty.protocol.v1.SystemInfo.OrbitDB.ReplicationStatus;
+                        public static toObject(message: berty.protocol.v1.SystemInfo.OrbitDB.ReplicationStatus, options?: $protobuf.IConversionOptions): { [k: string]: any };
                         public toJSON(): { [k: string]: any };
                     }
                 }
@@ -4286,14 +4287,14 @@ export namespace berty {
                 class P2P implements IP2P {
 
                     public connectedPeers: Long;
-                    public static create(properties?: berty.types.v1.SystemInfo.IP2P): berty.types.v1.SystemInfo.P2P;
-                    public static encode(message: berty.types.v1.SystemInfo.IP2P, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.SystemInfo.IP2P, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.SystemInfo.P2P;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.SystemInfo.P2P;
+                    public static create(properties?: berty.protocol.v1.SystemInfo.IP2P): berty.protocol.v1.SystemInfo.P2P;
+                    public static encode(message: berty.protocol.v1.SystemInfo.IP2P, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.SystemInfo.IP2P, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.SystemInfo.P2P;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.SystemInfo.P2P;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.SystemInfo.P2P;
-                    public static toObject(message: berty.types.v1.SystemInfo.P2P, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.SystemInfo.P2P;
+                    public static toObject(message: berty.protocol.v1.SystemInfo.P2P, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -4346,14 +4347,14 @@ export namespace berty {
                     public uid: Long;
                     public workingDir: string;
                     public systemUsername: string;
-                    public static create(properties?: berty.types.v1.SystemInfo.IProcess): berty.types.v1.SystemInfo.Process;
-                    public static encode(message: berty.types.v1.SystemInfo.IProcess, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.SystemInfo.IProcess, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.SystemInfo.Process;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.SystemInfo.Process;
+                    public static create(properties?: berty.protocol.v1.SystemInfo.IProcess): berty.protocol.v1.SystemInfo.Process;
+                    public static encode(message: berty.protocol.v1.SystemInfo.IProcess, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.SystemInfo.IProcess, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.SystemInfo.Process;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.SystemInfo.Process;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.SystemInfo.Process;
-                    public static toObject(message: berty.types.v1.SystemInfo.Process, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.SystemInfo.Process;
+                    public static toObject(message: berty.protocol.v1.SystemInfo.Process, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -4363,14 +4364,14 @@ export namespace berty {
 
             class PeerList implements IPeerList {
 
-                public static create(properties?: berty.types.v1.IPeerList): berty.types.v1.PeerList;
-                public static encode(message: berty.types.v1.IPeerList, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IPeerList, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.PeerList;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.PeerList;
+                public static create(properties?: berty.protocol.v1.IPeerList): berty.protocol.v1.PeerList;
+                public static encode(message: berty.protocol.v1.IPeerList, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IPeerList, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.PeerList;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.PeerList;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.PeerList;
-                public static toObject(message: berty.types.v1.PeerList, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.PeerList;
+                public static toObject(message: berty.protocol.v1.PeerList, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -4381,88 +4382,88 @@ export namespace berty {
 
                 class Request implements IRequest {
 
-                    public static create(properties?: berty.types.v1.PeerList.IRequest): berty.types.v1.PeerList.Request;
-                    public static encode(message: berty.types.v1.PeerList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.PeerList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.PeerList.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.PeerList.Request;
+                    public static create(properties?: berty.protocol.v1.PeerList.IRequest): berty.protocol.v1.PeerList.Request;
+                    public static encode(message: berty.protocol.v1.PeerList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.PeerList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.PeerList.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.PeerList.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.PeerList.Request;
-                    public static toObject(message: berty.types.v1.PeerList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.PeerList.Request;
+                    public static toObject(message: berty.protocol.v1.PeerList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
                 interface IReply {
-                    peers?: (berty.types.v1.PeerList.IPeer[]|null);
+                    peers?: (berty.protocol.v1.PeerList.IPeer[]|null);
                 }
 
                 class Reply implements IReply {
 
-                    public peers: berty.types.v1.PeerList.IPeer[];
-                    public static create(properties?: berty.types.v1.PeerList.IReply): berty.types.v1.PeerList.Reply;
-                    public static encode(message: berty.types.v1.PeerList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.PeerList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.PeerList.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.PeerList.Reply;
+                    public peers: berty.protocol.v1.PeerList.IPeer[];
+                    public static create(properties?: berty.protocol.v1.PeerList.IReply): berty.protocol.v1.PeerList.Reply;
+                    public static encode(message: berty.protocol.v1.PeerList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.PeerList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.PeerList.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.PeerList.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.PeerList.Reply;
-                    public static toObject(message: berty.types.v1.PeerList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.PeerList.Reply;
+                    public static toObject(message: berty.protocol.v1.PeerList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
                 interface IPeer {
                     id?: (string|null);
-                    routes?: (berty.types.v1.PeerList.IRoute[]|null);
+                    routes?: (berty.protocol.v1.PeerList.IRoute[]|null);
                     errors?: (string[]|null);
-                    features?: (berty.types.v1.PeerList.Feature[]|null);
+                    features?: (berty.protocol.v1.PeerList.Feature[]|null);
                     minLatency?: (Long|null);
                     isActive?: (boolean|null);
-                    direction?: (berty.types.v1.Direction|null);
+                    direction?: (berty.protocol.v1.Direction|null);
                 }
 
                 class Peer implements IPeer {
 
                     public id: string;
-                    public routes: berty.types.v1.PeerList.IRoute[];
+                    public routes: berty.protocol.v1.PeerList.IRoute[];
                     public errors: string[];
-                    public features: berty.types.v1.PeerList.Feature[];
+                    public features: berty.protocol.v1.PeerList.Feature[];
                     public minLatency: Long;
                     public isActive: boolean;
-                    public direction: berty.types.v1.Direction;
-                    public static create(properties?: berty.types.v1.PeerList.IPeer): berty.types.v1.PeerList.Peer;
-                    public static encode(message: berty.types.v1.PeerList.IPeer, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.PeerList.IPeer, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.PeerList.Peer;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.PeerList.Peer;
+                    public direction: berty.protocol.v1.Direction;
+                    public static create(properties?: berty.protocol.v1.PeerList.IPeer): berty.protocol.v1.PeerList.Peer;
+                    public static encode(message: berty.protocol.v1.PeerList.IPeer, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.PeerList.IPeer, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.PeerList.Peer;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.PeerList.Peer;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.PeerList.Peer;
-                    public static toObject(message: berty.types.v1.PeerList.Peer, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.PeerList.Peer;
+                    public static toObject(message: berty.protocol.v1.PeerList.Peer, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
                 interface IRoute {
                     isActive?: (boolean|null);
                     address?: (string|null);
-                    direction?: (berty.types.v1.Direction|null);
+                    direction?: (berty.protocol.v1.Direction|null);
                     latency?: (Long|null);
-                    streams?: (berty.types.v1.PeerList.IStream[]|null);
+                    streams?: (berty.protocol.v1.PeerList.IStream[]|null);
                 }
 
                 class Route implements IRoute {
 
                     public isActive: boolean;
                     public address: string;
-                    public direction: berty.types.v1.Direction;
+                    public direction: berty.protocol.v1.Direction;
                     public latency: Long;
-                    public streams: berty.types.v1.PeerList.IStream[];
-                    public static create(properties?: berty.types.v1.PeerList.IRoute): berty.types.v1.PeerList.Route;
-                    public static encode(message: berty.types.v1.PeerList.IRoute, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.PeerList.IRoute, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.PeerList.Route;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.PeerList.Route;
+                    public streams: berty.protocol.v1.PeerList.IStream[];
+                    public static create(properties?: berty.protocol.v1.PeerList.IRoute): berty.protocol.v1.PeerList.Route;
+                    public static encode(message: berty.protocol.v1.PeerList.IRoute, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.PeerList.IRoute, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.PeerList.Route;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.PeerList.Route;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.PeerList.Route;
-                    public static toObject(message: berty.types.v1.PeerList.Route, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.PeerList.Route;
+                    public static toObject(message: berty.protocol.v1.PeerList.Route, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -4473,14 +4474,14 @@ export namespace berty {
                 class Stream implements IStream {
 
                     public id: string;
-                    public static create(properties?: berty.types.v1.PeerList.IStream): berty.types.v1.PeerList.Stream;
-                    public static encode(message: berty.types.v1.PeerList.IStream, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.PeerList.IStream, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.PeerList.Stream;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.PeerList.Stream;
+                    public static create(properties?: berty.protocol.v1.PeerList.IStream): berty.protocol.v1.PeerList.Stream;
+                    public static encode(message: berty.protocol.v1.PeerList.IStream, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.PeerList.IStream, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.PeerList.Stream;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.PeerList.Stream;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.PeerList.Stream;
-                    public static toObject(message: berty.types.v1.PeerList.Stream, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.PeerList.Stream;
+                    public static toObject(message: berty.protocol.v1.PeerList.Stream, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -4506,14 +4507,14 @@ export namespace berty {
 
             class AttachmentPrepare implements IAttachmentPrepare {
 
-                public static create(properties?: berty.types.v1.IAttachmentPrepare): berty.types.v1.AttachmentPrepare;
-                public static encode(message: berty.types.v1.IAttachmentPrepare, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAttachmentPrepare, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AttachmentPrepare;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AttachmentPrepare;
+                public static create(properties?: berty.protocol.v1.IAttachmentPrepare): berty.protocol.v1.AttachmentPrepare;
+                public static encode(message: berty.protocol.v1.IAttachmentPrepare, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAttachmentPrepare, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AttachmentPrepare;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AttachmentPrepare;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AttachmentPrepare;
-                public static toObject(message: berty.types.v1.AttachmentPrepare, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AttachmentPrepare;
+                public static toObject(message: berty.protocol.v1.AttachmentPrepare, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -4528,14 +4529,14 @@ export namespace berty {
 
                     public block: Uint8Array;
                     public disableEncryption: boolean;
-                    public static create(properties?: berty.types.v1.AttachmentPrepare.IRequest): berty.types.v1.AttachmentPrepare.Request;
-                    public static encode(message: berty.types.v1.AttachmentPrepare.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.AttachmentPrepare.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AttachmentPrepare.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AttachmentPrepare.Request;
+                    public static create(properties?: berty.protocol.v1.AttachmentPrepare.IRequest): berty.protocol.v1.AttachmentPrepare.Request;
+                    public static encode(message: berty.protocol.v1.AttachmentPrepare.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.AttachmentPrepare.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AttachmentPrepare.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AttachmentPrepare.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.AttachmentPrepare.Request;
-                    public static toObject(message: berty.types.v1.AttachmentPrepare.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AttachmentPrepare.Request;
+                    public static toObject(message: berty.protocol.v1.AttachmentPrepare.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -4546,14 +4547,14 @@ export namespace berty {
                 class Reply implements IReply {
 
                     public attachmentCid: Uint8Array;
-                    public static create(properties?: berty.types.v1.AttachmentPrepare.IReply): berty.types.v1.AttachmentPrepare.Reply;
-                    public static encode(message: berty.types.v1.AttachmentPrepare.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.AttachmentPrepare.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AttachmentPrepare.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AttachmentPrepare.Reply;
+                    public static create(properties?: berty.protocol.v1.AttachmentPrepare.IReply): berty.protocol.v1.AttachmentPrepare.Reply;
+                    public static encode(message: berty.protocol.v1.AttachmentPrepare.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.AttachmentPrepare.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AttachmentPrepare.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AttachmentPrepare.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.AttachmentPrepare.Reply;
-                    public static toObject(message: berty.types.v1.AttachmentPrepare.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AttachmentPrepare.Reply;
+                    public static toObject(message: berty.protocol.v1.AttachmentPrepare.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -4563,14 +4564,14 @@ export namespace berty {
 
             class AttachmentRetrieve implements IAttachmentRetrieve {
 
-                public static create(properties?: berty.types.v1.IAttachmentRetrieve): berty.types.v1.AttachmentRetrieve;
-                public static encode(message: berty.types.v1.IAttachmentRetrieve, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.types.v1.IAttachmentRetrieve, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AttachmentRetrieve;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AttachmentRetrieve;
+                public static create(properties?: berty.protocol.v1.IAttachmentRetrieve): berty.protocol.v1.AttachmentRetrieve;
+                public static encode(message: berty.protocol.v1.IAttachmentRetrieve, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAttachmentRetrieve, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AttachmentRetrieve;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AttachmentRetrieve;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.types.v1.AttachmentRetrieve;
-                public static toObject(message: berty.types.v1.AttachmentRetrieve, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AttachmentRetrieve;
+                public static toObject(message: berty.protocol.v1.AttachmentRetrieve, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -4583,14 +4584,14 @@ export namespace berty {
                 class Request implements IRequest {
 
                     public attachmentCid: Uint8Array;
-                    public static create(properties?: berty.types.v1.AttachmentRetrieve.IRequest): berty.types.v1.AttachmentRetrieve.Request;
-                    public static encode(message: berty.types.v1.AttachmentRetrieve.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.AttachmentRetrieve.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AttachmentRetrieve.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AttachmentRetrieve.Request;
+                    public static create(properties?: berty.protocol.v1.AttachmentRetrieve.IRequest): berty.protocol.v1.AttachmentRetrieve.Request;
+                    public static encode(message: berty.protocol.v1.AttachmentRetrieve.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.AttachmentRetrieve.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AttachmentRetrieve.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AttachmentRetrieve.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.AttachmentRetrieve.Request;
-                    public static toObject(message: berty.types.v1.AttachmentRetrieve.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AttachmentRetrieve.Request;
+                    public static toObject(message: berty.protocol.v1.AttachmentRetrieve.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -4601,14 +4602,14 @@ export namespace berty {
                 class Reply implements IReply {
 
                     public block: Uint8Array;
-                    public static create(properties?: berty.types.v1.AttachmentRetrieve.IReply): berty.types.v1.AttachmentRetrieve.Reply;
-                    public static encode(message: berty.types.v1.AttachmentRetrieve.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.types.v1.AttachmentRetrieve.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.types.v1.AttachmentRetrieve.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.types.v1.AttachmentRetrieve.Reply;
+                    public static create(properties?: berty.protocol.v1.AttachmentRetrieve.IReply): berty.protocol.v1.AttachmentRetrieve.Reply;
+                    public static encode(message: berty.protocol.v1.AttachmentRetrieve.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.AttachmentRetrieve.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AttachmentRetrieve.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AttachmentRetrieve.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.types.v1.AttachmentRetrieve.Reply;
-                    public static toObject(message: berty.types.v1.AttachmentRetrieve.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AttachmentRetrieve.Reply;
+                    public static toObject(message: berty.protocol.v1.AttachmentRetrieve.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -4664,8 +4665,8 @@ export namespace berty {
                 public conversationOpen(request: berty.messenger.v1.ConversationOpen.IRequest): Promise<berty.messenger.v1.ConversationOpen.Reply>;
                 public conversationClose(request: berty.messenger.v1.ConversationClose.IRequest, callback: berty.messenger.v1.MessengerService.ConversationCloseCallback): void;
                 public conversationClose(request: berty.messenger.v1.ConversationClose.IRequest): Promise<berty.messenger.v1.ConversationClose.Reply>;
-                public servicesTokenList(request: berty.types.v1.ServicesTokenList.IRequest, callback: berty.messenger.v1.MessengerService.ServicesTokenListCallback): void;
-                public servicesTokenList(request: berty.types.v1.ServicesTokenList.IRequest): Promise<berty.types.v1.ServicesTokenList.Reply>;
+                public servicesTokenList(request: berty.protocol.v1.ServicesTokenList.IRequest, callback: berty.messenger.v1.MessengerService.ServicesTokenListCallback): void;
+                public servicesTokenList(request: berty.protocol.v1.ServicesTokenList.IRequest): Promise<berty.protocol.v1.ServicesTokenList.Reply>;
                 public replicationServiceRegisterGroup(request: berty.messenger.v1.ReplicationServiceRegisterGroup.IRequest, callback: berty.messenger.v1.MessengerService.ReplicationServiceRegisterGroupCallback): void;
                 public replicationServiceRegisterGroup(request: berty.messenger.v1.ReplicationServiceRegisterGroup.IRequest): Promise<berty.messenger.v1.ReplicationServiceRegisterGroup.Reply>;
                 public replicationSetAutoEnable(request: berty.messenger.v1.ReplicationSetAutoEnable.IRequest, callback: berty.messenger.v1.MessengerService.ReplicationSetAutoEnableCallback): void;
@@ -4676,6 +4677,10 @@ export namespace berty {
                 public getUsername(request: berty.messenger.v1.GetUsername.IRequest): Promise<berty.messenger.v1.GetUsername.Reply>;
                 public instanceExportData(request: berty.messenger.v1.InstanceExportData.IRequest, callback: berty.messenger.v1.MessengerService.InstanceExportDataCallback): void;
                 public instanceExportData(request: berty.messenger.v1.InstanceExportData.IRequest): Promise<berty.messenger.v1.InstanceExportData.Reply>;
+                public mediaPrepare(request: berty.messenger.v1.MediaPrepare.IRequest, callback: berty.messenger.v1.MessengerService.MediaPrepareCallback): void;
+                public mediaPrepare(request: berty.messenger.v1.MediaPrepare.IRequest): Promise<berty.messenger.v1.MediaPrepare.Reply>;
+                public mediaRetrieve(request: berty.messenger.v1.MediaRetrieve.IRequest, callback: berty.messenger.v1.MessengerService.MediaRetrieveCallback): void;
+                public mediaRetrieve(request: berty.messenger.v1.MediaRetrieve.IRequest): Promise<berty.messenger.v1.MediaRetrieve.Reply>;
             }
 
             namespace MessengerService {
@@ -4722,7 +4727,7 @@ export namespace berty {
 
                 type ConversationCloseCallback = (error: (Error|null), response?: berty.messenger.v1.ConversationClose.Reply) => void;
 
-                type ServicesTokenListCallback = (error: (Error|null), response?: berty.types.v1.ServicesTokenList.Reply) => void;
+                type ServicesTokenListCallback = (error: (Error|null), response?: berty.protocol.v1.ServicesTokenList.Reply) => void;
 
                 type ReplicationServiceRegisterGroupCallback = (error: (Error|null), response?: berty.messenger.v1.ReplicationServiceRegisterGroup.Reply) => void;
 
@@ -4733,6 +4738,10 @@ export namespace berty {
                 type GetUsernameCallback = (error: (Error|null), response?: berty.messenger.v1.GetUsername.Reply) => void;
 
                 type InstanceExportDataCallback = (error: (Error|null), response?: berty.messenger.v1.InstanceExportData.Reply) => void;
+
+                type MediaPrepareCallback = (error: (Error|null), response?: berty.messenger.v1.MediaPrepare.Reply) => void;
+
+                type MediaRetrieveCallback = (error: (Error|null), response?: berty.messenger.v1.MediaRetrieve.Reply) => void;
             }
 
             interface IConversationOpen {
@@ -5095,11 +5104,13 @@ export namespace berty {
 
                 interface IRequest {
                     link?: (string|null);
+                    passphrase?: (Uint8Array|null);
                 }
 
                 class Request implements IRequest {
 
                     public link: string;
+                    public passphrase: Uint8Array;
                     public static create(properties?: berty.messenger.v1.ParseDeepLink.IRequest): berty.messenger.v1.ParseDeepLink.Request;
                     public static encode(message: berty.messenger.v1.ParseDeepLink.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.ParseDeepLink.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5134,6 +5145,7 @@ export namespace berty {
                 kind?: (berty.messenger.v1.BertyLink.Kind|null);
                 bertyId?: (berty.messenger.v1.IBertyID|null);
                 bertyGroup?: (berty.messenger.v1.IBertyGroup|null);
+                encrypted?: (berty.messenger.v1.BertyLink.IEncrypted|null);
             }
 
             class BertyLink implements IBertyLink {
@@ -5141,6 +5153,7 @@ export namespace berty {
                 public kind: berty.messenger.v1.BertyLink.Kind;
                 public bertyId?: (berty.messenger.v1.IBertyID|null);
                 public bertyGroup?: (berty.messenger.v1.IBertyGroup|null);
+                public encrypted?: (berty.messenger.v1.BertyLink.IEncrypted|null);
                 public static create(properties?: berty.messenger.v1.IBertyLink): berty.messenger.v1.BertyLink;
                 public static encode(message: berty.messenger.v1.IBertyLink, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IBertyLink, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5154,10 +5167,51 @@ export namespace berty {
 
             namespace BertyLink {
 
+                interface IEncrypted {
+                    kind?: (berty.messenger.v1.BertyLink.Kind|null);
+                    nonce?: (Uint8Array|null);
+                    displayName?: (string|null);
+                    contactPublicRendezvousSeed?: (Uint8Array|null);
+                    contactAccountPk?: (Uint8Array|null);
+                    contactDisplayName?: (Uint8Array|null);
+                    groupPublicKey?: (Uint8Array|null);
+                    groupSecret?: (Uint8Array|null);
+                    groupSecretSig?: (Uint8Array|null);
+                    groupType?: (berty.protocol.v1.GroupType|null);
+                    groupSignPub?: (Uint8Array|null);
+                    groupDisplayName?: (Uint8Array|null);
+                }
+
+                class Encrypted implements IEncrypted {
+
+                    public kind: berty.messenger.v1.BertyLink.Kind;
+                    public nonce: Uint8Array;
+                    public displayName: string;
+                    public contactPublicRendezvousSeed: Uint8Array;
+                    public contactAccountPk: Uint8Array;
+                    public contactDisplayName: Uint8Array;
+                    public groupPublicKey: Uint8Array;
+                    public groupSecret: Uint8Array;
+                    public groupSecretSig: Uint8Array;
+                    public groupType: berty.protocol.v1.GroupType;
+                    public groupSignPub: Uint8Array;
+                    public groupDisplayName: Uint8Array;
+                    public static create(properties?: berty.messenger.v1.BertyLink.IEncrypted): berty.messenger.v1.BertyLink.Encrypted;
+                    public static encode(message: berty.messenger.v1.BertyLink.IEncrypted, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.BertyLink.IEncrypted, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.BertyLink.Encrypted;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.BertyLink.Encrypted;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.BertyLink.Encrypted;
+                    public static toObject(message: berty.messenger.v1.BertyLink.Encrypted, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
                 enum Kind {
                     UnknownKind = 0,
                     ContactInviteV1Kind = 1,
-                    GroupV1Kind = 2
+                    GroupV1Kind = 2,
+                    EncryptedV1Kind = 3
                 }
             }
 
@@ -5406,13 +5460,13 @@ export namespace berty {
             }
 
             interface IBertyGroup {
-                group?: (berty.types.v1.IGroup|null);
+                group?: (berty.protocol.v1.IGroup|null);
                 displayName?: (string|null);
             }
 
             class BertyGroup implements IBertyGroup {
 
-                public group?: (berty.types.v1.IGroup|null);
+                public group?: (berty.protocol.v1.IGroup|null);
                 public displayName: string;
                 public static create(properties?: berty.messenger.v1.IBertyGroup): berty.messenger.v1.BertyGroup;
                 public static encode(message: berty.messenger.v1.IBertyGroup, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5429,6 +5483,7 @@ export namespace berty {
                 type?: (berty.messenger.v1.AppMessage.Type|null);
                 payload?: (Uint8Array|null);
                 sentDate?: (Long|null);
+                medias?: (berty.messenger.v1.IMedia[]|null);
             }
 
             class AppMessage implements IAppMessage {
@@ -5436,6 +5491,7 @@ export namespace berty {
                 public type: berty.messenger.v1.AppMessage.Type;
                 public payload: Uint8Array;
                 public sentDate: Long;
+                public medias: berty.messenger.v1.IMedia[];
                 public static create(properties?: berty.messenger.v1.IAppMessage): berty.messenger.v1.AppMessage;
                 public static encode(message: berty.messenger.v1.IAppMessage, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IAppMessage, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5458,7 +5514,7 @@ export namespace berty {
                     TypeSetUserInfo = 5,
                     TypeAcknowledge = 6,
                     TypeReplyOptions = 7,
-                    TypeMonitorMetadata = 8
+                    TypeMonitorMetadata = 100
                 }
 
                 interface IUserMessage {
@@ -5594,12 +5650,12 @@ export namespace berty {
                 }
 
                 interface IMonitorMetadata {
-                    event?: (berty.types.v1.MonitorGroup.IEventMonitor|null);
+                    event?: (berty.protocol.v1.MonitorGroup.IEventMonitor|null);
                 }
 
                 class MonitorMetadata implements IMonitorMetadata {
 
-                    public event?: (berty.types.v1.MonitorGroup.IEventMonitor|null);
+                    public event?: (berty.protocol.v1.MonitorGroup.IEventMonitor|null);
                     public static create(properties?: berty.messenger.v1.AppMessage.IMonitorMetadata): berty.messenger.v1.AppMessage.MonitorMetadata;
                     public static encode(message: berty.messenger.v1.AppMessage.IMonitorMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.AppMessage.IMonitorMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5667,13 +5723,13 @@ export namespace berty {
                 }
 
                 interface IReply {
-                    protocol?: (berty.types.v1.SystemInfo.IReply|null);
+                    protocol?: (berty.protocol.v1.SystemInfo.IReply|null);
                     messenger?: (berty.messenger.v1.SystemInfo.IMessenger|null);
                 }
 
                 class Reply implements IReply {
 
-                    public protocol?: (berty.types.v1.SystemInfo.IReply|null);
+                    public protocol?: (berty.protocol.v1.SystemInfo.IReply|null);
                     public messenger?: (berty.messenger.v1.SystemInfo.IMessenger|null);
                     public static create(properties?: berty.messenger.v1.SystemInfo.IReply): berty.messenger.v1.SystemInfo.Reply;
                     public static encode(message: berty.messenger.v1.SystemInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5687,7 +5743,7 @@ export namespace berty {
                 }
 
                 interface IMessenger {
-                    process?: (berty.types.v1.SystemInfo.IProcess|null);
+                    process?: (berty.protocol.v1.SystemInfo.IProcess|null);
                     warns?: (string[]|null);
                     protocolInSameProcess?: (boolean|null);
                     db?: (berty.messenger.v1.SystemInfo.IDB|null);
@@ -5695,7 +5751,7 @@ export namespace berty {
 
                 class Messenger implements IMessenger {
 
-                    public process?: (berty.types.v1.SystemInfo.IProcess|null);
+                    public process?: (berty.protocol.v1.SystemInfo.IProcess|null);
                     public warns: string[];
                     public protocolInSameProcess: boolean;
                     public db?: (berty.messenger.v1.SystemInfo.IDB|null);
@@ -5763,11 +5819,13 @@ export namespace berty {
 
                 interface IRequest {
                     link?: (string|null);
+                    passphrase?: (Uint8Array|null);
                 }
 
                 class Request implements IRequest {
 
                     public link: string;
+                    public passphrase: Uint8Array;
                     public static create(properties?: berty.messenger.v1.ConversationJoin.IRequest): berty.messenger.v1.ConversationJoin.Request;
                     public static encode(message: berty.messenger.v1.ConversationJoin.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.ConversationJoin.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5863,6 +5921,7 @@ export namespace berty {
                 sentDate?: (Long|null);
                 acknowledged?: (boolean|null);
                 targetCid?: (string|null);
+                medias?: (berty.messenger.v1.IMedia[]|null);
             }
 
             class Interaction implements IInteraction {
@@ -5879,6 +5938,7 @@ export namespace berty {
                 public sentDate: Long;
                 public acknowledged: boolean;
                 public targetCid: string;
+                public medias: berty.messenger.v1.IMedia[];
                 public static create(properties?: berty.messenger.v1.IInteraction): berty.messenger.v1.Interaction;
                 public static encode(message: berty.messenger.v1.IInteraction, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IInteraction, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5888,6 +5948,49 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.Interaction;
                 public static toObject(message: berty.messenger.v1.Interaction, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
+            }
+
+            interface IMedia {
+                cid?: (string|null);
+                mimeType?: (string|null);
+                filename?: (string|null);
+                displayName?: (string|null);
+                interactionCid?: (string|null);
+                state?: (berty.messenger.v1.Media.State|null);
+                uri?:(string|null);
+            }
+
+            class Media implements IMedia {
+
+                public cid: string;
+                public mimeType: string;
+                public filename: string;
+                public displayName: string;
+                public interactionCid: string;
+                public state: berty.messenger.v1.Media.State;
+                public static create(properties?: berty.messenger.v1.IMedia): berty.messenger.v1.Media;
+                public static encode(message: berty.messenger.v1.IMedia, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IMedia, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.Media;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.Media;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.Media;
+                public static toObject(message: berty.messenger.v1.Media, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace Media {
+
+                enum State {
+                    StateUnknown = 0,
+                    StateNeverDownloaded = 1,
+                    StatePartiallyDownloaded = 2,
+                    StateDownloaded = 3,
+                    StateInCache = 4,
+                    StateInvalidCrypto = 5,
+                    StatePrepared = 100,
+                    StateAttached = 101
+                }
             }
 
             interface IContact {
@@ -6126,7 +6229,8 @@ export namespace berty {
                     TypeAccountUpdated = 7,
                     TypeMemberUpdated = 8,
                     TypeDeviceUpdated = 9,
-                    TypeNotified = 10
+                    TypeNotified = 10,
+                    TypeMediaUpdated = 11
                 }
 
                 interface IConversationUpdated {
@@ -6286,6 +6390,24 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.ListEnded;
                     public static toObject(message: berty.messenger.v1.StreamEvent.ListEnded, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IMediaUpdated {
+                    media?: (berty.messenger.v1.IMedia|null);
+                }
+
+                class MediaUpdated implements IMediaUpdated {
+
+                    public media?: (berty.messenger.v1.IMedia|null);
+                    public static create(properties?: berty.messenger.v1.StreamEvent.IMediaUpdated): berty.messenger.v1.StreamEvent.MediaUpdated;
+                    public static encode(message: berty.messenger.v1.StreamEvent.IMediaUpdated, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.StreamEvent.IMediaUpdated, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.StreamEvent.MediaUpdated;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.StreamEvent.MediaUpdated;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.MediaUpdated;
+                    public static toObject(message: berty.messenger.v1.StreamEvent.MediaUpdated, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -6698,11 +6820,13 @@ export namespace berty {
 
                 interface IRequest {
                     link?: (string|null);
+                    passphrase?: (Uint8Array|null);
                 }
 
                 class Request implements IRequest {
 
                     public link: string;
+                    public passphrase: Uint8Array;
                     public static create(properties?: berty.messenger.v1.ContactRequest.IRequest): berty.messenger.v1.ContactRequest.Request;
                     public static encode(message: berty.messenger.v1.ContactRequest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.ContactRequest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6806,6 +6930,7 @@ export namespace berty {
                     type?: (berty.messenger.v1.AppMessage.Type|null);
                     payload?: (Uint8Array|null);
                     conversationPublicKey?: (string|null);
+                    mediaCids?: (string[]|null);
                 }
 
                 class Request implements IRequest {
@@ -6813,6 +6938,7 @@ export namespace berty {
                     public type: berty.messenger.v1.AppMessage.Type;
                     public payload: Uint8Array;
                     public conversationPublicKey: string;
+                    public mediaCids: string[];
                     public static create(properties?: berty.messenger.v1.Interact.IRequest): berty.messenger.v1.Interact.Request;
                     public static encode(message: berty.messenger.v1.Interact.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.Interact.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -7160,6 +7286,122 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.LocalConversationState;
                 public static toObject(message: berty.messenger.v1.LocalConversationState, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
+            }
+
+            interface IMediaPrepare {
+            }
+
+            class MediaPrepare implements IMediaPrepare {
+
+                public static create(properties?: berty.messenger.v1.IMediaPrepare): berty.messenger.v1.MediaPrepare;
+                public static encode(message: berty.messenger.v1.IMediaPrepare, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IMediaPrepare, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.MediaPrepare;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.MediaPrepare;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MediaPrepare;
+                public static toObject(message: berty.messenger.v1.MediaPrepare, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace MediaPrepare {
+
+                interface IRequest {
+                    block?: (Uint8Array|null);
+                    info?: (berty.messenger.v1.IMedia|null);
+                    uri?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public block: Uint8Array;
+                    public info?: (berty.messenger.v1.IMedia|null);
+                    public uri: string;
+                    public static create(properties?: berty.messenger.v1.MediaPrepare.IRequest): berty.messenger.v1.MediaPrepare.Request;
+                    public static encode(message: berty.messenger.v1.MediaPrepare.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.MediaPrepare.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.MediaPrepare.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.MediaPrepare.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MediaPrepare.Request;
+                    public static toObject(message: berty.messenger.v1.MediaPrepare.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    cid?: (string|null);
+                }
+
+                class Reply implements IReply {
+
+                    public cid: string;
+                    public static create(properties?: berty.messenger.v1.MediaPrepare.IReply): berty.messenger.v1.MediaPrepare.Reply;
+                    public static encode(message: berty.messenger.v1.MediaPrepare.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.MediaPrepare.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.MediaPrepare.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.MediaPrepare.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MediaPrepare.Reply;
+                    public static toObject(message: berty.messenger.v1.MediaPrepare.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IMediaRetrieve {
+            }
+
+            class MediaRetrieve implements IMediaRetrieve {
+
+                public static create(properties?: berty.messenger.v1.IMediaRetrieve): berty.messenger.v1.MediaRetrieve;
+                public static encode(message: berty.messenger.v1.IMediaRetrieve, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IMediaRetrieve, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.MediaRetrieve;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.MediaRetrieve;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MediaRetrieve;
+                public static toObject(message: berty.messenger.v1.MediaRetrieve, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace MediaRetrieve {
+
+                interface IRequest {
+                    cid?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public cid: string;
+                    public static create(properties?: berty.messenger.v1.MediaRetrieve.IRequest): berty.messenger.v1.MediaRetrieve.Request;
+                    public static encode(message: berty.messenger.v1.MediaRetrieve.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.MediaRetrieve.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.MediaRetrieve.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.MediaRetrieve.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MediaRetrieve.Request;
+                    public static toObject(message: berty.messenger.v1.MediaRetrieve.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    block?: (Uint8Array|null);
+                    info?: (berty.messenger.v1.IMedia|null);
+                }
+
+                class Reply implements IReply {
+
+                    public block: Uint8Array;
+                    public info?: (berty.messenger.v1.IMedia|null);
+                    public static create(properties?: berty.messenger.v1.MediaRetrieve.IReply): berty.messenger.v1.MediaRetrieve.Reply;
+                    public static encode(message: berty.messenger.v1.MediaRetrieve.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.MediaRetrieve.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.MediaRetrieve.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.MediaRetrieve.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MediaRetrieve.Reply;
+                    public static toObject(message: berty.messenger.v1.MediaRetrieve.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
             }
         }
     }

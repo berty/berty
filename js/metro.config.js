@@ -7,6 +7,7 @@
 
 const defaultAssetExts = require('metro-config/src/defaults/defaults').assetExts
 const defaultSourceExts = require('metro-config/src/defaults/defaults').sourceExts
+const exclusionList = require('metro-config/src/defaults/exclusionList')
 
 module.exports = {
 	transformer: {
@@ -22,5 +23,6 @@ module.exports = {
 		extraNodeModules: require('node-libs-react-native'),
 		assetExts: defaultAssetExts.filter((ext) => ext !== 'svg'),
 		sourceExts: [...defaultSourceExts, 'svg'],
+		blacklistRE: exclusionList([/\.gomobile-cache\/.*/]),
 	},
 }
