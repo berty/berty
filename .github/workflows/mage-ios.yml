@@ -77,25 +77,25 @@ jobs:
         run: |
           echo "::set-output name=nodeModulesHash::`PRINT_CACHE_INFO=true mage nodeModules`"
           echo "::set-output name=nodeModulesGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage nodeModules`"
+          echo "::set-output name=xcodeProjHash::`PRINT_CACHE_INFO=true mage xcodeProj`"
+          echo "::set-output name=xcodeProjGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage xcodeProj`"
           echo "::set-output name=iOSFrameworkHash::`PRINT_CACHE_INFO=true mage iOSFramework`"
           echo "::set-output name=iOSFrameworkGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage iOSFramework`"
-          echo "::set-output name=xcWorkspaceHash::`PRINT_CACHE_INFO=true mage xcWorkspace`"
-          echo "::set-output name=xcWorkspaceGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage xcWorkspace`"
       - name: Cache nodeModules
         uses: actions/cache@v2
         with:
           path: ${{ fromJSON(steps.cacheInfo.outputs.nodeModulesGAPaths) }}
           key: ${{ runner.OS }}-mage-nodeModules-v1-${{ steps.cacheInfo.outputs.nodeModulesHash }}
+      - name: Cache xcodeProj
+        uses: actions/cache@v2
+        with:
+          path: ${{ fromJSON(steps.cacheInfo.outputs.xcodeProjGAPaths) }}
+          key: ${{ runner.OS }}-mage-xcWorkspace-v1-${{ steps.cacheInfo.outputs.xcodeProjHash }}
       - name: Cache iOSFramework
         uses: actions/cache@v2
         with:
           path: ${{ fromJSON(steps.cacheInfo.outputs.iOSFrameworkGAPaths) }}
-          key: ${{ runner.OS }}-mage-nodeModules-v1-${{ steps.cacheInfo.outputs.iOSFrameworkHash }}
-      - name: Cache xcWorkspace
-        uses: actions/cache@v2
-        with:
-          path: ${{ fromJSON(steps.cacheInfo.outputs.xcWorkspaceGAPaths) }}
-          key: ${{ runner.OS }}-mage-nodeModules-v1-${{ steps.cacheInfo.outputs.xcWorkspaceHash }}
+          key: ${{ runner.OS }}-mage-iOSFramework-v1-${{ steps.cacheInfo.outputs.iOSFrameworkHash }}
 
       - name: Build app deps
         run: |
