@@ -624,10 +624,11 @@ var rubyGems = &mtarget{rubyGemsDef, RubyGems}
 // xcodeproj
 
 var xcodeProjDef = &targetDef{
-	name:    "XcodeProj",
-	output:  "js/ios/Berty.xcodeproj",
-	sources: []string{"js/ios/*.yaml", "js/ios/Berty/Sources"},
-	mdeps:   []Rule{xcodeGen, swift},
+	name:      "XcodeProj",
+	output:    "js/ios/Berty.xcodeproj",
+	sources:   []string{"js/ios/*.yaml", "js/ios/Berty/Sources"},
+	mdeps:     []Rule{xcodeGen, swift},
+	artifacts: []string{"js/ios/Berty/main.jsbundle"},
 }
 
 // Build xcodeproj
