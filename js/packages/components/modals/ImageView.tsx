@@ -60,9 +60,7 @@ export const ImageView: React.FC<{
 					Share.open({
 						url: imagesWithDimensions[currentIndex].uri,
 					})
-						.then((res) => {
-							console.log(res)
-						})
+						.then(() => {})
 						.catch((err) => {
 							err && console.log(err)
 						})
