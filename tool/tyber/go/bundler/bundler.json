@@ -1,0 +1,13 @@
+{
+  "app_name": "Tyber",
+  "icon_path_darwin": "bundler/resources/icons/icon.icns",
+  "icon_path_linux": "bundler/resources/icons/icon.png",
+  "icon_path_windows": "bundler/resources/icons/icon.ico",
+  "output_path": "../output",
+  "resources_path": "bundler/resources",
+  "bind": {
+    "output_path": "bind",
+    "package": "bind"
+  },
+  "ldflags_package": "main"
+}

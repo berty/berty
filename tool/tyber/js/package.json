@@ -1,0 +1,47 @@
+{
+  "main": "index.js",
+  "homepage": "./",
+  "scripts": {
+    "web": "expo start --web",
+    "build": "expo build:web",
+    "start": "react-native start",
+    "test": "jest",
+    "postinstall": "./patchRNW.sh",
+    "postuninstall": "./patchRNW.sh"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^4.3.0",
+    "@eliav2/react-native-collapsible-view": "^1.3.2",
+    "@eva-design/eva": "^2.0.0",
+    "@ui-kitten/components": "^5.0.0",
+    "expo": "~39.0.2",
+    "expo-clipboard": "^1.0.1",
+    "expo-splash-screen": "~0.6.2",
+    "expo-updates": "~0.3.3",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-native": "~0.63.3",
+    "react-native-gesture-handler": "~1.7.0",
+    "react-native-reanimated": "~1.13.0",
+    "react-native-screens": "~2.10.1",
+    "react-native-svg": "^12.1.0",
+    "react-native-unimodules": "~0.11.0",
+    "react-native-web": "~0.13.12"
+  },
+  "devDependencies": {
+    "@babel/core": "~7.9.0",
+    "@expo/webpack-config": "^0.12.48",
+    "@types/react": "~16.9.35",
+    "@types/react-dom": "~16.9.8",
+    "@types/react-native": "~0.63.2",
+    "babel-preset-expo": "~8.3.0",
+    "jest-expo": "~39.0.0",
+    "lorem-ipsum": "^2.0.3",
+    "typescript": "~3.9.5",
+    "uuid": "^8.3.2"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "private": true
+}

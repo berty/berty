@@ -1,0 +1,10 @@
+{
+  "name": "Tyber",
+  "displayName": "Tyber",
+  "expo": {
+    "name": "Tyber",
+    "slug": "Tyber",
+    "version": "1.0.0",
+    "assetBundlePatterns": ["**/*"]
+  }
+}

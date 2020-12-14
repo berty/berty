@@ -9,6 +9,7 @@ import (
 	"text/tabwriter"
 	"time"
 
+	"github.com/gofrs/uuid"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	datastore "github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-ipfs/core"
@@ -129,6 +130,7 @@ type Manager struct {
 		} `json:"GRPC,omitempty"`
 	} `json:"Node,omitempty"`
 	InitTimeout time.Duration `json:"InitTimeout,omitempty"`
+	SessionID   string        `json:"sessionID,omitempty"`
 
 	// internal
 	ctx        context.Context
@@ -158,6 +160,13 @@ func New(ctx context.Context) (*Manager, error) {
 	m.Logging.Filters = defaultLoggingFilters
 	m.Logging.Format = "color"
 	m.Logging.Service = "berty"
+
+	// generate SessionID using uuidv4 to identify each run
+	id, err := uuid.NewV4()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	m.SessionID = id.String()
 
 	// storage path
 	{

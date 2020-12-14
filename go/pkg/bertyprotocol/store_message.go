@@ -13,6 +13,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/tyber"
 	ipfslog "berty.tech/go-ipfs-log"
 	"berty.tech/go-ipfs-log/identityprovider"
 	ipliface "berty.tech/go-ipfs-log/iface"
@@ -161,6 +162,19 @@ func (m *messageStore) ListEvents(ctx context.Context, since, until []byte, reve
 }
 
 func (m *messageStore) AddMessage(ctx context.Context, payload []byte, attachmentsCIDs [][]byte) (operation.Operation, error) {
+	m.logger.Debug(
+		fmt.Sprintf("Adding message to store with payload of %d bytes and %d attachment(s)", len(payload), len(attachmentsCIDs)),
+		tyber.FormatStepLogFields(
+			ctx,
+			[]tyber.Detail{
+				{Name: "Payload", Description: string(payload)},
+				{Name: "Attachments cIDs", Description: fmt.Sprintf("%q", attachmentsCIDs)},
+			},
+			tyber.Succeeded,
+			false,
+		)...,
+	)
+
 	md, err := m.devKS.MemberDeviceForGroup(m.g)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
@@ -170,6 +184,10 @@ func (m *messageStore) AddMessage(ctx context.Context, payload []byte, attachmen
 	if err != nil {
 		return nil, errcode.ErrKeystoreGet.Wrap(err)
 	}
+	m.logger.Debug(
+		"Secrets to encrypt message content retrieved successfully",
+		tyber.FormatStepLogFields(ctx, []tyber.Detail{}, tyber.Succeeded, false)...,
+	)
 
 	msg, err := (&protocoltypes.EncryptedMessage{
 		Plaintext:        payload,
@@ -183,6 +201,18 @@ func (m *messageStore) AddMessage(ctx context.Context, payload []byte, attachmen
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
 	}
+	m.logger.Debug(
+		"Message sealed successfully in secretbox envelope",
+		tyber.FormatStepLogFields(
+			ctx,
+			[]tyber.Detail{
+				{Name: "Cleartext size", Description: fmt.Sprintf("%d bytes", len(msg))},
+				{Name: "Cyphertext size", Description: fmt.Sprintf("%d bytes", len(env))},
+			},
+			tyber.Succeeded,
+			false,
+		)...,
+	)
 
 	op := operation.NewOperation(nil, "ADD", env)
 
@@ -190,6 +220,10 @@ func (m *messageStore) AddMessage(ctx context.Context, payload []byte, attachmen
 	if err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
+	m.logger.Debug(
+		"Envelope added to orbit-DB log successfully",
+		tyber.FormatStepLogFields(ctx, []tyber.Detail{}, tyber.Succeeded, false)...,
+	)
 
 	op, err = operation.ParseOperation(e)
 	if err != nil {
