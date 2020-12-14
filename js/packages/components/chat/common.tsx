@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { TouchableOpacity, SafeAreaView, View, TextInput } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 
@@ -6,6 +6,7 @@ import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
 import { useMsgrContext } from '@berty-tech/store/hooks'
 
+import { AddFileMenu } from './file-uploads/AddFileMenu'
 import { timeFormat } from '../helpers'
 import { playSound } from '../sounds'
 import BlurView from '../shared-components/BlurView'
@@ -31,11 +32,12 @@ export const ChatFooter: React.FC<{
 	convPk: string
 	disabled?: boolean
 	placeholder: string
-	onFileMenuPress: (cb: (newMedias: string[]) => void) => void
-}> = ({ isFocused, setFocus, convPk, disabled = false, placeholder, onFileMenuPress }) => {
+	setSwipe: (val: boolean) => void
+}> = ({ isFocused, setFocus, convPk, disabled = false, placeholder, setSwipe }) => {
 	const ctx = useMsgrContext()
 
 	const [message, setMessage] = useState('')
+	const [showAddFileMenu, setShowAddFileMenu] = useState(false)
 	const inputRef = useRef<TextInput>(null)
 	const _isFocused = isFocused || inputRef?.current?.isFocused() || false
 	const _styles = useStylesChatFooter()
@@ -49,33 +51,43 @@ export const ChatFooter: React.FC<{
 	const isFake = (conversation as { fake: boolean }).fake
 	const sendEnabled = !!(!isFake && (message || mediaCids.length > 0))
 
+	const sendMessage = useCallback(
+		(medias: string[] = []) => {
+			ctx.client
+				?.interact({
+					conversationPublicKey: convPk,
+					type: beapi.messenger.AppMessage.Type.TypeUserMessage,
+					payload: buf,
+					mediaCids: medias,
+				})
+				.then(() => {
+					setMessage('')
+					setMediaCids([])
+					playSound('messageSent')
+				})
+				.catch((e) => {
+					console.warn('e sending message:', e)
+				})
+		},
+		[buf, convPk, ctx.client],
+	)
+
 	// TODO: Debug, error on restarting node
 	const handlePressSend = React.useCallback(() => {
 		console.log('recompute handleSend', mediaCids)
 		if (!sendEnabled) {
 			return
 		}
-		ctx.client
-			?.interact({
-				conversationPublicKey: convPk,
-				type: beapi.messenger.AppMessage.Type.TypeUserMessage,
-				payload: buf,
-				mediaCids,
-			})
-			.then(() => {
-				setMessage('')
-				setMediaCids([])
-				playSound('messageSent')
-			})
-			.catch((e) => {
-				console.warn('e sending message:', e)
-			})
-	}, [convPk, ctx.client, buf, mediaCids, sendEnabled])
+		sendMessage()
+	}, [mediaCids, sendEnabled, sendMessage])
 
-	const handlePressAddMedia = React.useCallback(() => {
-		console.log('common.tsx')
-		onFileMenuPress((newMedias) => setMediaCids([...mediaCids, ...newMedias]))
-	}, [onFileMenuPress, mediaCids])
+	const handleCloseFileMenu = (newMedias: string[] | undefined) => {
+		if (newMedias) {
+			sendMessage([...mediaCids, ...newMedias])
+		}
+		setShowAddFileMenu(false)
+		setSwipe(true)
+	}
 
 	if (!conversation) {
 		return null
@@ -84,6 +96,7 @@ export const ChatFooter: React.FC<{
 	return (
 		<BlurView blurType='light' blurAmount={30}>
 			<SafeAreaView>
+				{showAddFileMenu && <AddFileMenu onClose={handleCloseFileMenu} />}
 				<View
 					style={[
 						row.right,
@@ -105,7 +118,10 @@ export const ChatFooter: React.FC<{
 							border.radius.small,
 							margin.right.small,
 						]}
-						onPress={handlePressAddMedia}
+						onPress={() => {
+							setSwipe(false)
+							setShowAddFileMenu(true)
+						}}
 					>
 						{mediaCids.length > 0 && <Text>{mediaCids.length}</Text>}
 						<Icon name='plus' width={26} height={26} fill='#C7C8D8' />

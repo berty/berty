@@ -36,7 +36,6 @@ import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { useLayout } from '../hooks'
 import { pbDateToNum } from '../helpers'
 import { MultiMemberAvatar } from '../avatars'
-import { AddFileMenu } from './file-uploads/AddFileMenu'
 import { ParsedInteraction } from '@berty-tech/store/types.gen'
 
 //
@@ -280,23 +279,14 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 	const lastUpdate = conv?.lastUpdate || lastInte?.sentDate || conv?.createdDate || null
 	const [stickyDate, setStickyDate] = useState(lastUpdate || null)
 	const [showStickyDate, setShowStickyDate] = useState(false)
-	const [{ addMedias }, setAddMedias] = useState<{ addMedias: (mediaCids: string[]) => void }>({
-		addMedias: () => {},
-	})
-	const [showAddFileMenu, setShowAddFileMenu] = useState<boolean>(false)
+
+	const [isSwipe, setSwipe] = useState(true)
 
 	return (
 		<View style={[flex.tiny, background.white]}>
-			{showAddFileMenu && (
-				<AddFileMenu
-					onClose={(newMedias) => {
-						addMedias(newMedias)
-						setShowAddFileMenu(false)
-					}}
-				/>
-			)}
 			<SwipeNavRecognizer
 				onSwipeLeft={() =>
+					isSwipe &&
 					dispatch(
 						CommonActions.navigate({
 							name: Routes.Chat.MultiMemberSettings,
@@ -313,10 +303,7 @@ export const MultiMember: React.FC<ScreenProps.Chat.Group> = ({ route: { params 
 						isFocused={inputIsFocused}
 						setFocus={setInputFocus}
 						placeholder={t('chat.multi-member.input-placeholder')}
-						onFileMenuPress={(newAddMedias) => {
-							setAddMedias({ addMedias: newAddMedias })
-							setShowAddFileMenu(true)
-						}}
+						setSwipe={setSwipe}
 					/>
 					<HeaderMultiMember id={params?.convId} {...({ stickyDate, showStickyDate } as any)} />
 				</KeyboardAvoidingView>

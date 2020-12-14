@@ -79,7 +79,7 @@ jobs:
           CI: "true"
         run: |
           make android.app_deps
-          (cd android && ./gradlew app:bundleReleaseYolo)
+          (yarn jetify && cd android && ./gradlew app:bundleReleaseYolo)
           ### TODO: move this part on Yolo and use release keystore ###
           mkdir -p $HOME/.android
           cp android/app/debug.keystore $HOME/.android

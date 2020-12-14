@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, ScrollView } from 'react-native'
+import { View } from 'react-native'
 import { SHA3 } from 'sha3'
 import palette from 'google-palette'
 import Color from 'color'
@@ -12,8 +12,10 @@ import { useStyles } from '@berty-tech/styles'
 import { MemberAvatar } from '../../avatars'
 import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageComponents'
 import { pbDateToNum } from '../../helpers'
-import AttachmentImage from '@berty-tech/components/AttachmentImage'
 import { InteractionUserMessage } from '@berty-tech/store/types.gen'
+import { PictureMessage } from './PictureMessage'
+import { AudioMessage } from './AudioMessage'
+import { FileMessage } from './FileMessage'
 
 const pal = palette('tol-rainbow', 256)
 
@@ -175,35 +177,16 @@ export const UserMessage: React.FC<{
 			)}
 
 			<View style={[column.top, _styles.messageItem]}>
-				{(inte.medias?.length || 0) > 0 && (
-					<View
-						style={{
-							justifyContent: inte.isMe ? 'flex-end' : 'flex-start',
-							flexWrap: inte.isMe ? 'wrap-reverse' : 'wrap',
-							flexDirection: 'row',
-							marginBottom: 10,
-							...(inte.isMe
-								? { borderRightColor: 'blue', borderRightWidth: 1, borderTopRightRadius: 15 }
-								: { borderLeftColor: 'blue', borderLeftWidth: 1, borderTopLeftRadius: 15 }),
-						}}
-					>
-						{inte.medias?.map((media) => {
-							if (media.mimeType?.startsWith('image') && media.cid) {
-								return (
-									<AttachmentImage
-										style={{ height: 100, width: 100, margin: 5, resizeMode: 'contain' }}
-										cid={media.cid}
-									/>
-								)
-							}
-							return (
-								<ScrollView style={{ height: 100, width: 100 }}>
-									<Text>{JSON.stringify(media, null, 4)}</Text>
-								</ScrollView>
-							)
-						})}
-					</View>
-				)}
+				{(inte.medias?.length || 0) > 0 &&
+					(() => {
+						if (inte?.medias?.[0]?.mimeType?.startsWith('image')) {
+							return <PictureMessage medias={inte.medias} />
+						} else if (inte?.medias?.[0]?.mimeType?.startsWith('audio')) {
+							return <AudioMessage medias={inte.medias} />
+						} else {
+							return <FileMessage medias={inte.medias} />
+						}
+					})()}
 				{!inte.isMe && isGroup && !isFollowupMessage && (
 					<View style={[isFollowedMessage && margin.left.scale(40)]}>
 						<Text style={[text.bold.medium, _styles.personNameInGroup, { color: msgSenderColor }]}>

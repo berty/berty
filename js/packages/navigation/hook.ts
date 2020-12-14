@@ -120,6 +120,10 @@ const createNavigation = ({
 					Routes.Modals.ManageDeepLink,
 				),
 				addBetabot: createNavigateFunc(navigate, Routes.Modals.AddBetabot),
+				imageView: createNavigateFunc<ScreenProps.Modals.ImageView>(
+					navigate,
+					Routes.Modals.ImageView,
+				),
 			},
 		},
 	}

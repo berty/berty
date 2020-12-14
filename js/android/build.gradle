@@ -39,6 +39,23 @@ allprojects {
     }
 }
 
+
+// Upgrading  compile SdkVersion and buildToolsVersion of subProjects
+// Currently react-native-audiowaveform has below commented values
+// compileSdkVersion 23
+// buildToolsVersion "23.0.1"
+ subprojects {
+        afterEvaluate {
+            project ->
+                if (project.hasProperty("android")) {
+                    android {
+                        compileSdkVersion = 29
+                        buildToolsVersion = "29.0.2"
+                    }
+                }
+        }
+    }
+
 task importEnvFile {
     def envFile = file("${rootDir.getPath()}/../.env")
 

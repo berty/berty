@@ -54,7 +54,7 @@ export const HyperlinkUserMessage: React.FC<{
 	const [isReadMore, setReadMore] = useState(false)
 
 	useEffect(() => {
-		setReadMore(message.length > READ_MORE_MESSAGE_LENGTH)
+		message && setReadMore(message.length > READ_MORE_MESSAGE_LENGTH)
 	}, [message])
 
 	return (

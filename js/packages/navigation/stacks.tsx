@@ -360,8 +360,8 @@ export const Navigation: React.FC = () => {
 				options={ModalScreenOptions}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Modals.Image}
-				component={Components.Modals.Image}
+				name={Routes.Modals.ImageView}
+				component={Components.Modals.ImageView}
 				options={ModalScreenOptions}
 			/>
 		</NavigationStack.Navigator>

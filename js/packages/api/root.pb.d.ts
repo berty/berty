@@ -5957,6 +5957,7 @@ export namespace berty {
                 displayName?: (string|null);
                 interactionCid?: (string|null);
                 state?: (berty.messenger.v1.Media.State|null);
+                uri?:(string|null);
             }
 
             class Media implements IMedia {

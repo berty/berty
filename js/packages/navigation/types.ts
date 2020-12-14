@@ -1,3 +1,5 @@
+import beapi from '@berty-tech/api'
+
 export type RouteProps<T> = { route: { params: T } }
 
 export namespace ScreenProps {
@@ -53,7 +55,7 @@ export namespace ScreenProps {
 	export namespace Modals {
 		export type ManageDeepLink = RouteProps<{ type: 'qr' | 'link'; value: string }>
 		export type AddBetabot = RouteProps<void>
-		export type Image = RouteProps<{ cid: string }>
+		export type ImageView = RouteProps<{ images: beapi.messenger.IMedia[] }>
 	}
 }
 
@@ -115,6 +117,6 @@ export namespace Routes {
 		DeleteAccount = 'DeleteAccount',
 		ManageDeepLink = 'ManageDeepLink',
 		AddBetabot = 'AddBetabot',
-		Image = 'Image',
+		ImageView = 'ImageView',
 	}
 }

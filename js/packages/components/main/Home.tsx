@@ -392,6 +392,27 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 		}
 	}
 
+	let messageType: 'picture' | 'audio' = ''
+
+	const userDisplayName =
+		type === beapi.messenger.Conversation.Type.MultiMemberType
+			? displayName
+			: contact?.displayName || ''
+
+	if (lastInte?.medias?.length) {
+		if (lastInte.medias[0].mimeType?.startsWith('image')) {
+			messageType = 'audio'
+			description = `${lastInte.isMe ? 'You' : userDisplayName} sent ${
+				lastInte.isMe ? userDisplayName : 'you'
+			} ${lastInte.medias.length > 1 ? lastInte.medias.length : 'a'} pic`
+		} else if (lastInte.medias[0].mimeType?.startsWith('audio')) {
+			messageType = 'audio'
+			description = `${lastInte.isMe ? 'You' : userDisplayName} sent ${
+				lastInte.isMe ? userDisplayName : 'you'
+			} ${lastInte.medias.length > 1 ? lastInte.medias.length : 'an'} audio`
+		}
+	}
+
 	return !isIncoming ? (
 		<TouchableHighlight
 			underlayColor={color.light.grey}
@@ -463,10 +484,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 							}}
 						>
 							<Text numberOfLines={1} style={[text.size.medium, text.color.black]}>
-								{(fake && 'FAKE - ') || ''}
-								{type === beapi.messenger.Conversation.Type.MultiMemberType
-									? displayName
-									: contact?.displayName || ''}
+								{(fake && 'FAKE - ') || ''} {userDisplayName}
 							</Text>
 						</View>
 						{/* Timestamp and unread count */}
@@ -505,6 +523,15 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 							},
 						]}
 					>
+						{!!messageType && (
+							<Icon
+								name={messageType === 'audio' ? 'headphones' : 'image'}
+								fill={color.black}
+								height={20}
+								width={20}
+								style={[margin.right.tiny]}
+							/>
+						)}
 						<Text
 							numberOfLines={1}
 							style={[
