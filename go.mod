@@ -96,8 +96,9 @@ require (
 	github.com/tj/assert v0.0.3
 	github.com/zcalusic/sysinfo v0.0.0-20200820110305-ef1bb2697bc2
 	go.opencensus.io v0.22.5 // indirect
-	go.opentelemetry.io/otel v0.8.0
-	go.opentelemetry.io/otel/exporters/trace/jaeger v0.8.0
+	go.opentelemetry.io/otel v0.15.0 // indirect
+	go.opentelemetry.io/otel/exporters/trace/jaeger v0.15.0
+	go.opentelemetry.io/otel/sdk v0.15.0
 	go.uber.org/goleak v1.1.10
 	go.uber.org/multierr v1.6.0
 	go.uber.org/zap v1.16.0
