@@ -1418,13 +1418,8 @@ func (t *targetDef) runTarget(implem func(*implemHelper) error) error {
 		return nil
 	}
 
-	if os.Getenv("PRINT_CACHE_PATHS") == "true" {
-		fmt.Println(t.output, t.infoPath(), t.artifacts...)
-		return nil
-	}
-
 	if os.Getenv("PRINT_CACHE_GA_JSON_PATHS") == "true" {
-		paths := strings.Join([]string{t.output, t.infoPath()}, "\n")
+		paths := strings.Join(append([]string{t.output, t.infoPath()}, t.artifacts...), "\n")
 		jsonBytes, err := json.Marshal(paths)
 		if err != nil {
 			return err
