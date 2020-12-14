@@ -81,9 +81,6 @@
         "accept": "Accepter",
         "card-title": "Demande de contact !"
       },
-      "messages": {
-        "title": "Messages"
-      },
       "input-placeholder": "Mots-clés de recherche",
       "no-contacts": "Vous n'avez pas encore de contact ou de conversation",
       "search": {
