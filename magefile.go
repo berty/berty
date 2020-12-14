@@ -582,11 +582,12 @@ var iOSFramework = &mtarget{iOSFrameworkDef, IOSFramework}
 // xcworkspace
 
 var xcWorkspaceDef = &targetDef{
-	name:    "XCWorkspace",
-	output:  "js/ios/Berty.xcworkspace",
-	mdeps:   []Rule{nodeModules, xcodeProj, rubyGems, rubyBundle},
-	sources: []string{"js/ios/Podfile", "js/ios/Podfile.lock", "js/ios/OpenSSL-Universal-Override.podspec"},
-	env:     []string{"CI"},
+	name:      "XCWorkspace",
+	output:    "js/ios/Berty.xcworkspace",
+	mdeps:     []Rule{nodeModules, xcodeProj, rubyGems, rubyBundle},
+	sources:   []string{"js/ios/Podfile", "js/ios/Podfile.lock", "js/ios/OpenSSL-Universal-Override.podspec"},
+	env:       []string{"CI"},
+	artifacts: []string{"js/ios/Pods"}, // maybe merge with "output" into an "outputs" field
 }
 
 // Install CocoaPods and build xcworkspace
@@ -1318,12 +1319,13 @@ func (t *mtool) CacheManifest() (string, error) {
 var _ Rule = (*mtool)(nil)
 
 type targetDef struct {
-	name    string        // rule name, used for logging
-	output  string        // output path, can be a directory
-	sources []string      // filesystem deps, is a go glob list, folders will be recursed into
-	mdeps   []Rule        // Rule dependencies TODO rename to rdeps
-	deps    []interface{} // classic mage dependencies (functions) TODO rename to cdeps
-	env     []string      // environment variables used in the rule, the values at build time will be added to the cache sum
+	name      string        // rule name, used for logging
+	output    string        // output path, can be a directory
+	sources   []string      // filesystem deps, is a go glob list, folders will be recursed into
+	mdeps     []Rule        // Rule dependencies TODO rename to rdeps
+	deps      []interface{} // classic mage dependencies (functions) TODO rename to cdeps
+	env       []string      // environment variables used in the rule, the values at build time will be added to the cache sum
+	artifacts []string      // additonalOutputs, used for cache
 }
 
 type mtarget struct {
@@ -1416,7 +1418,7 @@ func (t *targetDef) runTarget(implem func(*implemHelper) error) error {
 	}
 
 	if os.Getenv("PRINT_CACHE_PATHS") == "true" {
-		fmt.Println(t.output, t.infoPath())
+		fmt.Println(t.output, t.infoPath(), t.artifacts...)
 		return nil
 	}
 
