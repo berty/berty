@@ -22,10 +22,11 @@ import { GallerySection } from './GallerySection'
 import { GifSection } from './GifSection'
 import { RecorderState, TabItems } from './types'
 import { SecurityAccess } from './SecurityAccess'
+import { useClient } from '@berty-tech/store/hooks'
+
 let audioFilename = 'tempVoiceClip.aac'
 let player = new Player(audioFilename)
 let recorder: Recorder
-import { useClient } from '@berty-tech/store/hooks'
 
 const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C) =>
 	Promise.all(arr.map(cb))
