@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, TextInput } from 'react-native'
+import { View, TouchableOpacity, TextInput, Text as TextNative } from 'react-native'
 import { Buffer } from 'buffer'
 import { Text, Icon } from '@ui-kitten/components'
 import { useNavigation } from '@react-navigation/native'
@@ -28,11 +28,19 @@ const BodyAddThisContactContent: React.FC<{}> = ({ children }) => {
 	)
 }
 
-const SelectedContent = ({ contentName, pubKey }: { contentName: string; pubKey: string }) => {
+const SelectedContent = ({
+	contentName,
+	pubKey,
+	isEncrypted,
+}: {
+	contentName: string
+	pubKey: string
+	isEncrypted: boolean
+}) => {
 	const [{ padding }] = useStyles()
 	switch (contentName) {
 		case 'Fingerprint':
-			return <FingerprintContent seed={pubKey} />
+			return <FingerprintContent seed={pubKey} isEncrypted={isEncrypted} />
 		default:
 			return (
 				<Text style={[padding.horizontal.medium]}>Error: Unknown content name "{contentName}"</Text>
@@ -125,28 +133,52 @@ const AddThisContact: React.FC<{
 						onTabChange={setSelectedContent}
 					/>
 					<BodyAddThisContactContent>
-						<SelectedContent contentName={selectedContent} pubKey={publicKey} />
+						<SelectedContent
+							contentName={selectedContent}
+							pubKey={publicKey}
+							isEncrypted={isPassword}
+						/>
 					</BodyAddThisContactContent>
 				</View>
 				{isPassword ? (
-					<View
-						style={[
-							border.radius.small,
-							padding.small,
-							margin.top.medium,
-							row.fill,
-							padding.vertical.scale(12),
-							{ backgroundColor: '#E8E9FC99' },
-						]}
-					>
-						<TextInput
-							value={password}
-							onChangeText={setPassword}
-							autoCapitalize='none'
-							editable={true}
-							style={[{ fontFamily: 'Open Sans' }, text.bold.small]}
-							placeholder='Password...'
-						/>
+					<View>
+						<View
+							style={[
+								{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
+								margin.top.medium,
+							]}
+						>
+							<Icon name='info-outline' fill={color.blue} width={15} height={15} />
+							<TextNative
+								style={[
+									{ fontFamily: 'Open Sans', color: color.blue, paddingLeft: 5, fontSize: 13 },
+									text.align.center,
+									text.bold.small,
+								]}
+							>
+								Enter the contact password
+							</TextNative>
+						</View>
+						<View
+							style={[
+								border.radius.small,
+								padding.small,
+								margin.top.medium,
+								row.fill,
+								padding.vertical.scale(12),
+								{ backgroundColor: '#E8E9FC99' },
+							]}
+						>
+							<TextInput
+								value={password}
+								secureTextEntry={true}
+								onChangeText={setPassword}
+								autoCapitalize='none'
+								editable={true}
+								style={[{ fontFamily: 'Open Sans' }, text.bold.small]}
+								placeholder='Password...'
+							/>
+						</View>
 					</View>
 				) : null}
 				<View style={[row.fill, padding.medium]}>
@@ -161,7 +193,6 @@ const AddThisContact: React.FC<{
 							background.light.blue,
 							padding.vertical.scale(12),
 							border.radius.small,
-							// !confirmed && { opacity: 0.2 },
 						]}
 					>
 						<Text style={[text.color.blue, { textAlign: 'center' }]}>ADD THIS CONTACT</Text>
