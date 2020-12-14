@@ -341,6 +341,7 @@ to test more false-positive guesses.
 | kind | [BertyLink.Kind](#berty.messenger.v1.BertyLink.Kind) |  | kind is a clear representation of the unencrypted link type. |
 | nonce | [bytes](#bytes) |  | nonce is a clear field used by scrypt as &#34;salt&#34; to derive the passphrase and also used by cipher.NewCTR as &#34;iv&#34; to initialize a stream cipher. |
 | display_name | [string](#string) |  | display_name is an optional clear representation of the display name. |
+| checksum | [bytes](#bytes) |  | checksum is an optional field used to check if the decryption was successful. the length is customizable (SHAKE256). a longer checksum means less conflicts. having more conflicts may be bad in term of UX, but make it easier for an attacker to run an offline bruteforce. |
 | contact_public_rendezvous_seed | [bytes](#bytes) |  |  |
 | contact_account_pk | [bytes](#bytes) |  |  |
 | contact_display_name | [bytes](#bytes) |  |  |
@@ -407,7 +408,7 @@ to test more false-positive guesses.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | link | [string](#string) |  |  |
-| passphrase | [bytes](#bytes) |  | optional passphase to decrypt link |
+| passphrase | [bytes](#bytes) |  | optional passphase to decrypt the link |
 
 <a name="berty.messenger.v1.Conversation"></a>
 
@@ -485,7 +486,7 @@ to test more false-positive guesses.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | link | [string](#string) |  |  |
-| passphrase | [bytes](#bytes) |  | optional passphase to decrypt link |
+| passphrase | [bytes](#bytes) |  | optional passphase to decrypt the link |
 
 <a name="berty.messenger.v1.ConversationOpen"></a>
 
@@ -658,6 +659,7 @@ to test more false-positive guesses.
 | ----- | ---- | ----- | ----------- |
 | reset | [bool](#bool) |  | reset will regenerate a new link |
 | display_name | [string](#string) |  |  |
+| passphrase | [bytes](#bytes) |  | optional passphase to encrypt the link |
 
 <a name="berty.messenger.v1.Interact"></a>
 
@@ -812,7 +814,7 @@ Composite primary key
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | link | [string](#string) |  |  |
-| passphrase | [bytes](#bytes) |  | optional passphase to decrypt link |
+| passphrase | [bytes](#bytes) |  | optional passphase to decrypt the link |
 
 <a name="berty.messenger.v1.ReplicationServiceRegisterGroup"></a>
 

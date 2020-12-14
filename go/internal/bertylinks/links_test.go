@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/tj/assert"
 	"moul.io/srand"
+	"moul.io/u"
 
 	"berty.tech/berty/v2/go/internal/bertylinks"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -339,10 +340,10 @@ func TestEncryptLink(t *testing.T) {
 				require.Equal(t, link.Kind, messengertypes.BertyLink_EncryptedV1Kind)
 			}
 
-			// decrypt with invalid passphrase, and silently fail
+			// decrypt with invalid passphrase, and raise an error (invalid checksum)
 			{
 				link, err := bertylinks.UnmarshalLink(internalURL, []byte("invalid"))
-				require.NoError(t, err)
+				assert.Equal(t, errcode.ErrMessengerDeepLinkInvalidPassphrase.Error(), err.Error())
 				require.NotEqual(t, tc.link, link)
 			}
 			{
@@ -350,6 +351,9 @@ func TestEncryptLink(t *testing.T) {
 				require.NoError(t, err)
 				require.NotEqual(t, tc.link, link)
 			}
+
+			// here, it would be nice to add tests against conflicting invalid passphrases.
+			// we already check this in TestDecryptLink, so it's just a bonus.
 
 			// decrypt with good passphrase, and compare both links
 			{
@@ -381,3 +385,64 @@ const (
 	validGroupBlob         = "5QdUv6Fn3uvfPy8tqZSw7SDVFvv7cnNHhpMHtGNVHBHMBJscFiWxBDd9wnphtqMMdmcmNQin64m44XkBVFWoSRKPboXszWi1dvjJz7Z3WmfJMJMHRHuyub553R9h2JFxCBZBvqZyvxtVrqu9gMRG5TRk1DduS9suYCXB3finDx7uxvx1fkuWtDzeqPMBw9g6Zx"
 	validGroupInternalBlob = "EHJBK/TI1ETK.QPUU.E0ONINK9ZDPW2:.NB4DH/7C.HSXI..XUIS82*J7M1GJVWX/:O7X1C36NC5YAHW-D-M7A8NBAW3NPQP-Z8H.VPJOFVH1*0*FN202136-91H/UTNJXSNVFY7E$NV$A/O1BYIR:*H.N3JELJJE5V*U5Y319YNA9S1R.3TNO4-*0HW4W9*W/T3LOD3LW2JA/0:LZ31LH.4VKNWGN*LF-:89MXMYEN*R7*LSYR"
 )
+
+func TestDecryptLink(t *testing.T) {
+	buildLink := func(checksum []byte) *messengertypes.BertyLink {
+		return &messengertypes.BertyLink{
+			Kind: messengertypes.BertyLink_EncryptedV1Kind,
+			Encrypted: &messengertypes.BertyLink_Encrypted{
+				Kind:                        messengertypes.BertyLink_ContactInviteV1Kind,
+				Nonce:                       b64decode(t, "rERlYwJHU96gpJKH6ky8WA=="),
+				ContactPublicRendezvousSeed: b64decode(t, "LAxeSZ19aHwzuK4ngqke4w=="),
+				ContactAccountPK:            b64decode(t, "Bg26HLi8I6Gutd7aXEhlUQ=="),
+				ContactDisplayName:          b64decode(t, "e8gbA8sVxOl02Zk7"),
+				Checksum:                    checksum,
+			},
+		}
+	}
+
+	cases := []struct {
+		name                   string
+		link                   *messengertypes.BertyLink
+		passphrase             []byte
+		expectValidDisplayName bool
+		expectedErrcode        error
+	}{
+		{"no-pass", buildLink(nil), nil, false, nil},
+		{"no-cs-valid-pass", buildLink(nil), []byte("s3cur3"), true, nil},
+		{"empty-cs-valid-pass", buildLink([]byte{}), []byte("s3cur3"), true, nil},
+		{"valid-1c-cs-valid-pass", buildLink([]byte{247}), []byte("s3cur3"), true, nil},
+		{"valid-2c-cs-valid-pass", buildLink([]byte{247, 120}), []byte("s3cur3"), true, nil},
+		{"valid-10c-cs-valid-pass", buildLink([]byte{247, 120, 198, 131, 107, 189, 238, 35, 125, 161}), []byte("s3cur3"), true, nil},
+		{"invalid-1c-cs-valid-pass", buildLink([]byte{42}), []byte("s3cur3"), false, errcode.ErrMessengerDeepLinkInvalidPassphrase},
+		{"valid-1c-cs-invalid-pass", buildLink([]byte{247}), []byte("invalid"), false, errcode.ErrMessengerDeepLinkInvalidPassphrase},
+		{"valid-1c-cs-invalid-pass-conflict", buildLink([]byte{247}), []byte("s3cur3-conflict-100"), false, nil},
+		{"no-cs-invalid-pass", buildLink(nil), []byte("invalid"), false, nil},
+		{"empty-cs-invalid-pass", buildLink([]byte{}), []byte("invalid"), false, nil},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			linkStr, _, err := bertylinks.MarshalLink(tc.link)
+			require.NoError(t, err)
+			ret, err := bertylinks.UnmarshalLink(linkStr, tc.passphrase)
+			if tc.expectedErrcode == nil {
+				tc.expectedErrcode = errcode.ErrCode(-1)
+			}
+			assert.Equal(t, tc.expectedErrcode.Error(), errcode.Code(err).Error())
+			if tc.expectValidDisplayName {
+				require.NotNil(t, ret.BertyID)
+				assert.Equal(t, ret.BertyID.DisplayName, "Hello World!")
+			} else {
+				assert.True(t, ret == nil || ret.BertyID == nil || ret.BertyID.DisplayName != "Hello World!")
+			}
+		})
+	}
+}
+
+func b64decode(t *testing.T, input string) []byte {
+	t.Helper()
+	b, err := u.B64Decode(input)
+	require.NoError(t, err)
+	return b
+}

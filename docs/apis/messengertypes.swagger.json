@@ -1041,6 +1041,11 @@
           "type": "string",
           "description": "display_name is an optional clear representation of the display name."
         },
+        "checksum": {
+          "type": "string",
+          "format": "byte",
+          "description": "checksum is an optional field used to check if the decryption was successful.\nthe length is customizable (SHAKE256). a longer checksum means less conflicts.\nhaving more conflicts may be bad in term of UX, but make it easier for an attacker\nto run an offline bruteforce."
+        },
         "contact_public_rendezvous_seed": {
           "type": "string",
           "format": "byte"
@@ -1623,7 +1628,7 @@
         "passphrase": {
           "type": "string",
           "format": "byte",
-          "title": "optional passphase to decrypt link"
+          "title": "optional passphase to decrypt the link"
         }
       }
     },
@@ -1752,7 +1757,7 @@
         "passphrase": {
           "type": "string",
           "format": "byte",
-          "title": "optional passphase to decrypt link"
+          "title": "optional passphase to decrypt the link"
         }
       }
     },
@@ -1960,6 +1965,11 @@
         },
         "display_name": {
           "type": "string"
+        },
+        "passphrase": {
+          "type": "string",
+          "format": "byte",
+          "title": "optional passphase to encrypt the link"
         }
       }
     },
@@ -2165,7 +2175,7 @@
         "passphrase": {
           "type": "string",
           "format": "byte",
-          "title": "optional passphase to decrypt link"
+          "title": "optional passphase to decrypt the link"
         }
       }
     },

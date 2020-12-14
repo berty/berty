@@ -3259,6 +3259,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       displayName: {
                         type: "string",
                         id: 2
+                      },
+                      passphrase: {
+                        type: "bytes",
+                        id: 3
                       }
                     }
                   },
@@ -3409,6 +3413,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       displayName: {
                         type: "string",
                         id: 3
+                      },
+                      checksum: {
+                        type: "bytes",
+                        id: 4
                       },
                       contactPublicRendezvousSeed: {
                         type: "bytes",

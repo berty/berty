@@ -4928,12 +4928,14 @@ export namespace berty {
                 interface IRequest {
                     reset?: (boolean|null);
                     displayName?: (string|null);
+                    passphrase?: (Uint8Array|null);
                 }
 
                 class Request implements IRequest {
 
                     public reset: boolean;
                     public displayName: string;
+                    public passphrase: Uint8Array;
                     public static create(properties?: berty.messenger.v1.InstanceShareableBertyID.IRequest): berty.messenger.v1.InstanceShareableBertyID.Request;
                     public static encode(message: berty.messenger.v1.InstanceShareableBertyID.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.InstanceShareableBertyID.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5171,6 +5173,7 @@ export namespace berty {
                     kind?: (berty.messenger.v1.BertyLink.Kind|null);
                     nonce?: (Uint8Array|null);
                     displayName?: (string|null);
+                    checksum?: (Uint8Array|null);
                     contactPublicRendezvousSeed?: (Uint8Array|null);
                     contactAccountPk?: (Uint8Array|null);
                     contactDisplayName?: (Uint8Array|null);
@@ -5187,6 +5190,7 @@ export namespace berty {
                     public kind: berty.messenger.v1.BertyLink.Kind;
                     public nonce: Uint8Array;
                     public displayName: string;
+                    public checksum: Uint8Array;
                     public contactPublicRendezvousSeed: Uint8Array;
                     public contactAccountPk: Uint8Array;
                     public contactDisplayName: Uint8Array;
@@ -5957,7 +5961,6 @@ export namespace berty {
                 displayName?: (string|null);
                 interactionCid?: (string|null);
                 state?: (berty.messenger.v1.Media.State|null);
-                uri?:(string|null);
             }
 
             class Media implements IMedia {

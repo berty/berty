@@ -1,6 +1,7 @@
 package bertylinks
 
 import (
+	"bytes"
 	"crypto/aes"
 	"fmt"
 	"net/url"
@@ -9,6 +10,7 @@ import (
 	"github.com/eknkc/basex"
 	"github.com/gogo/protobuf/proto"
 	"github.com/mr-tron/base58"
+	"golang.org/x/crypto/sha3"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -318,6 +320,17 @@ func decryptLink(link *messengertypes.BertyLink, passphrase []byte) (*messengert
 		}
 	}
 
+	if link.Encrypted.Checksum != nil && len(link.Encrypted.Checksum) > 0 {
+		checksum := make([]byte, len(link.Encrypted.Checksum))
+		err := clearLinkChecksum(&decrypted, checksum)
+		if err != nil {
+			return nil, errcode.ErrInternal.Wrap(err)
+		}
+		if !bytes.Equal(link.Encrypted.Checksum, checksum) {
+			return nil, errcode.ErrMessengerDeepLinkInvalidPassphrase
+		}
+	}
+
 	return &decrypted, nil
 }
 
@@ -334,10 +347,15 @@ func EncryptLink(link *messengertypes.BertyLink, passphrase []byte) (*messengert
 			Kind: link.Kind, // inherit kind from the clear link.
 		},
 	}
-	// if display name is set in the encrypted part of the input link,
-	// then we want the display name to be available in the generated URL.
 	if link.Encrypted != nil {
+		// if display name is set in the encrypted part of the input link,
+		// then we want the display name to be available in the generated URL.
 		encrypted.Encrypted.DisplayName = link.Encrypted.DisplayName
+		// if checksum is set, it will be the size of the hash (SHAKE256).
+		encrypted.Encrypted.Checksum = link.Encrypted.Checksum
+	}
+	if encrypted.Encrypted.Checksum == nil {
+		encrypted.Encrypted.Checksum = make([]byte, DefaultChecksumSize)
 	}
 
 	// generate nonce with AES' blocksize
@@ -402,12 +420,63 @@ func EncryptLink(link *messengertypes.BertyLink, passphrase []byte) (*messengert
 		return nil, errcode.ErrInvalidInput
 	}
 
+	if encrypted.Encrypted.Checksum != nil && len(encrypted.Encrypted.Checksum) > 0 {
+		err := clearLinkChecksum(link, encrypted.Encrypted.Checksum)
+		if err != nil {
+			return nil, errcode.ErrInternal.Wrap(err)
+		}
+	}
+
 	return &encrypted, nil
 }
 
+func clearLinkChecksum(link *messengertypes.BertyLink, dest []byte) error {
+	// compute the hash based on every field that can be encrypted, even if they're empty.
+	// the order is important.
+	hasher := sha3.NewShake256()
+
+	// contact v1
+	if link.BertyID != nil {
+		for _, b := range [][]byte{
+			link.BertyID.PublicRendezvousSeed,
+			link.BertyID.AccountPK,
+			[]byte(link.BertyID.DisplayName),
+		} {
+			_, err := hasher.Write(b)
+			if err != nil {
+				return errcode.ErrInternal.Wrap(err)
+			}
+		}
+	}
+
+	// group v1
+	if link.BertyGroup != nil && link.BertyGroup.Group != nil {
+		for _, b := range [][]byte{
+			link.BertyGroup.Group.PublicKey,
+			link.BertyGroup.Group.Secret,
+			link.BertyGroup.Group.SecretSig,
+			link.BertyGroup.Group.SignPub,
+			[]byte(link.BertyGroup.DisplayName),
+		} {
+			_, err := hasher.Write(b)
+			if err != nil {
+				return errcode.ErrInternal.Wrap(err)
+			}
+		}
+	}
+
+	_, err := hasher.Read(dest)
+	if err != nil {
+		return errcode.ErrInternal.Wrap(err)
+	}
+
+	return nil
+}
+
 const (
-	LinkWebPrefix      = "https://berty.tech/id#"
-	LinkInternalPrefix = "BERTY://"
+	LinkWebPrefix       = "https://berty.tech/id#"
+	LinkInternalPrefix  = "BERTY://"
+	DefaultChecksumSize = 1 // 1-byte length by default (should have ~1/256 false-positive in case of invalid password)
 )
 
 // from https://www.swisseduc.ch/informatik/theoretische_informatik/qr_codes/docs/qr_standard.pdf
