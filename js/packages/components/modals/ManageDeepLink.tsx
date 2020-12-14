@@ -40,28 +40,61 @@ export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 			title = t('modals.manage-deep-link.error')
 		}
 		content = <InvalidScan title={title} error={error.toString()} />
-	} else if (pdlReply.link.kind === beapi.messenger.BertyLink.Kind.GroupV1Kind) {
+	} else if (pdlReply?.link?.kind === beapi.messenger.BertyLink.Kind.GroupV1Kind) {
 		content = (
 			<ManageGroupInvitation
 				link={params.value}
-				displayName={pdlReply.link.bertyGroup.displayName}
+				displayName={pdlReply.link.bertyGroup?.displayName || ''}
 				publicKey={base64ToURLBase64(
-					new Buffer(pdlReply.link.bertyGroup.group.publicKey).toString('base64'),
+					new Buffer(pdlReply.link.bertyGroup?.group?.publicKey || new Uint8Array()).toString(
+						'base64',
+					),
 				)}
 				type={params.type}
+				isPassword={false}
 			/>
 		)
-	} else if (pdlReply.link.kind === beapi.messenger.BertyLink.Kind.ContactInviteV1Kind) {
+	} else if (pdlReply?.link?.kind === beapi.messenger.BertyLink.Kind.ContactInviteV1Kind) {
 		content = (
 			<AddThisContact
 				link={params.value}
 				type={params.type}
-				displayName={pdlReply.link.bertyId.displayName}
+				displayName={pdlReply.link.bertyId?.displayName || ''}
 				publicKey={base64ToURLBase64(
-					new Buffer(pdlReply.link.bertyId.accountPk).toString('base64'),
+					new Buffer(pdlReply.link.bertyId?.accountPk || new Uint8Array()).toString('base64'),
 				)}
+				isPassword={false}
 			/>
 		)
+	} else if (pdlReply?.link?.kind === beapi.messenger.BertyLink.Kind.EncryptedV1Kind) {
+		console.log('enc', pdlReply?.link?.encrypted)
+		if (pdlReply?.link?.encrypted?.kind === beapi.messenger.BertyLink.Kind.ContactInviteV1Kind) {
+			content = (
+				<AddThisContact
+					link={params.value}
+					type={params.type}
+					displayName={pdlReply.link.bertyId?.displayName || ''}
+					publicKey={base64ToURLBase64(
+						new Buffer(pdlReply.link.bertyId?.accountPk || new Uint8Array()).toString('base64'),
+					)}
+					isPassword={true}
+				/>
+			)
+		} else if (pdlReply?.link?.encrypted?.kind === beapi.messenger.BertyLink.Kind.GroupV1Kind) {
+			content = (
+				<ManageGroupInvitation
+					link={params.value}
+					displayName={pdlReply.link.bertyGroup?.displayName || ''}
+					publicKey={base64ToURLBase64(
+						new Buffer(pdlReply.link.bertyGroup?.group?.publicKey || new Uint8Array()).toString(
+							'base64',
+						),
+					)}
+					type={params.type}
+					isPassword={true}
+				/>
+			)
+		}
 	}
 	return (
 		<>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, TextInput } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
@@ -44,13 +44,18 @@ export const ManageGroupInvitation: React.FC<{
 	displayName: string
 	publicKey: string
 	type: string
-}> = ({ link, type, displayName, publicKey }) => {
+	isPassword: boolean
+}> = ({ link, type, displayName, publicKey, isPassword }) => {
 	const navigation = useNavigation()
 	const { call: joinConversation, done, error } = messengerMethodsHooks.useConversationJoin()
-	const [{ row, text, column, color, flex, absolute, padding, background, border }] = useStyles()
+	const [
+		{ row, text, column, color, flex, absolute, padding, background, border, margin },
+	] = useStyles()
 	const [selectedContent, setSelectedContent] = useState('Fingerprint')
 	const _styles = useStylesModal()
 	const { t } = useTranslation()
+
+	const [password, setPassword] = useState('')
 
 	// TODO: handle error (shouldn't happen since we checked the link previously, but still)
 
@@ -122,6 +127,27 @@ export const ManageGroupInvitation: React.FC<{
 						<SelectedContent contentName={selectedContent} pubKey={publicKey} />
 					</BodyManageGroupInvitationContent>
 				</View>
+				{isPassword ? (
+					<View
+						style={[
+							border.radius.small,
+							padding.small,
+							margin.top.medium,
+							row.fill,
+							padding.vertical.scale(12),
+							{ backgroundColor: '#E8E9FC99' },
+						]}
+					>
+						<TextInput
+							value={password}
+							onChangeText={setPassword}
+							autoCapitalize='none'
+							editable={true}
+							style={[{ fontFamily: 'Open Sans' }, text.bold.small]}
+							placeholder='Password...'
+						/>
+					</View>
+				) : null}
 				<View style={[padding.top.big, row.fill, padding.medium]}>
 					<TouchableOpacity
 						onPress={() => joinConversation({ link })}
