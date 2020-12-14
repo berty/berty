@@ -667,6 +667,9 @@ func (svc *service) ConversationJoin(ctx context.Context, req *messengertypes.Co
 	if err != nil {
 		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
 	}
+	if link.Kind == messengertypes.BertyLink_EncryptedV1Kind {
+		return nil, errcode.ErrMessengerDeepLinkRequiresPassphrase
+	}
 	if !link.IsGroup() {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -823,6 +826,9 @@ func (svc *service) ContactRequest(ctx context.Context, req *messengertypes.Cont
 	link, err := bertylinks.UnmarshalLink(req.GetLink(), req.Passphrase)
 	if err != nil {
 		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)
+	}
+	if link.Kind == messengertypes.BertyLink_EncryptedV1Kind {
+		return nil, errcode.ErrMessengerDeepLinkRequiresPassphrase
 	}
 	if !link.IsContact() {
 		return nil, errcode.ErrMessengerInvalidDeepLink.Wrap(err)

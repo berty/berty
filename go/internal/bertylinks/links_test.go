@@ -328,13 +328,15 @@ func TestEncryptLink(t *testing.T) {
 			// decrypt with empty passphrase, and get a passphrase required error
 			{
 				link, err := bertylinks.UnmarshalLink(internalURL, nil)
-				assert.Equal(t, errcode.ErrMessengerDeepLinkRequiresPassphrase.Error(), errcode.Code(err).Error())
+				require.NoError(t, err)
 				require.NotEqual(t, tc.link, link)
+				require.Equal(t, link.Kind, messengertypes.BertyLink_EncryptedV1Kind)
 			}
 			{
 				link, err := bertylinks.UnmarshalLink(httpURL, nil)
-				assert.Equal(t, errcode.ErrMessengerDeepLinkRequiresPassphrase.Error(), errcode.Code(err).Error())
+				require.NoError(t, err)
 				require.NotEqual(t, tc.link, link)
+				require.Equal(t, link.Kind, messengertypes.BertyLink_EncryptedV1Kind)
 			}
 
 			// decrypt with invalid passphrase, and silently fail
