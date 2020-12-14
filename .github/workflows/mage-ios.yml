@@ -76,21 +76,55 @@ jobs:
         id: cacheInfo
         run: |
           echo "::set-output name=nodeModulesHash::`PRINT_CACHE_INFO=true mage nodeModules`"
-          echo "::set-output name=nodeModulesPaths::`PRINT_CACHE_PATHS=true mage nodeModules`"
           echo "::set-output name=nodeModulesGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage nodeModules`"
-
-      - name: Cache Node modules
+          echo "::set-output name=iOSFrameworkHash::`PRINT_CACHE_INFO=true mage iOSFramework`"
+          echo "::set-output name=iOSFrameworkGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage iOSFramework`"
+          echo "::set-output name=xcWorkspaceHash::`PRINT_CACHE_INFO=true mage xcWorkspace`"
+          echo "::set-output name=xcWorkspaceGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage xcWorkspace`"
+      - name: Cache nodeModules
         uses: actions/cache@v2
         with:
           path: ${{ fromJSON(steps.cacheInfo.outputs.nodeModulesGAPaths) }}
           key: ${{ runner.OS }}-mage-nodeModules-v1-${{ steps.cacheInfo.outputs.nodeModulesHash }}
-
-      - name: Debug
-        run: ls -la
-
-      - name: Debug 2
-        run: ls -la js
+      - name: Cache iOSFramework
+        uses: actions/cache@v2
+        with:
+          path: ${{ fromJSON(steps.cacheInfo.outputs.iOSFrameworkGAPaths) }}
+          key: ${{ runner.OS }}-mage-nodeModules-v1-${{ steps.cacheInfo.outputs.iOSFrameworkHash }}
+      - name: Cache xcWorkspace
+        uses: actions/cache@v2
+        with:
+          path: ${{ fromJSON(steps.cacheInfo.outputs.xcWorkspaceGAPaths) }}
+          key: ${{ runner.OS }}-mage-nodeModules-v1-${{ steps.cacheInfo.outputs.xcWorkspaceHash }}
 
       - name: Build app deps
         run: |
-          mage nodeModules
+          mage checkXcodebuild
+          mage iOSAppDeps
+
+      - name: Build the Archive
+        working-directory: js
+        run: |
+          xcodebuild archive \
+                CODE_SIGN_IDENTITY="" \
+                CODE_SIGNING_ALLOWED=NO \
+                ONLY_ACTIVE_ARCH=NO  \
+                EXCLUDED_ARCHS='armv7 armv7s' \
+                -workspace ios/Berty.xcworkspace \
+                -scheme "Berty Yolo" \
+                -sdk iphoneos \
+                -archivePath /tmp/Berty.xcarchive
+          for lib in /tmp/Berty.xcarchive/Products/Applications/Berty\ Yolo.app/Frameworks/*.dylib; do
+            lipo -remove armv7 -remove armv7s "$lib" -output "$lib"
+          done
+          codesign -fs "Berty Dummy" /tmp/Berty.xcarchive/Products/Applications/Berty\ Yolo.app
+          mkdir Payload
+          mv /tmp/Berty.xcarchive/Products/Applications/Berty\ Yolo.app Payload/
+          zip -r ${{ github.workspace }}/Berty\ Yolo.dummy-signed-ipa Payload
+
+      - name: Upload the Archive
+        uses: actions/upload-artifact@v2
+        with:
+          path: ${{ github.workspace }}/Berty Yolo.dummy-signed-ipa
+          name: berty-yolo-${{github.sha}}.dummy-signed-ipa
+          if-no-files-found: error
