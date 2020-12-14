@@ -254,11 +254,11 @@ func decryptLink(link *messengertypes.BertyLink, passphrase []byte) (*messengert
 	if link == nil || link.Kind != messengertypes.BertyLink_EncryptedV1Kind {
 		return nil, errcode.ErrInvalidInput
 	}
-	if passphrase == nil || string(passphrase) == "" {
-		return nil, errcode.ErrMessengerDeepLinkRequiresPassphrase
-	}
 	if err := link.IsValid(); err != nil {
 		return nil, err
+	}
+	if passphrase == nil || string(passphrase) == "" {
+		return link, nil
 	}
 
 	decrypted := messengertypes.BertyLink{
