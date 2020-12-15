@@ -30,6 +30,8 @@ type Bot struct {
 	}
 }
 
+// wololo
+
 // New initializes a new Bot.
 // The order of the passed options may have an impact.
 func New(opts ...NewOption) (*Bot, error) {
