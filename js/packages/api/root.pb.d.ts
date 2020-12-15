@@ -6,6 +6,7 @@ export namespace berty {
         namespace v1 {
 
             class AccountService extends $protobuf.rpc.Service {
+
                 public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): AccountService;
                 public openAccount(request: berty.account.v1.OpenAccount.IRequest, callback: berty.account.v1.AccountService.OpenAccountCallback): void;
                 public openAccount(request: berty.account.v1.OpenAccount.IRequest): Promise<berty.account.v1.OpenAccount.Reply>;
@@ -68,6 +69,7 @@ export namespace berty {
             }
 
             class OpenAccount implements IOpenAccount {
+
                 public static create(properties?: berty.account.v1.IOpenAccount): berty.account.v1.OpenAccount;
                 public static encode(message: berty.account.v1.IOpenAccount, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.account.v1.IOpenAccount, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -88,6 +90,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public args: string[];
                     public accountId: string;
                     public loggerFilters: string;
@@ -106,6 +109,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.account.v1.OpenAccount.IReply): berty.account.v1.OpenAccount.Reply;
                     public static encode(message: berty.account.v1.OpenAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.OpenAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -122,6 +126,7 @@ export namespace berty {
             }
 
             class CloseAccount implements ICloseAccount {
+
                 public static create(properties?: berty.account.v1.ICloseAccount): berty.account.v1.CloseAccount;
                 public static encode(message: berty.account.v1.ICloseAccount, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.account.v1.ICloseAccount, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -139,6 +144,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public static create(properties?: berty.account.v1.CloseAccount.IRequest): berty.account.v1.CloseAccount.Request;
                     public static encode(message: berty.account.v1.CloseAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.CloseAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -154,6 +160,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.account.v1.CloseAccount.IReply): berty.account.v1.CloseAccount.Reply;
                     public static encode(message: berty.account.v1.CloseAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.CloseAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -173,6 +180,7 @@ export namespace berty {
             }
 
             class AccountMetadata implements IAccountMetadata {
+
                 public accountId: string;
                 public name: string;
                 public lastOpened: Long;
@@ -191,6 +199,7 @@ export namespace berty {
             }
 
             class ListAccounts implements IListAccounts {
+
                 public static create(properties?: berty.account.v1.IListAccounts): berty.account.v1.ListAccounts;
                 public static encode(message: berty.account.v1.IListAccounts, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.account.v1.IListAccounts, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -208,6 +217,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public static create(properties?: berty.account.v1.ListAccounts.IRequest): berty.account.v1.ListAccounts.Request;
                     public static encode(message: berty.account.v1.ListAccounts.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.ListAccounts.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -224,6 +234,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public accounts: berty.account.v1.IAccountMetadata[];
                     public static create(properties?: berty.account.v1.ListAccounts.IReply): berty.account.v1.ListAccounts.Reply;
                     public static encode(message: berty.account.v1.ListAccounts.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -241,6 +252,7 @@ export namespace berty {
             }
 
             class DeleteAccount implements IDeleteAccount {
+
                 public static create(properties?: berty.account.v1.IDeleteAccount): berty.account.v1.DeleteAccount;
                 public static encode(message: berty.account.v1.IDeleteAccount, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.account.v1.IDeleteAccount, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -259,6 +271,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public accountId: string;
                     public static create(properties?: berty.account.v1.DeleteAccount.IRequest): berty.account.v1.DeleteAccount.Request;
                     public static encode(message: berty.account.v1.DeleteAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -275,6 +288,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.account.v1.DeleteAccount.IReply): berty.account.v1.DeleteAccount.Reply;
                     public static encode(message: berty.account.v1.DeleteAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.DeleteAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -291,6 +305,7 @@ export namespace berty {
             }
 
             class ImportAccount implements IImportAccount {
+
                 public static create(properties?: berty.account.v1.IImportAccount): berty.account.v1.ImportAccount;
                 public static encode(message: berty.account.v1.IImportAccount, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.account.v1.IImportAccount, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -313,6 +328,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public accountId: string;
                     public accountName: string;
                     public backupPath: string;
@@ -334,6 +350,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public accountMetadata?: (berty.account.v1.IAccountMetadata|null);
                     public static create(properties?: berty.account.v1.ImportAccount.IReply): berty.account.v1.ImportAccount.Reply;
                     public static encode(message: berty.account.v1.ImportAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -351,6 +368,7 @@ export namespace berty {
             }
 
             class CreateAccount implements ICreateAccount {
+
                 public static create(properties?: berty.account.v1.ICreateAccount): berty.account.v1.CreateAccount;
                 public static encode(message: berty.account.v1.ICreateAccount, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.account.v1.ICreateAccount, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -372,6 +390,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public accountId: string;
                     public accountName: string;
                     public args: string[];
@@ -392,6 +411,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public accountMetadata?: (berty.account.v1.IAccountMetadata|null);
                     public static create(properties?: berty.account.v1.CreateAccount.IReply): berty.account.v1.CreateAccount.Reply;
                     public static encode(message: berty.account.v1.CreateAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -409,6 +429,7 @@ export namespace berty {
             }
 
             class GetGRPCListenerAddrs implements IGetGRPCListenerAddrs {
+
                 public static create(properties?: berty.account.v1.IGetGRPCListenerAddrs): berty.account.v1.GetGRPCListenerAddrs;
                 public static encode(message: berty.account.v1.IGetGRPCListenerAddrs, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.account.v1.IGetGRPCListenerAddrs, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -426,6 +447,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public static create(properties?: berty.account.v1.GetGRPCListenerAddrs.IRequest): berty.account.v1.GetGRPCListenerAddrs.Request;
                     public static encode(message: berty.account.v1.GetGRPCListenerAddrs.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.GetGRPCListenerAddrs.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -442,6 +464,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public entries: berty.account.v1.GetGRPCListenerAddrs.Reply.IEntry[];
                     public static create(properties?: berty.account.v1.GetGRPCListenerAddrs.IReply): berty.account.v1.GetGRPCListenerAddrs.Reply;
                     public static encode(message: berty.account.v1.GetGRPCListenerAddrs.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -462,6 +485,7 @@ export namespace berty {
                     }
 
                     class Entry implements IEntry {
+
                         public proto: string;
                         public maddr: string;
                         public static create(properties?: berty.account.v1.GetGRPCListenerAddrs.Reply.IEntry): berty.account.v1.GetGRPCListenerAddrs.Reply.Entry;
@@ -481,6 +505,7 @@ export namespace berty {
             }
 
             class ClientInvokeUnary implements IClientInvokeUnary {
+
                 public static create(properties?: berty.account.v1.IClientInvokeUnary): berty.account.v1.ClientInvokeUnary;
                 public static encode(message: berty.account.v1.IClientInvokeUnary, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.account.v1.IClientInvokeUnary, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -501,6 +526,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public methodDesc?: (berty.account.v1.IMethodDesc|null);
                     public payload: Uint8Array;
                     public header: berty.account.v1.IMetadata[];
@@ -522,6 +548,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public payload: Uint8Array;
                     public trailer: berty.account.v1.IMetadata[];
                     public error?: (berty.account.v1.IError|null);
@@ -541,6 +568,7 @@ export namespace berty {
             }
 
             class ClientCreateStream implements IClientCreateStream {
+
                 public static create(properties?: berty.account.v1.IClientCreateStream): berty.account.v1.ClientCreateStream;
                 public static encode(message: berty.account.v1.IClientCreateStream, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.account.v1.IClientCreateStream, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -561,6 +589,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public methodDesc?: (berty.account.v1.IMethodDesc|null);
                     public payload: Uint8Array;
                     public header: berty.account.v1.IMetadata[];
@@ -582,6 +611,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public streamId: string;
                     public trailer: berty.account.v1.IMetadata[];
                     public error?: (berty.account.v1.IError|null);
@@ -601,6 +631,7 @@ export namespace berty {
             }
 
             class ClientStreamSend implements IClientStreamSend {
+
                 public static create(properties?: berty.account.v1.IClientStreamSend): berty.account.v1.ClientStreamSend;
                 public static encode(message: berty.account.v1.IClientStreamSend, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.account.v1.IClientStreamSend, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -620,6 +651,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public streamId: string;
                     public payload: Uint8Array;
                     public static create(properties?: berty.account.v1.ClientStreamSend.IRequest): berty.account.v1.ClientStreamSend.Request;
@@ -640,6 +672,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public streamId: string;
                     public trailer: berty.account.v1.IMetadata[];
                     public error?: (berty.account.v1.IError|null);
@@ -659,6 +692,7 @@ export namespace berty {
             }
 
             class ClientStreamRecv implements IClientStreamRecv {
+
                 public static create(properties?: berty.account.v1.IClientStreamRecv): berty.account.v1.ClientStreamRecv;
                 public static encode(message: berty.account.v1.IClientStreamRecv, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.account.v1.IClientStreamRecv, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -677,6 +711,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public streamId: string;
                     public static create(properties?: berty.account.v1.ClientStreamRecv.IRequest): berty.account.v1.ClientStreamRecv.Request;
                     public static encode(message: berty.account.v1.ClientStreamRecv.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -697,6 +732,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public streamId: string;
                     public payload: Uint8Array;
                     public trailer: berty.account.v1.IMetadata[];
@@ -717,6 +753,7 @@ export namespace berty {
             }
 
             class ClientStreamClose implements IClientStreamClose {
+
                 public static create(properties?: berty.account.v1.IClientStreamClose): berty.account.v1.ClientStreamClose;
                 public static encode(message: berty.account.v1.IClientStreamClose, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.account.v1.IClientStreamClose, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -735,6 +772,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public streamId: string;
                     public static create(properties?: berty.account.v1.ClientStreamClose.IRequest): berty.account.v1.ClientStreamClose.Request;
                     public static encode(message: berty.account.v1.ClientStreamClose.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -754,6 +792,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public streamId: string;
                     public trailer: berty.account.v1.IMetadata[];
                     public error?: (berty.account.v1.IError|null);
@@ -773,6 +812,7 @@ export namespace berty {
             }
 
             class ClientStreamCloseAndRecv implements IClientStreamCloseAndRecv {
+
                 public static create(properties?: berty.account.v1.IClientStreamCloseAndRecv): berty.account.v1.ClientStreamCloseAndRecv;
                 public static encode(message: berty.account.v1.IClientStreamCloseAndRecv, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.account.v1.IClientStreamCloseAndRecv, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -791,6 +831,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public streamId: string;
                     public static create(properties?: berty.account.v1.ClientStreamCloseAndRecv.IRequest): berty.account.v1.ClientStreamCloseAndRecv.Request;
                     public static encode(message: berty.account.v1.ClientStreamCloseAndRecv.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -811,6 +852,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public streamId: string;
                     public payload: Uint8Array;
                     public trailer: berty.account.v1.IMetadata[];
@@ -834,6 +876,7 @@ export namespace berty {
             }
 
             class MethodDesc implements IMethodDesc {
+
                 public name: string;
                 public isClientStream: boolean;
                 public isServerStream: boolean;
@@ -854,6 +897,7 @@ export namespace berty {
             }
 
             class Metadata implements IMetadata {
+
                 public key: string;
                 public values: string[];
                 public static create(properties?: berty.account.v1.IMetadata): berty.account.v1.Metadata;
@@ -874,6 +918,7 @@ export namespace berty {
             }
 
             class Error implements IError {
+
                 public grpcErrorCode: berty.account.v1.GRPCErrCode;
                 public errorCode: berty.errcode.ErrCode;
                 public message: string;
@@ -1039,6 +1084,7 @@ export namespace berty {
         }
 
         class ErrDetails implements IErrDetails {
+
             public codes: berty.errcode.ErrCode[];
             public static create(properties?: berty.errcode.IErrDetails): berty.errcode.ErrDetails;
             public static encode(message: berty.errcode.IErrDetails, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -1057,6 +1103,7 @@ export namespace berty {
         namespace v1 {
 
             class ProtocolService extends $protobuf.rpc.Service {
+
                 public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): ProtocolService;
                 public instanceExportData(request: berty.protocol.v1.InstanceExportData.IRequest, callback: berty.protocol.v1.ProtocolService.InstanceExportDataCallback): void;
                 public instanceExportData(request: berty.protocol.v1.InstanceExportData.IRequest): Promise<berty.protocol.v1.InstanceExportData.Reply>;
@@ -1252,6 +1299,7 @@ export namespace berty {
             }
 
             class Account implements IAccount {
+
                 public group?: (berty.protocol.v1.IGroup|null);
                 public accountPrivateKey: Uint8Array;
                 public aliasPrivateKey: Uint8Array;
@@ -1276,6 +1324,7 @@ export namespace berty {
             }
 
             class Group implements IGroup {
+
                 public publicKey: Uint8Array;
                 public secret: Uint8Array;
                 public secretSig: Uint8Array;
@@ -1300,6 +1349,7 @@ export namespace berty {
             }
 
             class GroupHeadsExport implements IGroupHeadsExport {
+
                 public publicKey: Uint8Array;
                 public signPub: Uint8Array;
                 public metadataHeadsCids: Uint8Array[];
@@ -1323,6 +1373,7 @@ export namespace berty {
             }
 
             class GroupMetadata implements IGroupMetadata {
+
                 public eventType: berty.protocol.v1.EventType;
                 public payload: Uint8Array;
                 public sig: Uint8Array;
@@ -1345,6 +1396,7 @@ export namespace berty {
             }
 
             class GroupEnvelope implements IGroupEnvelope {
+
                 public nonce: Uint8Array;
                 public event: Uint8Array;
                 public encryptedAttachmentCids: Uint8Array[];
@@ -1367,6 +1419,7 @@ export namespace berty {
             }
 
             class MessageHeaders implements IMessageHeaders {
+
                 public counter: Long;
                 public devicePk: Uint8Array;
                 public sig: Uint8Array;
@@ -1387,6 +1440,7 @@ export namespace berty {
             }
 
             class ProtocolMetadata implements IProtocolMetadata {
+
                 public attachmentsSecrets: Uint8Array[];
                 public static create(properties?: berty.protocol.v1.IProtocolMetadata): berty.protocol.v1.ProtocolMetadata;
                 public static encode(message: berty.protocol.v1.IProtocolMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -1405,6 +1459,7 @@ export namespace berty {
             }
 
             class EncryptedMessage implements IEncryptedMessage {
+
                 public plaintext: Uint8Array;
                 public protocolMetadata?: (berty.protocol.v1.IProtocolMetadata|null);
                 public static create(properties?: berty.protocol.v1.IEncryptedMessage): berty.protocol.v1.EncryptedMessage;
@@ -1426,6 +1481,7 @@ export namespace berty {
             }
 
             class MessageEnvelope implements IMessageEnvelope {
+
                 public messageHeaders: Uint8Array;
                 public message: Uint8Array;
                 public nonce: Uint8Array;
@@ -1449,6 +1505,7 @@ export namespace berty {
             }
 
             class EventContext implements IEventContext {
+
                 public id: Uint8Array;
                 public parentIds: Uint8Array[];
                 public groupPk: Uint8Array;
@@ -1470,6 +1527,7 @@ export namespace berty {
             }
 
             class AppMetadata implements IAppMetadata {
+
                 public devicePk: Uint8Array;
                 public message: Uint8Array;
                 public static create(properties?: berty.protocol.v1.IAppMetadata): berty.protocol.v1.AppMetadata;
@@ -1489,6 +1547,7 @@ export namespace berty {
             }
 
             class ContactAddAliasKey implements IContactAddAliasKey {
+
                 public devicePk: Uint8Array;
                 public aliasPk: Uint8Array;
                 public static create(properties?: berty.protocol.v1.IContactAddAliasKey): berty.protocol.v1.ContactAddAliasKey;
@@ -1509,6 +1568,7 @@ export namespace berty {
             }
 
             class GroupAddMemberDevice implements IGroupAddMemberDevice {
+
                 public memberPk: Uint8Array;
                 public devicePk: Uint8Array;
                 public memberSig: Uint8Array;
@@ -1529,6 +1589,7 @@ export namespace berty {
             }
 
             class DeviceSecret implements IDeviceSecret {
+
                 public chainKey: Uint8Array;
                 public counter: Long;
                 public static create(properties?: berty.protocol.v1.IDeviceSecret): berty.protocol.v1.DeviceSecret;
@@ -1549,6 +1610,7 @@ export namespace berty {
             }
 
             class GroupAddDeviceSecret implements IGroupAddDeviceSecret {
+
                 public devicePk: Uint8Array;
                 public destMemberPk: Uint8Array;
                 public payload: Uint8Array;
@@ -1570,6 +1632,7 @@ export namespace berty {
             }
 
             class MultiMemberGroupAddAliasResolver implements IMultiMemberGroupAddAliasResolver {
+
                 public devicePk: Uint8Array;
                 public aliasResolver: Uint8Array;
                 public aliasProof: Uint8Array;
@@ -1590,6 +1653,7 @@ export namespace berty {
             }
 
             class MultiMemberGrantAdminRole implements IMultiMemberGrantAdminRole {
+
                 public devicePk: Uint8Array;
                 public granteeMemberPk: Uint8Array;
                 public static create(properties?: berty.protocol.v1.IMultiMemberGrantAdminRole): berty.protocol.v1.MultiMemberGrantAdminRole;
@@ -1608,6 +1672,7 @@ export namespace berty {
             }
 
             class MultiMemberInitialMember implements IMultiMemberInitialMember {
+
                 public memberPk: Uint8Array;
                 public static create(properties?: berty.protocol.v1.IMultiMemberInitialMember): berty.protocol.v1.MultiMemberInitialMember;
                 public static encode(message: berty.protocol.v1.IMultiMemberInitialMember, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -1626,6 +1691,7 @@ export namespace berty {
             }
 
             class GroupAddAdditionalRendezvousSeed implements IGroupAddAdditionalRendezvousSeed {
+
                 public devicePk: Uint8Array;
                 public seed: Uint8Array;
                 public static create(properties?: berty.protocol.v1.IGroupAddAdditionalRendezvousSeed): berty.protocol.v1.GroupAddAdditionalRendezvousSeed;
@@ -1645,6 +1711,7 @@ export namespace berty {
             }
 
             class GroupRemoveAdditionalRendezvousSeed implements IGroupRemoveAdditionalRendezvousSeed {
+
                 public devicePk: Uint8Array;
                 public seed: Uint8Array;
                 public static create(properties?: berty.protocol.v1.IGroupRemoveAdditionalRendezvousSeed): berty.protocol.v1.GroupRemoveAdditionalRendezvousSeed;
@@ -1664,6 +1731,7 @@ export namespace berty {
             }
 
             class AccountGroupJoined implements IAccountGroupJoined {
+
                 public devicePk: Uint8Array;
                 public group?: (berty.protocol.v1.IGroup|null);
                 public static create(properties?: berty.protocol.v1.IAccountGroupJoined): berty.protocol.v1.AccountGroupJoined;
@@ -1683,6 +1751,7 @@ export namespace berty {
             }
 
             class AccountGroupLeft implements IAccountGroupLeft {
+
                 public devicePk: Uint8Array;
                 public groupPk: Uint8Array;
                 public static create(properties?: berty.protocol.v1.IAccountGroupLeft): berty.protocol.v1.AccountGroupLeft;
@@ -1701,6 +1770,7 @@ export namespace berty {
             }
 
             class AccountContactRequestDisabled implements IAccountContactRequestDisabled {
+
                 public devicePk: Uint8Array;
                 public static create(properties?: berty.protocol.v1.IAccountContactRequestDisabled): berty.protocol.v1.AccountContactRequestDisabled;
                 public static encode(message: berty.protocol.v1.IAccountContactRequestDisabled, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -1718,6 +1788,7 @@ export namespace berty {
             }
 
             class AccountContactRequestEnabled implements IAccountContactRequestEnabled {
+
                 public devicePk: Uint8Array;
                 public static create(properties?: berty.protocol.v1.IAccountContactRequestEnabled): berty.protocol.v1.AccountContactRequestEnabled;
                 public static encode(message: berty.protocol.v1.IAccountContactRequestEnabled, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -1736,6 +1807,7 @@ export namespace berty {
             }
 
             class AccountContactRequestReferenceReset implements IAccountContactRequestReferenceReset {
+
                 public devicePk: Uint8Array;
                 public publicRendezvousSeed: Uint8Array;
                 public static create(properties?: berty.protocol.v1.IAccountContactRequestReferenceReset): berty.protocol.v1.AccountContactRequestReferenceReset;
@@ -1757,6 +1829,7 @@ export namespace berty {
             }
 
             class AccountContactRequestEnqueued implements IAccountContactRequestEnqueued {
+
                 public devicePk: Uint8Array;
                 public groupPk: Uint8Array;
                 public contact?: (berty.protocol.v1.IShareableContact|null);
@@ -1778,6 +1851,7 @@ export namespace berty {
             }
 
             class AccountContactRequestSent implements IAccountContactRequestSent {
+
                 public devicePk: Uint8Array;
                 public contactPk: Uint8Array;
                 public static create(properties?: berty.protocol.v1.IAccountContactRequestSent): berty.protocol.v1.AccountContactRequestSent;
@@ -1799,6 +1873,7 @@ export namespace berty {
             }
 
             class AccountContactRequestReceived implements IAccountContactRequestReceived {
+
                 public devicePk: Uint8Array;
                 public contactPk: Uint8Array;
                 public contactRendezvousSeed: Uint8Array;
@@ -1820,6 +1895,7 @@ export namespace berty {
             }
 
             class AccountContactRequestDiscarded implements IAccountContactRequestDiscarded {
+
                 public devicePk: Uint8Array;
                 public contactPk: Uint8Array;
                 public static create(properties?: berty.protocol.v1.IAccountContactRequestDiscarded): berty.protocol.v1.AccountContactRequestDiscarded;
@@ -1840,6 +1916,7 @@ export namespace berty {
             }
 
             class AccountContactRequestAccepted implements IAccountContactRequestAccepted {
+
                 public devicePk: Uint8Array;
                 public contactPk: Uint8Array;
                 public groupPk: Uint8Array;
@@ -1860,6 +1937,7 @@ export namespace berty {
             }
 
             class AccountContactBlocked implements IAccountContactBlocked {
+
                 public devicePk: Uint8Array;
                 public contactPk: Uint8Array;
                 public static create(properties?: berty.protocol.v1.IAccountContactBlocked): berty.protocol.v1.AccountContactBlocked;
@@ -1879,6 +1957,7 @@ export namespace berty {
             }
 
             class AccountContactUnblocked implements IAccountContactUnblocked {
+
                 public devicePk: Uint8Array;
                 public contactPk: Uint8Array;
                 public static create(properties?: berty.protocol.v1.IAccountContactUnblocked): berty.protocol.v1.AccountContactUnblocked;
@@ -1898,6 +1977,7 @@ export namespace berty {
             }
 
             class AccountServiceTokenAdded implements IAccountServiceTokenAdded {
+
                 public devicePk: Uint8Array;
                 public serviceToken?: (berty.protocol.v1.IServiceToken|null);
                 public static create(properties?: berty.protocol.v1.IAccountServiceTokenAdded): berty.protocol.v1.AccountServiceTokenAdded;
@@ -1917,6 +1997,7 @@ export namespace berty {
             }
 
             class AccountServiceTokenRemoved implements IAccountServiceTokenRemoved {
+
                 public devicePk: Uint8Array;
                 public tokenId: string;
                 public static create(properties?: berty.protocol.v1.IAccountServiceTokenRemoved): berty.protocol.v1.AccountServiceTokenRemoved;
@@ -1937,6 +2018,7 @@ export namespace berty {
             }
 
             class GroupReplicating implements IGroupReplicating {
+
                 public devicePk: Uint8Array;
                 public authenticationUrl: string;
                 public replicationServer: string;
@@ -1955,6 +2037,7 @@ export namespace berty {
             }
 
             class InstanceExportData implements IInstanceExportData {
+
                 public static create(properties?: berty.protocol.v1.IInstanceExportData): berty.protocol.v1.InstanceExportData;
                 public static encode(message: berty.protocol.v1.IInstanceExportData, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IInstanceExportData, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -1972,6 +2055,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public static create(properties?: berty.protocol.v1.InstanceExportData.IRequest): berty.protocol.v1.InstanceExportData.Request;
                     public static encode(message: berty.protocol.v1.InstanceExportData.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.InstanceExportData.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -1988,6 +2072,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public exportedData: Uint8Array;
                     public static create(properties?: berty.protocol.v1.InstanceExportData.IReply): berty.protocol.v1.InstanceExportData.Reply;
                     public static encode(message: berty.protocol.v1.InstanceExportData.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2005,6 +2090,7 @@ export namespace berty {
             }
 
             class InstanceGetConfiguration implements IInstanceGetConfiguration {
+
                 public static create(properties?: berty.protocol.v1.IInstanceGetConfiguration): berty.protocol.v1.InstanceGetConfiguration;
                 public static encode(message: berty.protocol.v1.IInstanceGetConfiguration, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IInstanceGetConfiguration, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2029,6 +2115,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public static create(properties?: berty.protocol.v1.InstanceGetConfiguration.IRequest): berty.protocol.v1.InstanceGetConfiguration.Request;
                     public static encode(message: berty.protocol.v1.InstanceGetConfiguration.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.InstanceGetConfiguration.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2053,6 +2140,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public accountPk: Uint8Array;
                     public devicePk: Uint8Array;
                     public accountGroupPk: Uint8Array;
@@ -2078,6 +2166,7 @@ export namespace berty {
             }
 
             class ContactRequestReference implements IContactRequestReference {
+
                 public static create(properties?: berty.protocol.v1.IContactRequestReference): berty.protocol.v1.ContactRequestReference;
                 public static encode(message: berty.protocol.v1.IContactRequestReference, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IContactRequestReference, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2095,6 +2184,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public static create(properties?: berty.protocol.v1.ContactRequestReference.IRequest): berty.protocol.v1.ContactRequestReference.Request;
                     public static encode(message: berty.protocol.v1.ContactRequestReference.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.ContactRequestReference.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2112,6 +2202,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public publicRendezvousSeed: Uint8Array;
                     public enabled: boolean;
                     public static create(properties?: berty.protocol.v1.ContactRequestReference.IReply): berty.protocol.v1.ContactRequestReference.Reply;
@@ -2130,6 +2221,7 @@ export namespace berty {
             }
 
             class ContactRequestDisable implements IContactRequestDisable {
+
                 public static create(properties?: berty.protocol.v1.IContactRequestDisable): berty.protocol.v1.ContactRequestDisable;
                 public static encode(message: berty.protocol.v1.IContactRequestDisable, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IContactRequestDisable, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2147,6 +2239,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public static create(properties?: berty.protocol.v1.ContactRequestDisable.IRequest): berty.protocol.v1.ContactRequestDisable.Request;
                     public static encode(message: berty.protocol.v1.ContactRequestDisable.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.ContactRequestDisable.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2162,6 +2255,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.protocol.v1.ContactRequestDisable.IReply): berty.protocol.v1.ContactRequestDisable.Reply;
                     public static encode(message: berty.protocol.v1.ContactRequestDisable.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.ContactRequestDisable.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2178,6 +2272,7 @@ export namespace berty {
             }
 
             class ContactRequestEnable implements IContactRequestEnable {
+
                 public static create(properties?: berty.protocol.v1.IContactRequestEnable): berty.protocol.v1.ContactRequestEnable;
                 public static encode(message: berty.protocol.v1.IContactRequestEnable, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IContactRequestEnable, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2195,6 +2290,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public static create(properties?: berty.protocol.v1.ContactRequestEnable.IRequest): berty.protocol.v1.ContactRequestEnable.Request;
                     public static encode(message: berty.protocol.v1.ContactRequestEnable.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.ContactRequestEnable.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2211,6 +2307,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public publicRendezvousSeed: Uint8Array;
                     public static create(properties?: berty.protocol.v1.ContactRequestEnable.IReply): berty.protocol.v1.ContactRequestEnable.Reply;
                     public static encode(message: berty.protocol.v1.ContactRequestEnable.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2228,6 +2325,7 @@ export namespace berty {
             }
 
             class ContactRequestResetReference implements IContactRequestResetReference {
+
                 public static create(properties?: berty.protocol.v1.IContactRequestResetReference): berty.protocol.v1.ContactRequestResetReference;
                 public static encode(message: berty.protocol.v1.IContactRequestResetReference, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IContactRequestResetReference, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2245,6 +2343,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public static create(properties?: berty.protocol.v1.ContactRequestResetReference.IRequest): berty.protocol.v1.ContactRequestResetReference.Request;
                     public static encode(message: berty.protocol.v1.ContactRequestResetReference.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.ContactRequestResetReference.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2261,6 +2360,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public publicRendezvousSeed: Uint8Array;
                     public static create(properties?: berty.protocol.v1.ContactRequestResetReference.IReply): berty.protocol.v1.ContactRequestResetReference.Reply;
                     public static encode(message: berty.protocol.v1.ContactRequestResetReference.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2278,6 +2378,7 @@ export namespace berty {
             }
 
             class ContactRequestSend implements IContactRequestSend {
+
                 public static create(properties?: berty.protocol.v1.IContactRequestSend): berty.protocol.v1.ContactRequestSend;
                 public static encode(message: berty.protocol.v1.IContactRequestSend, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IContactRequestSend, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2297,6 +2398,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public contact?: (berty.protocol.v1.IShareableContact|null);
                     public ownMetadata: Uint8Array;
                     public static create(properties?: berty.protocol.v1.ContactRequestSend.IRequest): berty.protocol.v1.ContactRequestSend.Request;
@@ -2314,6 +2416,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.protocol.v1.ContactRequestSend.IReply): berty.protocol.v1.ContactRequestSend.Reply;
                     public static encode(message: berty.protocol.v1.ContactRequestSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.ContactRequestSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2330,6 +2433,7 @@ export namespace berty {
             }
 
             class ContactRequestAccept implements IContactRequestAccept {
+
                 public static create(properties?: berty.protocol.v1.IContactRequestAccept): berty.protocol.v1.ContactRequestAccept;
                 public static encode(message: berty.protocol.v1.IContactRequestAccept, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IContactRequestAccept, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2348,6 +2452,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public contactPk: Uint8Array;
                     public static create(properties?: berty.protocol.v1.ContactRequestAccept.IRequest): berty.protocol.v1.ContactRequestAccept.Request;
                     public static encode(message: berty.protocol.v1.ContactRequestAccept.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2364,6 +2469,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.protocol.v1.ContactRequestAccept.IReply): berty.protocol.v1.ContactRequestAccept.Reply;
                     public static encode(message: berty.protocol.v1.ContactRequestAccept.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.ContactRequestAccept.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2380,6 +2486,7 @@ export namespace berty {
             }
 
             class ContactRequestDiscard implements IContactRequestDiscard {
+
                 public static create(properties?: berty.protocol.v1.IContactRequestDiscard): berty.protocol.v1.ContactRequestDiscard;
                 public static encode(message: berty.protocol.v1.IContactRequestDiscard, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IContactRequestDiscard, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2398,6 +2505,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public contactPk: Uint8Array;
                     public static create(properties?: berty.protocol.v1.ContactRequestDiscard.IRequest): berty.protocol.v1.ContactRequestDiscard.Request;
                     public static encode(message: berty.protocol.v1.ContactRequestDiscard.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2414,6 +2522,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.protocol.v1.ContactRequestDiscard.IReply): berty.protocol.v1.ContactRequestDiscard.Reply;
                     public static encode(message: berty.protocol.v1.ContactRequestDiscard.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.ContactRequestDiscard.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2430,6 +2539,7 @@ export namespace berty {
             }
 
             class ContactBlock implements IContactBlock {
+
                 public static create(properties?: berty.protocol.v1.IContactBlock): berty.protocol.v1.ContactBlock;
                 public static encode(message: berty.protocol.v1.IContactBlock, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IContactBlock, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2448,6 +2558,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public contactPk: Uint8Array;
                     public static create(properties?: berty.protocol.v1.ContactBlock.IRequest): berty.protocol.v1.ContactBlock.Request;
                     public static encode(message: berty.protocol.v1.ContactBlock.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2464,6 +2575,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.protocol.v1.ContactBlock.IReply): berty.protocol.v1.ContactBlock.Reply;
                     public static encode(message: berty.protocol.v1.ContactBlock.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.ContactBlock.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2480,6 +2592,7 @@ export namespace berty {
             }
 
             class ContactUnblock implements IContactUnblock {
+
                 public static create(properties?: berty.protocol.v1.IContactUnblock): berty.protocol.v1.ContactUnblock;
                 public static encode(message: berty.protocol.v1.IContactUnblock, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IContactUnblock, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2498,6 +2611,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public contactPk: Uint8Array;
                     public static create(properties?: berty.protocol.v1.ContactUnblock.IRequest): berty.protocol.v1.ContactUnblock.Request;
                     public static encode(message: berty.protocol.v1.ContactUnblock.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2514,6 +2628,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.protocol.v1.ContactUnblock.IReply): berty.protocol.v1.ContactUnblock.Reply;
                     public static encode(message: berty.protocol.v1.ContactUnblock.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.ContactUnblock.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2530,6 +2645,7 @@ export namespace berty {
             }
 
             class ContactAliasKeySend implements IContactAliasKeySend {
+
                 public static create(properties?: berty.protocol.v1.IContactAliasKeySend): berty.protocol.v1.ContactAliasKeySend;
                 public static encode(message: berty.protocol.v1.IContactAliasKeySend, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IContactAliasKeySend, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2548,6 +2664,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: Uint8Array;
                     public static create(properties?: berty.protocol.v1.ContactAliasKeySend.IRequest): berty.protocol.v1.ContactAliasKeySend.Request;
                     public static encode(message: berty.protocol.v1.ContactAliasKeySend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2564,6 +2681,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.protocol.v1.ContactAliasKeySend.IReply): berty.protocol.v1.ContactAliasKeySend.Reply;
                     public static encode(message: berty.protocol.v1.ContactAliasKeySend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.ContactAliasKeySend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2580,6 +2698,7 @@ export namespace berty {
             }
 
             class MultiMemberGroupCreate implements IMultiMemberGroupCreate {
+
                 public static create(properties?: berty.protocol.v1.IMultiMemberGroupCreate): berty.protocol.v1.MultiMemberGroupCreate;
                 public static encode(message: berty.protocol.v1.IMultiMemberGroupCreate, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IMultiMemberGroupCreate, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2597,6 +2716,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public static create(properties?: berty.protocol.v1.MultiMemberGroupCreate.IRequest): berty.protocol.v1.MultiMemberGroupCreate.Request;
                     public static encode(message: berty.protocol.v1.MultiMemberGroupCreate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.MultiMemberGroupCreate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2613,6 +2733,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public groupPk: Uint8Array;
                     public static create(properties?: berty.protocol.v1.MultiMemberGroupCreate.IReply): berty.protocol.v1.MultiMemberGroupCreate.Reply;
                     public static encode(message: berty.protocol.v1.MultiMemberGroupCreate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2630,6 +2751,7 @@ export namespace berty {
             }
 
             class MultiMemberGroupJoin implements IMultiMemberGroupJoin {
+
                 public static create(properties?: berty.protocol.v1.IMultiMemberGroupJoin): berty.protocol.v1.MultiMemberGroupJoin;
                 public static encode(message: berty.protocol.v1.IMultiMemberGroupJoin, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IMultiMemberGroupJoin, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2648,6 +2770,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public group?: (berty.protocol.v1.IGroup|null);
                     public static create(properties?: berty.protocol.v1.MultiMemberGroupJoin.IRequest): berty.protocol.v1.MultiMemberGroupJoin.Request;
                     public static encode(message: berty.protocol.v1.MultiMemberGroupJoin.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2664,6 +2787,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.protocol.v1.MultiMemberGroupJoin.IReply): berty.protocol.v1.MultiMemberGroupJoin.Reply;
                     public static encode(message: berty.protocol.v1.MultiMemberGroupJoin.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.MultiMemberGroupJoin.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2680,6 +2804,7 @@ export namespace berty {
             }
 
             class MultiMemberGroupLeave implements IMultiMemberGroupLeave {
+
                 public static create(properties?: berty.protocol.v1.IMultiMemberGroupLeave): berty.protocol.v1.MultiMemberGroupLeave;
                 public static encode(message: berty.protocol.v1.IMultiMemberGroupLeave, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IMultiMemberGroupLeave, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2698,6 +2823,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: Uint8Array;
                     public static create(properties?: berty.protocol.v1.MultiMemberGroupLeave.IRequest): berty.protocol.v1.MultiMemberGroupLeave.Request;
                     public static encode(message: berty.protocol.v1.MultiMemberGroupLeave.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2714,6 +2840,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.protocol.v1.MultiMemberGroupLeave.IReply): berty.protocol.v1.MultiMemberGroupLeave.Reply;
                     public static encode(message: berty.protocol.v1.MultiMemberGroupLeave.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.MultiMemberGroupLeave.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2730,6 +2857,7 @@ export namespace berty {
             }
 
             class MultiMemberGroupAliasResolverDisclose implements IMultiMemberGroupAliasResolverDisclose {
+
                 public static create(properties?: berty.protocol.v1.IMultiMemberGroupAliasResolverDisclose): berty.protocol.v1.MultiMemberGroupAliasResolverDisclose;
                 public static encode(message: berty.protocol.v1.IMultiMemberGroupAliasResolverDisclose, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IMultiMemberGroupAliasResolverDisclose, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2748,6 +2876,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: Uint8Array;
                     public static create(properties?: berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.IRequest): berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.Request;
                     public static encode(message: berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2764,6 +2893,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.IReply): berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.Reply;
                     public static encode(message: berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.MultiMemberGroupAliasResolverDisclose.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2780,6 +2910,7 @@ export namespace berty {
             }
 
             class MultiMemberGroupAdminRoleGrant implements IMultiMemberGroupAdminRoleGrant {
+
                 public static create(properties?: berty.protocol.v1.IMultiMemberGroupAdminRoleGrant): berty.protocol.v1.MultiMemberGroupAdminRoleGrant;
                 public static encode(message: berty.protocol.v1.IMultiMemberGroupAdminRoleGrant, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IMultiMemberGroupAdminRoleGrant, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2799,6 +2930,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: Uint8Array;
                     public memberPk: Uint8Array;
                     public static create(properties?: berty.protocol.v1.MultiMemberGroupAdminRoleGrant.IRequest): berty.protocol.v1.MultiMemberGroupAdminRoleGrant.Request;
@@ -2816,6 +2948,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.protocol.v1.MultiMemberGroupAdminRoleGrant.IReply): berty.protocol.v1.MultiMemberGroupAdminRoleGrant.Reply;
                     public static encode(message: berty.protocol.v1.MultiMemberGroupAdminRoleGrant.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.MultiMemberGroupAdminRoleGrant.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2832,6 +2965,7 @@ export namespace berty {
             }
 
             class MultiMemberGroupInvitationCreate implements IMultiMemberGroupInvitationCreate {
+
                 public static create(properties?: berty.protocol.v1.IMultiMemberGroupInvitationCreate): berty.protocol.v1.MultiMemberGroupInvitationCreate;
                 public static encode(message: berty.protocol.v1.IMultiMemberGroupInvitationCreate, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IMultiMemberGroupInvitationCreate, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2850,6 +2984,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: Uint8Array;
                     public static create(properties?: berty.protocol.v1.MultiMemberGroupInvitationCreate.IRequest): berty.protocol.v1.MultiMemberGroupInvitationCreate.Request;
                     public static encode(message: berty.protocol.v1.MultiMemberGroupInvitationCreate.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2867,6 +3002,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public group?: (berty.protocol.v1.IGroup|null);
                     public static create(properties?: berty.protocol.v1.MultiMemberGroupInvitationCreate.IReply): berty.protocol.v1.MultiMemberGroupInvitationCreate.Reply;
                     public static encode(message: berty.protocol.v1.MultiMemberGroupInvitationCreate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2884,6 +3020,7 @@ export namespace berty {
             }
 
             class AppMetadataSend implements IAppMetadataSend {
+
                 public static create(properties?: berty.protocol.v1.IAppMetadataSend): berty.protocol.v1.AppMetadataSend;
                 public static encode(message: berty.protocol.v1.IAppMetadataSend, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IAppMetadataSend, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2904,6 +3041,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: Uint8Array;
                     public payload: Uint8Array;
                     public attachmentCids: Uint8Array[];
@@ -2922,6 +3060,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.protocol.v1.AppMetadataSend.IReply): berty.protocol.v1.AppMetadataSend.Reply;
                     public static encode(message: berty.protocol.v1.AppMetadataSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.AppMetadataSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2938,6 +3077,7 @@ export namespace berty {
             }
 
             class AppMessageSend implements IAppMessageSend {
+
                 public static create(properties?: berty.protocol.v1.IAppMessageSend): berty.protocol.v1.AppMessageSend;
                 public static encode(message: berty.protocol.v1.IAppMessageSend, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IAppMessageSend, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2958,6 +3098,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: Uint8Array;
                     public payload: Uint8Array;
                     public attachmentCids: Uint8Array[];
@@ -2976,6 +3117,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.protocol.v1.AppMessageSend.IReply): berty.protocol.v1.AppMessageSend.Reply;
                     public static encode(message: berty.protocol.v1.AppMessageSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.AppMessageSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -2995,6 +3137,7 @@ export namespace berty {
             }
 
             class GroupMetadataEvent implements IGroupMetadataEvent {
+
                 public eventContext?: (berty.protocol.v1.IEventContext|null);
                 public metadata?: (berty.protocol.v1.IGroupMetadata|null);
                 public event: Uint8Array;
@@ -3016,6 +3159,7 @@ export namespace berty {
             }
 
             class GroupMessageEvent implements IGroupMessageEvent {
+
                 public eventContext?: (berty.protocol.v1.IEventContext|null);
                 public headers?: (berty.protocol.v1.IMessageHeaders|null);
                 public message: Uint8Array;
@@ -3034,6 +3178,7 @@ export namespace berty {
             }
 
             class GroupMetadataList implements IGroupMetadataList {
+
                 public static create(properties?: berty.protocol.v1.IGroupMetadataList): berty.protocol.v1.GroupMetadataList;
                 public static encode(message: berty.protocol.v1.IGroupMetadataList, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IGroupMetadataList, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3057,6 +3202,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: Uint8Array;
                     public sinceId: Uint8Array;
                     public sinceNow: boolean;
@@ -3079,6 +3225,7 @@ export namespace berty {
             }
 
             class GroupMessageList implements IGroupMessageList {
+
                 public static create(properties?: berty.protocol.v1.IGroupMessageList): berty.protocol.v1.GroupMessageList;
                 public static encode(message: berty.protocol.v1.IGroupMessageList, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IGroupMessageList, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3102,6 +3249,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: Uint8Array;
                     public sinceId: Uint8Array;
                     public sinceNow: boolean;
@@ -3124,6 +3272,7 @@ export namespace berty {
             }
 
             class GroupInfo implements IGroupInfo {
+
                 public static create(properties?: berty.protocol.v1.IGroupInfo): berty.protocol.v1.GroupInfo;
                 public static encode(message: berty.protocol.v1.IGroupInfo, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IGroupInfo, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3143,6 +3292,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: Uint8Array;
                     public contactPk: Uint8Array;
                     public static create(properties?: berty.protocol.v1.GroupInfo.IRequest): berty.protocol.v1.GroupInfo.Request;
@@ -3163,6 +3313,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public group?: (berty.protocol.v1.IGroup|null);
                     public memberPk: Uint8Array;
                     public devicePk: Uint8Array;
@@ -3182,6 +3333,7 @@ export namespace berty {
             }
 
             class ActivateGroup implements IActivateGroup {
+
                 public static create(properties?: berty.protocol.v1.IActivateGroup): berty.protocol.v1.ActivateGroup;
                 public static encode(message: berty.protocol.v1.IActivateGroup, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IActivateGroup, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3201,6 +3353,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: Uint8Array;
                     public localOnly: boolean;
                     public static create(properties?: berty.protocol.v1.ActivateGroup.IRequest): berty.protocol.v1.ActivateGroup.Request;
@@ -3218,6 +3371,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.protocol.v1.ActivateGroup.IReply): berty.protocol.v1.ActivateGroup.Reply;
                     public static encode(message: berty.protocol.v1.ActivateGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.ActivateGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3234,6 +3388,7 @@ export namespace berty {
             }
 
             class DeactivateGroup implements IDeactivateGroup {
+
                 public static create(properties?: berty.protocol.v1.IDeactivateGroup): berty.protocol.v1.DeactivateGroup;
                 public static encode(message: berty.protocol.v1.IDeactivateGroup, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IDeactivateGroup, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3252,6 +3407,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: Uint8Array;
                     public static create(properties?: berty.protocol.v1.DeactivateGroup.IRequest): berty.protocol.v1.DeactivateGroup.Request;
                     public static encode(message: berty.protocol.v1.DeactivateGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3268,6 +3424,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.protocol.v1.DeactivateGroup.IReply): berty.protocol.v1.DeactivateGroup.Reply;
                     public static encode(message: berty.protocol.v1.DeactivateGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.DeactivateGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3284,6 +3441,7 @@ export namespace berty {
             }
 
             class MonitorGroup implements IMonitorGroup {
+
                 public static create(properties?: berty.protocol.v1.IMonitorGroup): berty.protocol.v1.MonitorGroup;
                 public static encode(message: berty.protocol.v1.IMonitorGroup, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IMonitorGroup, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3313,6 +3471,7 @@ export namespace berty {
                 }
 
                 class EventMonitorAdvertiseGroup implements IEventMonitorAdvertiseGroup {
+
                     public peerId: string;
                     public maddrs: string[];
                     public driverName: string;
@@ -3336,6 +3495,7 @@ export namespace berty {
                 }
 
                 class EventMonitorPeerFound implements IEventMonitorPeerFound {
+
                     public peerId: string;
                     public maddrs: string[];
                     public driverName: string;
@@ -3359,6 +3519,7 @@ export namespace berty {
                 }
 
                 class EventMonitorPeerJoin implements IEventMonitorPeerJoin {
+
                     public peerId: string;
                     public maddrs: string[];
                     public topic: string;
@@ -3381,6 +3542,7 @@ export namespace berty {
                 }
 
                 class EventMonitorPeerLeave implements IEventMonitorPeerLeave {
+
                     public peerId: string;
                     public topic: string;
                     public isSelf: boolean;
@@ -3404,6 +3566,7 @@ export namespace berty {
                 }
 
                 class EventMonitor implements IEventMonitor {
+
                     public type: berty.protocol.v1.MonitorGroup.TypeEventMonitor;
                     public advertiseGroup?: (berty.protocol.v1.MonitorGroup.IEventMonitorAdvertiseGroup|null);
                     public peerFound?: (berty.protocol.v1.MonitorGroup.IEventMonitorPeerFound|null);
@@ -3425,6 +3588,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: Uint8Array;
                     public static create(properties?: berty.protocol.v1.MonitorGroup.IRequest): berty.protocol.v1.MonitorGroup.Request;
                     public static encode(message: berty.protocol.v1.MonitorGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3443,6 +3607,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public event?: (berty.protocol.v1.MonitorGroup.IEventMonitor|null);
                     public groupPk: Uint8Array;
                     public static create(properties?: berty.protocol.v1.MonitorGroup.IReply): berty.protocol.v1.MonitorGroup.Reply;
@@ -3461,6 +3626,7 @@ export namespace berty {
             }
 
             class DebugListGroups implements IDebugListGroups {
+
                 public static create(properties?: berty.protocol.v1.IDebugListGroups): berty.protocol.v1.DebugListGroups;
                 public static encode(message: berty.protocol.v1.IDebugListGroups, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IDebugListGroups, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3478,6 +3644,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public static create(properties?: berty.protocol.v1.DebugListGroups.IRequest): berty.protocol.v1.DebugListGroups.Request;
                     public static encode(message: berty.protocol.v1.DebugListGroups.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.DebugListGroups.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3496,6 +3663,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public groupPk: Uint8Array;
                     public groupType: berty.protocol.v1.GroupType;
                     public contactPk: Uint8Array;
@@ -3515,6 +3683,7 @@ export namespace berty {
             }
 
             class DebugInspectGroupStore implements IDebugInspectGroupStore {
+
                 public static create(properties?: berty.protocol.v1.IDebugInspectGroupStore): berty.protocol.v1.DebugInspectGroupStore;
                 public static encode(message: berty.protocol.v1.IDebugInspectGroupStore, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IDebugInspectGroupStore, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3534,6 +3703,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: Uint8Array;
                     public logType: berty.protocol.v1.DebugInspectGroupLogType;
                     public static create(properties?: berty.protocol.v1.DebugInspectGroupStore.IRequest): berty.protocol.v1.DebugInspectGroupStore.Request;
@@ -3556,6 +3726,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public cid: Uint8Array;
                     public parentCids: Uint8Array[];
                     public metadataEventType: berty.protocol.v1.EventType;
@@ -3577,6 +3748,7 @@ export namespace berty {
             }
 
             class DebugGroup implements IDebugGroup {
+
                 public static create(properties?: berty.protocol.v1.IDebugGroup): berty.protocol.v1.DebugGroup;
                 public static encode(message: berty.protocol.v1.IDebugGroup, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IDebugGroup, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3595,6 +3767,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: Uint8Array;
                     public static create(properties?: berty.protocol.v1.DebugGroup.IRequest): berty.protocol.v1.DebugGroup.Request;
                     public static encode(message: berty.protocol.v1.DebugGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3612,6 +3785,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public peerIds: string[];
                     public static create(properties?: berty.protocol.v1.DebugGroup.IReply): berty.protocol.v1.DebugGroup.Reply;
                     public static encode(message: berty.protocol.v1.DebugGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3648,6 +3822,7 @@ export namespace berty {
             }
 
             class ShareableContact implements IShareableContact {
+
                 public pk: Uint8Array;
                 public publicRendezvousSeed: Uint8Array;
                 public metadata: Uint8Array;
@@ -3668,6 +3843,7 @@ export namespace berty {
             }
 
             class ServiceTokenSupportedService implements IServiceTokenSupportedService {
+
                 public serviceType: string;
                 public serviceEndpoint: string;
                 public static create(properties?: berty.protocol.v1.IServiceTokenSupportedService): berty.protocol.v1.ServiceTokenSupportedService;
@@ -3689,6 +3865,7 @@ export namespace berty {
             }
 
             class ServiceToken implements IServiceToken {
+
                 public token: string;
                 public authenticationUrl: string;
                 public supportedServices: berty.protocol.v1.IServiceTokenSupportedService[];
@@ -3708,6 +3885,7 @@ export namespace berty {
             }
 
             class AuthServiceCompleteFlow implements IAuthServiceCompleteFlow {
+
                 public static create(properties?: berty.protocol.v1.IAuthServiceCompleteFlow): berty.protocol.v1.AuthServiceCompleteFlow;
                 public static encode(message: berty.protocol.v1.IAuthServiceCompleteFlow, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IAuthServiceCompleteFlow, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3726,6 +3904,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public callbackUrl: string;
                     public static create(properties?: berty.protocol.v1.AuthServiceCompleteFlow.IRequest): berty.protocol.v1.AuthServiceCompleteFlow.Request;
                     public static encode(message: berty.protocol.v1.AuthServiceCompleteFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3742,6 +3921,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.protocol.v1.AuthServiceCompleteFlow.IReply): berty.protocol.v1.AuthServiceCompleteFlow.Reply;
                     public static encode(message: berty.protocol.v1.AuthServiceCompleteFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.AuthServiceCompleteFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3758,6 +3938,7 @@ export namespace berty {
             }
 
             class AuthServiceInitFlow implements IAuthServiceInitFlow {
+
                 public static create(properties?: berty.protocol.v1.IAuthServiceInitFlow): berty.protocol.v1.AuthServiceInitFlow;
                 public static encode(message: berty.protocol.v1.IAuthServiceInitFlow, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IAuthServiceInitFlow, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3776,6 +3957,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public authUrl: string;
                     public static create(properties?: berty.protocol.v1.AuthServiceInitFlow.IRequest): berty.protocol.v1.AuthServiceInitFlow.Request;
                     public static encode(message: berty.protocol.v1.AuthServiceInitFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3794,6 +3976,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public url: string;
                     public secureUrl: boolean;
                     public static create(properties?: berty.protocol.v1.AuthServiceInitFlow.IReply): berty.protocol.v1.AuthServiceInitFlow.Reply;
@@ -3812,6 +3995,7 @@ export namespace berty {
             }
 
             class ServicesTokenList implements IServicesTokenList {
+
                 public static create(properties?: berty.protocol.v1.IServicesTokenList): berty.protocol.v1.ServicesTokenList;
                 public static encode(message: berty.protocol.v1.IServicesTokenList, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IServicesTokenList, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3829,6 +4013,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public static create(properties?: berty.protocol.v1.ServicesTokenList.IRequest): berty.protocol.v1.ServicesTokenList.Request;
                     public static encode(message: berty.protocol.v1.ServicesTokenList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.ServicesTokenList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3846,6 +4031,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public tokenId: string;
                     public service?: (berty.protocol.v1.IServiceToken|null);
                     public static create(properties?: berty.protocol.v1.ServicesTokenList.IReply): berty.protocol.v1.ServicesTokenList.Reply;
@@ -3867,6 +4053,7 @@ export namespace berty {
             }
 
             class ServicesTokenCode implements IServicesTokenCode {
+
                 public services: string[];
                 public codeChallenge: string;
                 public tokenId: string;
@@ -3885,6 +4072,7 @@ export namespace berty {
             }
 
             class ReplicationServiceRegisterGroup implements IReplicationServiceRegisterGroup {
+
                 public static create(properties?: berty.protocol.v1.IReplicationServiceRegisterGroup): berty.protocol.v1.ReplicationServiceRegisterGroup;
                 public static encode(message: berty.protocol.v1.IReplicationServiceRegisterGroup, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IReplicationServiceRegisterGroup, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3904,6 +4092,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public tokenId: string;
                     public groupPk: Uint8Array;
                     public static create(properties?: berty.protocol.v1.ReplicationServiceRegisterGroup.IRequest): berty.protocol.v1.ReplicationServiceRegisterGroup.Request;
@@ -3921,6 +4110,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.protocol.v1.ReplicationServiceRegisterGroup.IReply): berty.protocol.v1.ReplicationServiceRegisterGroup.Reply;
                     public static encode(message: berty.protocol.v1.ReplicationServiceRegisterGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.ReplicationServiceRegisterGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3937,6 +4127,7 @@ export namespace berty {
             }
 
             class ReplicationServiceReplicateGroup implements IReplicationServiceReplicateGroup {
+
                 public static create(properties?: berty.protocol.v1.IReplicationServiceReplicateGroup): berty.protocol.v1.ReplicationServiceReplicateGroup;
                 public static encode(message: berty.protocol.v1.IReplicationServiceReplicateGroup, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IReplicationServiceReplicateGroup, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3955,6 +4146,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public group?: (berty.protocol.v1.IGroup|null);
                     public static create(properties?: berty.protocol.v1.ReplicationServiceReplicateGroup.IRequest): berty.protocol.v1.ReplicationServiceReplicateGroup.Request;
                     public static encode(message: berty.protocol.v1.ReplicationServiceReplicateGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3972,6 +4164,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public ok: boolean;
                     public static create(properties?: berty.protocol.v1.ReplicationServiceReplicateGroup.IReply): berty.protocol.v1.ReplicationServiceReplicateGroup.Reply;
                     public static encode(message: berty.protocol.v1.ReplicationServiceReplicateGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3989,6 +4182,7 @@ export namespace berty {
             }
 
             class SystemInfo implements ISystemInfo {
+
                 public static create(properties?: berty.protocol.v1.ISystemInfo): berty.protocol.v1.SystemInfo;
                 public static encode(message: berty.protocol.v1.ISystemInfo, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.ISystemInfo, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4006,6 +4200,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public static create(properties?: berty.protocol.v1.SystemInfo.IRequest): berty.protocol.v1.SystemInfo.Request;
                     public static encode(message: berty.protocol.v1.SystemInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.SystemInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4025,6 +4220,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public process?: (berty.protocol.v1.SystemInfo.IProcess|null);
                     public p2p?: (berty.protocol.v1.SystemInfo.IP2P|null);
                     public orbitdb?: (berty.protocol.v1.SystemInfo.IOrbitDB|null);
@@ -4045,6 +4241,7 @@ export namespace berty {
                 }
 
                 class OrbitDB implements IOrbitDB {
+
                     public accountMetadata?: (berty.protocol.v1.SystemInfo.OrbitDB.IReplicationStatus|null);
                     public static create(properties?: berty.protocol.v1.SystemInfo.IOrbitDB): berty.protocol.v1.SystemInfo.OrbitDB;
                     public static encode(message: berty.protocol.v1.SystemInfo.IOrbitDB, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4067,6 +4264,7 @@ export namespace berty {
                     }
 
                     class ReplicationStatus implements IReplicationStatus {
+
                         public progress: Long;
                         public maximum: Long;
                         public buffered: Long;
@@ -4088,6 +4286,7 @@ export namespace berty {
                 }
 
                 class P2P implements IP2P {
+
                     public connectedPeers: Long;
                     public static create(properties?: berty.protocol.v1.SystemInfo.IP2P): berty.protocol.v1.SystemInfo.P2P;
                     public static encode(message: berty.protocol.v1.SystemInfo.IP2P, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4126,6 +4325,7 @@ export namespace berty {
                 }
 
                 class Process implements IProcess {
+
                     public version: string;
                     public vcsRef: string;
                     public uptimeMs: Long;
@@ -4164,6 +4364,7 @@ export namespace berty {
             }
 
             class PeerList implements IPeerList {
+
                 public static create(properties?: berty.protocol.v1.IPeerList): berty.protocol.v1.PeerList;
                 public static encode(message: berty.protocol.v1.IPeerList, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IPeerList, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4181,6 +4382,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public static create(properties?: berty.protocol.v1.PeerList.IRequest): berty.protocol.v1.PeerList.Request;
                     public static encode(message: berty.protocol.v1.PeerList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.PeerList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4197,6 +4399,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public peers: berty.protocol.v1.PeerList.IPeer[];
                     public static create(properties?: berty.protocol.v1.PeerList.IReply): berty.protocol.v1.PeerList.Reply;
                     public static encode(message: berty.protocol.v1.PeerList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4220,6 +4423,7 @@ export namespace berty {
                 }
 
                 class Peer implements IPeer {
+
                     public id: string;
                     public routes: berty.protocol.v1.PeerList.IRoute[];
                     public errors: string[];
@@ -4247,6 +4451,7 @@ export namespace berty {
                 }
 
                 class Route implements IRoute {
+
                     public isActive: boolean;
                     public address: string;
                     public direction: berty.protocol.v1.Direction;
@@ -4268,6 +4473,7 @@ export namespace berty {
                 }
 
                 class Stream implements IStream {
+
                     public id: string;
                     public static create(properties?: berty.protocol.v1.PeerList.IStream): berty.protocol.v1.PeerList.Stream;
                     public static encode(message: berty.protocol.v1.PeerList.IStream, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4301,6 +4507,7 @@ export namespace berty {
             }
 
             class AttachmentPrepare implements IAttachmentPrepare {
+
                 public static create(properties?: berty.protocol.v1.IAttachmentPrepare): berty.protocol.v1.AttachmentPrepare;
                 public static encode(message: berty.protocol.v1.IAttachmentPrepare, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IAttachmentPrepare, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4320,6 +4527,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public block: Uint8Array;
                     public disableEncryption: boolean;
                     public static create(properties?: berty.protocol.v1.AttachmentPrepare.IRequest): berty.protocol.v1.AttachmentPrepare.Request;
@@ -4338,6 +4546,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public attachmentCid: Uint8Array;
                     public static create(properties?: berty.protocol.v1.AttachmentPrepare.IReply): berty.protocol.v1.AttachmentPrepare.Reply;
                     public static encode(message: berty.protocol.v1.AttachmentPrepare.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4355,6 +4564,7 @@ export namespace berty {
             }
 
             class AttachmentRetrieve implements IAttachmentRetrieve {
+
                 public static create(properties?: berty.protocol.v1.IAttachmentRetrieve): berty.protocol.v1.AttachmentRetrieve;
                 public static encode(message: berty.protocol.v1.IAttachmentRetrieve, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IAttachmentRetrieve, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4373,6 +4583,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public attachmentCid: Uint8Array;
                     public static create(properties?: berty.protocol.v1.AttachmentRetrieve.IRequest): berty.protocol.v1.AttachmentRetrieve.Request;
                     public static encode(message: berty.protocol.v1.AttachmentRetrieve.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4390,6 +4601,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public block: Uint8Array;
                     public static create(properties?: berty.protocol.v1.AttachmentRetrieve.IReply): berty.protocol.v1.AttachmentRetrieve.Reply;
                     public static encode(message: berty.protocol.v1.AttachmentRetrieve.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4410,6 +4622,7 @@ export namespace berty {
         namespace v1 {
 
             class MessengerService extends $protobuf.rpc.Service {
+
                 public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): MessengerService;
                 public instanceShareableBertyID(request: berty.messenger.v1.InstanceShareableBertyID.IRequest, callback: berty.messenger.v1.MessengerService.InstanceShareableBertyIDCallback): void;
                 public instanceShareableBertyID(request: berty.messenger.v1.InstanceShareableBertyID.IRequest): Promise<berty.messenger.v1.InstanceShareableBertyID.Reply>;
@@ -4536,6 +4749,7 @@ export namespace berty {
             }
 
             class ConversationOpen implements IConversationOpen {
+
                 public static create(properties?: berty.messenger.v1.IConversationOpen): berty.messenger.v1.ConversationOpen;
                 public static encode(message: berty.messenger.v1.IConversationOpen, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IConversationOpen, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4554,6 +4768,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: string;
                     public static create(properties?: berty.messenger.v1.ConversationOpen.IRequest): berty.messenger.v1.ConversationOpen.Request;
                     public static encode(message: berty.messenger.v1.ConversationOpen.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4570,6 +4785,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.messenger.v1.ConversationOpen.IReply): berty.messenger.v1.ConversationOpen.Reply;
                     public static encode(message: berty.messenger.v1.ConversationOpen.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.ConversationOpen.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4586,6 +4802,7 @@ export namespace berty {
             }
 
             class ConversationClose implements IConversationClose {
+
                 public static create(properties?: berty.messenger.v1.IConversationClose): berty.messenger.v1.ConversationClose;
                 public static encode(message: berty.messenger.v1.IConversationClose, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IConversationClose, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4604,6 +4821,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: string;
                     public static create(properties?: berty.messenger.v1.ConversationClose.IRequest): berty.messenger.v1.ConversationClose.Request;
                     public static encode(message: berty.messenger.v1.ConversationClose.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4620,6 +4838,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.messenger.v1.ConversationClose.IReply): berty.messenger.v1.ConversationClose.Reply;
                     public static encode(message: berty.messenger.v1.ConversationClose.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.ConversationClose.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4636,6 +4855,7 @@ export namespace berty {
             }
 
             class EchoTest implements IEchoTest {
+
                 public static create(properties?: berty.messenger.v1.IEchoTest): berty.messenger.v1.EchoTest;
                 public static encode(message: berty.messenger.v1.IEchoTest, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IEchoTest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4655,6 +4875,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public delay: Long;
                     public echo: string;
                     public static create(properties?: berty.messenger.v1.EchoTest.IRequest): berty.messenger.v1.EchoTest.Request;
@@ -4673,6 +4894,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public echo: string;
                     public static create(properties?: berty.messenger.v1.EchoTest.IReply): berty.messenger.v1.EchoTest.Reply;
                     public static encode(message: berty.messenger.v1.EchoTest.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4690,6 +4912,7 @@ export namespace berty {
             }
 
             class InstanceShareableBertyID implements IInstanceShareableBertyID {
+
                 public static create(properties?: berty.messenger.v1.IInstanceShareableBertyID): berty.messenger.v1.InstanceShareableBertyID;
                 public static encode(message: berty.messenger.v1.IInstanceShareableBertyID, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IInstanceShareableBertyID, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4710,6 +4933,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public reset: boolean;
                     public displayName: string;
                     public passphrase: Uint8Array;
@@ -4731,6 +4955,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public link?: (berty.messenger.v1.IBertyLink|null);
                     public internalUrl: string;
                     public webUrl: string;
@@ -4750,6 +4975,7 @@ export namespace berty {
             }
 
             class ShareableBertyGroup implements IShareableBertyGroup {
+
                 public static create(properties?: berty.messenger.v1.IShareableBertyGroup): berty.messenger.v1.ShareableBertyGroup;
                 public static encode(message: berty.messenger.v1.IShareableBertyGroup, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IShareableBertyGroup, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4769,6 +4995,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: Uint8Array;
                     public groupName: string;
                     public static create(properties?: berty.messenger.v1.ShareableBertyGroup.IRequest): berty.messenger.v1.ShareableBertyGroup.Request;
@@ -4789,6 +5016,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public link?: (berty.messenger.v1.IBertyLink|null);
                     public internalUrl: string;
                     public webUrl: string;
@@ -4808,6 +5036,7 @@ export namespace berty {
             }
 
             class DevShareInstanceBertyID implements IDevShareInstanceBertyID {
+
                 public static create(properties?: berty.messenger.v1.IDevShareInstanceBertyID): berty.messenger.v1.DevShareInstanceBertyID;
                 public static encode(message: berty.messenger.v1.IDevShareInstanceBertyID, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IDevShareInstanceBertyID, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4827,6 +5056,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public reset: boolean;
                     public displayName: string;
                     public static create(properties?: berty.messenger.v1.DevShareInstanceBertyID.IRequest): berty.messenger.v1.DevShareInstanceBertyID.Request;
@@ -4844,6 +5074,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.messenger.v1.DevShareInstanceBertyID.IReply): berty.messenger.v1.DevShareInstanceBertyID.Reply;
                     public static encode(message: berty.messenger.v1.DevShareInstanceBertyID.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.DevShareInstanceBertyID.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4860,6 +5091,7 @@ export namespace berty {
             }
 
             class ParseDeepLink implements IParseDeepLink {
+
                 public static create(properties?: berty.messenger.v1.IParseDeepLink): berty.messenger.v1.ParseDeepLink;
                 public static encode(message: berty.messenger.v1.IParseDeepLink, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IParseDeepLink, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4879,6 +5111,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public link: string;
                     public passphrase: Uint8Array;
                     public static create(properties?: berty.messenger.v1.ParseDeepLink.IRequest): berty.messenger.v1.ParseDeepLink.Request;
@@ -4897,6 +5130,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public link?: (berty.messenger.v1.IBertyLink|null);
                     public static create(properties?: berty.messenger.v1.ParseDeepLink.IReply): berty.messenger.v1.ParseDeepLink.Reply;
                     public static encode(message: berty.messenger.v1.ParseDeepLink.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4918,6 +5152,7 @@ export namespace berty {
             }
 
             class BertyLink implements IBertyLink {
+
                 public kind: berty.messenger.v1.BertyLink.Kind;
                 public bertyId?: (berty.messenger.v1.IBertyID|null);
                 public bertyGroup?: (berty.messenger.v1.IBertyGroup|null);
@@ -4950,6 +5185,7 @@ export namespace berty {
                 }
 
                 class Encrypted implements IEncrypted {
+
                     public kind: berty.messenger.v1.BertyLink.Kind;
                     public nonce: Uint8Array;
                     public displayName: string;
@@ -4984,6 +5220,7 @@ export namespace berty {
             }
 
             class SendContactRequest implements ISendContactRequest {
+
                 public static create(properties?: berty.messenger.v1.ISendContactRequest): berty.messenger.v1.SendContactRequest;
                 public static encode(message: berty.messenger.v1.ISendContactRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.ISendContactRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5004,6 +5241,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public bertyId?: (berty.messenger.v1.IBertyID|null);
                     public metadata: Uint8Array;
                     public ownMetadata: Uint8Array;
@@ -5022,6 +5260,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.messenger.v1.SendContactRequest.IReply): berty.messenger.v1.SendContactRequest.Reply;
                     public static encode(message: berty.messenger.v1.SendContactRequest.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.SendContactRequest.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5038,6 +5277,7 @@ export namespace berty {
             }
 
             class SendAck implements ISendAck {
+
                 public static create(properties?: berty.messenger.v1.ISendAck): berty.messenger.v1.SendAck;
                 public static encode(message: berty.messenger.v1.ISendAck, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.ISendAck, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5057,6 +5297,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: Uint8Array;
                     public messageId: Uint8Array;
                     public static create(properties?: berty.messenger.v1.SendAck.IRequest): berty.messenger.v1.SendAck.Request;
@@ -5074,6 +5315,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.messenger.v1.SendAck.IReply): berty.messenger.v1.SendAck.Reply;
                     public static encode(message: berty.messenger.v1.SendAck.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.SendAck.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5090,6 +5332,7 @@ export namespace berty {
             }
 
             class SendMessage implements ISendMessage {
+
                 public static create(properties?: berty.messenger.v1.ISendMessage): berty.messenger.v1.SendMessage;
                 public static encode(message: berty.messenger.v1.ISendMessage, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.ISendMessage, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5109,6 +5352,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: Uint8Array;
                     public message: string;
                     public static create(properties?: berty.messenger.v1.SendMessage.IRequest): berty.messenger.v1.SendMessage.Request;
@@ -5126,6 +5370,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.messenger.v1.SendMessage.IReply): berty.messenger.v1.SendMessage.Reply;
                     public static encode(message: berty.messenger.v1.SendMessage.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.SendMessage.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5142,6 +5387,7 @@ export namespace berty {
             }
 
             class SendReplyOptions implements ISendReplyOptions {
+
                 public static create(properties?: berty.messenger.v1.ISendReplyOptions): berty.messenger.v1.SendReplyOptions;
                 public static encode(message: berty.messenger.v1.ISendReplyOptions, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.ISendReplyOptions, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5161,6 +5407,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public groupPk: Uint8Array;
                     public options?: (berty.messenger.v1.AppMessage.IReplyOptions|null);
                     public static create(properties?: berty.messenger.v1.SendReplyOptions.IRequest): berty.messenger.v1.SendReplyOptions.Request;
@@ -5178,6 +5425,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.messenger.v1.SendReplyOptions.IReply): berty.messenger.v1.SendReplyOptions.Reply;
                     public static encode(message: berty.messenger.v1.SendReplyOptions.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.SendReplyOptions.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5197,6 +5445,7 @@ export namespace berty {
             }
 
             class BertyID implements IBertyID {
+
                 public publicRendezvousSeed: Uint8Array;
                 public accountPk: Uint8Array;
                 public displayName: string;
@@ -5217,6 +5466,7 @@ export namespace berty {
             }
 
             class BertyGroup implements IBertyGroup {
+
                 public group?: (berty.protocol.v1.IGroup|null);
                 public displayName: string;
                 public static create(properties?: berty.messenger.v1.IBertyGroup): berty.messenger.v1.BertyGroup;
@@ -5238,6 +5488,7 @@ export namespace berty {
             }
 
             class AppMessage implements IAppMessage {
+
                 public type: berty.messenger.v1.AppMessage.Type;
                 public payload: Uint8Array;
                 public sentDate: Long;
@@ -5272,6 +5523,7 @@ export namespace berty {
                 }
 
                 class UserMessage implements IUserMessage {
+
                     public body: string;
                     public static create(properties?: berty.messenger.v1.AppMessage.IUserMessage): berty.messenger.v1.AppMessage.UserMessage;
                     public static encode(message: berty.messenger.v1.AppMessage.IUserMessage, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5290,6 +5542,7 @@ export namespace berty {
                 }
 
                 class UserReaction implements IUserReaction {
+
                     public target: string;
                     public emoji: string;
                     public static create(properties?: berty.messenger.v1.AppMessage.IUserReaction): berty.messenger.v1.AppMessage.UserReaction;
@@ -5308,6 +5561,7 @@ export namespace berty {
                 }
 
                 class GroupInvitation implements IGroupInvitation {
+
                     public link: string;
                     public static create(properties?: berty.messenger.v1.AppMessage.IGroupInvitation): berty.messenger.v1.AppMessage.GroupInvitation;
                     public static encode(message: berty.messenger.v1.AppMessage.IGroupInvitation, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5326,6 +5580,7 @@ export namespace berty {
                 }
 
                 class SetGroupInfo implements ISetGroupInfo {
+
                     public displayName: string;
                     public avatarCid: string;
                     public static create(properties?: berty.messenger.v1.AppMessage.ISetGroupInfo): berty.messenger.v1.AppMessage.SetGroupInfo;
@@ -5345,6 +5600,7 @@ export namespace berty {
                 }
 
                 class SetUserInfo implements ISetUserInfo {
+
                     public displayName: string;
                     public avatarCid: string;
                     public static create(properties?: berty.messenger.v1.AppMessage.ISetUserInfo): berty.messenger.v1.AppMessage.SetUserInfo;
@@ -5363,6 +5619,7 @@ export namespace berty {
                 }
 
                 class Acknowledge implements IAcknowledge {
+
                     public target: string;
                     public static create(properties?: berty.messenger.v1.AppMessage.IAcknowledge): berty.messenger.v1.AppMessage.Acknowledge;
                     public static encode(message: berty.messenger.v1.AppMessage.IAcknowledge, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5380,6 +5637,7 @@ export namespace berty {
                 }
 
                 class ReplyOptions implements IReplyOptions {
+
                     public options: berty.messenger.v1.IReplyOption[];
                     public static create(properties?: berty.messenger.v1.AppMessage.IReplyOptions): berty.messenger.v1.AppMessage.ReplyOptions;
                     public static encode(message: berty.messenger.v1.AppMessage.IReplyOptions, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5397,6 +5655,7 @@ export namespace berty {
                 }
 
                 class MonitorMetadata implements IMonitorMetadata {
+
                     public event?: (berty.protocol.v1.MonitorGroup.IEventMonitor|null);
                     public static create(properties?: berty.messenger.v1.AppMessage.IMonitorMetadata): berty.messenger.v1.AppMessage.MonitorMetadata;
                     public static encode(message: berty.messenger.v1.AppMessage.IMonitorMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5416,6 +5675,7 @@ export namespace berty {
             }
 
             class ReplyOption implements IReplyOption {
+
                 public display: string;
                 public payload: string;
                 public static create(properties?: berty.messenger.v1.IReplyOption): berty.messenger.v1.ReplyOption;
@@ -5433,6 +5693,7 @@ export namespace berty {
             }
 
             class SystemInfo implements ISystemInfo {
+
                 public static create(properties?: berty.messenger.v1.ISystemInfo): berty.messenger.v1.SystemInfo;
                 public static encode(message: berty.messenger.v1.ISystemInfo, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.ISystemInfo, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5450,6 +5711,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public static create(properties?: berty.messenger.v1.SystemInfo.IRequest): berty.messenger.v1.SystemInfo.Request;
                     public static encode(message: berty.messenger.v1.SystemInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.SystemInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5467,6 +5729,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public protocol?: (berty.protocol.v1.SystemInfo.IReply|null);
                     public messenger?: (berty.messenger.v1.SystemInfo.IMessenger|null);
                     public static create(properties?: berty.messenger.v1.SystemInfo.IReply): berty.messenger.v1.SystemInfo.Reply;
@@ -5488,6 +5751,7 @@ export namespace berty {
                 }
 
                 class Messenger implements IMessenger {
+
                     public process?: (berty.protocol.v1.SystemInfo.IProcess|null);
                     public warns: string[];
                     public protocolInSameProcess: boolean;
@@ -5515,6 +5779,7 @@ export namespace berty {
                 }
 
                 class DB implements IDB {
+
                     public accounts: Long;
                     public contacts: Long;
                     public conversations: Long;
@@ -5539,6 +5804,7 @@ export namespace berty {
             }
 
             class ConversationJoin implements IConversationJoin {
+
                 public static create(properties?: berty.messenger.v1.IConversationJoin): berty.messenger.v1.ConversationJoin;
                 public static encode(message: berty.messenger.v1.IConversationJoin, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IConversationJoin, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5558,6 +5824,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public link: string;
                     public passphrase: Uint8Array;
                     public static create(properties?: berty.messenger.v1.ConversationJoin.IRequest): berty.messenger.v1.ConversationJoin.Request;
@@ -5575,6 +5842,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.messenger.v1.ConversationJoin.IReply): berty.messenger.v1.ConversationJoin.Reply;
                     public static encode(message: berty.messenger.v1.ConversationJoin.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.ConversationJoin.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5597,6 +5865,7 @@ export namespace berty {
             }
 
             class Account implements IAccount {
+
                 public publicKey: string;
                 public displayName: string;
                 public avatarCid: string;
@@ -5623,6 +5892,7 @@ export namespace berty {
             }
 
             class ServiceToken implements IServiceToken {
+
                 public accountPk: string;
                 public tokenId: string;
                 public serviceType: string;
@@ -5656,6 +5926,7 @@ export namespace berty {
             }
 
             class Interaction implements IInteraction {
+
                 public cid: string;
                 public type: berty.messenger.v1.AppMessage.Type;
                 public memberPublicKey: string;
@@ -5690,6 +5961,7 @@ export namespace berty {
             }
 
             class Media implements IMedia {
+
                 public cid: string;
                 public mimeType: string;
                 public filename: string;
@@ -5735,6 +6007,7 @@ export namespace berty {
             }
 
             class Contact implements IContact {
+
                 public publicKey: string;
                 public conversationPublicKey: string;
                 public conversation?: (berty.messenger.v1.IConversation|null);
@@ -5788,6 +6061,7 @@ export namespace berty {
             }
 
             class Conversation implements IConversation {
+
                 public publicKey: string;
                 public type: berty.messenger.v1.Conversation.Type;
                 public isOpen: boolean;
@@ -5835,6 +6109,7 @@ export namespace berty {
             }
 
             class ConversationReplicationInfo implements IConversationReplicationInfo {
+
                 public cid: string;
                 public conversationPublicKey: string;
                 public memberPublicKey: string;
@@ -5862,6 +6137,7 @@ export namespace berty {
             }
 
             class Member implements IMember {
+
                 public publicKey: string;
                 public displayName: string;
                 public avatarCid: string;
@@ -5886,6 +6162,7 @@ export namespace berty {
             }
 
             class Device implements IDevice {
+
                 public publicKey: string;
                 public memberPublicKey: string;
                 public static create(properties?: berty.messenger.v1.IDevice): berty.messenger.v1.Device;
@@ -5904,6 +6181,7 @@ export namespace berty {
             }
 
             class ContactMetadata implements IContactMetadata {
+
                 public displayName: string;
                 public static create(properties?: berty.messenger.v1.IContactMetadata): berty.messenger.v1.ContactMetadata;
                 public static encode(message: berty.messenger.v1.IContactMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5923,6 +6201,7 @@ export namespace berty {
             }
 
             class StreamEvent implements IStreamEvent {
+
                 public type: berty.messenger.v1.StreamEvent.Type;
                 public payload: Uint8Array;
                 public isNew: boolean;
@@ -5959,6 +6238,7 @@ export namespace berty {
                 }
 
                 class ConversationUpdated implements IConversationUpdated {
+
                     public conversation?: (berty.messenger.v1.IConversation|null);
                     public static create(properties?: berty.messenger.v1.StreamEvent.IConversationUpdated): berty.messenger.v1.StreamEvent.ConversationUpdated;
                     public static encode(message: berty.messenger.v1.StreamEvent.IConversationUpdated, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5976,6 +6256,7 @@ export namespace berty {
                 }
 
                 class ConversationDeleted implements IConversationDeleted {
+
                     public publicKey: string;
                     public static create(properties?: berty.messenger.v1.StreamEvent.IConversationDeleted): berty.messenger.v1.StreamEvent.ConversationDeleted;
                     public static encode(message: berty.messenger.v1.StreamEvent.IConversationDeleted, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5993,6 +6274,7 @@ export namespace berty {
                 }
 
                 class InteractionUpdated implements IInteractionUpdated {
+
                     public interaction?: (berty.messenger.v1.IInteraction|null);
                     public static create(properties?: berty.messenger.v1.StreamEvent.IInteractionUpdated): berty.messenger.v1.StreamEvent.InteractionUpdated;
                     public static encode(message: berty.messenger.v1.StreamEvent.IInteractionUpdated, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6010,6 +6292,7 @@ export namespace berty {
                 }
 
                 class InteractionDeleted implements IInteractionDeleted {
+
                     public cid: string;
                     public static create(properties?: berty.messenger.v1.StreamEvent.IInteractionDeleted): berty.messenger.v1.StreamEvent.InteractionDeleted;
                     public static encode(message: berty.messenger.v1.StreamEvent.IInteractionDeleted, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6027,6 +6310,7 @@ export namespace berty {
                 }
 
                 class ContactUpdated implements IContactUpdated {
+
                     public contact?: (berty.messenger.v1.IContact|null);
                     public static create(properties?: berty.messenger.v1.StreamEvent.IContactUpdated): berty.messenger.v1.StreamEvent.ContactUpdated;
                     public static encode(message: berty.messenger.v1.StreamEvent.IContactUpdated, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6044,6 +6328,7 @@ export namespace berty {
                 }
 
                 class AccountUpdated implements IAccountUpdated {
+
                     public account?: (berty.messenger.v1.IAccount|null);
                     public static create(properties?: berty.messenger.v1.StreamEvent.IAccountUpdated): berty.messenger.v1.StreamEvent.AccountUpdated;
                     public static encode(message: berty.messenger.v1.StreamEvent.IAccountUpdated, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6061,6 +6346,7 @@ export namespace berty {
                 }
 
                 class MemberUpdated implements IMemberUpdated {
+
                     public member?: (berty.messenger.v1.IMember|null);
                     public static create(properties?: berty.messenger.v1.StreamEvent.IMemberUpdated): berty.messenger.v1.StreamEvent.MemberUpdated;
                     public static encode(message: berty.messenger.v1.StreamEvent.IMemberUpdated, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6078,6 +6364,7 @@ export namespace berty {
                 }
 
                 class DeviceUpdated implements IDeviceUpdated {
+
                     public device?: (berty.messenger.v1.IDevice|null);
                     public static create(properties?: berty.messenger.v1.StreamEvent.IDeviceUpdated): berty.messenger.v1.StreamEvent.DeviceUpdated;
                     public static encode(message: berty.messenger.v1.StreamEvent.IDeviceUpdated, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6094,6 +6381,7 @@ export namespace berty {
                 }
 
                 class ListEnded implements IListEnded {
+
                     public static create(properties?: berty.messenger.v1.StreamEvent.IListEnded): berty.messenger.v1.StreamEvent.ListEnded;
                     public static encode(message: berty.messenger.v1.StreamEvent.IListEnded, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.StreamEvent.IListEnded, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6110,6 +6398,7 @@ export namespace berty {
                 }
 
                 class MediaUpdated implements IMediaUpdated {
+
                     public media?: (berty.messenger.v1.IMedia|null);
                     public static create(properties?: berty.messenger.v1.StreamEvent.IMediaUpdated): berty.messenger.v1.StreamEvent.MediaUpdated;
                     public static encode(message: berty.messenger.v1.StreamEvent.IMediaUpdated, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6130,6 +6419,7 @@ export namespace berty {
                 }
 
                 class Notified implements INotified {
+
                     public type: berty.messenger.v1.StreamEvent.Notified.Type;
                     public title: string;
                     public body: string;
@@ -6159,6 +6449,7 @@ export namespace berty {
                     }
 
                     class Basic implements IBasic {
+
                         public static create(properties?: berty.messenger.v1.StreamEvent.Notified.IBasic): berty.messenger.v1.StreamEvent.Notified.Basic;
                         public static encode(message: berty.messenger.v1.StreamEvent.Notified.IBasic, writer?: $protobuf.Writer): $protobuf.Writer;
                         public static encodeDelimited(message: berty.messenger.v1.StreamEvent.Notified.IBasic, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6177,6 +6468,7 @@ export namespace berty {
                     }
 
                     class MessageReceived implements IMessageReceived {
+
                         public interaction?: (berty.messenger.v1.IInteraction|null);
                         public conversation?: (berty.messenger.v1.IConversation|null);
                         public contact?: (berty.messenger.v1.IContact|null);
@@ -6196,6 +6488,7 @@ export namespace berty {
                     }
 
                     class ContactRequestSent implements IContactRequestSent {
+
                         public contact?: (berty.messenger.v1.IContact|null);
                         public static create(properties?: berty.messenger.v1.StreamEvent.Notified.IContactRequestSent): berty.messenger.v1.StreamEvent.Notified.ContactRequestSent;
                         public static encode(message: berty.messenger.v1.StreamEvent.Notified.IContactRequestSent, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6213,6 +6506,7 @@ export namespace berty {
                     }
 
                     class ContactRequestReceived implements IContactRequestReceived {
+
                         public contact?: (berty.messenger.v1.IContact|null);
                         public static create(properties?: berty.messenger.v1.StreamEvent.Notified.IContactRequestReceived): berty.messenger.v1.StreamEvent.Notified.ContactRequestReceived;
                         public static encode(message: berty.messenger.v1.StreamEvent.Notified.IContactRequestReceived, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6231,6 +6525,7 @@ export namespace berty {
             }
 
             class ConversationStream implements IConversationStream {
+
                 public static create(properties?: berty.messenger.v1.IConversationStream): berty.messenger.v1.ConversationStream;
                 public static encode(message: berty.messenger.v1.IConversationStream, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IConversationStream, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6250,6 +6545,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public count: Long;
                     public page: Long;
                     public static create(properties?: berty.messenger.v1.ConversationStream.IRequest): berty.messenger.v1.ConversationStream.Request;
@@ -6268,6 +6564,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public conversation?: (berty.messenger.v1.IConversation|null);
                     public static create(properties?: berty.messenger.v1.ConversationStream.IReply): berty.messenger.v1.ConversationStream.Reply;
                     public static encode(message: berty.messenger.v1.ConversationStream.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6285,6 +6582,7 @@ export namespace berty {
             }
 
             class ConversationCreate implements IConversationCreate {
+
                 public static create(properties?: berty.messenger.v1.IConversationCreate): berty.messenger.v1.ConversationCreate;
                 public static encode(message: berty.messenger.v1.IConversationCreate, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IConversationCreate, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6304,6 +6602,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public displayName: string;
                     public contactsToInvite: string[];
                     public static create(properties?: berty.messenger.v1.ConversationCreate.IRequest): berty.messenger.v1.ConversationCreate.Request;
@@ -6322,6 +6621,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public publicKey: string;
                     public static create(properties?: berty.messenger.v1.ConversationCreate.IReply): berty.messenger.v1.ConversationCreate.Reply;
                     public static encode(message: berty.messenger.v1.ConversationCreate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6339,6 +6639,7 @@ export namespace berty {
             }
 
             class AccountGet implements IAccountGet {
+
                 public static create(properties?: berty.messenger.v1.IAccountGet): berty.messenger.v1.AccountGet;
                 public static encode(message: berty.messenger.v1.IAccountGet, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IAccountGet, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6356,6 +6657,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public static create(properties?: berty.messenger.v1.AccountGet.IRequest): berty.messenger.v1.AccountGet.Request;
                     public static encode(message: berty.messenger.v1.AccountGet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.AccountGet.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6372,6 +6674,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public account?: (berty.messenger.v1.IAccount|null);
                     public static create(properties?: berty.messenger.v1.AccountGet.IReply): berty.messenger.v1.AccountGet.Reply;
                     public static encode(message: berty.messenger.v1.AccountGet.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6389,6 +6692,7 @@ export namespace berty {
             }
 
             class EventStream implements IEventStream {
+
                 public static create(properties?: berty.messenger.v1.IEventStream): berty.messenger.v1.EventStream;
                 public static encode(message: berty.messenger.v1.IEventStream, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IEventStream, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6408,6 +6712,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public count: Long;
                     public page: Long;
                     public static create(properties?: berty.messenger.v1.EventStream.IRequest): berty.messenger.v1.EventStream.Request;
@@ -6426,6 +6731,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public event?: (berty.messenger.v1.IStreamEvent|null);
                     public static create(properties?: berty.messenger.v1.EventStream.IReply): berty.messenger.v1.EventStream.Reply;
                     public static encode(message: berty.messenger.v1.EventStream.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6443,6 +6749,7 @@ export namespace berty {
             }
 
             class AccountUpdate implements IAccountUpdate {
+
                 public static create(properties?: berty.messenger.v1.IAccountUpdate): berty.messenger.v1.AccountUpdate;
                 public static encode(message: berty.messenger.v1.IAccountUpdate, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IAccountUpdate, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6462,6 +6769,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public displayName: string;
                     public avatarCid: string;
                     public static create(properties?: berty.messenger.v1.AccountUpdate.IRequest): berty.messenger.v1.AccountUpdate.Request;
@@ -6479,6 +6787,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.messenger.v1.AccountUpdate.IReply): berty.messenger.v1.AccountUpdate.Reply;
                     public static encode(message: berty.messenger.v1.AccountUpdate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.AccountUpdate.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6495,6 +6804,7 @@ export namespace berty {
             }
 
             class ContactRequest implements IContactRequest {
+
                 public static create(properties?: berty.messenger.v1.IContactRequest): berty.messenger.v1.ContactRequest;
                 public static encode(message: berty.messenger.v1.IContactRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IContactRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6514,6 +6824,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public link: string;
                     public passphrase: Uint8Array;
                     public static create(properties?: berty.messenger.v1.ContactRequest.IRequest): berty.messenger.v1.ContactRequest.Request;
@@ -6531,6 +6842,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.messenger.v1.ContactRequest.IReply): berty.messenger.v1.ContactRequest.Reply;
                     public static encode(message: berty.messenger.v1.ContactRequest.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.ContactRequest.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6547,6 +6859,7 @@ export namespace berty {
             }
 
             class ContactAccept implements IContactAccept {
+
                 public static create(properties?: berty.messenger.v1.IContactAccept): berty.messenger.v1.ContactAccept;
                 public static encode(message: berty.messenger.v1.IContactAccept, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IContactAccept, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6565,6 +6878,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public publicKey: string;
                     public static create(properties?: berty.messenger.v1.ContactAccept.IRequest): berty.messenger.v1.ContactAccept.Request;
                     public static encode(message: berty.messenger.v1.ContactAccept.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6581,6 +6895,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.messenger.v1.ContactAccept.IReply): berty.messenger.v1.ContactAccept.Reply;
                     public static encode(message: berty.messenger.v1.ContactAccept.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.ContactAccept.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6597,6 +6912,7 @@ export namespace berty {
             }
 
             class Interact implements IInteract {
+
                 public static create(properties?: berty.messenger.v1.IInteract): berty.messenger.v1.Interact;
                 public static encode(message: berty.messenger.v1.IInteract, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IInteract, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6618,6 +6934,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public type: berty.messenger.v1.AppMessage.Type;
                     public payload: Uint8Array;
                     public conversationPublicKey: string;
@@ -6637,6 +6954,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.messenger.v1.Interact.IReply): berty.messenger.v1.Interact.Reply;
                     public static encode(message: berty.messenger.v1.Interact.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.Interact.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6653,6 +6971,7 @@ export namespace berty {
             }
 
             class ReplicationServiceRegisterGroup implements IReplicationServiceRegisterGroup {
+
                 public static create(properties?: berty.messenger.v1.IReplicationServiceRegisterGroup): berty.messenger.v1.ReplicationServiceRegisterGroup;
                 public static encode(message: berty.messenger.v1.IReplicationServiceRegisterGroup, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IReplicationServiceRegisterGroup, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6672,6 +6991,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public tokenId: string;
                     public conversationPublicKey: string;
                     public static create(properties?: berty.messenger.v1.ReplicationServiceRegisterGroup.IRequest): berty.messenger.v1.ReplicationServiceRegisterGroup.Request;
@@ -6689,6 +7009,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.messenger.v1.ReplicationServiceRegisterGroup.IReply): berty.messenger.v1.ReplicationServiceRegisterGroup.Reply;
                     public static encode(message: berty.messenger.v1.ReplicationServiceRegisterGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.ReplicationServiceRegisterGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6705,6 +7026,7 @@ export namespace berty {
             }
 
             class ReplicationSetAutoEnable implements IReplicationSetAutoEnable {
+
                 public static create(properties?: berty.messenger.v1.IReplicationSetAutoEnable): berty.messenger.v1.ReplicationSetAutoEnable;
                 public static encode(message: berty.messenger.v1.IReplicationSetAutoEnable, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IReplicationSetAutoEnable, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6723,6 +7045,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public enabled: boolean;
                     public static create(properties?: berty.messenger.v1.ReplicationSetAutoEnable.IRequest): berty.messenger.v1.ReplicationSetAutoEnable.Request;
                     public static encode(message: berty.messenger.v1.ReplicationSetAutoEnable.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6739,6 +7062,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public static create(properties?: berty.messenger.v1.ReplicationSetAutoEnable.IReply): berty.messenger.v1.ReplicationSetAutoEnable.Reply;
                     public static encode(message: berty.messenger.v1.ReplicationSetAutoEnable.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.ReplicationSetAutoEnable.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6755,6 +7079,7 @@ export namespace berty {
             }
 
             class BannerQuote implements IBannerQuote {
+
                 public static create(properties?: berty.messenger.v1.IBannerQuote): berty.messenger.v1.BannerQuote;
                 public static encode(message: berty.messenger.v1.IBannerQuote, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IBannerQuote, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6773,6 +7098,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public random: boolean;
                     public static create(properties?: berty.messenger.v1.BannerQuote.IRequest): berty.messenger.v1.BannerQuote.Request;
                     public static encode(message: berty.messenger.v1.BannerQuote.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6791,6 +7117,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public quote: string;
                     public author: string;
                     public static create(properties?: berty.messenger.v1.BannerQuote.IReply): berty.messenger.v1.BannerQuote.Reply;
@@ -6809,6 +7136,7 @@ export namespace berty {
             }
 
             class GetUsername implements IGetUsername {
+
                 public static create(properties?: berty.messenger.v1.IGetUsername): berty.messenger.v1.GetUsername;
                 public static encode(message: berty.messenger.v1.IGetUsername, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IGetUsername, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6826,6 +7154,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public static create(properties?: berty.messenger.v1.GetUsername.IRequest): berty.messenger.v1.GetUsername.Request;
                     public static encode(message: berty.messenger.v1.GetUsername.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.GetUsername.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6842,6 +7171,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public username: string;
                     public static create(properties?: berty.messenger.v1.GetUsername.IReply): berty.messenger.v1.GetUsername.Reply;
                     public static encode(message: berty.messenger.v1.GetUsername.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6859,6 +7189,7 @@ export namespace berty {
             }
 
             class InstanceExportData implements IInstanceExportData {
+
                 public static create(properties?: berty.messenger.v1.IInstanceExportData): berty.messenger.v1.InstanceExportData;
                 public static encode(message: berty.messenger.v1.IInstanceExportData, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IInstanceExportData, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6876,6 +7207,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public static create(properties?: berty.messenger.v1.InstanceExportData.IRequest): berty.messenger.v1.InstanceExportData.Request;
                     public static encode(message: berty.messenger.v1.InstanceExportData.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.InstanceExportData.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6892,6 +7224,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public exportedData: Uint8Array;
                     public static create(properties?: berty.messenger.v1.InstanceExportData.IReply): berty.messenger.v1.InstanceExportData.Reply;
                     public static encode(message: berty.messenger.v1.InstanceExportData.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6914,6 +7247,7 @@ export namespace berty {
             }
 
             class LocalDatabaseState implements ILocalDatabaseState {
+
                 public publicKey: string;
                 public displayName: string;
                 public replicateFlag: boolean;
@@ -6938,6 +7272,7 @@ export namespace berty {
             }
 
             class LocalConversationState implements ILocalConversationState {
+
                 public publicKey: string;
                 public unreadCount: number;
                 public isOpen: boolean;
@@ -6957,6 +7292,7 @@ export namespace berty {
             }
 
             class MediaPrepare implements IMediaPrepare {
+
                 public static create(properties?: berty.messenger.v1.IMediaPrepare): berty.messenger.v1.MediaPrepare;
                 public static encode(message: berty.messenger.v1.IMediaPrepare, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IMediaPrepare, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6977,6 +7313,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public block: Uint8Array;
                     public info?: (berty.messenger.v1.IMedia|null);
                     public uri: string;
@@ -6996,6 +7333,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public cid: string;
                     public static create(properties?: berty.messenger.v1.MediaPrepare.IReply): berty.messenger.v1.MediaPrepare.Reply;
                     public static encode(message: berty.messenger.v1.MediaPrepare.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -7013,6 +7351,7 @@ export namespace berty {
             }
 
             class MediaRetrieve implements IMediaRetrieve {
+
                 public static create(properties?: berty.messenger.v1.IMediaRetrieve): berty.messenger.v1.MediaRetrieve;
                 public static encode(message: berty.messenger.v1.IMediaRetrieve, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IMediaRetrieve, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -7031,6 +7370,7 @@ export namespace berty {
                 }
 
                 class Request implements IRequest {
+
                     public cid: string;
                     public static create(properties?: berty.messenger.v1.MediaRetrieve.IRequest): berty.messenger.v1.MediaRetrieve.Request;
                     public static encode(message: berty.messenger.v1.MediaRetrieve.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -7049,6 +7389,7 @@ export namespace berty {
                 }
 
                 class Reply implements IReply {
+
                     public block: Uint8Array;
                     public info?: (berty.messenger.v1.IMedia|null);
                     public static create(properties?: berty.messenger.v1.MediaRetrieve.IReply): berty.messenger.v1.MediaRetrieve.Reply;
@@ -7075,6 +7416,7 @@ export namespace google {
         }
 
         class FileDescriptorSet implements IFileDescriptorSet {
+
             public file: google.protobuf.IFileDescriptorProto[];
             public static create(properties?: google.protobuf.IFileDescriptorSet): google.protobuf.FileDescriptorSet;
             public static encode(message: google.protobuf.IFileDescriptorSet, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -7103,6 +7445,7 @@ export namespace google {
         }
 
         class FileDescriptorProto implements IFileDescriptorProto {
+
             public name: string;
             public package: string;
             public dependency: string[];
@@ -7140,6 +7483,7 @@ export namespace google {
         }
 
         class DescriptorProto implements IDescriptorProto {
+
             public name: string;
             public field: google.protobuf.IFieldDescriptorProto[];
             public extension: google.protobuf.IFieldDescriptorProto[];
@@ -7169,6 +7513,7 @@ export namespace google {
             }
 
             class ExtensionRange implements IExtensionRange {
+
                 public start: number;
                 public end: number;
                 public static create(properties?: google.protobuf.DescriptorProto.IExtensionRange): google.protobuf.DescriptorProto.ExtensionRange;
@@ -7188,6 +7533,7 @@ export namespace google {
             }
 
             class ReservedRange implements IReservedRange {
+
                 public start: number;
                 public end: number;
                 public static create(properties?: google.protobuf.DescriptorProto.IReservedRange): google.protobuf.DescriptorProto.ReservedRange;
@@ -7216,6 +7562,7 @@ export namespace google {
         }
 
         class FieldDescriptorProto implements IFieldDescriptorProto {
+
             public name: string;
             public number: number;
             public label: google.protobuf.FieldDescriptorProto.Label;
@@ -7273,6 +7620,7 @@ export namespace google {
         }
 
         class OneofDescriptorProto implements IOneofDescriptorProto {
+
             public name: string;
             public options?: (google.protobuf.IOneofOptions|null);
             public static create(properties?: google.protobuf.IOneofDescriptorProto): google.protobuf.OneofDescriptorProto;
@@ -7293,6 +7641,7 @@ export namespace google {
         }
 
         class EnumDescriptorProto implements IEnumDescriptorProto {
+
             public name: string;
             public value: google.protobuf.IEnumValueDescriptorProto[];
             public options?: (google.protobuf.IEnumOptions|null);
@@ -7314,6 +7663,7 @@ export namespace google {
         }
 
         class EnumValueDescriptorProto implements IEnumValueDescriptorProto {
+
             public name: string;
             public number: number;
             public options?: (google.protobuf.IEnumValueOptions|null);
@@ -7335,6 +7685,7 @@ export namespace google {
         }
 
         class ServiceDescriptorProto implements IServiceDescriptorProto {
+
             public name: string;
             public method: google.protobuf.IMethodDescriptorProto[];
             public options?: (google.protobuf.IServiceOptions|null);
@@ -7359,6 +7710,7 @@ export namespace google {
         }
 
         class MethodDescriptorProto implements IMethodDescriptorProto {
+
             public name: string;
             public inputType: string;
             public outputType: string;
@@ -7427,6 +7779,7 @@ export namespace google {
         }
 
         class FileOptions implements IFileOptions {
+
             public javaPackage: string;
             public javaOuterClassname: string;
             public javaMultipleFiles: boolean;
@@ -7497,6 +7850,7 @@ export namespace google {
         }
 
         class MessageOptions implements IMessageOptions {
+
             public messageSetWireFormat: boolean;
             public noStandardDescriptorAccessor: boolean;
             public deprecated: boolean;
@@ -7536,6 +7890,7 @@ export namespace google {
         }
 
         class FieldOptions implements IFieldOptions {
+
             public ctype: google.protobuf.FieldOptions.CType;
             public packed: boolean;
             public jstype: google.protobuf.FieldOptions.JSType;
@@ -7574,6 +7929,7 @@ export namespace google {
         }
 
         class OneofOptions implements IOneofOptions {
+
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
             public static create(properties?: google.protobuf.IOneofOptions): google.protobuf.OneofOptions;
             public static encode(message: google.protobuf.IOneofOptions, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -7598,6 +7954,7 @@ export namespace google {
         }
 
         class EnumOptions implements IEnumOptions {
+
             public allowAlias: boolean;
             public deprecated: boolean;
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -7619,6 +7976,7 @@ export namespace google {
         }
 
         class EnumValueOptions implements IEnumValueOptions {
+
             public deprecated: boolean;
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
             public static create(properties?: google.protobuf.IEnumValueOptions): google.protobuf.EnumValueOptions;
@@ -7638,6 +7996,7 @@ export namespace google {
         }
 
         class ServiceOptions implements IServiceOptions {
+
             public deprecated: boolean;
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
             public static create(properties?: google.protobuf.IServiceOptions): google.protobuf.ServiceOptions;
@@ -7657,6 +8016,7 @@ export namespace google {
         }
 
         class MethodOptions implements IMethodOptions {
+
             public deprecated: boolean;
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
             public static create(properties?: google.protobuf.IMethodOptions): google.protobuf.MethodOptions;
@@ -7681,6 +8041,7 @@ export namespace google {
         }
 
         class UninterpretedOption implements IUninterpretedOption {
+
             public name: google.protobuf.UninterpretedOption.INamePart[];
             public identifierValue: string;
             public positiveIntValue: Long;
@@ -7707,6 +8068,7 @@ export namespace google {
             }
 
             class NamePart implements INamePart {
+
                 public namePart: string;
                 public isExtension: boolean;
                 public static create(properties?: google.protobuf.UninterpretedOption.INamePart): google.protobuf.UninterpretedOption.NamePart;
@@ -7726,6 +8088,7 @@ export namespace google {
         }
 
         class SourceCodeInfo implements ISourceCodeInfo {
+
             public location: google.protobuf.SourceCodeInfo.ILocation[];
             public static create(properties?: google.protobuf.ISourceCodeInfo): google.protobuf.SourceCodeInfo;
             public static encode(message: google.protobuf.ISourceCodeInfo, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -7749,6 +8112,7 @@ export namespace google {
             }
 
             class Location implements ILocation {
+
                 public path: number[];
                 public span: number[];
                 public leadingComments: string;
@@ -7771,6 +8135,7 @@ export namespace google {
         }
 
         class GeneratedCodeInfo implements IGeneratedCodeInfo {
+
             public annotation: google.protobuf.GeneratedCodeInfo.IAnnotation[];
             public static create(properties?: google.protobuf.IGeneratedCodeInfo): google.protobuf.GeneratedCodeInfo;
             public static encode(message: google.protobuf.IGeneratedCodeInfo, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -7793,6 +8158,7 @@ export namespace google {
             }
 
             class Annotation implements IAnnotation {
+
                 public path: number[];
                 public sourceFile: string;
                 public begin: number;

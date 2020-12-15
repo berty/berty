@@ -253,8 +253,7 @@ func PbtsRoot() error {
 		}
 
 		// json-module codegen doesn't support "new", so we remove the constructor declarations
-		re := regexp.MustCompile(".*constructor.*\n")
-		cleanedData := re.ReplaceAll(data, []byte(""))
+		cleanedData := regexp.MustCompile(".*constructor.*").ReplaceAll(data, []byte(""))
 
 		if err := pbtsRootDef.outputWrite(cleanedData); err != nil {
 			return err
