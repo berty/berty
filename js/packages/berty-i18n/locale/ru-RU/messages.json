@@ -1,412 +1,425 @@
 {
-  "time": {
-    "fuzzy-time": "чч:мм",
-    "fuzzy-month-day": "дд/ММ",
-    "fuzzy-year-month": "ММ/ГГ",
-    "datetime": "",
-    "started-ago": "Начато {{date}} назад"
-  },
-  "onboarding": {
-    "getstarted": {
-      "desc": "Защищённый peer-to-peer мессенджер, работающий как с наличием, так и без доступа в интернет, сотовой связи или доверия в сети",
-      "open-registered-account": "Открыть зарегистрированный аккаунт",
-      "import-button": "Импортировать данные из существующего аккаунта",
-      "account-selector-create-button": "Создать новый аккаунт",
-      "more-options": "Больше опций",
-      "button": "НАЧАТЬ"
-    },
-    "select-mode": {
-      "performance": {
-        "title": "Производительность",
-        "desc": "Простой в использовании - Все функции",
-        "push-notif": "Получать push-уведомления",
-        "offline-message": "Сообщения в оффлайне",
-        "add-contact": "Простое добавление контактов",
-        "fast-message": "Самая быстрая доставка сообщений"
-      },
-      "high-level": {
-        "title": "Высочайший уровень приватности",
-        "desc": "Для продвинутых пользователей - меньше метаданных",
-        "disable-push-notif": "Push-уведомления отключены",
-        "disable-local-peer-discovery": "Обнаружение локальных пиров отключено",
-        "disable-contact-request": "Запросы в контакты отключены"
-      }
-    },
-    "create-account": {
-      "title": "Создайте свой аккаунт",
-      "desc": "Имя - единственная необходимая информация",
-      "required": "Обязательно",
-      "placeholder": "Имя",
-      "button": "СОЗДАТЬ МОЙ АККАУНТ"
-    },
-    "services-auth": {
-      "header": "Аутентифицироваться в сервисы",
-      "title": "Сервисы",
-      "recommended": "Рекомендовано",
-      "desc": "Это будет автоматически копировать ваши беседы на сервер",
-      "button": "Использовать сервис управляемый Berty",
-      "skip": "ПРОПУСТИТЬ И СДЕЛАТЬ ПОЗЖЕ"
-    },
-    "generate-key": {
-      "title": "Запуск узла Berty…",
-      "desc": "Это может занять несколько секунд"
-    },
-    "notifications": {
-      "header": "Не пропускайте все новые сообщения и запросы в контакты",
-      "recommended": "Рекомендуется",
-      "title": "Уведомления",
-      "desc": "Вам необходимо разрешить push-уведомления от Berty на вашем устройстве",
-      "button": "РАЗРЕШИТЬ УВЕДОМЛЕНИЯ",
-      "skip": "ПРОПУСТИТЬ И НАСТРОИТЬ ПОЗЖЕ"
-    },
-    "bluetooth": {
-      "header": "Общайтесь без подключения к Интернету (wifi или сотовой связи), подключив ваше устройство непосредственно к пирам рядом",
-      "optional": "Необязательно",
-      "title": "Bluetooth",
-      "desc": "Чтобы использовать эту функцию, вам нужно разрешить использование Bluetooth на вашем устройстве",
-      "button": "РАЗРЕШИТЬ BLUETOOTH",
-      "skip": "ПРОПУСТИТЬ И СДЕЛАТЬ ПОЗЖЕ"
-    },
-    "setup-finished": {
-      "title": "Настройка завершена!",
-      "desc": "Теперь вы можете использовать приложение, начать добавлять контакты и общаться с ними свободно и приватно",
-      "button": "НАЧАТЬ ИСПОЛЬЗОВАТЬ BERTY"
-    }
-  },
-  "main": {
-    "home": {
-      "requests": {
-        "title": "Запросы",
-        "received-at": "Получено",
-        "accept": "Принять",
-        "card-title": "Запрос в контакты!"
-      },
-      "input-placeholder": "Поиск ключевого слова",
-      "no-contacts": "У вас пока нет контактов или чатов",
-      "search": {
-        "no-results": "Ничего не найдено"
-      }
-    },
-    "home-modal": {
-      "top-button": "Создать новую группу",
-      "bottom-button": "Сканировать контакт или группу"
-    }
-  },
-  "settings": {
-    "home": {
-      "header-left-button": "Справка",
-      "header-center-button": "Инструменты для разработки",
-      "header-right-button": "Настройки",
-      "network-button": "Список сетей",
-      "switch-accounts": "Использовать другой аккаунт"
-    },
-    "network-map": {
-      "title": "Список сетей",
-      "online-peers": "Пиры онлайн"
-    },
-    "mode": {
-      "title": "Настройки",
-      "desc": "Просигнализируйте всё, чтобы приложение подходило под ваши нужды",
-      "notifications-button": {
-        "title": "Уведомления",
-        "tag-enabled": "Включены",
-        "tag-disabled": "Отключены"
-      },
-      "bluetooth-button": {
-        "title": "Bluetooth",
-        "tag-enabled": "Включено",
-        "tag-disabled": "Отключено"
-      },
-      "app-mode-button": {
-        "title": "Режим приложения",
-        "performance-tag": "Производительность",
-        "privacy-tag": "Конфиденциальность",
-        "description-tag": "Простой в использовании - Все функции",
-        "first-bullet-point": "Получать push-уведомления",
-        "second-bullet-point": "Получать запросы в контакты",
-        "third-bullet-point": "Обнаружение локальных пиров (BLE & Multicast DNS)"
-      },
-      "dark-mode-button": "Тёмная тема",
-      "receive-contact-requests-button": "Получать запросы в контакты",
-      "external-services-button": "Внешние сервисы",
-      "auto-replicate-button": "Автоматическое копирование",
-      "multicast-dns-button": {
-        "title": "Multicast DNS",
-        "desc": "Обнаружение локальных пиров"
-      },
-      "blocked-contacts-button": {
-        "title": "Заблокированные контакты",
-        "tag": "заблокировано"
-      },
-      "delete-account-button": "Удалить мой аккаунт",
-      "backup-account-button": "Резервное копирование моего аккаунта"
-    },
-    "edit-profile": {
-      "title": "Редактировать мой профиль",
-      "qr-will-update": "Ваш Berty ID (QR-код) будет обновлен",
-      "ocr-wont-update": "Ваши ожидающие запросы в контакты не будут обновляться",
-      "save": "Сохранить изменения",
-      "cancel": "Отменить",
-      "name-input-placeholder": "Имя...",
-      "name-input-label": "Имя"
-    },
-    "notifications": {
-      "title": "Уведомления",
-      "enabled-desc": "Вы активировали уведомления!",
-      "disabled-desc": "Вы не активировали уведомления для этого приложения",
-      "activate-button": "Активировать уведомления",
-      "contact-request-button": {
-        "title": "Запрос в контакты",
-        "desc": "Получать уведомление каждый раз, когда кто-то посылает вам запрос в контакты"
-      },
-      "messages-notifications-button": {
-        "title": "Уведомления о сообщениях",
-        "display-button": "Показывать уведомления",
-        "preview-button": "Предпросмотр сообщений",
-        "sound-button": "Звук",
-        "exceptions-button": {
-          "title": "",
-          "preview-value": "",
-          "tag": "",
-          "tag_plural": ""
-        }
-      },
-      "group-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
-        "exceptions-button": {
-          "title": "",
-          "preview-value": "",
-          "tag": "",
-          "tag_plural": ""
-        }
-      }
-    },
-    "bluetooth": {
-      "title": "Bluetooth",
-      "desc": "",
-      "activate-button": ""
-    },
-    "mc": {
-      "activate-button": ""
-    },
-    "services-auth": {
-      "title": "",
-      "operated-services-button": "",
-      "register-service-button": {
-        "title": "",
-        "input-placeholder": "",
-        "action": ""
-      },
-      "registered-services-button": {
-        "title": "",
-        "sample-no-services": "",
-        "sample-unknown-service": ""
-      }
-    },
-    "delete-account": {
-      "title": "",
-      "first-desc": "",
-      "desc": "",
-      "cancel-button": "",
-      "delete-button": ""
-    },
-    "help": {
-      "title": "",
-      "security-privacy-button": {
-        "title": "",
-        "desc": ""
-      },
-      "updates-button": "",
-      "about-button": "",
-      "account-button": "",
-      "contact-button": "",
-      "message-button": "",
-      "group-button": "",
-      "settings-button": "",
-      "ask-button": "",
-      "report-button": ""
-    },
-    "about": {
-      "title": "",
-      "top-left-button": "",
-      "top-right-button": "",
-      "bottom-left-button": "",
-      "bottom-right-button": "",
-      "terms-button": "",
-      "privacy-button": "",
-      "software-button": "",
-      "contact-button": "",
-      "website-button": "Веб-сайт"
-    },
-    "updates": {
-      "title": "Обновления приложения",
-      "up-to-date-desc": "Приложение последней версии",
-      "version": "Версия",
-      "current-tag": "Текущая",
-      "installed-tag": "Установлено",
-      "initial-tag": "",
-      "not-installed-tag": ""
-    },
-    "devtools": {
-      "title": "",
-      "header-left-button": "",
-      "simulate-button": "",
-      "tor-button": "",
-      "tor-optional-option": "",
-      "tor-required-option": "",
-      "tor-disabled-option": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "system-info-button": "",
-      "debug-button": "",
-      "add-dev-conversations-button": "",
-      "share-button": {
-        "title": "",
-        "alert-title": "",
-        "alert-message": "",
-        "alert-accept-button": "",
-        "alert-cancel-button": ""
-      },
-      "native-bridge-button": "",
-      "dump-account-button": "",
-      "dump-contacts-button": "",
-      "dump-conversations-button": "",
-      "dump-interactions-button": "",
-      "dump-members-button": "",
-      "stop-node-button": "",
-      "bot-mode-button": "",
-      "local-grpc-button": "",
-      "console-logs-button": "",
-      "ipfs-webui-button": "",
-      "notifications-button": "",
-      "send-to-all-button": {
-        "title": "",
-        "sending": "",
-        "test": "",
-        "tried": ""
-      },
-      "footer-left-button": "",
-      "footer-middle-button": "",
-      "footer-right-button": ""
-    },
-    "system-info": {
-      "title": ""
-    },
-    "fake-data": {
-      "title": "",
-      "contacts-button": "",
-      "multi-members-button": "",
-      "messages-button": "",
-      "delete-button": ""
-    },
-    "add-dev-conversations": {
-      "title": "",
-      "add": "",
-      "tag-bot": "",
-      "tag-contact": "",
-      "tag-conversation": ""
-    },
-    "ipfs-webui": {
-      "title": ""
-    }
-  },
-  "modals": {
-    "manage-deep-link": {
-      "invalid-link": "",
-      "invalid-qr": "",
-      "error": ""
-    },
-    "invalid-scan": {
-      "dismiss-button": ""
-    },
-    "add-this-contact": {
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
-    },
-    "group-invitation": {
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
-    }
-  },
-  "chat": {
-    "contact-settings": {
-      "mark-button": "",
-      "block-button": "",
-      "delete-button": "",
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
-    },
-    "multi-member": {
-      "input-placeholder": ""
-    },
-    "multi-member-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "media-button": "",
-      "notifications-button": "",
-      "members-button": {
-        "title": "",
-        "unknown": ""
-      },
-      "add-member-button": "",
-      "invite-button": "",
-      "save-button": "",
-      "erase-button": "",
-      "leave-button": ""
-    },
-    "multi-member-qr": {
-      "title": ""
-    },
-    "one-to-one": {
-      "contact-request-box": {
-        "title": "",
-        "refuse-button": "",
-        "accept-button": "",
-        "accepted-button": ""
-      },
-      "betabot-box": {
-        "title": "",
-        "desc": "",
-        "skip-button": "",
-        "add-button": ""
-      },
-      "infos-chat": {
-        "connection-confirmed": "",
-        "request-sent": "",
-        "incoming": "",
-        "outgoing": ""
-      },
-      "betabot-input-placeholder": "",
-      "incoming-input-placeholder": "",
-      "input-placeholder": ""
-    },
-    "one-to-one-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "media-button": "",
-      "notifications-button": "",
-      "mutual-button": "",
-      "save-button": "",
-      "erase-button": ""
-    },
-    "replicate-group-settings": {
-      "title": "",
-      "no-registered-button": "",
-      "connect-button": "",
-      "manage-add-button": ""
-    },
-    "files": {
-      "record-sound": "",
-      "media": "",
-      "emojis": ""
-    }
-  }
+	"time": {
+		"fuzzy-time": "чч:мм",
+		"fuzzy-month-day": "дд/ММ",
+		"fuzzy-year-month": "ММ/ГГ",
+		"datetime": "",
+		"started-ago": "Начато {{date}} назад"
+	},
+	"onboarding": {
+		"getstarted": {
+			"desc": "Защищённый peer-to-peer мессенджер, работающий как с наличием, так и без доступа в интернет, сотовой связи или доверия в сети",
+			"open-registered-account": "Открыть зарегистрированный аккаунт",
+			"import-button": "Импортировать данные из существующего аккаунта",
+			"account-selector-create-button": "Создать новый аккаунт",
+			"more-options": "Больше опций",
+			"button": "НАЧАТЬ"
+		},
+		"select-mode": {
+			"performance": {
+				"title": "Производительность",
+				"desc": "Простой в использовании - Все функции",
+				"push-notif": "Получать push-уведомления",
+				"offline-message": "Сообщения в оффлайне",
+				"add-contact": "Простое добавление контактов",
+				"fast-message": "Самая быстрая доставка сообщений"
+			},
+			"high-level": {
+				"title": "Высочайший уровень приватности",
+				"desc": "Для продвинутых пользователей - меньше метаданных",
+				"disable-push-notif": "Push-уведомления отключены",
+				"disable-local-peer-discovery": "Обнаружение локальных пиров отключено",
+				"disable-contact-request": "Запросы в контакты отключены"
+			}
+		},
+		"create-account": {
+			"title": "Создайте свой аккаунт",
+			"desc": "Имя - единственная необходимая информация",
+			"required": "Обязательно",
+			"placeholder": "Имя",
+			"button": "СОЗДАТЬ МОЙ АККАУНТ"
+		},
+		"services-auth": {
+			"header": "Аутентифицироваться в сервисы",
+			"title": "Сервисы",
+			"recommended": "Рекомендовано",
+			"desc": "Это будет автоматически копировать ваши беседы на сервер",
+			"button": "Использовать сервис управляемый Berty",
+			"skip": "ПРОПУСТИТЬ И СДЕЛАТЬ ПОЗЖЕ"
+		},
+		"generate-key": {
+			"title": "Запуск узла Berty…",
+			"desc": "Это может занять несколько секунд"
+		},
+		"notifications": {
+			"header": "Не пропускайте все новые сообщения и запросы в контакты",
+			"recommended": "Рекомендуется",
+			"title": "Уведомления",
+			"desc": "Вам необходимо разрешить push-уведомления от Berty на вашем устройстве",
+			"button": "РАЗРЕШИТЬ УВЕДОМЛЕНИЯ",
+			"skip": "ПРОПУСТИТЬ И НАСТРОИТЬ ПОЗЖЕ"
+		},
+		"bluetooth": {
+			"header": "Общайтесь без подключения к Интернету (wifi или сотовой связи), подключив ваше устройство непосредственно к пирам рядом",
+			"optional": "Необязательно",
+			"title": "Bluetooth",
+			"desc": "Чтобы использовать эту функцию, вам нужно разрешить использование Bluetooth на вашем устройстве",
+			"button": "РАЗРЕШИТЬ BLUETOOTH",
+			"skip": "ПРОПУСТИТЬ И СДЕЛАТЬ ПОЗЖЕ"
+		},
+		"setup-finished": {
+			"title": "Настройка завершена!",
+			"desc": "Теперь вы можете использовать приложение, начать добавлять контакты и общаться с ними свободно и приватно",
+			"button": "НАЧАТЬ ИСПОЛЬЗОВАТЬ BERTY"
+		}
+	},
+	"main": {
+		"home": {
+			"requests": {
+				"title": "Запросы",
+				"received-at": "Получено",
+				"accept": "Принять",
+				"card-title": "Запрос в контакты!"
+			},
+			"input-placeholder": "Поиск ключевого слова",
+			"no-contacts": "У вас пока нет контактов или чатов",
+			"search": {
+				"no-results": "Ничего не найдено"
+			}
+		},
+		"home-modal": {
+			"top-button": "Создать новую группу",
+			"bottom-button": "Сканировать контакт или группу"
+		}
+	},
+	"settings": {
+		"home": {
+			"header-left-button": "Справка",
+			"header-center-button": "Инструменты для разработки",
+			"header-right-button": "Настройки",
+			"network-button": "Список сетей",
+			"switch-accounts": "Использовать другой аккаунт"
+		},
+		"network-map": {
+			"title": "Список сетей",
+			"online-peers": "Пиры онлайн"
+		},
+		"mode": {
+			"title": "Настройки",
+			"desc": "Просигнализируйте всё, чтобы приложение подходило под ваши нужды",
+			"notifications-button": {
+				"title": "Уведомления",
+				"tag-enabled": "Включены",
+				"tag-disabled": "Отключены"
+			},
+			"bluetooth-button": {
+				"title": "Bluetooth",
+				"tag-enabled": "Включено",
+				"tag-disabled": "Отключено"
+			},
+			"app-mode-button": {
+				"title": "Режим приложения",
+				"performance-tag": "Производительность",
+				"privacy-tag": "Конфиденциальность",
+				"description-tag": "Простой в использовании - Все функции",
+				"first-bullet-point": "Получать push-уведомления",
+				"second-bullet-point": "Получать запросы в контакты",
+				"third-bullet-point": "Обнаружение локальных пиров (BLE & Multicast DNS)"
+			},
+			"dark-mode-button": "Тёмная тема",
+			"receive-contact-requests-button": "Получать запросы в контакты",
+			"external-services-button": "Внешние сервисы",
+			"auto-replicate-button": "Автоматическое копирование",
+			"multicast-dns-button": {
+				"title": "Multicast DNS",
+				"desc": "Обнаружение локальных пиров"
+			},
+			"blocked-contacts-button": {
+				"title": "Заблокированные контакты",
+				"tag": "заблокировано"
+			},
+			"delete-account-button": "Удалить мой аккаунт",
+			"backup-account-button": "Резервное копирование моего аккаунта"
+		},
+		"edit-profile": {
+			"title": "Редактировать мой профиль",
+			"qr-will-update": "Ваш Berty ID (QR-код) будет обновлен",
+			"ocr-wont-update": "Ваши ожидающие запросы в контакты не будут обновляться",
+			"save": "Сохранить изменения",
+			"cancel": "Отменить",
+			"name-input-placeholder": "Имя...",
+			"name-input-label": "Имя"
+		},
+		"notifications": {
+			"title": "Уведомления",
+			"enabled-desc": "Вы активировали уведомления!",
+			"disabled-desc": "Вы не активировали уведомления для этого приложения",
+			"activate-button": "Активировать уведомления",
+			"contact-request-button": {
+				"title": "Запрос в контакты",
+				"desc": "Получать уведомление каждый раз, когда кто-то посылает вам запрос в контакты"
+			},
+			"messages-notifications-button": {
+				"title": "Уведомления о сообщениях",
+				"display-button": "Показывать уведомления",
+				"preview-button": "Предпросмотр сообщений",
+				"sound-button": "Звук",
+				"exceptions-button": {
+					"title": "Исключения",
+					"preview-value": "Добавить",
+					"tag": "{{count}} исключение",
+					"tag_plural": "{{count}} исключений"
+				}
+			},
+			"group-notifications-button": {
+				"title": "",
+				"display-button": "",
+				"preview-button": "",
+				"sound-button": "",
+				"exceptions-button": {
+					"title": "",
+					"preview-value": "",
+					"tag": "",
+					"tag_plural": ""
+				}
+			}
+		},
+		"bluetooth": {
+			"title": "Bluetooth",
+			"desc": "",
+			"activate-button": ""
+		},
+		"mc": {
+			"activate-button": ""
+		},
+		"services-auth": {
+			"title": "",
+			"operated-services-button": "",
+			"register-service-button": {
+				"title": "",
+				"input-placeholder": "",
+				"action": ""
+			},
+			"registered-services-button": {
+				"title": "",
+				"sample-no-services": "",
+				"sample-unknown-service": ""
+			}
+		},
+		"delete-account": {
+			"title": "",
+			"first-desc": "",
+			"desc": "",
+			"cancel-button": "",
+			"delete-button": ""
+		},
+		"help": {
+			"title": "",
+			"security-privacy-button": {
+				"title": "",
+				"desc": ""
+			},
+			"updates-button": "",
+			"about-button": "",
+			"account-button": "",
+			"contact-button": "",
+			"message-button": "",
+			"group-button": "",
+			"settings-button": "",
+			"ask-button": "",
+			"report-button": ""
+		},
+		"about": {
+			"title": "",
+			"top-left-button": "",
+			"top-right-button": "",
+			"bottom-left-button": "",
+			"bottom-right-button": "",
+			"terms-button": "",
+			"privacy-button": "",
+			"software-button": "",
+			"contact-button": "",
+			"website-button": "Веб-сайт"
+		},
+		"updates": {
+			"title": "Обновления приложения",
+			"up-to-date-desc": "Приложение последней версии",
+			"version": "Версия",
+			"current-tag": "Текущая",
+			"installed-tag": "Установлено",
+			"initial-tag": "",
+			"not-installed-tag": ""
+		},
+		"devtools": {
+			"title": "",
+			"header-left-button": "",
+			"simulate-button": "",
+			"tor-button": "",
+			"tor-optional-option": "",
+			"tor-required-option": "",
+			"tor-disabled-option": "",
+			"header-middle-button": "",
+			"header-right-button": "",
+			"system-info-button": "",
+			"debug-button": "",
+			"add-dev-conversations-button": "",
+			"share-button": {
+				"title": "",
+				"alert-title": "",
+				"alert-message": "",
+				"alert-accept-button": "",
+				"alert-cancel-button": ""
+			},
+			"native-bridge-button": "",
+			"dump-account-button": "",
+			"dump-contacts-button": "",
+			"dump-conversations-button": "",
+			"dump-interactions-button": "",
+			"dump-members-button": "",
+			"stop-node-button": "",
+			"bot-mode-button": "",
+			"local-grpc-button": "",
+			"console-logs-button": "",
+			"ipfs-webui-button": "",
+			"notifications-button": "",
+			"send-to-all-button": {
+				"title": "",
+				"sending": "",
+				"test": "",
+				"tried": ""
+			},
+			"footer-left-button": "",
+			"footer-middle-button": "",
+			"footer-right-button": ""
+		},
+		"system-info": {
+			"title": ""
+		},
+		"fake-data": {
+			"title": "",
+			"contacts-button": "",
+			"multi-members-button": "",
+			"messages-button": "",
+			"delete-button": ""
+		},
+		"add-dev-conversations": {
+			"title": "",
+			"add": "",
+			"tag-bot": "",
+			"tag-contact": "",
+			"tag-conversation": ""
+		},
+		"ipfs-webui": {
+			"title": ""
+		}
+	},
+	"modals": {
+		"manage-deep-link": {
+			"invalid-link": "",
+			"invalid-qr": "",
+			"error": ""
+		},
+		"invalid-scan": {
+			"dismiss-button": ""
+		},
+		"add-this-contact": {
+			"fingerprint": "",
+			"info": "",
+			"devices": ""
+		},
+		"group-invitation": {
+			"fingerprint": "",
+			"info": "",
+			"devices": ""
+		}
+	},
+	"chat": {
+		"contact-settings": {
+			"mark-button": "",
+			"block-button": "",
+			"delete-button": "",
+			"fingerprint": "",
+			"info": "",
+			"devices": ""
+		},
+		"multi-member": {
+			"input-placeholder": ""
+		},
+		"multi-member-settings": {
+			"header-left-button": "",
+			"header-middle-button": "",
+			"header-right-button": "",
+			"media-button": "",
+			"notifications-button": "",
+			"members-button": {
+				"title": "",
+				"unknown": ""
+			},
+			"add-member-button": "",
+			"invite-button": "",
+			"save-button": "",
+			"erase-button": "",
+			"leave-button": ""
+		},
+		"multi-member-qr": {
+			"title": ""
+		},
+		"one-to-one": {
+			"contact-request-box": {
+				"title": "",
+				"refuse-button": "",
+				"accept-button": "",
+				"accepted-button": ""
+			},
+			"betabot-box": {
+				"title": "",
+				"desc": "",
+				"skip-button": "",
+				"add-button": ""
+			},
+			"infos-chat": {
+				"connection-confirmed": "",
+				"request-sent": "",
+				"incoming": "",
+				"outgoing": ""
+			},
+			"betabot-input-placeholder": "",
+			"incoming-input-placeholder": "",
+			"input-placeholder": ""
+		},
+		"one-to-one-settings": {
+			"header-left-button": "",
+			"header-middle-button": "",
+			"header-right-button": "",
+			"media-button": "",
+			"notifications-button": "",
+			"mutual-button": "",
+			"save-button": "",
+			"erase-button": ""
+		},
+		"replicate-group-settings": {
+			"title": "",
+			"no-registered-button": "",
+			"connect-button": "",
+			"manage-add-button": ""
+		},
+		"files": {
+			"record-sound": "",
+			"recording": "",
+			"gallery": "",
+			"camera": "",
+			"record": "",
+			"files": "",
+			"microphone": "",
+			"gif": "",
+			"search-gif": "",
+			"security-access": "",
+			"security-access-desc": "",
+			"save-to-gallery": "",
+			"share": "",
+			"forward-berty": "",
+			"forward": "",
+			"image-saved": ""
+		}
+	}
 }
