@@ -5,7 +5,6 @@ package main
 import (
 	"encoding/base64"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -17,7 +16,7 @@ import (
 	"golang.org/x/crypto/sha3"
 )
 
-func htgtTargetPath(name string, target string, sources []string, env []string, implem func() error, phony bool) error {
+func htgtTargetPath(target string, sources []string, env []string, implem func() error, phony bool) error {
 	// FIXME: race condition: if a source is modified externally while the rule is running, the written manifest could be desynced
 	if newSources, err := htgtPath(target, env, sources...); err != nil || !newSources {
 		if err != nil {
@@ -26,12 +25,6 @@ func htgtTargetPath(name string, target string, sources []string, env []string, 
 		if !phony {
 			return errUpToDate
 		}
-	}
-
-	if phony {
-		fmt.Printf("🔨 %s: building (phony)\n", name)
-	} else {
-		fmt.Printf("🔨 %s: building\n", name)
 	}
 
 	if err := implem(); err != nil {
@@ -47,7 +40,7 @@ func htgtTargetPath(name string, target string, sources []string, env []string, 
 
 var errUpToDate = errors.New("up-to-date")
 
-func htgtTargetGlob(name string, target string, globs []string, env []string, implem func() error, phony bool) error {
+func htgtTargetGlob(target string, globs []string, env []string, implem func() error, phony bool) error {
 	srcs := []string{}
 	for _, g := range globs {
 		if !strings.ContainsRune(g, '*') {
@@ -61,7 +54,7 @@ func htgtTargetGlob(name string, target string, globs []string, env []string, im
 		srcs = append(srcs, matches...)
 	}
 
-	return htgtTargetPath(name, target, srcs, env, implem, phony)
+	return htgtTargetPath(target, srcs, env, implem, phony)
 }
 
 func htgtInfoDir(target string) string {

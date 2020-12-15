@@ -248,6 +248,12 @@ func (t *targetDef) runTarget(implem func(*implemHelper) error) error {
 	var buildStart time.Time
 	var buildEnd time.Time
 	implemWrapper := func() error {
+		if t.phony {
+			fmt.Printf("🔨 %s: building (phony)\n", t.name)
+		} else {
+			fmt.Printf("🔨 %s: building\n", t.name)
+		}
+
 		in, out := io.Pipe()
 		ch := make(chan struct{})
 		go func() {
@@ -269,7 +275,7 @@ func (t *targetDef) runTarget(implem func(*implemHelper) error) error {
 		return err
 	}
 
-	if err := htgtTargetGlob(t.name, t.output, allSources, t.env, implemWrapper, t.phony); err == errUpToDate {
+	if err := htgtTargetGlob(t.output, allSources, t.env, implemWrapper, t.phony); err == errUpToDate {
 		fmt.Printf("ℹ️  %s: up-to-date\n", t.name)
 		return nil
 	} else if err != nil {

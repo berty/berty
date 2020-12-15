@@ -56,11 +56,6 @@ var frameworkLdflagsDef = &targetDef{
 	env:    []string{"VCS_REF"},
 }
 
-/*
-* TODO: this forces a rebuild on commit change (same problem on xcodeProj rule)
-* it would be better to add a file in the app assets and read it at runtime on branch!=master
- */
-
 // Build version info
 func FrameworkLdflags() error {
 	return frameworkLdflagsDef.runTarget(func(ih *implemHelper) error {
@@ -384,11 +379,14 @@ var gomobile = &mtarget{gomobileDef, GomobileInit}
 
 //
 
+const androidFrameworkCache = "js/android/.gomobile-cache"
+
 var androidFrameworkDef = &targetDef{
-	name:    "AndroidFramework",
-	output:  "js/android/libs/gobridge.aar",
-	sources: []string{"go"},
-	mdeps:   []Rule{gomobile, frameworkLdFlags},
+	name:      "AndroidFramework",
+	output:    "js/android/libs/gobridge.aar",
+	sources:   []string{"go"},
+	mdeps:     []Rule{gomobile, frameworkLdFlags},
+	artifacts: []string{androidFrameworkCache},
 }
 
 // Build android gomobile framework
@@ -398,7 +396,7 @@ func AndroidFramework() error {
 			return err
 		}
 
-		cachePath, err := filepath.Abs("js/android/.gomobile-cache")
+		cachePath, err := filepath.Abs(androidFrameworkCache)
 		if err != nil {
 			return err
 		}
@@ -565,11 +563,14 @@ var iOSTor = &mtarget{iOSTorDef, IOSTor}
 
 // iOS Framework
 
+const iOSFrameworkCache = "js/ios/.gomobile-cache"
+
 var iOSFrameworkDef = &targetDef{
-	name:    "IOSFramework",
-	output:  "js/ios/Frameworks/Bertybridge.framework",
-	sources: []string{"go"},
-	mdeps:   []Rule{iOSTor, gomobile, frameworkLdFlags},
+	name:      "IOSFramework",
+	output:    "js/ios/Frameworks/Bertybridge.framework",
+	sources:   []string{"go"},
+	mdeps:     []Rule{iOSTor, gomobile, frameworkLdFlags},
+	artifacts: []string{iOSFrameworkCache},
 }
 
 // Build iOS gomobile framework
@@ -579,7 +580,7 @@ func IOSFramework() error {
 			return err
 		}
 
-		cachePath, err := filepath.Abs("js/ios/.gomobile-cache")
+		cachePath, err := filepath.Abs(iOSFrameworkCache)
 		if err != nil {
 			return err
 		}
@@ -669,12 +670,14 @@ var gitRevList = &mtarget{gitRevListDef, GitRevList}
 
 // xcodeproj
 
+const xcodeProjCache = "ios/vendor/xcodegen/.cache/berty-app"
+
 var xcodeProjDef = &targetDef{
 	name:      "XcodeProj",
 	output:    "js/ios/Berty.xcodeproj",
 	sources:   []string{"js/ios/*.yaml", "js/ios/Berty/Sources"},
 	mdeps:     []Rule{xcodeGen, swift, gitRevParse, gitRevList, globalVersion},
-	artifacts: []string{"js/ios/Berty/main.jsbundle", "js/ios/Berty/Info.plist"},
+	artifacts: []string{"js/ios/Berty/main.jsbundle", "js/ios/Berty/Info.plist", xcodeProjCache},
 }
 
 // Build xcodeproj
@@ -713,7 +716,7 @@ func XcodeProj() error {
 
 		return ih.execWdEnv("js", env, "swift", "run", "--package-path", "ios/vendor/xcodegen", "xcodegen",
 			"--spec", "ios/berty.yaml",
-			"--cache-path", "ios/vendor/xcodegen/.cache/berty-app",
+			"--cache-path", xcodeProjCache,
 			"--use-cache",
 		)
 	})
