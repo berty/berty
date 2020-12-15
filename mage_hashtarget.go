@@ -17,13 +17,15 @@ import (
 	"golang.org/x/crypto/sha3"
 )
 
-func htgtTargetPath(name string, target string, sources []string, env []string, implem func() error) error {
+func htgtTargetPath(name string, target string, sources []string, env []string, implem func() error, phony bool) error {
 	// FIXME: race condition: if a source is modified externally while the rule is running, the written manifest could be desynced
 	if newSources, err := htgtPath(target, env, sources...); err != nil || !newSources {
-		if err == nil {
+		if err != nil {
+			return err
+		}
+		if !phony {
 			return errUpToDate
 		}
-		return err
 	}
 
 	fmt.Printf("🔨 %s: building\n", name)
@@ -41,7 +43,7 @@ func htgtTargetPath(name string, target string, sources []string, env []string, 
 
 var errUpToDate = errors.New("up-to-date")
 
-func htgtTargetGlob(name string, target string, globs []string, env []string, implem func() error) error {
+func htgtTargetGlob(name string, target string, globs []string, env []string, implem func() error, phony bool) error {
 	srcs := []string{}
 	for _, g := range globs {
 		if !strings.ContainsRune(g, '*') {
@@ -55,7 +57,7 @@ func htgtTargetGlob(name string, target string, globs []string, env []string, im
 		srcs = append(srcs, matches...)
 	}
 
-	return htgtTargetPath(name, target, srcs, env, implem)
+	return htgtTargetPath(name, target, srcs, env, implem, phony)
 }
 
 func htgtInfoDir(target string) string {

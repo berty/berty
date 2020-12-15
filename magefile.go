@@ -33,10 +33,57 @@ const minimumAndroidVer = "21"
 const minimumIOsVer = "12.0"
 const requiredJavaVer = "18"
 
-func extLdFlags() string {
-	vcsRef := "olol"
-	version := "zer"
-	return fmt.Sprintf(`-ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=%s -X berty.tech/berty/v2/go/pkg/bertyversion.Version=%s"`, vcsRef, version)
+//
+
+//
+
+var frameworkLdflagsDef = &targetDef{
+	name:   "FrameworkLdflags",
+	output: "js/.framework-ldflags.json",
+	mdeps:  []Rule{goMods}, // TODO: add gitTool
+	env:    []string{"VERSIO", "VCS_REF"},
+	phony:  true,
+}
+
+// Build version info
+func FrameworkLdflags() error {
+	return frameworkLdflagsDef.runTarget(func(ih *implemHelper) error {
+		version, err := ih.getenvFallbackExec("VERSION", "go", "run", "-mod=readonly", "-modfile=go.mod", "github.com/mdomke/git-semver/v5")
+		if err != nil {
+			return err
+		}
+		vcsRef, err := ih.getenvFallbackExec("VCS_REF", "git", "rev-parse", "--short", "HEAD")
+		if err != nil {
+			return err
+		}
+		ldFlags := fmt.Sprintf(
+			`-ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=%s -X berty.tech/berty/v2/go/pkg/bertyversion.Version=%s"`,
+			unitrim(vcsRef), unitrim(version))
+		return ioutil.WriteFile(frameworkLdflagsDef.output, []byte(ldFlags), os.ModePerm)
+	})
+}
+
+var frameworkLdFlags = &mtarget{frameworkLdflagsDef, FrameworkLdflags}
+
+func (ih *implemHelper) getenvFallbackExec(key string, cmd string, args ...string) (string, error) {
+	if val := os.Getenv(key); val != "" {
+		return val, nil
+	}
+	val, err := ih.strExec(cmd, args...)
+	if err != nil {
+		return "", err
+	}
+	return val, nil
+}
+
+func (ih *implemHelper) strExec(name string, arg ...string) (string, error) {
+	cmd := exec.Command(name, arg...)
+	cmd.Stderr = ih.w
+	out, err := cmd.Output()
+	if err != nil {
+		return "", err
+	}
+	return string(out), nil
 }
 
 //
@@ -313,7 +360,7 @@ func StoreTypes() error {
 
 		cmd := exec.Command(c, args...)
 		cmd.Dir = workDir
-		cmd.Stderr = os.Stderr
+		cmd.Stderr = ih.w
 
 		fmt.Println(strings.Join(append([]string{"🏃", path.Join(".", workDir), "❯", c}, args...), " "), ">", output[len("js/"):])
 		out, err := cmd.Output()
@@ -368,7 +415,7 @@ var androidFrameworkDef = &targetDef{
 	name:    "AndroidFramework",
 	output:  "js/android/libs/gobridge.aar",
 	sources: []string{"go"},
-	mdeps:   []Rule{gomobile},
+	mdeps:   []Rule{gomobile, frameworkLdFlags},
 }
 
 // Build android gomobile framework
@@ -383,10 +430,15 @@ func AndroidFramework() error {
 			return err
 		}
 
+		ldflags, err := ioutil.ReadFile(frameworkLdFlags.def.output)
+		if err != nil {
+			return err
+		}
+
 		env := []string{"GO111MODULE=on"}
 		if err := ih.execEnv(env, "go", "run", "golang.org/x/mobile/cmd/gomobile", "bind",
 			"-v",
-			extLdFlags(),
+			string(ldflags),
 			"-o", androidFrameworkDef.output,
 			"-cache", cachePath,
 			"-target", "android",
@@ -500,7 +552,7 @@ var iOSTorDef = &targetDef{
 	mdeps:  []Rule{torVersion, tar},
 }
 
-// Fetch tor for iOS
+// Fetch tor deps for iOS
 func IOSTor(ctx context.Context) error {
 	return iOSTorDef.runTarget(func(ih *implemHelper) error {
 		versionBytes, err := ioutil.ReadFile(torVersion.def.output)
@@ -544,7 +596,7 @@ var iOSFrameworkDef = &targetDef{
 	name:    "IOSFramework",
 	output:  "js/ios/Frameworks/Bertybridge.framework",
 	sources: []string{"go"},
-	mdeps:   []Rule{iOSTor, gomobile},
+	mdeps:   []Rule{iOSTor, gomobile, frameworkLdFlags},
 }
 
 // Build iOS gomobile framework
@@ -559,10 +611,15 @@ func IOSFramework() error {
 			return err
 		}
 
+		ldflags, err := ioutil.ReadFile(frameworkLdFlags.def.output)
+		if err != nil {
+			return err
+		}
+
 		env := []string{"GO111MODULE=on"}
 		if err := ih.execEnv(env, "go", "run", "golang.org/x/mobile/cmd/gomobile", "bind",
 			"-v",
-			extLdFlags(),
+			string(ldflags),
 			"-o", iOSFrameworkDef.output,
 			"-cache", cachePath,
 			"-target", "ios",
@@ -1327,6 +1384,7 @@ type targetDef struct {
 	deps      []interface{} // classic mage dependencies (functions) TODO rename to cdeps
 	env       []string      // environment variables used in the rule, the values at build time will be added to the cache sum
 	artifacts []string      // additonalOutputs, used for cache
+	phony     bool          // rebuild every time
 }
 
 type mtarget struct {
@@ -1457,7 +1515,7 @@ func (t *targetDef) runTarget(implem func(*implemHelper) error) error {
 		return err
 	}
 
-	if err := htgtTargetGlob(t.name, t.output, allSources, t.env, implemWrapper); err == errUpToDate {
+	if err := htgtTargetGlob(t.name, t.output, allSources, t.env, implemWrapper, t.phony); err == errUpToDate {
 		fmt.Printf("ℹ️  %s: up-to-date\n", t.name)
 		return nil
 	} else if err != nil {
