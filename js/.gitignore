@@ -123,7 +123,3 @@ __generated__/
 # osx
 dist/
 osx/Berty.app
-
-# mage
-/.pbjs-flags.json
-/.framework-ldflags.json

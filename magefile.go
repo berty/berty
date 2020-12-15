@@ -5,13 +5,9 @@ package main
 import (
 	"bufio"
 	"context"
-	"encoding/hex"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"os/exec"
 	"path"
@@ -19,12 +15,9 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 	"unicode"
 
-	"github.com/blang/semver/v4"
-	"github.com/magefile/mage/mg" // mg contains helpful utility functions, like Deps
-	"golang.org/x/crypto/sha3"
+	"github.com/magefile/mage/mg"
 )
 
 // config
@@ -35,63 +28,71 @@ const requiredJavaVer = "18"
 
 //
 
-//
-
-var frameworkLdflagsDef = &targetDef{
-	name:   "FrameworkLdflags",
-	output: "js/.framework-ldflags.json",
-	mdeps:  []Rule{goMods}, // TODO: add gitTool
-	env:    []string{"VERSIO", "VCS_REF"},
-	phony:  true,
+var globalVersionDef = &targetDef{
+	name:   "GlobalVersion",
+	output: ".build-artifacts/global-version",
+	mdeps:  []Rule{goMods},
+	env:    []string{"VERSION"},
 }
 
-// Build version info
-func FrameworkLdflags() error {
-	return frameworkLdflagsDef.runTarget(func(ih *implemHelper) error {
+func GlobalVersion() error {
+	return globalVersionDef.runTarget(func(ih *implemHelper) error {
 		version, err := ih.getenvFallbackExec("VERSION", "go", "run", "-mod=readonly", "-modfile=go.mod", "github.com/mdomke/git-semver/v5")
 		if err != nil {
 			return err
 		}
-		vcsRef, err := ih.getenvFallbackExec("VCS_REF", "git", "rev-parse", "--short", "HEAD")
+		return globalVersionDef.outputWriteString(version)
+	})
+}
+
+var globalVersion = &mtarget{globalVersionDef, GlobalVersion}
+
+//
+
+var frameworkLdflagsDef = &targetDef{
+	name:   "FrameworkLdflags",
+	output: ".build-artifacts/js/framework-ldflags.json",
+	mdeps:  []Rule{globalVersion, gitRevParse},
+	env:    []string{"VCS_REF"},
+}
+
+/*
+* TODO: this forces a rebuild on commit change (same problem on xcodeProj rule)
+* it would be better to add a file in the app assets and read it at runtime on branch!=master
+ */
+
+// Build version info
+func FrameworkLdflags() error {
+	return frameworkLdflagsDef.runTarget(func(ih *implemHelper) error {
+		vcsRef := os.Getenv("VCS_REF")
+		if vcsRef == "" {
+			var err error
+			if vcsRef, err = gitRevParse.OutputString(); err != nil {
+				return err
+			}
+		}
+
+		version, err := globalVersion.OutputString()
 		if err != nil {
 			return err
 		}
+
 		ldFlags := fmt.Sprintf(
 			`-ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=%s -X berty.tech/berty/v2/go/pkg/bertyversion.Version=%s"`,
 			unitrim(vcsRef), unitrim(version))
-		return ioutil.WriteFile(frameworkLdflagsDef.output, []byte(ldFlags), os.ModePerm)
+
+		return frameworkLdflagsDef.outputWriteString(ldFlags)
 	})
 }
 
 var frameworkLdFlags = &mtarget{frameworkLdflagsDef, FrameworkLdflags}
-
-func (ih *implemHelper) getenvFallbackExec(key string, cmd string, args ...string) (string, error) {
-	if val := os.Getenv(key); val != "" {
-		return val, nil
-	}
-	val, err := ih.strExec(cmd, args...)
-	if err != nil {
-		return "", err
-	}
-	return val, nil
-}
-
-func (ih *implemHelper) strExec(name string, arg ...string) (string, error) {
-	cmd := exec.Command(name, arg...)
-	cmd.Stderr = ih.w
-	out, err := cmd.Output()
-	if err != nil {
-		return "", err
-	}
-	return string(out), nil
-}
 
 //
 
 var nodeModulesDef = &targetDef{
 	name:    "NodeModules",
 	output:  "js/node_modules",
-	sources: []string{"js/package.json", "js/yarn.lock", "magefile.go"},
+	sources: []string{"js/package.json", "js/yarn.lock"},
 	mdeps:   []Rule{yarn, node},
 	env:     []string{"CI"},
 }
@@ -120,7 +121,7 @@ var goModsDef = &targetDef{
 	name:    "GoMods",
 	output:  ".meta/GoMods",
 	mdeps:   []Rule{goTool},
-	sources: []string{"go.mod", "go.sum", "magefile.go"},
+	sources: []string{"go.mod", "go.sum"},
 }
 
 func GoMods() error {
@@ -135,8 +136,9 @@ var goMods = &mtarget{goModsDef, GoMods}
 
 var pbjsFlagsDef = &targetDef{
 	name:   "PbjsFlags",
-	output: "js/.pbjs-flags.json",
+	output: ".build-artifacts/js/pbjs-flags.json",
 	mdeps:  []Rule{goMods},
+	// TODO: workDir: "js",
 }
 
 // Build common pbjs flags
@@ -177,38 +179,6 @@ var pbjsDef = &targetDef{
 	mdeps:  []Rule{nodeModules, npx, pbjsFlags},
 }
 
-type implemHelper struct {
-	w io.Writer
-}
-
-func newImplemHelper(w io.Writer) *implemHelper {
-	return &implemHelper{
-		w: w,
-	}
-}
-
-func (ih *implemHelper) exec(cmd string, args ...string) error {
-	return ih.execWd("", cmd, args...)
-}
-
-func (ih *implemHelper) execWd(workDir string, cmd string, args ...string) error {
-	return ih.execWdEnv(workDir, nil, cmd, args...)
-}
-
-func (ih *implemHelper) execEnv(env []string, cmd string, args ...string) error {
-	return ih.execWdEnv("", env, cmd, args...)
-}
-
-func (ih *implemHelper) execWdEnv(workDir string, env []string, command string, args ...string) error {
-	fmt.Println(strings.Join(append(append([]string{"🏃", path.Clean(workDir), "❯"}, env...), append([]string{command}, args...)...), " "))
-	cmd := exec.Command(command, args...)
-	cmd.Dir = workDir
-	cmd.Stdout = ih.w
-	cmd.Stderr = ih.w
-	cmd.Env = append(os.Environ(), env...)
-	return cmd.Run()
-}
-
 func PbjsInit() error {
 	return pbjsDef.runTarget(func(ih *implemHelper) error {
 		return ih.execWd("js", "npx", "pbjs", "--version", "-")
@@ -216,6 +186,8 @@ func PbjsInit() error {
 }
 
 var pbjs = &mtarget{pbjsDef, PbjsInit}
+
+//
 
 var pbjsProtos = []string{"../api/bertyaccount.proto", "../api/protocoltypes.proto", "../api/messengertypes.proto"}
 
@@ -248,6 +220,8 @@ func PbjsRoot() error {
 }
 
 var pbjsRoot = &mtarget{pbjsRootDef, PbjsRoot}
+
+//
 
 var pbtsRootDef = &targetDef{
 	name:    "PbtsRoot",
@@ -282,7 +256,7 @@ func PbtsRoot() error {
 		re := regexp.MustCompile(".*constructor.*\n")
 		cleanedData := re.ReplaceAll(data, []byte(""))
 
-		if err := ioutil.WriteFile(pbtsRootDef.output, cleanedData, os.ModePerm); err != nil {
+		if err := pbtsRootDef.outputWrite(cleanedData); err != nil {
 			return err
 		}
 
@@ -299,7 +273,7 @@ const genWelshClientsSrc = "js/packages/grpc-bridge/gen-clients.js"
 var welshClientsTypesDef = &targetDef{
 	name:    "WelshClientsTypes",
 	output:  "js/packages/grpc-bridge/welsh-clients.gen.ts",
-	sources: []string{"magefile.go", genWelshClientsSrc},
+	sources: []string{genWelshClientsSrc},
 	mdeps:   []Rule{nodeModules, pbjsRoot, npx},
 }
 
@@ -323,7 +297,7 @@ func WelshClientsTypes() error {
 			return err
 		}
 
-		if err := ioutil.WriteFile(output, out, os.ModePerm); err != nil {
+		if err := welshClientsTypesDef.outputWrite(out); err != nil {
 			return err
 		}
 
@@ -368,7 +342,7 @@ func StoreTypes() error {
 			return err
 		}
 
-		if err := ioutil.WriteFile(output, out, os.ModePerm); err != nil {
+		if err := storeTypesDef.outputWrite(out); err != nil {
 			return err
 		}
 
@@ -538,7 +512,7 @@ func TorVersion() error {
 			goLibtorVer = words[0]
 		}
 
-		return ioutil.WriteFile(torVersionDef.output, []byte(goLibtorVer), os.ModePerm)
+		return torVersionDef.outputWriteString(goLibtorVer)
 	})
 }
 
@@ -678,13 +652,29 @@ func RubyGems() error {
 
 var rubyGems = &mtarget{rubyGemsDef, RubyGems}
 
+// gitRevParse
+
+var gitRevParseDef = &targetDef{name: "GitRevParse", output: ".build-artifacts/git-rev-parse", mdeps: []Rule{gitTool}, phony: true}
+
+func GitRevParse() error { return gitRevParseDef.runExecToOutput("git", "rev-parse", "HEAD") }
+
+var gitRevParse = &mtarget{gitRevParseDef, GitRevParse}
+
+// gitRevList
+
+var gitRevListDef = &targetDef{name: "GitRevList", output: ".build-artifacts/git-rev-list", mdeps: []Rule{gitTool}, phony: true}
+
+func GitRevList() error { return gitRevListDef.runExecToOutput("git", "rev-list", "HEAD") }
+
+var gitRevList = &mtarget{gitRevListDef, GitRevList}
+
 // xcodeproj
 
 var xcodeProjDef = &targetDef{
 	name:      "XcodeProj",
 	output:    "js/ios/Berty.xcodeproj",
-	sources:   []string{"js/ios/*.yaml", "js/ios/Berty/Sources", "magefile.go"},
-	mdeps:     []Rule{xcodeGen, swift},
+	sources:   []string{"js/ios/*.yaml", "js/ios/Berty/Sources"},
+	mdeps:     []Rule{xcodeGen, swift, gitRevParse, gitRevList, globalVersion},
 	artifacts: []string{"js/ios/Berty/main.jsbundle", "js/ios/Berty/Info.plist"},
 }
 
@@ -699,14 +689,28 @@ func XcodeProj() error {
 			return nil
 		}
 
-		//IOS_BUNDLE_VERSION=$(shell echo -n $(shell git rev-list HEAD | wc -l)) \
-		iOSBundleVersion := "wololo"
-		//IOS_SHORT_BUNDLE_VERSION=$(shell echo "$(VERSION)" | cut -c2- | cut -f1 -d '-') \
-		iOSShortBundleVersion := "wo"
-		//IOS_COMMIT=$(shell git rev-parse HEAD) \
-		iOSCommit := "shasha"
+		gitRevList, err := gitRevList.OutputString()
+		if err != nil {
+			return err
+		}
+		iOSBundleVersion := strings.Count(gitRevList, "\n")
 
-		env := []string{"IOS_BUNDLE_VERSION=" + iOSBundleVersion, "IOS_SHORT_BUNDLE_VERSION=" + iOSShortBundleVersion, "IOS_COMMIT=" + iOSCommit}
+		globalVersion, err := globalVersion.OutputString()
+		if err != nil {
+			return err
+		}
+		iOSShortBundleVersion := strings.Split(globalVersion[1:], "-")[0]
+
+		iOSCommit, err := gitRevParse.OutputString()
+		if err != nil {
+			return err
+		}
+
+		env := []string{
+			"IOS_BUNDLE_VERSION=" + strconv.Itoa(iOSBundleVersion),
+			"IOS_SHORT_BUNDLE_VERSION=" + iOSShortBundleVersion,
+			"IOS_COMMIT=" + unitrim(iOSCommit),
+		}
 
 		return ih.execWdEnv("js", env, "swift", "run", "--package-path", "ios/vendor/xcodegen", "xcodegen",
 			"--spec", "ios/berty.yaml",
@@ -787,6 +791,7 @@ var iOSDebugDef = &targetDef{
 	output: ".meta/IOSDebug",
 	mdeps:  iOSAppDeps,
 	env:    []string{"IOS_DEVICE", "METRO_RN_PORT"},
+	phony:  true,
 }
 
 // Build and run debug ios app
@@ -806,731 +811,3 @@ func IOSDebug() error {
 		return ih.execWd("js", "npx", args...)
 	})
 }
-
-// Force to reinstall the ios app
-func IOSDebugRe() error {
-	if err := os.Remove(iOSDebugDef.infoPath()); err != nil {
-		return err
-	}
-
-	mg.Deps(IOSDebug)
-
-	return nil
-}
-
-// yarn
-
-var yarnDef = &toolDef{
-	name:        "yarn",
-	versionArgs: []string{"-v"},
-}
-
-// Check-in yarn version
-func CheckYarn() error { return yarnDef.infoWrite() }
-
-var yarn = &mtool{yarnDef, CheckYarn}
-
-// node
-
-var nodeDef = &toolDef{
-	name:        "node",
-	semverRange: ">=14.0.0",
-	versionArgs: []string{"-v"},
-	versionTransform: func(s string) (semver.Version, error) {
-		return semver.Make(s[len("v"):])
-	},
-}
-
-// Check-in node version
-func CheckNode() error { return nodeDef.infoWrite() }
-
-var node = &mtool{nodeDef, CheckNode}
-
-// xcodebuild
-
-var xcodebuildDef = &toolDef{
-	name:        "xcodebuild",
-	versionArgs: []string{"-version"},
-	versionTransform: func(raw string) (semver.Version, error) {
-		words := strings.FieldsFunc(raw, unicode.IsSpace)
-		if len(words) < 2 {
-			return semver.Version{}, errors.New("expected at least two words in 'xcodebuild -version' output")
-		}
-		build := ""
-		if len(words) >= 5 {
-			build = words[4] + "."
-		}
-		sum := sha3.Sum224([]byte(raw))
-		build += hex.EncodeToString(sum[:])[:7]
-		return semver.Make(words[1] + "+" + build)
-	},
-}
-
-func CheckXcodebuild() error { return xcodebuildDef.infoWrite() }
-
-var xcodebuild = &mtool{xcodebuildDef, CheckXcodebuild}
-
-// npx
-
-var npxDef = &toolDef{name: "npx", versionArgs: []string{"-v"}}
-
-// Check if npx is available
-func CheckNpx() error { return npxDef.infoWrite() }
-
-var npx = &mtool{npxDef, CheckNpx}
-
-// ruby bundle
-
-var rubyBundleDef = &toolDef{
-	name:        "bundle",
-	versionArgs: []string{"--version"},
-	versionTransform: func(raw string) (semver.Version, error) {
-		words := strings.FieldsFunc(raw, unicode.IsSpace)
-		if len(words) == 0 {
-			return semver.Version{}, errors.New("expected at least one word in ruby bundle version")
-		}
-		return semver.Make(words[len(words)-1])
-	},
-}
-
-// Check if bundle is available
-func CheckRubyBundle() error { return rubyBundleDef.infoWrite() }
-
-var rubyBundle = &mtool{rubyBundleDef, CheckRubyBundle}
-
-// swift
-
-var swiftDef = &toolDef{
-	name:        "swift",
-	versionArgs: []string{"-version"},
-	versionTransform: func(raw string) (semver.Version, error) {
-		words := strings.FieldsFunc(raw, unicode.IsSpace)
-		if len(words) < 4 {
-			return semver.Version{}, errors.New("expected at least 4 words in swift version")
-		}
-		sum := sha3.Sum224([]byte(raw))
-		build := hex.EncodeToString(sum[:])[:7]
-		sver := words[3] + ".0+" + build
-		return semver.Make(sver)
-	},
-}
-
-// Check if swift is available
-func CheckSwift() error { return swiftDef.infoWrite() }
-
-var swift = &mtool{swiftDef, CheckSwift}
-
-// unzip
-
-var unzipDef = &toolDef{
-	name:        "unzip",
-	versionArgs: []string{"-v"},
-	versionTransform: func(raw string) (semver.Version, error) {
-		words := strings.FieldsFunc(raw, unicode.IsSpace)
-		if len(words) < 2 {
-			return semver.Version{}, errors.New("expected at least 2 words in unzip version")
-		}
-		parts := strings.SplitN(words[1], ".", 3)
-
-		minor := "0"
-		if len(parts) >= 2 {
-			if i, err := strconv.ParseInt(parts[1], 10, 0); err == nil {
-				minor = strconv.FormatInt(i, 10)
-			}
-		}
-
-		sum := sha3.Sum224([]byte(raw))
-		build := hex.EncodeToString(sum[:])[:7]
-
-		ver := strings.Join([]string{parts[0], minor, "0"}, ".") + "+" + build
-		return semver.Make(ver)
-	},
-}
-
-// Check if unzip is available
-func CheckUnzip() error { return unzipDef.infoWrite() }
-
-var unzip = &mtool{unzipDef, CheckUnzip}
-
-// tar
-
-var tarDef = &toolDef{
-	name:        "tar",
-	versionArgs: []string{"--version"},
-	versionTransform: func(raw string) (semver.Version, error) {
-		if raw == "" {
-			return semver.Version{}, errors.New("expected something in tar version output")
-		}
-
-		re := regexp.MustCompile(`^(tar\s+)?(\(GNU tar\)|bsdtar)\s+(\d+(.\d+(.\d+)?)?)`)
-		matches := re.FindStringSubmatch(raw)
-		if len(matches) < 4 {
-			return semver.Version{}, fmt.Errorf("expected at least 4 elems in regexp return, got:\n%v", matches)
-		}
-
-		flavor := strings.ReplaceAll(strings.Trim(matches[2], "()"), " ", "")
-
-		version := matches[3]
-		if atoms := strings.Split(version, "."); len(atoms) < 3 {
-			version += ".0"
-		}
-
-		sum := sha3.Sum224([]byte(raw))
-		build := flavor + "." + hex.EncodeToString(sum[:])[:7]
-
-		return semver.Make(version + "+" + build) // TODO: check access
-	},
-}
-
-// Check if tar is available
-func CheckTar() error { return tarDef.infoWrite() }
-
-var tar = &mtool{tarDef, CheckTar}
-
-// go
-
-var goDef = &toolDef{
-	name:        "go",
-	semverRange: ">=1.14.0 !1.15.4",
-	versionArgs: []string{"version"},
-	versionTransform: func(s string) (semver.Version, error) {
-		words := strings.FieldsFunc(s, unicode.IsSpace)
-		if len(words) < 3 {
-			return semver.Version{}, errors.New("expected at least 3 words in go version output")
-		}
-		return semver.Make(words[2][len("go"):])
-	},
-}
-
-// Check if go is available
-func CheckGo() error { return goDef.infoWrite() }
-
-var goTool = &mtool{goDef, CheckGo}
-
-// java
-
-var javaDef = &toolDef{
-	name:        "java",
-	semverRange: ">=1.8.0 <1.9.0",
-	versionArgs: []string{"-version"},
-	versionTransform: func(raw string) (semver.Version, error) {
-		words := strings.FieldsFunc(raw, unicode.IsSpace)
-		if len(words) < 3 {
-			return semver.Version{}, errors.New("expected at least 3 words in java version output")
-		}
-		ver := words[2]
-		sum := sha3.Sum224([]byte(raw))
-		build := words[0] + "." + hex.EncodeToString(sum[:])[:7]
-		return semver.Make(strings.Split(strings.Trim(ver, "\""), "_")[0] + "+" + build)
-	},
-}
-
-// Check-in java version
-func CheckJava() error { return javaDef.infoWrite() }
-
-var java = &mtool{javaDef, CheckJava}
-
-// misc
-
-// Check all tools
-func CheckTools() error {
-	mg.Deps(CheckYarn, CheckNpx, CheckRubyBundle, CheckSwift, CheckUnzip, CheckGo, CheckTar, CheckNode, CheckJava)
-
-	return nil
-}
-
-// utils
-
-func tmp() string {
-	tmp := os.Getenv("TMP")
-	if tmp == "" {
-		tmp = os.Getenv("TMPDIR")
-	}
-	if tmp == "" {
-		tmp = "/tmp"
-	}
-	return path.Clean(tmp)
-}
-
-func wget(ctx context.Context, url string) (io.ReadCloser, error) {
-	fmt.Printf("🌏 . ➡️  %s\n", url)
-	return _wget(ctx, url)
-}
-
-func _wget(ctx context.Context, url string) (io.ReadCloser, error) {
-	request, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	ctx, cancel_func := context.WithCancel(ctx)
-	request = request.WithContext(ctx)
-
-	response, err := http.DefaultClient.Do(request)
-	if err != nil {
-		cancel_func()
-		return nil, err
-	}
-
-	if response.StatusCode != 200 {
-		cancel_func()
-		return nil, fmt.Errorf("INVALID RESPONSE; status: %s", response.Status)
-	}
-
-	return response.Body, nil
-}
-
-func wdl(ctx context.Context, url string, path string) error {
-	fmt.Printf("🌏 . ⬇️  %s > %s\n", url, path)
-
-	file, err := os.OpenFile(path, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, os.ModePerm)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	stream, err := _wget(ctx, url)
-	if err != nil {
-		return err
-	}
-	defer stream.Close()
-
-	_, err = io.Copy(file, stream)
-	return err
-}
-
-func grepo(in io.Reader, arg string) io.Reader {
-	re := regexp.MustCompile(arg)
-	ret, out := io.Pipe()
-	scanner := bufio.NewScanner(in)
-
-	fmt.Printf("🤖 . grep -o %s\n", arg)
-
-	go func() {
-		for scanner.Scan() {
-			line := scanner.Text()
-			if match := re.FindString(line); match != "" {
-				if _, err := out.Write([]byte(match + "\n")); err != nil {
-					if cErr := out.CloseWithError(err); cErr != nil {
-						fmt.Errorf("grepo: close on write error: %s\nhad: %s", cErr.Error(), err.Error())
-					}
-					return
-				}
-			}
-		}
-		if err := out.Close(); err != nil {
-			fmt.Errorf("grepo: close: %s", err.Error())
-		}
-	}()
-
-	return ret
-}
-
-func uniq(in io.Reader) io.Reader {
-	ret, out := io.Pipe()
-	scanner := bufio.NewScanner(in)
-	m := make(map[string]struct{})
-
-	fmt.Println("🤖 . uniq")
-
-	go func() {
-		for scanner.Scan() {
-			line := scanner.Text()
-			if line == "" {
-				continue
-			}
-			if _, ok := m[line]; !ok {
-				if _, err := out.Write([]byte(line + "\n")); err != nil {
-					if cErr := out.CloseWithError(err); cErr != nil {
-						fmt.Errorf("uniq: close on write error: %s\nhad: %s", cErr.Error(), err.Error())
-						return
-					}
-				}
-				m[line] = struct{}{}
-			}
-		}
-		if err := out.Close(); err != nil {
-			fmt.Errorf("uniq: close: %s", err.Error())
-		}
-	}()
-
-	return ret
-}
-
-func rimraf(paths ...string) error {
-	fmt.Printf("🤖 . 💣 %s\n", strings.Join(paths, " "))
-	for _, p := range paths {
-		if err := os.RemoveAll(p); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func osMkdirs(dirs ...string) error {
-	dirs, _ = mapStrings(dirs, func(s string) (string, error) { return path.Clean(s), nil })
-	fmt.Printf("🤖 . 🏠 %s\n", strings.Join(dirs, " "))
-	for _, dir := range dirs {
-		if err := os.MkdirAll(dir, os.ModePerm); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func osTouch(p string) error {
-	p = path.Clean(p)
-	fmt.Printf("🤖 . ✋ %s\n", p)
-	_, err := os.Stat(p)
-	if os.IsNotExist(err) {
-		file, err := os.Create(p)
-		if err != nil {
-			return err
-		}
-		defer file.Close()
-	} else {
-		currentTime := time.Now().Local()
-		err = os.Chtimes(p, currentTime, currentTime)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func unitrim(str string) string {
-	return strings.TrimFunc(str, unicode.IsSpace)
-}
-
-func checkProgramGetVersionSemver(name string, versionArgs []string, transform func(string) (semver.Version, error)) (string, string, error) {
-	if transform == nil {
-		transform = semver.Make
-	}
-
-	cmd := exec.Command("which", name)
-	whichOut, err := cmd.CombinedOutput()
-	if err != nil {
-		return "", "", fmt.Errorf("❌ you must install `%s`\n%s\n%s", name, err.Error(), whichOut)
-	}
-	p := path.Clean(strings.TrimFunc(string(whichOut), unicode.IsSpace))
-
-	verCmd := exec.Command(name, versionArgs...)
-	verOut, err := verCmd.CombinedOutput()
-	if err != nil {
-		return "", p, fmt.Errorf("❌ checking %s: %s", name, err)
-	}
-
-	ver := strings.ReplaceAll(unitrim(string(verOut)), "\n", " ")
-	sver, err := transform(ver)
-	if err != nil {
-		return "", p, fmt.Errorf("❌ checking %s: %s", name, err)
-	}
-
-	return sver.String(), p, nil
-}
-
-func buildWords(workDir string, command string, args ...string) ([]string, error) {
-	fmt.Println(strings.Join(append([]string{"🏃", path.Join(".", workDir), "❯", command}, args...), " "))
-	cmd := exec.Command(command, args...)
-	cmd.Dir = path.Join(cmd.Dir, workDir)
-	cmd.Stderr = os.Stderr
-	out, err := cmd.Output()
-	if err != nil {
-		return nil, err
-	}
-	return strings.FieldsFunc(string(out), unicode.IsSpace), nil
-}
-
-func buildExecWdReader(dir string, command string, args ...string) (io.ReadCloser, error) {
-	fmt.Println(strings.Join(append([]string{"🏃", ".", "❯", command}, args...), " "))
-	cmd := exec.Command(command, args...)
-	cmd.Dir = dir
-	pipe, err := cmd.StdoutPipe()
-	if err != nil {
-		return nil, err
-	}
-	cmd.Stderr = os.Stderr
-	if err := cmd.Start(); err != nil {
-		return nil, err
-	}
-	return pipe, err
-}
-
-func buildExecWdString(dir string, command string, args ...string) (string, error) {
-	strm, err := buildExecWdReader(dir, command, args...)
-	if err != nil {
-		return "", err
-	}
-	b, err := ioutil.ReadAll(strm)
-	if err != nil {
-		return "", err
-	}
-	return string(b), nil
-}
-
-func buildExecWdSinkBytes(dir string, reader io.Reader, command string, args ...string) ([]byte, error) {
-	fmt.Println(strings.Join(append([]string{"🏃", ".", "❯", command}, args...), " "))
-	cmd := exec.Command(command, args...)
-	cmd.Dir = dir
-	cmd.Stdin = reader
-	cmd.Stderr = os.Stderr
-	return cmd.Output()
-}
-
-func buildExecSink(reader io.Reader, command string, args ...string) error {
-	fmt.Println(strings.Join(append([]string{"🏃", ".", "❯", command}, args...), " "))
-	cmd := exec.Command(command, args...)
-	cmd.Stdin = reader
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	return cmd.Run()
-}
-
-func mapStrings(strings []string, transform func(string) (string, error)) ([]string, error) {
-	mapped := make([]string, len(strings))
-	for i, str := range strings {
-		t, err := transform(str)
-		if err != nil {
-			return nil, err
-		}
-		mapped[i] = t
-	}
-	return mapped, nil
-}
-
-// types
-
-// TODO: maybe rename infoPath to manifestPath or sumPath or lockPath or something else
-type Rule interface {
-	InfoPath() string
-	Implem() interface{}
-	CacheManifest() (string, error)
-}
-
-type toolDef struct {
-	name             string                               // tool name, this is what will be searched in PATH, also used for logging and cache paths
-	versionArgs      []string                             // args to pass to the tool to print version informations to stdout
-	versionTransform func(string) (semver.Version, error) // function used to transform the version output into a semantic version string
-	semverRange      string                               // version range
-}
-
-func (t *toolDef) infoPath() string {
-	return htgtInfoPath(fmt.Sprintf(".meta/tools/%s", t.name))
-}
-
-func (t *toolDef) infoString() (string, error) {
-	// TODO: warn missing dep if file does not exists
-	b, err := ioutil.ReadFile(t.infoPath())
-	if err != nil {
-		return "", err
-	}
-	return string(b), nil
-}
-
-func (t *toolDef) infoWrite() error {
-	sver, p, err := checkProgramGetVersionSemver(t.name, t.versionArgs, t.versionTransform)
-	if err != nil {
-		return err
-	}
-
-	if t.semverRange != "" {
-		srange, err := semver.ParseRange(t.semverRange)
-		if err != nil {
-			return err
-		}
-		svo, err := semver.Make(sver)
-		if err != nil {
-			return err
-		}
-		if !srange(svo) {
-			return fmt.Errorf("version v%s not in range: %s", sver, t.semverRange)
-		}
-	}
-
-	fmt.Printf("🔍 %s v%s @%s\n", t.name, sver, p)
-
-	infop := t.infoPath()
-	if err := os.MkdirAll(path.Dir(infop), os.ModePerm); err != nil {
-		return err
-	}
-	return ioutil.WriteFile(infop, []byte(sver), os.ModePerm)
-}
-
-type mtool struct {
-	def    *toolDef
-	implem interface{}
-}
-
-func (t *mtool) InfoPath() string {
-	return t.def.infoPath()
-}
-
-func (t *mtool) Implem() interface{} {
-	return t.implem
-}
-
-func (t *mtool) CacheManifest() (string, error) {
-	sver, _, err := checkProgramGetVersionSemver(t.def.name, t.def.versionArgs, t.def.versionTransform)
-	return sver, err
-}
-
-var _ Rule = (*mtool)(nil)
-
-type targetDef struct {
-	name      string        // rule name, used for logging
-	output    string        // output path, can be a directory
-	sources   []string      // filesystem deps, is a go glob list, folders will be recursed into
-	mdeps     []Rule        // Rule dependencies TODO rename to rdeps
-	deps      []interface{} // classic mage dependencies (functions) TODO rename to cdeps
-	env       []string      // environment variables used in the rule, the values at build time will be added to the cache sum
-	artifacts []string      // additonalOutputs, used for cache
-	phony     bool          // rebuild every time
-}
-
-type mtarget struct {
-	def    *targetDef
-	implem interface{}
-}
-
-func (t *mtarget) InfoPath() string {
-	return t.def.infoPath()
-}
-
-func (t *mtarget) Implem() interface{} {
-	return t.implem
-}
-
-func (t *mtarget) CacheManifest() (string, error) {
-	return t.def.cacheManifest()
-}
-
-var _ Rule = (*mtarget)(nil)
-
-func (t *targetDef) infoPath() string {
-	return htgtInfoPath(t.output)
-}
-
-func (t *targetDef) outputBytes() ([]byte, error) {
-	// TODO: warn missing dep if file does not exists
-	return ioutil.ReadFile(t.output)
-}
-
-func (t *targetDef) outputString() (string, error) {
-	bytes, err := t.outputBytes()
-	if err != nil {
-		return "", err
-	}
-	return string(bytes), nil
-}
-
-func (t *targetDef) outputStringSlice() ([]string, error) {
-	jsonBytes, err := t.outputBytes()
-	if err != nil {
-		return nil, err
-	}
-	var strs []string
-	if err := json.Unmarshal(jsonBytes, &strs); err != nil {
-		return nil, err
-	}
-	return strs, nil
-}
-
-func (t *targetDef) outputStringSliceWrite(args ...string) error {
-	jsonBytes, err := json.Marshal(args)
-	if err != nil {
-		return err
-	}
-	return ioutil.WriteFile(t.output, jsonBytes, os.ModePerm)
-}
-
-func (t *targetDef) cacheManifest() (string, error) {
-	allSources := t.sources
-	injected := make(map[string]string)
-	for _, mdep := range t.mdeps {
-		depMan, err := mdep.CacheManifest()
-		if err != nil {
-			return "", err
-		}
-		injected[mdep.InfoPath()] = stringBase64Sha3(depMan)
-	}
-
-	return htgtManifestGenerate(t.output, t.env, allSources, injected, true)
-}
-
-func (t *targetDef) runTarget(implem func(*implemHelper) error) error {
-	var allDeps []interface{}
-	allSources := t.sources
-	for _, mdep := range t.mdeps {
-		allDeps = append(allDeps, mdep.Implem())
-		allSources = append(allSources, mdep.InfoPath())
-	}
-	allDeps = append(allDeps, t.deps...)
-
-	if os.Getenv("PRINT_CACHE_INFO") == "true" {
-		m, err := t.cacheManifest()
-		if err != nil {
-			return err
-		}
-		fmt.Println(stringBase64Sha3(m))
-		//fmt.Println(m)
-		return nil
-	}
-
-	if os.Getenv("PRINT_CACHE_GA_JSON_PATHS") == "true" {
-		paths := strings.Join(append([]string{t.output, t.infoPath()}, t.artifacts...), "\n")
-		jsonBytes, err := json.Marshal(paths)
-		if err != nil {
-			return err
-		}
-		fmt.Println(string(jsonBytes))
-		return nil
-	}
-
-	depsStart := time.Now()
-	mg.Deps(allDeps...)
-	depsEnd := time.Now()
-
-	allOut := []byte(nil)
-	var buildStart time.Time
-	var buildEnd time.Time
-	implemWrapper := func() error {
-		in, out := io.Pipe()
-		ch := make(chan struct{})
-		go func() {
-			defer close(ch)
-			var err error
-			if allOut, err = ioutil.ReadAll(in); err != nil {
-				fmt.Printf("⚠ %s: read: %s\n", t.name, err.Error())
-			}
-		}()
-
-		ih := newImplemHelper(out)
-
-		buildStart = time.Now()
-		err := implem(ih)
-		buildEnd = time.Now()
-
-		_ = out.Close()
-		<-ch
-		return err
-	}
-
-	if err := htgtTargetGlob(t.name, t.output, allSources, t.env, implemWrapper, t.phony); err == errUpToDate {
-		fmt.Printf("ℹ️  %s: up-to-date\n", t.name)
-		return nil
-	} else if err != nil {
-		if len(allOut) == 0 {
-			return fmt.Errorf("❌ %s: %s", t.name, err.Error())
-		}
-		return fmt.Errorf("❌ %s: %s\n%s", t.name, err.Error(), string(allOut))
-	}
-
-	totalDuration := buildEnd.Sub(depsStart)
-	implemDuration := buildEnd.Sub(buildStart)
-	depsDuration := depsEnd.Sub(depsStart)
-	fmt.Printf("✅ %s: built in %v (own: %v, deps: %v) \n", t.name, totalDuration, implemDuration, depsDuration)
-
-	return nil
-}
-
-// TOREFACTOR: split hash-invalidation features from dependency-management features

@@ -28,7 +28,11 @@ func htgtTargetPath(name string, target string, sources []string, env []string, 
 		}
 	}
 
-	fmt.Printf("🔨 %s: building\n", name)
+	if phony {
+		fmt.Printf("🔨 %s: building (phony)\n", name)
+	} else {
+		fmt.Printf("🔨 %s: building\n", name)
+	}
 
 	if err := implem(); err != nil {
 		return err

@@ -34,4 +34,5 @@ benchmark_result.json
 *__debug_bin
 
 # mage
-/.build-info
+/.build-info/
+/.build-artifacts/
