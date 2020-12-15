@@ -494,7 +494,7 @@ func metroRnPort() string {
 
 var torVersionDef = &targetDef{
 	name:   "TorVersion",
-	output: "js/ios/.tor-version",
+	output: ".build-artifacts/js/ios/.tor-version",
 	mdeps:  []Rule{goMods},
 }
 
