@@ -86,7 +86,7 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 	out, err = peers[1].GC.MessageStore().ListEvents(ctx, nil, nil, false)
 	assert.NoError(t, err)
 
-	testutil.FilterStability(t, testutil.Stable)
+	testutil.FilterStability(t, testutil.Unstable)
 
 	<-time.After(time.Second)
 
