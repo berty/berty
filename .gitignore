@@ -36,3 +36,4 @@ benchmark_result.json
 # mage
 /.build-info/
 /.build-artifacts/
+/build-profile.*

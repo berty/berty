@@ -145,3 +145,12 @@ jobs:
           path: ${{ github.workspace }}/Berty Yolo.dummy-signed-ipa
           name: berty-yolo-${{github.sha}}.dummy-signed-ipa
           if-no-files-found: error
+
+      - name: Generate profile graph
+        run: go run ./go/cmd/gen-build-profile.graph || true
+
+      - name: Upload build profile graph
+        uses: actions/upload-artifact@v2
+        with:
+          path: ${{ github.workspace }}/build-profile.svg
+          name: build-profile.svg
