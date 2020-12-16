@@ -109,7 +109,10 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ fromJSON(steps.cacheInfo.outputs.iOSFrameworkGAPaths) }}
-          key: ${{ runner.OS }}-mage-iOSFramework-v2-${{ steps.cacheInfo.outputs.iOSFrameworkHash }}
+          key: ${{ runner.OS }}-mage-iOSFramework-v2-${{ hashFiles('go.sum', 'go.mod') }}-${{ steps.cacheInfo.outputs.iOSFrameworkHash }}
+          restore-keys: |
+            ${{ runner.OS }}-mage-iOSFramework-v2-${{ hashFiles('go.sum', 'go.mod') }}-
+            ${{ runner.OS }}-mage-iOSFramework-v2-
 
       - name: Build app deps
         run: |
