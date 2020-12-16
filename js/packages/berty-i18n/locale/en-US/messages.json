@@ -405,21 +405,21 @@
     },
     "files": {
       "record-sound": "Record a sound message",
-      "recording": "Recording...",
-      "gallery": "Gallery",
-      "camera": "Camera",
-      "record": "Record",
-      "files": "Files",
-      "microphone": "Microphone",
-      "gif": "GIF",
-      "search-gif": "Search for a gif",
-      "security-access": "Security Access",
-      "security-access-desc": "Tap here to open setting to allow access to your",
-      "save-to-gallery": "Save this file in Gallery",
-      "share": "Share",
-      "forward-berty": "Forward to Berty contact",
-      "forward": "Forward",
-      "image-saved": "Image saved in Gallery"
+      "recording": "",
+      "gallery": "",
+      "camera": "",
+      "record": "",
+      "files": "",
+      "microphone": "",
+      "gif": "",
+      "search-gif": "",
+      "security-access": "",
+      "security-access-desc": "",
+      "save-to-gallery": "",
+      "share": "",
+      "forward-berty": "",
+      "forward": "",
+      "image-saved": ""
     }
   }
 }
