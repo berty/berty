@@ -95,8 +95,36 @@ func main() {
 				on = n
 				elems[d] = elem{profile{}, n}
 			}
-			_, err := graph.CreateEdge("", e.n, on)
-			if err != nil {
+			if _, err := graph.CreateEdge("", e.n, on); err != nil {
+				log.Fatal(err)
+			}
+		}
+	}
+
+	// inject fake root if multiple roots
+	roots := make(map[string]struct{})
+	for id := range elems {
+		if func() bool {
+			for _, oe := range elems {
+				for _, d := range oe.p.Deps {
+					if d == id {
+						return false
+					}
+				}
+			}
+			return true
+		}() {
+			roots[id] = struct{}{}
+		}
+	}
+
+	if len(roots) > 1 {
+		root, err := graph.CreateNode("")
+		if err != nil {
+			log.Fatal(err)
+		}
+		for id := range roots {
+			if _, err := graph.CreateEdge("", root, elems[id].n); err != nil {
 				log.Fatal(err)
 			}
 		}
