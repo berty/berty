@@ -101,7 +101,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ fromJSON(steps.cacheInfo.outputs.xcodeProjGAPaths) }}
-          key: ${{ runner.OS }}-mage-xcodeProj-v3-${{ steps.cacheInfo.outputs.xcodeProjHash }}
+          key: ${{ runner.OS }}-mage-xcodeProj-v4-${{ steps.cacheInfo.outputs.xcodeProjHash }}
       - name: Cache rubyGems
         uses: actions/cache@v2
         with:
