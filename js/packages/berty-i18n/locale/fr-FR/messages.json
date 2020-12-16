@@ -405,8 +405,21 @@
     },
     "files": {
       "record-sound": "Enregistrer un message sonore",
-      "media": "Accès à la galerie de médias",
-      "emojis": "Emojis & Bertyzzz!"
+      "recording": "Enregistrement...",
+      "gallery": "Galerie",
+      "camera": "Caméra",
+      "record": "Enregistrer",
+      "files": "Fichiers",
+      "microphone": "Microphone",
+      "gif": "GIF",
+      "search-gif": "Chercher un gif",
+      "security-access": "Accès sécurisé",
+      "security-access-desc": "Appuyez ici pour ouvrir le paramètre pour autoriser l'accès à votre",
+      "save-to-gallery": "Enregistrer ce fichier dans la galerie",
+      "share": "Partager",
+      "forward-berty": "Transférer au contact Berty",
+      "forward": "Transférer",
+      "image-saved": "Image enregistrée dans la galerie"
     }
   }
 }

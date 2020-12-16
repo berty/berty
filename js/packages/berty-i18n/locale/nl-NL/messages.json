@@ -1,125 +1,125 @@
 {
   "time": {
-    "fuzzy-time": "",
+    "fuzzy-time": "hh:mm",
     "fuzzy-month-day": "",
     "fuzzy-year-month": "",
     "datetime": "",
-    "started-ago": ""
+    "started-ago": "{{date}} geleden gestart"
   },
   "onboarding": {
     "getstarted": {
-      "desc": "",
-      "open-registered-account": "",
-      "import-button": "",
-      "account-selector-create-button": "",
-      "more-options": "",
-      "button": ""
+      "desc": "De beveiligde peer-to-peer messaging app die met of zonder internet werkt, mobiele gegevens of vertrouwen in het netwerk",
+      "open-registered-account": "Open een geregistreerd account",
+      "import-button": "Gegevens importeren uit een bestaand account",
+      "account-selector-create-button": "Maak een nieuw account",
+      "more-options": "Meer opties",
+      "button": "BEGIN HIER"
     },
     "select-mode": {
       "performance": {
-        "title": "",
-        "desc": "",
-        "push-notif": "",
-        "offline-message": "",
-        "add-contact": "",
-        "fast-message": ""
+        "title": "Prestaties",
+        "desc": "Eenvoudig in gebruik - alle functies",
+        "push-notif": "Ontvang push-meldingen",
+        "offline-message": "Offline berichten",
+        "add-contact": "Voeg eenvoudig contacten toe",
+        "fast-message": "Snelste aflevering van berichten"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
-        "disable-push-notif": "",
+        "title": "Hoogste niveau van privacy",
+        "desc": "Voor geavanceerde gebruikers - minder metagegevens",
+        "disable-push-notif": "Push-meldingen uitgeschakeld",
         "disable-local-peer-discovery": "",
-        "disable-contact-request": ""
+        "disable-contact-request": "Contact verzoeken uitgeschakeld"
       }
     },
     "create-account": {
-      "title": "",
-      "desc": "",
-      "required": "",
-      "placeholder": "",
-      "button": ""
+      "title": "Maak jouw account",
+      "desc": "Een naam is de enige informatie die vereist is",
+      "required": "Vereist",
+      "placeholder": "Naam",
+      "button": "MAAK MIJN ACCOUNT"
     },
     "services-auth": {
-      "header": "",
-      "title": "",
-      "recommended": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "header": "Authenticeer bij diensten",
+      "title": "Diensten",
+      "recommended": "Aangeraden",
+      "desc": "Dit zal automatisch je gesprekken kopiëren naar een server",
+      "button": "Gebruik diensten van Berty",
+      "skip": "OVERSLAAN EN LATER UITVOEREN"
     },
     "generate-key": {
-      "title": "",
-      "desc": ""
+      "title": "De Berty node wordt gestart…",
+      "desc": "Dit kan enkele seconden duren"
     },
     "notifications": {
-      "header": "",
-      "recommended": "",
-      "title": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "header": "Mis geen nieuw bericht of contact verzoek",
+      "recommended": "Aangeraden",
+      "title": "Notificaties",
+      "desc": "U moet push-meldingen van Berty op uw telefoon toestaan",
+      "button": "NOTIFICATIES TOESTAAN",
+      "skip": "OVERSLAAN EN LATER UITVOEREN"
     },
     "bluetooth": {
-      "header": "",
-      "optional": "",
+      "header": "Communiceer zonder internetverbinding (wifi of data) door je telefoon direct te verbinden met andere Berty gebruikers in de buurt",
+      "optional": "Optioneel",
       "title": "Bluetooth",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "desc": "Om deze functie te gebruiken, moet u het gebruik van Bluetooth op uw telefoon toestaan",
+      "button": "BLUETOOTH TOESTAAN",
+      "skip": "OVERSLAAN EN LATER UITVOEREN"
     },
     "setup-finished": {
-      "title": "",
-      "desc": "",
-      "button": ""
+      "title": "Setup voltooid!",
+      "desc": "Je kunt nu de app gebruiken, begin met het toevoegen van contacten om vrij en privé te communiceren",
+      "button": "GEBRUIK BERTY"
     }
   },
   "main": {
     "home": {
       "requests": {
-        "title": "",
-        "received-at": "",
-        "accept": "",
-        "card-title": ""
+        "title": "Verzoeken",
+        "received-at": "Ontvangen",
+        "accept": "Accepteren",
+        "card-title": "Contact verzoek!"
       },
-      "input-placeholder": "",
-      "no-contacts": "",
+      "input-placeholder": "Zoek naar",
+      "no-contacts": "Je hebt nog geen contacten of gesprekken",
       "search": {
-        "no-results": ""
+        "no-results": "Geen resultaten gevonden"
       }
     },
     "home-modal": {
-      "top-button": "",
-      "bottom-button": ""
+      "top-button": "Nieuwe groep aanmaken",
+      "bottom-button": "Scan contact of groep"
     }
   },
   "settings": {
     "home": {
-      "header-left-button": "",
-      "header-center-button": "",
-      "header-right-button": "",
-      "network-button": "",
-      "switch-accounts": ""
+      "header-left-button": "Help",
+      "header-center-button": "Devtools",
+      "header-right-button": "Instellingen",
+      "network-button": "Netwerk Lijst",
+      "switch-accounts": "Gebruik een ander account"
     },
     "network-map": {
-      "title": "",
-      "online-peers": ""
+      "title": "Netwerk Lijst",
+      "online-peers": "Online gebruikers"
     },
     "mode": {
-      "title": "",
-      "desc": "",
+      "title": "Instellingen",
+      "desc": "Pas alles aan om de app aan uw behoeften te laten voldoen",
       "notifications-button": {
-        "title": "",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "title": "Notificaties",
+        "tag-enabled": "Ingeschakeld",
+        "tag-disabled": "Uitgeschakeld"
       },
       "bluetooth-button": {
         "title": "Bluetooth",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "tag-enabled": "Ingeschakeld",
+        "tag-disabled": "Uitgeschakeld"
       },
       "app-mode-button": {
-        "title": "",
-        "performance-tag": "",
+        "title": "App modus",
+        "performance-tag": "Prestaties",
         "privacy-tag": "",
         "description-tag": "",
         "first-bullet-point": "",
@@ -190,13 +190,13 @@
       "activate-button": ""
     },
     "mc": {
-      "activate-button": ""
+      "activate-button": "Multipeer Connectiviteit activeren"
     },
     "services-auth": {
-      "title": "",
-      "operated-services-button": "",
+      "title": "Externe diensten",
+      "operated-services-button": "Gebruik diensten van Berty",
       "register-service-button": {
-        "title": "",
+        "title": "Registreer een custom dienst",
         "input-placeholder": "",
         "action": ""
       },
@@ -405,8 +405,21 @@
     },
     "files": {
       "record-sound": "",
-      "media": "",
-      "emojis": ""
+      "recording": "",
+      "gallery": "",
+      "camera": "",
+      "record": "",
+      "files": "",
+      "microphone": "",
+      "gif": "",
+      "search-gif": "",
+      "security-access": "",
+      "security-access-desc": "",
+      "save-to-gallery": "",
+      "share": "",
+      "forward-berty": "",
+      "forward": "",
+      "image-saved": ""
     }
   }
 }

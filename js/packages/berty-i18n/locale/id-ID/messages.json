@@ -11,9 +11,9 @@
       "desc": "",
       "open-registered-account": "",
       "import-button": "",
-      "account-selector-create-button": "",
-      "more-options": "",
-      "button": ""
+      "account-selector-create-button": "Buat akun baru",
+      "more-options": "Opsi lanjutan",
+      "button": "MEMULAI"
     },
     "select-mode": {
       "performance": {
@@ -70,7 +70,7 @@
     "setup-finished": {
       "title": "",
       "desc": "",
-      "button": ""
+      "button": "MULAI MENGGUNAKAN BERTY"
     }
   },
   "main": {
@@ -81,10 +81,10 @@
         "accept": "",
         "card-title": ""
       },
-      "input-placeholder": "",
+      "input-placeholder": "Cari kata kunci",
       "no-contacts": "",
       "search": {
-        "no-results": ""
+        "no-results": "Tidak ada hasil yang ditemukan"
       }
     },
     "home-modal": {
@@ -94,39 +94,39 @@
   },
   "settings": {
     "home": {
-      "header-left-button": "",
+      "header-left-button": "Bantuan",
       "header-center-button": "",
-      "header-right-button": "",
+      "header-right-button": "Pengaturan",
       "network-button": "",
-      "switch-accounts": ""
+      "switch-accounts": "Gunakan akun lain"
     },
     "network-map": {
       "title": "",
       "online-peers": ""
     },
     "mode": {
-      "title": "",
+      "title": "Pengaturan",
       "desc": "",
       "notifications-button": {
-        "title": "",
-        "tag-enabled": "",
+        "title": "Notifikasi",
+        "tag-enabled": "Diaktifkan",
         "tag-disabled": ""
       },
       "bluetooth-button": {
         "title": "",
-        "tag-enabled": "",
+        "tag-enabled": "Diaktifkan",
         "tag-disabled": ""
       },
       "app-mode-button": {
         "title": "",
         "performance-tag": "",
-        "privacy-tag": "",
+        "privacy-tag": "Privasi",
         "description-tag": "",
         "first-bullet-point": "",
         "second-bullet-point": "",
         "third-bullet-point": ""
       },
-      "dark-mode-button": "",
+      "dark-mode-button": "Mode gelap",
       "receive-contact-requests-button": "",
       "external-services-button": "",
       "auto-replicate-button": "",
@@ -405,8 +405,21 @@
     },
     "files": {
       "record-sound": "",
-      "media": "",
-      "emojis": ""
+      "recording": "",
+      "gallery": "",
+      "camera": "",
+      "record": "",
+      "files": "",
+      "microphone": "",
+      "gif": "",
+      "search-gif": "",
+      "security-access": "",
+      "security-access-desc": "",
+      "save-to-gallery": "",
+      "share": "",
+      "forward-berty": "",
+      "forward": "",
+      "image-saved": ""
     }
   }
 }
