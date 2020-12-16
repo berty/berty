@@ -45,6 +45,7 @@ end_of_line = crlf
 
 [*.{json,yml}]
 indent_size = 2
+indent_style = space
 
 [.{babelrc,eslintrc}]
 indent_size = 2
