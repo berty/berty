@@ -405,8 +405,21 @@
     },
     "files": {
       "record-sound": "Enregistrer un message sonore",
-      "media": "Accès à la galerie de médias",
-      "emojis": "Emojis & Bertyzzz!"
+      "recording": "",
+      "gallery": "",
+      "camera": "",
+      "record": "",
+      "files": "",
+      "microphone": "",
+      "gif": "",
+      "search-gif": "",
+      "security-access": "",
+      "security-access-desc": "",
+      "save-to-gallery": "",
+      "share": "Partager",
+      "forward-berty": "",
+      "forward": "",
+      "image-saved": ""
     }
   }
 }
