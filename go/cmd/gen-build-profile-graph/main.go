@@ -20,6 +20,8 @@ type profile struct {
 	TotalDuration  time.Duration `json:"totalDuration"`
 	ImplemDuration time.Duration `json:"implemDuration"`
 	DepsDuration   time.Duration `json:"depsDuration"`
+	Phony          bool          `json:"phony"`
+	UpToDate       bool          `json:"upToDate"`
 }
 
 type elem struct {
@@ -61,7 +63,20 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		n.SetLabel(fmt.Sprintf("%s\n%v", id, p.TotalDuration))
+		label := id + "\n"
+		if p.UpToDate {
+			label += "up-to-date\n"
+		}
+		if p.TotalDuration > 0 {
+			label += fmt.Sprintf("%v\n", p.TotalDuration)
+		}
+		if p.ImplemDuration > 0 {
+			label += fmt.Sprintf("own: %v\n", p.ImplemDuration)
+		}
+		if p.Phony {
+			label += "phony\n"
+		}
+		n.SetLabel(label)
 
 		elems[id] = elem{p, n}
 	}

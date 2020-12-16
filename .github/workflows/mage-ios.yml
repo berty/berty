@@ -147,7 +147,7 @@ jobs:
           if-no-files-found: error
 
       - name: Generate profile graph
-        run: go run ./go/cmd/gen-build-profile || true
+        run: go run ./go/cmd/gen-build-profile-graph || true
 
       - name: Upload build profile graph
         uses: actions/upload-artifact@v2
