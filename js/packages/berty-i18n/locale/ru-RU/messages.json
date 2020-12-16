@@ -165,10 +165,10 @@
         "preview-button": "Предпросмотр сообщений",
         "sound-button": "Звук",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
-          "tag": "",
-          "tag_plural": ""
+          "title": "Исключения",
+          "preview-value": "Добавить",
+          "tag": "{{count}} исключение",
+          "tag_plural": "{{count}} исключений"
         }
       },
       "group-notifications-button": {
@@ -405,8 +405,21 @@
     },
     "files": {
       "record-sound": "",
-      "media": "",
-      "emojis": ""
+      "recording": "",
+      "gallery": "",
+      "camera": "",
+      "record": "",
+      "files": "",
+      "microphone": "",
+      "gif": "",
+      "search-gif": "",
+      "security-access": "",
+      "security-access-desc": "",
+      "save-to-gallery": "",
+      "share": "",
+      "forward-berty": "",
+      "forward": "",
+      "image-saved": ""
     }
   }
 }
