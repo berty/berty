@@ -633,6 +633,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrBridgeNotRunning: 1601,
               ErrMessengerInvalidDeepLink: 2000,
               ErrMessengerDeepLinkRequiresPassphrase: 2001,
+              ErrMessengerDeepLinkInvalidPassphrase: 2002,
               ErrDBEntryAlreadyExists: 2100,
               ErrDBAddConversation: 2101,
               ErrDBAddContactRequestOutgoingSent: 2102,
@@ -3259,6 +3260,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       displayName: {
                         type: "string",
                         id: 2
+                      },
+                      passphrase: {
+                        type: "bytes",
+                        id: 3
                       }
                     }
                   },
@@ -3410,6 +3415,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         type: "string",
                         id: 3
                       },
+                      checksum: {
+                        type: "bytes",
+                        id: 4
+                      },
                       contactPublicRendezvousSeed: {
                         type: "bytes",
                         id: 10
@@ -3420,10 +3429,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         options: {
                           "(gogoproto.customname)": "ContactAccountPK"
                         }
-                      },
-                      contactDisplayName: {
-                        type: "bytes",
-                        id: 12
                       },
                       groupPublicKey: {
                         type: "bytes",
@@ -3444,10 +3449,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       groupSignPub: {
                         type: "bytes",
                         id: 24
-                      },
-                      groupDisplayName: {
-                        type: "bytes",
-                        id: 25
                       }
                     }
                   },

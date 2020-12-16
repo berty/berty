@@ -174,12 +174,16 @@ message BertyLink {
     bytes nonce = 2;
     // display_name is an optional clear representation of the display name.
     string display_name = 3;
+    // checksum is an optional field used to check if the decryption was successful.
+    // the length is customizable (SHAKE256). a longer checksum means less conflicts.
+    // having more conflicts may be bad in term of UX, but make it easier for an attacker
+    // to run an offline bruteforce.
+    bytes checksum = 4;
 
     // contact_v1: all bytes fields are encrypted
 
     bytes contact_public_rendezvous_seed = 10;
     bytes contact_account_pk = 11 [(gogoproto.customname) = "ContactAccountPK"];
-    bytes contact_display_name = 12;
 
     // group_v1: all bytes fields are encrypted
 
@@ -188,7 +192,6 @@ message BertyLink {
     bytes group_secret_sig = 22;
     berty.protocol.v1.GroupType group_type = 23; // clear
     bytes group_sign_pub = 24;
-    bytes group_display_name = 25;
   }
 
   enum Kind {
