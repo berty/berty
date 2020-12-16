@@ -43,7 +43,7 @@
 		"react-native": "0.63.4",
 		"react-native-audiowaveform": "^2.0.5",
 		"react-native-camera": ">=1.0.2",
-		"react-native-document-picker": "^4.1.0",
+		"react-native-document-picker": "^4.1.1",
 		"react-native-dropdown-picker": "^3.7.1",
 		"react-native-elements": "^2.3.2",
 		"react-native-fs": "^2.16.6",

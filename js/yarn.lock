@@ -7846,10 +7846,10 @@ react-native-crypto@^2.0.1:
     public-encrypt "^4.0.0"
     randomfill "^1.0.3"
 
-react-native-document-picker@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/react-native-document-picker/-/react-native-document-picker-4.1.0.tgz#8092c09727018587da34358bf731fe948d4171a5"
-  integrity sha512-tHYNng9GrnVrOoLk9K2j+T1xa8gAfC2Mk2dbJq32QBYD3zkHGMkFYGd2FZt0nuYxCBnd768tOQWuEZXwXM1tsg==
+react-native-document-picker@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-document-picker/-/react-native-document-picker-4.1.1.tgz#d4a7f18d397f7653610cc88921767d322cfd957b"
+  integrity sha512-bJeLOmwYTFkeTkqjjJ5VKtZyMvRfECb0w/xB/Tt83TAa00msMQfnxPI9oRrwWRyVPD3dKomp6zRbCnerCMIdgw==
 
 react-native-dropdown-picker@^3.7.1:
   version "3.7.1"
