@@ -17,6 +17,7 @@ import (
 	"strings"
 	"unicode"
 
+	"github.com/blang/semver/v4"
 	"github.com/magefile/mage/mg"
 )
 
@@ -31,7 +32,7 @@ const requiredJavaVer = "18"
 var globalVersionDef = &targetDef{
 	name:   "GlobalVersion",
 	output: ".build-artifacts/global-version",
-	mdeps:  []Rule{goMods},
+	mdeps:  []Rule{goMods, gitTool},
 	env:    []string{"VERSION"},
 	phony:  true, // because it depends on git data
 }
@@ -42,6 +43,16 @@ func GlobalVersion() error {
 		if err != nil {
 			return err
 		}
+		sver, err := semver.Make(version)
+		if err != nil {
+			return err
+		}
+		branch, err := ih.strExec("git", "branch")
+		if err != nil {
+			return err
+		}
+		sver.Pre = []
+		sver.Build = []string{branch)
 		return globalVersionDef.outputWriteString(version)
 	})
 }
