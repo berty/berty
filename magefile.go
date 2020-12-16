@@ -490,6 +490,7 @@ var androidDebugDef = &targetDef{
 	output: ".meta/AndroidDebug",
 	mdeps:  []Rule{frontGen, androidFramework, npx, java},
 	env:    []string{"ANDROID_DEVICE", "METRO_RN_PORT"},
+	phony:  true,
 }
 
 // Build and run debug android app
@@ -506,17 +507,6 @@ func AndroidDebug() error {
 		}
 		return ih.execWd("js", "npx", args...)
 	})
-}
-
-// Force to reinstall the android app
-func AndroidDebugRe() error {
-	if err := os.Remove(androidDebugDef.infoPath()); err != nil {
-		return err
-	}
-
-	mg.Deps(AndroidDebug)
-
-	return nil
 }
 
 // metro
