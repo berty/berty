@@ -50,8 +50,18 @@ const FingerprintContentFaction: React.FC<{ digestPart: string }> = ({ digestPar
 	)
 }
 
-export const FingerprintContent: React.FC<{ seed: string }> = ({ seed }) => {
+export const FingerprintContent: React.FC<{ seed: string; isEncrypted: boolean }> = ({
+	seed,
+	isEncrypted,
+}) => {
 	const [{ column, border, padding }] = useStyles()
+	if (isEncrypted) {
+		return (
+			<Text style={{ textAlign: 'center' }}>
+				This conversation is totally encrypted, title included.
+			</Text>
+		)
+	}
 	if (!seed) {
 		return <Text style={{ textAlign: 'center' }}>No seed</Text>
 	}
