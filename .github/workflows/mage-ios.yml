@@ -99,7 +99,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ fromJSON(steps.cacheInfo.outputs.xcodeProjGAPaths) }}
-          key: ${{ runner.OS }}-mage-xcodeProj-v2-${{ steps.cacheInfo.outputs.xcodeProjHash }}
+          key: ${{ runner.OS }}-mage-xcodeProj-v3-${{ steps.cacheInfo.outputs.xcodeProjHash }}
       - name: Cache xcWorkspace
         uses: actions/cache@v2
         with:

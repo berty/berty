@@ -670,7 +670,7 @@ var gitRevList = &mtarget{gitRevListDef, GitRevList}
 
 // xcodeproj
 
-const xcodeProjCache = "ios/vendor/xcodegen/.cache/berty-app"
+const xcodeProjCache = "js/ios/vendor/xcodegen/.cache/berty-app"
 
 var xcodeProjDef = &targetDef{
 	name:      "XcodeProj",
@@ -716,7 +716,7 @@ func XcodeProj() error {
 
 		return ih.execWdEnv("js", env, "swift", "run", "--package-path", "ios/vendor/xcodegen", "xcodegen",
 			"--spec", "ios/berty.yaml",
-			"--cache-path", xcodeProjCache,
+			"--cache-path", xcodeProjCache[len("js/"):],
 			"--use-cache",
 		)
 	})
