@@ -857,7 +857,7 @@ var iOSAppDeps = []Rule{nodeModules, frontGen, xcWorkspace, iOSFramework, npx}
 func IOSAppDeps() error {
 	deps := make([]interface{}, len(iOSAppDeps))
 	for i, d := range iOSAppDeps {
-		deps[i] = d.Implem
+		deps[i] = d.Implem()
 	}
 	mg.Deps(deps...)
 	return nil
