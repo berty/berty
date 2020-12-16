@@ -33,6 +33,7 @@ var globalVersionDef = &targetDef{
 	output: ".build-artifacts/global-version",
 	mdeps:  []Rule{goMods},
 	env:    []string{"VERSION"},
+	phony:  true, // because it depends on git data
 }
 
 func GlobalVersion() error {
