@@ -23,6 +23,7 @@ import (
 
 // config
 
+const masterBranch = "master"
 const minimumAndroidVer = "21"
 const minimumIOsVer = "12.0"
 const requiredJavaVer = "18"
@@ -32,28 +33,38 @@ const requiredJavaVer = "18"
 var globalVersionDef = &targetDef{
 	name:   "GlobalVersion",
 	output: ".build-artifacts/global-version",
-	mdeps:  []Rule{goMods, gitTool},
+	mdeps:  []Rule{goMods},
 	env:    []string{"VERSION"},
 	phony:  true, // because it depends on git data
 }
 
 func GlobalVersion() error {
 	return globalVersionDef.runTarget(func(ih *implemHelper) error {
+		branch, err := ih.strExec("git", "branch", "--show-current")
+		if err != nil {
+			return err
+		}
+
 		version, err := ih.getenvFallbackExec("VERSION", "go", "run", "-mod=readonly", "-modfile=go.mod", "github.com/mdomke/git-semver/v5")
 		if err != nil {
 			return err
 		}
-		sver, err := semver.Make(version)
+
+		if unitrim(branch) == masterBranch {
+			return globalVersionDef.outputWriteString(unitrim(version))
+		}
+
+		// pull request
+		sver, err := semver.Make(unitrim(version)[len("v"):])
 		if err != nil {
 			return err
 		}
-		branch, err := ih.strExec("git", "branch")
-		if err != nil {
+		sver.Pre = []semver.PRVersion{{VersionStr: "pullrequest"}}
+		sver.Build = []string{}
+		if err := sver.Validate(); err != nil {
 			return err
 		}
-		sver.Pre = []
-		sver.Build = []string{branch)
-		return globalVersionDef.outputWriteString(version)
+		return globalVersionDef.outputWriteString(sver.String())
 	})
 }
 
@@ -61,22 +72,53 @@ var globalVersion = &mtarget{globalVersionDef, GlobalVersion}
 
 //
 
+var frameworkRefDef = &targetDef{
+	name:   "FrameworkRef",
+	output: ".build-artifacts/js/framework-ref",
+	mdeps:  []Rule{gitTool, gitRevParse},
+	env:    []string{"VCS_REF"},
+	phony:  true,
+}
+
+func FrameworkRef() error {
+	return frameworkRefDef.runTarget(func(ih *implemHelper) error {
+		branch, err := ih.strExec("git", "branch", "--show-current")
+		if err != nil {
+			return err
+		}
+		if unitrim(branch) == masterBranch {
+			vcsRef := os.Getenv("VCS_REF")
+			if vcsRef == "" {
+				var err error
+				if vcsRef, err = gitRevParse.OutputString(); err != nil {
+					return err
+				}
+			}
+
+			return frameworkRefDef.outputWriteString(vcsRef)
+		}
+		// pull request
+		return frameworkRefDef.outputWriteString("deadbeefdeadbeefdeadbeefdeadbeefdeadbeef")
+	})
+}
+
+var frameworkRef = &mtarget{frameworkRefDef, FrameworkRef}
+
+//
+
 var frameworkLdflagsDef = &targetDef{
 	name:   "FrameworkLdflags",
-	output: ".build-artifacts/js/framework-ldflags.json",
-	mdeps:  []Rule{globalVersion, gitRevParse},
+	output: ".build-artifacts/js/framework-ldflags",
+	mdeps:  []Rule{globalVersion, frameworkRef},
 	env:    []string{"VCS_REF"},
 }
 
 // Build version info
 func FrameworkLdflags() error {
 	return frameworkLdflagsDef.runTarget(func(ih *implemHelper) error {
-		vcsRef := os.Getenv("VCS_REF")
-		if vcsRef == "" {
-			var err error
-			if vcsRef, err = gitRevParse.OutputString(); err != nil {
-				return err
-			}
+		ref, err := frameworkRef.OutputString()
+		if err != nil {
+			return err
 		}
 
 		version, err := globalVersion.OutputString()
@@ -86,7 +128,7 @@ func FrameworkLdflags() error {
 
 		ldFlags := fmt.Sprintf(
 			`-ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=%s -X berty.tech/berty/v2/go/pkg/bertyversion.Version=%s"`,
-			unitrim(vcsRef), unitrim(version))
+			unitrim(ref), unitrim(version))
 
 		return frameworkLdflagsDef.outputWriteString(ldFlags)
 	})
@@ -680,6 +722,36 @@ func GitRevList() error { return gitRevListDef.runExecToOutput("git", "rev-list"
 
 var gitRevList = &mtarget{gitRevListDef, GitRevList}
 
+//
+
+var iOSAppBundleVersionDef = &targetDef{
+	name:   "IOSBundleVersion",
+	output: ".build-artifacts/js/ios/app-bundle-version",
+	mdeps:  []Rule{gitTool, gitRevList},
+	phony:  true,
+}
+
+func IOSAppBundleVersion() error {
+	return iOSAppBundleVersionDef.runTarget(func(ih *implemHelper) error {
+		branch, err := ih.strExec("git", "branch", "--show-current")
+		if err != nil {
+			return err
+		}
+		if unitrim(branch) == masterBranch {
+			gitRevList, err := gitRevList.OutputString()
+			if err != nil {
+				return err
+			}
+			iOSBundleVersion := strings.Count(gitRevList, "\n")
+			return iOSAppBundleVersionDef.outputWriteString(strconv.Itoa(iOSBundleVersion))
+		}
+		// pull request
+		return iOSAppBundleVersionDef.outputWriteString("0") // TODO: use commit count on shared base with master
+	})
+}
+
+var iOSAppBundleVersion = &mtarget{iOSAppBundleVersionDef, IOSAppBundleVersion}
+
 // xcodeproj
 
 const xcodeProjCache = "js/ios/vendor/xcodegen/.cache/berty-app"
@@ -688,7 +760,7 @@ var xcodeProjDef = &targetDef{
 	name:      "XcodeProj",
 	output:    "js/ios/Berty.xcodeproj",
 	sources:   []string{"js/ios/*.yaml", "js/ios/Berty/Sources"},
-	mdeps:     []Rule{xcodeGen, swift, gitRevParse, gitRevList, globalVersion},
+	mdeps:     []Rule{xcodeGen, swift, frameworkRef, iOSAppBundleVersion, globalVersion},
 	artifacts: []string{"js/ios/Berty/main.jsbundle", "js/ios/Berty/Info.plist", xcodeProjCache},
 }
 
@@ -703,11 +775,10 @@ func XcodeProj() error {
 			return nil
 		}
 
-		gitRevList, err := gitRevList.OutputString()
+		iOSBundleVersion, err := iOSAppBundleVersion.OutputString()
 		if err != nil {
 			return err
 		}
-		iOSBundleVersion := strings.Count(gitRevList, "\n")
 
 		globalVersion, err := globalVersion.OutputString()
 		if err != nil {
@@ -715,14 +786,14 @@ func XcodeProj() error {
 		}
 		iOSShortBundleVersion := strings.Split(globalVersion[1:], "-")[0]
 
-		iOSCommit, err := gitRevParse.OutputString()
+		iOSCommit, err := frameworkRef.OutputString()
 		if err != nil {
 			return err
 		}
 
 		env := []string{
-			"IOS_BUNDLE_VERSION=" + strconv.Itoa(iOSBundleVersion),
-			"IOS_SHORT_BUNDLE_VERSION=" + iOSShortBundleVersion,
+			"IOS_BUNDLE_VERSION=" + unitrim(iOSBundleVersion),
+			"IOS_SHORT_BUNDLE_VERSION=" + unitrim(iOSShortBundleVersion),
 			"IOS_COMMIT=" + unitrim(iOSCommit),
 		}
 
