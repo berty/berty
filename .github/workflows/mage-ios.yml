@@ -147,10 +147,16 @@ jobs:
           if-no-files-found: error
 
       - name: Generate profile graph
-        run: go run ./go/cmd/gen-build-profile.graph || true
+        run: go run ./go/cmd/gen-build-profile || true
 
       - name: Upload build profile graph
         uses: actions/upload-artifact@v2
         with:
           path: ${{ github.workspace }}/build-profile.svg
           name: build-profile.svg
+      
+      - name: Upload build info
+        uses: actions/upload-artifact@v2
+        with:
+          path: ${{ github.workspace }}/.build-info
+          name: build-info

@@ -284,19 +284,76 @@ func (t *targetDef) runTarget(implem func(*implemHelper) error) error {
 		return err
 	}
 
-	if err := htgtTargetGlob(t.output, allSources, t.env, implemWrapper, t.phony); err == errUpToDate {
-		fmt.Printf("ℹ️  %s: up-to-date\n", t.name)
-		return nil
-	} else if err != nil {
-		if len(allOut) == 0 {
-			return fmt.Errorf("❌ %s: %s", t.name, err.Error())
-		}
-		return fmt.Errorf("❌ %s: %s\n%s", t.name, err.Error(), string(allOut))
-	}
-
+	err := htgtTargetGlob(t.output, allSources, t.env, implemWrapper, t.phony)
 	totalDuration := buildEnd.Sub(depsStart)
 	implemDuration := buildEnd.Sub(buildStart)
 	depsDuration := depsEnd.Sub(depsStart)
+	if err == errUpToDate {
+		fmt.Printf("ℹ️  %s: up-to-date\n", t.name)
+
+		{
+			// TODO: extract
+
+			deps := make([]string, len(t.mdeps))
+			for i, d := range t.mdeps {
+				deps[i] = d.Name()
+			}
+			profile, err := json.Marshal(map[string]interface{}{
+				"deps":           deps,
+				"totalDuration":  totalDuration,
+				"implemDuration": implemDuration,
+				"depsDuration":   depsDuration,
+				"upToDate":       true,
+				"phony":          t.phony,
+			})
+			if err != nil {
+				fmt.Printf("WARNING: failed to marshal profiling data for %s: %s\n", t.name, err.Error())
+			}
+			profilePath := path.Join(".build-info/.meta/profil", t.name)
+			if err := os.MkdirAll(path.Dir(profilePath), os.ModePerm); err != nil {
+				fmt.Printf("WARNING: failed to create profiling data dir %s: %s\n", t.name, err.Error())
+			}
+			if err := ioutil.WriteFile(profilePath, profile, os.ModePerm); err != nil {
+				fmt.Printf("WARNING: failed to save profiling data %s: %s\n", t.name, err.Error())
+			}
+		}
+
+		return nil
+	} else if err != nil {
+		var oerr error
+		if len(allOut) == 0 {
+			oerr = fmt.Errorf("❌ %s: %s", t.name, err.Error())
+		} else {
+			oerr = fmt.Errorf("❌ %s: %s\n%s", t.name, err.Error(), string(allOut))
+		}
+
+		{
+			// TODO: extract
+
+			deps := make([]string, len(t.mdeps))
+			for i, d := range t.mdeps {
+				deps[i] = d.Name()
+			}
+			profile, err := json.Marshal(map[string]interface{}{
+				"deps":           deps,
+				"totalDuration":  totalDuration,
+				"implemDuration": implemDuration,
+				"depsDuration":   depsDuration,
+				"error":          oerr.Error(),
+				"phony":          t.phony,
+			})
+			if err != nil {
+				fmt.Printf("WARNING: failed to marshal profiling data for %s: %s\n", t.name, err.Error())
+			}
+			profilePath := path.Join(".build-info/.meta/profil", t.name)
+			if err := os.MkdirAll(path.Dir(profilePath), os.ModePerm); err != nil {
+				fmt.Printf("WARNING: failed to create profiling data dir %s: %s\n", t.name, err.Error())
+			}
+			if err := ioutil.WriteFile(profilePath, profile, os.ModePerm); err != nil {
+				fmt.Printf("WARNING: failed to save profiling data %s: %s\n", t.name, err.Error())
+			}
+		}
+	}
 
 	fmt.Printf("✅ %s: built in %v (own: %v, deps: %v) \n", t.name, totalDuration, implemDuration, depsDuration)
 
@@ -312,6 +369,7 @@ func (t *targetDef) runTarget(implem func(*implemHelper) error) error {
 			"totalDuration":  totalDuration,
 			"implemDuration": implemDuration,
 			"depsDuration":   depsDuration,
+			"phony":          t.phony,
 		})
 		if err != nil {
 			fmt.Printf("WARNING: failed to marshal profiling data for %s: %s\n", t.name, err.Error())
