@@ -81,6 +81,8 @@ jobs:
           echo "::set-output name=iOSTorGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage iOSTor`"
           echo "::set-output name=xcodeProjHash::`PRINT_CACHE_INFO=true mage xcodeProj`"
           echo "::set-output name=xcodeProjGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage xcodeProj`"
+          echo "::set-output name=rubyGemsHash::`PRINT_CACHE_INFO=true mage rubyGems`"
+          echo "::set-output name=rubyGemsGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage rubyGems`"
           echo "::set-output name=xcWorkspaceHash::`PRINT_CACHE_INFO=true mage xcWorkspace`"
           echo "::set-output name=xcWorkspaceGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage xcWorkspace`"
           echo "::set-output name=iOSFrameworkHash::`PRINT_CACHE_INFO=true mage iOSFramework`"
@@ -100,6 +102,11 @@ jobs:
         with:
           path: ${{ fromJSON(steps.cacheInfo.outputs.xcodeProjGAPaths) }}
           key: ${{ runner.OS }}-mage-xcodeProj-v3-${{ steps.cacheInfo.outputs.xcodeProjHash }}
+      - name: Cache rubyGems
+        uses: actions/cache@v2
+        with:
+          path: ${{ fromJSON(steps.cacheInfo.outputs.rubyGemsGAPaths) }}
+          key: ${{ runner.OS }}-mage-rubyGems-v2-${{ steps.cacheInfo.outputs.rubyGemsHash }}
       - name: Cache xcWorkspace
         uses: actions/cache@v2
         with:
