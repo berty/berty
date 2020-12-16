@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -25,6 +26,7 @@ type Rule interface {
 	CacheManifest() (string, error)
 	OutputString() (string, error)
 	Name() string
+	Phony() bool
 }
 
 // toolDef
@@ -100,6 +102,10 @@ func (t *mtarget) Name() string {
 	return t.def.name
 }
 
+func (t *mtarget) Phony() bool {
+	return t.def.phony
+}
+
 var _ Rule = (*mtarget)(nil)
 
 // mtool
@@ -128,6 +134,10 @@ func (t *mtool) OutputString() (string, error) {
 
 func (t *mtool) Name() string {
 	return t.def.name
+}
+
+func (t *mtool) Phony() bool {
+	return true
 }
 
 var _ Rule = (*mtool)(nil)
@@ -220,25 +230,8 @@ func (t *targetDef) runExecToOutput(name string, arg ...string) error {
 	})
 }
 
+// FIXME: refracto
 func (t *targetDef) runTarget(implem func(*implemHelper) error) error {
-	var allDeps []interface{}
-	allSources := t.sources
-	for _, mdep := range t.mdeps {
-		allDeps = append(allDeps, mdep.Implem())
-		allSources = append(allSources, mdep.InfoPath())
-	}
-	allDeps = append(allDeps, t.deps...)
-
-	if os.Getenv("PRINT_CACHE_INFO") == "true" {
-		m, err := t.cacheManifest()
-		if err != nil {
-			return err
-		}
-		fmt.Println(stringBase64Sha3(m))
-		//fmt.Println(m)
-		return nil
-	}
-
 	if os.Getenv("PRINT_CACHE_GA_JSON_PATHS") == "true" {
 		paths := strings.Join(append([]string{t.output, t.infoPath()}, t.artifacts...), "\n")
 		jsonBytes, err := json.Marshal(paths)
@@ -249,13 +242,62 @@ func (t *targetDef) runTarget(implem func(*implemHelper) error) error {
 		return nil
 	}
 
+	var allDeps []interface{}
+	var stableDeps []interface{}
+	var phonyDeps []interface{}
+	allSources := t.sources
+	for _, mdep := range t.mdeps {
+		allDeps = append(allDeps, mdep.Implem())
+		allSources = append(allSources, mdep.InfoPath())
+		if mdep.Phony() {
+			phonyDeps = append(phonyDeps, mdep.Implem())
+		} else {
+			stableDeps = append(stableDeps, mdep.Implem())
+		}
+	}
+	allDeps = append(allDeps, t.deps...)
+
 	depsStart := time.Now()
 	mg.Deps(allDeps...)
 	depsEnd := time.Now()
 
+	if os.Getenv("PRINT_CACHE_INFO") == "true" {
+		// YOU NEED TO RUN THIS ON A CLEAN BUILD
+		// ^ FIXME: use "void" for stable (not phony) rules output hash even if the real manifest is present
+
+		srcs := []string(nil)
+		for _, g := range allSources {
+			if !strings.ContainsRune(g, '*') {
+				srcs = append(srcs, g)
+				continue
+			}
+			matches, err := filepath.Glob(g)
+			if err != nil {
+				return err
+			}
+			srcs = append(srcs, matches...)
+		}
+
+		if t.phony {
+			//fmt.Printf("🔨 %s: building (phony)\n", t.name)
+			if err := implem(newImplemHelper(os.Stdout)); err != nil {
+				return fmt.Errorf("❌ %s: %s", t.name, err.Error())
+			}
+			//fmt.Printf("✅ %s: built\n", t.name)
+		}
+
+		m, err := htgtManifestGenerate(t.output, t.env, srcs, nil, false)
+		if err != nil {
+			return err
+		}
+		//fmt.Printf("name: %s\nhash: %s\nmanifest: %s\n%s\n------\n", t.name, stringBase64Sha3(m), t.infoPath(), m)
+		fmt.Println(stringBase64Sha3(m))
+		return htgtManifestWritePath(t.output, t.env, srcs...)
+	}
+
 	allOut := []byte(nil)
-	var buildStart time.Time
-	var buildEnd time.Time
+	buildStart := time.Now()
+	buildEnd := buildStart
 	implemWrapper := func() error {
 		if t.phony {
 			fmt.Printf("🔨 %s: building (phony)\n", t.name)
@@ -275,7 +317,6 @@ func (t *targetDef) runTarget(implem func(*implemHelper) error) error {
 
 		ih := newImplemHelper(out)
 
-		buildStart = time.Now()
 		err := implem(ih)
 		buildEnd = time.Now()
 
@@ -434,7 +475,7 @@ func (ih *implemHelper) execToFile(p string, name string, arg ...string) error {
 }
 
 func (ih *implemHelper) getenvFallbackExec(key string, cmd string, args ...string) (string, error) {
-	if val := os.Getenv(key); val != "" {
+	if val := os.Getenv(key); len(val) > 0 {
 		return val, nil
 	}
 	val, err := ih.strExec(cmd, args...)

@@ -75,17 +75,17 @@ jobs:
       - name: Gather cache info
         id: cacheInfo
         run: |
-          echo "::set-output name=nodeModulesHash::`PRINT_CACHE_INFO=true mage nodeModules`"
+          echo "::set-output name=nodeModulesHash::`PRINT_CACHE_INFO=true mage nodeModules | tail -n1`"
           echo "::set-output name=nodeModulesGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage nodeModules`"
-          echo "::set-output name=iOSTorHash::`PRINT_CACHE_INFO=true mage iOSTor`"
+          echo "::set-output name=iOSTorHash::`PRINT_CACHE_INFO=true mage iOSTor | tail -n1`"
           echo "::set-output name=iOSTorGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage iOSTor`"
-          echo "::set-output name=xcodeProjHash::`PRINT_CACHE_INFO=true mage xcodeProj`"
+          echo "::set-output name=xcodeProjHash::`PRINT_CACHE_INFO=true mage xcodeProj | tail -n1`"
           echo "::set-output name=xcodeProjGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage xcodeProj`"
-          echo "::set-output name=rubyGemsHash::`PRINT_CACHE_INFO=true mage rubyGems`"
+          echo "::set-output name=rubyGemsHash::`PRINT_CACHE_INFO=true mage rubyGems | tail -n1`"
           echo "::set-output name=rubyGemsGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage rubyGems`"
-          echo "::set-output name=xcWorkspaceHash::`PRINT_CACHE_INFO=true mage xcWorkspace`"
+          echo "::set-output name=xcWorkspaceHash::`PRINT_CACHE_INFO=true mage xcWorkspace | tail -n1`"
           echo "::set-output name=xcWorkspaceGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage xcWorkspace`"
-          echo "::set-output name=iOSFrameworkHash::`PRINT_CACHE_INFO=true mage iOSFramework`"
+          echo "::set-output name=iOSFrameworkHash::`PRINT_CACHE_INFO=true mage iOSFramework | tail -n1`"
           echo "::set-output name=iOSFrameworkGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage iOSFramework`"
       - name: Cache nodeModules
         uses: actions/cache@v2

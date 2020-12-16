@@ -44,8 +44,12 @@ func GlobalVersion() error {
 		if err != nil {
 			return err
 		}
+		version = unitrim(version)
+		if version[0] == 'v' {
+			version = version[1:]
+		}
 
-		sver, err := semver.Make(unitrim(version)[len("v"):])
+		sver, err := semver.Make(version)
 		if err != nil {
 			return err
 		}
@@ -77,7 +81,6 @@ var frameworkRefDef = &targetDef{
 	output: ".build-artifacts/js/framework-ref",
 	mdeps:  []Rule{gitTool, gitRevParse},
 	env:    []string{"VCS_REF"},
-	phony:  true,
 }
 
 func FrameworkRef() error {
@@ -110,7 +113,6 @@ var frameworkLdflagsDef = &targetDef{
 	name:   "FrameworkLdflags",
 	output: ".build-artifacts/js/framework-ldflags",
 	mdeps:  []Rule{globalVersion, frameworkRef},
-	env:    []string{"VCS_REF"},
 }
 
 // Build version info
@@ -855,7 +857,7 @@ var iOSAppDeps = []Rule{nodeModules, frontGen, xcWorkspace, iOSFramework, npx}
 func IOSAppDeps() error {
 	deps := make([]interface{}, len(iOSAppDeps))
 	for i, d := range iOSAppDeps {
-		deps[i] = d.Implem()
+		deps[i] = d.Implem
 	}
 	mg.Deps(deps...)
 	return nil
