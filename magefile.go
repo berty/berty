@@ -40,30 +40,30 @@ var globalVersionDef = &targetDef{
 
 func GlobalVersion() error {
 	return globalVersionDef.runTarget(func(ih *implemHelper) error {
-		branch, err := ih.strExec("git", "branch", "--show-current")
-		if err != nil {
-			return err
-		}
-
 		version, err := ih.getenvFallbackExec("VERSION", "go", "run", "-mod=readonly", "-modfile=go.mod", "github.com/mdomke/git-semver/v5")
 		if err != nil {
 			return err
 		}
 
-		if unitrim(branch) == masterBranch {
-			return globalVersionDef.outputWriteString(unitrim(version))
-		}
-
-		// pull request
 		sver, err := semver.Make(unitrim(version)[len("v"):])
 		if err != nil {
 			return err
 		}
-		sver.Pre = []semver.PRVersion{{VersionStr: "pullrequest"}}
-		sver.Build = []string{}
-		if err := sver.Validate(); err != nil {
+
+		branch, err := ih.strExec("git", "branch", "--show-current")
+		if err != nil {
 			return err
 		}
+
+		if unitrim(branch) != masterBranch {
+			// pull request
+			sver.Pre = []semver.PRVersion{{VersionStr: "pullrequest"}}
+			sver.Build = []string{}
+			if err := sver.Validate(); err != nil {
+				return err
+			}
+		}
+
 		return globalVersionDef.outputWriteString(sver.String())
 	})
 }
@@ -127,7 +127,7 @@ func FrameworkLdflags() error {
 		}
 
 		ldFlags := fmt.Sprintf(
-			`-ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=%s -X berty.tech/berty/v2/go/pkg/bertyversion.Version=%s"`,
+			`-ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=%s -X berty.tech/berty/v2/go/pkg/bertyversion.Version=v%s"`,
 			unitrim(ref), unitrim(version))
 
 		return frameworkLdflagsDef.outputWriteString(ldFlags)
@@ -784,7 +784,7 @@ func XcodeProj() error {
 		if err != nil {
 			return err
 		}
-		iOSShortBundleVersion := strings.Split(globalVersion[1:], "-")[0]
+		iOSShortBundleVersion := strings.Split(globalVersion, "-")[0]
 
 		iOSCommit, err := frameworkRef.OutputString()
 		if err != nil {
