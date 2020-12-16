@@ -184,7 +184,6 @@ message BertyLink {
 
     bytes contact_public_rendezvous_seed = 10;
     bytes contact_account_pk = 11 [(gogoproto.customname) = "ContactAccountPK"];
-    bytes contact_display_name = 12;
 
     // group_v1: all bytes fields are encrypted
 
@@ -193,7 +192,6 @@ message BertyLink {
     bytes group_secret_sig = 22;
     berty.protocol.v1.GroupType group_type = 23; // clear
     bytes group_sign_pub = 24;
-    bytes group_display_name = 25;
   }
 
   enum Kind {

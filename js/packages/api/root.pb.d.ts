@@ -1032,6 +1032,7 @@ export namespace berty {
             ErrBridgeNotRunning = 1601,
             ErrMessengerInvalidDeepLink = 2000,
             ErrMessengerDeepLinkRequiresPassphrase = 2001,
+            ErrMessengerDeepLinkInvalidPassphrase = 2002,
             ErrDBEntryAlreadyExists = 2100,
             ErrDBAddConversation = 2101,
             ErrDBAddContactRequestOutgoingSent = 2102,
@@ -5176,13 +5177,11 @@ export namespace berty {
                     checksum?: (Uint8Array|null);
                     contactPublicRendezvousSeed?: (Uint8Array|null);
                     contactAccountPk?: (Uint8Array|null);
-                    contactDisplayName?: (Uint8Array|null);
                     groupPublicKey?: (Uint8Array|null);
                     groupSecret?: (Uint8Array|null);
                     groupSecretSig?: (Uint8Array|null);
                     groupType?: (berty.protocol.v1.GroupType|null);
                     groupSignPub?: (Uint8Array|null);
-                    groupDisplayName?: (Uint8Array|null);
                 }
 
                 class Encrypted implements IEncrypted {
@@ -5193,13 +5192,11 @@ export namespace berty {
                     public checksum: Uint8Array;
                     public contactPublicRendezvousSeed: Uint8Array;
                     public contactAccountPk: Uint8Array;
-                    public contactDisplayName: Uint8Array;
                     public groupPublicKey: Uint8Array;
                     public groupSecret: Uint8Array;
                     public groupSecretSig: Uint8Array;
                     public groupType: berty.protocol.v1.GroupType;
                     public groupSignPub: Uint8Array;
-                    public groupDisplayName: Uint8Array;
                     public static create(properties?: berty.messenger.v1.BertyLink.IEncrypted): berty.messenger.v1.BertyLink.Encrypted;
                     public static encode(message: berty.messenger.v1.BertyLink.IEncrypted, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.BertyLink.IEncrypted, writer?: $protobuf.Writer): $protobuf.Writer;

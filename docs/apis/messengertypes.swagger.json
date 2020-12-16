@@ -1054,10 +1054,6 @@
           "type": "string",
           "format": "byte"
         },
-        "contact_display_name": {
-          "type": "string",
-          "format": "byte"
-        },
         "group_public_key": {
           "type": "string",
           "format": "byte"
@@ -1074,10 +1070,6 @@
           "$ref": "#/definitions/v1GroupType"
         },
         "group_sign_pub": {
-          "type": "string",
-          "format": "byte"
-        },
-        "group_display_name": {
           "type": "string",
           "format": "byte"
         }

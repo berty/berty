@@ -344,13 +344,11 @@ to test more false-positive guesses.
 | checksum | [bytes](#bytes) |  | checksum is an optional field used to check if the decryption was successful. the length is customizable (SHAKE256). a longer checksum means less conflicts. having more conflicts may be bad in term of UX, but make it easier for an attacker to run an offline bruteforce. |
 | contact_public_rendezvous_seed | [bytes](#bytes) |  |  |
 | contact_account_pk | [bytes](#bytes) |  |  |
-| contact_display_name | [bytes](#bytes) |  |  |
 | group_public_key | [bytes](#bytes) |  |  |
 | group_secret | [bytes](#bytes) |  |  |
 | group_secret_sig | [bytes](#bytes) |  |  |
 | group_type | [berty.protocol.v1.GroupType](#berty.protocol.v1.GroupType) |  | clear |
 | group_sign_pub | [bytes](#bytes) |  |  |
-| group_display_name | [bytes](#bytes) |  |  |
 
 <a name="berty.messenger.v1.Contact"></a>
 

@@ -633,6 +633,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrBridgeNotRunning: 1601,
               ErrMessengerInvalidDeepLink: 2000,
               ErrMessengerDeepLinkRequiresPassphrase: 2001,
+              ErrMessengerDeepLinkInvalidPassphrase: 2002,
               ErrDBEntryAlreadyExists: 2100,
               ErrDBAddConversation: 2101,
               ErrDBAddContactRequestOutgoingSent: 2102,
@@ -3429,10 +3430,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                           "(gogoproto.customname)": "ContactAccountPK"
                         }
                       },
-                      contactDisplayName: {
-                        type: "bytes",
-                        id: 12
-                      },
                       groupPublicKey: {
                         type: "bytes",
                         id: 20
@@ -3452,10 +3449,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       groupSignPub: {
                         type: "bytes",
                         id: 24
-                      },
-                      groupDisplayName: {
-                        type: "bytes",
-                        id: 25
                       }
                     }
                   },

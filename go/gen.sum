@@ -3,6 +3,6 @@
 d42dd95843b3d42b1fb2051ba0fb7bb2c6301043  ../api/errcode.proto
 c314cc3d08e8849bd0693039e42da117c39efef5  ../api/go-internal/handshake.proto
 9b4665f0290b8e94e5ef4b80572a9304f587c2c7  ../api/go-internal/records.proto
-f6993c37d0f1af082f795e05672e1f1db95811fa  ../api/messengertypes.proto
+99523b2d4813fc3db6e79cd28a03ed0e127ec60e  ../api/messengertypes.proto
 82be117c46950434fc992ba05d184101ab7029ca  ../api/protocoltypes.proto
 3a0fcfcc152627b42610cf1e5bfb5f0dad304b3f  Makefile

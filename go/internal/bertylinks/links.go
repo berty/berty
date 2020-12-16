@@ -79,19 +79,18 @@ func MarshalLink(link *messengertypes.BertyLink) (internal string, web string, e
 	case messengertypes.BertyLink_EncryptedV1Kind:
 		kind = "enc"
 		machine.Encrypted = &messengertypes.BertyLink_Encrypted{
-			Kind:  link.Encrypted.Kind,
-			Nonce: link.Encrypted.Nonce,
+			Kind:     link.Encrypted.Kind,
+			Nonce:    link.Encrypted.Nonce,
+			Checksum: link.Encrypted.Checksum,
 		}
 		if link.Encrypted.DisplayName != "" {
 			human.Add("name", link.Encrypted.DisplayName)
 		}
 		switch link.Encrypted.Kind {
 		case messengertypes.BertyLink_ContactInviteV1Kind:
-			machine.Encrypted.ContactDisplayName = link.Encrypted.ContactDisplayName
 			machine.Encrypted.ContactAccountPK = link.Encrypted.ContactAccountPK
 			machine.Encrypted.ContactPublicRendezvousSeed = link.Encrypted.ContactPublicRendezvousSeed
 		case messengertypes.BertyLink_GroupV1Kind:
-			machine.Encrypted.GroupDisplayName = link.Encrypted.GroupDisplayName
 			machine.Encrypted.GroupPublicKey = link.Encrypted.GroupPublicKey
 			machine.Encrypted.GroupSecret = link.Encrypted.GroupSecret
 			machine.Encrypted.GroupSecretSig = link.Encrypted.GroupSecretSig
@@ -287,14 +286,7 @@ func decryptLink(link *messengertypes.BertyLink, passphrase []byte) (*messengert
 		}
 		stream.XORKeyStream(decrypted.BertyID.PublicRendezvousSeed, link.Encrypted.ContactPublicRendezvousSeed)
 		stream.XORKeyStream(decrypted.BertyID.AccountPK, link.Encrypted.ContactAccountPK)
-
-		if link.Encrypted.DisplayName != "" {
-			decrypted.BertyID.DisplayName = link.Encrypted.DisplayName
-		} else {
-			displayNameBytes := make([]byte, len(link.Encrypted.ContactDisplayName))
-			stream.XORKeyStream(displayNameBytes, link.Encrypted.ContactDisplayName)
-			decrypted.BertyID.DisplayName = string(displayNameBytes)
-		}
+		decrypted.BertyID.DisplayName = link.Encrypted.DisplayName
 
 	case messengertypes.BertyLink_GroupV1Kind:
 		decrypted.BertyGroup = &messengertypes.BertyGroup{
@@ -310,14 +302,7 @@ func decryptLink(link *messengertypes.BertyLink, passphrase []byte) (*messengert
 		stream.XORKeyStream(decrypted.BertyGroup.Group.Secret, link.Encrypted.GroupSecret)
 		stream.XORKeyStream(decrypted.BertyGroup.Group.SecretSig, link.Encrypted.GroupSecretSig)
 		stream.XORKeyStream(decrypted.BertyGroup.Group.SignPub, link.Encrypted.GroupSignPub)
-
-		if link.Encrypted.DisplayName != "" {
-			decrypted.BertyGroup.DisplayName = link.Encrypted.DisplayName
-		} else {
-			displayNameBytes := make([]byte, len(link.Encrypted.GroupDisplayName))
-			stream.XORKeyStream(displayNameBytes, link.Encrypted.GroupDisplayName)
-			decrypted.BertyGroup.DisplayName = string(displayNameBytes)
-		}
+		decrypted.BertyGroup.DisplayName = link.Encrypted.DisplayName
 	}
 
 	if link.Encrypted.Checksum != nil && len(link.Encrypted.Checksum) > 0 {
@@ -386,13 +371,9 @@ func EncryptLink(link *messengertypes.BertyLink, passphrase []byte) (*messengert
 		// encrypt fields (order is important)
 		encrypted.Encrypted.ContactPublicRendezvousSeed = make([]byte, len(link.BertyID.PublicRendezvousSeed))
 		encrypted.Encrypted.ContactAccountPK = make([]byte, len(link.BertyID.AccountPK))
-		displayNameBytes := make([]byte, len(link.BertyID.DisplayName))
 		stream.XORKeyStream(encrypted.Encrypted.ContactPublicRendezvousSeed, link.BertyID.PublicRendezvousSeed)
 		stream.XORKeyStream(encrypted.Encrypted.ContactAccountPK, link.BertyID.AccountPK)
-		stream.XORKeyStream(displayNameBytes, []byte(link.BertyID.DisplayName))
-		if encrypted.Encrypted.DisplayName == "" {
-			encrypted.Encrypted.ContactDisplayName = displayNameBytes
-		}
+		encrypted.Encrypted.DisplayName = link.BertyID.DisplayName
 
 	case messengertypes.BertyLink_GroupV1Kind:
 		if link.BertyGroup == nil || link.BertyGroup.Group == nil {
@@ -406,15 +387,11 @@ func EncryptLink(link *messengertypes.BertyLink, passphrase []byte) (*messengert
 		encrypted.Encrypted.GroupSecret = make([]byte, len(link.BertyGroup.Group.Secret))
 		encrypted.Encrypted.GroupSecretSig = make([]byte, len(link.BertyGroup.Group.SecretSig))
 		encrypted.Encrypted.GroupSignPub = make([]byte, len(link.BertyGroup.Group.SignPub))
-		displayNameBytes := make([]byte, len(link.BertyGroup.DisplayName))
 		stream.XORKeyStream(encrypted.Encrypted.GroupPublicKey, link.BertyGroup.Group.PublicKey)
 		stream.XORKeyStream(encrypted.Encrypted.GroupSecret, link.BertyGroup.Group.Secret)
 		stream.XORKeyStream(encrypted.Encrypted.GroupSecretSig, link.BertyGroup.Group.SecretSig)
 		stream.XORKeyStream(encrypted.Encrypted.GroupSignPub, link.BertyGroup.Group.SignPub)
-		stream.XORKeyStream(displayNameBytes, []byte(link.BertyGroup.DisplayName))
-		if encrypted.Encrypted.DisplayName == "" {
-			encrypted.Encrypted.GroupDisplayName = displayNameBytes
-		}
+		encrypted.Encrypted.DisplayName = link.BertyGroup.DisplayName
 
 	default:
 		return nil, errcode.ErrInvalidInput
@@ -440,7 +417,6 @@ func clearLinkChecksum(link *messengertypes.BertyLink, dest []byte) error {
 		for _, b := range [][]byte{
 			link.BertyID.PublicRendezvousSeed,
 			link.BertyID.AccountPK,
-			[]byte(link.BertyID.DisplayName),
 		} {
 			_, err := hasher.Write(b)
 			if err != nil {
@@ -456,7 +432,6 @@ func clearLinkChecksum(link *messengertypes.BertyLink, dest []byte) error {
 			link.BertyGroup.Group.Secret,
 			link.BertyGroup.Group.SecretSig,
 			link.BertyGroup.Group.SignPub,
-			[]byte(link.BertyGroup.DisplayName),
 		} {
 			_, err := hasher.Write(b)
 			if err != nil {
