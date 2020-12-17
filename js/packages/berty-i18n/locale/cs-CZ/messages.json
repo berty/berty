@@ -131,7 +131,7 @@
       "external-services-button": "Externí služby",
       "auto-replicate-button": "Automaticky kopírovat",
       "multicast-dns-button": {
-        "title": "",
+        "title": "Multicast DNS",
         "desc": "Vyhledat lokální uživatele"
       },
       "blocked-contacts-button": {
@@ -280,7 +280,7 @@
       "bot-mode-button": "Režim Bot",
       "local-grpc-button": "lokální gRPC",
       "console-logs-button": "Záznamy konzole",
-      "ipfs-webui-button": "",
+      "ipfs-webui-button": "IPFS WebUI",
       "notifications-button": "Oznámení",
       "send-to-all-button": {
         "title": "Odeslat zprávy všem kontaktům",
