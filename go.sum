@@ -2,10 +2,8 @@ bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc h1:utDghgcjE8u+EBjHOgYT+dJPcnD
 bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc/go.mod h1:FbcW6z/2VytnFDhZfumh8Ss8zxHE6qpMP5sHTRe0EaM=
 berty.tech/go-ipfs-log v1.2.6 h1:VBdyZgdkeIt17LS4UX6rJjmskqvfIHaOAEH9Z8aqvIM=
 berty.tech/go-ipfs-log v1.2.6/go.mod h1:4v7G/bAeHNQWqziNC9oZREEFYpSiejSE3+DB4G4nf9M=
-berty.tech/go-libp2p-tor-transport v0.8.3 h1:KhfPBPeuvMqW/88j6BS4O1vdTIRdlMD7bsxYBcp9rts=
-berty.tech/go-libp2p-tor-transport v0.8.3/go.mod h1:uttrniM0oeyYxHCpYy/gXcgZHu2zBy4F1doSUQm4rh0=
-berty.tech/go-libtor v1.0.333 h1:z0Uars8ZFprlGRGDAsomBtjTQfR9T7eMBmPDaZp1GRk=
-berty.tech/go-libtor v1.0.333/go.mod h1:9swOOQVb+kmvuAlsgWUK/4c52pm69AdbJsxLzk+fJEw=
+berty.tech/go-libtor v1.0.342 h1:s73BN+9ByEPR4bIXiXmxOy3fENzH4wmFmvrehPx1UuA=
+berty.tech/go-libtor v1.0.342/go.mod h1:9swOOQVb+kmvuAlsgWUK/4c52pm69AdbJsxLzk+fJEw=
 berty.tech/go-orbit-db v1.10.11 h1:JBDAoYigszK87P8JBlXDDMv+T/X9GiYH6+ZAXyomMjc=
 berty.tech/go-orbit-db v1.10.11/go.mod h1:Gl6pmjtt7Db5yA+2S14VP0XJ93Q2OslpyW/eSE9QNCg=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1 h1:xXAS7M/RcgIWia1XkXLueirm2zDXnMMNGb3UJhfRzbo=
@@ -121,6 +119,8 @@ github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24
 github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+CedLV8=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
 github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
+github.com/berty/go-dns v1.0.1 h1:5fyswL5QqJ/78hLUc5Go6e0VA0u7Bww/vyoddZpQyM4=
+github.com/berty/go-dns v1.0.1/go.mod h1:su21ON0Nu6vkydXbOgso3ZN05o2jguVv+utey3mKP8A=
 github.com/berty/go-libp2p-rendezvous v0.0.0-20201028141428-5b2e7e8ff19a h1:6bxQA1F9Ws6Q7W2OO1ysg0gJO3oPWb1lHQPSCHoZ4XU=
 github.com/berty/go-libp2p-rendezvous v0.0.0-20201028141428-5b2e7e8ff19a/go.mod h1:Riu0Lqmxg3NdX8TBJQYZjDjl3Al213MY9Jn2cuwsx+o=
 github.com/bgentry/speakeasy v0.1.0/go.mod h1:+zsyZBPWlz7T6j88CTgSN5bM796AkVf0kBD4zp0CCIs=
@@ -1115,6 +1115,8 @@ github.com/multiformats/go-multiaddr-dns v0.0.1/go.mod h1:9kWcqw/Pj6FwxAwW38n/94
 github.com/multiformats/go-multiaddr-dns v0.0.2/go.mod h1:9kWcqw/Pj6FwxAwW38n/9403szc57zJPs45fmnznu3Q=
 github.com/multiformats/go-multiaddr-dns v0.2.0 h1:YWJoIDwLePniH7OU5hBnDZV6SWuvJqJ0YtN6pLeH9zA=
 github.com/multiformats/go-multiaddr-dns v0.2.0/go.mod h1:TJ5pr5bBO7Y1B18djPuRsVkduhQH2YqYSbxWJzYGdK0=
+github.com/multiformats/go-multiaddr-dns v0.2.1-0.20201130213411-dba25a2c0b7a h1:Pw459lu1YP0+F78E5fiX+g/DWEyTo+EaTmgrPwU/vW8=
+github.com/multiformats/go-multiaddr-dns v0.2.1-0.20201130213411-dba25a2c0b7a/go.mod h1:mNzQ4eTGDg0ll1N9jKPOUogZPoJ30W8a7zk66FQPpdQ=
 github.com/multiformats/go-multiaddr-fmt v0.0.1/go.mod h1:aBYjqL4T/7j4Qx+R73XSv/8JsgnRFlf0w2KGLCmXl3Q=
 github.com/multiformats/go-multiaddr-fmt v0.1.0 h1:WLEFClPycPkp4fnIzoFoV9FVd49/eQsuaL3/CWe167E=
 github.com/multiformats/go-multiaddr-fmt v0.1.0/go.mod h1:hGtDIW4PU4BqJ50gW2quDuPVjyWNZxToGUh/HwTZYJo=

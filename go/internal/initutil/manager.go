@@ -79,6 +79,11 @@ type Manager struct {
 			Tor                   struct {
 				Mode       string `json:"Mode,omitempty"`
 				BinaryPath string `json:"BinaryPath,omitempty"`
+				DoT        struct {
+					Hostname string `json:"Hostname,omitempty"`
+					// comma separated list, form is : {IP4,[IP6]}{,:PORT}
+					Addresses string `json:"Addresses,omitempty"`
+				} `json:"DoT,omitempty"`
 			} `json:"Tor,omitempty"`
 			// FIXME: Remove this option, this is a temporary fix
 			RelayHack bool `json:"RelayHack,omitempty"`
