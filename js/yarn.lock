@@ -237,18 +237,17 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@babel/node@^7.12.6":
-  version "7.12.6"
-  resolved "https://registry.yarnpkg.com/@babel/node/-/node-7.12.6.tgz#28d40382d50d4dd9c6e712780c0443c6bf7be5c2"
-  integrity sha512-A1TpW2X05ZkI5+WV7Aa24QX4LyGwrGUQPflG1CyBdr84jUuH0mhkE2BQWSQAlfRnp4bMLjeveMJIhS20JaOfVQ==
+"@babel/node@^7.12.10":
+  version "7.12.10"
+  resolved "https://registry.yarnpkg.com/@babel/node/-/node-7.12.10.tgz#2a78e1a3a98f08e0d5e8adbaba783bed5efb09ae"
+  integrity sha512-lJT1sXp1bEfAZ7B2ChEOOiUxaGbIWkcAixqZDpbHnJWUqIjoofOGo5ON1bJ9HOmtMdF7rqKiOoM7zZSI87El3g==
   dependencies:
-    "@babel/register" "^7.12.1"
+    "@babel/register" "^7.12.10"
     commander "^4.0.1"
     core-js "^3.2.1"
     lodash "^4.17.19"
     node-environment-flags "^1.0.5"
     regenerator-runtime "^0.13.4"
-    resolve "^1.13.1"
     v8flags "^3.1.1"
 
 "@babel/parser@^7.0.0", "@babel/parser@^7.1.0", "@babel/parser@^7.12.7", "@babel/parser@^7.7.0":
@@ -668,10 +667,10 @@
     "@babel/helper-create-regexp-features-plugin" "^7.12.1"
     "@babel/helper-plugin-utils" "^7.10.4"
 
-"@babel/register@^7.0.0", "@babel/register@^7.12.1":
-  version "7.12.1"
-  resolved "https://registry.yarnpkg.com/@babel/register/-/register-7.12.1.tgz#cdb087bdfc4f7241c03231f22e15d211acf21438"
-  integrity sha512-XWcmseMIncOjoydKZnWvWi0/5CUCD+ZYKhRwgYlWOrA8fGZ/FjuLRpqtIhLOVD/fvR1b9DQHtZPn68VvhpYf+Q==
+"@babel/register@^7.0.0", "@babel/register@^7.12.10":
+  version "7.12.10"
+  resolved "https://registry.yarnpkg.com/@babel/register/-/register-7.12.10.tgz#19b87143f17128af4dbe7af54c735663b3999f60"
+  integrity sha512-EvX/BvMMJRAA3jZgILWgbsrHwBQvllC5T8B29McyME8DvkdOxk4ujESfrMvME8IHSDvWXrmMXxPvA/lx2gqPLQ==
   dependencies:
     find-cache-dir "^2.0.0"
     lodash "^4.17.19"
