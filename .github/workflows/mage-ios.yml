@@ -87,6 +87,7 @@ jobs:
           echo "::set-output name=xcWorkspaceGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage xcWorkspace`"
           echo "::set-output name=iOSFrameworkHash::`PRINT_CACHE_INFO=true mage iOSFramework | tail -n1`"
           echo "::set-output name=iOSFrameworkGAPaths::`PRINT_CACHE_GA_JSON_PATHS=true mage iOSFramework`"
+          rm -fr .build-info # remove special cache manifests otherwise some rules might get skiped
       - name: Cache nodeModules
         uses: actions/cache@v2
         with:
