@@ -396,7 +396,14 @@ func (t *targetDef) runTarget(implem func(*implemHelper) error) error {
 		}
 	}
 
-	fmt.Printf("✅ %s: built in %v (own: %v, deps: %v) \n", t.name, totalDuration, implemDuration, depsDuration)
+	add := ""
+	if os.Getenv("BERTY_BUILD_VERBOSE") == "true" && len(allOut) > 0 {
+		add = string(allOut)
+		if len(add) != 0 && add[len(add)-1] != '\n' {
+			add += "\n"
+		}
+	}
+	fmt.Printf("%s✅ %s: built in %v (own: %v, deps: %v) \n", add, t.name, totalDuration, implemDuration, depsDuration)
 
 	{
 		// TODO: extract
@@ -452,17 +459,20 @@ func (ih *implemHelper) execEnv(env []string, cmd string, args ...string) error 
 }
 
 func (ih *implemHelper) execWdEnv(workDir string, env []string, command string, args ...string) error {
-	fmt.Println(strings.Join(append(append([]string{"🏃", path.Clean(workDir), "❯"}, env...), append([]string{command}, args...)...), " "))
+	_, _ = ih.w.Write([]byte(fmt.Sprintln(strings.Join(append(append([]string{"🏃", path.Clean(workDir), "❯"}, env...), append([]string{command}, args...)...), " "))))
+
 	cmd := exec.Command(command, args...)
 	cmd.Dir = workDir
 	cmd.Stdout = ih.w
 	cmd.Stderr = ih.w
 	cmd.Env = append(os.Environ(), env...)
+
 	return cmd.Run()
 }
 
 func (ih *implemHelper) execToFile(p string, name string, arg ...string) error {
-	fmt.Println(strings.Join(append([]string{"🏃", ".", "❯"}, append([]string{name}, arg...)...), " "), ">", p)
+	_, _ = ih.w.Write([]byte(fmt.Sprintln(strings.Join(append([]string{"🏃", ".", "❯"}, append([]string{name}, arg...)...), " "), ">", p)))
+
 	file, err := os.OpenFile(p, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, os.ModePerm)
 	if err != nil {
 		return err
@@ -471,6 +481,7 @@ func (ih *implemHelper) execToFile(p string, name string, arg ...string) error {
 	cmd := exec.Command(name, arg...)
 	cmd.Stderr = ih.w
 	cmd.Stdout = file
+
 	return cmd.Run()
 }
 

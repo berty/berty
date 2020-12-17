@@ -122,13 +122,13 @@ jobs:
       - name: Build app deps
         run: |
           mage checkXcodebuild
-          mage iOSAppDeps
+          BERTY_BUILD_VERBOSE=true mage iOSAppDeps
 
       - name: Debug
         run: |
           ls -la js/ios/Frameworks
-          ls -la js/ios/Frameworks/Bertybridge.framework
-          ls -la js/ios/frameworks/bertybridge.framework
+          ls -la js/ios/Frameworks/Bertybridge.framework || true
+          ls -la js/ios/Frameworks/bertybridge.framework
 
       - name: Build the Archive
         working-directory: js
