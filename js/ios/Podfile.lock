@@ -303,7 +303,7 @@ PODS:
     - React-Core
   - react-native-cameraroll (4.0.1):
     - React
-  - react-native-document-picker (4.1.0):
+  - react-native-document-picker (4.1.1):
     - React-Core
   - react-native-safe-area-context (3.1.9):
     - React-Core
@@ -689,7 +689,7 @@ SPEC CHECKSUMS:
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-camera: 35854c4f764a4a6cf61c1c3525888b92f0fe4b31
   react-native-cameraroll: 60ba0068826eab1c8d43146191bafd4363ea58a7
-  react-native-document-picker: d870e0a41510b241d5b764e7a2b5ccf129af7967
+  react-native-document-picker: c9cbeb5445188a805ab19fa4061115d38fe1ea63
   react-native-safe-area-context: b6e0e284002381d2ff29fa4fff42b4d8282e3c94
   react-native-shake: 168b18d4656c9c90a787ecf41822f88be7b532ec
   react-native-webview: dfd7202ff115c44d3ea401c2f36122fb3ac79f07

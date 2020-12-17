@@ -124,6 +124,12 @@ jobs:
           mage checkXcodebuild
           mage iOSAppDeps
 
+      - name: Debug
+        run: |
+          ls -la js/ios/Frameworks
+          ls -la js/ios/Frameworks/Bertybridge.framework
+          ls -la js/ios/frameworks/bertybridge.framework
+
       - name: Build the Archive
         working-directory: js
         run: |

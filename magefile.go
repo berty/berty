@@ -650,8 +650,7 @@ func IOSFramework() error {
 			return err
 		}
 
-		return nil
-
+		return osTouch(iOSFrameworkDef.output)
 	})
 }
 
