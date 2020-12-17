@@ -2,19 +2,19 @@ import React, { useState } from 'react'
 import { View, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useNavigation as useNativeNavigation } from '@react-navigation/native'
+import { CommonActions, useNavigation as useNativeNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
-import { useNavigation } from '@berty-tech/navigation'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { CreateGroupHeader } from './CreateGroupAddMembers'
 import { Header } from './CreateGroupAddMembers'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { playSound } from '../sounds'
 import { ContactAvatar } from '../avatars'
+import { dispatch } from '@berty-tech/navigation/rootRef'
+import { Routes } from '@berty-tech/navigation'
 
 const useStylesCreateGroup = () => {
 	const [{ padding, height, width, absolute, border, column, text, background }] = useStyles()
@@ -152,6 +152,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 							{ fontFamily: 'Open Sans', color: '#AFB1C0' },
 						]}
 						placeholder='Group name'
+						placeholderTextColor='#AFB1C090'
 						onChangeText={onGroupNameChange}
 						autoCorrect={false}
 					/>
@@ -226,8 +227,7 @@ export const CreateGroupFinalize: React.FC<{
 	members: any[]
 	onRemoveMember: (id: string) => void
 }> = ({ members, onRemoveMember }) => {
-	const navigation = useNavigation()
-	const { navigate } = useNativeNavigation()
+	const { goBack } = useNativeNavigation()
 	const [groupName, setGroupName] = useState('New group')
 	const { call, error, done } = (messengerMethodsHooks as any).useConversationCreate()
 	const createGroup = React.useCallback(
@@ -243,44 +243,41 @@ export const CreateGroupFinalize: React.FC<{
 			if (error) {
 				console.error('Failed to create group:', error)
 			} else {
-				navigation.navigate.main.home()
+				dispatch(
+					CommonActions.reset({
+						routes: [{ name: Routes.Root.Tabs, params: { screen: Routes.Main.Home } }],
+					}),
+				)
 			}
 		}
-	}, [done, error, navigation.navigate.main])
+	}, [done, error])
 
 	return (
 		<Layout style={[flex.tiny]}>
-			<SwipeNavRecognizer
-				onSwipeUp={() => navigate('Main.Home')}
-				onSwipeDown={() => navigate('Main.Home')}
-				onSwipeLeft={() => navigate('Main.Home')}
-				onSwipeRight={() => navigate('Main.Home')}
-			>
-				<SafeAreaView style={[background.blue]}>
-					<View onLayout={(e) => setLayout(e.nativeEvent.layout.height)}>
-						<CreateGroupHeader />
-						<MemberList members={members} onRemoveMember={onRemoveMember} />
-						<Header
-							title='Add members'
-							onPress={navigation.goBack}
-							style={[padding.bottom.small]}
-							first
-						/>
-					</View>
-					<View style={[{ top: -5 }]}>
-						<Header title='Group info'>
-							<GroupInfo onGroupNameChange={setGroupName} layout={layout} />
-						</Header>
-					</View>
-				</SafeAreaView>
-				<FooterCreateGroup
-					title='CREATE A GROUP'
-					action={() => {
-						createGroup()
-						playSound('groupCreated')
-					}}
-				/>
-			</SwipeNavRecognizer>
+			<SafeAreaView style={[background.blue]}>
+				<View onLayout={(e) => setLayout(e.nativeEvent.layout.height)}>
+					<CreateGroupHeader />
+					<MemberList members={members} onRemoveMember={onRemoveMember} />
+					<Header
+						title='Add members'
+						onPress={() => goBack()}
+						style={[padding.bottom.small]}
+						first
+					/>
+				</View>
+				<View style={[{ top: -5 }]}>
+					<Header title='Group info'>
+						<GroupInfo onGroupNameChange={setGroupName} layout={layout} />
+					</Header>
+				</View>
+			</SafeAreaView>
+			<FooterCreateGroup
+				title='CREATE A GROUP'
+				action={() => {
+					createGroup()
+					playSound('groupCreated')
+				}}
+			/>
 		</Layout>
 	)
 }
