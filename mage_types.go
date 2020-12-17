@@ -394,6 +394,8 @@ func (t *targetDef) runTarget(implem func(*implemHelper) error) error {
 				fmt.Printf("WARNING: failed to save profiling data %s: %s\n", t.name, err.Error())
 			}
 		}
+
+		return oerr
 	}
 
 	add := ""
