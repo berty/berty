@@ -33,7 +33,7 @@ const requiredJavaVer = "18"
 var globalVersionDef = &targetDef{
 	name:   "GlobalVersion",
 	output: ".build-artifacts/global-version",
-	mdeps:  []Rule{goMods},
+	mdeps:  []Rule{goMods, gitTool},
 	env:    []string{"VERSION"},
 	phony:  true, // because it depends on git data
 }
@@ -81,6 +81,7 @@ var frameworkRefDef = &targetDef{
 	output: ".build-artifacts/js/framework-ref",
 	mdeps:  []Rule{gitTool, gitRevParse},
 	env:    []string{"VCS_REF"},
+	phony:  true,
 }
 
 func FrameworkRef() error {
