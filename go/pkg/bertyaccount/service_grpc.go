@@ -8,6 +8,7 @@ import (
 
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
@@ -39,19 +40,16 @@ func (s *service) ClientInvokeUnary(ctx context.Context, req *ClientInvokeUnary_
 	}
 
 	// create fake proto message
+	trailer := metadata.MD{}
 	in := grpcutil.NewLazyMessage().FromBytes(req.Payload)
-	out, err := serviceClient.InvokeUnary(ctx, desc, in)
-	if err != nil {
-		res.Error = getServiceError(err)
-		return res, nil
-	}
-
+	out, err := serviceClient.InvokeUnary(uctx, desc, in, grpc.Trailer(&trailer))
+	res.Error = getServiceError(err)
 	res.Payload = out.Bytes()
-	res.Trailer = getMetadataFromContext(uctx)
+	res.Trailer = convertMetadata(trailer)
 	return res, nil
 }
 
-// // CreateStream create a stream
+// CreateStream create a stream
 func (s *service) CreateClientStream(ctx context.Context, req *ClientCreateStream_Request) (*ClientCreateStream_Reply, error) {
 	serviceClient, err := s.getServiceClient()
 	if err != nil {
@@ -98,10 +96,11 @@ func (s *service) ClientStreamSend(ctx context.Context, req *ClientStreamSend_Re
 	res := &ClientStreamSend_Reply{StreamId: id}
 
 	in := grpcutil.NewLazyMessage().FromBytes(req.Payload)
-	if err := cstream.SendMsg(in); err != nil {
-		res.Error = getServiceError(err)
-		res.Trailer = convertMetadata(cstream.Trailer())
+	err = cstream.SendMsg(in)
+	res.Error = getServiceError(err)
 
+	if err != nil {
+		res.Trailer = convertMetadata(cstream.Trailer())
 		s.muStreams.Lock()
 		delete(s.streams, id)
 		s.muStreams.Unlock()
@@ -201,15 +200,6 @@ func newOutgoingContext(ctx context.Context, md []*Metadata) context.Context {
 	return metadata.NewOutgoingContext(ctx, outmd)
 }
 
-func getMetadataFromContext(ctx context.Context) []*Metadata {
-	// get trailer
-	if outmd, ok := metadata.FromIncomingContext(ctx); ok {
-		return convertMetadata(outmd)
-	}
-
-	return nil
-}
-
 func convertMetadata(in metadata.MD) []*Metadata {
 	out := make([]*Metadata, in.Len())
 	i := 0
@@ -226,25 +216,24 @@ func convertMetadata(in metadata.MD) []*Metadata {
 
 func getServiceError(err error) *Error {
 	if err == nil {
-		return nil
+		return &Error{}
 	}
 
-	var errCode errcode.ErrCode
-	var grpcErrCode GRPCErrCode
-
+	grpcErrCode := GRPCErrCode_OK
 	if s := status.Convert(err); s.Code() != codes.OK {
 		grpcErrCode = GRPCErrCode(s.Code())
 	}
 
-	if code := errcode.Code(err); code > 0 {
-		errCode = code
-	} else {
-		errCode = errcode.Undefined
+	errCode := errcode.Undefined
+	errCodes := errcode.Codes(err)
+	if len(errCodes) > 0 {
+		errCode = errCodes[0]
 	}
 
 	return &Error{
 		GrpcErrorCode: grpcErrCode,
 		ErrorCode:     errCode,
+		ErrorDetails:  &errcode.ErrDetails{Codes: errCodes},
 		Message:       err.Error(),
 	}
 }
@@ -253,13 +242,15 @@ func (s *service) clientStreamRecv(id string, cstream *grpcutil.LazyStream) *Cli
 	res := &ClientStreamRecv_Reply{StreamId: id}
 
 	out := grpcutil.NewLazyMessage()
-	if err := cstream.RecvMsg(out); err != nil {
-		s.muStreams.Lock()
+	err := cstream.RecvMsg(out)
+	res.Error = getServiceError(err)
 
+	if err != nil {
 		res.Error = getServiceError(err)
 		res.Trailer = convertMetadata(cstream.Trailer())
-		delete(s.streams, id)
 
+		s.muStreams.Lock()
+		delete(s.streams, id)
 		s.muStreams.Unlock()
 		return res
 	}

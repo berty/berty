@@ -213,9 +213,14 @@ message Metadata {
 }
 
 message Error {
+  // grpc error code
   GRPCErrCode grpc_error_code = 1;
+  // toplevel error
   errcode.ErrCode error_code = 2;
+  // toplevel error message
   string message = 3;
+  // detailed errors
+  errcode.ErrDetails error_details = 4;
 }
 
 enum GRPCErrCode {
