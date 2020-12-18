@@ -355,11 +355,6 @@ export const Navigation: React.FC = () => {
 				options={ModalScreenOptions}
 			/>
 			<NavigationStack.Screen
-				name={Routes.Modals.AddBetabot}
-				component={Components.Modals.AddBetabot}
-				options={ModalScreenOptions}
-			/>
-			<NavigationStack.Screen
 				name={Routes.Modals.ImageView}
 				component={Components.Modals.ImageView}
 				options={ModalScreenOptions}

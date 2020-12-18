@@ -3,14 +3,7 @@ import Jdenticon from 'react-native-jdenticon'
 import { Image, View, ViewStyle } from 'react-native'
 
 import { useStyles } from '@berty-tech/styles'
-import {
-	useAccount,
-	useContact,
-	useMember,
-	useConversation,
-	Maybe,
-	usePersistentOptions,
-} from '@berty-tech/store/hooks'
+import { useAccount, useContact, useMember, useConversation, Maybe } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
 
 import AttachmentImage from './AttachmentImage'
@@ -70,9 +63,17 @@ const GenericAvatar: React.FC<{
 	)
 }
 
-const BetabotAvatar: React.FC<{ size: number; style?: AvatarStyle }> = ({ size, style }) => {
+export const BotAvatar: React.FC<{ size: number; style?: AvatarStyle }> = ({ size, style }) => {
 	const [{ border, flex, background }] = useStyles()
-
+	const padding = Math.round(size / 15)
+	let innerSize = Math.round(size - 2 * padding)
+	if (innerSize % 2) {
+		innerSize--
+	}
+	let iconSize = Math.round(innerSize - innerSize / 8)
+	if (iconSize % 2) {
+		iconSize--
+	}
 	return (
 		<View
 			style={[
@@ -88,7 +89,7 @@ const BetabotAvatar: React.FC<{ size: number; style?: AvatarStyle }> = ({ size, 
 				},
 			]}
 		>
-			<Logo width={size - 15} height={size - 15} style={{ right: -1, top: -1 }} />
+			<Logo width={iconSize} height={iconSize} style={{ right: -2, top: -1 }} />
 		</View>
 	)
 }
@@ -111,15 +112,6 @@ export const ContactAvatar: React.FC<{
 	style?: AvatarStyle
 }> = ({ publicKey, size, style }) => {
 	const contact = useContact(publicKey)
-	const persistOpts = usePersistentOptions()
-
-	if (
-		persistOpts.betabot.convPk &&
-		publicKey?.toString() === persistOpts.betabot.convPk.toString()
-	) {
-		return <BetabotAvatar size={size} style={style} />
-	}
-
 	return (
 		<GenericAvatar
 			cid={contact?.avatarCid}

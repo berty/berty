@@ -3,7 +3,7 @@ import { View, ActivityIndicator as Spinner, Vibration } from 'react-native'
 import { Translation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { useNotificationsInhibitor } from '@berty-tech/store/hooks'
-import { MessengerActions, PersistentOptionsKeys, useMsgrContext } from '@berty-tech/store/context'
+import { MessengerActions, useMsgrContext } from '@berty-tech/store/context'
 import SwiperCard from './SwiperCard'
 import OnboardingWrapper from './OnboardingWrapper'
 
@@ -13,59 +13,7 @@ const SetupFinishedBody = () => {
 	const [isFinished, setIsFinished] = useState(false)
 	const [isAccount, setIsAccount] = useState(false)
 	const client = {}
-	const { setPersistentOption, contacts, persistentOptions, dispatch } = useMsgrContext()
-
-	React.useEffect(() => {
-		const handlePersistentOptions = async () => {
-			await setPersistentOption({
-				type: PersistentOptionsKeys.BetaBot,
-				payload: {
-					added: false,
-					convPk: Object.values(contacts)[0].publicKey,
-				},
-			})
-			await setPersistentOption({
-				type: PersistentOptionsKeys.I18N,
-				payload: {
-					language: 'enUS',
-				},
-			})
-			await setPersistentOption({
-				type: PersistentOptionsKeys.Notifications,
-				payload: {
-					enable: true,
-				},
-			})
-			await setPersistentOption({
-				type: PersistentOptionsKeys.BLE,
-				payload: {
-					enable: true,
-				},
-			})
-			await setPersistentOption({
-				type: PersistentOptionsKeys.MC,
-				payload: {
-					enable: true,
-				},
-			})
-			await setPersistentOption({
-				type: PersistentOptionsKeys.Debug,
-				payload: {
-					enable: false,
-				},
-			})
-			await setPersistentOption({
-				type: PersistentOptionsKeys.Tor,
-				payload: {
-					flag: 'disabled',
-				},
-			})
-		}
-
-		return () => {
-			handlePersistentOptions().catch((e) => console.warn(e))
-		}
-	}, [persistentOptions, contacts, setPersistentOption])
+	const { dispatch } = useMsgrContext()
 
 	return (
 		<Translation>

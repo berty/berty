@@ -8,11 +8,13 @@ type Config struct {
 			Name        string `json:"name"`
 			Description string `json:"description"`
 			Kind        string `json:"kind"`
+			Suggestion  bool   `json:"suggestion"`
 		} `json:"contacts"`
 		Conversations map[string]struct {
 			Link        string `json:"link"`
 			Name        string `json:"name"`
 			Description string `json:"description"`
+			Suggestion  bool   `json:"suggestion"`
 		} `json:"conversations"`
 	} `json:"berty"`
 	P2P struct {

@@ -119,6 +119,7 @@ export const setPersistentOption = async (
 			storageKeyForAccount(selectedAccount),
 			JSON.stringify(updatedPersistOpts),
 		)
+
 		dispatch({
 			type: MessengerActions.SetPersistentOption,
 			payload: updatedPersistOpts,
