@@ -1,5 +1,4 @@
 import React from 'react'
-import { enableScreens } from 'react-native-screens'
 import { IconRegistry } from '@ui-kitten/components'
 import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
@@ -18,8 +17,6 @@ import { StickMusicPlayer } from '@berty-tech/components/shared-components/Stick
 import { MusicPlayerProvider } from '@berty-tech/music-player'
 import { FeatherIconsPack } from './feather-icons'
 import { CustomIconsPack } from './custom-icons'
-
-enableScreens()
 
 export const App: React.FC = () => {
 	React.useEffect(() => {

@@ -6,8 +6,9 @@ import {
 	Image,
 	ActivityIndicator,
 	Pressable,
-	KeyboardAvoidingView,
 } from 'react-native'
+
+import { KeyboardAvoidingView } from '@berty-tech/components/shared-components/KeyboardAvoidingView'
 import { Icon, Input, Text } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'

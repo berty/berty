@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import {
 	ActivityIndicator,
-	KeyboardAvoidingView,
 	SectionList,
 	SectionListData,
 	SectionListRenderItem,
@@ -17,6 +16,7 @@ import { Translation, useTranslation } from 'react-i18next'
 import moment from 'moment'
 import { groupBy } from 'lodash'
 
+import { KeyboardAvoidingView } from '@berty-tech/components/shared-components/KeyboardAvoidingView'
 import { useStyles } from '@berty-tech/styles'
 import { Routes, ScreenProps, useNavigation } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'

@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import {
 	TouchableOpacity,
 	View,
-	KeyboardAvoidingView,
 	StatusBar,
 	ActivityIndicator,
 	SectionListRenderItem,
@@ -16,6 +15,7 @@ import { groupBy } from 'lodash'
 import moment from 'moment'
 import { useTranslation } from 'react-i18next'
 
+import { KeyboardAvoidingView } from '@berty-tech/components/shared-components/KeyboardAvoidingView'
 import { useStyles } from '@berty-tech/styles'
 import { Routes, ScreenProps, useNavigation } from '@berty-tech/navigation'
 import {
