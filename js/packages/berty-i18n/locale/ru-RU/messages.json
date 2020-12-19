@@ -8,7 +8,7 @@
   },
   "onboarding": {
     "getstarted": {
-      "desc": "Защищённый peer-to-peer мессенджер, работающий как с наличием, так и без доступа в интернет, сотовой связи или доверия в сети",
+      "desc": "Защищённый децентрализованный мессенджер, работающий как с наличием, так и без доступа в сеть Интернет, сотовой связи или доверия в сети",
       "open-registered-account": "Открыть зарегистрированный аккаунт",
       "import-button": "Импортировать данные из существующего аккаунта",
       "account-selector-create-button": "Создать новый аккаунт",
@@ -28,7 +28,7 @@
         "title": "Высочайший уровень приватности",
         "desc": "Для продвинутых пользователей - меньше метаданных",
         "disable-push-notif": "Push-уведомления отключены",
-        "disable-local-peer-discovery": "Обнаружение локальных пиров отключено",
+        "disable-local-peer-discovery": "Обнаружение узлов рядом отключено",
         "disable-contact-request": "Запросы в контакты отключены"
       }
     },
@@ -43,8 +43,8 @@
       "header": "Аутентифицироваться в сервисы",
       "title": "Сервисы",
       "recommended": "Рекомендовано",
-      "desc": "Это будет автоматически копировать ваши беседы на сервер",
-      "button": "Использовать сервис управляемый Berty",
+      "desc": "Это будет автоматически сохранять ваши беседы на сервере",
+      "button": "Использовать сервисы управляемые Berty",
       "skip": "ПРОПУСТИТЬ И СДЕЛАТЬ ПОЗЖЕ"
     },
     "generate-key": {
@@ -60,7 +60,7 @@
       "skip": "ПРОПУСТИТЬ И НАСТРОИТЬ ПОЗЖЕ"
     },
     "bluetooth": {
-      "header": "Общайтесь без подключения к Интернету (wifi или сотовой связи), подключив ваше устройство непосредственно к пирам рядом",
+      "header": "Общайтесь без доступа к сети Интернет (wifi или мобильного интернета), подключив ваше устройство непосредственно к ближайшим узлам",
       "optional": "Необязательно",
       "title": "Bluetooth",
       "desc": "Чтобы использовать эту функцию, вам нужно разрешить использование Bluetooth на вашем устройстве",
@@ -94,7 +94,7 @@
   },
   "settings": {
     "home": {
-      "header-left-button": "Справка",
+      "header-left-button": "Помощь",
       "header-center-button": "Инструменты для разработки",
       "header-right-button": "Настройки",
       "network-button": "Список сетей",
@@ -102,7 +102,7 @@
     },
     "network-map": {
       "title": "Список сетей",
-      "online-peers": "Пиры онлайн"
+      "online-peers": "Узлы онлайн"
     },
     "mode": {
       "title": "Настройки",
@@ -120,19 +120,19 @@
       "app-mode-button": {
         "title": "Режим приложения",
         "performance-tag": "Производительность",
-        "privacy-tag": "Конфиденциальность",
+        "privacy-tag": "Приватность",
         "description-tag": "Простой в использовании - Все функции",
         "first-bullet-point": "Получать push-уведомления",
         "second-bullet-point": "Получать запросы в контакты",
-        "third-bullet-point": "Обнаружение локальных пиров (BLE & Multicast DNS)"
+        "third-bullet-point": "Обнаружение узлов рядом (BLE & Multicast DNS)"
       },
       "dark-mode-button": "Тёмная тема",
       "receive-contact-requests-button": "Получать запросы в контакты",
       "external-services-button": "Внешние сервисы",
-      "auto-replicate-button": "Автоматическое копирование",
+      "auto-replicate-button": "Автоматическое сохранение",
       "multicast-dns-button": {
         "title": "Multicast DNS",
-        "desc": "Обнаружение локальных пиров"
+        "desc": "Обнаружение узлов рядом"
       },
       "blocked-contacts-button": {
         "title": "Заблокированные контакты",
@@ -172,72 +172,72 @@
         }
       },
       "group-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
+        "title": "Уведомления групп",
+        "display-button": "Показывать уведомления",
+        "preview-button": "Предпросмотр сообщений",
+        "sound-button": "Звук",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
-          "tag": "",
-          "tag_plural": ""
+          "title": "Исключения",
+          "preview-value": "Добавить",
+          "tag": "{{count}} исключение",
+          "tag_plural": "{{count}} исключений"
         }
       }
     },
     "bluetooth": {
       "title": "Bluetooth",
-      "desc": "",
-      "activate-button": ""
+      "desc": "Bluetooth позволяет пользоваться приложением Berty, даже если у вас нет подключения к сети Интернет (wifi или мобильного интернета), соединяя ваше устройство напрямую с ближайшими узлами",
+      "activate-button": "Активировать Bluetooth"
     },
     "mc": {
-      "activate-button": ""
+      "activate-button": "Активировать Multipeer Connectivity"
     },
     "services-auth": {
-      "title": "",
-      "operated-services-button": "",
+      "title": "Внешние сервисы",
+      "operated-services-button": "Использовать сервисы управляемые Berty",
       "register-service-button": {
-        "title": "",
-        "input-placeholder": "",
-        "action": ""
+        "title": "Зарегистрировать другого поставщика услуг",
+        "input-placeholder": "URL-адрес сервиса",
+        "action": "Добавить"
       },
       "registered-services-button": {
-        "title": "",
-        "sample-no-services": "",
-        "sample-unknown-service": ""
+        "title": "Текущие зарегистрированные сервисы",
+        "sample-no-services": "Нет зарегистрированных сервисов",
+        "sample-unknown-service": "Неизвестный сервис"
       }
     },
     "delete-account": {
-      "title": "",
-      "first-desc": "",
-      "desc": "",
-      "cancel-button": "",
-      "delete-button": ""
+      "title": "Удалить аккаунт!",
+      "first-desc": "Вы уверены, что хотите удалить свой аккаунт?",
+      "desc": "Пожалуйста, напишите \"удалить\", чтобы подтвердить",
+      "cancel-button": "ОТМЕНА",
+      "delete-button": "УДАЛИТЬ"
     },
     "help": {
-      "title": "",
+      "title": "Помощь",
       "security-privacy-button": {
-        "title": "",
-        "desc": ""
+        "title": "Безопасность и приватность",
+        "desc": "Держите ваши данные в безопасности и сохраняйте приватность"
       },
-      "updates-button": "",
-      "about-button": "",
-      "account-button": "",
-      "contact-button": "",
-      "message-button": "",
-      "group-button": "",
-      "settings-button": "",
-      "ask-button": "",
-      "report-button": ""
+      "updates-button": "Обновления",
+      "about-button": "О Berty",
+      "account-button": "Аккаунт и Berty ID",
+      "contact-button": "Контакте и запросы",
+      "message-button": "Сообщения",
+      "group-button": "Группы",
+      "settings-button": "Настройки",
+      "ask-button": "Задать вопрос",
+      "report-button": "Сообщить об ошибке"
     },
     "about": {
-      "title": "",
-      "top-left-button": "",
-      "top-right-button": "",
-      "bottom-left-button": "",
-      "bottom-right-button": "",
-      "terms-button": "",
-      "privacy-button": "",
-      "software-button": "",
+      "title": "О Berty",
+      "top-left-button": "Приватный и безопасный",
+      "top-right-button": "Сеть узлов",
+      "bottom-left-button": "Интернет или мобильный связь не обязательны",
+      "bottom-right-button": "Доверие в сети не обязательно",
+      "terms-button": "Условия пользования",
+      "privacy-button": "Политика конфиденциальности",
+      "software-button": "Лицензия программного обеспечения",
       "contact-button": "",
       "website-button": "Веб-сайт"
     },
