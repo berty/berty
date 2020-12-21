@@ -346,139 +346,188 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 							padding.bottom.large,
 						]}
 					>
-						{activeTab === TabItems.Record && recorderState === RecorderState.Recorded && (
-							<View
-								style={[
-									padding.vertical.medium,
-									padding.horizontal.large,
-									border.radius.top.large,
-									{
-										flexDirection: 'row',
-										alignItems: 'center',
-										backgroundColor: '#6B80FF',
-										width: '100%',
-										flex: 1,
-									},
-								]}
-							>
-								<TouchableOpacity
-									style={{
-										flex: 1,
-									}}
-									onPress={() => {
-										if (recorderState === RecorderState.Recorded) {
-											prepareMediaAndSend([
-												{
-													filename: audioFilename,
-													mimeType: 'audio/aac',
-													uri: recorderFilePath,
-												},
-											])
-										}
-									}}
-								>
-									<Icon height={50} width={50} name='checkmark-circle-2' fill='#4F58C0' />
-								</TouchableOpacity>
-
-								<TouchableOpacity
-									onPress={() => {
-										if (player?.isPlaying) {
-											player.pause()
-										} else if (player?.isPaused) {
-											player.playPause()
-										} else {
-											player = new Player('tempVoiceClip.aac')
-											player.play((err) => {
-												if (err) {
-													console.log('player play', err?.message)
-												} else {
-													startTimer()
-												}
-											})
-										}
-									}}
-									style={[
-										border.radius.small,
-										{
-											backgroundColor: '#4F58C0',
-											alignItems: 'center',
-											justifyContent: 'center',
-											height: 40,
-											width: 100,
-										},
-									]}
-								>
-									<Icon
-										name={player?.isPlaying ? 'pause' : 'play'}
-										fill='white'
-										height={30}
-										width={30}
-										pack='custom'
-									/>
-								</TouchableOpacity>
-
-								<View
-									style={{
-										flex: 1,
-										flexDirection: 'row',
-										alignItems: 'center',
-										justifyContent: 'flex-end',
-									}}
-								>
-									<View
+						{activeTab === TabItems.Record && (
+							<>
+								{recorderState === RecorderState.Recording && (
+									<TouchableOpacity
+										onPress={() => stopRecording()}
 										style={[
-											padding.vertical.tiny,
-											padding.horizontal.small,
-											border.radius.small,
+											padding.vertical.medium,
+											padding.horizontal.large,
+											border.radius.top.large,
 											{
-												backgroundColor: '#4F58C0',
+												flexDirection: 'row',
+												alignItems: 'center',
+												justifyContent: 'center',
+												backgroundColor: '#F89A9A',
+												width: '100%',
 											},
 										]}
 									>
-										<Text style={{ color: color.white }}>{duration}</Text>
-									</View>
+										<View
+											style={{
+												flex: 1,
+											}}
+										>
+											<Icon height={50} width={50} name='microphone' pack='custom' fill='#F65B77' />
+										</View>
 
-									<TouchableOpacity
-										onPress={() => {
-											setRecorderState(RecorderState.Default)
-											recorder?.destroy()
-											setRecordStartTime(null)
-											setRecordStopTime(null)
-											player?.stop()
-										}}
-										style={[padding.tiny, margin.left.small]}
-									>
-										<Icon name='close-circle-outline' fill='#A1AEFF' height={30} width={30} />
+										<Text>{t('chat.files.recording')}</Text>
+
+										<View
+											style={[
+												{
+													flex: 1,
+													alignItems: 'flex-end',
+												},
+											]}
+										>
+											<View
+												style={[
+													padding.vertical.tiny,
+													padding.horizontal.small,
+													border.radius.small,
+													{ backgroundColor: '#F6617A' },
+												]}
+											>
+												<Text style={{ color: color.white }}>{duration}</Text>
+											</View>
+										</View>
 									</TouchableOpacity>
-								</View>
-
-								<View
-									style={{
-										position: 'absolute',
-										bottom: 0,
-										left: 0,
-										right: 0,
-										backgroundColor: '#8999FF',
-										height: 5,
-									}}
-								>
-									<Animated.View
+								)}
+								{recorderState === RecorderState.Recorded && (
+									<View
 										style={[
+											padding.vertical.medium,
+											padding.horizontal.large,
+											border.radius.top.large,
 											{
+												flexDirection: 'row',
+												alignItems: 'center',
+												backgroundColor: '#6B80FF',
+												width: '100%',
+												flex: 1,
+											},
+										]}
+									>
+										<TouchableOpacity
+											style={{
+												flex: 1,
+											}}
+											onPress={() => {
+												prepareMediaAndSend([
+													{
+														filename: audioFilename,
+														mimeType: 'audio/aac',
+														uri: recorderFilePath,
+													},
+												])
+											}}
+										>
+											<Icon height={50} width={50} name='checkmark-circle-2' fill='#4F58C0' />
+										</TouchableOpacity>
+
+										<TouchableOpacity
+											onPress={() => {
+												if (player?.isPlaying) {
+													player.pause()
+												} else if (player?.isPaused) {
+													player.playPause()
+												} else {
+													player = new Player('tempVoiceClip.aac')
+													player.play((err) => {
+														if (err) {
+															console.log('player play', err?.message)
+														} else {
+															startTimer()
+														}
+													})
+												}
+											}}
+											style={[
+												border.radius.small,
+												{
+													backgroundColor: '#4F58C0',
+													alignItems: 'center',
+													justifyContent: 'center',
+													height: 40,
+													width: 100,
+												},
+											]}
+										>
+											<Icon
+												name={player?.isPlaying ? 'pause' : 'play'}
+												fill='white'
+												height={30}
+												width={30}
+												pack='custom'
+											/>
+										</TouchableOpacity>
+
+										<View
+											style={{
+												flex: 1,
+												flexDirection: 'row',
+												alignItems: 'center',
+												justifyContent: 'flex-end',
+											}}
+										>
+											<View
+												style={[
+													padding.vertical.tiny,
+													padding.horizontal.small,
+													border.radius.small,
+													{
+														backgroundColor: '#4F58C0',
+													},
+												]}
+											>
+												<Text style={{ color: color.white }}>{duration}</Text>
+											</View>
+
+											<TouchableOpacity
+												onPress={() => {
+													setRecorderState(RecorderState.Default)
+													recorder?.destroy()
+													setRecordStartTime(null)
+													setRecordStopTime(null)
+													player?.stop()
+												}}
+												style={[padding.tiny, margin.left.small]}
+											>
+												<Icon name='close-circle-outline' fill='#A1AEFF' height={30} width={30} />
+											</TouchableOpacity>
+										</View>
+
+										<View
+											style={{
 												position: 'absolute',
 												bottom: 0,
 												left: 0,
 												right: 0,
-												backgroundColor: '#3F49EA',
+												backgroundColor: '#8999FF',
 												height: 5,
-												width: animatedWidth,
-											},
-											Number(animatedWidth).toFixed(2) !== windowWidth.toFixed(2) &&
-												border.radius.right.tiny,
-										]}
-									/>
-								</View>
-							</View>
+											}}
+										>
+											<Animated.View
+												style={[
+													{
+														position: 'absolute',
+														bottom: 0,
+														left: 0,
+														right: 0,
+														backgroundColor: '#3F49EA',
+														height: 5,
+														width: animatedWidth,
+													},
+													Number(animatedWidth).toFixed(2) !== windowWidth.toFixed(2) &&
+														border.radius.right.tiny,
+												]}
+											/>
+										</View>
+									</View>
+								)}
+							</>
 						)}
 
 						<View

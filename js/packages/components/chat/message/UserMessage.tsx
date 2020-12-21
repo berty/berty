@@ -177,24 +177,33 @@ export const UserMessage: React.FC<{
 			)}
 
 			<View style={[column.top, _styles.messageItem]}>
-				{(inte.medias?.length || 0) > 0 &&
-					(() => {
-						if (inte?.medias?.[0]?.mimeType?.startsWith('image')) {
-							return <PictureMessage medias={inte.medias} />
-						} else if (inte?.medias?.[0]?.mimeType?.startsWith('audio')) {
-							return <AudioMessage medias={inte.medias} />
-						} else {
-							return <FileMessage medias={inte.medias} />
-						}
-					})()}
 				{!inte.isMe && isGroup && !isFollowupMessage && (
 					<View style={[isFollowedMessage && margin.left.scale(40)]}>
-						<Text style={[text.bold.medium, _styles.personNameInGroup, { color: msgSenderColor }]}>
+						<Text
+							style={[
+								text.bold.medium,
+								margin.bottom.tiny,
+								_styles.personNameInGroup,
+								{ color: msgSenderColor },
+							]}
+						>
 							{name}
 						</Text>
 					</View>
 				)}
-				{inte.payload.body ? (
+				<View style={[isFollowedMessage && margin.left.scale(40)]}>
+					{(inte.medias?.length || 0) > 0 &&
+						(() => {
+							if (inte?.medias?.[0]?.mimeType?.startsWith('image')) {
+								return <PictureMessage medias={inte.medias} />
+							} else if (inte?.medias?.[0]?.mimeType?.startsWith('audio')) {
+								return <AudioMessage medias={inte.medias} />
+							} else {
+								return <FileMessage medias={inte.medias} />
+							}
+						})()}
+				</View>
+				{!!inte.payload.body && (
 					<HyperlinkUserMessage
 						inte={inte}
 						msgBorderColor={msgBorderColor}
@@ -202,10 +211,6 @@ export const UserMessage: React.FC<{
 						msgBackgroundColor={msgBackgroundColor}
 						msgTextColor={msgTextColor}
 					/>
-				) : (
-					(inte.medias?.length || 0) === 0 && (
-						<Text style={{ textAlign: 'right', color: 'grey' }}>-</Text>
-					)
 				)}
 				{!isWithinCollapseDuration && (
 					<TimestampStatusUserMessage

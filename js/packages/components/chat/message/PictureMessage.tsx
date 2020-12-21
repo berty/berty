@@ -34,7 +34,7 @@ export const PictureMessage: React.FC<{ medias: any }> = ({ medias }) => {
 				{
 					alignItems: 'center',
 					justifyContent: 'center',
-					marginBottom: images.length * 5,
+					marginVertical: (images.length + 1) * 2.5,
 				},
 			]}
 		>

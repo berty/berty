@@ -201,7 +201,7 @@ export const Navigation: React.FC = () => {
 			case MessengerAppState.Ready:
 				dispatch(
 					CommonActions.reset({
-						routes: [{ name: Routes.Root.Tabs, params: { screen: Routes.Main.Home } }],
+						routes: [{ name: Routes.Main.Home }],
 					}),
 				)
 				return
@@ -212,7 +212,7 @@ export const Navigation: React.FC = () => {
 		<NavigationStack.Navigator
 			initialRouteName={
 				context.appState === MessengerAppState.Ready
-					? Routes.Root.Tabs
+					? Routes.Main.Home
 					: Routes.Onboarding.AccountSelector
 			}
 			screenOptions={CustomTransitionOptions}
@@ -254,7 +254,7 @@ export const Navigation: React.FC = () => {
 				component={CreateGroupNavigation}
 				options={ModalScreenOptions}
 			/>
-			<NavigationStack.Screen name={Routes.Root.Tabs} component={Components.Main.Home} />
+			<NavigationStack.Screen name={Routes.Main.Home} component={Components.Main.Home} />
 			<NavigationStack.Screen
 				name={Routes.Settings.MyBertyId}
 				component={Components.Settings.MyBertyId}

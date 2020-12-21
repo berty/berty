@@ -137,7 +137,16 @@ const AddMembersItem: React.FC<AddMembersItemProps> = ({
 	const _styles = useStylesCreateGroup()
 	return (
 		<View>
-			<View style={[row.fill, padding.right.small]}>
+			<TouchableOpacity
+				onPress={() => {
+					if (added) {
+						onRemoveMember(contact.publicKey)
+					} else {
+						onSetMember(contact)
+					}
+				}}
+				style={[row.fill, padding.right.small]}
+			>
 				<View style={[row.left, row.item.justify, padding.vertical.small, { flexShrink: 1 }]}>
 					<ContactAvatar size={50} publicKey={contact.publicKey} />
 					<Text numberOfLines={1} style={[margin.left.small, row.item.justify, { flexShrink: 1 }]}>
@@ -156,7 +165,7 @@ const AddMembersItem: React.FC<AddMembersItemProps> = ({
 						}}
 					/>
 				</View>
-			</View>
+			</TouchableOpacity>
 			{separateBar && <View style={[_styles.separateBar]} />}
 		</View>
 	)
@@ -193,6 +202,7 @@ const AddMembers: React.FC<AddMembersProps> = ({
 	onRemoveMember,
 	members,
 	layout,
+	paddingBottom,
 }) => {
 	const [
 		{ padding, background, row, height, margin, border },
@@ -229,11 +239,17 @@ const AddMembers: React.FC<AddMembersProps> = ({
 				</View>
 				<View style={[height(windowHeight - layout * scaleHeight - 70 * scaleHeight)]}>
 					<ScrollView
-						contentContainerStyle={[padding.top.medium, padding.bottom.scale(layout * scaleHeight)]}
+						contentContainerStyle={[
+							padding.top.medium,
+							{
+								paddingBottom,
+							},
+						]}
 						showsVerticalScrollIndicator={false}
 					>
 						{contacts.map((contact, index) => (
 							<AddMembersItem
+								key={contact.publicKey}
 								onSetMember={onSetMember}
 								onRemoveMember={onRemoveMember}
 								added={!!members.find((member) => member.publicKey === contact.publicKey)}
@@ -289,7 +305,7 @@ export const MemberList: React.FC<{
 	const [{ height, padding }] = useStyles()
 
 	return (
-		<View style={[members.length && height(135)]}>
+		<View style={[height(135)]}>
 			<ScrollView
 				horizontal={true}
 				showsHorizontalScrollIndicator={false}
@@ -384,7 +400,7 @@ export const CreateGroupAddMembers: React.FC<{
 						members={members}
 						onSetMember={onSetMember}
 						onRemoveMember={onRemoveMember}
-						paddingBottom={120}
+						paddingBottom={180}
 						layout={layout}
 					/>
 				</SafeAreaView>
