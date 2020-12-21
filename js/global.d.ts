@@ -15,3 +15,5 @@ declare module 'google-palette' {
 }
 
 declare module '*.png'
+
+declare module '*.gif'
