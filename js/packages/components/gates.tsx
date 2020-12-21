@@ -2,8 +2,6 @@ import React from 'react'
 import { ActivityIndicator, Button, Image, Text, TextInput, View } from 'react-native'
 
 import { useDeleteAccount, useMsgrContext, useRestart } from '@berty-tech/store/hooks'
-
-import LoaderDots from './shared-components/loader_dots.gif'
 import {
 	isClosing,
 	isDeletingState,
@@ -11,6 +9,8 @@ import {
 	MessengerActions,
 	MessengerAppState,
 } from '@berty-tech/store/context'
+
+import LoaderDots from './shared-components/LoaderDots'
 
 const expandSelfAndCenterContent: any = {
 	alignItems: 'center',
@@ -66,11 +66,7 @@ export const ListGate: React.FC = ({ children }) => {
 		return <>{children}</>
 	}
 
-	return (
-		<View style={expandSelfAndCenterContent}>
-			<Image source={LoaderDots} style={{ width: 170, height: 80 }} />
-		</View>
-	)
+	return <LoaderDots />
 }
 
 const DeleteProgressScreen = () => {
