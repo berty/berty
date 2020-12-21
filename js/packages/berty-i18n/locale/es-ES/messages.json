@@ -1,35 +1,35 @@
 {
   "time": {
-    "fuzzy-time": "",
-    "fuzzy-month-day": "",
-    "fuzzy-year-month": "",
+    "fuzzy-time": "hh:mm",
+    "fuzzy-month-day": "dd/MM",
+    "fuzzy-year-month": "MM/YY",
     "datetime": "",
     "started-ago": ""
   },
   "onboarding": {
     "getstarted": {
-      "desc": "",
-      "open-registered-account": "",
-      "import-button": "",
-      "account-selector-create-button": "",
-      "more-options": "",
-      "button": ""
+      "desc": "La aplicación de mensajería segura entre pares que funciona con o sin acceso a Internet, datos celulares o confianza en la red",
+      "open-registered-account": "Abrir una cuenta registrada",
+      "import-button": "Importar datos de una cuenta existente",
+      "account-selector-create-button": "Crear una nueva cuenta",
+      "more-options": "Más opciones",
+      "button": "EMPEZAR"
     },
     "select-mode": {
       "performance": {
         "title": "Rendimiento",
         "desc": "Fácil de usar - Todas las funciones",
-        "push-notif": "",
+        "push-notif": "Recibir notificaciones push",
         "offline-message": "Mensajería sin conexión",
-        "add-contact": "",
-        "fast-message": ""
+        "add-contact": "Añadir contactos de forma fácil",
+        "fast-message": "Envío de mensajes más rápido"
       },
       "high-level": {
         "title": "Mayor nivel de privacidad",
-        "desc": "",
-        "disable-push-notif": "",
-        "disable-local-peer-discovery": "",
-        "disable-contact-request": ""
+        "desc": "Para usuarios avanzados - Menos metadatos",
+        "disable-push-notif": "Notificaciones push desactivadas",
+        "disable-local-peer-discovery": "Descubrimiento local de pares desactivado",
+        "disable-contact-request": "Solicitudes de contacto desactivadas"
       }
     },
     "create-account": {
