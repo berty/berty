@@ -111,7 +111,7 @@ jobs:
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "dummypass" dummy.keychain
 
       - name: Build .env
-        run: cat tool/build/shakebugs-infos/env >> js/.env
+        run: cat tool/build/shakebugs-infos/env.prod >> js/.env
 
       - name: Build the Archive
         working-directory: js

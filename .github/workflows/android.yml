@@ -71,7 +71,7 @@ jobs:
           java-version: 1.8
 
       - name: Build .env
-        run: cat tool/build/shakebugs-infos/env >> js/.env
+        run: cat tool/build/shakebugs-infos/env.prod >> js/.env
 
       - name: Build the APK
         working-directory: js
