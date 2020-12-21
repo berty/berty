@@ -386,7 +386,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 		}
 	}
 
-	let messageType: 'picture' | 'audio' = ''
+	let messageType: 'picture' | 'audio' | '' = ''
 
 	const userDisplayName =
 		type === beapi.messenger.Conversation.Type.MultiMemberType
@@ -395,15 +395,15 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 
 	if (lastInte?.medias?.length) {
 		if (lastInte.medias[0].mimeType?.startsWith('image')) {
-			messageType = 'audio'
+			messageType = 'picture'
 			description = `${lastInte.isMe ? 'You' : userDisplayName} sent ${
 				lastInte.isMe ? userDisplayName : 'you'
-			} ${lastInte.medias.length > 1 ? lastInte.medias.length : 'a'} pic`
+			} ${lastInte.medias.length > 1 ? `${lastInte.medias.length} pics` : 'a pic'}`
 		} else if (lastInte.medias[0].mimeType?.startsWith('audio')) {
 			messageType = 'audio'
 			description = `${lastInte.isMe ? 'You' : userDisplayName} sent ${
 				lastInte.isMe ? userDisplayName : 'you'
-			} ${lastInte.medias.length > 1 ? lastInte.medias.length : 'an'} audio`
+			} ${lastInte.medias.length > 1 ? `${lastInte.medias.length} audio files` : 'an audio file'}`
 		}
 	}
 
@@ -1220,8 +1220,6 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 														top: 0,
 														bottom: 0,
 														height: windowHeight,
-														opacity: 0.94,
-														backgroundColor: 'transparent',
 													}}
 												/>
 												<HomeModal closeModal={() => setModalVisibility(false)} />

@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import { View, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { CommonActions, useNavigation as useNativeNavigation } from '@react-navigation/native'
+import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 
 import { useStyles } from '@berty-tech/styles'
+import { Routes } from '@berty-tech/navigation'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
@@ -13,8 +14,6 @@ import { Header } from './CreateGroupAddMembers'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { playSound } from '../sounds'
 import { ContactAvatar } from '../avatars'
-import { dispatch } from '@berty-tech/navigation/rootRef'
-import { Routes } from '@berty-tech/navigation'
 
 const useStylesCreateGroup = () => {
 	const [{ padding, height, width, absolute, border, column, text, background }] = useStyles()
@@ -227,9 +226,10 @@ export const CreateGroupFinalize: React.FC<{
 	members: any[]
 	onRemoveMember: (id: string) => void
 }> = ({ members, onRemoveMember }) => {
-	const { goBack } = useNativeNavigation()
+	const { goBack, reset } = useNativeNavigation()
 	const [groupName, setGroupName] = useState('New group')
-	const { call, error, done } = (messengerMethodsHooks as any).useConversationCreate()
+	const { call, error, done, reply } = (messengerMethodsHooks as any).useConversationCreate()
+
 	const createGroup = React.useCallback(
 		() => call({ displayName: groupName, contactsToInvite: members.map((m) => m.publicKey) }),
 		[groupName, members, call],
@@ -242,16 +242,24 @@ export const CreateGroupFinalize: React.FC<{
 		if (done) {
 			if (error) {
 				console.error('Failed to create group:', error)
-			} else {
-				dispatch(
-					CommonActions.reset({
-						routes: [{ name: Routes.Root.Tabs, params: { screen: Routes.Main.Home } }],
-					}),
-				)
+			} else if (reply?.publicKey) {
+				reset({
+					index: 0,
+					routes: [
+						{
+							name: Routes.Main.Home,
+						},
+						{
+							name: Routes.Chat.Group,
+							params: {
+								convId: reply.publicKey,
+							},
+						},
+					],
+				})
 			}
 		}
-	}, [done, error])
-
+	}, [done, error, reset, reply])
 	return (
 		<Layout style={[flex.tiny]}>
 			<SafeAreaView style={[background.blue]}>

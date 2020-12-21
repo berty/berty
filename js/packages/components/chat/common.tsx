@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react'
-import { TouchableOpacity, SafeAreaView, View, TextInput } from 'react-native'
+import { TouchableOpacity, SafeAreaView, View, TextInput, NativeModules } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
@@ -11,6 +11,11 @@ import { timeFormat } from '../helpers'
 import { playSound } from '../sounds'
 import BlurView from '../shared-components/BlurView'
 
+const {
+	PlatformConstants: { interfaceIdiom: deviceType },
+} = NativeModules
+
+const isTablet = deviceType === 'pad'
 // import { SafeAreaView } from 'react-native-safe-area-context'
 //
 // ChatFooter => Textinput for type message
@@ -156,6 +161,8 @@ export const ChatFooter: React.FC<{
 							]}
 							placeholder={placeholder}
 							placeholderTextColor={_isFocused ? color.blue : '#AFB1C0'}
+							returnKeyType={isTablet ? 'send' : 'default'}
+							onSubmitEditing={() => isTablet && handlePressSend()}
 						/>
 						<TouchableOpacity
 							style={[flex.tiny, { justifyContent: 'center', alignItems: 'center' }]}

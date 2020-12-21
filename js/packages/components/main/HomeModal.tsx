@@ -10,7 +10,6 @@ import {
 import { Icon } from '@ui-kitten/components'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { Translation } from 'react-i18next'
-import LinearGradient from 'react-native-linear-gradient'
 import {
 	PanGestureHandler,
 	State,
@@ -163,27 +162,6 @@ export const HomeModal: React.FC<{
 		<Translation>
 			{(t: any): React.ReactNode => (
 				<View style={[StyleSheet.absoluteFill, { zIndex: 1, elevation: 4 }]}>
-					<LinearGradient
-						style={[
-							absolute.bottom,
-							{
-								alignItems: 'center',
-								justifyContent: 'center',
-								height: '100%',
-								width: '100%',
-								opacity: 0.1,
-							},
-						]}
-						colors={['#ACACFF', '#06068A']}
-						start={{
-							x: 0,
-							y: 0.3,
-						}}
-						end={{
-							x: 0,
-							y: 1,
-						}}
-					/>
 					<View
 						style={[
 							absolute.bottom,
@@ -207,9 +185,18 @@ export const HomeModal: React.FC<{
 						<Animated.View
 							style={[
 								absolute.bottom,
+
 								{
 									width: '100%',
 									bottom: animateSwipe,
+									shadowColor: '#000',
+									shadowOffset: {
+										width: 0,
+										height: 5,
+									},
+									shadowOpacity: 0.2,
+									shadowRadius: 20,
+									elevation: 5,
 								},
 							]}
 						>

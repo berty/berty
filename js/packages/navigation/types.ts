@@ -59,9 +59,6 @@ export namespace ScreenProps {
 }
 
 export namespace Routes {
-	export enum Root {
-		Tabs = 'Tabs',
-	}
 	export enum Onboarding {
 		AccountSelector = 'Onboarding.AccountSelector',
 		GetStarted = 'Onboarding.GetStarted',
