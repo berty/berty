@@ -221,7 +221,8 @@ const AddMembers: React.FC<AddMembersProps> = ({
 					/>
 					<TextInput
 						style={[margin.left.small, row.item.justify, { color: '#AFB1C0' }]}
-						placeholder={'Search'}
+						placeholder='Search'
+						placeholderTextColor='#AFB1C090'
 						onChangeText={setSearchText}
 						autoCorrect={false}
 					/>
