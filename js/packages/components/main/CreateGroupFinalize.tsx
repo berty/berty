@@ -226,7 +226,7 @@ export const CreateGroupFinalize: React.FC<{
 	members: any[]
 	onRemoveMember: (id: string) => void
 }> = ({ members, onRemoveMember }) => {
-	const { navigate, goBack } = useNativeNavigation()
+	const { goBack, reset } = useNativeNavigation()
 	const [groupName, setGroupName] = useState('New group')
 	const { call, error, done, reply } = (messengerMethodsHooks as any).useConversationCreate()
 
@@ -243,12 +243,23 @@ export const CreateGroupFinalize: React.FC<{
 			if (error) {
 				console.error('Failed to create group:', error)
 			} else if (reply?.publicKey) {
-				navigate(Routes.Chat.Group, {
-					convId: reply.publicKey,
+				reset({
+					index: 0,
+					routes: [
+						{
+							name: Routes.Main.Home,
+						},
+						{
+							name: Routes.Chat.Group,
+							params: {
+								convId: reply.publicKey,
+							},
+						},
+					],
 				})
 			}
 		}
-	}, [done, error, navigate, reply])
+	}, [done, error, reset, reply])
 	return (
 		<Layout style={[flex.tiny]}>
 			<SafeAreaView style={[background.blue]}>

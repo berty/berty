@@ -49,7 +49,7 @@ const HeaderMultiMember: React.FC<{
 	stickyDate?: number
 	showStickyDate?: boolean
 }> = ({ id, stickyDate, showStickyDate }) => {
-	const { navigate } = useNavigation()
+	const { navigate, goBack } = useNavigation()
 	const [{ row, padding, flex, text, column, margin, color }] = useStyles()
 	const conversation = useConversation(id)
 	const [layoutHeader, onLayoutHeader] = useLayout() // to position date under blur
@@ -73,7 +73,7 @@ const HeaderMultiMember: React.FC<{
 			>
 				<TouchableOpacity
 					style={[flex.tiny, flex.justify.center, flex.align.center]}
-					onPress={() => navigate.main.home()}
+					onPress={goBack}
 				>
 					<Icon name='arrow-back-outline' width={25} height={25} fill={color.black} />
 				</TouchableOpacity>
