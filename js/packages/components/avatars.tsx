@@ -20,9 +20,10 @@ const GenericAvatar: React.FC<{
 	size: number
 	fallbackSeed: Maybe<string>
 	style?: AvatarStyle
-}> = ({ cid, size, fallbackSeed, style }) => {
-	const [{ border, background }] = useStyles()
-	const padding = Math.round(size / 10)
+	isEditable?: boolean
+}> = ({ cid, size, fallbackSeed, style, isEditable = false }) => {
+	const [{ border, background, color }] = useStyles()
+	const padding = Math.round(size / 14)
 	let innerSize = Math.round(size - 2 * padding)
 	let content: JSX.Element
 	if (cid) {
@@ -30,36 +31,72 @@ const GenericAvatar: React.FC<{
 			innerSize--
 		}
 		content = (
-			<AttachmentImage
-				cid={cid}
-				style={{ width: innerSize, height: innerSize, borderRadius: innerSize / 2 }}
-				notPressable
-			/>
+			<>
+				<AttachmentImage
+					cid={cid}
+					style={{ width: innerSize, height: innerSize, borderRadius: innerSize / 2 }}
+					notPressable
+				/>
+				{isEditable ? (
+					<View
+						style={[
+							{
+								width: innerSize,
+								height: innerSize,
+								position: 'absolute',
+								backgroundColor: color.light.blue,
+								opacity: 0.6,
+							},
+							border.radius.scale(innerSize / 2),
+						]}
+					/>
+				) : null}
+			</>
 		)
 	} else {
 		let iconSize = Math.round(innerSize - innerSize / 10) // adjust for jdenticon bug
 		if (iconSize % 2) {
 			iconSize--
 		}
-		content = <Jdenticon value={fallbackSeed} size={iconSize} style={{}} />
+		content = (
+			<>
+				<Jdenticon value={fallbackSeed} size={iconSize} style={{}} />
+				{isEditable ? (
+					<View
+						style={[
+							{
+								width: innerSize,
+								height: innerSize,
+								position: 'absolute',
+								backgroundColor: color.light.blue,
+								opacity: 0.6,
+							},
+							border.radius.scale(innerSize / 2),
+						]}
+					/>
+				) : null}
+			</>
+		)
 	}
 	return (
-		<View
-			style={[
-				background.white,
-				border.shadow.medium,
-				style,
-				{
-					borderRadius: size / 2,
-					width: size,
-					height: size,
-					alignItems: 'center',
-					justifyContent: 'center',
-				},
-			]}
-		>
-			{content}
-		</View>
+		<>
+			<View
+				style={[
+					background.white,
+					border.shadow.medium,
+					style,
+					{
+						borderRadius: size / 2,
+						width: size,
+						height: size,
+						alignItems: 'center',
+						justifyContent: 'center',
+					},
+				]}
+			>
+				{content}
+			</View>
+		</>
 	)
 }
 
@@ -94,7 +131,11 @@ export const BotAvatar: React.FC<{ size: number; style?: AvatarStyle }> = ({ siz
 	)
 }
 
-export const AccountAvatar: React.FC<{ size: number; style?: AvatarStyle }> = ({ size, style }) => {
+export const AccountAvatar: React.FC<{
+	size: number
+	style?: AvatarStyle
+	isEditable?: boolean
+}> = ({ size, style, isEditable }) => {
 	const account = useAccount()
 	return (
 		<GenericAvatar
@@ -102,6 +143,7 @@ export const AccountAvatar: React.FC<{ size: number; style?: AvatarStyle }> = ({
 			size={size}
 			fallbackSeed={account?.publicKey}
 			style={style}
+			isEditable={isEditable}
 		/>
 	)
 }

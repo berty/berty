@@ -688,8 +688,8 @@ const Conversations: React.FC<ConversationsProps> = ({
 					{items.map((i) => (
 						<ConversationsItem key={i.publicKey} {...i} />
 					))}
-					{suggestions.map((i: any) => (
-						<SuggestionsItem {...i} addBot={addBot} />
+					{suggestions.map((i: any, key: any) => (
+						<SuggestionsItem key={key} {...i} addBot={addBot} />
 					))}
 				</View>
 			)}

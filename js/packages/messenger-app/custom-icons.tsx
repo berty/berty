@@ -22,6 +22,7 @@ import Microphone from './custom-icons-svgs/microphone.svg'
 import Play from './custom-icons-svgs/play-player.svg'
 import Pause from './custom-icons-svgs/pause-player.svg'
 import Camera from './custom-icons-svgs/camera.svg'
+import CameraOutline from './custom-icons-svgs/camera-outline.svg'
 import Files from './custom-icons-svgs/files.svg'
 import Gallery from './custom-icons-svgs/gallery.svg'
 import Gif from './custom-icons-svgs/gif.svg'
@@ -50,6 +51,7 @@ const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	gallery: Gallery,
 	files: Files,
 	gif: Gif,
+	'camera-outline': CameraOutline,
 }
 
 const CustomIcon: React.FC<{

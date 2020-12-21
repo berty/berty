@@ -26,12 +26,6 @@ import BlurView from '../shared-components/BlurView'
 //
 
 // Style
-const useStylesEditProfile = () => {
-	const [{ width, height, border }] = useStyles()
-	return {
-		profileCircleAvatar: [width(90), height(90), border.radius.scale(45)],
-	}
-}
 const _stylesEditProfile = StyleSheet.create({
 	profileButton: { width: '80%', height: 50 },
 	profileInfo: { width: '100%', height: 60 },
@@ -89,7 +83,6 @@ const initialState: State = {
 
 const EditMyProfile: React.FC = () => {
 	const ctx = useMsgrContext()
-	const _styles = useStylesEditProfile()
 	const { goBack } = useNavigation()
 
 	const account = useAccount()
@@ -178,17 +171,68 @@ const EditMyProfile: React.FC = () => {
 
 	let image: JSX.Element
 	if (state.pic) {
+		const size = 90
+		const padding = Math.round(size / 14)
+		let innerSize = Math.round(size - 2 * padding)
+		if (innerSize % 2) {
+			innerSize--
+		}
 		image = (
-			<Image
-				source={{ uri: avatarURI }}
-				style={[_styles.profileCircleAvatar, background.light.blue, border.shadow.medium]}
-			/>
+			<>
+				<View
+					style={[
+						{ backgroundColor: color.white, padding: padding, borderRadius: 120 },
+						border.shadow.medium,
+					]}
+				>
+					<View>
+						<Image
+							source={{ uri: avatarURI }}
+							style={[
+								background.light.blue,
+								border.shadow.medium,
+								{ width: innerSize, height: innerSize, borderRadius: innerSize / 2 },
+							]}
+						/>
+						<View
+							style={[
+								{
+									width: innerSize,
+									height: innerSize,
+									position: 'absolute',
+									backgroundColor: color.light.blue,
+									opacity: 0.6,
+								},
+								border.radius.scale(innerSize / 2),
+							]}
+						/>
+					</View>
+				</View>
+				<Icon
+					style={{ top: -61, right: -30 }}
+					name='camera-outline'
+					pack='custom'
+					width={30}
+					height={30}
+					fill={color.blue}
+				/>
+			</>
 		)
-	} else if (account?.avatarCid) {
-		image = <AccountAvatar size={90} />
 	} else {
 		image = (
-			<View style={[_styles.profileCircleAvatar, background.light.blue, border.shadow.medium]} />
+			<>
+				<View style={[{ backgroundColor: color.white, borderRadius: 120 }, border.shadow.medium]}>
+					<AccountAvatar size={90} isEditable />
+				</View>
+				<Icon
+					style={{ top: -61, right: -30 }}
+					name='camera-outline'
+					pack='custom'
+					width={30}
+					height={30}
+					fill={color.blue}
+				/>
+			</>
 		)
 	}
 
@@ -196,7 +240,7 @@ const EditMyProfile: React.FC = () => {
 		<Translation>
 			{(t) => (
 				<View style={[margin.vertical.big]}>
-					<View style={[row.left, margin.bottom.medium]}>
+					<View style={[row.left]}>
 						<TouchableOpacity onPress={handlePicturePressed}>{image}</TouchableOpacity>
 						<View style={[flex.tiny, margin.left.big]}>
 							<Input
