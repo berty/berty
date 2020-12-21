@@ -42,6 +42,7 @@
 		"react-i18next": "^11.8.4",
 		"react-native": "0.63.4",
 		"react-native-audiowaveform": "^2.0.5",
+		"react-native-bootsplash": "^3.1.2",
 		"react-native-camera": ">=1.0.2",
 		"react-native-document-picker": "^4.1.1",
 		"react-native-dropdown-picker": "^3.7.1",

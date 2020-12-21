@@ -65,7 +65,7 @@ targets:
         UIBackgroundModes:
         - fetch
         - processing
-        UILaunchStoryboardName: LaunchScreen
+        UILaunchStoryboardName: BootSplash
         UIRequiredDeviceCapabilities: [armv7]
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         UISupportedInterfaceOrientations~ipad:

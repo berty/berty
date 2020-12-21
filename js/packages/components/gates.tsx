@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityIndicator, Button, Image, Text, TextInput, View } from 'react-native'
+import { ActivityIndicator, Button, Text, TextInput, View } from 'react-native'
 
 import { useDeleteAccount, useMsgrContext, useRestart } from '@berty-tech/store/hooks'
 import {
