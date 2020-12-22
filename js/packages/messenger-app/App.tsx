@@ -4,6 +4,7 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { NavigationContainer } from '@react-navigation/native'
 import Shake from '@shakebugs/react-native-shake'
+import RNBootSplash from 'react-native-bootsplash'
 
 import '@berty-tech/berty-i18n'
 import { Provider as ThemeProvider } from '@berty-tech/components/theme'
@@ -15,8 +16,17 @@ import { Provider as StyleProvider } from '@berty-tech/styles'
 import NotificationProvider from '@berty-tech/components/NotificationProvider'
 import { StickMusicPlayer } from '@berty-tech/components/shared-components/StickyMusicPlayer'
 import { MusicPlayerProvider } from '@berty-tech/music-player'
+import { useMountEffect } from '@berty-tech/store/hooks'
+
 import { FeatherIconsPack } from './feather-icons'
 import { CustomIconsPack } from './custom-icons'
+
+const BootSplashInhibitor = () => {
+	useMountEffect(() => {
+		RNBootSplash.hide({ fade: true })
+	})
+	return null
+}
 
 export const App: React.FC = () => {
 	React.useEffect(() => {
@@ -40,6 +50,7 @@ export const App: React.FC = () => {
 							}}
 						>
 							<NotificationProvider>
+								<BootSplashInhibitor />
 								<DeleteGate>
 									<StreamGate>
 										<ListGate>
