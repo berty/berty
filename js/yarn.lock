@@ -8394,10 +8394,10 @@ react-native-screens@^2.16.1:
   resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.16.1.tgz#b105a127378d90018a46daf0c2f6518fca60c06f"
   integrity sha512-WZ7m0sBDVaHbBnlHxwQnUlI6KNfQKHq+Unfw+VBuAlnSXvT+aw6Bb/K2bUlHzBgvrPjwY3Spc7ZERFuTwRLLwg==
 
-react-native-share@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-4.1.0.tgz#78083d03c236849342decd0ecbc0bb9b77f1eb72"
-  integrity sha512-ytkgi9UsjQviKgWKuniApomB3opjydxPKnrApBF+SPMnQFVVDlH5EyHR6rK+qxMtIAcspb7ylNPj3KzgO+YCrg==
+react-native-share@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-4.1.1.tgz#f36d03d293379a5e3b9782e921beab5aa6093cd1"
+  integrity sha512-3wXzZ2bcRH3fyMmq0ZtWE0wy2SeM9khpJo++JPJK22H5oKwe5IRX1yk8aPXtJG/S5UC2/2QQoh/MHtcGDZ4yLA==
 
 react-native-status-bar-height@^2.5.0:
   version "2.6.0"
