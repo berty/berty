@@ -199,11 +199,21 @@ func (m *Manager) getContext() context.Context {
 
 func (m *Manager) RunWorkers() error {
 	m.workers.Add(func() error {
-		<-m.getContext().Done()
-		return m.getContext().Err()
+		ctx := m.GetContext()
+		<-ctx.Done()
+		return ctx.Err()
 	}, func(error) {
 		m.ctxCancel()
 	})
+	m.workers.Add(func() error {
+		l, err := m.GetLogger()
+		if err != nil {
+			return err
+		}
+		<-m.GetContext().Done()
+		l.Info("Closing Berty node.")
+		return nil
+	}, func(error) {})
 	return m.workers.Run()
 }
 
