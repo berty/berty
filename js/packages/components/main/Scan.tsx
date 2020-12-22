@@ -6,16 +6,18 @@ import {
 	TouchableOpacity,
 	Vibration,
 	Text as TextNative,
+	Keyboard,
 } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
-
-import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@react-navigation/native'
 
+import { useStyles } from '@berty-tech/styles'
+import { useMountEffect } from '@berty-tech/store/hooks'
+
 import ScanTarget from './scan_target.svg'
-import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer.tsx'
+import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -210,9 +212,25 @@ const ScanComponent: React.FC<any> = () => {
 	)
 }
 
+export const useKeyboardDismiss = () => {
+	const navigation = useNavigation()
+	useMountEffect(() => {
+		const unsubscribeFocus = navigation.addListener('focus', Keyboard.dismiss)
+
+		Keyboard.dismiss()
+
+		return () => {
+			unsubscribeFocus()
+		}
+	})
+}
+
 export const Scan: React.FC<{}> = () => {
 	const [{ flex }] = useStyles()
 	const navigation = useNavigation()
+	React.useEffect(() => {
+		Keyboard.dismiss()
+	})
 
 	return (
 		<Layout style={[flex.tiny, { backgroundColor: 'transparent' }]}>
