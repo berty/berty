@@ -5,22 +5,26 @@ import (
 	"fmt"
 	"io/ioutil"
 	mrand "math/rand"
+	"net"
+	"net/http"
 	"path/filepath"
 	"strings"
 	"time"
 
+	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
 	datastore "github.com/ipfs/go-datastore"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
 	ipfs_core "github.com/ipfs/go-ipfs/core"
+	ipfs_repo "github.com/ipfs/go-ipfs/repo"
 	libp2p "github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/peerstore"
-	"github.com/libp2p/go-libp2p-core/routing"
 	discovery "github.com/libp2p/go-libp2p-discovery"
+	p2p_dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	ma "github.com/multiformats/go-multiaddr"
-	"github.com/pkg/errors"
+	manet "github.com/multiformats/go-multiaddr/net"
 	"moul.io/srand"
 
 	ble "berty.tech/berty/v2/go/internal/ble-driver"
@@ -34,12 +38,14 @@ import (
 	"berty.tech/berty/v2/go/pkg/tempdir"
 	tor "berty.tech/go-libp2p-tor-transport"
 	torcfg "berty.tech/go-libp2p-tor-transport/config"
+	ipfswebui "berty.tech/ipfs-webui-packed"
 )
 
 func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	m.SetupPresetFlags(fs)
 	fs.StringVar(&m.Node.Protocol.SwarmListeners, "p2p.swarm-listeners", ":default:", "IPFS swarm listeners")
-	fs.StringVar(&m.Node.Protocol.IPFSAPIListeners, "p2p.ipfs-api-listeners", "", "IPFS API listeners")
+	fs.StringVar(&m.Node.Protocol.IPFSAPIListeners, "p2p.ipfs-api-listeners", "/ip4/127.0.0.1/tcp/5001", "IPFS API listeners")
+	fs.StringVar(&m.Node.Protocol.IPFSWebUIListener, "p2p.webui-listener", ":3999", "IPFS WebUI listener")
 	fs.StringVar(&m.Node.Protocol.Announce, "p2p.swarm-announce", "", "IPFS announce addrs")
 	fs.StringVar(&m.Node.Protocol.NoAnnounce, "p2p.swarm-no-announce", "", "IPFS exclude announce addrs")
 	fs.BoolVar(&m.Node.Protocol.LocalDiscovery, "p2p.local-discovery", true, "if true local discovery will be enabled")
@@ -89,12 +95,12 @@ func (m *Manager) GetLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
 	m.applyDefaults()
 	if err := m.applyPreset(); err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 	}
 
 	if m.Node.Protocol.ipfsAPI != nil {
 		if m.Node.Protocol.ipfsNode == nil {
-			return nil, nil, errcode.TODO.Wrap(fmt.Errorf("already connected to a remote IPFS node"))
+			return nil, nil, errcode.ErrIPFSInit.Wrap(fmt.Errorf("already connected to a remote IPFS node"))
 		}
 
 		return m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, nil
@@ -102,296 +108,90 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 	logger, err := m.getLogger()
 	if err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 	}
 
-	rdvpeers, err := m.getRdvpMaddrs()
+	mrepo, err := m.setupIPFSRepo()
 	if err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 	}
 
-	swarmAddrs := m.getSwarmAddrs()
-
-	apiAddrs := []string{}
-	if m.Node.Protocol.IPFSAPIListeners != "" {
-		apiAddrs = strings.Split(m.Node.Protocol.IPFSAPIListeners, ",")
-	}
-
-	announce := []string{}
-	if m.Node.Protocol.Announce != "" {
-		announce = strings.Split(m.Node.Protocol.Announce, ",")
-	}
-
-	noannounce := []string{}
-	if m.Node.Protocol.NoAnnounce != "" {
-		noannounce = strings.Split(m.Node.Protocol.NoAnnounce, ",")
-	}
-
-	var (
-		ipfsConfigPatch ipfsutil.IpfsConfigPatcher
-		p2pOpts         libp2p.Option
-	)
-	if !m.Node.Protocol.DisableIPFSNetwork {
-		// tor is enabled (optional or required)
-		if m.torIsEnabled() {
-			torOpts := torcfg.Merge(
-				torcfg.SetTemporaryDirectory(tempdir.TempDir()),
-				// FIXME: Write an io.Writer to zap logger mapper.
-				torcfg.SetNodeDebug(ioutil.Discard),
-			)
-			if m.Node.Protocol.Tor.BinaryPath == "" {
-				torOpts = torcfg.Merge(torOpts, torcfg.EnableEmbeded)
-			} else {
-				torOpts = torcfg.Merge(torOpts, torcfg.SetBinaryPath(m.Node.Protocol.Tor.BinaryPath))
-			}
-
-			if !hasTorMaddr(swarmAddrs) {
-				swarmAddrs = append(swarmAddrs, tor.NopMaddr3Str)
-			}
-
-			if m.Node.Protocol.Tor.Mode == TorRequired {
-				torOpts = torcfg.Merge(torOpts, torcfg.AllowTcpDial)
-			}
-			torBuilder, err := tor.NewBuilder(torOpts)
-			if err != nil {
-				return nil, nil, errcode.TODO.Wrap(err)
-			}
-			p2pOpts = libp2p.ChainOptions(p2pOpts, libp2p.Transport(torBuilder))
-		}
-		// -tor.mode==required: disable everything except tor
-		if m.Node.Protocol.Tor.Mode == TorRequired {
-			// Patch the IPFS config to make it compliant with an anonymous node.
-			ipfsConfigPatch = func(c *ipfs_cfg.Config) error {
-				// Disable IP transports
-				c.Swarm.Transports.Network.QUIC = ipfs_cfg.False
-				c.Swarm.Transports.Network.TCP = ipfs_cfg.False
-				c.Swarm.Transports.Network.Websocket = ipfs_cfg.False
-
-				// Disable MDNS
-				c.Discovery.MDNS.Enabled = false
-
-				// Only keep tor listeners
-				c.Addresses.Swarm = []string{}
-				for _, maddr := range swarmAddrs {
-					if isTorMaddr(maddr) {
-						c.Addresses.Swarm = append(c.Addresses.Swarm, maddr)
-					}
-				}
-				return nil
-			}
-		}
-
-		// Setup BLE
-		if m.Node.Protocol.Ble {
-			if ble.Supported {
-				swarmAddrs = append(swarmAddrs, ble.DefaultAddr)
-				p2pOpts = libp2p.ChainOptions(p2pOpts,
-					libp2p.Transport(proximity.NewTransport(m.ctx, logger, ble.NewDriver(logger))),
-				)
-			} else {
-				m.initLogger.Warn("cannot enable BLE on an unsupported platform")
-			}
-		}
-
-		// Setup MC
-		if m.Node.Protocol.MultipeerConnectivity {
-			if mc.Supported {
-				swarmAddrs = append(swarmAddrs, mc.DefaultAddr)
-				p2pOpts = libp2p.ChainOptions(p2pOpts,
-					libp2p.Transport(proximity.NewTransport(m.ctx, logger, mc.NewDriver(logger))),
-				)
-			} else {
-				m.initLogger.Warn("cannot enable Multipeer-Connectivity on an unsupported platform")
-			}
-		}
-
-		if m.Node.Protocol.RelayHack {
-			// Resolving addresses
-			pis, err := ipfsutil.ParseAndResolveRdvpMaddrs(m.getContext(), m.initLogger, config.Config.P2P.RelayHack)
-			if err != nil {
-				return nil, nil, errcode.TODO.Wrap(err)
-			}
-
-			lenPis := len(pis)
-			pickFrom := make([]peer.AddrInfo, lenPis)
-			for lenPis > 0 {
-				lenPis--
-				pickFrom[lenPis] = *pis[lenPis]
-			}
-
-			// Selecting 2 random one
-			rng := mrand.New(mrand.NewSource(srand.SafeFast())) //nolint:gosec
-			var relays []peer.AddrInfo
-			if len(pickFrom) <= 2 {
-				relays = pickFrom
-			} else {
-				for i := 2; i > 0; i-- {
-					lenPickFrom := len(pickFrom)
-					n := rng.Intn(lenPickFrom)
-					relays = append(relays, pickFrom[n])
-					if n == 0 {
-						pickFrom = pickFrom[1:]
-						continue
-					}
-					if n == lenPickFrom-1 {
-						pickFrom = pickFrom[:n-1]
-						continue
-					}
-					pickFrom = append(pickFrom[:n], pickFrom[n+1:]...)
-				}
-			}
-
-			for _, relay := range relays {
-				for _, addr := range relay.Addrs {
-					announce = append(announce, addr.String()+"/p2p/"+relay.ID.String()+"/p2p-circuit")
-				}
-			}
-
-			p2pOpts = libp2p.ChainOptions(p2pOpts, libp2p.StaticRelays(relays))
-		}
-
-		// prefill peerstore with known rdvp servers
-		if m.Node.Protocol.Tor.Mode != TorRequired {
-			ipfsConfigPatch = ipfsutil.ChainIpfsConfigPatch(ipfsConfigPatch, func(cfg *ipfs_cfg.Config) error {
-				for _, p := range rdvpeers {
-					cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
-				}
-				return nil
-			})
-		}
-	} else {
-		ipfsConfigPatch = func(c *ipfs_cfg.Config) error {
-			// Disable IP transports
-			c.Swarm.Transports.Network.QUIC = ipfs_cfg.False
-			c.Swarm.Transports.Network.TCP = ipfs_cfg.False
-			c.Swarm.Transports.Network.Websocket = ipfs_cfg.False
-
-			// Disable MDNS
-			c.Discovery.MDNS.Enabled = false
-
-			// Remove all swarm listeners
-			c.Addresses.Swarm = []string{}
-			return nil
-		}
-	}
-
-	opts := ipfsutil.CoreAPIConfig{
-		SwarmAddrs: swarmAddrs,
-		APIAddrs:   apiAddrs,
-		APIConfig: ipfs_cfg.API{
-			HTTPHeaders: map[string][]string{
-				"Access-Control-Allow-Origin":  {"*"},
-				"Access-Control-Allow-Methods": {"POST", "PUT"},
-			},
+	mopts := ipfsutil.MobileOptions{
+		IpfsConfigPatch: m.setupIPFSConfig,
+		HostConfigFunc:  m.setupIPFSHost,
+		RoutingOption:   ipfsutil.CustomRoutingOption(p2p_dht.ModeClient, p2p_dht.Concurrency(2)),
+		ExtraOpts: map[string]bool{
+			// @NOTE(gfanton) temporally disable ipfs *main* pubsub
+			"pubsub": false,
 		},
-		Announce:          announce,
-		NoAnnounce:        noannounce,
-		DisableCorePubSub: true,
-		BootstrapAddrs:    ipfs_cfg.DefaultBootstrapAddresses,
-		ExtraLibp2pOption: p2pOpts,
-		IpfsConfigPatch:   ipfsConfigPatch,
-		HostConfig: func(h host.Host, _ routing.Routing) error {
+	}
+
+	// init ipfs node
+	mnode, err := ipfsutil.NewIPFSMobile(m.getContext(), mrepo, &mopts)
+	if err != nil {
+		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+	}
+	m.Node.Protocol.ipfsNode = mnode.IpfsNode
+
+	// init extended api
+	m.Node.Protocol.ipfsAPI, err = ipfsutil.NewExtendedCoreAPIFromNode(mnode.IpfsNode)
+	if err != nil {
+		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+	}
+
+	// serve webui api listener
+	// we get listeners from repo config
+	cfg, err := mrepo.Config()
+	if err != nil {
+		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+	}
+
+	// serve ipfs api
+	for _, addr := range cfg.Addresses.API {
+		maddr, err := ma.NewMultiaddr(addr)
+		if err != nil {
+			return nil, nil, errcode.ErrIPFSInit.Wrap(fmt.Errorf("unable to parse api addr `%s`: %w", addr, err))
+		}
+
+		var l manet.Listener
+		m.workers.Add(func() error {
 			var err error
 
-			if m.Metrics.Listener != "" {
-				registry, err := m.getMetricsRegistry()
-				if err != nil {
-					return err
-				}
-
-				if err = registry.Register(ipfsutil.NewHostCollector(h)); err != nil {
-					return err
-				}
-			}
-
-			var rdvClients []tinder.AsyncableDriver
-			if lenrdvpeers := len(rdvpeers); lenrdvpeers > 0 {
-				drivers := make([]tinder.AsyncableDriver, lenrdvpeers)
-				for i, peer := range rdvpeers {
-					h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
-					rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
-					disc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
-
-					// monitor this driver
-					disc, err := tinder.MonitorDriverAsync(logger, h, disc)
-					if err != nil {
-						return errors.Wrap(err, "unable to monitor discovery driver")
-					}
-
-					drivers[i] = disc
-				}
-				rdvClients = append(rdvClients, drivers...)
-			}
-
-			var rdvClient tinder.Driver
-			switch len(rdvClients) {
-			case 0:
-				// FIXME: Check if this isn't called when DisableIPFSNetwork true.
-				return errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't create an IPFS node without any discovery"))
-			case 1:
-				rdvClient = rdvClients[0]
-			default:
-				rdvClient = tinder.NewAsyncMultiDriver(logger, rdvClients...)
-			}
-
-			serverRng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
-			m.Node.Protocol.discovery, err = tinder.NewService(
-				logger,
-				rdvClient,
-				discovery.NewExponentialBackoff(m.Node.Protocol.MinBackoff, m.Node.Protocol.MaxBackoff, discovery.FullJitter, time.Second, 5.0, 0, serverRng),
-			)
+			l, err = manet.Listen(maddr)
 			if err != nil {
-				return err
+				return errcode.ErrIPFSInit.Wrap(err)
 			}
 
-			pt, err := ipfsutil.NewPubsubMonitor(logger, h)
-			if err != nil {
-				return err
+			return mnode.ServeCoreHTTP(manet.NetListener(l))
+		}, func(err error) {
+			if l != nil {
+				l.Close()
 			}
-
-			pubsub.DiscoveryPollInterval = m.Node.Protocol.PollInterval
-			m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.getContext(), h,
-				pubsub.WithMessageSigning(true),
-				pubsub.WithFloodPublish(true),
-				pubsub.WithDiscovery(m.Node.Protocol.discovery),
-				pubsub.WithPeerExchange(true),
-				pt.EventTracerOption(),
-			)
-			if err != nil {
-				return err
-			}
-
-			return nil
-		},
+		})
 	}
 
-	// FIXME: continue disabling things to speedup the node when DisableIPFSNetwork==true
-	if m.Datastore.InMemory {
-		rootDS, err := m.getRootDatastore()
-		if err != nil {
-			return nil, nil, errcode.TODO.Wrap(err)
-		}
+	// serve webui
+	if addr := m.Node.Protocol.IPFSWebUIListener; addr != "" {
+		dir := http.FileServer(ipfswebui.Dir())
+		server := &http.Server{Addr: addr, Handler: dir}
 
-		ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceIPFSDatastore))
+		var l net.Listener
+		m.workers.Add(func() error {
+			var err error
 
-		m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, err = ipfsutil.NewCoreAPIFromDatastore(m.getContext(), ipfsDS, &opts)
-		if err != nil {
-			return nil, nil, errcode.TODO.Wrap(err)
-		}
-	} else {
-		repopath := filepath.Join(m.Datastore.Dir, "ipfs")
-		repo, err := ipfsutil.LoadRepoFromPath(repopath)
-		if err != nil {
-			return nil, nil, errcode.TODO.Wrap(err)
-		}
+			l, err = net.Listen("tcp", addr)
+			if err != nil {
+				return errcode.ErrIPFSInit.Wrap(err)
+			}
 
-		m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, err = ipfsutil.NewCoreAPIFromRepo(m.getContext(), repo, &opts)
-		if err != nil {
-			return nil, nil, errcode.TODO.Wrap(err)
-		}
+			return server.Serve(l)
+		}, func(err error) {
+			if l != nil {
+				l.Close()
+			}
+		})
 	}
 
-	// PubSub
 	psapi := ipfsutil.NewPubSubAPI(m.getContext(), logger.Named("ps"), m.Node.Protocol.discovery, m.Node.Protocol.pubsub)
 	m.Node.Protocol.ipfsAPI = ipfsutil.InjectPubSubCoreAPIExtendedAdaptater(m.Node.Protocol.ipfsAPI, psapi)
 
@@ -402,16 +202,300 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	if m.Metrics.Listener != "" {
 		registry, err := m.getMetricsRegistry()
 		if err != nil {
-			return nil, nil, errcode.TODO.Wrap(err)
+			return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 		}
 
 		err = registry.Register(ipfsutil.NewBandwidthCollector(m.Node.Protocol.ipfsNode.Reporter))
 		if err != nil {
-			return nil, nil, errcode.TODO.Wrap(err)
+			return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 		}
 	}
 
 	return m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, nil
+}
+
+func (m *Manager) setupIPFSRepo() (*ipfs_mobile.RepoMobile, error) {
+	var err error
+	var repo ipfs_repo.Repo
+
+	if m.Datastore.InMemory {
+		rootDS, err := m.getRootDatastore()
+		if err != nil {
+			return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
+		}
+
+		ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceIPFSDatastore))
+
+		repo, err = ipfsutil.CreateMockedRepo(ipfsDS)
+		if err != nil {
+			return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
+		}
+
+		return ipfs_mobile.NewRepoMobile(":memory:", repo), nil
+	}
+
+	repopath := filepath.Join(m.Datastore.Dir, "ipfs")
+
+	repo, err = ipfsutil.LoadRepoFromPath(repopath)
+	if err != nil {
+		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
+	}
+
+	return ipfs_mobile.NewRepoMobile(repopath, repo), nil
+}
+
+func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error) {
+	p2popts := []libp2p.Option{}
+
+	logger, err := m.getLogger()
+	if err != nil {
+		return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
+	}
+
+	rdvpeers, err := m.getRdvpMaddrs()
+	if err != nil {
+		return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
+	}
+
+	cfg.Addresses.Swarm = m.getSwarmAddrs()
+	cfg.Bootstrap = ipfs_cfg.DefaultBootstrapAddresses
+
+	if m.Node.Protocol.IPFSAPIListeners != "" {
+		cfg.Addresses.API = strings.Split(m.Node.Protocol.IPFSAPIListeners, ",")
+	}
+
+	if m.Node.Protocol.Announce != "" {
+		cfg.Addresses.Announce = strings.Split(m.Node.Protocol.Announce, ",")
+	}
+
+	if m.Node.Protocol.NoAnnounce != "" {
+		cfg.Addresses.NoAnnounce = strings.Split(m.Node.Protocol.NoAnnounce, ",")
+	}
+
+	if m.Node.Protocol.DisableIPFSNetwork {
+		// Disable IP transports
+		cfg.Swarm.Transports.Network.QUIC = ipfs_cfg.False
+		cfg.Swarm.Transports.Network.TCP = ipfs_cfg.False
+		cfg.Swarm.Transports.Network.Websocket = ipfs_cfg.False
+
+		// Disable MDNS
+		cfg.Discovery.MDNS.Enabled = false
+
+		// Remove all swarm listeners
+		cfg.Addresses.Swarm = []string{}
+
+		return p2popts, nil
+	}
+
+	// tor is enabled (optional or required)
+	if m.torIsEnabled() {
+		torOpts := torcfg.Merge(
+			torcfg.SetTemporaryDirectory(tempdir.TempDir()),
+			// FIXME: Write an io.Writer to zap logger mapper.
+			torcfg.SetNodeDebug(ioutil.Discard),
+		)
+		if m.Node.Protocol.Tor.BinaryPath == "" {
+			torOpts = torcfg.Merge(torOpts, torcfg.EnableEmbeded)
+		} else {
+			torOpts = torcfg.Merge(torOpts, torcfg.SetBinaryPath(m.Node.Protocol.Tor.BinaryPath))
+		}
+
+		if !hasTorMaddr(cfg.Addresses.Swarm) {
+			cfg.Addresses.Swarm = append(cfg.Addresses.Swarm, tor.NopMaddr3Str)
+		}
+
+		if m.Node.Protocol.Tor.Mode == TorRequired {
+			torOpts = torcfg.Merge(torOpts, torcfg.AllowTcpDial)
+		}
+
+		torBuilder, err := tor.NewBuilder(torOpts)
+		if err != nil {
+			return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
+		}
+
+		p2popts = append(p2popts, libp2p.Transport(torBuilder))
+	}
+
+	// -tor.mode==required: disable everything except tor
+	if m.Node.Protocol.Tor.Mode == TorRequired {
+		// Patch the IPFS config to make it complient with an anonymous node.
+		// Disable IP transports
+		cfg.Swarm.Transports.Network.QUIC = ipfs_cfg.False
+		cfg.Swarm.Transports.Network.TCP = ipfs_cfg.False
+		cfg.Swarm.Transports.Network.Websocket = ipfs_cfg.False
+
+		// Disable MDNS
+		cfg.Discovery.MDNS.Enabled = false
+
+		// Only keep tor listeners
+		cfg.Addresses.Swarm = []string{}
+		for _, maddr := range cfg.Addresses.Swarm {
+			if isTorMaddr(maddr) {
+				cfg.Addresses.Swarm = append(cfg.Addresses.Swarm, maddr)
+			}
+		}
+	}
+
+	// Setup BLE
+	if m.Node.Protocol.Ble {
+		if ble.Supported {
+			cfg.Addresses.Swarm = append(cfg.Addresses.Swarm, ble.DefaultAddr)
+			p2popts = append(p2popts,
+				libp2p.Transport(proximity.NewTransport(m.ctx, logger, ble.NewDriver(logger))),
+			)
+		} else {
+			m.initLogger.Warn("cannot enable BLE on an unsupported platform")
+		}
+	}
+
+	// Setup MC
+	if m.Node.Protocol.MultipeerConnectivity {
+		if mc.Supported {
+			cfg.Addresses.Swarm = append(cfg.Addresses.Swarm, mc.DefaultAddr)
+			p2popts = append(p2popts,
+				libp2p.Transport(proximity.NewTransport(m.ctx, logger, mc.NewDriver(logger))),
+			)
+		} else {
+			m.initLogger.Warn("cannot enable Multipeer-Connectivity on an unsupported platform")
+		}
+	}
+
+	if m.Node.Protocol.RelayHack {
+		// Resolving addresses
+		pis, err := ipfsutil.ParseAndResolveRdvpMaddrs(m.getContext(), m.initLogger, config.Config.P2P.RelayHack)
+		if err != nil {
+			return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
+		}
+
+		lenPis := len(pis)
+		pickFrom := make([]peer.AddrInfo, lenPis)
+		for lenPis > 0 {
+			lenPis--
+			pickFrom[lenPis] = *pis[lenPis]
+		}
+
+		// Selecting 2 random one
+		rng := mrand.New(mrand.NewSource(srand.SafeFast())) //nolint:gosec
+		var relays []peer.AddrInfo
+		if len(pickFrom) <= 2 {
+			relays = pickFrom
+		} else {
+			for i := 2; i > 0; i-- {
+				lenPickFrom := len(pickFrom)
+				n := rng.Intn(lenPickFrom)
+				relays = append(relays, pickFrom[n])
+				if n == 0 {
+					pickFrom = pickFrom[1:]
+					continue
+				}
+				if n == lenPickFrom-1 {
+					pickFrom = pickFrom[:n-1]
+					continue
+				}
+				pickFrom = append(pickFrom[:n], pickFrom[n+1:]...)
+			}
+		}
+
+		for _, relay := range relays {
+			for _, addr := range relay.Addrs {
+				cfg.Addresses.Announce = append(cfg.Addresses.Announce, addr.String()+"/p2p/"+relay.ID.String()+"/p2p-circuit")
+			}
+		}
+
+		p2popts = append(p2popts, libp2p.StaticRelays(relays))
+	}
+
+	// prefill peerstore with known rdvp servers
+	if m.Node.Protocol.Tor.Mode != TorRequired {
+		for _, p := range rdvpeers {
+			cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
+		}
+	}
+
+	return p2popts, nil
+}
+
+func (m *Manager) setupIPFSHost(h host.Host) error {
+	logger, err := m.getLogger()
+	if err != nil {
+		return errcode.ErrIPFSSetupHost.Wrap(err)
+	}
+
+	rdvpeers, err := m.getRdvpMaddrs()
+	if err != nil {
+		return errcode.ErrIPFSSetupHost.Wrap(err)
+	}
+
+	if m.Metrics.Listener != "" {
+		registry, err := m.getMetricsRegistry()
+		if err != nil {
+			return errcode.ErrIPFSSetupHost.Wrap(err)
+		}
+
+		if err = registry.Register(ipfsutil.NewHostCollector(h)); err != nil {
+			return errcode.ErrIPFSSetupHost.Wrap(err)
+		}
+	}
+
+	var rdvClients []tinder.AsyncableDriver
+	if lenrdvpeers := len(rdvpeers); lenrdvpeers > 0 {
+		drivers := make([]tinder.AsyncableDriver, lenrdvpeers)
+		for i, peer := range rdvpeers {
+			h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
+			rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
+			disc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
+
+			// monitor this driver
+			disc, err := tinder.MonitorDriverAsync(logger, h, disc)
+			if err != nil {
+				return errcode.ErrIPFSSetupHost.Wrap(err)
+			}
+
+			drivers[i] = disc
+		}
+		rdvClients = append(rdvClients, drivers...)
+	}
+
+	var rdvClient tinder.Driver
+	switch len(rdvClients) {
+	case 0:
+		// FIXME: Check if this isn't called when DisableIPFSNetwork true.
+		return errcode.ErrIPFSSetupHost.Wrap(fmt.Errorf("can't create an IPFS node without any discovery"))
+	case 1:
+		rdvClient = rdvClients[0]
+	default:
+		rdvClient = tinder.NewAsyncMultiDriver(logger, rdvClients...)
+	}
+
+	serverRng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
+	m.Node.Protocol.discovery, err = tinder.NewService(
+		logger,
+		rdvClient,
+		discovery.NewExponentialBackoff(m.Node.Protocol.MinBackoff, m.Node.Protocol.MaxBackoff, discovery.FullJitter, time.Second, 5.0, 0, serverRng),
+	)
+	if err != nil {
+		return errcode.ErrIPFSSetupHost.Wrap(err)
+	}
+
+	pt, err := ipfsutil.NewPubsubMonitor(logger, h)
+	if err != nil {
+		return errcode.ErrIPFSSetupHost.Wrap(err)
+	}
+
+	pubsub.DiscoveryPollInterval = m.Node.Protocol.PollInterval
+	m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.getContext(), h,
+		pubsub.WithMessageSigning(true),
+		pubsub.WithFloodPublish(true),
+		pubsub.WithDiscovery(m.Node.Protocol.discovery),
+		pubsub.WithPeerExchange(true),
+		pt.EventTracerOption(),
+	)
+
+	if err != nil {
+		errcode.ErrIPFSSetupHost.Wrap(err)
+	}
+
+	return nil
 }
 
 func (m *Manager) getRdvpMaddrs() ([]*peer.AddrInfo, error) {
@@ -501,3 +585,332 @@ func (m *Manager) torIsEnabled() bool {
 	}
 	return false
 }
+
+// @NOTE(gfanton): old ipfs init method, remove me
+// func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode, error) {
+// 	m.applyDefaults()
+// 	if err := m.applyPreset(); err != nil {
+// 		return nil, nil, errcode.TODO.Wrap(err)
+// 	}
+
+// 	if m.Node.Protocol.ipfsAPI != nil {
+// 		if m.Node.Protocol.ipfsNode == nil {
+// 			return nil, nil, errcode.TODO.Wrap(fmt.Errorf("already connected to a remote IPFS node"))
+// 		}
+
+// 		return m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, nil
+// 	}
+
+// 	logger, err := m.getLogger()
+// 	if err != nil {
+// 		return nil, nil, errcode.TODO.Wrap(err)
+// 	}
+
+// 	rdvpeers, err := m.getRdvpMaddrs()
+// 	if err != nil {
+// 		return nil, nil, errcode.TODO.Wrap(err)
+// 	}
+
+// 	swarmAddrs := m.getSwarmAddrs()
+
+// 	apiAddrs := []string{}
+// 	if m.Node.Protocol.IPFSAPIListeners != "" {
+// 		apiAddrs = strings.Split(m.Node.Protocol.IPFSAPIListeners, ",")
+// 	}
+
+// 	announce := []string{}
+// 	if m.Node.Protocol.Announce != "" {
+// 		announce = strings.Split(m.Node.Protocol.Announce, ",")
+// 	}
+
+// 	noannounce := []string{}
+// 	if m.Node.Protocol.NoAnnounce != "" {
+// 		noannounce = strings.Split(m.Node.Protocol.NoAnnounce, ",")
+// 	}
+
+// 	var (
+// 		ipfsConfigPatch ipfsutil.IpfsConfigPatcher
+// 		p2pOpts         libp2p.Option
+// 	)
+// 	if !m.Node.Protocol.DisableIPFSNetwork {
+// 		// tor is enabled (optional or required)
+// 		if m.torIsEnabled() {
+// 			torOpts := torcfg.Merge(
+// 				torcfg.SetTemporaryDirectory(tempdir.TempDir()),
+// 				// FIXME: Write an io.Writer to zap logger mapper.
+// 				torcfg.SetNodeDebug(ioutil.Discard),
+// 			)
+// 			if m.Node.Protocol.Tor.BinaryPath == "" {
+// 				torOpts = torcfg.Merge(torOpts, torcfg.EnableEmbeded)
+// 			} else {
+// 				torOpts = torcfg.Merge(torOpts, torcfg.SetBinaryPath(m.Node.Protocol.Tor.BinaryPath))
+// 			}
+
+// 			if !hasTorMaddr(swarmAddrs) {
+// 				swarmAddrs = append(swarmAddrs, tor.NopMaddr3Str)
+// 			}
+
+// 			if m.Node.Protocol.Tor.Mode == TorRequired {
+// 				torOpts = torcfg.Merge(torOpts, torcfg.AllowTcpDial)
+// 			}
+// 			torBuilder, err := tor.NewBuilder(torOpts)
+// 			if err != nil {
+// 				return nil, nil, errcode.TODO.Wrap(err)
+// 			}
+// 			p2pOpts = libp2p.ChainOptions(p2pOpts, libp2p.Transport(torBuilder))
+// 		}
+// 		// -tor.mode==required: disable everything except tor
+// 		if m.Node.Protocol.Tor.Mode == TorRequired {
+// 			// Patch the IPFS config to make it complient with an anonymous node.
+// 			ipfsConfigPatch = func(c *ipfs_cfg.Config) error {
+// 				// Disable IP transports
+// 				c.Swarm.Transports.Network.QUIC = ipfs_cfg.False
+// 				c.Swarm.Transports.Network.TCP = ipfs_cfg.False
+// 				c.Swarm.Transports.Network.Websocket = ipfs_cfg.False
+
+// 				// Disable MDNS
+// 				c.Discovery.MDNS.Enabled = false
+
+// 				// Only keep tor listeners
+// 				c.Addresses.Swarm = []string{}
+// 				for _, maddr := range swarmAddrs {
+// 					if isTorMaddr(maddr) {
+// 						c.Addresses.Swarm = append(c.Addresses.Swarm, maddr)
+// 					}
+// 				}
+// 				return nil
+// 			}
+// 		}
+
+// 		// Setup BLE
+// 		if m.Node.Protocol.Ble {
+// 			if ble.Supported {
+// 				swarmAddrs = append(swarmAddrs, ble.DefaultAddr)
+// 				p2pOpts = libp2p.ChainOptions(p2pOpts,
+// 					libp2p.Transport(proximity.NewTransport(m.ctx, logger, ble.NewDriver(logger))),
+// 				)
+// 			} else {
+// 				m.initLogger.Warn("cannot enable BLE on an unsupported platform")
+// 			}
+// 		}
+
+// 		// Setup MC
+// 		if m.Node.Protocol.MultipeerConnectivity {
+// 			if mc.Supported {
+// 				swarmAddrs = append(swarmAddrs, mc.DefaultAddr)
+// 				p2pOpts = libp2p.ChainOptions(p2pOpts,
+// 					libp2p.Transport(proximity.NewTransport(m.ctx, logger, mc.NewDriver(logger))),
+// 				)
+// 			} else {
+// 				m.initLogger.Warn("cannot enable Multipeer-Connectivity on an unsupported platform")
+// 			}
+// 		}
+
+// 		if m.Node.Protocol.RelayHack {
+// 			// Resolving addresses
+// 			pis, err := ipfsutil.ParseAndResolveRdvpMaddrs(m.getContext(), m.initLogger, config.Config.P2P.RelayHack)
+// 			if err != nil {
+// 				return nil, nil, errcode.TODO.Wrap(err)
+// 			}
+
+// 			lenPis := len(pis)
+// 			pickFrom := make([]peer.AddrInfo, lenPis)
+// 			for lenPis > 0 {
+// 				lenPis--
+// 				pickFrom[lenPis] = *pis[lenPis]
+// 			}
+
+// 			// Selecting 2 random one
+// 			rng := mrand.New(mrand.NewSource(srand.SafeFast())) //nolint:gosec
+// 			var relays []peer.AddrInfo
+// 			if len(pickFrom) <= 2 {
+// 				relays = pickFrom
+// 			} else {
+// 				for i := 2; i > 0; i-- {
+// 					lenPickFrom := len(pickFrom)
+// 					n := rng.Intn(lenPickFrom)
+// 					relays = append(relays, pickFrom[n])
+// 					if n == 0 {
+// 						pickFrom = pickFrom[1:]
+// 						continue
+// 					}
+// 					if n == lenPickFrom-1 {
+// 						pickFrom = pickFrom[:n-1]
+// 						continue
+// 					}
+// 					pickFrom = append(pickFrom[:n], pickFrom[n+1:]...)
+// 				}
+// 			}
+
+// 			for _, relay := range relays {
+// 				for _, addr := range relay.Addrs {
+// 					announce = append(announce, addr.String()+"/p2p/"+relay.ID.String()+"/p2p-circuit")
+// 				}
+// 			}
+
+// 			p2pOpts = libp2p.ChainOptions(p2pOpts, libp2p.StaticRelays(relays))
+// 		}
+
+// 		// prefill peerstore with known rdvp servers
+// 		if m.Node.Protocol.Tor.Mode != TorRequired {
+// 			ipfsConfigPatch = ipfsutil.ChainIpfsConfigPatch(ipfsConfigPatch, func(cfg *ipfs_cfg.Config) error {
+// 				for _, p := range rdvpeers {
+// 					cfg.Peering.Peers = append(cfg.Peering.Peers, *p)
+// 				}
+// 				return nil
+// 			})
+// 		}
+// 	} else {
+// 		ipfsConfigPatch = func(c *ipfs_cfg.Config) error {
+// 			// Disable IP transports
+// 			c.Swarm.Transports.Network.QUIC = ipfs_cfg.False
+// 			c.Swarm.Transports.Network.TCP = ipfs_cfg.False
+// 			c.Swarm.Transports.Network.Websocket = ipfs_cfg.False
+
+// 			// Disable MDNS
+// 			c.Discovery.MDNS.Enabled = false
+
+// 			// Remove all swarm listeners
+// 			c.Addresses.Swarm = []string{}
+// 			return nil
+// 		}
+// 	}
+
+// 	opts := ipfsutil.CoreAPIConfig{
+// 		SwarmAddrs: swarmAddrs,
+// 		APIAddrs:   apiAddrs,
+// 		APIConfig: ipfs_cfg.API{
+// 			HTTPHeaders: map[string][]string{
+// 				"Access-Control-Allow-Origin":  {"*"},
+// 				"Access-Control-Allow-Methods": {"POST", "PUT"},
+// 			},
+// 		},
+// 		Announce:          announce,
+// 		NoAnnounce:        noannounce,
+// 		DisableCorePubSub: true,
+// 		BootstrapAddrs:    ipfs_cfg.DefaultBootstrapAddresses,
+// 		ExtraLibp2pOption: p2pOpts,
+// 		IpfsConfigPatch:   ipfsConfigPatch,
+// 		HostConfig: func(h host.Host, _ routing.Routing) error {
+// 			var err error
+
+// 			if m.Metrics.Listener != "" {
+// 				registry, err := m.getMetricsRegistry()
+// 				if err != nil {
+// 					return err
+// 				}
+
+// 				if err = registry.Register(ipfsutil.NewHostCollector(h)); err != nil {
+// 					return err
+// 				}
+// 			}
+
+// 			var rdvClients []tinder.AsyncableDriver
+// 			if lenrdvpeers := len(rdvpeers); lenrdvpeers > 0 {
+// 				drivers := make([]tinder.AsyncableDriver, lenrdvpeers)
+// 				for i, peer := range rdvpeers {
+// 					h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
+// 					rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
+// 					disc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
+
+// 					// monitor this driver
+// 					disc, err := tinder.MonitorDriverAsync(logger, h, disc)
+// 					if err != nil {
+// 						return errors.Wrap(err, "unable to monitor discovery driver")
+// 					}
+
+// 					drivers[i] = disc
+// 				}
+// 				rdvClients = append(rdvClients, drivers...)
+// 			}
+
+// 			var rdvClient tinder.Driver
+// 			switch len(rdvClients) {
+// 			case 0:
+// 				// FIXME: Check if this isn't called when DisableIPFSNetwork true.
+// 				return errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't create an IPFS node without any discovery"))
+// 			case 1:
+// 				rdvClient = rdvClients[0]
+// 			default:
+// 				rdvClient = tinder.NewAsyncMultiDriver(logger, rdvClients...)
+// 			}
+
+// 			serverRng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
+// 			m.Node.Protocol.discovery, err = tinder.NewService(
+// 				logger,
+// 				rdvClient,
+// 				discovery.NewExponentialBackoff(m.Node.Protocol.MinBackoff, m.Node.Protocol.MaxBackoff, discovery.FullJitter, time.Second, 5.0, 0, serverRng),
+// 			)
+// 			if err != nil {
+// 				return err
+// 			}
+
+// 			pt, err := ipfsutil.NewPubsubMonitor(logger, h)
+// 			if err != nil {
+// 				return err
+// 			}
+
+// 			pubsub.DiscoveryPollInterval = m.Node.Protocol.PollInterval
+// 			m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.getContext(), h,
+// 				pubsub.WithMessageSigning(true),
+// 				pubsub.WithFloodPublish(true),
+// 				pubsub.WithDiscovery(m.Node.Protocol.discovery),
+// 				pubsub.WithPeerExchange(true),
+// 				pt.EventTracerOption(),
+// 			)
+// 			if err != nil {
+// 				return err
+// 			}
+
+// 			return nil
+// 		},
+// 	}
+
+// 	// FIXME: continue disabling things to speedup the node when DisableIPFSNetwork==true
+// 	if m.Datastore.InMemory {
+// 		rootDS, err := m.getRootDatastore()
+// 		if err != nil {
+// 			return nil, nil, errcode.TODO.Wrap(err)
+// 		}
+
+// 		ipfsDS := ipfsutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceIPFSDatastore))
+
+// 		m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, err = ipfsutil.NewCoreAPIFromDatastore(m.getContext(), ipfsDS, &opts)
+// 		if err != nil {
+// 			return nil, nil, errcode.TODO.Wrap(err)
+// 		}
+// 	} else {
+// 		repopath := filepath.Join(m.Datastore.Dir, "ipfs")
+// 		repo, err := ipfsutil.LoadRepoFromPath(repopath)
+// 		if err != nil {
+// 			return nil, nil, errcode.TODO.Wrap(err)
+// 		}
+
+// 		m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, err = ipfsutil.NewCoreAPIFromRepo(m.getContext(), repo, &opts)
+// 		if err != nil {
+// 			return nil, nil, errcode.TODO.Wrap(err)
+// 		}
+// 	}
+
+// 	// PubSub
+// 	psapi := ipfsutil.NewPubSubAPI(m.getContext(), logger.Named("ps"), m.Node.Protocol.discovery, m.Node.Protocol.pubsub)
+// 	m.Node.Protocol.ipfsAPI = ipfsutil.InjectPubSubCoreAPIExtendedAdaptater(m.Node.Protocol.ipfsAPI, psapi)
+
+// 	// enable conn logger
+// 	ipfsutil.EnableConnLogger(m.getContext(), logger, m.Node.Protocol.ipfsNode.PeerHost)
+
+// 	// register metrics
+// 	if m.Metrics.Listener != "" {
+// 		registry, err := m.getMetricsRegistry()
+// 		if err != nil {
+// 			return nil, nil, errcode.TODO.Wrap(err)
+// 		}
+
+// 		err = registry.Register(ipfsutil.NewBandwidthCollector(m.Node.Protocol.ipfsNode.Reporter))
+// 		if err != nil {
+// 			return nil, nil, errcode.TODO.Wrap(err)
+// 		}
+// 	}
+
+// 	return m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, nil
+// }

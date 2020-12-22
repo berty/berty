@@ -4,10 +4,12 @@ import (
 	"context"
 	crand "crypto/rand"
 	"encoding/base64"
+	"fmt"
 	"math/rand"
 	"testing"
 	"time"
 
+	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
 	ds "github.com/ipfs/go-datastore"
 	dsync "github.com/ipfs/go-datastore/sync"
 	ipfs_cfg "github.com/ipfs/go-ipfs-config"
@@ -26,7 +28,6 @@ import (
 	rendezvous "github.com/libp2p/go-libp2p-rendezvous"
 	p2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlite"
 	p2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
-	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 
@@ -117,14 +118,9 @@ type TestingAPIOpts struct {
 
 // TestingCoreAPIUsingMockNet returns a fully initialized mocked Core API with the given mocknet
 func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *TestingAPIOpts) (CoreAPIMock, func()) {
-	t.Helper()
-
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()
 	}
-
-	var ps *pubsub.PubSub
-	var disc tinder.Driver
 
 	datastore := opts.Datastore
 	if datastore == nil {
@@ -132,75 +128,87 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 	}
 
 	repo := TestingRepo(t, datastore)
-	exapi, node, err := NewCoreAPIFromRepo(ctx, repo, &CoreAPIConfig{
-		DisableCorePubSub: true,
-		Host:              ipfs_mock.MockHostOption(opts.Mocknet),
-		HostConfig: func(h host.Host, r routing.Routing) error {
-			var err error
 
-			if opts.RDVPeer.ID != "" {
-				// opts.Mocknet.ConnectPeers(node.Identity, opts.RDVPeer.ID)
-				h.Peerstore().AddAddrs(opts.RDVPeer.ID, opts.RDVPeer.Addrs, peerstore.PermanentAddrTTL)
-				// @FIXME(gfanton): use rand as argument
-				disc = tinder.NewRendezvousDiscovery(opts.Logger, h, opts.RDVPeer.ID, rand.New(rand.NewSource(rand.Int63())))
-			} else {
-				disc = tinder.NewDriverRouting(opts.Logger, "dht", r)
-			}
-
-			// enable discovery monitor
-			disc, err = tinder.MonitorDriver(opts.Logger, h, disc)
-			if err != nil {
-				return errors.Wrap(err, "unable to monitor discovery driver")
-			}
-
-			minBackoff, maxBackoff := time.Second, time.Minute
-			rng := rand.New(rand.NewSource(rand.Int63()))
-			disc, err = tinder.NewService(
-				opts.Logger,
-				disc,
-				discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, rng),
-			)
-			if err != nil {
+	var ps *pubsub.PubSub
+	var disc tinder.Driver
+	configureRouting := func(h host.Host, r routing.Routing) error {
+		var err error
+		if opts.RDVPeer.ID != "" {
+			// opts.Mocknet.ConnectPeers(node.Identity, opts.RDVPeer.ID)
+			h.Peerstore().AddAddrs(opts.RDVPeer.ID, opts.RDVPeer.Addrs, peerstore.PermanentAddrTTL)
+			// @FIXME(gfanton): use rand as argument
+			disc = tinder.NewRendezvousDiscovery(opts.Logger, h, opts.RDVPeer.ID, rand.New(rand.NewSource(rand.Int63())))
+			if _, err = opts.Mocknet.LinkPeers(h.ID(), opts.RDVPeer.ID); err != nil {
 				return err
 			}
+		} else {
+			disc = tinder.NewDriverRouting(opts.Logger, "dht", r)
+		}
 
-			pubsubtracker, err := NewPubsubMonitor(opts.Logger, h)
-			if err != nil {
-				return err
-			}
-			ps, err = pubsub.NewGossipSub(ctx, h,
-				pubsub.WithMessageSigning(true),
-				pubsub.WithFloodPublish(true),
-				pubsub.WithDiscovery(disc),
-				pubsub.WithPeerExchange(true),
-				pubsubtracker.EventTracerOption(),
-			)
+		// enable discovery monitor
+		disc, err = tinder.MonitorDriver(opts.Logger, h, disc)
+		if err != nil {
+			return fmt.Errorf("unable to monitor discovery driver: %w", err)
+		}
 
+		minBackoff, maxBackoff := time.Second, time.Minute
+		rng := rand.New(rand.NewSource(rand.Int63()))
+		disc, err = tinder.NewService(
+			opts.Logger,
+			disc,
+			discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, rng),
+		)
+		if err != nil {
 			return err
+		}
+
+		pubsubtracker, err := NewPubsubMonitor(opts.Logger, h)
+		if err != nil {
+			return err
+		}
+
+		ps, err = pubsub.NewGossipSub(ctx, h,
+			pubsub.WithMessageSigning(true),
+			pubsub.WithFloodPublish(true),
+			pubsub.WithDiscovery(disc),
+			pubsub.WithPeerExchange(true),
+			pubsubtracker.EventTracerOption(),
+		)
+
+		return err
+	}
+
+	mrepo := ipfs_mobile.NewRepoMobile("", repo)
+	mnode, err := NewIPFSMobile(ctx, mrepo, &MobileOptions{
+		HostOption:        ipfs_mock.MockHostOption(opts.Mocknet),
+		RoutingConfigFunc: configureRouting,
+		ExtraOpts: map[string]bool{
+			"pubsub": false,
 		},
 	})
 
 	require.NoError(t, err, "failed to initialize IPFS node mock")
-	require.NotNil(t, ps)
-	require.NotNil(t, disc)
+	require.NotNil(t, ps, "pubsub should not be nil")
+	require.NotNil(t, disc, "discovery should not be nil")
 
-	_, err = opts.Mocknet.LinkPeers(node.Identity, opts.RDVPeer.ID)
+	exapi, err := NewExtendedCoreAPIFromNode(mnode.IpfsNode)
+	require.NoError(t, err, "unable to extend core api from node")
 
 	psapi := NewPubSubAPI(ctx, opts.Logger, disc, ps)
 	exapi = InjectPubSubCoreAPIExtendedAdaptater(exapi, psapi)
-	EnableConnLogger(ctx, opts.Logger, node.PeerHost)
+	EnableConnLogger(ctx, opts.Logger, mnode.PeerHost())
 
 	api := &coreAPIMock{
 		coreapi: exapi,
 		mocknet: opts.Mocknet,
 		pubsub:  ps,
-		node:    node,
+		node:    mnode.IpfsNode,
 		tinder:  disc,
 	}
 
 	return api, func() {
-		_ = node.Close()
-		_ = node.PeerHost.Close()
+		_ = mnode.Close()
+		_ = mnode.PeerHost().Close()
 		_ = repo.Close()
 	}
 }

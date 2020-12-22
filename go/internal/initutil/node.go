@@ -62,12 +62,10 @@ func (m *Manager) SetupProtocolAuth(fs *flag.FlagSet) {
 
 func (m *Manager) SetupEmptyGRPCListenersFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.GRPC.Listeners, "node.listeners", "", "gRPC API listeners")
-	fs.StringVar(&m.Node.Protocol.IPFSWebUIListener, "p2p.webui-listener", "", "IPFS WebUI listener")
 }
 
 func (m *Manager) SetupDefaultGRPCListenersFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.GRPC.Listeners, "node.listeners", "/ip4/127.0.0.1/tcp/9091/grpc", "gRPC API listeners")
-	fs.StringVar(&m.Node.Protocol.IPFSWebUIListener, "p2p.webui-listener", ":3999", "IPFS WebUI listener")
 }
 
 func (m *Manager) SetupPresetFlags(fs *flag.FlagSet) {
@@ -168,17 +166,17 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 
 	// construct http api endpoint
 	// ignore error to allow two berty instances in the same place
-	if m.Node.Protocol.IPFSAPIListeners != "" {
-		err = ipfsutil.ServeHTTPApi(logger, m.Node.Protocol.ipfsNode, "")
-		if err != nil {
-			logger.Warn("IPFS API error", zap.Error(err))
-		}
-	}
+	// if m.Node.Protocol.IPFSAPIListeners != "" {
+	// 	err = ipfsutil.ServeHTTPApi(logger, m.Node.Protocol.ipfsNode, "")
+	// 	if err != nil {
+	// 		logger.Warn("IPFS API error", zap.Error(err))
+	// 	}
+	// }
 
 	// serve the embedded ipfs web UI
-	if addr := m.Node.Protocol.IPFSWebUIListener; addr != "" {
-		m.Node.Protocol.ipfsWebUICleanup = ipfsutil.ServeHTTPWebui(addr, logger)
-	}
+	// if addr := m.Node.Protocol.IPFSWebUIListener; addr != "" {
+	// 	m.Node.Protocol.ipfsWebUICleanup = ipfsutil.ServeHTTPWebui(addr, logger)
+	// }
 
 	odb, err := m.getOrbitDB()
 	if err != nil {

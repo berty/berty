@@ -86,6 +86,10 @@ enum ErrCode {
 
   ErrIPFSAdd = 1050;
   ErrIPFSGet = 1051;
+  ErrIPFSInit = 1052;
+  ErrIPFSSetupConfig = 1053;
+  ErrIPFSSetupRepo = 1054;
+  ErrIPFSSetupHost = 1055;
 
   // Handshake errors
 
