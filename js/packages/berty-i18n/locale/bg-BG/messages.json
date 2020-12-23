@@ -1,11 +1,4 @@
 {
-  "time": {
-    "fuzzy-time": "",
-    "fuzzy-month-day": "",
-    "fuzzy-year-month": "",
-    "datetime": "",
-    "started-ago": ""
-  },
   "onboarding": {
     "getstarted": {
       "desc": "",
