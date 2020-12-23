@@ -2,10 +2,10 @@ bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc h1:utDghgcjE8u+EBjHOgYT+dJPcnD
 bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc/go.mod h1:FbcW6z/2VytnFDhZfumh8Ss8zxHE6qpMP5sHTRe0EaM=
 berty.tech/go-ipfs-log v1.2.6 h1:VBdyZgdkeIt17LS4UX6rJjmskqvfIHaOAEH9Z8aqvIM=
 berty.tech/go-ipfs-log v1.2.6/go.mod h1:4v7G/bAeHNQWqziNC9oZREEFYpSiejSE3+DB4G4nf9M=
-berty.tech/go-libp2p-tor-transport v0.8.3 h1:KhfPBPeuvMqW/88j6BS4O1vdTIRdlMD7bsxYBcp9rts=
-berty.tech/go-libp2p-tor-transport v0.8.3/go.mod h1:uttrniM0oeyYxHCpYy/gXcgZHu2zBy4F1doSUQm4rh0=
-berty.tech/go-libtor v1.0.333 h1:z0Uars8ZFprlGRGDAsomBtjTQfR9T7eMBmPDaZp1GRk=
-berty.tech/go-libtor v1.0.333/go.mod h1:9swOOQVb+kmvuAlsgWUK/4c52pm69AdbJsxLzk+fJEw=
+berty.tech/go-libp2p-tor-transport v0.8.4 h1:/GyXnO8ngHaJ7SGk9nP1tepCX8HzyC2Ebr26X+fmEq0=
+berty.tech/go-libp2p-tor-transport v0.8.4/go.mod h1:ng3uORmnjkr5ZYxLd0sxra3z+ScbqS0u+x7Zqdin608=
+berty.tech/go-libtor v1.0.345 h1:i39HFWq5oRN1wf30Dhlo2cVnyXMdjn9Sb4zYfzuZZ4s=
+berty.tech/go-libtor v1.0.345/go.mod h1:9swOOQVb+kmvuAlsgWUK/4c52pm69AdbJsxLzk+fJEw=
 berty.tech/go-orbit-db v1.10.11 h1:JBDAoYigszK87P8JBlXDDMv+T/X9GiYH6+ZAXyomMjc=
 berty.tech/go-orbit-db v1.10.11/go.mod h1:Gl6pmjtt7Db5yA+2S14VP0XJ93Q2OslpyW/eSE9QNCg=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1 h1:xXAS7M/RcgIWia1XkXLueirm2zDXnMMNGb3UJhfRzbo=
@@ -63,8 +63,8 @@ github.com/DataDog/sketches-go v0.0.0-20190923095040-43f19ad77ff7 h1:qELHH0AWCvf
 github.com/DataDog/sketches-go v0.0.0-20190923095040-43f19ad77ff7/go.mod h1:Q5DbzQ+3AkgGwymQO7aZFNP7ns2lZKGtvRBzRXfdi60=
 github.com/Jorropo/go-ipfs v0.4.20-0.20201127133049-9632069f4448 h1:E6zJ4YrZn4RJDWcKZ5WIA+z9MkfgOoQgLyMB1Qm2rHI=
 github.com/Jorropo/go-ipfs v0.4.20-0.20201127133049-9632069f4448/go.mod h1:L/6+fnHQ8rUe5DMxAPB7lRS4w4e2iLLRdawzi4SvKKM=
-github.com/Jorropo/go-libp2p-swarm v0.3.4 h1:WXT4kyRjF+FBoVXZl7vmdxCZkI6pUvh+ZmG79Y8Iwho=
-github.com/Jorropo/go-libp2p-swarm v0.3.4/go.mod h1:hdv95GWCTmzkgeJpP+GK/9D9puJegb7H57B5hWQR5Kk=
+github.com/Jorropo/go-libp2p-swarm v0.4.2 h1:U5fgMQAmq6ElSsl6Rc0ykFSWFO0TZiKhH8xr0kPS+2Y=
+github.com/Jorropo/go-libp2p-swarm v0.4.2/go.mod h1:XVFcO52VoLoo0eitSxNQWYq4D6sydGOweTOAjJNraCw=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
 github.com/Kubuxu/go-os-helper v0.0.1/go.mod h1:N8B+I7vPCT80IcP58r50u4+gEEcsZETFUpAzWW2ep1Y=
 github.com/Masterminds/goutils v1.1.0 h1:zukEsf/1JZwCMgHiK3GZftabmxiCw4apj3a28RPBiVg=
@@ -880,8 +880,6 @@ github.com/libp2p/go-libp2p-pubsub-router v0.4.0/go.mod h1:hs0j0ugcBjMOMgJ6diOlZ
 github.com/libp2p/go-libp2p-quic-transport v0.8.0/go.mod h1:F2FG/6Bzz0U6essUVxDzE0s9CrY4XGLbl7QEmDNvU7A=
 github.com/libp2p/go-libp2p-quic-transport v0.9.0 h1:WPuq5nV/chmIZIzvrkC2ulSdAQ0P0BDvgvAhZFOZ59E=
 github.com/libp2p/go-libp2p-quic-transport v0.9.0/go.mod h1:xyY+IgxL0qsW7Kiutab0+NlxM0/p9yRtrGTYsuMWf70=
-github.com/libp2p/go-libp2p-quic-transport v0.9.3 h1:e6eLN55agvemeYzdJTzIylVbLD5PJr0RJANr9HM+FVc=
-github.com/libp2p/go-libp2p-quic-transport v0.9.3/go.mod h1:STiznVmrLMFPXCrkEbNna/VxgdxBatcK0SA+1FSdxnI=
 github.com/libp2p/go-libp2p-quic-transport v0.10.0 h1:koDCbWD9CCHwcHZL3/WEvP2A+e/o5/W5L3QS/2SPMA0=
 github.com/libp2p/go-libp2p-quic-transport v0.10.0/go.mod h1:RfJbZ8IqXIhxBRm5hqUEJqjiiY8xmEuq3HUDS993MkA=
 github.com/libp2p/go-libp2p-record v0.0.1/go.mod h1:grzqg263Rug/sRex85QrDOLntdFAymLDLm7lxMgU79Q=
@@ -932,6 +930,7 @@ github.com/libp2p/go-libp2p-yamux v0.2.7/go.mod h1:X28ENrBMU/nm4I3Nx4sZ4dgjZ6VhL
 github.com/libp2p/go-libp2p-yamux v0.2.8/go.mod h1:/t6tDqeuZf0INZMTgd0WxIRbtK2EzI2h7HbFm9eAKI4=
 github.com/libp2p/go-libp2p-yamux v0.4.0 h1:qunEZzWwwmfSBYTtSyd81PlD1TjB5uuWcGYHWVXLbUg=
 github.com/libp2p/go-libp2p-yamux v0.4.0/go.mod h1:+DWDjtFMzoAwYLVkNZftoucn7PelNoy5nm3tZ3/Zw30=
+github.com/libp2p/go-libp2p-yamux v0.5.0/go.mod h1:AyR8k5EzyM2QN9Bbdg6X1SkVVuqLwTGf0L4DFq9g6po=
 github.com/libp2p/go-libp2p-yamux v0.5.1 h1:sX4WQPHMhRxJE5UZTfjEuBvlQWXB5Bo3A2JK9ZJ9EM0=
 github.com/libp2p/go-libp2p-yamux v0.5.1/go.mod h1:dowuvDu8CRWmr0iqySMiSxK+W0iL5cMVO9S94Y6gkv4=
 github.com/libp2p/go-maddr-filter v0.0.1/go.mod h1:6eT12kSQMA9x2pvFQa+xesMKUBlj9VImZbj3B9FBH/Q=
@@ -1013,6 +1012,8 @@ github.com/libp2p/go-yamux v1.3.5/go.mod h1:FGTiPvoV/3DVdgWpX+tM0OW3tsM+W5bSE3gZ
 github.com/libp2p/go-yamux v1.3.7/go.mod h1:fr7aVgmdNGJK+N1g+b6DW6VxzbRCjCOejR/hkmpooHE=
 github.com/libp2p/go-yamux v1.4.0 h1:7nqe0T95T2CWh40IdJ/tp8RMor4ubc9/wYZpB2a/Hx0=
 github.com/libp2p/go-yamux v1.4.0/go.mod h1:fr7aVgmdNGJK+N1g+b6DW6VxzbRCjCOejR/hkmpooHE=
+github.com/libp2p/go-yamux v1.4.1 h1:P1Fe9vF4th5JOxxgQvfbOHkrGqIZniTLf+ddhZp8YTI=
+github.com/libp2p/go-yamux v1.4.1/go.mod h1:fr7aVgmdNGJK+N1g+b6DW6VxzbRCjCOejR/hkmpooHE=
 github.com/libp2p/go-yamux/v2 v2.0.0 h1:vSGhAy5u6iHBq11ZDcyHH4Blcf9xlBhT4WQDoOE90LU=
 github.com/libp2p/go-yamux/v2 v2.0.0/go.mod h1:NVWira5+sVUIU6tu1JWvaRn1dRnG+cawOJiflsAM+7U=
 github.com/lightstep/lightstep-tracer-common/golang/gogo v0.0.0-20190605223551-bc2310a04743/go.mod h1:qklhhLq1aX+mtWk9cPHPzaBjWImj5ULL6C7HFJtXQMM=

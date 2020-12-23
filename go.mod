@@ -5,7 +5,7 @@ go 1.14
 require (
 	bazil.org/fuse v0.0.0-20200524192727-fb710f7dfd05 // indirect
 	berty.tech/go-ipfs-log v1.2.6
-	berty.tech/go-libp2p-tor-transport v0.8.3
+	berty.tech/go-libp2p-tor-transport v0.8.4
 	berty.tech/go-orbit-db v1.10.11
 	berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1
 	github.com/Masterminds/goutils v1.1.0 // indirect
@@ -129,7 +129,7 @@ replace (
 	github.com/agl/ed25519 => github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // latest commit before the author shutdown the repo; see https://github.com/golang/go/issues/20504
 	github.com/ipfs/go-ipfs => github.com/Jorropo/go-ipfs v0.4.20-0.20201127133049-9632069f4448 // temporary, see https://github.com/ipfs/go-ipfs/issues/7791
 	github.com/libp2p/go-libp2p-rendezvous => github.com/berty/go-libp2p-rendezvous v0.0.0-20201028141428-5b2e7e8ff19a // use berty fork of go-libp2p-rendezvous
-	github.com/libp2p/go-libp2p-swarm => github.com/Jorropo/go-libp2p-swarm v0.3.4 // temporary, see https://github.com/libp2p/go-libp2p-swarm/pull/227
+	github.com/libp2p/go-libp2p-swarm => github.com/Jorropo/go-libp2p-swarm v0.4.2 // temporary, see https://github.com/libp2p/go-libp2p-swarm/pull/227
 	github.com/peterbourgon/ff/v3 => github.com/moul/ff/v3 v3.0.1 // temporary, see https://github.com/peterbourgon/ff/pull/67, https://github.com/peterbourgon/ff/issues/68
 	golang.org/x/mobile => github.com/aeddi/mobile v0.0.1 // temporary, see https://github.com/golang/mobile/pull/58
 )

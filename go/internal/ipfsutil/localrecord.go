@@ -23,7 +23,7 @@ type LocalRecord struct {
 }
 
 // OptionLocalRecord is given to CoreAPIOption.Options when the ipfs node setup
-func OptionLocalRecord(ctx context.Context, node *ipfs_core.IpfsNode, api ipfs_interface.CoreAPI) error {
+func OptionLocalRecord(node *ipfs_core.IpfsNode, api ipfs_interface.CoreAPI) error {
 	lr := &LocalRecord{
 		host: node.PeerHost,
 	}
@@ -41,9 +41,10 @@ func (lr *LocalRecord) ListenClose(network.Network, ma.Multiaddr) {}
 
 // called when a connection opened
 func (lr *LocalRecord) Connected(net network.Network, c network.Conn) {
+	ctx := context.Background() // FIXME: since go-libp2p-core@0.8.0 adds support for passed context on new call, we should think if we have a better context to pass here
 	go func() {
 		if manet.IsPrivateAddr(c.RemoteMultiaddr()) || mafmt.Base(mc.ProtocolCode).Matches(c.RemoteMultiaddr()) {
-			if err := lr.sendLocalRecord(c); err != nil {
+			if err := lr.sendLocalRecord(ctx, c); err != nil {
 				return
 			}
 		}
@@ -59,8 +60,8 @@ func (lr *LocalRecord) OpenedStream(network.Network, network.Stream) {}
 // called when a stream closed
 func (lr *LocalRecord) ClosedStream(network.Network, network.Stream) {}
 
-func (lr *LocalRecord) sendLocalRecord(c network.Conn) error {
-	s, err := c.NewStream()
+func (lr *LocalRecord) sendLocalRecord(ctx context.Context, c network.Conn) error {
+	s, err := c.NewStream(ctx)
 	if err != nil {
 		return err
 	}
