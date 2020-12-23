@@ -280,9 +280,10 @@ func (ld *localDiscovery) ListenClose(network.Network, ma.Multiaddr) {}
 // Implementation of the network.Notifiee interface
 // Called when a connection is opened by discovery.Discoverer's FindPeers()
 func (ld *localDiscovery) Connected(net network.Network, c network.Conn) {
+	ctx := context.Background() // FIXME: since go-libp2p-core@0.8.0 adds support for passed context on new call, we should think if we have a better context to pass here
 	go func() {
 		if manet.IsPrivateAddr(c.RemoteMultiaddr()) || mafmt.Base(mc.ProtocolCode).Matches(c.RemoteMultiaddr()) {
-			if err := ld.sendLocalRecord(c); err != nil {
+			if err := ld.sendLocalRecord(ctx, c); err != nil {
 				return
 			}
 		}
@@ -290,9 +291,9 @@ func (ld *localDiscovery) Connected(net network.Network, c network.Conn) {
 }
 
 // Send records only owned by the local peer
-func (ld *localDiscovery) sendLocalRecord(c network.Conn) error {
+func (ld *localDiscovery) sendLocalRecord(ctx context.Context, c network.Conn) error {
 	// Open a multiplexed stream
-	s, err := c.NewStream()
+	s, err := c.NewStream(ctx)
 	if err != nil {
 		ld.logger.Error("localDiscovery: sendLocalRecord", zap.Error(err))
 		return err
