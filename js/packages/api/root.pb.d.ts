@@ -915,7 +915,6 @@ export namespace berty {
                 grpcErrorCode?: (berty.account.v1.GRPCErrCode|null);
                 errorCode?: (berty.errcode.ErrCode|null);
                 message?: (string|null);
-                errorDetails?: (berty.errcode.IErrDetails|null);
             }
 
             class Error implements IError {
@@ -923,7 +922,6 @@ export namespace berty {
                 public grpcErrorCode: berty.account.v1.GRPCErrCode;
                 public errorCode: berty.errcode.ErrCode;
                 public message: string;
-                public errorDetails?: (berty.errcode.IErrDetails|null);
                 public static create(properties?: berty.account.v1.IError): berty.account.v1.Error;
                 public static encode(message: berty.account.v1.IError, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.account.v1.IError, writer?: $protobuf.Writer): $protobuf.Writer;
