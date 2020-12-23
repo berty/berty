@@ -523,6 +523,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   message: {
                     type: "string",
                     id: 3
+                  },
+                  errorDetails: {
+                    type: "errcode.ErrDetails",
+                    id: 4
                   }
                 }
               },
