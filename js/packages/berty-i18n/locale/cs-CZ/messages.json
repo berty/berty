@@ -1,11 +1,4 @@
 {
-  "time": {
-    "fuzzy-time": "hh:mm",
-    "fuzzy-month-day": "dd/MM",
-    "fuzzy-year-month": "MM/RR",
-    "datetime": "",
-    "started-ago": ""
-  },
   "onboarding": {
     "getstarted": {
       "desc": "Zabezpečená aplikace pro peer-to-peer výměnu zpráv. Bezpečně funguje i bez přístupu k internetu a mobilním datům a v nedůvěryhodných sítích",
