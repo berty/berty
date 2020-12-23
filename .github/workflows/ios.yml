@@ -23,6 +23,66 @@ on:
       - '.github/workflows/ios.yml'
 
 jobs:
+  sync-pods-lock:
+    name: Verify that Podfile.lock is up to date
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}  # see https://github.com/actions/checkout/issues/299
+
+      - name: Setup XCode
+        uses: maxim-lobanov/setup-xcode@v1.2.1
+        with:
+          xcode-version: '12.0'
+
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15.3
+
+      - name: Cache Node modules
+        uses: actions/cache@v2
+        with:
+          path: js/node_modules
+          key: ${{ runner.OS }}-node-v4-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-node-v4-
+
+      - name: Cache Ruby modules
+        uses: actions/cache@v2
+        with:
+          path: js/vendor/bundle
+          key: ${{ runner.OS }}-bundle-${{ hashFiles('js/Gemfile.lock') }}
+          restore-keys: ${{ runner.OS }}-bundle-
+
+      - name: Cache XCodeGen
+        uses: actions/cache@v2
+        with:
+          path: js/vendor/xcodegen
+          key: ios-xcodegen-${{ hashFiles('js/XcodeGen.version') }}
+          restore-keys: ios-xcodegen-
+
+      - name: Cache XCode project
+        uses: actions/cache@v2
+        with:
+          path: js/ios/Berty.xcodeproj
+          key: ios-xcodeproj-${{ hashFiles('js/ios/*.yaml') }}
+          restore-keys: ios-xcodeproj-
+
+      - name: Generate xcodeproj
+        working-directory: js
+        run: make ios/Berty.xcodeproj
+      - name: Install Ruby modules
+        working-directory: js/ios
+        run: bundle install
+      - name: Sync Podfile.lock
+        working-directory: js/ios
+        run: bundle exec pod install --repo-update
+      - name: Check diff
+        run: if [[ $(git diff js/ios/Podfile.lock) ]]; then false; fi
   build:
     name: Build for iOS
     runs-on: macos-latest
