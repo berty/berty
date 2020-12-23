@@ -170,7 +170,7 @@ const BertyIdShare: React.FC<{}> = () => {
 			onPress={async () => {
 				try {
 					console.log('sharing', url)
-					await Share.share({ url })
+					await Share.share({ url, message: url })
 				} catch (e) {
 					console.error(e)
 				}
