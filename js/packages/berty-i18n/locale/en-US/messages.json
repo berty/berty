@@ -1,11 +1,4 @@
 {
-  "time": {
-    "fuzzy-time": "hh:mm",
-    "fuzzy-month-day": "dd/MM",
-    "fuzzy-year-month": "MM/YY",
-    "datetime": "MMM Do YYYY hh:mm",
-    "started-ago": "Started {{date}} ago"
-  },
   "onboarding": {
     "getstarted": {
       "desc": "The secure peer-to-peer messaging app that works with or without internet access, cellular data or trust in the network",
