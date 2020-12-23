@@ -915,6 +915,7 @@ export namespace berty {
                 grpcErrorCode?: (berty.account.v1.GRPCErrCode|null);
                 errorCode?: (berty.errcode.ErrCode|null);
                 message?: (string|null);
+                errorDetails?: (berty.errcode.IErrDetails|null);
             }
 
             class Error implements IError {
@@ -922,6 +923,7 @@ export namespace berty {
                 public grpcErrorCode: berty.account.v1.GRPCErrCode;
                 public errorCode: berty.errcode.ErrCode;
                 public message: string;
+                public errorDetails?: (berty.errcode.IErrDetails|null);
                 public static create(properties?: berty.account.v1.IError): berty.account.v1.Error;
                 public static encode(message: berty.account.v1.IError, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.account.v1.IError, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4644,6 +4646,8 @@ export namespace berty {
                 public systemInfo(request: berty.messenger.v1.SystemInfo.IRequest): Promise<berty.messenger.v1.SystemInfo.Reply>;
                 public echoTest(request: berty.messenger.v1.EchoTest.IRequest, callback: berty.messenger.v1.MessengerService.EchoTestCallback): void;
                 public echoTest(request: berty.messenger.v1.EchoTest.IRequest): Promise<berty.messenger.v1.EchoTest.Reply>;
+                public echoDuplexTest(request: berty.messenger.v1.EchoDuplexTest.IRequest, callback: berty.messenger.v1.MessengerService.EchoDuplexTestCallback): void;
+                public echoDuplexTest(request: berty.messenger.v1.EchoDuplexTest.IRequest): Promise<berty.messenger.v1.EchoDuplexTest.Reply>;
                 public conversationStream(request: berty.messenger.v1.ConversationStream.IRequest, callback: berty.messenger.v1.MessengerService.ConversationStreamCallback): void;
                 public conversationStream(request: berty.messenger.v1.ConversationStream.IRequest): Promise<berty.messenger.v1.ConversationStream.Reply>;
                 public eventStream(request: berty.messenger.v1.EventStream.IRequest, callback: berty.messenger.v1.MessengerService.EventStreamCallback): void;
@@ -4705,6 +4709,8 @@ export namespace berty {
                 type SystemInfoCallback = (error: (Error|null), response?: berty.messenger.v1.SystemInfo.Reply) => void;
 
                 type EchoTestCallback = (error: (Error|null), response?: berty.messenger.v1.EchoTest.Reply) => void;
+
+                type EchoDuplexTestCallback = (error: (Error|null), response?: berty.messenger.v1.EchoDuplexTest.Reply) => void;
 
                 type ConversationStreamCallback = (error: (Error|null), response?: berty.messenger.v1.ConversationStream.Reply) => void;
 
@@ -4872,12 +4878,14 @@ export namespace berty {
                 interface IRequest {
                     delay?: (Long|null);
                     echo?: (string|null);
+                    triggerError?: (boolean|null);
                 }
 
                 class Request implements IRequest {
 
                     public delay: Long;
                     public echo: string;
+                    public triggerError: boolean;
                     public static create(properties?: berty.messenger.v1.EchoTest.IRequest): berty.messenger.v1.EchoTest.Request;
                     public static encode(message: berty.messenger.v1.EchoTest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.EchoTest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4904,6 +4912,63 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.EchoTest.Reply;
                     public static toObject(message: berty.messenger.v1.EchoTest.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IEchoDuplexTest {
+            }
+
+            class EchoDuplexTest implements IEchoDuplexTest {
+
+                public static create(properties?: berty.messenger.v1.IEchoDuplexTest): berty.messenger.v1.EchoDuplexTest;
+                public static encode(message: berty.messenger.v1.IEchoDuplexTest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IEchoDuplexTest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.EchoDuplexTest;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.EchoDuplexTest;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.EchoDuplexTest;
+                public static toObject(message: berty.messenger.v1.EchoDuplexTest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace EchoDuplexTest {
+
+                interface IRequest {
+                    echo?: (string|null);
+                    triggerError?: (boolean|null);
+                }
+
+                class Request implements IRequest {
+
+                    public echo: string;
+                    public triggerError: boolean;
+                    public static create(properties?: berty.messenger.v1.EchoDuplexTest.IRequest): berty.messenger.v1.EchoDuplexTest.Request;
+                    public static encode(message: berty.messenger.v1.EchoDuplexTest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.EchoDuplexTest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.EchoDuplexTest.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.EchoDuplexTest.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.EchoDuplexTest.Request;
+                    public static toObject(message: berty.messenger.v1.EchoDuplexTest.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    echo?: (string|null);
+                }
+
+                class Reply implements IReply {
+
+                    public echo: string;
+                    public static create(properties?: berty.messenger.v1.EchoDuplexTest.IReply): berty.messenger.v1.EchoDuplexTest.Reply;
+                    public static encode(message: berty.messenger.v1.EchoDuplexTest.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.EchoDuplexTest.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.EchoDuplexTest.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.EchoDuplexTest.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.EchoDuplexTest.Reply;
+                    public static toObject(message: berty.messenger.v1.EchoDuplexTest.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }

@@ -374,6 +374,49 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/EchoDuplexTest": {
+      "post": {
+        "summary": "Use to test duplex stream.",
+        "operationId": "MessengerService_EchoDuplexTest",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1EchoDuplexTestReply"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of v1EchoDuplexTestReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " (streaming inputs)",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1EchoDuplexTestRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/EchoTest": {
       "post": {
         "summary": "Use to test stream.",
@@ -1841,6 +1884,25 @@
         }
       }
     },
+    "v1EchoDuplexTestReply": {
+      "type": "object",
+      "properties": {
+        "echo": {
+          "type": "string"
+        }
+      }
+    },
+    "v1EchoDuplexTestRequest": {
+      "type": "object",
+      "properties": {
+        "echo": {
+          "type": "string"
+        },
+        "trigger_error": {
+          "type": "boolean"
+        }
+      }
+    },
     "v1EchoTestReply": {
       "type": "object",
       "properties": {
@@ -1858,6 +1920,9 @@
         },
         "echo": {
           "type": "string"
+        },
+        "trigger_error": {
+          "type": "boolean"
         }
       }
     },

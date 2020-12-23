@@ -46,6 +46,9 @@ service MessengerService {
   // Use to test stream.
   rpc EchoTest(EchoTest.Request) returns (stream EchoTest.Reply);
 
+  // Use to test duplex stream.
+  rpc EchoDuplexTest(stream EchoDuplexTest.Request) returns (stream EchoDuplexTest.Reply);
+
   rpc ConversationStream(ConversationStream.Request) returns (stream ConversationStream.Reply);
   rpc EventStream(EventStream.Request) returns (stream EventStream.Reply);
   rpc ConversationCreate(ConversationCreate.Request) returns (ConversationCreate.Reply);
@@ -101,11 +104,23 @@ message EchoTest {
   message Request {
     uint64 delay = 1; // in ms
     string echo = 2;
+    bool trigger_error = 3;
   }
   message Reply {
     string echo = 1;
   }
 }
+
+message EchoDuplexTest {
+  message Request {
+    string echo = 2;
+    bool trigger_error = 3;
+  }
+  message Reply {
+    string echo = 1;
+  }
+}
+
 
 message InstanceShareableBertyID {
   message Request {

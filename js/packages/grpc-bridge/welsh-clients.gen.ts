@@ -89,6 +89,7 @@ export interface WelshMessengerServiceClient {
 	sendAck: UnaryType<beapi.messenger.MessengerService['sendAck']>
 	systemInfo: UnaryType<beapi.messenger.MessengerService['systemInfo']>
 	echoTest: ResponseStreamType<beapi.messenger.MessengerService['echoTest']>
+	echoDuplexTest: never
 	conversationStream: ResponseStreamType<beapi.messenger.MessengerService['conversationStream']>
 	eventStream: ResponseStreamType<beapi.messenger.MessengerService['eventStream']>
 	conversationCreate: UnaryType<beapi.messenger.MessengerService['conversationCreate']>

@@ -56,6 +56,9 @@
     - [DevShareInstanceBertyID.Reply](#berty.messenger.v1.DevShareInstanceBertyID.Reply)
     - [DevShareInstanceBertyID.Request](#berty.messenger.v1.DevShareInstanceBertyID.Request)
     - [Device](#berty.messenger.v1.Device)
+    - [EchoDuplexTest](#berty.messenger.v1.EchoDuplexTest)
+    - [EchoDuplexTest.Reply](#berty.messenger.v1.EchoDuplexTest.Reply)
+    - [EchoDuplexTest.Request](#berty.messenger.v1.EchoDuplexTest.Request)
     - [EchoTest](#berty.messenger.v1.EchoTest)
     - [EchoTest.Reply](#berty.messenger.v1.EchoTest.Reply)
     - [EchoTest.Request](#berty.messenger.v1.EchoTest.Request)
@@ -561,6 +564,27 @@ to test more false-positive guesses.
 | public_key | [string](#string) |  |  |
 | member_public_key | [string](#string) |  |  |
 
+<a name="berty.messenger.v1.EchoDuplexTest"></a>
+
+### EchoDuplexTest
+
+<a name="berty.messenger.v1.EchoDuplexTest.Reply"></a>
+
+### EchoDuplexTest.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| echo | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.EchoDuplexTest.Request"></a>
+
+### EchoDuplexTest.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| echo | [string](#string) |  |  |
+| trigger_error | [bool](#bool) |  |  |
+
 <a name="berty.messenger.v1.EchoTest"></a>
 
 ### EchoTest
@@ -581,6 +605,7 @@ to test more false-positive guesses.
 | ----- | ---- | ----- | ----------- |
 | delay | [uint64](#uint64) |  | in ms |
 | echo | [string](#string) |  |  |
+| trigger_error | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.EventStream"></a>
 
@@ -1250,6 +1275,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | SendAck | [SendAck.Request](#berty.messenger.v1.SendAck.Request) | [SendAck.Reply](#berty.messenger.v1.SendAck.Reply) | SendAck sends an acknowledge payload for given message id. |
 | SystemInfo | [SystemInfo.Request](#berty.messenger.v1.SystemInfo.Request) | [SystemInfo.Reply](#berty.messenger.v1.SystemInfo.Reply) | SystemInfo returns runtime information. |
 | EchoTest | [EchoTest.Request](#berty.messenger.v1.EchoTest.Request) | [EchoTest.Reply](#berty.messenger.v1.EchoTest.Reply) stream | Use to test stream. |
+| EchoDuplexTest | [EchoDuplexTest.Request](#berty.messenger.v1.EchoDuplexTest.Request) stream | [EchoDuplexTest.Reply](#berty.messenger.v1.EchoDuplexTest.Reply) stream | Use to test duplex stream. |
 | ConversationStream | [ConversationStream.Request](#berty.messenger.v1.ConversationStream.Request) | [ConversationStream.Reply](#berty.messenger.v1.ConversationStream.Reply) stream |  |
 | EventStream | [EventStream.Request](#berty.messenger.v1.EventStream.Request) | [EventStream.Reply](#berty.messenger.v1.EventStream.Reply) stream |  |
 | ConversationCreate | [ConversationCreate.Request](#berty.messenger.v1.ConversationCreate.Request) | [ConversationCreate.Reply](#berty.messenger.v1.ConversationCreate.Reply) |  |
