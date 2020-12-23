@@ -383,7 +383,7 @@ ios/Frameworks/Bertybridge.framework: $(bridge_src)
 
 ios/Berty.xcworkspace: ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle package.json ios/OpenSSL-Universal-Override.podspec
 	$(call check-program, bundle)
-	cd ios && bundle exec pod install
+	cd ios && bundle exec pod install $(if $(filter-out $(CI), true),--repo-update)
 	touch $@
 
 ios/Berty.xcodeproj: ios/vendor/xcodegen $(xcodegen_yml) $(call rwildcard,ios/Berty/Source,*)
