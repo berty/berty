@@ -13,16 +13,18 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"go.uber.org/zap"
 	grpc "google.golang.org/grpc"
+	"moul.io/progress"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	protocoltypes "berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 const accountMetafileName = "account_meta"
 
-func (s *service) openAccount(req *OpenAccount_Request) (*AccountMetadata, error) {
+func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress) (*AccountMetadata, error) {
 	args := req.GetArgs()
 
 	if req.AccountID == "" {
@@ -44,14 +46,25 @@ func (s *service) openAccount(req *OpenAccount_Request) (*AccountMetadata, error
 		return nil, errcode.ErrBertyAccountDataNotFound.Wrap(err)
 	}
 
+	if prog == nil {
+		prog = progress.New()
+	}
+	prog.AddStep("init")
+	prog.AddStep("setup-logger")
+	prog.AddStep("setup-manager")
+	prog.AddStep("setup-grpc")
+	prog.Get("init").Start()
+
 	args = append(args, "--store.dir", accountStorePath)
 
 	meta, err := s.updateAccountMetadataLastOpened(req.AccountID)
 	if err != nil {
 		return nil, errcode.ErrBertyAccountMetadataUpdate.Wrap(err)
 	}
+	prog.Get("init").Done()
 
 	// setup manager logger
+	prog.Get("setup-logger").Start()
 	logger := s.logger
 	{
 		var err error
@@ -61,10 +74,11 @@ func (s *service) openAccount(req *OpenAccount_Request) (*AccountMetadata, error
 			}
 		}
 	}
-
 	s.logger.Info("opening account", zap.Strings("args", args), zap.String("account-id", req.AccountID))
+	prog.Get("setup-logger").Done()
 
 	// setup manager
+	prog.Get("setup-manager").Start()
 	var initManager *initutil.Manager
 	{
 		var err error
@@ -72,8 +86,10 @@ func (s *service) openAccount(req *OpenAccount_Request) (*AccountMetadata, error
 			return nil, errcode.ErrBertyAccountManagerOpen.Wrap(err)
 		}
 	}
+	prog.Get("setup-manager").Done()
 
 	// get manager client conn
+	prog.Get("setup-grpc").Start()
 	var ccServices *grpc.ClientConn
 	{
 		var err error
@@ -85,20 +101,54 @@ func (s *service) openAccount(req *OpenAccount_Request) (*AccountMetadata, error
 
 	s.servicesClient = grpcutil.NewLazyClient(ccServices)
 	s.initManager = initManager
+	prog.Get("setup-grpc").Done()
 
 	return meta, nil
 }
 
 // OpenAccount, start berty node
-func (s *service) OpenAccount(_ context.Context, req *OpenAccount_Request) (*OpenAccount_Reply, error) {
+func (s *service) OpenAccount(req *OpenAccount_Request, server AccountService_OpenAccountServer) error {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	if _, err := s.openAccount(req); err != nil {
-		return nil, errcode.ErrBertyAccountOpenAccount.Wrap(err)
+	prog := progress.New()
+	ch := make(chan *progress.Step, 10)
+	prog.Subscribe(ch)
+	done := make(chan bool)
+
+	go func() {
+		for step := range ch {
+			snapshot := prog.Snapshot()
+			err := server.Send(&OpenAccount_Reply{
+				Progress: &protocoltypes.Progress{
+					State:     string(snapshot.State),
+					Doing:     snapshot.Doing,
+					Percent:   float32(snapshot.Percent),
+					Completed: uint64(snapshot.Completed),
+					Total:     uint64(snapshot.Total),
+					Delay:     uint64(snapshot.TotalDuration.Microseconds()),
+				},
+			})
+			if err != nil {
+				// not sure it is worth logging something here
+				close(ch)
+				break
+			}
+			if step == nil {
+				close(ch)
+				break
+			}
+		}
+		done <- true
+	}()
+
+	if _, err := s.openAccount(req, prog); err != nil {
+		return errcode.ErrBertyAccountOpenAccount.Wrap(err)
 	}
 
-	return &OpenAccount_Reply{}, nil
+	<-done
+
+	return nil
 }
 
 func (s *service) CloseAccount(_ context.Context, _ *CloseAccount_Request) (*CloseAccount_Reply, error) {
@@ -389,7 +439,7 @@ func (s *service) createAccount(req *CreateAccount_Request) (*AccountMetadata, e
 		Args:          req.Args,
 		AccountID:     req.AccountID,
 		LoggerFilters: req.LoggerFilters,
-	})
+	}, nil)
 	if err != nil {
 		return nil, err
 	}

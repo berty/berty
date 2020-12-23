@@ -63,7 +63,7 @@ export interface WelshProtocolServiceClient {
 }
 
 export interface WelshAccountServiceClient {
-	openAccount: UnaryType<beapi.account.AccountService['openAccount']>
+	openAccount: ResponseStreamType<beapi.account.AccountService['openAccount']>
 	closeAccount: UnaryType<beapi.account.AccountService['closeAccount']>
 	listAccounts: UnaryType<beapi.account.AccountService['listAccounts']>
 	deleteAccount: UnaryType<beapi.account.AccountService['deleteAccount']>
