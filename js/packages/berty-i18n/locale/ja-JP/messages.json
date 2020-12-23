@@ -1,11 +1,4 @@
 {
-  "time": {
-    "fuzzy-time": "HH:mm",
-    "fuzzy-month-day": "M月D日",
-    "fuzzy-year-month": "YYYY年M月",
-    "datetime": "",
-    "started-ago": ""
-  },
   "onboarding": {
     "getstarted": {
       "desc": "",
