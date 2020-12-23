@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { View, TouchableOpacity, TextInput, Text as TextNative } from 'react-native'
 import { Buffer } from 'buffer'
 import { Text, Icon } from '@ui-kitten/components'
-import { useNavigation } from '@react-navigation/native'
+import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
 import { ProceduralCircleAvatar } from '../shared-components/ProceduralCircleAvatar'
@@ -10,6 +10,8 @@ import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import InvalidScan from './InvalidScan'
 import messengerMethodsHooks from '@berty-tech/store/methods'
+import { dispatch } from '@berty-tech/navigation/rootRef'
+import { Routes } from '@berty-tech/navigation'
 
 const useStylesModal = () => {
 	const [{ width, border, height, opacity }] = useStyles()
@@ -70,8 +72,11 @@ const AddThisContact: React.FC<{
 
 	React.useEffect(() => {
 		if (done && !error) {
-			// navigation.goBack()
-			navigation.navigate('Tabs')
+			dispatch(
+				CommonActions.reset({
+					routes: [{ name: Routes.Main.Home }],
+				}),
+			)
 		}
 	}, [done, error, navigation])
 
