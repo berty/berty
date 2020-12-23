@@ -27,13 +27,13 @@ func NewLazyClient(cc *grpc.ClientConn) *LazyClient {
 	return &LazyClient{cc: cc}
 }
 
-func (lc *LazyClient) InvokeUnary(ctx context.Context, desc *LazyMethodDesc, in *LazyMessage, copts ...grpc.CallOption) (out *LazyMessage, err error) {
+func (lc *LazyClient) InvokeUnary(ctx context.Context, desc *LazyMethodDesc, in *LazyMessage) (out *LazyMessage, err error) {
 	out = NewLazyMessage()
-	err = grpc.Invoke(ctx, desc.Name, in, out, lc.cc, append(copts, grpc.ForceCodec(lazyCodec))...)
+	err = grpc.Invoke(ctx, desc.Name, in, out, lc.cc, grpc.ForceCodec(lazyCodec))
 	return
 }
 
-func (lc *LazyClient) InvokeStream(ctx context.Context, desc *LazyMethodDesc, in *LazyMessage, copts ...grpc.CallOption) (*LazyStream, error) {
+func (lc *LazyClient) InvokeStream(ctx context.Context, desc *LazyMethodDesc, in *LazyMessage) (*LazyStream, error) {
 	sdesc := &grpc.StreamDesc{
 		StreamName:    desc.Name,
 		ServerStreams: desc.ServerStreams,
@@ -41,7 +41,7 @@ func (lc *LazyClient) InvokeStream(ctx context.Context, desc *LazyMethodDesc, in
 	}
 
 	sctx, cancel := context.WithCancel(ctx)
-	cstream, err := grpc.NewClientStream(sctx, sdesc, lc.cc, desc.Name, append(copts, grpc.ForceCodec(lazyCodec))...)
+	cstream, err := grpc.NewClientStream(sctx, sdesc, lc.cc, desc.Name, grpc.ForceCodec(lazyCodec))
 	if err != nil {
 		cancel()
 		return nil, err
