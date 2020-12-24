@@ -9,6 +9,7 @@ type Config struct {
 			Description string `json:"description"`
 			Kind        string `json:"kind"`
 			Suggestion  bool   `json:"suggestion"`
+			Icon        string `json:"icon"`
 		} `json:"contacts"`
 		Conversations map[string]struct {
 			Link        string `json:"link"`

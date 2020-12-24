@@ -5,13 +5,13 @@ import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty-tech/api'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { useContact, useConversation, useMsgrContext } from '@berty-tech/store/hooks'
+import { useContact, useConversation } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
 
 import HeaderSettings from '../shared-components/Header'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-import { BotAvatar, ContactAvatar } from '../avatars'
+import { ContactAvatar } from '../avatars'
 
 //
 // OneToOneSettings
@@ -30,18 +30,10 @@ const useStylesOneToOne = () => {
 
 const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 	const _styles = useStylesOneToOne()
-	const ctx = useMsgrContext()
 	const [{ text, padding }] = useStyles()
-	const isSuggestion = Object.values(ctx.persistentOptions?.suggestions).find(
-		(v: any) => v.pk === contact?.publicKey,
-	)
 	return (
 		<View style={[_styles.headerAvatar, { alignItems: 'center' }]}>
-			{isSuggestion ? (
-				<BotAvatar size={100} />
-			) : (
-				<ContactAvatar size={100} publicKey={contact.publicKey} />
-			)}
+			<ContactAvatar size={100} publicKey={contact.publicKey} />
 			<Text
 				numberOfLines={1}
 				style={[text.size.scale(18), text.color.white, text.align.center, padding.top.small]}
