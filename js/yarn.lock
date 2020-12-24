@@ -1919,10 +1919,10 @@
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.4.tgz#15925414e0ad2cd765bfef58842f7e26a7accb24"
   integrity sha512-1HcDas8SEj4z1Wc696tH56G8OlRaH/sqZOynNNB+HF0WOeXPaxTtbYzJY2oEfiUxjSKjhCKr+MvR7dCHcEelug==
 
-"@types/react-native-share@^3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@types/react-native-share/-/react-native-share-3.3.0.tgz#dc264315c28177e0262a13d5b957e0940cf715c4"
-  integrity sha512-qcmtUNOhIO0tlz7RVQR2FtWzFlblge8gsJED6dT16HdaHq+8ssm+onTVup7UYcE5DEvlmGXBuW2kZU41H+d3FA==
+"@types/react-native-share@^3.3.1":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@types/react-native-share/-/react-native-share-3.3.1.tgz#8f605c09d6dadbde63ff46e1f74f81f09c5eeea2"
+  integrity sha512-grvLZNe1EblHEdId2RqL2cZ4Sf3GUlD7WZqoPSEnN58ektko1muNnQDls+LHC4bh14KZm3ye3kNR96e6R6TVDA==
   dependencies:
     "@types/react" "*"
     "@types/react-native" "*"
