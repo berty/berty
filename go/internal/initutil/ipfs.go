@@ -20,6 +20,7 @@ import (
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	ma "github.com/multiformats/go-multiaddr"
+	madns "github.com/multiformats/go-multiaddr-dns"
 	"github.com/pkg/errors"
 	"moul.io/srand"
 
@@ -34,6 +35,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/tempdir"
 	tor "berty.tech/go-libp2p-tor-transport"
 	torcfg "berty.tech/go-libp2p-tor-transport/config"
+	"berty.tech/go-libp2p-tor-transport/dns-helpers"
 )
 
 func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
@@ -51,6 +53,8 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Protocol.MultipeerConnectivity, "p2p.multipeer-connectivity", mc.Supported, "if true Multipeer Connectivity will be enabled")
 	fs.StringVar(&m.Node.Protocol.Tor.Mode, "tor.mode", defaultTorMode, "changes the behavior of libp2p regarding tor, see advanced help for more details")
 	fs.StringVar(&m.Node.Protocol.Tor.BinaryPath, "tor.binary-path", "", "if set berty will use this external tor binary instead of his builtin one")
+	fs.StringVar(&m.Node.Protocol.Tor.DoT.Hostname, "tor.dot.hostname", "cloudflare-dns.com", "hostname for DNS over TLS over Tor (only used when tor.mode==required)")
+	fs.StringVar(&m.Node.Protocol.Tor.DoT.Addresses, "tor.dot.addresses", "1.1.1.1,1.0.0.1,[2606:4700:4700::1111],[2606:4700:4700::1001]", "addresses used for DNS over TLS over Tor (format: {IP4,[IP6]}{,:PORT})")
 	fs.BoolVar(&m.Node.Protocol.DisableIPFSNetwork, "p2p.disable-ipfs-network", false, "disable as much networking feature as possible, useful during development")
 	fs.BoolVar(&m.Node.Protocol.RelayHack, "p2p.relay-hack", false, "*temporary flag*; if set, Berty will use relays from the config optimistically")
 
@@ -140,7 +144,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 				torcfg.SetNodeDebug(ioutil.Discard),
 			)
 			if m.Node.Protocol.Tor.BinaryPath == "" {
-				torOpts = torcfg.Merge(torOpts, torcfg.EnableEmbeded)
+				torOpts = torcfg.Merge(torOpts, torcfg.EnableEmbeded())
 			} else {
 				torOpts = torcfg.Merge(torOpts, torcfg.SetBinaryPath(m.Node.Protocol.Tor.BinaryPath))
 			}
@@ -150,34 +154,48 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 			}
 
 			if m.Node.Protocol.Tor.Mode == TorRequired {
-				torOpts = torcfg.Merge(torOpts, torcfg.AllowTcpDial)
+				torOpts = torcfg.Merge(torOpts, torcfg.AllowTcpDial())
 			}
 			torBuilder, err := tor.NewBuilder(torOpts)
 			if err != nil {
 				return nil, nil, errcode.TODO.Wrap(err)
 			}
-			p2pOpts = libp2p.ChainOptions(p2pOpts, libp2p.Transport(torBuilder))
-		}
-		// -tor.mode==required: disable everything except tor
-		if m.Node.Protocol.Tor.Mode == TorRequired {
-			// Patch the IPFS config to make it complient with an anonymous node.
-			ipfsConfigPatch = func(c *ipfs_cfg.Config) error {
-				// Disable IP transports
-				c.Swarm.Transports.Network.QUIC = ipfs_cfg.False
-				c.Swarm.Transports.Network.TCP = ipfs_cfg.False
-				c.Swarm.Transports.Network.Websocket = ipfs_cfg.False
-
-				// Disable MDNS
-				c.Discovery.MDNS.Enabled = false
-
-				// Only keep tor listeners
-				c.Addresses.Swarm = []string{}
-				for _, maddr := range swarmAddrs {
-					if isTorMaddr(maddr) {
-						c.Addresses.Swarm = append(c.Addresses.Swarm, maddr)
+			p2pOpts = libp2p.ChainOptions(p2pOpts, libp2p.Transport(torBuilder.GetTransportConstructor()))
+			// -tor.mode==required: disable everything except tor
+			if m.Node.Protocol.Tor.Mode == TorRequired {
+				// Replace the default madns resolver
+				{
+					madnsResolver, err := dns.CreateDoTMaDNSResolverFromDialContext(
+						torBuilder.GetDialer().DialContext,
+						m.Node.Protocol.Tor.DoT.Hostname,
+						strings.Split(m.Node.Protocol.Tor.DoT.Addresses, ",")...,
+					)
+					if err != nil {
+						return nil, nil, errcode.TODO.Wrap(err)
 					}
+					// FIXME: pass this as a libp2p option if this become available one day.
+					madns.DefaultResolver = madnsResolver
 				}
-				return nil
+
+				// Patch the IPFS config to make it complient with an anonymous node.
+				ipfsConfigPatch = func(c *ipfs_cfg.Config) error {
+					// Disable IP transports
+					c.Swarm.Transports.Network.QUIC = ipfs_cfg.False
+					c.Swarm.Transports.Network.TCP = ipfs_cfg.False
+					c.Swarm.Transports.Network.Websocket = ipfs_cfg.False
+
+					// Disable MDNS
+					c.Discovery.MDNS.Enabled = false
+
+					// Only keep tor listeners
+					c.Addresses.Swarm = []string{}
+					for _, maddr := range swarmAddrs {
+						if isTorMaddr(maddr) {
+							c.Addresses.Swarm = append(c.Addresses.Swarm, maddr)
+						}
+					}
+					return nil
+				}
 			}
 		}
 
@@ -250,7 +268,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 			p2pOpts = libp2p.ChainOptions(p2pOpts, libp2p.StaticRelays(relays))
 		}
 
-		// prefill peerstore with known rdvp servers
+		// activate peering with RDVP servers (hold a constant connection)
 		if m.Node.Protocol.Tor.Mode != TorRequired {
 			ipfsConfigPatch = ipfsutil.ChainIpfsConfigPatch(ipfsConfigPatch, func(cfg *ipfs_cfg.Config) error {
 				for _, p := range rdvpeers {
