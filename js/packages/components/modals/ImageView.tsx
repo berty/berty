@@ -11,6 +11,9 @@ import {
 	State,
 	PanGestureHandlerGestureEvent,
 	PanGestureHandlerStateChangeEvent,
+	PinchGestureHandler,
+	PinchGestureHandlerGestureEvent,
+	PinchGestureHandlerStateChangeEvent,
 } from 'react-native-gesture-handler'
 import { useConversationsCount } from '@berty-tech/store/hooks'
 import { ForwardToBertyContactModal } from './ForwardToBertyContactModal'
@@ -25,8 +28,15 @@ const ImageComp: React.FC<{
 	height: number
 	width: number
 	nativeVerticalEvent: PanGestureHandlerGestureEvent | false
-}> = ({ uri, height, width, nativeVerticalEvent }) => {
+	isPinchMode: boolean
+	setPinchMode: (value: boolean) => void
+}> = ({ uri, height, width, nativeVerticalEvent, setPinchMode }) => {
 	const [{}, { windowHeight, windowWidth }] = useStyles()
+
+	const [imageDimensions, setImageDimensions] = useState({
+		height,
+		width,
+	})
 
 	const initialPosition = useMemo(
 		() => ({
@@ -56,6 +66,28 @@ const ImageComp: React.FC<{
 			}).start()
 		}
 	}, [nativeVerticalEvent, initialPosition, position])
+
+	const handlePinchGesture = ({ nativeEvent }: PinchGestureHandlerGestureEvent) => {
+		if (nativeEvent.numberOfPointers !== 2) {
+			return
+		}
+		let localScale = nativeEvent.scale < 1 ? 1 : nativeEvent.scale
+		setPinchMode(localScale > 1)
+
+		setImageDimensions({
+			height: height * localScale,
+			width: width * localScale,
+		})
+
+		position.setValue({
+			x: (initialPosition.x - nativeEvent.focalY) * (localScale - 1) + initialPosition.x,
+			y: (initialPosition.y - nativeEvent.focalX) * (localScale - 1) + initialPosition.y,
+		})
+	}
+	const handleStateChange = ({ nativeEvent }: PinchGestureHandlerStateChangeEvent) => {
+		if (nativeEvent.oldState === State.ACTIVE) {
+		}
+	}
 	return (
 		<View
 			style={{
@@ -64,21 +96,31 @@ const ImageComp: React.FC<{
 				width: windowWidth,
 			}}
 		>
-			<Animated.View
-				style={{
-					position: 'absolute',
-					top: position.x,
-					left: position.y,
-				}}
+			<PinchGestureHandler
+				onGestureEvent={handlePinchGesture}
+				onHandlerStateChange={handleStateChange}
 			>
-				<Image
-					source={{ uri }}
+				<View
 					style={{
-						height: height,
-						width: width - 5,
+						height: windowHeight,
+						width: windowWidth,
+						position: 'relative',
+						alignItems: 'center',
+						justifyContent: 'center',
 					}}
-				/>
-			</Animated.View>
+				>
+					<Animated.Image
+						source={{ uri }}
+						style={{
+							height: imageDimensions.height,
+							width: imageDimensions.width - 5,
+							position: 'absolute',
+							top: position.x,
+							left: position.y,
+						}}
+					/>
+				</View>
+			</PinchGestureHandler>
 		</View>
 	)
 }
@@ -104,6 +146,7 @@ export const ImageView: React.FC<{
 	const [isModalVisible, setModalVisibility] = useState(false)
 	const [isForwardModalVisible, setForwardModalVisibility] = useState(false)
 	const [message, setMessage] = useState('')
+	const [isPinchMode, setPinchMode] = useState<null | string>(null)
 	const [nativeVerticalEvent, setNativeVerticalEvent] = useState<
 		false | PanGestureHandlerGestureEvent
 	>(false)
@@ -194,6 +237,9 @@ export const ImageView: React.FC<{
 	}, [images, getImageSize])
 
 	function animatePositionLeft({ nativeEvent }: PanGestureHandlerGestureEvent) {
+		if (isPinchMode) {
+			return
+		}
 		let leftLimit
 		let rightLimit
 		if (currentIndex === 0) {
@@ -356,6 +402,8 @@ export const ImageView: React.FC<{
 									height={height}
 									width={width}
 									nativeVerticalEvent={currentIndex === index && nativeVerticalEvent}
+									isPinchMode={isPinchMode === image.cid}
+									setPinchMode={(value) => setPinchMode(value ? image.cid : null)}
 								/>
 							)
 						})}
