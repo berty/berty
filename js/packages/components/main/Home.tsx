@@ -39,7 +39,7 @@ import { createSections } from './Search'
 import { HintBody } from '../shared-components/HintBody'
 import { playSound } from '../sounds'
 import { Footer } from './Footer'
-import { AccountAvatar, BotAvatar, ContactAvatar, ConversationAvatar } from '../avatars'
+import { AccountAvatar, HardcodedAvatar, ContactAvatar, ConversationAvatar } from '../avatars'
 import EmptyChat from './empty_chat.svg'
 import { AddBot } from '@berty-tech/components/modals'
 
@@ -371,9 +371,6 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 
 	const [{ color, row, border, flex, padding, text, opacity, margin }] = useStyles()
 	const { dispatch } = useNavigation()
-	const isSuggestion = Object.values(ctx.persistentOptions?.suggestions).find(
-		(v: any) => v.pk === contact?.publicKey,
-	)
 
 	let description
 	if (lastInte?.type === beapi.messenger.AppMessage.Type.TypeUserMessage) {
@@ -457,11 +454,7 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 						},
 					]}
 				>
-					{isSuggestion ? (
-						<BotAvatar size={40} />
-					) : (
-						<ConversationAvatar size={40} publicKey={publicKey} />
-					)}
+					<ConversationAvatar size={40} publicKey={publicKey} />
 				</View>
 				<View
 					style={[
@@ -567,12 +560,14 @@ const ConversationsItem: React.FC<ConversationsItemProps> = (props) => {
 	) : null
 }
 
-const SuggestionsItem: React.FC<{ displayName: string; link: string; addBot: any }> = ({
-	displayName,
-	link,
-	addBot,
-}) => {
+const SuggestionsItem: React.FC<{
+	displayName: string
+	link: string
+	addBot: any
+	icon: string
+}> = ({ displayName, link, addBot, icon, ...oProps }) => {
 	const [{ color, row, border, flex, padding, text, margin }] = useStyles()
+	console.log('sugg item', icon, oProps)
 	return (
 		<>
 			<TouchableHighlight
@@ -604,7 +599,7 @@ const SuggestionsItem: React.FC<{ displayName: string; link: string; addBot: any
 							},
 						]}
 					>
-						<BotAvatar size={40} />
+						<HardcodedAvatar size={40} name={icon} />
 					</View>
 					<View
 						style={[
@@ -1063,7 +1058,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 	const suggestions = Object.values(ctx.persistentOptions?.suggestions).filter(
 		(i: any) => i.state === 'unread',
 	)
-	const isSuggestion: number = suggestions.length
+	const hasSuggestion: number = suggestions.length
 
 	const searchConversations = React.useMemo(
 		() =>
@@ -1167,7 +1162,7 @@ export const Home: React.FC<ScreenProps.Main.Home> = () => {
 														onLayout={onLayoutConvs}
 														addBot={setIsAddBot}
 													/>
-													{!isConversation && !isSuggestion && (
+													{!isConversation && !hasSuggestion && (
 														<View style={[background.white]}>
 															<View
 																style={[

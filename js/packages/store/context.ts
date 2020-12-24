@@ -145,6 +145,7 @@ export type Suggestion = {
 	// added | skipped | unread
 	state: string
 	pk: string
+	icon: string
 }
 
 export type PersistentOptionsSuggestions = {
@@ -218,6 +219,7 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 					displayName: value.name,
 					state: 'unread',
 					pk: '',
+					icon: value.icon,
 				},
 			}
 		}

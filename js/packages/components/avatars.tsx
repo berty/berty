@@ -3,11 +3,20 @@ import Jdenticon from 'react-native-jdenticon'
 import { Image, View, ViewStyle } from 'react-native'
 
 import { useStyles } from '@berty-tech/styles'
-import { useAccount, useContact, useMember, useConversation, Maybe } from '@berty-tech/store/hooks'
+import {
+	useAccount,
+	useContact,
+	useMember,
+	useConversation,
+	Maybe,
+	useMsgrContext,
+} from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
+import PinkBotAvatar from '@berty-tech/assets/berty_bot_pink_bg.png'
+import GreenDevAvatar from '@berty-tech/assets/berty_dev_green_bg.png'
 
 import AttachmentImage from './AttachmentImage'
-import AvatarGroup19 from './main/Avatar_Group_Copy_19.png'
+import GroupAvatar from './main/Avatar_Group_Copy_19.png'
 import Logo from './main/1_berty_picto.svg'
 
 export type AvatarStyle = Omit<
@@ -100,33 +109,37 @@ const GenericAvatar: React.FC<{
 	)
 }
 
-export const BotAvatar: React.FC<{ size: number; style?: AvatarStyle }> = ({ size, style }) => {
-	const [{ border, flex, background }] = useStyles()
-	const padding = Math.round(size / 15)
-	let innerSize = Math.round(size - 2 * padding)
-	if (innerSize % 2) {
-		innerSize--
+const hardcodedAvatars = {
+	berty_dev_green_bg: GreenDevAvatar,
+	berty_bot_pink_bg: PinkBotAvatar,
+	group: GroupAvatar,
+}
+
+export type HardcodedAvatarKey = keyof typeof hardcodedAvatars
+
+export const HardcodedAvatar: React.FC<{
+	size: number
+	style?: AvatarStyle
+	name: HardcodedAvatarKey
+}> = ({ size, style, name }) => {
+	const [{ border }] = useStyles()
+	let avatar = hardcodedAvatars[name]
+	if (!avatar) {
+		avatar = Logo
 	}
-	let iconSize = Math.round(innerSize - innerSize / 8)
-	if (iconSize % 2) {
-		iconSize--
-	}
+	console.log('name', name, 'source', !!avatar)
 	return (
 		<View
-			style={[
-				background.white,
-				border.shadow.medium,
-				style,
-				flex.justify.center,
-				flex.align.center,
-				{
-					borderRadius: size / 2,
+			style={[{ borderRadius: size / 2, backgroundColor: 'white' }, border.shadow.medium, style]}
+		>
+			<Image
+				source={avatar}
+				style={{
 					width: size,
 					height: size,
-				},
-			]}
-		>
-			<Logo width={iconSize} height={iconSize} style={{ right: -2, top: -1 }} />
+					borderRadius: size / 2,
+				}}
+			/>
 		</View>
 	)
 }
@@ -154,6 +167,13 @@ export const ContactAvatar: React.FC<{
 	style?: AvatarStyle
 }> = ({ publicKey, size, style }) => {
 	const contact = useContact(publicKey)
+	const ctx = useMsgrContext()
+	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(
+		(v) => v.pk === publicKey,
+	)
+	if (suggestion) {
+		return <HardcodedAvatar size={size} style={style} name={suggestion.icon as any} />
+	}
 	return (
 		<GenericAvatar
 			cid={contact?.avatarCid}
@@ -173,25 +193,20 @@ export const MemberAvatar: React.FC<{
 	return <GenericAvatar cid={member?.avatarCid} size={size} fallbackSeed={member?.publicKey} />
 }
 
-export const MultiMemberAvatar: React.FC<{ size: number; style?: AvatarStyle }> = ({
-	size,
-	style,
-}) => {
-	const [{ border }] = useStyles()
-	return (
-		<View
-			style={[{ borderRadius: size / 2, backgroundColor: 'white' }, border.shadow.medium, style]}
-		>
-			<Image
-				source={AvatarGroup19}
-				style={{
-					width: size,
-					height: size,
-					borderRadius: size / 2,
-				}}
-			/>
-		</View>
+export const MultiMemberAvatar: React.FC<{
+	size: number
+	style?: AvatarStyle
+	publicKey: Maybe<string>
+}> = ({ size, style, publicKey }) => {
+	const ctx = useMsgrContext()
+	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(
+		(v) => v.pk === publicKey,
 	)
+	let name = 'group'
+	if (suggestion) {
+		name = suggestion.icon
+	}
+	return <HardcodedAvatar size={size} style={style} name={name as any} />
 }
 
 export const ConversationAvatar: React.FC<{
@@ -200,13 +215,21 @@ export const ConversationAvatar: React.FC<{
 	style?: AvatarStyle
 }> = ({ publicKey, size, style }) => {
 	const conv = useConversation(publicKey)
+	const ctx = useMsgrContext()
+
+	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(
+		(v) => v.pk === publicKey,
+	)
+	if (suggestion) {
+		return <HardcodedAvatar size={size} style={style} name={suggestion.icon as any} />
+	}
 
 	if (!conv) {
 		return <GenericAvatar size={size} style={style} cid='' fallbackSeed={publicKey} />
 	}
 
 	if (conv.type === beapi.messenger.Conversation.Type.MultiMemberType) {
-		return <MultiMemberAvatar size={size} style={style} />
+		return <MultiMemberAvatar size={size} style={style} publicKey={publicKey} />
 	}
 
 	return <ContactAvatar size={size} publicKey={conv?.contactPublicKey} />

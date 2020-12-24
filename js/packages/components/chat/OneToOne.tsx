@@ -15,6 +15,7 @@ import { CommonActions } from '@react-navigation/native'
 import { Translation, useTranslation } from 'react-i18next'
 import moment from 'moment'
 import { groupBy } from 'lodash'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { KeyboardAvoidingView } from '@berty-tech/components/shared-components/KeyboardAvoidingView'
 import { useStyles } from '@berty-tech/styles'
@@ -34,7 +35,7 @@ import { Message } from './message'
 import { MessageInvitationButton } from './message/MessageInvitation'
 import { MessageSystemWrapper } from './message/MessageSystemWrapper'
 import BlurView from '../shared-components/BlurView'
-import { ContactAvatar, BotAvatar } from '../avatars'
+import { ContactAvatar } from '../avatars'
 import { pbDateToNum, timeFormat } from '../helpers'
 import { useLayout } from '../hooks'
 import { playSound } from '../sounds'
@@ -61,12 +62,17 @@ const CenteredActivityIndicator: React.FC = (props: ActivityIndicator['props']) 
 	)
 }
 
-export const ChatHeader: React.FC<any> = ({ convPk, stickyDate, showStickyDate, isSuggestion }) => {
+export const ChatHeader: React.FC<{ convPk: any; stickyDate: any; showStickyDate: any }> = ({
+	convPk,
+	stickyDate,
+	showStickyDate,
+}) => {
+	const insets = useSafeAreaInsets()
 	const { navigate, goBack } = useNavigation()
 	const conv = useConversation(convPk)
 	const contact = useContact(conv?.contactPublicKey || null)
 
-	const [{ row, padding, column, margin, text, flex, opacity, color }] = useStyles()
+	const [{ padding, text, opacity, color }] = useStyles()
 
 	const [layoutHeader, onLayoutHeader] = useLayout() // to position date under blur
 
@@ -76,6 +82,7 @@ export const ChatHeader: React.FC<any> = ({ convPk, stickyDate, showStickyDate, 
 		return <CenteredActivityIndicator />
 	}
 	const title = (conv as any).fake ? `FAKE - ${contact.displayName}` : contact?.displayName || ''
+	const outerElemsSize = 45
 	return (
 		<View style={{ position: 'absolute', top: 0, left: 0, right: 0 }} onLayout={onLayoutHeader}>
 			<BlurView
@@ -85,66 +92,28 @@ export const ChatHeader: React.FC<any> = ({ convPk, stickyDate, showStickyDate, 
 			/>
 			<View
 				style={[
-					flex.align.center,
-					flex.direction.row,
-					padding.right.medium,
-					padding.left.tiny,
-					margin.top.scale(50),
-					padding.bottom.scale(20),
+					{
+						alignItems: 'center',
+						flexDirection: 'row',
+						justifyContent: 'space-between',
+						marginTop: insets.top,
+					},
+					padding.medium,
 				]}
 			>
-				<TouchableOpacity
-					style={[flex.tiny, flex.justify.center, flex.align.center]}
-					onPress={goBack}
-				>
+				<TouchableOpacity onPress={goBack} style={{ width: outerElemsSize }}>
 					<Icon name='arrow-back-outline' width={25} height={25} fill={color.black} />
 				</TouchableOpacity>
-				<View style={[flex.large, column.justify, row.item.justify, margin.top.small]}>
-					<View style={[flex.direction.row, flex.justify.center, flex.align.center]}>
-						<Text
-							numberOfLines={1}
-							style={[text.align.center, text.bold.medium, text.size.scale(20)]}
-						>
-							{title}
-						</Text>
-						{/* {state === 'error' && (
-							<Icon name='close-outline' width={14} height={14} fill={color.red} />
-						)} */}
-						{/* {state === 'done' ? (
-							<View
-								style={[
-									width(14),
-									height(14),
-									border.radius.scale(7),
-									margin.left.large,
-									{
-										backgroundColor: main?.debugGroup?.peerIds?.length ? color.green : color.red,
-									},
-								]}
-							/>
-						) : (
-							<ActivityIndicator size='small' style={[margin.left.large]} />
-						)} */}
-					</View>
-					{/* {lastDate && (
-						<Text numberOfLines={1} style={[text.size.small, text.color.grey, text.align.center]}>
-							Last seen <FromNow date={lastDate} />
-						</Text>
-					)} */}
-				</View>
-				<View style={[flex.tiny, row.fill, { alignItems: 'center' }]}>
-					<TouchableOpacity
-						activeOpacity={contact ? 0.2 : 0.5}
-						style={[flex.tiny, row.item.justify, !contact ? opacity(0.5) : null]}
-						onPress={() => navigate.chat.oneToOneSettings({ convId: convPk })}
-					>
-						{isSuggestion ? (
-							<BotAvatar size={45} />
-						) : (
-							<ContactAvatar size={45} publicKey={conv.contactPublicKey} />
-						)}
-					</TouchableOpacity>
-				</View>
+				<Text numberOfLines={1} style={[text.bold.medium, text.size.scale(20)]}>
+					{title}
+				</Text>
+				<TouchableOpacity
+					activeOpacity={contact ? 0.2 : 0.5}
+					style={[!contact ? opacity(0.5) : null]}
+					onPress={() => navigate.chat.oneToOneSettings({ convId: convPk })}
+				>
+					<ContactAvatar size={outerElemsSize} publicKey={conv.contactPublicKey} />
+				</TouchableOpacity>
 			</View>
 			{stickyDate && showStickyDate && layoutHeader?.height && (
 				<View
@@ -464,12 +433,9 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 	useReadEffect(params?.convId, 1000)
 	const { dispatch } = useNavigation()
 	const { t } = useTranslation()
+	const conv = useConversation(params?.convId)
+	const contact = useContact(conv?.contactPublicKey)
 
-	const ctx: any = useMsgrContext()
-	const conv = ctx.conversations[params?.convId]
-	const contact: any =
-		Object.values(ctx.contacts).find((c: any) => c.conversationPublicKey === conv?.publicKey) ||
-		null
 	const isIncoming = contact?.state === beapi.messenger.Contact.State.IncomingRequest
 	const isFooterDisable = isIncoming
 	const placeholder = isFooterDisable
@@ -479,9 +445,6 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 	const [stickyDate, setStickyDate] = useState(conv?.lastUpdate || null)
 	const [showStickyDate, setShowStickyDate] = useState(false)
 	const [isSwipe, setSwipe] = useState(true)
-	const isSuggestion = Object.values(ctx.persistentOptions?.suggestions).find(
-		(v: any) => v.pk === contact?.publicKey,
-	)
 
 	return (
 		<View style={[StyleSheet.absoluteFill, background.white, { flex: 1 }]}>
@@ -513,11 +476,7 @@ export const OneToOne: React.FC<ScreenProps.Chat.OneToOne> = ({ route: { params 
 						placeholder={placeholder}
 						setSwipe={setSwipe}
 					/>
-					<ChatHeader
-						isSuggestion={isSuggestion}
-						convPk={params?.convId || ''}
-						{...{ stickyDate, showStickyDate }}
-					/>
+					<ChatHeader convPk={params?.convId || ''} {...{ stickyDate, showStickyDate }} />
 				</KeyboardAvoidingView>
 			</SwipeNavRecognizer>
 		</View>

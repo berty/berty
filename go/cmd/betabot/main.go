@@ -273,27 +273,27 @@ func betabot() error {
 	return nil
 }
 
-func (bot *Bot) handleEvent(ctx context.Context, gme *messengertypes.EventStream_Reply) error {
-	handlers := map[messengertypes.StreamEvent_Type]func(ctx context.Context, gme *messengertypes.EventStream_Reply, payload proto.Message) error{
+func (bot *Bot) handleEvent(ctx context.Context, sr *messengertypes.EventStream_Reply) error {
+	handlers := map[messengertypes.StreamEvent_Type]func(context.Context, *messengertypes.EventStream_Reply, proto.Message) error{
 		messengertypes.StreamEvent_TypeContactUpdated:      bot.handleContactUpdated,
 		messengertypes.StreamEvent_TypeInteractionUpdated:  bot.handleInteractionUpdated,
 		messengertypes.StreamEvent_TypeConversationUpdated: bot.handleConversationUpdated,
 	}
 
-	handler, found := handlers[gme.Event.Type]
+	handler, found := handlers[sr.Event.Type]
 	if !found {
-		bot.logger.Debug("handling event", zap.Any("event", gme))
-		return fmt.Errorf("unhandled event type: %q", gme.Event.Type)
+		bot.logger.Debug("handling event", zap.Any("event", sr))
+		return fmt.Errorf("unhandled event type: %q", sr.Event.Type)
 	}
 
-	payload, err := gme.Event.UnmarshalPayload()
+	payload, err := sr.Event.UnmarshalPayload()
 	if err != nil {
 		return fmt.Errorf("unmarshal payload failed: %w", err)
 	}
-	bot.logger.Info("handling event", zap.Any("event", gme), zap.Any("payload", payload))
+	bot.logger.Info("handling event", zap.Any("event", sr), zap.Any("payload", payload))
 
-	if err := handler(ctx, gme, payload); err != nil {
-		return fmt.Errorf("handler %q error: %w", gme.Event.Type, err)
+	if err := handler(ctx, sr, payload); err != nil {
+		return fmt.Errorf("handler %q error: %w", sr.Event.Type, err)
 	}
 
 	return nil
@@ -321,18 +321,6 @@ func (bot *Bot) handleContactUpdated(ctx context.Context, _ *messengertypes.Even
 		})
 		bot.storeMutex.Unlock()
 		bot.saveStore()
-
-		body := `Hey! 🙌 Welcome to the Berty beta version! 🎊
-I’m here to help you with the onboarding process.
-Let's test out some features together!
-Just type 'yes' to let me know you copy that.`
-		options := []*messengertypes.ReplyOption{
-			{Payload: "yes", Display: "Sure, go for it!"},
-			{Payload: "no", Display: "Show me all you can do instead!"},
-		}
-		if err := bot.interactUserMessage(ctx, body, contact.ConversationPublicKey, options); err != nil {
-			return fmt.Errorf("interact user message failed: %w", err)
-		}
 	}
 	return nil
 }
@@ -485,7 +473,11 @@ func doStep2(ctx context.Context, _ *Conversation, bot *Bot, receivedMessage *me
 	return false, nil
 }
 
-func (bot *Bot) handleGroupInvitationInteractionUpdated(ctx context.Context, _ *messengertypes.EventStream_Reply, interaction *messengertypes.Interaction, payload proto.Message) error {
+func (bot *Bot) handleGroupInvitationInteractionUpdated(ctx context.Context, sr *messengertypes.EventStream_Reply, interaction *messengertypes.Interaction, payload proto.Message) error {
+	if !sr.GetEvent().GetIsNew() {
+		return nil
+	}
+
 	if !interaction.IsMe {
 		// auto-accept invitations to group
 		receivedInvitation := payload.(*messengertypes.AppMessage_GroupInvitation)
@@ -499,10 +491,14 @@ func (bot *Bot) handleGroupInvitationInteractionUpdated(ctx context.Context, _ *
 	return nil
 }
 
-func (bot *Bot) handleInteractionUpdated(ctx context.Context, gme *messengertypes.EventStream_Reply, payload proto.Message) error {
+func (bot *Bot) handleInteractionUpdated(ctx context.Context, sr *messengertypes.EventStream_Reply, payload proto.Message) error {
+	if !sr.GetEvent().GetIsNew() {
+		return nil
+	}
+
 	interaction := payload.(*messengertypes.StreamEvent_InteractionUpdated).Interaction
 
-	handlers := map[messengertypes.AppMessage_Type]func(ctx context.Context, gme *messengertypes.EventStream_Reply, interaction *messengertypes.Interaction, payload proto.Message) error{
+	handlers := map[messengertypes.AppMessage_Type]func(context.Context, *messengertypes.EventStream_Reply, *messengertypes.Interaction, proto.Message) error{
 		messengertypes.AppMessage_TypeUserMessage:     bot.handleUserMessageInteractionUpdated,
 		messengertypes.AppMessage_TypeGroupInvitation: bot.handleGroupInvitationInteractionUpdated,
 	}
@@ -517,14 +513,14 @@ func (bot *Bot) handleInteractionUpdated(ctx context.Context, gme *messengertype
 	}
 	bot.logger.Debug("handling interaction", zap.Any("payload", payload))
 
-	if err := handler(ctx, gme, interaction, payload); err != nil {
+	if err := handler(ctx, sr, interaction, payload); err != nil {
 		return fmt.Errorf("handle %q failed: %w", interaction.Type, err)
 	}
 
 	return nil
 }
 
-func (bot *Bot) handleConversationUpdated(ctx context.Context, _ *messengertypes.EventStream_Reply, payload proto.Message) error {
+func (bot *Bot) handleConversationUpdated(ctx context.Context, sr *messengertypes.EventStream_Reply, payload proto.Message) error {
 	// send to multimember staff conv that this user join us on Berty with the link of the group
 	conversation := payload.(*messengertypes.StreamEvent_ConversationUpdated).Conversation
 	if bot.store.StaffConvPK != "" && strings.HasPrefix(conversation.GetDisplayName(), staffXConvPrefix) {
@@ -559,7 +555,26 @@ For the moment i can't send a group invitation so i share the link of the conver
 		// 		return err
 		// 	}
 		// }
+
+		return nil
 	}
+
+	if conversation.Type == messengertypes.Conversation_ContactType && sr.GetEvent().GetIsNew() {
+		time.Sleep(2 * time.Second)
+		body := `Hey! 🙌 Welcome to the Berty beta version! 🎊
+I’m here to help you with the onboarding process.
+Let's test out some features together!
+Just type 'yes' to let me know you copy that.`
+		options := []*messengertypes.ReplyOption{
+			{Payload: "yes", Display: "Sure, go for it!"},
+			{Payload: "no", Display: "Show me all you can do instead!"},
+		}
+		if err := bot.interactUserMessage(ctx, body, conversation.GetPublicKey(), options); err != nil {
+			return fmt.Errorf("interact user message failed: %w", err)
+		}
+		return nil
+	}
+
 	return nil
 }
 
