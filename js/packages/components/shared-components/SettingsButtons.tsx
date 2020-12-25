@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, StyleProp } from 'react-native'
+import { View, TouchableOpacity, StyleProp, Animated, Easing } from 'react-native'
 import { Text, Icon, Toggle } from '@ui-kitten/components'
 import { useStyles } from '@berty-tech/styles'
 import { CircleAvatar } from './CircleAvatar'
@@ -79,7 +79,10 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 }) => {
 	const [isToggle, setIsToggle] = useState<boolean>()
 	const _styles = useStylesSettingButton()
-	const [{ background, margin, row, flex, padding, opacity, text, border }] = useStyles()
+	const [
+		{ background, margin, row, flex, padding, opacity, text, border },
+		{ windowWidth },
+	] = useStyles()
 
 	return (
 		<TouchableOpacity
@@ -136,7 +139,12 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 						</View>
 					)}
 					<View>
-						<Text style={[padding.left.small, text.color.black]}>{name}</Text>
+						<Text
+							numberOfLines={2}
+							style={[padding.left.small, text.color.black, { maxWidth: windowWidth - 150 }]}
+						>
+							{name}
+						</Text>
 					</View>
 				</View>
 				<View style={[row.center, { alignItems: 'center' }]}>
@@ -468,6 +476,70 @@ export const ButtonSettingItem: React.FC<ButtonSettingItem> = ({
 			<Text style={[text.bold.medium, _styles.updateFeatureText, { color }, styleText]}>
 				{value}
 			</Text>
+		</View>
+	)
+}
+
+export const ButtonDropDown: React.FC<{ title: string; body: string }> = ({ title, body }) => {
+	const [isOpen, setOpen] = useState(false)
+	const [{ padding, margin }] = useStyles()
+	const [animateHeight] = useState(new Animated.Value(0))
+	const [rotateValue] = useState(new Animated.Value(0))
+
+	const rotateAnimation = rotateValue.interpolate({
+		inputRange: [0, 1],
+		outputRange: ['0deg', '180deg'],
+	})
+
+	return (
+		<View
+			style={{
+				paddingVertical: 10,
+				flexDirection: 'row',
+				alignItems: 'center',
+				justifyContent: 'space-between',
+				marginLeft: 20,
+				paddingRight: 30,
+			}}
+		>
+			<View style={[padding.right.small, { flex: 1, overflow: 'hidden' }]}>
+				<Text style={{ marginBottom: 12 }}>{title}</Text>
+				<Animated.View style={{ maxHeight: animateHeight }}>
+					<Text style={[margin.top.small]}>{body}</Text>
+				</Animated.View>
+			</View>
+			<TouchableOpacity
+				activeOpacity={0.9}
+				style={[{ alignSelf: 'flex-start' }]}
+				onPress={() => {
+					Animated.parallel([
+						Animated.timing(animateHeight, {
+							toValue: isOpen ? 0 : 1000,
+							duration: isOpen ? 350 : 800,
+							easing: isOpen ? Easing.out(Easing.circle) : Easing.linear,
+							useNativeDriver: false,
+						}),
+						Animated.timing(rotateValue, {
+							toValue: isOpen ? 0 : 1,
+							duration: 150,
+							useNativeDriver: true,
+						}),
+					]).start()
+
+					setOpen((prev) => !prev)
+				}}
+			>
+				<Animated.View
+					style={[
+						padding.tiny,
+						{
+							transform: [{ rotate: rotateAnimation }],
+						},
+					]}
+				>
+					<Icon name='arrow-ios-upward' width={25} height={25} fill='black' />
+				</Animated.View>
+			</TouchableOpacity>
 		</View>
 	)
 }
