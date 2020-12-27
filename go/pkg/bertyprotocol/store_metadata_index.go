@@ -56,6 +56,39 @@ func (m *metadataStoreIndex) setLogger(logger *zap.Logger) {
 	m.logger = logger
 }
 
+// TODO: refractor common part with UpdateIndex() function
+func (m *metadataStoreIndex) UpdateReplicatingEntry(e ipfslog.Entry, metaEvent *protocoltypes.GroupMetadataEvent, event proto.Message) {
+	m.lock.Lock()
+	defer m.lock.Unlock()
+
+	_, alreadyHandledEvent := m.handledEvents[e.GetHash().String()]
+
+	// TODO: improve account events handling
+	if m.g.GroupType != protocoltypes.GroupTypeAccount && alreadyHandledEvent {
+		return
+	}
+
+	handlers, ok := m.eventHandlers[metaEvent.Metadata.EventType]
+	if !ok {
+		m.logger.Error("handler for event type not found", zap.String("event-type", metaEvent.Metadata.EventType.String()))
+		return
+	}
+
+	var lastErr error
+
+	for _, h := range handlers {
+		err := h(event)
+		if err != nil {
+			m.logger.Error("unable to handle event", zap.Error(err))
+			lastErr = err
+		}
+	}
+
+	if lastErr == nil {
+		m.handledEvents[e.GetHash().String()] = struct{}{}
+	}
+}
+
 func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) error {
 	m.lock.Lock()
 	defer m.lock.Unlock()
