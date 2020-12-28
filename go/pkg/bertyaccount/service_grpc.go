@@ -149,6 +149,8 @@ func (s *service) ClientStreamCloseAndRecv(ctx context.Context, req *ClientStrea
 		return nil, err
 	}
 
+	errS := getServiceError(err)
+	fmt.Printf("ERROR: %+v\n", errS)
 	reply := s.clientStreamRecv(id, cstream)
 
 	return &ClientStreamCloseAndRecv_Reply{

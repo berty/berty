@@ -963,13 +963,13 @@ func (svc *service) AccountGet(ctx context.Context, req *messengertypes.AccountG
 
 func (svc *service) EchoTest(req *messengertypes.EchoTest_Request, srv messengertypes.MessengerService_EchoTestServer) error {
 	if req.TriggerError {
-		return fmt.Errorf("error triggered: %w", errcode.ErrInternal)
+		return errcode.ErrTestEcho
 	}
 
 	for {
 		err := srv.Send(&messengertypes.EchoTest_Reply{Echo: req.Echo})
 		if err != nil {
-			return err
+			return errcode.ErrTestEchoSend
 		}
 
 		time.Sleep(time.Duration(req.Delay) * time.Millisecond)
@@ -980,18 +980,18 @@ func (svc *service) EchoDuplexTest(srv messengertypes.MessengerService_EchoDuple
 	for {
 		req, err := srv.Recv()
 		if err != nil {
-			return fmt.Errorf("unable to receive msg: %w", err)
+			return errcode.ErrTestEchoRecv
 		}
 
 		if req.TriggerError {
-			return fmt.Errorf("error triggered: %w", errcode.ErrInternal)
+			return errcode.ErrTestEcho
 		}
 
 		err = srv.Send(&messengertypes.EchoDuplexTest_Reply{
 			Echo: req.Echo,
 		})
 		if err != nil {
-			return fmt.Errorf("unable to send back msg: %w", err)
+			return errcode.ErrTestEchoSend
 		}
 	}
 }

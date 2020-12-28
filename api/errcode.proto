@@ -155,9 +155,15 @@ enum ErrCode {
   ErrReplayProcessGroupMessage = 2201;
 
   // API internals errors
+
   ErrAttachmentPrepare = 2300;
   ErrAttachmentRetrieve = 2301;
   ErrProtocolSend = 2302;
+
+  // Test Error
+  ErrTestEcho = 2401;
+  ErrTestEchoRecv = 2402;
+  ErrTestEchoSend = 2403;
 
   // -----------------
   // CLI

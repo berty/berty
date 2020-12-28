@@ -67,8 +67,8 @@ func TestGRPCUnaryService(t *testing.T) {
 
 		require.NoError(t, err)
 		require.NotNil(t, res.Error)
-		assert.NotEqual(t, res.Error.GrpcErrorCode, GRPCErrCode_OK)
-		assert.NotEqual(t, res.Error.GrpcErrorCode, errcode.Undefined)
+		assert.Equal(t, GRPCErrCode_UNAVAILABLE, res.Error.GrpcErrorCode)
+		assert.NotEqual(t, errcode.Undefined, res.Error.GrpcErrorCode)
 		require.NotNil(t, res.Error.ErrorDetails)
 		assert.Greater(t, len(res.Error.ErrorDetails.Codes), 0)
 	}
@@ -131,8 +131,8 @@ func TestGRPCStreamService(t *testing.T) {
 			})
 			require.NoError(t, err)
 			require.NotNil(t, res.Error)
-			assert.Equal(t, res.Error.GrpcErrorCode, GRPCErrCode_OK)
-			assert.Equal(t, res.Error.ErrorCode, errcode.Undefined)
+			assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
+			assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
 
 			var output messengertypes.EchoTest_Reply
 			err = proto.Unmarshal(res.Payload, &output)
@@ -202,8 +202,9 @@ func TestGRPCStreamServiceError(t *testing.T) {
 		require.NoError(t, err)
 		require.NotEmpty(t, res.StreamId)
 		require.NotNil(t, res.Error)
-		assert.Equal(t, res.Error.GrpcErrorCode, GRPCErrCode_OK)
-		assert.Equal(t, res.Error.ErrorCode, errcode.Undefined)
+
+		assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
+		assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
 		streamid = res.StreamId
 	}
 
@@ -214,8 +215,142 @@ func TestGRPCStreamServiceError(t *testing.T) {
 
 		require.NoError(t, err)
 		require.NotNil(t, res.Error)
-		assert.NotEqual(t, res.Error.GrpcErrorCode, GRPCErrCode_OK)
-		assert.NotEqual(t, res.Error.ErrorCode, errcode.Undefined)
+
+		assert.Equal(t, GRPCErrCode_UNAVAILABLE, res.Error.GrpcErrorCode)
+		assert.Equal(t, errcode.ErrTestEcho, res.Error.ErrorCode)
+	}
+}
+
+func TestGRPCStreamDuplexService(t *testing.T) {
+	tmpdir, err := ioutil.TempDir("", "test")
+	require.NoError(t, err)
+	defer os.RemoveAll(tmpdir)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	s, err := NewService(&Options{
+		RootDirectory: tmpdir,
+	})
+	require.NoError(t, err)
+
+	cl := createAccountClient(ctx, t, s)
+
+	// create an account
+	{
+		args := testConfig(tmpdir)
+		res, err := cl.CreateAccount(ctx, &CreateAccount_Request{
+			Args: args,
+		})
+		require.NoError(t, err)
+		assert.NotEmpty(t, res.AccountMetadata)
+	}
+
+	// test echoTest error
+	var streamid string
+	{
+		res, err := cl.CreateClientStream(ctx, &ClientCreateStream_Request{
+			MethodDesc: &MethodDesc{
+				Name:           "/berty.messenger.v1.MessengerService/EchoDuplexTest",
+				IsServerStream: true,
+				IsClientStream: true,
+			},
+		})
+
+		require.NoError(t, err)
+		require.NotEmpty(t, res.StreamId)
+		require.NotNil(t, res.Error)
+
+		assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
+		assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
+		streamid = res.StreamId
+	}
+
+	// send echo test
+	{
+		input := &messengertypes.EchoDuplexTest_Request{
+			Echo: echoStringTest,
+		}
+		payload, err := proto.Marshal(input)
+		require.NoError(t, err)
+
+		for i := 0; i < 10; i++ {
+			// test send
+			{
+				res, err := cl.ClientStreamSend(ctx, &ClientStreamSend_Request{
+					StreamId: streamid,
+					Payload:  payload,
+				})
+
+				require.NoError(t, err)
+				require.NotNil(t, res.Error)
+				assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
+				assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
+			}
+
+			// test recv
+			{
+				res, err := cl.ClientStreamRecv(ctx, &ClientStreamRecv_Request{
+					StreamId: streamid,
+				})
+
+				require.NoError(t, err)
+				require.NotNil(t, res.Error)
+				assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
+				assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
+
+				var output messengertypes.EchoDuplexTest_Reply
+				err = proto.Unmarshal(res.Payload, &output)
+				require.NoError(t, err)
+
+				assert.Equal(t, echoStringTest, output.Echo)
+			}
+		}
+	}
+
+	// test duplex error
+	{
+		input := &messengertypes.EchoDuplexTest_Request{
+			Echo:         echoStringTest,
+			TriggerError: true,
+		}
+		payload, err := proto.Marshal(input)
+		require.NoError(t, err)
+
+		// test send
+		{
+			res, err := cl.ClientStreamSend(ctx, &ClientStreamSend_Request{
+				StreamId: streamid,
+				Payload:  payload,
+			})
+
+			require.NoError(t, err)
+			require.NotNil(t, res.Error)
+			assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
+			assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
+		}
+
+		// test recv
+		{
+			res, err := cl.ClientStreamRecv(ctx, &ClientStreamRecv_Request{
+				StreamId: streamid,
+			})
+
+			require.NoError(t, err)
+			require.NotNil(t, res.Error)
+			assert.Equal(t, GRPCErrCode_UNAVAILABLE, res.Error.GrpcErrorCode)
+			assert.Equal(t, errcode.ErrTestEcho, res.Error.ErrorCode)
+		}
+
+		// should not be able to send again
+		{
+			_, err := cl.ClientStreamSend(ctx, &ClientStreamSend_Request{
+				StreamId: streamid,
+				Payload:  payload,
+			})
+
+			assert.Error(t, err)
+		}
 	}
 }
 
@@ -243,7 +378,7 @@ func testConfig(storedir string) []string {
 		"--log.format=console",
 		"--node.display-name=",
 		"--node.listeners=",
-		"--p2p.swarm-listeners=/ip6/0.0.0.0/tcp/0",
+		"--p2p.swarm-listeners=/ip6/::/tcp/0",
 		"--p2p.local-discovery=false",
 		"--store.dir=" + storedir,
 	}
