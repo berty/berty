@@ -53,4 +53,21 @@ class GRPCError extends Error {
 	}
 }
 
-export default GRPCError
+const newGRPCError = (code: number, message: string): GRPCError => {
+	const error = account.Error.fromObject({
+		message: message,
+		grpcErrorCode: code,
+	})
+	return new GRPCError(error)
+}
+
+const EOF = new GRPCError({
+	grpcErrorCode: account.GRPCErrCode.CANCELED,
+	message: 'EOF',
+})
+
+export {
+	GRPCError,
+	EOF,
+	newGRPCError,
+}

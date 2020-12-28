@@ -4,7 +4,7 @@ import { account } from '@berty-tech/api'
 import { getServiceName } from './utils'
 import * as pbjs from 'protobufjs'
 import { ServiceClientType } from '../welsh-clients.gen'
-import GRPCError from './error'
+import { GRPCError, EOF } from '../error'
 
 const ErrStreamClientAlreadyStarted = new GRPCError({
 	grpcErrorCode: account.GRPCErrCode.CANCELED,
@@ -85,7 +85,9 @@ const makeStreamClient = <M extends pbjs.Method>(
 				return
 			}
 
-			return method.resolvedResponseType?.decode(response.payload)
+			const payload = method.resolvedResponseType?.decode(response.payload)
+			this._publish(payload, null)
+			return payload
 		},
 	}
 
@@ -142,7 +144,7 @@ const stream = (accountClient: ServiceClientType<account.AccountService>) => asy
 
 	const grpcerr = new GRPCError(response.error)
 	if (!grpcerr.OK) {
-		throw grpcerr
+		throw grpcerr.EOF ? EOF : grpcerr
 	}
 
 	return makeStreamClient(response.streamId, method, accountClient)
