@@ -132,7 +132,7 @@ func Test_Add_Messages_To_Cache(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, ds0)
 
-	watcherCtx, watcherCancel := context.WithTimeout(ctx, time.Second*2)
+	watcherCtx, watcherCancel := context.WithTimeout(ctx, time.Second*5)
 	chSub := peers[1].GC.MessageStore().Subscribe(watcherCtx)
 	go func() {
 		for range chSub {
