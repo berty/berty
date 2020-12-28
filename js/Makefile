@@ -381,7 +381,7 @@ ios/Frameworks/Bertybridge.framework: $(bridge_src)
 			./go/framework/bertybridge
 	touch $@
 
-ios/Berty.xcworkspace: ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle package.json ios/OpenSSL-Universal-Override.podspec
+ios/Berty.xcworkspace: ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle package.json ios/OpenSSL-Universal-Override.podspec node_modules
 	$(call check-program, bundle)
 	cd ios && bundle exec pod install $(if $(filter-out $(CI), true),--repo-update)
 	touch $@

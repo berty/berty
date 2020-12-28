@@ -71,16 +71,15 @@ jobs:
           path: js/ios/Berty.xcodeproj
           key: ios-xcodeproj-${{ hashFiles('js/ios/*.yaml') }}
           restore-keys: ios-xcodeproj-
-
-      - name: Generate xcodeproj
+            
+      - name: Build deps
         working-directory: js
-        run: make ios/Berty.xcodeproj
-      - name: Install Ruby modules
-        working-directory: js/ios
-        run: bundle install
+        run: make node_modules ios/vendor/bundle ios/Berty.xcodeproj
+
       - name: Sync Podfile.lock
         working-directory: js/ios
         run: bundle exec pod install --repo-update
+
       - name: Check diff
         run: |
           set -euo pipefail -o xtrace
