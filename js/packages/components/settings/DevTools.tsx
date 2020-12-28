@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Alert, ScrollView, Vibration, View } from 'react-native'
-import DropDownPicker from 'react-native-dropdown-picker'
+import { DropDownPicker } from '@berty-tech/components/shared-components/DropDownPicker'
 import { Layout } from '@ui-kitten/components'
 import { Translation, useTranslation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
