@@ -8195,10 +8195,10 @@ react-native-document-picker@^4.1.1:
   resolved "https://registry.yarnpkg.com/react-native-document-picker/-/react-native-document-picker-4.1.1.tgz#d4a7f18d397f7653610cc88921767d322cfd957b"
   integrity sha512-bJeLOmwYTFkeTkqjjJ5VKtZyMvRfECb0w/xB/Tt83TAa00msMQfnxPI9oRrwWRyVPD3dKomp6zRbCnerCMIdgw==
 
-react-native-dropdown-picker@^3.7.1:
-  version "3.7.5"
-  resolved "https://registry.yarnpkg.com/react-native-dropdown-picker/-/react-native-dropdown-picker-3.7.5.tgz#b52729ee49ce58e314c81deac8306160df8a2091"
-  integrity sha512-eIOt5FdwBRIETZ0f3wJrdEAexXq02APdQS3ojILIyBEAorI49iq1q03GNahXx4ygMdNlI0TTEvXbZELHZ8ZUlg==
+react-native-dropdown-picker@^3.7.6:
+  version "3.7.6"
+  resolved "https://registry.yarnpkg.com/react-native-dropdown-picker/-/react-native-dropdown-picker-3.7.6.tgz#3630b3117fa7d1eefe7c71a31ed4aea6c0b07fb1"
+  integrity sha512-d7siIbuQusQiLQv632Oin3jq+fZp4uAfY8e/7xKiPcKElxg6eH3H9CA3CtT0FAe0hEFqqoWC3kwFSQ1JAhzMgw==
   dependencies:
     react-native-vector-icons "^7.0.0"
 
