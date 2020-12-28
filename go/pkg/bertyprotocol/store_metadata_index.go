@@ -85,6 +85,8 @@ func (m *metadataStoreIndex) UpdateReplicatingEntry(e ipfslog.Entry, metaEvent *
 	}
 
 	if lastErr == nil {
+		// Only marked it as handled if successful,
+		// otherwhile try handling again when replicating finished
 		m.handledEvents[e.GetHash().String()] = struct{}{}
 	}
 }
