@@ -984,7 +984,7 @@ const SearchComponent: React.FC<{
 							{
 								fontFamily: 'Open Sans',
 								position: 'absolute',
-								top: 230,
+								top: 80,
 								left: 0,
 								right: 0,
 								color: '#FFAE3A',
@@ -1000,9 +1000,9 @@ const SearchComponent: React.FC<{
 				width={500}
 				height={500}
 				fill='#FFFBF6'
-				style={{ position: 'absolute', top: 0, right: -63 }}
+				style={{ position: 'absolute', top: -150, right: -63 }}
 			/>
-			<View style={[margin.top.scale(370 * scaleHeight)]}>
+			<View style={[margin.top.scale(220 * scaleHeight)]}>
 				<HintBody />
 			</View>
 		</View>
