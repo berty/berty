@@ -45,7 +45,7 @@
 		"react-native-bootsplash": "^3.1.2",
 		"react-native-camera": ">=1.0.2",
 		"react-native-document-picker": "^4.1.1",
-		"react-native-dropdown-picker": "^3.7.1",
+		"react-native-dropdown-picker": "^3.7.6",
 		"react-native-elements": "^2.3.2",
 		"react-native-fs": "^2.16.6",
 		"react-native-gesture-handler": "^1.8.0",
