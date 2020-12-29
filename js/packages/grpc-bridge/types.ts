@@ -1,4 +1,4 @@
-import { GRPCError } from "./error"
+import { GRPCError } from './error'
 
 export type RequestStream<Request extends {}, Reply extends {}> = ({}) => Promise<{
 	emit: (r: Request) => Promise<void>

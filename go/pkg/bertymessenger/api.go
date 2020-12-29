@@ -969,7 +969,7 @@ func (svc *service) EchoTest(req *messengertypes.EchoTest_Request, srv messenger
 	for {
 		err := srv.Send(&messengertypes.EchoTest_Reply{Echo: req.Echo})
 		if err != nil {
-			return errcode.ErrTestEchoSend
+			return errcode.ErrTestEchoSend.Wrap(err)
 		}
 
 		time.Sleep(time.Duration(req.Delay) * time.Millisecond)
@@ -980,7 +980,7 @@ func (svc *service) EchoDuplexTest(srv messengertypes.MessengerService_EchoDuple
 	for {
 		req, err := srv.Recv()
 		if err != nil {
-			return errcode.ErrTestEchoRecv
+			return errcode.ErrTestEchoRecv.Wrap(err)
 		}
 
 		if req.TriggerError {
@@ -991,7 +991,7 @@ func (svc *service) EchoDuplexTest(srv messengertypes.MessengerService_EchoDuple
 			Echo: req.Echo,
 		})
 		if err != nil {
-			return errcode.ErrTestEchoSend
+			return errcode.ErrTestEchoSend.Wrap(err)
 		}
 	}
 }

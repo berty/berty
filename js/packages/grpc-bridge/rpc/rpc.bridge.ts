@@ -1,20 +1,20 @@
 import { Service } from '..'
 import rpcNative from './rpc.native'
-import { account } from '@berty-tech/api'
+import beapi from '@berty-tech/api'
 import { getServiceName } from './utils'
 import * as pbjs from 'protobufjs'
 import { ServiceClientType } from '../welsh-clients.gen'
 import { GRPCError, EOF } from '../error'
 
 const ErrStreamClientAlreadyStarted = new GRPCError({
-	grpcErrorCode: account.GRPCErrCode.CANCELED,
+	grpcErrorCode: beapi.account.GRPCErrCode.CANCELED,
 	message: 'client stream not started or has been closed',
 })
 
 const makeStreamClient = <M extends pbjs.Method>(
 	streamid: string,
 	method: M,
-	accountClient: ServiceClientType<account.AccountService>,
+	accountClient: ServiceClientType<beapi.account.AccountService>,
 ) => {
 	const eventEmitter = {
 		events: [] as ((...a: unknown[]) => void)[],
@@ -46,7 +46,7 @@ const makeStreamClient = <M extends pbjs.Method>(
 			}
 			this.started = true
 
-			var response: account.ClientStreamRecv.IReply
+			var response: beapi.account.ClientStreamRecv.IReply
 
 			for (;;) {
 				response = await accountClient.clientStreamRecv({ streamId: streamid })
@@ -98,7 +98,7 @@ const makeStreamClient = <M extends pbjs.Method>(
 	}
 }
 
-const unary = (accountClient: ServiceClientType<account.AccountService>) => async <
+const unary = (accountClient: ServiceClientType<beapi.account.AccountService>) => async <
 	M extends pbjs.Method
 >(
 	method: M,
@@ -122,7 +122,7 @@ const unary = (accountClient: ServiceClientType<account.AccountService>) => asyn
 	return response.payload
 }
 
-const stream = (accountClient: ServiceClientType<account.AccountService>) => async <
+const stream = (accountClient: ServiceClientType<beapi.account.AccountService>) => async <
 	M extends pbjs.Method
 >(
 	method: M,
@@ -150,10 +150,10 @@ const stream = (accountClient: ServiceClientType<account.AccountService>) => asy
 	return makeStreamClient(response.streamId, method, accountClient)
 }
 
-const client = (accountClient: ServiceClientType<account.AccountService>) => ({
+const client = (accountClient: ServiceClientType<beapi.account.AccountService>) => ({
 	unaryCall: unary(accountClient),
 	streamCall: stream(accountClient),
 })
 
-const accountClient = Service(account.AccountService, rpcNative)
+const accountClient = Service(beapi.account.AccountService, rpcNative)
 export default client(accountClient)

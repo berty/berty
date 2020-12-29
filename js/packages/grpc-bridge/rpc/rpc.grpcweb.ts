@@ -1,7 +1,7 @@
 import { grpc } from '@improbable-eng/grpc-web'
 import { getServiceName } from './utils'
 import * as pb from 'protobufjs'
-import { GRPCError, EOF,  newGRPCError } from '../error'
+import { newGRPCError } from '../error'
 
 class LazyMessage extends pb.Message implements grpc.ProtobufMessage {
 	buf: Uint8Array
@@ -58,7 +58,6 @@ const unary = <T extends pb.Method>(options: grpc.ClientRpcOptions) => async (
 				reject(newGRPCError(code, message))
 			}
 		})
-		console.log(request)
 		client.send(LazyMessage.deserializeBinary(request))
 		client.finishSend()
 	})
