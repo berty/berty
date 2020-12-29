@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { TouchableOpacity, View, ScrollView, Image, Platform } from 'react-native'
+import {
+	TouchableOpacity,
+	View,
+	ScrollView,
+	Image,
+	Platform,
+	ActivityIndicator,
+} from 'react-native'
 import { useStyles } from '@berty-tech/styles'
 import { Icon } from '@ui-kitten/components'
 import CameraRoll from '@react-native-community/cameraroll'
@@ -11,7 +18,8 @@ const GALLERY_IMAGE_PER_PAGE = 30
 
 export const GallerySection: React.FC<{
 	prepareMediaAndSend: (media: beapi.messenger.IMedia[]) => void
-}> = ({ prepareMediaAndSend }) => {
+	isLoading: boolean
+}> = ({ prepareMediaAndSend, isLoading }) => {
 	const [{ color, border, padding, margin }] = useStyles()
 
 	const [selectedImages, setSelectedImages] = useState<beapi.messenger.IMedia[]>([])
@@ -217,7 +225,11 @@ export const GallerySection: React.FC<{
 					</View>
 
 					<TouchableOpacity onPress={handleSend}>
-						<Icon name='paper-plane-outline' width={26} height={26} fill={color.black} />
+						{isLoading ? (
+							<ActivityIndicator />
+						) : (
+							<Icon name='paper-plane-outline' width={26} height={26} fill={color.black} />
+						)}
 					</TouchableOpacity>
 				</View>
 			)}

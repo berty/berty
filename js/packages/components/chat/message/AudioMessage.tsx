@@ -42,7 +42,6 @@ export const AudioMessage: React.FC<{ medias: any }> = ({ medias }) => {
 	return (
 		<View
 			style={[
-				margin.bottom.small,
 				{
 					flex: 1,
 					alignItems: 'center',
