@@ -91,7 +91,8 @@
       "header-center-button": "Devtools",
       "header-right-button": "Paramètres",
       "network-button": "Réseaux",
-      "switch-accounts": "Changer de compte"
+      "switch-accounts": "Changer de compte",
+      "edit-profile": "Modifier mon profil"
     },
     "network-map": {
       "title": "Réseaux",
