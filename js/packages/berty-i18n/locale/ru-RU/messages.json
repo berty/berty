@@ -91,7 +91,8 @@
       "header-center-button": "Инструменты для разработчиков",
       "header-right-button": "Настройки",
       "network-button": "Список сетей",
-      "switch-accounts": "Использовать другой аккаунт"
+      "switch-accounts": "Использовать другой аккаунт",
+      "edit-profile": ""
     },
     "network-map": {
       "title": "Список сетей",
