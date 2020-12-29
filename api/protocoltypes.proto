@@ -1319,7 +1319,7 @@ message AttachmentRetrieve {
 message Progress {
   string state = 1;
   string doing = 2;
-  float percent = 3;
+  float progress = 3;
   uint64 completed = 4;
   uint64 total = 5;
   uint64 delay = 6;

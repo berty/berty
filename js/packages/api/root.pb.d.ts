@@ -159,10 +159,12 @@ export namespace berty {
                 }
 
                 interface IReply {
+                    progress?: (berty.protocol.v1.IProgress|null);
                 }
 
                 class Reply implements IReply {
 
+                    public progress?: (berty.protocol.v1.IProgress|null);
                     public static create(properties?: berty.account.v1.CloseAccount.IReply): berty.account.v1.CloseAccount.Reply;
                     public static encode(message: berty.account.v1.CloseAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.CloseAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4479,7 +4481,7 @@ export namespace berty {
             interface IProgress {
                 state?: (string|null);
                 doing?: (string|null);
-                percent?: (number|null);
+                progress?: (number|null);
                 completed?: (Long|null);
                 total?: (Long|null);
                 delay?: (Long|null);
@@ -4489,7 +4491,7 @@ export namespace berty {
 
                 public state: string;
                 public doing: string;
-                public percent: number;
+                public progress: number;
                 public completed: Long;
                 public total: Long;
                 public delay: Long;

@@ -15,7 +15,7 @@ service AccountService {
   rpc OpenAccount (OpenAccount.Request) returns (stream OpenAccount.Reply);
 
   // CloseAccount, close the current account
-  rpc CloseAccount (CloseAccount.Request) returns (CloseAccount.Reply);
+  rpc CloseAccount (CloseAccount.Request) returns (stream CloseAccount.Reply);
 
   // ListAccounts retrieves a list of local accounts
   rpc ListAccounts (ListAccounts.Request) returns (ListAccounts.Reply);
@@ -66,7 +66,9 @@ message OpenAccount {
 
 message CloseAccount {
   message Request {}
-  message Reply {}
+  message Reply {
+    berty.protocol.v1.Progress progress = 1;
+  }
 }
 
 message AccountMetadata {

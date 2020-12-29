@@ -115,7 +115,7 @@ require (
 	gorm.io/gorm v1.20.9
 	moul.io/godev v1.7.0
 	moul.io/openfiles v1.2.0
-	moul.io/progress v1.1.0
+	moul.io/progress v1.3.2
 	moul.io/srand v1.6.1
 	moul.io/testman v1.5.0
 	moul.io/u v1.20.0

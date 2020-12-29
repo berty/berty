@@ -44,7 +44,7 @@ func runMain(args []string) error {
 		if err != nil {
 			return errcode.TODO.Wrap(err)
 		}
-		defer manager.Close()
+		defer manager.Close(nil)
 	}
 
 	// root command

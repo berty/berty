@@ -3,7 +3,7 @@ package bertyaccount
 import (
 	"context"
 	"flag"
-	fmt "fmt"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -12,14 +12,14 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"go.uber.org/zap"
-	grpc "google.golang.org/grpc"
+	"google.golang.org/grpc"
 	"moul.io/progress"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	protocoltypes "berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 const accountMetafileName = "account_meta"
@@ -61,10 +61,9 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 	if err != nil {
 		return nil, errcode.ErrBertyAccountMetadataUpdate.Wrap(err)
 	}
-	prog.Get("init").Done()
 
 	// setup manager logger
-	prog.Get("setup-logger").Start()
+	prog.Get("setup-logger").SetAsCurrent()
 	logger := s.logger
 	{
 		var err error
@@ -75,10 +74,9 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 		}
 	}
 	s.logger.Info("opening account", zap.Strings("args", args), zap.String("account-id", req.AccountID))
-	prog.Get("setup-logger").Done()
 
 	// setup manager
-	prog.Get("setup-manager").Start()
+	prog.Get("setup-manager").SetAsCurrent()
 	var initManager *initutil.Manager
 	{
 		var err error
@@ -86,15 +84,14 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 			return nil, errcode.ErrBertyAccountManagerOpen.Wrap(err)
 		}
 	}
-	prog.Get("setup-manager").Done()
 
 	// get manager client conn
-	prog.Get("setup-grpc").Start()
+	prog.Get("setup-grpc").SetAsCurrent()
 	var ccServices *grpc.ClientConn
 	{
 		var err error
 		if ccServices, err = initManager.GetGRPCClientConn(); err != nil {
-			initManager.Close()
+			initManager.Close(nil)
 			return nil, errcode.ErrBertyAccountGRPCClient.Wrap(err)
 		}
 	}
@@ -112,18 +109,18 @@ func (s *service) OpenAccount(req *OpenAccount_Request, server AccountService_Op
 	defer s.muService.Unlock()
 
 	prog := progress.New()
-	ch := make(chan *progress.Step, 10)
-	prog.Subscribe(ch)
+	ch := prog.Subscribe()
 	done := make(chan bool)
 
 	go func() {
 		for step := range ch {
+			_ = step
 			snapshot := prog.Snapshot()
 			err := server.Send(&OpenAccount_Reply{
 				Progress: &protocoltypes.Progress{
 					State:     string(snapshot.State),
 					Doing:     snapshot.Doing,
-					Percent:   float32(snapshot.Percent),
+					Progress:  float32(snapshot.Progress),
 					Completed: uint64(snapshot.Completed),
 					Total:     uint64(snapshot.Total),
 					Delay:     uint64(snapshot.TotalDuration.Microseconds()),
@@ -131,10 +128,6 @@ func (s *service) OpenAccount(req *OpenAccount_Request, server AccountService_Op
 			})
 			if err != nil {
 				// not sure it is worth logging something here
-				close(ch)
-				break
-			}
-			if step == nil {
 				close(ch)
 				break
 			}
@@ -146,30 +139,62 @@ func (s *service) OpenAccount(req *OpenAccount_Request, server AccountService_Op
 		return errcode.ErrBertyAccountOpenAccount.Wrap(err)
 	}
 
+	// wait
 	<-done
 
 	return nil
 }
 
-func (s *service) CloseAccount(_ context.Context, _ *CloseAccount_Request) (*CloseAccount_Reply, error) {
+func (s *service) CloseAccount(req *CloseAccount_Request, server AccountService_CloseAccountServer) error {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	// close previous initManager
-	if s.initManager != nil {
-		if l, err := s.initManager.GetLogger(); err == nil {
-			_ = l.Sync() // cleanup logger
-		}
-
-		if err := s.initManager.Close(); err != nil {
-			s.logger.Warn("unable to close account", zap.Error(err))
-			return nil, errcode.ErrBertyAccountManagerClose.Wrap(err)
-		}
-		s.initManager = nil
-		s.servicesClient = nil
+	if s.initManager == nil {
+		return nil
 	}
 
-	return &CloseAccount_Reply{}, nil
+	prog := progress.New()
+	ch := prog.Subscribe()
+	done := make(chan bool)
+
+	go func() {
+		for step := range ch {
+			_ = step
+			snapshot := prog.Snapshot()
+			err := server.Send(&CloseAccount_Reply{
+				Progress: &protocoltypes.Progress{
+					State:     string(snapshot.State),
+					Doing:     snapshot.Doing,
+					Progress:  float32(snapshot.Progress),
+					Completed: uint64(snapshot.Completed),
+					Total:     uint64(snapshot.Total),
+					Delay:     uint64(snapshot.TotalDuration.Microseconds()),
+				},
+			})
+			if err != nil {
+				// not sure it is worth logging something here
+				close(ch)
+				break
+			}
+		}
+		done <- true
+	}()
+
+	if l, err := s.initManager.GetLogger(); err == nil {
+		_ = l.Sync() // cleanup logger
+	}
+
+	if err := s.initManager.Close(prog); err != nil {
+		s.logger.Warn("unable to close account", zap.Error(err))
+		return errcode.ErrBertyAccountManagerClose.Wrap(err)
+	}
+	s.initManager = nil
+	s.servicesClient = nil
+
+	// wait
+	<-done
+
+	return nil
 }
 
 func (s *service) openManager(logger *zap.Logger, args ...string) (*initutil.Manager, error) {
@@ -205,7 +230,7 @@ func (s *service) openManager(logger *zap.Logger, args ...string) (*initutil.Man
 		// close and cleanup manager in case of failure
 		defer func() {
 			if err != nil {
-				manager.Close()
+				manager.Close(nil)
 			}
 		}()
 

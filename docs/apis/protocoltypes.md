@@ -1288,7 +1288,7 @@ Progress define a generic object that can be used to display a progress bar for 
 | ----- | ---- | ----- | ----------- |
 | state | [string](#string) |  |  |
 | doing | [string](#string) |  |  |
-| percent | [float](#float) |  |  |
+| progress | [float](#float) |  |  |
 | completed | [uint64](#uint64) |  |  |
 | total | [uint64](#uint64) |  |  |
 | delay | [uint64](#uint64) |  |  |

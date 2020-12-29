@@ -21,7 +21,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   CloseAccount: {
                     requestType: "CloseAccount.Request",
-                    responseType: "CloseAccount.Reply"
+                    responseType: "CloseAccount.Reply",
+                    responseStream: true
                   },
                   ListAccounts: {
                     requestType: "ListAccounts.Request",
@@ -109,7 +110,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {}
                   },
                   Reply: {
-                    fields: {}
+                    fields: {
+                      progress: {
+                        type: "berty.protocol.v1.Progress",
+                        id: 1
+                      }
+                    }
                   }
                 }
               },
@@ -2924,7 +2930,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 2
                   },
-                  percent: {
+                  progress: {
                     type: "float",
                     id: 3
                   },
