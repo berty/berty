@@ -8,7 +8,7 @@ import { ImageCounter } from '../ImageCounter'
 import { useNavigation } from '@berty-tech/navigation'
 
 export const PictureMessage: React.FC<{ medias: any }> = ({ medias }) => {
-	const [{ padding, border }] = useStyles()
+	const [{ border }] = useStyles()
 	const { protocolClient } = useMsgrContext()
 	const [images, setImages] = useState<any[]>([])
 	const navigation = useNavigation()
@@ -32,99 +32,88 @@ export const PictureMessage: React.FC<{ medias: any }> = ({ medias }) => {
 		<View
 			style={[
 				{
-					alignItems: 'center',
+					flexDirection: 'row',
+					alignContent: 'center',
 					justifyContent: 'center',
-					marginVertical: (images.length + 1) * 2.5,
 				},
 			]}
 		>
 			<View
-				style={[
-					{
-						flexDirection: 'row',
-						alignContent: 'center',
-						justifyContent: 'center',
-					},
-					padding.horizontal.small,
-				]}
+				style={{
+					height: 165 + (medias.length > 4 ? 3 : medias.length - 1) * 15,
+					width: 165 + (medias.length > 4 ? 3 : medias.length - 1) * 18,
+					position: 'relative',
+					marginRight: medias.length > 4 ? 60 : 0,
+				}}
 			>
-				<View
-					style={{
-						height: 150 + (medias.length > 4 ? 4 : medias.length) * 15,
-						width: 150 + (medias.length > 4 ? 7 : medias.length) * 18,
-						position: 'relative',
-					}}
-				>
-					{medias
-						.slice(0, medias.length > 4 ? 4 : medias.length)
-						.map((media: any, index: number) => (
-							<TouchableOpacity
-								onPress={() => {
-									navigation.navigate.modals.imageView({ images })
-								}}
-								activeOpacity={1}
-								style={{
-									position: 'absolute',
-									zIndex: 5 - index,
-									elevation: 5 - index,
-									left: index * 18,
-									bottom: index * 15,
-								}}
-							>
-								<View
-									key={media.cid}
-									style={[
-										{
-											backgroundColor: '#E9EAF8',
-											alignItems: 'center',
-											justifyContent: 'center',
-										},
-										border.radius.small,
-										padding.small,
-										border.shadow.small,
-									]}
-								>
-									<Image
-										source={{ uri: images[index]?.uri }}
-										style={[
-											{
-												height: 150,
-												width: 150,
-											},
-											border.radius.tiny,
-										]}
-									/>
-
-									{!images[index] && (
-										<ActivityIndicator
-											color='white'
-											size='large'
-											style={{
-												position: 'absolute',
-												left: 0,
-												right: 0,
-												zIndex: 4 - index,
-												elevation: 4 - index,
-											}}
-										/>
-									)}
-								</View>
-							</TouchableOpacity>
-						))}
-				</View>
-
-				{medias.length > 4 && (
-					<View
+				{medias.slice(0, medias.length > 4 ? 4 : medias.length).map((media: any, index: number) => (
+					<TouchableOpacity
+						onPress={() => {
+							navigation.navigate.modals.imageView({ images })
+						}}
+						activeOpacity={1}
 						style={{
-							right: 0,
-							top: 70,
 							position: 'absolute',
+							zIndex: 5 - index,
+							elevation: 5 - index,
+							left: index * 18,
+							bottom: index * 15,
 						}}
 					>
-						<ImageCounter count={medias.length - 4} />
-					</View>
-				)}
+						<View
+							key={media.cid}
+							style={[
+								{
+									backgroundColor: '#E9EAF8',
+									alignItems: 'center',
+									justifyContent: 'center',
+									height: 165,
+									width: 165,
+								},
+								border.radius.small,
+								border.shadow.small,
+							]}
+						>
+							<Image
+								source={{ uri: images[index]?.uri }}
+								style={[
+									{
+										height: 150,
+										width: 150,
+									},
+									border.radius.tiny,
+								]}
+							/>
+
+							{!images[index] && (
+								<ActivityIndicator
+									color='white'
+									size='large'
+									style={{
+										position: 'absolute',
+										left: 0,
+										right: 0,
+										zIndex: 4 - index,
+										elevation: 4 - index,
+									}}
+								/>
+							)}
+						</View>
+					</TouchableOpacity>
+				))}
 			</View>
+
+			{medias.length > 4 && (
+				<View
+					style={{
+						right: 0,
+						top: 70,
+						position: 'absolute',
+					}}
+				>
+					<ImageCounter count={medias.length - 4} />
+				</View>
+			)}
 		</View>
 	)
 }

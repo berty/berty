@@ -191,9 +191,16 @@ export const UserMessage: React.FC<{
 						</Text>
 					</View>
 				)}
-				<View style={[isFollowedMessage && margin.left.scale(40)]}>
-					{(inte.medias?.length || 0) > 0 &&
-						(() => {
+
+				{(inte.medias?.length || 0) > 0 && (
+					<View
+						style={[
+							isFollowedMessage && margin.left.scale(40),
+							previousMessage?.medias?.[0]?.mimeType ? margin.top.tiny : margin.top.small,
+							nextMessage?.medias?.[0]?.mimeType ? margin.bottom.tiny : margin.bottom.small,
+						]}
+					>
+						{(() => {
 							if (inte?.medias?.[0]?.mimeType?.startsWith('image')) {
 								return <PictureMessage medias={inte.medias} />
 							} else if (inte?.medias?.[0]?.mimeType?.startsWith('audio')) {
@@ -202,7 +209,9 @@ export const UserMessage: React.FC<{
 								return <FileMessage medias={inte.medias} />
 							}
 						})()}
-				</View>
+					</View>
+				)}
+
 				{!!inte.payload.body && (
 					<HyperlinkUserMessage
 						inte={inte}

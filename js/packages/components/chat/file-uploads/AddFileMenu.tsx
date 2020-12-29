@@ -6,6 +6,7 @@ import {
 	KeyboardAvoidingView,
 	Platform,
 	TouchableOpacity,
+	ActivityIndicator,
 } from 'react-native'
 import { useStyles } from '@berty-tech/styles'
 import { useTranslation } from 'react-i18next'
@@ -43,6 +44,7 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 	const [animatedWidth] = useState(new Animated.Value(0))
 	const [activeTab, setActiveTab] = useState(TabItems.Default)
 	const [isSecurityAccessVisible, setSecurityAccessVisibility] = useState(false)
+	const [isLoading, setLoading] = useState(false)
 	const client = useClient()
 
 	useEffect(() => {
@@ -278,18 +280,26 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 	}
 
 	const prepareMediaAndSend = async (res: beapi.messenger.IMedia[]) => {
-		const mediaCids = (
-			await amap(res, async (doc) => {
-				const stream = await client?.mediaPrepare({})
-				await stream?.emit({
-					info: { filename: doc.filename, mimeType: doc.mimeType, displayName: doc.filename },
-					uri: doc.uri,
+		if (isLoading) {
+			return
+		}
+		setLoading(true)
+		try {
+			const mediaCids = (
+				await amap(res, async (doc) => {
+					const stream = await client?.mediaPrepare({})
+					await stream?.emit({
+						info: { filename: doc.filename, mimeType: doc.mimeType, displayName: doc.filename },
+						uri: doc.uri,
+					})
+					const reply = await stream?.stopAndRecv()
+					return reply?.cid
 				})
-				const reply = await stream?.stopAndRecv()
-				return reply?.cid
-			})
-		).filter((cid) => !!cid)
-		onClose(mediaCids)
+			).filter((cid) => !!cid)
+
+			onClose(mediaCids)
+		} catch (err) {}
+		setLoading(false)
 	}
 
 	return (
@@ -413,6 +423,7 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 										<TouchableOpacity
 											style={{
 												flex: 1,
+												alignItems: 'flex-start',
 											}}
 											onPress={() => {
 												prepareMediaAndSend([
@@ -424,7 +435,11 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 												])
 											}}
 										>
-											<Icon height={50} width={50} name='checkmark-circle-2' fill='#4F58C0' />
+											{isLoading ? (
+												<ActivityIndicator color='#4F58C0' size={50} />
+											) : (
+												<Icon height={50} width={50} name='checkmark-circle-2' fill='#4F58C0' />
+											)}
 										</TouchableOpacity>
 
 										<TouchableOpacity
@@ -544,7 +559,7 @@ export const AddFileMenu: React.FC<{ onClose: (medias?: string[]) => void }> = (
 						</View>
 
 						{activeTab === TabItems.Gallery && (
-							<GallerySection prepareMediaAndSend={prepareMediaAndSend} />
+							<GallerySection prepareMediaAndSend={prepareMediaAndSend} isLoading={isLoading} />
 						)}
 						{activeTab === TabItems.GIF && <GifSection prepareMediaAndSend={prepareMediaAndSend} />}
 					</View>

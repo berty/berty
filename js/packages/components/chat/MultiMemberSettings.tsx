@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation, ScreenProps } from '@berty-tech/navigation'
-import { useConversation, useMsgrContext } from '@berty-tech/store/hooks'
+import { useConversation, useMsgrContext, useAccount } from '@berty-tech/store/hooks'
 
 import {
 	ButtonSetting,
@@ -15,7 +15,7 @@ import {
 } from '../shared-components/SettingsButtons'
 import HeaderSettings from '../shared-components/Header'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
-import { MemberAvatar, MultiMemberAvatar } from '../avatars'
+import { MemberAvatar, MultiMemberAvatar, AccountAvatar } from '../avatars'
 
 //
 // GroupChatSettings
@@ -89,10 +89,11 @@ const GroupChatSettingsHeader: React.FC<any> = ({ displayName }) => {
 const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 	const [{ padding, margin, color }] = useStyles()
 	const ctx: any = useMsgrContext()
+	const account = useAccount()
 	const pk = publicKey
 	const members = ctx.members[pk] || {}
 	const navigation = useNavigation()
-	const memberLength = Object.values(members).length
+	const memberLength = Object.values(members).length + 1
 	const memberText = memberLength < 2 ? 'member' : 'members'
 	const { t } = useTranslation()
 
@@ -120,6 +121,20 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 				}}
 				style={[margin.top.medium]}
 			>
+				<View
+					style={{
+						flexDirection: 'row',
+						alignItems: 'center',
+					}}
+				>
+					<AccountAvatar size={30} />
+					<ButtonSetting
+						style={[padding.horizontal.small]}
+						name={account?.displayName || ''}
+						alone={false}
+						actionIcon={null}
+					/>
+				</View>
 				{Object.entries(members).map(([k]) => {
 					return (
 						<View
