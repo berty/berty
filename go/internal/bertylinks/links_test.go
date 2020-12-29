@@ -331,13 +331,24 @@ func TestEncryptLink(t *testing.T) {
 				require.Equal(t, link.Kind, messengertypes.BertyLink_EncryptedV1Kind)
 			}
 
-			// decrypt with invalid passphrase, and raise an error (invalid checksum)
-			for _, u := range []string{internalURL, httpURL} {
-				link, err := bertylinks.UnmarshalLink(u, []byte("invalid"))
-				require.Error(t, err)
-				assert.Equal(t, errcode.ErrMessengerDeepLinkInvalidPassphrase.Error(), err.Error())
-				require.NotEqual(t, tc.link, link)
+			// decrypt with invalid passphrase, and raise an error (invalid checksum).
+			// since it may have false-positive, we give 10 tries and hope to have at least one that triggers an error.
+			hasFailed := false
+			for i := 0; i < 10; i++ {
+				for _, u := range []string{internalURL, httpURL} {
+					passphrase := fmt.Sprintf("invalid-%d", i)
+					link, err := bertylinks.UnmarshalLink(u, []byte(passphrase))
+					if err == nil {
+						continue
+					}
+					hasFailed = true
+					require.Error(t, err)
+					assert.Equal(t, errcode.ErrMessengerDeepLinkInvalidPassphrase.Error(), err.Error())
+					require.NotEqual(t, tc.link, link)
+					break
+				}
 			}
+			require.True(t, hasFailed)
 
 			// here, it would be nice to add tests against conflicting invalid passphrases.
 			// we already check this in TestDecryptLink, so it's just a bonus.

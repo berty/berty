@@ -1,11 +1,4 @@
 {
-  "time": {
-    "fuzzy-time": "hh:mm",
-    "fuzzy-month-day": "",
-    "fuzzy-year-month": "",
-    "datetime": "",
-    "started-ago": "{{date}} geleden gestart"
-  },
   "onboarding": {
     "getstarted": {
       "desc": "De beveiligde peer-to-peer messaging app die met of zonder internet werkt, mobiele gegevens of vertrouwen in het netwerk",
@@ -98,7 +91,8 @@
       "header-center-button": "Devtools",
       "header-right-button": "Instellingen",
       "network-button": "Netwerk Lijst",
-      "switch-accounts": "Gebruik een ander account"
+      "switch-accounts": "Gebruik een ander account",
+      "edit-profile": ""
     },
     "network-map": {
       "title": "Netwerk Lijst",

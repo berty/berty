@@ -1,11 +1,4 @@
 {
-  "time": {
-    "fuzzy-time": "hh:mm",
-    "fuzzy-month-day": "dd/MM",
-    "fuzzy-year-month": "MM/RR",
-    "datetime": "",
-    "started-ago": ""
-  },
   "onboarding": {
     "getstarted": {
       "desc": "Zabezpečená aplikace pro peer-to-peer výměnu zpráv. Bezpečně funguje i bez přístupu k internetu a mobilním datům a v nedůvěryhodných sítích",
@@ -98,7 +91,8 @@
       "header-center-button": "Nástroje pro vývojáře",
       "header-right-button": "Nastavení",
       "network-button": "Seznam sítí",
-      "switch-accounts": "Použít jiný účet"
+      "switch-accounts": "Použít jiný účet",
+      "edit-profile": ""
     },
     "network-map": {
       "title": "Seznam sítí",

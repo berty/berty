@@ -8,6 +8,7 @@
 #import <React/RCTLinkingManager.h> // needed for deep linking
 #import "Berty-Swift.h" // needed for swift
 #import <Firebase.h> // needed for crashlytics, TODO: remove this after closed beta / replace it by a more privacy complient solution
+#import "RNBootSplash.h" // needed by react-native-bootsplash
 // Done custom imports
 
 #ifdef FB_SONARKIT_ENABLED
@@ -64,6 +65,9 @@ static void InitializeFlipper(UIApplication *application) {
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+
+  [RNBootSplash initWithStoryboard:@"BootSplash" rootView:rootView]; // needed by react-native-bootsplash
+
   return YES;
 }
 

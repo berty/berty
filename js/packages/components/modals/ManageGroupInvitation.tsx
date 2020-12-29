@@ -175,7 +175,7 @@ export const ManageGroupInvitation: React.FC<{
 								onChangeText={setPassword}
 								autoCapitalize='none'
 								editable={true}
-								style={[{ fontFamily: 'Open Sans' }, text.bold.small]}
+								style={[{ fontFamily: 'Open Sans' }, text.bold.small, { width: '100%' }]}
 								placeholder='Password...'
 							/>
 						</View>

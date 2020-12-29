@@ -1,11 +1,4 @@
 {
-  "time": {
-    "fuzzy-time": "时:分",
-    "fuzzy-month-day": "月/日",
-    "fuzzy-year-month": "年/月",
-    "datetime": "年-月-时:分",
-    "started-ago": "开始于 {{date}} 之前"
-  },
   "onboarding": {
     "getstarted": {
       "desc": "安全的点对点消息应用程序，无论是否有互联网接入、蜂窝数据或网络信任",
@@ -98,7 +91,8 @@
       "header-center-button": "",
       "header-right-button": "",
       "network-button": "",
-      "switch-accounts": ""
+      "switch-accounts": "",
+      "edit-profile": ""
     },
     "network-map": {
       "title": "",

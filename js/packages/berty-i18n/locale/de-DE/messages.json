@@ -1,11 +1,4 @@
 {
-  "time": {
-    "fuzzy-time": "hh:mm",
-    "fuzzy-month-day": "dd/MM",
-    "fuzzy-year-month": "MM/YY",
-    "datetime": "MMM Tun YYYY hh:mm",
-    "started-ago": "Vor {{date}} gestartet"
-  },
   "onboarding": {
     "getstarted": {
       "desc": "Die sichere Peer-to-Peer-Messaging-App, die mit oder ohne Internetzugang, Mobilfunkdaten oder Vertrauen in das Netzwerk funktioniert",
@@ -98,7 +91,8 @@
       "header-center-button": "Für Entwickler",
       "header-right-button": "Einstellungen",
       "network-button": "Netzwerke",
-      "switch-accounts": "Anderes Konto verwenden"
+      "switch-accounts": "Anderes Konto verwenden",
+      "edit-profile": ""
     },
     "network-map": {
       "title": "Netzwerke",

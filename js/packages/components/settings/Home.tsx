@@ -3,7 +3,7 @@ import { View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-nat
 import { Text, Icon } from '@ui-kitten/components'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import QRCode from 'react-native-qrcode-svg'
-import { Translation } from 'react-i18next'
+import { Translation, useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
@@ -114,6 +114,8 @@ const HomeHeaderAvatar: React.FC = () => {
 const HomeHeader: React.FC = () => {
 	const navigation = useNativeNavigation()
 	const [{ color, margin }] = useStyles()
+	const { t }: { t: any } = useTranslation()
+
 	return (
 		<View style={{ width: '100%' }}>
 			<View
@@ -126,7 +128,17 @@ const HomeHeader: React.FC = () => {
 					<Icon name='arrow-back-outline' width={30} height={30} fill={color.white} />
 				</TouchableOpacity>
 				<View />
-				<TouchableOpacity onPress={() => navigation.navigate('Settings.EditProfile')}>
+				<TouchableOpacity
+					onPress={() => navigation.navigate('Settings.EditProfile')}
+					style={{
+						flexDirection: 'row',
+						alignContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<Text style={[{ color: color.white }, margin.right.small]}>
+						{t('settings.home.edit-profile')}
+					</Text>
 					<Icon name='edit-outline' width={30} height={30} fill={color.white} />
 				</TouchableOpacity>
 			</View>

@@ -11,6 +11,7 @@ import {
 	ButtonSetting,
 	FactionButtonSetting,
 	ButtonSettingRow,
+	ButtonDropDown,
 } from '../shared-components/SettingsButtons'
 import HeaderSettings from '../shared-components/Header'
 import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
@@ -127,19 +128,27 @@ const MultiMemberSettingsBody: React.FC<any> = ({ publicKey, link }) => {
 								alignItems: 'center',
 							}}
 						>
-							<MemberAvatar
-								publicKey={members[k]?.publicKey}
-								conversationPublicKey={publicKey}
-								size={30}
-							/>
-							<ButtonSetting
-								style={[padding.horizontal.small]}
-								name={`${
+							<View
+								style={[
+									padding.top.small,
+									{
+										alignSelf: 'flex-start',
+									},
+								]}
+							>
+								<MemberAvatar
+									publicKey={members[k]?.publicKey}
+									conversationPublicKey={publicKey}
+									size={30}
+								/>
+							</View>
+
+							<ButtonDropDown
+								title={
 									(members && members[k].displayName) ||
 									t('chat.multi-member-settings.members-button.unknown')
-								}: ${members[k].publicKey.slice(0, 20)}..`}
-								alone={false}
-								actionIcon={null}
+								}
+								body={members[k].publicKey}
 							/>
 						</View>
 					)

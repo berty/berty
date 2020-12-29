@@ -9,6 +9,7 @@ import Logo from '../../components/main/1_berty_picto.svg'
 import { MessengerAppState, useMsgrContext } from '@berty-tech/store/context'
 import { useSwitchToAccount, useNotificationsInhibitor } from '@berty-tech/store/hooks'
 import DocumentPicker from 'react-native-document-picker'
+import LoaderDots from '../shared-components/LoaderDots'
 
 const ListEntry = ({
 	title,
@@ -124,7 +125,7 @@ export const AccountSelector = () => {
 	const { accounts, embedded, appState } = useMsgrContext()
 
 	if (appState !== MessengerAppState.Closed) {
-		return <></>
+		return <LoaderDots />
 	}
 
 	return (

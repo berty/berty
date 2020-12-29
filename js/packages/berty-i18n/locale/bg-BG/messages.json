@@ -1,11 +1,4 @@
 {
-  "time": {
-    "fuzzy-time": "",
-    "fuzzy-month-day": "",
-    "fuzzy-year-month": "",
-    "datetime": "",
-    "started-ago": ""
-  },
   "onboarding": {
     "getstarted": {
       "desc": "",
@@ -98,7 +91,8 @@
       "header-center-button": "",
       "header-right-button": "",
       "network-button": "",
-      "switch-accounts": ""
+      "switch-accounts": "",
+      "edit-profile": ""
     },
     "network-map": {
       "title": "",

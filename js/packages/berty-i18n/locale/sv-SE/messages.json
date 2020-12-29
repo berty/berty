@@ -1,11 +1,4 @@
 {
-  "time": {
-    "fuzzy-time": "tt:mm",
-    "fuzzy-month-day": "dd/MM",
-    "fuzzy-year-month": "MM/ÅÅ",
-    "datetime": "",
-    "started-ago": ""
-  },
   "onboarding": {
     "getstarted": {
       "desc": "Den säkra peer-to-peer chattappen som fungerar utan internet eller mobildata, eller förtroende för nätverket",
@@ -98,7 +91,8 @@
       "header-center-button": "",
       "header-right-button": "",
       "network-button": "",
-      "switch-accounts": ""
+      "switch-accounts": "",
+      "edit-profile": ""
     },
     "network-map": {
       "title": "",

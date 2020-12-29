@@ -1,6 +1,9 @@
 package tech.berty.android;
 
+import android.os.Bundle; // needed by react-native-bootsplash
+
 import com.facebook.react.ReactActivity;
+import com.zoontek.rnbootsplash.RNBootSplash; // needed by react-native-bootsplash
 
 import com.shakebugs.shake.Shake;
 import android.view.MotionEvent;
@@ -20,5 +23,12 @@ public class MainActivity extends ReactActivity {
   public boolean dispatchTouchEvent(MotionEvent ev) {
       Shake.handleTouchEvent(ev, this);
       return super.dispatchTouchEvent(ev);
+  }
+
+   // needed byreact-native-bootsplash
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    RNBootSplash.init(R.drawable.bootsplash, MainActivity.this); // <- display the generated bootsplash.xml drawable over our MainActivity
   }
 }

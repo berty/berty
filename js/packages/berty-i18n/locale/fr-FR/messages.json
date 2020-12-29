@@ -1,11 +1,4 @@
 {
-  "time": {
-    "fuzzy-time": "hh:mm",
-    "fuzzy-month-day": "dd/MM",
-    "fuzzy-year-month": "MM/YY",
-    "datetime": "MMM Do YYYY hh:mm",
-    "started-ago": "Débuté il y a {{date}}"
-  },
   "onboarding": {
     "getstarted": {
       "desc": "L'application sécurisée qui fonctionne en pair à pair, avec ou sans accès à internet",
@@ -98,7 +91,8 @@
       "header-center-button": "Devtools",
       "header-right-button": "Paramètres",
       "network-button": "Réseaux",
-      "switch-accounts": "Changer de compte"
+      "switch-accounts": "Changer de compte",
+      "edit-profile": "Modifier mon profil"
     },
     "network-map": {
       "title": "Réseaux",

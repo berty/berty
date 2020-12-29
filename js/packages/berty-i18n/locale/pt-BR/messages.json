@@ -1,11 +1,4 @@
 {
-  "time": {
-    "fuzzy-time": "hh:mm",
-    "fuzzy-month-day": "dd/MM",
-    "fuzzy-year-month": "MM/AA",
-    "datetime": "MMM Do YYYY hh:mm",
-    "started-ago": "Started {{date}} ago"
-  },
   "onboarding": {
     "getstarted": {
       "desc": "O aplicativo seguro de mensagens ponto a ponto que funciona com ou sem acesso à internet, dados móveis ou confiando na rede",
@@ -98,7 +91,8 @@
       "header-center-button": "Ferramentas do desenvolvedor",
       "header-right-button": "Configurações",
       "network-button": "Lista de Redes",
-      "switch-accounts": "Usar outra conta"
+      "switch-accounts": "Usar outra conta",
+      "edit-profile": ""
     },
     "network-map": {
       "title": "Lista de Redes",

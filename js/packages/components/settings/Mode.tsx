@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { ScrollView, Vibration, View } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
-import DropDownPicker from 'react-native-dropdown-picker'
+import { DropDownPicker } from '@berty-tech/components/shared-components/DropDownPicker'
+
 import { Translation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
@@ -63,7 +64,6 @@ const BodyMode: React.FC<BodyModeProps> = ({ isMode }) => {
 					<DropDownPicker
 						items={items}
 						defaultValue={ctx.persistentOptions?.i18n.language}
-						containerStyle={[{ marginTop: 22, height: 60 }]}
 						onChangeItem={async (item: any) => {
 							await ctx.setPersistentOption({
 								type: PersistentOptionsKeys.I18N,

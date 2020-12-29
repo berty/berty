@@ -1,11 +1,4 @@
 {
-  "time": {
-    "fuzzy-time": "时:分",
-    "fuzzy-month-day": "月/日",
-    "fuzzy-year-month": "年/月",
-    "datetime": "年-月-时:分",
-    "started-ago": "开始于 {{date}} 之前"
-  },
   "onboarding": {
     "getstarted": {
       "desc": "安全的点对点消息应用程序，无论是否有互联网接入、蜂窝数据或网络信任",
@@ -84,21 +77,22 @@
       "input-placeholder": "搜索关键词",
       "no-contacts": "您还没有任何联系人或聊天",
       "search": {
-        "no-results": ""
+        "no-results": "未找到结果"
       }
     },
     "home-modal": {
-      "top-button": "",
-      "bottom-button": ""
+      "top-button": "创建新群组",
+      "bottom-button": "扫描联系人或群组"
     }
   },
   "settings": {
     "home": {
-      "header-left-button": "",
+      "header-left-button": "帮助",
       "header-center-button": "",
       "header-right-button": "",
       "network-button": "",
-      "switch-accounts": ""
+      "switch-accounts": "",
+      "edit-profile": ""
     },
     "network-map": {
       "title": "",

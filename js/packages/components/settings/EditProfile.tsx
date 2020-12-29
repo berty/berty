@@ -99,6 +99,7 @@ const EditMyProfile: React.FC = () => {
 				height: 400,
 				cropping: true,
 				cropperCircleOverlay: true,
+				mediaType: 'photo',
 			})
 			if (pic) {
 				dispatch({ type: 'SET_PICTURE', pic })
@@ -110,7 +111,7 @@ const EditMyProfile: React.FC = () => {
 		}
 	}
 
-	const avatarURI = state.pic?.sourceURL || state.pic?.path
+	const avatarURI = state.pic?.path
 
 	const handleSave = async () => {
 		try {
