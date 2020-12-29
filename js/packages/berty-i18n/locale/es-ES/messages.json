@@ -91,7 +91,8 @@
       "header-center-button": "Herramientas de desarrollo",
       "header-right-button": "Ajustes",
       "network-button": "Lista de redes",
-      "switch-accounts": "Usar otra cuenta"
+      "switch-accounts": "Usar otra cuenta",
+      "edit-profile": ""
     },
     "network-map": {
       "title": "Lista de redes",
