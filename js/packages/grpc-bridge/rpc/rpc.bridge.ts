@@ -7,14 +7,14 @@ import { ServiceClientType } from '../welsh-clients.gen'
 import { GRPCError, EOF } from '../error'
 
 const ErrStreamClientAlreadyStarted = new GRPCError({
-	grpcErrorCode: beapi.account.GRPCErrCode.CANCELED,
+	grpcErrorCode: beapi.bridge.GRPCErrCode.CANCELED,
 	message: 'client stream not started or has been closed',
 })
 
 const makeStreamClient = <M extends pbjs.Method>(
 	streamid: string,
 	method: M,
-	accountClient: ServiceClientType<beapi.account.AccountService>,
+	bridgeClient: ServiceClientType<beapi.bridge.BridgeService>,
 ) => {
 	const eventEmitter = {
 		events: [] as ((...a: unknown[]) => void)[],
@@ -27,7 +27,7 @@ const makeStreamClient = <M extends pbjs.Method>(
 			this.events.push(listener)
 		},
 		async emit(payload: Uint8Array) {
-			const response = await accountClient.clientStreamSend({
+			const response = await bridgeClient.clientStreamSend({
 				streamId: streamid,
 				payload,
 			})
@@ -46,10 +46,10 @@ const makeStreamClient = <M extends pbjs.Method>(
 			}
 			this.started = true
 
-			var response: beapi.account.ClientStreamRecv.IReply
+			var response: beapi.bridge.ClientStreamRecv.IReply
 
 			for (;;) {
-				response = await accountClient.clientStreamRecv({ streamId: streamid })
+				response = await bridgeClient.clientStreamRecv({ streamId: streamid })
 				const grpcerr = new GRPCError(response.error)
 				if (!grpcerr.OK) {
 					this._publish(null, grpcerr)
@@ -64,7 +64,7 @@ const makeStreamClient = <M extends pbjs.Method>(
 				throw ErrStreamClientAlreadyStarted
 			}
 
-			const response = await accountClient.clientStreamClose({ streamId: streamid })
+			const response = await bridgeClient.clientStreamClose({ streamId: streamid })
 			const grpcerr = new GRPCError(response.error)
 			if (!grpcerr.OK) {
 				this._publish(null, grpcerr)
@@ -78,7 +78,7 @@ const makeStreamClient = <M extends pbjs.Method>(
 				throw ErrStreamClientAlreadyStarted
 			}
 
-			const response = await accountClient.clientStreamCloseAndRecv({ streamId: streamid })
+			const response = await bridgeClient.clientStreamCloseAndRecv({ streamId: streamid })
 			const grpcerr = new GRPCError(response.error)
 			if (!grpcerr.OK) {
 				this._publish(null, grpcerr)
@@ -98,7 +98,7 @@ const makeStreamClient = <M extends pbjs.Method>(
 	}
 }
 
-const unary = (accountClient: ServiceClientType<beapi.account.AccountService>) => async <
+const unary = (bridgeClient: ServiceClientType<beapi.bridge.BridgeService>) => async <
 	M extends pbjs.Method
 >(
 	method: M,
@@ -109,7 +109,7 @@ const unary = (accountClient: ServiceClientType<beapi.account.AccountService>) =
 		name: `/${getServiceName(method)}/${method.name}`,
 	}
 
-	const response = await accountClient.clientInvokeUnary({
+	const response = await bridgeClient.clientInvokeUnary({
 		methodDesc: methodDesc,
 		payload: request,
 		// metadata: {}, // @TODO: pass metdate object
@@ -122,7 +122,7 @@ const unary = (accountClient: ServiceClientType<beapi.account.AccountService>) =
 	return response.payload
 }
 
-const stream = (accountClient: ServiceClientType<beapi.account.AccountService>) => async <
+const stream = (bridgeClient: ServiceClientType<beapi.bridge.BridgeService>) => async <
 	M extends pbjs.Method
 >(
 	method: M,
@@ -136,7 +136,7 @@ const stream = (accountClient: ServiceClientType<beapi.account.AccountService>) 
 		isServerStream: !!method.responseStream,
 	}
 
-	const response = await accountClient.createClientStream({
+	const response = await bridgeClient.createClientStream({
 		methodDesc: methodDesc,
 		payload: request,
 		// metadata: {},
@@ -147,13 +147,13 @@ const stream = (accountClient: ServiceClientType<beapi.account.AccountService>) 
 		throw grpcerr.EOF ? EOF : grpcerr
 	}
 
-	return makeStreamClient(response.streamId, method, accountClient)
+	return makeStreamClient(response.streamId, method, bridgeClient)
 }
 
-const client = (accountClient: ServiceClientType<beapi.account.AccountService>) => ({
-	unaryCall: unary(accountClient),
-	streamCall: stream(accountClient),
+const client = (bridgeClient: ServiceClientType<beapi.bridge.BridgeService>) => ({
+	unaryCall: unary(bridgeClient),
+	streamCall: stream(bridgeClient),
 })
 
-const accountClient = Service(beapi.account.AccountService, rpcNative)
-export default client(accountClient)
+const bridgeClient = Service(beapi.bridge.BridgeService, rpcNative)
+export default client(bridgeClient)

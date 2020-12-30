@@ -285,6 +285,8 @@ daemon.start.docker:
 
 pbjs_common_flags := --force-long -p ../api -p node_modules/@googleapis/googleapis -p `go list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `go list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src
 
+pbjs_protos := ../api/bertyaccount.proto ../api/bertybridge.proto ../api/protocoltypes.proto ../api/messengertypes.proto
+
 packages/api/root.pb.js: $(wildcard ../api/*) node_modules
 	$(call check-program, npx)
 	npx pbjs $(pbjs_common_flags) \
@@ -292,13 +294,13 @@ packages/api/root.pb.js: $(wildcard ../api/*) node_modules
 		-t json-module \
 		-w es6 \
 		-o $@ \
-		../api/bertyaccount.proto ../api/protocoltypes.proto ../api/messengertypes.proto
+		$(pbjs_protos)
 
 packages/api/root.pb.d.ts: $(wildcard ../api/*) node_modules
 	$(call check-program, npx)
 	npx pbjs $(pbjs_common_flags) \
 		-t static-module \
-		../api/bertyaccount.proto ../api/protocoltypes.proto ../api/messengertypes.proto \
+		$(pbjs_protos) \
 		| npx pbts --no-comments -o $@ -
 	sed -E -i.bak 's/^.*constructor.*$$//g' $@ # json-module codegen doesn't support new
 	rm -f $@.bak

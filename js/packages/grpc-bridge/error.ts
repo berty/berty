@@ -5,19 +5,19 @@ class GRPCError extends Error {
 	public EOF: boolean
 	public OK: boolean
 	public Code: beapi.errcode.ErrCode
-	public GrpcCode: beapi.account.GRPCErrCode
+	public GrpcCode: beapi.bridge.GRPCErrCode
 
-	private error: beapi.account.Error
+	private error: beapi.bridge.Error
 
-	constructor(e: beapi.account.IError | null | undefined) {
+	constructor(e: beapi.bridge.IError | null | undefined) {
 		if (!e) {
 			// this should not happen, but should not break the app either.
 			// instead simply create a empty error and warn about this
 			console.warn(`GRPCError: (${e}) grpc error provided, empty error returned`)
-			e = beapi.account.Error.create({})
+			e = beapi.bridge.Error.create({})
 		}
 
-		const error = beapi.account.Error.create(e)
+		const error = beapi.bridge.Error.create(e)
 		super(error.message)
 
 		this.error = error
@@ -25,11 +25,11 @@ class GRPCError extends Error {
 		this.GrpcCode = error.grpcErrorCode
 
 		this.OK =
-			error.grpcErrorCode === beapi.account.GRPCErrCode.OK &&
+			error.grpcErrorCode === beapi.bridge.GRPCErrCode.OK &&
 			error.errorCode === beapi.errcode.ErrCode.Undefined
 		this.EOF =
-			error.grpcErrorCode === beapi.account.GRPCErrCode.CANCELED ||
-			(error.grpcErrorCode === beapi.account.GRPCErrCode.UNKNOWN && error.message === 'EOF')
+			error.grpcErrorCode === beapi.bridge.GRPCErrCode.CANCELED ||
+			(error.grpcErrorCode === beapi.bridge.GRPCErrCode.UNKNOWN && error.message === 'EOF')
 	}
 
 	public details(): beapi.errcode.ErrDetails {
@@ -44,7 +44,7 @@ class GRPCError extends Error {
 		return this.Code
 	}
 
-	public grpcErrorCode(): beapi.account.GRPCErrCode {
+	public grpcErrorCode(): beapi.bridge.GRPCErrCode {
 		return this.GrpcCode
 	}
 
@@ -54,7 +54,7 @@ class GRPCError extends Error {
 }
 
 const newGRPCError = (code: number, message: string): GRPCError => {
-	const error = beapi.account.Error.fromObject({
+	const error = beapi.bridge.Error.fromObject({
 		message: message,
 		grpcErrorCode: code,
 	})
@@ -62,7 +62,7 @@ const newGRPCError = (code: number, message: string): GRPCError => {
 }
 
 const EOF = new GRPCError({
-	grpcErrorCode: beapi.account.GRPCErrCode.CANCELED,
+	grpcErrorCode: beapi.bridge.GRPCErrCode.CANCELED,
 	message: 'EOF',
 })
 

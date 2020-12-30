@@ -42,7 +42,7 @@ type BackgroundTaskDriver interface {
     Execute() (success bool)
 }
 ```
-[berty](https://github.com/berty/berty/blob/master/go/framework/bertybridge/driver_lifecycle.go)
+[berty](https://github.com/berty/berty/blob/master/go/framework/bertynative/driver_lifecycle.go)
 
 
 ##### implement in swift

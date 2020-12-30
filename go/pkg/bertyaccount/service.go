@@ -7,10 +7,10 @@ import (
 
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/notification"
+	"berty.tech/berty/v2/go/pkg/bertybridge"
 )
 
 // Servicex is AccountServiceServer
@@ -26,12 +26,18 @@ type Service interface {
 	Close() error
 }
 
+type Options struct {
+	RootDirectory string
+
+	ServiceClientRegister bertybridge.ServiceClientRegister
+	LifecycleManager      *lifecycle.Manager
+	NotificationManager   notification.Manager
+	Logger                *zap.Logger
+}
+
 type service struct {
 	rootCtx    context.Context
 	rootCancel context.CancelFunc
-
-	streams   map[string]*grpcutil.LazyStream
-	muStreams sync.RWMutex
 
 	notifManager notification.Manager
 	logger       *zap.Logger
@@ -40,19 +46,16 @@ type service struct {
 	muService        sync.RWMutex
 	initManager      *initutil.Manager
 	lifecycleManager *lifecycle.Manager
-	servicesClient   *grpcutil.LazyClient
-}
-
-type Options struct {
-	RootDirectory       string
-	LifecycleManager    *lifecycle.Manager
-	NotificationManager notification.Manager
-	Logger              *zap.Logger
+	sclients         bertybridge.ServiceClientRegister
 }
 
 func (o *Options) applyDefault() {
 	if o.Logger == nil {
 		o.Logger = zap.NewNop()
+	}
+
+	if o.ServiceClientRegister == nil {
+		o.ServiceClientRegister = bertybridge.NewNoopServiceClientRegister()
 	}
 
 	if o.LifecycleManager == nil {
@@ -75,7 +78,7 @@ func NewService(opts *Options) (Service, error) {
 		logger:           opts.Logger,
 		lifecycleManager: opts.LifecycleManager,
 		notifManager:     opts.NotificationManager,
-		streams:          make(map[string]*grpcutil.LazyStream),
+		sclients:         opts.ServiceClientRegister,
 	}
 
 	go s.handleLifecycle(rootCtx)
@@ -96,15 +99,6 @@ func (s *service) Close() error {
 	}
 
 	return nil
-}
-
-func (s *service) getServiceClient() (c *grpcutil.LazyClient, err error) {
-	s.muService.RLock()
-	if c = s.servicesClient; c == nil {
-		err = fmt.Errorf("service client not initialized")
-	}
-	s.muService.RUnlock()
-	return
 }
 
 func (s *service) getInitManager() (m *initutil.Manager, err error) {

@@ -185,6 +185,8 @@ generate_local:
 	$(GO) run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/bertyreplication.proto -o ../api/bertyreplication.yaml
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/errcode.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertyaccount.proto
+	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/bertybridge.proto
+	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/go-internal/testutil.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/go-internal/records.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src ../api/go-internal/handshake.proto
 	protoc $(protoc_opts) --gogo_out=plugins=grpc:$(GOPATH)/src --grpc-gateway_out=logtostderr=true,grpc_api_configuration=../api/protocoltypes.yaml:$(GOPATH)/src ../api/protocoltypes.proto
