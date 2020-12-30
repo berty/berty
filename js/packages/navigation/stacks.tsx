@@ -357,7 +357,7 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={Routes.Modals.ImageView}
 				component={Components.Modals.ImageView}
-				options={ModalScreenOptions}
+				options={{ ...ModalScreenOptions, gestureEnabled: false }}
 			/>
 		</NavigationStack.Navigator>
 	)
