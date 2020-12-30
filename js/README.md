@@ -24,19 +24,15 @@ This folder contains most of the Typescript and Javascript code needed for the B
 | directory                                                                   | description                                                                                    |
 | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | [api/](https://github.com/berty/berty/tree/master/js/packages/api)          | Interfaces with the [Berty golang services](https://github.com/berty/berty/tree/master/go/pkg) |
-| [babel-preset/](https://github.com/berty/berty/tree/master/js/packages/api) | Defines babel config                                                                           |
-| [berty-app/](./packages/berty-app/)                                         | Core Berty Messenger code                                                                      |
+| [messenger-app/](./packages/messenger-app/)                                         | Berty Messenger react root                                                                 |
 | [berty-i18n/](./packages/berty-i18n)                                        | Locale support files                                                                           |
-| [codegen/](./packages/codegen)                                              | Creates types from api data structures                                                         |  | [components](./packages/components) | React Native components |
-| [eslint-config/](./packages/eslint-config)                                  | JavaScript/TypeScript linter config                                                            |
-| [go-bridge/](./packages/go-bridge)                                          | Connects golang berty node codebase to native mobile code                                      |
-| [grpc-bridge/](./packages/grpc-bridge)                                      | Collection of grpc utilities                                                                   |
-| [hooks/](./packages/hooks)                                                  | React hooks that allow us to connect the app state to React components                         |
-| [navigation/](./packages/navigation)                                        | React Native navigation configuration                                                          |
-| [prettier-config/](./packages/prettier-config)                              | [prettier](https://prettier.io/) code formatting config                                        |
-| [store/](./packages/store)                                                  | App state control using [React Redux sagas](https://redux-saga.js.org/)                        |
+| [components](./packages/components) | React Native components |
+| [go-bridge/](./packages/go-bridge)                                          | Berty daemon native module
+| [grpc-bridge/](./packages/grpc-bridge)                                      | Collection of grpc utilities used to interface with the daemon                                                                   |
+| [navigation/](./packages/navigation)                                        | Berty Messenger + react-native-navigation                                                     |
+| [store/](./packages/store)                                                  | App state control using React hooks and Context |
 | [styles/](./packages/styles)                                                | Generates StyleSheet utilities and styles that conform to our design specs                     |
-| [web-dev-app/](./packages/web-dev-app)                                      | A minimal React web app that allows us to easily test our `hooks` and `store` functionality    |
+| [web-dev-app/](./packages/web-dev-app)                                      | A minimal React web app that allows us to easily test our `store` functionality (currently not supported)   |
 
 ## 🔨 Usage
 
@@ -87,9 +83,12 @@ $ ANDROID_DEVICE=__ANDROID_DEVICE_ID_2__ make android.debug
 
 🚧 This debugging tool is primarily used internally and not actively maintained except by developers for their own usage.
 
+TODO: This is currently not working, we need to port the transpiler config and catch up
+
 #### 1. Requirements
 
 - `yarn`
+- `npx`
 
 #### 2. Run required services
 
@@ -149,5 +148,3 @@ You can use one normal tab and one private tab to have two accounts at the same 
 - The [yarn package manager](https://classic.yarnpkg.com/en/)
 
 ## 🚧 Known issues and troubleshooting
-
-- gRPC errors on iOS and Android views (usually you can dismiss these and/or quit and re-open the app)
