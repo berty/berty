@@ -1,3 +1,5 @@
+import { GRPCError } from './error'
+
 export type RequestStream<Request extends {}, Reply extends {}> = ({}) => Promise<{
 	emit: (r: Request) => Promise<void>
 	stopAndRecv: () => Promise<Reply>
@@ -8,7 +10,7 @@ export type ResponseStream<Request extends {}, Reply extends {}> = (
 	req: Request,
 ) => Promise<{
 	start: () => Promise<void>
-	onMessage: (cb: (rep: Reply | null, err: Error | null) => void) => void
+	onMessage: (cb: (rep: Reply | null, err: GRPCError | null) => void) => void
 	stop: () => Promise<void>
 }>
 

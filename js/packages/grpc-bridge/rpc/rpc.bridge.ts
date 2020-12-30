@@ -1,37 +1,15 @@
 import { Service } from '..'
 import rpcNative from './rpc.native'
 import beapi from '@berty-tech/api'
-import { getServiceName, EOF } from './utils'
+import { getServiceName } from './utils'
 import * as pbjs from 'protobufjs'
 import { ServiceClientType } from '../welsh-clients.gen'
+import { GRPCError, EOF } from '../error'
 
-const getErrorFromResponse = <M extends pbjs.Method>(
-	method: M,
-	response: beapi.account.ClientStreamRecv.IReply,
-) => {
-	if (response.error) {
-		if (
-			response.error.grpcErrorCode === beapi.account.GRPCErrCode.CANCELED ||
-			(response.error.grpcErrorCode === beapi.account.GRPCErrCode.UNKNOWN &&
-				response.error.message === 'EOF')
-		) {
-			return EOF
-		}
-
-		if (response.error.errorCode || 0 > 0) {
-			return new Error(`${method.name} error: ${response.error.message}`)
-		}
-
-		if (response.error.grpcErrorCode || 0 > 0) {
-			const name = beapi.account.GRPCErrCode[response.error.grpcErrorCode || 0]
-			return new Error(`${method.name} error: GRPC_${name}(${response.error.grpcErrorCode})`)
-		}
-
-		return new Error(`unknown error: ${response.error.message}`)
-	}
-
-	return null
-}
+const ErrStreamClientAlreadyStarted = new GRPCError({
+	grpcErrorCode: beapi.account.GRPCErrCode.CANCELED,
+	message: 'client stream not started or has been closed',
+})
 
 const makeStreamClient = <M extends pbjs.Method>(
 	streamid: string,
@@ -54,25 +32,27 @@ const makeStreamClient = <M extends pbjs.Method>(
 				payload,
 			})
 
-			const err = getErrorFromResponse(method, response)
-			if (err) {
-				throw err
+			// check for error
+			if (response.error) {
+				const grpcerr = new GRPCError(response.error)
+				if (!grpcerr.OK) {
+					throw grpcerr
+				}
 			}
 		},
 		async start() {
 			if (this.started) {
-				throw new Error('client stream already started or has been closed')
+				throw ErrStreamClientAlreadyStarted
 			}
 			this.started = true
 
 			var response: beapi.account.ClientStreamRecv.IReply
+
 			for (;;) {
 				response = await accountClient.clientStreamRecv({ streamId: streamid })
-
-				const err = getErrorFromResponse(method, response)
-
-				if (err) {
-					this._publish(null, err)
+				const grpcerr = new GRPCError(response.error)
+				if (!grpcerr.OK) {
+					this._publish(null, grpcerr)
 					return
 				}
 
@@ -81,27 +61,33 @@ const makeStreamClient = <M extends pbjs.Method>(
 		},
 		async stop() {
 			if (!this.started) {
-				throw new Error('client stream not started or has been closed')
+				throw ErrStreamClientAlreadyStarted
 			}
+
 			const response = await accountClient.clientStreamClose({ streamId: streamid })
-			const err = getErrorFromResponse(method, response)
-			if (err) {
-				throw err
+			const grpcerr = new GRPCError(response.error)
+			if (!grpcerr.OK) {
+				this._publish(null, grpcerr)
+				return
 			}
+
 			return
 		},
 		async stopAndRecv() {
 			if (this.started) {
-				throw new Error('client stream not started or has been closed')
+				throw ErrStreamClientAlreadyStarted
 			}
 
 			const response = await accountClient.clientStreamCloseAndRecv({ streamId: streamid })
-
-			const err = getErrorFromResponse(method, response)
-			if (err) {
-				throw err
+			const grpcerr = new GRPCError(response.error)
+			if (!grpcerr.OK) {
+				this._publish(null, grpcerr)
+				return
 			}
-			return method.resolvedResponseType?.decode(response.payload)
+
+			const payload = method.resolvedResponseType?.decode(response.payload)
+			this._publish(payload, null)
+			return payload
 		},
 	}
 
@@ -128,9 +114,9 @@ const unary = (accountClient: ServiceClientType<beapi.account.AccountService>) =
 		payload: request,
 		// metadata: {}, // @TODO: pass metdate object
 	})
-	const err = getErrorFromResponse(method, response)
-	if (err !== null) {
-		throw err
+	const grpcerr = new GRPCError(response.error)
+	if (!grpcerr.OK) {
+		throw grpcerr
 	}
 
 	return response.payload
@@ -156,9 +142,9 @@ const stream = (accountClient: ServiceClientType<beapi.account.AccountService>) 
 		// metadata: {},
 	})
 
-	const err = getErrorFromResponse(method, response)
-	if (err !== null) {
-		throw err
+	const grpcerr = new GRPCError(response.error)
+	if (!grpcerr.OK) {
+		throw grpcerr.EOF ? EOF : grpcerr
 	}
 
 	return makeStreamClient(response.streamId, method, accountClient)

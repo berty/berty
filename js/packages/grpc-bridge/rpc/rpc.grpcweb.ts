@@ -1,6 +1,7 @@
 import { grpc } from '@improbable-eng/grpc-web'
-import { getServiceName, EOF } from './utils'
+import { getServiceName } from './utils'
 import * as pb from 'protobufjs'
+import { newGRPCError } from '../error'
 
 class LazyMessage extends pb.Message implements grpc.ProtobufMessage {
 	buf: Uint8Array
@@ -54,10 +55,9 @@ const unary = <T extends pb.Method>(options: grpc.ClientRpcOptions) => async (
 		})
 		client.onEnd((code: grpc.Code, message: string /*, trailers: grpc.Metadata*/): void => {
 			if (code !== grpc.Code.OK) {
-				reject(new Error(message))
+				reject(newGRPCError(code, message))
 			}
 		})
-		console.log(request)
 		client.send(LazyMessage.deserializeBinary(request))
 		client.finishSend()
 	})
@@ -89,11 +89,8 @@ const stream = <T extends pb.Method>(options: grpc.ClientRpcOptions) => async (
 					callback(message.serializeBinary(), null)
 				})
 				client.onEnd((code: grpc.Code, message: string /*, metadata: grpc.Metadata*/) => {
-					if (code !== grpc.Code.OK) {
-						callback(null, new Error(`grpc error(${code}): ${message}`))
-					} else {
-						callback(null, EOF)
-					}
+					const error = newGRPCError(code, message)
+					callback(null, error)
 				})
 			},
 			emit: async (request: Uint8Array) => {

@@ -962,13 +962,37 @@ func (svc *service) AccountGet(ctx context.Context, req *messengertypes.AccountG
 }
 
 func (svc *service) EchoTest(req *messengertypes.EchoTest_Request, srv messengertypes.MessengerService_EchoTestServer) error {
+	if req.TriggerError {
+		return errcode.ErrTestEcho
+	}
+
 	for {
 		err := srv.Send(&messengertypes.EchoTest_Reply{Echo: req.Echo})
 		if err != nil {
-			return err
+			return errcode.ErrTestEchoSend.Wrap(err)
 		}
 
 		time.Sleep(time.Duration(req.Delay) * time.Millisecond)
+	}
+}
+
+func (svc *service) EchoDuplexTest(srv messengertypes.MessengerService_EchoDuplexTestServer) error {
+	for {
+		req, err := srv.Recv()
+		if err != nil {
+			return errcode.ErrTestEchoRecv.Wrap(err)
+		}
+
+		if req.TriggerError {
+			return errcode.ErrTestEcho
+		}
+
+		err = srv.Send(&messengertypes.EchoDuplexTest_Reply{
+			Echo: req.Echo,
+		})
+		if err != nil {
+			return errcode.ErrTestEchoSend.Wrap(err)
+		}
 	}
 }
 

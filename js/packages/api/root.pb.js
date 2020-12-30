@@ -523,6 +523,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   message: {
                     type: "string",
                     id: 3
+                  },
+                  errorDetails: {
+                    type: "errcode.ErrDetails",
+                    id: 4
                   }
                 }
               },
@@ -647,6 +651,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrAttachmentPrepare: 2300,
               ErrAttachmentRetrieve: 2301,
               ErrProtocolSend: 2302,
+              ErrTestEcho: 2401,
+              ErrTestEchoRecv: 2402,
+              ErrTestEchoSend: 2403,
               ErrCLINoTermcaps: 3001,
               ErrServicesAuth: 4000,
               ErrServicesAuthNotInitialized: 4001,
@@ -3101,6 +3108,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     responseType: "EchoTest.Reply",
                     responseStream: true
                   },
+                  EchoDuplexTest: {
+                    requestType: "EchoDuplexTest.Request",
+                    requestStream: true,
+                    responseType: "EchoDuplexTest.Reply",
+                    responseStream: true
+                  },
                   ConversationStream: {
                     requestType: "ConversationStream.Request",
                     responseType: "ConversationStream.Reply",
@@ -3235,6 +3248,35 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       echo: {
                         type: "string",
                         id: 2
+                      },
+                      triggerError: {
+                        type: "bool",
+                        id: 3
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      echo: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              EchoDuplexTest: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      echo: {
+                        type: "string",
+                        id: 2
+                      },
+                      triggerError: {
+                        type: "bool",
+                        id: 3
                       }
                     }
                   },
