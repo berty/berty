@@ -1386,6 +1386,8 @@ github.com/tadvi/systray v0.0.0-20190226123456-11a2b8fa57af h1:6yITBqGTE2lEeTPG0
 github.com/tadvi/systray v0.0.0-20190226123456-11a2b8fa57af/go.mod h1:4F09kP5F+am0jAwlQLddpoMDM+iewkxxt6nxUQ5nq5o=
 github.com/tailscale/depaware v0.0.0-20201102210757-e2f543bafb1d h1:6tSgagMJvBlaa402Ecdtd6DLbdVs4EUzaJBVs+J7sr8=
 github.com/tailscale/depaware v0.0.0-20201102210757-e2f543bafb1d/go.mod h1:jissDaJNHiyV2tFdr3QyNEfsZrax/i2yQiSO+CljThI=
+github.com/tailscale/depaware v0.0.0-20201214215404-77d1e9757027 h1:lK99QQdH3yBWY6aGilF+IRlQIdmhzLrsEmF6JgN+Ryw=
+github.com/tailscale/depaware v0.0.0-20201214215404-77d1e9757027/go.mod h1:p9lPsd+cx33L3H9nNoecRRxPssFKUwwI50I3pZ0yT+8=
 github.com/tarm/serial v0.0.0-20180830185346-98f6abe2eb07/go.mod h1:kDXzergiv9cbyO7IOYJZWg1U88JhDg3PB6klq9Hg2pA=
 github.com/texttheater/golang-levenshtein v0.0.0-20180516184445-d188e65d659e/go.mod h1:XDKHRm5ThF8YJjx001LtgelzsoaEcvnA7lVWz9EeX3g=
 github.com/tj/assert v0.0.3 h1:Df/BlaZ20mq6kuai7f5z2TvPFiwC3xaWJSDQNiIS3Rk=
@@ -1556,6 +1558,8 @@ golang.org/x/mod v0.1.1-0.20191209134235-331c550502dd/go.mod h1:s0Qsj1ACt9ePp/hM
 golang.org/x/mod v0.2.0/go.mod h1:s0Qsj1ACt9ePp/hMypM3fl4fZqREWJwdYDEqhRiZZUA=
 golang.org/x/mod v0.3.0 h1:RM4zey1++hCTbCVQfnWeKs9/IEsaBLA8vTkd0WVtmH4=
 golang.org/x/mod v0.3.0/go.mod h1:s0Qsj1ACt9ePp/hMypM3fl4fZqREWJwdYDEqhRiZZUA=
+golang.org/x/mod v0.4.0 h1:8pl+sMODzuvGJkmj2W4kZihvVb5mKm8pB/X44PIQHv8=
+golang.org/x/mod v0.4.0/go.mod h1:s0Qsj1ACt9ePp/hMypM3fl4fZqREWJwdYDEqhRiZZUA=
 golang.org/x/net v0.0.0-20180524181706-dfa909b99c79/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/net v0.0.0-20180719180050-a680a1efc54d/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/net v0.0.0-20180724234803-3673e40ba225/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
@@ -1765,6 +1769,8 @@ golang.org/x/tools v0.0.0-20200904185747-39188db58858/go.mod h1:Cj7w3i3Rnn0Xh82u
 golang.org/x/tools v0.0.0-20201001230009-b5b87423c93b/go.mod h1:z6u4i615ZeAfBE4XtMziQW1fSVJXACjjbWkB/mvPzlU=
 golang.org/x/tools v0.0.0-20201118003311-bd56c0adb394 h1:O3VD5Fds21mB1WVRTbkiz/HTXESx6Jql5ucPZi69oiM=
 golang.org/x/tools v0.0.0-20201118003311-bd56c0adb394/go.mod h1:emZCQorbCU4vsT4fOWvOPXz4eW1wZW4PmDk9uLelYpA=
+golang.org/x/tools v0.0.0-20201211185031-d93e913c1a58 h1:1Bs6RVeBFtLZ8Yi1Hk07DiOqzvwLD/4hln4iahvFlag=
+golang.org/x/tools v0.0.0-20201211185031-d93e913c1a58/go.mod h1:emZCQorbCU4vsT4fOWvOPXz4eW1wZW4PmDk9uLelYpA=
 golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
 golang.org/x/xerrors v0.0.0-20191011141410-1b5146add898/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
 golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
@@ -1944,8 +1950,8 @@ moul.io/testman v1.5.0/go.mod h1:b4/5+lMsMDJtwuh25Cr0eVJ5Y4B2lSPfkzDtfct070g=
 moul.io/u v1.6.0/go.mod h1:yd3/IoYRIJaZWAJV2rYHvM2EPp/Pp0zSNraB5IPX+hw=
 moul.io/u v1.19.0 h1:TYzVanlhOK5suW4Q63OSO0qfy9IjNZUPu4IKl7e23Zw=
 moul.io/u v1.19.0/go.mod h1:KaaCftEbxFzGdKI+elj1xeRVrlmZvd9oa5sDhJ3qzFU=
-moul.io/u v1.19.1 h1:DOy8779oAik+ccW44X3Yp+Wz7dqR5FcHBLCv752gkU0=
-moul.io/u v1.19.1/go.mod h1:KaaCftEbxFzGdKI+elj1xeRVrlmZvd9oa5sDhJ3qzFU=
+moul.io/u v1.20.0 h1:VSGDnrFDggJeTqxEHB06OrPE8VeJq+xYsgjWTu8VTP4=
+moul.io/u v1.20.0/go.mod h1:wbu/e7QOYvmXQW4P3W2494MZU2y9Zh+H1hcr6HBxftE=
 moul.io/zapconfig v1.3.0 h1:vS5EMh04bXxqp80a6b7mUMeCYn8pEN9kIe7ZHEKfep0=
 moul.io/zapconfig v1.3.0/go.mod h1:9zIkSbBEmO7qv8n0h9RRPqOfiI4W7fWhDoZV2UxXxdI=
 moul.io/zapfilter v1.6.1 h1:D5ySvqGTADgtOmjhKCrCOnH3DHZjIqIAQD0kwCeyBIw=
