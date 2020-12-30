@@ -139,8 +139,9 @@ const ReplicateGroupContent: React.FC<{
 			)}
 			<ButtonSetting
 				name={t('chat.replicate-group-settings.connect-button')}
-				icon='plus-circle-outline'
-				iconSize={30}
+				icon='berty'
+				iconSize={28}
+				iconPack='custom'
 				iconColor={color.blue}
 				alone={true}
 				onPress={async () => {

@@ -158,6 +158,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 				</View>
 			</View>
 			<TouchableOpacity
+				activeOpacity={0.9}
 				style={[border.radius.medium, border.shadow.medium, padding.medium, margin.top.medium]}
 			>
 				<View style={[row.fill]}>
@@ -180,13 +181,6 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange, layout }) => {
 							About groups
 						</Text>
 					</View>
-					<Icon
-						name='arrow-ios-upward'
-						width={30}
-						height={30}
-						fill={color.black}
-						style={row.item.justify}
-					/>
 				</View>
 				<View style={[margin.top.medium, _stylesCreateGroup.groupInfoAboutGroupsItems]}>
 					<ButtonSettingItem
