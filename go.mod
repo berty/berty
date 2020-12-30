@@ -91,7 +91,7 @@ require (
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/stretchr/testify v1.6.1
-	github.com/tailscale/depaware v0.0.0-20201102210757-e2f543bafb1d
+	github.com/tailscale/depaware v0.0.0-20201214215404-77d1e9757027
 	github.com/tj/assert v0.0.3
 	github.com/zcalusic/sysinfo v0.0.0-20200820110305-ef1bb2697bc2
 	go.opencensus.io v0.22.5 // indirect
@@ -104,7 +104,7 @@ require (
 	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de
 	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
 	golang.org/x/text v0.3.4 // indirect
-	golang.org/x/tools v0.0.0-20201118003311-bd56c0adb394
+	golang.org/x/tools v0.0.0-20201211185031-d93e913c1a58
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 	google.golang.org/genproto v0.0.0-20201022181438-0ff5f38871d5 // indirect
 	google.golang.org/grpc v1.34.0
@@ -117,7 +117,7 @@ require (
 	moul.io/openfiles v1.2.0
 	moul.io/srand v1.6.1
 	moul.io/testman v1.5.0
-	moul.io/u v1.19.1
+	moul.io/u v1.20.0
 	moul.io/zapconfig v1.3.0
 	moul.io/zapfilter v1.6.1
 	moul.io/zapgorm2 v1.0.1
