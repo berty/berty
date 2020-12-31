@@ -305,6 +305,11 @@
     },
     "ipfs-webui": {
       "title": "IPFS Webinterface"
+    },
+    "my-berty-ID": {
+      "qr": "",
+      "fingerprint": "Fingerabdruck",
+      "devices": "Geräte"
     }
   },
   "modals": {
