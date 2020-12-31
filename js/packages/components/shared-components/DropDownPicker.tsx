@@ -77,9 +77,12 @@ export const DropDownPicker: React.FC<{
 			</TouchableOpacity>
 
 			<Animated.ScrollView
-				style={{
-					maxHeight: animateHeight,
-				}}
+				style={[
+					border.radius.bottom.medium,
+					{
+						maxHeight: animateHeight,
+					},
+				]}
 			>
 				{items.map((item) => (
 					<TouchableOpacity

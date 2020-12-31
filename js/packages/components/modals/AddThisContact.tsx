@@ -41,7 +41,7 @@ const SelectedContent = ({
 }) => {
 	const [{ padding }] = useStyles()
 	switch (contentName) {
-		case 'Fingerprint':
+		case 'fingerprint':
 			return <FingerprintContent seed={pubKey} isEncrypted={isEncrypted} />
 		default:
 			return (
@@ -62,7 +62,7 @@ const AddThisContact: React.FC<{
 	] = useStyles()
 	const navigation = useNavigation()
 	const { call: requestContact, error, done } = messengerMethodsHooks.useContactRequest()
-	const [selectedContent, setSelectedContent] = useState('Fingerprint')
+	const [selectedContent, setSelectedContent] = useState('fingerprint')
 	const _styles = useStylesModal()
 	const { t } = useTranslation()
 
@@ -117,23 +117,25 @@ const AddThisContact: React.FC<{
 					<TabBar
 						tabs={[
 							{
+								key: 'fingerprint',
 								name: t('modals.add-this-contact.fingerprint'),
 								icon: 'fingerprint',
 								iconPack: 'custom',
-							} as any, // TODO: fix typing
+							},
 							{
+								key: 'info',
 								name: t('modals.add-this-contact.info'),
 								icon: 'info-outline',
 								buttonDisabled: true,
 							},
 							{
+								key: 'devices',
 								name: t('modals.add-this-contact.devices'),
 								icon: 'smartphone',
-								iconSize: 20,
 								iconPack: 'feather',
 								iconTransform: [{ rotate: '22.5deg' }, { scale: 0.8 }],
 								buttonDisabled: true,
-							} as any, // TODO: fix typing
+							},
 						]}
 						onTabChange={setSelectedContent}
 					/>

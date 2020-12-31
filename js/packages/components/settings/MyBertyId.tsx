@@ -7,6 +7,7 @@ import { SafeAreaConsumer } from 'react-native-safe-area-context'
 import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/navigation'
 import { useAccount } from '@berty-tech/store/hooks'
+import { useTranslation } from 'react-i18next'
 
 import { TabBar } from '../shared-components/TabBar'
 import { RequestAvatar } from '../shared-components/Request'
@@ -106,9 +107,9 @@ const Fingerprint: React.FC = () => {
 
 const SelectedContent: React.FC<{ contentName: string }> = ({ contentName }) => {
 	switch (contentName) {
-		case 'QR':
+		case 'qr':
 			return <ContactRequestQR />
-		case 'Fingerprint':
+		case 'fingerprint':
 			return <Fingerprint />
 		default:
 			return <Text>Error: Unknown content name "{contentName}"</Text>
@@ -118,8 +119,9 @@ const SelectedContent: React.FC<{ contentName: string }> = ({ contentName }) => 
 const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
 	const [{ background, border, margin, padding, opacity }] = useStyles()
 	const { styleBertyIdContent, requestAvatarSize } = useStylesBertyId()
-	const [selectedContent, setSelectedContent] = useState('QR')
+	const [selectedContent, setSelectedContent] = useState('qr')
 	const account = useAccount()
+	const { t } = useTranslation()
 
 	return (
 		<View
@@ -135,10 +137,16 @@ const BertIdBody: React.FC<{ user: any }> = ({ user }) => {
 			<View style={[padding.horizontal.big]}>
 				<TabBar
 					tabs={[
-						{ name: 'QR', icon: 'qr', iconPack: 'custom' },
-						{ name: 'Fingerprint', icon: 'fingerprint', iconPack: 'custom' },
+						{ key: 'qr', name: t('settings.my-berty-ID.qr'), icon: 'qr', iconPack: 'custom' },
 						{
-							name: 'Devices',
+							key: 'fingerprint',
+							name: t('settings.my-berty-ID.fingerprint'),
+							icon: 'fingerprint',
+							iconPack: 'custom',
+						},
+						{
+							key: 'devices',
+							name: t('settings.my-berty-ID.devices'),
 							icon: 'smartphone',
 							iconPack: 'feather',
 							iconTransform: [{ rotate: '22.5deg' }, { scale: 0.8 }],

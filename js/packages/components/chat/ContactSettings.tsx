@@ -24,7 +24,7 @@ const SelectedContent: React.FC<{ contentName: string; publicKey: string }> = ({
 	publicKey,
 }) => {
 	switch (contentName) {
-		case 'Fingerprint':
+		case 'fingerprint':
 			return <FingerprintContent seed={publicKey} isEncrypted={false} />
 		default:
 			return <Text>Error: Unknown content name "{contentName}"</Text>
@@ -33,8 +33,8 @@ const SelectedContent: React.FC<{ contentName: string; publicKey: string }> = ({
 
 const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 	const [{ border, background, padding, row, absolute, text }] = useStyles()
-	const [selectedContent, setSelectedContent] = useState('Fingerprint')
 	const { t } = useTranslation()
+	const [selectedContent, setSelectedContent] = useState('fingerprint')
 
 	return (
 		<View style={[padding.medium, padding.top.scale(50)]}>
@@ -56,12 +56,19 @@ const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 					<TabBar
 						tabs={[
 							{
+								key: 'fingerprint',
 								name: t('chat.contact-settings.fingerprint'),
 								icon: 'fingerprint',
 								iconPack: 'custom',
 							},
-							{ name: t('chat.contact-settings.info'), icon: 'info-outline', buttonDisabled: true },
 							{
+								key: 'info',
+								name: t('chat.contact-settings.info'),
+								icon: 'info-outline',
+								buttonDisabled: true,
+							},
+							{
+								key: 'devices',
 								name: t('chat.contact-settings.devices'),
 								icon: 'smartphone',
 								iconPack: 'feather',

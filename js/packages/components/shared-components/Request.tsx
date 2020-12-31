@@ -174,7 +174,7 @@ export const MarkAsVerified: React.FC<{}> = () => {
 
 // Types
 type RequestComponentProps = {
-	user: any
+	contactPublicKey: string
 	markAsVerified?: boolean
 	buttons?: Buttons[]
 	blurAmount?: number
@@ -183,8 +183,8 @@ type RequestComponentProps = {
 }
 
 type BodyRequestProps = {
-	user: any
 	markAsVerified: boolean
+	contactPublicKey: string
 	buttons?: Buttons[]
 }
 
@@ -207,10 +207,10 @@ const SelectedContent = ({
 	publicKey: string
 }) => {
 	switch (contentName) {
-		case 'Fingerprint':
+		case 'fingerprint':
 			return (
 				<View>
-					<FingerprintContent seed={publicKey} />
+					<FingerprintContent seed={publicKey} isEncrypted={false} />
 					{markAsVerified && <MarkAsVerified />}
 				</View>
 			)
@@ -225,7 +225,7 @@ const BodyRequest: React.FC<BodyRequestProps> = ({
 	buttons = null,
 }) => {
 	const [{ padding, absolute, row, text, border }] = useStyles()
-	const [selectedContent, setSelectedContent] = useState()
+	const [selectedContent, setSelectedContent] = useState('fingerprint')
 	const contact = useContact(contactPublicKey)
 	return (
 		<View style={[padding.horizontal.medium, padding.bottom.medium]}>
@@ -234,16 +234,16 @@ const BodyRequest: React.FC<BodyRequestProps> = ({
 			</View>
 			<View style={[padding.horizontal.medium, padding.top.scale(75)]}>
 				<Text style={[padding.vertical.tiny, text.align.center, text.size.big]}>
-					{contact?.displayName}
+					{contact?.displayName || ''}
 				</Text>
 				<TabBar
 					tabs={[
-						{ name: 'Fingerprint', icon: 'fingerprint', iconPack: 'custom' },
-						{ name: 'Infos', icon: 'info-outline', buttonDisabled: true },
+						{ key: 'fingerprint', name: 'Fingerprint', icon: 'fingerprint', iconPack: 'custom' },
+						{ key: 'info', name: 'Infos', icon: 'info-outline', buttonDisabled: true },
 						{
+							key: 'devices',
 							name: 'Devices',
 							icon: 'smartphone',
-							iconSize: 20,
 							iconPack: 'feather',
 							iconTransform: [{ rotate: '22.5deg' }, { scale: 0.8 }],
 							buttonDisabled: true,
