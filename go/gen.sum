@@ -1,4 +1,4 @@
-b46b32beb8da133be29dfbf1fc505df36ba905d8  ../api/bertyaccount.proto
+5c03b81d18313052bab1e237f866fae5581dacb6  ../api/bertyaccount.proto
 4589e8f2ea76dc6030778f5559777636dc05a401  ../api/bertyreplication.proto
 b843029a8478c96fb213c05dd35f080fbd276fa7  ../api/errcode.proto
 c314cc3d08e8849bd0693039e42da117c39efef5  ../api/go-internal/handshake.proto

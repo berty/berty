@@ -103,8 +103,20 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 	return meta, nil
 }
 
-// OpenAccount, start berty node
-func (s *service) OpenAccount(req *OpenAccount_Request, server AccountService_OpenAccountServer) error {
+// OpenAccount starts a Berty node.
+func (s *service) OpenAccount(_ context.Context, req *OpenAccount_Request) (*OpenAccount_Reply, error) {
+	s.muService.Lock()
+	defer s.muService.Unlock()
+
+	if _, err := s.openAccount(req, nil); err != nil {
+		return nil, errcode.ErrBertyAccountOpenAccount.Wrap(err)
+	}
+
+	return &OpenAccount_Reply{}, nil
+}
+
+// OpenAccountWithProgress is similar to OpenAccount, but also streams the progress.
+func (s *service) OpenAccountWithProgress(req *OpenAccountWithProgress_Request, server AccountService_OpenAccountWithProgressServer) error {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -116,7 +128,7 @@ func (s *service) OpenAccount(req *OpenAccount_Request, server AccountService_Op
 		for step := range ch {
 			_ = step
 			snapshot := prog.Snapshot()
-			err := server.Send(&OpenAccount_Reply{
+			err := server.Send(&OpenAccountWithProgress_Reply{
 				Progress: &protocoltypes.Progress{
 					State:     string(snapshot.State),
 					Doing:     snapshot.Doing,
@@ -135,7 +147,13 @@ func (s *service) OpenAccount(req *OpenAccount_Request, server AccountService_Op
 		done <- true
 	}()
 
-	if _, err := s.openAccount(req, prog); err != nil {
+	// FIXME: replace with a helper that json unmarshal + directly remashal, to avoid being unsynced?
+	typed := OpenAccount_Request{
+		Args:          req.Args,
+		AccountID:     req.AccountID,
+		LoggerFilters: req.LoggerFilters,
+	}
+	if _, err := s.openAccount(&typed, prog); err != nil {
 		return errcode.ErrBertyAccountOpenAccount.Wrap(err)
 	}
 
@@ -145,7 +163,29 @@ func (s *service) OpenAccount(req *OpenAccount_Request, server AccountService_Op
 	return nil
 }
 
-func (s *service) CloseAccount(req *CloseAccount_Request, server AccountService_CloseAccountServer) error {
+func (s *service) CloseAccount(_ context.Context, req *CloseAccount_Request) (*CloseAccount_Reply, error) {
+	s.muService.Lock()
+	defer s.muService.Unlock()
+
+	if s.initManager == nil {
+		return &CloseAccount_Reply{}, nil
+	}
+
+	if l, err := s.initManager.GetLogger(); err == nil {
+		_ = l.Sync() // cleanup logger
+	}
+
+	if err := s.initManager.Close(nil); err != nil {
+		s.logger.Warn("unable to close account", zap.Error(err))
+		return nil, errcode.ErrBertyAccountManagerClose.Wrap(err)
+	}
+	s.initManager = nil
+	s.servicesClient = nil
+
+	return &CloseAccount_Reply{}, nil
+}
+
+func (s *service) CloseAccountWithProgress(req *CloseAccountWithProgress_Request, server AccountService_CloseAccountWithProgressServer) error {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -161,7 +201,7 @@ func (s *service) CloseAccount(req *CloseAccount_Request, server AccountService_
 		for step := range ch {
 			_ = step
 			snapshot := prog.Snapshot()
-			err := server.Send(&CloseAccount_Reply{
+			err := server.Send(&CloseAccountWithProgress_Reply{
 				Progress: &protocoltypes.Progress{
 					State:     string(snapshot.State),
 					Doing:     snapshot.Doing,
