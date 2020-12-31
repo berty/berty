@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// WithCode defines an error that can be used by helpers of this package.
 type WithCode interface {
 	error
 	Code() ErrCode
@@ -41,14 +42,12 @@ func Codes(err error) []ErrCode {
 
 // Has returns true if one of the error is or contains (wraps) an expected errcode
 func Has(err error, code WithCode) bool {
-	if Code(err) == code.Code() {
-		return true
+	codeCode := code.Code()
+	for _, otherCode := range Codes(err) {
+		if otherCode == codeCode {
+			return true
+		}
 	}
-
-	if cause := genericCause(err); cause != nil {
-		return Has(cause, code)
-	}
-
 	return false
 }
 

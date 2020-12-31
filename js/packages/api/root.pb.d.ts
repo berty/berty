@@ -106,10 +106,12 @@ export namespace berty {
                 }
 
                 interface IReply {
+                    progress?: (berty.protocol.v1.IProgress|null);
                 }
 
                 class Reply implements IReply {
 
+                    public progress?: (berty.protocol.v1.IProgress|null);
                     public static create(properties?: berty.account.v1.OpenAccount.IReply): berty.account.v1.OpenAccount.Reply;
                     public static encode(message: berty.account.v1.OpenAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.OpenAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -157,10 +159,12 @@ export namespace berty {
                 }
 
                 interface IReply {
+                    progress?: (berty.protocol.v1.IProgress|null);
                 }
 
                 class Reply implements IReply {
 
+                    public progress?: (berty.protocol.v1.IProgress|null);
                     public static create(properties?: berty.account.v1.CloseAccount.IReply): berty.account.v1.CloseAccount.Reply;
                     public static encode(message: berty.account.v1.CloseAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.CloseAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -954,152 +958,6 @@ export namespace berty {
                 DATA_LOSS = 15,
                 UNAUTHENTICATED = 16
             }
-        }
-    }
-
-    namespace errcode {
-
-        enum ErrCode {
-            Undefined = 0,
-            TODO = 666,
-            ErrNotImplemented = 777,
-            ErrInternal = 888,
-            ErrInvalidInput = 100,
-            ErrInvalidRange = 101,
-            ErrMissingInput = 102,
-            ErrSerialization = 103,
-            ErrDeserialization = 104,
-            ErrStreamRead = 105,
-            ErrStreamWrite = 106,
-            ErrStreamTransform = 110,
-            ErrStreamSendAndClose = 111,
-            ErrStreamHeaderWrite = 112,
-            ErrStreamHeaderRead = 115,
-            ErrStreamSink = 113,
-            ErrStreamCloseAndRecv = 114,
-            ErrMissingMapKey = 107,
-            ErrDBWrite = 108,
-            ErrDBRead = 109,
-            ErrCryptoRandomGeneration = 200,
-            ErrCryptoKeyGeneration = 201,
-            ErrCryptoNonceGeneration = 202,
-            ErrCryptoSignature = 203,
-            ErrCryptoSignatureVerification = 204,
-            ErrCryptoDecrypt = 205,
-            ErrCryptoDecryptPayload = 206,
-            ErrCryptoEncrypt = 207,
-            ErrCryptoKeyConversion = 208,
-            ErrCryptoCipherInit = 209,
-            ErrCryptoKeyDerivation = 210,
-            ErrMap = 300,
-            ErrForEach = 301,
-            ErrKeystoreGet = 400,
-            ErrKeystorePut = 401,
-            ErrOrbitDBInit = 1000,
-            ErrOrbitDBOpen = 1001,
-            ErrOrbitDBAppend = 1002,
-            ErrOrbitDBDeserialization = 1003,
-            ErrOrbitDBStoreCast = 1004,
-            ErrIPFSAdd = 1050,
-            ErrIPFSGet = 1051,
-            ErrHandshakeOwnEphemeralKeyGenSend = 1100,
-            ErrHandshakePeerEphemeralKeyRecv = 1101,
-            ErrHandshakeRequesterAuthenticateBoxKeyGen = 1102,
-            ErrHandshakeResponderAcceptBoxKeyGen = 1103,
-            ErrHandshakeRequesterHello = 1104,
-            ErrHandshakeResponderHello = 1105,
-            ErrHandshakeRequesterAuthenticate = 1106,
-            ErrHandshakeResponderAccept = 1107,
-            ErrHandshakeRequesterAcknowledge = 1108,
-            ErrContactRequestSameAccount = 1200,
-            ErrContactRequestContactAlreadyAdded = 1201,
-            ErrContactRequestContactBlocked = 1202,
-            ErrContactRequestContactUndefined = 1203,
-            ErrContactRequestIncomingAlreadyReceived = 1204,
-            ErrGroupMemberLogEventOpen = 1300,
-            ErrGroupMemberLogEventSignature = 1301,
-            ErrGroupMemberUnknownGroupID = 1302,
-            ErrGroupSecretOtherDestMember = 1303,
-            ErrGroupSecretAlreadySentToMember = 1304,
-            ErrGroupInvalidType = 1305,
-            ErrGroupMissing = 1306,
-            ErrGroupActivate = 1307,
-            ErrGroupDeactivate = 1308,
-            ErrGroupInfo = 1309,
-            ErrEventListMetadata = 1400,
-            ErrEventListMessage = 1401,
-            ErrMessageKeyPersistencePut = 1500,
-            ErrMessageKeyPersistenceGet = 1501,
-            ErrBridgeInterrupted = 1600,
-            ErrBridgeNotRunning = 1601,
-            ErrMessengerInvalidDeepLink = 2000,
-            ErrMessengerDeepLinkRequiresPassphrase = 2001,
-            ErrMessengerDeepLinkInvalidPassphrase = 2002,
-            ErrDBEntryAlreadyExists = 2100,
-            ErrDBAddConversation = 2101,
-            ErrDBAddContactRequestOutgoingSent = 2102,
-            ErrDBAddContactRequestOutgoingEnqueud = 2103,
-            ErrDBAddContactRequestIncomingReceived = 2104,
-            ErrDBAddContactRequestIncomingAccepted = 2105,
-            ErrDBAddGroupMemberDeviceAdded = 2106,
-            ErrDBMultipleRecords = 2107,
-            ErrReplayProcessGroupMetadata = 2200,
-            ErrReplayProcessGroupMessage = 2201,
-            ErrAttachmentPrepare = 2300,
-            ErrAttachmentRetrieve = 2301,
-            ErrProtocolSend = 2302,
-            ErrTestEcho = 2401,
-            ErrTestEchoRecv = 2402,
-            ErrTestEchoSend = 2403,
-            ErrCLINoTermcaps = 3001,
-            ErrServicesAuth = 4000,
-            ErrServicesAuthNotInitialized = 4001,
-            ErrServicesAuthWrongState = 4002,
-            ErrServicesAuthInvalidResponse = 4003,
-            ErrServicesAuthServer = 4004,
-            ErrServicesAuthCodeChallenge = 4005,
-            ErrServicesAuthServiceInvalidToken = 4006,
-            ErrServicesAuthServiceNotSupported = 4007,
-            ErrServicesAuthUnknownToken = 4008,
-            ErrServicesAuthInvalidURL = 4009,
-            ErrServiceReplication = 4100,
-            ErrServiceReplicationServer = 4101,
-            ErrServiceReplicationMissingEndpoint = 4102,
-            ErrBertyAccount = 5000,
-            ErrBertyAccountNoIDSpecified = 5001,
-            ErrBertyAccountAlreadyOpened = 5002,
-            ErrBertyAccountInvalidIDFormat = 5003,
-            ErrBertyAccountLoggerDecorator = 5004,
-            ErrBertyAccountGRPCClient = 5005,
-            ErrBertyAccountOpenAccount = 5006,
-            ErrBertyAccountDataNotFound = 5007,
-            ErrBertyAccountMetadataUpdate = 5008,
-            ErrBertyAccountManagerOpen = 5009,
-            ErrBertyAccountManagerClose = 5010,
-            ErrBertyAccountInvalidCLIArgs = 5011,
-            ErrBertyAccountFSError = 5012,
-            ErrBertyAccountAlreadyExists = 5013,
-            ErrBertyAccountNoBackupSpecified = 5014,
-            ErrBertyAccountIDGenFailed = 5015,
-            ErrBertyAccountCreationFailed = 5016
-        }
-
-        interface IErrDetails {
-            codes?: (berty.errcode.ErrCode[]|null);
-        }
-
-        class ErrDetails implements IErrDetails {
-
-            public codes: berty.errcode.ErrCode[];
-            public static create(properties?: berty.errcode.IErrDetails): berty.errcode.ErrDetails;
-            public static encode(message: berty.errcode.IErrDetails, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static encodeDelimited(message: berty.errcode.IErrDetails, writer?: $protobuf.Writer): $protobuf.Writer;
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.errcode.ErrDetails;
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.errcode.ErrDetails;
-            public static verify(message: { [k: string]: any }): (string|null);
-            public static fromObject(object: { [k: string]: any }): berty.errcode.ErrDetails;
-            public static toObject(message: berty.errcode.ErrDetails, options?: $protobuf.IConversionOptions): { [k: string]: any };
-            public toJSON(): { [k: string]: any };
         }
     }
 
@@ -4619,6 +4477,180 @@ export namespace berty {
                     public toJSON(): { [k: string]: any };
                 }
             }
+
+            interface IProgress {
+                state?: (string|null);
+                doing?: (string|null);
+                progress?: (number|null);
+                completed?: (Long|null);
+                total?: (Long|null);
+                delay?: (Long|null);
+            }
+
+            class Progress implements IProgress {
+
+                public state: string;
+                public doing: string;
+                public progress: number;
+                public completed: Long;
+                public total: Long;
+                public delay: Long;
+                public static create(properties?: berty.protocol.v1.IProgress): berty.protocol.v1.Progress;
+                public static encode(message: berty.protocol.v1.IProgress, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IProgress, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.Progress;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.Progress;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.Progress;
+                public static toObject(message: berty.protocol.v1.Progress, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+        }
+    }
+
+    namespace errcode {
+
+        enum ErrCode {
+            Undefined = 0,
+            TODO = 666,
+            ErrNotImplemented = 777,
+            ErrInternal = 888,
+            ErrInvalidInput = 100,
+            ErrInvalidRange = 101,
+            ErrMissingInput = 102,
+            ErrSerialization = 103,
+            ErrDeserialization = 104,
+            ErrStreamRead = 105,
+            ErrStreamWrite = 106,
+            ErrStreamTransform = 110,
+            ErrStreamSendAndClose = 111,
+            ErrStreamHeaderWrite = 112,
+            ErrStreamHeaderRead = 115,
+            ErrStreamSink = 113,
+            ErrStreamCloseAndRecv = 114,
+            ErrMissingMapKey = 107,
+            ErrDBWrite = 108,
+            ErrDBRead = 109,
+            ErrCryptoRandomGeneration = 200,
+            ErrCryptoKeyGeneration = 201,
+            ErrCryptoNonceGeneration = 202,
+            ErrCryptoSignature = 203,
+            ErrCryptoSignatureVerification = 204,
+            ErrCryptoDecrypt = 205,
+            ErrCryptoDecryptPayload = 206,
+            ErrCryptoEncrypt = 207,
+            ErrCryptoKeyConversion = 208,
+            ErrCryptoCipherInit = 209,
+            ErrCryptoKeyDerivation = 210,
+            ErrMap = 300,
+            ErrForEach = 301,
+            ErrKeystoreGet = 400,
+            ErrKeystorePut = 401,
+            ErrOrbitDBInit = 1000,
+            ErrOrbitDBOpen = 1001,
+            ErrOrbitDBAppend = 1002,
+            ErrOrbitDBDeserialization = 1003,
+            ErrOrbitDBStoreCast = 1004,
+            ErrIPFSAdd = 1050,
+            ErrIPFSGet = 1051,
+            ErrHandshakeOwnEphemeralKeyGenSend = 1100,
+            ErrHandshakePeerEphemeralKeyRecv = 1101,
+            ErrHandshakeRequesterAuthenticateBoxKeyGen = 1102,
+            ErrHandshakeResponderAcceptBoxKeyGen = 1103,
+            ErrHandshakeRequesterHello = 1104,
+            ErrHandshakeResponderHello = 1105,
+            ErrHandshakeRequesterAuthenticate = 1106,
+            ErrHandshakeResponderAccept = 1107,
+            ErrHandshakeRequesterAcknowledge = 1108,
+            ErrContactRequestSameAccount = 1200,
+            ErrContactRequestContactAlreadyAdded = 1201,
+            ErrContactRequestContactBlocked = 1202,
+            ErrContactRequestContactUndefined = 1203,
+            ErrContactRequestIncomingAlreadyReceived = 1204,
+            ErrGroupMemberLogEventOpen = 1300,
+            ErrGroupMemberLogEventSignature = 1301,
+            ErrGroupMemberUnknownGroupID = 1302,
+            ErrGroupSecretOtherDestMember = 1303,
+            ErrGroupSecretAlreadySentToMember = 1304,
+            ErrGroupInvalidType = 1305,
+            ErrGroupMissing = 1306,
+            ErrGroupActivate = 1307,
+            ErrGroupDeactivate = 1308,
+            ErrGroupInfo = 1309,
+            ErrEventListMetadata = 1400,
+            ErrEventListMessage = 1401,
+            ErrMessageKeyPersistencePut = 1500,
+            ErrMessageKeyPersistenceGet = 1501,
+            ErrBridgeInterrupted = 1600,
+            ErrBridgeNotRunning = 1601,
+            ErrMessengerInvalidDeepLink = 2000,
+            ErrMessengerDeepLinkRequiresPassphrase = 2001,
+            ErrMessengerDeepLinkInvalidPassphrase = 2002,
+            ErrDBEntryAlreadyExists = 2100,
+            ErrDBAddConversation = 2101,
+            ErrDBAddContactRequestOutgoingSent = 2102,
+            ErrDBAddContactRequestOutgoingEnqueud = 2103,
+            ErrDBAddContactRequestIncomingReceived = 2104,
+            ErrDBAddContactRequestIncomingAccepted = 2105,
+            ErrDBAddGroupMemberDeviceAdded = 2106,
+            ErrDBMultipleRecords = 2107,
+            ErrReplayProcessGroupMetadata = 2200,
+            ErrReplayProcessGroupMessage = 2201,
+            ErrAttachmentPrepare = 2300,
+            ErrAttachmentRetrieve = 2301,
+            ErrProtocolSend = 2302,
+            ErrTestEcho = 2401,
+            ErrTestEchoRecv = 2402,
+            ErrTestEchoSend = 2403,
+            ErrCLINoTermcaps = 3001,
+            ErrServicesAuth = 4000,
+            ErrServicesAuthNotInitialized = 4001,
+            ErrServicesAuthWrongState = 4002,
+            ErrServicesAuthInvalidResponse = 4003,
+            ErrServicesAuthServer = 4004,
+            ErrServicesAuthCodeChallenge = 4005,
+            ErrServicesAuthServiceInvalidToken = 4006,
+            ErrServicesAuthServiceNotSupported = 4007,
+            ErrServicesAuthUnknownToken = 4008,
+            ErrServicesAuthInvalidURL = 4009,
+            ErrServiceReplication = 4100,
+            ErrServiceReplicationServer = 4101,
+            ErrServiceReplicationMissingEndpoint = 4102,
+            ErrBertyAccount = 5000,
+            ErrBertyAccountNoIDSpecified = 5001,
+            ErrBertyAccountAlreadyOpened = 5002,
+            ErrBertyAccountInvalidIDFormat = 5003,
+            ErrBertyAccountLoggerDecorator = 5004,
+            ErrBertyAccountGRPCClient = 5005,
+            ErrBertyAccountOpenAccount = 5006,
+            ErrBertyAccountDataNotFound = 5007,
+            ErrBertyAccountMetadataUpdate = 5008,
+            ErrBertyAccountManagerOpen = 5009,
+            ErrBertyAccountManagerClose = 5010,
+            ErrBertyAccountInvalidCLIArgs = 5011,
+            ErrBertyAccountFSError = 5012,
+            ErrBertyAccountAlreadyExists = 5013,
+            ErrBertyAccountNoBackupSpecified = 5014,
+            ErrBertyAccountIDGenFailed = 5015,
+            ErrBertyAccountCreationFailed = 5016
+        }
+
+        interface IErrDetails {
+            codes?: (berty.errcode.ErrCode[]|null);
+        }
+
+        class ErrDetails implements IErrDetails {
+
+            public codes: berty.errcode.ErrCode[];
+            public static create(properties?: berty.errcode.IErrDetails): berty.errcode.ErrDetails;
+            public static encode(message: berty.errcode.IErrDetails, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: berty.errcode.IErrDetails, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.errcode.ErrDetails;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.errcode.ErrDetails;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): berty.errcode.ErrDetails;
+            public static toObject(message: berty.errcode.ErrDetails, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
         }
     }
 

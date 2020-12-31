@@ -16,11 +16,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 methods: {
                   OpenAccount: {
                     requestType: "OpenAccount.Request",
-                    responseType: "OpenAccount.Reply"
+                    responseType: "OpenAccount.Reply",
+                    responseStream: true
                   },
                   CloseAccount: {
                     requestType: "CloseAccount.Request",
-                    responseType: "CloseAccount.Reply"
+                    responseType: "CloseAccount.Reply",
+                    responseStream: true
                   },
                   ListAccounts: {
                     requestType: "ListAccounts.Request",
@@ -92,7 +94,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     }
                   },
                   Reply: {
-                    fields: {}
+                    fields: {
+                      progress: {
+                        type: "berty.protocol.v1.Progress",
+                        id: 1
+                      }
+                    }
                   }
                 }
               },
@@ -103,7 +110,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {}
                   },
                   Reply: {
-                    fields: {}
+                    fields: {
+                      progress: {
+                        type: "berty.protocol.v1.Progress",
+                        id: 1
+                      }
+                    }
                   }
                 }
               },
@@ -550,149 +562,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   DATA_LOSS: 15,
                   UNAUTHENTICATED: 16
                 }
-              }
-            }
-          }
-        }
-      },
-      errcode: {
-        options: {
-          go_package: "berty.tech/berty/go/pkg/errcode",
-          "(gogoproto.goproto_enum_prefix_all)": false
-        },
-        nested: {
-          ErrCode: {
-            values: {
-              Undefined: 0,
-              TODO: 666,
-              ErrNotImplemented: 777,
-              ErrInternal: 888,
-              ErrInvalidInput: 100,
-              ErrInvalidRange: 101,
-              ErrMissingInput: 102,
-              ErrSerialization: 103,
-              ErrDeserialization: 104,
-              ErrStreamRead: 105,
-              ErrStreamWrite: 106,
-              ErrStreamTransform: 110,
-              ErrStreamSendAndClose: 111,
-              ErrStreamHeaderWrite: 112,
-              ErrStreamHeaderRead: 115,
-              ErrStreamSink: 113,
-              ErrStreamCloseAndRecv: 114,
-              ErrMissingMapKey: 107,
-              ErrDBWrite: 108,
-              ErrDBRead: 109,
-              ErrCryptoRandomGeneration: 200,
-              ErrCryptoKeyGeneration: 201,
-              ErrCryptoNonceGeneration: 202,
-              ErrCryptoSignature: 203,
-              ErrCryptoSignatureVerification: 204,
-              ErrCryptoDecrypt: 205,
-              ErrCryptoDecryptPayload: 206,
-              ErrCryptoEncrypt: 207,
-              ErrCryptoKeyConversion: 208,
-              ErrCryptoCipherInit: 209,
-              ErrCryptoKeyDerivation: 210,
-              ErrMap: 300,
-              ErrForEach: 301,
-              ErrKeystoreGet: 400,
-              ErrKeystorePut: 401,
-              ErrOrbitDBInit: 1000,
-              ErrOrbitDBOpen: 1001,
-              ErrOrbitDBAppend: 1002,
-              ErrOrbitDBDeserialization: 1003,
-              ErrOrbitDBStoreCast: 1004,
-              ErrIPFSAdd: 1050,
-              ErrIPFSGet: 1051,
-              ErrHandshakeOwnEphemeralKeyGenSend: 1100,
-              ErrHandshakePeerEphemeralKeyRecv: 1101,
-              ErrHandshakeRequesterAuthenticateBoxKeyGen: 1102,
-              ErrHandshakeResponderAcceptBoxKeyGen: 1103,
-              ErrHandshakeRequesterHello: 1104,
-              ErrHandshakeResponderHello: 1105,
-              ErrHandshakeRequesterAuthenticate: 1106,
-              ErrHandshakeResponderAccept: 1107,
-              ErrHandshakeRequesterAcknowledge: 1108,
-              ErrContactRequestSameAccount: 1200,
-              ErrContactRequestContactAlreadyAdded: 1201,
-              ErrContactRequestContactBlocked: 1202,
-              ErrContactRequestContactUndefined: 1203,
-              ErrContactRequestIncomingAlreadyReceived: 1204,
-              ErrGroupMemberLogEventOpen: 1300,
-              ErrGroupMemberLogEventSignature: 1301,
-              ErrGroupMemberUnknownGroupID: 1302,
-              ErrGroupSecretOtherDestMember: 1303,
-              ErrGroupSecretAlreadySentToMember: 1304,
-              ErrGroupInvalidType: 1305,
-              ErrGroupMissing: 1306,
-              ErrGroupActivate: 1307,
-              ErrGroupDeactivate: 1308,
-              ErrGroupInfo: 1309,
-              ErrEventListMetadata: 1400,
-              ErrEventListMessage: 1401,
-              ErrMessageKeyPersistencePut: 1500,
-              ErrMessageKeyPersistenceGet: 1501,
-              ErrBridgeInterrupted: 1600,
-              ErrBridgeNotRunning: 1601,
-              ErrMessengerInvalidDeepLink: 2000,
-              ErrMessengerDeepLinkRequiresPassphrase: 2001,
-              ErrMessengerDeepLinkInvalidPassphrase: 2002,
-              ErrDBEntryAlreadyExists: 2100,
-              ErrDBAddConversation: 2101,
-              ErrDBAddContactRequestOutgoingSent: 2102,
-              ErrDBAddContactRequestOutgoingEnqueud: 2103,
-              ErrDBAddContactRequestIncomingReceived: 2104,
-              ErrDBAddContactRequestIncomingAccepted: 2105,
-              ErrDBAddGroupMemberDeviceAdded: 2106,
-              ErrDBMultipleRecords: 2107,
-              ErrReplayProcessGroupMetadata: 2200,
-              ErrReplayProcessGroupMessage: 2201,
-              ErrAttachmentPrepare: 2300,
-              ErrAttachmentRetrieve: 2301,
-              ErrProtocolSend: 2302,
-              ErrTestEcho: 2401,
-              ErrTestEchoRecv: 2402,
-              ErrTestEchoSend: 2403,
-              ErrCLINoTermcaps: 3001,
-              ErrServicesAuth: 4000,
-              ErrServicesAuthNotInitialized: 4001,
-              ErrServicesAuthWrongState: 4002,
-              ErrServicesAuthInvalidResponse: 4003,
-              ErrServicesAuthServer: 4004,
-              ErrServicesAuthCodeChallenge: 4005,
-              ErrServicesAuthServiceInvalidToken: 4006,
-              ErrServicesAuthServiceNotSupported: 4007,
-              ErrServicesAuthUnknownToken: 4008,
-              ErrServicesAuthInvalidURL: 4009,
-              ErrServiceReplication: 4100,
-              ErrServiceReplicationServer: 4101,
-              ErrServiceReplicationMissingEndpoint: 4102,
-              ErrBertyAccount: 5000,
-              ErrBertyAccountNoIDSpecified: 5001,
-              ErrBertyAccountAlreadyOpened: 5002,
-              ErrBertyAccountInvalidIDFormat: 5003,
-              ErrBertyAccountLoggerDecorator: 5004,
-              ErrBertyAccountGRPCClient: 5005,
-              ErrBertyAccountOpenAccount: 5006,
-              ErrBertyAccountDataNotFound: 5007,
-              ErrBertyAccountMetadataUpdate: 5008,
-              ErrBertyAccountManagerOpen: 5009,
-              ErrBertyAccountManagerClose: 5010,
-              ErrBertyAccountInvalidCLIArgs: 5011,
-              ErrBertyAccountFSError: 5012,
-              ErrBertyAccountAlreadyExists: 5013,
-              ErrBertyAccountNoBackupSpecified: 5014,
-              ErrBertyAccountIDGenFailed: 5015,
-              ErrBertyAccountCreationFailed: 5016
-            }
-          },
-          ErrDetails: {
-            fields: {
-              codes: {
-                rule: "repeated",
-                type: "ErrCode",
-                id: 1
               }
             }
           }
@@ -3050,6 +2919,177 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     }
                   }
                 }
+              },
+              Progress: {
+                fields: {
+                  state: {
+                    type: "string",
+                    id: 1
+                  },
+                  doing: {
+                    type: "string",
+                    id: 2
+                  },
+                  progress: {
+                    type: "float",
+                    id: 3
+                  },
+                  completed: {
+                    type: "uint64",
+                    id: 4
+                  },
+                  total: {
+                    type: "uint64",
+                    id: 5
+                  },
+                  delay: {
+                    type: "uint64",
+                    id: 6
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      errcode: {
+        options: {
+          go_package: "berty.tech/berty/go/pkg/errcode",
+          "(gogoproto.goproto_enum_prefix_all)": false
+        },
+        nested: {
+          ErrCode: {
+            values: {
+              Undefined: 0,
+              TODO: 666,
+              ErrNotImplemented: 777,
+              ErrInternal: 888,
+              ErrInvalidInput: 100,
+              ErrInvalidRange: 101,
+              ErrMissingInput: 102,
+              ErrSerialization: 103,
+              ErrDeserialization: 104,
+              ErrStreamRead: 105,
+              ErrStreamWrite: 106,
+              ErrStreamTransform: 110,
+              ErrStreamSendAndClose: 111,
+              ErrStreamHeaderWrite: 112,
+              ErrStreamHeaderRead: 115,
+              ErrStreamSink: 113,
+              ErrStreamCloseAndRecv: 114,
+              ErrMissingMapKey: 107,
+              ErrDBWrite: 108,
+              ErrDBRead: 109,
+              ErrCryptoRandomGeneration: 200,
+              ErrCryptoKeyGeneration: 201,
+              ErrCryptoNonceGeneration: 202,
+              ErrCryptoSignature: 203,
+              ErrCryptoSignatureVerification: 204,
+              ErrCryptoDecrypt: 205,
+              ErrCryptoDecryptPayload: 206,
+              ErrCryptoEncrypt: 207,
+              ErrCryptoKeyConversion: 208,
+              ErrCryptoCipherInit: 209,
+              ErrCryptoKeyDerivation: 210,
+              ErrMap: 300,
+              ErrForEach: 301,
+              ErrKeystoreGet: 400,
+              ErrKeystorePut: 401,
+              ErrOrbitDBInit: 1000,
+              ErrOrbitDBOpen: 1001,
+              ErrOrbitDBAppend: 1002,
+              ErrOrbitDBDeserialization: 1003,
+              ErrOrbitDBStoreCast: 1004,
+              ErrIPFSAdd: 1050,
+              ErrIPFSGet: 1051,
+              ErrHandshakeOwnEphemeralKeyGenSend: 1100,
+              ErrHandshakePeerEphemeralKeyRecv: 1101,
+              ErrHandshakeRequesterAuthenticateBoxKeyGen: 1102,
+              ErrHandshakeResponderAcceptBoxKeyGen: 1103,
+              ErrHandshakeRequesterHello: 1104,
+              ErrHandshakeResponderHello: 1105,
+              ErrHandshakeRequesterAuthenticate: 1106,
+              ErrHandshakeResponderAccept: 1107,
+              ErrHandshakeRequesterAcknowledge: 1108,
+              ErrContactRequestSameAccount: 1200,
+              ErrContactRequestContactAlreadyAdded: 1201,
+              ErrContactRequestContactBlocked: 1202,
+              ErrContactRequestContactUndefined: 1203,
+              ErrContactRequestIncomingAlreadyReceived: 1204,
+              ErrGroupMemberLogEventOpen: 1300,
+              ErrGroupMemberLogEventSignature: 1301,
+              ErrGroupMemberUnknownGroupID: 1302,
+              ErrGroupSecretOtherDestMember: 1303,
+              ErrGroupSecretAlreadySentToMember: 1304,
+              ErrGroupInvalidType: 1305,
+              ErrGroupMissing: 1306,
+              ErrGroupActivate: 1307,
+              ErrGroupDeactivate: 1308,
+              ErrGroupInfo: 1309,
+              ErrEventListMetadata: 1400,
+              ErrEventListMessage: 1401,
+              ErrMessageKeyPersistencePut: 1500,
+              ErrMessageKeyPersistenceGet: 1501,
+              ErrBridgeInterrupted: 1600,
+              ErrBridgeNotRunning: 1601,
+              ErrMessengerInvalidDeepLink: 2000,
+              ErrMessengerDeepLinkRequiresPassphrase: 2001,
+              ErrMessengerDeepLinkInvalidPassphrase: 2002,
+              ErrDBEntryAlreadyExists: 2100,
+              ErrDBAddConversation: 2101,
+              ErrDBAddContactRequestOutgoingSent: 2102,
+              ErrDBAddContactRequestOutgoingEnqueud: 2103,
+              ErrDBAddContactRequestIncomingReceived: 2104,
+              ErrDBAddContactRequestIncomingAccepted: 2105,
+              ErrDBAddGroupMemberDeviceAdded: 2106,
+              ErrDBMultipleRecords: 2107,
+              ErrReplayProcessGroupMetadata: 2200,
+              ErrReplayProcessGroupMessage: 2201,
+              ErrAttachmentPrepare: 2300,
+              ErrAttachmentRetrieve: 2301,
+              ErrProtocolSend: 2302,
+              ErrTestEcho: 2401,
+              ErrTestEchoRecv: 2402,
+              ErrTestEchoSend: 2403,
+              ErrCLINoTermcaps: 3001,
+              ErrServicesAuth: 4000,
+              ErrServicesAuthNotInitialized: 4001,
+              ErrServicesAuthWrongState: 4002,
+              ErrServicesAuthInvalidResponse: 4003,
+              ErrServicesAuthServer: 4004,
+              ErrServicesAuthCodeChallenge: 4005,
+              ErrServicesAuthServiceInvalidToken: 4006,
+              ErrServicesAuthServiceNotSupported: 4007,
+              ErrServicesAuthUnknownToken: 4008,
+              ErrServicesAuthInvalidURL: 4009,
+              ErrServiceReplication: 4100,
+              ErrServiceReplicationServer: 4101,
+              ErrServiceReplicationMissingEndpoint: 4102,
+              ErrBertyAccount: 5000,
+              ErrBertyAccountNoIDSpecified: 5001,
+              ErrBertyAccountAlreadyOpened: 5002,
+              ErrBertyAccountInvalidIDFormat: 5003,
+              ErrBertyAccountLoggerDecorator: 5004,
+              ErrBertyAccountGRPCClient: 5005,
+              ErrBertyAccountOpenAccount: 5006,
+              ErrBertyAccountDataNotFound: 5007,
+              ErrBertyAccountMetadataUpdate: 5008,
+              ErrBertyAccountManagerOpen: 5009,
+              ErrBertyAccountManagerClose: 5010,
+              ErrBertyAccountInvalidCLIArgs: 5011,
+              ErrBertyAccountFSError: 5012,
+              ErrBertyAccountAlreadyExists: 5013,
+              ErrBertyAccountNoBackupSpecified: 5014,
+              ErrBertyAccountIDGenFailed: 5015,
+              ErrBertyAccountCreationFailed: 5016
+            }
+          },
+          ErrDetails: {
+            fields: {
+              codes: {
+                rule: "repeated",
+                type: "ErrCode",
+                id: 1
               }
             }
           }

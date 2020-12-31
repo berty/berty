@@ -92,7 +92,7 @@ func (s *service) Close() error {
 
 	s.rootCancel()
 	if s.initManager != nil {
-		return s.initManager.Close()
+		return s.initManager.Close(nil)
 	}
 
 	return nil

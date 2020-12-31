@@ -194,7 +194,7 @@ func (i *integration) testbotAdd() error {
 }
 
 func (i *integration) cleanup() {
-	i.manager.Close()
+	i.manager.Close(nil)
 	time.Sleep(100 * time.Millisecond)
 	if i.tempdir != "" {
 		os.RemoveAll(i.tempdir)

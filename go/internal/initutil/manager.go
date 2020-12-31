@@ -19,6 +19,7 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
+	"moul.io/progress"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -207,54 +208,92 @@ func (m *Manager) RunWorkers() error {
 	return m.workers.Run()
 }
 
-func (m *Manager) Close() error {
+func (m *Manager) Close(prog *progress.Progress) error {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 
+	if prog == nil {
+		prog = progress.New()
+	}
+	prog.AddStep("cancel-context")
+	prog.AddStep("close-client-conn")
+	prog.AddStep("stop-buf-server")
+	prog.AddStep("close-buf-listener")
+	prog.AddStep("stop-grpc-server")
+	prog.AddStep("close-messenger-server")
+	prog.AddStep("close-messenger-protocol-client")
+	prog.AddStep("cleanup-messenger-db")
+	prog.AddStep("close-protocol-server")
+	prog.AddStep("cleanup-ipfs-webui")
+	prog.AddStep("close-ipfs-node")
+	prog.AddStep("close-datastore")
+	prog.AddStep("cleanup-logging")
+
+	prog.Get("cancel-context").SetAsCurrent()
 	if m.ctxCancel != nil {
 		m.ctxCancel()
 	}
 
+	prog.Get("close-client-conn").SetAsCurrent()
 	if m.Node.GRPC.clientConn != nil {
 		m.Node.GRPC.clientConn.Close()
 	}
 
+	prog.Get("stop-buf-server").SetAsCurrent()
 	if m.Node.GRPC.bufServer != nil {
 		m.Node.GRPC.bufServer.Stop()
 	}
 
+	prog.Get("close-buf-listener").SetAsCurrent()
 	if m.Node.GRPC.bufServerListener != nil {
 		m.Node.GRPC.bufServerListener.Close()
 	}
 
+	prog.Get("stop-grpc-server").SetAsCurrent()
 	if m.Node.GRPC.server != nil {
 		m.Node.GRPC.server.Stop()
 	}
 
+	prog.Get("close-messenger-server").SetAsCurrent()
 	if m.Node.Messenger.server != nil {
 		m.Node.Messenger.server.Close()
 	}
+
+	prog.Get("close-messenger-protocol-client").SetAsCurrent()
 	if m.Node.Messenger.protocolClient != nil {
 		m.Node.Messenger.protocolClient.Close()
 	}
+
+	prog.Get("cleanup-messenger-db").SetAsCurrent()
 	if m.Node.Messenger.dbCleanup != nil {
 		m.Node.Messenger.dbCleanup()
 	}
+
+	prog.Get("close-protocol-server").SetAsCurrent()
 	if m.Node.Protocol.server != nil {
 		m.Node.Protocol.server.Close()
 	}
+
+	prog.Get("cleanup-ipfs-webui").SetAsCurrent()
 	if m.Node.Protocol.ipfsWebUICleanup != nil {
 		m.Node.Protocol.ipfsWebUICleanup()
 	}
+
+	prog.Get("close-ipfs-node").SetAsCurrent()
 	if m.Node.Protocol.ipfsNode != nil {
 		m.Node.Protocol.ipfsNode.Close()
 	}
+
+	prog.Get("close-datastore").SetAsCurrent()
 	if m.Datastore.rootDS != nil {
 		m.Datastore.rootDS.Close()
 	}
+
+	prog.Get("cleanup-logging").SetAsCurrent()
 	if m.Logging.cleanup != nil {
 		m.Logging.cleanup()
 	}
+	prog.Get("cleanup-logging").Done()
 
 	return nil
 }

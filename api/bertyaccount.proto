@@ -3,6 +3,7 @@ syntax = "proto3";
 package berty.account.v1;
 
 import "gogoproto/gogo.proto";
+import "protocoltypes.proto";
 import "errcode.proto";
 
 option go_package = "berty.tech/berty/go/pkg/bertyaccount";
@@ -10,45 +11,51 @@ option go_package = "berty.tech/berty/go/pkg/bertyaccount";
 service AccountService {
   /// Account
 
-  // OpenAccount, start berty node
+  // OpenAccount starts a Berty node.
   rpc OpenAccount (OpenAccount.Request) returns (OpenAccount.Reply);
 
-  // CloseAccount, close the current account
+  // OpenAccountWithProgress is similar to OpenAccount, but also streams the progress.
+  rpc OpenAccountWithProgress (OpenAccountWithProgress.Request) returns (stream OpenAccountWithProgress.Reply);
+
+  // CloseAccount closes the currently opened account.
   rpc CloseAccount (CloseAccount.Request) returns (CloseAccount.Reply);
 
-  // ListAccounts retrieves a list of local accounts
+  // CloseAccountWithProgress is similar to CloseAccount, but also streams the progress.
+  rpc CloseAccountWithProgress (CloseAccountWithProgress.Request) returns (stream CloseAccountWithProgress.Reply);
+
+  // ListAccounts retrieves a list of local accounts.
   rpc ListAccounts (ListAccounts.Request) returns (ListAccounts.Reply);
 
-  // DeleteAccount deletes an account
+  // DeleteAccount deletes an account.
   rpc DeleteAccount (DeleteAccount.Request) returns (DeleteAccount.Reply);
 
-  // ImportAccount imports existing data
+  // ImportAccount imports existing data.
   rpc ImportAccount (ImportAccount.Request) returns (ImportAccount.Reply);
 
-  // CreateAccount creates a new account
+  // CreateAccount creates a new account.
   rpc CreateAccount (CreateAccount.Request) returns (CreateAccount.Reply);
 
   /// GRPC Adapter
 
-  // GetGRPCListenerAddrs return current listeners addrs available on this bridge
+  // GetGRPCListenerAddrs return current listeners addrs available on this bridge.
   rpc GetGRPCListenerAddrs (GetGRPCListenerAddrs.Request) returns (GetGRPCListenerAddrs.Reply);
 
-  // ClientInvokeUnary invoke a unary method
+  // ClientInvokeUnary invoke a unary method.
   rpc ClientInvokeUnary (ClientInvokeUnary.Request) returns (ClientInvokeUnary.Reply);
 
-  // CreateStream create a stream
+  // CreateClientStream create a stream.
   rpc CreateClientStream (ClientCreateStream.Request) returns (ClientCreateStream.Reply);
 
-  // Send Message over the given stream
+  // ClientStreamSend sends a Message over the given stream.
   rpc ClientStreamSend (ClientStreamSend.Request) returns (ClientStreamSend.Reply);
 
-  // Recv message over the given stream
+  // ClientStreamRecv receives a message over the given stream.
   rpc ClientStreamRecv (ClientStreamRecv.Request) returns (ClientStreamRecv.Reply);
 
-  // Close the given stream (should not be used)
+  // ClientStreamClose closes the given stream (should not be used).
   rpc ClientStreamClose (ClientStreamClose.Request) returns (ClientStreamClose.Reply);
 
-  // Close the writing end of a stream and return the next reply
+  // ClientStreamCloseAndRecv closes the writing end of a stream and returns the next reply.
   rpc ClientStreamCloseAndRecv (ClientStreamCloseAndRecv.Request) returns (ClientStreamCloseAndRecv.Reply);
 }
 
@@ -58,12 +65,32 @@ message OpenAccount {
     string account_id = 2 [(gogoproto.customname) = "AccountID"];
     string logger_filters = 3;
   }
-  message Reply {}
+  message Reply {
+  }
+}
+
+message OpenAccountWithProgress {
+  message Request {
+    repeated string args = 1;
+    string account_id = 2 [(gogoproto.customname) = "AccountID"];
+    string logger_filters = 3;
+  }
+  message Reply {
+    berty.protocol.v1.Progress progress = 1;
+  }
 }
 
 message CloseAccount {
   message Request {}
-  message Reply {}
+  message Reply {
+  }
+}
+
+message CloseAccountWithProgress {
+  message Request {}
+  message Reply {
+    berty.protocol.v1.Progress progress = 1;
+  }
 }
 
 message AccountMetadata {

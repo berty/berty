@@ -149,6 +149,7 @@
     - [PeerList.Request](#berty.protocol.v1.PeerList.Request)
     - [PeerList.Route](#berty.protocol.v1.PeerList.Route)
     - [PeerList.Stream](#berty.protocol.v1.PeerList.Stream)
+    - [Progress](#berty.protocol.v1.Progress)
     - [ProtocolMetadata](#berty.protocol.v1.ProtocolMetadata)
     - [ReplicationServiceRegisterGroup](#berty.protocol.v1.ReplicationServiceRegisterGroup)
     - [ReplicationServiceRegisterGroup.Reply](#berty.protocol.v1.ReplicationServiceRegisterGroup.Reply)
@@ -1277,6 +1278,20 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | id | [string](#string) |  | id is an identifier used to write protocol headers in streams. |
+
+<a name="berty.protocol.v1.Progress"></a>
+
+### Progress
+Progress define a generic object that can be used to display a progress bar for long-running actions.
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| state | [string](#string) |  |  |
+| doing | [string](#string) |  |  |
+| progress | [float](#float) |  |  |
+| completed | [uint64](#uint64) |  |  |
+| total | [uint64](#uint64) |  |  |
+| delay | [uint64](#uint64) |  |  |
 
 <a name="berty.protocol.v1.ProtocolMetadata"></a>
 

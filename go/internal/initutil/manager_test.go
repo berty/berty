@@ -92,7 +92,7 @@ func Example_flags() {
 	if err != nil {
 		panic(err)
 	}
-	defer manager.Close()
+	defer manager.Close(nil)
 
 	// configure flags
 	fmt.Println("before", u.JSON(manager.Node.GRPC))
@@ -118,7 +118,7 @@ func Example_noflags() {
 	if err != nil {
 		panic(err)
 	}
-	defer manager.Close()
+	defer manager.Close(nil)
 
 	fs := flag.NewFlagSet("", flag.ExitOnError)
 	manager.SetupLocalProtocolServerFlags(fs)
@@ -167,7 +167,7 @@ func TestTwoConcurrentManagers(t *testing.T) {
 		manager, err := initutil.New(ctx1)
 		require.NoError(t, err)
 		require.NotNil(t, manager)
-		defer manager.Close()
+		defer manager.Close(nil)
 		fs := flag.NewFlagSet("man1", flag.ExitOnError)
 		manager.SetupLoggingFlags(fs)
 		manager.SetupLocalProtocolServerFlags(fs)
@@ -183,7 +183,7 @@ func TestTwoConcurrentManagers(t *testing.T) {
 		manager, err := initutil.New(ctx2)
 		require.NoError(t, err)
 		require.NotNil(t, manager)
-		defer manager.Close()
+		defer manager.Close(nil)
 		fs := flag.NewFlagSet("man2", flag.ExitOnError)
 		manager.SetupLoggingFlags(fs)
 		manager.SetupRemoteNodeFlags(fs)
@@ -260,7 +260,7 @@ func TestLocalProtocolServerAndClient(t *testing.T) {
 	manager, err := initutil.New(ctx)
 	require.NoError(t, err)
 	require.NotNil(t, manager)
-	defer manager.Close()
+	defer manager.Close(nil)
 
 	// configure flags
 	fs := flag.NewFlagSet("test", flag.ExitOnError)
@@ -289,7 +289,7 @@ func TestLocalProtocolServerLeak(t *testing.T) {
 	manager, err := initutil.New(ctx)
 	require.NoError(t, err)
 	require.NotNil(t, manager)
-	defer manager.Close()
+	defer manager.Close(nil)
 
 	// configure flags
 	fs := flag.NewFlagSet("test", flag.ExitOnError)
@@ -310,7 +310,7 @@ func TestCloseOnUninited(t *testing.T) {
 	manager, err := initutil.New(ctx)
 	require.NoError(t, err)
 	require.NotNil(t, manager)
-	manager.Close()
+	manager.Close(nil)
 }
 
 func TestClosingTwice(t *testing.T) {
@@ -332,11 +332,11 @@ func TestClosingTwice(t *testing.T) {
 	_, err = manager.GetLocalProtocolServer()
 	require.NoError(t, err)
 
-	go manager.Close()
-	go manager.Close()
-	go manager.Close()
-	manager.Close()
-	manager.Close()
+	go manager.Close(nil)
+	go manager.Close(nil)
+	go manager.Close(nil)
+	manager.Close(nil)
+	manager.Close(nil)
 }
 
 func TestCloseOpenClose(t *testing.T) {
@@ -361,7 +361,7 @@ func TestRacyClose(t *testing.T) {
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
-		manager.Close()
+		manager.Close(nil)
 		wg.Done()
 	}()
 	go func() {
