@@ -171,7 +171,7 @@ See all our available contact methods on the [contact page](https://berty.tech/c
 
 ## Licensing
 
-© 2018-2020 [Berty Technologies](https://berty.tech)
+© 2018-2021 [Berty Technologies](https://berty.tech)
 h0
 
 Licensed under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0) ([`LICENSE-APACHE`](LICENSE-APACHE)) or the [MIT license](https://opensource.org/licenses/MIT) ([`LICENSE-MIT`](LICENSE-MIT)), at your option. See the [`COPYRIGHT`](COPYRIGHT) file for more details.
