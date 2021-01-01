@@ -1,26 +1,26 @@
 {
   "onboarding": {
     "getstarted": {
-      "desc": "",
-      "open-registered-account": "",
-      "import-button": "",
-      "account-selector-create-button": "",
-      "more-options": "",
-      "button": ""
+      "desc": "L'app di messaggistica peer-to-peer sicura che funziona con o senza accesso a Internet, connessione dati o fiducia nel web",
+      "open-registered-account": "Apri un account registrato",
+      "import-button": "Importa i dati da un account esistente",
+      "account-selector-create-button": "Crea un nuovo account",
+      "more-options": "Più opzioni",
+      "button": "INIZIA"
     },
     "select-mode": {
       "performance": {
-        "title": "",
-        "desc": "",
-        "push-notif": "",
-        "offline-message": "",
-        "add-contact": "",
-        "fast-message": ""
+        "title": "Prestazioni",
+        "desc": "Facile da usare - Tutte le funzionalità",
+        "push-notif": "Ricevi notifiche push",
+        "offline-message": "Messaggistica offline",
+        "add-contact": "Aggiungi i contatti facilmente",
+        "fast-message": "Consegna dei messaggi più veloce"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
-        "disable-push-notif": "",
+        "title": "Maggiore livello di privacy",
+        "desc": "Per utenti avanzati - Meno metadati",
+        "disable-push-notif": "Notifiche push disabilitate",
         "disable-local-peer-discovery": "",
         "disable-contact-request": ""
       }
