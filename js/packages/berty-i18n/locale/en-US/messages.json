@@ -305,12 +305,12 @@
     },
     "ipfs-webui": {
       "title": "IPFS WebUI"
-	},
-	"my-berty-ID": {
-		"qr": "QR",
-		"fingerprint": "Fingerprint",
-		"devices": "Devices"
-	}
+    },
+    "my-berty-ID": {
+      "qr": "QR",
+      "fingerprint": "Fingerprint",
+      "devices": "Devices"
+    }
   },
   "modals": {
     "manage-deep-link": {
