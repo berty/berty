@@ -10,6 +10,7 @@ import (
 
 	"berty.tech/berty/v2/go/framework/bertybridge"
 	"berty.tech/berty/v2/go/pkg/bertyaccount"
+	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
@@ -26,6 +27,7 @@ func Example() {
 			config.SetLifeCycleDriver(nil)
 			config.SetLoggerDriver(nil)
 			config.SetNotificationDriver(nil)
+			config.SetRootDir(tmpdir)
 		}
 
 		b, err = bertybridge.NewBridge(config)
@@ -40,7 +42,7 @@ func Example() {
 		"--log.format=console",
 		"--node.display-name=",
 		"--node.listeners=/ip4/127.0.0.1/tcp/0/grpcws",
-		"--p2p.swarm-listeners=/ip4/0.0.0.0/tcp/0,/ip6/0.0.0.0/tcp/0",
+		"--p2p.swarm-listeners=/ip4/0.0.0.0/tcp/0,/ip6/::/tcp/0",
 		"--p2p.local-discovery=false",
 		"--p2p.webui-listener=:3000",
 		"--store.dir=" + tmpdir,
@@ -48,18 +50,32 @@ func Example() {
 
 	// open account
 	{
-		// create `OpenAccount_Request` Input
-		reqb64, err := encodeProtoMessage(&bertyaccount.CreateAccount_Request{
-			Args: args,
-		})
+		// create `CreateAccount` Input
+		input := &bertyaccount.CreateAccount_Request{Args: args}
+		payload, err := proto.Marshal(input)
+		checkErr(err)
+
+		// Serialize request
+		in := &bridge_svc.ClientInvokeUnary_Request{
+			MethodDesc: &bridge_svc.MethodDesc{
+				Name: "/berty.account.v1.AccountService/CreateAccount",
+			},
+			Payload: payload,
+		}
+
+		reqb64, err := encodeProtoMessage(in)
 		checkErr(err)
 
 		// invoke through bridge client
-		ret, err := b.InvokeBridgeMethod("/berty.account.v1.AccountService/CreateAccount", reqb64)
+		ret, err := b.InvokeBridgeMethod("/berty.bridge.v1.BridgeService/ClientInvokeUnary", reqb64)
+		checkErr(err)
+
+		var output bridge_svc.ClientInvokeUnary_Reply
+		err = decodeProtoMessage(ret, &output)
 		checkErr(err)
 
 		// deserialize reply
-		var res bertyaccount.ClientInvokeUnary_Reply
+		var res bridge_svc.ClientInvokeUnary_Reply
 		err = decodeProtoMessage(ret, &res)
 		checkErr(err)
 
@@ -68,17 +84,33 @@ func Example() {
 
 	// check for GRPC listeners
 	{
-		// create `GetGRPCListenerAddrs_Request` Input
-		reqb64, err := encodeProtoMessage(&bertyaccount.GetGRPCListenerAddrs_Request{})
+		// create `InstanceGetConfiguration` Input
+		input := &bertyaccount.GetGRPCListenerAddrs_Request{}
+		payload, err := proto.Marshal(input)
+		checkErr(err)
+
+		// Serialize request
+		in := &bridge_svc.ClientInvokeUnary_Request{
+			MethodDesc: &bridge_svc.MethodDesc{
+				Name: "/berty.account.v1.AccountService/GetGRPCListenerAddrs",
+			},
+			Payload: payload,
+		}
+
+		reqb64, err := encodeProtoMessage(in)
 		checkErr(err)
 
 		// invoke through bridge client
-		ret, err := b.InvokeBridgeMethod("/berty.account.v1.AccountService/GetGRPCListenerAddrs", reqb64)
+		ret, err := b.InvokeBridgeMethod("/berty.bridge.v1.BridgeService/ClientInvokeUnary", reqb64)
+		checkErr(err)
+
+		var output bridge_svc.ClientInvokeUnary_Reply
+		err = decodeProtoMessage(ret, &output)
 		checkErr(err)
 
 		// deserialize reply
 		var res bertyaccount.GetGRPCListenerAddrs_Reply
-		err = decodeProtoMessage(ret, &res)
+		err = proto.Unmarshal(output.Payload, &res)
 		checkErr(err)
 
 		hasGRPCWeb := false
@@ -104,8 +136,8 @@ func Example() {
 		checkErr(err)
 
 		// Serialize request
-		in := &bertyaccount.ClientInvokeUnary_Request{
-			MethodDesc: &bertyaccount.MethodDesc{
+		in := &bridge_svc.ClientInvokeUnary_Request{
+			MethodDesc: &bridge_svc.MethodDesc{
 				Name: "/berty.protocol.v1.ProtocolService/InstanceGetConfiguration",
 			},
 			Payload: payload,
@@ -115,10 +147,10 @@ func Example() {
 		checkErr(err)
 
 		// invoke through bridge client
-		ret, err := b.InvokeBridgeMethod("/berty.account.v1.AccountService/ClientInvokeUnary", reqb64)
+		ret, err := b.InvokeBridgeMethod("/berty.bridge.v1.BridgeService/ClientInvokeUnary", reqb64)
 		checkErr(err)
 
-		var output bertyaccount.ClientInvokeUnary_Reply
+		var output bridge_svc.ClientInvokeUnary_Reply
 		err = decodeProtoMessage(ret, &output)
 		checkErr(err)
 

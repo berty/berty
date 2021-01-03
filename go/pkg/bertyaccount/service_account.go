@@ -15,7 +15,6 @@ import (
 	"google.golang.org/grpc"
 	"moul.io/progress"
 
-	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -88,15 +87,25 @@ func (s *service) openAccount(req *OpenAccount_Request, prog *progress.Progress)
 	// get manager client conn
 	prog.Get("setup-grpc").SetAsCurrent()
 	var ccServices *grpc.ClientConn
+	var srvServices *grpc.Server
 	{
 		var err error
+		if srvServices, _, err = initManager.GetGRPCServer(); err != nil {
+			initManager.Close(nil)
+			return nil, errcode.ErrBertyAccountGRPCClient.Wrap(err)
+		}
+
 		if ccServices, err = initManager.GetGRPCClientConn(); err != nil {
 			initManager.Close(nil)
 			return nil, errcode.ErrBertyAccountGRPCClient.Wrap(err)
 		}
 	}
 
-	s.servicesClient = grpcutil.NewLazyClient(ccServices)
+	if s.sclients != nil {
+		for serviceName := range srvServices.GetServiceInfo() {
+			s.sclients.RegisterService(serviceName, ccServices)
+		}
+	}
 	s.initManager = initManager
 	prog.Get("setup-grpc").Done()
 
@@ -180,7 +189,6 @@ func (s *service) CloseAccount(_ context.Context, req *CloseAccount_Request) (*C
 		return nil, errcode.ErrBertyAccountManagerClose.Wrap(err)
 	}
 	s.initManager = nil
-	s.servicesClient = nil
 
 	return &CloseAccount_Reply{}, nil
 }
@@ -229,7 +237,6 @@ func (s *service) CloseAccountWithProgress(req *CloseAccountWithProgress_Request
 		return errcode.ErrBertyAccountManagerClose.Wrap(err)
 	}
 	s.initManager = nil
-	s.servicesClient = nil
 
 	// wait
 	<-done

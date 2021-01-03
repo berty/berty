@@ -1,4 +1,5 @@
-b46b32beb8da133be29dfbf1fc505df36ba905d8  ../api/bertyaccount.proto
+eeb75a8313e11ec2e25a2aedf98e3f5ffecb19fb  ../api/bertyaccount.proto
+01dca8764f867ab96be8acdd8f3734de0e9edb7c  ../api/bertybridge.proto
 4589e8f2ea76dc6030778f5559777636dc05a401  ../api/bertyreplication.proto
 efe05c869eb27277829aa4018133888bf41f5e9e  ../api/bertyreplication.yaml
 b843029a8478c96fb213c05dd35f080fbd276fa7  ../api/errcode.proto

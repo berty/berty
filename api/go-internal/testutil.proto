@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package testutil;
+
+option go_package = "berty.tech/berty/go/internal/testutil";
+
+service TestService {
+  // use to test unary
+  rpc EchoTest(EchoTest.Request) returns (EchoTest.Reply);
+
+  // Use to test stream.
+  rpc EchoStreamTest(EchoStreamTest.Request) returns (stream EchoStreamTest.Reply);
+
+  // Use to test duplex stream.
+  rpc EchoDuplexTest(stream EchoDuplexTest.Request) returns (stream EchoDuplexTest.Reply);
+}
+
+message EchoTest {
+  message Request {
+    uint64 delay = 1;
+    string echo = 2;
+    bool trigger_error = 3;
+  }
+  message Reply {
+    string echo = 1;
+  }
+}
+
+message EchoStreamTest {
+  message Request {
+    uint64 delay = 1;
+    string echo = 2;
+    bool trigger_error = 3;
+  }
+  message Reply {
+    string echo = 1;
+  }
+}
+
+message EchoDuplexTest {
+  message Request {
+    string echo = 1;
+    bool trigger_error = 2;
+  }
+  message Reply {
+    string echo = 1;
+  }
+}

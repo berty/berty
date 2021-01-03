@@ -1,66 +1,83 @@
-package bertyaccount
+package bertybridge
 
 import (
-	"context"
-	"io/ioutil"
-	"os"
+	context "context"
 	"testing"
 
-	proto "github.com/golang/protobuf/proto"
+	proto "github.com/gogo/protobuf/proto"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/tj/assert"
-	"google.golang.org/grpc"
+	"go.uber.org/zap"
+	grpc "google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/internal/testutil"
+	errcode "berty.tech/berty/v2/go/pkg/errcode"
 )
 
 const echoStringTest = "Im sorry Dave, Im afraid I cant do that"
 
 func TestNewService(t *testing.T) {
-	s, err := NewService(&Options{})
-	require.NoError(t, err)
+	s := NewService(&Options{})
 
-	err = s.Close()
+	err := s.Close()
 	assert.NoError(t, err)
 }
 
-func TestGRPCUnaryService(t *testing.T) {
-	tmpdir, err := ioutil.TempDir("", "test")
-	require.NoError(t, err)
-	defer os.RemoveAll(tmpdir)
-
+func TestUnaryService(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	s, err := NewService(&Options{
-		RootDirectory: tmpdir,
-	})
-	require.NoError(t, err)
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 
-	cl := createAccountClient(ctx, t, s)
+	cl := createBridgeTestingClient(t, ctx, logger)
 
-	// create an account
+	// call `testutil.TestService/EchoTest` with empty request,
 	{
-		args := testConfig(tmpdir)
-		res, err := cl.CreateAccount(ctx, &CreateAccount_Request{
-			Args: args,
-		})
-		require.NoError(t, err)
-		assert.NotEmpty(t, res.AccountMetadata)
-	}
-
-	// call instance `MessengerService/ContactRequest` with empty request,
-	// should trigger an error
-	{
-		input := &messengertypes.ContactRequest{}
+		input := &testutil.EchoTest_Request{
+			Echo:         echoStringTest,
+			TriggerError: false,
+		}
 		payload, err := proto.Marshal(input)
 		require.NoError(t, err)
 
 		res, err := cl.ClientInvokeUnary(ctx, &ClientInvokeUnary_Request{
 			MethodDesc: &MethodDesc{
-				Name: "/berty.messenger.v1.MessengerService/ContactRequest",
+				Name: "/testutil.TestService/EchoTest",
+			},
+			Payload: payload,
+		})
+
+		require.NoError(t, err)
+		require.NotNil(t, res.Error)
+		assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
+		assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
+		assert.Nil(t, res.Error.ErrorDetails)
+	}
+}
+
+func TestUnaryServiceError(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+
+	cl := createBridgeTestingClient(t, ctx, logger)
+
+	// call `testutil.TestService/EchoTest` with empty request,
+	{
+		input := &testutil.EchoTest_Request{
+			Echo:         echoStringTest,
+			TriggerError: true,
+		}
+		payload, err := proto.Marshal(input)
+		require.NoError(t, err)
+
+		res, err := cl.ClientInvokeUnary(ctx, &ClientInvokeUnary_Request{
+			MethodDesc: &MethodDesc{
+				Name: "/testutil.TestService/EchoTest",
 			},
 			Payload: payload,
 		})
@@ -68,50 +85,35 @@ func TestGRPCUnaryService(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, res.Error)
 		assert.Equal(t, GRPCErrCode_UNAVAILABLE, res.Error.GrpcErrorCode)
-		assert.NotEqual(t, errcode.Undefined, res.Error.GrpcErrorCode)
+		assert.Equal(t, errcode.ErrTestEcho, res.Error.ErrorCode)
 		require.NotNil(t, res.Error.ErrorDetails)
 		assert.Greater(t, len(res.Error.ErrorDetails.Codes), 0)
 	}
 }
 
-func TestGRPCStreamService(t *testing.T) {
-	tmpdir, err := ioutil.TempDir("", "test")
-	require.NoError(t, err)
-	defer os.RemoveAll(tmpdir)
-
+func TestStreamService(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	s, err := NewService(&Options{
-		RootDirectory: tmpdir,
-	})
-	require.NoError(t, err)
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 
-	cl := createAccountClient(ctx, t, s)
-
-	// create an account
-	{
-		args := testConfig(tmpdir)
-		res, err := cl.CreateAccount(ctx, &CreateAccount_Request{
-			Args: args,
-		})
-		require.NoError(t, err)
-		assert.NotEmpty(t, res.AccountMetadata)
-	}
+	cl := createBridgeTestingClient(t, ctx, logger)
 
 	// call instance `MessengerService/EchoTest`
 	var streamid string
 	{
-		input := &messengertypes.EchoTest_Request{
+		input := &testutil.EchoTest_Request{
 			Delay: 10,
 			Echo:  echoStringTest,
 		}
+
 		payload, err := proto.Marshal(input)
 		require.NoError(t, err)
 
 		res, err := cl.CreateClientStream(ctx, &ClientCreateStream_Request{
 			MethodDesc: &MethodDesc{
-				Name:           "/berty.messenger.v1.MessengerService/EchoTest",
+				Name:           "/testutil.TestService/EchoStreamTest",
 				IsServerStream: true,
 			},
 			Payload: payload,
@@ -134,7 +136,7 @@ func TestGRPCStreamService(t *testing.T) {
 			assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
 			assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
 
-			var output messengertypes.EchoTest_Reply
+			var output testutil.EchoTest_Reply
 			err = proto.Unmarshal(res.Payload, &output)
 			require.NoError(t, err)
 
@@ -155,37 +157,21 @@ func TestGRPCStreamService(t *testing.T) {
 	}
 }
 
-func TestGRPCStreamServiceError(t *testing.T) {
-	tmpdir, err := ioutil.TempDir("", "test")
-	require.NoError(t, err)
-	defer os.RemoveAll(tmpdir)
-
+func TestStreamServiceError(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	s, err := NewService(&Options{
-		RootDirectory: tmpdir,
-	})
-	require.NoError(t, err)
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 
-	cl := createAccountClient(ctx, t, s)
-
-	// create an account
-	{
-		args := testConfig(tmpdir)
-		res, err := cl.CreateAccount(ctx, &CreateAccount_Request{
-			Args: args,
-		})
-		require.NoError(t, err)
-		assert.NotEmpty(t, res.AccountMetadata)
-	}
+	cl := createBridgeTestingClient(t, ctx, logger)
 
 	// test echoTest error
 	var streamid string
 	{
-		input := &messengertypes.EchoTest_Request{
+		input := &testutil.EchoTest_Request{
 			TriggerError: true,
-			Delay:        10,
+			Delay:        0,
 			Echo:         echoStringTest,
 		}
 		payload, err := proto.Marshal(input)
@@ -193,7 +179,7 @@ func TestGRPCStreamServiceError(t *testing.T) {
 
 		res, err := cl.CreateClientStream(ctx, &ClientCreateStream_Request{
 			MethodDesc: &MethodDesc{
-				Name:           "/berty.messenger.v1.MessengerService/EchoTest",
+				Name:           "/testutil.TestService/EchoTest",
 				IsServerStream: true,
 			},
 			Payload: payload,
@@ -221,37 +207,21 @@ func TestGRPCStreamServiceError(t *testing.T) {
 	}
 }
 
-func TestGRPCStreamDuplexService(t *testing.T) {
-	tmpdir, err := ioutil.TempDir("", "test")
-	require.NoError(t, err)
-	defer os.RemoveAll(tmpdir)
-
+func TestDuplexStreamService(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	s, err := NewService(&Options{
-		RootDirectory: tmpdir,
-	})
-	require.NoError(t, err)
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
 
-	cl := createAccountClient(ctx, t, s)
-
-	// create an account
-	{
-		args := testConfig(tmpdir)
-		res, err := cl.CreateAccount(ctx, &CreateAccount_Request{
-			Args: args,
-		})
-		require.NoError(t, err)
-		assert.NotEmpty(t, res.AccountMetadata)
-	}
+	cl := createBridgeTestingClient(t, ctx, logger)
 
 	// test echoTest error
 	var streamid string
 	{
 		res, err := cl.CreateClientStream(ctx, &ClientCreateStream_Request{
 			MethodDesc: &MethodDesc{
-				Name:           "/berty.messenger.v1.MessengerService/EchoDuplexTest",
+				Name:           "/testutil.TestService/EchoDuplexTest",
 				IsServerStream: true,
 				IsClientStream: true,
 			},
@@ -268,7 +238,7 @@ func TestGRPCStreamDuplexService(t *testing.T) {
 
 	// send echo test
 	{
-		input := &messengertypes.EchoDuplexTest_Request{
+		input := &testutil.EchoDuplexTest_Request{
 			Echo: echoStringTest,
 		}
 		payload, err := proto.Marshal(input)
@@ -299,7 +269,79 @@ func TestGRPCStreamDuplexService(t *testing.T) {
 				assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
 				assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
 
-				var output messengertypes.EchoDuplexTest_Reply
+				var output testutil.EchoDuplexTest_Reply
+				err = proto.Unmarshal(res.Payload, &output)
+				require.NoError(t, err)
+
+				assert.Equal(t, echoStringTest, output.Echo)
+			}
+		}
+	}
+}
+
+func TestDuplexStreamServiceError(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+
+	cl := createBridgeTestingClient(t, ctx, logger)
+
+	// test echoTest error
+	var streamid string
+	{
+		res, err := cl.CreateClientStream(ctx, &ClientCreateStream_Request{
+			MethodDesc: &MethodDesc{
+				Name:           "/testutil.TestService/EchoDuplexTest",
+				IsServerStream: true,
+				IsClientStream: true,
+			},
+		})
+
+		require.NoError(t, err)
+		require.NotEmpty(t, res.StreamId)
+		require.NotNil(t, res.Error)
+
+		assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
+		assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
+		streamid = res.StreamId
+	}
+
+	// send echo test
+	{
+		input := &testutil.EchoDuplexTest_Request{
+			Echo: echoStringTest,
+		}
+		payload, err := proto.Marshal(input)
+		require.NoError(t, err)
+
+		for i := 0; i < 10; i++ {
+			// test send
+			{
+				res, err := cl.ClientStreamSend(ctx, &ClientStreamSend_Request{
+					StreamId: streamid,
+					Payload:  payload,
+				})
+
+				require.NoError(t, err)
+				require.NotNil(t, res.Error)
+				assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
+				assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
+			}
+
+			// test recv
+			{
+				res, err := cl.ClientStreamRecv(ctx, &ClientStreamRecv_Request{
+					StreamId: streamid,
+				})
+
+				require.NoError(t, err)
+				require.NotNil(t, res.Error)
+				assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
+				assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
+
+				var output testutil.EchoDuplexTest_Reply
 				err = proto.Unmarshal(res.Payload, &output)
 				require.NoError(t, err)
 
@@ -308,9 +350,8 @@ func TestGRPCStreamDuplexService(t *testing.T) {
 		}
 	}
 
-	// test duplex error
 	{
-		input := &messengertypes.EchoDuplexTest_Request{
+		input := &testutil.EchoDuplexTest_Request{
 			Echo:         echoStringTest,
 			TriggerError: true,
 		}
@@ -354,32 +395,33 @@ func TestGRPCStreamDuplexService(t *testing.T) {
 	}
 }
 
-func createAccountClient(ctx context.Context, t *testing.T, s AccountServiceServer) AccountServiceClient {
+func createBridgeTestingClient(t *testing.T, ctx context.Context, logger *zap.Logger) BridgeServiceClient {
+	t.Helper()
+
 	srv := grpc.NewServer()
-	RegisterAccountServiceServer(srv, s)
+
+	svc := NewService(&Options{
+		Logger: logger,
+	})
+
+	RegisterBridgeServiceServer(srv, svc)
 
 	l := grpcutil.NewBufListener(ctx, 2048)
 
 	cc, err := l.NewClientConn()
-	assert.NoError(t, err)
-
-	cl := NewAccountServiceClient(cc)
+	require.NoError(t, err)
 
 	go srv.Serve(l.Listener)
 
 	t.Cleanup(func() { l.Close() })
 
-	return cl
-}
+	tcc, srv := testutil.TestingNewServiceClient(ctx, t, &testutil.Options{
+		Logger: logger,
+	})
 
-func testConfig(storedir string) []string {
-	return []string{
-		"--log.filters=info+:bty*,-*.grpc warn+:*.grpc error+:*",
-		"--log.format=console",
-		"--node.display-name=",
-		"--node.listeners=",
-		"--p2p.swarm-listeners=/ip6/::/tcp/0",
-		"--p2p.local-discovery=false",
-		"--store.dir=" + storedir,
+	for serviceName := range srv.GetServiceInfo() {
+		svc.RegisterService(serviceName, tcc)
 	}
+
+	return NewBridgeServiceClient(cc)
 }

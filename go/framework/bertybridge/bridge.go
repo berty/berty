@@ -12,9 +12,11 @@ import (
 	"google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/notification"
-	"berty.tech/berty/v2/go/pkg/bertyaccount"
+	account_svc "berty.tech/berty/v2/go/pkg/bertyaccount"
+	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
@@ -27,12 +29,13 @@ type Bridge struct {
 	errc   chan error
 	closec chan struct{}
 
-	service             bertyaccount.Service
-	bridgeServiceClient *grpcutil.LazyClient
-	grpcServer          *grpc.Server
-	onceCloser          sync.Once
-	workers             run.Group
-	logger              *zap.Logger
+	serviceAccount account_svc.Service
+	serviceBridge  bridge_svc.Service
+	client         *grpcutil.LazyClient
+	grpcServer     *grpc.Server
+	onceCloser     sync.Once
+	workers        run.Group
+	logger         *zap.Logger
 
 	lifecycleManager    *lifecycle.Manager
 	notificationManager notification.Manager
@@ -65,6 +68,9 @@ func NewBridge(config *Config) (*Bridge, error) {
 		} else {
 			b.logger = zap.NewNop()
 		}
+
+		// @NOTE(gfanton): replace grpc logger as soon as possible to avoid DATA_RACE
+		initutil.ReplaceGRPCLogger(b.logger.Named("grpc"))
 	}
 
 	// setup notification manager
@@ -85,37 +91,24 @@ func NewBridge(config *Config) (*Bridge, error) {
 		}
 	}
 
-	// setup berty bridge service
+	// setup native bridge client
 	{
-		opts := bertyaccount.Options{
-			RootDirectory: config.rootDir,
-
-			NotificationManager: b.notificationManager,
-			Logger:              b.logger,
-			LifecycleManager:    b.lifecycleManager,
+		opts := &bridge_svc.Options{
+			Logger: b.logger,
 		}
 
-		var err error
-		if b.service, err = bertyaccount.NewService(&opts); err != nil {
-			return nil, err
-		}
-	}
+		b.serviceBridge = bridge_svc.NewService(opts)
+		b.grpcServer = grpc.NewServer()
 
-	// setup bridge client
-	{
-		// register services for bridge client
-		s := grpc.NewServer()
-		bertyaccount.RegisterAccountServiceServer(s, b.service)
+		bridge_svc.RegisterBridgeServiceServer(b.grpcServer, b.serviceBridge)
 
 		bl := grpcutil.NewBufListener(ctx, bufListenerSize)
 		b.workers.Add(func() error {
-			return s.Serve(bl)
+			return b.grpcServer.Serve(bl)
 		}, func(error) {
+			b.serviceBridge.Close()
 			bl.Close()
-			b.service.Close()
 		})
-
-		b.grpcServer = s
 
 		// create native bridge client
 		ccBridge, err := bl.NewClientConn()
@@ -123,8 +116,54 @@ func NewBridge(config *Config) (*Bridge, error) {
 			return nil, errors.Wrap(err, "unable to get bridge gRPC ClientConn")
 		}
 
-		b.bridgeServiceClient = grpcutil.NewLazyClient(ccBridge)
+		b.client = grpcutil.NewLazyClient(ccBridge)
 	}
+
+	// setup berty account service
+	{
+		opts := account_svc.Options{
+			RootDirectory: config.rootDir,
+
+			ServiceClientRegister: b.serviceBridge,
+			NotificationManager:   b.notificationManager,
+			Logger:                b.logger,
+			LifecycleManager:      b.lifecycleManager,
+		}
+
+		var err error
+		if b.serviceAccount, err = account_svc.NewService(&opts); err != nil {
+			return nil, err
+		}
+	}
+
+	// setup account client
+	{
+		s := grpc.NewServer()
+
+		// register services bridge client
+		account_svc.RegisterAccountServiceServer(s, b.serviceAccount)
+
+		bl := grpcutil.NewBufListener(ctx, bufListenerSize)
+		b.workers.Add(func() error {
+			return s.Serve(bl)
+		}, func(error) {
+			b.serviceAccount.Close()
+			bl.Close()
+		})
+
+		// bind account to native bridge
+		ccAccount, err := bl.NewClientConn()
+		if err != nil {
+			return nil, errors.Wrap(err, "unable to get bridge gRPC ClientConn")
+		}
+
+		// register account to service bridge
+		for serviceName := range s.GetServiceInfo() {
+			b.serviceBridge.RegisterService(serviceName, ccAccount)
+		}
+	}
+
+	// setup native bridge client
 
 	// start Bridge
 	b.logger.Debug("starting Bridge")
@@ -153,7 +192,7 @@ func (b *Bridge) HandleState(appstate int) {
 func (b *Bridge) HandleTask() LifeCycleBackgroundTask {
 	return newBackgroundTask(b.logger, func(ctx context.Context) error {
 		b.lifecycleManager.UpdateState(bertymessenger.StateActive)
-		err := b.service.WakeUp(ctx)
+		err := b.serviceAccount.WakeUp(ctx)
 		b.lifecycleManager.UpdateState(bertymessenger.StateInactive)
 		return err
 	})
@@ -242,7 +281,7 @@ func (b *Bridge) InvokeBridgeMethod(method string, b64message string) (string, e
 		Name: method,
 	}
 
-	out, err := b.bridgeServiceClient.InvokeUnary(context.Background(), desc, in)
+	out, err := b.client.InvokeUnary(context.Background(), desc, in)
 	if err != nil {
 		return "", err
 	}

@@ -1,8 +1,4 @@
-import {
-	bridge as rpcBridge,
-	grpcweb as rpcWeb,
-	native as rpcNative,
-} from '@berty-tech/grpc-bridge/rpc'
+import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
 import i18n from '@berty-tech/berty-i18n'
 import { EOF, Service } from '@berty-tech/grpc-bridge'
 import ExternalTransport from './externalTransport'
@@ -22,7 +18,7 @@ import beapi from '@berty-tech/api'
 import { reducerAction } from '@berty-tech/store/providerReducer'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
-const accountService = Service(beapi.account.AccountService, rpcNative, null)
+const accountService = Service(beapi.account.AccountService, rpcBridge, null)
 
 export const storageKeyForAccount = (accountID: string) => `storage_${accountID}`
 

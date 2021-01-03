@@ -63,19 +63,19 @@ export interface WelshProtocolServiceClient {
 }
 
 export interface WelshAccountServiceClient {
-	openAccount: ResponseStreamType<beapi.account.AccountService['openAccount']>
-	closeAccount: ResponseStreamType<beapi.account.AccountService['closeAccount']>
+	openAccount: UnaryType<beapi.account.AccountService['openAccount']>
+	openAccountWithProgress: ResponseStreamType<
+		beapi.account.AccountService['openAccountWithProgress']
+	>
+	closeAccount: UnaryType<beapi.account.AccountService['closeAccount']>
+	closeAccountWithProgress: ResponseStreamType<
+		beapi.account.AccountService['closeAccountWithProgress']
+	>
 	listAccounts: UnaryType<beapi.account.AccountService['listAccounts']>
 	deleteAccount: UnaryType<beapi.account.AccountService['deleteAccount']>
 	importAccount: UnaryType<beapi.account.AccountService['importAccount']>
 	createAccount: UnaryType<beapi.account.AccountService['createAccount']>
 	getGRPCListenerAddrs: UnaryType<beapi.account.AccountService['getGRPCListenerAddrs']>
-	clientInvokeUnary: UnaryType<beapi.account.AccountService['clientInvokeUnary']>
-	createClientStream: UnaryType<beapi.account.AccountService['createClientStream']>
-	clientStreamSend: UnaryType<beapi.account.AccountService['clientStreamSend']>
-	clientStreamRecv: UnaryType<beapi.account.AccountService['clientStreamRecv']>
-	clientStreamClose: UnaryType<beapi.account.AccountService['clientStreamClose']>
-	clientStreamCloseAndRecv: UnaryType<beapi.account.AccountService['clientStreamCloseAndRecv']>
 }
 
 export interface WelshMessengerServiceClient {
