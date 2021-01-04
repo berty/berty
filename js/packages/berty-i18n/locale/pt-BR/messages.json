@@ -305,6 +305,11 @@
     },
     "ipfs-webui": {
       "title": ""
+    },
+    "my-berty-ID": {
+      "qr": "",
+      "fingerprint": "Impressão digital",
+      "devices": "Dispositivos"
     }
   },
   "modals": {
