@@ -360,25 +360,16 @@ ios/Frameworks/Bertybridge.framework: $(bridge_src)
 		echo $(go_libtor_ver) > ios/tor-deps/version; \
 	fi
 	mkdir -p ios/Frameworks
-	# TODO: uncomment this when Tor transport will be fixed
-	# cd .. && \
-	# 	GO111MODULE=on \
-	# 	LIBRARY_PATH="$(PWD)/ios/tor-deps/lib" \
-	# 	CPATH="$(PWD)/ios/tor-deps/include" \
-	# 	go run golang.org/x/mobile/cmd/gomobile bind \
-	# 		-o js/$@ \
-	# 		-v $(ext_ldflags) \
-	# 		-cache "$(PWD)/ios/.gomobile-cache" \
-	# 		-target ios \
-	# 		-tags embedTor \
-	# 		-iosversion $(minimum_ios_ver) \
-	# 		./go/framework/bertybridge
 	cd .. && \
-		GO111MODULE=on go run golang.org/x/mobile/cmd/gomobile bind \
+		GO111MODULE=on \
+		LIBRARY_PATH="$(PWD)/ios/tor-deps/lib" \
+		CPATH="$(PWD)/ios/tor-deps/include" \
+		go run golang.org/x/mobile/cmd/gomobile bind \
 			-o js/$@ \
 			-v $(ext_ldflags) \
 			-cache "$(PWD)/ios/.gomobile-cache" \
 			-target ios \
+			-tags embedTor \
 			-iosversion $(minimum_ios_ver) \
 			./go/framework/bertybridge
 	touch $@
