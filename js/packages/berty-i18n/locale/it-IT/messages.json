@@ -203,7 +203,7 @@
     "delete-account": {
       "title": "Elimina account!",
       "first-desc": "Sei sicuro di voler eliminare il tuo account?",
-      "desc": "",
+      "desc": "Digita elimina per confermare",
       "cancel-button": "ANNULLA",
       "delete-button": "ELIMINA"
     },
