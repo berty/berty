@@ -82,24 +82,28 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	if dir == InMemoryDir {
-		return sync_ds.MutexWrap(datastore.NewMapDatastore()), nil
+	inMemory := dir == InMemoryDir
+
+	var ds datastore.Batching
+	if inMemory {
+		ds = datastore.NewMapDatastore()
+	} else {
+		opts := ipfsbadger.DefaultOptions
+		if m.Datastore.LowMemoryProfile {
+			applyBadgerLowMemoryProfile(m.initLogger, &opts)
+		}
+
+		ds, err = ipfsbadger.NewDatastore(dir, &opts)
+		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
 	}
 
-	opts := ipfsbadger.DefaultOptions
-	if m.Datastore.LowMemoryProfile {
-		applyBadgerLowMemoryProfile(m.initLogger, &opts)
-	}
-
-	ds, err := ipfsbadger.NewDatastore(dir, &opts)
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
+	ds = sync_ds.MutexWrap(ds)
 	m.Datastore.rootDS = ds
 
-	m.Datastore.rootDS = sync_ds.MutexWrap(m.Datastore.rootDS)
-	m.initLogger.Debug("datastore", zap.Bool("in-memory", dir == InMemoryDir))
-	return m.Datastore.rootDS, nil
+	m.initLogger.Debug("datastore", zap.Bool("in-memory", inMemory))
+	return ds, nil
 }
 
 func applyBadgerLowMemoryProfile(logger *zap.Logger, o *ipfsbadger.Options) {
