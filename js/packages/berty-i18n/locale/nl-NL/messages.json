@@ -92,7 +92,7 @@
       "header-right-button": "Instellingen",
       "network-button": "Netwerk Lijst",
       "switch-accounts": "Gebruik een ander account",
-      "edit-profile": ""
+      "edit-profile": "Mijn profiel bewerken"
     },
     "network-map": {
       "title": "Netwerk Lijst",
@@ -114,53 +114,53 @@
       "app-mode-button": {
         "title": "App modus",
         "performance-tag": "Prestaties",
-        "privacy-tag": "",
-        "description-tag": "",
-        "first-bullet-point": "",
+        "privacy-tag": "Privacy",
+        "description-tag": "Eenvoudig in gebruik - alle functies",
+        "first-bullet-point": "Ontvang push-meldingen",
         "second-bullet-point": "",
         "third-bullet-point": ""
       },
-      "dark-mode-button": "",
+      "dark-mode-button": "Donkere modus",
       "receive-contact-requests-button": "",
-      "external-services-button": "",
+      "external-services-button": "Externe diensten",
       "auto-replicate-button": "",
       "multicast-dns-button": {
-        "title": "",
+        "title": "Multicast DNS",
         "desc": ""
       },
       "blocked-contacts-button": {
-        "title": "",
-        "tag": ""
+        "title": "Geblokkeerde contacten",
+        "tag": "geblokkeerd"
       },
-      "delete-account-button": "",
-      "backup-account-button": ""
+      "delete-account-button": "Verwijder mijn account",
+      "backup-account-button": "Back-up maken van mijn account"
     },
     "edit-profile": {
-      "title": "",
+      "title": "Mijn profiel bewerken",
       "qr-will-update": "",
       "ocr-wont-update": "",
-      "save": "",
-      "cancel": "",
-      "name-input-placeholder": "",
-      "name-input-label": ""
+      "save": "Wijzigingen opslaan",
+      "cancel": "Annuleren",
+      "name-input-placeholder": "Naam...",
+      "name-input-label": "Naam"
     },
     "notifications": {
-      "title": "",
+      "title": "Notificaties",
       "enabled-desc": "",
       "disabled-desc": "",
       "activate-button": "",
       "contact-request-button": {
-        "title": "",
+        "title": "Contact verzoek",
         "desc": ""
       },
       "messages-notifications-button": {
         "title": "",
-        "display-button": "",
+        "display-button": "Meldingen weergeven",
         "preview-button": "",
-        "sound-button": "",
+        "sound-button": "Geluid",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
+          "title": "Uitzonderingen",
+          "preview-value": "Toevoegen",
           "tag": "",
           "tag_plural": ""
         }
@@ -169,10 +169,10 @@
         "title": "",
         "display-button": "",
         "preview-button": "",
-        "sound-button": "",
+        "sound-button": "Geluid",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
+          "title": "Uitzonderingen",
+          "preview-value": "Toevoegen",
           "tag": "",
           "tag_plural": ""
         }
@@ -192,7 +192,7 @@
       "register-service-button": {
         "title": "Registreer een custom dienst",
         "input-placeholder": "",
-        "action": ""
+        "action": "Toevoegen"
       },
       "registered-services-button": {
         "title": "",
@@ -232,36 +232,36 @@
       "terms-button": "",
       "privacy-button": "",
       "software-button": "",
-      "contact-button": "",
-      "website-button": ""
+      "contact-button": "Neem contact op",
+      "website-button": "Website"
     },
     "updates": {
       "title": "",
       "up-to-date-desc": "",
-      "version": "",
-      "current-tag": "",
-      "installed-tag": "",
-      "initial-tag": "",
-      "not-installed-tag": ""
+      "version": "Versie",
+      "current-tag": "Huidige",
+      "installed-tag": "Geinstalleerd",
+      "initial-tag": "Eerste installatie",
+      "not-installed-tag": "Niet geïnstalleerd"
     },
     "devtools": {
       "title": "",
       "header-left-button": "",
       "simulate-button": "",
       "tor-button": "",
-      "tor-optional-option": "",
-      "tor-required-option": "",
-      "tor-disabled-option": "",
+      "tor-optional-option": "optioneel",
+      "tor-required-option": "vereist",
+      "tor-disabled-option": "uitgeschakeld",
       "header-middle-button": "",
       "header-right-button": "",
-      "system-info-button": "",
+      "system-info-button": "Systeem informatie",
       "debug-button": "",
       "add-dev-conversations-button": "",
       "share-button": {
         "title": "",
         "alert-title": "",
         "alert-message": "",
-        "alert-accept-button": "",
+        "alert-accept-button": "Yep 👍",
         "alert-cancel-button": ""
       },
       "native-bridge-button": "",
@@ -270,12 +270,12 @@
       "dump-conversations-button": "",
       "dump-interactions-button": "",
       "dump-members-button": "",
-      "stop-node-button": "",
+      "stop-node-button": "Stop node",
       "bot-mode-button": "",
       "local-grpc-button": "",
       "console-logs-button": "",
       "ipfs-webui-button": "",
-      "notifications-button": "",
+      "notifications-button": "Notificaties",
       "send-to-all-button": {
         "title": "",
         "sending": "",
