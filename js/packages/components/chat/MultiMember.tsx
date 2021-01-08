@@ -27,6 +27,7 @@ import {
 	useNotificationsInhibitor,
 } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
+import { ParsedInteraction } from '@berty-tech/store/types.gen'
 
 import { ChatFooter, ChatDate } from './common'
 import { Message } from './message'
@@ -36,7 +37,6 @@ import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { useLayout } from '../hooks'
 import { pbDateToNum } from '../helpers'
 import { MultiMemberAvatar } from '../avatars'
-import { ParsedInteraction } from '@berty-tech/store/types.gen'
 
 //
 // MultiMember

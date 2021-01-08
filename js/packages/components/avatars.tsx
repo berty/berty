@@ -127,7 +127,7 @@ export const HardcodedAvatar: React.FC<{
 	if (!avatar) {
 		avatar = Logo
 	}
-	console.log('name', name, 'source', !!avatar)
+
 	return (
 		<View
 			style={[{ borderRadius: size / 2, backgroundColor: 'white' }, border.shadow.medium, style]}

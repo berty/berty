@@ -84,7 +84,7 @@ export const DropDownPicker: React.FC<{
 					},
 				]}
 			>
-				{items.map((item) => (
+				{items.map((item, key) => (
 					<TouchableOpacity
 						activeOpacity={0.9}
 						onPress={() => {
@@ -92,6 +92,7 @@ export const DropDownPicker: React.FC<{
 							onChangeItem(item)
 						}}
 						style={[padding.medium]}
+						key={key}
 					>
 						<Text key={item.value}>{item.label}</Text>
 						<View

@@ -1,6 +1,6 @@
-import React from 'react'
-import { TouchableHighlight, View } from 'react-native'
-import { Text } from '@ui-kitten/components'
+import React, { useEffect, useMemo } from 'react'
+import { SectionList, Text as TextNative, TouchableHighlight, View } from 'react-native'
+import { Icon, Text } from '@ui-kitten/components'
 import { CommonActions } from '@react-navigation/native'
 
 import { Routes, useNavigation } from '@berty-tech/navigation'
@@ -8,8 +8,11 @@ import { useStyles } from '@berty-tech/styles'
 import { useConversation, useContact, useSortedConvInteractions } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
 
-import { pbDateToNum, timeFormat } from '../helpers'
-import { ContactAvatar, ConversationAvatar } from '../avatars'
+import { pbDateToNum, timeFormat } from '../../helpers'
+import { ContactAvatar, ConversationAvatar } from '../../avatars'
+import { EdgeInsets } from 'react-native-safe-area-context'
+import { Translation } from 'react-i18next'
+import { HintBody } from '@berty-tech/components/shared-components'
 
 // Styles
 
@@ -265,7 +268,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 	)
 }
 
-export const createSections = (
+const createSections = (
 	conversations: any,
 	contacts: any,
 	interactions: any,
@@ -299,4 +302,147 @@ export const createSections = (
 		},
 	]
 	return sections
+}
+
+const _approxFooterHeight = 90
+
+export const SearchComponent: React.FC<{
+	insets: EdgeInsets | null
+	conversations: { [key: string]: beapi.messenger.IConversation | undefined }
+	contacts: { [key: string]: beapi.messenger.IContact | undefined }
+	interactions: { [key: string]: beapi.messenger.IInteraction | undefined }
+	hasResults: boolean
+	value: string
+}> = ({ insets, conversations, contacts, interactions, hasResults, value }) => {
+	const [
+		{ height, width, background, padding, text, border, margin },
+		{ scaleHeight },
+	] = useStyles()
+	const validInsets = useMemo(() => insets || { top: 0, bottom: 0, left: 0, right: 0 }, [insets])
+
+	const sortedConversations = useMemo(() => {
+		return Object.values(conversations).sort((a, b) => {
+			return pbDateToNum(b?.lastUpdate) - pbDateToNum(a?.lastUpdate)
+		})
+	}, [conversations])
+
+	const sortedInteractions = useMemo(() => {
+		return Object.values(interactions).sort((a, b) => {
+			return pbDateToNum(b?.sentDate) - pbDateToNum(a?.sentDate)
+		})
+	}, [interactions])
+
+	const sections = useMemo(
+		() => createSections(sortedConversations, Object.values(contacts), sortedInteractions, value),
+		[contacts, sortedConversations, sortedInteractions, value],
+	)
+
+	useEffect(() => {
+		console.log(value, hasResults)
+	})
+
+	return hasResults ? (
+		<SectionList
+			style={{
+				marginLeft: validInsets.left,
+				marginRight: validInsets.right,
+			}}
+			stickySectionHeadersEnabled={false}
+			bounces={false}
+			keyExtractor={(item: any) => item.cid || item.publicKey}
+			sections={sections}
+			renderSectionHeader={({ section }) => {
+				const { title } = section
+				let isFirst
+				sections?.map((value: any, key: any) => {
+					if (value.data?.length && value.title === section.title) {
+						switch (key) {
+							case 0:
+								isFirst = true
+								break
+							case 1:
+								isFirst = sections[0].data?.length ? false : true
+								break
+							case 2:
+								isFirst = sections[0].data?.length || sections[1].data?.length ? false : true
+								break
+						}
+					}
+				})
+				return title ? (
+					<View
+						style={[
+							!isFirst && border.radius.top.big,
+							background.white,
+							!isFirst && {
+								shadowOpacity: 0.1,
+								shadowRadius: 8,
+								shadowOffset: { width: 0, height: -12 },
+							},
+						]}
+					>
+						<View style={[padding.horizontal.medium]}>
+							<View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+								<View
+									style={[width(42), height(4), margin.top.medium, { backgroundColor: '#F1F4F6' }]}
+								/>
+							</View>
+							<TextNative
+								style={[
+									text.size.scale(25),
+									text.color.black,
+									text.bold.medium,
+									{ fontFamily: 'Open Sans' },
+								]}
+							>
+								{title}
+							</TextNative>
+						</View>
+					</View>
+				) : null
+			}}
+			ListFooterComponent={() => (
+				// empty div at bottom of list
+
+				// Workaround to make sure nothing is hidden behind footer;
+				// adding padding/margin to this or a wrapping parent doesn't work
+				<View style={[height(_approxFooterHeight + 20)]} />
+			)}
+		/>
+	) : (
+		<View style={{ position: 'relative' }}>
+			<Translation>
+				{(t: any): React.ReactNode => (
+					<TextNative
+						style={[
+							text.color.black,
+							text.size.big,
+							text.bold.small,
+							text.align.center,
+							{
+								fontFamily: 'Open Sans',
+								position: 'absolute',
+								top: 230,
+								left: 0,
+								right: 0,
+								color: '#FFAE3A',
+							},
+						]}
+					>
+						{t('main.home.search.no-results')}
+					</TextNative>
+				)}
+			</Translation>
+			<Icon
+				name='search'
+				width={500}
+				height={500}
+				fill='#FFFBF6'
+				style={{ position: 'absolute', top: 0, right: -63 }}
+			/>
+			<View style={[margin.top.scale(370 * scaleHeight)]}>
+				<HintBody />
+			</View>
+		</View>
+	)
 }
