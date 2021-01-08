@@ -1,7 +1,7 @@
 import React from 'react'
 import { ActivityIndicator, Button, Text, TextInput, View } from 'react-native'
 
-import { useDeleteAccount, useMsgrContext, useRestart } from '@berty-tech/store/hooks'
+import { useMsgrContext } from '@berty-tech/store/hooks'
 import {
 	isClosing,
 	isDeletingState,
@@ -22,13 +22,19 @@ const expandSelfAndCenterContent: any = {
 const gutter = 50
 
 export const StreamGate: React.FC = ({ children }) => {
-	const { streamError, daemonAddress, embedded, dispatch } = useMsgrContext()
+	const {
+		streamError,
+		daemonAddress,
+		embedded,
+		dispatch,
+		streamInProgress,
+		deleteAccount,
+		restart,
+	} = useMsgrContext()
 	const [newAddress, setNewAddress] = React.useState(daemonAddress)
 	const changeAddress = React.useCallback(() => {
 		dispatch({ type: MessengerActions.SetDaemonAddress, payload: { value: newAddress } })
 	}, [dispatch, newAddress])
-	const restart = useRestart()
-	const deleteAccount = useDeleteAccount()
 
 	if (streamError) {
 		return (
@@ -53,6 +59,12 @@ export const StreamGate: React.FC = ({ children }) => {
 				<View style={{ marginTop: gutter }}>
 					<Button onPress={() => deleteAccount()} title='Delete account' />
 				</View>
+			</View>
+		)
+	} else if (streamInProgress) {
+		return (
+			<View style={[expandSelfAndCenterContent]}>
+				<Text>{streamInProgress.progress.doing}</Text>
 			</View>
 		)
 	}

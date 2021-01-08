@@ -4,7 +4,6 @@ export type RouteProps<T> = { route: { params: T } }
 
 export namespace ScreenProps {
 	export namespace Onboarding {
-		export type AccountSelector = RouteProps<void>
 		export type GetStarted = RouteProps<void>
 		export type SelectMode = RouteProps<void>
 		export type Performance = RouteProps<void>
@@ -60,7 +59,6 @@ export namespace ScreenProps {
 
 export namespace Routes {
 	export enum Onboarding {
-		AccountSelector = 'Onboarding.AccountSelector',
 		GetStarted = 'Onboarding.GetStarted',
 		SelectMode = 'Onboarding.SelectMode',
 		Performance = 'Onboarding.Performance',

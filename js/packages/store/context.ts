@@ -20,10 +20,10 @@ export enum MessengerAppState {
 	ClosingDaemon,
 	DeletingClosingDaemon,
 	DeletingClearingStorage,
+	StreamDone,
 }
 
 export enum MessengerActions {
-	SetInitDone = 'SET_INIT_DONE',
 	SetStreamError = 'SET_STREAM_ERROR',
 	AddFakeData = 'ADD_FAKE_DATA',
 	DeleteFakeData = 'DELETE_FAKE_DATA',
@@ -38,11 +38,10 @@ export enum MessengerActions {
 	SetStateOpeningListingEvents = 'SET_STATE_LISTING_EVENTS',
 	SetStateOpeningGettingLocalSettings = 'SET_STATE_OPENING_GETTING_LOCAL_SETTINGS',
 	SetStateOpeningMarkConversationsClosed = 'SET_STATE_OPENING_MARK_CONVERSATION_CLOSED',
+	SetStateStreamInProgress = 'SET_STATE_STREAM_IN_PROGRESS',
+	SetStateStreamDone = 'SET_STATE_STREAM_DONE',
 	SetStateReady = 'SET_STATE_READY',
-	SetStateClosing = 'SET_STATE_CLOSING',
-	SetStateDeleting = 'SET_STATE_DELETING',
 	SetAccounts = 'SET_ACCOUNTS',
-	Restart = 'RESTART',
 	BridgeClosed = 'BRIDGE_CLOSED',
 	AddNotificationInhibitor = 'ADD_NOTIFICATION_INHIBITOR',
 	RemoveNotificationInhibitor = 'REMOVE_NOTIFICATION_INHIBITOR',
@@ -59,9 +58,13 @@ export const isReadyingBasics = (state: MessengerAppState): boolean =>
 	state === MessengerAppState.OpeningWaitingForDaemon ||
 	state === MessengerAppState.OpeningWaitingForClients ||
 	state === MessengerAppState.OpeningListingEvents ||
-	state === MessengerAppState.OpeningGettingLocalSettings
+	state === MessengerAppState.OpeningGettingLocalSettings ||
+	state === MessengerAppState.Closed ||
+	state === MessengerAppState.OpeningMarkConversationsAsClosed ||
+	state === MessengerAppState.StreamDone ||
+	state === MessengerAppState.Init
 
-const expectedAppStateChanges = {
+const expectedAppStateChanges: any = {
 	[MessengerAppState.Init]: [
 		MessengerAppState.Closed,
 		MessengerAppState.OpeningWaitingForClients,
@@ -73,7 +76,10 @@ const expectedAppStateChanges = {
 		MessengerAppState.ClosingDaemon,
 	],
 	[MessengerAppState.OpeningWaitingForDaemon]: [MessengerAppState.OpeningWaitingForClients],
-	[MessengerAppState.OpeningWaitingForClients]: [MessengerAppState.OpeningListingEvents],
+	[MessengerAppState.OpeningWaitingForClients]: [
+		MessengerAppState.OpeningListingEvents,
+		MessengerAppState.OpeningMarkConversationsAsClosed,
+	],
 	[MessengerAppState.OpeningListingEvents]: [MessengerAppState.OpeningGettingLocalSettings],
 	[MessengerAppState.OpeningGettingLocalSettings]: [
 		MessengerAppState.OpeningMarkConversationsAsClosed,
@@ -97,6 +103,7 @@ const expectedAppStateChanges = {
 	[MessengerAppState.Ready]: [
 		MessengerAppState.DeletingClosingDaemon,
 		MessengerAppState.ClosingDaemon,
+		MessengerAppState.OpeningWaitingForClients,
 	],
 	[MessengerAppState.ClosingDaemon]: [
 		MessengerAppState.Closed,
@@ -253,10 +260,14 @@ export type NotificationsInhibitor = (
 	evt: beapi.messenger.StreamEvent.INotified,
 ) => boolean | 'sound-only'
 
+export type StreamInProgress = beapi.protocol.Progress
+
 export type MsgrState = {
 	selectedAccount: string | null
 	nextSelectedAccount: string | null
 	daemonAddress: string
+	streamInProgress: StreamInProgress | null
+	isNewAccount: boolean | null
 
 	appState: MessengerAppState
 	account?: beapi.messenger.IAccount | null
@@ -289,9 +300,13 @@ export type MsgrState = {
 		type: beapi.messenger.StreamEvent.Type | MessengerActions
 		payload?: any
 	}>
+
 	setPersistentOption: (arg0: PersistentOptionsUpdate) => Promise<void>
-	createNewAccount: () => void
+	createNewAccount: () => Promise<void>
 	importAccount: (arg0: string) => Promise<void>
+	switchAccount: (arg0: string) => Promise<void>
+	deleteAccount: () => Promise<void>
+	restart: () => Promise<void>
 }
 
 export const initialState = {
@@ -306,6 +321,8 @@ export const initialState = {
 	client: null,
 	protocolClient: null,
 	streamError: null,
+	streamInProgress: null,
+	isNewAccount: null,
 
 	addNotificationListener: () => {},
 	removeNotificationListener: () => {},
@@ -318,9 +335,13 @@ export const initialState = {
 
 	embedded: true,
 	dispatch: () => {},
+
 	setPersistentOption: async () => {},
-	createNewAccount: () => {},
+	createNewAccount: async () => {},
 	importAccount: async () => {},
+	switchAccount: async () => {},
+	deleteAccount: async () => {},
+	restart: async () => {},
 	accounts: [],
 }
 

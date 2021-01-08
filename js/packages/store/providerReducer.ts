@@ -170,24 +170,29 @@ export const reducerActions: {
 		daemonAddress: action.payload.value,
 	}),
 
-	[MessengerActions.SetPersistentOption]: (oldState, action) => {
-		return {
-			...oldState,
-			persistentOptions: action.payload,
-		}
-	},
+	[MessengerActions.SetPersistentOption]: (oldState, action) => ({
+		...oldState,
+		persistentOptions: action.payload,
+	}),
 
-	[MessengerActions.SetStateOpeningListingEvents]: (oldState, action) => {
-		return {
-			...oldState,
-			client: action.payload.messengerClient || oldState.client,
-			protocolClient: action.payload.protocolClient || oldState.protocolClient,
-			clearClients: action.payload.clearClients || oldState.clearClients,
-			appState: MessengerAppState.OpeningListingEvents,
-		}
-	},
+	[MessengerActions.SetStateOpeningListingEvents]: (oldState, action) => ({
+		...oldState,
+		client: action.payload.messengerClient || oldState.client,
+		protocolClient: action.payload.protocolClient || oldState.protocolClient,
+		clearClients: action.payload.clearClients || oldState.clearClients,
+		appState: MessengerAppState.OpeningListingEvents,
+	}),
 
 	[MessengerActions.SetStateClosed]: (oldState, _) => {
+		let accountSelected: any = null
+		Object.values(oldState.accounts).forEach((account) => {
+			if (!accountSelected) {
+				accountSelected = account
+			} else if (accountSelected && accountSelected.lastOpened < account.lastOpened) {
+				accountSelected = account
+			}
+		})
+
 		const ret = {
 			...initialState,
 			accounts: oldState.accounts,
@@ -222,23 +227,20 @@ export const reducerActions: {
 		const ret = {
 			...oldState,
 			nextSelectedAccount: action.payload,
+			isNewAccount: false,
 		}
 
-		if (
-			oldState.appState === MessengerAppState.Closed ||
-			oldState.appState === MessengerAppState.Init
-		) {
+		if (oldState.appState === MessengerAppState.Init) {
 			return reducer(ret, { type: MessengerActions.SetStateOpening })
 		}
 
-		return ret
+		return reducer(ret, { type: MessengerActions.SetStateOpeningClients })
 	},
 
 	[MessengerActions.SetStateOpening]: (oldState, _action) => {
 		if (oldState.nextSelectedAccount === null) {
 			return oldState
 		}
-
 		return {
 			...oldState,
 			selectedAccount: oldState.nextSelectedAccount,
@@ -267,55 +269,11 @@ export const reducerActions: {
 	[MessengerActions.SetStateReady]: (oldState, _) => ({
 		...oldState,
 		appState:
-			!oldState.account || !oldState.account.displayName
+			!oldState.account || !oldState.account.displayName || oldState.isNewAccount
 				? MessengerAppState.GetStarted
 				: MessengerAppState.Ready,
+		isNewAccount: null,
 	}),
-
-	[MessengerActions.SetStateClosing]: (oldState, _) => {
-		if (!oldState.embedded) {
-			return oldState
-		}
-
-		return {
-			...oldState,
-			appState:
-				oldState.appState === MessengerAppState.OpeningWaitingForDaemon
-					? MessengerAppState.Closed
-					: MessengerAppState.ClosingDaemon,
-			clearClients: null,
-		}
-	},
-
-	[MessengerActions.Restart]: (oldState, _) => {
-		if (!oldState.embedded) {
-			return oldState
-		}
-
-		if (oldState.appState === MessengerAppState.ClosingDaemon) {
-			return reducer(oldState, { type: MessengerActions.SetStateClosed })
-		}
-
-		return {
-			...oldState,
-			nextSelectedAccount: oldState.selectedAccount,
-			appState: MessengerAppState.ClosingDaemon,
-			clearClients: null,
-		}
-	},
-
-	[MessengerActions.SetStateDeleting]: (oldState, _) => {
-		return {
-			...oldState,
-			appState:
-				oldState.selectedAccount === null
-					? MessengerAppState.Closed
-					: oldState.embedded
-					? MessengerAppState.DeletingClosingDaemon
-					: MessengerAppState.DeletingClearingStorage,
-			clearClients: null,
-		}
-	},
 
 	[MessengerActions.SetAccounts]: (oldState, action) => ({
 		...oldState,
@@ -329,7 +287,6 @@ export const reducerActions: {
 				appState: MessengerAppState.DeletingClearingStorage,
 			}
 		}
-
 		return reducer(oldState, { type: MessengerActions.SetStateClosed })
 	},
 
@@ -360,13 +317,23 @@ export const reducerActions: {
 		return oldState
 	},
 
-	[MessengerActions.SetCreatedAccount]: (oldState, action) => {
-		return {
-			...oldState,
-			selectedAccount: action.payload.accountId,
-			appState: MessengerAppState.OpeningWaitingForClients,
-		}
-	},
+	[MessengerActions.SetCreatedAccount]: (oldState, action) => ({
+		...oldState,
+		selectedAccount: action?.payload?.accountId,
+		isNewAccount: true,
+		appState: MessengerAppState.OpeningWaitingForClients,
+	}),
+
+	[MessengerActions.SetStateStreamInProgress]: (oldState, action) => ({
+		...oldState,
+		streamInProgress: action.payload,
+	}),
+
+	[MessengerActions.SetStateStreamDone]: (oldState, _) => ({
+		...oldState,
+		appState: MessengerAppState.StreamDone,
+		streamInProgress: null,
+	}),
 }
 
 export const reducer = (oldState: MsgrState, action: reducerAction): MsgrState => {

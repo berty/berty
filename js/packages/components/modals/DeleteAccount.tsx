@@ -11,7 +11,7 @@ import { Text, Icon } from '@ui-kitten/components'
 import { Translation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
-import { useDeleteAccount } from '@berty-tech/store/hooks'
+import { useMsgrContext } from '@berty-tech/store/hooks'
 import { useNavigation as useReactNavigation } from '@react-navigation/core'
 
 const useStylesDeleteAccount = () => {
@@ -94,10 +94,10 @@ const DeleteAccountError: React.FC<{ error: string }> = ({ error }) => {
 const DELETE_STR = 'delete'
 
 const DeleteAccountContent: React.FC<{}> = () => {
+	const { deleteAccount } = useMsgrContext()
 	const _styles = useStylesDeleteAccount()
 	const [{ row, margin, background, border, color, padding, text, column }] = useStyles()
 	const navigation = useReactNavigation()
-	const deleteAccount = useDeleteAccount()
 	const [deleteConfirmation, setDeleteConfirmation] = useState<string>()
 	const confirmed = deleteConfirmation === DELETE_STR
 
@@ -156,9 +156,9 @@ const DeleteAccountContent: React.FC<{}> = () => {
 									_styles.deleteButton,
 									!confirmed && { opacity: 0.5 },
 								]}
-								onPress={() => {
+								onPress={async () => {
 									Vibration.vibrate(500)
-									deleteAccount()
+									await deleteAccount()
 								}}
 								disabled={!confirmed}
 							>
