@@ -69,52 +69,52 @@
   "main": {
     "home": {
       "requests": {
-        "title": "",
-        "received-at": "",
-        "accept": "",
-        "card-title": ""
+        "title": "Förfrågningar",
+        "received-at": "Mottagen",
+        "accept": "Acceptera",
+        "card-title": "Kontaktförfrågan!"
       },
       "input-placeholder": "",
-      "no-contacts": "",
+      "no-contacts": "Du har inga kontakter eller chatter ännu",
       "search": {
-        "no-results": ""
+        "no-results": "Inga resultat hittades"
       }
     },
     "home-modal": {
-      "top-button": "",
+      "top-button": "Skapa ny grupp",
       "bottom-button": ""
     }
   },
   "settings": {
     "home": {
-      "header-left-button": "",
+      "header-left-button": "Hjälp",
       "header-center-button": "",
-      "header-right-button": "",
+      "header-right-button": "Inställningar",
       "network-button": "",
-      "switch-accounts": "",
-      "edit-profile": ""
+      "switch-accounts": "Använd ett annat konto",
+      "edit-profile": "Redigera profil"
     },
     "network-map": {
       "title": "",
-      "online-peers": ""
+      "online-peers": "Aktiva anslutningar"
     },
     "mode": {
-      "title": "",
+      "title": "Inställningar",
       "desc": "",
       "notifications-button": {
-        "title": "",
-        "tag-enabled": "",
-        "tag-disabled": ""
+        "title": "Aviseringar",
+        "tag-enabled": "Aktiverad",
+        "tag-disabled": "Inaktiverad"
       },
       "bluetooth-button": {
         "title": "Bluetooth",
-        "tag-enabled": "",
+        "tag-enabled": "Aktiverad",
         "tag-disabled": ""
       },
       "app-mode-button": {
         "title": "",
-        "performance-tag": "",
-        "privacy-tag": "",
+        "performance-tag": "Prestanda",
+        "privacy-tag": "Sekretess",
         "description-tag": "",
         "first-bullet-point": "",
         "second-bullet-point": "",
@@ -122,8 +122,8 @@
       },
       "dark-mode-button": "",
       "receive-contact-requests-button": "",
-      "external-services-button": "",
-      "auto-replicate-button": "",
+      "external-services-button": "Externa tjänster",
+      "auto-replicate-button": "Automatisk replikering",
       "multicast-dns-button": {
         "title": "",
         "desc": ""
@@ -139,7 +139,7 @@
       "title": "",
       "qr-will-update": "",
       "ocr-wont-update": "",
-      "save": "",
+      "save": "Spara ändringar",
       "cancel": "",
       "name-input-placeholder": "",
       "name-input-label": "Namn"
