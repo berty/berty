@@ -47,6 +47,8 @@ func runMain(args []string) error {
 		defer manager.Close(nil)
 	}
 
+	guiCmd, guiInit := guiCommand()
+
 	// root command
 	var root *ffcli.Command
 	{
@@ -76,31 +78,52 @@ func runMain(args []string) error {
 				omnisearchCommand(),
 			},
 		}
-	}
 
-	// create run.Group
-	var process run.Group
-	{
-		// handle close signal
-		execute, interrupt := run.SignalHandler(ctx, os.Interrupt)
-		process.Add(execute, interrupt)
-
-		// add root command to process
-		process.Add(func() error {
-			return root.ParseAndRun(ctx, args)
-		}, func(error) {
-			ctxCancel()
-		})
-	}
-
-	// start the run.Group process
-	{
-		err := process.Run()
-		if err == context.Canceled {
-			return nil
+		if guiCmd != nil {
+			root.Subcommands = append(root.Subcommands, guiCmd)
 		}
-		return err
 	}
+
+	run := func() error {
+		// create run.Group
+		var process run.Group
+		{
+			// handle close signal
+			execute, interrupt := run.SignalHandler(ctx, os.Interrupt)
+			process.Add(execute, interrupt)
+
+			// add root command to process
+			process.Add(func() error {
+				return root.ParseAndRun(ctx, args)
+			}, func(error) {
+				ctxCancel()
+			})
+		}
+
+		// start the run.Group process
+		{
+			err := process.Run()
+			if err == context.Canceled {
+				return nil
+			}
+			return err
+		}
+	}
+
+	if guiInit != nil && args[0] == "gui" { // can't check subcommand after Parse
+		ech := make(chan error)
+		defer close(ech)
+
+		go func() {
+			ech <- run()
+		}()
+		if err := guiInit(); err != nil {
+			return err
+		}
+		return <-ech
+	}
+
+	return run()
 }
 
 func usageFunc(c *ffcli.Command) string {

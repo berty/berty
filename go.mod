@@ -8,6 +8,7 @@ require (
 	berty.tech/go-libp2p-tor-transport v0.8.4
 	berty.tech/go-orbit-db v1.10.11
 	berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1
+	fyne.io/fyne/v2 v2.0.0
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible // indirect
@@ -79,7 +80,6 @@ require (
 	github.com/multiformats/go-multiaddr-fmt v0.1.0
 	github.com/multiformats/go-multihash v0.0.14
 	github.com/multiformats/go-multistream v0.2.0
-	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/oklog/run v1.1.0
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/peterbourgon/ff/v3 v3.0.0
@@ -108,7 +108,6 @@ require (
 	google.golang.org/genproto v0.0.0-20201022181438-0ff5f38871d5 // indirect
 	google.golang.org/grpc v1.35.0
 	google.golang.org/grpc/examples v0.0.0-20200922230038-4e932bbcb079
-	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1
 	gorm.io/driver/sqlite v1.1.4
 	gorm.io/gorm v1.20.9

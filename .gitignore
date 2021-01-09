@@ -32,3 +32,6 @@ benchmark_result.json
 
 # Delve's binaries
 *__debug_bin
+
+# Dev dbs
+/*gui.d
