@@ -5,12 +5,14 @@ import { useMsgrContext } from '@berty-tech/store/context'
 
 const AccountButton: React.FC<{ account: any; selected: boolean }> = ({ account, selected }) => {
 	const [{ text, background, padding, border }] = useStyles()
-	const { switchAccount } = useMsgrContext()
+	const { switchAccount, selectedAccount } = useMsgrContext()
 	return (
 		<TouchableOpacity
 			style={[border.radius.medium, background.white, padding.medium, border.shadow.medium]}
 			onPress={async () => {
-				await switchAccount(account.accountId)
+				if (selectedAccount !== account.accountId) {
+					await switchAccount(account.accountId)
+				}
 			}}
 		>
 			<View style={{ justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center' }}>
@@ -34,16 +36,13 @@ export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
 			onPress={onPress}
 		>
 			<View style={[{ width: '100%' }]}>
-				{accounts.map((accountService, key) => {
-					console.log('map', accountService)
-					return (
-						<AccountButton
-							key={key}
-							account={accountService}
-							selected={selectedAccount === accountService.accountId}
-						/>
-					)
-				})}
+				{accounts.map((accountService, key) => (
+					<AccountButton
+						key={key}
+						account={accountService}
+						selected={selectedAccount === accountService.accountId}
+					/>
+				))}
 				<TouchableOpacity
 					style={[
 						border.radius.medium,
@@ -53,7 +52,7 @@ export const MultiAccount: React.FC<{ onPress: any }> = ({ onPress }) => {
 						margin.top.scale(2),
 					]}
 					onPress={async () => {
-						await createNewAccount(true)
+						await createNewAccount()
 					}}
 				>
 					<Text style={[text.color.black]}>Create new account</Text>

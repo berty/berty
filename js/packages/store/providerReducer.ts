@@ -184,15 +184,6 @@ export const reducerActions: {
 	}),
 
 	[MessengerActions.SetStateClosed]: (oldState, _) => {
-		let accountSelected: any = null
-		Object.values(oldState.accounts).forEach((account) => {
-			if (!accountSelected) {
-				accountSelected = account
-			} else if (accountSelected && accountSelected.lastOpened < account.lastOpened) {
-				accountSelected = account
-			}
-		})
-
 		const ret = {
 			...initialState,
 			accounts: oldState.accounts,
@@ -227,14 +218,10 @@ export const reducerActions: {
 		const ret = {
 			...oldState,
 			nextSelectedAccount: action.payload,
-			isNewAccount: false,
+			isNewAccount: null,
 		}
 
-		if (oldState.appState === MessengerAppState.Init) {
-			return reducer(ret, { type: MessengerActions.SetStateOpening })
-		}
-
-		return reducer(ret, { type: MessengerActions.SetStateOpeningClients })
+		return reducer(ret, { type: MessengerActions.SetStateClosed })
 	},
 
 	[MessengerActions.SetStateOpening]: (oldState, _action) => {
@@ -269,7 +256,9 @@ export const reducerActions: {
 	[MessengerActions.SetStateReady]: (oldState, _) => ({
 		...oldState,
 		appState:
-			!oldState.account || !oldState.account.displayName || oldState.isNewAccount
+			(Object.keys(oldState.accounts).length === 1 &&
+				(!oldState.account || !oldState.account.displayName)) ||
+			oldState.isNewAccount
 				? MessengerAppState.GetStarted
 				: MessengerAppState.Ready,
 		isNewAccount: null,
