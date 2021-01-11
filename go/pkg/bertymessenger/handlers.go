@@ -295,10 +295,11 @@ func (h *eventHandler) accountContactRequestOutgoingEnqueued(gme *protocoltypes.
 	contactPKBytes := ev.GetContact().GetPK()
 	contactPK := b64EncodeBytes(contactPKBytes)
 
+	// FIXME: Discuss about removing this whole Metadata unmarshaling by setting `ShareableContact.metadata` type directly to `ContactMetadata`.
 	var cm messengertypes.ContactMetadata
-	err := proto.Unmarshal(ev.GetContact().GetMetadata(), &cm)
-	if err != nil {
-		return err
+	if err := proto.Unmarshal(ev.GetContact().GetMetadata(), &cm); err != nil {
+		// No return check here, this isn't critical.
+		h.logger.Warn("Unparseable Metadata", zap.Error(err)) // Don't output metadata to logs, this isn't privacy safe.
 	}
 
 	gpk := b64EncodeBytes(ev.GetGroupPK())
