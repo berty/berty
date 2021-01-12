@@ -2738,6 +2738,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrForEach: 301,
               ErrKeystoreGet: 400,
               ErrKeystorePut: 401,
+              ErrNotFound: 404,
               ErrOrbitDBInit: 1000,
               ErrOrbitDBOpen: 1001,
               ErrOrbitDBAppend: 1002,
@@ -4393,6 +4394,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     options: {
                       "(gogoproto.moretags)": "gorm:primaryKey"
                     }
+                  },
+                  isMe: {
+                    type: "bool",
+                    id: 9
+                  },
+                  isCreator: {
+                    type: "bool",
+                    id: 8
                   },
                   infoDate: {
                     type: "int64",

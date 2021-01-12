@@ -65,6 +65,7 @@ enum ErrCode {
 
   ErrKeystoreGet = 400;
   ErrKeystorePut = 401;
+  ErrNotFound = 404; // generic
 
   //-----------------
   // Specific errors

@@ -7,6 +7,7 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 	"github.com/gogo/protobuf/proto"
+	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
@@ -93,14 +94,17 @@ func newConversationThumbnail(mc *msgrContext, convPK string) wfr {
 	})
 
 	unsubConv := mc.store.conversationSubscribe(convPK, func(conv *mt.Conversation) error {
+		text := ""
 		switch conv.GetType() {
 		case mt.Conversation_ContactType:
-			kindLabel.SetText("Contact")
+			text = "Contact"
 		case mt.Conversation_MultiMemberType:
-			kindLabel.SetText("Group")
+			text = "Group"
 		default:
-			kindLabel.SetText("Unknown")
+			text = "Unknown"
 		}
+		text += "\ndpk: " + safeShortPK(conv.GetLocalDevicePublicKey()) + "\nmpk: " + safeShortPK(conv.GetAccountMemberPublicKey())
+		kindLabel.SetText(text)
 		return nil
 	})
 
@@ -149,13 +153,11 @@ func newConversationThumbnail(mc *msgrContext, convPK string) wfr {
 func newConversationDisplay(mc *msgrContext, convPK string, kind mt.Conversation_Type) wfr {
 	h := newMCHelper()
 
-	for _, w := range []wfr{
+	if err := h.add(
 		newInteractionList(mc, convPK),
 		newConversationMessageEntry(mc, convPK),
-	} {
-		if err := h.add(w); err != nil {
-			return w
-		}
+	); err != nil {
+		return wfr{nil, nil, multierr.Combine(err, h.clean())}
 	}
 
 	objs := h.canvasObjects()

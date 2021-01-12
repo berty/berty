@@ -1,6 +1,7 @@
 package bertymessenger
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"time"
@@ -45,15 +46,16 @@ func newEventHandler(ctx context.Context, db *dbWrapper, protocolClient protocol
 	}
 
 	h.metadataHandlers = map[protocoltypes.EventType]func(gme *protocoltypes.GroupMetadataEvent) error{
-		protocoltypes.EventTypeAccountGroupJoined:                    h.accountGroupJoined,
-		protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued: h.accountContactRequestOutgoingEnqueued,
-		protocoltypes.EventTypeAccountContactRequestOutgoingSent:     h.accountContactRequestOutgoingSent,
-		protocoltypes.EventTypeAccountContactRequestIncomingReceived: h.accountContactRequestIncomingReceived,
-		protocoltypes.EventTypeAccountContactRequestIncomingAccepted: h.accountContactRequestIncomingAccepted,
-		protocoltypes.EventTypeGroupMemberDeviceAdded:                h.groupMemberDeviceAdded,
-		protocoltypes.EventTypeGroupMetadataPayloadSent:              h.groupMetadataPayloadSent,
-		protocoltypes.EventTypeAccountServiceTokenAdded:              h.accountServiceTokenAdded,
-		protocoltypes.EventTypeGroupReplicating:                      h.groupReplicating,
+		protocoltypes.EventTypeAccountGroupJoined:                     h.accountGroupJoined,
+		protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued:  h.accountContactRequestOutgoingEnqueued,
+		protocoltypes.EventTypeAccountContactRequestOutgoingSent:      h.accountContactRequestOutgoingSent,
+		protocoltypes.EventTypeAccountContactRequestIncomingReceived:  h.accountContactRequestIncomingReceived,
+		protocoltypes.EventTypeAccountContactRequestIncomingAccepted:  h.accountContactRequestIncomingAccepted,
+		protocoltypes.EventTypeGroupMemberDeviceAdded:                 h.groupMemberDeviceAdded,
+		protocoltypes.EventTypeGroupMetadataPayloadSent:               h.groupMetadataPayloadSent,
+		protocoltypes.EventTypeAccountServiceTokenAdded:               h.accountServiceTokenAdded,
+		protocoltypes.EventTypeGroupReplicating:                       h.groupReplicating,
+		protocoltypes.EventTypeMultiMemberGroupInitialMemberAnnounced: h.multiMemberGroupInitialMemberAnnounced,
 	}
 
 	h.appMessageHandlers = map[messengertypes.AppMessage_Type]struct {
@@ -549,6 +551,67 @@ func (h *eventHandler) contactRequestAccepted(contact *messengertypes.Contact, m
 	return nil
 }
 
+func (h *eventHandler) multiMemberGroupInitialMemberAnnounced(gme *protocoltypes.GroupMetadataEvent) error {
+	var ev protocoltypes.MultiMemberInitialMember
+	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
+		return err
+	}
+
+	mpkb := ev.GetMemberPK()
+	mpk := b64EncodeBytes(mpkb)
+	gpkb := gme.GetEventContext().GetGroupPK()
+	gpk := b64EncodeBytes(gpkb)
+
+	if err := h.db.tx(func(tx *dbWrapper) error {
+		// create or update member
+
+		member, err := tx.getMemberByPK(mpk, gpk)
+		if err != gorm.ErrRecordNotFound && err != nil {
+			return errcode.ErrDBRead.Wrap(err)
+		}
+
+		if err == gorm.ErrRecordNotFound {
+			gi, err := h.protocolClient.GroupInfo(h.ctx, &protocoltypes.GroupInfo_Request{GroupPK: gpkb})
+			if err != nil {
+				return errcode.ErrGroupInfo.Wrap(err)
+			}
+			isMe := bytes.Equal(gi.GetMemberPK(), mpkb)
+
+			if _, err := tx.addMember(mpk, gpk, "", "", isMe, true); err != nil {
+				return errcode.ErrDBWrite.Wrap(err)
+			}
+		} else {
+			member.IsCreator = true
+			if err := tx.db.Save(member).Error; err != nil {
+				return errcode.ErrDBWrite.Wrap(err)
+			}
+		}
+
+		return nil
+	}); err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	}
+
+	// dispatch update
+	{
+		member, err := h.db.getMemberByPK(mpk, gpk)
+		if err != nil {
+			return errcode.ErrDBRead.Wrap(err)
+		}
+
+		if h.svc != nil {
+			err = h.svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeMemberUpdated, &messengertypes.StreamEvent_MemberUpdated{Member: member}, true)
+			if err != nil {
+				return err
+			}
+
+			h.logger.Info("dispatched member update", zap.Any("member", member), zap.Bool("isNew", true))
+		}
+	}
+
+	return nil
+}
+
 // groupMemberDeviceAdded is called at different moments
 // * on AccountGroup when you add a new device to your group
 // * on ContactGroup when you or your contact add a new device
@@ -571,20 +634,12 @@ func (h *eventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEv
 	dpk := b64EncodeBytes(dpkb)
 	gpk := b64EncodeBytes(gpkb)
 
-	// Ensure the event has is not emitted by the current user
-	if isMe, err := checkIsMe(
-		h.ctx,
-		h.protocolClient,
-		&protocoltypes.GroupMessageEvent{
-			EventContext: gme.GetEventContext(),
-			Headers:      &protocoltypes.MessageHeaders{DevicePK: dpkb},
-		},
-	); err != nil {
-		return err
-	} else if isMe {
-		h.logger.Debug("ignoring member device because isMe")
-		return nil
+	// Check if the event is emitted by the current user
+	gi, err := h.protocolClient.GroupInfo(h.ctx, &protocoltypes.GroupInfo_Request{GroupPK: gpkb})
+	if err != nil {
+		return errcode.ErrGroupInfo.Wrap(err)
 	}
+	isMe := bytes.Equal(gi.GetMemberPK(), mpkb)
 
 	// Register device if not already known
 	if _, err := h.db.getDeviceByPK(dpk); err == gorm.ErrRecordNotFound {
@@ -651,18 +706,24 @@ func (h *eventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEv
 			}
 		}
 
-		member, err := h.db.addMember(mpk, gpk, userInfo.GetDisplayName(), userInfo.GetAvatarCID())
+		member, isNew, err := h.db.upsertMember(mpk, gpk, messengertypes.Member{
+			PublicKey:             mpk,
+			ConversationPublicKey: gpk,
+			DisplayName:           userInfo.GetDisplayName(),
+			AvatarCID:             userInfo.GetAvatarCID(),
+			IsMe:                  isMe,
+		})
 		if err != nil {
 			return err
 		}
 
 		if h.svc != nil {
-			err = h.svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeMemberUpdated, &messengertypes.StreamEvent_MemberUpdated{Member: member}, true)
+			err = h.svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeMemberUpdated, &messengertypes.StreamEvent_MemberUpdated{Member: member}, isNew)
 			if err != nil {
 				return err
 			}
 
-			h.logger.Info("dispatched member update", zap.String("name", member.GetDisplayName()), zap.String("conv", gpk))
+			h.logger.Info("dispatched member update", zap.Any("member", member), zap.Bool("isNew", isNew))
 		}
 	}
 
@@ -779,11 +840,6 @@ func (h *eventHandler) handleAppMessageUserMessage(tx *dbWrapper, i *messengerty
 }
 
 func (h *eventHandler) handleAppMessageSetUserInfo(tx *dbWrapper, i *messengertypes.Interaction, amPayload proto.Message) (*messengertypes.Interaction, bool, error) {
-	if i.IsMe {
-		h.logger.Info("ignoring SetUserInfo because isMe")
-		return i, false, nil
-	}
-
 	payload := amPayload.(*messengertypes.AppMessage_SetUserInfo)
 
 	if i.GetConversation().GetType() == messengertypes.Conversation_ContactType {
@@ -859,7 +915,7 @@ func (h *eventHandler) handleAppMessageSetUserInfo(tx *dbWrapper, i *messengerty
 			return nil, false, err
 		}
 
-		h.logger.Debug("dispatched member update", zap.String("name", payload.GetDisplayName()), zap.String("device-pk", i.GetDevicePublicKey()), zap.String("conv", i.ConversationPublicKey))
+		h.logger.Info("dispatched member update", zap.Any("member", member), zap.Bool("isNew", isNew))
 	}
 
 	return i, false, nil
@@ -872,13 +928,19 @@ func interactionFromAppMessage(h *eventHandler, gpk string, gme *protocoltypes.G
 		return nil, err
 	}
 
-	isMe, err := checkIsMe(h.ctx, h.protocolClient, gme)
+	isMe, err := checkDeviceIsMe(h.ctx, h.protocolClient, gme)
 	if err != nil {
 		return nil, err
 	}
 
 	dpkb := gme.GetHeaders().GetDevicePK()
 	dpk := b64EncodeBytes(dpkb)
+
+	mpk, err := h.db.getMemberPKFromDevicePK(dpk)
+	if err != nil {
+		h.logger.Error("failed to get memberPK from devicePK", zap.Error(err), zap.Bool("is-me", isMe), zap.String("device-pk", dpk), zap.String("group", gpk), zap.Any("app-message-type", am.GetType()))
+		mpk = ""
+	}
 
 	h.logger.Debug("received app message", zap.String("type", amt.String()), zap.Int("numMedias", len(am.GetMedias())))
 
@@ -891,6 +953,7 @@ func interactionFromAppMessage(h *eventHandler, gpk string, gme *protocoltypes.G
 		SentDate:              am.GetSentDate(),
 		DevicePublicKey:       dpk,
 		Medias:                am.GetMedias(),
+		MemberPublicKey:       mpk,
 	}
 
 	for _, media := range i.Medias {

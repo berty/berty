@@ -2200,6 +2200,12 @@
         "conversation_public_key": {
           "type": "string"
         },
+        "is_me": {
+          "type": "boolean"
+        },
+        "is_creator": {
+          "type": "boolean"
+        },
         "info_date": {
           "type": "string",
           "format": "int64"

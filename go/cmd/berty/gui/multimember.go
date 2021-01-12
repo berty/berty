@@ -93,7 +93,14 @@ func newMemberThumbnail(mc *msgrContext, convPK, memberPK string) wfr {
 	unsub := mc.store.memberSubscribe(convPK, memberPK, func(member *mt.Member) error {
 		name := member.GetDisplayName()
 		if len(name) != 0 && name != nameLabel.Text {
-			nameLabel.SetText(name + "\n" + safeShortPK(memberPK))
+			text := name + "\n" + safeShortPK(memberPK)
+			if member.GetIsCreator() {
+				text += "\n" + "Creator"
+			}
+			if member.GetIsMe() {
+				text += "\n" + "You"
+			}
+			nameLabel.SetText(text)
 		}
 		return nil
 	})
