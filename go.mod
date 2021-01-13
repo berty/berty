@@ -31,7 +31,7 @@ require (
 	github.com/githubnemo/CompileDaemon v1.2.1
 	github.com/gobuffalo/here v0.6.2 // indirect
 	github.com/gofrs/uuid v3.4.0+incompatible
-	github.com/gogo/protobuf v1.3.1
+	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.4.3
 	github.com/google/gopacket v1.1.19 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
@@ -51,7 +51,6 @@ require (
 	github.com/ipfs/interface-go-ipfs-core v0.4.0
 	github.com/itsTurnip/dishooks v0.0.0-20200206125049-b4fc7c7b042e
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
-	github.com/kisielk/errcheck v1.4.0 // indirect
 	github.com/koron/go-ssdp v0.0.2 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/libp2p/go-libp2p v0.13.0
@@ -104,7 +103,7 @@ require (
 	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de
 	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
 	golang.org/x/text v0.3.4 // indirect
-	golang.org/x/tools v0.0.0-20201211185031-d93e913c1a58
+	golang.org/x/tools v0.0.0-20210106214847-113979e3529a
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 	google.golang.org/genproto v0.0.0-20201022181438-0ff5f38871d5 // indirect
 	google.golang.org/grpc v1.34.0
