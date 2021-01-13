@@ -4,8 +4,8 @@
       "desc": "",
       "open-registered-account": "",
       "import-button": "",
-      "account-selector-create-button": "",
-      "more-options": "",
+      "account-selector-create-button": "Ustvari nov račun",
+      "more-options": "Več možnosti",
       "button": ""
     },
     "select-mode": {
@@ -13,13 +13,13 @@
         "title": "",
         "desc": "",
         "push-notif": "",
-        "offline-message": "",
-        "add-contact": "",
-        "fast-message": ""
+        "offline-message": "Sporočanje brez povezave",
+        "add-contact": "Enostavno dodaje kontakte",
+        "fast-message": "Najhitrejše dostavljanje sporočil"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
+        "title": "Najvišja stopnja varnosti",
+        "desc": "Za napredne uporabnike - Manj metapodatkov",
         "disable-push-notif": "",
         "disable-local-peer-discovery": "",
         "disable-contact-request": ""
@@ -28,17 +28,17 @@
     "create-account": {
       "title": "",
       "desc": "",
-      "required": "",
-      "placeholder": "",
-      "button": ""
+      "required": "Obvezno",
+      "placeholder": "Ime",
+      "button": "USTVARI MOJ RAČUN"
     },
     "services-auth": {
       "header": "",
-      "title": "",
-      "recommended": "",
+      "title": "Storitve",
+      "recommended": "Priporočeno",
       "desc": "",
       "button": "",
-      "skip": ""
+      "skip": "PRESKOČI IN NAREDI KASNEJE"
     },
     "generate-key": {
       "title": "",
@@ -46,64 +46,64 @@
     },
     "notifications": {
       "header": "",
-      "recommended": "",
-      "title": "",
+      "recommended": "Priporočeno",
+      "title": "Obvestila",
       "desc": "",
       "button": "",
-      "skip": ""
+      "skip": "PRESKOČI IN NAREDI KASNEJE"
     },
     "bluetooth": {
       "header": "",
-      "optional": "",
-      "title": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "optional": "Neobvezno",
+      "title": "Bluetooth",
+      "desc": "Za uporabo te funkcije morate dovoliti uporabo Bluetooth na vašemu telefonu",
+      "button": "DOVOLI BLUETOOTH",
+      "skip": "PRESKOČI IN NAREDI KASNEJE"
     },
     "setup-finished": {
-      "title": "",
-      "desc": "",
-      "button": ""
+      "title": "Nastavljanje končano!",
+      "desc": "Sedaj lahko začnete uporabljati aplikacijo, dodajate kontakte ter se z njimi pogovarjate prosto in privatno",
+      "button": "ZAČNITE UPORABLJATI BERTY"
     }
   },
   "main": {
     "home": {
       "requests": {
         "title": "",
-        "received-at": "",
-        "accept": "",
+        "received-at": "Prejeto",
+        "accept": "Sprejmi",
         "card-title": ""
       },
-      "input-placeholder": "",
+      "input-placeholder": "Išči ključne besede",
       "no-contacts": "",
       "search": {
-        "no-results": ""
+        "no-results": "Ni zadetkov"
       }
     },
     "home-modal": {
-      "top-button": "",
+      "top-button": "Ustvari novo skupino",
       "bottom-button": ""
     }
   },
   "settings": {
     "home": {
-      "header-left-button": "",
-      "header-center-button": "",
-      "header-right-button": "",
-      "network-button": "",
-      "switch-accounts": "",
-      "edit-profile": ""
+      "header-left-button": "Pomoč",
+      "header-center-button": "Razvijalska orodja",
+      "header-right-button": "Nastavitve",
+      "network-button": "Seznam omrežja",
+      "switch-accounts": "Uporabi drugi račun",
+      "edit-profile": "Uredi profil"
     },
     "network-map": {
-      "title": "",
+      "title": "Seznam omrežja",
       "online-peers": ""
     },
     "mode": {
-      "title": "",
+      "title": "Nastavitve",
       "desc": "",
       "notifications-button": {
-        "title": "",
-        "tag-enabled": "",
+        "title": "Obvestila",
+        "tag-enabled": "Vključeno",
         "tag-disabled": ""
       },
       "bluetooth-button": {
@@ -139,16 +139,16 @@
       "title": "",
       "qr-will-update": "",
       "ocr-wont-update": "",
-      "save": "",
-      "cancel": "",
-      "name-input-placeholder": "",
-      "name-input-label": ""
+      "save": "Shrani spremembe",
+      "cancel": "Prekini",
+      "name-input-placeholder": "Ime...",
+      "name-input-label": "Ime"
     },
     "notifications": {
-      "title": "",
-      "enabled-desc": "",
-      "disabled-desc": "",
-      "activate-button": "",
+      "title": "Obvestila",
+      "enabled-desc": "Omogočili ste obvestila!",
+      "disabled-desc": "Niste omogočili obvestil za to aplikacijo",
+      "activate-button": "Omogočite obvestila",
       "contact-request-button": {
         "title": "",
         "desc": ""
@@ -157,31 +157,31 @@
         "title": "",
         "display-button": "",
         "preview-button": "",
-        "sound-button": "",
+        "sound-button": "Zvok",
         "exceptions-button": {
           "title": "",
-          "preview-value": "",
+          "preview-value": "Dodaj",
           "tag": "",
           "tag_plural": ""
         }
       },
       "group-notifications-button": {
-        "title": "",
-        "display-button": "",
+        "title": "Skupinska obvestila",
+        "display-button": "Prikaži obvestila",
         "preview-button": "",
-        "sound-button": "",
+        "sound-button": "Zvok",
         "exceptions-button": {
           "title": "",
-          "preview-value": "",
+          "preview-value": "Dodaj",
           "tag": "",
           "tag_plural": ""
         }
       }
     },
     "bluetooth": {
-      "title": "",
+      "title": "Bluetooth",
       "desc": "",
-      "activate-button": ""
+      "activate-button": "Omogočite bluetooth"
     },
     "mc": {
       "activate-button": ""
@@ -192,30 +192,30 @@
       "register-service-button": {
         "title": "",
         "input-placeholder": "",
-        "action": ""
+        "action": "Dodaj"
       },
       "registered-services-button": {
         "title": "",
         "sample-no-services": "",
-        "sample-unknown-service": ""
+        "sample-unknown-service": "Neznana storitev"
       }
     },
     "delete-account": {
-      "title": "",
+      "title": "Izbriši račun!",
       "first-desc": "",
       "desc": "",
       "cancel-button": "",
-      "delete-button": ""
+      "delete-button": "IZBRIS"
     },
     "help": {
-      "title": "",
+      "title": "Pomoč",
       "security-privacy-button": {
-        "title": "",
+        "title": "Varnost in Zasebnost",
         "desc": ""
       },
-      "updates-button": "",
-      "about-button": "",
-      "account-button": "",
+      "updates-button": "Posodobitve",
+      "about-button": "O Berty",
+      "account-button": "Račun in Berty ID",
       "contact-button": "",
       "message-button": "",
       "group-button": "",
@@ -249,9 +249,9 @@
       "header-left-button": "",
       "simulate-button": "",
       "tor-button": "",
-      "tor-optional-option": "",
-      "tor-required-option": "",
-      "tor-disabled-option": "",
+      "tor-optional-option": "neobvezno",
+      "tor-required-option": "obvezno",
+      "tor-disabled-option": "onemogočeno",
       "header-middle-button": "",
       "header-right-button": "",
       "system-info-button": "",
@@ -308,13 +308,13 @@
     },
     "my-berty-ID": {
       "qr": "",
-      "fingerprint": "",
-      "devices": ""
+      "fingerprint": "Prstni odtis",
+      "devices": "Naprave"
     }
   },
   "modals": {
     "manage-deep-link": {
-      "invalid-link": "",
+      "invalid-link": "Neveljavna povezava!",
       "invalid-qr": "",
       "error": ""
     },
@@ -327,9 +327,9 @@
       "devices": ""
     },
     "group-invitation": {
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "fingerprint": "Prstni odtis",
+      "info": "Informacije",
+      "devices": "Naprave"
     }
   },
   "chat": {
@@ -337,21 +337,21 @@
       "mark-button": "",
       "block-button": "",
       "delete-button": "",
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "fingerprint": "Prstni odtis",
+      "info": "Informacije",
+      "devices": "Naprave"
     },
     "multi-member": {
       "input-placeholder": ""
     },
     "multi-member-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
+      "header-left-button": "Iskanje",
+      "header-middle-button": "Klic",
+      "header-right-button": "Deli",
       "media-button": "",
       "notifications-button": "",
       "members-button": {
-        "title": "",
+        "title": "Člani",
         "unknown": ""
       },
       "add-member-button": "",
