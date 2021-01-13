@@ -92,7 +92,7 @@
       "header-right-button": "Nastavení",
       "network-button": "Seznam sítí",
       "switch-accounts": "Použít jiný účet",
-      "edit-profile": ""
+      "edit-profile": "Upravit profil"
     },
     "network-map": {
       "title": "Seznam sítí",
@@ -307,7 +307,7 @@
       "title": "IPFS WebUI"
     },
     "my-berty-ID": {
-      "qr": "",
+      "qr": "QR",
       "fingerprint": "Otisk",
       "devices": "Zařízení"
     }
