@@ -21,7 +21,7 @@ jobs:
         run: ./tool/build/shell/resolve-workflows-for-cancel.py
 
       - name: Cancel Workflows
-        uses: styfle/cancel-workflow-action@0.6.0
+        uses: styfle/cancel-workflow-action@0.7.0
         with:
           workflow_id: ${{ steps.resolve-ids.outputs.IDS }}
           access_token: ${{ github.token }}
