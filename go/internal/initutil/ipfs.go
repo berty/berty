@@ -205,50 +205,21 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 			}
 		}
 
-		if m.Node.Protocol.RelayHack {
-			// Resolving addresses
-			pis, err := ipfsutil.ParseAndResolveRdvpMaddrs(m.getContext(), m.initLogger, config.Config.P2P.RelayHack)
-			if err != nil {
-				return nil, nil, errcode.TODO.Wrap(err)
-			}
-
-			lenPis := len(pis)
-			pickFrom := make([]peer.AddrInfo, lenPis)
-			for lenPis > 0 {
-				lenPis--
-				pickFrom[lenPis] = *pis[lenPis]
-			}
-
-			// Selecting 2 random one
-			rng := mrand.New(mrand.NewSource(srand.SafeFast())) //nolint:gosec
-			var relays []peer.AddrInfo
-			if len(pickFrom) <= 2 {
-				relays = pickFrom
-			} else {
-				for i := 2; i > 0; i-- {
-					lenPickFrom := len(pickFrom)
-					n := rng.Intn(lenPickFrom)
-					relays = append(relays, pickFrom[n])
-					if n == 0 {
-						pickFrom = pickFrom[1:]
-						continue
-					}
-					if n == lenPickFrom-1 {
-						pickFrom = pickFrom[:n-1]
-						continue
-					}
-					pickFrom = append(pickFrom[:n], pickFrom[n+1:]...)
-				}
-			}
-
-			for _, relay := range relays {
-				for _, addr := range relay.Addrs {
-					announce = append(announce, addr.String()+"/p2p/"+relay.ID.String()+"/p2p-circuit")
-				}
-			}
-
-			p2pOpts = libp2p.ChainOptions(p2pOpts, libp2p.StaticRelays(relays))
+		// Resolving addresses
+		pis, err := ipfsutil.ParseAndResolveRdvpMaddrs(m.getContext(), m.initLogger, config.Config.P2P.RelayHack)
+		if err != nil {
+			return nil, nil, errcode.TODO.Wrap(err)
 		}
+
+		relays := make([]peer.AddrInfo, len(pis))
+		for i, pi := range pis {
+			relays[i] = *pi
+		}
+
+		p2pOpts = libp2p.ChainOptions(p2pOpts,
+			libp2p.StaticRelays(relays),       // add static relay
+			libp2p.ForceReachabilityPrivate(), // add private reachability
+		)
 
 		// prefill peerstore with known rdvp servers
 		if m.Node.Protocol.Tor.Mode != TorRequired {
