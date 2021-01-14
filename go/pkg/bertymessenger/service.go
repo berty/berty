@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"runtime"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -309,6 +310,7 @@ func (svc *service) subscribeToMetadata(gpkb []byte) error {
 	if err != nil {
 		return errcode.ErrEventListMetadata.Wrap(err)
 	}
+	runtime.Breakpoint()
 	go func() {
 		for {
 			gme, err := s.Recv()

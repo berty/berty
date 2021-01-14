@@ -458,6 +458,7 @@ func (d *dbWrapper) addContactRequestOutgoingSent(contactPK string) (*messengert
 	}
 
 	contact := &messengertypes.Contact{}
+	var err error
 
 	if res := d.db.
 		Where(&messengertypes.Contact{
@@ -470,10 +471,15 @@ func (d *dbWrapper) addContactRequestOutgoingSent(contactPK string) (*messengert
 		}); res.Error != nil {
 		return nil, res.Error
 	} else if res.RowsAffected == 0 {
-		return nil, errcode.ErrDBAddContactRequestOutgoingSent.Wrap(fmt.Errorf("nothing found"))
+		// Check if that not already in the DB.
+		res := d.db.Where(&messengertypes.Contact{PublicKey: contactPK}).First(&contact)
+		if res.RowsAffected == 0 {
+			return nil, errcode.ErrDBAddContactRequestOutgoingSent.Wrap(fmt.Errorf("nothing found"))
+		}
+		err = res.Error
 	}
 
-	return contact, d.db.Where(&messengertypes.Contact{PublicKey: contactPK}).First(&contact).Error
+	return contact, err
 }
 
 func (d *dbWrapper) addContactRequestIncomingReceived(contactPK, displayName, groupPk string) (*messengertypes.Contact, error) {
