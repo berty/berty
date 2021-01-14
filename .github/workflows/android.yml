@@ -34,6 +34,12 @@ jobs:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}  # see https://github.com/actions/checkout/issues/299
 
+      - name: Pin Android NDK # pin ndk version due to https://github.com/golang/go/issues/42655
+        uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r20b
+
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
@@ -77,6 +83,7 @@ jobs:
         working-directory: js
         env:
           CI: "true"
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
         run: |
           make android.app_deps
           (yarn jetify && cd android && ./gradlew app:bundleReleaseYolo)
