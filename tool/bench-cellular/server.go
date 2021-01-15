@@ -8,7 +8,6 @@ import (
 	"log"
 	"math/rand"
 	"strconv"
-	"time"
 
 	"github.com/libp2p/go-libp2p"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
@@ -16,6 +15,7 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 
+	"github.com/libp2p/go-libp2p-core/event"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -139,74 +139,77 @@ func printHint(h host.Host, gOpts *globalOpts, sOpts *serverOpts) {
 	var serverAddr ma.Multiaddr
 
 	if sOpts.relay == disabledRelayMode {
-		fmt.Printf("%s Waiting for public address..", time.Now().Format("2006/01/02 15:04:05"))
+		log.Print("Waiting for public address...")
 	} else {
-		fmt.Printf("%s Waiting for relay address..", time.Now().Format("2006/01/02 15:04:05"))
+		log.Print("Waiting for relay address...")
 	}
 
-	for {
-		fmt.Printf(".")
-		time.Sleep(250 * time.Millisecond)
+	eventReceiver, err := h.EventBus().Subscribe(new(event.EvtLocalAddressesUpdated))
+	if err != nil {
+		log.Fatalf("can't subscribe to local addresses updated events: %v", err)
+	}
+	defer eventReceiver.Close()
 
-		for _, addr := range h.Addrs() {
+	for ev := range eventReceiver.Out() {
+		serverAddr = nil
+		update := ev.(event.EvtLocalAddressesUpdated)
+
+		for _, addr := range update.Current {
+			if addr.Action != event.Added {
+				continue
+			}
+
 			if sOpts.relay != disabledRelayMode {
-				if _, err := addr.ValueForProtocol(ma.P_CIRCUIT); err != nil {
+				if _, err := addr.Address.ValueForProtocol(ma.P_CIRCUIT); err != nil {
 					continue
 				}
 
 				if gOpts.tcp {
-					if _, err := addr.ValueForProtocol(ma.P_TCP); err != nil {
+					if _, err := addr.Address.ValueForProtocol(ma.P_TCP); err != nil {
 						continue
 					}
-					serverAddr = addr
-					break
+					serverAddr = addr.Address
 				} else {
-					if _, err := addr.ValueForProtocol(ma.P_QUIC); err != nil {
+					if _, err := addr.Address.ValueForProtocol(ma.P_QUIC); err != nil {
 						continue
 					}
-					serverAddr = addr
-					break
+					serverAddr = addr.Address
 				}
 			} else if sOpts.ip6 {
-				if _, err := addr.ValueForProtocol(ma.P_IP6); err != nil {
+				if _, err := addr.Address.ValueForProtocol(ma.P_IP6); err != nil {
 					continue
 				}
-				if manet.IsPublicAddr(addr) {
-					serverAddr = addr
-					break
+				if manet.IsPublicAddr(addr.Address) {
+					serverAddr = addr.Address
 				}
 			} else {
-				if _, err := addr.ValueForProtocol(ma.P_IP4); err != nil {
+				if _, err := addr.Address.ValueForProtocol(ma.P_IP4); err != nil {
 					continue
 				}
-				if manet.IsPublicAddr(addr) {
-					serverAddr = addr
-					break
+				if manet.IsPublicAddr(addr.Address) {
+					serverAddr = addr.Address
 				}
 			}
 		}
 
 		if serverAddr != nil {
-			fmt.Printf("\n")
-			break
+			hostAddr, err := ma.NewMultiaddr(fmt.Sprintf("/ipfs/%s", h.ID().Pretty()))
+			if err != nil {
+				panic(err)
+			}
+			fullAddr := serverAddr.Encapsulate(hostAddr)
+
+			hint := "Now run: './bench"
+			if gOpts.insecure {
+				hint += " -insecure"
+			}
+			if gOpts.tcp {
+				hint += " -tcp"
+			}
+			hint += fmt.Sprintf(" client -dest %s [-request ...] [-size X] [-reco]'", fullAddr)
+			log.Println(hint)
 		}
 	}
-
-	hostAddr, err := ma.NewMultiaddr(fmt.Sprintf("/ipfs/%s", h.ID().Pretty()))
-	if err != nil {
-		panic(err)
-	}
-	fullAddr := serverAddr.Encapsulate(hostAddr)
-
-	hint := "Now run: './bench"
-	if gOpts.insecure {
-		hint += " -insecure"
-	}
-	if gOpts.tcp {
-		hint += " -tcp"
-	}
-	hint += fmt.Sprintf(" client -dest %s [-request ...] [-size X] [-reco]'", fullAddr)
-	log.Println(hint)
 }
 
 func runServer(ctx context.Context, gOpts *globalOpts, sOpts *serverOpts) error {
@@ -215,7 +218,7 @@ func runServer(ctx context.Context, gOpts *globalOpts, sOpts *serverOpts) error 
 		return fmt.Errorf("server host creation failed: %v", err)
 	}
 
-	printHint(h, gOpts, sOpts)
+	go printHint(h, gOpts, sOpts)
 
 	h.SetStreamHandler(benchDownloadPID, func(s network.Stream) {
 		defer s.Close()
