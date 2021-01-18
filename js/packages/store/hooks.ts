@@ -1,4 +1,4 @@
-import { useContext, useMemo, useEffect, useCallback, EffectCallback } from 'react'
+import { useContext, useMemo, useEffect, EffectCallback } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty-tech/api'
@@ -169,25 +169,6 @@ export const useConvMemberList = (publicKey: Maybe<string>) => {
 export const usePersistentOptions = () => {
 	const ctx = useMsgrContext()
 	return ctx.persistentOptions || {}
-}
-
-export const useRestart = () => {
-	const ctx = useMsgrContext()
-	return useCallback(() => ctx.dispatch({ type: MessengerActions.Restart }), [ctx])
-}
-
-export const useDeleteAccount = () => {
-	const ctx = useMsgrContext()
-	return useCallback(() => ctx.dispatch({ type: MessengerActions.SetStateDeleting }), [ctx])
-}
-
-export const useSwitchToAccount = () => {
-	const ctx = useMsgrContext()
-
-	return useCallback(
-		(accountID) => ctx.dispatch({ type: MessengerActions.SetNextAccount, payload: accountID }),
-		[ctx],
-	)
 }
 
 //

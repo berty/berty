@@ -13,7 +13,7 @@ import Button from './Button'
 
 export const GetStarted = () => {
 	useNotificationsInhibitor(() => true)
-	const [{ absolute, background, column, flex, padding, text, margin, color }] = useStyles()
+	const [{ absolute, background, column, flex, padding, text }] = useStyles()
 	const { dispatch } = useMsgrContext()
 
 	return (
@@ -33,28 +33,12 @@ export const GetStarted = () => {
 						<Button
 							style={column.item.center}
 							textStyle={{ textTransform: 'uppercase' }}
-							onPress={() => dispatch({ type: MessengerActions.SetStateOnBoarding })}
+							onPress={() => {
+								dispatch({ type: MessengerActions.SetStateOnBoarding })
+							}}
 						>
 							{t('onboarding.getstarted.button')}
 						</Button>
-						<Text
-							style={[
-								column.item.center,
-								padding.horizontal.big,
-								margin.top.medium,
-								padding.medium,
-								{
-									textTransform: 'uppercase',
-									fontWeight: 'normal',
-									color: color.grey,
-								},
-							]}
-							onPress={() => {
-								dispatch({ type: MessengerActions.SetStateDeleting })
-							}}
-						>
-							{t('onboarding.getstarted.more-options') as any}
-						</Text>
 					</View>
 				</SafeAreaView>
 			)}

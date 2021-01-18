@@ -8,7 +8,7 @@ import RNBootSplash from 'react-native-bootsplash'
 
 import '@berty-tech/berty-i18n'
 import { Provider as ThemeProvider } from '@berty-tech/components/theme'
-import { StreamGate, DeleteGate, ListGate } from '@berty-tech/components/gates'
+import { StreamGate, ListGate } from '@berty-tech/components/gates'
 import MsgrProvider from '@berty-tech/store/provider'
 import { isReadyRef, navigationRef } from '@berty-tech/navigation'
 import { Navigation } from '@berty-tech/navigation/stacks'
@@ -51,16 +51,14 @@ export const App: React.FC = () => {
 						>
 							<NotificationProvider>
 								<BootSplashInhibitor />
-								<DeleteGate>
-									<StreamGate>
-										<ListGate>
-											<MusicPlayerProvider>
-												<StickMusicPlayer />
-												<Navigation />
-											</MusicPlayerProvider>
-										</ListGate>
-									</StreamGate>
-								</DeleteGate>
+								<StreamGate>
+									<ListGate>
+										<MusicPlayerProvider>
+											<StickMusicPlayer />
+											<Navigation />
+										</MusicPlayerProvider>
+									</ListGate>
+								</StreamGate>
 							</NotificationProvider>
 						</NavigationContainer>
 					</ThemeProvider>

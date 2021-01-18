@@ -7,8 +7,7 @@ import { Translation, useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty-tech/styles'
 import { ScreenProps, useNavigation } from '@berty-tech/navigation'
-import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
-import { MessengerActions } from '@berty-tech/store/context'
+import { useAccount } from '@berty-tech/store/hooks'
 
 import { ButtonSetting, ButtonSettingRow } from '../shared-components/SettingsButtons'
 import HeaderSettings from '../shared-components/Header'
@@ -150,7 +149,6 @@ const HomeHeader: React.FC = () => {
 const HomeBodySettings: React.FC<{}> = () => {
 	const [{ flex, color, padding }] = useStyles()
 	const navigation = useNativeNavigation()
-	const ctx = useMsgrContext()
 
 	return (
 		<Translation>
@@ -162,12 +160,6 @@ const HomeBodySettings: React.FC<{}> = () => {
 						iconPack='custom'
 						iconColor={color.blue}
 						onPress={() => navigation.navigate('Settings.NetworkMap')}
-					/>
-					<ButtonSetting
-						name={t('settings.home.switch-accounts')}
-						icon='log-out-outline'
-						iconColor={color.red}
-						onPress={() => ctx.dispatch({ type: MessengerActions.SetStateClosing })}
 					/>
 				</View>
 			)}

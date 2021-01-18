@@ -3,17 +3,17 @@ import { Linking } from 'react-native'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import {
 	createStackNavigator,
-	TransitionSpecs,
 	HeaderStyleInterpolators,
 	StackCardInterpolationProps,
 	StackNavigationOptions,
+	TransitionSpecs,
 } from '@react-navigation/stack'
 
 import * as RawComponents from '@berty-tech/components'
 import mapValues from 'lodash/mapValues'
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import { Routes } from './types'
-import { isClosing, MessengerAppState } from '@berty-tech/store/context'
+import { MessengerAppState } from '@berty-tech/store/context'
 import { dispatch, navigate } from '@berty-tech/navigation/rootRef'
 
 const CustomTransitionOptions: StackNavigationOptions = {
@@ -177,14 +177,6 @@ export const Navigation: React.FC = () => {
 	const context = useMsgrContext()
 
 	useEffect(() => {
-		if (context.appState === MessengerAppState.Closed || isClosing(context.appState)) {
-			dispatch(
-				CommonActions.reset({
-					routes: [{ name: Routes.Onboarding.AccountSelector }],
-				}),
-			)
-		}
-
 		switch (context.appState) {
 			case MessengerAppState.GetStarted:
 				dispatch(
@@ -213,7 +205,7 @@ export const Navigation: React.FC = () => {
 			initialRouteName={
 				context.appState === MessengerAppState.Ready
 					? Routes.Main.Home
-					: Routes.Onboarding.AccountSelector
+					: Routes.Onboarding.GetStarted
 			}
 			screenOptions={CustomTransitionOptions}
 		>
@@ -323,10 +315,6 @@ export const Navigation: React.FC = () => {
 			<NavigationStack.Screen
 				name={Routes.Settings.NetworkMap}
 				component={Components.Settings.NetworkMap}
-			/>
-			<NavigationStack.Screen
-				name={Routes.Onboarding.AccountSelector}
-				component={Components.Onboarding.AccountSelector}
 			/>
 			<NavigationStack.Screen
 				name={Routes.Onboarding.GetStarted}

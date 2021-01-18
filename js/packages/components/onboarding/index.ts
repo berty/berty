@@ -1,4 +1,3 @@
-export { AccountSelector } from './AccountSelector'
 export { GetStarted } from './GetStarted'
 export { CreateAccount } from './CreateAccount'
 export { ServicesAuth } from './ServicesAuth'

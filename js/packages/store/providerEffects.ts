@@ -1,130 +1,96 @@
-import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
-import i18n from '@berty-tech/berty-i18n'
-import { EOF, Service } from '@berty-tech/grpc-bridge'
-import ExternalTransport from './externalTransport'
-import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
 import { EventEmitter } from 'events'
 import AsyncStorage from '@react-native-community/async-storage'
 import cloneDeep from 'lodash/cloneDeep'
+
+import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
 import {
 	defaultPersistentOptions,
 	MessengerActions,
 	MessengerAppState,
 	PersistentOptions,
 	PersistentOptionsKeys,
-	PersistentOptionsUpdate,
 } from '@berty-tech/store/context'
 import beapi from '@berty-tech/api'
 import { reducerAction } from '@berty-tech/store/providerReducer'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
+import i18n from '@berty-tech/berty-i18n'
+import { EOF, Service } from '@berty-tech/grpc-bridge'
+import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
 
-const accountService = Service(beapi.account.AccountService, rpcBridge, null)
+import ExternalTransport from './externalTransport'
+import { createNewAccount } from './providerCallbacks'
+
+export const accountService = Service(beapi.account.AccountService, rpcBridge, null)
+
+export const closeAccountWithProgress = async (dispatch: (arg0: reducerAction) => void) => {
+	await accountService
+		.closeAccountWithProgress({})
+		.then(async (stream) => {
+			stream.onMessage((msg, _) => {
+				console.log('closeAccountWithProgress:', msg)
+				if (msg?.progress?.state !== 'done') {
+					dispatch({
+						type: MessengerActions.SetStateStreamInProgress,
+						payload: msg,
+					})
+				} else {
+					console.log('STREAM DONE')
+					dispatch({
+						type: MessengerActions.SetStateStreamDone,
+					})
+				}
+				return
+			})
+			await stream.start()
+			console.log('node is closed')
+		})
+		.catch((err) => {
+			dispatch({
+				type: MessengerActions.SetStreamError,
+				payload: { error: new Error(`Failed to close node: ${err}`) },
+			})
+		})
+}
+
+export const openAccountWithProgress = async (
+	dispatch: (arg0: reducerAction) => void,
+	bridgeOpts: GoBridgeOpts,
+	selectedAccount: string | null,
+) => {
+	await accountService
+		.openAccountWithProgress({
+			args: bridgeOpts.cliArgs,
+			accountId: selectedAccount?.toString(),
+			loggerFilters: GoBridgeDefaultOpts.logFilters,
+		})
+		.then(async (stream) => {
+			stream.onMessage((msg, _) => {
+				console.log('openAccountWithProgress:', msg)
+				if (msg?.progress?.doing !== 'done') {
+					dispatch({
+						type: MessengerActions.SetStateStreamInProgress,
+						payload: msg,
+					})
+				} else {
+					dispatch({
+						type: MessengerActions.SetStateStreamDone,
+					})
+				}
+				return
+			})
+			await stream.start()
+			console.log('node is opened')
+			dispatch({ type: MessengerActions.SetStateOpeningClients })
+		})
+		.catch((err) => {
+			dispatch({
+				type: MessengerActions.SetStreamError,
+				payload: { error: new Error(`Failed to start node: ${err}`) },
+			})
+		})
+}
 
 export const storageKeyForAccount = (accountID: string) => `storage_${accountID}`
-
-export const createNewAccount = async (
-	embedded: boolean,
-	dispatch: (arg0: reducerAction) => void,
-) => {
-	if (!embedded) {
-		return
-	}
-
-	let resp: beapi.account.CreateAccount.Reply
-
-	try {
-		resp = await accountService.createAccount({})
-	} catch (e) {
-		console.warn('unable to create account', e)
-		return
-	}
-
-	if (!resp.accountMetadata?.accountId) {
-		throw new Error('no account id returned')
-	}
-
-	await refreshAccountList(embedded, dispatch)
-
-	dispatch({
-		type: MessengerActions.SetCreatedAccount,
-		payload: {
-			accountId: resp.accountMetadata.accountId,
-		},
-	})
-}
-
-export const importAccount = async (
-	embedded: boolean,
-	dispatch: (arg0: reducerAction) => void,
-	path: string,
-) => {
-	if (!embedded) {
-		return
-	}
-
-	// TODO: check if bridge is running
-	let resp: beapi.account.CreateAccount.Reply
-
-	try {
-		resp = await accountService.importAccount({
-			backupPath: path,
-		})
-	} catch (e) {
-		console.warn('unable to import account', e)
-		return
-	}
-
-	if (!resp.accountMetadata?.accountId) {
-		throw new Error('no account id returned')
-	}
-
-	await refreshAccountList(embedded, dispatch)
-	await accountService.closeAccount({})
-
-	dispatch({
-		type: MessengerActions.SetNextAccount,
-		payload: resp.accountMetadata.accountId,
-	})
-}
-
-export const setPersistentOption = async (
-	dispatch: (arg0: reducerAction) => void,
-	selectedAccount: string | null,
-	action: PersistentOptionsUpdate,
-) => {
-	if (selectedAccount === null) {
-		console.warn('no account opened')
-		return
-	}
-
-	try {
-		let opts = {}
-		let persistOpts = await AsyncStorage.getItem(storageKeyForAccount(selectedAccount))
-
-		if (persistOpts !== null) {
-			opts = JSON.parse(persistOpts)
-		}
-
-		const updatedPersistOpts = {
-			...defaultPersistentOptions(),
-			...opts,
-			[action.type]: action.payload,
-		}
-
-		await AsyncStorage.setItem(
-			storageKeyForAccount(selectedAccount),
-			JSON.stringify(updatedPersistOpts),
-		)
-
-		dispatch({
-			type: MessengerActions.SetPersistentOption,
-			payload: updatedPersistOpts,
-		})
-	} catch (e) {
-		console.warn('store setPersistentOption Failed:', e)
-		return
-	}
-}
 
 export const refreshAccountList = async (
 	embedded: boolean,
@@ -159,7 +125,7 @@ const getPersistentOptions = async (
 	selectedAccount: string | null,
 ) => {
 	if (selectedAccount === null) {
-		console.warn('no account opened')
+		console.warn('getPersistentOptions / no account opened')
 		return
 	}
 
@@ -193,24 +159,25 @@ export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, emb
 	await GoBridge.initBridge()
 		.then(() => console.log('bridge init done'))
 		.catch((err) => {
-			console.error('unable to init bridge ', Object.keys(err), err.domain)
+			console.warn('unable to init bridge ', Object.keys(err), err.domain)
 		})
-
 	const f = async () => {
 		const accounts = await refreshAccountList(embedded, dispatch)
 
-		switch (Object.keys(accounts).length) {
-			case 0:
-				await createNewAccount(embedded, dispatch)
-				return
-
-			case 1:
-				dispatch({ type: MessengerActions.SetNextAccount, payload: accounts[0].accountId })
-				return
-
-			default:
-				dispatch({ type: MessengerActions.SetStateClosed })
-				return
+		if (Object.keys(accounts).length === 0) {
+			await createNewAccount(embedded, dispatch, null)
+		} else if (Object.keys(accounts).length > 0) {
+			console.log('accountsLength > 0 and dispatch SetNextAccount')
+			let accountSelected: any = null
+			Object.values(accounts).forEach((account) => {
+				if (!accountSelected) {
+					accountSelected = account
+				} else if (accountSelected && accountSelected.lastOpened < account.lastOpened) {
+					accountSelected = account
+				}
+			})
+			dispatch({ type: MessengerActions.SetNextAccount, payload: accountSelected.accountId })
+			return
 		}
 	}
 
@@ -236,14 +203,14 @@ export const openingLocalSettings = (
 export const openingDaemon = async (
 	dispatch: (arg0: reducerAction) => void,
 	appState: MessengerAppState,
-	selectedAccount: number | null,
+	selectedAccount: string | null,
 ) => {
 	if (appState !== MessengerAppState.OpeningWaitingForDaemon) {
 		return
 	}
 
 	if (selectedAccount === null) {
-		console.warn('no account opened')
+		console.warn('openingDaemon / no account opened')
 		return
 	}
 
@@ -281,24 +248,9 @@ export const openingDaemon = async (
 			// account already open
 			dispatch({ type: MessengerActions.SetStateOpeningClients })
 		})
-		.catch(() => {
+		.catch(async () => {
 			// account not open
-			accountService
-				.openAccount({
-					args: bridgeOpts.cliArgs,
-					accountId: selectedAccount.toString(),
-					loggerFilters: GoBridgeDefaultOpts.logFilters,
-				})
-				.then(() => {
-					console.log('account service is opened')
-					dispatch({ type: MessengerActions.SetStateOpeningClients })
-				})
-				.catch((err) => {
-					dispatch({
-						type: MessengerActions.SetStreamError,
-						payload: { error: new Error(`Failed to start node: ${err}`) },
-					})
-				})
+			await openAccountWithProgress(dispatch, bridgeOpts, selectedAccount)
 		})
 }
 
@@ -346,8 +298,11 @@ export const openingClients = (
 			cancel = () => stream.stop()
 			stream.onMessage((msg, err) => {
 				if (err) {
-					console.warn('events stream onMessage error:', err)
-					dispatch({ type: MessengerActions.SetStreamError, payload: { error: err } })
+					// if (err === EOF) {
+					// 	return
+					// }
+					// console.warn('events stream onMessage error:', err)
+					// dispatch({ type: MessengerActions.SetStreamError, payload: { error: err } })
 					return
 				}
 				const evt = msg?.event
@@ -444,17 +399,23 @@ export const openingCloseConvos = (
 
 // handle states DeletingClosingDaemon, ClosingDaemon
 export const closingDaemon = (
+	appState: MessengerAppState,
 	clearClients: (() => Promise<void>) | null,
 	dispatch: (arg0: reducerAction) => void,
 ) => {
-	if (!clearClients) {
+	if (
+		appState !== MessengerAppState.ClosingDaemon &&
+		appState !== MessengerAppState.DeletingClosingDaemon
+	) {
 		return
 	}
 	return () => {
 		const f = async () => {
 			try {
-				await clearClients()
-				await accountService.closeAccount({})
+				if (clearClients) {
+					await clearClients()
+				}
+				await closeAccountWithProgress(dispatch)
 			} catch (e) {
 				console.warn('unable to stop protocol', e)
 			}

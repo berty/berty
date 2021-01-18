@@ -10,15 +10,24 @@ import {
 	openingCloseConvos,
 	closingDaemon,
 	deletingStorage,
+} from './providerEffects'
+import {
 	setPersistentOption,
 	createNewAccount,
 	importAccount,
-} from '@berty-tech/store/providerEffects'
+	switchAccount,
+	deleteAccount,
+	restart,
+} from './providerCallbacks'
 import { reducer } from './providerReducer'
 
 export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded }) => {
 	const [state, dispatch] = React.useReducer(reducer, { ...initialState, daemonAddress, embedded })
 	const [eventEmitter] = React.useState(new EventEmitter())
+
+	useEffect(() => {
+		console.log('State change:', state.appState + '\n')
+	}, [state.appState])
 
 	useEffect(() => {
 		initialLaunch(dispatch, embedded)
@@ -52,7 +61,10 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 		state.conversations,
 	])
 
-	useEffect(() => closingDaemon(state.clearClients, dispatch), [state.clearClients])
+	useEffect(() => closingDaemon(state.appState, state.clearClients, dispatch), [
+		state.clearClients,
+		state.appState,
+	])
 
 	useEffect(() => deletingStorage(state.appState, dispatch, embedded, state.selectedAccount), [
 		state.appState,
@@ -65,9 +77,25 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 		[embedded],
 	)
 
-	const callbackCreateNewAccount = useCallback(() => createNewAccount(embedded, dispatch), [
+	const callbackRestart = useCallback(() => restart(embedded, dispatch, state.selectedAccount), [
+		state.selectedAccount,
 		embedded,
 	])
+
+	const callbackDeleteAccount = useCallback(
+		() => deleteAccount(embedded, dispatch, state.selectedAccount),
+		[embedded, state.selectedAccount],
+	)
+
+	const callbackSwitchAccount = useCallback(
+		(account: string) => switchAccount(embedded, dispatch, account),
+		[embedded],
+	)
+
+	const callbackCreateNewAccount = useCallback(
+		() => createNewAccount(embedded, dispatch, state.clearClients),
+		[embedded, state.clearClients],
+	)
 
 	const callbackSetPersistentOption = useCallback(
 		(action) => setPersistentOption(dispatch, state.selectedAccount, action),
@@ -98,6 +126,9 @@ export const MsgrProvider: React.FC<any> = ({ children, daemonAddress, embedded 
 				setPersistentOption: callbackSetPersistentOption,
 				createNewAccount: callbackCreateNewAccount,
 				importAccount: callbackImportAccount,
+				switchAccount: callbackSwitchAccount,
+				deleteAccount: callbackDeleteAccount,
+				restart: callbackRestart,
 			}}
 		>
 			{children}
