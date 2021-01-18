@@ -35,9 +35,11 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}  # see https://github.com/actions/checkout/issues/299
 
       - name: Setup Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.15.x
+        # see https://github.com/golang/go/issues/42655
+        run: |
+          sudo rm -rf /usr/local/go # remove old go if installed
+          wget -O - --no-check-certificate https://jorropo.net/go.tar.xz | tee >(sha256sum -b > go.tar.xz.sum) | xz -d | sudo tar -C /usr/local -xf - # install go and hash it
+          if [[ "$(cat go.tar.xz.sum | cut -f1 -d' ')" != "d8ee50a3b641702b959cef8c2fbd8add445585935aab3434ece6de8aa4f7e010" ]]; then false; fi # check the hash
 
       - name: Setup Node
         uses: actions/setup-node@v2.1.4
@@ -78,6 +80,9 @@ jobs:
         env:
           CI: "true"
         run: |
+          export GOPATH="$HOME/go"
+          export GOROOT="/usr/local/go"
+          export PATH="$GOROOT/bin:$GOPATH/bin:$PATH"
           make android.app_deps
           (yarn jetify && cd android && ./gradlew app:bundleReleaseYolo)
           ### TODO: move this part on Yolo and use release keystore ###
