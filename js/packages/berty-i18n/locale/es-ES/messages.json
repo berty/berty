@@ -92,7 +92,7 @@
       "header-right-button": "Ajustes",
       "network-button": "Lista de redes",
       "switch-accounts": "Usar otra cuenta",
-      "edit-profile": ""
+      "edit-profile": "Editar perfil"
     },
     "network-map": {
       "title": "Lista de redes",
@@ -307,7 +307,7 @@
       "title": "IPFS WebUI"
     },
     "my-berty-ID": {
-      "qr": "",
+      "qr": "QR",
       "fingerprint": "Huella digital",
       "devices": "Dispositivos"
     }

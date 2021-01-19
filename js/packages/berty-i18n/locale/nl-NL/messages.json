@@ -151,7 +151,7 @@
       "activate-button": "",
       "contact-request-button": {
         "title": "Contact verzoek",
-        "desc": ""
+        "desc": "Ontvang een notificatie telkens wanneer iemand je een contactverzoek stuurt"
       },
       "messages-notifications-button": {
         "title": "",
@@ -162,26 +162,26 @@
           "title": "Uitzonderingen",
           "preview-value": "Toevoegen",
           "tag": "",
-          "tag_plural": ""
+          "tag_plural": "{{count}} uitzonderingen"
         }
       },
       "group-notifications-button": {
         "title": "",
-        "display-button": "",
+        "display-button": "Meldingen weergeven",
         "preview-button": "",
         "sound-button": "Geluid",
         "exceptions-button": {
           "title": "Uitzonderingen",
           "preview-value": "Toevoegen",
           "tag": "",
-          "tag_plural": ""
+          "tag_plural": "{{count}} uitzonderingen"
         }
       }
     },
     "bluetooth": {
       "title": "Bluetooth",
       "desc": "",
-      "activate-button": ""
+      "activate-button": "Bluetooth activeren"
     },
     "mc": {
       "activate-button": "Multipeer Connectiviteit activeren"
@@ -201,43 +201,43 @@
       }
     },
     "delete-account": {
-      "title": "",
-      "first-desc": "",
+      "title": "Verwijder mijn account!",
+      "first-desc": "Weet je zeker dat je je account wilt verwijderen?",
       "desc": "",
-      "cancel-button": "",
-      "delete-button": ""
+      "cancel-button": "ANNULEREN",
+      "delete-button": "VERWIJDEREN"
     },
     "help": {
-      "title": "",
+      "title": "Help",
       "security-privacy-button": {
-        "title": "",
-        "desc": ""
+        "title": "Beveiliging & Privacy",
+        "desc": "Houd uw gegevens veilig en uw leven privé"
       },
-      "updates-button": "",
-      "about-button": "",
-      "account-button": "",
-      "contact-button": "",
-      "message-button": "",
-      "group-button": "",
-      "settings-button": "",
-      "ask-button": "",
-      "report-button": ""
+      "updates-button": "Updates",
+      "about-button": "Over Berty",
+      "account-button": "Account & Berty ID",
+      "contact-button": "Contacten & Verzoeken",
+      "message-button": "Berichten",
+      "group-button": "Groepen",
+      "settings-button": "Instellingen",
+      "ask-button": "Stel een vraag",
+      "report-button": "Rapporteer een fout"
     },
     "about": {
-      "title": "",
-      "top-left-button": "",
-      "top-right-button": "",
-      "bottom-left-button": "",
+      "title": "Over Berty",
+      "top-left-button": "Privé & Veilig",
+      "top-right-button": "Peer-to-peer netwerk",
+      "bottom-left-button": "Geen internet of data vereist",
       "bottom-right-button": "",
-      "terms-button": "",
-      "privacy-button": "",
-      "software-button": "",
+      "terms-button": "Gebruiksvoorwaarden",
+      "privacy-button": "Privacy Beleid",
+      "software-button": "Software licentie",
       "contact-button": "Neem contact op",
       "website-button": "Website"
     },
     "updates": {
-      "title": "",
-      "up-to-date-desc": "",
+      "title": "App updates",
+      "up-to-date-desc": "Uw app is up to date",
       "version": "Versie",
       "current-tag": "Huidige",
       "installed-tag": "Geinstalleerd",
@@ -246,179 +246,179 @@
     },
     "devtools": {
       "title": "",
-      "header-left-button": "",
+      "header-left-button": "Apparaat informatie",
       "simulate-button": "",
-      "tor-button": "",
+      "tor-button": "Tor {{option}}",
       "tor-optional-option": "optioneel",
       "tor-required-option": "vereist",
       "tor-disabled-option": "uitgeschakeld",
-      "header-middle-button": "",
-      "header-right-button": "",
+      "header-middle-button": "Nep-gegevens genereren",
+      "header-right-button": "Daemon herstarten",
       "system-info-button": "Systeem informatie",
-      "debug-button": "",
+      "debug-button": "Debug",
       "add-dev-conversations-button": "",
       "share-button": {
-        "title": "",
+        "title": "ID delen op discord",
         "alert-title": "",
-        "alert-message": "",
+        "alert-message": "Hiermee kunnen andere medewerkers uw QR-code scannen of uw contactlink kopiëren.",
         "alert-accept-button": "Yep 👍",
-        "alert-cancel-button": ""
+        "alert-cancel-button": "Nope"
       },
       "native-bridge-button": "",
-      "dump-account-button": "",
-      "dump-contacts-button": "",
-      "dump-conversations-button": "",
+      "dump-account-button": "Dump account",
+      "dump-contacts-button": "Contacten dumpen",
+      "dump-conversations-button": "Gesprekken dumpen",
       "dump-interactions-button": "",
-      "dump-members-button": "",
+      "dump-members-button": "Leden dumpen",
       "stop-node-button": "Stop node",
       "bot-mode-button": "",
       "local-grpc-button": "",
-      "console-logs-button": "",
-      "ipfs-webui-button": "",
+      "console-logs-button": "Console logs",
+      "ipfs-webui-button": "IPFS WebUI",
       "notifications-button": "Notificaties",
       "send-to-all-button": {
-        "title": "",
-        "sending": "",
-        "test": "",
-        "tried": ""
+        "title": "Verstuur berichten naar alle contacten",
+        "sending": "Verzenden...",
+        "test": "Test, ",
+        "tried": "✔ Geprobeerd om te verzenden naar {{length}} contacten"
       },
-      "footer-left-button": "",
-      "footer-middle-button": "",
-      "footer-right-button": ""
+      "footer-left-button": "Apparaat informatie",
+      "footer-middle-button": "Toon gebeurtenissen",
+      "footer-right-button": "Daemon herstarten"
     },
     "system-info": {
-      "title": ""
+      "title": "Systeem informatie"
     },
     "fake-data": {
-      "title": "",
+      "title": "Nep-gegevens genereren",
       "contacts-button": "",
       "multi-members-button": "",
       "messages-button": "",
-      "delete-button": ""
+      "delete-button": "Nep-gegevens verwijderen"
     },
     "add-dev-conversations": {
       "title": "",
-      "add": "",
-      "tag-bot": "",
-      "tag-contact": "",
-      "tag-conversation": ""
+      "add": "Voeg {{name}} toe",
+      "tag-bot": "Bot",
+      "tag-contact": "Contact",
+      "tag-conversation": "Groep"
     },
     "ipfs-webui": {
-      "title": ""
+      "title": "IPFS WebUI"
     },
     "my-berty-ID": {
-      "qr": "",
-      "fingerprint": "",
-      "devices": ""
+      "qr": "QR",
+      "fingerprint": "Vingerafdruk",
+      "devices": "Apparaten"
     }
   },
   "modals": {
     "manage-deep-link": {
-      "invalid-link": "",
-      "invalid-qr": "",
-      "error": ""
+      "invalid-link": "Ongeldige koppeling!",
+      "invalid-qr": "Ongeldige QR code!",
+      "error": "Fout!"
     },
     "invalid-scan": {
       "dismiss-button": ""
     },
     "add-this-contact": {
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "fingerprint": "Vingerafdruk",
+      "info": "Informatie",
+      "devices": "Apparaten"
     },
     "group-invitation": {
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "fingerprint": "Vingerafdruk",
+      "info": "Informatie",
+      "devices": "Apparaten"
     }
   },
   "chat": {
     "contact-settings": {
-      "mark-button": "",
-      "block-button": "",
-      "delete-button": "",
-      "fingerprint": "",
-      "info": "",
-      "devices": ""
+      "mark-button": "Markeren als geverifieerd",
+      "block-button": "Contact blokkeren",
+      "delete-button": "Contact verwijderen",
+      "fingerprint": "Vingerafdruk",
+      "info": "Informatie",
+      "devices": "Apparaten"
     },
     "multi-member": {
-      "input-placeholder": ""
+      "input-placeholder": "Schrijf een beveiligd bericht..."
     },
     "multi-member-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "media-button": "",
-      "notifications-button": "",
+      "header-left-button": "Zoeken",
+      "header-middle-button": "Bellen",
+      "header-right-button": "Delen",
+      "media-button": "Media, links & documenten",
+      "notifications-button": "Ontvang notificaties",
       "members-button": {
-        "title": "",
-        "unknown": ""
+        "title": "Leden",
+        "unknown": "Onbekend"
       },
-      "add-member-button": "",
+      "add-member-button": "Voeg deelnemer toe",
       "invite-button": "",
       "save-button": "",
       "erase-button": "",
-      "leave-button": ""
+      "leave-button": "Groep verlaten"
     },
     "multi-member-qr": {
-      "title": ""
+      "title": "QR Groep"
     },
     "one-to-one": {
       "contact-request-box": {
-        "title": "",
-        "refuse-button": "",
-        "accept-button": "",
-        "accepted-button": ""
+        "title": "CONTACT VERZOEK",
+        "refuse-button": "WEIGEREN",
+        "accept-button": "ACCEPTEREN",
+        "accepted-button": "GEACCEPTEERD"
       },
       "betabot-box": {
         "title": "",
         "desc": "",
-        "skip-button": "",
-        "add-button": ""
+        "skip-button": "OVERSLAAN",
+        "add-button": "TOEVOEGEN !"
       },
       "infos-chat": {
-        "connection-confirmed": "",
-        "request-sent": "",
-        "incoming": "",
+        "connection-confirmed": "👋 Berty verbinding bevestigd! 🎉",
+        "request-sent": "Verzoek verzonden ✈",
+        "incoming": "Accepteer dit verzoek om te reageren!",
         "outgoing": ""
       },
       "betabot-input-placeholder": "",
-      "incoming-input-placeholder": "",
-      "input-placeholder": ""
+      "incoming-input-placeholder": "Accepteer het verzoek om hier te schrijven...",
+      "input-placeholder": "Schrijf een beveiligd bericht..."
     },
     "one-to-one-settings": {
-      "header-left-button": "",
-      "header-middle-button": "",
-      "header-right-button": "",
-      "media-button": "",
-      "notifications-button": "",
-      "mutual-button": "",
-      "save-button": "",
-      "erase-button": ""
+      "header-left-button": "Zoeken",
+      "header-middle-button": "Bellen",
+      "header-right-button": "Delen",
+      "media-button": "Media, links & documenten",
+      "notifications-button": "Ontvang notificaties",
+      "mutual-button": "Wederzijdse groepen",
+      "save-button": "Gesprek opslaan op server",
+      "erase-button": "Gesprek wissen"
     },
     "replicate-group-settings": {
-      "title": "",
-      "no-registered-button": "",
-      "connect-button": "",
-      "manage-add-button": ""
+      "title": "Registreer gesprek op server",
+      "no-registered-button": "Geen replicatie service geregistreerd",
+      "connect-button": "Gebruik diensten van Berty",
+      "manage-add-button": "Beheer of voeg diensten toe"
     },
     "files": {
-      "record-sound": "",
-      "recording": "",
-      "gallery": "",
-      "camera": "",
-      "record": "",
-      "files": "",
-      "microphone": "",
-      "gif": "",
-      "search-gif": "",
-      "security-access": "",
-      "security-access-desc": "",
-      "save-to-gallery": "",
-      "share": "",
-      "forward-berty": "",
-      "forward": "",
-      "image-saved": ""
+      "record-sound": "Neem een bericht op",
+      "recording": "Opnemen...",
+      "gallery": "Galerij",
+      "camera": "Camera",
+      "record": "Opnemen",
+      "files": "Bestanden",
+      "microphone": "Microfoon",
+      "gif": "GIF",
+      "search-gif": "Zoek een gif",
+      "security-access": "Toegang tot beveiliging",
+      "security-access-desc": "Tik hier om instellingen te openen om toegang tot uw",
+      "save-to-gallery": "Dit bestand opslaan in de Galerij",
+      "share": "Delen",
+      "forward-berty": "Doorsturen naar Berty contact",
+      "forward": "Doorsturen",
+      "image-saved": "Afbeelding opgeslagen in Galerij"
     }
   }
 }
