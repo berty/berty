@@ -11,7 +11,7 @@ import { ScreenProps, useNavigation } from '@berty-tech/navigation'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
 import beapi from '@berty-tech/api'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
-import { EOF, Service } from '@berty-tech/grpc-bridge'
+import { Service } from '@berty-tech/grpc-bridge'
 import GoBridge from '@berty-tech/go-bridge'
 import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useAccount, useMsgrContext } from '@berty-tech/store/hooks'
@@ -19,6 +19,7 @@ import { SwipeNavRecognizer } from '../shared-components/SwipeNavRecognizer'
 import { Player } from '@react-native-community/audio-toolkit'
 import { playSound } from '../sounds'
 import { MessengerActions, PersistentOptionsKeys } from '@berty-tech/store/context'
+import Long from 'long'
 
 //
 // DevTools
@@ -81,11 +82,7 @@ const NativeCallButton: React.FC = () => {
 		__DEV__ ? middleware.logger.create('MESSENGER') : null, // eslint-disable-line
 	)
 
-	const messengerClient: any = Service(
-		beapi.messenger.MessengerService,
-		rpcBridge,
-		messengerMiddlewares,
-	)
+	const messengerClient = Service(beapi.messenger.MessengerService, rpcBridge, messengerMiddlewares)
 	const { t } = useTranslation()
 	let i = 0
 	return (
@@ -101,10 +98,10 @@ const NativeCallButton: React.FC = () => {
 				messengerClient
 					.echoTest({
 						echo: `hello number #${n}`,
-						delay: 1000,
+						delay: Long.fromNumber(1000),
 					})
-					.then((stream: any) => {
-						stream.onMessage((res: any) => {
+					.then((stream) => {
+						stream.onMessage((res) => {
 							if (res) {
 								Vibration.vibrate(500)
 							}
@@ -113,8 +110,8 @@ const NativeCallButton: React.FC = () => {
 						setTimeout(stream.stop, 10000)
 						return stream.start()
 					})
-					.catch((err: Error) => {
-						if (err === EOF) {
+					.catch((err) => {
+						if (err?.EOF) {
 							console.info(`end of the EchoTest stream #${n}`)
 						} else if (err) {
 							console.warn(err)

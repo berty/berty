@@ -1,5 +1,4 @@
 import { Buffer } from 'buffer'
-import { EOF } from '@berty-tech/grpc-bridge'
 import { WelshProtocolServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
 let cache: { cid: string; prom: Promise<string> }[] = []
@@ -17,7 +16,7 @@ const fetchSource = async (
 	const data = await new Promise<Buffer>((resolve, reject) => {
 		let buf = Buffer.from('')
 		stream.onMessage((msg, err) => {
-			if (err === EOF) {
+			if (err?.EOF) {
 				resolve(buf)
 				return
 			}
