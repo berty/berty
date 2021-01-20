@@ -81,15 +81,7 @@ const AddThisContact: React.FC<{
 	}, [done, error, navigation])
 
 	if (error) {
-		let title
-		if (type === 'link') {
-			title = t('modals.manage-deep-link.invalid-link')
-		} else if (type === 'qr') {
-			title = t('modals.manage-deep-link.invalid-qr')
-		} else {
-			title = t('modals.manage-deep-link.error')
-		}
-		return <InvalidScan title={title} error={error.toString()} />
+		return <InvalidScan type={type} error={error} />
 	}
 
 	return (
