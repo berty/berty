@@ -79,7 +79,7 @@
 		"@types/color": "^3.0.1",
 		"@types/jest": "^26.0.19",
 		"@types/lodash": "^4.14.167",
-		"@types/react-native": "^0.63.43",
+		"@types/react-native": "^0.63.46",
 		"@types/react-native-share": "^3.3.1",
 		"@types/react-test-renderer": "^16.9.4",
 		"@typescript-eslint/eslint-plugin": "4.12.0",
