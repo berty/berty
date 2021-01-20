@@ -3,7 +3,7 @@ import { MsgrState } from './context'
 import { Alert } from 'react-native'
 import { useAccount } from './hooks'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
-import { EOF, Service } from '@berty-tech/grpc-bridge'
+import { Service } from '@berty-tech/grpc-bridge'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
 import RNFS from 'react-native-fs'
 import RNFetchBlob from 'rn-fetch-blob'
@@ -187,7 +187,7 @@ export const exportAccountToFile = async () => {
 			})
 		})
 		.catch(async (err) => {
-			if (err === EOF) {
+			if (err?.EOF) {
 			} else {
 				console.warn(err)
 			}

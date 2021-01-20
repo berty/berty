@@ -14,7 +14,7 @@ import beapi from '@berty-tech/api'
 import { reducerAction } from '@berty-tech/store/providerReducer'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import i18n from '@berty-tech/berty-i18n'
-import { EOF, Service } from '@berty-tech/grpc-bridge'
+import { Service } from '@berty-tech/grpc-bridge'
 import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
 
 import ExternalTransport from './externalTransport'
@@ -298,7 +298,7 @@ export const openingClients = (
 			cancel = () => stream.stop()
 			stream.onMessage((msg, err) => {
 				if (err) {
-					// if (err === EOF) {
+					// if (err.EOF) {
 					// 	return
 					// }
 					// console.warn('events stream onMessage error:', err)
@@ -356,8 +356,8 @@ export const openingClients = (
 			})
 			await stream.start()
 		})
-		.catch((err: Error) => {
-			if (err === EOF) {
+		.catch((err) => {
+			if (err?.EOF) {
 				console.info('end of the events stream')
 				dispatch({ type: MessengerActions.SetStateClosed })
 			} else {
