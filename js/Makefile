@@ -379,7 +379,7 @@ ios/Berty.xcworkspace: ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle package
 	cd ios && bundle exec pod install $(if $(filter-out $(CI), true),--repo-update)
 	touch $@
 
-ios/Berty.xcodeproj: ios/vendor/xcodegen $(xcodegen_yml) $(call rwildcard,ios/Berty/Source,*)
+ios/Berty.xcodeproj: ios/vendor/xcodegen $(xcodegen_yml) $(call rwildcard,ios/Berty/Source,*) $(call rwildcard,assets,*)
 	$(call check-program, swift)
 	mkdir -p ios/Berty
 	touch ios/Berty/main.jsbundle
