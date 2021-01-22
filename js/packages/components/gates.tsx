@@ -1,5 +1,6 @@
 import React from 'react'
 import { ActivityIndicator, Button, Text, TextInput, View } from 'react-native'
+import * as Progress from 'react-native-progress'
 
 import { useMsgrContext } from '@berty-tech/store/hooks'
 import {
@@ -11,15 +12,71 @@ import {
 } from '@berty-tech/store/context'
 
 import LoaderDots from './shared-components/LoaderDots'
+import { useStyles } from '@berty-tech/styles'
 
 const expandSelfAndCenterContent: any = {
 	alignItems: 'center',
 	justifyContent: 'center',
+	paddingBottom: 30,
 	height: '100%',
 	width: '100%',
 }
 
 const gutter = 50
+
+const StreamInProgressCmp: React.FC<{}> = () => {
+	const [{ text }] = useStyles()
+	const { streamInProgress: stream } = useMsgrContext()
+	// const [stream, setStream] = React.useState<any>(streamInProgress)
+	// React.useEffect(() => {
+	// 	console.log('SIP', streamInProgress, stream)
+	// })
+
+	// React.useEffect(() => {
+	// 	const timer = setTimeout(() => {
+	// 		setStream(streamInProgress)
+	// 	}, 2000)
+	// 	return () => clearTimeout(timer)
+	// }, [streamInProgress])
+
+	return (
+		<View>
+			<Text
+				style={[
+					text.color.black,
+					text.bold.small,
+					text.align.center,
+					{ marginTop: 60, fontFamily: 'Open Sans' },
+				]}
+			>
+				{stream?.stream}
+			</Text>
+			<View style={[expandSelfAndCenterContent]}>
+				<Text
+					style={[
+						text.color.black,
+						text.bold.small,
+						text.align.center,
+						{ fontFamily: 'Open Sans' },
+					]}
+				>
+					{stream?.msg?.progress?.doing}
+				</Text>
+				<Text
+					style={[
+						text.color.black,
+						text.bold.small,
+						text.align.center,
+						{ fontFamily: 'Open Sans' },
+					]}
+				>
+					{stream?.msg?.progress?.completed} / {stream?.msg?.progress?.total}
+				</Text>
+				<Progress.Bar progress={stream?.msg?.progress?.progress} width={200} />
+			</View>
+		</View>
+	)
+}
 
 export const StreamGate: React.FC = ({ children }) => {
 	const {
@@ -61,12 +118,8 @@ export const StreamGate: React.FC = ({ children }) => {
 				</View>
 			</View>
 		)
-	} else if (streamInProgress) {
-		return (
-			<View style={[expandSelfAndCenterContent]}>
-				<Text>{streamInProgress.progress.doing}</Text>
-			</View>
-		)
+	} else if (streamInProgress?.msg) {
+		return <StreamInProgressCmp />
 	}
 	return <>{children}</>
 }

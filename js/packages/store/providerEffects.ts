@@ -27,11 +27,14 @@ export const closeAccountWithProgress = async (dispatch: (arg0: reducerAction) =
 		.closeAccountWithProgress({})
 		.then(async (stream) => {
 			stream.onMessage((msg, _) => {
-				console.log('closeAccountWithProgress:', msg)
+				// console.log('closeAccountWithProgress:', msg)
 				if (msg?.progress?.state !== 'done') {
 					dispatch({
 						type: MessengerActions.SetStateStreamInProgress,
-						payload: msg,
+						payload: {
+							msg: msg,
+							stream: 'Close account',
+						},
 					})
 				} else {
 					dispatch({
@@ -64,11 +67,14 @@ export const openAccountWithProgress = async (
 		})
 		.then(async (stream) => {
 			stream.onMessage((msg, _) => {
-				console.log('openAccountWithProgress:', msg)
+				// console.log('openAccountWithProgress:', msg)
 				if (msg?.progress?.doing !== 'done') {
 					dispatch({
 						type: MessengerActions.SetStateStreamInProgress,
-						payload: msg,
+						payload: {
+							msg: msg,
+							stream: 'Open account',
+						},
 					})
 				} else {
 					dispatch({
