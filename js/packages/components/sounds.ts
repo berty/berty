@@ -2,12 +2,12 @@ import mapValues from 'lodash/mapValues'
 import { Player } from '@react-native-community/audio-toolkit'
 
 const soundsMap = {
-	messageReceived: 'Berty_Notif_Message.mp3',
-	messageSent: 'Notif_Berty15message_envoye.mp3',
-	contactRequestSent: 'Notif_Berty02.mp3',
-	contactRequestReceived: 'Notif_Berty04.mp3',
-	contactRequestAccepted: 'Notif_Berty14.mp3',
-	groupCreated: 'Notif_Berty13.mp3',
+	messageReceived: 'message_received.mp3',
+	messageSent: 'message_sent.mp3',
+	contactRequestSent: 'contact_request_sent.mp3',
+	contactRequestReceived: 'contact_request_received.mp3',
+	contactRequestAccepted: 'contact_request_accepted.mp3',
+	groupCreated: 'group_created.mp3',
 }
 
 export type SoundKey = keyof typeof soundsMap
