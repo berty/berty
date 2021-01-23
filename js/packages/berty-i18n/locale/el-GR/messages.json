@@ -1,25 +1,25 @@
 {
   "onboarding": {
     "getstarted": {
-      "desc": "",
-      "open-registered-account": "",
-      "import-button": "",
-      "account-selector-create-button": "",
-      "more-options": "",
-      "button": ""
+      "desc": "Η ασφαλής εφαρμογή μηνυμάτων peer-to-peer που λειτουργεί με ή χωρίς πρόσβαση στο διαδίκτυο, δεδομένα κινητής τηλεφωνίας ή εμπιστοσύνη στο δίκτυο",
+      "open-registered-account": "Δημιούργησε έναν λογαριασμό",
+      "import-button": "Εισαγωγή δεδομένων από υπάρχοντα λογαριασμό",
+      "account-selector-create-button": "Δημιουργία νέου λογαριασμού",
+      "more-options": "Περισσότερες επιλογές",
+      "button": "ΞΕΚΙΝΗΣΕ ΤΩΡΑ"
     },
     "select-mode": {
       "performance": {
-        "title": "",
-        "desc": "",
-        "push-notif": "",
-        "offline-message": "",
-        "add-contact": "",
-        "fast-message": ""
+        "title": "Απόδοση",
+        "desc": "Εύκολο στη χρήση - Όλες οι δυνατότητες",
+        "push-notif": "Λήψη ειδοποιήσεων",
+        "offline-message": "Μηνύματα εκτός σύνδεσης",
+        "add-contact": "Εύκολη προσθήκη επαφών",
+        "fast-message": "Ταχύτερη παράδοση μηνυμάτων"
       },
       "high-level": {
-        "title": "",
-        "desc": "",
+        "title": "Υψηλότερο επίπεδο ιδιωτικότητας",
+        "desc": "Για προχωρημένους χρήστες - Λιγότερα μεταδεδομένα",
         "disable-push-notif": "",
         "disable-local-peer-discovery": "",
         "disable-contact-request": ""
