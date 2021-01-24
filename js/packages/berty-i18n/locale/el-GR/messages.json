@@ -20,61 +20,61 @@
       "high-level": {
         "title": "Υψηλότερο επίπεδο ιδιωτικότητας",
         "desc": "Για προχωρημένους χρήστες - Λιγότερα μεταδεδομένα",
-        "disable-push-notif": "",
-        "disable-local-peer-discovery": "",
-        "disable-contact-request": ""
+        "disable-push-notif": "Προώθηση ειδοποιήσεων ανενεργές",
+        "disable-local-peer-discovery": "Το τοπικό peer είναι απενεργοποιημένο",
+        "disable-contact-request": "Τα αιτήματα επαφής απενεργοποιήθηκαν"
       }
     },
     "create-account": {
-      "title": "",
-      "desc": "",
-      "required": "",
-      "placeholder": "",
-      "button": ""
+      "title": "Δημιουργία λογαριασμού",
+      "desc": "Απαιτείται μόνο το όνομα",
+      "required": "Απαιτείται",
+      "placeholder": "Όνομα",
+      "button": "ΔΗΜΙΟΥΡΓΙΑ ΛΟΓΑΡΙΑΣΜΟΥ"
     },
     "services-auth": {
-      "header": "",
-      "title": "",
-      "recommended": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "header": "Ταυτοποίηση στις υπηρεσίες",
+      "title": "Υπηρεσίες",
+      "recommended": "Προτεινόμενο",
+      "desc": "Αυτό θα αναπαράγει αυτόματα τις συνομιλίες σας σε ένα διακομιστή",
+      "button": "Χρήση υπηρεσιών που λειτουργούν με Berty",
+      "skip": "ΠΑΡΑΛΕΙΨΗ ΓΙΑ ΑΡΓΟΤΕΡΑ"
     },
     "generate-key": {
-      "title": "",
-      "desc": ""
+      "title": "Έναρξη του κόμβου Berty…",
+      "desc": "Αυτό μπορεί να διαρκέσει μερικά δευτερόλεπτα"
     },
     "notifications": {
-      "header": "",
-      "recommended": "",
-      "title": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "header": "Μη χάσετε κανένα νέο μήνυμα ή αίτημα επαφής",
+      "recommended": "Προτεινόμενο",
+      "title": "Ειδοποιήσεις",
+      "desc": "Πρέπει να εξουσιοδοτήσετε τις ειδοποιήσεις push από το Berty στο τηλέφωνό σας",
+      "button": "ΕΓΚΡΙΣΗ ΓΝΩΣΤΟΠΟΙΗΣΕΩΝ",
+      "skip": "ΠΑΡΑΛΕΙΨΗ ΓΙΑ ΑΡΓΟΤΕΡΑ"
     },
     "bluetooth": {
-      "header": "",
-      "optional": "",
-      "title": "",
-      "desc": "",
-      "button": "",
-      "skip": ""
+      "header": "Επικοινωνείτε χωρίς σύνδεση στο διαδίκτυο (wifi ή δεδομένα) συνδέοντας το τηλέφωνό σας απευθείας με κοντινές συσκευές",
+      "optional": "Προαιρετικό",
+      "title": "Bluetooth",
+      "desc": "Για να χρησιμοποιήσετε αυτήν τη δυνατότητα πρέπει να ενεργοποιήσετε το Bluetooth στο τηλέφωνό σας",
+      "button": "ΑΠΟΔΟΧΗ BLUETOOTH",
+      "skip": "ΠΑΡΑΛΕΙΨΗ ΓΙΑ ΑΡΓΟΤΕΡΑ"
     },
     "setup-finished": {
-      "title": "",
-      "desc": "",
-      "button": ""
+      "title": "Η εγκατάσταση ολοκληρώθηκε!",
+      "desc": "Τώρα μπορείτε να χρησιμοποιήσετε την εφαρμογή, να αρχίσετε να προσθέτετε επαφές και να μιλάτε ελεύθερα και ιδιωτικά μαζί τους",
+      "button": "ΕΝΑΡΞΗ ΧΡΗΣΗΣ ΤΟΥ BERTY"
     }
   },
   "main": {
     "home": {
       "requests": {
-        "title": "",
-        "received-at": "",
-        "accept": "",
-        "card-title": ""
+        "title": "Αιτήματα",
+        "received-at": "Ελήφθησαν",
+        "accept": "Αποδοχή",
+        "card-title": "Αίτημα επαφής!"
       },
-      "input-placeholder": "",
+      "input-placeholder": "Αναζήτηση λέξης-κλειδί",
       "no-contacts": "",
       "search": {
         "no-results": ""
@@ -154,32 +154,32 @@
         "desc": ""
       },
       "messages-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
+        "title": "Μηνύματα ειδοποιήσεων",
+        "display-button": "Εμφάνιση ειδοποιήσεων",
+        "preview-button": "Προεπισκόπηση μηνυμάτων",
+        "sound-button": "Ήχος",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
-          "tag": "",
-          "tag_plural": ""
+          "title": "Εξαιρέσεις",
+          "preview-value": "Προσθήκη",
+          "tag": "{{count}} εξαίρεση",
+          "tag_plural": "{{count}} εξαίρεση"
         }
       },
       "group-notifications-button": {
-        "title": "",
-        "display-button": "",
-        "preview-button": "",
-        "sound-button": "",
+        "title": "Ομαδοποιημένες ειδοποιήσεις",
+        "display-button": "Εμφάνιση ειδοποιήσεων",
+        "preview-button": "Προεπισκόπηση μηνυμάτων",
+        "sound-button": "Ήχος",
         "exceptions-button": {
-          "title": "",
-          "preview-value": "",
-          "tag": "",
-          "tag_plural": ""
+          "title": "Εξαιρέσεις",
+          "preview-value": "Προσθήκη",
+          "tag": "{{count}} εξαίρεση",
+          "tag_plural": "{{count}} εξαιρέσεις"
         }
       }
     },
     "bluetooth": {
-      "title": "",
+      "title": "Bluetooth",
       "desc": "",
       "activate-button": ""
     },
