@@ -13,6 +13,8 @@ jobs:
         uses: actions/checkout@master
       - name: Unshallow
         run: git fetch --prune --unshallow
+      - name: Install libgl
+        run: sudo apt-get install -y libgl1-mesa-glx libgl1-mesa-dev xorg-dev
       - name: Run Semantic Release
         id: semantic
         uses: codfish/semantic-release-action@v1

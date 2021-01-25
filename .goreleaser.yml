@@ -21,8 +21,9 @@ builds:
         goarch: 386
     flags:
       - "-a"
+      - "-tags=bertygui"
     ldflags:
-      - '-extldflags "-static" -X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)'
+      - '-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)'
 checksum:
   name_template: '{{.ProjectName}}_checksums.txt'
 changelog:
