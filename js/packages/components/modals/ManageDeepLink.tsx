@@ -1,6 +1,5 @@
 import React from 'react'
 import { StyleSheet, ActivityIndicator } from 'react-native'
-import { useTranslation } from 'react-i18next'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Buffer } from 'buffer'
 
@@ -18,7 +17,6 @@ import InvalidScan from './InvalidScan'
 export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 	route: { params },
 }) => {
-	const { t } = useTranslation()
 	const { reply: pdlReply, error, call, done, called } = messengerMethodsHooks.useParseDeepLink()
 	React.useEffect(() => {
 		if (!called) {
@@ -31,15 +29,7 @@ export const ManageDeepLink: React.FC<ScreenProps.Modals.ManageDeepLink> = ({
 	if (!done) {
 		content = <ActivityIndicator size='large' />
 	} else if (error) {
-		let title
-		if (dataType === 'link') {
-			title = t('modals.manage-deep-link.invalid-link')
-		} else if (dataType === 'qr') {
-			title = t('modals.manage-deep-link.invalid-qr')
-		} else {
-			title = t('modals.manage-deep-link.error')
-		}
-		content = <InvalidScan title={title} error={error.toString()} />
+		content = <InvalidScan error={error} type={dataType} />
 	} else if (pdlReply?.link?.kind === beapi.messenger.BertyLink.Kind.GroupV1Kind) {
 		content = (
 			<ManageGroupInvitation

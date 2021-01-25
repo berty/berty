@@ -4,6 +4,8 @@ import { Text, Icon } from '@ui-kitten/components'
 import { useNavigation } from '@react-navigation/native'
 import { Translation } from 'react-i18next'
 import { useStyles } from '@berty-tech/styles'
+import { useTranslation } from 'react-i18next'
+import beapi from '@berty-tech/api'
 
 //
 // Scan Invalid
@@ -116,9 +118,27 @@ const InvalidScanDismissButton: React.FC<{}> = () => {
 	)
 }
 
-const InvalidScan: React.FC<{ title: string; error: string }> = ({ title, error }) => {
+const InvalidScan: React.FC<{ type: string; error: any }> = ({ type, error }) => {
 	const [layout, setLayout] = useState<number>()
 	const [{ background, padding, border }] = useStyles()
+	const { t } = useTranslation()
+
+	const isContactAlreadyAdded = error?.error?.errorDetails?.codes?.includes(
+		beapi.errcode.ErrCode.ErrContactRequestContactAlreadyAdded,
+	)
+	let errorMessage = error.toString()
+	let title = ''
+	if (type === 'link') {
+		title = t('modals.manage-deep-link.invalid-link')
+	} else if (type === 'qr') {
+		title = t('modals.manage-deep-link.invalid-qr')
+		if (isContactAlreadyAdded) {
+			title = t('modals.manage-deep-link.contact-already-added')
+			errorMessage = t('modals.manage-deep-link.contact-already-added-message')
+		}
+	} else {
+		title = t('modals.manage-deep-link.error')
+	}
 
 	return (
 		<View style={[padding.medium, { justifyContent: 'center', height: '100%' }]}>
@@ -133,7 +153,7 @@ const InvalidScan: React.FC<{ title: string; error: string }> = ({ title, error 
 			>
 				<View style={[_invalidScanStyles.body]}>
 					<InvalidScanHeader title={title} />
-					<InvalidScanError error={error} />
+					<InvalidScanError error={errorMessage} />
 					<InvalidScanDismissButton />
 				</View>
 			</View>

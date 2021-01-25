@@ -117,15 +117,15 @@ export const HomeModal: React.FC<{
 	function slideUp() {
 		Animated.timing(animateSwipe, {
 			toValue: 0,
-			duration: 250,
+			duration: 150,
 			useNativeDriver: false,
 		}).start()
 	}
 
 	function slideDown() {
 		Animated.timing(animateSwipe, {
-			toValue: -100,
-			duration: 200,
+			toValue: -300,
+			duration: 150,
 			useNativeDriver: false,
 		}).start(closeModal)
 	}
@@ -143,14 +143,17 @@ export const HomeModal: React.FC<{
 		toValue &&
 			Animated.timing(animateSwipe, {
 				toValue,
-				duration: 100,
+				duration: 0,
 				useNativeDriver: false,
 			}).start()
 	}
 
 	function onHandlerStateChange(event: PanGestureHandlerStateChangeEvent): void {
 		if (event.nativeEvent.oldState === State.ACTIVE) {
-			if (event.nativeEvent.translationY > 100 || event.nativeEvent.velocityY > 100) {
+			if (
+				(event.nativeEvent.translationY > 10 && event.nativeEvent.velocityY >= 0) ||
+				event.nativeEvent.velocityY > 100
+			) {
 				slideDown()
 			} else {
 				slideUp()
