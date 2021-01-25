@@ -316,7 +316,9 @@
     "manage-deep-link": {
       "invalid-link": "Neveljavna povezava!",
       "invalid-qr": "",
-      "error": ""
+      "error": "",
+      "contact-already-added": "",
+      "contact-already-added-message": ""
     },
     "invalid-scan": {
       "dismiss-button": ""
