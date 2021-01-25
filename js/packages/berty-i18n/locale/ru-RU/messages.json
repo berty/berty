@@ -316,7 +316,9 @@
     "manage-deep-link": {
       "invalid-link": "Некорректная ссылка!",
       "invalid-qr": "Некорректный QR-код!",
-      "error": "Ошибка!"
+      "error": "Ошибка!",
+      "contact-already-added": "",
+      "contact-already-added-message": ""
     },
     "invalid-scan": {
       "dismiss-button": "ОТКЛОНИТЬ"
