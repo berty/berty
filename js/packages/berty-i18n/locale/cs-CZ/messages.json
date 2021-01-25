@@ -316,7 +316,9 @@
     "manage-deep-link": {
       "invalid-link": "Neplatný odkaz!",
       "invalid-qr": "Neplatný QR kód!",
-      "error": "Chyba!"
+      "error": "Chyba!",
+      "contact-already-added": "",
+      "contact-already-added-message": ""
     },
     "invalid-scan": {
       "dismiss-button": "ZAHODIT"
