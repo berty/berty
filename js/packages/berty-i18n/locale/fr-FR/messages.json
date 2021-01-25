@@ -316,7 +316,9 @@
     "manage-deep-link": {
       "invalid-link": "Lien invalide !",
       "invalid-qr": "QR code invalide !",
-      "error": "Erreur !"
+      "error": "Erreur !",
+      "contact-already-added": "Contact déjà ajouté",
+      "contact-already-added-message": "Vous ne pouvez pas ajouter le même contact plusieurs fois"
     },
     "invalid-scan": {
       "dismiss-button": "ANNULER"
